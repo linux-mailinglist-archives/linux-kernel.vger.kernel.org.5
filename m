@@ -1,136 +1,243 @@
-Return-Path: <linux-kernel+bounces-32791-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32792-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9590183601A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:52:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BF8783601F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:53:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D0A1283B04
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:52:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5FB9EB28918
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:53:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B931C3B1AC;
-	Mon, 22 Jan 2024 10:51:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="Lfs6mLb4"
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28ABB3A287;
+	Mon, 22 Jan 2024 10:53:25 +0000 (UTC)
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68A0C3A8CD;
-	Mon, 22 Jan 2024 10:51:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.143.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E06FA3A262;
+	Mon, 22 Jan 2024 10:53:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705920677; cv=none; b=pUgH5GxBwUM3rs/Ui5/zMNSgCymGVf3C3e48loaZfImHVsJv5St25lPcr3DQ6+nFu0ReQeV5SV6b8V9UHo4MuhnVCOcLrc9vCooLgqs5m4d88jKS+tKkdWnqQShYYSFIAWeUhRTjrxVZoyReuLdOkLvKeq2Mw9T4Hk6Y94+kM6w=
+	t=1705920804; cv=none; b=d1sYyOX41FzeOcg/irKFMBz3YO4s+dlQYs8JEPZ45BgZpeeGul8ylMccEuQSYhZ8OS2X6qubLkl+OHUo3GrsVakXs3mlUzEYLUu3FXugnyEnsJsLR0oqXR4PwW+oUDY03VD6gehnYUJnusMLuvR44PwI27qA67OaFjjLmzM/a9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705920677; c=relaxed/simple;
-	bh=svg98VKnZP3fRHaDjBbkju9KVDMrZOgy1g4WP5WhQD8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=MW+h/1nXpPEX6xsag4jv/WhBLHlqaG92TxmqblvS5wy0CUfdUZYU6DLygfJk1T3heW+r0DUFF+vLTQ8EOg8N0WLPbUGP80oEAYkxWFQnc+pw4/5L0DpMQ8p3Yr/yk+UCUuKs9jnmYq0wKsl3ww49slYgmV4bcwKSE9vOzUq/7r0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=Lfs6mLb4; arc=none smtp.client-ip=68.232.143.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1705920675; x=1737456675;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=svg98VKnZP3fRHaDjBbkju9KVDMrZOgy1g4WP5WhQD8=;
-  b=Lfs6mLb4NIc/zjcrtvaiG3jfqtHe6vBEs+cxB4txS4HQ1Np2BtDAexTE
-   OmTzZDxy2TbDbpU31DWuuh1MXIbTTMPm3jePEm8TUcGOYfp7EB1W6W0nQ
-   IGr4f4L8tt93TZbTuvGioKtdLuqPeeSwAFXnMnZm9CV+KXieycLl/V6Eo
-   F/oG9S3UG5Waagfh/uDdeLlHaiGuuAB7kQ62IsiC+GX5Bn7yXqg1sWcIx
-   C85PZR42Pf0vkYVPpzcwF/WGRKNSGLVvZ+v1sT0vlW5DgipdQ3+8wTzky
-   1+277gGJOjFoT0+z2Hzy6Zsyc6LNCmX/DTkvKK+nvOd2JNd0R5LKIIyBk
-   g==;
-X-CSE-ConnectionGUID: fAln4nUlTd+41qLbaJkDGw==
-X-CSE-MsgGUID: fLY4dCxFTJadzOIiXJQpDA==
-X-IronPort-AV: E=Sophos;i="6.05,211,1701100800"; 
-   d="scan'208";a="7427196"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 22 Jan 2024 18:51:14 +0800
-IronPort-SDR: Ol0B+PAA1Xfy4fEmP4YDPQ+AyE0T1Nw4ssoKvgy9fwd7nAiCDylfiv13aGgQ7+l1j1K8QCED70
- c3TD8o/6KR1A==
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 22 Jan 2024 02:01:18 -0800
-IronPort-SDR: HN3211Og+EnTAn1/uYEQkSJ5IpLy/3YoVt9P+QxZvh1hwrxvbYrIaEPgmZ3kVPmAxboLudfs7h
- T0v8FSZEZkvQ==
-WDCIronportException: Internal
-Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.6])
-  by uls-op-cesaip02.wdc.com with ESMTP; 22 Jan 2024 02:51:13 -0800
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Date: Mon, 22 Jan 2024 02:51:04 -0800
-Subject: [PATCH 2/2] btrfs: zoned: wake up cleaner sooner if needed
+	s=arc-20240116; t=1705920804; c=relaxed/simple;
+	bh=L5FK5n7+byXHvnUmc8Yx9kLf5H8D13l2oGTx6wWEyso=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=uvm0Qgmj66VkvMu8pp4vzCb3XPkP2dEyk0Kpp/1P/3zmzuSajiOlP/PZz8QxlzXEq5to8Uq1WhcR0Marmq0kXLzGw82OCZBxdMRB+btRdasIXeApwqaCPm2Y0ktP8/N+TK34nGJhWZ0fVI+QuKgk6Ih2NF57oxPLTc2owCpklfo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id 96ff3509ed9fbd29; Mon, 22 Jan 2024 11:53:14 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 010D666952F;
+	Mon, 22 Jan 2024 11:53:13 +0100 (CET)
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: rafael@kernel.org, viresh.kumar@linaro.org, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: Re: [PATCH] cpufreq: intel_pstate: Directly use stored ratios for max frequencies
+Date: Mon, 22 Jan 2024 11:53:13 +0100
+Message-ID: <6021639.lOV4Wx5bFT@kreacher>
+In-Reply-To: <20240118120513.1018808-1-srinivas.pandruvada@linux.intel.com>
+References: <20240118120513.1018808-1-srinivas.pandruvada@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240122-reclaim-fix-v1-2-761234a6d005@wdc.com>
-References: <20240122-reclaim-fix-v1-0-761234a6d005@wdc.com>
-In-Reply-To: <20240122-reclaim-fix-v1-0-761234a6d005@wdc.com>
-To: Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
-Cc: Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- Johannes Thumshirn <johannes.thumshirn@wdc.com>, 
- Damien Le Moal <dlemoal@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1705920670; l=1609;
- i=johannes.thumshirn@wdc.com; s=20230613; h=from:subject:message-id;
- bh=svg98VKnZP3fRHaDjBbkju9KVDMrZOgy1g4WP5WhQD8=;
- b=xWcXukl8CocPEfPTRefwvLuPkvBUrurbPRTiQsU8YMfBGpQ8agEMYORtkjbOPJVHTXE2+g1cq
- xtjSqYemPEBBX1S9tIcXZ8j9wWBY88FBT3OSNbny+hF+tbfujjBD5Km
-X-Developer-Key: i=johannes.thumshirn@wdc.com; a=ed25519;
- pk=TGmHKs78FdPi+QhrViEvjKIGwReUGCfa+3LEnGoR2KM=
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekiedgvddtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepiedprhgtphhtthhopehrrghfrggvlheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepvhhirhgvshhhrdhkuhhmrghrsehlihhnrghrohdrohhrghdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohep
+ lhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
 
-On very fast but small devices, waiting for a transaction commit can be
-too long of a wait in order to wake up the cleaner kthread to remove unused
-and reclaimable block-groups.
+On Thursday, January 18, 2024 1:05:13 PM CET Srinivas Pandruvada wrote:
+> Avoid unnecessary calculation for converting frequency to performance
+> ratio by using a scaling factor for the maximum non turbo and turbo
+> frequency. Here the driver already stored performance ratios for max
+> non turbo and turbo frequency by reading from MSR_HWP_CAPABILITIES.
+> Directly use those ratios without any calculations.
+> 
+> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> ---
+>  drivers/cpufreq/intel_pstate.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+> index 2ca70b0b5fdc..6bbc21ca96e0 100644
+> --- a/drivers/cpufreq/intel_pstate.c
+> +++ b/drivers/cpufreq/intel_pstate.c
+> @@ -2532,7 +2532,14 @@ static void intel_pstate_update_perf_limits(struct cpudata *cpu,
+>  		int freq;
+>  
+>  		freq = max_policy_perf * perf_ctl_scaling;
+> -		max_policy_perf = DIV_ROUND_UP(freq, scaling);
+> +
+> +		if (freq == cpu->pstate.turbo_freq)
+> +			max_policy_perf = cpu->pstate.turbo_pstate;
+> +		else if (freq == cpu->pstate.max_freq)
+> +			max_policy_perf = cpu->pstate.max_pstate;
+> +		else
+> +			max_policy_perf = DIV_ROUND_UP(freq, scaling);
+> +
+>  		freq = min_policy_perf * perf_ctl_scaling;
+>  		min_policy_perf = DIV_ROUND_UP(freq, scaling);
+>  	}
+> 
 
-Check every time we're adding back free space to a block group, if we need
-to activate the cleaner kthread.
+This needs to take all of the cases in which the analogous formula
+for computing a perf level is used, which are a few.
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Also, one can argue that this is a fix, because it prevents the CPU
+capacity from being limited artificially if the E-core-to-P-core scaling
+factor used by the platform to produce the HWP_CAP numbers is smaller
+than expected by the kernel.
+
+So here's my version of this patch (lightly tested):
+
 ---
- fs/btrfs/free-space-cache.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Subject: [PATCH v1] cpufreq: intel_pstate: Refine computation of P-state for given frequency
 
-diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index d372c7ce0e6b..2d98b9ca0e83 100644
---- a/fs/btrfs/free-space-cache.c
-+++ b/fs/btrfs/free-space-cache.c
-@@ -30,6 +30,7 @@
- #include "file-item.h"
- #include "file.h"
- #include "super.h"
-+#include "zoned.h"
+On systems using HWP, if a given frequency is equal to the maximum turbo
+frequency or the maximum non-turbo frequency, the HWP performance level
+corresponding to it is already known and can be used directly without
+any computation.
+
+Accordingly, adjust the code to use the known HWP performance levels in
+the cases mentioned above.
+
+This also helps to avoid limiting CPU capacity artificially in some
+cases when the BIOS produces the HWP_CAP numbers using a different
+E-core-to-P-core performance scaling factor than expected by the kernel.
+
+Fixes: f5c8cf2a4992 ("cpufreq: intel_pstate: hybrid: Use known scaling factor for P-cores")
+Cc: 6.1+ <stable@vger.kernel.org> # 6.1+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/cpufreq/intel_pstate.c |   55 +++++++++++++++++++++++++----------------
+ 1 file changed, 34 insertions(+), 21 deletions(-)
+
+Index: linux-pm/drivers/cpufreq/intel_pstate.c
+===================================================================
+--- linux-pm.orig/drivers/cpufreq/intel_pstate.c
++++ linux-pm/drivers/cpufreq/intel_pstate.c
+@@ -529,6 +529,30 @@ static int intel_pstate_cppc_get_scaling
+ }
+ #endif /* CONFIG_ACPI_CPPC_LIB */
  
- #define BITS_PER_BITMAP		(PAGE_SIZE * 8UL)
- #define MAX_CACHE_BYTES_PER_GIG	SZ_64K
-@@ -2694,6 +2695,7 @@ int __btrfs_add_free_space(struct btrfs_block_group *block_group,
- static int __btrfs_add_free_space_zoned(struct btrfs_block_group *block_group,
- 					u64 bytenr, u64 size, bool used)
- {
-+	struct btrfs_fs_info *fs_info = block_group->fs_info;
- 	struct btrfs_space_info *sinfo = block_group->space_info;
- 	struct btrfs_free_space_ctl *ctl = block_group->free_space_ctl;
- 	u64 offset = bytenr - block_group->start;
-@@ -2745,6 +2747,10 @@ static int __btrfs_add_free_space_zoned(struct btrfs_block_group *block_group,
- 		btrfs_mark_bg_to_reclaim(block_group);
- 	}
- 
-+	if (btrfs_zoned_should_reclaim(fs_info) &&
-+	    !test_bit(BTRFS_FS_CLEANER_RUNNING, &fs_info->flags))
-+		wake_up_process(fs_info->cleaner_kthread);
++static int intel_pstate_freq_to_hwp_rel(struct cpudata *cpu, int freq,
++					unsigned int relation)
++{
++	if (freq == cpu->pstate.turbo_freq)
++		return cpu->pstate.turbo_pstate;
 +
- 	return 0;
++	if (freq == cpu->pstate.max_freq)
++		return cpu->pstate.max_pstate;
++
++	switch (relation) {
++	case CPUFREQ_RELATION_H:
++		return freq / cpu->pstate.scaling;
++	case CPUFREQ_RELATION_C:
++		return DIV_ROUND_CLOSEST(freq, cpu->pstate.scaling);
++	}
++
++	return DIV_ROUND_UP(freq, cpu->pstate.scaling);
++}
++
++static int intel_pstate_freq_to_hwp(struct cpudata *cpu, int freq)
++{
++	return intel_pstate_freq_to_hwp_rel(cpu, freq, CPUFREQ_RELATION_L);
++}
++
+ /**
+  * intel_pstate_hybrid_hwp_adjust - Calibrate HWP performance levels.
+  * @cpu: Target CPU.
+@@ -546,6 +570,7 @@ static void intel_pstate_hybrid_hwp_adju
+ 	int perf_ctl_scaling = cpu->pstate.perf_ctl_scaling;
+ 	int perf_ctl_turbo = pstate_funcs.get_turbo(cpu->cpu);
+ 	int scaling = cpu->pstate.scaling;
++	int freq;
+ 
+ 	pr_debug("CPU%d: perf_ctl_max_phys = %d\n", cpu->cpu, perf_ctl_max_phys);
+ 	pr_debug("CPU%d: perf_ctl_turbo = %d\n", cpu->cpu, perf_ctl_turbo);
+@@ -559,16 +584,16 @@ static void intel_pstate_hybrid_hwp_adju
+ 	cpu->pstate.max_freq = rounddown(cpu->pstate.max_pstate * scaling,
+ 					 perf_ctl_scaling);
+ 
+-	cpu->pstate.max_pstate_physical =
+-			DIV_ROUND_UP(perf_ctl_max_phys * perf_ctl_scaling,
+-				     scaling);
++	freq = perf_ctl_max_phys * perf_ctl_scaling;
++	cpu->pstate.max_pstate_physical = intel_pstate_freq_to_hwp(cpu, freq);
+ 
+-	cpu->pstate.min_freq = cpu->pstate.min_pstate * perf_ctl_scaling;
++	freq = cpu->pstate.min_pstate * perf_ctl_scaling;
++	cpu->pstate.min_freq = freq;
+ 	/*
+ 	 * Cast the min P-state value retrieved via pstate_funcs.get_min() to
+ 	 * the effective range of HWP performance levels.
+ 	 */
+-	cpu->pstate.min_pstate = DIV_ROUND_UP(cpu->pstate.min_freq, scaling);
++	cpu->pstate.min_pstate = intel_pstate_freq_to_hwp(cpu, freq);
  }
  
+ static inline void update_turbo_state(void)
+@@ -2528,13 +2553,12 @@ static void intel_pstate_update_perf_lim
+ 	 * abstract values to represent performance rather than pure ratios.
+ 	 */
+ 	if (hwp_active && cpu->pstate.scaling != perf_ctl_scaling) {
+-		int scaling = cpu->pstate.scaling;
+ 		int freq;
+ 
+ 		freq = max_policy_perf * perf_ctl_scaling;
+-		max_policy_perf = DIV_ROUND_UP(freq, scaling);
++		max_policy_perf = intel_pstate_freq_to_hwp(cpu, freq);
+ 		freq = min_policy_perf * perf_ctl_scaling;
+-		min_policy_perf = DIV_ROUND_UP(freq, scaling);
++		min_policy_perf = intel_pstate_freq_to_hwp(cpu, freq);
+ 	}
+ 
+ 	pr_debug("cpu:%d min_policy_perf:%d max_policy_perf:%d\n",
+@@ -2908,18 +2932,7 @@ static int intel_cpufreq_target(struct c
+ 
+ 	cpufreq_freq_transition_begin(policy, &freqs);
+ 
+-	switch (relation) {
+-	case CPUFREQ_RELATION_L:
+-		target_pstate = DIV_ROUND_UP(freqs.new, cpu->pstate.scaling);
+-		break;
+-	case CPUFREQ_RELATION_H:
+-		target_pstate = freqs.new / cpu->pstate.scaling;
+-		break;
+-	default:
+-		target_pstate = DIV_ROUND_CLOSEST(freqs.new, cpu->pstate.scaling);
+-		break;
+-	}
+-
++	target_pstate = intel_pstate_freq_to_hwp_rel(cpu, freqs.new, relation);
+ 	target_pstate = intel_cpufreq_update_pstate(policy, target_pstate, false);
+ 
+ 	freqs.new = target_pstate * cpu->pstate.scaling;
+@@ -2937,7 +2950,7 @@ static unsigned int intel_cpufreq_fast_s
+ 
+ 	update_turbo_state();
+ 
+-	target_pstate = DIV_ROUND_UP(target_freq, cpu->pstate.scaling);
++	target_pstate = intel_pstate_freq_to_hwp(cpu, target_freq);
+ 
+ 	target_pstate = intel_cpufreq_update_pstate(policy, target_pstate, true);
+ 
 
--- 
-2.43.0
+
 
 
