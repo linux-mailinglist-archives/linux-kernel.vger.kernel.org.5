@@ -1,410 +1,124 @@
-Return-Path: <linux-kernel+bounces-33149-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33154-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89AC7836549
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:24:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD262836556
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:26:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 394B2289B82
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:24:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 946A31F2435B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:26:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E47993D3AE;
-	Mon, 22 Jan 2024 14:24:39 +0000 (UTC)
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [195.130.137.90])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F90A3D56E;
+	Mon, 22 Jan 2024 14:26:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="jr1UCVj1"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0943B3D397
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 14:24:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.137.90
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB5623D550;
+	Mon, 22 Jan 2024 14:26:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705933479; cv=none; b=XGB0wimRD3n3JSf782wEhDYU4Q2x0KuadeaomJ6zF3LfhupO6fasLGMxqTB4NPlkEnGVra49SnKEmRpfIrijdRfqBvHP/XJDtdYRIFcGqYDMCMEpvT6pUzXo7RTNzbfMV5bVULV+xrQVmhGDE320RsbvgiP2hE5GVc418LUm3Zc=
+	t=1705933564; cv=none; b=joOAZ8IW9nB+o62ZONNKy/AnSQhOflERtW0RiYzcxwnPSbAI9j5CPAIcc+xBCW9pxQbQGjdSBFcDreWE4xth/UIFQfEQi/1kkP+bVax5usQHO+AoN6h6ICnMIvSJ/LEWzef3sIS8kVDxnp9SJJTunxU8S+hdeJiyCJJPHFy6DLg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705933479; c=relaxed/simple;
-	bh=joO1L0dYAPVCMbnWAK+3SKlaq+ywTEuWlKC+U8+vrCY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=PHGi1jf50BeT6egJ8TtEZp/f5vGsARtqnd1ZKoSl06hLSDqziN/MhehF6RLbSkRSMqVELKQjQT5PZu3NCiUDhAAUS3ZV7zkpA5aAKnxEiM1jXlYJsvxwS59fppH6fK+JEEVLpfM0KG1PiAAN7mKv5uWT3zgRyg/Dh8pp5VscSCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.137.90
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:955e:bba5:7ff4:cfb6])
-	by albert.telenet-ops.be with bizsmtp
-	id dqQb2B0040ZxL6o06qQbQf; Mon, 22 Jan 2024 15:24:35 +0100
-Received: from rox.of.borg ([192.168.97.57])
-	by ramsan.of.borg with esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rRvDF-00GGx3-Si;
-	Mon, 22 Jan 2024 15:24:34 +0100
-Received: from geert by rox.of.borg with local (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rRvE2-00CFAj-Ti;
-	Mon, 22 Jan 2024 15:24:34 +0100
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Magnus Damm <magnus.damm@gmail.com>
-Cc: linux-staging@lists.linux.dev,
-	linux-usb@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2 4/4] staging: Remove board staging code
-Date: Mon, 22 Jan 2024 15:24:33 +0100
-Message-Id: <eec1bfb2878237888a8c3bc866d18dc53900739f.1705932585.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1705932585.git.geert+renesas@glider.be>
-References: <cover.1705932585.git.geert+renesas@glider.be>
+	s=arc-20240116; t=1705933564; c=relaxed/simple;
+	bh=pjnm2lVqgNCInFj28zDKIV7ML2AgLtVB+44YgPff9vM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YUyT/JMxaOszL0D5bp2zsUK+DDoX+QzxRJC+MNOnSDz04/ACLJCLQdyPAhZ607iJ/1u6F2twvXpw0V/V3o3kw33IfA3pKV/lryz5CnRURrDh9Fcza4uBtAnJ8ckjen148HDykE6zG5cdkH4qEsaP1xRrct4S97waok44hDHo8mU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=jr1UCVj1; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=ZgpoVOQM8qrxQhdVveMCPFTkIxUppA0Pw9b82iO99kI=; b=jr1UCVj1Q4Bptbe9SGYAU94oiy
+	+J3vFXfAUmclOcNEKiS/+8BISG6iv9l4K7FuRewcUy5Q4BfmJFtWoYCTxooiqKP6+NnNQNfyb2kTq
+	S5M9atD4TW+8KRdWxeJUAqi4r+hRuUjIeD9Qm5yNjNBe3hPRt48tN5yplKPrGtyTTUAM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rRvEz-005jLv-Qg; Mon, 22 Jan 2024 15:25:33 +0100
+Date: Mon, 22 Jan 2024 15:25:33 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Jie Luo <quic_luoj@quicinc.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, agross@kernel.org,
+	andersson@kernel.org, konrad.dybcio@linaro.org, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, corbet@lwn.net, catalin.marinas@arm.com,
+	will@kernel.org, p.zabel@pengutronix.de, linux@armlinux.org.uk,
+	shannon.nelson@amd.com, anthony.l.nguyen@intel.com,
+	jasowang@redhat.com, brett.creeley@amd.com, rrameshbabu@nvidia.com,
+	joshua.a.hay@intel.com, arnd@arndb.de, geert+renesas@glider.be,
+	neil.armstrong@linaro.org, dmitry.baryshkov@linaro.org,
+	nfraprado@collabora.com, m.szyprowski@samsung.com, u-kumar1@ti.com,
+	jacob.e.keller@intel.com, netdev@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, ryazanov.s.a@gmail.com,
+	ansuelsmth@gmail.com, quic_kkumarcs@quicinc.com,
+	quic_suruchia@quicinc.com, quic_soni@quicinc.com,
+	quic_pavir@quicinc.com, quic_souravp@quicinc.com,
+	quic_linchen@quicinc.com, quic_leiwei@quicinc.com
+Subject: Re: [PATCH net-next 02/20] dt-bindings: net: qcom,ppe: Add bindings
+ yaml file
+Message-ID: <6fbfc205-fffa-42bd-8019-368559db77ac@lunn.ch>
+References: <20240110114033.32575-1-quic_luoj@quicinc.com>
+ <20240110114033.32575-3-quic_luoj@quicinc.com>
+ <1d1116da-9af3-49e4-a180-cff721df5df5@linaro.org>
+ <749136bc-3db9-4b2d-a9ca-e5fb5985f639@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <749136bc-3db9-4b2d-a9ca-e5fb5985f639@quicinc.com>
 
-There are no more users of the board staging code.
+> > > +++ b/Documentation/devicetree/bindings/net/qcom,ppe.yaml
+> > > @@ -0,0 +1,1330 @@
+> > > +# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/net/qcom,ppe.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Qualcomm Packet Process Engine Ethernet controller
+> > 
+> > Where is the ref to ethernet controllers schema?
+> Sorry, the title above is not describing the device for this dtbindings
+> correctly.  It should say "Qualcomm Packet Process Engine". The
+> reference to the schema for PPE is mentioned above.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-v2:
-  - New.
----
- drivers/staging/Kconfig        |   2 -
- drivers/staging/Makefile       |   1 -
- drivers/staging/board/Kconfig  |  12 --
- drivers/staging/board/Makefile |   2 -
- drivers/staging/board/TODO     |   2 -
- drivers/staging/board/board.c  | 204 ---------------------------------
- drivers/staging/board/board.h  |  46 --------
- 7 files changed, 269 deletions(-)
- delete mode 100644 drivers/staging/board/Kconfig
- delete mode 100644 drivers/staging/board/Makefile
- delete mode 100644 drivers/staging/board/TODO
- delete mode 100644 drivers/staging/board/board.c
- delete mode 100644 drivers/staging/board/board.h
+I think you are not correctly understanding the comment. within the
+PPE you have a collection of Ethernet interfaces. All the common
+properties for Ethernet ports are described in
 
-diff --git a/drivers/staging/Kconfig b/drivers/staging/Kconfig
-index b8f777036bb22fe5..5175b1c4f1619863 100644
---- a/drivers/staging/Kconfig
-+++ b/drivers/staging/Kconfig
-@@ -50,8 +50,6 @@ source "drivers/staging/nvec/Kconfig"
- 
- source "drivers/staging/media/Kconfig"
- 
--source "drivers/staging/board/Kconfig"
--
- source "drivers/staging/gdm724x/Kconfig"
- 
- source "drivers/staging/fbtft/Kconfig"
-diff --git a/drivers/staging/Makefile b/drivers/staging/Makefile
-index 5bf357782d8377c5..67399c0ad8719cb5 100644
---- a/drivers/staging/Makefile
-+++ b/drivers/staging/Makefile
-@@ -15,7 +15,6 @@ obj-$(CONFIG_VME_BUS)		+= vme_user/
- obj-$(CONFIG_IIO)		+= iio/
- obj-$(CONFIG_FB_SM750)		+= sm750fb/
- obj-$(CONFIG_MFD_NVEC)		+= nvec/
--obj-$(CONFIG_STAGING_BOARD)	+= board/
- obj-$(CONFIG_LTE_GDM724X)	+= gdm724x/
- obj-$(CONFIG_FB_TFT)		+= fbtft/
- obj-$(CONFIG_MOST)		+= most/
-diff --git a/drivers/staging/board/Kconfig b/drivers/staging/board/Kconfig
-deleted file mode 100644
-index b49216768ef699f6..0000000000000000
---- a/drivers/staging/board/Kconfig
-+++ /dev/null
-@@ -1,12 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--config STAGING_BOARD
--	bool "Staging Board Support"
--	depends on OF_ADDRESS && OF_IRQ && HAVE_CLK
--	help
--	  Staging board base is to support continuous upstream
--	  in-tree development and integration of platform devices.
--
--	  Helps developers integrate devices as platform devices for
--	  device drivers that only provide platform device bindings.
--	  This in turn allows for incremental development of both
--	  hardware feature support and DT binding work in parallel.
-diff --git a/drivers/staging/board/Makefile b/drivers/staging/board/Makefile
-deleted file mode 100644
-index b6a00c93c2cc10dd..0000000000000000
---- a/drivers/staging/board/Makefile
-+++ /dev/null
-@@ -1,2 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--obj-y	:= board.o
-diff --git a/drivers/staging/board/TODO b/drivers/staging/board/TODO
-deleted file mode 100644
-index 8db70e10aa67448a..0000000000000000
---- a/drivers/staging/board/TODO
-+++ /dev/null
-@@ -1,2 +0,0 @@
--* replace platform device code with DT nodes once the driver supports DT
--* remove staging board code when no more platform devices are needed
-diff --git a/drivers/staging/board/board.c b/drivers/staging/board/board.c
-deleted file mode 100644
-index f980af0373452cab..0000000000000000
---- a/drivers/staging/board/board.c
-+++ /dev/null
-@@ -1,204 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * Copyright (C) 2014 Magnus Damm
-- * Copyright (C) 2015 Glider bvba
-- */
--
--#define pr_fmt(fmt)	"board_staging: "  fmt
--
--#include <linux/clkdev.h>
--#include <linux/init.h>
--#include <linux/irq.h>
--#include <linux/device.h>
--#include <linux/kernel.h>
--#include <linux/of.h>
--#include <linux/of_address.h>
--#include <linux/of_irq.h>
--#include <linux/platform_device.h>
--#include <linux/pm_domain.h>
--
--#include "board.h"
--
--static struct device_node *irqc_node __initdata;
--static unsigned int irqc_base __initdata;
--
--static bool find_by_address(u64 base_address)
--{
--	struct device_node *dn = of_find_all_nodes(NULL);
--	struct resource res;
--
--	while (dn) {
--		if (!of_address_to_resource(dn, 0, &res)) {
--			if (res.start == base_address) {
--				of_node_put(dn);
--				return true;
--			}
--		}
--		dn = of_find_all_nodes(dn);
--	}
--
--	return false;
--}
--
--bool __init board_staging_dt_node_available(const struct resource *resource,
--					    unsigned int num_resources)
--{
--	unsigned int i;
--
--	for (i = 0; i < num_resources; i++) {
--		const struct resource *r = resource + i;
--
--		if (resource_type(r) == IORESOURCE_MEM)
--			if (find_by_address(r->start))
--				return true; /* DT node available */
--	}
--
--	return false; /* Nothing found */
--}
--
--int __init board_staging_gic_setup_xlate(const char *gic_match,
--					 unsigned int base)
--{
--	WARN_ON(irqc_node);
--
--	irqc_node = of_find_compatible_node(NULL, NULL, gic_match);
--
--	WARN_ON(!irqc_node);
--	if (!irqc_node)
--		return -ENOENT;
--
--	irqc_base = base;
--	return 0;
--}
--
--static void __init gic_fixup_resource(struct resource *res)
--{
--	struct of_phandle_args irq_data;
--	unsigned int hwirq = res->start;
--	unsigned int virq;
--
--	if (resource_type(res) != IORESOURCE_IRQ || !irqc_node)
--		return;
--
--	irq_data.np = irqc_node;
--	irq_data.args_count = 3;
--	irq_data.args[0] = 0;
--	irq_data.args[1] = hwirq - irqc_base;
--	switch (res->flags &
--		(IORESOURCE_IRQ_LOWEDGE | IORESOURCE_IRQ_HIGHEDGE |
--		 IORESOURCE_IRQ_LOWLEVEL | IORESOURCE_IRQ_HIGHLEVEL)) {
--	case IORESOURCE_IRQ_LOWEDGE:
--		irq_data.args[2] = IRQ_TYPE_EDGE_FALLING;
--		break;
--	case IORESOURCE_IRQ_HIGHEDGE:
--		irq_data.args[2] = IRQ_TYPE_EDGE_RISING;
--		break;
--	case IORESOURCE_IRQ_LOWLEVEL:
--		irq_data.args[2] = IRQ_TYPE_LEVEL_LOW;
--		break;
--	case IORESOURCE_IRQ_HIGHLEVEL:
--	default:
--		irq_data.args[2] = IRQ_TYPE_LEVEL_HIGH;
--		break;
--	}
--
--	virq = irq_create_of_mapping(&irq_data);
--	if (WARN_ON(!virq))
--		return;
--
--	pr_debug("hwirq %u -> virq %u\n", hwirq, virq);
--	res->start = virq;
--}
--
--void __init board_staging_gic_fixup_resources(struct resource *res,
--					      unsigned int nres)
--{
--	unsigned int i;
--
--	for (i = 0; i < nres; i++)
--		gic_fixup_resource(&res[i]);
--}
--
--int __init board_staging_register_clock(const struct board_staging_clk *bsc)
--{
--	int error;
--
--	pr_debug("Aliasing clock %s for con_id %s dev_id %s\n", bsc->clk,
--		 bsc->con_id, bsc->dev_id);
--	error = clk_add_alias(bsc->con_id, bsc->dev_id, bsc->clk, NULL);
--	if (error)
--		pr_err("Failed to alias clock %s (%d)\n", bsc->clk, error);
--
--	return error;
--}
--
--#ifdef CONFIG_PM_GENERIC_DOMAINS_OF
--static int board_staging_add_dev_domain(struct platform_device *pdev,
--					const char *domain)
--{
--	struct device *dev = &pdev->dev;
--	struct of_phandle_args pd_args;
--	struct device_node *np;
--
--	np = of_find_node_by_path(domain);
--	if (!np) {
--		pr_err("Cannot find domain node %s\n", domain);
--		return -ENOENT;
--	}
--
--	pd_args.np = np;
--	pd_args.args_count = 0;
--
--	/* Initialization similar to device_pm_init_common() */
--	spin_lock_init(&dev->power.lock);
--	dev->power.early_init = true;
--
--	return of_genpd_add_device(&pd_args, dev);
--}
--#else
--static inline int board_staging_add_dev_domain(struct platform_device *pdev,
--					       const char *domain)
--{
--	return 0;
--}
--#endif
--
--int __init board_staging_register_device(const struct board_staging_dev *dev)
--{
--	struct platform_device *pdev = dev->pdev;
--	unsigned int i;
--	int error;
--
--	pr_debug("Trying to register device %s\n", pdev->name);
--	if (board_staging_dt_node_available(pdev->resource,
--					    pdev->num_resources)) {
--		pr_warn("Skipping %s, already in DT\n", pdev->name);
--		return -EEXIST;
--	}
--
--	board_staging_gic_fixup_resources(pdev->resource, pdev->num_resources);
--
--	for (i = 0; i < dev->nclocks; i++)
--		board_staging_register_clock(&dev->clocks[i]);
--
--	if (dev->domain)
--		board_staging_add_dev_domain(pdev, dev->domain);
--
--	error = platform_device_register(pdev);
--	if (error) {
--		pr_err("Failed to register device %s (%d)\n", pdev->name,
--		       error);
--		return error;
--	}
--
--	return error;
--}
--
--void __init board_staging_register_devices(const struct board_staging_dev *devs,
--					   unsigned int ndevs)
--{
--	unsigned int i;
--
--	for (i = 0; i < ndevs; i++)
--		board_staging_register_device(&devs[i]);
--}
-diff --git a/drivers/staging/board/board.h b/drivers/staging/board/board.h
-deleted file mode 100644
-index 5609daf4d8695f02..0000000000000000
---- a/drivers/staging/board/board.h
-+++ /dev/null
-@@ -1,46 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef __BOARD_H__
--#define __BOARD_H__
--
--#include <linux/init.h>
--#include <linux/of.h>
--
--struct board_staging_clk {
--	const char *clk;
--	const char *con_id;
--	const char *dev_id;
--};
--
--struct board_staging_dev {
--	/* Platform Device */
--	struct platform_device *pdev;
--	/* Clocks (optional) */
--	const struct board_staging_clk *clocks;
--	unsigned int nclocks;
--	/* Generic PM Domain (optional) */
--	const char *domain;
--};
--
--struct resource;
--
--bool board_staging_dt_node_available(const struct resource *resource,
--				     unsigned int num_resources);
--int board_staging_gic_setup_xlate(const char *gic_match, unsigned int base);
--void board_staging_gic_fixup_resources(struct resource *res, unsigned int nres);
--int board_staging_register_clock(const struct board_staging_clk *bsc);
--int board_staging_register_device(const struct board_staging_dev *dev);
--void board_staging_register_devices(const struct board_staging_dev *devs,
--				    unsigned int ndevs);
--
--#define board_staging(str, fn)			\
--static int __init runtime_board_check(void)	\
--{						\
--	if (of_machine_is_compatible(str))	\
--		fn();				\
--						\
--	return 0;				\
--}						\
--						\
--device_initcall(runtime_board_check)
--
--#endif /* __BOARD_H__ */
--- 
-2.34.1
+Documentation/devicetree/bindings/net/ethernet-controller.yaml
 
+so you are expected to reference this schema.
+
+> > > +description:
+> > > +  The PPE(packet process engine) is comprised of three componets, Ethernet
+> > > +  DMA, Switch core and Port wrapper, Ethernet DMA is used to transmit and
+> > > +  receive packets between Ethernet subsytem and host. The Switch core has
+> > > +  maximum 8 ports(maximum 6 front panel ports and two FIFO interfaces),
+> > > +  among which there are GMAC/XGMACs used as external interfaces and FIFO
+> > > +  interfaces connected the EDMA/EIP, The port wrapper provides connections
+> > > +  from the GMAC/XGMACS to SGMII/QSGMII/PSGMII/USXGMII/10G-BASER etc, there
+> > > +  are maximu 3 UNIPHY(PCS) instances supported by PPE.
+
+I think a big part of the problem here is, you have a flat
+representation of the PPE. But device tree is very hierarchical. The
+hardware itself is also probably very hierarchical. Please spend some
+timer studying other DT descriptions of similar hardware. Then throw
+away this vendor crap DT binding and start again from scratch, with a
+hierarchical description of the hardware.
+
+	Andrew
 
