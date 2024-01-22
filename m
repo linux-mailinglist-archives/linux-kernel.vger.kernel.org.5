@@ -1,128 +1,106 @@
-Return-Path: <linux-kernel+bounces-33072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C2AD83640D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:10:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7491183641C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:12:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2DEC1F247B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:10:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17899B27011
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:10:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FCE73CF57;
-	Mon, 22 Jan 2024 13:10:00 +0000 (UTC)
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ED863D0A6;
+	Mon, 22 Jan 2024 13:10:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KYFOdbuy"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE9763CF40;
-	Mon, 22 Jan 2024 13:09:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 702D63C6B3;
+	Mon, 22 Jan 2024 13:10:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705929000; cv=none; b=mtfYItS4u04J8BgkA/2ph6TAk4UbgqJxHcJoNBSAJTBpEE3pJdFB14M4mP29Q3xstAKJlMuHf8fiypPbB+TULZEgUKDIoP92t2siOxHFnj2qk6J9GoHuqXAChyfmIHVzizo7OtvC4hgVoh845DdCGS3mDY9MRwSrNw+AXa+lGuk=
+	t=1705929006; cv=none; b=S7FpSoehodqe7qf+/CtmNGiCVzQYzvP4SW2KIBl7WqQnPSaPz5ziLQcyFahb1TQspWu+1e9sEQuF1jaxdpTHQHhWdfrYgSHw33lCogTsHnbM/1Lf4JIXwaik7JK1T/OdYGf3r3WJXfru9gMi3gaQbgqjyTv18FRqOZJ42JaLCxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705929000; c=relaxed/simple;
-	bh=xiwg7Y87YSwBeE2hph4rd1wAKocGZq7PkaQcX0urJGY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rRReokfqjEzYMDHMnOUMA7pcaWcjoc87NAksuEcjDoqhI/KVukJ3yYOaJg3NFejW7PMAdqS3Jom8Nxwo3dtVw9C9/BsOsuunHC/kUTEY93CbSYD7kxOEHixodl1VGYjfvH41apGhgjdR3Rl8/4S+WLzBDqGCV9buod9TRRMokzc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
-Received: from i53875b8c.versanet.de ([83.135.91.140] helo=diego.localnet)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1rRu3Z-00053L-9z; Mon, 22 Jan 2024 14:09:41 +0100
-From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To: "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
- "conor+dt@kernel.org" <conor+dt@kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "linux-rockchip@lists.infradead.org" <linux-rockchip@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Iskander Amara <iskander.amara@theobroma-systems.com>
-Cc: Quentin Schulz <quentin.schulz@theobroma-systems.com>
-Subject:
- Re: [PATCH v2] arm64: dts: rockchip: add missing definition of pmu io domains
- 1 and 2 on ringneck
-Date: Mon, 22 Jan 2024 14:09:40 +0100
-Message-ID: <3388688.6M6d0yLqnL@diego>
-In-Reply-To:
- <VI1PR04MB6013A6A65AF95BB80067E601D6752@VI1PR04MB6013.eurprd04.prod.outlook.com>
-References:
- <20240103164734.1151290-1-iskander.amara@theobroma-systems.com>
- <VI1PR04MB6013A6A65AF95BB80067E601D6752@VI1PR04MB6013.eurprd04.prod.outlook.com>
+	s=arc-20240116; t=1705929006; c=relaxed/simple;
+	bh=Ol96TTNYfOJdyv4nPvv9/24t5Z86jPnPqKam2MbKhfo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pQeY64b5hUHrxxbdpFg2r/ORw2Oe0bT6RMB3wsz/MgJYHfWYG0kfz2S7Ua6yXaVbIcMVeXa05if8dMZ9auufE/6xTR1Wb0NEmIE8O7qD7eR+6mQcWBGjOb0Zr3c1lQ98hPBX/fXbUVi9ctOjZ3z5IMc+60fXtcvmchGjRPcVVaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KYFOdbuy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED2BCC433C7;
+	Mon, 22 Jan 2024 13:10:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705929006;
+	bh=Ol96TTNYfOJdyv4nPvv9/24t5Z86jPnPqKam2MbKhfo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KYFOdbuyilxaaHOh5qzgYaJE+e7iG2+JYBD9R7IOieiz9dmxiaJLOmHrKgWnhcsTU
+	 PkTsXJR437gYgDDHnKeH1bqpl34GUjexQmzCyB018vp68IzEfpYmaWz6t20LrGbtZ1
+	 qPQyRsY7sSaPRYgBKY1c1O9DVrSLwhxWlHmxvDafWYd0WhDsn0o4XlQ/LIXNes3zWa
+	 i5M5yEtOQTostafqOftsVA0iFEZMzj1CsacfJPur8aLwNAqCUTXHVObSSMM1zgL7xX
+	 buKaYThBY/YM8gdm4JJ/+tSRRrQF3TNh4YJdxYtlq8qGzX3nTQoRAwjHIREOlyMj2m
+	 TOnGwYy5RHApg==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rRu48-0000000083I-261d;
+	Mon, 22 Jan 2024 14:10:17 +0100
+Date: Mon, 22 Jan 2024 14:10:16 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Kalle Valo <kvalo@kernel.org>
+Cc: Johan Hovold <johan+linaro@kernel.org>,
+	Jeff Johnson <quic_jjohnson@quicinc.com>,
+	ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: ath11k: checking RCU usage
+Message-ID: <Za5pOIkQ0SN2XzHr@hovoldconsulting.com>
+References: <20231019153115.26401-1-johan+linaro@kernel.org>
+ <87o7goxget.fsf@kernel.org>
+ <ZTfgJCBxsNv3bVjv@hovoldconsulting.com>
+ <87zfx98r6a.fsf_-_@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87zfx98r6a.fsf_-_@kernel.org>
 
-Hi Iskander,
+Hi Kalle,
 
-Am Montag, 22. Januar 2024, 13:17:50 CET schrieb Iskander Amara:
-> Dear Ladies and Gentlemen,
-> Is there any feedback about the patch below that you would like to share?
-
-no feedback, change looks good.
-
-I was mainly waiting for the merge-window to close, so that
-I can get a nice 6.8-rc1 as base :-)
-
-Heiko
-
-> ________________________________
-> From: Iskander Amara <iskander.amara@theobroma-systems.com>
-> Sent: Wednesday, January 3, 2024 5:47 PM
-> To: robh+dt@kernel.org <robh+dt@kernel.org>; krzysztof.kozlowski+dt@linaro.org <krzysztof.kozlowski+dt@linaro.org>; conor+dt@kernel.org <conor+dt@kernel.org>; heiko@sntech.de <heiko@sntech.de>; devicetree@vger.kernel.org <devicetree@vger.kernel.org>; linux-arm-kernel@lists.infradead.org <linux-arm-kernel@lists.infradead.org>; linux-rockchip@lists.infradead.org <linux-rockchip@lists.infradead.org>; linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>
-> Cc: Quentin Schulz <quentin.schulz@theobroma-systems.com>; Iskander Amara <iskander.amara@theobroma-systems.com>
-> Subject: [PATCH v2] arm64: dts: rockchip: add missing definition of pmu io domains 1 and 2 on ringneck
+On Sat, Jan 13, 2024 at 12:26:53PM +0200, Kalle Valo wrote:
+> (old discussion, changing title)
 > 
-> Two pmuio domains on ringneck are not defined:
->         1- PMUIO1: supplied by vcc_3v3 regulator(PMIC RK809)
->         2- PMUIO2: supplied by vcc_3v3 regulator(PMIC RK809)
+> Johan Hovold <johan@kernel.org> writes:
 > 
-> The reason why no functional effect was observed is because of that
-> the above mentionned PMUIO domains were supplied by a regulator
-> which is always on.
-> 
-> So let's add their definition in the dtsi.
-> 
-> Signed-off-by: Iskander Amara <iskander.amara@theobroma-systems.com>
-> ---
-> v2:
->         - Fix indentation
->  arch/arm64/boot/dts/rockchip/px30-ringneck.dtsi | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/px30-ringneck.dtsi b/arch/arm64/boot/dts/rockchip/px30-ringneck.dtsi
-> index 12397755830b..bb1aea82e666 100644
-> --- a/arch/arm64/boot/dts/rockchip/px30-ringneck.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/px30-ringneck.dtsi
-> @@ -347,6 +347,12 @@ pmic_int: pmic-int {
->          };
->  };
-> 
-> +&pmu_io_domains {
-> +       pmuio1-supply = <&vcc_3v3>;
-> +       pmuio2-supply = <&vcc_3v3>;
-> +       status = "okay";
-> +};
-> +
->  &saradc {
->          vref-supply = <&vcc_1v8>;
->          status = "okay";
-> --
-> 2.34.1
-> 
-> 
+> > On Tue, Oct 24, 2023 at 05:07:38PM +0300, Kalle Valo wrote:
 
+> >> Thanks for the fixes. I really like using lockdep_assert_held() to
+> >> document if a function requires some lock held, is there anything
+> >> similar for RCU?
+> >
+> > Not really, but the checking is instead built into the primitives like
+> > rcu_dereference() and enabled whenever CONFIG_PROVE_RCU is set.
+> >
+> > For some special cases, we have open-coded checks like:
+> >
+> > 	RCU_LOCKDEP_WARN(!rcu_read_lock_held());
+> >
+> > which similarly depend on CONFIG_PROVE_RCU or simply
+> >
+> > 	WARN_ON_ONCE(!rcu_read_lock_held());
+> 
+> I just found out that sparse has __must_hold():
+> 
+> https://lore.kernel.org/linux-wireless/87sf31hhfp.fsf@kernel.org/
+> 
+> That looks promising, should we start using that in ath11k and ath12k to
+> check our RCU usage?
 
+I see that Johannes already commented on this in the thread above.
 
+I'm pretty sure smatch can't be used for this.
 
+Johan
 
