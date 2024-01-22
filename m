@@ -1,85 +1,71 @@
-Return-Path: <linux-kernel+bounces-33838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04EBB836F4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:13:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B666B83707E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:46:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17CB2294305
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:13:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D565BB2DFC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:11:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D48966B56;
-	Mon, 22 Jan 2024 17:37:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E51163FE32;
+	Mon, 22 Jan 2024 17:36:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="GxcCDIxd"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NNydHcMc"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A66B66B50;
-	Mon, 22 Jan 2024 17:37:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CD563FE28;
+	Mon, 22 Jan 2024 17:36:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705945056; cv=none; b=InSuGj+sut7AB6e3+oqh7dHsAVJtIco/4MeUg/7HmLS2IPgyFYRBtcTrlZLrfp3LVSqhcS6Oxn+xAIUVQWBWIE+m7pjU0jRe/HBRAsAJHwiuy1GE1QPMzGf+qEo1XRI0RCIjyQyO8xJLoooNNObEwayx0/amNCxk6Lr/jkNjd40=
+	t=1705945001; cv=none; b=OGRkyB/d1mZ+KeHKbI8cbqbZIN0tVA6F6w1D3MhTNbt0sALGkRjTxj29hYqD1sQOs1QMacZJdVgbI04ZnmXdBzj7F9Od+NDuXlmlATyancA1ZPV8lDPb3hXOuc7HsxgKGVlxpbTS6GnqhMU4kj8fc0QxU8YCgqICtnDKbDYOEkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705945056; c=relaxed/simple;
-	bh=8WYz4IV5sJnk5aen6jbAq+q3NiEqFAzxRle76P/6Bcg=;
+	s=arc-20240116; t=1705945001; c=relaxed/simple;
+	bh=Do6GH6AFLzNEnY0lWxGGX8GYLxuoxZy9j7mds6kAXtI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bHEUgjEpNrcwO2M4nSU0PXdsHvawUl8PF2rt599eW0kBLAmpmp/EB6JbKdoUzf+vdGyCBNXFc+MeLNgssLZCy89vN88LncP5E0AvxVRFtOfC8ZcJw+xgTOxyO9nm5E7I2XEJ3qXwcXWXsdJeNDJ3hV8CAASyi7YsGmbUvY7D7rQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=GxcCDIxd; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=Tpq99Xn3oyUQ1UeFUe2J523sJUHds2quY0PBRgIFX08=; b=GxcCDIxdcwixCbMs9SgULyWG0E
-	wCMQM9VlMDAwLQxTgpHTEnRfE7msH3WejKCDAHDyw87vHsUC+aNXNRD5jNUUHo0qapTZA38hZrvJZ
-	53K0QFJlwd5MNlRh0P8e6SnP37AmP2XpUWXxNWqzhwcI/X3UQ95Ykmav1x5+PGmO4et3HnLPPxJ0m
-	Ovo2XLa+Jaq5M5MgSObj3Z+PHWiB4+DorhpvG0pA59gH/tQGUs3xQUfmp57dswHCfYH54aZiBnGwQ
-	aGo7q/CvW8kcAt7Ga7nDj7uHEPQQsZl1YGmuv0vUAqKgOCyJXWhLwIOjPfq76ejYFSQo4GqGevKVU
-	rqsU1+RQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:56168)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rRyEA-0001Ho-0p;
-	Mon, 22 Jan 2024 17:36:54 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rRyE0-0001CD-Mi; Mon, 22 Jan 2024 17:36:44 +0000
-Date: Mon, 22 Jan 2024 17:36:44 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Lei Wei <quic_leiwei@quicinc.com>
-Cc: Luo Jie <quic_luoj@quicinc.com>, agross@kernel.org,
-	andersson@kernel.org, konrad.dybcio@linaro.org, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, corbet@lwn.net, catalin.marinas@arm.com,
-	will@kernel.org, p.zabel@pengutronix.de, shannon.nelson@amd.com,
-	anthony.l.nguyen@intel.com, jasowang@redhat.com,
-	brett.creeley@amd.com, rrameshbabu@nvidia.com,
-	joshua.a.hay@intel.com, arnd@arndb.de, geert+renesas@glider.be,
-	neil.armstrong@linaro.org, dmitry.baryshkov@linaro.org,
-	nfraprado@collabora.com, m.szyprowski@samsung.com, u-kumar1@ti.com,
-	jacob.e.keller@intel.com, andrew@lunn.ch, netdev@vger.kernel.org,
+	 Content-Type:Content-Disposition:In-Reply-To; b=byK4cZRH7HSQx7DPSAFL0xOjk07ujLQcQwFl4egwRPw6q6LiwKHnDgLpo7cR4bzhW8KUI3TX/jk/9LTdWL1G7qjli1pkisODiVmOOK1wTeE/NXNK1J547m8LCs2OT6esc4M6UD9bKwiOXikSu8ApmpsCaMA/dcweztY2uD3xrqY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NNydHcMc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E3F0C433F1;
+	Mon, 22 Jan 2024 17:36:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705945000;
+	bh=Do6GH6AFLzNEnY0lWxGGX8GYLxuoxZy9j7mds6kAXtI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NNydHcMc7/QEWugoSfbb5DWGOsn4aK0LhJI/R6p3sYhfcxjihuoQJMsx+CLWiP4Rp
+	 iEjmCVn28bQmDNgNOSCty7gUppgoTTJ5FcGqnSqk1yYwm0oZcfd1F1MaNdFGsQN5Hp
+	 nOCX5iUjak5ju5xd7nDQ0NU4HQAd6ixUqMn6AOJqwyvTzVur3V9rp+ZjN4u3GEOWtT
+	 Ncr++vP9S2Q0J33y/DRBGQpE9xQpt7CTGuOCHMTy8LItf/pZAfCCyDUdEqelwLgOho
+	 QWYZvo5owITvfDI1bS5prylQ1daAB6DvisORykBpQ3ichc1dv+WW5Xe+0c0izoy8Ix
+	 FC+xyP+nhIApA==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rRyE7-000000000su-3oVt;
+	Mon, 22 Jan 2024 18:36:52 +0100
+Date: Mon, 22 Jan 2024 18:36:51 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
 	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, ryazanov.s.a@gmail.com,
-	ansuelsmth@gmail.com, quic_kkumarcs@quicinc.com,
-	quic_suruchia@quicinc.com, quic_soni@quicinc.com,
-	quic_pavir@quicinc.com, quic_souravp@quicinc.com,
-	quic_linchen@quicinc.com
-Subject: Re: [PATCH net-next 18/20] net: ethernet: qualcomm: Add PPE MAC
- support for phylink
-Message-ID: <Za6nrICG8gjwTsJ9@shell.armlinux.org.uk>
-References: <20240110114033.32575-1-quic_luoj@quicinc.com>
- <20240110114033.32575-19-quic_luoj@quicinc.com>
- <ZZ6LGiSde4hHM+6j@shell.armlinux.org.uk>
- <fc9c3e08-a83c-4748-89e4-8b7b0c62da7f@quicinc.com>
+	linux-kernel@vger.kernel.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Konrad Dybcio <konrad.dybcio@somainline.org>
+Subject: Re: [PATCH 1/3] arm64: dts: qcom: sc8280xp: Fix PCIe PHY
+ power-domains
+Message-ID: <Za6ns-xhN3N-cmIr@hovoldconsulting.com>
+References: <20231227-topic-8280_pcie_dts-v1-0-13d12b1698ff@linaro.org>
+ <20231227-topic-8280_pcie_dts-v1-1-13d12b1698ff@linaro.org>
+ <ZY6sh8nlEUyEfL0u@hovoldconsulting.com>
+ <20231229170334.GA9098@thinkpad>
+ <20240122172528.GE3176@thinkpad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,54 +74,56 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fc9c3e08-a83c-4748-89e4-8b7b0c62da7f@quicinc.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20240122172528.GE3176@thinkpad>
 
-On Mon, Jan 22, 2024 at 11:01:26PM +0800, Lei Wei wrote:
-> 
-> 
-> On 1/10/2024 8:18 PM, Russell King (Oracle) wrote:
-> > On Wed, Jan 10, 2024 at 07:40:30PM +0800, Luo Jie wrote:
-> > > @@ -352,6 +1230,12 @@ static int ppe_port_maxframe_set(struct ppe_device *ppe_dev,
-> > >   }
-> > >   static struct ppe_device_ops qcom_ppe_ops = {
-> > > +	.phylink_setup = ppe_phylink_setup,
-> > > +	.phylink_destroy = ppe_phylink_destroy,
-> > > +	.phylink_mac_config = ppe_phylink_mac_config,
-> > > +	.phylink_mac_link_up = ppe_phylink_mac_link_up,
-> > > +	.phylink_mac_link_down = ppe_phylink_mac_link_down,
-> > > +	.phylink_mac_select_pcs = ppe_phylink_mac_select_pcs,
-> > >   	.set_maxframe = ppe_port_maxframe_set,
-> > >   };
+On Mon, Jan 22, 2024 at 10:55:28PM +0530, Manivannan Sadhasivam wrote:
+> On Fri, Dec 29, 2023 at 10:33:34PM +0530, Manivannan Sadhasivam wrote:
+> > On Fri, Dec 29, 2023 at 12:24:55PM +0100, Johan Hovold wrote:
+> > > On Wed, Dec 27, 2023 at 11:28:26PM +0100, Konrad Dybcio wrote:
+> > > > The PCIe GDSCs are only related to the RCs. The PCIe PHYs on the other
+> > > > hand, are powered by VDD_MX and their specific VDDA_PHY/PLL regulators.
+> > > 
+> > > No, that does not seem to be entirely correct. I added the power-domains
+> > > here precisely because they were needed to enable the PHYs.
+> > > 
+> > > This is something I stumbled over when trying to figure out how to
+> > > add support for the second lane pair (i.e. four-lane mode), and I just
+> > > went back and confirmed that this is still the case.
+> > > 
+> > > If you try to enable one of these PHYs without the corresponding GDSC
+> > > being enabled, you end up with:
+> > > 
+> > > [   37.709324] ------------[ cut here ]------------
+> > > [   37.718196] gcc_pcie_3b_aux_clk status stuck at 'off'
+> > > [   37.718205] WARNING: CPU: 4 PID: 482 at drivers/clk/qcom/clk-branch.c:86 clk_branch_wait+0x144/0x15c
+> > > 	
 > > 
-> > Why this extra layer of abstraction? If you need separate phylink
-> > operations, why not implement separate phylink_mac_ops structures?
+> > Technically this patch is correct. PHYs are backed by MX domain only and not
+> > GDSCs. Only the controllers (PCIe, UFS, USB) are backed by GDSCs. The fact that
+> > you are seeing issue with PCIe Aux clock suggests me that this clock may not be
+> > applicable to the PHY but it needs to be enabled for working of the PHY somehow.
+> > I'll try to find the details on how exactly it is needed.
+> > 
+> > But if I get the answer like, "This clock is also sourced to PHY directly", then
+> > we may need to add dual power domain for PHY (both GDSC and MX).
 > > 
 > 
-> This PPE driver will serve as the base driver for higher level drivers
-> such as the ethernet DMA (EDMA) driver and the DSA switch driver.
+> So I answer I got from Qcom is that this clock is only applicable to the PCIe
+> controller and not PHYs. On some platforms, there is a separate PCIE_PHY_AUX_CLK
+> coming from GCC that is used during L1SS state. I think that caused confusion
+> while adding PHY support for followup platforms and folks just used PCIE_AUX_CLK
+> since they couldn't find the actual PCIE_PHY_AUX_CLK.
 
-Why not have the higher level drivers provide a pointer to the
-appropriate phylink_mac_ops structure? Having extra levels of
-indirection makes my future maintenance of phylink harder (I'm already
-bugged by DSA doing this, and it's a right pain.)
+Thanks for sorting that out.
 
-For example, if one of your higher level drivers needs the mac_prepare
-or mac_finish functionality, you have to add a shim, extra function
-pointers and so on.
+> I've prepared a series to fix this mess, but I want to know how you end up
+> seeing the above "clk status stuck at off" issue. Is there an actual usecase for
+> powering up PHY without controller or you just experimented with it?
 
-If I need to add an extra parameter to a method, then I have to fix
-up your shim layer _as well_ as all the called methods - in other
-words, it adds extra maintenance burden.
+As I mentioned, I ran into this when experimenting with how to enable
+the "companion" PHY for four-lane support. There shouldn't be any use
+case for it (apart from using it to determine that the current
+description of the PHY resources is incomplete or incorrect).
 
-It also makes detecting whether an implementation provides something
-or not harder - see the problems when mac_select_pcs() was introduced
-and rather than testing to see whether the method is populated, we
-have to call the method with a dummy value to discover whether the
-sub-driver implements it or not. Honestly, I would really like to get
-rid of DSA's phylink_mac_ops shim layer.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Johan
 
