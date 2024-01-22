@@ -1,169 +1,139 @@
-Return-Path: <linux-kernel+bounces-33733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33734-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22AE3836DE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:41:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E1817836DEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:41:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C509028C877
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:41:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A72F28C81C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:41:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 047295BAE9;
-	Mon, 22 Jan 2024 16:58:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="hMtkxZ7m"
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01olkn2061.outbound.protection.outlook.com [40.92.107.61])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17ED65C5F0;
+	Mon, 22 Jan 2024 16:58:38 +0000 (UTC)
+Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82BB53D974;
-	Mon, 22 Jan 2024 16:58:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.107.61
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705942699; cv=fail; b=RUHMhQqJIqVlnk5318qeUm6UwYf5ke+NcgI058HspVieiuwJ+IkZ1jjx5NmCPxfCO5zdQsJ9kaGLf1WHl98tB27WvAakCSvlqbr+YLqbIRVlb/2XvLrRNWVCnYG0svKe/e84DJWJai+qSBPjv/EkgBK4kMcUIJrPXYHRnmBfSOY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705942699; c=relaxed/simple;
-	bh=7iBDF1jaIb9RM2xB3WS9BMY/UtVIWMcCp45iIADZ3xY=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=WzcGNGa/eb8wZA4lMp0EXgKkrmA8yUaR5jVkipeiPa6UYQUV+NKoSxlXRzitOeDOgfL/ncmbWC7VeNtWQTPoZGt/zlxm6OxmiDP3OQ6Xcl0SguwbVQHTZ9xUFnOcuFEQLhyeunWik4jokvnjW8uDdw1v2Ej6FY9fMpSM7C3zhDk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=hMtkxZ7m; arc=fail smtp.client-ip=40.92.107.61
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WJ4BFVPNIsKHUMBOfnAHD+rjs+hO0zMmioGbRV7tdHYluE0/u083yv15jnDjq0r8DT0+BEzp4P1yJJNZFDfjI5Ili0+PqYxjvJju07aty02ew1kNlVqoTSCMY5Yj21Jt7vCoKxx5bcOxz26kwttYyMt9COBCONuwDOSxVQ2HD0lEBYeiSnhjtolJk1a8w3zyGqG9mrEHZNpu01nj6t7OkSFkHf2PHEYIOIadklAdJ1loMb3jE6mKizLuw7OYbv9V6VD0ixdsfIMECo9tCGT0AjgaqktjzbHCzHAme+Tk3E10V+aDaVMb3C28mp25Mv2zYI0G87aGZ8mxCDb2pRv3xg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mbQkkmDb/DfJmOxciCW8jUjSMZsevOM9xfTfcOtlVZ8=;
- b=OTMEQDZnakbCmyHzwPhFCp5soVyhiC6TYmFHZTmjaTH+ILTnrj6xbdDXDnxvgZVVjkEs1DHmCCloOo1dpld/LlU/hGnzpFzneYBR3CnAhfg+jm3hQ5hamC4/dnIVngreiAPSQuqvwR7/y0tJX4V9VtdWOc9EzuCMZAknjHODvzUhyOi4fW/iXB6RVP80RfhbVXfqieVHtvo2egE4zfINICj2Y7kbzX4yVVZmZ45n0W/dksc+epMxshKx32UPCOln4z1QKBdYoWZVSb58PZoQk4jw6PRsgqzngo2fNqzIpo16uahI6fBKx4/bc66KoEfuj9mlLgyIDtc80Fk+OeEeNQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mbQkkmDb/DfJmOxciCW8jUjSMZsevOM9xfTfcOtlVZ8=;
- b=hMtkxZ7mCF4ruvJ5bABkk2mQ+fl/brhNUhGV9KAfTXVDXIHi5bJmeQp46NumTEt/WkJiikBTw/gQIj2aG8sB4Ir5PzzImhBthMAS8YxjOqEXFuuM8Qva0HKRXcHObnesPUTvJHb+5jmIh4ZN6f9m4qVb1iTnTxxKN7gw7u/A/aZ5WCDezVjs6JzqGxLiUM4Ax0JaO70zp7Y+o/Lh26Cxcj7k9lsDG8o6DM/1+ZmeCwWpkRp5lA7kpr89tGYlLOo8EIj0s4YVHnPmVqbQ/vrbA3xoOMIV+VqQnjkOuDDnUzO+AKcG3YN9LY/e4rNxNUlhRm8G09eWTkZ/FaUQcpx3ow==
-Received: from TYZPR01MB5556.apcprd01.prod.exchangelabs.com
- (2603:1096:400:363::9) by TYSPR01MB6359.apcprd01.prod.exchangelabs.com
- (2603:1096:405:8f::5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.36; Mon, 22 Jan
- 2024 16:58:13 +0000
-Received: from TYZPR01MB5556.apcprd01.prod.exchangelabs.com
- ([fe80::a639:b02c:5189:7140]) by TYZPR01MB5556.apcprd01.prod.exchangelabs.com
- ([fe80::a639:b02c:5189:7140%7]) with mapi id 15.20.7202.031; Mon, 22 Jan 2024
- 16:58:12 +0000
-Message-ID:
- <TYZPR01MB55569715C43B7B1EBE613B86C9752@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
-Date: Tue, 23 Jan 2024 00:57:22 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: ipq5018-rdp432-c2: correct board name
-To: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>, agross@kernel.org
-Cc: andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <TYZPR01MB55564BE24CE8718DBD4644A2C9762@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
- <ac35936e-2fc0-4ca5-b746-25fa0e31afac@quicinc.com>
-From: Ziyang Huang <hzyitc@outlook.com>
-In-Reply-To: <ac35936e-2fc0-4ca5-b746-25fa0e31afac@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TMN: [FjsYx4qLemGUnJH8ZvMkI5Lgsn+CTJW6]
-X-ClientProxiedBy: SG2PR02CA0062.apcprd02.prod.outlook.com
- (2603:1096:4:54::26) To TYZPR01MB5556.apcprd01.prod.exchangelabs.com
- (2603:1096:400:363::9)
-X-Microsoft-Original-Message-ID:
- <05b9c7c9-42dc-414f-97b4-65164d32aa2b@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BEE95C5E1;
+	Mon, 22 Jan 2024 16:58:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.186
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705942717; cv=none; b=K4Uz9HZ511+HTvpkokg2V1jKlLEpbfRPagfgCGCrLXM8iznYyKkDMbBrvxms8b0blABBo+tRmkin+uZNudh/EHV1uk0on9gyaKg/VKbJl0H5nEVwLobis7t7yRf5jZFFhwVzciw3wGC5+4N3ZTZxI+pAuflP/SAzGgKAK1GV49k=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705942717; c=relaxed/simple;
+	bh=bHAsR+sP5wRVnZ/aU2TbA3EueXSQy72cM9bFE1CTV5M=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=TCME4n9oWWJ3kTjkewwiwJR37PXUeHdemzrSNZmxI0spF0QdpoYd7ZiCQREV0hqLKwvYSOcIsgo6GlH+FPmTWJPGDtXUhvG8iAxJUDAl/WLA6pmV5MFvv6nHI4ZLji4V/aZ9M20zPsNT3+3TB7ZF0q7Fb/w7EI6hIRpqYMncgMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
+Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+	by mx.skole.hr (mx.skole.hr) with ESMTP id D19AA8525B;
+	Mon, 22 Jan 2024 17:58:31 +0100 (CET)
+From: Duje =?utf-8?B?TWloYW5vdmnEhw==?= <duje.mihanovic@skole.hr>
+To: Daniel Thompson <daniel.thompson@linaro.org>
+Cc: Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
+ Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Helge Deller <deller@gmx.de>,
+ Linus Walleij <linus.walleij@linaro.org>, Karel Balej <balejk@matfyz.cz>,
+ ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] leds: ktd2692: move ExpressWire code to library
+Date: Mon, 22 Jan 2024 17:57:53 +0100
+Message-ID: <23373359.6Emhk5qWAg@radijator>
+In-Reply-To: <20240122165011.GA8815@aspen.lan>
+References:
+ <20240120-ktd2801-v3-0-fe2cbafffb21@skole.hr> <5907190.MhkbZ0Pkbq@radijator>
+ <20240122165011.GA8815@aspen.lan>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYZPR01MB5556:EE_|TYSPR01MB6359:EE_
-X-MS-Office365-Filtering-Correlation-Id: afa72410-006a-4af5-7412-08dc1b6b5198
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	VOUyTdWV+10zWqJEsxCknAZbcGOngS3MacbV1orZ0Y82R1msZ+aNMQuqZjQ1rA03BbLJr967X0yZvIjFd1+ojvW92OsnNd7aQ5mYHJDBfASWFQ7E4Q0AuZB7DxqbKC55DRSv5O961wvtxwIOXmFuMmL2kBGJmPtEFGnmt95zkZ6TZbh7kCTwg9Rp7sBKuM/blAetpSQj0QYlku/8on6LR8GVeyrQie4Z0nNyBVhRWyd/RW5/Nmy1SlcO+cn82zCJisXxUOB1N8P7fOQ7ODTDqH5y2M0TJA1tusmCR14O9sBuhzGr1COsIwXI+8aRzhlV7JMAEPlT7yQbPtTFtdbUgTjsgpG9QAcvF68nsUsscDys+hoF0HSBZ2iplyIMX+FUG2Wq0YYa4wQrXrnM/kc/QIlBMkCBXc4vhUFbbWX8qXyKl12SMBRoxlaXDCMyOs/EhUvUc3lmLs1mg1Uq3abien4sZOOBrBiD1SMYJFD13+XV2HAxPoAz8818I5sC+a9DyAow8J+a+Ifxbq8j/z5FVOwRBTYjKNDmwvmXtCbhyJ9L4sJWpsJ0QKoupPY1YjTB
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Umk2SFU5Z1hBQjVDaDcyM09BNjJjcXIyRTN3L0tla1hoSjRaRzhkYi94UGJ2?=
- =?utf-8?B?TU5KVHF5ZGFTZ1h1R2ZoQ2txMjEyUXh2ZGNvNG5GSCtzRXhkMFQ5dXM5RXZz?=
- =?utf-8?B?RHhmd1kzb3BsWEJWWEtkN2RRVjJjNDdWcEt5R1o3WmRGUUtSMnlZdDIvYjNo?=
- =?utf-8?B?Wm8yYzhNZnhyUjM4TTFsTXpuQk0vMVRzS1krSWgwWndrQk1RYm5YV1AzY3dQ?=
- =?utf-8?B?bkNYVUtOTU9aT2xEWDFIR2hpYXhCNDU5TUttUjdGMlJKTjZVbkVCdFM2NWhX?=
- =?utf-8?B?U3dtbnRqRGhhOWlVam9TQng4Mm01VXlvM2NOczBGRlN1SXdSVnliSUdxVkZk?=
- =?utf-8?B?M01wMXljU2NDc2sxVWxUTzJ1UXRwME4vOWdCK1ZTNXJCMUN3VTZJekp2Vnlp?=
- =?utf-8?B?Zlo1NDdTYmlzcjV4NWNlV2JqeGpDb2VqYUJBa0tqSndkdXlsYjdscnJkbVFx?=
- =?utf-8?B?VVgyaHNMZGI4Smo4c3I4THNLV05LTzRPcmN4dS9TOUtUZXFHMk40eUtjVERa?=
- =?utf-8?B?aU5aTXNHVGJYSm53QzRlVGxhZ2JWK2hSbFR3YUdXcnlIeExCVDl5VUJIQ0dW?=
- =?utf-8?B?Y2p3MjNpL1JWc2tvZWUwV0ZXWXBmb2V1ek1STjFadnJZRjRxNkVvUzl5WHlE?=
- =?utf-8?B?djRBeVpYVWdyNFN1WUg0dDNmKzlXOVJzRStGdFZyRldKUUphOHQ5OVpWY2pR?=
- =?utf-8?B?Tkc5dVlCZ3hKNUQyblZQb0lXbnc4clNpQlh2TDMySVdhenk3dlEzOW9TR3ox?=
- =?utf-8?B?bDhZb3I3dDBRRVZoRDVoTnN5TDRSb3h2NkVTTUc5ZmVlK0tyRytJQ2JJVllk?=
- =?utf-8?B?VS9ZeHRqSkpTUlozamJqa21ZUnBxZjVOZHE2bEhPbkN0OG9QRmxOK3RMV0VO?=
- =?utf-8?B?bC9rckVvVHlXeE5uTXZCVGdIb1JneFVtMHhHMjVsVWJqTnJRVnI4U2JFakJT?=
- =?utf-8?B?enhBL1RQMFZKdTByd0ZnQ3B3MERBUENyVmdCNHh2YjgvakF2YUM0THRIa0hq?=
- =?utf-8?B?WDMxdFhkRTNkRmI1ZFZnKzBocDFWd2RIRDFIbGVqVjVGUVlMT2w3RHlLaW9Q?=
- =?utf-8?B?Njd0UUhCcmtPbmxseUc0L2VsaHRiZHdVVkx1UDRqWG1oN2hISFlrc2IwZ0hJ?=
- =?utf-8?B?SlQ3MGdTemZsWlAreUJHR1BkcHpIcGkzZUw4VmZmaXJSZTBoVXlMSmNwbVBB?=
- =?utf-8?B?R1RjNS92ZEZ1dExhRSsvaHM0SE5BVVB4a3RCZzJnYmNDNG83NlU3VWRUM1Zn?=
- =?utf-8?B?ODJJaUcvK0lJeFVaSVIwUFF5M2FHWUJhdFQrdGNzR2ZSMkV1OTVocEFLY2pR?=
- =?utf-8?B?UGlsV2xQOEprQ1dJZHVqVHExU2Yza2sxSGJnbzJBRENSZnhiWGdVRkttOEha?=
- =?utf-8?B?VkJrUi9IazNjaE5tQlE5MzZURzRSekdFM0R3V2Uvc2xCajVGMnFuUHlPcFh0?=
- =?utf-8?B?bStoQkkrazZGVVRGT3VuaFBKRFF2WDhCVEREbS9xN0pWeXkwUldxakVVVXhT?=
- =?utf-8?B?TVpScmFIT3VjWjVEbTA2Y2NEU2t5VWtFVk1XOGw5SnV3YVQ0NHJldGFmQjk4?=
- =?utf-8?B?cWVoa1FmaDFsaVYzcmJxZklHZTFKRS90Ym8veDJxTWtVS1I1SWV5b3VqWVpC?=
- =?utf-8?B?amhTbFJXRmxRS3Y4ZEMwS3pRbnJRUmc9PQ==?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: afa72410-006a-4af5-7412-08dc1b6b5198
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR01MB5556.apcprd01.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jan 2024 16:58:12.5763
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSPR01MB6359
+Autocrypt: addr=duje.mihanovic@skole.hr;
+ keydata=
+ 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
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 
-在 2024/1/23 0:03, Kathiravan Thirumoorthy 写道:
-> 
-> 
-> On 1/21/2024 6:22 PM, Ziyang Huang wrote:
->> According to Qualcomm document:
->>    MP03.1 is RDP404
->>    RDP432 is MP03.5
->>
->> Signed-off-by: Ziyang Huang <hzyitc@outlook.com>
->> ---
->>   arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts 
->> b/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
->> index 074b78d7939c..f7e8b5af6b44 100644
->> --- a/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
->> +++ b/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
->> @@ -1,6 +1,6 @@
->>   // SPDX-License-Identifier: GPL-2.0+ OR BSD-3-Clause
->>   /*
->> - * IPQ5018 MP03.1-C2 board device tree source
->> + * IPQ5018 MP03.5-C2 board device tree source
-> 
-> 
-> I suggest to use the RDP number itself here...
+On Monday, January 22, 2024 5:50:11 PM CET Daniel Thompson wrote:
+> On Mon, Jan 22, 2024 at 05:24:51PM +0100, Duje Mihanovi=C4=87 wrote:
+> > I believe a "select" would be more appropriate here unless these=20
+backlights
+> > should be hidden if GPIOLIB is disabled. The catch with "select" is that
+> > there seems to be no way to throw in the "|| COMPILE_TEST" other GPIO-
+based
+> > backlights have and I'm not sure what to do about that.
+>=20
+> I think the "|| COMPILE_TEST" might just be a copy 'n paste'ism (in fact I
+> may even have been guilty off propagating it in reviews when checking
+> for inconsistencies).
+>=20
+> AFAICT nothing will inhibit setting GPIOLIB so allyes- and allmodconfig
+> builds will always end up with GPIOLIB enabled. If we are happy to
+> select it then I think that is enough!
 
-Here is an embarrassing thing. AP/MPxx.x name is more common in the 
-entire QSDK while RDP number is almost never appeared.
+In that case I guess I'll just make it select GPIOLIB.
 
-> 
-> 
->>    *
->>    * Copyright (c) 2023 The Linux Foundation. All rights reserved.
->>    */
+Regards,
+=2D-
+Duje
+
+
 
 
