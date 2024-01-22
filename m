@@ -1,60 +1,61 @@
-Return-Path: <linux-kernel+bounces-33216-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37E20836661
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:02:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75275836675
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:02:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B8EE1C209E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:02:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CEB9288748
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:02:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1389C4645D;
-	Mon, 22 Jan 2024 14:56:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CF4046BAF;
+	Mon, 22 Jan 2024 14:56:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bK9svh/l"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JSJ4KGLP"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 491914642A;
-	Mon, 22 Jan 2024 14:56:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2C7046548;
+	Mon, 22 Jan 2024 14:56:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705935377; cv=none; b=tmXnbEGTiIN57h7mmbczKujEHpmFU9Wzbbo1snoZg9xKoaMNEqTYtgKpbhL2ZoU8nPMTLG0QIvbeptbhfOfWutWAqoxGbOZuiXpyj4Rv2lET/bjkBx0T8jBAjOLONB5dbvo7E5Q/dWJ1GOlzQM9RrdWc2saro2lTF7nRGKWgdHk=
+	t=1705935378; cv=none; b=JTLzIHIoygMvaqwknuG5U25zUPDCygmWB2f9yvFmRCXRRBpiahlkMc+47hv1c3+Au2eHN5lyGSxfyg+uD73frcxuMnOEvyCe4QUfhp8BKuhI/yXQ071QLNnO1ZJHnKmGJI9py90z7NW+3Mj5P/ou2fIFFzhRjezz1enOfkOtDrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705935377; c=relaxed/simple;
-	bh=5G2vFEVxxjljbx2Tfhpnz8wRhi/UN3fGZcr43JDnvzk=;
+	s=arc-20240116; t=1705935378; c=relaxed/simple;
+	bh=vmyO24YHFKdgEbGviAcUxNuIr0zWNNtVYbmIoc339XA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dmbAtnu3hmNkstUXYo5+kMa3sndiPHmlS7MAvlZRngZLi7K8Is4obHaS+VWVvEMMSLgnxVfM1P2IkDtTtCHltpDQL4HNKolADzGwTMh3QaaATRfitrGB1dqdvxVUmmgamUWXSSA92RDczj0ZNgwG8CjYmuQI7A1J+YfGx4G8iMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bK9svh/l; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80939C433B2;
-	Mon, 22 Jan 2024 14:56:15 +0000 (UTC)
+	 MIME-Version:Content-Type; b=UGNuZd/Rtg0IlBSvl81bG3ShMMtQWpiFcAEdHE6zy7K0Zj7fijqfig4XdqBi0u6HZlhVlaORHDEDqu3OMElo203JFKul1now0hLtAB4JparuZsC5P3xGcCquOsaVSiCXbiCr5gggZjB2QrM9V7RWx5cZTjG64OP8kcx6cIsqRgU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JSJ4KGLP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A6A0C433F1;
+	Mon, 22 Jan 2024 14:56:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705935376;
-	bh=5G2vFEVxxjljbx2Tfhpnz8wRhi/UN3fGZcr43JDnvzk=;
+	s=k20201202; t=1705935378;
+	bh=vmyO24YHFKdgEbGviAcUxNuIr0zWNNtVYbmIoc339XA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bK9svh/lwjJ3VkMd27CfVk7KwSMiG58+FojQWyIolM62OcCgfrYXfOIi84sp0oOOk
-	 SO1VIx1xOUvFIS2IzWO2owtrSXb+bdLrh9JetOX3yK0Q2s6FA3uDmewqPrKTPy4HOJ
-	 s8JWOZMr/+adHsX3cg/y6wZYfNOdf0CGp66kXPRc7MxMwE8sKI0ExgXhvDBPTBkcMQ
-	 lsaS/e2Ac5E/sVggP01rQ+f+DDLWayx481DdFmKTOPlLiZq1xnZ4h7lT9Y3BQbRxMG
-	 cRYUCwbAbxrRyDysEGxjwJS8VkviVtGRwRrna04t2Ej5VW33XAtLK6CNjGQ6q53Xdu
-	 hD6tEigb/B5mw==
+	b=JSJ4KGLPkwE0W8vT2uQm7MqtQyz7xPnVArPEbNZHwrsP8DwQ001e2gi4EAAhU8dHC
+	 hHEt3ywqgP7G+mQspmPWGtT3mXbF6LHqD7J+Qwa9da1j7hMs6oTiKqIbAyd/8V7iTX
+	 e+adXGjBGtR3Xp+ygpJgMNzjQoh/VgjrRRgrHB4ZDxDRXlzTMtFFHT8AUQLInVvHrA
+	 WKluYVymcNhWeys9cXfFNkcaZyYXM/lXCpm4tmg67NWFkzMEVqLT8gBy4+tMTDamtB
+	 yBZbWZhkl1GGc4i93XxxM7T7FAL0FHhTjq1erQXQjOR0NBFj69bzkHuFhI2cKIMd6x
+	 aahk0MIHsp0/A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
-	Mark Brown <broonie@kernel.org>,
+Cc: =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>,
+	Chaitanya Kumar Borah <chaitanya.kumar.borah@intel.com>,
+	Jani Nikula <jani.nikula@intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	lgirdwood@gmail.com,
-	perex@perex.cz,
-	tiwai@suse.com,
-	corbet@lwn.net,
-	linux-sound@vger.kernel.org,
-	linux-doc@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 03/88] ASoC: doc: Fix undefined SND_SOC_DAPM_NOPM argument
-Date: Mon, 22 Jan 2024 09:50:36 -0500
-Message-ID: <20240122145608.990137-3-sashal@kernel.org>
+	maarten.lankhorst@linux.intel.com,
+	tzimmermann@suse.de,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.7 04/88] drm: Fix color LUT rounding
+Date: Mon, 22 Jan 2024 09:50:37 -0500
+Message-ID: <20240122145608.990137-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122145608.990137-1-sashal@kernel.org>
 References: <20240122145608.990137-1-sashal@kernel.org>
@@ -64,40 +65,101 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.1
 Content-Transfer-Encoding: 8bit
 
-From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+From: Ville Syrjälä <ville.syrjala@linux.intel.com>
 
-[ Upstream commit 67c7666fe808c3a7af3cc6f9d0a3dd3acfd26115 ]
+[ Upstream commit c6fbb6bca10838485b820e8a26c23996f77ce580 ]
 
-The virtual widget example makes use of an undefined SND_SOC_DAPM_NOPM
-argument passed to SND_SOC_DAPM_MIXER().  Replace with the correct
-SND_SOC_NOPM definition.
+The current implementation of drm_color_lut_extract()
+generates weird results. Eg. if we go through all the
+values for 16->8bpc conversion we see the following pattern:
 
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-Link: https://lore.kernel.org/r/20231121120751.77355-1-cristian.ciocaltea@collabora.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+in            out (count)
+   0 -   7f ->  0 (128)
+  80 -  17f ->  1 (256)
+ 180 -  27f ->  2 (256)
+ 280 -  37f ->  3 (256)
+..
+fb80 - fc7f -> fc (256)
+fc80 - fd7f -> fd (256)
+fd80 - fe7f -> fe (256)
+fe80 - ffff -> ff (384)
+
+So less values map to 0 and more values map 0xff, which
+doesn't seem particularly great.
+
+To get just the same number of input values to map to
+the same output values we'd just need to drop the rounding
+entrirely. But perhaps a better idea would be to follow the
+OpenGL int<->float conversion rules, in which case we get
+the following results:
+
+in            out (count)
+   0 -   80 ->  0 (129)
+  81 -  181 ->  1 (257)
+ 182 -  282 ->  2 (257)
+ 283 -  383 ->  3 (257)
+..
+fc7c - fd7c -> fc (257)
+fd7d - fe7d -> fd (257)
+fe7e - ff7e -> fe (257)
+ff7f - ffff -> ff (129)
+
+Note that since the divisor is constant the compiler
+is able to optimize away the integer division in most
+cases. The only exception is the _ULL() case on 32bit
+architectures since that gets emitted as inline asm
+via do_div() and thus the compiler doesn't get to
+optimize it.
+
+Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20231013131402.24072-2-ville.syrjala@linux.intel.com
+Reviewed-by: Chaitanya Kumar Borah <chaitanya.kumar.borah@intel.com>
+Reviewed-by: Jani Nikula <jani.nikula@intel.com>
+Acked-by: Maxime Ripard <mripard@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/sound/soc/dapm.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/drm/drm_color_mgmt.h | 19 ++++++++-----------
+ 1 file changed, 8 insertions(+), 11 deletions(-)
 
-diff --git a/Documentation/sound/soc/dapm.rst b/Documentation/sound/soc/dapm.rst
-index 8e44107933ab..c3154ce6e1b2 100644
---- a/Documentation/sound/soc/dapm.rst
-+++ b/Documentation/sound/soc/dapm.rst
-@@ -234,7 +234,7 @@ corresponding soft power control. In this case it is necessary to create
- a virtual widget - a widget with no control bits e.g.
- ::
+diff --git a/include/drm/drm_color_mgmt.h b/include/drm/drm_color_mgmt.h
+index 81c298488b0c..54b2b2467bfd 100644
+--- a/include/drm/drm_color_mgmt.h
++++ b/include/drm/drm_color_mgmt.h
+@@ -36,20 +36,17 @@ struct drm_plane;
+  *
+  * Extract a degamma/gamma LUT value provided by user (in the form of
+  * &drm_color_lut entries) and round it to the precision supported by the
+- * hardware.
++ * hardware, following OpenGL int<->float conversion rules
++ * (see eg. OpenGL 4.6 specification - 2.3.5 Fixed-Point Data Conversions).
+  */
+ static inline u32 drm_color_lut_extract(u32 user_input, int bit_precision)
+ {
+-	u32 val = user_input;
+-	u32 max = 0xffff >> (16 - bit_precision);
+-
+-	/* Round only if we're not using full precision. */
+-	if (bit_precision < 16) {
+-		val += 1UL << (16 - bit_precision - 1);
+-		val >>= 16 - bit_precision;
+-	}
+-
+-	return clamp_val(val, 0, max);
++	if (bit_precision > 16)
++		return DIV_ROUND_CLOSEST_ULL(mul_u32_u32(user_input, (1 << bit_precision) - 1),
++					     (1 << 16) - 1);
++	else
++		return DIV_ROUND_CLOSEST(user_input * ((1 << bit_precision) - 1),
++					 (1 << 16) - 1);
+ }
  
--  SND_SOC_DAPM_MIXER("AC97 Mixer", SND_SOC_DAPM_NOPM, 0, 0, NULL, 0),
-+  SND_SOC_DAPM_MIXER("AC97 Mixer", SND_SOC_NOPM, 0, 0, NULL, 0),
- 
- This can be used to merge to signal paths together in software.
- 
+ u64 drm_color_ctm_s31_32_to_qm_n(u64 user_input, u32 m, u32 n);
 -- 
 2.43.0
 
