@@ -1,185 +1,219 @@
-Return-Path: <linux-kernel+bounces-32419-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32421-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22BB4835B7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:17:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B43E835B83
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:19:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8667B260DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:17:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF9D71F2198B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:19:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 063ABF9E6;
-	Mon, 22 Jan 2024 07:17:25 +0000 (UTC)
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 154DBF9D2;
+	Mon, 22 Jan 2024 07:19:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dq+9PwEX"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C73002564;
-	Mon, 22 Jan 2024 07:17:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F3DFF9C4;
+	Mon, 22 Jan 2024 07:19:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705907844; cv=none; b=p+/bz/pYTxFffi+s7eQLZqf2o3rIZmihJ/3xO6FWB4shGsbtQa9DuNI0sP/pkEWerEzukbzDoa/bmpVgKTTpW7UgLQj+kB2G5LIdsQ/dcax6Sjs7mr7fcYsf63EXsdwwLXabF0HR6omjKklA0WAede4VURO1lhjbknzkBAeY2RY=
+	t=1705907982; cv=none; b=BZJYTghhbVPd9M/OvbvlBrO82nNWZjiuqC4/Ak3Zg4bjxF8ZW12GU++SmSQjPJMfX0DiKctkValB78N9424zv01hd20CTqrk71cz+jixCD1o25JpoQUXdupervuPwGN5TgCZ8raeg5fMZ0qey+jxkqrY9u4lMjV1oo9lt4NanhY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705907844; c=relaxed/simple;
-	bh=EIzMyARXnac3YZNByVm9pg65cpv8PgZg6NgmGDtv5xY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Dt5pZnRG0wfB0cH2M/P5w9q0VDDRovnTMoAALM0HdGhuOXN08LlJcwMNwclrm7xcssVIK2r1Znmu7nT8eVIs6A+zEdBpoMQTBT97h+MRD4Bu7pDqhP0GThQmuf82FtHXqLuP7ch3haFqYU9WeXZOKW+dF5Pae2M2y8tABjlr8Ic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; arc=none smtp.client-ip=115.124.30.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R441e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0W.2pzwi_1705907838;
-Received: from 30.97.48.66(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W.2pzwi_1705907838)
-          by smtp.aliyun-inc.com;
-          Mon, 22 Jan 2024 15:17:18 +0800
-Message-ID: <8f52414c-e0f2-4931-9b32-5c22f1d581f0@linux.alibaba.com>
-Date: Mon, 22 Jan 2024 15:17:50 +0800
+	s=arc-20240116; t=1705907982; c=relaxed/simple;
+	bh=dj/LJopYse2HUzcW6afWbr8br4SBQm9nhXp424JXXIU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iYxW5DQ0TmxM36/oPLrg0fKzze/P2uBmn6B4UIu9nQAFLCj8y03DKDQosQO/fouqwFeRWr8cFGhXiVFg9bAuS/sFXIVNc2DMi0H5SzwsAu7yAQlHqZ8mjrGqsQtmnvrQUTYlO/NMEPxz2R3kOpM5NTiVsk2MMmupAvS6GJhhhMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dq+9PwEX; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55a90a0a1a1so1679624a12.0;
+        Sun, 21 Jan 2024 23:19:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705907979; x=1706512779; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uHfxS5Ol5SGn5i9F3Z2DwGCA8DrLgQq4cMm5+V02usA=;
+        b=dq+9PwEXJh8f/vbcnocplDnKUncmLT2q9Fs2swPki0OWuGyk9bPp90xRft9ISxqGOI
+         op1L1d2NDsMeiXLtJIY8nFaLaGiJZdzTQsjSUE4hm031aCHT/0JLVCyJgjGKYnifX0nF
+         jujUBYsZo2Wzy+aO7ZWAYmQM+iLTTf5/tg5lotqwTJyO83mqKmo5t+Wkaa9Cv97qPOif
+         3IfkyVkHvDm1zxAQmlY584l9+sdR918vsrt2XkwPMuiKf+B+sxIAHuwN09lQGQq1Ncue
+         VgaBXXXPahgEzkkEto+10hRdh1BkxCZ8UwU9WzxkL8gzSQzoNlX+tZV2vu4ZM/gsEv1G
+         PFNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705907979; x=1706512779;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uHfxS5Ol5SGn5i9F3Z2DwGCA8DrLgQq4cMm5+V02usA=;
+        b=v8x+Bhoh92aQLQb7kDRRqnM/FTLQ5KWyAbVDGmcwAT9UvF3HCzfe2aXR7AWVxqNIWw
+         QyI3LPp8Zq1KKbbY7su45IOo2k3cn40yj1QMbYTJdQtrjJtNFXUvTcQdOgRjYpFjBkIb
+         +WW8A9ZBcJ7S7pXPQbXTbB/+kjDAf5dFcWgJKCqxUZMblu6i9kbkIwiZLGx82UJ4S7jV
+         sYksGHjINEhn5f3UI+B49YolZKWsbxSLW+egwfsahU1eK4ZqIxWxH45RTCmrkxVqMdNA
+         L5I4soc/9qHQMBSvBjpGyhzRhR0Uy4UOcq96b4n2oPQQTtH4cVuTK6Z7RkrYQUPcdAhs
+         Pzdg==
+X-Gm-Message-State: AOJu0YwomEWou2Nr9ALcNaKADRCYyVLCKe6ohOga7YaOJsl5YHfIfq8q
+	FCCPfd8QQkn59mPfh9PjH2hllF9kHFbDHHn27Dui+wHw+0ES3XFifQQAf4gnTOs2XWDFZPSnHyJ
+	rdhY6ND75ELAvgQHQy4EeCnDEx04=
+X-Google-Smtp-Source: AGHT+IHFz/IZ8KDzNs86vVGSZGZizq2DiHBGzIcj/0rCXdm9V1odoIxmTR2rsuJ+ZDauzWaw+Gzj8XNxbF6HndhoGgs=
+X-Received: by 2002:a05:6402:35d4:b0:55c:381a:fafc with SMTP id
+ z20-20020a05640235d400b0055c381afafcmr369325edc.101.1705907978614; Sun, 21
+ Jan 2024 23:19:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] fs: improve dump_mapping() robustness
-To: Charan Teja Kalla <quic_charante@quicinc.com>,
- Al Viro <viro@zeniv.linux.org.uk>
-Cc: akpm@linux-foundation.org, willy@infradead.org, brauner@kernel.org,
- jack@suse.cz, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <937ab1f87328516821d39be672b6bc18861d9d3e.1705391420.git.baolin.wang@linux.alibaba.com>
- <20240118013857.GO1674809@ZenIV>
- <d5979f89-7a84-423a-a1c7-29bdbf7c2bc1@linux.alibaba.com>
- <c85fffe6-e455-d0fa-e332-87e81e0a0e86@quicinc.com>
-From: Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <c85fffe6-e455-d0fa-e332-87e81e0a0e86@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240115072306.303993-1-zegao@tencent.com> <CAM9d7cgXKaKTnfx9YJae2qqv0pXtWLVQPBN=2H0WZkenBjHFnQ@mail.gmail.com>
+ <CAD8CoPA6xBT9hbGZoviyyQm1bwn2Oh=v8QCMjxkMMOSN2zfC-A@mail.gmail.com>
+ <CAD8CoPA0YgVHVW1Ya1O0-vhmpCbiw2h3i29ayzKmg4YTu-zeKQ@mail.gmail.com>
+ <CAM9d7ciiKeVJzCjNyJp8hDsMe2ZiVyOKT3ses_SQMfdEQnWiog@mail.gmail.com>
+ <CAD8CoPCSDcB+-qvwEZGOrdi01C3W8N3dYN3XQUQ2jrpn1mSf=Q@mail.gmail.com>
+ <CAM9d7cigWxAN_nmT2rO-o7YG0hkmPNjDPeLtsn=z1YqRSjMEjA@mail.gmail.com> <CAD8CoPChgx_h9KU4nBJ+0__g6J=LvTBuMdbc0-F0dHz4=kjY0g@mail.gmail.com>
+In-Reply-To: <CAD8CoPChgx_h9KU4nBJ+0__g6J=LvTBuMdbc0-F0dHz4=kjY0g@mail.gmail.com>
+From: Ze Gao <zegao2021@gmail.com>
+Date: Mon, 22 Jan 2024 15:19:27 +0800
+Message-ID: <CAD8CoPC1-AZd6vRKFT_w-0ov8Rtm0yLnbMPGnJ4B3hh5C8bMyQ@mail.gmail.com>
+Subject: Re: [PATCH 0/4] perf sched: Fix task state report
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Adrian Hunter <adrian.hunter@intel.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@redhat.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, Ze Gao <zegao@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Jan 22, 2024 at 11:08=E2=80=AFAM Ze Gao <zegao2021@gmail.com> wrote=
+:
+>
+> On Sat, Jan 20, 2024 at 6:45=E2=80=AFAM Namhyung Kim <namhyung@kernel.org=
+> wrote:
+> >
+> > On Thu, Jan 18, 2024 at 5:54=E2=80=AFPM Ze Gao <zegao2021@gmail.com> wr=
+ote:
+> > >
+> > > On Fri, Jan 19, 2024 at 7:53=E2=80=AFAM Namhyung Kim <namhyung@kernel=
+org> wrote:
+> > > >
+> > > > On Wed, Jan 17, 2024 at 7:15=E2=80=AFPM Ze Gao <zegao2021@gmail.com=
+> wrote:
+> > > > >
+> > > > > On Thu, Jan 18, 2024 at 11:00=E2=80=AFAM Ze Gao <zegao2021@gmail.=
+com> wrote:
+> > > > > >
+> > > > > > On Wed, Jan 17, 2024 at 9:35=E2=80=AFAM Namhyung Kim <namhyung@=
+kernel.org> wrote:
+> > > > > > >
+> > > > > > > Hello,
+> > > > > > >
+> > > > > > > On Sun, Jan 14, 2024 at 11:23=E2=80=AFPM Ze Gao <zegao2021@gm=
+ail.com> wrote:
+> > > > > > > >
+> > > > > > > > Hi,
+> > > > > > > >
+> > > > > > > > The problems of task state report in both libtraceevent
+> > > > > > > > and perf sched has been reported in [1]. In short, they
+> > > > > > > > parsed the wrong state due to relying on the outdated
+> > > > > > > > hardcoded state string to interpret the raw bitmask
+> > > > > > > > from the record, which left the messes to maintain the
+> > > > > > > > backward compatibilities for both tools.
+> > > > > > > >
+> > > > > > > > [1] has not managed to make itself into the kernel, the
+> > > > > > > > problems and the solutions are well studied though.
+> > > > > > > >
+> > > > > > > > Luckily, as suggested by Steven, perf/libtraceevent
+> > > > > > > > records the print format, especially the __print_flags()
+> > > > > > > > part of the in-kernel tracepoint sched_switch in its
+> > > > > > > > metadata, and we have a chance to build the state str
+> > > > > > > > on the fly by parsing it.
+> > > > > > > >
+> > > > > > > > Now that libtraceevent has landed this solution in [2],
+> > > > > > > > we now apply the same idea to perf as well.
+> > > > > > >
+> > > > > > > Thanks for your work.  But perf links libtraceevent
+> > > > > > > conditionally so you need to make sure if it works without
+> > > > > > > that too.
+> > > > > >
+> > > > > > Yes, I've tested with NO_LIBTRACEEVENT=3D1, and it turns
+> > > > > > out perf removes perf sched subcmd without libtraceevent,
+> > > > >
+> > > > > FWIW,  commit 378ef0f5d9d7f4 ("perf build: Use libtraceevent
+> > > > > from the system") has proved this as well.
+> > > >
+> > > > Right, but I think we can enable perf sched without libtraceevent
+> > > > for minimal features like record only.  But that doesn't belong to
+> > > > this change set.
+> > > >
+> > > > >
+> > > > > > which explains why the compiler does not complain no
+> > > > > > evsel__intval() defined when !HAVE_LIBTRACEEVENT
+> > > > > > given the fact so many references of evsel__intval() in
+> > > > > > builtin-sched.c.
+> > > > > > Here evsel__taskstate() uses the exact assumption as
+> > > > > > evsel__intval(), so I put it next to it for clarity and it work=
+s
+> > > > > > without a doubt.
+> > > > > >
+> > > > > > > I think all libtraceevent related stuff should be in the
+> > > > > > > util/trace-event.c which is included only if the library is
+> > > > > > > available.  Maybe util/trace-event-parse.c is a better
+> > > > > > > place but then you need to tweak the python-ext-sources
+> > > > > > > and Makefile.perf for the case it's not available.
+> > > > > >
+> > > > > > Thanks for pointing this out. I will do the hack if you insist
+> > > > > > on this move :D. But I think the current version is clear
+> > > > > > enough, otherwise we need to move all the parts guarded
+> > > > > > by #ifdef HAVE_LIBTRACEEVENT out for complete decoupling.
+> > > > > > What do you think of it?
+> > > >
+> > > > Oh, I realized that all the affected codes are under the #ifdef
+> > > > properly then maybe it's ok for now.  But I prefer moving the
+> > > > code if you're ok.  Maybe I can accept this code as is and you
+> > >
+> > > Sounds great!
+> > >
+> > > > can work on the refactoring later.  Does that work for you?
+> > >
+> > > Absolutely! Will send the following refactoring patches soon. :D
+> >
+> > Thanks, but your patches don't apply cleanly.  Could you please
+> > rebase it onto the current perf-tools-next tree?
+>
+> Oops, that is kinda weird. I've tested and managed to cherry-picked all 4
+> patches onto branch perf-tools-next in [1], with no conflicts being
 
+Please forget about this. Looks like git-cherry-pick is smarter to
+figure out where to
+apply when in the same repo ( or than git-am ?).
 
-On 1/19/2024 11:48 PM, Charan Teja Kalla wrote:
-> Hi Matthew/Baolin,
-> 
-> On 1/18/2024 8:13 AM, Baolin Wang wrote:
->>
->>
->> On 1/18/2024 9:38 AM, Al Viro wrote:
->>> On Tue, Jan 16, 2024 at 03:53:35PM +0800, Baolin Wang wrote:
->>>
->>>> With checking the 'dentry.parent' and 'dentry.d_name.name' used by
->>>> dentry_name(), I can see dump_mapping() will output the invalid dentry
->>>> instead of crashing the system when this issue is reproduced again.
->>>
->>>>        dentry_ptr = container_of(dentry_first, struct dentry,
->>>> d_u.d_alias);
->>>> -    if (get_kernel_nofault(dentry, dentry_ptr)) {
->>>> +    if (get_kernel_nofault(dentry, dentry_ptr) ||
->>>> +        !dentry.d_parent || !dentry.d_name.name) {
->>>>            pr_warn("aops:%ps ino:%lx invalid dentry:%px\n",
->>>>                    a_ops, ino, dentry_ptr);
->>>>            return;
->>>
->>> That's nowhere near enough.  Your ->d_name.name can bloody well be
->>> pointing
->>> to an external name that gets freed right under you.  Legitimately so.
->>>
->>> Think what happens if dentry has a long name (longer than would fit into
->>> the embedded array) and gets renamed name just after you copy it into
->>> a local variable.  Old name will get freed.  Yes, freeing is RCU-delayed,
->>> but I don't see anything that would prevent your thread losing CPU
->>> and not getting it back until after the sucker's been freed.
->>
->> Yes, that's possible. And this appears to be a use-after-free issue in
->> the existing code, which is different from the issue that my patch
->> addressed.
->>
->> So how about adding a rcu_read_lock() before copying the dentry to a
->> local variable in case the old name is freed?
->>
-> 
-> We too seen the below crash while printing the dentry name.
-> 
-> aops:shmem_aops ino:5e029 dentry name:"dev/zero"
-> flags:
-> 0x8000000000080006(referenced|uptodate|swapbacked|zone=2|kasantag=0x0)
-> raw: 8000000000080006 ffffffc033b1bb60 ffffffc033b1bb60 ffffff8862537600
-> raw: 0000000000000001 0000000000000000 00000003ffffffff ffffff807fe64000
-> page dumped because: migration failure
-> migrating pfn aef223 failed ret:1
-> page:000000009e72a120 refcount:3 mapcount:0 mapping:000000003325dda1
-> index:0x1 pfn:0xaef223
-> memcg:ffffff807fe64000
-> Unable to handle kernel NULL pointer dereference at virtual address
-> 0000000000000000
-> Mem abort info:
->    ESR = 0x0000000096000005
->    EC = 0x25: DABT (current EL), IL = 32 bits
->    SET = 0, FnV = 0
->    EA = 0, S1PTW = 0
->    FSC = 0x05: level 1 translation fault
-> Data abort info:
->    ISV = 0, ISS = 0x00000005
->    CM = 0, WnR = 0
-> user pgtable: 4k pages, 39-bit VAs, pgdp=000000090c12d000
-> [0000000000000000] pgd=0000000000000000, p4d=0000000000000000,
-> pud=0000000000000000
-> Internal error: Oops: 0000000096000005 [#1] PREEMPT SMP
-> 
-> dentry_name+0x1f8/0x3a8
-> pointer+0x3b0/0x6b8
-> vsnprintf+0x4a4/0x65c
-> vprintk_store+0x168/0x4a8
-> vprintk_emit+0x98/0x218
-> vprintk_default+0x44/0x70
-> vprintk+0xf0/0x138
-> _printk+0x54/0x80
-> dump_mapping+0x17c/0x188
-> dump_page+0x1d0/0x2e8
-> offline_pages+0x67c/0x898
-> 
-> 
-> 
-> Not much comfortable with block layer internals, TMK, the below is what
-> happening in the my case:
-> memoffline	     		dput()
-> (offline_pages)		 (as part of closing of the shmem file)
-> ------------		 --------------------------------------
-> 					.......
-> 			1) dentry_unlink_inode()
-> 			      hlist_del_init(&dentry->d_u.d_alias);
-> 
-> 			2) iput():
-> 			    a) inode->i_state |= I_FREEING
-> 				.....
-> 			    b) evict_inode()->..->shmem_undo_range
-> 			       1) get the folios with elevated refcount
-> 3) do_migrate_range():
->     a) Because of the elevated
->     refcount in 2.b.1, the
->     migration of this page will
->     be failed.
-> 
-> 			       2) truncate_inode_folio() ->
-> 				     filemap_remove_folio():
->   				(deletes from the page cache,
-> 				 set page->mapping=NULL,
-> 				 decrement the refcount on folio)
->    b) Call dump_page():
->       1) mapping = page_mapping(page);
->       2) dump_mapping(mapping)
-> 	  a) We unlinked the dentry in 1)
->             thus dentry_ptr from host->i_dentry.first
->             is not a proper one.
-> 
->           b) dentry name print with %pd is resulting into
-> 	   the mentioned crash.
-> 
-> 
-> At least in this case, I think __this patchset in its current form can
-> help us__.
+Anyway I've resent a v2 series:
+    https://lore.kernel.org/all/20240122070859.1394479-2-zegao@tencent.com/
 
-This looks another case of NULL pointer access. Thanks for the detailed 
-analysis. Could you provide a Tested-by or Reviewed-by tag if it can 
-solve your problem?
+Tested and verified. Hope this time i don't mess it up :)
+
+Thanks,
+        -- Ze
+
+> hit.  Maybe I used the wrong branch tip?
+>
+> FWIW:  the tip I rebase onto is
+>
+> d988c9f511af (perf/perf-tools-next) MAINTAINERS: Add Namhyung as
+> tools/perf/ co-maintainer
+>
+> [1]:  https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-nex=
+t.git/
+>
+> Regards,
+>         -- Ze
+>
+> > Thanks,
+> > Namhyung
 
