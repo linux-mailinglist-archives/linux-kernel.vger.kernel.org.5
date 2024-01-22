@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-33201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33206-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C917836618
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:58:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFBA3836611
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:58:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AC787B238F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:57:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F22E1C226F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:58:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D78FD3E463;
-	Mon, 22 Jan 2024 14:56:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 098473F8F6;
+	Mon, 22 Jan 2024 14:56:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="BC7ehT8W"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="NXUxYe2P"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 844123DB8A;
-	Mon, 22 Jan 2024 14:56:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 888323E475;
+	Mon, 22 Jan 2024 14:56:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705935366; cv=none; b=ukintngxoO1uKvDk3wCmXM6OkzOW27G6M4jKL/uBTg4CZT4IepaopSdz7YtjeetlV5wUn/XkHEMHPG3pdTo0ODVqCjDM8r6sHi2lCkrC9Gq/Er2RLTjZ3uxllOlux+FeHd25CZOIusb9kPYoasOetZmvmA6dT9V6a9Fy+tUw900=
+	t=1705935369; cv=none; b=ZtshMZB0vJ8ghMp5YA+KwjHcBmOZ/h9Yy61096K7XcqgB2PQzMVyvobi2yPIDccqYeuCrtqePzOy/X+cFy17bq+KpEIqBWTSRGeZx8LBHXwtTNphaB2NUzEFcBbPku4LtEep54v+AJI5gBpqa+udgpYnqNT6z4rQkV5rhMyxzKo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705935366; c=relaxed/simple;
-	bh=tV3qkzmsXsNGV+4+fFAkO9mPG4b2oSBN0DovUgMeL+8=;
+	s=arc-20240116; t=1705935369; c=relaxed/simple;
+	bh=dURaSxRE/IZfjJLyZT/vYZbM6dWdVOBAFKjXFEr8J9A=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SLZ6/M2uR6YNCNIfcRcnXlwQAmfR8GJFbz+NlaRhK43uju8Yb7xxhUo7NnDSJqUjSLexTZPBovpfuKJwCZ7ZlvcCfhGYTV67y/mgCQE/Y5uxvZrnUSlPOoqOwGIIud4jW8bJfKWHDLvgbc+QxkMhizUHKczN8hj1xeGYln7psGw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=BC7ehT8W; arc=none smtp.client-ip=198.47.19.141
+	 MIME-Version:Content-Type; b=tnfwOP9tyAbqTJzHZEucxRNoTIUajSJJ/Pj128c/jDPEQvPdrbfKCkx6wswEbwutuLmpJR1kjTmmWrijAE7HLGYsTNF40Qt8T0/EU8WaAk/5dNmlk8PFV9PD51n9W6NSNFKr92tP1TzlA86uGLtbAZGpYvtaL6hGe5RiVtn54XY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=NXUxYe2P; arc=none smtp.client-ip=198.47.19.142
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
 Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40MEtikW038203;
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40MEtiQA068534;
 	Mon, 22 Jan 2024 08:55:44 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
 	s=ti-com-17Q1; t=1705935344;
-	bh=mbTat3723wDpGlFRlwVAYlOsNrwq5XzdVmFfwFWYYvY=;
+	bh=9rRP5bVB7MfblHgYAH/t7pFanTjJ5l/bZbdNSJMk0mQ=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=BC7ehT8WTPg/RwbJuMrydPPHKUJger68V/uZlqUr+jwAnOPzw76fULfIojhEcxIGg
-	 rz8MiLI/nobrTsOSzvrnSsH0OaWsy2A9vrSdEsz4A032v83qDZhOUtVR6bPa/ZfcnV
-	 rhQjFq5ttY/N0ZOphL7AOo/v9P4RjWKEi0wgp8CU=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40MEti3j126199
+	b=NXUxYe2PdVGyEsq/jyJRuWZsp0y6KGNKJoOEm+gerjGtNND9Q5n3ba+VlmmLDe8Hj
+	 agOYUR04S780eJyGY1+YG2Rhk2ZnJJYl0n+pgHtTv7qUfRayCJVO9JEmAihZyVjIUO
+	 3tYrmqsZz0Wi0szHSpG3mgDvqMCpebYeOv/c2BmE=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40MEtirK126196
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
 	Mon, 22 Jan 2024 08:55:44 -0600
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 22
  Jan 2024 08:55:44 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
  Frontend Transport; Mon, 22 Jan 2024 08:55:44 -0600
 Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40MEtiT3014458;
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40MEtima014462;
 	Mon, 22 Jan 2024 08:55:44 -0600
 From: Nishanth Menon <nm@ti.com>
 To: Tero Kristo <kristo@kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>
@@ -61,15 +61,10 @@ CC: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Rob Herring
 	<robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        Nishanth Menon <nm@ti.com>, Apelete Seketeli <aseketeli@baylibre.com>,
-        Jerome
- Neanne <jneanne@baylibre.com>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski@linaro.org>,
-        Tony Lindgren <tony@atomide.com>
-Subject: [PATCH V2 10/16] arm64: dts: ti: k3-j784s4: Add MIT license along with GPL-2.0
-Date: Mon, 22 Jan 2024 08:55:33 -0600
-Message-ID: <20240122145539.194512-11-nm@ti.com>
+        Nishanth Menon <nm@ti.com>, Tony Lindgren <tony@atomide.com>
+Subject: [PATCH V2 11/16] arm64: dts: ti: k3-pinctrl: Add MIT license along with GPL-2.0
+Date: Mon, 22 Jan 2024 08:55:34 -0600
+Message-ID: <20240122145539.194512-12-nm@ti.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122145539.194512-1-nm@ti.com>
 References: <20240122145539.194512-1-nm@ti.com>
@@ -92,120 +87,35 @@ While at this, update the GPL-2.0 to be GPL-2.0-only to be in sync
 with latest SPDX conventions (GPL-2.0 is deprecated).
 
 While at this, update the TI copyright year to sync with current year
-to indicate license change (and add it at least for one file which was
-missing TI copyright).
-
-Cc: Apelete Seketeli <aseketeli@baylibre.com>
-Cc: Jerome Neanne <jneanne@baylibre.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Tony Lindgren <tony@atomide.com>
+to indicate license change.
 
 Acked-by: Tony Lindgren <tony@atomide.com>
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Nishanth Menon <nm@ti.com>
 ---
 Changes Since v1:
-* Picked up acks
-Pending Acks:
- - Apelete Seketeli <aseketeli@baylibre.com> (no longer with Baylibre)
- - Jerome Neanne <jneanne@baylibre.com>
+* Picked up acks - all acks recieved
 
-V1: https://lore.kernel.org/r/20240110140903.4090946-11-nm@ti.com
+V1: https://lore.kernel.org/r/20240110140903.4090946-12-nm@ti.com
 
- arch/arm64/boot/dts/ti/k3-am69-sk.dts            | 4 ++--
- arch/arm64/boot/dts/ti/k3-j784s4-evm.dts         | 4 ++--
- arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi       | 4 ++--
- arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi | 4 ++--
- arch/arm64/boot/dts/ti/k3-j784s4-thermal.dtsi    | 5 ++++-
- arch/arm64/boot/dts/ti/k3-j784s4.dtsi            | 4 ++--
- 6 files changed, 14 insertions(+), 11 deletions(-)
+ arch/arm64/boot/dts/ti/k3-pinctrl.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am69-sk.dts b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
-index 8da591579868..dd6a58ef93e5 100644
---- a/arch/arm64/boot/dts/ti/k3-am69-sk.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am69-sk.dts
-@@ -1,6 +1,6 @@
--// SPDX-License-Identifier: GPL-2.0
-+// SPDX-License-Identifier: GPL-2.0-only OR MIT
+diff --git a/arch/arm64/boot/dts/ti/k3-pinctrl.h b/arch/arm64/boot/dts/ti/k3-pinctrl.h
+index 2a4e0e084d69..4c5743902ba6 100644
+--- a/arch/arm64/boot/dts/ti/k3-pinctrl.h
++++ b/arch/arm64/boot/dts/ti/k3-pinctrl.h
+@@ -1,9 +1,9 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
++/* SPDX-License-Identifier: GPL-2.0-only OR MIT */
  /*
-- * Copyright (C) 2022-2023 Texas Instruments Incorporated - https://www.ti.com/
-+ * Copyright (C) 2022-2024 Texas Instruments Incorporated - https://www.ti.com/
+  * This header provides constants for pinctrl bindings for TI's K3 SoC
+  * family.
   *
-  * Design Files: https://www.ti.com/lit/zip/SPRR466
-  * TRM: https://www.ti.com/lit/zip/spruj52
-diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
-index f34b92acc56d..ab4bc63d051d 100644
---- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
-+++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
-@@ -1,6 +1,6 @@
--// SPDX-License-Identifier: GPL-2.0
-+// SPDX-License-Identifier: GPL-2.0-only OR MIT
- /*
-- * Copyright (C) 2022 Texas Instruments Incorporated - https://www.ti.com/
-+ * Copyright (C) 2022-2024 Texas Instruments Incorporated - https://www.ti.com/
-  *
-  * EVM Board Schematics: https://www.ti.com/lit/zip/sprr458
+- * Copyright (C) 2018-2023 Texas Instruments Incorporated - https://www.ti.com/
++ * Copyright (C) 2018-2024 Texas Instruments Incorporated - https://www.ti.com/
   */
-diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-index f2b720ed1e4f..3cb964982792 100644
---- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-@@ -1,8 +1,8 @@
--// SPDX-License-Identifier: GPL-2.0
-+// SPDX-License-Identifier: GPL-2.0-only OR MIT
- /*
-  * Device Tree Source for J784S4 SoC Family Main Domain peripherals
-  *
-- * Copyright (C) 2022 Texas Instruments Incorporated - https://www.ti.com/
-+ * Copyright (C) 2022-2024 Texas Instruments Incorporated - https://www.ti.com/
-  */
- 
- #include <dt-bindings/mux/mux.h>
-diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
-index 3902a921d7e5..af3d9dbec278 100644
---- a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
-@@ -1,8 +1,8 @@
--// SPDX-License-Identifier: GPL-2.0
-+// SPDX-License-Identifier: GPL-2.0-only OR MIT
- /*
-  * Device Tree Source for J784S4 SoC Family MCU/WAKEUP Domain peripherals
-  *
-- * Copyright (C) 2022 Texas Instruments Incorporated - https://www.ti.com/
-+ * Copyright (C) 2022-2024 Texas Instruments Incorporated - https://www.ti.com/
-  */
- 
- &cbass_mcu_wakeup {
-diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-thermal.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-thermal.dtsi
-index f7b1a15b8fa0..e3ef61c1658f 100644
---- a/arch/arm64/boot/dts/ti/k3-j784s4-thermal.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j784s4-thermal.dtsi
-@@ -1,4 +1,7 @@
--// SPDX-License-Identifier: GPL-2.0
-+// SPDX-License-Identifier: GPL-2.0-only OR MIT
-+/*
-+ * Copyright (C) 2023-2024 Texas Instruments Incorporated - https://www.ti.com/
-+ */
- 
- #include <dt-bindings/thermal/thermal.h>
- 
-diff --git a/arch/arm64/boot/dts/ti/k3-j784s4.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4.dtsi
-index 4398c3a463e1..271a217905e9 100644
---- a/arch/arm64/boot/dts/ti/k3-j784s4.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j784s4.dtsi
-@@ -1,10 +1,10 @@
--// SPDX-License-Identifier: GPL-2.0
-+// SPDX-License-Identifier: GPL-2.0-only OR MIT
- /*
-  * Device Tree Source for J784S4 SoC Family
-  *
-  * TRM (SPRUJ43 JULY 2022): https://www.ti.com/lit/zip/spruj52
-  *
-- * Copyright (C) 2022 Texas Instruments Incorporated - https://www.ti.com/
-+ * Copyright (C) 2022-2024 Texas Instruments Incorporated - https://www.ti.com/
-  *
-  */
- 
+ #ifndef DTS_ARM64_TI_K3_PINCTRL_H
+ #define DTS_ARM64_TI_K3_PINCTRL_H
 -- 
 2.43.0
 
