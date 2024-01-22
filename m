@@ -1,136 +1,132 @@
-Return-Path: <linux-kernel+bounces-32781-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64B60836003
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:46:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08308836005
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:47:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 851841C21172
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:46:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9EF851F27AC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:47:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CF253A1D5;
-	Mon, 22 Jan 2024 10:46:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="s/LtA8vw"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE37B3A1DC;
+	Mon, 22 Jan 2024 10:47:03 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 025D43A1BD
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 10:46:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC7553A8CB;
+	Mon, 22 Jan 2024 10:46:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705920406; cv=none; b=qgkEOFgsY9LbsUFOzRbN1Omv/OPv/+WaBfG0aMFs1a3ynvsNQ7XB4jAhVGLhty/eNdFgYY6BgHl+d9KN2WvWkeR6i7DUdmi46VM8ys0dRg52M/PPLUoV00WUv8wpV+D7CO8bGBMrD224SS/EL7kTi6+8UdqLfSJoQUzEVXIf5rA=
+	t=1705920423; cv=none; b=A63WCMCsLQaTqFJAF4QA6rpBPhu0G67jEjZuOcZH2S2y/zIdppj95VOIm0Bwyies8P3iEkJjMq4+E+fjVoB6QcAoMfaTHwaR0DaQXiSrP6B4cyMAHf6x0cbCacz42OCaKnfv1sU61NcQzQ75CiV+05az3MmaWnDQrQhuxtRgXOo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705920406; c=relaxed/simple;
-	bh=Qdi++BPpN4xADY3Ws9MKWlDcELXeuOPfNA0zq22E1lY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qV9jDDjjTwFkaCKYXU+aK1LGbrXW+8luEKOBc3iNSCYB1a3No3dvJAoa/MvxSgYpbEp0Bo3Rb8xt1a5GIaDbRXbPkKXck0TcAboE+2FgqCUFUZ9VUiTSULiHj6hzT46wq094dNBrvFxWmYTqqTxxyhWMyudsE1Gpp4yFpwLm0+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=s/LtA8vw; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55a44bb66d3so3216460a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 02:46:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705920403; x=1706525203; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WHUmP85bYrqmNNOvIwdt3N2CuMyu+xnFnMaYntAOhIw=;
-        b=s/LtA8vwEetTDOBcb+yaZGhj8JLW7gioeFox6H99bii8YdM6JIyJ1Rrcm+rgCNaQCJ
-         qIqBacWPnJYtDF267pataLn4m3WsJ6KGU3zCDVqUIesZlHUQsLN+hSLKIIdF7FgpGpq7
-         c0wcA+LtDPE42+pKGgp4fZZLYlxMk5sifukp9yDSIGOFfQz3Q9d7+PNGm1zacsBGHpQd
-         IJPEn7ihfzFrVVRVgzLb1OKqbYcWNhc3fmT5MKtDXG8JxTxLAqr2XSVqy74PamcTOJ2w
-         fOymQlg+I26f9BcsZEcNdSRkInOUQgDNRBIkjG/B7A5Jw5qZYc9gKIR8tkpON+Mnlj/C
-         FZfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705920403; x=1706525203;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WHUmP85bYrqmNNOvIwdt3N2CuMyu+xnFnMaYntAOhIw=;
-        b=JubB3uZ/1WLnCqefDfLI1/WTjGRcujV0rXC+wi5cze04yF3jcRxWB5qd477h55//u6
-         JiQj8uFAUwpnIouBI0mQXXGgAI3fWso4eXX4hWmhqv2Fxgb8fjWfVE1SVz5fSdDHRul6
-         qbwGxsdcudN+a+VmzXos71f+NN7fCL7Oi1emJVUMRh0K0hbBFiHPMjfU4wJcirgL4yfW
-         PXKgwIFOd3sV/zxvesgIPbsZLtnCUTexVG3Itqihv0sFbgRJ1oKMAY69LS5xVhSWNuqv
-         y0IC0bV4ukbyU/qvlC2p4k7feCZ9oxuqmxwTEHvx0kaxwzs3maZ1M8zZiWuvCFR9GZpm
-         wJ0A==
-X-Gm-Message-State: AOJu0YxT2vB0nX9UOghAdyMAkutgy1AVAcb+/9hX/YoAsAh2NxXwmXXB
-	CL4bgKFX5c9EoR/eg9+e2jmdm+tjnH0NluRlkZmndaezQQQRRPMqURsEWgNoJpM=
-X-Google-Smtp-Source: AGHT+IEUX1EdKIuQMAVePF9Ofx6NGtmYXcsWrE2Cs1IuZl5YQs5RUT61OIgFxTYCtpqFtxndvhWl5g==
-X-Received: by 2002:a17:906:99d6:b0:a30:5299:c35a with SMTP id s22-20020a17090699d600b00a305299c35amr661177ejn.110.1705920403190;
-        Mon, 22 Jan 2024 02:46:43 -0800 (PST)
-Received: from [192.168.231.132] (178235179218.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.218])
-        by smtp.gmail.com with ESMTPSA id st10-20020a170907c08a00b00a2fd76dddebsm2387487ejc.35.2024.01.22.02.46.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 02:46:42 -0800 (PST)
-Message-ID: <aa16d6de-c8f9-437b-89b7-357f8063e0db@linaro.org>
-Date: Mon, 22 Jan 2024 11:46:41 +0100
+	s=arc-20240116; t=1705920423; c=relaxed/simple;
+	bh=fhaYFQB3dnbEhnIGIDw2KFqMrc6HBf6DGrphFIMQKhQ=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ITSdaBkU2YeKxnbMbHYPMv9/Xgnd9aD8TBniI1pvnxtTvqo3douBi2tglZceXlxXVzNkCa6gagEkXkkoqgRwdTWSVRXYYi+XnjT50j3GH3SnSWnT6WHR7K0zr/SYj+8p+054BVzmNgAX0RQeD6NR8InNbCyUw233UQbJtDL4Bl8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TJRhg2sZpzsWLL;
+	Mon, 22 Jan 2024 18:45:55 +0800 (CST)
+Received: from kwepemd100002.china.huawei.com (unknown [7.221.188.184])
+	by mail.maildlp.com (Postfix) with ESMTPS id 9E1BA1400FD;
+	Mon, 22 Jan 2024 18:46:55 +0800 (CST)
+Received: from M910t (10.110.54.157) by kwepemd100002.china.huawei.com
+ (7.221.188.184) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.28; Mon, 22 Jan
+ 2024 18:46:54 +0800
+Date: Mon, 22 Jan 2024 18:46:46 +0800
+From: Changbin Du <changbin.du@huawei.com>
+To: Adrian Hunter <adrian.hunter@intel.com>
+CC: Changbin Du <changbin.du@huawei.com>, Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa
+	<jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Ian Rogers
+	<irogers@google.com>, <linux-kernel@vger.kernel.org>,
+	<linux-perf-users@vger.kernel.org>, Andi Kleen <ak@linux.intel.com>, Thomas
+ Richter <tmricht@linux.ibm.com>, <changbin.du@gmail.com>, Peter Zijlstra
+	<peterz@infradead.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Ingo
+ Molnar <mingo@redhat.com>
+Subject: Re: [PATCH v4 3/5] perf: script: add field 'disasm' to display
+ mnemonic instructions
+Message-ID: <20240122104646.oqa7jnmd6ed2dzdw@M910t>
+References: <20240119104856.3617986-1-changbin.du@huawei.com>
+ <20240119104856.3617986-4-changbin.du@huawei.com>
+ <e840bd05-a9e0-4463-8597-b67c7627809b@intel.com>
+ <20240120074009.zmywqj6irtedivqk@M910t>
+ <e8e5ea25-326b-4565-b0e8-1583b09dba65@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] soc: qcom: aoss: Mark qmp_send() __printf()
-Content-Language: en-US
-To: Bjorn Andersson <quic_bjorande@quicinc.com>,
- Bjorn Andersson <andersson@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel test robot <lkp@intel.com>
-References: <20240119-aoss-printf-annotation-v1-1-27e2ceb8937a@quicinc.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240119-aoss-printf-annotation-v1-1-27e2ceb8937a@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <e8e5ea25-326b-4565-b0e8-1583b09dba65@intel.com>
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemd100002.china.huawei.com (7.221.188.184)
 
-On 19.01.2024 18:13, Bjorn Andersson wrote:
-> As reported by lkp, qmp_send() would benefit from a __printf() marker to
-> allow the compiler to further validate the passed parameters, fix this.
+On Mon, Jan 22, 2024 at 11:59:13AM +0200, Adrian Hunter wrote:
+> On 20/01/24 09:40, Changbin Du wrote:
+> > On Fri, Jan 19, 2024 at 08:39:36PM +0200, Adrian Hunter wrote:
+> >> On 19/01/24 12:48, Changbin Du wrote:
+> >>> In addition to the 'insn' field, this adds a new field 'disasm' to
+> >>> display mnemonic instructions instead of the raw code.
+> >>>
+> >>> $ sudo perf script -F +disasm
+> >>>        perf-exec 1443864 [006] 2275506.209848:          psb:  psb offs: 0                                      0 [unknown] ([unknown])
+> >>>        perf-exec 1443864 [006] 2275506.209848:          cbr:  cbr: 41 freq: 4100 MHz (114%)                    0 [unknown] ([unknown])
+> >>>               ls 1443864 [006] 2275506.209905:          1  branches:uH:      7f216b426100 _start+0x0 (/usr/lib/x86_64-linux-gnu/ld-2.31.so) insn: movq %rsp, %rdi
+> >>>               ls 1443864 [006] 2275506.209908:          1  branches:uH:      7f216b426103 _start+0x3 (/usr/lib/x86_64-linux-gnu/ld-2.31.so) insn: callq _dl_start+0x0
+> >>>
+> >>> Signed-off-by: Changbin Du <changbin.du@huawei.com>
+> >>> ---
+> >>>  tools/perf/Documentation/perf-script.txt | 7 ++++---
+> >>>  tools/perf/builtin-script.c              | 8 +++++++-
+> >>>  2 files changed, 11 insertions(+), 4 deletions(-)
+> >>>
+> >>> diff --git a/tools/perf/Documentation/perf-script.txt b/tools/perf/Documentation/perf-script.txt
+> >>> index ff9a52e44688..fc79167c6bf8 100644
+> >>> --- a/tools/perf/Documentation/perf-script.txt
+> >>> +++ b/tools/perf/Documentation/perf-script.txt
+> >>> @@ -132,9 +132,10 @@ OPTIONS
+> >>>          Comma separated list of fields to print. Options are:
+> >>>          comm, tid, pid, time, cpu, event, trace, ip, sym, dso, dsoff, addr, symoff,
+> >>>          srcline, period, iregs, uregs, brstack, brstacksym, flags, bpf-output,
+> >>> -        brstackinsn, brstackinsnlen, brstackoff, callindent, insn, insnlen, synth,
+> >>> -        phys_addr, metric, misc, srccode, ipc, data_page_size, code_page_size, ins_lat,
+> >>> -        machine_pid, vcpu, cgroup, retire_lat.
+> >>> +        brstackinsn, brstackinsnlen, brstackoff, callindent, insn, disasm,
+> >>> +        insnlen, synth, phys_addr, metric, misc, srccode, ipc, data_page_size,
+> >>> +        code_page_size, ins_lat, machine_pid, vcpu, cgroup, retire_lat.
+> >>> +
+> >>
+> >> Further down, there are explanations for insn and insnlen.  disasm
+> >> could be added there.
+> >>
+> > Updated as:
+> > 
+> > 	When doing instruction trace decoding, insn, disasm and insnlen give the
+> > 	instruction bytes, disassembled instructions and the instruction length
+> > 	of the current instruction respectively.
 > 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202401100855.UYl3HPPt-lkp@intel.com/
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> ---
+> I wondered about mentioning that disasm needs perf to be compiled with
+> disassembler support, but with a permissive license it seems likely
+> that libcapstone support would generally be built into perf, so that
+> should be fine.
+> 
+Yes, libcapstone has a permissive license. It's available on most Linux distros.
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+So, I updated as below:
 
-Konrad
+	When doing instruction trace decoding, insn, disasm and insnlen give the
+	instruction bytes, disassembled instructions (requires libcapstone support)
+	and the instruction length of the current instruction respectively.
+
+-- 
+Cheers,
+Changbin Du
 
