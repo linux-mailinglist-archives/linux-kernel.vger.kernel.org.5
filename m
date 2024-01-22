@@ -1,44 +1,44 @@
-Return-Path: <linux-kernel+bounces-32270-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32271-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC819835944
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 03:14:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 634FD835946
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 03:15:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB3AB1C2150D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 02:14:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 020251F21C68
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 02:15:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A0FDEA4;
-	Mon, 22 Jan 2024 02:14:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C147EBB;
+	Mon, 22 Jan 2024 02:15:19 +0000 (UTC)
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F1511847;
-	Mon, 22 Jan 2024 02:14:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 777B8A29;
+	Mon, 22 Jan 2024 02:15:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705889667; cv=none; b=ALvUyhrVHLzCbaqmNNaNhRNwq+aPkEpesMGDKH16rWnE4kNyNEXmswGbmSaIbS2pFjxnUXKYZcZexWRp3RyVgGCr1Ghe8qjy8rgimROnigqxyOmmncOal+mu/gzyuHEQbXcfEyuOARq2v4sCUvUq08uOmlAhOo8aOOimsQJi940=
+	t=1705889719; cv=none; b=XnOm4ic+rtON8vaYCCTjuvL1xhi6iEb2Vt8fnBbfwBy/shTEtlZqZsG1ueW67P4wz4GXGOmB7d0PN2z+uApWlcQxnUeDfJvFEwQUJ8lJY8XvG87O1SemH7O33c/h8fQAwcuUweFGkUYrp6tG73BGP9m2Qys6VGA2EpCe1KOOsbE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705889667; c=relaxed/simple;
-	bh=29z8AGhRsGH8QR8QAhcPdKbpoRwMk7pBxMoqGk4HLvo=;
+	s=arc-20240116; t=1705889719; c=relaxed/simple;
+	bh=OpqSj6buW5w7WYyTw697xfgdGiXKHBhbNUPbGeWQoKo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZYf5WZspYCgeaL+0CqFB9xiO96Nxv5HxMpuPKbZk6IIevoVGs2rJJ8n8RFr0XNxUyTbR5OhD4RIelu7KggUlfTltBUApphGAmFGelAvGLOb6nlO+shufV3TEQh/Al8+fMeAzm8AhBM2BUDQMg9ZTvhiWypZkK3kGQI7iYzzaqnM=
+	 In-Reply-To:Content-Type; b=QxY5IJCjvdbDm1q+XTW2i0SQ3WUbffVCPd5ZOd8iaZCB7oAfgfHcGmDe7DoYAOA/5gx4OmJiazytgwDZCH3GqQ0Y5x3G1DzGqh19L+G70Qunojorg1qer5cvs/2t6IHKzwLDx3ZbElyv4ZZBIyMeyc0VEHyz5qiURxvCSRkjOmA=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TJDLF31lFz4f3jqK;
-	Mon, 22 Jan 2024 10:14:13 +0800 (CST)
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TJDMM6FWhz4f3jpq;
+	Mon, 22 Jan 2024 10:15:11 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id AF8E31A016E;
-	Mon, 22 Jan 2024 10:14:15 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 293761A016E;
+	Mon, 22 Jan 2024 10:15:14 +0800 (CST)
 Received: from [10.174.179.247] (unknown [10.174.179.247])
-	by APP2 (Coremail) with SMTP id Syh0CgDnCg51z61lAHZrBg--.15193S3;
-	Mon, 22 Jan 2024 10:14:15 +0800 (CST)
-Message-ID: <030267fa-6f61-e87d-c827-8d2c3d9113c3@huaweicloud.com>
-Date: Mon, 22 Jan 2024 10:14:13 +0800
+	by APP2 (Coremail) with SMTP id Syh0CgDnCw+xz61lL4lrBg--.27205S3;
+	Mon, 22 Jan 2024 10:15:13 +0800 (CST)
+Message-ID: <18ec6274-dfbc-5083-92c9-16bdbe3ed34e@huaweicloud.com>
+Date: Mon, 22 Jan 2024 10:15:13 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -47,8 +47,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
  Thunderbird/91.10.0
-Subject: Re: [PATCH v2 1/3] md: Don't clear MD_CLOSING when the raid is about
- to stop
+Subject: Re: [PATCH v2 2/3] md: factor out a helper mddev_sync_blockdev() to
+ sync mddev
 To: Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>,
  linan666@huaweicloud.com
 Cc: song@kernel.org, shli@fb.com, neilb@suse.com, zlliu@suse.com,
@@ -56,93 +56,66 @@ Cc: song@kernel.org, shli@fb.com, neilb@suse.com, zlliu@suse.com,
  yukuai3@huawei.com, yi.zhang@huawei.com, houtao1@huawei.com,
  yangerkun@huawei.com
 References: <20240117093707.2767209-1-linan666@huaweicloud.com>
- <20240117093707.2767209-2-linan666@huaweicloud.com>
- <20240118083525.00002b15@linux.intel.com>
+ <20240117093707.2767209-3-linan666@huaweicloud.com>
+ <20240118090814.00001d0d@linux.intel.com>
 From: Li Nan <linan666@huaweicloud.com>
-In-Reply-To: <20240118083525.00002b15@linux.intel.com>
+In-Reply-To: <20240118090814.00001d0d@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgDnCg51z61lAHZrBg--.15193S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr17ZFyfKryDKr4fJFy8Grg_yoW8tF47pa
-	yrJF1Yyrs8Jry7CayaqF4kXa4Fgw4ftrWDtry2yFWrZ3Zru347JrySgrWqgrn8Wr9agF1j
-	qa1UXa4kuF1vgrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBI14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-	F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-	4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v
-	4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x
-	0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
-	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcV
-	C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
-	04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aV
-	CY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbHa0DUUUUU==
+X-CM-TRANSID:Syh0CgDnCw+xz61lL4lrBg--.27205S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7Xw1rtw4UGw4xCw4xCw4kWFg_yoWktrc_CF
+	WjyF97Jr45GFn2kFyYk3yxAr9YkanrWFn7ZFy2qr43Zw17X3W8GF9Yy3s5Xws5ZFZxZFs0
+	yw1fAaySvrsFqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbfAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+	0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr
+	1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIF
+	xwACI402YVCY1x02628vn2kIc2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7V
+	AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
+	r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6x
+	IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAI
+	w20EY4v20xvaj40_Gr0_Zr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
+	0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VU1c4S5UUUUU==
 X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
 
 
 
-在 2024/1/18 15:35, Mariusz Tkaczyk 写道:
-> On Wed, 17 Jan 2024 17:37:05 +0800
+在 2024/1/18 16:08, Mariusz Tkaczyk 写道:
+> On Wed, 17 Jan 2024 17:37:06 +0800
 > linan666@huaweicloud.com wrote:
 > 
 >> From: Li Nan <linan122@huawei.com>
 >>
->> The raid should not be opened anymore when it is about to be stopped.
->> However, other processes can open it again if the flag MD_CLOSING is
->> cleared before exiting. From now on, this flag will not be cleared when
->> the raid will be stopped.
+>> There are no functional changes, prepare to sync mddev in
+>> array_state_store().
 >>
->> Fixes: 065e519e71b2 ("md: MD_CLOSING needs to be cleared after called
->> md_set_readonly or do_md_stop") Signed-off-by: Li Nan <linan122@huawei.com>
+>> Signed-off-by: Li Nan <linan122@huawei.com>
 >> ---
->>   drivers/md/md.c | 16 +++++++++++++++-
->>   1 file changed, 15 insertions(+), 1 deletion(-)
+>>   drivers/md/md.c | 31 +++++++++++++++++++------------
+>>   1 file changed, 19 insertions(+), 12 deletions(-)
 >>
 >> diff --git a/drivers/md/md.c b/drivers/md/md.c
->> index 9bdd57324c37..4bf821b89415 100644
+>> index 4bf821b89415..2c793992a604 100644
 >> --- a/drivers/md/md.c
 >> +++ b/drivers/md/md.c
->> @@ -6254,7 +6254,15 @@ static void md_clean(struct mddev *mddev)
->>   	mddev->persistent = 0;
->>   	mddev->level = LEVEL_NONE;
->>   	mddev->clevel[0] = 0;
->> -	mddev->flags = 0;
->> +	/*
->> +	 * Don't clear MD_CLOSING, or mddev can be opened again.
->> +	 * 'hold_active != 0' means mddev is still in the creation
->> +	 * process and will be used later.
->> +	 */
->> +	if (mddev->hold_active)
->> +		mddev->flags = 0;
->> +	else
->> +		mddev->flags &= BIT_ULL_MASK(MD_CLOSING);
->>   	mddev->sb_flags = 0;
->>   	mddev->ro = MD_RDWR;
->>   	mddev->metadata_type[0] = 0;
->> @@ -7728,6 +7736,12 @@ static int md_ioctl(struct block_device *bdev,
->> blk_mode_t mode,
->>   	case STOP_ARRAY:
->>   		err = do_md_stop(mddev, 0, bdev);
->> +		if (!err)
->> +			/*
->> +			 * mddev has been stopped, keep flag the
->> +			 * MD_CLOSING to prevent reuse.
->> +			 */
->> +			did_set_md_closing = false;
+>> @@ -529,6 +529,23 @@ void mddev_resume(struct mddev *mddev)
+>>   }
+>>   EXPORT_SYMBOL_GPL(mddev_resume);
+>>   
+>> +/* sync bdev before setting device to readonly or stopping raid*/
+>> +static int mddev_sync_blockdev(struct mddev *mddev) {
 > 
-> Hello Nan,
-> The meaning of the "did_set_md_closing" is to notify that MD_CLOSING was set in
-> this function, to know how to behave on error.
-> You gave it another meaning "Do not clear MD_CLOSING because we want it to stay"
-> Please consider how to solve this confusion. I see the comment you added but I
-> think we can have this solved better, maybe just name it as "clear_md_closing"?
+> Please add something about MD_CLOSING to the function name. Comment is good but
+> you need open function to get it. Something like:
+> mddev_set_closing_and_sync_blockdev() is more reader friendly.
 > 
 
-Thanks for your review, I will rename it in next version.
+I agree. Let me improve this.
 
-> Anyway it looks acceptable to me:
+> Anyway, LGTM.
 > Acked-by: Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>
 > 
 > Thanks,
