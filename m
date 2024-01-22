@@ -1,103 +1,90 @@
-Return-Path: <linux-kernel+bounces-33399-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9176683693C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:56:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 149238369A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:07:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49BBF283619
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:56:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 480981C22955
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:07:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EDB73E486;
-	Mon, 22 Jan 2024 15:09:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B57CD1292E9;
+	Mon, 22 Jan 2024 15:11:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="eKQrMPZE"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TYNJUWRi"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C6563E46E
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 15:09:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0967A1292D5
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 15:11:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936186; cv=none; b=hBhPrXQaf5l04XZLxkpZn/kKbw+XM/J4Zu5aHsO4OrAbJ6+eOeSd4r6scw5BQ1xEHlpDsXJ2mJtXuGniCo1YZyPi9XNMaLROB10oBCWiy9E4DMmRwHv1e2LSEcJYNMUE4f04o09synzV6YTEp6CWmbmEG8JEpC5XQh++3+AYfhU=
+	t=1705936277; cv=none; b=uCwq3Sh7qfp9QYrfztQ5iguIE+0pFCA/fFK7bji9axiC/wMKPiawk8ssGWc35ZYujE9WzKZkU3kAPVhpjjSanStEtRq+T1hTgkGpFvXY6lX8DqKM0U89FE4X7oeIcDYbQAXbDFfzqgOrgIJLr/2+Fxwx0bO3VxdiP5og1mEQ+28=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936186; c=relaxed/simple;
-	bh=jRrHgiEv5YrpuZPjYjnGtdk6oRN9GqngHkVDqIa9fq4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hPW9r4JS//PpQLFEAK7ih0OZiY1COLKUa8+81YCmT65fRiG2jZb3mKoTOaDitAYyvIl9tA/4U4AlVYZQzbnZTJfv5RvnOWn/IQCayK/Kv3jrv0OAyogicywhbOiLApwTT+qUIrREVGCYR3eu+qrJsgoLi+GWhrCGsDbm1fIj9lo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=eKQrMPZE; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2cd04078ebeso42062561fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 07:09:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1705936183; x=1706540983; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j6qCq9mjgzXIcyyu8Xldo3rtV6iy8jAQllHcjOflIOk=;
-        b=eKQrMPZEGyYeZtG2vgzfUwhqS92QzC99jymhERUWJJ5uO5ohRoluqqQJOnVDyCzv8z
-         J4CsTHr1ONmE6UPX+Z67J2E79uZK26VSSnfEguFyQcDYH9UQmA3FnwLiiqFVAKFEI77z
-         ttK9GwubKIkz6jVYh6lIw8ZF/ASMdU8SxRAWo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705936183; x=1706540983;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j6qCq9mjgzXIcyyu8Xldo3rtV6iy8jAQllHcjOflIOk=;
-        b=LDRjz2jYYRnvYafcvKPOacOLm4kc7Ev+Ix2D5b+m2XjO9AP14tvI9M0n/bnJ/575O0
-         61o9/EX8ct0Cuulw1RtGhl92U+pogOE78qlmOHsEL2KS7LVphGM6J6qcF54fNDchAQbm
-         3AL54lPvEyHlosbu7ojY2V/jh2YN7IAD3b5Ti1zvXsBBCqVxn6zoXZFkDrGdHAL8ePCf
-         oABn9m1quU07Jda0M6k/CRVW2n0N8txrX+ziSUxG/zsbAt7+7VBbW5+b9STpTz/dO8cn
-         F9720c5rXihhwmpgO73UHx8+LeUBMFeikN0PryCDh4lTIw+ozlIuOgOODHHJiRff+7mE
-         P5Vg==
-X-Gm-Message-State: AOJu0Yz3uNRaW+vN5qyzPRDiVn5CRRUdllF3L4T6A3GUGP7r5WNEHGsT
-	YuYEz8WZejlQTF/qefJ9jL7hn4QanROEnBN242iyy8bZyq2Wjdv9PuYSrZMIVoAEe3JbfbrPZE2
-	iFPynBc+O0HlvpGA6nnf8rT0wBultq8LtVqdV
-X-Google-Smtp-Source: AGHT+IH5Di7gCKwIzxDI07ur5JWxCa0Zy2fz4w+FDojoTf5Vohxn0BkqSkHrzamnSL2FdOcvdK/g7QH5prbur3jeycY=
-X-Received: by 2002:a2e:a408:0:b0:2ce:fd80:210b with SMTP id
- p8-20020a2ea408000000b002cefd80210bmr890160ljn.3.1705936183235; Mon, 22 Jan
- 2024 07:09:43 -0800 (PST)
+	s=arc-20240116; t=1705936277; c=relaxed/simple;
+	bh=EpD3Hr2IfNJU3ntd7txCiVWwAPZLOWeSenY1lv5uZyk=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=NngZ6NBvnA9HPTFwmHgzBXVuRQSktSFhIFTDo9d3DXhfYvpsQdJcWXlRliMXssINHco1xhpXT0RgC4d2SpKBm/R0sweSqnZ0HBIdT4PO+kVFzde8yFVNJH/YVIOwCov0SFTz2kjgydlHNLMo2qA50FBSPALuYDBzUguW+yeEgpU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TYNJUWRi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D790C433B1;
+	Mon, 22 Jan 2024 15:11:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705936276;
+	bh=EpD3Hr2IfNJU3ntd7txCiVWwAPZLOWeSenY1lv5uZyk=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=TYNJUWRi/wwuOWzb359CmvuJy0/3Vovd7lDGYeMVs9/Yz7w5bX1bfbNnvCTDrPdUN
+	 J7CHCB39hHdUeeTfVtZw6I7oahcmV/xs0lpbCEa53SJI+WWIKNFe+YlcKydN7kRNUc
+	 xWe/ep/uePaBWTrRQNZZBKiS7NV7jNRhIlLdELhjaVqK6bcNIYLnCoF4KfPbWWdO+O
+	 mLEck4ohmA1sPjgZtxDJXlgjA35uGRLbJD02m6q3UeuG09dbttcMPmQd+2vw29cEo2
+	 BzTtkGDa0NER1X74GemxlWolAkNTmIRMpzWvDZo5y1t5w7UvEGQ6p21wGBAH1pSyKw
+	 voZRikFouUGwQ==
+From: Robert Foss <rfoss@kernel.org>
+To: linux-kernel@vger.kernel.org, Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Inki Dae <inki.dae@samsung.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>,
+ michael@amarulasolutions.com, Jonas Karlman <jonas@kwiboo.se>, Marek Szyprowski <m.szyprowski@samsung.com>,
+ Andrzej Hajda <andrzej.hajda@intel.com>, Jagan Teki <jagan@amarulasolutions.com>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
+ Amarula patchwork <linux-amarula@amarulasolutions.com>, Maxime Ripard <mripard@kernel.org>,
+ dri-devel@lists.freedesktop.org, Neil Armstrong <neil.armstrong@linaro.org>
+In-Reply-To: <20231218084354.508942-1-dario.binacchi@amarulasolutions.com>
+References: <20231218084354.508942-1-dario.binacchi@amarulasolutions.com>
+Subject: Re: [PATCH v9 0/2] Add displays support for bsh-smm-s2/pro boards
+Message-Id: <170593627232.3096177.528282215481259710.b4-ty@kernel.org>
+Date: Mon, 22 Jan 2024 16:11:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240119084328.3135503-1-lma@chromium.org> <20240119084328.3135503-3-lma@chromium.org>
- <1e7b8590-7dc7-47a8-8105-6d01db627f85@kernel.org>
-In-Reply-To: <1e7b8590-7dc7-47a8-8105-6d01db627f85@kernel.org>
-From: =?UTF-8?Q?=C5=81ukasz_Majczak?= <lma@chromium.org>
-Date: Mon, 22 Jan 2024 16:09:32 +0100
-Message-ID: <CAE5UKNqF1h5SCrVEjGR_5jeDZGBkbSZGxZTJ39Wb2vONHLdk2Q@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] watchdog: Add ChromeOS EC-based watchdog driver
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Gwendal Grignou <gwendal@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>, 
-	Radoslaw Biernacki <biernacki@google.com>, Wim Van Sebroeck <wim@linux-watchdog.org>, 
-	Lee Jones <lee@kernel.org>, Benson Leung <bleung@chromium.org>, 
-	Guenter Roeck <groeck@chromium.org>, linux-watchdog@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, chrome-platform@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.10.1
 
-On Mon, Jan 22, 2024 at 11:31=E2=80=AFAM Krzysztof Kozlowski <krzk@kernel.o=
-rg> wrote:
-> > +     wdd =3D devm_kzalloc(&pdev->dev, sizeof(struct watchdog_device), =
-GFP_KERNEL);
->
-> sizeof(*)
->
-ACK.
+On Mon, 18 Dec 2023 09:43:36 +0100, Dario Binacchi wrote:
+> The series adds drivers for the displays used by bsh-smm-s2/pro boards.
+> This required applying some patches to the samsung-dsim driver and the
+> drm_bridge.c module.
+> 
+> Changes in v9:
+> - Updated commit message
+> - Drop [3/3] arm64: dts: imx8mn-bsh-smm-s2/pro: add display setup
+>   because applied.
+> 
+> [...]
 
-> > +MODULE_DEVICE_TABLE(platform, cros_ec_wdt_id);
->
-> device_id is not placed here, please open existing drivers for
-> reference. Why this isn't referenced in driver structure?
->
-ACK, I will take s3c2410_wdt.c as an example, thank you.
+Applied, thanks!
 
-Best regards,
-Lukasz
+[1/2] drm: bridge: samsung-dsim: enter display mode in the enable() callback
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=b2fe2292624a
+[2/2] drm: bridge: samsung-dsim: complete the CLKLANE_STOP setting
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=72a0cfdc3ad7
+
+
+
+Rob
+
 
