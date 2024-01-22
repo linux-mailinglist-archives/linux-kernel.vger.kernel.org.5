@@ -1,209 +1,327 @@
-Return-Path: <linux-kernel+bounces-32297-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32298-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 617178359B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 04:15:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10EAD8359B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 04:20:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AD7328306A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 03:15:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 928C11F23313
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 03:20:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF2A31849;
-	Mon, 22 Jan 2024 03:15:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 641581865;
+	Mon, 22 Jan 2024 03:20:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gMeAeUOP"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="bKKVicJS"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 754F115AF;
-	Mon, 22 Jan 2024 03:15:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D89615AF;
+	Mon, 22 Jan 2024 03:19:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705893347; cv=none; b=L3e6wsEC2qjydU5u6ku/lMiuejw+PtGSIs47PYlfzNDzvmLicrFGxmLbigrf8LHHG5LSIyDB5+ytZF338lcIEM8vUsJ3sCua2rsK303tx/rMi9TzQZgeQeB2DGc37zsV59WL2m3IwtqUW5y8l01B+UzkOPZGeS45dhsmgQ7FCEI=
+	t=1705893600; cv=none; b=ojnLPv3u+Gnc4AZFtqEhse8Dt151bo/PuY7vA38Ebnn1S3TqhK3uJJxu7aZgkIy/QJyDoyTZ2X11eY5VH9tVxgEPaHcLmOufTDwK6ffehMgN8WPXmx2DvLIbo5lgv04ltxQUXCHSWKYUFrXST2uyyxqUhX5m9+Y6m4WVq37zuIU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705893347; c=relaxed/simple;
-	bh=06YlbewJXRAhOm7tJ/5PfYvStXE7hGG8dYBwOma+Qzs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qQEy/mA+6VbGlQqBQkwnLZHl3Zvb8NftX1fkX/uKsx1jLs8VWEkHTgdpnTXO08j1VwC/kOV/YB4o2CZ4oQmxzBTnImPGEBkCE87NCVYvN/pZ6G5X/93nvKFHXV3ijASKD3TbSI01v4T0mxyBs9WFq5OG6iNPMIfar+OTsKQgb1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gMeAeUOP; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55c4ec68993so153700a12.3;
-        Sun, 21 Jan 2024 19:15:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705893343; x=1706498143; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T7xdyl5DA3xSeSKcVJW9Zs9TsQMTTFI5fMd5HEPoi88=;
-        b=gMeAeUOPz2IrZAfmIcirTxXNmrXNpvF/s32NxG7+PxowbummuP4OvOb9YwEUjSy6nx
-         V///SqCVW2ady5VBD2mmmbXu8XgAp0HoYmHLFXWNlFWisvXQ9amokv0sPAXghlZ60Qxa
-         skEsO+r2mQ9AUroAacCgHYNeFwSEmnRMrDwClwdU24TVYasyLm9vyJ490+7P73LxsBJe
-         ODIgW7+VflvLZ4YHkD3ATuBW05cDmHG0W7n+cx9eR9TUTjQtehzgrvcwO68DHuVw8C/T
-         +7Ha6HwyR1Ctbcq4Ii3JPF2J9G+PjU9NXPlcTj6J3xqcpe1pD8xX2jziLwg+7xoh9rpr
-         BaWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705893343; x=1706498143;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=T7xdyl5DA3xSeSKcVJW9Zs9TsQMTTFI5fMd5HEPoi88=;
-        b=eluZzlSN8+Hw/uGbq9Sj4dBwdW1wdgAYAcHsI9W04Cgpa1RHxMiDBXwFSzeZfl2LST
-         OjR/JHWdPaetZdYaLO4LXQ9OoclOVntEKMItcvL0K5jKZqLmq790imr/g5sSCDGIetSa
-         ek+BTuGH1tVRo8x8zn42Hxa2Ci6VtTC0JxjIhQfz6Eq0XpsqPN9fIhOaYZeZlvd7nU5P
-         qK749OBctGcdKtlfySqKcRUiUEvFwN5WO1k6CkGqaOLnEt5Y7LeXMAkqhQ7MRNZOn5in
-         8RICz4BYjY8xW1jeWSOtYH5960WeukHztCbQr75HfALLDizEciqRPYYMzDk8+Vk1P4/0
-         yCJg==
-X-Gm-Message-State: AOJu0Yyz+CXmTlGRVBNI7gOC6v2a/207zm5wxZ2QNLHy8sxLeYi0aOlh
-	zF1Ck0WOrQDrFPFyFCK9dVvt1MWvyWSHVupq/H8qgqPSTdUL5XPfO+V+GZx0akbwVeuUFZUZq+i
-	OvG/yQYmfejTpfyyvc4Si4E6Am5s=
-X-Google-Smtp-Source: AGHT+IG2z+ecGlrBiwX7zX5v2PDcPw6i1sihRbutu0f/m3St7fHbXxtjgeB+qAdVopa5x3OTCAosfxIrHr9ZpPpqLSQ=
-X-Received: by 2002:aa7:d883:0:b0:559:ac5b:1a8 with SMTP id
- u3-20020aa7d883000000b00559ac5b01a8mr1370661edq.80.1705893343347; Sun, 21 Jan
- 2024 19:15:43 -0800 (PST)
+	s=arc-20240116; t=1705893600; c=relaxed/simple;
+	bh=cY1wVjEMWZ1DYvKj2pMaUFi3kHcC2bJDTzZC3Dm5kF0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ueNSMjviOtl0FsT1Epu57JMa8coZRvGiQM86d3oSo2mnP31zrpaElnwcnPR0u5BmzzIu3HuZ4Rtz4yKw5Yz+lFvt5RX+mKG4wCYwvKbDbOg/M0YBiGA6DSC9UTk00RC9NdBHjnhnpxUE9V6nJ4BmkTOC/37yM6wDVTPWa1JxcUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=bKKVicJS; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40M2tO8v003598;
+	Mon, 22 Jan 2024 03:19:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=w4rDROPXwKsplXymG58iW1n9fNi7MH1ioYD4EPLQUxQ=; b=bK
+	KVicJSZZQ7V8PcwN3gU4M3czgbXCoIoDTll4Q9YZLagS+d5GAwxDQmlgYjWDl6Ec
+	7GEBcEK2DQxOCOlFrGyEPVdHX4pp5BNVxZrGZQQHuimn4bJXoLa8tsEWAZeKZo4e
+	1IxkFMNalw3Ky/o/Zt7S8La11m++Z+nOcwetLYOfQe69Ivccb71mYsDkQEXfYZnZ
+	jMscTvFdvbrP/KeFdL2bb2B14ZymW/chKEaWOcXuJYRkDMD0VnBdOg0z2zxuuDQ2
+	Z+6wFz9Kv4FgXRRHCPMKPRzIuRvSzQTFEb0LoFcqNTxSFAuZ+7ydyzO+8p5Zv8ec
+	mbbup3cdPDshrZ5XcXxQ==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vr5s4ttjc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 22 Jan 2024 03:19:42 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40M3Jf8F022493
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 22 Jan 2024 03:19:41 GMT
+Received: from [10.239.133.211] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sun, 21 Jan
+ 2024 19:19:36 -0800
+Message-ID: <19790e4c-0217-4ebd-b98a-69f0887ec408@quicinc.com>
+Date: Mon, 22 Jan 2024 11:19:34 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240115072306.303993-1-zegao@tencent.com> <CAM9d7cgXKaKTnfx9YJae2qqv0pXtWLVQPBN=2H0WZkenBjHFnQ@mail.gmail.com>
- <CAD8CoPA6xBT9hbGZoviyyQm1bwn2Oh=v8QCMjxkMMOSN2zfC-A@mail.gmail.com>
- <CAD8CoPA0YgVHVW1Ya1O0-vhmpCbiw2h3i29ayzKmg4YTu-zeKQ@mail.gmail.com>
- <CAM9d7ciiKeVJzCjNyJp8hDsMe2ZiVyOKT3ses_SQMfdEQnWiog@mail.gmail.com>
- <CAD8CoPCSDcB+-qvwEZGOrdi01C3W8N3dYN3XQUQ2jrpn1mSf=Q@mail.gmail.com>
- <CAM9d7cigWxAN_nmT2rO-o7YG0hkmPNjDPeLtsn=z1YqRSjMEjA@mail.gmail.com> <CAD8CoPChgx_h9KU4nBJ+0__g6J=LvTBuMdbc0-F0dHz4=kjY0g@mail.gmail.com>
-In-Reply-To: <CAD8CoPChgx_h9KU4nBJ+0__g6J=LvTBuMdbc0-F0dHz4=kjY0g@mail.gmail.com>
-From: Ze Gao <zegao2021@gmail.com>
-Date: Mon, 22 Jan 2024 11:15:32 +0800
-Message-ID: <CAD8CoPDna2eSsYjkmJukShLfuo3po06za6nCiPfqrEY-RBjwJw@mail.gmail.com>
-Subject: Re: [PATCH 0/4] perf sched: Fix task state report
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Adrian Hunter <adrian.hunter@intel.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@redhat.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, Ze Gao <zegao@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 05/10] coresight-tpda: Add support to configure CMB
+ element
+Content-Language: en-US
+To: Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mathieu Poirier
+	<mathieu.poirier@linaro.org>,
+        Alexander Shishkin
+	<alexander.shishkin@linux.intel.com>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        Mike Leach <mike.leach@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+CC: Jinlong Mao <quic_jinlmao@quicinc.com>,
+        Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>,
+        <coresight@lists.linaro.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni
+	<quic_tsoni@quicinc.com>,
+        Song Chai <quic_songchai@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <andersson@kernel.org>
+References: <1705634583-17631-1-git-send-email-quic_taozha@quicinc.com>
+ <1705634583-17631-6-git-send-email-quic_taozha@quicinc.com>
+ <78b998a4-1760-4442-8b49-3aa07271785e@arm.com>
+From: Tao Zhang <quic_taozha@quicinc.com>
+In-Reply-To: <78b998a4-1760-4442-8b49-3aa07271785e@arm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 30TqhmTWjE-xgNBf0umeSC-sjJrkseEX
+X-Proofpoint-GUID: 30TqhmTWjE-xgNBf0umeSC-sjJrkseEX
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-21_04,2024-01-19_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ spamscore=0 clxscore=1015 phishscore=0 lowpriorityscore=0 adultscore=0
+ mlxlogscore=843 priorityscore=1501 impostorscore=0 malwarescore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401220022
 
-On Mon, Jan 22, 2024 at 11:08=E2=80=AFAM Ze Gao <zegao2021@gmail.com> wrote=
-:
->
-> On Sat, Jan 20, 2024 at 6:45=E2=80=AFAM Namhyung Kim <namhyung@kernel.org=
-> wrote:
-> >
-> > On Thu, Jan 18, 2024 at 5:54=E2=80=AFPM Ze Gao <zegao2021@gmail.com> wr=
-ote:
-> > >
-> > > On Fri, Jan 19, 2024 at 7:53=E2=80=AFAM Namhyung Kim <namhyung@kernel=
-org> wrote:
-> > > >
-> > > > On Wed, Jan 17, 2024 at 7:15=E2=80=AFPM Ze Gao <zegao2021@gmail.com=
-> wrote:
-> > > > >
-> > > > > On Thu, Jan 18, 2024 at 11:00=E2=80=AFAM Ze Gao <zegao2021@gmail.=
-com> wrote:
-> > > > > >
-> > > > > > On Wed, Jan 17, 2024 at 9:35=E2=80=AFAM Namhyung Kim <namhyung@=
-kernel.org> wrote:
-> > > > > > >
-> > > > > > > Hello,
-> > > > > > >
-> > > > > > > On Sun, Jan 14, 2024 at 11:23=E2=80=AFPM Ze Gao <zegao2021@gm=
-ail.com> wrote:
-> > > > > > > >
-> > > > > > > > Hi,
-> > > > > > > >
-> > > > > > > > The problems of task state report in both libtraceevent
-> > > > > > > > and perf sched has been reported in [1]. In short, they
-> > > > > > > > parsed the wrong state due to relying on the outdated
-> > > > > > > > hardcoded state string to interpret the raw bitmask
-> > > > > > > > from the record, which left the messes to maintain the
-> > > > > > > > backward compatibilities for both tools.
-> > > > > > > >
-> > > > > > > > [1] has not managed to make itself into the kernel, the
-> > > > > > > > problems and the solutions are well studied though.
-> > > > > > > >
-> > > > > > > > Luckily, as suggested by Steven, perf/libtraceevent
-> > > > > > > > records the print format, especially the __print_flags()
-> > > > > > > > part of the in-kernel tracepoint sched_switch in its
-> > > > > > > > metadata, and we have a chance to build the state str
-> > > > > > > > on the fly by parsing it.
-> > > > > > > >
-> > > > > > > > Now that libtraceevent has landed this solution in [2],
-> > > > > > > > we now apply the same idea to perf as well.
-> > > > > > >
-> > > > > > > Thanks for your work.  But perf links libtraceevent
-> > > > > > > conditionally so you need to make sure if it works without
-> > > > > > > that too.
-> > > > > >
-> > > > > > Yes, I've tested with NO_LIBTRACEEVENT=3D1, and it turns
-> > > > > > out perf removes perf sched subcmd without libtraceevent,
-> > > > >
-> > > > > FWIW,  commit 378ef0f5d9d7f4 ("perf build: Use libtraceevent
-> > > > > from the system") has proved this as well.
-> > > >
-> > > > Right, but I think we can enable perf sched without libtraceevent
-> > > > for minimal features like record only.  But that doesn't belong to
-> > > > this change set.
-> > > >
-> > > > >
-> > > > > > which explains why the compiler does not complain no
-> > > > > > evsel__intval() defined when !HAVE_LIBTRACEEVENT
-> > > > > > given the fact so many references of evsel__intval() in
-> > > > > > builtin-sched.c.
-> > > > > > Here evsel__taskstate() uses the exact assumption as
-> > > > > > evsel__intval(), so I put it next to it for clarity and it work=
-s
-> > > > > > without a doubt.
-> > > > > >
-> > > > > > > I think all libtraceevent related stuff should be in the
-> > > > > > > util/trace-event.c which is included only if the library is
-> > > > > > > available.  Maybe util/trace-event-parse.c is a better
-> > > > > > > place but then you need to tweak the python-ext-sources
-> > > > > > > and Makefile.perf for the case it's not available.
-> > > > > >
-> > > > > > Thanks for pointing this out. I will do the hack if you insist
-> > > > > > on this move :D. But I think the current version is clear
-> > > > > > enough, otherwise we need to move all the parts guarded
-> > > > > > by #ifdef HAVE_LIBTRACEEVENT out for complete decoupling.
-> > > > > > What do you think of it?
-> > > >
-> > > > Oh, I realized that all the affected codes are under the #ifdef
-> > > > properly then maybe it's ok for now.  But I prefer moving the
-> > > > code if you're ok.  Maybe I can accept this code as is and you
-> > >
-> > > Sounds great!
-> > >
-> > > > can work on the refactoring later.  Does that work for you?
-> > >
-> > > Absolutely! Will send the following refactoring patches soon. :D
-> >
-> > Thanks, but your patches don't apply cleanly.  Could you please
-> > rebase it onto the current perf-tools-next tree?
->
-> Oops, that is kinda weird. I've tested and managed to cherry-picked all 4
-> patches onto branch perf-tools-next in [1], with no conflicts being
-> hit.  Maybe I used the wrong branch tip?
 
-For reference, it ends up like:
-    https://github.com/zegao96/linux/commits/perf-tools-next/
+On 1/19/2024 7:47 PM, Suzuki K Poulose wrote:
+> On 19/01/2024 03:22, Tao Zhang wrote:
+>> Read the CMB element size from the device tree. Set the register
+>> bit that controls the CMB element size of the corresponding port.
+>>
+>> Reviewed-by: James Clark <james.clark@arm.com>
+>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+>> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
+>> ---
+>>   drivers/hwtracing/coresight/coresight-tpda.c | 123 +++++++++++--------
+>>   drivers/hwtracing/coresight/coresight-tpda.h |   6 +
+>>   2 files changed, 79 insertions(+), 50 deletions(-)
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-tpda.c 
+>> b/drivers/hwtracing/coresight/coresight-tpda.c
+>> index 4ac954f4bc13..987a69428c93 100644
+>> --- a/drivers/hwtracing/coresight/coresight-tpda.c
+>> +++ b/drivers/hwtracing/coresight/coresight-tpda.c
+>> @@ -18,6 +18,7 @@
+>>   #include "coresight-priv.h"
+>>   #include "coresight-tpda.h"
+>>   #include "coresight-trace-id.h"
+>> +#include "coresight-tpdm.h"
+>>     DEFINE_CORESIGHT_DEVLIST(tpda_devs, "tpda");
+>>   @@ -28,24 +29,57 @@ static bool coresight_device_is_tpdm(struct 
+>> coresight_device *csdev)
+>>               CORESIGHT_DEV_SUBTYPE_SOURCE_TPDM);
+>>   }
+>>   +static void tpdm_clear_element_size(struct coresight_device *csdev)
+>> +{
+>> +    struct tpda_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
+>> +
+>> +    drvdata->dsb_esize = 0;
+>> +    drvdata->cmb_esize = 0;
+>> +}
+>> +
+>> +static void tpda_set_element_size(struct tpda_drvdata *drvdata, u32 
+>> *val)
+>> +{
+>> +
+>> +    if (drvdata->dsb_esize == 64)
+>> +        *val |= TPDA_Pn_CR_DSBSIZE;
+>> +    else if (drvdata->dsb_esize == 32)
+>> +        *val &= ~TPDA_Pn_CR_DSBSIZE;
+>> +
+>> +    if (drvdata->cmb_esize == 64)
+>> +        *val |= FIELD_PREP(TPDA_Pn_CR_CMBSIZE, 0x2);
+>> +    else if (drvdata->cmb_esize == 32)
+>> +        *val |= FIELD_PREP(TPDA_Pn_CR_CMBSIZE, 0x1);
+>> +    else if (drvdata->cmb_esize == 8)
+>> +        *val &= ~TPDA_Pn_CR_CMBSIZE;
+>> +}
+>> +
+>>   /*
+>> - * Read the DSB element size from the TPDM device
+>> + * Read the element size from the TPDM device. One TPDM must have at 
+>> least one of the
+>> + * element size property.
+>>    * Returns
+>> - *    The dsb element size read from the devicetree if available.
+>> - *    0 - Otherwise, with a warning once.
+>> + *    0 - The element size property is read
+>> + *    Others - Cannot read the property of the element size
+>>    */
+>> -static int tpdm_read_dsb_element_size(struct coresight_device *csdev)
+>> +static int tpdm_read_element_size(struct tpda_drvdata *drvdata,
+>> +                  struct coresight_device *csdev)
+>>   {
+>> -    int rc = 0;
+>> -    u8 size = 0;
+>> +    int rc = -EINVAL;
+>> +    struct tpdm_drvdata *tpdm_data = 
+>> dev_get_drvdata(csdev->dev.parent);
+>> +
+>> +    if (tpdm_has_dsb_dataset(tpdm_data)) {
+>> +        rc = fwnode_property_read_u8(dev_fwnode(csdev->dev.parent),
+>> +                "qcom,dsb-element-size", &drvdata->dsb_esize);
+>> +    }
+>> +    if (tpdm_has_cmb_dataset(tpdm_data)) {
+>> +        rc = fwnode_property_read_u8(dev_fwnode(csdev->dev.parent),
+>> +                "qcom,cmb-element-size", &drvdata->cmb_esize);
+>> +    }
+>>   -    rc = fwnode_property_read_u8(dev_fwnode(csdev->dev.parent),
+>> -            "qcom,dsb-element-size", &size);
+>>       if (rc)
+>>           dev_warn_once(&csdev->dev,
+>> -            "Failed to read TPDM DSB Element size: %d\n", rc);
+>> +            "Failed to read TPDM Element size: %d\n", rc);
+>>   -    return size;
+>> +    return rc;
+>>   }
+>>     /*
+>> @@ -56,11 +90,12 @@ static int tpdm_read_dsb_element_size(struct 
+>> coresight_device *csdev)
+>>    * Parameter "inport" is used to pass in the input port number
+>>    * of TPDA, and it is set to -1 in the recursize call.
+>>    */
+>> -static int tpda_get_element_size(struct coresight_device *csdev,
+>> +static int tpda_get_element_size(struct tpda_drvdata *drvdata,
+>> +                 struct coresight_device *csdev,
+>>                    int inport)
+>>   {
+>> -    int dsb_size = -ENOENT;
+>> -    int i, size;
+>> +    int rc = 0;
+>> +    int i;
+>>       struct coresight_device *in;
+>>         for (i = 0; i < csdev->pdata->nr_inconns; i++) {
+>> @@ -69,30 +104,26 @@ static int tpda_get_element_size(struct 
+>> coresight_device *csdev,
+>>               continue;
+>>             /* Ignore the paths that do not match port */
+>> -        if (inport > 0 &&
+>> +        if (inport >= 0 &&
+>>               csdev->pdata->in_conns[i]->dest_port != inport)
+>>               continue;
+>>             if (coresight_device_is_tpdm(in)) {
+>> -            size = tpdm_read_dsb_element_size(in);
+>> +            if ((drvdata->dsb_esize) || (drvdata->cmb_esize))
+>> +                return -EEXIST;
+>> +            rc = tpdm_read_element_size(drvdata, in);
+>> +            if (rc)
+>> +                return rc;
+>>           } else {
+>>               /* Recurse down the path */
+>> -            size = tpda_get_element_size(in, -1);
+>> -        }
+>> -
+>> -        if (size < 0)
+>> -            return size;
+>> -
+>> -        if (dsb_size < 0) {
+>> -            /* Found a size, save it. */
+>> -            dsb_size = size;
+>> -        } else {
+>> -            /* Found duplicate TPDMs */
+>> -            return -EEXIST;
+>> +            rc = tpda_get_element_size(drvdata, in, -1);
+>> +            if (rc)
+>> +                return rc;
+>>           }
+>>       }
+>>   -    return dsb_size;
+>> +
+>> +    return rc;
+>>   }
+>>     /* Settings pre enabling port control register */
+>> @@ -109,7 +140,7 @@ static void tpda_enable_pre_port(struct 
+>> tpda_drvdata *drvdata)
+>>   static int tpda_enable_port(struct tpda_drvdata *drvdata, int port)
+>>   {
+>>       u32 val;
+>> -    int size;
+>> +    int rc;
+>>         val = readl_relaxed(drvdata->base + TPDA_Pn_CR(port));
+>>       /*
+>> @@ -117,29 +148,21 @@ static int tpda_enable_port(struct tpda_drvdata 
+>> *drvdata, int port)
+>>        * Set the bit to 0 if the size is 32
+>>        * Set the bit to 1 if the size is 64
+>>        */
+>> -    size = tpda_get_element_size(drvdata->csdev, port);
+>> -    switch (size) {
+>> -    case 32:
+>> -        val &= ~TPDA_Pn_CR_DSBSIZE;
+>> -        break;
+>> -    case 64:
+>> -        val |= TPDA_Pn_CR_DSBSIZE;
+>> -        break;
+>> -    case 0:
+>> -        return -EEXIST;
+>> -    case -EEXIST:
+>> +    tpdm_clear_element_size(drvdata->csdev);
+>> +    rc = tpda_get_element_size(drvdata, drvdata->csdev, port);
+>> +    if (!rc && ((drvdata->dsb_esize) || (drvdata->cmb_esize))) {
+>
+> minor nit: Drop unnecessary () around the drvdata member access.
+>
+>     if (!rc && (drvdata->dsb_esize || drvdata->cmb_esize))
+Sure, I will update in the next patch series.
+>
+>> +        tpda_set_element_size(drvdata, &val);
+>> +        /* Enable the port */
+>> +        val |= TPDA_Pn_CR_ENA;
+>> +        writel_relaxed(val, drvdata->base + TPDA_Pn_CR(port));
+>> +    } else if (rc == -EEXIST)
+>>           dev_warn_once(&drvdata->csdev->dev,
+>> -            "Detected multiple TPDMs on port %d", -EEXIST);
+>> -        return -EEXIST;
+>> -    default:
+>> -        return -EINVAL;
+>> -    }
+>> -
+>> -    /* Enable the port */
+>> -    val |= TPDA_Pn_CR_ENA;
+>> -    writel_relaxed(val, drvdata->base + TPDA_Pn_CR(port));
+>> +                  "Detected multiple TPDMs on port %d", -EEXIST);
+>
+> s/-EEXIST/port ?
 
-> FWIW:  the tip I rebase onto is
+Sure, I will update in the next patch series.
+
+
+Best,
+
+Tao
+
 >
-> d988c9f511af (perf/perf-tools-next) MAINTAINERS: Add Namhyung as
-> tools/perf/ co-maintainer
+> Rest looks fine to me.
 >
-> [1]:  https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-nex=
-t.git/
+> Suzuki
 >
-> Regards,
->         -- Ze
->
-> > Thanks,
-> > Namhyung
+> _______________________________________________
+> CoreSight mailing list -- coresight@lists.linaro.org
+> To unsubscribe send an email to coresight-leave@lists.linaro.org
 
