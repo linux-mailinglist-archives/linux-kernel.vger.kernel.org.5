@@ -1,175 +1,255 @@
-Return-Path: <linux-kernel+bounces-34260-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34261-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62FF6837685
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:49:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BB54883768A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:50:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03DF61F27E53
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:49:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2CBAE1F27DD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:50:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C8F611C8F;
-	Mon, 22 Jan 2024 22:49:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1033E111B4;
+	Mon, 22 Jan 2024 22:50:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infinera.com header.i=@infinera.com header.b="Y1aD3MeF"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2057.outbound.protection.outlook.com [40.107.244.57])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="I2UVqB4I"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94FD810A04;
-	Mon, 22 Jan 2024 22:49:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.57
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705963777; cv=fail; b=r0XsgtSQ7Pq2xFxRiBGrJKvDcLTbi1Ah8ypRX5mK3E9lLMci+MzVLT33WroU67LGYQLq1GXTvEsDyumAKJamMMjTdZ8yKxQ2cWglmbdEeubC9pqWrfn2dWh1L6K/+Puot9Vx6nidobip7TQOfAsPJUV5h8BckorzGvSb7FbHTBg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705963777; c=relaxed/simple;
-	bh=Vl1iOS4P0O9XujMxhCA86TN2+B4paYmrtEgyegRto60=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=LhoflWZs6hr7J07qKU1dx8rAHv/mSV6jIWDdeoWahreL5XO5XZOvu/1RLaSB+/gGIM1gumy2r21e4BRGWUSvN+hrmozVUW9PPdONtRPp+K8rqhw0Dp1S2Q0J8iulAvPk5rXCIWsiXHEL6WfLUtjhVyWiF3Wz/Yf3xHJ9J0OOUH8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=infinera.com; spf=pass smtp.mailfrom=infinera.com; dkim=pass (2048-bit key) header.d=infinera.com header.i=@infinera.com header.b=Y1aD3MeF; arc=fail smtp.client-ip=40.107.244.57
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=infinera.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infinera.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ce/Z0BtxRZR2I4sofi1z46g+nV/LdFSuY/86PvvFWu5zZ4jyNTn2obMtAjp7y9CbJ0fsxxv/C6QHrJ07BTu3wmTbFTRzjs5DZW1Jsfplaw/tgLt9z1/WYqfoVFXIdytH/Y1g1p0Go5vsLRfTt0ar3SX7zM4jGxWYZtHQfMlFQimC/8ILwEUZJUbvNwyySKk9gLe4ePm72y9TAUOs/LaL6pin8GIpW3hlChF7kwdDsGPRehdS0dLl9PEj16+KMK4miNlwxovUrY26yZwyeWTb0/L8tUk/DLQP80nuhk6K7hfmFCcALsWaQQvV79VrUq528vJ28Nl9SJhS4j0hobZwNA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ubLbj6SJ6B0R4kEYjpaa06DsUaGogaCYoFs0Mlc0eXE=;
- b=CnTNV+RBY6dwuSAQARK4pwUJHmGguKGttDPbLUoQqfggtfdLvafyFcGPZpskwtLv6pLqVJW17BtG4vclcXjCV+6VV6EEp+F2O3s7V/oLNPKrxrqOFEPNojTCK5fUU+e+k9F7Gt4KR48A+sP9k8aNCmKQK7OMrDxXKemLnBkj7v2j4AO6jtVoZoHdEK9LiI9nkY9VSqQ83Y3uAiAXSG+CkFQFbMkEjd6drvmR1390GoeR7sn9roHHgEPCt//GC4W8JTbHQYCpl9P+DPHVUOIRNtoTxKqgH507kyus8JrH+fzk9YMMGH2IraSENHEj4kwwjUfvnuSrqwH0+dG0PcFg0g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=infinera.com; dmarc=pass action=none header.from=infinera.com;
- dkim=pass header.d=infinera.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infinera.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ubLbj6SJ6B0R4kEYjpaa06DsUaGogaCYoFs0Mlc0eXE=;
- b=Y1aD3MeFWDY6cdqxXomrC/tnU1sqi3XrjWKXXx8nwCTsMqpDhzVuAwfouBdA7ZXf4ahaiPGixReGjzoXCMaqCbl3Nh9Y4Ua062xtx3/4SAXlS+AzNi/JlB7Nyp2c50GOvxGJHqJ9/Z8RbAj+IZYYouaUzLuniLXLhnK+HuIQIze+0F4Ihm3QJxtYjh8BcFFDQqIMARmtyoAQ3GApl5eHKkVaLV2wBqeq+xyL1gCBpndO9SVONTzgZosU9sgITGRvf5khzY9ZerWMyvKUk646/vodsNbE5sQTnMXprxg4xwTwSnFPmRvjDxTtvnvpUDi3v4TSWzrDG+nupgnLDFKSbw==
-Received: from PH0PR10MB4615.namprd10.prod.outlook.com (2603:10b6:510:36::24)
- by SN4PR10MB5800.namprd10.prod.outlook.com (2603:10b6:806:20f::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.32; Mon, 22 Jan
- 2024 22:49:32 +0000
-Received: from PH0PR10MB4615.namprd10.prod.outlook.com
- ([fe80::4d76:4230:708c:9eea]) by PH0PR10MB4615.namprd10.prod.outlook.com
- ([fe80::4d76:4230:708c:9eea%7]) with mapi id 15.20.7202.033; Mon, 22 Jan 2024
- 22:49:32 +0000
-From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-To: Greg KH <gregkh@linuxfoundation.org>
-CC: "quic_charante@quicinc.com" <quic_charante@quicinc.com>,
-	"david@redhat.com" <david@redhat.com>, "mhocko@suse.com" <mhocko@suse.com>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>, "linux-mm@kvack.org"
-	<linux-mm@kvack.org>, "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-	"mgorman@techsingularity.net" <mgorman@techsingularity.net>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"quic_pkondeti@quicinc.com" <quic_pkondeti@quicinc.com>, "vbabka@suse.cz"
-	<vbabka@suse.cz>, "stable@vger.kernel.org" <stable@vger.kernel.org>,
-	"quic_cgoldswo@quicinc.com" <quic_cgoldswo@quicinc.com>
-Subject: Re: [RESEND PATCH V2] mm: page_alloc: unreserve highatomic page
- blocks before oom
-Thread-Topic: [RESEND PATCH V2] mm: page_alloc: unreserve highatomic page
- blocks before oom
-Thread-Index: AQHaSjMflGKjL/PHykO7afANQUWSRrDmIBoAgABNFaY=
-Date: Mon, 22 Jan 2024 22:49:32 +0000
-Message-ID:
- <PH0PR10MB461565CEE892267025BC697BF4752@PH0PR10MB4615.namprd10.prod.outlook.com>
-References: <1700823445-27531-1-git-send-email-quic_charante@quicinc.com>
- <3fe3b3edd33cd784071dd9b459d20a79605ec918.camel@infinera.com>
- <2024012205-undrilled-those-2435@gregkh>
-In-Reply-To: <2024012205-undrilled-those-2435@gregkh>
-Accept-Language: en-GB, en-US
-Content-Language: en-GB
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=infinera.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR10MB4615:EE_|SN4PR10MB5800:EE_
-x-ms-office365-filtering-correlation-id: 4aa203c5-be9e-429d-0a41-08dc1b9c6629
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- FEqIeY4wL6uFyV2QdpxJlo5bV4M/qLlTVXkrJZNF9puGQ6mWEI4WWw9kAx0fYkrsLV7FAn0pffqcRi3domvQvdsPSfNEEX6BS2fkeTzqcRi3f9q/IleWOiCW7Oub/CroyeuMs8qflxP5yINBfqu4sQQeD3kC1tSjURCb8WwblAGNyFm7q/y66w7C/OX9bAqSWzyMg/WyiS4uBx1Dxa5rj0vsp3YlHRjiulxU/c9gidH3+9TwcLtIlGNlOLh4oP2YLgE8tr12Sy5pSw4x1Z1Id0+TPo1pbDGxczW+KVhACYLtPuIpq9mlkO9wbwwTgL/s3ERpyQHOQ+9zSzpWYXsMXveNjsc0OxWdv8vYx9ThKgyH/A81z8+fIIBwUxd0gzGnTNi1GTMV5fhSPTy18JwmBDMf/2sfLKwFJ+JAQlGTfvpGO0RxElHC9iCsZpZ2lL7FpFD6Mj24GmFFUp+ahuCOycvvCzdEcS7qBTxARYXpmYRj7DnDJSq4ksy6adePxJsLUlaolYGtgeeWSjgQLF31XbHEpChYoWCa65NHYqruT1vTSLcyhRZEExyiJ4OmWrZ8td2MYf/YvHvJdvcnLKW+Uz8De3DOqSqZ5MGqPQh/paCPOvYsG+dqdEuRkh6qazuN
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4615.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(39860400002)(366004)(136003)(396003)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(71200400001)(83380400001)(38100700002)(26005)(5660300002)(53546011)(8676002)(9686003)(41300700001)(122000001)(4326008)(8936002)(52536014)(478600001)(7416002)(2906002)(4744005)(316002)(66946007)(7696005)(64756008)(6506007)(6916009)(91956017)(66446008)(66476007)(66556008)(76116006)(54906003)(86362001)(33656002)(38070700009)(55016003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?iso-8859-1?Q?RlKENTAJKpsOKmBvBWDxiHc6GoOJZh1XQwamv5zsDpZqRaaEUlSaxZJ0D9?=
- =?iso-8859-1?Q?y5Aq05YgfYsHd3wWmJcv6JNYxJDsLGMg+ur2nAAi2hOWrE+lnsy9uU1LqE?=
- =?iso-8859-1?Q?0Jlv3oA9d5OHweEQF/BghJoRBP7iJp/gBZv/FR/Lcmyfhg2XR0opRCk/TC?=
- =?iso-8859-1?Q?25iXELjl+dxWaXV2tpo9ldZwG3A3qtNY034sQ+gy++Zz61IsOQmgjOoX0c?=
- =?iso-8859-1?Q?L6lVKH7rWxGmmNHqOA8xb86V7UYI91ZECPw4DhFRu3r93d9SWkQlajp/Lv?=
- =?iso-8859-1?Q?NA4Yl4lA//OzervQjgOdWAD9krgUiX1sqdFowdLc1J88ClFnVjWS3UPPqO?=
- =?iso-8859-1?Q?hD/2ZCmvd/m82pq2t6drki6rDa9iXENUQ4FLBZ8QbWGohpMqu84WWi/Vn2?=
- =?iso-8859-1?Q?79PgCipz8BGxs1XoggUOqnzKxGWlLxB+tV2MPo/UtY5PWkO/GWdEbtO/08?=
- =?iso-8859-1?Q?pvvkq5TCMWrFBW8ZCc38Q+hiJVg3y3NkRzYstYa3t6aSChwK0KlWhGDPd2?=
- =?iso-8859-1?Q?LG3A9NUMlIoTGEmSLUTiSU81Uh/LKdIU4pvd8cT3mAYglVhtkWfFS19bR8?=
- =?iso-8859-1?Q?k8rKlJDP1vLOMI3BdvbwD9iucqdGzLAJ1uKZ/mylHhwuIM0baJSRI5slCj?=
- =?iso-8859-1?Q?n9kXXW7amN4k7crTy/V8LFALbjZh281lcAvML7D6kLTbVnf5QIFPCDBaQX?=
- =?iso-8859-1?Q?nu3j9YPYhg4h6oMzByKoIAT1niBHuXTLXP4nCnxQF9G3rvsDT7Wy19VVg9?=
- =?iso-8859-1?Q?2k7d3vsEqT/G2P+v+8ed0Y+osrKO8kV8Iy0Ys17ewcIm/7r4iO3kxUF/XP?=
- =?iso-8859-1?Q?e+1a7FXbxl4HKm1zo+iCCB9HZtn9wVckZYKJn8YlHCjiDUXJU6ee9qC41t?=
- =?iso-8859-1?Q?DPv4/rxGDaaRuAg98Ay1PXuKm9yYgVcTRDsxFdC3FiKemIdB81/4y+0pH6?=
- =?iso-8859-1?Q?HY3XKGG1bPhwuKUAwLwt2PlXLutjzC1M/e+akwxD1wBo6ecZvP+1mCtFUN?=
- =?iso-8859-1?Q?YKUK3Mkb2yNv56eCxUPxG0neNi9zNhh9BFapWi5VIMxjVu0nwTb4Up1kJi?=
- =?iso-8859-1?Q?OdxPjoiWoZDgAn54MY5wo/BpYuL3LBzivuBXePZ4cTqL/Ef36qSTw8wq2Q?=
- =?iso-8859-1?Q?chbohMBFaaAnDBfyLM1oL8XxAGvpEW/UY0MbNqIWxibJoxXgfNwzggpnmC?=
- =?iso-8859-1?Q?LHe4nefEg3GAz+ZRxUKHNOOJe6ecqPAannjgPb44YC7KdpJkbLxjwHmTwz?=
- =?iso-8859-1?Q?/uGKYocmXrYQ2F2a1Adzu+N5G84MHjdxZ/ffMxHHtzB6x6qdAEm6vVVRdt?=
- =?iso-8859-1?Q?ASreB4cj9Q0wHwlpZ5rOx0yvY6nvw9rEJD4XNvoWlg2uzRR/B5G293MKyp?=
- =?iso-8859-1?Q?3OcTH2GtnPUJEffZ6TsutJbrYtruOMDwPdqQPRJ/ry0cEEfFvemU6lwWLp?=
- =?iso-8859-1?Q?Va7q848YKNW7D/uAuuCbVlevabsCJMtRQx7bEHb0g/dLpZ84BrWjbX3L8P?=
- =?iso-8859-1?Q?LHd0YdQAcbvys0beYwV7cy9zd7foOiogF+v3ung8H5fiFgtLcoRtkFL+zS?=
- =?iso-8859-1?Q?8q+ugcL0C1o6QmSLSrwkz56qGqU860Y0jH4WkG8kulkGqUtPMh4x/b4jrQ?=
- =?iso-8859-1?Q?2AWZmChPoLnoWegVBbCL0wET5dIfHXMiAv?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97E1C111A7
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 22:50:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705963811; cv=none; b=X74UE/bDv2JwfPL/DxbSSrduVhqmIlKu7o4HV7DT5eRCWuxxTOkdxq0tzubDq6FcdpySkz8TUTHl95VtdJthPmSRSSwkYUGydXfhU5iopt8qIrEqJiXIf88BpV9HjuHgHcgv5j/rtdYO8DDIRDaXxdRGjnU1RlJIqu8rNWxY1ME=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705963811; c=relaxed/simple;
+	bh=0DmqyN2qzJd7KHdqMTDg8vYx/m/BX1ady2AVpwzlH2k=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=gt/i2W+DKafMgJjazxlQ0z2uWvqFvW6MtKWAxKrZu+vJt+2TdLGNOu2oNYLaA8vI8eZUr3QU6bh+kvnPD2eVSyGUp81Pu4gxCb3vYWXDP8JC/Pg5PhI/0OY8TZ2qjMkfLBbR2q2LlzvlHXRNa96nNcwWtrTbecVHDJz1ad6ssxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=I2UVqB4I; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705963808;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZVVeXL5qmLu3TdV98EN624/Dnbva2hL9Ll9ny/kn3/A=;
+	b=I2UVqB4IYkFHMe2e3QAGpRdZdQwFqzswAqWpW0QahM49KtPxIcij8Sau5R6/M6TdTMKzjd
+	pnsKSIFtl7qgSWTbu8iO7dhHgnhlb5NVbrm81XwbBTi0XWrzpaKU5ZBIj9jAW0Ur7VxUVN
+	Bk9Dxc5JoN2kWJRCZ5naDbVpeTsPNSo=
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
+ [209.85.166.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-612-lZHTy9h5PzO1llTO95VeSQ-1; Mon, 22 Jan 2024 17:50:07 -0500
+X-MC-Unique: lZHTy9h5PzO1llTO95VeSQ-1
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7bf7e0c973eso302646839f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 14:50:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705963806; x=1706568606;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZVVeXL5qmLu3TdV98EN624/Dnbva2hL9Ll9ny/kn3/A=;
+        b=MxtPh+UJoo1i5NFr0+LbF0urYOk6ODKnDCT6wHRoWhntCjeniZXedhzVR18GDiYBip
+         a0HDL1m22SKlcL1TYJGPJtZ1toORp4Ug7iaN3Jg2/R9O2/jy4mfjJ8ZL3yIlPvivePuC
+         XsHxpQ2eyuIRyCb8+ysQtpHmX9khglltiXMAUr1EroCKuiA0o5RSp9BuDYe0BoHdPb5q
+         a3j1CMlgpzDelA+X11dgNhNZj3LEmfdwOkd36aGrWEQpdeRJpSXv/yPQHRFThVMumjDX
+         0svPtuYAQb4roTRTH89BgieQAKNfd7deYgPmDlbXkTBMm+DBi+9WX/+aLE7gFeMc7Roe
+         YSDA==
+X-Gm-Message-State: AOJu0Yy/itUWTsvI+E1WyqL9ZQII6vs9SeNE3SRzjieon4bXldeHLIYY
+	Hk1IObp0jTeswkT5VsNJWoFfGCiUENy5N+w5eunTz2LeuUMYBs3P3h7pJxqPKy2xouPsSKkWdkN
+	AUxt4VP7IqA9RZUKnbm34tDuKU8EeNvU3ivbns+ERW4UWugK65Jjgx1w6/KkdVw==
+X-Received: by 2002:a6b:6915:0:b0:7be:de5e:b62f with SMTP id e21-20020a6b6915000000b007bede5eb62fmr5147586ioc.35.1705963805866;
+        Mon, 22 Jan 2024 14:50:05 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IENSbToaby3ajpkurTOZkthuOENTMixweGS3HCdmResnrfwS/+Ukg/a8tOI1QELS/0DFJbyXw==
+X-Received: by 2002:a6b:6915:0:b0:7be:de5e:b62f with SMTP id e21-20020a6b6915000000b007bede5eb62fmr5147574ioc.35.1705963805574;
+        Mon, 22 Jan 2024 14:50:05 -0800 (PST)
+Received: from redhat.com ([38.15.36.11])
+        by smtp.gmail.com with ESMTPSA id t17-20020a056602181100b007bf9a6363f4sm526582ioh.6.2024.01.22.14.50.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 14:50:04 -0800 (PST)
+Date: Mon, 22 Jan 2024 15:50:03 -0700
+From: Alex Williamson <alex.williamson@redhat.com>
+To: Lukas Wunner <lukas@wunner.de>
+Cc: linux-pci@vger.kernel.org, bhelgaas@google.com,
+ linux-kernel@vger.kernel.org, eric.auger@redhat.com,
+ mika.westerberg@linux.intel.com, rafael.j.wysocki@intel.com,
+ Sanath.S@amd.com
+Subject: Re: [PATCH v2 2/2] PCI: Fix runtime PM race with PME polling
+Message-ID: <20240122155003.587225aa.alex.williamson@redhat.com>
+In-Reply-To: <20240122221730.GA16831@wunner.de>
+References: <20230803171233.3810944-1-alex.williamson@redhat.com>
+	<20230803171233.3810944-3-alex.williamson@redhat.com>
+	<20240118115049.3b5efef0.alex.williamson@redhat.com>
+	<20240122221730.GA16831@wunner.de>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: infinera.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4615.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4aa203c5-be9e-429d-0a41-08dc1b9c6629
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2024 22:49:32.2102
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 285643de-5f5b-4b03-a153-0ae2dc8aaf77
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: C4yZ4pKFp8IQ148uOlru6yb8i9a9nOfirgF3x1bf9BVYtvKcxcXdbVoFhg/R52XBQHY/M2vqiQb+ASGGT/GCxA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR10MB5800
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Seems like I pasted the wrong commit(sorry), should be: ac3f3b0a55518056bc8=
-0ed32a41931c99e1f7d81=0A=
-I only see that one in master.=0A=
-=0A=
-________________________________________=0A=
-From: Greg KH <gregkh@linuxfoundation.org>=0A=
-Sent: 22 January 2024 18:41=0A=
-To: Joakim Tjernlund=0A=
-Cc: quic_charante@quicinc.com; david@redhat.com; mhocko@suse.com; akpm@linu=
-x-foundation.org; linux-mm@kvack.org; hannes@cmpxchg.org; mgorman@techsingu=
-larity.net; linux-kernel@vger.kernel.org; quic_pkondeti@quicinc.com; vbabka=
-@suse.cz; stable@vger.kernel.org; quic_cgoldswo@quicinc.com=0A=
-Subject: Re: [RESEND PATCH V2] mm: page_alloc: unreserve highatomic page bl=
-ocks before oom=0A=
-=0A=
-On Thu, Jan 18, 2024 at 05:23:58PM +0000, Joakim Tjernlund wrote:=0A=
-> Could this patch be backported to stable? I have seen similar OOMs with=
-=0A=
-> reserved_highatomic:4096KB=0A=
->=0A=
-> Upstream commit: 04c8716f7b0075def05dc05646e2408f318167d2=0A=
-=0A=
-Backported to exactly where?  This commit is in the 4.20 kernel and=0A=
-newer, please tell me you aren't relying on the 4.19.y kernel anymore...=0A=
-=0A=
-thanks,=0A=
-=0A=
-greg k-h=0A=
+On Mon, 22 Jan 2024 23:17:30 +0100
+Lukas Wunner <lukas@wunner.de> wrote:
+
+> On Thu, Jan 18, 2024 at 11:50:49AM -0700, Alex Williamson wrote:
+> > On Thu,  3 Aug 2023 11:12:33 -0600 Alex Williamson <alex.williamson@redhat.com wrote:  
+> > > Testing that a device is not currently in a low power state provides no
+> > > guarantees that the device is not immenently transitioning to such a state.
+> > > We need to increment the PM usage counter before accessing the device.
+> > > Since we don't wish to wake the device for PME polling, do so only if the
+> > > device is already active by using pm_runtime_get_if_active().
+> > > 
+> > > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> > > ---
+> > >  drivers/pci/pci.c | 23 ++++++++++++++++-------
+> > >  1 file changed, 16 insertions(+), 7 deletions(-)  
+> > 
+> > Resurrecting this patch (currently commit d3fcd7360338) for discussion
+> > as it's been identified as the source of a regression in:
+> > 
+> > https://bugzilla.kernel.org/show_bug.cgi?id=218360
+> > 
+> > Copying Mika, Lukas, and Rafael as it's related to:
+> > 
+> > 000dd5316e1c ("PCI: Do not poll for PME if the device is in D3cold")
+> > 
+> > where we skip devices in D3cold when processing the PME list.
+> > 
+> > I think the issue in the above bz is that the downstream TB3/USB4 port
+> > is in D3 (presumably D3hot) and I therefore infer the device is in state
+> > RPM_SUSPENDED.  This commit is attempting to make sure the device power
+> > state is stable across the call such that it does not transition into
+> > D3cold while we're accessing it.
+> > 
+> > To do that I used pm_runtime_get_if_active(), but in retrospect this
+> > requires the device to be in RPM_ACTIVE so we end up skipping anything
+> > suspended or transitioning.  
+> 
+> How about dropping the calls to pm_runtime_get_if_active() and
+> pm_runtime_put() and instead simply do:
+> 
+> 			if (pm_runtime_suspended(&pdev->dev) &&
+> 			    pdev->current_state != PCI_D3cold)
+> 				pci_pme_wakeup(pdev, NULL);
+
+Hi Lukas,
+
+Do we require that the polled device is in the RPM_SUSPENDED state?
+Also pm_runtime_suspended() can also only be trusted while holding the
+device power.lock, we need a usage count reference to maintain that
+state.
+
+I'm also seeing cases where the bridge is power state D0, but PM state
+RPM_SUSPENDING, so config space of the polled device becomes
+inaccessible even while we're holding a reference once we allow polling
+in RPM_SUSPENDED.
+
+I'm currently working with the below patch, which I believe addresses
+all these issues, but I'd welcome review and testing. Thanks,
+
+Alex
+
+commit 0a063b8e91d0bc807db712c81c8b270864f99ecb
+Author: Alex Williamson <alex.williamson@redhat.com>
+Date:   Tue Jan 16 13:28:33 2024 -0700
+
+    PCI: Fix active state requirement in PME polling
+    
+    The commit noted in fixes added a bogus requirement that runtime PM
+    managed devices need to be in the RPM_ACTIVE state for PME polling.
+    In fact, there is no requirement of a specific runtime PM state, it
+    is only required that the state is stable such that testing config
+    space availability, ie. !D3cold, remains valid across the PME wakeup.
+    
+    To that effect, defer polling of runtime PM managed devices that are
+    not in either the RPM_ACTIVE or RPM_SUSPENDED states.  Devices in
+    transitional states remain on the pci_pme_list and will be re-queued.
+    
+    However in allowing polling of devices in the RPM_SUSPENDED state,
+    the bridge state requires further refinement as it's possible to poll
+    while the bridge is in D0, but the runtime PM state is RPM_SUSPENDING.
+    An asynchronous completion of the bridge transition to a low power
+    state can make config space of the subordinate device become
+    unavailable.  A runtime PM reference to the bridge is therefore added
+    with a supplementary requirement that the bridge is in the RPM_ACTIVE
+    state.
+    
+    Fixes: d3fcd7360338 ("PCI: Fix runtime PM race with PME polling")
+    Reported-by: Sanath S <sanath.s@amd.com>
+    Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218360
+    Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index bdbf8a94b4d0..31dbf1834b07 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -2433,29 +2433,45 @@ static void pci_pme_list_scan(struct work_struct *work)
+ 		if (pdev->pme_poll) {
+ 			struct pci_dev *bridge = pdev->bus->self;
+ 			struct device *dev = &pdev->dev;
+-			int pm_status;
++			struct device *bdev = bridge ? &bridge->dev : NULL;
+ 
+ 			/*
+-			 * If bridge is in low power state, the
+-			 * configuration space of subordinate devices
+-			 * may be not accessible
++			 * If we have a bridge, it should be in an active/D0
++			 * state or the configuration space of subordinate
++			 * devices may not be accessible.
+ 			 */
+-			if (bridge && bridge->current_state != PCI_D0)
+-				continue;
++			if (bdev) {
++				spin_lock_irq(&bdev->power.lock);
++				if (!pm_runtime_active(bdev) ||
++				    bridge->current_state != PCI_D0) {
++					spin_unlock_irq(&bdev->power.lock);
++					continue;
++				}
++				pm_runtime_get_noresume(bdev);
++				spin_unlock_irq(&bdev->power.lock);
++			}
+ 
+ 			/*
+-			 * If the device is in a low power state it
+-			 * should not be polled either.
++			 * The device itself may be either in active or
++			 * suspended state, but must not be in D3cold so
++			 * that configuration space is accessible.  The
++			 * transitional resuming and suspending states are
++			 * skipped to avoid D3cold races.
+ 			 */
+-			pm_status = pm_runtime_get_if_active(dev, true);
+-			if (!pm_status)
+-				continue;
+-
+-			if (pdev->current_state != PCI_D3cold)
++			spin_lock_irq(&dev->power.lock);
++			if ((pm_runtime_active(dev) ||
++			     pm_runtime_suspended(dev)) &&
++			    pdev->current_state != PCI_D3cold) {
++				pm_runtime_get_noresume(dev);
++				spin_unlock_irq(&dev->power.lock);
+ 				pci_pme_wakeup(pdev, NULL);
+-
+-			if (pm_status > 0)
+ 				pm_runtime_put(dev);
++			} else {
++				spin_unlock_irq(&dev->power.lock);
++			}
++
++			if (bdev)
++				pm_runtime_put(bdev);
+ 		} else {
+ 			list_del(&pme_dev->list);
+ 			kfree(pme_dev);
+
 
