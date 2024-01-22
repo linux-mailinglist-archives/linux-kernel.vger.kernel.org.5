@@ -1,156 +1,140 @@
-Return-Path: <linux-kernel+bounces-32872-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32873-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06CB7836132
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:23:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE850836139
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:23:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0F17286059
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:23:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F7C61C21C3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:23:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3919F3DB93;
-	Mon, 22 Jan 2024 11:10:50 +0000 (UTC)
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DB773E460;
+	Mon, 22 Jan 2024 11:11:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="aqNLgk52"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE5853D99B
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 11:10:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEB823B18E
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 11:11:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705921849; cv=none; b=nWJbrqsxEMZjJO18/v7nCB4pkV2EbUxTKPJ0thbgo1kfDzm4C/jCcPbZIIuxA2JoSoYQQCG8p5ZZ7J84WJNAeKiJ8DKbC56p8fVXZ0wOKTK+tBLV7RU60yA/jlhKuJN7vMdqE7copcbAzRy8+YmJaevs0t7IIYl/FeXNOR60nwo=
+	t=1705921903; cv=none; b=JIZExiiaL7LtUq0dycxDtz7f4Lc7TM00fHVG/Vn+jvLpogacNXJKsBUeCmUCWlZ9YMfsXYILj5QtI4JblHlbHBUBPGecoP3bZJLI5KmRMrZWkVIXzFzBrqPjvhVufMO84mQmfyGFgM9Zy2U4Wr3k+lUIQbbrdKRkUDI0AQKBRpk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705921849; c=relaxed/simple;
-	bh=cuK6dlsAqqCyuHKmfg4fbsKC82Budl4OWQwU5QWb5N8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DEgrfGzOSc3ZfPk3or9OT2PeWyklCgI3MLa/dsRy09uh3UiPfXKI4emFCYlQ2HKKgPmWcF4qWxaIlJGZiuhN1XIio0oQsTT3sV+Dw0O/GXojBSEr64ng2wv7zjhJIwiRrAVZkAkh0EDt8B5pjwQEXbR7OexgYamyQ0+d7F0gPvg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; arc=none smtp.client-ip=115.124.30.113
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0W.7NcCV_1705921837;
-Received: from 30.221.149.111(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0W.7NcCV_1705921837)
-          by smtp.aliyun-inc.com;
-          Mon, 22 Jan 2024 19:10:38 +0800
-Message-ID: <4ada64aa-87ec-4340-9892-be52c1f27a97@linux.alibaba.com>
-Date: Mon, 22 Jan 2024 19:10:36 +0800
+	s=arc-20240116; t=1705921903; c=relaxed/simple;
+	bh=UxyTRYJrjqQ5DKtv4x7xt8N6ofKWsaiz0ZFqC7P9iQA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=SI770tgAjAEIlvPxuLgbXV+DvmOyMupyFvFf+FtqA1gZa9jQG4vVCAXJ3WZgh/Y0KsN6DMGDeSLxtVjV84nnNO6oR84fBuooVXxDw2JHh9SdypUnVqC5+/nbB6hSHuStktpNMuSRrP18eUXnqhrV3C6toXDcoSRIPsYFpv9Z4mM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=aqNLgk52; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55a44bb66d3so3247257a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 03:11:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1705921899; x=1706526699; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2+NuF+IrheqV39DhurkeC/NdqjCC1Krg29+Aw27A90o=;
+        b=aqNLgk5275sDX48SHiN/znMn0nYhbuic4/hP5/FA/YaBtKuZ4/P3q/fT6ZwvhH1W65
+         rfJTwX0UwvOl6iedQ2JoKWw+THqznadPcRevqKCXVp2sM6lLGAAgiAl4gsp2ieDWfSZ4
+         OpsuDDBjks/qq8E/q+1NlJws5QX92jzKFhcMPfCUZVPulSXb/cSr8gMi8PhNyBBhFVXE
+         gjWD+gEGkYqdsQjPPYn5sTRB9uxbc3hWF5AJoVGdhFYnPuSc2gfiC0w99HRzuDCrHCIJ
+         oxqhSgZYK1ZT5IL+Ho68Si0XmB9tBjZYiv5txVqL3JttSqTAnjonY25tFEDDKxAFveeN
+         LTtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705921899; x=1706526699;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2+NuF+IrheqV39DhurkeC/NdqjCC1Krg29+Aw27A90o=;
+        b=OP8t1b6bp4KcfLPOs6KVgHXf9tLIe2lmBmft6TA/DZbLONGb6ysT6fXAXkE7xeIxD3
+         XBxUWaSh5q4a5gaAp7X1GUco7+yiR3THW/N5s9VmuDc753/ZHxxMKmzRyBbCU1t2Ge7+
+         WBcCaQbaUimxr4KL/P6IbBeYtIy52DG7xpbPMcFy3CiC3b1DY96I0qCnhPTjfgQun2cw
+         7YODtSpjmFXSDip0E5XMdA4Ma+Vp8rZk3ZSGOiBBkn0slpv3iAu9bRUBOmS9CdOhXG2n
+         S1oLRjfpaPYUfsPXHEz5g/OgJUjIETgk+5Spik8SrP8umcW4qLYveemR935gk21zQfeT
+         ECog==
+X-Gm-Message-State: AOJu0YyW7Y2WXNx9GaHg2jIHeI17uQlbyUkFnK0BuGNNEQOPB4zDw4Hr
+	A7ZowjD3K0lneUnw+P5gTl03xgYaqly9MPMuKeuNXBXIwrtW9YJX49AJkJlolps=
+X-Google-Smtp-Source: AGHT+IHTI3lS82Shzhgaq78IcSLYXJWf0bXqAjyhj0u6OR9ZSFyNceOlihdHtJoisQ6VBe9RQdQutw==
+X-Received: by 2002:aa7:c618:0:b0:55a:8430:834d with SMTP id h24-20020aa7c618000000b0055a8430834dmr1650512edq.65.1705921898698;
+        Mon, 22 Jan 2024 03:11:38 -0800 (PST)
+Received: from claudiu-X670E-Pro-RS.. ([82.78.167.135])
+        by smtp.gmail.com with ESMTPSA id t34-20020a056402242200b0055823c2ae17sm14194241eda.64.2024.01.22.03.11.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 03:11:38 -0800 (PST)
+From: Claudiu <claudiu.beznea@tuxon.dev>
+X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
+To: wim@linux-watchdog.org,
+	linux@roeck-us.net,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	geert+renesas@glider.be,
+	magnus.damm@gmail.com,
+	mturquette@baylibre.com,
+	sboyd@kernel.org,
+	p.zabel@pengutronix.de,
+	biju.das.jz@bp.renesas.com
+Cc: linux-watchdog@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-clk@vger.kernel.org,
+	claudiu.beznea@tuxon.dev,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH 00/10] watchdog: rzg2l_wdt: Add support for RZ/G3S
+Date: Mon, 22 Jan 2024 13:11:05 +0200
+Message-Id: <20240122111115.2861835-1-claudiu.beznea.uj@bp.renesas.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] virtio_net: Support RX hash XDP hint
-To: Liang Chen <liangchen.linux@gmail.com>, mst@redhat.com,
- jasowang@redhat.com
-Cc: virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-References: <20240122102256.261374-1-liangchen.linux@gmail.com>
-From: Heng Qi <hengqi@linux.alibaba.com>
-In-Reply-To: <20240122102256.261374-1-liangchen.linux@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Hi Liang Chen,
+From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-在 2024/1/22 下午6:22, Liang Chen 写道:
-> The RSS hash report is a feature that's part of the virtio specification.
-> Currently, virtio backends like qemu, vdpa (mlx5), and potentially vhost
-> (still a work in progress as per [1]) support this feature. While the
-> capability to obtain the RSS hash has been enabled in the normal path,
-> it's currently missing in the XDP path. Therefore, we are introducing XDP
-> hints through kfuncs to allow XDP programs to access the RSS hash.
->
-> Signed-off-by: Liang Chen <liangchen.linux@gmail.com>
-> ---
->   drivers/net/virtio_net.c | 56 ++++++++++++++++++++++++++++++++++++++++
->   1 file changed, 56 insertions(+)
->
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index d7ce4a1011ea..1463a4709e3c 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -4579,6 +4579,60 @@ static void virtnet_set_big_packets(struct virtnet_info *vi, const int mtu)
->   	}
->   }
->   
-> +static int virtnet_xdp_rx_hash(const struct xdp_md *_ctx, u32 *hash,
-> +			   enum xdp_rss_hash_type *rss_type)
-> +{
-> +	const struct xdp_buff *xdp = (void *)_ctx;
-> +	struct virtio_net_hdr_v1_hash *hdr_hash;
-> +	struct virtnet_info *vi;
-> +
-> +	if (!(xdp->rxq->dev->features & NETIF_F_RXHASH))
+Hi,
 
-I think 'vi->has_rss_hash_report' should be used here.
-NETIF_F_RXHASH cannot guarantee that the hash report feature is negotiated,
-and accessing hash_report and hash_value is unsafe at this time.
+Series adds watchdog support for Renesas RZ/G3S (R9A08G045) SoC.
 
-> +		return -ENODATA;
-> +
-> +	vi = netdev_priv(xdp->rxq->dev);
-> +	hdr_hash = (struct virtio_net_hdr_v1_hash *)(xdp->data - vi->hdr_len);
+Patches do the following:
+- patch 1/10 adds clock and reset support for watchdog
+- patches 2-6/10 adds fixes and cleanup for the watchdog driver
+- patch 7/10 adds suspend to RAM to the watchdog driver (to be used by
+  RZ/G3S)
+- patch 8/10 documents the RZ/G3S support
+- patches 9-10/10 add device tree support
 
-If the virtio-net-hdr is overrided by the XDP prog, how can this be done 
-correctly and as expected?
+It is expected that the clock and device tree support will go through
+Geert's tree while the rest of the patches through the watchdog tree.
 
-Thanks,
-Heng
+Thank you,
+Claudiu Beznea
 
-> +
-> +	switch (__le16_to_cpu(hdr_hash->hash_report)) {
-> +		case VIRTIO_NET_HASH_REPORT_TCPv4:
-> +			*rss_type = XDP_RSS_TYPE_L4_IPV4_TCP;
-> +			break;
-> +		case VIRTIO_NET_HASH_REPORT_UDPv4:
-> +			*rss_type = XDP_RSS_TYPE_L4_IPV4_UDP;
-> +			break;
-> +		case VIRTIO_NET_HASH_REPORT_TCPv6:
-> +			*rss_type = XDP_RSS_TYPE_L4_IPV6_TCP;
-> +			break;
-> +		case VIRTIO_NET_HASH_REPORT_UDPv6:
-> +			*rss_type = XDP_RSS_TYPE_L4_IPV6_UDP;
-> +			break;
-> +		case VIRTIO_NET_HASH_REPORT_TCPv6_EX:
-> +			*rss_type = XDP_RSS_TYPE_L4_IPV6_TCP_EX;
-> +			break;
-> +		case VIRTIO_NET_HASH_REPORT_UDPv6_EX:
-> +			*rss_type = XDP_RSS_TYPE_L4_IPV6_UDP_EX;
-> +			break;
-> +		case VIRTIO_NET_HASH_REPORT_IPv4:
-> +			*rss_type = XDP_RSS_TYPE_L3_IPV4;
-> +			break;
-> +		case VIRTIO_NET_HASH_REPORT_IPv6:
-> +			*rss_type = XDP_RSS_TYPE_L3_IPV6;
-> +			break;
-> +		case VIRTIO_NET_HASH_REPORT_IPv6_EX:
-> +			*rss_type = XDP_RSS_TYPE_L3_IPV6_EX;
-> +			break;
-> +		case VIRTIO_NET_HASH_REPORT_NONE:
-> +		default:
-> +			*rss_type = XDP_RSS_TYPE_NONE;
-> +	}
-> +
-> +	*hash = __le32_to_cpu(hdr_hash->hash_value);
-> +	return 0;
-> +}
-> +
-> +static const struct xdp_metadata_ops virtnet_xdp_metadata_ops = {
-> +	.xmo_rx_hash			= virtnet_xdp_rx_hash,
-> +};
-> +
->   static int virtnet_probe(struct virtio_device *vdev)
->   {
->   	int i, err = -ENOMEM;
-> @@ -4613,6 +4667,8 @@ static int virtnet_probe(struct virtio_device *vdev)
->   	dev->ethtool_ops = &virtnet_ethtool_ops;
->   	SET_NETDEV_DEV(dev, &vdev->dev);
->   
-> +	dev->xdp_metadata_ops = &virtnet_xdp_metadata_ops;
-> +
->   	/* Do we support "hardware" checksums? */
->   	if (virtio_has_feature(vdev, VIRTIO_NET_F_CSUM)) {
->   		/* This opens up the world of extra features. */
+Claudiu Beznea (10):
+  clk: renesas: r9a08g045: Add clock and reset support for watchdog
+  watchdog: rzg2l_wdt: Use pm_runtime_resume_and_get()
+  watchdog: rzg2l_wdt: Check return status of pm_runtime_put()
+  watchdog: rzg2l_wdt: Remove reset de-assert on probe/stop
+  watchdog: rzg2l_wdt: Remove comparison with zero
+  watchdog: rzg2l_wdt: Rely on the reset driver for doing proper reset
+  watchdog: rzg2l_wdt: Add suspend/resume support
+  dt-bindings: watchdog: renesas,wdt: Document RZ/G3S support
+  arm64: dts: renesas: r9a08g045: Add watchdog node
+  arm64: dts: renesas: rzg3s-smarc-som: Enable the watchdog interface
+
+ .../bindings/watchdog/renesas,wdt.yaml        |   1 +
+ arch/arm64/boot/dts/renesas/r9a08g045.dtsi    |  14 +++
+ .../boot/dts/renesas/rzg3s-smarc-som.dtsi     |   5 +
+ drivers/clk/renesas/r9a08g045-cpg.c           |   3 +
+ drivers/watchdog/rzg2l_wdt.c                  | 100 ++++++++++--------
+ 5 files changed, 76 insertions(+), 47 deletions(-)
+
+-- 
+2.39.2
 
 
