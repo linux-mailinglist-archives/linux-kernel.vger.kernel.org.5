@@ -1,182 +1,113 @@
-Return-Path: <linux-kernel+bounces-32326-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 276BD835A35
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 06:10:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B238835A65
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 06:39:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A89C1C21AA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 05:10:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C689B20BBD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 05:39:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E17E14C8E;
-	Mon, 22 Jan 2024 05:10:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="UJwTldj3"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9105B5684;
+	Mon, 22 Jan 2024 05:38:55 +0000 (UTC)
+Received: from ni.piap.pl (ni.piap.pl [195.187.100.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CE4F4C65
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 05:10:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 277875673;
+	Mon, 22 Jan 2024 05:38:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.187.100.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705900233; cv=none; b=iZrFJQjD1zA+B4GQLQ/rw78IA5YQFjhBVI+IFGR2GUCbcMZDXGFd/xG90moYomwKrOTvKwFdwu/COvA5PM64t5IRq326d5ikXJBT0n5FnqkY5XGlbP1uuecAlEeXFD6ZU7ESwNSrsGauHkjA1AKMdd57TM1C3cwU2vG0sQmcmE8=
+	t=1705901935; cv=none; b=JEs1mpUQAAW2l/TJucbpZTG/bpYKPuJ7Yjur8mMZlfij4JDP2KRvCpxZdo1JdHqEGZjY20i9Hl0yY3CUQwi1J+FYxNvu4MPt5ZaW/rEiGrcNrt6RggN3MTxG/wXawsTH0siEOMsQqV7NTRVygWPNy1Yybm2GlzoZPr1YObJFcMo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705900233; c=relaxed/simple;
-	bh=IVCfn+pI29tjNzjS3wp0wFp5/+Z2nUKsVuz8Y3dLxVY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=e05OQaVqSbuf2WQd2YbVbuzFvde57U91zokpKw8nX5As4fxgdVNrqsD3vRsZULMPrrhLbtRk9OiDefVKcmQKB8v1SOPIhwOThlo+kWskq6kIwKj0GEgLFhtshWL1gzzL22SjG5r3MqknElT/vnMXvUiMx8Z2HFJBkxa2QYZd1vs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=UJwTldj3; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-50e835800adso2828016e87.0
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 21:10:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1705900228; x=1706505028; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=bX4dObL3c95165XLM7yzt7rEIgdTlOtpBnPF9EhNwGQ=;
-        b=UJwTldj3GGaIHFXa3t4g6hdXwYrLY4N6p7CPUdfNV7bP36LRbM/1cy+YBAilhuKSI8
-         f2WFDL9qJTuy8Cd7bTtjVi0l373Y/ZiUBgF+5Qd4Rw3OKSuCv0gO+Jzinr1j8KkV9/jR
-         UOATkhdTu21BjVClkPrhAJ7dVgJUeq3pCyHjE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705900228; x=1706505028;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bX4dObL3c95165XLM7yzt7rEIgdTlOtpBnPF9EhNwGQ=;
-        b=rhmGxUs19bT3v07knpZSyv0NQRGCj1LQHdUoPLTOzf58/TISCuU2rZhKjPYDx8Z9O+
-         vhQCTBr9CuTCX7fRPdBqpr474zwzLvScPL0+SkSUVw1aruCcuAi52HPKjmXNGOx5ZBri
-         DH2Rc2yEkq6yBnX66s6UYwjnJakB+CYRBLjLlwyy1DCyM44KOvy/V7KcPPQyXZQrT6YY
-         lfqMaJmZuNZSNVuVqV0dHdrhGZv/0zXZKD74X94S0H7dxAsFlo8ihFnEUT+QpVAhDIPd
-         sEG0kABWgKgbGHAlVf8+Neb7dAHTJ4e0NFHUJEgKzhp4eK48DGLUdJGJZH8eVPFUHh+G
-         wFJw==
-X-Gm-Message-State: AOJu0Yx4QJNWYjKWqIYjlG2imnZKf35SuP2UO1MY0tcIKp32HshE6yua
-	Rw7k6thVo5fG7rPNQd1DQL8nRdQeJ6YJpKkRI9AmCOPdAxEAOEGbBaecLbrNywLokHzkM1DLt4r
-	CEQT2nw==
-X-Google-Smtp-Source: AGHT+IFSprsOZOnIXsajITcVNVsO14jnZgJQ0dHjTRAwbKCZ8KzT1yiPHqJVb0pgnWW3GzyC+DccjQ==
-X-Received: by 2002:a19:e008:0:b0:50e:8efd:e0c1 with SMTP id x8-20020a19e008000000b0050e8efde0c1mr741141lfg.175.1705900228406;
-        Sun, 21 Jan 2024 21:10:28 -0800 (PST)
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com. [209.85.221.46])
-        by smtp.gmail.com with ESMTPSA id k16-20020a056402049000b0055c2404fbe4sm1247379edv.69.2024.01.21.21.10.26
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Jan 2024 21:10:26 -0800 (PST)
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3392ba29845so1284888f8f.2
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 21:10:26 -0800 (PST)
-X-Received: by 2002:a7b:ce95:0:b0:40e:49ac:e4a6 with SMTP id
- q21-20020a7bce95000000b0040e49ace4a6mr1440118wmj.171.1705900225838; Sun, 21
- Jan 2024 21:10:25 -0800 (PST)
+	s=arc-20240116; t=1705901935; c=relaxed/simple;
+	bh=1sisWpA0oLBoywGGJoqzMdCk3uVhcDAAv42idkjUAiI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=EJihzt0lgHnsqSZkWcop2gCCzDV+Ls7GRd1NtruzrL8g3dvoEzkr3WbIbnRdfeMJ/YAUUekaP/wQRUec8aIVcMY6JuHhkEjuheAYk76hI7pnHpTn38PTI84kmlphZEbArZh9HiCdPaGijvzc65v8gcRugFF7pBq5ristN5FcqAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=piap.pl; spf=pass smtp.mailfrom=piap.pl; arc=none smtp.client-ip=195.187.100.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=piap.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=piap.pl
+Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
+	by ni.piap.pl (Postfix) with ESMTPS id E1899C3F2A57;
+	Mon, 22 Jan 2024 06:28:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl E1899C3F2A57
+From: =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-kernel@vger.kernel.org,  Shawn Guo <shawnguo@kernel.org>,  Sascha
+ Hauer <s.hauer@pengutronix.de>,  Mauro Carvalho Chehab
+ <mchehab@kernel.org>,  Sakari Ailus <sakari.ailus@linux.intel.com>,
+  linux-arm-kernel@lists.infradead.org,  linux-media@vger.kernel.org
+Subject: Re: [PATCH] media: i2c: ar0521: fix spellos
+In-Reply-To: <20240111043302.15641-1-rdunlap@infradead.org> (Randy Dunlap's
+	message of "Wed, 10 Jan 2024 20:33:01 -0800")
+References: <20240111043302.15641-1-rdunlap@infradead.org>
+Sender: khalasa@piap.pl
+Date: Mon, 22 Jan 2024 06:28:41 +0100
+Message-ID: <m3y1ci543a.fsf@t19.piap.pl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1705507931.git.jpoimboe@kernel.org> <ac84a832feba5418e1b58d1c7f3fe6cc7bc1de58.1705507931.git.jpoimboe@kernel.org>
- <6667b799702e1815bd4e4f7744eddbc0bd042bb7.camel@kernel.org>
- <20240117193915.urwueineol7p4hg7@treble> <CAHk-=wg_CoTOfkREgaQQA6oJ5nM9ZKYrTn=E1r-JnvmQcgWpSg@mail.gmail.com>
- <CALvZod6LgX-FQOGgNBmoRACMBK4GB+K=a+DYrtExcuGFH=J5zQ@mail.gmail.com>
- <ZahSlnqw9yRo3d1v@P9FQF9L96D.corp.robot.car> <CALvZod4V3QTULTW5QxgqCbDpNtVO6fXzta33HR7GN=L2LUU26g@mail.gmail.com>
-In-Reply-To: <CALvZod4V3QTULTW5QxgqCbDpNtVO6fXzta33HR7GN=L2LUU26g@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sun, 21 Jan 2024 21:10:09 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whYOOdM7jWy5jdrAm8LxcgCMFyk2bt8fYYvZzM4U-zAQA@mail.gmail.com>
-Message-ID: <CAHk-=whYOOdM7jWy5jdrAm8LxcgCMFyk2bt8fYYvZzM4U-zAQA@mail.gmail.com>
-Subject: Re: [PATCH RFC 1/4] fs/locks: Fix file lock cache accounting, again
-To: Shakeel Butt <shakeelb@google.com>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>, Josh Poimboeuf <jpoimboe@kernel.org>, 
-	Vlastimil Babka <vbabka@suse.cz>, Jeff Layton <jlayton@kernel.org>, 
-	Chuck Lever <chuck.lever@oracle.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org, 
-	Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>, Vasily Averin <vasily.averin@linux.dev>, 
-	Michal Koutny <mkoutny@suse.com>, Waiman Long <longman@redhat.com>, 
-	Muchun Song <muchun.song@linux.dev>, Jiri Kosina <jikos@kernel.org>, cgroups@vger.kernel.org, 
-	linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-KLMS-Rule-ID: 3
+X-KLMS-Message-Action: skipped
+X-KLMS-AntiSpam-Status: not scanned, whitelist
+X-KLMS-AntiPhishing: not scanned, whitelist
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
 
-On Wed, 17 Jan 2024 at 14:56, Shakeel Butt <shakeelb@google.com> wrote:
-> >
-> > So I don't see how we can make it really cheap (say, less than 5% overhead)
-> > without caching pre-accounted objects.
+Hi Randy,
+
+Good catches, thanks for your work.
+
+Randy Dunlap <rdunlap@infradead.org> writes:
+
+> Fix spelling mistakes as reported by codespell.
+
+Acked-by: Krzysztof Ha=C5=82asa <khalasa@piap.pl>
+
+> --- a/drivers/media/i2c/ar0521.c
+> +++ b/drivers/media/i2c/ar0521.c
+> @@ -314,7 +314,7 @@ static void ar0521_calc_pll(struct ar052
+>          * In the clock tree:
+>          * MIPI_CLK =3D PIXEL_CLOCK * bpp / 2 / 2
+>          *
+> -        * Generic pixel_rate to bus clock frequencey equation:
+> +        * Generic pixel_rate to bus clock frequency equation:
+>          * MIPI_CLK =3D V4L2_CID_PIXEL_RATE * bpp / lanes / 2
+>          *
+>          * From which we derive the PIXEL_CLOCK to use in the clock tree:
+> @@ -327,7 +327,7 @@ static void ar0521_calc_pll(struct ar052
+>          *
+>          * TODO: in case we have less data lanes we have to reduce the de=
+sired
+>          * VCO not to exceed the limits specified by the datasheet and
+> -        * consequentially reduce the obtained pixel clock.
+> +        * consequently reduce the obtained pixel clock.
+>          */
+>         pixel_clock =3D AR0521_PIXEL_CLOCK_RATE * 2 / sensor->lane_count;
+>         bpp =3D ar0521_code_to_bpp(sensor);
+> @@ -806,7 +806,7 @@ static const struct initial_reg {
+>         REGS(be(0x3F00),
+>              be(0x0017),  /* 3F00: BM_T0 */
+>              be(0x02DD),  /* 3F02: BM_T1 */
+> -            /* 3F04: if Ana_gain less than 2, use noise_floor0, multipl =
+*/
+> +            /* 3F04: if Ana_gain less than 2, use noise_floor0, multiply=
+ */
+>              be(0x0020),
+>              /* 3F06: if Ana_gain between 4 and 7, use noise_floor2 and */
+>              be(0x0040),
 >
-> Maybe this is what we want. Now we are down to just SLUB, maybe such
-> caching of pre-accounted objects can be in SLUB layer and we can
-> decide to keep this caching per-kmem-cache opt-in or always on.
+>
 
-So it turns out that we have another case of SLAB_ACCOUNT being quite
-a big expense, and it's actually the normal - but failed - open() or
-execve() case.
+--=20
+Krzysztof "Chris" Ha=C5=82asa
 
-See the thread at
-
-    https://lore.kernel.org/all/CAHk-=whw936qzDLBQdUz-He5WK_0fRSWwKAjtbVsMGfX70Nf_Q@mail.gmail.com/
-
-and to see the effect in profiles, you can use this EXTREMELY stupid
-test program:
-
-    #include <fcntl.h>
-
-    int main(int argc, char **argv)
-    {
-        for (int i = 0; i < 10000000; i++)
-                open("nonexistent", O_RDONLY);
-    }
-
-where the point of course is that the "nonexistent" pathname doesn't
-actually exist (so don't create a file called that for the test).
-
-What happens is that open() allocates a 'struct file *' early from the
-filp kmem_cache, which has SLAB_ACCOUNT set. So we'll do accounting
-for it, failt the pathname open, and free it again, which uncharges
-the accounting.
-
-Now, in this case, I actually have a suggestion: could we please just
-make SLAB_ACCOUNT be something that we do *after* the allocation, kind
-of the same way the zeroing works?
-
-IOW, I'd love to get rid of slab_pre_alloc_hook() entirely, and make
-slab_post_alloc_hook() do all the "charge the memcg if required".
-
-Obviously that means that now a failure to charge the memcg would have
-to then de-allocate things, but that's an uncommon path and would be
-marked unlikely and not be in the hot path at all.
-
-Now, the reason I would prefer that is that the *second* step would be to
-
- (a) expose a "kmem_cache_charge()" function that takes a
-*non*-accounted slab allocation, and turns it into an accounted one
-(and obviously this is why you want to do everything in the post-alloc
-hook: just try to share this code)
-
- (b) remote the SLAB_ACCOUNT from the filp_cachep, making all file
-allocations start out unaccounted.
-
- (c) when we have *actually* looked up the pathname and open the file
-successfully, at *that* point we'd do a
-
-        error = kmem_cache_charge(filp_cachep, file);
-
-    in do_dentry_open() to turn the unaccounted file pointer into an
-accounted one (and if that fails, we do the cleanup and free it, of
-course, exactly like we do when file_get_write_access() fails)
-
-which means that now the failure case doesn't unnecessarily charge the
-allocation that never ends up being finalized.
-
-NOTE! I think this would clean up mm/slub.c too, simply because it
-would get rid of that memcg_slab_pre_alloc_hook() entirely, and get
-rid of the need to carry the "struct obj_cgroup **objcgp" pointer
-along until the post-alloc hook: everything would be done post-alloc.
-
-The actual kmem_cache_free() code already deals with "this slab hasn't
-been accounted" because it obviously has to deal with allocations that
-were done without __GFP_ACCOUNT anyway. So there's no change needed on
-the freeing path, it already has to handle this all gracefully.
-
-I may be missing something, but it would seem to have very little
-downside, and fix a case that actually is visible right now.
-
-              Linus
+Sie=C4=87 Badawcza =C5=81ukasiewicz
+Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
+Al. Jerozolimskie 202, 02-486 Warszawa
 
