@@ -1,109 +1,212 @@
-Return-Path: <linux-kernel+bounces-33845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 322A1836F6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:15:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AD5C836F71
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:15:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C33B21F28AFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:15:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE3A11F2E89C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:15:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91D4A4177A;
-	Mon, 22 Jan 2024 17:39:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C3AD4643E;
+	Mon, 22 Jan 2024 17:39:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="eXaC9LBN"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yog+BDAp"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4522C4175F
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:39:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D104F4642C;
+	Mon, 22 Jan 2024 17:39:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705945166; cv=none; b=jWpkngAl2lpn7iCzum8tx1mmg7DRZX71u9sGsPRUk+LrN/4+aPEun+jptyRUwEyrbrTSWIu6iqQ0yQcmHnYPn45eUtTZ/07uzD9WeTTthRHYe4wAbhG6WYHBNAnQF7cwwqWkRvIyhwvL1zruB2Jj8BIT2cwtRNL0MsGnv+feSn0=
+	t=1705945172; cv=none; b=iPn+4zrKq9hIzR4DRxtkbY5V9X/bYxXq/HtLTM98RetPqebqeBe0oHLhufLcAty2qeacnTAZbLsLpKe+MlHNGGdf6nYcn0f+PYqJhhlSQhTMtxe1srJxjXTMvtw8cLJuYPe78Uqspy851Caz4YIThxSNnUUKA+wb1KyIy4vwpxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705945166; c=relaxed/simple;
-	bh=CAvYeYI2kz8KoiZF3Lrxx88mx+1idoUbkJ6hLoT8C20=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gl77l77giwaWXCju0HqzPcw/7NG38PY+LuSB3fSUtfUIygUcygLijHmNykDuG0fkyi8OoiRlaobsbeUGCDqTmYvDxwJ2jHfzcyYYmuLUrRkcSn5ALAqWDkGXM9PL+ty81uiuDtz5TRQalD8dPXybmy0r3l3vJSY+uIxcvP3QsGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=eXaC9LBN; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-50e78f1f41fso3367361e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:39:24 -0800 (PST)
+	s=arc-20240116; t=1705945172; c=relaxed/simple;
+	bh=hfCd1Y5oYmxXeZ+dlaZix8KLaxz5lElV/rFBFaBiI98=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GuLw/iJZ9jcN3QUBvqA5CVOh5wwND/OsG6NN0wQPYeeWUdQ7i2LBvoq+6BlU3MERV8a7C1RvEwgZhvUmfw+Mx/V5tILbs6kxKX2NQaXQhc3uvAXAKv8+Z3VQpMjxaKkkUlx9SPBVYVbAkxKdYoW231U5yjUy0RdTQpDyWXrvR7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yog+BDAp; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d74dce86f7so10233225ad.2;
+        Mon, 22 Jan 2024 09:39:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1705945163; x=1706549963; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=fa8a4vXTHxkTgPqpvg8FT2cqTtekezDLhidpa4qyO/I=;
-        b=eXaC9LBNyCoFkhW4P0MWX7otpt9jANXihntAwpFaHJqQVRNvQhMSCnOWjw4Ais8S4A
-         C6aK8zmrvM0RbY2Qh9uRVSX+FlEEy9W3XTuewxC8hd6UNgOj7bDpqM5MSO+hk593jMF5
-         bTU/wsTixpQlNCkO5zud8ETdmKXs0cAu8LQG8=
+        d=gmail.com; s=20230601; t=1705945170; x=1706549970; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=iRlYTVmwRF54QEgOCDB+moTbTPswdx4GRYVGmNIHl68=;
+        b=Yog+BDAp9WKLRGP3QHvNKVUpxA5sGv1LmgSBhB/nDyV0JuOL9lieXlK5yEgTXpZwVm
+         MzQjyRkmlrBfbBihDY1zbi5Z1V5vLgblztnAMwjUpLo0mveaK/N0zPSAuL1Rkj4XIJw4
+         CvklL654x0b8YKmb6dpzRVWfD7bWXZ4ddbZC/QsIaRlMXG9djUslDBhUaawKLArXn8O5
+         15NE3C/ah38VvVYbNQvd5XBnWrfOwL7cMlMXlXkDo5Q/nEKmBRBNJrHCMsUY+mCqQ04+
+         1e6SR9letSfo9T9izEdwiYMUAlkXNoKxWzA4sce3W7ovU6/vthuEG5zKHR70TDCCUW4G
+         QCDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705945163; x=1706549963;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1705945170; x=1706549970;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=fa8a4vXTHxkTgPqpvg8FT2cqTtekezDLhidpa4qyO/I=;
-        b=KnEu3Mq1ki00hkLljCTVSkPnWAfgrvgpgVUHG2grndWy82Szf6kvXGXQJUwLu5utiM
-         nRbg0lDV327HCaC0baOTMLGNRQuxa7sc0vCDEkrRnCKL0Cs1xr8uu2uwqaOED27JMtjY
-         apNi6DXYaYY7tlXcpRujTwZRg8ivBvzrHzzd8etWm+JQ2aFBwnaG6aplfSNyrUoTN6Nz
-         Uc8NlFLPDnaYGsWdYZtS21mYS6EI/MbLLAcVMX0xoZXbsbQRipusQ+eMtbIO5I4F4fRF
-         H5lzrLntl0N3/VocS4x4wfRSYmRyPthCNvoVEkC2RHrlPQik1JW8zcIvXHVRzC/tYay0
-         iA0Q==
-X-Gm-Message-State: AOJu0Ywv7xO9zzaJOnnyiqFex7qM5r0f3TgNsGwieareRolOnLdie1yl
-	vPGKosRdJ4Zpi9ZFos4i2kJdxx/yM+aNPeqYA1ASjbZToWrgkYyPXhngYMuGRV6//HuJ7I2VK5R
-	MZJIC7A==
-X-Google-Smtp-Source: AGHT+IEULYFuTGI6kGgL6cSejMwVCQ+D3b6WEstREz2WOIndAiIkWzyFDdGv0ZFrZ5SqNY6cyGeQWg==
-X-Received: by 2002:ac2:4c90:0:b0:50e:73af:598f with SMTP id d16-20020ac24c90000000b0050e73af598fmr1486587lfl.64.1705945163046;
-        Mon, 22 Jan 2024 09:39:23 -0800 (PST)
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
-        by smtp.gmail.com with ESMTPSA id br2-20020a056512400200b0050e75eba7dbsm2060567lfb.213.2024.01.22.09.39.22
-        for <linux-kernel@vger.kernel.org>
+        bh=iRlYTVmwRF54QEgOCDB+moTbTPswdx4GRYVGmNIHl68=;
+        b=WSgBpLU3Y+yU9DY4OkC6XbhvRxGX50KEyH+4mojTWZ+7RSzi4KfFwC5xBc7QGdBxp4
+         MD5DOkFZ1GBVPLdUnlbh7YMNp30VEeofu7M6cfo0P1BN8XhqvB1ZU1tdsHeYfYa9mGSy
+         3Tg4FZBSXuiiPJ8qnju8LoFVIlDT4lyS0Gr1CpzdMSQ+xCaEEVSE9A8IzY9l+LxdPbh9
+         wcaN3klzpqx+EH/D3TkGd1GVCYGl3mcNS8EqXzV+EmE/qq1cJQBunfSX807qoytG0KG1
+         4MwZ8pdS0Dvwh4iasE43vEKr2BYk9ErDdt/olU12tXl6+sCKeC9bX465v1F4jbufGi5w
+         PXSg==
+X-Gm-Message-State: AOJu0Yx+zHKjBc3RHANpcOV3ll1mfTvFAumGcoL3zbY1hDixHo+DaHPe
+	MEQxROeqpIBUT83L6B16zkFYIGlmym4oeKKJqXGMBdAc1najlw1L
+X-Google-Smtp-Source: AGHT+IFdOn4FdPrIQ0ppWcJpcTrHrmkNQ2x1tWtSGsVJVEb3zvx0+1VfIsNOGwNuwwtazqcsdF25Kw==
+X-Received: by 2002:a17:903:25d1:b0:1d7:ebe:9d4e with SMTP id jc17-20020a17090325d100b001d70ebe9d4emr4423977plb.92.1705945170002;
+        Mon, 22 Jan 2024 09:39:30 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id v20-20020a170902f0d400b001d74cee458asm2317033pla.107.2024.01.22.09.39.28
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 09:39:22 -0800 (PST)
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2cca8eb0509so39005141fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:39:22 -0800 (PST)
-X-Received: by 2002:a05:651c:124b:b0:2cc:b9c2:1b50 with SMTP id
- h11-20020a05651c124b00b002ccb9c21b50mr1489308ljh.106.1705945162034; Mon, 22
- Jan 2024 09:39:22 -0800 (PST)
+        Mon, 22 Jan 2024 09:39:29 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <a5a807c1-76ef-4cf7-a2cf-bc432c420ded@roeck-us.net>
+Date: Mon, 22 Jan 2024 09:39:27 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117143548.595884070@goodmis.org> <20240117143810.531966508@goodmis.org>
- <CAMuHMdXKiorg-jiuKoZpfZyDJ3Ynrfb8=X+c7x0Eewxn-YRdCA@mail.gmail.com>
- <20240122100630.6a400dd3@gandalf.local.home> <CAMuHMdXD0weO4oku8g2du6fj-EzxGaF+0i=zrPScSXwphFAZgg@mail.gmail.com>
- <20240122114743.7e46b7cb@gandalf.local.home> <CAHk-=wiq5mr+wSb6pmtt7QqBhQo_xr7ip=yMwQ5ryWVwCyMhfg@mail.gmail.com>
-In-Reply-To: <CAHk-=wiq5mr+wSb6pmtt7QqBhQo_xr7ip=yMwQ5ryWVwCyMhfg@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 22 Jan 2024 09:39:05 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjGxVVKvxVf=NDnMhB3=eQ_NMiEY3onG1wRAjJepig=aw@mail.gmail.com>
-Message-ID: <CAHk-=wjGxVVKvxVf=NDnMhB3=eQ_NMiEY3onG1wRAjJepig=aw@mail.gmail.com>
-Subject: Re: [for-linus][PATCH 1/3] eventfs: Have the inodes all for files and
- directories all be the same
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Kees Cook <keescook@chromium.org>, 
-	linux-kernel@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Christian Brauner <brauner@kernel.org>, 
-	Al Viro <viro@zeniv.linux.org.uk>, Ajay Kaher <ajay.kaher@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 07/10] watchdog: rzg2l_wdt: Add suspend/resume support
+Content-Language: en-US
+To: Claudiu <claudiu.beznea@tuxon.dev>, wim@linux-watchdog.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ geert+renesas@glider.be, magnus.damm@gmail.com, mturquette@baylibre.com,
+ sboyd@kernel.org, p.zabel@pengutronix.de, biju.das.jz@bp.renesas.com
+Cc: linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-clk@vger.kernel.org, Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240122111115.2861835-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240122111115.2861835-8-claudiu.beznea.uj@bp.renesas.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20240122111115.2861835-8-claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, 22 Jan 2024 at 09:37, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> Yeah, limiting it to directories will at least somewhat help the
-> address leaking.
+On 1/22/24 03:11, Claudiu wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> The RZ/G3S supports deep sleep states where power to most of the IP blocks
+> is cut off. To ensure proper working of the watchdog when resuming from
+> such states, the suspend function is stopping the watchdog and the resume
+> function is starting it. There is no need to configure the watchdog
+> in case the watchdog was stopped prior to starting suspend.
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> ---
+>   drivers/watchdog/rzg2l_wdt.c | 26 ++++++++++++++++++++++++++
+>   1 file changed, 26 insertions(+)
+> 
+> diff --git a/drivers/watchdog/rzg2l_wdt.c b/drivers/watchdog/rzg2l_wdt.c
+> index 9333dc1a75ab..186796b739f7 100644
+> --- a/drivers/watchdog/rzg2l_wdt.c
+> +++ b/drivers/watchdog/rzg2l_wdt.c
+> @@ -279,6 +279,7 @@ static int rzg2l_wdt_probe(struct platform_device *pdev)
+>   	priv->wdev.timeout = WDT_DEFAULT_TIMEOUT;
+>   
+>   	watchdog_set_drvdata(&priv->wdev, priv);
+> +	dev_set_drvdata(dev, priv);
+>   	ret = devm_add_action_or_reset(&pdev->dev, rzg2l_wdt_pm_disable, &priv->wdev);
+>   	if (ret)
+>   		return ret;
+> @@ -300,10 +301,35 @@ static const struct of_device_id rzg2l_wdt_ids[] = {
+>   };
+>   MODULE_DEVICE_TABLE(of, rzg2l_wdt_ids);
+>   
+> +static int rzg2l_wdt_suspend_late(struct device *dev)
+> +{
+> +	struct rzg2l_wdt_priv *priv = dev_get_drvdata(dev);
+> +
+> +	if (!watchdog_active(&priv->wdev))
+> +		return 0;
+> +
+> +	return rzg2l_wdt_stop(&priv->wdev);
+> +}
+> +
+> +static int rzg2l_wdt_resume_early(struct device *dev)
+> +{
+> +	struct rzg2l_wdt_priv *priv = dev_get_drvdata(dev);
+> +
+> +	if (!watchdog_active(&priv->wdev))
+> +		return 0;
+> +
+> +	return rzg2l_wdt_start(&priv->wdev);
+> +}
+> +
+> +static const struct dev_pm_ops rzg2l_wdt_pm_ops = {
+> +	LATE_SYSTEM_SLEEP_PM_OPS(rzg2l_wdt_suspend_late, rzg2l_wdt_resume_early)
+> +};
+> +
+>   static struct platform_driver rzg2l_wdt_driver = {
+>   	.driver = {
+>   		.name = "rzg2l_wdt",
+>   		.of_match_table = rzg2l_wdt_ids,
+> +		.pm = pm_ptr(&rzg2l_wdt_pm_ops),
 
-Actually, why not juist add an inode number to your data structures,
-at least for directories? And just do a static increment on it as they
-get registered?
+I think this will create a build error if CONFIG_PM=n because rzg2l_wdt_pm_ops
+will be unused but is not marked with __maybe_unused. But then the driver won't be
+operational with CONFIG_PM=n, so I really wonder if it makes sense to include any
+such conditional code instead of making the driver depend on CONFIG_PM.
 
-That avoids the whole issue with possibly leaking kernel address data.
+I really don't think it is desirable to suggest that the driver would work with
+CONFIG_PM=n if that isn't really true.
 
-              Linus
+Guenter
+
+>   	},
+>   	.probe = rzg2l_wdt_probe,
+>   };
+
 
