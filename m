@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-33288-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33289-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF2AB8367FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:24:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EF7D8367FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:24:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B26191C20C4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:24:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 579E6289240
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:24:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 714295C8E4;
-	Mon, 22 Jan 2024 15:00:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62C064120C;
+	Mon, 22 Jan 2024 15:00:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OQK7aWnz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pAEzrwXP"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7CAB40C13;
-	Mon, 22 Jan 2024 15:00:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A79D65C8F8;
+	Mon, 22 Jan 2024 15:00:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705935622; cv=none; b=tysE53y2uqMbu+fie79YmekZZVsFGu6aLFxdpBAvJoops++dInYlwnZk/ycH4SzKd7GouNjeyawhK2TQYFBCUf6WvurB4HXOCtHL+oZwWkqQFOtoWlBdueE6hCZzK9hAw8Atq8pDUvZX6pBHPOc5p5mW8hlKkw2FBoMgSmRSQFI=
+	t=1705935631; cv=none; b=RkvqAjbaXdFXNRNIatZUtWAtI+HGpUSbMTY+Hn1fIEYbCr/h2uAir0z6CV0XUg8mC4lAB+APMou4liZX4/4BgMXE7YGY938WM2E2VG4ZOdkLq2N/myjG1FhgF0QCEHsedTINcEK1zt+ShSvZ+Gg4WDNP2Via/t4GhT73JRC1JeQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705935622; c=relaxed/simple;
-	bh=ziCgN18ZBJKgFtWmWXYcTNGfWO2DoZ1XDQaXC3PcFpE=;
+	s=arc-20240116; t=1705935631; c=relaxed/simple;
+	bh=6ZXLAZ3CUd7RckLL3TGYSlSEb3X1k/ch4z1/v29BQPw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gQLAKXpv/PaVn/wtV4Oo5o9N8kD8zq64YsGvwEmZOVSupplbSnJPb/0S+qjmuntee2re6j/QxxXnwY4ePXOLMa8SNRwqvZQxgO7eobT68r6AKQxOv8oTeIN3df5TJgS3qYut1dCD23LR0aDxdFtXZBpPPSJybkF73Iu/ClMwVKQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OQK7aWnz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 113D5C43390;
-	Mon, 22 Jan 2024 15:00:19 +0000 (UTC)
+	 MIME-Version; b=B9Ouiw955tmaq+modq+uZN89GRW0FXmDU1IDYkcPWavQ1VBVEzb8SZYlqV+CvOQwnMilIxU/3o8DGLQj+3U+Kr0Jiv1YBZFtnFJ8KZ2KRfnLuYr4Y9NbFknesV88Vwr542qttktq4pNw7/OkB0o737GbN3QA+e2BIav+5Ozm87M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pAEzrwXP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E686BC433F1;
+	Mon, 22 Jan 2024 15:00:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705935622;
-	bh=ziCgN18ZBJKgFtWmWXYcTNGfWO2DoZ1XDQaXC3PcFpE=;
+	s=k20201202; t=1705935631;
+	bh=6ZXLAZ3CUd7RckLL3TGYSlSEb3X1k/ch4z1/v29BQPw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OQK7aWnzjZzdFVGzDp+JNdBtFy5E8iIU+z4fMMRPepQ0bBmSkMOxZ4WaOiGrouQJm
-	 75pPS4Le4ZKUwSZEv+GubI3qgjC0c6c0tNDGlkmAsy2LyYc4Scw4NV4nGJhhriS3aE
-	 Mg7aDpdXYnyMeqXQ1JWv2Dx6vO/AtFIDREpwVYzz+5DXhF2i2B5H0BWYrLijvn3thq
-	 5zBTUbT8PcicdUm5kOzXxRroJh++3wFUSQERhwAaaQiYe3VgZ1MDuQrDA08A8zaU9S
-	 SMnXuP4fZ9u6nTc8Sasju/VrY8Q4xn81Orue0v6j2ik1SpzqVuJR1TxTl39FejJ1Fe
-	 /Zc6IM/4BS+Vw==
+	b=pAEzrwXP663CBCxl5C1oxV+iOTiexH2M33bMSLwAh2RPwOWHiizIrivZBDHDhHRFd
+	 xtItIAXd0IXA+mDM6qiWizjSzIQugw9wEBsu7IkjbqJZNYjj+KdJQcoB7ixFcZjr4/
+	 QH97JAhcGwVP91e/z0yPHxBlBBr7dy350qRl6qI7o/Itkr5yF74T+AZEAkNYwjK9CJ
+	 NUDQjSq5UumoXxTPf3qLnIQ4KcGwwhACKry9NJo/SMul231vDp5c/4fZ8nEz6wC5L6
+	 8FDbHFPFe2V2eSlmfLk73PY/6WirVWyO4oJdpgn2+j13e9LnJbbEinUlEHoVir3+vG
+	 CPX1tYqi3R0pA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Josip Pavic <josip.pavic@amd.com>,
-	Aric Cyr <aric.cyr@amd.com>,
+Cc: Allen Pan <allen.pan@amd.com>,
+	Charlene Liu <charlene.liu@amd.com>,
 	Wayne Lin <wayne.lin@amd.com>,
 	Daniel Wheeler <daniel.wheeler@amd.com>,
 	Alex Deucher <alexander.deucher@amd.com>,
@@ -56,16 +56,12 @@ Cc: Josip Pavic <josip.pavic@amd.com>,
 	Xinhui.Pan@amd.com,
 	airlied@gmail.com,
 	daniel@ffwll.ch,
-	qingqing.zhuo@amd.com,
-	hamza.mahfooz@amd.com,
-	mario.limonciello@amd.com,
-	wenjing.liu@amd.com,
-	aurabindo.pillai@amd.com,
+	Qingqing.Zhuo@amd.com,
 	amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.7 66/88] drm/amd/display: make flip_timestamp_in_us a 64-bit variable
-Date: Mon, 22 Jan 2024 09:51:39 -0500
-Message-ID: <20240122145608.990137-66-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.7 67/88] drm/amd/display: fix usb-c connector_type
+Date: Mon, 22 Jan 2024 09:51:40 -0500
+Message-ID: <20240122145608.990137-67-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122145608.990137-1-sashal@kernel.org>
 References: <20240122145608.990137-1-sashal@kernel.org>
@@ -80,41 +76,46 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.1
 Content-Transfer-Encoding: 8bit
 
-From: Josip Pavic <josip.pavic@amd.com>
+From: Allen Pan <allen.pan@amd.com>
 
-[ Upstream commit 6fb12518ca58412dc51054e2a7400afb41328d85 ]
+[ Upstream commit 0d26644bc57d8737c8e2fb3145366f7d0b941935 ]
 
-[Why]
-This variable currently overflows after about 71 minutes. This doesn't
-cause any known functional issues but it does make debugging more
-difficult.
+[why]
+BIOS switches to use USB-C connector type 0x18, but VBIOS's
+objectInfo table not supported yet. driver needs to patch it
+based on enc_cap from system integration info table.
 
-[How]
-Make it a 64-bit variable.
-
-Reviewed-by: Aric Cyr <aric.cyr@amd.com>
+Reviewed-by: Charlene Liu <charlene.liu@amd.com>
 Acked-by: Wayne Lin <wayne.lin@amd.com>
-Signed-off-by: Josip Pavic <josip.pavic@amd.com>
+Signed-off-by: Allen Pan <allen.pan@amd.com>
 Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/dc_hw_types.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../gpu/drm/amd/display/dc/dcn35/dcn35_dio_link_encoder.c    | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dc_hw_types.h b/drivers/gpu/drm/amd/display/dc/dc_hw_types.h
-index e2a3aa8812df..811474f4419b 100644
---- a/drivers/gpu/drm/amd/display/dc/dc_hw_types.h
-+++ b/drivers/gpu/drm/amd/display/dc/dc_hw_types.h
-@@ -244,7 +244,7 @@ enum pixel_format {
- #define DC_MAX_DIRTY_RECTS 3
- struct dc_flip_addrs {
- 	struct dc_plane_address address;
--	unsigned int flip_timestamp_in_us;
-+	unsigned long long flip_timestamp_in_us;
- 	bool flip_immediate;
- 	/* TODO: add flip duration for FreeSync */
- 	bool triplebuffer_flips;
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn35/dcn35_dio_link_encoder.c b/drivers/gpu/drm/amd/display/dc/dcn35/dcn35_dio_link_encoder.c
+index f91e08895275..da94e5309fba 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn35/dcn35_dio_link_encoder.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn35/dcn35_dio_link_encoder.c
+@@ -256,6 +256,10 @@ void dcn35_link_encoder_construct(
+ 		enc10->base.features.flags.bits.IS_UHBR10_CAPABLE = bp_cap_info.DP_UHBR10_EN;
+ 		enc10->base.features.flags.bits.IS_UHBR13_5_CAPABLE = bp_cap_info.DP_UHBR13_5_EN;
+ 		enc10->base.features.flags.bits.IS_UHBR20_CAPABLE = bp_cap_info.DP_UHBR20_EN;
++		if (bp_cap_info.DP_IS_USB_C) {
++			/*BIOS not switch to use CONNECTOR_ID_USBC = 24 yet*/
++			enc10->base.features.flags.bits.DP_IS_USB_C = 1;
++		}
+ 
+ 	} else {
+ 		DC_LOG_WARNING("%s: Failed to get encoder_cap_info from VBIOS with error code %d!\n",
+@@ -264,4 +268,5 @@ void dcn35_link_encoder_construct(
+ 	}
+ 	if (enc10->base.ctx->dc->debug.hdmi20_disable)
+ 		enc10->base.features.flags.bits.HDMI_6GB_EN = 0;
++
+ }
 -- 
 2.43.0
 
