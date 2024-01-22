@@ -1,63 +1,64 @@
-Return-Path: <linux-kernel+bounces-33293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0B2F836809
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:25:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AB4583680C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:26:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78CDC1F2472F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:25:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DF6F1C22C94
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:26:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C83685D73B;
-	Mon, 22 Jan 2024 15:01:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ED1241774;
+	Mon, 22 Jan 2024 15:01:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SkQ6OXgB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c8Q39pps"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 179DB5D72B;
-	Mon, 22 Jan 2024 15:01:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2FB55D72B;
+	Mon, 22 Jan 2024 15:01:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705935671; cv=none; b=WE62eSiiLUzHD6ueF3KL2O8SZXySFxjYdCgRvRSm/VnOESTZPeVWMsImkx0QMBUBEumTgelzbE9luXQ+r4+PT90wbsZLugUDdpBpqZiOL5gXMw5YuY0Cxl/PORtWwSe9qMtk+Z9iC0TO2WuyfL0vhinF8eLY3cbbooDi9PlnOB8=
+	t=1705935675; cv=none; b=q+EXg/h7p7KUkR2KD606R+dcEC1YsIBIWHfKpPS3tIkGfjuYd146GwwI2qMu8sYxp+Ub6TuahswOozdIVU60EWO96HEWVrYss3EPisTWUYq1k6MFOXbYWdtjxlfddnllkUGkKLN35MeAQnvzqgQ2VVPF1Ih8BafjVHDsmr16+KI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705935671; c=relaxed/simple;
-	bh=IVyJGvpiA9eg1GLGeKrTfWT38yVbLDTSmjexmMIhq5g=;
+	s=arc-20240116; t=1705935675; c=relaxed/simple;
+	bh=jMt1X1UPSGWztS6fWUz+xylWbP0lQWWMOLDrSFZxAZw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HZ8Ir7keIHoYlyh3dbgnP7P+vyrvjTXFWgmM6TWqVlWops/8SiwIlXkTYqu40kYZT/KbFf1+uF7hAfYOZ/mXwWFXbSRSWnjU9RXs1YJARm1444l2Tw3/rY7vTuWXWE1boyIZzC8bGfvBh7TuM292g+VkEIUrw9scxORgF80GBNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SkQ6OXgB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1F82C43330;
-	Mon, 22 Jan 2024 15:01:08 +0000 (UTC)
+	 MIME-Version; b=LiRn24l/RqZDhIJmEsmMPbEDhndzod2HoNCYy97UxAZaH6vIElNkO/JQEvpeSBozi2TEbLA/8nxqeZCFZ4M969rIcEG25wp5yrfkXvVxjLKnbjNvrSywdVwzMDj0gBNld5PyHzwQr4pQK0N+aPL7QXJhKsomAvP+dO8LvqwboFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c8Q39pps; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAA12C433F1;
+	Mon, 22 Jan 2024 15:01:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705935670;
-	bh=IVyJGvpiA9eg1GLGeKrTfWT38yVbLDTSmjexmMIhq5g=;
+	s=k20201202; t=1705935674;
+	bh=jMt1X1UPSGWztS6fWUz+xylWbP0lQWWMOLDrSFZxAZw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SkQ6OXgBj3jDYP8HrLfmSYyk2KIhwJQigWVbv3h8dOci+U82Q4GrCM/KXff93mW9S
-	 PlM2EziLnA506N/70LY6NBCQnMkQeSb4iakhCHF7hdrod/byKB8qXFqIOkRFLVGImg
-	 vUbtd9kPB50F17LeTiu1ZymVCGfors+WYQVgD1eSYzh8sChbd2E4Mzi1Ys0H/U7c5G
-	 WcJsUSS/xFxeZ0Wo1eNk5iSfixxb0oeQTCvV/IJoX7UDOsitOYRaqDmmfFYifGpsB0
-	 N6FzfGg0ubHkuV8vpM9sUBVQ6tzEGWlJOm0PNLzZPMTr5R8h1gQTXCU+9NA42K+53w
-	 4vaNzA5+2qd7A==
+	b=c8Q39ppsM/YaOVhAZ+2uRn/5CxSu2GYc30UsCt6XjnxgUo84H9kpleyqJxYQmDZDL
+	 Wut4D56+waMHf8yf8PipaErC8HSOpywwXrK5VOdGjaMi4DYyN5QT/ErwEcs2gzfr8/
+	 Tj4+uKn/gh2+ue09M+OEs2eijy1MWJXpU/m+fpOBK9/GMCgg+5WwYmpw8Vy28wgK3P
+	 +9uJQC0l3yD114RXKxYDD8CybK/jSud2thqzoSm9dGNYZ4BlKk90EcPeyxa9SdJBdJ
+	 4n0X5HULSdUf1tOpTNyI9ww9Wzj+vE2KZ/17/IYNEwHTKF7lQoErMyoWDVjEOpALx0
+	 QvqZqbtI3hzRA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
-	"Oliver F . Brown" <oliver.brown@oss.nxp.com>,
-	Ranjani Vaidyanathan <ranjani.vaidyanathan@nxp.com>,
-	Abel Vesa <abel.vesa@linaro.org>,
+Cc: Gergo Koteles <soyer@irl.hu>,
+	Takashi Iwai <tiwai@suse.de>,
 	Sasha Levin <sashal@kernel.org>,
-	abelvesa@kernel.org,
-	mturquette@baylibre.com,
-	sboyd@kernel.org,
-	shawnguo@kernel.org,
-	linux-clk@vger.kernel.org,
-	linux-imx@nxp.com,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.7 71/88] clk: imx: clk-imx8qxp: fix LVDS bypass, pixel and phy clocks
-Date: Mon, 22 Jan 2024 09:51:44 -0500
-Message-ID: <20240122145608.990137-71-sashal@kernel.org>
+	perex@perex.cz,
+	tiwai@suse.com,
+	sbinding@opensource.cirrus.com,
+	kailang@realtek.com,
+	luke@ljones.dev,
+	andy.chi@canonical.com,
+	shenghao-ding@ti.com,
+	ruinairas1992@gmail.com,
+	vitalyr@opensource.cirrus.com,
+	linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 72/88] ALSA: hda/tas2781: add fixup for Lenovo 14ARB7
+Date: Mon, 22 Jan 2024 09:51:45 -0500
+Message-ID: <20240122145608.990137-72-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122145608.990137-1-sashal@kernel.org>
 References: <20240122145608.990137-1-sashal@kernel.org>
@@ -72,75 +73,67 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.1
 Content-Transfer-Encoding: 8bit
 
-From: Alexander Stein <alexander.stein@ew.tq-group.com>
+From: Gergo Koteles <soyer@irl.hu>
 
-[ Upstream commit 3f5f63adeea7e7aa715e101ffe4b4ac9705f9664 ]
+[ Upstream commit b5cb53fd32779f3a971c45bcd997ae2608aa1086 ]
 
-To be compatible with SCU firmware based on 1.15 a different clock
-routing for LVDS is needed.
+The 14ARB7 has two tas2563 amplifier on i2c.
+Connect it to the tas2781 driver.
 
-Signed-off-by: Oliver F. Brown <oliver.brown@oss.nxp.com>
-Signed-off-by: Ranjani Vaidyanathan <ranjani.vaidyanathan@nxp.com>
-Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-Reviewed-by: Abel Vesa <abel.vesa@linaro.org>
-Link: https://lore.kernel.org/r/20231218122407.2757175-1-alexander.stein@ew.tq-group.com/
-Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+Signed-off-by: Gergo Koteles <soyer@irl.hu>
+Link: https://lore.kernel.org/r/abce9ee55689523562feb72383377171a489ddc7.1703891777.git.soyer@irl.hu
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/imx/clk-imx8qxp.c | 24 ++++++++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
+ sound/pci/hda/patch_realtek.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/drivers/clk/imx/clk-imx8qxp.c b/drivers/clk/imx/clk-imx8qxp.c
-index 41f0a45aa162..7d8883916cac 100644
---- a/drivers/clk/imx/clk-imx8qxp.c
-+++ b/drivers/clk/imx/clk-imx8qxp.c
-@@ -66,6 +66,22 @@ static const char * const lcd_pxl_sels[] = {
- 	"lcd_pxl_bypass_div_clk",
- };
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 70b17b08d4ff..9606f2448fda 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6984,6 +6984,12 @@ static void tas2781_fixup_i2c(struct hda_codec *cdc,
+ 	 tas2781_generic_fixup(cdc, action, "i2c", "TIAS2781");
+ }
  
-+static const char *const lvds0_sels[] = {
-+	"clk_dummy",
-+	"clk_dummy",
-+	"clk_dummy",
-+	"clk_dummy",
-+	"mipi0_lvds_bypass_clk",
-+};
++static void yoga7_14arb7_fixup_i2c(struct hda_codec *cdc,
++	const struct hda_fixup *fix, int action)
++{
++	 tas2781_generic_fixup(cdc, action, "i2c", "INT8866");
++}
 +
-+static const char *const lvds1_sels[] = {
-+	"clk_dummy",
-+	"clk_dummy",
-+	"clk_dummy",
-+	"clk_dummy",
-+	"mipi1_lvds_bypass_clk",
-+};
-+
- static const char * const mipi_sels[] = {
- 	"clk_dummy",
- 	"clk_dummy",
-@@ -207,9 +223,9 @@ static int imx8qxp_clk_probe(struct platform_device *pdev)
- 	/* MIPI-LVDS SS */
- 	imx_clk_scu("mipi0_bypass_clk", IMX_SC_R_MIPI_0, IMX_SC_PM_CLK_BYPASS);
- 	imx_clk_scu("mipi0_pixel_clk", IMX_SC_R_MIPI_0, IMX_SC_PM_CLK_PER);
--	imx_clk_scu("mipi0_lvds_pixel_clk", IMX_SC_R_LVDS_0, IMX_SC_PM_CLK_MISC2);
- 	imx_clk_scu("mipi0_lvds_bypass_clk", IMX_SC_R_LVDS_0, IMX_SC_PM_CLK_BYPASS);
--	imx_clk_scu("mipi0_lvds_phy_clk", IMX_SC_R_LVDS_0, IMX_SC_PM_CLK_MISC3);
-+	imx_clk_scu2("mipi0_lvds_pixel_clk", lvds0_sels, ARRAY_SIZE(lvds0_sels), IMX_SC_R_LVDS_0, IMX_SC_PM_CLK_MISC2);
-+	imx_clk_scu2("mipi0_lvds_phy_clk", lvds0_sels, ARRAY_SIZE(lvds0_sels), IMX_SC_R_LVDS_0, IMX_SC_PM_CLK_MISC3);
- 	imx_clk_scu2("mipi0_dsi_tx_esc_clk", mipi_sels, ARRAY_SIZE(mipi_sels), IMX_SC_R_MIPI_0, IMX_SC_PM_CLK_MST_BUS);
- 	imx_clk_scu2("mipi0_dsi_rx_esc_clk", mipi_sels, ARRAY_SIZE(mipi_sels), IMX_SC_R_MIPI_0, IMX_SC_PM_CLK_SLV_BUS);
- 	imx_clk_scu2("mipi0_dsi_phy_clk", mipi_sels, ARRAY_SIZE(mipi_sels), IMX_SC_R_MIPI_0, IMX_SC_PM_CLK_PHY);
-@@ -219,9 +235,9 @@ static int imx8qxp_clk_probe(struct platform_device *pdev)
+ /* for alc295_fixup_hp_top_speakers */
+ #include "hp_x360_helper.c"
  
- 	imx_clk_scu("mipi1_bypass_clk", IMX_SC_R_MIPI_1, IMX_SC_PM_CLK_BYPASS);
- 	imx_clk_scu("mipi1_pixel_clk", IMX_SC_R_MIPI_1, IMX_SC_PM_CLK_PER);
--	imx_clk_scu("mipi1_lvds_pixel_clk", IMX_SC_R_LVDS_1, IMX_SC_PM_CLK_MISC2);
- 	imx_clk_scu("mipi1_lvds_bypass_clk", IMX_SC_R_LVDS_1, IMX_SC_PM_CLK_BYPASS);
--	imx_clk_scu("mipi1_lvds_phy_clk", IMX_SC_R_LVDS_1, IMX_SC_PM_CLK_MISC3);
-+	imx_clk_scu2("mipi1_lvds_pixel_clk", lvds1_sels, ARRAY_SIZE(lvds1_sels), IMX_SC_R_LVDS_1, IMX_SC_PM_CLK_MISC2);
-+	imx_clk_scu2("mipi1_lvds_phy_clk", lvds1_sels, ARRAY_SIZE(lvds1_sels), IMX_SC_R_LVDS_1, IMX_SC_PM_CLK_MISC3);
- 
- 	imx_clk_scu2("mipi1_dsi_tx_esc_clk", mipi_sels, ARRAY_SIZE(mipi_sels), IMX_SC_R_MIPI_1, IMX_SC_PM_CLK_MST_BUS);
- 	imx_clk_scu2("mipi1_dsi_rx_esc_clk", mipi_sels, ARRAY_SIZE(mipi_sels), IMX_SC_R_MIPI_1, IMX_SC_PM_CLK_SLV_BUS);
+@@ -7454,6 +7460,7 @@ enum {
+ 	ALC236_FIXUP_DELL_DUAL_CODECS,
+ 	ALC287_FIXUP_CS35L41_I2C_2_THINKPAD_ACPI,
+ 	ALC287_FIXUP_TAS2781_I2C,
++	ALC287_FIXUP_YOGA7_14ARB7_I2C,
+ 	ALC245_FIXUP_HP_MUTE_LED_COEFBIT,
+ 	ALC245_FIXUP_HP_X360_MUTE_LEDS,
+ 	ALC287_FIXUP_THINKPAD_I2S_SPK,
+@@ -9568,6 +9575,12 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_THINKPAD_ACPI,
+ 	},
++	[ALC287_FIXUP_YOGA7_14ARB7_I2C] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = yoga7_14arb7_fixup_i2c,
++		.chained = true,
++		.chain_id = ALC285_FIXUP_THINKPAD_HEADSET_JACK,
++	},
+ 	[ALC245_FIXUP_HP_MUTE_LED_COEFBIT] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc245_fixup_hp_mute_led_coefbit,
+@@ -10221,6 +10234,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x3853, "Lenovo Yoga 7 15ITL5", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
+ 	SND_PCI_QUIRK(0x17aa, 0x3855, "Legion 7 16ITHG6", ALC287_FIXUP_LEGION_16ITHG6),
+ 	SND_PCI_QUIRK(0x17aa, 0x3869, "Lenovo Yoga7 14IAL7", ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK_PIN),
++	SND_PCI_QUIRK(0x17aa, 0x3870, "Lenovo Yoga 7 14ARB7", ALC287_FIXUP_YOGA7_14ARB7_I2C),
+ 	SND_PCI_QUIRK(0x17aa, 0x387d, "Yoga S780-16 pro Quad AAC", ALC287_FIXUP_TAS2781_I2C),
+ 	SND_PCI_QUIRK(0x17aa, 0x387e, "Yoga S780-16 pro Quad YC", ALC287_FIXUP_TAS2781_I2C),
+ 	SND_PCI_QUIRK(0x17aa, 0x3881, "YB9 dual power mode2 YC", ALC287_FIXUP_TAS2781_I2C),
 -- 
 2.43.0
 
