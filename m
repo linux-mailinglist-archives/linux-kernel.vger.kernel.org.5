@@ -1,96 +1,95 @@
-Return-Path: <linux-kernel+bounces-33799-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33798-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53C2F836EAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:00:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BED4D836EAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:00:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CAC628D904
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:00:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7609A1F2D5F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:00:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C627B52F7B;
-	Mon, 22 Jan 2024 17:22:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PyPltJOG"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 894B552F6A;
-	Mon, 22 Jan 2024 17:22:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E598051C54;
+	Mon, 22 Jan 2024 17:22:47 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B37B51C50
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:22:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705944173; cv=none; b=G/5TZDSr7S/lWEwKl00XKvn0T4ARBjF6kiwhDxFxFdL2qbWtZ3OloyYW5sEFhoRBWBlG5iBsKTjNkUwuNlKlDg3iwF2QcfenCm+Wbfarwnv0xWqqQm0ePVZp5HWu2aJrYP8GbBbTu24Ej01whxISLm6NESt+OT9e4WFMeIRUuG0=
+	t=1705944167; cv=none; b=mCtBI08pMybMOfV3193PsziDBir6gAmlb7QXAN7d1Ym2l1bVJlRSNv/EAYYbR8j42EhbnNEIWApnGF/ZBgBHQuc5n3v1HLBYwhhZg+5G8oUa9T+fgPQk/1cUqiUw4chsughY9F4qF4br6lhNuAD37GYr1IfGBwLJKE43yYBZswQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705944173; c=relaxed/simple;
-	bh=nMd8l1R4VjnN4kwtNc6jWq5EKtW15kh24YWU3Q+Oyi4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=etNyUP2T/R0rqCpX5MoBE6WX4/DaVE63riUFACeK+hD86LH4rmxI+ymwrBsLwvambpFY3SzF0x4a9MkY5vkTYOFc3tfMw9RM9XKU6PzGp8tcgtN6QKGnluUJ+XGzW0oZyOsS3G83OY4BdP1ekodb9LsoFEMYMFG/WkdT6J9utps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PyPltJOG; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705944172; x=1737480172;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=nMd8l1R4VjnN4kwtNc6jWq5EKtW15kh24YWU3Q+Oyi4=;
-  b=PyPltJOGt7QrF0nktKDt8ECABUJ4lCMkGQZt27K0DT6vAhQZc0MkKbCH
-   pxOZ/x6VxYXzNd4KymGP2zw42uIyiCT0qyHtd5YKDe96lDKCSSLO7f75x
-   7epaRecX7zp2Cv0mJNavA/JzFQ4NTx9zS6BCSkwO1fl8wChyQ6LdkHkrj
-   4aBDPUXhTsEadhYVTyNQopFacJVVw8QYjdXwxtzeeAdSGPldW3VQm0Gsi
-   yJ4UBj2RQP63PVIjuIVi1o/95WjlGZMMnRQl9RsHwvmSAia0rxQ9lccC/
-   y9sHWxDzbBT+OpT1Ez5O6+Xx0717B5VY0H/byB+vYPbtie/Ruh2p3wSzF
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="8379604"
-X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
-   d="scan'208";a="8379604"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 09:22:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="735237565"
-X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
-   d="scan'208";a="735237565"
-Received: from mshelego-mobl3.ger.corp.intel.com (HELO localhost) ([10.252.40.242])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 09:22:39 -0800
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Daniel Vetter <daniel.vetter@ffwll.ch>, Joonas Lahtinen
- <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>,
- Intel Graphics <intel-gfx@lists.freedesktop.org>, DRI
- <dri-devel@lists.freedesktop.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the drm-intel tree
-In-Reply-To: <20240122092520.68a86f48@canb.auug.org.au>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20231114141715.6f435118@canb.auug.org.au>
- <8734x8u4la.fsf@intel.com> <87y1f0sol1.fsf@intel.com>
- <20240122092520.68a86f48@canb.auug.org.au>
-Date: Mon, 22 Jan 2024 19:22:35 +0200
-Message-ID: <87o7ddnuzo.fsf@intel.com>
+	s=arc-20240116; t=1705944167; c=relaxed/simple;
+	bh=cHclBrzs9BlYr7t/j2CTkwuESk1+v6PN7H5BUrU0yXE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WKHCU6rf8feolCNIWbSlpW9VBIFE/qFFSbzy5wg+ZYXhBZeHYZSmKiBz5+5tpbMrdAL+jsE7RCNNMqe6P+PLcwm8W4nIkymRfU9JZzxXBfzVghqeBl4uby8vnnfEYuObxVOEi/hHQGIqChf+q7XnGX0K1fPnjz7sCIFKB5iWj+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EC7B01FB;
+	Mon, 22 Jan 2024 09:23:30 -0800 (PST)
+Received: from [10.1.33.151] (XHFQ2J9959.cambridge.arm.com [10.1.33.151])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 271523F5A1;
+	Mon, 22 Jan 2024 09:22:44 -0800 (PST)
+Message-ID: <d2272d63-1999-4cb3-be61-4a9fbd00e728@arm.com>
+Date: Mon, 22 Jan 2024 17:22:42 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] mm/memory: fix folio_set_dirty() vs.
+ folio_mark_dirty() in zap_pte_range()
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org, Matthew Wilcox <willy@infradead.org>,
+ Andrew Morton <akpm@linux-foundation.org>
+References: <20240122171751.272074-1-david@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240122171751.272074-1-david@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, 22 Jan 2024, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->> [1] https://patchwork.freedesktop.org/patch/msgid/20231114081033.27343-1-bagasdotme@gmail.com
->
-> This is still not fixed.
+On 22/01/2024 17:17, David Hildenbrand wrote:
+> The correct folio replacement for "set_page_dirty()" is
+> "folio_mark_dirty()", not "folio_set_dirty()". Using the latter won't
+> properly inform the FS using the dirty_folio() callback.
 
-Thanks for the reminder. Commit 1a84c213146a ("drm/dp_mst: Separate
-@failing_port list in drm_dp_mst_atomic_check_mgr() comment") in
-drm-misc-fixes, likely to show up in -rc2.
+That set_page_dirty() naming is pretty nasty, hey.
 
-BR,
-Jani.
+> 
+> This has been found by code inspection, but likely this can result in
+> some real trouble when zapping dirty PTEs that point at clean pagecache
+> folios.
+> 
+> Reported-by: Ryan Roberts <ryan.roberts@arm.com>
+> Closes: https://lkml.kernel.org/r/2445cedb-61fb-422c-8bfb-caf0a2beed62@arm.com
+> Fixes: c46265030b0f ("mm/memory: page_remove_rmap() -> folio_remove_rmap_pte()")
+> Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
+Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
 
--- 
-Jani Nikula, Intel
+> ---
+>  mm/memory.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 7e1f4849463aa..89bcae0b224d6 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -1464,7 +1464,7 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+>  			delay_rmap = 0;
+>  			if (!folio_test_anon(folio)) {
+>  				if (pte_dirty(ptent)) {
+> -					folio_set_dirty(folio);
+> +					folio_mark_dirty(folio);
+>  					if (tlb_delay_rmap(tlb)) {
+>  						delay_rmap = 1;
+>  						force_flush = 1;
+
 
