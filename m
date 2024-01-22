@@ -1,234 +1,167 @@
-Return-Path: <linux-kernel+bounces-33627-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33630-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F2C1836C76
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:06:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DD38836C7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:07:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F2641F25AF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:06:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC1521F24974
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:07:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99B04495E4;
-	Mon, 22 Jan 2024 15:50:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 399C04A996;
+	Mon, 22 Jan 2024 15:52:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Rw8SPQRi"
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2050.outbound.protection.outlook.com [40.107.92.50])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RPbdCksU"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F7993D997
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 15:50:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.50
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705938657; cv=fail; b=OGh+2Cb8p1eXFPpPz8O33rTHP73rLmHzaKDM7pFL96OLSDKgi//lQE/qOrHUBp5sJzX+DKz6PSaY5HwMtZ3cmQ+FkyL3lz6xgl3IqEtrVJOtbpMA51XKdNDuvqjmvrifebAAUg/3EZbFz3ywljIESBGDGmxCOvlfrgaGWc+ZcS8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705938657; c=relaxed/simple;
-	bh=94vbXgYcArHybx4OiAGp15beIjeWi6jfU9eV9Un1qGw=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=mILgpw+LqhbhHwl0pdnwSF8YkTReddfxGQR6m7qDlEG+gflDJ22IyyJu4kLfj0O4BcoRZZ04gHzv9FqGWsaRxU1HBCQtT/llNKg1jyFYkMa3qmzMKQB2jPMkYkcRh2MRr0gl1Duz5LFF8hWOwdcLB0Ght7IVCNnQOYc8bKKyOho=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Rw8SPQRi; arc=fail smtp.client-ip=40.107.92.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Yncd9T9hz+sDSlrr5cByKM6+4bVY/E57EWblaY9BtkAZ2JVlqsJXF9Pqf4DYOfXWYHr4TR7fTwzy+tK5ZTeUsCkt8j1CGm+MEeJlcSSWymi0KwQunBWiaFMScl0ytzNYoSLyLX92CYD21ANN0rZj2W2PJnUcHIwzrTtqY+FpAanMxwuxpv96ThZETkBn+n0ZeVizVXIcsFGyHBCNzZSG/idIs2BhaKK2ZQVoJrlHIqMI4XJ43pZO4FT/UajSvaTgWqGD8u47IKixWrACYyZENSkRPIifd+AnAXJzhHtxH6zGVwfZIBqnyEi1poJ/9IR93NPXLNDzZEtocaYNPWcMYw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=J2XVi3eSZ5D8q1eTjepiXFv2aPbkAy7Twd66eqao4qg=;
- b=FCocUNFrT8rhowLY3YNyQNCcysamtA5y2IkBgX+dzFf1cHTo4/grRZtfznteA6YKn1PEHAlhXL5Jxrzn8KCwMmI5j03oLHWm3D1O3G6y01dut5r5HK23PusVBYkuzUwByNAhfN5fM5g+KrEJev5ty7sIZcTMq1lpDbthFeXLRpArsSOghDkZH/7+V8sYzii/Q4t/SXOxvXti8Gy8qQfYixa/jipfStZdU8DwHMuQLUFGjfqYgV0lFyfKoClAciEV4WHU9vS9MkVArRXIzYyPO+qOey6gf6SUn5HRE4kNYk7U6vZDJUXBa5y5MT/eWXl/YEICkU5tSzufsaEUZnNfPA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J2XVi3eSZ5D8q1eTjepiXFv2aPbkAy7Twd66eqao4qg=;
- b=Rw8SPQRij3/COkVi5gfSU43eX2vBfNzE5FPxpoVquc9bwtEd5CFVPtDw1BanZdVaaDDMl9oau99fXoTIeqK8NhaxkrT5MoNQdlBQVjDj4tVS5Kwupq0hPeFQo+wfKnstvrAIFBz1DQuMcpzyJAGMoeV7USDLKAUkj8x8JVmjpQw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
- by DM4PR12MB6159.namprd12.prod.outlook.com (2603:10b6:8:a8::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7202.32; Mon, 22 Jan 2024 15:50:52 +0000
-Received: from CO6PR12MB5427.namprd12.prod.outlook.com
- ([fe80::3f6b:792d:4233:f994]) by CO6PR12MB5427.namprd12.prod.outlook.com
- ([fe80::3f6b:792d:4233:f994%6]) with mapi id 15.20.7202.034; Mon, 22 Jan 2024
- 15:50:52 +0000
-Message-ID: <ca1faaec-461b-401c-a86a-e0929d282b51@amd.com>
-Date: Mon, 22 Jan 2024 10:50:48 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] drm/amdgpu: Implement check_async_props for planes
-Content-Language: en-US
-To: =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
- =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
-Cc: daniel@ffwll.ch, =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
- =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel.daenzer@mailbox.org>,
- linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
- Xaver Hugl <xaver.hugl@gmail.com>, Pekka Paalanen <ppaalanen@gmail.com>,
- dri-devel@lists.freedesktop.org, kernel-dev@igalia.com,
- alexander.deucher@amd.com, Dave Airlie <airlied@gmail.com>,
- christian.koenig@amd.com, Joshua Ashton <joshua@froggi.es>
-References: <20240119181235.255060-1-andrealmeid@igalia.com>
- <20240119181235.255060-3-andrealmeid@igalia.com> <Zaq-r7UZpEy7_Rrn@intel.com>
-From: Harry Wentland <harry.wentland@amd.com>
-In-Reply-To: <Zaq-r7UZpEy7_Rrn@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: YQBPR0101CA0035.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c00::48) To CO6PR12MB5427.namprd12.prod.outlook.com
- (2603:10b6:5:358::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F38893DB8D
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 15:52:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705938733; cv=none; b=ukti1mVnNwwjYiEgRMXy+Oom/8g6oXrmalWhIboPrb4mvDGE+kLPee+Hm7BNBn61S+tMvDKQl2qO90nN4OAdvfkFtuSysarqTXqMxq4lMIjf91S0EsLTy2+0n5KMHDLY5oqkcN9ekpxRMWpeKUjrmSInzTBWSn95DroQ+Y6GPLo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705938733; c=relaxed/simple;
+	bh=7De9Fv+OD2bqtwV/7+HprxG7Hd4QITb+OxusYx+b06Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=t2tk+NElTSQwdoupu6GGazexUd4ymu3zSP5w94AM2W3rraMt164D1+kIkeBS9zafOrvN+KEwOPic3oDoNUxxkraogNfRfkCqUUIwd/rQeSVAHHx7AA04plra9xSPLNrYRRWU5RxnZN5wPiKDqZqaMEfqGWFyqKKD+veC4NOWkT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RPbdCksU; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705938730;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to; bh=/CvXrObtjsC2jxDLLgV2Oyu6BbmZSwCCJ7Mdf9Rmjzc=;
+	b=RPbdCksUx1jh6kFE06wLRkwLE6tfCjD0XSdj4GldDLwtqdBTeaYlxOF4yICucFjl7mn0Ne
+	8WMWRR78nAO8SE6+JeArMWvzKGHpgFhF9sedCzxFlYe5Z4ftVtRu4bVGIeimYdlQ5cOjtT
+	IO4hsOt7rnxbnlu1FwA20K91GGpVMME=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-478-aDoSptkTPciUiorPUn7HbQ-1; Mon,
+ 22 Jan 2024 10:52:07 -0500
+X-MC-Unique: aDoSptkTPciUiorPUn7HbQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 207DA3C0008A;
+	Mon, 22 Jan 2024 15:52:06 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.26])
+	by smtp.corp.redhat.com (Postfix) with SMTP id E0202111E408;
+	Mon, 22 Jan 2024 15:52:04 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Mon, 22 Jan 2024 16:50:52 +0100 (CET)
+Date: Mon, 22 Jan 2024 16:50:50 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
+	Dylan Hatch <dylanbhatch@google.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] getrusage: move thread_group_cputime_adjusted()
+ outside of lock_task_sighand()
+Message-ID: <20240122155050.GA26205@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR12MB5427:EE_|DM4PR12MB6159:EE_
-X-MS-Office365-Filtering-Correlation-Id: 02945968-323a-4ae8-3a13-08dc1b61e9ac
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	9H0e4L2/+RgP3TH7a0Z0aLxSaISeuY/eBWXk1gRwDdJ0prR/Z187tvlfr8ODfV8Ts/ijWwLYjkaAy8Me9rkRIdtleUIZtvcis8juWCsJJ6Ud6VQvQKsjArSr9eoIBd7WuO7T2ws+YSkWgplguhhDepRTzqVcIDbN8e/zyCL3c1VYUw/U1HwqIxM57JGbSx76SfpVeF6WdaQmY3sC+Y53Ht/ec2y2BrEvswVLe2AOZcm88C5nllSMZZh2FgDfn4kqsIRJ7YfSdEgoq6kGgo7OwspOCveEs4eyuVAzM4OcSuFKUJSR7YnYoDbQY8yZW8NK5k3OHGHDuzCIXgl5ouOTExPGZiV9yfyqU/5dPR0Z8v/LnYSJk+7TfnxYDzZZNrh3E6jxV88vbw0UHgzdc8BKIXcmllrPtOgrugmCAd6gdI9TC1U0zmaHQfNfxKfwYtRdQO13v42ijS9boNpctIjBSNOqgFYYCcRC4mVdM6u1Ug0Qdme5fOYZZxnoFc/1viIkNNjofjBBzI7loqvL0RhMYsKZ7xHQkVBePYm6DoGPs9F7xdC8735Do2w+x0SpGHilAbqHEdz1fyimYQDzmmYiUbHODx0jjiJwe4hRzAvrUhMpscpHyrli6FUXNnNF16OV5jMm8w3UXjeNZeLfdwo9EA==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(396003)(346002)(136003)(366004)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(31686004)(2616005)(6666004)(26005)(6512007)(53546011)(6506007)(86362001)(31696002)(36756003)(66574015)(38100700002)(2906002)(41300700001)(8936002)(44832011)(4326008)(6486002)(83380400001)(5660300002)(7416002)(316002)(8676002)(66946007)(478600001)(110136005)(54906003)(66556008)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?VUxGQTNXUm05UmRUSFFCdzhaZEg2ZHdYWkErRkMvRzBKZXZKdjdaK0dJMlhL?=
- =?utf-8?B?Mk85Mnkva1FtS21yK3UrSU5KRFEwblhQMUljQ2tkWmREVzJyZS92dGE0TUU4?=
- =?utf-8?B?UmdMNzVETDJuTFVUR3BuZlRWbnFtWVBBNkd5M09YZE9nQ0p5VW1wYWl1elhi?=
- =?utf-8?B?NW5nZlYvYW5rbUNjcldlNWYydCszNHVta1RqUEpWN1YwNmtwWjNVVVJ2UXNC?=
- =?utf-8?B?dXRsSEM5TFJ3V3A5RFZ1eFlJOWdGb3NZL01SbzVicXR5c1VBSk5CdjNQdUY4?=
- =?utf-8?B?ZVZoYVNhd084NVFtcCtqZ0NVZ2FtLzIrMXgvQ0Q1MXJrYUtTcjE0aElzR2VS?=
- =?utf-8?B?UVdKL1pwSW1KY2FSSGhvS2VaR0gwelJSUFMrcjR0cU1QM0ExMHRHUnA2VjRV?=
- =?utf-8?B?NFcwUTZKK1JOZXBoVUc0YktXV2RUa2RuUzlseGk1QUl3WmRjLzZQeWNGOUJ5?=
- =?utf-8?B?dWROYkgycEFZNmlUTm1GVGYzNGpsZ0hxS2ZLSlgydXJKek10S056VW5kbDkw?=
- =?utf-8?B?Yjc4V2NLKyswVDU0cXFUZElVQ3VrMVA3aFYwM1RmcVpDazJtNXFRQVU5aU81?=
- =?utf-8?B?R3h5Tk9VeUJqOG0rNmZWK3dKdXFrVWlFRTJHV0N0RGovUnJ4VEJYS1VNVitS?=
- =?utf-8?B?c29Jb09xRE1HUWczb1ZFeWFYZXM1aTEyYldxRjRzRWRJRml3bXdzTlAyVmJJ?=
- =?utf-8?B?R3hBd3VoSHJxenRUbCtaV2cwZW8vYzVVaFFsdXlUa25hZHJXSllndldOT1o0?=
- =?utf-8?B?dnBtRStQQkJTU2I2eEZsK2JOam5pb0VTaWkySURTOWUrOEdyOXUxY0JOYWpj?=
- =?utf-8?B?YTQrZHNYMnRLTjRqdkpKZDVkTnJnS2c0WkFJWkRXUmFsSmEwSUhDTENnckFW?=
- =?utf-8?B?dExBZmlsbStldTEzUDBCQU0wbzVlVGtBOEs5UHF1RC9OcFR4OHNZQTFVTnhp?=
- =?utf-8?B?SkFteXN3ZCtzdXBFQW55OFd1RUx3d3RMajF6Q0pxeDM1YzZYcWdkSHNxbE9X?=
- =?utf-8?B?M09FdXhOeHRXTW9PUG1sem1WcHkxNFJXNmNKVWFaVEk2VDhEYU5EMWhxWkJv?=
- =?utf-8?B?cXhpY29SVTJtcDg0bXo5R256ckZhSW1PZHZzL3llVVZhUi92UTZoWi9hRkpS?=
- =?utf-8?B?ZGtUaytvc2luaDFKcHBYM2xOMWtxcUpZQ3NGb05kNUcxdkMzdnBzb2V1c2pj?=
- =?utf-8?B?VnBaOVRDZFhWSjM0Z2V2RlAwK0xsS1RTQXdlRHFnZjliYUY5RzNrY1hGd3Mz?=
- =?utf-8?B?akJTZ3JiYitjWU9tM1ZSU0cyckowazljdFJXU2RZcEpLZStzWlQ1S3JwV0xl?=
- =?utf-8?B?WHdKd2ZkWDgvVVE5UUdDaUNmRjB6OWtDMmI4ckZOVUtQeGQ0endMMEpMaVZl?=
- =?utf-8?B?dHhmelRLME9Mdkw5S3hCVVBtTXFEZHRBaDE2QlhkNEJ6U2xrQkRpQWxQakhn?=
- =?utf-8?B?UGd3WWd4ODgxb1V6TDYyaU54YUNwT3BUMExZVkh1Q2tGaFJ4T1ArMDZ2NE9V?=
- =?utf-8?B?blJXMDMyaXM3KzdBd0hOUURXYU9OMmk3ZmpOeDFGQlZETGZ2dmkyUkdFTGR1?=
- =?utf-8?B?dDU3ckU5R0ViTCtQdklwYkVINFl4M0tNL212SEIvMXJmbi9WVHJIYkdubVlY?=
- =?utf-8?B?K294Y2VKdUM1K0RScjNOUmJjSGEvbFlmb0lZRkFZaUFLNWRnOHVsKzNkdmVS?=
- =?utf-8?B?MXFGeXdZSm5ZTmZwbjVJVDZqczNNdlJLY1NlV3pjeGIvem01RmlQQ3YrbG1w?=
- =?utf-8?B?ZStxSG1SYisxU2R3enhLMHRscHpyQmF4QUErYjg4aEdkelFYY2VpK2diVlo2?=
- =?utf-8?B?R0tMeCtwaXJGdThLbmhIaGo3aks5aXYrSGdvbUo3MHlXcFVyVmd1Z1ZFaGJF?=
- =?utf-8?B?WUNIeXBqcHhpZVpEbGdxeU15VEtrM29SQXdKem1kZlBaNnNHZ0YrQ1RINld6?=
- =?utf-8?B?QjlFTkhoNWtSczZXVVJHOUl1eSswVzBqaWJKOU1jN1VmTkJzNC85ODRsck5R?=
- =?utf-8?B?elk4eUlCdkI2ZWw4OU5GSFNoWDMwaXdYWjdacTIyS2ZpL0dXclVDSmNqcWdW?=
- =?utf-8?B?YlJwMStNSWVOckVodWRIL0w5UncvbmpJZURhOU5waUgxMzRmZXJZaklWMXFI?=
- =?utf-8?Q?ai2j853y8rKiTIhQxdwwxVZwt?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 02945968-323a-4ae8-3a13-08dc1b61e9ac
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jan 2024 15:50:52.8208
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0ns06GYIKmBbXZDnwUOrjkoWcFcUXRg+VsTGHIELWaf/dXADvGwcmrcM8CNjaXrfKxtSNVeyAvzFn61v5uYE8g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6159
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240122155023.GA26169@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
+thread_group_cputime() does its own locking, we can safely shift
+thread_group_cputime_adjusted() which does another for_each_thread loop
+outside of ->siglock protected section.
 
+This is also preparation for the next patch which changes getrusage() to
+use stats_lock instead of siglock, thread_group_cputime() takes the same
+lock.  With the current implementation recursive read_seqbegin_or_lock()
+is fine, thread_group_cputime() can't enter the slow mode if the caller
+holds stats_lock, yet this looks more safe and better performance-wise.
 
-On 2024-01-19 13:25, Ville Syrjälä wrote:
-> On Fri, Jan 19, 2024 at 03:12:35PM -0300, André Almeida wrote:
->> AMD GPUs can do async flips with changes on more properties than just
->> the FB ID, so implement a custom check_async_props for AMD planes.
->>
->> Allow amdgpu to do async flips with IN_FENCE_ID and FB_DAMAGE_CLIPS
->> properties. For userspace to check if a driver support this two
->> properties, the strategy for now is to use TEST_ONLY commits.
->>
->> Signed-off-by: André Almeida <andrealmeid@igalia.com>
->> ---
->> v2: Drop overlay plane option for now
->>
->>   .../amd/display/amdgpu_dm/amdgpu_dm_plane.c   | 29 +++++++++++++++++++
->>   1 file changed, 29 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
->> index 116121e647ca..7afe8c1b62d4 100644
->> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
->> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
->> @@ -25,6 +25,7 @@
->>    */
->>   
->>   #include <drm/drm_atomic_helper.h>
->> +#include <drm/drm_atomic_uapi.h>
->>   #include <drm/drm_blend.h>
->>   #include <drm/drm_gem_atomic_helper.h>
->>   #include <drm/drm_plane_helper.h>
->> @@ -1430,6 +1431,33 @@ static void amdgpu_dm_plane_drm_plane_destroy_state(struct drm_plane *plane,
->>   	drm_atomic_helper_plane_destroy_state(plane, state);
->>   }
->>   
->> +static int amdgpu_dm_plane_check_async_props(struct drm_property *prop,
->> +					  struct drm_plane *plane,
->> +					  struct drm_plane_state *plane_state,
->> +					  struct drm_mode_object *obj,
->> +					  u64 prop_value, u64 old_val)
->> +{
->> +	struct drm_mode_config *config = &plane->dev->mode_config;
->> +	int ret;
->> +
->> +	if (prop != config->prop_fb_id &&
->> +	    prop != config->prop_in_fence_fd &&
-> 
-> IN_FENCE should just be allowed always.
-> 
->> +	    prop != config->prop_fb_damage_clips) {
-> 
-> This seems a bit dubious to me. How is amdgpu using the damage
-> information during async flips?
+Reported-and-tested-by: Dylan Hatch <dylanbhatch@google.com>
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+---
+ kernel/sys.c | 34 +++++++++++++++++++---------------
+ 1 file changed, 19 insertions(+), 15 deletions(-)
 
-Yeah, I'm also not sure this is right. Has anyone tested this
-with a PSR SU panel?
+diff --git a/kernel/sys.c b/kernel/sys.c
+index e219fcfa112d..70ad06ad852e 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -1785,17 +1785,19 @@ void getrusage(struct task_struct *p, int who, struct rusage *r)
+ 	struct task_struct *t;
+ 	unsigned long flags;
+ 	u64 tgutime, tgstime, utime, stime;
+-	unsigned long maxrss = 0;
++	unsigned long maxrss;
++	struct mm_struct *mm;
+ 	struct signal_struct *sig = p->signal;
+ 
+-	memset((char *)r, 0, sizeof (*r));
++	memset(r, 0, sizeof(*r));
+ 	utime = stime = 0;
++	maxrss = 0;
+ 
+ 	if (who == RUSAGE_THREAD) {
+ 		task_cputime_adjusted(current, &utime, &stime);
+ 		accumulate_thread_rusage(p, r);
+ 		maxrss = sig->maxrss;
+-		goto out;
++		goto out_thread;
+ 	}
+ 
+ 	if (!lock_task_sighand(p, &flags))
+@@ -1819,9 +1821,6 @@ void getrusage(struct task_struct *p, int who, struct rusage *r)
+ 		fallthrough;
+ 
+ 	case RUSAGE_SELF:
+-		thread_group_cputime_adjusted(p, &tgutime, &tgstime);
+-		utime += tgutime;
+-		stime += tgstime;
+ 		r->ru_nvcsw += sig->nvcsw;
+ 		r->ru_nivcsw += sig->nivcsw;
+ 		r->ru_minflt += sig->min_flt;
+@@ -1839,19 +1838,24 @@ void getrusage(struct task_struct *p, int who, struct rusage *r)
+ 	}
+ 	unlock_task_sighand(p, &flags);
+ 
+-out:
+-	r->ru_utime = ns_to_kernel_old_timeval(utime);
+-	r->ru_stime = ns_to_kernel_old_timeval(stime);
++	if (who == RUSAGE_CHILDREN)
++		goto out_children;
+ 
+-	if (who != RUSAGE_CHILDREN) {
+-		struct mm_struct *mm = get_task_mm(p);
++	thread_group_cputime_adjusted(p, &tgutime, &tgstime);
++	utime += tgutime;
++	stime += tgstime;
+ 
+-		if (mm) {
+-			setmax_mm_hiwater_rss(&maxrss, mm);
+-			mmput(mm);
+-		}
++out_thread:
++	mm = get_task_mm(p);
++	if (mm) {
++		setmax_mm_hiwater_rss(&maxrss, mm);
++		mmput(mm);
+ 	}
++
++out_children:
+ 	r->ru_maxrss = maxrss * (PAGE_SIZE / 1024); /* convert pages to KBs */
++	r->ru_utime = ns_to_kernel_old_timeval(utime);
++	r->ru_stime = ns_to_kernel_old_timeval(stime);
+ }
+ 
+ SYSCALL_DEFINE2(getrusage, int, who, struct rusage __user *, ru)
+-- 
+2.25.1.362.g51ebf55
 
-Harry
-
-> 
->> +		ret = drm_atomic_plane_get_property(plane, plane_state,
->> +						    prop, &old_val);
->> +		return drm_atomic_check_prop_changes(ret, old_val, prop_value, prop);
->> +	}
->> +
->> +	if (plane_state->plane->type != DRM_PLANE_TYPE_PRIMARY) {
->> +		drm_dbg_atomic(prop->dev,
->> +			       "[OBJECT:%d] Only primary planes can be changed during async flip\n",
->> +			       obj->id);
->> +		return -EINVAL;
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->>   static const struct drm_plane_funcs dm_plane_funcs = {
->>   	.update_plane	= drm_atomic_helper_update_plane,
->>   	.disable_plane	= drm_atomic_helper_disable_plane,
->> @@ -1438,6 +1466,7 @@ static const struct drm_plane_funcs dm_plane_funcs = {
->>   	.atomic_duplicate_state = amdgpu_dm_plane_drm_plane_duplicate_state,
->>   	.atomic_destroy_state = amdgpu_dm_plane_drm_plane_destroy_state,
->>   	.format_mod_supported = amdgpu_dm_plane_format_mod_supported,
->> +	.check_async_props = amdgpu_dm_plane_check_async_props,
->>   };
->>   
->>   int amdgpu_dm_plane_init(struct amdgpu_display_manager *dm,
->> -- 
->> 2.43.0
-> 
 
