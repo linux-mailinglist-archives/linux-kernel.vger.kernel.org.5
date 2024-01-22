@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-32546-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32547-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 275DA835CF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:46:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C225B835CF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:47:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C04E1C2399B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:46:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7240A286C5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:47:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3090438FB9;
-	Mon, 22 Jan 2024 08:46:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3712539AD3;
+	Mon, 22 Jan 2024 08:46:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="pE3kdyiw"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2058.outbound.protection.outlook.com [40.107.243.58])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="U/v3RbBT"
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2065.outbound.protection.outlook.com [40.107.100.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAD5A364CB;
-	Mon, 22 Jan 2024 08:46:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D11839846;
+	Mon, 22 Jan 2024 08:46:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.65
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705913172; cv=fail; b=I93Gh9LpZ6KTLzBVcTf1Ol/xwI+WpCVFmJM0aGJ1ZSOBl/suSC9jdUaNzjMZiAXgf3wYMKSGG89oBUYqBl0dFTh3+rTRs4roT1MzsuwhEgDdbUkZAjreVD8tV5IRRsO62b67xyb7HKMbGng4LwRlxKBDzV+lqcPSpqS+LlL23w8=
+	t=1705913175; cv=fail; b=uwBMWdSYLdL0HO7Lxs7bFbyQXijww6eVnOmb31Ucr7yYiIOmOz8l2LcurGtw4WxMYHQAuuk8i72Uv8l8rHzSVyVnYGo4n9yP+mnebKBLEPm90CiK0W+DHztVOiLFbxJqhVA7gpUnJkxIFVOPWmSNbCuuu6FuvOyc2ISaOsfW97g=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705913172; c=relaxed/simple;
-	bh=bMZz9FC0hpSJTWqNuvMPvmiaUjXR7ocPHtgB2At+hAo=;
+	s=arc-20240116; t=1705913175; c=relaxed/simple;
+	bh=2lvEeibgpcsPhkDGLuPvCbJk7df3PcEFc/h04Qs3RSo=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jbXvx+Wq/oMXFYi39hc+qphdZdzVOVHZqu/j0eRiYxrfNxpzyN7NpJSzusEEYwzkr4pBA5PNpl4XHWe2S757RUHIHFe8Koz2LB1m2BcspRkC7M5gjSgXsnLHo7C3PmbLCtDWlN3+RyhVVZ2MHhTSPdhOCV+TWVV7fHFF20EZUpU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=pE3kdyiw; arc=fail smtp.client-ip=40.107.243.58
+	 MIME-Version:Content-Type; b=sOYecpvXfjBmZGoJyxH9IbqUZVSy4OfH3QjXbPNPD0QuOMV2JbalT6+uoWoPJd9TP9xe2xCbOPqUKcbtrj+5bxS6E5fgWKAW9wa2QLCk5glgql41RCP/B16pmOMs9+EwjN+E883D43Am+LdPnystwVsXDcNCV3Va3td7DfUioqI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=U/v3RbBT; arc=fail smtp.client-ip=40.107.100.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ELI+Oq49qg/M0LALzW/t0/3lp/M+Llc9BlruDCXI0ozvTcXz7AvQFup9KSrZ8AKg//vknAazlr+Tp5B0WI3lf+zFPhx7CTfXD7NwAcSMD0h1zZfg0YWhKZvG6UXvbwVdEYFMcHNBe+wAqHJ8N2uS6NrlfYB01MQqDisaSSLS6jQ2U/tcr60qm92KeiUku1N+siivj40KaFdjTvcnZrM02GpFxXIWwJjNlU4JViIVrC1Q8spCEmzuhbZXl6onzOWcKexMg9HAFfEtJEeQ5VphE27M7pAA3G1Sds6Qxw7ZzXGEUH6bCt9cn9APwqV0fGsVWjthG0EAy8AeVxD2t4YQKQ==
+ b=L3ixyE27np2GhRznJB18hAxNBF8wkdpum6OBSti4emluMTZJZKJKk1aXxqu/dalWDGeLX1j69Vkf9co70tHHzh799/G9fv4+kGrB5AJjx4JN7+9/aR1c8j1ruEhSCsF2XkOsT4Ofxfpe9L1FaDO2O/6AKmMjLID9xWib5CgF9kcm+Qwmwy2mbm9davxjpFfFHtc4rHSDqgsmtcAbVRi33ydGYEPj38J547Gg8odF8pa4G/ZaEilnkH9+chbMBsT2uD+PjdYPcnGtpoUm/1fGX95Ggsvw74fjaXZgmF4iGlL2fpBzJQaPVGRQX8YYMPwQfSMczCKoRiw81IQtZ+0t0A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ey2O5ktrthQlwGd9R2arXJH4t+wDrwCX5uMLGaZciKA=;
- b=jeCC2rVOPZ5r86mwatAL8dWxXqlnOOwaLFLJ5+BzhweDP8aG1sEP+xHUki71NWqTH9L5HrNxUnZxWHBWDmxRHSjcJBFcwXAF7s7YYy9aAc10pgFdVDCczePYkQgMysHqtNCo8aQUKG1gncEmay8NMZ8swrF4pZnGSHxeZuoA0yIUWv/Qy1fAsW31cSlJUFHUBRcMiU7G08MwO48t60xWxO1zNqg4Z8WciUc8Tos3kl5iZXPj66N5dEiYkiWdD/JtnmJoa1k+zGfnUNsDex5EW7Jrx3PrQln2cCeuYxdZkUGjXREJwWeYcrWv8YVLcMmJhF4B+OHUnkgTvsJ2cnQNPA==
+ bh=DcvfQSSnH+4J0JigX21NM6c5EIhSO2RCi7FuBNCnepo=;
+ b=RkAA5qFvfhtc9/9g0ZipexIP29butHHkvPEElWdlbsUeZpEvoKrq20YidnKBhFCDnIaHXn/prJ93boZYMvpC+9ZQ/AFO62QNiogxKDXZwVdAwoDkbko4LCAu6Sp2lzZvcz8Whcmum4QCIXPCwjbzhNCsu7PFhFIxr5cNq6godKcjd1CwdIjwh+4/m1mGRC6crqSj343jNzIX03XF+vpbNkL3T3Ak8RoCzCHS57yIMkynWLlYrq/44l1nGM97vyT563WAYbRx0q+gBH/rbEhwkF8fm78uhjbIfku4PIToWN/+iEzJDd3wifNizmaJCeg5lI3CMPrYZA5ZLfKcLGYyhg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.117.160) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -44,18 +44,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ey2O5ktrthQlwGd9R2arXJH4t+wDrwCX5uMLGaZciKA=;
- b=pE3kdyiwDpZl1mKMBuianDLjxHmWaEnEkSoH0t/hOEqbcfXH4LmBnBdobwTmEiNgbcEeh3tvnPeDznI31qEZdhEhTiiVsyDRa8NP+R9qa0Lc2yYHGPVniwvsGGj6igJDSPkHI0Htv00TrE07DuiiEzby60icmrFPPzgRdurrbY7l9Fq4chy62wtwRbi4D1DzEJhui+tiArWBHp0LBhBtpCG8Wo3QQjWQXG/yI1Iyo0wGe73Hl3Kk88u3EgR63ZrAN1KUVUPI/FtZmkBWlh7jdHfVZ9TwCDIrDTWuyY3v/a9lSKUTeYanC+hXUjnzRCNske4nEMim63V3XLLeZaF+bA==
-Received: from SJ0PR13CA0144.namprd13.prod.outlook.com (2603:10b6:a03:2c6::29)
- by SJ0PR12MB5406.namprd12.prod.outlook.com (2603:10b6:a03:3ae::5) with
+ bh=DcvfQSSnH+4J0JigX21NM6c5EIhSO2RCi7FuBNCnepo=;
+ b=U/v3RbBTuqXIbiH6uQMFKxriMFAstN66ApcZfyG6elW+ggTyKDuIjr0BjRUdGBwzNXcJA6Khr4sDYER9+q+pYtHzCZkU5E6ct6xxkVLrIAE/5o27ug8U2I6RVWR7vmC+UFmfnmwM3RiWSa4jH8mN+T8R5AuRSInE+IRF6XPVxsocsWefmmaWe6EM6XHxyOqAeTxERHQ/riIto0IvPEbedhVKOQcY2kHEQH5D4mZTAEffAwKmno+mc7q5LQz9nC7XopTEonE1Q2VMspb6PqlX5FSigH3DJOgdw4VB945HHi/SNY8llmFViDJpP/hfnmRR9FgB22cvjBYkJGkbclK+8w==
+Received: from SJ0PR03CA0012.namprd03.prod.outlook.com (2603:10b6:a03:33a::17)
+ by IA0PR12MB8929.namprd12.prod.outlook.com (2603:10b6:208:484::8) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.32; Mon, 22 Jan
- 2024 08:46:05 +0000
-Received: from SJ5PEPF000001CE.namprd05.prod.outlook.com
- (2603:10b6:a03:2c6:cafe::2b) by SJ0PR13CA0144.outlook.office365.com
- (2603:10b6:a03:2c6::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.17 via Frontend
- Transport; Mon, 22 Jan 2024 08:46:05 +0000
+ 2024 08:46:10 +0000
+Received: from SJ5PEPF000001CD.namprd05.prod.outlook.com
+ (2603:10b6:a03:33a:cafe::f0) by SJ0PR03CA0012.outlook.office365.com
+ (2603:10b6:a03:33a::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.34 via Frontend
+ Transport; Mon, 22 Jan 2024 08:46:10 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -63,17 +63,17 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
  216.228.117.160 as permitted sender) receiver=protection.outlook.com;
  client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
 Received: from mail.nvidia.com (216.228.117.160) by
- SJ5PEPF000001CE.mail.protection.outlook.com (10.167.242.38) with Microsoft
+ SJ5PEPF000001CD.mail.protection.outlook.com (10.167.242.42) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7202.16 via Frontend Transport; Mon, 22 Jan 2024 08:46:05 +0000
+ 15.20.7202.16 via Frontend Transport; Mon, 22 Jan 2024 08:46:10 +0000
 Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
  (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 22 Jan
- 2024 00:45:55 -0800
+ 2024 00:46:00 -0800
 Received: from dev-r-vrt-155.mtr.labs.mlnx (10.126.231.35) by
  rnnvmail201.nvidia.com (10.129.68.8) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Mon, 22 Jan 2024 00:45:49 -0800
+ 15.2.986.41; Mon, 22 Jan 2024 00:45:55 -0800
 From: Danielle Ratson <danieller@nvidia.com>
 To: <netdev@vger.kernel.org>
 CC: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
@@ -85,9 +85,9 @@ CC: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
 	<jiri@resnulli.us>, <linux-doc@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, <mlxsw@nvidia.com>, <petrm@nvidia.com>,
 	<idosch@nvidia.com>
-Subject: [RFC PATCH net-next 1/9] ethtool: Add ethtool operation to write to a transceiver module EEPROM
-Date: Mon, 22 Jan 2024 10:45:22 +0200
-Message-ID: <20240122084530.32451-2-danieller@nvidia.com>
+Subject: [RFC PATCH net-next 2/9] mlxsw: Implement ethtool operation to write to a transceiver module EEPROM
+Date: Mon, 22 Jan 2024 10:45:23 +0200
+Message-ID: <20240122084530.32451-3-danieller@nvidia.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240122084530.32451-1-danieller@nvidia.com>
 References: <20240122084530.32451-1-danieller@nvidia.com>
@@ -103,95 +103,193 @@ X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
  rnnvmail201.nvidia.com (10.129.68.8)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ5PEPF000001CE:EE_|SJ0PR12MB5406:EE_
-X-MS-Office365-Filtering-Correlation-Id: b411a1ee-fc80-4ed4-fbc8-08dc1b269214
+X-MS-TrafficTypeDiagnostic: SJ5PEPF000001CD:EE_|IA0PR12MB8929:EE_
+X-MS-Office365-Filtering-Correlation-Id: d71a7a9b-7e2b-4657-bfef-08dc1b26951f
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	1i5dRMbGY9tqhjmI5gaPbfpfuzHfFsy8JmpGk1uA6Ofi1STZi+jBUEbWkBTh8ADpiMrVuXSIL1MUrqALJqcQqokVZ0/8vMKrGDRL+6a8poEwikPEiHvgVStaRfcBTE5ivIHmkYiWMx2WTIDS5/eOSpr86i2oDdUxz1fajfMX5u9dDJ8rCglInokKYmxx2XUsmR9n+342BFkwC69Kglvqx2RAIDD26kNbK75cyqQOo9wo3KjOMmHrFjKy+Q79LiEF0EbMdba0CF376V+ymuXNE4Zu4R3mwkuN1VMGWL+Wk4uakEuSNpO1MYJxoWx7af/mHla1So/RXt8Ookr29iGhc4EpdJgrkus2l5SogJTy67o1s+YElF745WAGgvhGe1VdYPpmT5wgBpWrat9UGRzu5B3Z1xRnrLO1WniwnkscEKJflQSd4Z0QTg7hNgkIPaehN0lyNZyOLoO1TJCxJXIS1sLKBut9DAals6gWMaJ12SDG40m1rwk9YDijKvIR0a11GXBHUYOiRq/PeQDv018WbDXr017CRbtdzn1fKH6Eve8S3KWgiSrZKn2inlqBcqt2s5TNbjveS4CZuyxBN6U0oUpI9LTDaZr6AePCtbGmcCMt58bj8H4b36VIL4yvjDamY12n9SMJtr/aHlfHhWxtT3x/0DmTMG/oVy/UvNI7Zl35qLkNuspjgQfPKAZny7R3z9fvacnxUh/mov/049o2auH1bM7pBkYJaeU9ke8gjGDumvnyA6C5Y+FD3IA3Y28v
+	Gs6JeXDb+D1Wkc99a0s/6Nh/+Ajf5NHn6y2gbvvOHzj3OvC+AWY5IzGCsSxR2vkMwlNYYOwiruNTFfGU4cAmemle3tPucVGBiEXavnp4RhgzBjm5TNBnUxJjyAFP8UJYPDkHEEKYqzBiGf+vNJJGrjD4F69pNOmBV+yYdBwZRg4LRsYsblnrDSYcWOorix1yVzODTd/mHh2AOuiRVyeWWvvK4e/LFaoFGe3JNLbrPK2WezohzxET3ADt6QNhM0gG98DCVSf/eeBWVY2bdlJPMBoh09DiCB7w3zdtwJUhiqgjxz7PhZ7I5eP886V/kBMuAhoBmyi9sAHulOweVdUrvaMsYgNPNdhmJRxD47dH/RdTxY+gB61sIAtlFEFnTHjPODWgkOJleQq5CjSoD5vkzhEOzoE5UnyqZIjh6Bt7gqsxVu+gm8wmCShAcQw7/aAQiIzev/C1X72OESJOJSvICFEltacwNBgO1xaRgLQ6A9xslaKsWx+iKLSpe1hgANzJjg1FVLw1JNOqMEwfg8DbS3SLMNdQ0JoOMdpTAjXd2SjfJb97FMvrmtGp707YXaUNTlKJXBHUmxXBlYwWBZm3wPYEbc2DphifxBWD8B+RDvyXOm31DfLQjmUnbsI4ulzeyPZBcQCPEJ2Go1xjkJNXiEpDy+CcA5THJtJGHyvlwjc2haHsRG9ZOmmBfrrnGslyLESte2qbUT6GwwKLXJY0lX0bh9swId23M7OeBMpCxn8=
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(376002)(39860400002)(136003)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(82310400011)(40470700004)(36840700001)(46966006)(16526019)(40480700001)(40460700003)(336012)(6666004)(426003)(2616005)(1076003)(26005)(107886003)(356005)(82740400003)(7636003)(86362001)(36756003)(83380400001)(36860700001)(5660300002)(7416002)(47076005)(2906002)(41300700001)(8676002)(8936002)(4326008)(70206006)(70586007)(316002)(478600001)(54906003)(6916009);DIR:OUT;SFP:1101;
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(136003)(396003)(346002)(230922051799003)(1800799012)(82310400011)(451199024)(64100799003)(186009)(46966006)(40470700004)(36840700001)(356005)(7636003)(82740400003)(36756003)(40460700003)(40480700001)(86362001)(83380400001)(426003)(16526019)(336012)(26005)(107886003)(1076003)(2616005)(36860700001)(316002)(70586007)(70206006)(8936002)(8676002)(6666004)(54906003)(478600001)(6916009)(47076005)(2906002)(5660300002)(41300700001)(4326008)(7416002);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jan 2024 08:46:05.3011
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jan 2024 08:46:10.3892
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b411a1ee-fc80-4ed4-fbc8-08dc1b269214
+X-MS-Exchange-CrossTenant-Network-Message-Id: d71a7a9b-7e2b-4657-bfef-08dc1b26951f
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	SJ5PEPF000001CE.namprd05.prod.outlook.com
+	SJ5PEPF000001CD.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5406
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8929
 
 From: Ido Schimmel <idosch@nvidia.com>
 
-Ethtool can already retrieve information from a transceiver module
-EEPROM by invoking the ethtool_ops::get_module_eeprom_by_page operation.
-Add a corresponding operation that allows ethtool to write to a
-transceiver module EEPROM.
-
-The purpose of this operation is not to enable arbitrary read / write
-access, but to allow the kernel to write to specific addresses as part
-of transceiver module firmware flashing. In the future, more
-functionality can be implemented on top of these read / write
-operations.
-
-Adjust the comments of the 'ethtool_module_eeprom' structure as it is
-no longer used only for read access.
+Implement the ethtool_ops::set_module_eeprom_by_page operation to allow
+ethtool to write to a transceiver module EEPROM, in a similar fashion to
+the ethtool_ops::get_module_eeprom_by_page operation.
 
 Signed-off-by: Ido Schimmel <idosch@nvidia.com>
 Reviewed-by: Petr Machata <petrm@nvidia.com>
 ---
- include/linux/ethtool.h | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ .../net/ethernet/mellanox/mlxsw/core_env.c    | 57 +++++++++++++++++++
+ .../net/ethernet/mellanox/mlxsw/core_env.h    |  6 ++
+ drivers/net/ethernet/mellanox/mlxsw/minimal.c | 15 +++++
+ .../mellanox/mlxsw/spectrum_ethtool.c         | 15 +++++
+ 4 files changed, 93 insertions(+)
 
-diff --git a/include/linux/ethtool.h b/include/linux/ethtool.h
-index 325e0778e937..bb253d90352b 100644
---- a/include/linux/ethtool.h
-+++ b/include/linux/ethtool.h
-@@ -474,17 +474,14 @@ struct ethtool_rmon_stats {
- #define ETH_MODULE_MAX_I2C_ADDRESS	0x7f
+diff --git a/drivers/net/ethernet/mellanox/mlxsw/core_env.c b/drivers/net/ethernet/mellanox/mlxsw/core_env.c
+index 53b150b7ae4e..79e4c745ac3b 100644
+--- a/drivers/net/ethernet/mellanox/mlxsw/core_env.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/core_env.c
+@@ -513,6 +513,63 @@ mlxsw_env_get_module_eeprom_by_page(struct mlxsw_core *mlxsw_core,
+ }
+ EXPORT_SYMBOL(mlxsw_env_get_module_eeprom_by_page);
  
- /**
-- * struct ethtool_module_eeprom - EEPROM dump from specified page
-- * @offset: Offset within the specified EEPROM page to begin read, in bytes.
-- * @length: Number of bytes to read.
-- * @page: Page number to read from.
-- * @bank: Page bank number to read from, if applicable by EEPROM spec.
-+ * struct ethtool_module_eeprom - plug-in module EEPROM read / write parameters
-+ * @offset: Offset within the specified page, in bytes.
-+ * @length: Number of bytes to read / write.
-+ * @page: Page number.
-+ * @bank: Bank number, if supported by EEPROM spec.
-  * @i2c_address: I2C address of a page. Value less than 0x7f expected. Most
-  *	EEPROMs use 0x50 or 0x51.
-  * @data: Pointer to buffer with EEPROM data of @length size.
-- *
-- * This can be used to manage pages during EEPROM dump in ethtool and pass
-- * required information to the driver.
-  */
- struct ethtool_module_eeprom {
- 	u32	offset;
-@@ -789,6 +786,8 @@ struct ethtool_rxfh_param {
-  * @get_module_eeprom_by_page: Get a region of plug-in module EEPROM data from
-  *	specified page. Returns a negative error code or the amount of bytes
-  *	read.
-+ * @set_module_eeprom_by_page: Write to a region of plug-in module EEPROM.
-+ *	Returns a negative error code or zero.
-  * @get_eth_phy_stats: Query some of the IEEE 802.3 PHY statistics.
-  * @get_eth_mac_stats: Query some of the IEEE 802.3 MAC statistics.
-  * @get_eth_ctrl_stats: Query some of the IEEE 802.3 MAC Ctrl statistics.
-@@ -921,6 +920,9 @@ struct ethtool_ops {
- 	int	(*get_module_eeprom_by_page)(struct net_device *dev,
- 					     const struct ethtool_module_eeprom *page,
- 					     struct netlink_ext_ack *extack);
-+	int	(*set_module_eeprom_by_page)(struct net_device *dev,
-+					     const struct ethtool_module_eeprom *page,
-+					     struct netlink_ext_ack *extack);
- 	void	(*get_eth_phy_stats)(struct net_device *dev,
- 				     struct ethtool_eth_phy_stats *phy_stats);
- 	void	(*get_eth_mac_stats)(struct net_device *dev,
++int
++mlxsw_env_set_module_eeprom_by_page(struct mlxsw_core *mlxsw_core,
++				    u8 slot_index, u8 module,
++				    const struct ethtool_module_eeprom *page,
++				    struct netlink_ext_ack *extack)
++{
++	struct mlxsw_env *mlxsw_env = mlxsw_core_env(mlxsw_core);
++	u32 bytes_written = 0;
++	u16 device_addr;
++	int err;
++
++	if (!mlxsw_env_linecard_is_active(mlxsw_env, slot_index)) {
++		NL_SET_ERR_MSG_MOD(extack,
++				   "Cannot write to EEPROM of a module on an inactive line card");
++		return -EIO;
++	}
++
++	err = mlxsw_env_validate_module_type(mlxsw_core, slot_index, module);
++	if (err) {
++		NL_SET_ERR_MSG_MOD(extack, "EEPROM is not equipped on port module type");
++		return err;
++	}
++
++	device_addr = page->offset;
++
++	while (bytes_written < page->length) {
++		char mcia_pl[MLXSW_REG_MCIA_LEN];
++		char eeprom_tmp[128] = {};
++		u8 size;
++
++		size = min_t(u8, page->length - bytes_written,
++			     mlxsw_env->max_eeprom_len);
++
++		mlxsw_reg_mcia_pack(mcia_pl, slot_index, module, page->page,
++				    device_addr + bytes_written, size,
++				    page->i2c_address);
++		mlxsw_reg_mcia_bank_number_set(mcia_pl, page->bank);
++		memcpy(eeprom_tmp, page->data + bytes_written, size);
++		mlxsw_reg_mcia_eeprom_memcpy_to(mcia_pl, eeprom_tmp);
++
++		err = mlxsw_reg_write(mlxsw_core, MLXSW_REG(mcia), mcia_pl);
++		if (err) {
++			NL_SET_ERR_MSG_MOD(extack, "Failed to access module's EEPROM");
++			return err;
++		}
++
++		err = mlxsw_env_mcia_status_process(mcia_pl, extack);
++		if (err)
++			return err;
++
++		bytes_written += size;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL(mlxsw_env_set_module_eeprom_by_page);
++
+ static int mlxsw_env_module_reset(struct mlxsw_core *mlxsw_core, u8 slot_index,
+ 				  u8 module)
+ {
+diff --git a/drivers/net/ethernet/mellanox/mlxsw/core_env.h b/drivers/net/ethernet/mellanox/mlxsw/core_env.h
+index a197e3ae069c..e4ff17869400 100644
+--- a/drivers/net/ethernet/mellanox/mlxsw/core_env.h
++++ b/drivers/net/ethernet/mellanox/mlxsw/core_env.h
+@@ -28,6 +28,12 @@ mlxsw_env_get_module_eeprom_by_page(struct mlxsw_core *mlxsw_core,
+ 				    const struct ethtool_module_eeprom *page,
+ 				    struct netlink_ext_ack *extack);
+ 
++int
++mlxsw_env_set_module_eeprom_by_page(struct mlxsw_core *mlxsw_core,
++				    u8 slot_index, u8 module,
++				    const struct ethtool_module_eeprom *page,
++				    struct netlink_ext_ack *extack);
++
+ int mlxsw_env_reset_module(struct net_device *netdev,
+ 			   struct mlxsw_core *mlxsw_core, u8 slot_index,
+ 			   u8 module, u32 *flags);
+diff --git a/drivers/net/ethernet/mellanox/mlxsw/minimal.c b/drivers/net/ethernet/mellanox/mlxsw/minimal.c
+index 6b98c3287b49..e52be38b5495 100644
+--- a/drivers/net/ethernet/mellanox/mlxsw/minimal.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/minimal.c
+@@ -140,6 +140,20 @@ mlxsw_m_get_module_eeprom_by_page(struct net_device *netdev,
+ 						   page, extack);
+ }
+ 
++static int
++mlxsw_m_set_module_eeprom_by_page(struct net_device *netdev,
++				  const struct ethtool_module_eeprom *page,
++				  struct netlink_ext_ack *extack)
++{
++	struct mlxsw_m_port *mlxsw_m_port = netdev_priv(netdev);
++	struct mlxsw_core *core = mlxsw_m_port->mlxsw_m->core;
++
++	return mlxsw_env_set_module_eeprom_by_page(core,
++						   mlxsw_m_port->slot_index,
++						   mlxsw_m_port->module,
++						   page, extack);
++}
++
+ static int mlxsw_m_reset(struct net_device *netdev, u32 *flags)
+ {
+ 	struct mlxsw_m_port *mlxsw_m_port = netdev_priv(netdev);
+@@ -181,6 +195,7 @@ static const struct ethtool_ops mlxsw_m_port_ethtool_ops = {
+ 	.get_module_info	= mlxsw_m_get_module_info,
+ 	.get_module_eeprom	= mlxsw_m_get_module_eeprom,
+ 	.get_module_eeprom_by_page = mlxsw_m_get_module_eeprom_by_page,
++	.set_module_eeprom_by_page = mlxsw_m_set_module_eeprom_by_page,
+ 	.reset			= mlxsw_m_reset,
+ 	.get_module_power_mode	= mlxsw_m_get_module_power_mode,
+ 	.set_module_power_mode	= mlxsw_m_set_module_power_mode,
+diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_ethtool.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_ethtool.c
+index 0f29e9c19411..d4fd7f7d660f 100644
+--- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_ethtool.c
+@@ -1067,6 +1067,20 @@ mlxsw_sp_get_module_eeprom_by_page(struct net_device *dev,
+ 						   module, page, extack);
+ }
+ 
++static int
++mlxsw_sp_set_module_eeprom_by_page(struct net_device *dev,
++				   const struct ethtool_module_eeprom *page,
++				   struct netlink_ext_ack *extack)
++{
++	struct mlxsw_sp_port *mlxsw_sp_port = netdev_priv(dev);
++	struct mlxsw_sp *mlxsw_sp = mlxsw_sp_port->mlxsw_sp;
++	u8 slot_index = mlxsw_sp_port->mapping.slot_index;
++	u8 module = mlxsw_sp_port->mapping.module;
++
++	return mlxsw_env_set_module_eeprom_by_page(mlxsw_sp->core, slot_index,
++						   module, page, extack);
++}
++
+ static int
+ mlxsw_sp_get_ts_info(struct net_device *netdev, struct ethtool_ts_info *info)
+ {
+@@ -1256,6 +1270,7 @@ const struct ethtool_ops mlxsw_sp_port_ethtool_ops = {
+ 	.get_module_info		= mlxsw_sp_get_module_info,
+ 	.get_module_eeprom		= mlxsw_sp_get_module_eeprom,
+ 	.get_module_eeprom_by_page	= mlxsw_sp_get_module_eeprom_by_page,
++	.set_module_eeprom_by_page	= mlxsw_sp_set_module_eeprom_by_page,
+ 	.get_ts_info			= mlxsw_sp_get_ts_info,
+ 	.get_eth_phy_stats		= mlxsw_sp_get_eth_phy_stats,
+ 	.get_eth_mac_stats		= mlxsw_sp_get_eth_mac_stats,
 -- 
 2.40.1
 
