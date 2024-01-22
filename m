@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-32234-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32233-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2AF88358EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 01:23:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE9148358EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 01:23:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09C211C20B1D
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76A6F2823A3
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 00:23:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1376315AF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 139AD15C8;
 	Mon, 22 Jan 2024 00:23:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pHW/j+hV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FTtQ7CnR"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50E1537E;
-	Mon, 22 Jan 2024 00:22:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50DE637B;
+	Mon, 22 Jan 2024 00:22:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705882979; cv=none; b=eE4bCHO+bY/+CXG3u4X2Pta23ENtDKufKpCUHfItVeeXgCL5dkKEhfL5TCWvSDAXzCgeR/qKAxJmB+50u6c4CXtnui9/uKfePURcnWW3f00mt0zfj/EidWLRGV6Q6FLTJVOHbRf8WYQW7YC3iCK2Soce10direMMN6WPwmoJgZ8=
+	t=1705882979; cv=none; b=aaXvXbOUeg1kSIQmQiru7fAmeWgWRG4ITB1GXr3c0h0aQnYc8Kciqo0jfdxEoE0q12XUtutr9QC8VdWvPSRuPj/gOy5uQ4m1BtAKC87eDZEphdFv4NiAPoREuJm3fs/G0QWXxvjPXHVnuRnXeXhvDC3kHE7wp7l434v9GPZkIBw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1705882979; c=relaxed/simple;
-	bh=cu/x3ItAEqexfto4Q62/HSpF8UbXNvIBvj4vMpklLig=;
+	bh=aVQvquY3/QZrbd8jHI67vn2mQbmidA09BUUPYfRdUOA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Hilg/JWPBMQ4TDShslQ5k7jbAIYa2GGO9ko8YWJu3wHvpOHL8Cjvg9sKYLL4xhSoVmOUWWcOtUt6lmnJaAd3FRpP7zuCJbzXCWDKwjDcUB7y7oPKlXStKVMSI2Tt5MbdteFH6IYY7y7alYXxwzSyM/tsScbvh86uBCNe4iEqSZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pHW/j+hV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB036C43390;
-	Mon, 22 Jan 2024 00:22:57 +0000 (UTC)
+	 MIME-Version; b=Tty0DWUiiHubVCiEJvButucwfP4lf36/o6POPT9Px243oFqQDCx3XkZT/JVNU4Jg6HdbAdNXtY5Zl1xI4i3QE0NSU44C5i3geUmLqdPIoE068NVkMiIgPctrhcbumRCJyuO4b+1k1sDDh49/yqJNGD+JiYSgosdVOnD4v5i7/jA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FTtQ7CnR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64366C433A6;
+	Mon, 22 Jan 2024 00:22:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1705882978;
-	bh=cu/x3ItAEqexfto4Q62/HSpF8UbXNvIBvj4vMpklLig=;
+	bh=aVQvquY3/QZrbd8jHI67vn2mQbmidA09BUUPYfRdUOA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pHW/j+hVYcQ07mUuVmoaaAsGPm/61eCDdoJM0ufsYRwR6PrpSPg84A+/4jl51OZqh
-	 gRJqHPELv2mQnKLWkuFWnmN6bOuwlKBmo1kkltWLEMQiZiPjAKFOdrKl4xdlX2EfZf
-	 MFIuQ/hgBkYKXEw4jZWDBPoLXota/bOJ7wWH+VHTnNr0myYVIsGWL+dLXfLSG7ByEZ
-	 1BvesMZ2YNLNAY8HD4twt8KK1b+kp7/ituTaaXKMTwHXvZAWuFnNZpnQ8pFjZEo8cg
-	 5W2ZkYpsq0PQFU3itAG689+XqQbphjP4Fji+0DZ+zAUPDz9JKqxZOdTSz6bQEq3q68
-	 HayS0AbAwrKxg==
+	b=FTtQ7CnRAUueJnnwKyKVtqaOwLHuwC50ol1N6VBH3F4bXANTK4yKJAw6z1Bd+7gnE
+	 0IIJKaDyNCShEoILNDTHusQSstJiDlGlbnsDfmMniFSVrchtQUhYr3vI3l4khHjkKd
+	 h6LcwvPzGM+OP1JHcacDkJnkgZw9TagVLJx1zZXf3RfUMrSsM7aItVVFJokHuMGpmC
+	 q0Pw3Argq3++kZn2Cymq+WX+dr3xaTG8SFvmjka986TDgrZ7yZ/BegxfAUzFx6jJF1
+	 jY8188HAgmTprMrmSOwzKr/UnrdXb2LuUYjSlIAZy/EkYhh97eiF4C50oT+MFjUr0s
+	 44HlDYBKQ385A==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org,
 	linux-riscv@lists.infradead.org
@@ -53,11 +53,10 @@ Cc: linux-kernel@vger.kernel.org,
 	Palmer Dabbelt <palmer@dabbelt.com>,
 	Paul Walmsley <paul.walmsley@sifive.com>,
 	Phoebe Chen <phoebe.chen@sifive.com>,
-	hongrong.hsu@sifive.com,
-	Heiko Stuebner <heiko.stuebner@vrull.eu>
-Subject: [PATCH v3 01/10] RISC-V: add helper function to read the vector VLEN
-Date: Sun, 21 Jan 2024 16:19:12 -0800
-Message-ID: <20240122002024.27477-2-ebiggers@kernel.org>
+	hongrong.hsu@sifive.com
+Subject: [PATCH v3 02/10] RISC-V: add TOOLCHAIN_HAS_VECTOR_CRYPTO
+Date: Sun, 21 Jan 2024 16:19:13 -0800
+Message-ID: <20240122002024.27477-3-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122002024.27477-1-ebiggers@kernel.org>
 References: <20240122002024.27477-1-ebiggers@kernel.org>
@@ -69,54 +68,48 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Heiko Stuebner <heiko.stuebner@vrull.eu>
+From: Eric Biggers <ebiggers@google.com>
 
-VLEN describes the length of each vector register and some instructions
-need specific minimal VLENs to work correctly.
+Add a kconfig symbol that indicates whether the toolchain supports the
+vector crypto extensions.  This is needed by the RISC-V crypto code.
 
-The vector code already includes a variable riscv_v_vsize that contains
-the value of "32 vector registers with vlenb length" that gets filled
-during boot. vlenb is the value contained in the CSR_VLENB register and
-the value represents "VLEN / 8".
-
-So add riscv_vector_vlen() to return the actual VLEN value for in-kernel
-users when they need to check the available VLEN.
-
-Signed-off-by: Heiko Stuebner <heiko.stuebner@vrull.eu>
-Reviewed-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Jerry Shih <jerry.shih@sifive.com>
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- arch/riscv/include/asm/vector.h | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ arch/riscv/Kconfig | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/arch/riscv/include/asm/vector.h b/arch/riscv/include/asm/vector.h
-index 0cd6f0a027d1f..731dcd0ed4de9 100644
---- a/arch/riscv/include/asm/vector.h
-+++ b/arch/riscv/include/asm/vector.h
-@@ -277,11 +277,22 @@ static inline bool riscv_v_vstate_ctrl_user_allowed(void) { return false; }
- #define riscv_v_vstate_restore(vstate, regs)	do {} while (0)
- #define __switch_to_vector(__prev, __next)	do {} while (0)
- #define riscv_v_vstate_off(regs)		do {} while (0)
- #define riscv_v_vstate_on(regs)			do {} while (0)
- #define riscv_v_thread_free(tsk)		do {} while (0)
- #define  riscv_v_setup_ctx_cache()		do {} while (0)
- #define riscv_v_thread_alloc(tsk)		do {} while (0)
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index bffbd869a0682..5613b2bb686ec 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -571,20 +571,27 @@ config RISCV_ISA_V_PREEMPTIVE
+ 	  consumption due to the allocation of per-task's kernel Vector context.
  
- #endif /* CONFIG_RISCV_ISA_V */
+ config TOOLCHAIN_HAS_ZBB
+ 	bool
+ 	default y
+ 	depends on !64BIT || $(cc-option,-mabi=lp64 -march=rv64ima_zbb)
+ 	depends on !32BIT || $(cc-option,-mabi=ilp32 -march=rv32ima_zbb)
+ 	depends on LLD_VERSION >= 150000 || LD_VERSION >= 23900
+ 	depends on AS_HAS_OPTION_ARCH
  
-+/*
-+ * Return the implementation's vlen value.
-+ *
-+ * riscv_v_vsize contains the value of "32 vector registers with vlenb length"
-+ * so rebuild the vlen value in bits from it.
-+ */
-+static inline int riscv_vector_vlen(void)
-+{
-+	return riscv_v_vsize / 32 * 8;
-+}
++# This symbol indicates that the toolchain supports all v1.0 vector crypto
++# extensions, including Zvk*, Zvbb, and Zvbc.  LLVM added all of these at once.
++# binutils added all except Zvkb, then added Zvkb.  So we just check for Zvkb.
++config TOOLCHAIN_HAS_VECTOR_CRYPTO
++	def_bool $(as-instr, .option arch$(comma) +zvkb)
++	depends on AS_HAS_OPTION_ARCH
 +
- #endif /* ! __ASM_RISCV_VECTOR_H */
+ config RISCV_ISA_ZBB
+ 	bool "Zbb extension support for bit manipulation instructions"
+ 	depends on TOOLCHAIN_HAS_ZBB
+ 	depends on MMU
+ 	depends on RISCV_ALTERNATIVE
+ 	default y
+ 	help
+ 	   Adds support to dynamically detect the presence of the ZBB
+ 	   extension (basic bit manipulation) and enable its usage.
+ 
 -- 
 2.43.0
 
