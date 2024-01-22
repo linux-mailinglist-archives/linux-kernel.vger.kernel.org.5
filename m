@@ -1,64 +1,69 @@
-Return-Path: <linux-kernel+bounces-33294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AB4583680C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:26:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AB6683680E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:26:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DF6F1C22C94
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:26:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6DC61F256E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:26:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ED1241774;
-	Mon, 22 Jan 2024 15:01:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 678D35D72B;
+	Mon, 22 Jan 2024 15:01:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c8Q39pps"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gRklkEbG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2FB55D72B;
-	Mon, 22 Jan 2024 15:01:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A500E5D8E9;
+	Mon, 22 Jan 2024 15:01:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705935675; cv=none; b=q+EXg/h7p7KUkR2KD606R+dcEC1YsIBIWHfKpPS3tIkGfjuYd146GwwI2qMu8sYxp+Ub6TuahswOozdIVU60EWO96HEWVrYss3EPisTWUYq1k6MFOXbYWdtjxlfddnllkUGkKLN35MeAQnvzqgQ2VVPF1Ih8BafjVHDsmr16+KI=
+	t=1705935683; cv=none; b=ZaFKfVp8PNOGcakCHANaUmfDMwQBP+nkQuVFsvZSdk9DLP8FmnlV9/PcfSMNKFwajzhyvnG8iWQFJWwKwmf6ApU9Qvz+Ij2RjxTbVQUlsy2PpDPm9CopIIbGmY5VDc+aaudNH9R/XPeLQOhYA2i8tT7WR0a6hqaLojhY3cBzT4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705935675; c=relaxed/simple;
-	bh=jMt1X1UPSGWztS6fWUz+xylWbP0lQWWMOLDrSFZxAZw=;
+	s=arc-20240116; t=1705935683; c=relaxed/simple;
+	bh=bB14RhwtHCht10MRw+OWoJQOjFl0frT6lyEbD5z5Phk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LiRn24l/RqZDhIJmEsmMPbEDhndzod2HoNCYy97UxAZaH6vIElNkO/JQEvpeSBozi2TEbLA/8nxqeZCFZ4M969rIcEG25wp5yrfkXvVxjLKnbjNvrSywdVwzMDj0gBNld5PyHzwQr4pQK0N+aPL7QXJhKsomAvP+dO8LvqwboFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c8Q39pps; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAA12C433F1;
-	Mon, 22 Jan 2024 15:01:12 +0000 (UTC)
+	 MIME-Version; b=FJVm7tV2F9eaHd0chT7dHa5x9QU1b2IsYjS7EaZOGBE2/X5g2acVrZTQm9BGFkaCyzskeVdDej4A4D96GRpU7tBXqTqNzTdSOMKat/3mxLNtLM2oyV5xtRmuDRtuPfjyr8s8IMTZn1QG1oold+aLzsk1NsoYtJ6aOl6ulL724B4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gRklkEbG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2402EC433C7;
+	Mon, 22 Jan 2024 15:01:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705935674;
-	bh=jMt1X1UPSGWztS6fWUz+xylWbP0lQWWMOLDrSFZxAZw=;
+	s=k20201202; t=1705935683;
+	bh=bB14RhwtHCht10MRw+OWoJQOjFl0frT6lyEbD5z5Phk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=c8Q39ppsM/YaOVhAZ+2uRn/5CxSu2GYc30UsCt6XjnxgUo84H9kpleyqJxYQmDZDL
-	 Wut4D56+waMHf8yf8PipaErC8HSOpywwXrK5VOdGjaMi4DYyN5QT/ErwEcs2gzfr8/
-	 Tj4+uKn/gh2+ue09M+OEs2eijy1MWJXpU/m+fpOBK9/GMCgg+5WwYmpw8Vy28wgK3P
-	 +9uJQC0l3yD114RXKxYDD8CybK/jSud2thqzoSm9dGNYZ4BlKk90EcPeyxa9SdJBdJ
-	 4n0X5HULSdUf1tOpTNyI9ww9Wzj+vE2KZ/17/IYNEwHTKF7lQoErMyoWDVjEOpALx0
-	 QvqZqbtI3hzRA==
+	b=gRklkEbGQgRD/oiH5PirFGtoy628UtNe0D0XItifHnKeLShsKmcIpmsRvS3CsG11z
+	 I4YwFJRTCBOqeAc6ATk93QWnc/EUEl4Jyop45rbaub5AvSzIgixgUaJ3HXhQyBQ/nk
+	 Ng2jZOeEETcYB0wHOylpmRAid1WiH1r7Vkj2s/+u6LMrb6wF+VIbxxs4eWwe1rj/9j
+	 2xt8OG30o2h+At0O09qQZCcYvETlogZGEBiDh2jDLMcqPnT5JZ0w230Gqb/OCGL/dx
+	 tQcOWDnsxYj+8X/bfXdoWGb+uEvFmQ0gzq6MzYf/3Q/FlbHWwc2KV+zkHzf17KDPox
+	 MLUE2LrS1SS5A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Gergo Koteles <soyer@irl.hu>,
-	Takashi Iwai <tiwai@suse.de>,
+Cc: "Stanley.Yang" <Stanley.Yang@amd.com>,
+	Tao Zhou <tao.zhou1@amd.com>,
+	Hawking Zhang <Hawking.Zhang@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
 	Sasha Levin <sashal@kernel.org>,
-	perex@perex.cz,
-	tiwai@suse.com,
-	sbinding@opensource.cirrus.com,
-	kailang@realtek.com,
-	luke@ljones.dev,
-	andy.chi@canonical.com,
-	shenghao-ding@ti.com,
-	ruinairas1992@gmail.com,
-	vitalyr@opensource.cirrus.com,
-	linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 72/88] ALSA: hda/tas2781: add fixup for Lenovo 14ARB7
-Date: Mon, 22 Jan 2024 09:51:45 -0500
-Message-ID: <20240122145608.990137-72-sashal@kernel.org>
+	christian.koenig@amd.com,
+	Xinhui.Pan@amd.com,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	lijo.lazar@amd.com,
+	asad.kamal@amd.com,
+	Felix.Kuehling@amd.com,
+	le.ma@amd.com,
+	srinivasan.shanmugam@amd.com,
+	mukul.joshi@amd.com,
+	rajneesh.bhardwaj@amd.com,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.7 73/88] drm/amdgpu: Fix ecc irq enable/disable unpaired
+Date: Mon, 22 Jan 2024 09:51:46 -0500
+Message-ID: <20240122145608.990137-73-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122145608.990137-1-sashal@kernel.org>
 References: <20240122145608.990137-1-sashal@kernel.org>
@@ -73,67 +78,122 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.1
 Content-Transfer-Encoding: 8bit
 
-From: Gergo Koteles <soyer@irl.hu>
+From: "Stanley.Yang" <Stanley.Yang@amd.com>
 
-[ Upstream commit b5cb53fd32779f3a971c45bcd997ae2608aa1086 ]
+[ Upstream commit a32c6f7f5737cc7e31cd7ad5133f0d96fca12ea6 ]
 
-The 14ARB7 has two tas2563 amplifier on i2c.
-Connect it to the tas2781 driver.
+The ecc_irq is disabled while GPU mode2 reset suspending process,
+but not be enabled during GPU mode2 reset resume process.
 
-Signed-off-by: Gergo Koteles <soyer@irl.hu>
-Link: https://lore.kernel.org/r/abce9ee55689523562feb72383377171a489ddc7.1703891777.git.soyer@irl.hu
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Changed from V1:
+	only do sdma/gfx ras_late_init in aldebaran_mode2_restore_ip
+	delete amdgpu_ras_late_resume function
+
+Changed from V2:
+	check umc ras supported before put ecc_irq
+
+Signed-off-by: Stanley.Yang <Stanley.Yang@amd.com>
+Reviewed-by: Tao Zhou <tao.zhou1@amd.com>
+Reviewed-by: Hawking Zhang <Hawking.Zhang@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/aldebaran.c | 26 +++++++++++++++++++++++++-
+ drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c |  4 ++++
+ drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c |  5 +++++
+ drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c  |  4 ++++
+ 4 files changed, 38 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 70b17b08d4ff..9606f2448fda 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6984,6 +6984,12 @@ static void tas2781_fixup_i2c(struct hda_codec *cdc,
- 	 tas2781_generic_fixup(cdc, action, "i2c", "TIAS2781");
+diff --git a/drivers/gpu/drm/amd/amdgpu/aldebaran.c b/drivers/gpu/drm/amd/amdgpu/aldebaran.c
+index 02f4c6f9d4f6..576067d66bb9 100644
+--- a/drivers/gpu/drm/amd/amdgpu/aldebaran.c
++++ b/drivers/gpu/drm/amd/amdgpu/aldebaran.c
+@@ -330,6 +330,7 @@ aldebaran_mode2_restore_hwcontext(struct amdgpu_reset_control *reset_ctl,
+ {
+ 	struct list_head *reset_device_list = reset_context->reset_device_list;
+ 	struct amdgpu_device *tmp_adev = NULL;
++	struct amdgpu_ras *con;
+ 	int r;
+ 
+ 	if (reset_device_list == NULL)
+@@ -355,7 +356,30 @@ aldebaran_mode2_restore_hwcontext(struct amdgpu_reset_control *reset_ctl,
+ 		 */
+ 		amdgpu_register_gpu_instance(tmp_adev);
+ 
+-		/* Resume RAS */
++		/* Resume RAS, ecc_irq */
++		con = amdgpu_ras_get_context(tmp_adev);
++		if (!amdgpu_sriov_vf(tmp_adev) && con) {
++			if (tmp_adev->sdma.ras &&
++				tmp_adev->sdma.ras->ras_block.ras_late_init) {
++				r = tmp_adev->sdma.ras->ras_block.ras_late_init(tmp_adev,
++						&tmp_adev->sdma.ras->ras_block.ras_comm);
++				if (r) {
++					dev_err(tmp_adev->dev, "SDMA failed to execute ras_late_init! ret:%d\n", r);
++					goto end;
++				}
++			}
++
++			if (tmp_adev->gfx.ras &&
++				tmp_adev->gfx.ras->ras_block.ras_late_init) {
++				r = tmp_adev->gfx.ras->ras_block.ras_late_init(tmp_adev,
++						&tmp_adev->gfx.ras->ras_block.ras_comm);
++				if (r) {
++					dev_err(tmp_adev->dev, "GFX failed to execute ras_late_init! ret:%d\n", r);
++					goto end;
++				}
++			}
++		}
++
+ 		amdgpu_ras_resume(tmp_adev);
+ 
+ 		/* Update PSP FW topology after reset */
+diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
+index a5a05c16c10d..6c5185608854 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
+@@ -1041,6 +1041,10 @@ static int gmc_v10_0_hw_fini(void *handle)
+ 
+ 	amdgpu_irq_put(adev, &adev->gmc.vm_fault, 0);
+ 
++	if (adev->gmc.ecc_irq.funcs &&
++		amdgpu_ras_is_supported(adev, AMDGPU_RAS_BLOCK__UMC))
++		amdgpu_irq_put(adev, &adev->gmc.ecc_irq, 0);
++
+ 	return 0;
  }
  
-+static void yoga7_14arb7_fixup_i2c(struct hda_codec *cdc,
-+	const struct hda_fixup *fix, int action)
-+{
-+	 tas2781_generic_fixup(cdc, action, "i2c", "INT8866");
-+}
-+
- /* for alc295_fixup_hp_top_speakers */
- #include "hp_x360_helper.c"
+diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c b/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
+index 23d7b548d13f..c9c653cfc765 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
+@@ -941,6 +941,11 @@ static int gmc_v11_0_hw_fini(void *handle)
+ 	}
  
-@@ -7454,6 +7460,7 @@ enum {
- 	ALC236_FIXUP_DELL_DUAL_CODECS,
- 	ALC287_FIXUP_CS35L41_I2C_2_THINKPAD_ACPI,
- 	ALC287_FIXUP_TAS2781_I2C,
-+	ALC287_FIXUP_YOGA7_14ARB7_I2C,
- 	ALC245_FIXUP_HP_MUTE_LED_COEFBIT,
- 	ALC245_FIXUP_HP_X360_MUTE_LEDS,
- 	ALC287_FIXUP_THINKPAD_I2S_SPK,
-@@ -9568,6 +9575,12 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_THINKPAD_ACPI,
- 	},
-+	[ALC287_FIXUP_YOGA7_14ARB7_I2C] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = yoga7_14arb7_fixup_i2c,
-+		.chained = true,
-+		.chain_id = ALC285_FIXUP_THINKPAD_HEADSET_JACK,
-+	},
- 	[ALC245_FIXUP_HP_MUTE_LED_COEFBIT] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc245_fixup_hp_mute_led_coefbit,
-@@ -10221,6 +10234,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x3853, "Lenovo Yoga 7 15ITL5", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
- 	SND_PCI_QUIRK(0x17aa, 0x3855, "Legion 7 16ITHG6", ALC287_FIXUP_LEGION_16ITHG6),
- 	SND_PCI_QUIRK(0x17aa, 0x3869, "Lenovo Yoga7 14IAL7", ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK_PIN),
-+	SND_PCI_QUIRK(0x17aa, 0x3870, "Lenovo Yoga 7 14ARB7", ALC287_FIXUP_YOGA7_14ARB7_I2C),
- 	SND_PCI_QUIRK(0x17aa, 0x387d, "Yoga S780-16 pro Quad AAC", ALC287_FIXUP_TAS2781_I2C),
- 	SND_PCI_QUIRK(0x17aa, 0x387e, "Yoga S780-16 pro Quad YC", ALC287_FIXUP_TAS2781_I2C),
- 	SND_PCI_QUIRK(0x17aa, 0x3881, "YB9 dual power mode2 YC", ALC287_FIXUP_TAS2781_I2C),
+ 	amdgpu_irq_put(adev, &adev->gmc.vm_fault, 0);
++
++	if (adev->gmc.ecc_irq.funcs &&
++		amdgpu_ras_is_supported(adev, AMDGPU_RAS_BLOCK__UMC))
++		amdgpu_irq_put(adev, &adev->gmc.ecc_irq, 0);
++
+ 	gmc_v11_0_gart_disable(adev);
+ 
+ 	return 0;
+diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
+index 2ac5820e9c92..507d695bcc6b 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
+@@ -2380,6 +2380,10 @@ static int gmc_v9_0_hw_fini(void *handle)
+ 
+ 	amdgpu_irq_put(adev, &adev->gmc.vm_fault, 0);
+ 
++	if (adev->gmc.ecc_irq.funcs &&
++		amdgpu_ras_is_supported(adev, AMDGPU_RAS_BLOCK__UMC))
++		amdgpu_irq_put(adev, &adev->gmc.ecc_irq, 0);
++
+ 	return 0;
+ }
+ 
 -- 
 2.43.0
 
