@@ -1,74 +1,120 @@
-Return-Path: <linux-kernel+bounces-34084-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2A85837305
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:48:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDE4783732F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:51:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 721981F27E37
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:48:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04F551C2686A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:51:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1B4240BE3;
-	Mon, 22 Jan 2024 19:46:38 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29507405CE;
+	Mon, 22 Jan 2024 19:49:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Mb5uGjqO"
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D34B3FE50
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 19:46:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4D523FE53
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 19:49:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705952798; cv=none; b=cI+5gkOYtrTii/n9/FnvEWvbr8ewCvoI5fuBVdvE5SoAIaA7UZo7UnePa2OrFBf0pMAQOD2WaD1eocVpT5GE/6hUjzLUDB65Fo0ClOgDceIw652zTdeWAA5j/SHW1bnhBR6cANbcvzbS6p6bWiZ3c0S0wzprWC3raQ2VtclP+Eg=
+	t=1705952986; cv=none; b=tHIgoShvFA8LOG67RFU9hvabcWDYFidGmp0v4qcBZFizWKDiG9GfA3qdVjRoKuaewuJ0cavXTnGxNY+SMj5TIZIKGU+DpsKdqlPJE+2eGK1RBhOGfzlQgcPLwtFCDbJTHbpXRDSh6LwS52KdSCiSSJlsnllKtUknjl/fTbdkD2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705952798; c=relaxed/simple;
-	bh=YfZwdzk34XcZ0EEsKF8elFs4vxTzfWCAOoh0xRozprk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kRKMbNY/3p39Py2n78xNHZUlCt699lvVubI8gZ8jmx0eSUwf6rwRdlxS1s2a60ZTriIKQvMKPF3nZrchuLhIoLb4XOdrsQ4PgkX+5L2k2wfUIE+8KBlz5w8IMdx8unaY75p8zzOGYOlB94LZQJHX7cEYv/nBwK+nRGn8MRrGMws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B75C7C433F1;
-	Mon, 22 Jan 2024 19:46:36 +0000 (UTC)
-Date: Mon, 22 Jan 2024 14:48:05 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Kees Cook
- <keescook@chromium.org>, linux-kernel@vger.kernel.org, Masami Hiramatsu
- <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton
- <akpm@linux-foundation.org>, Christian Brauner <brauner@kernel.org>, Al
- Viro <viro@zeniv.linux.org.uk>, Ajay Kaher <ajay.kaher@broadcom.com>
-Subject: Re: [for-linus][PATCH 1/3] eventfs: Have the inodes all for files
- and directories all be the same
-Message-ID: <20240122144805.0bda8a75@gandalf.local.home>
-In-Reply-To: <20240122144443.0f9cf5b9@gandalf.local.home>
-References: <20240117143548.595884070@goodmis.org>
-	<20240117143810.531966508@goodmis.org>
-	<CAMuHMdXKiorg-jiuKoZpfZyDJ3Ynrfb8=X+c7x0Eewxn-YRdCA@mail.gmail.com>
-	<20240122100630.6a400dd3@gandalf.local.home>
-	<CAMuHMdXD0weO4oku8g2du6fj-EzxGaF+0i=zrPScSXwphFAZgg@mail.gmail.com>
-	<20240122114743.7e46b7cb@gandalf.local.home>
-	<CAHk-=wiq5mr+wSb6pmtt7QqBhQo_xr7ip=yMwQ5ryWVwCyMhfg@mail.gmail.com>
-	<CAHk-=wjGxVVKvxVf=NDnMhB3=eQ_NMiEY3onG1wRAjJepig=aw@mail.gmail.com>
-	<CAHk-=wiLqJYT2GGSBhKuJS-Uq1DVq3S32oP0SwqQiATuBivxcg@mail.gmail.com>
-	<20240122144443.0f9cf5b9@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1705952986; c=relaxed/simple;
+	bh=N5/02QQcKOFzVJAx5+uukXGNVlRapVJpelm/ZexGgDw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=r2qkc8wyIXhdmrHwhERbbqCJWX6tYBdQ8OUBnPof592pt3A8yx7PXUuVmRXipc8brF7A7DfdJ/npwSUocIw111cM+pJEmELhPAhLypQ1b3G6C9daLilIztGAJH60LuQiYE81QQKmkkZ8ZuYaTa1UR+SjpIb6uZyqTKsRrErMH14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Mb5uGjqO; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-5100409e31eso209928e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 11:49:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705952983; x=1706557783; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UmmFjd1D1SG8gXESzpiPv0tTaSblIwyR7+CuwIgKAtU=;
+        b=Mb5uGjqOLdxeckGf5S77ezdfQss2r2XWpnVhWJDJixZI6Yz/KxFHSMdBc3pAhEx7Rn
+         4vWveEbjRalqBTfWdAQmue5GrwIQemU3FzrVxvLYJ4a+LGI3qUzBZUiiK38XUXNKvipJ
+         lNT5Wip/hPA0VLDhwVhHkFz3VYzY+0SdtBmfNMM9ZViq1DtN33F1lWqvhY/keD/1/WLN
+         y/jRfJp7LM4pgvXn67umRfStj/F8aZoNgyLQiNO4YcD8fCGuALNIa9ppumSTb0SE1nHq
+         pw34AY0g6FjPHfOcgkJVWgOtrHNzRFO9rpYrO+dB9IKgBCjMAvyoCzBLrTqZXbiWa1QC
+         lnVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705952983; x=1706557783;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UmmFjd1D1SG8gXESzpiPv0tTaSblIwyR7+CuwIgKAtU=;
+        b=NZ/KFqfCsEC+dshLk87fPy90ALrX5me5LW4GW2IlLqTIYBdVD1EKqjWMaI/jb9BW9C
+         YEtmIgYO1fVnfcRUwx3w+TCDBMI26ucPnG4FWdLm/8yddsxXK+N64IlodaUua2ojvC7Q
+         Rw+v8LwZPxU9ZhqUto7ZbyS/fn8WtK0myiNXkY4tpCLR7XY0o64y36u+suqnfpSbay6t
+         LWroonfiytKjUHd6gVrl6csfAN7mcMqshqI6SbHo/YszvKXDVCSjd0L3BBqXN6dMhBhU
+         8XGp1C9xGo2uO3UhB/jeQJqqKFb9Oh31zhdvTqFODITbzJR+jQhs4EUxnZLugpb15vke
+         ko+w==
+X-Gm-Message-State: AOJu0YyhNCQIF/sjvCID6CZ6zFvfp9GONG6rIYw5Btr9OKr7oFlSoq8v
+	4J/iAqVwBBQpYbI6pYyxs1PfVC/rztua5PiOn5bOBkDRmBjjb8jiV9eaefj7DiWc/1ojcOVVTt+
+	z76U9V0ue7easu/mlTXIKJ6k/VA4z8LAE7vfL
+X-Google-Smtp-Source: AGHT+IHwEYx3Exd15BVvGjkkGlcFwLPytwHOu/ASU6tibw2uMUBmjgKDeCLv71mOUL21U2r8DyjfoZpQZefxk0Mf/2Q=
+X-Received: by 2002:a05:6512:e9b:b0:50e:8106:9e86 with SMTP id
+ bi27-20020a0565120e9b00b0050e81069e86mr2770324lfb.43.1705952982619; Mon, 22
+ Jan 2024 11:49:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240117-b4-zswap-lock-optimize-v2-0-b5cc55479090@bytedance.com> <20240117-b4-zswap-lock-optimize-v2-2-b5cc55479090@bytedance.com>
+In-Reply-To: <20240117-b4-zswap-lock-optimize-v2-2-b5cc55479090@bytedance.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Mon, 22 Jan 2024 11:49:05 -0800
+Message-ID: <CAJD7tkbYv_TfEZ3Dj1JE=NXA323MdxGR9ib34PUoCmbfFaSCRQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] mm/zswap: split zswap rb-tree
+To: Chengming Zhou <zhouchengming@bytedance.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>, 
+	Chris Li <chriscli@google.com>, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	Johannes Weiner <hannes@cmpxchg.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 22 Jan 2024 14:44:43 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Fri, Jan 19, 2024 at 3:22=E2=80=AFAM Chengming Zhou
+<zhouchengming@bytedance.com> wrote:
+>
+> Each swapfile has one rb-tree to search the mapping of swp_entry_t to
+> zswap_entry, that use a spinlock to protect, which can cause heavy lock
+> contention if multiple tasks zswap_store/load concurrently.
+>
+> Optimize the scalability problem by splitting the zswap rb-tree into
+> multiple rb-trees, each corresponds to SWAP_ADDRESS_SPACE_PAGES (64M),
+> just like we did in the swap cache address_space splitting.
+>
+> Although this method can't solve the spinlock contention completely, it
+> can mitigate much of that contention. Below is the results of kernel buil=
+d
+> in tmpfs with zswap shrinker enabled:
+>
+>      linux-next  zswap-lock-optimize
+> real 1m9.181s    1m3.820s
+> user 17m44.036s  17m40.100s
+> sys  7m37.297s   4m54.622s
+>
+> So there are clearly improvements.
 
-> Slightly different version below.
+If/when you respin this, can you mention that testing was done with a
+single swapfile? I assume the improvements will be less with multiple
+swapfiles as lock contention should be better.
 
-The main difference between this and your patch is that the inode numbers
-are only generated when needed, and files that are never referenced, will
-not add to the possibility of overflow or collision.
+>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> Acked-by: Nhat Pham <nphamcs@gmail.com>
 
--- Steve
+I think the diff in zswap_swapoff() should be much simpler with the
+tree(s) cleanup removed. Otherwise LGTM.
+
+Acked-by: Yosry Ahmed <yosryahmed@google.com>
 
