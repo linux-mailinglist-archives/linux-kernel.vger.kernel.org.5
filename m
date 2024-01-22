@@ -1,90 +1,125 @@
-Return-Path: <linux-kernel+bounces-34275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD55683773C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 00:01:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38E0D837744
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 00:01:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD7321C20D7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:01:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CAB001F259D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:01:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 932C7495CC;
-	Mon, 22 Jan 2024 23:00:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D612B4A9A2;
+	Mon, 22 Jan 2024 23:00:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SUarzsQU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gRB+oBBx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7B431E4B6;
-	Mon, 22 Jan 2024 22:59:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E07136B0C;
+	Mon, 22 Jan 2024 23:00:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705964399; cv=none; b=rWX3/p85WfPg1CS4qlTBe9Dh3geGruflTPgkTgn/ZdDgBZCyrUmBJlfMFrZwCaIRTrL/kjtQu3ZiW/TrbrknmsSOthmDn3tWOrPMvTNqJDrM2FWkVrlPYlll3+RZjL3uIbyYbSDM4Ec4DwGMEkloKiYO8p8tysAvHKgaGNtlLQA=
+	t=1705964429; cv=none; b=RRD5So1mhtsvSlJJVQx2zU4Km7gFy/k8jOWP+MiUHR/qDqDyDC+Lv63YihR1Me5MjyweE5html1lGmM6K46Szt0HTTIPjn70rhRWszk6yoSTQ/WzKqen8tM9zApym/HHfxp3ANZyN4lvdToSRGPQx+a+Rdi3lH9fueehVKUFgZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705964399; c=relaxed/simple;
-	bh=P+lLUFcKbgaw62nJsWY79RoGrwUu1qdo7Aga5YdAO9Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=d6wie3cg2xgHHF/UwVKXOCvxyDgNeJaLJnOlrws5b9NyWyzwRBPl/tzrZxzrOJIB+jCMlu5JCha6UhuMilvsavsH1GeWk+9p+OYNZsW8wR8ijm7Eq6r+tHcAktbC6wM+tx6tvHI/ITz4BRDirRHKXSgDFxVFRCXzKpC8Aplt7D4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SUarzsQU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1341C43141;
-	Mon, 22 Jan 2024 22:59:59 +0000 (UTC)
+	s=arc-20240116; t=1705964429; c=relaxed/simple;
+	bh=zSGD4Ci6DJ0vZvzDYCjqP9tLlzmLMqoKbD5SnqjHrqs=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=Z0DI7MHcdFw5gQbXbhUL9E5S/utvSDsMJ8Vt2HjZ7X7OppypKq40t+O4hXw/t1ZPc7msaTGDtQBFq3T99+jczIVTBfiV7Yt3UOSjAtKH4+S6n88oVPvOK+2wUxdbVDOLgSifMpVkNmR0Mio0cgQycqwopwB0kvxbyjvy2ChQia4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gRB+oBBx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57EF4C433B2;
+	Mon, 22 Jan 2024 23:00:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705964399;
-	bh=P+lLUFcKbgaw62nJsWY79RoGrwUu1qdo7Aga5YdAO9Q=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=SUarzsQUQmCc76k5oiHQIldqeNSjoajXTKYtOLH3AQ1jK4bwg9iAUWcW6Bcz8oMU9
-	 yiZFwTVSvW+9P3IS0ECHvQ2XPgMg9cLP8FopJaoIrB6fIz8pZU4rXNlN1Hts/LkDKo
-	 ewapeWBCM9wUwGgYaZogkWOb9NWBV/PcD5p9l6Bn18lWEDfpSNFQAE5zh9uWeVDa8U
-	 1y5dB0Hvqbij+Of9tRseiJiJgvApynhjoL9a5IEQ/09pZWpEyB+WsLkR1xJoOWlQif
-	 svbdLDuDbdnMRP3VyBrxG2FDnW8fd61nroVc3thW0xJ6ugPyVmag99vNOvQTPv0gTn
-	 w2poeoBMdVFDA==
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2cd0f4797aaso36181961fa.0;
-        Mon, 22 Jan 2024 14:59:59 -0800 (PST)
-X-Gm-Message-State: AOJu0YztOMkAwNWJC5HFH0ZOLlTarGMa3g08P41Elu1O9VAgyM9Gj/j/
-	31ksBb+1x6+qK061h6cGQY4GOw4pbY+3HvLHHdLZdf76PtVzRyJ6Kzh4iFilcfdn3mfq3gjt4sM
-	1vEpaIOQqxge7nAIVA+TdZRrqvDo=
-X-Google-Smtp-Source: AGHT+IFih/EQB2okjKYdkuLFHs5nIfhXH9B79lEyTW/QBe3Xff893sJyOY8NY1U1c6X/Qc+AHogQDgFfHHTc0mUGwEs=
-X-Received: by 2002:a2e:86cf:0:b0:2cd:ee6d:a280 with SMTP id
- n15-20020a2e86cf000000b002cdee6da280mr1740068ljj.38.1705964397915; Mon, 22
- Jan 2024 14:59:57 -0800 (PST)
+	s=k20201202; t=1705964428;
+	bh=zSGD4Ci6DJ0vZvzDYCjqP9tLlzmLMqoKbD5SnqjHrqs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=gRB+oBBxCsHW4pSCQmACISlVPmO4dMDjO4Cn9S3dF5ck4Z+5JA2wTVILKH8FgrVcx
+	 l7/QUAceIbSWIy+0kT0yfljPPAPyc060ppSh7gWfgYXJkneSPdba+05IFNidF4N/Di
+	 QDmhO7bj3z2SGCHZArOWD7zJqdhnPK7LQmIPwAqSUVWx5O0JAPIItxym31M/Rroga8
+	 SVsRX3svYuUggxsRUjsoisORJ/9g3J1Vj59UplZr5C7cyDkI7/ArTW5cYv/ggu0pYS
+	 ZLuzY1TxFGRkmnibjxs9rDoo9P6+AkDkLkFrLf62HIv/jLWnBFDNk123yXf4SjTcBw
+	 RU5aYDugc+Bbw==
+Date: Mon, 22 Jan 2024 17:00:26 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Vidya Sagar <vidyas@nvidia.com>
+Cc: bhelgaas@google.com, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, treding@nvidia.com,
+	jonathanh@nvidia.com, kthota@nvidia.com, mmaddireddy@nvidia.com,
+	sagar.tv@gmail.com
+Subject: Re: [PATCH V2] PCI: Clear errors logged in Secondary Status Register
+Message-ID: <20240122230026.GA290856@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122075700.7120-1-yangtiezhu@loongson.cn> <20240122075700.7120-3-yangtiezhu@loongson.cn>
-In-Reply-To: <20240122075700.7120-3-yangtiezhu@loongson.cn>
-From: Song Liu <song@kernel.org>
-Date: Mon, 22 Jan 2024 14:59:46 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW7QpiUTaqRp=mnWvxCY_mSeuaFpiY4G9OdAZBZ6RmnPBg@mail.gmail.com>
-Message-ID: <CAPhsuW7QpiUTaqRp=mnWvxCY_mSeuaFpiY4G9OdAZBZ6RmnPBg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 2/3] selftests/bpf: Copy insn_is_pseudo_func()
- into testing_helpers
-To: Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240116143258.483235-1-vidyas@nvidia.com>
 
-On Sun, Jan 21, 2024 at 11:57=E2=80=AFPM Tiezhu Yang <yangtiezhu@loongson.c=
-n> wrote:
->
-> insn_is_pseudo_func() will be used in test_verifier, the original idea is
-> to move it from libbpf.c to libbpf_internal.h and then include the header
-> to reuse this function, this just adds more internal code of libbpf used
-> by selftests. While we have allowed it in some cases to avoid duplication
-> of more complex logic, it is not justified in this case.
->
-> Since insn_is_pseudo_func() and its helper is_ldimm64_insn() are trivial
-> enough, just copy into testing_helpers.
->
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+On Tue, Jan 16, 2024 at 08:02:58PM +0530, Vidya Sagar wrote:
+> The enumeration process leaves the 'Received Master Abort' bit set in
+> the Secondary Status Register of the downstream port in the following
+> scenarios.
+> 
+> (1) The device connected to the downstream port has ARI capability
+>     and that makes the kernel set the 'ARI Forwarding Enable' bit in
+>     the Device Control 2 Register of the downstream port. This
+>     effectively makes the downstream port forward the configuration
+>     requests targeting the devices downstream of it, even though they
+>     don't exist in reality. It causes the downstream devices return
+>     completions with UR set in the status in turn causing 'Received
+>     Master Abort' bit set.
+> 
+>     In contrast, if the downstream device doesn't have ARI capability,
+>     the 'ARI Forwarding Enable' bit in the downstream port is not set
+>     and any configuration requests targeting the downstream devices
+>     that don't exist are terminated (section 6.13 of PCI Express Base
+>     6.0 spec) in the downstream port itself resulting in no change of
+>     the 'Received Master Abort' bit.
+> 
+> (2) A PCIe switch is connected to the downstream port and when the
+>     enumeration flow tries to explore the presence of devices that
+>     don't really exist downstream of the switch, the downstream
+>     port receives the completions with UR set causing the 'Received
+>     Master Abort' bit set.
 
-Acked-by: Song Liu <song@kernel.org>
+Are these the only possible ways this error is logged?  I expected
+them to be logged when we enumerate below a Root Port that has nothing
+attached, for example.
+
+Does clearing them in pci_scan_bridge_extend() cover all ways this
+error might be logged during enumeration?  I can't remember whether
+all enumeration goes through this path.
+
+> Clear 'Received Master Abort' bit to keep the bridge device in a clean
+> state post enumeration.
+> 
+> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+> ---
+> V2:
+> * Changed commit message based on Bjorn's feedback
+> 
+>  drivers/pci/probe.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> index 795534589b98..640d2871b061 100644
+> --- a/drivers/pci/probe.c
+> +++ b/drivers/pci/probe.c
+> @@ -1470,6 +1470,9 @@ static int pci_scan_bridge_extend(struct pci_bus *bus, struct pci_dev *dev,
+>  	}
+>  
+>  out:
+> +	/* Clear errors in the Secondary Status Register */
+> +	pci_write_config_word(dev, PCI_SEC_STATUS, 0xffff);
+> +
+>  	pci_write_config_word(dev, PCI_BRIDGE_CONTROL, bctl);
+>  
+>  	pm_runtime_put(&dev->dev);
+> -- 
+> 2.25.1
+> 
 
