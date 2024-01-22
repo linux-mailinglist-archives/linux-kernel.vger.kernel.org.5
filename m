@@ -1,198 +1,153 @@
-Return-Path: <linux-kernel+bounces-33841-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08673836F5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:14:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50298836F62
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:14:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B9641C26531
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:14:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0841DB250CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:14:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DA6640BF4;
-	Mon, 22 Jan 2024 17:38:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC35840C1D;
+	Mon, 22 Jan 2024 17:38:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yPCF1fbJ"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JuAFpTO4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 368913E47B
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:38:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32E3840C1F;
+	Mon, 22 Jan 2024 17:38:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705945119; cv=none; b=rj9TscLYE4DhreSFghG057ohTzLZSzApOytn5LM4S6SdSXvDvlHQ7pYbK1oj6+f1FjGp6xW2chQUX0SULS0hpvR0U5suzg8tziTUGRMqfEDnhMvpFazRuYDX51ToqviwpZSqyIXM73WbRWV09tIL6nYQNVp6rj1H9dKRVQgZ1gg=
+	t=1705945128; cv=none; b=N2IFC2oYOJvdh94RYFJ/uAx4IlIwoAjL/QfoWG/Uq14A+GAaUSfAwIZHsNtns2W1Nh2HHcmZI8A6wTKJb7j5uCO0SRGLchVY53Imn0t4OZfX1scVgnrqcJYGk0xsnW06l/G0x5a4byeQLWdoD+iVxWswjZQCd9nRqR/y/jLicmc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705945119; c=relaxed/simple;
-	bh=lx13kHG0tJJSdUreOeJdloyx12tNITbn9wmXA6Zx684=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KWCgUIgmyYyKtCX25E42TnkD4XKSGT06QuuLPegrsxUM+2++QblGyUJ3TTc9Z2AXbD7rz/AK1jYbkVIBjKKYXf0Xu4wGPLdx5O5P/RgwaxijZMo+3mDsfHi6AII+TambC5GGknBIX8S9WLyPd8Nit7iG2X1Sb9ONTKdtGCTPHPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yPCF1fbJ; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d72d240c69so253815ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:38:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705945117; x=1706549917; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5UuQsVtmQQmr5HjqyMtyAk8R8Y84z4aC4k61fXm7dcc=;
-        b=yPCF1fbJt88udfi4IbYvyaXYX1RwZVyFK5gY8d4VgFcIHQfE23M7XwhosOmHMl7BSw
-         1f2ch0AVVFdaRvBeDfwm1Dx3LPBiol/n1wR7FJJuAo5L6FDFzvUlHz1gV6X5bPTy1Kmx
-         RKhjIETiDmyPys3CDehoYWfEpHESDMTCapSKiGdGka7ryTwq/zKsrJqHCsMbu+yVxXlA
-         49lYvZyMLr7jiTPTi/pmV/HGwBC+sOJv9BVuM2L3UTGKoH1ffNCyTzQfpoVteKAulTit
-         kiPRTYXLk7smW4XpMxCIX25uXX/RsApCHtPRHd7o4ihYa9OBLGk9EX7cdiupmcQmgTiK
-         DKJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705945117; x=1706549917;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5UuQsVtmQQmr5HjqyMtyAk8R8Y84z4aC4k61fXm7dcc=;
-        b=Il7LklUAX+JQLY/P7fxLO9K/DhZBfwTEynKUtTMubVAqCouk5GTOkzDARrXorC8hk6
-         ur55utvOR+JuT8Bnkj622PKjvbq/7DcNwRk4PGCKu2UWvah4rkMExgWTnwgM/wdZMrqG
-         rVT2rY5+bvB2AKJQcFF/j3kFxQkxlV2QpR8VawE22RfGDLxz/zU2OQB/Wlz0MUlxaa5/
-         +5yORuMLNIqABcp4RKQLBLi8tVII4d1o1MCU+FP5TpDhRp06HD4zWgVSlnk+GQ8ktiKo
-         fC35Dsk4HDlLpwtBSMTtQno0m+myrIG1FiZuUOtHf49+A2ll8ra9JdtYNPA8BCdNfx1+
-         Ravg==
-X-Gm-Message-State: AOJu0YxIk8lllqEZizqmv1P48rgxKkVlbEuGx/FBhzMMjI3g/mfhN+0O
-	xxVzYdHkSnTOcAZ7nEVEbDwM1u/+hRS6NpN7zFyfiXqASgchrJhLRp+/Iau7ZvLIkmLBAr59DaL
-	cHvYTExW45Z/aB9ohgFJNK61Re2MjEphu26pz
-X-Google-Smtp-Source: AGHT+IFYv5tHX1WQPl3UKkucHmsgclS/9mQvJ8BtkspQnHW8INm/bfJkBEp88NMt7Nyb4tbGmP3GUFNzcPfeUEN4+yY=
-X-Received: by 2002:a17:902:e747:b0:1d6:f66b:1057 with SMTP id
- p7-20020a170902e74700b001d6f66b1057mr2985plf.28.1705945117286; Mon, 22 Jan
- 2024 09:38:37 -0800 (PST)
+	s=arc-20240116; t=1705945128; c=relaxed/simple;
+	bh=s97P5ad8CGWrxO21PQ5C9STKmQGTWqhS9e/Fu2B5J0w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QYMYf0ogDwc647h236n7JNy+77E/2ByhhmQrsPcnawoBFIqGgHyDdxiK09quHAMbtV93tjfKuIvqni+W+AL/s8XoPN0noUmKkJS+EyCGPiqva+bKbvqxmFGHds0H/P/8OcZFG1bkmQGbOF7LItEwUbZSk/fPN3XOhMlkTsSvPe4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JuAFpTO4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 403CEC433F1;
+	Mon, 22 Jan 2024 17:38:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705945127;
+	bh=s97P5ad8CGWrxO21PQ5C9STKmQGTWqhS9e/Fu2B5J0w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JuAFpTO4VI3Yr4fOiCfZbAQwdKFYU0AdHcap5+Mw/07qi6v4lEN5DqbTuANk5L8T4
+	 p78ZfIu8Px2GzvoOs7wS8eJzYm8uvjG8a8Hy34ZdqeQTNql/1IgU7x4NOKsn0zKsr/
+	 AHBeD0wSAyGNpBlD3gvQA1NUOvCexaf+iJtE/QXoenL1fJeZKy6Cqo1O3qc9/6cX4K
+	 uwR1QNG9JkmcfCBBcgcS2cPrD84OBWA9WS1VymOkHxjEtmav9WQp86tb9N2lrSAdwF
+	 xH2dQsn0F/PFUAJRCGcYYq6ZiCmS7WECdJ/0vOBFLIhATa3VdOW/VyJfb1r9xVAyAi
+	 8gB9oXA1UeUDg==
+Date: Mon, 22 Jan 2024 17:38:41 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Fabian Pfitzner <f.pfitzner@pengutronix.de>
+Cc: Michael Hennerich <michael.hennerich@analog.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Alexandru Tachici <alexandru.tachici@analog.com>,
+	kernel@pengutronix.de, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: phy: adin: add missing clock option
+Message-ID: <20240122-referable-unpainted-e17146ad8c7a@spud>
+References: <20240122110311.2725036-1-f.pfitzner@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1705507931.git.jpoimboe@kernel.org> <ac84a832feba5418e1b58d1c7f3fe6cc7bc1de58.1705507931.git.jpoimboe@kernel.org>
- <6667b799702e1815bd4e4f7744eddbc0bd042bb7.camel@kernel.org>
- <20240117193915.urwueineol7p4hg7@treble> <CAHk-=wg_CoTOfkREgaQQA6oJ5nM9ZKYrTn=E1r-JnvmQcgWpSg@mail.gmail.com>
- <CALvZod6LgX-FQOGgNBmoRACMBK4GB+K=a+DYrtExcuGFH=J5zQ@mail.gmail.com>
- <ZahSlnqw9yRo3d1v@P9FQF9L96D.corp.robot.car> <CALvZod4V3QTULTW5QxgqCbDpNtVO6fXzta33HR7GN=L2LUU26g@mail.gmail.com>
- <CAHk-=whYOOdM7jWy5jdrAm8LxcgCMFyk2bt8fYYvZzM4U-zAQA@mail.gmail.com>
-In-Reply-To: <CAHk-=whYOOdM7jWy5jdrAm8LxcgCMFyk2bt8fYYvZzM4U-zAQA@mail.gmail.com>
-From: Shakeel Butt <shakeelb@google.com>
-Date: Mon, 22 Jan 2024 09:38:23 -0800
-Message-ID: <CALvZod6tCb=3+W18V7kntjJZBRMigGnyPQGjQK0no9Q1KmpcRQ@mail.gmail.com>
-Subject: Re: [PATCH RFC 1/4] fs/locks: Fix file lock cache accounting, again
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>, Josh Poimboeuf <jpoimboe@kernel.org>, 
-	Vlastimil Babka <vbabka@suse.cz>, Jeff Layton <jlayton@kernel.org>, 
-	Chuck Lever <chuck.lever@oracle.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org, 
-	Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>, Vasily Averin <vasily.averin@linux.dev>, 
-	Michal Koutny <mkoutny@suse.com>, Waiman Long <longman@redhat.com>, 
-	Muchun Song <muchun.song@linux.dev>, Jiri Kosina <jikos@kernel.org>, cgroups@vger.kernel.org, 
-	linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="T9OLXLfc2/3CNTTe"
+Content-Disposition: inline
+In-Reply-To: <20240122110311.2725036-1-f.pfitzner@pengutronix.de>
+
+
+--T9OLXLfc2/3CNTTe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Linus,
+On Mon, Jan 22, 2024 at 12:03:12PM +0100, Fabian Pfitzner wrote:
+> The GP_CLK pin on Adin1300 PHY's offers three different output clocks.
+> This patch adds the missing 125MHz recovered clock option which is not
+> yet availible in the driver.
+>=20
+> Signed-off-by: Fabian Pfitzner <f.pfitzner@pengutronix.de>
+> ---
+>  Documentation/devicetree/bindings/net/adi,adin.yaml | 7 +++++--
 
-On Sun, Jan 21, 2024 at 9:16=E2=80=AFPM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Wed, 17 Jan 2024 at 14:56, Shakeel Butt <shakeelb@google.com> wrote:
-> > >
-> > > So I don't see how we can make it really cheap (say, less than 5% ove=
-rhead)
-> > > without caching pre-accounted objects.
-> >
-> > Maybe this is what we want. Now we are down to just SLUB, maybe such
-> > caching of pre-accounted objects can be in SLUB layer and we can
-> > decide to keep this caching per-kmem-cache opt-in or always on.
->
-> So it turns out that we have another case of SLAB_ACCOUNT being quite
-> a big expense, and it's actually the normal - but failed - open() or
-> execve() case.
->
-> See the thread at
->
->     https://lore.kernel.org/all/CAHk-=3Dwhw936qzDLBQdUz-He5WK_0fRSWwKAjtb=
-VsMGfX70Nf_Q@mail.gmail.com/
->
-> and to see the effect in profiles, you can use this EXTREMELY stupid
-> test program:
->
->     #include <fcntl.h>
->
->     int main(int argc, char **argv)
->     {
->         for (int i =3D 0; i < 10000000; i++)
->                 open("nonexistent", O_RDONLY);
->     }
->
-> where the point of course is that the "nonexistent" pathname doesn't
-> actually exist (so don't create a file called that for the test).
->
-> What happens is that open() allocates a 'struct file *' early from the
-> filp kmem_cache, which has SLAB_ACCOUNT set. So we'll do accounting
-> for it, failt the pathname open, and free it again, which uncharges
-> the accounting.
->
-> Now, in this case, I actually have a suggestion: could we please just
-> make SLAB_ACCOUNT be something that we do *after* the allocation, kind
-> of the same way the zeroing works?
->
-> IOW, I'd love to get rid of slab_pre_alloc_hook() entirely, and make
-> slab_post_alloc_hook() do all the "charge the memcg if required".
->
-> Obviously that means that now a failure to charge the memcg would have
-> to then de-allocate things, but that's an uncommon path and would be
-> marked unlikely and not be in the hot path at all.
->
-> Now, the reason I would prefer that is that the *second* step would be to
->
->  (a) expose a "kmem_cache_charge()" function that takes a
-> *non*-accounted slab allocation, and turns it into an accounted one
-> (and obviously this is why you want to do everything in the post-alloc
-> hook: just try to share this code)
->
->  (b) remote the SLAB_ACCOUNT from the filp_cachep, making all file
-> allocations start out unaccounted.
->
->  (c) when we have *actually* looked up the pathname and open the file
-> successfully, at *that* point we'd do a
->
->         error =3D kmem_cache_charge(filp_cachep, file);
->
->     in do_dentry_open() to turn the unaccounted file pointer into an
-> accounted one (and if that fails, we do the cleanup and free it, of
-> course, exactly like we do when file_get_write_access() fails)
->
-> which means that now the failure case doesn't unnecessarily charge the
-> allocation that never ends up being finalized.
->
-> NOTE! I think this would clean up mm/slub.c too, simply because it
-> would get rid of that memcg_slab_pre_alloc_hook() entirely, and get
-> rid of the need to carry the "struct obj_cgroup **objcgp" pointer
-> along until the post-alloc hook: everything would be done post-alloc.
->
-> The actual kmem_cache_free() code already deals with "this slab hasn't
-> been accounted" because it obviously has to deal with allocations that
-> were done without __GFP_ACCOUNT anyway. So there's no change needed on
-> the freeing path, it already has to handle this all gracefully.
->
-> I may be missing something, but it would seem to have very little
-> downside, and fix a case that actually is visible right now.
->
+Binding patches should be split out from drivers please.
 
-Thanks for the idea. Actually I had a discussion with Vlastimil at LPC
-'22 on a similar idea but for a different problem i.e. allocation in
-irq context or more specifically charging sockets for incoming TCP
-connections. If you see inet_csk_accept() we solved this for TCP
-memory by charging at accept() syscall but the kernel memory holding
-socket is still uncharged.
+Thanks,
+Conor.
 
-So, I think having the framework you suggested would help more
-use-cases. I will take a stab at this in the next couple of days
-(sorry stuck in some other stuff atm).
+>  drivers/net/phy/adin.c                              | 2 ++
+>  2 files changed, 7 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/net/adi,adin.yaml b/Docume=
+ntation/devicetree/bindings/net/adi,adin.yaml
+> index 929cf8c0b0fd..cd1b4efa692b 100644
+> --- a/Documentation/devicetree/bindings/net/adi,adin.yaml
+> +++ b/Documentation/devicetree/bindings/net/adi,adin.yaml
+> @@ -38,14 +38,17 @@ properties:
+> =20
+>    adi,phy-output-clock:
+>      description: |
+> -      Select clock output on GP_CLK pin. Two clocks are available:
+> -      A 25MHz reference and a free-running 125MHz.
+> +      Select clock output on GP_CLK pin. Three clocks are available:
+> +        - 25MHz reference
+> +        - free-running 125MHz=20
+> +        - recovered 125MHz
+>        The phy can alternatively automatically switch between the referen=
+ce and
+>        the 125MHz clocks based on its internal state.
+>      $ref: /schemas/types.yaml#/definitions/string
+>      enum:
+>        - 25mhz-reference
+>        - 125mhz-free-running
+> +      - 125mhz-recovered
+>        - adaptive-free-running
+> =20
+>    adi,phy-output-reference-clock:
+> diff --git a/drivers/net/phy/adin.c b/drivers/net/phy/adin.c
+> index 2e1a46e121d9..b1ed6fd24763 100644
+> --- a/drivers/net/phy/adin.c
+> +++ b/drivers/net/phy/adin.c
+> @@ -508,6 +508,8 @@ static int adin_config_clk_out(struct phy_device *phy=
+dev)
+>  		sel |=3D ADIN1300_GE_CLK_CFG_25;
+>  	} else if (strcmp(val, "125mhz-free-running") =3D=3D 0) {
+>  		sel |=3D ADIN1300_GE_CLK_CFG_FREE_125;
+> +	} else if (strcmp(val, "125mhz-recovered") =3D=3D 0) {
+> +		sel |=3D ADIN1300_GE_CLK_CFG_RCVR_125;
+>  	} else if (strcmp(val, "adaptive-free-running") =3D=3D 0) {
+>  		sel |=3D ADIN1300_GE_CLK_CFG_HRT_FREE;
+>  	} else {
+>=20
+> base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+> --=20
+> 2.39.2
+>=20
 
-thanks,
-Shakeel
+--T9OLXLfc2/3CNTTe
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZa6oIQAKCRB4tDGHoIJi
+0jbYAP49mdKtvg7unND1j8aBN/hxnTyY3WvZ5HQqpXL7NlTl6QD+MSD66DKsii7j
+HvCpLEZMFmLKxjcK1iYDb5IdOtDR2gQ=
+=rSP9
+-----END PGP SIGNATURE-----
+
+--T9OLXLfc2/3CNTTe--
 
