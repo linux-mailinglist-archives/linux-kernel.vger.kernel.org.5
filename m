@@ -1,66 +1,47 @@
-Return-Path: <linux-kernel+bounces-33768-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33767-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 342B6836E57
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:50:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE669836E56
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:50:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48A851C274BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:50:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 930AD28BDF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:50:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4D595F56E;
-	Mon, 22 Jan 2024 17:17:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dq0NSfYF"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9F8E40C13
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:17:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 705064E1C0;
+	Mon, 22 Jan 2024 17:17:24 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4601E3EA84;
+	Mon, 22 Jan 2024 17:17:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705943874; cv=none; b=b6Y9rD/eDV8E9QNXAkClE2AXCQxrh9X+q7kqmUrsVm8oavHrYRyHdr5koeiwWG03ESeYi7P901K219O8lOEhSC7buYu8TI4z0ITCQOKUU708DQ1wW2BRNl2nlU5OCRkaZ8+4UTHzv7dcySagA/csAEY/IXxx9K/W+CqqhkD7S10=
+	t=1705943844; cv=none; b=JkrRd4XIioTqEPgGnhB6oFbmBbwp5tk8UoXH/MK7LbANpaeM97uOlszTyxLGKRxHxExGBiWL2CtT9yeU4laOySrBAuaP0Td5Klh2HLKBPPIiGsHdoI6ihxFQ5VszCoYkYqcQr7qB5OYAGlM2jukAC5BxAWP54Bywl7fD3MtSS/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705943874; c=relaxed/simple;
-	bh=cmr8yF5b3znopsdS7F3eRda3NyWqbTYPL2Cz5yi3QOo=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=SlxYE2Aiuxuucai9edTMeLybG5j/XvEm1W0IjBDXuRRRngxvmhP/0mntCDcPe4d3+EM5xX5Lh91aUD68C15Cr31yvZ6N2fRaDYNhj8fkrt0FO7dszsGXDx8tuL5hv7/1XBYkkYqs+11Lrv5tfheG0ARXtHrbAu0b4Ku4Hr56l1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dq0NSfYF; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705943871;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=dDzoH2ydbaG6uArVRXPWiTruxakYgLL2hFbtSHqrYpg=;
-	b=dq0NSfYF5nWNz1XMCWOEIk7JE+5gBholGvbHJ/WHSp2lad5AGm6WEQwwKy8oZwB5IMPw0R
-	vS6MgEleAIKqMYIT6UeSFHEW1TUXVSgWZrN09tAKXsqMLuVH4ArbW3pwvSI+Gb6ri6IY0J
-	6CgI6DF/LvbKjebC91agQXSZMViZcKk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-693-e-6ynDVzP3GbsK1ChLXfUQ-1; Mon, 22 Jan 2024 12:17:47 -0500
-X-MC-Unique: e-6ynDVzP3GbsK1ChLXfUQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 39380845E37;
-	Mon, 22 Jan 2024 17:17:47 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.26])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 33E3840C1430;
-	Mon, 22 Jan 2024 17:17:45 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Mon, 22 Jan 2024 18:16:33 +0100 (CET)
-Date: Mon, 22 Jan 2024 18:16:31 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ptrace_attach: shift send(SIGSTOP) into ptrace_set_stopped()
-Message-ID: <20240122171631.GA29844@redhat.com>
+	s=arc-20240116; t=1705943844; c=relaxed/simple;
+	bh=KDFtMJDZ8kPGPxRG/wiPLBoAwqtONcETQZz1W104Fps=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MvsxOWd+8a34YJSNIDxh8QynLmrF4Sz7G+hNCJyN5MVhJRPvQmyZb/bOJ9/kvyuiNET+pp3dCzUDvQE63QpR45hRUXXLgTx8hlRRqPCzETOptue2FHueXcpowsSGY5m0kCKpZfVn3iFQ5J5U2iSWHUR3QjCMLirbkR7CiHXhB3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DDD321FB;
+	Mon, 22 Jan 2024 09:18:07 -0800 (PST)
+Received: from pluto (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8C6143F5A1;
+	Mon, 22 Jan 2024 09:17:20 -0800 (PST)
+Date: Mon, 22 Jan 2024 17:17:18 +0000
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc: sudeep.holla@arm.com, mturquette@baylibre.com, sboyd@kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH V4 2/2] clk: scmi: support state_ctrl_forbidden
+Message-ID: <Za6jHg6lD2_U3uO0@pluto>
+References: <20240121110901.1414856-1-peng.fan@oss.nxp.com>
+ <20240121110901.1414856-2-peng.fan@oss.nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,56 +50,87 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+In-Reply-To: <20240121110901.1414856-2-peng.fan@oss.nxp.com>
 
-Turn send_sig_info(SIGSTOP) into send_signal_locked(SIGSTOP) and move
-it from ptrace_attach() to ptrace_set_stopped().
+On Sun, Jan 21, 2024 at 07:09:01PM +0800, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> Some clocks may exported to linux, while those clocks are not allowed
+> to configure by Linux. For example:
+> 
+> SYS_CLK1-----
+>              \
+> 	     --MUX--->MMC1_CLK
+>              /
+> SYS_CLK2-----
+> 
+> MMC1 needs set parent, so SYS_CLK1 and SYS_CLK2 are exported to Linux,
+> then the clk propagation will touch SYS_CLK1 or SYS_CLK2.
+> So we need bypass the failure for SYS_CLK1 or SYS_CLK2 when enable
+> the clock of MMC1, adding scmi_no_state_ctrl_clk_ops to use software
+> enable counter, while not calling scmi api.
+> 
+> Co-developed-by: Cristian Marussi <cristian.marussi@arm.com>
+> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
 
-This looks more logical and avoids lock(siglock) right after unlock().
+Thanks, LGTM.
 
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
----
- kernel/ptrace.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
+Tested-by: Cristian Marussi <cristian.marussi@arm.com>
 
-diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-index 2fabd497d659..d5f89f9ef29f 100644
---- a/kernel/ptrace.c
-+++ b/kernel/ptrace.c
-@@ -375,10 +375,13 @@ static int check_ptrace_options(unsigned long data)
- 	return 0;
- }
- 
--static inline void ptrace_set_stopped(struct task_struct *task)
-+static inline void ptrace_set_stopped(struct task_struct *task, bool seize)
- {
- 	guard(spinlock)(&task->sighand->siglock);
- 
-+	/* SEIZE doesn't trap tracee on attach */
-+	if (!seize)
-+		send_signal_locked(SIGSTOP, SEND_SIG_PRIV, task, PIDTYPE_PID);
- 	/*
- 	 * If the task is already STOPPED, set JOBCTL_TRAP_STOP and
- 	 * TRAPPING, and kick it so that it transits to TRACED.  TRAPPING
-@@ -457,14 +460,8 @@ static int ptrace_attach(struct task_struct *task, long request,
- 				return -EPERM;
- 
- 			task->ptrace = flags;
--
- 			ptrace_link(task, current);
--
--			/* SEIZE doesn't trap tracee on attach */
--			if (!seize)
--				send_sig_info(SIGSTOP, SEND_SIG_PRIV, task);
--
--			ptrace_set_stopped(task);
-+			ptrace_set_stopped(task, seize);
- 		}
- 	}
- 
--- 
-2.25.1.362.g51ebf55
+Cheers,
+Cristian
 
-
+> 
+> V4:
+>  Add scmi_no_state_ctrl_clk_ops per Cristian
+>  Add Cristian's tag
+> 
+> V3:
+>  Add check in atomic enable
+> 
+> V2:
+>  New. Take Cristian's suggestion
+> 
+>  drivers/clk/clk-scmi.c | 15 +++++++++++++--
+>  1 file changed, 13 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
+> index 8cbe24789c24..5747b6d651f0 100644
+> --- a/drivers/clk/clk-scmi.c
+> +++ b/drivers/clk/clk-scmi.c
+> @@ -194,6 +194,15 @@ static const struct clk_ops scmi_atomic_clk_ops = {
+>  	.determine_rate = scmi_clk_determine_rate,
+>  };
+>  
+> +static const struct clk_ops scmi_no_state_ctrl_clk_ops = {
+> +	.recalc_rate = scmi_clk_recalc_rate,
+> +	.round_rate = scmi_clk_round_rate,
+> +	.set_rate = scmi_clk_set_rate,
+> +	.set_parent = scmi_clk_set_parent,
+> +	.get_parent = scmi_clk_get_parent,
+> +	.determine_rate = scmi_clk_determine_rate,
+> +};
+> +
+>  static int scmi_clk_ops_init(struct device *dev, struct scmi_clk *sclk,
+>  			     const struct clk_ops *scmi_ops)
+>  {
+> @@ -290,8 +299,10 @@ static int scmi_clocks_probe(struct scmi_device *sdev)
+>  		 * specify (or support) an enable_latency associated with a
+>  		 * clock, we default to use atomic operations mode.
+>  		 */
+> -		if (is_atomic &&
+> -		    sclk->info->enable_latency <= atomic_threshold)
+> +		if (sclk->info->state_ctrl_forbidden)
+> +			scmi_ops = &scmi_no_state_ctrl_clk_ops;
+> +		else if (is_atomic &&
+> +			 sclk->info->enable_latency <= atomic_threshold)
+>  			scmi_ops = &scmi_atomic_clk_ops;
+>  		else
+>  			scmi_ops = &scmi_clk_ops;
+> -- 
+> 2.37.1
+> 
 
