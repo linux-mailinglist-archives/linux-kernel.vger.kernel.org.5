@@ -1,133 +1,94 @@
-Return-Path: <linux-kernel+bounces-33093-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAD4B836468
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:25:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 529AD83646B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:26:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FCB81F23477
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:25:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 803821C22A70
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:26:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53C0B3CF72;
-	Mon, 22 Jan 2024 13:25:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 417FC3CF71;
+	Mon, 22 Jan 2024 13:26:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="I1Hboj50"
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ECz3VvnE"
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C09E73CF5A
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 13:25:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6130D3CF5A
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 13:26:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705929929; cv=none; b=KuyZeNzmAxcAl5uheQq+ZFfrs/RvWdAClvroBEDC0iml78nYZM0NlkwigbewyPU0buhPCzaOwzaHxMRNmHrTATHEB1udmH6rN6NagIyQ/Q1Ew0CpvmfSxIfpX2HC/a7H748ehCHQdzTNHZiPhhnlm5jzGsDIWwHFFIUceged+FM=
+	t=1705929961; cv=none; b=LAS9LmL/K5eSUdlncXhmbrzcSjpNenTC+nAq3YM+KWPfFWJ3iRt2+szok+lqUt0fLDMsLPX8EzSWZr3dAhlDIDXYlKAaYpEyPLH6EycT/I4gqh6F88uKW07vKoVEKj86PK6eAiavAWSS9veBxuznyormYYAHEtQNJvOtMqmELAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705929929; c=relaxed/simple;
-	bh=8/ysmW7ZNCwST64C+OGZnecZkpP9Ivshlxnv2xaANtk=;
-	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TyOcdQ+0umz399bWHf77gI8GBe2Sff+wqmRhjCMOyiP8JRlos9wDXWz3D5vz+wByMWao6Mj6lL5mM3AdbcJlx02z/MWvl4uNdxMBvFhcx1pjjtC7GEAK9G/FPf5y1Q7At3D7Bl0BdvPWt4S/oz2Dcsylgwic3cztLkdU1LBn8Pk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=I1Hboj50; arc=none smtp.client-ip=185.125.188.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com [209.85.160.200])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id B63F43F270
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 13:25:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1705929919;
-	bh=YH8oe3j90TqC6EUcRLoZewEzXWg7T54K4/yaoqW2dG8=;
-	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-	 To:Cc:Content-Type;
-	b=I1Hboj50NBVRf/Ancb9KRXF956ETQXZNPO0JDlxxHjjusimU1dMIAgUOaTGi7rbeU
-	 yyhdvSFpTwGzqujEl7EgXZHXdbjMHXD+8mBBZ8wqG1W2v5f4hTsRpeU0/neapPH+RH
-	 MGpDYU6mYa0w2wPUhVfhvi+qRN8WhNSd2k92BUYLwNxeYiJVneY7cCY6WVIOcVcnQE
-	 lVQn37VFP2UkwONCD+YdOMJG2GK3P2blXQsek+wOALpDSxKfwQr4JWIpmL7X4zn2s2
-	 vlo1/qIkR3GNrVoOjSr+9VYznTgtSWFJFvt1IZCChGbi9mPBATyBSlaQan77hRnWAa
-	 9z3m1+udseGWw==
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-42a4660fae8so6285051cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 05:25:19 -0800 (PST)
+	s=arc-20240116; t=1705929961; c=relaxed/simple;
+	bh=+IY+tfOH7zJnbjGk7hYlS29OqszFz0vs9oLxHBldGNI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GWbaD6bf0YpCTI2VAls4B8u09EmDIBgmlNuvr0uy1jYsgfU/MJEndHpVcnzgmXM1Q83qma+/Ph2gNuTYVuLP4Tx2P5MH4dAQcA/V8qaCB88d1GO/b4gc++p8xDwhxvTO9zYvu+dXShwC7hZnDsWJGnbVuynR9GXbT6K8Q9HSAzc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ECz3VvnE; arc=none smtp.client-ip=209.85.219.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dc226dca91aso2697895276.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 05:26:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705929959; x=1706534759; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t2EXpV6xqoHqJuzPm5cEvHDlaObu5qMOKhYaowDZaLs=;
+        b=ECz3VvnEFxZWi7u6JxnRrjgfgD77kISD11ctjP9lTLNK3r6he8SPOSyyM40dVlLFMg
+         SD3cn2JBRv7zxaD/BUp6U8SBwbqx+Q18DTE6VEKX2P54a327RsEiq0mQc0mOhKuAeFd7
+         ZuxpXo9lxxFulpXZHoDiynHqQ4m5+UaRyRk8PlasGixOTLUWe7P/L701/bDM2P+dUIvB
+         viw/bavkcUIR9ZjOsGFyAl9H2LJdxSBdSfuhmhHmuR2j0exG42JN6Kx5aehdOZt5t7mM
+         sPjLjgfxTUNivrPlWnElsPuWQ7QxfjDVRUb5A0Tv7srQv2Pv16RfvAdXMqZvdoB5PRgS
+         JvPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705929919; x=1706534719;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YH8oe3j90TqC6EUcRLoZewEzXWg7T54K4/yaoqW2dG8=;
-        b=mYfa9Lyn/528bJrnzlpdioYU9LrRZsTufj+R/7WZNMBksPr+ZrTkNWkJK29MnwSBbM
-         wkEBJzDaOUsKDNVDHamHRKzwsNSPYS844tUSR/UkbqSBotcG5NRG3GT9CRkKdOuAxaa/
-         UjpaaCbUyCfK09ZFF6svnGPUekUMu/75cQu3s6i0AsuKuj+fHRFvzrsckLGKiNHIHxMd
-         53An+e485QaARfe+mMYJVnsVxR0OhoSVX4v8quWtkJtBI+JCm9RMtHCHGkBhgK6XbGGs
-         Pf0hOn/nJP8J5GvpbJedIujVbP5WxFUMkDKNXZkfnWGidre9gn0oyPUtMjCr2pfFtsHT
-         KHLg==
-X-Gm-Message-State: AOJu0YxDYcBxkTX35OIFQ1DsYz9VPkM+PySZHvEPFa3m8jBBc6PhQpl6
-	ZNUdeIjF2lVXTtyGL1uGax8+tj16C1BkZ2WSI2Ch6HsVL8/7n3D9RsHybS83vyX+9tTDd9Ie6y6
-	YddOXQnGl1eX+T0Ia9N9uAuJ8CCe9Q2jiWbdtOcqazZDrido1hlzJbM9MNK6Ow8FZsYpO/c+lfL
-	OG6sO2W8fUSCFxnUy1EK3TnMS0zpsoEHFK+IGYpWqhRRCNZA4Anpbe
-X-Received: by 2002:a05:622a:303:b0:42a:49e4:b37 with SMTP id q3-20020a05622a030300b0042a49e40b37mr119062qtw.3.1705929918832;
-        Mon, 22 Jan 2024 05:25:18 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF7+muAaQtx9j7uChxp/TBkqVQgMiOi15ISY7W8przRxn8y+BBacZEXgLJg7UZEG/dbFasUGtdYFB6HCnf8ULY=
-X-Received: by 2002:a05:622a:303:b0:42a:49e4:b37 with SMTP id
- q3-20020a05622a030300b0042a49e40b37mr119041qtw.3.1705929918598; Mon, 22 Jan
- 2024 05:25:18 -0800 (PST)
-Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 22 Jan 2024 05:25:18 -0800
-From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <20240122080631.2880-2-qiujingbao.dlmu@gmail.com>
-References: <20240122080631.2880-1-qiujingbao.dlmu@gmail.com> <20240122080631.2880-2-qiujingbao.dlmu@gmail.com>
+        d=1e100.net; s=20230601; t=1705929959; x=1706534759;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=t2EXpV6xqoHqJuzPm5cEvHDlaObu5qMOKhYaowDZaLs=;
+        b=qQddVL2fxVeubMMIvcEGlQv1cYNmj7DQmFr4E4j1VAzryiWq4Gwhau4uQLOPJkBrqH
+         uZje/d6e7O9AJ6ATShTzekC57EBvZ4bgsxYmmOs1ByF0CF085HsevHl3Dx51mvNw1wsz
+         o6Ai1QMKJfPUEO3664Jf9FHNWA51fCLU3c6f3XewIroC6f6vOe4a17+ZAOJIsOfOqv/r
+         aI9CriWdar4Rs6khGw8hlOM1FfUMnQEbLxubrZ/bSMjre/86TTGHFaAsUPYghBRk5Zt2
+         cDEDx5pdSUQAPs1Otc+3tqR8reETo3ZxVv/BJZJkn9iefnSxitEwvX1bBxItMTZ/K8li
+         iyMg==
+X-Gm-Message-State: AOJu0YxtUEGxnjDnelLAXozmDtenp+sVwpcUMyHJOg/YlCKDGAiyiLsI
+	RtJZQO8nFOY4ZkT5iVMAUtGgDCbRZMWuLD0Hwk624xVNuT4h/CTeofy+JBtHx55xhExjYcLR7bI
+	tNbqiTC+e9mAf5ma3rvETeRIvQqY=
+X-Google-Smtp-Source: AGHT+IGooEEMFTIvajOh5dXtBxmZl5Gi4scxX5Kl9/CvfMVnSMv/V8qW15MvHBhhCBGQMMHipIZyGAKUnxKkxBF7UuU=
+X-Received: by 2002:a05:6902:2587:b0:dc2:3411:aa4 with SMTP id
+ du7-20020a056902258700b00dc234110aa4mr2107163ybb.77.1705929959276; Mon, 22
+ Jan 2024 05:25:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Date: Mon, 22 Jan 2024 05:25:18 -0800
-Message-ID: <CAJM55Z_DFox9c_eDeHtx9H+9e4A6pjkCkt7po94j_mu-tQWywg@mail.gmail.com>
-Subject: Re: [PATCH v7 3/3] riscv: dts: sophgo: add rtc dt node for CV1800
-To: Jingbao Qiu <qiujingbao.dlmu@gmail.com>, alexandre.belloni@bootlin.com, 
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	chao.wei@sophgo.com, unicorn_wang@outlook.com, paul.walmsley@sifive.com, 
-	palmer@dabbelt.com, aou@eecs.berkeley.edu
-Cc: linux-rtc@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	dlan@gentoo.org
+MIME-Version: 1.0
+References: <Za5qb8livKA4XTeG@pop-os> <20240122132057.GAZa5ruRCBJzuuVKC9@fat_crate.local>
+In-Reply-To: <20240122132057.GAZa5ruRCBJzuuVKC9@fat_crate.local>
+From: Pranav Athreya <pranavsubbu@gmail.com>
+Date: Mon, 22 Jan 2024 18:55:48 +0530
+Message-ID: <CAP1Lp8_y+p+EZFhHvX7b1L+FpxRdXqit_2BZqGzYBvzVS8ojjg@mail.gmail.com>
+Subject: Re: [PATCH] x86/alternatives: Fix switch block in apply_reloc()
+To: Borislav Petkov <bp@alien8.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Jingbao Qiu wrote:
-> Add the rtc device tree node to cv1800 SoC.
->
-> Signed-off-by: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
-> ---
->  arch/riscv/boot/dts/sophgo/cv1800b.dtsi | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> index df40e87ee063..0cd7eb9a3048 100644
-> --- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> +++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> @@ -119,5 +119,12 @@ clint: timer@74000000 {
->  			reg = <0x74000000 0x10000>;
->  			interrupts-extended = <&cpu0_intc 3>, <&cpu0_intc 7>;
->  		};
-> +
-> +		rtc: rtc@5025000 {
-> +			compatible = "sophgo,cv1800-rtc";
-> +			reg = <0x5025000 0x2000>;
-> +			interrupts = <17 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&osc>;
-> +		};
+On Mon, Jan 22, 2024 at 6:51=E2=80=AFPM Borislav Petkov <bp@alien8.de> wrot=
+e:
+> It is more compact and faster readable this way. Do not always take what
+> checkpatch tells you to the letter.
 
-Before this patch it looks like the nodes are sorted by their address,
-but this would break it.
+Understood. Thank you for the feedback, Boris.
 
->  	};
->  };
-> --
-> 2.43.0
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+Regards,
+    Pranav
 
