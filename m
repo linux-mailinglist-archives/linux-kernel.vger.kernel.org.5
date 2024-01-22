@@ -1,58 +1,56 @@
-Return-Path: <linux-kernel+bounces-33543-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33544-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ACE9836B0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:38:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 350B8836B12
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:38:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE5071C24C3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:38:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E00C81F25B3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:38:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0965857332;
-	Mon, 22 Jan 2024 15:17:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C62414C5A8;
+	Mon, 22 Jan 2024 15:17:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o5nZQjQC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A1pWxCCD"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CA3514C587;
-	Mon, 22 Jan 2024 15:17:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBF5E14C599;
+	Mon, 22 Jan 2024 15:17:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936672; cv=none; b=ADKMNe43cb7b/EvDEN0/x7hO8IwdThT5xK05DxTVI6JLSiNmpyojPHF4dBOL9/BeAve9Scyy2gZBtcTW6z4IqTnvOI9C9CMJB02gZZnzBZGPvp2Ip55rb5pQaXFcZMUU+Pvq8105tzu7hPXJvn+T8COe4h2QILcoVC3DJ7d5bE8=
+	t=1705936673; cv=none; b=iAgYu89p09XhYiHEKMVYY/4DFOxPbvwGlmwyhUAu6u70ptXiOdGm8zvey/1i9Xq4nyr+og1SuDoJq1EvhP8hC4p6yQrQO5fb3fkdzf6jf74FV5QXlygY4xWZofuRYV0WQ7gzilxMRvN8fGaAqQt86qTsvsKhqDaV5IM7IzAa1X8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936672; c=relaxed/simple;
-	bh=RSfFW5hWnDVynWV4jW6qkfYMtLyQ16JOdwenWKS7Wo0=;
+	s=arc-20240116; t=1705936673; c=relaxed/simple;
+	bh=Duf5G8RFJCYbHOwpwBD1F55O756p0JeBz9f8XmbBEC0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AFWZhXzxV635M6ux+BXTD8fldoMBW5SjMwgEQC2owX5Zy4ZRkZZnmOLfdVe8uaf4khwN78fmKMhi/FjEfewa+ATJkDZdQMVvTMvS4Hf6of4D7v2OWYr0jFNP6PuvpbgJW2zoSoZRLXbKNTrvVOCZy6V9pX3mA6AtdS+4e8FkLIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o5nZQjQC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 184E9C433F1;
-	Mon, 22 Jan 2024 15:17:50 +0000 (UTC)
+	 MIME-Version; b=oNqlrA1tOgsYOFIpsKxKr+B/WOWdvLvHEtOXG+fIz5G9SNF+0a9Uk8nrecbfUSx2HQfyLAssrJadz7Z9K/7ebRqOf8fGE7TluzqEJSU78qZN8c8+9yFAT1ofQQcpahy3K38DjZXrsrHDg0/PPhYYFiN42sEfwYHm4dnRWqv5hQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A1pWxCCD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5BE5C43601;
+	Mon, 22 Jan 2024 15:17:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705936672;
-	bh=RSfFW5hWnDVynWV4jW6qkfYMtLyQ16JOdwenWKS7Wo0=;
+	s=k20201202; t=1705936673;
+	bh=Duf5G8RFJCYbHOwpwBD1F55O756p0JeBz9f8XmbBEC0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=o5nZQjQCyp2Uylpougt1e8jhijM+PX9vOUhAXeoGsLVyYIDZvih/jsybu4hYv7xfZ
-	 n7wITco6C4udseq77kezJW7LFczdYbrBbKzz2nB4n1lJZwxTx032kIxTok/7ec2U03
-	 gUkV5WiQxFl9nIF+EZT2QypqOX8OTzOuC5L37z67ereUUK2ckowlo9e+O8G3SfoazS
-	 +5wAdpRznR6KEtpBSNCEVNnkELz13yMyZjVC9e9uqHO0cRAq0+KRaNa/xhpDBng1iB
-	 FTwvYYtdkfqr7b0wUPAzLSFp04PAw2oleGrY2yI9oxe/VIBifMCAOzQyM0oXsZeURr
-	 xmltN2WJBYZuQ==
+	b=A1pWxCCDabtw59c2G5rc8bbCBj2+1HgB7Ecv+izM/jFVMISQZNJJ2/gaEMwo2i1tV
+	 ESOOHvV0MNhzAvNAQJH6Z+4YGwmyMvwOJgZCDmD+zOlz0TdW/JdbvNFwC5+N8iJcc3
+	 NdUmW1hQUaFTw4I6pkKlKwSFcXa0bjaDuW0PstJhidrzS7cR4q0zwlToVd4j8t0ajo
+	 v7BqQKvXQdz6gHk0nu0E6fVPBJI4RblBkz3Jwpa3/MdN2Rd0kyCtcWf9KWtOsYM85W
+	 djsuEYSdJLzWDOhYY1cs/EUp2tbiuMWcwroSoO/RJ8E6Ldmw96FlH8ecXvWgTzTLg5
+	 ginlLGdUqyLsg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kuan-Wei Chiu <visitorckw@gmail.com>,
-	Stephen Boyd <sboyd@kernel.org>,
+Cc: Werner Fischer <devlists@wefi.net>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Wim Van Sebroeck <wim@linux-watchdog.org>,
 	Sasha Levin <sashal@kernel.org>,
-	mturquette@baylibre.com,
-	duje.mihanovic@skole.hr,
-	conor.dooley@microchip.com,
-	linux-clk@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 20/24] clk: mmp: pxa168: Fix memory leak in pxa168_clk_init()
-Date: Mon, 22 Jan 2024 10:16:34 -0500
-Message-ID: <20240122151659.997085-20-sashal@kernel.org>
+	linux-watchdog@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 21/24] watchdog: it87_wdt: Keep WDTCTRL bit 3 unmodified for IT8784/IT8786
+Date: Mon, 22 Jan 2024 10:16:35 -0500
+Message-ID: <20240122151659.997085-21-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122151659.997085-1-sashal@kernel.org>
 References: <20240122151659.997085-1-sashal@kernel.org>
@@ -67,49 +65,69 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.4.267
 Content-Transfer-Encoding: 8bit
 
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
+From: Werner Fischer <devlists@wefi.net>
 
-[ Upstream commit 2fbabea626b6467eb4e6c4cb7a16523da12e43b4 ]
+[ Upstream commit d12971849d71781c1e4ffd1117d4878ce233d319 ]
 
-In cases where mapping of mpmu/apmu/apbc registers fails, the code path
-does not handle the failure gracefully, potentially leading to a memory
-leak. This fix ensures proper cleanup by freeing the allocated memory
-for 'pxa_unit' before returning.
+WDTCTRL bit 3 sets the mode choice for the clock input of IT8784/IT8786.
+Some motherboards require this bit to be set to 1 (= PCICLK mode),
+otherwise the watchdog functionality gets broken. The BIOS of those
+motherboards sets WDTCTRL bit 3 already to 1.
 
-Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-Link: https://lore.kernel.org/r/20231210175232.3414584-1-visitorckw@gmail.com
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Instead of setting all bits of WDTCTRL to 0 by writing 0x00 to it, keep
+bit 3 of it unchanged for IT8784/IT8786 chips. In this way, bit 3 keeps
+the status as set by the BIOS of the motherboard.
+
+Watchdog tests have been successful with this patch with the following
+systems:
+  IT8784: Thomas-Krenn LES plus v2 (YANLING YL-KBRL2 V2)
+  IT8786: Thomas-Krenn LES plus v3 (YANLING YL-CLU L2)
+  IT8786: Thomas-Krenn LES network 6L v2 (YANLING YL-CLU6L)
+
+Link: https://lore.kernel.org/all/140b264d-341f-465b-8715-dacfe84b3f71@roeck-us.net/
+
+Signed-off-by: Werner Fischer <devlists@wefi.net>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20231213094525.11849-4-devlists@wefi.net
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/mmp/clk-of-pxa168.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/watchdog/it87_wdt.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/mmp/clk-of-pxa168.c b/drivers/clk/mmp/clk-of-pxa168.c
-index f110c02e83cb..9674c6c06dca 100644
---- a/drivers/clk/mmp/clk-of-pxa168.c
-+++ b/drivers/clk/mmp/clk-of-pxa168.c
-@@ -258,18 +258,21 @@ static void __init pxa168_clk_init(struct device_node *np)
- 	pxa_unit->mpmu_base = of_iomap(np, 0);
- 	if (!pxa_unit->mpmu_base) {
- 		pr_err("failed to map mpmu registers\n");
-+		kfree(pxa_unit);
- 		return;
- 	}
+diff --git a/drivers/watchdog/it87_wdt.c b/drivers/watchdog/it87_wdt.c
+index a4b71ebc8cab..0a2c44a3aac0 100644
+--- a/drivers/watchdog/it87_wdt.c
++++ b/drivers/watchdog/it87_wdt.c
+@@ -260,6 +260,7 @@ static struct watchdog_device wdt_dev = {
+ static int __init it87_wdt_init(void)
+ {
+ 	u8  chip_rev;
++	u8 ctrl;
+ 	int rc;
  
- 	pxa_unit->apmu_base = of_iomap(np, 1);
- 	if (!pxa_unit->apmu_base) {
- 		pr_err("failed to map apmu registers\n");
-+		kfree(pxa_unit);
- 		return;
- 	}
+ 	rc = superio_enter();
+@@ -315,7 +316,18 @@ static int __init it87_wdt_init(void)
  
- 	pxa_unit->apbc_base = of_iomap(np, 2);
- 	if (!pxa_unit->apbc_base) {
- 		pr_err("failed to map apbc registers\n");
-+		kfree(pxa_unit);
- 		return;
- 	}
+ 	superio_select(GPIO);
+ 	superio_outb(WDT_TOV1, WDTCFG);
+-	superio_outb(0x00, WDTCTRL);
++
++	switch (chip_type) {
++	case IT8784_ID:
++	case IT8786_ID:
++		ctrl = superio_inb(WDTCTRL);
++		ctrl &= 0x08;
++		superio_outb(ctrl, WDTCTRL);
++		break;
++	default:
++		superio_outb(0x00, WDTCTRL);
++	}
++
+ 	superio_exit();
  
+ 	if (timeout < 1 || timeout > max_units * 60) {
 -- 
 2.43.0
 
