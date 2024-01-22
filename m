@@ -1,74 +1,71 @@
-Return-Path: <linux-kernel+bounces-34006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B40418371D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:05:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DB3268371D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:06:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 552A41F33778
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:05:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 752001F2BFDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:06:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A3065DF01;
-	Mon, 22 Jan 2024 18:46:27 +0000 (UTC)
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3F175DF39;
+	Mon, 22 Jan 2024 18:46:28 +0000 (UTC)
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 479C35D912;
-	Mon, 22 Jan 2024 18:46:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E040C5D919;
+	Mon, 22 Jan 2024 18:46:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705949186; cv=none; b=Udbf4sw6GCvZN4ez9bHZAURUmsuPVpYYGkMzdCextlVn7xwsXwcuRECk3il8MOtXO1xi0DgvKVp0xxs1rZN+GXsv7EibnlTX3SDapEX+CQLgJBr1QiPeK8zn/hWa7g7Yt7Ngnl6Oe7OUkTyO8bEn+b9SbLJBn/KqcyLVXV0pW1c=
+	t=1705949188; cv=none; b=uPubcoxdwJh0aqfG67ihekukv90pEp3e9GXTxy6VsuX+fiagSnCiIbIV3bj5PRubACMaJnMGoCm1nrNrCFKnihYSZh7xojdvwMQjKZpFRU4uvujl9Dr0QhQbtvJY7P9ncKfuFBrxd9dAlRAuEWGB9gQyrwxZj0DEIRcEQZDzXaA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705949186; c=relaxed/simple;
-	bh=VbHbxI9NkmA+9Mqpk8tzUxd70Y/xsuQkZk8/7FGLYSE=;
+	s=arc-20240116; t=1705949188; c=relaxed/simple;
+	bh=+f0GABE2vYwLftBWVjTV99H9hCN+aUA+VFW1jTa4YvA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=SP2ds3FZuA6T+LKQK4C/gnGHWoK45UGl7W9En3qq8snUSLYEGJoMK9xHk7ZPFiaN2BYaXN9XFvPvAS42pX424N+kQox6MKmAIxT5/BbTgqA+uAd68Y0Ezl4VXgjUBYfO/dqfz4EMLMbPdqz1eDc+ZEBJ3pc0BlxPGQXu78UvpgY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.44
+	 MIME-Version; b=KITuQgKDQ2ufNuJiHygjZeZ5m6K8hOOfasU6VPWijnYz+RsGc97PwOo/OTCbUW72YFTi8+8cd9kTeae2ptYmUyMmGC+Q8cKp+i915TejEy138v+f2dTzFeB6uvLr/2WEuO418TPh6v/P2vEltQi6PcxY0xjfxwzs+lRTu2aloRg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-55783b7b47aso3886255a12.0;
-        Mon, 22 Jan 2024 10:46:24 -0800 (PST)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-55817a12ad8so3773498a12.2;
+        Mon, 22 Jan 2024 10:46:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705949183; x=1706553983;
+        d=1e100.net; s=20230601; t=1705949185; x=1706553985;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=E/0M5osMFLAULLGk8LcjCC1Gs2/yU+XJAZrxPG+vQCQ=;
-        b=BjJ1H1RTMjOptzfPTcBIP2gFFYhxDugqEMZ2htzlH7wzSpd3RaaWUS2mlnIm3FxSUo
-         1HGhiCnOJO0AmvTABm3iWGHISZM2DvBG7kL31YRbbprO65b/P1p2clfWRAgOZsbNw12b
-         URyQGIEcBheUaITKq60PIR0AzArmGSRLh6qyM120mMZR05OgclADWIY4DPevoybbT9N1
-         /D/i9Na1tlhyYEsiqlZud8/Tb773MxAA368feEiFuJsVL93Xj+Qv/ts5gerNOIn4mRri
-         NsorClObwTHzS2Zo/FO7SPf8DqtVaFUKQiSbddQF5dGV7ZF0vS45k+g8yLHjSyTFkTlN
-         g34g==
-X-Gm-Message-State: AOJu0YyfxkcAk5hg6o6mFpuqH2m0QNRbyG6tlyy+bn3dqtRfTb1qVgVj
-	SAUEuKeLkawPcQjM4qs4nJK7DecW4fzFeEgA7oYmKnhpD8IBx9B+HzX4l3qRQgM+Qg==
-X-Google-Smtp-Source: AGHT+IEJGESHTQrw0i0sc12iHg9b0ZR8v7qWjj4Cu74CAz6lVYNCKva17nx7Jk2cFASP19b777Lc7g==
-X-Received: by 2002:a17:906:b17:b0:a30:4cc6:fc22 with SMTP id u23-20020a1709060b1700b00a304cc6fc22mr1148868ejg.2.1705949183504;
-        Mon, 22 Jan 2024 10:46:23 -0800 (PST)
-Received: from localhost (fwdproxy-lla-008.fbsv.net. [2a03:2880:30ff:8::face:b00c])
-        by smtp.gmail.com with ESMTPSA id ti8-20020a170907c20800b00a2da4738882sm10140301ejc.131.2024.01.22.10.46.23
+        bh=cyI7NPsyPL2bVyAR9zv80ihx/UAk8uVQYMV9FnhPAlg=;
+        b=YVlFhv3IcA3+KlJnJ+tTVfEHxcuWoUiyG6x65HNX7UU/lA8p9+sWrd/gAb9sJi2KWW
+         2TZENyvJHXnKz6i/NbdCMISJCh+MudOsV+emQRNdYlP/j4AO7s/rGvKNzInjJtpYRzR7
+         6xKZj2s57AEVCCry9K+BMLlLNAtBCbMlHmpR90Nyrv83XdnsqWwOsrk/ZCPVc+LMevJg
+         nDHHTRXN3+5cbwvsniVI1YMpAJwYqdFx1CSL1PHaoDBHhUn41nOEfqMqvD7V1AI9WJ9p
+         GTfoquLr7/P54XZN3vg4S+rSOnHKq2ui5JQioYlo9C64pa/V4z7Wm7Qn1GnPqtUOcrOC
+         gdKQ==
+X-Gm-Message-State: AOJu0YyvWi+ckxo+vWdjOwWyCt5pWLfOdd3vXWiN3rG0rMGs14DRtdqw
+	ls+5tG/vjJtGjJFOj3sVJnfk1nYaJ0I96TqFSvxLpNjS5LrabeQAQUBKaUoNqynrVA==
+X-Google-Smtp-Source: AGHT+IFc07k+pn+R0zsuwKWlbTJ4Vc9/o3Zrg1YOiP/bQw3sEOsgoe6s1Ply2h8JwYE5JHZiLv7PDg==
+X-Received: by 2002:a50:e610:0:b0:558:b0d7:6a1 with SMTP id y16-20020a50e610000000b00558b0d706a1mr169173edm.47.1705949185194;
+        Mon, 22 Jan 2024 10:46:25 -0800 (PST)
+Received: from localhost (fwdproxy-lla-116.fbsv.net. [2a03:2880:30ff:74::face:b00c])
+        by smtp.gmail.com with ESMTPSA id fj9-20020a0564022b8900b00559cb738c1bsm7552231edb.4.2024.01.22.10.46.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 10:46:23 -0800 (PST)
+        Mon, 22 Jan 2024 10:46:24 -0800 (PST)
 From: Breno Leitao <leitao@debian.org>
 To: kuba@kernel.org,
 	davem@davemloft.net,
 	abeni@redhat.com,
 	edumazet@google.com,
+	Claudiu Manoil <claudiu.manoil@nxp.com>,
+	Vladimir Oltean <vladimir.oltean@nxp.com>,
 	Paolo Abeni <pabeni@redhat.com>
 Cc: dsahern@kernel.org,
 	weiwan@google.com,
-	Simon Horman <horms@kernel.org>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Wei Fang <wei.fang@nxp.com>,
-	Rob Herring <robh@kernel.org>,
-	Christian Marangi <ansuelsmth@gmail.com>,
-	netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
+	netdev@vger.kernel.org (open list:FREESCALE ENETC ETHERNET DRIVERS),
 	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next 07/22] net: fill in MODULE_DESCRIPTION()s for nps_enet
-Date: Mon, 22 Jan 2024 10:45:28 -0800
-Message-Id: <20240122184543.2501493-8-leitao@debian.org>
+Subject: [PATCH net-next 08/22] net: fill in MODULE_DESCRIPTION()s for enetc
+Date: Mon, 22 Jan 2024 10:45:29 -0800
+Message-Id: <20240122184543.2501493-9-leitao@debian.org>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20240122184543.2501493-1-leitao@debian.org>
 References: <20240122184543.2501493-1-leitao@debian.org>
@@ -81,23 +78,23 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
-Add descriptions to the EZchip NPS ethernet driver.
+Add descriptions to the NXP ENETC Ethernet driver.
 
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- drivers/net/ethernet/ezchip/nps_enet.c | 1 +
+ drivers/net/ethernet/freescale/enetc/enetc.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/ezchip/nps_enet.c b/drivers/net/ethernet/ezchip/nps_enet.c
-index 07c2b701b5fa..9ebe751c1df0 100644
---- a/drivers/net/ethernet/ezchip/nps_enet.c
-+++ b/drivers/net/ethernet/ezchip/nps_enet.c
-@@ -661,4 +661,5 @@ static struct platform_driver nps_enet_driver = {
- module_platform_driver(nps_enet_driver);
+diff --git a/drivers/net/ethernet/freescale/enetc/enetc.c b/drivers/net/ethernet/freescale/enetc/enetc.c
+index cffbf27c4656..bfdbdab443ae 100644
+--- a/drivers/net/ethernet/freescale/enetc/enetc.c
++++ b/drivers/net/ethernet/freescale/enetc/enetc.c
+@@ -3216,4 +3216,5 @@ void enetc_pci_remove(struct pci_dev *pdev)
+ }
+ EXPORT_SYMBOL_GPL(enetc_pci_remove);
  
- MODULE_AUTHOR("EZchip Semiconductor");
-+MODULE_DESCRIPTION("EZchip NPS Ethernet driver");
- MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("NXP ENETC Ethernet driver");
+ MODULE_LICENSE("Dual BSD/GPL");
 -- 
 2.39.3
 
