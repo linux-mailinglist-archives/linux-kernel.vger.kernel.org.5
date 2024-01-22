@@ -1,113 +1,159 @@
-Return-Path: <linux-kernel+bounces-32855-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32863-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 167188360FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:18:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0700483617B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:28:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C384A28C0C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:18:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38D58B2230A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:20:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5254247F78;
-	Mon, 22 Jan 2024 11:05:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF5913C064;
+	Mon, 22 Jan 2024 11:06:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="C5FDCqDh"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sT8RYILN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC0A047F6E;
-	Mon, 22 Jan 2024 11:05:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09B483A8CF;
+	Mon, 22 Jan 2024 11:06:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705921533; cv=none; b=BDkNaMfwcFxWLXbtCJXZRwCP9yhDLMAoy6uZ+l3jWsoDayyHBmEosUZQzdRDBh8DHiYs1mJv7gfccf/N85F5obNIN+dtSI4Z3GEO8K2mHg2rzXbuGYWjaL+l520JM9HAvpJCkdBoIA3rAt+wo0qi6t6ygNmbttutK57qqe1l63k=
+	t=1705921571; cv=none; b=KbhVNuO+FcKtHczjMqQBaJzYy75mhNWPltY6SKQI9rncK8P4ow+tgE7kCJuUKSQaGA/xhOLrxhTFH0GQg/Ma06seqkz0EWMtrvPYZfBrVHbRv42fa5V0pz6GI4H278zP4XLc1/Ix/9vPUF/imPLkh1Ll1L7m1DMu0iX1A+ZAceM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705921533; c=relaxed/simple;
-	bh=6ZklisPid4pGWh8xv7uYvwv1UbtizZrGDGHyMTYB4L8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=n1dpCEpGbNBQKuSjU++lTHyN46g7lz1FLd1cAZYheh1Nl/uzvd6eotO7udHHv/yyPoKeCxepTXSfb0FIdUlw1tFqH7lRe9DIP8MCpw+7cb46QCDuq/bEpXc4Lp9FPANoQxS+/BPipZYrjllKl37d5YHz7TeUOXipBd5tOR0s2LM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=C5FDCqDh; arc=none smtp.client-ip=192.55.52.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705921531; x=1737457531;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=6ZklisPid4pGWh8xv7uYvwv1UbtizZrGDGHyMTYB4L8=;
-  b=C5FDCqDhTaUHG0ua9N6SYd3zWI3RMZDNhYAzOYoJfWI4Ig0KTjeMEpeO
-   BCO/HnqYF/rC7k0mcQxZVmphfpNbPzXRSJHLhaiO60anoMJOtieNN2Mdu
-   5xdlM7doAmIt55seccfetCZInUOSm5ISsR+P/98YojGiHQP4FLEpkctEx
-   a0KL9k5zjWvAJgxNvJM/V8CjBHKDtaA437qNKPoRtnvORKfNxddtJvB65
-   rk6BIF4K6sopliFd4MXAKZNz87LnpZPQD2RGXYaxdCMlH/f9Drf+wMsTy
-   6VO6IBwIevOftbcWyrNusHqjuLFSg0Qrp3RI0FZFdR9o6G/NSlGoyeaQH
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10960"; a="400046461"
-X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
-   d="scan'208";a="400046461"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 03:05:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
-   d="scan'208";a="1255951"
-Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.94.8.107]) ([10.94.8.107])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 03:05:29 -0800
-Message-ID: <0b6f3998-135f-4059-a8a8-e924281353f8@linux.intel.com>
-Date: Mon, 22 Jan 2024 12:05:11 +0100
+	s=arc-20240116; t=1705921571; c=relaxed/simple;
+	bh=V/MmW1yVoK0TjvFsg0TJRYR3IjhkDr66kgUMy4s5icQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dvcnf1pF4l77Sqj6ZNXFA4DxtlwbXEKdUgirGkxng48oV2DZ7+TJMmKncGJVFb5EukEqa2xLluY/ztj47MH/6VFro1hbhQyAvPPdxAjDDleLOntZNMOH9EQp+2WTYZt7an2HpEqN1qtxhdI4hnZITZsU4FFnHcMlYFskgglijVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sT8RYILN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C865C433C7;
+	Mon, 22 Jan 2024 11:06:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705921570;
+	bh=V/MmW1yVoK0TjvFsg0TJRYR3IjhkDr66kgUMy4s5icQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sT8RYILNkg7DURq+DonPfOgYKWZzT9z1t7mKh5x8C8ZtDBgG2Ac0So6ocPeViznQk
+	 +b371knvzEQWiydLKI1rfHATW4gAcoP59HbiRavhYPxlUmUDhWQYFGir8/FVGINZd4
+	 4pbOy4f0jZXJrLq+pJ3U/hqDcEQirBEh7ORQTHlbVbDWuK1Bz5xSiDRJ61ytOBjCy+
+	 MIKGPKdVLBk54rOk1kK1ZfjKmuXIlY6qfkGds5xNN06kmh+7o/uJaxX7pptL30KyeJ
+	 KtePRH0INjn0SKiK3esQsx8GBl9w/Z8ZG+lbA3GAdrOUfJSnUjJhBs97oG+pTIzNU4
+	 jhoAF4LEG4IIA==
+Date: Mon, 22 Jan 2024 16:36:06 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Paul Cercueil <paul@crapouillou.net>
+Cc: Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
+	linux-iio@vger.kernel.org, linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+	Nuno =?iso-8859-1?Q?S=E1?= <noname.nuno@gmail.com>,
+	Michael Hennerich <Michael.Hennerich@analog.com>
+Subject: Re: [Linaro-mm-sig] Re: [PATCH v5 3/8] dmaengine: Add API function
+ dmaengine_prep_slave_dma_vec()
+Message-ID: <Za5MHkzSjyVUoytI@matsya>
+References: <20231219175009.65482-1-paul@crapouillou.net>
+ <20231219175009.65482-4-paul@crapouillou.net>
+ <ZYRWbROAuMXftH07@matsya>
+ <86a30af0db2232bd473a38cd001342156cd4012e.camel@crapouillou.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ALSA: hda: Increase default bdl_pos_adj for Apollo Lake
-To: Rui Salvaterra <rsalvaterra@gmail.com>, tiwai@suse.com
-Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240122092338.25047-2-rsalvaterra@gmail.com>
-Content-Language: en-US
-From: =?UTF-8?Q?Amadeusz_S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-In-Reply-To: <20240122092338.25047-2-rsalvaterra@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <86a30af0db2232bd473a38cd001342156cd4012e.camel@crapouillou.net>
 
-On 1/22/2024 10:23 AM, Rui Salvaterra wrote:
-> Apollo Lake seems to also suffer from IRQ timing issues. After being up for ~4
-> minutes, a Pentium N4200 system ends up falling back to workqueue-based IRQ
-> handling:
-> 
-> [  208.019906] snd_hda_intel 0000:00:0e.0: IRQ timing workaround is activated
-> for card #0. Suggest a bigger bdl_pos_adj.
-> 
-> Unfortunately, the Baytrail and Braswell workaround value of 32 samples isn't
-> enough to fix the issue here. Default to 64 samples.
-> 
-> Signed-off-by: Rui Salvaterra <rsalvaterra@gmail.com>
-> ---
->   sound/pci/hda/hda_intel.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index 2276adc84478..9fb54813693c 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -1732,6 +1732,8 @@ static int default_bdl_pos_adj(struct azx *chip)
->   		case 0x0f04: /* Baytrail */
->   		case 0x2284: /* Braswell */
->   			return 32;
-> +		case 0x5a98: /* Apollo Lake */
-> +			return 64;
->   		}
->   	}
->   
+Hi Paul,
 
-And seems like I've missed some IDs, when doing PCI IDs conversion. 
-Anyway, can you use PCI_DEVICE_ID_INTEL_HDA_APL instead of 0x5a98 as it 
-is self describing (no need for comment)?
 
-And if you want more patches in kernel - convert first 0x0f04 & 0x2284 
-to PCI_DEVICE_ID_INTEL_HDA_BYT & PCI_DEVICE_ID_INTEL_HDA_BSW and then do 
-the above change ;)
+On 08-01-24, 13:20, Paul Cercueil wrote:
+> Hi Vinod,
+> 
+> Le jeudi 21 décembre 2023 à 20:44 +0530, Vinod Koul a écrit :
+> > On 19-12-23, 18:50, Paul Cercueil wrote:
+> > > This function can be used to initiate a scatter-gather DMA
+> > > transfer,
+> > > where the address and size of each segment is located in one entry
+> > > of
+> > > the dma_vec array.
+> > > 
+> > > The major difference with dmaengine_prep_slave_sg() is that it
+> > > supports
+> > > specifying the lengths of each DMA transfer; as trying to override
+> > > the
+> > > length of the transfer with dmaengine_prep_slave_sg() is a very
+> > > tedious
+> > > process. The introduction of a new API function is also justified
+> > > by the
+> > > fact that scatterlists are on their way out.
+> > > 
+> > > Note that dmaengine_prep_interleaved_dma() is not helpful either in
+> > > that
+> > > case, as it assumes that the address of each segment will be higher
+> > > than
+> > > the one of the previous segment, which we just cannot guarantee in
+> > > case
+> > > of a scatter-gather transfer.
+> > > 
+> > > Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> > > 
+> > > ---
+> > > v3: New patch
+> > > 
+> > > v5: Replace with function dmaengine_prep_slave_dma_vec(), and
+> > > struct
+> > >     'dma_vec'.
+> > >     Note that at some point we will need to support cyclic
+> > > transfers
+> > >     using dmaengine_prep_slave_dma_vec(). Maybe with a new "flags"
+> > >     parameter to the function?
+> > > ---
+> > >  include/linux/dmaengine.h | 25 +++++++++++++++++++++++++
+> > >  1 file changed, 25 insertions(+)
+> > > 
+> > > diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
+> > > index 3df70d6131c8..ee5931ddb42f 100644
+> > > --- a/include/linux/dmaengine.h
+> > > +++ b/include/linux/dmaengine.h
+> > > @@ -160,6 +160,16 @@ struct dma_interleaved_template {
+> > >  	struct data_chunk sgl[];
+> > >  };
+> > >  
+> > > +/**
+> > > + * struct dma_vec - DMA vector
+> > > + * @addr: Bus address of the start of the vector
+> > > + * @len: Length in bytes of the DMA vector
+> > > + */
+> > > +struct dma_vec {
+> > > +	dma_addr_t addr;
+> > > +	size_t len;
+> > > +};
+> 
+> I don't want to be pushy, but I'd like to know how to solve this now,
+> otherwise I'll just send the same patches for my v6.
+> 
+> > so you want to transfer multiple buffers, right? why not use
+> > dmaengine_prep_slave_sg(). If there is reason for not using that one?
+> 
+> The reason is that we want to have the possibility to transfer less
+> than the total size of the scatterlist, and that's currently very hard
+> to do - scatterlists were designed to not be tampered with.
+> 
+> Christian König then suggested to introduce a "dma_vec" which had been
+> on his TODO list for a while now.
+
+Yeah for this interleaved seems overkill. Lets go with this api. I would
+suggest change the name of the API replacing slave with peripheral
+though
+
+-- 
+~Vinod
 
