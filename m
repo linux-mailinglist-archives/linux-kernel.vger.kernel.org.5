@@ -1,177 +1,280 @@
-Return-Path: <linux-kernel+bounces-32988-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32990-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 167598362DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:12:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A9E788362E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:14:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA60B289EA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:12:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59EAD28BA54
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:14:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFD033B781;
-	Mon, 22 Jan 2024 12:12:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5287C3B2BF;
+	Mon, 22 Jan 2024 12:14:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="GfBpVkeA";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="rRjPgmyL"
-Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ECd9pQBC"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B3DB3B196;
-	Mon, 22 Jan 2024 12:12:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.153.144
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705925556; cv=fail; b=gXhtjPNGdD0ksneuJk6HuZRvqK6sy9HmZOYjYUWT8ooCIsiwrjrfJVFNrK/rteSLFxyAdcwkfKqeC715oP5O5vxbSKTYlgrq/L+8Teu9+K+mZocA+7kXRbPEwvtv8iQ9s6qDUBWffmHOPaVKQZF2NV9D2GIplxaUPpNR1XGtsiU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705925556; c=relaxed/simple;
-	bh=QN7jogb3RG5lZnCzbwJVq00qL1/UKqptynO9R1KPZsM=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=hv31uZlOYWwc+YGsS/NEHxAbnYuXV1DGsg19ItlWgdhPtViq5GtD/IuG0/T5e5JEbWdUVqaAGqsQfRUi/+l5QC6vSE8qIHtb3bLtZ4IQs8Qy623VtFqbNNEIxwuUVlrhYf2C5GuZMh3g4EDqjjbEY1spypU1rJDqUz0jZVixlJA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=GfBpVkeA; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=rRjPgmyL; arc=fail smtp.client-ip=216.71.153.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1705925555; x=1737461555;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=QN7jogb3RG5lZnCzbwJVq00qL1/UKqptynO9R1KPZsM=;
-  b=GfBpVkeAIFfyv38PYGFeHFxe2+Pzxglzl6Cn75Yexe4iFe742ESpst5c
-   EOj5ZWOxZCuCmbpttLDJ8Mk/q8vvBbDpQZBdz2iLqVJ2FhE/uhX1tLS3C
-   STDqJ3j5TX5KFz4Kiqv30wJqBUaIF694frI3ZOCVKkgTlKUys5WhT7OjP
-   byBXA5OupSIPNHEpiEzFd6jCf3clLU3KBgzvfNw+1RnGT2UTjQfxXjN0/
-   CgbU/Wkn9GrHixZZQ0vR1RmBv6HdlAH4pd+TmYUypwPSFRYegpoa/nPnR
-   5j197Ae7U6AZ9zhT4gaF6qPSAhdTqdtJI+8kEer3vbzBPd/6UXc0ZJOSx
-   A==;
-X-CSE-ConnectionGUID: TiNXXhSYRtiXchjJjkcz8w==
-X-CSE-MsgGUID: tRMi3IRlSmaGYqKuOAIOgA==
-X-IronPort-AV: E=Sophos;i="6.05,211,1701100800"; 
-   d="scan'208";a="7928162"
-Received: from mail-dm6nam10lp2101.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.101])
-  by ob1.hgst.iphmx.com with ESMTP; 22 Jan 2024 20:12:28 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MKRoi/9ZWuAw7etHymtbEOpcbDldmL/sI0s/vfvz7Q354d5WdKg9TDWU1PGk9iRfbqj3qWKjY02AvrCd5QW5YEKKg+jb/Fr6A6QFNF61z/wOXwwH2jcJKOwr8gOKmICTyWhFoqW0sKPiGLGDWvQ1MlLFB1dz1/U2uQ4Pn06r0uk0iB+DXqW0MeYRKsTgzSKW2zquJjAbeMVlXcge9got4cwGaS9MfZmBoh9NztLwqWn7znth8S3YnUTFHIg/DjiGD42vYLn6s5AMnDsB2/RP9n5DrOl50L/0unipckR5PLTVUu014sKQPE6FqsgNEynDwqjF6MW0qfn5Lp/AfhlpqA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QN7jogb3RG5lZnCzbwJVq00qL1/UKqptynO9R1KPZsM=;
- b=fauV2rl+H851PpVDr6g8kAvdaB9q0AC2WsOfoWLsMR+1DgUayZJVCoXt8Z8RpbhgfltTS9psFvIaehAMFNV93jPpm6lcPKhSISuf4mDzsfadvpNqfynh5OIj8HQYSKcBHmbLlzAdGWsScyBZcTBoHl0JdFHc7hOZHg7NMrfYGAtAigFl8lZFabKtt0jFBvWj6sgcePFTMZKT4bVqtLUMMjAtwJY83OtNZkgZndkDBA6tHlXEDc0ThSS40Hq5OR6HR2x29RjouZM2Mp1S2ggjWUoWMDkTJre1UVhTz+Y2CJ6JA9danBGrg0zd3/9pmvnLE+UcRyAdFow/UQ6iZNV21g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QN7jogb3RG5lZnCzbwJVq00qL1/UKqptynO9R1KPZsM=;
- b=rRjPgmyLsF7E3rJSfej571FDb4nEsXfVDsK1enCz7YErmRGzkE57UGifpiw2nsUFuU48/cBAEqrkKlF//1JeGb+QfD8A1HJ8tHuX832Zh8IJaTBn7vtvdA4Kqm0/cJhko48zn89VJBT4fqEJOdJW9Hy+rGiAINNCq5Me4w1byH0=
-Received: from SJ0PR04MB7776.namprd04.prod.outlook.com (2603:10b6:a03:300::11)
- by BY5PR04MB6293.namprd04.prod.outlook.com (2603:10b6:a03:1ef::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.34; Mon, 22 Jan
- 2024 12:12:26 +0000
-Received: from SJ0PR04MB7776.namprd04.prod.outlook.com
- ([fe80::6c12:a7ce:2b9c:69bf]) by SJ0PR04MB7776.namprd04.prod.outlook.com
- ([fe80::6c12:a7ce:2b9c:69bf%6]) with mapi id 15.20.7202.031; Mon, 22 Jan 2024
- 12:12:25 +0000
-From: Naohiro Aota <Naohiro.Aota@wdc.com>
-To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-CC: Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Damien Le Moal
-	<dlemoal@kernel.org>
-Subject: Re: [PATCH 1/2] btrfs: zoned: use rcu list for iterating devices to
- collect stats
-Thread-Topic: [PATCH 1/2] btrfs: zoned: use rcu list for iterating devices to
- collect stats
-Thread-Index: AQHaTSDueMfLZECX/UiLJj78u0qsV7DlvkEA
-Date: Mon, 22 Jan 2024 12:12:25 +0000
-Message-ID: <xow7peddc2x5dyrttecs2evtw2vtaf537ed4cyzpp2htbufcjp@ul7zzkmkfcps>
-References: <20240122-reclaim-fix-v1-0-761234a6d005@wdc.com>
- <20240122-reclaim-fix-v1-1-761234a6d005@wdc.com>
-In-Reply-To: <20240122-reclaim-fix-v1-1-761234a6d005@wdc.com>
-Accept-Language: ja-JP, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR04MB7776:EE_|BY5PR04MB6293:EE_
-x-ms-office365-filtering-correlation-id: 534e6b71-28e1-4d0c-7bac-08dc1b436563
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- GricgW1aBwJWfaACs3EjeYhdl5HQaOq9oU6Biy2ivrVBFlrIumculWlxmgguj9CAYYyg9iH7K7EMHejttbql23rq2fohPvzQrZBZuAWMe3ucWSuiZKBUmhewoj87A1lOKYnKiPYv6S6DxBR139PWi54YBb/2vNLVU7SWNg5c3qRfpIu/HobVY7vdsl/cWlmuCZWKdT+hG76e+jv2XybNGXhiwbks11TZPv+s6gQO8lrXTlNzXG+y3wjya7PcFG72lOqrdw9J69fsZRhDtB3ROTvlqLudK+233PdvVH8ZQdvL8XJjBwbiuWdhRD5337s1BfzBYYpBrn/qGgLkeVYGO8PIBarg+ki5XBZPaPpF2dsAyd+4e9yaebFgbSL3c+Sze0DDVYT2al4haJ7+cMRKIi/hiyvQIzmWCf0mAWE1bXDSrUNCF9y4CioYwb0quZP4LEmQgBiqvuKxUoi5M1JRQmv/tOaIgouskP+NaVnPvEdXOc2QTp4vnIG2Az3CKvMAIVpJOF7P2MhUXU4Wy7KWhQJ+YAj6zmoksIaAmnRG9W3GctSEPjFimklbJyJyk0wcCBY+ffuoUI6jloxNtUIlj6a30O5n5gNBYS1kV3YNZakf/72W7fghRgydZNtlUcIK
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(346002)(396003)(39860400002)(136003)(376002)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(66556008)(66476007)(66446008)(6636002)(316002)(66946007)(71200400001)(64756008)(76116006)(54906003)(9686003)(6486002)(6512007)(6506007)(2906002)(4744005)(5660300002)(8936002)(8676002)(26005)(83380400001)(91956017)(122000001)(4326008)(6862004)(38100700002)(478600001)(38070700009)(33716001)(41300700001)(86362001)(82960400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?Mekj/70XnamkorbGXng8u8ufvaT0TMw1VQnsjSaIy4fXp6m5232TbiTq2ue7?=
- =?us-ascii?Q?9oqBy+S7nkAmTesjLjGYd3o1ZciXH+npByvbS27lFYm9uqVn63Wezps0qG9T?=
- =?us-ascii?Q?Mg22ZhkmTWfI993ZBQjq4vYArdoNkvGgaRGO3Hjp5uQzE76bYzMmUreIHtKJ?=
- =?us-ascii?Q?XBAfQYAKykeGpnC1cO8dEfvKtJ7nJ/JNUtgle1lku824k0EmpXIMSCFc5trV?=
- =?us-ascii?Q?/UcuuyggGxFgExk9K3bTnX9I79YIUkFYjB/+w+uHvt0bmrdTorU4WEB0tHsB?=
- =?us-ascii?Q?+6s4DyLXiyYIV9GZzLWIXXCupDKczul7ZT5KDjE4xA1079T1prp2hFx15Bcq?=
- =?us-ascii?Q?ZTu2e2H1HJyNLL6sGoqd7syXqavrqvk8BAA4ENB8/R4PPToF/mxbkiD+OMXA?=
- =?us-ascii?Q?PVe/pJ5S+BYfF/izeh1Uh0ExTx1yweHiNy1LMx1F0gQojwkOfShBl1zpBNIY?=
- =?us-ascii?Q?CicT6TLIDDRkmIuH+hd/dOs3sBRAjcVDndEdK/wlgY2jQud4J6ydOwEBlbmf?=
- =?us-ascii?Q?hj+p+IV9S2yujB27f3f2AYYLEi75zm/rXGR1lzcmMb9IKwEg3BeEO934NHLS?=
- =?us-ascii?Q?G449h0AivJyHeMPoX9UibakIYhsa6+e0Y/amEksYnwHwmT2qL6b11bGmDKMb?=
- =?us-ascii?Q?5Pgw9Dh8iSLPakhkwn/y+KbDnWgY+7h0OXuIRHquMyvwB/NaXFwbr0lB9C1v?=
- =?us-ascii?Q?oZLcH/sKp9jSHUVDiE+8wzOb+PoC9v1rUcd7vDgRCa4C5hbQcJ+xCAJmjshJ?=
- =?us-ascii?Q?AwXDDh0C0NB0zmkIoCW/kjJbq+cDs5ZmUSu76CLeXritdmldK8qlWTKYfLsr?=
- =?us-ascii?Q?9DegNw0DawhojYMKZ2nRgAVMBYCtSV+ebnSe9/wq2CybQjFnCs3lH+NS+gXA?=
- =?us-ascii?Q?ziWkMudP68beZAVQ19yb/3hKUYjaYgwoDMgLM99nnSDCUu4/E3XsO8v4m8jH?=
- =?us-ascii?Q?NhXm4d7+nlJ9OvdQgoyTbyO+9OXBau4h5Xtcx+DqzmF6wIGKEoUY9uDWTY+I?=
- =?us-ascii?Q?kodHXIj0aKKPSIKcrL1SI1HiB/lqjsGgsRrRb2vO0qZDwvDkd+mM6rFgQ7iP?=
- =?us-ascii?Q?z/RT1ex6TxMjRzvhh5FW1J0ldza3+GZxXGFnHy6/nEBN89MAAeMqt4B/2IqW?=
- =?us-ascii?Q?Y6ZAVswbi0YVcNh5p6WOyBL/OK2g9bRBgx/7dXitMSnvhWtmdFWbnnpRHgHf?=
- =?us-ascii?Q?ykHQcGNz3e/p3JbQHV+FD3EO+B3VMo2oly1Lb6RCplDGP2N2k6VyxnvQcYo8?=
- =?us-ascii?Q?PjWWVxgc85BDGKcF52kUF0ZBhdDM9lSVxoE3B8qtKReQ6xymp666a3FEUqJS?=
- =?us-ascii?Q?Vf/VKHTZsYmbJnnqVb2mk5+pcxoom34lmX3ZCtoFb78/fRP7iXQz4RpABJUe?=
- =?us-ascii?Q?ThzkDAnMNx3S1+iTv7yObaGe0BLOdG9L2NLpaZ2M8LtLrUKXuy5dTKum36+I?=
- =?us-ascii?Q?OYNMWzQ+pOcvLshrwEyAcrcvcjYirQAqmwGF7gdjt2DzflVB9vjGWEUiu1Ap?=
- =?us-ascii?Q?fimWFwrb/nr/ccJqwUv9hfHBSSTFrugFCI65P7RF+xopcnfXY90pUVOmt/yB?=
- =?us-ascii?Q?JasS61CXNK5Sg/NX10y+Lbgls+zrQ/o/C8e3qSCxYrlSIjegUXFTFEnRaelS?=
- =?us-ascii?Q?RQ=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <A10C12A8F910F54994B3C7B227DBFD17@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7D5D4C8E;
+	Mon, 22 Jan 2024 12:14:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705925652; cv=none; b=sTOvkqOq4Am7LVXKp91kV0mkDgAw/IshYJkCKnsgQ7E9VhElWl7IRuNYh2dlkD9jLNGFC3IY5Vd8/b2StgO9uno5B2hfu5c5IWbWcvqJZ9KAvVyzIB+IFljuuDhznsJvDx8FcUrKX108x2+zy0MC5HWuakLqdo4IGePqQ/oH7mQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705925652; c=relaxed/simple;
+	bh=ELHrYWXB8hxaqdWW758txPVG+d4KwfVYIBf9ybMLLeY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=otJwBjVVMcfpHKSeD6jhfWajyw/p26qDeWBB/eVjk2VKPCdPxh++a2Gvwglo8nq6+qqLjtqlf7Xjtf09EKMxUcXiFv+dGeEkoixjj7WprwpHbLF1RsVOXv4VswOQ/odn9ahd6BdJ3nqgMCQHevKtxhhaiWi103VEyZ0nBDo6u00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=ECd9pQBC; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40M73uIG005703;
+	Mon, 22 Jan 2024 12:13:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=iwX9zbLnqRi6ines1Rl995lfpQUv5J94a5bIi9jB1aw=; b=EC
+	d9pQBCwE5tflC5gqtEH0H95LNNAK7v8pnXiZOApfxu9R18MAznhMP9PyQVXkrkHd
+	SeuJKpSXgnHqZYHFKcbqO99/QGJfwcDSMLftt6VdZiGHCDqkgTAHVjnb6P2RimkU
+	ihS/hp10HtWn/Lo99vqtRGcxMrvlMqGCFrB0A8nXVVM6x+ENd6RgiA1XK5h7/82E
+	pVjvX7wSjPxcmltl1B/LOiR2MxbfTyOaoMArJNEb3AM5a6P3edgaFawQD2QCB+Lt
+	9bfVA3oUcUihzm0kZjNos5/x/DlC+pzEzZK50YQRap6Fhlo1+BssWbn+qE7uyGzt
+	bnDUetmi5FJ1G7zS3T1Q==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vskn18qhy-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 22 Jan 2024 12:13:50 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40MCDnGR002380
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 22 Jan 2024 12:13:49 GMT
+Received: from [10.216.19.244] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 22 Jan
+ 2024 04:13:41 -0800
+Message-ID: <dfa3747f-4ed6-299f-1a43-0c0f13d103d9@quicinc.com>
+Date: Mon, 22 Jan 2024 17:42:49 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	xr03RWRjjolATwBPgyGGZbRQr7i+7BkrqQwJIKcErtDAdbUvJC2n7tqhiCtFoQFBN9SssFqbOJ2Tp3UBxaiK+TgT2OZfProR6Bayo1mrClwft8Ls3S0zphXLpmdsuxQTsch1/Yo+kJnLke9kguLQB1rhAZ08NkvhBiAwvkzH3aWvpZZJyh7xFLJ+CaFpXQ7w7t6WHpEiaC9EQsKxqrQASdFYM4x10V1CafIKNpn0dLPMD9C0MMPUtvd2FwXM2U8s0I//zmP6yacWuvBMHnJRSCsGDwC7/U/agRoXgI3JYz+gPPfFpU3uO66aEf5W5rs7C/vlsT53VviNaSB/DpxZCRwoSl62h6zrrZPSAEbGgzMbR5lO+xyuL4cy9wnBFjo3xmnI0nb5NJt5Cb+y6z2zilY0r9t7Mzcy8+dmOSFzF8opXZrPjAziP21XLL8w156hDX2vQd7LSscq0axTl4L31hdYSjlklp/1zzfHSVoHxUG/3cj0qYL3oiK6fa1Yerdj/zBTtubDmZIB86mArdlkS3VVx882zLoxVOKRd8K7gOAFBHctO2Qv97KhxDTCz48lLkK3ggzftIhMtnEE/kzxivvhSOZS8tpguweIcm8DuhMd39n3TQAax1J+OTdinpg5
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7776.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 534e6b71-28e1-4d0c-7bac-08dc1b436563
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2024 12:12:25.7235
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: k/c1wz58RAqbbG+/Z9zyZStuDVDwfRikXMCiN381jT7DZ+TqsjcPxnXMpKJjBQvvQ6uSCGVK83VTfr1+TplZgg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6293
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.0
+Subject: Re: [PATCH RESEND v2 0/4] PM: hibernate: LZ4 compression support
+Content-Language: en-US
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+CC: Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        "Jonathan
+ Corbet" <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Peter
+ Zijlstra <peterz@infradead.org>,
+        "Steven Rostedt (Google)"
+	<rostedt@goodmis.org>,
+        Tejun Heo <tj@kernel.org>, "Paul E. McKenney"
+	<paulmck@kernel.org>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        <linux-pm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_pkondeti@quicinc.com>,
+        <quic_kprasan@quicinc.com>, <quic_mpilaniy@quicinc.com>,
+        <quic_shrekk@quicinc.com>, <mpleshivenkov@google.com>,
+        <ericyin@google.com>
+References: <cover.1700048610.git.quic_nprakash@quicinc.com>
+ <2153c549-2a45-3d1d-a407-e175a34b77bf@quicinc.com>
+ <CAJZ5v0jqDEEw0CCAxCOcK+u+BtEa1M1B4t3OZj8umw=rxigu_g@mail.gmail.com>
+From: Nikhil V <quic_nprakash@quicinc.com>
+In-Reply-To: <CAJZ5v0jqDEEw0CCAxCOcK+u+BtEa1M1B4t3OZj8umw=rxigu_g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: MwJPeho8F_wlshwWLJGCKL9uaGRir2Zi
+X-Proofpoint-ORIG-GUID: MwJPeho8F_wlshwWLJGCKL9uaGRir2Zi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-22_02,2024-01-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ mlxlogscore=999 priorityscore=1501 impostorscore=0 phishscore=0
+ spamscore=0 lowpriorityscore=0 clxscore=1011 adultscore=0 bulkscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401220085
 
-On Mon, Jan 22, 2024 at 02:51:03AM -0800, Johannes Thumshirn wrote:
-> As btrfs_zoned_should_reclaim only has to iterate the device list in orde=
-r
-> to collect stats on the device's total and used bytes, we don't need to
-> take the full blown mutex, but can iterate the device list in a rcu_read
-> context.
->=20
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-Looks good.
 
-Reviewed-by: Naohiro Aota <naohiro.aota@wdc.com>=
+On 12/12/2023 6:14 PM, Rafael J. Wysocki wrote:
+> Hi,
+> 
+> On Wed, Nov 29, 2023 at 11:20 AM Nikhil V <quic_nprakash@quicinc.com> wrote:
+>>
+>>
+>> On 11/15/2023 5:52 PM, Nikhil V wrote:
+>>> This patch series covers the following:
+>>> 1. Renaming lzo* to generic names, except for lzo_xxx() APIs. This is
+>>> used in the next patch where we move to crypto based APIs for
+>>> compression. There are no functional changes introduced by this
+>>> approach.
+>>>
+>>>
+>>> 2. Replace LZO library calls with crypto generic APIs
+>>>
+>>> Currently for hibernation, LZO is the only compression algorithm
+>>> available and uses the existing LZO library calls. However, there
+>>> is no flexibility to switch to other algorithms which provides better
+>>> results. The main idea is that different compression algorithms have
+>>> different characteristics and hibernation may benefit when it uses
+>>> alternate algorithms.
+>>>
+>>> By moving to crypto based APIs, it lays a foundation to use other
+>>> compression algorithms for hibernation.
+>>>
+>>>
+>>> 3. LZ4 compression
+>>>
+>>> Extend the support for LZ4 compression to be used with hibernation.
+>>> The main idea is that different compression algorithms have different
+>>> characteristics and hibernation may benefit when it uses any of these
+>>> algorithms: a default algorithm, having higher compression rate but is
+>>> slower(compression/decompression) and a secondary algorithm, that is
+>>> faster(compression/decompression) but has lower compression rate.
+>>>
+>>> LZ4 algorithm has better decompression speeds over LZO. This reduces
+>>> the hibernation image restore time.
+>>> As per test results:
+>>>                                       LZO             LZ4
+>>> Size before Compression(bytes)   682696704       682393600
+>>> Size after Compression(bytes)    146502402       155993547
+>>> Decompression Rate               335.02 MB/s     501.05 MB/s
+>>> Restore time                       4.4s             3.8s
+>>>
+>>> LZO is the default compression algorithm used for hibernation. Enable
+>>> CONFIG_HIBERNATION_DEF_COMP_LZ4 to set the default compressor as LZ4.
+>>>
+>>> Compression Benchmarks: https://github.com/lz4/lz4
+>>>
+>>>
+>>> 4. Support to select compression algorithm
+>>>
+>>> Currently the default compression algorithm is selected based on
+>>> Kconfig. Introduce a kernel command line parameter "hib_compression" to
+>>> override this behaviour.
+>>>
+>>> Users can set "hib_compression" command line parameter to specify
+>>> the algorithm.
+>>> Usage:
+>>>       LZO: hib_compression=lzo
+>>>       LZ4: hib_compression=lz4
+>>> LZO is the default compression algorithm used with hibernation.
+>>>
+>>>
+>>> Changes in v2:
+>>>    - Fixed build issues reported by kernel test robot for ARCH=sh, [1].
+>>> [1] https://lore.kernel.org/oe-kbuild-all/202310171226.pLUPeuC7-lkp@intel.com/
+>>>
+>>> Nikhil V (4):
+>>>     PM: hibernate: Rename lzo* to make it generic
+>>>     PM: hibernate: Move to crypto APIs for LZO compression
+>>>     PM: hibernate: Add support for LZ4 compression for hibernation
+>>>     PM: hibernate: Support to select compression algorithm
+>>>
+>>>    .../admin-guide/kernel-parameters.txt         |   6 +
+>>>    kernel/power/Kconfig                          |  26 ++-
+>>>    kernel/power/hibernate.c                      |  85 +++++++-
+>>>    kernel/power/power.h                          |  19 ++
+>>>    kernel/power/swap.c                           | 189 +++++++++++-------
+>>>    5 files changed, 251 insertions(+), 74 deletions(-)
+>>>
+>>>
+>>> base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+>>
+>> Hi @Rafael/@Pavel/@Len,
+>>
+>> Could you please let me know if you have any concerns on this approach?
+> 
+> Not really a concern, but that is a significant change that I would
+> rather make early in the cycle, which means after the 6.8 merge
+> window.
+> 
+> No need to resend unless there is something to address in which case
+> I'll let you know.
+> 
+> Thanks!
+> 
+>> FYI: We have tested this on QEMU and its working fine.
+>>
+>> Logs(suspend):
+>> [   75.242227] PM: Using 3 thread(s) for lz4 compression
+>> [   75.243043] PM: Compressing and saving image data (17495 pages)...
+>> [   75.243917] PM: Image saving progress:   0%
+>> [   75.261727] PM: Image saving progress:  10%
+>> [   75.277968] PM: Image saving progress:  20%
+>> [   75.290927] PM: Image saving progress:  30%
+>> [   75.305186] PM: Image saving progress:  40%
+>> [   75.318252] PM: Image saving progress:  50%
+>> [   75.330310] PM: Image saving progress:  60%
+>> [   75.345906] PM: Image saving progress:  70%
+>> [   75.359054] PM: Image saving progress:  80%
+>> [   75.372176] PM: Image saving progress:  90%
+>> [   75.388411] PM: Image saving progress: 100%
+>> [   75.389775] PM: Image saving done
+>> [   75.390397] PM: hibernation: Wrote 69980 kbytes in 0.14 seconds
+>> (499.85 MB/s)
+>> [   75.391591] PM: Image size after compression: 28242 kbytes
+>> [   75.393089] PM: S|
+>> [   75.399784] sd 0:0:0:0: [sda] Synchronizing SCSI cache
+>> [   75.439170] sd 0:0:0:0: [sda] Stopping disk
+>> [   75.501461] ACPI: PM: Preparing to enter system sleep state S5
+>> [   75.502766] reboot: Power down
+>>
+>>
+>>
+>> Logs(resume):
+>> [    1.063248] PM: hibernation: resume from hibernation
+>> [    1.072868] Freezing user space processes
+>> [    1.073707] Freezing user space processes completed (elapsed 0.000
+>> seconds)
+>> [    1.075192] OOM killer disabled.
+>> [    1.075837] Freezing remaining freezable tasks
+>> [    1.078010] Freezing remaining freezable tasks completed (elapsed
+>> 0.001 seconds)
+>> [    1.087489] PM: Using 3 thread(s) for lz4 decompression
+>> [    1.088570] PM: Loading and decompressing image data (17495 pages)...
+>> [    1.125549] PM: Image loading progress:   0%
+>> [    1.190380] PM: Image loading progress:  10%
+>> [    1.204963] PM: Image loading progress:  20%
+>> [    1.218988] PM: Image loading progress:  30%
+>> [    1.233697] PM: Image loading progress:  40%
+>> [    1.248658] PM: Image loading progress:  50%
+>> [    1.262910] PM: Image loading progress:  60%
+>> [    1.276966] PM: Image loading progress:  70%
+>> [    1.290517] PM: Image loading progress:  80%
+>> [    1.305427] PM: Image loading progress:  90%
+>> [    1.320666] PM: Image loading progress: 100%
+>> [    1.321866] PM: Image loading done
+>> [    1.322599] PM: hibernation: Read 69980 kbytes in 0.23 seconds
+>> (304.26 MB/s)
+>> [    1.324795] printk: Suspending console(s) (use no_console_suspend to
+>> debug)
+>> [   74.943801] ata1.00: Entering standby power mode
+>>
+>>
+>> Thanks,
+>> Nikhil V
+
+
+Hi @Rafael
+
+We have picked this patch series on 6.8-rc1 and tested the functionality 
+on QEMU. Its working fine. However, while applying the patches we could 
+see minor conflicts. Could you please let me know if we need to push a 
+new version after resolving these conflicts?
+
+Thanks,
+Nikhil V
 
