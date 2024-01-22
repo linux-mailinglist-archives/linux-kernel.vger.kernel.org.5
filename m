@@ -1,71 +1,70 @@
-Return-Path: <linux-kernel+bounces-34004-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34005-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75AA68372AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:35:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B8F378372A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:33:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE89DB2B235
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:05:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6AD9CB28170
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:05:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F17A45D74C;
-	Mon, 22 Jan 2024 18:46:21 +0000 (UTC)
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 883055D8F6;
+	Mon, 22 Jan 2024 18:46:23 +0000 (UTC)
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 165B25D72E;
-	Mon, 22 Jan 2024 18:46:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7E175D742;
+	Mon, 22 Jan 2024 18:46:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705949181; cv=none; b=n0BLXbZF+Een6evXgOuH/Y5oxNv69Wtfw87iVhAA4UHZ2sqlVErutJMVrfOi1dKt578FJ/HeuZySlO8Qo5yugIckdq1Y8sgB3EjsSGRJk6psDYR/7D/mCGue4yr/oeCQyswudoiEp8N3q4mcLv8xeLgPyjwBz6t6lBBs3rqcltI=
+	t=1705949183; cv=none; b=TcVYXte4qXC+2BzRiA/8UmP0/Wakh80qcYlh8XioixsnxI7BAPxrq7HPr8I+z8DFzcl6s1vARQSc1F+IZbdbCveJLxzStWdHzMljQNd6OM31vcV17ZGmQ5bImXok2Kqy9kOUqPRLyk7gCM+a9S9CRpiKHLYrhmRUuTpuzY2wG+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705949181; c=relaxed/simple;
-	bh=otC0oxYyfZVPzZX/zfwI8stSIJHDGA7ed6/sdnWLpD8=;
+	s=arc-20240116; t=1705949183; c=relaxed/simple;
+	bh=mUSXXGPgY8FzkMOOClPqzHH3thRlJ2ker48ophTtyRE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hyVauOseBfdn9OKRHlQC9pEBf6eIfUKrBLKfMR5LN6y/WvE225xKmARz2TvIv/UJKWkQvmxiY+3+Rrx4uh3hK3e5TRs+4e/z4rDp7wrAYzvCO2gJcK/v0NQ8CyddvcEJgyZBe7MJPexc8g1fnl0VMsziGV42l1G2Sty90aEmFHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.47
+	 MIME-Version; b=chnZSLiYbjoaV2/F7RGvL+mH9CXev98jxfLOC/hkA9zy8mouG3fY5Hl1dsyYTnBz98uFKtl4kpEvVZmSTSqwbhlLjUyIdLx8cVb5uUfvqZcr/0obexD/GTBrzdpfo1ggG8t5qFdBVqXlemTeKx/4lMWJPOrBV824O4mmENqCqBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55a50649ff6so3707128a12.3;
-        Mon, 22 Jan 2024 10:46:19 -0800 (PST)
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55c2c90c67dso1605664a12.1;
+        Mon, 22 Jan 2024 10:46:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705949178; x=1706553978;
+        d=1e100.net; s=20230601; t=1705949180; x=1706553980;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cFgt0ozQbjnWYH5i2XF8dhHsvqD/EPeO+LGoxd7oSiw=;
-        b=mXA+8qW+XW1ap4FlIngSn0f1UxAhYSgsRRr3VRXcSUnxjk58qElwGJLnIBZ6p9Znku
-         RaI3lw5XyVsP9SQMdFbHszgpX6Nz5h+7p6GuBAvWNKvE7Iy7EdM20+El2kY7op6n1lm7
-         aqYqo/ySalHQQyoHLHZOcf9AO2S98aZUxbL9GFi2UAIQ7WhemynzEAunIW0RGeX5XyhZ
-         Wv7cWcNNoQjnKb/+rN950njAtVozu+inkJMwVX41SoFFE154uExiK6IhDLcKQICvcjg7
-         KC/hkdh5jljSMypNY1hfGyn5ofQmpVrRG4EHXi2zGmGsoqU2TjwuzsznWpLmnk2rBC64
-         /Udw==
-X-Gm-Message-State: AOJu0YxLZ48uH2769yAcmKkwkyqJL7rh/tyzviUkf5MsPn+RQz5exQh6
-	HcLggVy8eS1w9RHvAWxYe09EcoPg07Jc7WFx26xPQI4OxR+tUY+d
-X-Google-Smtp-Source: AGHT+IGIkou9QnryPpz+vRPDO+hr3ow5esx20rM3txVr/gZq9i74UVDxo11A65nkzoncxt50dz3G5Q==
-X-Received: by 2002:a17:906:33d1:b0:a30:9c4f:5008 with SMTP id w17-20020a17090633d100b00a309c4f5008mr281253eja.37.1705949178153;
-        Mon, 22 Jan 2024 10:46:18 -0800 (PST)
+        bh=EXBd7/4njBbq+wgt8CKjNpRhE1ABIHxgKJAmYauI2kE=;
+        b=Dz3ueYYTQEme/4jg6MafrxkVNRsDDi+lrp846NV0nlZYxw4tQHftO9uvM0jp2FGYFP
+         qH70nv/Pp/KwKDn23k7DGE3xDCcu14EzkQJouwqOgtXv3OreT5chvrZtEid/qIC1Zl32
+         S+FjAUSYqqan8SHzUO0ww1Q/tCFuObABgvHK3NI1CjQ192Yzl5f5djrCeAVVPw0xFm++
+         v/K9UVtPOVIjkSzdo80XNXksIiHInG2OSV51c21bmXxsGUAJTiCG6NfKArvEqGYIl/T5
+         rHWNjfLyxneWC1ojNr6A6I5+PZagmgd/c4EVfcOQkeK7Mo1h+XE9lslVYCBt2PoRDcd0
+         hGJA==
+X-Gm-Message-State: AOJu0YwKnt2wSrqXocZTXtQSe/9CxIr/VwTVibKpHf3hye16pA5PrS3V
+	EYh+W0R+1zUfld7rDohszIT3iJ/Lhiyk4Sk8gDHGMiJWfPqmoOdom4hONllMsz98LQ==
+X-Google-Smtp-Source: AGHT+IGgLG2F2rncpfZUuRuOG4QDdT1LawaPbpSmB5QVps6sAPMgif0c3ETZ3ioZeqb5jZKpbOgjYg==
+X-Received: by 2002:a17:906:dfe7:b0:a2b:a618:7db3 with SMTP id lc7-20020a170906dfe700b00a2ba6187db3mr2038313ejc.72.1705949179885;
+        Mon, 22 Jan 2024 10:46:19 -0800 (PST)
 Received: from localhost (fwdproxy-lla-119.fbsv.net. [2a03:2880:30ff:77::face:b00c])
-        by smtp.gmail.com with ESMTPSA id k26-20020a17090666da00b00a1df4387f16sm13673849ejp.95.2024.01.22.10.46.17
+        by smtp.gmail.com with ESMTPSA id ps10-20020a170906bf4a00b00a27a32e6502sm1312130ejb.117.2024.01.22.10.46.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 10:46:17 -0800 (PST)
+        Mon, 22 Jan 2024 10:46:19 -0800 (PST)
 From: Breno Leitao <leitao@debian.org>
 To: kuba@kernel.org,
 	davem@davemloft.net,
 	abeni@redhat.com,
 	edumazet@google.com,
+	Hartley Sweeten <hsweeten@visionengravers.com>,
 	Paolo Abeni <pabeni@redhat.com>
 Cc: dsahern@kernel.org,
 	weiwan@google.com,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Simon Horman <horms@kernel.org>,
-	netdev@vger.kernel.org (open list:CAVIUM LIQUIDIO NETWORK DRIVER),
+	netdev@vger.kernel.org (open list:CIRRUS LOGIC EP93XX ETHERNET DRIVER),
 	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next 05/22] net: fill in MODULE_DESCRIPTION()s for liquidio
-Date: Mon, 22 Jan 2024 10:45:26 -0800
-Message-Id: <20240122184543.2501493-6-leitao@debian.org>
+Subject: [PATCH net-next 06/22] net: fill in MODULE_DESCRIPTION()s for ep93xxx_eth
+Date: Mon, 22 Jan 2024 10:45:27 -0800
+Message-Id: <20240122184543.2501493-7-leitao@debian.org>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20240122184543.2501493-1-leitao@debian.org>
 References: <20240122184543.2501493-1-leitao@debian.org>
@@ -78,25 +77,24 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
-Add descriptions to the Cavium Liquidio.
+Add descriptions to the Cirrus EP93xx ethernet driver.
 
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- drivers/net/ethernet/cavium/liquidio/lio_core.c | 1 +
+ drivers/net/ethernet/cirrus/ep93xx_eth.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/cavium/liquidio/lio_core.c b/drivers/net/ethernet/cavium/liquidio/lio_core.c
-index 9cc6303c82ff..f38d31bfab1b 100644
---- a/drivers/net/ethernet/cavium/liquidio/lio_core.c
-+++ b/drivers/net/ethernet/cavium/liquidio/lio_core.c
-@@ -27,6 +27,7 @@
- #include "octeon_network.h"
+diff --git a/drivers/net/ethernet/cirrus/ep93xx_eth.c b/drivers/net/ethernet/cirrus/ep93xx_eth.c
+index 1c2a540db13d..1f495cfd7959 100644
+--- a/drivers/net/ethernet/cirrus/ep93xx_eth.c
++++ b/drivers/net/ethernet/cirrus/ep93xx_eth.c
+@@ -868,5 +868,6 @@ static struct platform_driver ep93xx_eth_driver = {
  
- MODULE_AUTHOR("Cavium Networks, <support@cavium.com>");
-+MODULE_DESCRIPTION("Cavium LiquidIO Intelligent Server Adapter Core");
+ module_platform_driver(ep93xx_eth_driver);
+ 
++MODULE_DESCRIPTION("Cirrus EP93xx Ethernet driver");
  MODULE_LICENSE("GPL");
- 
- /* OOM task polling interval */
+ MODULE_ALIAS("platform:ep93xx-eth");
 -- 
 2.39.3
 
