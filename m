@@ -1,223 +1,241 @@
-Return-Path: <linux-kernel+bounces-33175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F22FC8365B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:44:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EA848365AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:43:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7D8AEB2AA9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:39:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82546B2B85E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:40:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 502053D55B;
-	Mon, 22 Jan 2024 14:39:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B9B53D97C;
+	Mon, 22 Jan 2024 14:39:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="eo8SYT0D"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="JBKJDPpu";
+	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="C937uXha"
+Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A27F3D965
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 14:39:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705934373; cv=none; b=MC+4tT0TcyvpCkw8vtcTX/qYVOO/Epzx7TFiWwzxHbQEseewVhV7od0++6vliv04JtJWz3F3Tnb7cOK2UMYXIzLGQwZgFIjwc6h3suErtv4/TxRxl2Fn1qXH74gj+7lQi0M3CqdAT3JMjcoyzlKJfgkxZxm5yU4h3sas3OIugS4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705934373; c=relaxed/simple;
-	bh=HdyUZf62kgjNhc07s/teq5GSlhwGxXpPTINVlGw5Xm4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jPJwDz772okaX5NHGOUmMp6QhtLOL9M5IMZn3QOA9EQqQ/+zYc95CrlHD0uWeBFvIFeI/NwFpzsCILlq0Z7B6ssg/QhwuPDIrSjrM0RBHKrnJ+5PZ8NYNImVEJxyEW3tt1q372VnC61rc9DeccBRAhxLPdQx7iPtrbCjNkNqSbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=eo8SYT0D; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3392d417a9fso890252f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 06:39:31 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AAF63D966;
+	Mon, 22 Jan 2024 14:39:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.154.42
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705934395; cv=fail; b=Z3ol/eUhTIUhUc6upg+6gbDhPTRn3nGWu0k5+GkAh6aL7NTA+NZOSxmHOm+9JemT9xZS9y65XuKm7ovy64p78GF1TDsNu+kSxmB2yEXlqkGOlPNYb3tkb0c6LjBexlpE5nL4h7+lRFLNV7SQRiUkK5CH/ufoc5g/fP4/rB7ty14=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705934395; c=relaxed/simple;
+	bh=7j1DmMIbDVXiglJ6TVuarU69JVH4CYjrQAoIl+2kMkY=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=dkycoQv2juroX0KWcrs7XlfN3onCRgrnar6/66OpL5Qcb+t8xLBuy8hxszG77+4L1uXmkgZKPqVTwY6lOswVaS4k51e4GU754vmDaWsM0xpfXfodmI6ch6w+KVZ1x3sExbh/26OLd1HFXprKGLJeUjJB+170W8UrNxgH11grlmM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=JBKJDPpu; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=C937uXha; arc=fail smtp.client-ip=216.71.154.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1705934393; x=1737470393;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=7j1DmMIbDVXiglJ6TVuarU69JVH4CYjrQAoIl+2kMkY=;
+  b=JBKJDPpuLF9j7X5tETlbt6aXotdXWwluyThfkK25/IU2EQix1eBcDfGa
+   SbORnx5yXBrQJsH1M7eJSa/EizxYKoV+C2UIAAnQRCGhv2FTWbE7eCccH
+   sN1mrFsFKEedsGGjQrkYcCP/PL8Y67gpwYkmvYHSHAVsCXrist7NF8o4R
+   FlNas9jrrVUAzcoPu/UFv34KoqFAd7hkDtI8HawRPLmTXIk0GYxnR/Pjx
+   wtFxlyoDwRCA2k5b/Co7I8WGuYk1quJRYkoykz3JvfWJ10QIZwWJlqK4B
+   nGU83hOUk9/0unTUt6OgasSsJhpZfsHPZ87U0IIR9WfokOOqhyf0qtuyO
+   A==;
+X-CSE-ConnectionGUID: QUFKmtRASeG68ZwQF9hv7A==
+X-CSE-MsgGUID: TZSgwDxOTEqFCPHLZTCTPw==
+X-IronPort-AV: E=Sophos;i="6.05,211,1701100800"; 
+   d="scan'208";a="7168433"
+Received: from mail-bn8nam11lp2169.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.169])
+  by ob1.hgst.iphmx.com with ESMTP; 22 Jan 2024 22:39:46 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SeF67e2OTReIAsIHeOWM8YpR9ZAvGScU1ZSM6Gt7bZsuQysbsgiIhssXdm/SffzeJf5Xuu9RtxUcLy/cI53NfEnt6wW8NfXrPFQzzSvzjYEk2MwR5VJG4ZAxslPm0oM7XE9TtqwF+qu16o1G6E6hGfX8v53PKzzq7rOGVpST419xYNkGXz2EhoBXXrcHnDSl14isQ4A98BAPAq/Oyy1sJY5OVcRuzVieEfQcxldY+TexKsdecaaoBw5JXCDvfcJoqCzf/w6L9ZWsySMnwOPn5Yf0toyPF5LJx1s/p01qi77eRxw7cBw9bDtKG9QVxnVn/X+5SkW5//X7trKHgJui/A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=awsjmm8b5a62EZglOubEjDvIOS7RTOSZgU2W33Vnt+E=;
+ b=Tv7VUuCM2Jbvi5Q/H3txXMhfsFPF5IiWKSXHjsZQxBa3rzM7iCZrNHbvje5A+zxqXEMzS7lLc9fDgS7DiaQ3emqqZTUrawK95lumA8pcTGkOVIQS9Fj7ljnTAuWZ8dkHdmj+tyOq5h6R9VIBRZCnoffuc9IjiwVZW290IP8+pL4HJ5Sz4BfjVGtJqwJjpqqpG5gPXQHrhFnjEtHfjftuY8+UVKhIRBBYFn6k0tNwT0bUut9RCRuAlQ+3E9PqzC+PbxND3tD0KMwFpZw9eFhgPr3C8MljAwzESGw6e6kEXW3GJcfaQzou1340Z9VPgOnr44Eax01deYRHwgKWPxPiWA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1705934370; x=1706539170; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=B8lvCubU57aNIM2sBEUNaYeXXZI+ZZd7zrjhp/AYVOA=;
-        b=eo8SYT0DNNiQsm027pSKU3nSMDRwfnrAA/2YKL/H+1WIYe96LXC/Fe/UyMITAd3Fuw
-         pcIp0m1sZoy+g2P6KY3t45f54Mp9ivj7Bbij1aw792NQzM280HgIXkLoUKvsZphfNuzb
-         B1JKpcVpl/L+ZOIUX9qWoawGMNGJf9lgY98yGF+cN7ercwWptJUzp3vYrwxzVrpoQPxz
-         B42QMZ2ZUEuzeIROt3mEjKhIhZzjb8o1IvZEXOzDjtErBwA46u9hKEVIgAGxQm5NfmOE
-         odcofmsXQo21ziQNsiTUCHsjO/v8W6Bil9MLC/AN5jo/DyWL47NzBwFjQG6cFe1zute3
-         nNGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705934370; x=1706539170;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=B8lvCubU57aNIM2sBEUNaYeXXZI+ZZd7zrjhp/AYVOA=;
-        b=MazNmbLEdwp/z3bDOyFWldcvyv/1Wv6GfJZUkq4j+5nfxoZ1JsSVbf32Z4YwW69GUz
-         UuZscHyqP0Ynuwg9m1qK7+GmXqy/AkCTfLlOhCl8TKP2M8pfiCmxamO6HWP7RObNU+lE
-         Y1QkysB7VhMr92w2SHqDAK1AKV63xzr8ZIOPLQHOZUGLhCkczQQU2WcxHLvfctH243qZ
-         MgTxSXShYs5aH4W31dS7enPklKSwtNDqZs/KUBBUKEhyZ+re3twrAVT4el+QolF5uLd7
-         FmktN3VEgpP6Ta59l5SaJfwbQIqJo+IF8HNzOmCE2U3fGfVxxjyleob7hOpu6r5Ya9TY
-         hZ4A==
-X-Gm-Message-State: AOJu0Yyv8fexFZz0LmA5ymogmB+cH/pHKY+XLdSAUg7ieET98xEs6eh/
-	5jLg9xnlrNuhZfOsc+6PSGKBgZHqEM+m6serSbSHeNqdP+urxghXPUAEFwu7QqU=
-X-Google-Smtp-Source: AGHT+IEdsqyOsPosFvOf94mD/UiOTrBNPGiAbDkqL6dHgwHaSf32EOQ4SCLbaCzVosKC4SbAD4vuog==
-X-Received: by 2002:a5d:4243:0:b0:339:35e8:f9 with SMTP id s3-20020a5d4243000000b0033935e800f9mr956516wrr.123.1705934369759;
-        Mon, 22 Jan 2024 06:39:29 -0800 (PST)
-Received: from [192.168.2.177] ([207.188.161.188])
-        by smtp.gmail.com with ESMTPSA id w15-20020adfec4f000000b00338a3325331sm9111017wrn.69.2024.01.22.06.39.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 06:39:29 -0800 (PST)
-Message-ID: <372ed255-85b7-4f18-a28e-82e18171f7e3@suse.com>
-Date: Mon, 22 Jan 2024 15:39:27 +0100
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=awsjmm8b5a62EZglOubEjDvIOS7RTOSZgU2W33Vnt+E=;
+ b=C937uXhagMs66XW+8STkfXDc8lvJFDXGfvOVzKEAK35FS7DWuvu1tw+D0MNFrcEiICynp6WqHJLCTH5tZluHQ70VweehNzlfxAlDDfFGxRu22O5l9Lj7bgVLLS2EeX+WpXNepn6d9LBLR5SRwZUfEiKzr+zUI+SvkWEEsjEcyNA=
+Received: from SJ0PR04MB7776.namprd04.prod.outlook.com (2603:10b6:a03:300::11)
+ by BN8PR04MB6274.namprd04.prod.outlook.com (2603:10b6:408:df::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.34; Mon, 22 Jan
+ 2024 14:39:44 +0000
+Received: from SJ0PR04MB7776.namprd04.prod.outlook.com
+ ([fe80::6c12:a7ce:2b9c:69bf]) by SJ0PR04MB7776.namprd04.prod.outlook.com
+ ([fe80::6c12:a7ce:2b9c:69bf%6]) with mapi id 15.20.7202.031; Mon, 22 Jan 2024
+ 14:39:44 +0000
+From: Naohiro Aota <Naohiro.Aota@wdc.com>
+To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+CC: Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Damien Le Moal
+	<dlemoal@kernel.org>
+Subject: Re: Re: [PATCH 2/2] btrfs: zoned: wake up cleaner sooner if needed
+Thread-Topic: Re: [PATCH 2/2] btrfs: zoned: wake up cleaner sooner if needed
+Thread-Index: AQHaTSDvOd+kWBN8wkSOr2ka96SkX7DlwQgAgAACYgCAACQAgA==
+Date: Mon, 22 Jan 2024 14:39:44 +0000
+Message-ID: <k7fiky6xm4hshkr5q2xukfjndcseiesfanlpc4oozztvuyclbw@ftrhgjeicsfs>
+References: <20240122-reclaim-fix-v1-0-761234a6d005@wdc.com>
+ <20240122-reclaim-fix-v1-2-761234a6d005@wdc.com>
+ <x6bi4u2u65q37tde3s357lzhce4wglpobfgp7qgzhun4iadg3m@2pewiu6xuts4>
+ <f5d54836-5edf-4cd0-88c8-f2d474368ea9@wdc.com>
+In-Reply-To: <f5d54836-5edf-4cd0-88c8-f2d474368ea9@wdc.com>
+Accept-Language: ja-JP, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ0PR04MB7776:EE_|BN8PR04MB6274:EE_
+x-ms-office365-filtering-correlation-id: 60463a25-2be1-43db-1d88-08dc1b57f96e
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ iPnTA3CJw375loRA8Zut1ZueNkrCS2/D0PX8KXEDLHbUTxY8802g/59J4kDfcYSruTYwxQi+jLfkF+94rit2TrHhur1KfJrNUrkbF2u/OFSPQ8Uxa1NG33FzojLFBTGr/rBzNmVDX4HYTTx6JFhyDpAZnYu9bAD9EQK8+2owcyNifc2YUhBrK9rs6pq3i3E0fUnpG6BIiFYl6DCuHKAibL4D2ZGm+FCwEy6L0zsO+FO4ItRnDJJ3J7xsq33tVmybTmndbc0h3uKz/YMgUAj7fIipM5iK1ORLL/RwagrKXK/TB+LByT6uGc0onTmQFoAr82HsfbNFMkShxJ1ENFbWAugY1zhGvxRpq1dukUIrLReltsCFuPaCk9EY64/Pcei/6frOEgWGuSY5ZreYJNhbRT3F2/M/+6rW6EidA9esoJ9ktFA/cb/XWWIn3L608rAD1NVo4QI5R+Eol8Yj0InIjQhgZrBOhhyMaDjxdgVHeNCVJlrKsTtQNHPwXbvZJ4asyX7mbQqEZ83s8n0Xem67XUICEY011/szamcyP0Veysek/PfSEoYXTmUuXKekw6CqkCbPdnRMcXzK9r0mjWUvnC6Tn4UmdKFIFo9xtRxKv/W/9AX9o7GRsLK5BRR2S3FK95BZkYSKsAPi+koN0CbcfA==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(376002)(136003)(396003)(346002)(366004)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(26005)(6506007)(71200400001)(6512007)(9686003)(53546011)(83380400001)(478600001)(5660300002)(2906002)(33716001)(41300700001)(66556008)(6486002)(6862004)(8936002)(66476007)(8676002)(4326008)(66446008)(6636002)(64756008)(91956017)(54906003)(316002)(76116006)(66946007)(82960400001)(38100700002)(86362001)(122000001)(38070700009)(27256008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?5oGYuZp/En91ODKgwEHIp9U1dJ/FLaJfAV28KiB97b6osGsLkZRFLn1etyqe?=
+ =?us-ascii?Q?LxEDfNFLQ3sj8GEAk7JPBu917OshCQoq6iV9yEeg+k4QvrXjtt4c5BOMXZgJ?=
+ =?us-ascii?Q?CkEss4E9mrZ0uuBC6HLBLH+C7f04FLgubO9O1hWgc2XzrehTzCzX5YYDlxMe?=
+ =?us-ascii?Q?PjJ2p30fASZGQfg+6UOCjHIIBdcXyfGPBiSRGtn/da8T64PmsQhyVpO1zRhI?=
+ =?us-ascii?Q?ZyE8NNIPlA6IW4AwFtHPAVyHgmxUpPuuKt+6LWAp9T9CyZc0yzF9ceg/zlTM?=
+ =?us-ascii?Q?lk25y1IZ7OMlNmI1LMpGzdeEi98XcM16ml0KXQhXq38mjXoC/k/QPZMKYiKB?=
+ =?us-ascii?Q?RWQK6GTMzZg34zoL0C9/1c152px8KPLiIqfIJeseLR9NNv0xV8TWQ/+bIYb3?=
+ =?us-ascii?Q?SHXCetCIpQ1TIBfj7/rGbnU6dcyjLdSUNKFAAtJaxjlRsDDdMDHKfi140Uyv?=
+ =?us-ascii?Q?VTDGoLzbFSz83m3HT50h/WwT11RYaFYhUhYDARR5Igitsr5/InDbKrqWkxF0?=
+ =?us-ascii?Q?DebYIPAHhHcIVDKP+CbhnrQtG0nV2CHRSek4rnJYu0KByHyE9lSZyEITMn/+?=
+ =?us-ascii?Q?jV2iMP5TRTBEx2CEkfIjmPBdnITkvn/fYrD0nFu+wwC9jQnSEnU8MbZHVSFl?=
+ =?us-ascii?Q?fXxyH3LTlipADCRDtRUJsc+ap90t3hW1ebxurVPii7spINmbXWcQHS+k6Z8+?=
+ =?us-ascii?Q?ZonxEEBJyyD7Jk0TqI+/Eenp0qIi8hCBZhweRjrQM9I2KpWZiXZAhA9VjF+w?=
+ =?us-ascii?Q?5d9/Ap7MI3NW+nulIjaOCOVGFuWNF/t6av0Q1u0Z3GlhK27qcpjDmNiVv7z4?=
+ =?us-ascii?Q?Ksqy/H86cTGJYIwBD27lmvVfMVTkqEmLpROzy0cDOCJjfPe171wk9zXubgN8?=
+ =?us-ascii?Q?AuaNJq7DFZBe5vIJXU6sJ+XX7auOC3u3du7CBuMXVFIoqwze4XjUmzvmI01Y?=
+ =?us-ascii?Q?W2uqDSvIL4UkDIoauBd15qzdrZXSM8tRM/Tl79EAJSI4HXJ36ruhLMitXwSH?=
+ =?us-ascii?Q?Jcn7HV6ELdEwis1n2yAdIBxhAqJK5g0VbnHe86FClLauqpstd3Gq0DdKhfy1?=
+ =?us-ascii?Q?QQi1TLaLOeksWjvTKTIU/2BVRVyvZj4ru9jSgbjExU1sVhi70kCfXcdIt/Si?=
+ =?us-ascii?Q?0RYPZdthnHVXRpGOSxf8R1EEW4m6Aeen6o6jKUrAjVYwoJRJFImzsBAcKHTK?=
+ =?us-ascii?Q?L5tMcp+KQ4K8TI42Gxse0IllTisFJ5KddEOf1Ep3RYIuu4cYf6dliCy0j+6h?=
+ =?us-ascii?Q?sKyKjicf2bB/IM65/G3Vjbvta8+mYc6ceM7vRQc45JFabs1aN/bPhlfLJWFu?=
+ =?us-ascii?Q?yk2HFm/h2IDWUE4sU6oA8qlVxN1M6ZoGBVzg7Sa/9dFqpUTj8U1JaE3aWBay?=
+ =?us-ascii?Q?mGLsstt6h9wnIeEDLkZyWcLeENQ8aLPN2QNscRPkkJOLGzfmVYPC9/LYRvFw?=
+ =?us-ascii?Q?4AEw5FMHsnPQuMOKWYSHk8DLdZYVgMgIb/V1c/sVr0a00uR+XUNMz7QayHQP?=
+ =?us-ascii?Q?9hJhCgRfyJIrB4h8InKR637VcOdzVT/tHAHmFdbO5PLUnjwEujAAcw7+bc/8?=
+ =?us-ascii?Q?jEJSah9gvD5LeVz+maTH3r+OMypFVPhB1TDIWBc6+HqvAPcYYqG/wE086XhR?=
+ =?us-ascii?Q?dg=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <AE37F9CF087A494D845CE5C5C7DCCDFC@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] arm64: dts: s32g: add uSDHC node
-Content-Language: en-US, ca-ES, es-ES
-To: Ghennadi Procopciuc <ghennadi.procopciuc@oss.nxp.com>,
- Chester Lin <chester62515@gmail.com>, Andreas Farber <afaerber@suse.de>,
- Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>
-Cc: NXP S32 Linux Team <s32@nxp.com>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- NXP Linux Team <linux-imx@nxp.com>, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-clk@vger.kernel.org, Ghennadi Procopciuc
- <ghennadi.procopciuc@nxp.com>, Ciprian Costea <ciprianmarian.costea@nxp.com>
-References: <20240122140602.1006813-1-ghennadi.procopciuc@oss.nxp.com>
- <20240122140602.1006813-3-ghennadi.procopciuc@oss.nxp.com>
-From: Matthias Brugger <mbrugger@suse.com>
-Autocrypt: addr=mbrugger@suse.com; keydata=
- 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
- PVrr2NoUqi/bxI8fFQJD1jVj8K0=
-In-Reply-To: <20240122140602.1006813-3-ghennadi.procopciuc@oss.nxp.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	gFdW/8O9jYwjMd6GIuK36rzkj7DuVt/Cu0xHffwIZQfJmaudJKneuelun2RDiNg8e6b/MZACAMOkbtN31WNov8EEYsUH/fQIyzy7pADE5IQUCRws6PWwNMbXhTaVJDZigStVo02R99vGADDCovKvRQ29Uj7/Ut7qmo1Tw0FDkxbvo5pZRS+5aQatc3cKoTLkYL/QORJBTiqyFSU3Neh/TWGPKSlJ/tqn/s3ahB4BkC7Whkw7Q1En71ewbbeby2/yECDb7jPM76zV/e0VuNMMP+HU6Xm0RYZijzT59HBJ1lzSXTSK64qMmzeqIRcqqAnGAulTeZIxVkIrzzHkxfUPqHF2uphqIKPvEx2VNkguF+EnvZ9HGs0UX1L1kEvsOd9PCOqJfFcpxhxp/vuy8SCTVRQX1sUKqJHH7LImYiF/hBllEmAZBvEq45CM2tDxAXc57/MWLFiHD0isH0PfJztx5FVC8xTXYVZr+xQePOhZjnub6P6AvZuus0jF9H0mmE/WQleoWYBxkr+vt5VCuyt6U31aCCxcppgr534XpJBoZehJXCpzsuyCUb7pr8SqIBHvmvQV/jpew8TInESe7PFx7qL2qwxxQ/8NZ/baddXtbxdQsZYduWwytXWCAMNPiDHe
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7776.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 60463a25-2be1-43db-1d88-08dc1b57f96e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2024 14:39:44.0375
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: z16C9ZBqcrJtk+V7R3aHfxoqlpQRN0yFm21DtWKaFwJfQ6nqwT3xi45H8TVh6lb9HeVFDWKjr0N/oz/SYNe5eQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR04MB6274
 
+On Mon, Jan 22, 2024 at 12:30:52PM +0000, Johannes Thumshirn wrote:
+> On 22.01.24 13:22, Naohiro Aota wrote:
+> > On Mon, Jan 22, 2024 at 02:51:04AM -0800, Johannes Thumshirn wrote:
+> >> On very fast but small devices, waiting for a transaction commit can b=
+e
+> >> too long of a wait in order to wake up the cleaner kthread to remove u=
+nused
+> >> and reclaimable block-groups.
+> >>
+> >> Check every time we're adding back free space to a block group, if we =
+need
+> >> to activate the cleaner kthread.
+> >>
+> >> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> >> ---
+> >>   fs/btrfs/free-space-cache.c | 6 ++++++
+> >>   1 file changed, 6 insertions(+)
+> >>
+> >> diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+> >> index d372c7ce0e6b..2d98b9ca0e83 100644
+> >> --- a/fs/btrfs/free-space-cache.c
+> >> +++ b/fs/btrfs/free-space-cache.c
+> >> @@ -30,6 +30,7 @@
+> >>   #include "file-item.h"
+> >>   #include "file.h"
+> >>   #include "super.h"
+> >> +#include "zoned.h"
+> >>  =20
+> >>   #define BITS_PER_BITMAP		(PAGE_SIZE * 8UL)
+> >>   #define MAX_CACHE_BYTES_PER_GIG	SZ_64K
+> >> @@ -2694,6 +2695,7 @@ int __btrfs_add_free_space(struct btrfs_block_gr=
+oup *block_group,
+> >>   static int __btrfs_add_free_space_zoned(struct btrfs_block_group *bl=
+ock_group,
+> >>   					u64 bytenr, u64 size, bool used)
+> >>   {
+> >> +	struct btrfs_fs_info *fs_info =3D block_group->fs_info;
+> >>   	struct btrfs_space_info *sinfo =3D block_group->space_info;
+> >>   	struct btrfs_free_space_ctl *ctl =3D block_group->free_space_ctl;
+> >>   	u64 offset =3D bytenr - block_group->start;
+> >> @@ -2745,6 +2747,10 @@ static int __btrfs_add_free_space_zoned(struct =
+btrfs_block_group *block_group,
+> >>   		btrfs_mark_bg_to_reclaim(block_group);
+> >>   	}
+> >>  =20
+> >> +	if (btrfs_zoned_should_reclaim(fs_info) &&
+> >> +	    !test_bit(BTRFS_FS_CLEANER_RUNNING, &fs_info->flags))
+> >> +		wake_up_process(fs_info->cleaner_kthread);
+> >> +
+> >=20
+> > Isn't it too costly to call btrfs_zoned_should_reclaim() every time
+> > something updated? Can we wake up it in btrfs_mark_bg_to_reclaim and
+> > btrfs_mark_bg_unused ?
+>=20
+> Hmm yes, I've thought of adding a list_count() for the reclaim and=20
+> unused lists, and only calling into should_reclaim if these lists have=20
+> entries. Or even better !list_is_singular().
 
+That sounds reasonable.
 
-On 22/01/2024 15:06, Ghennadi Procopciuc wrote:
-> From: Ghennadi Procopciuc <ghennadi.procopciuc@nxp.com>
-> 
-> Add the uSDHC node for the boards that are based on S32G SoCs.
-> 
-> Signed-off-by: Ciprian Costea <ciprianmarian.costea@nxp.com>
-> Signed-off-by: Ghennadi Procopciuc <ghennadi.procopciuc@nxp.com>
+> >=20
+> > Also, looking into btrfs_zoned_should_reclaim(), it sums device->bytes_=
+used
+> > for each fs_devices->devices. And, device->bytes_used is set at
+> > create_chunk() or at btrfs_remove_chunk(). Isn't it feasible to do the
+> > calculation only there?
+>=20
+> Oh sh*t! Right we should check bytes_used from all space_infos in=20
+> btrfs_zoned_should_reclaim() and compare that to the disk total bytes.
 
-Reviewed-by: Matthias Brugger <mbrugger@suse.com>
+You mean device->bytes_used? space_info->bytes_used does not count free
+space and zone_unusable in BGs, so using that changes the behavior. Even,
+it won't kick the thread if there are many zone_unusable but small used
+space.
 
-> ---
->   arch/arm64/boot/dts/freescale/s32g2.dtsi        | 10 ++++++++++
->   arch/arm64/boot/dts/freescale/s32g274a-evb.dts  |  6 +++++-
->   arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts |  6 +++++-
->   3 files changed, 20 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/s32g2.dtsi b/arch/arm64/boot/dts/freescale/s32g2.dtsi
-> index ef1a1d61f2ba..fc19ae2e8d3b 100644
-> --- a/arch/arm64/boot/dts/freescale/s32g2.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/s32g2.dtsi
-> @@ -138,6 +138,16 @@ uart2: serial@402bc000 {
->   			status = "disabled";
->   		};
->   
-> +		usdhc0: mmc@402f0000 {
-> +			compatible = "nxp,s32g2-usdhc";
-> +			reg = <0x402f0000 0x1000>;
-> +			interrupts = <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&clks 32>, <&clks 31>, <&clks 33>;
-> +			clock-names = "ipg", "ahb", "per";
-> +			bus-width = <8>;
-> +			status = "disabled";
-> +		};
-> +
->   		gic: interrupt-controller@50800000 {
->   			compatible = "arm,gic-v3";
->   			reg = <0x50800000 0x10000>,
-> diff --git a/arch/arm64/boot/dts/freescale/s32g274a-evb.dts b/arch/arm64/boot/dts/freescale/s32g274a-evb.dts
-> index 9118d8d2ee01..00070c949e2a 100644
-> --- a/arch/arm64/boot/dts/freescale/s32g274a-evb.dts
-> +++ b/arch/arm64/boot/dts/freescale/s32g274a-evb.dts
-> @@ -1,7 +1,7 @@
->   // SPDX-License-Identifier: GPL-2.0-or-later OR MIT
->   /*
->    * Copyright (c) 2021 SUSE LLC
-> - * Copyright (c) 2019-2021 NXP
-> + * Copyright 2019-2021, 2024 NXP
->    */
->   
->   /dts-v1/;
-> @@ -32,3 +32,7 @@ memory@80000000 {
->   &uart0 {
->   	status = "okay";
->   };
-> +
-> +&usdhc0 {
-> +	status = "okay";
-> +};
-> diff --git a/arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts b/arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts
-> index e05ee854cdf5..b3fc12899cae 100644
-> --- a/arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts
-> +++ b/arch/arm64/boot/dts/freescale/s32g274a-rdb2.dts
-> @@ -1,7 +1,7 @@
->   // SPDX-License-Identifier: GPL-2.0-or-later OR MIT
->   /*
->    * Copyright (c) 2021 SUSE LLC
-> - * Copyright (c) 2019-2021 NXP
-> + * Copyright 2019-2021, 2024 NXP
->    */
->   
->   /dts-v1/;
-> @@ -38,3 +38,7 @@ &uart0 {
->   &uart1 {
->   	status = "okay";
->   };
-> +
-> +&usdhc0 {
-> +	status = "okay";
-> +};
+> =
 
