@@ -1,85 +1,56 @@
-Return-Path: <linux-kernel+bounces-34150-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34151-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DD1F837478
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:48:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1591B83747F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:50:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13EB9B2677C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:48:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E833B22C6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:49:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 080E940BEE;
-	Mon, 22 Jan 2024 20:48:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B7DC47A6C;
+	Mon, 22 Jan 2024 20:49:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fHwwFqog"
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M1hVgyLq"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AE2247A6F;
-	Mon, 22 Jan 2024 20:48:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E3D73D3A7;
+	Mon, 22 Jan 2024 20:49:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705956493; cv=none; b=Z7VwSsB9qqpl0qUGCTuKJPnRyhndizj0fzUjsP/ZYxDAqfbqynSbvhvQaHqYOZeGObXkur+DwA9v4z6GDvWm2VwfH5JePZQZUNZxWWwc+TX5hevhuHoVnnur6faTdAVihh1iM1VADwZwPz6nE2LVbXWE1HZoWQR78nUO9X+I3kE=
+	t=1705956588; cv=none; b=haTpsirdk6FQBbQDCFR6BFfOFVnhmeyxKpvs2vMw0648b3wckt9prYf7lWqujrl4hsjnlJ5abAOUALtrXC3nSZKmDXV5JFMB1vexz9UB+xwHP2ZFLjjWCtKCjU1pz2TYw8ODXSArw5T+meA4HEe9t8IHc+Hyi+yuVdfk6OXBBzA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705956493; c=relaxed/simple;
-	bh=8XRvpSquamu132UqFZuWHKJ8p5Euo14fp4Ytri8iSd0=;
+	s=arc-20240116; t=1705956588; c=relaxed/simple;
+	bh=8uQMHUcXhtjhqayjyELeGsTQuyul/RDw0AHVO1zqFyc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ctt0Via0zKoT6nRTDSijMN+y64BWfZYGZUbYBcoI8V0P3yWOJgBxDuEMok8MDGzCIX4Yt0Ccq1TBxHEGJ1Se6DWumz78kdDbyOXlpuFNCc6tSKVxH9U/WnRzNpbaorjQIEq33oyAyhMgWr3EtbEkIRMmAcCug2/O5oyiAsLSf2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fHwwFqog; arc=none smtp.client-ip=209.85.222.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-78313f4d149so351601785a.1;
-        Mon, 22 Jan 2024 12:48:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705956490; x=1706561290; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IDi9GcOQS8eCYkI2DpVwexR5G2dm1+2pPXZXYYh/dT8=;
-        b=fHwwFqog0t0OvN7ww7EQlwkNxx3lyxU5poi1oc19J1JOA6smI2Sz5A6W0hqfBEhB/X
-         d/8C2I4FsQfY7csMPYRW+475zJzUFh2BBCVNJkwpqh0B3kYcu2XvrciKS/ceaxcKOWAZ
-         IRrMXYOUN295ljOvfuE/b5b7F8awaeY53Zm8VVeObSCus9jfll7vdTNFd2Dn0oczDQWL
-         IzKxCAoE1qi2aGoChw3wGVTswHiOOxo5jir36VXJMNsQ8URL1Lwjevl1Kg7vL4U5cAQa
-         tkv+kgufGutEJDB2S44SwsAYERoxh4rbfckN6MY7IQnd9gDvCLHGHFYXjWt1WQdF00B6
-         dK7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705956490; x=1706561290;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IDi9GcOQS8eCYkI2DpVwexR5G2dm1+2pPXZXYYh/dT8=;
-        b=KJSiGWolnIz+oZQOkLFC7h/MfbqbGoUerIAQhEaAz8cFhDSb7BdN8YLmDB/GHBS3EH
-         dLEdeqv096pYjf/ZwRbkvrVMjPxQXZ7iLMadULy1swWkQlkTsb0qdizcNZplNNwMWo7Z
-         2IEXd6ldqsBNQE6AWme9UDSJe03uf3TirMTpM6PeHK9TAY0iVixrpo8m0ss/31qeN6HJ
-         NArR+d43xSBvarXD0+0Wg6owtPCGrfrv3HxKXlAczhJM8pzzyPOIJSOLOj37cphcWCQH
-         JsPgWNy/r59YcXCWgYgxjUFgjhOIj5SkdjAVGZkp6U0PRExMZIv9kVp06XC9OuuktaKe
-         6ZGw==
-X-Gm-Message-State: AOJu0Ywas5cwiDioWjbYDpFk0ALD5EnXgB2F+Iu8q73Qt/bXVSeEVK8c
-	HAz45IC4CofBTpqrv2x8W2FlZ3tg20l8cNx3BzOUwKCy667sU2hW
-X-Google-Smtp-Source: AGHT+IHODYDLocg6BOZ3+ciCSlGghq/llOd9vS1/pgnYtr1Ncp9xWFC/Blj7nzHcnzYTn1MnpjfHjw==
-X-Received: by 2002:a05:620a:494b:b0:783:24fc:d09b with SMTP id vz11-20020a05620a494b00b0078324fcd09bmr6272645qkn.106.1705956490265;
-        Mon, 22 Jan 2024 12:48:10 -0800 (PST)
-Received: from errol.ini.cmu.edu ([72.95.245.133])
-        by smtp.gmail.com with ESMTPSA id qp16-20020a05620a389000b00783574d5017sm2440577qkn.19.2024.01.22.12.48.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 12:48:09 -0800 (PST)
-Date: Mon, 22 Jan 2024 15:48:08 -0500
-From: "Gabriel L. Somlo" <gsomlo@gmail.com>
-To: Breno Leitao <leitao@debian.org>
-Cc: kuba@kernel.org, davem@davemloft.net, abeni@redhat.com,
-	edumazet@google.com, Paolo Abeni <pabeni@redhat.com>,
-	Karol Gugala <kgugala@antmicro.com>,
-	Mateusz Holenko <mholenko@antmicro.com>,
-	Joel Stanley <joel@jms.id.au>, dsahern@kernel.org,
-	weiwan@google.com,
-	"open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 11/22] net: fill in MODULE_DESCRIPTION()s for
- litex
-Message-ID: <Za7UiPIebizfbmQn@errol.ini.cmu.edu>
-References: <20240122184543.2501493-1-leitao@debian.org>
- <20240122184543.2501493-12-leitao@debian.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gRXmGaXvTAzXQtXbd4IwIl6KykjM7NgF1PLC3VXB8SNpZmO1wv987+rHNF++GK1bqDDCPfLcjRAyxxK7ZsLTQj4ZAEi72LXq4OaPfT625jV3x3Fl+NQijjkBfqurOH5gq8tATcW5tUKj94xnd2qG/d0YbSuMyCETAuAcmUFegck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M1hVgyLq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 775E8C433B1;
+	Mon, 22 Jan 2024 20:49:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705956587;
+	bh=8uQMHUcXhtjhqayjyELeGsTQuyul/RDw0AHVO1zqFyc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=M1hVgyLqytB+uOHN87/G0Mx0O6oa8OSf0K4e4wc1VVYQIoqwi9xrsFE6x4PEEx/8Y
+	 lr0H/drkLUBoaLo9VKnXH1F5F8BA6la87ESLGGQN7aAFXtpdL8mX4PEmb3kqSX1SE3
+	 06YjGNizjI3n+wh2XLRin7lCLVaJqDFJ49BZpHfCqhUGf0DKgawRJYdNgMToHt7nk3
+	 qOFwgp2AqXaKkwgX20Gh6slmRbXDORYVstZToPkBncThvJa8obBig35ydVnzS5+eAR
+	 jUzFydz+GaIKg2nnmhyOwuNyW6w5xebf2y26X7zJLIohGGQ+4YP1CbYvzuxGbdR7RD
+	 fJlYIJKL8et8A==
+Date: Mon, 22 Jan 2024 20:49:38 +0000
+From: Simon Horman <horms@kernel.org>
+To: mhklinux@outlook.com
+Cc: haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, linux-kernel@vger.kernel.org,
+	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH net 1/1] hv_netvsc: Calculate correct ring size when
+ PAGE_SIZE is not 4 Kbytes
+Message-ID: <20240122204938.GG126470@kernel.org>
+References: <20240122162028.348885-1-mhklinux@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,35 +59,37 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240122184543.2501493-12-leitao@debian.org>
-X-Clacks-Overhead: GNU Terry Pratchett
+In-Reply-To: <20240122162028.348885-1-mhklinux@outlook.com>
 
-On Mon, Jan 22, 2024 at 10:45:32AM -0800, Breno Leitao wrote:
-> W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
-> Add descriptions to the LiteX Liteeth Ethernet device.
+On Mon, Jan 22, 2024 at 08:20:28AM -0800, mhkelley58@gmail.com wrote:
+> From: Michael Kelley <mhklinux@outlook.com>
 > 
-> Signed-off-by: Breno Leitao <leitao@debian.org>
-
-Acked-by: Gabriel Somlo <gsomlo@gmail.com>
-
-Thanks,
---Gabriel
-
-> ---
->  drivers/net/ethernet/litex/litex_liteeth.c | 1 +
->  1 file changed, 1 insertion(+)
+> Current code in netvsc_drv_init() incorrectly assumes that PAGE_SIZE
+> is 4 Kbytes, which is wrong on ARM64 with 16K or 64K page size. As a
+> result, the default VMBus ring buffer size on ARM64 with 64K page size
+> is 8 Mbytes instead of the expected 512 Kbytes. While this doesn't break
+> anything, a typical VM with 8 vCPUs and 8 netvsc channels wastes 120
+> Mbytes (8 channels * 2 ring buffers/channel * 7.5 Mbytes/ring buffer).
 > 
-> diff --git a/drivers/net/ethernet/litex/litex_liteeth.c b/drivers/net/ethernet/litex/litex_liteeth.c
-> index 5182fe737c37..ff54fbe41bcc 100644
-> --- a/drivers/net/ethernet/litex/litex_liteeth.c
-> +++ b/drivers/net/ethernet/litex/litex_liteeth.c
-> @@ -318,4 +318,5 @@ static struct platform_driver liteeth_driver = {
->  module_platform_driver(liteeth_driver);
->  
->  MODULE_AUTHOR("Joel Stanley <joel@jms.id.au>");
-> +MODULE_DESCRIPTION("LiteX Liteeth Ethernet driver");
->  MODULE_LICENSE("GPL");
-> -- 
-> 2.39.3
+> Unfortunately, the module parameter specifying the ring buffer size
+> is in units of 4 Kbyte pages. Ideally, it should be in units that
+> are independent of PAGE_SIZE, but backwards compatibility prevents
+> changing that now.
 > 
+> Fix this by having netvsc_drv_init() hardcode 4096 instead of using
+> PAGE_SIZE when calculating the ring buffer size in bytes. Also
+> use the VMBUS_RING_SIZE macro to ensure proper alignment when running
+> with page size larger than 4K.
+> 
+> Cc: <stable@vger.kernel.org> # 5.15.x
+> Signed-off-by: Michael Kelley <mhklinux@outlook.com>
+
+Hi Michael,
+
+As a bug fix this probably warrants a fixes tag.
+Perhaps this is appropriate?
+
+Fixes: 450d7a4b7ace ("Staging: hv: ring parameter")
+
+..
 
