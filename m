@@ -1,123 +1,105 @@
-Return-Path: <linux-kernel+bounces-33647-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33649-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F1B5836D88
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:33:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBBA9836CB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:14:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 527CBB253D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:14:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 839E928A154
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:14:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE68B4EB31;
-	Mon, 22 Jan 2024 16:03:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AD58633E3;
+	Mon, 22 Jan 2024 16:04:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="eamRYZ0M"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PmveBwGU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 896C93EA8F;
-	Mon, 22 Jan 2024 16:03:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F3F43EA83;
+	Mon, 22 Jan 2024 16:04:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705939418; cv=none; b=p8bvF2UgXZ7bS8cTig4j0d8St9ozBheIZ76mYzeZrxXZgdD01baHqt2/Jsb8L0Ce9tpKX5El+Rk6P33E9tTgVkWsFOd/vXlCtHt+IrFCKsPaYFwEyt5gytLdbb6A5/9SwSe4158m+gaODX/5hAsbbrlSKNrMbB5mNsmf0DT2c48=
+	t=1705939467; cv=none; b=jiB2Pa+E1Nciyk+DE8HPB2ivjDYi/VIpZh9aeVx9Hzg7E2u1JAlON+XgJcMjFxFu3n94r8Sh/MHD0rnDkmtIKvOM4bl6NU9FeEsVS2N2TNzVtrgWY4CjxEUGBA1qDur5FwPFDxjBjkUeqmXqHBJAa01MWHd6G4wMYnjVQzp0s5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705939418; c=relaxed/simple;
-	bh=QGXSD/SDVZivoaMa5ArrDzQaQVGkjfhExyjmEzM5iSw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=qLKpjeiFoZKilOuvdodKsaf2qNE8HF9fhBS1khBE5w14ZwnvXcZQAXhxqco1yUsZnnzLTbb0TtwvQnaAcCff52nMkrE+D1Vb1HD5YPemSWtvmly+yKJ7bh0vYrCOh1INz/0rersByvwFyKI/eV+iX07DRSrVKU/q6zOdiPUKZT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=eamRYZ0M; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40MDmuNs009117;
-	Mon, 22 Jan 2024 16:03:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=Yv75h0rlM5YC4o4po53BdQlfr7U8O8sgTrQ4h1Po+Es=; b=ea
-	mRYZ0MKgpcgI6QupiqOlapXMPYmY4KFLiXOPdzNM081H5pZKf0Pi6GxzDFEfJsfF
-	6AqQWCc1bp2E0aVbx+AgOHSVfLn3YYHpWiyke5KpB7KaT6kOltYsfMkx+BQkDe/p
-	zWLnvOYs4G6i9jhQ7iMkYdRjLaarHv3fREAGmWDgJ6OZmQF/q4ynB5yeurxylJRS
-	6SlXf6ab5XnYLL15ymTsi96U59QD+8nzr3JHpgcRW28iL20ZWhsbEa48RdTVZm02
-	IGcaiPykh7Et0DX5c2u9QEfOqe66eg/DL06c/cUjAV2pLzotX7g+x3qV+4XMWBTx
-	EvRYz30WXQkCr+UZ5NJQ==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vssjwrae9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Jan 2024 16:03:20 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40MG3JmS017379
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Jan 2024 16:03:19 GMT
-Received: from [10.216.24.76] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 22 Jan
- 2024 08:03:14 -0800
-Message-ID: <ac35936e-2fc0-4ca5-b746-25fa0e31afac@quicinc.com>
-Date: Mon, 22 Jan 2024 21:33:08 +0530
+	s=arc-20240116; t=1705939467; c=relaxed/simple;
+	bh=9NOW4PJJJHRMNdIzMEfidVAyIfbuRCPZbGomXALQm0g=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=TjcWpxoZi3yxKb/hpj56HK05JZT2c6IhLzTxvP/kCrnSZiEsa+tEBVL2BeUsKKeYrp4AvOVnpsjcDB0quGlbNi0gj2IxbC3RZoPEAzauwkSmmijOy0d5gOFwc0zYlVdz0uC4WcNBtDy55ax2S+hDP17rCDSNys++rK/m484B9tU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PmveBwGU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33BC7C433F1;
+	Mon, 22 Jan 2024 16:04:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705939466;
+	bh=9NOW4PJJJHRMNdIzMEfidVAyIfbuRCPZbGomXALQm0g=;
+	h=From:Subject:Date:To:Cc:From;
+	b=PmveBwGUz8JvHM7e6ofP1ebzsZpdb43APmUivPMUAd7D3BO2vFuia6u+dSSJPY3Ck
+	 Xs1voI1XS4+rxqadPge+7SqUTTuUh1SJZ/ji26xOUDUVL+B0nbCNX3cFUpZ0mw1pfO
+	 Vo1WdWzhODF8vxiymPkL5hydPDQflwoaxE4Nl5IU2Tsoomp70k5oH9k/f0Kn4FvtkT
+	 ez2yu6DB8NQ9NT8FyiaU1yBEWuKKpy8ZfcgqgeAq8Lh8fJKM2/8Rd/S58Lb6rYGTX3
+	 CaoskedoYo2ARCg98Wff9mU+J/05oX6vKz+u1m3eagWt0CGngQ5Qdnvy2CZ4iOUnq7
+	 eIPkBP4lAUxWg==
+From: Mark Brown <broonie@kernel.org>
+Subject: [PATCH v2 0/2] kselftest/seccomp: Convert to KTAP output
+Date: Mon, 22 Jan 2024 16:04:14 +0000
+Message-Id: <20240122-b4-kselftest-seccomp-benchmark-ktap-v2-0-aed137eaea41@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: ipq5018-rdp432-c2: correct board name
-To: Ziyang Huang <hzyitc@outlook.com>, <agross@kernel.org>
-CC: <andersson@kernel.org>, <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <TYZPR01MB55564BE24CE8718DBD4644A2C9762@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
-Content-Language: en-US
-From: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-In-Reply-To: <TYZPR01MB55564BE24CE8718DBD4644A2C9762@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: AaEfHXUF4EUAUeiBAKduXP-CvRT9BGnR
-X-Proofpoint-ORIG-GUID: AaEfHXUF4EUAUeiBAKduXP-CvRT9BGnR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-22_06,2024-01-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
- lowpriorityscore=0 priorityscore=1501 adultscore=0 mlxlogscore=511
- mlxscore=0 suspectscore=0 clxscore=1011 phishscore=0 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401220110
+X-B4-Tracking: v=1; b=H4sIAP6RrmUC/5WNSw6CMBQAr2Le2mfaV+XjynsYFlAf0BRa0jZEQ
+ 7i7lRu4nFnMbBA5GI5wP20QeDXReJeBzifQY+sGRvPKDCRISZI1dle0kac+cUwYWWs/L9ix0+P
+ cBos2tQuqW1kIVZEqRQW5tATuzfu4PJvMo4nJh88xXeXP/tdfJQrs65qJqkLJTjwsB8fTxYcBm
+ n3fv8+l4l/XAAAA
+To: Kees Cook <keescook@chromium.org>, 
+ Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, 
+ Shuah Khan <shuah@kernel.org>
+Cc: linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Mark Brown <broonie@kernel.org>, Anders Roxell <anders.roxell@linaro.org>
+X-Mailer: b4 0.13-dev-5c066
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1145; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=9NOW4PJJJHRMNdIzMEfidVAyIfbuRCPZbGomXALQm0g=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlrpIG/0Ays7HCrytmcrA21yoUdZu+RYOgOVqEfPuu
+ xXq3ASiJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZa6SBgAKCRAk1otyXVSH0KhYB/
+ 9uafPxDt7FR88b0KSa2blor4TZ957DpjYC1XeYc/N3BdmNmn+O+jEI8xAe9OQXGbVzWspfgyBOO/iY
+ O9WZlsvNFZle2TC+YpqahqKZoFjK0Jaza+Hi4Auv4rS69XisXrS704R2rpnHupruftoJ802DZpdhY+
+ ryqqby578Eb0ikADFCqrX3diOHE8Jj3aSkeOeLkMbq2qK3rJTUMIlPiwAVbSri0shbnqd3jATiE1dQ
+ LtNefuMLrxHM+gXmvJtK5FgmxE/RzxLG+WrAi5PSWTyBPxHAk+GlRrn8boX7eRHHqKoiucZu+tOa3x
+ 2M23AbzDAj1Xo88LQZPuSRLl4i+6F3
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 
+Currently the seccomp benchmark selftest produces non-standard output,
+meaning that while it makes a number of checks of the performance it
+observes this has to be parsed by humans.  This means that automated
+systems running this suite of tests are almost certainly ignoring the
+results which isn't ideal for spotting problems.  Let's rework things so
+that each check that the program does is reported as a test result to
+the framework.
 
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+Changes in v2:
+- Rebase onto v6.8-rc1.
+- Link to v1: https://lore.kernel.org/r/20231219-b4-kselftest-seccomp-benchmark-ktap-v1-0-f99e228631b0@kernel.org
 
-On 1/21/2024 6:22 PM, Ziyang Huang wrote:
-> According to Qualcomm document:
->    MP03.1 is RDP404
->    RDP432 is MP03.5
-> 
-> Signed-off-by: Ziyang Huang <hzyitc@outlook.com>
-> ---
->   arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts b/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
-> index 074b78d7939c..f7e8b5af6b44 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
-> +++ b/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
-> @@ -1,6 +1,6 @@
->   // SPDX-License-Identifier: GPL-2.0+ OR BSD-3-Clause
->   /*
-> - * IPQ5018 MP03.1-C2 board device tree source
-> + * IPQ5018 MP03.5-C2 board device tree source
+---
+Mark Brown (2):
+      kselftest/seccomp: Use kselftest output functions for benchmark
+      kselftest/seccomp: Report each expectation we assert as a KTAP test
 
+ .../testing/selftests/seccomp/seccomp_benchmark.c  | 105 +++++++++++++--------
+ 1 file changed, 65 insertions(+), 40 deletions(-)
+---
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+change-id: 20231219-b4-kselftest-seccomp-benchmark-ktap-357603823708
 
-I suggest to use the RDP number itself here...
+Best regards,
+-- 
+Mark Brown <broonie@kernel.org>
 
-
->    *
->    * Copyright (c) 2023 The Linux Foundation. All rights reserved.
->    */
 
