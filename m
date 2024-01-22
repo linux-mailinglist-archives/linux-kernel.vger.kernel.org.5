@@ -1,150 +1,198 @@
-Return-Path: <linux-kernel+bounces-33839-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 580A0836F57
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:13:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 08673836F5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:14:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DD281C269DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:13:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B9641C26531
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:14:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A30435A11A;
-	Mon, 22 Jan 2024 17:38:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DA6640BF4;
+	Mon, 22 Jan 2024 17:38:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=rong.moe header.i=i@rong.moe header.b="mWNYWuTO"
-Received: from sender4-op-o15.zoho.com (sender4-op-o15.zoho.com [136.143.188.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yPCF1fbJ"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4965559B7B;
-	Mon, 22 Jan 2024 17:38:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.15
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705945087; cv=pass; b=QDpS/yksmb0OhucI6OmoK6AbFWFj6tpeDMMG5onZ/mmg3kxKkh0+g5TnHw/dR5zri7yc281RG5BwT1eHgdn0PfLT8Jj3eyofHsvY4J6Y9oUBAVP8hk+LOgH1QnoqfvLvjI9MCUe0mrcxNm+x1GuWkUIpgeQnrRVphfXbUaDlDAo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705945087; c=relaxed/simple;
-	bh=TP1/GIhm0AolInvICof2QAYpqp3X+269kiaQUPdI4pI=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=qpF92GxyNxCrWiyLUXrNomVBG4Ik00E7PAs2ZrK67pBgycc+UdvflqykYj682mJwGdPe7QSixcpUyfH2ROqybT9hO9R58GkKGNcXz2QUCDgTyzC3KSnmEAZjXRyNxqMhUwlUnooFwZaKZH5pT4W+HH10PW7DY7wQuBuYZQNJWJk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rong.moe; spf=pass smtp.mailfrom=rong.moe; dkim=pass (1024-bit key) header.d=rong.moe header.i=i@rong.moe header.b=mWNYWuTO; arc=pass smtp.client-ip=136.143.188.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rong.moe
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rong.moe
-Delivered-To: uwu@icenowy.me
-ARC-Seal: i=1; a=rsa-sha256; t=1705945080; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=TG1rVNTJ/gBR42F8jp7dBf6vVAf3/rMkUMKbWHAvg44spJCHvcHLlTJ7J/Hd8rVfWZ1HX8YIys/lKqSVwFzmwy+/hjtoVSd+6BsT4BJh2EZTDqahx5WjEPOYgkTLsRWu0LX5Z4EtCh6+3gemO10klOLeJmBU79uE9OumEy03a0A=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1705945080; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=EeIzTxqVAm5xGJwXvmtUxCe9G4u7J32wQZzbvkU2/WE=; 
-	b=FwTA/fdZNuZL1QTtL99wyFUUYxeKDMpvu4XUf+2BwcVAuAzLT4aKDgPtZQUUaNgeBp/Hr1g3zFhyBC7r/gwTWnyOsH0UxkwFSlfn8Z5JRU+J2SkZyKBw0oTzax3ygjSN+73AaGzvgTwjhZ+cfbF2bFaIG+nES7lRmjFQkFNCSYI=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=rong.moe;
-	spf=pass  smtp.mailfrom=i@rong.moe;
-	dmarc=pass header.from=<i@rong.moe>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1705945080;
-	s=zmail; d=rong.moe; i=i@rong.moe;
-	h=Message-ID:Subject:Subject:From:From:To:To:Cc:Cc:Date:Date:In-Reply-To:References:Content-Type:Content-Transfer-Encoding:MIME-Version:Message-Id:Reply-To;
-	bh=EeIzTxqVAm5xGJwXvmtUxCe9G4u7J32wQZzbvkU2/WE=;
-	b=mWNYWuTOtFCRT8Xp3nmgI0bPCEwa25RLgPgc21JMTuCrKm5F9/9Xek+Ya/tKNXia
-	NL+4ZCII0QK1oC+4dpv6JBSCz6m8smo25yQI2ebvnI48its5LQTpSOBt4DQ/J7ZmEZ0
-	nTPizE2XXNjzztDFsOqzuoDD1DsiVjZrgJXZ9WPo=
-Received: from tb.lan (182.118.238.16 [182.118.238.16]) by mx.zohomail.com
-	with SMTPS id 17059450788345.314839394946716; Mon, 22 Jan 2024 09:37:58 -0800 (PST)
-Message-ID: <9882dfb98a2c49d655775f17cf6c89f1a9181d69.camel@rong.moe>
-Subject: Re: [PATCH 4/4] ARM: dts: qcom: msm8974: Add device tree for
- Samsung Galaxy S5 China
-From: Rong Zhang <i@rong.moe>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>, Bjorn Andersson
- <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Icenowy Zheng <uwu@icenowy.me>
-Date: Tue, 23 Jan 2024 01:37:50 +0800
-In-Reply-To: <1635b0e5-df47-4918-be83-edc27c59d8cf@linaro.org>
-References: <20240121154010.168440-1-i@rong.moe>
-	 <20240121154010.168440-5-i@rong.moe>
-	 <1635b0e5-df47-4918-be83-edc27c59d8cf@linaro.org>
-Autocrypt: addr=i@rong.moe; prefer-encrypt=mutual;
- keydata=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
-	cMTsfqztU+orM
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3-1 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 368913E47B
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:38:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705945119; cv=none; b=rj9TscLYE4DhreSFghG057ohTzLZSzApOytn5LM4S6SdSXvDvlHQ7pYbK1oj6+f1FjGp6xW2chQUX0SULS0hpvR0U5suzg8tziTUGRMqfEDnhMvpFazRuYDX51ToqviwpZSqyIXM73WbRWV09tIL6nYQNVp6rj1H9dKRVQgZ1gg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705945119; c=relaxed/simple;
+	bh=lx13kHG0tJJSdUreOeJdloyx12tNITbn9wmXA6Zx684=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KWCgUIgmyYyKtCX25E42TnkD4XKSGT06QuuLPegrsxUM+2++QblGyUJ3TTc9Z2AXbD7rz/AK1jYbkVIBjKKYXf0Xu4wGPLdx5O5P/RgwaxijZMo+3mDsfHi6AII+TambC5GGknBIX8S9WLyPd8Nit7iG2X1Sb9ONTKdtGCTPHPs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yPCF1fbJ; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d72d240c69so253815ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:38:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705945117; x=1706549917; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5UuQsVtmQQmr5HjqyMtyAk8R8Y84z4aC4k61fXm7dcc=;
+        b=yPCF1fbJt88udfi4IbYvyaXYX1RwZVyFK5gY8d4VgFcIHQfE23M7XwhosOmHMl7BSw
+         1f2ch0AVVFdaRvBeDfwm1Dx3LPBiol/n1wR7FJJuAo5L6FDFzvUlHz1gV6X5bPTy1Kmx
+         RKhjIETiDmyPys3CDehoYWfEpHESDMTCapSKiGdGka7ryTwq/zKsrJqHCsMbu+yVxXlA
+         49lYvZyMLr7jiTPTi/pmV/HGwBC+sOJv9BVuM2L3UTGKoH1ffNCyTzQfpoVteKAulTit
+         kiPRTYXLk7smW4XpMxCIX25uXX/RsApCHtPRHd7o4ihYa9OBLGk9EX7cdiupmcQmgTiK
+         DKJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705945117; x=1706549917;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5UuQsVtmQQmr5HjqyMtyAk8R8Y84z4aC4k61fXm7dcc=;
+        b=Il7LklUAX+JQLY/P7fxLO9K/DhZBfwTEynKUtTMubVAqCouk5GTOkzDARrXorC8hk6
+         ur55utvOR+JuT8Bnkj622PKjvbq/7DcNwRk4PGCKu2UWvah4rkMExgWTnwgM/wdZMrqG
+         rVT2rY5+bvB2AKJQcFF/j3kFxQkxlV2QpR8VawE22RfGDLxz/zU2OQB/Wlz0MUlxaa5/
+         +5yORuMLNIqABcp4RKQLBLi8tVII4d1o1MCU+FP5TpDhRp06HD4zWgVSlnk+GQ8ktiKo
+         fC35Dsk4HDlLpwtBSMTtQno0m+myrIG1FiZuUOtHf49+A2ll8ra9JdtYNPA8BCdNfx1+
+         Ravg==
+X-Gm-Message-State: AOJu0YxIk8lllqEZizqmv1P48rgxKkVlbEuGx/FBhzMMjI3g/mfhN+0O
+	xxVzYdHkSnTOcAZ7nEVEbDwM1u/+hRS6NpN7zFyfiXqASgchrJhLRp+/Iau7ZvLIkmLBAr59DaL
+	cHvYTExW45Z/aB9ohgFJNK61Re2MjEphu26pz
+X-Google-Smtp-Source: AGHT+IFYv5tHX1WQPl3UKkucHmsgclS/9mQvJ8BtkspQnHW8INm/bfJkBEp88NMt7Nyb4tbGmP3GUFNzcPfeUEN4+yY=
+X-Received: by 2002:a17:902:e747:b0:1d6:f66b:1057 with SMTP id
+ p7-20020a170902e74700b001d6f66b1057mr2985plf.28.1705945117286; Mon, 22 Jan
+ 2024 09:38:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ZohoMailClient: External
+References: <cover.1705507931.git.jpoimboe@kernel.org> <ac84a832feba5418e1b58d1c7f3fe6cc7bc1de58.1705507931.git.jpoimboe@kernel.org>
+ <6667b799702e1815bd4e4f7744eddbc0bd042bb7.camel@kernel.org>
+ <20240117193915.urwueineol7p4hg7@treble> <CAHk-=wg_CoTOfkREgaQQA6oJ5nM9ZKYrTn=E1r-JnvmQcgWpSg@mail.gmail.com>
+ <CALvZod6LgX-FQOGgNBmoRACMBK4GB+K=a+DYrtExcuGFH=J5zQ@mail.gmail.com>
+ <ZahSlnqw9yRo3d1v@P9FQF9L96D.corp.robot.car> <CALvZod4V3QTULTW5QxgqCbDpNtVO6fXzta33HR7GN=L2LUU26g@mail.gmail.com>
+ <CAHk-=whYOOdM7jWy5jdrAm8LxcgCMFyk2bt8fYYvZzM4U-zAQA@mail.gmail.com>
+In-Reply-To: <CAHk-=whYOOdM7jWy5jdrAm8LxcgCMFyk2bt8fYYvZzM4U-zAQA@mail.gmail.com>
+From: Shakeel Butt <shakeelb@google.com>
+Date: Mon, 22 Jan 2024 09:38:23 -0800
+Message-ID: <CALvZod6tCb=3+W18V7kntjJZBRMigGnyPQGjQK0no9Q1KmpcRQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 1/4] fs/locks: Fix file lock cache accounting, again
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>, Josh Poimboeuf <jpoimboe@kernel.org>, 
+	Vlastimil Babka <vbabka@suse.cz>, Jeff Layton <jlayton@kernel.org>, 
+	Chuck Lever <chuck.lever@oracle.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org, 
+	Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>, Vasily Averin <vasily.averin@linux.dev>, 
+	Michal Koutny <mkoutny@suse.com>, Waiman Long <longman@redhat.com>, 
+	Muchun Song <muchun.song@linux.dev>, Jiri Kosina <jikos@kernel.org>, cgroups@vger.kernel.org, 
+	linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2024-01-22 at 11:50 +0100, Konrad Dybcio wrote:
-> Looks like you didn't change the brcm,board-type though?
+Hi Linus,
 
-In "[PATCH 2/4] ARM: dts: qcom: msm8974-samsung-klte: Pin brcm,board-
-type in wifi":
+On Sun, Jan 21, 2024 at 9:16=E2=80=AFPM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Wed, 17 Jan 2024 at 14:56, Shakeel Butt <shakeelb@google.com> wrote:
+> > >
+> > > So I don't see how we can make it really cheap (say, less than 5% ove=
+rhead)
+> > > without caching pre-accounted objects.
+> >
+> > Maybe this is what we want. Now we are down to just SLUB, maybe such
+> > caching of pre-accounted objects can be in SLUB layer and we can
+> > decide to keep this caching per-kmem-cache opt-in or always on.
+>
+> So it turns out that we have another case of SLAB_ACCOUNT being quite
+> a big expense, and it's actually the normal - but failed - open() or
+> execve() case.
+>
+> See the thread at
+>
+>     https://lore.kernel.org/all/CAHk-=3Dwhw936qzDLBQdUz-He5WK_0fRSWwKAjtb=
+VsMGfX70Nf_Q@mail.gmail.com/
+>
+> and to see the effect in profiles, you can use this EXTREMELY stupid
+> test program:
+>
+>     #include <fcntl.h>
+>
+>     int main(int argc, char **argv)
+>     {
+>         for (int i =3D 0; i < 10000000; i++)
+>                 open("nonexistent", O_RDONLY);
+>     }
+>
+> where the point of course is that the "nonexistent" pathname doesn't
+> actually exist (so don't create a file called that for the test).
+>
+> What happens is that open() allocates a 'struct file *' early from the
+> filp kmem_cache, which has SLAB_ACCOUNT set. So we'll do accounting
+> for it, failt the pathname open, and free it again, which uncharges
+> the accounting.
+>
+> Now, in this case, I actually have a suggestion: could we please just
+> make SLAB_ACCOUNT be something that we do *after* the allocation, kind
+> of the same way the zeroing works?
+>
+> IOW, I'd love to get rid of slab_pre_alloc_hook() entirely, and make
+> slab_post_alloc_hook() do all the "charge the memcg if required".
+>
+> Obviously that means that now a failure to charge the memcg would have
+> to then de-allocate things, but that's an uncommon path and would be
+> marked unlikely and not be in the hot path at all.
+>
+> Now, the reason I would prefer that is that the *second* step would be to
+>
+>  (a) expose a "kmem_cache_charge()" function that takes a
+> *non*-accounted slab allocation, and turns it into an accounted one
+> (and obviously this is why you want to do everything in the post-alloc
+> hook: just try to share this code)
+>
+>  (b) remote the SLAB_ACCOUNT from the filp_cachep, making all file
+> allocations start out unaccounted.
+>
+>  (c) when we have *actually* looked up the pathname and open the file
+> successfully, at *that* point we'd do a
+>
+>         error =3D kmem_cache_charge(filp_cachep, file);
+>
+>     in do_dentry_open() to turn the unaccounted file pointer into an
+> accounted one (and if that fails, we do the cleanup and free it, of
+> course, exactly like we do when file_get_write_access() fails)
+>
+> which means that now the failure case doesn't unnecessarily charge the
+> allocation that never ends up being finalized.
+>
+> NOTE! I think this would clean up mm/slub.c too, simply because it
+> would get rid of that memcg_slab_pre_alloc_hook() entirely, and get
+> rid of the need to carry the "struct obj_cgroup **objcgp" pointer
+> along until the post-alloc hook: everything would be done post-alloc.
+>
+> The actual kmem_cache_free() code already deals with "this slab hasn't
+> been accounted" because it obviously has to deal with allocations that
+> were done without __GFP_ACCOUNT anyway. So there's no change needed on
+> the freeing path, it already has to handle this all gracefully.
+>
+> I may be missing something, but it would seem to have very little
+> downside, and fix a case that actually is visible right now.
+>
 
-   /*
-    * This aims to allow other klte* variants to load the same firmware,
-    * as klte variants have little differences in the wifi part.
-    */
+Thanks for the idea. Actually I had a discussion with Vlastimil at LPC
+'22 on a similar idea but for a different problem i.e. allocation in
+irq context or more specifically charging sockets for incoming TCP
+connections. If you see inet_csk_accept() we solved this for TCP
+memory by charging at accept() syscall but the kernel memory holding
+socket is still uncharged.
 
-So it is intentional, in order to let them share the same FW, in
-particular, the NVRAM file.
+So, I think having the framework you suggested would help more
+use-cases. I will take a stab at this in the next couple of days
+(sorry stuck in some other stuff atm).
 
-Without [PATCH 2/4] and with this [PATCH 4/4]:
-- klte DT probes "brcmfmac*.samsung,klte.txt"
-- kltechn DT probes "brcmfmac*.samsung,kltechn.txt", but never probes
-"brcmfmac*.samsung,klte.txt"
-
-With both [PATCH 2/4] and this [PATCH 4/4]:
-- klte DT probes "brcmfmac*.samsung,klte.txt"
-- kltechn DT probes "brcmfmac*.samsung,klte.txt"
-
-I pinned "brcm,board-type" in the klte DT instead of the kltechn one
-because other klte* variants are known to have little difference in the
-WiFi part. By pinning it in the klte DT, future ports could be easier.
-
-If you'd prefer not doing this, I am OK to drop [PATCH 2/4] in the v2
-patchset.
-
-FYI:
-
-LineageOS considers all klte variants use "common" WiFi FW:
-https://github.com/search?q=3Drepo%3ALineageOS%2Fandroid_kernel_samsung_klt=
-e+CONFIG_BCMDHD_NVRAM_PATH&type=3Dcode
-https://github.com/LineageOS/android_device_samsung_klte-common/blob/8f71a6=
-3415397def5ba886f4030b0d91e2253262/common-proprietary-files.txt#L251
-
-I've tested the klte port of PostmarketOS (with klte FW and this
-patchset) on kltechn, and it worked fine. For the FW used by
-PostmarketOS, see also:
-https://gitlab.com/postmarketOS/pmaports/-/blob/439227770ffcd32eb7e26436598=
-c804dc35637ad/device/testing/firmware-samsung-klte/APKBUILD#L17
-
-
-> > +++ b/arch/arm/boot/dts/qcom/qcom-msm8974pro-samsung-kltechn.dts
-> > @@ -0,0 +1,16 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +#include "qcom-msm8974pro-samsung-klte.dts"
->=20
-> It's customary not to include .dts files, instead split the common parts
-> into e.g. qcom-msm8974pro-samsung-klte-common.dtsi and include this in
-> both the existing and the new one.
-
-At the very beginning, I thought including .dts could make the patchset
-tiny (considering that the difference among klte* is also tiny).
-
-I agree that splitting the common parts into a .dtsi will make things
-more elegant and make klte* DTs consistent with the style of qcom DTs.
-
-Will do in v2. Thanks for your advice.
-
-Thanks,
-Rong
-
+thanks,
+Shakeel
 
