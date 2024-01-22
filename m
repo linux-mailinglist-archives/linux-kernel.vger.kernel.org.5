@@ -1,101 +1,125 @@
-Return-Path: <linux-kernel+bounces-32507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B22E5835C74
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:20:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85C8F835C76
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:21:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52CCC1F2749F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:20:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B93061C23B51
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:21:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C691E210E0;
-	Mon, 22 Jan 2024 08:20:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yNg12Jq0"
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 286852135C;
+	Mon, 22 Jan 2024 08:20:27 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCDF220DF1
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 08:20:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61E43210F5
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 08:20:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705911609; cv=none; b=t9ZRKuhoUT2/HwZQo1B5i0QkcCzZfcxLEwixQZAsrmRYIBrHlgeZXvpGwSU5ybp9MbsGz+873PeAvNWOMAMhajMCGnRJPdQZyF+WG116njtEN9SBhosAEd2idy0L3btZ3erjoo9emHLZ/w9h72PwawMS4EnAXP8F1xv0KnMQdAk=
+	t=1705911626; cv=none; b=nhuvZe/UXDQpdYr75pi9iIwuQT7a2N2OSu6+havqHIskRYNQZ3yS/tFONH5q/Ll9ZWgkoy7tYGUpS/6qs7d2CmFQtf1klCTX3lNPrf+4keL4jZaUDVCnNrQ+1GRGW8GUtNR29h3aD+9BByOylyXAPQxn6SAOAXq0xoBDRRLkroA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705911609; c=relaxed/simple;
-	bh=isDe77D2iQvn55U1/z57KKJud4YSPJiujYGyL9CMF28=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=F/2AP3cuvvl79ve+9w+WwTDXEzmLCQ2wqnLYLs/mKv5PtqS3LHDMoTV22NV2UHOuXifWUGGZ5uo/Tz/MZOxjxOaqSKh56JFuzd0Phxpgb/BFhFT+kQQJZBK2219PIXjdIrQ3/4j7j+edaHeKng2lx3IpzU/JTzDb2W4k3p5wVIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yNg12Jq0; arc=none smtp.client-ip=209.85.128.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5ffe7e7b7b3so5785367b3.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 00:20:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705911607; x=1706516407; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=isDe77D2iQvn55U1/z57KKJud4YSPJiujYGyL9CMF28=;
-        b=yNg12Jq0OjH/xqi3+tUJ9zj2qTgX8hBhK2jYjb2mScduou4IX0K3l7pEMG4g7/letz
-         u9QfFxEmhFWwcP3h82bO8F1BbhS+/LVPSAFI6ueGEJOSjlPWndsD1UgvkBC7GvO/QnKr
-         QUTekXeHUFsMl3f2Wi/nT5UVxpW5/BfWypW68hQPEUOWLFvcqNPlclTac+LncILNJd9d
-         Kxcws3Ze/yaze6bacIWkLw+08EGLaCiSv+8WCu+z+JQGJpZMdKRkjsL3HAVFZJRBXcjv
-         q4HTwJXPnRO1wsi6MZsvcvLIFej7Tzewi7eQncYa3RR4GRK4iCr4BpGZbiRHQ54Q6C14
-         atGg==
+	s=arc-20240116; t=1705911626; c=relaxed/simple;
+	bh=dCDychL2QgdYfb9TQKM74zR/SBVGu+AY6yivpkgbRTE=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=VeGMgDos9jy/RXqqL+zUa8ecZeUEA58IhvuQpojlPUQvqzWhu3NqUAB7ANIXZ5SvHgAwrWgpea2v/5iujqESmVkGgMIXVMgFUZkbbnaXiuNjsYnyWspcVFHaUvpG6/b8ajOm2kiJRsnKn25gVLhKaLM7PQ/zGVwzIWUHlQyBVbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7bf4698825eso282965939f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 00:20:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705911607; x=1706516407;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=isDe77D2iQvn55U1/z57KKJud4YSPJiujYGyL9CMF28=;
-        b=n2SxEVvJulH+qn4ngB42r7tXAbFzz6ApZNqzGNi8cLCoBaGKJeMh+3DP49/5E7OBG4
-         EK29nmIhHljG7XUNH508kUBfNV8iGHOgs/AO5SyOezdAtIcagRdCdIpBizTlONGzt658
-         TJEsnjAcLLKVOaNVHoey40gBeU2TdFAz6lh0bYC+xqSF6GQE8jJUw2AEE0eyRpSBbN+r
-         jgzenTP2gtfqQQXp41uHuGUNG6bYGKyH7WtQK/+u+XOrZ/LEmvFtpso/87zJqFwqVToK
-         R7oSzv/3HUQUS95a+5V0AD92U/uHH3BdLohh55rQh8y4NuvfiujkadROtNLM4vW8cz4c
-         SaHQ==
-X-Gm-Message-State: AOJu0Yz3J1DHuQwsPNxe+Qb5a4IZ/Kgmrc1RSjwD8wLukkGSffYfuRCz
-	Oe5TsuvP5O1ZL2AwswY3wD66x4lkhkg+qxqq2SJ+3oF63qa6vYZHfUGvTuzboInsIp4zgR4CWdk
-	PVcycWSBOT/d4pqVfEfLaXSRC3vR70QqkT6NNbg==
-X-Google-Smtp-Source: AGHT+IEDIu6tz4zc7zLNjO22lhxaAaUhf1UZ0shhNc0RxwcPSI9HNppAZHgchwGKFX+SqDSpztPQxnGIdvmwIPPAy7A=
-X-Received: by 2002:a81:9185:0:b0:5ff:53de:dbef with SMTP id
- i127-20020a819185000000b005ff53dedbefmr2552068ywg.11.1705911606868; Mon, 22
- Jan 2024 00:20:06 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705911624; x=1706516424;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=r3idZW5TKojJjW79OKe2S/XHyZ2jC9PZZqQG/IMm0/M=;
+        b=k7rKFfIGC9dg4R1utoxPS+AxPLi6HIR8yAjuIwynXZK/yqXS2APUGkTst+XsTd0S4U
+         Y3bAnqh5qPC+n6WJ+y6XEbBnxWcf6fyO46hnVGViI6RaHC5aOceUQcaal1Z2Q8mJo9g0
+         nnPcblNwwpqR8LdGKgP0V87NSFymUxbO8zXYUN+YYudP65e2tkFpPwvb2LSpEBAOzmVH
+         C7lacwF8jM93QpzMqnNWFZ9oWdWS8TLnz75Q2KbpDKiTnIlYYw1wC5RwS5idtp3YVJcV
+         +1M2Dc/xSd6637RO+JJpi+8GkNwg9LW2E33CVsOHwU2cHoQ647pEVbki6As9URgyKdYo
+         +tKg==
+X-Gm-Message-State: AOJu0YzbnL1ZDFdf8x2hDs9fKJoJnLjpJ98+miVPU/j5SQ+j09DbBUjJ
+	TwFFsYE/3RRDQlBXF49svpATCRuY14nZOLrN2A8XHvhifiyS4mlbA4ViU5+qdi3ZU1/BaGE58V5
+	8Wf1f/AQ0RDrUtiSP+MFJOeij9UZckXDYqAE/Qz5sUdJVTV6Nl2mtIig=
+X-Google-Smtp-Source: AGHT+IHm9pO/1KObgYeHysK3c8SNlB6aArrBtVOrXRhi21A/xS859gCHKy8uh7k6ZkAuIqAk9xtORxfGt4I8lyK/cZKHicMqxJN2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240121053232.276968-1-dmitry.torokhov@gmail.com>
-In-Reply-To: <20240121053232.276968-1-dmitry.torokhov@gmail.com>
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Date: Mon, 22 Jan 2024 09:19:56 +0100
-Message-ID: <CACMJSetrYPaXOr5abHtP1mjsyH3nB3=6CwxWfviN1BP0rhgEhg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] Input: matrix_keypad - avoid repeatedly converting
- GPIO to IRQ
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: linux-input@vger.kernel.org, Dan Carpenter <dan.carpenter@linaro.org>, 
-	linux-kernel@vger.kernel.org
+X-Received: by 2002:a05:6e02:12e3:b0:360:7c34:ffa7 with SMTP id
+ l3-20020a056e0212e300b003607c34ffa7mr479882iln.1.1705911624601; Mon, 22 Jan
+ 2024 00:20:24 -0800 (PST)
+Date: Mon, 22 Jan 2024 00:20:24 -0800
+In-Reply-To: <0000000000009c91ce060e87575b@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000671a09060f84808b@google.com>
+Subject: Re: [syzbot] [kvm?] KMSAN: uninit-value in em_ret_far
+From: syzbot <syzbot+579eb95e588b48b4499c@syzkaller.appspotmail.com>
+To: bp@alien8.de, dave.hansen@linux.intel.com, glider@google.com, 
+	hpa@zytor.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	mingo@redhat.com, n.zhandarovich@fintech.ru, nogikh@google.com, 
+	pbonzini@redhat.com, seanjc@google.com, syzkaller-bugs@googlegroups.com, 
+	tglx@linutronix.de, x86@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Sun, 21 Jan 2024 at 06:32, Dmitry Torokhov <dmitry.torokhov@gmail.com> wrote:
->
-> gpio_to_irq() is getting more expensive and may require sleeping.
+syzbot has found a reproducer for the following issue on:
 
-This is no longer true, the relevant commit was reverted and I have
-now a working series where I'm using SRCU for lockless list traversal
-so if anything it will actually become cheaper.
+HEAD commit:    9f8413c4a66f Merge tag 'cgroup-for-6.8' of git://git.kerne..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=174e24d7e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=656820e61b758b15
+dashboard link: https://syzkaller.appspot.com/bug?extid=579eb95e588b48b4499c
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13ffebbde80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=143dcfc7e80000
 
-> Convert row GPIOs to interrupt numbers once in probe() and use
-> this information when the driver needs to enable or disable given
-> interrupt line.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/79d9f2f4b065/disk-9f8413c4.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/cbc68430d9c6/vmlinux-9f8413c4.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/9740ad9fc172/bzImage-9f8413c4.xz
 
-That being said, I'm not against this change, though this may not be
-very useful after all.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+579eb95e588b48b4499c@syzkaller.appspotmail.com
 
-Bartosz
+=====================================================
+BUG: KMSAN: uninit-value in em_ret_far+0x332/0x340 arch/x86/kvm/emulate.c:2258
+ em_ret_far+0x332/0x340 arch/x86/kvm/emulate.c:2258
+ em_ret_far_imm+0x39/0x4f0 arch/x86/kvm/emulate.c:2270
+ x86_emulate_insn+0x1d81/0x5800 arch/x86/kvm/emulate.c:5289
+ x86_emulate_instruction+0x13c5/0x3090 arch/x86/kvm/x86.c:9101
+ kvm_mmu_page_fault+0x100a/0x1120 arch/x86/kvm/mmu/mmu.c:5778
+ handle_ept_violation+0x4ef/0x7e0 arch/x86/kvm/vmx/vmx.c:5788
+ __vmx_handle_exit arch/x86/kvm/vmx/vmx.c:6567 [inline]
+ vmx_handle_exit+0x1b01/0x2130 arch/x86/kvm/vmx/vmx.c:6584
+ vcpu_enter_guest arch/x86/kvm/x86.c:10992 [inline]
+ vcpu_run arch/x86/kvm/x86.c:11095 [inline]
+ kvm_arch_vcpu_ioctl_run+0x9d4f/0xc680 arch/x86/kvm/x86.c:11321
+ kvm_vcpu_ioctl+0xbfc/0x1770 arch/x86/kvm/../../../virt/kvm/kvm_main.c:4155
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl+0x225/0x410 fs/ioctl.c:857
+ __x64_sys_ioctl+0x96/0xe0 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x6d/0x140 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-[snip!]
+Local variable eip created at:
+ em_ret_far+0x3a/0x340 arch/x86/kvm/emulate.c:2243
+ em_ret_far_imm+0x39/0x4f0 arch/x86/kvm/emulate.c:2270
+
+CPU: 0 PID: 5001 Comm: syz-executor428 Not tainted 6.7.0-syzkaller-00562-g9f8413c4a66f #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+=====================================================
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
