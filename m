@@ -1,151 +1,128 @@
-Return-Path: <linux-kernel+bounces-33728-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33729-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FB30836E38
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:48:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AD6B836DD5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:39:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 32AC7B2FEFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:39:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D8D81C26391
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:39:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA91541769;
-	Mon, 22 Jan 2024 16:53:14 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 841C754BDD;
+	Mon, 22 Jan 2024 16:55:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZLLKROcA"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45BD63FB39
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 16:53:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DFAC46454
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 16:55:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705942394; cv=none; b=YN9TysQm4NQsb8Yc9irj/GXOQXUD4VFEGktUmETV9fusS9/E4rGWkj4AiBb4JAeUip0Rjh3jAnma2ptSkoADrYfGLq8CtINyPYzbtpx+q/g0wdAgWKVkgCwfIrYE50rKkGEg0I7qkcY3C9O04qVk/76bIA0uPVEIyFl4n4FVFTY=
+	t=1705942521; cv=none; b=iZsHCR677UIUO9YV5j2Bh7ia1PBhnaKyfEQHD3HNFJPpHjeEHpA9aNfzUZlOmoMXu/TPiSB5X3zeFwMzdHczbix39fg2FwjtqlnI2il0ZRcXUTb8PPI/oadQdhwW/uNJ7Kqqc1eioD5uNphjQ+/9Xe/flviYJ7xc9inguWXmALk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705942394; c=relaxed/simple;
-	bh=yB3S6jwurrEU9VAq2uFfd3p+Gn+5Y72CDpba3esPKqE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=MO9JCiHk+12kkKtJ0ie+JNZPF7wydX7Enlr1haQgGB/b3dT++JLQReqtG09xgJwLs5n5EgSUtPSJvPtV3OQlUQYEE7YtCqcuwpwGNdHpv4w5niOKYIqN5yC72RCPz6QXyRm5oNipuf02QOPnlu4FYw3Yr6TTxq6Z4tm+eZnxvh8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-258-veqgJaI3Peyfp47kXADBow-1; Mon, 22 Jan 2024 16:53:09 +0000
-X-MC-Unique: veqgJaI3Peyfp47kXADBow-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 22 Jan
- 2024 16:52:42 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Mon, 22 Jan 2024 16:52:42 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Guenter Roeck' <linux@roeck-us.net>, Charlie Jenkins
-	<charlie@rivosinc.com>
-CC: Palmer Dabbelt <palmer@dabbelt.com>, Conor Dooley <conor@kernel.org>,
-	Samuel Holland <samuel.holland@sifive.com>, Xiao Wang
-	<xiao.w.wang@intel.com>, Evan Green <evan@rivosinc.com>, Guo Ren
-	<guoren@kernel.org>, "linux-riscv@lists.infradead.org"
-	<linux-riscv@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-arch@vger.kernel.org"
-	<linux-arch@vger.kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Arnd Bergmann <arnd@arndb.de>
-Subject: RE: [PATCH v15 5/5] kunit: Add tests for csum_ipv6_magic and
- ip_fast_csum
-Thread-Topic: [PATCH v15 5/5] kunit: Add tests for csum_ipv6_magic and
- ip_fast_csum
-Thread-Index: AQHaTVGn8AUolzpWZEe7KQadoytUPLDmCvsQ
-Date: Mon, 22 Jan 2024 16:52:42 +0000
-Message-ID: <6b0dc20f392c488a9080651a2a2cd4bd@AcuMS.aculab.com>
-References: <20240108-optimize_checksum-v15-0-1c50de5f2167@rivosinc.com>
- <20240108-optimize_checksum-v15-5-1c50de5f2167@rivosinc.com>
- <2c8e98b6-336e-4bc7-81ba-5a4d35ac868a@roeck-us.net>
-In-Reply-To: <2c8e98b6-336e-4bc7-81ba-5a4d35ac868a@roeck-us.net>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1705942521; c=relaxed/simple;
+	bh=8CXEZAI9p+rNkSoJMtDxmMwVqX0l1AUSjTzoof5EcMQ=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=O1Cqf38DGdQNHMMO5G27vKyIu/pYZ9TcBUHVjnXxaOyBzCENw1sC473Duo/O9akOLsKvUbCWrxWLa3KD4dz38u/AJr2M6iiWb5fzzkzXUT/QBSQPpIV07+wEpdJyVWnB+KbwEmdkJ1GGEVB51v/XFsAdeD4lsnOdf0TR8iJtjKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ZLLKROcA; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-559cef15db5so7846315a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 08:55:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705942518; x=1706547318; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eviaarrHpSZeGPBJGMW5DVT05MBy6NrnL0kFpqfkPXM=;
+        b=ZLLKROcAHWfya/CIf+X+IL0YYbZtKZHJgA6rq02bhRcRlq0X1yAo04R12VTpAKn9G9
+         wIe+TEuKqj/0jou5vtgiZRvdbOZG+uns65+Gg/sCdtNznH3yuiF8z9dHezEQMqiG9EQW
+         6kKSSijQM1fPTw25pXWnZxumHl3RlwcJ39TBwuq6jeX73G6l2MFvsDrGCRxbWdJQdASI
+         XWMOvmlCOQJSzOFUAYUJBOe6KO6SoaMY4vewS4RTs7mLydOFfpvoiRTylDWN876sDP0v
+         D6TMQhtFmQSqaKn6NIyibrK3SbRlVjD9TaHJg7bu1gqhYh8x4if4AQijhEbA3bsMLKlk
+         z7Aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705942518; x=1706547318;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eviaarrHpSZeGPBJGMW5DVT05MBy6NrnL0kFpqfkPXM=;
+        b=SRaW1myl5A0YpiiZRea7kZp7rUzFvUpUroaLAuArMm8GLg2tbK9iVqMfvl2cURYI6I
+         Ha7AONLvJIINbHr0VzZ1dgJ0YjUS3+ffxLgvtg4OGxzyaBdoRNDB0ToArf+UNC0WfPhv
+         DjAYCg9YiIGsb/fYxdXSK+deNV99b1Q2RnLdJ872MpNbS8gGVgUap5KLHSTI0qwmPFwV
+         mbJT1dm51YR3idPlociowoK1WXvil7WVr/JpcvSvniEzYesmGJ5gQtVfjRd/c9OyqQKb
+         vjVa1JYNuCHJ13vB+Xzv1EljLO3/329WcpRDqTajWGtH4tEEwmJ0Jd3TvT9lCY6J62Gn
+         C/xw==
+X-Gm-Message-State: AOJu0YxCvPe58ITxxbKWnBr++TimHMXRHComMdvpIHmcySBbmCXF53wX
+	i2CDDeoUekQLBl/bAdM62WiAqm0kr8N+UXTfeDw1eP8I2euP+LhHUIUcgzkr6PIq0Efv8fEI07M
+	4
+X-Google-Smtp-Source: AGHT+IFOG8Du3dt/lDW1J4M+ULamdNrT6bybVDkUdNDMHDaJXtSRu6jRB4UlD4OtxBYTEA6yaVPF9A==
+X-Received: by 2002:a17:906:3044:b0:a2f:ebb:f200 with SMTP id d4-20020a170906304400b00a2f0ebbf200mr6058747ejd.9.1705942518382;
+        Mon, 22 Jan 2024 08:55:18 -0800 (PST)
+Received: from [192.168.1.195] ([5.133.47.210])
+        by smtp.gmail.com with ESMTPSA id g11-20020a170906538b00b00a26aa8f3372sm13401726ejo.27.2024.01.22.08.55.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 08:55:17 -0800 (PST)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, 
+ Arnd Bergmann <arnd@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, regressions@lists.linux.dev, 
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>, 
+ Chen-Yu Tsai <wenst@chromium.org>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, asahi@lists.linux.dev, 
+ Sven Peter <sven@svenpeter.dev>, Michael Walle <michael@walle.cc>, 
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240122153442.7250-1-arnd@kernel.org>
+References: <20240122153442.7250-1-arnd@kernel.org>
+Subject: Re: [PATCH] nvmem: include bit index in cell sysfs file name
+Message-Id: <170594251756.17335.7078970144473561827.b4-ty@linaro.org>
+Date: Mon, 22 Jan 2024 16:55:17 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.2
 
-From: Guenter Roeck
-> Sent: 22 January 2024 16:40
->=20
-> Hi,
->=20
-> On Mon, Jan 08, 2024 at 03:57:06PM -0800, Charlie Jenkins wrote:
-> > Supplement existing checksum tests with tests for csum_ipv6_magic and
-> > ip_fast_csum.
-> >
-> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> > ---
->=20
-> With this patch in the tree, the arm:mps2-an385 qemu emulation gets a bad=
- hiccup.
->=20
-> [    1.839556] Unhandled exception: IPSR =3D 00000006 LR =3D fffffff1
-> [    1.839804] CPU: 0 PID: 164 Comm: kunit_try_catch Tainted: G          =
-       N 6.8.0-rc1 #1
-> [    1.839948] Hardware name: Generic DT based system
-> [    1.840062] PC is at __csum_ipv6_magic+0x8/0xb4
-> [    1.840408] LR is at test_csum_ipv6_magic+0x3d/0xa4
-> [    1.840493] pc : [<21212f34>]    lr : [<21117fd5>]    psr: 0100020b
-> [    1.840586] sp : 2180bebc  ip : 46c7f0d2  fp : 21275b38
-> [    1.840664] r10: 21276b60  r9 : 21275b28  r8 : 21465cfc
-> [    1.840751] r7 : 00003085  r6 : 21275b4e  r5 : 2138702c  r4 : 00000001
-> [    1.840847] r3 : 2c000000  r2 : 1ac7f0d2  r1 : 21275b39  r0 : 21275b29
-> [    1.840942] xPSR: 0100020b
->=20
-> This translates to:
->=20
-> PC is at __csum_ipv6_magic (arch/arm/lib/csumipv6.S:15)
-> LR is at test_csum_ipv6_magic (./arch/arm/include/asm/checksum.h:60
-> ./arch/arm/include/asm/checksum.h:163 lib/checksum_kunit.c:617)
->=20
-> Obviously I can not say if this is a problem with qemu or a problem with
-> the Linux kernel. Given that, and the presumably low interest in
-> running mps2-an385 with Linux, I'll simply disable that test. Just take
-> it as a heads up that there _may_ be a problem with this on arm
-> nommu systems.
 
-Can you drop in a disassembly of __csum_ipv6_magic ?
-Actually I think it is:
-ENTRY(__csum_ipv6_magic)
-=09=09str=09lr, [sp, #-4]!
-=09=09adds=09ip, r2, r3
-=09=09ldmia=09r1, {r1 - r3, lr}
+On Mon, 22 Jan 2024 16:34:10 +0100, Arnd Bergmann wrote:
+> Creating sysfs files for all Cells caused a boot failure for linux-6.8-rc1 on
+> Apple M1, which (in downstream dts files) has multiple nvmem cells that use the
+> same byte address. This causes the device probe to fail with
+> 
+> [    0.605336] sysfs: cannot create duplicate filename '/devices/platform/soc@200000000/2922bc000.efuse/apple_efuses_nvmem0/cells/efuse@a10'
+> [    0.605347] CPU: 7 PID: 1 Comm: swapper/0 Tainted: G S                 6.8.0-rc1-arnd-5+ #133
+> [    0.605355] Hardware name: Apple Mac Studio (M1 Ultra, 2022) (DT)
+> [    0.605362] Call trace:
+> [    0.605365]  show_stack+0x18/0x2c
+> [    0.605374]  dump_stack_lvl+0x60/0x80
+> [    0.605383]  dump_stack+0x18/0x24
+> [    0.605388]  sysfs_warn_dup+0x64/0x80
+> [    0.605395]  sysfs_add_bin_file_mode_ns+0xb0/0xd4
+> [    0.605402]  internal_create_group+0x268/0x404
+> [    0.605409]  sysfs_create_groups+0x38/0x94
+> [    0.605415]  devm_device_add_groups+0x50/0x94
+> [    0.605572]  nvmem_populate_sysfs_cells+0x180/0x1b0
+> [    0.605682]  nvmem_register+0x38c/0x470
+> [    0.605789]  devm_nvmem_register+0x1c/0x6c
+> [    0.605895]  apple_efuses_probe+0xe4/0x120
+> [    0.606000]  platform_probe+0xa8/0xd0
+> 
+> [...]
 
-So the fault is (probably) a misaligned ldmia ?
-Are they ever supported?
+Applied, thanks!
 
-=09David
+[1/1] nvmem: include bit index in cell sysfs file name
+      commit: b40fed13870045731e374e6bb48800cde0feb4e2
 
-=09=09adcs=09ip, ip, r1
-=09=09adcs=09ip, ip, r2
-=09=09adcs=09ip, ip, r3
-=09=09adcs=09ip, ip, lr
-=09=09ldmia=09r0, {r0 - r3}
-=09=09adcs=09r0, ip, r0
-=09=09adcs=09r0, r0, r1
-=09=09adcs=09r0, r0, r2
-=09=09ldr=09r2, [sp, #4]
-=09=09adcs=09r0, r0, r3
-=09=09adcs=09r0, r0, r2
-=09=09adcs=09r0, r0, #0
-=09=09ldmfd=09sp!, {pc}
-ENDPROC(__csum_ipv6_magic)
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
+Best regards,
+-- 
+Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
 
