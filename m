@@ -1,71 +1,60 @@
-Return-Path: <linux-kernel+bounces-33545-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33546-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0ABAD836B16
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:39:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A8E4836B19
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:39:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7B85283940
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:39:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BAE41F25E63
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:39:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6F8714D42B;
-	Mon, 22 Jan 2024 15:17:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65BB914D453;
+	Mon, 22 Jan 2024 15:18:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IyTeum1J"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bRV7Ics5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36F3057863;
-	Mon, 22 Jan 2024 15:17:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD4FD14D444;
+	Mon, 22 Jan 2024 15:18:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936678; cv=none; b=cvbj/xZmBEV/FU6oXapuK5d8FHcQYnxrwMSbpy/8mQQcEUnDhsMstDujyFM3nPqrH1a7I8gyvA7M1LFtMXiLf+O2G3kKTxcr/qyTkKdr+Axe2BVsmKHeF6zbG5e3AVCRgZfGeZ4K03qNnIgiFAApIazhwzdCVy+2OW35POcdAoU=
+	t=1705936681; cv=none; b=LP70DsCfLpXJ6RTGJnJ55A/RM/62tzLKN+D+NANw4KpAk2o/omFedOSMSK7kJrGpXUdNqwnvKgP8NN6QkkC8HujTky3WqxUpvmF1gLstF1n85VaRJEkl5JQWXvXeSc7G+Yb5ijpzBHJ9ah447FYsVOV0yYUFfe6WVumejkmGmkI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936678; c=relaxed/simple;
-	bh=bMawO10I3hl7jFjEz0kMbTCMFYdlXvwJZ/zmQMb6maI=;
+	s=arc-20240116; t=1705936681; c=relaxed/simple;
+	bh=SVpnJsIni3yL13XFNxVisCP4/jsC1U1pPMVXaLKJHPk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rUutiz+WMiAPnvCx97t1ycxwBVD8EO0Wju3tUI/Lk6lWCif7B7IpvuYO8SA3q1OqbC0h5BalEnhk1OmDrBtjlJuAJCxQ6Yce88l7cRPUFBZH48KODLp0JSSerFIxpXX3/JZSE91zF2Q3LdQKCn+G8YgGc3sPiXYyAiHlDYhHbFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IyTeum1J; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1E76C433C7;
-	Mon, 22 Jan 2024 15:17:55 +0000 (UTC)
+	 MIME-Version:Content-Type; b=HtExny8HQQ4Hn5a9uc9Egzr9yPOEIIqireYapJ9mo61N/4qxQ1rrRN7RrkB+siooyvdZBp22qkATYYgvnhBlerNECrOOcVGRkg8TBC9xh+MFju+Q2hYBLa7c+Sl5yDnsKh4YVsK6v+q2I3t2VpWosdVgKWP/UGuQJFOlr19ELbQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bRV7Ics5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B738C43390;
+	Mon, 22 Jan 2024 15:17:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705936678;
-	bh=bMawO10I3hl7jFjEz0kMbTCMFYdlXvwJZ/zmQMb6maI=;
+	s=k20201202; t=1705936681;
+	bh=SVpnJsIni3yL13XFNxVisCP4/jsC1U1pPMVXaLKJHPk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IyTeum1JzD7/Qu8TGdLTSu8HvB0sQktdF8YXdwtqCHN4LU0b+K1H6Yul5/nGsY1mq
-	 L45J/yuo8lHoGB+8pYkoP64GXq/JnqgcYoeYwtVgJH/FFBJ9lJ2jTbFFv16slw3EcX
-	 zTNki5LpZKtpk7oopikacM1Bi5JMZWTBG6wU0UnR8PuLws6G1S+qWqhI/jr4fcij3X
-	 pCHbWCY+aZH9iwpXCLS7bIfKyWTrfdFbJysc+GVg02mO9Uoer0kacoW2ggqBbQpE8U
-	 8XkSPkWyq0dKnGAJqSrUEzcQvKt7ormYg9bVTrwNBwCQeDA8z5Y9bAYCzOiSRJ1Muo
-	 JDKU+cogZfFkQ==
+	b=bRV7Ics5pCzYabJpn2S+ztmHJxxfxJNbGWaBiugV64xOYXMmQKDiOGLrY0tnoMs6V
+	 Hw7At4BY//SYpYR6c4Fs9KC8PslzrCHD77/e7q1Jyh4ALs3r0e8ORSi7paSVOPoD9R
+	 LEOthfd3jhnUD2ONR1pVMn8sxG1D/q7iKbErmGQ/rDFE7zoQm+Rj2FqVDvVu1FlxHJ
+	 5j/kVjHBLd0EEJp+A8jJ1JvZPm+smXFS9EWm36e1Oq8nBzJDvQiVQs+7suobTQffIW
+	 a4XNNG5kV0Wk1LjQUhMp2MWu5wlCkirDtaaYkUrN8e3AWCCk56RdFC/7zuo/ef84Gd
+	 jJJQtcETDou0Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Josip Pavic <josip.pavic@amd.com>,
-	Aric Cyr <aric.cyr@amd.com>,
-	Wayne Lin <wayne.lin@amd.com>,
-	Daniel Wheeler <daniel.wheeler@amd.com>,
+Cc: Felix Kuehling <Felix.Kuehling@amd.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
 	Alex Deucher <alexander.deucher@amd.com>,
 	Sasha Levin <sashal@kernel.org>,
-	harry.wentland@amd.com,
-	sunpeng.li@amd.com,
-	Rodrigo.Siqueira@amd.com,
-	christian.koenig@amd.com,
 	Xinhui.Pan@amd.com,
 	airlied@gmail.com,
 	daniel@ffwll.ch,
-	mario.limonciello@amd.com,
-	qingqing.zhuo@amd.com,
-	wenjing.liu@amd.com,
-	hamza.mahfooz@amd.com,
-	aurabindo.pillai@amd.com,
 	amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.4 22/24] drm/amd/display: make flip_timestamp_in_us a 64-bit variable
-Date: Mon, 22 Jan 2024 10:16:36 -0500
-Message-ID: <20240122151659.997085-22-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 23/24] drm/amdgpu: Let KFD sync with VM fences
+Date: Mon, 22 Jan 2024 10:16:37 -0500
+Message-ID: <20240122151659.997085-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122151659.997085-1-sashal@kernel.org>
 References: <20240122151659.997085-1-sashal@kernel.org>
@@ -75,46 +64,43 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.4.267
 Content-Transfer-Encoding: 8bit
 
-From: Josip Pavic <josip.pavic@amd.com>
+From: Felix Kuehling <Felix.Kuehling@amd.com>
 
-[ Upstream commit 6fb12518ca58412dc51054e2a7400afb41328d85 ]
+[ Upstream commit ec9ba4821fa52b5efdbc4cdf0a77497990655231 ]
 
-[Why]
-This variable currently overflows after about 71 minutes. This doesn't
-cause any known functional issues but it does make debugging more
-difficult.
+Change the rules for amdgpu_sync_resv to let KFD synchronize with VM
+fences on page table reservations. This fixes intermittent memory
+corruption after evictions when using amdgpu_vm_handle_moved to update
+page tables for VM mappings managed through render nodes.
 
-[How]
-Make it a 64-bit variable.
-
-Reviewed-by: Aric Cyr <aric.cyr@amd.com>
-Acked-by: Wayne Lin <wayne.lin@amd.com>
-Signed-off-by: Josip Pavic <josip.pavic@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/dc_hw_types.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dc_hw_types.h b/drivers/gpu/drm/amd/display/dc/dc_hw_types.h
-index 0b8700a8a94a..c6281d4a18ce 100644
---- a/drivers/gpu/drm/amd/display/dc/dc_hw_types.h
-+++ b/drivers/gpu/drm/amd/display/dc/dc_hw_types.h
-@@ -423,7 +423,7 @@ struct dc_cursor_position {
- };
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c
+index 95e5e93edd18..7e840e560513 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_sync.c
+@@ -218,7 +218,8 @@ int amdgpu_sync_resv(struct amdgpu_device *adev,
+ 		 */
+ 		fence_owner = amdgpu_sync_get_owner(f);
+ 		if (fence_owner == AMDGPU_FENCE_OWNER_KFD &&
+-		    owner != AMDGPU_FENCE_OWNER_UNDEFINED)
++		    owner != AMDGPU_FENCE_OWNER_UNDEFINED &&
++	    owner != AMDGPU_FENCE_OWNER_KFD)
+ 			continue;
  
- struct dc_cursor_mi_param {
--	unsigned int pixel_clk_khz;
-+	unsigned long long pixel_clk_khz;
- 	unsigned int ref_clk_khz;
- 	struct rect viewport;
- 	struct fixed31_32 h_scale_ratio;
+ 		if (amdgpu_sync_same_dev(adev, f)) {
 -- 
 2.43.0
 
