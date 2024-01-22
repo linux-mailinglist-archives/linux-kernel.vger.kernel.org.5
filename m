@@ -1,61 +1,68 @@
-Return-Path: <linux-kernel+bounces-33413-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33414-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5914D836964
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:00:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BEAA836973
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:01:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 880281C23F29
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:00:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 45BE5B2980C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:00:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27B907FBC9;
-	Mon, 22 Jan 2024 15:10:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 268888002A;
+	Mon, 22 Jan 2024 15:10:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C78JlUop"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NUErfq4t"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AED77FBBA;
-	Mon, 22 Jan 2024 15:10:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 689F94D581;
+	Mon, 22 Jan 2024 15:10:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936225; cv=none; b=uNLNZrEiEZid1CnHP/j5QsEF7YRpI7KIi35CWs5ujXVfxSftyuk/OlP4i/dZwcASetyXl+EAuZ2ZjkJm6Yjbos5U8ZL86K7O8S2VNqW6LiNU4af0lPEh8FEYUR5k9boj4hJz6stDSm7oQHS8L2AdpxAZoY85JdIHawej/7h9vM4=
+	t=1705936229; cv=none; b=Z5y68/b9OHJl+OuYwrP4Z/6OSR704eYPVJgiYizK3JI6sSaUUgAE+kRmoGtLgP9IDY2UC8AjkJdFrhla9Ex8A3PZnzqpVmiyU7gVxNcoHJVFhb7gwAESRKP4QmfP7+RZT1A2PccbpFSu0kHvAMqNiMq/6WVn/SxywUs9jgzX4BY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936225; c=relaxed/simple;
-	bh=kVIYlOYLVqalaQnOMDEKOJ+nnyTguATuIPG6OEDzO/s=;
+	s=arc-20240116; t=1705936229; c=relaxed/simple;
+	bh=I2ttqNaYkWSONcBMr0Ex0KP1m88+0wC3Oik8zjvoO48=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=F3UUduwof3l+VfblTWYmIKlKpqqR6Yj+imNeeQk4y7saZFVlj6EyjgHr4v6Dx2+S9m/+TtZhDjSfHuLFobAMqjQlb0dpgfbtMKUzBS4zy9r1Awyr/jaKzExsgNMLYeBk0iklFzXcpRsLjWQSBearJFa1EZKE2pv/yE9HxTy+q24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C78JlUop; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB761C433F1;
-	Mon, 22 Jan 2024 15:10:23 +0000 (UTC)
+	 MIME-Version; b=WSmOVocfuI2bPoBvWcrkDFhqHISGHvq3NAPuoHRctKip2kUVPCNY0lFJAmWaPHSI+xedFPYvB5/oplTLaXXPAkok1/LXcEiHmRWRJ8VJFJ5IgAVYccVi11Yfe4FY94/9+u8u3O4GwpXSIAD9rpB8I6uUVan5mtDpfUEojn0zUh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NUErfq4t; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33C55C43390;
+	Mon, 22 Jan 2024 15:10:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705936225;
-	bh=kVIYlOYLVqalaQnOMDEKOJ+nnyTguATuIPG6OEDzO/s=;
+	s=k20201202; t=1705936229;
+	bh=I2ttqNaYkWSONcBMr0Ex0KP1m88+0wC3Oik8zjvoO48=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=C78JlUopUZJVkiya0fRTqslYfZy8soxwCwUvpxZxcDfMLp27X6nABG3M5+ssGHmeX
-	 dbo9CMRMlgclVvL02yfA7x5rPFAna0cmjdJPPQLHINwQ6g47uCIU58RxAcGi090u76
-	 Xujvg1j98fSUQ04nxjW+wFj5cnFLhIAK8qoovVHBr+EM4vVHvNAST8onRSdxw4vFX/
-	 NBO4H20YOjbM8AmxEOF6JG9CsUcdoJu2v5EINUO8GGyF7lpKLqePWVMgGMPcLX18AX
-	 quYKwY0iXkM3PVEMO4hdxiuoYB2jUeeyIoY5pCCWCC1UvnzhP6XucI6x0mE3b4kol3
-	 YjBdgjOr2lomQ==
+	b=NUErfq4tpIH5YUD3KXDHn4bW0SPUrJz/p4JhKeTnZIN6n3KT4Gprw669xpfPBPF2v
+	 5jnDYFzdB6tywv255WspXRWb/1Sq/s6nGKHUKIO1TRrtbZP+Tffm5pchaP8/ORG5fz
+	 kE6KDslx2iMjM5XMZBXcxH3pbRNnLEXw02JO5ZnnlCUZjXgig/2SkFfZrZcjXnglwo
+	 fwJPevsZ+zrM20Gya81/JCv6FyB7fFA+lh/FDg3yE6GtlFJlxDK8Wn2yM3NLnLuNGg
+	 Uz15z1pHYIP7/0FUwC2pXal3061FIctwe/QeqVuXs2YCZD1Tj2MsSSivwxCRMKa80t
+	 l2PUDKAprV4yA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
-	Mark Brown <broonie@kernel.org>,
+Cc: Alex Hung <alex.hung@amd.com>,
+	Harry Wentland <harry.wentland@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
 	Sasha Levin <sashal@kernel.org>,
-	lgirdwood@gmail.com,
-	perex@perex.cz,
-	tiwai@suse.com,
-	posteuca@mutex.one,
-	Vijendar.Mukunda@amd.com,
-	cristian.ciocaltea@collabora.com,
-	linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 13/53] ASoC: amd: Add new dmi entries for acp5x platform
-Date: Mon, 22 Jan 2024 10:08:14 -0500
-Message-ID: <20240122150949.994249-13-sashal@kernel.org>
+	sunpeng.li@amd.com,
+	Rodrigo.Siqueira@amd.com,
+	christian.koenig@amd.com,
+	Xinhui.Pan@amd.com,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	alvin.lee2@amd.com,
+	wayne.lin@amd.com,
+	dillon.varone@amd.com,
+	qingqing.zhuo@amd.com,
+	aurabindo.pillai@amd.com,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.1 14/53] drm/amd/display: Fix writeback_info never got updated
+Date: Mon, 22 Jan 2024 10:08:15 -0500
+Message-ID: <20240122150949.994249-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122150949.994249-1-sashal@kernel.org>
 References: <20240122150949.994249-1-sashal@kernel.org>
@@ -70,53 +77,52 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.74
 Content-Transfer-Encoding: 8bit
 
-From: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
+From: Alex Hung <alex.hung@amd.com>
 
-[ Upstream commit c3ab23a10771bbe06300e5374efa809789c65455 ]
+[ Upstream commit 8a307777c36e15f38c9f23778babcd368144c7d8 ]
 
-Add sys_vendor and product_name dmi entries for acp5x platform.
+[WHY]
+wb_enabled field is set to false before it is used, and the following
+code will never be executed.
 
-Signed-off-by: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
-Link: https://lore.kernel.org/r/20231206110620.1695591-1-venkataprasad.potturu@amd.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+[HOW]
+Setting wb_enable to false after all removal work is completed.
+
+Reviewed-by: Harry Wentland <harry.wentland@amd.com>
+Signed-off-by: Alex Hung <alex.hung@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/amd/acp-config.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/dc/core/dc_stream.c | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/amd/acp-config.c b/sound/soc/amd/acp-config.c
-index 0932473b6394..9ee71a99a087 100644
---- a/sound/soc/amd/acp-config.c
-+++ b/sound/soc/amd/acp-config.c
-@@ -3,7 +3,7 @@
- // This file is provided under a dual BSD/GPLv2 license. When using or
- // redistributing this file, you may do so under either license.
- //
--// Copyright(c) 2021 Advanced Micro Devices, Inc.
-+// Copyright(c) 2021, 2023 Advanced Micro Devices, Inc.
- //
- // Authors: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
- //
-@@ -35,6 +35,19 @@ static const struct config_entry config_table[] = {
- 			{}
- 		},
- 	},
-+	{
-+		.flags = FLAG_AMD_LEGACY,
-+		.device = ACP_PCI_DEV_ID,
-+		.dmi_table = (const struct dmi_system_id []) {
-+			{
-+				.matches = {
-+					DMI_MATCH(DMI_SYS_VENDOR, "Valve"),
-+					DMI_MATCH(DMI_PRODUCT_NAME, "Jupiter"),
-+				},
-+			},
-+			{}
-+		},
-+	},
- 	{
- 		.flags = FLAG_AMD_SOF,
- 		.device = ACP_PCI_DEV_ID,
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_stream.c b/drivers/gpu/drm/amd/display/dc/core/dc_stream.c
+index 556c57c390ff..12b73b0ff19e 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_stream.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_stream.c
+@@ -514,18 +514,13 @@ bool dc_stream_remove_writeback(struct dc *dc,
+ 		return false;
+ 	}
+ 
+-//	stream->writeback_info[dwb_pipe_inst].wb_enabled = false;
+-	for (i = 0; i < stream->num_wb_info; i++) {
+-		/*dynamic update*/
+-		if (stream->writeback_info[i].wb_enabled &&
+-			stream->writeback_info[i].dwb_pipe_inst == dwb_pipe_inst) {
+-			stream->writeback_info[i].wb_enabled = false;
+-		}
+-	}
+-
+ 	/* remove writeback info for disabled writeback pipes from stream */
+ 	for (i = 0, j = 0; i < stream->num_wb_info; i++) {
+ 		if (stream->writeback_info[i].wb_enabled) {
++
++			if (stream->writeback_info[i].dwb_pipe_inst == dwb_pipe_inst)
++				stream->writeback_info[i].wb_enabled = false;
++
+ 			if (j < i)
+ 				/* trim the array */
+ 				stream->writeback_info[j] = stream->writeback_info[i];
 -- 
 2.43.0
 
