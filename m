@@ -1,121 +1,167 @@
-Return-Path: <linux-kernel+bounces-33753-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33754-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B7BA836E20
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:46:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87BAA836E25
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:46:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B4EF1F25035
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:46:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABF811C21CDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:46:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99BC73E463;
-	Mon, 22 Jan 2024 17:09:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82242495CD;
+	Mon, 22 Jan 2024 17:10:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A2snNYWM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NpF1WIcn"
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7F583DBAE;
-	Mon, 22 Jan 2024 17:09:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E0553EA65;
+	Mon, 22 Jan 2024 17:10:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705943396; cv=none; b=NaCz5zV8ZZJjruAVisocSskQPDtGs2eM2HAEpiGNgCYUmZcVj3qX5nZA4V2ujvA826GNVPgy0J7FFVJ9/PvtZmVgTxqaTMSEppIcg5XMQJsRWJAmt9Fs2SWRWtzjDoW1iH1r+lgNOLw51suQ4e8tcg9VqyzZy1C5UEMECSCB8gM=
+	t=1705943415; cv=none; b=THRIgeDaF2JEFgSuRoWxxvKx6Isn2Gd0d6uF2gXdlxoxcNUByq3NNDQmVhNq1pfudNt+eYqCXf3XuY6xNzvLz3jdtbVo2qzN4eWMfFCUEisahvhgxpyWfMBpl+VwPdjClgMqUEprLYQXtm52dcNr1tSYWwrY4K/l4arGxf6Iiaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705943396; c=relaxed/simple;
-	bh=t2lzAIQ/wgiQPWzdfyeH8NuB4LMXlxLjxCYsI2QGApc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QmQhPzG8wZUuIsZAnHxXoFMQZXAH211fbsGuCcN6PfjQc4XEPkhrBmpt9dvrNbXM5dPyuPJLN9kvD1BEgiLIYAcZO/xodehbyE/ijTKVfmioZrho2UCOuHAw3AmXQuQT7hw34duKRyY5wPSeTkf8dM7zo5Qgla7GfqtA8SLbcns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A2snNYWM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADCC5C43399;
-	Mon, 22 Jan 2024 17:09:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705943396;
-	bh=t2lzAIQ/wgiQPWzdfyeH8NuB4LMXlxLjxCYsI2QGApc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=A2snNYWMIXDvqOW9DSsiBFnfFglhNTMmq9sWG5U3u9yl5Z1grQnACfmMRT9lf/RUJ
-	 yU3zqtX7bU4B6ELEQttqkZRVfCKkO6iq1u2ZpzcFoJZU/UH/nrmqAAukK+fjjzq+8N
-	 Ycz5JBtPVuwFDtU2tcW9WZo5vG5e4RQSiM2LoFz1MpvSMx/cWVjldubQacLg28xnqw
-	 KWOlTe7XpXZbxMxV4Xs829bra/gshHYAEElmrvU8Fq5cgmqt7xYQi2QHFQwAC6W+iI
-	 Cq4rGO/4x1wvTiewOX9eM03hlg/cGUfoKUcbMSAz3Trg074FXEKwozLSQI8+vdtddp
-	 bZbLNtxcSZKbQ==
-Date: Mon, 22 Jan 2024 17:09:51 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Hiago De Franco <hiagofranco@gmail.com>
-Cc: Shawn Guo <shawnguo@kernel.org>, linux-arm-kernel@lists.infradead.org,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>, devicetree@vger.kernel.org,
+	s=arc-20240116; t=1705943415; c=relaxed/simple;
+	bh=hg6YVFiUag7Jpn+ogfj/fOty689o28bCOhcvA6bAVyM=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=LQ471mR9+Kuri/77n7RBRcNHRDCGx749ilcnpqwtw01YAL2vFjQugTADWjQGIb7GYEGc5BC7gJLn23uidGijauMzaUyQtcvVlKoZVo4xDIVCfpDPkfEXkzouJYmI1S6SmaGcSu21Tcf16QA/6VaCuRLUxdRa/pBknLHwyNuV+To=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NpF1WIcn; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6da9c834646so3365277b3a.3;
+        Mon, 22 Jan 2024 09:10:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705943414; x=1706548214; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UJG831c9X6YdaovxlTqiwAZnTkqpj5rWBo3Fhk5z9C0=;
+        b=NpF1WIcnLkN+vK/4MlwYxA9DPZhfdqYP6kFzuE+t50GsLpWBBDojIBe5jxf1MA5G6B
+         RWzRLZIrVNebin45kqFWw7BZc2Vp7ZOvshup+l5gvFW4Djn6hmoizBB5vcfcp+8qAGpN
+         Og11sEFfIzx+Ac9voB2ZwM8dqWClrpZ9aRfMe68O7RJE37FD+HGF/rIwzFQqla5hzmfM
+         LlGDZJ1L6TKa+ycNCZbnzz4zC5CCm73cjUhrC2iS2tEeKzq8Pc3AEXEF45imJks3QNtK
+         3qbHooXI7oI4/N8j2TVOCqZJmb3iTwxdbqigUdvMPRr6jA2K84eRFO2wOorrGva2Wo04
+         LJEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705943414; x=1706548214;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UJG831c9X6YdaovxlTqiwAZnTkqpj5rWBo3Fhk5z9C0=;
+        b=R4auaEYi1qC9bWbluEPATPoMoDALYkVw2qbAiUL7U3i/UcpBCrwabNm+3jQvw1r/T0
+         Cq4+y+aSoMh14uuq0ZJ7NvR91lunxr8G3UQTBX4n2sm/k8HUI/IgmG+jbIR5iwYJ1hLC
+         icfyvChUQ/Km4z10zRhrXh/FNjjixNaMPRD0z60MJwOSnTUVyUqs87ZeCxeu/gDzgnjt
+         YqBJUfiVhkXsXM+4oYh9wi412TA3qNpO9NPLvDUL4HANK+fw2X7HIYm5Kl59mYvLve09
+         KrMoDDJsXw2ndltIqVZctnBPpuTPlaniUm3kFrgPJkdYGPy0CrnC9GRj4/crW7gN41yJ
+         0esw==
+X-Gm-Message-State: AOJu0YwXCOFKekG07U/o3Riyu+luwklI0lZAULXsztUCpbedJGoxIsmJ
+	rgfovu67NX8m1gDIN3rLCOk1aEBquSRrudf8Sa1ib8qbVgW8QC4u
+X-Google-Smtp-Source: AGHT+IGMAkEmkRAFTXivmjaEGv5mnh0z4Lxw/gwh0uW8k6XsWOS2sg7jlgnsTVKbIPBT+Zl5rlPDjw==
+X-Received: by 2002:a05:6a20:8e19:b0:19b:118e:bd87 with SMTP id y25-20020a056a208e1900b0019b118ebd87mr6197660pzj.90.1705943413700;
+        Mon, 22 Jan 2024 09:10:13 -0800 (PST)
+Received: from localhost.localdomain (c-73-254-87-52.hsd1.wa.comcast.net. [73.254.87.52])
+        by smtp.gmail.com with ESMTPSA id lc14-20020a056a004f4e00b006db00cb78a8sm10209855pfb.179.2024.01.22.09.10.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 09:10:13 -0800 (PST)
+From: mhkelley58@gmail.com
+X-Google-Original-From: mhklinux@outlook.com
+To: haiyangz@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	jejb@linux.ibm.com,
+	martin.petersen@oracle.com,
 	linux-kernel@vger.kernel.org,
-	Hiago De Franco <hiago.franco@toradex.com>
-Subject: Re: [PATCH v1 1/2] dt-bindings: arm: fsl: Add
- toradex,apalis_imx6q-eval-v1.2 board
-Message-ID: <20240122-unfiled-cruelly-2ee24a8d8116@spud>
-References: <20240122123526.43400-1-hiagofranco@gmail.com>
- <20240122123526.43400-2-hiagofranco@gmail.com>
+	linux-hyperv@vger.kernel.org,
+	linux-scsi@vger.kernel.org
+Subject: [PATCH 1/1] scsi: storvsc: Fix ring buffer size calculation
+Date: Mon, 22 Jan 2024 09:09:56 -0800
+Message-Id: <20240122170956.496436-1-mhklinux@outlook.com>
+X-Mailer: git-send-email 2.25.1
+Reply-To: mhklinux@outlook.com
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="BUnWwTpzDy0Sk/a/"
-Content-Disposition: inline
-In-Reply-To: <20240122123526.43400-2-hiagofranco@gmail.com>
+Content-Transfer-Encoding: 8bit
 
+From: Michael Kelley <mhklinux@outlook.com>
 
---BUnWwTpzDy0Sk/a/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Current code uses the specified ring buffer size (either the default of
+128 Kbytes or a module parameter specified value) to encompass the one page
+ring buffer header plus the actual ring itself.  When the page size is
+4K, carving off one page for the header isn't significant.  But when the
+page size is 64K on ARM64, only half of the default 128 Kbytes is left
+for the actual ring.  While this doesn't break anything, the smaller
+ring size could be a performance bottleneck.
 
-On Mon, Jan 22, 2024 at 09:34:59AM -0300, Hiago De Franco wrote:
-> From: Hiago De Franco <hiago.franco@toradex.com>
->=20
-> Add the toradex,apalis_imx6q-eval-v1.2 compatible string for version 1.2
-> of the Apalis Evaluation Board.
->=20
-> Version v1.2 includes the following changes compared to v1.1:
->=20
-> - 8-bit MMC connector replaced with a 4-bit uSD connector.
-> - Audio codec NAU88C22 added.
-> - M24C02 EEPROM i2c added.
-> - MIPI-CSI-2 connector directly to the board added.
-> - PCIe switch PEX8605 removed and PCIe now is routed directly to Mini
->   PCIe connector.
-> - Power measurement IC INA219 added.
-> - Replaced DVI with HDMI connector.
-> - Single-channel USB to UART converter replaced with four-channel USB
->   to UART/JTAG.
-> - Temperature sensor TMP75 added.
->=20
-> Please note that version v1.0 (which reached EOL) is compatible with
-> v1.1, therefore toradex,apalis_imx6q-eval compatible string should be
-> used for both v1.0 and v1.1.
->=20
-> Signed-off-by: Hiago De Franco <hiago.franco@toradex.com>
+Fix this by applying the VMBUS_RING_SIZE macro to the specified ring
+buffer size.  This macro adds a page for the header, and rounds up
+the size to a page boundary, using the page size for which the kernel
+is built.  Use this new size for subsequent ring buffer calculations.
+For example, on ARM64 with 64K page size and the default ring size,
+this results in the actual ring being 128 Kbytes, which is intended.
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Cc: <stable@vger.kernel.org> # 5.15.x
+Signed-off-by: Michael Kelley <mhklinux@outlook.com>
+---
+ drivers/scsi/storvsc_drv.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-Cheers,
-Conor.
+diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
+index a95936b18f69..7ceb982040a5 100644
+--- a/drivers/scsi/storvsc_drv.c
++++ b/drivers/scsi/storvsc_drv.c
+@@ -330,6 +330,7 @@ enum storvsc_request_type {
+  */
+ 
+ static int storvsc_ringbuffer_size = (128 * 1024);
++static int aligned_ringbuffer_size;
+ static u32 max_outstanding_req_per_channel;
+ static int storvsc_change_queue_depth(struct scsi_device *sdev, int queue_depth);
+ 
+@@ -687,8 +688,8 @@ static void handle_sc_creation(struct vmbus_channel *new_sc)
+ 	new_sc->next_request_id_callback = storvsc_next_request_id;
+ 
+ 	ret = vmbus_open(new_sc,
+-			 storvsc_ringbuffer_size,
+-			 storvsc_ringbuffer_size,
++			 aligned_ringbuffer_size,
++			 aligned_ringbuffer_size,
+ 			 (void *)&props,
+ 			 sizeof(struct vmstorage_channel_properties),
+ 			 storvsc_on_channel_callback, new_sc);
+@@ -1973,7 +1974,7 @@ static int storvsc_probe(struct hv_device *device,
+ 	dma_set_min_align_mask(&device->device, HV_HYP_PAGE_SIZE - 1);
+ 
+ 	stor_device->port_number = host->host_no;
+-	ret = storvsc_connect_to_vsp(device, storvsc_ringbuffer_size, is_fc);
++	ret = storvsc_connect_to_vsp(device, aligned_ringbuffer_size, is_fc);
+ 	if (ret)
+ 		goto err_out1;
+ 
+@@ -2164,7 +2165,7 @@ static int storvsc_resume(struct hv_device *hv_dev)
+ {
+ 	int ret;
+ 
+-	ret = storvsc_connect_to_vsp(hv_dev, storvsc_ringbuffer_size,
++	ret = storvsc_connect_to_vsp(hv_dev, aligned_ringbuffer_size,
+ 				     hv_dev_is_fc(hv_dev));
+ 	return ret;
+ }
+@@ -2198,8 +2199,9 @@ static int __init storvsc_drv_init(void)
+ 	 * the ring buffer indices) by the max request size (which is
+ 	 * vmbus_channel_packet_multipage_buffer + struct vstor_packet + u64)
+ 	 */
++	aligned_ringbuffer_size = VMBUS_RING_SIZE(storvsc_ringbuffer_size);
+ 	max_outstanding_req_per_channel =
+-		((storvsc_ringbuffer_size - PAGE_SIZE) /
++		((aligned_ringbuffer_size - PAGE_SIZE) /
+ 		ALIGN(MAX_MULTIPAGE_BUFFER_PACKET +
+ 		sizeof(struct vstor_packet) + sizeof(u64),
+ 		sizeof(u64)));
+-- 
+2.25.1
 
---BUnWwTpzDy0Sk/a/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZa6hXwAKCRB4tDGHoIJi
-0lUrAQDaGHf9wC1apPqofEVDUhZIOpU2zo3bsdGjY8rebT8U/AD/R7iUArog2/s/
-XkkNjs30GLr+ut34UoHxIxBhVahngAs=
-=A/No
------END PGP SIGNATURE-----
-
---BUnWwTpzDy0Sk/a/--
 
