@@ -1,153 +1,107 @@
-Return-Path: <linux-kernel+bounces-34231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8D068375FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:17:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E194983760A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:18:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8271B284865
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:17:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96FA1280D5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:18:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02A834A9A1;
-	Mon, 22 Jan 2024 22:16:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EPPucPcO"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3658448CC6;
+	Mon, 22 Jan 2024 22:17:42 +0000 (UTC)
+Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [83.223.95.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E80E2495EB
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 22:16:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20D784878F;
+	Mon, 22 Jan 2024 22:17:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.223.95.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705961805; cv=none; b=NQr4CrYsZRU9vWXnoXsENVGd0Vdz4MTbMuEYVjT0EEuOlyye0DN4BOYk+Ct9479AfXKHwxBnSXZGyETGv847RcL8vfnKzZ00U0ATEj6BNHMptLvLiuzE6EV/z1f32BVioBB+G06AZTfMTS+Gv2b/tV5eIGOcv/gMmsRgucVcM28=
+	t=1705961861; cv=none; b=L/c8ipRS7v2sY2kD3YmQyZdqDVe6cgRp+4AfJ3ZP2M/rOSiH4O/4zNUOjzR6VsSbmLtYgn0NSrx0Oc+Sa+NHup67BAsqjh6/T4SW4YXHy6ZJtXBZxlP46E2GCYRtEDM5AvNi6tdm10xX/zujvVElt3Aq0VPFikqC5wVA/8xNZ9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705961805; c=relaxed/simple;
-	bh=zpHSxyxjqSYyi+Uuf35ROAtNAMm8L1pBJx6LkCld5PQ=;
+	s=arc-20240116; t=1705961861; c=relaxed/simple;
+	bh=VXI2zyva/FA7xQVMN8/hQAUXyYWMmB149msEZZUc1/4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j851OFMYJM5BWQ5UJeZGOA+MxmuhX35XZY5+UL5BNRaHQmw4s2gKlPylZJTgDaiD2o9aJH72pN/tdRRVjUAvBXe7D1yMuQTvbd7mPlLvDliMDpE7F1OapXPiZHs/nf8WLo0s5RZewabi9KNcJPjEVck2E4NHNvxoAcm9N5yF0Wk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EPPucPcO; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705961803;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BgrZaLUDZX0rpHph8wYR2fbFPEW3Vfi/WSc3wqW+lkA=;
-	b=EPPucPcORYUEPcWGS7qeW/FMGRU9JjXn/RCkOs06sufuTwQCjwoDtJW1cAFJmoEPK5Rr6b
-	DasJGYnhF+UoIOmYvBXZTqLpvgcH0bzK0GvuarnEiHabRzE3oVbwENk0Nr0j9A0VAhVEDx
-	/KJLl3+mFuSvpP7vrxrFlLmZzAB74Uc=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-657-5qQQxakgOjOhuctDJ01KuA-1; Mon, 22 Jan 2024 17:16:41 -0500
-X-MC-Unique: 5qQQxakgOjOhuctDJ01KuA-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3367e2bd8b0so2696218f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 14:16:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705961800; x=1706566600;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BgrZaLUDZX0rpHph8wYR2fbFPEW3Vfi/WSc3wqW+lkA=;
-        b=De5WWCc0se9CGdtvtVyMR7d2PqrwKUxSS+jWQvLv0+CLh8fbPsddqoPNWeGxwq1z9V
-         ZmJcVOV2kgYyHIQNG6QZXBbZye6rqq0JLe8rY2AwqlvxPJ58nRBHHAnPYPFIJ6v6x0CC
-         RZh1qoZcFSvh1GCI+dCdj0Lg8pSXX6ixkYEmjeDGEA85Wsx5ntXUj2rfIZE5a6k1YyOO
-         exP4g05dh4ZU23TQuKbgbx0aGPVWm0K1nc557G9S39rzv1WGpgOkpO2AGTfM4vdZpwt8
-         SFoZqPiom8nDL2/qMgness8lA616d7GPw4/sfaK4fHBigXEwAiMeP+oBSwwLh0EK7/Gn
-         /kUg==
-X-Gm-Message-State: AOJu0YxHbzS1sE2B+MRbjzMujp8y5INIAcYjnoePjUAD/9glHVH26CV5
-	4x6JOlIqCCcldCAg9kFJLX612+vZedfiGvYqZRN1qhBRLKBDGexq5p5gxSdb45wwdut4mNEb/of
-	o3mHr48XQJofFfdy3rKUid4pT7Z3FPGM+4ifbHaH8ozKxq81tgeqVpqOnki810g==
-X-Received: by 2002:a5d:448b:0:b0:337:bf4c:3a81 with SMTP id j11-20020a5d448b000000b00337bf4c3a81mr2380774wrq.75.1705961800511;
-        Mon, 22 Jan 2024 14:16:40 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFWdH0GMxWI068JJC+LHDgSL52h2kQAYV0P+HNqImIdsOA1ed+Uxg1v1MOWcAqydVLXIXeq+Q==
-X-Received: by 2002:a5d:448b:0:b0:337:bf4c:3a81 with SMTP id j11-20020a5d448b000000b00337bf4c3a81mr2380760wrq.75.1705961800201;
-        Mon, 22 Jan 2024 14:16:40 -0800 (PST)
-Received: from cassiopeiae ([2a02:810d:4b3f:ee94:642:1aff:fe31:a19f])
-        by smtp.gmail.com with ESMTPSA id j14-20020a5d604e000000b003392cdeb3a2sm5703597wrt.103.2024.01.22.14.16.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 14:16:39 -0800 (PST)
-Date: Mon, 22 Jan 2024 23:16:37 +0100
-From: Danilo Krummrich <dakr@redhat.com>
-To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc: ojeda@kernel.org, alex.gaynor@gmail.com, wedsonaf@gmail.com,
-	boqun.feng@gmail.com, gary@garyguo.net, bjorn3_gh@protonmail.com,
-	benno.lossin@proton.me, a.hindborg@samsung.com,
-	aliceryhl@google.com, rust-for-linux@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rust: str: add to_ascii_{upper,lower}case() to CString
-Message-ID: <Za7pRc1wTtEhObTN@cassiopeiae>
-References: <20240122184608.11863-1-dakr@redhat.com>
- <CANiq72kdX-LK=OurnR5ZGDXEf90DxshUX13up4c8kiz0jxHc+Q@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=eLAPQwlAvwMV6HOL4evE0DT4GDHmlzBeEx/xg6Ai3JOWTtuShgCyqlUNyutkNuOAU3mIYysdDs62fjP9MmS7VuUjRCc72kSN5vU/vcWwYmYP4ZuTATqhNvAm42U4boKB75phOnH2BTJ/9DDyNGjAWaAsdYsc6c7imbyx9bY5liQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=83.223.95.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
+	by bmailout1.hostsharing.net (Postfix) with ESMTPS id 2230F300002D2;
+	Mon, 22 Jan 2024 23:17:30 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+	id 1681A30501F; Mon, 22 Jan 2024 23:17:30 +0100 (CET)
+Date: Mon, 22 Jan 2024 23:17:30 +0100
+From: Lukas Wunner <lukas@wunner.de>
+To: Alex Williamson <alex.williamson@redhat.com>
+Cc: linux-pci@vger.kernel.org, bhelgaas@google.com,
+	linux-kernel@vger.kernel.org, eric.auger@redhat.com,
+	mika.westerberg@linux.intel.com, rafael.j.wysocki@intel.com,
+	Sanath.S@amd.com
+Subject: Re: [PATCH v2 2/2] PCI: Fix runtime PM race with PME polling
+Message-ID: <20240122221730.GA16831@wunner.de>
+References: <20230803171233.3810944-1-alex.williamson@redhat.com>
+ <20230803171233.3810944-3-alex.williamson@redhat.com>
+ <20240118115049.3b5efef0.alex.williamson@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANiq72kdX-LK=OurnR5ZGDXEf90DxshUX13up4c8kiz0jxHc+Q@mail.gmail.com>
+In-Reply-To: <20240118115049.3b5efef0.alex.williamson@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Mon, Jan 22, 2024 at 08:38:26PM +0100, Miguel Ojeda wrote:
-> On Mon, Jan 22, 2024 at 7:46 PM Danilo Krummrich <dakr@redhat.com> wrote:
-> >
-> > Add functions to convert a CString to upper- / lowercase assuming all
-> > characters are ASCII encoded.
+On Thu, Jan 18, 2024 at 11:50:49AM -0700, Alex Williamson wrote:
+> On Thu,  3 Aug 2023 11:12:33 -0600 Alex Williamson <alex.williamson@redhat.com wrote:
+> > Testing that a device is not currently in a low power state provides no
+> > guarantees that the device is not immenently transitioning to such a state.
+> > We need to increment the PM usage counter before accessing the device.
+> > Since we don't wish to wake the device for PME polling, do so only if the
+> > device is already active by using pm_runtime_get_if_active().
+> > 
+> > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> > ---
+> >  drivers/pci/pci.c | 23 ++++++++++++++++-------
+> >  1 file changed, 16 insertions(+), 7 deletions(-)
 > 
-> Like Alice mentioned, please mention the use case, i.e. the "why?"
-
-Sure, I need this in the context of converting stringified enum values
-(representing different GPU chipsets) to strings in order to generate the
-corresponding firmware paths. The project context is Nova (GSP only Rust
-successor of Nouveau).
-
-If preferred, I can add this to the commit message.
-
-> (perhaps also linking the Zulip discussion if you like [1]).
+> Resurrecting this patch (currently commit d3fcd7360338) for discussion
+> as it's been identified as the source of a regression in:
 > 
-> [1] https://rust-for-linux.zulipchat.com/#narrow/stream/288089-General/topic/String.20manipulation.20in.20kernel.20Rust
-
-Sure, gonna add it.
-
+> https://bugzilla.kernel.org/show_bug.cgi?id=218360
 > 
-> > +    /// Converts the whole CString to lowercase.
+> Copying Mika, Lukas, and Rafael as it's related to:
 > 
-> Please use Markdown and, if possible, an intra-doc link, i.e.
+> 000dd5316e1c ("PCI: Do not poll for PME if the device is in D3cold")
 > 
->     /// Converts the whole [`CString`] to lowercase.
+> where we skip devices in D3cold when processing the PME list.
 > 
-> Also perhaps we should mimic the standard library docs?
-
-Mimic, as in copy them over (to the extent they actually apply)?
-
+> I think the issue in the above bz is that the downstream TB3/USB4 port
+> is in D3 (presumably D3hot) and I therefore infer the device is in state
+> RPM_SUSPENDED.  This commit is attempting to make sure the device power
+> state is stable across the call such that it does not transition into
+> D3cold while we're accessing it.
 > 
-> > +    pub fn to_ascii_lowercase(&mut self) {
-> > +        self.buf.make_ascii_lowercase();
-> > +    }
-> 
-> Why did you choose the `to_ascii_*()` name for these? In the standard
-> library, the in-place ones are `make_ascii_*()` (like the one you call
-> in the implementation).
+> To do that I used pm_runtime_get_if_active(), but in retrospect this
+> requires the device to be in RPM_ACTIVE so we end up skipping anything
+> suspended or transitioning.
 
-Should be make_ascii_*(), agreed.
+How about dropping the calls to pm_runtime_get_if_active() and
+pm_runtime_put() and instead simply do:
 
-> 
-> Should the new-object-returned ones be added, by the way, if we are
-> adding these?
+			if (pm_runtime_suspended(&pdev->dev) &&
+			    pdev->current_state != PCI_D3cold)
+				pci_pme_wakeup(pdev, NULL);
 
-Sure, I'm fine adding them as well. Not sure we'll need them for Nova though.
+Thanks,
 
-- Danilo
-
-> 
-> Cheers,
-> Miguel
-> 
-
+Lukas
 
