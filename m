@@ -1,56 +1,72 @@
-Return-Path: <linux-kernel+bounces-33499-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D96DF836A63
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:26:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18481836A64
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:26:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 936E528325D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:26:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C57DC281BF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:26:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68A8A13B797;
-	Mon, 22 Jan 2024 15:15:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0796013B7AA;
+	Mon, 22 Jan 2024 15:15:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NADIfuXQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kK3HR8ov"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA26313B791;
-	Mon, 22 Jan 2024 15:15:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C6F73D3BD;
+	Mon, 22 Jan 2024 15:15:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936535; cv=none; b=US5xN+L2QS/LU79G999ZsBe+d5QfezaddIkrc9JdzjLyLmWPv6DO3wmaZTs6ES7eprHDx7lL7JBp0h3n3qG9chnoAqeknuWZ18htkZWUEs1w5rGZPpg2WVl9D4v+CO3VJuYN2T962fdwO1k0ffFdNEeAt2NcEFgjsnxiOTpBT04=
+	t=1705936540; cv=none; b=AoD5nQeuUfk6nbW4RSUvKAqNgL9KujGRQQ2vEBSURImjPaE7YPq7folOeUT3yCMDZFec6YdvvMhj7dKB+v7e4i9AQQtcWEWSkpf5VnmykYBy1bIKS/caKeCd9k/rhar36G6iVRr3DtZYD6xc+H+BU+TvKtNuCrVxTXpNthnHeQQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936535; c=relaxed/simple;
-	bh=cWo7YuSlunsz7usgTvxCagPcAzLZJnbyK/Mk14vIiB0=;
+	s=arc-20240116; t=1705936540; c=relaxed/simple;
+	bh=EFenuZeTfK4htTwIGJoDpBTqQUk9QC/xPh9GsknP7mo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dbVngVBmQhRYZ9cPyassIcZSjA0iUEIfIvpI6/Scorsc4n0tlqflh8KTUTtNNMHn/Aw6yq8OJ+TX/DuJ0F0DN316uCZZGcq9UWTy274Spz1IhNTIyBeysn/1YyEXXJ4ZQnhf3Vb5PYPqULA9u/tL5x/UARuMZT8OUMtP7MfIP9w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NADIfuXQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20D2CC433C7;
-	Mon, 22 Jan 2024 15:15:34 +0000 (UTC)
+	 MIME-Version; b=ZCRay/5vFSVt4C605ewBEcSrdty6JpxGtybvnjBx2fCOQgOLlnDVhGlDNMcGMfdj3depKzz1Gjgp7s9hlY/AiFbgoVbZ6AUCM2T7lfSDU0Wmg8eqT7oGZDDdSgbgE9NO1Qb8+vtn1z47qsIdEggoF6w0IsMFeEul6SgMdNX61O0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kK3HR8ov; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96B9BC433C7;
+	Mon, 22 Jan 2024 15:15:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705936535;
-	bh=cWo7YuSlunsz7usgTvxCagPcAzLZJnbyK/Mk14vIiB0=;
+	s=k20201202; t=1705936540;
+	bh=EFenuZeTfK4htTwIGJoDpBTqQUk9QC/xPh9GsknP7mo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NADIfuXQ78/53DYJVkWSzsGW3zan89wwFxeClvshxWu4lSdnjRtpyAO4002YbcxUB
-	 zLVFs+sM0m10R2bXcQPrNyiQ5kEYTn0p1ZVqfQpwhBclT7L/eP8KeOE6HL+qxIpRBB
-	 bryCwrM/FLxf6q3TAAAiAsb67eogzU1xCz6/YPC9DhQOnNFNemY6moQuaMj7x7tCrc
-	 FddeYAHS6nZnyhGigxnp8WafdvDWlizK7fGUnPICwWDr5gcvYjUGy4WJIpTAOdMrZR
-	 ZI6pDsiz29r3513VeGUx2pD4xHKz1Mh2o50lp9zX2AACJ4t167rNWBrUD6POy2arhx
-	 pyVC41R2IWsBQ==
+	b=kK3HR8ovikzmiCl+OGQPgnX+Kh43K8j1ziqdt9S6p6RQGyjNPGYH5yTYTRqTLavyO
+	 lKPFomQ9j6KlMlx/jRN3440NCpOOKOxtJQijw7VYxWC2r7o1y5zrUC9ypjtFcsHsQk
+	 1vhEWD+g5ugg/pWxg/ifMuRvv7+0D9PPJlYbRdQ2sRFVeYKfqLTH5k6VG0xmP41FKy
+	 GEvXSw3OXTgkiCcMVteMfbjvucB+/EZGDE8BGFDCAY0oVRZswYTgB/DfMIQJKqPJJn
+	 +9bmgw967RJMdglS1Q3IkrZc5VpHfPmz85w9NEBnPW2+gAO1dpgq7UzAo7rVi92SRd
+	 suvQkdB+O4OUA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jack Wang <jinpu.wang@ionos.com>,
-	Leon Romanovsky <leon@kernel.org>,
+Cc: Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>,
+	Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+	Hamza Mahfooz <hamza.mahfooz@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
 	Sasha Levin <sashal@kernel.org>,
-	neelx@redhat.com,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 06/28] RDMA/IPoIB: Fix error code return in ipoib_mcast_join
-Date: Mon, 22 Jan 2024 10:14:32 -0500
-Message-ID: <20240122151521.996443-6-sashal@kernel.org>
+	harry.wentland@amd.com,
+	sunpeng.li@amd.com,
+	Rodrigo.Siqueira@amd.com,
+	christian.koenig@amd.com,
+	Xinhui.Pan@amd.com,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	jun.lei@amd.com,
+	Qingqing.Zhuo@amd.com,
+	wenjing.liu@amd.com,
+	alvin.lee2@amd.com,
+	samson.tam@amd.com,
+	aric.cyr@amd.com,
+	dillon.varone@amd.com,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.10 07/28] drm/amd/display: Fix tiled display misalignment
+Date: Mon, 22 Jan 2024 10:14:33 -0500
+Message-ID: <20240122151521.996443-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122151521.996443-1-sashal@kernel.org>
 References: <20240122151521.996443-1-sashal@kernel.org>
@@ -65,32 +81,41 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.208
 Content-Transfer-Encoding: 8bit
 
-From: Jack Wang <jinpu.wang@ionos.com>
+From: Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>
 
-[ Upstream commit 753fff78f430704548f45eda52d6d55371a52c0f ]
+[ Upstream commit c4b8394e76adba4f50a3c2696c75b214a291e24a ]
 
-Return the error code in case of ib_sa_join_multicast fail.
+[Why]
+When otg workaround is applied during clock update, otgs of
+tiled display went out of sync.
 
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-Link: https://lore.kernel.org/r/20231121130316.126364-2-jinpu.wang@ionos.com
-Signed-off-by: Leon Romanovsky <leon@kernel.org>
+[How]
+To call dc_trigger_sync() after clock update to sync otgs again.
+
+Reviewed-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Acked-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
+Signed-off-by: Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/ipoib/ipoib_multicast.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/amd/display/dc/core/dc.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-index 86e4ed64e4e2..5633809dc61e 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-@@ -557,6 +557,7 @@ static int ipoib_mcast_join(struct net_device *dev, struct ipoib_mcast *mcast)
- 		spin_unlock_irq(&priv->lock);
- 		complete(&mcast->done);
- 		spin_lock_irq(&priv->lock);
-+		return ret;
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/amd/display/dc/core/dc.c
+index 36a9e9c84ed4..272252cd0500 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
+@@ -1440,6 +1440,10 @@ static enum dc_status dc_commit_state_no_check(struct dc *dc, struct dc_state *c
+ 		wait_for_no_pipes_pending(dc, context);
+ 		/* pplib is notified if disp_num changed */
+ 		dc->hwss.optimize_bandwidth(dc, context);
++		/* Need to do otg sync again as otg could be out of sync due to otg
++		 * workaround applied during clock update
++		 */
++		dc_trigger_sync(dc, context);
  	}
- 	return 0;
- }
+ 
+ 	context->stream_mask = get_stream_mask(dc, context);
 -- 
 2.43.0
 
