@@ -1,167 +1,398 @@
-Return-Path: <linux-kernel+bounces-33754-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33765-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87BAA836E25
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:46:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58350836E50
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:50:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABF811C21CDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:46:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F1CF1C23BC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:50:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82242495CD;
-	Mon, 22 Jan 2024 17:10:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B89A5EE76;
+	Mon, 22 Jan 2024 17:16:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NpF1WIcn"
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vz21bdLK"
+Received: from mail-ed1-f74.google.com (mail-ed1-f74.google.com [209.85.208.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E0553EA65;
-	Mon, 22 Jan 2024 17:10:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50ED43D57C
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:16:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705943415; cv=none; b=THRIgeDaF2JEFgSuRoWxxvKx6Isn2Gd0d6uF2gXdlxoxcNUByq3NNDQmVhNq1pfudNt+eYqCXf3XuY6xNzvLz3jdtbVo2qzN4eWMfFCUEisahvhgxpyWfMBpl+VwPdjClgMqUEprLYQXtm52dcNr1tSYWwrY4K/l4arGxf6Iiaw=
+	t=1705943774; cv=none; b=FNLVzhm5m0z31zndSk8PJWSytEVZuvebVVSVwTXGJz0qq0KGWkCqMwi6KjJim8jafpkwFuvQUfspNqQoocrx/PfNnhTL2yO4rtOzwB/ssowC4Badxa/GZegUVARmRBYJgkwHkg46npko1xuEE7LhDYKSTboSZOxmsM4qLAA8UXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705943415; c=relaxed/simple;
-	bh=hg6YVFiUag7Jpn+ogfj/fOty689o28bCOhcvA6bAVyM=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=LQ471mR9+Kuri/77n7RBRcNHRDCGx749ilcnpqwtw01YAL2vFjQugTADWjQGIb7GYEGc5BC7gJLn23uidGijauMzaUyQtcvVlKoZVo4xDIVCfpDPkfEXkzouJYmI1S6SmaGcSu21Tcf16QA/6VaCuRLUxdRa/pBknLHwyNuV+To=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NpF1WIcn; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6da9c834646so3365277b3a.3;
-        Mon, 22 Jan 2024 09:10:14 -0800 (PST)
+	s=arc-20240116; t=1705943774; c=relaxed/simple;
+	bh=eSXrV3HKgyMlnf1tirSBCKNMtpchJL1nchJ7DsOVBps=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=hZAa8AJHfw/+rVqn2Mb3L+Vj6SvbGv7Pgl6wYp+VlfTZOHb0cg8adZKy/2zD9hzAdYJR4WUl7OxqTpUkZZioig/IcNv91VacNr6GGlsYx4LbCab6rhR+o46c4nWe/yTfegKYbUD8pNpbR6unvjMtHGF7ZA/HwORe5JUIwuAX44k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vz21bdLK; arc=none smtp.client-ip=209.85.208.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--elver.bounces.google.com
+Received: by mail-ed1-f74.google.com with SMTP id 4fb4d7f45d1cf-558b84a7eeeso2030526a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:16:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705943414; x=1706548214; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:reply-to:message-id:date
-         :subject:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UJG831c9X6YdaovxlTqiwAZnTkqpj5rWBo3Fhk5z9C0=;
-        b=NpF1WIcnLkN+vK/4MlwYxA9DPZhfdqYP6kFzuE+t50GsLpWBBDojIBe5jxf1MA5G6B
-         RWzRLZIrVNebin45kqFWw7BZc2Vp7ZOvshup+l5gvFW4Djn6hmoizBB5vcfcp+8qAGpN
-         Og11sEFfIzx+Ac9voB2ZwM8dqWClrpZ9aRfMe68O7RJE37FD+HGF/rIwzFQqla5hzmfM
-         LlGDZJ1L6TKa+ycNCZbnzz4zC5CCm73cjUhrC2iS2tEeKzq8Pc3AEXEF45imJks3QNtK
-         3qbHooXI7oI4/N8j2TVOCqZJmb3iTwxdbqigUdvMPRr6jA2K84eRFO2wOorrGva2Wo04
-         LJEA==
+        d=google.com; s=20230601; t=1705943770; x=1706548570; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=IeBiO5JIOcbB3aarK4M/MV2q2unRSMAULj52Ob3ZR74=;
+        b=vz21bdLKsUSYvX5jzH0+jEQGP21rpg8JscY7jgyjG85B4kW7r3pJPDYRlTH7Kg49vM
+         Mn4lu3Jr15gWb9WEyFGTEFUeBso3ID7Cp43Ccp7D5R5dNnjbLIwdLE81N6MIs4o37xVK
+         iOeA65VGoBdzbC7OK2IaGZYwmNFSOD8tGLSnE9WL0JkYp8rThBp5/WmSn+Gc7YJfTrzV
+         ksOAYsHuLxrWoi89XfoLUc1E5aYdgvn/1drqMIjb/XFlKTPF3B4Z9q4RSqnoqxBcWGdF
+         T/Dh0vQhf+BbWxyXEquwHXQceKmMhHxQKe/zN6dEvR9C7fqueiH+tlMIUiHQmpAX6+ul
+         SWdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705943414; x=1706548214;
-        h=content-transfer-encoding:mime-version:reply-to:message-id:date
-         :subject:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UJG831c9X6YdaovxlTqiwAZnTkqpj5rWBo3Fhk5z9C0=;
-        b=R4auaEYi1qC9bWbluEPATPoMoDALYkVw2qbAiUL7U3i/UcpBCrwabNm+3jQvw1r/T0
-         Cq4+y+aSoMh14uuq0ZJ7NvR91lunxr8G3UQTBX4n2sm/k8HUI/IgmG+jbIR5iwYJ1hLC
-         icfyvChUQ/Km4z10zRhrXh/FNjjixNaMPRD0z60MJwOSnTUVyUqs87ZeCxeu/gDzgnjt
-         YqBJUfiVhkXsXM+4oYh9wi412TA3qNpO9NPLvDUL4HANK+fw2X7HIYm5Kl59mYvLve09
-         KrMoDDJsXw2ndltIqVZctnBPpuTPlaniUm3kFrgPJkdYGPy0CrnC9GRj4/crW7gN41yJ
-         0esw==
-X-Gm-Message-State: AOJu0YwXCOFKekG07U/o3Riyu+luwklI0lZAULXsztUCpbedJGoxIsmJ
-	rgfovu67NX8m1gDIN3rLCOk1aEBquSRrudf8Sa1ib8qbVgW8QC4u
-X-Google-Smtp-Source: AGHT+IGMAkEmkRAFTXivmjaEGv5mnh0z4Lxw/gwh0uW8k6XsWOS2sg7jlgnsTVKbIPBT+Zl5rlPDjw==
-X-Received: by 2002:a05:6a20:8e19:b0:19b:118e:bd87 with SMTP id y25-20020a056a208e1900b0019b118ebd87mr6197660pzj.90.1705943413700;
-        Mon, 22 Jan 2024 09:10:13 -0800 (PST)
-Received: from localhost.localdomain (c-73-254-87-52.hsd1.wa.comcast.net. [73.254.87.52])
-        by smtp.gmail.com with ESMTPSA id lc14-20020a056a004f4e00b006db00cb78a8sm10209855pfb.179.2024.01.22.09.10.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 09:10:13 -0800 (PST)
-From: mhkelley58@gmail.com
-X-Google-Original-From: mhklinux@outlook.com
-To: haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	jejb@linux.ibm.com,
-	martin.petersen@oracle.com,
-	linux-kernel@vger.kernel.org,
-	linux-hyperv@vger.kernel.org,
-	linux-scsi@vger.kernel.org
-Subject: [PATCH 1/1] scsi: storvsc: Fix ring buffer size calculation
-Date: Mon, 22 Jan 2024 09:09:56 -0800
-Message-Id: <20240122170956.496436-1-mhklinux@outlook.com>
-X-Mailer: git-send-email 2.25.1
-Reply-To: mhklinux@outlook.com
+        d=1e100.net; s=20230601; t=1705943770; x=1706548570;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IeBiO5JIOcbB3aarK4M/MV2q2unRSMAULj52Ob3ZR74=;
+        b=YGNkx+Maiyzfjopx+xHQq665TtS8DULDuLw3Dp3xpRRLVcWYvSL6S6KjkLDVUpuaFW
+         x0IG7uNgjFfydQTb2nBnG7lOUl3/UWoGewdavG1o1O2/nqgC9dteNOG8PmHi37Yf8wep
+         PE4wNLsMxc7lB/ZE2r6S/jJU+JT8uOh/TBFXnrvPOYc2yIynAMRF4LS3NMYslt1HZ0vF
+         12sFWZ2oVmVhWZ+EUijifM0YTz9dLz8OYDWZ1i5p8O26HMGnXeTm2OxbNKh9z7Lp7ZQo
+         S872/o2G7BraM+CNobg1mkrvZOfxeWt+YpIXbRXrdUp/+3icgJLC7BBWkcOfeSvIOjd0
+         Pbgw==
+X-Gm-Message-State: AOJu0YxxxB8imMOTrM46s74ySmvyxEWc9/MDLBjbXj14JomXjyBwYma1
+	jObRJPaUBZA9b4NGllfrtcufAo4pl2rAGJxMwHvlOtSGkhEQ7Rg3DS8yrVPzUMS0HQsmfkGz3Q=
+	=
+X-Google-Smtp-Source: AGHT+IG6FACQXom5w3f7gHO27sxHOSB2FVLWUKGdi4S+O46ejh+lyp6MF71wZTC449rYG1KxBVOV5ggoeA==
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:9c:201:511d:f6cb:99a8:ac0d])
+ (user=elver job=sendgmr) by 2002:a05:6402:4004:b0:55a:6821:7753 with SMTP id
+ d4-20020a056402400400b0055a68217753mr992eda.1.1705943770543; Mon, 22 Jan 2024
+ 09:16:10 -0800 (PST)
+Date: Mon, 22 Jan 2024 18:11:30 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+Message-ID: <20240122171215.319440-2-elver@google.com>
+Subject: [RFC PATCH] stackdepot: use variable size records for non-evictable entries
+From: Marco Elver <elver@google.com>
+To: elver@google.com, Andrew Morton <akpm@linux-foundation.org>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>, Alexander Potapenko <glider@google.com>, 
+	Dmitry Vyukov <dvyukov@google.com>, Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, kasan-dev@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-From: Michael Kelley <mhklinux@outlook.com>
+With the introduction of stack depot evictions, each stack record is now
+fixed size, so that future reuse after an eviction can safely store
+differently sized stack traces. In all cases that do not make use of
+evictions, this wastes lots of space.
 
-Current code uses the specified ring buffer size (either the default of
-128 Kbytes or a module parameter specified value) to encompass the one page
-ring buffer header plus the actual ring itself.  When the page size is
-4K, carving off one page for the header isn't significant.  But when the
-page size is 64K on ARM64, only half of the default 128 Kbytes is left
-for the actual ring.  While this doesn't break anything, the smaller
-ring size could be a performance bottleneck.
+Fix it by re-introducing variable size stack records (up to the max
+allowed size) for entries that will never be evicted. We know if an
+entry will never be evicted if the flag STACK_DEPOT_FLAG_GET is not
+provided, since a later stack_depot_put() attempt is undefined behavior.
 
-Fix this by applying the VMBUS_RING_SIZE macro to the specified ring
-buffer size.  This macro adds a page for the header, and rounds up
-the size to a page boundary, using the page size for which the kernel
-is built.  Use this new size for subsequent ring buffer calculations.
-For example, on ARM64 with 64K page size and the default ring size,
-this results in the actual ring being 128 Kbytes, which is intended.
+With my current kernel config that enables KASAN and also SLUB owner tracking,
+I observe (after a kernel boot) a whopping reduction of 296 stack depot pools,
+which translates into 4736 KiB saved. The savings here are from SLUB owner
+tracking only, because KASAN generic mode still uses refcounting.
 
-Cc: <stable@vger.kernel.org> # 5.15.x
-Signed-off-by: Michael Kelley <mhklinux@outlook.com>
+Before:
+
+  pools: 893
+  allocations: 29841
+  frees: 6524
+  in_use: 23317
+  freelist_size: 3454
+
+After:
+
+  pools: 597
+  allocations: 29657
+  frees: 6425
+  in_use: 23232
+  freelist_size: 3493
+
+Fixes: 108be8def46e ("lib/stackdepot: allow users to evict stack traces")
+Signed-off-by: Marco Elver <elver@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
 ---
- drivers/scsi/storvsc_drv.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-index a95936b18f69..7ceb982040a5 100644
---- a/drivers/scsi/storvsc_drv.c
-+++ b/drivers/scsi/storvsc_drv.c
-@@ -330,6 +330,7 @@ enum storvsc_request_type {
+Sending this out as an early RFC.
+
+We're stilling mulling over what to do with generic KASAN, because stack
+depot eviction support was only added due to concern of too much memory
+usage.
+
+If this general approach makes sense, then I'd be in favour of just
+reverting all the KASAN-generic eviction patches and leaving KASAN-tag
+as the only user of evictions.
+
+Thoughts?
+
+---
+ lib/stackdepot.c | 163 +++++++++++++++++++++++++----------------------
+ 1 file changed, 88 insertions(+), 75 deletions(-)
+
+diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+index 5caa1f566553..726002d2ac09 100644
+--- a/lib/stackdepot.c
++++ b/lib/stackdepot.c
+@@ -93,9 +93,6 @@ struct stack_record {
+ 	};
+ };
+ 
+-#define DEPOT_STACK_RECORD_SIZE \
+-	ALIGN(sizeof(struct stack_record), 1 << DEPOT_STACK_ALIGN)
+-
+ static bool stack_depot_disabled;
+ static bool __stack_depot_early_init_requested __initdata = IS_ENABLED(CONFIG_STACKDEPOT_ALWAYS_INIT);
+ static bool __stack_depot_early_init_passed __initdata;
+@@ -121,6 +118,8 @@ static void *stack_pools[DEPOT_MAX_POOLS];
+ static void *new_pool;
+ /* Number of pools in stack_pools. */
+ static int pools_num;
++/* Offset to the unused space in the currently used pool. */
++static size_t pool_offset = DEPOT_POOL_SIZE;
+ /* Freelist of stack records within stack_pools. */
+ static LIST_HEAD(free_stacks);
+ /*
+@@ -294,48 +293,44 @@ int stack_depot_init(void)
+ EXPORT_SYMBOL_GPL(stack_depot_init);
+ 
+ /*
+- * Initializes new stack depot @pool, release all its entries to the freelist,
+- * and update the list of pools.
++ * Initializes new stack pool, and update the list of pools.
   */
- 
- static int storvsc_ringbuffer_size = (128 * 1024);
-+static int aligned_ringbuffer_size;
- static u32 max_outstanding_req_per_channel;
- static int storvsc_change_queue_depth(struct scsi_device *sdev, int queue_depth);
- 
-@@ -687,8 +688,8 @@ static void handle_sc_creation(struct vmbus_channel *new_sc)
- 	new_sc->next_request_id_callback = storvsc_next_request_id;
- 
- 	ret = vmbus_open(new_sc,
--			 storvsc_ringbuffer_size,
--			 storvsc_ringbuffer_size,
-+			 aligned_ringbuffer_size,
-+			 aligned_ringbuffer_size,
- 			 (void *)&props,
- 			 sizeof(struct vmstorage_channel_properties),
- 			 storvsc_on_channel_callback, new_sc);
-@@ -1973,7 +1974,7 @@ static int storvsc_probe(struct hv_device *device,
- 	dma_set_min_align_mask(&device->device, HV_HYP_PAGE_SIZE - 1);
- 
- 	stor_device->port_number = host->host_no;
--	ret = storvsc_connect_to_vsp(device, storvsc_ringbuffer_size, is_fc);
-+	ret = storvsc_connect_to_vsp(device, aligned_ringbuffer_size, is_fc);
- 	if (ret)
- 		goto err_out1;
- 
-@@ -2164,7 +2165,7 @@ static int storvsc_resume(struct hv_device *hv_dev)
+-static void depot_init_pool(void *pool)
++static bool depot_init_pool(void **prealloc)
  {
- 	int ret;
+-	int offset;
++	void *pool = NULL;
  
--	ret = storvsc_connect_to_vsp(hv_dev, storvsc_ringbuffer_size,
-+	ret = storvsc_connect_to_vsp(hv_dev, aligned_ringbuffer_size,
- 				     hv_dev_is_fc(hv_dev));
- 	return ret;
+ 	lockdep_assert_held(&pool_lock);
+ 
+-	/* Initialize handles and link stack records into the freelist. */
+-	for (offset = 0; offset <= DEPOT_POOL_SIZE - DEPOT_STACK_RECORD_SIZE;
+-	     offset += DEPOT_STACK_RECORD_SIZE) {
+-		struct stack_record *stack = pool + offset;
+-
+-		stack->handle.pool_index = pools_num;
+-		stack->handle.offset = offset >> DEPOT_STACK_ALIGN;
+-		stack->handle.extra = 0;
+-
+-		/*
+-		 * Stack traces of size 0 are never saved, and we can simply use
+-		 * the size field as an indicator if this is a new unused stack
+-		 * record in the freelist.
+-		 */
+-		stack->size = 0;
++	if (new_pool) {
++		/* We have a new pool saved, use it. */
++		pool = new_pool;
++		new_pool = NULL;
+ 
+-		INIT_LIST_HEAD(&stack->hash_list);
+-		/*
+-		 * Add to the freelist front to prioritize never-used entries:
+-		 * required in case there are entries in the freelist, but their
+-		 * RCU cookie still belongs to the current RCU grace period
+-		 * (there can still be concurrent readers).
+-		 */
+-		list_add(&stack->free_list, &free_stacks);
+-		counters[DEPOT_COUNTER_FREELIST_SIZE]++;
++		/* Take note that we might need a new new_pool. */
++		if (pools_num < DEPOT_MAX_POOLS)
++			WRITE_ONCE(new_pool_required, true);
++	} else if (unlikely(pools_num >= DEPOT_MAX_POOLS)) {
++		/* Bail out if we reached the pool limit. */
++		WARN_ONCE(1, "Stack depot reached limit capacity");
++	} else if (*prealloc) {
++		/* We have preallocated memory, use it. */
++		pool = *prealloc;
++		*prealloc = NULL;
+ 	}
+ 
++	if (!pool)
++		return false;
++
+ 	/* Save reference to the pool to be used by depot_fetch_stack(). */
+ 	stack_pools[pools_num] = pool;
+ 
+ 	/* Pairs with concurrent READ_ONCE() in depot_fetch_stack(). */
+ 	WRITE_ONCE(pools_num, pools_num + 1);
+ 	ASSERT_EXCLUSIVE_WRITER(pools_num);
++
++	pool_offset = 0;
++
++	return true;
  }
-@@ -2198,8 +2199,9 @@ static int __init storvsc_drv_init(void)
- 	 * the ring buffer indices) by the max request size (which is
- 	 * vmbus_channel_packet_multipage_buffer + struct vstor_packet + u64)
+ 
+ /* Keeps the preallocated memory to be used for a new stack depot pool. */
+@@ -368,39 +363,40 @@ static void depot_keep_new_pool(void **prealloc)
+ }
+ 
+ /*
+- * Try to initialize a new stack depot pool from either a previous or the
+- * current pre-allocation, and release all its entries to the freelist.
++ * Try to initialize a new stack record from the current pool, a cached pool, or
++ * the current pre-allocation.
+  */
+-static bool depot_try_init_pool(void **prealloc)
++static struct stack_record *depot_pop_free_pool(void **prealloc, size_t size)
+ {
++	struct stack_record *stack;
++	void *current_pool;
++	u32 pool_index;
++
+ 	lockdep_assert_held(&pool_lock);
+ 
+-	/* Check if we have a new pool saved and use it. */
+-	if (new_pool) {
+-		depot_init_pool(new_pool);
+-		new_pool = NULL;
++	if (pool_offset + size > DEPOT_POOL_SIZE) {
++		if (!depot_init_pool(prealloc))
++			return NULL;
++	}
+ 
+-		/* Take note that we might need a new new_pool. */
+-		if (pools_num < DEPOT_MAX_POOLS)
+-			WRITE_ONCE(new_pool_required, true);
++	if (WARN_ON_ONCE(pools_num < 1))
++		return NULL;
++	pool_index = pools_num - 1;
++	current_pool = stack_pools[pool_index];
++	if (WARN_ON_ONCE(!current_pool))
++		return NULL;
+ 
+-		return true;
+-	}
++	stack = current_pool + pool_offset;
+ 
+-	/* Bail out if we reached the pool limit. */
+-	if (unlikely(pools_num >= DEPOT_MAX_POOLS)) {
+-		WARN_ONCE(1, "Stack depot reached limit capacity");
+-		return false;
+-	}
++	/* Pre-initialize handle once. */
++	stack->handle.pool_index = pool_index;
++	stack->handle.offset = pool_offset >> DEPOT_STACK_ALIGN;
++	stack->handle.extra = 0;
++	INIT_LIST_HEAD(&stack->hash_list);
+ 
+-	/* Check if we have preallocated memory and use it. */
+-	if (*prealloc) {
+-		depot_init_pool(*prealloc);
+-		*prealloc = NULL;
+-		return true;
+-	}
++	pool_offset += size;
+ 
+-	return false;
++	return stack;
+ }
+ 
+ /* Try to find next free usable entry. */
+@@ -420,7 +416,7 @@ static struct stack_record *depot_pop_free(void)
+ 	 * check the first entry.
  	 */
-+	aligned_ringbuffer_size = VMBUS_RING_SIZE(storvsc_ringbuffer_size);
- 	max_outstanding_req_per_channel =
--		((storvsc_ringbuffer_size - PAGE_SIZE) /
-+		((aligned_ringbuffer_size - PAGE_SIZE) /
- 		ALIGN(MAX_MULTIPAGE_BUFFER_PACKET +
- 		sizeof(struct vstor_packet) + sizeof(u64),
- 		sizeof(u64)));
+ 	stack = list_first_entry(&free_stacks, struct stack_record, free_list);
+-	if (stack->size && !poll_state_synchronize_rcu(stack->rcu_state))
++	if (!poll_state_synchronize_rcu(stack->rcu_state))
+ 		return NULL;
+ 
+ 	list_del(&stack->free_list);
+@@ -429,45 +425,62 @@ static struct stack_record *depot_pop_free(void)
+ 	return stack;
+ }
+ 
++static inline size_t depot_stack_record_size(struct stack_record *s, size_t nr_entries)
++{
++	const size_t used = flex_array_size(s, entries, nr_entries);
++	const size_t unused = sizeof(s->entries) - used;
++
++	WARN_ON_ONCE(sizeof(s->entries) < used);
++
++	return ALIGN(sizeof(struct stack_record) - unused, 1 << DEPOT_STACK_ALIGN);
++}
++
+ /* Allocates a new stack in a stack depot pool. */
+ static struct stack_record *
+-depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **prealloc)
++depot_alloc_stack(unsigned long *entries, int nr_entries, u32 hash, depot_flags_t flags, void **prealloc)
+ {
+-	struct stack_record *stack;
++	struct stack_record *stack = NULL;
++	size_t record_size;
+ 
+ 	lockdep_assert_held(&pool_lock);
+ 
+ 	/* This should already be checked by public API entry points. */
+-	if (WARN_ON_ONCE(!size))
++	if (WARN_ON_ONCE(!nr_entries))
+ 		return NULL;
+ 
+-	/* Check if we have a stack record to save the stack trace. */
+-	stack = depot_pop_free();
+-	if (!stack) {
+-		/* No usable entries on the freelist - try to refill the freelist. */
+-		if (!depot_try_init_pool(prealloc))
+-			return NULL;
++	/* Limit number of saved frames to CONFIG_STACKDEPOT_MAX_FRAMES. */
++	if (nr_entries > CONFIG_STACKDEPOT_MAX_FRAMES)
++		nr_entries = CONFIG_STACKDEPOT_MAX_FRAMES;
++
++	if (flags & STACK_DEPOT_FLAG_GET) {
++		/*
++		 * Evictable entries have to allocate the max. size so they may
++		 * safely be re-used by differently sized allocations.
++		 */
++		record_size = depot_stack_record_size(stack, CONFIG_STACKDEPOT_MAX_FRAMES);
+ 		stack = depot_pop_free();
+-		if (WARN_ON(!stack))
+-			return NULL;
++	} else {
++		record_size = depot_stack_record_size(stack, nr_entries);
+ 	}
+ 
+-	/* Limit number of saved frames to CONFIG_STACKDEPOT_MAX_FRAMES. */
+-	if (size > CONFIG_STACKDEPOT_MAX_FRAMES)
+-		size = CONFIG_STACKDEPOT_MAX_FRAMES;
++	if (!stack) {
++		stack = depot_pop_free_pool(prealloc, record_size);
++		if (!stack)
++			return NULL;
++	}
+ 
+ 	/* Save the stack trace. */
+ 	stack->hash = hash;
+-	stack->size = size;
+-	/* stack->handle is already filled in by depot_init_pool(). */
++	stack->size = nr_entries;
++	/* stack->handle is already filled in by depot_pop_free_pool(). */
+ 	refcount_set(&stack->count, 1);
+-	memcpy(stack->entries, entries, flex_array_size(stack, entries, size));
++	memcpy(stack->entries, entries, flex_array_size(stack, entries, nr_entries));
+ 
+ 	/*
+ 	 * Let KMSAN know the stored stack record is initialized. This shall
+ 	 * prevent false positive reports if instrumented code accesses it.
+ 	 */
+-	kmsan_unpoison_memory(stack, DEPOT_STACK_RECORD_SIZE);
++	kmsan_unpoison_memory(stack, record_size);
+ 
+ 	counters[DEPOT_COUNTER_ALLOCS]++;
+ 	counters[DEPOT_COUNTER_INUSE]++;
+@@ -681,7 +694,7 @@ depot_stack_handle_t stack_depot_save_flags(unsigned long *entries,
+ 	found = find_stack(bucket, entries, nr_entries, hash, depot_flags);
+ 	if (!found) {
+ 		struct stack_record *new =
+-			depot_alloc_stack(entries, nr_entries, hash, &prealloc);
++			depot_alloc_stack(entries, nr_entries, hash, depot_flags, &prealloc);
+ 
+ 		if (new) {
+ 			/*
 -- 
-2.25.1
+2.43.0.429.g432eaa2c6b-goog
 
 
