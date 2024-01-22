@@ -1,122 +1,135 @@
-Return-Path: <linux-kernel+bounces-32510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32512-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B68BB835C82
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:24:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E321835C87
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:25:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F190286479
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:24:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3B7BB26696
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:25:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30C7F20DF3;
-	Mon, 22 Jan 2024 08:24:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C0C020DFE;
+	Mon, 22 Jan 2024 08:24:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U9yVUA7u"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s1URRlGj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D03F20DE0;
-	Mon, 22 Jan 2024 08:24:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B50120DE1;
+	Mon, 22 Jan 2024 08:24:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705911867; cv=none; b=m6aLmHchn7mQGPt70F+5k4Enyonl6Z9tkCQgkbE6eWx8Tiy4kZhLI/m71MAcBSAWvLU1p0n+NR6JBtP2uPTjwlXtKk8SAKKP2MZS5odonj45jDKcZqsLBwMbdIHrnZb4K8BBhhR5Kbw3FNmCuDRRoxdzMYKZQs/F7oialhK9EYc=
+	t=1705911897; cv=none; b=PR4Z5Cxx15WZOXvYHGLWVHsCb96Jo/LjlkJywC7slLJYUpqCML97F/VAkbqCNC6r/hSKrJfr2nBa5FjsxPUxnZ6xjULgikkfxIhzF0C7C9+dvBGRqv+PAoUMoI1fAIzQjAarCwMoyrnLrTdD6vgArcO5NYt+5uoBku4Zg+Y8vpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705911867; c=relaxed/simple;
-	bh=+DIt2XHxR6GWd87F4zF71KKoFdrIBtRWA2j/kw1c0rI=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=R3LTN5cUd/+JPyTklE7v3XiZOoiFoTK0P5IFbqDOoY2WOVa1WN9k77U2bV4YPk/Z3JLgMI4YtM53uiNic7CjjnSSeCPQT1llfmXkiPkzV+D27zhg0E1bis2RjRiJ5YPWlljglJrqsIQTG7uOA0npJ9iGJBNiu5eZjB6jLgvjCw8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U9yVUA7u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3693C433C7;
-	Mon, 22 Jan 2024 08:24:25 +0000 (UTC)
+	s=arc-20240116; t=1705911897; c=relaxed/simple;
+	bh=drF9HS0qNEy+0/grGYgRcmiwZBDcpQyCv996fd/G5Uw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uXKt000/T8Aa0YK9G8y4fBcRSBYqzRdbizfGdwT8s+5WzCSeZ0E/sKuDmQZ3JJP6OQ2gFg2BLVcBen7QSVWwTn8R9nEEwWNFLEd4YTIhF3U136KeLe1xL2uiO2JkqsRp0Mx4HsMqREkgS9jeJV5e+BZ7uSBwG0Sh6WBe9JXe43g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s1URRlGj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C09E8C433C7;
+	Mon, 22 Jan 2024 08:24:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705911867;
-	bh=+DIt2XHxR6GWd87F4zF71KKoFdrIBtRWA2j/kw1c0rI=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=U9yVUA7ussq3zLhB7QYCuHHjo7VA6uSyWsUtucbdkKJqLtHrXHCZlLTlb7AkP7x9p
-	 KAnO6b7eHzgEZnbaVH84M6vxblFJiBQjCV3Md/2QS6ehAAok6VfACKisSOq9lDiEFO
-	 LGPWTuyQ8KMbIYxXIAjwuODbhXn4lnGCm+1nScMmpYtqove6hSuQA4eJDdKLAbwlrJ
-	 cLrE1P4eTzV5lr9tMUupqCbfR9NoomokJcdW9L5xBqXvaOHjb+wPYw6t1Jsswb7lXd
-	 d7jqBa0Nz547WYXOZCzIp48mgmFtbuCNPKkDVT92lXDKZxrQQeXZ4ReZSKt5rpzN+s
-	 zo/NZkZfZBsvg==
-From: Kalle Valo <kvalo@kernel.org>
-To: "Linux regression tracking (Thorsten Leemhuis)" <regressions@leemhuis.info>
-Cc: ath11k@lists.infradead.org,  Linux regressions mailing list
- <regressions@lists.linux.dev>,  linux-wireless@vger.kernel.org,
-  linux-kernel@vger.kernel.org
-Subject: Re: [regression] ath11k broken in v6.7
-References: <874jfjiolh.fsf@kernel.org> <87frytg7b8.fsf@kernel.org>
-	<878r4lg3t8.fsf@kernel.org> <87jzo13jmf.fsf@kernel.org>
-	<94150b26-bdd9-49c2-82a1-26ff46c9d32a@leemhuis.info>
-Date: Mon, 22 Jan 2024 10:24:23 +0200
-In-Reply-To: <94150b26-bdd9-49c2-82a1-26ff46c9d32a@leemhuis.info> (Linux
-	regression tracking's message of "Mon, 22 Jan 2024 09:03:27 +0100")
-Message-ID: <87fryp3he0.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=k20201202; t=1705911896;
+	bh=drF9HS0qNEy+0/grGYgRcmiwZBDcpQyCv996fd/G5Uw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=s1URRlGjJA38bXP5Tqq7X0QiPyWe3UraXQYziiFt47585KnHSGCL0jFjJwEmzttNe
+	 i2sGsduyPw2Sg1I6HXBlaiQ3g9W51qyA8zeUoJFdgwPA8Cm7eSnjqMH/eVdgQlyoXw
+	 0McCO5WsZwHz4i1coBWQBIgcnyJR2yFipOTrLmYtOth4Y9xXxJoaDrMC8fzMKnmxaX
+	 UkGde0+cJfWZ21larnsTS7hcRJ+jZUe36eTbgWWA0sJTX0msi+zXPEUToMVXZjTpRx
+	 RbW16AveJ/rfSy4EPmMpApjuHanWfaPCZU4CE/3jzTjygb0GjWBB4q5iPKBcCf+H2+
+	 S9s+9RrCs2Rhw==
+Date: Mon, 22 Jan 2024 08:24:51 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Changhuang Liang <changhuang.liang@starfivetech.com>
+Cc: Conor Dooley <conor.dooley@microchip.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Emil Renner Berthing <kernel@esmil.dk>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Jack Zhu <jack.zhu@starfivetech.com>,
+	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: Re: =?utf-8?B?5Zue5aSNOiDlm57lpI06IFtQQVRD?=
+ =?utf-8?Q?H_v1_1=2F2=5D_dt-bindings?= =?utf-8?Q?=3A?= media: starfive: Match
+ driver and yaml property names
+Message-ID: <20240122-uncivil-almost-631137081fd9@spud>
+References: <20240119100639.84029-1-changhuang.liang@starfivetech.com>
+ <20240119100639.84029-2-changhuang.liang@starfivetech.com>
+ <20240119-despair-festival-59ab2d4d896b@wendy>
+ <SHXPR01MB0671E2150D9A2707F12E0901F270A@SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn>
+ <20240119-preamble-calm-7724e17fcebc@wendy>
+ <BJXPR01MB0662E6EEEEF888BD90A1FCE5F275A@BJXPR01MB0662.CHNPR01.prod.partner.outlook.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="691fbi7YiHqy5KOf"
+Content-Disposition: inline
+In-Reply-To: <BJXPR01MB0662E6EEEEF888BD90A1FCE5F275A@BJXPR01MB0662.CHNPR01.prod.partner.outlook.cn>
 
-"Linux regression tracking (Thorsten Leemhuis)"
-<regressions@leemhuis.info> writes:
 
-> On 22.01.24 08:36, Kalle Valo wrote:
->> Kalle Valo <kvalo@kernel.org> writes:
->>> Kalle Valo <kvalo@kernel.org> writes:
->>>> Kalle Valo <kvalo@kernel.org> writes:
->>>>
->>>>> Just trying to make everyone aware because I suspect this will affect
->>>>> quite a few people: ath11k is crashing during suspend on v6.7 due to a
->>>>> mac80211 patch, more info:
->>>>> https://bugzilla.kernel.org/show_bug.cgi?id=218364
->
-> Many thx for the heads up, much appreciated. Sorry, forgot to add it to
-> the tracking myself: during the merge window thing are sometimes a bit
-> chaotic for myself as well. And I was head-down in rewriting some parts
-> of regzbot (see below).
+--691fbi7YiHqy5KOf
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-No worries, this was a good time to learn all this myself.
+On Mon, Jan 22, 2024 at 01:33:56AM +0000, Changhuang Liang wrote:
+>=20
+> > On Fri, Jan 19, 2024 at 12:57:22PM +0000, Changhuang Liang wrote:
+> > > EXTERNAL EMAIL: Do not click links or open attachments unless you know
+> > > the content is safe
+> > >
+> > > Hi , Conor
+> > >
+> > > > =E4=B8=BB=E9=A2=98: Re: [PATCH v1 1/2] dt-bindings: media: starfive=
+: Match driver
+> > > > and yaml property names
+> > > >
+> > > > On Fri, Jan 19, 2024 at 02:06:38AM -0800, Changhuang Liang wrote:
+> > > > > Drop some unused properties for clocks, resets and interrupts for
+> > > > > StarFive JH7110 camera subsystem.
+> > > >
+> > > > What do you mean "unused"?
+> > > >
+> > > > Do these clocks etc exist but are not used by the driver?
+> > > >
+> > > > Or do they not exist at all?
+> > > >
+> > > > The two are very different!
+> >=20
+> > > These clocks etc exist but are not used by the driver.
+> >=20
+> > That's not an acceptable reason for removing them from the binding. If =
+they
+> > exist, they should be documented, regardless of whether the driver make=
+s use
+> > of them. NAK.
+>=20
+> If so, how to avoid the warning of dtbs_check.
 
->>>>> Proposed fix:
->>>>> https://patchwork.kernel.org/project/linux-wireless/patch/20240111170629.1257217-1-benjamin@sipsolutions.net/
->>>>
->>>> The fix is now applied:
->>>>
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/wireless/wireless.git/commit/?id=556857aa1d0855aba02b1c63bc52b91ec63fc2cc
->>>>
->>>> I'll try to use regzbot for the first time, let's see how it goes:
->>>>
->>>> #regzbot introduced: 0a3d898ee9a8 ^
->>>
->>> Forgot to include the bug report:
->>>
->>> #regzbot link: https://bugzilla.kernel.org/show_bug.cgi?id=218364
->
-> FWIW, that usage was slightly off and not how it's supposed to be done.
-> But whatever, let's ignore that. I'm reworking things currently
-> slightly, as you are not the first one that slightly got mislead -- and
-> the newer commands will hopefully be mire intuitive.
+By also adding the clocks, resets and interrupts to the dts.
 
-Just to educate myself, how should I have done it? (But feel free to
-skip the question if you are busy)
+--691fbi7YiHqy5KOf
+Content-Type: application/pgp-signature; name="signature.asc"
 
->> #regzbot fix: 556857aa1d0855aba02b1c63bc52b91ec63fc2cc
->
-> Great, thx. Hope it reached mainline soon. Maybe once it's there you or
-> I should tell Greg to pick this up quickly for stable given that it
-> apparently "might affect quite a few people".
+-----BEGIN PGP SIGNATURE-----
 
-I'll try to remember that but the thing is that I don't really follow
-stable releases. I wish there would be a person who could follow stable
-releases from wireless perspective and make sure everything is ok there.
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZa4mUwAKCRB4tDGHoIJi
+0h/FAP9OymvQKrw2lHv7pji+pa6/xaJNsKHlv4dCxUXnS+SjUgD+ItSiNki3Vypi
+yxKXpfp0nWKwBR7x5uxNdhSO9OoXtQs=
+=tSBw
+-----END PGP SIGNATURE-----
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+--691fbi7YiHqy5KOf--
 
