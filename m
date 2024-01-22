@@ -1,100 +1,79 @@
-Return-Path: <linux-kernel+bounces-34200-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34201-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6453837578
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:36:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9362883757B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:36:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A66AB224D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:36:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3DFF028956D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:36:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEFEF4878F;
-	Mon, 22 Jan 2024 21:34:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A425648CC5;
+	Mon, 22 Jan 2024 21:35:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ejiCP1VO";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="18DIKOhg";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ejiCP1VO";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="18DIKOhg"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="V4Rk67bh"
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59022481A5;
-	Mon, 22 Jan 2024 21:34:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5E3B48CF3
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 21:35:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705959297; cv=none; b=MH0RdirYxEh36kArg5i/0I8oos/5adPeVmmkcnMN2ApZBBopI57E5JFTjG3QzDswq3y2WAGWT6NnyJ4oP9y9QlOmVMP93OIWcr0WUdjsEjUmdYRP33HZYl1AY5elCYh7jfm70K+KubLVKMT7evvMdW6HiyZP7WfgtQlfQcg1mBc=
+	t=1705959323; cv=none; b=F02r8OCrE/V/ZWLAKDJNxBX4ZiHqTZL0CY/BarsXEp6W7UsRT67a1h8EUT2eThHu2tGOnQ/fBTgdBZ23KFJJDKzYgd4VPuhBsEDYFqBniVPccHSDzT43f1H+kEspLCX8cmgDG3Kyi1L16DA9lTB20Rkn/HIPpE0hlYwOZ97Qzy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705959297; c=relaxed/simple;
-	bh=AvisTLD9wXTFCZ0+eSEooOBpcWR8LOo3Vu/9ugqVbRc=;
+	s=arc-20240116; t=1705959323; c=relaxed/simple;
+	bh=tir7kge5xaX08VMRW1qUzxTUu9x6OO0aQSyK1LncuuY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p5ziffTSsHSLhzXyeg7SrkIS2nYgbCz6t+O+cYZlAUnfoGwvXssIjDfZETOGNpitwycqRYb2r1E5Jhu6nG7+eoTXYVsEQbMfi8b4iMszeHYpehNWPsEPQ6/YPWRDg9pM1ZFdEwXclrpHjbhhkVZikDwkO057VFF/mDFTg3aj5Ro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ejiCP1VO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=18DIKOhg; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ejiCP1VO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=18DIKOhg; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 805C61F391;
-	Mon, 22 Jan 2024 21:34:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705959293;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4V8EMIiewNXIpjskcZ/asr7GAbLav864HbAcqkeBWDA=;
-	b=ejiCP1VOck0JH8EV2FpNiyMOC0Qng47tmgubMjJO5KFYw/gNGS2/o9RDPjxmGKqOUVrqEx
-	jiFhtg+YFtv/QbvEF6HpGbuGYkW4okwPY16UHUQduT6cJCUY6aCNSK6Gm67Uf7cmXNkpx6
-	4gwHnEzFGWVZtL2dMxTab5zlWsdgNmE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705959293;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4V8EMIiewNXIpjskcZ/asr7GAbLav864HbAcqkeBWDA=;
-	b=18DIKOhgNI2S3WVE6dmQYHsp2Uh7JitA1mvuovx+xmV7i6lz1+xlUOsxmEh8G94kSOO6rW
-	w34cBlddncKAjqDQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705959293;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4V8EMIiewNXIpjskcZ/asr7GAbLav864HbAcqkeBWDA=;
-	b=ejiCP1VOck0JH8EV2FpNiyMOC0Qng47tmgubMjJO5KFYw/gNGS2/o9RDPjxmGKqOUVrqEx
-	jiFhtg+YFtv/QbvEF6HpGbuGYkW4okwPY16UHUQduT6cJCUY6aCNSK6Gm67Uf7cmXNkpx6
-	4gwHnEzFGWVZtL2dMxTab5zlWsdgNmE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705959293;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4V8EMIiewNXIpjskcZ/asr7GAbLav864HbAcqkeBWDA=;
-	b=18DIKOhgNI2S3WVE6dmQYHsp2Uh7JitA1mvuovx+xmV7i6lz1+xlUOsxmEh8G94kSOO6rW
-	w34cBlddncKAjqDQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5DD0F13310;
-	Mon, 22 Jan 2024 21:34:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id lHdkFn3frmUSAgAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Mon, 22 Jan 2024 21:34:53 +0000
-Date: Mon, 22 Jan 2024 22:34:28 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc: Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>
-Subject: Re: [PATCH 1/2] btrfs: zoned: use rcu list for iterating devices to
- collect stats
-Message-ID: <20240122213428.GE31555@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20240122-reclaim-fix-v1-0-761234a6d005@wdc.com>
- <20240122-reclaim-fix-v1-1-761234a6d005@wdc.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Cgxo6GIr7KCZ1Hk5ZznS1h2y+gSc0eVO461dLv/Nz23N7+/VDI+zMD/ComPxqakVkAU8jlc4m1gBA912MRcuULqsVOnN71kpv5bECIZ5zDx1R/qzyCuBit+MhlG8HOdl7PEjiDggl5e7WQs0HzzEO/Ny4DHGev8HSypW2JvAtO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=V4Rk67bh; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6db0fdd2b8fso1716043b3a.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 13:35:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1705959320; x=1706564120; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=La/pQA6UxU8t2n1gEI32Cqq0uc4Tew1m9B7OoRZQ8SI=;
+        b=V4Rk67bhj38bUYpTgO1fXNT7hlYfhelV36xIeufYYXG/jyrFnpW3z+ZFIoQNE/eiSz
+         7F7EblPvj8mBUqZ4tkfYTHThHDwRYOueP8p409VYLs5dsXEPMFIurqLUt9qGQ1wNQpvW
+         yxofseEB9WDEY9pPwhthu+mwYY3hrzwhMJeb0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705959320; x=1706564120;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=La/pQA6UxU8t2n1gEI32Cqq0uc4Tew1m9B7OoRZQ8SI=;
+        b=StMaJIp4Lc8V+YjAKyWbawZiEGTK0A3wpqJvZ0trzmjpacoMqazD6Ky61ZeW7yJmoa
+         rfU8ZBX1j7APhjywP/PxaCA/k+HD+cHQFtxuespu7fjLtM0M21vYxeG5E+M2OyoPHExD
+         WOPpwQWfYQk+AZAUx/HPDorSGXbFMLOUXpSmxe7hWeobnP4pMOG5hsr1S8qWcC53Hgx2
+         t3FfibGC9zILJKbeAn9Os2GhtgHzzRhgyRswdgfdpgP78NwiXNugz3neYh+brk3e70Oo
+         ohGr7PE2w1g4pit5zwZrdLo0pvRepSUifEGO+nuhrqPCO9yiLNmcwNAcwnuMe1At5LIi
+         M3rA==
+X-Gm-Message-State: AOJu0YxRWbjPM7FONF9n8wpE5qvtO443eJkbS1LDm/aDy+rebkO/NOUx
+	FE8/8j8YhD8hfR/idhLpawQDV/pTterQpNn+PzWXzQ3P7yHe2gf3xOFi/GlEGA==
+X-Google-Smtp-Source: AGHT+IEhye246jTya1RIC7tJ0lpkhYypKWEZO4ePXa0bxP/yrVeg7EyStXAcy9+TrTGZeyn+aV1J5Q==
+X-Received: by 2002:a17:90a:c0f:b0:28a:b5ac:514f with SMTP id 15-20020a17090a0c0f00b0028ab5ac514fmr1976731pjs.95.1705959319837;
+        Mon, 22 Jan 2024 13:35:19 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id pd5-20020a17090b1dc500b0028c5585fb41sm10145282pjb.45.2024.01.22.13.35.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 13:35:19 -0800 (PST)
+Date: Mon, 22 Jan 2024 13:35:18 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] eventfs: Save directory inodes in the eventfs_inode
+ structure
+Message-ID: <202401221334.A6BC4754@keescook>
+References: <20240122152748.46897388@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -103,67 +82,52 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240122-reclaim-fix-v1-1-761234a6d005@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-0.26 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.46)[79.03%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -0.26
+In-Reply-To: <20240122152748.46897388@gandalf.local.home>
 
-On Mon, Jan 22, 2024 at 02:51:03AM -0800, Johannes Thumshirn wrote:
-> As btrfs_zoned_should_reclaim only has to iterate the device list in order
-> to collect stats on the device's total and used bytes, we don't need to
-> take the full blown mutex, but can iterate the device list in a rcu_read
-> context.
+On Mon, Jan 22, 2024 at 03:27:48PM -0500, Steven Rostedt wrote:
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 > 
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->  fs/btrfs/zoned.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> The eventfs inodes and directories are allocated when referenced. But this
+> leaves the issue of keeping consistent inode numbers and the number is
+> only saved in the inode structure itself. When the inode is no longer
+> referenced, it can be freed. When the file that the inode was representing
+> is referenced again, the inode is once again created, but the inode number
+> needs to be the same as it was before.
 > 
-> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> index 168af9d000d1..b7e7b5a5a6fa 100644
-> --- a/fs/btrfs/zoned.c
-> +++ b/fs/btrfs/zoned.c
-> @@ -2423,15 +2423,15 @@ bool btrfs_zoned_should_reclaim(struct btrfs_fs_info *fs_info)
->  	if (fs_info->bg_reclaim_threshold == 0)
->  		return false;
->  
-> -	mutex_lock(&fs_devices->device_list_mutex);
-> -	list_for_each_entry(device, &fs_devices->devices, dev_list) {
-> +	rcu_read_lock();
-> +	list_for_each_entry_rcu(device, &fs_devices->devices, dev_list) {
->  		if (!device->bdev)
->  			continue;
->  
->  		total += device->disk_total_bytes;
->  		used += device->bytes_used;
->  	}
-> -	mutex_unlock(&fs_devices->device_list_mutex);
-> +	rcu_read_unlock();
+> Just making the inode numbers the same for all files is fine, but that
+> does not work with directories. The find command will check for loops via
+> the inode number and having the same inode number for directories triggers:
+> 
+>   # find /sys/kernel/tracing
+> find: File system loop detected;
+> '/sys/kernel/debug/tracing/events/initcall/initcall_finish' is part of the same file system loop as
+> '/sys/kernel/debug/tracing/events/initcall'.
+> [..]
+> 
+> Linus pointed out that the eventfs_inode structure ends with a single
+> 32bit int, and on 64 bit machines, there's likely a 4 byte hole due to
+> alignment. We can use this hole to store the inode number for the
+> eventfs_inode. All directories in eventfs are represented by an
+> eventfs_inode and that data structure can hold its inode number.
+> 
+> That last int was also purposely placed at the end of the structure to
+> prevent holes from within. Now that there's a 4 byte number to hold the
+> inode, both the inode number and the last integer can be moved up in the
+> structure for better cache locality, where the llist and rcu fields can be
+> moved to the end as they are only used when the eventfs_inode is being
+> deleted.
+> 
+> Link: https://lore.kernel.org/all/CAMuHMdXKiorg-jiuKoZpfZyDJ3Ynrfb8=X+c7x0Eewxn-YRdCA@mail.gmail.com/
+> 
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Fixes: 53c41052ba31 ("eventfs: Have the inodes all for files and directories all be the same")
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-This is basically only a hint and inaccuracies in the total or used
-values would be transient, right? The sum is calculated each time the
-funciton is called, not stored anywhere so in the unlikely case of
-device removal it may skip reclaim once, but then pick it up later.
-Any actual removal of the block groups in verified again and properly
-locked in btrfs_reclaim_bgs_work().
+Since I reviewed the earlier patch, I will repeat here for the formal
+one too. :) Thanks for avoiding the hashing!
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+-- 
+Kees Cook
 
