@@ -1,30 +1,30 @@
-Return-Path: <linux-kernel+bounces-33936-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D41EF837050
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:42:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2810583702C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:38:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8AD2E1F2BFCB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:42:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B01B1C24AF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:38:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38B8E62A0A;
-	Mon, 22 Jan 2024 18:08:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A726604BD;
+	Mon, 22 Jan 2024 18:08:26 +0000 (UTC)
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD0D960EEB
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 18:08:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AD2F56478
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 18:08:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705946914; cv=none; b=hKHUCcJdiJOiGKU9WPwDw6WvdNkt++lJ1zpgPuqz0ctHFOqyVplyvqRZW0aN1Ai0DDYnG/u55ftifkvTdDqh8LIztzqrwIAcxfVZHtMOxLeoINiKJskk58QmJeyWPkx2onlCBYibADaBUJhRcfpG4OGo5Br640Xvgk7H2SMVJVY=
+	t=1705946905; cv=none; b=YqdtGE8L6jZZyfpsQw7TqvFW8MBs0G7IUZyqc9K61JDmnF83hoNzaVqWJ2GIJlEii2uyHLIBefcj7FYmsVh65wkhC6aOlbQeyD/hfqmgR9XkLZ+SiNpdkSnjVuWhK7uEcoAsS0bGfHC845kzdWKFitF2TusBsnupRtX+drOi3aA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705946914; c=relaxed/simple;
-	bh=+iqzpfPfwM8JLJkorLSCUBZld3eFtgJC2EACC7dzGUs=;
+	s=arc-20240116; t=1705946905; c=relaxed/simple;
+	bh=GJnKadlNnJS1gno0Yw0zl0W6daCJwsdHG/qNey5ch9c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WDOlHknBua0Ki2Nt5FQqbWSYhqvZDovLVZUDSS79HKSaMK6qlMRLbPf6HAK9OyB9/sVfBfOYMPV4L7xwM9u12LbYBGjlaPliSMJd3fNyml+6wEIj6bwMN5FpVTvZsf5zle+d1xNS8A0SEy8JzMfHMErJJkx01GuBDyZbiISbvZk=
+	 MIME-Version:Content-Type; b=I6/pCrIWkoX0chod9GJHtHe894aVVkhqS6T/cgQGB7smULBJ+aFKCDV8sYdcgh1B8xxt1GnTjv/frgXwRPLYAKZfPFZonzYR7Z1uiY2Uc3SDT9JtAYOLnmwzsHU9l00RA8TuWpQpqYlIIIxxGko9bpuxFStPNjcU+09TVyKPo1Y=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -32,27 +32,24 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rRyiX-0001yg-Rp; Mon, 22 Jan 2024 19:08:17 +0100
+	id 1rRyiX-000216-SG; Mon, 22 Jan 2024 19:08:17 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rRyiX-001eQW-1z; Mon, 22 Jan 2024 19:08:17 +0100
+	id 1rRyiX-001eQZ-8y; Mon, 22 Jan 2024 19:08:17 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1rRyiW-005ZyF-37;
-	Mon, 22 Jan 2024 19:08:16 +0100
+	id 1rRyiX-005ZyJ-0c;
+	Mon, 22 Jan 2024 19:08:17 +0100
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: Mark Brown <broonie@kernel.org>
 Cc: kernel@pengutronix.de,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	linux-arm-msm@vger.kernel.org,
 	linux-spi@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 21/33] spi: geni-qcom: Follow renaming of SPI "master" to "controller"
-Date: Mon, 22 Jan 2024 19:07:16 +0100
-Message-ID:  <62a1745954aab076ab05e9b02aad6fbd63176c45.1705944943.git.u.kleine-koenig@pengutronix.de>
+Subject: [PATCH v2 22/33] spi: loopback-test: Follow renaming of SPI "master" to "controller"
+Date: Mon, 22 Jan 2024 19:07:17 +0100
+Message-ID:  <ab9c65cee88831da83150eeac1950e20be5a83a7.1705944943.git.u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1705944943.git.u.kleine-koenig@pengutronix.de>
 References: <cover.1705944943.git.u.kleine-koenig@pengutronix.de>
@@ -63,7 +60,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1141; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=+iqzpfPfwM8JLJkorLSCUBZld3eFtgJC2EACC7dzGUs=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlrq7bYHxk635tTZIlGrZqUFmwFO4wXkKUnT1Z4 W0Tbo6upv+JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZa6u2wAKCRCPgPtYfRL+ TjHkCAC1NOHuyVQojyy+s/JSNPgJFwWA8GlsPSTcCRSSU/OZili1bD4PZpWp/Po1i0+90glzV2L UMcm2bfPel6O6JlFmJiG2HrpBQrBeFvS4neiNCRzn89yd3uTZ1ImN8jSIH6ZOtO248TopI9TOiu zFGlhqqP6B5igJRbXnEALglCF88pgOxtoXqED3W2R3FjyjmUAqRo0QsB9Os4iyn7wh8rRWiMN8q 9ApowptkKJqemKr+1vHxpHGaddxcH8LTuNJ+lFtdmQ4XJ+dPCAexRzL3H5G2BK2LF5GhDrE6moD VeqFhkSD4dlqIwsQkeM0qyVoEOU3nYPSOHg3K9FQKl+S7PjM
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1084; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=GJnKadlNnJS1gno0Yw0zl0W6daCJwsdHG/qNey5ch9c=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlrq7cFWUHqF/1PJE9bgirCfBKrrnbczVV9Nzd+ 52F1bO91zuJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZa6u3AAKCRCPgPtYfRL+ TpjtCACopMzJq78D6c9de/3xtOaBrobZMBg3LSNI9eYsfs1uObHHyCx4hgT9/F2yMX2WoGuznXa qviGmFeToNOOm6Otniy17PoTkr4sTwOuyhc1wC4L5kKSYZ2JlmvajXIhmQ8lAR0lPwV/z9KAgvG pPnN/IeraDAuRTl383rvg4so8DZb1DCSBIIOhOi2qbtRyv/sqiLr1uinuatJopsY0KIjtRyloQA u4I1gzEmgVE3WZ2xSNOLgIqJbMDuimF3TIpsH4DwqkumYH4v6n457I5eA9tSGC4HPj3cw47a7P0 VoolGG6sXwSjdmnJw2zmZ/N4+7MJtReEPNKOxERkqGSdGkk0
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -76,28 +73,28 @@ some functions and struct members were renamed. To not break all drivers
 compatibility macros were provided.
 
 To be able to remove these compatibility macros push the renaming into
-this driver. This was already tried before in commit 8726bdcef62e ("spi:
-geni-qcom: switch to use modern name"), that's why this change is so
-small.
+this driver.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/spi/spi-geni-qcom.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/spi/spi-loopback-test.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/spi/spi-geni-qcom.c b/drivers/spi/spi-geni-qcom.c
-index 15f84e68d4d2..37ef8c40b276 100644
---- a/drivers/spi/spi-geni-qcom.c
-+++ b/drivers/spi/spi-geni-qcom.c
-@@ -647,7 +647,7 @@ static void spi_geni_release_dma_chan(struct spi_geni_master *mas)
- 
- static int spi_geni_init(struct spi_geni_master *mas)
- {
--	struct spi_master *spi = dev_get_drvdata(mas->dev);
-+	struct spi_controller *spi = dev_get_drvdata(mas->dev);
- 	struct geni_se *se = &mas->se;
- 	unsigned int proto, major, minor, ver;
- 	u32 spi_tx_cfg, fifo_disable;
+diff --git a/drivers/spi/spi-loopback-test.c b/drivers/spi/spi-loopback-test.c
+index bbf2015d8e5c..fee8893d2751 100644
+--- a/drivers/spi/spi-loopback-test.c
++++ b/drivers/spi/spi-loopback-test.c
+@@ -1031,8 +1031,8 @@ int spi_test_run_test(struct spi_device *spi, const struct spi_test *test,
+ #define FOR_EACH_ALIGNMENT(var)						\
+ 	for (var = 0;							\
+ 	    var < (test->iterate_##var ?				\
+-			(spi->master->dma_alignment ?			\
+-			 spi->master->dma_alignment :			\
++			(spi->controller->dma_alignment ?		\
++			 spi->controller->dma_alignment :		\
+ 			 test->iterate_##var) :				\
+ 			1);						\
+ 	    var++)
 -- 
 2.43.0
 
