@@ -1,135 +1,128 @@
-Return-Path: <linux-kernel+bounces-33483-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33494-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57AEC836A36
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:21:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F454836A50
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:24:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10EB728532D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:21:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 033072835E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:24:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D60DE52F7A;
-	Mon, 22 Jan 2024 15:14:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3A9A3FB12;
+	Mon, 22 Jan 2024 15:15:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DN2Lis9/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B+HEGo5H"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AD0152F6B
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 15:14:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1D753FB0D;
+	Mon, 22 Jan 2024 15:15:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936465; cv=none; b=bHrctu7HqzspruwXN/15Xb31JlDM9o0doq5GuqWmdjf5OKUTBOakNhe3F23tUw+1l2jlV2NZGXr+UjCcx2JK0i/7q+QeTuxRNqNWTXiqihLEqh7KE5V/RUxfzmkGjIW9XsPaMtK3o0hHVYYm/4uuUxOT2l54wbIQb4De4X5oZpA=
+	t=1705936526; cv=none; b=YfraU8cIMvbLwDmlMvOoQG7pubry6zguUVVfZQkNzqszSDWC8ebSZDVxFdjRl56cYAzJHMNwrsiOBfg3vo0xxI7yj7owSfWcJsv7ZK+/L3Zw0tmdh/m7lJqZoRul2G2U5AZYPJLQKxWVnLi2TkUPsSlJjPkUmxrQsDusOXlRcDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936465; c=relaxed/simple;
-	bh=DCZ1yeweHK2ZD0/uXdu9bE6/Jcq3FK7B2WmAhGZfcIk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DrtL9GlsK1atu4XvBqmm0IXvjomvl1OPeIJRMBAXOCbeZeRJai00vG0j2k5t+tNx4Zvso68YM3P6viD8RKAcUmVpFqdOPvLwgZxFUKwuxtwVVdK7gp17areO9vgueu/R9XdVUKNVJMaWHHSBUCnQ6S9xsbIixGQLpvfEcVjUKH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DN2Lis9/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B55CAC4166B
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 15:14:24 +0000 (UTC)
+	s=arc-20240116; t=1705936526; c=relaxed/simple;
+	bh=z/q4voB+EPDamF3u0eqwmT9u48yKxLVPnuOYra/Tn6c=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mmuyrInb02QjsTyvT3Mj2yAINklAZwnQd0FcxIvJ28SnBL/L/mWtqHm7TXG6xseAzJX8y8TWnTeLwkg3XN7fDBNZEzIdULac6qMzXEz3KJJ0vYq6vhPyvm+ayZ5x4MVlljVWe5g8u1pxSmkMXlbgbbEMT0xizO8jNs2I51T5BdY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B+HEGo5H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DB0AC433C7;
+	Mon, 22 Jan 2024 15:15:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705936464;
-	bh=DCZ1yeweHK2ZD0/uXdu9bE6/Jcq3FK7B2WmAhGZfcIk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=DN2Lis9/iFq5QR+6FC0X0SvlTktEklejUr/3e8HjykOk7Lsgc5bcKpMhYCkKC2iYD
-	 T9steyNhvyHKhP4TsWHn/tZVpG1aKTBC4aqYvUFH2qo3usH51KhwMJ3ITdVxk7WPh0
-	 AT5lC3YybaCAjFgZ/W38LDMrYgcYIasm707zfrq8ym/UHiBVgrOzI9ThYmMREjR9rV
-	 X3+PwJTc8vNyo3M14CCZxCQ3+W7LpOppSTBMVkgH4Zoinln+2WB8zQpUcBmdx8z1L9
-	 qUmh0p79qbxe2HemO3pdqBS9D4ie34AJKgcrPlT9JyyH8DMAuhKN0x6qUXlhx5g0FW
-	 pkC9is7+/O5YA==
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dc22597dbfeso3533100276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 07:14:24 -0800 (PST)
-X-Gm-Message-State: AOJu0YwUmVdxulAva5eI5Zqm6YBwDVLokmQB5+VjqntSWLgFyhzYmEHe
-	qecgHGkvBRzA4oj1w5NuSmlUo8f30jPCNOJCeXePcnmiIdSNdjb32cfprNwuxS7gcyv0nn5Ud53
-	mmNG8gwVTSg1m/ZAjQbP0vs3x1eVgWlQfpz4Wjw==
-X-Google-Smtp-Source: AGHT+IELeqUZHcuEi6czSy6GxZtZYY24kkEpIurvFbFmTxvGFQUNqb3M5tKbk3ha+xCzPOeAwzOOrlbwEjoG5Tvhq/U=
-X-Received: by 2002:a25:8049:0:b0:dbe:aab1:b0e3 with SMTP id
- a9-20020a258049000000b00dbeaab1b0e3mr2553106ybn.98.1705936463808; Mon, 22 Jan
- 2024 07:14:23 -0800 (PST)
+	s=k20201202; t=1705936524;
+	bh=z/q4voB+EPDamF3u0eqwmT9u48yKxLVPnuOYra/Tn6c=;
+	h=From:To:Cc:Subject:Date:From;
+	b=B+HEGo5HkIk+FQS/1l2VcoUlMcdzwvCuWENhqcYVt5nTr0BzGycBBCWHZxrQ4LoNl
+	 pCTG83j3ydR9lSQJnH7D+df2lKleegK4fRzIg10cNte5BK2WfnqrLnkyJBt/jjGS+C
+	 mudfXslXm1C33FwwgnosQvjufbx2E4xcPHOtbwsk9LkKl7jPhas2AZn0oVwr0fyaae
+	 qa9WrGjm/Ysbv+dCAgEwg9ihE9xQmwo8979YAItR3bCPvVRMgsGUQlepbUlwekC3tk
+	 Fwh2n+vZS1kP7/YQok1qqcX8K9XrxFmQzGSRKxDqIlHJl/OTJb1Gli9cMjcpUiHt7c
+	 SnYR7RFIJoO1A==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Chao Yu <chao@kernel.org>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	linux-f2fs-devel@lists.sourceforge.net
+Subject: [PATCH AUTOSEL 5.10 01/28] f2fs: fix to check return value of f2fs_reserve_new_block()
+Date: Mon, 22 Jan 2024 10:14:27 -0500
+Message-ID: <20240122151521.996443-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214123205.v2.1.I9d1afcaad76a3e2c0ca046dc4adbc2b632c22eda@changeid>
- <20231214123205.v2.2.I7b83c0f31aeedc6b1dc98c7c741d3e1f94f040f8@changeid>
-In-Reply-To: <20231214123205.v2.2.I7b83c0f31aeedc6b1dc98c7c741d3e1f94f040f8@changeid>
-From: Robert Foss <rfoss@kernel.org>
-Date: Mon, 22 Jan 2024 16:14:12 +0100
-X-Gmail-Original-Message-ID: <CAN6tsi4LtcSK0vc7oWn_H2Mk=pHj9kxTnk1aB5FZi2varHox=g@mail.gmail.com>
-Message-ID: <CAN6tsi4LtcSK0vc7oWn_H2Mk=pHj9kxTnk1aB5FZi2varHox=g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] drm/bridge: ti-sn65dsi86: Never store more than
- msg->size bytes in AUX xfer
-To: Douglas Anderson <dianders@chromium.org>
-Cc: dri-devel@lists.freedesktop.org, Guenter Roeck <groeck@chromium.org>, 
-	Andrzej Hajda <andrzej.hajda@intel.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	David Airlie <airlied@gmail.com>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Jonas Karlman <jonas@kwiboo.se>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Sam Ravnborg <sam@ravnborg.org>, 
-	Stephen Boyd <swboyd@chromium.org>, Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 5.10.208
+Content-Transfer-Encoding: 8bit
 
-On Thu, Dec 14, 2023 at 9:32=E2=80=AFPM Douglas Anderson <dianders@chromium=
-org> wrote:
->
-> For aux reads, the value `msg->size` indicates the size of the buffer
-> provided by `msg->buffer`. We should never in any circumstances write
-> more bytes to the buffer since it may overflow the buffer.
->
-> In the ti-sn65dsi86 driver there is one code path that reads the
-> transfer length from hardware. Even though it's never been seen to be
-> a problem, we should make extra sure that the hardware isn't
-> increasing the length since doing so would cause us to overrun the
-> buffer.
->
-> Fixes: 982f589bde7a ("drm/bridge: ti-sn65dsi86: Update reply on aux failu=
-res")
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
->
-> Changes in v2:
-> - Updated patch subject to match ps8640 patch.
->
->  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/brid=
-ge/ti-sn65dsi86.c
-> index 9095d1453710..62cc3893dca5 100644
-> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-> @@ -527,6 +527,7 @@ static ssize_t ti_sn_aux_transfer(struct drm_dp_aux *=
-aux,
->         u32 request_val =3D AUX_CMD_REQ(msg->request);
->         u8 *buf =3D msg->buffer;
->         unsigned int len =3D msg->size;
-> +       unsigned int short_len;
->         unsigned int val;
->         int ret;
->         u8 addr_len[SN_AUX_LENGTH_REG + 1 - SN_AUX_ADDR_19_16_REG];
-> @@ -600,7 +601,8 @@ static ssize_t ti_sn_aux_transfer(struct drm_dp_aux *=
-aux,
->         }
->
->         if (val & AUX_IRQ_STATUS_AUX_SHORT) {
-> -               ret =3D regmap_read(pdata->regmap, SN_AUX_LENGTH_REG, &le=
-n);
-> +               ret =3D regmap_read(pdata->regmap, SN_AUX_LENGTH_REG, &sh=
-ort_len);
-> +               len =3D min(len, short_len);
->                 if (ret)
->                         goto exit;
->         } else if (val & AUX_IRQ_STATUS_NAT_I2C_FAIL) {
-> --
-> 2.43.0.472.g3155946c3a-goog
->
->
+From: Chao Yu <chao@kernel.org>
 
-Reviewed-by: Robert Foss <rfoss@kernel.org>
+[ Upstream commit 956fa1ddc132e028f3b7d4cf17e6bfc8cb36c7fd ]
+
+Let's check return value of f2fs_reserve_new_block() in do_recover_data()
+rather than letting it fails silently.
+
+Also refactoring check condition on return value of f2fs_reserve_new_block()
+as below:
+- trigger f2fs_bug_on() only for ENOSPC case;
+- use do-while statement to avoid redundant codes;
+
+Signed-off-by: Chao Yu <chao@kernel.org>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/f2fs/recovery.c | 23 +++++++++++++++++------
+ 1 file changed, 17 insertions(+), 6 deletions(-)
+
+diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
+index c3c527afdd07..2700e0fdd3e0 100644
+--- a/fs/f2fs/recovery.c
++++ b/fs/f2fs/recovery.c
+@@ -641,7 +641,16 @@ static int do_recover_data(struct f2fs_sb_info *sbi, struct inode *inode,
+ 		 */
+ 		if (dest == NEW_ADDR) {
+ 			f2fs_truncate_data_blocks_range(&dn, 1);
+-			f2fs_reserve_new_block(&dn);
++			do {
++				err = f2fs_reserve_new_block(&dn);
++				if (err == -ENOSPC) {
++					f2fs_bug_on(sbi, 1);
++					break;
++				}
++			} while (err &&
++				IS_ENABLED(CONFIG_F2FS_FAULT_INJECTION));
++			if (err)
++				goto err;
+ 			continue;
+ 		}
+ 
+@@ -649,12 +658,14 @@ static int do_recover_data(struct f2fs_sb_info *sbi, struct inode *inode,
+ 		if (f2fs_is_valid_blkaddr(sbi, dest, META_POR)) {
+ 
+ 			if (src == NULL_ADDR) {
+-				err = f2fs_reserve_new_block(&dn);
+-				while (err &&
+-				       IS_ENABLED(CONFIG_F2FS_FAULT_INJECTION))
++				do {
+ 					err = f2fs_reserve_new_block(&dn);
+-				/* We should not get -ENOSPC */
+-				f2fs_bug_on(sbi, err);
++					if (err == -ENOSPC) {
++						f2fs_bug_on(sbi, 1);
++						break;
++					}
++				} while (err &&
++					IS_ENABLED(CONFIG_F2FS_FAULT_INJECTION));
+ 				if (err)
+ 					goto err;
+ 			}
+-- 
+2.43.0
+
 
