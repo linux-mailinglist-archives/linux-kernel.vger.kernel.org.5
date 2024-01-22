@@ -1,164 +1,147 @@
-Return-Path: <linux-kernel+bounces-34283-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 208E083776F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 00:05:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 686F6837766
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 00:05:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 536091C221C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:05:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E0912833DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 23:05:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43091495C2;
-	Mon, 22 Jan 2024 23:05:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="09N6/asb";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2W6Ghoz2";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="09N6/asb";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2W6Ghoz2"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93CC239842;
+	Mon, 22 Jan 2024 23:04:38 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C3E5364DD;
-	Mon, 22 Jan 2024 23:05:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29F8C4A988
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 23:04:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705964751; cv=none; b=YvN2E4UiP5KhTTmQuo/3zr67DPnms1fgkHy7BoostUi1dYntjCAWblZnUUhHr6HDYXTdzsPYsFGRJie63MD0R06n3bPT4MJjqRZ0IWtJUX0A7tds81ubXbQ4RFCq//2HEFYVHTz6U9TRnB8gGwa4Y+DNC7DbQtg8vByRG4a7IgM=
+	t=1705964678; cv=none; b=Gjzxdm5g2E2U63YWz9oNwXUsX5Fv1L8AzG8jnJfo267AMOJrznAOR+H+ul2muMPvTQtnJSZAj4BGd0qtF2WxfwJ3+HemrVXhSEVpaFZjeoB0hdz8uQ8utrHqjVAI5oEdZn9XlgYoB0+Daw8WoM611VLCPGW0dAMess4v649YmpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705964751; c=relaxed/simple;
-	bh=SALosj7hPzRWwZS+P+b6rHJSA9Y8WaIYJu0rYoaCQPU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZhAwdzb/EQwldPbUV0E/G3bXZZTYUO64rClLEIJg30T2AwUfElSsOo+ssEYRGPisIP1koXG0a/bMKTco+WMPVffh5nyIpiPtnnqlvD+7EqyIBmOPQY0AZrG014FCTLPGL8sOw9DyNUqntp2ab5PpTh/Ug5SMAr11i2glC6/Tpe4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=09N6/asb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2W6Ghoz2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=09N6/asb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2W6Ghoz2; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B9FD121FCF;
-	Mon, 22 Jan 2024 23:05:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705964747;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RMmD19Va6uoSBzoselCt3P1uMVFvKzLAPpQQ76TCNpA=;
-	b=09N6/asbA8EdQZS1+Xzdd7gQKmoGJEKaWPSYYXdu/ngXaGDGDV7A4nQl1cqRYEwFzht2mQ
-	VL2dyh46xhr5RvGN07Og6ESJOsBerhbdIU+EQi3b8TUg6gnGwA/6PVwaPXvVTQu4NUxe/5
-	bIpezahq+/25cFO02cehAv4FyaV54CY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705964747;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RMmD19Va6uoSBzoselCt3P1uMVFvKzLAPpQQ76TCNpA=;
-	b=2W6Ghoz2bv1CrviVPmJHPGI3ACFonjz/0HCZriaQw1uPaXCTLKUC/Yy8QJ8NT66nrR+0Xt
-	y/tn+HgKbwYuxlBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705964747;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RMmD19Va6uoSBzoselCt3P1uMVFvKzLAPpQQ76TCNpA=;
-	b=09N6/asbA8EdQZS1+Xzdd7gQKmoGJEKaWPSYYXdu/ngXaGDGDV7A4nQl1cqRYEwFzht2mQ
-	VL2dyh46xhr5RvGN07Og6ESJOsBerhbdIU+EQi3b8TUg6gnGwA/6PVwaPXvVTQu4NUxe/5
-	bIpezahq+/25cFO02cehAv4FyaV54CY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705964747;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RMmD19Va6uoSBzoselCt3P1uMVFvKzLAPpQQ76TCNpA=;
-	b=2W6Ghoz2bv1CrviVPmJHPGI3ACFonjz/0HCZriaQw1uPaXCTLKUC/Yy8QJ8NT66nrR+0Xt
-	y/tn+HgKbwYuxlBQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id A3F1813310;
-	Mon, 22 Jan 2024 23:05:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id vsKZJ8v0rmVBDAAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Mon, 22 Jan 2024 23:05:47 +0000
-Date: Tue, 23 Jan 2024 00:05:26 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] Btrfs fixes for 6.8-rc2
-Message-ID: <20240122230526.GF31555@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1705946889.git.dsterba@suse.com>
- <CAHk-=wgHDYsNm7CG3szZUotcNqE_w+ojcF+JG88gn5px7uNs0Q@mail.gmail.com>
- <CAHk-=wiroGW6OMrPXrFg8mxYJa+362XJTsD5HkHXUHffcMieAA@mail.gmail.com>
+	s=arc-20240116; t=1705964678; c=relaxed/simple;
+	bh=eV/1PBpFY/w9xfh1oc7d6hhOkwniusf4d5foreVSHeg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Cxvc8/TdphiYv+2/xMPJrYBMb6I/qgYi3Hsr9pPahlZJ+pLxsOi2lMnvK04H3mkmvq2fVm3dhbIyHAZDzqVmpfN6fWBX40vOi4dSqgqoycg/wspxTAfh6gsIj3DOzQOmrEPW99qyMQ9nOmFD5bWPOKECrv00eFVfDCMwLGt28yY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE4F1C433F1;
+	Mon, 22 Jan 2024 23:04:36 +0000 (UTC)
+Date: Mon, 22 Jan 2024 18:06:05 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Rajneesh Bhardwaj
+ <rajneesh.bhardwaj@amd.com>, Felix Kuehling <Felix.Kuehling@amd.com>,
+ Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+ dri-devel@lists.freedesktop.org
+Subject: [BUG]  BUG: kernel NULL pointer dereference at ttm_device_init+0xb4
+Message-ID: <20240122180605.28daf23a@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiroGW6OMrPXrFg8mxYJa+362XJTsD5HkHXUHffcMieAA@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -1.00
-X-Spamd-Result: default: False [-1.00 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[37.85%]
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 22, 2024 at 02:54:31PM -0800, Linus Torvalds wrote:
-> On Mon, 22 Jan 2024 at 14:34, Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > Bah. These fixes are garbage. Now my machine doesn't even boot. I'm
-> > bisecting
+I just kicked off testing some patches on top of 6.8-rc1 and triggered this
+immediately:
 
-Ah, sorry.
+[ note this happened on both my 32 bit an 64 bit test machines, this is
+  just the 32 bit output ]
 
-> My bisection says
-> 
->    1e7f6def8b2370ecefb54b3c8f390ff894b0c51b is the first bad commit
+ BUG: kernel NULL pointer dereference, address: 00000238
+ #PF: supervisor read access in kernel mode
+ #PF: error_code(0x0000) - not-present page
+ *pdpt = 0000000000000000 *pde = f000ff53f000ff53 
+ Oops: 0000 [#1] PREEMPT SMP PTI
+ CPU: 0 PID: 9 Comm: kworker/0:1 Not tainted 6.8.0-rc1-test-00001-g2b44760609e9-dirty #1056
+ Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+ Workqueue: events work_for_cpu_fn
+ EIP: ttm_device_init+0xb4/0x274
+ Code: 86 10 09 00 00 83 c4 0c 85 c0 0f 84 96 01 00 00 8b 45 ac 8d 9e 94 00 00 00 89 46 08 89 f0 e8 27 05 00 00 8b 55 a8 0f b6 45 98 <8b> 8a 38 02 00 00 50 0f b6 45 9c 50 89 d8 e8 95 ee ff ff 8b 45 a0
+ EAX: 00000000 EBX: c135a7e4 ECX: c135a7b0 EDX: 00000000
+ ESI: c135a750 EDI: 0007bc1d EBP: c11d7e4c ESP: c11d7de4
+ DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010246
+ CR0: 80050033 CR2: 00000238 CR3: 145c4000 CR4: 000006f0
+ Call Trace:
+  ? show_regs+0x4f/0x58
+  ? __die+0x1d/0x58
+  ? page_fault_oops+0x171/0x330
+  ? lock_acquire+0xa4/0x280
+  ? kernelmode_fixup_or_oops.constprop.0+0x7c/0xcc
+  ? __bad_area_nosemaphore.constprop.0+0x124/0x1b4
+  ? __mutex_lock+0x17f/0xb00
+  ? bad_area_nosemaphore+0xf/0x14
+  ? do_user_addr_fault+0x140/0x3e4
+  ? exc_page_fault+0x5b/0x1d8
+  ? pvclock_clocksource_read_nowd+0x130/0x130
+  ? handle_exception+0x133/0x133
+  ? pvclock_clocksource_read_nowd+0x130/0x130
+  ? ttm_device_init+0xb4/0x274
+  ? pvclock_clocksource_read_nowd+0x130/0x130
+  ? ttm_device_init+0xb4/0x274
+  qxl_ttm_init+0x34/0x130
+  qxl_bo_init+0xd/0x10
+  qxl_device_init+0x52a/0x92c
+  qxl_pci_probe+0x91/0x1ac
+  local_pci_probe+0x3d/0x84
+  work_for_cpu_fn+0x16/0x20
+  process_one_work+0x1bc/0x4a0
+  worker_thread+0x310/0x3a8
+  kthread+0xea/0x110
+  ? rescuer_thread+0x2f0/0x2f0
+  ? kthread_complete_and_exit+0x1c/0x1c
+  ret_from_fork+0x34/0x4c
+  ? kthread_complete_and_exit+0x1c/0x1c
+  ret_from_fork_asm+0x12/0x18
+  entry_INT80_32+0xf0/0xf0
+ Modules linked in:
+ CR2: 0000000000000238
+ ---[ end trace 0000000000000000 ]---
 
-We got a report today [1] that this commit is indeed bad,
+The crash happened here:
 
-https://lore.kernel.org/linux-btrfs/CABq1_vj4GpUeZpVG49OHCo-3sdbe2-2ROcu_xDvUG-6-5zPRXg@mail.gmail.com/
+int ttm_device_init(struct ttm_device *bdev, const struct ttm_device_funcs *funcs,
+		    struct device *dev, struct address_space *mapping,
+		    struct drm_vma_offset_manager *vma_manager,
+		    bool use_dma_alloc, bool use_dma32)
+{
+	struct ttm_global *glob = &ttm_glob;
+	int ret;
 
-the timing was also unfortuate and too late to recall the pull request.
+	if (WARN_ON(vma_manager == NULL))
+		return -EINVAL;
 
-> but I'll still have to verify by testing the revert on top of my current tree.
-> 
-> It did revert cleanly, but I also note that if the zstd case is wrong,
-> I assume the other very similar commits (for zlib and lzo) are
-> potentially also wrong.
-> 
-> Let me reboot to verify that at least my machine boots.
+	ret = ttm_global_init();
+	if (ret)
+		return ret;
 
-Per the report revert makes it work again and zlib and lzo cases are not
-affected.
+	bdev->wq = alloc_workqueue("ttm",
+				   WQ_MEM_RECLAIM | WQ_HIGHPRI | WQ_UNBOUND, 16);
+	if (!bdev->wq) {
+		ttm_global_release();
+		return -ENOMEM;
+	}
 
-I can send a pull request reverting all the three until we figure out
-what's wrong, or you can do it as all revert cleanly.
+	bdev->funcs = funcs;
+
+	ttm_sys_man_init(bdev);
+
+	ttm_pool_init(&bdev->pool, dev, dev_to_node(dev), use_dma_alloc, use_dma32); <<<------- BUG!
+
+Specifically, it appears that dev is NULL and dev_to_node() doesn't like
+having a NULL pointer passed to it.
+
+I currently "fixed" this with a:
+
+	if (!dev)
+		return -EINVAL;
+
+at the start of this function just so that I can continue running my tests,
+but that is obviously incorrect.
+
+-- Steve
 
