@@ -1,186 +1,173 @@
-Return-Path: <linux-kernel+bounces-33979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33977-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E83B83713C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:57:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C832837144
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:57:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0F311C29B2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:57:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83580282FEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:56:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 891454CDE2;
-	Mon, 22 Jan 2024 18:23:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09B3C4C3B1;
+	Mon, 22 Jan 2024 18:22:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=marliere.net header.i=@marliere.net header.b="RZQRoupX"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="devtgNN0"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 194CE4C62E;
-	Mon, 22 Jan 2024 18:23:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39ACF4BAA2;
+	Mon, 22 Jan 2024 18:22:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705947798; cv=none; b=TONv71SrZlG0Dt/uYtfcalXlH7ruxdwBJB0/dtwJo28wpt12BAA8gS6WNyo7HDl87KTJYTJc9kNRsQD1hqfzYGMHA89drnk/8Ib6Z2IuK0NywRVpONgmfQZ7r5wQyt+Z8C+h2DGShheZmigXegiqzfXcwx2ZEgGG+xQGKWriIlY=
+	t=1705947770; cv=none; b=jyLpvQs7Soy2obSt909wKiUwEr3LukCITKafxHaFvANWQMPHTWTLZqC+BlejT1VtHH0Uh+IHds8f7tEPjFEs1B4+Jgj73J6rHMBaC+wPk+gkcn1J0MXsTFliX/Tqyfa6B/QS7kggMRMGRZDHGbxiehtalg1j0Y5RSH5m944JHD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705947798; c=relaxed/simple;
-	bh=r5tnMBAxj+Zc0GnIBmWi8dlh9C839THA+aaunMF7LB0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LDdQyBitsLvBbcINhBRHe6myRJp2wsWJwAa/UhF8ADjyEb5U9ZRsjXTz5EyuxvwritieKFTbIMegDUAGRySCDQ7cwV88JFAiG73XlmxieBYeqhvs9YMiYNzaHpA2C3RjGnT0J5H1JLQD8h01j1L82AATOhrl2728TfuoaSSX1TU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=fail (0-bit key) header.d=marliere.net header.i=@marliere.net header.b=RZQRoupX reason="key not found in DNS"; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d70a986c4aso12684635ad.2;
-        Mon, 22 Jan 2024 10:23:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705947796; x=1706552596;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k6N23FD1ddpWBXwStnXFwbZTQFl0KVxuOVUtdcEtA6s=;
-        b=ejnyRgMqdETwUejoWgAvdFvQt6Mqk5L33RTmTc+96muJnhqpeMIqbhOk9U0kKEff6S
-         /SWQuRxK4Mcj2mIIWPqJQ4CCXnEjVmQmbnzmtxXwP0K6+oYUhT+6LmpAnK20aG9T+wYO
-         1qiQFN16OpoPJPxR/3r5fxgS2w3WtYtvlq6q5urlw1YTLGbfNOL1bPNktZJyLkC9FHbA
-         VykIO8TybgRP0ffQWRqixW7GDWqHk9Jar/qgT+nmeuaQeQBb/dzAdPzwyDj8GgqGmwxM
-         H2M/MFpOHhETLH1Q3XrCY6hS8fAiV+0azUZHnLsnn3IrOWRqY3C5zGR/IzmOqzfzpXo7
-         l80w==
-X-Gm-Message-State: AOJu0Yy6zMr6R8lM3R3LuQ0BsE+a6JCTbZfxyorDJNaVSQdwaqpV8hlR
-	TJG6agLub1MB09/jBWSRrFrOOe0Z4vdhp3ILTcEPGbi+Z5SSyOoe
-X-Google-Smtp-Source: AGHT+IFA42EU4wtFKLB3beE553Ttt3Gfp4paRYRn38+U44SUio0ZUWHXrS/ZlCUVtTxW4iYy6ndCXg==
-X-Received: by 2002:a17:903:1ca:b0:1d7:691e:2707 with SMTP id e10-20020a17090301ca00b001d7691e2707mr454076plh.27.1705947796230;
-        Mon, 22 Jan 2024 10:23:16 -0800 (PST)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id o5-20020a1709026b0500b001d70af7dd0dsm7046402plk.263.2024.01.22.10.23.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 10:23:15 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2023; t=1705947794;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=k6N23FD1ddpWBXwStnXFwbZTQFl0KVxuOVUtdcEtA6s=;
-	b=RZQRoupXiycDUK13994y5n5TZ9ltuuDfHOR1zuZRCGwyOl3G7qD/PFaabCOzwWxTw9lSZF
-	zE9K1vnaeHOk/fBUItsTcGum0K3dtBqMHsXi01KL7ztsXSGQReVq8ljHDPEsCcZJo48H9b
-	d+lA8lu4zlUvocuSpbk5nzyWhqwUkAGb+xI17eCTJqUzLrziuJxx7x6g0GzZj+UAmb+xXq
-	cA4fhl5msSpVj2J0tk3P/isPKbmwtU76qi/JTwRx5XVwsO43aRdWqj6JyxMXRXAjv+oM2R
-	qT3o+wuynGSR89HjPN21uzpMWf/UNKDsOA/zAbXZk1OFHsKqGxGS1uaJx0H7Kw==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-To: Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: "Ricardo B. Marliere" <ricardo@marliere.net>,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH] tracing: add trace_seq_reset function
-Date: Mon, 22 Jan 2024 15:22:25 -0300
-Message-ID: <20240122182225.69061-2-ricardo@marliere.net>
+	s=arc-20240116; t=1705947770; c=relaxed/simple;
+	bh=8ff78h9bJtx1azZLBLk1EKJHIodHEpeL9E/XnvsmPko=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZTIcHtuWv8UKxB/LHCfNvlUkeOnINtSOP4RP0ZeH3pEwUMV5rTE2FX92faiiOulte9gLBdgSvHnMbUiI13RsRsIqkbgG4u1nDoMIDt0RPWs5KD4nSrvK7LwfRbCcvPu82/oE8bRA9+ErP7YAPxH8HXBI1Rx0NYi9Tfhfgyl28Ys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=devtgNN0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F03DDC433C7;
+	Mon, 22 Jan 2024 18:22:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705947770;
+	bh=8ff78h9bJtx1azZLBLk1EKJHIodHEpeL9E/XnvsmPko=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=devtgNN0jDYFRdzNk3Wt1y9JSHXhizTYMpfs8XvyYsJh9dfLHfoxM1Z7yJ73twTv9
+	 G+3t5cvDuGsFkGYFpiHtMRyHnQVVbGOuNgwNKpfCNxzhvhDFKeqdaZfWu3q7qBn5CL
+	 uQ8PBHSMsUQihpxJw2S5gzL0M0U2lbtgcFmpWUCwv7h72hA0cGwK1m6nnpiFD21dzI
+	 6xuVTQd7k0wzVzP/jkQuNHvwGfyWkebctqOKP6ySl2ynLVELSVXnm8p8OgpWpxNgEI
+	 eWYQoxLRCr0TioMTOcjOUE2hzjwXgUxn7k5J5NElOfpB2UfT1rvUgNbl/tCdcZPJxn
+	 rBNIKEoQG+/tQ==
+Message-ID: <f96b33ab-56d5-4a43-a1ff-2e68e2c55ac2@kernel.org>
+Date: Mon, 22 Jan 2024 19:22:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Kernel panic in netif_rx_internal after v6 pings between netns
+Content-Language: en-GB, fr-BE
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Eric Dumazet <edumazet@google.com>, Netdev <netdev@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
+References: <98724dcd-ddf3-4f78-a386-f966ffbc9528@kernel.org>
+ <CANn89iLAYXpRiGaGi+rvOZyxMfpUmW2cOg6hLhqE=+2JJS8rkw@mail.gmail.com>
+ <65c4f6a2-207f-45e0-9ec3-bad81a05b196@kernel.org>
+ <5340b60d-a09a-4865-a648-d1a45e9e6d5f@kernel.org>
+ <20240122092804.3535b652@kernel.org>
+From: Matthieu Baerts <matttbe@kernel.org>
+Autocrypt: addr=matttbe@kernel.org; keydata=
+ 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
+ lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
+Organization: NGI0 Core
+In-Reply-To: <20240122092804.3535b652@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Currently, trace_seq_init may be called many times with the intent of
-resetting the buffer. Add a function trace_seq_reset that does that and
-replace the relevant occurrences to use it instead.
+Hi Jakub,
 
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
- include/linux/trace_seq.h    | 8 ++++++++
- include/trace/trace_events.h | 2 +-
- kernel/trace/trace.c         | 8 ++++----
- kernel/trace/trace_seq.c     | 2 +-
- 4 files changed, 14 insertions(+), 6 deletions(-)
+On 22/01/2024 18:28, Jakub Kicinski wrote:
 
-diff --git a/include/linux/trace_seq.h b/include/linux/trace_seq.h
-index 9ec229dfddaa..c28e0ccb50bd 100644
---- a/include/linux/trace_seq.h
-+++ b/include/linux/trace_seq.h
-@@ -29,6 +29,14 @@ trace_seq_init(struct trace_seq *s)
- 	s->readpos = 0;
- }
- 
-+static inline void
-+trace_seq_reset(struct trace_seq *s)
-+{
-+	seq_buf_clear(&s->seq);
-+	s->full = 0;
-+	s->readpos = 0;
-+}
-+
- /**
-  * trace_seq_used - amount of actual data written to buffer
-  * @s: trace sequence descriptor
-diff --git a/include/trace/trace_events.h b/include/trace/trace_events.h
-index c2f9cabf154d..2bc79998e5ab 100644
---- a/include/trace/trace_events.h
-+++ b/include/trace/trace_events.h
-@@ -227,7 +227,7 @@ trace_raw_output_##call(struct trace_iterator *iter, int flags,		\
- 									\
- 	field = (typeof(field))entry;					\
- 									\
--	trace_seq_init(p);						\
-+	trace_seq_reset(p);						\
- 	return trace_output_call(iter, #call, print);			\
- }									\
- static struct trace_event_functions trace_event_type_funcs_##call = {	\
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 46dbe22121e9..9147f3717b9a 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -6946,7 +6946,7 @@ tracing_read_pipe(struct file *filp, char __user *ubuf,
- 	/* reset all but tr, trace, and overruns */
- 	trace_iterator_reset(iter);
- 	cpumask_clear(iter->started);
--	trace_seq_init(&iter->seq);
-+	trace_seq_reset(&iter->seq);
- 
- 	trace_event_read_lock();
- 	trace_access_lock(iter->cpu_file);
-@@ -6993,7 +6993,7 @@ tracing_read_pipe(struct file *filp, char __user *ubuf,
- 	/* Now copy what we have to the user */
- 	sret = trace_seq_to_user(&iter->seq, ubuf, cnt);
- 	if (iter->seq.readpos >= trace_seq_used(&iter->seq))
--		trace_seq_init(&iter->seq);
-+		trace_seq_reset(&iter->seq);
- 
- 	/*
- 	 * If there was nothing to send to user, in spite of consuming trace
-@@ -7125,7 +7125,7 @@ static ssize_t tracing_splice_read_pipe(struct file *filp,
- 		spd.partial[i].offset = 0;
- 		spd.partial[i].len = trace_seq_used(&iter->seq);
- 
--		trace_seq_init(&iter->seq);
-+		trace_seq_reset(&iter->seq);
- 	}
- 
- 	trace_access_unlock(iter->cpu_file);
-@@ -10274,7 +10274,7 @@ trace_printk_seq(struct trace_seq *s)
- 
- 	printk(KERN_TRACE "%s", s->buffer);
- 
--	trace_seq_init(s);
-+	trace_seq_reset(s);
- }
- 
- void trace_init_global_iter(struct trace_iterator *iter)
-diff --git a/kernel/trace/trace_seq.c b/kernel/trace/trace_seq.c
-index c158d65a8a88..741b2f3d76c0 100644
---- a/kernel/trace/trace_seq.c
-+++ b/kernel/trace/trace_seq.c
-@@ -59,7 +59,7 @@ int trace_print_seq(struct seq_file *m, struct trace_seq *s)
- 	 * do something else with the contents.
- 	 */
- 	if (!ret)
--		trace_seq_init(s);
-+		trace_seq_reset(s);
- 
- 	return ret;
- }
+(...)
+
+> Somewhat related. What do you do currently to ignore crashes?
+
+I was wondering why you wanted to ignore crashes :) ... but then I saw
+the new "Test ignored" and "Crashes ignored" sections on the status
+page. Just to be sure: you don't want to report issues that have not
+been introduced by the new patches, right?
+
+We don't need to do that on MPTCP side:
+- either it is a new crash with patches that are in reviewed and that's
+not impacting others → we test each series individually, not a batch of
+series.
+- or there are issues with recent patches, not in netdev yet → we fix,
+or revert.
+- or there is an issue elsewhere, like the kernel panic we reported
+here: usually I try to quickly apply a workaround, e.g. applying a fix,
+or a revert. I don't think we ever had an issue really impacting us
+where we couldn't find a quick solution in one or two days. With the
+panic we reported here, ~15% of the tests had an issue, that's "OK" to
+have that for a few days/weeks
+
+With fewer tests and a smaller community, it is easier for us to just
+say on the ML and weekly meetings: "this is a known issue, please ignore
+for the moment". But if possible, I try to add a workaround/fix in our
+repo used by the CI and devs (not upstreamed).
+
+For NIPA CI, do you want to do like with the build and compare with a
+reference? Or multiple ones to take into account unstable tests? Or
+maintain a list of known issues (I think you started to do that,
+probably safer/easier for the moment)?
+
+> I was seeing a lot of:
+> https://netdev-2.bots.linux.dev/vmksft-net-mp/results/431181/vm-crash-thr0-2
+> 
+> So I hacked up this function to filter the crash from NIPA CI:
+> https://github.com/kuba-moo/nipa/blob/master/contest/remote/lib/vm.py#L50
+> It tries to get first 5 function names from the stack, to form 
+> a "fingerprint". But I seem to recall a discussion at LPC's testing
+> track that there are existing solutions for generating fingerprints.
+> Are you aware of any?
+
+No, sorry. But I guess they are using that with syzkaller, no?
+
+I have to admit that crashes (or warnings) are quite rare, so there was
+no need to have an automation there. But if it is easy to have a
+fingerprint, I will be interested as well, it can help for the tracking:
+to find occurrences of crashes/warnings that are very hard to reproduce.
+
+> (FWIW the crash from above seems to be gone on latest linux.git,
+> this night's CIs run are crash-free.)
+
+Good it was quickly fixed!
+
+Cheers,
+Matt
 -- 
-2.43.0
-
+Sponsored by the NGI0 Core fund.
 
