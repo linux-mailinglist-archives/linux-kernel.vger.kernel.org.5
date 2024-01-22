@@ -1,142 +1,172 @@
-Return-Path: <linux-kernel+bounces-33108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33106-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4F908364AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:46:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6ADB08364A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:45:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7FCC1C2302F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:46:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5E631F252F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:45:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF2CC3D0A6;
-	Mon, 22 Jan 2024 13:46:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hcwEfNfs"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00AEA3D0B9
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 13:46:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F1EE3D0AB;
+	Mon, 22 Jan 2024 13:45:08 +0000 (UTC)
+Received: from cae.in-ulm.de (cae.in-ulm.de [217.10.14.231])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA8243CF74
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 13:45:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.10.14.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705931180; cv=none; b=ruHqQXqZmlUEZ6xk16v+uiLJ+dGACCiGCLWKDPxgFY9bYEmwPVG7IxYY7KFL+ewo3stqxQkgRiI3tzpz6MFAlCtWvyfSP3b854YpFS/NSorbq09gh8DXdXiVT/B7tE07RYq5iaPpp6xblV/9tIHs8NyPtJZhXZCCy2HPczULCMk=
+	t=1705931107; cv=none; b=Shr4xKlw9wmEo+g3SdZ6lw/MUmyEnSDcVrsBmkLp3RbGYarKstSKZ870r0yWSb3/875JooTJDAKlEwllFBVTLEAfggOHZZEZz8eXUCMdwteDEhU8qtKDGVhV2gT9W5Pv88pS2Xyv5N9s2NNAbOA8zaqKiTCYcsupdPy246rXn7M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705931180; c=relaxed/simple;
-	bh=TA5S6rkWrfMIGQh8b4nq6v9XJGxLaFmJwtdW6D84hqc=;
+	s=arc-20240116; t=1705931107; c=relaxed/simple;
+	bh=rlj/uOhX+2J2TcdtyX2fpOBJZMek3HcpcJSp2zX5UAU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QrtRY5VADb5JcSe4lCik71Uj9w1V2LyIOPKZDs5HEa+TkXb5Ak5i4+VNVV14jmuTYtjO/fTnmxZ5q67OOT15oZyVYf+E4zx0Juwlyz0Z6RsuHymv4FRjB+4tLrZPY30nQqp1HxPIP5guCLnxvhLTzeJdoPTtCiq5wmlDh0PoC6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hcwEfNfs; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705931177;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TA5S6rkWrfMIGQh8b4nq6v9XJGxLaFmJwtdW6D84hqc=;
-	b=hcwEfNfsP1NuoTL5AzGeVz0eSmDoaAFJsC0fvLMuj0oc1F2jrBPnkCkSK0tCGlyeMrpLVq
-	hkpFPUIvTkAJQgepfhETrp/iyUFgiltuQwWKn42a2lLP7jxDzw+kblbKoSfvlDyPz4BlJh
-	7sQvelG4PtAF96iAy52c7/DTuRQRmp4=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-584-rOsLYw9bNWC8ERd5q2uA1Q-1; Mon, 22 Jan 2024 08:46:14 -0500
-X-MC-Unique: rOsLYw9bNWC8ERd5q2uA1Q-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 27D14862CC5;
-	Mon, 22 Jan 2024 13:46:12 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.26])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 14FC1C30BE1;
-	Mon, 22 Jan 2024 13:46:00 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Mon, 22 Jan 2024 14:44:58 +0100 (CET)
-Date: Mon, 22 Jan 2024 14:44:46 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Bernd Edlinger <bernd.edlinger@hotmail.de>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
-	Alexey Dobriyan <adobriyan@gmail.com>,
-	Kees Cook <keescook@chromium.org>,
-	Andy Lutomirski <luto@amacapital.net>,
-	Will Drewry <wad@chromium.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Michal Hocko <mhocko@suse.com>, Serge Hallyn <serge@hallyn.com>,
-	James Morris <jamorris@linux.microsoft.com>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Yafang Shao <laoar.shao@gmail.com>, Helge Deller <deller@gmx.de>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	Adrian Reber <areber@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>, Jens Axboe <axboe@kernel.dk>,
-	Alexei Starovoitov <ast@kernel.org>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-	tiozhang <tiozhang@didiglobal.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	"Paulo Alcantara (SUSE)" <pc@manguebit.com>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	YueHaibing <yuehaibing@huawei.com>,
-	Paul Moore <paul@paul-moore.com>, Aleksa Sarai <cyphar@cyphar.com>,
-	Stefan Roesch <shr@devkernel.io>, Chao Yu <chao@kernel.org>,
-	xu xin <xu.xin16@zte.com.cn>, Jeff Layton <jlayton@kernel.org>,
-	Jan Kara <jack@suse.cz>, David Hildenbrand <david@redhat.com>,
-	Dave Chinner <dchinner@redhat.com>, Shuah Khan <shuah@kernel.org>,
-	Zheng Yejian <zhengyejian1@huawei.com>,
-	Elena Reshetova <elena.reshetova@intel.com>,
-	David Windsor <dwindsor@gmail.com>,
-	Mateusz Guzik <mjguzik@gmail.com>, Ard Biesheuvel <ardb@kernel.org>,
-	"Joel Fernandes (Google)" <joel@joelfernandes.org>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Hans Liljestrand <ishkamiel@gmail.com>
-Subject: Re: [PATCH v14] exec: Fix dead-lock in de_thread with ptrace_attach
-Message-ID: <20240122134446.GB22901@redhat.com>
-References: <AM8PR10MB470801D01A0CF24BC32C25E7E40E9@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
- <AM8PR10MB470875B22B4C08BEAEC3F77FE4169@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
- <AS8P193MB1285DF698D7524EDE22ABFA1E4A1A@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
- <AS8P193MB12851AC1F862B97FCE9B3F4FE4AAA@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
- <AS8P193MB1285FF445694F149B70B21D0E46C2@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
- <20240116152210.GA12342@redhat.com>
- <AS8P193MB128538BC3833E654F56DA801E4722@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
- <20240117163739.GA32526@redhat.com>
- <AS8P193MB1285FDD902CC57C781AF2770E4752@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+	 Content-Type:Content-Disposition:In-Reply-To; b=lkeDFdBsxWjJmpMY/Azcl5fu8b+ekDd6VwfLI7CA+dTngTmVKJmJ8pDetKzdfHGOI6POhXI1/Qr+fukADGByX30xFstaoDzAeT5duc9bzUuG1tXHH7wf2ISjRi0QLuaUm1Z8LyJdbpcBLqS01f9+PbUgs3yuXL4zqAx4hl/s7gU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de; spf=pass smtp.mailfrom=c--e.de; arc=none smtp.client-ip=217.10.14.231
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c--e.de
+Received: by cae.in-ulm.de (Postfix, from userid 1000)
+	id 21E1614033C; Mon, 22 Jan 2024 14:45:05 +0100 (CET)
+Date: Mon, 22 Jan 2024 14:45:05 +0100
+From: "Christian A. Ehrhardt" <lk@c--e.de>
+To: Baolu Lu <baolu.lu@linux.intel.com>
+Cc: Paul Menzel <pmenzel@molgen.mpg.de>,
+	=?iso-8859-1?Q?J=F6rg_R=F6del?= <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: Dell XPS 13 9360: DMAR errors `DRHD: handling fault status reg
+ 2` and `[INTR-REMAP] Request device [f0:1f.0] fault index 0x0`
+Message-ID: <Za5xYauQDe8xcVGr@cae.in-ulm.de>
+References: <9a24c335-8ec5-48c9-9bdd-b0dac5ecbca8@molgen.mpg.de>
+ <cb71c806-b100-4673-a131-faac77344002@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <AS8P193MB1285FDD902CC57C781AF2770E4752@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cb71c806-b100-4673-a131-faac77344002@linux.intel.com>
 
-I'll try to read your email later, just one note for now...
 
-On 01/22, Bernd Edlinger wrote:
->
-> > I didn't say that t is a group leader. I said it can be a zombie sub-thread
-> > with ->exit_state != 0.
->
-> the condition here is
->
-> (t != tsk->group_leader || !t->exit_state)
->
-> so in other words, if t is a sub-thread, i.e. t != tsk->group_leader
-> then the t->exit_state does not count,
+Hi,
 
-Ah indeed, somehow I misread this check as if you skip the sub-threads
-with ->exit_state != 0.
+On Mon, Jan 22, 2024 at 08:53:43PM +0800, Baolu Lu wrote:
+> On 2024/1/19 20:59, Paul Menzel wrote:
+> > Dear Linux folks,
+> > 
+> > 
+> > On a Dell XPS 13 9360 Linux 6.6.8, 6.6.11 and 6.7 (and earlier versions)
+> > log the lines below when resuming from ACPI S3 (deep):
+> > 
+> >      [    0.000000] Linux version 6.7-amd64
+> > (debian-kernel@lists.debian.org) (x86_64-linux-gnu-gcc-13 (Debian
+> > 13.2.0-9) 13.2.0, GNU ld (GNU Binutils for Debian) 2.41.50.20231227) #1
+> > SMP PREEMPT_DYNAMIC Debian 6.7-1~exp1 (2024-01-08)
+> >      [    0.000000] Command line: BOOT_IMAGE=/vmlinuz-6.7-amd64
+> > root=UUID=32e29882-d94d-4a92-9ee4-4d03002bfa29 ro quiet pci=noaer
+> > mem_sleep_default=deep log_buf_len=8M
+> >      […]
+> >      [    0.000000] DMI: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0
+> > 06/02/2022
+> >      […]
+> >      [   99.711230] PM: suspend entry (deep)
+> >      […]
+> >      [   99.722101] printk: Suspending console(s) (use
+> > no_console_suspend to debug)
+> >      [  100.285178] ACPI: EC: interrupt blocked
+> >      [  100.319908] ACPI: PM: Preparing to enter system sleep state S3
+> >      [  100.331793] ACPI: EC: event blocked
+> >      [  100.331798] ACPI: EC: EC stopped
+> >      [  100.331800] ACPI: PM: Saving platform NVS memory
+> >      [  100.335224] Disabling non-boot CPUs ...
+> >      [  100.337412] smpboot: CPU 1 is now offline
+> >      [  100.341065] smpboot: CPU 2 is now offline
+> >      [  100.346441] smpboot: CPU 3 is now offline
+> >      [  100.353086] ACPI: PM: Low-level resume complete
+> >      [  100.353129] ACPI: EC: EC started
+> >      [  100.353129] ACPI: PM: Restoring platform NVS memory
+> >      [  100.355219] Enabling non-boot CPUs ...
+> >      [  100.355244] smpboot: Booting Node 0 Processor 1 APIC 0x2
+> >      [  100.355954] CPU1 is up
+> >      [  100.355972] smpboot: Booting Node 0 Processor 2 APIC 0x1
+> >      [  100.356698] CPU2 is up
+> >      [  100.356716] smpboot: Booting Node 0 Processor 3 APIC 0x3
+> >      [  100.357371] CPU3 is up
+> >      [  100.360217] ACPI: PM: Waking up from system sleep state S3
+> >      [  100.668380] ACPI: EC: interrupt unblocked
+> >      [  100.668598] pcieport 0000:00:1c.0: Intel SPT PCH root port ACS
+> > workaround enabled
+> >      [  100.668606] pcieport 0000:00:1c.4: Intel SPT PCH root port ACS
+> > workaround enabled
+> >      [  100.668643] pcieport 0000:00:1d.0: Intel SPT PCH root port ACS
+> > workaround enabled
+> >      [  100.690996] DMAR: DRHD: handling fault status reg 2
+> >      [  100.691001] DMAR: [INTR-REMAP] Request device [f0:1f.0] fault
+> > index 0x0 [fault reason 0x25] Blocked a compatibility format interrupt
+> > request
+> > 
+> > But I am unable to find the device f0:1f.0:
+> > 
+> >      $ lspci -nn
+> >      00:00.0 Host bridge [0600]: Intel Corporation Xeon E3-1200 v6/7th
+> > Gen Core Processor Host Bridge/DRAM Registers [8086:5904] (rev 02)
+> >      00:02.0 VGA compatible controller [0300]: Intel Corporation HD
+> > Graphics 620 [8086:5916] (rev 02)
+> >      00:04.0 Signal processing controller [1180]: Intel Corporation Xeon
+> > E3-1200 v5/E3-1500 v5/6th Gen Core Processor Thermal Subsystem
+> > [8086:1903] (rev 02)
+> >      00:14.0 USB controller [0c03]: Intel Corporation Sunrise Point-LP
+> > USB 3.0 xHCI Controller [8086:9d2f] (rev 21)
+> >      00:14.2 Signal processing controller [1180]: Intel Corporation
+> > Sunrise Point-LP Thermal subsystem [8086:9d31] (rev 21)
+> >      00:15.0 Signal processing controller [1180]: Intel Corporation
+> > Sunrise Point-LP Serial IO I2C Controller #0 [8086:9d60] (rev 21)
+> >      00:15.1 Signal processing controller [1180]: Intel Corporation
+> > Sunrise Point-LP Serial IO I2C Controller #1 [8086:9d61] (rev 21)
+> >      00:16.0 Communication controller [0780]: Intel Corporation Sunrise
+> > Point-LP CSME HECI #1 [8086:9d3a] (rev 21)
+> >      00:1c.0 PCI bridge [0604]: Intel Corporation Sunrise Point-LP PCI
+> > Express Root Port #1 [8086:9d10] (rev f1)
+> >      00:1c.4 PCI bridge [0604]: Intel Corporation Sunrise Point-LP PCI
+> > Express Root Port #5 [8086:9d14] (rev f1)
+> >      00:1d.0 PCI bridge [0604]: Intel Corporation Sunrise Point-LP PCI
+> > Express Root Port #9 [8086:9d18] (rev f1)
+> >      00:1f.0 ISA bridge [0601]: Intel Corporation Sunrise Point-LP LPC
+> > Controller [8086:9d58] (rev 21)
+> >      00:1f.2 Memory controller [0580]: Intel Corporation Sunrise
+> > Point-LP PMC [8086:9d21] (rev 21)
+> >      00:1f.3 Audio device [0403]: Intel Corporation Sunrise Point-LP HD
+> > Audio [8086:9d71] (rev 21)
+> >      00:1f.4 SMBus [0c05]: Intel Corporation Sunrise Point-LP SMBus
+> > [8086:9d23] (rev 21)
+> >      01:00.0 PCI bridge [0604]: Intel Corporation DSL6340 Thunderbolt 3
+> > Bridge [Alpine Ridge 2C 2015] [8086:1576]
+> >      02:00.0 PCI bridge [0604]: Intel Corporation DSL6340 Thunderbolt 3
+> > Bridge [Alpine Ridge 2C 2015] [8086:1576]
+> >      02:01.0 PCI bridge [0604]: Intel Corporation DSL6340 Thunderbolt 3
+> > Bridge [Alpine Ridge 2C 2015] [8086:1576]
+> >      02:02.0 PCI bridge [0604]: Intel Corporation DSL6340 Thunderbolt 3
+> > Bridge [Alpine Ridge 2C 2015] [8086:1576]
+> >      39:00.0 USB controller [0c03]: Intel Corporation DSL6340 USB 3.1
+> > Controller [Alpine Ridge] [8086:15b5]
+> >      3a:00.0 Network controller [0280]: Qualcomm Atheros QCA6174
+> > 802.11ac Wireless Network Adapter [168c:003e] (rev 32)
+> >      3b:00.0 Non-Volatile memory controller [0108]: SK hynix PC300 NVMe
+> > Solid State Drive 512GB [1c5c:1284]
+> > 
+> > As this is logged as an error, can this be fixed somehow?
+> 
+> This appears to be a platform problem. The hidden device (f0:1f.0) is
+> not visible to the OS, so no driver can program the interrupt remapping
+> table for the device's interrupts.
 
-Sorry for noise.
+The hidden device has been identified as the IO-APIC. It is visible
+and properly declared to use 0f:1f.0 in the DMAR table.
 
-Oleg.
+     regards  Christian
 
 
