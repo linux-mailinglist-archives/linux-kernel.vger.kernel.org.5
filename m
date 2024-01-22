@@ -1,48 +1,71 @@
-Return-Path: <linux-kernel+bounces-34135-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34136-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56880837425
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:43:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98CF6837432
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:44:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C6B928C6FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:43:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A6D11F23996
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 20:44:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1D1D482D7;
-	Mon, 22 Jan 2024 20:42:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FAFB47773;
+	Mon, 22 Jan 2024 20:44:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WJMJhdkE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JbJZySkp"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E720D482C0;
-	Mon, 22 Jan 2024 20:42:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7684E482C0;
+	Mon, 22 Jan 2024 20:44:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705956146; cv=none; b=Gkh+ierMhkto0OBxUHwtkX3ZQNC6LzTPk8lJHaZmToto2EV5o8qWgQzjMXCSy3c8jVoMxk3umJNuDcfUjh7nUwwHmz82SB0I/lJ125Sn8sli3I+FukvgPDbWMbgaXRCNpMnqtb/ptTAJrTdVdnwC+y7K6jEj+Uj4lIiT98IP7dE=
+	t=1705956255; cv=none; b=e7nn0xLo3zX/gAMmqEsHu7A3Cx5j/vK7yhYhuYzFeVzvcqKORnvJ/cDbTUWiW3hmxL5mb5qV6MuzGUKaLp3muFmBMZjahh9YLD6xQ5II3tFDIQK/SXnjpUj5ZzsAQnV37q8Spnc7/OxAWU/UP1iYLUaLNfRyyR1XaMPLk1cAbqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705956146; c=relaxed/simple;
-	bh=9wwET/SR7knk4oSeCNFeV/MEM9M1Z+V//fKVMmchNVA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=GCkvGzz4IRZWvb7cK1xwT9g3OwAKjbSu5338ROhRDNtSN1PrxWG86pTAi5eUA1vnUSVocKHjGK6hQ8ChGZaajmII3sKdiFumNTh/9Pf9UHHCvLa8ZDLbwHPNqGAvhvVi7Wu8DPjbhSgN38WKaTiZeGtI3TWDbadRaFQE5O5y6xg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WJMJhdkE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09458C43390;
-	Mon, 22 Jan 2024 20:42:23 +0000 (UTC)
+	s=arc-20240116; t=1705956255; c=relaxed/simple;
+	bh=jP30lAx8kMXkg0eWAT8+e0vfehU+8oEqT+be6BiK5j8=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=fSm4XKWCN1vRu4IwWGQeP955xei8zEZWlw7nM4a0FcISqzy530qR7OUAJMw5AQFJmqdHe4UXViAs+AKlmJZuH6i1Bb0foOvTCbgiURwi5paYHimHieH4xPwOW5lAyaXiVLReqT14sRrWblLqQL8vu2i7onIz4jfcPhmLswV2KyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JbJZySkp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6614C433C7;
+	Mon, 22 Jan 2024 20:44:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705956145;
-	bh=9wwET/SR7knk4oSeCNFeV/MEM9M1Z+V//fKVMmchNVA=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=WJMJhdkEMVCsME+TmfhWjSnniEDJHwowqo5SHRtMJ6QQ79jW80iSuhn8ruChmQRNe
-	 uajnlUjNW8Zsh2qgHCl5obP2siMRrvEOVeD1u9IRtexCD/GZ4b254yFGMry4OPFZ42
-	 cc71nCZfe8phSoFEjR+O+n6Q0vDTnkdZAzFYoohK+8Y8OiUEltZDQrPvkXV04HoVvv
-	 1AOwKoagGq191arGl0quSnDW3wD8ZPcZ2zDsek7cqO1tjU7JvsLEWBVvzgdgvME2/P
-	 syOA4PcoE/irBksey7CvpMyB9TEoVFiA1oRtI6NjXrkV0BbHv9WlUJhtYbQJkrPGlj
-	 eLAaaBdIYX64A==
+	s=k20201202; t=1705956255;
+	bh=jP30lAx8kMXkg0eWAT8+e0vfehU+8oEqT+be6BiK5j8=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=JbJZySkp7+mBwZvUK6oOtNcqB9fuLRH6BA+jpdkh7Gxyd5VdU7cZ/r5onQQ/fq7sd
+	 CTM44adcuaXzgkRZz1sMAx9qzCUKX+aGkOVFxtK/rnYRayWKL36GQUd+CexLazoU0Y
+	 0qF8/E/MUziz8YXjrvJDMRN63zH9S4CmI6Fg5LtnSbaN3pa2xqIZyp92Uld375KEHK
+	 9GWIT2gNsiYL+WbHZATaraf02EBXWZhz2tSvm7T/Xkr7a5m/BEAj6NI4FbPPMd63Zd
+	 XF24TalYJ1sr5jjmzU+Pjjzg4iEYWoQ05YTCUHwDP7inI3123uNpyvcGnHFFPFtEqY
+	 jhLt78GUK+0Ag==
 From: Mark Brown <broonie@kernel.org>
-Date: Mon, 22 Jan 2024 20:41:54 +0000
-Subject: [PATCH 4/4] arm64/sme: Remove spurious 'is' in SME documentation
+To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, 
+ Takashi Iwai <tiwai@suse.com>, 
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, 
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, 
+ Bard Liao <yung-chuan.liao@linux.intel.com>, 
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, 
+ Daniel Baluta <daniel.baluta@nxp.com>, 
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, 
+ Venkata Prasad Potturu <venkataprasad.potturu@amd.com>, 
+ Emil Velikov <emil.velikov@collabora.com>, 
+ Syed Saba Kareem <Syed.SabaKareem@amd.com>, 
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, 
+ Alper Nebi Yasak <alpernebiyasak@gmail.com>, 
+ Vijendar Mukunda <Vijendar.Mukunda@amd.com>, 
+ V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>, 
+ Mastan Katragadda <Mastan.Katragadda@amd.com>, 
+ Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>, 
+ Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ sound-open-firmware@alsa-project.org, kernel@collabora.com
+In-Reply-To: <20231219030728.2431640-1-cristian.ciocaltea@collabora.com>
+References: <20231219030728.2431640-1-cristian.ciocaltea@collabora.com>
+Subject: Re: [PATCH v2 0/8] Improve SOF support for Steam Deck OLED
+Message-Id: <170595625065.145475.12588005064775574769.b4-ty@kernel.org>
+Date: Mon, 22 Jan 2024 20:44:10 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,51 +74,60 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240122-arm64-sve-sme-doc-v1-4-3d492e45265b@kernel.org>
-References: <20240122-arm64-sve-sme-doc-v1-0-3d492e45265b@kernel.org>
-In-Reply-To: <20240122-arm64-sve-sme-doc-v1-0-3d492e45265b@kernel.org>
-To: Catalin Marinas <catalin.marinas@arm.com>, 
- Will Deacon <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>
-Cc: Dave Martin <dave.martin@arm.com>, linux-arm-kernel@lists.infradead.org, 
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Mark Brown <broonie@kernel.org>, 
- Edmund Grimley-Evans <edmund.grimley-evans@arm.com>
 X-Mailer: b4 0.13-dev-5c066
-X-Developer-Signature: v=1; a=openpgp-sha256; l=904; i=broonie@kernel.org;
- h=from:subject:message-id; bh=9wwET/SR7knk4oSeCNFeV/MEM9M1Z+V//fKVMmchNVA=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlrtMjztdy04L3pPKFQ1UwQtFqAqS9I99xBUZdbr7I
- CdmgEmKJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZa7TIwAKCRAk1otyXVSH0EOqB/
- 4kOHuIWx69XoT/RvheUGIeg8J6oxM+WtZVJEVFPIDAlWVc83YY8eyKp9n+WWz4MhO5XYUUQ+1/kVIL
- nu5oS58CpKIFsYZCz4KlWQzu/AOWr6Mtbb5szjzWKxz1JDZQugZzC4EjiExRx4FOiMb34XkH/DGt2q
- s/GEdytazihB5d9tSxFE0/1XlGZE0hU4vjbJzkegGoX5+sCRo3M7OyUZTsgIfjk2GafMUY8uECNAet
- u5zr8YjOhg4d2TO68AHXFdqE+48uvKVJQO0O+9SqH1guCb9gwuE5QIAAre4fOas6m4x4oTyWTq83U/
- WQIIiyJOgp1a4HIpKh7NqPRZNS5J4y
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 
-Just a typographical error.
+On Tue, 19 Dec 2023 05:07:18 +0200, Cristian Ciocaltea wrote:
+> This patch series is a continuation of [1] to provide several fixes and
+> improvements to the SOF drivers targeting the Vangogh platform, as found on
+> Valve's Steam Deck OLED.  The previous series only handled the legacy ACP
+> drivers.
+> 
+> Also note that, since v2, this patch series requires an updated SOF
+> topology to provide a correct DAI link ID for the BT codec.  The binary
+> file should be located under:
+> 
+> [...]
 
-Reported-by: Edmund Grimley-Evans <edmund.grimley-evans@arm.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- Documentation/arch/arm64/sme.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Applied to
 
-diff --git a/Documentation/arch/arm64/sme.rst b/Documentation/arch/arm64/sme.rst
-index ba0a5e5b2523..bc9855e599c8 100644
---- a/Documentation/arch/arm64/sme.rst
-+++ b/Documentation/arch/arm64/sme.rst
-@@ -75,7 +75,7 @@ model features for SME is included in Appendix A.
- 2.  Vector lengths
- ------------------
- 
--SME defines a second vector length similar to the SVE vector length which is
-+SME defines a second vector length similar to the SVE vector length which
- controls the size of the streaming mode SVE vectors and the ZA matrix array.
- The ZA matrix is square with each side having as many bytes as a streaming
- mode SVE vector.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
--- 
-2.30.2
+Thanks!
+
+[1/8] ASoC: amd: acp: Drop redundant initialization of machine driver data
+      commit: f0f1021fc9cb88ebdc241b6121107399ee4f2eb7
+[2/8] ASoC: amd: acp: Make use of existing *_CODEC_DAI macros
+      commit: 68ab29426d88294d16170919a6a6e764f375113f
+[3/8] ASoC: amd: acp: Add missing error handling in sof-mach
+      commit: d0ada20279db2649a7549a2b8a4a3379c59f238d
+[4/8] ASoC: amd: acp: Update MODULE_DESCRIPTION for sof-mach
+      commit: a4832a94688000662d4ebb8a1c05f086a9c98826
+[5/8] ASoC: SOF: amd: Fix memory leak in amd_sof_acp_probe()
+      commit: 222be59e5eed1554119294edc743ee548c2371d0
+[6/8] ASoC: SOF: amd: Optimize quirk for Valve Galileo
+      commit: a13f0c3c0e8fb3e61fbfd99c6b350cf9be0c4660
+[7/8] ASoC: SOF: core: Skip firmware test for custom loaders
+      commit: 369b997a1371aeecd0a1fb0f9f4ef3747a1d07a4
+[8/8] ASoC: SOF: amd: Compute file paths on firmware load
+      commit: d9cacc1a2af2e1cd781b5cd2a3e57fbde64f5a2d
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
 
