@@ -1,138 +1,150 @@
-Return-Path: <linux-kernel+bounces-32704-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32707-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0A93835F20
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:08:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2071835F36
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:12:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DA581C245EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:08:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B64A8B25107
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:10:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15A2F39FFA;
-	Mon, 22 Jan 2024 10:07:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 439033A1AE;
+	Mon, 22 Jan 2024 10:09:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b="OfRjt8QW"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pE6PNA+e"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED78A3A1DC
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 10:07:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 852B939FF7;
+	Mon, 22 Jan 2024 10:09:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705918063; cv=none; b=fXSM2M4fXR/ykcK1J3w9Y1U7aD1yRtlROjvKuuC2dqNkSYwy8bGZJth7KLpBQVm6IbGau8itEMAY5UDG2CrAcB09pNXwjWlJfDomvzVXare8g7J8P44YhcIZH+7SMqjmH06bfmfxUSjqdwpLP1ME6gdw1mpwpUnVNvomEfR5Yvs=
+	t=1705918186; cv=none; b=fygt2uPejxhgNyLEbIBVz94wkMWb/W/qouCKuMXhOCT2YZTrvOg29dVsF6tf4bb8EWSO81sUvfTs41B0wPc+jegIJmuj8hGmVvM0WDEZEkmWWbeBbsEtWTQkva1xAQ2pDOcJP4S4W0BxHrGsbtOWDeVQJI7FkuDQO2wWGEt9ecI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705918063; c=relaxed/simple;
-	bh=7hfseNti4KOg7rK9baauGbMNt7pApk4b65kBVK61lRM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XiEPnuFpRFnoUJSfddO579KsjRRGvziFZuL8of250LRfBIyHMCqYnAyl9FS1UaInC7m4Qpu0oyOa5mdZqty6J432VSxEbbmUnAkyLdg+9/oF/fYGcFuvKOScc85rKirQFWM8G9OWK+etw0N7wqliH/CClciGW4ye54V0f6Q44sY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com; spf=pass smtp.mailfrom=tweaklogic.com; dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b=OfRjt8QW; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tweaklogic.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6dbe3fc1421so227543b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 02:07:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tweaklogic.com; s=google; t=1705918060; x=1706522860; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7SZ6TVtvqO7xS+FN5Shbzs8pDYcUTB61xRBtZe0By+M=;
-        b=OfRjt8QWrGSQCDS9EbbbtG+FrNaVTL6vPTnUtshkgbUB19HjnZEumH4sKuKYnaN1Zx
-         FsLKoKGueE/+xeL9S0a/cGimMfbRuPbC/wnRry43IaV1n9NxGSfhnyJkMLEueO1q+z59
-         CmNev0L+hFeNv9F3GW+7LBImF9OY5yVBZmshcXSecGloHjovUvtrAzyKomeEDinJ6h3n
-         HrEK9glHVQLoQsZd4JJzoq6nr5uiOsY9rar0li+QnkYMILC/v82Rp/9XkqKuIftvIu13
-         6QY6vADYa8GXc9M5LKyNY8fDS21KwImF6NozidqSiSf5LdtGiPilsBELp8DcUMFNHtIS
-         Tekw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705918060; x=1706522860;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7SZ6TVtvqO7xS+FN5Shbzs8pDYcUTB61xRBtZe0By+M=;
-        b=CLVKSOlD9dDYAcUsgKA+6HH25Vmo/qM80Igsw92tT131KPSr5a6DikGiNa42qFlDEp
-         OFQkOk/BajJMHvNKV1OMmB1RX98gsBIdvI/ZsGnaCmnOYahf7woTN16FvSTwQrFNBgUC
-         kY6vqmBe14kQgpUVxS0cgCrGQvd5HTrlKF19KhCk3CZAM1HARI8r70QY/gWkGwUJzvg5
-         vDVfHg+e6nqQjJA7rYcbmyLQTRzemSTHDn/hGV+v3n/h6pRynj6ygkmC9cO6Pe5j56CS
-         W+V6EtikOucTuPCMdtZiAmMt2mJrXWRsw30cqFDG79vEkcWteoQgedpjCmSXArNquilT
-         Nibw==
-X-Gm-Message-State: AOJu0YzN8glCA8PqhOGZybcImEQUQP7hFxxiBNZqNdD38Ck0YogHPrfm
-	7Zh+bY2OK5p69pDgHYmwi16LD1/l2lRZjz8mzFljaLkOPFO4p5ByCNcGN1D7RXY=
-X-Google-Smtp-Source: AGHT+IFOmDwDqyifPwJRFILel0xXFOZg55zuqJ0ufInqRPYJxdwGgQjTGWuazVH1pqkRIehl9L8Msw==
-X-Received: by 2002:a17:903:1251:b0:1d7:657:8ab1 with SMTP id u17-20020a170903125100b001d706578ab1mr1864860plh.76.1705918060314;
-        Mon, 22 Jan 2024 02:07:40 -0800 (PST)
-Received: from [192.168.20.11] ([180.150.112.156])
-        by smtp.gmail.com with ESMTPSA id w14-20020a170902a70e00b001d75c26e857sm811322plq.288.2024.01.22.02.07.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 02:07:39 -0800 (PST)
-Message-ID: <478fc1b0-aba4-4f36-bdb6-bf5fc7eb8609@tweaklogic.com>
-Date: Mon, 22 Jan 2024 20:37:32 +1030
+	s=arc-20240116; t=1705918186; c=relaxed/simple;
+	bh=XE5sibT07MUtktKYn3gvfIB8/LptzZOVCxCJLPHfZrs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GbXYj9/m2l5tKNhgzaAhZdEWzLxYi5IH3N5NsyPpKCVTCdtKQnacV9bN2NcObZqjvzvVrgBaU/kTEjUQFtu1QBIZghZVluo5FVL7kdI1cc9YTrUfKDhtW7RiZ2A6TiJTDammpcKMHz2aphR0Vn/T2KAz+DWihOScxj0lu+WZnIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pE6PNA+e; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29AF3C43399;
+	Mon, 22 Jan 2024 10:09:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705918186;
+	bh=XE5sibT07MUtktKYn3gvfIB8/LptzZOVCxCJLPHfZrs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=pE6PNA+eLZyYw0TapmmcWDXjWfdMjlnLhXiY9/+R2rWvkRGdRh1DUl/DdvQ5+l7HP
+	 2e9+ak5ovFNBt2Tjti0K4KXWIOV6CN7CpPZhtp7T27LDUPcqnMTUroB81UDu6SJduo
+	 vGEq6FMMLuqq7jBGBRmDDpfod3dVbEO98BJdTp2ac0k+94fJtK/poI9i7UKJXZh2a/
+	 LirqchStvbjQdb7ArfZ10z7ouhBfXAhH8vpNnIuB7JwIS7e73yFxCB5B3hYNj++IEm
+	 K0Eo+aMRM3FIEohcby8udgcsK5LOm6EzCkkxl+VPEG/zO2ZW2jHS164fJHvtcctyFd
+	 bfZkzmqHtbmJw==
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-50ff9bde634so646195e87.2;
+        Mon, 22 Jan 2024 02:09:46 -0800 (PST)
+X-Gm-Message-State: AOJu0YxXlr3kCZ3GQ9M0/yV++KgWY2Sxw9Mn9BRa7sKjcJMggZRR+IJQ
+	0Bn6gdizDgU0CpNqbyGMonud55FCUKYI0jFTaF60f+tafMG6NO//60LvT9PP8898tv2N/71oVsG
+	b7/565E+RBrvaPaZd/rUA1MPzm5Y=
+X-Google-Smtp-Source: AGHT+IFTfhxWMWLtxGAHctQc939UBRXnunfcyPtj4pRi1fRakd+7q0rE30I0aMY6W+/fJlYYtH8KkeqTkMVR+zsnMYM=
+X-Received: by 2002:ac2:48a6:0:b0:50e:88d0:447b with SMTP id
+ u6-20020ac248a6000000b0050e88d0447bmr1202146lfg.31.1705918184370; Mon, 22 Jan
+ 2024 02:09:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 2/3] dt-bindings: iio: light: Avago APDS9306
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Matti Vaittinen <mazziesaccount@gmail.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Marek Vasut <marex@denx.de>, Anshul Dalal <anshulusr@gmail.com>,
- Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Cc: Matt Ranostay <matt@ranostay.sg>,
- Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
- linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240121051735.32246-1-subhajit.ghosh@tweaklogic.com>
- <20240121051735.32246-3-subhajit.ghosh@tweaklogic.com>
- <a317aeaf-6b4c-43c9-b5d6-78d93ba6f9af@linaro.org>
-From: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-In-Reply-To: <a317aeaf-6b4c-43c9-b5d6-78d93ba6f9af@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240120103734.4155446-1-yukuai1@huaweicloud.com>
+ <CAPhsuW7trizGqWcBWQ1R1mrxyA6sNTuwXOK-0vxtCHO6fqcTbQ@mail.gmail.com> <354941c2-17bd-ce04-f8c8-645d7c4de4cc@huaweicloud.com>
+In-Reply-To: <354941c2-17bd-ce04-f8c8-645d7c4de4cc@huaweicloud.com>
+From: Song Liu <song@kernel.org>
+Date: Mon, 22 Jan 2024 02:09:31 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW68RTGBSFpnyePTX5ydo+erh7mKJt2UD64VX5g6JfR4sA@mail.gmail.com>
+Message-ID: <CAPhsuW68RTGBSFpnyePTX5ydo+erh7mKJt2UD64VX5g6JfR4sA@mail.gmail.com>
+Subject: Re: [PATCH 0/5] md: fix/prevent dm-raid regressions
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: Mikulas Patocka <mpatocka@redhat.com>, dm-devel@lists.linux.dev, msnitzer@redhat.com, 
+	heinzm@redhat.com, linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 22/1/24 20:21, Krzysztof Kozlowski wrote:
-> On 21/01/2024 06:17, Subhajit Ghosh wrote:
->> Adding device tree support for APDS9306 Ambient Light Sensor.
->> Updating datasheet hyperlinks.
->> Adding interrupt definition macro and header file.
->> Adding vdd-supply property.
-> 
-> Why? Do other devices have it?
-Are you referring to vdd-supply? No, I guess, haven't checked actually.
-If other devices don't have, can you suggest the best way to handle that?
-> 
-> 
->>   required:
->> @@ -33,6 +37,8 @@ required:
->>   
->>   examples:
->>     - |
->> +    #include <dt-bindings/interrupt-controller/irq.h>
->> +
->>       i2c {
->>           #address-cells = <1>;
->>           #size-cells = <0>;
->> @@ -41,7 +47,8 @@ examples:
->>               compatible = "avago,apds9300";
->>               reg = <0x39>;
->>               interrupt-parent = <&gpio2>;
->> -            interrupts = <29 8>;
->> +            interrupts = <29 IRQ_TYPE_LEVEL_LOW>;
-> 
-> Separate change.
-Understood.
-> 
-> Best regards,
-> Krzysztof
-> 
-Regards,
-Subhajit Ghosh
+On Mon, Jan 22, 2024 at 12:24=E2=80=AFAM Yu Kuai <yukuai1@huaweicloud.com> =
+wrote:
+>
+> Hi,
+>
+> =E5=9C=A8 2024/01/21 12:41, Song Liu =E5=86=99=E9=81=93:
+> > On Sat, Jan 20, 2024 at 2:41=E2=80=AFAM Yu Kuai <yukuai1@huaweicloud.co=
+m> wrote:
+> >>
+> >> From: Yu Kuai <yukuai3@huawei.com>
+> >>
+> >> There are some problems that we fixed in md/raid, and some apis is cha=
+nged.
+> >> However, dm-raid rely the old apis(noted that old apis is problematic =
+in
+> >> corner cases), and now there are regressions in lvm2 testsuite.
+> >>
+> >> This patchset fix some regressions(patch 1-3), and revert changes to
+> >> prevent regressions(patch 4,5). Noted that the problems in patch 4,5 i=
+s
+> >> not clear yet, and I'm not able to locate the root cause ASAP, hence I
+> >> decide to revert changes to prevent regressions first.
+> >
+> > Thanks for looking into this!
+> >
+> > Patch 1-3 look good to me. But since we need to back port these fixes
+> > to 6.7 kernels, let's make it very clear what issues are being fixed.
+> > Please:
+>
+> I'm attaching my test result here, before I send the next version.
+>
+> The tested patched add following changes for patch 5:
+>
+> @@ -9379,6 +9387,15 @@ static void md_start_sync(struct work_struct *ws)
+>          suspend ? mddev_suspend_and_lock_nointr(mddev) :
+>                    mddev_lock_nointr(mddev);
+>
+> +       if (!test_bit(MD_RECOVERY_RUNNING, &mddev->recovery)) {
+> +               /*
+> +                * dm-raid calls md_reap_sync_thread() directly to
+> unregister
+> +                * sync_thread, and md/raid should never trigger this.
+> +                */
+> +               WARN_ON_ONCE(mddev->gendisk);
+> +               goto not_running;;
+> +       }
+> +
+>          if (!md_is_rdwr(mddev)) {
+>
+> Failed tests for v6.6:
+> ###       failed: [ndev-vanilla] shell/duplicate-vgid.sh
+> ###       failed: [ndev-vanilla] shell/fsadm-crypt.sh
+> ###       failed: [ndev-vanilla] shell/lvchange-raid1-writemostly.sh
+> ###       failed: [ndev-vanilla] shell/lvconvert-cache-abort.sh
+> ###       failed: [ndev-vanilla] shell/lvconvert-repair-raid.sh
+> ###       failed: [ndev-vanilla] shell/lvcreate-large-raid.sh
+> ###       failed: [ndev-vanilla] shell/lvextend-raid.sh
+> ###       failed: [ndev-vanilla] shell/select-report.sh
+>
+> Failed tests for next-20240117(latest linux-next, between v6.7 to v6.8-rc=
+1)
+> ###       failed: [ndev-vanilla] shell/duplicate-vgid.sh
+> ###       failed: [ndev-vanilla] shell/fsadm-crypt.sh
+> ###       failed: [ndev-vanilla] shell/lvchange-raid1-writemostly.sh
+> ###       failed: [ndev-vanilla] shell/lvconvert-repair-raid.sh
+> ###       failed: [ndev-vanilla] shell/lvextend-raid.sh
+> ###       failed: [ndev-vanilla] shell/select-report.sh
+>
+> Please noted that the test lvconvert-raid-reshape.sh is still possible
+> to fail due to commit c467e97f079f ("md/raid6: use valid sector values
+> to determine if an I/O should wait on the reshape").
 
+Thanks for the information!
+
+I will look closer into the raid6 issue.
+
+Song
 
