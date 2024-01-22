@@ -1,158 +1,108 @@
-Return-Path: <linux-kernel+bounces-34174-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34175-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AE8883751C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:16:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3C2B837520
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:16:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B67A52888BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:15:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 231581C2649A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:16:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB51D47F78;
-	Mon, 22 Jan 2024 21:15:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B90C47F72;
+	Mon, 22 Jan 2024 21:16:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o1T7fwc1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="SaiTxQdK"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D4AE47F57;
-	Mon, 22 Jan 2024 21:15:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BBC047F5D
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 21:16:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705958150; cv=none; b=X9tGT+OkIMgGrOVtcLZQez7FoCL6/Y0EIwRHD87V0MBh7TG5ghoBKrXYYkHRCm3rDuuHWHNlhn2i8wGOaEzf826IwGynadwiGKTHXlN+1Lanb0bMdJWjJIC7AStrIiNznY63xXvhdXPUa0jFoM2hfH8xzc/pLSA3/y4Frfz8+60=
+	t=1705958181; cv=none; b=bn9CnEQCw6a7Rt1/04f5xIi3dy7lbqY9J9gruSTauznuH5CaS96ahx+FjoNKk1PArCBp8UdPqMS+6YFg3OSnm3RRfECInoOqyKGJv6mdnjxPjC1u2WUahMWr4GZ+6q14wzQ8UighFQ1VSYHp3qvuDZ/U7el95q4hNY2M0zmO4vA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705958150; c=relaxed/simple;
-	bh=+Sd1NCS7PJbxgZHkZkL/NbxvN4eZbz3phY9jzv/ht6M=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QXXGsw0cMb9RlQYCvHqRizUUShLy1QBAiQsXWYyqpN+22Wx7kAFCIK23uc9FksuOeu4vUMlV6FR8y5vHHdmm7i9PTnfPs/p6PZWJK44fB5ixF2a3FpX/tJ/MDmJOMPNPXJTESikUeKAEDVgH0ohmWy+j2OloExRzBLLiIEhvA6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o1T7fwc1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 495A2C433F1;
-	Mon, 22 Jan 2024 21:15:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705958149;
-	bh=+Sd1NCS7PJbxgZHkZkL/NbxvN4eZbz3phY9jzv/ht6M=;
-	h=From:To:Cc:Subject:Date:From;
-	b=o1T7fwc1V5q7RmfJRbstGjV5dsI6E/QdKShN042B+tXDRre9tnqA+ZuJfPs+J2SFm
-	 iCGqUKlYAMnRYK2K2tD8qYZSSNlMkusWT109maWcxydt5c9Fef/9/7EsNmKeFlYK2X
-	 AUleTEbReQs8WAhNUKP56QD7yNYehvF1OpvquuxBE5Hr6NSVmwPIlEypsYFaAoEpkT
-	 3Vr7duejQVZY6IGbfDGEiN5gRTc3EzDOHIYoOTf/4dLrAQaE9fAkWt6+fyGpf2OftS
-	 0Piu6niMK4yYNzDfs/n3s+kcGfRgAaL7oNg1aJIs3ofawGbH2iUyOQGWU2ocr+GCWK
-	 o+p89ipoWno9g==
-From: Rob Herring <robh@kernel.org>
-To: Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Alessandro Zummo <a.zummo@towertech.it>
-Cc: linux-gpio@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-i2c@vger.kernel.org,
-	linux-rtc@vger.kernel.org
-Subject: [PATCH] MAINTAINERS: Drop my "+dt" sub-address
-Date: Mon, 22 Jan 2024 15:15:26 -0600
-Message-ID: <20240122211528.1719994-1-robh@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1705958181; c=relaxed/simple;
+	bh=zMXc6tor4fJWUFbxItJ2+5r+CRBPP2/dvta/6uILgnA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Tnh6jFNDyLUKePzF8MzzFSZFIwTXg5yPRGEwuEK4OdGmpl++trzD6XjK0eTwFbJTN/gtYab/wlq7cYZXU6nWIggWnz6L4Y5jrc+9XhMGFtpCYQhl1X0hV7k7SygRq9MZ8C/QaK0opwETWeQWHf4H4tdDfG/dem65CCCkSbKwWjI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=SaiTxQdK; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d71e184695so13023865ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 13:16:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1705958179; x=1706562979; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WK/doAZyyGzQuUQ64pMN/IegoB0Y5GZJ/6bMRTJUZOs=;
+        b=SaiTxQdKSvdfDHf7FsAVB4Up811/prozfadikTlsZcpgqyu//7JGkD7lZap1WTv3/3
+         zpsWEw/NFgolwwJgdoS3CQWtu6WWaltSUmnndO6I1eDYlP4mLNvPCOQ1U/7X2VPOVZCg
+         mITcET3n22GHWVgtPIu4buWcJiSXEc5lOA120=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705958179; x=1706562979;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WK/doAZyyGzQuUQ64pMN/IegoB0Y5GZJ/6bMRTJUZOs=;
+        b=tx8TEE/9oIvuPAKvHrAOlzFmCesKj6WK6IjlHsjtUqOQqUhv4w8P0XHmBbNSIetJuu
+         V8tzcWBRboxFfBKet05YIDFiMJdmeRpjBaBpe5o6qXOMwnHG+YUwcCffTbJRrzJkd2Ef
+         loGicm9MDdOwLmsNuC/gYjui8UYZmtS08h/15aGmUv474sl3i7kefC8IQpZy4wdyMWY4
+         8i7P6lMFCIfpm42U+nZ3NuMZ2EKbcRCbW4smxiJ8xwn7tLXGJKiDQonKWahqZ3F509Y6
+         DknhyRIFKAzgOn5f2hawdjwIGgXK/5+1VAI4NTx8Z8d4tDDF+Wy9l7smP5LnVlYsw8lv
+         BEAA==
+X-Gm-Message-State: AOJu0Yyc+kFc0Omo9ZnOteI3ko6yk0Cl75ptIWXUj7TPvIxN7Bw0/vA6
+	82HaOJAPUlzZSKhqwfElJRdy64l0QV9azw76lA/9q6UnguKM+MQ72cIfcVgWAGc=
+X-Google-Smtp-Source: AGHT+IHY6QTp3+L73kbC1yAy2VNJUlYykSfBPUTr4schnUh02OhLk1d1DJUhybB11UylKM92YKo7RQ==
+X-Received: by 2002:a17:902:e891:b0:1d7:599d:ed25 with SMTP id w17-20020a170902e89100b001d7599ded25mr1272345plg.39.1705958179526;
+        Mon, 22 Jan 2024 13:16:19 -0800 (PST)
+Received: from fastly.com ([208.184.224.238])
+        by smtp.gmail.com with ESMTPSA id u4-20020a170902b28400b001d720c7ed48sm5693728plr.286.2024.01.22.13.16.18
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 22 Jan 2024 13:16:19 -0800 (PST)
+Date: Mon, 22 Jan 2024 13:16:16 -0800
+From: Joe Damato <jdamato@fastly.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	chuck.lever@oracle.com, jlayton@kernel.org,
+	linux-api@vger.kernel.org, edumazet@google.com, davem@davemloft.net,
+	alexander.duyck@gmail.com, sridhar.samudrala@intel.com,
+	kuba@kernel.org
+Subject: Re: [RFC 1/1] eventpoll: support busy poll per epoll instance
+Message-ID: <20240122211616.GA1244@fastly.com>
+References: <20240120004247.42036-1-jdamato@fastly.com>
+ <20240120004247.42036-2-jdamato@fastly.com>
+ <20240122-erwidern-erleichtern-8a04080a4db3@brauner>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240122-erwidern-erleichtern-8a04080a4db3@brauner>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 
-I never really implemented any filtering on the "+dt" sub-address, so
-drop it.
+On Mon, Jan 22, 2024 at 04:25:01PM +0100, Christian Brauner wrote:
+> On Sat, Jan 20, 2024 at 12:42:47AM +0000, Joe Damato wrote:
+> > Add F_EPOLL_{S,G}ET_BUSY_POLL_USECS to allow setting a busy poll timeout
+> > per epoll instance so that individual applications can enable (or
+> > disable) epoll based busy poll as needed.
+> > 
+> > Prior to this change, epoll-based busy poll could only be enabled
+> > system-wide, which limits the usefulness of busy poll.
+> > 
+> > Signed-off-by: Joe Damato <jdamato@fastly.com>
+> > ---
+> 
+> This should be an ioctl on the epoll fd, not a fcntl(). fcntl()s
+> should aim to be generic which this isn't. We've recently rejected a
+> memfd addition as a fcntl() as well for the same reason.
 
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- Documentation/devicetree/bindings/gpio/mrvl-gpio.yaml       | 2 +-
- Documentation/devicetree/bindings/i2c/i2c-pxa.yaml          | 2 +-
- Documentation/devicetree/bindings/rtc/sa1100-rtc.yaml       | 2 +-
- Documentation/devicetree/bindings/timer/mrvl,mmp-timer.yaml | 2 +-
- MAINTAINERS                                                 | 4 ++--
- 5 files changed, 6 insertions(+), 6 deletions(-)
+OK, thanks for the review. An ioctl makes more sense, I agree.
 
-diff --git a/Documentation/devicetree/bindings/gpio/mrvl-gpio.yaml b/Documentation/devicetree/bindings/gpio/mrvl-gpio.yaml
-index 9cf6137dd524..65155bb701a9 100644
---- a/Documentation/devicetree/bindings/gpio/mrvl-gpio.yaml
-+++ b/Documentation/devicetree/bindings/gpio/mrvl-gpio.yaml
-@@ -9,7 +9,7 @@ title: Marvell PXA GPIO controller
- maintainers:
-   - Linus Walleij <linus.walleij@linaro.org>
-   - Bartosz Golaszewski <bgolaszewski@baylibre.com>
--  - Rob Herring <robh+dt@kernel.org>
-+  - Rob Herring <robh@kernel.org>
- 
- allOf:
-   - if:
-diff --git a/Documentation/devicetree/bindings/i2c/i2c-pxa.yaml b/Documentation/devicetree/bindings/i2c/i2c-pxa.yaml
-index 31386a8d7684..e89ee361741e 100644
---- a/Documentation/devicetree/bindings/i2c/i2c-pxa.yaml
-+++ b/Documentation/devicetree/bindings/i2c/i2c-pxa.yaml
-@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
- title: Marvell MMP I2C controller
- 
- maintainers:
--  - Rob Herring <robh+dt@kernel.org>
-+  - Rob Herring <robh@kernel.org>
- 
- allOf:
-   - $ref: /schemas/i2c/i2c-controller.yaml#
-diff --git a/Documentation/devicetree/bindings/rtc/sa1100-rtc.yaml b/Documentation/devicetree/bindings/rtc/sa1100-rtc.yaml
-index a16c355dcd11..fcf52d2cac9e 100644
---- a/Documentation/devicetree/bindings/rtc/sa1100-rtc.yaml
-+++ b/Documentation/devicetree/bindings/rtc/sa1100-rtc.yaml
-@@ -12,7 +12,7 @@ allOf:
- maintainers:
-   - Alessandro Zummo <a.zummo@towertech.it>
-   - Alexandre Belloni <alexandre.belloni@bootlin.com>
--  - Rob Herring <robh+dt@kernel.org>
-+  - Rob Herring <robh@kernel.org>
- 
- properties:
-   compatible:
-diff --git a/Documentation/devicetree/bindings/timer/mrvl,mmp-timer.yaml b/Documentation/devicetree/bindings/timer/mrvl,mmp-timer.yaml
-index 1ee4aab695d3..fe6bc4173789 100644
---- a/Documentation/devicetree/bindings/timer/mrvl,mmp-timer.yaml
-+++ b/Documentation/devicetree/bindings/timer/mrvl,mmp-timer.yaml
-@@ -9,7 +9,7 @@ title: Marvell MMP Timer
- maintainers:
-   - Daniel Lezcano <daniel.lezcano@linaro.org>
-   - Thomas Gleixner <tglx@linutronix.de>
--  - Rob Herring <robh+dt@kernel.org>
-+  - Rob Herring <robh@kernel.org>
- 
- properties:
-   $nodename:
-diff --git a/MAINTAINERS b/MAINTAINERS
-index eda745c0f92a..42b43337c266 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16358,7 +16358,7 @@ S:	Supported
- F:	drivers/infiniband/ulp/opa_vnic
- 
- OPEN FIRMWARE AND FLATTENED DEVICE TREE
--M:	Rob Herring <robh+dt@kernel.org>
-+M:	Rob Herring <robh@kernel.org>
- L:	devicetree@vger.kernel.org
- S:	Maintained
- W:	http://www.devicetree.org/
-@@ -16374,7 +16374,7 @@ K:	of_overlay_fdt_apply
- K:	of_overlay_remove
- 
- OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS
--M:	Rob Herring <robh+dt@kernel.org>
-+M:	Rob Herring <robh@kernel.org>
- M:	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
- M:	Conor Dooley <conor+dt@kernel.org>
- L:	devicetree@vger.kernel.org
--- 
-2.43.0
-
+I'll rewrite it as you've suggested and send another RFC.
 
