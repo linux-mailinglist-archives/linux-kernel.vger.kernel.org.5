@@ -1,39 +1,69 @@
-Return-Path: <linux-kernel+bounces-33798-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33800-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BED4D836EAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:00:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E1D1836F2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 19:11:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7609A1F2D5F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:00:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20CF3B326CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:00:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E598051C54;
-	Mon, 22 Jan 2024 17:22:47 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B37B51C50
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:22:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63D5752F98;
+	Mon, 22 Jan 2024 17:23:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="NCIqAD7c"
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F60A612C6
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:22:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705944167; cv=none; b=mCtBI08pMybMOfV3193PsziDBir6gAmlb7QXAN7d1Ym2l1bVJlRSNv/EAYYbR8j42EhbnNEIWApnGF/ZBgBHQuc5n3v1HLBYwhhZg+5G8oUa9T+fgPQk/1cUqiUw4chsughY9F4qF4br6lhNuAD37GYr1IfGBwLJKE43yYBZswQ=
+	t=1705944179; cv=none; b=Ly2uI3OC+L7hBuhpD3AaCilzrd0802501ztAi93khH/JMVJsSM/bQjFPLXiQcWV+w66w3Lfd/Z8cBKRgJ0cx1Y16EEfEaSLJXOwJ5vcd+42d0xln/rbVhuuebG4LeRQ/yQy6dYXFCG4Gtb7+/GkDekBiGrTMAXq8PJJnVZpNPd0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705944167; c=relaxed/simple;
-	bh=cHclBrzs9BlYr7t/j2CTkwuESk1+v6PN7H5BUrU0yXE=;
+	s=arc-20240116; t=1705944179; c=relaxed/simple;
+	bh=bEHwRRHZEZ5muODAZZTChjTXAGcN8GLNJSdSobXIA0I=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WKHCU6rf8feolCNIWbSlpW9VBIFE/qFFSbzy5wg+ZYXhBZeHYZSmKiBz5+5tpbMrdAL+jsE7RCNNMqe6P+PLcwm8W4nIkymRfU9JZzxXBfzVghqeBl4uby8vnnfEYuObxVOEi/hHQGIqChf+q7XnGX0K1fPnjz7sCIFKB5iWj+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EC7B01FB;
-	Mon, 22 Jan 2024 09:23:30 -0800 (PST)
-Received: from [10.1.33.151] (XHFQ2J9959.cambridge.arm.com [10.1.33.151])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 271523F5A1;
-	Mon, 22 Jan 2024 09:22:44 -0800 (PST)
-Message-ID: <d2272d63-1999-4cb3-be61-4a9fbd00e728@arm.com>
-Date: Mon, 22 Jan 2024 17:22:42 +0000
+	 In-Reply-To:Content-Type; b=bb2LZIzEGJI6pFlqCL9ShIumPS6I0vLwkLOUedUy3A+wVB4ZptkkxDLRErXvclsimGGsECtG90NxMQKjIqG1KrmQu9UH0R6fD1NO7cAaHgLxM0yRYdgrsvqxGUYxESsFrjVvrujQCljB35EuUgBKBlEGtkI2hzmKemjzfjb9++c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=NCIqAD7c; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6d9ac0521c6so830651b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:22:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1705944177; x=1706548977; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3cKBLusi5odBbefyu3q7+UJ6/M6hhfLrmEnRO/AYdSg=;
+        b=NCIqAD7cPTDcHzPOjo+YrAdQhZRnfiXAizEgkmFr/YbQQIzPn5dYBRVoS31a+ULPw8
+         /R5CcIGj6Mm8eLJg3DZK7ZCJPQpjgbfXu8Q11j91CGCoGCU8BY1JBVY6JepkTDzF5D1c
+         axZaTBWHcjXBZ4ya9oqXJyJ/HDv68Y293Vi/M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705944177; x=1706548977;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3cKBLusi5odBbefyu3q7+UJ6/M6hhfLrmEnRO/AYdSg=;
+        b=YZNgBC+pXyb1ufPl9oETO36F0Dd8/BkvRL5CjLvhZF3H6jeyHuimCjcBhDFDXYz4Mb
+         UHIyiX2HBku2GeEhqQVH8jBz6oiOyTgRNSw/xmn2/QV+pMiIUfv4QWCia3KgxMUXfw0U
+         7vZFBZhEqlS/VtZ7B/DQQFA3hkt89t+EnGGRJ7cGOqb1kZ84fQRgLUtf6vlcrdtUH5k8
+         za00ZAVYOqGDy/SS8xCSklKJIZhNziAGDf4jAMJs8rbWv2ULGdO+O7bjEIJUTBmYGmjh
+         fekolGRzM2KjU1ZKuiVcOIgb1G2BLkhYHVvA0sMqNqj6Hue8rWvgfND+8km7UyO26Thk
+         L5mA==
+X-Gm-Message-State: AOJu0YwKek2ZZP7LFVOozPSecL9y3aU5Ue0fdAzlR8YLpDsrKUIXlsfK
+	Y0SBkpWSfOQTTI3HjopbHhQMN8IK8QcYVCH/kyemzTOZOd6n1A7TtJKVzOG4XWA=
+X-Google-Smtp-Source: AGHT+IGjgFJLDdAfyqDNErB5PR6R2A+VDqHcrvgpf1rrqIFIthJVkNUJsACPjPjML0hqNb41Xog8zQ==
+X-Received: by 2002:a62:6204:0:b0:6d9:383b:d91a with SMTP id w4-20020a626204000000b006d9383bd91amr8897256pfb.1.1705944176719;
+        Mon, 22 Jan 2024 09:22:56 -0800 (PST)
+Received: from [128.240.1.152] ([206.170.126.10])
+        by smtp.gmail.com with ESMTPSA id y74-20020a62ce4d000000b006d9a48882f7sm10245573pfg.118.2024.01.22.09.22.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jan 2024 09:22:56 -0800 (PST)
+Message-ID: <f3ba4181-ab38-4779-987f-9bda47f003be@linuxfoundation.org>
+Date: Mon, 22 Jan 2024 10:22:54 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,55 +71,51 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] mm/memory: fix folio_set_dirty() vs.
- folio_mark_dirty() in zap_pte_range()
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org, Matthew Wilcox <willy@infradead.org>,
- Andrew Morton <akpm@linux-foundation.org>
-References: <20240122171751.272074-1-david@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20240122171751.272074-1-david@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH v6 2/3] livepatch: Move tests from lib/livepatch to
+ selftests/livepatch
+Content-Language: en-US
+To: Marcos Paulo de Souza <mpdesouza@suse.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>
+Cc: Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
+ Jiri Kosina <jikos@kernel.org>, Miroslav Benes <mbenes@suse.cz>,
+ Petr Mladek <pmladek@suse.com>, Joe Lawrence <joe.lawrence@redhat.com>,
+ linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+ live-patching@vger.kernel.org, skhan@linuxfoundation.org
+References: <20240112-send-lp-kselftests-v6-0-79f3e9a46717@suse.com>
+ <20240112-send-lp-kselftests-v6-2-79f3e9a46717@suse.com>
+ <Zap04ddls7ZvbL/U@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+ <Zap26MINbbxREt4c@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+ <53cf93b2efadc0f42712eb92436bd575b5622664.camel@suse.com>
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <53cf93b2efadc0f42712eb92436bd575b5622664.camel@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 22/01/2024 17:17, David Hildenbrand wrote:
-> The correct folio replacement for "set_page_dirty()" is
-> "folio_mark_dirty()", not "folio_set_dirty()". Using the latter won't
-> properly inform the FS using the dirty_folio() callback.
-
-That set_page_dirty() naming is pretty nasty, hey.
-
+On 1/22/24 05:55, Marcos Paulo de Souza wrote:
+> On Fri, 2024-01-19 at 14:19 +0100, Alexander Gordeev wrote:
+>> On Fri, Jan 19, 2024 at 02:11:01PM +0100, Alexander Gordeev wrote:
+>>> FWIW, for s390 part:
+>>>
+>>> Alexander Gordeev <agordeev@linux.ibm.com>
+>>
+>> Acked-by: Alexander Gordeev <agordeev@linux.ibm.com>
 > 
-> This has been found by code inspection, but likely this can result in
-> some real trouble when zapping dirty PTEs that point at clean pagecache
-> folios.
+> Thanks Alexandre and Joe for testing and supporting the change.
 > 
-> Reported-by: Ryan Roberts <ryan.roberts@arm.com>
-> Closes: https://lkml.kernel.org/r/2445cedb-61fb-422c-8bfb-caf0a2beed62@arm.com
-> Fixes: c46265030b0f ("mm/memory: page_remove_rmap() -> folio_remove_rmap_pte()")
-> Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-
-Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
-
-> ---
->  mm/memory.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Shuah, now that the issue found by that Joe was fixed, do you think the
+> change is ready to be merged? The patches were reviewed by three
+> different people already, and I don't know what else can be missing at
+> this point.
 > 
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 7e1f4849463aa..89bcae0b224d6 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -1464,7 +1464,7 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
->  			delay_rmap = 0;
->  			if (!folio_test_anon(folio)) {
->  				if (pte_dirty(ptent)) {
-> -					folio_set_dirty(folio);
-> +					folio_mark_dirty(folio);
->  					if (tlb_delay_rmap(tlb)) {
->  						delay_rmap = 1;
->  						force_flush = 1;
+
+I would have liked doc patch and lib.mk separate. However, I am pulling this
+now to get testing done. In the future please keep them separate.
+
+thanks,
+-- Shuah
 
 
