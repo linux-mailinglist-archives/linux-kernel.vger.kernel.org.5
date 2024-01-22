@@ -1,33 +1,33 @@
-Return-Path: <linux-kernel+bounces-33796-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33795-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0CF2836EA3
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB9C9836EA2
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:59:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F332B1C28B0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:59:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A1FF1F2CC63
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:59:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32FDB60DFF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BCAA60DFC;
 	Mon, 22 Jan 2024 17:22:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aZcK0mcJ"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PWZyyodt"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DBDB60DEC
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B152360DEF
 	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:21:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705944121; cv=none; b=RkrPYgtLBB7SDiizk6HApHXKtMuRyZI+GaIloaibIgxtN4AfqLoHZvTRCmXuCYw8DmfKBPbgUQP1s255n6NBsWxZQWrzhBrY3SFV095RpsmkJxuVUFMVF1o+ODmzA9aZ3sOOlxmZBa7rROnX4xvPpSSJLKZN9M+mhtaoVaQt3C8=
+	t=1705944121; cv=none; b=H48ZrnM88L1n1KYEWbmDZOGLXpMRjgW+KM1jyIyAt1aYR1FTPesrG69LHhZSxYerchfiXpCFlaVJyPa3lZje/HwsD0OES1/eTrEEb07+7tHaJm8TuKHZGudQ7GR/VwfTT+QTWlH8w7/Go6zu11ORMsmbm026VcCGS1ThW1PqWLs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1705944121; c=relaxed/simple;
-	bh=98P8Ul6Yd7c/3fLfOg78lrSuMF8zpONCYx14LZgSuKM=;
+	bh=OxrzxxUWihz3B2zxHQ6fTBKU+t//zIV2dCIEuKHpOM0=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=kSA2DpQ4wXlr7HVNj/+6Sk1JZzAfIWxKBO4L9f9MDZwFvSLRmSOcbihWlW8xR5FCZIHHVlBkOA/g2zv3sDGhou0vKQ/h0tcoMFRvia54YxcCvjBXp4uQW4CF/GgfhIszLwvefLohhKqXK34UYR13HRg6oKuWWw5ZMkgsVcNOMDo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aZcK0mcJ; arc=none smtp.client-ip=170.10.129.124
+	 In-Reply-To:To:Cc; b=GUMkqPTAxyY/fy6T5ncGUakPjpBkM8qAetP8ayPidhGi/T0/dR0Jf12mRfNCO26CMWBguj4tSJozqnLaHKi1m7HLIrZTAItLMCBOX0RQNxYDuVmYfv2qlhC4nQqC0a/Ug52mZNVFZT7epo/AWAOtEV30Ct8lxn007h8YeUCuqRo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PWZyyodt; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
@@ -36,45 +36,45 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=R70AogzmSo/CRKtY8ackbX9p9Zw/xQ4/D9I9iZgsmTo=;
-	b=aZcK0mcJ/UxbGQVHOIRR5emOiTaFZYQuGDJnDLrXv83ImNE3ladtAkZWEexhG2T7jBRNvM
-	gmHkQRxBTnmB3D3YhGvo6ioMBwW+T0pLPIcv+/pkehoxv5hpGF68jnSohHDKEQH5bK8clb
-	y5fjQOULNRRUTY3P0WzwjVVNgoadc/s=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=7rD2RVNfwDn0BbFWtf0meNmC+cZt+1EvBJ+MzhncMZA=;
+	b=PWZyyodttiPWgQSY7JSd3/iKAKtUYGrlq6WB7j0fGDe66DJ2Rh4925QHA0DaYfDX+VQetw
+	rF9ZCW0JDYpO4C9QntRmyprq6HN7c8VT00SdTp+azXtR1GHXotGPm0q0vEZf6Mgc6Py78P
+	AgNAZwfFAnLKBEID5bGE3ESeXtir/wk=
+Received: from mail-ua1-f69.google.com (mail-ua1-f69.google.com
+ [209.85.222.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-613-rcqANBuTMLK5wGN8ZetTNw-1; Mon, 22 Jan 2024 12:21:50 -0500
-X-MC-Unique: rcqANBuTMLK5wGN8ZetTNw-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-68694f9e037so9399446d6.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:21:50 -0800 (PST)
+ us-mta-391-gIS6TGeTMBCqCxBXG21xHw-1; Mon, 22 Jan 2024 12:21:56 -0500
+X-MC-Unique: gIS6TGeTMBCqCxBXG21xHw-1
+Received: by mail-ua1-f69.google.com with SMTP id a1e0cc1a2514c-7cee1755d80so912367241.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:21:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705944107; x=1706548907;
+        d=1e100.net; s=20230601; t=1705944111; x=1706548911;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=R70AogzmSo/CRKtY8ackbX9p9Zw/xQ4/D9I9iZgsmTo=;
-        b=w0/BZ4c8BxTfogUbav7pbghu1noF7Y39A2fV+8JuQnfwh/tJ3rEDTzPeh+zKgxMPh1
-         tw86+XFJw/l2tJfHDeHdE0dgFtPaZIDmSy3hpz9ukjuEiHZbz9EWdWjbWSp8lEIOnFFr
-         T2xvd0RUG0KEzRLnLhrjzZV0DzhPKZW+giC5aQIkfTctJu5CXnxZ3G5Gg6JXUyQ6bci8
-         obf0LeZfetWdHDc3oicXetueqXSt+sP8gzCAqqvXZf4Ggp4JfMllGxke0YzxE0RuWClA
-         owXLCRTuJoU0VBMFyKi1NHQKCCssOP5hhj18gUeBt3mSssVGRnAM798ipdQ05ipCAsp/
-         SE7g==
-X-Gm-Message-State: AOJu0YyU4PutZp9GzUBe2IVlxYi1ZO1RlO/2uvDSlYcKBHMcifIj4fr6
-	Vwdxf3zLaH9vI8SzQcc6qI9orTbPC3ctc7NKSTa6rGoimNGnRtP35S7gm5OxtcL33BeyxqIuv3b
-	oUZ2aAQ2Pxqtt6A6eGdqBrLrByZV0n165/vw+JqZ1oYiMcK6pFQ6TZB3ykpI9nw==
-X-Received: by 2002:ad4:5d45:0:b0:681:888c:b82c with SMTP id jk5-20020ad45d45000000b00681888cb82cmr6893800qvb.125.1705944106734;
-        Mon, 22 Jan 2024 09:21:46 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGsma1BTJH1NJyj/o8MHNafqTa7tvq2hIYGZ9YYQ15ylWOe7E5a5Aggrc/RaI6Iu3ZEfYrJBA==
-X-Received: by 2002:ad4:5d45:0:b0:681:888c:b82c with SMTP id jk5-20020ad45d45000000b00681888cb82cmr6893775qvb.125.1705944106311;
-        Mon, 22 Jan 2024 09:21:46 -0800 (PST)
+        bh=7rD2RVNfwDn0BbFWtf0meNmC+cZt+1EvBJ+MzhncMZA=;
+        b=jimMZfQ2jI0vFW4VeYF7nInlJ0DQjZhlVvaVKEhaFsqL/QjxRyi9nRNTU7OaJ+OpKH
+         FIP/r0kDc31F3uVDlvsgOtnXeURukjdrTBD7NruINg7tSgrd8lnVu6DREiuigY2kzT0Z
+         PmKgwdSk5JwN81TC/yde0JGT7PPxU6Z+NAPCDutheG+17hLDWTF/zZkhf3gUimUYqalg
+         lhQZ4gAPCgRc6SY9y82IJWrDND2H7TwNKeeLTlyawRjNRYDRsjZBVy8WeEjXndLArTH8
+         sKM+uUppFLURnqHGbdqYmXDhj7IpPinHeCsTf8bgkQI3Sxgb4BEddvu0YKCqRBw32c91
+         FIOQ==
+X-Gm-Message-State: AOJu0YzN86vov4mYlijkZdQ//1OmTBsE6W6CqE9oMgs3qd2SLW1d3NDv
+	ldfzSIa4DuTBvpTQd8xzMO2H2Oey3CWeQfGz1OU6c9+BkvOfxyi8Aw1uqVrGiBE4U+vWj7cCZsf
+	G0fKr1oWclE2/AoyDBdp/F6J0Z7/fe4mt9PqH1U7WTkG6F3ERF3p0ISzVuvoKpQ==
+X-Received: by 2002:a05:6122:179c:b0:4b7:422b:d7c3 with SMTP id o28-20020a056122179c00b004b7422bd7c3mr1787498vkf.20.1705944111717;
+        Mon, 22 Jan 2024 09:21:51 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF22UHtqop2p9ldWS0FUSCe44a8uIXyYTv6zwTkEm4KTH9So+jKN01poJ3m4ghRt3Y9yA0QGA==
+X-Received: by 2002:a05:6122:179c:b0:4b7:422b:d7c3 with SMTP id o28-20020a056122179c00b004b7422bd7c3mr1787474vkf.20.1705944111456;
+        Mon, 22 Jan 2024 09:21:51 -0800 (PST)
 Received: from [192.168.1.163] ([2600:1700:1ff0:d0e0::37])
-        by smtp.gmail.com with ESMTPSA id lf3-20020a0562142cc300b00680c25f5f06sm2567738qvb.86.2024.01.22.09.21.41
+        by smtp.gmail.com with ESMTPSA id lf3-20020a0562142cc300b00680c25f5f06sm2567738qvb.86.2024.01.22.09.21.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 09:21:42 -0800 (PST)
+        Mon, 22 Jan 2024 09:21:47 -0800 (PST)
 From: Andrew Halaney <ahalaney@redhat.com>
-Date: Mon, 22 Jan 2024 11:21:29 -0600
-Subject: [PATCH RFC v4 04/11] scsi: ufs: qcom: Perform read back after
- writing unipro mode
+Date: Mon, 22 Jan 2024 11:21:30 -0600
+Subject: [PATCH RFC v4 05/11] scsi: ufs: qcom: Perform read back after
+ writing CGC enable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,7 +83,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240122-ufs-reset-ensure-effect-before-delay-v4-4-6c48432151cc@redhat.com>
+Message-Id: <20240122-ufs-reset-ensure-effect-before-delay-v4-5-6c48432151cc@redhat.com>
 References: <20240122-ufs-reset-ensure-effect-before-delay-v4-0-6c48432151cc@redhat.com>
 In-Reply-To: <20240122-ufs-reset-ensure-effect-before-delay-v4-0-6c48432151cc@redhat.com>
 To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
@@ -96,10 +96,11 @@ To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
  Bart Van Assche <bvanassche@acm.org>, Can Guo <quic_cang@quicinc.com>
 Cc: Will Deacon <will@kernel.org>, linux-arm-msm@vger.kernel.org, 
  linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Andrew Halaney <ahalaney@redhat.com>
+ Andrew Halaney <ahalaney@redhat.com>, 
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 X-Mailer: b4 0.12.3
 
-Currently, the QUNIPRO_SEL bit is written to and then an mb() is used to
+Currently, the CGC enable bit is written and then an mb() is used to
 ensure that completes before continuing.
 
 mb() ensure that the write completes, but completion doesn't mean that
@@ -111,32 +112,31 @@ be seen over here:
 
     https://youtu.be/i6DayghhA8Q?si=MiyxB5cKJXSaoc01&t=1678
 
-But, there's really no reason to even ensure completion before
-continuing. The only requirement here is that this write is ordered to
-this endpoint (which readl()/writel() guarantees already). For that
-reason the mb() can be dropped altogether without anything forcing
-completion.
+Let's do that to ensure the bit hits the device. Because the mb()'s
+purpose wasn't to add extra ordering (on top of the ordering guaranteed
+by writel()/readl()), it can safely be removed.
 
-Fixes: f06fcc7155dc ("scsi: ufs-qcom: add QUniPro hardware support and power optimizations")
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Reviewed-by: Can Guo <quic_cang@quicinc.com>
+Fixes: 81c0fc51b7a7 ("ufs-qcom: add support for Qualcomm Technologies Inc platforms")
 Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
 ---
- drivers/ufs/host/ufs-qcom.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/ufs/host/ufs-qcom.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-index a489c8c6f849..decad95bd444 100644
+index decad95bd444..881074fc2329 100644
 --- a/drivers/ufs/host/ufs-qcom.c
 +++ b/drivers/ufs/host/ufs-qcom.c
-@@ -278,9 +278,6 @@ static void ufs_qcom_select_unipro_mode(struct ufs_qcom_host *host)
+@@ -406,7 +406,7 @@ static void ufs_qcom_enable_hw_clk_gating(struct ufs_hba *hba)
+ 		    REG_UFS_CFG2);
  
- 	if (host->hw_ver.major >= 0x05)
- 		ufshcd_rmwl(host->hba, QUNIPRO_G4_SEL, 0, REG_UFS_CFG0);
--
--	/* make sure above configuration is applied before we return */
+ 	/* Ensure that HW clock gating is enabled before next operations */
 -	mb();
++	ufshcd_readl(hba, REG_UFS_CFG2);
  }
  
- /*
+ static int ufs_qcom_hce_enable_notify(struct ufs_hba *hba,
 
 -- 
 2.43.0
