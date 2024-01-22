@@ -1,139 +1,113 @@
-Return-Path: <linux-kernel+bounces-33153-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B147836553
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:26:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45C5A836547
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:24:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53EA328359C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:26:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 783F21C2248F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:24:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1A433D3AE;
-	Mon, 22 Jan 2024 14:25:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E6483D3B6;
+	Mon, 22 Jan 2024 14:24:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SV86V6/s"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="UCjldjGA"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F07A3D0AB
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 14:25:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 545083D960;
+	Mon, 22 Jan 2024 14:24:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705933539; cv=none; b=QCvbXTmtnLzhOJb+VrHlnMrF27OFp3WuRlEp7Y6xJqnJVJSjQO+ow0YUZDCPSfsjmvYJ9+4pozP4wlUVIJGxoZpEIaMx79r+mYz6DB6ux+SKfnSoiaPotZC9zgUIr8WzrVhzBET4dulvVJAV1/WHW740HtZq9OfiwKCU3vpr05U=
+	t=1705933449; cv=none; b=Nbn8QO+ZZHWI/YyEJOFoe0adAUOpd9zb3+iSVX6E2gYSVpf7kocOkGRUWvtJ3xdz22xM53dSPULPn128Zq9YaZU/6Se/RIFQL/YXjRvzIcQcwWZctllEjqek7InRJWobfDZl8fTt+u+5OuvTpdXvH7WIxESTbOEsxAzEMXN5Hsc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705933539; c=relaxed/simple;
-	bh=Rh5IVlp0YssIc4eNTuzg4mhQZO06svg3HovTv2W7ILM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SjVy0zoG0sGrP8bsmUH00Zzj7olTRuWPSTcL4wVB3RgpiUgx3WjYiS/0q8SJyMzqSoeRgACD4ZQIx974dvVRaZxjJ0V35pv5NXSXrC/Gx/IlTLwuVySn23695aRJ6OtSFu4Ly/WQUaqrE9g8o5mG+OPLKBaixBMt3DiYRZboo0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SV86V6/s; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705933536;
+	s=arc-20240116; t=1705933449; c=relaxed/simple;
+	bh=GqwxD3RMhMhLI38AMEY+0N7cBezxiMSYs0jrQ6phPXg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WzdF+lKNhriw8YFil4/Pc4T53Wbcm7BvxHfC/378JN2D0U8CZ3MDdpQr3qy7shdGg75QDgItk3qFGPmQB97t215o0FgLe2bfDZ6BOolFVjZeMAaFTN7xHY2qdx3UTTBK/+R6jKZJvpWP3Yqftq8W6++TC2ao6tuzNqjKQ+ZHpVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=UCjldjGA; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 562831BF20E;
+	Mon, 22 Jan 2024 14:24:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1705933445;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=1kM0OznqVTZzB3UnT1IpCXRocmMQjkR6vJeB4/d2+AU=;
-	b=SV86V6/s0RUelitLiD1dhbsWUaF0Ut+x+Nl+lxOzp8ukfvfkZxjjrZkgZcSDUV0zwcGsqC
-	uAzOz9p8t27nt9rwTwatEFYoAs0MwS9V4UkZ/ueqOcmg1bepl8hslKmfsfHtyy5LsCDNye
-	Of/QKds691qh/5xsqpC1gfowveJ8a34=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-392-a187XN_BOLKbZjXdHTW1Ag-1; Mon, 22 Jan 2024 09:25:32 -0500
-X-MC-Unique: a187XN_BOLKbZjXdHTW1Ag-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2D3FC868A22;
-	Mon, 22 Jan 2024 14:25:32 +0000 (UTC)
-Received: from tpad.localdomain (unknown [10.96.133.2])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id E0C333C2E;
-	Mon, 22 Jan 2024 14:25:31 +0000 (UTC)
-Received: by tpad.localdomain (Postfix, from userid 1000)
-	id 387EE401CEC01; Mon, 22 Jan 2024 11:22:10 -0300 (-03)
-Date: Mon, 22 Jan 2024 11:22:10 -0300
-From: Marcelo Tosatti <mtosatti@redhat.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>,
-	Joe Mario <jmario@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mark power efficient workqueue as unbounded if nohz_full
- enabled
-Message-ID: <Za56EiAI9D5S8NuT@tpad>
-References: <ZaqbP0QmVPAQTbYA@tpad>
- <ZasMfA-v1YykDA1i@slm.duckdns.org>
+	bh=PrbPm4U9gTUgFkdJBeExNHbmpdtsVHY66VNg0wV3TpI=;
+	b=UCjldjGAg35lVQBN0mR/Ja8PzHUW42EQboTIr9Q5NKy+PB/D28qdW1oOc4F5ZQ3/MGfsKu
+	2+wCbOhAspaJUoKrzJXTj/fpGlUEHwLMZPqVrE5VeUo0u6ZMn3a9uXf+5m0B3LZ5rDpsYh
+	nhBuF/hIsEIUuVeCO7HY3X/NFUT+J3fCfoSqZv/FjddnaMfhqTbIG/s8958X5CdNcqGfQC
+	K9b1ACXRkYKCZ36n5YKaTaDCLOCEimcQEo1ghUhX1cw2kqbbnHBXEbejobqdkdGMVh5wdW
+	uYszU+SivBh3bBHK9O5iK8tf9oPdXsGCgOTYpLJ6gYFt0l2TZEXtlOPMvgZImw==
+Message-ID: <71c7e797-feaa-4285-9399-327b24308a34@bootlin.com>
+Date: Mon, 22 Jan 2024 15:24:02 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZasMfA-v1YykDA1i@slm.duckdns.org>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 11/14] phy: cadence-torrent: add suspend and resume
+ support
+Content-Language: en-US
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+ Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>,
+ Tony Lindgren <tony@atomide.com>, Haojian Zhuang
+ <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>,
+ Aaro Koskinen <aaro.koskinen@iki.fi>,
+ Janusz Krzysztofik <jmkrzyszt@gmail.com>, Andi Shyti
+ <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
+ Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
+ Philipp Zabel <p.zabel@pengutronix.de>, Tom Joseph <tjoseph@cadence.com>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+ linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
+ linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
+ theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com
+References: <20240116182244.GA101245@bhelgaas>
+From: Thomas Richard <thomas.richard@bootlin.com>
+In-Reply-To: <20240116182244.GA101245@bhelgaas>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: thomas.richard@bootlin.com
 
-On Fri, Jan 19, 2024 at 01:57:48PM -1000, Tejun Heo wrote:
-> On Fri, Jan 19, 2024 at 12:54:39PM -0300, Marcelo Tosatti wrote:
-> > 
-> > A customer using nohz_full has experienced the following interruption:
-> > 
-> > oslat-1004510 [018] timer_cancel:         timer=0xffff90a7ca663cf8
-> > oslat-1004510 [018] timer_expire_entry:   timer=0xffff90a7ca663cf8 function=delayed_work_timer_fn now=4709188240 baseclk=4709188240
-> > oslat-1004510 [018] workqueue_queue_work: work struct=0xffff90a7ca663cd8 function=fb_flashcursor workqueue=events_power_efficient req_cpu=8192 cpu=18
-> > oslat-1004510 [018] workqueue_activate_work: work struct 0xffff90a7ca663cd8
-> > oslat-1004510 [018] sched_wakeup:         kworker/18:1:326 [120] CPU:018
-> > oslat-1004510 [018] timer_expire_exit:    timer=0xffff90a7ca663cf8
-> > oslat-1004510 [018] irq_work_entry:       vector=246
-> > oslat-1004510 [018] irq_work_exit:        vector=246
-> > oslat-1004510 [018] tick_stop:            success=0 dependency=SCHED
-> > oslat-1004510 [018] hrtimer_start:        hrtimer=0xffff90a70009cb00 function=tick_sched_timer/0x0 ...
-> > oslat-1004510 [018] softirq_exit:         vec=1 [action=TIMER]
-> > oslat-1004510 [018] softirq_entry:        vec=7 [action=SCHED]
-> > oslat-1004510 [018] softirq_exit:         vec=7 [action=SCHED]
-> > oslat-1004510 [018] tick_stop:            success=0 dependency=SCHED
-> > oslat-1004510 [018] sched_switch:         oslat:1004510 [120] R ==> kworker/18:1:326 [120]
-> > kworker/18:1-326 [018] workqueue_execute_start: work struct 0xffff90a7ca663cd8: function fb_flashcursor
-> > kworker/18:1-326 [018] workqueue_queue_work: work struct=0xffff9078f119eed0 function=drm_fb_helper_damage_work workqueue=events req_cpu=8192 cpu=18
-> > kworker/18:1-326 [018] workqueue_activate_work: work struct 0xffff9078f119eed0
-> > kworker/18:1-326 [018] timer_start:          timer=0xffff90a7ca663cf8 function=delayed_work_timer_fn ...
-> > 
-> > Set wq_power_efficient to true, in case nohz_full is enabled. 
-> > This makes the power efficient workqueue be unbounded, which allows
-> > workqueue items there to be moved to HK CPUs.
-> > 
-> > Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
+Hello,
+
+On 1/16/24 19:22, Bjorn Helgaas wrote:
+> On Mon, Jan 15, 2024 at 05:14:52PM +0100, Thomas Richard wrote:
+>> Add suspend and resume support.
+>> The alread_configured flag is cleared during suspend stage to force the
+>> phy initialization during the resume stage.
 > 
-> Applied to wq/for-6.9.
+> s/alread_configured/already_configured/
 > 
-> A side note: with the recent affinity improvements to unbound workqueues, I
-> wonder whether we'd be able to drop wq_power_efficient and just use
-> system_unbound_wq instead without noticeable perf difference.
+> Wrap to fill 75 columns.  Add a blank line if you intend two
+> paragraphs.
 > 
-> Thanks.
+> I don't know whether there's a strong convention in drivers/phy, but I
+> see several commit logs that capitalize "PHY".  "Phy" is not a
+> standard English word, so I think the capitalization makes it easier
+> to read.
 > 
-> -- 
-> tejun
 
-Tejun,
+Yes indeed, PHY is used in lots of commit logs.
+So I guess I can use it.
 
-About the performance difference (of running locally VS running
-remotely), can you list a few performance sensitive work queues 
-(where per-CPU execution makes a significant difference).
+Regards,
 
-Because i suppose it would be safe (from a performance regression
-perspective) to move all delayed works to housekeeping CPUs.
-
-And also, being more extreme, why not an option to mark all workqueues
-as unbounded (or perhaps userspace control of bounding, even for 
-workqueues marked as "per-CPU").
-
-Thanks.
-
-
+-- 
+Thomas Richard, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
 
