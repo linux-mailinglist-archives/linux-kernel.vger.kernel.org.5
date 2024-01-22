@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-33405-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33406-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31F1B83694A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:58:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CE1783694E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:58:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE9BE284C91
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:58:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56B6828563C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:58:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 865F87E571;
-	Mon, 22 Jan 2024 15:10:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AC367E583;
+	Mon, 22 Jan 2024 15:10:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FPkOEzLA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uhWM56Fe"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C17C67CF3B;
-	Mon, 22 Jan 2024 15:10:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 578CC7E58C;
+	Mon, 22 Jan 2024 15:10:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936200; cv=none; b=R6x8TGYUEq/zl0PakxRKAsaaIVDROVdPAgWsEKOhJ+vksc5fULXtSlqUr4ezoyBfXh+QmTHVTCI5KDM2ZfhPG046OKY6bVhPUdrBmGXJ6hb9SkObi0K3sRFTEm9TQiU3YBBH/s8OE0m6KI1bhgJ8D1NOX9DWNrHKHMOfDUd93f0=
+	t=1705936203; cv=none; b=LNKDLBaDzbV07HSXcpRH7bkyUl28RhgBl/gWT3IkbaR06bZNBrXKmvM2HjYa56Iks9her58g974fXY+Wwe5l3sfpW3VUHjB+AELvCHtGH/mLr3sUvpgm1Pvq0GDYA7vDrrhAY93dWwxd5vbccPGVn0M5/bkmMvww2ENOTQVtqCU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936200; c=relaxed/simple;
-	bh=oNw3w5nS83B0ZDRRZx4eoZomjkgdKcZdX7qABqD8vuM=;
+	s=arc-20240116; t=1705936203; c=relaxed/simple;
+	bh=JdZ4z4Xi4Q7kOn2EGUL3jGM0m56Qx8gGSJ6XgYAkvAw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FXQSbSkpacjGc5EewBbU18ThoHv5kQkwvx2kA8YHzLy9JEBxYT1G1I+/Yx0iAKtXrZWJHilSBCMJSYa8/qic+1Tj/x8WpiseT3Y3TDAtR875o7tRAIbFHQDcdLI+Zyx8GddRG+X40uohjV7JXfUWBFjdvC3RCzhwkd7F0+dpyJw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FPkOEzLA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEC4EC433C7;
-	Mon, 22 Jan 2024 15:09:59 +0000 (UTC)
+	 MIME-Version; b=pXS0MFH8mzkB+gCnDacCKBv1Yt6rYEhxjCYzkOPIAKzmqrR6LbAo2CzUDFYv7QzvTWO2sZpUxH9QHY3PKf8F1BB9SDCjRM20RJhPELOapQVKeiNnnUf+DjQBwEA2AYn7z8JTHTdKAh8QP1aXmKRhxj1Yravgw2Qik9A5mzJf++A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uhWM56Fe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 618A3C43390;
+	Mon, 22 Jan 2024 15:10:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705936200;
-	bh=oNw3w5nS83B0ZDRRZx4eoZomjkgdKcZdX7qABqD8vuM=;
+	s=k20201202; t=1705936203;
+	bh=JdZ4z4Xi4Q7kOn2EGUL3jGM0m56Qx8gGSJ6XgYAkvAw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FPkOEzLA0O7MbV6dr+WJjXTvY/5V6LymOQaA9+DjM2CmIwvdni0ksvgPEuEfS0Evl
-	 OSHffpsw6pjy9h0kRorNWB3Qkcc/hXUvbsTScsuORSEKhVw56jWiSLUq7KWrXDkB/V
-	 GTKnLh1TERk2f4rwYp2IaPrCdCGyZh6jzBKvd5AvHE8VPFhordjN+Cvor4MqOulO5j
-	 Lue4oRsEwLEuJuGth5ohQBj5hiwdtRs4EuKrgJs5sLXIeH2bRNG32q1cofqyCAl0bj
-	 1CuWN5zoSPLQ+uSsxbqBWryTjhB8yRwyygNkA9vV5CrAGErJNrFNzgPyZEQ3UU9qmf
-	 Wg4T29YsKShtw==
+	b=uhWM56Fe3/PbeT9mADCzvcgYdhBjtA14gG6t0a3ys3C0T6P+bWR9lOj/IK8PNGwmn
+	 k0EyhErVk7yhgf7vjzsiJcVtMHfPLEhz2k7T4veYtGnSwsXUpnlj3qS2xx8PoOmTH2
+	 0Lydb7abMfBOqqtIhjoHBY1th+VBwrmjZlwxyVqELxKpO4G5ZeUq0812wQlXrSRsK2
+	 8NBZMQHsItdn7FdsWsiaWvq1uBnL5MXYa3dGmsS14PicKIZ0G6i7xFA0vzHuyvccXF
+	 0Ob6Mv5wUFupMnHHxk80pBjXpMWrqaBeFCJUPFauwo2TFF/v6tH25i8G9vhRcCJ6Nq
+	 Ocmoxyi/oxc/g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Al Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
+Cc: Jack Wang <jinpu.wang@ionos.com>,
+	Leon Romanovsky <leon@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-fsdevel@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 05/53] fast_dput(): handle underflows gracefully
-Date: Mon, 22 Jan 2024 10:08:06 -0500
-Message-ID: <20240122150949.994249-5-sashal@kernel.org>
+	neelx@redhat.com,
+	linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 06/53] RDMA/IPoIB: Fix error code return in ipoib_mcast_join
+Date: Mon, 22 Jan 2024 10:08:07 -0500
+Message-ID: <20240122150949.994249-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122150949.994249-1-sashal@kernel.org>
 References: <20240122150949.994249-1-sashal@kernel.org>
@@ -64,76 +65,32 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.74
 Content-Transfer-Encoding: 8bit
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+From: Jack Wang <jinpu.wang@ionos.com>
 
-[ Upstream commit 504e08cebe1d4e1efe25f915234f646e74a364a8 ]
+[ Upstream commit 753fff78f430704548f45eda52d6d55371a52c0f ]
 
-If refcount is less than 1, we should just warn, unlock dentry and
-return true, so that the caller doesn't try to do anything else.
+Return the error code in case of ib_sa_join_multicast fail.
 
-Taking care of that leaves the rest of "lockref_put_return() has
-failed" case equivalent to "decrement refcount and rejoin the
-normal slow path after the point where we grab ->d_lock".
-
-NOTE: lockref_put_return() is strictly a fastpath thing - unlike
-the rest of lockref primitives, it does not contain a fallback.
-Caller (and it looks like fast_dput() is the only legitimate one
-in the entire kernel) has to do that itself.  Reasons for
-lockref_put_return() failures:
-	* ->d_lock held by somebody
-	* refcount <= 0
-	* ... or an architecture not supporting lockref use of
-cmpxchg - sparc, anything non-SMP, config with spinlock debugging...
-
-We could add a fallback, but it would be a clumsy API - we'd have
-to distinguish between:
-	(1) refcount > 1 - decremented, lock not held on return
-	(2) refcount < 1 - left alone, probably no sense to hold the lock
-	(3) refcount is 1, no cmphxcg - decremented, lock held on return
-	(4) refcount is 1, cmphxcg supported - decremented, lock *NOT* held
-	    on return.
-We want to return with no lock held in case (4); that's the whole point of that
-thing.  We very much do not want to have the fallback in case (3) return without
-a lock, since the caller might have to retake it in that case.
-So it wouldn't be more convenient than doing the fallback in the caller and
-it would be very easy to screw up, especially since the test coverage would
-suck - no way to test (3) and (4) on the same kernel build.
-
-Reviewed-by: Christian Brauner <brauner@kernel.org>
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+Link: https://lore.kernel.org/r/20231121130316.126364-2-jinpu.wang@ionos.com
+Signed-off-by: Leon Romanovsky <leon@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/dcache.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/infiniband/ulp/ipoib/ipoib_multicast.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/dcache.c b/fs/dcache.c
-index 52e6d5fdab6b..b09bc88dbbec 100644
---- a/fs/dcache.c
-+++ b/fs/dcache.c
-@@ -787,12 +787,12 @@ static inline bool fast_dput(struct dentry *dentry)
- 	 */
- 	if (unlikely(ret < 0)) {
- 		spin_lock(&dentry->d_lock);
--		if (dentry->d_lockref.count > 1) {
--			dentry->d_lockref.count--;
-+		if (WARN_ON_ONCE(dentry->d_lockref.count <= 0)) {
- 			spin_unlock(&dentry->d_lock);
- 			return true;
- 		}
--		return false;
-+		dentry->d_lockref.count--;
-+		goto locked;
+diff --git a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
+index 5b3154503bf4..9e6967a40042 100644
+--- a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
++++ b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
+@@ -546,6 +546,7 @@ static int ipoib_mcast_join(struct net_device *dev, struct ipoib_mcast *mcast)
+ 		spin_unlock_irq(&priv->lock);
+ 		complete(&mcast->done);
+ 		spin_lock_irq(&priv->lock);
++		return ret;
  	}
- 
- 	/*
-@@ -850,6 +850,7 @@ static inline bool fast_dput(struct dentry *dentry)
- 	 * else could have killed it and marked it dead. Either way, we
- 	 * don't need to do anything else.
- 	 */
-+locked:
- 	if (dentry->d_lockref.count) {
- 		spin_unlock(&dentry->d_lock);
- 		return true;
+ 	return 0;
+ }
 -- 
 2.43.0
 
