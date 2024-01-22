@@ -1,58 +1,59 @@
-Return-Path: <linux-kernel+bounces-33219-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33215-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4215836685
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:03:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28A688366E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:09:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74B222897DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:03:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B462B2A3DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:01:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B105147A76;
-	Mon, 22 Jan 2024 14:56:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C052B4644F;
+	Mon, 22 Jan 2024 14:56:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="HMTL1w52"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="fx/aDYPh"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8215146535;
-	Mon, 22 Jan 2024 14:56:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4A7E41232;
+	Mon, 22 Jan 2024 14:56:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705935380; cv=none; b=Sp3uO1DrHOIBY8FFOdLMz9NnkELi30maDqZv41nbojV7Q8odrVcHBOfYnZHnyer0telERzsgQ4yGpQXcXBaubfko878Mw0Q1lvb2ULe6MB6O0Nr3mTQPvDTIQx4gAj+H74F8GNQhYWJTjey9FlTrytgRbm0pvOb74+bIGVboJI4=
+	t=1705935376; cv=none; b=qvzzAjLRO4RajrxrqEpDSac6TTdgOvkvglnw7B0EMMwrqjK/SzxJATriNRExak1KF4DExfNC+qfZvx6Qebj2mpfOzfjIMuSgVoSKy215BSlcZBIlaqMDOEIlB42HNC7opZf1s3tTRKNTPPT/1BkUEtSY1SkAg6be9ITVDnL5a4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705935380; c=relaxed/simple;
-	bh=tseWQ+TXhuYGKRBWR8R0RrEZEs9EXXRyjbdZGTywX+Y=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=oTy0oY5gE9aZU0JE4sZ+60wLRHLkTPcLUSZif2Ze+7ggfrc07Ua5dymtF6ulKWGbYgTSHfc8RIWUQe7ZYAB8+1O1zdyKz+I5S/milnwo0XwVftgVPCxLNGmcjvlTX75dFReMjuh3NbDQkxZ0/ZlwSU5xHXOikfydqL0NYreBQbg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=HMTL1w52; arc=none smtp.client-ip=198.47.23.248
+	s=arc-20240116; t=1705935376; c=relaxed/simple;
+	bh=eoes7x/bKOV6Let0lFwVK/mRboNEG2eZf+NgoVlz7e4=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=VZSkLWqtJVos6LA4U1dCxtKTKXx/87c5VOwX485KwIWtQPiFBxEv/Q1OV+VHK+jyl7raZii2fIVvhX2fesBmFd+Q27rNVAb/MUoRc6mrMUT0dxv42XHevNRY2zNgNNE75EEu4EMAODJQ2cOz/gM7O0DzgQtXggD29wvTC3vgCow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=fx/aDYPh; arc=none smtp.client-ip=198.47.19.142
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40MEthx5045395;
-	Mon, 22 Jan 2024 08:55:43 -0600
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40MEtim6068526;
+	Mon, 22 Jan 2024 08:55:44 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1705935343;
-	bh=mCzh9yt7kMY1MpZtUBHO4MH/an5Hfn5JHx44oH9oldg=;
-	h=From:To:CC:Subject:Date;
-	b=HMTL1w52Z2LAmw21r8upUfo7oOAah+du0Z4Ht0uzVdIlgf/6xKEuwXalX2K24292j
-	 /X7v6HbRh4OS5lkIxX0cpCg10MV5Do9UKhFzzclCcYM2HTrn9fag0OFenNqAa+S5g3
-	 cPDVodW2zIokJLC7NXIONyodweYKv0+kllSlIAC8=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40MEthX5126190
+	s=ti-com-17Q1; t=1705935344;
+	bh=XivmqVx03hmiLabFfMgTUunogacbx4P7WI8MlIj0TNA=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=fx/aDYPh01i3C3IjxRHpm3iCRfRNCCCmjYDGZVB0IbFpa7Cvlzw4NYiwtrYEGGwbh
+	 QRlUVlotbAj/vejCQtrdmeQ/dZuXjA6d5TMaZIj55qOpGeoUlGimoIfrPbZBqBmnLT
+	 beCeyxtYv+SJj7uIHXh2ne4yKwnopp0gqjqPW6zU=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40MEtirG012931
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 22 Jan 2024 08:55:43 -0600
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+	Mon, 22 Jan 2024 08:55:44 -0600
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 22
  Jan 2024 08:55:43 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
  Frontend Transport; Mon, 22 Jan 2024 08:55:43 -0600
 Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40MEthel021988;
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40MEthue022000;
 	Mon, 22 Jan 2024 08:55:43 -0600
 From: Nishanth Menon <nm@ti.com>
 To: Tero Kristo <kristo@kernel.org>, Vignesh Raghavendra <vigneshr@ti.com>
@@ -62,38 +63,21 @@ CC: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         <devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
         Nishanth Menon <nm@ti.com>,
         "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Ayush Singh <ayushdevel1325@gmail.com>,
-        Chao Zeng <chao.zeng@siemens.com>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Esteban Blanc
-	<eblanc@baylibre.com>,
-        Garrett Giordano <ggiordano@phytec.com>,
-        Guillaume La
- Roque <glaroque@baylibre.com>,
         Jan Kiszka <jan.kiszka@siemens.com>,
-        Jason
- Kridner <jkridner@beagleboard.org>,
-        Jerome Neanne <jneanne@baylibre.com>,
-        Julien Panis <jpanis@baylibre.com>,
         Krzysztof Kozlowski
 	<krzysztof.kozlowski@linaro.org>,
-        Le Jin <le.jin@siemens.com>,
-        Matthias
- Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Peng Fan <peng.fan@nxp.com>, Pierre Gondois <pierre.gondois@arm.com>,
-        Robert Nelson
-	<robertcnelson@gmail.com>,
-        Rob Herring <robh@kernel.org>, Roger Quadros
-	<rogerq@kernel.org>,
-        Ronald Wahl <ronald.wahl@raritan.com>,
-        Sarah Walker
-	<sarah.walker@imgtec.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Tony Lindgren <tony@atomide.com>, Wadim Egorov <w.egorov@phytec.de>
-Subject: [PATCH V2 00/16] arm64: dts: ti: Additional licensing and clarification
-Date: Mon, 22 Jan 2024 08:55:23 -0600
-Message-ID: <20240122145539.194512-1-nm@ti.com>
+        Matthias Schiffer
+	<matthias.schiffer@ew.tq-group.com>,
+        Pierre Gondois <pierre.gondois@arm.com>, Rob Herring <robh@kernel.org>,
+        Tomi Valkeinen
+	<tomi.valkeinen@ideasonboard.com>,
+        Tony Lindgren <tony@atomide.com>
+Subject: [PATCH V2 06/16] arm64: dts: ti: k3-am65: Add MIT license along with GPL-2.0
+Date: Mon, 22 Jan 2024 08:55:29 -0600
+Message-ID: <20240122145539.194512-7-nm@ti.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240122145539.194512-1-nm@ti.com>
+References: <20240122145539.194512-1-nm@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -104,201 +88,220 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Thank you all for the detailed acks on various patches on V1,
-consolidated all of these with V2 and noted some missing acks below.
-Since it has been 12 days since I posted v1 and v6.8-rc1 is now
-tagged, looks like a good time to refresh the series.
+Modify license to include dual licensing as GPL-2.0-only OR MIT
+license for SoC and TI evm device tree files. This allows for Linux
+kernel device tree to be used in other Operating System ecosystems
+such as Zephyr or FreeBSD.
 
-As part of my 2023 LPC talk[1] about the difficulty in ensuring
-device tree is same across multiple s/w ecosystems, I mentioned about
-Licensing, and Rob had indicated that other SoC vendors have MIT
-license option that allows co-existance with Apache.
+While at this, update the GPL-2.0 to be GPL-2.0-only to be in sync
+with latest SPDX conventions (GPL-2.0 is deprecated).
 
-So, bunch of internal paper work later (during which GPL-2.0-only
-had to be retained due to certain user community), here is the
-update to sync TI K3 device trees with addition of MIT license in
-addition to existing GPL-2.0 license.
-
-After querying BeagleBoard Foundation folks, they'd also like to
-follow suit, so those platforms have been added to the list as well.
-
-While at this, clarify existing licenses to be compatible with latest
-SPDX specifications for iot2050 and phycore.
-
-Verdin platforms look already sane, so no action required there.
-
-The CC list is based on (Since I am representing @ti.com for this
-series):
-git log --no-merges --pretty="%ae" $files|grep -v "@ti.com"|sort -u
-
-Requesting Acked by from the CC list at the earliest so that we can
-merge this for next baseline. - patches 6, 8 and 10 need some
-love.
-
-- "Alexander A. Klimov" <grandmaster@al2klimov.de> (patch #6, #8)
-- Rob Herring <robh@kernel.org> (patch #6)
-- Peng Fan <peng.fan@nxp.com> (patch #8)
-- Jerome Neanne <jneanne@baylibre.com> (patch #8, #10)
-
-Changes since V1:
-* Just picked up acks, most patches are clean now except for 6, 8 and
-  10.
-* As requested, Switched Phytec license from GPL2.0-only to Adding MIT
-  along with it.
-
-V1: https://lore.kernel.org/all/20240110140903.4090946-1-nm@ti.com/
-
+While at this, update the TI copyright year to sync with current year
+to indicate license change (and add it at least for one file which was
+missing TI copyright).
 
 Cc: "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc: Ayush Singh <ayushdevel1325@gmail.com>
-Cc: Chao Zeng <chao.zeng@siemens.com>
-Cc: Christian Gmeiner <christian.gmeiner@gmail.com>
-Cc: Esteban Blanc <eblanc@baylibre.com>
-Cc: Garrett Giordano <ggiordano@phytec.com>
-Cc: Guillaume La Roque <glaroque@baylibre.com>
 Cc: Jan Kiszka <jan.kiszka@siemens.com>
-Cc: Jason Kridner <jkridner@beagleboard.org>
-Cc: Jerome Neanne <jneanne@baylibre.com>
-Cc: Julien Panis <jpanis@baylibre.com>
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Le Jin <le.jin@siemens.com>
 Cc: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc: Peng Fan <peng.fan@nxp.com>
 Cc: Pierre Gondois <pierre.gondois@arm.com>
-Cc: Robert Nelson <robertcnelson@gmail.com>
 Cc: Rob Herring <robh@kernel.org>
-Cc: Roger Quadros <rogerq@kernel.org>
-Cc: Ronald Wahl <ronald.wahl@raritan.com>
-Cc: Sarah Walker <sarah.walker@imgtec.com>
 Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 Cc: Tony Lindgren <tony@atomide.com>
-Cc: Wadim Egorov <w.egorov@phytec.de>
 
-Nishanth Menon (16):
-  arm64: dts: ti: Use https for urls
-  arm64: dts: ti: k3-am62a7: Add MIT license along with GPL-2.0
-  arm64: dts: ti: k3-am625: Add MIT license along with GPL-2.0
-  arm64: dts: ti: k3-am62p: Add MIT license along with GPL-2.0
-  arm64: dts: ti: k3-am64: Add MIT license along with GPL-2.0
-  arm64: dts: ti: k3-am65: Add MIT license along with GPL-2.0
-  arm64: dts: ti: k3-j7200: Add MIT license along with GPL-2.0
-  arm64: dts: ti: k3-j721e: Add MIT license along with GPL-2.0
-  arm64: dts: ti: k3-j721s2: Add MIT license along with GPL-2.0
-  arm64: dts: ti: k3-j784s4: Add MIT license along with GPL-2.0
-  arm64: dts: ti: k3-pinctrl: Add MIT license along with GPL-2.0
-  arm64: dts: ti: k3-serdes: Add MIT license along with GPL-2.0
-  arm64: dts: ti: beagle*: Add MIT license along with GPL-2.0
-  arm64: dts: ti: phycore*: Add MIT license along with GPL-2.0
-  arm64: dts: ti: iot2050*: Clarify GPL-2.0 as GPL-2.0-only
-  arm64: dts: ti: Makefile: Clarify GPL-2.0 as GPL-2.0-only
+Acked-by: Jan Kiszka <jan.kiszka@siemens.com>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Acked-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Acked-by: Pierre Gondois <pierre.gondois@arm.com>
+Acked-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Acked-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Nishanth Menon <nm@ti.com>
+---
+Changes Since v1:
+* Picked up acks.
 
- arch/arm64/boot/dts/ti/Makefile                           | 2 +-
- arch/arm64/boot/dts/ti/k3-am62-lp-sk.dts                  | 4 ++--
- arch/arm64/boot/dts/ti/k3-am62-main.dtsi                  | 4 ++--
- arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi                   | 4 ++--
- arch/arm64/boot/dts/ti/k3-am62-phycore-som.dtsi           | 4 ++--
- arch/arm64/boot/dts/ti/k3-am62-thermal.dtsi               | 5 ++++-
- arch/arm64/boot/dts/ti/k3-am62-wakeup.dtsi                | 4 ++--
- arch/arm64/boot/dts/ti/k3-am62.dtsi                       | 4 ++--
- .../boot/dts/ti/k3-am625-beagleplay-csi2-ov5640.dtso      | 4 ++--
- .../boot/dts/ti/k3-am625-beagleplay-csi2-tevi-ov5640.dtso | 4 ++--
- arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts            | 6 +++---
- arch/arm64/boot/dts/ti/k3-am625-phyboard-lyra-rdk.dts     | 4 ++--
- arch/arm64/boot/dts/ti/k3-am625-sk.dts                    | 4 ++--
- arch/arm64/boot/dts/ti/k3-am625.dtsi                      | 4 ++--
- arch/arm64/boot/dts/ti/k3-am62a-main.dtsi                 | 4 ++--
- arch/arm64/boot/dts/ti/k3-am62a-mcu.dtsi                  | 4 ++--
- arch/arm64/boot/dts/ti/k3-am62a-thermal.dtsi              | 5 ++++-
- arch/arm64/boot/dts/ti/k3-am62a-wakeup.dtsi               | 4 ++--
- arch/arm64/boot/dts/ti/k3-am62a.dtsi                      | 4 ++--
- arch/arm64/boot/dts/ti/k3-am62a7-sk.dts                   | 4 ++--
- arch/arm64/boot/dts/ti/k3-am62a7.dtsi                     | 4 ++--
- arch/arm64/boot/dts/ti/k3-am62p-main.dtsi                 | 4 ++--
- arch/arm64/boot/dts/ti/k3-am62p-mcu.dtsi                  | 4 ++--
- arch/arm64/boot/dts/ti/k3-am62p-thermal.dtsi              | 5 ++++-
- arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi               | 4 ++--
- arch/arm64/boot/dts/ti/k3-am62p.dtsi                      | 4 ++--
- arch/arm64/boot/dts/ti/k3-am62p5-sk.dts                   | 4 ++--
- arch/arm64/boot/dts/ti/k3-am62p5.dtsi                     | 4 ++--
- arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi            | 4 ++--
- arch/arm64/boot/dts/ti/k3-am62x-sk-csi2-imx219.dtso       | 4 ++--
- arch/arm64/boot/dts/ti/k3-am62x-sk-csi2-ov5640.dtso       | 4 ++--
- arch/arm64/boot/dts/ti/k3-am62x-sk-csi2-tevi-ov5640.dtso  | 4 ++--
- arch/arm64/boot/dts/ti/k3-am62x-sk-hdmi-audio.dtso        | 4 ++--
- arch/arm64/boot/dts/ti/k3-am64-main.dtsi                  | 4 ++--
- arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi                   | 4 ++--
- arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi           | 6 +++---
- arch/arm64/boot/dts/ti/k3-am64-thermal.dtsi               | 5 ++++-
- arch/arm64/boot/dts/ti/k3-am64.dtsi                       | 4 ++--
- arch/arm64/boot/dts/ti/k3-am642-evm.dts                   | 4 ++--
- arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-rdk.dts  | 6 +++---
- arch/arm64/boot/dts/ti/k3-am642-sk.dts                    | 4 ++--
- arch/arm64/boot/dts/ti/k3-am642.dtsi                      | 4 ++--
- arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg1.dtsi    | 2 +-
- arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi    | 2 +-
- arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi        | 2 +-
- arch/arm64/boot/dts/ti/k3-am65-main.dtsi                  | 4 ++--
- arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi                   | 4 ++--
- arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi                | 4 ++--
- arch/arm64/boot/dts/ti/k3-am65.dtsi                       | 4 ++--
- arch/arm64/boot/dts/ti/k3-am652.dtsi                      | 4 ++--
- .../arm64/boot/dts/ti/k3-am6528-iot2050-basic-common.dtsi | 2 +-
- arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts    | 2 +-
- arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dts        | 2 +-
- .../dts/ti/k3-am654-base-board-rocktech-rk101-panel.dtso  | 4 ++--
- arch/arm64/boot/dts/ti/k3-am654-base-board.dts            | 4 ++--
- arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso               | 4 ++--
- arch/arm64/boot/dts/ti/k3-am654-idk.dtso                  | 4 ++--
- arch/arm64/boot/dts/ti/k3-am654-industrial-thermal.dtsi   | 5 ++++-
- arch/arm64/boot/dts/ti/k3-am654.dtsi                      | 4 ++--
- .../boot/dts/ti/k3-am6548-iot2050-advanced-common.dtsi    | 2 +-
- arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-m2.dts  | 2 +-
- arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts | 2 +-
- arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts     | 2 +-
- arch/arm64/boot/dts/ti/k3-am68-sk-base-board.dts          | 4 ++--
- arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi                | 4 ++--
- arch/arm64/boot/dts/ti/k3-am69-sk.dts                     | 4 ++--
- arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts     | 4 ++--
- .../arm64/boot/dts/ti/k3-j7200-evm-quad-port-eth-exp.dtso | 4 ++--
- arch/arm64/boot/dts/ti/k3-j7200-main.dtsi                 | 4 ++--
- arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi           | 4 ++--
- arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi               | 4 ++--
- arch/arm64/boot/dts/ti/k3-j7200-thermal.dtsi              | 5 ++++-
- arch/arm64/boot/dts/ti/k3-j7200.dtsi                      | 4 ++--
- arch/arm64/boot/dts/ti/k3-j721e-beagleboneai64.dts        | 8 ++++----
- arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts     | 4 ++--
- arch/arm64/boot/dts/ti/k3-j721e-evm-gesi-exp-board.dtso   | 4 ++--
- arch/arm64/boot/dts/ti/k3-j721e-evm-pcie0-ep.dtso         | 4 ++--
- .../arm64/boot/dts/ti/k3-j721e-evm-quad-port-eth-exp.dtso | 4 ++--
- arch/arm64/boot/dts/ti/k3-j721e-main.dtsi                 | 4 ++--
- arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi           | 4 ++--
- arch/arm64/boot/dts/ti/k3-j721e-sk.dts                    | 4 ++--
- arch/arm64/boot/dts/ti/k3-j721e-som-p0.dtsi               | 4 ++--
- arch/arm64/boot/dts/ti/k3-j721e-thermal.dtsi              | 5 ++++-
- arch/arm64/boot/dts/ti/k3-j721e.dtsi                      | 4 ++--
- arch/arm64/boot/dts/ti/k3-j721s2-common-proc-board.dts    | 4 ++--
- arch/arm64/boot/dts/ti/k3-j721s2-evm-gesi-exp-board.dtso  | 4 ++--
- arch/arm64/boot/dts/ti/k3-j721s2-evm-pcie1-ep.dtso        | 4 ++--
- arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi                | 4 ++--
- arch/arm64/boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi          | 4 ++--
- arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi              | 4 ++--
- arch/arm64/boot/dts/ti/k3-j721s2-thermal.dtsi             | 5 ++++-
- arch/arm64/boot/dts/ti/k3-j721s2.dtsi                     | 4 ++--
- arch/arm64/boot/dts/ti/k3-j784s4-evm.dts                  | 4 ++--
- arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi                | 4 ++--
- arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi          | 4 ++--
- arch/arm64/boot/dts/ti/k3-j784s4-thermal.dtsi             | 5 ++++-
- arch/arm64/boot/dts/ti/k3-j784s4.dtsi                     | 4 ++--
- arch/arm64/boot/dts/ti/k3-pinctrl.h                       | 4 ++--
- arch/arm64/boot/dts/ti/k3-serdes.h                        | 4 ++--
- 99 files changed, 210 insertions(+), 183 deletions(-)
+Pending acks:
+ - "Alexander A. Klimov" <grandmaster@al2klimov.de>
+ - Rob Herring <robh@kernel.org>
 
+V1: https://lore.kernel.org/r/20240110140903.4090946-7-nm@ti.com
 
-base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+ arch/arm64/boot/dts/ti/k3-am65-main.dtsi                     | 4 ++--
+ arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi                      | 4 ++--
+ arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi                   | 4 ++--
+ arch/arm64/boot/dts/ti/k3-am65.dtsi                          | 4 ++--
+ arch/arm64/boot/dts/ti/k3-am652.dtsi                         | 4 ++--
+ .../dts/ti/k3-am654-base-board-rocktech-rk101-panel.dtso     | 4 ++--
+ arch/arm64/boot/dts/ti/k3-am654-base-board.dts               | 4 ++--
+ arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso                  | 4 ++--
+ arch/arm64/boot/dts/ti/k3-am654-idk.dtso                     | 4 ++--
+ arch/arm64/boot/dts/ti/k3-am654-industrial-thermal.dtsi      | 5 ++++-
+ arch/arm64/boot/dts/ti/k3-am654.dtsi                         | 4 ++--
+ 11 files changed, 24 insertions(+), 21 deletions(-)
 
-
-[1] https://www.youtube.com/watch?v=kr-Yd56so9M
-    https://lpc.events/event/17/contributions/1547/
+diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+index fcea54465636..e55a8c891bc9 100644
+--- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+@@ -1,8 +1,8 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only OR MIT
+ /*
+  * Device Tree Source for AM6 SoC Family Main Domain peripherals
+  *
+- * Copyright (C) 2016-2018 Texas Instruments Incorporated - https://www.ti.com/
++ * Copyright (C) 2016-2024 Texas Instruments Incorporated - https://www.ti.com/
+  */
+ #include <dt-bindings/phy/phy-am654-serdes.h>
+ 
+diff --git a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
+index ecd7356f3315..6ff3ccc39fb4 100644
+--- a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
+@@ -1,8 +1,8 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only OR MIT
+ /*
+  * Device Tree Source for AM6 SoC Family MCU Domain peripherals
+  *
+- * Copyright (C) 2016-2020 Texas Instruments Incorporated - https://www.ti.com/
++ * Copyright (C) 2016-2024 Texas Instruments Incorporated - https://www.ti.com/
+  */
+ 
+ &cbass_mcu {
+diff --git a/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
+index f037b36243ce..37527890ddea 100644
+--- a/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi
+@@ -1,8 +1,8 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only OR MIT
+ /*
+  * Device Tree Source for AM6 SoC Family Wakeup Domain peripherals
+  *
+- * Copyright (C) 2016-2018 Texas Instruments Incorporated - https://www.ti.com/
++ * Copyright (C) 2016-2024 Texas Instruments Incorporated - https://www.ti.com/
+  */
+ 
+ &cbass_wakeup {
+diff --git a/arch/arm64/boot/dts/ti/k3-am65.dtsi b/arch/arm64/boot/dts/ti/k3-am65.dtsi
+index 4d7b6155a76b..c59baebc5a25 100644
+--- a/arch/arm64/boot/dts/ti/k3-am65.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am65.dtsi
+@@ -1,8 +1,8 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only OR MIT
+ /*
+  * Device Tree Source for AM6 SoC Family
+  *
+- * Copyright (C) 2016-2018 Texas Instruments Incorporated - https://www.ti.com/
++ * Copyright (C) 2016-2024 Texas Instruments Incorporated - https://www.ti.com/
+  */
+ 
+ #include <dt-bindings/gpio/gpio.h>
+diff --git a/arch/arm64/boot/dts/ti/k3-am652.dtsi b/arch/arm64/boot/dts/ti/k3-am652.dtsi
+index 0f22e00faa90..cbb3caaf82c3 100644
+--- a/arch/arm64/boot/dts/ti/k3-am652.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am652.dtsi
+@@ -1,8 +1,8 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only OR MIT
+ /*
+  * Device Tree Source for AM65 SoC family in Dual core configuration
+  *
+- * Copyright (C) 2023 Texas Instruments Incorporated - https://www.ti.com/
++ * Copyright (C) 2023-2024 Texas Instruments Incorporated - https://www.ti.com/
+  */
+ 
+ #include "k3-am65.dtsi"
+diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board-rocktech-rk101-panel.dtso b/arch/arm64/boot/dts/ti/k3-am654-base-board-rocktech-rk101-panel.dtso
+index 4209d991eb6b..364c57b3b3a0 100644
+--- a/arch/arm64/boot/dts/ti/k3-am654-base-board-rocktech-rk101-panel.dtso
++++ b/arch/arm64/boot/dts/ti/k3-am654-base-board-rocktech-rk101-panel.dtso
+@@ -1,10 +1,10 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only OR MIT
+ /**
+  * OLDI-LCD1EVM Rocktech integrated panel and touch DT overlay for AM654-EVM.
+  * Panel Link: https://www.digimax.it/en/tft-lcd/20881-RK101II01D-CT
+  * AM654 LCD EVM: https://www.ti.com/tool/TMDSLCD1EVM
+  *
+- * Copyright (C) 2023 Texas Instruments Incorporated - https://www.ti.com/
++ * Copyright (C) 2023-2024 Texas Instruments Incorporated - https://www.ti.com/
+  */
+ 
+ /dts-v1/;
+diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+index 822c288d2797..5109e1bf68d0 100644
+--- a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
++++ b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+@@ -1,6 +1,6 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only OR MIT
+ /*
+- * Copyright (C) 2016-2020 Texas Instruments Incorporated - https://www.ti.com/
++ * Copyright (C) 2016-2024 Texas Instruments Incorporated - https://www.ti.com/
+  */
+ 
+ /dts-v1/;
+diff --git a/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
+index ec8cf20ca3ac..0a6e75265ba9 100644
+--- a/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
++++ b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
+@@ -1,8 +1,8 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only OR MIT
+ /**
+  * DT overlay for IDK application board on AM654 EVM
+  *
+- * Copyright (C) 2018-2023 Texas Instruments Incorporated - https://www.ti.com/
++ * Copyright (C) 2018-2024 Texas Instruments Incorporated - https://www.ti.com/
+  */
+ 
+ /dts-v1/;
+diff --git a/arch/arm64/boot/dts/ti/k3-am654-idk.dtso b/arch/arm64/boot/dts/ti/k3-am654-idk.dtso
+index 150428dfce6f..8bdb87fcbde0 100644
+--- a/arch/arm64/boot/dts/ti/k3-am654-idk.dtso
++++ b/arch/arm64/boot/dts/ti/k3-am654-idk.dtso
+@@ -1,8 +1,8 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only OR MIT
+ /**
+  * DT overlay for IDK application board on AM654 EVM
+  *
+- * Copyright (C) 2018-2023 Texas Instruments Incorporated - https://www.ti.com/
++ * Copyright (C) 2018-2024 Texas Instruments Incorporated - https://www.ti.com/
+  */
+ 
+ /dts-v1/;
+diff --git a/arch/arm64/boot/dts/ti/k3-am654-industrial-thermal.dtsi b/arch/arm64/boot/dts/ti/k3-am654-industrial-thermal.dtsi
+index 9021c738056b..de5a2ed907a7 100644
+--- a/arch/arm64/boot/dts/ti/k3-am654-industrial-thermal.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am654-industrial-thermal.dtsi
+@@ -1,4 +1,7 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only OR MIT
++/*
++ * Copyright (C) 2020-2024 Texas Instruments Incorporated - https://www.ti.com/
++ */
+ 
+ #include <dt-bindings/thermal/thermal.h>
+ 
+diff --git a/arch/arm64/boot/dts/ti/k3-am654.dtsi b/arch/arm64/boot/dts/ti/k3-am654.dtsi
+index 888567b921f0..bb77c8454734 100644
+--- a/arch/arm64/boot/dts/ti/k3-am654.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am654.dtsi
+@@ -1,8 +1,8 @@
+-// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0-only OR MIT
+ /*
+  * Device Tree Source for AM6 SoC family in Quad core configuration
+  *
+- * Copyright (C) 2016-2018 Texas Instruments Incorporated - https://www.ti.com/
++ * Copyright (C) 2016-2024 Texas Instruments Incorporated - https://www.ti.com/
+  */
+ 
+ #include "k3-am65.dtsi"
 -- 
 2.43.0
 
