@@ -1,429 +1,228 @@
-Return-Path: <linux-kernel+bounces-32413-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32414-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C639C835B6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:13:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21A40835B6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:13:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 765B6286BFE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:13:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 126BDB2407D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:13:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46A4AF9E9;
-	Mon, 22 Jan 2024 07:13:01 +0000 (UTC)
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2088FC09;
+	Mon, 22 Jan 2024 07:13:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UsWEKk8r"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A510F9C4
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 07:12:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A74AFFBE7
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 07:13:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705907580; cv=none; b=ZqEciaDDjU7RxfXs2IcJc22ahyK5Kf6K/3cr9c7uqc2HvktNJ/CBNTz9t/Ajg0z6ffFueTSKjTowxr8/1lWya7OeuOGa7l2SLW24ZdKIJ36Oic6ZA7uRrSSbLF22K2ty4h6R/bbkZDPUX3+z3WtVXkF8uLqjemDjhfbKVDf5EVg=
+	t=1705907611; cv=none; b=kPyW2obqIT2JCsK2b97u7pUFb0H8kmUhHuGZv1Cr3n/jIyniY1E59+qB0gBFbSgYfEHPf1X+z3i1RdWpbCAK3TcGHJo5a6HgaD4vZe7C28GI76e3ynh3tM5kMsrXru81TOklsKTqAp7tpfKlT1UBmwwUthe/znIRDsJhdxta6LE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705907580; c=relaxed/simple;
-	bh=ph/lpLNdQA9SfY0A/zbplG5wCHE+cXCrdEl+/dGa44Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Gn2OptrDiuNWyDOfE8gYYYsOKGJ0SKkUXgboyPe9q19gUiZ98URKaau1RSe7ZvofKKg44ANLxVWSwDiUPUT8YgO8h/KLTtr26bEoa//lXdAEbTLui75VOl9lgu/nqCpmJHpC30ke+vCRLBovBMpyy04dlb8OLyuLTGAMnR30w4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; arc=none smtp.client-ip=115.124.30.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R631e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0W.33wn._1705907574;
-Received: from localhost(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0W.33wn._1705907574)
-          by smtp.aliyun-inc.com;
-          Mon, 22 Jan 2024 15:12:54 +0800
-From: Jingbo Xu <jefflexu@linux.alibaba.com>
-To: xiang@kernel.org,
-	chao@kernel.org,
-	linux-erofs@lists.ozlabs.org
-Cc: huyue2@coolpad.com,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] erofs: make iov_iter describe target buffer when read from fscache
-Date: Mon, 22 Jan 2024 15:12:53 +0800
-Message-Id: <20240122071253.119004-1-jefflexu@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
+	s=arc-20240116; t=1705907611; c=relaxed/simple;
+	bh=6Lrv5xwMfaDaPsl1VCKPLCnIY6z/5ht1dxDtK8LPTm4=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=V9wsm3ztT9VWNqCjDNnus0HI32D6SbMDbj7T2N23snCHTD0FAPKOQKNajl0rnoagpZN1DmYSqps4LbM73GOUoZOpePJhVDV83BG6kssf1xAml3TUWb9FHtW2JWeQZs8IqoHoveKOpo0fkRTtJjnkr9CorbffkzlFDURbYvR05SU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UsWEKk8r; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbeac1f5045so3614425276.1
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Jan 2024 23:13:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705907608; x=1706512408; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=oXyU4pkvCRYAyA2TUvsUC8dh5sAPzBBH4qagn6tOpF0=;
+        b=UsWEKk8rXs+hKbDWocKQBdrDKXKhfh7jxYSGJNpmt/g5n6Ib5Uh7cFCdtwF1uBsKIo
+         6bV0X98CVkYYVLY2A8uEkBhzAv5kYDxH8nsK+7P9lARMQCWcL7k4auaMiQ0OacLPjz8J
+         22aphKXRcuApyh1s4BwTpO8M++11answPeB7Z4GtcZP+d1V+0X+EfzxgcfhAzKXC7hxA
+         lNlWWZp0M+PPptivUqVxF8iO+FulNtCQyaQO9LtolBByrN9Z+w9YkmQX+JaTn9O7VOAk
+         IPNA3xX69jCFo65s2A7SJ9YqakfeYuAO2S3UNxVv3zeckadO/eSh7ZZ3CXtmsRdaqwlQ
+         p5oQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705907608; x=1706512408;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oXyU4pkvCRYAyA2TUvsUC8dh5sAPzBBH4qagn6tOpF0=;
+        b=ChKshpuksDJNOQVDrSPD9iG4L8wQAYYgb+hnXJP8iepHXjP193/L4tdMwVOT/kH/uw
+         VAKfaRolE9DFUBU8WtIY4iLhHE3JYzFPL6CLxhBNy9L2CwHtk3bpcuNZ3XaoJLAXWv6A
+         QN+LyNB5b+S7P2MUfJaZFG93NniHMI9LEBaWzqbebHojNsM85CPKvjfV2QYGCszrSAdI
+         Gn51TPHDephzNnC9lvP1Z9o+VZbnpEHXJA2Jv8Grek7crfEPjWZFoY9nfGTAfvTEtmse
+         Ov/w/PC8BYyvH2LdqOZuV4NAkhYunq0roOyHOLynzPX71EL6AJu+XgF55gOKU/5k2AD6
+         9PYQ==
+X-Gm-Message-State: AOJu0Yw9yGVBBunOFsUFaXzllpE6utfu8TU1Srs88jsRiqC+AP1qeKtt
+	cwquvSp/ADu1TlL0ymwGosBcBag8TdhKsx3q5ytcVFaiJ+12hxlDwAakMtGhxvT6qqw2tdH0HPJ
+	ccw==
+X-Google-Smtp-Source: AGHT+IG8d1Gn9VWPvChN4p2/RHkaCghVVAROZ7VOgDGN0KGJpb0phlIzNaSwlCWzvJeInLF/vdqx3fCBkG0=
+X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:4979:1d79:d572:5708])
+ (user=surenb job=sendgmr) by 2002:a25:e90c:0:b0:dbe:49ca:eb03 with SMTP id
+ n12-20020a25e90c000000b00dbe49caeb03mr1889847ybd.5.1705907608657; Sun, 21 Jan
+ 2024 23:13:28 -0800 (PST)
+Date: Sun, 21 Jan 2024 23:13:22 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+Message-ID: <20240122071324.2099712-1-surenb@google.com>
+Subject: [PATCH 1/3] mm: make vm_area_struct anon_name field RCU-safe
+From: Suren Baghdasaryan <surenb@google.com>
+To: akpm@linux-foundation.org
+Cc: viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz, 
+	dchinner@redhat.com, casey@schaufler-ca.com, ben.wolsieffer@hefring.com, 
+	paulmck@kernel.org, david@redhat.com, avagin@google.com, 
+	usama.anjum@collabora.com, peterx@redhat.com, hughd@google.com, 
+	ryan.roberts@arm.com, wangkefeng.wang@huawei.com, Liam.Howlett@Oracle.com, 
+	yuzhao@google.com, axelrasmussen@google.com, lstoakes@gmail.com, 
+	talumbau@google.com, willy@infradead.org, vbabka@suse.cz, 
+	mgorman@techsingularity.net, jhubbard@nvidia.com, vishal.moola@gmail.com, 
+	mathieu.desnoyers@efficios.com, dhowells@redhat.com, jgg@ziepe.ca, 
+	sidhartha.kumar@oracle.com, andriy.shevchenko@linux.intel.com, 
+	yangxingui@huawei.com, keescook@chromium.org, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, kernel-team@android.com, 
+	surenb@google.com
+Content-Type: text/plain; charset="UTF-8"
 
-So far the fscache mode supports uncompressed data only, and the data
-read from fscache is put directly into the target page cache.  As the
-support for compressed data in fscache mode is going to be introduced,
-refactor the interface of reading fscache so that the following
-compressed part could make the raw data read from fscache be directed to
-the target buffer it wants, decompress the raw data, and finally fill
-the page cache with the decompressed data.
+For lockless /proc/pid/maps reading we have to ensure all the fields
+used when generating the output are RCU-safe. The only pointer fields
+in vm_area_struct which are used to generate that file's output are
+vm_file and anon_name. vm_file is RCU-safe but anon_name is not. Make
+anon_name RCU-safe as well.
 
-As the first step, a new structure, i.e. erofs_fscache_io (cio), is
-introduced to describe a generic read request from the fscache, while
-the caller can specify the target buffer it wants in the iov_iter
-structure (cio->iter).  Besides, the caller can also specify its
-completion callback and private data through cio, which will be called
-to make further handling, e.g. unlocking the page cache for uncompressed
-data or decompressing the read raw data, when the read request from the
-fscache completes.  Now erofs_fscache_read_io_async() serves as a
-generic interface for reading raw data from fscache for both compressed
-and uncompressed data.
-
-The erofs_fscache_request structure is kept to describe a request to
-fill the page cache in the specified range.
-
-Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 ---
- fs/erofs/fscache.c | 219 ++++++++++++++++++++++++---------------------
- 1 file changed, 118 insertions(+), 101 deletions(-)
+ include/linux/mm_inline.h | 10 +++++++++-
+ include/linux/mm_types.h  |  3 ++-
+ mm/madvise.c              | 30 ++++++++++++++++++++++++++----
+ 3 files changed, 37 insertions(+), 6 deletions(-)
 
-diff --git a/fs/erofs/fscache.c b/fs/erofs/fscache.c
-index bc12030393b2..10709f20bef5 100644
---- a/fs/erofs/fscache.c
-+++ b/fs/erofs/fscache.c
-@@ -13,8 +13,6 @@ static LIST_HEAD(erofs_domain_cookies_list);
- static struct vfsmount *erofs_pseudo_mnt;
+diff --git a/include/linux/mm_inline.h b/include/linux/mm_inline.h
+index f4fe593c1400..bbdb0ca857f1 100644
+--- a/include/linux/mm_inline.h
++++ b/include/linux/mm_inline.h
+@@ -389,7 +389,7 @@ static inline void dup_anon_vma_name(struct vm_area_struct *orig_vma,
+ 	struct anon_vma_name *anon_name = anon_vma_name(orig_vma);
  
- struct erofs_fscache_request {
--	struct erofs_fscache_request *primary;
--	struct netfs_cache_resources cache_resources;
- 	struct address_space	*mapping;	/* The mapping being accessed */
- 	loff_t			start;		/* Start position */
- 	size_t			len;		/* Length of the request */
-@@ -23,42 +21,13 @@ struct erofs_fscache_request {
- 	refcount_t		ref;
+ 	if (anon_name)
+-		new_vma->anon_name = anon_vma_name_reuse(anon_name);
++		rcu_assign_pointer(new_vma->anon_name, anon_vma_name_reuse(anon_name));
+ }
+ 
+ static inline void free_anon_vma_name(struct vm_area_struct *vma)
+@@ -411,6 +411,8 @@ static inline bool anon_vma_name_eq(struct anon_vma_name *anon_name1,
+ 		!strcmp(anon_name1->name, anon_name2->name);
+ }
+ 
++struct anon_vma_name *anon_vma_name_get_rcu(struct vm_area_struct *vma);
++
+ #else /* CONFIG_ANON_VMA_NAME */
+ static inline void anon_vma_name_get(struct anon_vma_name *anon_name) {}
+ static inline void anon_vma_name_put(struct anon_vma_name *anon_name) {}
+@@ -424,6 +426,12 @@ static inline bool anon_vma_name_eq(struct anon_vma_name *anon_name1,
+ 	return true;
+ }
+ 
++static inline
++struct anon_vma_name *anon_vma_name_get_rcu(struct vm_area_struct *vma)
++{
++	return NULL;
++}
++
+ #endif  /* CONFIG_ANON_VMA_NAME */
+ 
+ static inline void init_tlb_flush_pending(struct mm_struct *mm)
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 8b611e13153e..bbe1223cd992 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -545,6 +545,7 @@ struct vm_userfaultfd_ctx {};
+ 
+ struct anon_vma_name {
+ 	struct kref kref;
++	struct rcu_head rcu;
+ 	/* The name needs to be at the end because it is dynamically sized. */
+ 	char name[];
  };
- 
--static struct erofs_fscache_request *erofs_fscache_req_alloc(struct address_space *mapping,
--					     loff_t start, size_t len)
--{
--	struct erofs_fscache_request *req;
--
--	req = kzalloc(sizeof(struct erofs_fscache_request), GFP_KERNEL);
--	if (!req)
--		return ERR_PTR(-ENOMEM);
--
--	req->mapping = mapping;
--	req->start   = start;
--	req->len     = len;
--	refcount_set(&req->ref, 1);
--
--	return req;
--}
--
--static struct erofs_fscache_request *erofs_fscache_req_chain(struct erofs_fscache_request *primary,
--					     size_t len)
--{
--	struct erofs_fscache_request *req;
--
--	/* use primary request for the first submission */
--	if (!primary->submitted) {
--		refcount_inc(&primary->ref);
--		return primary;
--	}
--
--	req = erofs_fscache_req_alloc(primary->mapping,
--			primary->start + primary->submitted, len);
--	if (!IS_ERR(req)) {
--		req->primary = primary;
--		refcount_inc(&primary->ref);
--	}
--	return req;
--}
-+struct erofs_fscache_io {
-+	struct netfs_cache_resources cache_resources;
-+	struct iov_iter		iter;
-+	netfs_io_terminated_t	end_io;
-+	void			*private;
-+	refcount_t		ref;
-+};
- 
- static void erofs_fscache_req_complete(struct erofs_fscache_request *req)
+@@ -699,7 +700,7 @@ struct vm_area_struct {
+ 	 * terminated string containing the name given to the vma, or NULL if
+ 	 * unnamed. Serialized by mmap_lock. Use anon_vma_name to access.
+ 	 */
+-	struct anon_vma_name *anon_name;
++	struct anon_vma_name __rcu *anon_name;
+ #endif
+ #ifdef CONFIG_SWAP
+ 	atomic_long_t swap_readahead_info;
+diff --git a/mm/madvise.c b/mm/madvise.c
+index 912155a94ed5..0f222d464254 100644
+--- a/mm/madvise.c
++++ b/mm/madvise.c
+@@ -88,14 +88,15 @@ void anon_vma_name_free(struct kref *kref)
  {
-@@ -83,82 +52,116 @@ static void erofs_fscache_req_complete(struct erofs_fscache_request *req)
- static void erofs_fscache_req_put(struct erofs_fscache_request *req)
- {
- 	if (refcount_dec_and_test(&req->ref)) {
--		if (req->cache_resources.ops)
--			req->cache_resources.ops->end_operation(&req->cache_resources);
--		if (!req->primary)
--			erofs_fscache_req_complete(req);
--		else
--			erofs_fscache_req_put(req->primary);
-+		erofs_fscache_req_complete(req);
- 		kfree(req);
- 	}
+ 	struct anon_vma_name *anon_name =
+ 			container_of(kref, struct anon_vma_name, kref);
+-	kfree(anon_name);
++	kfree_rcu(anon_name, rcu);
  }
  
--static void erofs_fscache_subreq_complete(void *priv,
-+static struct erofs_fscache_request *erofs_fscache_req_alloc(struct address_space *mapping,
-+						loff_t start, size_t len)
-+{
-+	struct erofs_fscache_request *req;
-+
-+	req = kzalloc(sizeof(*req), GFP_KERNEL);
-+	if (req) {
-+		req->mapping = mapping;
-+		req->start = start;
-+		req->len = len;
-+		refcount_set(&req->ref, 1);
-+	}
-+	return req;
-+}
-+
-+static bool erofs_fscache_io_put(struct erofs_fscache_io *cio)
-+{
-+	if (refcount_dec_and_test(&cio->ref)) {
-+		if (cio->cache_resources.ops)
-+			cio->cache_resources.ops->end_operation(&cio->cache_resources);
-+		kfree(cio);
-+		return true;
-+	}
-+	return false;
-+}
-+
-+static void erofs_fscache_req_io_put(struct erofs_fscache_io *cio)
-+{
-+	struct erofs_fscache_request *req = cio->private;
-+
-+	if (erofs_fscache_io_put(cio))
-+		erofs_fscache_req_put(req);
-+}
-+
-+static void erofs_fscache_req_end_io(void *priv,
- 		ssize_t transferred_or_error, bool was_async)
+ struct anon_vma_name *anon_vma_name(struct vm_area_struct *vma)
  {
--	struct erofs_fscache_request *req = priv;
-+	struct erofs_fscache_io *cio = priv;
-+	struct erofs_fscache_request *req = cio->private;
-+
-+	if (IS_ERR(transferred_or_error))
-+		req->error = transferred_or_error;
-+	erofs_fscache_req_io_put(cio);
-+}
-+
-+static struct erofs_fscache_io *erofs_fscache_req_io_alloc(struct erofs_fscache_request *req)
-+{
-+	struct erofs_fscache_io *cio;
+ 	mmap_assert_locked(vma->vm_mm);
  
--	if (IS_ERR_VALUE(transferred_or_error)) {
--		if (req->primary)
--			req->primary->error = transferred_or_error;
--		else
--			req->error = transferred_or_error;
-+	cio = kzalloc(sizeof(*cio), GFP_KERNEL);
-+	if (cio) {
-+		cio->end_io = erofs_fscache_req_end_io;
-+		cio->private = req;
-+		refcount_inc(&req->ref);
-+		refcount_set(&cio->ref, 1);
- 	}
--	erofs_fscache_req_put(req);
-+	return cio;
+-	return vma->anon_name;
++	return rcu_dereference_protected(vma->anon_name,
++		rwsem_is_locked(&vma->vm_mm->mmap_lock));
  }
  
- /*
-- * Read data from fscache (cookie, pstart, len), and fill the read data into
-- * page cache described by (req->mapping, lstart, len). @pstart describeis the
-- * start physical address in the cache file.
-+ * Read data from fscache described by cookie at pstart physical address
-+ * offset, and fill the read data into buffer described by cio->iter.
-  */
--static int erofs_fscache_read_folios_async(struct fscache_cookie *cookie,
--		struct erofs_fscache_request *req, loff_t pstart, size_t len)
-+static int erofs_fscache_read_io_async(struct fscache_cookie *cookie,
-+		loff_t pstart, struct erofs_fscache_io *cio)
- {
- 	enum netfs_io_source source;
--	struct super_block *sb = req->mapping->host->i_sb;
--	struct netfs_cache_resources *cres = &req->cache_resources;
--	struct iov_iter iter;
--	loff_t lstart = req->start + req->submitted;
--	size_t done = 0;
-+	struct netfs_cache_resources *cres = &cio->cache_resources;
-+	struct iov_iter *iter = &cio->iter;
- 	int ret;
+ /* mmap_lock should be write-locked */
+@@ -105,7 +106,7 @@ static int replace_anon_vma_name(struct vm_area_struct *vma,
+ 	struct anon_vma_name *orig_name = anon_vma_name(vma);
  
--	DBG_BUGON(len > req->len - req->submitted);
--
- 	ret = fscache_begin_read_operation(cres, cookie);
- 	if (ret)
- 		return ret;
- 
--	while (done < len) {
--		loff_t sstart = pstart + done;
--		size_t slen = len - done;
-+	while (iov_iter_count(iter)) {
-+		size_t len, remain = iov_iter_count(iter);
- 		unsigned long flags = 1 << NETFS_SREQ_ONDEMAND;
- 
-+		len = remain;
- 		source = cres->ops->prepare_ondemand_read(cres,
--				sstart, &slen, LLONG_MAX, &flags, 0);
--		if (WARN_ON(slen == 0))
-+				pstart, &len, LLONG_MAX, &flags, 0);
-+		if (WARN_ON(len == 0))
- 			source = NETFS_INVALID_READ;
- 		if (source != NETFS_READ_FROM_CACHE) {
--			erofs_err(sb, "failed to fscache prepare_read (source %d)", source);
-+			erofs_err(NULL, "prepare_read failed (source %d)", source);
- 			return -EIO;
- 		}
- 
--		refcount_inc(&req->ref);
--		iov_iter_xarray(&iter, ITER_DEST, &req->mapping->i_pages,
--				lstart + done, slen);
--
--		ret = fscache_read(cres, sstart, &iter, NETFS_READ_HOLE_FAIL,
--				   erofs_fscache_subreq_complete, req);
-+		iov_iter_truncate(iter, len);
-+		refcount_inc(&cio->ref);
-+		ret = fscache_read(cres, pstart, iter, NETFS_READ_HOLE_FAIL,
-+				   cio->end_io, cio);
- 		if (ret == -EIOCBQUEUED)
- 			ret = 0;
- 		if (ret) {
--			erofs_err(sb, "failed to fscache_read (ret %d)", ret);
-+			erofs_err(NULL, "fscache_read failed (ret %d)", ret);
- 			return ret;
- 		}
-+		if (WARN_ON(iov_iter_count(iter)))
-+			return -EIO;
- 
--		done += slen;
-+		iov_iter_reexpand(iter, remain - len);
-+		pstart += len;
+ 	if (!anon_name) {
+-		vma->anon_name = NULL;
++		rcu_assign_pointer(vma->anon_name, NULL);
+ 		anon_vma_name_put(orig_name);
+ 		return 0;
  	}
--	DBG_BUGON(done != len);
+@@ -113,11 +114,32 @@ static int replace_anon_vma_name(struct vm_area_struct *vma,
+ 	if (anon_vma_name_eq(orig_name, anon_name))
+ 		return 0;
+ 
+-	vma->anon_name = anon_vma_name_reuse(anon_name);
++	rcu_assign_pointer(vma->anon_name, anon_vma_name_reuse(anon_name));
+ 	anon_vma_name_put(orig_name);
+ 
  	return 0;
  }
- 
-@@ -167,33 +170,43 @@ static int erofs_fscache_meta_read_folio(struct file *data, struct folio *folio)
- 	int ret;
- 	struct erofs_fscache *ctx = folio->mapping->host->i_private;
- 	struct erofs_fscache_request *req;
-+	struct erofs_fscache_io *cio;
- 
-+	ret = -ENOMEM;
- 	req = erofs_fscache_req_alloc(folio->mapping,
- 				folio_pos(folio), folio_size(folio));
--	if (IS_ERR(req)) {
-+	if (!req) {
- 		folio_unlock(folio);
--		return PTR_ERR(req);
-+		return ret;
- 	}
- 
--	ret = erofs_fscache_read_folios_async(ctx->cookie, req,
--				folio_pos(folio), folio_size(folio));
-+	cio = erofs_fscache_req_io_alloc(req);
-+	if (!cio) {
-+		req->error = ret;
-+		goto out;
-+	}
-+	iov_iter_xarray(&cio->iter, ITER_DEST, &folio->mapping->i_pages,
-+			folio_pos(folio), folio_size(folio));
 +
-+	ret = erofs_fscache_read_io_async(ctx->cookie, folio_pos(folio), cio);
- 	if (ret)
- 		req->error = ret;
- 
-+	erofs_fscache_req_io_put(cio);
-+out:
- 	erofs_fscache_req_put(req);
- 	return ret;
- }
- 
--static int erofs_fscache_data_read_slice(struct erofs_fscache_request *primary)
-+static int erofs_fscache_data_read_slice(struct erofs_fscache_request *req)
- {
--	struct address_space *mapping = primary->mapping;
-+	struct address_space *mapping = req->mapping;
- 	struct inode *inode = mapping->host;
- 	struct super_block *sb = inode->i_sb;
--	struct erofs_fscache_request *req;
-+	struct erofs_fscache_io *cio;
- 	struct erofs_map_blocks map;
- 	struct erofs_map_dev mdev;
--	struct iov_iter iter;
--	loff_t pos = primary->start + primary->submitted;
-+	loff_t pos = req->start + req->submitted;
- 	size_t count;
- 	int ret;
- 
-@@ -204,6 +217,7 @@ static int erofs_fscache_data_read_slice(struct erofs_fscache_request *primary)
- 
- 	if (map.m_flags & EROFS_MAP_META) {
- 		struct erofs_buf buf = __EROFS_BUF_INITIALIZER;
-+		struct iov_iter iter;
- 		erofs_blk_t blknr;
- 		size_t offset, size;
- 		void *src;
-@@ -224,15 +238,17 @@ static int erofs_fscache_data_read_slice(struct erofs_fscache_request *primary)
- 		}
- 		iov_iter_zero(PAGE_SIZE - size, &iter);
- 		erofs_put_metabuf(&buf);
--		primary->submitted += PAGE_SIZE;
-+		req->submitted += PAGE_SIZE;
- 		return 0;
- 	}
- 
--	count = primary->len - primary->submitted;
-+	count = req->len - req->submitted;
- 	if (!(map.m_flags & EROFS_MAP_MAPPED)) {
-+		struct iov_iter iter;
++/*
++ * Returned anon_vma_name is stable due to elevated refcount but not guaranteed
++ * to be assigned to the original VMA after the call.
++ */
++struct anon_vma_name *anon_vma_name_get_rcu(struct vm_area_struct *vma)
++{
++	struct anon_vma_name __rcu *anon_name;
 +
- 		iov_iter_xarray(&iter, ITER_DEST, &mapping->i_pages, pos, count);
- 		iov_iter_zero(count, &iter);
--		primary->submitted += count;
-+		req->submitted += count;
- 		return 0;
- 	}
- 
-@@ -247,14 +263,15 @@ static int erofs_fscache_data_read_slice(struct erofs_fscache_request *primary)
- 	if (ret)
- 		return ret;
- 
--	req = erofs_fscache_req_chain(primary, count);
--	if (IS_ERR(req))
--		return PTR_ERR(req);
-+	cio = erofs_fscache_req_io_alloc(req);
-+	if (!cio)
-+		return -ENOMEM;
-+	iov_iter_xarray(&cio->iter, ITER_DEST, &mapping->i_pages, pos, count);
-+	ret = erofs_fscache_read_io_async(mdev.m_fscache->cookie,
-+			mdev.m_pa + (pos - map.m_la), cio);
-+	erofs_fscache_req_io_put(cio);
- 
--	ret = erofs_fscache_read_folios_async(mdev.m_fscache->cookie,
--			req, mdev.m_pa + (pos - map.m_la), count);
--	erofs_fscache_req_put(req);
--	primary->submitted += count;
-+	req->submitted += count;
- 	return ret;
- }
- 
-@@ -278,9 +295,9 @@ static int erofs_fscache_read_folio(struct file *file, struct folio *folio)
- 
- 	req = erofs_fscache_req_alloc(folio->mapping,
- 			folio_pos(folio), folio_size(folio));
--	if (IS_ERR(req)) {
-+	if (!req) {
- 		folio_unlock(folio);
--		return PTR_ERR(req);
-+		return -ENOMEM;
- 	}
- 
- 	ret = erofs_fscache_data_read(req);
-@@ -297,7 +314,7 @@ static void erofs_fscache_readahead(struct readahead_control *rac)
- 
- 	req = erofs_fscache_req_alloc(rac->mapping,
- 			readahead_pos(rac), readahead_length(rac));
--	if (IS_ERR(req))
-+	if (!req)
- 		return;
- 
- 	/* The request completion will drop refs on the folios. */
++	WARN_ON_ONCE(!rcu_read_lock_held());
++
++	anon_name = rcu_dereference(vma->anon_name);
++	if (!anon_name)
++		return NULL;
++
++	if (unlikely(!kref_get_unless_zero(&anon_name->kref)))
++		return NULL;
++
++	return anon_name;
++}
++
+ #else /* CONFIG_ANON_VMA_NAME */
+ static int replace_anon_vma_name(struct vm_area_struct *vma,
+ 				 struct anon_vma_name *anon_name)
 -- 
-2.19.1.6.gb485710b
+2.43.0.429.g432eaa2c6b-goog
 
 
