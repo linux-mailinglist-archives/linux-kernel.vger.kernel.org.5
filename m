@@ -1,78 +1,79 @@
-Return-Path: <linux-kernel+bounces-34170-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34171-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 642948374ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:09:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 187C28374F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 22:11:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96AF21C2917B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:09:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B1171C23F1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 21:11:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7369A47F5F;
-	Mon, 22 Jan 2024 21:09:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C484547F5B;
+	Mon, 22 Jan 2024 21:10:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LXap1gsb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L5wjLa6g"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8CAE3D962;
-	Mon, 22 Jan 2024 21:09:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 151CF481A1;
+	Mon, 22 Jan 2024 21:10:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705957786; cv=none; b=OZxLBR2GD7YsdTrCXG+HPTWNvdNOfcxaFmad031UfQHYFSlSRSBcBu7dZNdyV1UBZufWukWrftZmJGtYk3wrwBlDPXOhYit12lRwXXFVPcG6uprUNSVcK+3gezO21k8GsRPhvH0cxqxDFjj6ckLETQjWGUigti1s9e3wn0d5Xhc=
+	t=1705957852; cv=none; b=Xxfq/V8eY5q5/AtfuN9pfP6FUalxJYoJNzyIaDxcsZapIrNlCCEhGmuKD3tLrKgYm/qt0ZsKHkzMlDsfLpPfdT+GeYV/K4MyIsOOKeya8rmTnBRF3hZzaoax3LS2Y2DveBz6blcPALynA0+MTLk41ixwU667k1gAQpQjoo/bdpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705957786; c=relaxed/simple;
-	bh=Ih7R6TYxhCM9I3BeQKAYztZnAv4JyEVKt9MpxCjzGWE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tKbDU4TcoQx2r8BfeCT6w58rsnBWvYPu8bMVn15x+1PsNGIHM3H8ZlAy5WpsUbJqhRIgbVQS0lEvV2GRuF6KYdqE5Ji6/og6X/e3H4x1+Iv+pQW2YTn8QZP8qoDvdLyDqEcKUNvhMj4adLG1b4agF06XlevTyGSwXH6sIO9K+Bs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LXap1gsb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7201C433C7;
-	Mon, 22 Jan 2024 21:09:45 +0000 (UTC)
+	s=arc-20240116; t=1705957852; c=relaxed/simple;
+	bh=TDViGXXDF62YHlJpIBlrEc0F5ODj676gbujRwRqKUtY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dDqAOgtaqVrWTddbT1JaD5GuEKeu3re4NSiaNt4VCzpGedNOyX9f9vPTgksQ6xyL2kWONRp6MUbtopKvuiEuolovB4O6KaXY/JuijCL7YKbkR6AtVrKzvx2bVf9dO/gnXyUO1ihLToBXWFlahb+tp20IkseBoLzkcvXO6kyYF6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L5wjLa6g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F1D7C43390;
+	Mon, 22 Jan 2024 21:10:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705957786;
-	bh=Ih7R6TYxhCM9I3BeQKAYztZnAv4JyEVKt9MpxCjzGWE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=LXap1gsbnuqyJgpUh20kPe601KuOC0HAQTF5WaOrs+Di36aEs0U41afa7zyLoBVXV
-	 +qr6Spp1cMGbGTwm3jllrajaeJdB/1EgVjjx6nT6GAzNUe3hNx/T6zqZ9fPvA0qvlx
-	 Cz/HHKqvkwDPG55XRCihWpu7LBIL9CEhxX4q1N+4CoYRUFVlqJHj6zn0Vx8eUyjOVv
-	 SRN+MKyAEZeQ1QruUgeA8ljEd4M/lrR+noQJXHLgdUkV+yNAO92fsUqR3kv2kFseoK
-	 Q+hZ1vtBqRbXkGwFYQN6GyTGAACygObyPYFw43sBU2drzNRtAQZWePvpBxEBRQiiNo
-	 rtRPY2NbiOx9g==
-Date: Mon, 22 Jan 2024 13:09:44 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Denis Kirjanov <dkirjanov@suse.de>, Timur Tabi <timur@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Marijn Suijten
- <marijn.suijten@somainline.org>, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org
-Subject: Re: [PATCH] net: ethernet: qualcomm: Remove QDF24xx support
-Message-ID: <20240122130944.288284fc@kernel.org>
-In-Reply-To: <88a6314b-f780-4511-85a5-839115beeff5@linaro.org>
-References: <20240122-topic-qdf_cleanup_net-v1-1-caf0d9c4408a@linaro.org>
-	<ce1b41a4-a9bc-4dbc-ae85-5187b3cab10b@suse.de>
-	<88a6314b-f780-4511-85a5-839115beeff5@linaro.org>
+	s=k20201202; t=1705957851;
+	bh=TDViGXXDF62YHlJpIBlrEc0F5ODj676gbujRwRqKUtY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=L5wjLa6gOcizqQtkvIgi2lycdDBDD1WQZBJR5QPDfYTBF5FHJKR4h3z+x1XnyxSHf
+	 +gBBIrzMsUiibgEP7xUUXakoEbnrzasfK6DPRix7wfJbcGjoFHTHoqZWdHohsyMOfB
+	 //BfYKXdio7Px8XckjFam7Ko0P2jas24o/UI4r93TPzx5Xxpaf8GtEvlU7ORdwWS/8
+	 XoP4MYf+9KdSUYqMQzqPHazQK4/W7Fvn2R8i5lYJZzTrHWImGB0ANygxK16vYvn/nN
+	 TS2OegnnyGrOMjjuhhj4S9BKTfpC6IEDUCjWRx5S/ZBaUzMPme2C61S4+102pwecXi
+	 Hn3fMN+zHurKw==
+Date: Mon, 22 Jan 2024 21:10:46 +0000
+From: Simon Horman <horms@kernel.org>
+To: Zhipeng Lu <alexious@zju.edu.cn>
+Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Piotr Marczak <piotr.marczak@intel.com>,
+	Alice Michael <alice.michael@intel.com>,
+	Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+	intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] i40e: fix a memleak in i40e_init_recovery_mode
+Message-ID: <20240122211046.GK126470@kernel.org>
+References: <20240122173633.3843715-1-alexious@zju.edu.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240122173633.3843715-1-alexious@zju.edu.cn>
 
-On Mon, 22 Jan 2024 16:36:01 +0100 Konrad Dybcio wrote:
-> > On 1/22/24 15:02, Konrad Dybcio wrote:  
-> >> This SoC family was destined for server use, featuring Qualcomm's very
-> >> interesting Kryo cores (before "Kryo" became a marketing term for Arm
-> >> cores with small modifications). It did however not leave the labs of
-> >> Qualcomm and presumably some partners, nor was it ever productized.  
-> > 
-> > You forgot the net-next prefix  
+On Tue, Jan 23, 2024 at 01:36:33AM +0800, Zhipeng Lu wrote:
+> In i40e_init_recovery_mode, pf->vsi is allocated without free, causing
+> a memleak. This patch adds deallocation operations for pf->vsi in each
+> and every error-handling paths after pf->vsi's.
 > 
-> Right. Should I resend, or just leave it now?
+> Fixes: 4ff0ee1af016 ("i40e: Introduce recovery mode support")
+> Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
 
-Looks like our bot guessed right, you can leave it.
+Reviewed-by: Simon Horman <horms@kernel.org>
+
 
