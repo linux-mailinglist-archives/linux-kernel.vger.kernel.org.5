@@ -1,162 +1,113 @@
-Return-Path: <linux-kernel+bounces-32442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32447-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B86A835BCD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:39:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 058DE835BD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 08:42:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53708281979
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:39:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD2991C217CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 07:42:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3507720DED;
-	Mon, 22 Jan 2024 07:39:03 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05FE91642D;
+	Mon, 22 Jan 2024 07:42:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jOnqDMRd"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 505B120DD2;
-	Mon, 22 Jan 2024 07:39:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 496DB14F6C;
+	Mon, 22 Jan 2024 07:42:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705909142; cv=none; b=Hspp8Q5IAi2WudvIkeq269z6y26HRRu95pIGGDjVUyHhHC9zrqp46/BagGJqrFQx2aoFMO7mIFENTuofCVDWwXECgcqln9QZyQrceISGy1xCerkcN0Y1qzJtx+nxp+IWTB++s1ka4EZa8ZghaeYzzER6FCwAvUtfIvne3g8GKko=
+	t=1705909327; cv=none; b=t5Sfz5HNorVcrktsf8AlMjo0QV76sae2q72AvDQY+2LWEPkH6XcOzAR4lvPiGHMxF5ciJUasLer3bsYa/Y1UfpKEj456seFhhaVlj6ZN/SkXcrZLR2w43oiv3BK/c/LLpS1QxaXnOs2xVSe6JjhyQ70mcoFhnbE14Ya3LCUYQW8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705909142; c=relaxed/simple;
-	bh=wqD3BcIyhEmryJcEFaCD5uVA14nzmG5cK5v0iik8hsM=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=R6Hs6jZDOlUuv9DNioAM5VfLJ5ZJ/Q0qB+BOdQ7erHeFQHdg2KOQrwOHZzVuAx1RZz5D5K4osUQRvV0pHw1e7mC1qZtHmFZghKCxBlSDHeosOmNKlZYT8IEjq3bcVeBWyBC2fostEGemuGJEyRWGVTVcMPUx/kPJDBxbCGf7Pws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TJMWd6s7LzVhkZ;
-	Mon, 22 Jan 2024 15:37:49 +0800 (CST)
-Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0E1201850CA;
-	Mon, 22 Jan 2024 15:38:59 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
- (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 22 Jan
- 2024 15:37:41 +0800
-From: Ye Bin <yebin10@huawei.com>
-To: <rostedt@goodmis.org>, <mhiramat@kernel.org>,
-	<mathieu.desnoyers@efficios.com>, <linux-trace-kernel@vger.kernel.org>
-CC: <linux-kernel@vger.kernel.org>, <yebin10@huawei.com>
-Subject: [PATCH v2 7/7] selftests/ftrace: add test cases for VFS type "%pd" and "%pD"
-Date: Mon, 22 Jan 2024 15:40:15 +0800
-Message-ID: <20240122074015.4042575-8-yebin10@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20240122074015.4042575-1-yebin10@huawei.com>
-References: <20240122074015.4042575-1-yebin10@huawei.com>
+	s=arc-20240116; t=1705909327; c=relaxed/simple;
+	bh=6q+Ae298LK6Fwx9w1Hxqg+/TcqF4+MMHBmWb7Tw8+hU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uQ1aSF46tk2aWy4OvE+gENAnpX36Khxre6ANhFgF3WpMnv5uKJSZ47FGArOukW+tj67uEYW0EXe+8fLu6W5OyCbdkmDJOn2fEO+cFlBc53a0sRUOZ//MKboctanu6k7iHoyCWR5lCgKo4Orm+cjwVGy3y2/E2vKVotdSGqSzwcE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jOnqDMRd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B284C43394;
+	Mon, 22 Jan 2024 07:41:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705909326;
+	bh=6q+Ae298LK6Fwx9w1Hxqg+/TcqF4+MMHBmWb7Tw8+hU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jOnqDMRdvXuWTje7hxQN2dCLE7PzYUq8rAYWennGmg2eWAJlF8wYxF7WITOD93XyX
+	 kOi7HC3t/JBdyraClA4q5IQ6eCe0QP9DQEOOLu5rJzGGtUakerutvskNDSebyStAJZ
+	 z+mnBJqfh9Fcq+5rh+Kc2KPiYn9xLCRpmCpxOFhvwp4xLOdS0I9/a1r1ZusQ+JEtay
+	 eerJbS9dnoFfr2YnDqeIifjrZ8RFwgs3XLP/I8Wfw7PBHR0aHCQTC5FxayDUKgCqE/
+	 I+Nux9qFYloyZL8LPJSk6tchB/m6C22f9IUgs1mhO9obbBZ8/pniLuN0IIT85I3k0j
+	 4+4RMm18KCn0Q==
+Date: Mon, 22 Jan 2024 09:41:40 +0200
+From: Mike Rapoport <rppt@kernel.org>
+To: Shijie Huang <shijie@amperemail.onmicrosoft.com>
+Cc: Yury Norov <yury.norov@gmail.com>,
+	Huang Shijie <shijie@os.amperecomputing.com>,
+	gregkh@linuxfoundation.org, patches@amperecomputing.com,
+	rafael@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
+	aou@eecs.berkeley.edu, kuba@kernel.org, vschneid@redhat.com,
+	mingo@kernel.org, akpm@linux-foundation.org, vbabka@suse.cz,
+	tglx@linutronix.de, jpoimboe@kernel.org, ndesaulniers@google.com,
+	mikelley@microsoft.com, mhiramat@kernel.org, arnd@arndb.de,
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
+	will@kernel.org, mark.rutland@arm.com, mpe@ellerman.id.au,
+	linuxppc-dev@lists.ozlabs.org, chenhuacai@kernel.org,
+	jiaxun.yang@flygoat.com, linux-mips@vger.kernel.org,
+	cl@os.amperecomputing.com
+Subject: Re: [PATCH] NUMA: Early use of cpu_to_node() returns 0 instead of
+ the correct node id
+Message-ID: <Za4cNBQBLZujlAlP@kernel.org>
+References: <20240119033227.14113-1-shijie@os.amperecomputing.com>
+ <Zan9sb0vtSvVvQeA@yury-ThinkPad>
+ <1cd078fd-c345-4d85-a92f-04c806c20efa@amperemail.onmicrosoft.com>
+ <Zao13I4Bb0tur0fZ@kernel.org>
+ <b8786c38-d6c4-4fea-a918-ac6a45682dba@amperemail.onmicrosoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500010.china.huawei.com (7.192.105.118)
+In-Reply-To: <b8786c38-d6c4-4fea-a918-ac6a45682dba@amperemail.onmicrosoft.com>
 
-This patch adds test cases for new print format type "%pd/%pD".The test cases
-test the following items:
-1. Test README if add "%pd/%pD" type;
-2. Test "%pd" type for dput();
-3. Test "%pD" type for vfs_read();
+On Fri, Jan 19, 2024 at 04:50:53PM +0800, Shijie Huang wrote:
+> 
+> 在 2024/1/19 16:42, Mike Rapoport 写道:
+> > Is there a fundamental reason to have early_cpu_to_node() at all?
+> 
+> The early_cpu_to_node does not work on some ARCHs (which support the NUMA),
+> such as  SPARC, MIPS and S390.
 
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- .../ftrace/test.d/kprobe/kprobe_args_vfs.tc   | 79 +++++++++++++++++++
- 1 file changed, 79 insertions(+)
- create mode 100644 tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_vfs.tc
+My question was why we need early_cpu_to_node() at all and why can't we use
+cpu_to_node() early on arches that do have it.
+ 
+> Thanks
+> 
+> Huang Shijie
+> 
+> > It seems that all the mappings are known by the end of setup_arch() and the
+> > initialization of numa_node can be moved earlier.
+> > > > I would also initialize the numa_node with NUMA_NO_NODE at declaration,
+> > > > so that if someone calls cpu_to_node() before the variable is properly
+> > > > initialized at runtime, he'll get NO_NODE, which is obviously an error.
+> > > Even we set the numa_node with NUMA_NO_NODE, it does not always produce
+> > > error.
+> > > 
+> > > Please see the alloc_pages_node().
+> > > 
+> > > 
+> > > Thanks
+> > > 
+> > > Huang Shijie
+> > > 
 
-diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_vfs.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_vfs.tc
-new file mode 100644
-index 000000000000..1d8edd294dd6
---- /dev/null
-+++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_vfs.tc
-@@ -0,0 +1,79 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+# description: Kprobe event VFS type argument
-+# requires: kprobe_events
-+
-+case `uname -m` in
-+x86_64)
-+  ARG1=%di
-+;;
-+i[3456]86)
-+  ARG1=%ax
-+;;
-+aarch64)
-+  ARG1=%x0
-+;;
-+arm*)
-+  ARG1=%r0
-+;;
-+ppc64*)
-+  ARG1=%r3
-+;;
-+ppc*)
-+  ARG1=%r3
-+;;
-+s390*)
-+  ARG1=%r2
-+;;
-+mips*)
-+  ARG1=%r4
-+;;
-+loongarch*)
-+  ARG1=%r4
-+;;
-+riscv*)
-+  ARG1=%a0
-+;;
-+*)
-+  echo "Please implement other architecture here"
-+  exit_untested
-+esac
-+
-+: "Test argument %pd/%pD in README"
-+grep -q "%pd/%pD" README
-+
-+: "Test argument %pd with name"
-+echo "p:testprobe dput name=${ARG1}:%pd" > kprobe_events
-+echo 1 > events/kprobes/testprobe/enable
-+grep -q "1" events/kprobes/testprobe/enable
-+echo 0 > events/kprobes/testprobe/enable
-+grep "dput" trace | grep -q "enable"
-+echo "" > kprobe_events
-+echo "" > trace
-+
-+: "Test argument %pd without name"
-+echo "p:testprobe dput ${ARG1}:%pd" > kprobe_events
-+echo 1 > events/kprobes/testprobe/enable
-+grep -q "1" events/kprobes/testprobe/enable
-+echo 0 > events/kprobes/testprobe/enable
-+grep "dput" trace | grep -q "enable"
-+echo "" > kprobe_events
-+echo "" > trace
-+
-+: "Test argument %pD with name"
-+echo "p:testprobe vfs_read name=${ARG1}:%pD" > kprobe_events
-+echo 1 > events/kprobes/testprobe/enable
-+grep -q "1" events/kprobes/testprobe/enable
-+echo 0 > events/kprobes/testprobe/enable
-+grep "vfs_read" trace | grep -q "enable"
-+echo "" > kprobe_events
-+echo "" > trace
-+
-+: "Test argument %pD without name"
-+echo "p:testprobe vfs_read ${ARG1}:%pD" > kprobe_events
-+echo 1 > events/kprobes/testprobe/enable
-+grep -q "1"  events/kprobes/testprobe/enable
-+echo 0 > events/kprobes/testprobe/enable
-+grep "vfs_read" trace | grep -q "enable"
-+echo "" > kprobe_events
-+echo "" > trace
 -- 
-2.31.1
-
+Sincerely yours,
+Mike.
 
