@@ -1,60 +1,59 @@
-Return-Path: <linux-kernel+bounces-32829-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32830-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C38F8360F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:17:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F323F8360A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:11:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21BE2B2D137
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:10:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3400282196
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:11:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 623DF3EA6C;
-	Mon, 22 Jan 2024 11:04:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C54D3F8C3;
+	Mon, 22 Jan 2024 11:04:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vo+oIk5h"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IrAAUZf5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 800E03D992;
-	Mon, 22 Jan 2024 11:04:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 855D03B191;
+	Mon, 22 Jan 2024 11:04:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705921483; cv=none; b=qbtKWcXqikO3/R9BGm23g/a1cBoyC1rRp8VS+d2cjsQs3Mhty2CTbfPXqEG6k+r+gzx4FAmq+4nd3YX3xcZtocArx/9ZjU7um2YdKRWmAuQ2S6VGtpC5M5dqt6mZ8L3JhZIwkw+SvPcQAH+ujfs6XGC6OhTz92wzG/iP3hfVqDY=
+	t=1705921487; cv=none; b=nCywzUJKrDWocLITslX9uBdrl0WLUl7uEgJRTK8xqkFNuxsoOKtxHGILyz6N5uWcOk97fyZcgz6KJvehpi1606darDeyLR1PX854BJVUe6wopEb/8MkOEN6TF2Rvlg5MvUm/WYcw3VzwZ7W++PNijX1Cs8piRK/SNLBQLmNW6Ao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705921483; c=relaxed/simple;
-	bh=78VMq3JL8t5gBveknAo3r3rRe+fLL5A0Pbc/IeE/Bko=;
+	s=arc-20240116; t=1705921487; c=relaxed/simple;
+	bh=2fSZN99XZQUnAa9CnsJObtPdAd0ZIH+IG8ptjKVVkpQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KXsIQBU0H1aLcfGDw8Dm5f/berl3xKosb5vgAI5mL5AZbuNOFgx5mHGOYMWS2jabJyrR8WToOvKcl6AiwVUEXiiPdretx7mFsQNRgWlRHvVm/YhetWzjtswa8EINLIXetMLp81tuRYYgjKqj2qnZbMXTjGpMkUpHJzd95mjUXC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vo+oIk5h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFB2CC43390;
-	Mon, 22 Jan 2024 11:04:40 +0000 (UTC)
+	 MIME-Version; b=iWo3gC751UZa8gvlmc9yYHhh//wm5Y+xdC1cZhxwEL+yIoituajPkANOF0Y+Vo6gMi12a3B+gJVM85ZQ6tRvpV0HLTSu/Jg6oiDlEOkgoH4znjo5zwqEIu29CDISrb/4/FLRRpTTjatW4267sJEbyxva28PfHyEk7lDr0NmwcN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IrAAUZf5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBF0EC43394;
+	Mon, 22 Jan 2024 11:04:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705921483;
-	bh=78VMq3JL8t5gBveknAo3r3rRe+fLL5A0Pbc/IeE/Bko=;
+	s=k20201202; t=1705921486;
+	bh=2fSZN99XZQUnAa9CnsJObtPdAd0ZIH+IG8ptjKVVkpQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Vo+oIk5hcf9XziDdJe4Rm/T/rNPEaG7DGugZy7DDdgBPbLbVuLgwGknpsyuFXDiAa
-	 IFNujXbRkx/OkOO/BuCRZCr0fwW+y5Xw5DSEjxqJR+hprAyH7zp3+kSKGZHGKapAPW
-	 BOoWiax/6cwAh0px2MIR6hvqFFa311dKjbbmLWDPMmhu3s8BD3n+iOlxcCnoPp6qbS
-	 NVynEYLJGOFvOKHraQznn8PUULWCO3jsESmA1vc20C7UI1GcYQ3xrdQ/L9CKwR2p5M
-	 832M1N7pFwn/1PlqB7K/HnsMeGDLJptW2Ed5JAgq0JeGYmTyWApyQSSFw0nrKntwqh
-	 Nk7gzMNLPj7QQ==
+	b=IrAAUZf5/cjo+lkybIjA2lDmJqnzyywtkzmOl1arxuNSXnQJ8mQ5yV3UbVYBdzQ9I
+	 HfBDs7ipLWd2fZB7vWII7J2e8Tulp37UWe5CWJlUx+xidYnBrl3+FreUPHJurJj1jk
+	 j/zQELLH6ZVH/m++18yORLIZE3KgjFnoEyXoAjvc1ktRxM6yRJvs8a/Cl7gR9crcSX
+	 PW2HLlEB3PPsLXVYMH6cRsVgM/MEBZZlJ8q0bUY9xy/959jQ7BTlP7IPh8A/BDwntj
+	 KLQnt9P8BrIOI9a46fi8f2IKmBbSDZ0JnatTypR0VykckemKT3ziCbICrSizKH9QYo
+	 4H7J4ffyCSafQ==
 From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To: gregkh@linuxfoundation.org
 Cc: linux-serial@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
 	Helge Deller <deller@gmx.de>,
 	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
 	Daniel Vetter <daniel@ffwll.ch>,
 	linux-fbdev@vger.kernel.org,
 	dri-devel@lists.freedesktop.org,
 	linux-parisc@vger.kernel.org
-Subject: [PATCH v2 20/47] tty: vt: make init parameter of consw::con_init() a bool
-Date: Mon, 22 Jan 2024 12:03:34 +0100
-Message-ID: <20240122110401.7289-21-jirislaby@kernel.org>
+Subject: [PATCH v2 21/47] tty: vt: sanitize arguments of consw::con_clear()
+Date: Mon, 22 Jan 2024 12:03:35 +0100
+Message-ID: <20240122110401.7289-22-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122110401.7289-1-jirislaby@kernel.org>
 References: <20240122110401.7289-1-jirislaby@kernel.org>
@@ -66,13 +65,19 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The 'init' parameter of consw::con_init() is true for the first call of
-the hook on a particular console. So make the parameter a bool.
+In consw::con_clear():
+* Height is always 1, so drop it.
+* Offsets and width are always unsigned values, so re-type them as such.
+
+This needs a new __fbcon_clear() in the fbcon code to still handle
+height which might not be 1 when called internally.
+
+Note that tests for negative count/width are left in place -- they are
+taken care of in the next patches.
 
 And document the hook.
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Cc: Helge Deller <deller@gmx.de>
 Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
 Cc: Daniel Vetter <daniel@ffwll.ch>
@@ -80,169 +85,282 @@ Cc: linux-fbdev@vger.kernel.org
 Cc: dri-devel@lists.freedesktop.org
 Cc: linux-parisc@vger.kernel.org
 ---
-
-Notes:
-    [v2] fix up the comment (Geert)
-
- drivers/tty/vt/vt.c                 | 8 ++++----
- drivers/video/console/dummycon.c    | 2 +-
- drivers/video/console/mdacon.c      | 2 +-
- drivers/video/console/newport_con.c | 2 +-
- drivers/video/console/sticon.c      | 2 +-
- drivers/video/console/vgacon.c      | 4 ++--
- drivers/video/fbdev/core/fbcon.c    | 2 +-
- include/linux/console.h             | 4 +++-
- 8 files changed, 14 insertions(+), 12 deletions(-)
+ drivers/tty/vt/vt.c                 |  2 +-
+ drivers/video/console/dummycon.c    |  4 ++--
+ drivers/video/console/mdacon.c      | 15 +++++---------
+ drivers/video/console/newport_con.c |  6 +++---
+ drivers/video/console/sticon.c      |  8 ++++----
+ drivers/video/console/vgacon.c      |  4 ++--
+ drivers/video/fbdev/core/fbcon.c    | 32 +++++++++++++++++------------
+ include/linux/console.h             |  5 +++--
+ 8 files changed, 39 insertions(+), 37 deletions(-)
 
 diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index bbfda0d33ca1..fcb41c8724f3 100644
+index fcb41c8724f3..b6f1449421bc 100644
 --- a/drivers/tty/vt/vt.c
 +++ b/drivers/tty/vt/vt.c
-@@ -999,7 +999,7 @@ int vc_cons_allocated(unsigned int i)
- 	return (i < MAX_NR_CONSOLES && vc_cons[i].d);
+@@ -1585,7 +1585,7 @@ static void csi_X(struct vc_data *vc)
+ 	vc_uniscr_clear_line(vc, vc->state.x, count);
+ 	scr_memsetw((unsigned short *)vc->vc_pos, vc->vc_video_erase_char, 2 * count);
+ 	if (con_should_update(vc))
+-		vc->vc_sw->con_clear(vc, vc->state.y, vc->state.x, 1, count);
++		vc->vc_sw->con_clear(vc, vc->state.y, vc->state.x, count);
+ 	vc->vc_need_wrap = 0;
  }
- 
--static void visual_init(struct vc_data *vc, int num, int init)
-+static void visual_init(struct vc_data *vc, int num, bool init)
- {
- 	/* ++Geert: vc->vc_sw->con_init determines console size */
- 	if (vc->vc_sw)
-@@ -1083,7 +1083,7 @@ int vc_allocate(unsigned int currcons)	/* return 0 on success */
- 	vc->port.ops = &vc_port_ops;
- 	INIT_WORK(&vc_cons[currcons].SAK_work, vc_SAK);
- 
--	visual_init(vc, currcons, 1);
-+	visual_init(vc, currcons, true);
- 
- 	if (!*vc->uni_pagedict_loc)
- 		con_set_default_unimap(vc);
-@@ -3513,7 +3513,7 @@ static int __init con_init(void)
- 		vc_cons[currcons].d = vc = kzalloc(sizeof(struct vc_data), GFP_NOWAIT);
- 		INIT_WORK(&vc_cons[currcons].SAK_work, vc_SAK);
- 		tty_port_init(&vc->port);
--		visual_init(vc, currcons, 1);
-+		visual_init(vc, currcons, true);
- 		/* Assuming vc->vc_{cols,rows,screenbuf_size} are sane here. */
- 		vc->vc_screenbuf = kzalloc(vc->vc_screenbuf_size, GFP_NOWAIT);
- 		vc_init(vc, currcons || !vc->vc_sw->con_save_screen);
-@@ -3682,7 +3682,7 @@ static int do_bind_con_driver(const struct consw *csw, int first, int last,
- 		old_was_color = vc->vc_can_do_color;
- 		vc->vc_sw->con_deinit(vc);
- 		vc->vc_origin = (unsigned long)vc->vc_screenbuf;
--		visual_init(vc, i, 0);
-+		visual_init(vc, i, false);
- 		set_origin(vc);
- 		update_attr(vc);
  
 diff --git a/drivers/video/console/dummycon.c b/drivers/video/console/dummycon.c
-index 14af5d9e13b0..f2cef9d9a4b5 100644
+index f2cef9d9a4b5..0a69d5c216ee 100644
 --- a/drivers/video/console/dummycon.c
 +++ b/drivers/video/console/dummycon.c
-@@ -98,7 +98,7 @@ static const char *dummycon_startup(void)
-     return "dummy device";
+@@ -109,8 +109,8 @@ static void dummycon_init(struct vc_data *vc, bool init)
  }
  
--static void dummycon_init(struct vc_data *vc, int init)
-+static void dummycon_init(struct vc_data *vc, bool init)
- {
-     vc->vc_can_do_color = 1;
-     if (init) {
+ static void dummycon_deinit(struct vc_data *vc) { }
+-static void dummycon_clear(struct vc_data *vc, int sy, int sx, int height,
+-			   int width) { }
++static void dummycon_clear(struct vc_data *vc, unsigned int sy, unsigned int sx,
++			   unsigned int width) { }
+ static void dummycon_cursor(struct vc_data *vc, int mode) { }
+ 
+ static bool dummycon_scroll(struct vc_data *vc, unsigned int top,
 diff --git a/drivers/video/console/mdacon.c b/drivers/video/console/mdacon.c
-index ef29b321967f..c5b255c96879 100644
+index c5b255c96879..1ddbb6cd5b0c 100644
 --- a/drivers/video/console/mdacon.c
 +++ b/drivers/video/console/mdacon.c
-@@ -352,7 +352,7 @@ static const char *mdacon_startup(void)
- 	return "MDA-2";
+@@ -442,23 +442,18 @@ static void mdacon_putcs(struct vc_data *c, const unsigned short *s,
+ 	}
  }
  
--static void mdacon_init(struct vc_data *c, int init)
-+static void mdacon_init(struct vc_data *c, bool init)
+-static void mdacon_clear(struct vc_data *c, int y, int x, 
+-			  int height, int width)
++static void mdacon_clear(struct vc_data *c, unsigned int y, unsigned int x,
++			 unsigned int width)
  {
- 	c->vc_complement_mask = 0x0800;	 /* reverse video */
- 	c->vc_display_fg = &mda_display_fg;
+ 	u16 *dest = mda_addr(x, y);
+ 	u16 eattr = mda_convert_attr(c->vc_video_erase_char);
+ 
+-	if (width <= 0 || height <= 0)
++	if (width <= 0)
+ 		return;
+ 
+-	if (x==0 && width==mda_num_columns) {
+-		scr_memsetw(dest, eattr, height*width*2);
+-	} else {
+-		for (; height > 0; height--, dest+=mda_num_columns)
+-			scr_memsetw(dest, eattr, width*2);
+-	}
++	scr_memsetw(dest, eattr, width * 2);
+ }
+-                        
++
+ static int mdacon_switch(struct vc_data *c)
+ {
+ 	return 1;	/* redrawing needed */
 diff --git a/drivers/video/console/newport_con.c b/drivers/video/console/newport_con.c
-index e8e4f82cd4a1..12c64ef47087 100644
+index 12c64ef47087..55c6106b3507 100644
 --- a/drivers/video/console/newport_con.c
 +++ b/drivers/video/console/newport_con.c
-@@ -324,7 +324,7 @@ static const char *newport_startup(void)
- 	return NULL;
+@@ -346,12 +346,12 @@ static void newport_deinit(struct vc_data *c)
+ 	}
  }
  
--static void newport_init(struct vc_data *vc, int init)
-+static void newport_init(struct vc_data *vc, bool init)
+-static void newport_clear(struct vc_data *vc, int sy, int sx, int height,
+-			  int width)
++static void newport_clear(struct vc_data *vc, unsigned int sy, unsigned int sx,
++			  unsigned int width)
  {
- 	int cols, rows;
+ 	int xend = ((sx + width) << 3) - 1;
+ 	int ystart = ((sy << 4) + topscan) & 0x3ff;
+-	int yend = (((sy + height) << 4) + topscan - 1) & 0x3ff;
++	int yend = (((sy + 1) << 4) + topscan - 1) & 0x3ff;
  
+ 	if (logo_active)
+ 		return;
 diff --git a/drivers/video/console/sticon.c b/drivers/video/console/sticon.c
-index 992a4fa431aa..0bfeabc3f7c7 100644
+index 0bfeabc3f7c7..d99c2a659bfd 100644
 --- a/drivers/video/console/sticon.c
 +++ b/drivers/video/console/sticon.c
-@@ -273,7 +273,7 @@ static int sticon_font_set(struct vc_data *vc, struct console_font *font,
- 	return sticon_set_font(vc, font, vpitch);
+@@ -300,13 +300,13 @@ static void sticon_deinit(struct vc_data *c)
+ 	sticon_set_def_font(i);
  }
  
--static void sticon_init(struct vc_data *c, int init)
-+static void sticon_init(struct vc_data *c, bool init)
+-static void sticon_clear(struct vc_data *conp, int sy, int sx, int height,
+-			 int width)
++static void sticon_clear(struct vc_data *conp, unsigned int sy, unsigned int sx,
++			 unsigned int width)
  {
-     struct sti_struct *sti = sticon_sti;
-     int vc_cols, vc_rows;
+-    if (!height || !width)
++    if (!width)
+ 	return;
+ 
+-    sti_clear(sticon_sti, sy, sx, height, width,
++    sti_clear(sticon_sti, sy, sx, 1, width,
+ 	      conp->vc_video_erase_char, font_data[conp->vc_num]);
+ }
+ 
 diff --git a/drivers/video/console/vgacon.c b/drivers/video/console/vgacon.c
-index 0c76e2817b49..5d523753def8 100644
+index 5d523753def8..85f29dec2c3d 100644
 --- a/drivers/video/console/vgacon.c
 +++ b/drivers/video/console/vgacon.c
-@@ -367,7 +367,7 @@ static const char *vgacon_startup(void)
- 	return display_desc;
- }
+@@ -1191,8 +1191,8 @@ static bool vgacon_scroll(struct vc_data *c, unsigned int t, unsigned int b,
+  *  The console `switch' structure for the VGA based console
+  */
  
--static void vgacon_init(struct vc_data *c, int init)
-+static void vgacon_init(struct vc_data *c, bool init)
- {
- 	struct uni_pagedict *p;
- 
-@@ -384,7 +384,7 @@ static void vgacon_init(struct vc_data *c, int init)
- 	c->vc_scan_lines = vga_scan_lines;
- 	c->vc_font.height = c->vc_cell_height = vga_video_font_height;
- 
--	/* set dimensions manually if init != 0 since vc_resize() will fail */
-+	/* set dimensions manually if init is true since vc_resize() will fail */
- 	if (init) {
- 		c->vc_cols = vga_video_num_columns;
- 		c->vc_rows = vga_video_num_lines;
+-static void vgacon_clear(struct vc_data *vc, int sy, int sx, int height,
+-			 int width) { }
++static void vgacon_clear(struct vc_data *vc, unsigned int sy, unsigned int sx,
++			 unsigned int width) { }
+ static void vgacon_putc(struct vc_data *vc, int c, int ypos, int xpos) { }
+ static void vgacon_putcs(struct vc_data *vc, const unsigned short *s,
+ 			 int count, int ypos, int xpos) { }
 diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-index d3fb98084eda..939c5d893dfb 100644
+index 939c5d893dfb..8a31a36483ea 100644
 --- a/drivers/video/fbdev/core/fbcon.c
 +++ b/drivers/video/fbdev/core/fbcon.c
-@@ -988,7 +988,7 @@ static const char *fbcon_startup(void)
- 	return display_desc;
+@@ -1235,8 +1235,8 @@ static void fbcon_deinit(struct vc_data *vc)
+  *  restriction is simplicity & efficiency at the moment.
+  */
+ 
+-static void fbcon_clear(struct vc_data *vc, int sy, int sx, int height,
+-			int width)
++static void __fbcon_clear(struct vc_data *vc, unsigned int sy, unsigned int sx,
++			  unsigned int height, unsigned int width)
+ {
+ 	struct fb_info *info = fbcon_info_from_console(vc->vc_num);
+ 	struct fbcon_ops *ops = info->fbcon_par;
+@@ -1273,6 +1273,12 @@ static void fbcon_clear(struct vc_data *vc, int sy, int sx, int height,
+ 		ops->clear(vc, info, real_y(p, sy), sx, height, width);
  }
  
--static void fbcon_init(struct vc_data *vc, int init)
-+static void fbcon_init(struct vc_data *vc, bool init)
++static void fbcon_clear(struct vc_data *vc, unsigned int sy, unsigned int sx,
++			unsigned int width)
++{
++	__fbcon_clear(vc, sy, sx, 1, width);
++}
++
+ static void fbcon_putcs(struct vc_data *vc, const unsigned short *s,
+ 			int count, int ypos, int xpos)
  {
- 	struct fb_info *info;
- 	struct fbcon_ops *ops;
+@@ -1760,7 +1766,7 @@ static bool fbcon_scroll(struct vc_data *vc, unsigned int t, unsigned int b,
+ 		case SCROLL_MOVE:
+ 			fbcon_redraw_blit(vc, info, p, t, b - t - count,
+ 				     count);
+-			fbcon_clear(vc, b - count, 0, count, vc->vc_cols);
++			__fbcon_clear(vc, b - count, 0, count, vc->vc_cols);
+ 			scr_memsetw((unsigned short *) (vc->vc_origin +
+ 							vc->vc_size_row *
+ 							(b - count)),
+@@ -1783,7 +1789,7 @@ static bool fbcon_scroll(struct vc_data *vc, unsigned int t, unsigned int b,
+ 					    b - t - count, vc->vc_cols);
+ 			else
+ 				goto redraw_up;
+-			fbcon_clear(vc, b - count, 0, count, vc->vc_cols);
++			__fbcon_clear(vc, b - count, 0, count, vc->vc_cols);
+ 			break;
+ 
+ 		case SCROLL_PAN_REDRAW:
+@@ -1801,7 +1807,7 @@ static bool fbcon_scroll(struct vc_data *vc, unsigned int t, unsigned int b,
+ 							  vc->vc_rows - b, b);
+ 			} else
+ 				fbcon_redraw_move(vc, p, t + count, b - t - count, t);
+-			fbcon_clear(vc, b - count, 0, count, vc->vc_cols);
++			__fbcon_clear(vc, b - count, 0, count, vc->vc_cols);
+ 			break;
+ 
+ 		case SCROLL_PAN_MOVE:
+@@ -1824,14 +1830,14 @@ static bool fbcon_scroll(struct vc_data *vc, unsigned int t, unsigned int b,
+ 					    b - t - count, vc->vc_cols);
+ 			else
+ 				goto redraw_up;
+-			fbcon_clear(vc, b - count, 0, count, vc->vc_cols);
++			__fbcon_clear(vc, b - count, 0, count, vc->vc_cols);
+ 			break;
+ 
+ 		case SCROLL_REDRAW:
+ 		      redraw_up:
+ 			fbcon_redraw(vc, t, b - t - count,
+ 				     count * vc->vc_cols);
+-			fbcon_clear(vc, b - count, 0, count, vc->vc_cols);
++			__fbcon_clear(vc, b - count, 0, count, vc->vc_cols);
+ 			scr_memsetw((unsigned short *) (vc->vc_origin +
+ 							vc->vc_size_row *
+ 							(b - count)),
+@@ -1848,7 +1854,7 @@ static bool fbcon_scroll(struct vc_data *vc, unsigned int t, unsigned int b,
+ 		case SCROLL_MOVE:
+ 			fbcon_redraw_blit(vc, info, p, b - 1, b - t - count,
+ 				     -count);
+-			fbcon_clear(vc, t, 0, count, vc->vc_cols);
++			__fbcon_clear(vc, t, 0, count, vc->vc_cols);
+ 			scr_memsetw((unsigned short *) (vc->vc_origin +
+ 							vc->vc_size_row *
+ 							t),
+@@ -1871,7 +1877,7 @@ static bool fbcon_scroll(struct vc_data *vc, unsigned int t, unsigned int b,
+ 					    b - t - count, vc->vc_cols);
+ 			else
+ 				goto redraw_down;
+-			fbcon_clear(vc, t, 0, count, vc->vc_cols);
++			__fbcon_clear(vc, t, 0, count, vc->vc_cols);
+ 			break;
+ 
+ 		case SCROLL_PAN_MOVE:
+@@ -1893,7 +1899,7 @@ static bool fbcon_scroll(struct vc_data *vc, unsigned int t, unsigned int b,
+ 					    b - t - count, vc->vc_cols);
+ 			else
+ 				goto redraw_down;
+-			fbcon_clear(vc, t, 0, count, vc->vc_cols);
++			__fbcon_clear(vc, t, 0, count, vc->vc_cols);
+ 			break;
+ 
+ 		case SCROLL_PAN_REDRAW:
+@@ -1910,14 +1916,14 @@ static bool fbcon_scroll(struct vc_data *vc, unsigned int t, unsigned int b,
+ 					fbcon_redraw_move(vc, p, count, t, 0);
+ 			} else
+ 				fbcon_redraw_move(vc, p, t, b - t - count, t + count);
+-			fbcon_clear(vc, t, 0, count, vc->vc_cols);
++			__fbcon_clear(vc, t, 0, count, vc->vc_cols);
+ 			break;
+ 
+ 		case SCROLL_REDRAW:
+ 		      redraw_down:
+ 			fbcon_redraw(vc, b - 1, b - t - count,
+ 				     -count * vc->vc_cols);
+-			fbcon_clear(vc, t, 0, count, vc->vc_cols);
++			__fbcon_clear(vc, t, 0, count, vc->vc_cols);
+ 			scr_memsetw((unsigned short *) (vc->vc_origin +
+ 							vc->vc_size_row *
+ 							t),
+@@ -2196,7 +2202,7 @@ static void fbcon_generic_blank(struct vc_data *vc, struct fb_info *info,
+ 
+ 		oldc = vc->vc_video_erase_char;
+ 		vc->vc_video_erase_char &= charmask;
+-		fbcon_clear(vc, 0, 0, vc->vc_rows, vc->vc_cols);
++		__fbcon_clear(vc, 0, 0, vc->vc_rows, vc->vc_cols);
+ 		vc->vc_video_erase_char = oldc;
+ 	}
+ }
 diff --git a/include/linux/console.h b/include/linux/console.h
-index 93a1db5bf3b5..fc9450e0c78f 100644
+index fc9450e0c78f..8fd96a5fca5f 100644
 --- a/include/linux/console.h
 +++ b/include/linux/console.h
-@@ -36,6 +36,8 @@ enum vc_intensity;
- /**
-  * struct consw - callbacks for consoles
+@@ -38,6 +38,7 @@ enum vc_intensity;
   *
-+ * @con_init:   initialize the console on @vc. @init is true for the very first
-+ *		call on this @vc.
+  * @con_init:   initialize the console on @vc. @init is true for the very first
+  *		call on this @vc.
++ * @con_clear:  erase @count characters at [@x, @y] on @vc. @count >= 1.
   * @con_scroll: move lines from @top to @bottom in direction @dir by @lines.
   *		Return true if no generic handling should be done.
   *		Invoked by csi_M and printing to the console.
-@@ -46,7 +48,7 @@ enum vc_intensity;
- struct consw {
- 	struct module *owner;
+@@ -50,8 +51,8 @@ struct consw {
  	const char *(*con_startup)(void);
--	void	(*con_init)(struct vc_data *vc, int init);
-+	void	(*con_init)(struct vc_data *vc, bool init);
+ 	void	(*con_init)(struct vc_data *vc, bool init);
  	void	(*con_deinit)(struct vc_data *vc);
- 	void	(*con_clear)(struct vc_data *vc, int sy, int sx, int height,
- 			int width);
+-	void	(*con_clear)(struct vc_data *vc, int sy, int sx, int height,
+-			int width);
++	void	(*con_clear)(struct vc_data *vc, unsigned int y,
++			     unsigned int x, unsigned int count);
+ 	void	(*con_putc)(struct vc_data *vc, int c, int ypos, int xpos);
+ 	void	(*con_putcs)(struct vc_data *vc, const unsigned short *s,
+ 			int count, int ypos, int xpos);
 -- 
 2.43.0
 
