@@ -1,96 +1,78 @@
-Return-Path: <linux-kernel+bounces-32740-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32742-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6263C835F8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:25:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99DCA835F90
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 11:26:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BF3728B04B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:25:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4FFD31F27A2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:26:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A19A73D554;
-	Mon, 22 Jan 2024 10:22:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DC8B3A278;
+	Mon, 22 Jan 2024 10:23:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="qWLmpWb7"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DmPYIvEs"
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A5533D0D8
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 10:22:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F31F73A1DC
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 10:23:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705918940; cv=none; b=Lc3FGb+2ZWaelo9XUCg7xowCODKionRaymMzvx9JcylcLy8ogYRyQgt18RFiKrWHkv4U/YqrsXi7Z3lqlBCqk6fH1JP6A/OtP2ycloBc8YDgrrl89762WEjw7qY2Nl0+chOcVmnAdny5rHv1ZMi+8Rv7UuJVWb9yX5xgFrC5Hlc=
+	t=1705918988; cv=none; b=oN/NRi1+6zGBafKbMkbacAIUazpJOOOhaER266Yhi52yiu6eOc1yi6KAC8uZw9JtywVJTQOB9i/AfJBl+p/ZflllQ6btwtrcTmvR2VL2h54iSXwcOWrjuC/+iKVl819dXzIF6J/hWc8KowMrmjPqqKTJAO090J5L6Ecyulsi77g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705918940; c=relaxed/simple;
-	bh=LZfgbhUnLx5DwPbySeH7M/oXcgqr+FxGPWib5/pJNeI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=TwhHFY5slRY77fAaBIsMabKOHgZrLBmZYB7lCLN2M8V8awlINsOkgyWaEwvP4otZhhdEI8SgSElCf3u8x6f+DUmm4zqXkMUJc8mJEXXKP0CN8eQPPXmDwAji5lyE+BS54IKlWf0SrvAfa5YzcsnVr4npE/oQcWeGZuSk6eIc124=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=qWLmpWb7; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-339289fead2so2102982f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 02:22:19 -0800 (PST)
+	s=arc-20240116; t=1705918988; c=relaxed/simple;
+	bh=Ock7B69XdGIXdbkP3Pl3P871KHNB5YiSNiJc9wfXg6A=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ixoCc0FcJHpWk5yplSj2GjAD+rm5Fhm8ywp3xHLxuOwYCw3/KJ5OAYbDFzkd64tOSHMkzhrY7IY/pDNIarquQzYZbfOe2T8alVu2Gh/ZAluXODqLbwUs2rU4C/RIAZj6Mdo0avJQ6oFawTIgFsFeVCTMM3uclKpT64IBlKw/qCI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DmPYIvEs; arc=none smtp.client-ip=209.85.215.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5c66b093b86so2822453a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 02:23:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1705918938; x=1706523738; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lalvSbjsX1nGni0gXE16NpSAE0FFmKU1SqK46Owrhtw=;
-        b=qWLmpWb7/ihpAkeWYU9kZojnWCuutXFJAHrz6z1D7T+kIKNTmtdS5mKEi6E+6jP79B
-         lSRhYe2Kdfc4yCUpdSxsUtmHYt2LaS8tUhLwkxYyzOfXpaP6EevPIrhSo0z6kzHfG29R
-         Nf3aQtUp/Ils7IymicuZj6EoFeGYu+Ent6K4Kg1WrHRXfU1OzQX7+svDz+GdxCL8RKC8
-         WBmu1WOK8qvhtxSu7UiXzbw1q8v2m+lFzB5EaBH2aC2Sp0/wA8A1BDkPtne21X53Ney9
-         1isWrz+z75WPjedfR/FhxxBQeXKEry4C1kOWuUC4O7xI1X7AMpdR7XM7fwKLc24TF7BA
-         EO+A==
+        d=gmail.com; s=20230601; t=1705918986; x=1706523786; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dcV0b9EAD7cikX7TBR9d3JnFTgh+L0e81zNYPrMvnxA=;
+        b=DmPYIvEs4y8Lagauk/ShNunR7GnBj8IK2830u1xLhj9VU2tW6A0OEdNuXw0izz//fN
+         DIh2scwXWSQhKIhF2SwPgsj8uBJ9mCf6ewWZAIzKD4huZbZ/27W2pzrjTnwtvU6L7Frf
+         APSmjCl8gi+vGCAqDa5nkKZ7B1hzr4IbQ8ju6UQ94gJbpiiQ45zIaMKSDv/we2uggjh+
+         cyFxMDEVRoKTBAHtkIhGnlo7xmI/emYQyGtRa3au6AwHzk1kDSjG4hiaxKjWMF4Dsauq
+         EbDLK4U7EUwWUV9agy2BNt0iC1ZJ/1+xBeIwm0UsAtIyVZJZmMos/S7usRSn2w2wW1hl
+         8vGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705918938; x=1706523738;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lalvSbjsX1nGni0gXE16NpSAE0FFmKU1SqK46Owrhtw=;
-        b=WljOXm2xK8CTelYNM4tsRMsqgoskNZiCr3XO6bG4opA72H8mfZJ6nVsT5keS4nD0OV
-         9dCq2SuZiWN59DDdy/5gWuNqw4atMLNN+F8iakJUsnkib0kE5Z9ZxdaLLDwolBXi24C3
-         LUEQZyfuNsKocPOo1UL+j6gXl0oVLu2Y0mF4GbOy0kS76ReW5Ue5OzbKh+cFwtCEnGfA
-         yo92Br8tNZenYlXJJ47eZtBlqg5vS5lDWJKMcmvo8jbUOedXElVwiBIfMxLEyDFaJKhx
-         Os+B3oSW3rQiV/GUa+iJA2x7vEv54lxobGXKVUe+SW9fR8jiQHSyCW7prH3HVVwXDXuj
-         bCbw==
-X-Gm-Message-State: AOJu0Yy3pamVvCaKSFRtdmXrbH3y1MHEndveGi/RY5EnMOiX35sHr9Al
-	tQ0vq0HHwzv3Cj25FJtbNnHIHMvEzQEFeD5R9yuM1YJQHsT/YsMqYb6nfSCVtDU=
-X-Google-Smtp-Source: AGHT+IEpKsNdwYZEVS8Yao5oTwFGu6BmEkSUNiDQ+jJqNJ8dTqzDh8ajse/ScTF26QX3aTiYAs/sYg==
-X-Received: by 2002:a05:600c:4e93:b0:40e:abb8:1b2 with SMTP id f19-20020a05600c4e9300b0040eabb801b2mr1000679wmq.90.1705918937973;
-        Mon, 22 Jan 2024 02:22:17 -0800 (PST)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:92a0:6172:d229:1898])
-        by smtp.gmail.com with ESMTPSA id q7-20020adffec7000000b0033926505eafsm6377904wrs.32.2024.01.22.02.22.17
+        d=1e100.net; s=20230601; t=1705918986; x=1706523786;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dcV0b9EAD7cikX7TBR9d3JnFTgh+L0e81zNYPrMvnxA=;
+        b=btSgfqB1x3HheM6LjiBLTyw2DYyZ1Yyn1M1daKQgn/Ay0fc+636QoAwn6/IHnbbGX0
+         y1NLVMa2reJZD5G2NjSgYa9lmEeIp9CNKVxtCZieOI4pUD6qRTG+8mHA47m/eHEJqYVH
+         LaOlkdT8ZXY8Y2OS6T2W2QV33aY8eWpnUc3Slh8Ca/PjJablehzrsf69kVQsvQD2wr2q
+         XNNcZ4rq0EdaxkV13Vxx6E1zJiZ+j1BTJjxF/DPODHyrchAosHwq4+SvyNnL0m9Rlen8
+         iHZBkSfkhHvic0UK+U9gaSJSt4lURML9v/XygMm1wLEQ78Xa7BdtR7ZJZ5IqzDBkxpYi
+         533Q==
+X-Gm-Message-State: AOJu0YzTMuy9KcqTnLzLyTv5KkL/bTXhOEJ5N0DXQgUjcPZvx8FoqWKo
+	4sDnE7zGHWRRcLn2lYAH01PA0x6hy7wR+3XEvtACivEcI6jzmVdF
+X-Google-Smtp-Source: AGHT+IHVwosNjjzlFduyjv9cVRyks0refrlWsNmXZ/WWUafu5XgUkYbq7SH7UpuFcqAkCnZT5Hmizw==
+X-Received: by 2002:a17:90a:1041:b0:290:2405:aee7 with SMTP id y1-20020a17090a104100b002902405aee7mr6720307pjd.11.1705918986114;
+        Mon, 22 Jan 2024 02:23:06 -0800 (PST)
+Received: from dell.. ([111.192.196.252])
+        by smtp.googlemail.com with ESMTPSA id su7-20020a17090b534700b0028d29d837c7sm9099697pjb.36.2024.01.22.02.23.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 02:22:17 -0800 (PST)
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-To: Andy Gross <agross@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Elliot Berman <quic_eberman@quicinc.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Guru Das Srinagesh <quic_gurus@quicinc.com>,
-	Andrew Halaney <ahalaney@redhat.com>,
-	Maximilian Luz <luzmaximilian@gmail.com>,
-	Alex Elder <elder@linaro.org>,
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arm-msm@vger.kernel.org,
+        Mon, 22 Jan 2024 02:23:05 -0800 (PST)
+From: Liang Chen <liangchen.linux@gmail.com>
+To: mst@redhat.com,
+	jasowang@redhat.com
+Cc: virtualization@lists.linux-foundation.org,
 	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	kernel@quicinc.com,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	Deepti Jaggi <quic_djaggi@quicinc.com>
-Subject: [RESEND PATCH v6 12/12] arm64: defconfig: enable SHM Bridge support for the TZ memory allocator
-Date: Mon, 22 Jan 2024 11:21:57 +0100
-Message-Id: <20240122102157.22761-13-brgl@bgdev.pl>
+	liangchen.linux@gmail.com
+Subject: [PATCH] virtio_net: Support RX hash XDP hint
+Date: Mon, 22 Jan 2024 18:22:56 +0800
+Message-Id: <20240122102256.261374-1-liangchen.linux@gmail.com>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240122102157.22761-1-brgl@bgdev.pl>
-References: <20240122102157.22761-1-brgl@bgdev.pl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -99,32 +81,92 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+The RSS hash report is a feature that's part of the virtio specification.
+Currently, virtio backends like qemu, vdpa (mlx5), and potentially vhost
+(still a work in progress as per [1]) support this feature. While the
+capability to obtain the RSS hash has been enabled in the normal path,
+it's currently missing in the XDP path. Therefore, we are introducing XDP
+hints through kfuncs to allow XDP programs to access the RSS hash.
 
-Enable SHM Bridge support in the Qualcomm TrustZone allocator by default
-as even on architectures that don't support it, we automatically fall
-back to the default behavior.
-
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Tested-by: Andrew Halaney <ahalaney@redhat.com> # sc8280xp-lenovo-thinkpad-x13s
-Tested-by: Deepti Jaggi <quic_djaggi@quicinc.com> #sa8775p-ride
-Reviewed-by: Elliot Berman <quic_eberman@quicinc.com>
+Signed-off-by: Liang Chen <liangchen.linux@gmail.com>
 ---
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/virtio_net.c | 56 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 56 insertions(+)
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index e6cf3e5d63c3..7a9428e333c1 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -253,6 +253,7 @@ CONFIG_INTEL_STRATIX10_RSU=m
- CONFIG_MTK_ADSP_IPC=m
- CONFIG_EFI_CAPSULE_LOADER=y
- CONFIG_IMX_SCU=y
-+CONFIG_QCOM_TZMEM_MODE_SHMBRIDGE=y
- CONFIG_QCOM_QSEECOM=y
- CONFIG_QCOM_QSEECOM_UEFISECAPP=y
- CONFIG_GNSS=m
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index d7ce4a1011ea..1463a4709e3c 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -4579,6 +4579,60 @@ static void virtnet_set_big_packets(struct virtnet_info *vi, const int mtu)
+ 	}
+ }
+ 
++static int virtnet_xdp_rx_hash(const struct xdp_md *_ctx, u32 *hash,
++			   enum xdp_rss_hash_type *rss_type)
++{
++	const struct xdp_buff *xdp = (void *)_ctx;
++	struct virtio_net_hdr_v1_hash *hdr_hash;
++	struct virtnet_info *vi;
++
++	if (!(xdp->rxq->dev->features & NETIF_F_RXHASH))
++		return -ENODATA;
++
++	vi = netdev_priv(xdp->rxq->dev);
++	hdr_hash = (struct virtio_net_hdr_v1_hash *)(xdp->data - vi->hdr_len);
++
++	switch (__le16_to_cpu(hdr_hash->hash_report)) {
++		case VIRTIO_NET_HASH_REPORT_TCPv4:
++			*rss_type = XDP_RSS_TYPE_L4_IPV4_TCP;
++			break;
++		case VIRTIO_NET_HASH_REPORT_UDPv4:
++			*rss_type = XDP_RSS_TYPE_L4_IPV4_UDP;
++			break;
++		case VIRTIO_NET_HASH_REPORT_TCPv6:
++			*rss_type = XDP_RSS_TYPE_L4_IPV6_TCP;
++			break;
++		case VIRTIO_NET_HASH_REPORT_UDPv6:
++			*rss_type = XDP_RSS_TYPE_L4_IPV6_UDP;
++			break;
++		case VIRTIO_NET_HASH_REPORT_TCPv6_EX:
++			*rss_type = XDP_RSS_TYPE_L4_IPV6_TCP_EX;
++			break;
++		case VIRTIO_NET_HASH_REPORT_UDPv6_EX:
++			*rss_type = XDP_RSS_TYPE_L4_IPV6_UDP_EX;
++			break;
++		case VIRTIO_NET_HASH_REPORT_IPv4:
++			*rss_type = XDP_RSS_TYPE_L3_IPV4;
++			break;
++		case VIRTIO_NET_HASH_REPORT_IPv6:
++			*rss_type = XDP_RSS_TYPE_L3_IPV6;
++			break;
++		case VIRTIO_NET_HASH_REPORT_IPv6_EX:
++			*rss_type = XDP_RSS_TYPE_L3_IPV6_EX;
++			break;
++		case VIRTIO_NET_HASH_REPORT_NONE:
++		default:
++			*rss_type = XDP_RSS_TYPE_NONE;
++	}
++
++	*hash = __le32_to_cpu(hdr_hash->hash_value);
++	return 0;
++}
++
++static const struct xdp_metadata_ops virtnet_xdp_metadata_ops = {
++	.xmo_rx_hash			= virtnet_xdp_rx_hash,
++};
++
+ static int virtnet_probe(struct virtio_device *vdev)
+ {
+ 	int i, err = -ENOMEM;
+@@ -4613,6 +4667,8 @@ static int virtnet_probe(struct virtio_device *vdev)
+ 	dev->ethtool_ops = &virtnet_ethtool_ops;
+ 	SET_NETDEV_DEV(dev, &vdev->dev);
+ 
++	dev->xdp_metadata_ops = &virtnet_xdp_metadata_ops;
++
+ 	/* Do we support "hardware" checksums? */
+ 	if (virtio_has_feature(vdev, VIRTIO_NET_F_CSUM)) {
+ 		/* This opens up the world of extra features. */
 -- 
 2.40.1
 
