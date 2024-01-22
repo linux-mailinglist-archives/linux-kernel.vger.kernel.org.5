@@ -1,172 +1,180 @@
-Return-Path: <linux-kernel+bounces-33670-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 040D0836CFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:22:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 413C0836D1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 18:24:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83663288D40
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:22:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1FF21F2705C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 17:24:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2C0A5101E;
-	Mon, 22 Jan 2024 16:23:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Enx1HGIs"
-Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F6D6664B5;
+	Mon, 22 Jan 2024 16:25:41 +0000 (UTC)
+Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7760150279;
-	Mon, 22 Jan 2024 16:23:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 203583FB0D;
+	Mon, 22 Jan 2024 16:25:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705940629; cv=none; b=AvNKdQGlqOgbps+SJ/pI2JLMdJKoB8g9z41UuPIcRxBe+NDP4sQn6rxjbARe53GCDLLiFMuEOZlSFARfamldkd8s5NOM2X/zV3T7GNUO4tuuawy5RaY18DEN2LX/j+Yuc4+9w9R9CkDh50D/ebGvs1PFzrJ768tZlMfGiY+AlSE=
+	t=1705940741; cv=none; b=n2T/MHDexI3RGHB/IMcJA4my/5XbV+migKgbW7wtiywTdyf9JWIkkTCZyx2IvFARHBcyYvNYd7AkFyjTYjomTvGz1h97rC8tRrWv7r4cdpouLq7FGNO91c/pVzUzyJf1tdIp4IeO2V0Dp4WeGPQg8g+1t3LV0YraClrdjX/xQTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705940629; c=relaxed/simple;
-	bh=ctEaKNZFDGbsSXqRw8IOY9JUurhEb6JZdXGmd/zRjxc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZwCiCbNHyOaLXoC/fgeUDKZqo4a8ipIgaYXJgHjcWn95mchHynQlYrBfkBFIKmsAiTJOJuGltBr9XwLwjKe4CcRek84rGRLf57uh00AtIytXjVmGvbut91zAv5z6CY+fsbBNSeg65cRwvIy7yPjIZDIcN4oNl1j+/5ggdHmaBUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Enx1HGIs; arc=none smtp.client-ip=209.85.166.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-36275c1f11bso116575ab.1;
-        Mon, 22 Jan 2024 08:23:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705940627; x=1706545427; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+Mfx2hahF3mSU03cNx8bFJW8kznthWgLM/hhXHRDnxI=;
-        b=Enx1HGIsEfU3DzCHtEYX/zvbJsSrMEkQ1VxmvjeBTVrgPBgP2Vs7YFJ7uD1Q2bMv1Z
-         vXwFnvWXOGGtAy6MYJcEtavb5bGoH7Y6AvAWdR5j9WhuAim12c5qKgyjCvnitn+2AYui
-         zKzi9K7gpKPvU9JpXx8y+bi/YTOXtCpEJP/9UhPbDx9/ywGtAos2+Au1xPYTWNPiWeb5
-         lMgH48nvWQQC1rgZr7Wyxl2sbILZRHI9czlv2nJCIjXGW3WYsKk1xoYQmtYovUXKS7F4
-         M1BQBXbXNyDlCj+a9GNWniPd/xwNklDcQwoOvECIBjDEklZy5DtoEDumyYHGIa+AdOEE
-         p8XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705940627; x=1706545427;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+Mfx2hahF3mSU03cNx8bFJW8kznthWgLM/hhXHRDnxI=;
-        b=OqvaX7OYTGA3O2Qb3hIau75Ypcpv/4i1Go6ujGUr8r1l3hkDsIR0fDYZDblWcvsOU5
-         3qPZNXO0mwdWvr9+UgeH50pJPMwIqLpzWvAXFCRIO5ZK3ngtC4+aS2UX4ZrfOHXZ2fGu
-         R+CllSDI5TQ9luC59ACZoZ3LKW2JcMzaU6T4HAwsjVlLqGWtSAOs3JHEgIq1tes8r9nF
-         +AxmqV4vpJOSNOLXHuieGkQN16CStHieUSiwJZg+G258EPbhOfjUEYfZjpG5bYKlSGsb
-         8CMl3dT2HW3GTkCR7g+I7Q3p95gnZXR3ntZteetdZTu2DijmBxduOfuXXSc15F190LpS
-         osNQ==
-X-Gm-Message-State: AOJu0Yzh4faLWc+zQDBBtQnfymcX19SXID7tdMmZAZQdiFA9AzP2k1t0
-	w51BhIjM4knfMxvuRZRSppNhdch2H3UHRzLayhk0ELyV04NbbU6rTwXbbqIy
-X-Google-Smtp-Source: AGHT+IG6BLYd5D1AcOz1m3V0gy6/cTz5Q8nZuwLgDP3aHWZW79Gac93IIbSggDEw97xq9QyE5ZZHMw==
-X-Received: by 2002:a05:6e02:1c2f:b0:35f:f59f:9f4c with SMTP id m15-20020a056e021c2f00b0035ff59f9f4cmr7339058ilh.1.1705940627467;
-        Mon, 22 Jan 2024 08:23:47 -0800 (PST)
-Received: from visitorckw-System-Product-Name (IP-216-168.cs.nctu.edu.tw. [140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id f1-20020a63dc41000000b005c6617b52e6sm8766104pgj.5.2024.01.22.08.23.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 08:23:47 -0800 (PST)
-Date: Tue, 23 Jan 2024 00:23:43 +0800
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: colyli@suse.de, bfoster@redhat.com, jserv@ccns.ncku.edu.tw,
-	linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH 0/5] Optimize number of comparisons for heap/heapsort
- implementaion
-Message-ID: <Za6Wj1730cqvoYaQ@visitorckw-System-Product-Name>
-References: <20240121153649.2733274-1-visitorckw@gmail.com>
- <nl6kvjxg4gia5pbfb4jibxusvavmlwumrvy3swfs33ciub32wt@2kmeqnqycxxh>
- <Za1Ml/ZUBXdYXOIt@visitorckw-System-Product-Name>
- <ioyfizrzq7w7mjrqcadtzsfgpuntowtjdw5pgn4qhvsdp4mqqg@nrlek5vmisbu>
- <Za6EjshZWFUPLJef@visitorckw-System-Product-Name>
- <zwcm35flig23fttyybenorsu27ki3dsurqjkjxhrlbnk5zg3n7@vmagssufbuy2>
+	s=arc-20240116; t=1705940741; c=relaxed/simple;
+	bh=Lzg500XdWoPoJzqx8S/twF0nm+rUqhojb4Ctq96JPzc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qFCyzIGpQpfJ+JcQhqMcjc1y8XxtclnKGqYoCdHyjusr/suUobSttXdeDKMsPF4ILf0q44T7nzodNb+jz6JrjH1p34/oXxzU7DqykR9CoAhoV/GA9t83anzodqCO9T3ruHdwENHaMEhOz0KqfrOYY8R5TR892kZ3jlmWuNgJsxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
+Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+	by mx.skole.hr (mx.skole.hr) with ESMTP id 755E98523E;
+	Mon, 22 Jan 2024 17:25:29 +0100 (CET)
+From: Duje =?utf-8?B?TWloYW5vdmnEhw==?= <duje.mihanovic@skole.hr>
+To: Daniel Thompson <daniel.thompson@linaro.org>
+Cc: Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
+ Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Helge Deller <deller@gmx.de>,
+ Linus Walleij <linus.walleij@linaro.org>, Karel Balej <balejk@matfyz.cz>,
+ ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] leds: ktd2692: move ExpressWire code to library
+Date: Mon, 22 Jan 2024 17:24:51 +0100
+Message-ID: <5907190.MhkbZ0Pkbq@radijator>
+In-Reply-To: <20240122101926.GA8596@aspen.lan>
+References:
+ <20240120-ktd2801-v3-0-fe2cbafffb21@skole.hr>
+ <20240120-ktd2801-v3-1-fe2cbafffb21@skole.hr>
+ <20240122101926.GA8596@aspen.lan>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <zwcm35flig23fttyybenorsu27ki3dsurqjkjxhrlbnk5zg3n7@vmagssufbuy2>
+Autocrypt: addr=duje.mihanovic@skole.hr;
+ keydata=
+ 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
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Jan 22, 2024 at 11:06:39AM -0500, Kent Overstreet wrote:
-> On Mon, Jan 22, 2024 at 11:06:54PM +0800, Kuan-Wei Chiu wrote:
-> > On Sun, Jan 21, 2024 at 12:41:55PM -0500, Kent Overstreet wrote:
-> > > On Mon, Jan 22, 2024 at 12:55:51AM +0800, Kuan-Wei Chiu wrote:
-> > > > On Sun, Jan 21, 2024 at 11:21:06AM -0500, Kent Overstreet wrote:
-> > > > > On Sun, Jan 21, 2024 at 11:36:44PM +0800, Kuan-Wei Chiu wrote:
-> > > > > > Hello,
-> > > > > > 
-> > > > > > The existing implementations of heap/heapsort follow the conventional
-> > > > > > textbook approach, where each heapify operation requires approximately
-> > > > > > 2*log2(n) comparisons. In this series, I introduce a bottom-up variant
-> > > > > > that reduces the number of comparisons during heapify operations to
-> > > > > > approximately log2(n), while maintaining the same number of swap
-> > > > > > operations.
-> > > > > > 
-> > > > > > Thanks,
-> > > > > > Kuan-Wei
-> > > > > > 
-> > > > > > Kuan-Wei Chiu (5):
-> > > > > >   bcachefs: Optimize eytzinger0_sort() using bottom-up heapsort
-> > > > > >   bcachefs: Introduce parent function for sort_cmp_size()
-> > > > > >   bcachefs: Optimize sort_cmp_size() using bottom-up heapsort
-> > > > > >   bcachefs: Optimize number of comparisons in heap_sift_down
-> > > > > >   bcache: Optimize number of comparisons in heap_sift
-> > > > > > 
-> > > > > >  drivers/md/bcache/util.h |  23 +++++----
-> > > > > >  fs/bcachefs/util.c       | 109 ++++++++++++++++++++++++++-------------
-> > > > > >  fs/bcachefs/util.h       |  23 +++++----
-> > > > > >  3 files changed, 98 insertions(+), 57 deletions(-)
-> > > > > 
-> > > > > Good stuff
-> > > > > 
-> > > > > While we're looking at this code, we should be doing some cleanup too -
-> > > > > there's no reason for the heap code to be duplicated in bcache and
-> > > > > bcachefs anymore, and it'd also be nice to get fs/bcachefs/eytzinger.h
-> > > > > moved to include/linux and bcache converted to use it.
-> > > > > 
-> > > > > I also would not be surprised if there's another heap implementation in
-> > > > > include/linux; we'll want to check for that and if there is decide which
-> > > > > is worth keeping.
-> > > > >
-> > > > Yes, we have 'min_heap.h' in include/linux.
-> > > 
-> > > So that has the advantage of more readable code - functions instead of
-> > > macros - whereas my version has the type safe interface.
-> > > 
-> > > We could combine the two approaches, and put a type-safe interface on
-> > > top of the min_heap.h code with some small macro wrappers - see
-> > > generic-radix-tree.h for an example of how that's done.
-> > 
-> > Without modifying the interface provided by min_heap.h, it seems
-> > challenging to implement the functionality of heap_add due to the
-> > relationship with heap_setbackpointer.
-> 
-> min_heap.h has the same functionality, different interface - updating
-> the callers for an interface change is fine.
->
-OK, I'll take some time to do these cleanups.
-> > 
-> > Additionally, when looking into the code in generic-radix-tree.h,
-> > should we replace type[0] with type[]? This is because zero-length
-> > arrays are deprecated language features mentioned in document [1].
-> 
-> Zero length arrays are deprecated as VLAs, but this isn't a VLA - we're
-> not storing anything there, the variable is just so that macros have
-> access to the type.
-> 
-> > Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays [1]
-> > > 
-> > > min_heap.h has only one user though? I don't think I can quite believe
-> > > that's the only other code in the kernel using a heap, there must be
-> > > more open coded out there...
-> > 
-> > I'm not sure why, but it seems that in the kernel, other places using
-> > the heap implement their own subsystem-specific solutions rather than
-> > utilizing a generic heap interface. For instance,
-> > kernel/sched/cpudeadline.c and net/sched/sch_cake.c both have their own
-> > implementations.
-> 
-> Sounds like a fun cleanup project :)
+On Monday, January 22, 2024 11:19:26 AM CET Daniel Thompson wrote:
+> On Sat, Jan 20, 2024 at 10:26:43PM +0100, Duje Mihanovi=C4=87 wrote:
+> > diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+> > index 6292fddcc55c..d29b6823e7d1 100644
+> > --- a/drivers/leds/Kconfig
+> > +++ b/drivers/leds/Kconfig
+> > @@ -181,6 +181,9 @@ config LEDS_EL15203000
+> >=20
+> >  	  To compile this driver as a module, choose M here: the module
+> >  	  will be called leds-el15203000.
+> >=20
+> > +config LEDS_EXPRESSWIRE
+> > +	bool
+> > +
+>=20
+> Shouldn't there be a "select GPIOLIB" here? It seems odd to make the
+> clients responsible for the dependencies.
+>=20
+> BTW there seems to be very little consistency across the kernel between
+> "depends on GPIOLIB" and "select GPIOLIB".. but select is marginally
+> more popular (283 vs. 219 in the kernel I checked).
+
+I believe a "select" would be more appropriate here unless these backlights=
+=20
+should be hidden if GPIOLIB is disabled. The catch with "select" is that th=
+ere=20
+seems to be no way to throw in the "|| COMPILE_TEST" other GPIO-based=20
+backlights have and I'm not sure what to do about that.
+
+> > diff --git a/drivers/leds/flash/leds-ktd2692.c
+> > b/drivers/leds/flash/leds-ktd2692.c index 598eee5daa52..8c17de3d621f=20
+100644
+> > --- a/drivers/leds/flash/leds-ktd2692.c
+> > +++ b/drivers/leds/flash/leds-ktd2692.c
+> >=20
+> >  <snip>
+> >  static void ktd2692_expresswire_write(struct ktd2692_context *led, u8
+> >  value)
+> >  {
+> > =20
+> >  	int i;
+> >=20
+> > -	ktd2692_expresswire_start(led);
+> > +	expresswire_start(&led->props);
+> >=20
+> >  	for (i =3D 7; i >=3D 0; i--)
+> >=20
+> > -		ktd2692_expresswire_set_bit(led, value & BIT(i));
+> > -	ktd2692_expresswire_end(led);
+> > +		expresswire_set_bit(&led->props, value & BIT(i));
+> > +	expresswire_end(&led->props);
+> >=20
+> >  }
+>=20
+> Is there any reason not to have an expresswire_write_u8() method in the
+> library code? It is a concept that appears in both drivers.
+
+Not really, I'll add it in v4.
+
+Regards,
+=2D-
+Duje
+
+
+
 
