@@ -1,161 +1,139 @@
-Return-Path: <linux-kernel+bounces-33076-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33077-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B377836423
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:13:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B236A836426
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:14:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BA221F24AEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:13:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 687B4292865
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:14:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5D763CF50;
-	Mon, 22 Jan 2024 13:13:54 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 464EC3CF50;
+	Mon, 22 Jan 2024 13:13:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="YZlmCEQC"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 125BD3C6AB
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 13:13:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7DD23C6AB
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 13:13:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705929234; cv=none; b=VY9adPqS0o9EPuFYvfty0EyhsdKsTtHzSuCH3fmlgtwe1hGG/dwUkrW026tydM5jubB3WlCg+myMq2F9KRFuH2AAGyTy1d/svp96In4njk93nO0GKE3YsPJi2lVgZXrN0++oQE+XEQfLwmpEHbSsLuS2dfYCOxbUqGu/US6tz8c=
+	t=1705929238; cv=none; b=AkNU8QqrlrpbIgQP5oOkueXN1CFqiuCPOmC3EccYLlA20VOqoRs8BpALoz8WBWjZvZips9YVWVixbjpJZTR/f+p8Y9YHJPbvDM2dXHE+qbfKkp6l8qu6wWkbN5OKs+YakCJ/lg/7+TpxYnA+joTfDCY2qaZ4yZhf7z3VopF1bso=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705929234; c=relaxed/simple;
-	bh=5R7j8Dl9cK0KfAuJewWJ6X7E8Pn2vi+QuvLjLtLOAz8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UHY0MACZhGiRCZZuqkeP8N/m+kBJ0dys1nlR3jDIF1/lACEfgIO3XCmUMTY2J4mJ7r5VH56mLN75aqMG0OitH0O3Jw+642OXoH/79V4zQLDKkbPIpQKNx9feKwaSFnNsF8kNTOTPqyXoHk3JAgrLYEW/IOnOJUmFVYSTX7g+/rs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1rRu75-0005ez-Pg; Mon, 22 Jan 2024 14:13:19 +0100
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1rRu73-001biB-E1; Mon, 22 Jan 2024 14:13:17 +0100
-Received: from pengutronix.de (unknown [172.20.34.65])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id EDDCF27B58F;
-	Mon, 22 Jan 2024 13:13:16 +0000 (UTC)
-Date: Mon, 22 Jan 2024 14:13:16 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Conor Dooley <conor@kernel.org>
-Cc: linux-riscv@lists.infradead.org, 
-	Conor Dooley <conor.dooley@microchip.com>, Daire McNamara <daire.mcnamara@microchip.com>, 
-	Wolfgang Grandegger <wg@grandegger.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, linux-can@vger.kernel.org, 
-	netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-clk@vger.kernel.org
-Subject: Re: [PATCH v2 2/7] dt-bindings: can: mpfs: add missing required clock
-Message-ID: <20240122-surely-crimp-ba4a8c55106d-mkl@pengutronix.de>
-References: <20240122-catty-roast-d3625dbb02fe@spud>
- <20240122-breeder-lying-0d3668d98886@spud>
+	s=arc-20240116; t=1705929238; c=relaxed/simple;
+	bh=hU5CNotTJU/uvRLdwjZo0czn7scddniW8EAN5gt5mi8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PqhDlSmMDgfzkLlRKvjVgZNNiTNw7C+jluy8u23mCVQo7mpmV3ibQb8WzUlVH5T5Dqz0mmjKzACf5Og3PZlnyPSfMHR6eoU/rzEq5085HIxBmkGPj3EldMTWd0UOpTQ/PY3OU/lpovlobMQUUWfdf20td6A38M9XvW4Jg4pG52g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=YZlmCEQC; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6dbb003be79so2769483b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 05:13:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1705929236; x=1706534036; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=S9m5xL1UcAIW5Th4J3nWvbXTBdcQrCpR+emEwkfnp8k=;
+        b=YZlmCEQCowlR3rOi3HvvfFKtIRvSUnrA9kEbyJFoKf9mcHJfiKiKBK6uGPpquOFzQk
+         QumyAdjKilg1FGkV/V+KF9AgCrNhEDX3xNuJ5dAS6EdYlnZFt4/79727E1H2k3+F4Z/7
+         Uqk5cSHIAsuWCsKYH5Bkdk6FsNMPwR/+3vSXRC50cq/eNhDrQM4kFyXeutaEGwQ0tLt4
+         TV7ap31jWHEKD500/gUbrwRgwUUK4SK7/DmTeP9xRvGYzYLGMKtl4bF0i0fdgprZijyU
+         AKgAtpHsGqrGVMweUJY1+x9HakvpyYMTPgKJ41Kgqq6pDEEP6R7UPtHMOg+6iycVyuu+
+         q2fQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705929236; x=1706534036;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S9m5xL1UcAIW5Th4J3nWvbXTBdcQrCpR+emEwkfnp8k=;
+        b=PtLZc1qdDyZrgI2ylUKcUdc4jdLP1PwH13G6EE+39xyGrHxxVvuKbDlkj6vP1svHi6
+         BKZDqIt31JDe1j2byFJXshclhonOCp5yDR78Dm67FhlwIw+eL8e5TrA01TqDact6YhC4
+         z31JQSh8PK8gGjFM6Fpbf2IvpW/pLwsWAItsN+6fY19KNqTokRX1QH2WfZLogV7/2kFE
+         7lVCtMfb4bJyAndESbKlAppO9MqE5SQjCOARcSKZM+0a7J6LIrPP2GEOQHUzPMF17SCt
+         kHEEthc88nEpm2EOGNjqtUn8l+Z5oCT6qsIKTsnyRTHHoIeSS7jnf6NqUboiMoQqAohE
+         TZyQ==
+X-Gm-Message-State: AOJu0Yx0pYW2CA+0gWOUs1SaR6cd3PAkLvo2+Q5FwoZMvSOrHpr8fbD+
+	tjGuE9bu4bP6bfOqkYVpiYmka7ngyT0TD+cwRKtwtR/Rye+qFvjc7s+q67DeE8s=
+X-Google-Smtp-Source: AGHT+IFputq7UFFL827FFoI/oAfRWz79uIU4OBZSmCcoJo+oNBqN99aJWqv0U1ox8jhqLMyo/PvaTg==
+X-Received: by 2002:a05:6a20:9599:b0:199:84a8:9358 with SMTP id iu25-20020a056a20959900b0019984a89358mr4277279pzb.45.1705929236011;
+        Mon, 22 Jan 2024 05:13:56 -0800 (PST)
+Received: from [10.4.246.34] ([139.177.225.245])
+        by smtp.gmail.com with ESMTPSA id lc9-20020a056a004f4900b006db105027basm9507610pfb.50.2024.01.22.05.13.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jan 2024 05:13:55 -0800 (PST)
+Message-ID: <5fa2bf99-3c80-4196-94e7-af8c1591acdd@bytedance.com>
+Date: Mon, 22 Jan 2024 21:13:49 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="gm5qx6ivqj7qxcxg"
-Content-Disposition: inline
-In-Reply-To: <20240122-breeder-lying-0d3668d98886@spud>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] mm: zswap: remove unnecessary tree cleanups in
+ zswap_swapoff()
+To: Yosry Ahmed <yosryahmed@google.com>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>,
+ Chris Li <chrisl@kernel.org>, Huang Ying <ying.huang@intel.com>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240120024007.2850671-1-yosryahmed@google.com>
+ <20240120024007.2850671-3-yosryahmed@google.com>
+Content-Language: en-US
+From: Chengming Zhou <zhouchengming@bytedance.com>
+In-Reply-To: <20240120024007.2850671-3-yosryahmed@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-
---gm5qx6ivqj7qxcxg
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On 22.01.2024 12:19:50, Conor Dooley wrote:
-> From: Conor Dooley <conor.dooley@microchip.com>
->=20
-> The CAN controller on PolarFire SoC has an AHB peripheral clock _and_ a
-> CAN bus clock. The bus clock was omitted when the binding was written,
-> but is required for operation. Make up for lost time and add it.
->=20
-> Cautionary tale in adding bindings without having implemented a real
-> user for them perhaps.
->=20
-> Fixes: c878d518d7b6 ("dt-bindings: can: mpfs: document the mpfs CAN contr=
-oller")
-> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+On 2024/1/20 10:40, Yosry Ahmed wrote:
+> During swapoff, try_to_unuse() makes sure that zswap_invalidate() is
+> called for all swap entries before zswap_swapoff() is called. This means
+> that all zswap entries should already be removed from the tree. Simplify
+> zswap_swapoff() by removing the tree cleanup loop, and leaving an
+> assertion in its place.
+> 
+> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 > ---
->  .../devicetree/bindings/net/can/microchip,mpfs-can.yaml     | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/net/can/microchip,mpfs-can=
-=2Eyaml b/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.yaml
-> index 45aa3de7cf01..01e4d4a54df6 100644
-> --- a/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.yaml
-> +++ b/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.yaml
-> @@ -24,7 +24,9 @@ properties:
->      maxItems: 1
-> =20
->    clocks:
-> -    maxItems: 1
-> +    items:
-> +      - description: AHB peripheral clock
-> +      - description: CAN bus clock
+> Chengming, Chris, I think this should make the tree split and the xarray
+> conversion patches simpler (especially the former). If others agree,
+> both changes can be rebased on top of this.
 
-What about adding clock-names, so that the order can be checked
-automatically?
+Ok.
 
-> =20
->  required:
->    - compatible
-> @@ -39,7 +41,7 @@ examples:
->      can@2010c000 {
->          compatible =3D "microchip,mpfs-can";
->          reg =3D <0x2010c000 0x1000>;
-> -        clocks =3D <&clkcfg 17>;
-> +        clocks =3D <&clkcfg 17>, <&clkcfg 37>;
->          interrupt-parent =3D <&plic>;
->          interrupts =3D <56>;
->      };
-> --=20
-> 2.43.0
->=20
->=20
+Reviewed-by: Chengming Zhou <zhouchengming@bytedance.com>
 
-Marc
+Thanks.
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---gm5qx6ivqj7qxcxg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmWuaecACgkQvlAcSiqK
-BOiItAgAiVb1F3nml4JkuMIY7dmQo5gzshMOge9YwxV+CViwK6+VZN81W+a+uBRC
-nG6H9blRP6/eWCGmJMty07eR8pnzfzh1F7fdSr3ZjVJAtPcNY/Ywc5ByKebJz8jS
-bXxVgQ4cxcMzl54lO6xd0cFi9cCAIc8ENFStCmEhc65/KJMu8uDcitYv2T1fDj3d
-mrs7ok2oKy0JvVoQUVdeSfcWj3KxK4Hl4HX4cDZlsQhLuNRcRm17k5Xf8wtqiW+T
-Qi0Lyzls8rj/Phk0qKpWpcsMxVa76FAYj6W6yyW0s0mP+0piGLWfxNYqdXsvkOvh
-7ak8HyX1amqRf3OBh6/9Uk1imCpACw==
-=oZCM
------END PGP SIGNATURE-----
-
---gm5qx6ivqj7qxcxg--
+> ---
+>  mm/zswap.c | 9 ++-------
+>  1 file changed, 2 insertions(+), 7 deletions(-)
+> 
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index f8bc9e0892687..9675c3c27f9d1 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -1790,17 +1790,12 @@ void zswap_swapon(int type)
+>  void zswap_swapoff(int type)
+>  {
+>  	struct zswap_tree *tree = zswap_trees[type];
+> -	struct zswap_entry *entry, *n;
+>  
+>  	if (!tree)
+>  		return;
+>  
+> -	/* walk the tree and free everything */
+> -	spin_lock(&tree->lock);
+> -	rbtree_postorder_for_each_entry_safe(entry, n, &tree->rbroot, rbnode)
+> -		zswap_free_entry(entry);
+> -	tree->rbroot = RB_ROOT;
+> -	spin_unlock(&tree->lock);
+> +	/* try_to_unuse() invalidated all entries already */
+> +	WARN_ON_ONCE(!RB_EMPTY_ROOT(&tree->rbroot));
+>  	kfree(tree);
+>  	zswap_trees[type] = NULL;
+>  }
 
