@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-33353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88EE98368B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:44:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01BDE8368B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 16:45:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 224E51F2212B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:44:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5F5928463A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:45:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2549D664B7;
-	Mon, 22 Jan 2024 15:05:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60E44664DE;
+	Mon, 22 Jan 2024 15:06:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hhiDSSnO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qst/US9h"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EBE7482D4;
-	Mon, 22 Jan 2024 15:05:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A39DE664C7;
+	Mon, 22 Jan 2024 15:06:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705935958; cv=none; b=KmWv/VoZsACgTINBhtSKVvL/E0pa0i5/lBmcnF/VwAT2ebwZClaO1lTgKcBG4j4tLQHPDD0wl9baI57bXbDXanyYMYQq9ZaGaqS0ZHXajh0KwHZz1YZXjAydVm23o3kdnqH8ZHASC1K2xPG2IDIxbm5orsC/A1Dee1bSjLC/rsc=
+	t=1705935960; cv=none; b=uRQE1MuKXu54FuEXsvlWJK8ukmL1D1ZlZ6gMxX4Kbt4cOU9UlvgSmJu+AqhovpLL+0qZxApUjNG5P+aC/tYCmfrCK/pjyv6BzCUBMSWTis0CmDw+mAsoDWv/zCBbRw5+vKsjbzWN+hqgkEgyvNKpZMNkEG/aHMrSzZrgqX0Bw7E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705935958; c=relaxed/simple;
-	bh=UNspoClVXO8/E+KfqNWpHwaw2Gn220gcdOs10fm3868=;
+	s=arc-20240116; t=1705935960; c=relaxed/simple;
+	bh=7fqh0ooNs9VxNhB9vsgBz/ZTlYTQl6JYLsLyxbBzZOY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aYn00BwfNu4ZDuT4uPfEipJiiLvZWnxvhUqi5KWWuqDuaGWpc+LEU45L8yTR6DxDByEj6tsKrOHllE8W/hhT/YlJzihDugF+AXCnZP/Njeen51x4/yQ/nFSACJknm8ZOs9kLTO70Y1mbaZMmoI3xnL4N3y8ng+vD57MCZW+v4/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hhiDSSnO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7470C43143;
-	Mon, 22 Jan 2024 15:05:56 +0000 (UTC)
+	 MIME-Version; b=h84/BXykGRKN3VpQvSalmwVCdjT6bhhmD/kt1TnSjfawEanXhdNu1QA2XVFXX7II6SU64qJFwXwIdllseviOzkj7PE2ePNgNOMJ8XttgJQL5JA9M028WdBy1fxl4FIZs/znKuV/gssQXtUp+2mRxg9Kc3YPOx93UATY0TJccqNk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qst/US9h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC1ABC43399;
+	Mon, 22 Jan 2024 15:05:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705935958;
-	bh=UNspoClVXO8/E+KfqNWpHwaw2Gn220gcdOs10fm3868=;
+	s=k20201202; t=1705935960;
+	bh=7fqh0ooNs9VxNhB9vsgBz/ZTlYTQl6JYLsLyxbBzZOY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hhiDSSnON4v9DBIuX0bpSS7ddGIKhqDY4dTULMX2dJwa3lwLCI1HGlM6mXmhppH7z
-	 OpGdyMhiKNlCCWeM2eqUV674svLops4TkiF4866DV8jxqO0+uNA4Btq6ihHGdu/Vd8
-	 fHR9g3O3t2Q75sr9GQ0uoBfQsOxBizAWqgj0v++1DbRd3+CCZzQP+qKKvckek6EDg2
-	 oOKUgty9BcHHl64qLqy5hb0qD3z56veqcObdX8XA9B3yqLTc7rEc+Y9wPGjWYC87Mc
-	 lGxbSbBoCSSRMqL9oLVfJnFBD6dkhN7B5eXlaBwkzOyUkw8efqV7PZeL1DTwmWatk5
-	 G+p+bLK7+dEKw==
+	b=Qst/US9hws/zF2yIHqCQYwI3Sq4AzOTSkjbsXB6n2ZSV86CN2hq4r77zMFJRGexey
+	 sI/IGswEF8fnbKyR6nEu+fQsQXvOQv9rgLQdf4x59RpdlkFwc3OOvmr2ashG1lvbxu
+	 OCagzIJYRq2g5Li3M7DcdTxb3rZwPchqs7nVdTvjg9STCVaF2I1uxzEYPSc9VFpzbG
+	 sDXm5XbjLyoTq6QF9A4xUblpFxxcoAkRmPT4a6vul3pPMeXNj72wyWdE0x9QtLV0Iv
+	 cFrh3mzS2lDS3yrD1Ln8208Q+wuh7EvoEKaNfB+3mIoOFAiwKRV1XT//gnr3kKKAr6
+	 zO/mpe8M95ERw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -53,9 +53,9 @@ Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
 	linux-media@vger.kernel.org,
 	linux-rockchip@lists.infradead.org,
 	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.6 31/73] media: rkisp1: Store IRQ lines
-Date: Mon, 22 Jan 2024 10:01:45 -0500
-Message-ID: <20240122150432.992458-31-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 32/73] media: rkisp1: Fix IRQ disable race issue
+Date: Mon, 22 Jan 2024 10:01:46 -0500
+Message-ID: <20240122150432.992458-32-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240122150432.992458-1-sashal@kernel.org>
 References: <20240122150432.992458-1-sashal@kernel.org>
@@ -72,12 +72,25 @@ Content-Transfer-Encoding: 8bit
 
 From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
-[ Upstream commit 0753874617de883c6d4da903142f334f76a75d70 ]
+[ Upstream commit 870565f063a58576e8a4529f122cac4325c6b395 ]
 
-Store the IRQ lines used by the driver for easy access. These are needed
-in future patches which fix IRQ race issues.
+In rkisp1_isp_stop() and rkisp1_csi_disable() the driver masks the
+interrupts and then apparently assumes that the interrupt handler won't
+be running, and proceeds in the stop procedure. This is not the case, as
+the interrupt handler can already be running, which would lead to the
+ISP being disabled while the interrupt handler handling a captured
+frame.
 
-Link: https://lore.kernel.org/r/20231207-rkisp-irq-fix-v3-3-358a2c871a3c@ideasonboard.com
+This brings up two issues: 1) the ISP could be powered off while the
+interrupt handler is still running and accessing registers, leading to
+board lockup, and 2) the interrupt handler code and the code that
+disables the streaming might do things that conflict.
+
+It is not clear to me if 2) causes a real issue, but 1) can be seen with
+a suitable delay (or printk in my case) in the interrupt handler,
+leading to board lockup.
+
+Link: https://lore.kernel.org/r/20231207-rkisp-irq-fix-v3-4-358a2c871a3c@ideasonboard.com
 
 Tested-by: Adam Ford <aford173@gmail.com>  #imx8mp-beacon
 Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
@@ -85,109 +98,69 @@ Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../platform/rockchip/rkisp1/rkisp1-common.h    | 11 ++++++++++-
- .../media/platform/rockchip/rkisp1/rkisp1-dev.c | 17 +++++++++++++----
- 2 files changed, 23 insertions(+), 5 deletions(-)
+ .../platform/rockchip/rkisp1/rkisp1-csi.c     | 14 ++++++++++++-
+ .../platform/rockchip/rkisp1/rkisp1-isp.c     | 20 ++++++++++++++++---
+ 2 files changed, 30 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-index d30f0ecb1bfd..104a1dbeff43 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-@@ -61,6 +61,14 @@ struct dentry;
- 						 RKISP1_CIF_ISP_EXP_END |	\
- 						 RKISP1_CIF_ISP_HIST_MEASURE_RDY)
+diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
+index fdff3d0da4e5..0a67eb96402c 100644
+--- a/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
++++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
+@@ -141,8 +141,20 @@ static void rkisp1_csi_disable(struct rkisp1_csi *csi)
+ 	struct rkisp1_device *rkisp1 = csi->rkisp1;
+ 	u32 val;
  
-+/* IRQ lines */
-+enum rkisp1_irq_line {
-+	RKISP1_IRQ_ISP = 0,
-+	RKISP1_IRQ_MI,
-+	RKISP1_IRQ_MIPI,
-+	RKISP1_NUM_IRQS,
-+};
+-	/* Mask and clear interrupts. */
++	/* Mask MIPI interrupts. */
+ 	rkisp1_write(rkisp1, RKISP1_CIF_MIPI_IMSC, 0);
 +
- /* enum for the resizer pads */
- enum rkisp1_rsz_pad {
- 	RKISP1_RSZ_PAD_SINK,
-@@ -441,7 +449,6 @@ struct rkisp1_debug {
-  * struct rkisp1_device - ISP platform device
-  *
-  * @base_addr:	   base register address
-- * @irq:	   the irq number
-  * @dev:	   a pointer to the struct device
-  * @clk_size:	   number of clocks
-  * @clks:	   array of clocks
-@@ -459,6 +466,7 @@ struct rkisp1_debug {
-  * @stream_lock:   serializes {start/stop}_streaming callbacks between the capture devices.
-  * @debug:	   debug params to be exposed on debugfs
-  * @info:	   version-specific ISP information
-+ * @irqs:          IRQ line numbers
-  */
- struct rkisp1_device {
- 	void __iomem *base_addr;
-@@ -479,6 +487,7 @@ struct rkisp1_device {
- 	struct mutex stream_lock; /* serialize {start/stop}_streaming cb between capture devices */
- 	struct rkisp1_debug debug;
- 	const struct rkisp1_info *info;
-+	int irqs[RKISP1_NUM_IRQS];
- };
- 
- /*
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-index 22b2ae0e89c4..c3fa40976140 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-@@ -114,6 +114,7 @@
- struct rkisp1_isr_data {
- 	const char *name;
- 	irqreturn_t (*isr)(int irq, void *ctx);
-+	u32 line_mask;
- };
- 
- /* ----------------------------------------------------------------------------
-@@ -471,9 +472,9 @@ static const char * const px30_isp_clks[] = {
- };
- 
- static const struct rkisp1_isr_data px30_isp_isrs[] = {
--	{ "isp", rkisp1_isp_isr },
--	{ "mi", rkisp1_capture_isr },
--	{ "mipi", rkisp1_csi_isr },
-+	{ "isp", rkisp1_isp_isr, BIT(RKISP1_IRQ_ISP) },
-+	{ "mi", rkisp1_capture_isr, BIT(RKISP1_IRQ_MI) },
-+	{ "mipi", rkisp1_csi_isr, BIT(RKISP1_IRQ_MIPI) },
- };
- 
- static const struct rkisp1_info px30_isp_info = {
-@@ -492,7 +493,7 @@ static const char * const rk3399_isp_clks[] = {
- };
- 
- static const struct rkisp1_isr_data rk3399_isp_isrs[] = {
--	{ NULL, rkisp1_isr },
-+	{ NULL, rkisp1_isr, BIT(RKISP1_IRQ_ISP) | BIT(RKISP1_IRQ_MI) | BIT(RKISP1_IRQ_MIPI) },
- };
- 
- static const struct rkisp1_info rk3399_isp_info = {
-@@ -543,6 +544,9 @@ static int rkisp1_probe(struct platform_device *pdev)
- 	if (IS_ERR(rkisp1->base_addr))
- 		return PTR_ERR(rkisp1->base_addr);
- 
-+	for (unsigned int il = 0; il < ARRAY_SIZE(rkisp1->irqs); ++il)
-+		rkisp1->irqs[il] = -1;
++	/* Flush posted writes */
++	rkisp1_read(rkisp1, RKISP1_CIF_MIPI_IMSC);
 +
- 	for (i = 0; i < info->isr_size; i++) {
- 		irq = info->isrs[i].name
- 		    ? platform_get_irq_byname(pdev, info->isrs[i].name)
-@@ -550,6 +554,11 @@ static int rkisp1_probe(struct platform_device *pdev)
- 		if (irq < 0)
- 			return irq;
- 
-+		for (unsigned int il = 0; il < ARRAY_SIZE(rkisp1->irqs); ++il) {
-+			if (info->isrs[i].line_mask & BIT(il))
-+				rkisp1->irqs[il] = irq;
-+		}
++	/*
++	 * Wait until the IRQ handler has ended. The IRQ handler may get called
++	 * even after this, but it will return immediately as the MIPI
++	 * interrupts have been masked.
++	 */
++	synchronize_irq(rkisp1->irqs[RKISP1_IRQ_MIPI]);
 +
- 		ret = devm_request_irq(dev, irq, info->isrs[i].isr, 0,
- 				       dev_driver_string(dev), dev);
- 		if (ret) {
++	/* Clear MIPI interrupt status */
+ 	rkisp1_write(rkisp1, RKISP1_CIF_MIPI_ICR, ~0);
+ 
+ 	val = rkisp1_read(rkisp1, RKISP1_CIF_MIPI_CTRL);
+diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
+index 07fbb77ce234..2239fb6c7d39 100644
+--- a/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
++++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
+@@ -281,11 +281,25 @@ static void rkisp1_isp_stop(struct rkisp1_isp *isp)
+ 	 * ISP(mi) stop in mi frame end -> Stop ISP(mipi) ->
+ 	 * Stop ISP(isp) ->wait for ISP isp off
+ 	 */
+-	/* stop and clear MI and ISP interrupts */
+-	rkisp1_write(rkisp1, RKISP1_CIF_ISP_IMSC, 0);
+-	rkisp1_write(rkisp1, RKISP1_CIF_ISP_ICR, ~0);
+ 
++	/* Mask MI and ISP interrupts */
++	rkisp1_write(rkisp1, RKISP1_CIF_ISP_IMSC, 0);
+ 	rkisp1_write(rkisp1, RKISP1_CIF_MI_IMSC, 0);
++
++	/* Flush posted writes */
++	rkisp1_read(rkisp1, RKISP1_CIF_MI_IMSC);
++
++	/*
++	 * Wait until the IRQ handler has ended. The IRQ handler may get called
++	 * even after this, but it will return immediately as the MI and ISP
++	 * interrupts have been masked.
++	 */
++	synchronize_irq(rkisp1->irqs[RKISP1_IRQ_ISP]);
++	if (rkisp1->irqs[RKISP1_IRQ_ISP] != rkisp1->irqs[RKISP1_IRQ_MI])
++		synchronize_irq(rkisp1->irqs[RKISP1_IRQ_MI]);
++
++	/* Clear MI and ISP interrupt status */
++	rkisp1_write(rkisp1, RKISP1_CIF_ISP_ICR, ~0);
+ 	rkisp1_write(rkisp1, RKISP1_CIF_MI_ICR, ~0);
+ 
+ 	/* stop ISP */
 -- 
 2.43.0
 
