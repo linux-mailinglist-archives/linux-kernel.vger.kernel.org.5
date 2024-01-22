@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-33125-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43B6F8364FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:04:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89D40836515
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:07:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5B3DB271CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:04:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A543B2741C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:04:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 017283DB99;
-	Mon, 22 Jan 2024 14:02:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7661E3DBAA;
+	Mon, 22 Jan 2024 14:02:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bucdMhRI"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UgLRmAKH"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9C693DB85;
-	Mon, 22 Jan 2024 14:02:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E1693DB92;
+	Mon, 22 Jan 2024 14:02:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705932149; cv=none; b=Ab6DCJTUKo/CHJyC7z26676c3Tsgllk6QNpSFLiZw7TGCNOtv09W3XIbDLDankLYO76kO0J7OanRJ7dEkSJuFqCyDEu8P810QerMjqVnpOLavNvQpo+QVk7316f3nDxn++hIiZm1It8nvH1OBF7yP+FXdf6s26EPZe1eOAbzb4g=
+	t=1705932150; cv=none; b=EeQzC7m8h+Hvodutnw/3T4Lq+3ZT46aWv0siJEJVBtnrXvFlcf0Y0PFSu4naLHgZDEKm40rj0T4aaUrqWVIpoOCV3qU4eGzQTXwL1YKcj9gLs1LO9VanhAhwAuzU+mXy2yp+aTlxnfcHhEQseYQtUjSUObhAbzQP2whKFk2Iidc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705932149; c=relaxed/simple;
-	bh=IudtWyOxinWnl6LMIfCneUAvzLA9Hbbkx69DLR7GJl4=;
+	s=arc-20240116; t=1705932150; c=relaxed/simple;
+	bh=lsO8tfbwD9AdmOWSFushpOZY+ipFK/d/A6+FIEtkRsM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jKjQI2U+Tx71SkBkqg9sttSZyFPiFylnzahj9IHm4kzosP9kUEtgut1QugOdCRAGKeKPNK2hd5pc79v/ibzTpvvOcRXglH+nMfL18ZOUS1ala8zDujM64U/tKsySomz8T8CC+3YSawyZCzOQaWeYXnEPuj1TY+F7yLwno53hmKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bucdMhRI; arc=none smtp.client-ip=209.85.210.178
+	 MIME-Version; b=m7h38Z0MOLEIQGNU8knXdrByEmytzNKYVj1wtpObTX+5vYbree+E6ZAJAB5QAzHeyt2JhvIouYGJxxbzvT1e04NxU9yz9W485R+KC1uKf+aYgI3hXRM5UQo/vuFnXBxSl61cJBTMOvL8dq0iKfaXp/4VPS/xOBHUts0mZMFU5Ro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UgLRmAKH; arc=none smtp.client-ip=209.85.210.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6dbd7f1a300so1523537b3a.1;
-        Mon, 22 Jan 2024 06:02:27 -0800 (PST)
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6db9e52bbccso1569350b3a.3;
+        Mon, 22 Jan 2024 06:02:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705932147; x=1706536947; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1705932148; x=1706536948; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=alZcxKZkQD4ACA9S37ZutEnmpFpfckKyvR2o/CXMERQ=;
-        b=bucdMhRIo22Umco4hkh/xPFwwvax492Hk4PbxT86wYFrhMWEDKfVAIJKIHLIyL4Knt
-         Bv6pCrFmcPu7eSvk1ARXOr7jL5KjwV3bgylNzxrKNPHa3RtS+YjeWH5HJ0jGYf5967rd
-         k5iTKruVcI6ee4nQbbAE+QScPf0g6+6qgDSvhvXsxz415L/i7AF+6Jz7kmTZml5oXF9R
-         iewMOmAdWQhx2195fXtmipoo6EXiBwxFmJxByQMK3EhezID3uqgRqTHFmns9L/oFS1/6
-         9n+dPHImwjVmhay1Nf9t3uAZl2KtEPXbTFMpYzAHNVOTuOX9/IqpV6ZMz6FJHKa3rh+M
-         7RdA==
+        bh=XjPSFlgRnv/9c3guXKpp1n6ASVGkqJA5QUOIQi+tg3A=;
+        b=UgLRmAKHkX33uHUwh35fhTjXZGB+Ndd1sGSlXkv08oFh6Q01c3UHRNKk4xZRG+tqPO
+         OzSDAa6XQVpQMY6i2LMZii6PzQfvLvuVco5E6wn2Zth5GvgKNYfz9eqnAyqFptQQdhk/
+         +uYAqJjLvwiFUyGvqa3vE2dPSjJJ5LWpIANlMSaQbaH6hvUF05noe8y7kQ6HurZZnnaV
+         5DGA6rFtIrm5rJmqn+aXK6+bJkr04sv613Ss6XurAGggHGFuh5eSCQtveLYTX7wkTaAU
+         v6wy8/tT7u+aydWwelMlg8Y453YtCA5C6pNdrd1ghDZJX+uH7HgOo7YBPQBAWyu3tfQ2
+         rryA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705932147; x=1706536947;
+        d=1e100.net; s=20230601; t=1705932148; x=1706536948;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=alZcxKZkQD4ACA9S37ZutEnmpFpfckKyvR2o/CXMERQ=;
-        b=Q9Gw8RygFPbeGdaSjP5eDO6ije3oticD6sV+jwRTW7rWKJn5XvWvL3/PnNm0n8p8to
-         OJ7vSIUADXj5Avb5aUbrVgBLYMltW6GxXX41mCGuOXEMQ41vKgvg3875N6r3QvfiuXkK
-         OG2dayfcWFYyIrEHaAn2TDEHq1uXMzd86RuL3dnAWWEeGFgcqQDJXfTTgWFCvAFK+dRH
-         CJU/MtYOpa4JI+GrdHwdTOEJB82SJ8S9Pog/LkkR55VGITV/TPoDt3GKnvpjgufKLfs/
-         LVu+V3BBxjVNMIGcsds2n2M0QrU1zx10jENIkx3/xW82UhDKdBx9DPXGEi9Hoidap88p
-         ftkQ==
-X-Gm-Message-State: AOJu0YzsTLN9UOcdoNmp2PDOJLRMU5EnUsa4T4uw4rfkrFAyTEhXZWr1
-	d8cwy60Z7cb8UzMc/zxzdBq3pI4CpHcsloL1tZM1xzOiRmnwPje5JvF6fGUM
-X-Google-Smtp-Source: AGHT+IFGRsWE0m3/mYANyApH0MQNZYBDD6S3mG4V5ht5ZjqPqL59L4uiv9H2OMLBK9maXXSMPx7Wwg==
-X-Received: by 2002:a05:6a20:6ba6:b0:19a:d8d2:c645 with SMTP id bu38-20020a056a206ba600b0019ad8d2c645mr4510454pzb.109.1705932145406;
-        Mon, 22 Jan 2024 06:02:25 -0800 (PST)
+        bh=XjPSFlgRnv/9c3guXKpp1n6ASVGkqJA5QUOIQi+tg3A=;
+        b=lxJ+0z3RHzl+ozVgeT7hbmVz9uxEoDQTJYXPAeCczXIkr8iiEFFpz5Wk+9yhaAvMQ3
+         36/lsqD13OuMdIl8+V81tH2cy8jRVA1N6S510Sd9EXey1JkU2QLlb86SdhZjNkNVNtlf
+         jGiLo+KU65XVW+wbhHlvH6d1dFtioWtfZvxZWZp4gC3oM4IQa/1MegNUeqZscf8oYclI
+         OciTgOasm5oxudEnMrp6nL/Rs1frXtyvwEVN2aNH93PGYxT2CLUWNJrsx+z8E12DPoxs
+         ZlHC06rIrSprRA6XO2vLWSrec5CONc76UeyqMwUeA5gxZYw7JhKPiZqhJCckIpqTfWXH
+         uGBg==
+X-Gm-Message-State: AOJu0YzpAtd8YBeGFuLCt5V0rfUoYqcT5KhMaQyZwlAIo9WjzJvwgiYu
+	k2/64Pb+McVrTEKPlhVG9NiDZJ+0S0bCfYw1gtGEyBsxSTWs+8Z7SuBRlvPJ
+X-Google-Smtp-Source: AGHT+IErfOnMzZVqFI64j2LTUNuUqhdegSCHK2JHAFvOFMQ9RqK65rBzD1nsZ8xRPWDYFwYhr0UFbQ==
+X-Received: by 2002:a05:6a00:244e:b0:6d9:b385:26f9 with SMTP id d14-20020a056a00244e00b006d9b38526f9mr2420201pfj.2.1705932147801;
+        Mon, 22 Jan 2024 06:02:27 -0800 (PST)
 Received: from carrot.. (i223-218-154-72.s42.a014.ap.plala.or.jp. [223.218.154.72])
-        by smtp.gmail.com with ESMTPSA id n14-20020a62e50e000000b006da2aad58adsm9901913pff.176.2024.01.22.06.02.23
+        by smtp.gmail.com with ESMTPSA id n14-20020a62e50e000000b006da2aad58adsm9901913pff.176.2024.01.22.06.02.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 06:02:24 -0800 (PST)
+        Mon, 22 Jan 2024 06:02:26 -0800 (PST)
 From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: linux-nilfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 06/15] nilfs2: convert persistent object allocator to use kmap_local
-Date: Mon, 22 Jan 2024 23:01:53 +0900
-Message-Id: <20240122140202.6950-7-konishi.ryusuke@gmail.com>
+Subject: [PATCH 07/15] nilfs2: convert DAT to use kmap_local
+Date: Mon, 22 Jan 2024 23:01:54 +0900
+Message-Id: <20240122140202.6950-8-konishi.ryusuke@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240122140202.6950-1-konishi.ryusuke@gmail.com>
 References: <20240122140202.6950-1-konishi.ryusuke@gmail.com>
@@ -83,194 +83,175 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Regarding the allocator code that is commonly used in the ondisk inode
-metadata file ifile and the disk address translation metadata file
-DAT, convert the parts that use the deprecated kmap_atomic() and kmap()
-to use kmap_local.
-
-Most can be converted directly, but only
-nilfs_palloc_prepare_alloc_entry() needs to be rewritten to change mapping
-sections so that multiple kmap_local/kunmap_local calls are nested and
-disk I/O can be avoided within the mapping sections.
+Concerning the code of the metadata file DAT for disk address translation,
+convert all parts that use the deprecated kmap_atomic to use kmap_local.
+All transformations are directly possible.
 
 Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
 ---
- fs/nilfs2/alloc.c | 91 ++++++++++++++++++++++++-----------------------
- 1 file changed, 46 insertions(+), 45 deletions(-)
+ fs/nilfs2/dat.c | 38 +++++++++++++++++++-------------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
 
-diff --git a/fs/nilfs2/alloc.c b/fs/nilfs2/alloc.c
-index 7342de296ec3..89caef7513db 100644
---- a/fs/nilfs2/alloc.c
-+++ b/fs/nilfs2/alloc.c
-@@ -525,54 +525,55 @@ int nilfs_palloc_prepare_alloc_entry(struct inode *inode,
- 		ret = nilfs_palloc_get_desc_block(inode, group, 1, &desc_bh);
- 		if (ret < 0)
- 			return ret;
--		desc_kaddr = kmap(desc_bh->b_page);
-+		desc_kaddr = kmap_local_page(desc_bh->b_page);
- 		desc = nilfs_palloc_block_get_group_desc(
- 			inode, group, desc_bh, desc_kaddr);
- 		n = nilfs_palloc_rest_groups_in_desc_block(inode, group,
- 							   maxgroup);
--		for (j = 0; j < n; j++, desc++, group++) {
-+		for (j = 0; j < n; j++, desc++, group++, group_offset = 0) {
- 			lock = nilfs_mdt_bgl_lock(inode, group);
--			if (nilfs_palloc_group_desc_nfrees(desc, lock) > 0) {
--				ret = nilfs_palloc_get_bitmap_block(
--					inode, group, 1, &bitmap_bh);
--				if (ret < 0)
--					goto out_desc;
--				bitmap_kaddr = kmap(bitmap_bh->b_page);
--				bitmap = bitmap_kaddr + bh_offset(bitmap_bh);
--				pos = nilfs_palloc_find_available_slot(
--					bitmap, group_offset,
--					entries_per_group, lock);
--				if (pos >= 0) {
--					/* found a free entry */
--					nilfs_palloc_group_desc_add_entries(
--						desc, lock, -1);
--					req->pr_entry_nr =
--						entries_per_group * group + pos;
--					kunmap(desc_bh->b_page);
--					kunmap(bitmap_bh->b_page);
--
--					req->pr_desc_bh = desc_bh;
--					req->pr_bitmap_bh = bitmap_bh;
--					return 0;
--				}
--				kunmap(bitmap_bh->b_page);
--				brelse(bitmap_bh);
-+			if (nilfs_palloc_group_desc_nfrees(desc, lock) == 0)
-+				continue;
-+
-+			kunmap_local(desc_kaddr);
-+			ret = nilfs_palloc_get_bitmap_block(inode, group, 1,
-+							    &bitmap_bh);
-+			if (unlikely(ret < 0)) {
-+				brelse(desc_bh);
-+				return ret;
- 			}
+diff --git a/fs/nilfs2/dat.c b/fs/nilfs2/dat.c
+index 9cf6ba58f585..8f71f8b0e218 100644
+--- a/fs/nilfs2/dat.c
++++ b/fs/nilfs2/dat.c
+@@ -91,13 +91,13 @@ void nilfs_dat_commit_alloc(struct inode *dat, struct nilfs_palloc_req *req)
+ 	struct nilfs_dat_entry *entry;
+ 	void *kaddr;
  
--			group_offset = 0;
-+			desc_kaddr = kmap_local_page(desc_bh->b_page);
-+			desc = nilfs_palloc_block_get_group_desc(
-+				inode, group, desc_bh, desc_kaddr);
-+
-+			bitmap_kaddr = kmap_local_page(bitmap_bh->b_page);
-+			bitmap = bitmap_kaddr + bh_offset(bitmap_bh);
-+			pos = nilfs_palloc_find_available_slot(
-+				bitmap, group_offset, entries_per_group, lock);
-+			kunmap_local(bitmap_kaddr);
-+			if (pos >= 0)
-+				goto found;
-+
-+			brelse(bitmap_bh);
+-	kaddr = kmap_atomic(req->pr_entry_bh->b_page);
++	kaddr = kmap_local_page(req->pr_entry_bh->b_page);
+ 	entry = nilfs_palloc_block_get_entry(dat, req->pr_entry_nr,
+ 					     req->pr_entry_bh, kaddr);
+ 	entry->de_start = cpu_to_le64(NILFS_CNO_MIN);
+ 	entry->de_end = cpu_to_le64(NILFS_CNO_MAX);
+ 	entry->de_blocknr = cpu_to_le64(0);
+-	kunmap_atomic(kaddr);
++	kunmap_local(kaddr);
+ 
+ 	nilfs_palloc_commit_alloc_entry(dat, req);
+ 	nilfs_dat_commit_entry(dat, req);
+@@ -115,13 +115,13 @@ static void nilfs_dat_commit_free(struct inode *dat,
+ 	struct nilfs_dat_entry *entry;
+ 	void *kaddr;
+ 
+-	kaddr = kmap_atomic(req->pr_entry_bh->b_page);
++	kaddr = kmap_local_page(req->pr_entry_bh->b_page);
+ 	entry = nilfs_palloc_block_get_entry(dat, req->pr_entry_nr,
+ 					     req->pr_entry_bh, kaddr);
+ 	entry->de_start = cpu_to_le64(NILFS_CNO_MIN);
+ 	entry->de_end = cpu_to_le64(NILFS_CNO_MIN);
+ 	entry->de_blocknr = cpu_to_le64(0);
+-	kunmap_atomic(kaddr);
++	kunmap_local(kaddr);
+ 
+ 	nilfs_dat_commit_entry(dat, req);
+ 
+@@ -145,12 +145,12 @@ void nilfs_dat_commit_start(struct inode *dat, struct nilfs_palloc_req *req,
+ 	struct nilfs_dat_entry *entry;
+ 	void *kaddr;
+ 
+-	kaddr = kmap_atomic(req->pr_entry_bh->b_page);
++	kaddr = kmap_local_page(req->pr_entry_bh->b_page);
+ 	entry = nilfs_palloc_block_get_entry(dat, req->pr_entry_nr,
+ 					     req->pr_entry_bh, kaddr);
+ 	entry->de_start = cpu_to_le64(nilfs_mdt_cno(dat));
+ 	entry->de_blocknr = cpu_to_le64(blocknr);
+-	kunmap_atomic(kaddr);
++	kunmap_local(kaddr);
+ 
+ 	nilfs_dat_commit_entry(dat, req);
+ }
+@@ -167,12 +167,12 @@ int nilfs_dat_prepare_end(struct inode *dat, struct nilfs_palloc_req *req)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	kaddr = kmap_atomic(req->pr_entry_bh->b_page);
++	kaddr = kmap_local_page(req->pr_entry_bh->b_page);
+ 	entry = nilfs_palloc_block_get_entry(dat, req->pr_entry_nr,
+ 					     req->pr_entry_bh, kaddr);
+ 	start = le64_to_cpu(entry->de_start);
+ 	blocknr = le64_to_cpu(entry->de_blocknr);
+-	kunmap_atomic(kaddr);
++	kunmap_local(kaddr);
+ 
+ 	if (blocknr == 0) {
+ 		ret = nilfs_palloc_prepare_free_entry(dat, req);
+@@ -202,7 +202,7 @@ void nilfs_dat_commit_end(struct inode *dat, struct nilfs_palloc_req *req,
+ 	sector_t blocknr;
+ 	void *kaddr;
+ 
+-	kaddr = kmap_atomic(req->pr_entry_bh->b_page);
++	kaddr = kmap_local_page(req->pr_entry_bh->b_page);
+ 	entry = nilfs_palloc_block_get_entry(dat, req->pr_entry_nr,
+ 					     req->pr_entry_bh, kaddr);
+ 	end = start = le64_to_cpu(entry->de_start);
+@@ -212,7 +212,7 @@ void nilfs_dat_commit_end(struct inode *dat, struct nilfs_palloc_req *req,
+ 	}
+ 	entry->de_end = cpu_to_le64(end);
+ 	blocknr = le64_to_cpu(entry->de_blocknr);
+-	kunmap_atomic(kaddr);
++	kunmap_local(kaddr);
+ 
+ 	if (blocknr == 0)
+ 		nilfs_dat_commit_free(dat, req);
+@@ -227,12 +227,12 @@ void nilfs_dat_abort_end(struct inode *dat, struct nilfs_palloc_req *req)
+ 	sector_t blocknr;
+ 	void *kaddr;
+ 
+-	kaddr = kmap_atomic(req->pr_entry_bh->b_page);
++	kaddr = kmap_local_page(req->pr_entry_bh->b_page);
+ 	entry = nilfs_palloc_block_get_entry(dat, req->pr_entry_nr,
+ 					     req->pr_entry_bh, kaddr);
+ 	start = le64_to_cpu(entry->de_start);
+ 	blocknr = le64_to_cpu(entry->de_blocknr);
+-	kunmap_atomic(kaddr);
++	kunmap_local(kaddr);
+ 
+ 	if (start == nilfs_mdt_cno(dat) && blocknr == 0)
+ 		nilfs_palloc_abort_free_entry(dat, req);
+@@ -362,7 +362,7 @@ int nilfs_dat_move(struct inode *dat, __u64 vblocknr, sector_t blocknr)
  		}
- 
--		kunmap(desc_bh->b_page);
-+		kunmap_local(desc_kaddr);
- 		brelse(desc_bh);
  	}
  
- 	/* no entries left */
- 	return -ENOSPC;
+-	kaddr = kmap_atomic(entry_bh->b_page);
++	kaddr = kmap_local_page(entry_bh->b_page);
+ 	entry = nilfs_palloc_block_get_entry(dat, vblocknr, entry_bh, kaddr);
+ 	if (unlikely(entry->de_blocknr == cpu_to_le64(0))) {
+ 		nilfs_crit(dat->i_sb,
+@@ -370,13 +370,13 @@ int nilfs_dat_move(struct inode *dat, __u64 vblocknr, sector_t blocknr)
+ 			   __func__, (unsigned long long)vblocknr,
+ 			   (unsigned long long)le64_to_cpu(entry->de_start),
+ 			   (unsigned long long)le64_to_cpu(entry->de_end));
+-		kunmap_atomic(kaddr);
++		kunmap_local(kaddr);
+ 		brelse(entry_bh);
+ 		return -EINVAL;
+ 	}
+ 	WARN_ON(blocknr == 0);
+ 	entry->de_blocknr = cpu_to_le64(blocknr);
+-	kunmap_atomic(kaddr);
++	kunmap_local(kaddr);
  
-- out_desc:
--	kunmap(desc_bh->b_page);
--	brelse(desc_bh);
--	return ret;
-+found:
-+	/* found a free entry */
-+	nilfs_palloc_group_desc_add_entries(desc, lock, -1);
-+	req->pr_entry_nr = entries_per_group * group + pos;
-+	kunmap_local(desc_kaddr);
-+
-+	req->pr_desc_bh = desc_bh;
-+	req->pr_bitmap_bh = bitmap_bh;
-+	return 0;
- }
- 
- /**
-@@ -606,10 +607,10 @@ void nilfs_palloc_commit_free_entry(struct inode *inode,
- 	spinlock_t *lock;
- 
- 	group = nilfs_palloc_group(inode, req->pr_entry_nr, &group_offset);
--	desc_kaddr = kmap(req->pr_desc_bh->b_page);
-+	desc_kaddr = kmap_local_page(req->pr_desc_bh->b_page);
- 	desc = nilfs_palloc_block_get_group_desc(inode, group,
- 						 req->pr_desc_bh, desc_kaddr);
--	bitmap_kaddr = kmap(req->pr_bitmap_bh->b_page);
-+	bitmap_kaddr = kmap_local_page(req->pr_bitmap_bh->b_page);
- 	bitmap = bitmap_kaddr + bh_offset(req->pr_bitmap_bh);
- 	lock = nilfs_mdt_bgl_lock(inode, group);
- 
-@@ -621,8 +622,8 @@ void nilfs_palloc_commit_free_entry(struct inode *inode,
- 	else
- 		nilfs_palloc_group_desc_add_entries(desc, lock, 1);
- 
--	kunmap(req->pr_bitmap_bh->b_page);
--	kunmap(req->pr_desc_bh->b_page);
-+	kunmap_local(bitmap_kaddr);
-+	kunmap_local(desc_kaddr);
- 
- 	mark_buffer_dirty(req->pr_desc_bh);
- 	mark_buffer_dirty(req->pr_bitmap_bh);
-@@ -647,10 +648,10 @@ void nilfs_palloc_abort_alloc_entry(struct inode *inode,
- 	spinlock_t *lock;
- 
- 	group = nilfs_palloc_group(inode, req->pr_entry_nr, &group_offset);
--	desc_kaddr = kmap(req->pr_desc_bh->b_page);
-+	desc_kaddr = kmap_local_page(req->pr_desc_bh->b_page);
- 	desc = nilfs_palloc_block_get_group_desc(inode, group,
- 						 req->pr_desc_bh, desc_kaddr);
--	bitmap_kaddr = kmap(req->pr_bitmap_bh->b_page);
-+	bitmap_kaddr = kmap_local_page(req->pr_bitmap_bh->b_page);
- 	bitmap = bitmap_kaddr + bh_offset(req->pr_bitmap_bh);
- 	lock = nilfs_mdt_bgl_lock(inode, group);
- 
-@@ -662,8 +663,8 @@ void nilfs_palloc_abort_alloc_entry(struct inode *inode,
- 	else
- 		nilfs_palloc_group_desc_add_entries(desc, lock, 1);
- 
--	kunmap(req->pr_bitmap_bh->b_page);
--	kunmap(req->pr_desc_bh->b_page);
-+	kunmap_local(bitmap_kaddr);
-+	kunmap_local(desc_kaddr);
- 
- 	brelse(req->pr_bitmap_bh);
- 	brelse(req->pr_desc_bh);
-@@ -755,7 +756,7 @@ int nilfs_palloc_freev(struct inode *inode, __u64 *entry_nrs, size_t nitems)
- 		/* Get the first entry number of the group */
- 		group_min_nr = (__u64)group * epg;
- 
--		bitmap_kaddr = kmap(bitmap_bh->b_page);
-+		bitmap_kaddr = kmap_local_page(bitmap_bh->b_page);
- 		bitmap = bitmap_kaddr + bh_offset(bitmap_bh);
- 		lock = nilfs_mdt_bgl_lock(inode, group);
- 
-@@ -801,7 +802,7 @@ int nilfs_palloc_freev(struct inode *inode, __u64 *entry_nrs, size_t nitems)
- 			entry_start = rounddown(group_offset, epb);
- 		} while (true);
- 
--		kunmap(bitmap_bh->b_page);
-+		kunmap_local(bitmap_kaddr);
- 		mark_buffer_dirty(bitmap_bh);
- 		brelse(bitmap_bh);
- 
-@@ -815,11 +816,11 @@ int nilfs_palloc_freev(struct inode *inode, __u64 *entry_nrs, size_t nitems)
- 					   inode->i_ino);
+ 	mark_buffer_dirty(entry_bh);
+ 	nilfs_mdt_mark_dirty(dat);
+@@ -426,7 +426,7 @@ int nilfs_dat_translate(struct inode *dat, __u64 vblocknr, sector_t *blocknrp)
  		}
+ 	}
  
--		desc_kaddr = kmap_atomic(desc_bh->b_page);
-+		desc_kaddr = kmap_local_page(desc_bh->b_page);
- 		desc = nilfs_palloc_block_get_group_desc(
- 			inode, group, desc_bh, desc_kaddr);
- 		nfree = nilfs_palloc_group_desc_add_entries(desc, lock, n);
--		kunmap_atomic(desc_kaddr);
-+		kunmap_local(desc_kaddr);
- 		mark_buffer_dirty(desc_bh);
- 		nilfs_mdt_mark_dirty(inode);
- 		brelse(desc_bh);
+-	kaddr = kmap_atomic(entry_bh->b_page);
++	kaddr = kmap_local_page(entry_bh->b_page);
+ 	entry = nilfs_palloc_block_get_entry(dat, vblocknr, entry_bh, kaddr);
+ 	blocknr = le64_to_cpu(entry->de_blocknr);
+ 	if (blocknr == 0) {
+@@ -436,7 +436,7 @@ int nilfs_dat_translate(struct inode *dat, __u64 vblocknr, sector_t *blocknrp)
+ 	*blocknrp = blocknr;
+ 
+  out:
+-	kunmap_atomic(kaddr);
++	kunmap_local(kaddr);
+ 	brelse(entry_bh);
+ 	return ret;
+ }
+@@ -457,7 +457,7 @@ ssize_t nilfs_dat_get_vinfo(struct inode *dat, void *buf, unsigned int visz,
+ 						   0, &entry_bh);
+ 		if (ret < 0)
+ 			return ret;
+-		kaddr = kmap_atomic(entry_bh->b_page);
++		kaddr = kmap_local_page(entry_bh->b_page);
+ 		/* last virtual block number in this block */
+ 		first = vinfo->vi_vblocknr;
+ 		do_div(first, entries_per_block);
+@@ -473,7 +473,7 @@ ssize_t nilfs_dat_get_vinfo(struct inode *dat, void *buf, unsigned int visz,
+ 			vinfo->vi_end = le64_to_cpu(entry->de_end);
+ 			vinfo->vi_blocknr = le64_to_cpu(entry->de_blocknr);
+ 		}
+-		kunmap_atomic(kaddr);
++		kunmap_local(kaddr);
+ 		brelse(entry_bh);
+ 	}
+ 
 -- 
 2.34.1
 
