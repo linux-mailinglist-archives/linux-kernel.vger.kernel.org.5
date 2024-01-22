@@ -1,168 +1,163 @@
-Return-Path: <linux-kernel+bounces-32663-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 810AA835E9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:50:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F74F835EA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 10:51:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B6211C21012
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:50:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FC95287896
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 09:51:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E6DC3A264;
-	Mon, 22 Jan 2024 09:48:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HauJAfF2"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34BDA3BB3C;
+	Mon, 22 Jan 2024 09:48:33 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC6773B783
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:48:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 444513A8CF
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 09:48:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705916886; cv=none; b=ajmcAHld5zh23u8eIlaWcbq+pN1pIepCntOmwsRX78QrIXFud/tC8PEKEPxa1Mw/qsw28lTsOVxzRocXsH104j6JG6pbntPXmQPPTiA297ojLUHl1680p8pSngJejfUdIXQB5bmJXwwJkbDsfODvs9Euw8Xe3emx0GYMqek2FhM=
+	t=1705916912; cv=none; b=K7n2tiYqI7c0nRuVbUbZVqKc9QhnkPnXtcQ/DwoODBsybLdmbtbBS2cvx5t/m5SWeAtH6YgIZBKGeK24WSgTmnGqflVCFJFpDI3BvVlN3l9QWMAnfcNCguopc2QWXGZTtJ2ecBGlxPGr6ryvrnJD/4D+U6L8LwiJi86oJWUVH10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705916886; c=relaxed/simple;
-	bh=5CqzgLvtLSy8On98r79zHw0T1BKSaoeTGaV2f7m3H3M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oZ71KphXr+7gLZkNFLkUFp2y2i0IrIFfau9EXBqD62y0H2M2Wl3Cdwn/1Td7uxZyfSWpr0xcy/dp+ZPKsgCb3lduHlsJ7RVVzgq13lwgLOMSHzm9JTdIORW4YosLByv2IXtjlExepjz29wUGJr1QR7L28DvfO07l6j2ICTIsdFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HauJAfF2; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40eab3912d5so10477605e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 01:48:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705916883; x=1706521683; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sKFo9+gcWyXSSIE3+PgkR0ECiwezI5MaHJNwR7Qu1YQ=;
-        b=HauJAfF2iwL2ILlMDpr37svxRUw3YQYBquts28x+7oLwpJpaEjQvmA1qbtqykQ0rT3
-         2riLL3j20WRn69NSS4JZ8DM9r84bO+P5b5MDgdqGN/xiZlruLkJRpdezVHcTpD//lmmx
-         qGbWhIwt6F0EsmT6CckA1XhKYCAxSg+P9tu4acJydBQOYN6hAzAFeWpNgidPY9CVg/Lm
-         /B3bfQAbgjY+yAKp5X0e/9ku+pzh8lDRX7oqAvHqcMC0TjRuIfATZPcTelwJ3rGP5VNQ
-         WszBKSo7NSx7jGvC0wgo5eNKMoj5o+Fi2g+IBwMM2wI0Ah3X9J7Ns1BbkYp0wSLMcWrA
-         8kjg==
+	s=arc-20240116; t=1705916912; c=relaxed/simple;
+	bh=GHXNHGnWBoujjSR/eQtHQpeS/SHwk5cxAZOS/b+R4yk=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=HMe3BMw/knsAn1F+rupZjRFx6OJzywz9n0cK2Ocn3bIUHGpvM2Uij4rnduLTHBn7RKUvMjXBCHkxSL04Ly2BYVkseZ38a2ykQq2FddbSUABFqNptApkaLlgbZn5elbx4L4O4hW2VfSvMV5Kuk1DI8XD8LLIOiHVLjdxEtH8a/rs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-360a0a5a87dso26595425ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 01:48:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705916883; x=1706521683;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sKFo9+gcWyXSSIE3+PgkR0ECiwezI5MaHJNwR7Qu1YQ=;
-        b=v1xl/6QpD96toEkPK2qRmlyS7My6D/w7NZ62IFepzy3B+XKQpEPM/Pu7wN5coKu0//
-         jRvxcxeRvf6io8innCTFONx9JQgfIkc8lNG3gJabGvh+htwSU9hyFXvpKgRualnjB9YQ
-         ltwWWpfLh+p1nDm4QZv6NOgQ2w4cOWzF0+qGIUj3uwZqn5VVGF1Pdd/tnTXF6Ncs/NRD
-         FWG+/Cdy1fyw6rsiZqzNsfRP2VNd7aXbU2OJWjywghG0aEw482FG0Tyw8Ko7oJxBEOVm
-         hY/K/3825EhsItO6Qc0AedNvhJsYgbHzmLfs0YeogqzGAVJi7P5TxigU/gf5ceGqagKB
-         oJXw==
-X-Gm-Message-State: AOJu0YzJY8BiZl5V+UFBdlFtn86xuRKBByadu/u1IcexrqZc6q8FpCiS
-	QGLMcpsNWJkwhqD0xHkrftFW/Bbof7AgNY3jzHESVC6sd6J2ZTD6qskMTnRXxhQ=
-X-Google-Smtp-Source: AGHT+IGn7yMWGuO5tqeG5FaAb0ROqU+B5Ne8/dIZdLThjMhGcUVPi+cSi7GB7/EIoaFU8uJ8eWdofA==
-X-Received: by 2002:a5d:4bc2:0:b0:339:219e:a049 with SMTP id l2-20020a5d4bc2000000b00339219ea049mr2227946wrt.92.1705916883163;
-        Mon, 22 Jan 2024 01:48:03 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id x16-20020adfcc10000000b00337b47ae539sm3154432wrh.42.2024.01.22.01.48.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 01:48:02 -0800 (PST)
-Message-ID: <73d75a74-71db-43c7-935a-65423159ce42@linaro.org>
-Date: Mon, 22 Jan 2024 10:48:02 +0100
+        d=1e100.net; s=20230601; t=1705916910; x=1706521710;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ct1ERqM8hnJD4Wmb1AvKYZCdcYP1ircWk6jl9QOBlUM=;
+        b=CxKH+gwp4czvdBMMPQYUW9W0ajDaD6mC7gfhecrVJn5WsQRsC7waXj5KevVmbpTd6W
+         ubyq9YqjJcaR4wPNjhPuHb8rFIdRdOE9AkdNIsF3YS+/3AE0Gjsb/IxwrUESFxl5Nbck
+         hBaPRL5GZPf+Mc4L00Wu4uZnMReZOrlKfl3oOexOT9RQMslW6C98CASbVubUhc1d9CuV
+         gJ1v234HkYgn8uaIWM9VcPmx6U1H6+PDbwCyVno+s015bChmY11Bf+Ra3fRr0JhitU9b
+         otbz52v8pzTK1Lyuew5L12u4R8Qv1cLU8PtKKSawXBiqElQ9lEv2vOqa+dycjO5Q+zb6
+         is9Q==
+X-Gm-Message-State: AOJu0YyRJcHpv6w/RKVqA5wM7Vw9NxuBf2utEj+0dMJXuqZxCYuoLwVI
+	ThN+3+njFsHtOoU+QjEos+lclED0vZgs4+k0FMZ6eypyyDT9JVCtPkoJ7XrNn+cLUqtlw/N2GOi
+	/EFcFiGFSA/896qUGrz5KVyPJO5gEy1kb/pCeFSNWInNhabps/hMuTzQ=
+X-Google-Smtp-Source: AGHT+IH8TuX8cwVVjuo3CoDWJuKdvUSncWtuq/VFUP0Ae7/9BbYzaAotqyQkpwfuiM4kae7O87pK9NHVaAS6qUpahWdHjJr7hvms
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] ARM: dts: qcom: msm8974-samsung-klte: Add label on
- /i2c-gpio-led
-Content-Language: en-US
-To: Rong Zhang <i@rong.moe>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Icenowy Zheng <uwu@icenowy.me>
-References: <20240121154010.168440-1-i@rong.moe>
- <20240121154010.168440-2-i@rong.moe>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240121154010.168440-2-i@rong.moe>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:1d8e:b0:360:968d:bfb9 with SMTP id
+ h14-20020a056e021d8e00b00360968dbfb9mr282113ila.5.1705916910039; Mon, 22 Jan
+ 2024 01:48:30 -0800 (PST)
+Date: Mon, 22 Jan 2024 01:48:30 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000707b50060f85bb0e@google.com>
+Subject: [syzbot] [hfs?] KASAN: out-of-bounds Read in hfsplus_bnode_move
+From: syzbot <syzbot+6df204b70bf3261691c5@syzkaller.appspotmail.com>
+To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 21/01/2024 16:39, Rong Zhang wrote:
-> Some variants of klte, e.g., the China edition (kltechn), have minor
-> differences to differentiate them from klte. This includes the GPIO pins
-> connected to /i2c-gpio-led.
-> 
-> A label is added on /i2c-gpio-led to allow DT of other variants to
-> reference it conveniently. Considering both LEDs and a GPIO expander are
-> connected to the node, it is named "i2c_led_gpio".
-> 
-> Signed-off-by: Rong Zhang <i@rong.moe>
-> ---
->  arch/arm/boot/dts/qcom/qcom-msm8974pro-samsung-klte.dts | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/boot/dts/qcom/qcom-msm8974pro-samsung-klte.dts b/arch/arm/boot/dts/qcom/qcom-msm8974pro-samsung-klte.dts
-> index b93539e2b87e..013946ccda0f 100644
-> --- a/arch/arm/boot/dts/qcom/qcom-msm8974pro-samsung-klte.dts
-> +++ b/arch/arm/boot/dts/qcom/qcom-msm8974pro-samsung-klte.dts
-> @@ -77,7 +77,7 @@ touchkey@20 {
->  		};
->  	};
->  
-> -	i2c-gpio-led {
-> +	i2c_led_gpio: i2c-gpio-led {
+Hello,
 
-This does not make much sense on its own. 6 commit msg lines just to add
-a label. Squash it.
+syzbot found the following issue on:
 
-Best regards,
-Krzysztof
+HEAD commit:    125514880ddd Merge tag 'sh-for-v6.8-tag1' of git://git.ker..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=15edd643e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7a6ff9d9d5d2dc4a
+dashboard link: https://syzkaller.appspot.com/bug?extid=6df204b70bf3261691c5
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=169c2d57e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11109193e80000
 
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/86a8a3ee9ef1/disk-12551488.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/b73f0ed65615/vmlinux-12551488.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/7aa088345217/bzImage-12551488.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/3a894fc3d764/mount_0.gz
+
+Bisection is inconclusive: the issue happens on the oldest tested release.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12fdd643e80000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=11fdd643e80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=16fdd643e80000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+6df204b70bf3261691c5@syzkaller.appspotmail.com
+
+loop0: detected capacity change from 0 to 1024
+==================================================================
+BUG: KASAN: out-of-bounds in hfsplus_bnode_move+0x5f3/0x910 fs/hfsplus/bnode.c:228
+Read of size 18446744073709551602 at addr 000508800000104e by task syz-executor353/5048
+
+CPU: 0 PID: 5048 Comm: syz-executor353 Not tainted 6.7.0-syzkaller-12829-g125514880ddd #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ print_report+0xe6/0x540 mm/kasan/report.c:491
+ kasan_report+0x142/0x170 mm/kasan/report.c:601
+ kasan_check_range+0x27e/0x290 mm/kasan/generic.c:189
+ __asan_memmove+0x29/0x70 mm/kasan/shadow.c:94
+ hfsplus_bnode_move+0x5f3/0x910 fs/hfsplus/bnode.c:228
+ hfsplus_brec_insert+0x61c/0xdd0 fs/hfsplus/brec.c:128
+ hfsplus_create_attr+0x49e/0x630 fs/hfsplus/attributes.c:252
+ __hfsplus_setxattr+0x6fe/0x22d0 fs/hfsplus/xattr.c:354
+ hfsplus_initxattrs+0x158/0x220 fs/hfsplus/xattr_security.c:59
+ security_inode_init_security+0x2a7/0x470 security/security.c:1752
+ hfsplus_fill_super+0x14d3/0x1c90 fs/hfsplus/super.c:567
+ mount_bdev+0x206/0x2d0 fs/super.c:1663
+ legacy_get_tree+0xef/0x190 fs/fs_context.c:662
+ vfs_get_tree+0x8c/0x2a0 fs/super.c:1784
+ do_new_mount+0x2be/0xb40 fs/namespace.c:3352
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3875
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf5/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7fd7936b4d3a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff572a70a8 EFLAGS: 00000286 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fff572a70c0 RCX: 00007fd7936b4d3a
+RDX: 0000000020000040 RSI: 0000000020000240 RDI: 00007fff572a70c0
+RBP: 0000000000000004 R08: 00007fff572a7100 R09: 00000000000006c8
+R10: 0000000000800000 R11: 0000000000000286 R12: 0000000000800000
+R13: 00007fff572a7100 R14: 0000000000000003 R15: 0000000000080000
+ </TASK>
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
