@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-32334-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-32335-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA930835A53
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 06:36:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D11E835A61
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 06:38:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BBA01C213C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 05:36:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E868B20A8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 05:38:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A925ACA7D;
-	Mon, 22 Jan 2024 05:35:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D83A917733;
+	Mon, 22 Jan 2024 05:36:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XKE25fjz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FEAnx3fE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3A464C90;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDCCB5258;
 	Mon, 22 Jan 2024 05:35:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705901758; cv=none; b=g9zpgTK76lQ+k9ZfhnAUhQEK1b9/+B3vMeo0hPJhtOBwvQyOtEyy78NXpTrZtaHivio0JdE+RnLvcljEPQLZHJhpy6G/Hy4ZqpgICyT+B8oKJ9D/gPFkmkAB88NxM9N9FIGbmmvtcw57WUpDnlR3Bcw/T236MHb8EEJcxx8Qb3I=
+	t=1705901759; cv=none; b=IbR/a0MO3vTifnifgMaemilUFCaiSYMqLhOWdcfEq/76MVJaKrZ1xWXufY1EUoVmafUTxWYsQb8IMbWNUGs7bQgy1+TUElpIRHzMKuuXatFrzEqq619lhUZKeRznaNLvFRNSlIAX37oxQiAAfugaLzQF7UmvvdSiN35emxVdgeI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705901758; c=relaxed/simple;
-	bh=Bgfx+EXSTylXwbNtkkMqzd6UQvp2lUWMn2C6vtoawQg=;
+	s=arc-20240116; t=1705901759; c=relaxed/simple;
+	bh=LgnPIr16xe/Eyg7GrkmIKz7Cyl9FY+m7UgNnLdHAPPQ=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=U50AbJiJTt7KUIlY8nVn+nRwiMf++KzVgS8QQAJ99rCX+ncjmxoR2qk2mT5NvnRJIeXmAg/5+2mQXLbivtT5D+Izf8SJwSCcqh1GCw4sRihzhNI9KxRDDGRLzn8puq/wFU/4T9KqBY54zxHO+w1rPDqBWaD7tzpcDAx7e5CMLVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XKE25fjz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 581CCC433A6;
+	 In-Reply-To:To:Cc; b=gi1Xy2vtipGKjPRmij94304+Wwj+PNczBa6mO9gNyplv9Kp1ZJcAh5kz61liMpPOqRgiRwXoZSQsymcAtVNF/AZZvFg9GYXOH7Y2zOMx1as8lkAWo5ctJ2+KETtuCNeJY7vB+GQ+viGG1bJzHT1EgmRuwjFdR0F4mDj0nbkFJSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FEAnx3fE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 65C7BC433B2;
 	Mon, 22 Jan 2024 05:35:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1705901758;
-	bh=Bgfx+EXSTylXwbNtkkMqzd6UQvp2lUWMn2C6vtoawQg=;
+	bh=LgnPIr16xe/Eyg7GrkmIKz7Cyl9FY+m7UgNnLdHAPPQ=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=XKE25fjzDV/7nvKO1u8VP9DMhM4FhykMky9I7YxP8Ezrkm9QY7pv+FO95Z043mrav
-	 eEJCD5NR0gWNVOBdMvdGMF/64rVCHR8VdszdOzqujUgwA1AYRLikEVEe2Xuuz6QU4w
-	 wU6E00CpxkfFXKjP1MVUCbYuSoDUR0VA9UMEV7M0XIXLiFyULO51ccUN+lAb4Ho5/y
-	 G7VkyEmEvUeeXrwq7IZYU0FWwAn28snmS8EBGNtqvOSpRucBB09FX0fbnKNk6qnBoQ
-	 HbHAjTaPSFUFOZqfVFkiAUY+Umpkpxfhn/QgTa14ASLcn2FnykpOblx5rxujemZSy/
-	 +G+zKzzDpSJ7Q==
+	b=FEAnx3fEK6JD5LUmtQLA6bVxU8x6VoMR8v9J+swdMCx+B11rc99MSWaQvohGRxdUa
+	 BLZ2z2EPUHdDmrNrf9+a1fsskslLAh6kzk5faPRMxn0s6QU0ERTfkcuPjScduGgfpM
+	 19PrM4Q6U2oBSjMBVk0voDG0d2GE75VDuMCLcSvW1AmusTb9T7DEIGOcqNSIbhQ0+I
+	 kx9+xIyQCBDlXB+KBKBrsrSZFeQ74xj8zT6XQ77q2WAspSXbz+nqgslqf4Ei3BULwL
+	 PSN99SY51Odb/VpYy4KOAwR4/3/O8p+DvzIjU7oFRCAqPwysMZLdRgoCZYXQum11AP
+	 gYjl8Fr7DMGUQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 457C5C47DDF;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50E0AC4725D;
 	Mon, 22 Jan 2024 05:35:58 +0000 (UTC)
 From: =?utf-8?b?QXLEsW7DpyDDnE5BTA==?= via B4 Relay
  <devnull+arinc.unal.arinc9.com@kernel.org>
-Date: Mon, 22 Jan 2024 08:35:55 +0300
-Subject: [PATCH net-next v3 4/7] net: dsa: mt7530: improve comments
- regarding switch ports
+Date: Mon, 22 Jan 2024 08:35:56 +0300
+Subject: [PATCH net-next v3 5/7] net: dsa: mt7530: improve code path for
+ setting up port 5
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,7 +57,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Message-Id:
- <20240122-for-netnext-mt7530-improvements-1-v3-4-042401f2b279@arinc9.com>
+ <20240122-for-netnext-mt7530-improvements-1-v3-5-042401f2b279@arinc9.com>
 References:
  <20240122-for-netnext-mt7530-improvements-1-v3-0-042401f2b279@arinc9.com>
 In-Reply-To:
@@ -78,11 +78,11 @@ Cc: mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
  linux-mediatek@lists.infradead.org, 
  =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1705901755; l=4567;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1705901755; l=2869;
  i=arinc.unal@arinc9.com; s=arinc9-patatt; h=from:subject:message-id;
- bh=rLcHCbYDzkt28v28nq9XIDczR9kM3jpJ8YmzJ0uoUlo=;
- b=P9VOv8+icSWtarQqBoOfyPHXdJUQtTer/Hw1RKxWe3HptZ6UWnYL15uVjd13g8sHELrl5aVez
- DZ0Bb8gDDuYBbL8SBFGTOYBY/b98Q7SFPz4h42o7MxTgYsK7IPd7/fB
+ bh=K1vv0sb4U5bv6JWVSjtKmiZWdaaNGL0l9QDdgT1NRyY=;
+ b=LN+tVioZv9sRZbXOurLsKXkw/mMpADeJb+mk83LyUQA1NsQWX3cG08nWZa3OMaW0hn3sS0cUK
+ s9L7uFbWGlKDuv579ZNoAV5Muc2hPittpeiHPhM3ecLRTG+uutMokVT
 X-Developer-Key: i=arinc.unal@arinc9.com; a=ed25519;
  pk=VmvgMWwm73yVIrlyJYvGtnXkQJy9CvbaeEqPQO9Z4kA=
 X-Endpoint-Received:
@@ -92,130 +92,92 @@ Reply-To: <arinc.unal@arinc9.com>
 
 From: Arınç ÜNAL <arinc.unal@arinc9.com>
 
-There's no logic to numerically order the CPU ports. Just state the port
-number instead.
+There're two code paths for setting up port 5:
 
-Remove the irrelevant PHY muxing information from
-mt7530_mac_port_get_caps(). Explain the supported MII modes instead.
+mt7530_setup()
+-> mt7530_setup_port5()
 
-Remove the out of place PHY muxing information from
-mt753x_phylink_mac_config(). The function is for MT7530, MT7531, and the
-switch on the MT7988 SoC but there's no PHY muxing on MT7531 or the switch
-on the MT7988 SoC.
+mt753x_phylink_mac_config()
+-> mt753x_mac_config()
+   -> mt7530_mac_config()
+      -> mt7530_setup_port5()
 
-These comments were gradually introduced with the commits below.
-commit ca366d6c889b ("net: dsa: mt7530: Convert to PHYLINK API")
-commit 38f790a80560 ("net: dsa: mt7530: Add support for port 5")
-commit 88bdef8be9f6 ("net: dsa: mt7530: Extend device data ready for adding
-a new hardware")
-commit c288575f7810 ("net: dsa: mt7530: Add the support of MT7531 switch")
+Currently mt7530_setup_port5() from mt7530_setup() always runs. If port 5
+is used as a CPU, DSA, or user port, mt7530_setup_port5() from
+mt753x_phylink_mac_config() won't run. That is because priv->p5_interface
+set on mt7530_setup_port5() will match state->interface on
+mt753x_phylink_mac_config() which will stop running mt7530_setup_port5()
+again.
+
+Therefore, mt7530_setup_port5() will never run from
+mt753x_phylink_mac_config().
+
+Address this by not running mt7530_setup_port5() from mt7530_setup() if
+port 5 is used as a CPU, DSA, or user port. This driver isn't in the
+dsa_switches_apply_workarounds[] array so phylink will always be present.
+
+To keep the cases where port 5 isn't controlled by phylink working as
+before, preserve the mt7530_setup_port5() call from mt7530_setup().
+
+Do not set priv->p5_intf_sel to P5_DISABLED. It is already set to that when
+"priv" is allocated.
+
+Move setting the interface to a more specific location. It's supposed to be
+overwritten if PHY muxing is detected.
+
+Improve the comment which explains the process.
 
 Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-Acked-by: Daniel Golle <daniel@makrotopia.org>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 ---
- drivers/net/dsa/mt7530.c | 30 ++++++++++++++++++++----------
- 1 file changed, 20 insertions(+), 10 deletions(-)
+ drivers/net/dsa/mt7530.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index c77092506c3f..93d8498ce274 100644
+index 93d8498ce274..33c15f10de34 100644
 --- a/drivers/net/dsa/mt7530.c
 +++ b/drivers/net/dsa/mt7530.c
-@@ -2520,12 +2520,14 @@ static void mt7530_mac_port_get_caps(struct dsa_switch *ds, int port,
- 				     struct phylink_config *config)
- {
- 	switch (port) {
--	case 0 ... 4: /* Internal phy */
-+	/* Ports which are connected to switch PHYs. There is no MII pinout. */
-+	case 0 ... 4:
- 		__set_bit(PHY_INTERFACE_MODE_GMII,
- 			  config->supported_interfaces);
- 		break;
+@@ -2308,16 +2308,15 @@ mt7530_setup(struct dsa_switch *ds)
+ 		return ret;
  
--	case 5: /* 2nd cpu port with phy of port 0 or 4 / external phy */
-+	/* Port 5 supports rgmii with delays, mii, and gmii. */
-+	case 5:
- 		phy_interface_set_rgmii(config->supported_interfaces);
- 		__set_bit(PHY_INTERFACE_MODE_MII,
- 			  config->supported_interfaces);
-@@ -2533,7 +2535,8 @@ static void mt7530_mac_port_get_caps(struct dsa_switch *ds, int port,
- 			  config->supported_interfaces);
- 		break;
- 
--	case 6: /* 1st cpu port */
-+	/* Port 6 supports rgmii and trgmii. */
-+	case 6:
- 		__set_bit(PHY_INTERFACE_MODE_RGMII,
- 			  config->supported_interfaces);
- 		__set_bit(PHY_INTERFACE_MODE_TRGMII,
-@@ -2548,19 +2551,24 @@ static void mt7531_mac_port_get_caps(struct dsa_switch *ds, int port,
- 	struct mt7530_priv *priv = ds->priv;
- 
- 	switch (port) {
--	case 0 ... 4: /* Internal phy */
-+	/* Ports which are connected to switch PHYs. There is no MII pinout. */
-+	case 0 ... 4:
- 		__set_bit(PHY_INTERFACE_MODE_GMII,
- 			  config->supported_interfaces);
- 		break;
- 
--	case 5: /* 2nd cpu port supports either rgmii or sgmii/8023z */
-+	/* Port 5 supports rgmii with delays on MT7531BE, sgmii/802.3z on
-+	 * MT7531AE.
-+	 */
-+	case 5:
- 		if (!priv->p5_sgmii) {
- 			phy_interface_set_rgmii(config->supported_interfaces);
+ 	/* Setup port 5 */
+-	priv->p5_intf_sel = P5_DISABLED;
+-	interface = PHY_INTERFACE_MODE_NA;
+-
+ 	if (!dsa_is_unused_port(ds, 5)) {
+ 		priv->p5_intf_sel = P5_INTF_SEL_GMAC5;
+-		ret = of_get_phy_mode(dsa_to_port(ds, 5)->dn, &interface);
+-		if (ret && ret != -ENODEV)
+-			return ret;
+ 	} else {
+-		/* Scan the ethernet nodes. look for GMAC1, lookup used phy */
++		/* Scan the ethernet nodes. Look for GMAC1, lookup the used PHY.
++		 * Set priv->p5_intf_sel to the appropriate value if PHY muxing
++		 * is detected.
++		 */
++		interface = PHY_INTERFACE_MODE_NA;
++
+ 		for_each_child_of_node(dn, mac_np) {
+ 			if (!of_device_is_compatible(mac_np,
+ 						     "mediatek,eth-mac"))
+@@ -2348,6 +2347,8 @@ mt7530_setup(struct dsa_switch *ds)
+ 			of_node_put(phy_node);
  			break;
  		}
- 		fallthrough;
++
++		mt7530_setup_port5(ds, interface);
+ 	}
  
--	case 6: /* 1st cpu port supports sgmii/8023z only */
-+	/* Port 6 supports sgmii/802.3z. */
-+	case 6:
- 		__set_bit(PHY_INTERFACE_MODE_SGMII,
- 			  config->supported_interfaces);
- 		__set_bit(PHY_INTERFACE_MODE_1000BASEX,
-@@ -2579,11 +2587,13 @@ static void mt7988_mac_port_get_caps(struct dsa_switch *ds, int port,
- 	phy_interface_zero(config->supported_interfaces);
+ #ifdef CONFIG_GPIOLIB
+@@ -2358,8 +2359,6 @@ mt7530_setup(struct dsa_switch *ds)
+ 	}
+ #endif /* CONFIG_GPIOLIB */
  
- 	switch (port) {
--	case 0 ... 4: /* Internal phy */
-+	/* Ports which are connected to switch PHYs. There is no MII pinout. */
-+	case 0 ... 4:
- 		__set_bit(PHY_INTERFACE_MODE_INTERNAL,
- 			  config->supported_interfaces);
- 		break;
- 
-+	/* Port 6 is connected to SoC's XGMII MAC. There is no MII pinout. */
- 	case 6:
- 		__set_bit(PHY_INTERFACE_MODE_INTERNAL,
- 			  config->supported_interfaces);
-@@ -2747,12 +2757,12 @@ mt753x_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
- 	u32 mcr_cur, mcr_new;
- 
- 	switch (port) {
--	case 0 ... 4: /* Internal phy */
-+	case 0 ... 4:
- 		if (state->interface != PHY_INTERFACE_MODE_GMII &&
- 		    state->interface != PHY_INTERFACE_MODE_INTERNAL)
- 			goto unsupported;
- 		break;
--	case 5: /* 2nd cpu port with phy of port 0 or 4 / external phy */
-+	case 5:
- 		if (priv->p5_interface == state->interface)
- 			break;
- 
-@@ -2762,7 +2772,7 @@ mt753x_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
- 		if (priv->p5_intf_sel != P5_DISABLED)
- 			priv->p5_interface = state->interface;
- 		break;
--	case 6: /* 1st cpu port */
-+	case 6:
- 		if (priv->p6_interface == state->interface)
- 			break;
- 
+-	mt7530_setup_port5(ds, interface);
+-
+ 	/* Flush the FDB table */
+ 	ret = mt7530_fdb_cmd(priv, MT7530_FDB_FLUSH, NULL);
+ 	if (ret < 0)
 
 -- 
 2.40.1
