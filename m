@@ -1,113 +1,140 @@
-Return-Path: <linux-kernel+bounces-33148-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45C5A836547
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:24:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCDF5836557
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 15:26:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 783F21C2248F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:24:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C9198B24FFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 14:25:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E6483D3B6;
-	Mon, 22 Jan 2024 14:24:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="UCjldjGA"
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A83B73D55A;
+	Mon, 22 Jan 2024 14:24:45 +0000 (UTC)
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [195.130.132.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 545083D960;
-	Mon, 22 Jan 2024 14:24:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85AD23D55B
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 14:24:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705933449; cv=none; b=Nbn8QO+ZZHWI/YyEJOFoe0adAUOpd9zb3+iSVX6E2gYSVpf7kocOkGRUWvtJ3xdz22xM53dSPULPn128Zq9YaZU/6Se/RIFQL/YXjRvzIcQcwWZctllEjqek7InRJWobfDZl8fTt+u+5OuvTpdXvH7WIxESTbOEsxAzEMXN5Hsc=
+	t=1705933485; cv=none; b=PaKg7jK4rculTEnH32E5IiVpFzMoSW1XCX19RxpZEjFeUfavTVBm8gC0GpWeu8+he3+tZzyQ7mOBE33NLgp4UtrapDrvsfNGbM1JSGApnWBdH7u5rpMd2BXFDwbIKcjvRMqeOy0n18BpCj3BUMDT4eWqsDiUy82ZCRwhWlbzCMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705933449; c=relaxed/simple;
-	bh=GqwxD3RMhMhLI38AMEY+0N7cBezxiMSYs0jrQ6phPXg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WzdF+lKNhriw8YFil4/Pc4T53Wbcm7BvxHfC/378JN2D0U8CZ3MDdpQr3qy7shdGg75QDgItk3qFGPmQB97t215o0FgLe2bfDZ6BOolFVjZeMAaFTN7xHY2qdx3UTTBK/+R6jKZJvpWP3Yqftq8W6++TC2ao6tuzNqjKQ+ZHpVA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=UCjldjGA; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 562831BF20E;
-	Mon, 22 Jan 2024 14:24:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1705933445;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PrbPm4U9gTUgFkdJBeExNHbmpdtsVHY66VNg0wV3TpI=;
-	b=UCjldjGAg35lVQBN0mR/Ja8PzHUW42EQboTIr9Q5NKy+PB/D28qdW1oOc4F5ZQ3/MGfsKu
-	2+wCbOhAspaJUoKrzJXTj/fpGlUEHwLMZPqVrE5VeUo0u6ZMn3a9uXf+5m0B3LZ5rDpsYh
-	nhBuF/hIsEIUuVeCO7HY3X/NFUT+J3fCfoSqZv/FjddnaMfhqTbIG/s8958X5CdNcqGfQC
-	K9b1ACXRkYKCZ36n5YKaTaDCLOCEimcQEo1ghUhX1cw2kqbbnHBXEbejobqdkdGMVh5wdW
-	uYszU+SivBh3bBHK9O5iK8tf9oPdXsGCgOTYpLJ6gYFt0l2TZEXtlOPMvgZImw==
-Message-ID: <71c7e797-feaa-4285-9399-327b24308a34@bootlin.com>
-Date: Mon, 22 Jan 2024 15:24:02 +0100
+	s=arc-20240116; t=1705933485; c=relaxed/simple;
+	bh=u3lCWVWgAgWl8h7GW8PVAHDWbnbB0UjtV3vO7hRzYG4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=gOKe36nx2aC5iFADtZZlmS7Bp4BYTw423snJK1NegLfoYHzHCWPZCJVXU7Yp4Szo45ltlmhNVOup4LPtLg1N2YeDbC0mxeM+yrigMUJ8j3WHy6F69n76OfIw3/XFyMjqHZ98GnzqQgE70qIPnBovtVj9lR3xaM/450C7yQtfiXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:955e:bba5:7ff4:cfb6])
+	by xavier.telenet-ops.be with bizsmtp
+	id dqQa2B00h0ZxL6o01qQbti; Mon, 22 Jan 2024 15:24:35 +0100
+Received: from rox.of.borg ([192.168.97.57])
+	by ramsan.of.borg with esmtp (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1rRvDF-00GGwo-Pc;
+	Mon, 22 Jan 2024 15:24:34 +0100
+Received: from geert by rox.of.borg with local (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1rRvE2-00CFAU-OO;
+	Mon, 22 Jan 2024 15:24:34 +0100
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Magnus Damm <magnus.damm@gmail.com>
+Cc: linux-staging@lists.linux.dev,
+	linux-usb@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v2 0/4] staging: Remove EMMA Mobile USB Gadget and board staging support
+Date: Mon, 22 Jan 2024 15:24:29 +0100
+Message-Id: <cover.1705932585.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 11/14] phy: cadence-torrent: add suspend and resume
- support
-Content-Language: en-US
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>,
- Tony Lindgren <tony@atomide.com>, Haojian Zhuang
- <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>,
- Janusz Krzysztofik <jmkrzyszt@gmail.com>, Andi Shyti
- <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
- Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
- Philipp Zabel <p.zabel@pengutronix.de>, Tom Joseph <tjoseph@cadence.com>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
- linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
- theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com
-References: <20240116182244.GA101245@bhelgaas>
-From: Thomas Richard <thomas.richard@bootlin.com>
-In-Reply-To: <20240116182244.GA101245@bhelgaas>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: thomas.richard@bootlin.com
+Content-Transfer-Encoding: 8bit
 
-Hello,
+	Hi Greg,
 
-On 1/16/24 19:22, Bjorn Helgaas wrote:
-> On Mon, Jan 15, 2024 at 05:14:52PM +0100, Thomas Richard wrote:
->> Add suspend and resume support.
->> The alread_configured flag is cleared during suspend stage to force the
->> phy initialization during the resume stage.
-> 
-> s/alread_configured/already_configured/
-> 
-> Wrap to fill 75 columns.  Add a blank line if you intend two
-> paragraphs.
-> 
-> I don't know whether there's a strong convention in drivers/phy, but I
-> see several commit logs that capitalize "PHY".  "Phy" is not a
-> standard English word, so I think the capitalization makes it easier
-> to read.
-> 
+Board staging was introduced to host temporarily legacy board support
+for platforms that are under active conversion to DT.  Currently it
+hosts:
+  1. USB Gadget support for the Kyoto Microcomputer Co. KZM-A9-Dual
+     (KZM9D) development board,
+  2. Display support for the Atmark Techno Armadillo-800-EVA development
+     board.
 
-Yes indeed, PHY is used in lots of commit logs.
-So I guess I can use it.
+During the last few years, the KZM9D development board didn't receive
+much love.  Also, no one really cared about the EMMA Mobile USB Gadget
+driver, which is also hosted under staging.  Recently, the SH-Mobile
+LCDC DRM driver and Armadillo-800-EVA display support have been
+converted to DT.
 
-Regards,
+Hence this patch series removes all board staging support, together with
+the now unused EMMA Mobile USB Gadget driver.
+
+Changes compared to v1:
+  - Drop RFC, widen audience,
+  - Drop EMMA Mobile EV2 clkdev registration patch (merged),
+  - Add Acked-by,
+  - Remove Armadillo-800-EVA and core board staging code, too.
+
+Thanks!
+
+[1] "[PATCH/RFC 0/3] Remove KZM9D board staging support"
+    https://lore.kernel.org/all/cover.1686325857.git.geert+renesas@glider.be/
+
+Geert Uytterhoeven (4):
+  staging: emxx_udc: Remove EMMA Mobile USB Gadget driver
+  staging: board: Remove KZM9D board staging code
+  staging: board: Remove Armadillo-800-EVA board staging code
+  staging: Remove board staging code
+
+ drivers/staging/Kconfig                 |    4 -
+ drivers/staging/Makefile                |    2 -
+ drivers/staging/board/Kconfig           |   12 -
+ drivers/staging/board/Makefile          |    4 -
+ drivers/staging/board/TODO              |    2 -
+ drivers/staging/board/armadillo800eva.c |   88 -
+ drivers/staging/board/board.c           |  204 --
+ drivers/staging/board/board.h           |   46 -
+ drivers/staging/board/kzm9d.c           |   26 -
+ drivers/staging/emxx_udc/Kconfig        |   11 -
+ drivers/staging/emxx_udc/Makefile       |    2 -
+ drivers/staging/emxx_udc/TODO           |    6 -
+ drivers/staging/emxx_udc/emxx_udc.c     | 3223 -----------------------
+ drivers/staging/emxx_udc/emxx_udc.h     |  554 ----
+ 14 files changed, 4184 deletions(-)
+ delete mode 100644 drivers/staging/board/Kconfig
+ delete mode 100644 drivers/staging/board/Makefile
+ delete mode 100644 drivers/staging/board/TODO
+ delete mode 100644 drivers/staging/board/armadillo800eva.c
+ delete mode 100644 drivers/staging/board/board.c
+ delete mode 100644 drivers/staging/board/board.h
+ delete mode 100644 drivers/staging/board/kzm9d.c
+ delete mode 100644 drivers/staging/emxx_udc/Kconfig
+ delete mode 100644 drivers/staging/emxx_udc/Makefile
+ delete mode 100644 drivers/staging/emxx_udc/TODO
+ delete mode 100644 drivers/staging/emxx_udc/emxx_udc.c
+ delete mode 100644 drivers/staging/emxx_udc/emxx_udc.h
 
 -- 
-Thomas Richard, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.34.1
 
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
 
