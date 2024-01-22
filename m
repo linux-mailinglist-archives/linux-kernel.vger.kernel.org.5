@@ -1,125 +1,113 @@
-Return-Path: <linux-kernel+bounces-33005-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-33002-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9ABC83631F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:23:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 242FF836314
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 13:22:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC7E11C22C17
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:23:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42B10B289C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jan 2024 12:22:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72B453CF42;
-	Mon, 22 Jan 2024 12:20:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64EBD3D964;
+	Mon, 22 Jan 2024 12:20:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eKWZG3ay"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="frXLkzL0"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 465E53E473
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 12:20:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23D2D3D55C;
+	Mon, 22 Jan 2024 12:20:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705926057; cv=none; b=awgbD+ozS0JYx8Pt4FZg7HTtOrSXUNRyTmzQcneMEFXEjd/fFnoe21GH2jeNt73rrtBpDG0Mh1BchdMRtjfEryZHJxe/Ra/sSNNlkkFFx6KrzukuNuo0e7Hokpf0tXFHE3WdhBsQ2iSQkBPC38AYlYYYmA+aRuiggEe8TzYQdS4=
+	t=1705926036; cv=none; b=t7LmU6JNw/kGdgj3DyyN9XIhVcNMArZT/VLQ66wfMvMcOXD+l32XQwGwheabJVeG4RuF9XID2pLuYiZ30vKwmw0GMX1RW8tHi0t2yJiuPhmjbrgMXds/c0Sta8J5kD5UUP5bFxdETfh+76R1bmQ1idz3d69+BykmebpJiI+FrYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705926057; c=relaxed/simple;
-	bh=xC7n5NC9SALvj1NmFHUYUAbKPwq4iRoDMR2D5nFzGzM=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=LvSIAm74S8pd6oabxWPuCVf+F2YkqXFLGZBwzURaViZoSm2RMTo+EcngWuQmdXqK+K/ooabon2KyLoAocO2JhFIt63SMpuk0h3cKqjgFyBy+jdV/1K6RuxdGSvnutSway4T4DOgLVZ7xu7ugPqYyu1bK+sDh7f6RcXkLIVsqxz0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eKWZG3ay; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1705926036; c=relaxed/simple;
+	bh=Fst93YHEkoTT1MXwK0wHemZAw7gr0g5iyr/F8HZnIIM=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=de+smXdzHJKokU4bt2i1b6Q9BLQjRcmuxFOdWiXXdz5HS/QhOJB7t6upOB2qdSXjSSKu7ZHiFV9i/XyiEBtUsYqKAdq4SzvtC3TSD1KA3EajXoMAU58kXTN5LEiraZrnbM1BJl7yqwriAHLgfjcqQf10OLpKa/fj6d0dqxQMOVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=frXLkzL0; arc=none smtp.client-ip=192.55.52.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705926055; x=1737462055;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=xC7n5NC9SALvj1NmFHUYUAbKPwq4iRoDMR2D5nFzGzM=;
-  b=eKWZG3ayFb38u/yGUNFcQU3QHSwDUrxj7X0C926s9xbRiJjRywKnAsKD
-   3rDsXN+SISgYSDS3VyGxGZYE3eIRHv0oiqi1QVurpOOh5pfJa2tRQLTlX
-   fj4lQ7/bWopHMx8sSSdanocXCxSFvi8HCcETXocXax1h+1T0rrEW3JOne
-   r18yDrVSRIKM04pf28idMpGKhpCJKCNuDUTo/xfpNS/Ekf1kysh9Su6mQ
-   jnxNKW3lhInOuWVLDDcWUebi96NgjmCn7yEaif2alJ0C4OhDZNw6Suf/f
-   xAsTHQShteZjbsQLvsfFeZTZGly+YK1loXeTIr/tsTCBbWKzcsCkPGYIc
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10960"; a="8582558"
+  t=1705926035; x=1737462035;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=Fst93YHEkoTT1MXwK0wHemZAw7gr0g5iyr/F8HZnIIM=;
+  b=frXLkzL0VjVd39MyvrLetgsGYHs1X5wSqLS4MOJjOHrh6Ep1bFa0Z+dJ
+   Q92er2gbiFW21gaxd6HELDswc+HvSqLOZEi2vuQqRe/q5+DG5nYCVWvAt
+   akvqgINGixQl2/rik0JNlEdxUzlEsCBYPcSUdkhjzLtSTB6gKZua3v9/A
+   sBosI2+6kKPQjNHV2JiX+6mcWGQXEcu7+w+7MJZeCflFMQYwJAU7h/fw1
+   +Le0X5lYenV1cFk/9sE2mRMdJxrQbrO3VkhATwQDduzugQjEaEJyCOTPs
+   3O7+WDYHJcUMZ7z7LztZGf45qoyBiobRYzHSLZRtFi1VIBGcepc5yN3FK
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10960"; a="432355872"
 X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
-   d="scan'208";a="8582558"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 04:20:54 -0800
+   d="scan'208";a="432355872"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 04:20:34 -0800
 X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10960"; a="958720646"
 X-IronPort-AV: E=Sophos;i="6.05,211,1701158400"; 
-   d="scan'208";a="27339380"
-Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
-  by orviesa002.jf.intel.com with ESMTP; 22 Jan 2024 04:20:53 -0800
-Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rRtII-0006bO-20;
-	Mon, 22 Jan 2024 12:20:50 +0000
-Date: Mon, 22 Jan 2024 20:20:25 +0800
-From: kernel test robot <lkp@intel.com>
-To: Helge Deller <deller@gmx.de>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: arch/parisc/kernel/drivers.c:745:19-20: Unneeded semicolon
-Message-ID: <202401222059.Wli6OGT0-lkp@intel.com>
+   d="scan'208";a="958720646"
+Received: from avulfx-mobl1.ger.corp.intel.com (HELO localhost) ([10.94.249.150])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 04:20:30 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Mon, 22 Jan 2024 14:20:25 +0200 (EET)
+To: Bjorn Helgaas <helgaas@kernel.org>
+cc: Mahesh J Salgaonkar <mahesh@linux.ibm.com>, 
+    Oliver O'Halloran <oohall@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>, 
+    Keith Busch <kbusch@kernel.org>, Dongdong Liu <liudongdong3@huawei.com>, 
+    linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org, 
+    LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] PCI/DPC: Fix TLP Prefix register reading offset
+In-Reply-To: <20240119225923.GA191511@bhelgaas>
+Message-ID: <ad91677a-cce3-03fe-c826-12f8d44e3466@linux.intel.com>
+References: <20240119225923.GA191511@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: multipart/mixed; BOUNDARY="8323328-1542941559-1705925767=:994"
+Content-ID: <c10c0ccc-5b18-b509-a91c-8375ff8673c8@linux.intel.com>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   6613476e225e090cc9aad49be7fa504e290dd33d
-commit: ac9fb7d2b71d8353603534a5e5cc92f54fd7e219 parisc: drivers: Fix kdoc warnings
-date:   7 months ago
-config: parisc-randconfig-r062-20240122 (https://download.01.org/0day-ci/archive/20240122/202401222059.Wli6OGT0-lkp@intel.com/config)
-compiler: hppa-linux-gcc (GCC) 13.2.0
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401222059.Wli6OGT0-lkp@intel.com/
+--8323328-1542941559-1705925767=:994
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-ID: <ac85c081-d4f5-e715-905e-e955db4eb39c@linux.intel.com>
 
-cocci warnings: (new ones prefixed by >>)
->> arch/parisc/kernel/drivers.c:745:19-20: Unneeded semicolon
+On Fri, 19 Jan 2024, Bjorn Helgaas wrote:
 
-vim +745 arch/parisc/kernel/drivers.c
+> On Thu, Jan 18, 2024 at 01:08:15PM +0200, Ilpo J=E4rvinen wrote:
+> > The TLP Prefix Log Register consists of multiple DWORDs (PCIe r6.1 sec
+> > 7.9.14.13) but the loop in dpc_process_rp_pio_error() keeps reading
+> > from the first DWORD. Add the iteration count based offset calculation
+> > into the config read.
+>=20
+> So IIUC the user-visible bug is that we print only the first PIO TLP
+> Prefix (duplicated several times), and we never print the second,
+> third, etc Prefixes, right?
 
-   720	
-   721	/**
-   722	 * parse_tree_node - returns a device entry in the iotree
-   723	 * @parent: the parent node in the tree
-   724	 * @index: the current BC index
-   725	 * @modpath: the hardware_path struct to match a device against
-   726	 * @return: The corresponding device if found, NULL otherwise.
-   727	 *
-   728	 * Checks all the children of @parent for a matching @id.  If none
-   729	 * found, it returns NULL.
-   730	 */
-   731	static struct device *
-   732	parse_tree_node(struct device *parent, int index, struct hardware_path *modpath)
-   733	{
-   734		struct parse_tree_data d = {
-   735			.index          = index,
-   736			.modpath        = modpath,
-   737		};
-   738	
-   739		struct recurse_struct recurse_data = {
-   740			.obj	= &d,
-   741			.fn	= check_parent,
-   742		};
-   743	
-   744		if (device_for_each_child(parent, &recurse_data, descend_children))
- > 745			{ /* nothing */ };
-   746	
-   747		return d.dev;
-   748	}
-   749	
+Yes.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> I wish we could print them all in a single pci_err(), as we do for the
+> TLP Header Log, instead of dribbling them out one by one.
+
+I've also done some work towards consolidating AER and DPC TLP=20
+Header/Prefix Log handling which is when I found this bug (the reading=20
+side is already done but printing is still pending).
+
+> > Fixes: f20c4ea49ec4 ("PCI/DPC: Add eDPC support")
+> > Signed-off-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
+
+--=20
+ i.
+--8323328-1542941559-1705925767=:994--
 
