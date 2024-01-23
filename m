@@ -1,44 +1,45 @@
-Return-Path: <linux-kernel+bounces-36054-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 594C2839AC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 22:04:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19B08839AC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 22:04:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7DB0B22D63
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:04:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C2C31C22280
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:04:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1555739AE5;
-	Tue, 23 Jan 2024 21:04:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3B7C39848;
+	Tue, 23 Jan 2024 21:04:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b="tMappZn9"
+	dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b="VhEfb8xu"
 Received: from ahti.lucaweiss.eu (ahti.lucaweiss.eu [128.199.32.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCCBD13ACC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCD231A27A;
 	Tue, 23 Jan 2024 21:04:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=128.199.32.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706043876; cv=none; b=hPbQKwGGX/DbkVR/0aHpU2M0XCcqVIPFYVIjiEP9SBx7BCb3bqJ832wtMLaFI0+J1172pkFkDz1XAhyg/LuuL5nejgTA0aYKlxdV9Fl+JhuP1afyKPmmzYoTe5QHZSBTB7ticc7USKOb+Qr08SU/pi7b1FQCnixmgUG/L+SJ5a4=
+	t=1706043876; cv=none; b=aUR/XuvdNC7sevQv7OWXd25eV5wMI6GPWmIpbxDEC4wi+NAXgxR4hoatvtWexr+X68zaMZMj2+Xf7TfDNh+g6aX3EGvbFgCE4lGAdXN6TLSFOZOlzbkXt2oI7bdhAs0IGC5uqS3D3hgePWXWTZX3eq80XwOpX/VQf2ko+/Vov/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706043876; c=relaxed/simple;
-	bh=6Tt6eRYCiLryDbZmMcrKQu7hSAO30Hir5TyQMBYLc2E=;
+	bh=iUZ9ff9Sy/VGyfLsHpEtkeYzZrimjw/PLUyxTEaxB+8=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=JFUYl4Qmv0Ftc6Hz8W7+6jH+ZBwfE1EsJuyHwkGcdgL71Z28IBxWIzhJEfEqusi8XlClWPM7O9mKxoYfi3aMnB1hwA/Wmff/UB/cwKSM3Psj4wDtoW3TmtbGHSjKitxGTuzkZMIizFjsrSvpDsyFW5wAwyhSkkYfweUKoPrJ8bg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz; spf=pass smtp.mailfrom=z3ntu.xyz; dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b=tMappZn9; arc=none smtp.client-ip=128.199.32.197
+	 In-Reply-To:To:Cc; b=loWzWMLJ+hh6vpKC2OYiCB1/VXpOK3G67ZFMOojgPYhprTvogiG6oDRcUYl1DcCy3rUR6W+e8B2secijNPCWH/0mDZzGiTov31ymfyPcI8TBFWji1Nk3XplEebJJvRBGsxd5wumUUvBSO1irt1+HKnbVaw24oRBpoYg2hZTLR9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz; spf=pass smtp.mailfrom=z3ntu.xyz; dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b=VhEfb8xu; arc=none smtp.client-ip=128.199.32.197
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=z3ntu.xyz
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=s1;
-	t=1706043867; bh=6Tt6eRYCiLryDbZmMcrKQu7hSAO30Hir5TyQMBYLc2E=;
+	t=1706043867; bh=iUZ9ff9Sy/VGyfLsHpEtkeYzZrimjw/PLUyxTEaxB+8=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=tMappZn94EZDvk53WXGyAWQjeOxqtwTvDv42zG18rEuu1uegC0BhYJ1DbxkZB0ZFZ
-	 Q0FlkgGTUNDV5/QCXog3OwikuARSDiFMdjR6nCnBsswpBbbYAL60MA9+q6YCiTI6JI
-	 pNtmu99dYk5zkyw7jpByT7ZuAcj3VxPj/zZWzrTU=
+	b=VhEfb8xuK6Z+e0ASbBsRCW8WXFX3p/aLRwG3yVVu1N6eWhIG0/9JKrS7F1NBQBOxC
+	 IeWZ+v1tqDX4Yiw2SYzJj1Ez8aN/464YRdXYpfU2meZAZsSV8T15puoTzCdaYuX+2z
+	 zMqQnTjKY5NwCjIHsV9DCYzc0S4o9CYCvokFNr3w=
 From: Luca Weiss <luca@z3ntu.xyz>
-Date: Tue, 23 Jan 2024 22:03:56 +0100
-Subject: [PATCH 2/3] clk: qcom: gcc-msm8953: add MDSS_BCR reset
+Date: Tue, 23 Jan 2024 22:03:57 +0100
+Subject: [PATCH 3/3] arm64: dts: qcom: msm8953: add reset for display
+ subsystem
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -47,7 +48,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240123-msm8953-mdss-reset-v1-2-bb8c6d3ce897@z3ntu.xyz>
+Message-Id: <20240123-msm8953-mdss-reset-v1-3-bb8c6d3ce897@z3ntu.xyz>
 References: <20240123-msm8953-mdss-reset-v1-0-bb8c6d3ce897@z3ntu.xyz>
 In-Reply-To: <20240123-msm8953-mdss-reset-v1-0-bb8c6d3ce897@z3ntu.xyz>
 To: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
@@ -61,46 +62,47 @@ Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Luca Weiss <luca@z3ntu.xyz>, Vladimir Lypak <vladimir.lypak@gmail.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=812; i=luca@z3ntu.xyz;
- h=from:subject:message-id; bh=8RJwt2p5+9bT6QQ/3hPOmBGTH0lkJfO7XYCtLnTgeIM=;
- b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBlsCnXA+2mEUNEOks1QZlI/1ceT4VUxjVTjAH78
- B8CNE5k++uJAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZbAp1wAKCRBy2EO4nU3X
- VrhSD/0WGCK03oMpHb2EbL2RqQS/Ywq3b7sbBoW8HjGlfmhZyNN03GchQqM43BSpXDOGpDPv2b6
- mb4nvGd4fG000UsPOctR1SgCRll82pC30krHtuzuXE0TxKsIaifKwLMfItBz2r6FS/9n01XOoS1
- a9boyPpp6pWLydI2EPn3AbMAP+CDejOWxnn5yYB8O7O46xPI40fhLir61rJLbhM4wWreP65hi+P
- F/OVc94cTXB69aO/bwqGu+ri1WtDXnaoJKto2HmNjbC9B6hD5sa2Z0YC7gKhNTPAP01ivY2GNa0
- v9JOnqHjNex12zSdicTUd1tYiud8crfzGz+9Y1W9m0XkIGcq646eEXFvqbadN2XlTfjpY1Nogd9
- Oef2Bz4dWDa8TY/fJ6Nheeu/M4AvSViBCLv+1S/+f0KA0fOSUwLd5s7Q/k+88BXhYqTmvj8C2A7
- IdJakQnCqtXOfa0/ppIzrbxlZjyYX8nMS+8yH+kZfjqYl1KnbZFgVDARfQ4XM1yvX1NAI/MdZ4c
- MXkLqAvrmBW9DA7ZJ++TxdPJdmXdGfXqlfv9/XT4auG5M2Q+nrkUOlKLCF005baXIgYM1/LinOl
- +JmC2x30d28UPk/07XBLUEePxVy+Gqy79hHNYvGXPWnOpsdbzOOKsuqhyqqeJoW3C7Zz77yjjF4
- 5Jl8a/0cKfc3FIg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=774; i=luca@z3ntu.xyz;
+ h=from:subject:message-id; bh=2eGHbPBMdO+UgME/Y6wGkZ+t0vRvxXHXtjw6rDrXCQA=;
+ b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBlsCnY8IywGYM0+ByxpNlLjwe0KF31yb0R24nKo
+ 3uRQqntBqiJAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZbAp2AAKCRBy2EO4nU3X
+ VkT4D/wPDY9u4kI772wMuV+JU85Ok3ODvWBeV65f2Aj5mic3HAOfGFQzvBnED3RY5v68/T5t0iN
+ hpHpxQvletMss+auTI4T/PXBF8JsFCfoQY3mn+eGFJQil2NrXrqfhQjeRNGT4b0X1aBtFQ+EQDY
+ HU82Mfq2R5GophhKMW0oa0RhCX2w1D2LVcTAg8hU2/ygTKCQ6zK34kkgyJMZAVBmhBocTFu1F49
+ IUU2js0Irq4RN2gN1TDiOqDo9uOGLkAh0jLCoSve4YsnmPx67PB8WpkIJS0RGVxOwPtAM7lD2yc
+ 0j+0Z8CPikioyLaogYNma9RHo1FliEADpTsmVMDeKCp5fh4ddE4ZO5GAKgCr7ecDWHUb+z+OWNg
+ xWVzaq5WiRYo1LFM8BNjlN4+Ko8uQ1MiMG0/N0zEYlvd942mAuD5t9rARfbPbMgXL5WRQuFVb7a
+ wjlKLpaduvTnNpyz0KUb4425j3IAj5AL+Eo5dhginLcKUMeaC60S6wVVljPN/nqV1RJgtti5W1A
+ 2xc2pEp1E4RYZlpJZ2hAHpH3TRhba0zzoWDpnQXCWA9vIHO1bPQdXJZx/7wT2sM5e25HCF+YQcb
+ hXQXRl1Bzr8PaqnxkhUf7I49TnAuis8Kfp6VnyKucUqfiupwurZXgYt1O4AooMO7ZQnmTMuTd+n
+ dsEgawnrk5b2QCA==
 X-Developer-Key: i=luca@z3ntu.xyz; a=openpgp;
  fpr=BD04DA24C971B8D587B2B8D7FAF69CF6CD2D02CD
 
 From: Vladimir Lypak <vladimir.lypak@gmail.com>
 
-Add an entry in the gcc driver for the MDSS_BCR reset found on MSM8953.
+With this reset we can avoid situations like IRQ storms from DSI host
+before it even started probing (because boot-loader left DSI IRQs on).
 
 Signed-off-by: Vladimir Lypak <vladimir.lypak@gmail.com>
-[luca: expand commit message, move entry]
 Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
 ---
- drivers/clk/qcom/gcc-msm8953.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/qcom/msm8953.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/clk/qcom/gcc-msm8953.c b/drivers/clk/qcom/gcc-msm8953.c
-index 3e5a8cb14d4d..5725857faae6 100644
---- a/drivers/clk/qcom/gcc-msm8953.c
-+++ b/drivers/clk/qcom/gcc-msm8953.c
-@@ -4171,6 +4171,7 @@ static const struct qcom_reset_map gcc_msm8953_resets[] = {
- 	[GCC_USB3PHY_PHY_BCR]	= { 0x3f03c },
- 	[GCC_USB3_PHY_BCR]	= { 0x3f034 },
- 	[GCC_USB_30_BCR]	= { 0x3f070 },
-+	[GCC_MDSS_BCR]		= { 0x4d074 },
- };
+diff --git a/arch/arm64/boot/dts/qcom/msm8953.dtsi b/arch/arm64/boot/dts/qcom/msm8953.dtsi
+index ad2f8cf9c966..dcb5c98b793c 100644
+--- a/arch/arm64/boot/dts/qcom/msm8953.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8953.dtsi
+@@ -859,6 +859,8 @@ mdss: display-subsystem@1a00000 {
+ 				      "vsync",
+ 				      "core";
  
- static const struct regmap_config gcc_msm8953_regmap_config = {
++			resets = <&gcc GCC_MDSS_BCR>;
++
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
+ 			ranges;
 
 -- 
 2.43.0
