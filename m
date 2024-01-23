@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-34734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC0088386E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 06:47:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 833F48386ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 06:47:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5092BB22BE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 05:47:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A3D4282123
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 05:47:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC65C524C;
-	Tue, 23 Jan 2024 05:46:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 378CC5C85;
+	Tue, 23 Jan 2024 05:46:46 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7181E5690;
-	Tue, 23 Jan 2024 05:46:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CE92C8DD;
+	Tue, 23 Jan 2024 05:46:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705988801; cv=none; b=IgzHQ2ql7o/kwtnoUM9BltTxO0NMW0wtcvzzqNCKdIgHz1yfsvfrOKB1iDowh0F2aqA7LmZiEj4/2YURcQ9HDm2qMB3EZGGZlpQ6ZhtEPc/9vMhaCDg2t0mlXdUdMDgJK+2iQmx2Y/kyDkyGJC8dEqW8yoxHTqFKGXdeafms/a0=
+	t=1705988805; cv=none; b=pJogscWKjlkmQ6p+yqupNPjPnYwKWqICKUCOF3VBK6BoUCsW+gq2wKV6nRLYom3cuayvqutCSJ/9CZnCthKDIpmyoV/mdKqHhiaRZv4sryTCXBncycf6qsnGmkrZZacIv/9isODjNA+xVviCSkFCXzXFeXdhyVAiywSlljSzN6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705988801; c=relaxed/simple;
-	bh=yL5OLRgesBnWRwqPjOcPtiOchdKVa1hZNNUEdFB3DTc=;
+	s=arc-20240116; t=1705988805; c=relaxed/simple;
+	bh=0mjJxnCmvKiSTYuVDSEK+hlxIecGTkYr/y/sD7YUgkw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=X1uuEbNtloWC1rGIs3Hskun1TOWpsoR86pD22ENhQ7RNbzQn+gDDClOKL+vSIYc9iFWE/yMaqRDNfzoykTNdjfVfdybP6ixLiTeODhGuh9so6NlSifAYmsu10Dk8Aq+MyIr8SJgjeohbsKYBcgw727Lng5AvSpNJXSU8Sz2mQfo=
+	 MIME-Version; b=hkaX0w53+vhlbX1YotkeMPXRcu+GfS4+Xv84kkQ//BCT/Lr2LLnwlPtpibm1H5jz87l6pfAsHUbzK1b58jGYLK+93a9z+FzlgOihhjQPLfx3V3PICW864bY/3/3V+N7VUGNte0LlKv2XBltH9F0CVmxcwagixo5aryzorfa7wB0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 350D11FB;
-	Mon, 22 Jan 2024 21:47:24 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0FCE41FB;
+	Mon, 22 Jan 2024 21:47:29 -0800 (PST)
 Received: from a077893.arm.com (unknown [10.163.40.228])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6ED173F762;
-	Mon, 22 Jan 2024 21:46:34 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 5AB8B3F762;
+	Mon, 22 Jan 2024 21:46:39 -0800 (PST)
 From: Anshuman Khandual <anshuman.khandual@arm.com>
 To: linux-arm-kernel@lists.infradead.org,
 	suzuki.poulose@arm.com
@@ -46,9 +46,9 @@ Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
 	linux-kernel@vger.kernel.org,
 	coresight@lists.linaro.org,
 	linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH V4 02/11] coresight: stm: Extract device name from AMBA pid based table lookup
-Date: Tue, 23 Jan 2024 11:15:59 +0530
-Message-Id: <20240123054608.1790189-3-anshuman.khandual@arm.com>
+Subject: [PATCH V4 03/11] coresight: tmc: Extract device properties from AMBA pid based table lookup
+Date: Tue, 23 Jan 2024 11:16:00 +0530
+Message-Id: <20240123054608.1790189-4-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240123054608.1790189-1-anshuman.khandual@arm.com>
 References: <20240123054608.1790189-1-anshuman.khandual@arm.com>
@@ -60,8 +60,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Instead of using AMBA private data field, extract the device name from AMBA
-pid based table lookup using new coresight_get_uci_data_from_amba() helper.
+This extracts device properties from AMBA pid based table lookup. This also
+defers tmc_etr_setup_caps() after the coresight device has been initialized
+so that PID value can be read.
 
 Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
 Cc: Mike Leach <mike.leach@linaro.org>
@@ -69,66 +70,63 @@ Cc: James Clark <james.clark@arm.com>
 Cc: coresight@lists.linaro.org
 Cc: linux-arm-kernel@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org
-Cc: linux-stm32@st-md-mailman.stormreply.com
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- drivers/hwtracing/coresight/coresight-priv.h | 10 ++++++++++
- drivers/hwtracing/coresight/coresight-stm.c  | 14 +++++++++++++-
- 2 files changed, 23 insertions(+), 1 deletion(-)
+ .../hwtracing/coresight/coresight-tmc-core.c  | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-priv.h b/drivers/hwtracing/coresight/coresight-priv.h
-index 767076e07970..68cbb036cec8 100644
---- a/drivers/hwtracing/coresight/coresight-priv.h
-+++ b/drivers/hwtracing/coresight/coresight-priv.h
-@@ -221,6 +221,16 @@ static inline void *coresight_get_uci_data(const struct amba_id *id)
- 	return uci_id->data;
+diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
+index 7ec5365e2b64..e71db3099a29 100644
+--- a/drivers/hwtracing/coresight/coresight-tmc-core.c
++++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
+@@ -370,16 +370,24 @@ static inline bool tmc_etr_has_non_secure_access(struct tmc_drvdata *drvdata)
+ 	return (auth & TMC_AUTH_NSID_MASK) == 0x3;
  }
  
-+static inline void *coresight_get_uci_data_from_amba(const struct amba_id *table, u32 pid)
-+{
-+	while (table->mask) {
-+		if ((table->id & table->mask) == pid)
-+			return coresight_get_uci_data(table);
-+		table++;
-+	};
-+	return NULL;
-+}
++#define TMC_AMBA_MASK 0xfffff
 +
- void coresight_release_platform_data(struct coresight_device *csdev,
- 				     struct device *dev,
- 				     struct coresight_platform_data *pdata);
-diff --git a/drivers/hwtracing/coresight/coresight-stm.c b/drivers/hwtracing/coresight/coresight-stm.c
-index a1c27c901ad1..9cdca4f86cab 100644
---- a/drivers/hwtracing/coresight/coresight-stm.c
-+++ b/drivers/hwtracing/coresight/coresight-stm.c
-@@ -804,6 +804,18 @@ static void stm_init_generic_data(struct stm_drvdata *drvdata,
- 	drvdata->stm.set_options = stm_generic_set_options;
- }
- 
-+#define STM_AMBA_MASK 0xfffff
++static const struct amba_id tmc_ids[];
 +
-+static const struct amba_id stm_ids[];
-+
-+static char *stm_csdev_name(struct coresight_device *csdev)
-+{
-+	u32 stm_pid = coresight_get_pid(&csdev->access) & STM_AMBA_MASK;
-+	void *uci_data = coresight_get_uci_data_from_amba(stm_ids, stm_pid);
-+
-+	return uci_data ? (char *)uci_data : "STM";
-+}
-+
- static int stm_probe(struct amba_device *adev, const struct amba_id *id)
+ /* Detect and initialise the capabilities of a TMC ETR */
+-static int tmc_etr_setup_caps(struct device *parent, u32 devid, void *dev_caps)
++static int tmc_etr_setup_caps(struct device *parent, u32 devid)
  {
- 	int ret, trace_id;
-@@ -900,7 +912,7 @@ static int stm_probe(struct amba_device *adev, const struct amba_id *id)
- 	pm_runtime_put(&adev->dev);
+ 	int rc;
+-	u32 dma_mask = 0;
++	u32 tmc_pid, dma_mask = 0;
+ 	struct tmc_drvdata *drvdata = dev_get_drvdata(parent);
++	void *dev_caps;
  
- 	dev_info(&drvdata->csdev->dev, "%s initialized\n",
--		 (char *)coresight_get_uci_data(id));
-+		 stm_csdev_name(drvdata->csdev));
- 	return 0;
+ 	if (!tmc_etr_has_non_secure_access(drvdata))
+ 		return -EACCES;
  
- cs_unregister:
++	tmc_pid = coresight_get_pid(&drvdata->csdev->access) & TMC_AMBA_MASK;
++	dev_caps = coresight_get_uci_data_from_amba(tmc_ids, tmc_pid);
++
+ 	/* Set the unadvertised capabilities */
+ 	tmc_etr_init_caps(drvdata, (u32)(unsigned long)dev_caps);
+ 
+@@ -497,10 +505,6 @@ static int tmc_probe(struct amba_device *adev, const struct amba_id *id)
+ 		desc.type = CORESIGHT_DEV_TYPE_SINK;
+ 		desc.subtype.sink_subtype = CORESIGHT_DEV_SUBTYPE_SINK_SYSMEM;
+ 		desc.ops = &tmc_etr_cs_ops;
+-		ret = tmc_etr_setup_caps(dev, devid,
+-					 coresight_get_uci_data(id));
+-		if (ret)
+-			goto out;
+ 		idr_init(&drvdata->idr);
+ 		mutex_init(&drvdata->idr_mutex);
+ 		dev_list = &etr_devs;
+@@ -539,6 +543,9 @@ static int tmc_probe(struct amba_device *adev, const struct amba_id *id)
+ 		goto out;
+ 	}
+ 
++	if (drvdata->config_type == TMC_CONFIG_TYPE_ETR)
++		ret = tmc_etr_setup_caps(dev, devid);
++
+ 	drvdata->miscdev.name = desc.name;
+ 	drvdata->miscdev.minor = MISC_DYNAMIC_MINOR;
+ 	drvdata->miscdev.fops = &tmc_fops;
 -- 
 2.25.1
 
