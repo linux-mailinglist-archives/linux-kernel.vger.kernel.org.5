@@ -1,210 +1,111 @@
-Return-Path: <linux-kernel+bounces-36037-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC684839A81
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:44:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C5D0839A85
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:46:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CDA51C277DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:44:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C936F28C217
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:46:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAFA75250;
-	Tue, 23 Jan 2024 20:44:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 461365251;
+	Tue, 23 Jan 2024 20:46:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="o1apjl9m"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JV4LwnHa"
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 830672109
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 20:44:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FBA32109;
+	Tue, 23 Jan 2024 20:46:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706042684; cv=none; b=Up56T4Bd1a07sBhvzeOrVmi51XaWNp8Mf7/pN93MVn/F9b/+77ehjh+wbnIhNtAXF38Rp5KIBn5+kPAn5wxbwNGFU+mcTwSoRondxWyG+Qd9fX8j/RcdekNK7tCDpEhLB5elZb+cXGh8Mo3w1KMH7tlcuMQGZ+XrDeMu8iUZZKM=
+	t=1706042796; cv=none; b=fVBExAszXfTD8UcYyPvhFk97APE9XMqNhTwDbKKSUeYUcQ7K+GX/GLd2PwU4I6hLhXTLuJVFOKECexEKq/CqQ+BwjxSsp/DNziCq6Ju389Le9jrZMf6yBj1CzzDP3oQ7Rg69WvhJmnVrNOr5GWHGg0Oqd4OsQuN5VQtcUpWjHCs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706042684; c=relaxed/simple;
-	bh=3jCvRB4HD/I2qU3Zjc5yS28yBs6yYnwm+im0L/hbAtA=;
-	h=Date:Message-Id:Mime-Version:Subject:From:To:Cc:Content-Type; b=Tv3Ffd3+vn6gnRhvhQm+UrHCN6qMVBrcbbDMuPWHr0/X+YAHKH6uATS0d1SzD9Qk5mTQEm1OFsZbcwwoU0PvCxQU+mPEM0yz1EPgZJboJI2cg2TvxiZjrDIy9ImvEOTHTnb1lOFSvWM+bon9hYqlkyVxcvkfuddCVgOt64h7Pps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=o1apjl9m; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc22f3426aeso7944461276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 12:44:42 -0800 (PST)
+	s=arc-20240116; t=1706042796; c=relaxed/simple;
+	bh=USYoeYJUQKAUokSUeFb0sbYN2Qpzt9xeoPo2sEUmPjI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QgJX1px45KKJy0PiNMt0Of97+GIZo14MS/5gdQiMkfmEWWfw7ZxyTaJXLdqg8Y+0fY4wjKPX0pyNW8ozOWKoCTHgW8bb2WC1vIgm2D+0pRdFP5fBj+AmstY3k9RmIT2ISkutY7mu8pBA5vfkeXWTC8c4iv6BOWMBEDZSIvjxQSU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JV4LwnHa; arc=none smtp.client-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5d24c9b3c8eso863208a12.1;
+        Tue, 23 Jan 2024 12:46:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706042681; x=1706647481; darn=vger.kernel.org;
-        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=gY0AJEtwU5pTI4pJWheKjEqkk5Hi/1V7D+eNS/EusLQ=;
-        b=o1apjl9mHfWS6GeE0NOEvNp5Scywe71cfAi+6ducGQrN71mEGRRqDk9MnxIDz+Sb2R
-         pYrVV3raux06gu3x2MOWSG00DVgDCO9BD6NkZ3dmeDFJ4UUu9r8dn832NluHRoWIi59O
-         vjJBB8BOpekTpU8LU39tAhDtojaHpnXa5C4FKuOAO2JNd+UEnDdVBk1Lq9GyPwXzSfQ2
-         3WJ+B5W+UkxM46niXyD5SsM+wzf5T6nZLzkvCIwt/lwiO6tyhAXfLSqTCniLofM+wArM
-         y8qHLmwhupjRxgtq9w2COW3MtUAFiggvWEoMyYl26GQcHxDxiD/Zgiej2PV1CLJqcLKy
-         z/8Q==
+        d=gmail.com; s=20230601; t=1706042794; x=1706647594; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1193ZUcARbQXW2VvJBKE7RwBOAanI7LZN4mhx6j3UEg=;
+        b=JV4LwnHaR6M0IcSPBhdcmvlPLM5b8oetwvQSOuJXZ28CnvWfPvQi423zMxKF4Y9CGc
+         7XyfOUl058PLxyjjhr4XMBehstLBBSe3ymYXuSKeKlw6MOIhuKLQN/Rv0+WvXIJ/MU7t
+         k6wWJZvMUxpWBF1LpH4syQcGjyI3TJxXWAsQ5QpezOVs2sgVQSeMNSUhZN9n0pK072fP
+         gEmyM9lcZmfpmFIqpQZLvzDNWQ6/L5q/wgItLJoSZLPNQQe18WBgnwhwf9a8ZjVvLKZj
+         LAkT12fxuYXQLHL+vaes3BjENPaYoZeHcVxAt/rIk929tqmwwLZVLrWY5rDg147+9m8q
+         Zx/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706042681; x=1706647481;
-        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gY0AJEtwU5pTI4pJWheKjEqkk5Hi/1V7D+eNS/EusLQ=;
-        b=kU/8ABLHAFsAEYxcGK1bYE8+KtWLwWkalZUIMUDoFya8ZKGyrE/UTAJ3XBDlmsOtgk
-         9qlRy7KOcjC2mViNPn5/Stp4kjWFrRffJ5zKJ4F9Fctzl6uxBlQ+9qOpd5RAuNd8vTB1
-         b1rm6AquRsMfOjCFCBsNAxLB+3xE1BKgqjy3FId1AEXzFzEHIlKWII2Mc+Oc6iv4HPK+
-         jsjEJe4o/5NX/KMqCZdhWz916IasJ6ztJWaIJgMwR0R4q4mOVTY+5qabX0Tl/NwDNbVK
-         W7nuM9GHZMWOpwy7QkyaT0yHGyyW/7Ro1kdHJf1koMH4E2DeHPGntvcrbOaSGuJ0WkA7
-         chlg==
-X-Gm-Message-State: AOJu0YzqFcTk9xOwsx8pJDE4kbbU7PeillHMYLpxl+SXMRver0IcBrL9
-	N4nB3jPOtN9ieiYOFLKFXnJGToGGXWTp39qnAIowBYU7btw9ZR4T7aCFZJj5t4ehrb+rkObgNUw
-	Ktbtmnw==
-X-Google-Smtp-Source: AGHT+IEH+jXKjumQFQcElV3EEDQUoZ4RZrdBmfN12M0KGfM+tnT6TDt0bfOTHzC18Ac190xN55NiZcJD2MJU
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:b37:2438:2b2f:daae])
- (user=irogers job=sendgmr) by 2002:a25:c3c7:0:b0:dbf:4359:326a with SMTP id
- t190-20020a25c3c7000000b00dbf4359326amr55841ybf.1.1706042681557; Tue, 23 Jan
- 2024 12:44:41 -0800 (PST)
-Date: Tue, 23 Jan 2024 12:44:37 -0800
-Message-Id: <20240123204437.1322700-1-irogers@google.com>
+        d=1e100.net; s=20230601; t=1706042794; x=1706647594;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1193ZUcARbQXW2VvJBKE7RwBOAanI7LZN4mhx6j3UEg=;
+        b=wJul461xzVIJbBs+UsVHOJSQPE5WdBB8Vf/bg++nFhhrRITM3XKSnhavVWbOA7c47P
+         VzjrX06yRQ5gAHOGHG3NG/k3VpF3umTC2b1lv762MUE8bYqtcAVqKqy1wmwnwk2blbBC
+         bLLmDJuaixK3k0jJM6j9VBdmAKBqrKlQoJ1o+2+2trflmAY3VdRoqfXzLvTq/L1g8hN5
+         CdBWzGAwcNLjtw40DTdL5jq/oWd14ExVdE5Eq3cv2Q2p2gXTQc/4pNB2T2Iy9cex8VaS
+         mB6krgEFyKourzMvN223QQtv9rBor6GWnDVGq+OdfPdgIB5h2Axc/z9EFHaktzyXzt3U
+         8P/Q==
+X-Gm-Message-State: AOJu0Yy++1WFG66EgbD/6Wt6ZJFgj1Cw4fF5lZvP+oBpn8BmQ0Rivwv1
+	1aD4mJZ06NsGoDaJtOH7eiqnyxKb799Bpksz54JX2gEXF9QHtpJt
+X-Google-Smtp-Source: AGHT+IHRlB0tSZZINjSUHO0zHKwAMgzJQcJzD96eqvVlSKplexha/BylAQa/rUNq18wO1981hAOVmg==
+X-Received: by 2002:a05:6a20:9f9b:b0:19b:238a:85f5 with SMTP id mm27-20020a056a209f9b00b0019b238a85f5mr3922586pzb.11.1706042794455;
+        Tue, 23 Jan 2024 12:46:34 -0800 (PST)
+Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
+        by smtp.gmail.com with ESMTPSA id g5-20020a636b05000000b005bd980cca56sm10569872pgc.29.2024.01.23.12.46.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jan 2024 12:46:34 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Tue, 23 Jan 2024 10:46:33 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: willy@infradead.org, akpm@linux-foundation.org,
+	hcochran@kernelspring.com, mszeredi@redhat.com, axboe@kernel.dk,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/5] Fix and cleanups to page-writeback
+Message-ID: <ZbAlqdwNv_uxnKT1@slm.duckdns.org>
+References: <20240123183332.876854-1-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-Subject: [PATCH v2] libbpf: Add some details for BTF parsing failures
-From: Ian Rogers <irogers@google.com>
-To: Alan Maguire <alan.maguire@oracle.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240123183332.876854-1-shikemeng@huaweicloud.com>
 
-As CONFIG_DEBUG_INFO_BTF is default off the existing "failed to find
-valid kernel BTF" message makes diagnosing the kernel build issue some
-what cryptic. Add a little more detail with the hope of helping users.
+On Wed, Jan 24, 2024 at 02:33:27AM +0800, Kemeng Shi wrote:
+> This series contains some random cleanups and a fix to correct
+> calculation of cgroup wb's bg_thresh. More details can be found
+> respective patches. Thanks!
+> 
+> Kemeng Shi (5):
+>   mm: enable __wb_calc_thresh to calculate dirty background threshold
+>   mm: correct calculation of cgroup wb's bg_thresh in wb_over_bg_thresh
+>   mm: call __wb_calc_thresh instead of wb_calc_thresh in
+>     wb_over_bg_thresh
+>   mm: remove redundant check in wb_min_max_ratio
+>   mm: remove stale comment __folio_mark_dirty
 
-Before:
-```
-libbpf: failed to find valid kernel BTF
-libbpf: Error loading vmlinux BTF: -3
-libbpf: failed to load object 'lock_contention_bpf'
-libbpf: failed to load BPF skeleton 'lock_contention_bpf': -3
-```
+I don't have the fifth patch in my inbox and I find the patchset difficult
+to review because it's changing subtle behaviors without sufficient
+justifications or concrete cases which motivated the changes. For now, I
+think it'd be prudent to not apply this patchset.
 
-After no access /sys/kernel/btf/vmlinux:
-```
-libbpf: Unable to access canonical vmlinux BTF from /sys/kernel/btf/vmlinux
-libbpf: Error loading vmlinux BTF: -3
-libbpf: failed to load object 'lock_contention_bpf'
-libbpf: failed to load BPF skeleton 'lock_contention_bpf': -3
-```
+Thanks.
 
-After no BTF /sys/kernel/btf/vmlinux:
-```
-libbpf: Failed to load vmlinux BTF from /sys/kernel/btf/vmlinux, was CONFIG_DEBUG_INFO_BTF enabled?
-libbpf: Error loading vmlinux BTF: -3
-libbpf: failed to load object 'lock_contention_bpf'
-libbpf: failed to load BPF skeleton 'lock_contention_bpf': -3
-```
-
-Closes: https://lore.kernel.org/bpf/CAP-5=fU+DN_+Y=Y4gtELUsJxKNDDCOvJzPHvjUVaUoeFAzNnig@mail.gmail.com/
-Signed-off-by: Ian Rogers <irogers@google.com>
-
----
-v2. Try to address review comments from Andrii Nakryiko.
----
- tools/lib/bpf/btf.c | 49 ++++++++++++++++++++++++++++++++-------------
- 1 file changed, 35 insertions(+), 14 deletions(-)
-
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index ee95fd379d4d..d8a05dda0836 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -4920,16 +4920,25 @@ static int btf_dedup_remap_types(struct btf_dedup *d)
- 	return 0;
- }
- 
-+static struct btf *btf__load_vmlinux_btf_path(const char *path)
-+{
-+	struct btf *btf;
-+	int err;
-+
-+	btf = btf__parse(path, NULL);
-+	err = libbpf_get_error(btf);
-+	pr_debug("loading kernel BTF '%s': %d\n", path, err);
-+	return err ? NULL : btf;
-+}
-+
- /*
-  * Probe few well-known locations for vmlinux kernel image and try to load BTF
-  * data out of it to use for target BTF.
-  */
- struct btf *btf__load_vmlinux_btf(void)
- {
-+	/* fall back locations, trying to find vmlinux on disk */
- 	const char *locations[] = {
--		/* try canonical vmlinux BTF through sysfs first */
--		"/sys/kernel/btf/vmlinux",
--		/* fall back to trying to find vmlinux on disk otherwise */
- 		"/boot/vmlinux-%1$s",
- 		"/lib/modules/%1$s/vmlinux-%1$s",
- 		"/lib/modules/%1$s/build/vmlinux",
-@@ -4938,29 +4947,41 @@ struct btf *btf__load_vmlinux_btf(void)
- 		"/usr/lib/debug/boot/vmlinux-%1$s.debug",
- 		"/usr/lib/debug/lib/modules/%1$s/vmlinux",
- 	};
--	char path[PATH_MAX + 1];
-+	const char *location;
- 	struct utsname buf;
- 	struct btf *btf;
--	int i, err;
-+	int i;
- 
--	uname(&buf);
-+	/* try canonical vmlinux BTF through sysfs first */
-+	location = "/sys/kernel/btf/vmlinux";
-+	if (faccessat(AT_FDCWD, location, R_OK, AT_EACCESS) == 0) {
-+		btf = btf__load_vmlinux_btf_path(location);
-+		if (btf)
-+			return btf;
-+
-+		pr_warn("Failed to load vmlinux BTF from %s, was CONFIG_DEBUG_INFO_BTF enabled?\n",
-+			location);
-+	} else
-+		pr_warn("Unable to access canonical vmlinux BTF from %s\n", location);
- 
-+	uname(&buf);
- 	for (i = 0; i < ARRAY_SIZE(locations); i++) {
--		snprintf(path, PATH_MAX, locations[i], buf.release);
-+		char path[PATH_MAX + 1];
-+
-+		snprintf(path, sizeof(path), locations[i], buf.release);
- 
-+		btf = btf__load_vmlinux_btf_path(path);
- 		if (faccessat(AT_FDCWD, path, R_OK, AT_EACCESS))
- 			continue;
- 
--		btf = btf__parse(path, NULL);
--		err = libbpf_get_error(btf);
--		pr_debug("loading kernel BTF '%s': %d\n", path, err);
--		if (err)
--			continue;
-+		btf = btf__load_vmlinux_btf_path(location);
-+		if (btf)
-+			return btf;
- 
--		return btf;
-+		pr_warn("Failed to load vmlinux BTF from %s, was CONFIG_DEBUG_INFO_BTF enabled?\n",
-+			path);
- 	}
- 
--	pr_warn("failed to find valid kernel BTF\n");
- 	return libbpf_err_ptr(-ESRCH);
- }
- 
 -- 
-2.43.0.429.g432eaa2c6b-goog
-
+tejun
 
