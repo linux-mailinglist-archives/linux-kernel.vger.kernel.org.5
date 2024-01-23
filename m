@@ -1,182 +1,155 @@
-Return-Path: <linux-kernel+bounces-35997-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36003-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A14908399E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:55:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1EE88399F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:06:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 43A7AB22E58
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:55:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4E641C2781D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:06:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 945C985C49;
-	Tue, 23 Jan 2024 19:54:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B50182D92;
+	Tue, 23 Jan 2024 20:06:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="I11P/kwN"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="UxL+L9NL"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86EFC82D6E
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 19:54:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DAEE63511;
+	Tue, 23 Jan 2024 20:06:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706039697; cv=none; b=XOOWWdCYYu5f7R17jlBfSknGT6DXmOhrkTU5r+jvflnTIcJjDu3wimbPtj3qbhn9rhArPG6BAkMi3uN/E6iXGQy1rqEimS0oW4GOl+XnXoRwo3aXfn+UoWhXiS8qMEv3WAoqoJzCEzFR5vR4Y9kzDKyc1HdAzIaFqBdboq07J4Y=
+	t=1706040371; cv=none; b=cZ/PrgUupvO1pNmarddrkkYKb70mkQXcbEr9GmfGhbHy2nu5QZrwCpSur/f3+aZAdMjnsby0i3R25Db2Z0xwj+vex1IGlmvf3efxooNuF9znIH7PTCw5huaFTj9AT3oEOhM0to1Nd8fUQ3oqntO72aZg1VsZkX33O4vzskitG40=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706039697; c=relaxed/simple;
-	bh=9IEGG6PLhGqtk7d3upqqFRh5vj6GY8bnCuD2LwJUNsk=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=GrfmDIq0X9SiWiutcfCxP9qfoYjsD03D6DRoEY7MJGmFp5MyGh3gjItFgUxbWBWU+6jC7NqV7STss6yOwm7qmO1RNH3e3XtSxtJgC1PdsXUv7/+mUpdvtsMe4rZoj60rGszQ4Dz3F3MnNK8e3kozWwwRDoSZ5CiUjnDK8Fui6Vc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=I11P/kwN; arc=none smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40NGRDpM010751;
-	Tue, 23 Jan 2024 19:54:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id; s=corp-2023-11-20;
- bh=4cvj7c2w+z41DgBXLGIzhGP2KC9m8gbIV2h/6Xm2E7c=;
- b=I11P/kwN3xlIMVsze4r4AjQR7rnVlK2rgaOneJe0CJFtIjNLw3D7mX24cwJKAQL1xqJw
- Yi3fXY7s8tRbr2HZAoL0NfpoaP2oNjL8VRHykKlPRSyi2L7RzyaV6hhU61JmytGcyPci
- /K2Ay+8DExnSAxe5zBtCgJW8WRe+nbLnUi+esvwPYiJg/+qTAF2yoHkKQtRsxIMm2o3o
- Q75g34T/gIdb8qIDZP1MtBJfuMW5JdxQheFA3SvLqXg7Im2AQH8JboxAszGsKESi4qbp
- lllT7Fbei66C9trjJOYD4FgnAeu5j8Mvkjyk41dUftM0IeCVFZjkSq2bdA73RQ4w86Bk Uw== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vr7cxy5t9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 23 Jan 2024 19:54:48 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40NJGoJm001953;
-	Tue, 23 Jan 2024 19:54:48 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3vs322uy92-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=NO);
-	Tue, 23 Jan 2024 19:54:48 +0000
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40NJsliO012746;
-	Tue, 23 Jan 2024 19:54:47 GMT
-Received: from pp-thinkcentre-m82.us.oracle.com (dhcp-10-132-95-245.usdhcp.oraclecorp.com [10.132.95.245])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3vs322uy3m-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA256 bits=128 verify=NO);
-	Tue, 23 Jan 2024 19:54:47 +0000
-From: Prakash Sangappa <prakash.sangappa@oracle.com>
-To: linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc: muchun.song@linux.dev, mike.kravetz@oracle.com, akpm@linux-foundation.org
-Subject: [PATCH v3] Hugetlb pages should not be reserved by shmat() if SHM_NORESERVE
-Date: Tue, 23 Jan 2024 12:04:42 -0800
-Message-Id: <1706040282-12388-1-git-send-email-prakash.sangappa@oracle.com>
-X-Mailer: git-send-email 2.7.4
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-23_11,2024-01-23_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
- phishscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401230148
-X-Proofpoint-ORIG-GUID: PbxVhyfXH_cXUs6-8xQQ0Hu3MOa1QFGZ
-X-Proofpoint-GUID: PbxVhyfXH_cXUs6-8xQQ0Hu3MOa1QFGZ
+	s=arc-20240116; t=1706040371; c=relaxed/simple;
+	bh=GzhJCzJzKpc9xeFhTpsdwMvee7CM5aTLill6q4USv3U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=nNgJFY8pYQz6l4ko0JKZD3FJAdN9fhcX/lWv6sOp50QtlENpWQFLUZFjJzcTRw3L1jmm0+HqJx3cuRWHqWFmHODhYbJND0Ndr/1dn16kOA0x+sSPjxGC/BIsal7c7ArZTm5lIyKgl5tKfrseSOLvP1nWYdns9qRCo90Ed/u+M2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=UxL+L9NL; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40NGPRR5029341;
+	Tue, 23 Jan 2024 20:06:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=hUYsYhKG8zh/NNdalZUM0dorkIoNrzpo0eGcmzdbCH4=; b=Ux
+	L+L9NL7W3fcIBkONqHWLOW36dZTeWbd+HPbi4EFcKAV6JZr41W7+xaANSML/P/cb
+	9G7Qw+65VseuGMlWiNptOiO9ViqhfdjEBRyeDNfN7vF/+AiTtDh/PkV7Ep0onY50
+	6vb3yAz1BmjO8J4hOvuLsmAMEqostsCsyXR4ndGZ/lDme8zDforBZnF6Pkja2E7O
+	eYB8L0A4tOHPp8R7Q/5iXdMdw+25u6THmb/Ee43t+OKpbb98OhLvfmo34QllQdm/
+	TlYQEa87hfYRdb5xzrl4LUBSRo31DUGGlfR8rkJD6qCyAAgPI3DGcy0d/1bmbOKI
+	MEhkJsOjMX/ehg7PpstQ==
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vtesch2a5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 23 Jan 2024 20:06:01 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40NK60r0023727
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 23 Jan 2024 20:06:00 GMT
+Received: from [10.110.28.150] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 23 Jan
+ 2024 12:05:56 -0800
+Message-ID: <fd2c8c1b-02f3-2750-3449-f93fc119fda2@quicinc.com>
+Date: Tue, 23 Jan 2024 12:05:56 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 1/2] dt-bindings: hwinfo: Introduce board-id
+Content-Language: en-US
+To: Elliot Berman <quic_eberman@quicinc.com>,
+        Amrit Anand
+	<quic_amrianan@quicinc.com>
+CC: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <agross@kernel.org>, <konrad.dybcio@linaro.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>,
+        Conor Dooley
+	<conor@kernel.org>, <andersson@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski@linaro.org>
+References: <1705749649-4708-1-git-send-email-quic_amrianan@quicinc.com>
+ <1705749649-4708-2-git-send-email-quic_amrianan@quicinc.com>
+ <6e40dd60-884f-be23-0052-d14f7194f844@quicinc.com>
+ <f21bc259-45fa-d14b-a556-625b813287f4@quicinc.com>
+ <499320f4-f6b1-4582-9512-89ab505305b6@linaro.org>
+ <20240123-sterilize-flap-8971aa3bad4b@spud>
+ <1941558d-d1e0-43b7-9208-65b9ba191bc2@quicinc.com>
+From: Trilok Soni <quic_tsoni@quicinc.com>
+In-Reply-To: <1941558d-d1e0-43b7-9208-65b9ba191bc2@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Tbf2azYCNSayz4Q5wH74QmTAEgBJ7PpC
+X-Proofpoint-ORIG-GUID: Tbf2azYCNSayz4Q5wH74QmTAEgBJ7PpC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-23_11,2024-01-23_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 malwarescore=0
+ bulkscore=0 spamscore=0 phishscore=0 mlxscore=0 mlxlogscore=892
+ impostorscore=0 suspectscore=0 lowpriorityscore=0 priorityscore=1501
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401230148
 
-For shared memory of type SHM_HUGETLB, hugetlb pages are reserved in
-shmget() call. If SHM_NORESERVE flags is specified then the hugetlb
-pages are not reserved. However when the shared memory is attached
-with the shmat() call the hugetlb pages are getting reserved incorrectly
-for SHM_HUGETLB shared memory created with SHM_NORESERVE which is a bug.
+On 1/23/2024 10:51 AM, Elliot Berman wrote:
+> 
+> 
+> On 1/23/2024 9:18 AM, Conor Dooley wrote:
+>> On Tue, Jan 23, 2024 at 12:50:07PM +0100, Krzysztof Kozlowski wrote:
+>>> On 22/01/2024 11:10, Amrit Anand wrote:
+>>>>
+>>>> On 1/21/2024 12:40 AM, Trilok Soni wrote:
+>>>>> On 1/20/2024 3:20 AM, Amrit Anand wrote:
+>>>>>> From: Elliot Berman <quic_eberman@quicinc.com>
+>>>>>>
+>>>>>> Device manufacturers frequently ship multiple boards or SKUs under a
+>>>>>> single software package. These software packages will ship multiple
+>>>>>> devicetree blobs and require some mechanism to pick the correct DTB for
+>>>>>> the board the software package was deployed. Introduce a common
+>>>>>> definition for adding board identifiers to device trees. board-id
+>>>>>> provides a mechanism for bootloaders to select the appropriate DTB which
+>>>>>> is vendor/OEM-agnostic.
+>>>>> Please extend CC list to more architectures? linux-arm-kernel, risc-v etc; since
+>>>>> the proposal below is not specific to ARM but any architecture is using the
+>>>>> devicetree.
+>>>> Wouldn't devicetree@vger.kernel.org will have concern folks from all the 
+>>>> architectures?
+>>>> Please correct me.
+>>>
+>>> No.
+>>
+>> The chromium guys should get a CC on future versions of this stuff,
+>> since they like doing wacky things with compatible strings in their
+>> bootloader and this problem is one they also face. Doug Anderson and the
+>> mediatek chromebook folks would be a good start.
+>>
+> 
+> Please CC Peter Griffin from Linaro as he helped restart this 
+> discussion at Plumbers.
+> 
+> Peter Griffin <peter.griffin@linaro.org>
+> 
+> Also, for the oneplus boards:
+> Caleb Connolly <caleb.connolly@linaro.org>
 
--------------------------------
-Following test shows the issue.
+Thank you everyone. Amrit - please take care of above comments
+when you post next revision and as suggested please add other
+architecture mailing lists using the devicetree. Thank you. 
 
-$cat shmhtb.c
-
-int main()
-{
-	int shmflags = 0660 | IPC_CREAT | SHM_HUGETLB | SHM_NORESERVE;
-	int shmid;
-
-	shmid = shmget(SKEY, SHMSZ, shmflags);
-	if (shmid < 0)
-	{
-		printf("shmat: shmget() failed, %d\n", errno);
-		return 1;
-	}
-	printf("After shmget()\n");
-	system("cat /proc/meminfo | grep -i hugepages_");
-
-	shmat(shmid, NULL, 0);
-	printf("\nAfter shmat()\n");
-	system("cat /proc/meminfo | grep -i hugepages_");
-
-	shmctl(shmid, IPC_RMID, NULL);
-	return 0;
-}
-
- #sysctl -w vm.nr_hugepages=20
- #./shmhtb
-
-After shmget()
-HugePages_Total:      20
-HugePages_Free:       20
-HugePages_Rsvd:        0
-HugePages_Surp:        0
-
-After shmat()
-HugePages_Total:      20
-HugePages_Free:       20
-HugePages_Rsvd:        5 <--
-HugePages_Surp:        0
---------------------------------
-
-Fix is to ensure that hugetlb pages are not reserved for SHM_HUGETLB shared
-memory in the shmat() call.
-
-Signed-off-by: Prakash Sangappa <prakash.sangappa@oracle.com>
----
-v2: Modifed fix to call hugetlb_reserve_pages() with VM_NORESERVE instead
-    as per vma lock is allocated in hugetlb_reserve_pages().
-v3: Updated change log to describe user visible effect of the bug with
-    a test case, as suggested by Andrew Morton.
-
- fs/hugetlbfs/inode.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
-
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index f757d4f..40b12b0 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -100,6 +100,7 @@ static int hugetlbfs_file_mmap(struct file *file, struct vm_area_struct *vma)
- 	loff_t len, vma_len;
- 	int ret;
- 	struct hstate *h = hstate_file(file);
-+	vm_flags_t vm_flags;
- 
- 	/*
- 	 * vma address alignment (but not the pgoff alignment) has
-@@ -141,10 +142,20 @@ static int hugetlbfs_file_mmap(struct file *file, struct vm_area_struct *vma)
- 	file_accessed(file);
- 
- 	ret = -ENOMEM;
-+
-+	vm_flags = vma->vm_flags;
-+	/*
-+	 * for SHM_HUGETLB, the pages are reserved in the shmget() call so skip
-+	 * reserving here. Note: only for SHM hugetlbfs file, the inode
-+	 * flag S_PRIVATE is set.
-+	 */
-+	if (inode->i_flags & S_PRIVATE)
-+		vm_flags |= VM_NORESERVE;
-+
- 	if (!hugetlb_reserve_pages(inode,
- 				vma->vm_pgoff >> huge_page_order(h),
- 				len >> huge_page_shift(h), vma,
--				vma->vm_flags))
-+				vm_flags))
- 		goto out;
- 
- 	ret = 0;
 -- 
-2.7.4
+---Trilok Soni
 
 
