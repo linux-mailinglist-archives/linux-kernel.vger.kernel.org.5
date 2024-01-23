@@ -1,132 +1,150 @@
-Return-Path: <linux-kernel+bounces-36033-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36034-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BA73839A68
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:39:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5817E839A71
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:43:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E92D1C281C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:39:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C92F8B2B71F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:43:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 106254C7B;
-	Tue, 23 Jan 2024 20:39:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AEXR0JW3"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E399522C;
+	Tue, 23 Jan 2024 20:43:16 +0000 (UTC)
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08F7A4417
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 20:39:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6CF720F1;
+	Tue, 23 Jan 2024 20:43:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706042352; cv=none; b=Jo1cR5j1KvjAcf+2CWrVtjDP/IEZhQ0FXBddT58Y45p9x3vYk7HvwkUCtKjJYoMxAzM32W+ZTTvGVLwGDRDLQN+SLoXU6xtlcfLH4Hgxae31+SghxNGpEjuU8926411ZgCS1KqjGupKISj66irYG1ouTKhR3bkOzXfKyP3vC0Fg=
+	t=1706042596; cv=none; b=bJiU7xcisTw90cGDq8Ai2A8+BSE9dKplaX3JOBLpj9++L/PRTaY9+vTjmhkNNRp0yVzJsrLnpJwNKfYy0STSy/JXxu0fhRAhqWkQQtoFRYHqmhbjNTRAjMIc6u5aoS8Pc1n3qRk42KqYb/ZAeAa94f+Lq/jKyNlmhCr2CLUQwE0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706042352; c=relaxed/simple;
-	bh=AKvnUEhfVuCU8VrVyAXnPsxlke6MhfWDzU9qTo+VAk8=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=sqhHzlGbOkqdU8xOwL/7WwD3oN9L1bUmeGRochQrvwvWS0s42GYryBzpzlOJaE+SjEwU3Z4GsoXaL1poNs8LIhv+T796ffLt1I3lOWYvtnNXAWv8oGClnxhWp6aHKUoh9FvuakvaJ1SBDCFS9S99O6s/uJbOyFjZ0hRPZPevDKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AEXR0JW3; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706042350;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MZviQqgVcq2tRc3p4TWEA+VfgMFTGON5OotgVwwOHF4=;
-	b=AEXR0JW3kcQewmXfRpoKS0VgDzaTzwxOXZlygNLAzJ7cw7nHVfaY40lxE7XFrjOsfOqLMX
-	LP6TiRmZgA/665cjMvGNe/DtqBV1xBq8UaiTK45GarJrZ3zVfsZ8SUQfdm03jM6uw4hl9p
-	QCJtvtqz6s4R6knrExoPdwtM8zNB+m0=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-16-4b7BRzuFOe-EJjmvnNvwOg-1; Tue, 23 Jan 2024 15:39:04 -0500
-X-MC-Unique: 4b7BRzuFOe-EJjmvnNvwOg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 088278828C2;
-	Tue, 23 Jan 2024 20:39:03 +0000 (UTC)
-Received: from file1-rdu.file-001.prod.rdu2.dc.redhat.com (unknown [10.11.5.21])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id EC2462026D66;
-	Tue, 23 Jan 2024 20:39:02 +0000 (UTC)
-Received: by file1-rdu.file-001.prod.rdu2.dc.redhat.com (Postfix, from userid 12668)
-	id D9D7030A79CB; Tue, 23 Jan 2024 20:39:02 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-	by file1-rdu.file-001.prod.rdu2.dc.redhat.com (Postfix) with ESMTP id D72613FB4E;
-	Tue, 23 Jan 2024 21:39:02 +0100 (CET)
-Date: Tue, 23 Jan 2024 21:39:02 +0100 (CET)
-From: Mikulas Patocka <mpatocka@redhat.com>
-To: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-cc: Damien Le Moal <dlemoal@kernel.org>, Naohiro Aota <naohiro.aota@wdc.com>, 
-    Mike Snitzer <snitzer@kernel.org>, dm-devel@lists.linux.dev, 
-    Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
-    David Sterba <dsterba@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>, 
-    Chao Yu <chao@kernel.org>, Jens Axboe <axboe@kernel.dk>, 
-    Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, 
-    Chaitanya Kulkarni <kch@nvidia.com>, linux-fsdevel@vger.kernel.org, 
-    linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-    linux-f2fs-devel@lists.sourceforge.net, linux-block@vger.kernel.org, 
-    linux-nvme@lists.infradead.org, 
-    "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: Re: [PATCH 1/5] zonefs: pass GFP_KERNEL to blkdev_zone_mgmt() call
-In-Reply-To: <20240123-zonefs_nofs-v1-1-cc0b0308ef25@wdc.com>
-Message-ID: <31e0f796-1c5-b7f8-2f4b-d937770e8d5@redhat.com>
-References: <20240123-zonefs_nofs-v1-0-cc0b0308ef25@wdc.com> <20240123-zonefs_nofs-v1-1-cc0b0308ef25@wdc.com>
+	s=arc-20240116; t=1706042596; c=relaxed/simple;
+	bh=EEncKghprTOWMaCnJRfayS7I/j2ad9+aypBZ5XxEPbQ=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=JJeLRpdFHEtMBFrBK7UsxXPpv5gvo25gzz2R4bx6B6Zn/8Nd+l7CrYy4x5R4grAumW6xpHAt+R2NiobihRsdQMOhmFXIkmv0wFl5u87BLWTf+XjNrwjTqfD3kJEmrMSzPyLP/JPKtZOmpnVXJZo27EqBudIta88mrDhWA2RgL/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.105] (31.173.84.3) by msexch01.omp.ru (10.188.4.12)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Tue, 23 Jan
+ 2024 23:43:03 +0300
+Subject: Re: [PATCH net-next v4 07/15] net: ravb: Move reference clock
+ enable/disable on runtime PM APIs
+To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
+	<geert+renesas@glider.be>
+CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Claudiu Beznea
+	<claudiu.beznea.uj@bp.renesas.com>
+References: <20240123125829.3970325-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240123125829.3970325-8-claudiu.beznea.uj@bp.renesas.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <ec3f5d8a-ac38-1134-93a3-c4ceb8b944e0@omp.ru>
+Date: Tue, 23 Jan 2024 23:43:02 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+In-Reply-To: <20240123125829.3970325-8-claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 01/23/2024 20:31:10
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 182874 [Jan 23 2024]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.84.3 in (user) dbl.spamhaus.org}
+X-KSE-AntiSpam-Info:
+	omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.84.3
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 01/23/2024 20:34:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 1/23/2024 5:23:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
+On 1/23/24 3:58 PM, Claudiu wrote:
 
-
-On Tue, 23 Jan 2024, Johannes Thumshirn wrote:
-
-> Pass GFP_KERNEL instead of GFP_NOFS to the blkdev_zone_mgmt() call in
-> zonefs_zone_mgmt().
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 > 
-> As as zonefs_zone_mgmt() and zonefs_inode_zone_mgmt() are never called
-> from a place that can recurse back into the filesystem on memory reclaim,
-> it is save to call blkdev_zone_mgmt() with GFP_KERNEL.
+> Reference clock could be or not part of the power domain. If it is part of
+
+   Could be or not be, perhaps?
+
+> the power domain, the power domain takes care of propertly setting it. In
+
+   Properly. :-)
+
+> case it is not part of the power domain and full runtime PM support is
+> available in driver the clock will not be propertly disabled/enabled at
+> runtime. For this, keep the prepare/unprepare operations in the driver's
+> probe()/remove() functions and move the enable/disable in runtime PM
+> functions.
 > 
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->  fs/zonefs/super.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Along with it, the other clock request operations were moved close to
+> reference clock request and prepare to have all the clock requests
+> specific code grouped together.
 > 
-> diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c
-> index 93971742613a..63fbac018c04 100644
-> --- a/fs/zonefs/super.c
-> +++ b/fs/zonefs/super.c
-> @@ -113,7 +113,7 @@ static int zonefs_zone_mgmt(struct super_block *sb,
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+[...]
+
+> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+> index 9fc0e39e33c2..4673cc2faec0 100644
+> --- a/drivers/net/ethernet/renesas/ravb_main.c
+> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+[...]
+> @@ -3060,21 +3058,27 @@ static int ravb_resume(struct device *dev)
+>  	return ret;
+>  }
 >  
->  	trace_zonefs_zone_mgmt(sb, z, op);
->  	ret = blkdev_zone_mgmt(sb->s_bdev, op, z->z_sector,
-> -			       z->z_size >> SECTOR_SHIFT, GFP_NOFS);
-> +			       z->z_size >> SECTOR_SHIFT, GFP_KERNEL);
->  	if (ret) {
->  		zonefs_err(sb,
->  			   "Zone management operation %s at %llu failed %d\n",
-> 
-> -- 
-> 2.43.0
+> -static int ravb_runtime_nop(struct device *dev)
+> +static int ravb_runtime_suspend(struct device *dev)
+>  {
+> -	/* Runtime PM callback shared between ->runtime_suspend()
+> -	 * and ->runtime_resume(). Simply returns success.
+> -	 *
+> -	 * This driver re-initializes all registers after
+> -	 * pm_runtime_get_sync() anyway so there is no need
+> -	 * to save and restore registers here.
+> -	 */
 
-zonefs_inode_zone_mgmt calls 
-lockdep_assert_held(&ZONEFS_I(inode)->i_truncate_mutex); - so, this 
-function is called with the mutex held - could it happen that the 
-GFP_KERNEL allocation recurses into the filesystem and attempts to take 
-i_truncate_mutex as well?
+   I want to pull out the dummy {ravb|sh_eth}_runtime_nop() funcs --
+they don't seem to be necessary... Then we can implement your clock
+dance with freshly added ravb_runtime_{suspend|resume}()...
 
-i.e. GFP_KERNEL -> iomap_do_writepage -> zonefs_write_map_blocks -> 
-zonefs_write_iomap_begin -> mutex_lock(&zi->i_truncate_mutex)
+[...]
 
-Mikulas
-
+MBR, Sergey
 
