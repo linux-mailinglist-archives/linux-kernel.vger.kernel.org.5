@@ -1,120 +1,220 @@
-Return-Path: <linux-kernel+bounces-35831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35832-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8433C83971A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:59:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B758583971D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:00:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B71971C23C63
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:59:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68064285119
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:00:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2BFF8120A;
-	Tue, 23 Jan 2024 17:59:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDE0C81215;
+	Tue, 23 Jan 2024 18:00:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lQ1r0Lua"
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="kiV/UvtX";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="8T+6+jW/";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="N7RwBA6F";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7+M8i/DF"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48F3C8005D
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 17:59:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65FC38005D;
+	Tue, 23 Jan 2024 18:00:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706032775; cv=none; b=mYOykqzNubbYXU/Sa6HMYZO7qwTL5wWAMHcTA3PSYBGRSJkIz6WyHOpJi6dfKfWJCguGx+UXZzuaRIeWUNh/Qx7xLeGNE0fORTUFA31OTZeg309hC5RJ9dBPCaVlRqRGkQd00uoGy14zY+dJv1wadMYrLvqXigE8lNz2xHIXdOE=
+	t=1706032819; cv=none; b=ndCEyi2fEw101xKgWIb8jXU6md2fzynAOYfXMrP4GRUecYmX2mBFAQW5MD//T6hmCgGcJl+5+sCeF2U+4aa4Dj0tCATLvkTv6Xoi3SXDzStd7Odze1hpAcYpW33mZC5bjwhqAbLqHoWk/VZ/0T+1ZTNSqKN+DIBESPc4gJ40NQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706032775; c=relaxed/simple;
-	bh=zy+VtAthqnrtNOUurs3SoKsfCadphFbukqOkKL+5+c0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cKxKDsuPbRsBrU+I3KFbU7FxQ2k0O9Y3OWgqPXocnaAIBg68Ia3MY6JO0D7YOzSotLjV3DVnqs0jKLxTgH71RWCABV29LNSLvXuxnJM7vORHnXezOkNjZ/F13f4DC7pVj5g/mjx2cUWfaPn946QUd+YCOQO22U/9qOe5a8WmJ1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lQ1r0Lua; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2cd33336b32so61249111fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 09:59:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706032771; x=1706637571; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MevgjBoC1naTbBSpDdFhU7jz6wq+Ub0rYmPiyyfGzGg=;
-        b=lQ1r0LuaqIBsLzUw9F3CllEmNPwkUTvNHClVpuRm3iq3/0BM5kK8lH8HPiHSBKA4nR
-         IkNVD6C7HeeFp6YIAW2HKv2oqGiY41U7cHFHSeE/CPQOIG7oCQekk26IUqmmz/XXCPjH
-         wgwQCY9gEvgW8b6arKwH2Durs/sHl/3VMCdPU/x9ZbFqO4jlUvh2zF6txvdDhJO1bAtp
-         dTFAdG/idcVGtFpG5tnaSTaM8VxmwfnZIBOIWuCixylG7rAl2lsS74LW/7WidwJo5ZAe
-         ggiBUpkvs76V3dxEk9e1+DOftSzbo1QDRm0vXeC5lKUtNeKD82RiefH4vNB1U0bIAx0g
-         s+Qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706032771; x=1706637571;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MevgjBoC1naTbBSpDdFhU7jz6wq+Ub0rYmPiyyfGzGg=;
-        b=fM4sTQHnAOdDEEbRQitE4K0dyjyg+5tXkxb/r5o/CzgIVZX31NFnyz6rX5R+rPtSSM
-         8jZxcqT4ByJTHBS/PS9zM5i/nQONpSp2rjWWbU+k42iwtNxRjN/NE4QwN+TgevNdv1KQ
-         gpkIi38MCYLt8g+oJzLlUttwc2998mlP44K0X8rX8hnKWlSZDdzxyDlosrjboLOT0PvI
-         z0QYKum5ej+OONo2IujNxZQEsujIqq+PkAhtS+G9iaipas8c44teU9Qz1iUjLFEVxy25
-         w0sc/JPYlMJmfpwbMUXfB7BzK3CHq8Puya4SvOJyOR7i8SE6sIOOqvItMVyGzGUykzyu
-         2LPw==
-X-Gm-Message-State: AOJu0YyPXQc76U9ZrIjDG5jREp5W9wTcEFyHoI5RGYwQG68IlYQELFum
-	zEadysnaY90qOew8Zg3QbAg7izuAoscN5UFyH98DsaGxt2fIOL4Cocmc2ajwIB0=
-X-Google-Smtp-Source: AGHT+IFsQdXZATi7GwTB0ulTN78M/aUoE2hnQJP5hgZwsQ02mD2/+t03X9iw/GN1e8SEqoW0WSkhyw==
-X-Received: by 2002:a05:651c:2208:b0:2cc:609d:eeaf with SMTP id y8-20020a05651c220800b002cc609deeafmr102633ljq.36.1706032771190;
-        Tue, 23 Jan 2024 09:59:31 -0800 (PST)
-Received: from [172.30.205.123] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id f17-20020a05651c03d100b002cdfc29b46dsm1514699ljp.88.2024.01.23.09.59.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jan 2024 09:59:30 -0800 (PST)
-Message-ID: <4c37d84f-ee46-4557-b25d-01ad9af4e950@linaro.org>
-Date: Tue, 23 Jan 2024 18:59:29 +0100
+	s=arc-20240116; t=1706032819; c=relaxed/simple;
+	bh=x+4DKQ0VomY5Vn/A2UNegg9hB/vO0L2w7CrEM1I0bng=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fnjPrhT2WvC1x3GKUCaRgvQLMxPYpfm3reUCQcadUXJHxdkqZDCqBaBR9WUjjumZeUNi5XJW2Fui18bfWZYZ0CV+CwW9gCE95UKs5VGr5k4vRYMXhLrg24geaCIt/XGfj8mS/yAYixA4moG3NrJCX8Kx/uxvBsUDZFLV4n2LdxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=kiV/UvtX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=8T+6+jW/; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=N7RwBA6F; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7+M8i/DF; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C6EDB1F79B;
+	Tue, 23 Jan 2024 18:00:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706032809; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=INBI/Isa3O19dYdw2aRIskylv6DV2Svn3LWWNjvnDaE=;
+	b=kiV/UvtXntEAK8kIull+dRj6dexryLwH4imrKZ+MyXmAyrOhkr15RuzMGIaJXXintJjb7e
+	t9KDU1IHCFB5jye/TKO/8kQaPHhwXWfxfywZc3NhfSWn+VRILt5XJlRbWInjxSXoLXkB43
+	/rgsB7hoQzs13LHiHqqmiM/ALAOeoCo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706032809;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=INBI/Isa3O19dYdw2aRIskylv6DV2Svn3LWWNjvnDaE=;
+	b=8T+6+jW/0prvyKoDs1LZw2bQpHKrm7TScVec8e7i4wyErKLJ2+U4Tv2LtVIUC8jXdWG8Nx
+	rbKaqYqt20SaLBCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706032808; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=INBI/Isa3O19dYdw2aRIskylv6DV2Svn3LWWNjvnDaE=;
+	b=N7RwBA6FBOSZIY00nSEYwyStKOhMVag1aZC5AFlB8kbvvE8XfiBW3uD4f4R7SnVSomsJY/
+	56xfcM/wdX9uvklhm5q0n23/0ad6leOz7cnJjFODvnuFsgKIICL9jHBE2+2nMJ1WNxNfOq
+	XcM+BNrYfQbI7ywxPshpnzX8VsC3TUY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706032808;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=INBI/Isa3O19dYdw2aRIskylv6DV2Svn3LWWNjvnDaE=;
+	b=7+M8i/DF36t2tADhHtScro2yUi1M09IQuMjQ8Igq2MsJYPa2feIo97ElujbXiNZGgkfFCz
+	TdZQc9TArcnaAlDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B8601136A4;
+	Tue, 23 Jan 2024 18:00:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id lZ/zLKj+r2XcKAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 23 Jan 2024 18:00:08 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 53DFFA0803; Tue, 23 Jan 2024 19:00:08 +0100 (CET)
+Date: Tue, 23 Jan 2024 19:00:08 +0100
+From: Jan Kara <jack@suse.cz>
+To: Kees Cook <keescook@chromium.org>
+Cc: linux-hardening@vger.kernel.org,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	linux-fsdevel@vger.kernel.org,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 09/82] select: Avoid wrap-around instrumentation in
+ do_sys_poll()
+Message-ID: <20240123180008.sg77hnu5r7nqrgjy@quack3>
+References: <20240122235208.work.748-kees@kernel.org>
+ <20240123002814.1396804-9-keescook@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net: ethernet: qualcomm: Remove QDF24xx support
-Content-Language: en-US
-To: Timur Tabi <timur@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- Marijn Suijten <marijn.suijten@somainline.org>,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-References: <20240122-topic-qdf_cleanup_net-v1-1-caf0d9c4408a@linaro.org>
- <CAOZdJXXCmZi8Qx-y2D_NhJiafnGhvma2OY6F+KauqYcNAAQNCQ@mail.gmail.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <CAOZdJXXCmZi8Qx-y2D_NhJiafnGhvma2OY6F+KauqYcNAAQNCQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240123002814.1396804-9-keescook@chromium.org>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-2.60 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,linux.org.uk:email,chromium.org:email,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -2.60
 
-
-
-On 1/22/24 21:34, Timur Tabi wrote:
-> On Mon, Jan 22, 2024 at 6:02 AM Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
->>
->> This SoC family was destined for server use, featuring Qualcomm's very
->> interesting Kryo cores (before "Kryo" became a marketing term for Arm
->> cores with small modifications). It did however not leave the labs of
->> Qualcomm and presumably some partners, nor was it ever productized.
->>
->> Remove the related drivers, as they seem to be long obsolete.
->>
->> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+On Mon 22-01-24 16:26:44, Kees Cook wrote:
+> The mix of int, unsigned int, and unsigned long used by struct
+> poll_list::len, todo, len, and j meant that the signed overflow
+> sanitizer got worried it needed to instrument several places where
+> arithmetic happens between these variables. Since all of the variables
+> are always positive and bounded by unsigned int, use a single type in
+> all places. Additionally expand the zero-test into an explicit range
+> check before updating "todo".
 > 
-> Sad day indeed, but understandable.
+> This keeps sanitizer instrumentation[1] out of a UACCESS path:
 > 
-> Acked-by: Timur Tabi <timur@kernel.org>
+> vmlinux.o: warning: objtool: do_sys_poll+0x285: call to __ubsan_handle_sub_overflow() with UACCESS enabled
 > 
-> If you're looking for other QDF stuff to remove, the QDF2400 hacks in
-> the SBSA UART driver really should go.
+> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> Cc: Christian Brauner <brauner@kernel.org>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: linux-fsdevel@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-I have a branch completely axing it, but it looks like Qualcomm
-apparently still uses some internally [1].. I'm not super happy,
-but let's wait on this one.
+Looks good. Feel free to add:
 
-Konrad
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-[1] https://lore.kernel.org/linux-arm-msm/52479377-ff61-7537-e4aa-064ab4a77c03@quicinc.com/
+								Honza
+
+> ---
+>  fs/select.c | 13 +++++++------
+>  1 file changed, 7 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/select.c b/fs/select.c
+> index 0ee55af1a55c..11a3b1312abe 100644
+> --- a/fs/select.c
+> +++ b/fs/select.c
+> @@ -839,7 +839,7 @@ SYSCALL_DEFINE1(old_select, struct sel_arg_struct __user *, arg)
+>  
+>  struct poll_list {
+>  	struct poll_list *next;
+> -	int len;
+> +	unsigned int len;
+>  	struct pollfd entries[];
+>  };
+>  
+> @@ -975,14 +975,15 @@ static int do_sys_poll(struct pollfd __user *ufds, unsigned int nfds,
+>  		struct timespec64 *end_time)
+>  {
+>  	struct poll_wqueues table;
+> -	int err = -EFAULT, fdcount, len;
+> +	int err = -EFAULT, fdcount;
+>  	/* Allocate small arguments on the stack to save memory and be
+>  	   faster - use long to make sure the buffer is aligned properly
+>  	   on 64 bit archs to avoid unaligned access */
+>  	long stack_pps[POLL_STACK_ALLOC/sizeof(long)];
+>  	struct poll_list *const head = (struct poll_list *)stack_pps;
+>   	struct poll_list *walk = head;
+> - 	unsigned long todo = nfds;
+> +	unsigned int todo = nfds;
+> +	unsigned int len;
+>  
+>  	if (nfds > rlimit(RLIMIT_NOFILE))
+>  		return -EINVAL;
+> @@ -998,9 +999,9 @@ static int do_sys_poll(struct pollfd __user *ufds, unsigned int nfds,
+>  					sizeof(struct pollfd) * walk->len))
+>  			goto out_fds;
+>  
+> -		todo -= walk->len;
+> -		if (!todo)
+> +		if (walk->len >= todo)
+>  			break;
+> +		todo -= walk->len;
+>  
+>  		len = min(todo, POLLFD_PER_PAGE);
+>  		walk = walk->next = kmalloc(struct_size(walk, entries, len),
+> @@ -1020,7 +1021,7 @@ static int do_sys_poll(struct pollfd __user *ufds, unsigned int nfds,
+>  
+>  	for (walk = head; walk; walk = walk->next) {
+>  		struct pollfd *fds = walk->entries;
+> -		int j;
+> +		unsigned int j;
+>  
+>  		for (j = walk->len; j; fds++, ufds++, j--)
+>  			unsafe_put_user(fds->revents, &ufds->revents, Efault);
+> -- 
+> 2.34.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
