@@ -1,140 +1,137 @@
-Return-Path: <linux-kernel+bounces-36019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36021-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CA95839A39
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:23:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 612AA839A40
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:27:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E174C293663
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:23:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18D671F293AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:27:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39F0485C56;
-	Tue, 23 Jan 2024 20:23:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE20485C67;
+	Tue, 23 Jan 2024 20:26:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cWSKoImh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NwOZBhww"
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F5DA60EE4;
-	Tue, 23 Jan 2024 20:23:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D684A85C50
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 20:26:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706041384; cv=none; b=IfSUVUIl5fxRfVfLjua7uadwQpWb9vxGjuiSAxxxDXfnKLSRS3BxZRZJk007SnROPAbt+hv9uTsq/5uhDdiY9SiD1cnHefXEl4o1v80UdL84s5vBrIJKEv440yIVW8ZJeZX7IT527gTz4QTcMWSt5nk5EwQzAPRYgYSAmF9f454=
+	t=1706041617; cv=none; b=gW6O6Z+PWy+oEatYWrhhdWXrUJlA9n/JrsJ+YeLbDzXc7FQvGgiY2ejCiPRbgffyOfi2nDPy0MBNPsyeRBHadZ/zxMmJDjRcWmcjOKA72/QQ7X8Ex0x98PFSHPG1+niciGdechTZOuzwTnGF9Pl93tDD1PB2YnIQjmC1HCX4cCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706041384; c=relaxed/simple;
-	bh=Uc3CPYoXa1xgdWm4ozcRAySO3PLJd1TMPVuIn2a8TfA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IyBNMovvXuHYnwL2CAmRk+gcnGrSfT7NNqrBg4b0ne1mytBBy9vJpzl4/UTVMy5Y/uEk9gYBF1IZnbORH/Mn2YhJvSgzrBlyyaI8kN55PVcinwgT08e7IqtdtFv1LPAMjs7TpN5D84ydo0BAZa912pXxXYTiDuJb5pB3h+2B35o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cWSKoImh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C2B4C433C7;
-	Tue, 23 Jan 2024 20:23:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706041383;
-	bh=Uc3CPYoXa1xgdWm4ozcRAySO3PLJd1TMPVuIn2a8TfA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cWSKoImhagqWR4Xw+vXw2oBHqg/U5p49xUmp7tmcVYDUw/HguPwZY+7zALZ3zk/8v
-	 YInixZ1047inlSqJ9Iiy9DKQNpR2QRMo0IKjGet5vzY3zIgmPxXS6e70PChEDz4hvS
-	 xebC+D34YiLv3nd2Tjuk+eYUBY1RvK1rieXbUh39ol/CZrrpxDeYxe1LwUaC6z2gnU
-	 ehNPxK3JjySo9ILnjTiRZgVyyN9Jf3QeZT3Fy9eTjcqfqgz51dd8yo8hbNlKKPjsU4
-	 TU06qCp2mVi7a5ZoZpueRbczCFIqilG6twoWscHhHotROSfEuVpiG0N86GnhSLMLWF
-	 R1uMYc3gY/5+Q==
-From: SeongJae Park <sj@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org,
-	patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org,
-	akpm@linux-foundation.org,
-	linux@roeck-us.net,
-	shuah@kernel.org,
-	patches@kernelci.org,
-	lkft-triage@lists.linaro.org,
-	pavel@denx.de,
-	jonathanh@nvidia.com,
-	f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net,
-	rwarsow@gmx.de,
-	conor@kernel.org,
-	allen.lkml@gmail.com,
-	damon@lists.linux.dev,
-	SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 6.7 000/638] 6.7.2-rc2 review
-Date: Tue, 23 Jan 2024 12:23:01 -0800
-Message-Id: <20240123202301.93566-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240123174544.648088948@linuxfoundation.org>
-References: 
+	s=arc-20240116; t=1706041617; c=relaxed/simple;
+	bh=Cp+ymBvg/0BHYvFzHxqF4DKgxRgzwB/sWXRqtG8txJY=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Content-Type; b=hhpsx9tZxS8CXBDOfy/kmWyvbDt5FQEqXkH0gyL7/Icw4AMhGyXSiQaWmHkWZTriKetPvCEmKwlLbZJHQ7tmOwU8u9YAu1RpPzUgW5eKVglv+iTCxpoU/IA87/5TkFDk0PQgb8Al8tBagfcF1wiIWFwasR8aHsJJwt9HoWptyfQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aahila.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NwOZBhww; arc=none smtp.client-ip=209.85.215.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aahila.bounces.google.com
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5cda0492c8eso5300590a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 12:26:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706041615; x=1706646415; darn=vger.kernel.org;
+        h=to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=c0U7M+lCiUNoRWYnkx7E5J9oeIbMrbKijEVU8nWAyc0=;
+        b=NwOZBhwwqRGkDWl6RqptZcaaXqbF/XTC6UfYQ7/qdsK5wWIK85dxL65R+TByHINU1x
+         DfbsqP03vLkqnBJR0ujsRn2ZEs4BnqFH06kHDQxXVpZ9JXbP+4GzoCcFBOd2AsQfTbF/
+         yZlThgKWCf5MSqgF4WtlB+Y2J/Jhkp02WgJbqSUOjU17fZFW8v2Yfp2Y7PW3zyB7VwvG
+         WHQN0+nVNy5CSJ97+iqP4vbi0r8dDlnKW2EH1ndBfkcBX5BiVowZGYzJIdrXwlYGvIqu
+         qztmBf0zD4/L4gMzZ234+83sTl+UF1eMMPpM2hZYQDaKkdydpd0Ui1cCu675wbiHZLSN
+         u1bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706041615; x=1706646415;
+        h=to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=c0U7M+lCiUNoRWYnkx7E5J9oeIbMrbKijEVU8nWAyc0=;
+        b=JeSJ9wXA5gWYa91Sow87euI7RUNIsgFRrfEZFqDpzGU9ICUloi7miiOWMatA/KO4Gy
+         oF3CAOZuzrO2ESJh4ZXq4MZM4JFE6qUOntgbvHBU76sSSc4thwblFevhuwPuMOua7wkK
+         QxxLbYnZCcBAWqkd1J4rdUdetwMQ5yR5EMNAfDfnhc5cq7kR58qG+oMljG8Fi030ZqEB
+         VwddA0L/1TghGEv19XbIGfYbXNGq85imx7NkHGlU59cfECeTbVXaG6WDHjOGZ8nbccWy
+         cIcDc4veiZH5gJ/V4cr+li6OE78kHK+xEqgDqoTagDtRFfjsIG2ZeeXZZKDm89qb0w7u
+         thNg==
+X-Gm-Message-State: AOJu0Yz0u1ezuRVqG6L29bKSLtivhyKkyG79u0XPhgRsDUIZPBQHJhHQ
+	1tHViGMXb5KGGpCprzMgL6s5MS0GbnvPoj1CyNrOKRpMdWxdZYGMRm5tpkhVe1r/UG36O526TrR
+	W6w==
+X-Google-Smtp-Source: AGHT+IHdN+SZZs5oEAHmcrkZZmRemBImoRFGAgG+gYZW4A2y8GsnkYoKaLaHs7+ljoxTcFm3ZnySdpH8pkg=
+X-Received: from aahila.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2f3])
+ (user=aahila job=sendgmr) by 2002:a63:d0:0:b0:5c7:c00:29cd with SMTP id
+ 199-20020a6300d0000000b005c70c0029cdmr33581pga.12.1706041615116; Tue, 23 Jan
+ 2024 12:26:55 -0800 (PST)
+Date: Tue, 23 Jan 2024 20:26:37 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+Message-ID: <20240123202638.1498449-1-aahila@google.com>
+Subject: [PATCH net-next v4 1/2] bonding: Add independent control state machine
+From: Aahil Awatramani <aahila@google.com>
+To: Aahil Awatramani <aahila@google.com>, David Dillow <dave@thedillows.org>, 
+	Mahesh Bandewar <maheshb@google.com>, Jay Vosburgh <j.vosburgh@gmail.com>, 
+	Hangbin Liu <liuhangbin@gmail.com>, Andy Gospodarek <andy@greyhouse.net>, 
+	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hello,
+Add support for the independent control state machine per IEEE
+802.1AX-2008 5.4.15 in addition to the existing implementation of the
+coupled control state machine.
 
-On Tue, 23 Jan 2024 09:47:30 -0800 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+Introduces two new states, AD_MUX_COLLECTING and AD_MUX_DISTRIBUTING in
+the LACP MUX state machine for separated handling of an initial
+Collecting state before the Collecting and Distributing state. This
+enables a port to be in a state where it can receive incoming packets
+while not still distributing. This is useful for reducing packet loss when
+a port begins distributing before its partner is able to collect.
 
-> This is the start of the stable review cycle for the 6.7.2 release.
-> There are 638 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 25 Jan 2024 17:44:25 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.2-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
-> and the diffstat can be found below.
+Added new functions such as bond_set_slave_tx_disabled_flags and
+bond_set_slave_rx_enabled_flags to precisely manage the port's collecting
+and distributing states. Previously, there was no dedicated method to
+disable TX while keeping RX enabled, which this patch addresses.
 
-This rc kernel passes DAMON functionality test[1] on my test machine.
-Attaching the test results summary below.  Please note that I retrieved the
-kernel from linux-stable-rc tree[2].
+Note that the regular flow process in the kernel's bonding driver remains
+unaffected by this patch. The extension requires explicit opt-in by the
+user (in order to ensure no disruptions for existing setups) via netlink
+support using the new bonding parameter coupled_control. The default value
+for coupled_control is set to 1 so as to preserve existing behaviour.
 
-Tested-by: SeongJae Park <sj@kernel.org>
-
-[1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] 2320541f64ba ("Linux 6.7.2-rc2")
-
-Thanks,
-SJ
-
-[...]
-
+Signed-off-by: Aahil Awatramani <aahila@google.com>
 ---
+ Documentation/networking/bonding.rst | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-ok 1 selftests: damon: debugfs_attrs.sh
-ok 2 selftests: damon: debugfs_schemes.sh
-ok 3 selftests: damon: debugfs_target_ids.sh
-ok 4 selftests: damon: debugfs_empty_targets.sh
-ok 5 selftests: damon: debugfs_huge_count_read_write.sh
-ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
-ok 7 selftests: damon: debugfs_rm_non_contexts.sh
-ok 8 selftests: damon: sysfs.sh
-ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
-ok 10 selftests: damon: reclaim.sh
-ok 11 selftests: damon: lru_sort.sh
-ok 1 selftests: damon-tests: kunit.sh
-ok 2 selftests: damon-tests: huge_count_read_write.sh
-ok 3 selftests: damon-tests: buffer_overflow.sh
-ok 4 selftests: damon-tests: rm_contexts.sh
-ok 5 selftests: damon-tests: record_null_deref.sh
-ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
-ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
-ok 8 selftests: damon-tests: damo_tests.sh
-ok 9 selftests: damon-tests: masim-record.sh
-ok 10 selftests: damon-tests: build_i386.sh
-ok 11 selftests: damon-tests: build_arm64.sh
-ok 12 selftests: damon-tests: build_m68k.sh
-ok 13 selftests: damon-tests: build_i386_idle_flag.sh
-ok 14 selftests: damon-tests: build_i386_highpte.sh
-ok 15 selftests: damon-tests: build_nomemcg.sh
- [33m
- [92mPASS [39m
+diff --git a/Documentation/networking/bonding.rst b/Documentation/networking/bonding.rst
+index f7a73421eb76..e774b48de9f5 100644
+--- a/Documentation/networking/bonding.rst
++++ b/Documentation/networking/bonding.rst
+@@ -444,6 +444,18 @@ arp_missed_max
+ 
+ 	The default value is 2, and the allowable range is 1 - 255.
+ 
++coupled_control
++
++    Specifies whether the LACP state machine's MUX in the 802.3ad mode
++    should have separate Collecting and Distributing states.
++
++    This is by implementing the independent control state machine per
++    IEEE 802.1AX-2008 5.4.15 in addition to the existing coupled control
++    state machine.
++
++    The default value is 1. This setting does not separate the Collecting
++    and Distributing states, maintaining the bond in coupled control.
++
+ downdelay
+ 
+ 	Specifies the time, in milliseconds, to wait before disabling
+-- 
+2.43.0.429.g432eaa2c6b-goog
+
 
