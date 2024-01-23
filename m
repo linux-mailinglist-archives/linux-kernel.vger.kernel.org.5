@@ -1,249 +1,270 @@
-Return-Path: <linux-kernel+bounces-34441-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34444-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57D048379DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:46:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AAEC837AD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:55:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74FCFB25BB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 00:45:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2CD3D1F2520D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 00:55:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B9E91272DB;
-	Tue, 23 Jan 2024 00:09:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 409FD131E32;
+	Tue, 23 Jan 2024 00:18:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="zebvpRoC"
-Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="D0KRmlgq"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CA321272D1
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:09:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705968566; cv=none; b=Z7498iAFdMMcJp7Vstkzcl7NoUpCpikpT2A3S3G8TnDjflM3xbKSiGvNntz3Kvc1rjwwfVTjuSaHxngvOXiFESYWe0QU6+vTKsJP/qjs+6lQSkfVwMrNlX+s2G2gtVeI1dkgYgQFLQKXQjHlmqtwtzE9qolHRDIUJFUM3NQbd70=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705968566; c=relaxed/simple;
-	bh=Jdg61seavXE1xpT5pY2hLDNUXhU6byHp1r4GrlR7kMM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oNkb3uin7BK2aqeBiXLmRfmfv+PGPYq8X95rzbfsukdiWmlqhaGQdD4BQkFy4Ju3bve73rL+056O97RUzfg92RVhPf2O1iNx5BQkP8mRaZ/1ih//Vq8arR9iXd3isnao2Ar5kBuHB3LjiHRuICK6m75z6sh4Gkmn+G/vB6f0JQ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zebvpRoC; arc=none smtp.client-ip=209.85.166.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-3600b2c43a8so63565ab.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 16:09:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705968563; x=1706573363; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z6iTX3Dff/qf4GiTmslr7evJO0INpDmUd3EHXqqq3wQ=;
-        b=zebvpRoCn1NRTtisZrPZACcUsPbib5xrU3m4YcucMgNqDNIg10bVUdeHKfrDNjFYir
-         pzy79S+5xw7m71QwSdlGmO1XIv5IWNTRnIP6rMcwT3hiE0u00zZdQjI5Q5nX6LY3UP95
-         N4MbJiyVqnJMmLYFLW8Njw4gGh19RAR8BgmKWbPpV7M4+NRwlcL+TmV6BO3Y/H3LM5nE
-         Cl77C1S4uXnznWeLq8dE3fQYvanGaUGLec5zaa68gVs/GA60n3uQlMZkPiB4C/Rswexv
-         882d/EDdk05K+2yYvvh1CWckX+2BZ1Z86e3DCA6r9s/VjpdGsD/dwyRzbQUgyGM9dN1a
-         e9mA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705968563; x=1706573363;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Z6iTX3Dff/qf4GiTmslr7evJO0INpDmUd3EHXqqq3wQ=;
-        b=vtIFQp54q15iOwrp2Zp0ihq3tJJJd++446+A/Rqqf1oNgn1Fkc2zm/LOTT2SCOinOr
-         oI+guQO2nKPFUmMWm/TbppYo6e2eXOls/LsFd4aKAk0KAGmGKo5jDcnuFEVnOpePz2OS
-         hy5CcQWz0JaEjxsULTyajX/EcVtN7AI9VsaC4nQaLODGkrvi3ASlV1SP7tcHy6iiCx9r
-         cjRPqjbHa5QkIQ5/XoOVAoUCkwq0SYWOBGqF5zTfRKKE1Cf1yuWfnpyNhLTolXl7wgt3
-         rXOWlHibfuXm+PYStIJH8Y+V5bCehv3ImAnQt1zZz47uz91K0bIhXMG+iuU2oC0eFXT9
-         LZVQ==
-X-Gm-Message-State: AOJu0Yy9S2Vl/ghecSY92JbMM0QO1cxNGVxbLUTnKrmfr1t8RcrDe+16
-	zJuq9H1jxvJy6ueyqVZCb1x/j7drFXTmWoG1JprpNMwm8/7gw72hLSN0K1mfN6eYO92R8i4o8JG
-	s5178p+UJcyT6YP8LC9P9ITyWObdmRRFf/Fi4
-X-Google-Smtp-Source: AGHT+IGqNTx22hwyx7T0tN42zdxmyKTBbyuTaqbWxwjPCDxtKJTpB4ygzpyrf+5qPDdG35azdOsTjzkSR/SOtDR0Sbo=
-X-Received: by 2002:a92:d0ce:0:b0:361:932f:f078 with SMTP id
- y14-20020a92d0ce000000b00361932ff078mr105294ila.22.1705968563081; Mon, 22 Jan
- 2024 16:09:23 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A8B5130E42;
+	Tue, 23 Jan 2024 00:18:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=134.134.136.65
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705969095; cv=fail; b=Hn0jMeFd5nwCxmWjx2iHT59KGmHolR9nzMH7sLa2smvO+3Dnt3iYfgVK4XmxwuOcoSfJ2ji6XkYdflBwY5C4mSjU53AeNzRSsDBnb4AnMZaa+Vrtw1Y8N2AfYENhvl4hvfPCMirFY01DO0SW4OJjkQgrWfhK260yX2kB5PTV2Gc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705969095; c=relaxed/simple;
+	bh=EDJiT0ZlNoKRnzdEDcGx1vHp/1YEH4AHGuiVaUK3tG4=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=o7LakGun5OCSxV9M0HQztWUQ+AGyfKk4RfKa0VT2RHzA1kPG2oH1vE5ZfVfTgxFSiE+uXz3M4j3aY6KDOaZjQD8HTNN9bNhxn07rA7Tuif0r29DR8uw9pX/NCzGY1rhisY7wZFFb+I4kZnmerLRc8e54DHFuwKr+4qjF8WWUgIo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=D0KRmlgq; arc=fail smtp.client-ip=134.134.136.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705969093; x=1737505093;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=EDJiT0ZlNoKRnzdEDcGx1vHp/1YEH4AHGuiVaUK3tG4=;
+  b=D0KRmlgq8o2DxA+7+OQGjF8lfmjzmFDq6EYktp9fge8fPDgli4HIbFUe
+   dSAxqrwSPldgUmELKheitJW2T/zrwWBBl2k4PNRiy+9fd1knUIQRdaFrA
+   dv0y01PiNTujeIi5Qth0GprNdyemCBEyMXuRfS3iX90NuSE/m1bGm5uHr
+   NYgt/Xw61aK0TdAwBihpNpx9/ghMY6+VBaMJUJz2FH/Hu9YQYCe9gunhU
+   RiTM90URYHA93opu8I+X16Vel8ZhDmO7Pc6MlWJG1B54ktATXdRMpamh6
+   1zvdQYqhileCGCssOAgeTVVKeLuGsI73Y++5Oazd9thxY0s7G2X3MRMf4
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="405124578"
+X-IronPort-AV: E=Sophos;i="6.05,212,1701158400"; 
+   d="scan'208";a="405124578"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 16:18:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,212,1701158400"; 
+   d="scan'208";a="27823905"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmviesa001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Jan 2024 16:18:12 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 22 Jan 2024 16:18:11 -0800
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 22 Jan 2024 16:18:10 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 22 Jan 2024 16:18:10 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.101)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 22 Jan 2024 16:18:10 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aCn02vD5sijt35Kc5PMtIwno6PdW4EpW1ewwn85+j/VWAQn1nDs0sQsvRq16qTr1GVck0cQDaut3rR+nDexEMy8U9zvclPi0taiRwB7KYWR0QWc3YisOaZJkuzma+vX0CHGN4AOOPo3w07Uvs2EC8UMxaXvn3edH8xtrWafQU10pMPUsm4acuqAeXNstrnLirHj+UL3+PICb0S+km7+VzdW0q8MOhGOvR2G87MLtUt7StPqx4Kle914YdRW9f1WgI/UIWhA0XFuEnd7Wnzoa4sPBsIzE1OcmKOE+EZx9QFT/quINIq8NGbD3c9SvjaC/XIZc2m/ITj+H9d2uPntIyw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9IHucuEr9KYUPZK9FjWaSkRU2MlLIamszfLjHunIrNE=;
+ b=OQC13/RWV9wYjB4lQ4KGPZp5Vug7FbXuh7iLGB0EDWWbQiQi/jjsYq//EAKVdLcbO2HqndCQb50VpyQxRLwjv4Y8rfLRB0hGkAjrjfN0zVYlTCV1LQVG8nLRvrqDGuM1Xv3JKhg0foWJyEPSzLq5FpN5FdLnrDR9DnKkwXiYwxMsZY31/Ru4mkugD/VvG5tG/1YC6JJ+4HC7i8MADI3qKpbuXjqWq9k9VdnSEXeBsakHC8OaywLu7ltEDPdAA4BVfo7Z1FxSkaR1z9nRrHkOtf2DP65mSKuFojmjcb8qLC6VnLJJx83XCVOxhPYF5Ux6RC2Arc2rMtwSgADuysezng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BYAPR11MB3320.namprd11.prod.outlook.com (2603:10b6:a03:18::25)
+ by DS0PR11MB7901.namprd11.prod.outlook.com (2603:10b6:8:f4::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.32; Tue, 23 Jan
+ 2024 00:18:08 +0000
+Received: from BYAPR11MB3320.namprd11.prod.outlook.com
+ ([fe80::c3aa:f75e:c0ed:e15f]) by BYAPR11MB3320.namprd11.prod.outlook.com
+ ([fe80::c3aa:f75e:c0ed:e15f%3]) with mapi id 15.20.7202.031; Tue, 23 Jan 2024
+ 00:18:08 +0000
+Message-ID: <e83eb3e8-6d08-462b-9ffe-d843e439d7da@intel.com>
+Date: Mon, 22 Jan 2024 16:18:06 -0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf 2/3] x86/mm: Disallow vsyscall page read for
+ copy_from_kernel_nofault()
+To: Hou Tao <houtao@huaweicloud.com>, <x86@kernel.org>, <bpf@vger.kernel.org>
+CC: Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski
+	<luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner
+	<tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
+	<bp@alien8.de>, "H . Peter Anvin" <hpa@zytor.com>,
+	<linux-kernel@vger.kernel.org>, xingwei lee <xrivendell7@gmail.com>, "Jann
+ Horn" <jannh@google.com>, <houtao1@huawei.com>
+References: <20240119073019.1528573-1-houtao@huaweicloud.com>
+ <20240119073019.1528573-3-houtao@huaweicloud.com>
+Content-Language: en-US
+From: Sohil Mehta <sohil.mehta@intel.com>
+In-Reply-To: <20240119073019.1528573-3-houtao@huaweicloud.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR03CA0194.namprd03.prod.outlook.com
+ (2603:10b6:a03:2ef::19) To BYAPR11MB3320.namprd11.prod.outlook.com
+ (2603:10b6:a03:18::25)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122155436.185089-1-james.clark@arm.com> <CAP-5=fX=GDGoZaACtPagB23k-1JGN6yaNgEdCS2QMnpz1htiyg@mail.gmail.com>
-In-Reply-To: <CAP-5=fX=GDGoZaACtPagB23k-1JGN6yaNgEdCS2QMnpz1htiyg@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Mon, 22 Jan 2024 16:09:11 -0800
-Message-ID: <CAP-5=fWvjjEtGdZ7-B9nJ2jFEu1zQD0=eg8Np4S+f6DaKVTQpQ@mail.gmail.com>
-Subject: Re: [PATCH] perf test: Fix session topology test on heterogeneous systems
-To: James Clark <james.clark@arm.com>
-Cc: linux-perf-users@vger.kernel.org, mark.rutland@arm.com, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	Yang Jihong <yangjihong1@huawei.com>, Changbin Du <changbin.du@huawei.com>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR11MB3320:EE_|DS0PR11MB7901:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5a741c60-44a9-4e95-dad2-08dc1ba8c6a7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nxe/V3ZLfNnKI2f6L1OtsMiBx/+4R2xHgXVV8AkUzitY+vNW5deVKk676A05i3VkItdGEaHnUtSud18q+YqN+J6pA7iserw566JwPjMljKkdQEUt2ZdwpmsDTUsaBpOwziHhgr9KdEhqVjNO7tVkcYB/SnQyfMbbooDvQUoj3GkeNYwuuHX6W/1PDWZ+EHDBhZFXsrspobPkT/a8nvL+mRrMUzA2B9txT4yOSd0yRWvpvRkVf1S2c7clbLJxp0aOKYajgZ54ovI7FOPg6MFSus4K6CKsKiEjLG4sw695UkXWDPvESuHMMI24GaTQVsjwgL+RCLBxTynFXAlqRv0sHALPQMH5LiuKNhyJOjKL+Asu/rqCbkbYKIVFwB5riWxCvtTbtBbt2yZl0MBZqr5ftvAYMv5x4Rvmiymz1jCk/4QHU74LQ/6zkk6e9EBVJnlEQ5VWStCUnsbIfqFZTFNn2f365f3OyJY8h2Xc8t1+bkHJe6dioLxQ7G7tcus5baOGNoaUB9OSyqx+0WB64JM2+5ZnQr7QVE5uWVM0Xa5nvMZS9y2KFURsNe56Lbygcey6R/OSVaooelaHfYXn3vu78dnlzPzlcabIQFo9UhYG6Zgj39MMGVUsLONVe9zwqNnDLCDBPpJMsQyt4p5GjBQtnA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3320.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(346002)(376002)(366004)(136003)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(31686004)(31696002)(86362001)(82960400001)(36756003)(38100700002)(26005)(2616005)(83380400001)(66476007)(8936002)(6486002)(8676002)(6512007)(6506007)(316002)(53546011)(66556008)(54906003)(66946007)(44832011)(4326008)(5660300002)(7416002)(2906002)(478600001)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TzM4OUlkbHhzRmZhenMrNzZrNmc0T2hSMnN5Y3daQkx3N2dpZ05vMk1kUi9s?=
+ =?utf-8?B?cHBnVmFVemY5TG9XYmFKdWREVC92cG5HbDNKN0IzdjdtODlPOWR6NEtUT2pP?=
+ =?utf-8?B?WC90R3hvQ0szZFRjZTFhaE9mbmV1cXpKVFRCa3R2T3FIZ0FyTFprbm8wRE9Y?=
+ =?utf-8?B?akpYOTRWSjJlc1ZVLzVsWFRaVHN5ODdDNGRzdFZRa3FFOFVITFdDV2lLVmw0?=
+ =?utf-8?B?a2g2b0FrN0RVbXpzQkgzaDlFK0ZVWmRxN3FsNkIzbzF2L0VQbkxCZGhvL1NU?=
+ =?utf-8?B?b1hkOU80ZDJvQndQMFhoVHVTYlVueS82TklYN2orbHhjTC91bGtJZEpldUtv?=
+ =?utf-8?B?NFREKys3TWRWb0FQQ2FuZGlXYit1cGVEQW4vbU4zd280NXdvK1kvQ2VrL1ZL?=
+ =?utf-8?B?Y0g0OHpmSzNRNGYyU1Y5bEFOZ2JuT2hrYU5OY2MvOXVKQithMGZCTlkvUnlE?=
+ =?utf-8?B?SmR3N2VES1A3UStsQXZxa0hnc0JHWElPQXJDamZVKzRScHNCVGJhZFJsc09I?=
+ =?utf-8?B?SktBTHFrOVR6U1ZlcWp1TzAxNDM0QXFURXp6enVieWQxSUxuYzNxbnVibmlI?=
+ =?utf-8?B?SzlFejZTZlg2YnJmbnJTak1XSGp2dUhRM3ZybEY5eFRnWE9hb1FSaXdPOGtp?=
+ =?utf-8?B?RDhINFd0bklRRDVYUEgzcVc2d2lMOVdsWHVEa0xrc2dEdUxpY0dpK2FhY2RN?=
+ =?utf-8?B?dFR2Y25XemtueHhLdXNFNEs3QTY2NDc3eGxSN01lV3dTY054eVRWaDhUVVlM?=
+ =?utf-8?B?M3pMME8rQ2tUUGM4VTNZM1ZsSzkrQlpsK21PUS9NQW91UHptUkJwRllYeVA4?=
+ =?utf-8?B?N1YyT1VDejJJQWE5QktJOG81c1VRa1JOSmZhRlQvRXpPckpOeTdRRHdqVUEy?=
+ =?utf-8?B?TFlqaitzMmdCSnhZbnF2UitEY1NMb0tGSFFJUzNaS3ZmVWEyb0d1TEE3L2pi?=
+ =?utf-8?B?OHVSTklSSUxPNUNYSlc2cXhMbldIbG5udlVJRS80a3p6MVY0TllYekQrWVhn?=
+ =?utf-8?B?SytGU2xFZ2MrQWxrQVZuMnJvMXVaTkFmMk9weGNjaTJaN1pMVEpaT2tyN2to?=
+ =?utf-8?B?RHN2MFdhSG9xL3RRcHhMdTYxaTRWYXQ2cVQ1bVNUT2F4RFdDUjUzMDBzNE9t?=
+ =?utf-8?B?KzQ0VEdWaG4zcXpvcWd2WUU5c010ZkNtV1luaDlpcTF5STJTYnlmMENBNVRy?=
+ =?utf-8?B?OFRDT1JSaUlacWJWSVBXK3NoUnVyODJaMEJrREJHRWkwQ3c0QWJLSS9GS1Bp?=
+ =?utf-8?B?TEZPWGVBVEFyam5LbUtxb09ZN1JNVFBjTkx2MHQ1RFltbTlBOHJ6YWpzc2Yr?=
+ =?utf-8?B?TVIxcDdOUE9TalhVM2tCekcxWWY1dzFnQ1k5cWVIQ2YvQktKVUlwSk9jdkRa?=
+ =?utf-8?B?cm03RzJZc3NVcjRGNXdxUGxIcERGeU43MjI5UEpzU2ZEK1hIMVl2UUFrNi9C?=
+ =?utf-8?B?dG9xVzdtckdPemVSSWQzb3oxemlFK3lla1V5QkY3WlJjdlppTXdhVitiV0hs?=
+ =?utf-8?B?T0M1VU9ZTDM3R3V3MzVCZFFyWHgrRS92VzBXNHY3NEhGNTNLR3BBSmpPTHky?=
+ =?utf-8?B?WENvMG9SUzkxeXE3TmtHY1B2STdicEIveFBteWRMYnp2RzlmUzlzSGpnN1Nk?=
+ =?utf-8?B?WnFrazFkK0pRb3h3MUFaeTJCeUpsVnpQTVpsOXBXSUVQVHk0eGJBN1phcTE3?=
+ =?utf-8?B?d0MvREtsRlNyb0FuZHFZSkRCSFluZ3gyT2VKTXpDblZZdjRyOG1PNVEyNG9w?=
+ =?utf-8?B?STcrMUNYNnBXVjhDMG1oTWJZdTd2dm9xY1dIVDVxUEJTdkNLVitqMzBkZmxw?=
+ =?utf-8?B?UnNsTWpSei9YUWdqT2VEak9GQXo1Q20rQXowWWVmbnl5cW4xMkpHUHROVDdE?=
+ =?utf-8?B?Q1dDMzlQbHpoa0lTeHJYYUI1bjBmMGJQTEZQaEZtSExSWXp5Mmk0czljRlRF?=
+ =?utf-8?B?VEZwNkJITks2aVUxUXorU2lXUER5anZVVVJ3ZGpZZWtERE8yNlhpMXN0NE9a?=
+ =?utf-8?B?NnFWZTU2TFBhT3V6aU52V0N3WCtDakJNbGJqYVRSeS85RDJQZ2ZaalVlMVJw?=
+ =?utf-8?B?UkdaMmVsYkhpT20reUN6V1RLeFdQVzF4YUhCa001MGdydlhuYmR4YkRIbC9B?=
+ =?utf-8?Q?LVqIcvxU3SeSnNJi2iBeF9o6G?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a741c60-44a9-4e95-dad2-08dc1ba8c6a7
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3320.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jan 2024 00:18:08.2607
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: o1lSPeTXb0MuKSM2dRqKwt1c5pEr3Fp1ImjOllzqNRXUMne7tctLk1fNaSY7EqkA9nIG0Azp2IHV/hrqfU6h6Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7901
+X-OriginatorOrg: intel.com
 
-On Mon, Jan 22, 2024 at 9:09=E2=80=AFAM Ian Rogers <irogers@google.com> wro=
-te:
->
-> Hi James, I think the subject should be something like "perf evlist:
-> Fix new_default for >1 core PMU" as the change will apply more widely
-> than just the test. The test failure fix can be in the subject. You
-> could add a:
->
-> Closes: https://lore.kernel.org/lkml/CAP-5=3DfWVQ-7ijjK3-w1q+k2WYVNHbAcej=
-b-xY0ptbjRw476VKA@mail.gmail.com/
->
-> On Mon, Jan 22, 2024 at 7:55=E2=80=AFAM James Clark <james.clark@arm.com>=
- wrote:
-> >
-> > The test currently fails with this message when evlist__new_default()
-> > opens more than one event:
-> >
-> >   32: Session topology                                                :
-> >   --- start ---
-> >   templ file: /tmp/perf-test-vv5YzZ
-> >   Using CPUID 0x00000000410fd070
-> >   Opening: unknown-hardware:HG
-> >   ------------------------------------------------------------
-> >   perf_event_attr:
-> >     type                             0 (PERF_TYPE_HARDWARE)
-> >     config                           0xb00000000
-> >     disabled                         1
-> >   ------------------------------------------------------------
-> >   sys_perf_event_open: pid 0  cpu -1  group_fd -1  flags 0x8 =3D 4
-> >   Opening: unknown-hardware:HG
-> >   ------------------------------------------------------------
-> >   perf_event_attr:
-> >     type                             0 (PERF_TYPE_HARDWARE)
-> >     config                           0xa00000000
-> >     disabled                         1
-> >   ------------------------------------------------------------
-> >   sys_perf_event_open: pid 0  cpu -1  group_fd -1  flags 0x8 =3D 5
-> >   non matching sample_type
-> >   FAILED tests/topology.c:73 can't get session
-> >   ---- end ----
-> >   Session topology: FAILED!
-> >
-> > This is because when re-opening the file and parsing the header, Perf
-> > expects that any file that has more than one event has the session ID
-> > flag set. Perf record already sets the flag in a similar way when there
-> > is more than one event, so add the same logic to evlist__new_default().
-> >
-> > evlist__new_default() is only currently used in tests, so I don't
-> > expect this change to have any other side effects.
-> >
-> > The session topology test has been failing on Arm big.LITTLE platforms
-> > since commit 251aa040244a ("perf parse-events: Wildcard most
-> > "numeric" events") when evlist__new_default() started opening multiple
-> > events for 'cycles'.
-> >
-> > Fixes: 251aa040244a ("perf parse-events: Wildcard most "numeric" events=
-")
-> > Signed-off-by: James Clark <james.clark@arm.com>
-> > ---
-> >  tools/perf/util/evlist.c | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
-> > diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-> > index 95f25e9fb994..56db37fac6f6 100644
-> > --- a/tools/perf/util/evlist.c
-> > +++ b/tools/perf/util/evlist.c
-> > @@ -95,6 +95,7 @@ struct evlist *evlist__new_default(void)
-> >         struct evlist *evlist =3D evlist__new();
-> >         bool can_profile_kernel;
-> >         int err;
-> > +       struct evsel *evsel;
-> >
-> >         if (!evlist)
-> >                 return NULL;
-> > @@ -106,6 +107,10 @@ struct evlist *evlist__new_default(void)
-> >                 evlist =3D NULL;
-> >         }
-> >
-> > +       if (evlist->core.nr_entries > 1)
-> > +               evlist__for_each_entry(evlist, evsel)
-> > +                       evsel__set_sample_id(evsel, false);
-> > +
->
-> nit: the if should have curlies, with them we can reduce the scope of
-> evsel like below. It is also nice for constants to name the arguments
-> [1].
->
-> if (evlist->core.nr_entries > 1) {
->     struct evsel *evsel;
->
->     evlist__for_each_entry(evlist, evsel)
->         evsel__set_sample_id(evsel, /*can_sample_identifier=3D*/false);
-> }
->
-> Tested-by: Ian Rogers <irogers@google.com>
-> (also Reviewed-by)
->
-> When testing with this with Mark's change [2] I see on alderlake two fail=
-ures:
-> ```
-> irogers@alderlake:~$ perf test 74 -vv
-> Couldn't bump rlimit(MEMLOCK), failures may take place when creating
-> BPF maps, etc
-> 74: daemon operations                                               :
-> --- start ---
-> test child forked, pid 553821
-> test daemon list
-> test daemon reconfig
-> test daemon stop
-> test daemon signal
-> signal 12 sent to session 'test [554082]'
-> signal 12 sent to session 'test [554082]'
-> FAILED: perf data no generated
-> test daemon ping
-> test daemon lock
-> test child finished with -1
-> ---- end ----
-> daemon operations: FAILED!
-> irogers@alderlake:~$ perf test 76 -vv
-> Couldn't bump rlimit(MEMLOCK), failures may take place when creating
-> BPF maps, etc
-> 76: perf list tests                                                 :
-> --- start ---
-> test child forked, pid 554167
-> Json output test
-> Expecting ',' delimiter: line 4971 column 2 (char 243497)
-> test child finished with -1
-> ---- end ----
-> perf list tests: FAILED!
-> ```
-> So I think this patch may be exposing other latent issues. I'll try to
-> take a look.
+On 1/18/2024 11:30 PM, Hou Tao wrote:
+> From: Hou Tao <houtao1@huawei.com>
+> 
+> When trying to use copy_from_kernel_nofault() to read vsyscall page
+> through a bpf program, the following oops was reported:
+> 
+>   BUG: unable to handle page fault for address: ffffffffff600000
+>   #PF: supervisor read access in kernel mode
+>   #PF: error_code(0x0000) - not-present page
+>   PGD 3231067 P4D 3231067 PUD 3233067 PMD 3235067 PTE 0
+>   Oops: 0000 [#1] PREEMPT SMP PTI
+>   CPU: 1 PID: 20390 Comm: test_progs ...... 6.7.0+ #58
+>   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996) ......
+>   RIP: 0010:copy_from_kernel_nofault+0x6f/0x110
+>   ......
+>   Call Trace:
+>    <TASK>
+>    ? copy_from_kernel_nofault+0x6f/0x110
+>    bpf_probe_read_kernel+0x1d/0x50
+>    bpf_prog_2061065e56845f08_do_probe_read+0x51/0x8d
+>    trace_call_bpf+0xc5/0x1c0
+>    perf_call_bpf_enter.isra.0+0x69/0xb0
+>    perf_syscall_enter+0x13e/0x200
+>    syscall_trace_enter+0x188/0x1c0
+>    do_syscall_64+0xb5/0xe0
+>    entry_SYSCALL_64_after_hwframe+0x6e/0x76
+>    </TASK>
+>   ......
+>   ---[ end trace 0000000000000000 ]---
+> 
+> The oops happens as follows: A bpf program uses bpf_probe_read_kernel()
+> to read from vsyscall page, bpf_probe_read_kernel() invokes
+> copy_from_kernel_nofault() in turn and then invokes __get_user_asm(). A
+> page fault exception is triggered accordingly, but handle_page_fault()
+> considers the vsyscall page address as a userspace address instead of
+> a kernel space address, so the fix-up set-up by bpf isn't applied.
 
-Unrelated issues to this patch, fixes in:
-https://lore.kernel.org/lkml/20240123000604.1211486-1-irogers@google.com/
+This comment and the one in the code below seem contradictory and
+confusing. Do we want the vsyscall page address to be considered as a
+userspace address or not?
 
-Thanks,
-Ian
+IIUC, the issue here is that the vsyscall page (in xonly mode) is not
+really mapped and therefore running copy_from_kernel_nofault() on this
+address is incorrect. This patch fixes this by making
+copy_from_kernel_nofault() return an error for a vsyscall address.
 
-> Another thought, rather than having an evlist validate we should just
-> assert the evlist is always in a good shape whenever it is mutated.
-> That would have avoided this bug as the code would have blown up
-> early.
->
-> Thanks,
-> Ian
->
-> [1] https://clang.llvm.org/extra/clang-tidy/checks/bugprone/argument-comm=
-ent.html
-> [2] https://lore.kernel.org/lkml/20240116170348.463479-1-mark.rutland@arm=
-com/
->
-> >         return evlist;
-> >  }
->
->
-> >
-> > --
-> > 2.34.1
-> >
+
+> Because the exception happens in kernel space and page fault handling is
+> disabled, page_fault_oops() is invoked and an oops happens.
+> 
+> Fix it by disallowing vsyscall page read for copy_from_kernel_nofault().
+> 
+
+[Maybe I have misunderstood the issue here and following questions are
+not even relevant.]
+
+But, what about vsyscall=emulate? In that mode the page is actually
+mapped. Would we want the page read to go through then?
+
+> Originally-from: Thomas Gleixner <tglx@linutronix.de>
+
+Documentation/process/maintainer-tip.rst says to use "Originally-by:"
+
+
+> diff --git a/arch/x86/mm/maccess.c b/arch/x86/mm/maccess.c
+> index 6993f026adec9..bb454e0abbfcf 100644
+> --- a/arch/x86/mm/maccess.c
+> +++ b/arch/x86/mm/maccess.c
+> @@ -3,6 +3,8 @@
+>  #include <linux/uaccess.h>
+>  #include <linux/kernel.h>
+>  
+> +#include "mm_internal.h"
+> +
+>  #ifdef CONFIG_X86_64
+>  bool copy_from_kernel_nofault_allowed(const void *unsafe_src, size_t size)
+>  {
+> @@ -15,6 +17,10 @@ bool copy_from_kernel_nofault_allowed(const void *unsafe_src, size_t size)
+>  	if (vaddr < TASK_SIZE_MAX + PAGE_SIZE)
+>  		return false;
+>  
+> +	/* vsyscall page is also considered as userspace address. */
+
+A bit more explanation about why this should happen might be useful.
+
+> +	if (is_vsyscall_vaddr(vaddr))
+> +		return false;
+> +
+>  	/*
+>  	 * Allow everything during early boot before 'x86_virt_bits'
+>  	 * is initialized.  Needed for instruction decoding in early
+
 
