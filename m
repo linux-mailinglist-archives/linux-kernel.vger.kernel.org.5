@@ -1,114 +1,112 @@
-Return-Path: <linux-kernel+bounces-35814-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35816-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A0DF8396E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:50:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 874BC8396E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:51:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D687BB24879
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:50:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 327A51F25430
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:51:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3B0381ACC;
-	Tue, 23 Jan 2024 17:49:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0429081AA2;
+	Tue, 23 Jan 2024 17:50:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G9tWfBhX"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="txpf10q3"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C4DC80056;
-	Tue, 23 Jan 2024 17:49:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4318D811EF;
+	Tue, 23 Jan 2024 17:50:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706032198; cv=none; b=PIHN99Lyip/ruVRhj4+YLNtj1PvYSVs9gG85xsBEdH1rzQhxo26wfNWFm1lpB/Gzv8hR3Dq/FRrFU6D6leym57HeGf15xQqKAzsRzpGANd2QORg1BrizwOA9drSrETcrezw9/lJ3fRLbKAlUziM1fZeOYoWyz/OspjjGnNfep/s=
+	t=1706032230; cv=none; b=iz3i0Wwijyflc3yjZAe0nL6NohPet2StYWOke9HukTsN1eKvwBuK9+47Mut/4DriwiAWe379R2vgnSF6W20nPDW9xEb8f+09xuy+yPokM4M/kaLhTAB4twmzm1ehd4MF4BBkSBnJOIk+O1QStbyxJceuBhrqr2ChnkB+S9EzDrk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706032198; c=relaxed/simple;
-	bh=pZmhTwrYFluya1Y15DJtUQFyoFTSJRRJJCwBZJCZ/7E=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rl6ISlssXaeIBkjUX5y1HmfJCjqgfQlx71pGS5ThvT9SKej9h1ookmzyEl7a+beXy4USjeRd6vVKb2YKVzgg3IR2u8/tEJfPCkA9DGxEoOYH35XaJf8l8SOdw+AmPT3AlMS67Bq/A2lUfw9npTsOOBZeYALgW5OelLS4uOttk04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G9tWfBhX; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40eacb6067dso28833155e9.1;
-        Tue, 23 Jan 2024 09:49:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706032195; x=1706636995; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=phUpc3vqpaERggtFkDbvhq6Ow8Zicp3uWb8jHfud6kw=;
-        b=G9tWfBhX81Tw9+B5+c/bENYMAaHJ9aD2YQKpBCeLSQ852fiKv5WrZvxx9zX1/3iQaY
-         Q0BWvuoL2wUFSS+DO77H7mfuc9Nnv5v4vt0SV1wOh51Z/i17tVP/SykQyFAALLlCYOIv
-         YHPud/PJTPfyO/yR8vATHfJ/fVf8WzGXR1uCdzMQrO/iWnrNoJ71RkQNt6NbtgwLITlK
-         VJq/AwmOmIgW/ud0TOvzVfP5gV51yo0hbGrOXnetbRdLkkUMffGuN32U2h/uBiOUcz1o
-         /rKek0YoSc1jc3zRxGmMkxFa+huI3HuEYQ4E38QCEyzLlzi/Y49Vwho/1SDfYg3yeqzn
-         PlZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706032195; x=1706636995;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=phUpc3vqpaERggtFkDbvhq6Ow8Zicp3uWb8jHfud6kw=;
-        b=NX5mYVhNOSLsp2tBq0BJe247O7tD+YEeLl8vEIp6dETOrkl3OGEC3R4SXz2phgPNJk
-         bkPZYYPoTV1lM+ZoC2qytQql8G38aMUCYlj58BiO3+Z1pIakeMVFDLxI19x6YfBaWHDk
-         mPL+Oj+b9I9RkwT9EgVXJgQJH3CSfAxsBPfB/HadEhVFPd88cE63sygQV1ssHDJlNcGI
-         o4OLd4rcIYgCb+HDJ5U8OV45Jah7ffn9tGZzWJVLwXvZmwYlhZLy+D/SCV31moB5VDBf
-         V8oyG8fpCcjXgZ/Kr4B2m03LDLaYEg33W5k5v6DyP7sNDY3FuFui5djriRi5U1Wl5x4n
-         Tx0A==
-X-Gm-Message-State: AOJu0YxZhxVnV9R8S43JOT4vPvFYGJ/j7emgFTQ7Zci7sC+GOjxiV19B
-	lGqVGJe+b5UrxaU10DrLzMXIIE1u61fPgReDWaf6f5DEe4CS3Nin
-X-Google-Smtp-Source: AGHT+IH7zIW6Sody5lpgf0QjQ/UUb5BDBibnCsSPJ9ObnPZSc8pZ+zdBI5rEoa7/i2qPfa4nThePJg==
-X-Received: by 2002:a05:600c:198a:b0:40e:4786:9379 with SMTP id t10-20020a05600c198a00b0040e47869379mr416361wmq.103.1706032194674;
-        Tue, 23 Jan 2024 09:49:54 -0800 (PST)
-Received: from jernej-laptop.localnet (86-58-14-70.dynamic.telemach.net. [86.58.14.70])
-        by smtp.gmail.com with ESMTPSA id a17-20020a5d5711000000b00339273d0626sm9662579wrv.84.2024.01.23.09.49.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 09:49:54 -0800 (PST)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Samuel Holland <samuel@sholland.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Vinod Koul <vkoul@kernel.org>, Chen-Yu Tsai <wens@kernel.org>
-Cc: Chen-Yu Tsai <wens@csie.org>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
- linux-sound@vger.kernel.org, dmaengine@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject:
- Re: [PATCH 2/7] dt-bindings: sound: sun4i-spdif: Add Allwinner H616
- compatible
-Date: Tue, 23 Jan 2024 18:49:53 +0100
-Message-ID: <8325591.T7Z3S40VBb@jernej-laptop>
-In-Reply-To: <20240122170518.3090814-3-wens@kernel.org>
-References:
- <20240122170518.3090814-1-wens@kernel.org>
- <20240122170518.3090814-3-wens@kernel.org>
+	s=arc-20240116; t=1706032230; c=relaxed/simple;
+	bh=Fg0kjr4p02yeL0dd3zpR20S3rY7QojmBvz5b3eZjGMY=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=t/7X9rPUn6/iVl8xleW6DJQ+hECArk7h3xkZ5hR9RSFYri9UlK9ey//CgkMCi6FLRD9xBqeb+RXBxKIK7qrb3ispd7KqacF1A9UkRx3tmg6cTmvkXxzL+QysyLRi7MraPLLAODRJOQk9upWDnCq0Gj5Wcj8qCsjKO712sXl6O6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=txpf10q3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id EBB36C433C7;
+	Tue, 23 Jan 2024 17:50:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706032230;
+	bh=Fg0kjr4p02yeL0dd3zpR20S3rY7QojmBvz5b3eZjGMY=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=txpf10q3NNT5p/ZbgP37oRGugwd240cA5vlkhPPYdaRJzCLdrHhvFpUFCPEMJvdAD
+	 xHdEDErc2MfD1gyre6Yn+ca6xxFLR7yr+85zx0RdnnL1BCGGswRkJAsvES7qddTc1d
+	 jXwQsyD0oj1QSTgwEO6jGiRAiOhSdWqr5z9gsN/UngCkaXRVzgkj/LJaQuHuds8K8n
+	 iMR4tJaYy4qu9h+/Y9z2w6Gk+HhYN1ICqFGRoUhk8bLLes+8SCbMZLCV39Zd4Ndqs6
+	 83fxqyG93y/qRDVzoRnByqO4vwlsEz+ZMRxeV8YOyxJO6VIvepdfJuTlcVfjkUmvu7
+	 K32Es2dZEBglQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D1D0CDFF762;
+	Tue, 23 Jan 2024 17:50:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v3 00/10] RISC-V crypto with reworked asm files
+From: patchwork-bot+linux-riscv@kernel.org
+Message-Id: 
+ <170603222985.30461.5962076100762100573.git-patchwork-notify@kernel.org>
+Date: Tue, 23 Jan 2024 17:50:29 +0000
+References: <20240122002024.27477-1-ebiggers@kernel.org>
+In-Reply-To: <20240122002024.27477-1-ebiggers@kernel.org>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: linux-riscv@lists.infradead.org, linux-crypto@vger.kernel.org,
+ linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu, andy.chiu@sifive.com,
+ ardb@kernel.org, christoph.muellner@vrull.eu, heiko@sntech.de,
+ jerry.shih@sifive.com, palmer@dabbelt.com, paul.walmsley@sifive.com,
+ phoebe.chen@sifive.com, hongrong.hsu@sifive.com
 
-Dne ponedeljek, 22. januar 2024 ob 18:05:13 CET je Chen-Yu Tsai napisal(a):
-> From: Chen-Yu Tsai <wens@csie.org>
-> 
-> The SPDIF hardware block found in the H616 SoC has the same layout as
-> the one found in the H6 SoC, except that it is missing the receiver
-> side.
-> 
-> Add a new compatible string for it.
-> 
-> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+Hello:
 
-Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+This series was applied to riscv/linux.git (for-next)
+by Palmer Dabbelt <palmer@rivosinc.com>:
 
-Best regards,
-Jernej
+On Sun, 21 Jan 2024 16:19:11 -0800 you wrote:
+> This patchset, which applies to v6.8-rc1, adds cryptographic algorithm
+> implementations accelerated using the RISC-V vector crypto extensions
+> (https://github.com/riscv/riscv-crypto/releases/download/v1.0.0/riscv-crypto-spec-vector.pdf)
+> and RISC-V vector extension
+> (https://github.com/riscv/riscv-v-spec/releases/download/v1.0/riscv-v-spec-1.0.pdf).
+> The following algorithms are included: AES in ECB, CBC, CTR, and XTS modes;
+> ChaCha20; GHASH; SHA-2; SM3; and SM4.
+> 
+> [...]
+
+Here is the summary with links:
+  - [v3,01/10] RISC-V: add helper function to read the vector VLEN
+    (no matching commit)
+  - [v3,02/10] RISC-V: add TOOLCHAIN_HAS_VECTOR_CRYPTO
+    https://git.kernel.org/riscv/c/34ca4ec628de
+  - [v3,03/10] RISC-V: hook new crypto subdir into build-system
+    https://git.kernel.org/riscv/c/178f3856436c
+  - [v3,04/10] crypto: riscv - add vector crypto accelerated AES-{ECB,CBC,CTR,XTS}
+    https://git.kernel.org/riscv/c/eb24af5d7a05
+  - [v3,05/10] crypto: riscv - add vector crypto accelerated ChaCha20
+    https://git.kernel.org/riscv/c/bb54668837a0
+  - [v3,06/10] crypto: riscv - add vector crypto accelerated GHASH
+    https://git.kernel.org/riscv/c/600a3853dfa0
+  - [v3,07/10] crypto: riscv - add vector crypto accelerated SHA-{256,224}
+    https://git.kernel.org/riscv/c/8c8e40470ffe
+  - [v3,08/10] crypto: riscv - add vector crypto accelerated SHA-{512,384}
+    https://git.kernel.org/riscv/c/b3415925a08b
+  - [v3,09/10] crypto: riscv - add vector crypto accelerated SM3
+    https://git.kernel.org/riscv/c/563a5255afa2
+  - [v3,10/10] crypto: riscv - add vector crypto accelerated SM4
+    https://git.kernel.org/riscv/c/b8d06352bbf3
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
 
