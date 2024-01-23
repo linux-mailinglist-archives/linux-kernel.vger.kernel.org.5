@@ -1,163 +1,113 @@
-Return-Path: <linux-kernel+bounces-35973-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3323C839958
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:14:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA841839954
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:14:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C41FA1F22D42
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:14:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29C851C255CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:14:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC2E9823AE;
-	Tue, 23 Jan 2024 19:14:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFDFB81215;
+	Tue, 23 Jan 2024 19:14:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VbLRBQVR"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TR5/obcd"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 856C0433D1
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 19:14:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23A7F481DC;
+	Tue, 23 Jan 2024 19:14:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706037266; cv=none; b=O67+uN4M38kAGev9zik7IApOnCDL64e14pDy5eV0uDLmygof6cVZ/9opLTlBDEh94v/U7wGKGW9mqaNW7lJCHtsRUeAauY1I4CUu9/Nw6Sn7uc4QR5ZwyWCussMYjV9MFyDkqnj4IsGhATCdQWg031BGRduzZNQEkc5XEHisR1o=
+	t=1706037241; cv=none; b=tuT4wB9EoW/ATeKuvFdnIWvC6OmH/KjYH4xHT0y5gc90DDrURWxbOXzBx/GiH3PzVovMYGwymutEXJFpWjiC1DMcn+3LMfxNCYDGf6txdBJcUozqQJdxs9UeMVFMeeYRi9IAdC4X6gZLxDakLRh0VZMnt8YTp5CS+4EFI/ec6os=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706037266; c=relaxed/simple;
-	bh=XyTcwd8qXE/hKl/HKpN6+Q+TlUcZa83KF6IodAsDa/A=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=rBDOOCA7H9mB6xOOlfkt14szrhpgLFGq7cX8qygg6WD8qKJve8TDTcVNQkiJ6sqD+Q1CRuoyjtIrj/PFpiEHUP5eP0B5n7baDZUNhS8UcPT4rusv+yjCy6LrUIGEepw4ymIkS/tUNLeXVL4VhpIE4KKKnh5xKHlENWbplYdGSeM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VbLRBQVR; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706037262;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=JX1C39DLRiXRo9KmPAPcoOAD8i9NqnqwxEQEJ9FubBk=;
-	b=VbLRBQVRUNuhy+io31f+AcFKsZLpKMtn070olk06CIfa6kILPZezn6GefJl3GAganqk7F+
-	z6zFZXCNMBdHlkjTHozXTZLCBufYWirZZnFV0G3S+v0/Mf1MKgO8LXtiYkPjrOXIL4httn
-	LG3pM3qYwrdCOaJlhSgLZr12G2zAqbw=
-Received: from mail-ua1-f69.google.com (mail-ua1-f69.google.com
- [209.85.222.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-116-dnH6Br9WMjGTA0PRTRdUOQ-1; Tue, 23 Jan 2024 14:14:20 -0500
-X-MC-Unique: dnH6Br9WMjGTA0PRTRdUOQ-1
-Received: by mail-ua1-f69.google.com with SMTP id a1e0cc1a2514c-7d2f873493cso750698241.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 11:14:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706037260; x=1706642060;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JX1C39DLRiXRo9KmPAPcoOAD8i9NqnqwxEQEJ9FubBk=;
-        b=X6bXRB0Sl7kaPeQEqWnro7dLETX1yNU7Hfsxgzw1ne86lqp0TTCBMmqyQKeRZz+zS3
-         UD2+5nCteEqqiu8I3WI5cWlxtg5e7E75TYtYkGr2rAIMdgmJtzoDARpVnN2eMN5zsPZN
-         C8dMUgKAgMsyzZevPsrgDRcqTCBifcPGP4KhG4MnNjAXFgFVjP76rYHNh+N9aI+kLDBb
-         RLa9UJWuf+D4p8rKwSQ/K8lWaudLuTdjHfL/lQwoKHA2szZNLuvb+p4jh0UEMRmXLQF5
-         Go9oxUFJ9Je1Ab5HwoyLCv7S4y62pE4BAl+eRmd2NVw7G1+ZTx+65uXljO4/oDS2Fq6N
-         qaPA==
-X-Gm-Message-State: AOJu0Yx3UOQMcRgLpgxXxO9N8ntpzXxAINxfqLz35YxySL8ORN1D5BtY
-	IqS39fu9xJOy/iQWJ2XDXpHW28niGw1YqGZXVDXgwd2A3ZJk70vPznHKQg1oGalQfV8MnvMxfaj
-	ZlhRqI34cJB1GGEzDCIZM9E/vTajq6+Tr0hX6vX+CpYZMeKRupYlsSUSjFcjhkw==
-X-Received: by 2002:a05:6102:504:b0:469:877d:fc1a with SMTP id l4-20020a056102050400b00469877dfc1amr3831539vsa.8.1706037260324;
-        Tue, 23 Jan 2024 11:14:20 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGcPBUMVwlS4nMBzDdAWf4eFzF3isPk56IUM4Qu5TPTFe0QdBgOX49eKPlHyED9Kzt5PBx5MQ==
-X-Received: by 2002:a05:6102:504:b0:469:877d:fc1a with SMTP id l4-20020a056102050400b00469877dfc1amr3831528vsa.8.1706037259988;
-        Tue, 23 Jan 2024 11:14:19 -0800 (PST)
-Received: from [192.168.171.162] ([2600:380:6a3c:801d:216a:a904:5575:54a5])
-        by smtp.gmail.com with ESMTPSA id oh6-20020a056214438600b00685754458c9sm3616658qvb.115.2024.01.23.11.14.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 11:14:19 -0800 (PST)
-From: Andrew Halaney <ahalaney@redhat.com>
-Date: Tue, 23 Jan 2024 13:13:36 -0600
-Subject: [PATCH] scsi: ufs: qcom: Clarify comments about the initial
- phy_gear
+	s=arc-20240116; t=1706037241; c=relaxed/simple;
+	bh=Oijw2mPnsGQxqdOnmwSluoedvOV45guwWoQ6OhYQUoQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iSfgAYqg+YsSAoJOfhtr3pbSWJ5jYn4JMEao0jxB3/Av3R+sTULHWnjlKYUNiDvRQqkelsrMPkfcmPd+6AjpGo9YRWT58T26xbr+PkFNLDlUQ/os2vCaCl7RlU3Plx5laizpUmSbKeVuG5+WFQrBtcLUiOD06I6VvfKGVn6RZK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TR5/obcd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D908C433C7;
+	Tue, 23 Jan 2024 19:13:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706037240;
+	bh=Oijw2mPnsGQxqdOnmwSluoedvOV45guwWoQ6OhYQUoQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TR5/obcds3kYwRGzVZli1bcFhOcKx5nnLWF5IHRRURUkWHCmvY/+z/PbKXJuDZD66
+	 DANzIi4ztzbJyfXsSpU7wlyF0QwX/ycIFAgUED8dMF1PfbwdZcgBd328lGNakEkjPG
+	 UcSZOuE2M7wjazt3Iaclw4kI6sp67IKbYIyaGxNCYYQHkMWo1BI1HBFrDqU48AwX84
+	 96cOFvgHHUVCXeh3YE8J3+AFxTNd+rR5rN55Dcr5IIrMHkpuUxGlFhKNQJ6SYqhw0j
+	 mhQApamcUbuOe1wi3AwlZi2T6X2C43PJQ0P6slE1+6XvNghOiNpLR3B2mDAEc9GAkP
+	 GN39x7iRY/6Ww==
+Date: Tue, 23 Jan 2024 19:13:53 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Shenghao Ding <shenghao-ding@ti.com>, conor+dt@kernel.org,
+	robh+dt@kernel.org, andriy.shevchenko@linux.intel.com,
+	kevin-lu@ti.com, baojun.xu@ti.com, devicetree@vger.kernel.org,
+	lgirdwood@gmail.com, perex@perex.cz,
+	pierre-louis.bossart@linux.intel.com, 13916275206@139.com,
+	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+	liam.r.girdwood@intel.com, soyer@irl.hu, jkhuang3@ti.com,
+	tiwai@suse.de, pdjuandi@ti.com, j-mcpherson@ti.com, navada@ti.com
+Subject: Re: [PATCH v1 3/4] ASoc: pcm6240: Add compile item for pcm6240 codec
+ driver
+Message-ID: <8989fc5a-032e-49a2-b55f-9e7a526d8649@sirena.org.uk>
+References: <20240123111411.850-1-shenghao-ding@ti.com>
+ <20240123111411.850-3-shenghao-ding@ti.com>
+ <08809d8b-a474-42e8-8a25-edc94e7d9723@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240123-ufs-reinit-comments-v1-1-ff2b3532d7fe@redhat.com>
-X-B4-Tracking: v=1; b=H4sIAN8PsGUC/x3MQQqAIBBA0avErBtQM4OuEi3ExppFFk5FEN09a
- fkW/z8glJkE+uqBTBcLb6lA1xWExaeZkKdiMMpYpU2DZxTMxIkPDNu6UjoEdRes9dEZ12oo5Z4
- p8v1fh/F9P0uIne1lAAAA
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
- "James E.J. Bottomley" <jejb@linux.ibm.com>, 
- "Martin K. Petersen" <martin.petersen@oracle.com>, echanude@redhat.com
-Cc: linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Andrew Halaney <ahalaney@redhat.com>
-X-Mailer: b4 0.12.3
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="6AcwafjYfkmuuvQ+"
+Content-Disposition: inline
+In-Reply-To: <08809d8b-a474-42e8-8a25-edc94e7d9723@linaro.org>
+X-Cookie: Stay together, drag each other down.
 
-The comments that currently are within the hw_ver < 4 conditional
-are misleading. They really apply to various branches of the
-conditionals there and incorrectly state that the phy_gear value
-can increase.
 
-Right now the logic is to:
+--6AcwafjYfkmuuvQ+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-    * Default to max supported gear for phy_gear
-    * Set phy_gear to minimum value if version < 4 since those versions
-      only support one PHY init sequence (and therefore don't need reinit)
-    * Set phy_gear to the optimal value if the device version is already
-      populated in the controller registers on boot
+On Tue, Jan 23, 2024 at 12:25:33PM +0100, Krzysztof Kozlowski wrote:
+> On 23/01/2024 12:14, Shenghao Ding wrote:
+> > PCM6240 driver implements a flexible and configurable setting for register
+> > and filter coefficients, to one, two or even multiple PCM6240 Family Audio
+> > chips.
 
-Let's move some of the comment to outside the if statement and clean up
-the bit left about switching to a higher gear on reinit. This way the
-comment more accurately reflects the logic.
+> So before you added dead code? No, please add a working code, so squash
+> the patches.
 
-Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
----
-This is a minor comment cleanup inspired by my mistaken understanding of
-the flow over at [0]
+This is a fairly normal way of adding completely new files that are
+split into multiple commits for whatever reason, and given that the
+main C file is 2600 lines and the header another couple of hundred I'm
+not going to object to something that makes them a bit easier to digest.
+This is especially true for a driver like this which is handling some
+hardware that's a bit interesting and therefore has more complicated
+code, it's not all big data tables like many ASoC drivers.
 
-[0] https://lore.kernel.org/linux-arm-msm/20240123143615.GD19029@thinkpad/
----
- drivers/ufs/host/ufs-qcom.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+It'd be even nicer to have things done a bit more incrementally in
+logical blocks but every little helps.
 
-diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-index 39eef470f8fa..d9ec2dfbbda4 100644
---- a/drivers/ufs/host/ufs-qcom.c
-+++ b/drivers/ufs/host/ufs-qcom.c
-@@ -843,15 +843,20 @@ static void ufs_qcom_set_phy_gear(struct ufs_qcom_host *host)
- 	struct ufs_host_params *host_params = &host->host_params;
- 	u32 val, dev_major;
- 
-+	/*
-+	 * Default to powering up the PHY to the max gear possible, which is
-+	 * backwards compatible with lower gears but not optimal from
-+	 * a power usage point of view. After device negotiation, if the
-+	 * gear is lower a reinit will be performed to program the PHY
-+	 * to the ideal gear for this combo of controller and device.
-+	 */
- 	host->phy_gear = host_params->hs_tx_gear;
- 
- 	if (host->hw_ver.major < 0x4) {
- 		/*
--		 * For controllers whose major HW version is < 4, power up the
--		 * PHY using minimum supported gear (UFS_HS_G2). Switching to
--		 * max gear will be performed during reinit if supported.
--		 * For newer controllers, whose major HW version is >= 4, power
--		 * up the PHY using max supported gear.
-+		 * These controllers only have one PHY init sequence,
-+		 * let's power up the PHY using that (the minimum supported
-+		 * gear, UFS_HS_G2).
- 		 */
- 		host->phy_gear = UFS_HS_G2;
- 	} else if (host->hw_ver.major >= 0x5) {
+--6AcwafjYfkmuuvQ+
+Content-Type: application/pgp-signature; name="signature.asc"
 
----
-base-commit: 319fbd8fc6d339e0a1c7b067eed870c518a13a02
-change-id: 20240123-ufs-reinit-comments-17c44af62651
+-----BEGIN PGP SIGNATURE-----
 
-Best regards,
--- 
-Andrew Halaney <ahalaney@redhat.com>
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWwD/AACgkQJNaLcl1U
+h9CD4Af/fu+SJnY++tUuDbtG4I57I0AjyiLnU2S/XRrj/F6oiPE3qWRORdxIt9ep
+5pzcfS3KX2w7a+NLsHlF/3VcDng+TLtqjRTKOq810il5MvviQ/UQ8uVrK0TE/ZN6
+tL+x9gfCYM/sE2Cz9HjClYjKSglg2xXDZ6IuBakesvRj+bJ9yaRSzZOulknv9YCk
+ztFl4NHf+Hfr69IsK5vsTj89DE65Lexmjv9GjRnAUdIFuAKVlvLU5GW32i+AO+db
+rCaG0AgD0WGLhZmxiUdJZyBAp6dXH6+FBHZkcJ2C2nAo1fEErPITLJhJ427/+ED4
+GBNiJ5jTohK29ac3f00qcK6CWEqO3Q==
+=u/Cs
+-----END PGP SIGNATURE-----
 
+--6AcwafjYfkmuuvQ+--
 
