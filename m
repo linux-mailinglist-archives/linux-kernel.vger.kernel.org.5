@@ -1,146 +1,82 @@
-Return-Path: <linux-kernel+bounces-35491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35492-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B30028391F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:03:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25C478391F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:03:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E66691C21CB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:03:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84C71B223EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:03:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6246F5FBAD;
-	Tue, 23 Jan 2024 15:02:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CB6F5FEE8;
+	Tue, 23 Jan 2024 15:02:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uHEA1s9k"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DkFPbd16"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9838D15BA;
-	Tue, 23 Jan 2024 15:02:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D7125FDAA;
+	Tue, 23 Jan 2024 15:02:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706022122; cv=none; b=qB2zOg4ZJQoe36Y7H9P8A7+NLO9LwvCwpzW8xLnEOcSY6hXzsgoxsEfiOTn2K8nGW2I1XyRWG9dwWZ57h1D9h0EnSLrUD7lHyZX6EfhFhD2JS9dFkX9rnsj8e8ldkr8T5bX80KSqvJa+DCHSiDcePO2sInQoRKgifLOZSBuBj4Q=
+	t=1706022147; cv=none; b=WQP3ggfoYoj0JaXBODtQghv6EeSLVq9j1Av0nIuDgHfCPQpmijZ2s58VWtFUZiBNKzB3AKJ4AOiZzxCevBxuaLjvlLzmQSjqTdoo/g7oMO8nGcOZf0bTq8K8Tq1ozPzHhewe83dAGYU/cjsgFIjcnBmWpTbk8Khb42aPOIi6dOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706022122; c=relaxed/simple;
-	bh=3eBELIBeNx2jjMvZH92tK5Oz5R59USxyREJu/1TPfWk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jdKzasFZeHPHmxlPrjsCfrt2y5aGbK1UFllnqhNfzIULDkzHPUoLbDnL3sv2HxWi97lzCfudQvAM6b04c5slgYGCYxjRhxYYqJlLU/+3GccCvGWsGAGu8wMjhHeoCClf6txVd1Sp0MfnRDQIrWlaueB8qO6mOantGmln/QQrzbE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uHEA1s9k; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D53D8C433F1;
-	Tue, 23 Jan 2024 15:01:57 +0000 (UTC)
+	s=arc-20240116; t=1706022147; c=relaxed/simple;
+	bh=c55w7bNYVc+/PvGNzvXmIarNgAUxg847kHKA77JNnc0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=TyFKieN8kUeD9OcyVHppw0HZy1hAf4lIyA8s4WLcLiuc10zklSm7lU328JKeFSeiQMg8U5NzfZIKkFZuqTQlVrGvgiE0YX7/B8PUXyKrhEOUjSBydjBTfmnLrH8SyOlH1vIpinTZHMrUF3rCw8qxSI59NMlwbrjQtWqysRHBZss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DkFPbd16; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F0AEC433C7;
+	Tue, 23 Jan 2024 15:02:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706022122;
-	bh=3eBELIBeNx2jjMvZH92tK5Oz5R59USxyREJu/1TPfWk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uHEA1s9kWvQ+XQzXBiu/M34apKWuU+GpHUXmcVUg59cVAOsixFtkqpirdW/PJ8hdw
-	 xpAD8eI4CGCv2m8kqN0YyGjnUwhM4aqJwUw+HW0GH5q/KqmlYet2to3bs7HqCwTTJ6
-	 ozmCCCEW8aMtilJ9nC3eeAkZg+6X+OxcvgDjHIUzDbauYzYbQD5wDnJ075It/qiMSc
-	 K3dhUkaQNdhcA44yTSxOJWBKfg8jlyiwQua8n9T2LzqJ6R6IYVfdtySdpw2sE41Rg4
-	 rPpbVEdJQYbQpExIgdQei3yMf2Vpg24eCfDDMndOYXAyj4daDpcAhssuuoKx3S9gs5
-	 /a5h3zSNvDEXA==
-Date: Tue, 23 Jan 2024 15:01:54 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Shenghao Ding <shenghao-ding@ti.com>, conor+dt@kernel.org,
-	robh+dt@kernel.org, andriy.shevchenko@linux.intel.com,
-	kevin-lu@ti.com, baojun.xu@ti.com, devicetree@vger.kernel.org,
-	lgirdwood@gmail.com, perex@perex.cz,
-	pierre-louis.bossart@linux.intel.com, 13916275206@139.com,
-	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-	liam.r.girdwood@intel.com, soyer@irl.hu, jkhuang3@ti.com,
-	tiwai@suse.de, pdjuandi@ti.com, j-mcpherson@ti.com, navada@ti.com
-Subject: Re: [PATCH v1 4/4] ASoc: dt-bindings: Create yaml file for pcm6240
- codec driver
-Message-ID: <9ed437f8-e429-4694-bffc-15931d57a48b@sirena.org.uk>
-References: <20240123111411.850-1-shenghao-ding@ti.com>
- <20240123111411.850-4-shenghao-ding@ti.com>
- <92c1a3f3-6b3b-47cb-a4bf-0d20e4af95e5@linaro.org>
+	s=k20201202; t=1706022147;
+	bh=c55w7bNYVc+/PvGNzvXmIarNgAUxg847kHKA77JNnc0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=DkFPbd16B7eo+m35zewPwpfGW8OFongXs9gXKgsc5czh3fGnGmNGKjI/CQGOeQ2Re
+	 jCLea4BNT6AHbNFPilYwcfTvFYLswvelMQ56KeRZU8ukGee/n2ggQWhnZgFtPkEmbt
+	 g1qTFagY7GhwHbYDoFH6LQ/e2v9UTJV4fW+thUlKh5u3KnT0aINbHJ+SSImjYrGZdL
+	 SAYzQVwT/bKsAH3JO+vLeH9bIELLNM2znN5PeNk/UfO/6snR2riciBc4qlIgcJQpYr
+	 g/6BgYxUx8njeLBVRgchNDpKi+Y3HXdcyfZZc2CPJBipIqaUIbhKNvuCgm3szHawzg
+	 3PdMLdG8QWaYw==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-trace-kernel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] tracing/probes: Fix probe event argument parser
+Date: Wed, 24 Jan 2024 00:02:23 +0900
+Message-Id: <170602214309.215583.16731124846112910621.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="9cF9qpcdPLhab6Kd"
-Content-Disposition: inline
-In-Reply-To: <92c1a3f3-6b3b-47cb-a4bf-0d20e4af95e5@linaro.org>
-X-Cookie: Stay together, drag each other down.
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+These fix two bugs in the trace probe event argument parser, which I
+found while I'm cleaning up the code.
+
+One is just adding an error message to message log buffer (but it is
+important to check the reason). Another is setting the size of argument
+entry correctly with argument data updated by BTF.
+
+Thank you,
+
+---
+
+Masami Hiramatsu (Google) (2):
+      tracing/probes: Fix to show a parse error for bad type for $comm
+      tracing/probes: Fix to set arg size and fmt after setting type from BTF
 
 
---9cF9qpcdPLhab6Kd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+ kernel/trace/trace_probe.c |   32 ++++++++++++++++++--------------
+ kernel/trace/trace_probe.h |    3 ++-
+ 2 files changed, 20 insertions(+), 15 deletions(-)
 
-On Tue, Jan 23, 2024 at 12:25:04PM +0100, Krzysztof Kozlowski wrote:
-> On 23/01/2024 12:14, Shenghao Ding wrote:
-
-> > ---
-> > Change in v1:
-> >  - Create yaml file for pcm6240 codec driver
-
-> I don't understand. v1 is the first version. Against what is this change?
-
-This appears to be a perfectly clear description of the contents of the
-first version, it's a change against the tree before the patch is
-applied.  It's a bit unusual to include a per version changelog on the
-first version but not a problem.
-
-> > +    enum:
-> > +      - ti,adc3120
-> > +      - ti,adc5120
-> > +      - ti,adc6120
-> > +      - ti,dix4192
-> > +      - ti,pcm1690
-> > +      - ti,pcm3120
-> > +      - ti,pcm3140
-> > +      - ti,pcm5120
-> > +      - ti,pcm5140
-> > +      - ti,pcm6120
-> > +      - ti,pcm6140
-> > +      - ti,pcm6240
-> > +      - ti,pcm6260
-> > +      - ti,pcm9211
-> > +      - ti,pcmd3140
-> > +      - ti,pcmd3180
-> > +      - ti,pcmd512x
-> > +      - ti,taa5212
-> > +      - ti,taa5412
-> > +      - ti,tad5212
-> > +      - ti,tad5412
-
-> And none of them are compatible with something?
-
-No idea about these specific chips but that would be entirely normal for
-CODECs, even where things are subsets there's often some tweaks needed
-to initialisation or whatever.
-
-> > +     two: pcmdevice@48 {
-
-> Node names should be generic. See also an explanation and list of
-> examples (not exhaustive) in DT specification:
-> https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
-
-Please be more specific about what you're looking to see there.
-pcmdevice doesn't seem particularly more specific than something like
-dsp, it certainly seems within what the text describes.
-
---9cF9qpcdPLhab6Kd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWv1OIACgkQJNaLcl1U
-h9DNpAf/Se74hxYh7AkTK3yij9PfZPxDMjbface6QBvRaG1iWWBqUTVkAWkey0PV
-+gX+ac+2Vx6rCUlhjKfQAVUakit8Mqwhuzpjdr+0K8CyVg4O5wpwp4Wb8U2tpPmx
-BD+KRVCWP4yf+XAUW2tXpohgpc3MC/Vw8qdNycWsGjj8utSsL0yj7Ezojyxsjrjz
-xH3PGkIAmyedjhP20zqQtyzns/Wu65mge1D83JkV+iqvlDwGM/kTBEXWB7nkLh+n
-lYX2IoTB8gxIoxRfzgBejzhN/fKh94gK9hqHV3VgnL/V6TQObmau+fPWQiwaEf6o
-gwLvLYuF/eC/xNQidFJI4NAFCxdf3w==
-=NJzF
------END PGP SIGNATURE-----
-
---9cF9qpcdPLhab6Kd--
+--
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
