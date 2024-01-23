@@ -1,133 +1,155 @@
-Return-Path: <linux-kernel+bounces-35789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2742839690
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:39:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12527839696
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:40:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58E3A1F27D69
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:39:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF1FE28398D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:40:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60ECC8004C;
-	Tue, 23 Jan 2024 17:39:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C069E80052;
+	Tue, 23 Jan 2024 17:40:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="Nw2HZd/L"
-Received: from mout.web.de (mout.web.de [212.227.15.4])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d3HEU7me"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 774467F7EF;
-	Tue, 23 Jan 2024 17:39:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 082217FBA1;
+	Tue, 23 Jan 2024 17:40:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706031557; cv=none; b=GcPzWcdGmbMdUO5IrX2JFg54AWcGXLwEaTyu1aJ/9fPygVP3onTG8GnvhZWUKFHdf/GzxIaTB1qVQC5+Xw+5ciGTKLWfefNaqOaOK3wmR9HTCk+UbTqBd35SATLBxBUArUHxbVMjRRtKKJul464m5CyWdsr9gd1ihPL1xENy2pk=
+	t=1706031611; cv=none; b=LqZzVbHPujIDCksMxpoWVhedaHryKJqe5a3bCIracQbgHUr3id4lDu3+5JgLMaj+sHoQPZYj1Gn21xRclsHiRbP3bcrL+Qg0PWvmZtoMCTnez2BPB81MZb3voaHFCyrv57MwFwrHCK+PX3vD7JkdK26o0MxfEww+wwFvoyoonzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706031557; c=relaxed/simple;
-	bh=j1oHpg4MxoWTUcQaZ1olHovNZwz63l8U9f6+pGJ2lyw=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=NdK73ik1GvOADi5RSSKAMoYJ8ehF/vkoo9IiMvY/KIBquoc6sylWbWreqBSohaPhp5QdoyhIw7xMp51a2+1E4Jvq6YSdKyyU0jFXvnT3lkZ+gJ9ifT/sLz/ImbeGYc+dXTd0etHczQAyyDgOAL7PBhfKO0PxN2ntAARe+5L/AVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=Nw2HZd/L; arc=none smtp.client-ip=212.227.15.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1706031525; x=1706636325; i=markus.elfring@web.de;
-	bh=j1oHpg4MxoWTUcQaZ1olHovNZwz63l8U9f6+pGJ2lyw=;
-	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
-	b=Nw2HZd/LI3K4FI7m1djjISxf6D2R8AsLKI2IdRYiLQjaQOz+0+3ICR2TYjGwhbpk
-	 ZPhTPvKYLyAC/nqzMkkSjEd3bevz2F14muq0IeWoO8OFuPJ3yg+QJBbbjxCwLCAok
-	 +aJKbbhiPJqcvS9QTe8Vi6NZRxgiooUInYhg8X5hgZ/ckHuXCNCLVTBQSOmH3dfEY
-	 SRAh3GMLyLOXEs2scYvc+2rJTWPtizR88Csme1ig260izjVHz4swSiGfyOySMgTrv
-	 LHxMTt6kcr21wcIg/O2QZ3VSToEPm9jSuv67uOr0fCRUfLTkSCi46CqbNNEG+4Bvh
-	 LbItnEetlFd21npPdw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.87.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1N01Za-1rDGct0iwQ-00xLW8; Tue, 23
- Jan 2024 18:38:45 +0100
-Message-ID: <0b2bccfb-d1a3-4c2e-b1d3-159630edf21a@web.de>
-Date: Tue, 23 Jan 2024 18:38:42 +0100
+	s=arc-20240116; t=1706031611; c=relaxed/simple;
+	bh=3StveZ7O01KUMKkYSW0OiZTG31utUIkqY45LlOjxvBw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AJuxxWaaec25KBNQBa8uJEXpbghAlVSK6BEvW/hLxGBQTdMx02GSMgzxqr/XgfGRnKZdGT0YkhErtqJ/o1D/boDnRqA1z6z5HiQ6hwOkZtpeFGw23guJz/t736tEmfC99J2sXnQVndHsSisCMye3yHhqf9hRdTRtQn27LrAnFf4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d3HEU7me; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEC2AC433F1;
+	Tue, 23 Jan 2024 17:40:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706031610;
+	bh=3StveZ7O01KUMKkYSW0OiZTG31utUIkqY45LlOjxvBw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=d3HEU7meYerxBi+D51f6kVazcNp4V04WVj8EZprWX19a4JQnMEKWvD+QQTAb7Nb5T
+	 25d4jPu+ddlrrnp3tlkUvyki8ElAjECaCLRnYan5JHntJm4sQ3WgDyjghdmk5DrRNq
+	 MAxa6wXR0MG8oSvStdYv18Z4YQ87KUIb/OeDr5auu/OCkUn+8ZwAV0sTa2XJai9rS2
+	 wyhab2tfozpAGfRKUc3tfWnp2EY1PXdLxnNtO0SoY+0hsIiHdJI0EqR7CoCUfmZAjX
+	 RsCj1YwMUHCOpFah/sgiPnUVYfkMqWFsw4lztEtwfB64WfdCn10n7JW5AvBfxvKl6A
+	 4lMs3PwwmznSg==
+Date: Tue, 23 Jan 2024 17:40:02 +0000
+From: Simon Horman <horms@kernel.org>
+To: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, cake@lists.bufferbloat.net,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jamal Hadi Salim <jhs@mojatatu.com>,
+	Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+	Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+	Stephen Hemminger <stephen@networkplumber.org>,
+	Petr Pavlu <ppavlu@suse.cz>, Michal Kubecek <mkubecek@suse.cz>,
+	Martin Wilck <mwilck@suse.com>,
+	Pedro Tammela <pctammela@mojatatu.com>
+Subject: Re: [PATCH v4 3/4] net/sched: Load modules via their alias
+Message-ID: <20240123174002.GN254773@kernel.org>
+References: <20240123135242.11430-1-mkoutny@suse.com>
+ <20240123135242.11430-4-mkoutny@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: devicetree@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Frank Rowand <frowand.list@gmail.com>, Lizhi Hou <lizhi.hou@amd.com>,
- Rob Herring <robh+dt@kernel.org>
-Content-Language: en-GB
-Cc: LKML <linux-kernel@vger.kernel.org>, Kunwu Chan <chentao@kylinos.cn>
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] of: unittest: Return directly after a failed kasprintf() call
- in of_unittest_pci_node_verify()
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:WJwV0X4SrkIl1x7eYAfuuKIkzEKEjVLiVLm0xDpc25U8/8a10oS
- HHTdw0wX5QhiPucq31noLHuJuWuBDRwZiFpTIJkm5aD8Sj6bCIZ/D8L78e0oZL3kIh9SN/W
- ay7tDhJjCR6DysJFGjWY30id87NXbT/1v7BLn/VZHDEIKC8syGy28HKNKxoPIiDWvuoh4BC
- rMul1Funyal/SvX/IXfeA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:EEXap3aLt3M=;C/95zT7YksgzcT6MP9G9p9xmZei
- DASbxD436h1QydtkXQyROSGVV5xEXam1Yd9yzAqJW9ROwU/q2aBew0s4Hwqy8mtH6mgMHw2Tl
- KqiMoBwK6r3XiaOrijeRkXE1nLR0VrgXO3jjRfkKXyhsRSXNHr263qGi00xQXu+5BNYZMWxvv
- JVF4c/R+GVBIHyGSM5xL92x7kOsyha+zH1u7CFM1RsfA+L9Eir90TyRFdpz3cXBO6xqIgJ1o/
- aeV9OLSFvjPwb4kub+nLLePpOezeRBZYjNqqYQg8u+fKMPypczMOeRCs0MgHaWnKUMzFpPR/Y
- n65GEiAtWtEw+loJqfOboFqxpcz532UGGP7XxT6tm/RjTf7tCpffpVjhxRhEm9YYX4PAJ176Q
- EUb1EGMGKdwT24gff7zlbLMgT7cmc8p4iWcel22FjN2uq0VWoCE3gHyIEkAvHOQakSK6Vwigd
- i6YoJe0Rq6m4t5Da7W2zjB2p9OPDWAx3DFQvEUh07WtyoP6Ld7rGYuwB6FgoJtEdWDqLKebdt
- eT4/9QylULvP3uiIxklSszotDGNW/Njyjn4o7ITkn2QpavdAZ14YHcO1uHBVQ97jxoJTey7uq
- axoo62QKRBoo3UPX5fVvRz99n2Gl9PSKBSmyAhrXnBZfPwDfYnCVbnoc3dqlBSmrijyQh6Cke
- Fm3e4l3N8yGK03jN0kOZaWvjHOyjuOsW4/RM2firIHTx/sp0eEOVhacOZMoeA3YqnUZ0zylkv
- YOc5nLL0SeyMZoSl3QqKRymSu2PnUI8NM1y5Fa7fPNm2KMdBtubmTl1bF0Y0ugGehfxFTIi7X
- HoxfK6ZmcUrLIukBKhFvdKVJu6KDKWR1UuHjNORT0GeoF+BEtGa7En5KNJs0rv9+mQQAJT+Gk
- XqFzjn8Tx4FtDORsSn+CLBmEUGas1RZlOCyLcGJh0Pp+KxXahOp4pOzMEfP2xZKpAZChlg1ir
- cflSnA==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240123135242.11430-4-mkoutny@suse.com>
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Tue, 23 Jan 2024 18:24:53 +0100
+On Tue, Jan 23, 2024 at 02:52:41PM +0100, Michal Koutný wrote:
+> The cls_,sch_,act_ modules may be loaded lazily during network
+> configuration but without user's awareness and control.
+> 
+> Switch the lazy loading from canonical module names to a module alias.
+> This allows finer control over lazy loading, the precedent from
+> commit 7f78e0351394 ("fs: Limit sys_mount to only request filesystem
+> modules.") explains it already:
+> 
+> 	Using aliases means user space can control the policy of which
+> 	filesystem^W net/sched modules are auto-loaded by editing
+> 	/etc/modprobe.d/*.conf with blacklist and alias directives.
+> 	Allowing simple, safe, well understood work-arounds to known
+> 	problematic software.
+> 
+> By default, nothing changes. However, if a specific module is
+> blacklisted (its canonical name), it won't be modprobe'd when requested
+> under its alias (i.e. kernel auto-loading). It would appear as if the
+> given module was unknown.
+> 
+> The module can still be loaded under its canonical name, which is an
+> explicit (privileged) user action.
+> 
+> Signed-off-by: Michal Koutný <mkoutny@suse.com>
+> ---
+>  net/sched/act_api.c | 2 +-
+>  net/sched/cls_api.c | 2 +-
+>  net/sched/sch_api.c | 4 ++--
+>  3 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/net/sched/act_api.c b/net/sched/act_api.c
+> index 3e30d7260493..60c0fadfac6d 100644
+> --- a/net/sched/act_api.c
+> +++ b/net/sched/act_api.c
+> @@ -1363,7 +1363,7 @@ struct tc_action_ops *tc_action_load_ops(struct nlattr *nla, u32 flags,
+>  
+>  		if (rtnl_held)
+>  			rtnl_unlock();
+> -		request_module("act_%s", act_name);
+> +		request_module(NET_ACT_ALIAS_PREFIX "%s", name);
 
-The result from a call of the function =E2=80=9Ckasprintf=E2=80=9D was pas=
-sed to
-a subsequent function call without checking for a null pointer before
-(according to a memory allocation failure).
-This issue was detected by using the Coccinelle software.
+Hi Michal,
 
-Thus return directly after a failed kasprintf() call.
+name doesn't exist in this context, perhaps the line above should be:
 
-Fixes: 26409dd045892 ("of: unittest: Add pci_dt_testdrv pci driver")
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- drivers/of/unittest.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+		request_module(NET_ACT_ALIAS_PREFIX "%s", act_name);
 
-diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
-index e9e90e96600e..a46268fe8d2a 100644
-=2D-- a/drivers/of/unittest.c
-+++ b/drivers/of/unittest.c
-@@ -3990,6 +3990,9 @@ static int of_unittest_pci_node_verify(struct pci_de=
-v *pdev, bool add)
+>  		if (rtnl_held)
+>  			rtnl_lock();
+>  
+> diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
+> index 92a12e3d0fe6..b31b832598e7 100644
+> --- a/net/sched/cls_api.c
+> +++ b/net/sched/cls_api.c
+> @@ -257,7 +257,7 @@ tcf_proto_lookup_ops(const char *kind, bool rtnl_held,
+>  #ifdef CONFIG_MODULES
+>  	if (rtnl_held)
+>  		rtnl_unlock();
+> -	request_module("cls_%s", kind);
+> +	request_module(NET_CLS_ALIAS_PREFIX "%s", name);
 
- 	if (add) {
- 		path =3D kasprintf(GFP_KERNEL, "%pOF/pci-ep-bus@0/unittest-pci@100", pn=
-p);
-+		if (!path)
-+			return -ENOMEM;
-+
- 		np =3D of_find_node_by_path(path);
- 		unittest(np, "Failed to get unittest-pci node under PCI node\n");
- 		if (!np) {
-@@ -4003,6 +4006,9 @@ static int of_unittest_pci_node_verify(struct pci_de=
-v *pdev, bool add)
- 			rc =3D -ENODEV;
- 	} else {
- 		path =3D kasprintf(GFP_KERNEL, "%pOF/pci-ep-bus@0", pnp);
-+		if (!path)
-+			return -ENOMEM;
-+
- 		np =3D of_find_node_by_path(path);
- 		unittest(!np, "Child device tree node is not removed\n");
- 		child_dev =3D device_find_any_child(&pdev->dev);
-=2D-
-2.43.0
+Likewise, perhaps the line above should be:
 
+	request_module(NET_CLS_ALIAS_PREFIX "%s", kind);
+
+>  	if (rtnl_held)
+>  		rtnl_lock();
+>  	ops = __tcf_proto_lookup_ops(kind);
+
+..
+
+-- 
+pw-bot: changes-requested
 
