@@ -1,214 +1,447 @@
-Return-Path: <linux-kernel+bounces-34807-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D81C18387BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:02:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7ECFF8387C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:03:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5142E1F247E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:02:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9764AB24117
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:03:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2D3551026;
-	Tue, 23 Jan 2024 07:02:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D4A95103A;
+	Tue, 23 Jan 2024 07:03:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="lWC0AtaQ";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="cW3GZ60I"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B7m1VD26"
+Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BE883E491;
-	Tue, 23 Jan 2024 07:02:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705993344; cv=fail; b=aTxN5FbIuxueGSowtdyvLfXwsO55ecWRVRF0tV+ZsIzS9y825dPBVMnKd0ccQ2jxjtXt3V98J0lk2b5rJFUOGJcGn7YceBfUtn5UkNlMyhpn1gLgpz3sen0e6kByKCNCe1fW9O1SA6DmkM6JjSRyAfxpk24bLiOIu6wNfAPfaXw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705993344; c=relaxed/simple;
-	bh=Z+u3wtzYGJXVPBmCnfzklxwp2ma/wGDgK/Blg9koN0w=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=gVDu6o7KabEP7XIIwfyvXI5ITwvYJcMS8OOq8z/xg6Se/639BpkM0zROGrkB7CcL17+pQ3/i221FiA/3DpmNjOAv0ovqVk61hKTfqlozRFmDZFNhEND/H6/BiOBRTZOaP28id4p7pNEDTmAkso1GgW7OcRFL4qiZWbJFFNgFLSU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=lWC0AtaQ; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=cW3GZ60I; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40N6YxhJ006003;
-	Tue, 23 Jan 2024 07:01:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=Z+u3wtzYGJXVPBmCnfzklxwp2ma/wGDgK/Blg9koN0w=;
- b=lWC0AtaQxY3UqoP5Y6cAmlob7oggYJIKOaqOrA/twCQXLw6IVvtwGgfsitGZicGV2xOH
- rdXftGaC1fAhryaeuYyeuc8pg5SNx00AbA0Xq/Rp0YWmeryfFbDq5ZDSXmuiiTlB314E
- +QSRuRi4K6fnBdCKKiVJBMRgdX0G3Hb1vhDLTNLRtgkrpitPxdIb2drE2Y3aex6JZc3R
- MASr3va5U7x0AVwaCwC361qpMf8GhEpFS/YWOO9NE5pXXrtnXisaZf34RG4RpqjYV7W2
- 0IA4KmkI+qwqOvIxCIIon7IGoCpyK16qVTb4NbanLpAlADzcVLr6I/OMB41T3OJmkrF7 nw== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vr7cwdgqx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 23 Jan 2024 07:01:52 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40N6VLrs016258;
-	Tue, 23 Jan 2024 07:01:51 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2168.outbound.protection.outlook.com [104.47.56.168])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3vs32qbke5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 23 Jan 2024 07:01:51 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BjOoTou+UsVVL/qnzzL6bTcLJMwc5oEIVjsudnTDY6JhFnX0xiDrjbkf7rjxpGsp74B7KiJi6nRmlLUP2SsBVO3IuHMfSkAuYQ8OfLXhibOulkLw+QnkYAXwLPwkPnS+3IEntG8Y5qyKRkQWQ94bJ4FzIzGgr4zHHJgIakmXkxqj2F3a1cffoBHo68tTpE4i+uDoJ6IBBzillBz8VgI4JK4k97X4aLfUi3/4lsoGF86SQQYJ3l1fUF0OZSZjPntEZs8OKlsCT97cNa5yIdSLdkaA9PNzfXOHbhREiGMtorE+2naW0rwtTPpZM9U9gFXC23++0teMlIosrWS7o8Zpqg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Z+u3wtzYGJXVPBmCnfzklxwp2ma/wGDgK/Blg9koN0w=;
- b=ZfEKwyijUgJkIN5Ct/cGuP7K3LBCU0Kq7Yp7NWpwWIPPoLl7wTQEXaaSwm7D8rnoL+Z34ZaOCVbR31I9+6LW70+u+odJHFLM2TQrPUzRrfdxQ6WbIi7EEmh5WWDjHApXzr0cnkJH66+1XTCqvANYgjv62RlqZkXQA1CKlggDa2kmTxJKBJSbV9wr/3i3F0ij2/60aPdhX9692o2FrtMYVKEL+5x7umJXaJdljC6UYbMwvqEes4B9csVhkbeO0PUBCVU1EPT9gvvMRngkKURUWVPki3uaqlyHgFBW01Cw9PdQRb0Fs333Esb0KMrDsqpl9Kx2iRUFtNxUmqQ9hrreZA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FD75524A4;
+	Tue, 23 Jan 2024 07:03:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.49
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705993402; cv=none; b=jLkdG3Ik7DJPJsV3QZTtmlCzdofsHbDUNRWwZFs4tZ/8COmNXYj28PFRN+C7K84w2RG8TJNrfLnj1N1CJiXUrGQg2uBwHsAUoU2O/SYOfRGfGHaOPX51qx+4lwbwIDigDhWN8MUHMSMPiuOHnnXPkZhnhOS/UN/OaHeqXFp3lEU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705993402; c=relaxed/simple;
+	bh=zz2DhOsA7lKV454Wy4HlDezE8wkN5htlxq1g9lqRAWo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=NVHx1bvkYOtdsI47WKeyvvFP0ODhBfZFq8Nlufj51TSIuuANL7IMJsespIVLx/F7lISMJ1EZcHyYgo/ryaTEWiF1D3M2Ahy/tkHyVHi1b+s2SwRcbifVzK4GowZSNUq83YKqlSfEXdmEE88/CrhwZt7tPBCRKOpX5eSuAKMl0t0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B7m1VD26; arc=none smtp.client-ip=209.85.161.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-5999f3f6ce9so492463eaf.0;
+        Mon, 22 Jan 2024 23:03:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Z+u3wtzYGJXVPBmCnfzklxwp2ma/wGDgK/Blg9koN0w=;
- b=cW3GZ60IEa7KS1NC1omaRLgb0G1QbJId5Nj4dHWjBY8T46bjEAvkaPoZ1XuzPedd6AeOPBmwYUEPNNLLAhtFWMaAMuc03EnNWE3uQJAR/FC6XCnjlrEZjUqWE3+/IyHEICs/gT11sum7LeY3f3m8LWixQTVqmGUbuiosqfO7eoo=
-Received: from CO6PR10MB5409.namprd10.prod.outlook.com (2603:10b6:5:357::14)
- by PH7PR10MB7033.namprd10.prod.outlook.com (2603:10b6:510:276::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.24; Tue, 23 Jan
- 2024 07:01:49 +0000
-Received: from CO6PR10MB5409.namprd10.prod.outlook.com
- ([fe80::91b3:fd53:a6ee:8685]) by CO6PR10MB5409.namprd10.prod.outlook.com
- ([fe80::91b3:fd53:a6ee:8685%4]) with mapi id 15.20.7202.034; Tue, 23 Jan 2024
- 07:01:49 +0000
-From: Ankur Arora <ankur.a.arora@oracle.com>
-To: tglx@linutronix.de
-Cc: ankur.a.arora@oracle.com, david@fromorbit.com, dchinner@redhat.com,
-        djwong@kernel.org, hch@lst.de, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, wenjian1@xiaomi.com, wenjianhn@gmail.com
-Subject: Re: [PATCH] xfs: explicitly call cond_resched in xfs_itruncate_extents_flags
-Date: Mon, 22 Jan 2024 23:01:58 -0800
-Message-Id: <20240123070158.4023269-1-ankur.a.arora@oracle.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <87v87yiu2g.ffs@tglx>
-References: <87v87yiu2g.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MW4PR03CA0282.namprd03.prod.outlook.com
- (2603:10b6:303:b5::17) To CO6PR10MB5409.namprd10.prod.outlook.com
- (2603:10b6:5:357::14)
+        d=gmail.com; s=20230601; t=1705993399; x=1706598199; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LKSMteuWkKCP1Fe0jW8ClSMxtYeAHuiJeStYDwoZyCE=;
+        b=B7m1VD260USnXrzU+4+hWUQN5CpMr0NWKXYuQVi1YeY3a/Nv2reIXdA3fLnHr+YPpu
+         QItXH5gzew6O+sK4oJbApjL7xuYaofZlUfTi8SRWCTAcgvlrNLWjjv4WSZQtagaiujvx
+         S0pf1/YO5KvrtloI2EHqYEhRkpRvHfu4MvwXcFF79g7057P4LQSqKRWwio6rcOeJw8Dz
+         N20P3ZD8Iw7VpcqeHTETeYGsG1Urn7QZd00L+ucgOnrFoAoIusXIXXKy/r5XM8EDbFu0
+         dFZ5DXywswAN6Zfe7JOBgKPqs+XxOYi5mwvqQQpPsOyS1aTuM75Wcexeg1MF7YK5/6jA
+         P7MA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705993399; x=1706598199;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LKSMteuWkKCP1Fe0jW8ClSMxtYeAHuiJeStYDwoZyCE=;
+        b=II3fRNUQu4bGALwZhj94RHVf9q+k8gHbEN1EwDAnUL/rDE80SfO/B7QMv6BbWE6QT7
+         TgjkE7URJzNCZe/3xWziO9ETi/WReGaDhZ/YkEgCdqnIDbar1OU9C0Yt1cQ8gAKuOGVD
+         W3njtfzX22+9OAUyAHI0NsL3+B7lNaCLg9c08m651r35qXLv2nnDKn0U4IyFvCOFLAS8
+         oJ+17/nyxozVuq6oLNOX6A4+D8nZsWnfiEEpzcTtGXRfuwNPLRiO7OsK4Bc3UhhfB60S
+         ljzetRspY+iCNTHmvxS/DyiHo388KYMV3HAcu9lNg/0+erQW+t/T3ntMsXQMNa+tVcPc
+         5tFQ==
+X-Gm-Message-State: AOJu0YzXoKE2IFLAIY5c+OqFxVASZRrwoefKtCgSUsdM5evCWA/TJxE6
+	9H12JL/Ypy4G76mNd30vhDP3rQpKaYm1ZJuUpJEH8rzcFfOjzRSi
+X-Google-Smtp-Source: AGHT+IE+tgIe+tNobDsNkDlBW1p4j8yuov2/PcOmj91vCjrHJTiqThxQMD+5plzBwX04sckZHrrm/A==
+X-Received: by 2002:a05:6358:7f18:b0:175:7274:99c4 with SMTP id p24-20020a0563587f1800b00175727499c4mr5253359rwn.39.1705993399332;
+        Mon, 22 Jan 2024 23:03:19 -0800 (PST)
+Received: from localhost.localdomain ([43.132.98.115])
+        by smtp.googlemail.com with ESMTPSA id y39-20020a056a00182700b006dbd41ce285sm4619730pfa.16.2024.01.22.23.03.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 23:03:18 -0800 (PST)
+From: Ze Gao <zegao2021@gmail.com>
+X-Google-Original-From: Ze Gao <zegao@tencent.com>
+To: Adrian Hunter <adrian.hunter@intel.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org,
+	Ze Gao <zegao@tencent.com>
+Subject: [PATCH] perf evsel: Rename get_states() to parse_task_states() and make it public
+Date: Tue, 23 Jan 2024 02:02:11 -0500
+Message-ID: <20240123070210.1669843-2-zegao@tencent.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20240122070859.1394479-2-zegao@tencent.com>
+References: <20240122070859.1394479-2-zegao@tencent.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR10MB5409:EE_|PH7PR10MB7033:EE_
-X-MS-Office365-Filtering-Correlation-Id: d9ffb80a-1db3-472e-620e-08dc1be12b84
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	gAkd+l9xmiXeah4sA9DPuvUYS6oQsYSCyXsZKkahDwXU4+jSlZpeua/F/FavnUC1/BjTWPX4W5H6pNasMhx8eCJ2svpNaEp7Jc+K0mjRhgTeQCr5rWzkwzEBoupqiYY2hwDyhWzucZqOizw7z45Vcx4nAyORvqfm+3NoD3JXvxXkdZ6Viko5AI73tQTwcwfz+ih1ph53DbC3/gfSeErDY0tPwHRIjnNbPEJ4ryzIFBTg01WEKOaLH3OWcjMRIDMGTJQ9A8CeqemyHo4rmPOWCaW4Kmltr/lEMRDYJia9irkI5nRf/FLTZFWCqGvZlg2b9wDMHCwez2eRHQxzLn8Jm7OGtv6oXH6ddptQ4ZfqwVAB/uA9IbfpVRv5/yUov3aPNU2vo/Qz5wkUfQXPXPxKe2SjNQDaXM9zg6QlThdXA0owlf79EBJBrr/UqW238GVQj4EylIsyM2yskFgAeBRQrXUI9KPoyTdpxEylOuuDPW8YZiM7bNrz/Idy6wuGaGS3R0uzqaXrqBJCkElQkXxfH3LvtVcigRZ2P3L19i8T7HICZBaBuVXXLJt9rJ4xtWpF
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR10MB5409.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(136003)(376002)(396003)(39860400002)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(8676002)(8936002)(36756003)(316002)(4326008)(38100700002)(103116003)(86362001)(6486002)(83380400001)(2616005)(6506007)(6512007)(478600001)(6666004)(53546011)(6916009)(66556008)(66476007)(5660300002)(66946007)(2906002)(1076003)(26005)(41300700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?V3ZTcTdDWVNFWFdyWlhqak1nRXZpTXVjTmZZMC9nV2ZDRXZjQUx4K21nWkJP?=
- =?utf-8?B?bGl6Vm1IYUthSEN2eGhuU0hXWldpMlAvdmozdjJJanB5cnYyamhxLzJUeHVy?=
- =?utf-8?B?WmdXZmo2ZDhBekNuWTVwSC82OWhSSDNpa1lIT0Qzek1JMEVGa2VrZ2NQZUNC?=
- =?utf-8?B?U2tFVUd1UnRQc1lOazJ5YWtCUlpORlJpUnJ5TkdWSHZaY0Z0a2NWeEtwY212?=
- =?utf-8?B?R1YxK0VBWlFoRnUyUWhsV2JhQUNoclh5YzZyWThic0locUtlNmNqUHhZY3FR?=
- =?utf-8?B?N1ErMjkyOWY5QklvYzB6Y2Ztd2F3eHpYdUt2cTV3eHV6VmNCRWV5ZmhiaC9i?=
- =?utf-8?B?SjFGOHVmcFc2NEFINDBoQmNoUFAxR1c4ZXp2NVNyY2REelIyTTNhUlVySTB0?=
- =?utf-8?B?QnlubURIdEx6S2g1YXpRZ3FCYUV3RVArN2l3aDliNEtMblJZU0FLWk5Ed2tw?=
- =?utf-8?B?bFNjU1NjRnBVK0JFb1Z4Smgwck83Y01sZGN1OEh4aHpOT2ZXNHhsWllYS0xQ?=
- =?utf-8?B?RjJFZjRoTzhSZkhYSkozdzhZdGJnTEtSQlhHdTVsS1NFZ3R1NmxxQ1hMTHoy?=
- =?utf-8?B?YlIyRlBoQzQ5WWxLUmJIUmNQMWxMNVhMUnIrNC9QdjRVaU10T244Zk9aYXNs?=
- =?utf-8?B?S0liZ2ZBRUFjZ1V1T0dmNXJmMkdJazYxL3Z3OEVrRDM5WnRVOUlVWUFEaHB3?=
- =?utf-8?B?eXRIaHllZXcraW1aNTN3czcySEpqRDlIWmRlaDg1TmZkVlBWVWFCSVoyUnZs?=
- =?utf-8?B?YUoxU1VhQ1R3WTFKajV6NXZNK0N3SHkvOWNLQ012RlNEczNFMXVQOWFxS2Vy?=
- =?utf-8?B?b2g5R0xUNzRScmd2SjF3WVcrSExaSit3U1NlMjNCbUZJaUxJU1JjeHRNQVVi?=
- =?utf-8?B?NW96OEVUMlMvNk9pUzQxYWtZRHF4R0l6cE8vK1p0RmRjS0pCTnFGZVo3b0Vn?=
- =?utf-8?B?dGlCVVNKVUhKbTQ1dkc1eDNDc0lLa0Q1UWF0RmdkZk1IZWEzL25ZeHZDMHNn?=
- =?utf-8?B?ZlEwcFRPMmhPenQrcjJvN3BCbzcyUktqWHBNOUc5aG9UU0J5MHkzdGJKZkhs?=
- =?utf-8?B?WW55b3ludU9PK0xxZzBUelhXMWFRZ0F3QzBzblN2UnB0aXc0Nkp4dWgyTUtk?=
- =?utf-8?B?WDlQTFB0YjZXakVnckxCZm5YQ0VtNFhsVHNjSkFKaGE4bVBaK1R0MytHTTJX?=
- =?utf-8?B?dTA5YXR4dmVSRDJhQlV6NDNtelNDUWlKZEZhT0VFZmVQNndrWjF2K2szNGM2?=
- =?utf-8?B?RkRPTy9rMG1CWGlGN1gxa0k1RGlCNmtMMjhsM0JicG5wOW9nanFNam8vZXVZ?=
- =?utf-8?B?NVR4YWtmNWtxSDBBcUpvOElla2hVNFdqZnVRNTVvcGY3M1J3MUhiYUl2aFly?=
- =?utf-8?B?dmNFVk9FN3ZyL05paXNEZmJZUGM5K2ZHMnluSXA4NjlNaUNvSGd2UmFtNjU3?=
- =?utf-8?B?MFZvd2loM0ppOWJkU3o4NEJxL0pCSkxSaXNpclR4OXFkT1FLRkhMK3pFczhR?=
- =?utf-8?B?OTkvUXNkdnRMUndpMi8ySnFYMEZtNFNFZzNNbDA2UnlpRVBYbDRFVlpoYXh1?=
- =?utf-8?B?UTZ6cW1HSlhDRHM3bm5jTGQrZDdqd0RjUVQzVTdyT3k2RDI4N1pNNkhpTDd1?=
- =?utf-8?B?S0NZd0swK2tQVEZRZGlFd0VpYTVRUzUrSlFSWEdLU0g4c1RabkQxekl1OHc2?=
- =?utf-8?B?aGorcXVtcCtLTDU2QVZ4Z2p2azFQR0NvejY1UFd0REtkVHYrK0h6MXVQVWJh?=
- =?utf-8?B?VktnZ1NrKy9UeThJeFkvdUg3UytlMEFiZ2VINHU2YXl6NFVPMVh1dmk2VkVR?=
- =?utf-8?B?a2FNWUpGejVFM0JNYk82Z0syVW02V09rWHJOWDNEUGpMbGFUL01nOEJLR2VO?=
- =?utf-8?B?LzlTU3pyakwwb0ppb1M3ekhFUzM4M05LbWc2NmFnMlpDb0l1bG8zNjNoKzBj?=
- =?utf-8?B?dW05ODhRR1pzazdoeWVwcDJycFNPVUNkSDgzZ3A3eG1UOUhYQlFzYlh0M1Vn?=
- =?utf-8?B?MnNYUVZGRXYrWmNsL3IvVFc3VlM5UExKOTdRSXRiZUczV3BxK1pKd29tb3NQ?=
- =?utf-8?B?enhzY0ZaNWc3MWFHR0tETGJFcmhhVkhEMGJOVG0rMUJjZzFKR2VGcTBxcTdm?=
- =?utf-8?B?d0dUOEo2djkwem1XWGlrS1E4WTZPeGl1K0JhaERtLzdKbGJXTDJ6d3FwcUVN?=
- =?utf-8?B?bWc9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	pYCDL8qI+rMu90fLx77zOIvvEwlQJZIeYE+uhwhxGhT7gvXRjS8TJuHJ3hYjAQMQ/iMgOu71iK6gwH7jyuZTxZNgMlpUNbKuK+xcd9qi5vMipgc8fcxokE1J9fiRy3Wa6gvYKvB4Lrvf0ZuqHFXU0WJE/Q2DhKp5SgVux+I/iZXD2DyBVqk/B9V3BQNEj8TjUYqnjIuoG/jJDe+NOFFCHD9mCNOgJomNrz1fdXheqsf/9YHF9mgyDSWIPK9U6zTbhJDePyk8pynOkiy6uDWWC4TezTmuqMUX/EBrj5JORaAhEmzAROCzRCB7s/A8jLTGIXvukRdBGoZQtTmg733oFgIDH1WRcd/4aeF2PHEhRZzndUcDFSSZbkzlN5eN0t0H3ZcOP3Lj7KHC+WYCQceK2YWWMp/rGGreKzIlkKG9dc9y7cxudVt8iJKklFybpjQ5aBitNe8W/FaHVTvaK4YBWdMCP+Uyjph0pDJJRSw+l5FLHhWOuZ3eVqXba6O5shtXxG7PDUQfgLkQlpbyxrn2FCgFxGpu0RtRMyhAXRiKmNVeAht4Y5q5EeCW04Cd1hN5sprSwzVea6xg7ua59dWzz6gNU/ypEDhW4lrYJEMARaw=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d9ffb80a-1db3-472e-620e-08dc1be12b84
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR10MB5409.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jan 2024 07:01:49.2314
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sIIduoa3PPSZB8sz/yQqVkKCMpEcXuqLHVGOtsBc9asdUKOTovar/5MbIasolE1P/eyb63Xq4pGG2aUnL9OCZmT2jT1gat/7aDzoFfE3GZY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB7033
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-23_02,2024-01-23_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
- spamscore=0 mlxscore=0 adultscore=0 bulkscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401230049
-X-Proofpoint-ORIG-GUID: LTzdUHDi2XjvvtIeX3182Pgrm0HA9n3R
-X-Proofpoint-GUID: LTzdUHDi2XjvvtIeX3182Pgrm0HA9n3R
+Content-Transfer-Encoding: 8bit
 
-[ Missed this email until now. ]
+Since get_states() assumes the existence of libtraceevent, so move
+to where it should belong, i.e, util/trace-event-parse.c, and also
+rename it to parse_task_states().
 
-Thomas Gleixner writes:
+Leave evsel_getstate() untouched as it fits well in the evsel
+category.
 
->On Fri, Jan 12 2024 at 07:27, Dave Chinner wrote:
->
->Cc: Ankur
->
-> > On Thu, Jan 11, 2024 at 08:52:22PM +0800, Jian Wen wrote:
-> >> On Thu, Jan 11, 2024 at 5:38 AM Dave Chinner <david@fromorbit.com> wrote:
-> >> > IOWs, this is no longer considered an acceptible solution by core
-> >> > kernel maintainers.
-> >> Understood. I will only build a hotfix for our production kernel then.
-> >
-> > Yeah, that may be your best short term fix. We'll need to clarify
-> > what the current policy is on adding cond_resched points before we
-> > go any further in this direction.
->
-> Well, right now until the scheduler situation is sorted there is no
-> other solution than to add the cond_resched() muck.
->
-> > Thomas, any update on what is happening with cond_resched() - is
-> > there an ETA on it going away/being unnecessary?
->
-> Ankur is working on that...
+Also make some necessary tweaks for python support, and get it
+verified with: perf test python.
 
-Yeah, running through a final round of tests before sending out the series.
+Signed-off-by: Ze Gao <zegao@tencent.com>
+---
 
-Dave, on the status of cond_resched(): the work on this adds a new scheduling
-model (as Thomas implemented in his PoC) undwer which cond_resched() would
-basically be a stub.
+Hi Namhyung,
 
-However, given that other preemption models continue to use cond_resched(),
-we would need to live with cond_resched() for a while -- at least while
-this model works well enough under a wide enough variety of loads.
+This is the promised refactoring patch for [1], and hopefully it
+works as what we all expected.
 
-Thanks
-Ankur
+[1]: https://lore.kernel.org/all/20240122070859.1394479-2-zegao@tencent.com/
+
+
+Regards,
+        -- Ze
+
+ tools/perf/Makefile.perf            |   2 +-
+ tools/perf/util/evsel.c             | 115 +---------------------------
+ tools/perf/util/python-ext-sources  |   1 +
+ tools/perf/util/setup.py            |   1 +
+ tools/perf/util/trace-event-parse.c | 113 +++++++++++++++++++++++++++
+ tools/perf/util/trace-event.h       |   3 +
+ 6 files changed, 120 insertions(+), 115 deletions(-)
+
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index 27e7c478880f..a5d274bd804b 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -370,7 +370,7 @@ python-clean := $(call QUIET_CLEAN, python) $(RM) -r $(PYTHON_EXTBUILD) $(OUTPUT
+ ifeq ($(CONFIG_LIBTRACEEVENT),y)
+   PYTHON_EXT_SRCS := $(shell grep -v ^\# util/python-ext-sources)
+ else
+-  PYTHON_EXT_SRCS := $(shell grep -v ^\#\\\|util/trace-event.c util/python-ext-sources)
++  PYTHON_EXT_SRCS := $(shell grep -v ^\#\\\|util/trace-event.c\\\|util/trace-event-parse.c util/python-ext-sources)
+ endif
+ 
+ PYTHON_EXT_DEPS := util/python-ext-sources util/setup.py $(LIBAPI)
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index 4d14f14f2506..9e67324b1608 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -2851,119 +2851,6 @@ u64 evsel__intval_common(struct evsel *evsel, struct perf_sample *sample, const
+ 	return field ? format_field__intval(field, sample, evsel->needs_swap) : 0;
+ }
+ 
+-/*
+- * prev_state is of size long, which is 32 bits on 32 bit architectures.
+- * As it needs to have the same bits for both 32 bit and 64 bit architectures
+- * we can just assume that the flags we care about will all be within
+- * the 32 bits.
+- */
+-#define MAX_STATE_BITS 32
+-
+-static const char *convert_sym(struct tep_print_flag_sym *sym)
+-{
+-	static char save_states[MAX_STATE_BITS + 1];
+-
+-	memset(save_states, 0, sizeof(save_states));
+-
+-	/* This is the flags for the prev_state_field, now make them into a string */
+-	for (; sym; sym = sym->next) {
+-		long bitmask = strtoul(sym->value, NULL, 0);
+-		int i;
+-
+-		for (i = 0; !(bitmask & 1); i++)
+-			bitmask >>= 1;
+-
+-		if (i >= MAX_STATE_BITS)
+-			continue;
+-
+-		save_states[i] = sym->str[0];
+-	}
+-
+-	return save_states;
+-}
+-
+-static struct tep_print_arg_field *
+-find_arg_field(struct tep_format_field *prev_state_field, struct tep_print_arg *arg)
+-{
+-	struct tep_print_arg_field *field;
+-
+-	if (!arg)
+-		return NULL;
+-
+-	if (arg->type == TEP_PRINT_FIELD)
+-		return &arg->field;
+-
+-	if (arg->type == TEP_PRINT_OP) {
+-		field = find_arg_field(prev_state_field, arg->op.left);
+-		if (field && field->field == prev_state_field)
+-			return field;
+-		field = find_arg_field(prev_state_field, arg->op.right);
+-		if (field && field->field == prev_state_field)
+-			return field;
+-	}
+-	return NULL;
+-}
+-
+-static struct tep_print_flag_sym *
+-test_flags(struct tep_format_field *prev_state_field, struct tep_print_arg *arg)
+-{
+-	struct tep_print_arg_field *field;
+-
+-	field = find_arg_field(prev_state_field, arg->flags.field);
+-	if (!field)
+-		return NULL;
+-
+-	return arg->flags.flags;
+-}
+-
+-static struct tep_print_flag_sym *
+-search_op(struct tep_format_field *prev_state_field, struct tep_print_arg *arg)
+-{
+-	struct tep_print_flag_sym *sym = NULL;
+-
+-	if (!arg)
+-		return NULL;
+-
+-	if (arg->type == TEP_PRINT_OP) {
+-		sym = search_op(prev_state_field, arg->op.left);
+-		if (sym)
+-			return sym;
+-
+-		sym = search_op(prev_state_field, arg->op.right);
+-		if (sym)
+-			return sym;
+-	} else if (arg->type == TEP_PRINT_FLAGS) {
+-		sym = test_flags(prev_state_field, arg);
+-	}
+-
+-	return sym;
+-}
+-
+-static const char *get_states(struct tep_format_field *prev_state_field)
+-{
+-	struct tep_print_flag_sym *sym;
+-	struct tep_print_arg *arg;
+-	struct tep_event *event;
+-
+-	event = prev_state_field->event;
+-
+-	/*
+-	 * Look at the event format fields, and search for where
+-	 * the prev_state is parsed via the format flags.
+-	 */
+-	for (arg = event->print_fmt.args; arg; arg = arg->next) {
+-		/*
+-		 * Currently, the __print_flags() for the prev_state
+-		 * is embedded in operations, so they too must be
+-		 * searched.
+-		 */
+-		sym = search_op(prev_state_field, arg);
+-		if (sym)
+-			return convert_sym(sym);
+-	}
+-	return NULL;
+-}
+-
+ char evsel__taskstate(struct evsel *evsel, struct perf_sample *sample, const char *name)
+ {
+ 	static struct tep_format_field *prev_state_field;
+@@ -2979,7 +2866,7 @@ char evsel__taskstate(struct evsel *evsel, struct perf_sample *sample, const cha
+ 		return state;
+ 
+ 	if (!states || field != prev_state_field) {
+-		states = get_states(field);
++		states = parse_task_states(field);
+ 		if (!states)
+ 			return state;
+ 		prev_state_field = field;
+diff --git a/tools/perf/util/python-ext-sources b/tools/perf/util/python-ext-sources
+index 593b660ec75e..1bec945f4838 100644
+--- a/tools/perf/util/python-ext-sources
++++ b/tools/perf/util/python-ext-sources
+@@ -31,6 +31,7 @@ util/counts.c
+ util/print_binary.c
+ util/strlist.c
+ util/trace-event.c
++util/trace-event-parse.c
+ ../lib/rbtree.c
+ util/string.c
+ util/symbol_fprintf.c
+diff --git a/tools/perf/util/setup.py b/tools/perf/util/setup.py
+index 79d5e2955f85..3107f5aa8c9a 100644
+--- a/tools/perf/util/setup.py
++++ b/tools/perf/util/setup.py
+@@ -85,6 +85,7 @@ if '-DHAVE_LIBTRACEEVENT' in cflags:
+     extra_libraries += [ 'traceevent' ]
+ else:
+     ext_sources.remove('util/trace-event.c')
++    ext_sources.remove('util/trace-event-parse.c')
+ 
+ # use full paths with source files
+ ext_sources = list(map(lambda x: '%s/%s' % (src_perf, x) , ext_sources))
+diff --git a/tools/perf/util/trace-event-parse.c b/tools/perf/util/trace-event-parse.c
+index 2d3c2576bab7..f0332bd3a501 100644
+--- a/tools/perf/util/trace-event-parse.c
++++ b/tools/perf/util/trace-event-parse.c
+@@ -122,6 +122,119 @@ void event_format__print(struct tep_event *event,
+ 	return event_format__fprintf(event, cpu, data, size, stdout);
+ }
+ 
++/*
++ * prev_state is of size long, which is 32 bits on 32 bit architectures.
++ * As it needs to have the same bits for both 32 bit and 64 bit architectures
++ * we can just assume that the flags we care about will all be within
++ * the 32 bits.
++ */
++#define MAX_STATE_BITS 32
++
++static const char *convert_sym(struct tep_print_flag_sym *sym)
++{
++	static char save_states[MAX_STATE_BITS + 1];
++
++	memset(save_states, 0, sizeof(save_states));
++
++	/* This is the flags for the prev_state_field, now make them into a string */
++	for (; sym; sym = sym->next) {
++		long bitmask = strtoul(sym->value, NULL, 0);
++		int i;
++
++		for (i = 0; !(bitmask & 1); i++)
++			bitmask >>= 1;
++
++		if (i >= MAX_STATE_BITS)
++			continue;
++
++		save_states[i] = sym->str[0];
++	}
++
++	return save_states;
++}
++
++static struct tep_print_arg_field *
++find_arg_field(struct tep_format_field *prev_state_field, struct tep_print_arg *arg)
++{
++	struct tep_print_arg_field *field;
++
++	if (!arg)
++		return NULL;
++
++	if (arg->type == TEP_PRINT_FIELD)
++		return &arg->field;
++
++	if (arg->type == TEP_PRINT_OP) {
++		field = find_arg_field(prev_state_field, arg->op.left);
++		if (field && field->field == prev_state_field)
++			return field;
++		field = find_arg_field(prev_state_field, arg->op.right);
++		if (field && field->field == prev_state_field)
++			return field;
++	}
++	return NULL;
++}
++
++static struct tep_print_flag_sym *
++test_flags(struct tep_format_field *prev_state_field, struct tep_print_arg *arg)
++{
++	struct tep_print_arg_field *field;
++
++	field = find_arg_field(prev_state_field, arg->flags.field);
++	if (!field)
++		return NULL;
++
++	return arg->flags.flags;
++}
++
++static struct tep_print_flag_sym *
++search_op(struct tep_format_field *prev_state_field, struct tep_print_arg *arg)
++{
++	struct tep_print_flag_sym *sym = NULL;
++
++	if (!arg)
++		return NULL;
++
++	if (arg->type == TEP_PRINT_OP) {
++		sym = search_op(prev_state_field, arg->op.left);
++		if (sym)
++			return sym;
++
++		sym = search_op(prev_state_field, arg->op.right);
++		if (sym)
++			return sym;
++	} else if (arg->type == TEP_PRINT_FLAGS) {
++		sym = test_flags(prev_state_field, arg);
++	}
++
++	return sym;
++}
++
++const char *parse_task_states(struct tep_format_field *state_field)
++{
++	struct tep_print_flag_sym *sym;
++	struct tep_print_arg *arg;
++	struct tep_event *event;
++
++	event = state_field->event;
++
++	/*
++	 * Look at the event format fields, and search for where
++	 * the prev_state is parsed via the format flags.
++	 */
++	for (arg = event->print_fmt.args; arg; arg = arg->next) {
++		/*
++		 * Currently, the __print_flags() for the prev_state
++		 * is embedded in operations, so they too must be
++		 * searched.
++		 */
++		sym = search_op(state_field, arg);
++		if (sym)
++			return convert_sym(sym);
++	}
++	return NULL;
++}
++
+ void parse_ftrace_printk(struct tep_handle *pevent,
+ 			 char *file, unsigned int size __maybe_unused)
+ {
+diff --git a/tools/perf/util/trace-event.h b/tools/perf/util/trace-event.h
+index a69ee29419f3..bbf8b26bc8da 100644
+--- a/tools/perf/util/trace-event.h
++++ b/tools/perf/util/trace-event.h
+@@ -15,6 +15,7 @@ struct perf_tool;
+ struct thread;
+ struct tep_plugin_list;
+ struct evsel;
++struct tep_format_field;
+ 
+ struct trace_event {
+ 	struct tep_handle	*pevent;
+@@ -51,6 +52,8 @@ int parse_event_file(struct tep_handle *pevent,
+ unsigned long long
+ raw_field_value(struct tep_event *event, const char *name, void *data);
+ 
++const char *parse_task_states(struct tep_format_field *state_field);
++
+ void parse_proc_kallsyms(struct tep_handle *pevent, char *file, unsigned int size);
+ void parse_ftrace_printk(struct tep_handle *pevent, char *file, unsigned int size);
+ void parse_saved_cmdline(struct tep_handle *pevent, char *file, unsigned int size);
+-- 
+2.41.0
+
 
