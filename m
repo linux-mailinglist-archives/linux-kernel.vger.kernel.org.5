@@ -1,140 +1,107 @@
-Return-Path: <linux-kernel+bounces-36018-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D21D0839A37
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:22:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12F9E839A3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:23:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AF8D293952
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:22:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 454B21C23B38
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:23:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C43F885C59;
-	Tue, 23 Jan 2024 20:22:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 694AB8612C;
+	Tue, 23 Jan 2024 20:23:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e/cGuKZx"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="oBa9glMe"
+Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B15A60EE4;
-	Tue, 23 Jan 2024 20:22:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E15C60EE4
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 20:23:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706041345; cv=none; b=RqUfWQXxG7Yo/Uz65rd/w6yoCelaXUx6KSeacW2SdvUDnraSjsjfuidpcGa7yzdytb8aQG4JlTRETPco+/l1sQJG8h+ko9y5zC50H7mWm09cUnOO765kDuhJM79OOskllG3hbjTG7kZrM+MPlR19HSpHav9rNjnK6JRhyozecgc=
+	t=1706041392; cv=none; b=hAzLJAsCTpOvZCtEeuBneaW8Sa8VDTdvK7oEfV9mBTJi3AmeHLSiE6MaN7w7IlIEczrkFUJJKnTodaVmdB3kMBWkh/x91C1Qm+43/Mkdkr6FoRRbCPIyRikkoJHzS7Bo2Ym9tBMc7OzTXx37OcUOJrPeNtJmEPMPmFGfNRB9+a4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706041345; c=relaxed/simple;
-	bh=jM4MyoWo+izflWjFp+k4fq9uZesoK+y9N2WT7j1n6BM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=saMmpRpIbPB0q/Zun2Mqv3+L9bPvjjL2mRew2LSSbrYC9KRBF4p7icg4cpKw0W+YoCw3SKGjnaHGyHhDpcuSUkWxFqe1zkPs8ifzYY5rGe1OS58dAXdpJSDVffLmlIhQoEEjWcHfJIkZXksN1NDf2XjwH0qbki4twUBzj9HDdFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e/cGuKZx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 444A8C433C7;
-	Tue, 23 Jan 2024 20:22:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706041344;
-	bh=jM4MyoWo+izflWjFp+k4fq9uZesoK+y9N2WT7j1n6BM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=e/cGuKZx95IXTZ8h9dhHrwJ5QBPOTXDPClCsd62277JsMLiv+zbYaK/hyg1hxxSAY
-	 5WOtbkvKfeB8OFG2Q5VlrjxoKf/WPQB7AxGo/G+U6ewxCRwDcCHTfs++DKdfXw/DJN
-	 L7oOsT+dbQZh6YO8oaj4/4fv0Ekitr2IDT/s8SxRRFpav9n8fIhei8krF8Jy/qpwn2
-	 dJw4Ye+ejLfD1uTEMgCailFMF1ZXjtmJaNKyq2t2m5fGZtBVBOE/LZgr6RwvosZAb6
-	 q3+2qlVZcq4Lz/MT73QYX6DGHEfig1rxqgLV/woQE3PTIKb/DN37nnOrQ3YSfnoUtd
-	 eXQBxUDB2LX6Q==
-From: SeongJae Park <sj@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org,
-	patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org,
-	akpm@linux-foundation.org,
-	linux@roeck-us.net,
-	shuah@kernel.org,
-	patches@kernelci.org,
-	lkft-triage@lists.linaro.org,
-	pavel@denx.de,
-	jonathanh@nvidia.com,
-	f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net,
-	rwarsow@gmx.de,
-	conor@kernel.org,
-	allen.lkml@gmail.com,
-	damon@lists.linux.dev,
-	SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 6.6 000/580] 6.6.14-rc2 review
-Date: Tue, 23 Jan 2024 12:22:21 -0800
-Message-Id: <20240123202221.93545-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240123174533.427864181@linuxfoundation.org>
-References: 
+	s=arc-20240116; t=1706041392; c=relaxed/simple;
+	bh=BqASrS5v3yWPEFqu6y4zqCpxrbcAoTDrMMa4rh9P/3k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hHO4zPcNScuvL/UrrDkbF2kJ0/lykYIvs1SYGPz04CMT6wHSQkKypOD9gREiJQmNL9ausMo6ou/CuDNyni9DBevZHsEkoBcLyjlhjEkgpv26x5+UiLCfa0mvTSpfpvzkNR7XO0XLVIRTrtqBKgtCvx4DC3TRxaCtLt+8KHjS2Ho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=oBa9glMe; arc=none smtp.client-ip=209.85.219.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-68183d4e403so27458986d6.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 12:23:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706041390; x=1706646190; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BqASrS5v3yWPEFqu6y4zqCpxrbcAoTDrMMa4rh9P/3k=;
+        b=oBa9glMehjeCvDo7oZQGymSPQS7/NtdX4hKaU7M34xtkws+Q8TZe15GDIAigIygl8f
+         cow+XzyoNsZWOIlusEtfYSVe88AHV33mCpvC4nEWPPQam/HHiMdeUBvCIE5Chut9Qqs+
+         U9m5LF+TFtGNL2lyq2pTwmueGgQQkrYLCU1xDVnDessVG7D3hyQVs/iD0VlFyDjtuDzu
+         zPUiKdO/eCqyfGAxexBKfK7BX9gXNWLW8iPYOu9278S1cXi2oiNT3W9mExmmUUDy0fGk
+         7tdATct7EsOP+tORAp1Np6U/qEMwuyhLpIxHNng7n4KuJI82XjtMSytQJrTrx23pA9kr
+         gqvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706041390; x=1706646190;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BqASrS5v3yWPEFqu6y4zqCpxrbcAoTDrMMa4rh9P/3k=;
+        b=SjoMt4NhPFzDbicNAJvcvJzzGsVb7vumCWy9RKuRu/sRRi9vIqk6/HW/N7USlxh7v+
+         0K7U55xYubmHSw/OKZT0rK1CpFkO1x4jABkuCrBAVhKvZTFRDCq/lDHGyvL9Xf3t96Ev
+         LCF1EW29pFPhfAqp8QvPXTw8V2Q5x26FCO7V6LsQskfJ5b2yyePmUJaTMYbPZklkIfVf
+         d6HOWu0wgewwrsmW6aArHV+W0mSmVeOEHCHx22ZwnQVokzAhrvcCEN/yff/vkGd4BfcO
+         MnXUriyA3/7Ql7XwUSuzLaWvM1JFiuQcbHEgm8i/SABSr/FkhV/sW4l0F1uWiLnCg+d0
+         5HNQ==
+X-Gm-Message-State: AOJu0YyQfqbHORZEbR0Oig+WbSHfoWa7r38dRzJrGPfVA87vJBXV9qT2
+	hIs7SuRQxT6C7B28Wmq8tzFQZYKFVvFY1q50mwqawd6mNk/RajGBdoTdc1h7VRWmU7K2WIKKfx6
+	N6hugocRTLQnt9E+wH9pYP9uwhA4JqHkqnv37
+X-Google-Smtp-Source: AGHT+IHna79NyELk6+Fcq8hQsna4nxAc71AjuZxgFc8fjxggfR6bowcpQplSGGfvUlte/zTh8cgBUo2A+JI1lpmHDZE=
+X-Received: by 2002:a0c:da8d:0:b0:681:80b2:262f with SMTP id
+ z13-20020a0cda8d000000b0068180b2262fmr1319326qvj.107.1706041390167; Tue, 23
+ Jan 2024 12:23:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240122175810.1942504-1-aahila@google.com> <20240122175810.1942504-2-aahila@google.com>
+ <20240122211357.767d4edd@kernel.org>
+In-Reply-To: <20240122211357.767d4edd@kernel.org>
+From: Aahil Awatramani <aahila@google.com>
+Date: Tue, 23 Jan 2024 12:22:58 -0800
+Message-ID: <CAGfWUPzuXi+j=JE2Q3ZZ-MCfS84Y9Om5smB9C4Qn9Fq7RLY6=w@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 2/2] bonding: Add independent control state machine
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: David Dillow <dave@thedillows.org>, Mahesh Bandewar <maheshb@google.com>, 
+	Jay Vosburgh <j.vosburgh@gmail.com>, Hangbin Liu <liuhangbin@gmail.com>, 
+	Andy Gospodarek <andy@greyhouse.net>, "David S . Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+> The compiler will know what to inline, please drop the "inline"
+> use in C sources in this patch. It just hides unused function
+> warnings and serves no real purpose.
 
-On Tue, 23 Jan 2024 09:47:11 -0800 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+Understood, done.
+I have dropped any inline reference coming from C sources in this patch.
 
-> This is the start of the stable review cycle for the 6.6.14 release.
-> There are 580 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 25 Jan 2024 17:44:18 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.14-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
-
-This rc kernel passes DAMON functionality test[1] on my test machine.
-Attaching the test results summary below.  Please note that I retrieved the
-kernel from linux-stable-rc tree[2].
-
-Tested-by: SeongJae Park <sj@kernel.org>
-
-[1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] 86b2b02ae53b ("Linux 6.6.14-rc2")
-
-Thanks,
-SJ
-
-[...]
-
----
-
-ok 1 selftests: damon: debugfs_attrs.sh
-ok 2 selftests: damon: debugfs_schemes.sh
-ok 3 selftests: damon: debugfs_target_ids.sh
-ok 4 selftests: damon: debugfs_empty_targets.sh
-ok 5 selftests: damon: debugfs_huge_count_read_write.sh
-ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
-ok 7 selftests: damon: debugfs_rm_non_contexts.sh
-ok 8 selftests: damon: sysfs.sh
-ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
-ok 10 selftests: damon: reclaim.sh
-ok 11 selftests: damon: lru_sort.sh
-ok 1 selftests: damon-tests: kunit.sh
-ok 2 selftests: damon-tests: huge_count_read_write.sh
-ok 3 selftests: damon-tests: buffer_overflow.sh
-ok 4 selftests: damon-tests: rm_contexts.sh
-ok 5 selftests: damon-tests: record_null_deref.sh
-ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
-ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
-ok 8 selftests: damon-tests: damo_tests.sh
-ok 9 selftests: damon-tests: masim-record.sh
-ok 10 selftests: damon-tests: build_i386.sh
-ok 11 selftests: damon-tests: build_arm64.sh
-ok 12 selftests: damon-tests: build_m68k.sh
-ok 13 selftests: damon-tests: build_i386_idle_flag.sh
-ok 14 selftests: damon-tests: build_i386_highpte.sh
-ok 15 selftests: damon-tests: build_nomemcg.sh
- [33m
- [92mPASS [39m
+On Mon, Jan 22, 2024 at 9:14=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
+ote:
+>
+> On Mon, 22 Jan 2024 17:58:10 +0000 Aahil Awatramani wrote:
+> > +static inline void __disable_distributing_port(struct port *port)
+>
+> The compiler will know what to inline, please drop the "inline"
+> use in C sources in this patch. It just hides unused function
+> warnings and serves no real purpose.
+> --
+> pw-bot: cr
 
