@@ -1,143 +1,182 @@
-Return-Path: <linux-kernel+bounces-35844-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35843-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFE6883973A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:06:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5138839738
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:06:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FEE71F2B36C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:06:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63C331F2AB30
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:06:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6A5281214;
-	Tue, 23 Jan 2024 18:06:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="SXl8Q/ec"
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10F208120A
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 18:06:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7874881213;
+	Tue, 23 Jan 2024 18:06:23 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 820E97FBC4;
+	Tue, 23 Jan 2024 18:06:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706033194; cv=none; b=KXXBM8X/YdSzjcqeQAx8s8pyofBPjNrm9KxPfLZQGPmSHFGeBvDVp9EXRAQnTShK+9aLGaPPKWDfrfOYLRImb6CdlCC5nZYDQRCeEj0MoB3RBiubhZWK8tX7QpdyoIZbTI7GNjiVrVhkHlE4zhc2sKLnceVAqIq0nAiseoPH4/U=
+	t=1706033183; cv=none; b=fIrFz7+2Tck8NUEvrBy/FKYe+joHmDtNXXn041BnLXXJ7mZYs8LmYhBb8FlWFfzcJKUTMeO+z50DvNGqoQB5/j5Xy0Pyo7JqRCBIhLSn5W8RHwVsfiAWD23nMkFsIHdGU6gvOqmO6g4A32UZE9yaqSbVli+MnHAvwvrmTk5PEQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706033194; c=relaxed/simple;
-	bh=DSKd2JcJ2/mza9EM+Xnm+jdVYiFpr3Vkuf4kEF/SCIw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fNBOifAECOqZCM5Fa0yWiDOn7eaNMIuDIliOX2oEftKK9khXPfvCYcGUSiXryopLIFLN9PwVhT+YiR6oaicDpoBjoO3lTqs+hNqO5247GwvvUnYLCPV3dUrR0OHtwhPvk8QqtMmKmxAu2FyTkkWVLIR2eE2zNkBHxMQ2cjFYWqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=SXl8Q/ec; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-55a3a875f7fso5091673a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 10:06:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1706033191; x=1706637991; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=sPOVFQl2tkZfe3QyiMSbVqeq8qtXQuoltOLEZXEAb4Y=;
-        b=SXl8Q/ecMZB/UMQysXz88PMxEHev6hL077NpL5gsMW0TCuAY6Qi4bOPVjKrRIksIgR
-         x2PfsxlrYyrbtec2IZKHXirj/fN+YmY2ITshai5EaHMNKEezjye6HWUsAwvkgJ6KEQ1Y
-         wkDBxgZphwqfTAI2QGvHisqkiDS+3EfNAzQp4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706033191; x=1706637991;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sPOVFQl2tkZfe3QyiMSbVqeq8qtXQuoltOLEZXEAb4Y=;
-        b=e97DUPTzNvWWPrvxVjDLyjwV6FVQMtWO+1qd6vzwZyf7iAd7dhPLYldu6q7GQznYFO
-         QYPjEAkrYIaSmGJoFbwAhivLLCWx0vJdMsruCgjOLwvgcFKWe086n1ZOVkoeenQNGIap
-         2TiHs69qIB2D9OkDG0dxPuNseVx9zAvnitZ8Ueag1HkcPZ2k2qCzKItl0wzjPPSZxOII
-         Uv9SxAm5IfsIVingyGRkZJcwNKYxfGqDGWHaC2sjHXdpBMNvBe7+h6E+i1dpMoRR+R6Y
-         mPLM5BUxeBlnj8f46UCVGoBx2OxX4XYZdss4pWhvCdOqI/7pnLBasFqbRDUSCL3HYt+6
-         vyCQ==
-X-Gm-Message-State: AOJu0YzzqU31KgjEzSrPpoqHjj/PDfOUZjHJJXBhUE9PRxPRRbfYtO7T
-	J60XYWvx5H8txSpM8hFgTgQfTOED95dnAoPOr106Xd+5z32DV4f/oObSlN+ifsD9QgnZIljE1B7
-	jOKPMlQ==
-X-Google-Smtp-Source: AGHT+IGuCpCKRJ4FDd1KtYXNPnslibBkt0oY7DoecV/2/jGdZ6Krdp+ioznD2JIKYpXi+We222DN4Q==
-X-Received: by 2002:aa7:dd44:0:b0:558:251b:3bd1 with SMTP id o4-20020aa7dd44000000b00558251b3bd1mr1078528edw.37.1706033191009;
-        Tue, 23 Jan 2024 10:06:31 -0800 (PST)
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com. [209.85.128.42])
-        by smtp.gmail.com with ESMTPSA id x9-20020aa7cd89000000b00558e0481b2fsm14224968edv.47.2024.01.23.10.06.30
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jan 2024 10:06:30 -0800 (PST)
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40ea5653f6bso43304865e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 10:06:30 -0800 (PST)
-X-Received: by 2002:a05:600c:42cb:b0:40e:4ab9:70df with SMTP id
- j11-20020a05600c42cb00b0040e4ab970dfmr368030wme.245.1706033189635; Tue, 23
- Jan 2024 10:06:29 -0800 (PST)
+	s=arc-20240116; t=1706033183; c=relaxed/simple;
+	bh=mpukHrJGQfkSvb2i5G7GCeHO/07bhGWWUAkmqYst/Z0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lfn2ouovJOKYZxL8jlBO9M65zagNQqEghoe0rGyEp3pfviYMGK80zykzfSBRq0aQldnjF6pzxTcMzNWKJlUtAnc3D5ncpoYdeYR39OBrm22lh1VN6tXFSTRavcn1jX06il1/SgHJUOy9N6XowyPMT9YncAucfRnWrXwRgrxkYKs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C8BCD1FB;
+	Tue, 23 Jan 2024 10:07:04 -0800 (PST)
+Received: from [10.57.77.165] (unknown [10.57.77.165])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8441B3F7F4;
+	Tue, 23 Jan 2024 10:06:18 -0800 (PST)
+Message-ID: <47364d76-4eb9-42fe-bbbf-dec483cda2af@arm.com>
+Date: Tue, 23 Jan 2024 18:06:17 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122235208.work.748-kees@kernel.org> <20240123002814.1396804-34-keescook@chromium.org>
- <CAHk-=whS7FSbBoo1gxe+83twO2JeGNsUKMhAcfWymw9auqBvjg@mail.gmail.com> <202401221713.3FCABC9290@keescook>
-In-Reply-To: <202401221713.3FCABC9290@keescook>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 23 Jan 2024 10:06:12 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgMPVv-mDxA2qcywpLCRLojtaKmP13h7bVo4m=XN202xA@mail.gmail.com>
-Message-ID: <CAHk-=wgMPVv-mDxA2qcywpLCRLojtaKmP13h7bVo4m=XN202xA@mail.gmail.com>
-Subject: Re: [PATCH 34/82] ipc: Refactor intentional wrap-around calculation
-To: Kees Cook <keescook@chromium.org>
-Cc: linux-hardening@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Mark Brown <broonie@kernel.org>, 
-	Mike Kravetz <mike.kravetz@oracle.com>, Vasily Averin <vasily.averin@linux.dev>, 
-	Alexander Mikhalitsyn <alexander@mihalicyn.com>, "Gustavo A. R. Silva" <gustavoars@kernel.org>, 
-	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] mm: thp_get_unmapped_area must honour topdown
+ preference
+Content-Language: en-GB
+To: Yang Shi <shy828301@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Rik van Riel
+ <riel@surriel.com>, Matthew Wilcox <willy@infradead.org>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20240123171420.3970220-1-ryan.roberts@arm.com>
+ <CAHbLzkpXNDJy+p96maDeYa7rrqHUG+Go6epdqeUog-0xabiGiw@mail.gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAHbLzkpXNDJy+p96maDeYa7rrqHUG+Go6epdqeUog-0xabiGiw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, 22 Jan 2024 at 17:38, Kees Cook <keescook@chromium.org> wrote:
->
-> I've tried to find the right balance between not enough details and too
-> much. I guess I got it wrong.
+On 23/01/2024 17:52, Yang Shi wrote:
+> On Tue, Jan 23, 2024 at 9:14 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>
+>> The addition of commit efa7df3e3bb5 ("mm: align larger anonymous
+>> mappings on THP boundaries") caused the "virtual_address_range" mm
+>> selftest to start failing on arm64. Let's fix that regression.
+>>
+>> There were 2 visible problems when running the test; 1) it takes much
+>> longer to execute, and 2) the test fails. Both are related:
+>>
+>> The (first part of the) test allocates as many 1GB anonymous blocks as
+>> it can in the low 256TB of address space, passing NULL as the addr hint
+>> to mmap. Before the faulty patch, all allocations were abutted and
+>> contained in a single, merged VMA. However, after this patch, each
+>> allocation is in its own VMA, and there is a 2M gap between each VMA.
+>> This causes the 2 problems in the test: 1) mmap becomes MUCH slower
+>> because there are so many VMAs to check to find a new 1G gap. 2) mmap
+>> fails once it hits the VMA limit (/proc/sys/vm/max_map_count). Hitting
+>> this limit then causes a subsequent calloc() to fail, which causes the
+>> test to fail.
+>>
+>> The problem is that arm64 (unlike x86) selects
+>> ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT. But __thp_get_unmapped_area()
+>> allocates len+2M then always aligns to the bottom of the discovered gap.
+>> That causes the 2M hole.
+>>
+>> Fix this by detecting cases where we can still achive the alignment goal
+>> when moved to the top of the allocated area, if configured to prefer
+>> top-down allocation.
+>>
+>> While we are at it, fix thp_get_unmapped_area's use of pgoff, which
+>> should always be zero for anonymous mappings. Prior to the faulty
+>> change, while it was possible for user space to pass in pgoff!=0, the
+>> old mm->get_unmapped_area() handler would not use it.
+>> thp_get_unmapped_area() does use it, so let's explicitly zero it before
+>> calling the handler. This should also be the correct behavior for arches
+>> that define their own get_unmapped_area() handler.
+>>
+>> Fixes: efa7df3e3bb5 ("mm: align larger anonymous mappings on THP boundaries")
+>> Closes: https://lore.kernel.org/linux-mm/1e8f5ac7-54ce-433a-ae53-81522b2320e1@arm.com/
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> 
+> Thanks for debugging this. Looks good to me. Reviewed-by: Yang Shi
+> <shy828301@gmail.com>
 
-My complaint isn't about the level of detail.
+Thanks!
 
-My complaint is about how the commit log IS ACTIVELY MISLEADING
-GARBAGE and does not match the actual patch in any way, shape, or
-form.
+> 
+>> ---
+>>
+>> Applies on top of v6.8-rc1. Would be good to get this into the next -rc.
+> 
+> This may have a conflict with my fix (" mm: huge_memory: don't force
+> huge page alignment on 32 bit") which is on mm-unstable now.
 
-It talks about completely irrelevant issues that simply have nothing
-to do with it.
+It applies cleanly to mm-unstable. You change modifies the top part of
+__thp_get_unmapped_area() and mine modifies the bottom :)
 
-It talks about undefined behavior and about a "unsigned wrap-around
-sanitizer[2]", which is nonsensical, since there is no undefined
-behavior to sanitize. It literally gives a link to a github "issue"
-for that claim, but when you follow the link, it's actually about
-*signed* overflow, which is something entirely different.
+> 
+>>
+>> Thanks,
+>> Ryan
+>>
+>>  mm/huge_memory.c | 10 ++++++++--
+>>  mm/mmap.c        |  6 ++++--
+>>  2 files changed, 12 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>> index 94ef5c02b459..8c66f88e71e9 100644
+>> --- a/mm/huge_memory.c
+>> +++ b/mm/huge_memory.c
+>> @@ -809,7 +809,7 @@ static unsigned long __thp_get_unmapped_area(struct file *filp,
+>>  {
+>>         loff_t off_end = off + len;
+>>         loff_t off_align = round_up(off, size);
+>> -       unsigned long len_pad, ret;
+>> +       unsigned long len_pad, ret, off_sub;
+>>
+>>         if (off_end <= off_align || (off_end - off_align) < size)
+>>                 return 0;
+>> @@ -835,7 +835,13 @@ static unsigned long __thp_get_unmapped_area(struct file *filp,
+>>         if (ret == addr)
+>>                 return addr;
+>>
+>> -       ret += (off - ret) & (size - 1);
+>> +       off_sub = (off - ret) & (size - 1);
+>> +
+>> +       if (current->mm->get_unmapped_area == arch_get_unmapped_area_topdown &&
+>> +           !off_sub)
+>> +               return ret + size;
+>> +
+>> +       ret += off_sub;
+>>         return ret;
+>>  }
+>>
+>> diff --git a/mm/mmap.c b/mm/mmap.c
+>> index b78e83d351d2..d89770eaab6b 100644
+>> --- a/mm/mmap.c
+>> +++ b/mm/mmap.c
+>> @@ -1825,15 +1825,17 @@ get_unmapped_area(struct file *file, unsigned long addr, unsigned long len,
+>>                 /*
+>>                  * mmap_region() will call shmem_zero_setup() to create a file,
+>>                  * so use shmem's get_unmapped_area in case it can be huge.
+>> -                * do_mmap() will clear pgoff, so match alignment.
+>>                  */
+>> -               pgoff = 0;
+>>                 get_area = shmem_get_unmapped_area;
+>>         } else if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE)) {
+>>                 /* Ensures that larger anonymous mappings are THP aligned. */
+>>                 get_area = thp_get_unmapped_area;
+>>         }
+>>
+>> +       /* Always treat pgoff as zero for anonymous memory. */
+>> +       if (!file)
+>> +               pgoff = 0;
+>> +
+>>         addr = get_area(file, addr, len, pgoff, flags);
+>>         if (IS_ERR_VALUE(addr))
+>>                 return addr;
+>> --
+>> 2.25.1
+>>
 
-And honestly, the patch itself is garbage. The code is fine. Any
-"sanitizer" that complains about that code is pure and utter shite.
-
-Really.
-
-If you actually have some real "detect unsigned wraparound" tool
-(NOTE: that is *NOT* undefined behavior, and that is *NOT* a
-"sanitizer", it's at most some helpful checker), then such a tool had
-better recognize the perfectly fine traditional idiom for this, which
-is to do the addition and check that the result is smaller. Like the
-code does.
-
-See what I'm saying? The patch is garbage. Any sanitizer that would
-complain about the old code is garbage. And the commit message is
-worse than garbage, it is actively misleading to the point that I'd
-call it lying, trying to confuse the issues by bringing up things that
-are utterly and entirely irrelevant to the patch.
-
-So:
-
- - get rid of that commit message that is lying garbage
-
- - fix the so-called "sanitizer".
-
- - stop calling the unsigned wrap-around a "sanitizer" and talking
-about "undefined behavior" in the same sentence, since it's neither.
-
-Do you really not see why I think that thing is actively *WRONG*?
-
-           Linus
 
