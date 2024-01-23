@@ -1,79 +1,87 @@
-Return-Path: <linux-kernel+bounces-34492-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34539-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C1CA837CEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:21:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 018FB837EB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:42:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E617C28EBB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:21:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABD6C1F29E11
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:42:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD1405B5CF;
-	Tue, 23 Jan 2024 00:29:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D50C7E57E;
+	Tue, 23 Jan 2024 00:45:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="dei4nlrQ"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="dqR1af5m"
+Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80BF015B2E7
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:29:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F16A612F8
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:45:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705969754; cv=none; b=gC3YxrvmAzisY1m1+BqPiVZ57Osqtp9vxgVfZlMSaNKI4t/BH19UPeAqwHoRRLHRJwLF0zp2Gxn/lBB65EPAtMav8CwYvA/n/n5OQD9g29fllz4WBbt315TL1qrb3Wni9rCu9fSSyxGgdQOvIoeyYFby8YP37H9OjtzhXi39pTU=
+	t=1705970758; cv=none; b=i4NwLmnhPuiCSYwBD851co/qgVZH9VTde33lIZHFI8MAEGy6LTiL3+IeFNCVJa2GBeYwBtnuARGxPPmakYSoW2kbsoFMN3Scbmg32fW+Quf/4mEq8xc81a4Uj7VGXCbVy0/j1zQ4qE9VaqEbSuHqh/7Z1+GztSudm+kO0w1EsnI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705969754; c=relaxed/simple;
-	bh=Le2cw8/EMeZDvyWiTZfIKGAqobpbeo1xxbxe1eKIEog=;
+	s=arc-20240116; t=1705970758; c=relaxed/simple;
+	bh=jUfBRygKEob0pYY7t7xuNdNYLn6sNoLNNiaAx8Qo6NY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=OAW+1XK4vOvBPNetVFTFsNdZKD90+PfvnJddzXammGLLZ7K/RyvNZwaQhCxiobQgplOFeLOE80spbI5FHSzuICSAMyiQZeLZ6lmfvNejTDQpr6zELgXGXwOh3cvYF8IUZiZpCtEXN4Nux5BP2zzcUzv6swFvZHbclpGFd+WgQfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=dei4nlrQ; arc=none smtp.client-ip=209.85.214.175
+	 MIME-Version; b=hVl+m3cfBTHfm/GZNZccsjbg64Y0Med3S4bcwi0SDTi2q3aRHUNauZGWmw54QKFpZi4Tq6vy2NQXmNYqvNKgFZUNKcYpqqkp1iHAJZb4F+viHDrVQOSKbnXtptvtAmVcxkcvh6cqmIAYn1lno8RcKcQFEqv78lvNgu1V5jywV+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=dqR1af5m; arc=none smtp.client-ip=209.85.161.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d7431e702dso10690305ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 16:29:13 -0800 (PST)
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-58e256505f7so1920899eaf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 16:45:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1705969753; x=1706574553; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1705970756; x=1706575556; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4kSZcErhkvLURXFhEcykitt7q+k1IsSKXy6VMnrbEx4=;
-        b=dei4nlrQVSmZaRc7i9w34s2JHXoCLSllCDEuYyKgw7v/ZalCE32trcheV5afy+MkG4
-         PJDijwomQl32hvpaX7i9vlIpJPROylLEcbAWBZlgsmhlVnMbt0Azr1BHJcpwp31KpjSR
-         Jl+FV2Cok0fJt1RRiwZNQxM+Jm6CWWrYE87H8=
+        bh=E9D2RhyYqAg2d9K0ImTDYoiLNMME5NOa6lhB+xLPfvo=;
+        b=dqR1af5mzPyfLO9xXiIoQvQM+PeTnpbvEBte9mASZeEiRoM7xDXs/nRAry/7bw/30j
+         IaFSuFO1FL8njrxoNPXgL++CVOtxMga93y4Orfww3oHsJsVmrWE6oMUd1Gh5c1qLn6m7
+         R9RpQwICkmY0cJYT7WIYtId5T0TirdTRUdzjo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705969753; x=1706574553;
+        d=1e100.net; s=20230601; t=1705970756; x=1706575556;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4kSZcErhkvLURXFhEcykitt7q+k1IsSKXy6VMnrbEx4=;
-        b=QTkk7IULCJYoHe12affgaQw0oPLQ+nNm+Isf9eXIyiGBLfuUKs+BGo3JJnr5JQLyx/
-         B7+b82c43QCs1iYKrqwJcM007nSNojTY8AQ2h/QJsHng90Q/ebkcaWZLHKl4LmrQJsWw
-         OTKawEpTHfTonLGDI++ak555TbC8la0oH8pDob9YgqtxURukuMm0AT2rUY4kS+gBlh4m
-         Pt7ZE3RNGq1f/JvGlDgAHqZnjQKN2AYYS6YZg222pJ9smsjrEllMqMkkIskmApGd6Ydq
-         dVm3XYjgeGJr53pw9RWU1OxGtyTZE4VYee+GkGQwPwgiWZHvtHQks4cxEWGKX7D6Avzf
-         8rZA==
-X-Gm-Message-State: AOJu0Ywh25ddgMNTG87ZpMIfFxLNXv7s3A+5J4ep4UrSl4+L9jouHFt9
-	6GrvwglX7og9WUtO1kw+VLTiR3zVa8T1df9k0LK+voJN5BNYZA2o/ZfgyBh1UQ==
-X-Google-Smtp-Source: AGHT+IG3RDfq5susdGGtZ5t8hNNXczrgazB2fai6AkFle9yipHha6eOEWBtXrxnRKsK0nSd5aI3KHw==
-X-Received: by 2002:a17:902:c946:b0:1d7:ad4:7d9 with SMTP id i6-20020a170902c94600b001d70ad407d9mr2794072pla.60.1705969752949;
-        Mon, 22 Jan 2024 16:29:12 -0800 (PST)
+        bh=E9D2RhyYqAg2d9K0ImTDYoiLNMME5NOa6lhB+xLPfvo=;
+        b=Sjfn2Ez7wO4R1s1WqbErKqO/9BFF63Ms8xjsYphnclHIg+j4ZLB+0vgBz/tFc7Tzhq
+         GDzUyGfjtzTPBxt9wMmjqV+XENzsSpxbcA0fEiI97mixnU8DnBIUya2ynbAvwsFuaVhQ
+         QE28rvktjxCJ8B58GNbEl7J/TfeJW+3KuXLRhC2NtJHk0NO8cIMqu7siLFZ2ZzSYZF+K
+         mludYXYAZrPiNFN9uL/tF0XucTK7tjjjQVvjW2quG3dNv1E7UM8FZAGvttbpYFWCBIHD
+         /giPjxxYqJoQrS8C9Kt9i/2R1Rg6cdCECnFn2BZXBpmEOjmB+cBftMQK1oTk/Os4dOz3
+         3tjQ==
+X-Gm-Message-State: AOJu0YzzBuN0FqVN+yRHnL3OHuKPmszUjvBOllUcvZv/xGbPeX4jg9AR
+	XTQhMQyiOe6724iZoztnuqrbD1QJ9pqWrX+6ss9JupifIK+C8xQsasb6edS9Pw==
+X-Google-Smtp-Source: AGHT+IFVISzrzSXSdVQ6Q9UgTnrk65aK8T32BzTL9w9bZOjlyVv+fDCi/DNB3qZ7M7Yj6ydPIU0wGg==
+X-Received: by 2002:a05:6358:9044:b0:171:4aa4:51 with SMTP id f4-20020a056358904400b001714aa40051mr2836525rwf.54.1705970755743;
+        Mon, 22 Jan 2024 16:45:55 -0800 (PST)
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id b4-20020a170902a9c400b001d74b1ef56fsm2652747plr.271.2024.01.22.16.28.52
+        by smtp.gmail.com with ESMTPSA id q24-20020aa79838000000b006dba11edc7csm9613217pfl.218.2024.01.22.16.45.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 16:29:08 -0800 (PST)
+        Mon, 22 Jan 2024 16:45:54 -0800 (PST)
 From: Kees Cook <keescook@chromium.org>
 To: linux-hardening@vger.kernel.org
 Cc: Kees Cook <keescook@chromium.org>,
+	Marc Zyngier <maz@kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Eric Auger <eric.auger@redhat.com>,
+	linux-arm-kernel@lists.infradead.org,
+	kvmarm@lists.linux.dev,
 	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-mm@kvack.org,
 	Bill Wendling <morbo@google.com>,
 	Justin Stitt <justinstitt@google.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 56/82] usercopy: Refactor intentional wrap-around test
-Date: Mon, 22 Jan 2024 16:27:31 -0800
-Message-Id: <20240123002814.1396804-56-keescook@chromium.org>
+Subject: [PATCH 57/82] KVM: arm64: vgic-v3: Refactor intentional wrap-around test
+Date: Mon, 22 Jan 2024 16:27:32 -0800
+Message-Id: <20240123002814.1396804-57-keescook@chromium.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240122235208.work.748-kees@kernel.org>
 References: <20240122235208.work.748-kees@kernel.org>
@@ -83,19 +91,19 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1952; i=keescook@chromium.org;
- h=from:subject; bh=Le2cw8/EMeZDvyWiTZfIKGAqobpbeo1xxbxe1eKIEog=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlrwgJFBcLI030OvWlIdf+JlEl9ZpGqp2xZrVGc
- OF5/tb3LLKJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZa8ICQAKCRCJcvTf3G3A
- JlAfD/4hK8oQxeilJy5M1BswN23KROlrOk+00GSMbycYwZKmxQcAxh0DnW23pgXbeUgj2xRlH7k
- /F+1z4vu9eaAj8Y/Y9hBh2STz4jydgyEv7WtfzL7Jw1BNKRrtbBNLwAwKJ0huo8jHVSKWwPVexP
- H0dsQTMPDxMkMaS77DgFrqDnf83+cga/jJS5LHAev1F3Rt7Vzx4KZTVfeW2Dto3dvVvaDA7Mr1W
- zclIJH/mqpfAZHnTuBX0Lc9+8RKLG4qO+2/IUsGeLKMWwR1WVPmDTM2bkl/aMTUuS9zUOBkJ+kz
- KOHdKKXC1Rs12cJXs6FaDHdaa14Rs0A4hpkuD5hOdyzaS307IhV5depO3u68Tj2Uik5iOAg0Sd+
- mbpV425cNRUyFHClpds5aX3e702vMEC0hgaOLiRwlk5K3u6RQW1N7GluN4un20Sn6BhkHSH4U+N
- YixLEE2YDQcd7gaZZwk6n5ylkZBndaXc6h2B9qpnebQVrz7cHnXCvjJ523k41Bmm1MZTcW9H7Np
- ST8joAjzTwXfRq5dJvhigwFDMdUGFtxsZ2soh6RZ/+fTiuyYL+m8B2frhQ33eS/G9AbMn6WFBxK
- EFYGaKAJmKlp3x8HgzZyfaTqO4BFToZOSpxteo584SQH5dsfYvS3kwiZW/3iIX05kIzLTWTZTqU IgI+hkYy5CRcMww==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2103; i=keescook@chromium.org;
+ h=from:subject; bh=jUfBRygKEob0pYY7t7xuNdNYLn6sNoLNNiaAx8Qo6NY=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlrwgK6p/l1eSrerQhSuQAXGj4NB7+sc1cNpXou
+ bSA7eeLunuJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZa8ICgAKCRCJcvTf3G3A
+ JvcVEACO/+PPMjBquDJGhsJWwJDHC0YCgObRXdZAVFrFSsIROk0VLyG5+vouD43LP2qVe5ORA5j
+ bl5cVYkqVOrsAC8uQaB+9i/mDFxTvj5VHQm1TUR2xuP827NRLV0VGb2f9Fj/FPIjyevrbu0PcMA
+ UcER3p5QpR/cuOZBj3R/vah7DqHmaIne4dZAW9p54Oi514wjbLYhIfwOSVCQL6DDgGIxtnATzDD
+ rAetbVwGi503y+FO6LYOjI422f/21hmyOca1/u/ISsjjrgZO428LuNq+QUdmIip/pVhEsXw8ww/
+ p6vIlHQPoGVgnE7c+USyPLwZ3CV0VXxY5SD2sAnDH2sBy1akaJOFxzQW/An8acwegGir2tjE+9z
+ hio1KXTg8hgdaASg3zurlSyzb/NdXrjdSN6i2SO3oMHjyswNoYDG6syzHtssPhYvXSMwoORpOb6
+ Nx1W3AP8puZxaKMMtXwuTZ4hJP34sZZEphdi9Zjxm+/Mp+OOxcREehtCCqhGGuy1nli8/sDthQ7
+ aoQzWOoHL5ZpbGHMN/SLiNoUgBhdBSRoZmgD+1JJk9d7k+fOkPqwiHE0BWvftclmj303mH/PUoN
+ 2BvnsyIvYnasZFwaeKFsyyhJujnG5CgR4qWeDlnraQiHQ9dpiPFRn6D3DgZwjPb7plAU6AHtvog iYvmKmaokbzYFnQ==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 
@@ -120,30 +128,34 @@ Link: https://git.kernel.org/linus/68df3755e383e6fecf2354a67b08f92f18536594 [1]
 Link: https://github.com/KSPP/linux/issues/26 [2]
 Link: https://github.com/KSPP/linux/issues/27 [3]
 Link: https://github.com/KSPP/linux/issues/344 [4]
-Cc: Kees Cook <keescook@chromium.org>
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-hardening@vger.kernel.org
-Cc: linux-mm@kvack.org
-Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Oliver Upton <oliver.upton@linux.dev>
+Cc: James Morse <james.morse@arm.com>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: Zenghui Yu <yuzenghui@huawei.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Eric Auger <eric.auger@redhat.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: kvmarm@lists.linux.dev
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- mm/usercopy.c | 2 +-
+ arch/arm64/kvm/vgic/vgic-mmio-v3.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/usercopy.c b/mm/usercopy.c
-index 83c164aba6e0..5141c4402903 100644
---- a/mm/usercopy.c
-+++ b/mm/usercopy.c
-@@ -151,7 +151,7 @@ static inline void check_bogus_address(const unsigned long ptr, unsigned long n,
- 				       bool to_user)
- {
- 	/* Reject if object wraps past end of memory. */
--	if (ptr + (n - 1) < ptr)
-+	if (add_would_overflow(ptr, (n - 1)))
- 		usercopy_abort("wrapped address", NULL, to_user, 0, ptr + n);
+diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+index c15ee1df036a..860b774c0c13 100644
+--- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
++++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+@@ -863,7 +863,7 @@ static int vgic_v3_alloc_redist_region(struct kvm *kvm, uint32_t index,
+ 	int ret;
  
- 	/* Reject if NULL or ZERO-allocation. */
+ 	/* cross the end of memory ? */
+-	if (base + size < base)
++	if (add_would_overflow(base, size))
+ 		return -EINVAL;
+ 
+ 	if (list_empty(rd_regions)) {
 -- 
 2.34.1
 
