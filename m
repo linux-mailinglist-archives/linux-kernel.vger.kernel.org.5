@@ -1,82 +1,101 @@
-Return-Path: <linux-kernel+bounces-34713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34715-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A214838679
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 05:58:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7689583867E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 06:00:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2EEBA1C21DCF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 04:58:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 060541F25E9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 05:00:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AC5920E4;
-	Tue, 23 Jan 2024 04:58:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE9D04A32;
+	Tue, 23 Jan 2024 05:00:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="2TdosJpw"
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2052.outbound.protection.outlook.com [40.107.212.52])
+	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="m+AjAekQ"
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2113.outbound.protection.outlook.com [40.107.101.113])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82D371FBF
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 04:58:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16C33468C;
+	Tue, 23 Jan 2024 05:00:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.113
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705985926; cv=fail; b=pD18/kZbHq2D3Zt2EJsBX7r/ktnng79Go0VZPUvyPBjUyHulfeK84PYiH9AdoB05du7S8NlHP7ffs22hABsWerfjbkkv/LlBnUW7XNJJHdyB5clP3xBAKsJsRqXaRBbH2aS3Zt8miQwjGkUJh0Qv6e0xXgniamQi2l9aTxHlxzA=
+	t=1705986011; cv=fail; b=EGWiusQFXAOwDsaihCO/pwqoEleaF06xVKx16Z+6qZxj46RZUX/03GUt0+GkNAFv5Y9oGYOkr7r034tnjpLEWxd3xz4Wv1y0bxqv6VhQKfNl0u5xXoxiuOp1p8NbR0zPNSFzOU/vYudNqCUwW4Ee4kY0gx/++7nP6IVK3nA+6N8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705985926; c=relaxed/simple;
-	bh=Rl83s+5PWdH2Hw0TU4fFdMYKJ42lyPG7IsqLbNJO16M=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=aMh+Co+1jK4ZsCPfMSjzmXh/TGU0RSdwoew6Sda5synNXrI/krrgKmivYddnTPqHg+yUyUdyWNip767f0r9k3q+gFNqeitmOfTBulzm47Ern7/TD11PNueqTShL0zrY35l6McfZfjfoFO2fvk8LGoy7EpMOYTnPFQqW8XKh2RAQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=2TdosJpw; arc=fail smtp.client-ip=40.107.212.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+	s=arc-20240116; t=1705986011; c=relaxed/simple;
+	bh=L979Qw/iaV24ouemHtWpyWkG+WRhHTZA/64ZShB4PaQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=THApC3gPIvUc4m+A5Wyu7KC07vJu3Vwck2CcP5z/OWn8K51eXfyl2uECwoyjNldQZEE5WVSRwjT5lPqxursarFTzOXar4mj8+WGsELPl5+MSAwDPH3Bf4FmM8erAgaBghe6BKjRKQG4VakR5v+pVal46SephNS9N/xSX8byDz+o=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=m+AjAekQ; arc=fail smtp.client-ip=40.107.101.113
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QGJ5flyBoxy+fgzH34QMq5fV2HS53RWLhiflWWP8jWOG2WHcv0RwXHUe9WKpDotmOz3jr4bRNgDfAQKccowQkpXFnTFUd9E1LcTaZptvUE3qiGOJ/apx58RzjihjDN1ePlLhtCPp1c0E2Y0aZ68Z7+dh0pi8dI8QjHAbCwSOKYAMI5KkGR86rE9eA50rRFEpMHeWBWY2P1HQy/osoFmJ7k66nla57tCP7qQDbg/k1zA/rCSGbhR13UiSqSd7j0nBrPJpbFzz2RSNd6YL9+5mQLJ7126+AgXhmIMC1ljk177yI2D1O9RsoYzBUAA7N2BzUdm+28k8RI6EPWiy6CEGag==
+ b=WwIZwVw05GXifOwX+7u4/hT4BktsxgdX9gUq7jsv3dadOZCmikbqWZYDnV6pVuaQAQ1mQajsbieS+K3AvtTtioHNGihvJoPJWoLsnu1R3GOAa0oQwYMfVtnU9+tw0AimlsO4P4aIAgzzu1mDBpYUrI/mJNoMfvq7jPPEzSFfAFFxjKw27nwDpaue7Vjj+i+puOuP8WsVsVGIl5YHcXI1kF07E1DBqIVb7kaLVR13FSi0CaGbbABv55zyFJlzLexYw0wLqjbS+VrVuMWoLAeaXeqPigvBlcM97P/gePb2i+AwSlUKzTlrxEA/YCeZN/xCuN7JcPyRI8VQ7jvUSoe2Tg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Rbm7401ecWLPhbaAxLwkueqWnIjBEI8GD3JDIW49KXo=;
- b=LbpGGVi0z+5Gd9dwGkqfbBKeLWCjnQz4BsGn3JGGL/w2TaBqAErtOe61NbEcx1+CCQqo44jCHXkzRVAP46SQuLZpY4Dknm/0iI9nd/S0Aqw/E2S72I6lu7XLRy24NUwLbk5d/97HGoNCh3vBP0vkzXN//Rl8+7Ffe8GLsDeX7sSLCpLHplprwpKl8VljxMCsVkFHXj77w7PQ/eUtVbKjUycYlw9fJvEZgcGxDG//sSwszqTiPiF0gVz8hRoT9kJneq1SWWSGenUMy3KqEqhuC9Njju9FzH5PiegH8oWnpfRGVHISVyGPFGk9cmTvPVmeMPRYtVzOByJjMZU3n93rLA==
+ bh=L8VMOla1IfoGtWF3wkPssQAMpxGPlgWmvfrDwBZXah8=;
+ b=jbm04+Y9wNsQITlTP7oaVLwR2sdTuUxZTR6Oek8/WM7Wg9eNivbdsNncs1t3qBbCTTwftp6JFq7AuW2nQdcU0gXJWRYTzXEhs8vX08mFkurac4Xyk2iPj8GvULzcUdHf4ybn/GKFcmjSVxZqPY7+PK6X8ofbRchMmIq5+NPNiz/Zq6zwaiNd0tQphaaFubf+ePSIL9wZsHhSx8PI+s4+RDwN39cy1nob22YtsS/CD5iTzI/ROK8lRYnmiq1f8aM9jYlCIDNeVvbEbeBLJqxZei7T+91vr48UfM4+vPbnOKN/JthVCsmxMNlvBHHi6lcvSLb3wBH7gEKnr/l1NzJm5w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Rbm7401ecWLPhbaAxLwkueqWnIjBEI8GD3JDIW49KXo=;
- b=2TdosJpwDkzpLOHi9nMgTX4UnX3K/7fN2g8f5J442ptWZWX+lSOTKIAZDkgviuOdAvjKH62JBws22JL3VYM+J16trQa1ZVgCfskwqD/Hj/7+3ey62+X2F+DL/0uAwB6QGdICVAniCeptMml65mquqO20EnkLE2QTaqCp323pA80=
+ bh=L8VMOla1IfoGtWF3wkPssQAMpxGPlgWmvfrDwBZXah8=;
+ b=m+AjAekQwvzmwcaQLWU2c4FXfV4iIOXemadq1ERnmUxlVOiulnPl65nYBaXcVkdcjCkzehI/NLrnBHM1DMBPxB7HIhgts4fOJHVzmH3ZbkmLt90vhKM+4V+bpUeqnoKytZuWtZg2G2Wo9n/m166KukD7ZAIC8GC896Or24g3nlo=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MW2PR12MB2379.namprd12.prod.outlook.com (2603:10b6:907:9::24)
- by PH8PR12MB7304.namprd12.prod.outlook.com (2603:10b6:510:217::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.34; Tue, 23 Jan
- 2024 04:58:41 +0000
-Received: from MW2PR12MB2379.namprd12.prod.outlook.com
- ([fe80::4803:9b3b:a146:5b97]) by MW2PR12MB2379.namprd12.prod.outlook.com
- ([fe80::4803:9b3b:a146:5b97%7]) with mapi id 15.20.7202.035; Tue, 23 Jan 2024
- 04:58:41 +0000
-Message-ID: <21c8694c-26e4-3bc1-edd8-2267b0164a09@amd.com>
-Date: Tue, 23 Jan 2024 10:28:31 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [PATCH] sched/fair: Skip newidle_balance() when an idle CPU is
- woken up to process an IPI
-Content-Language: en-US
-To: Tim Chen <tim.c.chen@linux.intel.com>, linux-kernel@vger.kernel.org
-Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
- vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
- bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
- vschneid@redhat.com, gautham.shenoy@amd.com,
- David Vernet <void@manifault.com>
-References: <20240119084548.2788-1-kprateek.nayak@amd.com>
- <b4f5ac150685456cf45a342e3bb1f28cdd557a53.camel@linux.intel.com>
-From: K Prateek Nayak <kprateek.nayak@amd.com>
-In-Reply-To: <b4f5ac150685456cf45a342e3bb1f28cdd557a53.camel@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PN2P287CA0013.INDP287.PROD.OUTLOOK.COM
- (2603:1096:c01:21b::15) To MW2PR12MB2379.namprd12.prod.outlook.com
- (2603:10b6:907:9::24)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from PH0PR01MB7975.prod.exchangelabs.com (2603:10b6:510:26d::15) by
+ BL1PR01MB7865.prod.exchangelabs.com (2603:10b6:208:39c::5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7202.37; Tue, 23 Jan 2024 05:00:06 +0000
+Received: from PH0PR01MB7975.prod.exchangelabs.com ([fe80::91c:92f:45a5:e68a])
+ by PH0PR01MB7975.prod.exchangelabs.com ([fe80::91c:92f:45a5:e68a%6]) with
+ mapi id 15.20.7202.026; Tue, 23 Jan 2024 05:00:05 +0000
+From: Huang Shijie <shijie@os.amperecomputing.com>
+To: gregkh@linuxfoundation.org
+Cc: patches@amperecomputing.com,
+	rafael@kernel.org,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	yury.norov@gmail.com,
+	kuba@kernel.org,
+	vschneid@redhat.com,
+	mingo@kernel.org,
+	akpm@linux-foundation.org,
+	vbabka@suse.cz,
+	rppt@kernel.org,
+	tglx@linutronix.de,
+	jpoimboe@kernel.org,
+	ndesaulniers@google.com,
+	mikelley@microsoft.com,
+	mhiramat@kernel.org,
+	arnd@arndb.de,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	catalin.marinas@arm.com,
+	will@kernel.org,
+	mark.rutland@arm.com,
+	mpe@ellerman.id.au,
+	linuxppc-dev@lists.ozlabs.org,
+	chenhuacai@kernel.org,
+	jiaxun.yang@flygoat.com,
+	linux-mips@vger.kernel.org,
+	cl@os.amperecomputing.com,
+	Huang Shijie <shijie@os.amperecomputing.com>
+Subject: [PATCH v2] NUMA: Early use of cpu_to_node() returns 0 instead of the correct node id
+Date: Tue, 23 Jan 2024 12:58:43 +0800
+Message-Id: <20240123045843.75969-1-shijie@os.amperecomputing.com>
+X-Mailer: git-send-email 2.40.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: CH0PR03CA0384.namprd03.prod.outlook.com
+ (2603:10b6:610:119::26) To PH0PR01MB7975.prod.exchangelabs.com
+ (2603:10b6:510:26d::15)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,127 +103,189 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW2PR12MB2379:EE_|PH8PR12MB7304:EE_
-X-MS-Office365-Filtering-Correlation-Id: 26486129-99cb-40e5-efa1-08dc1bcff7fe
+X-MS-TrafficTypeDiagnostic: PH0PR01MB7975:EE_|BL1PR01MB7865:EE_
+X-MS-Office365-Filtering-Correlation-Id: e587ba2d-86b5-4ad6-ea82-08dc1bd02a01
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	t7BB9YVGtu11W2OKEmBsEPJT9CPr8S3B3VqJRP4awwO+tgaZMDdMoG/gNNTrVPmVwinEAaay9syfLmcrA91GvqzXDv9k+lxMuf2gcG4/idJHeAtusz8gxaJY3+ngy8biGEi8yr39svz1klQgaUvUGH2Ls5PI0PgU74i1EheH9dNIPmaBI2tJinkn57pUYSZG9cb7PMsf2u7pH2a4tzPYhCp6aPtJasyGSbOV3wDL48S9TZOCnQnknTFG5FZS5qEMUHttQA/On/Fw7BTtY60L+zkBUIjGPiYWf6C+j9qiC1xcjG5V6+mV5VdkXqT0ih0FrkJYfJYQqhVBz2zp3HEP9fTD6+Co4sPcmbZrAUHlQ/fLyWbvmzqJEJchzlFGGscmqfXYkEAEgduDJ/ejc38T8z/fb3/uqo66dHl6yuvDuW6s22KMJybdhFYr2w1t2DvjFmHHBD5o7ElmfAqRpoH0z+lchAoYcmW5QwEnsk6rkCYnwHBsr+cD8wKXarZhyPUNV7cLnMM0rpHpOb4Gc58T8Zswbqan6ZYVJ/hVuzg1n9latdtLM//J6zS7kIFwy73Nbt2/ixUp9t/j24rKj0Fz8btUnihfvcvzWX/WcyK38mCBMGaPzcQwJ0n47A3+NNAvU0Qnfapzq5KPem2Xs711hw==
+	+dPw5AkUKDAFa6fB1cwtJupmWRsmlVWFpO/rFtQ6UaY0Hcb4jQxQ0voerUo4skt68kMU2LFdmg8u/GQvuiB+n44nhuuS8B9mnjwFn4MMjHs5iuiGO1wBvDWBxgVWP6CWVqSo1gACs7TuQecKIi8EnueOTvbiM/1TNxgm35qqHDojoEAnn+HG42M2lGzEHv54MEDpQA3EUnOh5HVmujk2A4KkC5v3VB5aOcr/nS27n1BkpeJdGdmnse+JxGXNVO9mKaqizwTaTPpVL+g6SD4kmpYRSW1/lkxIZmbNfIS55V47nQsi6bn5oT6nzE4nd+CzjoW2BiCkRUxsuxZBmsFgW1falAFAkXfBQV0kr0FAgmlM0cb7HHm+ORtxl7gtI6mnaeTu/TsXtm4vMAV8Tmj1SfPdnifMU9rX7mpq3motbCYKa9DioieZpT2Mb0f/wW07UQMxyqGlfztbxpkWrxvbrJZ6Zy5KrRUsSnyZYmwYMNdCewawXETbsFWLktsRpYCiXJ3rCN6KApJ+KEVjsYYv85JYpUVZKvSA8qKJwLvEaQ6j+l9s6+O/J85gvIUIcBnihjY/LFMDKrcQv4uoHi4RnVbDAiTxoCU68ZrZ2wLtRVo=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR12MB2379.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(346002)(366004)(39860400002)(136003)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(6506007)(2616005)(26005)(6666004)(6512007)(53546011)(83380400001)(5660300002)(2906002)(7416002)(41300700001)(8676002)(66556008)(478600001)(316002)(6486002)(8936002)(66476007)(4326008)(66946007)(31696002)(86362001)(38100700002)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB7975.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(136003)(366004)(39850400004)(376002)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(6666004)(86362001)(66476007)(66556008)(66946007)(107886003)(316002)(6916009)(2616005)(38350700005)(6512007)(41300700001)(52116002)(6506007)(5660300002)(8936002)(8676002)(4326008)(83380400001)(38100700002)(1076003)(26005)(7416002)(2906002)(478600001)(6486002)(966005);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?K2l2YSt4ZmpFck96WmwvVUtZWmVrbWNsZG56ZGhkM0QveWVJYnY2UENzRXRM?=
- =?utf-8?B?ZHJVOTJ1YjBjeldmMVo3QWY3NnhGNVc5MHJNZmtBSjA2R0Nxc0wzdFF6KzJ6?=
- =?utf-8?B?UnE4MmcxMzMyNTBJcUNPK2NHMjU3M3lxcjgzYis5WUVsdlkxMjd4OU5ld29u?=
- =?utf-8?B?TU0rR3lVTXBqaURCMTZJY0ZzZnUvSUNka0tKbTZ4N25oSmhBME1jVmtSbFFQ?=
- =?utf-8?B?Ri9hOFIwcEVJWlVIb3FFeEwrVjBiT1lDT0Z0WUVTQ0pyeWhQaHRGUUdXanB4?=
- =?utf-8?B?MDJ3MjZieHhzSnJNYXl6aHFaa0hsYXN6VzdSVGQxVWhhbEloakoxVDFKeDk0?=
- =?utf-8?B?MTRyWTRkWTJzRUhNbmJ5aHpIekNiell5VEtndWk4aVJVenlJaTRYdGZTdmdh?=
- =?utf-8?B?eEFLUVV2M0dSczk2Ymora2RyRHpQaWhnWElyWjFxRk1SVnJlVXF5Ym1odmxE?=
- =?utf-8?B?STFiOWpRSU1ZamxJZzF1TDU0YmNzQUJjRzJTNnBwaVVhdU5TUWswZDd1dVcw?=
- =?utf-8?B?Y0pBckgwbXFmUDJVSWtuSGFEalIyMktHQWJJMSsybFplak5CMnUzRUdUc2d5?=
- =?utf-8?B?TUdIT21mYnZJWlpaKzc4SG13MFdhbnZJSitnM01iWXozY3k5YzRrcFBMOHNK?=
- =?utf-8?B?aVZKNGtrc0VCa3NWTmd4TzJwSEJrVGdCVUlVK1JnTmp6bGV1WXg4bnpLdkZm?=
- =?utf-8?B?bmd2RHpFN2xNL2Y5bnpVcWZ6T2dwYmNWaWUydHVWYVdIMWpzenlBcUVBRUFQ?=
- =?utf-8?B?d2JtejE0bUZWM3NVZHREVFdtUXR4dTN1TXFXU2RCSnVoMkN3YUNkODVoZG1P?=
- =?utf-8?B?QVdFWTYwVzNpOTd5dC9iRVZKM2xCSHlrQ2YvQ3lWUHZKaENpUUgyYk9iRnc0?=
- =?utf-8?B?cmduVUJGRTd5aXh5MUNPK1dnejFHSDMwbGpwSmZVKzZzUzkyMEVnNS9xVENB?=
- =?utf-8?B?SFdabk1HWHFIL01XaVpqNW9ZTTNTbnF3ckdWSmFJUDZZaWpPSUQ5cHlQNDd3?=
- =?utf-8?B?eXBCaFdPZllKMXRwT0RGYXJ3QnpZVmRGT3MzczZWdWsrTkF0aXd5T1VreEtx?=
- =?utf-8?B?WGlFdzluQllNSllsbXhxWk42TXZhbkNMOFJhaUMwN3dlWk93TFFKOE90a005?=
- =?utf-8?B?akZ2dTR5cmh6MlhjaCt4WXBrSmNTQU9mREtkK0VNcjJhZmxhTk8ySk9nZFNT?=
- =?utf-8?B?RDBlV1Y1bXhOekxyMVE4YjNST1FZNUZuazUyOHk1VFF0UnNuSlErc0JWd1hO?=
- =?utf-8?B?NjRJTkxxdVdoOXpwTE9HRnRtNEZHNUZKbnI1bnpKemJ0K1RUdjNmaHc1Qmly?=
- =?utf-8?B?d001WEtZdHd6czFVKzdUNHdpNTJsR0hxbXVFd3pNTXpLd3hvZDg3K2c5bUpt?=
- =?utf-8?B?TmlJYjZUc2R3YzNid0hNU0Z2WlJXaGp6NkxzRWFxaG5xSjZYbFBRd0VUdXZJ?=
- =?utf-8?B?RnF4Y0Y4b08yTXVIaTRkc09FMG04T2p0R3FoVWs2cldzQzVTbndQZUdUaVM0?=
- =?utf-8?B?WVFvSUZCNkgwUFZqMUVVRnJYbksrL2R1ZFlHMGtZNGdzR3ovR3AwZ3k4MFM5?=
- =?utf-8?B?eGIrUXFJT29Kck1mWlFMTzYwRkFGN21BVW1abWVCQndLcWNVcnp2em9hdHFN?=
- =?utf-8?B?SG9SUk1rbEcvckhZSzZqK0FPelplajloUzR0aXlSN0xyMHRiaWdwMTlIaUk5?=
- =?utf-8?B?bkVCUUU1ZXNUYVpETVJHNTRQYm5EcWR3SFdDNmM4c212YXRCSEVEcDkrY2t1?=
- =?utf-8?B?NWE4cENWY3JlU2YvTGF5TGlmL2RTdldKSS92eHk5OEtCaXBMcHd4TmtBcFJu?=
- =?utf-8?B?eEVmQTQyNnVIRkJLb0FUbmxoQURqbjdmTEZRaU9teVVCTGtJeFUxR1d2akhp?=
- =?utf-8?B?Sll0SFk4Mm14QnhLWmw5UFFmTFpNaS9uaGgyZjFFN1VJZlNCYjRHTUlTS3pm?=
- =?utf-8?B?Y3Q0QmU1NFV4MjVzOFAycHB3N0VqVTM1bHJpbFkyME12RHFLb05ISDNkWUJz?=
- =?utf-8?B?TmlhRk5HQXhjbmZoQWZFYjZGZ0c5aUdLRXl4aU8vUWZ5NHhBS0hCaE9rRGRq?=
- =?utf-8?B?aTdVRGZzbGdOLzFSQkpsN1FzOXpTVTRaenZiK3BpUmxOb2VPUStxRzZvejJr?=
- =?utf-8?Q?bWO58+KuocyTGDfjpw+8dqEzm?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 26486129-99cb-40e5-efa1-08dc1bcff7fe
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR12MB2379.namprd12.prod.outlook.com
+	=?us-ascii?Q?fqghm1328fx4Erk9LUmtZxirlH34qnrW7vkFv1ctbjWLlHKxU20vcrZRVRfu?=
+ =?us-ascii?Q?ljM5Mb38oKRJ9HUQgDAEGvsOmGn7T86xTPDSlhDSidLyHFrghqHi+2cBzh9f?=
+ =?us-ascii?Q?qe4MxQHH6JPkcwTxG1nvsoWgfdYv3vqhIG37FQzLsHVjBXgkFTg0Mtw5tneQ?=
+ =?us-ascii?Q?kKd6XKcevkSbm9keBudBeCc0rByr4PtcsbECgWvCt1HGyppD9/06BctP/oeM?=
+ =?us-ascii?Q?alUQkDPTczuWSeuaotN9CAZMTyS0gFhioFt3M1JWV3KglYZ/jbjKmFh0EElO?=
+ =?us-ascii?Q?6mutVFYNkm8yKg35pYi+YKK7lLDPkfiGpmDD2PObSUdS8bbdMJmxqibdHBpA?=
+ =?us-ascii?Q?BWy0f64bxL6uj3p7KnzQzxc4rNp+1bmeekPorGK81sojUwgFyyG5EJ/wDJpC?=
+ =?us-ascii?Q?9gx5+qB+vvQpCLQGPLAxb7/5h+weNb7/qx5rKL4XSgZFXDr2jRLvarLRO/NO?=
+ =?us-ascii?Q?tVczoMRY0SGHRNcaJ6LwITUFNMbZ9VdZLg5X0vowFNwvm0lbjhqz4su48kvB?=
+ =?us-ascii?Q?ZaTkk7AMUR2CAvfdFT6n35nOfh30mZFOje4SutEQxHOLzPy/yr6mWnHUYgWl?=
+ =?us-ascii?Q?jAapEqkHFl+1mm5Exwt4/Bue6W64pUk8WZh9d+aYsIu06Ow7/pp23407i2LJ?=
+ =?us-ascii?Q?2ICVD6HBnqFj3z0Rf/HUtHAdYSR03IR1zj3Ee7dqA4x9AQRDIQNBp0V7kky8?=
+ =?us-ascii?Q?cZPu/GwCYrJA9htFddx+bNKAzwqiY8Dd9UGqSSmWWqQlbWkpj1xGtHdmPv2p?=
+ =?us-ascii?Q?hYiPEJyitBjPQM/GqroFccQhMsrdJ/OdlmgSzsaFuaypxF+U0NkpFCs7qNRs?=
+ =?us-ascii?Q?gw+KH2HxnfQNOgNYalg7DxKNY+eWS721J4xBp+s68hCQiTq9B4mDLPeW9Owq?=
+ =?us-ascii?Q?JMHz3sfxnbH+TerTFJUAPSth2NRp34t1wuUxIyNhUqzgeZII65AUCSQcV5eK?=
+ =?us-ascii?Q?zC6nNgouJffoITKEdxQ+6A6QFQYwlUD394Ek6eF/M8DSrUG5cc3g8MY1xg+J?=
+ =?us-ascii?Q?Yqx29mtnk91DNEbl3NOPAZgufElxMpUHNzpvjMbHktJby7vhlpHYn1V2g6P3?=
+ =?us-ascii?Q?/W1WxSQW4+rq/qYzFu92EjqZ9G+jSpIuqGT1YfwEiC14gIdRcWoEAHEsX1rk?=
+ =?us-ascii?Q?hinJKMZNFHKD4YcSs7Nu3b4r2vS1gm1uf+lIwnyucyUJDD0VGhW3QITL9fW2?=
+ =?us-ascii?Q?hCFlQf3K5mBfFUAPZx4szOqEpYaY2+Q2uuWqArJ8ou5KI5QP9G6XCb/5W+qb?=
+ =?us-ascii?Q?2ZxfuCcZqDAqYuenche9AmiXNKikcibRDRCBQHVUAuwFphLGW7365hO3HScd?=
+ =?us-ascii?Q?KWeJmX9f7fYTEf2104qTKRf4Hd1AlAeJYKW9WSrxcLTHleNt31zXrmHhox7a?=
+ =?us-ascii?Q?lRkcrnVxoioE87Ki+nVDoFspbX6WUnGJ0vhKwMcviLYwtmTrqQVY+kfI7ztV?=
+ =?us-ascii?Q?eAQrHzFJyBmE7+S0Aqs6W6rRolrWojN/uL7CaG5MQSk6riLMsVp/k8RydfA/?=
+ =?us-ascii?Q?i0NbscMe/3B2JBE/e/1sEgOkPRURzhAEIIwf1Wn9X/j08nqD24Vv+Y2bN1pg?=
+ =?us-ascii?Q?J2NIqsB7xwHjf9EO9ry2BLMY4L4Qj0wNg8Fn1fGWUaT0wSrNd7q4ekpjxbae?=
+ =?us-ascii?Q?jtCzs6nRN4KKy2PGAeMvO8Q=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e587ba2d-86b5-4ad6-ea82-08dc1bd02a01
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB7975.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jan 2024 04:58:41.6301
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jan 2024 05:00:05.7255
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dIx8kBusq2eJv+GBxw8+lhVmleY6jh8/AV0CMBHDRUC4kBYFO1W19i+IWrycKVbokqIrNszu6hfB0EhGxlmWDw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7304
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0En8K7/fzhbbvkh2ervdoWUhcfdH/JRiWXlMNnHUiV+XvFu/WY4HNWZU5BqloIkoh/Rj+OW9K5QXJytl4QBJKC9aLaFi0NasK44tSqUdj6+PbvAYH5RE0lgbRH9TZz0/
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR01MB7865
 
-Hello Tim,
+During the kernel booting, the generic cpu_to_node() is called too early in
+arm64, powerpc and riscv when CONFIG_NUMA is enabled.
 
-On 1/23/2024 3:29 AM, Tim Chen wrote:
-> On Fri, 2024-01-19 at 14:15 +0530, K Prateek Nayak wrote:
->>
->> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->> index b803030c3a03..1fedc7e29c98 100644
->> --- a/kernel/sched/fair.c
->> +++ b/kernel/sched/fair.c
->> @@ -8499,6 +8499,16 @@ done: __maybe_unused;
->>  	if (!rf)
->>  		return NULL;
->>  
->> +	/*
->> +	 * An idle CPU in TIF_POLLING mode might end up here after processing
->> +	 * an IPI when the sender sets the TIF_NEED_RESCHED bit and avoids
->> +	 * sending an actual IPI. In such cases, where an idle CPU was woken
->> +	 * up only to process an interrupt, without necessarily queuing a task
->> +	 * on it, skip newidle_balance() to facilitate faster idle re-entry.
->> +	 */
->> +	if (prev == rq->idle)
->> +		return NULL;
->> +
-> 
-> Should we check the call function queue directly to detect that there is
-> an IPI waiting to be processed? something like
-> 
-> 	if (!llist_empty(&per_cpu(call_single_queue, rq->cpu)))
-> 		return NULL;
+For arm64/powerpc/riscv, there are at least four places in the common code
+where the generic cpu_to_node() is called before it is initialized:
+	   1.) early_trace_init()         in kernel/trace/trace.c
+	   2.) sched_init()               in kernel/sched/core.c
+	   3.) init_sched_fair_class()    in kernel/sched/fair.c
+	   4.) workqueue_init_early()     in kernel/workqueue.c
 
-That could be a valid check too. However, if an IPI is queued right
-after this check, the processing is still delayed since
-newidle_balance() only bails out for scenarios when a wakeup is trying
-to queue a new task on the CPU running the newidle_balance().
+In order to fix the bug, the patch changes generic cpu_to_node to
+function pointer, and export it for kernel modules.
+Introduce smp_prepare_boot_cpu_start() to wrap the original
+smp_prepare_boot_cpu(), and set cpu_to_node with early_cpu_to_node.
+Introduce smp_prepare_cpus_done() to wrap the original smp_prepare_cpus(),
+and set the cpu_to_node to formal _cpu_to_node().
 
-> 
-> Could there be cases where we want to do idle balance in this code path?
-> Say a cpu is idle and a scheduling tick came in, we may try
-> to look for something to run on the idle cpu.  Seems like after
-> your change above, that would be skipped.
+Signed-off-by: Huang Shijie <shijie@os.amperecomputing.com>
+---
+v1 --> v2:
+	In order to fix the x86 compiling error, move the cpu_to_node()
+       	from driver/base/arch_numa.c to driver/base/node.c.
 
-Wouldn't scheduler_tick() do load balancing when the time comes? In my
-testing, I did not see a case where the workloads I tested were
-sensitive to the aspect of newidle_balance() being invoked at scheduler
-tick. Have you come across a workload which might be sensitive to this
-aspect that I can quickly test and verify? Meanwhile, I'll run the
-workloads mentioned in the commit log on an Intel system to see if I
-can spot any sensitivity to this change.
+	v1: http://lists.infradead.org/pipermail/linux-arm-kernel/2024-January/896160.html
 
-Adding David to the thread too since HHVM seems to be one of those
-workloads that is very sensitive to a successful newidle_balance().
+	An old different title patch:
+	http://lists.infradead.org/pipermail/linux-arm-kernel/2024-January/895963.html
 
-> 
-> Tim
-> 
-> 
->>  	new_tasks = newidle_balance(rq, rf);
->>  
->>  	/*
-> 
+---
+ drivers/base/node.c      | 11 +++++++++++
+ include/linux/topology.h |  6 ++----
+ init/main.c              | 29 +++++++++++++++++++++++++++--
+ 3 files changed, 40 insertions(+), 6 deletions(-)
 
---
-Thanks and Regards,
-Prateek
+diff --git a/drivers/base/node.c b/drivers/base/node.c
+index 1c05640461dd..477d58c12886 100644
+--- a/drivers/base/node.c
++++ b/drivers/base/node.c
+@@ -976,3 +976,14 @@ void __init node_dev_init(void)
+ 			panic("%s() failed to add node: %d\n", __func__, ret);
+ 	}
+ }
++
++#ifdef CONFIG_USE_PERCPU_NUMA_NODE_ID
++#ifndef cpu_to_node
++int _cpu_to_node(int cpu)
++{
++	return per_cpu(numa_node, cpu);
++}
++int (*cpu_to_node)(int cpu);
++EXPORT_SYMBOL(cpu_to_node);
++#endif
++#endif
+diff --git a/include/linux/topology.h b/include/linux/topology.h
+index 52f5850730b3..e7ce2bae11dd 100644
+--- a/include/linux/topology.h
++++ b/include/linux/topology.h
+@@ -91,10 +91,8 @@ static inline int numa_node_id(void)
+ #endif
+ 
+ #ifndef cpu_to_node
+-static inline int cpu_to_node(int cpu)
+-{
+-	return per_cpu(numa_node, cpu);
+-}
++extern int (*cpu_to_node)(int cpu);
++extern int _cpu_to_node(int cpu);
+ #endif
+ 
+ #ifndef set_numa_node
+diff --git a/init/main.c b/init/main.c
+index e24b0780fdff..b142e9c51161 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -870,6 +870,18 @@ static void __init print_unknown_bootoptions(void)
+ 	memblock_free(unknown_options, len);
+ }
+ 
++static void __init smp_prepare_boot_cpu_start(void)
++{
++	smp_prepare_boot_cpu();	/* arch-specific boot-cpu hooks */
++
++#ifdef CONFIG_USE_PERCPU_NUMA_NODE_ID
++#ifndef cpu_to_node
++	/* The early_cpu_to_node should be ready now. */
++	cpu_to_node = early_cpu_to_node;
++#endif
++#endif
++}
++
+ asmlinkage __visible __init __no_sanitize_address __noreturn __no_stack_protector
+ void start_kernel(void)
+ {
+@@ -899,7 +911,7 @@ void start_kernel(void)
+ 	setup_command_line(command_line);
+ 	setup_nr_cpu_ids();
+ 	setup_per_cpu_areas();
+-	smp_prepare_boot_cpu();	/* arch-specific boot-cpu hooks */
++	smp_prepare_boot_cpu_start();
+ 	boot_cpu_hotplug_init();
+ 
+ 	pr_notice("Kernel command line: %s\n", saved_command_line);
+@@ -1519,6 +1531,19 @@ void __init console_on_rootfs(void)
+ 	fput(file);
+ }
+ 
++static void __init smp_prepare_cpus_done(unsigned int setup_max_cpus)
++{
++	/* Different ARCHs may override smp_prepare_cpus() */
++	smp_prepare_cpus(setup_max_cpus);
++
++#ifdef CONFIG_USE_PERCPU_NUMA_NODE_ID
++#ifndef cpu_to_node
++	/* Change to the formal function. */
++	cpu_to_node = _cpu_to_node;
++#endif
++#endif
++}
++
+ static noinline void __init kernel_init_freeable(void)
+ {
+ 	/* Now the scheduler is fully set up and can do blocking allocations */
+@@ -1531,7 +1556,7 @@ static noinline void __init kernel_init_freeable(void)
+ 
+ 	cad_pid = get_pid(task_pid(current));
+ 
+-	smp_prepare_cpus(setup_max_cpus);
++	smp_prepare_cpus_done(setup_max_cpus);
+ 
+ 	workqueue_init();
+ 
+-- 
+2.40.1
+
 
