@@ -1,180 +1,313 @@
-Return-Path: <linux-kernel+bounces-36061-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36062-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86DC4839AE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 22:10:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69446839AE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 22:13:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EFCE4B23572
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:10:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19E7D28A2EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:13:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C06062C1A7;
-	Tue, 23 Jan 2024 21:10:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4DAC376E6;
+	Tue, 23 Jan 2024 21:12:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b="sEpcPcLh";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="cUq4dazu"
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="khPcMMPP"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F91729434;
-	Tue, 23 Jan 2024 21:10:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.26
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 849422C1A7;
+	Tue, 23 Jan 2024 21:12:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706044228; cv=none; b=ufqiJkhBNBvr7w57j/bAUoC5WceiXxPDt8wRJF+xm/S07YDf+HQ9oPr9M85Re6vYkNagHIMOteCKK42PuDEHLjbmyoSiEyxbrZ7lZ7pv3O2yLCXkG8GvXI1OO5ON3MnS67Dff6w5i8dry9wjlLwZUUS/5+B9trIvKOHH5/74/oE=
+	t=1706044378; cv=none; b=WVre5vNC6dqw+kjwY2ZbUSeRl5ekrB1JxFeykWwG9Vgripi45jouaUJm3U9/alwSLDyJAa3NFpqmsltyzUWZ42pKcpRzQ1e1AtqzPBUHUtscsi8VvTTq1uIEJKDIybWDP/7OSISTb9H8LMrMhk/S3dvWzx77YTuT1BE7iJuyTAQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706044228; c=relaxed/simple;
-	bh=dYvXX13fIYIhM9hpmdKZ+G8LhU/8/Fw9vf+MJ02McGo=;
+	s=arc-20240116; t=1706044378; c=relaxed/simple;
+	bh=y2tVhOoHqbkrgoEwdopUBYrq/O3nTt8UTKN6fH85W78=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m/z/DWqFpvV64BumnRtulinw6+glSotT1ERgbxa1EGdiEZJhsg2CIrzZf1gsm0uWLcxvo2oUdWyvnaIS5CgtYb1nquSUYRVLqcFmmmbmMQwTGvPT/DMNC7KO9XqSgojGSckW+FGfXOE3QOTPYj/bb/IEFTPFlvUH/gMh7BoXcAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza; spf=pass smtp.mailfrom=tycho.pizza; dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b=sEpcPcLh; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=cUq4dazu; arc=none smtp.client-ip=66.111.4.26
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tycho.pizza
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailout.nyi.internal (Postfix) with ESMTP id 73F975C0191;
-	Tue, 23 Jan 2024 16:10:25 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Tue, 23 Jan 2024 16:10:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1706044225; x=1706130625; bh=3s+NYKmSwd
-	36BsjF0J4/1gUDj3DMNYT/x588dQ9rC4Y=; b=sEpcPcLhtFfPpPOkJfDXMOfwIa
-	a0qNyRNYbATGRyIQ7k3r9aKBzWt5RMniCyN2/88XOqgz38bd+JNvTYuhbpqoF6t3
-	ALkeUYA2upmkeqA+A/t8bVwwFEGzS6nDiefBdWftpxR6umOiNy3qvx6cS8btaYlt
-	XAS+fO0TtOmyW8Wz3bcHwxBNlGjT9ej/R15jPGuvIMQrkApDvDMs6VzSAZCkHr8d
-	ohNHoLf4akahRm9aPNz9JNLtVql+TQAGsnpYEdhD8Fp9axuOc/rIb6sFc3+f7Ezi
-	wMRoW3U5fLyBuehSsTDi4/qUseXBPAfDC0iY1cRc47cM4JPrQnRrQC4GmtFQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1706044225; x=1706130625; bh=3s+NYKmSwd36BsjF0J4/1gUDj3DM
-	NYT/x588dQ9rC4Y=; b=cUq4dazu13nOLFBr9VvPcgQMODY1DgLrZkR84WT1RVnJ
-	TaxMO4CHhfyxyRfAHnvGHNf+uv2BPabdlxoIRczOGnjaXzDGUGOqTFcD1US7r7up
-	qb9dA2akbZxdNTS1y15EqaM4F5uD1HOlOMiQQzI3jE5g2h7FhenTyRHbcJ1Neabf
-	MFX77X7uK/dF5ZIw1tRlOot2TL4OlChAdiO1uHV+xJzdadD5iojN4kc0kiTjnSmJ
-	oOJTyrlP3ocYbQcLonZPsG4xvxaw83XqNyQrecdmcvelAehyFGUEBlQlIV4LDtSG
-	44kcBiZAdI2bqLg3VXmWMHeAkeM+W6Qh6PaLZglDFQ==
-X-ME-Sender: <xms:QSuwZfWTuY8hZUygS_6z-EohVpPofLgB0cv2iIBuDd1YkHvEHWd-Qw>
-    <xme:QSuwZXk5xBB8vBoowIq8eON88vQ9hYVd_FWvJvkpoiJq4SpLiZfk9eoYDBC3Fo9XN
-    uekF6XIdlL6qDfnS9s>
-X-ME-Received: <xmr:QSuwZbaGG1BDlUImahpP13Q4o8iieSInqCjPCEiUvlSgp2Fe1LyYOrB3D9_j3UHk8dpl_ck0zEBi2LI7gtkTGfme>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekkedgudegfecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigt
-    hhhoucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtf
-    frrghtthgvrhhnpeeutedttefgjeefffehffffkeejueevieefudelgeejuddtfeffteek
-    lefhleelteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpehthigthhhosehthigthhhordhpihiiiigr
-X-ME-Proxy: <xmx:QSuwZaVLax97mIITnZD5FrjpvPqGbbDhPJ8FI5dH2ijEHyXlEOVDEA>
-    <xmx:QSuwZZk3BdWAYHm_bi9MyfR2srxnlpt6vStvpvSFV5yj2ndGieGn2w>
-    <xmx:QSuwZXe-HtPp1O_kfctY40nfshQ2ZZleXJsKcEItVqxdk0p7fXyVxQ>
-    <xmx:QSuwZSAYi9Ll_IOg01eTsY3vpI3RoWxMEOLu5nNIcP0evREWBkyqLQ>
-Feedback-ID: i21f147d5:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 23 Jan 2024 16:10:21 -0500 (EST)
-Date: Tue, 23 Jan 2024 14:10:15 -0700
-From: Tycho Andersen <tycho@tycho.pizza>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Christian Brauner <brauner@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-api@vger.kernel.org, Tycho Andersen <tandersen@netflix.com>
-Subject: Re: [PATCH v3 1/3] pidfd: allow pidfd_open() on non-thread-group
- leaders
-Message-ID: <ZbArN3EYRfhrNs3o@tycho.pizza>
-References: <20240123153452.170866-1-tycho@tycho.pizza>
- <20240123153452.170866-2-tycho@tycho.pizza>
- <20240123195608.GB9978@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=b47DgCbvjNGRBE3Ebg5V7gh7K+Sc2Bc/JxfMIDG4/pEXp972M30NWoNcTy/KS/EPzf+9SH3JXPLNGbiN35ibrSOLKJqZyJUONQIr0OY/9WwT4N2DN9k1sdSgSqf33PX1tc8H5JWGt4z8tqLaOLFFV3DsETJdC9AShM4i/jWzfYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=khPcMMPP; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=SHg3OZ8rSfuStuI/t9nj9uzIE/yE48Lbl7/EYKvNYzQ=; b=khPcMMPPOS3B4SHAZHQpR7RIZd
+	z0s3275zIx+WRubbX4rCLVwWchIc3qCgsHQ3SwLBSBDibxOjWpdZE7n17u5PeYPR8bEUixN8TdGnV
+	tUzdOJ3cH38ZGg96a3RPK0Le/3lPA3HHqYnWBDe2Rr1Qq0ALcz2XOY+hOSS7f6wFs59Dvxa1eMwF+
+	fUimAV6KLbZbkzTlDfLDOyXIbY1cevpyffkEOj8oZWaSIA7Shw/Bpk6kPVR6XctAKYol+IABzZfTt
+	UA0Q4XsCOoepZOTZ96m6rptCs2EJNYKdmVTmM6SbZdtMydRWeBJQChp3Fz2W54mOdTUEaQh5PNI9s
+	x197biww==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:56660)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rSO4f-00036p-05;
+	Tue, 23 Jan 2024 21:12:49 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rSO4b-0002Gq-Oh; Tue, 23 Jan 2024 21:12:45 +0000
+Date: Tue, 23 Jan 2024 21:12:45 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+	x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
+	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+	Salil Mehta <salil.mehta@huawei.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	jianyong.wu@arm.com, justin.he@arm.com,
+	James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v3 05/21] ACPI: Rename ACPI_HOTPLUG_CPU to include
+ 'present'
+Message-ID: <ZbArzbC19L1YxLHi@shell.armlinux.org.uk>
+References: <CAJZ5v0h7wsLt8d3ZoLXsK1=crAx66T42WDKNoHcg8CiHpAjS8g@mail.gmail.com>
+ <Za/q9jivG4OdZM0f@shell.armlinux.org.uk>
+ <CAJZ5v0gwe02uzAQoX0QDHo35OTEozpbnqC6vukjM3aE6HMq9WQ@mail.gmail.com>
+ <ZbADTBLDEFtdglho@shell.armlinux.org.uk>
+ <CAJZ5v0jh-EdrnjkJep++UDo+Uv4hmR7VV4KYVdF4CK2K+5XLtg@mail.gmail.com>
+ <ZbAMjZoybVfiAGcT@shell.armlinux.org.uk>
+ <CAJZ5v0gt=MR1JGsPZnZG_AqudA-KMmb4BOa_A6H9B6+Rhe_+JQ@mail.gmail.com>
+ <ZbAdAdqqfXRuY3Xj@shell.armlinux.org.uk>
+ <CAJZ5v0gsqbeJc4qX-AefOqu53=rDme2XzFXacWz_0zbVBoaXjw@mail.gmail.com>
+ <ZbAoJO8f66Dg0lGF@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240123195608.GB9978@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZbAoJO8f66Dg0lGF@shell.armlinux.org.uk>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Tue, Jan 23, 2024 at 08:56:08PM +0100, Oleg Nesterov wrote:
-> Too late for me, but I don't understand this patch after a quick glance.
-> perhaps I missed something...
-
-Thanks for taking a look.
-
-> On 01/23, Tycho Andersen wrote:
-> >
-> > @@ -256,6 +256,17 @@ void release_task(struct task_struct *p)
-> >  	write_lock_irq(&tasklist_lock);
-> >  	ptrace_release_task(p);
-> >  	thread_pid = get_pid(p->thread_pid);
-> > +
-> > +	/*
-> > +	 * If we're not the leader, notify any waiters on our pidfds. Note that
-> > +	 * we don't want to notify the leader until /everyone/ in the thread
-> > +	 * group is dead, viz. the condition below.
-> > +	 *
-> > +	 * We have to do this here, since __exit_signal() will
-> > +	 * __unhash_processes(), and break do_notify_pidfd()'s lookup.
-> > +	 */
-> > +	if (!thread_group_leader(p))
-> > +		do_notify_pidfd(p);
+On Tue, Jan 23, 2024 at 08:57:08PM +0000, Russell King (Oracle) wrote:
+> On Tue, Jan 23, 2024 at 09:17:18PM +0100, Rafael J. Wysocki wrote:
+> > On Tue, Jan 23, 2024 at 9:09 PM Russell King (Oracle)
+> > <linux@armlinux.org.uk> wrote:
+> > >
+> > > On Tue, Jan 23, 2024 at 08:27:05PM +0100, Rafael J. Wysocki wrote:
+> > > > On Tue, Jan 23, 2024 at 7:59 PM Russell King (Oracle)
+> > > > <linux@armlinux.org.uk> wrote:
+> > > > >
+> > > > > On Tue, Jan 23, 2024 at 07:26:57PM +0100, Rafael J. Wysocki wrote:
+> > > > > > On Tue, Jan 23, 2024 at 7:20 PM Russell King (Oracle)
+> > > > > > <linux@armlinux.org.uk> wrote:
+> > > > > > >
+> > > > > > > On Tue, Jan 23, 2024 at 06:43:59PM +0100, Rafael J. Wysocki wrote:
+> > > > > > > > On Tue, Jan 23, 2024 at 5:36 PM Russell King (Oracle)
+> > > > > > > > <linux@armlinux.org.uk> wrote:
+> > > > > > > > >
+> > > > > > > > > On Tue, Jan 23, 2024 at 05:15:54PM +0100, Rafael J. Wysocki wrote:
+> > > > > > > > > > On Tue, Jan 23, 2024 at 2:28 PM Russell King (Oracle)
+> > > > > > > > > > <linux@armlinux.org.uk> wrote:
+> > > > > > > > > > >
+> > > > > > > > > > > On Mon, Jan 22, 2024 at 06:00:13PM +0000, Jonathan Cameron wrote:
+> > > > > > > > > > > > On Mon, 18 Dec 2023 21:35:16 +0100
+> > > > > > > > > > > > "Rafael J. Wysocki" <rafael@kernel.org> wrote:
+> > > > > > > > > > > >
+> > > > > > > > > > > > > On Wed, Dec 13, 2023 at 1:49 PM Russell King <rmk+kernel@armlinux.org.uk> wrote:
+> > > > > > > > > > > > > >
+> > > > > > > > > > > > > > From: James Morse <james.morse@arm.com>
+> > > > > > > > > > > > > >
+> > > > > > > > > > > > > > The code behind ACPI_HOTPLUG_CPU allows a not-present CPU to become
+> > > > > > > > > > > > > > present.
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > Right.
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > > This isn't the only use of HOTPLUG_CPU. On arm64 and riscv
+> > > > > > > > > > > > > > CPUs can be taken offline as a power saving measure.
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > But still there is the case in which a non-present CPU can become
+> > > > > > > > > > > > > present, isn't it there?
+> > > > > > > > > > > >
+> > > > > > > > > > > > Not yet defined by the architectures (and I'm assuming it probably never will be).
+> > > > > > > > > > > >
+> > > > > > > > > > > > The original proposal we took to ARM was to do exactly that - they pushed
+> > > > > > > > > > > > back hard on the basis there was no architecturally safe way to implement it.
+> > > > > > > > > > > > Too much of the ARM arch has to exist from the start of time.
+> > > > > > > > > > > >
+> > > > > > > > > > > > https://lore.kernel.org/linux-arm-kernel/cbaa6d68-6143-e010-5f3c-ec62f879ad95@arm.com/
+> > > > > > > > > > > > is one of the relevant threads of the kernel side of that discussion.
+> > > > > > > > > > > >
+> > > > > > > > > > > > Not to put specific words into the ARM architects mouths, but the
+> > > > > > > > > > > > short description is that there is currently no demand for working
+> > > > > > > > > > > > out how to make physical CPU hotplug possible, as such they will not
+> > > > > > > > > > > > provide an architecturally compliant way to do it for virtual CPU hotplug and
+> > > > > > > > > > > > another means is needed (which is why this series doesn't use the present bit
+> > > > > > > > > > > > for that purpose and we have the Online capable bit in MADT/GICC)
+> > > > > > > > > > > >
+> > > > > > > > > > > > It was a 'fun' dance of several years to get to that clarification.
+> > > > > > > > > > > > As another fun fact, the same is defined for x86, but I don't think
+> > > > > > > > > > > > anyone has used it yet (GICC for ARM has an online capable bit in the flags to
+> > > > > > > > > > > > enable this, which was remarkably similar to the online capable bit in the
+> > > > > > > > > > > > flags of the Local APIC entries as added fairly recently).
+> > > > > > > > > > > >
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > > On arm64 an offline CPU may be disabled by firmware, preventing it from
+> > > > > > > > > > > > > > being brought back online, but it remains present throughout.
+> > > > > > > > > > > > > >
+> > > > > > > > > > > > > > Adding code to prevent user-space trying to online these disabled CPUs
+> > > > > > > > > > > > > > needs some additional terminology.
+> > > > > > > > > > > > > >
+> > > > > > > > > > > > > > Rename the Kconfig symbol CONFIG_ACPI_HOTPLUG_PRESENT_CPU to reflect
+> > > > > > > > > > > > > > that it makes possible CPUs present.
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > Honestly, I don't think that this change is necessary or even useful.
+> > > > > > > > > > > >
+> > > > > > > > > > > > Whilst it's an attempt to avoid future confusion, the rename is
+> > > > > > > > > > > > not something I really care about so my advice to Russell is drop
+> > > > > > > > > > > > it unless you are attached to it!
+> > > > > > > > > > >
+> > > > > > > > > > > While I agree that it isn't a necessity, I don't fully agree that it
+> > > > > > > > > > > isn't useful.
+> > > > > > > > > > >
+> > > > > > > > > > > One of the issues will be that while Arm64 will support hotplug vCPU,
+> > > > > > > > > > > it won't be setting ACPI_HOTPLUG_CPU because it doesn't support
+> > > > > > > > > > > the present bit changing. So I can see why James decided to rename
+> > > > > > > > > > > it - because with Arm64's hotplug vCPU, the idea that ACPI_HOTPLUG_CPU
+> > > > > > > > > > > somehow enables hotplug CPU support is now no longer true.
+> > > > > > > > > > >
+> > > > > > > > > > > Keeping it as ACPI_HOTPLUG_CPU makes the code less obvious, because it
+> > > > > > > > > > > leads one to assume that it ought to be enabled for Arm64's
+> > > > > > > > > > > implementatinon, and that could well cause issues in the future if
+> > > > > > > > > > > people make the assumption that "ACPI_HOTPLUG_CPU" means hotplug CPU
+> > > > > > > > > > > is supported in ACPI. It doesn't anymore.
+> > > > > > > > > >
+> > > > > > > > > > On x86 there is no confusion AFAICS.  It's always meant "as long as
+> > > > > > > > > > the platform supports it".
+> > > > > > > > >
+> > > > > > > > > That's x86, which supports physical CPU hotplug. We're introducing
+> > > > > > > > > support for Arm64 here which doesn't support physical CPU hotplug.
+> > > > > > > > >
+> > > > > > > > >                                                 ACPI-based      Physical        Virtual
+> > > > > > > > > Arch    HOTPLUG_CPU     ACPI_HOTPLUG_CPU        Hotplug         Hotplug         Hotplug
+> > > > > > > > > Arm64   Y               N                       Y               N               Y
+> > > > > > > > > x86     Y               Y                       Y               Y               Y
+> > > > > > > > >
+> > > > > > > > > So ACPI_HOTPLUG_CPU becomes totally misnamed with the introduction
+> > > > > > > > > of hotplug on Arm64.
+> > > > > > > > >
+> > > > > > > > > If we want to just look at stuff from an x86 perspective, then yes,
+> > > > > > > > > it remains correct to call it ACPI_HOTPLUG_CPU. It isn't correct as
+> > > > > > > > > soon as we add Arm64, as I already said.
+> > > > > > > >
+> > > > > > > > And if you rename it, it becomes less confusing for ARM64, but more
+> > > > > > > > confusing for x86, which basically is my point.
+> > > > > > > >
+> > > > > > > > IMO "hotplug" covers both cases well enough and "hotplug present" is
+> > > > > > > > only accurate for one of them.
+> > > > > > > >
+> > > > > > > > > And honestly, a two line quip to my reasoned argument is not IMHO
+> > > > > > > > > an acceptable reply.
+> > > > > > > >
+> > > > > > > > Well, I'm not even sure how to respond to this ...
+> > > > > > >
+> > > > > > > The above explanation you give would have been useful...
+> > > > > > >
+> > > > > > > I don't see how "hotplug" covers both cases. As I've tried to point
+> > > > > > > out many times now, ACPI_HOTPLUG_CPU is N for Arm64, yet it supports
+> > > > > > > ACPI based hotplug. How does ACPI_HOTPLUG_CPU cover Arm64 if it's
+> > > > > > > N there?
+> > > > > >
+> > > > > > But IIUC this change is preliminary for changing it (or equivalent
+> > > > > > option with a different name) to Y, isn't it?
+> > > > >
+> > > > > No. As I keep saying, ACPI_HOTPLUG_CPU ends up N on Arm64 even when
+> > > > > it supports hotplug CPU via ACPI.
+> > > > >
+> > > > > Even with the full Arm64 patch set here, under arch/ we still only
+> > > > > have:
+> > > > >
+> > > > > arch/loongarch/Kconfig: select ACPI_HOTPLUG_PRESENT_CPU if ACPI_PROCESSOR && HOTPLUG_CPU
+> > > > > arch/x86/Kconfig:       select ACPI_HOTPLUG_PRESENT_CPU         if ACPI_PROCESSOR && HOTPLUG_CPU
+> > > > >
+> > > > > To say it yet again, ACPI_HOTPLUG_(PRESENT_)CPU is *never* set on
+> > > > > Arm64.
+> > > >
+> > > > Allright, so ARM64 is not going to use the code that is conditional on
+> > > > ACPI_HOTPLUG_CPU today.
+> > > >
+> > > > Fair enough.
+> > > >
+> > > > > > > IMHO it totally doesn't, and moreover, it goes against what
+> > > > > > > one would logically expect - and this is why I have a problem with
+> > > > > > > your effective NAK for this change. I believe you are basically
+> > > > > > > wrong on this for the reasons I've given - that ACPI_HOTPLUG_CPU
+> > > > > > > will be N for Arm64 despite it supporting ACPI-based CPU hotplug.
+> > > > > >
+> > > > > > So I still have to understand how renaming it for all architectures
+> > > > > > (including x86) is supposed to help.
+> > > > > >
+> > > > > > It will still be the same option under a different name.  How does
+> > > > > > that change things technically?
+> > > > >
+> > > > > Do you think that it makes any sense to have support for ACPI-based
+> > > > > hotplug CPU
+> > > >
+> > > > So this is all about what you and I mean by "ACPI-based hotplug CPU".
+> > > >
+> > > > > *and* having it functional with a configuration symbol
+> > > > > named "ACPI_HOTPLUG_CPU" to be set to N ? That's essentially what
+> > > > > you are advocating for...
+> > > >
+> > > > Setting ACPI_HOTPLUG_CPU to N means that you are not going to compile
+> > > > the code that is conditional on it.
+> > > >
+> > > > That code allows the processor driver to be removed from CPUs and
+> > > > arch_unregister_cpu() to be called from within acpi_bus_trim()  (among
+> > > > other things).  On the way up, it allows arch_register_cpu() to be
+> > > > called from within acpi_bus_scan().  If these things are not done,
+> > > > what I mean by "ACPI-based hotplug CPU" is not supported.
+> > >
+> > > Even on Arm64, arch_register_cpu() and arch_unregister_cpu() will be
+> > > called when the CPU in the VM is hot-removed or hot-added...
+> > 
+> > In a different way, however.
 > 
-> This doesn't look consistent.
+> This is getting tiresome. The goal posts keep moving. This isn't a
+> discussion, this is a "you're wrong and I'm going to keep changing my
+> argument if you agree with me to make you always wrong".
 > 
-> If the task is a group leader do_notify_pidfd() is called by exit_notify()
-> when it becomes a zombie (if no other threads), before it is reaped by its
-> parent (unless autoreap).
+> Sorry, no point continuing this.
 
-There is another path, also in release_task(), that I was trying to
-mirror since it deals explicitly with sub-threads but,
+Let me be clear why I'm exhasperated by this.
 
-> If it is a sub-thread, it is called by release_task() above. Note that a
-> sub-thread can become a zombie too if it is traced.
+I've been giving you a technical argument (Arm64 supporting ACPI
+hotplug CPU, but ACPI_HOTPLUG_CPU=n) for many many emails. You
+seemed to misunderstand that, expecting ACPI_HOTPLUG_CPU to become
+Y later in the series.
 
-I didn't know about this.
+When that became clear that it wasn't, you've changed tack. It then
+became about whether two functions get called or not.
 
-> >  	__exit_signal(p);
-> 
-> and,  do_notify_pidfd() is called before __exit_signal() which does
-> __unhash_process() -> detach_pid(PIDTYPE_PID).
-> 
-> Doesn't this mean that pidfd_poll() can hang? thread_group_exited()
-> won't return true after do_notify_pidfd() above, not to mention that
-> thread_group_empty() is not possible if !thread_group_leader().
+When I pointed out that they are still going to be called, oh no,
+it's not about whether those two functions will be called but
+how they get called.
 
-I was wondering about this too, but the test_non_tgl_poll_exit test in
-the next patch tests exactly this and works as expected.
+Essentially, what this comes down to is that _you_ have no technical
+argument against the change, just _you_ don't personally want it
+and it doesn't matter what justification I come up with, you're
+always going to tell me something different.
 
-> So. When do we want to do do_notify_pidfd() ? Whe the task (leader or not)
-> becomes a zombie (passes exit_notify) or when it is reaped by release_task?
+So why not state that you personally don't want it in the first
+place? Why this game of cat and mouse and the constantly changing
+arguments. I guess it's to waste developers time.
 
-It seems like we'd want it when exit_notify() is called in principle,
-since that's when the pid actually dies. When it is reaped is "mostly
-unrelated". Something like,
+Well, I'm calling you out for this, because I'm that pissed off
+at the amount of time you're causing to be wasted.
 
-1. in the "normal" exit_notify() paths via do_notify_parent()
-2. if none of those cases are true (aka the final else in
-   exit_notify()) and the thread is not ptraced
-3. via release_task() finally if this was the thread group leader and
-   it died before some sub-thread
-
-then in pidfd_poll(), we can do:
-
-    if (!tsk || (tsk->exit_state >= 0) || thread_group_exited())
-        do_notify_pidfd();
-
-?
-
-> Either way pidfd_poll() needs more changes with this patch and it can't
-> use thread_group_exited(). If do_notify_pidfd() is called by release_task()
-> after __exit_signal(), it can just check pid_has_task(PIDTYPE_PID).
-
-I suppose this is why my test works, since pid_task(PIDTYPE_PID) is null
-after release_task(). But if we want it to happen earlier, we'll have
-to do something like the above.
-
-Tycho
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
