@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-35893-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92BDD83984C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:48:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BACBA839851
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:48:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30C5A1F24219
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:48:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CDFA1F235ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:48:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC3A786AED;
-	Tue, 23 Jan 2024 18:46:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1DC81272BB;
+	Tue, 23 Jan 2024 18:46:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Sq3qE0dV"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="RFfW3jho"
 Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93EAA85C4A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1789C85C7E;
 	Tue, 23 Jan 2024 18:46:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706035617; cv=none; b=sFMPYuAfygWZXux4P3R6hoomVy1X3BGGkvDU/Sh8DkKm0R6rkFMAJzvVFB3IZpOGFNNTSiu8suJzCFZhYuOFGuLaO52jOBbtyAPzFJjxSS7akd5gT4C9OHof5nblY3plNGnBTRxudOAutqr3sViS7PBcamDJcyXnFw1CwasdIKY=
+	t=1706035617; cv=none; b=tFKef/urrisay+gGHJxZ4WzJ2PvFda0AU3Hssew9MvPAluTQqNy5lEIeYD4YPQ89olTfiAHhsNbwxAnfscvTYm7FFTApcxSy666QmtZnFH40hkoIrsyOpRFlqljj1QRl4YVkKPdCBPvgCilEyNoax7W08FqZkutosu9rB/5y5d0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706035617; c=relaxed/simple;
-	bh=N56mWfcnzmIQh2ql1P8TK4KuqLvv6Hr8DkMvlnHr83M=;
+	bh=lmRit2wwP0VKPeCChGmI/nU/kHnVMLUnIEtXfr5zJzY=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=aBiUUDF0u1O8N076xyEGCro6ooZD/wvVS/ZP+y7iTga4VhpzY+ADWJ/0fK9n699wry5V3p/IadypEudaVkdBL9frewVXZjp3v2vSc/ht0mEZKAuz3jE1/p4sv7vBs9I38+rk4SrKGg4Wkx5SnDrhFAwKrhbncMe74k5JtTOf08E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Sq3qE0dV; arc=none smtp.client-ip=198.47.19.141
+	 MIME-Version:Content-Type; b=rL03OeoMQAr2+c83lEl/YdRmi2v4zd/CcXcQ91SJSBfZT09tx1rftZfioQvbxY6wCEpotSObs538uunauHvOob3kRZgVqPLQAkIBhLsu9E7bIW2tiozpToD2eHOn0C+Y5piNBvJgihXpEaie+W0SbbC4wAVmRaEuRk4M+Ir7M1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=RFfW3jho; arc=none smtp.client-ip=198.47.19.141
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40NIkcpk111741;
-	Tue, 23 Jan 2024 12:46:38 -0600
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40NIkdl1111746;
+	Tue, 23 Jan 2024 12:46:39 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706035598;
-	bh=Fnn4Eaec4WxtTkMHSfV5vv0vfLWjshQGib5zI9abKQ0=;
+	s=ti-com-17Q1; t=1706035599;
+	bh=+LsaequArBDt9r+xd6rw4/1iVgdQx4r0fsBkKYAhTUA=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=Sq3qE0dVG1l3ymQRVxyH6Us6tlr0iOZQpZd6SHgpBiEt56+5b1Zaa4Qn7YwmlRSc3
-	 WTcn4xkFzLpeBN10kaEtLXTKUxid6POtkVaSxCzmOicbMrMafTSW9QK3wZdjVeLPVN
-	 8XPr6doPbwFFklvwPD9OpnHp7aJQrHHUw32erGpo=
+	b=RFfW3jhoyar67nIU0PAaCWGcBz2wypQDH4G54Aesmr9IAf4IXQ6eNgJLVHSkTtXyp
+	 LAEco3r4B8jijvqbwE9VgMBAdli2aLBS83axjmoYSQYoFdhOe3v769AK8pfli9atuX
+	 chkih1L0Tmggt2IxsWnN3t6Io6uMJ/aY81D9XGlo=
 Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40NIkcsn011094
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40NIkd6F009881
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 23 Jan 2024 12:46:38 -0600
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE111.ent.ti.com
+	Tue, 23 Jan 2024 12:46:39 -0600
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE111.ent.ti.com
  (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 23
- Jan 2024 12:46:38 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ Jan 2024 12:46:39 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 23 Jan 2024 12:46:38 -0600
+ Frontend Transport; Tue, 23 Jan 2024 12:46:39 -0600
 Received: from lelvsmtp5.itg.ti.com ([10.249.42.149])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40NIkX1x063265;
-	Tue, 23 Jan 2024 12:46:37 -0600
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40NIkX20063265;
+	Tue, 23 Jan 2024 12:46:38 -0600
 From: Andrew Davis <afd@ti.com>
 To: Bjorn Andersson <andersson@kernel.org>,
         Mathieu Poirier
@@ -72,9 +72,9 @@ To: Bjorn Andersson <andersson@kernel.org>,
 CC: <linux-remoteproc@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
         Andrew Davis <afd@ti.com>
-Subject: [PATCH 8/9] remoteproc: st: Use devm_rproc_alloc() helper
-Date: Tue, 23 Jan 2024 12:46:31 -0600
-Message-ID: <20240123184632.725054-8-afd@ti.com>
+Subject: [PATCH 9/9] remoteproc: stm32: Use devm_rproc_alloc() helper
+Date: Tue, 23 Jan 2024 12:46:32 -0600
+Message-ID: <20240123184632.725054-9-afd@ti.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240123184632.725054-1-afd@ti.com>
 References: <20240123184632.725054-1-afd@ti.com>
@@ -94,60 +94,38 @@ free on error paths.
 
 Signed-off-by: Andrew Davis <afd@ti.com>
 ---
- drivers/remoteproc/st_remoteproc.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+ drivers/remoteproc/stm32_rproc.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/remoteproc/st_remoteproc.c b/drivers/remoteproc/st_remoteproc.c
-index cb163766c56d5..1340be9d01101 100644
---- a/drivers/remoteproc/st_remoteproc.c
-+++ b/drivers/remoteproc/st_remoteproc.c
-@@ -347,23 +347,21 @@ static int st_rproc_probe(struct platform_device *pdev)
- 	int enabled;
- 	int ret, i;
+diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+index 4f469f0bcf8b2..fed0866de1819 100644
+--- a/drivers/remoteproc/stm32_rproc.c
++++ b/drivers/remoteproc/stm32_rproc.c
+@@ -843,7 +843,7 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
  
 -	rproc = rproc_alloc(dev, np->name, &st_rproc_ops, NULL, sizeof(*ddata));
 +	rproc = devm_rproc_alloc(dev, np->name, &st_rproc_ops, NULL, sizeof(*ddata));
  	if (!rproc)
  		return -ENOMEM;
  
- 	rproc->has_iommu = false;
- 	ddata = rproc->priv;
- 	ddata->config = (struct st_rproc_config *)device_get_match_data(dev);
--	if (!ddata->config) {
--		ret = -ENODEV;
--		goto free_rproc;
--	}
-+	if (!ddata->config)
-+		return -ENODEV;
- 
- 	platform_set_drvdata(pdev, rproc);
- 
- 	ret = st_rproc_parse_dt(pdev);
- 	if (ret)
--		goto free_rproc;
-+		return ret;
- 
- 	enabled = st_rproc_state(pdev);
- 	if (enabled < 0) {
-@@ -439,8 +437,7 @@ static int st_rproc_probe(struct platform_device *pdev)
- 		mbox_free_channel(ddata->mbox_chan[i]);
- free_clk:
- 	clk_unprepare(ddata->clk);
--free_rproc:
+@@ -897,7 +897,6 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+ 		dev_pm_clear_wake_irq(dev);
+ 		device_init_wakeup(dev, false);
+ 	}
 -	rproc_free(rproc);
-+
  	return ret;
  }
  
-@@ -456,8 +453,6 @@ static void st_rproc_remove(struct platform_device *pdev)
- 
- 	for (i = 0; i < ST_RPROC_MAX_VRING * MBOX_MAX; i++)
- 		mbox_free_channel(ddata->mbox_chan[i]);
--
+@@ -918,7 +917,6 @@ static void stm32_rproc_remove(struct platform_device *pdev)
+ 		dev_pm_clear_wake_irq(dev);
+ 		device_init_wakeup(dev, false);
+ 	}
 -	rproc_free(rproc);
  }
  
- static struct platform_driver st_rproc_driver = {
+ static int stm32_rproc_suspend(struct device *dev)
 -- 
 2.39.2
 
