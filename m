@@ -1,304 +1,292 @@
-Return-Path: <linux-kernel+bounces-35980-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57C6B839972
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:24:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27F35839977
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:26:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 070A828B6C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:24:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A903D1F2BAA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:26:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4E7E823B0;
-	Tue, 23 Jan 2024 19:24:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE999823DA;
+	Tue, 23 Jan 2024 19:26:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="SyTACI7t"
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CasgT+PY"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 070D1612D4
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 19:24:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6285A81215
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 19:26:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706037848; cv=none; b=m2C7KOJBY/A2abpUa3M0/SxLzEyKRg0G75TDpFqafveIl0hxwL5PO+Fw8pTfTmcM4zvFDNzuvddJtdGhHjIomuml1g68wXhAdoCsPW4XHnoZSTwI/uYy/hBVR9g1ToiVQ+pJG8vJyPYqOgizooN3siDpvmgUv8IsSpc9Crgd6Bs=
+	t=1706037966; cv=none; b=t2HMIfr1qz4YJgqtS9kevbwMbcHNL42gpdhVYnuR1XbfPBEhO0p9F/4lQRD9COJel4oxLKk1wQ6qnxqKCLA58HMLT4zuIa3qFfooIuZqqucCXPo+1YQ8DXBkwtFfoCbaOlpowVAEgv+pKYyOpbcaGHVz4/uOGj7uRo8bbt1q3CA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706037848; c=relaxed/simple;
-	bh=0ZX9j54KYRijAcoplZets1Kbc2e+DFw/oZSWq/2AvE4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QVvcpHBI452F9GGYJhsnOru0IKMBMchHZ7YzNA4geeTMoeCK+wcFXChluPe9Kvup9NHlb7FlN9q7qW+yxhGsc3eatGZm8EL338LCSHctXteIo/K/XoMMEdng91yq2QYnx9JUfDCI4NnPtlQvTY6o/GLg57KftHuA6/WC5pSdEVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=SyTACI7t; arc=none smtp.client-ip=209.85.219.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-6869233d472so9375036d6.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 11:24:06 -0800 (PST)
+	s=arc-20240116; t=1706037966; c=relaxed/simple;
+	bh=5FBFXSyj94x51VgxUD4rusLgZttfd6JjBhpIl2yLV40=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=r8L3etT5FjF1SMT3zcfZ2nR+e75CBvDuEgzYKTkDVnX4s1GPXtAZDEwb8gcra0zGL7PBv2Zr/V+4gz0WDxuTjTOWFui0TjlyN1yU0LJIyVvH0NStxoZCpy18mFfwIY61cf5QtA/EiOve9EULk9cFx+DCquVEFURM4K68QkeeIBY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CasgT+PY; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d74045c463so17781705ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 11:26:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1706037846; x=1706642646; darn=vger.kernel.org;
-        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=wkIUfEXwRu/+N4sOiOwy8ir++STVN+XYpVkosyYabeg=;
-        b=SyTACI7tAG0qoW6FVlp/XCFVwFg9VgCl0Q/xHerYWhgwAi/yFtMGiGlrnkhHnqQGo4
-         10SlRzFtErZdUN06Wn+gAlQMYSewSlvWVwqquwTjRy3kSFdCIPsiiYQIYNn5jKd8P20C
-         1yac0YsTAZvaWfhGDzVcdEmEGEX5FrNEiUulU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706037846; x=1706642646;
-        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1706037963; x=1706642763; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wkIUfEXwRu/+N4sOiOwy8ir++STVN+XYpVkosyYabeg=;
-        b=j95/6HSeY4MlrcKb+LfdXAwOu51tve+vW0lkQxNhP1zVeiq8TYwSCSOA6wzqgeMiQM
-         U8zQBO7YI1IURDU0ObwAzqHNIJy4kb3VxlkEIBobJVIKO7jHTp/N3pwuP0jzaSsE1wlt
-         fyglAM8cfzUJEiVOKtC4MOBgoT4BhTqpCdOV3pS/aO5L8i+IVyeXf5lPp5b7XpYr0vyL
-         OG8pP73pFNxTAYzgWmjNhAGhiyaAD6CQAAZ8OgrDumZiXY6HIf3ktatT6G6CM8Pg8Gpu
-         epYG9VjHiU0yJGz+KmuqyMsBi/lSkb1UlQqu5En8P73Ub7rsZGVp6WySNTmnrE1Aaoc1
-         pePg==
-X-Gm-Message-State: AOJu0Yxm6gEMbE/hF7EXc4o3sEgIYksJbRnaNJa4cbfYrMhNBOYGl2q/
-	SMYL1rQ5810WEM4HN1Dq/qrtmcsrRkh3bTDkfFAJ9ooRo8C28o2NZxYHNeHLjg==
-X-Google-Smtp-Source: AGHT+IHQnC70I2pgI/rxPqRXpqXHYc91aMJtQ8yQGsumeUGBbLShjI7nlHntw/uDzYDG15pRNvZROg==
-X-Received: by 2002:ad4:5bea:0:b0:686:949b:6c6d with SMTP id k10-20020ad45bea000000b00686949b6c6dmr1251105qvc.79.1706037845842;
-        Tue, 23 Jan 2024 11:24:05 -0800 (PST)
-Received: from [192.168.52.129] ([192.19.222.250])
-        by smtp.gmail.com with ESMTPSA id qd24-20020ad44818000000b00680b1090832sm3658446qvb.146.2024.01.23.11.24.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jan 2024 11:24:04 -0800 (PST)
-Message-ID: <662e1c6e-7b79-4171-8d28-01023912fab5@broadcom.com>
-Date: Tue, 23 Jan 2024 11:24:01 -0800
+        bh=wuHlV1lpJmfb9OJ+O6FIwlNwW4G3p0JEzL0apMB/mzw=;
+        b=CasgT+PYAPMcdH/JyoEsGpD5RmVMm3UkS1VuSisq6AQX4f9fU1f1+fWs6BN9vAj5tP
+         b/qlhkzckrYeh63O+IEY4hor76YphAlR2l9TK4ZV8oN7e+ve5PkGXDSSfncmXVKhufpN
+         R9KIm5V04N9S4izyhkJ0T9Q82md6bWAeE5DpPoIc7ko3iwRUER3W78lWYkt9v1XoHtgk
+         1c9bJsxPbL0SYz0rs3W6EvldAh5S8LhVfW+EBlRI7VzkskPBU6Ix0Ve0i7B0K0NfAA+f
+         URDS7hqZ4panIUU108o5H7LUBf06LCgqtA/kDGdeQae4i8lY4ng7MYTL0tKAm5VYO2GV
+         ZJ9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706037963; x=1706642763;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wuHlV1lpJmfb9OJ+O6FIwlNwW4G3p0JEzL0apMB/mzw=;
+        b=FMz0O1x6u8MQ0lZA5qipmPuQNim/uXXFkzFYnxwINYF+fwooB0vC2RcxONan7gXe1m
+         5LRpgmCNGGq1YjajRqELBwDnmkPtDdF7LqqjAlz2SA0LFaz7+GmZEMg0nDchB/KC653y
+         R8qdz7pVi2DWsqVj9SUZp60C7/TXc4RWU41MRBIGwKuDlSOBW9M2egon/ZlR7lQu4e3B
+         MvWtR/4w95vb2Yj2L64UuWDBJSDNvMnSyUSOnmeBGbywtFiF/RyN81CDO+dg7pJADHJQ
+         VLstVzsXhPIJOXa2nKom6jwmc5g/dHW1qryVrSVtzyHO+3Rqo/jPa8RACdfgHWRWobWQ
+         hTCQ==
+X-Gm-Message-State: AOJu0YwAvE+RBo3dT0YbaVMXkY9l9fHU7ozPkaqMYyjfVHySBE0Ou3g+
+	S67SZAedzj6c2qkeA35tDe7/dG6cmMy5M+d5cHAKbKmuF1xf0Y7pyVyxRFxOWgN7oVQh+Ngh0RB
+	b5hCC/1gmanLj4Jb3k7q1lGwp86dXaYAV/wQtwA==
+X-Google-Smtp-Source: AGHT+IEHfXLoZyhqfDv3qI1ZFPPtY8soGvcCPAk/KuzY/2oAvjcwCUC2GWTSCgmoUJlPsdsFnca814M9v+7iD4fc0Bk=
+X-Received: by 2002:a17:90a:49cb:b0:28c:f2f5:a966 with SMTP id
+ l11-20020a17090a49cb00b0028cf2f5a966mr2997435pjm.10.1706037963650; Tue, 23
+ Jan 2024 11:26:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 01/10] dt-bindings: mtd: brcmnand: Updates for bcmbca
- SoCs
-To: Jonas Gorski <jonas.gorski@gmail.com>
-Cc: dregan@broadcom.com, dregan@mail.com, miquel.raynal@bootlin.com,
- richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- computersforpeace@gmail.com, kdasu.kdev@gmail.com,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, joel.peshkin@broadcom.com,
- tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com,
- anand.gore@broadcom.com, kursad.oney@broadcom.com,
- florian.fainelli@broadcom.com, rafal@milecki.pl,
- bcm-kernel-feedback-list@broadcom.com, andre.przywara@arm.com,
- baruch@tkos.co.il, linux-arm-kernel@lists.infradead.org,
- dan.carpenter@linaro.org
-References: <20240118195356.133391-1-dregan@broadcom.com>
- <20240118195356.133391-2-dregan@broadcom.com>
- <CAOiHx=k2Wn+UaVFbB-n2XKmFuBss4LKmLSW45YME07z=7zg0ww@mail.gmail.com>
- <c1fc163b-1f4f-42a5-91c3-b31ad33a9741@broadcom.com>
- <CAOiHx=n62Ap8bGbTu0xcKMHcqgpaLZ-GNjsW2DQ5XPrnsxmAJw@mail.gmail.com>
-From: William Zhang <william.zhang@broadcom.com>
-In-Reply-To: <CAOiHx=n62Ap8bGbTu0xcKMHcqgpaLZ-GNjsW2DQ5XPrnsxmAJw@mail.gmail.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000cb5a13060fa1e3f1"
+References: <20240123153421.715951-1-tudor.ambarus@linaro.org> <20240123153421.715951-20-tudor.ambarus@linaro.org>
+In-Reply-To: <20240123153421.715951-20-tudor.ambarus@linaro.org>
+From: Sam Protsenko <semen.protsenko@linaro.org>
+Date: Tue, 23 Jan 2024 13:25:52 -0600
+Message-ID: <CAPLW+4=5ra6rBRwYYckzutawJoGw_kJahLaYmDzct2Dyuw0qQg@mail.gmail.com>
+Subject: Re: [PATCH 19/21] spi: s3c64xx: add support for google,gs101-spi
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: broonie@kernel.org, andi.shyti@kernel.org, arnd@arndb.de, 
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	alim.akhtar@samsung.com, linux-spi@vger.kernel.org, 
+	linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-arch@vger.kernel.org, andre.draszik@linaro.org, 
+	peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
---000000000000cb5a13060fa1e3f1
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+On Tue, Jan 23, 2024 at 9:34=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linaro=
+org> wrote:
+>
+> Add support for GS101 SPI. All the SPI nodes on GS101 have 64 bytes
+> FIFOs, infer the FIFO size from the compatible. GS101 allows just 32bit
+> register accesses, otherwise a Serror Interrupt is raised. Do the write
+> reg accesses in 32 bits.
+>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> ---
 
+I counted 3 different features in this patch. Would be better to split
+it correspondingly into 3 patches, to make patches atomic:
 
+  1. I/O width
+  2. FIFO size
+  3. Adding support for gs101
 
-On 1/23/24 02:34, Jonas Gorski wrote:
-> On Mon, 22 Jan 2024 at 18:34, William Zhang <william.zhang@broadcom.com> wrote:
->>
->> Hi,
->>
->> On 1/22/24 03:48, Jonas Gorski wrote:
->>> Hi,
->>>
->>> On Thu, 18 Jan 2024 at 20:56, <dregan@broadcom.com> wrote:
->>>>
->>>> From: William Zhang <william.zhang@broadcom.com>
->>>>
->>>> Update the descriptions to reflect different families of broadband SoC and
->>>> use the general name bcmbca for ARM based SoC.
->>>>
->>>> Add brcm,nand-use-wp property to have an option for disabling this
->>>> feature on broadband board design that does not use write protection.
->>>>
->>>> Add brcm,nand-ecc-use-strap to get ecc setting from board boot strap for
->>>> broadband board designs because they do not specify ecc setting in dts
->>>> but rather using the strap setting.
->>>>
->>>> Remove the requirement of interrupts property to reflect the driver
->>>> code. Also add myself to the list of maintainers.
->>>>
->>>> Signed-off-by: William Zhang <william.zhang@broadcom.com>
->>>> Reviewed-by: David Regan <dregan@broadcom.com>
->>>> ---
->>>> Changes in v2:
->>>> - Revert the new compatible string nand-bcmbca
->>>> - Drop the BCM63168 compatible fix to avoid any potential ABI
->>>> incompatibility issue
->>>> - Simplify the explanation for brcm,nand-use-wp
->>>> - Keep the interrupt name requirement when interrupt number is specified
->>>> ---
->>>>    .../bindings/mtd/brcm,brcmnand.yaml           | 36 +++++++++++++++----
->>>>    1 file changed, 30 insertions(+), 6 deletions(-)
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
->>>> index f57e96374e67..56176ec1a992 100644
->>>> --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
->>>> +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
->>>> @@ -9,6 +9,7 @@ title: Broadcom STB NAND Controller
->>>>    maintainers:
->>>>      - Brian Norris <computersforpeace@gmail.com>
->>>>      - Kamal Dasu <kdasu.kdev@gmail.com>
->>>> +  - William Zhang <william.zhang@broadcom.com>
->>>>
->>>>    description: |
->>>>      The Broadcom Set-Top Box NAND controller supports low-level access to raw NAND
->>>> @@ -18,9 +19,10 @@ description: |
->>>>      supports basic PROGRAM and READ functions, among other features.
->>>>
->>>>      This controller was originally designed for STB SoCs (BCM7xxx) but is now
->>>> -  available on a variety of Broadcom SoCs, including some BCM3xxx, BCM63xx, and
->>>> -  iProc/Cygnus. Its history includes several similar (but not fully register
->>>> -  compatible) versions.
->>>> +  available on a variety of Broadcom SoCs, including some BCM3xxx, MIPS based
->>>> +  Broadband SoC (BCM63xx), ARM based Broadband SoC (BCMBCA) and iProc/Cygnus.
->>>> +  Its history includes several similar (but not fully register compatible)
->>>> +  versions.
->>>>
->>>>      -- Additional SoC-specific NAND controller properties --
->>>>
->>>> @@ -53,7 +55,7 @@ properties:
->>>>                  - brcm,brcmnand-v7.2
->>>>                  - brcm,brcmnand-v7.3
->>>>              - const: brcm,brcmnand
->>>> -      - description: BCM63138 SoC-specific NAND controller
->>>> +      - description: BCMBCA SoC-specific NAND controller
->>>>            items:
->>>>              - const: brcm,nand-bcm63138
->>>>              - enum:
->>>> @@ -65,7 +67,7 @@ properties:
->>>>              - const: brcm,nand-iproc
->>>>              - const: brcm,brcmnand-v6.1
->>>>              - const: brcm,brcmnand
->>>> -      - description: BCM63168 SoC-specific NAND controller
->>>> +      - description: BCM63xx SoC-specific NAND controller
->>>
->>> Only the BCM63268 family has a v4.0 NAND controller with support for
->>> ONFI and raw access; BCM6368 has a v2.1, and BCM6328 and BCM6362 have
->>> a v2.2.
->>>
->>> So claiming this is a generic binding is wrong; you would need to add
->>> the appropriate variants first. Or add another one for the BCM6368
->>> NAND v2.x controllers, which is missing. You can find them used in
->>> arch/mips/boot/dts/brcm/bcm63{28,62,68}.dtsi.
->>>
->> I am not changing binding here but jsut update the description to
->> identify these MIPS based chip as bcm63xx family. This convention is
->> used in other IP blocks too.  And yes this binding is not correct and I
->> noticed the same v2.x usage in the dtsi files you pointed out. So I
->> actually updated this binding in my v1 here
->> https://lore.kernel.org/lkml/20230606231252.94838-6-william.zhang@broadcom.com/
->> but there was some concern as it could possibly break the ABI in that
->> thread's discussion.
-> 
-> That change did change the ABI that would have (AFAICT) broken it for BCM63168.
-> 
-> My point is: This binding in its current state is valid *only* for the
-> BCM63168 NAND controller, and not for any other BCM63xx NAND
-> controllers.
-> 
-I didn't know that 6368 does not work. I will revert this change then.
+And I'm not really convinced about FIFO size change.
 
-> So changing the description to BCM63xx is wrong, unless you extend it
-> to also match the BCM6328/6362/6368 NAND controller bindings as used.
-> 
-> I can send a patch adding the missing binding parts, I actually have a
-> WIP one lying around as I started trying to address dts issues in the
-> MIPS bcm63xx dts(i) files a while ago.
-> 
-Yeah and if you can update it to bcm63xx, that will be great!
+>  drivers/spi/spi-s3c64xx.c | 50 +++++++++++++++++++++++++++++++++------
+>  1 file changed, 43 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
+> index 62671b2d594a..c4ddd2859ba4 100644
+> --- a/drivers/spi/spi-s3c64xx.c
+> +++ b/drivers/spi/spi-s3c64xx.c
+> @@ -20,6 +20,7 @@
+>
+>  #define MAX_SPI_PORTS                          12
+>  #define S3C64XX_SPI_QUIRK_CS_AUTO              BIT(1)
+> +#define S3C64XX_SPI_GS1O1_32BIT_REG_IO_WIDTH   BIT(2)
+>  #define AUTOSUSPEND_TIMEOUT                    2000
+>
+>  /* Registers and bit-fields */
+> @@ -131,6 +132,7 @@ struct s3c64xx_spi_dma_data {
+>   * @rx_lvl_offset: Bit offset of RX_FIFO_LVL bits in SPI_STATUS regiter.
+>   * @tx_st_done: Bit offset of TX_DONE bit in SPI_STATUS regiter.
+>   * @clk_div: Internal clock divider
+> + * @fifosize: size of the FIFO
+>   * @quirks: Bitmask of known quirks
+>   * @high_speed: True, if the controller supports HIGH_SPEED_EN bit.
+>   * @clk_from_cmu: True, if the controller does not include a clock mux a=
+nd
+> @@ -149,6 +151,7 @@ struct s3c64xx_spi_port_config {
+>         int     tx_st_done;
+>         int     quirks;
+>         int     clk_div;
+> +       unsigned int fifosize;
+>         bool    high_speed;
+>         bool    clk_from_cmu;
+>         bool    clk_ioclk;
+> @@ -175,6 +178,7 @@ struct s3c64xx_spi_port_config {
+>   * @tx_dma: Local transmit DMA data (e.g. chan and direction)
+>   * @port_conf: Local SPI port configuartion data
+>   * @port_id: Port identification number
+> + * @fifosize: size of the FIFO for this port
+>   */
+>  struct s3c64xx_spi_driver_data {
+>         void __iomem                    *regs;
+> @@ -194,6 +198,7 @@ struct s3c64xx_spi_driver_data {
+>         struct s3c64xx_spi_dma_data     tx_dma;
+>         const struct s3c64xx_spi_port_config    *port_conf;
+>         unsigned int                    port_id;
+> +       unsigned int                    fifosize;
+>  };
+>
+>  static void s3c64xx_flush_fifo(struct s3c64xx_spi_driver_data *sdd)
+> @@ -403,7 +408,7 @@ static bool s3c64xx_spi_can_dma(struct spi_controller=
+ *host,
+>         struct s3c64xx_spi_driver_data *sdd =3D spi_controller_get_devdat=
+a(host);
+>
+>         if (sdd->rx_dma.ch && sdd->tx_dma.ch)
+> -               return xfer->len > FIFO_DEPTH(sdd);
+> +               return xfer->len > sdd->fifosize;
+>
+>         return false;
+>  }
+> @@ -447,12 +452,22 @@ static int s3c64xx_enable_datapath(struct s3c64xx_s=
+pi_driver_data *sdd,
+>                                         xfer->tx_buf, xfer->len / 4);
+>                                 break;
+>                         case 16:
+> -                               iowrite16_rep(regs + S3C64XX_SPI_TX_DATA,
+> -                                       xfer->tx_buf, xfer->len / 2);
+> +                               if (sdd->port_conf->quirks &
+> +                                   S3C64XX_SPI_GS1O1_32BIT_REG_IO_WIDTH)
+> +                                       iowrite16_32_rep(regs + S3C64XX_S=
+PI_TX_DATA,
+> +                                                        xfer->tx_buf, xf=
+er->len / 2);
+> +                               else
+> +                                       iowrite16_rep(regs + S3C64XX_SPI_=
+TX_DATA,
+> +                                                     xfer->tx_buf, xfer-=
+>len / 2);
+>                                 break;
+>                         default:
+> -                               iowrite8_rep(regs + S3C64XX_SPI_TX_DATA,
+> -                                       xfer->tx_buf, xfer->len);
+> +                               if (sdd->port_conf->quirks &
+> +                                   S3C64XX_SPI_GS1O1_32BIT_REG_IO_WIDTH)
+> +                                       iowrite8_32_rep(regs + S3C64XX_SP=
+I_TX_DATA,
+> +                                                       xfer->tx_buf, xfe=
+r->len);
+> +                               else
+> +                                       iowrite8_rep(regs + S3C64XX_SPI_T=
+X_DATA,
+> +                                                    xfer->tx_buf, xfer->=
+len);
+>                                 break;
+>                         }
+>                 }
+> @@ -696,7 +711,7 @@ static int s3c64xx_spi_transfer_one(struct spi_contro=
+ller *host,
+>                                     struct spi_transfer *xfer)
+>  {
+>         struct s3c64xx_spi_driver_data *sdd =3D spi_controller_get_devdat=
+a(host);
+> -       const unsigned int fifo_len =3D FIFO_DEPTH(sdd);
+> +       const unsigned int fifo_len =3D sdd->fifosize;
+>         const void *tx_buf =3D NULL;
+>         void *rx_buf =3D NULL;
+>         int target_len =3D 0, origin_len =3D 0;
+> @@ -1145,6 +1160,11 @@ static int s3c64xx_spi_probe(struct platform_devic=
+e *pdev)
+>                 sdd->port_id =3D pdev->id;
+>         }
+>
+> +       if (sdd->port_conf->fifosize)
+> +               sdd->fifosize =3D sdd->port_conf->fifosize;
+> +       else
+> +               sdd->fifosize =3D FIFO_DEPTH(sdd);
+> +
+>         sdd->cur_bpw =3D 8;
+>
+>         sdd->tx_dma.direction =3D DMA_MEM_TO_DEV;
+> @@ -1234,7 +1254,7 @@ static int s3c64xx_spi_probe(struct platform_device=
+ *pdev)
+>         dev_dbg(&pdev->dev, "Samsung SoC SPI Driver loaded for Bus SPI-%d=
+ with %d Targets attached\n",
+>                                         sdd->port_id, host->num_chipselec=
+t);
+>         dev_dbg(&pdev->dev, "\tIOmem=3D[%pR]\tFIFO %dbytes\n",
+> -                                       mem_res, FIFO_DEPTH(sdd));
+> +                                       mem_res, sdd->fifosize);
+>
+>         pm_runtime_mark_last_busy(&pdev->dev);
+>         pm_runtime_put_autosuspend(&pdev->dev);
+> @@ -1362,6 +1382,18 @@ static const struct dev_pm_ops s3c64xx_spi_pm =3D =
+{
+>                            s3c64xx_spi_runtime_resume, NULL)
+>  };
+>
+> +static const struct s3c64xx_spi_port_config gs101_spi_port_config =3D {
+> +       .fifosize       =3D 64,
 
-> Best Regards,
-> Jonas
+I think if you rework the the .fifo_lvl_mask, replacing it with
+fifosize, you should also do next things in this series:
+  1. Rework it for all supported (existing) chips in this driver
+  2. Provide fifosize property for each SPI node for all existing dts
+that use this driver
+  3. Get rid of .fifo_lvl_mask for good. But the compatibility with
+older kernels has to be taken into the account here as well.
 
---000000000000cb5a13060fa1e3f1
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Otherwise it looks like a half attempt and not finished, only creating
+a duplicated property/struct field for the same (already existing)
+thing. Because it's completely possible to do the same using just
+fifo_lvl_mask without introducing new fields or properties. If it
+seems to much -- maybe just use .fifo_lvl_mask for now, and do all
+that reworking properly later, in a separate patch series?
 
-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
-YDZuuBJwnyCzevMoPtVYPharioL5H3BRnQi8YoTXH7/uRo33dewYFm474yFjwwnt82TFtveVZkVq
-6h4WIQ4wTcwFfET8zMkELnGzS5SHCl8sPD+lNxxJ1JDZYwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
-BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
-YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
-BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
-MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
-YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
-Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
-HREEHjAcgRp3aWxsaWFtLnpoYW5nQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
-BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUq65GzwZxydFHjjYEU/9h
-xHhPWlwwDQYJKoZIhvcNAQELBQADggEBAA2hGG3JPAdGPH0ZdohGUCIVjKz+U+EFuIDbS6A/5jqX
-VhYAxZlzj7tSjUIM7G7IhyfqPC46GKJ/4x+Amz1Z6YxNGy71L68kYD6hIbBcA5AM42QBUufly6Oa
-/ppSz3WoflVyFFQ5YXniZ+eU+2/cdnYZg4aVUnFjimOF5o3NfMLzOkhQNxbaDjFUfUYD8hKmU6v4
-0vUBj8KZ9Gi1LIagLKUREn8jku0lcLsRbnJ5Ey5ScajC/FESPyYWasOW8j8/1EoJksmhbYGKNS6C
-urb/KlmDGfVrIRYDbL0ckhGQIP5c6L+kSQZ2sHnQK0e0WgIaZYxaPYeY5u0GLCOze+3vyRMxggJt
-MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
-VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwxuh2XG3FXRL1W
-JOEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIDbweeD7HgIdc0CiLlbHUhs+UVJY
-Xg5TRJBMopyesQ/eMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0
-MDEyMzE5MjQwNlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
-CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQCm+iqaiO5de0yM8lqhNyp9fJe8koPHlnyBTNcjl/etD2Pv
-rgAxUz5FxH4NjfFIOtg/+0ukRfHdPA/pKmrYqujict8nMnX+llKu11csmmJn6K2mdZ+xUyTpP4ip
-g6NCNO5Cjwb0S/1i9OYAB0GJejCqwTyab0LaupySDbHPuwUVGMCkib49EzHjc3O/urVAqqetxJwK
-ailVLJR8xI96EQ1V1OoC7un9lOArbpqsVMj8jUL9cgi8nCW50pt46reOwgiJSHyDIqhgFgyczcz9
-t8ZYQ2b3O9fLtMeBRZIEIbNZ4NkX/y8NrY6zOVLl508C9o3VQZvw1HZBpd9EUy7M3Zro
---000000000000cb5a13060fa1e3f1--
+> +       .rx_lvl_offset  =3D 15,
+> +       .tx_st_done     =3D 25,
+> +       .clk_div        =3D 4,
+> +       .high_speed     =3D true,
+> +       .clk_from_cmu   =3D true,
+> +       .has_loopback   =3D true,
+> +       .quirks         =3D S3C64XX_SPI_QUIRK_CS_AUTO |
+> +                         S3C64XX_SPI_GS1O1_32BIT_REG_IO_WIDTH,
+> +};
+> +
+>  static const struct s3c64xx_spi_port_config s3c2443_spi_port_config =3D =
+{
+>         .fifo_lvl_mask  =3D { 0x7f },
+>         .rx_lvl_offset  =3D 13,
+> @@ -1452,6 +1484,10 @@ static const struct platform_device_id s3c64xx_spi=
+_driver_ids[] =3D {
+>  };
+>
+>  static const struct of_device_id s3c64xx_spi_dt_match[] =3D {
+> +       {
+> +               .compatible =3D "google,gs101-spi",
+> +               .data =3D &gs101_spi_port_config,
+> +       },
+>         {
+>                 .compatible =3D "samsung,s3c2443-spi",
+>                 .data =3D &s3c2443_spi_port_config,
+> --
+> 2.43.0.429.g432eaa2c6b-goog
+>
 
