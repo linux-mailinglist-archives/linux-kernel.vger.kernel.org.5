@@ -1,165 +1,254 @@
-Return-Path: <linux-kernel+bounces-35480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35481-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E71F38391D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:58:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A146B8391E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:00:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97E8C28780A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:58:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 433E51F2856C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:00:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 431E25F55F;
-	Tue, 23 Jan 2024 14:58:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17C2B5FBA6;
+	Tue, 23 Jan 2024 14:59:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="BLG6Fqvi"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="0uRCA6f6"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BED715026F;
-	Tue, 23 Jan 2024 14:58:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.41
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706021912; cv=fail; b=nR9PgSe0kjqZM8acq3XeJnlvULE49CQIOk03/nYkyKsC/ge8tvcYgGmSqzmX+vpZ535N/PCqnoIUtV48jnMmSMWErEth/Rrc0PZX0DBWWUcx1CU+lcWgzY/nPxss0azkPyRlX/sgiUw9rh1yQ43jqmxJYmJm0QIYzDFRTmAUM8E=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706021912; c=relaxed/simple;
-	bh=lkjuoN57MiR1suFntNTGdTFHV67dcAuNKJ6C+DJK+ao=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Ew33bl2L2JiJ3mI8eHRm5Ru+Ca2SM/xhNv+GZwgzO2iR6BfWiEb7ooDVRF2wvzNNQtwmPZxW5lK0aRgFHnxOopJh4kLlmpIX5iKmjPgv6w/5X47ilmmXATnLL52q5DqF414RcZkAcGt64biLI3QGbodyhZEZ3DAkNbyZgKmYoi8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=BLG6Fqvi; arc=fail smtp.client-ip=40.107.236.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Xh6LP29N8/UhAkcnvIHWVhtEDdmLlaICtlzywURRtGsCOu42VK4Bg2oOoelONxJgxGAkYtYPP9O2jq9pSMQ6gyT2Y19IhbzloeXSKYlzHtWfAYwQFj/446mKOrZZV+e8j5B17bHdcnEYIIsWM79W9FxdSdHnfeiltPkV7rnjeDU/ihJndhU6a+HRgM7bpqyAWXf1DEE+XaU1arFOUAwVmJqnH3NqxOIhW62Ntj1ZCY5uuaSO2Q46lYItcGalxohPNk2ycxMYlIhjibAqJiotOIZHSA8rcB0xxtHU1B0jv6YS4wMrwaXMuiceSrkEc6+ps1J65louWzghnhml07kHEQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Map9aaTuwz3wHYR7loSLnisuK+tFi8ceP63pgLexVNY=;
- b=ceuvW6JtnzriyQJ4WektWaG9iSyhNUdFpzslhsMXqyyJxuDop6bM7muxOoQjM/glPTP8chVzTcT2nmcGWK+Ld+qAeGNhiL4G6oxzSi4SBJY6pG0WIHdJQUhXz1r1vOYpql5ac8khXuUlqgXVXX4v2GXKbV5luWPzI97oqU5zoccgAPp9q9zY070X8ZtI2DUVT7ZVsrTeESel/fa9r0VV6jzBZ0wyu3EA680HToAhqpanrjMoeKDWgJHlAW454iuXZXMumleKQZG+a2s4rb0FZglaerJZb2AMeOFyjpOj02Nn/f/fAOsSzIfN4FOhOfjThn+ClRrOo+pQC08CR9zq0g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Map9aaTuwz3wHYR7loSLnisuK+tFi8ceP63pgLexVNY=;
- b=BLG6Fqvi8offdmnvKSLLy/byZ124d5Hqi8l/nerlIbo4NeUonDyrG0lWmnDtShccq+4IqfzreO1/O29RnSJjGejW8VkXAK/Yr0e0uXlzX9LoL17ydMugp6AhCanpMEVlE8mvTahl2/EaB8CWpCEcBEWQaJ5TBPGtFdl1UG9h578=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
- by SJ2PR12MB8160.namprd12.prod.outlook.com (2603:10b6:a03:4af::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.32; Tue, 23 Jan
- 2024 14:58:27 +0000
-Received: from MW3PR12MB4553.namprd12.prod.outlook.com
- ([fe80::f1ae:6833:99e2:9dd4]) by MW3PR12MB4553.namprd12.prod.outlook.com
- ([fe80::f1ae:6833:99e2:9dd4%6]) with mapi id 15.20.7202.034; Tue, 23 Jan 2024
- 14:58:27 +0000
-Message-ID: <8696e53c-2787-4c19-a673-626434460015@amd.com>
-Date: Tue, 23 Jan 2024 08:58:24 -0600
-User-Agent: Mozilla Thunderbird
-Reply-To: babu.moger@amd.com
-Subject: Re: [PATCH v5 1/2] x86/resctrl: Remove hard-coded memory bandwidth
- limit
-To: Borislav Petkov <bp@alien8.de>
-Cc: corbet@lwn.net, fenghua.yu@intel.com, reinette.chatre@intel.com,
- tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
- x86@kernel.org, hpa@zytor.com, paulmck@kernel.org, rdunlap@infradead.org,
- tj@kernel.org, peterz@infradead.org, seanjc@google.com,
- kim.phillips@amd.com, jmattson@google.com, ilpo.jarvinen@linux.intel.com,
- jithu.joseph@intel.com, kan.liang@linux.intel.com, nikunj@amd.com,
- daniel.sneddon@linux.intel.com, pbonzini@redhat.com,
- rick.p.edgecombe@intel.com, rppt@kernel.org,
- maciej.wieczor-retman@intel.com, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, eranian@google.com, peternewman@google.com,
- dhagiani@amd.com
-References: <20231201005720.235639-1-babu.moger@amd.com>
- <c26a8ca79d399ed076cf8bf2e9fbc58048808289.1705359148.git.babu.moger@amd.com>
- <20240123103623.GAZa-Wp79DMgeArPJz@fat_crate.local>
-Content-Language: en-US
-From: "Moger, Babu" <babu.moger@amd.com>
-In-Reply-To: <20240123103623.GAZa-Wp79DMgeArPJz@fat_crate.local>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DS7PR03CA0320.namprd03.prod.outlook.com
- (2603:10b6:8:2b::15) To MW3PR12MB4553.namprd12.prod.outlook.com
- (2603:10b6:303:2c::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 143855C5FB;
+	Tue, 23 Jan 2024 14:59:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706021994; cv=none; b=ErW5ohTl/jDud6F/MOGuzjfCxEx88Ud4xrh6whnAjsCEq+wztmAQdyMdLHOXCOGmfwyIZy4RjaoQjto1jPvjB3JSRef0wF3xTmfJIbIVkJgXjj1ixDOisquh5f8K8g47+qMl0a9CstPXHR+T73l+Qtx+C54SOLVYOX0ajL59P5s=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706021994; c=relaxed/simple;
+	bh=S2nNMUs1kL5gBban5RvYepp4KkT73O4GwescFEHu7M0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rVifd8T3o3HeXdUb9F4G2zKIwVfc/mZ7JLnrTHn7QKdDvUV6zyMDIXktlEYxXpE9ls3OaEkHkJ0xkAv3Sla7TyxQXvx6q4O1ejaj/XD2XQN/dZbSsV1pd6nJK4hAHXR/kyKR0oEH6NiF8yqvh11iB+2D+KeYOhUZ2yZPHaGlaw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=0uRCA6f6; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=Cy6lkn4Op/3yUQXZQHShopdoVhncUbCOYHYdLrbNsOk=; b=0uRCA6f6dyL9b5hwe2V9zfJMeC
+	Jrj+tRumFPBYLz1UF5/gC/e/t3ePZ1VL74pK/4pT95ZLAGfYVli1V7VVnEWsiGBtvvncqzWkPz/3o
+	KxaRfyM+0nn25IsDtmaZXcik41iSTz1H484y8kqEt2ghmIlYNAriohtH5SgKnjpcJkIpvgzZX6O3Y
+	Fh4Tt7TAOh4nmmFn/3OqiXf4uHg445sgqaq8xBzjFnfZ7jF7Kou4Z3vqbx4SnPx8A4k8BGTU1n24O
+	04xzQ9lkqRIRvkgjGE3YSgYq4HeyaFAdEFnBPK6L17VdAliAhie1HUhdhMKXdEOx0lji/Djjv/lT3
+	MbcFnuCA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37654)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rSIFb-0002bC-2T;
+	Tue, 23 Jan 2024 14:59:43 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rSIFX-00021n-7b; Tue, 23 Jan 2024 14:59:39 +0000
+Date: Tue, 23 Jan 2024 14:59:39 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+	x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
+	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+	Salil Mehta <salil.mehta@huawei.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	jianyong.wu@arm.com, justin.he@arm.com,
+	James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v3 17/21] ACPI: add support to register CPUs based on
+ the _STA enabled bit
+Message-ID: <Za/UWxAEnS5O/oY3@shell.armlinux.org.uk>
+References: <Za+61Jikkxh2BinY@shell.armlinux.org.uk>
+ <20240123142218.00001a7b@Huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|SJ2PR12MB8160:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2c8f8c36-8b6d-4982-f33d-08dc1c23c191
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	UDbX/hP4s9Ud/X5Xgyok2UlV98FlrN2JfFoM7qLOEWncnC3aph7VD7mJluy/B726vW+XqJE1P59edThfrumoj3OGV+atV3Xpvv97coTIPdoaVA80s5KQfixmuJ0XsfYEK5z2GcNmfk8lHPCWO2KZQ+o/b6RZneOCEafLWGv1ydwykHHNv3mklx1/MYgkx1VH6Tk8yFcNVo0xvGPFAm4wW3TODrd48HnJiqueJLWoHQa3uH5elD9MMYPLfZdd4zoT5PjKmgJgzR+4c4pInIPRPDHMJ+V6m/zB6quq3wZY6JS9wDTVFcFHcBlUXCV1wNVeNHqFk8OfGeHzVsP9B5/FASpiyuOTqgGbF133fUO35Zc5zEEdTeOoskf+BX8+G/J+olWjdc2ijC3bdQ85W6y27aaGULVmx1ZJwXz+DGlduOIVHrlKHEaDbN41B2U/3abWuA2dE0brSv0rjYxTNH08kcUn2i5P72NUO35FhMTmJs38uzmpE4K0XSzi24KKPkr9oxiSlNV21CwTG7nEG3H+UTljU94UfD/AVeP5h7n16hPCqy8WVBXdzF9RwKi+S9E9PFBxiBbpgSw6dqkG9MxSxaWpYFhRA/yLeyioUDHeMPkoocVmDB5/4qeXm2GeGFliMqrgXgueBv8C+hI5NsWPwQ==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(136003)(376002)(366004)(396003)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(41300700001)(38100700002)(86362001)(31696002)(36756003)(7416002)(26005)(2906002)(316002)(6916009)(66946007)(66476007)(5660300002)(3450700001)(4326008)(8676002)(8936002)(4744005)(2616005)(66556008)(478600001)(6512007)(53546011)(6506007)(6666004)(31686004)(6486002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?VjBoY3QvMVdBaW12UHprdGlpTW5rR0s0ZDhVK0oyVGNzV3Q0bi9iNzRLRUo4?=
- =?utf-8?B?ZXA1Z3FoNXFDMHhpRlNqaTF3RGNzNGFnbm9sd21BcFhXazJiYWR6alF3M2hW?=
- =?utf-8?B?T3BOd1pmMm9JRDlkNGdldm5XRXdOVVlaVERDTHNHQ2xiMm4zdHRxREY5NnFU?=
- =?utf-8?B?Qnh0anFobWQ4a1l3WEk4Y2wyaFdMb1NrTkd0M3Q2T2QyaDBOaGRZUzhXcnRn?=
- =?utf-8?B?NVBhd2RYU2ZVK0Jkek1jL1E1MnV0bDNLZEFrU0N2Nm83ZU40RXI5YzkrOVA1?=
- =?utf-8?B?cldiOTZJN2VlQTZrMDVZTmw0UjJ0RThrMmFtaXFJV0g5RzBVcjdVakh3Uzhn?=
- =?utf-8?B?eHpHNVc5Z1Z6SS9JRzZ3Rk1CY0dRelc5bXRNeG9EVjFVVmJpZkNUNkVDM2Fz?=
- =?utf-8?B?VER4ZS9zbS9FRnd0NDdCMTh1U0czNFpMUjdYazF0QzlvaHl3N0hoS3RYUUhn?=
- =?utf-8?B?ODM5T0RCTnVldERpTWxCR3M4VDZhTXUzaXFNVi9wbkViZ1dLVGdYb2l5M000?=
- =?utf-8?B?My8zMnhXTWtiM3U4ZUJPYkNMeURhdEZ0MGNWZnE3dDJFQmxtVzdsanF4VEdS?=
- =?utf-8?B?eEgrZ2tmRVEvemJPOHdXQTRkZUdCcWg3WVJ2V3JhWEVWQlNUeW13bmxOS1o3?=
- =?utf-8?B?STlVcGJleHprV0ovbVM2NDZMT2NaUWxSTTRoWC9YcCtKMDk0NzFlVGV3N2VZ?=
- =?utf-8?B?aDQrNXpaa1dPUmFkVlBlQ1gydXg0WHJNaURUOVMrMEFza1BtR0I5aWNPdXdM?=
- =?utf-8?B?Y3A4d0toQ3UyWjRBaVBBa1BDc1RtZ2pOQVNOb0g2UWc3OFZhTjZBZytLTmRy?=
- =?utf-8?B?YU94NTI2VUpHRHpRVm1uUjNrRzNLMU5hNDQzaXBhMkZtKzRoeFR4UEs0aXU4?=
- =?utf-8?B?ZXZnRGd6OHpSZ1dVanNuZTZDdEM2UEM5OHpZV0dSd2xpUGhpTG1NTzNqODla?=
- =?utf-8?B?aEcxamUraXl2Y1BtdHBWd2dkaGc5N0JDNE83SXNzdFI3TFFtbGxlWWluWnBV?=
- =?utf-8?B?RVNSUFhRLzlFTUtsMjdLbVJpOWg5Q2pXK0FtaG1KMzFESGZNekZQTFl0TkY2?=
- =?utf-8?B?cDU2eTZnN0pUUE12Vlk2VitoYmVRRkZ5RWgxN0JReXNPRmhHSkF1R2NQd1Nj?=
- =?utf-8?B?ejlmVlBEbFA0bk5VZGpJbEFsWEhlZG9KbHl1SUxEMTdsdmdSOW41NzNzRU5j?=
- =?utf-8?B?dEoydDkyVGZYN015Q0tFbmQ1Uml1akZVWWZ1TTBIaEFxM0N3Sm9lSTBtYjF1?=
- =?utf-8?B?VnFRWEI3U25uU3RxcEV4bk1vcWZGSFE0eHltQ1hZWWFJNEMwVG5LbnJXemVi?=
- =?utf-8?B?a1VVdmhVOElXa2JJMFZqWFdFbWY4WXM4ZVQwOVRXNUxnVG5icGxUbk4vays2?=
- =?utf-8?B?akx6UVVhUWdwN0Eybk1UamFwcWFSUnVleHBSOUJzUGdpNFJoKzM1MWVWNmhM?=
- =?utf-8?B?RTNwVEVpMDcybVNJc216SSs4SzdyZXFNSTB5VExpS2FOUFVRaXZOUmloWGU0?=
- =?utf-8?B?dzZMUnhiTVJvc1Q1YnVBdzVxcGExS0tBUTFGQ1dYUU5xYVBaQjdTZ3VIT1N4?=
- =?utf-8?B?TFZ6SEF2bGVTbUx4TkRiYkVRR1VzMkdiMytxNGZmMlIzZ0NJaWJaOWRFb3gz?=
- =?utf-8?B?TjQ1Y1BrUDFKczVyM25nU0FPb1lWWlJYV29tSVRBaGdjTkJFNHdtUXkyWURq?=
- =?utf-8?B?L3RlQXptWmVxT0ZHVWJqd29TdXl6RGJaNU54Y0Z6Z25jR0h2amZIRXNFYS8v?=
- =?utf-8?B?L2FZRjNaaC9kcVFTWTBKdThib3l1LzNtZStaa2JRV3NITHZjMkpVa1BTbFkw?=
- =?utf-8?B?YnBjZ0JabWFXa1h5SHdXVEpFUDlWcnZRWGVMWDhNQTVwM0M5aVVjNFBzKzZ6?=
- =?utf-8?B?RDI1YmNXeG85MTEwR2YvcXJFalJNZVVzZDlhMXNELzM0WUlHQzlvOHhvZ093?=
- =?utf-8?B?TVBUMnoyNzJWTWFwd2ZwZi9tVEZscllOTzBoT25OQ09WQkJrT0dyY1ZGaEg2?=
- =?utf-8?B?TU5TV2FaZ3U3Wmx5U1gxTG5FR29DTlBxMlJJUWN5emcwT2JMaGI4NVp2aG1K?=
- =?utf-8?B?QTNhZXkxTTJTZFFqNlFvNjIrck9ydnY2Mmptc0NGTDFJVFBjLzNLUzdIY2VF?=
- =?utf-8?Q?/2RI=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2c8f8c36-8b6d-4982-f33d-08dc1c23c191
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jan 2024 14:58:27.8635
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YbUL1u2aqt15IfqV0OtRlg/sbJMTl8oi/EBI8N28R8AjF5a7hSYel7MKRtttFeUx
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8160
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240123142218.00001a7b@Huawei.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-Hi Boris,
+On Tue, Jan 23, 2024 at 02:22:18PM +0000, Jonathan Cameron wrote:
+> On Tue, 23 Jan 2024 13:10:44 +0000
+> "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
+> 
+> > On Tue, Jan 23, 2024 at 10:26:03AM +0000, Jonathan Cameron wrote:
+> > > On Tue, 2 Jan 2024 14:53:20 +0000
+> > > Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+> > >   
+> > > > On Mon, 18 Dec 2023 13:03:32 +0000
+> > > > "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
+> > > >   
+> > > > > On Wed, Dec 13, 2023 at 12:50:38PM +0000, Russell King wrote:    
+> > > > > > From: James Morse <james.morse@arm.com>
+> > > > > > 
+> > > > > > acpi_processor_get_info() registers all present CPUs. Registering a
+> > > > > > CPU is what creates the sysfs entries and triggers the udev
+> > > > > > notifications.
+> > > > > > 
+> > > > > > arm64 virtual machines that support 'virtual cpu hotplug' use the
+> > > > > > enabled bit to indicate whether the CPU can be brought online, as
+> > > > > > the existing ACPI tables require all hardware to be described and
+> > > > > > present.
+> > > > > > 
+> > > > > > If firmware describes a CPU as present, but disabled, skip the
+> > > > > > registration. Such CPUs are present, but can't be brought online for
+> > > > > > whatever reason. (e.g. firmware/hypervisor policy).
+> > > > > > 
+> > > > > > Once firmware sets the enabled bit, the CPU can be registered and
+> > > > > > brought online by user-space. Online CPUs, or CPUs that are missing
+> > > > > > an _STA method must always be registered.      
+> > > > > 
+> > > > > ...
+> > > > >     
+> > > > > > @@ -526,6 +552,9 @@ static void acpi_processor_post_eject(struct acpi_device *device)
+> > > > > >  		acpi_processor_make_not_present(device);
+> > > > > >  		return;
+> > > > > >  	}
+> > > > > > +
+> > > > > > +	if (cpu_present(pr->id) && !(sta & ACPI_STA_DEVICE_ENABLED))
+> > > > > > +		arch_unregister_cpu(pr->id);      
+> > > > > 
+> > > > > This change isn't described in the commit log, but seems to be the cause
+> > > > > of the build error identified by the kernel build bot that is fixed
+> > > > > later in this series. I'm wondering whether this should be in a
+> > > > > different patch, maybe "ACPI: Check _STA present bit before making CPUs
+> > > > > not present" ?    
+> > > > 
+> > > > Would seem a bit odd to call arch_unregister_cpu() way before the code
+> > > > is added to call the matching arch_registers_cpu()
+> > > > 
+> > > > Mind you this eject doesn't just apply to those CPUs that are registered
+> > > > later I think, but instead to all.  So we run into the spec hole that
+> > > > there is no way to identify initially 'enabled' CPUs that might be disabled
+> > > > later.
+> > > >   
+> > > > > 
+> > > > > Or maybe my brain isn't working properly (due to being Covid positive.)
+> > > > > Any thoughts, Jonathan?    
+> > > > 
+> > > > I'll go with a resounding 'not sure' on where this change belongs.
+> > > > I blame my non existent start of the year hangover.
+> > > > Hope you have recovered!  
+> > > 
+> > > Looking again, I think you were right, move it to that earlier patch.  
+> > 
+> > I'm having second thoughts - because this patch introduces the
+> > arch_register_cpu() into the acpi_processor_add() path (via
+> > acpi_processor_get_info() and acpi_processor_make_enabled(), so isn't
+> > it also correct to add arch_unregister_cpu() to the detach/post_eject
+> > path as well? If we add one without the other, doesn't stuff become
+> > a bit asymetric?
+> > 
+> > Looking more deeply at these changes, I'm finding it isn't easy to
+> > keep track of everything that's going on here.
+> 
+> I can sympathize.
+> 
+> > 
+> > We had attach()/detach() callbacks that were nice and symetrical.
+> > How we have this post_eject() callback that makes things asymetrical.
+> > 
+> > We have the attach() method that registers the CPU, but no detach
+> > method, instead having the post_eject() method. On the face of it,
+> > arch_unregister_cpu() doesn't look symetric unless one goes digging
+> > more in the code - by that, I mean arch_register_cpu() only gets
+> > called of present=1 _and_ enabled=1. However, arch_unregister_cpu()
+> > gets called buried in acpi_processor_make_not_present(), called when
+> > present=0, and then we have this new one to handle the case where
+> > enabled=0. It is not obvious that arch_unregister_cpu() is the reverse
+> > of what happens with arch_register_cpu() here.
+> 
+> One option would be to pull the arch_unregister_cpu() out so it
+> happens in one place in both the present = 0 and enabled = 0 cases but
+> I'm not sure if it's safe to reorder the contents of 
+> acpi_processor_not_present() as it's followed by a bunch of things.
+> 
+> Would looks something like
+> 
+> if (cpu_present(pr->id)) {
+> 	if (!(sta & ACPI_STA_DEVICE_PRESENT)) {
+> 		acpi_processor_make_not_present(device); /* Remove arch_cpu_unregister() */
+> 	} else if (!(sta & ACPI_STA_DEVICE_ENABLED)) {
+> 		/* Nothing to do in this case */
+> 	} else {
+> 		return; /* Firmware did something silly - probably racing */
+> 	}
+> 	arch_unregister_cpu(pr->id);
+> 
+> 	return;
+> }
+> 
+> > 
+> > Then we have the add() method allocating pr->throttling.shared_cpu_map,
+> > and acpi_processor_make_not_present() freeing it. From what I read in
+> > ACPI v6.5, enabled is not allowed to be set without present. So, if
+> > _STA reports that a CPU that had present=1 enabled=1, but then is
+> > later reported to be enabled=0 (which we handle by calling only
+> > arch_unregister_cpu()) then what happens when _STA changes to
+> > enabled=1 later? Does add() get called? 
+> 
+> yes it does (I poked it to see) which indeed isn't good (unless I've
+> broken my setup in some obscure way).
 
-On 1/23/24 04:36, Borislav Petkov wrote:
-> On Mon, Jan 15, 2024 at 04:52:27PM -0600, Babu Moger wrote:
->> Fixes: 4d05bf71f157 ("x86/resctrl: Introduce AMD QOS feature")
+Thanks for confirming - I haven't had a chance to do any testing (late
+lunch because of spending so long looking at this...)
+
+> Seems we need a few more things than arch_unregister_cpu() pulled out
+> in the above code.
+
+Yes, and I also wonder whether we should be doing any of that
+unconditionally...
+
+> > If it does, this would cause
+> > a new acpi_processor structure to be allocated and the old one to be
+> > leaked... I hope I'm wrong about add() being called - but if it isn't,
+> > how does enabled going from 0->1 get handled... and if we are handling
+> > its 1->0 transition separately from present, then surely we should be
+> > handling that.
+> > 
+> > Maybe I'm just getting confused, but I've spent much of this morning
+> > trying to unravel all this... and I'm of the opinion that this isn't a
+> > sign of a good approach.
 > 
-> What's the point of this Fixes tag? You want this backported to stable?
-> 
-Yes. That is the intention. This applies to both these patches.
+> It's all annoyingly messy at the root of things, but indeed you've found
+> some issues in current implementation.  Feels like just ripping out
+> a bunch of stuff from acpi_processor_make_not_present() and calling it
+> for both paths will probably work, but I've not tested that yet.
+
+.. since surely if we've already got to the point of issuing a
+post_eject() callback, the device has already been ejected
+and thus has gone - and if it is ever "replaced" we will get an
+attach() callback.
+
+Moreover, looking at acpi_scan_hot_remove(), if we are the device
+being ejected, then after ej0 is evaluated, _STA is checked, and
+acpi_bus_post_eject() called only if enabled=0. (This will also
+end up calling post_eject() for any children as well which won't
+have their _STA evaluated.)
+
+So this has got me wondering whether acpi_processor_post_eject()
+should be doing all the cleanup in acpi_processor_make_not_present()
+except if we believe the call is in error (e.g.
+!ACPI_HOTPLUG_PRESENT_CPU and present=0) - thus preparing the way
+for a future attach() callback.
+
+Hmm. I wonder if Rafael has any input on this.
+
 -- 
-Thanks
-Babu Moger
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
