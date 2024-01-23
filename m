@@ -1,108 +1,149 @@
-Return-Path: <linux-kernel+bounces-34678-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34679-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAB0883860F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 04:33:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA478838611
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 04:33:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C57E2884C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:33:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17C911C25142
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:33:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30FE217EB;
-	Tue, 23 Jan 2024 03:32:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C26D720F1;
+	Tue, 23 Jan 2024 03:33:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="3TINPxLK";
-	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="uGqyq7q3"
-Received: from nautica.notk.org (nautica.notk.org [91.121.71.147])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hDdILOnH"
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12CE71FAD;
-	Tue, 23 Jan 2024 03:32:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.121.71.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03A0A1FAD
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 03:33:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705980778; cv=none; b=Prn6JIz6pAqUXP9EEbYn7kKmt8ad+rN6SCo++Rrh4ecC7qMiKrGPY1EJEhMdu4wrwnCVZp2CnS1sbD/4/Gl4VeLqBqtLS2tCiPX2G35GTg7IuMapt9vHwJYxpPg1Noo9oXCnKDMT4x2a5i4VsAJFnBt6eQCwS/CsJkYiuHZFXGk=
+	t=1705980797; cv=none; b=MuIF7YNy4pO8QtnzsrFmcXqg+uySr1KuaXH4ngW1u8oOV5zGj0TeYKigHOUFg5xt9/9Su/dqTSX+C+rk+k+Xhj3XNBj1iagWoKkEyzYNhGSaHYZOsMjcOChus40bWoHzXcVqjlD7h2cIiD2mREa34vFcA5nf5xgTv3k/uXf5zSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705980778; c=relaxed/simple;
-	bh=7fxI+iyyNWSoSUmsJMgY6DVZ2y7voll3MUa2FDfiIq4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NRrcpAG898zZ4GefKTSJOTtmtUCltFCpLf2/FnIVYXcHq4v2WbaDQV+hU1zdinRx9AHL/ZAQPp23dSZk8NoK7/PBMj12/6D8vcGwRYzb+z5R/ErwONsVBptD9Kuauk4BrvgxlxFHLhfS4nwu7Wr6iBEESMqyGln9Xfu7j1eN6sg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org; spf=pass smtp.mailfrom=codewreck.org; dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b=3TINPxLK; dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b=uGqyq7q3; arc=none smtp.client-ip=91.121.71.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codewreck.org
-Received: by nautica.notk.org (Postfix, from userid 108)
-	id 4E57AC01C; Tue, 23 Jan 2024 04:32:48 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-	t=1705980768; bh=b93yNmc+VBgXRL09Mp5+7dMbMPdweACw/yHwyKfZMKg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=3TINPxLKpzP+CnAOS8ruiRLuGUN1PORXrQJGS2SflN0ep/ND4RH1KRK/D4Txlcdyw
-	 4OHNrH2MXfF+TDLSupxSRbU8ulpBuathC/jRKnSQ3a2khN+yCpQkadYfQqkTztoo+s
-	 1Fi4jbo4xptftj0hj0nT/I1myEWAqLmFkSLfJMHgR8YdCuLYeCWkaduhSI+/KJvh15
-	 Lapn4qgDtw+ZxLcHFppj4/oTOLk6T3Dy4ssajMNcdUak/ltVkIEpvl+f93gXB0trHN
-	 8eL9G1mLYyLtsJ/bR1P3HuoiUhW3f/Z1TjLNtaV3mZaDKpOQ6J+B7HXjgwS2CpJAcx
-	 2TlIPbkdWrk6w==
-X-Spam-Level: 
-Received: from gaia.codewreck.org (localhost [127.0.0.1])
-	by nautica.notk.org (Postfix) with ESMTPS id C0C17C009;
-	Tue, 23 Jan 2024 04:32:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-	t=1705980766; bh=b93yNmc+VBgXRL09Mp5+7dMbMPdweACw/yHwyKfZMKg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uGqyq7q3dtVz1Wuap29NUBqW+tgGwLJWWHGmTDAGJw5xMX8FNcwxUheP58fmPzsbs
-	 336aRtXaEnjOanTSAVTZHg9Q3tNGXIB+EysKQRg2a7Z0BtiylYGhTqzice5S/qpOLt
-	 IIyDSwXdcqWYwji4jCsh+GThzprzt2gWwxqRcJTgFXN8jt7mhQLeH8k4HZEmxDnhNY
-	 2UkFbsoK31jie5WjYB2Q+5olw4Y0j8QJCTJHZpVIDQ1XpDYZlux9qTu1D/NVuVXJJv
-	 o72Cw2xKL0WF2HoIf9PprLW+2Isxf4kFGItMHBP78y7j/3qsQ8HDLex8zRVG+ZPCRQ
-	 kxSmm+0rBUXTQ==
-Received: from localhost (gaia.codewreck.org [local])
-	by gaia.codewreck.org (OpenSMTPD) with ESMTPA id 130446ff;
-	Tue, 23 Jan 2024 03:32:35 +0000 (UTC)
-Date: Tue, 23 Jan 2024 12:32:20 +0900
-From: Dominique Martinet <asmadeus@codewreck.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-	jonathanh@nvidia.com, f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-	conor@kernel.org, allen.lkml@gmail.com
-Subject: Re: [PATCH 5.10 000/286] 5.10.209-rc1 review
-Message-ID: <Za8zRHpPN1jqKiiu@codewreck.org>
-References: <20240122235732.009174833@linuxfoundation.org>
+	s=arc-20240116; t=1705980797; c=relaxed/simple;
+	bh=dY0b4QbqepYoiunrDJoruXQx54evIQWDoFF8FO6Rtd8=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=GkPltXN/5rQlv+BTexdT5BTG91qzmnYlkEcMnuyoinOBpfbSTLF5YUlqn+rFcx2MOU4Jl3P+od/CsvClxZJF4M9s9+LEuH71iaMuX3+O0ph04Qpja9NL4aAl2l249tOjnUzEn71uppTQ7N7zrAKyRCEPd29aBK3hQWRwLb4+tAQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hDdILOnH; arc=none smtp.client-ip=95.215.58.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Content-Type: text/plain;
+	charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1705980793;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dGyLFiCSPKnOgt2WMLCtOYKgq5Jt8mMSuChCnDpw3sE=;
+	b=hDdILOnHa8NAGzybj5naIfs7XhsW6yGVUI0mLp3wSur97OZeZCcTf+GNMtuTZh9YvMngVg
+	jH6zVoGsuSW/BEOdpXQ62XSPAsc29ZSZAoayO48d+pFWjEx09xuqfulfmjMrTs6gFDJW82
+	zNGhPQjLUXBQ+TnbaAac7FitvyZV7dE=
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240122235732.009174833@linuxfoundation.org>
+Mime-Version: 1.0
+Subject: Re: [PATCH v4 6/7] hugetlb: parallelize 2M hugetlb allocation and
+ initialization
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <829fb129-f643-4960-a2da-cd38e5ee8f39@linux.dev>
+Date: Tue, 23 Jan 2024 11:32:28 +0800
+Cc: David Hildenbrand <david@redhat.com>,
+ David Rientjes <rientjes@google.com>,
+ Mike Kravetz <mike.kravetz@oracle.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Tim Chen <tim.c.chen@linux.intel.com>,
+ Linux-MM <linux-mm@kvack.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ Gang Li <ligang.bdlg@bytedance.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <C79B8BB3-C1F8-4DFA-A084-C4B47486681F@linux.dev>
+References: <20240118123911.88833-1-gang.li@linux.dev>
+ <20240118123911.88833-7-gang.li@linux.dev>
+ <ddf37da4-4cbc-478a-be9b-3060b0aebc90@linux.dev>
+ <14e38e95-2bc6-4571-b502-4e3954b4bcc4@linux.dev>
+ <849D7EA4-BCF4-4587-8A78-F3B35B63EAE9@linux.dev>
+ <829fb129-f643-4960-a2da-cd38e5ee8f39@linux.dev>
+To: Gang Li <gang.li@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 
-Greg Kroah-Hartman wrote on Mon, Jan 22, 2024 at 03:55:06PM -0800:
-> This is the start of the stable review cycle for the 5.10.209 release.
-> There are 286 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 24 Jan 2024 23:56:49 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.209-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
 
-Tested 3c264a5f70c7 ("Linux 5.10.209-rc1") on:
-- arm i.MX6ULL (Armadillo 640)
-- arm64 i.MX8MP (Armadillo G4)
 
-No obvious regression in dmesg or basic tests:
-Tested-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
+> On Jan 23, 2024, at 10:12, Gang Li <gang.li@linux.dev> wrote:
+>=20
+> On 2024/1/22 19:30, Muchun Song wrote:
+>>> On Jan 22, 2024, at 18:12, Gang Li <gang.li@linux.dev> wrote:
+>>>=20
+>>> On 2024/1/22 15:10, Muchun Song wrote:> On 2024/1/18 20:39, Gang Li =
+wrote:
+>>>>> +static void __init hugetlb_alloc_node(unsigned long start, =
+unsigned long end, void *arg)
+>>>>>   {
+>>>>> -    unsigned long i;
+>>>>> +    struct hstate *h =3D (struct hstate *)arg;
+>>>>> +    int i, num =3D end - start;
+>>>>> +    nodemask_t node_alloc_noretry;
+>>>>> +    unsigned long flags;
+>>>>> +    int next_node =3D 0;
+>>>> This should be first_online_node which may be not zero.
+>>>=20
+>>> That's right. Thanks!
+>>>=20
+>>>>> -    for (i =3D 0; i < h->max_huge_pages; ++i) {
+>>>>> -        if (!alloc_bootmem_huge_page(h, NUMA_NO_NODE))
+>>>>> +    /* Bit mask controlling how hard we retry per-node =
+allocations.*/
+>>>>> +    nodes_clear(node_alloc_noretry);
+>>>>> +
+>>>>> +    for (i =3D 0; i < num; ++i) {
+>>>>> +        struct folio *folio =3D alloc_pool_huge_folio(h, =
+&node_states[N_MEMORY],
+>>>>> +                        &node_alloc_noretry, &next_node);
+>>>>> +        if (!folio)
+>>>>>               break;
+>>>>> +        spin_lock_irqsave(&hugetlb_lock, flags);
+>>>>> I suspect there will more contention on this lock when =
+parallelizing.
+>>>=20
+>>> In the worst case, there are only 'numa node number' of threads in
+>>> contention. And in my testing, it doesn't degrade performance, but
+>>> rather improves performance due to the reduced granularity.
+>> So, the performance does not change if you move the lock out of
+>> loop?
+>>=20
+>=20
+> If we move the lock out of loop, then multi-threading becomes =
+single-threading, which definitely reduces performance.
 
--- 
-Dominique
+No. I mean batching the pages into pool list just like =
+prep_and_add_allocated_folios
+does.
+
+>=20
+> ```
+> +       spin_lock_irqsave(&hugetlb_lock, flags);
+>        for (i =3D 0; i < num; ++i) {
+>                struct folio *folio =3D alloc_pool_huge_folio(h, =
+&node_states[N_MEMORY],
+>                                                &node_alloc_noretry, =
+&next_node);
+>                if (!folio)
+>                        break;
+> -               spin_lock_irqsave(&hugetlb_lock, flags);
+>                __prep_account_new_huge_page(h, folio_nid(folio));
+>                enqueue_hugetlb_folio(h, folio);
+> -               spin_unlock_irqrestore(&hugetlb_lock, flags);
+>                cond_resched();
+>        }
+> +       spin_unlock_irqrestore(&hugetlb_lock, flags);
+> }
+> ```
+
+
 
