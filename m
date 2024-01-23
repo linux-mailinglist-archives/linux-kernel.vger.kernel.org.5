@@ -1,165 +1,141 @@
-Return-Path: <linux-kernel+bounces-35182-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35183-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB816838D3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:17:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B4EA838D44
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:19:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEE631C2182F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:17:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E8431C21B8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:19:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B08195D759;
-	Tue, 23 Jan 2024 11:17:16 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9EB15D8FC;
-	Tue, 23 Jan 2024 11:17:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6DE95D745;
+	Tue, 23 Jan 2024 11:19:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eOlUs8aG"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7221C5D727
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 11:19:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706008636; cv=none; b=QFiwinrfQ0C82hfwR+ZkZP+TwRZfgIjoPPDFHdNxB6LA7SDxTTcS28g8IebjcSvsX+e6jMf8Rw98vLNR8J8qywPj6dLDPMojiGG2pfLW0dzbJn/aGAmo4/M3zrP534B98ijiaNP78GcLjgm75S0CHvnKDhdnzpiOPd4dgcpCjEo=
+	t=1706008772; cv=none; b=fubsGwuE5UaSlFzTxhRr3a8jhfASX9R6cOhGbZ6119IgSOCkRHIANynfVr0wIblyT89eQg2ebJkpbI4KHOjMo4b2+6+a6VHEin9JszbUZ1B8NwU41C3bKhHRrwp9EWbRYBrc51ApXkvYcRuOSlQ8pqZmYoSRyerZm91QcxXN0vk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706008636; c=relaxed/simple;
-	bh=PhFtbKKxCyRQcfECiSYZj99oUivuJJBtHAiQ+xcjLek=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DuStTrBGwdCHwulQTCiZ2Rb3kHQIia8Jio31XijmGfgpyP3KPwnYz0phkyjWBgwBLmrTZ1kdMGZt6zfm8rkn30l7OBSJyV+MYWF/gxPpZS2B51lg0k47acam5a2mzr/2u0geIl59lSMj5gSCD65pQhLE3r9XX59fBtzOUciRj7w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5AAB21FB;
-	Tue, 23 Jan 2024 03:17:58 -0800 (PST)
-Received: from [10.57.77.165] (unknown [10.57.77.165])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 436DD3F762;
-	Tue, 23 Jan 2024 03:17:09 -0800 (PST)
-Message-ID: <75e99c49-734a-47f4-b7a5-7e346bd2487b@arm.com>
-Date: Tue, 23 Jan 2024 11:17:07 +0000
+	s=arc-20240116; t=1706008772; c=relaxed/simple;
+	bh=C6BsBKcktkP97lGptVkgfZZi4GPR1FFiDYW4JzJCj9s=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=I/QgmQhQy0O6rloI2LzyMjmmtXMuT2VYadnl8hv+h8pd04sXI8o68XN2z6OD6EJQKe2XHKQUpAO+gHQ0zmhMq4raZs+aiJAzwkOu2/pulRyRRDEfId9ou2l0D/Iqs3SwwahoYCLYVGQ0n8CQ/tsgyJcZdvoTuNGWC9n6JOpTQ+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eOlUs8aG; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-55a9008c185so4713351a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 03:19:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706008768; x=1706613568; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=o/Xcl0onVjE7Leo9ysBcPjIxgXGjF6Jy/8Rf+APk+/A=;
+        b=eOlUs8aGYFW/B/f4QXfFWPgfq3QuS8kYiqRXd3cXpSqJCsAYIwWxi7R/zUqeBpTedV
+         7Al4CmeYn+eSvZpm6VH1sIkGYgHxHpEkSonInJ9ph2kmlUVAMC9W4qbbWqQAOCHk7/T1
+         G6haJebLX2pL8ct5XdQ7ttUcUrjSwZwIbAyMGUgsDI4KXp04mWM1TDLWjvW9QtjMzzT4
+         3axpfGHPSzByQbnyGLYLViSged/OVhOcvZBODJ5wVIwZELTFJEm1d+Tp0n04y13LCLEI
+         4/XEcNuomovWCtCsbfhskqGCIz9iK4m/tdEePVLx25T2qaVAs0ZipTIzn0tFVG9zumAQ
+         ejVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706008768; x=1706613568;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=o/Xcl0onVjE7Leo9ysBcPjIxgXGjF6Jy/8Rf+APk+/A=;
+        b=NVKGLxFKWgpVq3rYVWqNyx8Swqr7wEPNb8+hoehH83+MZMCK3W+1V9nQMGvJCh/pZL
+         osg1/NZJ6XmVG0e2GaAxUrqmnNVOy0FGsAa11ItIiuLQsTCZ8LqC+cCk3B0EG2Sxl4Wx
+         l4yGjxbW0Au8ONXjuF2Nvc2M73ZdWvXa+0BZZ0xdbUq1JPMEaQtKva6hpWC7IgUGmN7R
+         o76Sqg1c3R70gai0d51GiiVHKdf3if9s1zfLxBt8PoH3ORJyczgaDs/a/fmNFvigLdji
+         jrJdp0KffNmxOYLUg/vx5rhC4v8Ak++LBVzf1+xmQdeh9kcXGJVbttk/UNSr85dV9UF6
+         yQ8A==
+X-Gm-Message-State: AOJu0YyRdIQ4vgQPsjb7oagvVe+7KDbZ29+BJZWFWaCtMq6b+ApL4b/j
+	tfqm1YrXWkjdSHWPRIVTqBFnG0dwAO1gp9pwvCP2gH6HW5Zsl8fpHuGOLJZ3z1arXQ==
+X-Google-Smtp-Source: AGHT+IFk7AASUlgymkD/G88lgvQsTAkBAYnM+YVX+xHj/hQ3x0n0nkYgMDyEVMonARKTlnNwZyS96A==
+X-Received: by 2002:aa7:ce03:0:b0:55c:8358:73c3 with SMTP id d3-20020aa7ce03000000b0055c835873c3mr897723edv.11.1706008768450;
+        Tue, 23 Jan 2024 03:19:28 -0800 (PST)
+Received: from [127.0.1.1] (2a02-8389-41cf-e200-e5e9-d5c9-698d-8bd1.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:e5e9:d5c9:698d:8bd1])
+        by smtp.gmail.com with ESMTPSA id fk4-20020a056402398400b005576a384b46sm15230791edb.10.2024.01.23.03.19.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jan 2024 03:19:28 -0800 (PST)
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Date: Tue, 23 Jan 2024 12:19:26 +0100
+Subject: [PATCH] iio: move LIGHT_UVA and LIGHT_UVB to the end of
+ iio_modifier
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 01/11] arm/pgtable: define PFN_PTE_SHIFT on arm and
- arm64
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
- Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, "David S. Miller"
- <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
-References: <20240122194200.381241-1-david@redhat.com>
- <20240122194200.381241-2-david@redhat.com>
- <fdaeb9a5-d890-499a-92c8-d171df43ad01@arm.com>
- <46080ac1-7789-499b-b7f3-0231d7bd6de7@redhat.com>
- <02d42161-a867-424d-bef8-efd67d592cbc@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <02d42161-a867-424d-bef8-efd67d592cbc@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240123-uva_uvb_fix-v1-1-5b9c25d50d90@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAL2gr2UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDQyNj3dKyxPjSsqT4tMwKXfNECwMzUwtTE0tLIyWgjoKiVKAw2LTo2Np
+ aAK8Mi0NdAAAA
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>, 
+ Paul Cercueil <paul@crapouillou.net>
+Cc: linux-kernel@vger.kernel.org, 
+ Javier Carrasco <javier.carrasco.cruz@gmail.com>
+X-Mailer: b4 0.13-dev-4e032
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1706008767; l=1301;
+ i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
+ bh=C6BsBKcktkP97lGptVkgfZZi4GPR1FFiDYW4JzJCj9s=;
+ b=Yc72VEqJM5zrpEqQmsV8U9t1eA71cJlvBYw0KeffmBNNAyCCQ7SGD+QWRUv9k0hhKwR+A/ico
+ ce1zmXYwZtFAhamVfUBwzkEag8EZoQcKAMtSJhtpTzPsIZbG5gPMgIY
+X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
+ pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
 
-On 23/01/2024 11:02, David Hildenbrand wrote:
-> On 23.01.24 11:48, David Hildenbrand wrote:
->> On 23.01.24 11:34, Ryan Roberts wrote:
->>> On 22/01/2024 19:41, David Hildenbrand wrote:
->>>> We want to make use of pte_next_pfn() outside of set_ptes(). Let's
->>>> simpliy define PFN_PTE_SHIFT, required by pte_next_pfn().
->>>>
->>>> Signed-off-by: David Hildenbrand <david@redhat.com>
->>>> ---
->>>>    arch/arm/include/asm/pgtable.h   | 2 ++
->>>>    arch/arm64/include/asm/pgtable.h | 2 ++
->>>>    2 files changed, 4 insertions(+)
->>>>
->>>> diff --git a/arch/arm/include/asm/pgtable.h b/arch/arm/include/asm/pgtable.h
->>>> index d657b84b6bf70..be91e376df79e 100644
->>>> --- a/arch/arm/include/asm/pgtable.h
->>>> +++ b/arch/arm/include/asm/pgtable.h
->>>> @@ -209,6 +209,8 @@ static inline void __sync_icache_dcache(pte_t pteval)
->>>>    extern void __sync_icache_dcache(pte_t pteval);
->>>>    #endif
->>>>    +#define PFN_PTE_SHIFT        PAGE_SHIFT
->>>> +
->>>>    void set_ptes(struct mm_struct *mm, unsigned long addr,
->>>>                  pte_t *ptep, pte_t pteval, unsigned int nr);
->>>>    #define set_ptes set_ptes
->>>> diff --git a/arch/arm64/include/asm/pgtable.h
->>>> b/arch/arm64/include/asm/pgtable.h
->>>> index 79ce70fbb751c..d4b3bd96e3304 100644
->>>> --- a/arch/arm64/include/asm/pgtable.h
->>>> +++ b/arch/arm64/include/asm/pgtable.h
->>>> @@ -341,6 +341,8 @@ static inline void __sync_cache_and_tags(pte_t pte,
->>>> unsigned int nr_pages)
->>>>            mte_sync_tags(pte, nr_pages);
->>>>    }
->>>>    +#define PFN_PTE_SHIFT        PAGE_SHIFT
->>>
->>> I think this is buggy. And so is the arm64 implementation of set_ptes(). It
->>> works fine for 48-bit output address, but for 52-bit OAs, the high bits are not
->>> kept contigously, so if you happen to be setting a mapping for which the
->>> physical memory block straddles bit 48, this won't work.
->>
->> Right, as soon as the PTE bits are not contiguous, this stops working,
->> just like set_ptes() would, which I used as orientation.
->>
->>>
->>> Today, only the 64K base page config can support 52 bits, and for this,
->>> OA[51:48] are stored in PTE[15:12]. But 52 bits for 4K and 16K base pages is
->>> coming (hopefully v6.9) and in this case OA[51:50] are stored in PTE[9:8].
->>> Fortunately we already have helpers in arm64 to abstract this.
->>>
->>> So I think arm64 will want to define its own pte_next_pfn():
->>>
->>> #define pte_next_pfn pte_next_pfn
->>> static inline pte_t pte_next_pfn(pte_t pte)
->>> {
->>>     return pfn_pte(pte_pfn(pte) + 1, pte_pgprot(pte));
->>> }
->>>
-> 
-> Digging into the details, on arm64 we have:
-> 
-> #define pte_pfn(pte)           (__pte_to_phys(pte) >> PAGE_SHIFT)
-> 
-> and
-> 
-> #define __pte_to_phys(pte)     (pte_val(pte) & PTE_ADDR_MASK)
-> 
-> But that implies, that upstream the PFN is always contiguous, no?
-> 
+The new modifiers should have added to the end of the enum, so they do
+not affect the existing entries.
 
+No modifiers were added since then, so they can be moved safely to the
+end of the list.
 
-But __pte_to_phys() and __phys_to_pte_val() depend on a Kconfig. If PA bits is
-52, the bits are not all contiguous:
+Move IIO_MOD_LIGHT_UVA and IIO_MOD_LIGHT_UVB to the end of iio_modifier.
 
-#ifdef CONFIG_ARM64_PA_BITS_52
-static inline phys_addr_t __pte_to_phys(pte_t pte)
-{
-	return (pte_val(pte) & PTE_ADDR_LOW) |
-		((pte_val(pte) & PTE_ADDR_HIGH) << PTE_ADDR_HIGH_SHIFT);
-}
-static inline pteval_t __phys_to_pte_val(phys_addr_t phys)
-{
-	return (phys | (phys >> PTE_ADDR_HIGH_SHIFT)) & PTE_ADDR_MASK;
-}
-#else
-#define __pte_to_phys(pte)	(pte_val(pte) & PTE_ADDR_MASK)
-#define __phys_to_pte_val(phys)	(phys)
-#endif
+Fixes: b89710bd215e ("iio: add modifiers for A and B ultraviolet light")
+Suggested-by: Paul Cercueil <paul@crapouillou.net>
+Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+---
+ include/uapi/linux/iio/types.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/uapi/linux/iio/types.h b/include/uapi/linux/iio/types.h
+index 5060963707b1..f2e0b2d50e6b 100644
+--- a/include/uapi/linux/iio/types.h
++++ b/include/uapi/linux/iio/types.h
+@@ -91,8 +91,6 @@ enum iio_modifier {
+ 	IIO_MOD_CO2,
+ 	IIO_MOD_VOC,
+ 	IIO_MOD_LIGHT_UV,
+-	IIO_MOD_LIGHT_UVA,
+-	IIO_MOD_LIGHT_UVB,
+ 	IIO_MOD_LIGHT_DUV,
+ 	IIO_MOD_PM1,
+ 	IIO_MOD_PM2P5,
+@@ -107,6 +105,8 @@ enum iio_modifier {
+ 	IIO_MOD_PITCH,
+ 	IIO_MOD_YAW,
+ 	IIO_MOD_ROLL,
++	IIO_MOD_LIGHT_UVA,
++	IIO_MOD_LIGHT_UVB,
+ };
+ 
+ enum iio_event_type {
+
+---
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+change-id: 20240123-uva_uvb_fix-7a8065854992
+
+Best regards,
+-- 
+Javier Carrasco <javier.carrasco.cruz@gmail.com>
 
 
