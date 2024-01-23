@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-35928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94A2E8398E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:59:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF4B98398E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:59:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B98B41C2475D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:58:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 422FA1F2A672
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:59:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA47612837C;
-	Tue, 23 Jan 2024 18:51:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEA4C12838A;
+	Tue, 23 Jan 2024 18:51:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="COQc5zGn"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Tpku0gkf"
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AE1E481DC;
-	Tue, 23 Jan 2024 18:51:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77E59823DC;
+	Tue, 23 Jan 2024 18:51:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706035874; cv=none; b=Ivjl7d/7czV0VrLsYM4KpeYTXAml2Gd9u11jcIX6hIWaKbjh/bOcgr0FzCFmSQk1bhHlqDXXuzFDTmXHIF1UohHwu/J6mQt7NgNsGosqXFdRe3vnCOMrb02VNl6SvjWlur1rz3Mjs/jboFByFB9DD1/35425nnBZDjZFw1MQADw=
+	t=1706035875; cv=none; b=WzLj/+2uxiyRMIFdbOzVKbAG69xRABNOR73Gnx2GbY0sVzfGMVDfiERrnFiwr2GVNOn2r91tA5FbpljvZPqLywpFSEY6IIINuDlwFSGSK3TmmwntkDWM9tI/mVdOCGbqnAF5vpIJjaSpwsCPugh8NQFyRLCaPr8epyEcOfkXttU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706035874; c=relaxed/simple;
-	bh=bczC8A0hQ/gAAjL9hVQx1yHdULUKlfb9gniprw4vb0U=;
+	s=arc-20240116; t=1706035875; c=relaxed/simple;
+	bh=o2ahNAmeA/qzaSQtZbaOB8+UqIGGbQfhYxfQ3WsXzr0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=szmUQpRfGrcgi2pWs+FVxKW0fSuyzIaMgjt17EbVnrI0ewVCbKyP+q7n0rC9kb8lUFBTnq0jqEdSzvAskXGgb1dfqWsQDtNerJ4+cO8O75DI9mXXEyDphz4zq4vSjNjkkPHQDNO1dS6oELoVu6zos4hou3NvXhZmAUSm5CWSHJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=COQc5zGn; arc=none smtp.client-ip=192.55.52.120
+	 MIME-Version; b=D8KcxBKAqMJ05w1C84p/uxXM1cGSOctSHEhm1yEQo8ssjhWGuU5DxxW2F3/bQhHI2w8YDB3/P23CqlnYAPiK0e1IZltvM5HfddDMnd7b74uMF6rOj+IFONpaPC9EYH7VB9Q5+NNTHFydo6EO2b49DVUwvLyvrKLoTgrLarjHVXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Tpku0gkf; arc=none smtp.client-ip=192.55.52.120
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706035872; x=1737571872;
+  t=1706035873; x=1737571873;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=bczC8A0hQ/gAAjL9hVQx1yHdULUKlfb9gniprw4vb0U=;
-  b=COQc5zGnLoEG33B9d1SChRgyS25T//OiXNew8xcPh0lPrZ5YFDxMJ993
-   gFD9fPt+JxEgPXoKa3/k0hm7E3bXnH06SNsUC0sLkhJdX1X/jZRyoLoO6
-   ltntCWh/mW0W0HcuQG6P41AciS4NRDi3h11J/nqjmpxhmGeSx2xuQdJkf
-   ErzsoVFvx66pTkCGkf6gyXV3HMf6x98rOcOX0IbRO5RuRuYooGoFNK0VL
-   Dg2q31SzrZxS1jG+GszNUdefzDdX54jnyx78nfMMVI0akelFSE7CuQodA
-   nmuc+DDpjU1XjUlh77YUML1Mk/ySCAc+SGHiGdJih6JUv0qqWuTgde11w
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="400487447"
+  bh=o2ahNAmeA/qzaSQtZbaOB8+UqIGGbQfhYxfQ3WsXzr0=;
+  b=Tpku0gkfO/TwHn1N7QQUwJTj+9mjymuqqLaO0yTmZ2QXH7USjqSMISvM
+   ++6Xhdu3cmbtpOrCxIs5oMfLOlOdT4ome5IdGB563xBFx9X/DnyzAHq5K
+   R3M1xO0nO9FlHHbWdUFBqr/TA6pwdGzsK4waRnLkCikK9+zaDS3SPv2QO
+   ekkqyu5342TmKqwC77OER+6VG9CEojkSseDB8fMVB2zePQ2hTt24Z5rKo
+   A7oLBTmyuujBBDyl459RN6+0tBSDlPFQp1YAHYus7iRoP940nF9rAd9hE
+   pA+wVViA/siGaPEEty2Ci+nFoqL+DSdt6u5AvVWYumZCGE8gHdhquj0HX
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="400487463"
 X-IronPort-AV: E=Sophos;i="6.05,215,1701158400"; 
-   d="scan'208";a="400487447"
+   d="scan'208";a="400487463"
 Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 10:51:10 -0800
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 10:51:11 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.05,215,1701158400"; 
-   d="scan'208";a="1764016"
+   d="scan'208";a="1764030"
 Received: from kanliang-dev.jf.intel.com ([10.165.154.102])
-  by fmviesa004.fm.intel.com with ESMTP; 23 Jan 2024 10:51:11 -0800
+  by fmviesa004.fm.intel.com with ESMTP; 23 Jan 2024 10:51:12 -0800
 From: kan.liang@linux.intel.com
 To: acme@kernel.org,
 	namhyung@kernel.org,
@@ -76,9 +76,9 @@ To: acme@kernel.org,
 	linux-arm-kernel@lists.infradead.org
 Cc: Kan Liang <kan.liang@linux.intel.com>,
 	Kajol Jain <kjain@linux.ibm.com>
-Subject: [PATCH V4 1/7] perf mem: Add mem_events into the supported perf_pmu
-Date: Tue, 23 Jan 2024 10:50:30 -0800
-Message-Id: <20240123185036.3461837-2-kan.liang@linux.intel.com>
+Subject: [PATCH V4 2/7] perf mem: Clean up perf_mem_events__ptr()
+Date: Tue, 23 Jan 2024 10:50:31 -0800
+Message-Id: <20240123185036.3461837-3-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20240123185036.3461837-1-kan.liang@linux.intel.com>
 References: <20240123185036.3461837-1-kan.liang@linux.intel.com>
@@ -92,222 +92,465 @@ Content-Transfer-Encoding: 8bit
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-With the mem_events, perf doesn't need to read sysfs for each PMU to
-find the mem-events-supported PMU. The patch also makes it possible to
-clean up the related __weak functions later.
+The mem_events can be retrieved from the struct perf_pmu now. An ARCH
+specific perf_mem_events__ptr() is not required anymore. Remove all of
+them.
 
-The patch is only to add the mem_events into the perf_pmu for all ARCHs.
-It will be used in the later cleanup patches.
+The Intel hybrid has multiple mem-events-supported PMUs. But they share
+the same mem_events. Other ARCHs only support one mem-events-supported
+PMU. In the configuration, it's good enough to only configure the
+mem_events for one PMU. Add perf_mem_events_find_pmu() which returns the
+first mem-events-supported PMU.
+
+In the perf_mem_events__init(), the perf_pmus__scan() is not required
+anymore. It avoids checking the sysfs for every PMU on the system.
+
+Make the perf_mem_events__record_args() more generic. Remove the
+perf_mem_events__print_unsupport_hybrid().
+
+Since pmu is added as a new parameter, rename perf_mem_events__ptr() to
+perf_pmu__mem_events_ptr(). Several other functions also do a similar
+rename.
 
 Reviewed-by: Ian Rogers <irogers@google.com>
 Reviewed-by: Kajol Jain <kjain@linux.ibm.com>
 Tested-by: Ravi Bangoria <ravi.bangoria@amd.com>
-Tested-by: Leo Yan <leo.yan@linaro.org>
-Tested-by: Kajol Jain <kjain@linux.ibm.com>
-Suggested-by: Leo Yan <leo.yan@linaro.org>
+Tested-by: Kajol jain <kjain@linux.ibm.com>
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- tools/perf/arch/arm/util/pmu.c          | 3 +++
- tools/perf/arch/arm64/util/mem-events.c | 7 ++++---
- tools/perf/arch/arm64/util/mem-events.h | 7 +++++++
- tools/perf/arch/x86/util/mem-events.c   | 4 ++--
- tools/perf/arch/x86/util/mem-events.h   | 9 +++++++++
- tools/perf/arch/x86/util/pmu.c          | 7 +++++++
- tools/perf/util/mem-events.c            | 2 +-
- tools/perf/util/mem-events.h            | 1 +
- tools/perf/util/pmu.c                   | 4 +++-
- tools/perf/util/pmu.h                   | 7 +++++++
- 10 files changed, 44 insertions(+), 7 deletions(-)
- create mode 100644 tools/perf/arch/arm64/util/mem-events.h
- create mode 100644 tools/perf/arch/x86/util/mem-events.h
+ tools/perf/arch/arm64/util/mem-events.c |  10 +--
+ tools/perf/arch/x86/util/mem-events.c   |  18 ++---
+ tools/perf/builtin-c2c.c                |  28 +++++--
+ tools/perf/builtin-mem.c                |  28 +++++--
+ tools/perf/util/mem-events.c            | 103 ++++++++++++------------
+ tools/perf/util/mem-events.h            |   9 ++-
+ 6 files changed, 104 insertions(+), 92 deletions(-)
 
-diff --git a/tools/perf/arch/arm/util/pmu.c b/tools/perf/arch/arm/util/pmu.c
-index 7f3af3b97f3b..8b7cb68ba1a8 100644
---- a/tools/perf/arch/arm/util/pmu.c
-+++ b/tools/perf/arch/arm/util/pmu.c
-@@ -13,6 +13,7 @@
- #include "hisi-ptt.h"
- #include "../../../util/pmu.h"
- #include "../../../util/cs-etm.h"
-+#include "../../arm64/util/mem-events.h"
- 
- void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
- {
-@@ -26,6 +27,8 @@ void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
- 		pmu->selectable = true;
- 		pmu->is_uncore = false;
- 		pmu->perf_event_attr_init_default = arm_spe_pmu_default_config;
-+		if (!strcmp(pmu->name, "arm_spe_0"))
-+			pmu->mem_events = perf_mem_events_arm;
- 	} else if (strstarts(pmu->name, HISI_PTT_PMU_NAME)) {
- 		pmu->selectable = true;
- #endif
 diff --git a/tools/perf/arch/arm64/util/mem-events.c b/tools/perf/arch/arm64/util/mem-events.c
-index 3bcc5c7035c2..edf8207f7812 100644
+index edf8207f7812..d3e69a520c2b 100644
 --- a/tools/perf/arch/arm64/util/mem-events.c
 +++ b/tools/perf/arch/arm64/util/mem-events.c
-@@ -1,10 +1,11 @@
- // SPDX-License-Identifier: GPL-2.0
--#include "map_symbol.h"
-+#include "util/map_symbol.h"
-+#include "util/mem-events.h"
- #include "mem-events.h"
+@@ -13,17 +13,9 @@ struct perf_mem_event perf_mem_events_arm[PERF_MEM_EVENTS__MAX] = {
  
- #define E(t, n, s) { .tag = t, .name = n, .sysfs_name = s }
+ static char mem_ev_name[100];
  
--static struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX] = {
-+struct perf_mem_event perf_mem_events_arm[PERF_MEM_EVENTS__MAX] = {
- 	E("spe-load",	"arm_spe_0/ts_enable=1,pa_enable=1,load_filter=1,store_filter=0,min_latency=%u/",	"arm_spe_0"),
- 	E("spe-store",	"arm_spe_0/ts_enable=1,pa_enable=1,load_filter=0,store_filter=1/",			"arm_spe_0"),
- 	E("spe-ldst",	"arm_spe_0/ts_enable=1,pa_enable=1,load_filter=1,store_filter=1,min_latency=%u/",	"arm_spe_0"),
-@@ -17,7 +18,7 @@ struct perf_mem_event *perf_mem_events__ptr(int i)
+-struct perf_mem_event *perf_mem_events__ptr(int i)
+-{
+-	if (i >= PERF_MEM_EVENTS__MAX)
+-		return NULL;
+-
+-	return &perf_mem_events_arm[i];
+-}
+-
+ const char *perf_mem_events__name(int i, const char *pmu_name __maybe_unused)
+ {
+-	struct perf_mem_event *e = perf_mem_events__ptr(i);
++	struct perf_mem_event *e = &perf_mem_events_arm[i];
+ 
  	if (i >= PERF_MEM_EVENTS__MAX)
+ 		return NULL;
+diff --git a/tools/perf/arch/x86/util/mem-events.c b/tools/perf/arch/x86/util/mem-events.c
+index 2b81d229982c..5fb41d50118d 100644
+--- a/tools/perf/arch/x86/util/mem-events.c
++++ b/tools/perf/arch/x86/util/mem-events.c
+@@ -28,17 +28,6 @@ struct perf_mem_event perf_mem_events_amd[PERF_MEM_EVENTS__MAX] = {
+ 	E("mem-ldst",	"ibs_op//",	"ibs_op"),
+ };
+ 
+-struct perf_mem_event *perf_mem_events__ptr(int i)
+-{
+-	if (i >= PERF_MEM_EVENTS__MAX)
+-		return NULL;
+-
+-	if (x86__is_amd_cpu())
+-		return &perf_mem_events_amd[i];
+-
+-	return &perf_mem_events_intel[i];
+-}
+-
+ bool is_mem_loads_aux_event(struct evsel *leader)
+ {
+ 	struct perf_pmu *pmu = perf_pmus__find("cpu");
+@@ -54,7 +43,12 @@ bool is_mem_loads_aux_event(struct evsel *leader)
+ 
+ const char *perf_mem_events__name(int i, const char *pmu_name)
+ {
+-	struct perf_mem_event *e = perf_mem_events__ptr(i);
++	struct perf_mem_event *e;
++
++	if (x86__is_amd_cpu())
++		e = &perf_mem_events_amd[i];
++	else
++		e = &perf_mem_events_intel[i];
+ 
+ 	if (!e)
+ 		return NULL;
+diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
+index f78eea9e2153..838481505e08 100644
+--- a/tools/perf/builtin-c2c.c
++++ b/tools/perf/builtin-c2c.c
+@@ -3215,12 +3215,19 @@ static int parse_record_events(const struct option *opt,
+ 			       const char *str, int unset __maybe_unused)
+ {
+ 	bool *event_set = (bool *) opt->value;
++	struct perf_pmu *pmu;
++
++	pmu = perf_mem_events_find_pmu();
++	if (!pmu) {
++		pr_err("failed: there is no PMU that supports perf c2c\n");
++		exit(-1);
++	}
+ 
+ 	if (!strcmp(str, "list")) {
+-		perf_mem_events__list();
++		perf_pmu__mem_events_list(pmu);
+ 		exit(0);
+ 	}
+-	if (perf_mem_events__parse(str))
++	if (perf_pmu__mem_events_parse(pmu, str))
+ 		exit(-1);
+ 
+ 	*event_set = true;
+@@ -3245,6 +3252,7 @@ static int perf_c2c__record(int argc, const char **argv)
+ 	bool all_user = false, all_kernel = false;
+ 	bool event_set = false;
+ 	struct perf_mem_event *e;
++	struct perf_pmu *pmu;
+ 	struct option options[] = {
+ 	OPT_CALLBACK('e', "event", &event_set, "event",
+ 		     "event selector. Use 'perf c2c record -e list' to list available events",
+@@ -3256,7 +3264,13 @@ static int perf_c2c__record(int argc, const char **argv)
+ 	OPT_END()
+ 	};
+ 
+-	if (perf_mem_events__init()) {
++	pmu = perf_mem_events_find_pmu();
++	if (!pmu) {
++		pr_err("failed: no PMU supports the memory events\n");
++		return -1;
++	}
++
++	if (perf_pmu__mem_events_init(pmu)) {
+ 		pr_err("failed: memory events not supported\n");
+ 		return -1;
+ 	}
+@@ -3280,7 +3294,7 @@ static int perf_c2c__record(int argc, const char **argv)
+ 	rec_argv[i++] = "record";
+ 
+ 	if (!event_set) {
+-		e = perf_mem_events__ptr(PERF_MEM_EVENTS__LOAD_STORE);
++		e = perf_pmu__mem_events_ptr(pmu, PERF_MEM_EVENTS__LOAD_STORE);
+ 		/*
+ 		 * The load and store operations are required, use the event
+ 		 * PERF_MEM_EVENTS__LOAD_STORE if it is supported.
+@@ -3289,15 +3303,15 @@ static int perf_c2c__record(int argc, const char **argv)
+ 			e->record = true;
+ 			rec_argv[i++] = "-W";
+ 		} else {
+-			e = perf_mem_events__ptr(PERF_MEM_EVENTS__LOAD);
++			e = perf_pmu__mem_events_ptr(pmu, PERF_MEM_EVENTS__LOAD);
+ 			e->record = true;
+ 
+-			e = perf_mem_events__ptr(PERF_MEM_EVENTS__STORE);
++			e = perf_pmu__mem_events_ptr(pmu, PERF_MEM_EVENTS__STORE);
+ 			e->record = true;
+ 		}
+ 	}
+ 
+-	e = perf_mem_events__ptr(PERF_MEM_EVENTS__LOAD);
++	e = perf_pmu__mem_events_ptr(pmu, PERF_MEM_EVENTS__LOAD);
+ 	if (e->record)
+ 		rec_argv[i++] = "-W";
+ 
+diff --git a/tools/perf/builtin-mem.c b/tools/perf/builtin-mem.c
+index 51499c20da01..ef64bae77ca7 100644
+--- a/tools/perf/builtin-mem.c
++++ b/tools/perf/builtin-mem.c
+@@ -43,12 +43,19 @@ static int parse_record_events(const struct option *opt,
+ 			       const char *str, int unset __maybe_unused)
+ {
+ 	struct perf_mem *mem = *(struct perf_mem **)opt->value;
++	struct perf_pmu *pmu;
++
++	pmu = perf_mem_events_find_pmu();
++	if (!pmu) {
++		pr_err("failed: there is no PMU that supports perf mem\n");
++		exit(-1);
++	}
+ 
+ 	if (!strcmp(str, "list")) {
+-		perf_mem_events__list();
++		perf_pmu__mem_events_list(pmu);
+ 		exit(0);
+ 	}
+-	if (perf_mem_events__parse(str))
++	if (perf_pmu__mem_events_parse(pmu, str))
+ 		exit(-1);
+ 
+ 	mem->operation = 0;
+@@ -72,6 +79,7 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
+ 	int ret;
+ 	bool all_user = false, all_kernel = false;
+ 	struct perf_mem_event *e;
++	struct perf_pmu *pmu;
+ 	struct option options[] = {
+ 	OPT_CALLBACK('e', "event", &mem, "event",
+ 		     "event selector. use 'perf mem record -e list' to list available events",
+@@ -84,7 +92,13 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
+ 	OPT_END()
+ 	};
+ 
+-	if (perf_mem_events__init()) {
++	pmu = perf_mem_events_find_pmu();
++	if (!pmu) {
++		pr_err("failed: no PMU supports the memory events\n");
++		return -1;
++	}
++
++	if (perf_pmu__mem_events_init(pmu)) {
+ 		pr_err("failed: memory events not supported\n");
+ 		return -1;
+ 	}
+@@ -113,7 +127,7 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
+ 
+ 	rec_argv[i++] = "record";
+ 
+-	e = perf_mem_events__ptr(PERF_MEM_EVENTS__LOAD_STORE);
++	e = perf_pmu__mem_events_ptr(pmu, PERF_MEM_EVENTS__LOAD_STORE);
+ 
+ 	/*
+ 	 * The load and store operations are required, use the event
+@@ -126,17 +140,17 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
+ 		rec_argv[i++] = "-W";
+ 	} else {
+ 		if (mem->operation & MEM_OPERATION_LOAD) {
+-			e = perf_mem_events__ptr(PERF_MEM_EVENTS__LOAD);
++			e = perf_pmu__mem_events_ptr(pmu, PERF_MEM_EVENTS__LOAD);
+ 			e->record = true;
+ 		}
+ 
+ 		if (mem->operation & MEM_OPERATION_STORE) {
+-			e = perf_mem_events__ptr(PERF_MEM_EVENTS__STORE);
++			e = perf_pmu__mem_events_ptr(pmu, PERF_MEM_EVENTS__STORE);
+ 			e->record = true;
+ 		}
+ 	}
+ 
+-	e = perf_mem_events__ptr(PERF_MEM_EVENTS__LOAD);
++	e = perf_pmu__mem_events_ptr(pmu, PERF_MEM_EVENTS__LOAD);
+ 	if (e->record)
+ 		rec_argv[i++] = "-W";
+ 
+diff --git a/tools/perf/util/mem-events.c b/tools/perf/util/mem-events.c
+index 0a8f415f5efe..27a33dc44964 100644
+--- a/tools/perf/util/mem-events.c
++++ b/tools/perf/util/mem-events.c
+@@ -29,17 +29,42 @@ struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX] = {
+ static char mem_loads_name[100];
+ static bool mem_loads_name__init;
+ 
+-struct perf_mem_event * __weak perf_mem_events__ptr(int i)
++struct perf_mem_event *perf_pmu__mem_events_ptr(struct perf_pmu *pmu, int i)
+ {
+-	if (i >= PERF_MEM_EVENTS__MAX)
++	if (i >= PERF_MEM_EVENTS__MAX || !pmu)
  		return NULL;
  
 -	return &perf_mem_events[i];
-+	return &perf_mem_events_arm[i];
++	return &pmu->mem_events[i];
++}
++
++static struct perf_pmu *perf_pmus__scan_mem(struct perf_pmu *pmu)
++{
++	while ((pmu = perf_pmus__scan(pmu)) != NULL) {
++		if (pmu->mem_events)
++			return pmu;
++	}
++	return NULL;
++}
++
++struct perf_pmu *perf_mem_events_find_pmu(void)
++{
++	/*
++	 * The current perf mem doesn't support per-PMU configuration.
++	 * The exact same configuration is applied to all the
++	 * mem_events supported PMUs.
++	 * Return the first mem_events supported PMU.
++	 *
++	 * Notes: The only case which may support multiple mem_events
++	 * supported PMUs is Intel hybrid. The exact same mem_events
++	 * is shared among the PMUs. Only configure the first PMU
++	 * is good enough as well.
++	 */
++	return perf_pmus__scan_mem(NULL);
  }
  
- const char *perf_mem_events__name(int i, const char *pmu_name __maybe_unused)
-diff --git a/tools/perf/arch/arm64/util/mem-events.h b/tools/perf/arch/arm64/util/mem-events.h
-new file mode 100644
-index 000000000000..5fc50be4be38
---- /dev/null
-+++ b/tools/perf/arch/arm64/util/mem-events.h
-@@ -0,0 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ARM64_MEM_EVENTS_H
-+#define _ARM64_MEM_EVENTS_H
-+
-+extern struct perf_mem_event perf_mem_events_arm[PERF_MEM_EVENTS__MAX];
-+
-+#endif /* _ARM64_MEM_EVENTS_H */
-diff --git a/tools/perf/arch/x86/util/mem-events.c b/tools/perf/arch/x86/util/mem-events.c
-index 191b372f9a2d..2b81d229982c 100644
---- a/tools/perf/arch/x86/util/mem-events.c
-+++ b/tools/perf/arch/x86/util/mem-events.c
-@@ -16,13 +16,13 @@ static char mem_stores_name[100];
+ const char * __weak perf_mem_events__name(int i, const char *pmu_name  __maybe_unused)
+ {
+-	struct perf_mem_event *e = perf_mem_events__ptr(i);
++	struct perf_mem_event *e = &perf_mem_events[i];
  
- #define E(t, n, s) { .tag = t, .name = n, .sysfs_name = s }
+ 	if (!e)
+ 		return NULL;
+@@ -61,7 +86,7 @@ __weak bool is_mem_loads_aux_event(struct evsel *leader __maybe_unused)
+ 	return false;
+ }
  
--static struct perf_mem_event perf_mem_events_intel[PERF_MEM_EVENTS__MAX] = {
-+struct perf_mem_event perf_mem_events_intel[PERF_MEM_EVENTS__MAX] = {
- 	E("ldlat-loads",	"%s/mem-loads,ldlat=%u/P",	"%s/events/mem-loads"),
- 	E("ldlat-stores",	"%s/mem-stores/P",		"%s/events/mem-stores"),
- 	E(NULL,			NULL,				NULL),
- };
+-int perf_mem_events__parse(const char *str)
++int perf_pmu__mem_events_parse(struct perf_pmu *pmu, const char *str)
+ {
+ 	char *tok, *saveptr = NULL;
+ 	bool found = false;
+@@ -79,7 +104,7 @@ int perf_mem_events__parse(const char *str)
  
--static struct perf_mem_event perf_mem_events_amd[PERF_MEM_EVENTS__MAX] = {
-+struct perf_mem_event perf_mem_events_amd[PERF_MEM_EVENTS__MAX] = {
- 	E(NULL,		NULL,		NULL),
- 	E(NULL,		NULL,		NULL),
- 	E("mem-ldst",	"ibs_op//",	"ibs_op"),
-diff --git a/tools/perf/arch/x86/util/mem-events.h b/tools/perf/arch/x86/util/mem-events.h
-new file mode 100644
-index 000000000000..3959e427f482
---- /dev/null
-+++ b/tools/perf/arch/x86/util/mem-events.h
-@@ -0,0 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _X86_MEM_EVENTS_H
-+#define _X86_MEM_EVENTS_H
-+
-+extern struct perf_mem_event perf_mem_events_intel[PERF_MEM_EVENTS__MAX];
-+
-+extern struct perf_mem_event perf_mem_events_amd[PERF_MEM_EVENTS__MAX];
-+
-+#endif /* _X86_MEM_EVENTS_H */
-diff --git a/tools/perf/arch/x86/util/pmu.c b/tools/perf/arch/x86/util/pmu.c
-index 469555ae9b3c..cd22e80e5657 100644
---- a/tools/perf/arch/x86/util/pmu.c
-+++ b/tools/perf/arch/x86/util/pmu.c
-@@ -15,6 +15,7 @@
- #include "../../../util/pmu.h"
- #include "../../../util/fncache.h"
- #include "../../../util/pmus.h"
-+#include "mem-events.h"
- #include "env.h"
+ 	while (tok) {
+ 		for (j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
+-			struct perf_mem_event *e = perf_mem_events__ptr(j);
++			struct perf_mem_event *e = perf_pmu__mem_events_ptr(pmu, j);
  
- void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
-@@ -30,6 +31,12 @@ void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
- 		pmu->selectable = true;
+ 			if (!e->tag)
+ 				continue;
+@@ -112,7 +137,7 @@ static bool perf_mem_event__supported(const char *mnt, struct perf_pmu *pmu,
+ 	return !stat(path, &st);
+ }
+ 
+-int perf_mem_events__init(void)
++int perf_pmu__mem_events_init(struct perf_pmu *pmu)
+ {
+ 	const char *mnt = sysfs__mount();
+ 	bool found = false;
+@@ -122,8 +147,7 @@ int perf_mem_events__init(void)
+ 		return -ENOENT;
+ 
+ 	for (j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
+-		struct perf_mem_event *e = perf_mem_events__ptr(j);
+-		struct perf_pmu *pmu = NULL;
++		struct perf_mem_event *e = perf_pmu__mem_events_ptr(pmu, j);
+ 
+ 		/*
+ 		 * If the event entry isn't valid, skip initialization
+@@ -132,29 +156,20 @@ int perf_mem_events__init(void)
+ 		if (!e->tag)
+ 			continue;
+ 
+-		/*
+-		 * Scan all PMUs not just core ones, since perf mem/c2c on
+-		 * platforms like AMD uses IBS OP PMU which is independent
+-		 * of core PMU.
+-		 */
+-		while ((pmu = perf_pmus__scan(pmu)) != NULL) {
+-			e->supported |= perf_mem_event__supported(mnt, pmu, e);
+-			if (e->supported) {
+-				found = true;
+-				break;
+-			}
+-		}
++		e->supported |= perf_mem_event__supported(mnt, pmu, e);
++		if (e->supported)
++			found = true;
  	}
- #endif
-+
-+	if (x86__is_amd_cpu()) {
-+		if (!strcmp(pmu->name, "ibs_op"))
-+			pmu->mem_events = perf_mem_events_amd;
-+	} else if (pmu->is_core)
-+		pmu->mem_events = perf_mem_events_intel;
+ 
+ 	return found ? 0 : -ENOENT;
  }
  
- int perf_pmus__num_mem_pmus(void)
-diff --git a/tools/perf/util/mem-events.c b/tools/perf/util/mem-events.c
-index 3a2e3687878c..0a8f415f5efe 100644
---- a/tools/perf/util/mem-events.c
-+++ b/tools/perf/util/mem-events.c
-@@ -19,7 +19,7 @@ unsigned int perf_mem_events__loads_ldlat = 30;
+-void perf_mem_events__list(void)
++void perf_pmu__mem_events_list(struct perf_pmu *pmu)
+ {
+ 	int j;
  
- #define E(t, n, s) { .tag = t, .name = n, .sysfs_name = s }
+ 	for (j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
+-		struct perf_mem_event *e = perf_mem_events__ptr(j);
++		struct perf_mem_event *e = perf_pmu__mem_events_ptr(pmu, j);
  
--static struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX] = {
-+struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX] = {
- 	E("ldlat-loads",	"cpu/mem-loads,ldlat=%u/P",	"cpu/events/mem-loads"),
- 	E("ldlat-stores",	"cpu/mem-stores/P",		"cpu/events/mem-stores"),
- 	E(NULL,			NULL,				NULL),
+ 		fprintf(stderr, "%-*s%-*s%s",
+ 			e->tag ? 13 : 0,
+@@ -165,50 +180,32 @@ void perf_mem_events__list(void)
+ 	}
+ }
+ 
+-static void perf_mem_events__print_unsupport_hybrid(struct perf_mem_event *e,
+-						    int idx)
+-{
+-	const char *mnt = sysfs__mount();
+-	struct perf_pmu *pmu = NULL;
+-
+-	while ((pmu = perf_pmus__scan(pmu)) != NULL) {
+-		if (!perf_mem_event__supported(mnt, pmu, e)) {
+-			pr_err("failed: event '%s' not supported\n",
+-			       perf_mem_events__name(idx, pmu->name));
+-		}
+-	}
+-}
+-
+ int perf_mem_events__record_args(const char **rec_argv, int *argv_nr,
+ 				 char **rec_tmp, int *tmp_nr)
+ {
+ 	const char *mnt = sysfs__mount();
++	struct perf_pmu *pmu = NULL;
+ 	int i = *argv_nr, k = 0;
+ 	struct perf_mem_event *e;
+ 
+-	for (int j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
+-		e = perf_mem_events__ptr(j);
+-		if (!e->record)
+-			continue;
+ 
+-		if (perf_pmus__num_mem_pmus() == 1) {
+-			if (!e->supported) {
+-				pr_err("failed: event '%s' not supported\n",
+-				       perf_mem_events__name(j, NULL));
+-				return -1;
+-			}
++	while ((pmu = perf_pmus__scan_mem(pmu)) != NULL) {
++		for (int j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
++			e = perf_pmu__mem_events_ptr(pmu, j);
+ 
+-			rec_argv[i++] = "-e";
+-			rec_argv[i++] = perf_mem_events__name(j, NULL);
+-		} else {
+-			struct perf_pmu *pmu = NULL;
++			if (!e->record)
++				continue;
+ 
+ 			if (!e->supported) {
+-				perf_mem_events__print_unsupport_hybrid(e, j);
++				pr_err("failed: event '%s' not supported\n",
++					perf_mem_events__name(j, pmu->name));
+ 				return -1;
+ 			}
+ 
+-			while ((pmu = perf_pmus__scan(pmu)) != NULL) {
++			if (perf_pmus__num_mem_pmus() == 1) {
++				rec_argv[i++] = "-e";
++				rec_argv[i++] = perf_mem_events__name(j, NULL);
++			} else {
+ 				const char *s = perf_mem_events__name(j, pmu->name);
+ 
+ 				if (!perf_mem_event__supported(mnt, pmu, e))
 diff --git a/tools/perf/util/mem-events.h b/tools/perf/util/mem-events.h
-index b40ad6ea93fc..8c5694b2d0b0 100644
+index 8c5694b2d0b0..0ad301a2e424 100644
 --- a/tools/perf/util/mem-events.h
 +++ b/tools/perf/util/mem-events.h
-@@ -34,6 +34,7 @@ enum {
- };
- 
+@@ -36,14 +36,15 @@ enum {
  extern unsigned int perf_mem_events__loads_ldlat;
-+extern struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX];
+ extern struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX];
  
- int perf_mem_events__parse(const char *str);
- int perf_mem_events__init(void);
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 3c9609944a2f..3d4373b8ab63 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -986,8 +986,10 @@ static int pmu_max_precise(int dirfd, struct perf_pmu *pmu)
- }
+-int perf_mem_events__parse(const char *str);
+-int perf_mem_events__init(void);
++int perf_pmu__mem_events_parse(struct perf_pmu *pmu, const char *str);
++int perf_pmu__mem_events_init(struct perf_pmu *pmu);
  
- void __weak
--perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
-+perf_pmu__arch_init(struct perf_pmu *pmu)
- {
-+	if (pmu->is_core)
-+		pmu->mem_events = perf_mem_events;
- }
+ const char *perf_mem_events__name(int i, const char *pmu_name);
+-struct perf_mem_event *perf_mem_events__ptr(int i);
++struct perf_mem_event *perf_pmu__mem_events_ptr(struct perf_pmu *pmu, int i);
++struct perf_pmu *perf_mem_events_find_pmu(void);
+ bool is_mem_loads_aux_event(struct evsel *leader);
  
- struct perf_pmu *perf_pmu__lookup(struct list_head *pmus, int dirfd, const char *name)
-diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-index 424c3fee0949..e35d985206db 100644
---- a/tools/perf/util/pmu.h
-+++ b/tools/perf/util/pmu.h
-@@ -10,6 +10,8 @@
- #include <stdio.h>
- #include "parse-events.h"
- #include "pmu-events/pmu-events.h"
-+#include "map_symbol.h"
-+#include "mem-events.h"
+-void perf_mem_events__list(void);
++void perf_pmu__mem_events_list(struct perf_pmu *pmu);
+ int perf_mem_events__record_args(const char **rec_argv, int *argv_nr,
+ 				 char **rec_tmp, int *tmp_nr);
  
- struct evsel_config_term;
- struct perf_cpu_map;
-@@ -162,6 +164,11 @@ struct perf_pmu {
- 		 */
- 		bool exclude_guest;
- 	} missing_features;
-+
-+	/**
-+	 * @mem_events: List of the supported mem events
-+	 */
-+	struct perf_mem_event *mem_events;
- };
- 
- /** @perf_pmu__fake: A special global PMU used for testing. */
 -- 
 2.35.1
 
