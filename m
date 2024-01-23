@@ -1,60 +1,63 @@
-Return-Path: <linux-kernel+bounces-35151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1DB4838CE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:05:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F4AC838CE4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:06:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B7DF1F25C66
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:05:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 455A928B998
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:06:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB4D65D8ED;
-	Tue, 23 Jan 2024 11:03:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 047F55D91B;
+	Tue, 23 Jan 2024 11:03:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RGmsdftY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LAQA9lLk"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 263C15D8EA;
-	Tue, 23 Jan 2024 11:03:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 395E35D90B;
+	Tue, 23 Jan 2024 11:03:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706007819; cv=none; b=fDWHI9iI52DtxgjET6HpLZ9/OetqT6P8uQcyNWsTpXBPEYp3VkkmRtBvsIM7ClaWJBTJLC4QNAoP5nR/uRO5PI+97nqOv/vDP1QTmUFXPwiv3Unl44EH/IoDtR1xNEtIJ8oy1+qsfjjlZ1sKysIHT99Gsiqj8uWXEmcDMdIIGWU=
+	t=1706007822; cv=none; b=oh3/t5k2y/x8CBu/Ym36LKlKuXQ9w/Xemg6bpd2O1s8XCHD5/MJEvYYDIFJv6AxEIg/JzuvbRSROe24zT5RP+2Btkc7AINU3eaqZBcrdy1P5JCEfeSFEJnYVrpFctv+vBmP2KEGAQ5DQrpjplgfJUdVftmkIwcuZSGLDLEJIqtc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706007819; c=relaxed/simple;
-	bh=jyHwFlf0bHE9KEIPyirMBwXPxM3oK4/6sY+55qCmc8I=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cAP3gqpMry0X1myBE8fY7tteBWWHYE8Hj3W/AQtsJZlGXlOk2I/aoPvX6rCLQOQI/Z1l0MerYb9ULBibidGlA35Sy6s7qmMiA+SLB30DJT+m5nJlP/V9MdSauJ3y2vyMnQN9lKcQ25rhJwmncm6FbvDdLoZcmEITYw+o3r74ntw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RGmsdftY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8133C32781;
-	Tue, 23 Jan 2024 11:03:35 +0000 (UTC)
+	s=arc-20240116; t=1706007822; c=relaxed/simple;
+	bh=yxslJnBmg5lxtsS0rsR6gRhm2LlSKzD9dPNmd8c8t9U=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=nrORnU/Bx5PbZgZxrURN6IoLC0xEO1rUd9YQY56/sZer/0qAjCIe8B8dNLgJaW95BbuBGp4ZnkPXcebf9FXA5i/rVHHvUjYAeqEN4zQKWPaPaY4yBvM2lyy1s0anNkQq3QQfcgMd9DdkwWHmMPGuqx+O8+kV+WKpp2J+F6lfHoc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LAQA9lLk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 293BEC433F1;
+	Tue, 23 Jan 2024 11:03:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706007818;
-	bh=jyHwFlf0bHE9KEIPyirMBwXPxM3oK4/6sY+55qCmc8I=;
-	h=From:To:Cc:Subject:Date:From;
-	b=RGmsdftYQp083L9bpv+o7IEzQPkf/M5kWaNBeIPefz9etL4hiy9Fqp9dO0FzowKvy
-	 G3f5pnPGjSC76upEzAcn9d8gG6lNTY3ApHnPUMg+qCTLPkNc7x9b2D4UUgkcIj8NJN
-	 Fxy0urhrplHdVz4yubm4ygqqUZ48b3/ASIr0OK4jxf88wO6lThPNYz5kL/0cr1dO/0
-	 NFCWA4pWuSqrPTkCT/pFzj0R2x1YkOlr3tkaLeEfA7JyKqlcMDTg36OqdqkNtOih7H
-	 SkOgZ9ynrAHJt+my7fshXN1gm0ysABdHjOkQNTie7II2Br64TB3nq9dks9ZZLLUNNL
-	 m51Nn52L3Wm1Q==
+	s=k20201202; t=1706007821;
+	bh=yxslJnBmg5lxtsS0rsR6gRhm2LlSKzD9dPNmd8c8t9U=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=LAQA9lLk1o09pZ0OU8sEoF/LI25bbOJBw4xu8n0aWQpPnTEx4nmNze4zTXnxYEmmg
+	 vi2y9jUVu4NQOo95uUULh2cBfA0tQq6g/j6fLGB0gUTJLstUoWvHdXcdrPMCzcB55M
+	 VJ+ftYWffw3aPPns9d6PsiayBWddORbduSkroNcohTeAv3s7vkKT54j7zn0iGxg6z/
+	 CrOJHnVUl+S3tYSe9ipau5qYUAZ88qVU077iPrvLsGtbyB3QPhmECoVyhcFWxhoPD+
+	 2Nz9K11GGtgzIUG9fupGmRZTjAy5X2382nFvcUOJT/hZPWvwQwATwHPZDORIzM9wNs
+	 4kPXh7FplRA3w==
 From: Lorenzo Pieralisi <lpieralisi@kernel.org>
 To: linux-kernel@vger.kernel.org
 Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Marc Zyngier <maz@kernel.org>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-acpi@vger.kernel.org,
 	acpica-devel@lists.linux.dev,
-	Mark Rutland <mark.rutland@arm.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
 	Fang Xiang <fangxiang3@xiaomi.com>,
-	Marc Zyngier <maz@kernel.org>,
 	Robert Moore <robert.moore@intel.com>
-Subject: [PATCH v5 0/1] irqchip/gic-v3: Enable non-coherent GIC designs probing
-Date: Tue, 23 Jan 2024 12:03:31 +0100
-Message-Id: <20240123110332.112797-1-lpieralisi@kernel.org>
+Subject: [PATCH v5 1/1] irqchip/gic-v3: Enable non-coherent redistributors/ITSes ACPI probing
+Date: Tue, 23 Jan 2024 12:03:32 +0100
+Message-Id: <20240123110332.112797-2-lpieralisi@kernel.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240123110332.112797-1-lpieralisi@kernel.org>
+References: <20240123110332.112797-1-lpieralisi@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,71 +66,129 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This series is v5 of previous series:
+The GIC architecture specification defines a set of registers for
+redistributors and ITSes that control the sharebility and cacheability
+attributes of redistributors/ITSes initiator ports on the interconnect
+(GICR_[V]PROPBASER, GICR_[V]PENDBASER, GITS_BASER<n>).
 
-v4: https://lore.kernel.org/all/20231227110038.55453-1-lpieralisi@kernel.org
-v3: https://lore.kernel.org/all/20231006125929.48591-1-lpieralisi@kernel.org
-v2: https://lore.kernel.org/all/20230906094139.16032-1-lpieralisi@kernel.org
-v1: https://lore.kernel.org/all/20230905104721.52199-1-lpieralisi@kernel.org
+Architecturally the GIC provides a means to drive shareability and
+cacheability attributes signals but it is not mandatory for designs to
+wire up the corresponding interconnect signals that control the
+cacheability/shareability of transactions.
 
-v4 -> v5
-	- ACPICA patches merged for v6.8
-	- Refactored ACPI parsing code according to review
-	- Rebased against v6.8-rc1
+Redistributors and ITSes interconnect ports can be connected to
+non-coherent interconnects that are not able to manage the
+shareability/cacheability attributes; this implicitly makes the
+redistributors and ITSes non-coherent observers.
 
-v3 -> v4:
-	- Dropped patches [1-3], already merged
-	- Added Linuxized ACPICA changes accepted upstream
-	- Rebased against v6.7-rc3
+To enable non-coherent GIC designs on ACPI based systems, parse the MADT
+GICC/GICR/ITS subtables non-coherent flags to determine whether the
+respective components are non-coherent observers and force the
+shareability attributes to be programmed into the redistributors and
+ITSes registers.
 
-v2 -> v3:
-	- Added ACPICA temporary changes and ACPI changes to implement
-	  ECR https://bugzilla.tianocore.org/show_bug.cgi?id=4557
-	- ACPI changes are for testing purposes - subject to ECR code
-	  first approval
+An ACPI global function (acpi_get_madt_revision()) is added to retrieve
+the MADT revision, in that it is essential to check the MADT revision
+before checking for flags that were added with MADT revision 7 so that
+if the kernel is booted with an ACPI MADT table with revision < 7 it
+skips parsing the newly added flags (that should be zeroed reserved
+values for MADT versions < 7 but they could turn out to be buggy and
+should be ignored).
 
-v1 -> v2:
-	- Updated DT bindings as per feedback
-	- Updated patch[2] to use GIC quirks infrastructure
-
-Original cover letter
+Signed-off-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Marc Zyngier <maz@kernel.org>
 ---
-The GICv3 architecture specifications provide a means for the
-system programmer to set the shareability and cacheability
-attributes the GIC components (redistributors and ITSes) use
-to drive memory transactions.
-
-Albeit the architecture give control over shareability/cacheability
-memory transactions attributes (and barriers), it is allowed to
-connect the GIC interconnect ports to non-coherent memory ports
-on the interconnect, basically tying off shareability/cacheability
-"wires" and de-facto making the redistributors and ITSes non-coherent
-memory observers.
-
-This series aims at starting a discussion over a possible solution
-to this problem, by adding to the GIC device tree bindings the
-standard dma-noncoherent property. The GIC driver uses the property
-to force the redistributors and ITSes shareability attributes to
-non-shareable, which consequently forces the driver to use CMOs
-on GIC memory tables.
-
-On ARM DT DMA is default non-coherent, so the GIC driver can't rely
-on the generic DT dma-coherent/non-coherent property management layer
-(of_dma_is_coherent()) which would default all GIC designs in the field
-as non-coherent; it has to rely on ad-hoc dma-noncoherent property handling.
-
-When a consistent approach is agreed upon for DT an equivalent binding will
-be put forward for ACPI based systems.
-
-Lorenzo Pieralisi (1):
-  irqchip/gic-v3: Enable non-coherent redistributors/ITSes ACPI probing
-
  drivers/acpi/processor_core.c    | 15 +++++++++++++++
  drivers/irqchip/irq-gic-v3-its.c |  4 ++++
  drivers/irqchip/irq-gic-v3.c     |  9 +++++++++
  include/linux/acpi.h             |  3 +++
  4 files changed, 31 insertions(+)
 
+diff --git a/drivers/acpi/processor_core.c b/drivers/acpi/processor_core.c
+index b203cfe28550..915713c0e9b7 100644
+--- a/drivers/acpi/processor_core.c
++++ b/drivers/acpi/processor_core.c
+@@ -215,6 +215,21 @@ phys_cpuid_t __init acpi_map_madt_entry(u32 acpi_id)
+ 	return rv;
+ }
+ 
++int __init acpi_get_madt_revision(void)
++{
++	struct acpi_table_header *madt = NULL;
++	int revision;
++
++	if (ACPI_FAILURE(acpi_get_table(ACPI_SIG_MADT, 0, &madt)))
++		return -EINVAL;
++
++	revision = madt->revision;
++
++	acpi_put_table(madt);
++
++	return revision;
++}
++
+ static phys_cpuid_t map_mat_entry(acpi_handle handle, int type, u32 acpi_id)
+ {
+ 	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
+diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+index fec1b58470df..a60c560ce891 100644
+--- a/drivers/irqchip/irq-gic-v3-its.c
++++ b/drivers/irqchip/irq-gic-v3-its.c
+@@ -5591,6 +5591,10 @@ static int __init gic_acpi_parse_madt_its(union acpi_subtable_headers *header,
+ 		goto node_err;
+ 	}
+ 
++	if (acpi_get_madt_revision() >= 7 &&
++	    (its_entry->flags & ACPI_MADT_ITS_NON_COHERENT))
++		its->flags |= ITS_FLAGS_FORCE_NON_SHAREABLE;
++
+ 	err = its_probe_one(its);
+ 	if (!err)
+ 		return 0;
+diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+index 98b0329b7154..8cb8dff86c12 100644
+--- a/drivers/irqchip/irq-gic-v3.c
++++ b/drivers/irqchip/irq-gic-v3.c
+@@ -2356,6 +2356,11 @@ gic_acpi_parse_madt_redist(union acpi_subtable_headers *header,
+ 		pr_err("Couldn't map GICR region @%llx\n", redist->base_address);
+ 		return -ENOMEM;
+ 	}
++
++	if (acpi_get_madt_revision() >= 7 &&
++	    (redist->flags & ACPI_MADT_GICR_NON_COHERENT))
++		gic_data.rdists.flags |= RDIST_FLAGS_FORCE_NON_SHAREABLE;
++
+ 	gic_request_region(redist->base_address, redist->length, "GICR");
+ 
+ 	gic_acpi_register_redist(redist->base_address, redist_base);
+@@ -2380,6 +2385,10 @@ gic_acpi_parse_madt_gicc(union acpi_subtable_headers *header,
+ 		return -ENOMEM;
+ 	gic_request_region(gicc->gicr_base_address, size, "GICR");
+ 
++	if (acpi_get_madt_revision() >= 7 &&
++	    (gicc->flags & ACPI_MADT_GICC_NON_COHERENT))
++		gic_data.rdists.flags |= RDIST_FLAGS_FORCE_NON_SHAREABLE;
++
+ 	gic_acpi_register_redist(gicc->gicr_base_address, redist_base);
+ 	return 0;
+ }
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index b7165e52b3c6..4eedab0e51c3 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -284,6 +284,9 @@ static inline bool invalid_phys_cpuid(phys_cpuid_t phys_id)
+ 	return phys_id == PHYS_CPUID_INVALID;
+ }
+ 
++
++int __init acpi_get_madt_revision(void);
++
+ /* Validate the processor object's proc_id */
+ bool acpi_duplicate_processor_id(int proc_id);
+ /* Processor _CTS control */
 -- 
 2.34.1
 
