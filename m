@@ -1,124 +1,136 @@
-Return-Path: <linux-kernel+bounces-34959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4B2C8389D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:59:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57E038389E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:01:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B5B41F21DFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:59:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 102F82874E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:01:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3433057313;
-	Tue, 23 Jan 2024 08:58:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37E6357868;
+	Tue, 23 Jan 2024 09:01:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wVxu5pWk"
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KuWx9f2Z"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEE7A56B65
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 08:58:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BA5251C54
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 09:01:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706000338; cv=none; b=k8jtFhlfjn8VdwdBtRKgZmwoOHy3FEuNW78rooUa8SlshA7gx4HBzsNYTAfC6ObhPCghTVlcgoPICnVRDzptsFzXZ54M6kKZTAdRQO6AQAiHz55iQTm6N6VujpldWh7W8+HDUH4LgaVk3wS0hlyc7+WTeWQnRJxs2tPmCBWco4o=
+	t=1706000468; cv=none; b=piUx6MBXQzcVwH9N1NcWaNx1hmS/E+Drjx6QOMkuhNHcHU2pMIXZleCtg/z/mmH/94URmfKEpesfeHP6icbfn4gi7POvN+u0Da5uUsJRF/wSeVLBjNo5BWSm1tDXkULF8yJsE/gJMUo9IDuS8ZZnyE7FecI8hzfat8+LwhgOW3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706000338; c=relaxed/simple;
-	bh=GdENzMYn4lktZHY4KmY+kX1Nank39qBXFG/o0ROvZNc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Bc0vD678N2C49gV44SAVam39PODmCNTVZhFRsgTdmbKL8mqkCMOwOls//OTjzKB9SCo458tQZC20npyec0J5to0PoifonaVGuEaNXqlFOOE+oMeV2ElBj7NxYYElzoqYetv5QrokrlmqTJmpjoiDt784fvHbtmQrl0Mc7SAGGDE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wVxu5pWk; arc=none smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5ff828b93f0so34604057b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:58:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706000333; x=1706605133; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gd8+YHFNJMug/HTkqV82yzOrM3/5Esu8/DX82CjRhUU=;
-        b=wVxu5pWknd9HOkJozXVxTrd9yovv2IN62w8SGAPQriPTWTOK9UGIBmRW3V/r5T7rHo
-         DoFeRrbaBDnOFK+5SkzGhLeQP9ZERWVF1WH/zzx4CbFMsvWIpnkpopRSAIllM9LuAXE6
-         09sQ4ex2Y5HRwcTqlthmmp4QhXt0gNx8Jll5Vhz35/AbM1lpXd5GP/cN3iOGvrLFEJnL
-         GmfYWQQlIiMwt4mMwbYg4KTqRC4ZTD1PNKz40+45+WN3bUPY5CyMhnzRbvmowjA06Cgn
-         zKjqJd4fE78dT9MpYnQpWZME5AwTxiJDZi6a1uFu2E92Us6tS0KJgaexkrIVfS04xTAo
-         i7nQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706000333; x=1706605133;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Gd8+YHFNJMug/HTkqV82yzOrM3/5Esu8/DX82CjRhUU=;
-        b=DUxRnodPizByfIrj7OhCfDPNk29/JBHmJNwCHUgq1Qx/mXla0iGt51wP7+tn9I9N5t
-         M92KqOTE9SR9+RsHnZI5jTTPZDiQZi6L5TjJiD1CmOB/52vhC2btOvTDy8gGHtyJBZD7
-         6gK1h9OIkd9/lg04aeP+6Bc8hynmF+wExW4O9I0ki/n+qorh7IWDGwMeaTn4FexcuIhx
-         4B0S10kkzOktAJTei4W8WraoEIQ0vIdkk3diIwNqxHHI6j7n0ZszVKoqHOr3qCewsRV9
-         ezRtokxbHbacQXOW0g4zYisHir5rz+uotfzSM2Iap0I8iidl+wU+Zi9DAp1AjOexq5fq
-         pUzg==
-X-Gm-Message-State: AOJu0YybtDMJI5dvbIvkX2BSHkF3EiO2/4w+vZ8q8tNNQ/CbNmrI1reI
-	xnXwweWPnGmk2znJJ0A5M7SeN+xzofYtKz2Y6rkoVEz7KvAMN18C3C8ANNhoszcJujZTjystZPU
-	aMxuQW7YVY/BeZymFls+e1hRrZVzPoLj+2KXQiw==
-X-Google-Smtp-Source: AGHT+IFf/yktetlkF3njKK8Z1wzoUWcmawotJ8Ye1DL57gIxMBOqjlwuvWsRSA1pLmywAxwnZS3wOD7ICeW8AzNHXL0=
-X-Received: by 2002:a81:bb4a:0:b0:5e7:57df:6341 with SMTP id
- a10-20020a81bb4a000000b005e757df6341mr3802936ywl.38.1706000332818; Tue, 23
- Jan 2024 00:58:52 -0800 (PST)
+	s=arc-20240116; t=1706000468; c=relaxed/simple;
+	bh=2iIMuxSXVIfbhEDxIspm7QifUedTVVjC5VjdGTdogdA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=arQH1e9hs5jFaGIvGAPclgIYgulLg6v7uIOmrG2C4pa6TCUsOxDkUYxp1CsEU4bvkEV4BAJFwfXNJK9fEec4C5RdQ/JeUYFznLL4sQ7Y37+bWGtaHhib89OokEfxnhmH7DzJR+tqZHb4YXK+0jTxgoxZ+HmrzDbnJaPtZvuSs6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KuWx9f2Z; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706000465; x=1737536465;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=2iIMuxSXVIfbhEDxIspm7QifUedTVVjC5VjdGTdogdA=;
+  b=KuWx9f2ZKVes/QlPrb7mff5JakMCsP9FCZUNuUUVU5yVUlWSgnKa5Jxe
+   p7DpuS785uwkkWUR4kSAhomwlcXzmC5uePNBkJvf7xb3R1NG8b2v4wMEW
+   KtZAYCei3ekixLIUtl4eC6rkS0b8yLJ5ut8VitnYbFAnwx/BAtGtG3T6D
+   nLOE+kcH+7ITsPfOqyo7kt5GY9ZH/Rn9FIVP4XZv2E2uzMULhXww1quN+
+   8gnPK/iIffT7yGCkT58HpZOkahad4UiY6ngjjNDu6JWbIzRJf2PyCqCK0
+   mjd/ksgJ4U5qaefxRwziqQnfOFrGU3JHmhhF7c1SDJ5QnYVSdIP+1AzAa
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="8572860"
+X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
+   d="scan'208";a="8572860"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 01:01:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
+   d="scan'208";a="1589512"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 01:01:01 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,  Johannes Weiner
+ <hannes@cmpxchg.org>,  Nhat Pham <nphamcs@gmail.com>,  Chris Li
+ <chrisl@kernel.org>,  Chengming Zhou <zhouchengming@bytedance.com>,
+  linux-mm@kvack.org,  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mm: swap: update inuse_pages after all cleanups are
+ done
+In-Reply-To: <20240120024007.2850671-2-yosryahmed@google.com> (Yosry Ahmed's
+	message of "Sat, 20 Jan 2024 02:40:06 +0000")
+References: <20240120024007.2850671-1-yosryahmed@google.com>
+	<20240120024007.2850671-2-yosryahmed@google.com>
+Date: Tue, 23 Jan 2024 16:59:03 +0800
+Message-ID: <87wms0toh4.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240123-sm8650_pm8010_support-v2-0-52f517b20a1d@quicinc.com>
-In-Reply-To: <20240123-sm8650_pm8010_support-v2-0-52f517b20a1d@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 23 Jan 2024 10:58:41 +0200
-Message-ID: <CAA8EJpqfQrwBdpAeZGk0+ejwhr4G375Y8gRseGBbJDcTzDKQQA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] Add PM8010 regulators for sm8650 boards.
-To: quic_fenglinw@quicinc.com
-Cc: kernel@quicinc.com, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, quic_collinsd@quicinc.com, 
-	Neil Armstrong <neil.armstrong@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=ascii
 
-On Tue, 23 Jan 2024 at 10:49, Fenglin Wu via B4 Relay
-<devnull+quic_fenglinw.quicinc.com@kernel.org> wrote:
+Yosry Ahmed <yosryahmed@google.com> writes:
+
+> In swap_range_free(), we update inuse_pages then do some cleanups (arch
+> invalidation, zswap invalidation, swap cache cleanups, etc). During
+> swapoff, try_to_unuse() uses inuse_pages to make sure all swap entries
+> are freed. Make sure we only update inuse_pages after we are done with
+> the cleanups.
 >
-> Add PM8010 RPMh regulators for sm8650-mtp and sm8650-qrd boards.
+> In practice, this shouldn't matter, because swap_range_free() is called
+> with the swap info lock held, and the swapoff code will spin for that
+> lock after try_to_unuse() anyway.
 >
-> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+> The goal is to make it obvious and more future proof that once
+> try_to_unuse() returns, all cleanups are done.
+
+Defines "all cleanups".  Apparently, some other operations are still
+to be done after try_to_unuse() in swap_off().
+
+> This also facilitates a
+> following zswap cleanup patch which uses this fact to simplify
+> zswap_swapoff().
+>
+> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 > ---
-> Changes in v2:
-> - Added Reviewed-by/Tested-by trailers
+>  mm/swapfile.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index 556ff7347d5f0..2fedb148b9404 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -737,8 +737,6 @@ static void swap_range_free(struct swap_info_struct *si, unsigned long offset,
+>  		if (was_full && (si->flags & SWP_WRITEOK))
+>  			add_to_avail_list(si);
+>  	}
+> -	atomic_long_add(nr_entries, &nr_swap_pages);
+> -	WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
+>  	if (si->flags & SWP_BLKDEV)
+>  		swap_slot_free_notify =
+>  			si->bdev->bd_disk->fops->swap_slot_free_notify;
+> @@ -752,6 +750,8 @@ static void swap_range_free(struct swap_info_struct *si, unsigned long offset,
+>  		offset++;
+>  	}
+>  	clear_shadow_from_swap_cache(si->type, begin, end);
+> +	atomic_long_add(nr_entries, &nr_swap_pages);
+> +	WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
 
-Please refrain from posting new versions of your series if the only
-change consists of the updated trailers. Such changes are handled
-automatically by the subsystem maintainers.
+This isn't enough.  You need to use smp_wmb() here and smp_rmb() in
+somewhere reading si->inuse_pages.
 
-> - Link to v1: https://lore.kernel.org/r/20240123-sm8650_pm8010_support-v1-0-dec2224d5740@quicinc.com
->
-> ---
-> Fenglin Wu (2):
->       arm64: dts: qcom: sm8650-mtp: add PM8010 regulators
->       arm64: dts: qcom: sm8650-qrd: add PM8010 regulators
->
->  arch/arm64/boot/dts/qcom/sm8650-mtp.dts | 118 ++++++++++++++++++++++++++++++++
->  arch/arm64/boot/dts/qcom/sm8650-qrd.dts | 118 ++++++++++++++++++++++++++++++++
->  2 files changed, 236 insertions(+)
-> ---
-> base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
-> change-id: 20240123-sm8650_pm8010_support-750c05a5cd5d
->
-> Best regards,
-> --
-> Fenglin Wu <quic_fenglinw@quicinc.com>
->
->
+>  }
+>  
+>  static void set_cluster_next(struct swap_info_struct *si, unsigned long next)
 
-
--- 
-With best wishes
-Dmitry
+--
+Best Regards,
+Huang, Ying
 
