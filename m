@@ -1,81 +1,83 @@
-Return-Path: <linux-kernel+bounces-35029-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35034-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C347838ACC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:49:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D914838ADD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:50:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1398F28C09C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:49:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 246761F24971
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:50:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7F345D733;
-	Tue, 23 Jan 2024 09:45:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8871E5D8ED;
+	Tue, 23 Jan 2024 09:45:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="hxwNynJb"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SgqeWKKk"
+Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 864A45D727;
-	Tue, 23 Jan 2024 09:45:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 663D55D75D
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 09:45:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706003106; cv=none; b=incVdL6SyVOzaCgJDUCx5Mg6aJnqaC1XBMu+0EWE60U3LlBQxEjwnHNwMs7QBaMA2iBg8v45OXYDbbzjKBWuzA3S8KIU6QlrNujL144uDvwCdxM11K5GgerXAbqHPbisx3ge6FwcPgS2FrCddODTXC313DNLHEqu5n74H5yjwWE=
+	t=1706003138; cv=none; b=qxTOfy6+BC0BsX4USwBlgpPOGCDDv/I/o0hnyUslxVCcf5j4Jyiv0TMy7uDGy7U/e/RAVeQk74BgMByPf7WED2YSiSdPj1/HisfwWrCGZb6skSgt3GoxDKVZmQc+r4Y8RuuFkNBew/bdqQW/utSlPgg5k3M4kJvjF46oCLbOnb8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706003106; c=relaxed/simple;
-	bh=pymzY/3H3JwV2zvE9dnuZ+MtpGTlYgDuqgn9PZfrCkI=;
+	s=arc-20240116; t=1706003138; c=relaxed/simple;
+	bh=aLi4ni515fDPLmheTfXWKONnXtTpxfLwvtIiaSEI/pI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Fg4G4c9N5tK3OFPbC2lkG6qa3Uj+4xatdWe26gD65xek1Bo8BhkfeCZkrZwhz/k1rP4aEp/PKI/4PHTnOBgt9sDwACNfLbzv14+xSofARn9FROI7PkPzTNA0MVnuWIXsYwoutCY1S753kff10xTtyPnYa5rPa5z6EdakKzIlI5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=hxwNynJb; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 7D7C040E01BB;
-	Tue, 23 Jan 2024 09:45:00 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 50w5MlWy-wd7; Tue, 23 Jan 2024 09:44:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1706003097; bh=GkrBxaeL2aLlMplkTSKVP94a03nzHfhpk7LQpBp9/7k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hxwNynJbGDduwLhbt4g4J7ymAcJHM+Xol23ZxPF4xrH/6X9JLuOLJMWEeOYiFtDmk
-	 uxiINz75Rp2vkRqFEvxLv71BucXmNgjdRQ4nhGo2rH6oDuLQ2B1NPaS1YB0cg/3cO6
-	 eT39INMB7cu1Y5Q3OR1PkmYuGTH/TglaeJpx2PdatETiQzzFCbLjzQ9YSia5WQMzVL
-	 6UDWcS5RBHDSe6hGicTCTCK8qEujnJiTa9vkMbq4m+DLaIPk5F772MNYDI30z0h4GB
-	 LhiPvUvZS6+YO7IexEpzHOqgt1L/CaSlJ7b8pTqEJkQZW+bgkT6dJND/OLK38s12Ro
-	 wDuwq7do0I4/Pow2LuhJjMApbhdd8MaTNMOIVibAqkZvGgL11tgnd5krf/HpIWFWdU
-	 0kAt6721pkSLBL6WMNnPTNPTVuxaYghjQcevor1j6C2sCIY7L647yZCBhI/BvtF/lB
-	 h8kyUYGcHIPzpCVv67IulAwR3RI6FjNaznAgzBZUDL54RG/QdGofPc/joibedooUEk
-	 Y7DT1umvJkwwt4gIpX2QVwWxbY3NpmcCIJelzttQ1IFlfLkPbuVAK2XtFB47XzSOZ6
-	 LLC4ki2bI6pVe+I687BjIQGek2p15B6sR0cnvT/YpfQrawQfSIOW2Ix63Uug1kt11k
-	 wfVynrHAvlPN8MXOqht7prNo=
-Received: from zn.tnic (pd953099d.dip0.t-ipconnect.de [217.83.9.157])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2949D40E01B4;
-	Tue, 23 Jan 2024 09:44:34 +0000 (UTC)
-Date: Tue, 23 Jan 2024 10:44:27 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-Cc: herbert@gondor.apana.org.au, davem@davemloft.net,
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-	x86@kernel.org, hpa@zytor.com, seanjc@google.com,
-	kim.phillips@amd.com, kirill.shutemov@linux.intel.com,
-	jmattson@google.com, babu.moger@amd.com, kai.huang@intel.com,
-	acme@redhat.com, aik@amd.com, namhyung@kernel.org,
-	CobeChen@zhaoxin.com, TimGuo@zhaoxin.com, LeoLiu-oc@zhaoxin.com,
-	GeorgeXue@zhaoxin.com
-Subject: Re: [PATCH v2 2/3] x86/cpufeatures: Add CPU feature flags for
- Zhaoxin Hash Engine
-Message-ID: <20240123094427.GAZa-Ke5d2Kwyk2nSU@fat_crate.local>
-References: <20240123022852.2475-1-TonyWWang-oc@zhaoxin.com>
- <20240123022852.2475-3-TonyWWang-oc@zhaoxin.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=GXPLO/utQHji1I2CL8SCgUEs0Adpm0e0sW9ZLo2R0HqN5ZbtDRr+uruF/wpeSzpEiAlg3sH/1cEl+KoG3Y9nibvR+2CsTAEu/xj9dUtqytTFuCx3byeBTaSXNsbvuedKIe3ooB+yPUQk6WDF25Yn2pw9kfOa2TFUNQ1pWBQTIJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=SgqeWKKk; arc=none smtp.client-ip=209.85.160.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-429985e952bso22440391cf.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 01:45:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706003136; x=1706607936; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=GPuIu+Od8YPZ7JAGfosVr9r0tWmFr9cTu0oqbB+e0Zo=;
+        b=SgqeWKKkVfxFi6U7w1Pb3K8TdafaRdah6HPMhYpQCSjsPbxITaoq/4gOfakq4uHny1
+         iyaLBJIoOITozXmV3Nf8bZ+uVxL2n2qzAPyhagNapf5fXxmWWg74khT9OZ3jKdzVKj5M
+         Vw20FKcGeQi3Soibai1EkTr//02S+07D7D0xp9zq/809AI/yyg+Z3Ty/AP/sV+a2Ibam
+         RoiqsJMcCApxz6LVBRkyeMGYfLJ8or+rRMa9fDWXCvv6v40HOHQ2aWpRL0ICazeaV6i1
+         vUsLTYN3FdfpbhpJxyhF5Mkpe04uKOcGnLVKUz0fvZJY+MWoKXAEeHrpt7NWTU4hPflv
+         jrZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706003136; x=1706607936;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GPuIu+Od8YPZ7JAGfosVr9r0tWmFr9cTu0oqbB+e0Zo=;
+        b=FHcNmF33EqgAX06zefcwchFB+aKFi/8uHkWU4qQVeR63g7QHE3aoIqi+0cr80twYNT
+         wCpLvTq4yYWZugKQGnLrnq9GzDWy2DAX0Pc8c5I8HDsFyzaaeoxYpDC4W+jKvK5LWcAm
+         Wqw88OhRvil0fkMv92oR98q7a9Wpdty5xHFi3As70YJCX+A8K3v++WjJjx9kSgfFoUkc
+         9JWE9XXqbp9LpuQeYfiPpN4Rq6sSY92KrZjsI9n/HS2Ko0fewB/zykAFL1F78OPS/IOw
+         LrfFBIKOlQ1HONSpOO4r8yuDN+o8UNwi3YV5cfQ/LwoWjC8qm+5TazJMUKlgJtNErIfJ
+         M1Ag==
+X-Gm-Message-State: AOJu0Yzp9sKTmgI0pKZoN4JvgHnVTfIE0n9WoQ9VnRr6zJCNgIMbZiWL
+	4x2988n3rT2xZa06oaVGVdrqpBrfTVGAI0+Udaz8GiH5WKyD2436Lf0+a2fkvg==
+X-Google-Smtp-Source: AGHT+IGwmRddd4hbzIPzChpuRO0Dfx5I4nzCNEfptJ98zrnanML4MnrVA1G0oVNdUJTPC+nD4BLe2g==
+X-Received: by 2002:ac8:4e93:0:b0:42a:3a03:7ea0 with SMTP id 19-20020ac84e93000000b0042a3a037ea0mr450084qtp.111.1706003136386;
+        Tue, 23 Jan 2024 01:45:36 -0800 (PST)
+Received: from thinkpad ([120.56.197.174])
+        by smtp.gmail.com with ESMTPSA id fg6-20020a05622a580600b00429be14d3bbsm3323313qtb.13.2024.01.23.01.45.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jan 2024 01:45:36 -0800 (PST)
+Date: Tue, 23 Jan 2024 15:15:28 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Amit Pundir <amit.pundir@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] clk: qcom: gcc-sdm845: Add soft dependency on rpmhpd
+Message-ID: <20240123094528.GA19029@thinkpad>
+References: <20240123062814.2555649-1-amit.pundir@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,62 +86,43 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240123022852.2475-3-TonyWWang-oc@zhaoxin.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240123062814.2555649-1-amit.pundir@linaro.org>
 
-On Tue, Jan 23, 2024 at 10:28:51AM +0800, Tony W Wang-oc wrote:
-> Zhaoxin CPUs have implemented the SHA(Secure Hash Algorithm) as its
-> instrucions.
-> Add two CPU feature flags indicated by CPUID.(EAX=C0000001,ECX=0):EDX
-> bit 25/26 which will be used by Zhaoxin SHA driver.
+On Tue, Jan 23, 2024 at 11:58:14AM +0530, Amit Pundir wrote:
+> With the addition of RPMh power domain to the GCC node in
+> device tree, we noticed a significant delay in getting the
+> UFS driver probed on AOSP which futher led to mount failures
+> because Android do not support rootwait. So adding a soft
+> dependency on RPMh power domain which informs modprobe to
+> load rpmhpd module before gcc-sdm845.
 > 
-> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+> Cc: <stable@vger.kernel.org> # v5.4+
+> Fixes: 4b6ea15c0a11 ("arm64: dts: qcom: sdm845: Add missing RPMh power domain to GCC")
+> Suggested-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
+
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+- Mani
+
 > ---
->  arch/x86/include/asm/cpufeatures.h       | 4 +++-
->  tools/arch/x86/include/asm/cpufeatures.h | 4 +++-
->  2 files changed, 6 insertions(+), 2 deletions(-)
+>  drivers/clk/qcom/gcc-sdm845.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> index 29cb275a219d..28b0e62dbdf5 100644
-> --- a/arch/x86/include/asm/cpufeatures.h
-> +++ b/arch/x86/include/asm/cpufeatures.h
-> @@ -145,7 +145,7 @@
->  #define X86_FEATURE_RDRAND		( 4*32+30) /* RDRAND instruction */
->  #define X86_FEATURE_HYPERVISOR		( 4*32+31) /* Running on a hypervisor */
->  
-> -/* VIA/Cyrix/Centaur-defined CPU features, CPUID level 0xC0000001, word 5 */
-> +/* VIA/Cyrix/Centaur/Zhaoxin-defined CPU features, CPUID level 0xC0000001, word 5 */
-
-Does that mean that all those companies agree on the contents of this
-CPUID leaf?
-
->  #define X86_FEATURE_XSTORE		( 5*32+ 2) /* "rng" RNG present (xstore) */
->  #define X86_FEATURE_XSTORE_EN		( 5*32+ 3) /* "rng_en" RNG enabled */
->  #define X86_FEATURE_XCRYPT		( 5*32+ 6) /* "ace" on-CPU crypto (xcrypt) */
-> @@ -156,6 +156,8 @@
->  #define X86_FEATURE_PHE_EN		( 5*32+11) /* PHE enabled */
->  #define X86_FEATURE_PMM			( 5*32+12) /* PadLock Montgomery Multiplier */
->  #define X86_FEATURE_PMM_EN		( 5*32+13) /* PMM enabled */
-> +#define X86_FEATURE_PHE2		( 5*32+25) /* "phe2" Zhaoxin Hash Engine */
-> +#define X86_FEATURE_PHE2_EN		( 5*32+26) /* "phe2_en" PHE2 enabled */
-						      ^^^^^^^^^
-
-From: Documentation/arch/x86/cpuinfo.rst
-
-"a: Feature flags can be derived from the contents of CPUID leaves.
-------------------------------------------------------------------
-These feature definitions are organized mirroring the layout of CPUID
-leaves and grouped in words with offsets as mapped in enum cpuid_leafs
-in cpufeatures.h (see arch/x86/include/asm/cpufeatures.h for details).
-If a feature is defined with a X86_FEATURE_<name> definition in
-cpufeatures.h, and if it is detected at run time, the flags will be
-displayed accordingly in /proc/cpuinfo. For example, the flag "avx2"
-comes from X86_FEATURE_AVX2 in cpufeatures.h."
-
-Is your grep broken?
+> diff --git a/drivers/clk/qcom/gcc-sdm845.c b/drivers/clk/qcom/gcc-sdm845.c
+> index 725cd52d2398..ea4c3bf4fb9b 100644
+> --- a/drivers/clk/qcom/gcc-sdm845.c
+> +++ b/drivers/clk/qcom/gcc-sdm845.c
+> @@ -4037,3 +4037,4 @@ module_exit(gcc_sdm845_exit);
+>  MODULE_DESCRIPTION("QTI GCC SDM845 Driver");
+>  MODULE_LICENSE("GPL v2");
+>  MODULE_ALIAS("platform:gcc-sdm845");
+> +MODULE_SOFTDEP("pre: rpmhpd");
+> -- 
+> 2.25.1
+> 
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+மணிவண்ணன் சதாசிவம்
 
