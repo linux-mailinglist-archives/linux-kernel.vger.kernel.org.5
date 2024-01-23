@@ -1,102 +1,111 @@
-Return-Path: <linux-kernel+bounces-35774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CC94839655
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:25:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B63A0839656
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:25:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B48FD287690
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:25:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6FA8C288954
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:25:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 641E080030;
-	Tue, 23 Jan 2024 17:25:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8DAE80027;
+	Tue, 23 Jan 2024 17:25:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SsyQZ1Cl"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ChNhpYMJ"
+Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A21567FBC1;
-	Tue, 23 Jan 2024 17:25:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 919A07FBCA;
+	Tue, 23 Jan 2024 17:25:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706030710; cv=none; b=evP4I3YC3BB85wHAlLg9Mj2RtrYTzp8v2D9bdafgf2/ITaqPINJmWnKH6WK/t8HqlpLhwKNUH93oRWCfBpd9jNDX4SwTBFPxC3G+fneRNvRvEUYm7jl4yY7bkkpZIgjW9MFvONYK8D7ZFtcZciADES6yXlVs+Z5hgaJqrfUQFrA=
+	t=1706030733; cv=none; b=SORqBRJnVPfUfqRBRYFWyJhHtt8kQ8p2594Sc5im/r1mKBa8/hs8X6uoiTTblr2b2sE5ya/IN867FNlQSRuWPq8pLgmTDlJYljeniz5zYHRS4zKLpft1F3Krpwkp93Hz1yvT2NFPew/UTjTLNd2QuEtFgeltQNzrCf+vPuoHHMo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706030710; c=relaxed/simple;
-	bh=/+SkSMXEvZL7JnAfLyB9WU4yUTd/UNiUILkQDm11AUc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tvh5y+widUkXhpqdbW6I9fNoEzX9NoiOU5e5dvyT0PldXxVejklS5ddCLa+jHSvM5rLYkFm/3NrcTWNaqhG1sF55+pucL7nPZynLPy0zuKH64JcnlPlAcigFTdBkAlpr5eY1iwafj3k7HKj4QDQW9zn5Ybk9yr2Jx5xaA8oelKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SsyQZ1Cl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9239C433C7;
-	Tue, 23 Jan 2024 17:25:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706030710;
-	bh=/+SkSMXEvZL7JnAfLyB9WU4yUTd/UNiUILkQDm11AUc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SsyQZ1ClhmUW+4PfVIea5D+atCt9xW/phWP1Ii1PSiS2YlGgTnee/sGoouvb08n27
-	 IQxIk1u6H7IGHU8tvDzFP8iP6hiX7O7H9Jlzo0Jyk0Rp8T+Qa9veHJcoTbuYRdHPZI
-	 JRej4AbG0ztvIkkb5xW1Cwfw8XTYUoq4hbDrIuywtDECiBc8j+2a+VCj3vu3kmM39+
-	 Zv0NTmnqbQ/CFztrkqZjrQlYYcicdi1CDzv0bZV1d3NH0JbcyBL6zRWY3dWMO8rcKY
-	 oBdgxmFjhkwQQDGk1SzUDn+z9bcG7eFRIy6xW41Y5xf76ktmfZjLX7zIqMCwLeMRt5
-	 mZilSAZa+7QKQ==
-Date: Tue, 23 Jan 2024 17:25:04 +0000
-From: Conor Dooley <conor@kernel.org>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: gregkh@linuxfoundation.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	heikki.krogerus@linux.intel.com, matthias.bgg@gmail.com,
-	dmitry.baryshkov@linaro.org, neil.armstrong@linaro.org,
-	andersson@kernel.org, nathan@kernel.org, luca.weiss@fairphone.com,
-	tianping.fang@mediatek.com, linux-usb@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, kernel@collabora.com
-Subject: Re: [PATCH v3 1/2] dt-bindings: usb: Introduce ITE IT5205 Alt. Mode
- Passive MUX
-Message-ID: <20240123-doozy-sureness-ce1bb4d555a2@spud>
-References: <20240122110446.140226-1-angelogioacchino.delregno@collabora.com>
- <20240122110446.140226-2-angelogioacchino.delregno@collabora.com>
+	s=arc-20240116; t=1706030733; c=relaxed/simple;
+	bh=DN4WENUc4MsSSYl06gk8TP+YIxrGOlef2AHZVAyLDnU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ozXEsJ5M/Iw3EZYCI3Rpl1W1pcRYFoB9e0okYs5JAU+IgW+CAv17lEYU6rA8rZCizH8ZKr1sITatl/unOIihndwFJYCA9y/4F3N8JcfMRqmDO48EtLlgw4qxSNj1wyEl004J6NEDMXWPsNNrNS/kHZLXvGZWkiEj3Faa9A/gpj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ChNhpYMJ; arc=none smtp.client-ip=209.85.222.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-7d2e16b552dso1096853241.1;
+        Tue, 23 Jan 2024 09:25:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706030730; x=1706635530; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=U/HCJ5AzaWgbdtZfIl+oZilfRmZKIIXAk9H/FfZ0fUY=;
+        b=ChNhpYMJP5SY9YW8TLr/cEfL+f9qtwWsuIPh3ac16k3TS51Xi39QWDbBxRhA4TMbdS
+         4isWB7/YkRvsA589U+izes/VeVWqV+FlY7r8seHh8SbUc6q1nfAYle1GE5ViaL6S9Ysy
+         dXb1Vp962f2YW8NC+AjTcuPagej/zs2wo4H9+WQr9wALEM+Jg19gyNryPP1feoRJ0PSL
+         FojHDo6B/q+zHOoR/NkGukm6oKW6DzEuoqUhczNPFfWxGKuJZTVrtmCFJQJEqSF1tM99
+         Q7ErDy6MleIplLEIQOUpIcyFaxxXgISBTfTQrgRACf4mCsmVF2ZCo2msuVsyMhKODN0F
+         DYmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706030730; x=1706635530;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=U/HCJ5AzaWgbdtZfIl+oZilfRmZKIIXAk9H/FfZ0fUY=;
+        b=T+L8+6JFqU0y9prn3cWcJRkU5NhJ3Clnq0LxCvCKFa5OlBNO6mj4xE+m8GoN8EvdGM
+         rIY7RrUVJz6T6HUoZpluGP4D4M772jJtc3dAv+9nUq0o9u6CWCSxkfXF+Rgw6DHo0q5m
+         qyMqeAGcWmdjHh+RIiOm33oKeDH0Er3bcPoSnv3XOMAJy0DDhLayic80Oatp2iwV8cIb
+         twDoJwx+rR7osFf/iBlmCn5B0jdz7qORcjGl8qj8xkwxqml6FngXN9l001P1FOX0j3Gr
+         JXhiSd9ohBujW+59lSda/ab48u/eHZl1pHyEzo6ntjXKfnfwwuMZEyKo6nfYIHpRa2Yp
+         MdKw==
+X-Gm-Message-State: AOJu0YzblfDMvk2xxVw1aStJVWN68D7GXGdz6mNNCOE1u+KklyhyohQs
+	suMba0rt8vG+nJBASZI9o/kxRE9o0yQbht103/DhC/BIYpx8oaUVzoO/esOPeTUQTmRjNN25cxF
+	Yk2Yzg+QZ4AXMQbY6pU6tMnW5MYQ=
+X-Google-Smtp-Source: AGHT+IGH0ByYIyMyTwM+KJ/xVrRcWkiXemQa0A3WurIOXLLE10kZajdVmAftNg4oXG1iwLNr64w0B7acqvvmNdaFBqc=
+X-Received: by 2002:ac5:c939:0:b0:4b7:4136:f0d2 with SMTP id
+ u25-20020ac5c939000000b004b74136f0d2mr2664009vkl.29.1706030730508; Tue, 23
+ Jan 2024 09:25:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="/XCj4OvKvckKfaBz"
-Content-Disposition: inline
-In-Reply-To: <20240122110446.140226-2-angelogioacchino.delregno@collabora.com>
+References: <20240122235818.091081209@linuxfoundation.org>
+In-Reply-To: <20240122235818.091081209@linuxfoundation.org>
+From: Allen <allen.lkml@gmail.com>
+Date: Tue, 23 Jan 2024 09:25:19 -0800
+Message-ID: <CAOMdWSLnk9YmdsPX69jL7XrWOsbx+Ua75Z8P8E2x8+Pxsgte3Q@mail.gmail.com>
+Subject: Re: [PATCH 6.7 000/641] 6.7.2-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+> This is the start of the stable review cycle for the 6.7.2 release.
+> There are 641 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 24 Jan 2024 23:56:49 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.2-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
---/XCj4OvKvckKfaBz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Compiled and booted on my x86_64 and ARM64 test systems. No errors or
+regressions.
 
-On Mon, Jan 22, 2024 at 12:04:45PM +0100, AngeloGioacchino Del Regno wrote:
-> Introduce a binding for the ITE IT5205 Alternate Mode Passive MUX,
-> used for connecting, disconnecting and switching orientation and
-> control the SBU signals for alternate modes on USB Type-C ports.
->=20
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@coll=
-abora.com>
+Tested-by: Allen Pais <apais@linux.microsoft.com>
 
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-
-Cheers,
-Conor.
-
---/XCj4OvKvckKfaBz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZa/2cAAKCRB4tDGHoIJi
-0sYQAQDQyqLUgZBdQdVEY6xff7eoCvbdU/jaARvKcKaPn1vdDAEA/hmLVL/fRr56
-YR12yOvgBBZRx4C0x/9NuNpVPSbnbgU=
-=HBIR
------END PGP SIGNATURE-----
-
---/XCj4OvKvckKfaBz--
+Thanks.
 
