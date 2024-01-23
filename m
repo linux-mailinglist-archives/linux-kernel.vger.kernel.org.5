@@ -1,309 +1,137 @@
-Return-Path: <linux-kernel+bounces-34568-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34569-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 883968380F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:04:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2584783812B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:06:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3911D28BE06
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:04:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 563A5B2B431
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:05:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63B3913DB90;
-	Tue, 23 Jan 2024 01:06:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFB4D13F008;
+	Tue, 23 Jan 2024 01:06:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j9ZWPZfF"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Cnyg90WM"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E98013AA39;
-	Tue, 23 Jan 2024 01:06:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7168213EFFE
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 01:06:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705971975; cv=none; b=AusIaTo8IRJ7lcxlKtVUlYZUV9GLQMcWzy1QbgvHnZ4R6gL38MRDBITrUcYzPIGDzTtYu6MfleJO0zdbBO8OljyBgSq92h5Ce3ZuBQfvV85bjpa4lO/z/AZQZFlvds7DHFdiuat+vLGQbcID6WubD+kdF5AWAi22iwGG3KROBso=
+	t=1705972017; cv=none; b=eHlpm2z1aHzWoL98BqO7t1gk4k3iVheEU6rjA2VtahWATh+hFhkBheaKepBSG8Zwqx5FeBz4X0tqslYuo3h+y/z2OEkB7YZ7pGHRiruxqQD4clPFPAZNl5vFx2sxX4fCRay6SD2fZE+6yrSOK2VsFuCxCoiKM1HvTjWCXCQTEvU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705971975; c=relaxed/simple;
-	bh=0zOOxVBNBW4qBweDclWnban+lMJxMRSlx4+NvMtrNR4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=k9/YlOnRRPqS+JCnOxGKJ41OGcOf7dwr96+yRSoSYZ0/5RRt2ezXTAGkGPi6fGD1UG06LX4jZ5Kpvhgh9NzDCsudB9CveI6jrEBY4LjnMNd/I2KKZrrJIgf/yVh+8dEMpWtivW5mfCkqNwyHLORDHTY3zhlMUaBTRt0ti0tVm7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j9ZWPZfF; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d6ff29293dso22762285ad.0;
-        Mon, 22 Jan 2024 17:06:12 -0800 (PST)
+	s=arc-20240116; t=1705972017; c=relaxed/simple;
+	bh=ywRV5J5Nzq5u9UseuF5RgaNdI1b+Me/W43zM3dVnPQQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KsoGasLNjRFlQITYqbMOL9Hq77sFFpD/+d8ekiXQq9YWOpI5eHDUUGKbxeqlfY7Z8XulM1PHOpcY1+e4LAsANUxk5Zyg36oYx+BVB0Oh7WwT3esiAO1tufNQM5N2rYnHFhiC295310G99+pGLnGuPUU3S1ZOMXb3s/P1TDczznI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Cnyg90WM; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40e43e55b87so15565e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:06:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705971972; x=1706576772; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=Dww+c2ua5vGiOnRP836ljW2S8BcprbVDvaDWfIZ2I50=;
-        b=j9ZWPZfFQ/SVCDSZhuixfE+zqccEylRqEiRUmXiE1FRx7hYZ5MsbRMVbCOkAvwHN+p
-         dlkHfqexH155VKFEy8Z5LoQrzkcZcJzFl4clnYhpi7ANAJ4mmfanE0TyGIohfCCKNUqD
-         uALIduZIVBinq3QDrdxo5+niDEoUY853ZbzaNnwFix3t/undXlUsIRzR4D8fTA4o+32l
-         AgEQvrhpY7QfHc3dELJkRpLuteGxUBN0xVvZjsN18wN+HPi9bJAQQPBUTQLaFxDc639R
-         /lbyHwyPw6EKwvIM4KPcgrtLmeHm0s3cja9SacMeSCVfceJzDngd2TRD55Oo8uKN71Dn
-         0rIg==
+        d=google.com; s=20230601; t=1705972013; x=1706576813; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QZk5WhKB+5XNkDgpDR6qQPJ9RduGx9EVoLu/fbH5djM=;
+        b=Cnyg90WM31YH+N6SZ8qJHSS6wW3eYOXvSdaLeXy+KHpqPiPm76Ldn5ZRoFv5wOATDU
+         ii28U3wVDlLAqPOtZJoxOXq9pcCIondZGS1rpDaBivSTvDTzIox1USIlBtL+M2lcfspM
+         Yp3frwHmUlDakSZbhmS7oH4Y892W72le+2DwkS3nNig3C6quCSNkC+/0nATawK2RkilK
+         M5bRUBdER/2q8q/dLjULrd0X0hngWccbPNWY0L/doyTUixdzrFxT6yCXbNFj1dn33RNM
+         YnVJ9q5bDIN/7d4Os8lyZh/7gPASDwU9jqRMOwVjd2Eike5fTDkMZOVDa8ST9qqZY+1M
+         JBrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705971972; x=1706576772;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Dww+c2ua5vGiOnRP836ljW2S8BcprbVDvaDWfIZ2I50=;
-        b=YMmNHvy9SctjgJ39ZMcXSPuZawzG/oQxFtpog6145U25Jji/7+I5GBAye/f4GacKbl
-         81PuuqvXX+Et18adMnZhAMawGFCvCi5wsOwHvSZ6XDknZvTkA00dMQem2sHAFfi/SrUL
-         seu0F3zuYOO/a2ia2R7gorKmEe+BGjFy24jY/a9Hr+/VJ41PU6jH0GNt69RCiEqoOKd1
-         E59nfJggHraSOb5/8guzZkpy5I4S5PzX4QYMv0AGvl/6s+QUasb7uzLOEagelh2IP/Yv
-         3wJgo7YWYirOTx4giKZJzWrlN7SnYUC786CedXKK+bLx89tJO9ha5QXsgyygW+gR/xz5
-         h5wQ==
-X-Gm-Message-State: AOJu0YxW52zpbWW5vdiLCEkAqT12LlnXnpUZn3PJMP1vobj/z+0S+XyF
-	NV9imm3NVIA0qY13iiAErEndfdIrre7t5DhuubVDa2/g0cuvxHFV
-X-Google-Smtp-Source: AGHT+IH/bOAlBbcgqc0pZiK0H0ofcW2HeJVBCsA8LLR7upvg31tLkkhH156+Hj1H9pzRS3twibcG7w==
-X-Received: by 2002:a17:902:e890:b0:1d7:3533:9687 with SMTP id w16-20020a170902e89000b001d735339687mr2217792plg.42.1705971972221;
-        Mon, 22 Jan 2024 17:06:12 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id o17-20020a170902e29100b001d73228cd99sm4163522plc.99.2024.01.22.17.06.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 17:06:11 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <e548f697-650e-4333-9f39-19a472b7d90a@roeck-us.net>
-Date: Mon, 22 Jan 2024 17:06:09 -0800
+        d=1e100.net; s=20230601; t=1705972013; x=1706576813;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QZk5WhKB+5XNkDgpDR6qQPJ9RduGx9EVoLu/fbH5djM=;
+        b=lhhp6EuR5hewRQLjqfOb8GRn95iyR2O37pmpAti0U0FQbXSumAAJsiJzlQu0AV+NGs
+         ERBGmhPxTk7nLznbxmh2m5VXEMFNRRDGb0hF8XgUcF8SkFm1KQvJZ2MbndgyMjTrwAFh
+         O6+2N6ct1zR41BU9zm0H/9BmRvMbZGMr4KAR5Cl+QDmDxrmwOf2L8x7HIFGJkWhY1PT+
+         DhXvnmqxCJXEXlSVeoTRskMMED/aW1PO6gvn0RZ6gNZGgY1o4X9tMZyY2f32ke5dntLt
+         Tpc2j3URcKgkhdr7kfjY1Yp78zIF789pC/WzwceJQcYNwouYtWl0qdCX/jFPO3KJFZGl
+         MOZw==
+X-Gm-Message-State: AOJu0YxZ9/rYUdUXUj2MUwN6i53eDSo/EB/Q8EL7+RdLeBLvjMQdHu9H
+	ORHpVruYtC7QAxwXaGYY3pQR/IXeZI5FPImXPjIuXoc5KZReqR9CvIylg20Endi1nX0NbA3iQWg
+	393Rs9E+u6x4/Wcaxx96PQ+g1klfn8JFO+6M=
+X-Google-Smtp-Source: AGHT+IElL0l7ZlzCyVu6sV4TowvH4h8r0O04eb+NvMNmeHH+7QDZkuVEAlW8EbrBMPiwzqOcOoBeUWgdFl3Fn/WB43A=
+X-Received: by 2002:a05:600c:4f4b:b0:40d:839b:7844 with SMTP id
+ m11-20020a05600c4f4b00b0040d839b7844mr92588wmq.6.1705972013523; Mon, 22 Jan
+ 2024 17:06:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v15 5/5] kunit: Add tests for csum_ipv6_magic and
- ip_fast_csum
-Content-Language: en-US
-To: Charlie Jenkins <charlie@rivosinc.com>,
- Palmer Dabbelt <palmer@dabbelt.com>
-Cc: David.Laight@aculab.com, Conor Dooley <conor@kernel.org>,
- samuel.holland@sifive.com, xiao.w.wang@intel.com,
- Evan Green <evan@rivosinc.com>, guoren@kernel.org,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-arch@vger.kernel.org, Paul Walmsley <paul.walmsley@sifive.com>,
- aou@eecs.berkeley.edu, Arnd Bergmann <arnd@arndb.de>
-References: <be959a4bb660466faba5ade7976485c8@AcuMS.aculab.com>
- <mhng-b5f26a34-7632-4423-9f07-3224170bae9f@palmer-ri-x1c9>
- <Za8AXnKCm4cPyVbp@ghost>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <Za8AXnKCm4cPyVbp@ghost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240122235208.work.748-kees@kernel.org> <20240123002814.1396804-75-keescook@chromium.org>
+In-Reply-To: <20240123002814.1396804-75-keescook@chromium.org>
+From: John Stultz <jstultz@google.com>
+Date: Mon, 22 Jan 2024 17:06:41 -0800
+Message-ID: <CANDhNCos=XQoHS1YHxpaw-cawJUiZyw-Z=6qZ1iZw3RFUxNN3w@mail.gmail.com>
+Subject: Re: [PATCH 75/82] timekeeping: Refactor intentional wrap-around test
+To: Kees Cook <keescook@chromium.org>
+Cc: linux-hardening@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, 
+	Stephen Boyd <sboyd@kernel.org>, "Gustavo A. R. Silva" <gustavoars@kernel.org>, 
+	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 1/22/24 15:55, Charlie Jenkins wrote:
-> On Mon, Jan 22, 2024 at 03:39:16PM -0800, Palmer Dabbelt wrote:
->> On Mon, 22 Jan 2024 13:41:48 PST (-0800), David.Laight@ACULAB.COM wrote:
->>> From: Guenter Roeck
->>>> Sent: 22 January 2024 17:16
->>>>
->>>> On 1/22/24 08:52, David Laight wrote:
->>>>> From: Guenter Roeck
->>>>>> Sent: 22 January 2024 16:40
->>>>>>
->>>>>> Hi,
->>>>>>
->>>>>> On Mon, Jan 08, 2024 at 03:57:06PM -0800, Charlie Jenkins wrote:
->>>>>>> Supplement existing checksum tests with tests for csum_ipv6_magic and
->>>>>>> ip_fast_csum.
->>>>>>>
->>>>>>> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
->>>>>>> ---
->>>>>>
->>>>>> With this patch in the tree, the arm:mps2-an385 qemu emulation gets a bad hiccup.
->>>>>>
->>>>>> [    1.839556] Unhandled exception: IPSR = 00000006 LR = fffffff1
->>>>>> [    1.839804] CPU: 0 PID: 164 Comm: kunit_try_catch Tainted: G                 N 6.8.0-rc1 #1
->>>>>> [    1.839948] Hardware name: Generic DT based system
->>>>>> [    1.840062] PC is at __csum_ipv6_magic+0x8/0xb4
->>>>>> [    1.840408] LR is at test_csum_ipv6_magic+0x3d/0xa4
->>>>>> [    1.840493] pc : [<21212f34>]    lr : [<21117fd5>]    psr: 0100020b
->>>>>> [    1.840586] sp : 2180bebc  ip : 46c7f0d2  fp : 21275b38
->>>>>> [    1.840664] r10: 21276b60  r9 : 21275b28  r8 : 21465cfc
->>>>>> [    1.840751] r7 : 00003085  r6 : 21275b4e  r5 : 2138702c  r4 : 00000001
->>>>>> [    1.840847] r3 : 2c000000  r2 : 1ac7f0d2  r1 : 21275b39  r0 : 21275b29
->>>>>> [    1.840942] xPSR: 0100020b
->>>>>>
->>>>>> This translates to:
->>>>>>
->>>>>> PC is at __csum_ipv6_magic (arch/arm/lib/csumipv6.S:15)
->>>>>> LR is at test_csum_ipv6_magic (./arch/arm/include/asm/checksum.h:60
->>>>>> ./arch/arm/include/asm/checksum.h:163 lib/checksum_kunit.c:617)
->>>>>>
->>>>>> Obviously I can not say if this is a problem with qemu or a problem with
->>>>>> the Linux kernel. Given that, and the presumably low interest in
->>>>>> running mps2-an385 with Linux, I'll simply disable that test. Just take
->>>>>> it as a heads up that there _may_ be a problem with this on arm
->>>>>> nommu systems.
->>>>>
->>>>> Can you drop in a disassembly of __csum_ipv6_magic ?
->>>>> Actually I think it is:
->>>>
->>>> It is, as per the PC pointer above. I don't know anything about arm assembler,
->>>> much less about its behavior with THUMB code.
->>>
->>> Doesn't look like thumb to me (offset 8 is two 4-byte instructions) and
->>> the code I found looks like arm to me.
->>> (I haven't written any arm asm since before they invented thumb!)
->>>
->>>>> ENTRY(__csum_ipv6_magic)
->>>>> 		str	lr, [sp, #-4]!
->>>>> 		adds	ip, r2, r3
->>>>> 		ldmia	r1, {r1 - r3, lr}
->>>>>
->>>>> So the fault is (probably) a misaligned ldmia ?
->>>>> Are they ever supported?
->>>>>
->>>>
->>>> Good question. My primary guess is that this never worked. As I said,
->>>> this was just intended to be informational, (probably) no reason to bother.
->>>>
->>>> Of course one might ask if it makes sense to even keep the arm nommu code
->>>> in the kernel, but that is of course a different question. I do wonder though
->>>> if anyone but me is running it.
->>>
->>> If it is an alignment fault it isn't a 'nommu' bug.
->>>
->>> And traditionally arm didn't support misaligned transfers (well not
->>> in anyway any other cpu did!).
->>> It might be that the kernel assumes that all ethernet packets are
->>> aligned, but the test suite isn't aligning the buffer.
->>> Which would make it a test suite bug.
->>
->>  From talking to Evan and Vineet, I think you're right and this is a test
->> suite bug: specifically the tests weren't respecting NET_IP_ALIGN.  That
->> didn't crop up for ip_fast_csum() as it just uses ldr which supports
->> misaligned accesses on the M3 (at least as far as I can tell).
->>
->> So I think the right fix is something like
->>
->>     diff --git a/lib/checksum_kunit.c b/lib/checksum_kunit.c
->>     index 225bb7701460..2dd282e27dd4 100644
->>     --- a/lib/checksum_kunit.c
->>     +++ b/lib/checksum_kunit.c
->>     @@ -5,6 +5,7 @@
->>      #include <kunit/test.h>
->>      #include <asm/checksum.h>
->>     +#include <asm/checksum.h>
->>      #include <net/ip6_checksum.h>
->>      #define MAX_LEN 512
->>     @@ -15,6 +16,7 @@
->>      #define IPv4_MAX_WORDS 15
->>      #define NUM_IPv6_TESTS 200
->>      #define NUM_IP_FAST_CSUM_TESTS 181
->>     +#define SUPPORTED_ALIGNMENT (1 << NET_IP_ALIGN)
->>      /* Values for a little endian CPU. Byte swap each half on big endian CPU. */
->>      static const u32 random_init_sum = 0x2847aab;
->>     @@ -486,7 +488,7 @@ static void test_csum_fixed_random_inputs(struct kunit *test)
->>      	__sum16 result, expec;
->>      	assert_setup_correct(test);
->>     -	for (align = 0; align < TEST_BUFLEN; ++align) {
->>     +	for (align = 0; align < TEST_BUFLEN; align += SUPPORTED_ALIGNMENT) {
->>      		memcpy(&tmp_buf[align], random_buf,
->>      		       min(MAX_LEN, TEST_BUFLEN - align));
->>      		for (len = 0; len < MAX_LEN && (align + len) < TEST_BUFLEN;
->>     @@ -513,7 +515,7 @@ static void test_csum_all_carry_inputs(struct kunit *test)
->>      	assert_setup_correct(test);
->>      	memset(tmp_buf, 0xff, TEST_BUFLEN);
->>     -	for (align = 0; align < TEST_BUFLEN; ++align) {
->>     +	for (align = 0; align < TEST_BUFLEN; align += SUPPORTED_ALIGNMENT) {
->>      		for (len = 0; len < MAX_LEN && (align + len) < TEST_BUFLEN;
->>      		     ++len) {
->>      			/*
->>     @@ -553,7 +555,7 @@ static void test_csum_no_carry_inputs(struct kunit *test)
->>      	assert_setup_correct(test);
->>      	memset(tmp_buf, 0x4, TEST_BUFLEN);
->>     -	for (align = 0; align < TEST_BUFLEN; ++align) {
->>     +	for (align = 0; align < TEST_BUFLEN; align += SUPPORTED_ALIGNMENT) {
->>      		for (len = 0; len < MAX_LEN && (align + len) < TEST_BUFLEN;
->>      		     ++len) {
->>      			/*
->>
->> but I haven't even build tested it...
-> 
-> This doesn't fix the test_csum_ipv6_magic test case that was causing the
-> initial problem, but the same trick can be done in that test.
-> 
+On Mon, Jan 22, 2024 at 4:36=E2=80=AFPM Kees Cook <keescook@chromium.org> w=
+rote:
+>
+> In an effort to separate intentional arithmetic wrap-around from
+> unexpected wrap-around, we need to refactor places that depend on this
+> kind of math. One of the most common code patterns of this is:
+>
+>         VAR + value < VAR
+>
+> Notably, this is considered "undefined behavior" for signed and pointer
+> types, which the kernel works around by using the -fno-strict-overflow
+> option in the build[1] (which used to just be -fwrapv). Regardless, we
+> want to get the kernel source to the position where we can meaningfully
+> instrument arithmetic wrap-around conditions and catch them when they
+> are unexpected, regardless of whether they are signed[2], unsigned[3],
+> or pointer[4] types.
+>
+> Refactor open-coded wrap-around addition test to use add_would_overflow()=
+.
+> This paves the way to enabling the wrap-around sanitizers in the future.
+>
+> Link: https://git.kernel.org/linus/68df3755e383e6fecf2354a67b08f92f185365=
+94 [1]
+> Link: https://github.com/KSPP/linux/issues/26 [2]
+> Link: https://github.com/KSPP/linux/issues/27 [3]
+> Link: https://github.com/KSPP/linux/issues/344 [4]
+> Cc: John Stultz <jstultz@google.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  kernel/time/timekeeping.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
+> index 266d02809dbb..2fc7cf16584c 100644
+> --- a/kernel/time/timekeeping.c
+> +++ b/kernel/time/timekeeping.c
+> @@ -1984,7 +1984,7 @@ static __always_inline void timekeeping_apply_adjus=
+tment(struct timekeeper *tk,
+>          * Which simplifies to:
+>          *      xtime_nsec -=3D offset
+>          */
+> -       if ((mult_adj > 0) && (tk->tkr_mono.mult + mult_adj < mult_adj)) =
+{
+> +       if ((mult_adj > 0) && (add_would_overflow(mult_adj, tk->tkr_mono.=
+mult))) {
+>                 /* NTP adjustment caused clocksource mult overflow */
+>                 WARN_ON_ONCE(1);
+>                 return;
 
-The above didn't (and still doesn't) fail for me. The following fixes the problem.
-So, yes, I guess the problem has to do with alignment. I don't know if NET_IP_ALIGN
-would do the trick, though - it works, but it seems to me that the definition of
-NET_IP_ALIGN is supposed to address potential performance issues, not mandatory
-IP header alignment.
-
-Thanks,
-Guenter
-
----
-diff --git a/lib/checksum_kunit.c b/lib/checksum_kunit.c
-index 225bb7701460..c8730af2a474 100644
---- a/lib/checksum_kunit.c
-+++ b/lib/checksum_kunit.c
-@@ -591,6 +591,8 @@ static void test_ip_fast_csum(struct kunit *test)
-         }
-  }
-
-+#define SUPPORTED_ALIGNMENT (1 << NET_IP_ALIGN)
-+
-  static void test_csum_ipv6_magic(struct kunit *test)
-  {
-  #if defined(CONFIG_NET)
-@@ -607,7 +609,7 @@ static void test_csum_ipv6_magic(struct kunit *test)
-         const int csum_offset = sizeof(struct in6_addr) + sizeof(struct in6_addr) +
-                             sizeof(int) + sizeof(char);
-
--       for (int i = 0; i < NUM_IPv6_TESTS; i++) {
-+       for (int i = 0; i < NUM_IPv6_TESTS; i+=SUPPORTED_ALIGNMENT) {
-                 saddr = (const struct in6_addr *)(random_buf + i);
-                 daddr = (const struct in6_addr *)(random_buf + i +
-                                                   daddr_offset);
-
-
+Acked-by: John Stultz <jstultz@google.com>
 
