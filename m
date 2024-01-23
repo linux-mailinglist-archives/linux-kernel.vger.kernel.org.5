@@ -1,77 +1,178 @@
-Return-Path: <linux-kernel+bounces-34670-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 583558385F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 04:13:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 335A28385F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 04:13:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CEAC4B2281D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:13:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CE591F2762A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:13:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8287817EB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AD511851;
 	Tue, 23 Jan 2024 03:13:23 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D81E810
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FBC0A2D
 	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 03:13:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705979603; cv=none; b=KFe2iula5Q9DdbyJK1/KkYQz5xQ3uaZEb9AFstgxFU+RRJDgx/0/J3oxdgIa5Cb8uUYTEsTbiZTTeCVfg6KjdVwONkO2qb+iK2jinIvFDjiSo1PJktqLVMDwurFVFNEhphCidGq9teuj3WV/uGFXH5n0aCjLg2Zfgs+eKNouD3Q=
+	t=1705979603; cv=none; b=rWQMwqBbmsx6Yszs9TMAm30oO/2lajhCvopQ4RLb/pVK0d7AsTMBDCZsZlEohlQoTyhC5Q+SOj0rMgJpUqtEK5+z6T/BQ/xZlNQaR753tbeT6hpHZg3iQ1cCaICN34Ke5BOBDJIIbMyWWmd6/5zMCsNZgb+0XPpWPQ1yw++k8H4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1705979603; c=relaxed/simple;
-	bh=P9m3e0sqQC05bMtxDHPbp2+Kd/hzkQ3TRdYVPbYdiRM=;
-	h=Message-ID:Date:From:To:Cc:Subject; b=BZFjUhDytw2XyIgaHKHZh59PvPwL+5VnyuIfwu0/mvlu1twgsCzhwAi4qKUwn0HzvXslXATLFKGvIagloMN7rMue21OjzoEJyZXDK5GtBDt5CqWZA9q9JAYGxBM7A8otRiSAihuxtzE6UmteM9JUjKnQHZkhrP32I5WrKEkALDQ=
+	bh=tlLAY6EO02qx1b+oRH7VARDvczbq9v+as7OlbaqoAos=;
+	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
+	 Content-Type; b=skFrvnaa6TdVZ1+Fay6YiVZnXodAxkBu27m0aIK/TboNHsMm9F8jLy5zRZ/x5dWDecwpJcuF9Boi2QHkSbqkEoIB/blgKeRo+4YNHWZL5dzm7C+Au2lXHL85+7pKV64+w5x29RehyDKyqXVs3+ACjT4XtRK4QUUp9jWlNXpOn/I=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B87E3C433F1;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3437C433C7;
 	Tue, 23 Jan 2024 03:13:22 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1rS7FU-00000002i8Q-2gGn;
+	id 1rS7FU-00000002i8w-3Oab;
 	Mon, 22 Jan 2024 22:14:52 -0500
-Message-ID: <20240123030826.619242906@goodmis.org>
+Message-ID: <20240123031452.667736338@goodmis.org>
 User-Agent: quilt/0.67
-Date: Mon, 22 Jan 2024 22:08:26 -0500
+Date: Mon, 22 Jan 2024 22:08:27 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org
 Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Mark Rutland <mark.rutland@arm.com>,
  Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>
-Subject: [for-linus][PATCH 0/2] tracing/eventfs: Fixes for 6.8
+ Andrew Morton <akpm@linux-foundation.org>,
+ Petr Pavlu <petr.pavlu@suse.com>,
+ Tom Zanussi <tom.zanussi@linux.intel.com>
+Subject: [for-linus][PATCH 1/2] tracing: Ensure visibility when inserting an element into tracing_map
+References: <20240123030826.619242906@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 
-Tracing and eventfs fixes for 6.8:
+From: Petr Pavlu <petr.pavlu@suse.com>
 
-- Fix histogram tracing_map insertion.
-  The tracing_map_insert copies the value into the elt variable and
-  then assigns the elt to the entry value. But it is possible that
-  the entry value becomes visible on other CPUs before the elt is
-  fully initialized. This is fixed by adding a wmb() between the
-  initialization of the elt variable and assigning it.
+Running the following two commands in parallel on a multi-processor
+AArch64 machine can sporadically produce an unexpected warning about
+duplicate histogram entries:
 
-- Have eventfs directory have unique inode numbers. Having them be
-  all the same proved to be a failure as the find application will
-  think that the directories are causing loops, as it checks for
-  directory loops via their inodes. Have the evenfs dir entries
-  get their inodes assigned when they are referenced and then save
-  them in the eventfs_inode structure.
+ $ while true; do
+     echo hist:key=id.syscall:val=hitcount > \
+       /sys/kernel/debug/tracing/events/raw_syscalls/sys_enter/trigger
+     cat /sys/kernel/debug/tracing/events/raw_syscalls/sys_enter/hist
+     sleep 0.001
+   done
+ $ stress-ng --sysbadaddr $(nproc)
 
-Petr Pavlu (1):
-      tracing: Ensure visibility when inserting an element into tracing_map
+The warning looks as follows:
 
-Steven Rostedt (Google) (1):
-      eventfs: Save directory inodes in the eventfs_inode structure
+[ 2911.172474] ------------[ cut here ]------------
+[ 2911.173111] Duplicates detected: 1
+[ 2911.173574] WARNING: CPU: 2 PID: 12247 at kernel/trace/tracing_map.c:983 tracing_map_sort_entries+0x3e0/0x408
+[ 2911.174702] Modules linked in: iscsi_ibft(E) iscsi_boot_sysfs(E) rfkill(E) af_packet(E) nls_iso8859_1(E) nls_cp437(E) vfat(E) fat(E) ena(E) tiny_power_button(E) qemu_fw_cfg(E) button(E) fuse(E) efi_pstore(E) ip_tables(E) x_tables(E) xfs(E) libcrc32c(E) aes_ce_blk(E) aes_ce_cipher(E) crct10dif_ce(E) polyval_ce(E) polyval_generic(E) ghash_ce(E) gf128mul(E) sm4_ce_gcm(E) sm4_ce_ccm(E) sm4_ce(E) sm4_ce_cipher(E) sm4(E) sm3_ce(E) sm3(E) sha3_ce(E) sha512_ce(E) sha512_arm64(E) sha2_ce(E) sha256_arm64(E) nvme(E) sha1_ce(E) nvme_core(E) nvme_auth(E) t10_pi(E) sg(E) scsi_mod(E) scsi_common(E) efivarfs(E)
+[ 2911.174738] Unloaded tainted modules: cppc_cpufreq(E):1
+[ 2911.180985] CPU: 2 PID: 12247 Comm: cat Kdump: loaded Tainted: G            E      6.7.0-default #2 1b58bbb22c97e4399dc09f92d309344f69c44a01
+[ 2911.182398] Hardware name: Amazon EC2 c7g.8xlarge/, BIOS 1.0 11/1/2018
+[ 2911.183208] pstate: 61400005 (nZCv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
+[ 2911.184038] pc : tracing_map_sort_entries+0x3e0/0x408
+[ 2911.184667] lr : tracing_map_sort_entries+0x3e0/0x408
+[ 2911.185310] sp : ffff8000a1513900
+[ 2911.185750] x29: ffff8000a1513900 x28: ffff0003f272fe80 x27: 0000000000000001
+[ 2911.186600] x26: ffff0003f272fe80 x25: 0000000000000030 x24: 0000000000000008
+[ 2911.187458] x23: ffff0003c5788000 x22: ffff0003c16710c8 x21: ffff80008017f180
+[ 2911.188310] x20: ffff80008017f000 x19: ffff80008017f180 x18: ffffffffffffffff
+[ 2911.189160] x17: 0000000000000000 x16: 0000000000000000 x15: ffff8000a15134b8
+[ 2911.190015] x14: 0000000000000000 x13: 205d373432323154 x12: 5b5d313131333731
+[ 2911.190844] x11: 00000000fffeffff x10: 00000000fffeffff x9 : ffffd1b78274a13c
+[ 2911.191716] x8 : 000000000017ffe8 x7 : c0000000fffeffff x6 : 000000000057ffa8
+[ 2911.192554] x5 : ffff0012f6c24ec0 x4 : 0000000000000000 x3 : ffff2e5b72b5d000
+[ 2911.193404] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff0003ff254480
+[ 2911.194259] Call trace:
+[ 2911.194626]  tracing_map_sort_entries+0x3e0/0x408
+[ 2911.195220]  hist_show+0x124/0x800
+[ 2911.195692]  seq_read_iter+0x1d4/0x4e8
+[ 2911.196193]  seq_read+0xe8/0x138
+[ 2911.196638]  vfs_read+0xc8/0x300
+[ 2911.197078]  ksys_read+0x70/0x108
+[ 2911.197534]  __arm64_sys_read+0x24/0x38
+[ 2911.198046]  invoke_syscall+0x78/0x108
+[ 2911.198553]  el0_svc_common.constprop.0+0xd0/0xf8
+[ 2911.199157]  do_el0_svc+0x28/0x40
+[ 2911.199613]  el0_svc+0x40/0x178
+[ 2911.200048]  el0t_64_sync_handler+0x13c/0x158
+[ 2911.200621]  el0t_64_sync+0x1a8/0x1b0
+[ 2911.201115] ---[ end trace 0000000000000000 ]---
 
-----
- fs/tracefs/event_inode.c   | 14 +++++++++++---
- fs/tracefs/internal.h      |  7 ++++---
- kernel/trace/tracing_map.c |  7 ++++++-
- 3 files changed, 21 insertions(+), 7 deletions(-)
+The problem appears to be caused by CPU reordering of writes issued from
+__tracing_map_insert().
+
+The check for the presence of an element with a given key in this
+function is:
+
+ val = READ_ONCE(entry->val);
+ if (val && keys_match(key, val->key, map->key_size)) ...
+
+The write of a new entry is:
+
+ elt = get_free_elt(map);
+ memcpy(elt->key, key, map->key_size);
+ entry->val = elt;
+
+The "memcpy(elt->key, key, map->key_size);" and "entry->val = elt;"
+stores may become visible in the reversed order on another CPU. This
+second CPU might then incorrectly determine that a new key doesn't match
+an already present val->key and subsequently insert a new element,
+resulting in a duplicate.
+
+Fix the problem by adding a write barrier between
+"memcpy(elt->key, key, map->key_size);" and "entry->val = elt;", and for
+good measure, also use WRITE_ONCE(entry->val, elt) for publishing the
+element. The sequence pairs with the mentioned "READ_ONCE(entry->val);"
+and the "val->key" check which has an address dependency.
+
+The barrier is placed on a path executed when adding an element for
+a new key. Subsequent updates targeting the same key remain unaffected.
+
+From the user's perspective, the issue was introduced by commit
+c193707dde77 ("tracing: Remove code which merges duplicates"), which
+followed commit cbf4100efb8f ("tracing: Add support to detect and avoid
+duplicates"). The previous code operated differently; it inherently
+expected potential races which result in duplicates but merged them
+later when they occurred.
+
+Link: https://lore.kernel.org/linux-trace-kernel/20240122150928.27725-1-petr.pavlu@suse.com
+
+Fixes: c193707dde77 ("tracing: Remove code which merges duplicates")
+Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
+Acked-by: Tom Zanussi <tom.zanussi@linux.intel.com>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ kernel/trace/tracing_map.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/trace/tracing_map.c b/kernel/trace/tracing_map.c
+index c774e560f2f9..a4dcf0f24352 100644
+--- a/kernel/trace/tracing_map.c
++++ b/kernel/trace/tracing_map.c
+@@ -574,7 +574,12 @@ __tracing_map_insert(struct tracing_map *map, void *key, bool lookup_only)
+ 				}
+ 
+ 				memcpy(elt->key, key, map->key_size);
+-				entry->val = elt;
++				/*
++				 * Ensure the initialization is visible and
++				 * publish the elt.
++				 */
++				smp_wmb();
++				WRITE_ONCE(entry->val, elt);
+ 				atomic64_inc(&map->hits);
+ 
+ 				return entry->val;
+-- 
+2.43.0
+
+
 
