@@ -1,215 +1,135 @@
-Return-Path: <linux-kernel+bounces-36125-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36127-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F687839BFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 23:18:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18A3D839BFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 23:19:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 947BF1C2574A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 22:18:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90916B2A623
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 22:19:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 864884F61D;
-	Tue, 23 Jan 2024 22:17:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97103537F5;
+	Tue, 23 Jan 2024 22:18:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bvAyWCgT"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="nRk88Dcn"
+Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 361BF4F216
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 22:17:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85A624F211;
+	Tue, 23 Jan 2024 22:18:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706048278; cv=none; b=F8dlxw+Iddv4TyCScTfMEXvM1N/0b8CdSBb0gEMp22VieQ2+bV+n2tyXsJHpzFzSdZbbTE6sIatxmYTbM2fcZxzgqiETXvdz2kOe8XGK2GCDzA2YP0Pc5lxmZrUcp8kFSssBXaMrExhEN5vqiIBf8nrcq+e7EsI3975oqp+Y8cQ=
+	t=1706048289; cv=none; b=W4EF8OHkJjyBZ8TkA5NBVkRcCu0Pn/ICfFjIIhoXDTG0HQ8XKCVlPm/jl73V+iG5ctfjCUGM/P/Rg4gDBzp2gEwOYhF2uI8es8GrvCFTzuTs6/XdlpOIdpWrDP0UgQnAlkpyCu6E/+4nDBrVwx1SuzbXlXV8YH7U8uIJFHhrtaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706048278; c=relaxed/simple;
-	bh=eQc/0XprESJCX8/SL8NWCcerd2+39PRmvZ4jwBgHHms=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=kcrzFSp2ONcdzHNZ4h3LXGyEJC6sgOb1CGMGpejlhdlgTZaIh+80MhTwmPkZAp3zaq2HGuuPihxGBPxAhiljNbm3igtB8O7eYlDFY3ppK3mSq3KrkXM6V/sHIHIlz64nnYZ8Dtsih74WkaTv95xSz+V998R7yz53v24j9eSXZcg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bvAyWCgT; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc236791689so6612378276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 14:17:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706048276; x=1706653076; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sq2A5rdPoZzXe3JfsyjEi2DmgNcsMleYf8+7wJXU3oU=;
-        b=bvAyWCgTdB7xqhlCHl4FccHzz0TK4HuT69XojP7Cihu+xUqrUNsjr6aNdFRlc0lsA6
-         oVP+JJe+KMh22It+JjF8vj3488kwKDj6QU20MRaBCLEZ1i8xL+HzBcyLfACMM/GAmzkc
-         KTaARTv6Pgz+NXkYt8/JkL35I0bDegpG5Eug7Ry8RDHnbw34yfpkPqaeKOO7bph7hcCb
-         Hz3IzdfhsiEoI7zRO/kpcKycv9QKpLW7Gqcl/msLocu02G6gQCaYgUYPyWAzNu5qRZUj
-         2Z7BEswmWXCYGl6FBdDwUgEIgTT8CGLjVoEGurlb5lE3NpvaAlXYiFfM8/E8QngSuMFR
-         shoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706048276; x=1706653076;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sq2A5rdPoZzXe3JfsyjEi2DmgNcsMleYf8+7wJXU3oU=;
-        b=TDYwVqrGrPxeit3rtiGRwvDk8aPUV1uhvs+/2nqwaQtEet3VPTh7p/B5gXs5p2NBjT
-         pvMc05IuGm8CdcS2I8i22ZQt2iE+tjcxlxuB7EDII2ksrIBPZ00SF17su1SYv0lPbtWH
-         KMpjXQ9v1rbjDDWj3qN0p4B9vCc6/YS16PM8ZxJ+bmUE3j29U3wJ6ml0bTBHoryUgkea
-         pof30gG2WSSIjKP/owAhdYfcPtL4nK/226FNdcMM4RNa9lroU7ygzYy2O5pvkeHalLWL
-         0bjrVhVnEXNxe20Tk25oZSjxtVQsoUqc23IfBjLgSCmgjoeUcOd1uDENLYY8sEA+Rrfz
-         DYcg==
-X-Gm-Message-State: AOJu0YzXcWD3mTA6jcMeRC1WMzxYlJyt0UMTM590FbsD9vpcoxKcB25U
-	vNX0sqklAfT6fTf/GtS//sG0Ui7ZZ1pS2Y+YKNhwXKvv4FHTw+QYZW+IJG+5IYH82XnT5HiV7ae
-	IGzYxyxmGegQpm+elv6QUIKo8oE9/TcaYmDytiTwgOMYW7C8YS46Ruu29pT3sorQi5RmXvjepTJ
-	QQNWr+VxPUpW81FwcPwnCnigeRWKxwYvxGG5WACnCfqooaGTfrcTI9g+hTFQ8qe4BM60o=
-X-Google-Smtp-Source: AGHT+IH87J0v28hXMQrSfT2AvSQ99998vzYrtkl0Kh0l9IUSxf/Sr2m7Wvvoa8btav6qxFFlBuAzv1P6tFn0ptW02Q==
-X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2c4:200:3608:aa16:52d:3594])
- (user=almasrymina job=sendgmr) by 2002:a05:6902:86:b0:dbe:a214:888c with SMTP
- id h6-20020a056902008600b00dbea214888cmr3189553ybs.11.1706048276193; Tue, 23
- Jan 2024 14:17:56 -0800 (PST)
-Date: Tue, 23 Jan 2024 14:17:45 -0800
-In-Reply-To: <20240123221749.793069-1-almasrymina@google.com>
+	s=arc-20240116; t=1706048289; c=relaxed/simple;
+	bh=7pV9x3NQmIGRm7ICc9Pgmv7Nj3R4TIsAeaVRF50Ts9w=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=qP0D4Fe/88EjuVEKg+iNDXKcBkA/ztNHy+pL5ozG5qpDtDGT/sS/qDrd4qPDUlSmJqfYcD08IsKkaFXUIGLJARY1iLB9keNkcuNK+9ROEHT6DQMNqTlGNpBhQyqPolh5lg4DXkwY3zqNpuJZYCbgOEEPPkPR0SGy7Y30C9V6pRQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=nRk88Dcn; arc=none smtp.client-ip=168.119.38.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=fb+aJv8HD8MKHoL2qErWawmWGsVeusQx5f3Xw3e0Ow4=;
+	t=1706048287; x=1707257887; b=nRk88DcnC13n75FuKAe63hU96apWsfJl4w8TnyjgP35G7PP
+	TY/WL+2lgbfHJeCPlEzQFlsg0MrHEJu9lFb8jmdDfKn1POBX4dS/ha6N2t5q/lGcbyyGh1XzT3Emd
+	ZctH4x2blgRhwmZFN+4nD0urToLiG2kA6n3BROEjf5s7HD5altIJEAUjZXb+8iHOoxS44wJVGptKC
+	9ah9U7pyLWIYAWwU4tkJPmVSILJ1ejYiwxZzzA6BUaZDaL1XOiMTkx5DtNabe8OQoq+IXaDQrHj2J
+	tl9iIYTeYQQ5+xj9vYQUsXJqfuYYWxxPZMX+KG027lILe5aAzT5pwtggP7hMO5Xw==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1rSP5W-0000000FGNa-2A9F;
+	Tue, 23 Jan 2024 23:17:46 +0100
+Message-ID: <a6adae9df117daab7457260c030cc97d8608eccb.camel@sipsolutions.net>
+Subject: Re: [PATCH 0/2] kernel-doc: Remove deprecated kernel-doc option
+ 'functions'
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Jonathan Corbet <corbet@lwn.net>, Anna-Maria Behnsen
+	 <anna-maria@linutronix.de>, linux-doc@vger.kernel.org
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+ Borislav Petkov <bp@alien8.de>, x86@kernel.org, Mike Rapoport
+ <rppt@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>, "David S.
+ Miller" <davem@davemloft.net>,  Marco Elver <elver@google.com>, Alexander
+ Potapenko <glider@google.com>, Shuah Khan <shuah@kernel.org>,  Moritz
+ Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>, Xu Yilun
+ <yilun.xu@intel.com>,  Dipen Patel <dipenp@nvidia.com>, Philipp Zabel
+ <p.zabel@pengutronix.de>, Heikki Krogerus
+ <heikki.krogerus@linux.intel.com>, David Airlie <airlied@gmail.com>, Daniel
+ Vetter <daniel@ffwll.ch>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, Jiri Kosina <jikos@kernel.org>,
+ Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
+ linux-kernel@vger.kernel.org
+Date: Tue, 23 Jan 2024 23:17:45 +0100
+In-Reply-To: <87y1cfiu2y.fsf@meer.lwn.net>
+References: <20240122132820.46633-1-anna-maria@linutronix.de>
+	 <c0fd30e8e6d175eab50d7d5212117107e5251e4d.camel@sipsolutions.net>
+	 <87y1cfiu2y.fsf@meer.lwn.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240123221749.793069-1-almasrymina@google.com>
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-Message-ID: <20240123221749.793069-2-almasrymina@google.com>
-Subject: [PATCH net-next v6 1/2] net: introduce abstraction for network memory
-From: Mina Almasry <almasrymina@google.com>
-To: linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Cc: Mina Almasry <almasrymina@google.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Jason Gunthorpe <jgg@nvidia.com>, 
-	"=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>, Shakeel Butt <shakeelb@google.com>, 
-	Yunsheng Lin <linyunsheng@huawei.com>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+X-malware-bazaar: not-scanned
 
-Add the netmem_ref type, an abstraction for network memory.
+On Tue, 2024-01-23 at 15:05 -0700, Jonathan Corbet wrote:
+>=20
+> So I feel like I'm missing something; the problem with Sphinx and
+> namespacing is separate from whether kernel-doc recognizes "-functions";
+> I don't think that taking out this support will make the other problem
+> any harder to solve.  Do you see something I'm not?
 
-To add support for new memory types to the net stack, we must first
-abstract the current memory type. Currently parts of the net stack
-use struct page directly:
+Well, I was thinking that today, in the rst files, we use
 
-- page_pool
-- drivers
-- skb_frag_t
+. kernel-doc:: include/net/cfg80211.h
+   :functions:
+        cfg80211_rx_assoc_resp
 
-Originally the plan was to reuse struct page* for the new memory types,
-and to set the LSB on the page* to indicate it's not really a page.
-However, for compiler type checking we need to introduce a new type.
+(for example).
 
-netmem_ref is introduced to abstract the underlying memory type.
-Currently it's a no-op abstraction that is always a struct page
-underneath. In parallel there is an undergoing effort to add support
-for devmem to the net stack:
+This clearly references the *function* cfg80211_rx_assoc_resp(), at
+least it makes that intent clear.
 
-https://lore.kernel.org/netdev/20231208005250.2910004-1-almasrymina@google.com/
+We also had a *struct* called cfg80211_rx_assoc_resp, until we removed
+it recently because of the sphinx namespacing issues.
 
-netmem_ref can be pointers to different underlying memory types, and the
-low bits are set to indicate the memory type. Helpers are provided
-to convert netmem pointers to the underlying memory type (currently only
-struct page). In the devmem series helpers are provided so that calling
-code can use netmem without worrying about the underlying memory type
-unless absolutely necessary.
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
-Signed-off-by: Mina Almasry <almasrymina@google.com>
+Now if we change the reference to the function to be just
 
----
+. kernel-doc:: include/net/cfg80211.h
+   :identifiers:
+        cfg80211_rx_assoc_resp
 
-v6:
-- Applied Reviewed-by from Shakeel.
+then how do you know that it's actually referencing the function vs. the
+struct? I mean, OK, today it can only reference the single "thing" (**)
+that sphinx accepts ...  but hoping that some day the sphinx namespacing
+issue will be solved, we'd need a way to actually reference the
+different namespaces from the rst files, no? So it seemed to me that
+just unconditionally referencing an "identifier" makes that harder, not
+easier?
 
-rfc v5:
-- RFC due to merge window.
-- Change to 'typedef unsigned long __bitwise netmem_ref;'
-- Fixed commit message (Shakeel).
-- Did not apply Shakeel's reviewed-by since the code changed
-  significantly.
+We have 'struct class' for example, and use
 
-v4:
-- use 'struct netmem;' instead of 'typedef void *__bitwise netmem_ref;'
+. kernel-doc:: include/linux/device/class.h
+   :identifiers: class
 
-  Using __bitwise with a non-integer type was wrong and triggered many
-  patchwork bot errors/warnings.
+to refer to it. At least you know it's not a function, though if you
+also had an 'enum class' you'd not be able to figure it out.
 
-  Using an integer type causes the compiler to warn when casting NULL to
-  the integer type.
 
-  Attempt to use an empty struct for our opaque network memory.
+(**) Also, I think a struct or enum name isn't actually called an
+identifier in C? So maybe that's a bad term regardless of the
+namespacing. But I guess even if I'm right (and I'm not really sure)
+then that's too late now.
 
-v3:
-
-- Modify struct netmem from a union of struct page + new types to an opaque
-  netmem_ref type.  I went with:
-
-  +typedef void *__bitwise netmem_ref;
-
-  rather than this that Jakub recommended:
-
-  +typedef unsigned long __bitwise netmem_ref;
-
-  Because with the latter the compiler issues warnings to cast NULL to
-  netmem_ref. I hope that's ok.
-
-- Add some function docs.
-
-v2:
-
-- Use container_of instead of a type cast (David).
----
- include/net/netmem.h | 41 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
- create mode 100644 include/net/netmem.h
-
-diff --git a/include/net/netmem.h b/include/net/netmem.h
-new file mode 100644
-index 000000000000..9f327d964782
---- /dev/null
-+++ b/include/net/netmem.h
-@@ -0,0 +1,41 @@
-+/* SPDX-License-Identifier: GPL-2.0
-+ *
-+ *	Network memory
-+ *
-+ *	Author:	Mina Almasry <almasrymina@google.com>
-+ */
-+
-+#ifndef _NET_NETMEM_H
-+#define _NET_NETMEM_H
-+
-+/**
-+ * netmem_ref - a nonexistent type marking a reference to generic network
-+ * memory.
-+ *
-+ * A netmem_ref currently is always a reference to a struct page. This
-+ * abstraction is introduced so support for new memory types can be added.
-+ *
-+ * Use the supplied helpers to obtain the underlying memory pointer and fields.
-+ */
-+typedef unsigned long __bitwise netmem_ref;
-+
-+/* This conversion fails (returns NULL) if the netmem_ref is not struct page
-+ * backed.
-+ *
-+ * Currently struct page is the only possible netmem, and this helper never
-+ * fails.
-+ */
-+static inline struct page *netmem_to_page(netmem_ref netmem)
-+{
-+	return (__force struct page *)netmem;
-+}
-+
-+/* Converting from page to netmem is always safe, because a page can always be
-+ * a netmem.
-+ */
-+static inline netmem_ref page_to_netmem(struct page *page)
-+{
-+	return (__force netmem_ref)page;
-+}
-+
-+#endif /* _NET_NETMEM_H */
--- 
-2.43.0.429.g432eaa2c6b-goog
-
+johannes
 
