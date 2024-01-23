@@ -1,270 +1,250 @@
-Return-Path: <linux-kernel+bounces-35402-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDF9183906A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:50:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C384A839075
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:53:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4BAF51F21F74
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:50:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C89461C20E11
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:53:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B3B15F570;
-	Tue, 23 Jan 2024 13:50:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86EF55F850;
+	Tue, 23 Jan 2024 13:52:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=pschenker.ch header.i=@pschenker.ch header.b="bPMqBnpz"
-Received: from smtp-8fae.mail.infomaniak.ch (smtp-8fae.mail.infomaniak.ch [83.166.143.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="j5yWyNDX";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="j5yWyNDX"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D63975F55A
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 13:50:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.166.143.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 961585EE87;
+	Tue, 23 Jan 2024 13:52:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706017827; cv=none; b=AZoLkRl1iClOOQ5CsV0d+o2RfXU/Q6v/i/q61PXglt0eDv6YuLhUVCBaOUs0g/flRwx8sBOdgEI1pwnoAgBKIUpPFHMa9HLeRJYNDbd5zzTxfuJFi+DAop86l0UQq7SPtacr5+S0Ne8qMsLcwVr6nnKrphj0V42kZoG0hVPAdOI=
+	t=1706017970; cv=none; b=LsAmvdPIKvNmOMQhwzocEuoIsvAswex+VtyvVJSWZfl7yLwFXgrofufbOOOLHiZktETUfllEKnCpmX2maoAZyMZrGJ8+B5PsXv5bKj9XRgKvYvA5NPA3TK4nB49msHS/ODl1Dls1xgy85udFC9eKSaVuhgSAcLKqrTBGji8eFcE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706017827; c=relaxed/simple;
-	bh=+q/tYEcIVTExKnWzMTwhtlDg9ZknBc4T0oiIo10zzGY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Oi+BU5NLxiOzgmKq6hSLzKEinT1KgmyCfXoJQsiVPqb0lYMoWuXh8iABLsulVyFyIA0/jdJ35JpR3UHQPjrD7nO7pkejVpx7YUP+kx3jS7CbQQ74HpMkrbyBRByGVDoTy4wJJGR6iJdGIvYZFJABGzv7WtuQgzkSiqBp3GOzEnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=pschenker.ch; spf=pass smtp.mailfrom=pschenker.ch; dkim=pass (1024-bit key) header.d=pschenker.ch header.i=@pschenker.ch header.b=bPMqBnpz; arc=none smtp.client-ip=83.166.143.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=pschenker.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pschenker.ch
-Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
-	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4TK7l039CCzMq1N5;
-	Tue, 23 Jan 2024 14:50:20 +0100 (CET)
-Received: from unknown by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4TK7kz4WkvzMppBk;
-	Tue, 23 Jan 2024 14:50:19 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=pschenker.ch;
-	s=20220412; t=1706017820;
-	bh=+q/tYEcIVTExKnWzMTwhtlDg9ZknBc4T0oiIo10zzGY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bPMqBnpzFFq0nHUd5n3DB8GbbU9QtVQ5oVk802ATafHT4iK49wowRj0zRphKAGnS6
-	 dvj+8DPViTvRnsmuT8N2jT7Za0H9qs/8ufomhQwRjGgP4GmhUyQ+j2OX8PTOp8UvW+
-	 bmKAMMpzD/3UzJ6gKIshZ6WugdZp+0cetnaxBfr4=
-From: Philippe Schenker <dev@pschenker.ch>
-To: netdev@vger.kernel.org
-Cc: Paolo Abeni <pabeni@redhat.com>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Woojung Huh <woojung.huh@microchip.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
+	s=arc-20240116; t=1706017970; c=relaxed/simple;
+	bh=JQy/dr7uzQI0KyqlOvGb+umF6PLdRTxKI0y9SDbr8XM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=s1quPeAVYEm7PB3Ivwd1/QH+6gterVMQedAlMGx6HRKmLpbcn7apZcuySyWae2cbSGyWeV4BDsKvvjY3kHzSV8mVaqymd4wtTDK+g411yphZOjQ7zIWdRuMQRnvuBUi9891DON4yEhFS7BAddNxlXLg2y9g3Y98dH/Ci1nQXm0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=j5yWyNDX; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=j5yWyNDX; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id AE9971F791;
+	Tue, 23 Jan 2024 13:52:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706017966; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=CarnWeIkkACTfle2HvzZUnaWqpriWpFFYHwb0I69pLU=;
+	b=j5yWyNDXGLWkCNyNnl7D6qNhCxUWFJpFiezdwaiko0Oa5EBUYsMwePeAf/YZUpxgwf9rxe
+	wuHOKp3c7bnYAhX9/Li5GIlMKE7+m1xYM8eHBWnI7EXJFefbiQ6AzON9JjRC76VLScj2LC
+	msRIH+dzyKd/qnoDj6SDYHRsB7B77tI=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706017966; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=CarnWeIkkACTfle2HvzZUnaWqpriWpFFYHwb0I69pLU=;
+	b=j5yWyNDXGLWkCNyNnl7D6qNhCxUWFJpFiezdwaiko0Oa5EBUYsMwePeAf/YZUpxgwf9rxe
+	wuHOKp3c7bnYAhX9/Li5GIlMKE7+m1xYM8eHBWnI7EXJFefbiQ6AzON9JjRC76VLScj2LC
+	msRIH+dzyKd/qnoDj6SDYHRsB7B77tI=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 86802136A4;
+	Tue, 23 Jan 2024 13:52:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 46s9IK7Er2UMVwAAD6G6ig
+	(envelope-from <mkoutny@suse.com>); Tue, 23 Jan 2024 13:52:46 +0000
+From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+To: netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	UNGLinuxDriver@microchip.com,
-	Marek Vasut <marex@denx.de>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	devicetree@vger.kernel.org,
+	bpf@vger.kernel.org,
+	cake@lists.bufferbloat.net
+Cc: "David S . Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Jakub Kicinski <kuba@kernel.org>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Rob Herring <robh+dt@kernel.org>,
-	Philippe Schenker <philippe.schenker@impulsing.ch>
-Subject: [PATCH net-next v1 2/2] net: dsa: Add KSZ8567 switch support
-Date: Tue, 23 Jan 2024 14:50:14 +0100
-Message-Id: <20240123135014.614858-2-dev@pschenker.ch>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240123135014.614858-1-dev@pschenker.ch>
-References: <20240123135014.614858-1-dev@pschenker.ch>
+	Paolo Abeni <pabeni@redhat.com>,
+	Jamal Hadi Salim <jhs@mojatatu.com>,
+	Cong Wang <xiyou.wangcong@gmail.com>,
+	Jiri Pirko <jiri@resnulli.us>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+	Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+	Stephen Hemminger <stephen@networkplumber.org>,
+	Petr Pavlu <ppavlu@suse.cz>,
+	Michal Kubecek <mkubecek@suse.cz>,
+	Martin Wilck <mwilck@suse.com>,
+	Pedro Tammela <pctammela@mojatatu.com>
+Subject: [PATCH v4 0/4] net/sched: Load modules via alias
+Date: Tue, 23 Jan 2024 14:52:38 +0100
+Message-ID: <20240123135242.11430-1-mkoutny@suse.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Infomaniak-Routing: alpha
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [7.50 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_SPAM(5.10)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 R_RATELIMIT(0.00)[to_ip_from(RL63s8thh5w8zyxj4waeg9pq8e)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWELVE(0.00)[29];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[davemloft.net,google.com,kernel.org,redhat.com,mojatatu.com,gmail.com,resnulli.us,iogearbox.net,linux.dev,toke.dk,intel.com,networkplumber.org,suse.cz,suse.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Level: *******
+X-Spam-Score: 7.50
+X-Spam-Flag: NO
 
-From: Philippe Schenker <philippe.schenker@impulsing.ch>
+These modules may be loaded lazily without user's awareness and
+control. Add respective aliases to modules and request them under these
+aliases so that modprobe's blacklisting mechanism (through aliases)
+works for them. (The same pattern exists e.g. for filesystem
+modules.)
 
-This commit introduces support for the KSZ8567, a robust 7-port
-Ethernet switch. The KSZ8567 features two RGMII/MII/RMII interfaces,
-each capable of gigabit speeds, complemented by five 10/100 Mbps
-MAC/PHYs.
+For example (before the change):
+  $ tc filter add dev lo parent 1: protocol ip prio 1 handle 10 tcindex ...
+  # cls_tcindex module is loaded despite a `blacklist cls_tcindex` entry
+  # in /etc/modprobe.d/*.conf
 
-Signed-off-by: Philippe Schenker <philippe.schenker@impulsing.ch>
+After the change:
+  $ tc filter add dev lo parent 1: protocol ip prio 1 handle 10 tcindex ...
+  Unknown filter "tcindex", hence option "..." is unparsable
+  # explicit/acknowledged (privileged) action is needed
+  $ modprobe cls_tcindex
+  # blacklist entry won't apply to this direct modprobe, module is
+  # loaded with awareness
 
----
+A considered alternative was invoking `modprobe -b` always from
+request_module(), however, dismissed as too intrusive and slightly
+confusing in favor of the precedented aliases (the commit 7f78e0351394
+("fs: Limit sys_mount to only request filesystem modules.").
 
- drivers/net/dsa/microchip/ksz9477_i2c.c     |  4 ++
- drivers/net/dsa/microchip/ksz_common.c      | 42 ++++++++++++++++++++-
- drivers/net/dsa/microchip/ksz_common.h      |  1 +
- drivers/net/dsa/microchip/ksz_spi.c         |  5 +++
- include/linux/platform_data/microchip-ksz.h |  1 +
- 5 files changed, 52 insertions(+), 1 deletion(-)
+User experience suffers in both alternatives. It's improvement is
+orthogonal to blacklist honoring.
 
-diff --git a/drivers/net/dsa/microchip/ksz9477_i2c.c b/drivers/net/dsa/microchip/ksz9477_i2c.c
-index cac4a607e54a..82bebee4615c 100644
---- a/drivers/net/dsa/microchip/ksz9477_i2c.c
-+++ b/drivers/net/dsa/microchip/ksz9477_i2c.c
-@@ -103,6 +103,10 @@ static const struct of_device_id ksz9477_dt_ids[] = {
- 		.compatible = "microchip,ksz8563",
- 		.data = &ksz_switch_chips[KSZ8563]
- 	},
-+	{
-+		.compatible = "microchip,ksz8567",
-+		.data = &ksz_switch_chips[KSZ8567]
-+	},
- 	{
- 		.compatible = "microchip,ksz9567",
- 		.data = &ksz_switch_chips[KSZ9567]
-diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
-index 245dfb7a7a31..9b96de86dfc8 100644
---- a/drivers/net/dsa/microchip/ksz_common.c
-+++ b/drivers/net/dsa/microchip/ksz_common.c
-@@ -1214,6 +1214,38 @@ const struct ksz_chip_data ksz_switch_chips[] = {
- 		.rd_table = &ksz8563_register_set,
- 	},
- 
-+	[KSZ8567] = {
-+		.chip_id = KSZ8567_CHIP_ID,
-+		.dev_name = "KSZ8567",
-+		.num_vlans = 4096,
-+		.num_alus = 4096,
-+		.num_statics = 16,
-+		.cpu_ports = 0x7F,	/* can be configured as cpu port */
-+		.port_cnt = 7,		/* total port count */
-+		.port_nirqs = 3,
-+		.num_tx_queues = 4,
-+		.tc_cbs_supported = true,
-+		.tc_ets_supported = true,
-+		.ops = &ksz9477_dev_ops,
-+		.mib_names = ksz9477_mib_names,
-+		.mib_cnt = ARRAY_SIZE(ksz9477_mib_names),
-+		.reg_mib_cnt = MIB_COUNTER_NUM,
-+		.regs = ksz9477_regs,
-+		.masks = ksz9477_masks,
-+		.shifts = ksz9477_shifts,
-+		.xmii_ctrl0 = ksz9477_xmii_ctrl0,
-+		.xmii_ctrl1 = ksz9477_xmii_ctrl1,
-+		.supports_mii	= {false, false, false, false,
-+				   false, true, true},
-+		.supports_rmii	= {false, false, false, false,
-+				   false, true, true},
-+		.supports_rgmii = {false, false, false, false,
-+				   false, true, true},
-+		.internal_phy	= {true, true, true, true,
-+				   true, false, false},
-+		.gbit_capable	= {false, false, false, false, false, true, true},
-+	},
-+
- 	[KSZ8795] = {
- 		.chip_id = KSZ8795_CHIP_ID,
- 		.dev_name = "KSZ8795",
-@@ -2649,6 +2681,7 @@ static void ksz_port_teardown(struct dsa_switch *ds, int port)
- 
- 	switch (dev->chip_id) {
- 	case KSZ8563_CHIP_ID:
-+	case KSZ8567_CHIP_ID:
- 	case KSZ9477_CHIP_ID:
- 	case KSZ9563_CHIP_ID:
- 	case KSZ9567_CHIP_ID:
-@@ -2705,7 +2738,8 @@ static enum dsa_tag_protocol ksz_get_tag_protocol(struct dsa_switch *ds,
- 	    dev->chip_id == KSZ9563_CHIP_ID)
- 		proto = DSA_TAG_PROTO_KSZ9893;
- 
--	if (dev->chip_id == KSZ9477_CHIP_ID ||
-+	if (dev->chip_id == KSZ8567_CHIP_ID ||
-+	    dev->chip_id == KSZ9477_CHIP_ID ||
- 	    dev->chip_id == KSZ9896_CHIP_ID ||
- 	    dev->chip_id == KSZ9897_CHIP_ID ||
- 	    dev->chip_id == KSZ9567_CHIP_ID)
-@@ -2813,6 +2847,7 @@ static int ksz_max_mtu(struct dsa_switch *ds, int port)
- 	case KSZ8830_CHIP_ID:
- 		return KSZ8863_HUGE_PACKET_SIZE - VLAN_ETH_HLEN - ETH_FCS_LEN;
- 	case KSZ8563_CHIP_ID:
-+	case KSZ8567_CHIP_ID:
- 	case KSZ9477_CHIP_ID:
- 	case KSZ9563_CHIP_ID:
- 	case KSZ9567_CHIP_ID:
-@@ -2839,6 +2874,7 @@ static int ksz_validate_eee(struct dsa_switch *ds, int port)
- 
- 	switch (dev->chip_id) {
- 	case KSZ8563_CHIP_ID:
-+	case KSZ8567_CHIP_ID:
- 	case KSZ9477_CHIP_ID:
- 	case KSZ9563_CHIP_ID:
- 	case KSZ9567_CHIP_ID:
-@@ -3183,6 +3219,7 @@ static int ksz_switch_detect(struct ksz_device *dev)
- 		case KSZ9896_CHIP_ID:
- 		case KSZ9897_CHIP_ID:
- 		case KSZ9567_CHIP_ID:
-+		case KSZ8567_CHIP_ID:
- 		case LAN9370_CHIP_ID:
- 		case LAN9371_CHIP_ID:
- 		case LAN9372_CHIP_ID:
-@@ -3220,6 +3257,7 @@ static int ksz_cls_flower_add(struct dsa_switch *ds, int port,
- 
- 	switch (dev->chip_id) {
- 	case KSZ8563_CHIP_ID:
-+	case KSZ8567_CHIP_ID:
- 	case KSZ9477_CHIP_ID:
- 	case KSZ9563_CHIP_ID:
- 	case KSZ9567_CHIP_ID:
-@@ -3239,6 +3277,7 @@ static int ksz_cls_flower_del(struct dsa_switch *ds, int port,
- 
- 	switch (dev->chip_id) {
- 	case KSZ8563_CHIP_ID:
-+	case KSZ8567_CHIP_ID:
- 	case KSZ9477_CHIP_ID:
- 	case KSZ9563_CHIP_ID:
- 	case KSZ9567_CHIP_ID:
-@@ -4142,6 +4181,7 @@ static int ksz_parse_drive_strength(struct ksz_device *dev)
- 	case KSZ8794_CHIP_ID:
- 	case KSZ8765_CHIP_ID:
- 	case KSZ8563_CHIP_ID:
-+	case KSZ8567_CHIP_ID:
- 	case KSZ9477_CHIP_ID:
- 	case KSZ9563_CHIP_ID:
- 	case KSZ9567_CHIP_ID:
-diff --git a/drivers/net/dsa/microchip/ksz_common.h b/drivers/net/dsa/microchip/ksz_common.h
-index 15612101a155..060c5de9aa05 100644
---- a/drivers/net/dsa/microchip/ksz_common.h
-+++ b/drivers/net/dsa/microchip/ksz_common.h
-@@ -187,6 +187,7 @@ struct ksz_device {
- /* List of supported models */
- enum ksz_model {
- 	KSZ8563,
-+	KSZ8567,
- 	KSZ8795,
- 	KSZ8794,
- 	KSZ8765,
-diff --git a/drivers/net/dsa/microchip/ksz_spi.c b/drivers/net/dsa/microchip/ksz_spi.c
-index 6f6d878e742c..c8166fb440ab 100644
---- a/drivers/net/dsa/microchip/ksz_spi.c
-+++ b/drivers/net/dsa/microchip/ksz_spi.c
-@@ -164,6 +164,10 @@ static const struct of_device_id ksz_dt_ids[] = {
- 		.compatible = "microchip,ksz8563",
- 		.data = &ksz_switch_chips[KSZ8563]
- 	},
-+	{
-+		.compatible = "microchip,ksz8567",
-+		.data = &ksz_switch_chips[KSZ8567]
-+	},
- 	{
- 		.compatible = "microchip,ksz9567",
- 		.data = &ksz_switch_chips[KSZ9567]
-@@ -204,6 +208,7 @@ static const struct spi_device_id ksz_spi_ids[] = {
- 	{ "ksz9893" },
- 	{ "ksz9563" },
- 	{ "ksz8563" },
-+	{ "ksz8567" },
- 	{ "ksz9567" },
- 	{ "lan9370" },
- 	{ "lan9371" },
-diff --git a/include/linux/platform_data/microchip-ksz.h b/include/linux/platform_data/microchip-ksz.h
-index f177416635a2..c4466e56d9d7 100644
---- a/include/linux/platform_data/microchip-ksz.h
-+++ b/include/linux/platform_data/microchip-ksz.h
-@@ -24,6 +24,7 @@
- 
- enum ksz_chip_id {
- 	KSZ8563_CHIP_ID = 0x8563,
-+	KSZ8567_CHIP_ID = 0x00856700,
- 	KSZ8795_CHIP_ID = 0x8795,
- 	KSZ8794_CHIP_ID = 0x8794,
- 	KSZ8765_CHIP_ID = 0x8765,
+Changes from v1 (https://lore.kernel.org/r/20231121175640.9981-1-mkoutny@suse.com)
+- Treat sch_ and act_ modules analogously to cls_
+
+Changes from v2 (https://lore.kernel.org/r/20231206192752.18989-1-mkoutny@suse.com)
+- reorganized commits (one generated commit + manual pre-/post- work)
+- used alias names more fitting the existing net- aliases
+- more info in commit messages and cover letter
+- rebased on current master
+
+Changes from v3 (https://lore.kernel.org/r/20240112180646.13232-1-mkoutny@suse.com)
+- rebase on netdev/net-next/main
+- correct aliases in cls_* modules (wrong sed)
+- replace repeated prefix strings with a macro
+- patch also request_module call in qdisc_set_default()
+
+Michal Koutný (4):
+  net/sched: Add helper macros with module names
+  net/sched: Add module aliases for cls_,sch_,act_ modules
+  net/sched: Load modules via their alias
+  net/sched: Remove alias of sch_clsact
+
+ include/net/act_api.h      | 2 ++
+ include/net/pkt_cls.h      | 2 ++
+ include/net/pkt_sched.h    | 2 ++
+ net/sched/act_api.c        | 2 +-
+ net/sched/act_bpf.c        | 1 +
+ net/sched/act_connmark.c   | 1 +
+ net/sched/act_csum.c       | 1 +
+ net/sched/act_ct.c         | 1 +
+ net/sched/act_ctinfo.c     | 1 +
+ net/sched/act_gact.c       | 1 +
+ net/sched/act_gate.c       | 1 +
+ net/sched/act_ife.c        | 1 +
+ net/sched/act_mirred.c     | 1 +
+ net/sched/act_mpls.c       | 1 +
+ net/sched/act_nat.c        | 1 +
+ net/sched/act_pedit.c      | 1 +
+ net/sched/act_police.c     | 1 +
+ net/sched/act_sample.c     | 1 +
+ net/sched/act_simple.c     | 1 +
+ net/sched/act_skbedit.c    | 1 +
+ net/sched/act_skbmod.c     | 1 +
+ net/sched/act_tunnel_key.c | 1 +
+ net/sched/act_vlan.c       | 1 +
+ net/sched/cls_api.c        | 2 +-
+ net/sched/cls_basic.c      | 1 +
+ net/sched/cls_bpf.c        | 1 +
+ net/sched/cls_cgroup.c     | 1 +
+ net/sched/cls_flow.c       | 1 +
+ net/sched/cls_flower.c     | 1 +
+ net/sched/cls_fw.c         | 1 +
+ net/sched/cls_matchall.c   | 1 +
+ net/sched/cls_route.c      | 1 +
+ net/sched/cls_u32.c        | 1 +
+ net/sched/sch_api.c        | 4 ++--
+ net/sched/sch_cake.c       | 1 +
+ net/sched/sch_cbs.c        | 1 +
+ net/sched/sch_choke.c      | 1 +
+ net/sched/sch_codel.c      | 1 +
+ net/sched/sch_drr.c        | 1 +
+ net/sched/sch_etf.c        | 1 +
+ net/sched/sch_ets.c        | 1 +
+ net/sched/sch_fq.c         | 1 +
+ net/sched/sch_fq_codel.c   | 1 +
+ net/sched/sch_gred.c       | 1 +
+ net/sched/sch_hfsc.c       | 1 +
+ net/sched/sch_hhf.c        | 1 +
+ net/sched/sch_htb.c        | 1 +
+ net/sched/sch_ingress.c    | 3 ++-
+ net/sched/sch_mqprio.c     | 1 +
+ net/sched/sch_multiq.c     | 1 +
+ net/sched/sch_netem.c      | 1 +
+ net/sched/sch_pie.c        | 1 +
+ net/sched/sch_plug.c       | 1 +
+ net/sched/sch_prio.c       | 1 +
+ net/sched/sch_qfq.c        | 1 +
+ net/sched/sch_red.c        | 1 +
+ net/sched/sch_sfb.c        | 1 +
+ net/sched/sch_sfq.c        | 1 +
+ net/sched/sch_skbprio.c    | 1 +
+ net/sched/sch_taprio.c     | 1 +
+ net/sched/sch_tbf.c        | 1 +
+ 61 files changed, 66 insertions(+), 5 deletions(-)
+
+
+base-commit: 736b5545d39ca59d4332a60e56cc8a1a5e264a8e
 -- 
-2.34.1
+2.43.0
 
 
