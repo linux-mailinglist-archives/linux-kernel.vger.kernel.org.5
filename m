@@ -1,201 +1,271 @@
-Return-Path: <linux-kernel+bounces-36009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E0E1839A10
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:12:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73EFB839A12
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:13:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CCA51C277CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:12:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7EB928AEAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:13:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B4A282D99;
-	Tue, 23 Jan 2024 20:12:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF8B285C46;
+	Tue, 23 Jan 2024 20:13:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="nJKuqU3e"
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AUFvj68+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 601E260EE4
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 20:12:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C753150276;
+	Tue, 23 Jan 2024 20:13:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706040764; cv=none; b=FOb/Qid4wimg0xCNSC3vpvhUYqSV9Hk561CbqOsuBPlhgBCOdE+AAo7RLg1Z6K3f1VsJieThEsy9UroF7NemKgYyDZUNJ76L/N7pKKqpyb8eXcDAT5tAV6J+lZ5myjeDdG4JaIKPRPv1PF/NPKAPptkVTCNsIk5oXQznlp+ViyA=
+	t=1706040798; cv=none; b=kS5og9xGRDPj34O5Y/nVQOmDpFqeNIaBaVMyekb8K9A8C53WA7JXwTC9kzW7OcT/57Lfgz4deVfVYXFX4wIjuNq56/ZHDiaQLc4/OkJYFjbNXVkmQG/nUvmCk4xEQHPztX2TmOGV3xm/7EPcSv8awMotX9afp209bHYQT7pnzm8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706040764; c=relaxed/simple;
-	bh=RhOsBONDInTHVMDMesY5uYaQKhwdN7vLZj/DsxcUXPY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=taUqid+BwelUJr/QRNWevlhxrUnjMN+DKFWucDPc0mCOSlxusNmNZu8Up/T6xcTT4tJt4+Zt2xvWJiNSz14QH/YKwRGa1PpmXgK6cgBrDs1sG79NkxiFqYIpw2LCVzLePvsyFk51uW7mnv/MH3m5yWcUQGG73oMrmPRESzH7mtU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=nJKuqU3e; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6dbbcb1aff8so3301948b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 12:12:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1706040760; x=1706645560; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=q24KVFfei+cia4T3WP6Kgi33KWd4bcIhvTEH02DjEqs=;
-        b=nJKuqU3ee1OZYkEsPgkOnnPhLwt+U/aeJAkFMzUinLBDoOQQToGOejX5mwqVioOWah
-         Dn4Q/FCG7yY1uuSPNeAu/aGz8pcvOyaNhkHCE3RHKGhMM1lbQoyGP0M6GuAWIxBMdQC4
-         SjFAXKCZMPkxVBVLZEVEqW/WZ0a3mZr9mQhdTf1srdl5KLn4tAsu9+bqgQ09LMwvV2DD
-         TvhOUisd9MH/xE8cidMX3Mxu0y0BSNwQ5Z1LLuFJY30/kZAmytj+J8F4ukkx0ivIoYfF
-         3Hkz97vQf71KDY5et/NR8EqNWQ8FSCISWHvSGZkMmSt3N7ISUaubZ76g1cUOMKPn8tb3
-         uh6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706040760; x=1706645560;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=q24KVFfei+cia4T3WP6Kgi33KWd4bcIhvTEH02DjEqs=;
-        b=DMGJHBjjekVzyLNKi5n7ee18+ZgSTrAgvUAnSrfCvTK0TklfoUN7pWs0ar/q9DaXqz
-         t+2i9Pii8rAclHWMIqE2dSXKtkx1XAis2eGaH8zkHqGlE3Kz4Napbu99zi7PXNqB3PhM
-         wm/2OHdgw5nM2eIffmIVNhxl90N1o6khPreDY21aOs1jJgBjB5F9TfIcQ1LYFtNaP1c2
-         hjuaPlCunAidq9yfSHwl5WLF3a1dOQgKHW0oo8Wpe/nUZg4lZL7rGRdzSXWG6vpynGUX
-         l5Uq8bOomNLAh8dlSmOL+drcuxxPacHfJa8r0Ktv14z7fX0lD6q64gPOdF1fnm2JVhdA
-         57BA==
-X-Gm-Message-State: AOJu0Yz4MomfeHGITHmqK3jmc8mLb6Hs+lTTJp2aP472GAhJF4jO09JW
-	rjNP1lFkfNYbkx1jbOYnmH3qj5fJWLBHd1UMhHsRQZ+xMQaVActlAvlBSHfzL04=
-X-Google-Smtp-Source: AGHT+IEcQiYu55Hik8wDlo7Ps+NIXOV8U19eTqLxlMvYghAEPGspeoISpv6RbsjOhufVhuWEsZ5o0g==
-X-Received: by 2002:a05:6a20:28a3:b0:19a:3d26:d40f with SMTP id q35-20020a056a2028a300b0019a3d26d40fmr3266995pzf.39.1706040760622;
-        Tue, 23 Jan 2024 12:12:40 -0800 (PST)
-Received: from localhost ([2620:10d:c090:400::4:e07e])
-        by smtp.gmail.com with ESMTPSA id x126-20020a626384000000b006dbd7e5bd1esm5508869pfb.52.2024.01.23.12.12.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 12:12:40 -0800 (PST)
-Date: Tue, 23 Jan 2024 15:12:34 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Nhat Pham <nphamcs@gmail.com>, Chris Li <chrisl@kernel.org>,
-	Chengming Zhou <zhouchengming@bytedance.com>,
-	Huang Ying <ying.huang@intel.com>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] mm: zswap: remove unnecessary tree cleanups in
- zswap_swapoff()
-Message-ID: <20240123201234.GC1745986@cmpxchg.org>
-References: <20240120024007.2850671-1-yosryahmed@google.com>
- <20240120024007.2850671-3-yosryahmed@google.com>
- <20240122201906.GA1567330@cmpxchg.org>
- <CAJD7tkaATS48HVuBfbOmPM3EvRUoPFr66WhF64UC4FkyVH5exg@mail.gmail.com>
- <20240123153851.GA1745986@cmpxchg.org>
- <CAJD7tkasHsRnT_75-TXsEe58V9_OW6m3g6CF7Kmsvz8CKRG_EA@mail.gmail.com>
+	s=arc-20240116; t=1706040798; c=relaxed/simple;
+	bh=pi03UgEe3I8Y1AABCY6ECn63w3R2NG8aaETp+FeROkc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VEnkSh2ctnxDGRJ4B6Rtpm1L4I5rKebbQVprpI+1qY5sGUdiXGk4k3QHWqCnuXvqrbNW3sMXOCAHNTRqgP/zOfPQrffpJVQ+8Em0ZRGvpEhR4QziPshegCiL6dYiFm0hB9hzm1nUIe+khtSu9HGKiPDdpGjuxtNtFCCQ04GLRwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AUFvj68+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6B9AC433C7;
+	Tue, 23 Jan 2024 20:13:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706040798;
+	bh=pi03UgEe3I8Y1AABCY6ECn63w3R2NG8aaETp+FeROkc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=AUFvj68+PlEQlAL1OjBmIp7/r04ae7VChrDLYP72S6y8GORvuzyMiTOTENKNkhyNn
+	 QDDs9w+uNNifScWlw0xllKg+dV2ZFIuZy3+gdQYBtSeZllgI0osaFY2tv8DVzSI9sV
+	 pu/yQZZtCT6z25c6Z7KhWoHF3DUn33siUVsEQ65+Q3/JY0iOcBCE54+V57yKKy7bnK
+	 luCGR1/+k3JGUMdQ62k8qEy4eOiOtCjn3wO9IHGf950itCaCgwk4eSrQFrzASX15p+
+	 iyJzTIDg6zycFKTsgLt+8cl+AVVEkY/q3B+x/flk14z8kjTlkJAJA4l1GNlKIvFV0i
+	 LIKzxmw3R3ZRw==
+From: Roger Quadros <rogerq@kernel.org>
+To: nm@ti.com,
+	vigneshr@ti.com
+Cc: afd@ti.com,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	srk@ti.com,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Roger Quadros <rogerq@kernel.org>
+Subject: [PATCH v3] arm64: dts: ti: am642-evm: Add overlay for NAND expansion card
+Date: Tue, 23 Jan 2024 22:13:12 +0200
+Message-Id: <20240123201312.23187-1-rogerq@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tkasHsRnT_75-TXsEe58V9_OW6m3g6CF7Kmsvz8CKRG_EA@mail.gmail.com>
 
-On Tue, Jan 23, 2024 at 07:54:49AM -0800, Yosry Ahmed wrote:
-> On Tue, Jan 23, 2024 at 7:38 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >
-> > On Mon, Jan 22, 2024 at 12:39:16PM -0800, Yosry Ahmed wrote:
-> > > On Mon, Jan 22, 2024 at 12:19 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > > >
-> > > > On Sat, Jan 20, 2024 at 02:40:07AM +0000, Yosry Ahmed wrote:
-> > > > > During swapoff, try_to_unuse() makes sure that zswap_invalidate() is
-> > > > > called for all swap entries before zswap_swapoff() is called. This means
-> > > > > that all zswap entries should already be removed from the tree. Simplify
-> > > > > zswap_swapoff() by removing the tree cleanup loop, and leaving an
-> > > > > assertion in its place.
-> > > > >
-> > > > > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> > > >
-> > > > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> > > >
-> > > > That's a great simplification.
-> > > >
-> > > > Removing the tree->lock made me double take, but at this point the
-> > > > swapfile and its cache should be fully dead and I don't see how any of
-> > > > the zswap operations that take tree->lock could race at this point.
-> > >
-> > > It took me a while staring at the code to realize this loop is pointless.
-> > >
-> > > However, while I have your attention on the swapoff path, there's a
-> > > slightly irrelevant problem that I think might be there, but I am not
-> > > sure.
-> > >
-> > > It looks to me like swapoff can race with writeback, and there may be
-> > > a chance of UAF for the zswap tree. For example, if zswap_swapoff()
-> > > races with shrink_memcg_cb(), I feel like we may free the tree as it
-> > > is being used. For example if zswap_swapoff()->kfree(tree) happen
-> > > right before shrink_memcg_cb()->list_lru_isolate(l, item).
-> > >
-> > > Please tell me that I am being paranoid and that there is some
-> > > protection against zswap writeback racing with swapoff. It feels like
-> > > we are very careful with zswap entries refcounting, but not with the
-> > > zswap tree itself.
-> >
-> > Hm, I don't see how.
-> >
-> > Writeback operates on entries from the LRU. By the time
-> > zswap_swapoff() is called, try_to_unuse() -> zswap_invalidate() should
-> > will have emptied out the LRU and tree.
-> >
-> > Writeback could have gotten a refcount to the entry and dropped the
-> > tree->lock. But then it does __read_swap_cache_async(), and while
-> > holding the page lock checks the tree under lock once more; if that
-> > finds the entry valid, it means try_to_unuse() hasn't started on this
-> > page yet, and would be held up by the page lock/writeback state.
-> 
-> Consider the following race:
-> 
-> CPU 1                                 CPU 2
-> # In shrink_memcg_cb()     # In swap_off
-> list_lru_isolate()
->                                             zswap_invalidate()
->                                             ..
->                                             zswap_swapoff() -> kfree(tree)
-> spin_lock(&tree->lock);
-> 
-> Isn't this a UAF or am I missing something here?
+The NAND expansion card plugs in over the HSE (High Speed Expansion)
+connector. Add support for it.
 
-Oof. You're right, it looks like there is a bug. Digging through the
-history, I think this is actually quite old: the original backend
-shrinkers would pluck something off their LRU, drop all locks, then
-try to acquire tree->lock. There is no protection against swapoff.
+We add the ranges property to the GPMC node instead of the NAND
+overlay file to prevent below warnings.
 
-The lock that is supposed to protect this is the LRU lock. That's
-where reclaim and invalidation should synchronize. But it's not right:
+/fragment@3/__overlay__: Relying on default #address-cells value
+/fragment@3/__overlay__: Relying on default #size-cells value
 
-1. We drop the LRU lock before acquiring the tree lock. We should
-   instead trylock the tree while still holding the LRU lock to make
-   sure the tree is safe against swapoff.
+As GPMC is dedicated for NAND use on this board, it should be OK.
 
-2. zswap_invalidate() acquires the LRU lock when refcount hits 0. But
-   it must always cycle the LRU lock before freeing the tree for that
-   synchronization to work.
+Signed-off-by: Roger Quadros <rogerq@kernel.org>
+---
 
-Once we're holding a refcount to the entry, it's safe to drop all
-locks for the next step because we'll then work against the swapcache
-and entry: __read_swap_cache_async() will try to pin and lock whatever
-swap entry is at that type+offset. This also pins the type's current
-tree. HOWEVER, if swapoff + swapon raced, this could be a different
-tree than what we had in @tree, so
+Notes:
+    Changelog:
+    v3:
+    - Fix dtc warning by moving ranges property into the GPMC node
+    - update licence to GPL-2.0-only OR MIT and Copyright year to 2024
+    - don't drop k3-am642-evm.dtb target from Makefile
+    
+    v2:
+    - Don't leave k3-am642-evm-nand.dtbo as an orphan. Make k3-am642-evm-nand.dtb
+    with the overlay applied on the base board.
 
-3. we shouldn't pass @tree to zswap_writeback_entry(). It needs to
-   look up zswap_trees[] again after __read_swap_cache_async()
-   succeeded to validate the entry.
+ arch/arm64/boot/dts/ti/Makefile               |   2 +
+ arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso | 139 ++++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-am642-evm.dts       |   4 +
+ 3 files changed, 145 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso
 
-Once it succeeded, we can validate the entry. The entry is valid due
-to our refcount. The zswap_trees[type] is valid due to the cache pin.
+diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
+index 52c1dc910308..cb03d0013fca 100644
+--- a/arch/arm64/boot/dts/ti/Makefile
++++ b/arch/arm64/boot/dts/ti/Makefile
+@@ -38,6 +38,8 @@ dtb-$(CONFIG_ARCH_K3) += k3-am62x-sk-hdmi-audio.dtbo
+ 
+ # Boards with AM64x SoC
+ dtb-$(CONFIG_ARCH_K3) += k3-am642-evm.dtb
++k3-am642-evm-nand-dtbs := k3-am642-evm.dtb k3-am642-evm-nand.dtbo
++dtb-$(CONFIG_ARCH_K3) += k3-am642-evm-nand.dtb
+ dtb-$(CONFIG_ARCH_K3) += k3-am642-phyboard-electra-rdk.dtb
+ dtb-$(CONFIG_ARCH_K3) += k3-am642-sk.dtb
+ dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl.dtb
+diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso b/arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso
+new file mode 100644
+index 000000000000..3d1c2111ec88
+--- /dev/null
++++ b/arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso
+@@ -0,0 +1,139 @@
++// SPDX-License-Identifier: GPL-2.0-only OR MIT
++/**
++ * DT overlay for HSE NAND expansion card on AM642 EVM
++ *
++ * Copyright (C) 2021-2024 Texas Instruments Incorporated - https://www.ti.com/
++ */
++
++/dts-v1/;
++/plugin/;
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/interrupt-controller/irq.h>
++#include "k3-pinctrl.h"
++
++&main_pmx0 {
++	gpmc0_pins_default: gpmc0-pins-default {
++		pinctrl-single,pins = <
++			AM64X_IOPAD(0x0094, PIN_INPUT, 7) /* (T19) GPMC0_BE1n.GPIO0_36 */
++
++			AM64X_IOPAD(0x003c, PIN_INPUT, 0) /* (T20) GPMC0_AD0 */
++			AM64X_IOPAD(0x0040, PIN_INPUT, 0) /* (U21) GPMC0_AD1 */
++			AM64X_IOPAD(0x0064, PIN_INPUT, 0) /* (R16) GPMC0_AD10 */
++			AM64X_IOPAD(0x0068, PIN_INPUT, 0) /* (W20) GPMC0_AD11 */
++			AM64X_IOPAD(0x006c, PIN_INPUT, 0) /* (W21) GPMC0_AD12 */
++			AM64X_IOPAD(0x0070, PIN_INPUT, 0) /* (V18) GPMC0_AD13 */
++			AM64X_IOPAD(0x0074, PIN_INPUT, 0) /* (Y21) GPMC0_AD14 */
++			AM64X_IOPAD(0x0078, PIN_INPUT, 0) /* (Y20) GPMC0_AD15 */
++			AM64X_IOPAD(0x0044, PIN_INPUT, 0) /* (T18) GPMC0_AD2 */
++			AM64X_IOPAD(0x0048, PIN_INPUT, 0) /* (U20) GPMC0_AD3 */
++			AM64X_IOPAD(0x004c, PIN_INPUT, 0) /* (U18) GPMC0_AD4 */
++			AM64X_IOPAD(0x0050, PIN_INPUT, 0) /* (U19) GPMC0_AD5 */
++			AM64X_IOPAD(0x0054, PIN_INPUT, 0) /* (V20) GPMC0_AD6 */
++			AM64X_IOPAD(0x0058, PIN_INPUT, 0) /* (V21) GPMC0_AD7 */
++			AM64X_IOPAD(0x005c, PIN_INPUT, 0) /* (V19) GPMC0_AD8 */
++			AM64X_IOPAD(0x0060, PIN_INPUT, 0) /* (T17) GPMC0_AD9 */
++			AM64X_IOPAD(0x0098, PIN_INPUT_PULLUP, 0) /* (W19) GPMC0_WAIT0 */
++			AM64X_IOPAD(0x009c, PIN_INPUT_PULLUP, 0) /* (Y18) GPMC0_WAIT1 */
++			AM64X_IOPAD(0x00a8, PIN_OUTPUT_PULLUP, 0) /* (R19) GPMC0_CSn0 */
++			AM64X_IOPAD(0x00ac, PIN_OUTPUT_PULLUP, 0) /* (R20) GPMC0_CSn1 */
++			AM64X_IOPAD(0x00b0, PIN_OUTPUT_PULLUP, 0) /* (P19) GPMC0_CSn2 */
++			AM64X_IOPAD(0x00b4, PIN_OUTPUT_PULLUP, 0) /* (R21) GPMC0_CSn3 */
++			AM64X_IOPAD(0x007c, PIN_OUTPUT, 0) /* (R17) GPMC0_CLK */
++			AM64X_IOPAD(0x0084, PIN_OUTPUT, 0) /* (P16) GPMC0_ADVn_ALE */
++			AM64X_IOPAD(0x0088, PIN_OUTPUT, 0) /* (R18) GPMC0_OEn_REn */
++			AM64X_IOPAD(0x008c, PIN_OUTPUT, 0) /* (T21) GPMC0_WEn */
++			AM64X_IOPAD(0x0090, PIN_OUTPUT, 0) /* (P17) GPMC0_BE0n_CLE */
++			AM64X_IOPAD(0x00a0, PIN_OUTPUT_PULLUP, 0) /* (N16) GPMC0_WPn */
++			AM64X_IOPAD(0x00a4, PIN_OUTPUT, 0) /* (N17) GPMC0_DIR */
++		>;
++	};
++};
++
++&main_gpio0 {
++	gpio0-36 {
++		gpio-hog;
++		gpios = <36 0>;
++		input;
++		line-name = "GPMC0_MUX_DIR";
++	};
++};
++
++&elm0 {
++	status = "okay";
++};
++
++&gpmc0 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&gpmc0_pins_default>;
++	#address-cells = <2>;
++	#size-cells = <1>;
++
++	nand@0,0 {
++		compatible = "ti,am64-nand";
++		reg = <0 0 64>;		/* device IO registers */
++		interrupt-parent = <&gpmc0>;
++		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
++			     <1 IRQ_TYPE_NONE>;	/* termcount */
++		rb-gpios = <&gpmc0 0 GPIO_ACTIVE_HIGH>;	/* gpmc_wait0 */
++		ti,nand-xfer-type = "prefetch-polled";
++		ti,nand-ecc-opt = "bch8";	/* BCH8: Bootrom limitation */
++		ti,elm-id = <&elm0>;
++		nand-bus-width = <8>;
++		gpmc,device-width = <1>;
++		gpmc,sync-clk-ps = <0>;
++		gpmc,cs-on-ns = <0>;
++		gpmc,cs-rd-off-ns = <40>;
++		gpmc,cs-wr-off-ns = <40>;
++		gpmc,adv-on-ns = <0>;
++		gpmc,adv-rd-off-ns = <25>;
++		gpmc,adv-wr-off-ns = <25>;
++		gpmc,we-on-ns = <0>;
++		gpmc,we-off-ns = <20>;
++		gpmc,oe-on-ns = <3>;
++		gpmc,oe-off-ns = <30>;
++		gpmc,access-ns = <30>;
++		gpmc,rd-cycle-ns = <40>;
++		gpmc,wr-cycle-ns = <40>;
++		gpmc,bus-turnaround-ns = <0>;
++		gpmc,cycle2cycle-delay-ns = <0>;
++		gpmc,clk-activation-ns = <0>;
++		gpmc,wr-access-ns = <40>;
++		gpmc,wr-data-mux-bus-ns = <0>;
++
++		partitions {
++			compatible = "fixed-partitions";
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			partition@0 {
++				label = "NAND.tiboot3";
++				reg = <0x00000000 0x00200000>;	/* 2M */
++			};
++			partition@200000 {
++				label = "NAND.tispl";
++				reg = <0x00200000 0x00200000>;	/* 2M */
++			};
++			partition@400000 {
++				label = "NAND.tiboot3.backup";	/* 2M */
++				reg = <0x00400000 0x00200000>;	/* BootROM looks at 4M */
++			};
++			partition@600000 {
++				label = "NAND.u-boot";
++				reg = <0x00600000 0x00400000>;	/* 4M */
++			};
++			partition@a00000 {
++				label = "NAND.u-boot-env";
++				reg = <0x00a00000 0x00040000>;	/* 256K */
++			};
++			partition@a40000 {
++				label = "NAND.u-boot-env.backup";
++				reg = <0x00a40000 0x00040000>;	/* 256K */
++			};
++			partition@a80000 {
++				label = "NAND.file-system";
++				reg = <0x00a80000 0x3f580000>;
++			};
++		};
++	};
++};
+diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+index 8c5651d2cf5d..9c7ed3fd361d 100644
+--- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
++++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+@@ -731,3 +731,7 @@ &main_mcan1 {
+ 	pinctrl-0 = <&main_mcan1_pins_default>;
+ 	phys = <&transceiver2>;
+ };
++
++&gpmc0 {
++	ranges = <0 0 0x00 0x51000000 0x01000000>; /* CS0 space. Min partition = 16MB */
++};
 
-However, if validation failed and we have a non-zero writeback_result,
-there is one last bug:
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+-- 
+2.34.1
 
-4. the original entry's tree is no longer valid for the entry put.
-
-The current scheme handles invalidation fine (which is good because
-that's quite common). But it's fundamentally unsynchronized against
-swapoff (which has probably gone undetected because that's rare).
-
-I can't think of an immediate solution to this, but I wanted to put my
-analysis out for comments.
 
