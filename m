@@ -1,96 +1,133 @@
-Return-Path: <linux-kernel+bounces-36163-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36164-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9999C839CE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 00:00:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA60D839CEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 00:05:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8A60B264AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 23:00:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD32E1C236DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 23:05:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E6A153E1D;
-	Tue, 23 Jan 2024 23:00:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D37053E1C;
+	Tue, 23 Jan 2024 23:05:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="loJ9QKWw"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="vH7Lla7v"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62FD153808
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 23:00:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 588231FBF;
+	Tue, 23 Jan 2024 23:05:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706050839; cv=none; b=UXsImUIY7eUt+aNU0Po+fTG/+YntNUKbPuP9iPCEkkM2Ge8LA1GQXa7Z/buHbsDrkKQ482FPFiHH1JnJuyWNvozHq/mKe/Bsa3DKh7Yb8+97ZsGUBVAcqlP6/+rPV5UYMxVKdh30O5gPhL8uuyThbizoWBely18q28yD8WlRbzM=
+	t=1706051121; cv=none; b=M76CSEG1xLAFnhnS2Pz4efs5BYHgsPIzUqv5D6BHOUB1uyJkndPOlx1eXb+zV3N4D0q2ep4nHxuhKiaT+BiiimqOvXBb+eBzr5WPD2z/bomz5eyrG29Su3ayLYF7cBZo4MgSS8U9G7AJdCWcaboXqbL3WghQvHNYTrTCxRvaN7U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706050839; c=relaxed/simple;
-	bh=1F2Qaxx0X4RH64MvPK8ltxCC/J1hBfLXSHmNUUNkRVU=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=oKj5vMQxq9TpquLdP/uPBHjQdUoZFP9uIioQfGnzUOYHvsPuYPF7POLqjYhrab43SWggmXr9l4zy5ien3pJaggGPVfe9kCri42PuJg2eBI+3b6Se8pfKo7+DpPKha0TKUJWLsbkObLIub848NInm9NSj3RJUxWUJF8hAHlmVJow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=loJ9QKWw; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc26605c3aaso6037515276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 15:00:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706050837; x=1706655637; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bpBA1amDIIWdDJ6LPLULP87iPv1yXvr1GDinBnEPISQ=;
-        b=loJ9QKWwx2zBLp9nBqlDQzbZaOR23nbd3vXhAT+e37NJUiVd5vonJjqHmNuQIatSzP
-         PYUTVNxoVR7SvVqnlN+w+xMXul5PVgfxUTgixAKwXDYI2AuSsJeQ0JhVEzKhvYTem2qV
-         ZF6UUmdY3uWBEsJZ+EeyH2Lz9EchW2ZxkfBhMWW4uQv2UX6JwUlUsvDOwFRFi+c6166/
-         /y8C7GagndvuJIkaUJh8JDA6UitE41iVeOFfPsroShF50Udt2Pf4LjgbTO4YsxlYZFQQ
-         hVSVLwdyFy+DSubsmTs/rd/Sqc0bMoFkJlP+Hxoh8UrDL0+lxy4r78T+fAp93RJzegSb
-         ia/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706050837; x=1706655637;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bpBA1amDIIWdDJ6LPLULP87iPv1yXvr1GDinBnEPISQ=;
-        b=O2g+58PBOiF/cwthbSIszW9tNDlCsV2edIzBunRI9OdQ4YleovuN+2SH/yPs2crioa
-         Tqou6WCJdlvSrrL0QEPxqw3NwjAd5zyDL9GJOXnitXlsv16DwEMnKy6ETUzpGIrsM2Pr
-         TOpd6hZCHhocYVjPbN/fpB3MvfsSsdszqiF4FhTeoVJZA3D2MS7d6KPSSVdhmV+kXpvU
-         Ch06nPkSbs0Q9KsnWOIaOa6kzGM+1lmCoK2xQxPD9ClI3ZAI19b9HDMlp57zSE28FHRQ
-         g24VGSpxfqrEXxMm2obgOg7NYzIRGsL405rX8xMFPEUNnHiUHEuqEAsUV1ZJTRfSeu2y
-         RrAA==
-X-Gm-Message-State: AOJu0YzIVmd7uIxpcYoIPc+uob2g/K2ClvY0oUqNyHRo1ROy7T81IA8s
-	hGyVBpzj436UXGsgy3Xbdh4s57wTLU5/8eGla57k2pDsLRXvqkgBMv1zaz4Lph2fXo9Fvbsfn9p
-	jkw==
-X-Google-Smtp-Source: AGHT+IEsUJfha+HUtxBPjbdRfDNnrDTm2iRfwj3LukExHF25a4abzM5kw8V3CYMPuPoUsetw8QW+nf8ci04=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:b1f:b0:dbe:abc7:ae5c with SMTP id
- ch31-20020a0569020b1f00b00dbeabc7ae5cmr488261ybb.3.1706050837513; Tue, 23 Jan
- 2024 15:00:37 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Tue, 23 Jan 2024 15:00:31 -0800
+	s=arc-20240116; t=1706051121; c=relaxed/simple;
+	bh=cLrGrbY6uV0ei8zOEGo18FtgiZ5MqiDjUB06AAHyR3w=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Es+CblKOqF/LYIKLxJnFmsJXTENO9BaTOqKA8Yg0gC7yplWj7pMy8xwH36VkN2ZnS8N/oGkpCajscb0kZC8LycpcSaIYJgxHD2/jV1w8BjhdZP9+bHuz2QldQTnAI+3wPyrnsH+/O0Lrt0gDj+I4VwFoThxJ+PIUzBLQxO2PzUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=vH7Lla7v; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1706051108;
+	bh=HNFyw6oJLgUp6IbWrIIGpsmsfbcCq2FixbzA2mxEIOY=;
+	h=Date:From:To:Cc:Subject:From;
+	b=vH7Lla7vUtxH7y6GsBak7pUxSj0AW0py9ULNlPmgWYfvyvQ0Xnh89m1xPmZztw4jR
+	 3YLp1lVxQQvEGbt19VLsTjRobuvP+s63vJ5R/xO5UJgmNrrR9E1Lhf593hXtVBdTJb
+	 5j/GqY56dWVxzHiQzn5B7UGDKMQ2uNgnhF6oLlOqpC74qSYU83IBLlGzOkh5ExTRgk
+	 V0SrJIt5BMqXdLV6MyUdr0g8qzO7p8Fm9/HIGwc1uaG6H42P6ah5rPCgZO5e2EZ5oh
+	 97ZnLYFIthNOkKCsvfxQtEYhAFn3xJxeG76M+mmG4KvvuZ++Q+hjSeuXoA+b1a5e05
+	 cK52RXqVjN2/g==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TKN3832Ynz4wbp;
+	Wed, 24 Jan 2024 10:05:08 +1100 (AEDT)
+Date: Wed, 24 Jan 2024 10:05:06 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Suren Baghdasaryan <surenb@google.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the mm tree
+Message-ID: <20240124100506.67f0df5f@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-Message-ID: <20240123230031.2487501-1-seanjc@google.com>
-Subject: [ANNOUNCE] PUCK Agenda - 2024.01.24 - Memtypes for non-coherent DMA
-From: Sean Christopherson <seanjc@google.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Yan Zhao <yan.y.zhao@intel.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Oliver Upton <oliver.upton@linux.dev>, Marc Zyngier <maz@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/AhJKXlXOWKXq6qP/K3eIOQX";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Tomorrow's PUCK topic is memtypes for non-coherent DMA.
+--Sig_/AhJKXlXOWKXq6qP/K3eIOQX
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-https://lore.kernel.org/all/20240105091237.24577-1-yan.y.zhao@intel.com
+Hi all,
 
-Time:     6am PDT
-Video:    https://meet.google.com/vdb-aeqo-knk
-Phone:    https://tel.meet/vdb-aeqo-knk?pin=3003112178656
+After merging the mm tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
 
-Calendar: https://calendar.google.com/calendar/u/0?cid=Y182MWE1YjFmNjQ0NzM5YmY1YmVkN2U1ZWE1ZmMzNjY5Y2UzMmEyNTQ0YzVkYjFjN2M4OTE3MDJjYTUwOTBjN2Q1QGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20
-Drive:    https://drive.google.com/drive/folders/1aTqCrvTsQI9T4qLhhLs_l986SngGlhPH?resourcekey=0-FDy0ykM3RerZedI8R-zj4A&usp=drive_link
+fs/proc/task_mmu.c: In function 'get_vma_snapshow':
+fs/proc/task_mmu.c:145:19: error: 'struct vm_area_struct' has no member nam=
+ed 'anon_name'; did you mean 'anon_vma'?
+  145 |         if (copy->anon_name && !anon_vma_name_get_rcu(copy))
+      |                   ^~~~~~~~~
+      |                   anon_vma
+fs/proc/task_mmu.c:161:19: error: 'struct vm_area_struct' has no member nam=
+ed 'anon_name'; did you mean 'anon_vma'?
+  161 |         if (copy->anon_name)
+      |                   ^~~~~~~~~
+      |                   anon_vma
+fs/proc/task_mmu.c:162:41: error: 'struct vm_area_struct' has no member nam=
+ed 'anon_name'; did you mean 'anon_vma'?
+  162 |                 anon_vma_name_put(copy->anon_name);
+      |                                         ^~~~~~~~~
+      |                                         anon_vma
+fs/proc/task_mmu.c: In function 'put_vma_snapshot':
+fs/proc/task_mmu.c:174:18: error: 'struct vm_area_struct' has no member nam=
+ed 'anon_name'; did you mean 'anon_vma'?
+  174 |         if (vma->anon_name)
+      |                  ^~~~~~~~~
+      |                  anon_vma
+fs/proc/task_mmu.c:175:40: error: 'struct vm_area_struct' has no member nam=
+ed 'anon_name'; did you mean 'anon_vma'?
+  175 |                 anon_vma_name_put(vma->anon_name);
+      |                                        ^~~~~~~~~
+      |                                        anon_vma
 
-Future Schedule:
-January 31st - Finalizing internal guest_memfd APIs for SNP/TDX (tentative)
-February     - Available!
+Caused by commit
+
+  786cebbd51a4 ("mm/maps: read proc/pid/maps under RCU")
+
+from the mm-unstable branch.
+
+This build does not have CONFIG_ANON_VMA_NAME set.
+
+I have reverted that commit for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/AhJKXlXOWKXq6qP/K3eIOQX
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWwRiIACgkQAVBC80lX
+0Gzb7Af9EHsvuGa7WYVxJEP6AawzUeNjezkKjf4whJr+t2fpG93ztYsZrSLxT2aH
+ejrn4p1pVier+ziLB/K9r5AwSv3hZpr9FWSVlx+MC5vCIc7BOGM2GqmcG6Y0snWD
+F57xS54FcXea6GkGJaHnPDS1cV/4lqNZwMfFQ7ifuxSU25FytylsM9yDFDiVLGa0
+1p2LfXadQj5KYL1Vb0I5vNuvJSf1wGPJ9VwWibXOTBhA/Wwj6A7O2rqLh2LRiu3q
+kapW4Hqw39FgiWqWlf++m8q1fAVcT6zxq+iLmoKQGKPpN7vKHajXmtU5PzplkZ74
+YypR3eYvtQgP4SVfo+NCwZ2+HpT1zg==
+=Mcnf
+-----END PGP SIGNATURE-----
+
+--Sig_/AhJKXlXOWKXq6qP/K3eIOQX--
 
