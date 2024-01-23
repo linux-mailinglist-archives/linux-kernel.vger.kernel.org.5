@@ -1,139 +1,158 @@
-Return-Path: <linux-kernel+bounces-35254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12C71838EA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:36:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A0D9838EA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:38:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D121B246C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:36:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6D9F289C7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:38:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF4D75D906;
-	Tue, 23 Jan 2024 12:35:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A3085EE66;
+	Tue, 23 Jan 2024 12:38:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NonuuLgn"
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="y1xJnaPu"
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57B1955E60
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 12:35:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E1A95D906
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 12:38:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706013359; cv=none; b=FkC2y7e/Z9+RcOlgsr7o7NhofT1tIEyo/FmHThXt/Ze6DdGB8Rpn4mNGzneZzKP5QV9RxAbFr7R5G2EqK4z/IgmdZl8G01ElaCcnp45pnDexUtLUD5kIwgkZDyri9qp9HqWe1t9f2pSFWMSzt90bQXPeVvg/aSnGN5XGbb6vTjg=
+	t=1706013502; cv=none; b=lOFxS6gUFWTgiosVYXja5Cy6IR63FX/Cl85FweZeoUJIJpruruLbtiM4ZGWbE3sD7ZoL+9SlG3wRjpmQh6t3G4loRB08QmsSa7HaAsWiq44psN1AmyGMKdhGwZNwEEt2KGNDmneGQsTBMJ0dO6+q1KGxpX/bi25TVx2FdHrzdQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706013359; c=relaxed/simple;
-	bh=8/zTT+iZ/oo1tm0R1k3Sjrqd19V/Jx1/9DafHWx+Dag=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JvyDlgENjMWJDMMhE3E5VRQJ3O9nBxnww2gHU6D71EIdi/S/jxE+S1j6OBRyf6dhGTMCzn9gNPFWvmK7ZFPpG5M7XcG3SEAQjCnVi4h6Bgq58LmR3EG9tg6lHBvjtqq1Qn0kC8q6iOPJzjUCqMUftx5JOa9Pfvi/H/60OXjKZmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NonuuLgn; arc=none smtp.client-ip=95.215.58.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <5b0e1b73-9a94-4ab5-b30d-59caea8954cb@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706013355;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=q104h3QlUtguKNU196gINZbfXFac0qkpzQO4Cu5ARaE=;
-	b=NonuuLgnbwm4TnzPT2hLumdstqoqmJBJsfPv8LB60gKfqePWFPiJzILiH9PccobXB1PieG
-	lO6t2H72mcCMoEa4wh3Cn6pJ5TfzFOVVP3C+sif+Hgd4yFWJCvb7ZloelXh72zvS+vJmNu
-	3+nAiscLqw5LpVHBJkVX7VwpoButdoE=
-Date: Tue, 23 Jan 2024 20:35:48 +0800
+	s=arc-20240116; t=1706013502; c=relaxed/simple;
+	bh=WBQDTNBTK9sdRRuBTkFzcjNllsxW2QS/rV8OG3A6y6U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=W5ehhEsZvRTBksjx5HqcUxzgmy7Pz5ZNOWlQEl36NHHYj+IB3hKGspxJ2SHhMFw5u7HpFfv0dwrhJdaAz8PqrbnPggTUnTrnc1pup638PmnzdXtuHK9ljhr9E61Rw8TozsMSAxR27smoQzJH2Pb5zX8GZ9VPQ65pMlmQFLrZg9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=y1xJnaPu; arc=none smtp.client-ip=209.85.128.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5ff7dc53ce0so31230847b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 04:38:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706013500; x=1706618300; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=b0Aht4Z16P8L5ltKdjULPwhLp0+Y9JoWi3OkWohTfrU=;
+        b=y1xJnaPuWp2atV6P14a9WHO0DEDzDqqaFQjOJhABoM9HEZgIAA7h/FQw2EYKEo2j8Y
+         QcGlzyugWSOtZDWjdB3/+cb5bAbvjT4jUXWYuXnBDa0+0mJWpGkCktP7/u5l5/QxrrF+
+         LJtANgl+8BjmeCHxXl0UjwkgqGxLhMdBZWFj4zvieKZZNy2IYFnImWfEnvZDf1PeP0ov
+         +7tYWBdA+v9zxeTUkCLZWcXGm7lxQabns0EutJtxdlWuNfwemytn3o6yG7L64DvYMcuW
+         mPbxGOfmevdoQ2knoKISALT1jScuIf444motd8lM9KDEz5r3SwHdNsOjz2HKcIBkptMN
+         1sXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706013500; x=1706618300;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=b0Aht4Z16P8L5ltKdjULPwhLp0+Y9JoWi3OkWohTfrU=;
+        b=c0N2OU10Yrraf+dBCE8btsDvwMPJ1NwQ4LQ8r3BZSqQ+ng76FtWGE/gnSZcNxl9yzF
+         Cdyof5WH99OdBt4Fibi27zcNALL2a/Yr4txW4f9r0d4J3M8cd6FjFQ+AO6CeBXzFvipl
+         knAM6ZqCyzqVDCSgUB6W7lfxwTgXbitosoIAREYCbc2WUzr7pHVfl1B3Uk1dYvn08aOx
+         gqbriA3RYfDOHwh229iGk+KyHKJggmuanqg2Vf4/C2gV/2xGhLmOotGL4o0AnztnsJRi
+         1P5e4Mlz2zvxpLk46k19d3QGRXmLel6HkDrnKfRMc+2oAfJWJB0DlMNkknCq8leMNggd
+         EsDg==
+X-Gm-Message-State: AOJu0YyDXGNUwtVE17MHDPnGl1mHyVPWf6XzyqcUK8ZokbM14Hw1HNJE
+	WUxDuiwg2X+vikpoQ8g2cbAA15a7vmu8qrRSWAgmekid/dJdRzaY6NheMgIvMtnlRZTbg/GXF53
+	/HwrgI65PxKBH7G/22zwDGJSL/SBn84GJJgvsew==
+X-Google-Smtp-Source: AGHT+IFjlLKWbIaooUFn6twpk291b0gxpXJoWwlTCxkhUpnf30Mbu7r2hCw+P/4GYu6YGZMa4RxyQnwR/iUlnPiM5mg=
+X-Received: by 2002:a0d:de07:0:b0:5f7:a3bf:6071 with SMTP id
+ h7-20020a0dde07000000b005f7a3bf6071mr3324304ywe.105.1706013499919; Tue, 23
+ Jan 2024 04:38:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 5/5] drm-bridge: display-connector: Switch to use fwnode
- API
-Content-Language: en-US
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: David Airlie <airlied@gmail.com>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, Sui Jingfeng <suijingfeng@loongson.cn>
-References: <20240122163220.110788-1-sui.jingfeng@linux.dev>
- <20240122163220.110788-6-sui.jingfeng@linux.dev>
- <20240123012026.GC22880@pendragon.ideasonboard.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sui Jingfeng <sui.jingfeng@linux.dev>
-In-Reply-To: <20240123012026.GC22880@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240105160103.183092-1-ulf.hansson@linaro.org>
+ <20240105160103.183092-4-ulf.hansson@linaro.org> <87801f3e-b7ce-46ba-9856-1321635a11b5@nxp.com>
+ <CANLsYkwtNa_-t0f5rhTh5mtF72urKNyqWk0_qfbBwSCQK_6eOg@mail.gmail.com> <Za8WFHxVQZ44fJJn@p14s>
+In-Reply-To: <Za8WFHxVQZ44fJJn@p14s>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Tue, 23 Jan 2024 13:37:43 +0100
+Message-ID: <CAPDyKFqTEYygDTQz6a4TRWr0Ozs8eMBFYWrFRohTzp7svC9gsw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] remoteproc: imx_rproc: Convert to dev_pm_domain_attach|detach_list()
+To: Mathieu Poirier <mathieu.poirier@linaro.org>, "Rafael J . Wysocki" <rafael@kernel.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Iuliana Prodan <iuliana.prodan@nxp.com>
+Cc: Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org, 
+	Sudeep Holla <sudeep.holla@arm.com>, Kevin Hilman <khilman@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Nikunj Kela <nkela@quicinc.com>, Prasad Sodagudi <psodagud@quicinc.com>, 
+	Stephan Gerhold <stephan@gerhold.net>, Ben Horgan <Ben.Horgan@arm.com>, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-remoteproc@vger.kernel.org, 
+	linux-media@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Daniel Baluta <daniel.baluta@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi,
+On Tue, 23 Jan 2024 at 02:27, Mathieu Poirier
+<mathieu.poirier@linaro.org> wrote:
+>
+> On Mon, Jan 22, 2024 at 01:02:08PM -0700, Mathieu Poirier wrote:
+> > On Mon, 22 Jan 2024 at 10:51, Iuliana Prodan <iuliana.prodan@nxp.com> wrote:
+> > >
+> > > On 1/5/2024 6:01 PM, Ulf Hansson wrote:
+> > > > Let's avoid the boilerplate code to manage the multiple PM domain case, by
+> > > > converting into using dev_pm_domain_attach|detach_list().
+> > > >
+> > > > Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > > > Cc: Bjorn Andersson <andersson@kernel.org>
+> > > > Cc: Shawn Guo <shawnguo@kernel.org>
+> > > > Cc: Sascha Hauer <s.hauer@pengutronix.de>
+> > > > Cc: Iuliana Prodan <iuliana.prodan@nxp.com>
+> > > > Cc: Daniel Baluta <daniel.baluta@nxp.com>
+> > > > Cc: <linux-remoteproc@vger.kernel.org>
+> > > > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> > > > ---
+> > > >
+> > > > Changes in v2:
+> > > >       - None.
+> > > >
+> > > > Iuliana/Daniel I am ccing you to request help with test/review of this change.
+> > > > Note that, you will need patch 1/5 in the series too, to be able to test this.
+> > > >
+> > > > Kind regards
+> > > > Ulf Hansson
+> > >
+> > > Tested-by: Iuliana Prodan <iuliana.prodan@nxp.com>
+> > > Reviewed-by: Iuliana Prodan <iuliana.prodan@nxp.com>
+> > >
+> >
+> > Thanks for the leg-work on this.  I'll pick this up in rc1 later this week.
+>
+> Looking at the other files in this set, Ulf of perhaps Bjorn should take this
+> set.
 
+Yes, all patches in the series depend on the new helper function that
+is introduced in patch 1.
 
-On 2024/1/23 09:20, Laurent Pinchart wrote:
-> On Tue, Jan 23, 2024 at 12:32:20AM +0800, Sui Jingfeng wrote:
->> From: Sui Jingfeng<suijingfeng@loongson.cn>
->>
->> Because API has wider coverage, it can be used on non-DT systems as well.
->>
->> Signed-off-by: Sui Jingfeng<suijingfeng@loongson.cn>
->> ---
->>   drivers/gpu/drm/bridge/display-connector.c | 22 ++++++++++++----------
->>   1 file changed, 12 insertions(+), 10 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/bridge/display-connector.c b/drivers/gpu/drm/bridge/display-connector.c
->> index eb7e194e7735..2c3e54a458e8 100644
->> --- a/drivers/gpu/drm/bridge/display-connector.c
->> +++ b/drivers/gpu/drm/bridge/display-connector.c
->> @@ -243,8 +243,8 @@ static int display_connector_probe(struct platform_device *pdev)
->>   	case DRM_MODE_CONNECTOR_DVII: {
->>   		bool analog, digital;
->>   
->> -		analog = of_property_read_bool(pdev->dev.of_node, "analog");
->> -		digital = of_property_read_bool(pdev->dev.of_node, "digital");
->> +		analog = fwnode_property_present(pdev->dev.fwnode, "analog");
->> +		digital = fwnode_property_present(pdev->dev.fwnode, "digital");
->>   		if (analog && !digital) {
->>   			conn->bridge.type = DRM_MODE_CONNECTOR_DVIA;
->>   		} else if (!analog && digital) {
->> @@ -261,8 +261,8 @@ static int display_connector_probe(struct platform_device *pdev)
->>   	case DRM_MODE_CONNECTOR_HDMIA: {
->>   		const char *hdmi_type;
->>   
->> -		ret = of_property_read_string(pdev->dev.of_node, "type",
->> -					      &hdmi_type);
->> +		ret = fwnode_property_read_string(pdev->dev.fwnode, "type",
->> +						  &hdmi_type);
->>   		if (ret < 0) {
->>   			dev_err(&pdev->dev, "HDMI connector with no type\n");
->>   			return -EINVAL;
->> @@ -292,7 +292,7 @@ static int display_connector_probe(struct platform_device *pdev)
->>   	conn->bridge.interlace_allowed = true;
->>   
->>   	/* Get the optional connector label. */
->> -	of_property_read_string(pdev->dev.of_node, "label", &label);
->> +	fwnode_property_read_string(pdev->dev.fwnode, "label", &label);
->>   
->>   	/*
->>   	 * Get the HPD GPIO for DVI, HDMI and DP connectors. If the GPIO can provide
->> @@ -330,12 +330,13 @@ static int display_connector_probe(struct platform_device *pdev)
->>   	if (type == DRM_MODE_CONNECTOR_DVII ||
->>   	    type == DRM_MODE_CONNECTOR_HDMIA ||
->>   	    type == DRM_MODE_CONNECTOR_VGA) {
->> -		struct device_node *phandle;
->> +		struct fwnode_handle *fwnode;
->>   
->> -		phandle = of_parse_phandle(pdev->dev.of_node, "ddc-i2c-bus", 0);
->> -		if (phandle) {
->> -			conn->bridge.ddc = of_get_i2c_adapter_by_node(phandle);
->> -			of_node_put(phandle);
->> +		fwnode = fwnode_find_reference(pdev->dev.fwnode, "ddc-i2c-bus", 0);
->> +		if (!IS_ERR_OR_NULL(fwnode)) {
->> +			dev_info(&pdev->dev, "has I2C bus property\n");
-> This looks like a debugging leftover.
+I can certainly take the whole series via my pmdomain tree, if that's
+fine by everyone.
 
+Note that, there is also another series for genpd and qcom drivers
+that might make it for v6.9. It may be best to keep all these things
+together to avoid conflicts.
 
-Yes, thanks a lot for reviewing.
-I will pick up suggestions and go back to improve.
+Let's see what Greg/Rafael thinks about patch 1 first though.
 
+>
+> for:
+>
+> drivers/remoteproc/imx_rproc.c
+> drivers/remoteproc/imx_dsp_rproc.c
+>
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
+Thanks Mathieu and Iuliana!
+
+[...]
+
+Kind regards
+Uffe
+
+[1]
+https://lore.kernel.org/all/20240122-gdsc-hwctrl-v4-0-9061e8a7aa07@linaro.org/
 
