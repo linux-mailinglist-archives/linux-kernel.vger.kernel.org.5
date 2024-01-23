@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-35560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35561-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EDF9839347
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:42:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14DAE83934A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:42:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D33C5284F2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:42:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98AE61F21004
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:42:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B23E1604BC;
-	Tue, 23 Jan 2024 15:35:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 102B9657A0;
+	Tue, 23 Jan 2024 15:35:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b="RtwdzzVy";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="WRbCi4+z"
+	dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b="L9NshSxm";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="l3X4O2pq"
 Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C59C960273;
-	Tue, 23 Jan 2024 15:35:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8186604AB;
+	Tue, 23 Jan 2024 15:35:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706024109; cv=none; b=LeRyhAEjPZbzzlF/5rpNnaRHjPfchjxAvxsS8onGgZ/4AI0lvuc3cvCOoVChjzgoKLtqhFzdXPMTqEefDakRLgMgo39M+dSPKb9SqBTpWqghQ6uUQR3gdg6B6FcL9kda1RKkIq1m83P7H0rWrxbNaYQBEk9maVESJiylzUwRp0U=
+	t=1706024112; cv=none; b=uvAPXVDSsoPrNxFLIBvtksV4wD/+PLUB7Ynr/wKZ6VD8qiFWPfzLKDk3xRy/ftbejwTIHJpIlJBDfZJV3H2tcNOE9Frl+4AevlJxbeE8VVvVKR55o9cadqvLTkP2exTCzceYiu9nbsitYlIM057UngBdiRkG1Jd0A230bWxbiI0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706024109; c=relaxed/simple;
-	bh=GNoSOzPorlXaJiPSQNqXcwNADrooIycd6sfZwndbFVo=;
+	s=arc-20240116; t=1706024112; c=relaxed/simple;
+	bh=+lIPS6RzRodmvLYw4TzWh3eMC+7u1tq4p2/L67zBeus=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=u0r//uKZEh/cmIn8EnnqeHxBfT4LcrhK8ehiOMKOL7pn/90jJzYH14xWqfnez0kkIg42Ps+pFEZt44x5czQqTKglsAoq0++BCpIOAx2GlnC7mJ4Ayprss7U3ryVJ6dc9BbQ3USTueKePyh76aoRIghVU9fxXaKShFVUFOlAhEBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza; spf=pass smtp.mailfrom=tycho.pizza; dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b=RtwdzzVy; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=WRbCi4+z; arc=none smtp.client-ip=66.111.4.28
+	 MIME-Version; b=KLERQuCA26PMIRBY6PA1AU8Iw4GcOJYxfFqyJDLpyq+VXI3bJiNx0asDRbyDaQ77loRxUIoSaawoAibHccjmfHrxc9Xxi78V2w/75GNzCeAo/xw5MSx5dqt5zCqiTYAnMdRBl6Ua/PYOq2gRECURabHNX9V1KYI0I+xjTg9rc0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza; spf=pass smtp.mailfrom=tycho.pizza; dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b=L9NshSxm; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=l3X4O2pq; arc=none smtp.client-ip=66.111.4.28
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tycho.pizza
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailout.nyi.internal (Postfix) with ESMTP id C1BFA5C01D5;
-	Tue, 23 Jan 2024 10:35:06 -0500 (EST)
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailout.nyi.internal (Postfix) with ESMTP id DB7F55C0206;
+	Tue, 23 Jan 2024 10:35:08 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Tue, 23 Jan 2024 10:35:06 -0500
+  by compute7.internal (MEProxy); Tue, 23 Jan 2024 10:35:08 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
 	cc:cc:content-transfer-encoding:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm2; t=1706024106; x=
-	1706110506; bh=M9C9oXaW03dr+ruWy17gy2FxHRKy1LqG/xA89jIm6Jg=; b=R
-	twdzzVyrV/XPizH2kgzfstAvqCjHQrdbkDlmXTV08IV1djbRnMUdcTjWKHpG0vuP
-	Dapaiy/1NkYu6m9Xzr+8sW+PnN1z8Zw7dSHbCxY4vKG6J5nkchsG96+RMTjXUX+v
-	o0KD0uIW5pVRgc3/T9yoiR8wVL5lj6a/npJTQqXTus5ejG0VRVm5Y+EflMMjgbFs
-	ZkffURe5kNgxtHFmpV0JEmcqCtOGyjz18ackzpo+v17RvRTkic3rDxu3E0R6389T
-	zHZ34hIlWu+7C/cs9kqpihLR4q+K2CFTFXeYdE4eyRakyWojx8bBFQb38WCSSj9M
-	V7islNSCDD18c+imK7GJA==
+	:reply-to:subject:subject:to:to; s=fm2; t=1706024108; x=
+	1706110508; bh=y0dCuJmsBWMkvx90Fc88sNZXPF3qBCbDZbPHGZtR/Vs=; b=L
+	9NshSxmcBzn62iqxvMUpMM4YAynwSlTcOJf9i7IO2YQjW0/VVoxeOdy0RWorlhRK
+	69GKED7WbHlQC5P8r1E4TNOPiZbRV6XGQpJcr3qZltdGl5/28K/k9nD2JkZ9DmkG
+	W4viJidf8zdUq+dQ9v+Ab5s0CW4yJ9Vk9VHQOXZoqmRWSeHb/zgkvEx0YLfWUSSW
+	AuM5NY13+WpHhVVos2yoHba3qJJaufZztRgJXsBusoF1aypVvhwNxKOK5o20CwTw
+	hQZgYWnoF8njqMdwloW4wH244K4Ye2M9+josbofBHlXKXaXRNgI5keZrMPW7br2a
+	liv9TgSz3BTdR6QRY6W/w==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
 	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1706024106; x=
-	1706110506; bh=M9C9oXaW03dr+ruWy17gy2FxHRKy1LqG/xA89jIm6Jg=; b=W
-	RbCi4+zYrIaBZg6/tDRZk7pM/C7EYtcMUgWtI7PWu22wxaYeQmN5aMCLklJG8HOf
-	F9PK08aG3jX+bo+XXRg1N/hKLFAXvK6ZdseeBnEWN1JAnOGYhBkdeJF6fBUF3Ytq
-	cmKFkkq0/XFeuRAQmjdo7ZA0r3Zyumlw0Jg6S25gMwdfsVidiA4VNQzfSqzEs8bt
-	XUOYJfW+dVRat9lHihGMU2NQ+ZgMbuxpBl6cWMtjIVBd5FmpCBLUmdyf3xL3/5F1
-	mNpzpwNRn8VuDSs+AUGQqcStXOO+FTUIR8I/IGF5ZFqF5f8+usW/QKA6JQRPaxtM
-	jCgGmYe8Vn9YA0Ax8PWYA==
-X-ME-Sender: <xms:qtyvZUdjCeKpCZAf4N72Y4hStfS1FdktPIvIsE8pekBGbduV8rUKQA>
-    <xme:qtyvZWMrmwzKeGIAIug2GLWDVHYAmcFqegJa-zB6mr_nw4ANok3VVyyn93kE8A651
-    npM5Csdxr4GSRw0SRk>
-X-ME-Received: <xmr:qtyvZVjDsJd-vsG-eWeaGRE5RfD3yssgM2JE-tVDfcsOWJFd3_JwjShCXNKmTe5QGRaVeA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekkedgjeejucetufdoteggodetrfdotf
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1706024108; x=
+	1706110508; bh=y0dCuJmsBWMkvx90Fc88sNZXPF3qBCbDZbPHGZtR/Vs=; b=l
+	3X4O2pqOQ2eVtrecnUMe2Xk8vKmurOCfgGV97XEMkPNg5ICC3P23v0GetJr5yyuL
+	u+3IWhSC90cpLID7pfW0b3TC9G5rNTkDz8Zi2dBVNu11k5talrmyHzN9gIOGJ77c
+	cUoA6UtsEMK2oya1K0DS6ARYNdzCKaTkDvK5vBiKfKT8mPaxpwLbhEfe2TSAEC9U
+	oja0/bTSCfd9oUBKRADyyQyswt8+1dso65cAO1ytyf+AKPUSq9ze+hC9Phw3kjgO
+	gn06br0vdf+EihRyoecP42GL9dyQqg1oBCLhY/SLlMdimWDJGHy0ogQlf/+ya5RA
+	+yPq4bZ0ZWLbunbbv1T4w==
+X-ME-Sender: <xms:rNyvZf3n-cGstH8B6UWzESW5Sh_L-7K8Gygef2TxCECbLeKRgzXZ7g>
+    <xme:rNyvZeEwB6m7i5z7h1P0XaOiahA8mSByQ7B-8RkTUz2YYVh_YTNdYQhr4gUgyRraV
+    AhkssQ0v3DjJTs6Cmc>
+X-ME-Received: <xmr:rNyvZf5NxpIi2DMFA181DRoMYFAkJ_UfNag61tKUdV_FbqBd5AZ22m3gvwpnKdVdmuKcRQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekkedgjeeiucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhephffvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepvfihtghh
@@ -73,13 +73,13 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekkedgjeejucetufdoteggod
     ieekgfelnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiii
     gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehthigthhhosehthigthhhordhpihii
     iigr
-X-ME-Proxy: <xmx:qtyvZZ-oxw8spuJs6iMruPU6KqTBmnphQdajNFy8XAUk1hR4cOYUyg>
-    <xmx:qtyvZQtqWartjP9mGRbjfFb6j_PNE-tv2RyKBLp5nkf2jagkAv4FiQ>
-    <xmx:qtyvZQGlYqq3tfzCLOLj-s6abTWeG9s2P4V4O9QKj8HfSJIv6C2svA>
-    <xmx:qtyvZaXnl-JbqYgaeIIktv1HfuQqtBUKJXW_B-kei706mJFKXxH9WA>
+X-ME-Proxy: <xmx:rNyvZU3VjBek-4oT4Ux9mTHmrF2oxRZSII4RwDzZ-D13L68U1OibVg>
+    <xmx:rNyvZSHE2TPj-USbGqGc4UWlKJmMARRg8iQnVHlzDOmLL8hF-SM56g>
+    <xmx:rNyvZV_EQKe01nulUNGABBLSZPIzYU_TiTnfLj-HI4UnddrVrRV2Zw>
+    <xmx:rNyvZfPUsmm1I1m5UhrS9MIqB7l-7AswqEXUJGtX_JPULDvTtmntyw>
 Feedback-ID: i21f147d5:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 23 Jan 2024 10:35:05 -0500 (EST)
+ 23 Jan 2024 10:35:07 -0500 (EST)
 From: Tycho Andersen <tycho@tycho.pizza>
 To: Christian Brauner <brauner@kernel.org>
 Cc: Oleg Nesterov <oleg@redhat.com>,
@@ -87,9 +87,9 @@ Cc: Oleg Nesterov <oleg@redhat.com>,
 	linux-api@vger.kernel.org,
 	Tycho Andersen <tycho@tycho.pizza>,
 	Tycho Andersen <tandersen@netflix.com>
-Subject: [PATCH v3 1/3] pidfd: allow pidfd_open() on non-thread-group leaders
-Date: Tue, 23 Jan 2024 08:34:50 -0700
-Message-Id: <20240123153452.170866-2-tycho@tycho.pizza>
+Subject: [PATCH v3 2/3] selftests/pidfd: add non-thread-group leader tests
+Date: Tue, 23 Jan 2024 08:34:51 -0700
+Message-Id: <20240123153452.170866-3-tycho@tycho.pizza>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240123153452.170866-1-tycho@tycho.pizza>
 References: <20240123153452.170866-1-tycho@tycho.pizza>
@@ -103,133 +103,632 @@ Content-Transfer-Encoding: 8bit
 
 From: Tycho Andersen <tandersen@netflix.com>
 
-We are using the pidfd family of syscalls with the seccomp userspace
-notifier. When some thread triggers a seccomp notification, we want to do
-some things to its context (munge fd tables via pidfd_getfd(), maybe write
-to its memory, etc.). However, threads created with ~CLONE_FILES or
-~CLONE_VM mean that we can't use the pidfd family of syscalls for this
-purpose, since their fd table or mm are distinct from the thread group
-leader's. In this patch, we relax this restriction for pidfd_open().
-
-In order to avoid dangling poll() users we need to notify pidfd waiters
-when individual threads die, but once we do that all the other machinery
-seems to work ok viz. the tests. But I suppose there are more cases than
-just this one.
+This adds a family of tests for various behaviors for pidfds of
+non-thread-group leaders.
 
 Signed-off-by: Tycho Andersen <tandersen@netflix.com>
---
-v2: unify pidfd notification to all go through do_notify_pidfd() inside of
-    __exit_signals() suggested by Oleg.
-    Link to v1: https://lore.kernel.org/all/20231130163946.277502-1-tycho@tycho.pizza/
-v3: go back to two separate call sites, the exiting one in
-    do_notify_parent(), and a new one in release_task(), when a thread is
-    not the thread group leader.
 ---
- include/linux/sched/signal.h |  1 +
- kernel/exit.c                | 11 +++++++++++
- kernel/fork.c                |  4 +---
- kernel/pid.c                 | 11 +----------
- kernel/signal.c              |  2 +-
- 5 files changed, 15 insertions(+), 14 deletions(-)
+v2: unchanged
+v3: add some tests for the situation that Christian described in one of the
+    previous threads, see the comments for a link + details.
+---
+ tools/testing/selftests/pidfd/.gitignore      |   1 +
+ tools/testing/selftests/pidfd/Makefile        |   3 +-
+ .../selftests/pidfd/pidfd_non_tgl_test.c      | 583 ++++++++++++++++++
+ 3 files changed, 586 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
-index 4b7664c56208..d752f003a69a 100644
---- a/include/linux/sched/signal.h
-+++ b/include/linux/sched/signal.h
-@@ -333,6 +333,7 @@ extern int kill_pid_usb_asyncio(int sig, int errno, sigval_t addr, struct pid *,
- extern int kill_pgrp(struct pid *pid, int sig, int priv);
- extern int kill_pid(struct pid *pid, int sig, int priv);
- extern __must_check bool do_notify_parent(struct task_struct *, int);
-+extern void do_notify_pidfd(struct task_struct *task);
- extern void __wake_up_parent(struct task_struct *p, struct task_struct *parent);
- extern void force_sig(int);
- extern void force_fatal_sig(int);
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 3988a02efaef..90117d7861f4 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -256,6 +256,17 @@ void release_task(struct task_struct *p)
- 	write_lock_irq(&tasklist_lock);
- 	ptrace_release_task(p);
- 	thread_pid = get_pid(p->thread_pid);
+diff --git a/tools/testing/selftests/pidfd/.gitignore b/tools/testing/selftests/pidfd/.gitignore
+index 973198a3ec3d..e7532e84a34a 100644
+--- a/tools/testing/selftests/pidfd/.gitignore
++++ b/tools/testing/selftests/pidfd/.gitignore
+@@ -6,3 +6,4 @@ pidfd_wait
+ pidfd_fdinfo_test
+ pidfd_getfd_test
+ pidfd_setns_test
++pidfd_non_tgl_test
+diff --git a/tools/testing/selftests/pidfd/Makefile b/tools/testing/selftests/pidfd/Makefile
+index d731e3e76d5b..50e3aa9de05a 100644
+--- a/tools/testing/selftests/pidfd/Makefile
++++ b/tools/testing/selftests/pidfd/Makefile
+@@ -2,7 +2,8 @@
+ CFLAGS += -g $(KHDR_INCLUDES) -pthread -Wall
+ 
+ TEST_GEN_PROGS := pidfd_test pidfd_fdinfo_test pidfd_open_test \
+-	pidfd_poll_test pidfd_wait pidfd_getfd_test pidfd_setns_test
++	pidfd_poll_test pidfd_wait pidfd_getfd_test pidfd_setns_test \
++	pidfd_non_tgl_test
+ 
+ include ../lib.mk
+ 
+diff --git a/tools/testing/selftests/pidfd/pidfd_non_tgl_test.c b/tools/testing/selftests/pidfd/pidfd_non_tgl_test.c
+new file mode 100644
+index 000000000000..c0624b127fab
+--- /dev/null
++++ b/tools/testing/selftests/pidfd/pidfd_non_tgl_test.c
+@@ -0,0 +1,583 @@
++// SPDX-License-Identifier: GPL-2.0
++#define _GNU_SOURCE
++#include <sys/socket.h>
++#include <limits.h>
++#include <string.h>
++#include <signal.h>
++#include <syscall.h>
++#include <sched.h>
++#include <poll.h>
++
++#include "../kselftest.h"
++#include "pidfd.h"
++
++static int sys_waitid(int which, pid_t pid, siginfo_t *info, int options,
++		      struct rusage *ru)
++{
++	return syscall(__NR_waitid, which, pid, info, options, ru);
++}
++
++// glibc defaults to 8MB stacks
++#define STACK_SIZE (8 * 1024 * 1024)
++static char stack[STACK_SIZE];
++
++static int thread_sleep(void *)
++{
++	while (1)
++		sleep(100);
++	return 1;
++}
++
++static int fork_task_with_thread(int (*fn)(void *), int sk_pair[2],
++				 pid_t *tgl, pid_t *thread, int *tgl_pidfd,
++				 int *thread_pidfd)
++{
++	*tgl_pidfd = *thread_pidfd = -1;
++
++	*tgl = fork();
++	if (*tgl < 0) {
++		perror("fork");
++		return -1;
++	}
++
++	if (!*tgl) {
++		int flags = CLONE_THREAD | CLONE_VM | CLONE_SIGHAND;
++		pid_t t;
++
++		t = clone(fn, stack + STACK_SIZE, flags, sk_pair);
++		if (t < 0) {
++			perror("clone");
++			exit(1);
++		}
++
++		close(sk_pair[1]);
++
++		if (write(sk_pair[0], &t, sizeof(t)) != sizeof(t)) {
++			perror("read");
++			exit(1);
++		}
++
++		// wait to get killed for various reasons by the tests.
++		while (1)
++			sleep(100);
++	}
++
++	errno = 0;
++	if (read(sk_pair[1], thread, sizeof(*thread)) != sizeof(*thread)) {
++		perror("read");
++		goto cleanup;
++	}
++
++	*tgl_pidfd = sys_pidfd_open(*tgl, 0);
++	if (*tgl_pidfd < 0) {
++		perror("pidfd_open tgl");
++		goto cleanup;
++	}
++
++	*thread_pidfd = sys_pidfd_open(*thread, 0);
++	if (*thread_pidfd < 0) {
++		perror("pidfd");
++		goto cleanup;
++	}
++
++	return 0;
++
++cleanup:
++	kill(*tgl, SIGKILL);
++	if (*tgl_pidfd >= 0)
++		close(*tgl_pidfd);
++	if (*thread_pidfd >= 0)
++		close(*thread_pidfd);
++	return -1;
++}
++
++static int test_non_tgl_basic(void)
++{
++	pid_t tgl, thread;
++	int sk_pair[2], status;
++	int tgl_pidfd = -1, thread_pidfd = -1;
++	int ret = KSFT_FAIL;
++
++	if (socketpair(PF_LOCAL, SOCK_SEQPACKET, 0, sk_pair) < 0) {
++		ksft_print_msg("socketpair failed %s\n", strerror(errno));
++		return KSFT_FAIL;
++	}
++
++	if (fork_task_with_thread(thread_sleep, sk_pair, &tgl, &thread,
++				  &tgl_pidfd, &thread_pidfd) < 0) {
++		return KSFT_FAIL;
++	}
 +
 +	/*
-+	 * If we're not the leader, notify any waiters on our pidfds. Note that
-+	 * we don't want to notify the leader until /everyone/ in the thread
-+	 * group is dead, viz. the condition below.
-+	 *
-+	 * We have to do this here, since __exit_signal() will
-+	 * __unhash_processes(), and break do_notify_pidfd()'s lookup.
++	 * KILL of a thread should still kill everyone
 +	 */
-+	if (!thread_group_leader(p))
-+		do_notify_pidfd(p);
- 	__exit_signal(p);
- 
- 	/*
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 47ff3b35352e..44969cd472f0 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -2157,8 +2157,6 @@ static int __pidfd_prepare(struct pid *pid, unsigned int flags, struct file **re
-  * Allocate a new file that stashes @pid and reserve a new pidfd number in the
-  * caller's file descriptor table. The pidfd is reserved but not installed yet.
-  *
-- * The helper verifies that @pid is used as a thread group leader.
-- *
-  * If this function returns successfully the caller is responsible to either
-  * call fd_install() passing the returned pidfd and pidfd file as arguments in
-  * order to install the pidfd into its file descriptor table or they must use
-@@ -2176,7 +2174,7 @@ static int __pidfd_prepare(struct pid *pid, unsigned int flags, struct file **re
-  */
- int pidfd_prepare(struct pid *pid, unsigned int flags, struct file **ret)
- {
--	if (!pid || !pid_has_task(pid, PIDTYPE_TGID))
-+	if (!pid)
- 		return -EINVAL;
- 
- 	return __pidfd_prepare(pid, flags, ret);
-diff --git a/kernel/pid.c b/kernel/pid.c
-index b52b10865454..b55c0adf457b 100644
---- a/kernel/pid.c
-+++ b/kernel/pid.c
-@@ -552,11 +552,6 @@ struct pid *pidfd_get_pid(unsigned int fd, unsigned int *flags)
-  * Return the task associated with @pidfd. The function takes a reference on
-  * the returned task. The caller is responsible for releasing that reference.
-  *
-- * Currently, the process identified by @pidfd is always a thread-group leader.
-- * This restriction currently exists for all aspects of pidfds including pidfd
-- * creation (CLONE_PIDFD cannot be used with CLONE_THREAD) and pidfd polling
-- * (only supports thread group leaders).
-- *
-  * Return: On success, the task_struct associated with the pidfd.
-  *	   On error, a negative errno number will be returned.
-  */
-@@ -615,11 +610,7 @@ int pidfd_create(struct pid *pid, unsigned int flags)
-  * @flags: flags to pass
-  *
-  * This creates a new pid file descriptor with the O_CLOEXEC flag set for
-- * the process identified by @pid. Currently, the process identified by
-- * @pid must be a thread-group leader. This restriction currently exists
-- * for all aspects of pidfds including pidfd creation (CLONE_PIDFD cannot
-- * be used with CLONE_THREAD) and pidfd polling (only supports thread group
-- * leaders).
-+ * the process identified by @pid.
-  *
-  * Return: On success, a cloexec pidfd is returned.
-  *         On error, a negative errno number will be returned.
-diff --git a/kernel/signal.c b/kernel/signal.c
-index c9c57d053ce4..3e3c9d0fa3a5 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2019,7 +2019,7 @@ int send_sigqueue(struct sigqueue *q, struct pid *pid, enum pid_type type)
- 	return ret;
- }
- 
--static void do_notify_pidfd(struct task_struct *task)
-+void do_notify_pidfd(struct task_struct *task)
- {
- 	struct pid *pid;
- 
++	if (sys_pidfd_send_signal(thread_pidfd, SIGKILL, NULL, 0)) {
++		perror("pidfd_send_signal");
++		goto cleanup;
++	}
++
++	errno = 0;
++	if (waitpid(tgl, &status, 0) != tgl) {
++		perror("waitpid tgl");
++		goto cleanup;
++	}
++
++	if (!WIFSIGNALED(status) || WTERMSIG(status) != SIGKILL) {
++		ksft_print_msg("bad exit status %x\n", status);
++		goto cleanup;
++	}
++
++	ret = KSFT_PASS;
++
++cleanup:
++	close(sk_pair[0]);
++	close(sk_pair[1]);
++	close(tgl_pidfd);
++	close(thread_pidfd);
++	return ret;
++}
++
++static int thread_exec(void *arg)
++{
++	int *sk_pair = arg;
++	pid_t thread;
++
++	if (read(sk_pair[0], &thread, sizeof(thread)) != sizeof(thread)) {
++		perror("read");
++		exit(1);
++	}
++
++	execlp("/bin/true", "/bin/true", NULL);
++	return 1;
++}
++
++static int test_non_tgl_exec(void)
++{
++	pid_t tgl, thread;
++	int sk_pair[2];
++	int tgl_pidfd = -1, thread_pidfd = -1;
++	int ret = KSFT_FAIL, ready;
++	struct pollfd pollfd;
++
++	if (socketpair(PF_LOCAL, SOCK_SEQPACKET, 0, sk_pair) < 0) {
++		ksft_print_msg("socketpair failed %s\n", strerror(errno));
++		return KSFT_FAIL;
++	}
++
++	if (fork_task_with_thread(thread_exec, sk_pair, &tgl, &thread,
++				  &tgl_pidfd, &thread_pidfd) < 0) {
++		return KSFT_FAIL;
++	}
++
++	if (write(sk_pair[1], &thread, sizeof(thread)) != sizeof(thread)) {
++		perror("read");
++		goto cleanup;
++	}
++
++	// thread will exec(), so this pidfd should eventually be dead (i.e.
++	// poll should return).
++	pollfd.fd = thread_pidfd;
++	pollfd.events = POLLIN;
++
++	ready = poll(&pollfd, 1, -1);
++	if (ready == -1) {
++		perror("poll");
++		goto cleanup;
++	}
++
++	if (ready != 1) {
++		ksft_print_msg("bad poll result %d\n", ready);
++		goto cleanup;
++	}
++
++	if (pollfd.revents != POLLIN) {
++		ksft_print_msg("bad poll revents: %x\n", pollfd.revents);
++		goto cleanup;
++	}
++
++	errno = 0;
++	if (sys_pidfd_getfd(thread_pidfd, 0, 0) > 0) {
++		ksft_print_msg("got a real fd");
++		goto cleanup;
++	}
++
++	if (errno != ESRCH) {
++		ksft_print_msg("polling invalid thread didn't give ESRCH");
++		goto cleanup;
++	}
++
++	ret = KSFT_PASS;
++
++cleanup:
++	close(sk_pair[0]);
++	close(sk_pair[1]);
++	close(tgl_pidfd);
++	close(thread_pidfd);
++	kill(tgl, SIGKILL);
++	waitpid(tgl, NULL, 0);
++	return ret;
++}
++
++int thread_wait_exit(void *arg)
++{
++	int *sk_pair = arg;
++	pid_t thread;
++
++	if (read(sk_pair[0], &thread, sizeof(thread)) != sizeof(thread)) {
++		perror("read");
++		exit(1);
++	}
++
++	return 0;
++}
++
++static int test_non_tgl_poll_exit(void)
++{
++	pid_t tgl, thread, writer;
++	int sk_pair[2], ready;
++	int tgl_pidfd = -1, thread_pidfd = -1;
++	int ret = KSFT_FAIL;
++	struct pollfd pollfd;
++
++	if (socketpair(PF_LOCAL, SOCK_SEQPACKET, 0, sk_pair) < 0) {
++		ksft_print_msg("socketpair failed %s\n", strerror(errno));
++		return KSFT_FAIL;
++	}
++
++	if (fork_task_with_thread(thread_wait_exit, sk_pair, &tgl, &thread,
++				  &tgl_pidfd, &thread_pidfd) < 0) {
++		return KSFT_FAIL;
++	}
++
++	writer = fork();
++	if (writer < 0) {
++		perror("fork");
++		return KSFT_FAIL;
++	}
++
++	if (writer == 0) {
++		sleep(3);
++		if (write(sk_pair[1], &thread, sizeof(thread)) != sizeof(thread)) {
++			perror("read");
++			exit(1);
++		}
++		exit(0);
++	}
++
++	// thread will exit, so this pidfd should eventually be dead (i.e.
++	// poll should return).
++	pollfd.fd = thread_pidfd;
++	pollfd.events = POLLIN;
++
++	ready = poll(&pollfd, 1, -1);
++	if (ready == -1) {
++		perror("poll");
++		goto cleanup;
++	}
++
++	if (ready != 1) {
++		ksft_print_msg("bad poll result %d\n", ready);
++		goto cleanup;
++	}
++
++	if (pollfd.revents != POLLIN) {
++		ksft_print_msg("bad poll revents: %x\n", pollfd.revents);
++		goto cleanup;
++	}
++
++	if (pollfd.fd != thread_pidfd) {
++		ksft_print_msg("bad poll fd: %x\n", pollfd.fd);
++		goto cleanup;
++	}
++
++	ret = KSFT_PASS;
++
++cleanup:
++	close(sk_pair[0]);
++	close(sk_pair[1]);
++	close(tgl_pidfd);
++	close(thread_pidfd);
++	kill(tgl, SIGKILL);
++	waitpid(tgl, NULL, 0);
++	waitpid(thread, NULL, 0);
++	return ret;
++}
++
++
++static int test_non_tgl_exit_poll(void)
++{
++	pid_t tgl, thread;
++	int sk_pair[2];
++	int tgl_pidfd = -1, thread_pidfd = -1;
++	int ret = KSFT_FAIL, ready;
++	struct pollfd pollfd;
++	siginfo_t siginfo;
++
++	if (socketpair(PF_LOCAL, SOCK_SEQPACKET, 0, sk_pair) < 0) {
++		ksft_print_msg("socketpair failed %s\n", strerror(errno));
++		return KSFT_FAIL;
++	}
++
++	if (fork_task_with_thread(thread_wait_exit, sk_pair, &tgl, &thread,
++				  &tgl_pidfd, &thread_pidfd) < 0) {
++		return KSFT_FAIL;
++	}
++
++	if (write(sk_pair[1], &thread, sizeof(thread)) != sizeof(thread)) {
++		perror("write");
++		goto cleanup;
++	}
++
++	// thread will exit, so this pidfd should eventually be dead (i.e.
++	// poll should return).
++	pollfd.fd = thread_pidfd;
++	pollfd.events = POLLIN;
++
++	ready = poll(&pollfd, 1, -1);
++	if (ready == -1) {
++		perror("poll");
++		goto cleanup;
++	}
++
++	if (ready != 1) {
++		ksft_print_msg("bad poll result %d\n", ready);
++		goto cleanup;
++	}
++
++	if (pollfd.revents != POLLIN) {
++		ksft_print_msg("bad poll revents: %x\n", pollfd.revents);
++		goto cleanup;
++	}
++
++	errno = 0;
++	if (sys_pidfd_getfd(thread_pidfd, 0, 0) > 0) {
++		ksft_print_msg("got a real pidfd");
++		goto cleanup;
++	}
++
++	if (errno != ESRCH) {
++		ksft_print_msg("polling invalid thread didn't give ESRCH");
++		goto cleanup;
++	}
++
++	// ok, but the thread group *leader* should still be alive
++	pollfd.fd = tgl_pidfd;
++	ready = poll(&pollfd, 1, 1);
++	if (ready == -1) {
++		perror("poll");
++		goto cleanup;
++	}
++
++	if (ready != 0) {
++		ksft_print_msg("polling leader returned something?! %x", pollfd.revents);
++		goto cleanup;
++	}
++
++	errno = 0;
++	if (sys_waitid(P_PIDFD, thread_pidfd, &siginfo, WEXITED, NULL) == 0) {
++		ksft_print_msg("got a real wait value");
++		goto cleanup;
++	}
++
++	if (errno != ECHILD) {
++		ksft_print_msg("waiting invalid thread didn't give ECHILD: %d\n", errno);
++		goto cleanup;
++	}
++
++	close(thread_pidfd);
++
++	ret = KSFT_PASS;
++
++cleanup:
++	kill(tgl, SIGKILL);
++	waitpid(tgl, NULL, 0);
++	waitpid(thread, NULL, 0);
++	return ret;
++}
++
++/*
++ * This is a test for the first half of the scenario in
++ * https://lore.kernel.org/all/20231207-avancieren-unbezahlbar-9258f45ec3ec@brauner/
++ *
++ * i.e we expect:
++ *
++ *      waitid(P_PIDFD, tg_pidfd)               waitid(P_PIDFD, t_pidfd)
++ *      tg_pid[PIDTYPE_TGID] == tsk1            t_pid[PIDTYPE_TGID] == NULL
++ *      => succeeds                             => fails
++ */
++static int test_non_tgl_waitid_exit(void)
++{
++	pid_t tgl, thread, writer;
++	int sk_pair[2], status;
++	int tgl_pidfd = -1, thread_pidfd = -1;
++	int ret = KSFT_FAIL;
++	siginfo_t siginfo;
++
++	if (socketpair(PF_LOCAL, SOCK_SEQPACKET, 0, sk_pair) < 0) {
++		ksft_print_msg("socketpair failed %s\n", strerror(errno));
++		return KSFT_FAIL;
++	}
++
++	if (fork_task_with_thread(thread_wait_exit, sk_pair, &tgl, &thread,
++				  &tgl_pidfd, &thread_pidfd) < 0) {
++		return KSFT_FAIL;
++	}
++
++	writer = fork();
++	if (writer < 0) {
++		perror("fork");
++		return KSFT_FAIL;
++	}
++
++	if (writer == 0) {
++		sleep(3);
++		if (write(sk_pair[1], &thread, sizeof(thread)) != sizeof(thread)) {
++			perror("read");
++			exit(1);
++		}
++		exit(0);
++	}
++
++	errno = 0;
++	if (sys_waitid(P_PIDFD, thread_pidfd, &siginfo, __WALL | WEXITED, NULL) == 0
++			|| errno != ECHILD) {
++		ksft_print_msg("waitid didn't give ECHILD");
++		goto cleanup;
++	}
++	close(thread_pidfd);
++
++	kill(tgl, SIGKILL);
++
++	errno = 0;
++	if (sys_waitid(P_PIDFD, tgl_pidfd, &siginfo, __WALL | WEXITED, NULL) != 0) {
++		perror("waitid");
++		ksft_print_msg("waitid failed %d\n", errno);
++		goto cleanup;
++	}
++	close(tgl_pidfd);
++
++	if (siginfo.si_code != CLD_KILLED || siginfo.si_status != SIGKILL) {
++		ksft_print_msg("bad exit code %x status %x\n", siginfo.si_code, siginfo.si_status);
++		goto cleanup;
++	}
++
++	ret = KSFT_PASS;
++
++cleanup:
++	kill(tgl, SIGKILL);
++	waitpid(tgl, &status, 0);
++	waitpid(writer, NULL, 0);
++	return ret;
++}
++
++/*
++ * This is a test for the first second half of the scenario in
++ * https://lore.kernel.org/all/20231207-avancieren-unbezahlbar-9258f45ec3ec@brauner/
++ *
++ * i.e after the exec, we expect:
++ *
++ *      waitid(P_PIDFD, tg_pidfd)		waitid(P_PIDFD, t_pid)
++ *      tg_pid[PIDTYPE_TGID] == tsk2		t_pid[PIDTYPE_TGID] == NULL
++ *      => succeeds				=> fails
++ */
++static int test_non_tgl_waitid_exec(void)
++{
++	pid_t tgl, thread, writer;
++	int sk_pair[2], status;
++	int tgl_pidfd = -1, thread_pidfd = -1;
++	int ret = KSFT_FAIL;
++	siginfo_t siginfo;
++
++	if (socketpair(PF_LOCAL, SOCK_SEQPACKET, 0, sk_pair) < 0) {
++		ksft_print_msg("socketpair failed %s\n", strerror(errno));
++		return KSFT_FAIL;
++	}
++
++	if (fork_task_with_thread(thread_exec, sk_pair, &tgl, &thread,
++				  &tgl_pidfd, &thread_pidfd) < 0) {
++		return KSFT_FAIL;
++	}
++
++	writer = fork();
++	if (writer < 0) {
++		perror("fork");
++		return KSFT_FAIL;
++	}
++
++	if (writer == 0) {
++		sleep(3);
++		if (write(sk_pair[1], &thread, sizeof(thread)) != sizeof(thread)) {
++			perror("read");
++			exit(1);
++		}
++		exit(0);
++	}
++
++	errno = 0;
++	if (sys_waitid(P_PIDFD, thread_pidfd, &siginfo, __WALL | WEXITED, NULL) == 0
++			|| errno != ECHILD) {
++		ksft_print_msg("waitid didn't give ECHILD");
++		goto cleanup;
++	}
++	close(thread_pidfd);
++
++	kill(tgl, SIGKILL);
++
++	errno = 0;
++	if (sys_waitid(P_PIDFD, tgl_pidfd, &siginfo, __WALL | WEXITED, NULL) != 0) {
++		perror("waitid");
++		ksft_print_msg("waitid failed %d\n", errno);
++		goto cleanup;
++	}
++	close(tgl_pidfd);
++
++	if (siginfo.si_code != CLD_KILLED || siginfo.si_status != SIGKILL) {
++		ksft_print_msg("bad exit code %x status %x\n", siginfo.si_code, siginfo.si_status);
++		goto cleanup;
++	}
++
++	ret = KSFT_PASS;
++cleanup:
++	kill(tgl, SIGKILL);
++	kill(thread, SIGKILL);
++	waitpid(tgl, &status, 0);
++	waitpid(thread, &status, 0);
++	waitpid(writer, &status, 0);
++	return ret;
++}
++
++#define T(x) { x, #x }
++struct pidfd_non_tgl_test {
++	int (*fn)();
++	const char *name;
++} tests[] = {
++	T(test_non_tgl_basic),
++	T(test_non_tgl_exec),
++	T(test_non_tgl_poll_exit),
++	T(test_non_tgl_exit_poll),
++	T(test_non_tgl_waitid_exit),
++	T(test_non_tgl_waitid_exec),
++};
++#undef T
++
++int main(int argc, char *argv[])
++{
++	int i, ret = EXIT_SUCCESS;
++
++	for (i = 0; i < ARRAY_SIZE(tests); i++) {
++		switch (tests[i].fn()) {
++		case KSFT_PASS:
++			ksft_test_result_pass("%s\n", tests[i].name);
++			break;
++		case KSFT_SKIP:
++			ksft_test_result_skip("%s\n", tests[i].name);
++			break;
++		default:
++			ret = EXIT_FAILURE;
++			ksft_test_result_fail("%s\n", tests[i].name);
++			break;
++		}
++	}
++
++	return ret;
++}
 -- 
 2.34.1
 
