@@ -1,193 +1,166 @@
-Return-Path: <linux-kernel+bounces-35243-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35244-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECA25838E6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:23:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2389C838E6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:23:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 60E961F250DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:23:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 471B41C23211
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:23:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A57595DF31;
-	Tue, 23 Jan 2024 12:22:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 251B55DF33;
+	Tue, 23 Jan 2024 12:23:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="daSWs3v5"
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JGz9NGCn"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B9895DF11
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 12:22:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6BF65DF11;
+	Tue, 23 Jan 2024 12:23:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706012570; cv=none; b=R9KSjIx7uMGOiN3s70FbJ32+7S1wR3poHvC/CDo4FkUQ5ylsJ1jYfxpBiZ4aLXy/Fd1+YjwGICxfya0TUwSoWMfqZvzxZ/I+ueNougMb6nAzKFSGzUaD5aCw9AW9xDyrJbDmFCPojtHbMPKYrGQb+7QvgYmo7wHX7zjLGeIua8o=
+	t=1706012604; cv=none; b=khDumpZmk62FRbo40IyGWF90Iv9r3fCzZoonQWZG/mNb4Uh1iAwhLdrrlAr7gDebY22dqjYA0X4l75pOjC6YylWusJ2Lq1E99vXtEE497vmL3+yNM3UUfuXZ90uDdQTWarmFrgh2NYfvBDH6wf2DV97q9PAsPi+XeOwdecdh/pk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706012570; c=relaxed/simple;
-	bh=k01DIOSRLVW+DQ24icE6Ir9vmX5ig64RCP8pnc3p7ek=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JL2ws6m79rFsk41lLz/NcINsPmtmr/MinVcOjuhOPnY8Oay0rJaqVwVzhMDg9zbGRyRpSaMaKgFuoiImwKBd5/LA9LwULWCUdcnxhCLKi384rVdz0yzz0wMQAG03NurCwza2qKNp5TY5fbOdD0ZqGrO98U7FlnI835VoIedgDvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=daSWs3v5; arc=none smtp.client-ip=209.85.219.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dc24ead4428so2801457276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 04:22:49 -0800 (PST)
+	s=arc-20240116; t=1706012604; c=relaxed/simple;
+	bh=81Rq969C5fC2gwndSCJqbGyzbfJ1wYlS4kuBnSDBHgM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=jcmmRmbAke1gQhgQl+SEt47DWWAJC5Fzfp9YYElkxStMmTpNQB7igOhMNUBpbeq7O+xUQRjtVP0kEE+CwoCMTnrowCfzbY7I3slFE5nk9ND4zKbYlyk+MA95sX9tvCdRGaIDHR01U6U9Lsq0/2ZENs66np5dFzxwJA64SYhnxww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JGz9NGCn; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55a3a875f7fso4622854a12.3;
+        Tue, 23 Jan 2024 04:23:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706012568; x=1706617368; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=2i2JkhvjeVmwGZk7KmpKzIYKY/0vcbt6K1rVecnj+is=;
-        b=daSWs3v5GBb3Z796ykMqaJjklxg1kU4UFVj3TpUM78LR2YYzsoZK7WhOJT9lYvfyrw
-         gsnQQ+PxWeat1m0NrXbEl1JMcoCQud030KlSPgJ/Sp8VWBPU580chAk0nb3bt9DSAvRj
-         SrkcS3aRWhplQ99RBozUBlFUtUXG6FBo3bC4VEwe1BolkujeQEb0xMkwqpF7a+0de6Cn
-         W2n0wFPBabGPvhqri2pkLimwQukTkjaH5MamK5V3KOdotP2RRBBwfMPtXlrsjFZ9VTi8
-         cLZNlqkqEuVbBTfSrjoatBCNHTS/kEDc5y/s7Ha3R/5XfsARGCvROt1YVsCrMu34i45X
-         ai+w==
+        d=gmail.com; s=20230601; t=1706012601; x=1706617401; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0aT0YmN+E9RIm6EBLaUbj2bmTaqy7pebRlFTaUr3D2Y=;
+        b=JGz9NGCnniuAM+DPmb+XqjWLKMTj29KHdVuv8KfXvDgfBPsGz4q5t6xDoHYmyMRSdt
+         3sE2BZ3iIMUTi3y6GJ5QgpOwxXwO5BlfLSBeYFFnzW9a7x87/qvsgxMXPsYapDLPJIE1
+         qL7mimPP1MRjkofJPQqX7Z/KfNOMwv9zAxfPUGSkKDJ9f3s89WxDmiD8uw4sVe8G5Xm1
+         IYt9HChq2kb+4ZtPueXP8H6AMA1HhJHtAouEKrDMlJqRmdrHtYL1AWZMdOt4q/ab1D+B
+         Zj8Ne5ZwIvL+UrDVh+vCg8e2IJQ5PCJ3I7jAbcIwMFKTc3p6Hvm4HnkGZEDWMmQ+u8Bt
+         EE5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706012568; x=1706617368;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1706012601; x=1706617401;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=2i2JkhvjeVmwGZk7KmpKzIYKY/0vcbt6K1rVecnj+is=;
-        b=JV/xQI9sathTxHlYHd4Zm7eQ/MIF79Tr+X5+KMXlTpInFdvB8TP0i6JTsLn8DnILfx
-         Nf0Zw6wDraHQ5g3al6SrzsnlCW44Y9ojiMMiXyapn09vLzrF8c5GIkVb8tUDkYlZG3bL
-         5+XoX8HWSA6AXtj5Dp+VMINS6x2Ot+1R0kB84kFWPrELRSAZjBS4AmzgnDsWNVAb3Rb8
-         DOrDxrRGZM8VQkVIHuKgGUfjLF8TGc0Yxg2GiuYQepT3TY/WHY98f9yZ4xwUgtXGAIL5
-         tTslAuvf9IQVBzWTfcGS0c9bvnVTRcqij4bx/25WdpqKqAH+4Z5eYA+k/YyOUOkHBiiC
-         oBBA==
-X-Gm-Message-State: AOJu0YxcIqwxeyCnH5a6Y4sFyWIi0NzKNaOwgB18FOAiPVVjF18j/QwK
-	gjHSKIrQvx+mynsl1mP/UpiQkAsJQ7o2CPHFffzb+D0QcxkQ/FoeZJbp98/uAa4HPB14N0Kf6wy
-	tB9H5c4V54tr9fZvx3P2NhQOloZIA019jsAQUU81MSkM4V/baWPs=
-X-Google-Smtp-Source: AGHT+IHRYpBdL+ROMhEUsObvUM8ZcI+g0eEAzyEDHj0Yi0tXAbx/m8ujU8Z/pG8HvhWj58H8mBPxPah0p/6uQX6mzx0=
-X-Received: by 2002:a5b:d0d:0:b0:dc2:46cd:eeef with SMTP id
- y13-20020a5b0d0d000000b00dc246cdeeefmr3299310ybp.130.1706012568299; Tue, 23
- Jan 2024 04:22:48 -0800 (PST)
+        bh=0aT0YmN+E9RIm6EBLaUbj2bmTaqy7pebRlFTaUr3D2Y=;
+        b=q3D/e9lUQiPXbjV6a+aOKUIxMVEshrk680uYp429B1I+bx4XGPi3xKKNz6UANSqO87
+         AtoKR7Y8Z84VHXaPjiAuc2/YilkrP5vgq2dGUxOAgI3TpHHASN3H/Z2OyFaPaPOIDc/L
+         xQxSfZNqtdfwqlmspnkfoumeKXL1vfrC6FSqkxACafqF7yqWSlewr9MMU8hWMY7WXup7
+         aKqY9T3Mayby0RZUkeM7na3yJ/Gf9vd+WruVoetgQ2UUXibGBb4HulfQQntErG3Dd0WR
+         nARmhI89k/3JvrCBUOWNjMHSaClRFFYKUSQMjl3QpDXu2Mf3BKGN4GLw4Oyp9JrRB1cS
+         qRiQ==
+X-Gm-Message-State: AOJu0Yw48c0eONcPQZQCEfQ3KSNl2737lymMTTqQud8SVEubrLwtCWDp
+	B8RqTdIj2e07nEiyGosXsKhp+H33MOnlGasmuISEmIg/ktoui+mn
+X-Google-Smtp-Source: AGHT+IGA3HrSeLV+JUbWs+DXbEXmOPvoc09OHj5n0LVd6cRvKKc77CwwjGVeefJBo43iRrx7MpMG9w==
+X-Received: by 2002:a17:907:c312:b0:a2a:3101:c9c7 with SMTP id tl18-20020a170907c31200b00a2a3101c9c7mr99810ejc.123.1706012600578;
+        Tue, 23 Jan 2024 04:23:20 -0800 (PST)
+Received: from localhost.lan (031011218106.poznan.vectranet.pl. [31.11.218.106])
+        by smtp.gmail.com with ESMTPSA id ce2-20020a170906b24200b00a26a0145c5esm14292308ejb.116.2024.01.23.04.23.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jan 2024 04:23:20 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Andrew Lunn <andrew@lunn.ch>,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH] arm64: dts: marvell: reorder crypto interrupts on Armada SoCs
+Date: Tue, 23 Jan 2024 13:22:58 +0100
+Message-Id: <20240123122258.24218-1-zajec5@gmail.com>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231225133615.78993-1-eugen.hristev@collabora.com>
-In-Reply-To: <20231225133615.78993-1-eugen.hristev@collabora.com>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Tue, 23 Jan 2024 13:22:12 +0100
-Message-ID: <CAPDyKFoNuKv3BSifiuJrYQ7JSKo6OHaugrWChhKWB3BxKrdKCQ@mail.gmail.com>
-Subject: Re: [PATCH] pmdomain: mediatek: fix race conditions with genpd
-To: Eugen Hristev <eugen.hristev@collabora.com>
-Cc: matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com, 
-	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
-	kernel@collabora.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, 25 Dec 2023 at 14:36, Eugen Hristev <eugen.hristev@collabora.com> wrote:
->
-> If the power domains are registered first with genpd and *after that*
-> the driver attempts to power them on in the probe sequence, then it is
-> possible that a race condition occurs if genpd tries to power them on
-> in the same time.
-> The same is valid for powering them off before unregistering them
-> from genpd.
+From: Rafał Miłecki <rafal@milecki.pl>
 
-Right. When the PM domain has been registered with genpd, attempts to
-power-on/off the PM domain need to be synchronized with genpd.
+Match order specified in binding documentation. It says "mem" should be
+the last interrupt.
 
-> Attempt to fix race conditions by first removing the domains from genpd
-> and *after that* powering down domains.
-> Also first power up the domains and *after that* register them
-> to genpd.
+This fixes:
+arch/arm64/boot/dts/marvell/armada-3720-db.dtb: crypto@90000: interrupt-names:0: 'ring0' was expected
+        from schema $id: http://devicetree.org/schemas/crypto/inside-secure,safexcel.yaml#
+arch/arm64/boot/dts/marvell/armada-3720-db.dtb: crypto@90000: interrupt-names:1: 'ring1' was expected
+        from schema $id: http://devicetree.org/schemas/crypto/inside-secure,safexcel.yaml#
+arch/arm64/boot/dts/marvell/armada-3720-db.dtb: crypto@90000: interrupt-names:2: 'ring2' was expected
+        from schema $id: http://devicetree.org/schemas/crypto/inside-secure,safexcel.yaml#
+arch/arm64/boot/dts/marvell/armada-3720-db.dtb: crypto@90000: interrupt-names:3: 'ring3' was expected
+        from schema $id: http://devicetree.org/schemas/crypto/inside-secure,safexcel.yaml#
+arch/arm64/boot/dts/marvell/armada-3720-db.dtb: crypto@90000: interrupt-names:4: 'eip' was expected
+        from schema $id: http://devicetree.org/schemas/crypto/inside-secure,safexcel.yaml#
+arch/arm64/boot/dts/marvell/armada-3720-db.dtb: crypto@90000: interrupt-names:5: 'mem' was expected
+        from schema $id: http://devicetree.org/schemas/crypto/inside-secure,safexcel.yaml#
 
-This seems like a reasonable approach to me.
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+---
+ arch/arm64/boot/dts/marvell/armada-37xx.dtsi  | 10 +++++-----
+ arch/arm64/boot/dts/marvell/armada-cp11x.dtsi | 10 +++++-----
+ 2 files changed, 10 insertions(+), 10 deletions(-)
 
->
-> Fixes: 59b644b01cf4 ("soc: mediatek: Add MediaTek SCPSYS power domains")
-> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
+diff --git a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+index e300145ad1a6..1cc3fa1c354d 100644
+--- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
++++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
+@@ -431,14 +431,14 @@ xor11 {
+ 			crypto: crypto@90000 {
+ 				compatible = "inside-secure,safexcel-eip97ies";
+ 				reg = <0x90000 0x20000>;
+-				interrupts = <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>,
+-					     <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>,
++				interrupts = <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>,
+ 					     <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>,
+ 					     <GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>,
+ 					     <GIC_SPI 23 IRQ_TYPE_LEVEL_HIGH>,
+-					     <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>;
+-				interrupt-names = "mem", "ring0", "ring1",
+-						  "ring2", "ring3", "eip";
++					     <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>,
++					     <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>;
++				interrupt-names = "ring0", "ring1", "ring2",
++						  "ring3", "eip", "mem";
+ 				clocks = <&nb_periph_clk 15>;
+ 			};
+ 
+diff --git a/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi b/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
+index 4ec1aae0a3a9..7e595ac80043 100644
+--- a/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
++++ b/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
+@@ -511,14 +511,14 @@ CP11X_LABEL(sdhci0): mmc@780000 {
+ 		CP11X_LABEL(crypto): crypto@800000 {
+ 			compatible = "inside-secure,safexcel-eip197b";
+ 			reg = <0x800000 0x200000>;
+-			interrupts = <87 IRQ_TYPE_LEVEL_HIGH>,
+-				<88 IRQ_TYPE_LEVEL_HIGH>,
++			interrupts = <88 IRQ_TYPE_LEVEL_HIGH>,
+ 				<89 IRQ_TYPE_LEVEL_HIGH>,
+ 				<90 IRQ_TYPE_LEVEL_HIGH>,
+ 				<91 IRQ_TYPE_LEVEL_HIGH>,
+-				<92 IRQ_TYPE_LEVEL_HIGH>;
+-			interrupt-names = "mem", "ring0", "ring1",
+-				"ring2", "ring3", "eip";
++				<92 IRQ_TYPE_LEVEL_HIGH>,
++				<87 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "ring0", "ring1", "ring2", "ring3",
++					  "eip", "mem";
+ 			clock-names = "core", "reg";
+ 			clocks = <&CP11X_LABEL(clk) 1 26>,
+ 				 <&CP11X_LABEL(clk) 1 17>;
+-- 
+2.35.3
 
-Applied for fixes and by adding a stable tag, thanks! Although,
-please, see some more comments below.
-
-> ---
->
-> This comes as another way to fix the problem as described in this thread:
-> https://lore.kernel.org/linux-arm-kernel/20231129113120.4907-1-eugen.hristev@collabora.com/
->
-> I have not been able to reproduce the problem with either fix anymore
-> (so far).
->
-> I have a few doubts about this one though, if I really covered the
-> way it's supposed to work, and registering the pmdomains in the recursive
-> function in the reversed order has any side effect or if it does not
-> work correctly.
-> Tested on mt8186 where it appears to be fine.
-
-I had a quick look at the code in the driver and a few things caught my eyes.
-
-*) The error path in scpsys_probe() doesn't seem to handle removal of
-the link between parent/child-domains (subdomains).
-**) An option that might simplify the code and error path too, could
-be to convert into using of_genpd_add|remove_subdomain() in favor or
-pm_genpd_add|remove_subdomain().
-
-Kind regards
-Uffe
-
-
->
-> Eugen
->
->  drivers/pmdomain/mediatek/mtk-pm-domains.c | 15 +++++++--------
->  1 file changed, 7 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/pmdomain/mediatek/mtk-pm-domains.c b/drivers/pmdomain/mediatek/mtk-pm-domains.c
-> index e26dc17d07ad..e274e3315fe7 100644
-> --- a/drivers/pmdomain/mediatek/mtk-pm-domains.c
-> +++ b/drivers/pmdomain/mediatek/mtk-pm-domains.c
-> @@ -561,6 +561,11 @@ static int scpsys_add_subdomain(struct scpsys *scpsys, struct device_node *paren
->                         goto err_put_node;
->                 }
->
-> +               /* recursive call to add all subdomains */
-> +               ret = scpsys_add_subdomain(scpsys, child);
-> +               if (ret)
-> +                       goto err_put_node;
-> +
->                 ret = pm_genpd_add_subdomain(parent_pd, child_pd);
->                 if (ret) {
->                         dev_err(scpsys->dev, "failed to add %s subdomain to parent %s\n",
-> @@ -570,11 +575,6 @@ static int scpsys_add_subdomain(struct scpsys *scpsys, struct device_node *paren
->                         dev_dbg(scpsys->dev, "%s add subdomain: %s\n", parent_pd->name,
->                                 child_pd->name);
->                 }
-> -
-> -               /* recursive call to add all subdomains */
-> -               ret = scpsys_add_subdomain(scpsys, child);
-> -               if (ret)
-> -                       goto err_put_node;
->         }
->
->         return 0;
-> @@ -588,9 +588,6 @@ static void scpsys_remove_one_domain(struct scpsys_domain *pd)
->  {
->         int ret;
->
-> -       if (scpsys_domain_is_on(pd))
-> -               scpsys_power_off(&pd->genpd);
-> -
->         /*
->          * We're in the error cleanup already, so we only complain,
->          * but won't emit another error on top of the original one.
-> @@ -600,6 +597,8 @@ static void scpsys_remove_one_domain(struct scpsys_domain *pd)
->                 dev_err(pd->scpsys->dev,
->                         "failed to remove domain '%s' : %d - state may be inconsistent\n",
->                         pd->genpd.name, ret);
-> +       if (scpsys_domain_is_on(pd))
-> +               scpsys_power_off(&pd->genpd);
->
->         clk_bulk_put(pd->num_clks, pd->clks);
->         clk_bulk_put(pd->num_subsys_clks, pd->subsys_clks);
-> --
-> 2.34.1
->
->
 
