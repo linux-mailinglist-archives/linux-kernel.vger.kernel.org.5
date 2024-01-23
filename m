@@ -1,722 +1,245 @@
-Return-Path: <linux-kernel+bounces-34637-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34641-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4902283857F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:42:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3295F83858C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:44:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F035028A31D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:42:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6AC7286EF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:44:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C3B24B5A6;
-	Tue, 23 Jan 2024 02:29:08 +0000 (UTC)
-Received: from mx2.zhaoxin.com (mx2.zhaoxin.com [203.110.167.99])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A85B550244;
+	Tue, 23 Jan 2024 02:29:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="VvBOuzsO";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="WUufoVJj"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB37C29408
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 02:29:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.110.167.99
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705976947; cv=none; b=S8Eh54ATCIXh12/wONW08XKsqU8+MT/pshRGZbITXFntAhmFJEYIJz8Lbkr9HW+cHNSjmk2GCNEj9CAecDtjA8Rvx6xLJ0m0tn0r7yombkHm5G6cu1sDmSvYvn8MlnhDje2zVuqzTEcGUq+ujHlc0bUmYze37bpkzz2vaHORLiQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705976947; c=relaxed/simple;
-	bh=aKNudZURXkE0eh5I39W+olvacmX+u5O7V8geqBn7LkI=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nrAO5IOfhHaX5myFUDgMkb+WZU8uQeiPE1GcW7WNIiBQkdrYc3WYNgy/1bVFrDd+U6ln3XcaKwSrRlDqwQe4UFRIP/TH1rq2esyPv5kJT3sE/8ZU4G9+UIW/cQEX9PI2A3J1gRfZQA0ocCUvHLBTE8tLLtSYpUiougNaMP49y9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com; spf=pass smtp.mailfrom=zhaoxin.com; arc=none smtp.client-ip=203.110.167.99
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
-X-ASG-Debug-ID: 1705976941-1eb14e0c7e27290001-xx1T2L
-Received: from ZXSHMBX1.zhaoxin.com (ZXSHMBX1.zhaoxin.com [10.28.252.163]) by mx2.zhaoxin.com with ESMTP id TupZt8Zh9ZMPwTOL (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Tue, 23 Jan 2024 10:29:01 +0800 (CST)
-X-Barracuda-Envelope-From: TonyWWang-oc@zhaoxin.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
-Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHMBX1.zhaoxin.com
- (10.28.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 23 Jan
- 2024 10:29:01 +0800
-Received: from localhost.localdomain (10.32.65.162) by zxbjmbx1.zhaoxin.com
- (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 23 Jan
- 2024 10:28:58 +0800
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
-From: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-X-Barracuda-RBL-Trusted-Forwarder: 10.29.252.163
-To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-	<linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-	<dave.hansen@linux.intel.com>, <x86@kernel.org>, <hpa@zytor.com>,
-	<seanjc@google.com>, <kim.phillips@amd.com>,
-	<kirill.shutemov@linux.intel.com>, <jmattson@google.com>,
-	<babu.moger@amd.com>, <kai.huang@intel.com>, <TonyWWang-oc@zhaoxin.com>,
-	<acme@redhat.com>, <aik@amd.com>, <namhyung@kernel.org>
-CC: <CobeChen@zhaoxin.com>, <TimGuo@zhaoxin.com>, <LeoLiu-oc@zhaoxin.com>,
-	<GeorgeXue@zhaoxin.com>
-Subject: [PATCH v2 3/3] crypto: Zhaoxin: Hardware Engine Driver for SHA1/256/384/512
-Date: Tue, 23 Jan 2024 10:28:52 +0800
-X-ASG-Orig-Subj: [PATCH v2 3/3] crypto: Zhaoxin: Hardware Engine Driver for SHA1/256/384/512
-Message-ID: <20240123022852.2475-4-TonyWWang-oc@zhaoxin.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240123022852.2475-1-TonyWWang-oc@zhaoxin.com>
-References: <20240123022852.2475-1-TonyWWang-oc@zhaoxin.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B61884F886;
+	Tue, 23 Jan 2024 02:29:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705976993; cv=fail; b=aJkDQciix3wQOT3fjWRkEvh5eVcPeJfwwf8tISZdsjTb3XsgF7bqaDYWWC0ea8RFJtvFx02VrSdZP4AWqZUrmlLCyUND1LnWTTXzspjTXsyXjI2dBPJ4iFu3966VvEq0bBjZMlm9ZdKB/jcz/2t5kHf5UcUzlMSCQLevV6WEwcA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705976993; c=relaxed/simple;
+	bh=goqGNY48Qe2NVYHamgVuZW4lkrxT2RAomRAHpb4dw74=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=qxAXx1t/MpKa4NsbwG94xjMdJ35lmaRrpfXOquZo72l5Ym9CKP6syi01hgj7Q3fZoYgFl3CSWHJw950kBNIDEbPDk81G1t+uzhGWA5/yQClXzIhXptKcIiyWLUvShWjRhNIMzzOdhyFG7t5ZNVHrDy9XxmNC1sNpCyv09FujEEA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=Oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=VvBOuzsO; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=WUufoVJj; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=Oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40N2TD8q023096;
+	Tue, 23 Jan 2024 02:29:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2023-11-20;
+ bh=rHuphJv+tcmEa8VGe1rk+6hnxTP28V9xY/R41o5DUII=;
+ b=VvBOuzsOt8r4+ETFqz7TBC3zjv8cI1vtT30Bhnn+02AbPi31l8+SDQ/nsGPIiK2auhcZ
+ A1WHP1aq+4uqYrNus21sWzgPy2GzMZ7XENN9es3kh2o3zxvEtQMEpnyrk6cQIzWlpDrR
+ t8RGp/hXIgu3CUgsf/gfYyo/vHacct9K/VjkbSX/s5uhI1044u0MZqX3dknYY4/i7a3Q
+ GDBZNoiErt1WHP5Cdyq5ZDWXllTuCKhcNgkaSG+Cd/JJAksk86VCPEbzjm4V6KGHB68w
+ gwHJXPK05aEA+SNpRYpe6Mp29yAmCCZ9EJNNhFzrp1mxo835lMzmFM/Yi0/huPOaSlTx Pg== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vr79nd7r9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 23 Jan 2024 02:29:27 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40N1N3tw013275;
+	Tue, 23 Jan 2024 02:29:26 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3vs3703vs1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 23 Jan 2024 02:29:26 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MZkiVHKhJNQJT5BvT1doDJEwHqMq6bv349f79LzLMCkkUR9uW9GAU/YoRRqJ0Y6Q30rmCvSMvCpt1fgZ/fnG3YKiG6nvDOFa0wQh+JV1C2x5Ip7qmXm3HEjChYAM4+J6RFGK+L4LK9mU9cpZJCm1POHPC8Pikp/rO1VidhUsIQF+MCjg2rhYAn1R1yi+mLpFxAPWoHmM1VfhS3Jm+43TqXTbFOgntXMkUC7E8y34/tjfE0MLc+yH2woYYImW9GBLUBc6fc55B2o3JJGJ8Cq63yr9O4ToaSgQYjZhIoPik8M8y3cGqtmqeIxh2fuT6wY/E9Dv1FN/mA0bmMoeWn/Eqw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rHuphJv+tcmEa8VGe1rk+6hnxTP28V9xY/R41o5DUII=;
+ b=SjZAkDL3uNfmSfjVVATcYcHZHNGZY4dpycgeo7Mb5hqTRCuWWeHlJqav+ZioG1VZHGdC+1MwFDrLfJqh24WR8v5eFqSaJ0BiCaNgrudNs2Q4t1aYyAxeDYPjTxIFnyXNYKljFzyD4gZYZUW+2BqFdNW2TmBpVGJSIi2+ENcQNzuP8YbcsUEM10J9lDvUTLTwGAkCeHPe51eO2OZ2RM+nnC0wMoQyze7GhbgvJnTAaqQCyTDxS6hAqZn3zhjYcYms4bRJMsC1CnZPokYYjixKPLI/y6RNHll9U1Xaev+LePveFx3eT/I9V1aXO9LVunGN5wATug0QuEk0cjppP9K4Xg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rHuphJv+tcmEa8VGe1rk+6hnxTP28V9xY/R41o5DUII=;
+ b=WUufoVJjAYHnEyn3kCU4cCe9AeNkNzyjuUE6603RidbDNVVv+OHh4HVNCtNclgduTAoSEq//++OP9LqVXeH0zflXrYRydYb+151iIerbwYuK3Ifi6prIw21vuMb4pjclyAGl1iPay7VohKFFa2mbdHpD15/TYM/MuvgEVNNUIQg=
+Received: from DS0PR10MB7933.namprd10.prod.outlook.com (2603:10b6:8:1b8::15)
+ by CO1PR10MB4724.namprd10.prod.outlook.com (2603:10b6:303:96::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.34; Tue, 23 Jan
+ 2024 02:29:23 +0000
+Received: from DS0PR10MB7933.namprd10.prod.outlook.com
+ ([fe80::20c8:7efa:f9a8:7606]) by DS0PR10MB7933.namprd10.prod.outlook.com
+ ([fe80::20c8:7efa:f9a8:7606%4]) with mapi id 15.20.7202.031; Tue, 23 Jan 2024
+ 02:29:23 +0000
+Date: Mon, 22 Jan 2024 21:29:21 -0500
+From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+To: Kees Cook <keescook@chromium.org>
+Cc: linux-hardening@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>, linux-m68k@lists.linux-m68k.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Bill Wendling <morbo@google.com>,
+        Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 27/82] m68k: Refactor intentional wrap-around calculation
+Message-ID: <20240123022921.77eddqhiltrpphdv@revolver>
+References: <20240122235208.work.748-kees@kernel.org>
+ <20240123002814.1396804-27-keescook@chromium.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240123002814.1396804-27-keescook@chromium.org>
+User-Agent: NeoMutt/20220429
+X-ClientProxiedBy: YT3PR01CA0084.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:84::8) To DS0PR10MB7933.namprd10.prod.outlook.com
+ (2603:10b6:8:1b8::15)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
- zxbjmbx1.zhaoxin.com (10.29.252.163)
-X-Barracuda-Connect: ZXSHMBX1.zhaoxin.com[10.28.252.163]
-X-Barracuda-Start-Time: 1705976941
-X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
-X-Barracuda-URL: https://10.28.252.36:4443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at zhaoxin.com
-X-Barracuda-Scan-Msg-Size: 18963
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
-X-Barracuda-Spam-Score: -2.02
-X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.119809
-	Rule breakdown below
-	 pts rule name              description
-	---- ---------------------- --------------------------------------------------
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR10MB7933:EE_|CO1PR10MB4724:EE_
+X-MS-Office365-Filtering-Correlation-Id: a380067e-48ea-405a-188b-08dc1bbb1ce2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	sMQrSdKjmIVLuQXURzZnLOCVeKv274+txjFjangEPUiiS6lb7dB1BCMr4w1+4+Neo/EPh/9Ml2AlkjsNBeKcFAR2rP+I+AADMADbgcI/3uW8gkJFgdj37g4exfxWQcWd11QUU4o/RrRGHSNvzq/w3RVAGNSf7dIwzLhP44GtWqmS0MMKYXgJslISVZBMVCWjJl3dKwPiV566NzCv8li1mGf2Udblix81wLKKgzc53deMH0VVm5PNlh1zFow4Nk0E4/WATlLQ20bfmOsdYVgzSD1KF6VJhN0g0Gs2agu7Otuwb/MMXH1QUVn0sbRCM5X6FCJ/n3sK1L/DcET61TOEb0qfONPcR5PhNAjYr7Afmp8K923uL42GJTB/9/NHdegXxCf7axE/XSALdFMsrttxEj4z2tI8BjUCRYZDyMKDsqH/ra0+/qlgNQJPjtaESZJEUZGVm4VaZq5pJxHHR6uzxnjtvGVFnIFX/y8rG4ybxTfXZ7eSiFHNkmo08cr9TsNBj7LUCiaG2ieSXPEz410JCQe+xaFo+MZ11/83qxVQefqKQJRrrvqeQNd4j8dLKXoTzgCWzHeKlYSyNdtL1Jy9aA==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR10MB7933.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(366004)(346002)(396003)(39860400002)(136003)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(1076003)(26005)(6506007)(6512007)(9686003)(83380400001)(5660300002)(478600001)(7416002)(2906002)(41300700001)(33716001)(66556008)(6486002)(54906003)(966005)(4326008)(66946007)(6916009)(316002)(8676002)(66476007)(8936002)(86362001)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?rfrRRV6FfGhp3+DH6GfIl0nlMQdhO8poHj4yfbcXoVP7Gf4beX7LNP4IB1qw?=
+ =?us-ascii?Q?YvLJB94he4trGkfgqbW27SAdlX6NxFv2/Y0KnS99WVWGOcUqV2+F5biXJDok?=
+ =?us-ascii?Q?6euQEhcLaBi+Todw3rrF83OAaq9O27X2KADmQIhmowCgCFk0RAC2HgTEsPhH?=
+ =?us-ascii?Q?+CIzL1zbiwNY4u+hLZ4Hb89PboZS8CFHzW9WMbkwRbPrnTWJpYI+i5twwEIe?=
+ =?us-ascii?Q?ROl321lvNq8zoxH+k7Zo85NodiRRwgArAuJ23q6qcVCwR58LxYlme/WH0naB?=
+ =?us-ascii?Q?cNz8v55nyDT865RuWd7oOu9tjUsIGslM9JaqGecKsjbo+qxt8t42rLhfabrO?=
+ =?us-ascii?Q?MWii/DUMAyJ67HxfKmpQBPiW78NFsj4UscZQ83uqoJZTJQ0sAgIo5fdDCDeI?=
+ =?us-ascii?Q?bMmQkIikC4kqY6sgb2zBhHgMteAHH/Y1IGe6wa0NbjcgJGhRFNlDl7OlNZkR?=
+ =?us-ascii?Q?jYCga12jTpipB9zRZAhBwMkdLNGbM0hQEO0ocLXOqMVLG4/QDF/j2q2/gWF2?=
+ =?us-ascii?Q?StErr3eZhNVJb5Kr8wyFj4CbhDQsmvEjCEhxend4mJkiLkV74TnPPfHHNXTC?=
+ =?us-ascii?Q?TsjW4M8hccUBy+C/eGJuWQuyYMedU/GsLxyP5zYEDU+YtGpE/iEXEUJc1Ncr?=
+ =?us-ascii?Q?DsyIKXMBpAp/L2A1vPR7axksWcY2Ce+qRwZUDFZCAQiKvc70wpAG7CkdEwRn?=
+ =?us-ascii?Q?oVjyPqEPtnPIuSRhwrtd8hm3gW+6FhGJT+FoPR+vjapRUWrnLF7KwDPovbDg?=
+ =?us-ascii?Q?wo2wbLe5GWTrFxdbVeYPOQP1lgSSpZneRgh00yZSMbAFca3RGtekYcH8/wI4?=
+ =?us-ascii?Q?jq9K8jn8lPxqZo5DtDMJxHamOYlRRIgOOM+NGWkt4VkJbgbg/lteIms9AyjD?=
+ =?us-ascii?Q?n6jNG32WRUYQ6pFAAsJiMlnlkUyGbauGYTlKxtKB1F6wgqkLhEUbwmnw+F6R?=
+ =?us-ascii?Q?yr/bxJvuy2FO8jCRZfs3rxKpvNBthteW5cIFPa4clEfKLPpOGp/Hno9X4BEj?=
+ =?us-ascii?Q?iZjMtQ55mT+NR9bG33+50bgxVCFD6aL0ojqmFpQBB9Xf2oixG+0ZKShBcNl9?=
+ =?us-ascii?Q?TguFrzwUkfZu5pWQQq8V07sQqfeXbCtfCh6KihE9dVI9eQ7/UmAe0BCwupDj?=
+ =?us-ascii?Q?9qXvafCUiqUwds6bFVsSDdKGBB0sJlQ7OkD2Cj9LNNuD+g/aubkHcqb0B5+A?=
+ =?us-ascii?Q?jvfe9pcETii69l206UP+ISSVf6GOlbyaRVObsua/9sX+FGtZVcUEeVbXkqMf?=
+ =?us-ascii?Q?22ZjgZj4vG5wFm8OUxPaU2CpRx70jWX+Am/DNPg87AWUsP0fhgHhhI2+tINf?=
+ =?us-ascii?Q?SCQFXUlhaB8wJ1O1Lp7z8qivhFpTljGPWjHiGEBkiEQJTOP+27HaIuusL5kv?=
+ =?us-ascii?Q?ZPFwTDE8ISxF42CzlBn6wgJGsHC0uGCFxAr7o7AAYfzcH9eUL7qC30KPVNnB?=
+ =?us-ascii?Q?V0SbNJueRTu+P0Bd+zv427amNokj4/rXESgXIsVQSeyYbba8cUX2xKa6tFpq?=
+ =?us-ascii?Q?YEnGVodJa0ILxt/NzhzuMf+YyTs1rcI6qFOGje5lHlrs9dVGg2p0I0TrEKBM?=
+ =?us-ascii?Q?hQ54akU5wlQem1is9T+u142eirMRZggAFrmkfyWO?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	LU0p7E+7TAC0tDpXpI9cyv+0F4VPxdBzNyK6HzT2BamjobSp8NoWVffTME/S7/C3nTVmPa/YWW2KOrRaxUHVer+fBw8bD38hINsWFi3j3MoQS0SZlG08Ren8O8dDz6YdcMpIZ+cuizxR1YllhYLRK3qlHM952XEB+J6MhzGV2iePBlvE8cgASaehxgJgXEveauXykM5ey3FNtR9aoioWFDbxt1+H1nLeioYwTN0Bf+IWqSsvJuStrFsVLRI6fiuawwShXtv7yBuBS1SUklw3lYV2/2fxCFZXwLvRODI0WffJqOifAFBl61Y3NA3CSTKqN9db0fKoAwSLVU2ELAl8YvT6wgsSDbR9DDJqc91yt/8YtC5AwDVy+shKIQ3hkrIg9HGZph2BzH0Eop2/f/FSVMTfQTFY+K8pSVW5aM3BidJtBh2LB0QeG/5KRirVpD0VqCgpKK9UXdPbKQk7ADfuNpIgu4SjaIpjJSFb8NGxQXar6bqdtaDFHhatIg9/I9j0MG/X945GqvjI1ZS1mvknyQLasrEVtgeS8T8ol9wq3QH0TK1qBiV6nSOD1v430DAEpmlnVncdaKX9Y1T5g+Mr+vVH6fdstt7keoKs8VG5nGo=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a380067e-48ea-405a-188b-08dc1bbb1ce2
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR10MB7933.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jan 2024 02:29:23.8404
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: V4AKez4scciYZ7ghOVcX2VPNz3qkpWtJGSF44xpJMY42KnsAr/Oi7cnmiEV9NEXxBYFDlrfT8TwWgfS65ayv6w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4724
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-22_12,2024-01-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
+ mlxlogscore=999 mlxscore=0 phishscore=0 adultscore=0 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401230016
+X-Proofpoint-GUID: hpPZy6-0mUj1mKyhjCQuSKItHibNI_Wp
+X-Proofpoint-ORIG-GUID: hpPZy6-0mUj1mKyhjCQuSKItHibNI_Wp
 
-Zhaoxin CPUs have implemented the SHA(Secure Hash Algorithm) as its CPU
-instructions, including SHA1, SHA256, SHA384 and SHA512, which conform
-to the Secure Hash Algorithms specified by FIPS 180-3.
+* Kees Cook <keescook@chromium.org> [240122 19:36]:
+> In an effort to separate intentional arithmetic wrap-around from
+> unexpected wrap-around, we need to refactor places that depend on this
+> kind of math. One of the most common code patterns of this is:
+> 
+> 	VAR + value < VAR
+> 
+> Notably, this is considered "undefined behavior" for signed and pointer
+> types, which the kernel works around by using the -fno-strict-overflow
+> option in the build[1] (which used to just be -fwrapv). Regardless, we
+> want to get the kernel source to the position where we can meaningfully
+> instrument arithmetic wrap-around conditions and catch them when they
+> are unexpected, regardless of whether they are signed[2], unsigned[3],
+> or pointer[4] types.
+> 
+> Refactor open-coded unsigned wrap-around addition test to use
+> check_add_overflow(), retaining the result for later usage (which removes
+> the redundant open-coded addition). This paves the way to enabling the
+> unsigned wrap-around sanitizer[2] in the future.
+> 
+> Link: https://git.kernel.org/linus/68df3755e383e6fecf2354a67b08f92f18536594 [1]
+> Link: https://github.com/KSPP/linux/issues/26 [2]
+> Link: https://github.com/KSPP/linux/issues/27 [3]
+> Link: https://github.com/KSPP/linux/issues/344 [4]
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Liam Howlett <liam.howlett@oracle.com>
+> Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: linux-m68k@lists.linux-m68k.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  arch/m68k/kernel/sys_m68k.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/m68k/kernel/sys_m68k.c b/arch/m68k/kernel/sys_m68k.c
+> index 1af5e6082467..b2b9248f2566 100644
+> --- a/arch/m68k/kernel/sys_m68k.c
+> +++ b/arch/m68k/kernel/sys_m68k.c
+> @@ -391,10 +391,11 @@ sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
+>  
+>  		mmap_read_lock(current->mm);
+>  	} else {
+> +		unsigned long sum;
+>  		struct vm_area_struct *vma;
+>  
+>  		/* Check for overflow.  */
 
-With the help of implementation of SHA in hardware instead of software,
-can develop applications with higher performance, more security and more
-flexibility.
+With your nice self-documenting code, you can probably drop that
+comment.
 
-Below table gives a summary of test using the driver tcrypt with different
-crypt algorithm drivers on Zhaoxin KH-40000 platform:
----------------------------------------------------------------------------
-tcrypt     driver   16*    64      256     1024    2048    4096    8192
----------------------------------------------------------------------------
-           zhaoxin** 442.80 1309.21 3257.53 5221.56 5813.45 6136.39 6264.50***
-403:SHA1   generic** 341.44 813.27  1458.98 1818.03 1896.60 1940.71 1939.06
-           ratio    1.30   1.61    2.23    2.87    3.07    3.16    3.23
----------------------------------------------------------------------------
-           zhaoxin  451.70 1313.65 2958.71 4658.55 5109.16 5359.08 5459.13
-404:SHA256 generic  202.62 463.55  845.01  1070.50 1117.51 1144.79 1155.68
-           ratio    2.23   2.83    3.50    4.35    4.57    4.68    4.72
----------------------------------------------------------------------------
-           zhaoxin  350.90 1406.42 3166.16 5736.39 6627.77 7182.01 7429.18
-405:SHA384 generic  161.76 654.88  979.06  1350.56 1423.08 1496.57 1513.12
-           ratio    2.17   2.15    3.23    4.25    4.66    4.80    4.91
----------------------------------------------------------------------------
-           zhaoxin  334.49 1394.71 3159.93 5728.86 6625.33 7169.23 7407.80
-406:SHA512 generic  161.80 653.84  979.42  1351.41 1444.14 1495.35 1518.43
-           ratio    2.07   2.13    3.23    4.24    4.59    4.79    4.88
----------------------------------------------------------------------------
-*: The length of each data block to be processed by one complete SHA
-   sequence, namely one INIT, multi UPDATEs and one FINAL.
-**: Crypt algorithm driver used by tcrypt, "zhaoxin" represents zhaoxin-sha
-   while "generic" represents the generic software SHA driver.
-***: The speed of each crypt algorithm driver processing different length
-   of data blocks, unit is Mb/s.
+With or without the change,
 
-The ratio in the table implies the performance of SHA implemented by
-zhaoxin-sha driver is much higher than the ones implemented by the generic
-software driver of sha1/sha256/sha384/sha512.
+Reviewed-by: Liam R. Howlett <Liam.Howlett@oracle.com>
 
-Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
----
- MAINTAINERS                  |   6 +
- drivers/crypto/Kconfig       |  16 ++
- drivers/crypto/Makefile      |   1 +
- drivers/crypto/zhaoxin-sha.c | 500 +++++++++++++++++++++++++++++++++++
- drivers/crypto/zhaoxin-sha.h |  17 ++
- 5 files changed, 540 insertions(+)
- create mode 100644 drivers/crypto/zhaoxin-sha.c
- create mode 100644 drivers/crypto/zhaoxin-sha.h
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index ddc5e1049921..7d2bb64ea196 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -24329,6 +24329,12 @@ L:	linux-kernel@vger.kernel.org
- S:	Maintained
- F:	arch/x86/kernel/cpu/zhaoxin.c
- 
-+ZHAOXIN SHA SUPPORT
-+M:	<TonyWWang-oc@zhaoxin.com>
-+M:	<GeorgeXue@zhaoxin.com>
-+S:	Maintained
-+F:	drivers/crypto/zhaoxin-sha.c
-+
- ZONEFS FILESYSTEM
- M:	Damien Le Moal <dlemoal@kernel.org>
- M:	Naohiro Aota <naohiro.aota@wdc.com>
-diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
-index 0991f026cb07..97716b90e180 100644
---- a/drivers/crypto/Kconfig
-+++ b/drivers/crypto/Kconfig
-@@ -799,4 +799,20 @@ config CRYPTO_DEV_SA2UL
- source "drivers/crypto/aspeed/Kconfig"
- source "drivers/crypto/starfive/Kconfig"
- 
-+config CRYPTO_DEV_ZHAOXIN_SHA
-+	tristate "Support for Zhaoxin SHA1/SHA256/SHA384/SHA512 algorithms"
-+	depends on X86 && !UML
-+	select CRYPTO_HASH
-+	select CRYPTO_SHA1
-+	select CRYPTO_SHA256
-+	select CRYPTO_SHA384
-+	select CRYPTO_SHA512
-+	help
-+	  Use Zhaoxin HW engine for SHA1/SHA256/SHA384/SHA512 algorithms.
-+
-+	  Available in ZX-C+ and newer processors.
-+
-+	  If unsure say M. The compiled module will be
-+	  called zhaoxin-sha.
-+
- endif # CRYPTO_HW
-diff --git a/drivers/crypto/Makefile b/drivers/crypto/Makefile
-index d859d6a5f3a4..b77c02d6dab7 100644
---- a/drivers/crypto/Makefile
-+++ b/drivers/crypto/Makefile
-@@ -51,3 +51,4 @@ obj-y += hisilicon/
- obj-$(CONFIG_CRYPTO_DEV_AMLOGIC_GXL) += amlogic/
- obj-y += intel/
- obj-y += starfive/
-+obj-$(CONFIG_CRYPTO_DEV_ZHAOXIN_SHA) += zhaoxin-sha.o
-diff --git a/drivers/crypto/zhaoxin-sha.c b/drivers/crypto/zhaoxin-sha.c
-new file mode 100644
-index 000000000000..17242239edf2
---- /dev/null
-+++ b/drivers/crypto/zhaoxin-sha.c
-@@ -0,0 +1,500 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Cryptographic API.
-+ *
-+ * Support for Zhaoxin hardware crypto engine.
-+ *
-+ * Copyright (c) 2023  George Xue <georgexue@zhaoxin.com>
-+ */
-+
-+#include <crypto/internal/hash.h>
-+#include <crypto/sha1.h>
-+#include <crypto/sha2.h>
-+#include <linux/err.h>
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/errno.h>
-+#include <linux/interrupt.h>
-+#include <linux/kernel.h>
-+#include <linux/scatterlist.h>
-+#include <asm/cpu_device_id.h>
-+#include "zhaoxin-sha.h"
-+
-+static inline void zhaoxin_output_block(uint32_t *src, uint32_t *dst, size_t count)
-+{
-+	while (count--)
-+		*dst++ = swab32(*src++);
-+}
-+
-+static int zhaoxin_sha1_init(struct shash_desc *desc)
-+{
-+	struct sha1_state *sctx = shash_desc_ctx(desc);
-+
-+	*sctx = (struct sha1_state){
-+		.state = { SHA1_H0, SHA1_H1, SHA1_H2, SHA1_H3, SHA1_H4 },
-+	};
-+
-+	return 0;
-+}
-+
-+static int zhaoxin_sha1_update(struct shash_desc *desc, const u8 *data, unsigned int len)
-+{
-+	struct sha1_state *sctx = shash_desc_ctx(desc);
-+	unsigned int partial, done;
-+	const u8 *src;
-+	u8 buf[SHA1_BLOCK_SIZE * 2];
-+	u8 *dst = &buf[0];
-+
-+	partial = sctx->count & (SHA1_BLOCK_SIZE - 1);
-+	sctx->count += len;
-+	done = 0;
-+	src = data;
-+	memcpy(dst, sctx->state, SHA1_DIGEST_SIZE);
-+
-+	if ((partial + len) >= SHA1_BLOCK_SIZE) {
-+
-+		/* Append the bytes in state's buffer to a block to handle */
-+		if (partial) {
-+			done = -partial;
-+			memcpy(sctx->buffer + partial, data, done + SHA1_BLOCK_SIZE);
-+			src = sctx->buffer;
-+
-+			asm volatile (".byte 0xf3,0x0f,0xa6,0xc8"
-+			: "+S"(src), "+D"(dst)
-+			: "a"(-1L), "c"(1UL));
-+
-+			done += SHA1_BLOCK_SIZE;
-+			src = data + done;
-+		}
-+
-+		/* Process the left bytes from the input data */
-+		if (len - done >= SHA1_BLOCK_SIZE) {
-+			asm volatile (".byte 0xf3,0x0f,0xa6,0xc8"
-+			: "+S"(src), "+D"(dst)
-+			: "a"(-1L),
-+			"c"((unsigned long)((len - done) / SHA1_BLOCK_SIZE)));
-+
-+			done += ((len - done) - (len - done) % SHA1_BLOCK_SIZE);
-+			src = data + done;
-+		}
-+		partial = 0;
-+	}
-+	memcpy(sctx->state, dst, SHA1_DIGEST_SIZE);
-+	memcpy(sctx->buffer + partial, src, len - done);
-+
-+	return 0;
-+}
-+
-+static int zhaoxin_sha1_final(struct shash_desc *desc, u8 *out)
-+{
-+	struct sha1_state *state = shash_desc_ctx(desc);
-+	unsigned int partial, padlen;
-+	__be64 bits;
-+	static const u8 padding[SHA1_BLOCK_SIZE] = {SHA_PADDING_BYTE, };
-+	const int bit_offset = SHA1_BLOCK_SIZE - sizeof(__be64);
-+
-+	bits = cpu_to_be64(state->count << 3);
-+
-+	/* Padding */
-+	partial = state->count & (SHA1_BLOCK_SIZE - 1);
-+	padlen = (partial < bit_offset) ? (bit_offset - partial) :
-+		((SHA1_BLOCK_SIZE + bit_offset) - partial);
-+	zhaoxin_sha1_update(desc, padding, padlen);
-+
-+	/* Append length field bytes */
-+	zhaoxin_sha1_update(desc, (const u8 *)&bits, sizeof(bits));
-+
-+	/* Swap to output */
-+	zhaoxin_output_block(state->state, (uint32_t *)out, SHA1_DIGEST_SIZE/sizeof(uint32_t));
-+
-+	return 0;
-+}
-+
-+static int zhaoxin_sha256_init(struct shash_desc *desc)
-+{
-+	struct sha256_state *sctx = shash_desc_ctx(desc);
-+
-+	*sctx = (struct sha256_state){
-+		.state = { SHA256_H0, SHA256_H1, SHA256_H2, SHA256_H3,
-+				SHA256_H4, SHA256_H5, SHA256_H6, SHA256_H7},
-+	};
-+
-+	return 0;
-+}
-+
-+static int zhaoxin_sha256_update(struct shash_desc *desc, const u8 *data,
-+			  unsigned int len)
-+{
-+	struct sha256_state *sctx = shash_desc_ctx(desc);
-+	unsigned int partial, done;
-+	const u8 *src;
-+	u8 buf[SHA256_BLOCK_SIZE*2];
-+	u8 *dst = &buf[0];
-+
-+	partial = sctx->count & (SHA256_BLOCK_SIZE - 1);
-+	sctx->count += len;
-+	done = 0;
-+	src = data;
-+	memcpy(dst, sctx->state, SHA256_DIGEST_SIZE);
-+
-+	if ((partial + len) >= SHA256_BLOCK_SIZE) {
-+
-+		/* Append the bytes in state's buffer to a block to handle */
-+		if (partial) {
-+			done = -partial;
-+			memcpy(sctx->buf + partial, data, done + SHA256_BLOCK_SIZE);
-+			src = sctx->buf;
-+
-+			asm volatile (".byte 0xf3,0x0f,0xa6,0xd0"
-+			: "+S"(src), "+D"(dst)
-+			: "a"(-1L), "c"(1UL));
-+
-+			done += SHA256_BLOCK_SIZE;
-+			src = data + done;
-+		}
-+
-+		/* Process the left bytes from input data*/
-+		if (len - done >= SHA256_BLOCK_SIZE) {
-+			asm volatile (".byte 0xf3,0x0f,0xa6,0xd0"
-+			: "+S"(src), "+D"(dst)
-+			: "a"(-1L),
-+			"c"((unsigned long)((len - done) / SHA256_BLOCK_SIZE)));
-+
-+			done += ((len - done) - (len - done) % SHA256_BLOCK_SIZE);
-+			src = data + done;
-+		}
-+		partial = 0;
-+	}
-+	memcpy(sctx->state, dst, SHA256_DIGEST_SIZE);
-+	memcpy(sctx->buf + partial, src, len - done);
-+
-+	return 0;
-+}
-+
-+static int zhaoxin_sha256_final(struct shash_desc *desc, u8 *out)
-+{
-+	struct sha256_state *state = shash_desc_ctx(desc);
-+	unsigned int partial, padlen;
-+	__be64 bits;
-+	static const u8 padding[SHA256_BLOCK_SIZE] = {SHA_PADDING_BYTE, };
-+	const int bit_offset = SHA256_BLOCK_SIZE - sizeof(__be64);
-+
-+	bits = cpu_to_be64(state->count << 3);
-+
-+	/* Padding */
-+	partial = state->count & (SHA256_BLOCK_SIZE - 1);
-+	padlen = (partial < bit_offset) ? (bit_offset - partial) :
-+		((SHA256_BLOCK_SIZE + bit_offset) - partial);
-+	zhaoxin_sha256_update(desc, padding, padlen);
-+
-+	/* Append length field bytes */
-+	zhaoxin_sha256_update(desc, (const u8 *)&bits, sizeof(bits));
-+
-+	/* Swap to output */
-+	zhaoxin_output_block(state->state, (uint32_t *)out, SHA256_DIGEST_SIZE/sizeof(uint32_t));
-+
-+	return 0;
-+}
-+
-+static inline void zhaoxin_output_block_512(uint64_t *src,
-+			uint64_t *dst, size_t count)
-+{
-+	while (count--)
-+		*dst++ = swab64(*src++);
-+}
-+
-+static int zhaoxin_sha384_init(struct shash_desc *desc)
-+{
-+	struct sha512_state *sctx = shash_desc_ctx(desc);
-+
-+	*sctx = (struct sha512_state){
-+		.state = { SHA384_H0, SHA384_H1, SHA384_H2, SHA384_H3,
-+				SHA384_H4, SHA384_H5, SHA384_H6, SHA384_H7},
-+		.count = {0, 0},
-+	};
-+
-+	return 0;
-+}
-+
-+static int zhaoxin_sha512_init(struct shash_desc *desc)
-+{
-+	struct sha512_state *sctx = shash_desc_ctx(desc);
-+
-+	*sctx = (struct sha512_state){
-+		.state = { SHA512_H0, SHA512_H1, SHA512_H2, SHA512_H3,
-+				SHA512_H4, SHA512_H5, SHA512_H6, SHA512_H7},
-+		.count = {0, 0},
-+	};
-+
-+	return 0;
-+}
-+
-+static int zhaoxin_sha512_update(struct shash_desc *desc, const u8 *data,
-+			  unsigned int len)
-+{
-+	struct sha512_state *sctx = shash_desc_ctx(desc);
-+	unsigned int partial, done;
-+	const u8 *src;
-+	u8 buf[SHA512_BLOCK_SIZE];
-+	u8 *dst = &buf[0];
-+
-+	partial = sctx->count[0] % SHA512_BLOCK_SIZE;
-+
-+	sctx->count[0] += len;
-+	if (sctx->count[0] < len)
-+		sctx->count[1]++;
-+
-+	done = 0;
-+	src = data;
-+	memcpy(dst, sctx->state, SHA512_DIGEST_SIZE);
-+
-+	if ((partial + len) >= SHA512_BLOCK_SIZE) {
-+		/* Append the bytes in state's buffer to a block to handle */
-+		if (partial) {
-+
-+			done = -partial;
-+			memcpy(sctx->buf + partial, data, done + SHA512_BLOCK_SIZE);
-+
-+			src = sctx->buf;
-+
-+			asm volatile (".byte 0xf3,0x0f,0xa6,0xe0"
-+			: "+S"(src), "+D"(dst)
-+			: "c"(1UL));
-+
-+			done += SHA512_BLOCK_SIZE;
-+			src = data + done;
-+		}
-+
-+		/* Process the left bytes from input data*/
-+		if (len - done >= SHA512_BLOCK_SIZE) {
-+			asm volatile (".byte 0xf3,0x0f,0xa6,0xe0"
-+			: "+S"(src), "+D"(dst)
-+			: "c"((unsigned long)((len - done) / SHA512_BLOCK_SIZE)));
-+
-+			done += ((len - done) - (len - done) % SHA512_BLOCK_SIZE);
-+			src = data + done;
-+		}
-+		partial = 0;
-+	}
-+
-+	memcpy(sctx->state, dst, SHA512_DIGEST_SIZE);
-+	memcpy(sctx->buf + partial, src, len - done);
-+
-+	return 0;
-+}
-+
-+static int zhaoxin_sha512_final(struct shash_desc *desc, u8 *out)
-+{
-+	const int bit_offset = SHA512_BLOCK_SIZE - sizeof(__be64[2]);
-+	struct sha512_state *state = shash_desc_ctx(desc);
-+	unsigned int partial = state->count[0] % SHA512_BLOCK_SIZE, padlen;
-+	__be64 bits2[2];
-+
-+	// Both SHA384 and SHA512 may be supported.
-+	int dgst_size = crypto_shash_digestsize(desc->tfm);
-+
-+	static u8 padding[SHA512_BLOCK_SIZE];
-+
-+	memset(padding, 0, SHA512_BLOCK_SIZE);
-+	padding[0] = SHA_PADDING_BYTE;
-+
-+	// Convert byte count in little endian to bit count in big endian.
-+	bits2[0] = cpu_to_be64(state->count[1] << 3 | state->count[0] >> 61);
-+	bits2[1] = cpu_to_be64(state->count[0] << 3);
-+
-+	padlen = (partial < bit_offset) ? (bit_offset - partial) :
-+		((SHA512_BLOCK_SIZE + bit_offset) - partial);
-+
-+	zhaoxin_sha512_update(desc, padding, padlen);
-+
-+	/* Append length field bytes */
-+	zhaoxin_sha512_update(desc, (const u8 *)bits2, sizeof(__be64[2]));
-+
-+	/* Swap to output */
-+	zhaoxin_output_block_512(state->state, (uint64_t *)out, dgst_size/sizeof(uint64_t));
-+
-+	return 0;
-+}
-+
-+static int zhaoxin_sha_export(struct shash_desc *desc,
-+				void *out)
-+{
-+	int statesize = crypto_shash_statesize(desc->tfm);
-+	void *sctx = shash_desc_ctx(desc);
-+
-+	memcpy(out, sctx, statesize);
-+	return 0;
-+}
-+
-+static int zhaoxin_sha_import(struct shash_desc *desc,
-+				const void *in)
-+{
-+	int statesize = crypto_shash_statesize(desc->tfm);
-+	void *sctx = shash_desc_ctx(desc);
-+
-+	memcpy(sctx, in, statesize);
-+	return 0;
-+}
-+
-+static struct shash_alg sha1_alg = {
-+	.digestsize	=	SHA1_DIGEST_SIZE,
-+	.init		=	zhaoxin_sha1_init,
-+	.update		=	zhaoxin_sha1_update,
-+	.final		=	zhaoxin_sha1_final,
-+	.export		=	zhaoxin_sha_export,
-+	.import		=	zhaoxin_sha_import,
-+	.descsize	=	sizeof(struct sha1_state),
-+	.statesize	=	sizeof(struct sha1_state),
-+	.base		=	{
-+		.cra_name		=	"sha1",
-+		.cra_driver_name	=	"sha1-zhaoxin",
-+		.cra_priority		=	ZHAOXIN_SHA_CRA_PRIORITY,
-+		.cra_blocksize		=	SHA1_BLOCK_SIZE,
-+		.cra_module		=	THIS_MODULE,
-+	}
-+};
-+
-+static struct shash_alg sha256_alg = {
-+	.digestsize	=	SHA256_DIGEST_SIZE,
-+	.init		=	zhaoxin_sha256_init,
-+	.update		=	zhaoxin_sha256_update,
-+	.final		=	zhaoxin_sha256_final,
-+	.export		=	zhaoxin_sha_export,
-+	.import		=	zhaoxin_sha_import,
-+	.descsize	=	sizeof(struct sha256_state),
-+	.statesize	=	sizeof(struct sha256_state),
-+	.base		=	{
-+		.cra_name		=	"sha256",
-+		.cra_driver_name	=	"sha256-zhaoxin",
-+		.cra_priority		=	ZHAOXIN_SHA_CRA_PRIORITY,
-+		.cra_blocksize		=	SHA256_BLOCK_SIZE,
-+		.cra_module		=	THIS_MODULE,
-+	}
-+};
-+
-+static struct shash_alg sha384_alg = {
-+	.digestsize	=	SHA384_DIGEST_SIZE,
-+	.init		=	zhaoxin_sha384_init,
-+	.update		=	zhaoxin_sha512_update,
-+	.final		=	zhaoxin_sha512_final,
-+	.export		=	zhaoxin_sha_export,
-+	.import		=	zhaoxin_sha_import,
-+	.descsize	=	sizeof(struct sha512_state),
-+	.statesize	=	sizeof(struct sha512_state),
-+	.base		=	{
-+		.cra_name		=	"sha384",
-+		.cra_driver_name	=	"sha384-zhaoxin",
-+		.cra_priority		=	ZHAOXIN_SHA_CRA_PRIORITY,
-+		.cra_blocksize		=	SHA384_BLOCK_SIZE,
-+		.cra_module		=	THIS_MODULE,
-+	}
-+};
-+
-+static struct shash_alg sha512_alg = {
-+	.digestsize	=	SHA512_DIGEST_SIZE,
-+	.init		=	zhaoxin_sha512_init,
-+	.update		=	zhaoxin_sha512_update,
-+	.final		=	zhaoxin_sha512_final,
-+	.export		=	zhaoxin_sha_export,
-+	.import		=	zhaoxin_sha_import,
-+	.descsize	=	sizeof(struct sha512_state),
-+	.statesize	=	sizeof(struct sha512_state),
-+	.base		=	{
-+		.cra_name		=	"sha512",
-+		.cra_driver_name	=	"sha512-zhaoxin",
-+		.cra_priority		=	ZHAOXIN_SHA_CRA_PRIORITY,
-+		.cra_blocksize		=	SHA512_BLOCK_SIZE,
-+		.cra_module		=	THIS_MODULE,
-+	}
-+};
-+
-+
-+static const struct x86_cpu_id zhaoxin_sha_ids[] = {
-+	X86_MATCH_VENDOR_FAM_FEATURE(ZHAOXIN, 6, X86_FEATURE_PHE, NULL),
-+	X86_MATCH_VENDOR_FAM_FEATURE(ZHAOXIN, 7, X86_FEATURE_PHE, NULL),
-+	X86_MATCH_VENDOR_FAM_FEATURE(CENTAUR, 7, X86_FEATURE_PHE, NULL),
-+	{}
-+};
-+MODULE_DEVICE_TABLE(x86cpu, zhaoxin_sha_ids);
-+
-+static int __init zhaoxin_sha_init(void)
-+{
-+	int rc = -ENODEV;
-+
-+	struct shash_alg *sha1;
-+	struct shash_alg *sha256;
-+	struct shash_alg *sha384;
-+	struct shash_alg *sha512;
-+
-+	if (!x86_match_cpu(zhaoxin_sha_ids) || !boot_cpu_has(X86_FEATURE_PHE_EN))
-+		return -ENODEV;
-+
-+	sha1 = &sha1_alg;
-+	sha256 = &sha256_alg;
-+
-+	rc = crypto_register_shash(sha1);
-+	if (rc)
-+		goto out;
-+
-+	rc = crypto_register_shash(sha256);
-+	if (rc)
-+		goto out_unreg1;
-+
-+	if (boot_cpu_has(X86_FEATURE_PHE2_EN)) {
-+
-+		sha384 = &sha384_alg;
-+		sha512 = &sha512_alg;
-+
-+		rc = crypto_register_shash(sha384);
-+		if (rc)
-+			goto out_unreg2;
-+
-+		rc = crypto_register_shash(sha512);
-+		if (rc)
-+			goto out_unreg3;
-+
-+		pr_notice("Using Zhaoxin Hardware Engine for SHA1/SHA256/SHA384/SHA512 algorithms.\n");
-+	} else
-+		pr_notice("Using Zhaoxin Hardware Engine for SHA1/SHA256 algorithms.\n");
-+
-+
-+	return 0;
-+
-+out_unreg3:
-+	if (boot_cpu_has(X86_FEATURE_PHE2_EN))
-+		crypto_unregister_shash(sha384);
-+
-+out_unreg2:
-+	crypto_unregister_shash(sha256);
-+out_unreg1:
-+	crypto_unregister_shash(sha1);
-+
-+out:
-+	pr_err("Zhaoxin Hardware Engine for SHA1/SHA256/SHA384/SHA512 initialization failed.\n");
-+	return rc;
-+}
-+
-+static void __exit zhaoxin_sha_fini(void)
-+{
-+	crypto_unregister_shash(&sha1_alg);
-+	crypto_unregister_shash(&sha256_alg);
-+
-+	if (boot_cpu_has(X86_FEATURE_PHE2_EN)) {
-+		crypto_unregister_shash(&sha384_alg);
-+		crypto_unregister_shash(&sha512_alg);
-+	}
-+
-+}
-+
-+module_init(zhaoxin_sha_init);
-+module_exit(zhaoxin_sha_fini);
-+
-+MODULE_DESCRIPTION("Zhaoxin Hardware SHA1/SHA256/SHA384/SHA512 algorithms support.");
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("George Xue");
-+
-+MODULE_ALIAS_CRYPTO("sha1-zhaoxin");
-+MODULE_ALIAS_CRYPTO("sha256-zhaoxin");
-+MODULE_ALIAS_CRYPTO("sha384-zhaoxin");
-+MODULE_ALIAS_CRYPTO("sha512-zhaoxin");
-+
-diff --git a/drivers/crypto/zhaoxin-sha.h b/drivers/crypto/zhaoxin-sha.h
-new file mode 100644
-index 000000000000..699659018d19
---- /dev/null
-+++ b/drivers/crypto/zhaoxin-sha.h
-@@ -0,0 +1,17 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * Driver for Zhaoxin Sha
-+ *
-+ * Copyright (c) 2023 George Xue<georgexue@zhaoxin.com>
-+ */
-+
-+#ifndef _ZHAOXIN_SHA_H
-+#define _ZHAOXIN_SHA_H
-+
-+#define ZHAOXIN_SHA_CRA_PRIORITY	300
-+#define ZHAOXIN_SHA_COMPOSITE_PRIORITY 400
-+
-+#define SHA_PADDING_BYTE    0x80
-+
-+#endif	/* _ZHAOXIN_SHA_H */
-+
--- 
-2.25.1
-
+> -		if (addr + len < addr)
+> +		if (check_add_overflow(addr, len, &sum))
+>  			goto out;
+>  
+>  		/*
+> @@ -403,7 +404,7 @@ sys_cacheflush (unsigned long addr, int scope, int cache, unsigned long len)
+>  		 */
+>  		mmap_read_lock(current->mm);
+>  		vma = vma_lookup(current->mm, addr);
+> -		if (!vma || addr + len > vma->vm_end)
+> +		if (!vma || sum > vma->vm_end)
+>  			goto out_unlock;
+>  	}
+>  
+> -- 
+> 2.34.1
+> 
 
