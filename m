@@ -1,264 +1,174 @@
-Return-Path: <linux-kernel+bounces-35230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35231-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 754CE838E2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:09:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B5C9838E31
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:09:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24701283734
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:09:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF3CCB220E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:09:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D69985DF03;
-	Tue, 23 Jan 2024 12:09:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F4825DF11;
+	Tue, 23 Jan 2024 12:09:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="j6MkMbWm"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="B1cDTipr";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="rSkTzEX/";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="d8BrprTY";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="akPQxMhy"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32C605D916
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 12:09:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E04CD5D917
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 12:09:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706011753; cv=none; b=a9sY5woJZ5vBZXkxtlJFVWIA4bKtwx/8oS7WxpFDHFxlzIXnD27TX3u9vzCHh988LwbAncnEaVTxGl4BEFj4mydY9YoCNUIz083XAK8r1lHxGiC1qAnxw7/EiW346HqzcL7qP+YUJkCJ1BDecNd7JMl2cJyC3vQso02XJkop/Ik=
+	t=1706011784; cv=none; b=W7W75v3tE+ajB6DbeiQ7/qvGKcyiuqUH4rsB6eEe8yynHguixOYM81cD3+t8Su8ezf/RWMQNn0WzNRJyZhnvplKQKaWSg8ldjWuYq8ZVkdZyiKhj/g2yZHnvI9iB0Uil0qOMkhqbdRaCsLUyDdtYOIo5lz2oGDeAA79A3KQCvyY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706011753; c=relaxed/simple;
-	bh=FFfT5q80Hs3zDMjLI3EodrE/Zh2o/sWHApPCFclFeC0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=E3Weyqo41rB23ZYdmp4bfY+zBTKA5bny8zrMoFpcXNE72dqKBklBC5K7ekpEilpMC9lgwPD31DpNIe4ZSdzu8LF2oeqytBFA9ZuL+MIjkDZ78YZCUn7ySTxAngCTIAEEaVQGFVNZ99FIfLfiOocsGqdzCvW2onTOaEHdvrXfQFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=j6MkMbWm; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3392291b21bso3608113f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 04:09:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706011749; x=1706616549; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=l3C8Fw5l+jhncPA4wDIldFznr0WXO1yKPR2qB2QrPqU=;
-        b=j6MkMbWm/Ky+OXkpG8xFxAoK6HPI8/NmzIXR/+CHWPrj8HvPFbQGmX7CKu+xqi1z1m
-         lkls/ofkWLmM1H2JLoGr9b86FFF6if14T8L4VlzkvMVQC//RzL6P5lHwPEwyC/7wumU+
-         2VNodlIz4kV5EAFz/aLK7o6zzFhTjcuPv4xzXr5mt6OTEHcRiu1Krtjf8Wbw2t5uS//9
-         Z8dzEcuFEMCUe/hXKbCdnbVv0eso1qkUpdKDNYZjNsEZyFlc7Z704XyQlFDUUrzO/M8w
-         S8ZgtjyQnT+E1tPZTAKb5NaXT875yQKnYEtWotHLGIVd6n7YDJnED64ddHCAg93kllTW
-         TA9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706011749; x=1706616549;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=l3C8Fw5l+jhncPA4wDIldFznr0WXO1yKPR2qB2QrPqU=;
-        b=i27eUq0dTo+LA5cqATC8394QF8VKM4sLWQnvRdIz4GAUeGe4gPG2qnl0u0ag6YQ922
-         tX4tvkvYyS3FOymtRVm3WZTkwjzejrAdNjE99AB33Yd9wHSTTRki9YdKcsu7Vq5H+Oa3
-         Po+V9sETQ4M+dZyQZWdeIh8GN6jtEr11sT25j4MpREqZ0pzzwTrzryGQ1+9TdY3QaPqc
-         JcZf2rAdsbMWI+xR/yT7KD2UDnX1W0W4vOmQd/KhpHe3m1sAjtrEg2QDQEH+vdnXP0yh
-         bIELgSu3W0znuuELnThXA930FpwGAbmliIM1JgOb14rs8Afx0Cx7Ku1MWlKKQhwxhBDr
-         Ilww==
-X-Gm-Message-State: AOJu0YzYVoF5JDl0x1LiYwYW7xleIUYVDt+aaOVAVjbCnSiCqcSGdxkl
-	BE/OpGJfWuLdAborPrpYJzihxuPcXNUUzVIFRe38On74EYxYWlHii7fDNibobTA=
-X-Google-Smtp-Source: AGHT+IHQmsUP+BU7Tso5igJYN5GTEPdX50NGuYMN9RVsXOr4bhNHRPYgbh0Bp1hDTMEC9YUNwolbyQ==
-X-Received: by 2002:a05:6000:1f89:b0:339:372e:7714 with SMTP id bw9-20020a0560001f8900b00339372e7714mr2297966wrb.32.1706011749386;
-        Tue, 23 Jan 2024 04:09:09 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id j14-20020a5d604e000000b003392cdeb3a2sm7140080wrt.103.2024.01.23.04.09.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jan 2024 04:09:09 -0800 (PST)
-Message-ID: <1fc9815e-76dd-41d7-aa1a-caa72ef4ad34@linaro.org>
-Date: Tue, 23 Jan 2024 13:09:07 +0100
+	s=arc-20240116; t=1706011784; c=relaxed/simple;
+	bh=pDZYxDOT18/AZF6D6YMd8wpC3QRkUUbr09SS2lZLElU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Goe+AmZ7Pm/0GMFLJ3aabdrKr9N42zQvCrQmnO5kBY1p1+jepRD0tC5ajdlPBXxx2V91+FSR547kKX+GzomQZ6U1vfjU/DEoquQtA91w+aTlO+XKFktZy5cpj27sWhSpXf7w2JlkYHfWjyFd0hOit/LxEjGztAE7MNMRhixIRhE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=B1cDTipr; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=rSkTzEX/; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=d8BrprTY; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=akPQxMhy; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C579D21DBD;
+	Tue, 23 Jan 2024 12:09:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1706011781; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=/+1BDwHJnbrAZhBlYSe1wZMRPanHDDMr02vP/6SuvQU=;
+	b=B1cDTiprfahudrxoImph/fwM/kqG0wrxbI3Eep72sjZSbh1avyjXgD2VVIlHqcR5t+yytA
+	+c4B8lRY4t8TzapW8BYJkk6ET80laQ6BTbf5NO4FA7gRg8pjpuvQ5bNpECr2zYaRuy39gb
+	j9LEcIKhFh3j+QpaNTQUk4BvAKQThzo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1706011781;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=/+1BDwHJnbrAZhBlYSe1wZMRPanHDDMr02vP/6SuvQU=;
+	b=rSkTzEX/gwn29cDxjtf/iR//xik4AJ7BVAEeCbhubPR9IfJK6DJv+EkLWamFyG0psfYheh
+	iQ7gLf5FQ0AMXVDA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1706011780; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=/+1BDwHJnbrAZhBlYSe1wZMRPanHDDMr02vP/6SuvQU=;
+	b=d8BrprTY8ViLJy7Me6f/fUc9mexEb89wcEcOyCAKRaKRrRlu5AueuQ/LAGZxte4/rokRdH
+	M9nzwq77i16PmyRlMdVv8ZBzFSxmfayYK8k9ISYFEJVOL2nz/5KhJeRnP5icT+touWuEM4
+	YksK44+cSc7YT7UsXbr9YzPVhzv+fXY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1706011780;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=/+1BDwHJnbrAZhBlYSe1wZMRPanHDDMr02vP/6SuvQU=;
+	b=akPQxMhywd5JLeBxICmRJ9ihEhNX5OUXuedQuYvLvBMCo8+ekYORqo4eppuU7QjVKTCLrv
+	teCpTH08foE+Q+Cg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8611813786;
+	Tue, 23 Jan 2024 12:09:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Fa12H4Ssr2V7OAAAD6G6ig
+	(envelope-from <tzimmermann@suse.de>); Tue, 23 Jan 2024 12:09:40 +0000
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: javierm@redhat.com,
+	chenhuacai@kernel.org
+Cc: dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Jaak Ristioja <jaak@ristioja.ee>,
+	Huacai Chen <chenhuacai@loongson.cn>,
+	Thorsten Leemhuis <regressions@leemhuis.info>,
+	Jani Nikula <jani.nikula@linux.intel.com>
+Subject: [PATCH] Revert "drivers/firmware: Move sysfb_init() from device_initcall to subsys_initcall_sync"
+Date: Tue, 23 Jan 2024 13:09:26 +0100
+Message-ID: <20240123120937.27736-1-tzimmermann@suse.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: hwinfo: Introduce board-id
-Content-Language: en-US
-To: Amrit Anand <quic_amrianan@quicinc.com>, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, agross@kernel.org,
- andersson@kernel.org, konrad.dybcio@linaro.org
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, kernel@quicinc.com,
- Elliot Berman <quic_eberman@quicinc.com>
-References: <1705749649-4708-1-git-send-email-quic_amrianan@quicinc.com>
- <1705749649-4708-2-git-send-email-quic_amrianan@quicinc.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <1705749649-4708-2-git-send-email-quic_amrianan@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: *
+X-Spamd-Bar: +
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=d8BrprTY;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=akPQxMhy
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [1.49 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.00)[29.76%]
+X-Spam-Score: 1.49
+X-Rspamd-Queue-Id: C579D21DBD
+X-Spam-Flag: NO
 
-On 20/01/2024 12:20, Amrit Anand wrote:
-> From: Elliot Berman <quic_eberman@quicinc.com>
-> 
+This reverts commit 60aebc9559492cea6a9625f514a8041717e3a2e4.
 
+Commit 60aebc9559492cea ("drivers/firmware: Move sysfb_init() from
+device_initcall to subsys_initcall_sync") messes up initialization order
+of the graphics drivers and leads to blank displays on some systems. So
+revert the commit.
 
+To make the display drivers fully independent from initialization
+order requires to track framebuffer memory by device and independently
+from the loaded drivers. The kernel currently lacks the infrastructure
+to do so.
 
-> 
-> How is this better than Qualcomm's qcom,msm-id/qcom,board-id?
-> -------------------------------------------------------------
-> The selection process for devicetrees was Qualcomm-specific and not
-> useful for other devices and bootloaders that were not developed by
-> Qualcomm because a complex algorithm was used to implement. Board-ids
-> provide a matching solution that can be implemented by bootloaders
-> without introducing vendor-specific code. Qualcomm uses three
-> devicetree properties: msm-id (interchangeably: soc-id), board-id, and
-> pmic-id.  This does not scale well for use casese which use identifiers,
-> for example, to distinguish between a display panel. For a display
-> panel, an approach could be to add a new property: display-id,
-> but now	bootloaders need to be updated to also read this property. We
-> want to	avoid requiring to update bootloaders with new hardware
+Reported-by: Jaak Ristioja <jaak@ristioja.ee>
+Closes: https://lore.kernel.org/dri-devel/ZUnNi3q3yB3zZfTl@P70.localdomain/T/#t
+Reported-by: Huacai Chen <chenhuacai@loongson.cn>
+Closes: https://lore.kernel.org/dri-devel/20231108024613.2898921-1-chenhuacai@loongson.cn/
+Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/10133
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: Javier Martinez Canillas <javierm@redhat.com>
+Cc: Thorsten Leemhuis <regressions@leemhuis.info>
+Cc: Jani Nikula <jani.nikula@linux.intel.com>
+---
+ drivers/firmware/sysfb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Some mis-indentation in two lines above.
-
-> identifiers: a bootloader need only recognize the identifiers it can
-> handle.
-> 
-> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
-> Signed-off-by: Amrit Anand <quic_amrianan@quicinc.com>
-> ---
->  .../devicetree/bindings/hwinfo/board-id.yaml       | 53 ++++++++++++++++++++++
->  1 file changed, 53 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/hwinfo/board-id.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/hwinfo/board-id.yaml b/Documentation/devicetree/bindings/hwinfo/board-id.yaml
-
-I think we should add it to dtschema, because bootloaders are using these.
-
-> new file mode 100644
-> index 0000000..82d5ff7
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/hwinfo/board-id.yaml
-> @@ -0,0 +1,53 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/hwinfo/board-id.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Board Identifier for Devicetree Selection
-> +
-> +maintainers:
-> +  - Amrit Anand <quic_amrianan@quicinc.com>
-> +  - Elliot Berman <quic_eberman@quicinc.com>
-> +
-> +description: |
-
-Do not need '|' unless you need to preserve formatting.
-
-> +  Device manufacturers frequently ship multiple boards under a single
-> +  software package. These software packages will ship multiple devicetree
-> +  blobs and require some mechanism to pick the correct DTB for the board
-> +  the software package was deployed. board-id provides a mechanism for
-> +  bootloaders to select the appropriate DTB which is vendor/OEM-agnostic.
-> +
-> +select:
-> +  anyOf:
-> +    - required:
-> +        - 'board-id'
-> +    - required:
-> +        - 'board-id-types'
-> +    - required:
-> +        - '#board-id-cells'
-
-I don't fully get why do you need this select. Isn't the schema selected
-by nodename? Or maybe it is for the final required: but then this could
-be just set of dependencies.
-
-> +
-> +properties:
-> +  $nodename:
-> +    const: "/"
-
-Blank line.
-
-> +  board-id:
-> +    $ref: /schemas/types.yaml#/definitions/uint32-matrix
-> +    description: |
-
-Do not need '|' unless you need to preserve formatting.
-
-> +      A list of identifiers that can be used to match with this devicetree.
-
-s/devicetree/Devicetree/ ?
-
-> +      The interpretatation of each cell can be matched with the
-
-Typo: interpretation
-
-> +      board-id-type at the same index.
-> +
-> +  board-id-types:
-> +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
-> +    description:
-> +      Defines the type of each cell, indicating to the DeviceTree selection
-
-s/DeviceTree/Devicetree/ ?
-
-
-> +      mechanism how to parse the board-id.
-> +
-> +  '#board-id-cells':
-
- What are the cells for?
-
-> +    minimum: 1
-> +
-> +required:
-> +  - board-id
-> +  - board-id-types
-> +  - '#board-id-cells'
-
-
-> +
-> +additionalProperties: true
-
-Best regards,
-Krzysztof
+diff --git a/drivers/firmware/sysfb.c b/drivers/firmware/sysfb.c
+index 82fcfd29bc4d2..3c197db42c9d9 100644
+--- a/drivers/firmware/sysfb.c
++++ b/drivers/firmware/sysfb.c
+@@ -128,4 +128,4 @@ static __init int sysfb_init(void)
+ }
+ 
+ /* must execute after PCI subsystem for EFI quirks */
+-subsys_initcall_sync(sysfb_init);
++device_initcall(sysfb_init);
+-- 
+2.43.0
 
 
