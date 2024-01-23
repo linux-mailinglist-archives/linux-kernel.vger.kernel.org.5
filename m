@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-34801-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34802-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A30748387A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:43:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E34A8387A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:43:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE333B20AF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 06:43:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B999A285FDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 06:43:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF0B852F86;
-	Tue, 23 Jan 2024 06:43:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 100825026B;
+	Tue, 23 Jan 2024 06:43:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LuqiZ4Vx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D8iN8cPB"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 093BC5025F;
-	Tue, 23 Jan 2024 06:43:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E1B7524A4;
+	Tue, 23 Jan 2024 06:43:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705992199; cv=none; b=syhvu6vPQGgLEbM/xu2gaqs15piFIlDToYeoi88ATUCIzeUXFBH7NKq0FEp7xZeToQd7xSet1jPt7Ppt4eK2sT6X4qYcZ+b/1uN37oOnG3NiWruWL/GtPkXHUm3oXuhuNZbzsoX+1sIHSV/u1Z8kgwCrDGMliSTLAJ37aOG7L+w=
+	t=1705992199; cv=none; b=NE+FtUly0uI/wrBsK/WFd1H/Us29XlogLpufcf7EBTf/ipXMmhpKnEOQYnbiw+rwYW5OaHxlxc2ESUW0caR4wup2d2S0EaVtHFSHUtQ58ptvfo2VgnCysPqM4T4rdjUUxEcNL0W8vncSebt5lK4QzellW4nz85IEgkehzPuLrlo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1705992199; c=relaxed/simple;
-	bh=LgOMeRNvvfI8V6uporG7N90vxquiLAsMEyAXBPhg8QU=;
+	bh=W6IM59aFdpsXM36kU3enHoCT7JiyixPOs1BAXIz9u88=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=RhhXcNftJJs8Cm67e7oPwG0tq9MS2mnNRIPV/Pu+KNbqSIF9IsDeBRFG3+hzxSZ7adHD8+Q5t6LuLPSFuTh3lVLeLsFnNSxwEqcxbLmjiha5DaxdYH7UHQ+VUUV+Nq3zpeNfgFBFfB2H23nRry2DYh7P96YWR1i9Gpq4+qAbxxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LuqiZ4Vx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id BB0CDC433C7;
+	 In-Reply-To:To:Cc; b=skvgQfwROEJqHuyNh5ySwC/U59iySIg/5fAvapFm659UJyq2gc/bIJBMxcwYJfNibZ/+Lyrl6BwQGmJ6SQRWOX8HSso1esUhrnyojumQAb4xk/3bxMh1QwkmL6j2mMId3xTVemCkfwXJonJBCho3LQL9ifdybTHZZBSb8Ea07CA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D8iN8cPB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C2DD8C43390;
 	Tue, 23 Jan 2024 06:43:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1705992198;
-	bh=LgOMeRNvvfI8V6uporG7N90vxquiLAsMEyAXBPhg8QU=;
+	bh=W6IM59aFdpsXM36kU3enHoCT7JiyixPOs1BAXIz9u88=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=LuqiZ4VxFegSwkRHiXoF1aDEJTvPUiQr0raZHmnVia+G5wQAOEbSfkohXeeRi/uoL
-	 2HDd0RfmFNg76Ay8UH+7M6UkuUFP831/sS68UkRTd59lcoGO9nSIWh5K+SlihUm37I
-	 E3Sq8Va98/8dV99Pr0WZ8IkPuaBgyWRJM65xKs4qos7y0ieykEARxY9i0SdJOLHP70
-	 xdnwpgBdFydfj5IfnUlMmefSy9yyVoa4TPSfgzRojn551BjvYG+2UVMSud8XwCMVbu
-	 vebWMar9FeP8dYBV71ZiesUV1zoQcyvCYu9rZALUCgXRmU0CiEwcI0t++EQ5l8b41y
-	 O65We05Yu19kA==
+	b=D8iN8cPBlCt9yrHA0E2usAWnTOv0ceVoejE0dPm6/kbSfqDHJqEukdjL/1DEZu/CW
+	 VTKglv3i5b87NHdgwBepFUb5RVtUKECrSsTmPr7dzQUaKeFXRV5rPkXMc92cxhv2c6
+	 inyWt7eAynzqgJQjAt8QvnrL5ZUGfDzqwN1Sp53KRYhr7pF2GK6MdfDStBQeZYAPzK
+	 9qeL3eU9LHGiQo/yTjzsw8mDTZbWPxLdGv0ZxsyP6KhhsM3/KhZH1xY8t3U4xyhy0w
+	 46k5ocVUP3eLujVwsjZEa2fKev1D9gfrhFuYkqcx9KMGmOJ72/bFHDZ7Rv4JIF1iOh
+	 4BeZriWbKYKlA==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AD7DC47DDB;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A50D0C47DDF;
 	Tue, 23 Jan 2024 06:43:18 +0000 (UTC)
 From: Fenglin Wu via B4 Relay <devnull+quic_fenglinw.quicinc.com@kernel.org>
-Date: Tue, 23 Jan 2024 14:42:23 +0800
-Subject: [PATCH 1/2] arm64: dts: qcom: sm8650-mtp: add PM8010 regulators
+Date: Tue, 23 Jan 2024 14:42:24 +0800
+Subject: [PATCH 2/2] arm64: dts: qcom: sm8650-qrd: add PM8010 regulators
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,7 +54,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240123-sm8650_pm8010_support-v1-1-dec2224d5740@quicinc.com>
+Message-Id: <20240123-sm8650_pm8010_support-v1-2-dec2224d5740@quicinc.com>
 References: <20240123-sm8650_pm8010_support-v1-0-dec2224d5740@quicinc.com>
 In-Reply-To: <20240123-sm8650_pm8010_support-v1-0-dec2224d5740@quicinc.com>
 To: kernel@quicinc.com, Bjorn Andersson <andersson@kernel.org>, 
@@ -67,9 +67,9 @@ Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
 X-Mailer: b4 0.13-dev-83828
 X-Developer-Signature: v=1; a=ed25519-sha256; t=1705992197; l=4110;
  i=quic_fenglinw@quicinc.com; s=20230725; h=from:subject:message-id;
- bh=l3ciU5iTwo8blY95GC+Dkvk60UkOaXfi4/HNikaPzTw=;
- b=ZbngVRAR5+WinykY2mKIhX0oRiLGQmB4xU28k7Z9LF+C2GuOGOu+iJSAQrGtci0eQu7DODsCJ
- bINfYQIFFjMBj4LfOPPptjHtmAOhuprrCjms4h4OabSNf2umxZa41V6
+ bh=PlYF8bjp7tmNp066AtzxBMH/atroxUuklQesSrZwfQ0=;
+ b=NKWGsWHknezrrOYZwH4XD3ImCuqFjobocVLviK9pk7t4coZhezftxZQFTtMbxmGtRY80fGeTl
+ k2mhbGbrw1lCY+avu+jk3Me4t/H2iDaOmRWBdFLpFDz2vUthCeCdL6x
 X-Developer-Key: i=quic_fenglinw@quicinc.com; a=ed25519;
  pk=hleIDz3Unk1zeiwwOnZUjoQVMMelRancDFXg927lNjI=
 X-Endpoint-Received:
@@ -79,18 +79,18 @@ Reply-To: <quic_fenglinw@quicinc.com>
 
 From: Fenglin Wu <quic_fenglinw@quicinc.com>
 
-Add PM8010 regulator device nodes for sm8650-mtp board.
+Add PM8010 regulator device nodes for sm8650-qrd board.
 
 Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
 ---
- arch/arm64/boot/dts/qcom/sm8650-mtp.dts | 118 ++++++++++++++++++++++++++++++++
+ arch/arm64/boot/dts/qcom/sm8650-qrd.dts | 118 ++++++++++++++++++++++++++++++++
  1 file changed, 118 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8650-mtp.dts b/arch/arm64/boot/dts/qcom/sm8650-mtp.dts
-index 9d916edb1c73..3791971efee6 100644
---- a/arch/arm64/boot/dts/qcom/sm8650-mtp.dts
-+++ b/arch/arm64/boot/dts/qcom/sm8650-mtp.dts
-@@ -428,6 +428,124 @@ vreg_l3i_1p2: ldo3 {
+diff --git a/arch/arm64/boot/dts/qcom/sm8650-qrd.dts b/arch/arm64/boot/dts/qcom/sm8650-qrd.dts
+index 592a67a47c78..361894fa201a 100644
+--- a/arch/arm64/boot/dts/qcom/sm8650-qrd.dts
++++ b/arch/arm64/boot/dts/qcom/sm8650-qrd.dts
+@@ -436,6 +436,124 @@ vreg_l3i_1p2: ldo3 {
  						   RPMH_REGULATOR_MODE_HPM>;
  		};
  	};
