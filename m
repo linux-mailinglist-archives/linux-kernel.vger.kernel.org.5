@@ -1,119 +1,120 @@
-Return-Path: <linux-kernel+bounces-35585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35586-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8F8A8393AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:50:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 610178393B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:51:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB13D1C26323
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:50:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15F691F2371B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:51:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B23616A336;
-	Tue, 23 Jan 2024 15:44:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5E336088B;
+	Tue, 23 Jan 2024 15:44:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="XmvUj9ZN"
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fB/DiWid"
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4E9E524A4
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 15:44:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2EA06BB4A;
+	Tue, 23 Jan 2024 15:44:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706024673; cv=none; b=GXROjm5NNbePW1rqXv0tNL3jVWKvQW+wokcuYpdneOG8ZPnJM+Fv7ieO1zx98sZMXhq3M8ANzvIm1o78tws3EB+zid6SNuafTacCHXZSXXg4lNTNxcdmjuvb7FfPXVaHj25AZq/cQ6UFNjKGGB9icjR0ycUPw5EcjshqqicB2Uo=
+	t=1706024683; cv=none; b=f1A6UX24eLgMWP7KShHbUGdXYYo5f37io6c5VF+OizmHuncpGhOyNjN3UDwC4N8KL6YcR6fcNrm9/nXtNelbFXAxFB0VY8FtUtcS9yfL2zVqN9mG+MVWZzSQ6lC6RbY8NLgNnz3rr8hkWs81n2gxfoL44JnuHSBLzFyPvaiV7sQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706024673; c=relaxed/simple;
-	bh=cZsWIGSnswkpJfNQ1zY6Bc/UlVwQs6ttZZj85VwnUUA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BIR2Gx9q9+KfppbjQXeQjWTe1V8OoJVAgRC/9PwRohqzsZKsF8Iqx7J92R+9U/Z+M2V2WRwPhE5u7lyqgOEUjSmGlRRS9qpKCJ+x4TJCxuSLl3pU9OH+IG1i1IoEKNhmnsYH1Nqa+oCUwssNBFXVKx80vntTXHWuSQJw2j/pJMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=XmvUj9ZN; arc=none smtp.client-ip=209.85.160.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-429ca07044eso33965821cf.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:44:31 -0800 (PST)
+	s=arc-20240116; t=1706024683; c=relaxed/simple;
+	bh=rVS8jGbR1XkYYdRYiPqWd3eo7KWQ9uoG2lTEv7reHhc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VkQToUSmZ0d6nVHVqJvoUHrxUZwZ3e47uw7OlYfKVHTVBcjj+e7sfJg26eGdyHE9Jx4qMvWvqrk7/3B+GTek+msY+oo5R5uN0KjqPa237gWfJIEN0pGKV4ZZj5TmX2ADyYSQZB2uZ7pEuvKnNiq3pQluNEWlPQ2dmOmj1KG+d3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fB/DiWid; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-50eabfac2b7so5608743e87.0;
+        Tue, 23 Jan 2024 07:44:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1706024670; x=1706629470; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cZsWIGSnswkpJfNQ1zY6Bc/UlVwQs6ttZZj85VwnUUA=;
-        b=XmvUj9ZN40RHlUCTOCAgYOQgAiJHqXLpcFsmMcc8mS9kIi6MqpkDYkFshzF7Q9GNET
-         hi4k81s8LGhlVbLAZ7EU4Qxvg+I3sS4M6GQmUTYGK9PFlu/ncqA3Qan4I8Cx+DZtzGG7
-         xRwxpmG+txe6B8HLuzLQAPP0J+brjbmRR7Ito=
+        d=gmail.com; s=20230601; t=1706024674; x=1706629474; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=uyKGGaXH67qi8vCo0maX5/zi228Y+OGFXkTPJDuBuaU=;
+        b=fB/DiWidXcfoGe+tqkkxStXuslmPJHkl8TwlP9TmNeukffaZuvABIaVpxIqSgwMqr9
+         P7k7qN+N/XyK7t787EZ3DQesEEm6QkILlrIE4GpSgoC4juvJ5nVIKdeINmGzZ/2OH/iv
+         jDjn3ttUyNYTEGKYL0egvNlsDNWyyRb6Rf3VBS+4aRy5/10x1Y5elwzBgBbo4lle9hqA
+         6eHTifJPhSWgIwohEMXfo0/xvZKBujgqFLUuRvulusT/UT8cw9mFZLoRHf65OiAK4qCC
+         DnfwiqnycBuULJHc+GxBqs1HZBGNqqvGwczd+udUB+4fwhDpSjMgQBTSQuwT+BY8t6ON
+         twKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706024670; x=1706629470;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1706024674; x=1706629474;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cZsWIGSnswkpJfNQ1zY6Bc/UlVwQs6ttZZj85VwnUUA=;
-        b=V7gffx04A98o4AaTotwKMYmT7+B2/46W8vMUtk4ns6ihKs2D1EwOu8rtla2q0CLeM+
-         HtfqcVmZSQP9AHsDyagNxg+aQ2U4NJNAoDOAr60j6NAo2FSXA0DEAbz0diIAOcTAtSBG
-         SYGCObXpD2BWdZ3jG1OoQ8I10y42S5t4GAj7xF93uyo6bpvzEHVjLw/JnJDJGoAyZ7On
-         6gC7ZyqGKmOc8s+mvnS/XzCbDOdpYm+ZbV4XyQ4aWwPIU6KebO/2p19dAScw2Q3BlHhO
-         +57ZHQ0DElHAkN+v4EZ7FXrP+n3e6GPHfOFt2IH4l+IkVLykM8vcj5tKyFUdAbm+Lka9
-         Uc+g==
-X-Gm-Message-State: AOJu0YyHzrprOj4pypl9RTqAsMIvgIyrWvV4tBJ3hQnci39WYJdzdKPd
-	gxQGSqEfLW3Dd3ApLD6E1OLLevpk9u/SW7pG16pEAHIqyfCf8rFpZEI03uEosq8=
-X-Google-Smtp-Source: AGHT+IEa+M6myW1ZUclUpAeTXxs7+k+AQmHTNgsak6oyXNySB845AQqeFG9zgDjQsIVwAk2yXjhIVw==
-X-Received: by 2002:a05:620a:25cc:b0:783:26fd:6055 with SMTP id y12-20020a05620a25cc00b0078326fd6055mr7463575qko.110.1706024670501;
-        Tue, 23 Jan 2024 07:44:30 -0800 (PST)
-Received: from [10.5.0.2] ([45.88.220.198])
-        by smtp.gmail.com with ESMTPSA id v18-20020a05620a091200b00783534c512bsm3231784qkv.32.2024.01.23.07.44.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jan 2024 07:44:29 -0800 (PST)
-Message-ID: <0454a852-5e61-4181-b8cd-518e1cb45b58@joelfernandes.org>
-Date: Tue, 23 Jan 2024 10:44:27 -0500
+        bh=uyKGGaXH67qi8vCo0maX5/zi228Y+OGFXkTPJDuBuaU=;
+        b=vdBMkCumAs1lJaUHT6gBXtPjNr9tIo9MLoQqwgOcKHKfb5wT+FMcLtvRkZeVbeLBbw
+         YonfIzJN6ACkU/lGplYnudYfyp6DLyc+XLqZdcn6sEC9lFjssTjwx88GwKqvjx3YQhi8
+         1LE9xoJId/WMYp6kyrLW0R/Aa55JR1xK4xsN1ZwUIBPdOCUb0xv4hNwPDLaf56aG72We
+         cBhOnUAlvOWRamstbfZFCsslCQkaR1FD/QhFkjCrZrdMENlzPp/FDmsYjTeuO1ygcP5t
+         XlqHWRV5wRaZ9pXcsMBaYKsmr0+rgGZ4cUtqfLZGu3OQLvVyKcx5jnm2yhY4thu786L5
+         CY2w==
+X-Gm-Message-State: AOJu0Yzxm8k/ATojyEMj/cChwrV5AGsbhTry66bW7kiWevYand17vqWp
+	K/kcaMhkUrkyTnFGpdsiMl1JkMUHl/H0K9yynvc88mz4UjO8Ltq5
+X-Google-Smtp-Source: AGHT+IGvZs9WnjBR1iDMpj3ez0AwsvXopSSeTCvRBn1HLppGHnCqP0V6f1yZxITawki33y1vUZjNag==
+X-Received: by 2002:a05:6512:ac2:b0:50f:1502:79e5 with SMTP id n2-20020a0565120ac200b0050f150279e5mr3271350lfu.14.1706024674068;
+        Tue, 23 Jan 2024 07:44:34 -0800 (PST)
+Received: from skbuf ([188.25.255.36])
+        by smtp.gmail.com with ESMTPSA id vb5-20020a170907d04500b00a28aba1f56fsm158225ejc.210.2024.01.23.07.44.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jan 2024 07:44:33 -0800 (PST)
+Date: Tue, 23 Jan 2024 17:44:31 +0200
+From: Vladimir Oltean <olteanv@gmail.com>
+To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Luiz Angelo Daros de Luca <luizluca@gmail.com>,
+	mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+	Alvin =?utf-8?Q?=C5=A0ipraga?= <ALSI@bang-olufsen.dk>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: dsa: remove OF-based MDIO bus registration
+ from DSA core
+Message-ID: <20240123154431.gwhufnatxjppnm64@skbuf>
+References: <20240122053348.6589-1-arinc.unal@arinc9.com>
+ <20240122053348.6589-1-arinc.unal@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 7/7] sched/fair: Fair server interface
-Content-Language: en-US
-To: Daniel Bristot de Oliveira <bristot@redhat.com>,
- Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
- linux-kernel@vger.kernel.org, Luca Abeni <luca.abeni@santannapisa.it>,
- Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
- Thomas Gleixner <tglx@linutronix.de>,
- Vineeth Pillai <vineeth@bitbyteword.org>,
- Shuah Khan <skhan@linuxfoundation.org>, Phil Auld <pauld@redhat.com>,
- suleiman@google.com
-References: <cover.1699095159.git.bristot@kernel.org>
- <26adad2378c8b15533e4f6216c2863341e587f57.1699095159.git.bristot@kernel.org>
- <20240119015513.GA2187855@google.com>
- <3f002616-0975-49b8-a2bf-04abd0446b95@redhat.com>
-From: Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <3f002616-0975-49b8-a2bf-04abd0446b95@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240122053348.6589-1-arinc.unal@arinc9.com>
+ <20240122053348.6589-1-arinc.unal@arinc9.com>
 
-On 1/22/2024 9:14 AM, Daniel Bristot de Oliveira wrote:
-> Interesting, does it keep any task hung? I am having a case where I see
-> a hung task, but I do not get the splat because the system freezes (printk
-> with rq_lock I guess)...
+On Mon, Jan 22, 2024 at 08:33:48AM +0300, Arınç ÜNAL wrote:
+> These subdrivers which control switches [with MDIO bus] probed on OF, will
+> lose the ability to register the MDIO bus OF-based:
+> 
+> drivers/net/dsa/b53/b53_common.c
+> drivers/net/dsa/lan9303-core.c
+> drivers/net/dsa/realtek/realtek-mdio.c
+> drivers/net/dsa/vitesse-vsc73xx-core.c
+> 
+> These subdrivers let the DSA core driver register the bus:
+> - ds->ops->phy_read() and ds->ops->phy_write() are present.
+> - ds->user_mii_bus is not populated.
+> 
+> The commit fe7324b93222 ("net: dsa: OF-ware slave_mii_bus") which brought
+> OF-based MDIO bus registration on the DSA core driver is reasonably recent
+> and, in this time frame, there have been no device trees in the Linux
+> repository that started describing the MDIO bus, or dt-bindings defining
+> the MDIO bus for the switches these subdrivers control. So I don't expect
+> any devices to be affected.
 
-I missed replying to this part of your email. We see it as a syzkaller report
-with splats, so it is not clear if a task was hung at the time of a splat.
-syzkaller runs in its own separate VM instance.
-
-The fun part is though, I found a way to do ftrace dump on it without having to
-pass any boot parameters (that's another issue that we can't pass it boot
-parameters). So we have that tool in our debug arsenal for these issues, thankfully.
-
-> It might be the same problem.
-
-True, possibly.
-
-thanks,
-
- - Joel
+IIUC, Luiz made the original patch for the realtek switches. Shouldn't
+we wait until realtek registers ds->user_mii_bus on its own, before
+reverting? Otherwise, you're basically saying that Luiz made the DSA
+core patch without needing it.
 
