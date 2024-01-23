@@ -1,202 +1,97 @@
-Return-Path: <linux-kernel+bounces-34652-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34657-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D4318385BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:53:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B361A8385C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:55:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 970CAB211B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:53:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6893928C7EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:55:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03C86ED0;
-	Tue, 23 Jan 2024 02:53:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZLRAbMT5"
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3070E290F;
+	Tue, 23 Jan 2024 02:55:18 +0000 (UTC)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E25E2811
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 02:53:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 466D1812;
+	Tue, 23 Jan 2024 02:55:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705978413; cv=none; b=UuCNjRgotJ8+Z/1rC0nR0EDIJ9ACFmaEc3ldVlZ6IuCzikJDqowpFQjqDDkRF1V9Add6lz3WqcAyPWaWHMHsNMCm3+gV+YcYS/PDXjX9cS0LgG1j2FmySMkg2GvnJgvuW7v5hYkuYNNlS9pjqNXB1Pk8Cln78Ikuce2jpBP8Wyo=
+	t=1705978517; cv=none; b=glGnWS4U/EmOR1Q9NqGl2P5h9BjMvwLIrLwaPhAWm8OcoOW7sQ78jsCnFmQdTFf6fqDm5aE0057c5gd8ller+g15V2h2/8ZEG51NI/uqjVAluRKwQABaXYwzYzw6v5j6XS8mel8ifpM/vf+qsHs4lkoltGIK2FcTpcdTzAd+D1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705978413; c=relaxed/simple;
-	bh=cC55pTITuXahQpx5YCMQPJ0anjw73aDUUrh4ymutob4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=k+nmor2gBQThKk9bTyGcgNbiTd0ZUxK0HGcXcGA3AybXXDutsof5IHU8vpb6Jnmvee+3LeoTBHlDB/gQcuprkl/rrwVvgBAE+7nBbhFdhRdO2bwcGG2MqGNUHO+xcuSeeUb+Av6uwl8J9UfuYeMpqOiBdCf27ONpND9/PZs65UQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZLRAbMT5; arc=none smtp.client-ip=209.85.210.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6e0eed0427cso995927a34.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 18:53:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705978411; x=1706583211; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uOBCaJ52Y1g1wzfxl07PVL77XlQF0EwMm9afVAokmvY=;
-        b=ZLRAbMT5C0b/oyf12DbDmWL8GIWiRrfHIy9CGljNLL4r3aMR/LPRALk47yABSsHYhl
-         3yfeMP9sCJLnO/gBJ9bjeCCWXPB75hM31//j2ojGFQtAFbknwOiGp8P1mCEVSdH+qtRp
-         x6w59P8IO0WeNOx6tZ2NbanMPVVy7m92IvtrWv/UoFDG0UnBozdoC4o5smoY5WVzjLjC
-         +K1JAz30qzDN8QRJPfURTz5o2LUYRN3OumEHfPmcHb+LFdw0w0bN8CIojAIxW05STwPn
-         liM9EUn8WRrY8XNyXAzddhIKQPxhklSiRIaxf3aR96SCT5QtE7dD+ikgL0TabjaMCxNC
-         nFOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705978411; x=1706583211;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uOBCaJ52Y1g1wzfxl07PVL77XlQF0EwMm9afVAokmvY=;
-        b=OOPWzjWdbXYDeybOQykCQwY5b2XAhYQm5GAPzzFubJM6Dozv+4OQPQY1lG8z13+FT8
-         4s/FrxO2KjHnfvv172IQrEZtWLdz/2AD8cDIrJmhdNBNmZP6BDRAWbZ7iTAd1rfqNdgN
-         rYm4bCHmbbdO/m1LvMt2g3KqmiXtSfhPVYlqOHYdsE+UHTjL0k/rSBWjd7s8gvE/BLAO
-         E0/0T7c2fFpJ3KHFf/HWI0bI7KmZiqAPEXBwto2CDc1nr8edE+FADYcAUqiv0NpzI3Zh
-         OB81PNCXsMDodtRn+Jb52l6/KfFUbi32Xqg6BIKaRxc/A3t6FkXOon/lsndCFW85ZTom
-         r0hQ==
-X-Gm-Message-State: AOJu0YzuLuTv+IS0HXbhsnAlmNLy4g4A09TSOsmO9NZroIg+zLdekr5G
-	ZZ2gtRWjiS8W5KsqkkThD0nemOCCwLfo9GevZJZkokq6YU5ht4q+ISQ6U2Wi2XWvm7oHfhbqljK
-	/3OSN42BZ6eWgTl/4YOHzGJEe/THIVAXwa26z
-X-Google-Smtp-Source: AGHT+IFXnuoWHsPt7MY3gRiy78pyvptCCA/Wzy2bbiGjmlKPmzoyWRp+/5K0w+QS+OWCk9JQTFxdNGfCk/E9iYZ3T2w=
-X-Received: by 2002:a05:6870:4624:b0:213:4043:aaf2 with SMTP id
- z36-20020a056870462400b002134043aaf2mr810089oao.83.1705978410832; Mon, 22 Jan
- 2024 18:53:30 -0800 (PST)
+	s=arc-20240116; t=1705978517; c=relaxed/simple;
+	bh=LiwWyhM1qtbQeVlD18oSz5aI1Vwll7UcNW8EVujM6uY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=s6o9KNrFn5VKoaYryu4cQzfVfNskEHoFkgTocO+3X/DO8FmrZv8vUiGo8lgiRCAZLctD2eWrPp6+M73t0fyEZ4iFBR4xFsgBrdHXG/CeTNH6pTAcU7Mj244OGv0r4QHztdyKcZME0qqpK7ugDKKHrzraSAMmHGE435vQAseZS38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TJsBg1dDnz1wnDj;
+	Tue, 23 Jan 2024 10:54:51 +0800 (CST)
+Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
+	by mail.maildlp.com (Postfix) with ESMTPS id B30441404D8;
+	Tue, 23 Jan 2024 10:55:12 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
+ (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 23 Jan
+ 2024 10:53:32 +0800
+From: Ye Bin <yebin10@huawei.com>
+To: <rostedt@goodmis.org>, <mhiramat@kernel.org>,
+	<mathieu.desnoyers@efficios.com>, <linux-trace-kernel@vger.kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <yebin10@huawei.com>
+Subject: [PATCH v3 0/7] support '%pd' and '%pD' for print file name
+Date: Tue, 23 Jan 2024 10:56:01 +0800
+Message-ID: <20240123025608.2370978-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117192534.1327608-1-dylanbhatch@google.com>
- <20240119141501.GA23739@redhat.com> <20240119141529.GB23739@redhat.com>
- <CADBMgpxC+BP-wfrM-wP1nbZOcRb0LbsmMDQ3LQ8hUKYsF3QECw@mail.gmail.com>
- <20240120204552.c0708fd10fc8e2442c447049@linux-foundation.org> <20240121120754.GA2814@redhat.com>
-In-Reply-To: <20240121120754.GA2814@redhat.com>
-From: Dylan Hatch <dylanbhatch@google.com>
-Date: Mon, 22 Jan 2024 18:53:19 -0800
-Message-ID: <CADBMgpz7k=LhktfcJhSDBDWN0oLeQxPqhOVws3fq0LNpnfOSYg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] getrusage: use sig->stats_lock
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Kees Cook <keescook@chromium.org>, 
-	Frederic Weisbecker <frederic@kernel.org>, "Joel Fernandes (Google)" <joel@joelfernandes.org>, 
-	Ard Biesheuvel <ardb@kernel.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
-	"Eric W. Biederman" <ebiederm@xmission.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, 
-	Dmitry Vyukov <dvyukov@google.com>, Luis Chamberlain <mcgrof@kernel.org>, 
-	Mike Christie <michael.christie@oracle.com>, David Hildenbrand <david@redhat.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Stefan Roesch <shr@devkernel.io>, 
-	Joey Gouly <joey.gouly@arm.com>, Josh Triplett <josh@joshtriplett.org>, Helge Deller <deller@gmx.de>, 
-	Ondrej Mosnacek <omosnace@redhat.com>, Florent Revest <revest@chromium.org>, 
-	Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500010.china.huawei.com (7.192.105.118)
 
-On Sun, Jan 21, 2024 at 4:09=E2=80=AFAM Oleg Nesterov <oleg@redhat.com> wro=
-te:
->
-> Dylan, do you have a better description? Can you share your repro?
+During fault locating, the file name needs to be printed based on the
+dentry/file address. The offset needs to be calculated each time, which
+is troublesome. Similar to printk, kprobe supports printing file names
+for dentry/file addresses.
 
-That description seems accurate to me.
+Diff v3 vs v2:
+1. Return the index of where the suffix was found in str_has_suffix();
 
-> although I think that something simple like
->
->         #define NT BIG_NUMBER
->
->         pthread_barrier_t barr;
->
->         void *thread(void *arg)
->         {
->                 struct rusage ru;
->
->                 pthread_barrier_wait(&barr);
->                 for (;;)
->                         getrusage(RUSAGE_SELF, &ru);
->                 return NULL;
->         }
->
->         int main(void)
->         {
->                 pthread_barrier_init(&barr, NULL, NT);
->
->                 for (int n =3D 0; n < NT-1; ++n) {
->                         pthread_t pt;
->                         pthread_create(&pt, NULL, thread, NULL);
->                 }
->                 thread(NULL);
->
->                 return 0;
->         }
->
-> should work if you have a machine with a lot of memory/cpus.
->
-> Oleg.
->
+Diff v2 vs v1:
+1. Use "%pd/%pD" print format instead of "pd/pD" print format;
+2. Add "%pd/%pD" in README;
+3. Expand "%pd/%pD" argument before parameter parsing;
+4. Add more detail information in ftrace documentation;
+5. Add test cases for new print format in selftests/ftrace;
 
-Here's my repro, very similar to what you've sent:
+Ye Bin (7):
+  string.h: add str_has_suffix() helper for test string ends with
+    specify string
+  tracing/probes: add traceprobe_expand_dentry_args() helper
+  tracing/probes: support '%pd' type for print struct dentry's name
+  tracing/probes: support '%pD' type for print struct file's name
+  tracing: add new type "%pd/%pD" in readme_msg[]
+  Documentation: tracing: add new type '%pd' and '%pD' for kprobe
+  selftests/ftrace: add test cases for VFS type "%pd" and "%pD"
 
-#define _GNU_SOURCE
-#include <sys/resource.h>
-#include <sched.h>
-#include <sys/wait.h>
-#include <stdio.h>
-#include <sys/mman.h>
-#include <stdlib.h>
-#include <unistd.h>
+ Documentation/trace/kprobetrace.rst           |  6 +-
+ include/linux/string.h                        | 28 +++++++
+ kernel/trace/trace.c                          |  2 +-
+ kernel/trace/trace_kprobe.c                   |  6 ++
+ kernel/trace/trace_probe.c                    | 47 +++++++++++
+ kernel/trace/trace_probe.h                    |  3 +
+ .../ftrace/test.d/kprobe/kprobe_args_vfs.tc   | 79 +++++++++++++++++++
+ 7 files changed, 169 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_vfs.tc
 
-int thrd_func(void *data) {
-       struct rusage usage;
-       int *complete =3D (void *)data;
+-- 
+2.31.1
 
-       while (!*complete);
-       while (1) {
-              getrusage(RUSAGE_SELF, &usage);
-       }
-}
-
-#define STACK_SIZE (1024)
-
-int main(int argc, char **argv) {
-       if (argc !=3D 2) {
-              printf("Usage: %s <thread count>\n", argv[0]);
-              exit(EXIT_SUCCESS);
-       }
-       const int cnt =3D atoi(argv[1]);
-       int pids[cnt];
-       int complete =3D 0;
-       printf("Starting test with %d threads...\n", cnt);
-       for (int i =3D 0; i < cnt; i++) {
-              char *stack =3D mmap(NULL, STACK_SIZE, PROT_READ | PROT_WRITE=
-,
-                                               MAP_PRIVATE |
-MAP_ANONYMOUS | MAP_STACK, -1, 0);
-              if (stack =3D=3D MAP_FAILED) {
-                     perror("mmap() failed\n");
-                    return -1;
-              }
-
-              pids[i] =3D clone(thrd_func, stack + STACK_SIZE, CLONE_THREAD
-                               | CLONE_SIGHAND | CLONE_FS | CLONE_VM |
-CLONE_FILES, (void *) &complete);
-
-              if (pids[i] =3D=3D -1) {
-                     perror("clone() failed\n");
-                     return pids[i];
-              }
-       }
-       complete =3D 1;
-       printf("waiting on threads...\n");
-       sleep(100);
-       complete =3D 0;
-       printf("test finished.\n");
-       exit(EXIT_SUCCESS);
-}
-
-I can't remember exactly why I chose to call mmap and clone directly instea=
-d
-of using pthreads... but I do know what mmap'ing in a smaller stack size
-makes the repro more reliable since you can create more threads. It
-seemed like around 250K threads was about enough to reliably produce
-the lockup, but your mileage may vary.
 
