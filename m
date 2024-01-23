@@ -1,149 +1,107 @@
-Return-Path: <linux-kernel+bounces-34679-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA478838611
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 04:33:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BB53838615
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 04:34:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17C911C25142
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:33:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D95DC289E77
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:34:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C26D720F1;
-	Tue, 23 Jan 2024 03:33:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36107185A;
+	Tue, 23 Jan 2024 03:33:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hDdILOnH"
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NErg9foy"
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03A0A1FAD
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 03:33:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F1071846;
+	Tue, 23 Jan 2024 03:33:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705980797; cv=none; b=MuIF7YNy4pO8QtnzsrFmcXqg+uySr1KuaXH4ngW1u8oOV5zGj0TeYKigHOUFg5xt9/9Su/dqTSX+C+rk+k+Xhj3XNBj1iagWoKkEyzYNhGSaHYZOsMjcOChus40bWoHzXcVqjlD7h2cIiD2mREa34vFcA5nf5xgTv3k/uXf5zSM=
+	t=1705980836; cv=none; b=jOEN6wtnzNIoPq+ZuUeN6VeOahNnnX1sP+dV0tDS7Z8tYz8hGkM9oN8qSPNeAglzBgIIcS9HcDAHRoSQ7sb05SU6teK1nhaHy+KS831docAJNwnVsQgIiJrKnNsYO7FyAmfcM2uhO9PFKGcztuyMhF06q4pnoiQTBqoVmgA/mVg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705980797; c=relaxed/simple;
-	bh=dY0b4QbqepYoiunrDJoruXQx54evIQWDoFF8FO6Rtd8=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=GkPltXN/5rQlv+BTexdT5BTG91qzmnYlkEcMnuyoinOBpfbSTLF5YUlqn+rFcx2MOU4Jl3P+od/CsvClxZJF4M9s9+LEuH71iaMuX3+O0ph04Qpja9NL4aAl2l249tOjnUzEn71uppTQ7N7zrAKyRCEPd29aBK3hQWRwLb4+tAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hDdILOnH; arc=none smtp.client-ip=95.215.58.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Content-Type: text/plain;
-	charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705980793;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dGyLFiCSPKnOgt2WMLCtOYKgq5Jt8mMSuChCnDpw3sE=;
-	b=hDdILOnHa8NAGzybj5naIfs7XhsW6yGVUI0mLp3wSur97OZeZCcTf+GNMtuTZh9YvMngVg
-	jH6zVoGsuSW/BEOdpXQ62XSPAsc29ZSZAoayO48d+pFWjEx09xuqfulfmjMrTs6gFDJW82
-	zNGhPQjLUXBQ+TnbaAac7FitvyZV7dE=
+	s=arc-20240116; t=1705980836; c=relaxed/simple;
+	bh=l3OzJx1tHOBmQO02sT2tNPr/PdKQ56BhECwBcWhlP68=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bafi8jkcv9LyuDqS2u31gxDIsKv3kQey3Ao0BGGBcuPUC5s+WDRuoaSFfHwVt8r7dei/4iqojwlGhnIN0Ckw8BXMOR8QadF4n6MQHWpoUCFjQzlpoNejEzQo/KVImQ+dDtDXcAD1mkA7jwri2bK4SDdLtxCNaypaINJGkC6Y68s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NErg9foy; arc=none smtp.client-ip=209.85.167.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3bbc649c275so1277540b6e.0;
+        Mon, 22 Jan 2024 19:33:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705980834; x=1706585634; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AJL5I+nGMoZkwtnGjpEDMfbOksb5ycAv+1Ffyi6VeZU=;
+        b=NErg9foyVfJqyGOwMkCJb92XBeVr2l2eZhsH3KpUqFsb++V4PHnCE0MeElvFyFOtEu
+         H0KhtyVNtctZ98eP0Szoc9GSAevL2BwgYH1PkBiJ2cWymH088DWhvO9XNVutOXzFTru0
+         Er1E7Ywm+Wfe595l1M02is9KCPweAlwGWL8js7udsRqVFFa9z2kDUMlrhJEq02rpP4Av
+         SGfCwV64tphn7LYYe8+jTivpjjdpvc3QNnEfwGFubH7MSyHZpw+F+MlJaXrXrJyd+sJ6
+         kIQFegd1L2zLd1ifb0pMHDZ/hzEf8SwvM6eMbuLc4nJWwf3CH5qKFkT3BNPOoBqwbiuU
+         eN7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705980834; x=1706585634;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AJL5I+nGMoZkwtnGjpEDMfbOksb5ycAv+1Ffyi6VeZU=;
+        b=Y12CNxCZVFcSnlt90TEN960foFBLDovQrIiqI1ovW0U+Mk9m8jhzGuKuCrRK+kIMvE
+         CGS400M1ahocaJ+T//MTK+gfoAEil+Sgvr3ZO6+6bJPIwHOsljd1tQqh2rERGEK2vsss
+         0CququrPXe6XHtYnvCd9cB+OC4wlihsKUp1aOLxWpG4mOoABnu8trtDHSUacpUG5dq/5
+         WY4V9adR5HbRqy4vum/2P486IRJ/6g6MySEXLX591l8/0gZbxTn4Bdqf6DLTr0yt+dZ2
+         Qb3mVyXBiBOSuKG78LxrjS0uLlCblqJL3zIODgFod+TTvrkxggH5E8I/93fx3j5EV2lq
+         IlCg==
+X-Gm-Message-State: AOJu0YyzMHjuv2Vv21cgcoPsUgVJkufESQ+IeVRtGA2e/arD0jJfcBVR
+	vL88RwYCoFrAh7a8MF6XzIEjRmbZivvocsAP9j/cUVlYFf6lpRHF
+X-Google-Smtp-Source: AGHT+IFgTGEcGpqPg1vbnLfvDKVdv+LdLVoqnOn3OMVCzmwZmfiL1XUYY5LU+U5Yi4wd4TkZKKuzQQ==
+X-Received: by 2002:aca:281a:0:b0:3bd:a4f3:a3 with SMTP id 26-20020aca281a000000b003bda4f300a3mr2329875oix.36.1705980834064;
+        Mon, 22 Jan 2024 19:33:54 -0800 (PST)
+Received: from google.com ([2620:15c:9d:2:b644:a8c4:640a:70c6])
+        by smtp.gmail.com with ESMTPSA id jw13-20020a056a00928d00b006dd738e9004sm163466pfb.172.2024.01.22.19.33.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 19:33:53 -0800 (PST)
+Date: Mon, 22 Jan 2024 19:33:50 -0800
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Bryant Mairs <bryant@mai.rs>
+Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+	Luca Weiss <luca@z3ntu.xyz>
+Subject: Re: [PATCH 1/7] dt-bindings: input: melfas,mms114: add MMS252
+ compatible
+Message-ID: <Za8znk7Lwqpl0Kor@google.com>
+References: <20231105204759.37107-1-bryant@mai.rs>
+ <20231105204759.37107-2-bryant@mai.rs>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Subject: Re: [PATCH v4 6/7] hugetlb: parallelize 2M hugetlb allocation and
- initialization
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <829fb129-f643-4960-a2da-cd38e5ee8f39@linux.dev>
-Date: Tue, 23 Jan 2024 11:32:28 +0800
-Cc: David Hildenbrand <david@redhat.com>,
- David Rientjes <rientjes@google.com>,
- Mike Kravetz <mike.kravetz@oracle.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Tim Chen <tim.c.chen@linux.intel.com>,
- Linux-MM <linux-mm@kvack.org>,
- LKML <linux-kernel@vger.kernel.org>,
- Gang Li <ligang.bdlg@bytedance.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <C79B8BB3-C1F8-4DFA-A084-C4B47486681F@linux.dev>
-References: <20240118123911.88833-1-gang.li@linux.dev>
- <20240118123911.88833-7-gang.li@linux.dev>
- <ddf37da4-4cbc-478a-be9b-3060b0aebc90@linux.dev>
- <14e38e95-2bc6-4571-b502-4e3954b4bcc4@linux.dev>
- <849D7EA4-BCF4-4587-8A78-F3B35B63EAE9@linux.dev>
- <829fb129-f643-4960-a2da-cd38e5ee8f39@linux.dev>
-To: Gang Li <gang.li@linux.dev>
-X-Migadu-Flow: FLOW_OUT
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231105204759.37107-2-bryant@mai.rs>
 
+On Sun, Nov 05, 2023 at 09:46:16PM +0100, Bryant Mairs wrote:
+> From: Luca Weiss <luca@z3ntu.xyz>
+> 
+> Add a compatible for MMS252 touchscreen which appears to work fine with
+> the MMS114 driver.
+> 
+> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+> Signed-off-by: Bryant Mairs <bryant@mai.rs>
 
+Applied, thank you.
 
-> On Jan 23, 2024, at 10:12, Gang Li <gang.li@linux.dev> wrote:
->=20
-> On 2024/1/22 19:30, Muchun Song wrote:
->>> On Jan 22, 2024, at 18:12, Gang Li <gang.li@linux.dev> wrote:
->>>=20
->>> On 2024/1/22 15:10, Muchun Song wrote:> On 2024/1/18 20:39, Gang Li =
-wrote:
->>>>> +static void __init hugetlb_alloc_node(unsigned long start, =
-unsigned long end, void *arg)
->>>>>   {
->>>>> -    unsigned long i;
->>>>> +    struct hstate *h =3D (struct hstate *)arg;
->>>>> +    int i, num =3D end - start;
->>>>> +    nodemask_t node_alloc_noretry;
->>>>> +    unsigned long flags;
->>>>> +    int next_node =3D 0;
->>>> This should be first_online_node which may be not zero.
->>>=20
->>> That's right. Thanks!
->>>=20
->>>>> -    for (i =3D 0; i < h->max_huge_pages; ++i) {
->>>>> -        if (!alloc_bootmem_huge_page(h, NUMA_NO_NODE))
->>>>> +    /* Bit mask controlling how hard we retry per-node =
-allocations.*/
->>>>> +    nodes_clear(node_alloc_noretry);
->>>>> +
->>>>> +    for (i =3D 0; i < num; ++i) {
->>>>> +        struct folio *folio =3D alloc_pool_huge_folio(h, =
-&node_states[N_MEMORY],
->>>>> +                        &node_alloc_noretry, &next_node);
->>>>> +        if (!folio)
->>>>>               break;
->>>>> +        spin_lock_irqsave(&hugetlb_lock, flags);
->>>>> I suspect there will more contention on this lock when =
-parallelizing.
->>>=20
->>> In the worst case, there are only 'numa node number' of threads in
->>> contention. And in my testing, it doesn't degrade performance, but
->>> rather improves performance due to the reduced granularity.
->> So, the performance does not change if you move the lock out of
->> loop?
->>=20
->=20
-> If we move the lock out of loop, then multi-threading becomes =
-single-threading, which definitely reduces performance.
-
-No. I mean batching the pages into pool list just like =
-prep_and_add_allocated_folios
-does.
-
->=20
-> ```
-> +       spin_lock_irqsave(&hugetlb_lock, flags);
->        for (i =3D 0; i < num; ++i) {
->                struct folio *folio =3D alloc_pool_huge_folio(h, =
-&node_states[N_MEMORY],
->                                                &node_alloc_noretry, =
-&next_node);
->                if (!folio)
->                        break;
-> -               spin_lock_irqsave(&hugetlb_lock, flags);
->                __prep_account_new_huge_page(h, folio_nid(folio));
->                enqueue_hugetlb_folio(h, folio);
-> -               spin_unlock_irqrestore(&hugetlb_lock, flags);
->                cond_resched();
->        }
-> +       spin_unlock_irqrestore(&hugetlb_lock, flags);
-> }
-> ```
-
-
+-- 
+Dmitry
 
