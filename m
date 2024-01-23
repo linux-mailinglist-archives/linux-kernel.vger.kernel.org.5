@@ -1,113 +1,119 @@
-Return-Path: <linux-kernel+bounces-35969-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2942F83995F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:15:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 709EB83995E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:15:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 595A3B2E428
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:12:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7D76AB28DE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:12:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91F0112839B;
-	Tue, 23 Jan 2024 19:05:30 +0000 (UTC)
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD7E786159;
+	Tue, 23 Jan 2024 19:05:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DjXDEbto"
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02355128375;
-	Tue, 23 Jan 2024 19:05:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8C1C7FBC5
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 19:05:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706036730; cv=none; b=ohFeGCTnXQ7apDWThOCmbU35j4jihmAvhnn1h34RTOmqHKg+bmaEV7pGo+1xOjI/CgrhohW2FbIB4ej9v7G6SGbtGMmt7Kig8nYyNjzas/eWS2ljHaYje0TEx+RQF69QwvaNQlBlzBFCWIdt+vVLPsHfXSqzHAfk7mP5Rg+cKk4=
+	t=1706036726; cv=none; b=HxhPZpATwbvEvzWrak6aL9I4nNkUQP8LQqISHS9zTZbTsgNuPfoPgfDGgIP1TAGRcMo0zkrG37pToGkYXKxcccHi8jN9l8kF1moA3YjdoZlvrLFmOglNHj/n8EJS0luEq4TOgpB/OhpY53v7opEKFfOulqKuwczgmiewr1DqMtc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706036730; c=relaxed/simple;
-	bh=K+POQtrUPBrvK9huteUY/chYhWLFqoQivtt56NqPe5U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iN9Byko6viLCQwx5tNOYEF5cpvvYfRpkC0KVRPTRH6PcOhC8FRhnM15mTp8emZI60HP/n3o+NPGGjSONMoc6IXh3NVnZjSd1Aw16dYWs/Iv/M/b9r6HyFJqTQwarYktdyUxeMm1M7ycS5Agpr0tgy/N+sn1FB3N2nz6zTu4Z5t8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=heusel.eu; spf=pass smtp.mailfrom=heusel.eu; arc=none smtp.client-ip=217.72.192.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=heusel.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=heusel.eu
-Received: from localhost ([141.70.80.5]) by mrelayeu.kundenserver.de (mreue109
- [212.227.15.183]) with ESMTPSA (Nemesis) id 1MS3rB-1reH5O269r-00TU4z; Tue, 23
- Jan 2024 20:05:13 +0100
-Date: Tue, 23 Jan 2024 20:05:11 +0100
-From: Christian Heusel <christian@heusel.eu>
-To: Mario Limonciello <mario.limonciello@amd.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, 
-	Basavaraj Natikar <Basavaraj.Natikar@amd.com>, Shyam Sundar S K <Shyam-sundar.S-k@amd.com>, 
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>, 
-	open list <linux-kernel@vger.kernel.org>, "Rafael J . Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH] pinctrl: amd: Add IRQF_ONESHOT to the interrupt request
-Message-ID: <q336uhrwuvhaf2x4fc6tneaavgugcyszgn75vzbrr4ksf7oxhi@3qcwff6nuvei>
-References: <20240123180818.3994-1-mario.limonciello@amd.com>
+	s=arc-20240116; t=1706036726; c=relaxed/simple;
+	bh=OCbI+NLF1YGu498IgDblfbl3chaPTQws1Te3v7nNHtw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JnsVj2mGGKycfRbn1lRY4XYzj3M7VQDqqvsnAfO57bt4/8oYowF4/7vam76LUIGT27CHc/HcP35626dJ2Vy8/bezuyOPE+m6vXVwm2vaYs2z5H4jVd08eoavF7C2fVHLwQ0hFRdNcfFGrjhFWqgv8rjhoPBjx/+mTCBRnYVVo9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DjXDEbto; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so3649719a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 11:05:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706036724; x=1706641524; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bVERgvysCWGTIRLyfCXZM2M+ukaLtX3i/mU0WUPzMyA=;
+        b=DjXDEbtoQ6dLI9g5+CvSohqx73PLyl7pRSa/1T6ewLrPMGTjRKUwBmLRiBe8qYE9JT
+         junPd/eidBbQYHrRpP0aKgtC+pJmxHmKJgwySFfIUKjtofr8Bt5SqPPYrwfx1g/kFPS/
+         NK39wVMn5i8LKfTvVVoywUrNWXpTAA4LTEzV+UDOECFHsuIwqku6QJucKZJl+XzLXoQj
+         gLe9zGNfPad4su04Y8dFSpm2NWr+2bhC2xK/nYNwsxFSxxl5oBHqcO7BAvRNUvNx1M3J
+         twJruxlZDCilQYp2v7/yyriUbU6vJRpqvvLT21O+mf8rQSPfXPwCpkmiOWMZSFsgZkeG
+         zBaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706036724; x=1706641524;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bVERgvysCWGTIRLyfCXZM2M+ukaLtX3i/mU0WUPzMyA=;
+        b=H+jggi2cmlcYJVdCNhrmPCuu9D374PYFwk+4SLh2XQfvXbUYeA7Q+zI2cd+SV7/sEo
+         xQ0xHPrYLIajW2SusjU+YUTt9oMqwfAc4uwdt5NalVciY6I76dC4m357T+ZrW4F+b2r0
+         Oaee7ZUbzUhnukJU7WJwlGNvZVoH5xldndGIXUdpdBzCdY6tXvIkCBnOEpRxDgVPpQj/
+         2nHiV85Fp54nJht92wK2XJrx6iojM56N3BB9rPOsuxdYAeFLD00PwNb2USUBcigEf4UD
+         8Pt+JlTxssByXIcgfZuB09TYWQ2aj97TRTkwpkEXIbPn6eEO8ROA7Miwf+UaXboJDIfp
+         YNmw==
+X-Gm-Message-State: AOJu0YzKKrivmhtR0M6/p0l5E4TNKgZpjbFX4DfNXCqjAeMj8dbuPTOP
+	BGHmKmv/33Q36uj+r/zi0N7CcTGMGWZiMEZF84uBdvDROQLpobiYpnzQGaPe976NxjIw8bjo1xc
+	/syIUB8FuzlFDT4Gaj8gTKPUFaVmWXzeSxdF1eQ==
+X-Google-Smtp-Source: AGHT+IEmzTb6pGV6jReIafVXWwbj4cum+U8ODr9yAF3ZBzIkY6pczw4WK0Mea40kpolMuPv8pK9QI+1MXj9Fb/brwsM=
+X-Received: by 2002:a17:90a:6f82:b0:290:6b5f:fcd5 with SMTP id
+ e2-20020a17090a6f8200b002906b5ffcd5mr3070046pjk.0.1706036724112; Tue, 23 Jan
+ 2024 11:05:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="bsyluouxdqi3s7n6"
-Content-Disposition: inline
-In-Reply-To: <20240123180818.3994-1-mario.limonciello@amd.com>
-X-Provags-ID: V03:K1:Gm5kXVdpfIXtk/gCwj1eOdDhwOzgaN8U8D5zrISYj85b3E54iZy
- bMOBRdYRu6GRvORY/NEe/imBtmKYd1IklLyoBy35vvyzOlC/EowijU6rbpKPmJLcZyTaKr6
- po8C4aA4sBY4mJEYUJ5TnZ8IPhKH0eZL0++bjz6DnJMJ97fz4j2DfUkDbhyt8QcvfwZg47o
- aEFTf/FWayI0v3pTHDM1g==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:mYY3OSjtAOc=;R/bgZE0U+xSL5JoVr42K9OMX1hh
- +2Y2WiSRdMlsHXqjzIlcSMZG1cQtkaherMHk0HQZV9/W/t5c7a1ozfpIPoowRWa8bh8IF3Sd1
- YwZlr1iHECa6uHCXdkFfSS3riR4nBJRmXynbevtf6GdyvldoAehNBSp3qzC63IEc7GtKznNZP
- TxityFSNtz7wc5KaSsdnrn1Wmb1CD8viNy7YLrMbucuy8XFFChqvHa6pkAhPNpDwKwSpShfYt
- YJzzNRVC2+cvU3sqUuPjPsOvknZHlrUWiBWPAZuztbkHGifP6FhdOrq8ZEXIBEt/zhJWf3SRW
- SfMlQMcj0kdC7IrSH1n1G7kQZ0JermjzRAy9MoDMQUaCSHCf6O3G/QfgRfB21EP8WT5izevDe
- VzSHU1jUbZbCJ2KdXZfVpPfViFZhe5Tvg4Nc3M3SOCHQHJFFfv550EplI9get9XBnNtyEGVFp
- DQYlTO02FtgbH9sQhVWLWhkf5VGGQIYvkgim0tVipKZ2MDcuFIXUwrWgUMtGjYvH/cduGR1o7
- zuwMTihsU2HjLXL8PrqTtRKnGA7LETaA2DkHB0gaBlQ8KXtC0GF1SdL4f0wWzOMYKKHTGV4Eo
- nQ7gePvlLAs4yUyStQ9yqezAg6bPJVCT4s4orcSu08N7rKFmww8kukZ8YqPCTcJNqF00SWIbx
- tI7buIn8r9wH6lzhb21g5nUWxUse1K/D5nl8kULDZNLTYFOonaC6dR861wPlKjC5sHLfsQJny
- OzAA8jaSpf5qPwTJL4tCRE+5/ULZA/YXKcXYap9Dr7TZY76xVYsVJle3Xqt7LsR+TWY+Hcoai
- haOHwREKoaDfL+MofTF9x6LsjDZbSeKjzU00jUTCSHHwlBRo2SV0v9rRvH/2E2rFbJy8B9G4s
- JjAkaV063OCv3Hg==
+References: <20240123153421.715951-1-tudor.ambarus@linaro.org> <20240123153421.715951-2-tudor.ambarus@linaro.org>
+In-Reply-To: <20240123153421.715951-2-tudor.ambarus@linaro.org>
+From: Sam Protsenko <semen.protsenko@linaro.org>
+Date: Tue, 23 Jan 2024 13:05:13 -0600
+Message-ID: <CAPLW+4k3EmkzW9K638umFNav1HvofYHV=WnXPmDaRTXuFDN7Bw@mail.gmail.com>
+Subject: Re: [PATCH 01/21] spi: dt-bindings: samsung: add google,gs101-spi compatible
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: broonie@kernel.org, andi.shyti@kernel.org, arnd@arndb.de, 
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	alim.akhtar@samsung.com, linux-spi@vger.kernel.org, 
+	linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-arch@vger.kernel.org, andre.draszik@linaro.org, 
+	peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Jan 23, 2024 at 9:34=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linaro=
+org> wrote:
+>
+> Add "google,gs101-spi" dedicated compatible for representing SPI of
+> Google GS101 SoC.
+>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> ---
 
---bsyluouxdqi3s7n6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
 
-On 24/01/23 12:08PM, Mario Limonciello wrote:
-> This should fix the GPIO controller failing to work after commit
-> 7a36b901a6eb ("ACPI: OSL: Use a threaded interrupt handler for SCI").
-> ```
-> [    0.417335] genirq: Flags mismatch irq 9. 00000088 (pinctrl_amd) vs. 00002080 (acpi)
-> [    0.420073] amd_gpio: probe of AMDI0030:00 failed with error -16
-> ```
-
-I have just applied this on top of 6.8-rc1 and the error in dmesg went
-away, so from my perspective this fix looks good.
-
-Tested-by: Christian Heusel <christian@heusel.eu>
-
---bsyluouxdqi3s7n6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEb3ea3iR6a4oPcswTwEfU8yi1JYUFAmWwDecACgkQwEfU8yi1
-JYVBDg/8CSAC9XQWg61EgRJl3sUloUO1V+grtvVxy+q9LbmgwplE7FghQbZBp0Vf
-1cC52D4oGczxJ7Qr5+A/79na9AbdqNecfe/FIiz1V0e9jWyUd05Gcb7jzcspNrGA
-K+Vqel4Ut/inGXXqbMxIPfD5oWTRquQ42gYyijHFJDXAm2N1upUHz7Gay5kWhx+b
-EFvnSOnlxpkWdPM2l6fIIhZd24RfpYyWj7/lGCsII795YvMLfYyqQ0o0LA+LLrOZ
-qipuT+ZPZfpVLsxjpj3cGTWV65RYpestNXiFhsr0zSi3HHOKGSoBvI86i9i5lOgy
-wDuDuSr4MhEd5FPNoqBp2jKL94YI6qu4pockUOom92q+I2kdjEMGOk2VtZBPkoW9
-wNsCcqGgXbbRB7FN745a7Q78A6yEFxd4W+irbTRyFm26LFSys/6sOIwjodxLkSf3
-RvaIVXgnwsHTtP/K5OTf92SBsAbmHDDXAS/Vqv+LSZyy2qs3DIf/pijMLq7QahTf
-knhNdMjDNxRLmD2Gvr4Be6Go3Q6lzU9OSmkhzfrAa3Rktsai+7R55jWUVahfD84e
-c49u6KUKJ0mls8m1E2ggQPLL+kxjiZqLYzaHIpVmGCNqGIR0fm5As7wMnZXqv3iU
-IUHABPX6Y+sBlCLCyPFyTnPfrKGCKw6LBq+CoZout8KK5XJCD+c=
-=ydZH
------END PGP SIGNATURE-----
-
---bsyluouxdqi3s7n6--
+>  Documentation/devicetree/bindings/spi/samsung,spi.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/Documentation/devicetree/bindings/spi/samsung,spi.yaml b/Doc=
+umentation/devicetree/bindings/spi/samsung,spi.yaml
+> index 79da99ca0e53..386ea8b23993 100644
+> --- a/Documentation/devicetree/bindings/spi/samsung,spi.yaml
+> +++ b/Documentation/devicetree/bindings/spi/samsung,spi.yaml
+> @@ -17,6 +17,7 @@ properties:
+>    compatible:
+>      oneOf:
+>        - enum:
+> +          - google,gs101-spi
+>            - samsung,s3c2443-spi # for S3C2443, S3C2416 and S3C2450
+>            - samsung,s3c6410-spi
+>            - samsung,s5pv210-spi # for S5PV210 and S5PC110
+> --
+> 2.43.0.429.g432eaa2c6b-goog
+>
 
