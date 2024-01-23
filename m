@@ -1,151 +1,187 @@
-Return-Path: <linux-kernel+bounces-35395-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35396-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C9EF839056
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:42:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9282E839057
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:43:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F4B3286DFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:42:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A56C284096
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:43:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 367765F54A;
-	Tue, 23 Jan 2024 13:42:38 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 997B25F542;
-	Tue, 23 Jan 2024 13:42:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C5515F550;
+	Tue, 23 Jan 2024 13:43:14 +0000 (UTC)
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68E2E5EE9A;
+	Tue, 23 Jan 2024 13:43:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706017357; cv=none; b=jGBUy1xufhgc7//h6zETeWYq9PFsLrCASE1EFMNK8fvXz6+d6QE+OlmUg8+NiqtJQh2bGsoaLywttHmp2aQmPXgwjzMisp8x0zofBRBK5q+vP5GYU3erPFsx6yk/J+dHPjKAkjC9ivpNVB9oOFsKH0lY8FqL/RuSUvMhKcGV794=
+	t=1706017393; cv=none; b=Kk8mLno/MlPTcIPmLTdeUEwYk/PqacWqMby04diCOxaG/hZTM0vnG18TRfPYXTlN7S+L9o0KJX2xjISKAjjJqn499lr3akVIC+n77E20SJ6Pn+fxr9fWmIv2BVKvWGH6br4+9oXg3tdl3jarWlGOt6XRhtqp2ue30v8bXKsK9Ts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706017357; c=relaxed/simple;
-	bh=uUJ2HO+3UqHTTrvrYPI/QJXNZTXarf00MBuJxNlTReI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DIE5RD/2XfE6wfD1em51zp9HV9D1+EnBEkx2ektx7dWcQb8hfDQd61iE/vQpFyxmz7ZfpgY0XhoCa4k9hrLu9TzOjioiX0d4TQNcc1eOx1Y+y6RbyAITLSaLh8rFr2BWbnhZzJfPIUCy6Vz8tIw7CUM+2yu+iQSH/xjnDAfGAic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5D631FEC;
-	Tue, 23 Jan 2024 05:43:20 -0800 (PST)
-Received: from [10.57.77.165] (unknown [10.57.77.165])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A8BB63F762;
-	Tue, 23 Jan 2024 05:42:30 -0800 (PST)
-Message-ID: <94d33a07-c59a-4315-9c64-8b4d959ca1f4@arm.com>
-Date: Tue, 23 Jan 2024 13:42:29 +0000
+	s=arc-20240116; t=1706017393; c=relaxed/simple;
+	bh=Jb9itl957EFVoNO5FWQy9uocQU42xFzLex48PwPhTqo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=i2gFPXbDLsuiJeHhjryq6juw6GReeIbz6At4quHKJxOhnN7WvMhWY6jzvv/Q2vB9wW2uQY9FE7Wt2dwNsDphyWzHyw5xT6mWkeOcPuqpbba8orMLnD2tNJfLlRx9UK2GObCmUebGRw/HMVjciXMbQ2uQIPVJ0bIzTxpcYFwPQU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5edfcba97e3so43988207b3.2;
+        Tue, 23 Jan 2024 05:43:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706017390; x=1706622190;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ta8VXhfkrMNIwJSy/HBWlj17p8HnvVLoiI7h5yLdjII=;
+        b=GO9Rd3TbSJdxA+RJbUCZOXh/q7c4dclE73jVHDMqOG6fdKYhkOmSktHhVQROe0uidD
+         Kpo+dDiJbZFJGCYUaPXXl2wRD6WSP8OvrAV7i94itz9bMReXqv1m9+i0pBat1KAbXBe/
+         WHGIoUY0ba+tsdaOfzDz8Sq6Ksl5D1koPI2UuV3UN9Prvm/OJ0DBBOGo56LDriWlJL4i
+         hYGKhRBAqlnOgyohEHHbwfs8381rocR79Rb7kDbsdvRyL4m7W/HkjVWkP/kSaMirzsYQ
+         /TWjjAxf3Qdc/DN9TeGBbEq7e+p1d2zDNmjZRmfyP1AOg/Cnrl88kaFQKtS2Mi/F152U
+         GlOw==
+X-Gm-Message-State: AOJu0YyCSAOhfn8Yh9F//yH0JxF2lLkOlFdJ7hxt0AGA9aXD89wvOd+s
+	senrQAdsc1WTPVT37iXBZd474kNrh45DgbodgVVryZrGhg4H9+HqIdxFKR8Wf6g=
+X-Google-Smtp-Source: AGHT+IHxjorUYIUGj5cuOXZdUYvwecuOQnqM2naYCWagiysYPgxFGUzVgD0y3Fqucr9HLeE2hT20Ow==
+X-Received: by 2002:a0d:cb8b:0:b0:5ff:5beb:d570 with SMTP id n133-20020a0dcb8b000000b005ff5bebd570mr4683025ywd.43.1706017390085;
+        Tue, 23 Jan 2024 05:43:10 -0800 (PST)
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
+        by smtp.gmail.com with ESMTPSA id w197-20020a0dd4ce000000b005ff9acf4683sm3296792ywd.123.2024.01.23.05.43.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jan 2024 05:43:09 -0800 (PST)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5f2d4aaa2fdso43943317b3.1;
+        Tue, 23 Jan 2024 05:43:09 -0800 (PST)
+X-Received: by 2002:a0d:f5c3:0:b0:5fb:da77:af07 with SMTP id
+ e186-20020a0df5c3000000b005fbda77af07mr4704548ywf.32.1706017389477; Tue, 23
+ Jan 2024 05:43:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 10/11] mm/memory: ignore dirty/accessed/soft-dirty bits
- in folio_pte_batch()
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
- Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, "David S. Miller"
- <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
-References: <20240122194200.381241-1-david@redhat.com>
- <20240122194200.381241-11-david@redhat.com>
- <59592b50-fe89-4b32-8490-2e6c296f972f@arm.com>
- <76740e33-9b52-4e23-b407-8ae38bac15ec@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <76740e33-9b52-4e23-b407-8ae38bac15ec@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240122235208.work.748-kees@kernel.org> <20240123002814.1396804-27-keescook@chromium.org>
+ <CAMuHMdWa9tXQRHkkX-W+5n8kuCvEFZdsfStPtYGA0MZpTGX79Q@mail.gmail.com> <c915b476-784c-4d64-8063-f18837350568@helsinkinet.fi>
+In-Reply-To: <c915b476-784c-4d64-8063-f18837350568@helsinkinet.fi>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 23 Jan 2024 14:42:57 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVhPV0-BCe-90oh5tpwt1S8bOQsyRE+vemVGORSfS-gBg@mail.gmail.com>
+Message-ID: <CAMuHMdVhPV0-BCe-90oh5tpwt1S8bOQsyRE+vemVGORSfS-gBg@mail.gmail.com>
+Subject: Re: [PATCH 27/82] m68k: Refactor intentional wrap-around calculation
+To: Eero Tamminen <oak@helsinkinet.fi>
+Cc: Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org, 
+	Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Liam Howlett <liam.howlett@oracle.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+	Hugh Dickins <hughd@google.com>, linux-m68k@lists.linux-m68k.org, 
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>, Bill Wendling <morbo@google.com>, 
+	Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 23/01/2024 13:06, David Hildenbrand wrote:
-> On 23.01.24 13:25, Ryan Roberts wrote:
->> On 22/01/2024 19:41, David Hildenbrand wrote:
->>> Let's ignore these bits: they are irrelevant for fork, and will likely
->>> be irrelevant for upcoming users such as page unmapping.
->>>
->>> Signed-off-by: David Hildenbrand <david@redhat.com>
->>> ---
->>>   mm/memory.c | 10 ++++++++--
->>>   1 file changed, 8 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/mm/memory.c b/mm/memory.c
->>> index f563aec85b2a8..341b2be845b6e 100644
->>> --- a/mm/memory.c
->>> +++ b/mm/memory.c
->>> @@ -953,24 +953,30 @@ static __always_inline void __copy_present_ptes(struct
->>> vm_area_struct *dst_vma,
->>>       set_ptes(dst_vma->vm_mm, addr, dst_pte, pte, nr);
->>>   }
->>>   +static inline pte_t __pte_batch_clear_ignored(pte_t pte)
->>> +{
->>> +    return pte_clear_soft_dirty(pte_mkclean(pte_mkold(pte)));
->>> +}
->>> +
->>>   /*
->>>    * Detect a PTE batch: consecutive (present) PTEs that map consecutive
->>>    * pages of the same folio.
->>>    *
->>>    * All PTEs inside a PTE batch have the same PTE bits set, excluding the PFN.
->>
->> nit: last char should be a comma (,) not a full stop (.)
->>
->>> + * the accessed bit, dirty bit and soft-dirty bit.
->>>    */
->>>   static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
->>>           pte_t *start_ptep, pte_t pte, int max_nr)
->>>   {
->>>       unsigned long folio_end_pfn = folio_pfn(folio) + folio_nr_pages(folio);
->>>       const pte_t *end_ptep = start_ptep + max_nr;
->>> -    pte_t expected_pte = pte_next_pfn(pte);
->>> +    pte_t expected_pte = __pte_batch_clear_ignored(pte_next_pfn(pte));
->>>       pte_t *ptep = start_ptep + 1;
->>>         VM_WARN_ON_FOLIO(!pte_present(pte), folio);
->>>         while (ptep != end_ptep) {
->>> -        pte = ptep_get(ptep);
->>> +        pte = __pte_batch_clear_ignored(ptep_get(ptep));
->>>             if (!pte_same(pte, expected_pte))
->>>               break;
->>
->> I think you'll lose dirty information in the child for private mappings? If the
->> first pte in a batch is clean, but a subsequent page is dirty, you will end up
->> setting all the pages in the batch as clean in the child. Previous behavior
->> would preserve dirty bit for private mappings.
->>
->> In my version (v3) that did arbitrary batching, I had some fun and games
->> tracking dirty, write and uffd_wp:
->> https://lore.kernel.org/linux-arm-kernel/20231204105440.61448-2-ryan.roberts@arm.com/
->>
->> Also, I think you will currently either set soft dirty on all or none of the
->> pages in the batch, depending on the value of the first. I previously convinced
->> myself that the state was unimportant so always cleared it in the child to
->> provide consistency.
-> 
-> Good points regarding dirty and soft-dirty. I wanted to avoid passing flags to
-> folio_pte_batch(), but maybe that's just what we need to not change behavior.
+Hi Eero,
 
-I think you could not bother with the enforce_uffd_wp - just always enforce
-uffd-wp. So that's one simplification vs mine. Then you just need an any_dirty
-flag following the same pattern as your any_writable. Then just set dirty on the
-whole batch in the child if any were dirty in the parent.
+On Tue, Jan 23, 2024 at 2:30=E2=80=AFPM Eero Tamminen <oak@helsinkinet.fi> =
+wrote:
+> On 23.1.2024 10.13, Geert Uytterhoeven wrote:
+> > On Tue, Jan 23, 2024 at 1:35=E2=80=AFAM Kees Cook <keescook@chromium.or=
+g> wrote:
+> >> In an effort to separate intentional arithmetic wrap-around from
+> >> unexpected wrap-around, we need to refactor places that depend on this
+> >> kind of math. One of the most common code patterns of this is:
+> >>
+> >>          VAR + value < VAR
+> >>
+> >> Notably, this is considered "undefined behavior" for signed and pointe=
+r
+> >> types, which the kernel works around by using the -fno-strict-overflow
+> >> option in the build[1] (which used to just be -fwrapv). Regardless, we
+> >> want to get the kernel source to the position where we can meaningfull=
+y
+> >> instrument arithmetic wrap-around conditions and catch them when they
+> >> are unexpected, regardless of whether they are signed[2], unsigned[3],
+> >> or pointer[4] types.
+> >>
+> >> Refactor open-coded unsigned wrap-around addition test to use
+> >> check_add_overflow(), retaining the result for later usage (which remo=
+ves
+> >> the redundant open-coded addition). This paves the way to enabling the
+> >> unsigned wrap-around sanitizer[2] in the future.
+> >>
+> >> Link: https://git.kernel.org/linus/68df3755e383e6fecf2354a67b08f92f185=
+36594 [1]
+> >> Link: https://github.com/KSPP/linux/issues/26 [2]
+> >> Link: https://github.com/KSPP/linux/issues/27 [3]
+> >> Link: https://github.com/KSPP/linux/issues/344 [4]
+> >> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> >> Cc: Andrew Morton <akpm@linux-foundation.org>
+> >> Cc: Arnd Bergmann <arnd@arndb.de>
+> >> Cc: Liam Howlett <liam.howlett@oracle.com>
+> >> Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> >> Cc: Hugh Dickins <hughd@google.com>
+> >> Cc: linux-m68k@lists.linux-m68k.org
+> >> Signed-off-by: Kees Cook <keescook@chromium.org>
+> >
+> > Thanks for your patch!
+> >
+> >> --- a/arch/m68k/kernel/sys_m68k.c
+> >> +++ b/arch/m68k/kernel/sys_m68k.c
+> >> @@ -391,10 +391,11 @@ sys_cacheflush (unsigned long addr, int scope, i=
+nt cache, unsigned long len)
+> >>
+> >>                  mmap_read_lock(current->mm);
+> >>          } else {
+> >> +               unsigned long sum;
+> >
+> > "sum" sounds like this is a dummy variable, to please the third
+> > parameter of check_add_overflow()...
+> >
+> >>                  struct vm_area_struct *vma;
+> >>
+> >>                  /* Check for overflow.  */
+> >
+> > I agree with Liam: please drop the comment.
+> >
+> >> -               if (addr + len < addr)
+> >> +               if (check_add_overflow(addr, len, &sum))
+> >>                          goto out;
+> >>
+> >>                  /*
+> >> @@ -403,7 +404,7 @@ sys_cacheflush (unsigned long addr, int scope, int=
+ cache, unsigned long len)
+> >>                   */
+> >>                  mmap_read_lock(current->mm);
+> >>                  vma =3D vma_lookup(current->mm, addr);
+> >> -               if (!vma || addr + len > vma->vm_end)
+> >> +               if (!vma || sum > vma->vm_end)
+> >
+> > ... Oh, it is actually used. What about renaming it to "end" instead?
+>
+> IMHO this is more descriptive:
+> +               if (check_add_overflow(addr, len, &sum))
+>
+> than this:
+> +               if (check_add_overflow(addr, len, &end))
+>
+> "sum" is IMHO quite obviously sum of the preceding args, whereas I do
+> not know what "end" would be.
 
-Although now I'm wondering if there is a race here... What happens if a page in
-the parent becomes dirty after you have checked it but before you write protect
-it? Isn't that already a problem with the current non-batched version? Why do we
-even to preserve dirty in the child for private mappings?
+"end" is the end of the block of size "len" pointed to by "addr".
 
+IMHO "if (sum > vma->vm_end)" is less descriptive...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
