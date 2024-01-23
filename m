@@ -1,180 +1,124 @@
-Return-Path: <linux-kernel+bounces-35000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C2E5838A63
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:33:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9316838A65
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:34:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52DECB23B19
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:33:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC6111C23590
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:34:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 948CE59B69;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8A195A0E6;
+	Tue, 23 Jan 2024 09:33:45 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8595559B62;
 	Tue, 23 Jan 2024 09:33:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="S+BrXl9K";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="S+BrXl9K"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FA8959B4C;
-	Tue, 23 Jan 2024 09:33:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706002420; cv=none; b=AW5dlAvX5/9XJ3j6YG1rSTE3EHwUg1YXMlyCsrOYSHVWBmozGppQhtTLeip12OCZbVbPq1/Eq/MByxJV0kO1119C0HIRdlm/enFCqUeQFDQEqhhvwzeYChT34V7nLuzb0U3BM7/uLTKi3JFwoKs1yXBlrt8DJ6F5Y/IVfrv5MPA=
+	t=1706002425; cv=none; b=QxcK8wUVYWa+BJqqeI/IIDJDTJ92Bef1S8sUrXjFFuHRYXMcWBJtF0V7SolvkD6pebp3zDxZHsyJ1UjGhpSNi1TZr9rEuIx73v6TaX5seSxd/wC7Ubrx5ao3BcU7NgFuoQTbOm+84mqO5RW75jrkyYWo8CushfhhJlAakm2TCkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706002420; c=relaxed/simple;
-	bh=2KnS/m/aJXF9pgC7sa33Pkk2SdNYQMgvjyWG/WyoxTs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FqMPnLs3ItmhDv5lsRW81fvzHegP85mwv4+l9VsqzC5/d2braGMMR82/VGdw0Ecvc8r1wYi9igxjkWiLETxWJRuUUQ6v9SrW0g8SUsqVPF3LdGSsbebJFQ1gBso4tLVurBENLX5n7RFNaUJfOGyBoD3QX+IPh8/tBy/RMwGOqV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=S+BrXl9K; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=S+BrXl9K; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3249622177;
-	Tue, 23 Jan 2024 09:33:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706002417; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vr0dVSL74POTu+Iy/t8VsndcOHjm5FnK2rIR21aIjBA=;
-	b=S+BrXl9K9p1cn9yvSqLBO6VScZ2ywrf6is1PxTTlOrOQLKR/o1eBgNPpxkLlrCuQiXFQQl
-	ppba9WHp4P1Rk+Xl+nS5t5H/PqltWHfRSpGhUke8SVx0Y9i2fBBGEWEMzWKRzzqxG8e32f
-	9YiuDQWiNDXvvemyB6ndXo393rAodMo=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706002417; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vr0dVSL74POTu+Iy/t8VsndcOHjm5FnK2rIR21aIjBA=;
-	b=S+BrXl9K9p1cn9yvSqLBO6VScZ2ywrf6is1PxTTlOrOQLKR/o1eBgNPpxkLlrCuQiXFQQl
-	ppba9WHp4P1Rk+Xl+nS5t5H/PqltWHfRSpGhUke8SVx0Y9i2fBBGEWEMzWKRzzqxG8e32f
-	9YiuDQWiNDXvvemyB6ndXo393rAodMo=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 13D05136A4;
-	Tue, 23 Jan 2024 09:33:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id bXbOAfGHr2VMBwAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Tue, 23 Jan 2024 09:33:37 +0000
-Date: Tue, 23 Jan 2024 10:33:36 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: "T.J. Mercier" <tjmercier@google.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>, android-mm@google.com,
-	yuzhao@google.com, yangyifei03@kuaishou.com,
-	cgroups@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "mm:vmscan: fix inaccurate reclaim during
- proactive reclaim"
-Message-ID: <Za-H8NNW9bL-I4gj@tiehlicka>
-References: <20240121214413.833776-1-tjmercier@google.com>
+	s=arc-20240116; t=1706002425; c=relaxed/simple;
+	bh=jtfVkdL6JvKuPixP2eull7hNXa+QZLAVSJb4hUeRoZs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EkMaN1busJYiGZSbVUdNbz9JHspw2CYKPNpWyQy8uCssaOgZvMKdEr+vu89a86fSdBXs7K63Wm1Gl9BvqVuGS8IDd8qh3zaaVRBoJAhnpzyqzDVpRXOj8T4hFFGbGbk2SUK3rBDEhmE2NVBpIOW8DAH30p5ndP0TChqjnYQwEts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F0D91FB;
+	Tue, 23 Jan 2024 01:34:26 -0800 (PST)
+Received: from [10.57.77.165] (unknown [10.57.77.165])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AF2463F5A1;
+	Tue, 23 Jan 2024 01:33:39 -0800 (PST)
+Message-ID: <e92f7c49-5268-421e-a017-af268c845b1b@arm.com>
+Date: Tue, 23 Jan 2024 09:33:38 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240121214413.833776-1-tjmercier@google.com>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=S+BrXl9K
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DWL_DNSWL_MED(-2.00)[suse.com:dkim];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -3.01
-X-Rspamd-Queue-Id: 3249622177
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] selftests/mm: run_vmtests.sh: add missing tests
+Content-Language: en-GB
+To: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>
+Cc: kernel@collabora.com, linux-mm@kvack.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240123073615.920324-1-usama.anjum@collabora.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240123073615.920324-1-usama.anjum@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sun 21-01-24 21:44:12, T.J. Mercier wrote:
-> This reverts commit 0388536ac29104a478c79b3869541524caec28eb.
+On 23/01/2024 07:36, Muhammad Usama Anjum wrote:
+> Add missing tests to run_vmtests.sh. The mm kselftests are run through
+> run_vmtests.sh. If a test isn't present in this script, it'll not run
+> with run_tests or `make -C tools/testing/selftests/mm run_tests`.
 > 
-> Proactive reclaim on the root cgroup is 10x slower after this patch when
-> MGLRU is enabled, and completion times for proactive reclaim on much
-> smaller non-root cgroups take ~30% longer (with or without MGLRU).
-
-What is the reclaim target in these pro-active reclaim requests?
-
-> With
-> root reclaim before the patch, I observe average reclaim rates of
-> ~70k pages/sec before try_to_free_mem_cgroup_pages starts to fail and
-> the nr_retries counter starts to decrement, eventually ending the
-> proactive reclaim attempt.
-
-Do I understand correctly that the reclaim target is over estimated and
-you expect that the reclaim process breaks out early>
-
-> After the patch the reclaim rate is
-> consistently ~6.6k pages/sec due to the reduced nr_pages value causing
-> scan aborts as soon as SWAP_CLUSTER_MAX pages are reclaimed. The
-> proactive reclaim doesn't complete after several minutes because
-> try_to_free_mem_cgroup_pages is still capable of reclaiming pages in
-> tiny SWAP_CLUSTER_MAX page chunks and nr_retries is never decremented.
-
-I do not understand this part. How does a smaller reclaim target manages
-to have reclaimed > 0 while larger one doesn't?
- 
-> The docs for memory.reclaim say, "the kernel can over or under reclaim
-> from the target cgroup" which this patch was trying to fix. Revert it
-> until a less costly solution is found.
-> 
-> Signed-off-by: T.J. Mercier <tjmercier@google.com>
+> Cc: Ryan Roberts <ryan.roberts@arm.com>
+> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
 > ---
->  mm/memcontrol.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> Changes since v1:
+> - Copy the original scripts and their dependence script to install directory as well
+> ---
+>  tools/testing/selftests/mm/Makefile       | 3 +++
+>  tools/testing/selftests/mm/run_vmtests.sh | 3 +++
+>  2 files changed, 6 insertions(+)
 > 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index e4c8735e7c85..cee536c97151 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6956,8 +6956,8 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
->  			lru_add_drain_all();
->  
->  		reclaimed = try_to_free_mem_cgroup_pages(memcg,
-> -					min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
-> -					GFP_KERNEL, reclaim_options);
-> +						nr_to_reclaim - nr_reclaimed,
-> +						GFP_KERNEL, reclaim_options);
->  
->  		if (!reclaimed && !nr_retries--)
->  			return -EAGAIN;
-> -- 
-> 2.43.0.429.g432eaa2c6b-goog
-> 
+> diff --git a/tools/testing/selftests/mm/Makefile b/tools/testing/selftests/mm/Makefile
+> index 2453add65d12f..c9c8112a7262e 100644
+> --- a/tools/testing/selftests/mm/Makefile
+> +++ b/tools/testing/selftests/mm/Makefile
+> @@ -114,6 +114,9 @@ TEST_PROGS := run_vmtests.sh
+>  TEST_FILES := test_vmalloc.sh
+>  TEST_FILES += test_hmm.sh
+>  TEST_FILES += va_high_addr_switch.sh
+> +TEST_FILES += charge_reserved_hugetlb.sh
+> +TEST_FILES += write_hugetlb_memory.sh
+> +TEST_FILES += hugetlb_reparenting_test.sh
 
--- 
-Michal Hocko
-SUSE Labs
+I see you are exporting 3 scripts, but only invoking 2 of them from
+run_vmtests.sh below. Is one a helper that gets called indirectly?
+
+>  
+>  include ../lib.mk
+>  
+> diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
+> index 246d53a5d7f28..12754af00b39c 100755
+> --- a/tools/testing/selftests/mm/run_vmtests.sh
+> +++ b/tools/testing/selftests/mm/run_vmtests.sh
+> @@ -248,6 +248,9 @@ CATEGORY="hugetlb" run_test ./map_hugetlb
+>  CATEGORY="hugetlb" run_test ./hugepage-mremap
+>  CATEGORY="hugetlb" run_test ./hugepage-vmemmap
+>  CATEGORY="hugetlb" run_test ./hugetlb-madvise
+> +CATEGORY="hugetlb" run_test ./charge_reserved_hugetlb.sh -cgroup-v2
+> +CATEGORY="hugetlb" run_test ./hugetlb_reparenting_test.sh -cgroup-v2
+> +CATEGORY="hugetlb" run_test ./hugetlb-read-hwpoison
+
+I'm not really a fan of adding this last test here; its destructive because it
+poisons 8 hugepages. So at a minimum, I think you need to modify the code in
+run_vmtests.sh to ensure those extra pages are allocated (there is already a
+section in the script that allocates hugepages).
+
+However, given this test is destructive, I'd prefer that it wasn't run as part
+of the main test set. Because the first time you run it, it will presumably
+pass, but now some of the hugepages are poisoned so next time you run it, there
+won't be enough unpoisoned hugepages and a test will fail. So you have very
+confusing behaviour for a developer who might be running these tests multiple
+times per boot (e.g. me).
+
+Perhaps we can add a -d (destructive) option to the script, and this test will
+only be run if that option is passed?
+
+Thanks,
+Ryan
+
+
+>  
+>  nr_hugepages_tmp=$(cat /proc/sys/vm/nr_hugepages)
+>  # For this test, we need one and just one huge page
+
 
