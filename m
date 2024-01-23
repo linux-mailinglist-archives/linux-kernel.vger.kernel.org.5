@@ -1,81 +1,87 @@
-Return-Path: <linux-kernel+bounces-34476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34472-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37B72837D49
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:25:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEBE0837CB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:15:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4FF14B2A98F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:16:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B9571C21E8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:15:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87BF6157E6D;
-	Tue, 23 Jan 2024 00:28:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DA55156970;
+	Tue, 23 Jan 2024 00:28:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="KxLuwfNe"
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Y8S9QdP8"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BC26157046
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:28:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 946DB155A52
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:28:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705969731; cv=none; b=SuGwtEpTDgue9nNQWjMFUyA+q0rVrNKpkD5QXW6OZhPcop16Gb8PfqHZmNtyDAXeocrildZ5z3sl+j68UCnMpLmaO33KszsWQ9r4qS/LQuJ3q3gGkGnkhUrwdz+IeTMo4Eg/hN+VC4wvSBd18cmrIvb5EI+32GKgyEupdvnyqnk=
+	t=1705969725; cv=none; b=MQJ+xZ5czKItT6FnQ76/FzmJpO7pNyyTYVYpj1dUbK6F8L6NhH2WVBN/40lMwnvyRhQlQcWjoxj1pr6+6/di3AStcAoUVqOtIGkV0H8mGBimFz7kQuZkyrjkGHP2m1SZvcGDUcacctIMG6k9SnxyGj+ZLeognna5aC5HELHJSL0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705969731; c=relaxed/simple;
-	bh=PmD97Weq3WllHYy9c/D1C/9IrSV8qUdF4whlDGfFZE8=;
+	s=arc-20240116; t=1705969725; c=relaxed/simple;
+	bh=NL4i6bTrYINnZ5CxcbHpw8YCfhRtLA5nCGl1fzFiRXM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Q8y3fo52RXTgUKmUyX7xw+hHeuQNlrxPUwzNKeGcfxGPeH5JvV57rDuC8V4oH6j2YUj9ZVfx7O6i5iZgFI0sOIRHe2XdnnyrWVjYd3kyyW+WIxYShddHgLYqt3yuvwhUOTvQuGfbdSE200Du8uxmSGXi7Av4/MhOo8VGysjdve4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=KxLuwfNe; arc=none smtp.client-ip=209.85.210.172
+	 MIME-Version; b=M0SG5h7H6SCudBcYu6zAu7Auf6hPCoQSHlZgeeBPugyFCZdss2U/N4nb3EcDE//KjQppd8qNsMeXEnZp3wUjRqoWcO2EY4hFEiOjzJ+74jsOSqasP0kTkEkpIxBsHbucSqBZHgg9DzmI2BZnAGVSjoyHcQjyIdlCJAN9FHBmQ5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Y8S9QdP8; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6dbb003be79so3306634b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 16:28:50 -0800 (PST)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d50d0c98c3so38101175ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 16:28:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1705969729; x=1706574529; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1705969723; x=1706574523; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3TGYFkY09Xk6GAlz0uNRUAdH36K12Z/wH1iFNj2bT+k=;
-        b=KxLuwfNeRJ+hmFoGPgKZdlSk+AYoOwcnwNz/P+4GZsPoSKEZ9HNAHLvM+HANHQRZT4
-         IkXcv9H6RXrMOIwSYUYQinVC0WWTcub5AISix0D2fUXvIdSWUUfQmcTkEZYPNnWvb/0j
-         MbKKp5qCJvCY3jSKGtEiavNakTz/xerufCI8Q=
+        bh=7ba+SJRXi6zigp5yNKxV6w56BvmmlI5rW36eVy3OGs8=;
+        b=Y8S9QdP8DgqPUnzAiLlxiMBNfBsuFwXYSulxpTZqqNXQYDD6DQR3yK8its2d1GJ/+X
+         xMh0/0KydNdEQ/2cXW5f2AlpRKtRo9yHorGdqjCPXdhKXSxAg5XVocCYHE1gCqjZtagA
+         U1g68YwzIDaFUDA+ZfLMq0UA2nS2XRaY4maIM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705969729; x=1706574529;
+        d=1e100.net; s=20230601; t=1705969723; x=1706574523;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3TGYFkY09Xk6GAlz0uNRUAdH36K12Z/wH1iFNj2bT+k=;
-        b=LpEbBSFnfLUQW5ha7+VfSSRs3NkWco549Iwyg/j4uMjk0B7klbtWddt89xVfBlcRgs
-         xVUNUdXlephtB5zo5V93umX10ipTlMmN3HpjpRwVbyS0EV/PqxMprXbbwwPYRJPdWdUm
-         Sut8QLjkfnyiaf0Ya8M9wyrZP0ssuDWEbv6HZAh97xs9swJ+2WSJDFQQxeemRbZTcXOU
-         bk1hKvwhIm5Qi4w8SSN/Dfgf1glqhZDF69lExEhxcxDaw6fj+Vu5fdB8v5TmUNSVuwQs
-         EdupkB9qxFVbqVshnnBePqck9oyshJ9lRdPl9eDSjkJtNS+7gdGuIOIVgefoBWzm6Hko
-         g79Q==
-X-Gm-Message-State: AOJu0Yxh1/+/sa0LV9gFk4raBwGjzeYSrGHz1NAC6GfCx4kuOi0S35/2
-	sWYCVnplMaUY4R+CXOwAUAyU6HdOl2RyKCJJeZ9nNYGm65culnjkunLujkLAzQ==
-X-Google-Smtp-Source: AGHT+IEfA0xPtU78X5p9h/WA+ZnUOTlNVoIOWKUAiv95UE+kyy39ruCd+kJ3jzTf5eQRZGjVvYX/ow==
-X-Received: by 2002:a05:6a21:a59a:b0:19b:5b08:1f4b with SMTP id gd26-20020a056a21a59a00b0019b5b081f4bmr5434332pzc.15.1705969729702;
-        Mon, 22 Jan 2024 16:28:49 -0800 (PST)
+        bh=7ba+SJRXi6zigp5yNKxV6w56BvmmlI5rW36eVy3OGs8=;
+        b=pxvyaAz27ppY7QDbahczpEF00DF93Jy+H8iO0+v47FQq45AkTzZNqDta2NmraiIovh
+         g4xqPjbkq0rNB4yh+agGXO8UlPyY3eyoj1XzeEj+WTupFpkcC0bZgmSfgfm0dRo1h4gB
+         rwhFNYQCIOY92LOtlBiU9X4+eZvd+YPXhHKX2HJOdD/4q+irYWeWqbDbCBQD24ysWNAS
+         7Qcv22xZNHcHIYmBbjlxcVvHSZaOcsbWgQRjlZBVH14xFNfRRi/cnUp978cseYNceQe+
+         6wSiXtigt2n77V/z7UtAUZ6RhetD7pOMdP3jpxXlv1AuE25xoi6aR1Rm9ULn2wPDr3UA
+         OD0A==
+X-Gm-Message-State: AOJu0YyiufH6Gz75CdotNjMF88Nr7x1ECU2fRUYVpRmiQ5AQjDMuPRMr
+	3RablcZqANmM9Y51m+BQ8y64Lv2sSnWsVg6XpxI1iOPuuRtH74VbGred++U4Kw==
+X-Google-Smtp-Source: AGHT+IHQcrX5UyzgI3Bm4vvQyCphFgwNS1v5TuPH/cr2wDJrrcl4aZywV9TGXqEEG1hudUlUGDMIdA==
+X-Received: by 2002:a17:902:eecd:b0:1d7:6c6:9fca with SMTP id h13-20020a170902eecd00b001d706c69fcamr6811474plb.30.1705969722956;
+        Mon, 22 Jan 2024 16:28:42 -0800 (PST)
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id j3-20020a056a00130300b006d9c216a9e6sm10138528pfu.56.2024.01.22.16.28.32
+        by smtp.gmail.com with ESMTPSA id mj6-20020a1709032b8600b001d7057c2fbasm7670974plb.100.2024.01.22.16.28.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 22 Jan 2024 16:28:37 -0800 (PST)
 From: Kees Cook <keescook@chromium.org>
 To: linux-hardening@vger.kernel.org
 Cc: Kees Cook <keescook@chromium.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Jan Kara <jack@suse.cz>,
-	linux-fsdevel@vger.kernel.org,
+	Will Deacon <will@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
 	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
 	Bill Wendling <morbo@google.com>,
 	Justin Stitt <justinstitt@google.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 09/82] select: Avoid wrap-around instrumentation in do_sys_poll()
-Date: Mon, 22 Jan 2024 16:26:44 -0800
-Message-Id: <20240123002814.1396804-9-keescook@chromium.org>
+Subject: [PATCH 10/82] locking/atomic/x86: Silence intentional wrapping addition
+Date: Mon, 22 Jan 2024 16:26:45 -0800
+Message-Id: <20240123002814.1396804-10-keescook@chromium.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240122235208.work.748-kees@kernel.org>
 References: <20240122235208.work.748-kees@kernel.org>
@@ -85,95 +91,53 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2641; i=keescook@chromium.org;
- h=from:subject; bh=PmD97Weq3WllHYy9c/D1C/9IrSV8qUdF4whlDGfFZE8=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlrwgEytnksz1bThGRY5DK5TacZnS6Yl60KDnSM
- 2MX5BKOiv6JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZa8IBAAKCRCJcvTf3G3A
- Jsc5D/4y3WYeKpzWOOCxgpOBEmELwR2i5cXRFClXQT8Dh5kznbNc+qjzrcINPA5tfSMCKqksOx2
- waq122UgLgvDs7kGRlptl6E9Kprq6DsDw7wdLfNoA3H+ez8jQf7JMzOFjWisqc+q+jJGBKio24e
- t5vJf6GnubB4mzBH4cZa61OqBJLmA1GNOx2gzWHE7j2iHZt5Iy2clBMGTO3SJukqU+UEfX1LM96
- E6oSsKlWVm1gG+iB/RYC5pJmH5aFoHPKxdNYXiMUR6/fPhx42TmcBw7unDDy1oG+rxPjMPPMZT2
- leZok2gnYc4BwgPfLMNk9ETxLWf+k36o/uDLrgpw/LraN9jvCqUzOUFCpFPD5+N4O0XII2AdJ+A
- tJK7FysfIpkuh80CwTkFnjC8SIOpbkM+mSyJ7PdArgrVe0L63H/dBv6ZlwKDZ5C/XX09BrbP3QC
- q2Yy0UBMTqv1wOFi9U04tsQ5mQ07h1ZuvDzmUtltQobblFJDqZq8WS6mT/pfB26btDsAJ2hBv6v
- YQEZZaUcq9UKzCcx9V1ZRnULm3/5JmndEptvjMNPeJk7dKuVUADDoSQYcb0YgpFZrwk1LSVwvLY
- wjTpDJn01qEVtVti3Y1lPIiR2B4JRJTy/PVM5W6p1kAdrkPJjFXMwq+zftEur4gCaiNYE5uahWZ R3xr3G8bEQBxjAw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1192; i=keescook@chromium.org;
+ h=from:subject; bh=NL4i6bTrYINnZ5CxcbHpw8YCfhRtLA5nCGl1fzFiRXM=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlrwgEtlYLVvMON6u8nAd+7f45eDDaD4MUEJz3n
+ 57bKZbOnZ+JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZa8IBAAKCRCJcvTf3G3A
+ JlP6D/4u8pYwPHBrl199KKA3Xl2ZV9zqU8Mw8Os7Nd8y33hZwj6LsS01wPP6z6jSiddM3/hGchv
+ rQHONauEIxmyByTRV5HT85mPCm/ncSaT719PWXFKVjyUXSkiKjO3QQdPfz2MfOyoEW7WIva6W2t
+ Zd35j2E0rg0u2zkGqPAAHzmhK2/nD+c93RmUgoR2tEko0m3iEOnQFdzhw61Nm3YlbYUH3xKPbGQ
+ jW0TXuROEnkxi/GOtXU82d5qC1xM2yk79p0LknCPi8iSgDQguTeMOg2LJLrKIdG6NfkeFYWfqFg
+ yGPUiPtzOwyZnbHfUHNwOW3r+Ncg0xVW10JrHniCo5XDIzPoncXKJBzHri1+EaHKRvBTERunaZg
+ 05dn1owdZtkZAbaVP/ALiduc9RkerbYaQFv/xruC08jnijnw/6cGUzo48MfOi9J0TobE4ffCtAU
+ udL/itLTV39/A+dHftTu0mT6oxKO8RfiMXPEhKG0eVjHoxp8HwETwJ4aqqKzbhlToIXkRhP7MP6
+ Fytnvxr78dbMrfa3vQ0NPQHyZOl04u/dSGBORaKVBkA7mkn2kh54bggtXaWmvkPmnOiH4h0LbLi
+ kfJw/tV2RV4idwY9ZVRu71pPQSZd7OqBz85j8Fy5dO7RGDrTsjRVDEnjwhtW8oxa70vIMYx6w66 f0o7nKMznSYPssA==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 
-The mix of int, unsigned int, and unsigned long used by struct
-poll_list::len, todo, len, and j meant that the signed overflow
-sanitizer got worried it needed to instrument several places where
-arithmetic happens between these variables. Since all of the variables
-are always positive and bounded by unsigned int, use a single type in
-all places. Additionally expand the zero-test into an explicit range
-check before updating "todo".
+Annotate atomic_add_return() to avoid signed overflow instrumentation.
+It is expected to wrap around.
 
-This keeps sanitizer instrumentation[1] out of a UACCESS path:
-
-vmlinux.o: warning: objtool: do_sys_poll+0x285: call to __ubsan_handle_sub_overflow() with UACCESS enabled
-
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: Jan Kara <jack@suse.cz>
-Cc: linux-fsdevel@vger.kernel.org
+Cc: Will Deacon <will@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: x86@kernel.org
+Cc: "H. Peter Anvin" <hpa@zytor.com>
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- fs/select.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ arch/x86/include/asm/atomic.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/select.c b/fs/select.c
-index 0ee55af1a55c..11a3b1312abe 100644
---- a/fs/select.c
-+++ b/fs/select.c
-@@ -839,7 +839,7 @@ SYSCALL_DEFINE1(old_select, struct sel_arg_struct __user *, arg)
+diff --git a/arch/x86/include/asm/atomic.h b/arch/x86/include/asm/atomic.h
+index 55a55ec04350..4120cdd87da8 100644
+--- a/arch/x86/include/asm/atomic.h
++++ b/arch/x86/include/asm/atomic.h
+@@ -80,7 +80,7 @@ static __always_inline bool arch_atomic_add_negative(int i, atomic_t *v)
+ }
+ #define arch_atomic_add_negative arch_atomic_add_negative
  
- struct poll_list {
- 	struct poll_list *next;
--	int len;
-+	unsigned int len;
- 	struct pollfd entries[];
- };
- 
-@@ -975,14 +975,15 @@ static int do_sys_poll(struct pollfd __user *ufds, unsigned int nfds,
- 		struct timespec64 *end_time)
+-static __always_inline int arch_atomic_add_return(int i, atomic_t *v)
++static __always_inline __signed_wrap int arch_atomic_add_return(int i, atomic_t *v)
  {
- 	struct poll_wqueues table;
--	int err = -EFAULT, fdcount, len;
-+	int err = -EFAULT, fdcount;
- 	/* Allocate small arguments on the stack to save memory and be
- 	   faster - use long to make sure the buffer is aligned properly
- 	   on 64 bit archs to avoid unaligned access */
- 	long stack_pps[POLL_STACK_ALLOC/sizeof(long)];
- 	struct poll_list *const head = (struct poll_list *)stack_pps;
-  	struct poll_list *walk = head;
-- 	unsigned long todo = nfds;
-+	unsigned int todo = nfds;
-+	unsigned int len;
- 
- 	if (nfds > rlimit(RLIMIT_NOFILE))
- 		return -EINVAL;
-@@ -998,9 +999,9 @@ static int do_sys_poll(struct pollfd __user *ufds, unsigned int nfds,
- 					sizeof(struct pollfd) * walk->len))
- 			goto out_fds;
- 
--		todo -= walk->len;
--		if (!todo)
-+		if (walk->len >= todo)
- 			break;
-+		todo -= walk->len;
- 
- 		len = min(todo, POLLFD_PER_PAGE);
- 		walk = walk->next = kmalloc(struct_size(walk, entries, len),
-@@ -1020,7 +1021,7 @@ static int do_sys_poll(struct pollfd __user *ufds, unsigned int nfds,
- 
- 	for (walk = head; walk; walk = walk->next) {
- 		struct pollfd *fds = walk->entries;
--		int j;
-+		unsigned int j;
- 
- 		for (j = walk->len; j; fds++, ufds++, j--)
- 			unsafe_put_user(fds->revents, &ufds->revents, Efault);
+ 	return i + xadd(&v->counter, i);
+ }
 -- 
 2.34.1
 
