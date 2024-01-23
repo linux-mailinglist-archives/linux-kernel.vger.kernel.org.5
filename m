@@ -1,86 +1,83 @@
-Return-Path: <linux-kernel+bounces-36079-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA56C839B35
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 22:31:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18C25839B37
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 22:32:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C418282F7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:31:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BEB51C236FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:32:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A5FC3B790;
-	Tue, 23 Jan 2024 21:31:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C867B3B78E;
+	Tue, 23 Jan 2024 21:32:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Ad60CBuj"
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="RZWZDETR"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F2052C682
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 21:31:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA1CCC8FD
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 21:32:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706045474; cv=none; b=WEIGmARkw1EDE+kw4vBSrWpudEsFFBv2aItUaLmoGnoksWPcKhnOtH9q9ygFIAvIqU51Yzy3GtsnOX53CUPHN/TZPD1TIRkOY4xMWqzmD2gLxX5dYJ6TAajIzzurQ9QBMYMyR+CsdldHtqR7awIRJKTWNWsaU+qVJPm2J1WMtcQ=
+	t=1706045558; cv=none; b=mNjiWwp3j3NmBxmgvK4JyF6n6EVDCBH7yQcBjElYwPAkLV0l4L2iQGuGxHcW35hnGVU4vxnfnSagCB6s4WNsdjzlzDzE03u0S5lokcjNAyuukPSAjZL7/zYW5p+yqtkoJfNFy45hCEEdsFsZTtkxpD9N+jYP1ijjkoLDnjaLfxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706045474; c=relaxed/simple;
-	bh=jP2/IW9UNkEjSgAKZeY0ax+X34XlCZzhZYmXu4icG+o=;
+	s=arc-20240116; t=1706045558; c=relaxed/simple;
+	bh=N2eMKxGKC9fb0PjB8BggX+mn9jsS+yaW0VK2ox0w8Oo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bt5u7gyag6PhZ4Q1trldtWqLo2iFa2ZV79Rf8flpGWtg0Xz9YmeZ4xSV8qY6d1HBzPwSeWeXCKBOtnS7ol+HZzy3jkEYS4XS2LnGFoVJ44/WJkTYQpQJrGELoW5KcAso7QvHCMobBhhFCr4LsKCKdCcY95h8hjS9Li3UBqUt3d4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Ad60CBuj; arc=none smtp.client-ip=209.85.215.174
+	 Content-Type:Content-Disposition:In-Reply-To; b=kKeWjfqy2JQ0FuY+PSc6HyM/s+qSTjz7NiUwgQHC3ohLOAQg8jv+vkdXBlCI9JTQufqV8kGppKQyX2Jw8ivHA3YvggZ9Sp5iE3qVID7j37sf+u/q71KVbfX4Zmh589G2gY4ejmejyjUq3fqDLy2q9smG9aTgD4lGP1h2P7xsDAk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=RZWZDETR; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5ce07cf1e5dso2681789a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 13:31:13 -0800 (PST)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d74678df08so16070815ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 13:32:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706045472; x=1706650272; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1706045556; x=1706650356; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cLSrHTqApY0rnoNDPNmTbGyM4UlT798vTtkhFOVuGO8=;
-        b=Ad60CBujlqu06M2IFBbPXvjYD8g/BEXRejYj+DNvOwe8wY8n5vBoew7hrTl/u+VcTX
-         Mw1Suq5x7dhwT8+Kg1UpTRVofpgjJnrHYr6gl+HBY//ZZHbqrNqMWfVbigTZJZHXagmU
-         rnCo70Rr5QxK6vUJfK1EJi4krFDpBRl+2UwKE=
+        bh=swQh+tXC7wjzygjmlvxoa7jnM24RYNaNqlf/2tnlFpM=;
+        b=RZWZDETRJ3tdK1x5X6K5KNtiJ9OFq2PbD0OBYuOj5ncE/kICqyYGWyiipWArPUcV+R
+         I+VcKv+e80Px86gl3C4eF6UjVc0z6kUBEQ/9X4Yswd3eUeustu+K4+ttSrKMPRUpJqOF
+         Sj0lAePTvUusLq9GYw+KSHDTQyNdvGhRNvpBk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706045472; x=1706650272;
+        d=1e100.net; s=20230601; t=1706045556; x=1706650356;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cLSrHTqApY0rnoNDPNmTbGyM4UlT798vTtkhFOVuGO8=;
-        b=ediMbpM2NQ7+7gRMfWODEs8BfsP/N+sOCpZTyuOUyYQrbDP82BKMgkkdiR4cTorvwi
-         uPM2LsNQDDsCiZds7WSSK6GcvBXZkw3VydQrOKxQWs/fOPygf2VoSZktlBBq2GrHv7yO
-         CY84TWrvhgfgWrGhAyo55IOf5AIgg+ZIr8lGH+Iy6Ci0Up3Yv3UhQOAxw9niYrloG5hS
-         az4ugW7rRaSOHU6aGcxnWL7IcF3HxDUFDnTYTP7A4MdUCWAuNjOx7aLyq/4ucr1xkFRQ
-         yVxzwo3ybegJZj4DybqMDnnusMojClGxKvCIcPQWaBcXPuTAphjwJMvCR8j/48SqnWAe
-         imng==
-X-Gm-Message-State: AOJu0YwYCN+Hi5s7V9/JgwdQyWX/hPyn9qKGi/GkCmUMYscIMB4RXeNL
-	oK5fwQaoLluyQPIDx11YjGIqoqyV7AQUelCVFc2ig+IVyDgfYsTvhI3EnNCBqDtg4J1GEvj6Mam
-	5RQ==
-X-Google-Smtp-Source: AGHT+IFZZEebKX2R0JqbRWEEh9em7MQ0hN72r+XKI76xsV+huWAf7uMifAtdFdhTI+U9kp5jq78zPg==
-X-Received: by 2002:a05:6a20:28a1:b0:19a:3a7f:63cd with SMTP id q33-20020a056a2028a100b0019a3a7f63cdmr3098127pzf.49.1706045472672;
-        Tue, 23 Jan 2024 13:31:12 -0800 (PST)
+        bh=swQh+tXC7wjzygjmlvxoa7jnM24RYNaNqlf/2tnlFpM=;
+        b=Ot26w71HGyKXB+iVWRaiFeK+D5wxAmzmnbGYkkwAlGPO3F+ZJHa7mQn7AVT5m66/E8
+         Am2ovbxNHEcRFAaFLd2DozLVViIy4UsNOfOYjh7dhMzcmHX77qvIDiakVwFYpSnM0r1e
+         HW0zxYIaulv6WAKTcKjEDaBlv8CfpquolsBDsQ0F/AGQFq8rf50txrf+87trgOtVg2v9
+         geoNDOXZ5Tc9LP6RJJt7o/fK9V7Fr/8LiG7i6/MNL/MMfWX8B0LD7C6RpcGs8ykHTYyM
+         l06if8Q+O1f9yBtUstykbAbjhLtHmGLTUKVITz4+KbXBrdFQ0DilQ3/VAc+kevZpY28u
+         rC+w==
+X-Gm-Message-State: AOJu0Yy698qGZSMQCzjtnRmhFAM+fAcMyUqHSw7Hq00EomGX9GbR+dug
+	xq1Ultzn2RDdGMBW7sVnEw+UbzyIKn8DUvdpr5p04WsYDTjCjBFTqyYCLehUQA==
+X-Google-Smtp-Source: AGHT+IEQgobK3CRi+ljenTCG6shvI0FXYyD3FQGn2ZQQGUseg7yif9UwvyOavRLNcvr02zSwCtZc7A==
+X-Received: by 2002:a17:903:120d:b0:1d5:7316:c9fb with SMTP id l13-20020a170903120d00b001d57316c9fbmr3866864plh.37.1706045556284;
+        Tue, 23 Jan 2024 13:32:36 -0800 (PST)
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id kr8-20020a056a004b4800b006da73b90fe4sm12541675pfb.14.2024.01.23.13.31.12
+        by smtp.gmail.com with ESMTPSA id g8-20020a170902740800b001d714ccf7b3sm8100220pll.180.2024.01.23.13.32.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 13:31:12 -0800 (PST)
-Date: Tue, 23 Jan 2024 13:31:11 -0800
+        Tue, 23 Jan 2024 13:32:35 -0800 (PST)
+Date: Tue, 23 Jan 2024 13:32:35 -0800
 From: Kees Cook <keescook@chromium.org>
-To: Adrian Hunter <adrian.hunter@intel.com>
-Cc: linux-hardening@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-	Ian Rogers <irogers@google.com>, John Garry <john.garry@huawei.com>,
-	Fangrui Song <maskray@google.com>, linux-perf-users@vger.kernel.org,
+To: Jan Beulich <jbeulich@suse.com>
+Cc: Wei Liu <wei.liu@kernel.org>, Paul Durrant <paul@xen.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
 	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
 	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 69/82] perf tools: Refactor intentional wrap-around test
-Message-ID: <202401231330.C55D17922@keescook>
+	Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 80/82] xen-netback: Refactor intentional wrap-around test
+Message-ID: <202401231331.0BD2925D4E@keescook>
 References: <20240122235208.work.748-kees@kernel.org>
- <20240123002814.1396804-69-keescook@chromium.org>
- <dc3a7101-964b-46c5-a78b-374b68cd54fb@intel.com>
+ <20240123002814.1396804-80-keescook@chromium.org>
+ <35ff4947-7863-40da-b0e7-3b84e17c6163@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,15 +86,25 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <dc3a7101-964b-46c5-a78b-374b68cd54fb@intel.com>
+In-Reply-To: <35ff4947-7863-40da-b0e7-3b84e17c6163@suse.com>
 
-On Tue, Jan 23, 2024 at 08:21:41AM +0200, Adrian Hunter wrote:
-> perf tools has separate includes to the kernel, so does not
-> seem to include add_would_overflow() in any of its include
-> files at this point.  Need to update
-> tools/include/linux/overflow.h first.
+On Tue, Jan 23, 2024 at 08:55:44AM +0100, Jan Beulich wrote:
+> On 23.01.2024 01:27, Kees Cook wrote:
+> > --- a/drivers/net/xen-netback/hash.c
+> > +++ b/drivers/net/xen-netback/hash.c
+> > @@ -345,7 +345,7 @@ u32 xenvif_set_hash_mapping(struct xenvif *vif, u32 gref, u32 len,
+> >  		.flags = GNTCOPY_source_gref
+> >  	}};
+> >  
+> > -	if ((off + len < off) || (off + len > vif->hash.size) ||
+> > +	if ((add_would_overflow(off, len)) || (off + len > vif->hash.size) ||
+> 
+> I'm not maintainer of this code, but if I was I would ask that the
+> excess parentheses be removed, to improve readability.
 
-Oops, thank you! I will adjust this.
+Good call. I will adjust that. Thanks!
+
+-Kees
 
 -- 
 Kees Cook
