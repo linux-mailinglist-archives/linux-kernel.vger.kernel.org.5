@@ -1,130 +1,102 @@
-Return-Path: <linux-kernel+bounces-35621-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD44B83944E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:07:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4104C839451
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:09:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67C152963E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:07:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6BDC1B287D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:08:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 608BD664C2;
-	Tue, 23 Jan 2024 16:06:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZqKDF9P/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEE2D664DE;
+	Tue, 23 Jan 2024 16:06:56 +0000 (UTC)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AE4A612F0;
-	Tue, 23 Jan 2024 16:06:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 586906166E;
+	Tue, 23 Jan 2024 16:06:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706025997; cv=none; b=u3UYdKM7absC8LoTxvSCQFYeSrn192Ryfsmnzz0cGdwsV+JLVflZwT69pQcJ5JXPeYgEtoy0OzkqOOHejoTwRJRgXDXmyto3CeqyxNATadKfyGjSiQ6mOSFQYNDEiPWW42Yhxa0Cw/dDHyMSd9htreOb3aOMMoE3M3yxH9brtcc=
+	t=1706026016; cv=none; b=nyypNh7TNCoZx0MAMBBzlkcAXYE147U5DBGYQggWIlZfq0ZVCtC0bHnqtiiroyKeEEQLNG9OXrX/HzAYfkcDao2X8cUakszzWc7TtCWhZi+MsA/UVCBVIEhzM3SIfD051IFFnnpURADo9s3tuloYk28fD0u18dtb1muRK8NnkNc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706025997; c=relaxed/simple;
-	bh=c+2cQ1AyZkqNt9Y2ompQm2rjkM685pFW95EhdYleG2s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oLTc4dAlTw0Vjav50id/LIAxuvpMsnHCKnmu1G8UB7mWwTlHmyJxrrmJCXwum4BndzQm+3vuyLuL69aTaDHfE7vyvoqv9KSgNbRdoh0q3TExCnO6YE6lMR31Ys2w5Ir6fgzf2AFC22v5RTE7dj2eCgV2AF6B5dFPJf6IYy4IHlk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZqKDF9P/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 897F6C433C7;
-	Tue, 23 Jan 2024 16:06:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706025997;
-	bh=c+2cQ1AyZkqNt9Y2ompQm2rjkM685pFW95EhdYleG2s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZqKDF9P/mvQjLAc8h3Abn9WoTJUp9KtaR6/uA+yfV/pt26Ro5WhvSGkyNGHl0z50N
-	 CNXdkMh0bnD1wXemYLC1ueyErXN5KrfnTMWUKETpXP5UCpyYC0gD5PlMiVvFKa9NUL
-	 UWEeCGQm7oVnf+/xZArWo6QcXGGFsz0HoGYikoqRIe2yBh5Trih0ZlNo24J/lBqqX7
-	 BqvTDYyz1y82cgpFPT0W+GNridgk8nez4kKxANPW6edNRi6lzCXK3BYowfZRzgSrDS
-	 bUZvMJRDWivim7ncP3SHc+qQgKJQ89qJvutMuG07s3jWozNpCW9ZiHzavdUSxCM6RN
-	 RCxvYbjxbaDzQ==
-Date: Tue, 23 Jan 2024 16:06:31 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Philippe Schenker <dev@pschenker.ch>
-Cc: netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Woojung Huh <woojung.huh@microchip.com>,
-	Vladimir Oltean <olteanv@gmail.com>, linux-kernel@vger.kernel.org,
-	UNGLinuxDriver@microchip.com, Marek Vasut <marex@denx.de>,
-	Florian Fainelli <f.fainelli@gmail.com>, devicetree@vger.kernel.org,
-	Eric Dumazet <edumazet@google.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-	Rob Herring <robh+dt@kernel.org>,
-	Philippe Schenker <philippe.schenker@impulsing.ch>
-Subject: Re: [PATCH net-next v1 1/2] dt-bindings: net: dsa: Add KSZ8567
- switch support
-Message-ID: <20240123-ripening-tabby-b97785375990@spud>
-References: <20240123135014.614858-1-dev@pschenker.ch>
+	s=arc-20240116; t=1706026016; c=relaxed/simple;
+	bh=+hqW3hOQC1UxvdWfn9TZu3+fIZ7vvE+96H8K/qkpMIg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=l2ZGD0GrSHJJFUn8ni6Exea8+KGGBZ6MYZQ079Sfu4utVnknmZfDx8e8cMNVnCESpsT6sb58YUTX/k9pbMeVV5y9W0meJmCkb9frRuEU7lx+7EpPtf8zpW5bNvmvpRp37bbnw8hVpX/K2Is+htwvKTzh2drPZE57u0j0IaeyIV0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de; spf=pass smtp.mailfrom=valentinobst.de; arc=none smtp.client-ip=212.227.17.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=valentinobst.de
+Received: from localhost.localdomain ([95.223.130.98]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1N33ZD-1qy6RS2jwz-013OUg; Tue, 23 Jan 2024 17:06:43 +0100
+From: Valentin Obst <kernel@valentinobst.de>
+To: Miguel Ojeda <ojeda@kernel.org>,
+	Alex Gaynor <alex.gaynor@gmail.com>,
+	Wedson Almeida Filho <wedsonaf@gmail.com>
+Cc: rust-for-linux@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 06/12] rust: str: move SAFETY comment in front of unsafe block
+Date: Tue, 23 Jan 2024 17:06:41 +0100
+Message-ID: <20240123160642.125285-1-kernel@valentinobst.de>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240123150112.124084-1-kernel@valentinobst.de>
+References: <20240123150112.124084-1-kernel@valentinobst.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="NI/8LBe6Z0gbguMf"
-Content-Disposition: inline
-In-Reply-To: <20240123135014.614858-1-dev@pschenker.ch>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:kkN8nkXFa/+Hos8xuVkzUCkfnQm83AX9LM0fqlu6ufKA1n6bf8O
+ fDOu/W245ZOO3bxg1ZxOjfH79yvO+QF8AooaTY6iw9PjLiYxTmqyNvNIcn71GYfsNTbsurI
+ gd9IazbpuqpzwB3Pi5WruGqT8LUUufy0CK7Vny2rw8uq6ysgNcN6oRf7TVYQI5Syb+YmCAH
+ KOcm4J6PT92OtwpvFZj/A==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:UXzJXFTNxhQ=;cigvECPexeR2yYWYYtRlxnddXJ6
+ uUuC7zyc0G9/wix6gcrdC7KEtbWMeFKzssrRHli5z4UlFn0UNoJ1WuF98fKFmNlYjMx47bos0
+ k1uPNIXPGaHB515jcrN93YXGHA2zlk187NkpHT1zlQbzxPtPkBZZCw/PT006GpZ7oJ17bR3/6
+ SrV86T+WRZBjoXxj2JZ8D/9ZrNB3IPeDhNtPVSpZB/m7OmOLK/0b9sr9MgpOl6joC1O/2AEEL
+ 3i3eWtoWc7KIj3U0NWnyrirRII/JezCsrE48ZYrBvhkMXyGcECKA8pVHjEMuSMqw3+6TMInCl
+ 3Jvs6f5UdV1eP2g69l7e+uBeug/sRpnNU5BajfEyilkOdkI6TLMoo6EBbivEOValh/CAXnQfY
+ TI+Y0ow2u+kXmizqRdSlLU6Zr2o7lnV2cPLL35MxQZbpSXK9ChdyiGu/Lz+r0kGmFXgsO9tNX
+ 6cwAlJJW2N9EivRWNE7Sug2jmn2l0e+g08cTYi10LUcbJUiysJEsFONBPpNbwkO/BQK+XEeVS
+ HIVqW28zSUS6UW/jNRiNTyNirD2F+Ztr86mh44D0wG/l9rQq4JEuoZH2frQ+gP3jnU1nxZjur
+ UxuAzcvZ7L4DOTtJkXHfcyR2hnLygWhKtwPwVJ+8vUX/nnNhMVZp0DXza9OYV8Qo+NFSGhAf4
+ bjZOiQ9iKN4muNIKJUQaci8r51eDuxu+OE0S3GNFIYRbC37Nr9ROvObaxE1i5zOFl7isjJEXB
+ T31yEA5ZcGGg0WFUFMVVGr2jXFJlD15kjmJUF4/YIyO2w6gja72JsQ6vjpThXXGEpR1tC1XNY
+ dkrkmGZJ2AVv91Pb2f3Z44cg83hsI/ZVgd6GIuufvk7UkH4swQp5jHLM5Oo0Y1RSnHRT4xVLt
+ vc79mNqvYvfN2Pg==
 
+SAFETY comments should immediately precede the unsafe block they
+justify. Move assignment to `bar` past comment as it is safe.
 
---NI/8LBe6Z0gbguMf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Valentin Obst <kernel@valentinobst.de>
+Reviewed-by: Trevor Gross <tmgross@umich.edu>
+Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+---
+ rust/kernel/str.rs | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Tue, Jan 23, 2024 at 02:50:13PM +0100, Philippe Schenker wrote:
-> From: Philippe Schenker <philippe.schenker@impulsing.ch>
->=20
-> This commit adds the dt-binding for KSZ8567, a robust 7-port
-> Ethernet switch. The KSZ8567 features two RGMII/MII/RMII interfaces,
-> each capable of gigabit speeds, complemented by five 10/100 Mbps
-> MAC/PHYs.
->=20
-> Signed-off-by: Philippe Schenker <philippe.schenker@impulsing.ch>
+diff --git a/rust/kernel/str.rs b/rust/kernel/str.rs
+index 843ffeec9b3e..fec5c4314758 100644
+--- a/rust/kernel/str.rs
++++ b/rust/kernel/str.rs
+@@ -191,9 +191,9 @@ pub fn to_str(&self) -> Result<&str, core::str::Utf8Error> {
+     /// ```
+     /// # use kernel::c_str;
+     /// # use kernel::str::CStr;
++    /// let bar = c_str!("ツ");
+     /// // SAFETY: String literals are guaranteed to be valid UTF-8
+     /// // by the Rust compiler.
+-    /// let bar = c_str!("ツ");
+     /// assert_eq!(unsafe { bar.as_str_unchecked() }, "ツ");
+     /// ```
+     #[inline]
+-- 
+2.43.0
 
-This device has all the same constraints as the other ones in this
-binding, why is it not compatible with any of them? If it isn't, the
-compatible should mention why it is not.
-
-Cheers,
-Conor.
-
-> ---
->=20
->  Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml=
- b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
-> index c963dc09e8e1..52acc15ebcbf 100644
-> --- a/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
-> +++ b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
-> @@ -31,6 +31,7 @@ properties:
->        - microchip,ksz9893
->        - microchip,ksz9563
->        - microchip,ksz8563
-> +      - microchip,ksz8567
-> =20
->    reset-gpios:
->      description:
-> --=20
-> 2.34.1
->=20
-
---NI/8LBe6Z0gbguMf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZa/kBwAKCRB4tDGHoIJi
-0qIwAP0cAGkY71vvUkGVLtIl9vMLiEQ4yyjNGvN6RsdtKatZwwEAnjjiGl1UYl8C
-Ha3eBRlaGSPNPIG1GySfDMPmK5FZhgc=
-=Jrfg
------END PGP SIGNATURE-----
-
---NI/8LBe6Z0gbguMf--
 
