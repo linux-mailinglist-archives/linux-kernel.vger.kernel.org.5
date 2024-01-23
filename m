@@ -1,134 +1,136 @@
-Return-Path: <linux-kernel+bounces-35091-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35090-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BE86838BEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:30:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A06B838BE4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:29:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E763A1F26342
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:29:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA1311F25D7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:29:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 786745C5E0;
-	Tue, 23 Jan 2024 10:29:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=phytec.de header.i=@phytec.de header.b="KVSg1o47"
-Received: from mickerik.phytec.de (mickerik.phytec.de [91.26.50.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4AD75C5F2;
+	Tue, 23 Jan 2024 10:29:34 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 251805A784
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 10:29:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.26.50.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC8E75A784;
+	Tue, 23 Jan 2024 10:29:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706005782; cv=none; b=ca72zCD3yRnjM0hXaKcWfNTTKlBz7f6s01ptBLbepieqkoH8G4UYnJDohsf0ovU6uD6tD8tQSMJc864Syqf9ORjL/xc0NUdKKlRApupluBDHW23+apXd86QB394RXSUrHt0qtsU7xokhOPJj2WLa8bZbgsyeXnAi+f+U/sxpczo=
+	t=1706005774; cv=none; b=DZm3euRVCNutT4SsZDJckjW7rhEd9Px/cqMUWydtEr6ieO+uj29rKgN/iNr0Az3oA9uDf5eCrpnZiOOguazKl2v/3BneMl0xdbQQjXGPrUUjzgfUXwGDoqPSdI7si0DmP17SmlTGapcj9Xl5N+JwJK7XpNbFy8jUxLMS1yZTUZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706005782; c=relaxed/simple;
-	bh=3528Bh1w1ePwVQXdFUJM6DTyJtAszP7ZqPeAoExHN4A=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=J0i6bub9LoJQlTRCt7Bwyq67GEPe2b33E19at3mme6EMZicVL11lNPL9fKCIDH9zbUvcdSXVWHEMsHnCMfEnBKUBoxebnIA31ejHz2scQxZheeKJ/JXyeDVnwMughGNjzS/+pUtL8qMzm/TUmK7Il/oxQ6RrVld1tx/FM4DCyBM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.de; spf=pass smtp.mailfrom=phytec.de; dkim=pass (1024-bit key) header.d=phytec.de header.i=@phytec.de header.b=KVSg1o47; arc=none smtp.client-ip=91.26.50.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=phytec.de
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
-	q=dns/txt; i=@phytec.de; t=1706005776; x=1708597776;
-	h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=3528Bh1w1ePwVQXdFUJM6DTyJtAszP7ZqPeAoExHN4A=;
-	b=KVSg1o47nZMwLABH1P8l2bJgdO3nZzJtzG0izWjSPacER8bgcaLR6Johmg1GeCVU
-	7rnFmiQwwbvq4gabidP3HkRImN69jl1wHGEcyz0FtNc2z8UuCtyDYgbhp6CTiUD6
-	qAZ4HB3XcE00hRDO2V4LrBApfQCJpRVSDaqBOOPlElk=;
-X-AuditID: ac14000a-fadff7000000290d-4d-65af95104432
-Received: from berlix.phytec.de (Unknown_Domain [172.25.0.12])
-	(using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(Client did not present a certificate)
-	by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id CE.4A.10509.0159FA56; Tue, 23 Jan 2024 11:29:36 +0100 (CET)
-Received: from augenblix2.phytec.de (172.25.0.11) by Berlix.phytec.de
- (172.25.0.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.6; Tue, 23 Jan
- 2024 11:29:36 +0100
-From: Wadim Egorov <w.egorov@phytec.de>
-To: <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <upstream@lists.phytec.de>
-Subject: [PATCH] arm64: dts: ti: k3-am642-phyboard-electra: Add TPM support
-Date: Tue, 23 Jan 2024 11:29:21 +0100
-Message-ID: <20240123102921.1348777-1-w.egorov@phytec.de>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1706005774; c=relaxed/simple;
+	bh=1z304UMB9iwNDgxznbQ/na098G6JM2egcJawzjYAgFU=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ERhRc5Hb++LNIU/64VugtridSW1xiRX3h9nyNNc6zgvhBTxQcFtjDFfWUUyLKrhgvmffmBvrDCbEqqXaTBZ0IoCcvHLf/udcme9zLhCKyWR1LC+rJBeHHOkr5XFPIFAMiHB6y176sZmfIGUBCxeGqxhvyjTFHKndB9SoTAbSjNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TK3Ct523Lz6K91D;
+	Tue, 23 Jan 2024 18:26:34 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id B7F05140A90;
+	Tue, 23 Jan 2024 18:29:29 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 23 Jan
+ 2024 10:29:29 +0000
+Date: Tue, 23 Jan 2024 10:29:28 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC: <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+	<x86@kernel.org>, <acpica-devel@lists.linuxfoundation.org>,
+	<linux-csky@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<linux-ia64@vger.kernel.org>, <linux-parisc@vger.kernel.org>, Salil Mehta
+	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	<jianyong.wu@arm.com>, <justin.he@arm.com>, James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v3 18/21] ACPI: processor: Only call
+ arch_unregister_cpu() if HOTPLUG_CPU is selected
+Message-ID: <20240123102928.0000270c@Huawei.com>
+In-Reply-To: <ZYBB32fMWB6of7Jb@shell.armlinux.org.uk>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+	<E1rDOhH-00DvlO-UP@rmk-PC.armlinux.org.uk>
+	<20231215165009.000035f2@Huawei.com>
+	<ZYBB32fMWB6of7Jb@shell.armlinux.org.uk>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: Florix.phytec.de (172.25.0.13) To Berlix.phytec.de
- (172.25.0.12)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrHLMWRmVeSWpSXmKPExsWyRpKBR1dg6vpUg2VLJC3W7D3HZDH/yDlW
-	i+WfZ7Nb9L14yGyx6fE1VovLu+awWbz5cZbJonXvEXaL7nfqFv/PfmB34PLYtKqTzePOtT1s
-	HpuX1Hv0d7ewehy/sZ3J4/MmuQC2KC6blNSczLLUIn27BK6M7otf2Ase8FR0/t/A3MB4lquL
-	kZNDQsBEYtfX7+xdjFwcQgKLmST2tZxhhXAeM0o8v3iZBaSKTUBd4s6Gb2AJEYFuRomTB5Yx
-	gzjMAm2MEk8eHmAGqRIW8JaYtuAOK4jNIqAqcf3xE6C5HBy8ApYSy+YHQqyTl5h5CWQdJ1BY
-	UOLkzCdgC5iB4s1bZzND2BISB1+8ALOFgOIvLi1ngemddu41M4QdKnFk02qmCYwCs5CMmoVk
-	1CwkoxYwMq9iFMrNTM5OLcrM1ivIqCxJTdZLSd3ECIoDEQauHYx9czwOMTJxMB5ilOBgVhLh
-	vSG5LlWINyWxsiq1KD++qDQntfgQozQHi5I47+qO4FQhgfTEktTs1NSC1CKYLBMHp1QDo6eQ
-	7b+2P1qHjSuYG9R1Pq0wt7jttzYw4sKd0K1RB9LkLrwueaP/xnXT5s0Zk+30ZEL/HnLTexf2
-	8eucqsp7O/TPJ/pK/3tXoLpMKOL/tyDDTUesj8oW2dZcsOQ9VpE25eAen6OLVE/2bUtiufXz
-	QOBCPkPRhlvzVG9H9l05mDp5u4cQ778HHkosxRmJhlrMRcWJADj06iRxAgAA
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500004.china.huawei.com (7.191.163.9) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-The phyBOARD-Electra populates a TPM module on SPI0 bus.
-Add support for the Infineon SLB9670 TPM module.
+On Mon, 18 Dec 2023 12:58:07 +0000
+"Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
 
-Signed-off-by: Wadim Egorov <w.egorov@phytec.de>
----
- .../dts/ti/k3-am642-phyboard-electra-rdk.dts  | 23 +++++++++++++++++++
- 1 file changed, 23 insertions(+)
+> On Fri, Dec 15, 2023 at 04:50:09PM +0000, Jonathan Cameron wrote:
+> > On Wed, 13 Dec 2023 12:50:43 +0000
+> > Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
+> >   
+> > > From: James Morse <james.morse@arm.com>
+> > > 
+> > > The kbuild robot points out that configurations without HOTPLUG_CPU
+> > > selected can try to build acpi_processor_post_eject() without success
+> > > as arch_unregister_cpu() is not defined.
+> > > 
+> > > Check this explicitly. This will be merged into:
+> > > | ACPI: Add post_eject to struct acpi_scan_handler for cpu hotplug
+> > > for any subsequent posting.
+> > > 
+> > > Reported-by: kbuild test robot <lkp@intel.com>
+> > > Signed-off-by: James Morse <james.morse@arm.com>
+> > > Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> > > Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> > > Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+> > > ---
+> > > This should probably be squashed into an earlier patch.  
+> > 
+> > Agreed. If not
+> > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>  
+> 
+> I'm not convinced that "ACPI: Add post_eject to struct acpi_scan_handler
+> for cpu hotplug" is the correct commit to squash this into.
+> 
+> As far as acpi_processor.c is concerned, This commit merely renames
+> acpi_processor_remove() to be acpi_processor_post_eject(). The function
+> references arch_unregister_cpu() before and after this change, and its
+> build is dependent on CONFIG_ACPI_HOTPLUG_PRESENT_CPU being defined.
+> 
+> Commit "ACPI: convert acpi_processor_post_eject() to use IS_ENABLED()"
+> removed the ifdef CONFIG_ACPI_HOTPLUG_PRESENT_CPU surrounding
+> acpi_processor_post_eject, and that symbol depends on
+> CONFIG_HOTPLUG_CPU, so I think this commit is also fine.
+> 
+> Commit "ACPI: Check _STA present bit before making CPUs not present"
+> rewrites the function - the original body gets called
+> acpi_processor_make_not_present() and a new acpi_processor_post_eject()
+> is created. At this point, it doesn't reference arch_unregister_cpu().
+> 
+> Commit "ACPI: add support to register CPUs based on the _STA enabled
+> bit" adds a reference to arch_unregister_cpu() in this new
+> acpi_processor_post_eject() - so I think this is the correct commit
+> this change should be merged into.
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-rdk.dts b/arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-rdk.dts
-index 53b64e55413f..8a518a86abc2 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-rdk.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-rdk.dts
-@@ -159,6 +159,15 @@ AM64X_IOPAD(0x0298, PIN_INPUT_PULLUP, 0)	/* (D19) MMC1_SDCD */
- 		>;
- 	};
- 
-+	main_spi0_pins_default: main-spi0-default-pins {
-+		pinctrl-single,pins = <
-+			AM64X_IOPAD(0x020c, PIN_OUTPUT, 7)	/* (C13) SPI0_CS1.GPIO1_43 */
-+			AM64X_IOPAD(0x0210, PIN_INPUT, 0)	/* (D13) SPI0_CLK */
-+			AM64X_IOPAD(0x0214, PIN_OUTPUT, 0)	/* (A13) SPI0_D0 */
-+			AM64X_IOPAD(0x0218, PIN_INPUT, 0)	/* (A14) SPI0_D1 */
-+		>;
-+	};
-+
- 	main_uart0_pins_default: main-uart0-default-pins {
- 		pinctrl-single,pins = <
- 			AM64X_IOPAD(0x0230, PIN_INPUT, 0)	/* (D15) UART0_RXD */
-@@ -248,6 +257,20 @@ &main_mcan1 {
- 	phys = <&can_tc2>;
- };
- 
-+&main_spi0 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&main_spi0_pins_default>;
-+	cs-gpios = <0>, <&main_gpio1 43 GPIO_ACTIVE_LOW>;
-+	ti,pindir-d0-out-d1-in;
-+
-+	tpm@1 {
-+		compatible = "infineon,slb9670", "tcg,tpm_tis-spi";
-+		reg = <1>;
-+		spi-max-frequency = <10000000>;
-+	};
-+};
-+
- &main_uart0 {
- 	status = "okay";
- 	pinctrl-names = "default";
--- 
-2.25.1
+That or where that change ends up given your earlier suggestion to
+move that change as well.  I find it hard to care as long as
+the bisection issue is squashed by the change.  If we make the code
+drop out before the build issue is introduced that's fine because
+we are arguing we shouldn't be running it anyway so such protection
+is fine if not necessary for build fix purposes.
+
+J
+
+> 
 
 
