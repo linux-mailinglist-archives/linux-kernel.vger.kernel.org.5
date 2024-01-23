@@ -1,176 +1,187 @@
-Return-Path: <linux-kernel+bounces-34944-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34945-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD123838991
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:51:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79EDA838998
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:51:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF7061C20F20
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:51:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29886287D51
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:51:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F26457894;
-	Tue, 23 Jan 2024 08:50:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4DE95811B;
+	Tue, 23 Jan 2024 08:51:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hDaQTB+K"
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zKpM9PPP"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF3C92B9CD;
-	Tue, 23 Jan 2024 08:50:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66F8E56B8F
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 08:51:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705999850; cv=none; b=Nq/Foybri0O27qXNqb1j3I1SvB6Kn1dXbLz4vZmnoPhbbcQCCkSdHwFJ/j2UOKniSCj6HZ3tElW7lq1ZfKFC/xjFccy6fSMIwpyJWH2FQ1HrPcWv6VLAKqRk3sX362EaCGzBJk2D1jlaIayK/YcAJ+qKXUaMFCso6lK7R+JGAlQ=
+	t=1705999873; cv=none; b=BU8y4avhaUEQMk8123WdB/MktJKc48uBFfN11lL/eK8sHS8BRyqOivx0bCEWoNX8G/eTOkJHF88B5p1DZdfcKWLy+P3hgMvY8vRacCmUnz9tyBJeggsnQfPEIy0NcxV0BAfdfq2B7r+PSk7+DKK/sEPutNpE3O2XI7xYlvzVEgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705999850; c=relaxed/simple;
-	bh=wLPog+0OdPWTf/vpChuci+4P8FjJPM6rI/8KZQ+nq7w=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hfNB3gMX3gvEWJbEXSxQsEWaVAHJRTWr71z6GNCc9y5sTvznaCkLYu8sEwXIAi0LqYdpeUdtq8AbRXbAL2GiIhue/nCaDDPPFUMuP0OvOd/U42cgXO8lUZnGA/mnIqE1UiiiJRcwfNS9kQrv9JylL6W6Lq2GmdgRGhaXk1uT8Uc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hDaQTB+K; arc=none smtp.client-ip=209.85.210.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6de83f5a004so2792387a34.1;
-        Tue, 23 Jan 2024 00:50:48 -0800 (PST)
+	s=arc-20240116; t=1705999873; c=relaxed/simple;
+	bh=+gcmOjMQPqlDY3Wgjuyd44I6g+LXA/PY7PT+sGIxmyQ=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=qveEGtWquUwQur70EIl1M8UJ/BgtsccC+nXAc746KNIMbNf2FnKY1RsTzkXYYPRzStRRJsStbPdwvfKUEEFL3/ODd9ZU6ChXaXhIaECIx1wTwzYI3LZ7bVP6B083eNC54kYOm42lfRVMIMqYhzLwtZDTq/5gL6Y4WYYmb6B48ZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zKpM9PPP; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40e72a567eeso48750755e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:51:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705999848; x=1706604648; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FNB6nZlr/06kPBlEqaF8a61wrkKCAoA4BnsL6cXaDrQ=;
-        b=hDaQTB+KL5dQHp1OiEXldk3WKg0d1jvkbCh+eaWcP3c2JAF2k7v3wk0CR5SdISx3aB
-         bzNmKzDSIgLwt5Ik2ka6zd/PnFZS2ugclv2VTbPJUYvQ4R7JWi7awivTSwE+uM396zuN
-         jaZz9W+5E8X4eDgvk3MVqvUwwGK3m9NXp2GDMmx+0fE5RbVFI86lPuRuykKjQa/h4yah
-         CYGE2++fxbpBgQmk8vAjieRVj96k2Zki3STreNGDUGY0gW0fBPiR8XXp7wGbB7fmHrXW
-         lqbEsSDvt/XSwvexyldaF3ArhHx5nJjTtQyeizajiWhQ+thYB1T3c+RCGAgFKwU+JjpU
-         M8PQ==
+        d=linaro.org; s=google; t=1705999869; x=1706604669; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DaGJoLogihiL/0UHUPbyeYeS+Spf1Z+WxpkchPy4Grc=;
+        b=zKpM9PPPxvH5kyuqvxz+DmOmK0TC5bEM9seJ1XtUomb8sJcZ5tl830uHnBalqXwKPV
+         Sma58VnJZHpT/9VVPqURbqWGPslEWo0Kc+yZ8VGAT587+ZonfKxncnUgbsLPROVhWwgs
+         1g5HoNIZcSUQGLQHBCWtNpdpGeD8DIjYBRyxLu+EgYten2TG2a63eQscpPI71seYn6b+
+         QRHHy7SBsf2uKq15e7FhZS8i/D1X/gBreWI7gay9mLKkxKqyDCCmKK9hmjdO5/Wq6QC3
+         ajTW4uiugO6wCltUeWyKSmFWcaqWB2OC5rrAPSZ/GhAx83TbxFzfGpeyqrShFPPv5wq/
+         v7tA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705999848; x=1706604648;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1705999869; x=1706604669;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=FNB6nZlr/06kPBlEqaF8a61wrkKCAoA4BnsL6cXaDrQ=;
-        b=NLOpQnSkQ/A92wUQqWGUv7EvRnGQ5q99xuLTMLnsYuWkOnJ/k1/JGLYW+WLb9yvTcX
-         5bHco7quLyktKwS0W1iD8dGnQFmkG4FibD01qrELLLh4rAjIw5gjAv9D2FeL2RdZYZeW
-         MHhqwPDb+TfNvsCU1dSQ32dLgT3tMlDtc3LGF242cJ7GANrEIxOe2SlGIp6YUvm8bZZ6
-         7a/Wo9TXlw5TPtoEGsd9QehIp0/PZITxKkXuzYo192YNo0L804mLrc6QKXt3wBZ11QDs
-         ZOq/OFnhjR+XwAenkl0Ejq+eghzT/0R0wvf2tUFI7hBHE4ppQpivSznTmg2lUE50Ipvm
-         GVUg==
-X-Gm-Message-State: AOJu0YxKf3TfD0nmT9Oj5kgBpHByUkrvjDpEtuzjXOoNObUcTtWtfVMr
-	BjXtwvS1u8Fi/tmddQtn62stxLBrsC72WGmzh7SsLiaEimDNYr3Z
-X-Google-Smtp-Source: AGHT+IHRKZzHqJsuxlpfoRfWi87C1N58CDPLVDywt+3AVD3QL8TKT2ebBbKukW0im0MhyVmjRuztlw==
-X-Received: by 2002:a05:6830:1e2d:b0:6dc:8dfb:3a86 with SMTP id t13-20020a0568301e2d00b006dc8dfb3a86mr5969046otr.15.1705999847791;
-        Tue, 23 Jan 2024 00:50:47 -0800 (PST)
-Received: from localhost.localdomain ([112.65.140.130])
-        by smtp.googlemail.com with ESMTPSA id w70-20020a638249000000b005cf88b016cesm9626322pgd.72.2024.01.23.00.50.44
+        bh=DaGJoLogihiL/0UHUPbyeYeS+Spf1Z+WxpkchPy4Grc=;
+        b=kc+hhw97uWFQLzwfPn44byNk5DPDPW9ryMF0Us5oDkJ/dkYuSaJG/cR0PyfsWDX9z5
+         eW/CPn0GJmcwYHAQ1sRxvzix+O+6K11jWPtz144mXdyvdZdCHQm6rUKWF7EYcFzrW0jy
+         Q/D1eFvLIpA1u1IJFfOB4+biRWmDmb3QqQAKpU12mK7Rby1VM1qXvMYi2TZnTsZHkPDr
+         iiOpYZaU7QyzWGzC1XL7Do9A6mpGMwnTz9u6mBdDhKQs4WBlgn5Av3tAQcguIfhYKsjU
+         6zgWJy/5+r/EeX6yYC/cWbPH+EDDik84SrPORjitIBLO4BPdIC691w7QMkrChM9IiL4i
+         +vtg==
+X-Gm-Message-State: AOJu0YxbB5R6ETxDopf8ZQpz/7f6YQo0yFrx5QckxA9WLhx0Ao+DskOU
+	ckwAmWafr82x0hKuKR39L6/EvbctgzoAire5C3HU5KrzbyMOZoP2N3EiCngYqAI=
+X-Google-Smtp-Source: AGHT+IHb5DtsEtadnShum/J2/T5bgjpckJw73/YgilXwYlRseylnCK8hCZ/tS4FFrOg5ZKxUgJ3h4A==
+X-Received: by 2002:a05:600c:3aca:b0:40e:5979:f91d with SMTP id d10-20020a05600c3aca00b0040e5979f91dmr179780wms.183.1705999869527;
+        Tue, 23 Jan 2024 00:51:09 -0800 (PST)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id m35-20020a05600c3b2300b0040e541ddcb1sm41847342wms.33.2024.01.23.00.51.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 00:50:47 -0800 (PST)
-From: Furong Xu <0x1207@gmail.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Joao Pinto <jpinto@synopsys.com>,
-	Simon Horman <horms@kernel.org>
-Cc: netdev@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	xfr@outlook.com,
-	rock.xu@nio.com,
-	Furong Xu <0x1207@gmail.com>
-Subject: [PATCH net] net: stmmac: xgmac: fix safety error descriptions
-Date: Tue, 23 Jan 2024 16:50:37 +0800
-Message-Id: <20240123085037.939471-1-0x1207@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 23 Jan 2024 00:51:09 -0800 (PST)
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Subject: [PATCH v7 0/4] remoteproc: qcom: Introduce DSP support for SM8650
+Date: Tue, 23 Jan 2024 09:51:01 +0100
+Message-Id: <20240123-topic-sm8650-upstream-remoteproc-v7-0-61283f50162f@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAPV9r2UC/43QTW6DMBAF4KtEXteVPf6lq96jysI2Q2KpYGRTl
+ Cri7jVRpVCxKMs3i+/NzJ0UzBELeTvdScY5lpiGGszLiYSrGy5IY1szAQaCM67plMYYaOmtVox
+ +jWXK6HqasU8TjjkFqrWzBtHrDpFUZszYxduj4uNc8zWWKeXvR+PM1+kvDup/fOaUUWdbYCgDc
+ hveP+PgcnpN+UJWfYaNKNgBEaqoWYOoDCBzsBPFU+TswANmUcXWtzI479BLsxPlUwRmD4hyvbr
+ RQaDqWMPFTlQbkcMBUVURjWwcd9KCtjtRb8UjO+oqipZrL0zHlfR/xGVZfgBT2APkawIAAA==
+To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Mathieu Poirier <mathieu.poirier@linaro.org>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Manivannan Sadhasivam <mani@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Neil Armstrong <neil.armstrong@linaro.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+ Mukesh Ojha <quic_mojha@quicinc.com>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3254;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=+gcmOjMQPqlDY3Wgjuyd44I6g+LXA/PY7PT+sGIxmyQ=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlr336qQtgKcKrq3FzSf8QH5kAWaCEPmRW+jAqWeJK
+ /j0Cy7WJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZa99+gAKCRB33NvayMhJ0Q/wD/
+ 9Uv5inVk+Lysd6DSXn6xNd8s7uE9SPU083joPw2XoLaUYxyhPs9Gn/61SvkaKsDhJzsZqXHuUtYn47
+ PCOx3JVQ+ahnnh9XT2EgUvSZyAiXkXYBhnO8Ea2wJL8TwpyGLKiP5Hm3m/NKQZtuf5RHxOkUmhXCyA
+ 4rLgeo1+rB+OlQBx94YnnKgin9KypzGWyC8iKS/tRhBwM9KZ78PkSP2K6kqqYNbYqKyx5IaeNVbCPB
+ 4ljpGXJUx/Pwg9bLJvuURFzMiIDiM+9XQFkrg3RjqgYg23XuO7ij+fKOIIAjZJ1pYlStzo8d8tLiyH
+ 7/hb2VEup3cAt7DwArTBIe56FsvpN4eZhzjqGazaG5YucMFQvzJWHgxdI535PNN2KXYgDev7lGBIBb
+ YwNd+F1MiCmf0Y74jGv/W2h5HGwDMPpCymPYDz1MJFTT2l+XsO9KbJbgxMkPUy9++z3LQEy5saR1ol
+ VjuQnpYHkwWxfB+oX5bIai4XriSZO/NDb36ZgJzN2pyJV8qus6Ri6AiqvRZgwr4nNJzLQVV534dkzf
+ 499OidR7+wz9PZjLa6QxVns9Jx3jVliNYqgABb8IBpPPQASgk0aKWPhrYtKt3TBEyv0t77Z1IgHUa8
+ 6pByja4mzRH/zBJ/i9QBQvsrBhhHeyPdOSWR7bwBxFSwyZQU+qgysvbSfy5w==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 
-Commit 56e58d6c8a56 ("net: stmmac: Implement Safety Features in
-XGMAC core") prints safety error descriptions when safety error assert,
-but missed some special errors, and mixed correctable errors and
-uncorrectable errors together.
-This patch complete the error code list and print the type of errors.
+Add the bindings and driver changes for DSP support on the
+SM8650 platform in order to enable the aDSP, cDSP and MPSS
+subsystems to boot.
 
-Fixes: 56e58d6c8a56 ("net: stmmac: Implement Safety Features in XGMAC core")
-Signed-off-by: Furong Xu <0x1207@gmail.com>
+Compared to SM8550, where SM8650 uses the same dual firmware files,
+(dtb file and main firmware) the memory zones requirement has changed:
+- cDSP: now requires 2 memory zones to be configured as shared
+  between the cDSP and the HLOS subsystem
+- MPSS: In addition to the memory zone required for the SM8550
+  MPSS, two more are required to be configured for MPSS
+  usage only.
+
+In order to handle this and avoid code duplication, the region_assign_*
+code patch has been made more generic and is able handle multiple
+DSP-only memory zones (for MPSS) or DSP-HLOS shared memory zones (cDSP)
+in the same region_assign functions.
+
+Dependencies: None
+
+For convenience, a regularly refreshed linux-next based git tree containing
+all the SM8650 related work is available at:
+https://git.codelinaro.org/neil.armstrong/linux/-/tree/topic/sm8650/upstream/integ
+
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- .../ethernet/stmicro/stmmac/dwxgmac2_core.c   | 36 +++++++++----------
- 1 file changed, 18 insertions(+), 18 deletions(-)
+Changes in v7:
+- Rebased on v6.8-rc1
+- Add another memory region for MPSS, in bindings, code and DT
+  - Kepts Krzysztof's review on bindings after agreement on irc
+  - Kept drivers patches reviews because it's only a miminal change (value 2 -> 3)
+- Link to v6: https://lore.kernel.org/r/20231218-topic-sm8650-upstream-remoteproc-v6-0-3d16b37f154b@linaro.org
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-index eb48211d9b0e..ad812484059e 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-@@ -748,29 +748,29 @@ static void dwxgmac3_handle_mac_err(struct net_device *ndev,
- }
- 
- static const struct dwxgmac3_error_desc dwxgmac3_mtl_errors[32]= {
--	{ true, "TXCES", "MTL TX Memory Error" },
-+	{ true, "TXCES", "MTL TX Memory Correctable Error" },
- 	{ true, "TXAMS", "MTL TX Memory Address Mismatch Error" },
--	{ true, "TXUES", "MTL TX Memory Error" },
-+	{ true, "TXUES", "MTL TX Memory Uncorrectable Error" },
- 	{ false, "UNKNOWN", "Unknown Error" }, /* 3 */
--	{ true, "RXCES", "MTL RX Memory Error" },
-+	{ true, "RXCES", "MTL RX Memory Correctable Error" },
- 	{ true, "RXAMS", "MTL RX Memory Address Mismatch Error" },
--	{ true, "RXUES", "MTL RX Memory Error" },
-+	{ true, "RXUES", "MTL RX Memory Uncorrectable Error" },
- 	{ false, "UNKNOWN", "Unknown Error" }, /* 7 */
--	{ true, "ECES", "MTL EST Memory Error" },
-+	{ true, "ECES", "MTL EST Memory Correctable Error" },
- 	{ true, "EAMS", "MTL EST Memory Address Mismatch Error" },
--	{ true, "EUES", "MTL EST Memory Error" },
-+	{ true, "EUES", "MTL EST Memory Uncorrectable Error" },
- 	{ false, "UNKNOWN", "Unknown Error" }, /* 11 */
--	{ true, "RPCES", "MTL RX Parser Memory Error" },
-+	{ true, "RPCES", "MTL RX Parser Memory Correctable Error" },
- 	{ true, "RPAMS", "MTL RX Parser Memory Address Mismatch Error" },
--	{ true, "RPUES", "MTL RX Parser Memory Error" },
-+	{ true, "RPUES", "MTL RX Parser Memory Uncorrectable Error" },
- 	{ false, "UNKNOWN", "Unknown Error" }, /* 15 */
--	{ false, "UNKNOWN", "Unknown Error" }, /* 16 */
--	{ false, "UNKNOWN", "Unknown Error" }, /* 17 */
--	{ false, "UNKNOWN", "Unknown Error" }, /* 18 */
-+	{ true, "SCES", "MTL SGF GCL Memory Correctable Error" },
-+	{ true, "SAMS", "MTL SGF GCL Memory Address Mismatch Error" },
-+	{ true, "SUES", "MTL SGF GCL Memory Uncorrectable Error" },
- 	{ false, "UNKNOWN", "Unknown Error" }, /* 19 */
--	{ false, "UNKNOWN", "Unknown Error" }, /* 20 */
--	{ false, "UNKNOWN", "Unknown Error" }, /* 21 */
--	{ false, "UNKNOWN", "Unknown Error" }, /* 22 */
-+	{ true, "RXFCES", "MTL RXF Memory Correctable Error" },
-+	{ true, "RXFAMS", "MTL RXF Memory Address Mismatch Error" },
-+	{ true, "RXFUES", "MTL RXF Memory Uncorrectable Error" },
- 	{ false, "UNKNOWN", "Unknown Error" }, /* 23 */
- 	{ false, "UNKNOWN", "Unknown Error" }, /* 24 */
- 	{ false, "UNKNOWN", "Unknown Error" }, /* 25 */
-@@ -796,13 +796,13 @@ static void dwxgmac3_handle_mtl_err(struct net_device *ndev,
- }
- 
- static const struct dwxgmac3_error_desc dwxgmac3_dma_errors[32]= {
--	{ true, "TCES", "DMA TSO Memory Error" },
-+	{ true, "TCES", "DMA TSO Memory Correctable Error" },
- 	{ true, "TAMS", "DMA TSO Memory Address Mismatch Error" },
--	{ true, "TUES", "DMA TSO Memory Error" },
-+	{ true, "TUES", "DMA TSO Memory Uncorrectable Error" },
- 	{ false, "UNKNOWN", "Unknown Error" }, /* 3 */
--	{ true, "DCES", "DMA DCACHE Memory Error" },
-+	{ true, "DCES", "DMA DCACHE Memory Correctable Error" },
- 	{ true, "DAMS", "DMA DCACHE Address Mismatch Error" },
--	{ true, "DUES", "DMA DCACHE Memory Error" },
-+	{ true, "DUES", "DMA DCACHE Memory Uncorrectable Error" },
- 	{ false, "UNKNOWN", "Unknown Error" }, /* 7 */
- 	{ false, "UNKNOWN", "Unknown Error" }, /* 8 */
- 	{ false, "UNKNOWN", "Unknown Error" }, /* 9 */
+Changes in v6:
+- Rebased on next-20231218, last patch did not apply anymore
+- Link to v5: https://lore.kernel.org/r/20231212-topic-sm8650-upstream-remoteproc-v5-0-e749a1a48268@linaro.org
+
+Changes in v5:
+- Rename _perms to _owners per Konrad suggestion
+- Link to v4: https://lore.kernel.org/r/20231208-topic-sm8650-upstream-remoteproc-v4-0-a96c3e5f0913@linaro.org
+
+Changes in v4:
+- Collected review from Mukesh Ojha
+- Fixed adsp_unassign_memory_region() as suggested by Mukesh Ojha
+- Link to v3: https://lore.kernel.org/r/20231106-topic-sm8650-upstream-remoteproc-v3-0-dbd4cabaeb47@linaro.org
+
+Changes in v3:
+- Collected bindings review tags
+- Small fixes suggested by Mukesh Ojha
+- Link to v2: https://lore.kernel.org/r/20231030-topic-sm8650-upstream-remoteproc-v2-0-609ee572e0a2@linaro.org
+
+Changes in v2:
+- Fixed sm8650 entries in allOf:if:then to match Krzysztof's comments
+- Collected reviewed-by on patch 3
+- Link to v1: https://lore.kernel.org/r/20231025-topic-sm8650-upstream-remoteproc-v1-0-a8d20e4ce18c@linaro.org
+
+---
+Neil Armstrong (4):
+      dt-bindings: remoteproc: qcom,sm8550-pas: document the SM8650 PAS
+      remoteproc: qcom: pas: make region assign more generic
+      remoteproc: qcom: pas: Add SM8650 remoteproc support
+      arm64: dts: qcom: sm8650: add missing qlink_logging reserved memory for mpss
+
+ .../bindings/remoteproc/qcom,sm8550-pas.yaml       |  45 ++++++-
+ arch/arm64/boot/dts/qcom/sm8650.dtsi               |   8 +-
+ drivers/remoteproc/qcom_q6v5_pas.c                 | 150 ++++++++++++++++-----
+ 3 files changed, 167 insertions(+), 36 deletions(-)
+---
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+change-id: 20231016-topic-sm8650-upstream-remoteproc-66a87eeb6fee
+
+Best regards,
 -- 
-2.34.1
+Neil Armstrong <neil.armstrong@linaro.org>
 
 
