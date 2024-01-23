@@ -1,176 +1,163 @@
-Return-Path: <linux-kernel+bounces-35467-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35468-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 592A383919A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:42:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 083C083919E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:45:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DEACB1F262DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:42:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 897D01F21F64
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:45:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECA325FBB2;
-	Tue, 23 Jan 2024 14:42:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E681950A81;
+	Tue, 23 Jan 2024 14:45:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fy9RxXA2"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="oYH9+34T"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA5145FBAA;
-	Tue, 23 Jan 2024 14:41:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A241C5026F;
+	Tue, 23 Jan 2024 14:45:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706020921; cv=none; b=pdmiTf/fl2iC+4/Sc/CHk9cnvT7f1gXQPQgRyB4/5tWfEVSpnGtojUC3ww2uaxCIIR1G3YYKVLKgYkLqVCjkTjGmtn3Vp4usMcS5IX5m7Kl9XxiqAuAGrZMuFdGhVDCNv9gEmomTiJUAD8JVgMCvBv2yCCtDLNdLDp+dnozKNBk=
+	t=1706021102; cv=none; b=tYa5BBQ4/SFcbDSNXJYa9C/Ds1FWe0NR30Efl/zLrNCAWvQDsaV9/GawikjQ5Jyz4u66WDF5DB7od1pexgPNGFJ/6tsEkbbMSDynRKJq++XFP9t0gjHV7POm6SUm/tjyy5zuVwqit8X/ZclnTn8fQTm0BvkbGwsbVVwknTKs72w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706020921; c=relaxed/simple;
-	bh=/G/0DNSlCdvQHDjA0E5XMdtuoUCzLwstX3BIGOhPQl8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JVo28lTS25BzN42Obtv51tBfq2QkGEAQMrst0GQe419JcGenF4YuvRk0p9oGKXLvTmczf+7S44yvQZ193lyVuCyktF0WMvNILn9fIzlVZ0vRbteLAS2Y1Ia1P3IWssWyXBrs/mSMSAZpU4OntjFH/4bTY4VlK3px/95TRxAlgJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fy9RxXA2; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d427518d52so31287115ad.0;
-        Tue, 23 Jan 2024 06:41:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706020919; x=1706625719; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=kiH7/X/jWCZvnjGCpz1ct/EafnIRL4KUlTVwPeC5kXc=;
-        b=Fy9RxXA29YWp7YcmFjzWm/yrp+g8Hkp0fMeqUHyLw+6AJFqVy9Q93lXSsmeTiDYUtO
-         6FdEk9UU0cGnSBQlSEMeq+LaTPlxjMptvJADYgHX7G6i81B3prraEXtu2s+WCKT5KX3X
-         mp0zYvUYCgy+ebSEFOdhqNx4+8SAxWmPvT06cHFKytCe0O36ZJPKazw/1tqBGqYR61az
-         oT75yAsvLIBZ/4kHGvBfXt/w/EW/7G2UZvpevE7Uh1esRwH0C0s4yIthoUkqM9HnCOjB
-         SqOKbAEBRhjpvybWXmRTRvoAqgj94Onv34rTrG0FeWSgA0oEiuPPTjl7rF+hP5o/DBWQ
-         OgtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706020919; x=1706625719;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kiH7/X/jWCZvnjGCpz1ct/EafnIRL4KUlTVwPeC5kXc=;
-        b=BxfileRAIsj8tNLedCsdqJuU/Ho5VsawYf3m4J4zaJdUVYlPURoTijsNe1KDOtA5zb
-         biXmXy3FlnWUIIWJ4It/HSrXWmb9nrR9OMTgL5dnlrM2U67cVoG8oHoP/MmBCVaWrkUf
-         Qs8Z/MN9JCgmX0FFyBSHtAI8eJ/ZzcpoFgmNtTp9QMbSisYk/B0z0vsWHanhmgiBggc8
-         7GmkFPugBGAOAuJMsAjn0x1XDXtICZ+IXJVsf9l1tg/1YAY9pvLRjuhEOh+v7wjQlatr
-         OmCvzRpsOMe1pQOK4K9hE8NmbIZZhYxeHucdcYcIvEOPdpFJELLLpB9w+aFc4WkJvrxa
-         WzYw==
-X-Gm-Message-State: AOJu0Yx44Mp6Ao25YAxh++sFJoil5GOPJ8IAHjKgP9e+PdvJHATeBpSb
-	0QNYi5fz0s7WGgYfTLouR3u66f5moFsSd59RKLVrK8Pq40+6rNYZx/irjgAqmwF55/TFot5F9+B
-	bqRIAfUvY0hQA8u29DRLGWfVMuekNJD2pBKXzYQ==
-X-Google-Smtp-Source: AGHT+IFqcQVVXIOGxEde9nKQOVJLFr0nsF4kQA4MI03XIpNWrNav+3WLZsBWHt24yINft6CkgPzrT3ljF42PTbD/aAQ=
-X-Received: by 2002:a17:902:b18a:b0:1d7:323a:ecd6 with SMTP id
- s10-20020a170902b18a00b001d7323aecd6mr5333712plr.42.1706020919094; Tue, 23
- Jan 2024 06:41:59 -0800 (PST)
+	s=arc-20240116; t=1706021102; c=relaxed/simple;
+	bh=+8mWQtyFcnYGhfR0wkSQ68fK9+UKR6e+xL/523DTfrE=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=aU9/kxnr2+YeurUxjFusLPE02lJ9WNkE/QQVwVjiZ5py0OPVmztnX+ilUtjorDnAQh1UJEGNMxJnJp7xqUC23wN4SSLajW0RA+IP6dv1R+yX/lftCv5pifHzCkzyC85RRqYR2QLuhuOKw9g8KH4jVJ3qG3/x3Ca+/3u2evmFvH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=oYH9+34T; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1706021099;
+	bh=+8mWQtyFcnYGhfR0wkSQ68fK9+UKR6e+xL/523DTfrE=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=oYH9+34T274wj0pmflwVQkZtj4kzL8X0IozbxHiUB9ZxNClluGgTttaT4fIDBM3zg
+	 /c1PI1tgscghRptoWKdEndPRz85x5eU6/hvZbRgXGcEzBx1qKSGoG2YiotL/+9Cgkh
+	 0wJKLLagQx9oMACCrnO+GquHBAVe+sfJk8P5q3JGCeo7eGpzy2rVybdaE15QyxXOV+
+	 Os1+/IMiq88hvgXLTh1OsOLQNCcWVOL7DFqRR+I2ojRiKPmVS5QRIwzRcKuHmO6dvq
+	 34SAn06OsRTaNegs093K7Ji1pGJo3EF3K4EpazlyotI676TaEKiNelO8qOIS21m3Rh
+	 4thZ6PDfmB0jg==
+Received: from [100.96.234.34] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id DC41437820AF;
+	Tue, 23 Jan 2024 14:44:56 +0000 (UTC)
+Message-ID: <4bf9bf87-0622-4824-9026-d7ab5839f433@collabora.com>
+Date: Tue, 23 Jan 2024 19:45:08 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240123040817.200542-1-f.fainelli@gmail.com>
-In-Reply-To: <20240123040817.200542-1-f.fainelli@gmail.com>
-From: Jonas Gorski <jonas.gorski@gmail.com>
-Date: Tue, 23 Jan 2024 15:41:47 +0100
-Message-ID: <CAOiHx=mgNB5V178vNQM0oePd9uhDsz7bnqKRCcbfc22WxZm1jQ@mail.gmail.com>
-Subject: Re: [PATCH] MIPS: BCM63XX: Fix missing prototypes
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: linux-mips@vger.kernel.org, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, kernel@collabora.com,
+ linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH v2 1/2] selftests/mm: run_vmtests.sh: add missing tests
+Content-Language: en-US
+To: Ryan Roberts <ryan.roberts@arm.com>
+References: <20240123073615.920324-1-usama.anjum@collabora.com>
+ <e92f7c49-5268-421e-a017-af268c845b1b@arm.com>
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <e92f7c49-5268-421e-a017-af268c845b1b@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi,
+Hi Ryan,
 
-On Tue, 23 Jan 2024 at 05:08, Florian Fainelli <f.fainelli@gmail.com> wrote:
->
-> We have a number of missing prototypes warnings for the BCM63XX machine,
-> fix those by providing adequate function prototypes.
+Thank you so much for reviewing and getting involved.
 
-None of these prototypes should be needed, most functions are never
-called outside of their units and are just missing a static
-annotation, and one already has a prototype in a different header.
+On 1/23/24 2:33 PM, Ryan Roberts wrote:
+> On 23/01/2024 07:36, Muhammad Usama Anjum wrote:
+>> Add missing tests to run_vmtests.sh. The mm kselftests are run through
+>> run_vmtests.sh. If a test isn't present in this script, it'll not run
+>> with run_tests or `make -C tools/testing/selftests/mm run_tests`.
+>>
+>> Cc: Ryan Roberts <ryan.roberts@arm.com>
+>> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+>> ---
+>> Changes since v1:
+>> - Copy the original scripts and their dependence script to install directory as well
+>> ---
+>>  tools/testing/selftests/mm/Makefile       | 3 +++
+>>  tools/testing/selftests/mm/run_vmtests.sh | 3 +++
+>>  2 files changed, 6 insertions(+)
+>>
+>> diff --git a/tools/testing/selftests/mm/Makefile b/tools/testing/selftests/mm/Makefile
+>> index 2453add65d12f..c9c8112a7262e 100644
+>> --- a/tools/testing/selftests/mm/Makefile
+>> +++ b/tools/testing/selftests/mm/Makefile
+>> @@ -114,6 +114,9 @@ TEST_PROGS := run_vmtests.sh
+>>  TEST_FILES := test_vmalloc.sh
+>>  TEST_FILES += test_hmm.sh
+>>  TEST_FILES += va_high_addr_switch.sh
+>> +TEST_FILES += charge_reserved_hugetlb.sh
+>> +TEST_FILES += write_hugetlb_memory.sh
+>> +TEST_FILES += hugetlb_reparenting_test.sh
+> 
+> I see you are exporting 3 scripts, but only invoking 2 of them from
+> run_vmtests.sh below. Is one a helper that gets called indirectly?
+Yeah, write_hugetlb_memory.sh is needed by charge_reserved_hugetlb.sh. I'll
+put a comment there.
 
->
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
->  arch/mips/include/asm/mach-bcm63xx/bcm63xx_cpu.h    | 8 ++++++++
->  arch/mips/include/asm/mach-bcm63xx/bcm63xx_timer.h  | 1 +
->  arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h | 2 ++
->  arch/mips/include/asm/mach-bcm63xx/irq.h            | 3 +++
->  4 files changed, 14 insertions(+)
->
-> diff --git a/arch/mips/include/asm/mach-bcm63xx/bcm63xx_cpu.h b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_cpu.h
-> index 1cad18e6681d..b9ab5ee1c7b2 100644
-> --- a/arch/mips/include/asm/mach-bcm63xx/bcm63xx_cpu.h
-> +++ b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_cpu.h
-> @@ -1065,4 +1065,12 @@ void bcm63xx_machine_halt(void);
->
->  void bcm63xx_machine_reboot(void);
->
-> +int bcm63xx_register_devices(void);
+> 
+>>  
+>>  include ../lib.mk
+>>  
+>> diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
+>> index 246d53a5d7f28..12754af00b39c 100755
+>> --- a/tools/testing/selftests/mm/run_vmtests.sh
+>> +++ b/tools/testing/selftests/mm/run_vmtests.sh
+>> @@ -248,6 +248,9 @@ CATEGORY="hugetlb" run_test ./map_hugetlb
+>>  CATEGORY="hugetlb" run_test ./hugepage-mremap
+>>  CATEGORY="hugetlb" run_test ./hugepage-vmemmap
+>>  CATEGORY="hugetlb" run_test ./hugetlb-madvise
+>> +CATEGORY="hugetlb" run_test ./charge_reserved_hugetlb.sh -cgroup-v2
+>> +CATEGORY="hugetlb" run_test ./hugetlb_reparenting_test.sh -cgroup-v2
+>> +CATEGORY="hugetlb" run_test ./hugetlb-read-hwpoison
+> 
+> I'm not really a fan of adding this last test here; its destructive because it
+> poisons 8 hugepages. So at a minimum, I think you need to modify the code in
+> run_vmtests.sh to ensure those extra pages are allocated (there is already a
+> section in the script that allocates hugepages).
+> 
+> However, given this test is destructive, I'd prefer that it wasn't run as part
+> of the main test set. Because the first time you run it, it will presumably
+> pass, but now some of the hugepages are poisoned so next time you run it, there
+> won't be enough unpoisoned hugepages and a test will fail. So you have very
+> confusing behaviour for a developer who might be running these tests multiple
+> times per boot (e.g. me).
+> 
+> Perhaps we can add a -d (destructive) option to the script, and this test will
+> only be run if that option is passed?
+Ideally we should be able to fix these tests before enabling them and there
+shouldn't be any side-effect of these. I'm struggling with the
+configurations where I'm getting consistent results. Studying and analyzing
+how and how many hugetlbs are being allocated/deallocated isn't straight
+forward enough in these.
 
-defined and used only in arch/mips/bcm63xx/setup.c
+I'll spend more time to either put it under some flag or modify the tests
+to don't entangle with each other.
 
-> +
-> +int bcm63xx_rng_register(void);
+> 
+> Thanks,
+> Ryan
+> 
+> 
+>>  
+>>  nr_hugepages_tmp=$(cat /proc/sys/vm/nr_hugepages)
+>>  # For this test, we need one and just one huge page
+> 
+> 
 
-defined and used only in arch/mips/bcm63xx/dev-rng.c
-
-> +
-> +int bcm63xx_uart_register(unsigned int id);
-
-This one already has a prototype in bcm63xx_dev_uart.h,
-arch/mips/bcm63xx/dev-uart.c just needs to include that header file.
-
-> +
-> +int bcm63xx_wdt_register(void);
-
-defined and used only in arch/mips/bcm63xx/dev-wdt.c
-
-> +
->  #endif /* !BCM63XX_CPU_H_ */
-> diff --git a/arch/mips/include/asm/mach-bcm63xx/bcm63xx_timer.h b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_timer.h
-> index bcbece793fd8..f920c7274f5e 100644
-> --- a/arch/mips/include/asm/mach-bcm63xx/bcm63xx_timer.h
-> +++ b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_timer.h
-> @@ -8,5 +8,6 @@ int bcm63xx_timer_set(int id, int monotonic, unsigned int countdown_us);
->  int bcm63xx_timer_enable(int id);
->  int bcm63xx_timer_disable(int id);
->  unsigned int bcm63xx_timer_countdown(unsigned int countdown_us);
-> +int bcm63xx_timer_init(void);
-
-defined and used only in arch/mips/bcm63xx/timer.c
-
->
->  #endif /* !BCM63XX_TIMER_H_ */
-> diff --git a/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h b/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h
-> index 830f53f28e3f..7b905c8a424d 100644
-> --- a/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h
-> +++ b/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h
-> @@ -51,4 +51,6 @@ struct board_info {
->         unsigned long ephy_reset_gpio_flags;
->  };
->
-> +int bcm63xx_get_fallback_sprom(struct ssb_bus *bus, struct ssb_sprom *out);
-
-defined and used only in arch/mips/bcm63xx/boards/board_bcm963xx.c
-
-> +
->  #endif /* ! BOARD_BCM963XX_H_ */
-> diff --git a/arch/mips/include/asm/mach-bcm63xx/irq.h b/arch/mips/include/asm/mach-bcm63xx/irq.h
-> index b016f0615d5f..cbb92a609835 100644
-> --- a/arch/mips/include/asm/mach-bcm63xx/irq.h
-> +++ b/arch/mips/include/asm/mach-bcm63xx/irq.h
-> @@ -5,4 +5,7 @@
->  #define NR_IRQS 128
->  #define MIPS_CPU_IRQ_BASE 0
->
-> +void __dispatch_internal_32(int cpu);
-> +void __dispatch_internal_64(int cpu);
-
-dispatch __dispatch_internal_32()/__dispatch_internal_64() are defined
-and used only in arch/mips/bcm63xx/irq.c
-
-Best Regards,
-Jonas
+-- 
+BR,
+Muhammad Usama Anjum
 
