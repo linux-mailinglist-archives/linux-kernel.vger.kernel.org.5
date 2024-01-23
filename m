@@ -1,111 +1,130 @@
-Return-Path: <linux-kernel+bounces-34917-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34920-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BDA083892F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:37:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65E03838938
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:38:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EDE41C250A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:37:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DF6C282099
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:38:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2246C5C5F7;
-	Tue, 23 Jan 2024 08:35:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E519F5788F;
+	Tue, 23 Jan 2024 08:37:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nIAV5LS8"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XnU4Jqo7"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEF755C5E8
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 08:35:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36A5257327;
+	Tue, 23 Jan 2024 08:37:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705998923; cv=none; b=CigPIzFw2gT6lNGzQ0nHYqK/CCeNV2qvyv9hiV7tBSPu+8Sap/PH8wH6IrwYDfj3pltncKUtCc1zs/ALvZXMQh/RLd4hyfIH9e5cCZ+SCAQViOdg2YqOOavEvGNpvYzs4ZAI+1Bl5QNYVkhoLudcGXVvQSfke4EsjS5H9xzApec=
+	t=1705999046; cv=none; b=tT75GUB37yuOPmp3cPGWg1IYLWYz1uTmm+Rq0OQjEXPWqOUs46XYeNDsn3JhUNmyyb2xIPjVT153E64teTYXTH0viArXqkwMrfK88Y6ftiY+nyF1LULQmbRZAYn1VwvKPlG2o7v6EsuronHerJzyppX3JKMXqGiNX1CxDs1bZnU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705998923; c=relaxed/simple;
-	bh=XSWZdAOs6hAsxD5MITsh6XvhE0ZurohRXOoGiYT/7Ww=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=tFgBV8xEAeN7hc3xTL0tbExIIV71yRsAxAZFQkNQsNfve6+/xBhSLjfi769d1AuYpz9WZW1sOTUcmah5Pzl3zbDFcXTrlqanKJh5ilMKzSIJKTU0OA4pnzIxHk9tiWKc+OieU5d5CsNg7lvuVdGJanBXTicJSI6Z5PYIk17agQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nIAV5LS8; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40e5afc18f5so44304325e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:35:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705998920; x=1706603720; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=skHURHUQR7i0GOIojP4/LIIN0dBVeJ7kB7JR1qs7z2M=;
-        b=nIAV5LS8m0X6+9c15dz63Jdew/f3//RDSnamYG1YVoks95mmADFP53H3zUbbn3jxPH
-         Q0wZwdaWuTkxI7LFaD9GyZ/VQg9JelHnZD8z3XHfcX3qcAkAtqvMIUjQoUnF0HxiwOSG
-         4NTJBIHVcygPswb4ljXJmnug4Gt7WCGD4upW5anSqTE1ZW8AN+0eAnirLqJWCBHbzSlA
-         vAvQAd1KgdsFnYw8+iGoPD1wfM1pwfv444wNJEnRHmQA+NfT9SAcxWgB+a6OnNzLMrET
-         c9bs8Jt1uBWax9PnU8geWJiAvoPIuH2zEsvPN7BgT2BgTPH5nqU6kCnx2LLhci+1JQp/
-         gSzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705998920; x=1706603720;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=skHURHUQR7i0GOIojP4/LIIN0dBVeJ7kB7JR1qs7z2M=;
-        b=PLyDp+fckTx6Zk70kBDbMv6kIKMypgnPZe7PrHyER3Alp0SFEkHxPojeyVOjluO3iW
-         m+58iOy4vUdqrNr/H9wVPpjlvd3F44S2gExypuxrQbM2mipLa6zC/lGmR3my+HyLD4gT
-         X6DsVzBhV0pGs/bmEXSndiOnVSaM9vmOR4TNRuDiixEPMCQROX5V4ZUpMwCTi0zt6vz2
-         jxJs0H6JZnAv1omVsAPaMWbzLEcCg7C9dEV/GhAO9JbfEVVMc4QK/mi/NZ+5NWxvLJOO
-         oW7JIedPj1qZFxEubPaNyKCerX8IIvgiekiSWcuj+/yarSbU2x/tQLhukRy2k/W5bLxF
-         jdZQ==
-X-Gm-Message-State: AOJu0YxyaGkHSfomA45dcOc78vvtXsIprDchFz5ACFmKT/wnCR96zTvy
-	4w+XXovl5sJJ4ouV+M7tj0yMejNSDnMi4smpPPcj6pEO4Xs7NzuSbD47Q8evNFI=
-X-Google-Smtp-Source: AGHT+IEDMr/w8Trt1zB7Og/p3DQFm8Ri9WQH4rTw1DnY+3XH5GBq/BcUu+6w0HawCFf9l/HasGidLQ==
-X-Received: by 2002:a05:600c:2249:b0:40e:4ca6:1017 with SMTP id a9-20020a05600c224900b0040e4ca61017mr347253wmm.57.1705998920390;
-        Tue, 23 Jan 2024 00:35:20 -0800 (PST)
-Received: from krzk-bin.. ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id i19-20020a05600c355300b0040e76b60235sm30590641wmq.8.2024.01.23.00.35.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 00:35:20 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Dmitry Osipenko <digetx@gmail.com>,
-	linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-tegra@vger.kernel.org
-Subject: [PATCH] dt-bindings: memory-controllers: narrow regex for unit address to hex numbers
-Date: Tue, 23 Jan 2024 09:35:17 +0100
-Message-Id: <20240123083517.21091-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1705999046; c=relaxed/simple;
+	bh=i3fm9I0AtALKEDU1lFQLDOyc8qHvrAP7w0tD+wvw694=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=lSUb+JAfWcWKStRypJFoCUQk161iWlI/JGtGnfMohiWJs76vAMaUcHgvuHJmbx6q3hntu/qB1o8vv+5EeDoGupVVaIHsWu/j3iZXy59rR8b2l94US5GPHgqb6cdoB6zLNtvJ6RpLKKU0utulfuIwKFsGGAAJXqCKXl8ZfVxHCrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XnU4Jqo7; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705999044; x=1737535044;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=i3fm9I0AtALKEDU1lFQLDOyc8qHvrAP7w0tD+wvw694=;
+  b=XnU4Jqo7GuQZuCNyljLjK63RufcYaMzICzcl4HutzhaT7PJ+zhxhbUco
+   GwMfyKz9vzRTxaP4umXoujikvDN3RgmCnPf0S++dk0w47926TWlsq5PbY
+   hR6eLcGbnleQPY75gpB3stA6MFbFTkZ2SrJLY0c0k2PqywqjzeAx4F499
+   ZLLDK5VRvPuD+lfmnSubeZFxEMSxOYGsU01VY6tgTJtXHjNtzTahmEETB
+   3UkZwQ3QVxHbhKIBFhJ6eptJPHQrNv0uHf0ym+nROltRv04xdVMCO3VVf
+   QO4KeO8roOBovtXd3ZwwnahOL2M/vDJ1R3wD/HuoDdrGNPUAJkXc8NqIs
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="1339952"
+X-IronPort-AV: E=Sophos;i="6.05,213,1701158400"; 
+   d="scan'208";a="1339952"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 00:37:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,213,1701158400"; 
+   d="scan'208";a="20261546"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 00:37:16 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Gregory Price <gregory.price@memverge.com>
+Cc: Gregory Price <gourry.memverge@gmail.com>,  <linux-mm@kvack.org>,
+  <linux-kernel@vger.kernel.org>,  <linux-doc@vger.kernel.org>,
+  <linux-fsdevel@vger.kernel.org>,  <linux-api@vger.kernel.org>,
+  <corbet@lwn.net>,  <akpm@linux-foundation.org>,  <honggyu.kim@sk.com>,
+  <rakie.kim@sk.com>,  <hyeongtak.ji@sk.com>,  <mhocko@kernel.org>,
+  <vtavarespetr@micron.com>,  <jgroves@micron.com>,
+  <ravis.opensrc@micron.com>,  <sthanneeru@micron.com>,
+  <emirakhur@micron.com>,  <Hasan.Maruf@amd.com>,
+  <seungjun.ha@samsung.com>,  <hannes@cmpxchg.org>,
+  <dan.j.williams@intel.com>,  Srinivasulu Thanneeru
+ <sthanneeru.opensrc@micron.com>
+Subject: Re: [PATCH v2 3/3] mm/mempolicy: introduce MPOL_WEIGHTED_INTERLEAVE
+ for weighted interleaving
+In-Reply-To: <Za9LnN59SBWwdFdW@memverge.com> (Gregory Price's message of "Tue,
+	23 Jan 2024 00:16:12 -0500")
+References: <20240119175730.15484-1-gregory.price@memverge.com>
+	<20240119175730.15484-4-gregory.price@memverge.com>
+	<87jzo0vjkk.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<Za9GiqsZtcfKXc5m@memverge.com> <Za9LnN59SBWwdFdW@memverge.com>
+Date: Tue, 23 Jan 2024 16:35:19 +0800
+Message-ID: <87a5owv454.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ascii
 
-Regular expression used to match the unit address part should not allow
-non-hex numbers.
+Gregory Price <gregory.price@memverge.com> writes:
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- .../bindings/memory-controllers/nvidia,tegra20-emc.yaml         | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Mon, Jan 22, 2024 at 11:54:34PM -0500, Gregory Price wrote:
+>> > 
+>> > Can the above code be simplified as something like below?
+>> > 
+>> >         resume_node = prev_node;
+> ---         resume_weight = 0;
+> +++         resume_weight = weights[node];
+>> >         for (...) {
+>> >                 ...
+>> >         }
+>> > 
+>> 
+>> I'll take another look at it, but this logic is annoying because of the
+>> corner case:  me->il_prev can be NUMA_NO_NODE or an actual numa node.
+>> 
+>
+> After a quick look, as long as no one objects to (me->il_prev) remaining
+> NUMA_NO_NODE
 
-diff --git a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
-index f54e553e6c0e..71896cb10692 100644
---- a/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
-+++ b/Documentation/devicetree/bindings/memory-controllers/nvidia,tegra20-emc.yaml
-@@ -145,7 +145,7 @@ patternProperties:
-   "^emc-table@[0-9]+$":
-     $ref: "#/$defs/emc-table"
- 
--  "^emc-tables@[a-z0-9-]+$":
-+  "^emc-tables@[a-f0-9-]+$":
-     type: object
-     properties:
-       reg:
--- 
-2.34.1
+MAX_NUMNODES-1 ?
 
+> while having a weight assigned to pol->wil.cur_weight,
+
+I think that it is OK.
+
+And, IIUC, pol->wil.cur_weight can be 0, as in
+weighted_interleave_nodes(), if it's 0, it will be assigned to default
+weight for the node.
+
+> then
+> this looks like it can be simplified as above.
+>
+> I don't think it's harmful, but i'll have to take a quick look at what
+> happens on rebind to make sure we don't have a stale weight.
+
+Make sense.
+
+--
+Best Regards,
+Huang, Ying
 
