@@ -1,96 +1,91 @@
-Return-Path: <linux-kernel+bounces-35558-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E104F839341
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:41:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C23D839345
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:41:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BFEF1C234F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:41:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB9C91F2209D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:41:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A820F6026A;
-	Tue, 23 Jan 2024 15:34:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A76E6027C;
+	Tue, 23 Jan 2024 15:35:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Zn5i5rSv"
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b="fBlX29H2";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="dgEPaiM3"
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 229CF634F5
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 15:34:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E96C75FDCC;
+	Tue, 23 Jan 2024 15:35:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706024090; cv=none; b=Sq0ayUF+ZFc12Hog5ArS5GtV9hVrk422BglhuA9/iRs6zvdYjRRYxOQCArivFeYL6/Tvh59CPuu48anI7M7HzTcK4hMMWsJsa56Nqb1PLXWmxxap1n/O7NCc5GixmOLYfHDvCbEQX1MdsrJ5KFsRGLmYyP+MJco0p43I2HYuyOM=
+	t=1706024108; cv=none; b=lzNJEjhIdt7LfB5+1RhIypctyCMEfGCGMOUZ1vjkj7IJHgdt8CtMcHuqCWs2uzvxydnSj2WgSLDCVc6Ay+Y2tkWPz/lZLjlIZV2k51Z6zN/x16mEjnrOSlUj/INqMxKKQjOoy8TglMATgIkcjrO3YHxVQLHtfmRquLlMuqY9LWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706024090; c=relaxed/simple;
-	bh=1Cc0NM6fhLussfzfohHUT88afhdt/sIa5MfxqO5OBZo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dWHuAY2/kPHG5VfoGgClm5Qi/KUpRGgTLYjxJ5UbeGyNRcRjllGLTPiqTrJIK8R68COyOwDXzn0PANvDVSkzlHZhWc4dhDc+HFTru5wceDSs0Rv/L9Iw1j+s0lLwQFKQv/NEopu6ZzKj2ftuk380Iv77rYRUngsZDLCKrl9Osj0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Zn5i5rSv; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40ec3535225so1667785e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:34:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706024086; x=1706628886; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Pkm1sDmd91/8Icdqt+yhAM2zfTrJG1x4ZL3+cJTuru4=;
-        b=Zn5i5rSvSY9328KM0si0UnV0VwXCnr95T0IbGW0bZo9ez8lYk00peIEOAaMD2flWr/
-         zvMi661YQVkuA0vUMPkLeEChZpMyf42B+jMfIJWeWM1fJqLONW4rCXlzbrlEGJU6mLOT
-         C+RgIoKMSWJL8QKWRrr5f0BLGy7UhihMBiJNS/VrIsrNJt9rR92wCOkJN1/yT6+Kh5d5
-         HGygKjHrsktQ3Fw4p5NLXTWwAMqRnQC1cGZl9AawzHus7IADcHyce5rCt3JY8Rat1zYT
-         G+AmtqlFAi3uhBm/lBM0jrtvmmmaJfKbYWqHPZ7ozeYuuP91hnYaFJvn88r/zZDtVATR
-         HoQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706024086; x=1706628886;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Pkm1sDmd91/8Icdqt+yhAM2zfTrJG1x4ZL3+cJTuru4=;
-        b=rLzEez30KA5dYvBtyGjqDhJinzXFaLcxnMkaeIujR8syZNRk78plMfFXr6cFh55oyT
-         y8GJDvyx5ktmg2Vz3aBFJWIedHz0rmr2/tjresooDg3cYapcaTQpPY/0NfPmva3kGw+F
-         z6hRNgMy1cxA0YoWn5TPvwL+rnIn0DIHy82GZZdo8kRkw22uFmRxTED7utzSnLdUAPQO
-         Uyqk3sde2PFefeSh9avgdSWK+1ybk8IsiWK5uEuz0OTk89eFYB7fT0yLNL+8QjtWJddj
-         aIDQnzKdrI77qSXcZ+Zi705ATCiQgVNpTRJNceTlpBQcCgRbyBbFp7c/0vmm/sRWvv8J
-         5j9Q==
-X-Gm-Message-State: AOJu0Ywex2nPcuhWZnAHi/+OeF5W5cPaPUT+Tk4OBlruf6f3iTQ6isYf
-	Xsf9ymR7IZMFjwHG/eF03nwVYIDXcd6lb8z8xAwd71b63FwgXFACuwk3A0hWa8c=
-X-Google-Smtp-Source: AGHT+IE4mLdB3TlfxdLmU2ph7jFqikJUsLFTael0hg9zuHgIorXMxGlhO+GRg4XyNJMUtoeWepFXyg==
-X-Received: by 2002:a05:600c:3b90:b0:40e:bed2:7bcd with SMTP id n16-20020a05600c3b9000b0040ebed27bcdmr319089wms.140.1706024086420;
-        Tue, 23 Jan 2024 07:34:46 -0800 (PST)
-Received: from ta2.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
-        by smtp.gmail.com with ESMTPSA id p21-20020a05600c359500b0040e3488f16dsm42457536wmq.12.2024.01.23.07.34.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 07:34:45 -0800 (PST)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: broonie@kernel.org,
-	andi.shyti@kernel.org,
-	arnd@arndb.de
-Cc: robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	alim.akhtar@samsung.com,
-	linux-spi@vger.kernel.org,
-	linux-samsung-soc@vger.kernel.org,
-	devicetree@vger.kernel.org,
+	s=arc-20240116; t=1706024108; c=relaxed/simple;
+	bh=XcJc/yvMCH0RbyeBdmRrU6syGsXpx3+8eaxSeIwzZ+c=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=flIB3cmH5zNla5LNw09b8aSXdW7MDxX2p+ocQMHHAmk1NzSQGLmFGW4p0NWFKYWjDUnDEw1XCUMYQhCm4DGx2DfpfFmxUv4M/XNn66EO3ztOMWb2Q5LZFOeyQ27o2YRa+axGJ3yOyrCLYmNjh8b7qW7CpOaQ+79DvNs/vg/sFmU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza; spf=pass smtp.mailfrom=tycho.pizza; dkim=pass (2048-bit key) header.d=tycho.pizza header.i=@tycho.pizza header.b=fBlX29H2; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=dgEPaiM3; arc=none smtp.client-ip=66.111.4.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tycho.pizza
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tycho.pizza
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.nyi.internal (Postfix) with ESMTP id CD27B5C01C5;
+	Tue, 23 Jan 2024 10:35:04 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Tue, 23 Jan 2024 10:35:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+	cc:cc:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm2; t=1706024104; x=1706110504; bh=cpXoKTh0mBiWlf0Tpz7Tl
+	cUg3DJUYpaHX2Su09+jA0s=; b=fBlX29H2GKnOsOdTnWheKvb5z7HjLMeIi1o6h
+	y5T5Odtf6rADsoffBEXIEHKzCAGqDJ3kjkXC9DlRg0CMOKcimfCWAigJO6eOLNpL
+	m0o1SnrSHqqcD4HyiSquik2WtrVZDOY6PrCGXE0RvfxDirdm4FbuSkg8dxHjyHIH
+	GE0Gzm3ARElfQuNna13DK40ThMSrxmDfuilQV4Y52+IK5d2dvJyv7CjCdRT3jL+b
+	9mdMbw1yqwMFyDgEhDMRxc2qo5uoUXw1DaRLCT/LCS/bIPYkEB1Rb3FJzLKB1IN+
+	C8TGlyNSp42TdPMuTjKJqSYw75kWlzuSyDO4EDopzn6WfIkfg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1706024104; x=1706110504; bh=cpXoKTh0mBiWlf0Tpz7TlcUg3DJU
+	YpaHX2Su09+jA0s=; b=dgEPaiM3Y4oX1IDgLIegPeyh4zh6oMZ2vJHohdGCS92g
+	FBzKO5BfQh4LadliUm4805B68V1+bkLooin4lKGpcOuRilaCWBF2yaKDCPwjm3p/
+	VMGWwuF4DbhNjAV3fTbS0m51b6D9Qqb/og9eAkQdHtnwnNUdLDeiHVbT+l4qEmWe
+	e/KKgmAQniU9AKD1C/QMFZPv1CCxIC0mvfAAUsqydkuwMr0JWrgS5Z6IWJ2drvtA
+	1CjSF+txfzpjOVDddiMNO3ZucKIHJddnKMJnhh9hIeGC6Yl0Cr8lPu3Xh5L/VGOv
+	SLhCRKO9ZB5+we4sQSKVA4I+8AhEDqYTfCb8I8D9jA==
+X-ME-Sender: <xms:qNyvZad-mdVR3C25zUPtYXnATsRYsJiCFSFzY4jyBWvZo-Wuq-d7xA>
+    <xme:qNyvZUMTD7Zrs1cQFdqu2CWwHjCoeYnRSxRKO5l_DYVcmYuBDVz3j9N9o0MlsYl1a
+    CPwItqJ1pgfNdgLFPs>
+X-ME-Received: <xmr:qNyvZbi93eKSQniq2kPm4JMcMLAuu1-OGuJHPlaYdirnqtwq0swEREX3osSLNf0ibic9PA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekkedgjeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvvefufffkofgggfestdekredtredttdenucfhrhhomhepvfihtghhohcu
+    tehnuggvrhhsvghnuceothihtghhohesthihtghhohdrphhiiiiirgeqnecuggftrfgrth
+    htvghrnhepheeffeehleeftdfgjeegheelieefvdfghfeuudeuheehuefhhffhtefhiedv
+    geegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepth
+    ihtghhohesthihtghhohdrphhiiiiirg
+X-ME-Proxy: <xmx:qNyvZX-DYIs2e7X-Z5zhwtLRDOAU5ptt4g25_0-h6WxHHnWHdVghBw>
+    <xmx:qNyvZWvbk6USd5KEB8NVKqTLvW2K1-mMcuglJRrzaI_NvlDg_tUyvg>
+    <xmx:qNyvZeEqoei83qLCLw-l9sFUelWMBiLqbvn3zejMd27-Mlw5pLeZRw>
+    <xmx:qNyvZYI_2S7v59IVBvJ37iqkqXbKmCOFSMV7zLhHFWcSfpZYa-wAGw>
+Feedback-ID: i21f147d5:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 23 Jan 2024 10:35:03 -0500 (EST)
+From: Tycho Andersen <tycho@tycho.pizza>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Oleg Nesterov <oleg@redhat.com>,
 	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-arch@vger.kernel.org,
-	andre.draszik@linaro.org,
-	peter.griffin@linaro.org,
-	semen.protsenko@linaro.org,
-	kernel-team@android.com,
-	willmcvicker@google.com,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH 21/21] MAINTAINERS: add Tudor Ambarus as R for the samsung SPI driver
-Date: Tue, 23 Jan 2024 15:34:20 +0000
-Message-ID: <20240123153421.715951-22-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-In-Reply-To: <20240123153421.715951-1-tudor.ambarus@linaro.org>
-References: <20240123153421.715951-1-tudor.ambarus@linaro.org>
+	linux-api@vger.kernel.org,
+	Tycho Andersen <tandersen@netflix.com>
+Subject: [PATCH v3 0/3] pidfds for non thread group leaders
+Date: Tue, 23 Jan 2024 08:34:49 -0700
+Message-Id: <20240123153452.170866-1-tycho@tycho.pizza>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -99,27 +94,43 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-I'm working with the samsung SPI driver and I'd like to review further
-patches on this driver. Add myself as reviewer.
+From: Tycho Andersen <tandersen@netflix.com>
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+Hi all,
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 8d1052fa6a69..b9cde7ed8489 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -19404,6 +19404,7 @@ F:	include/linux/clk/samsung.h
- 
- SAMSUNG SPI DRIVERS
- M:	Andi Shyti <andi.shyti@kernel.org>
-+R:	Tudor Ambarus <tudor.ambarus@linaro.org>
- L:	linux-spi@vger.kernel.org
- L:	linux-samsung-soc@vger.kernel.org
- S:	Maintained
+Finally picking this back up. I looked for a location where we could put
+the do_notify_pidfd() call so that we'd only need one for an
+embarassingly long time, but couldn't find anything that worked. So, we
+have a new call in a similar location in v1, just using the actual
+helper. Perhaps this makes sense, since we're adding a new feature.
+
+Hopefully all the tests even pass this time! I looked for a bit but
+couldn't figure out why they don't exit(0) when something failed. I'll
+keep looking at that.
+
+Thoughts welcome,
+
+Tycho
+
+Tycho Andersen (3):
+  pidfd: allow pidfd_open() on non-thread-group leaders
+  selftests/pidfd: add non-thread-group leader tests
+  clone: allow CLONE_THREAD | CLONE_PIDFD together
+
+ include/linux/sched/signal.h                  |   1 +
+ kernel/exit.c                                 |  11 +
+ kernel/fork.c                                 |   7 +-
+ kernel/pid.c                                  |  11 +-
+ kernel/signal.c                               |   2 +-
+ tools/testing/selftests/pidfd/.gitignore      |   1 +
+ tools/testing/selftests/pidfd/Makefile        |   3 +-
+ .../selftests/pidfd/pidfd_non_tgl_test.c      | 600 ++++++++++++++++++
+ 8 files changed, 619 insertions(+), 17 deletions(-)
+ create mode 100644 tools/testing/selftests/pidfd/pidfd_non_tgl_test.c
+
+
+base-commit: 610347effc2ecb5ededf5037e82240b151f883ab
 -- 
-2.43.0.429.g432eaa2c6b-goog
+2.34.1
 
 
