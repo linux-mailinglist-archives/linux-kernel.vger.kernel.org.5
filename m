@@ -1,248 +1,368 @@
-Return-Path: <linux-kernel+bounces-35180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35181-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43B0F838D33
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:17:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B9FA838D38
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:17:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68F261C21020
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:17:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8428CB26369
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:17:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7EEC5D73A;
-	Tue, 23 Jan 2024 11:16:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E38235D8E6;
+	Tue, 23 Jan 2024 11:17:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="I4gL0Hhv"
-Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-mr2fra01on2040.outbound.protection.outlook.com [40.107.9.40])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bxAGskvY"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BE0F5D725;
-	Tue, 23 Jan 2024 11:16:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.9.40
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706008618; cv=fail; b=tEfyLMGcs1YSG6pg6MzwVreYWok6RVRPgnsHBrsL79pBtIsxhUrRIcjCqAjAi+58nu8UXapvc8SGDmCmgIrhUlq8IRshxo+g7iCfL/u6oqzTJSVSU35k17mTzByeodgEtVeLTTL/scWyKsFFyKxCcGlhsdaUab39tj3l8Gje6l0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706008618; c=relaxed/simple;
-	bh=+6W4/cyL4Y2ZhdceMjL2+vg44zCKCt2UCT4qM2RGVGg=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=S24Exe9qOkpOt7uaFNRcT83HV8xthJpd2GCVBO3DIadRsPn2N85spWkRPa5XpFXY41EZYoBpHVVpPJSRDj4eS+Y3bc4XVT6+CpLPp+2sO2cXpV0t4SBVcNGRcw/zMRHH7tKQLpHFiLYI9T8LAxrXyG9b276neuQRPUn0XQ53A2Q=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b=I4gL0Hhv; arc=fail smtp.client-ip=40.107.9.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Dw5a33UdFjPdraFMBJZqp1QCRh5i0xx/AR0G4uuQeoLduMB39bcG5MBaCwKQV61lkde44yqVDB/PrnARRlL2Te+FcNK+20W/G48DCultwRmITMT0yJyDEl+xI1Sum2NLkmX6gohzd5K+ibZMSdY1aMYBly9Pms4hv4xboueGjMTq5RJDRcOcssfXB3mKQkGEbv1hyGizV4ZVQlulc6lQt8ttyC/LYf2j8BCc0ocrRDLsYlGbqUrwSfh4dmJNcbBR/rddXsug9fTtdNgtEhjdzBPCtEHj0o3ejj7/FSktVkW3CSx4R+vVWmFluM4EfW3Gu3KmnKSyXmKi5HjpPWVvhw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+6W4/cyL4Y2ZhdceMjL2+vg44zCKCt2UCT4qM2RGVGg=;
- b=JOp9YVLZyqy3WRfUokTkiOWvXjLdy4JvoFWKHBsem9oTxhpurUexZC60rPZfxlfQ3eqvj3aEh4pYQ1UxIDKm0MvD6MhRowWVMKWEWiur5bqX2GBNYkJSqzvtdG5Obt9Qjx7wvrQZ/50AIZ/kGWLhUspN6vhmbaDURZecaMfmGInm/LJgAUz0CaP6vdr55Yuu2FJABlwiWJZHntvSCLXQJ/RsoHO0BF8J+UKI8y/fOKMXK3JF9ifnpq4NSP+BlmlrhFTL240KmZ/D2vMPbLY1kQD/lhAZEvBHoF0FxVt3i3h77LhvKUeIzN1fJLuukeW2xhLolDX2VbomjiGE884Www==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+6W4/cyL4Y2ZhdceMjL2+vg44zCKCt2UCT4qM2RGVGg=;
- b=I4gL0HhvSKe8m2hrC+ZFjaNJNDAlDYjQ0uOhMN5tTVJtSfgIN2WUNe6P1bOqsr9ISJUyvYpQV4SGLi9Ak/sQ8ULHzkLOY5Z9xwLighv85ABySns5oQFCzt1Yg8BxN3mGtQdDrc27M+85bsPn6w9P2PnQOV1zv8Gz7ygWpjJvtTpxIYOHrx06hEAp7ZgpPKDLCVMPxx96hZAozsMDyvwRAMreq1OfA24qdVGcOyTihHsa8GT7wfaRPhFBBN3xC/T19Vz3E5G3IWixCuMhPCzJil1BKpM9YS2L5Zzay7k7fO9mFIcuG4iasUAZdKMrgnretmqnByJ7b7uIHtyiVdYvPg==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by MR1P264MB2066.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:14::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.37; Tue, 23 Jan
- 2024 11:16:53 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::9f77:c0ff:cd22:ae96]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::9f77:c0ff:cd22:ae96%4]) with mapi id 15.20.7202.035; Tue, 23 Jan 2024
- 11:16:53 +0000
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Ryan Roberts <ryan.roberts@arm.com>, David Hildenbrand <david@redhat.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC: "linux-mm@kvack.org" <linux-mm@kvack.org>, Andrew Morton
-	<akpm@linux-foundation.org>, Matthew Wilcox <willy@infradead.org>, Russell
- King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will
- Deacon <will@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman
-	<mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Aneesh Kumar K.V
-	<aneesh.kumar@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Paul
- Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Alexander Gordeev
-	<agordeev@linux.ibm.com>, Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle
-	<svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linuxppc-dev@lists.ozlabs.org"
-	<linuxppc-dev@lists.ozlabs.org>, "linux-riscv@lists.infradead.org"
-	<linux-riscv@lists.infradead.org>, "linux-s390@vger.kernel.org"
-	<linux-s390@vger.kernel.org>, "sparclinux@vger.kernel.org"
-	<sparclinux@vger.kernel.org>
-Subject: Re: [PATCH v1 01/11] arm/pgtable: define PFN_PTE_SHIFT on arm and
- arm64
-Thread-Topic: [PATCH v1 01/11] arm/pgtable: define PFN_PTE_SHIFT on arm and
- arm64
-Thread-Index: AQHaTWsgqyRS0TfRAU20Q9lz/3ZqNbDnNJ2AgAAD9YCAAAWZgIAAAlKA
-Date: Tue, 23 Jan 2024 11:16:53 +0000
-Message-ID: <ae3d826f-758f-4738-b72a-e99f098bb2b3@csgroup.eu>
-References: <20240122194200.381241-1-david@redhat.com>
- <20240122194200.381241-2-david@redhat.com>
- <fdaeb9a5-d890-499a-92c8-d171df43ad01@arm.com>
- <46080ac1-7789-499b-b7f3-0231d7bd6de7@redhat.com>
- <6703b648-10ab-4fea-b7f1-75421319465b@arm.com>
-In-Reply-To: <6703b648-10ab-4fea-b7f1-75421319465b@arm.com>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|MR1P264MB2066:EE_
-x-ms-office365-filtering-correlation-id: d19e1d14-40cf-406b-6bce-08dc1c04cd6d
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- u41d1MyySMr2OQiXZyV0oXV8zrb+kh2+NttuCTEGXcriC2ozlBRrnaFFmKGHoSicVOaJ7fy3QK9/WIUiuXE6736Bcf0q06yJmpYqeFRFYTfoWzKLYhTZ2y/KxJrZRUh7bWBTJMhJY9zCVlqmd6QJUnvDBP+CsE13YkVpks0hXKOXWV8QLaH/5BFyqDxJx0yACNKOoBiclgxnpgvvHl6kdeiH4+KwvDH2AnfL11S7wyPC7LPozoZp/nuofQMX4mRoV3UiV/iFPVFM8CD3rqU7QRDRtKkstJMhWmAhZ5JpwhywXwrxVzXw3Sgdlc4p0I5uYAX8Nc+d7lPHTkBSgKoEHxx2BPzIpbxHcAuva4uZOyibRmLhNudT25NtoNpp+IzGAj9BcAzKF9nMbn6ntl9XsMSKQgnro4qKxUuFIm5tcUCjNAq9ZnuY80Zse8G30v1lgytOLoKycw2C4PG5eeeqVfyjLSwTmHDQwZ4Tm97FEowLii1Hwk/07vqVzj33fIo4AFGBCnkUMc5Gv+GRcDohx10rbd0WpZ9HOhszEDU6G+CBrln8vfu7CVeGV78VzLEUCbdu1IFzuqB9pGbtD4EFQtKx1W/X5uQX9raPKOd+jJ2CisiUjs2h0YGpwO24TGqA9Q+rO91FONYD2N8YixoPYk9umr0Cey9gx+tMu68RFEpop/EE/0saw4/NWUVBgLF3
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(396003)(376002)(136003)(366004)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(38070700009)(44832011)(4326008)(83380400001)(8936002)(8676002)(7416002)(38100700002)(122000001)(31696002)(86362001)(41300700001)(36756003)(2906002)(5660300002)(76116006)(66946007)(91956017)(66476007)(110136005)(66556008)(316002)(64756008)(54906003)(66446008)(2616005)(31686004)(6512007)(6506007)(53546011)(6486002)(478600001)(71200400001)(66574015)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?eG43azMwVEpEM3NxN1l3Rk9hNlNxdnhZYm1UME5xVTlqL1A1aGxXWDNzWWs3?=
- =?utf-8?B?WVV4VXpVZGtXLzlCRDNyckZSTm9saXZaSnlUcEZPajR1MUpxY1RndURnYXhG?=
- =?utf-8?B?ZklmVzV2dGtVeURFUElsaUNsMDI0R2pKVWw5cmpoWXdPaDFIaTA1THNQSDY5?=
- =?utf-8?B?M1pWVXdPSVNiblQ3WEdxcEFramVycE5uUFA3OEFLWWh5VE9rK014elZOYldh?=
- =?utf-8?B?VU91WUFVUkIwbmt6OFd5M3JtSGtDYXJGSStYa0ZrRk9WV1dOSzUrZFRLUlNC?=
- =?utf-8?B?QVNyNzhaR0Y0WWtoUzVkM3d2bWYyOU1iYmtpa3ovUS9jKzFCRGVsa2NrdUM3?=
- =?utf-8?B?VnNXbmZ5ejhOUklaUWx2YkVjMUVSaExmNFBMbXI4d2sxM3dZVmdYUm53em5l?=
- =?utf-8?B?YmJtNzB0R3ZJR0VzL24rNUtiRDRNZThQK09xVmowTjZoZzBaVGVNY0VJdXNv?=
- =?utf-8?B?YVM1em91SXZRRStlNENZVXV6TFRJK1pwRzhPU1NMQitFWm5DWjFnR2VyczFU?=
- =?utf-8?B?RHRtUkVDWVo0ODJiMlJtd2hwS3k0Z0x1TUovaHJaSytnaHpQanJEVGhZQ0pT?=
- =?utf-8?B?ZkMzNWZ4cmpaa1MvallOdU4yVndlNDQ4WmJwQk9vcXQyNDNIbm5XZlV1aS80?=
- =?utf-8?B?bXd5aUJaeWhvR2ZNYUo5QmZ0VXp4UUNqR09VWEpEdkRXRHpVOHJFcHpPSGxW?=
- =?utf-8?B?SmxPbmRSaG5XWlhkK1JjZmxFWklPc09BeDRBdTNLSk9BaVBWRWhhS0IrdU1y?=
- =?utf-8?B?Nml6WnIyVDRtcGZvamc5QzIrOVlkNnhUODhaVFBCU3lqMlpoY01PVFZyQlV2?=
- =?utf-8?B?YVZwdGpNTUFrN0tXemVyOThjNlltSFc3bnZPdllkUFphY3k1Q05Baml2Z1Vo?=
- =?utf-8?B?OUNnbjRhN3l2Q1pvanpDNnVMd2Y5YVFMTGJZTEcrWHZFdndGR2p3Q1BQVmwx?=
- =?utf-8?B?eXpJRExWZFFuSStUQU1sSkNFcUkwc2ttN2R5N0NMSmlLZURGYUhjS0Q1QW9n?=
- =?utf-8?B?UWFLMGdSVGY5L3AyWW5SNUlkbmdHZjNHQ0tUQXl3TnA3SGdwOVNBOGkyTXFQ?=
- =?utf-8?B?QmhtQWM3d0VhSXNzTjAyRlgzV3V2S0V5cnZPdnJhUXhMYlREMnJTT0hzbDBH?=
- =?utf-8?B?MWs5cldndFdCSUFIWHF5NFo3ckFWdW1wdjFKM2lvbEVnM1NNcE40YlZrSGp3?=
- =?utf-8?B?QVNlQzhWTm16Ny9FVkM5UzQzeHhua0YzT1liNWJhU1J1bjVEc0ErVWsvV3Fu?=
- =?utf-8?B?UTNqZHZPUlg1TUVyWW14d0l3d2FOSVpDRnBIY1lCcnhFcThmMFJqZkRDQ0hQ?=
- =?utf-8?B?QUwrcVhvYlliUlRLOGx5L2R2Y1hOQzFRanhJY3V2TWMrV1ExZzB3QWo5aTNC?=
- =?utf-8?B?d1c1SzEwSm4vMFFyLzdDM205Skl4cklmckxIc1NWUjVtVk84K1h4dXN3UDVv?=
- =?utf-8?B?ZytVVW8xK2Vyc01jZmlqVjRsLzRhK3o0L2ZJeG0xYVBhcVRhQkcrSUtZNzh1?=
- =?utf-8?B?TDBIQVZ4bEZPVGdGT2ZCMXJPRXgvMHdDVERvY1oreUttY0dSRWRyRW5TTHFU?=
- =?utf-8?B?VWpLYzJ1Tmp2eGwrKzgxSGt0VzBNTGpwWlhrdWMvRlk5b3VxbXJveUVoN2w0?=
- =?utf-8?B?R3NzeUlxallGMUswWUlhT1hvM2xjK1JZdDFXQmVvZVBjZHpqdmhvYWJVUkFo?=
- =?utf-8?B?Y1l6dGozanJGbGg5RWtRSEVPZ2xxRlpqSEtPVFltcW5lWGxIR0Z4N0xVbkpR?=
- =?utf-8?B?OVNNTHAwVmk3cmFFdElHQ21pMnJIWEMyYzBVcSttNU1KTVNXNGpFNlZMM3M1?=
- =?utf-8?B?OGVPbVFiM3Nid0ZhT3ZRQ1lwSUZFdkNrc3lnakd6TlNYbnlGamZ3a08rRE5K?=
- =?utf-8?B?dm81eGxyMDg2K3ZsL0o1YTJwb3Y1U04zd3c2V1hsTUpzS1hKVFNLYmtQZlJo?=
- =?utf-8?B?Z3hDbnd5VG9UVk1aQXVFdzVXZDNkMC9wZjY2OXlMZHN5YU02YzF0QVZIalRD?=
- =?utf-8?B?YStEaWdFcTBvTHBTR3FVbmpHVnd5cGZkTnZLSTBsSEszczgyYk5mNy9tQ1J5?=
- =?utf-8?B?NEoxbzdkZ1hYYWtoRG1NY0FmQkRzL0NZWmF4azVCSmZXV2NmWk9xSTRjd3lt?=
- =?utf-8?B?UGcrN1doNW9URmpIeVRlbFljVnBnWG90SHRodUp3SWUvMWJQSFAyY1U2MEt0?=
- =?utf-8?B?WWc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <49BD98163C2F2044ABB514897981CBE3@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 059A55D759
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 11:17:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706008627; cv=none; b=R6kqS6Ks5q84TQMRyfnyiZPme/ht0gXkut7FktmFJ+ir44sMv97A28JATN9JVo5jBoc4/srgvoeZNlcf4lFDULn8UzKRUqiYN2DiuhNwKJI4RxY/Hk7VdyS+ljLECGvdeJxs48OIPAdOfSvLVipTvhMHNJ0a4DGPsll29VKcOBs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706008627; c=relaxed/simple;
+	bh=yzIpgSarbLnkTu1ruIWuQf/KD1Y53tWgm7gNTofFOMA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=C+iZyG2SpJ/bsq8qa/4hgN9ElI1oC9alb0wqKopk54z/OkoStFum/7l+omqMbL06nNvn8Rz6yiZdSMtIxxEpndpvQ8W6t4G9ExKMn8lqTpjE/ns+V05UQJFGoof2mVh3du6fuMkEMx+SZ5bSYeGZKjil+O0hXtG8slUboy5lP2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bxAGskvY; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40eb033c1b0so18286135e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 03:17:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706008624; x=1706613424; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zjP6iJ/yX6dQK3yxWU3uAXRBZwEHVZpEGxhPfzJdMQA=;
+        b=bxAGskvY3e0s2n6jcVsGbADv3zVC0fWrq/e34WBfR4rhbr26URlJzqC+gZywrFfvJB
+         BAt7MVoLymWSDkCj6basRnh7i9ZcEgdVE2gpTVVMxBiqfAi9533OAeoe4eE+9nF1u3aJ
+         5phBzU8ACV6yWTycmymSISrVvEeLLsKcd3ZPWScXOfFB5i7Da76f+t1kH3xa5L8zR2FB
+         ZATX//ATzL/eKK7/Eui+kieXJa1fFLV5djhtfRWf2IfSQcv38zs1ZJdxVVlVyGAVCLgZ
+         eLSYjrDfML207LvnxXS+6l9u9KteGwlgIcQYsm10XKq0/lIY7QtHxb7/xXJVFMgdjmNL
+         s32A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706008624; x=1706613424;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zjP6iJ/yX6dQK3yxWU3uAXRBZwEHVZpEGxhPfzJdMQA=;
+        b=q4yMPYpWBH5rcbPeShMh9DIf+Upspi+qVWz9wePu4BzfRZTczDZg192ZizjLajMSXc
+         feEjozQfJVdoNq6ZlofR4/N8LZpr659Yq5+zg4AKX/lpVrsQQC3xReZ+j1vXo2hOlsyV
+         yYLvwozfbJu4f86Q6wSPPkpBSK7XVFy0rP6XWo7cTBhwKybOvp/XbJ3bpsfUuIPHvl3Z
+         p448rRWFt+wPPo+sHxsrsTU2OqZdu4HixaRxZUtO635CyYJsIBWpc5pq0aH++My1V2OL
+         huRC2cvcAKjwN3jViUJ5MGvc40bL2YBoxrGIo2QCzTlYetPlg54ekLl9DgzQKehraKUC
+         viBA==
+X-Gm-Message-State: AOJu0YwUlQ4NLk+wVnKafpuc0FAts/lAhlcutJGGq2VU7/rN9B52L8I1
+	ulz9faCuJvfyPI7I272oXt2LPt8ZT9RC20jAGZFmVJrp0LVz9uwKdnMQxn5SH4E=
+X-Google-Smtp-Source: AGHT+IGi4oRmEbEte4U8kteyuUXQDR6c8dGS8ONy9WyBOQRr1Fq1GgBagTCnaGeXaQtCiJP+kwrZsw==
+X-Received: by 2002:a05:600c:474b:b0:40e:4672:5227 with SMTP id w11-20020a05600c474b00b0040e46725227mr25481wmo.96.1706008624158;
+        Tue, 23 Jan 2024 03:17:04 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id w18-20020a05600c475200b0040d2d33312csm42650785wmo.2.2024.01.23.03.17.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jan 2024 03:17:03 -0800 (PST)
+Message-ID: <26b9a75c-3721-4d7a-985e-772d9f67e6d5@linaro.org>
+Date: Tue, 23 Jan 2024 12:17:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: d19e1d14-40cf-406b-6bce-08dc1c04cd6d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jan 2024 11:16:53.1127
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: c3leklxw2YVtsNr1Zi7yVMKgrXm7CjL9XY4nI3Gmdv1Yon2zJx8d0QEMfVCSqqVNYNY6bGT/Tu4LUrgunk6Lgs6H7V4t4OIfqY8K5+Cmu7I=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MR1P264MB2066
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/9] soc: samsung: exynos-pmu: Add
+ exynos_pmu_update/read/write APIs and SoC quirks
+Content-Language: en-US
+To: Peter Griffin <peter.griffin@linaro.org>, arnd@arndb.de,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, linux@roeck-us.net,
+ wim@linux-watchdog.org, conor+dt@kernel.org, alim.akhtar@samsung.com,
+ jaewon02.kim@samsung.com, chanho61.park@samsung.com,
+ semen.protsenko@linaro.org
+Cc: kernel-team@android.com, tudor.ambarus@linaro.org,
+ andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com,
+ linux-fsd@tesla.com, linux-watchdog@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org
+References: <20240122225710.1952066-1-peter.griffin@linaro.org>
+ <20240122225710.1952066-3-peter.griffin@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240122225710.1952066-3-peter.griffin@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-DQoNCkxlIDIzLzAxLzIwMjQgw6AgMTI6MDgsIFJ5YW4gUm9iZXJ0cyBhIMOpY3JpdMKgOg0KPiBP
-biAyMy8wMS8yMDI0IDEwOjQ4LCBEYXZpZCBIaWxkZW5icmFuZCB3cm90ZToNCj4+IE9uIDIzLjAx
-LjI0IDExOjM0LCBSeWFuIFJvYmVydHMgd3JvdGU6DQo+Pj4gT24gMjIvMDEvMjAyNCAxOTo0MSwg
-RGF2aWQgSGlsZGVuYnJhbmQgd3JvdGU6DQo+Pj4+IFdlIHdhbnQgdG8gbWFrZSB1c2Ugb2YgcHRl
-X25leHRfcGZuKCkgb3V0c2lkZSBvZiBzZXRfcHRlcygpLiBMZXQncw0KPj4+PiBzaW1wbGl5IGRl
-ZmluZSBQRk5fUFRFX1NISUZULCByZXF1aXJlZCBieSBwdGVfbmV4dF9wZm4oKS4NCj4+Pj4NCj4+
-Pj4gU2lnbmVkLW9mZi1ieTogRGF2aWQgSGlsZGVuYnJhbmQgPGRhdmlkQHJlZGhhdC5jb20+DQo+
-Pj4+IC0tLQ0KPj4+PiAgwqAgYXJjaC9hcm0vaW5jbHVkZS9hc20vcGd0YWJsZS5owqDCoCB8IDIg
-KysNCj4+Pj4gIMKgIGFyY2gvYXJtNjQvaW5jbHVkZS9hc20vcGd0YWJsZS5oIHwgMiArKw0KPj4+
-PiAgwqAgMiBmaWxlcyBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKykNCj4+Pj4NCj4+Pj4gZGlmZiAt
-LWdpdCBhL2FyY2gvYXJtL2luY2x1ZGUvYXNtL3BndGFibGUuaCBiL2FyY2gvYXJtL2luY2x1ZGUv
-YXNtL3BndGFibGUuaA0KPj4+PiBpbmRleCBkNjU3Yjg0YjZiZjcwLi5iZTkxZTM3NmRmNzllIDEw
-MDY0NA0KPj4+PiAtLS0gYS9hcmNoL2FybS9pbmNsdWRlL2FzbS9wZ3RhYmxlLmgNCj4+Pj4gKysr
-IGIvYXJjaC9hcm0vaW5jbHVkZS9hc20vcGd0YWJsZS5oDQo+Pj4+IEBAIC0yMDksNiArMjA5LDgg
-QEAgc3RhdGljIGlubGluZSB2b2lkIF9fc3luY19pY2FjaGVfZGNhY2hlKHB0ZV90IHB0ZXZhbCkN
-Cj4+Pj4gIMKgIGV4dGVybiB2b2lkIF9fc3luY19pY2FjaGVfZGNhY2hlKHB0ZV90IHB0ZXZhbCk7
-DQo+Pj4+ICDCoCAjZW5kaWYNCj4+Pj4gIMKgICsjZGVmaW5lIFBGTl9QVEVfU0hJRlTCoMKgwqDC
-oMKgwqDCoCBQQUdFX1NISUZUDQo+Pj4+ICsNCj4+Pj4gIMKgIHZvaWQgc2V0X3B0ZXMoc3RydWN0
-IG1tX3N0cnVjdCAqbW0sIHVuc2lnbmVkIGxvbmcgYWRkciwNCj4+Pj4gIMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCBwdGVfdCAqcHRlcCwgcHRlX3QgcHRldmFsLCB1bnNpZ25lZCBpbnQg
-bnIpOw0KPj4+PiAgwqAgI2RlZmluZSBzZXRfcHRlcyBzZXRfcHRlcw0KPj4+PiBkaWZmIC0tZ2l0
-IGEvYXJjaC9hcm02NC9pbmNsdWRlL2FzbS9wZ3RhYmxlLmggYi9hcmNoL2FybTY0L2luY2x1ZGUv
-YXNtL3BndGFibGUuaA0KPj4+PiBpbmRleCA3OWNlNzBmYmI3NTFjLi5kNGIzYmQ5NmUzMzA0IDEw
-MDY0NA0KPj4+PiAtLS0gYS9hcmNoL2FybTY0L2luY2x1ZGUvYXNtL3BndGFibGUuaA0KPj4+PiAr
-KysgYi9hcmNoL2FybTY0L2luY2x1ZGUvYXNtL3BndGFibGUuaA0KPj4+PiBAQCAtMzQxLDYgKzM0
-MSw4IEBAIHN0YXRpYyBpbmxpbmUgdm9pZCBfX3N5bmNfY2FjaGVfYW5kX3RhZ3MocHRlX3QgcHRl
-LA0KPj4+PiB1bnNpZ25lZCBpbnQgbnJfcGFnZXMpDQo+Pj4+ICDCoMKgwqDCoMKgwqDCoMKgwqAg
-bXRlX3N5bmNfdGFncyhwdGUsIG5yX3BhZ2VzKTsNCj4+Pj4gIMKgIH0NCj4+Pj4gIMKgICsjZGVm
-aW5lIFBGTl9QVEVfU0hJRlTCoMKgwqDCoMKgwqDCoCBQQUdFX1NISUZUDQo+Pj4NCj4+PiBJIHRo
-aW5rIHRoaXMgaXMgYnVnZ3kuIEFuZCBzbyBpcyB0aGUgYXJtNjQgaW1wbGVtZW50YXRpb24gb2Yg
-c2V0X3B0ZXMoKS4gSXQNCj4+PiB3b3JrcyBmaW5lIGZvciA0OC1iaXQgb3V0cHV0IGFkZHJlc3Ms
-IGJ1dCBmb3IgNTItYml0IE9BcywgdGhlIGhpZ2ggYml0cyBhcmUgbm90DQo+Pj4ga2VwdCBjb250
-aWdvdXNseSwgc28gaWYgeW91IGhhcHBlbiB0byBiZSBzZXR0aW5nIGEgbWFwcGluZyBmb3Igd2hp
-Y2ggdGhlDQo+Pj4gcGh5c2ljYWwgbWVtb3J5IGJsb2NrIHN0cmFkZGxlcyBiaXQgNDgsIHRoaXMg
-d29uJ3Qgd29yay4NCj4+DQo+PiBSaWdodCwgYXMgc29vbiBhcyB0aGUgUFRFIGJpdHMgYXJlIG5v
-dCBjb250aWd1b3VzLCB0aGlzIHN0b3BzIHdvcmtpbmcsIGp1c3QgbGlrZQ0KPj4gc2V0X3B0ZXMo
-KSB3b3VsZCwgd2hpY2ggSSB1c2VkIGFzIG9yaWVudGF0aW9uLg0KPj4NCj4+Pg0KPj4+IFRvZGF5
-LCBvbmx5IHRoZSA2NEsgYmFzZSBwYWdlIGNvbmZpZyBjYW4gc3VwcG9ydCA1MiBiaXRzLCBhbmQg
-Zm9yIHRoaXMsDQo+Pj4gT0FbNTE6NDhdIGFyZSBzdG9yZWQgaW4gUFRFWzE1OjEyXS4gQnV0IDUy
-IGJpdHMgZm9yIDRLIGFuZCAxNksgYmFzZSBwYWdlcyBpcw0KPj4+IGNvbWluZyAoaG9wZWZ1bGx5
-IHY2LjkpIGFuZCBpbiB0aGlzIGNhc2UgT0FbNTE6NTBdIGFyZSBzdG9yZWQgaW4gUFRFWzk6OF0u
-DQo+Pj4gRm9ydHVuYXRlbHkgd2UgYWxyZWFkeSBoYXZlIGhlbHBlcnMgaW4gYXJtNjQgdG8gYWJz
-dHJhY3QgdGhpcy4NCj4+Pg0KPj4+IFNvIEkgdGhpbmsgYXJtNjQgd2lsbCB3YW50IHRvIGRlZmlu
-ZSBpdHMgb3duIHB0ZV9uZXh0X3BmbigpOg0KPj4+DQo+Pj4gI2RlZmluZSBwdGVfbmV4dF9wZm4g
-cHRlX25leHRfcGZuDQo+Pj4gc3RhdGljIGlubGluZSBwdGVfdCBwdGVfbmV4dF9wZm4ocHRlX3Qg
-cHRlKQ0KPj4+IHsNCj4+PiAgwqDCoMKgwqByZXR1cm4gcGZuX3B0ZShwdGVfcGZuKHB0ZSkgKyAx
-LCBwdGVfcGdwcm90KHB0ZSkpOw0KPj4+IH0NCj4+Pg0KPj4+IEknbGwgZG8gYSBzZXBhcmF0ZSBw
-YXRjaCB0byBmaXggdGhlIGFscmVhZHkgYnJva2VuIGFybTY0IHNldF9wdGVzKCkNCj4+PiBpbXBs
-ZW1lbnRhdGlvbi4NCj4+DQo+PiBNYWtlIHNlbnNlLg0KPj4NCj4+Pg0KPj4+IEknbSBub3Qgc3Vy
-ZSBpZiB0aGlzIHR5cGUgb2YgcHJvYmxlbSBtaWdodCBhbHNvIGFwcGx5IHRvIG90aGVyIGFyY2hl
-cz8NCj4+DQo+PiBJIHNhdyBzaW1pbGFyIGhhbmRsaW5nIGluIHRoZSBQUEMgaW1wbGVtZW50YXRp
-b24gb2Ygc2V0X3B0ZXMsIGJ1dCB3YXMgbm90IGFibGUNCj4+IHRvIGNvbnZpbmNlIG1lIHRoYXQg
-aXQgaXMgYWN0dWFsbHkgcmVxdWlyZWQgdGhlcmUuDQo+Pg0KPj4gcHRlX3BmbiBvbiBwcGMgZG9l
-czoNCj4+DQo+PiBzdGF0aWMgaW5saW5lIHVuc2lnbmVkIGxvbmcgcHRlX3BmbihwdGVfdCBwdGUp
-DQo+PiB7DQo+PiAgwqDCoMKgwqByZXR1cm4gKHB0ZV92YWwocHRlKSAmIFBURV9SUE5fTUFTSykg
-Pj4gUFRFX1JQTl9TSElGVDsNCj4+IH0NCj4+DQo+PiBCdXQgdGhhdCBtZWFucyB0aGF0IHRoZSBQ
-Rk5zICphcmUqIGNvbnRpZ3VvdXMuDQo+IA0KPiBhbGwgdGhlIHBwYyBwZm5fcHRlKCkgaW1wbGVt
-ZW50YXRpb25zIGFsc28gb25seSBzaGlmdCB0aGUgcGZuLCBzbyBJIHRoaW5rIHBwYyBpcw0KPiBz
-YWZlIHRvIGp1c3QgZGVmaW5lIFBGTl9QVEVfU0hJRlQuIEFsdGhvdWdoIDIgb2YgdGhlIDMgaW1w
-bGVtZW50YXRpb25zIHNoaWZ0IGJ5DQo+IFBURV9SUE5fU0hJRlQgYW5kIHRoZSBvdGhlciBzaGlm
-dHMgYnkgUEFHRV9TSVpFLCBzbyB5b3UgbWlnaHQgd2FudCB0byBkZWZpbmUNCj4gUEZOX1BURV9T
-SElGVCBzZXBhcmF0ZWx5IGZvciBhbGwgMyBjb25maWdzPw0KDQpXZSBoYXZlIFBURV9SUE5fU0hJ
-RlQgZGVmaW5lZCBmb3IgYWxsIDQgaW1wbGVtZW50YXRpb25zLCBmb3Igc29tZSBvZiANCnRoZW0g
-eW91IGFyZSByaWdodCBpdCBpcyBkZWZpbmVkIGFzIFBBR0VfU0hJRlQsIGJ1dCBJIHNlZSBubyBy
-ZWFzb24gdG8gDQpkZWZpbmUgUEZOX1BURV9TSElGVCBzZXBhcmF0ZWx5Lg0KDQo+IA0KPj4gSWYg
-aGlnaCBiaXRzIGFyZSB1c2VkIGZvcg0KPj4gc29tZXRoaW5nIGVsc2UsIHRoZW4gd2UgbWlnaHQg
-cHJvZHVjZSBhIGdhcmJhZ2UgUFRFIG9uIG92ZXJmbG93LCBidXQgdGhhdA0KPj4gc2hvdWxkbid0
-IHJlYWxseSBtYXR0ZXIgSSBjb25jbHVkZWQgZm9yIGZvbGlvX3B0ZV9iYXRjaCgpIHB1cnBvc2Vz
-LCB3ZSdkIG5vdA0KPj4gZGV0ZWN0ICJiZWxvbmdzIHRvIHRoaXMgZm9saW8gYmF0Y2giIGVpdGhl
-ciB3YXkuDQo+IA0KPiBFeGFjdGx5Lg0KPiANCj4+DQo+PiBNYXliZSBpdCdzIGxpa2VseSBjbGVh
-bmVyIHRvIGFsc28gaGF2ZSBhIGN1c3RvbSBwdGVfbmV4dF9wZm4oKSBvbiBwcGMsIEkganVzdA0K
-Pj4gaG9wZSB0aGF0IHdlIGRvbid0IGxvc2UgYW55IG90aGVyIGFyYml0cmFyeSBQVEUgYml0cyBi
-eSBkb2luZyB0aGUgcHRlX3BncHJvdCgpLg0KPiANCj4gSSBkb24ndCBzZWUgdGhlIG5lZWQgZm9y
-IHBwYyB0byBpbXBsZW1lbnQgcHRlX25leHRfcGZuKCkuDQoNCkFncmVlZC4NCg0KPiANCj4gcHRl
-X3BncHJvdCgpIGlzIG5vdCBhICJwcm9wZXIiIGFyY2ggaW50ZXJmYWNlIChpdHMgb25seSByZXF1
-aXJlZCBieSB0aGUgY29yZS1tbQ0KPiBpZiB0aGUgYXJjaCBpbXBsZW1lbnRzIGEgY2VydGFpbiBL
-Y29uZmlnIElJUkMpLiBGb3IgYXJtNjQsIGFsbCBiaXRzIHRoYXQgYXJlIG5vdA0KPiBwZm4gYXJl
-IHBncHJvdCwgc28gdGhlcmUgYXJlIG5vIGJpdHMgbG9zdC4NCj4gDQo+Pg0KPj4NCj4+IEkgZ3Vl
-c3MgcHRlX3BmbigpIGltcGxlbWVudGF0aW9ucyBzaG91bGQgdGVsbCB1cyBpZiBhbnl0aGluZyBz
-cGVjaWFsIG5lZWRzIHRvDQo+PiBoYXBwZW4uDQo+Pg0KPiANCg==
+On 22/01/2024 23:57, Peter Griffin wrote:
+> Newer Exynos SoCs have atomic set/clear bit hardware for PMU registers as
+> these registers can be accessed by multiple masters. Some platforms also
+> protect the PMU registers for security hardening reasons so they can't be
+> written by normal world and are only write acessible in el3 via a SMC call.
+
+
+Typo? accessible?
+
+> 
+> Add support for both of these usecases using SoC specific quirks that are
+> determined from the DT compatible string.>
+> Drivers which need to read and write PMU registers should now use these
+> new exynos_pmu_*() APIs instead of obtaining a regmap using
+> syscon_regmap_lookup_by_phandle()
+> 
+> Depending on the SoC specific quirks, the exynos_pmu_*() APIs will access
+> the PMU register in the appropriate way.
+> 
+> Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
+> ---
+>  drivers/soc/samsung/exynos-pmu.c       | 209 ++++++++++++++++++++++++-
+>  drivers/soc/samsung/exynos-pmu.h       |   4 +
+>  include/linux/soc/samsung/exynos-pmu.h |  28 ++++
+>  3 files changed, 234 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/soc/samsung/exynos-pmu.c b/drivers/soc/samsung/exynos-pmu.c
+> index 250537d7cfd6..e9e933ede568 100644
+> --- a/drivers/soc/samsung/exynos-pmu.c
+> +++ b/drivers/soc/samsung/exynos-pmu.c
+> @@ -5,6 +5,7 @@
+>  //
+>  // Exynos - CPU PMU(Power Management Unit) support
+>  
+> +#include <linux/arm-smccc.h>
+>  #include <linux/of.h>
+>  #include <linux/of_address.h>
+>  #include <linux/mfd/core.h>
+> @@ -12,29 +13,204 @@
+>  #include <linux/of_platform.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/delay.h>
+> +#include <linux/regmap.h>
+>  
+>  #include <linux/soc/samsung/exynos-regs-pmu.h>
+>  #include <linux/soc/samsung/exynos-pmu.h>
+>  
+>  #include "exynos-pmu.h"
+>  
+> +/**
+> + * DOC: Quirk flags for different Exynos PMU IP-cores
+> + *
+> + * This driver supports multiple Exynos based SoCs, each of which might have a
+> + * different set of registers and features supported.
+> + *
+> + * Quirk flags described below serve the purpose of telling the driver about
+> + * mentioned SoC traits, and can be specified in driver data for each particular
+> + * supported device.
+> + *
+> + * %QUIRK_HAS_ATOMIC_BITSETHW: PMU IP has special atomic bit set/clear HW
+> + * to protect against PMU registers being accessed from multiple bus masters.
+> + *
+> + * %QUIRK_PMU_ALIVE_WRITE_SEC: PMU registers are *not* write accesible from
+> + * normal world. This is found on some SoCs as a security hardening measure. PMU
+> + * registers on these SoCs can only be written via a SMC call and registers are
+> + * checked by EL3 firmware against an allowlist before the write can procede.
+> + * Note: This quirk should only be set for platforms whose el3 firmware
+> + * implements the TENSOR_SMC_PMU_SEC_REG interface below.
+> + */
+> +
+> +#define QUIRK_HAS_ATOMIC_BITSETHW		BIT(0)
+> +#define QUIRK_PMU_ALIVE_WRITE_SEC		BIT(1)
+> +
+> +#define PMUALIVE_MASK GENMASK(14, 0)
+> +
+>  struct exynos_pmu_context {
+>  	struct device *dev;
+>  	const struct exynos_pmu_data *pmu_data;
+> +	struct regmap *pmureg;
+> +	void __iomem *pmu_base_addr;
+> +	phys_addr_t pmu_base_pa;
+> +	/* protect PMU reg atomic update operations */
+> +	spinlock_t update_lock;
+>  };
+>  
+> -void __iomem *pmu_base_addr;
+>  static struct exynos_pmu_context *pmu_context;
+>  
+> +/*
+> + * Some SoCs are configured so that PMU_ALIVE registers can only be written
+> + * from el3. As Linux needs to write some of these registers, the following
+> + * SMC register read/write/read,write,modify interface is used.
+> + *
+> + * Note: This SMC interface is known to be implemented on gs101 and derivative
+> + * SoCs.
+> + */
+> +#define TENSOR_SMC_PMU_SEC_REG			(0x82000504)
+> +#define TENSOR_PMUREG_READ			0
+> +#define TENSOR_PMUREG_WRITE			1
+> +#define TENSOR_PMUREG_RMW			2
+
+These are tensor specific...
+
+> +
+> +int set_priv_reg(phys_addr_t reg, u32 val)
+
+..but this not...
+
+> +{
+> +	struct arm_smccc_res res;
+> +
+> +	arm_smccc_smc(TENSOR_SMC_PMU_SEC_REG,
+
+.. and this is again.
+
+Some naming should be clarified, e.g. tensor specific functions should
+have some prefix as well, e.g. tensor_writel(), tensor_cmpxchg() or
+something similar.
+
+
+> +		      reg,
+> +		      TENSOR_PMUREG_WRITE,
+> +		      val, 0, 0, 0, 0, &res);
+> +
+> +	if (res.a0)
+> +		pr_warn("%s(): SMC failed: %lu\n", __func__, res.a0);
+> +
+> +	return (int)res.a0;
+> +}
+> +
+> +int rmw_priv_reg(phys_addr_t reg, u32 mask, u32 val)
+> +{
+> +	struct arm_smccc_res res;
+> +
+> +	arm_smccc_smc(TENSOR_SMC_PMU_SEC_REG,
+> +		      reg,
+> +		      TENSOR_PMUREG_RMW,
+> +		      mask, val, 0, 0, 0, &res);
+> +
+> +	if (res.a0)
+> +		pr_warn("%s(): SMC failed: %lu\n", __func__, res.a0);
+> +
+> +	return (int)res.a0;
+> +}
+> +
+> +/*
+> + * For SoCs that have set/clear bit hardware (as indicated by
+> + * QUIRK_HAS_ATOMIC_BITSETHW) this function can be used when
+> + * the PMU register will be accessed by multiple masters.
+> + *
+> + * For example, to set bits 13:8 in PMU reg offset 0x3e80
+> + * exynos_pmu_set_bit_atomic(0x3e80, 0x3f00, 0x3f00);
+> + *
+> + * To clear bits 13:8 in PMU offset 0x3e80
+> + * exynos_pmu_set_bit_atomic(0x3e80, 0x0, 0x3f00);
+> + */
+> +static inline void exynos_pmu_set_bit_atomic(unsigned int offset,
+> +					     u32 val, u32 mask)
+> +{
+> +	unsigned long flags;
+> +	unsigned int i;
+> +
+> +	spin_lock_irqsave(&pmu_context->update_lock, flags);
+> +	for (i = 0; i < 32; i++) {
+> +		if (mask & BIT(i)) {
+> +			if (val & BIT(i)) {
+> +				offset |= 0xc000;
+> +				pmu_raw_writel(i, offset);
+> +			} else {
+> +				offset |= 0x8000;
+> +				pmu_raw_writel(i, offset);
+> +			}
+> +		}
+> +	}
+> +	spin_unlock_irqrestore(&pmu_context->update_lock, flags);
+> +}
+> +
+> +int exynos_pmu_update_bits(unsigned int offset, unsigned int mask,
+> +			   unsigned int val)
+> +{
+> +	if (pmu_context->pmu_data &&
+> +	    pmu_context->pmu_data->quirks & QUIRK_PMU_ALIVE_WRITE_SEC)
+> +		return rmw_priv_reg(pmu_context->pmu_base_pa + offset,
+> +				    mask, val);
+> +
+> +	return regmap_update_bits(pmu_context->pmureg, offset, mask, val);
+> +}
+> +EXPORT_SYMBOL(exynos_pmu_update_bits);
+
+You need kerneldoc for all exported functions.
+
+Also, EXPORT_SYMBOL_GPL
+
+> +
+>  void pmu_raw_writel(u32 val, u32 offset)
+>  {
+> -	writel_relaxed(val, pmu_base_addr + offset);
+> +	if (pmu_context->pmu_data &&
+> +	    pmu_context->pmu_data->quirks & QUIRK_PMU_ALIVE_WRITE_SEC)
+> +		return (void)set_priv_reg(pmu_context->pmu_base_pa + offset,
+> +					  val);
+> +
+> +	return writel_relaxed(val, pmu_context->pmu_base_addr + offset);
+>  }
+>  
+
+..
+
+> diff --git a/drivers/soc/samsung/exynos-pmu.h b/drivers/soc/samsung/exynos-pmu.h
+> index 1c652ffd79b4..570c6e4dc8c3 100644
+> --- a/drivers/soc/samsung/exynos-pmu.h
+> +++ b/drivers/soc/samsung/exynos-pmu.h
+> @@ -25,8 +25,12 @@ struct exynos_pmu_data {
+>  	void (*pmu_init)(void);
+>  	void (*powerdown_conf)(enum sys_powerdown);
+>  	void (*powerdown_conf_extra)(enum sys_powerdown);
+> +	u32 quirks;
+>  };
+>  
+> +int set_priv_reg(phys_addr_t reg, u32 val);
+> +int rmw_priv_reg(phys_addr_t reg, u32 mask, u32 val);
+
+Why these are in the header?
+
+Best regards,
+Krzysztof
+
 
