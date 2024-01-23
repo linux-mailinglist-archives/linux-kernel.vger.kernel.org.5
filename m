@@ -1,221 +1,188 @@
-Return-Path: <linux-kernel+bounces-34838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5036D838825
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:42:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D91B1838827
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:43:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3A2E28A4FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:42:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52B151F21E7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:43:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5711752F78;
-	Tue, 23 Jan 2024 07:42:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C871552F73;
+	Tue, 23 Jan 2024 07:42:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="FW1lyyvm"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Kj8Kfumc"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BC1C55E62;
-	Tue, 23 Jan 2024 07:42:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 843D356768
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:42:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705995750; cv=none; b=KTgD2ySqdUUIesFqha8pfC+ymSxMVGz9tZDLsAa9Vac//nVW6EmOC+xfo0rvua06sBvhzbvQm0iy3AYWP15Wdo02FNX51+bhHVr9O61wBDQwWnKpS3+6FXyPKG6I6K/wot/sR8YrcTepyhVEihS8XViDN+q7seqlBVWj8KKrzPU=
+	t=1705995765; cv=none; b=Sj8PJXoZctlL7ZkC99SV1SYRV1U7oNfrMYn0CLy0QWYD6Fo2HMUJJ7fmFL/8qcnT0kSJGzzvXWIkRzukuY1oyqGa3iSfyMhfXPOafG6rRr6oExg1jIb399NFgdaS1wfUgBwLBysXNmSfmdoNdMsW1XuRwgixC23332ae/leOr7M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705995750; c=relaxed/simple;
-	bh=/Ky7Ep269Hk21quP39msGOAez4BJHg26ia+TzLNBuVE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PTx7h26ey4vR6+EQa5/1radHbB4i107t4Fu4Z5j+aut9GVUi9nHPNjdsar7TjYeHymvWJcraiy1fPTzkRjMDik+VbxDUNAZ4kTznnubfBJIRyQFWcbQgNJJ9KjRvJJ/ucUG1p2/E9Z+h0uAI7h9Sf9ezqKjEmxtyvKFeV+X51E8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=FW1lyyvm; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-	s=s31663417; t=1705995723; x=1706600523; i=wahrenst@gmx.net;
-	bh=/Ky7Ep269Hk21quP39msGOAez4BJHg26ia+TzLNBuVE=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=FW1lyyvmSOepgMolaBYLicMCTguuIV7FHQ+LhniGDOW187gxp9dMLpOPROkedCza
-	 lJkT59Vn1h5Nbyae+zG/akFvTm+Rw3WootVkff8zW67FgyssSMAzLApmblBb8afgc
-	 XzpZnjyE9REJosBzSAIDzOGYZEUcD3pUiCKZqCpSP69+ZmCjzV6CI/fNLTOlpQq3n
-	 5ELOOoPP/4LKHs+Is8H31ynLGDf7+p0L/losu6GBefrUQis8GTFreIfduPjIT02Zx
-	 rPy0srsGec2r2oIgzVNV+L45+uDlMfbt0Lm1zeN9kVpbJ29nlJY4NGf5NupexgxJe
-	 dPbVTAnP+brZVPZq7g==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.1.167] ([37.4.248.43]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mq2nA-1qo9qj1QYM-00n83a; Tue, 23
- Jan 2024 08:42:03 +0100
-Message-ID: <85fe8c8b-ea08-4f24-9a06-33a5678c1a0a@gmx.net>
-Date: Tue, 23 Jan 2024 08:42:01 +0100
+	s=arc-20240116; t=1705995765; c=relaxed/simple;
+	bh=fWVdAFi8tqkVEPHMLL7aLJ5rxCKSE6trIkaFQGg66nc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dg3dS1Bhg4TkR/SYk3Gb6cv4cTiFXEKnqeldNAO3zgMf2bBcUwjxY8jOaugSCyzTSggTbc6IdVz3hBZqNv/Gy77+zVuM0m216dE+gZ9Af7JGK0nYQIJxz1swX5b4K9ifuvELciSVpW8I4FNLX+CntLHDIKSlg2aPAIRKpYymv5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Kj8Kfumc; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a271a28aeb4so423905566b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 23:42:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705995763; x=1706600563; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=wZzIeT2Z5wGL0rXRJX/Ydbtl6mnZkEArBg3h/e5jiwQ=;
+        b=Kj8Kfumc5CNR+u6BFctOBLQfvVBcUeK30eHhFv6YSop4idtrB4CSe1cbkQwMQPx/dk
+         EZCNQlyeC45vM8Up0Oj2ZxiMnNCML+Q1uiSEq+CGvb+1xoIg3KzvAi2A4iOGkznFTKCT
+         1wZJzIiHZvSvZFKHXjDyiynln2fsGxjfj60KTPMJz7xarnl2ffskzdBiijWxvm89a6c7
+         DjlEPT2fZUllQ7RYJKCPfRS13FcPddiynKZoZiHFw+m+28Q024inZm5TTan791JcYwg1
+         eyZkJZLNi5TU35xDZLSzmDBQhrvJFxd9wh836Mj7Z6jIBuxkZpgi3oCV22Sp3tAPrtuw
+         +TsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705995763; x=1706600563;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wZzIeT2Z5wGL0rXRJX/Ydbtl6mnZkEArBg3h/e5jiwQ=;
+        b=O3KK5dvreHkalK6kza5fxmmkfYAZRL0km0hKohQTIWDQ5FKoJFZrR9bmaIx8BB3t2o
+         asByGgkuroCGAh74eJXrVhSuM6YyIzIyAbBRvQtckrP1SPEqP4FCW6IGnZkmnZ1ZGPUB
+         oEyQoAavd5FIhogN/2rUZg7e3nJD6vy2uSUUOzDsCZIXeVCjoM1DH7S5Y21srt0PJ62/
+         DvxyKGnria4a/gE29wcB3ELp0eZ/YiLJIn05I+GZmNym8mz0wZJXbDofyM4h4cPDdjXa
+         6ikOtE83F8/pr4WOTg/No2kQpFAGRaHrbI+36Mt//ILFisq3Ed1LHIWXQkB8Vcq3RoMB
+         SvDg==
+X-Gm-Message-State: AOJu0Ywwpt+JT1qVwn2yQCtBSclKkC/Q7LYsI/qFBFIYTpPODk20onnO
+	/bFE6M6ZqwpPWhnRKy2eH+2c+K0XugqSbya8gS2Kf6XTcy6+3cw+Ta2MMjCVYpKluaViFRQKK8q
+	k+eZ/5MxU/YDuALl/xpGWyHfCb1nnojSGxkvC
+X-Google-Smtp-Source: AGHT+IGNX9ulSeeQIbUyGQNVQY4Czahak4z9LGEomH0AJ2xc+UCctfiizqZinfYpBy7MeHaPDFyWXUkPe40oq1O2sdk=
+X-Received: by 2002:a17:906:c9d5:b0:a27:be67:1743 with SMTP id
+ hk21-20020a170906c9d500b00a27be671743mr2574733ejb.40.1705995762578; Mon, 22
+ Jan 2024 23:42:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/3] arm64: dts: imx93: Add phyBOARD-Segin-i.MX93
- support
-To: Wadim Egorov <w.egorov@phytec.de>, Mathieu Othacehe <othacehe@gnu.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
- Li Yang <leoyang.li@nxp.com>, Primoz Fiser <primoz.fiser@norik.com>,
- Christoph Stoidner <c.stoidner@phytec.de>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-References: <20240122095306.14084-1-othacehe@gnu.org>
- <20240122095306.14084-4-othacehe@gnu.org>
- <537266fe-0bf7-4208-a9f3-ae27f462c6ed@phytec.de>
-Content-Language: en-US
-From: Stefan Wahren <wahrenst@gmx.net>
-In-Reply-To: <537266fe-0bf7-4208-a9f3-ae27f462c6ed@phytec.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:TBhRzAvEq7kXjopTV3OOvjTGvLbk/dHvnj3MvPABnqEaH5koOvG
- NJKJDZLgFxCWXRs4kvR7O+cNqp0riBhKqekdQXX7FOZ8huvQb6yNqsKalAbs951W9vmBkVY
- 9ENhKlm9aBU/bl/BBGruwABcGFfCdBSRFu+xIiH54M/W8R2Mdi3DPcEhaat6zvEFSjn9xZZ
- 1wIcBExd5XNMYF78XkVlw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:aBQQa9GZRyo=;ChimGMRT8O6EtacR23H1rRswAMA
- C2gu7Do5TC+f4NUdJuKTRXRwNgIzvJij/E8s3fH2HLA89tfqehFQc4uzKW8g+3+ehIHFCG3a3
- 3X63TyEY7LIY6sRx1zgKyVNgq/VIHhxOeINHraWwIEPO5hL9C8fPRaKVG2qnmUDQa/Wo0oseB
- 92od87/PFlQAS2f/IAMWWfAmQPDl68G/LWOxfJqiCvoWq/gREtXFnoFtn8fv4HqvbQZSdLe+W
- /f0a/t7vy5x7WaLbuxM6Lh1raoFMpXytO6b8rfZO9m939czIKS/d50lV8NjLdgpuGQuWYK96c
- xFNhG8lTIBgVm3c8jCCg1zB+RtFRjQ5WXPUe7hZm6+JZswOgblRTVH0kM7y11l8wokFm0S7k6
- jyU9bVEIGoSlrTWM4uF3yJoPhCMQPG1hFcIQAc9iXL6XmR9J+Yri/5z6UeFSxBs/t6N9q9QFG
- Sohui3bRzTSpGF6p7WX4s77OxaFD+P+/U2DqchIGfQd69V7DS5ZrWs3MeN1AUHjuGE8cH9pcQ
- LWqLwhBMCRO7HO/5xXLqQ4EVcnCW3PMt/Q2SRCfsv80NZ+iOy6DfV/vYvu9xdaDY7Z8LqT7ky
- H34Uo2av8laT3XsVIf6Rbj0MVGkofXR7MlUVcsWFKSJ+Iu2j0/a18CHBDzAL9A/7EGPNOfelO
- SE7GvBr1K/HoUiTwibwcqx4nCqs1lDQIbj3vmkNPtFDw51/LeQOVK1+rM/lwi3YhCYKbd0nfP
- 6K6hjJlWUDIvBfVCkg1CaWyOQiXoXMsGQ6lmwRWi40apsrx46jSdcyOr0I7mDSq81Cdbu38bP
- KtFKKQomWSDpvmAsx3JNXudZQETgyZYulkXrnyY/7xEzYW2S47ydEs9INFpJZFGBtl+wGj0k8
- ih0DuoM41wF4JpxH0VnCiEA2CJXfpNe+Ht8w8mtXXUruKopU7efzGeRjBUgEwlVplN1iKNaT0
- 3iqR+VZeZeW+soP6NN7XtEo4LNo=
+References: <202401221624.cb53a8ca-oliver.sang@intel.com> <CAJD7tka0o+jn3UkXB+ZfZvRw1v+KysJbaGQvJdHcSmAhYC5TQA@mail.gmail.com>
+ <Za9pB928KjSORPw+@xsang-OptiPlex-9020>
+In-Reply-To: <Za9pB928KjSORPw+@xsang-OptiPlex-9020>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Mon, 22 Jan 2024 23:42:04 -0800
+Message-ID: <CAJD7tkYtKdLccKbFVoVo9DH8VtHHAXNMEz5D-Ww5jHhDy-QxbA@mail.gmail.com>
+Subject: Re: [linus:master] [mm] 8d59d2214c: vm-scalability.throughput -36.6% regression
+To: Oliver Sang <oliver.sang@intel.com>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org, 
+	Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Domenico Cerasuolo <cerasuolodomenico@gmail.com>, Shakeel Butt <shakeelb@google.com>, 
+	Chris Li <chrisl@kernel.org>, Greg Thelen <gthelen@google.com>, 
+	Ivan Babrou <ivan@cloudflare.com>, Michal Hocko <mhocko@kernel.org>, 
+	Michal Koutny <mkoutny@suse.com>, Muchun Song <muchun.song@linux.dev>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Tejun Heo <tj@kernel.org>, 
+	Waiman Long <longman@redhat.com>, Wei Xu <weixugc@google.com>, cgroups@vger.kernel.org, 
+	linux-mm@kvack.org, ying.huang@intel.com, feng.tang@intel.com, 
+	fengwei.yin@intel.com
+Content-Type: multipart/mixed; boundary="0000000000006ba232060f9817a0"
 
-Hi Wadim,
+--0000000000006ba232060f9817a0
+Content-Type: text/plain; charset="UTF-8"
 
-Am 23.01.24 um 07:11 schrieb Wadim Egorov:
-> Hey Mathieu,
+> > Oliver, would you be able to test if the attached patch helps? It's
+> > based on 8d59d2214c236.
 >
-> Am 22.01.24 um 10:53 schrieb Mathieu Othacehe:
->> Add basic support for phyBOARD-Segin-i.MX93.
->> Main features are:
->> * eMMC
->> * Ethernet
->> * SD-Card
->> * UART
->>
->> Signed-off-by: Mathieu Othacehe <othacehe@gnu.org>
->> ---
->> =C2=A0 arch/arm64/boot/dts/freescale/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 1 +
->> =C2=A0 .../dts/freescale/imx93-phyboard-segin.dts=C2=A0=C2=A0=C2=A0 | 1=
-41 ++++++++++++++++++
->> =C2=A0 .../boot/dts/freescale/imx93-phycore-som.dtsi | 127 ++++++++++++=
-++++
->> =C2=A0 3 files changed, 269 insertions(+)
->> =C2=A0 create mode 100644
->> arch/arm64/boot/dts/freescale/imx93-phyboard-segin.dts
->> =C2=A0 create mode 100644
->> arch/arm64/boot/dts/freescale/imx93-phycore-som.dtsi
->>
->> diff --git a/arch/arm64/boot/dts/freescale/Makefile
->> b/arch/arm64/boot/dts/freescale/Makefile
->> index 2e027675d7bb..65db918c821c 100644
->> --- a/arch/arm64/boot/dts/freescale/Makefile
->> +++ b/arch/arm64/boot/dts/freescale/Makefile
->> @@ -201,6 +201,7 @@ dtb-$(CONFIG_ARCH_MXC) +=3D
->> imx8qxp-colibri-iris-v2.dtb
->> =C2=A0 dtb-$(CONFIG_ARCH_MXC) +=3D imx8qxp-mek.dtb
->> =C2=A0 dtb-$(CONFIG_ARCH_MXC) +=3D imx8ulp-evk.dtb
->> =C2=A0 dtb-$(CONFIG_ARCH_MXC) +=3D imx93-11x11-evk.dtb
->> +dtb-$(CONFIG_ARCH_MXC) +=3D imx93-phyboard-segin.dtb
->> =C2=A0 dtb-$(CONFIG_ARCH_MXC) +=3D imx93-tqma9352-mba93xxca.dtb
->> =C2=A0 dtb-$(CONFIG_ARCH_MXC) +=3D imx93-tqma9352-mba93xxla.dtb
->> =C2=A0 diff --git a/arch/arm64/boot/dts/freescale/imx93-phyboard-segin.=
-dts
->> b/arch/arm64/boot/dts/freescale/imx93-phyboard-segin.dts
->> new file mode 100644
->> index 000000000000..5433c33d1322
->> --- /dev/null
->> +++ b/arch/arm64/boot/dts/freescale/imx93-phyboard-segin.dts
->> @@ -0,0 +1,141 @@
->> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
->> +/*
->> + * Copyright (C) 2023 PHYTEC Messtechnik GmbH
->> + * Author: Wadim Egorov <w.egorov@phytec.de>, Christoph Stoidner
->> <c.stoidner@phytec.de>
->> + * Copyright (C) 2024 Mathieu Othacehe <m.othacehe@gmail.com>
->> + *
->> + * Product homepage:
->> + * phyBOARD-Segin carrier board is reused for the i.MX93 design.
->> + *
->> https://www.phytec.de/produkte/single-board-computer/phyboard-segin-imx=
-6ul/
->> + */
->> +
->> +#include "imx93-phycore-som.dtsi"
->> +
->> +/{
->> +=C2=A0=C2=A0=C2=A0 model =3D "PHYTEC phyBOARD-Segin-i.MX93";
->> +=C2=A0=C2=A0=C2=A0 compatible =3D "phytec,imx93-phyboard-segin",
->> "phytec,imx93-phycore-som",
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 "fsl,imx93";
->> +
->> +=C2=A0=C2=A0=C2=A0 chosen {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 stdout-path =3D &lpuart1;
->> +=C2=A0=C2=A0=C2=A0 };
->> +
->> +=C2=A0=C2=A0=C2=A0 reg_usdhc2_vmmc: regulator-usdhc2 {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 compatible =3D "regulator-f=
-ixed";
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 enable-active-high;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 gpio =3D <&gpio3 7 GPIO_ACT=
-IVE_HIGH>;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pinctrl-names =3D "default"=
-;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pinctrl-0 =3D <&pinctrl_reg=
-_usdhc2_vmmc>;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 regulator-min-microvolt =3D=
- <3300000>;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 regulator-max-microvolt =3D=
- <3300000>;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 regulator-name =3D "VCC_SD"=
-;
->> +=C2=A0=C2=A0=C2=A0 };
->> +};
->> +
->> +/* GPIOs */
->> +&gpio1 {
->> +=C2=A0=C2=A0=C2=A0 pinctrl-names =3D "default";
->> +=C2=A0=C2=A0=C2=A0 pinctrl-0 =3D <&pinctrl_gpio1>;
+> the patch failed to compile:
 >
-> You are doing more than you describing in your changes log.
-> Here you are forcing a gpio-only functionality for the X16 header. But
-> the pins we route down to the X16 expansion connector can be also used
-> differently.
+> build_errors:
+>   - "mm/memcontrol.c:731:38: error: 'x' undeclared (first use in this function)"
 
-i think the word "forcing" is little bit hard in this case. It doesn't
-define a gpio-hog.
+Apologizes, apparently I sent the patch with some pending diff in my
+tree that I hadn't committed. Please find a fixed patch attached.
 
-> Typically we provide device tree overlays for different use cases on
-> this expansion connectors.
+Thanks.
 
-Can you please explain why the device tree overlays cannot overwrite the
-pinmuxing?
+--0000000000006ba232060f9817a0
+Content-Type: application/octet-stream; 
+	name="0001-mm-memcg-optimize-parent-iteration-in-memcg_rstat_up.patch"
+Content-Disposition: attachment; 
+	filename="0001-mm-memcg-optimize-parent-iteration-in-memcg_rstat_up.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_lrq1so3z0>
+X-Attachment-Id: f_lrq1so3z0
 
->
-> Please drop the muxing.
->
-> Same applies for the gpio names.
-What's the problem with defining gpio line names for user friendliness?
-The Raspberry Pi has also an expansion header, all the pins can be muxed
-to different functions but still have gpio line names.
-
-Best regards
+RnJvbSAxYjAwYjRlMGJiYzIxNWZjZWJiOWQzZDQ1ZTVkNjMxMzViN2I3ZTg5IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBZb3NyeSBBaG1lZCA8eW9zcnlhaG1lZEBnb29nbGUuY29tPgpE
+YXRlOiBNb24sIDIyIEphbiAyMDI0IDIxOjM1OjI5ICswMDAwClN1YmplY3Q6IFtQQVRDSF0gbW06
+IG1lbWNnOiBvcHRpbWl6ZSBwYXJlbnQgaXRlcmF0aW9uIGluIG1lbWNnX3JzdGF0X3VwZGF0ZWQo
+KQoKU2lnbmVkLW9mZi1ieTogWW9zcnkgQWhtZWQgPHlvc3J5YWhtZWRAZ29vZ2xlLmNvbT4KLS0t
+CiBtbS9tZW1jb250cm9sLmMgfCA0NiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0t
+LS0tLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgMjkgaW5zZXJ0aW9ucygrKSwgMTcgZGVsZXRp
+b25zKC0pCgpkaWZmIC0tZ2l0IGEvbW0vbWVtY29udHJvbC5jIGIvbW0vbWVtY29udHJvbC5jCmlu
+ZGV4IGM1YWEwYzJjYjY4YjIuLmQ2YTlkNmRhZDJmMDAgMTAwNjQ0Ci0tLSBhL21tL21lbWNvbnRy
+b2wuYworKysgYi9tbS9tZW1jb250cm9sLmMKQEAgLTYzNCw2ICs2MzQsMTAgQEAgc3RydWN0IG1l
+bWNnX3Ztc3RhdHNfcGVyY3B1IHsKIAogCS8qIFN0YXRzIHVwZGF0ZXMgc2luY2UgdGhlIGxhc3Qg
+Zmx1c2ggKi8KIAl1bnNpZ25lZCBpbnQJCXN0YXRzX3VwZGF0ZXM7CisKKwkvKiBDYWNoZWQgcG9p
+bnRlcnMgZm9yIGZhc3QgdXBkYXRlcyBpbiBtZW1jZ19yc3RhdF91cGRhdGVkKCkgKi8KKwlzdHJ1
+Y3QgbWVtY2dfdm1zdGF0c19wZXJjcHUJKnBhcmVudDsKKwlzdHJ1Y3QgbWVtY2dfdm1zdGF0cwkJ
+KnZtc3RhdHM7CiB9OwogCiBzdHJ1Y3QgbWVtY2dfdm1zdGF0cyB7CkBAIC02OTgsMzYgKzcwMiwz
+NSBAQCBzdGF0aWMgdm9pZCBtZW1jZ19zdGF0c191bmxvY2sodm9pZCkKIH0KIAogCi1zdGF0aWMg
+Ym9vbCBtZW1jZ19zaG91bGRfZmx1c2hfc3RhdHMoc3RydWN0IG1lbV9jZ3JvdXAgKm1lbWNnKQor
+c3RhdGljIGJvb2wgbWVtY2dfdm1zdGF0c19uZWVkc19mbHVzaChzdHJ1Y3QgbWVtY2dfdm1zdGF0
+cyAqdm1zdGF0cykKIHsKLQlyZXR1cm4gYXRvbWljNjRfcmVhZCgmbWVtY2ctPnZtc3RhdHMtPnN0
+YXRzX3VwZGF0ZXMpID4KKwlyZXR1cm4gYXRvbWljNjRfcmVhZCgmdm1zdGF0cy0+c3RhdHNfdXBk
+YXRlcykgPgogCQlNRU1DR19DSEFSR0VfQkFUQ0ggKiBudW1fb25saW5lX2NwdXMoKTsKIH0KIAog
+c3RhdGljIGlubGluZSB2b2lkIG1lbWNnX3JzdGF0X3VwZGF0ZWQoc3RydWN0IG1lbV9jZ3JvdXAg
+Km1lbWNnLCBpbnQgdmFsKQogeworCXN0cnVjdCBtZW1jZ192bXN0YXRzX3BlcmNwdSAqc3RhdGM7
+CiAJaW50IGNwdSA9IHNtcF9wcm9jZXNzb3JfaWQoKTsKLQl1bnNpZ25lZCBpbnQgeDsKIAogCWlm
+ICghdmFsKQogCQlyZXR1cm47CiAKIAljZ3JvdXBfcnN0YXRfdXBkYXRlZChtZW1jZy0+Y3NzLmNn
+cm91cCwgY3B1KTsKLQotCWZvciAoOyBtZW1jZzsgbWVtY2cgPSBwYXJlbnRfbWVtX2Nncm91cCht
+ZW1jZykpIHsKLQkJeCA9IF9fdGhpc19jcHVfYWRkX3JldHVybihtZW1jZy0+dm1zdGF0c19wZXJj
+cHUtPnN0YXRzX3VwZGF0ZXMsCi0JCQkJCSAgYWJzKHZhbCkpOwotCi0JCWlmICh4IDwgTUVNQ0df
+Q0hBUkdFX0JBVENIKQorCXN0YXRjID0gdGhpc19jcHVfcHRyKG1lbWNnLT52bXN0YXRzX3BlcmNw
+dSk7CisJZm9yICg7IHN0YXRjOyBzdGF0YyA9IHN0YXRjLT5wYXJlbnQpIHsKKwkJc3RhdGMtPnN0
+YXRzX3VwZGF0ZXMgKz0gYWJzKHZhbCk7CisJCWlmIChzdGF0Yy0+c3RhdHNfdXBkYXRlcyA8IE1F
+TUNHX0NIQVJHRV9CQVRDSCkKIAkJCWNvbnRpbnVlOwogCiAJCS8qCiAJCSAqIElmIEBtZW1jZyBp
+cyBhbHJlYWR5IGZsdXNoLWFibGUsIGluY3JlYXNpbmcgc3RhdHNfdXBkYXRlcyBpcwogCQkgKiBy
+ZWR1bmRhbnQuIEF2b2lkIHRoZSBvdmVyaGVhZCBvZiB0aGUgYXRvbWljIHVwZGF0ZS4KIAkJICov
+Ci0JCWlmICghbWVtY2dfc2hvdWxkX2ZsdXNoX3N0YXRzKG1lbWNnKSkKLQkJCWF0b21pYzY0X2Fk
+ZCh4LCAmbWVtY2ctPnZtc3RhdHMtPnN0YXRzX3VwZGF0ZXMpOwotCQlfX3RoaXNfY3B1X3dyaXRl
+KG1lbWNnLT52bXN0YXRzX3BlcmNwdS0+c3RhdHNfdXBkYXRlcywgMCk7CisJCWlmICghbWVtY2df
+dm1zdGF0c19uZWVkc19mbHVzaChzdGF0Yy0+dm1zdGF0cykpCisJCQlhdG9taWM2NF9hZGQoc3Rh
+dGMtPnN0YXRzX3VwZGF0ZXMsCisJCQkJICAgICAmc3RhdGMtPnZtc3RhdHMtPnN0YXRzX3VwZGF0
+ZXMpOworCQlzdGF0Yy0+c3RhdHNfdXBkYXRlcyA9IDA7CiAJfQogfQogCkBAIC03NTEsNyArNzU0
+LDcgQEAgc3RhdGljIHZvaWQgZG9fZmx1c2hfc3RhdHModm9pZCkKIAogdm9pZCBtZW1fY2dyb3Vw
+X2ZsdXNoX3N0YXRzKHZvaWQpCiB7Ci0JaWYgKG1lbWNnX3Nob3VsZF9mbHVzaF9zdGF0cyhyb290
+X21lbV9jZ3JvdXApKQorCWlmIChtZW1jZ192bXN0YXRzX25lZWRzX2ZsdXNoKHJvb3RfbWVtX2Nn
+cm91cC0+dm1zdGF0cykpCiAJCWRvX2ZsdXNoX3N0YXRzKCk7CiB9CiAKQEAgLTc2NSw3ICs3Njgs
+NyBAQCB2b2lkIG1lbV9jZ3JvdXBfZmx1c2hfc3RhdHNfcmF0ZWxpbWl0ZWQodm9pZCkKIHN0YXRp
+YyB2b2lkIGZsdXNoX21lbWNnX3N0YXRzX2R3b3JrKHN0cnVjdCB3b3JrX3N0cnVjdCAqdykKIHsK
+IAkvKgotCSAqIERlbGliZXJhdGVseSBpZ25vcmUgbWVtY2dfc2hvdWxkX2ZsdXNoX3N0YXRzKCkg
+aGVyZSBzbyB0aGF0IGZsdXNoaW5nCisJICogRGVsaWJlcmF0ZWx5IGlnbm9yZSBtZW1jZ192bXN0
+YXRzX25lZWRzX2ZsdXNoKCkgaGVyZSBzbyB0aGF0IGZsdXNoaW5nCiAJICogaW4gbGF0ZW5jeS1z
+ZW5zaXRpdmUgcGF0aHMgaXMgYXMgY2hlYXAgYXMgcG9zc2libGUuCiAJICovCiAJZG9fZmx1c2hf
+c3RhdHMoKTsKQEAgLTU0NTMsMTAgKzU0NTYsMTEgQEAgc3RhdGljIHZvaWQgbWVtX2Nncm91cF9m
+cmVlKHN0cnVjdCBtZW1fY2dyb3VwICptZW1jZykKIAlfX21lbV9jZ3JvdXBfZnJlZShtZW1jZyk7
+CiB9CiAKLXN0YXRpYyBzdHJ1Y3QgbWVtX2Nncm91cCAqbWVtX2Nncm91cF9hbGxvYyh2b2lkKQor
+c3RhdGljIHN0cnVjdCBtZW1fY2dyb3VwICptZW1fY2dyb3VwX2FsbG9jKHN0cnVjdCBtZW1fY2dy
+b3VwICpwYXJlbnQpCiB7CisJc3RydWN0IG1lbWNnX3Ztc3RhdHNfcGVyY3B1ICpzdGF0YywgKnBz
+dGF0YzsKIAlzdHJ1Y3QgbWVtX2Nncm91cCAqbWVtY2c7Ci0JaW50IG5vZGU7CisJaW50IG5vZGUs
+IGNwdTsKIAlpbnQgX19tYXliZV91bnVzZWQgaTsKIAlsb25nIGVycm9yID0gLUVOT01FTTsKIApA
+QCAtNTQ4MCw2ICs1NDg0LDE0IEBAIHN0YXRpYyBzdHJ1Y3QgbWVtX2Nncm91cCAqbWVtX2Nncm91
+cF9hbGxvYyh2b2lkKQogCWlmICghbWVtY2ctPnZtc3RhdHNfcGVyY3B1KQogCQlnb3RvIGZhaWw7
+CiAKKwlmb3JfZWFjaF9wb3NzaWJsZV9jcHUoY3B1KSB7CisJCWlmIChwYXJlbnQpCisJCQlwc3Rh
+dGMgPSBwZXJfY3B1X3B0cihwYXJlbnQtPnZtc3RhdHNfcGVyY3B1LCBjcHUpOworCQlzdGF0YyA9
+IHBlcl9jcHVfcHRyKG1lbWNnLT52bXN0YXRzX3BlcmNwdSwgY3B1KTsKKwkJc3RhdGMtPnBhcmVu
+dCA9IHBhcmVudCA/IHBzdGF0YyA6IE5VTEw7CisJCXN0YXRjLT52bXN0YXRzID0gbWVtY2ctPnZt
+c3RhdHM7CisJfQorCiAJZm9yX2VhY2hfbm9kZShub2RlKQogCQlpZiAoYWxsb2NfbWVtX2Nncm91
+cF9wZXJfbm9kZV9pbmZvKG1lbWNnLCBub2RlKSkKIAkJCWdvdG8gZmFpbDsKQEAgLTU1MjUsNyAr
+NTUzNyw3IEBAIG1lbV9jZ3JvdXBfY3NzX2FsbG9jKHN0cnVjdCBjZ3JvdXBfc3Vic3lzX3N0YXRl
+ICpwYXJlbnRfY3NzKQogCXN0cnVjdCBtZW1fY2dyb3VwICptZW1jZywgKm9sZF9tZW1jZzsKIAog
+CW9sZF9tZW1jZyA9IHNldF9hY3RpdmVfbWVtY2cocGFyZW50KTsKLQltZW1jZyA9IG1lbV9jZ3Jv
+dXBfYWxsb2MoKTsKKwltZW1jZyA9IG1lbV9jZ3JvdXBfYWxsb2MocGFyZW50KTsKIAlzZXRfYWN0
+aXZlX21lbWNnKG9sZF9tZW1jZyk7CiAJaWYgKElTX0VSUihtZW1jZykpCiAJCXJldHVybiBFUlJf
+Q0FTVChtZW1jZyk7Ci0tIAoyLjQzLjAuNDI5Lmc0MzJlYWEyYzZiLWdvb2cKCg==
+--0000000000006ba232060f9817a0--
 
