@@ -1,145 +1,112 @@
-Return-Path: <linux-kernel+bounces-36119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19B81839BDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 23:10:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 342B1839BE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 23:12:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C60B81F27CCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 22:10:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C988A1F2A356
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 22:12:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29F384F212;
-	Tue, 23 Jan 2024 22:10:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8B394F216;
+	Tue, 23 Jan 2024 22:12:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="lXBtnw+3"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="g062aeWH"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0663B4F201;
-	Tue, 23 Jan 2024 22:10:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A6E61A27C
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 22:12:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706047822; cv=none; b=Oz48J+8L74KGkgEShejbkoyKp8jw6dksadPf9124JCB39Fj3m75UpOX9BLlg3nyVmO+zSxQUCjteSO80qjmWJApgqYBhdds1P7JFCmsTXW1743JJi3kbD3C/klK3HrGMS0kqzOz8UcBkmdtYyNONuZ4fdb5ELHXMB2a4+QhBd1o=
+	t=1706047949; cv=none; b=S6bEw1X3Xarv5v9E6JS8fZpoy9UmObR4xaGzxjRruN8gpnBljZzVgXQFaW2BHtGZFdg/gRCArhuZid1nJUkoIUNMUJfNp6ZdLPxZJ9I+6fOhkDJ0HlvSDSWc23tRHGIhXQOnIytjD51pwriMqoPiU3GX78EViS3IfaDcJanv5aY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706047822; c=relaxed/simple;
-	bh=4tLvgtW9phV6f8odf0il9TWr49sI69U76al3modxrbs=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fkhCeqODo7jp41j4Pw83UBOXp8GRKNPHE2t383Wtaz5zO09DCLKMIqzCe2cTsWboZi2RoOBhk8m73fHiEYPljOYR3E6tcJoppDYbK9PWccC87DiNOItEsLwru39BhePqOQUHs4hnRZTirlCcjw5nuUJyQlAXvyTfQeJs+3lwTw4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=lXBtnw+3; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40NKvwjl024439;
-	Tue, 23 Jan 2024 22:10:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=bMUGP/ExetbQlmoXaOtIF
-	/n/k5ZMkOe7YT4/9Tx2TRE=; b=lXBtnw+3NINvG0kz8cksz6lSjMy12Huo61tvD
-	EiP86dOOImKlLThEVW2VrWhiDMji3D0YHgVA9tfXT95HYmEoHlyPsM5gQYy2eLI6
-	b2Mfh2pOxc5yNlrQ/TEe0wZZIX80TPQcC4DlZsH9ZoV/J/AH4Wl9C5Py3UOsP3V2
-	27X3bErqnCx5jglbFp1lCPUi7suKmOVTCM+26UjiWK8ELCgRMdM9xTN8HZkj8AVD
-	oUY59ONOwYi58mjMqU1GqyIWzVBqBGdX0bCaPfiHQci5WhMXg62k9X+CoVE3njaV
-	YdegOHoJtvDFtOuS44Tj2NAWBZ0f1VLHoDAKNhMDl+IeOk8Jg==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vtmgwg5ub-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Jan 2024 22:10:16 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40NMAGgZ023105
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Jan 2024 22:10:16 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 23 Jan 2024 14:10:15 -0800
-Date: Tue, 23 Jan 2024 14:10:14 -0800
-From: Bjorn Andersson <quic_bjorande@quicinc.com>
-To: Chris Lew <quic_clew@quicinc.com>
-CC: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] soc: qcom: aoss: Add tracepoints in qmp_send()
-Message-ID: <20240123221014.GG2936378@hu-bjorande-lv.qualcomm.com>
-References: <20240117-qcom-aoss-tracepoints-v1-1-4f935920cf4b@quicinc.com>
- <02dc2748-e73d-f565-9879-6a05e84cbd8b@quicinc.com>
+	s=arc-20240116; t=1706047949; c=relaxed/simple;
+	bh=yQx9UthoJeKm1WZYjbBJ01OFS6LBdI2HlCCVfimdaT8=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=tUc1oi9uBfd5baT5kCWKUi1OtBIgBwfNZXjHzDHMt9IK9PhbYxpZkvPdSC1uMVp+T406iYxhxfWAS/p7Z6Eg7KIJbetF7h1u1/kY1bnkdJO9QOpuDlbnpbbLfdxtTuxH55/7Zu0M0oCw9mHPGiGpT10o1/DYWdGuca8Zz733kDk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--mizhang.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=g062aeWH; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--mizhang.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5ff85fabbecso63897477b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 14:12:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706047945; x=1706652745; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wxlcqEi9GPSMvEkZ9TLbFMdD/IrKZGyQ1yOZzIdu8Ao=;
+        b=g062aeWHJ/f59eGp3G4MeV1vBg4sYUnRdNQAJ93h4lLiWRXdH1vzSEu17AOuBonxTC
+         d4r0kIMpXea5i2beHHMH4nYudY6+MTnD0BLNEYExmycgFmEw6GQdRdPMRQWVv/YjaIhq
+         /ftSu74hNYvpbjGsOJ/B8uiX8gOgTL9jRle2/WLAGsIFxn/73DYFgHvpZGnKXK53de/h
+         y0L7x6Ua7HJb2E7EH3ZfbkRougIkTPV0aXM/HukB2WV6DfODT72K+RnJKpfJ6Ozw8qOT
+         1vY8UeLmqihHKsTnhqnfSpLY5cOQ7mc7pQ8VHOmBx/2qdr72NkvV60Ty8EzNfSzXgUiM
+         e6tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706047945; x=1706652745;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wxlcqEi9GPSMvEkZ9TLbFMdD/IrKZGyQ1yOZzIdu8Ao=;
+        b=c/TVjc/kiYfZASsb9UyfgyxMpzlOSLxYHDhlLuGsASpQFn5UKsvDNm2d7IO4r4UzpN
+         vmnTvqk6auKLdZSFeqikUqPba7/wYhT98QZXEpF/uZDY9RaV35OcXFw7SYVW+R1qW7kk
+         Zn7/Q62ayaVXbYC8dxmlb7viRL87fUOS0sRgGVhKGzljLC42LaGn1gtAIkrn9VDOwWfH
+         +2XXObjpTdovEiRhT8IBSglR7eyQBYfLHpUeb8BiV2h4DDhOx9Sww8vSKPGH5318j1hK
+         OdVf/2+M51CP5W3JjktYQ9ajNyWL3JuZ7cYExOwbzdaaqXVdmhboWo8zr89S4zaKUt3R
+         dZEg==
+X-Gm-Message-State: AOJu0YxtKb76HwxSNovKRDYDmzRi0alw3H9O90CNGyaFKA10sF5qkFrV
+	cDW9uDmadBcWndC3QpvDFGw/Vu9WB8imR5l35jVix1AfGa7Z2yRhnLob4p+UH9BA/ZIuJro/VPV
+	t/6VR3A==
+X-Google-Smtp-Source: AGHT+IGgFmgGBBNeO2m9PkEd4cL5jCRH6Usqn1jPECOTfs20TGpyuBXu86a6mZmLv1CFWTpB7sobJsKumjfr
+X-Received: from mizhang-super.c.googlers.com ([35.247.89.60]) (user=mizhang
+ job=sendgmr) by 2002:a81:a096:0:b0:5e6:27ee:67fb with SMTP id
+ x144-20020a81a096000000b005e627ee67fbmr2249829ywg.4.1706047945575; Tue, 23
+ Jan 2024 14:12:25 -0800 (PST)
+Reply-To: Mingwei Zhang <mizhang@google.com>
+Date: Tue, 23 Jan 2024 22:12:20 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <02dc2748-e73d-f565-9879-6a05e84cbd8b@quicinc.com>
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: FBBPbl3TJbuz1fzTOxSoVcJMpshJVUq1
-X-Proofpoint-ORIG-GUID: FBBPbl3TJbuz1fzTOxSoVcJMpshJVUq1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-23_13,2024-01-23_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- impostorscore=0 spamscore=0 mlxscore=0 bulkscore=0 suspectscore=0
- lowpriorityscore=0 clxscore=1015 mlxlogscore=999 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2401230164
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+Message-ID: <20240123221220.3911317-1-mizhang@google.com>
+Subject: [PATCH] KVM: x86/pmu: Fix type length error when reading pmu->fixed_ctr_ctrl
+From: Mingwei Zhang <mizhang@google.com>
+To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Mingwei Zhang <mizhang@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Jan 23, 2024 at 10:54:16AM -0800, Chris Lew wrote:
-> 
-> 
-> On 1/17/2024 7:52 PM, Bjorn Andersson wrote:
-> > @@ -235,6 +238,8 @@ int qmp_send(struct qmp *qmp, const char *fmt, ...)
-> >   	mutex_lock(&qmp->tx_lock);
-> > +	trace_aoss_send(buf);
-> > +
-> >   	/* The message RAM only implements 32-bit accesses */
-> >   	__iowrite32_copy(qmp->msgram + qmp->offset + sizeof(u32),
-> >   			 buf, sizeof(buf) / sizeof(u32));
-> > @@ -256,6 +261,8 @@ int qmp_send(struct qmp *qmp, const char *fmt, ...)
-> >   		ret = 0;
-> >   	}
-> > +	trace_aoss_send_done(buf, ret);
-> > +
-> 
-> As a side note, another place where we've traced before is on the receiving
-> irq to get the full timing of how long AOSS takes to process a command. I
-> think we've discussed this in the past and decided that we can use kprobes
-> if that need occurs.
-> 
+Fix type length error since pmu->fixed_ctr_ctrl is u64 but the local
+variable old_fixed_ctr_ctrl is u8. Truncating the value leads to
+information loss at runtime. This leads to incorrect value in old_ctrl
+retrieved from each field of old_fixed_ctr_ctrl and causes incorrect code
+execution within the for loop of reprogram_fixed_counters(). So fix this
+type to u64.
 
-Right, these two tracepoints would not provide an accurate measurement
-for the that time. But as we discussed, we can use this in combination
-with other events to acquire such measurements.
+Fixes: 76d287b2342e ("KVM: x86/pmu: Drop "u8 ctrl, int idx" for reprogram_fixed_counter()")
+Signed-off-by: Mingwei Zhang <mizhang@google.com>
+---
+ arch/x86/kvm/vmx/pmu_intel.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> >   	mutex_unlock(&qmp->tx_lock);
-> >   	return ret;
-> > diff --git a/drivers/soc/qcom/trace-aoss.h b/drivers/soc/qcom/trace-aoss.h
-> > new file mode 100644
-> > index 000000000000..48cd3f0f4cb8
-> > --- /dev/null
-> > +++ b/drivers/soc/qcom/trace-aoss.h
-> > @@ -0,0 +1,48 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Copyright (c) 2024 Qualcomm Innovation Center, Inc. All rights reserved.
-> > + */
-> > +
-> > +#undef TRACE_SYSTEM
-> > +#define TRACE_SYSTEM qcom_aoss
-> > +
-> > +#if !defined(_TRACE_RPMH_H) || defined(TRACE_HEADER_MULTI_READ)
-> > +#define _TRACE_RPMH_H
-> 
-> Any Reason for this to be _TRACE_RPMH_H instead of _TRACE_AOSS_H?
-> 
+diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+index a6216c874729..315c7c2ba89b 100644
+--- a/arch/x86/kvm/vmx/pmu_intel.c
++++ b/arch/x86/kvm/vmx/pmu_intel.c
+@@ -71,7 +71,7 @@ static int fixed_pmc_events[] = {
+ static void reprogram_fixed_counters(struct kvm_pmu *pmu, u64 data)
+ {
+ 	struct kvm_pmc *pmc;
+-	u8 old_fixed_ctr_ctrl = pmu->fixed_ctr_ctrl;
++	u64 old_fixed_ctr_ctrl = pmu->fixed_ctr_ctrl;
+ 	int i;
+ 
+ 	pmu->fixed_ctr_ctrl = data;
 
-That's what copy-paste gave me... Thanks for spotting that!
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+-- 
+2.43.0.429.g432eaa2c6b-goog
 
-Regards,
-Bjorn
 
