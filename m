@@ -1,236 +1,156 @@
-Return-Path: <linux-kernel+bounces-34731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34732-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 670228386D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 06:44:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DECB58386DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 06:46:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E30901F21F5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 05:43:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FD171F2389F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 05:46:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6072442F;
-	Tue, 23 Jan 2024 05:43:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gCZd2P1q"
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64F8D610E;
-	Tue, 23 Jan 2024 05:43:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F5674432;
+	Tue, 23 Jan 2024 05:46:31 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 495D95225;
+	Tue, 23 Jan 2024 05:46:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705988626; cv=none; b=noLhdHeB2qrBitzFScL5tdHqcfBiIge4sK/v1kRx3kiNUbSXsarU9yvL+/osmSxQiqEkZKmI+ImcnyC0LO0OqMlmPcWWryRh8RqTgGl3wL4kVvUROW5nGr6Kexmo304Ob9BmFe96rhy6yLuhTdNjn8VBO8FZ8tRMdudrfymf7i0=
+	t=1705988791; cv=none; b=jozp6N31wgzdsBVVspz+tGwxQHKVchIFI7YumogMKUjxo3wNeX/fyy3yJ3Z+yPHFXP2U59FF4r0bX1C2PM9s/bB9wDoJaBOSXww8rWUTFVNt6SvdALjGEXjakZuU1EFOkgapfV7Ng/UPRl4PMkKZfjrBFPodmDUqm/xpe5dRW8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705988626; c=relaxed/simple;
-	bh=7rGHj9r3OXJL07yNpi61MkOCzh1FvjG8lj3vqTCI+SM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VNEuUtE4FjAUCAGDToBxE+aOQuFzkiskgPij+puvPc2ai7/7lHac0ThgTbkZwuE3Ict8XPBliGWkxmixdYYWXBktEf7Vj703NYPm+1TWfIB3V7pZe0+GwuBUCrOSOJ5fuyc0YT8972hZtFTuqQmtlDErr93fpvNAnPafzr/BaRQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gCZd2P1q; arc=none smtp.client-ip=209.85.216.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-290b9f83037so834887a91.1;
-        Mon, 22 Jan 2024 21:43:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705988625; x=1706593425; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AuovRQjx7d71L1ULwmEIz7mlWHd8R7QHzO34D3ThGeY=;
-        b=gCZd2P1qWCzjCQ6SGE5wcBHzqz7subo5zf/zCJuvXsPCV0bTd5YQTWuYZcpicA1VkC
-         /qS9SJv0yPGR2+C+Ml/KQWDJGfstIFqHeMxctHMVoUAsJjTNZGYPGvI9fDSEJmzroJt5
-         W8IwajDpoMn70jhs6jqe6AsgqmvtkILJzH1Wzr3Mx4xSL/xk291205vppfq+tlxkknKF
-         BxSS1e+u1A8b5e1F9QvRr52Lk9yJfeF5nejVTIf742AmbHqAWhUE7/MxNpa+nuhV9Tzg
-         iTVkTtFj8IEKjWI796/RoufakI32/pf9podI/NiTi8LHkzTmTp7YBGxMzqCYcoa/k8nl
-         cYaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705988625; x=1706593425;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AuovRQjx7d71L1ULwmEIz7mlWHd8R7QHzO34D3ThGeY=;
-        b=rlLOH7UleX85vby9hHBf8daVOcUd6im3SwcoHMOtPnhy5Hxgwu+pFtfeJuo0gbB5i1
-         En3RMalwnUNoa3nddnlLgMTFvo/Oe+SERB3W6eykxc4gp7bodWWc4UWhL4/IvgzQIs1z
-         UbQrCTMivcdygoX72hmpVVmc9BiZ9LMipZZnaj7FegdEs4lPew0tZUfgpugvWBRhODLm
-         bROqiVZYnr/ARRFDwNnoR08UroVHCPSGrff/0li4CC9iRuAijSalgzZwtL2RIeoNx1zx
-         BlKr836Y4Kac+LEZz2M2qYKUVOFQTC71owmlDQN1iLtCJiR7J6iH0Du5Lgsa48+itdbB
-         MqYg==
-X-Gm-Message-State: AOJu0YzHXGQ3oO94zTJtRZZ8nlndX7OCaYGefpHN93GbI+OrAkkujfsw
-	HXbwzorGMOe3AsUPqddTfrJ4C3RWVK6YrywiSaGRNddlmHZ4QSgs6hHsT9xTB1ybyoy4GcX0d0o
-	OnKyQOGtUKWAPWyCGA9jHOyqQB68=
-X-Google-Smtp-Source: AGHT+IEXUaDidFghYUnWcJpAOGf8GFGtYpk0jNWNdlFlwcsv+0JMDDc5RlHGVi+IG2fPEqGTCINRiIYKXhAdCOJTTz4=
-X-Received: by 2002:a17:90a:1041:b0:290:2405:aee7 with SMTP id
- y1-20020a17090a104100b002902405aee7mr8514741pjd.11.1705988624603; Mon, 22 Jan
- 2024 21:43:44 -0800 (PST)
+	s=arc-20240116; t=1705988791; c=relaxed/simple;
+	bh=I5/7kgG0RHIfM6JTMemznuMv1VkSOat4HzAutMg0TrU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=uZWvDPeeQHQDI05bRnZ3chTSzArYfT9WR/D0+rf2oFTkmm5P+wdOjabHR03o7rEethhiJGSYfqU9o9cg+NN2irsizZVRSgbIaPVyXpII42rxM4xSAHeheZVgRDXh0P5KxtuAKfgfxDgdKUYzQwBju6AuYFu1O08Iov6+R09xl8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EB5D51FB;
+	Mon, 22 Jan 2024 21:47:12 -0800 (PST)
+Received: from a077893.arm.com (unknown [10.163.40.228])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 8CBB63F762;
+	Mon, 22 Jan 2024 21:46:22 -0800 (PST)
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+To: linux-arm-kernel@lists.infradead.org,
+	suzuki.poulose@arm.com
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Mike Leach <mike.leach@linaro.org>,
+	James Clark <james.clark@arm.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	coresight@lists.linaro.org,
+	linux-stm32@st-md-mailman.stormreply.com
+Subject: [PATCH V4 00/11] coresight: Move remaining AMBA ACPI devices into platform driver
+Date: Tue, 23 Jan 2024 11:15:57 +0530
+Message-Id: <20240123054608.1790189-1-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122075700.7120-1-yangtiezhu@loongson.cn> <20240122075700.7120-4-yangtiezhu@loongson.cn>
- <CAEf4Bzaj=W3tUbfKRbQ3JgYqXimthVOs9uvmj4YxkbDhE3v0SA@mail.gmail.com> <15c4c8b2-9561-37b9-91d9-ce4ec76537e4@loongson.cn>
-In-Reply-To: <15c4c8b2-9561-37b9-91d9-ce4ec76537e4@loongson.cn>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 22 Jan 2024 21:43:32 -0800
-Message-ID: <CAEf4BzZuMJ7gsRLL03irRrMH6DAO-NsvQoiYrfV4Ga_3hJUMWA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 3/3] selftests/bpf: Skip callback tests if jit
- is disabled in test_verifier
-To: Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Hou Tao <houtao@huaweicloud.com>, Song Liu <song@kernel.org>, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jan 22, 2024 at 7:35=E2=80=AFPM Tiezhu Yang <yangtiezhu@loongson.cn=
-> wrote:
->
->
->
-> On 01/23/2024 09:08 AM, Andrii Nakryiko wrote:
-> > On Sun, Jan 21, 2024 at 11:57=E2=80=AFPM Tiezhu Yang <yangtiezhu@loongs=
-on.cn> wrote:
-> >>
-> >> If CONFIG_BPF_JIT_ALWAYS_ON is not set and bpf_jit_enable is 0, there
-> >> exist 6 failed tests.
->
-> ...
->
-> >>         if (expected_ret =3D=3D ACCEPT || expected_ret =3D=3D VERBOSE_=
-ACCEPT) {
-> >> +               if (fd_prog < 0 && saved_errno =3D=3D EINVAL && jit_di=
-sabled) {
-> >> +                       for (i =3D 0; i < prog_len; i++, prog++) {
-> >> +                               if (!insn_is_pseudo_func(prog))
-> >> +                                       continue;
-> >> +                               printf("SKIP (callbacks are not allowe=
-d in non-JITed programs)\n");
-> >> +                               skips++;
-> >> +                               goto close_fds;
-> >> +                       }
-> >> +               }
-> >
-> > Wouldn't it be better to add an explicit flag to those tests to mark
-> > that they require JIT enabled, instead of trying to derive this from
-> > analysing their BPF instructions?
->
-> Maybe something like this, add test flag F_NEEDS_JIT_ENABLED in
-> bpf_loop_inline.c, check the flag and jit_disabled at the beginning
-> of do_test_single(), no need to check fd_prog, saved_errno and the other
-> conditions, the patch #2 can be removed too.
->
-> If you are OK with the following changes, I will send v7 later.
->
+This moves remaining AMBA ACPI devices into respective platform drivers for
+enabling ACPI based power management support. This series applies on kernel
+v6.8-rc1 release. This series has been built, and boot tested on a DT based
+coresight platform. Although this still requires some more testing on ACPI
+based coresight platforms.
 
-Yes, I think this approach is much better, thanks.
+https://git.gitlab.arm.com/linux-arm/linux-anshuman.git (amba_other_acpi_migration_v4)
 
-> ----->8-----
->
-> diff --git a/tools/testing/selftests/bpf/test_verifier.c
-> b/tools/testing/selftests/bpf/test_verifier.c
-> index 1a09fc34d093..c65915188d7c 100644
-> --- a/tools/testing/selftests/bpf/test_verifier.c
-> +++ b/tools/testing/selftests/bpf/test_verifier.c
-> @@ -67,6 +67,7 @@
->
->   #define F_NEEDS_EFFICIENT_UNALIGNED_ACCESS     (1 << 0)
->   #define F_LOAD_WITH_STRICT_ALIGNMENT           (1 << 1)
-> +#define F_NEEDS_JIT_ENABLED                    (1 << 2)
->
->   /* need CAP_BPF, CAP_NET_ADMIN, CAP_PERFMON to load progs */
->   #define ADMIN_CAPS (1ULL << CAP_NET_ADMIN |    \
-> @@ -74,6 +75,7 @@
->                      1ULL << CAP_BPF)
->   #define UNPRIV_SYSCTL "kernel/unprivileged_bpf_disabled"
->   static bool unpriv_disabled =3D false;
-> +static bool jit_disabled;
->   static int skips;
->   static bool verbose =3D false;
->   static int verif_log_level =3D 0;
-> @@ -1524,6 +1526,13 @@ static void do_test_single(struct bpf_test *test,
-> bool unpriv,
->          __u32 pflags;
->          int i, err;
->
-> +       if ((test->flags & F_NEEDS_JIT_ENABLED) && jit_disabled) {
-> +               printf("SKIP (callbacks are not allowed in non-JITed
-> programs)\n");
-> +               skips++;
-> +               sched_yield();
-> +               return;
-> +       }
-> +
->          fd_prog =3D -1;
->          for (i =3D 0; i < MAX_NR_MAPS; i++)
->                  map_fds[i] =3D -1;
-> @@ -1844,6 +1853,8 @@ int main(int argc, char **argv)
->                  return EXIT_FAILURE;
->          }
->
-> +       jit_disabled =3D !is_jit_enabled();
-> +
->          /* Use libbpf 1.0 API mode */
->          libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
->
-> diff --git a/tools/testing/selftests/bpf/verifier/bpf_loop_inline.c
-> b/tools/testing/selftests/bpf/verifier/bpf_loop_inline.c
-> index a535d41dc20d..59125b22ae39 100644
-> --- a/tools/testing/selftests/bpf/verifier/bpf_loop_inline.c
-> +++ b/tools/testing/selftests/bpf/verifier/bpf_loop_inline.c
-> @@ -57,6 +57,7 @@
->          .expected_insns =3D { PSEUDO_CALL_INSN() },
->          .unexpected_insns =3D { HELPER_CALL_INSN() },
->          .prog_type =3D BPF_PROG_TYPE_TRACEPOINT,
-> +       .flags =3D F_NEEDS_JIT_ENABLED,
->          .result =3D ACCEPT,
->          .runs =3D 0,
->          .func_info =3D { { 0, MAIN_TYPE }, { 12, CALLBACK_TYPE } },
-> @@ -90,6 +91,7 @@
->          .expected_insns =3D { HELPER_CALL_INSN() },
->          .unexpected_insns =3D { PSEUDO_CALL_INSN() },
->          .prog_type =3D BPF_PROG_TYPE_TRACEPOINT,
-> +       .flags =3D F_NEEDS_JIT_ENABLED,
->          .result =3D ACCEPT,
->          .runs =3D 0,
->          .func_info =3D { { 0, MAIN_TYPE }, { 16, CALLBACK_TYPE } },
-> @@ -127,6 +129,7 @@
->          .expected_insns =3D { HELPER_CALL_INSN() },
->          .unexpected_insns =3D { PSEUDO_CALL_INSN() },
->          .prog_type =3D BPF_PROG_TYPE_TRACEPOINT,
-> +       .flags =3D F_NEEDS_JIT_ENABLED,
->          .result =3D ACCEPT,
->          .runs =3D 0,
->          .func_info =3D {
-> @@ -165,6 +168,7 @@
->          .expected_insns =3D { PSEUDO_CALL_INSN() },
->          .unexpected_insns =3D { HELPER_CALL_INSN() },
->          .prog_type =3D BPF_PROG_TYPE_TRACEPOINT,
-> +       .flags =3D F_NEEDS_JIT_ENABLED,
->          .result =3D ACCEPT,
->          .runs =3D 0,
->          .func_info =3D {
-> @@ -235,6 +239,7 @@
->          },
->          .unexpected_insns =3D { HELPER_CALL_INSN() },
->          .prog_type =3D BPF_PROG_TYPE_TRACEPOINT,
-> +       .flags =3D F_NEEDS_JIT_ENABLED,
->          .result =3D ACCEPT,
->          .func_info =3D {
->                  { 0, MAIN_TYPE },
-> @@ -252,6 +257,7 @@
->          .unexpected_insns =3D { HELPER_CALL_INSN() },
->          .result =3D ACCEPT,
->          .prog_type =3D BPF_PROG_TYPE_TRACEPOINT,
-> +       .flags =3D F_NEEDS_JIT_ENABLED,
->          .func_info =3D { { 0, MAIN_TYPE }, { 16, CALLBACK_TYPE } },
->          .func_info_cnt =3D 2,
->          BTF_TYPES
->
-> Thanks,
-> Tiezhu
->
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc: Sudeep Holla <sudeep.holla@arm.com>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: Mike Leach <mike.leach@linaro.org>
+Cc: James Clark <james.clark@arm.com>
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: linux-acpi@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Cc: coresight@lists.linaro.org
+Cc: linux-stm32@st-md-mailman.stormreply.com
+
+Changes in V4:
+
+- Fixed PM imbalance in etm4_probe() error path with pm_runtime_disable()
+- Restored back the pm_runtime_disable() on platform probe error paths
+  in replicator, funnel, catu, tpiu, tmc and stm devices
+- Dropped dev_caps argument from __tmc_probe()
+- Changed xxxx_platform_remove() for platform_driver->remove_new() callback
+
+Changes in V3:
+
+https://lore.kernel.org/all/20231208053939.42901-1-anshuman.khandual@arm.com/
+
+- Split coresight_init_driver/remove_driver() helpers into a separate patch
+- Added 'drvdata->pclk' comments in replicator, funnel, tpiu, tmc, and stm devices
+- Updated funnel, and replicator drivers to use these new helpers
+- Check for drvdata instead of drvdata->pclk in suspend and resume paths in catu,
+  tmc and debug devices
+- Added patch to extract device name from AMBA pid based table lookup for stm
+- Added patch to extract device properties from AMBA pid based table look for tmc
+- Dropped pm_runtime_put() from common __probe() functions
+- Handled pm_runtime_put() in AMBA driver in success path
+- Handled pm_runtime_put() in platform driver in both success and error paths
+
+Changes in V2:
+
+https://lore.kernel.org/all/20231201062053.1268492-1-anshuman.khandual@arm.com/
+
+- Dropped redundant devm_ioremap_resource() hunk from tmc_platform_probe()
+- Defined coresight_[init|remove]_driver() for both AMBA/platform drivers
+- Changed catu, tmc, tpiu, stm and debug coresight drivers to use the new
+  helpers avoiding build issues arising from module_amba_driver(), and
+  module_platform_driver() being on the same file
+
+Changes in V1:
+
+https://lore.kernel.org/all/20231027072943.3418997-1-anshuman.khandual@arm.com/
+
+- Replaced all IS_ERR() instances with IS_ERR_OR_NULL() as per Suzuki
+
+Changes in RFC:
+
+https://lore.kernel.org/all/20230921042040.1334641-1-anshuman.khandual@arm.com/
+
+Anshuman Khandual (11):
+  coresight: etm4x: Fix unbalanced pm_runtime_enable()
+  coresight: stm: Extract device name from AMBA pid based table lookup
+  coresight: tmc: Extract device properties from AMBA pid based table lookup
+  coresight: Add helpers registering/removing both AMBA and platform drivers
+  coresight: replicator: Move ACPI support from AMBA driver to platform driver
+  coresight: funnel: Move ACPI support from AMBA driver to platform driver
+  coresight: catu: Move ACPI support from AMBA driver to platform driver
+  coresight: tpiu: Move ACPI support from AMBA driver to platform driver
+  coresight: tmc: Move ACPI support from AMBA driver to platform driver
+  coresight: stm: Move ACPI support from AMBA driver to platform driver
+  coresight: debug: Move ACPI support from AMBA driver to platform driver
+
+ drivers/acpi/arm64/amba.c                     |   8 -
+ drivers/hwtracing/coresight/coresight-catu.c  | 142 +++++++++++++---
+ drivers/hwtracing/coresight/coresight-catu.h  |   1 +
+ drivers/hwtracing/coresight/coresight-core.c  |  29 ++++
+ .../hwtracing/coresight/coresight-cpu-debug.c | 141 ++++++++++++++--
+ .../coresight/coresight-etm4x-core.c          |   3 +
+ .../hwtracing/coresight/coresight-funnel.c    |  86 +++++-----
+ drivers/hwtracing/coresight/coresight-priv.h  |  10 ++
+ .../coresight/coresight-replicator.c          |  81 ++++-----
+ drivers/hwtracing/coresight/coresight-stm.c   | 117 +++++++++++--
+ .../hwtracing/coresight/coresight-tmc-core.c  | 158 +++++++++++++++---
+ drivers/hwtracing/coresight/coresight-tmc.h   |   2 +
+ drivers/hwtracing/coresight/coresight-tpiu.c  | 102 +++++++++--
+ include/linux/coresight.h                     |   7 +
+ 14 files changed, 726 insertions(+), 161 deletions(-)
+
+-- 
+2.25.1
+
 
