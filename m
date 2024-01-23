@@ -1,177 +1,112 @@
-Return-Path: <linux-kernel+bounces-35407-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35409-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8C3F839081
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:53:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50A5983908C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:55:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64BCE1F22E27
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:53:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A30A28D179
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:55:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 611F15FDAD;
-	Tue, 23 Jan 2024 13:52:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEB0F5F842;
+	Tue, 23 Jan 2024 13:53:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="IboYbwOi";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Kko701xO"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LibUh6Yz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D859D5F565;
-	Tue, 23 Jan 2024 13:52:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BBE35F571;
+	Tue, 23 Jan 2024 13:53:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706017972; cv=none; b=P4jPLMZeRsvl+gluesFuCvXrkGPyTDTnuJo+oxhFg8u215qlBdte5iYrLkLIsF7Y5rvqAgAcd6jMWk6HjA591kgJjbnopP71enIp4BJyo+fSg6mK1iPXQ0FwNculpPcUxFjxPVLwasTzAwT66/AhWZ6lhxzcZS8R3wuvIyzp+HI=
+	t=1706018032; cv=none; b=rN2EJP58E2kK5U9x8q5Tv7+uMB/yFm1NSoxx744BAXIRICW3MZN2mBdXjO1cCIHE9DX+5AZj+AWJFDpz1Uz4I4NsH6csPxtv4WyQ0cfR6V5wWKiG6efnCgo4F9m+BG3xlf/mONU8+7sNFSzCHRstx0OCsdZXdsOiB+kDs44jkRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706017972; c=relaxed/simple;
-	bh=pISfP3Hzv5P7bazKFw8x24gFRtSxfRqfs11zSQ5Dbys=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gfywlABQO+5rtjm5fmJjNQyoRAZzVDbx5Pv/O3XwB+kEas1sGG48EdjfgqMiEtk6cangY+lfDKwAimzM4GvVKwAJu5cAU4p5T4G+pibTyl0VUQR0aJ2MlRvvaeeFdTZuNe+f61rKzO/bc2JuIx+LVGSVO9QaYJ9tRTLt0xt7KN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=IboYbwOi; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Kko701xO; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 22DEC1FD52;
-	Tue, 23 Jan 2024 13:52:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706017968; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IUKCAfTVoUrxB4zijGrDV9tJzwRsfCTR6KHiqfmXiK8=;
-	b=IboYbwOiqlbaX2wd0HmSqCbYgYrOKSDteGasFw296lSHkEyhATr/cH9zoRtqXElPiGxbnR
-	HxfNiJztorKYwBEJVT7yUSaSpkc9OlVcIU3hEEogrevpfSOJ3zHkMrxkVzRqlKuxR9qNdQ
-	RuaXoz0uAlp40FjCZCgIpHdkvQ8jt9k=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706017967; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IUKCAfTVoUrxB4zijGrDV9tJzwRsfCTR6KHiqfmXiK8=;
-	b=Kko701xOZnUWqfDnlanF9u3rpQaVvN8IRdddv5a6v07dZ/hUHjSJS0D6Bjwno5Ui+ppHgb
-	osLwB01sY//O1VtfadNso6aoj9X5Fk+0R+egC/CyYSt040mF+sLFqYf5bMLssnnldLmVQl
-	0ARVwqFMvYvdbf8Xzb9sSXOMj0FxLz8=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 04C62139B9;
-	Tue, 23 Jan 2024 13:52:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8KICAa/Er2UMVwAAD6G6ig
-	(envelope-from <mkoutny@suse.com>); Tue, 23 Jan 2024 13:52:47 +0000
-From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-To: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	cake@lists.bufferbloat.net
-Cc: "David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Jamal Hadi Salim <jhs@mojatatu.com>,
-	Cong Wang <xiyou.wangcong@gmail.com>,
-	Jiri Pirko <jiri@resnulli.us>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
-	Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-	Stephen Hemminger <stephen@networkplumber.org>,
-	Petr Pavlu <ppavlu@suse.cz>,
-	Michal Kubecek <mkubecek@suse.cz>,
-	Martin Wilck <mwilck@suse.com>,
-	Pedro Tammela <pctammela@mojatatu.com>
-Subject: [PATCH v4 4/4] net/sched: Remove alias of sch_clsact
-Date: Tue, 23 Jan 2024 14:52:42 +0100
-Message-ID: <20240123135242.11430-5-mkoutny@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240123135242.11430-1-mkoutny@suse.com>
-References: <20240123135242.11430-1-mkoutny@suse.com>
+	s=arc-20240116; t=1706018032; c=relaxed/simple;
+	bh=lHE5qALm5p12AB5xvDSRbe8fy7YDuNGo659MXcjmjg0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FHUr3vtv4H0XbANQH1A/A2gz/j+rz2UuTtuoym8vc5W1rFYE9AxHgRaOZ8chZ4XQa0QjRKviBO8umHuVoqSjshLApIxgKS6XJ5cTnRYJ+zlJdi2vd+1CniIU+kHXN5mjFih3rfMFPV90pHMghDcWmB9SrC/IZKa6/+euh9QllLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LibUh6Yz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDF38C43394;
+	Tue, 23 Jan 2024 13:53:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706018031;
+	bh=lHE5qALm5p12AB5xvDSRbe8fy7YDuNGo659MXcjmjg0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=LibUh6YzFkdUMB5x2vFIMHn5ljzZklpQUEiBWgYGgCLS0iN+7E9H71pJJUTuv5v24
+	 XktRUEpqulVCDQuLbUYwyHbKqRUkzsJ6EvqDBJLMUYicLRjtN3PTO2iPxcHKPuE9NT
+	 /mi6gbNT+CZepyR04uxdX1R0Qz3/oap2nrbrMNGUYiSwbX5IkJCZUhlJN1jadvgi6l
+	 wwx5DaglOxbrBFGyBdoMkNleEfepDSIeBJtxJaUsNxYpFZR/yGrOQBClykVKwTwsaZ
+	 WFZGhKW8pgTMb7JKk9RMA7qvTqPtHZIqsjaC0eixb4XeTDfRe+3kIc/S/1Rruxfyew
+	 hv2PShG0Npm4Q==
+Date: Tue, 23 Jan 2024 13:53:46 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Herve Codina <herve.codina@bootlin.com>,
+	Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
+	Guenter Roeck <linux@roeck-us.net>,
+	"linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH] spi: Raise limit on number of chip selects
+Message-ID: <49b52941-6205-48bd-b2ae-e334018ac5cd@sirena.org.uk>
+References: <20240122-spi-multi-cs-max-v1-1-a7e98cd5f6c7@kernel.org>
+ <20240123120430.75c7ace0@bootlin.com>
+ <cefafa30-b78d-471b-83e0-b05060d806d4@sirena.org.uk>
+ <93385fc2-7596-4f66-b0c1-07d7d5c9ed8d@csgroup.eu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=Kko701xO
-X-Spamd-Result: default: False [2.02 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 DWL_DNSWL_BLOCKED(0.00)[suse.com:dkim];
-	 R_RATELIMIT(0.00)[to_ip_from(RLhcw5w5rtick65589d1tggrs1)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.17)[69.66%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWELVE(0.00)[29];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[davemloft.net,google.com,kernel.org,redhat.com,mojatatu.com,gmail.com,resnulli.us,iogearbox.net,linux.dev,toke.dk,intel.com,networkplumber.org,suse.cz,suse.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 2.02
-X-Rspamd-Queue-Id: 22DEC1FD52
-X-Spam-Level: **
-X-Spam-Flag: NO
-X-Spamd-Bar: ++
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ksPexoEfm+2lrFiK"
+Content-Disposition: inline
+In-Reply-To: <93385fc2-7596-4f66-b0c1-07d7d5c9ed8d@csgroup.eu>
+X-Cookie: Stay together, drag each other down.
 
-The module sch_ingress stands out among net/sched modules
-because it provides multiple act/sch functionalities in a single .ko.
-They have aliases to make autoloading work for any of the provided
-functionalities.
 
-Since the autoloading was changed to uniformly request any functionality
-under its alias, the non-systemic aliases can be removed now (i.e.
-assuming the alias were only used to ensure autoloading).
+--ksPexoEfm+2lrFiK
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Michal Koutný <mkoutny@suse.com>
----
- net/sched/sch_ingress.c | 1 -
- 1 file changed, 1 deletion(-)
+On Tue, Jan 23, 2024 at 01:26:04PM +0000, Christophe Leroy wrote:
+> Le 23/01/2024 =E0 14:18, Mark Brown a =E9crit=A0:
+> > On Tue, Jan 23, 2024 at 12:04:30PM +0100, Herve Codina wrote:
 
-diff --git a/net/sched/sch_ingress.c b/net/sched/sch_ingress.c
-index 48a800131e99..c2ef9dcf91d2 100644
---- a/net/sched/sch_ingress.c
-+++ b/net/sched/sch_ingress.c
-@@ -370,6 +370,5 @@ static void __exit ingress_module_exit(void)
- module_init(ingress_module_init);
- module_exit(ingress_module_exit);
- 
--MODULE_ALIAS("sch_clsact");
- MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("Ingress and clsact based ingress and egress qdiscs");
--- 
-2.43.0
+> >> Moving the SPI_CS_CNT_MAX value from 4 to 8 is not enough to handle my=
+ case.
+> >> Tested moving SPI_CS_CNT_MAX to 16 and it was ok.
 
+> > OK, I've also heard 12 as a number which this would cover.
+
+> By the way the comment in include/linux/spi/spi.h is confusing. This=20
+> SPI_CS_CNT_MAX is really not the max number of CS supported per SPI=20
+> device but the max number of CS supported per SPI controller.
+
+Well, it's a combination of the comment being confusing and the
+implementation being a bit broken - we simply shouldn't be limiting the
+number of chip selects per controller, the per device limit is much more
+reasonable.  So ideally the code would be changed to reflect the
+comment.
+
+--ksPexoEfm+2lrFiK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWvxOkACgkQJNaLcl1U
+h9DsFgf/QUPZ739YoVwE9AXX/Fu7c+/pK0+faTgklg4rcrPdwL4KfG2hDxeSCIgO
+VrIS2x9/tHUAm8Ghk7K5gh8CT8QpNm999loqbnAir3W0NUc2maVrLhXq7CLheFD8
+qL4RXybqiojosu1HFZdmJTK7K+qgMxJ4sxXGc+yBk2Eh+wN7SBI5UH8YX7oLMoGx
++bUYOZ6PV52rx8ZxUp2t4AOk8y6lmeWv9aDvkkTl7mTk733N21TjOHvT9QIolcyM
+WPK3SZ6/8WNu52LOFkkf2QeXrhAQ52jeiI1MXaKSfv9U0MxTG8074g6YiiBNzm4A
+7GzfXCbs1EXXZ6Zs2feBR2DLcTSqFA==
+=zIhb
+-----END PGP SIGNATURE-----
+
+--ksPexoEfm+2lrFiK--
 
