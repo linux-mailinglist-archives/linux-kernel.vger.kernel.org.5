@@ -1,142 +1,233 @@
-Return-Path: <linux-kernel+bounces-35149-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35150-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09580838CDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:04:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BF6F838CDF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:05:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B56B628C6DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:04:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 39CD01C24CF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:05:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AFB95FB96;
-	Tue, 23 Jan 2024 11:02:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE7185D735;
+	Tue, 23 Jan 2024 11:02:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Mc3kA+i+"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ePlJqPGY"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 213325F842
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 11:02:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DF845FDD4
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 11:02:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706007729; cv=none; b=MebMUXfRluLhxE4PyMJ8vRyL91S74gXWsT/qVQr9DrRc9g7H1V4hue39kCzqJLQP2pm4pxoIcNpwhkgwNv1rE5DXzSf2VF2waSiq66fJcDfNM0YFyd/AoEp1g/mCulaw8KRP5OIzVhEGHpBdUiikju2kIBFVIDFhigzZ/KQIOxg=
+	t=1706007750; cv=none; b=ea3hfyJTsiQz/k9F2bYTFVxwJ7/tPu7sxRw/3mQ85KLxS5XkbWdf1iWAakXza4mEEkfbgJgfNZN/ioSNxBd7Hzg0ZTJor4VofEUNV6PO92GliStSj/9aesb1d7EHCtq0GWbFmfLGb7KIkvUwYpgjxJ5WDkjGFmMPp96I3VTjqvk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706007729; c=relaxed/simple;
-	bh=DRJb0q1Zs5m9FHxncMp+WtocUGeWENIn4hFZ3jMpbf4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=R3gMYuS95Z43GYDrQ8f3HxFkvMN87pmh1+KvCG7oPdjtNVj02R298KsHNjwXNwYo4WMNrxM2U2YMlGPj2NRoF4gtMXR20IYmeWIrD7dLklPxXbmAX+EQ2AMMVk/dG65d97v64ROiaZuWQbXKeZvcuqH6n1D2WqVjiPOk0/FCBGw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Mc3kA+i+; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-558f523c072so4854267a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 03:02:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706007726; x=1706612526; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HQ/D28R0YKKKC1gDIsfGpJEeUBBXOwP0F91BqOnJzCc=;
-        b=Mc3kA+i+nrMXCzs1IArxoLT1jBHBqYrn+Hr2n6vdCy0l3nBKcZWYkI2tsbk21gW09n
-         2DKXleG6T0ziUsNvb/OJp3NRiaONy5cx5pXpGrZD3+8f77s8SMCq37jTtLljzNehnnvV
-         jfEa812qPC5JCyF6DyndkWF76sMmXUIFFZhDMSqsBTbV2mwC3oDKLUyTDvLJRPk7jXLQ
-         x7Z+eOd6HFPMImCXLlQ8dwCPRfoGVV4R3PJJwsIeP5pC46mjRKwYgYOWZEN1MpPxvmKQ
-         RzbNzk41w03+9fek3sS53vNUUKFxE7RGlxpR+90rAN7P+/reubhjcrGUuQXc9cevHZf2
-         Yg8w==
+	s=arc-20240116; t=1706007750; c=relaxed/simple;
+	bh=xHRjbHljsfKs8v3osVXO5LAvQqCgJMdWACPEiozXZhY=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=d574BXn9r0jwcXphDQYbrEc+vkfYLaFvCTHWYnWYi56x/0iFCaoieONmhTsN696fnKKL7gTl1IKAwZkx7jNv+L2H0yYaEnl0WuboCcdep+vYaEYRErMTUi6uS99h5QkrcnAivf1zTm7BKslhP5/f/J17jRtqfTDpvaH0Xoqh0B8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ePlJqPGY; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706007746;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=ADeVdxuyk9aWMHIaHDhLLOZKsBVve1swb6NJsYgtkms=;
+	b=ePlJqPGYz/m7vS8MDxjtAlatpqc0hNiJtB+SeZTgkLQL4lH6AmFGey2gA4tQ/Ji9s2dwL5
+	lF/gfKqJbE1FXFqBU6kBx57lmcgfas6KxPSahYGsCkHfZSu0W2m1lSMcosl7nlTjUJAczk
+	uugZiVPDoB0BnJyxSoDUsl0qhqzGE2Y=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-662-xPUpXbJSMeGyiWdAv0r_ZA-1; Tue, 23 Jan 2024 06:02:24 -0500
+X-MC-Unique: xPUpXbJSMeGyiWdAv0r_ZA-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40e4f70af99so38394445e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 03:02:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706007726; x=1706612526;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HQ/D28R0YKKKC1gDIsfGpJEeUBBXOwP0F91BqOnJzCc=;
-        b=NZaMuyOknsi4sUIIU/H3azNohrmYzX6I5TunCU0IDSW295xtuEUJ3PAUJkxm+/hC1N
-         xQDVYvqAKf5O4hneePa+nwp7EqOxUC5a4t4L14/3UE0R8ibWZpStQino0VXTQok43xRa
-         grlY+6L5jPoeb8Tg8yxQUkF5IARmXDyYLtRg6JKMuuUBnUx+mCPswDmmii3szNo5IpxQ
-         Fjh+HH2GIsq/D/Lf1YFJH2Zx1KUn8ObTCw41kHTUj5KgZE3BhL+rbgppvSUY29SA3GIV
-         /2zxcnK3ECm60+zpQOzvK1Kr/xGsh/aT4LJZLun5e2mXFsYW4mBNQnGljpMlnmweypEm
-         d9iw==
-X-Gm-Message-State: AOJu0Yx25CLuVIOPGj8iFBbWz0fYND8seYDshDqALr5rUJRq31q8Qyp4
-	Q/SyD2EeTAC7qc8lySBSjRe9BzbQQBwAOosnbTYqHTwJ3PmD2fnkR2PuihPUjnE=
-X-Google-Smtp-Source: AGHT+IFWWqS8372HH7wb5qX1syXLHclPL2G8c1ikx7ZjkwZYpmvE3jXF+zH1+zpwV6q4Mao7jl3CiQ==
-X-Received: by 2002:a50:ed14:0:b0:553:2ce6:1447 with SMTP id j20-20020a50ed14000000b005532ce61447mr390037eds.34.1706007726408;
-        Tue, 23 Jan 2024 03:02:06 -0800 (PST)
-Received: from [127.0.1.1] ([79.115.23.25])
-        by smtp.gmail.com with ESMTPSA id fg7-20020a056402548700b005593c83bdafsm11430074edb.45.2024.01.23.03.02.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 03:02:06 -0800 (PST)
-From: Abel Vesa <abel.vesa@linaro.org>
-Date: Tue, 23 Jan 2024 13:01:25 +0200
-Subject: [PATCH v4 11/11] arm64: dts: qcom: x1e80100-qcp: Fix supplies for
- LDOs 3E and 2J
+        d=1e100.net; s=20230601; t=1706007743; x=1706612543;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:from:content-language:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ADeVdxuyk9aWMHIaHDhLLOZKsBVve1swb6NJsYgtkms=;
+        b=sRNXuG0UwDIplp36EMnJGWfEGB9jAtsdsWB+yQDjPPQ6/uvYhld/ps3C1HWRxpaNHM
+         G93WkH6LvWJZ2MlgnK9JdAge62mDTO4hSVB5OxALX4GrpSYQYig9DoB9kxk72sLkj7Dc
+         dzIhJc7X5mWtZv+cFweNzoeR3EXdaiIcyz4pVnrE7BSuCwzfRHQ3QQZbXKzQ/jqEDAbm
+         oD09W/hYOH5Cmw3d6P47NGNGEchT2d6iOpFOrV4sgmScjneDfX/cfbcaf4Wv+5wc9VHP
+         8KtyE50p0PvPDsaDxXUT80yqNal+slzAnUE86BAAubherJdqD49VddByuNh07oFUcequ
+         +fzA==
+X-Gm-Message-State: AOJu0YwPYPhMSE+fWyvLS/2GdGL8VtNywe8sKPHF0+dtpkc2PSfv5jce
+	BwZSSuvzwT3Ehw2bVbpB+TzZfwryg1lUjpCRx3OTUvd9AIcyU1LBMHskXLAeG3ioIFBC7l7UuYm
+	hRVCveFLn06bQdGte3lPCCAOcs1bTcfS6gntQQ/RW1MOplPkwHFjgf1L0wgqqcw==
+X-Received: by 2002:a7b:cb87:0:b0:40e:b2b2:d2 with SMTP id m7-20020a7bcb87000000b0040eb2b200d2mr6555wmi.134.1706007743549;
+        Tue, 23 Jan 2024 03:02:23 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF+tCfxmJ/19soGtVmtlIvjQMKvo21RHU0ZgsqtMZFvba5PNIEO7LEFpu0n7sRR1TY7GNTQEA==
+X-Received: by 2002:a7b:cb87:0:b0:40e:b2b2:d2 with SMTP id m7-20020a7bcb87000000b0040eb2b200d2mr6550wmi.134.1706007743076;
+        Tue, 23 Jan 2024 03:02:23 -0800 (PST)
+Received: from ?IPV6:2003:cb:c741:de00:bf0f:cd46:dc1c:2de9? (p200300cbc741de00bf0fcd46dc1c2de9.dip0.t-ipconnect.de. [2003:cb:c741:de00:bf0f:cd46:dc1c:2de9])
+        by smtp.gmail.com with ESMTPSA id fl21-20020a05600c0b9500b0040e9d507424sm15840531wmb.5.2024.01.23.03.02.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jan 2024 03:02:22 -0800 (PST)
+Message-ID: <02d42161-a867-424d-bef8-efd67d592cbc@redhat.com>
+Date: Tue, 23 Jan 2024 12:02:20 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 01/11] arm/pgtable: define PFN_PTE_SHIFT on arm and
+ arm64
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+To: Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
+ Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, "David S. Miller"
+ <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
+References: <20240122194200.381241-1-david@redhat.com>
+ <20240122194200.381241-2-david@redhat.com>
+ <fdaeb9a5-d890-499a-92c8-d171df43ad01@arm.com>
+ <46080ac1-7789-499b-b7f3-0231d7bd6de7@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <46080ac1-7789-499b-b7f3-0231d7bd6de7@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240123-x1e80100-dts-missing-nodes-v4-11-072dc2f5c153@linaro.org>
-References: <20240123-x1e80100-dts-missing-nodes-v4-0-072dc2f5c153@linaro.org>
-In-Reply-To: <20240123-x1e80100-dts-missing-nodes-v4-0-072dc2f5c153@linaro.org>
-To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Sibi Sankar <quic_sibis@quicinc.com>, 
- Rajendra Nayak <quic_rjendra@quicinc.com>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Abel Vesa <abel.vesa@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1044; i=abel.vesa@linaro.org;
- h=from:subject:message-id; bh=DRJb0q1Zs5m9FHxncMp+WtocUGeWENIn4hFZ3jMpbf4=;
- b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlr5ydtIofnJg/IfxCtIPZv5J6pSbBJyZ90spNS
- kXaNfMkArmJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZa+cnQAKCRAbX0TJAJUV
- Vmh3D/95FZM7aRFpnp6BP1fcHJPLA0qOi95fQsRIA59t5LwzJQw4SzC+VEl4HOhSGn5AowRFK05
- tvMsw74SD8fdQaokyU3Y9/nn8rXoav58YaAKwi/wck1gDa0QguJcJiUaqPC9iUQkkitC/rishoj
- ptfy5ZQ0FGDkOg4tP8d5TaNkSF1HLnp4HbRDXYnVTrGLIJmnqA1impmEnyODyULtEXg+99SKAz6
- OTtDThkrlcYgmhZaDyTRrzJEHzSQlWqNyvkNjpmE3OP/EDldfwNpNLus36lK6vYWiAnKho4Va/q
- fV9y5OLRDQZmw6TFzo0Io7mDn4I2LJYqbGpf9UYNSe22hFQAMOk2OmHAyGm9l/MY0kn+BKG/ETL
- nAy/xhYVAEcqYg0qiKHi1FWtm3m+YrSKVrD5D8xgvVTSAEEIns0llZsTcB42ivzOiw+Q7xnNrU/
- bk7tgMSUCN8fmU9H8bXb/TLpxgsE+yIyYxyGTI4zgzW+JrIzfpP1/2ajlzgtqIn1oOxE6l58toZ
- VbkGs8aUDdZd2MU86w2oLFkAMr6o4o/nze+fV0RIHT3yDFo0LZH6gt12nIkb5EBluOiYp3QjPYH
- YGI9Fxzy0N5w+86payCo87h+CKPRKwtrKCRq8fePnJS48+xyku2Z/gwFC6Py8gx7FmGLFeBp5y3
- +17gVSOap5hEJXg==
-X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
- fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 
-The LDOs 3E and 2J are actually supplied by SMPS 5J. Fix accordingly.
+On 23.01.24 11:48, David Hildenbrand wrote:
+> On 23.01.24 11:34, Ryan Roberts wrote:
+>> On 22/01/2024 19:41, David Hildenbrand wrote:
+>>> We want to make use of pte_next_pfn() outside of set_ptes(). Let's
+>>> simpliy define PFN_PTE_SHIFT, required by pte_next_pfn().
+>>>
+>>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>>> ---
+>>>    arch/arm/include/asm/pgtable.h   | 2 ++
+>>>    arch/arm64/include/asm/pgtable.h | 2 ++
+>>>    2 files changed, 4 insertions(+)
+>>>
+>>> diff --git a/arch/arm/include/asm/pgtable.h b/arch/arm/include/asm/pgtable.h
+>>> index d657b84b6bf70..be91e376df79e 100644
+>>> --- a/arch/arm/include/asm/pgtable.h
+>>> +++ b/arch/arm/include/asm/pgtable.h
+>>> @@ -209,6 +209,8 @@ static inline void __sync_icache_dcache(pte_t pteval)
+>>>    extern void __sync_icache_dcache(pte_t pteval);
+>>>    #endif
+>>>    
+>>> +#define PFN_PTE_SHIFT		PAGE_SHIFT
+>>> +
+>>>    void set_ptes(struct mm_struct *mm, unsigned long addr,
+>>>    		      pte_t *ptep, pte_t pteval, unsigned int nr);
+>>>    #define set_ptes set_ptes
+>>> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+>>> index 79ce70fbb751c..d4b3bd96e3304 100644
+>>> --- a/arch/arm64/include/asm/pgtable.h
+>>> +++ b/arch/arm64/include/asm/pgtable.h
+>>> @@ -341,6 +341,8 @@ static inline void __sync_cache_and_tags(pte_t pte, unsigned int nr_pages)
+>>>    		mte_sync_tags(pte, nr_pages);
+>>>    }
+>>>    
+>>> +#define PFN_PTE_SHIFT		PAGE_SHIFT
+>>
+>> I think this is buggy. And so is the arm64 implementation of set_ptes(). It
+>> works fine for 48-bit output address, but for 52-bit OAs, the high bits are not
+>> kept contigously, so if you happen to be setting a mapping for which the
+>> physical memory block straddles bit 48, this won't work.
+> 
+> Right, as soon as the PTE bits are not contiguous, this stops working,
+> just like set_ptes() would, which I used as orientation.
+> 
+>>
+>> Today, only the 64K base page config can support 52 bits, and for this,
+>> OA[51:48] are stored in PTE[15:12]. But 52 bits for 4K and 16K base pages is
+>> coming (hopefully v6.9) and in this case OA[51:50] are stored in PTE[9:8].
+>> Fortunately we already have helpers in arm64 to abstract this.
+>>
+>> So I think arm64 will want to define its own pte_next_pfn():
+>>
+>> #define pte_next_pfn pte_next_pfn
+>> static inline pte_t pte_next_pfn(pte_t pte)
+>> {
+>> 	return pfn_pte(pte_pfn(pte) + 1, pte_pgprot(pte));
+>> }
+>>
 
-Fixes: af16b00578a7 ("arm64: dts: qcom: Add base X1E80100 dtsi and the QCP dts")
-Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
----
- arch/arm64/boot/dts/qcom/x1e80100-qcp.dts | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Digging into the details, on arm64 we have:
 
-diff --git a/arch/arm64/boot/dts/qcom/x1e80100-qcp.dts b/arch/arm64/boot/dts/qcom/x1e80100-qcp.dts
-index 8dbf6d0eaac3..e76d29053d79 100644
---- a/arch/arm64/boot/dts/qcom/x1e80100-qcp.dts
-+++ b/arch/arm64/boot/dts/qcom/x1e80100-qcp.dts
-@@ -261,7 +261,7 @@ regulators-3 {
- 		qcom,pmic-id = "e";
- 
- 		vdd-l2-supply = <&vreg_s1f_0p7>;
--		vdd-l3-supply = <&vph_pwr>;
-+		vdd-l3-supply = <&vreg_s5j_1p2>;
- 
- 		vreg_l2e_0p8: ldo2 {
- 			regulator-name = "vreg_l2e_0p8";
-@@ -367,7 +367,7 @@ regulators-7 {
- 		qcom,pmic-id = "j";
- 
- 		vdd-l1-supply = <&vreg_s1f_0p7>;
--		vdd-l2-supply = <&vph_pwr>;
-+		vdd-l2-supply = <&vreg_s5j_1p2>;
- 		vdd-l3-supply = <&vreg_s1f_0p7>;
- 		vdd-s5-supply = <&vph_pwr>;
- 
+#define pte_pfn(pte)           (__pte_to_phys(pte) >> PAGE_SHIFT)
+
+and
+
+#define __pte_to_phys(pte)     (pte_val(pte) & PTE_ADDR_MASK)
+
+But that implies, that upstream the PFN is always contiguous, no?
 
 -- 
-2.34.1
+Cheers,
+
+David / dhildenb
 
 
