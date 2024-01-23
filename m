@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-36046-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36047-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3534839AAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:58:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7826839AAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:58:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94C2B1F2B907
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:58:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA84A287BDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:58:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BA7853BA;
-	Tue, 23 Jan 2024 20:58:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 530D42C681;
+	Tue, 23 Jan 2024 20:58:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T4iu9DrU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y8itH9+3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B42513ACC;
-	Tue, 23 Jan 2024 20:57:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C03D22062;
+	Tue, 23 Jan 2024 20:58:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706043480; cv=none; b=pRu8axL0szoyqUS6PSDODrHehxH6jGaGwrzahuQEAElc0ffY2VBfpE1JY1kM+GMUDgjByD2mHSb6hM5bFjqufBAWKcQMmRHob2bwcdQwzU+S49xMvaGBHv1UbQ6cbWjqzSTiC/d15pHOKm1AudU+DZ0/UyN9aV6Bu88f/9Mce+s=
+	t=1706043482; cv=none; b=jC4dTKqAXCvlJHjNSmQxEV0rChCshmHU8laQyvAcsVsTesuum1i37g+Il47//1ASbniqJdxGrRpztU7rjshFkgdZkJMFElUHVEYx5rEVcYvthTT9Ujt7MFfm3GOUARWTQD+HQ3bw1ygOXpFZLYdpe3xdxxGxY3KXhnvtusR8xYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706043480; c=relaxed/simple;
-	bh=beniaoOVcxeR7gRHaBkA7uCAdkIPvUsqVHb1E+XI+bo=;
+	s=arc-20240116; t=1706043482; c=relaxed/simple;
+	bh=Dy5zxA6c7jFWwSh8GJ8YoVzBXmqlTVG67n4m3y2+WZE=;
 	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=LEhH9gvah9958AvjViJ3Ln15h3D58Z8cUbBGTQuuUVZDGtMHP8q4eETKJsd3y1Cy5VlJP3x6k5p5jtFPJSyxz/qRFM0jW3knsJroNZM436zFZMRHtpRfK6Erau+f2egcnMSOk/NF/lYBwaJ2dLR2Y/LEuGihqsWJuYwywP2b+Ko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T4iu9DrU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73C03C433C7;
-	Tue, 23 Jan 2024 20:57:59 +0000 (UTC)
+	 Message-Id:Subject; b=CLjyqFgjoT2/RkmirjWCgUYQkjziyZmTejBHq+pmS70NXzyM/k4M5KMPbjKHKp04rXLwSXhBJK/OFeKNc7dJsf8+jeWVbOQCWBKDsfXveElV6EHrc+urhgxiB/2g/QE00t41G1xcj6I9P1HDWQkQ0S8sMyEjwu4nEa64YKhRO3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y8itH9+3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF9D3C433F1;
+	Tue, 23 Jan 2024 20:58:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706043479;
-	bh=beniaoOVcxeR7gRHaBkA7uCAdkIPvUsqVHb1E+XI+bo=;
+	s=k20201202; t=1706043482;
+	bh=Dy5zxA6c7jFWwSh8GJ8YoVzBXmqlTVG67n4m3y2+WZE=;
 	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=T4iu9DrUuiqMfbn+rWnnPjIF5OPJbWwQEXfwwpWsvqQbm3K3atui4RJT7B6uuhib8
-	 8tlCyTXPYKKrBaQN/JshRYeX5/SbNHQLOKB7CWX8S4t8L2kX9EGx2Afwr/7+0mSWDl
-	 cwLlUnp71H0VE9H9xQpzDPKL4GkDf/DCyorNpXlr/0tDPNVt39B7vR5oerfqiUULeB
-	 hEzDp2h+bzGr2pToW1C5vIDY5JLkv6CQr3y0d//xa9GPRfWJfjJ0oHiIcFqWQCzGSn
-	 59cIktQNBGJxZ8g4w+yq4nxxZJB+ye7y4jYWTViOWnhpcD89EIp39OzCUc0ve7On6J
-	 Ni5i1pgxVqZJQ==
-Date: Tue, 23 Jan 2024 14:57:58 -0600
+	b=Y8itH9+33g8+Bro4cfhlc60bsNVJqZfNXDqJmnChcxydSoY5g9EJt/6wS5O9GmVp6
+	 NANOqaRYekyGd54ktMiLDmLHcxCUzy8hcG2kmYYtGllcqx32v/YmxD7tzU5Ig7pvuN
+	 WJKvoO/okkfp6Z8clHXV82jmbo4x8MObJmP7r61FUsUc3zIN2JRT71Nzei5Oe9f4Qv
+	 DIUG+2kkDJ0BdY7K/OrTmC5xRH2dH/vtXQJGoVSurHq03HK46t/VSDh56GPdIBctKp
+	 wXmtc4lROICktAuWDujUMxYkBaA6ohyrXtLoNsQHL8e8MF+M88d7+eE2ua/XctxqrV
+	 QWQelbEm+TgUQ==
+Date: Tue, 23 Jan 2024 14:58:00 -0600
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -51,61 +51,61 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 From: Rob Herring <robh@kernel.org>
 To: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>, 
- =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- Gregory CLEMENT <gregory.clement@bootlin.com>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Stephen Boyd <sboyd@kernel.org>, 
- Michael Turquette <mturquette@baylibre.com>, 
+Cc: Rob Herring <robh+dt@kernel.org>, 
  Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-mips@vger.kernel.org, 
- linux-gpio@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, 
- Tawfik Bayouk <tawfik.bayouk@mobileye.com>, devicetree@vger.kernel.org, 
- linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Rob Herring <robh+dt@kernel.org>
-In-Reply-To: <20240123-mbly-clk-v3-3-392b010b8281@bootlin.com>
+ Conor Dooley <conor+dt@kernel.org>, Stephen Boyd <sboyd@kernel.org>, 
+ linux-mips@vger.kernel.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ linux-gpio@vger.kernel.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Gregory CLEMENT <gregory.clement@bootlin.com>, 
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>, 
+ devicetree@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Linus Walleij <linus.walleij@linaro.org>, linux-kernel@vger.kernel.org, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, linux-clk@vger.kernel.org
+In-Reply-To: <20240123-mbly-clk-v3-4-392b010b8281@bootlin.com>
 References: <20240123-mbly-clk-v3-0-392b010b8281@bootlin.com>
- <20240123-mbly-clk-v3-3-392b010b8281@bootlin.com>
-Message-Id: <170604347681.1901901.3923700915063893929.robh@kernel.org>
-Subject: Re: [PATCH v3 03/17] dt-bindings: pinctrl: allow pin controller
- device without unit address
+ <20240123-mbly-clk-v3-4-392b010b8281@bootlin.com>
+Message-Id: <170604347738.1901942.18176924808448385013.robh@kernel.org>
+Subject: Re: [PATCH v3 04/17] dt-bindings: soc: mobileye: add EyeQ5 OLB
+ system controller
 
 
-On Tue, 23 Jan 2024 19:46:48 +0100, Théo Lebrun wrote:
-> Allow a pin controller device to have no address, therefore no unit
-> address.
-> 
-> The previous $nodename was enforcing a unit address, but
-> scripts/dtc/checks.c enforced that names with unit addresses have reg
-> or ranges:
-> 
->    Warning (unit_address_vs_reg): .../pinctrl@0: node has a unit
->    name, but no reg or ranges property
-> 
-> Fix pinctrl.yaml to adopt a (pinctrl|pinmux)(-[a-z]+)? node name when
-> neither reg nor ranges are required. Use [a-z]+ to avoid conflicts with
-> pinctrl-consumer.yaml.
+On Tue, 23 Jan 2024 19:46:49 +0100, Théo Lebrun wrote:
+> Add documentation to describe the "Other Logic Block" syscon.
 > 
 > Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
 > ---
->  Documentation/devicetree/bindings/pinctrl/pinctrl.yaml | 18 +++++++++++++++---
->  1 file changed, 15 insertions(+), 3 deletions(-)
+>  .../bindings/soc/mobileye/mobileye,eyeq5-olb.yaml  | 77 ++++++++++++++++++++++
+>  MAINTAINERS                                        |  1 +
+>  2 files changed, 78 insertions(+)
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
 on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
 yamllint warnings/errors:
-/Documentation/devicetree/bindings/pinctrl/pinctrl.yaml:45:8: [warning] wrong indentation: expected 8 but found 7 (indentation)
-/Documentation/devicetree/bindings/pinctrl/pinctrl.yaml:47:8: [warning] wrong indentation: expected 8 but found 7 (indentation)
 
 dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.yaml:
+Error in referenced schema matching $id: http://devicetree.org/schemas/clock/mobileye,eyeq5-clk.yaml
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.example.dtb: system-controller@e00000: clock-controller: False schema does not allow {'compatible': ['mobileye,eyeq5-clk'], '#clock-cells': [[1]], 'clocks': [[4294967295]], 'clock-names': ['ref']}
+	from schema $id: http://devicetree.org/schemas/soc/mobileye/mobileye,eyeq5-olb.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.example.dtb: system-controller@e00000: reset-controller: False schema does not allow {'compatible': ['mobileye,eyeq5-reset'], '#reset-cells': [[2]]}
+	from schema $id: http://devicetree.org/schemas/soc/mobileye/mobileye,eyeq5-olb.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.example.dtb: system-controller@e00000: pinctrl-a: False schema does not allow {'compatible': ['mobileye,eyeq5-a-pinctrl'], '#pinctrl-cells': [[1]]}
+	from schema $id: http://devicetree.org/schemas/soc/mobileye/mobileye,eyeq5-olb.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.example.dtb: system-controller@e00000: pinctrl-b: False schema does not allow {'compatible': ['mobileye,eyeq5-b-pinctrl'], '#pinctrl-cells': [[1]]}
+	from schema $id: http://devicetree.org/schemas/soc/mobileye/mobileye,eyeq5-olb.yaml#
+Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.example.dtb: /example-0/system-controller@e00000/clock-controller: failed to match any schema with compatible: ['mobileye,eyeq5-clk']
+Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.example.dtb: /example-0/system-controller@e00000/reset-controller: failed to match any schema with compatible: ['mobileye,eyeq5-reset']
+Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.example.dtb: /example-0/system-controller@e00000/pinctrl-a: failed to match any schema with compatible: ['mobileye,eyeq5-a-pinctrl']
+Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.example.dtb: /example-0/system-controller@e00000/pinctrl-b: failed to match any schema with compatible: ['mobileye,eyeq5-b-pinctrl']
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240123-mbly-clk-v3-3-392b010b8281@bootlin.com
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240123-mbly-clk-v3-4-392b010b8281@bootlin.com
 
 The base for the series is generally the latest rc1. A different dependency
 should be noted in *this* patch.
