@@ -1,97 +1,155 @@
-Return-Path: <linux-kernel+bounces-35419-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95B0E8390C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:03:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 296208390C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:03:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48E7C1F22CE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:03:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF9AF1F22BF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:03:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 042545F863;
-	Tue, 23 Jan 2024 14:03:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A8295F861;
+	Tue, 23 Jan 2024 14:03:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l6lL8PmE"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="J5wf3pnt"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34D2B5F841;
-	Tue, 23 Jan 2024 14:02:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB7F85F563;
+	Tue, 23 Jan 2024 14:03:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706018579; cv=none; b=fgxxe5kJLWshHn0eIXSMCWAtIhY51Ol6x0gCWj+Nd+bR5IExgkj2gy6/OeDorMXXaNYCre3NjJrYNWcW8MPAXaealgWGrEIf4RxMSWFh8+bfHngCtd90tauj6XvMHnMN8z8jbQ+0wKovpFlmN55DS4nqwATdo+hinka7YAyGWjQ=
+	t=1706018602; cv=none; b=aMhqIv58vkNs4mHjM1T+GjFoNVVUzEAGoxtoZxJJ/e3xS4MC32i8qS6zRIEvNeiVJ1pRFGyuUpnMhqgIXS8/MpyQf1dEHUWLrqQziIrjWggcRfv+Vw7dWeeK9dYj0UPn7JAgRNQKnQoaCy1x9eEUSozm6P2teIvjJilh4BADQbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706018579; c=relaxed/simple;
-	bh=07J5vk8WrZtMUgfX9yUoEbt1L1ydDJvsXfEiWtN8rKU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=laCBR53BRXXYShYAPeWhfrA344Pis92cB2wFGohpwn8pqT/E/wv7z/y3PjGbxUz9KKdgnSxMrI3UD9cNS6ygs2z5pdpXK/ZMTeMbG949nT7STKX0zuoM4EGMm6ycQomaxrdSg6WHHQ7Z1bXYy/xokjkR9O2mNz7SZ2cNnXEYJmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l6lL8PmE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E53B4C43390;
-	Tue, 23 Jan 2024 14:02:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706018578;
-	bh=07J5vk8WrZtMUgfX9yUoEbt1L1ydDJvsXfEiWtN8rKU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=l6lL8PmEhiPnkg3AaFYGvj4tEwYmxSUxj/M9olDGO5c+2bydQkvUmIdqo825Gr4Ge
-	 r9Dji7LWBvIzsKzsw8ivu/rtRyeT6upVnAmsdFdw5F7fAdO1UOH3M4yFvGEwqsbY2w
-	 edkV42ClQlkuaeU6BiHNs9RMb0RNl+a99g0Usyfr6WX7X+J428aYct34DXH56asG7R
-	 2Qk0okBICHwgmhLN1EM3igCXkPbTkW7u/BXbaZXgAoLxjVuVDDfXUwc7NmgOBhgMXq
-	 310/wBYOzv7hSleYDkp46A3WVSHgZoTKYM8+GCyq1u1wJb8H+1vUC9Z5II9ueFg/JC
-	 D9NZ5HjbldLLw==
-Date: Tue, 23 Jan 2024 19:32:54 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Thomas Richard <thomas.richard@bootlin.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Andy Shevchenko <andy@kernel.org>, Tony Lindgren <tony@atomide.com>,
-	Haojian Zhuang <haojian.zhuang@linaro.org>,
-	Vignesh R <vigneshr@ti.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
-	Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Tom Joseph <tjoseph@cadence.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-	linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
-	linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
-	theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com,
-	u-kumar1@ti.com
-Subject: Re: [PATCH 05/14] phy: ti: phy-j721e-wiz: make wiz_clock_init
- callable multiple times
-Message-ID: <Za_HDoBeUC9sbh35@matsya>
-References: <20240102-j7200-pcie-s2r-v1-0-84e55da52400@bootlin.com>
- <20240102-j7200-pcie-s2r-v1-5-84e55da52400@bootlin.com>
- <Za9oR8BpoufCRNIw@matsya>
- <d005e3c5-08b3-4a4f-b1ed-e02bde82c2f9@bootlin.com>
+	s=arc-20240116; t=1706018602; c=relaxed/simple;
+	bh=hlKrbnklZRHtyhAfgwLZQF2nt4+9pCu/Iy9MfEcp0IU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VharcbwWajpjQGr8nYnuoiAqs0aJznWI7R5vpo5NbkBZjDC7pR/kya7egwJrgiPofQH7wLWkOmWmOwp94bqWjbovjBACWLrV9ipk1V29aYnAQT+exTgKdm1WCi6lbzEupxtNUMlC8R5avWKHVAEczrt/kfK67uI74Dw76dv4/RA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=J5wf3pnt; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40NDrToc024811;
+	Tue, 23 Jan 2024 14:03:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=JtE9UsiqiWfdyi4MV6/bGG5MDHlb4VIcfi2PP2a34vw=;
+ b=J5wf3pntzgos836U9Igqyp65p1eHWSa4rnwQ8WXisVURXzm8AUL0QOU5TaLMCRTreB61
+ c3sY7pPhfuwPc0aT6XuXmNflGahMwdUFXO5NJd4dToNrhHO9iNd5XZUJTEebYp0PQhcs
+ 2Hj3LiHo1m9qZCaTzwGW7S+Upx6sqdD62KCd0Tms7rEPYTTAy1bW5M7CJ0XoIcmo0aaX
+ 1/fy1FWabQCdLlOYemdAIqVxJe7AYFM8p0+ojDa0zQts8xCjef6GUhq0OMeotihkHcuy
+ xs5YlA3bhCMAPU4IohXVYFMdGo9Tqp9IfmiVC/Kx6zxOVtOqsjty5vKiWEOE+3B1rA3t Vw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vteqwr9a5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 23 Jan 2024 14:03:10 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40NDs7LK026468;
+	Tue, 23 Jan 2024 14:03:09 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vteqwr99g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 23 Jan 2024 14:03:09 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40NBX7Mm026508;
+	Tue, 23 Jan 2024 14:03:08 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vrrgt7s09-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 23 Jan 2024 14:03:08 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40NE35Vl56295866
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 23 Jan 2024 14:03:05 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B9A892007B;
+	Tue, 23 Jan 2024 14:03:05 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5AD0920078;
+	Tue, 23 Jan 2024 14:03:05 +0000 (GMT)
+Received: from [9.152.224.38] (unknown [9.152.224.38])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 23 Jan 2024 14:03:05 +0000 (GMT)
+Message-ID: <3c51c969-3884-4104-b38d-570c61525214@linux.ibm.com>
+Date: Tue, 23 Jan 2024 15:03:05 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d005e3c5-08b3-4a4f-b1ed-e02bde82c2f9@bootlin.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 00/15] net/smc: implement loopback-ism used by
+ SMC-D
+To: Wen Gu <guwen@linux.alibaba.com>, Wenjia Zhang <wenjia@linux.ibm.com>,
+        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, jaka@linux.ibm.com
+Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com, alibuda@linux.alibaba.com,
+        tonylu@linux.alibaba.com, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240111120036.109903-1-guwen@linux.alibaba.com>
+ <f98849a7-41e9-421b-97b7-36d720cc43ee@linux.alibaba.com>
+ <20a1a1f3-789a-4d91-9a94-dca16161afd7@linux.ibm.com>
+ <1860588f-2246-4dcd-9db5-4ccd7add0f4a@linux.alibaba.com>
+Content-Language: en-US
+From: Alexandra Winter <wintera@linux.ibm.com>
+In-Reply-To: <1860588f-2246-4dcd-9db5-4ccd7add0f4a@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: SSW86zNU0u0yqe7OCema3jFlkIu8Ysiz
+X-Proofpoint-ORIG-GUID: COMkbAp-6ED6dcEelzULVI7hCHml2eV3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-23_06,2024-01-23_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
+ lowpriorityscore=0 malwarescore=0 mlxscore=0 mlxlogscore=649 adultscore=0
+ bulkscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401230103
 
-On 23-01-24, 09:20, Thomas Richard wrote:
-> >>  
-> >> -	ret = wiz_clock_init(wiz, node);
-> >> +	ret = wiz_clock_init(wiz, node, true);
-> > 
-> > You are calling it one once? So what am I missing
+
+
+On 19.01.24 02:46, Wen Gu wrote:
 > 
-> In patch 6/14, wiz_clock_init is called in resume_noirq callback:
 > 
-> ret = wiz_clock_init(wiz, node, false);
+> On 2024/1/18 21:59, Wenjia Zhang wrote:
+>>
+>>
+>> On 18.01.24 09:27, Wen Gu wrote:
+>>>
+>>>
+>>> On 2024/1/11 20:00, Wen Gu wrote:
+>>>> This patch set acts as the second part of the new version of [1] (The first
+>>>> part can be referred from [2]), the updated things of this version are listed
+>>>> at the end.
+>>>>
+>>>
+>>> Hi Wenjia and Jan, I would appreciate any thoughts or comments you might have
+>>> on this series. Thank you very much!
+>>>
+>> Hi Wen,
+>>
+>> I'm still in the middle of the proto type on IPPROTO_SMC and other issues, so that I need more time to review this patch series.
+>>
+>> Thank you for your patience!
+>> Wenjia
+> 
+> Understood. Thank you! Wenjia.
+> 
+> Best regards,
+> Wen Gu
+> 
 
-noticed later, I think this would be useful to mention in changelog
+Hello Wen Gu and others,
 
--- 
-~Vinod
+I just wanted to let you know that unfortunately both Wenjia and Jan have called in sick and we don't know
+when they will be back at work. 
+So I'm sorry but there may be mroe delays in the review of this patchset.
+
+Kind regards
+Alexandra Winter
 
