@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-34987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B1D6838A30
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:22:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63521838A31
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:22:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E1A81F29517
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:22:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 130632877F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:22:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 772235820F;
-	Tue, 23 Jan 2024 09:21:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EC3358AC1;
+	Tue, 23 Jan 2024 09:21:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="FCU1ffDE"
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="XS/Uh0iJ"
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 428A15811E
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 09:21:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E88505822D
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 09:21:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706001685; cv=none; b=D9LIDMYd0lri2vMCiuuNXurDEj5rqnF3Bn1+l/Z4JHJkMau4LhHWXInaZsceR9v0CGB7U244hvMSvdzBaLw+25ueviUreO+eNfs34wDLAmeFO7BCUfEzyoDZXMg7P1taSpoUfg2ff3IrcvlA+x+Uby6MBuVgo9lMjbAfe/eI1Z8=
+	t=1706001689; cv=none; b=qL7xfFavtSW/BBf2Bx6CTl9dP8Mp+Y82rcKaw7o7vKvU84aVE5VU+o5tvm3oQ4ENsSRNbLRYCDd69pPwUbTBbkgeQxCnL8NvGD+xw0rCuVneszmVb0+bjo2uRDmm44q8ZqIZeBuG3jk19j25gMnwG+a0Ds215erQNfaEmnk0h4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706001685; c=relaxed/simple;
-	bh=FR/Lt8hCWLf4BJION9Icx5d5GdS0Oj5IF1M85CIYC9U=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=crdZA4CngnTc1YRya2zy5wXkhlhMEez4grlxwLv0ALNOPpsQPkvnSy14Xeb35DL8lHymo4Z3R08iRFvLdN1wP4IiREyY4Vo44OZM9ast2xBwFK+3BlAPZKbHHcIqQA//lZB/LvjAxn/6dMmUIwCPakMMq2IB6kf/VLTWNBzMpyM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=FCU1ffDE; arc=none smtp.client-ip=209.85.167.170
+	s=arc-20240116; t=1706001689; c=relaxed/simple;
+	bh=7C+tIDAexxZtGUr88BRAtpwjZhSDpQTHpgA/Tvvz8pE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=uImfW+mF+ZRDRvcf0FE/lH2++JVRhv7YE+SlblCVNiJn9+CIml5ldsAOB+H3/Q0Juyo3+r0F9DZbXOTvHUwiDul5BALRnxM7k4xowa7a4E+gPBxXRr1ZahA7EaU7OhXi9j/vdZaS6AyBSsyICysQBLxTm75YSRmAS0gRfbVZmJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=XS/Uh0iJ; arc=none smtp.client-ip=209.85.210.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3bbb4806f67so3463178b6e.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 01:21:24 -0800 (PST)
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6de424cef01so1978236a34.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 01:21:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1706001683; x=1706606483; darn=vger.kernel.org;
+        d=shopee.com; s=shopee.com; t=1706001687; x=1706606487; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=E0lqcueCBy3FeODNoPZZYWM4Zx9qtOGexvsaM0ZvdHU=;
-        b=FCU1ffDEuSvI7NqKirw2po2tmFKsYgRkMVyOROVd0Do8rG1VVCkxxZib0GiwJa3v93
-         7X/8o52JN03jwjFhBHxMFdl1A9UFfNCAjnO1Ok50gLgamhIp4TlhbkpYqy7QhDwE3lzc
-         Uq35z6OsABbXqBjlPh0UDYOTzKgPq5QKKCrmcRZiCV+oVXe/VXHmD63dygrSFOiyjSCl
-         iz2Wfa5064KTyOtM8v0yBFQGDN4MGbmbw8yK8XHqAx/4E8LA/7GAuWsYtEZ25EFjhkLI
-         9IV5AVU4FEH9U2lA3rDBU++Ti0ZjFiJj38l8ZEMgzm6ZE0HUfGFK7JZODgwkHqWTKJXH
-         NJXA==
+        bh=CJkjXjTnrwSkzf7VwgN4WhxQt30ievtg/kefs5USDPY=;
+        b=XS/Uh0iJorVptS03/u+UFJN+KSIIFSp9eCUFBGIA37rnVHIqG4AWowTdmCfjc+9wi/
+         t2dIoDL09B3yHW5ynzErHlDlVEw4Wy05CYoGCqUz3DYhfj9M5Jnyx25FOylgwEROim6m
+         9EK8iJewUKCpd3LqLEJOgdCeQwD1WQFSdBRmpjlie8jr+ehTzS/a6698KN9jbYhxPb8V
+         SISEJFKhm4XmSKCQrU8iWGiN2mhUSRor9bgtPyFYX3wTIcKVEDfx9zXcfVxEVuh9WP7n
+         O8n67zzLZIJCytnUew/QJm8Oq/SNLn6M0wcAJT4LMoyDvDjs1Jh1VlxylswImmie39gA
+         gkMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706001683; x=1706606483;
+        d=1e100.net; s=20230601; t=1706001687; x=1706606487;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=E0lqcueCBy3FeODNoPZZYWM4Zx9qtOGexvsaM0ZvdHU=;
-        b=YRNabp5BpBBMQJEBn/2Ea/DaRA45b3so/4oeGU7T5/dIDMfHAWI5GciZ9Wy1KZBoI2
-         B25JMnymaOWYqPwUsbYlzCRh4RCI9MN7oP963sc7LcdwZlAM4gMe+VLn/aP45jOjpg5d
-         7uw67TBniH11PQ6IQXIDVTOCyAXgKCXzkgw9ehD/nk1qjgYj0a2HpIWRvAd3szFI1apG
-         X9zJGwwXfJD5TcGpiy37bbiR5E7MEvG4zF3zrODiiwJGpkl4QNquDRl8lcaiZRZ1CB16
-         Kj2zxtw3E0hsS+Z9GmMbT/zI4ILSd7bTtdw1GviIdaTFfcrGHjW11oVBhR+gAod368xd
-         BEHg==
-X-Gm-Message-State: AOJu0YxyaaTpc6Sn8OYVJKJfH+zR2LZT2UDV8MK6FKXSC6iJSkQL666T
-	Uo5R1QhatG9yy4br3uGzrKDKYG/XZK0swgYyL9vEyC5vBQc2gF0Y1jIKoclMO/k=
-X-Google-Smtp-Source: AGHT+IG6N3uyl08knvYtVB3RFhiOFCF4c+HLjyvTFetuTHFgNYJqHY2iM1WQrnwYSGKIi9XXtiz5vg==
-X-Received: by 2002:a05:6808:1891:b0:3bd:bb2b:86e2 with SMTP id bi17-20020a056808189100b003bdbb2b86e2mr2758987oib.101.1706001683322;
-        Tue, 23 Jan 2024 01:21:23 -0800 (PST)
+        bh=CJkjXjTnrwSkzf7VwgN4WhxQt30ievtg/kefs5USDPY=;
+        b=GlMfRSVjsthWASX7p8CPpr/1rOzzMrchmlJbyTUK0GF162Fqd/gIwyNa1TLIn7DHH3
+         1nLAYz/lUYLacnhS3/DmeXNWb3lmeINkcwOFQlYaBax2bYm+F4v0RzDQr5JiF/Itf9ff
+         wFDjximO/pPPbfTrrAZno/HM5U5kxYM2pT4uXltOnLqgwhGmpN5PSOvIURsANEBlOpG+
+         DFxDD0jdoiCDfmHow1jLRIZ2PrCxGNIEaZF81sFVPAb9N2HtjbwrOBwraveXm5S+BvRv
+         u3RisZEA0EVpc5oxxCmYWtRUYVH8tH285QlnEw3mTZwyqdygrZEQlYDvwRTiZDJMqNnf
+         hZhQ==
+X-Gm-Message-State: AOJu0YwVBF0vaxTQ1hpSxzE1APqlJdk2N8RQLCzs8hhhdcutOqRgAXmc
+	lSa9CHcrqukrOiNvYfMtMdsXxEDaaUd9W5szp0NG3++heJB75sCUWLADAs0f8H8=
+X-Google-Smtp-Source: AGHT+IFmXJgW/PKwd6NkpxU9tb92tOBTT2q/7+VmrKX6hyGA19UL+ZJ/YLynF2HbzhSFschVMFHZiw==
+X-Received: by 2002:a05:6358:60cb:b0:176:2f2:1c5a with SMTP id i11-20020a05635860cb00b0017602f21c5amr4868638rwi.30.1706001686799;
+        Tue, 23 Jan 2024 01:21:26 -0800 (PST)
 Received: from ubuntu-haifeng.default.svc.cluster.local ([101.127.248.173])
-        by smtp.gmail.com with ESMTPSA id i15-20020aa787cf000000b006dbddea71e2sm3650707pfo.79.2024.01.23.01.21.21
+        by smtp.gmail.com with ESMTPSA id i15-20020aa787cf000000b006dbddea71e2sm3650707pfo.79.2024.01.23.01.21.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 01:21:23 -0800 (PST)
+        Tue, 23 Jan 2024 01:21:26 -0800 (PST)
 From: Haifeng Xu <haifeng.xu@shopee.com>
 To: reinette.chatre@intel.com
 Cc: fenghua.yu@intel.com,
@@ -71,9 +71,9 @@ Cc: fenghua.yu@intel.com,
 	x86@kernel.org,
 	linux-kernel@vger.kernel.org,
 	Haifeng Xu <haifeng.xu@shopee.com>
-Subject: [PATCH 1/3] x86/resctrl: Display the number of available CLOSIDs
-Date: Tue, 23 Jan 2024 09:20:22 +0000
-Message-Id: <20240123092024.1271882-1-haifeng.xu@shopee.com>
+Subject: [PATCH 2/3] x86/resctrl: Display the number of available RMIDs
+Date: Tue, 23 Jan 2024 09:20:23 +0000
+Message-Id: <20240123092024.1271882-2-haifeng.xu@shopee.com>
 X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -83,69 +83,115 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-We can know the number of CLOSIDs for each rdt resource, for example:
+Now we can know the total number of RMIDs from:
 
-cat /sys/fs/resctrl/info/L3/num_closids
-cat /sys/fs/resctrl/info/MB/num_closids
-..
+/sys/fs/resctrl/info/L3_MON/num_rmids
 
-The number of available CLOSIDs is the minimal value of them. When users
-try to create new control groups, to avoid running out of CLOSIDs, they
-have to traverse /sys/fs/resctrl/ and count the number of directories.
+But for users, they don't know the number of available RMIDs. Especially
+when llc_occupancy is enabled, though the monitor group is removed, its
+rmid may not be freed.
 
-To make things more easier, add a RFTYPE_TOP_INFO file 'free_closids'
-that tells users how many free closids are left.
+Users may confused that though the number of control groups and monitor
+groups is less than num_rmids, they still fail to create a new monitor
+group, so add a RFTYPE_TOP_INFO file 'free_rmids' that tells users how
+many free rmids are left.
 
 Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
 ---
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ arch/x86/kernel/cpu/resctrl/internal.h |  1 +
+ arch/x86/kernel/cpu/resctrl/monitor.c  | 16 ++++++++++++++--
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 16 ++++++++++++++++
+ 3 files changed, 31 insertions(+), 2 deletions(-)
 
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index a4f1aa15f0a2..4b0392bd3a65 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -117,6 +117,7 @@ struct rmid_read {
+ extern bool rdt_alloc_capable;
+ extern bool rdt_mon_capable;
+ extern unsigned int rdt_mon_features;
++extern unsigned int free_rmids;
+ extern struct list_head resctrl_schema_all;
+ 
+ enum rdt_group_type {
+diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+index f136ac046851..edf8b6e1017c 100644
+--- a/arch/x86/kernel/cpu/resctrl/monitor.c
++++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+@@ -51,6 +51,11 @@ static unsigned int rmid_limbo_count;
+  */
+ static struct rmid_entry	*rmid_ptrs;
+ 
++/*
++ * This is the number of available RMIDs.
++ */
++unsigned int free_rmids;
++
+ /*
+  * Global boolean for rdt_monitor which is true if any
+  * resource monitoring is enabled.
+@@ -299,6 +304,7 @@ void __check_limbo(struct rdt_domain *d, bool force_free)
+ 			if (!--entry->busy) {
+ 				rmid_limbo_count--;
+ 				list_add_tail(&entry->list, &rmid_free_lru);
++				free_rmids++;
+ 			}
+ 		}
+ 		crmid = nrmid + 1;
+@@ -327,6 +333,7 @@ int alloc_rmid(void)
+ 	entry = list_first_entry(&rmid_free_lru,
+ 				 struct rmid_entry, list);
+ 	list_del(&entry->list);
++	free_rmids--;
+ 
+ 	return entry->rmid;
+ }
+@@ -362,8 +369,10 @@ static void add_rmid_to_limbo(struct rmid_entry *entry)
+ 
+ 	if (entry->busy)
+ 		rmid_limbo_count++;
+-	else
++	else {
+ 		list_add_tail(&entry->list, &rmid_free_lru);
++		free_rmids++;
++	}
+ }
+ 
+ void free_rmid(u32 rmid)
+@@ -379,8 +388,10 @@ void free_rmid(u32 rmid)
+ 
+ 	if (is_llc_occupancy_enabled())
+ 		add_rmid_to_limbo(entry);
+-	else
++	else {
+ 		list_add_tail(&entry->list, &rmid_free_lru);
++		free_rmids++;
++	}
+ }
+ 
+ static struct mbm_state *get_mbm_state(struct rdt_domain *d, u32 rmid,
+@@ -737,6 +748,7 @@ static int dom_data_init(struct rdt_resource *r)
+ 	 */
+ 	entry = __rmid_entry(0);
+ 	list_del(&entry->list);
++	free_rmids = nr_rmids - 1;
+ 
+ 	return 0;
+ }
 diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 69a1de92384a..577d870ac45f 100644
+index 577d870ac45f..1eac0ca97b81 100644
 --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
 +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -113,6 +113,7 @@ void rdt_staged_configs_clear(void)
-  */
- static int closid_free_map;
- static int closid_free_map_len;
-+static int free_closids;
- 
- int closids_supported(void)
- {
-@@ -133,6 +134,7 @@ static void closid_init(void)
- 	/* CLOSID 0 is always reserved for the default group */
- 	closid_free_map &= ~1;
- 	closid_free_map_len = rdt_min_closid;
-+	free_closids = rdt_min_closid - 1;
- }
- 
- static int closid_alloc(void)
-@@ -143,6 +145,7 @@ static int closid_alloc(void)
- 		return -ENOSPC;
- 	closid--;
- 	closid_free_map &= ~(1 << closid);
-+	free_closids--;
- 
- 	return closid;
- }
-@@ -150,6 +153,7 @@ static int closid_alloc(void)
- void closid_free(int closid)
- {
- 	closid_free_map |= 1 << closid;
-+	free_closids++;
- }
- 
- /**
-@@ -912,6 +916,15 @@ static int rdt_last_cmd_status_show(struct kernfs_open_file *of,
+@@ -925,6 +925,15 @@ static int rdt_free_closids_show(struct kernfs_open_file *of,
  	return 0;
  }
  
-+static int rdt_free_closids_show(struct kernfs_open_file *of,
-+				 struct seq_file *seq, void *v)
++static int rdt_free_rmids_show(struct kernfs_open_file *of,
++			       struct seq_file *seq, void *v)
 +{
 +	mutex_lock(&rdtgroup_mutex);
-+	seq_printf(seq, "%d\n", free_closids);
++	seq_printf(seq, "%d\n", free_rmids);
 +	mutex_unlock(&rdtgroup_mutex);
 +	return 0;
 +}
@@ -153,15 +199,15 @@ index 69a1de92384a..577d870ac45f 100644
  static int rdt_num_closids_show(struct kernfs_open_file *of,
  				struct seq_file *seq, void *v)
  {
-@@ -1755,6 +1768,13 @@ static struct rftype res_common_files[] = {
- 		.seq_show	= rdt_last_cmd_status_show,
- 		.fflags		= RFTYPE_TOP_INFO,
+@@ -1775,6 +1784,13 @@ static struct rftype res_common_files[] = {
+ 		.seq_show       = rdt_free_closids_show,
+ 		.fflags         = RFTYPE_TOP_INFO,
  	},
 +	{
-+		.name           = "free_closids",
++		.name           = "free_rmids",
 +		.mode           = 0444,
 +		.kf_ops         = &rdtgroup_kf_single_ops,
-+		.seq_show       = rdt_free_closids_show,
++		.seq_show       = rdt_free_rmids_show,
 +		.fflags         = RFTYPE_TOP_INFO,
 +	},
  	{
