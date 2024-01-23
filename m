@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-35669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D58B839503
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:40:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AFD3839507
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:41:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B09ADB28FA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:40:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9EF72B293D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:41:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8033E85C77;
-	Tue, 23 Jan 2024 16:37:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02C9E86154;
+	Tue, 23 Jan 2024 16:37:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="En/XbSYb"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Z4imqtNS"
 Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FBBB80046;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8E168005D;
 	Tue, 23 Jan 2024 16:37:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706027829; cv=none; b=P6eKtePJbOun7wXPcd16AETVBr9Otl42VQMD+H3FXlVyoYryFHTCAmOFgASxri5zBSTKiz5fH6psdXNCko3E/MIWXM9UipsGK5Wy6N51sEKE/a5j4Ox54CQbhq1YnmKRge7XrR/ysaJUsvo3GH5OefzI/zGi/NP8TcnYheGIN24=
+	t=1706027830; cv=none; b=OMRVzw+bxBwWh/X9Oj2Oq3p6gp5+uW1KSz896DMBH9tP8H1A4+FJ3O46SM+QaIQDg10+Ut28QzZ8HoBRC52KDFiwJekEwRxRFR0eys/3GTc5AFqbnZB4SPh8ctZ8qhQMjmLbrU1IzTtzzeGkq6V4I/tcwbNOL2vQuLE6tOP754o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706027829; c=relaxed/simple;
-	bh=AOscs8QIG573GTnqalFMMwHtcQ8ONmRuwieK8uqlR40=;
+	s=arc-20240116; t=1706027830; c=relaxed/simple;
+	bh=HqyDbZstUWJOaMyZ4TiG/oEUrlUvngFXfqf5DbMzNi0=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ryqcfJRfO5cYPeOLlz/ywwwWi/HdvmSoGxVTM+mRVyTwvSuKJNvmtAtLZJxot1vYfvp8tMPj7HLm7BhWH3wXFR0QLwWPuKWoGCpX2+PDot84eCqcfX+XyyuEXJdOogkSGG1kF0Ml7N9AIgmIH5Bc9e4VHGwYF8gY4qp4ocOqwKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=En/XbSYb; arc=none smtp.client-ip=198.47.19.142
+	 MIME-Version:Content-Type; b=qJCghWFqF33X0A00TtI0mfSidHCQVHESKOkowL6VA5nNa2cxV5hqf6811YkEGoDsK04WXOJY0mJM/QWyTHGtgOQvadecwD+B7KuDWCCWFTkY5JQqSxSK8o2ZKKT/kOqJ+nxTXsQ3KUXUDP3IE9hh9lS8UPHy3YXXqsl69+QiEpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Z4imqtNS; arc=none smtp.client-ip=198.47.19.142
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40NGax8N094134;
-	Tue, 23 Jan 2024 10:36:59 -0600
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40NGb0s0094139;
+	Tue, 23 Jan 2024 10:37:00 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706027819;
-	bh=NynlMJZVVWmFK6HEqJQ06332dhB5iMXyjOa26cOux3g=;
+	s=ti-com-17Q1; t=1706027820;
+	bh=kVXImxDJPM4A7YrQnUDOEbJIk29vaGvEJQGgWRehcUA=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=En/XbSYbkpAcJ6Xir3CNLJiY1RSv1Tblem41AtTRy3eVfDAYyubRm40jysHFe5o5e
-	 yR7dxzI1qPLHTXBJQ5jwyiTPbYEe/0eYi8DXg4GB4tIi4PfEnV8nFwypqppuesg6CP
-	 6i/sCNkGkSQt4pv5UKakL8dTC5VASwYwq1MsjC+g=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40NGaxU5119736
+	b=Z4imqtNSh7hFg4AmEfTGwNX1/h8bMgvjZZEjwc3EiKeniyaKolR/dqfW4j+KgEkaA
+	 tGx+/pafkNm1MkAdG8xrLFrsmXSDbUD6uIrHRzuFYTFpks6l1rKQ8kQPDwjrVnh8/Z
+	 1VQn9ht3Vh6taqfgNbMC2WHP2vcLFJcdT88FTem0=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40NGb0IK034013
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 23 Jan 2024 10:36:59 -0600
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+	Tue, 23 Jan 2024 10:37:00 -0600
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 23
  Jan 2024 10:36:59 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
  Frontend Transport; Tue, 23 Jan 2024 10:36:59 -0600
 Received: from lelvsmtp6.itg.ti.com ([10.249.42.149])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40NGars3123403;
-	Tue, 23 Jan 2024 10:36:58 -0600
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40NGars4123403;
+	Tue, 23 Jan 2024 10:36:59 -0600
 From: Andrew Davis <afd@ti.com>
 To: Sebastian Reichel <sre@kernel.org>,
         Support Opensource
@@ -66,9 +66,9 @@ To: Sebastian Reichel <sre@kernel.org>,
 CC: <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Andrew Davis
 	<afd@ti.com>
-Subject: [PATCH 15/21] power: supply: wm8350: Use devm_power_supply_register() helper
-Date: Tue, 23 Jan 2024 10:36:47 -0600
-Message-ID: <20240123163653.384385-16-afd@ti.com>
+Subject: [PATCH 16/21] power: supply: da9150: Use devm_iio_channel_get() helper
+Date: Tue, 23 Jan 2024 10:36:48 -0600
+Message-ID: <20240123163653.384385-17-afd@ti.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240123163653.384385-1-afd@ti.com>
 References: <20240123163653.384385-1-afd@ti.com>
@@ -82,73 +82,103 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Use the device lifecycle managed register function. This helps prevent
-mistakes like unregistering out of order in cleanup functions and
-forgetting to unregister on error paths.
+Use the device lifecycle managed get function. This helps prevent
+mistakes like releasing out of order in cleanup functions and
+forgetting to release on error paths.
 
 Signed-off-by: Andrew Davis <afd@ti.com>
 ---
- drivers/power/supply/wm8350_power.c | 29 +++++++----------------------
- 1 file changed, 7 insertions(+), 22 deletions(-)
+ drivers/power/supply/da9150-charger.c | 57 +++++++--------------------
+ 1 file changed, 14 insertions(+), 43 deletions(-)
 
-diff --git a/drivers/power/supply/wm8350_power.c b/drivers/power/supply/wm8350_power.c
-index f23b4f5343bc1..9b0010b28cafc 100644
---- a/drivers/power/supply/wm8350_power.c
-+++ b/drivers/power/supply/wm8350_power.c
-@@ -540,22 +540,17 @@ static int wm8350_power_probe(struct platform_device *pdev)
- 	struct wm8350_charger_policy *policy = power->policy;
- 	int ret;
+diff --git a/drivers/power/supply/da9150-charger.c b/drivers/power/supply/da9150-charger.c
+index 37db9e4ed7f30..77e2d42382e45 100644
+--- a/drivers/power/supply/da9150-charger.c
++++ b/drivers/power/supply/da9150-charger.c
+@@ -521,36 +521,26 @@ static int da9150_charger_probe(struct platform_device *pdev)
+ 	charger->dev = dev;
  
--	power->ac = power_supply_register(&pdev->dev, &wm8350_ac_desc, NULL);
-+	power->ac = devm_power_supply_register(&pdev->dev, &wm8350_ac_desc, NULL);
- 	if (IS_ERR(power->ac))
- 		return PTR_ERR(power->ac);
- 
--	power->battery = power_supply_register(&pdev->dev, &wm8350_battery_desc,
--					       NULL);
--	if (IS_ERR(power->battery)) {
--		ret = PTR_ERR(power->battery);
--		goto battery_failed;
+ 	/* Acquire ADC channels */
+-	charger->ibus_chan = iio_channel_get(dev, "CHAN_IBUS");
+-	if (IS_ERR(charger->ibus_chan)) {
+-		ret = PTR_ERR(charger->ibus_chan);
+-		goto ibus_chan_fail;
 -	}
-+	power->battery = devm_power_supply_register(&pdev->dev, &wm8350_battery_desc, NULL);
-+	if (IS_ERR(power->battery))
-+		return PTR_ERR(power->battery);
++	charger->ibus_chan = devm_iio_channel_get(dev, "CHAN_IBUS");
++	if (IS_ERR(charger->ibus_chan))
++		return PTR_ERR(charger->ibus_chan);
  
--	power->usb = power_supply_register(&pdev->dev, &wm8350_usb_desc, NULL);
--	if (IS_ERR(power->usb)) {
--		ret = PTR_ERR(power->usb);
--		goto usb_failed;
+-	charger->vbus_chan = iio_channel_get(dev, "CHAN_VBUS");
+-	if (IS_ERR(charger->vbus_chan)) {
+-		ret = PTR_ERR(charger->vbus_chan);
+-		goto vbus_chan_fail;
 -	}
-+	power->usb = devm_power_supply_register(&pdev->dev, &wm8350_usb_desc, NULL);
-+	if (IS_ERR(power->usb))
-+		return PTR_ERR(power->usb);
++	charger->vbus_chan = devm_iio_channel_get(dev, "CHAN_VBUS");
++	if (IS_ERR(charger->vbus_chan))
++		return PTR_ERR(charger->vbus_chan);
  
- 	ret = device_create_file(&pdev->dev, &dev_attr_charger_state);
- 	if (ret < 0)
-@@ -569,13 +564,6 @@ static int wm8350_power_probe(struct platform_device *pdev)
- 		wm8350_reg_lock(wm8350);
- 	}
+-	charger->tjunc_chan = iio_channel_get(dev, "CHAN_TJUNC");
+-	if (IS_ERR(charger->tjunc_chan)) {
+-		ret = PTR_ERR(charger->tjunc_chan);
+-		goto tjunc_chan_fail;
+-	}
++	charger->tjunc_chan = devm_iio_channel_get(dev, "CHAN_TJUNC");
++	if (IS_ERR(charger->tjunc_chan))
++		return PTR_ERR(charger->tjunc_chan);
  
--	return ret;
+-	charger->vbat_chan = iio_channel_get(dev, "CHAN_VBAT");
+-	if (IS_ERR(charger->vbat_chan)) {
+-		ret = PTR_ERR(charger->vbat_chan);
+-		goto vbat_chan_fail;
+-	}
++	charger->vbat_chan = devm_iio_channel_get(dev, "CHAN_VBAT");
++	if (IS_ERR(charger->vbat_chan))
++		return PTR_ERR(charger->vbat_chan);
+ 
+ 	/* Register power supplies */
+ 	charger->usb = power_supply_register(dev, &usb_desc, NULL);
+-	if (IS_ERR(charger->usb)) {
+-		ret = PTR_ERR(charger->usb);
+-		goto usb_fail;
+-	}
++	if (IS_ERR(charger->usb))
++		return PTR_ERR(charger->usb);
+ 
+ 	charger->battery = power_supply_register(dev, &battery_desc, NULL);
+ 	if (IS_ERR(charger->battery)) {
+@@ -619,19 +609,6 @@ static int da9150_charger_probe(struct platform_device *pdev)
+ battery_fail:
+ 	power_supply_unregister(charger->usb);
+ 
+-usb_fail:
+-	iio_channel_release(charger->vbat_chan);
 -
--usb_failed:
--	power_supply_unregister(power->battery);
--battery_failed:
--	power_supply_unregister(power->ac);
+-vbat_chan_fail:
+-	iio_channel_release(charger->tjunc_chan);
 -
+-tjunc_chan_fail:
+-	iio_channel_release(charger->vbus_chan);
+-
+-vbus_chan_fail:
+-	iio_channel_release(charger->ibus_chan);
+-
+-ibus_chan_fail:
  	return ret;
  }
  
-@@ -586,9 +574,6 @@ static void wm8350_power_remove(struct platform_device *pdev)
+@@ -659,12 +636,6 @@ static void da9150_charger_remove(struct platform_device *pdev)
  
- 	free_charger_irq(wm8350);
- 	device_remove_file(&pdev->dev, &dev_attr_charger_state);
--	power_supply_unregister(power->battery);
--	power_supply_unregister(power->ac);
--	power_supply_unregister(power->usb);
+ 	power_supply_unregister(charger->battery);
+ 	power_supply_unregister(charger->usb);
+-
+-	/* Release ADC channels */
+-	iio_channel_release(charger->ibus_chan);
+-	iio_channel_release(charger->vbus_chan);
+-	iio_channel_release(charger->tjunc_chan);
+-	iio_channel_release(charger->vbat_chan);
  }
  
- static struct platform_driver wm8350_power_driver = {
+ static struct platform_driver da9150_charger_driver = {
 -- 
 2.39.2
 
