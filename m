@@ -1,188 +1,199 @@
-Return-Path: <linux-kernel+bounces-34808-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34809-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E8FD8387BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:02:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA7AC8387C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:03:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 736F61C232AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:02:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF6701C234F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:03:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4730E524DA;
-	Tue, 23 Jan 2024 07:02:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBD2350A6F;
+	Tue, 23 Jan 2024 07:02:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bvDJGNe8"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="Q5XO73gX"
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE6F7524AB
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:02:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4430A55E5E
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:02:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705993352; cv=none; b=qPrwuxNLphbcT1RbjEvRgJCOIHHCSGCfNRAiygQ6mgeTqzeJ7EziGsBWIp909k++gFWaSeg3tVHlHbArBCDOm36THf3CaEo+akHXY4Qe/4CFCwmu7XUFeUEOaxTFhBDh8vG1RkzZOt/mNv3a82SVeu4hzUWzd7QA+4BhE8MVK7I=
+	t=1705993362; cv=none; b=bt74tbESXCc7+B03/AYZoVnwd0BuqfETeUemhAd0EVIxE0zI6CIVcLPHdBhtJEu5eStCzxf/UOnyOM/oBP5P7lBsiwQu6B6euTKGsVXyqZElWjMcC/Li/Bn5wKzwiTq9XSfebPi/k+ZAgvrPchXeB406FKYyjsYaPH3qIZQPCdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705993352; c=relaxed/simple;
-	bh=PckbnojtQP7fIhmpNDhDIvlrNTBhrfSCfkOehTYrNes=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YkXiIlFaWueu2Xlmp7TM2VUcMYjTIXzBWBHlGi1rCVgbkcacN/B465WEAB+9wfpEs9Po1RE6Mxf+ItUFMJ8kbBeDV/5HylVSbCLkcijuWCm7vdZjhw2sa63cM4GcOWp2hirlr3E1DceAEYHSRzvqspZatyYMBPzwIcld8tq26bg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bvDJGNe8; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705993349;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TsV76N5FsHio9dpfWTXAdKJMHXRNJk86MphFy5Q6dbc=;
-	b=bvDJGNe8MI3mwy7As2gg5POHC/APm2KRznWsrUMRq2YaQasac9tb/WGnegBSFqtXkCy5G+
-	zNVmuxq070grCE1H6UWwIsiujeokngcYrvBUpagcNRm9SKl6iuoL2zkO3Ovt0i9NdBFAdS
-	nHzDmL9NqDNMhuwmolVAqA4U7CR5AYU=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-230-v209av_aMYqufANvaurR6g-1; Tue, 23 Jan 2024 02:02:27 -0500
-X-MC-Unique: v209av_aMYqufANvaurR6g-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3392c9e8001so930191f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 23:02:27 -0800 (PST)
+	s=arc-20240116; t=1705993362; c=relaxed/simple;
+	bh=umk0ZPnWTL0b4WUNFY7XpYAosoBwjT3rA5b6SOxM+0U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eidDyF8BkYpsKM2KCcaSXpWkkFSJeYuEhr4/3enJX5BpkiIRhXTLJYQ4rP2W09lEsMN3yIcaldOG+k6lQxTR9DtfRMoFxcq7+NwZ6XYZADLaNlL2mVLCZOMUYcG5HbfATCbWhHETrbPvMpbsXDpxz1ejbRApt9++Ef7aAgkNjoA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=Q5XO73gX; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-337d99f9cdfso3505571f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 23:02:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1705993358; x=1706598158; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0HA3HgAJbahgUJBX1gJ3AzroSL9tqmUD02YJ2gg4LNI=;
+        b=Q5XO73gX+U2nlb9u59i4ZhawUFU0/aOalOflTpE5G0EqqxrXQ0v119F96LsSe7ohiC
+         w/u4kj1Ci8lLFZNqnUFSbrr4b80XzBdUisbIdwRPNJ+ZdJIeOGK6XmwimsLH6on8A6mI
+         xBI0d5TqhipvbFwbkY1JL2jHKJtJ8pMmJLxuhriz+B92AlYnYzNE6Foqkg9vyE+lRqOw
+         KHAz4gKoqrm3bqJfo5ytjZF3LT3tr2C0ukmbzPNEPhGMfEaH39UviY+WeHnIiT/F/dZz
+         qXH3kz08EjJ25wWvXLGhAdgdDJcGdCBYraNWjWqo265YOsxQNQk88Ij3bYh0Otz/eiK1
+         3dWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705993346; x=1706598146;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TsV76N5FsHio9dpfWTXAdKJMHXRNJk86MphFy5Q6dbc=;
-        b=EigWGpbU2YjwMpfBCYDgiSx4qJDtn54IbgENZgSTp2eFZloFFmCVoj7XcEB8CywPxW
-         Y+hQDLas99d6usYqeVbt8lTbmXPt0Oy5z8BJvfoK+RY2hL7oY2XUeMuU7JC8AyL2kAD8
-         zQVtyAkrfCX0HC3Inr5LTLKf4YJ5VrXLvA8Rhk1/S5wFr85yQUh5hFkH5tHVV3hkO+mb
-         Pz4c+3fdsBNjTFIolskOu6Y/NmQqJnNv6DRDgEkxLhQZWu6RlFjXTsXVVLcJz2lGO/Of
-         ehkyDlyFiLV33EQ8YbXiOigpCIKa0g8SsiylOrgjelxOdZKxBPcmPL7udg6dm/1Mo0fW
-         TqrA==
-X-Gm-Message-State: AOJu0YyjZ+aaWP4/dPGJ2Yn+EwmSUS1n69JJE9jK9/sW2Id/Zy20J9KQ
-	bmolYdKW9pblsAfmrDaG7rQYx31fLNH4PUm7QrXwO3V7WNsKG1CtRB/0ATZnG/7UQaVctf6yv7S
-	+1fzYFMevfma6geKK6DjWtdWNKoU3HQzIzmFjGPv+RHe41wADPAu/K3/AagpHIpD2C48G7A==
-X-Received: by 2002:a5d:45c8:0:b0:339:2316:2dfd with SMTP id b8-20020a5d45c8000000b0033923162dfdmr2793876wrs.55.1705993345948;
-        Mon, 22 Jan 2024 23:02:25 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFKPCc/VKtZ0fB34YBJ8fKJhmwOhPLSe4PAnPOQ4TN+MbrkUQsJV7uRv9FqgcBj96Znj8l10A==
-X-Received: by 2002:a5d:45c8:0:b0:339:2316:2dfd with SMTP id b8-20020a5d45c8000000b0033923162dfdmr2793868wrs.55.1705993345613;
-        Mon, 22 Jan 2024 23:02:25 -0800 (PST)
-Received: from redhat.com ([2a06:c701:73ef:4100:2cf6:9475:f85:181e])
-        by smtp.gmail.com with ESMTPSA id d6-20020adff846000000b0033725783839sm15422511wrq.110.2024.01.22.23.02.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 23:02:24 -0800 (PST)
-Date: Tue, 23 Jan 2024 02:02:22 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Liang Chen <liangchen.linux@gmail.com>
-Cc: jasowang@redhat.com, virtualization@lists.linux-foundation.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] virtio_net: Support RX hash XDP hint
-Message-ID: <20240123020132-mutt-send-email-mst@kernel.org>
-References: <20240122102256.261374-1-liangchen.linux@gmail.com>
+        d=1e100.net; s=20230601; t=1705993358; x=1706598158;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0HA3HgAJbahgUJBX1gJ3AzroSL9tqmUD02YJ2gg4LNI=;
+        b=ZTXnHjTE12sgBhKT9U50L22JlFLoAAUoRHXmg1JSTNjK0M3riiSWuJ3YxczCCqmib4
+         4RkS3eZStx31EyB7ET+sqoz6cXnk3RG+ojpfMHD5nsCi3TSVZnFYFxBDjzBtElktCnTe
+         PogTMr6remA6KGVGNgLyyryV/ovZ85v/PMQEclxNTdeW91Xyvp6vv8Ch2a/b0lVlqViP
+         fqI350KC+abB+wxfmkwg/0911oF8izSjmFk2iGdh/vPGzsIHpNQMBqsH93yo5PgKiBwi
+         nJr2NjjbJCOK3sRERqFg8yh8UgbN6aPTdIJmEsa4tsmapZPecl3gkLJlFfHUSXKyieU8
+         BkmA==
+X-Gm-Message-State: AOJu0YwdsFX8kmq34AZhcowaIRg3xhgAvIWWOvTMOxp+jwJn4Fyp98tf
+	fo1mtG9Jm7tsHGZfnrdQI5oV7J1pasmmDpW3l9xGUMHiEhL/pqimT5LXg0jegc8=
+X-Google-Smtp-Source: AGHT+IFS5K2uIygufmipIXH0vhHz5DAndNr0whIooxvibYTJnGVc1IlHqA+kcq/xwxH4E4Cnt7O3Xg==
+X-Received: by 2002:a05:6000:4cc:b0:339:35a4:7caa with SMTP id h12-20020a05600004cc00b0033935a47caamr1569042wri.54.1705993358156;
+        Mon, 22 Jan 2024 23:02:38 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.135])
+        by smtp.gmail.com with ESMTPSA id q7-20020adffec7000000b0033926505eafsm8410992wrs.32.2024.01.22.23.02.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jan 2024 23:02:37 -0800 (PST)
+Message-ID: <92db308f-075c-4799-9777-5bc14438ce68@tuxon.dev>
+Date: Tue, 23 Jan 2024 09:02:35 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240122102256.261374-1-liangchen.linux@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 03/10] watchdog: rzg2l_wdt: Check return status of
+ pm_runtime_put()
+Content-Language: en-US
+To: Guenter Roeck <linux@roeck-us.net>, wim@linux-watchdog.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ geert+renesas@glider.be, magnus.damm@gmail.com, mturquette@baylibre.com,
+ sboyd@kernel.org, p.zabel@pengutronix.de, biju.das.jz@bp.renesas.com
+Cc: linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-clk@vger.kernel.org, Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240122111115.2861835-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240122111115.2861835-4-claudiu.beznea.uj@bp.renesas.com>
+ <c857cdd4-459b-41ae-b4bb-0da45e461335@roeck-us.net>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <c857cdd4-459b-41ae-b4bb-0da45e461335@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jan 22, 2024 at 06:22:56PM +0800, Liang Chen wrote:
-> The RSS hash report is a feature that's part of the virtio specification.
-> Currently, virtio backends like qemu, vdpa (mlx5), and potentially vhost
-> (still a work in progress as per [1]) support this feature. While the
-> capability to obtain the RSS hash has been enabled in the normal path,
-> it's currently missing in the XDP path. Therefore, we are introducing XDP
-> hints through kfuncs to allow XDP programs to access the RSS hash.
+
+
+On 22.01.2024 19:31, Guenter Roeck wrote:
+> On 1/22/24 03:11, Claudiu wrote:
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>
+>> pm_runtime_put() may return an error code. Check its return status.
+>>
+>> Fixes: 2cbc5cd0b55f ("watchdog: Add Watchdog Timer driver for RZ/G2L")
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>> ---
+>>   drivers/watchdog/rzg2l_wdt.c | 6 +++++-
+>>   1 file changed, 5 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/watchdog/rzg2l_wdt.c b/drivers/watchdog/rzg2l_wdt.c
+>> index 4ab9e7c5e771..0554965027cd 100644
+>> --- a/drivers/watchdog/rzg2l_wdt.c
+>> +++ b/drivers/watchdog/rzg2l_wdt.c
+>> @@ -144,9 +144,13 @@ static int rzg2l_wdt_start(struct watchdog_device
+>> *wdev)
+>>   static int rzg2l_wdt_stop(struct watchdog_device *wdev)
+>>   {
+>>       struct rzg2l_wdt_priv *priv = watchdog_get_drvdata(wdev);
+>> +    int ret;
+>>         rzg2l_wdt_reset(priv);
+>> -    pm_runtime_put(wdev->parent);
+>> +
+>> +    ret = pm_runtime_put(wdev->parent);
+>> +    if (ret < 0)
+>> +        return ret;
+>>         return 0;
+>>   }
 > 
-> Signed-off-by: Liang Chen <liangchen.linux@gmail.com>
-> ---
->  drivers/net/virtio_net.c | 56 ++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 56 insertions(+)
+> A simple
+>     return pm_runtime_put();
+> might do.
+
+pm_runtime_put() may return 1 if the device is already suspended though
+this call trace:
+
+pm_runtime_put() ->
+   __pm_runtime_idle() ->
+       rpm_idle() ->
+           rpm_suspend() ->
+               rpm_check_suspend_allowed() [1]
+
+That return value is not considered error thus I wanted to consider it
+here, too.
+
+[1]
+https://elixir.bootlin.com/linux/latest/source/drivers/base/power/runtime.c#L278
+
 > 
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index d7ce4a1011ea..1463a4709e3c 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -4579,6 +4579,60 @@ static void virtnet_set_big_packets(struct virtnet_info *vi, const int mtu)
->  	}
->  }
->  
-> +static int virtnet_xdp_rx_hash(const struct xdp_md *_ctx, u32 *hash,
-> +			   enum xdp_rss_hash_type *rss_type)
-> +{
-> +	const struct xdp_buff *xdp = (void *)_ctx;
-> +	struct virtio_net_hdr_v1_hash *hdr_hash;
-> +	struct virtnet_info *vi;
-> +
-> +	if (!(xdp->rxq->dev->features & NETIF_F_RXHASH))
-> +		return -ENODATA;
-> +
-> +	vi = netdev_priv(xdp->rxq->dev);
-> +	hdr_hash = (struct virtio_net_hdr_v1_hash *)(xdp->data - vi->hdr_len);
-> +
-> +	switch (__le16_to_cpu(hdr_hash->hash_report)) {
-> +		case VIRTIO_NET_HASH_REPORT_TCPv4:
-> +			*rss_type = XDP_RSS_TYPE_L4_IPV4_TCP;
-> +			break;
-> +		case VIRTIO_NET_HASH_REPORT_UDPv4:
-> +			*rss_type = XDP_RSS_TYPE_L4_IPV4_UDP;
-> +			break;
-> +		case VIRTIO_NET_HASH_REPORT_TCPv6:
-> +			*rss_type = XDP_RSS_TYPE_L4_IPV6_TCP;
-> +			break;
-> +		case VIRTIO_NET_HASH_REPORT_UDPv6:
-> +			*rss_type = XDP_RSS_TYPE_L4_IPV6_UDP;
-> +			break;
-> +		case VIRTIO_NET_HASH_REPORT_TCPv6_EX:
-> +			*rss_type = XDP_RSS_TYPE_L4_IPV6_TCP_EX;
-> +			break;
-> +		case VIRTIO_NET_HASH_REPORT_UDPv6_EX:
-> +			*rss_type = XDP_RSS_TYPE_L4_IPV6_UDP_EX;
-> +			break;
-> +		case VIRTIO_NET_HASH_REPORT_IPv4:
-> +			*rss_type = XDP_RSS_TYPE_L3_IPV4;
-> +			break;
-> +		case VIRTIO_NET_HASH_REPORT_IPv6:
-> +			*rss_type = XDP_RSS_TYPE_L3_IPV6;
-> +			break;
-> +		case VIRTIO_NET_HASH_REPORT_IPv6_EX:
-> +			*rss_type = XDP_RSS_TYPE_L3_IPV6_EX;
-> +			break;
-> +		case VIRTIO_NET_HASH_REPORT_NONE:
-> +		default:
-> +			*rss_type = XDP_RSS_TYPE_NONE;
-> +	}
-> +
-> +	*hash = __le32_to_cpu(hdr_hash->hash_value);
-> +	return 0;
-> +}
-> +
-> +static const struct xdp_metadata_ops virtnet_xdp_metadata_ops = {
-> +	.xmo_rx_hash			= virtnet_xdp_rx_hash,
-> +};
-> +
->  static int virtnet_probe(struct virtio_device *vdev)
->  {
->  	int i, err = -ENOMEM;
-> @@ -4613,6 +4667,8 @@ static int virtnet_probe(struct virtio_device *vdev)
->  	dev->ethtool_ops = &virtnet_ethtool_ops;
->  	SET_NETDEV_DEV(dev, &vdev->dev);
->  
-> +	dev->xdp_metadata_ops = &virtnet_xdp_metadata_ops;
-> +
+> However, one question: Given that pm_runtime_put() returns -ENOSYS if
+> CONFIG_PM is disabled, that means the driver will depend on CONFIG_PM=y.
 
-How about making this assignment depend on 
+Indeed, the driver depends on CONFIG_PM=y for proper working. It is for
+devices selecting ARCH_RZG2L and RZ/V2M (ARM64 based uarch) which select
+CONFIG_PM=y:
+https://elixir.bootlin.com/linux/latest/source/drivers/soc/renesas/Kconfig#L45
 
-xdp->rxq->dev->features & NETIF_F_RXHASH
+The driver is written with CONFIG_PM=y dependency in mind (e.g. the clocks
+are enabled though runtime PM APIs).
 
-?
+> Assuming this is intentional, would it make sense to explicitly declare
+> that dependency in Kconfig ? It doesn't seem to make any sense to build
+> the driver if it won't work anyway.
 
->  	/* Do we support "hardware" checksums? */
->  	if (virtio_has_feature(vdev, VIRTIO_NET_F_CSUM)) {
->  		/* This opens up the world of extra features. */
-> -- 
-> 2.40.1
+The dependency exists there for ARCH_RZG2L and RZ/V2M devices but not
+directly and it is not strict (in the sense that we allow to build the
+driver w/o CONFIG_PM (I think this is good to check build on different
+configurations, the COMPILE_TEST is there anyway in [1]) ). E.g.:
 
+RENESAS_RZG2LWDT depends on ARCH_RENESAS [1]
+ARCH_RENESAS is the ARMv8 uarch flag [2]
+SOC_RENESAS is set if ARCH_RENESAS [3]
+ARCH_RZG2L is visible only if SOC_RENESAS [4]
+ARCH_RZG2L selects PM [5]
+RZ/V2M selects PM [6]
+
+Please let me know what do you think about it?
+
+Thank you,
+Claudiu Beznea
+
+
+[1]
+https://elixir.bootlin.com/linux/latest/source/drivers/watchdog/Kconfig#L913
+[2]
+https://elixir.bootlin.com/linux/latest/source/arch/arm64/Kconfig.platforms#L273
+[3]
+https://elixir.bootlin.com/linux/latest/source/drivers/soc/renesas/Kconfig#L2
+[4]
+https://elixir.bootlin.com/linux/latest/source/drivers/soc/renesas/Kconfig#L9
+[5]
+https://elixir.bootlin.com/linux/latest/source/drivers/soc/renesas/Kconfig#L45
+[6]
+https://elixir.bootlin.com/linux/latest/source/drivers/soc/renesas/Kconfig#L328
+
+
+> 
+> Thanks,
+> Guenter
+> 
 
