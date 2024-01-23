@@ -1,139 +1,153 @@
-Return-Path: <linux-kernel+bounces-35705-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35699-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEECB839561
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:52:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74060839550
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:51:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36C701C26031
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:52:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 242A12867A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:51:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A27712837D;
-	Tue, 23 Jan 2024 16:47:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DE6A81AC5;
+	Tue, 23 Jan 2024 16:47:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Q/Wshek2"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XDWjqQOv"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EA79823C4
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 16:47:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEF177FBC5
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 16:47:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706028442; cv=none; b=pdT3b2OZpr8Eji7IDgBjN3V1JtswQK/xxFxaE9zVR8ISepmoH0M+YvQpnr3pfLyhe+7dN1pwEEWv48TS0t7S3Wcz22FbXvlytNDoRLs5tBc+DaRmUv3mDyaU0m7qyfBQ9AduRjWI72LMo6hR8MWyCzRyeZKSEAjLTzz2Uudcnd8=
+	t=1706028435; cv=none; b=dfsWt7cqm6I/kPC7aRnKxX3vBFEUgVwdhX5VucAMX5N5AwrTt3gEUtbBRopLpo5cTgH177mV5n0dwqL8BLh1w//qr6jwL/JHDAHUwDSXm0QxMnhKs8qdTLckHGDatev0kWF/Dluur2ZVA1VBEfY1VWaCY65WWC5cqbWYzb9DzTk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706028442; c=relaxed/simple;
-	bh=y2H4liOuLMXWRjrojYIkk1z0/acO1y/+NRSlJUxLT6o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SsXGl0gMs7EZhv/hqYEMT8F4fpA2Ye52IWY0Y/vyBTn2ri9kPnxPYcrx/4/P4eqgZHl3tfeTVyIYPPyl7qKtLTzYJ0kdJpI7sgsmzffwhBSkV4Ay4x6f+F3+0rwguqtMn7RP3HZq2T/t71Aun9XJpP7nNZ13NJTD3XmsmK/LGGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Q/Wshek2; arc=none smtp.client-ip=134.134.136.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706028440; x=1737564440;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=y2H4liOuLMXWRjrojYIkk1z0/acO1y/+NRSlJUxLT6o=;
-  b=Q/Wshek2Uy7YgKd8lgvyLgWffsA2Fh/4009RDioISYw1q4WU/g6wFlZh
-   grZe4rGgIZINommUif0BzwIyqwc+tFKPMiUxsp4atklT2+wwxWf9foYFT
-   OW5qoixhHFBOf7a1rnDXUoOaYCZotCHikOvm65jnTuzaFgWsmRRZ4DDKn
-   grTzWeBuQf0wPp1XSY9WfuZDeGNLF3BRPhkcWJP5frLaiR4M4V/7oT6gJ
-   2Ua9nFNIMZCLaaDdjH9ot1uxSFjBY3gsmlX5e216VghGtkxuWK0Oifcku
-   /MIkAAUe+/ygYCoNbvuycI//e8YXVLfmZwMsy2NfxcXbNz+Zd3yVQpjsr
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="391999549"
-X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
-   d="scan'208";a="391999549"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 08:47:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="959189334"
-X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
-   d="scan'208";a="959189334"
-Received: from gsrivast-mobl.amr.corp.intel.com (HELO [10.212.204.58]) ([10.212.204.58])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 08:47:09 -0800
-Message-ID: <c5c56248-4831-4a0c-91ee-c9041dd69a7e@intel.com>
-Date: Tue, 23 Jan 2024 08:47:08 -0800
+	s=arc-20240116; t=1706028435; c=relaxed/simple;
+	bh=VmqWmkVk2E221iXjM3l2lT8iiChVT3f//bDMS9EMSDg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=N1L06fU4aqE7WgQiC2EYe1DqXTcyNF6R/brXmuQ0kZJpqVM13kj6NEY4DoiJ8Ro163qYDJdtKfH0hWKo72aRWZKR1FTLsOtN1UV31iLipCqMY7RKTSEeoTu9j4Nq10IJZ9pGrJGw6xG4afaPnuBbWQJ3eu6RzEISe2pNp1THecQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XDWjqQOv; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706028433;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M9mM7qlCz6z9YvWSA4Tu5l5wrgkaUMvIE6kPjXg7hy4=;
+	b=XDWjqQOvL50+q2tGzd+HfZD6Z2NpvI3NRkHOukbLLzJikJqbvU5OyN7NobuHPibbeqjFdE
+	ZrDZ5M6weW+tQvPADsgKW8a7rPnuTqgnD2FHRJYHNX0stMNA0U17jCSVSltmWwRjIqFfsf
+	euUWAAreO9w4MaSNeWbeOnbrDyii1cw=
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
+ [209.85.166.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-21-Ra3RZYOaMPuhPUcNDiPiaA-1; Tue, 23 Jan 2024 11:47:11 -0500
+X-MC-Unique: Ra3RZYOaMPuhPUcNDiPiaA-1
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-361b0f701c4so24525075ab.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 08:47:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706028430; x=1706633230;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M9mM7qlCz6z9YvWSA4Tu5l5wrgkaUMvIE6kPjXg7hy4=;
+        b=Av74LyPEtdv07/x179mtg+jTqP1yTt5YZ+kam8UiyM6TCUbYmqfxSqdQWWjndaeKBu
+         1yMYO+AWmLROPT6ZGECV3kr8FUbxWgeIvwZnkJhWdqQyqF7hL53LVwG3O4NPffreIP4R
+         VdeIX21jUV050j5CKh92RKCBQ1RzqMF/v4rjF+ni5DjZ6LQOSZKW4u/in356arBUwjK7
+         DIqshXFAG273TMLdYNJhxH/y4MY4a+5cQO6pcAzaTocXHesH6ghDLFtAjtdP/obHiLSf
+         K5cpCAFao2Yfb6XNi6bhxAV10Rtd2pgpMpxmMvk7m+xmY9LBE+ZffCSSkuacCRTNtnro
+         Nf+A==
+X-Gm-Message-State: AOJu0Yy3v7xScsblDofPqwHnZBmyKx5YNk7AUOafo2na/FBhI4k4zK7U
+	z3Nxn2MeSVIkeojHzdFCkcO9dPiF2+/zMP8WS3HTRtTzso66ZOiT/+Z06s2DIhir8fERUQWRx4T
+	qgt52EsNqNblD07Ut0nTzVJrSwWnm1poGRbbqrZLnfG5UgmzfZ7MLe9exaQpkkw==
+X-Received: by 2002:a05:6e02:d50:b0:35f:f5cf:cbb4 with SMTP id h16-20020a056e020d5000b0035ff5cfcbb4mr115627ilj.40.1706028430654;
+        Tue, 23 Jan 2024 08:47:10 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH9fXaWBL0yG1u10Af5Dv9zNtVuVDGLAuHTeJ5fG1osxWhm/qUiT27aEHuqFS5qZWzxjjG/cw==
+X-Received: by 2002:a05:6e02:d50:b0:35f:f5cf:cbb4 with SMTP id h16-20020a056e020d5000b0035ff5cfcbb4mr115624ilj.40.1706028430424;
+        Tue, 23 Jan 2024 08:47:10 -0800 (PST)
+Received: from redhat.com ([38.15.36.11])
+        by smtp.gmail.com with ESMTPSA id ck12-20020a056e02370c00b003627a7f95a7sm1797183ilb.0.2024.01.23.08.47.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jan 2024 08:47:09 -0800 (PST)
+Date: Tue, 23 Jan 2024 09:47:08 -0700
+From: Alex Williamson <alex.williamson@redhat.com>
+To: Lukas Wunner <lukas@wunner.de>
+Cc: linux-pci@vger.kernel.org, bhelgaas@google.com,
+ linux-kernel@vger.kernel.org, eric.auger@redhat.com,
+ mika.westerberg@linux.intel.com, rafael.j.wysocki@intel.com,
+ Sanath.S@amd.com
+Subject: Re: [PATCH v2 2/2] PCI: Fix runtime PM race with PME polling
+Message-ID: <20240123094708.39937bc4.alex.williamson@redhat.com>
+In-Reply-To: <20240123161239.GA1386@wunner.de>
+References: <20230803171233.3810944-1-alex.williamson@redhat.com>
+	<20230803171233.3810944-3-alex.williamson@redhat.com>
+	<20240118115049.3b5efef0.alex.williamson@redhat.com>
+	<20240122221730.GA16831@wunner.de>
+	<20240122155003.587225aa.alex.williamson@redhat.com>
+	<20240123104519.GA21747@wunner.de>
+	<20240123085521.07e2b978.alex.williamson@redhat.com>
+	<20240123161239.GA1386@wunner.de>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86/mm: Simplify redundant overlap calculation
-Content-Language: en-US
-To: Dave Hansen <dave.hansen@linux.intel.com>, linux-kernel@vger.kernel.org
-Cc: David Binderman <dcb314@hotmail.com>, Andy Lutomirski <luto@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- x86@kernel.org
-References: <20240123163623.1342917-1-dave.hansen@linux.intel.com>
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <20240123163623.1342917-1-dave.hansen@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On 1/23/24 08:36, Dave Hansen wrote:
-> There have been a couple of reports that the two sides of the
-> overlaps() calculation are redundant.  I spent way too much time
-> looking at this, but I became convinced that they are redundant
-> when a little test program of mine produced identical disassembly
-> for both versions of the check.
+On Tue, 23 Jan 2024 17:12:39 +0100
+Lukas Wunner <lukas@wunner.de> wrote:
+
+> On Tue, Jan 23, 2024 at 08:55:21AM -0700, Alex Williamson wrote:
+> > On Tue, 23 Jan 2024 11:45:19 +0100 Lukas Wunner <lukas@wunner.de> wrote:  
+> > > If the device is RPM_SUSPENDING, why immediately resume it for polling?
+> > > It's sufficient to poll it the next time around, i.e. 1 second later.
+> > > 
+> > > Likewise, if it's already RPM_RESUMING or RPM_ACTIVE anyway, no need
+> > > to poll PME.  
+> > 
+> > I'm clearly not an expert on PME, but this is not obvious to me and
+> > before the commit that went in through this thread, PME wakeup was
+> > triggered regardless of the PM state.  I was trying to restore the
+> > behavior of not requiring a specific PM state other than deferring
+> > polling across transition states.  
 > 
-> Remove the second condition.  It is exactly the same as the first.
+> There are broken devices which are incapable of signaling PME.
+> As a workaround, the kernel polls these devices once per second.
+> The first time the device signals PME, the kernel stops polling
+> that particular device because PME is clearly working.
 > 
-> Fixes: 91ee8f5c1f50 ("x86/mm/cpa: Allow range check for static protections")
-> Reported-by: David Binderman <dcb314@hotmail.com>
+> So this is just a best-effort way to support PME for broken devices.
+> If it takes a little longer to detect that PME was signaled, it's not
+> a big deal.
+> 
+> > The issue I'm trying to address is that config space of the device can
+> > become inaccessible while calling pci_pme_wakeup() on it, causing a
+> > system fault on some hardware.  So a gratuitous pci_pme_wakeup() can be
+> > detrimental.
+> > 
+> > We require the device config space to remain accessible, therefore the
+> > instantaneous test against D3cold and that the parent bridge is in D0
+> > is not sufficient.  I see traces where the parent bridge is in D0, but
+> > the PM state is RPM_SUSPENDING and the endpoint device transitions to
+> > D3cold while we're executing pci_pme_wakeup().  
+> 
+> We have pci_config_pm_runtime_{get,put}() helpers to ensure the parent
+> of a device is in D0 so that the device's config space is accessible.
+> So you may need to use that in pci_pme_wakeup().
 
-Gah, that one escaped a moment too soon:
+pci_config_pm_runtime_get() doesn't seem to align with our current
+philosophy to defer polling devices that aren't in the correct power
+state.  We require the bridge to be in D0, but we defer polling rather
+than resume it otherwise.  We also defer device polling if the device
+is in D3cold, whereas the above function would resume a device in that
+state.  I think our bridge D0 test could be reliable if it were done
+holding a reference acquired via pm_runtime_get_if_active().  Thanks,
 
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Alex
 
-.. obviously
 
