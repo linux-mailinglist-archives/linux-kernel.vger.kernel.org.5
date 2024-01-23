@@ -1,183 +1,211 @@
-Return-Path: <linux-kernel+bounces-35852-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35853-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CEAD839761
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:12:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC10C839764
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:14:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B25AD1C214B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:12:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71FE1288A4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:14:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D24981AA7;
-	Tue, 23 Jan 2024 18:12:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6096681AA3;
+	Tue, 23 Jan 2024 18:14:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oKfaOYf6"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JUc7eAo3"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CFBD81213
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 18:12:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6A1180059
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 18:14:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706033568; cv=none; b=Dfzm7TyB5IFtfXMS0fJ6cN1IEFYcNTB9O+/zJKxf78dv40MH+M8k7NJhsvvJDIggbIS5wIj0sx8X3qLvR3qoDb21QJh4WKWLf2tWF77TXOP/93otchsHdWLZO/DMrCuK5WBUL3xvmiRul9P9IPH9iJi1xf9CO8S5s1U/vYMpCRo=
+	t=1706033664; cv=none; b=fVtMp8kd6UWDK2X4WVyQUl40fMBSDfWHi/OiSS479MdUQl5fG7f6afaVEcSLpnP+kANuJvvFiMBKbA388sv2zfWR3j+MmZC8X5aLYBJecevb7diYt6QRmt65UkriqgDxJ0G0e70MYZtqEV8Wcd/yjTz4phuMGvmecPCDd+QrATY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706033568; c=relaxed/simple;
-	bh=+W+AqW+k5MfHNzbur2Sb7hgrL0x44q1TMGMN+vCfnTA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JPFwhwYHnpj4Pu2cJRQGTYvXXSN7owLxcL4wW19sMmuGXOyVvaYVRQUwClx6hUsWVnKKYS5PwHKcTDUoVvrhxhp518TZjcVaCYUZKQafkYmznRRgi32hYNf80h18TG7UvIB2gEpJMZLBX4owXHcMvx7znebYI7n/ppDt4Fr0gBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oKfaOYf6; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-337cc8e72f5so4247545f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 10:12:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706033565; x=1706638365; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=dq4sU5qjvIDsr51THEhq6jtgp9rKsAHiomBG84n/Fuc=;
-        b=oKfaOYf6JLdVSwwp+OLg6Rj45eWEfwtpimvasEBLZ+MTaNPBZndi3MdvgMsPfrfW9Z
-         7+qYlNgGeaDG7huc0z1idz7ta0y7FT5tlFqykE+nr7pCckrVV5H4MpuOMuDijv7RrqBI
-         tcm0aT3q7ZUSmedTLzRqU+lAYw0vH0oEIuk5RYhImdOnJQJPw6m05qxFS3nHr3K28Lqg
-         4ZkEdTE3mTLH1ARK2V7vFEpsQ5+vHmFLEeJq8q5egfOWc+aSA9ingKauaMU5tpao6zGN
-         ME5dlXnyG9PKaR7IqDa43+Cz3ykuyxWJf2HWIF5X6ZG0WtNJxo69s7CqN8BrR7UvIA2j
-         gp2g==
+	s=arc-20240116; t=1706033664; c=relaxed/simple;
+	bh=xHFGpm9pWz3kZVYwHNNZet//rXzB/hN+jSwWzW2Gyn0=;
+	h=Date:From:To:cc:Subject:Message-ID:MIME-Version:Content-Type; b=Re6gaSvyHtvzvxQIxLUGeKm868ocLJdHURkI2q4Cuq1sFnVfwRS4lrdflAXfEaCSnw3r5LmbgEDp5kiXXKDBViPecaBGI/qNdGmfZslWH4Qghx1WMyLyyqalBIMlKdWJYubzr4fd+wLZ7wHZUNKWs2dgPusuU/3sJYL1neM282o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JUc7eAo3; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706033661;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=eM/q6+ASudnWqkA1GcXB1FCKeCcpDQUk18zBNzi9GWQ=;
+	b=JUc7eAo3PpN/edw871mcdBZyQVRTlZd1OlIRtc9hZ++o5c/C5F5qUhVsf5/GLQP0rtEKXx
+	/SSBdUkNu09RAZrglDKe39Ki9NU7SUeHfO8LahoupPYmMnuhFGL2++NtYOh5tTCfVrkqRl
+	Ghukajh/8GH9AXXSbsqYFtYl3vqwAbs=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-589-dS7E340OPruTPrGY4Zl1UQ-1; Tue, 23 Jan 2024 13:14:20 -0500
+X-MC-Unique: dS7E340OPruTPrGY4Zl1UQ-1
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-7831ed4bb2aso859739485a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 10:14:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706033565; x=1706638365;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dq4sU5qjvIDsr51THEhq6jtgp9rKsAHiomBG84n/Fuc=;
-        b=ECje8kvPK5wCamdLlpAdIKTAv/0MWYxJsuH49eOLT43ckgzSiukQJzA8/I6idSN2Wt
-         LgFXsAUQ0NY93ux+pQBObaq5HoLYPasbNt2sfhnJ2daRH+WUisMZSObIP7L653fdNxuO
-         6dPcEmjpZGc7HwiG5wtGKx1hDSpv7M4v4UPU6kcNuxFS+yyfTE9XZrTBJ29wo0h7kKes
-         nJC+u6k3lvMjJkfxtrmdScn4ySg7hU+WGme8WiC5d70m+R/qG0UjzhqiO/nNzHk+vuqZ
-         2j94F0VM5VOKhmR5ifXAqb6SOVueMUSWTfg+yInx99/z3q9eMGWsoIp9LHTgf2JqgOPJ
-         nGlw==
-X-Gm-Message-State: AOJu0YyDnqN+wmKbDj3raHsObigeepVOASmDdCqHKQE7yNWcpMGAg5KR
-	VLrHPTONyBAjpVZvN6wJaPvYEiiNJYCkSKFlh2m9NWdUfv+IeFtV2jO3MNoHt9o=
-X-Google-Smtp-Source: AGHT+IGiYOo20x7pVta4MxGePb1BjCmsxmpLPnsJ1+A6X9iWMxljXqPr3HBtQmTqd/ihvRFbCel9gQ==
-X-Received: by 2002:adf:e602:0:b0:339:30fd:cbb5 with SMTP id p2-20020adfe602000000b0033930fdcbb5mr2343358wrm.109.1706033564736;
-        Tue, 23 Jan 2024 10:12:44 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id u11-20020adfa18b000000b00337d2d1e0ecsm14207170wru.104.2024.01.23.10.12.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jan 2024 10:12:44 -0800 (PST)
-Message-ID: <6c72a521-1048-42eb-ac74-d8f718a90723@linaro.org>
-Date: Tue, 23 Jan 2024 19:12:41 +0100
+        d=1e100.net; s=20230601; t=1706033659; x=1706638459;
+        h=mime-version:message-id:subject:cc:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eM/q6+ASudnWqkA1GcXB1FCKeCcpDQUk18zBNzi9GWQ=;
+        b=RrU51JyVV2F6A+rUzhQgZunw8aKBpVsTwwPvrvpAtSBo+jbxO6Xpcw6fNtm93bvNKm
+         U9hbHNPqajKfXe+PHQ6rMGqwa8or29zxX3gXUSUhJoGs7d0sVzo9+yOF8OIibfmA58A2
+         WpiG4vxigKujD4SuwvFr/uFr1LM6T6mbrRXWCbRa3YNNlv/Bs9XG5+5k5guRekUcqGnv
+         O9D+zOMxeJJoxytMGdT8lxxBYUJk/BCui4c+zMkf0fcuk7ZKIWZLOcwl9K81L+EwAATR
+         B1U7/s7zI6aqFZ6owgGnTTGV6WzDmWyXpV3JZgUQC7ZjNmZHm2Ug9VlnaCmvCHtHqzi0
+         aKYw==
+X-Gm-Message-State: AOJu0YyUGzfQA5O9fUYlwxgi8MCGMaoPi7zrzK7e+fu0lLjpG1Z76/Ee
+	7rGyv+IEzjhGslNKgWJB23MQ2CYAHDko8gN56uxi12l86vQ/THAdtVt90genIjwvfcffYxdrBky
+	/Ug2HR/Pm8KGaarScfck+nZ2M2kuOP7nJL65pEFzZ0Vp4bFfhmDnbTEp51qEK51+Aw4cj8A==
+X-Received: by 2002:ae9:f013:0:b0:783:4da7:cb0a with SMTP id l19-20020ae9f013000000b007834da7cb0amr6497284qkg.133.1706033658695;
+        Tue, 23 Jan 2024 10:14:18 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEf7M6O5d3QeI26pmzTEouNVBiDWOXr8Y36A5bae8xC/Ml3y1fubitwXSsttOsUt8tK59q2Yg==
+X-Received: by 2002:ae9:f013:0:b0:783:4da7:cb0a with SMTP id l19-20020ae9f013000000b007834da7cb0amr6497277qkg.133.1706033658430;
+        Tue, 23 Jan 2024 10:14:18 -0800 (PST)
+Received: from rh (p200300c93f0273004f0fe90936098834.dip0.t-ipconnect.de. [2003:c9:3f02:7300:4f0f:e909:3609:8834])
+        by smtp.gmail.com with ESMTPSA id sq9-20020a05620a4ac900b0078322b61e88sm3301622qkn.78.2024.01.23.10.14.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jan 2024 10:14:18 -0800 (PST)
+Date: Tue, 23 Jan 2024 19:14:14 +0100 (CET)
+From: Sebastian Ott <sebott@redhat.com>
+To: dri-devel@lists.freedesktop.org, virtualization@lists.linux.dev, 
+    linux-kernel@vger.kernel.org
+cc: David Airlie <airlied@redhat.com>, Gerd Hoffmann <kraxel@redhat.com>, 
+    Daniel Vetter <daniel@ffwll.ch>
+Subject: [PATCH RESEND] drm/virtio: set segment size for virtio_gpu device
+Message-ID: <7258a4cc-da16-5c34-a042-2a23ee396d56@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/9] watchdog: s3c2410_wdt: update to use new
- exynos_pmu_*() apis
-To: Peter Griffin <peter.griffin@linaro.org>
-Cc: arnd@arndb.de, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- linux@roeck-us.net, wim@linux-watchdog.org, conor+dt@kernel.org,
- alim.akhtar@samsung.com, jaewon02.kim@samsung.com,
- chanho61.park@samsung.com, semen.protsenko@linaro.org,
- kernel-team@android.com, tudor.ambarus@linaro.org, andre.draszik@linaro.org,
- saravanak@google.com, willmcvicker@google.com, linux-fsd@tesla.com,
- linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org
-References: <20240122225710.1952066-1-peter.griffin@linaro.org>
- <20240122225710.1952066-4-peter.griffin@linaro.org>
- <da30a68a-e29f-45c8-aa73-02955255a457@linaro.org>
- <CADrjBPor5tMY4r0jOy7GH36auCU7dWn6Qn4ct89bsSMW4vAQOA@mail.gmail.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CADrjBPor5tMY4r0jOy7GH36auCU7dWn6Qn4ct89bsSMW4vAQOA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; format=flowed; charset=US-ASCII
 
-On 23/01/2024 18:30, Peter Griffin wrote:
->>>               dev_warn(wdt->dev, "Couldn't get RST_STAT register\n");
->>>       else if (rst_stat & BIT(wdt->drv_data->rst_stat_bit))
->>> @@ -698,14 +699,6 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
->>>       if (ret)
->>>               return ret;
->>>
->>> -     if (wdt->drv_data->quirks & QUIRKS_HAVE_PMUREG) {
->>> -             wdt->pmureg = syscon_regmap_lookup_by_phandle(dev->of_node,
->>> -                                             "samsung,syscon-phandle");
->>> -             if (IS_ERR(wdt->pmureg))
->>> -                     return dev_err_probe(dev, PTR_ERR(wdt->pmureg),
->>> -                                          "syscon regmap lookup failed.\n");
->>
->>
->> Continuing topic from the binding: I don't see how you handle probe
->> deferral, suspend ordering.
-> 
-> The current implementation is simply relying on exynos-pmu being
-> postcore_initcall level.
-> 
-> I was just looking around for any existing Linux APIs that could be a
-> more robust solution. It looks like
-> 
-> of_parse_phandle()
-> and
-> of_find_device_by_node();
-> 
-> Are often used to solve this type of probe deferral issue between
-> devices. Is that what you would recommend using? Or is there something
-> even better?
+Hej,
 
-I think you should keep the phandle and then set device link based on
-of_find_device_by_node(). This would actually improve the code, because
-syscon_regmap_lookup_by_phandle() does not create device links.
+debug dma code is not happy with virtio gpu (arm64 VM):
 
-Best regards,
-Krzysztof
+[  305.881733] ------------[ cut here ]------------
+[  305.883117] DMA-API: virtio-pci 0000:07:00.0: mapping sg segment longer than device claims to support [len=262144] [max=65536]
+[  305.885976] WARNING: CPU: 8 PID: 2002 at kernel/dma/debug.c:1177 check_sg_segment+0x2d0/0x420
+[  305.888038] Modules linked in: crct10dif_ce(+) polyval_ce polyval_generic ghash_ce virtio_gpu(+) virtio_net net_failover virtio_blk(+) virtio_dma_buf virtio_console failover virtio_mmio scsi_dh_r dac scsi_dh_emc scsi_dh_alua dm_multipath qemu_fw_cfg
+[  305.893496] CPU: 8 PID: 2002 Comm: (udev-worker) Not tainted 6.7.0 #1
+[  305.895070] Hardware name: QEMU KVM Virtual Machine, BIOS edk2-20230524-3.fc37 05/24/2023
+[  305.897112] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[  305.897129] pc : check_sg_segment+0x2d0/0x420
+[  305.897139] lr : check_sg_segment+0x2d0/0x420
+[  305.897145] sp : ffff80008ffc69d0
+[  305.897149] x29: ffff80008ffc69d0 x28: dfff800000000000 x27: ffffb0232879e578
+[  305.897167] x26: ffffffff00000000 x25: ffffb0232778c060 x24: ffff19ee9b2060c0
+[  305.897181] x23: 00000000ffffffff x22: ffffb0232ab9ce10 x21: ffff19eece5c64ac
+[  305.906942] x20: 0000000000010000 x19: ffff19eece5c64a0 x18: ffff19eec36fc304
+[  305.908633] x17: 6e61687420726567 x16: 6e6f6c20746e656d x15: 6765732067732067
+[  305.910352] x14: 00000000f1f1f1f1 x13: 0000000000000001 x12: ffff700011ff8cc3
+[  305.912044] x11: 1ffff00011ff8cc2 x10: ffff700011ff8cc2 x9 : ffffb02324a70e54
+[  305.913751] x8 : 00008fffee00733e x7 : ffff80008ffc6617 x6 : 0000000000000001
+[  305.915451] x5 : ffff80008ffc6610 x4 : 1fffe33e70564622 x3 : dfff800000000000
+[  305.917158] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff19f382b23100
+[  305.918864] Call trace:
+[  305.919474]  check_sg_segment+0x2d0/0x420
+[  305.920443]  debug_dma_map_sg+0x2a0/0x428
+[  305.921402]  __dma_map_sg_attrs+0xf4/0x1a8
+[  305.922388]  dma_map_sgtable+0x7c/0x100
+[  305.923318]  drm_gem_shmem_get_pages_sgt+0x15c/0x328
+[  305.924500]  virtio_gpu_object_shmem_init.constprop.0.isra.0+0x50/0x628 [virtio_gpu]
+[  305.926390]  virtio_gpu_object_create+0x198/0x478 [virtio_gpu]
+[  305.927802]  virtio_gpu_mode_dumb_create+0x2a0/0x4c8 [virtio_gpu]
+[  305.929272]  drm_mode_create_dumb+0x1c0/0x280
+[  305.930327]  drm_client_framebuffer_create+0x140/0x328
+[  305.931555]  drm_fbdev_generic_helper_fb_probe+0x1bc/0x5c0
+[  305.932871]  __drm_fb_helper_initial_config_and_unlock+0x1e0/0x630
+[  305.934372]  drm_fb_helper_initial_config+0x50/0x68
+[  305.935540]  drm_fbdev_generic_client_hotplug+0x148/0x200
+[  305.936819]  drm_client_register+0x130/0x200
+[  305.937856]  drm_fbdev_generic_setup+0xe8/0x320
+[  305.938932]  virtio_gpu_probe+0x13c/0x2d0 [virtio_gpu]
+[  305.940190]  virtio_dev_probe+0x38c/0x600
+[  305.941153]  really_probe+0x334/0x9c8
+[  305.942047]  __driver_probe_device+0x164/0x3d8
+[  305.943102]  driver_probe_device+0x64/0x180
+[  305.944094]  __driver_attach+0x1d4/0x488
+[  305.945045]  bus_for_each_dev+0x104/0x198
+[  305.946008]  driver_attach+0x44/0x68
+[  305.946892]  bus_add_driver+0x23c/0x4a8
+[  305.947838]  driver_register+0xf8/0x3d0
+[  305.948770]  register_virtio_driver+0x74/0xc8
+[  305.949836]  virtio_gpu_driver_init+0x20/0xff8 [virtio_gpu]
+[  305.951237]  do_one_initcall+0x17c/0x8c0
+[  305.952182]  do_init_module+0x1dc/0x630
+[  305.953106]  load_module+0x10c0/0x1638
+[  305.954012]  init_module_from_file+0xe0/0x140
+[  305.955058]  idempotent_init_module+0x2c0/0x590
+[  305.956174]  __arm64_sys_finit_module+0xb4/0x140
+[  305.957282]  invoke_syscall+0xd8/0x258
+[  305.958187]  el0_svc_common.constprop.0+0x16c/0x240
+[  305.959526]  do_el0_svc+0x48/0x68
+[  305.960456]  el0_svc+0x58/0x118
+[  305.961310]  el0t_64_sync_handler+0x120/0x130
+[  305.962510]  el0t_64_sync+0x194/0x198
+[  305.963509] irq event stamp: 37944
+[  305.964412] hardirqs last  enabled at (37943): [<ffffb02324a7439c>] console_unlock+0x1a4/0x1c8
+[  305.966602] hardirqs last disabled at (37944): [<ffffb023276724e4>] el1_dbg+0x24/0xa0
+[  305.968535] softirqs last  enabled at (37930): [<ffffb0232475114c>] __do_softirq+0x8e4/0xe1c
+[  305.970781] softirqs last disabled at (37925): [<ffffb0232475a9b0>] ____do_softirq+0x18/0x30
+[  305.972937] ---[ end trace 0000000000000000 ]---
+
+The 64K max_segment size of the device seems to be inherited by PCIs default.
+The sg list is crated via this drm helper:
+
+struct sg_table *drm_prime_pages_to_sg(struct drm_device *dev,
+  				       struct page **pages, unsigned int nr_pages)
+{
+..
+  	if (dev)
+  		max_segment = dma_max_mapping_size(dev->dev);
+  	if (max_segment == 0)
+  		max_segment = UINT_MAX;
+  	err = sg_alloc_table_from_pages_segment(sg, pages, nr_pages, 0,
+  						nr_pages << PAGE_SHIFT,
+  						max_segment, GFP_KERNEL);
+..
+}
+
+I'm a bit puzzled why this uses dma_max_mapping_size() and not
+dma_get_max_seg_size(). But since this is used by a lot of drivers
+I'm not really keen to touch this code that works like this for ages.
+
+So let's just make debug dma code aware of the actual segment size
+that's used by the device:
+
+--->8
+drm/virtio: set segment size for virtio_gpu device
+
+Set the segment size of the virtio_gpu device to the value
+used by the drm helpers when allocating sg lists to fix the
+following complaint from DMA_API debug code:
+DMA-API: virtio-pci 0000:07:00.0: mapping sg segment longer than device claims to support [len=262144] [max=65536]
+
+Signed-off-by: Sebastian Ott <sebott@redhat.com>
+---
+   drivers/gpu/drm/virtio/virtgpu_drv.c | 1 +
+   1 file changed, 1 insertion(+)
+
+diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.c b/drivers/gpu/drm/virtio/virtgpu_drv.c
+index 4334c7608408..74b2cb3295af 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_drv.c
++++ b/drivers/gpu/drm/virtio/virtgpu_drv.c
+@@ -94,6 +94,7 @@ static int virtio_gpu_probe(struct virtio_device *vdev)
+   			goto err_free;
+   	}
+
++	dma_set_max_seg_size(dev->dev, dma_max_mapping_size(dev->dev) ? : UINT_MAX);
+   	ret = virtio_gpu_init(vdev, dev);
+   	if (ret)
+   		goto err_free;
+-- 
+2.43.0
+
 
 
