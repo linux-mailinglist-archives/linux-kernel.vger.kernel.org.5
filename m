@@ -1,141 +1,130 @@
-Return-Path: <linux-kernel+bounces-34847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE1ED838842
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:51:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9002838844
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:51:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5EEA81F218A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:51:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1806B1C23D6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:51:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C8ED53E2E;
-	Tue, 23 Jan 2024 07:51:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A86A556741;
+	Tue, 23 Jan 2024 07:51:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="HlQOCBJh";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="jZcjz8pE";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="HlQOCBJh";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="jZcjz8pE"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="BYQQiZeT"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ED2352F77;
-	Tue, 23 Jan 2024 07:51:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 961EE56452;
+	Tue, 23 Jan 2024 07:51:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705996266; cv=none; b=XwV/BsruBFNka/iz5hq4WML+zcSITM6qnxitCvbuIb3Ygkc0NgOgoD46NS16fFLxwOjFxSn9nlLCtuoVGs6EEhSNbI8R1hZhzcXCvR0QOpJ2I3bfkQG1o35Z6R3VnHWtRHB6xluK1Hw7rehYbyVRPifBZ8euEr2khRWZB6cHgsQ=
+	t=1705996270; cv=none; b=cLNGMnvlmqf/Ams8aOxBDtd6zONYdqi4WCzvlUf1wBFKux1vmaKZLcEyLcqHb1DJSAeOgwopsZ4TpGa1ySv2ti9PKH4zyJ9bXRNPnWABJKAxCXcdhmoz99DK4O0A/YH4+DkbJgmFiRjJ6AfxLfnoxxDlDJNHf3WXrXGvCga1/Xs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705996266; c=relaxed/simple;
-	bh=+FQ2dXwSPK4lKzUb9x6+Wx7xiSG9UCJSvsRF2UHO+Rc=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LQu93m1xt1D50G54OOL824Gr/LQWEIPhaLxX+69SP0vql7Kc8MOfR8qgdZ1dMmEviigkVbMuSLnW4L5n0Twv1Pf+thwXKZmQLPsHTTl1wMrOVic5dVXiRIzrcNs/DqUL8uVy2J8p0c/iK2FCTDKnoYAeO5OTkOIBshDwet1SMJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=HlQOCBJh; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=jZcjz8pE; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=HlQOCBJh; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=jZcjz8pE; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	s=arc-20240116; t=1705996270; c=relaxed/simple;
+	bh=zd/j1EL0RWNL3nB5t24QcTLBe0LEMe9+ptv3ScUHGE4=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=eWxo3QBpkmimgdvGKTwOB5+9zqrlBiH0f7bZ3CxcYR8JdIlYgcgrltLYl3XCQpRlVyInscY8lWw9QrioccT34SUr1SWU4lnnvhJhsyn0mqM7tGzUssXfqHmjsXxcXaKm1ywnEMbX7nhyEUeklim20ndzJf3BSxDzBs3szP0v5HE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=BYQQiZeT; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1705996266;
+	bh=zd/j1EL0RWNL3nB5t24QcTLBe0LEMe9+ptv3ScUHGE4=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=BYQQiZeTl9d9jUYXQwlAq2xsSGjXnSj08xc6WQbbiRU8zvqnXznPnH515XlrKNKJ5
+	 RPj1JkvVs/el14sZ6hRHEMdVHmWQx3Rqp9ZbPjy7ljb2chw07kmVACCQD91sm8eNmK
+	 1IMQnBtQbKrCrn8Ck1W1mUL7uFe8Etoe8TgLTam6G6fBUpYobBJNEKxaxmUxQUn5Ko
+	 vp8E5RS4wXCM4IOGDJBjnMsgq59tBA3HsS+78PMxzLUGHg9xMwrUxMRANI+SthenVc
+	 78Li0WbGQVS59l4O/5jUCv5jq5WBYoo6XGWkMhwxDfEfwFJruGyCnN8jQYyrnTygpr
+	 uexNwtqT7ANDg==
+Received: from [100.96.234.34] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id DA85221F23;
-	Tue, 23 Jan 2024 07:51:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1705996261; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Q+flJAd6H8oP/VR9Ty1oReEk9oo5tXSBeY0zG3mnicQ=;
-	b=HlQOCBJhCnHT+WCvO+jY2rIdyFVcFpI3bD06lU6FZWzwVRqRHJIvI9GfbAiBUvb/13QrB+
-	vPfCYw0DKdkQzHEDLBnLEjejy9yr1MIaXSXetvaWsZl6LC7GELUeb5eSZXoKafrH6AaXth
-	EZnb40fb38Po4UBXVv6mbVxtU4n/j9o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1705996261;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Q+flJAd6H8oP/VR9Ty1oReEk9oo5tXSBeY0zG3mnicQ=;
-	b=jZcjz8pEfVWzb8lwN/VLw7RNFOl7xBV2UGZ9qPmOOQ5PnpfJ9NIXmJfL9Lz7O3jlX3WhiO
-	4GFrD2+EPORF7rDA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1705996261; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Q+flJAd6H8oP/VR9Ty1oReEk9oo5tXSBeY0zG3mnicQ=;
-	b=HlQOCBJhCnHT+WCvO+jY2rIdyFVcFpI3bD06lU6FZWzwVRqRHJIvI9GfbAiBUvb/13QrB+
-	vPfCYw0DKdkQzHEDLBnLEjejy9yr1MIaXSXetvaWsZl6LC7GELUeb5eSZXoKafrH6AaXth
-	EZnb40fb38Po4UBXVv6mbVxtU4n/j9o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1705996261;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Q+flJAd6H8oP/VR9Ty1oReEk9oo5tXSBeY0zG3mnicQ=;
-	b=jZcjz8pEfVWzb8lwN/VLw7RNFOl7xBV2UGZ9qPmOOQ5PnpfJ9NIXmJfL9Lz7O3jlX3WhiO
-	4GFrD2+EPORF7rDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A89E2136A4;
-	Tue, 23 Jan 2024 07:51:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 9S6qJ+Vvr2WiZQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Tue, 23 Jan 2024 07:51:01 +0000
-Date: Tue, 23 Jan 2024 08:51:01 +0100
-Message-ID: <87y1cgmqsa.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Rui Salvaterra <rsalvaterra@gmail.com>
-Cc: amadeuszx.slawinski@linux.intel.com,
-	tiwai@suse.com,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] ALSA: hda: Replace numeric device IDs with constant values
-In-Reply-To: <20240122114512.55808-2-rsalvaterra@gmail.com>
-References: <20240122114512.55808-2-rsalvaterra@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 779F83782066;
+	Tue, 23 Jan 2024 07:51:03 +0000 (UTC)
+Message-ID: <de0e9e64-9833-4c60-8234-30b709b135db@collabora.com>
+Date: Tue, 23 Jan 2024 12:51:16 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -2.71
-X-Spamd-Result: default: False [-2.71 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FREEMAIL_TO(0.00)[gmail.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-2.41)[97.29%]
-X-Spam-Flag: NO
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, kernel@collabora.com,
+ linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH] selftests/mm: run_vmtests.sh: add missing tests
+To: Ryan Roberts <ryan.roberts@arm.com>
+References: <20240116090641.3411660-1-usama.anjum@collabora.com>
+ <ffdba8c4-f1a2-4141-a3d4-0c85dfea6fef@arm.com>
+ <e3b2c142-aaae-481d-8206-5e8f374fd37e@collabora.com>
+ <06d796a1-1ae2-4f97-8fd6-0e3529ae2799@arm.com>
+Content-Language: en-US
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <06d796a1-1ae2-4f97-8fd6-0e3529ae2799@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, 22 Jan 2024 12:45:12 +0100,
-Rui Salvaterra wrote:
+On 1/22/24 2:59 PM, Ryan Roberts wrote:
+>>>> +CATEGORY="hugetlb" run_test ./hugetlb-read-hwpoison
+>>>
+>>> The addition of this test causes 2 later tests to fail with ENOMEM. I suspect
+>>> its a side-effect of marking the hugetlbs as hwpoisoned? (just a guess based on
+>>> the test name!). Once a page is marked poisoned, is there a way to un-poison it?
+>>> If not, I suspect that's why it wasn't part of the standard test script in the
+>>> first place.
+>> hugetlb-read-hwpoison failed as probably the fix in the kernel for the test
+>> hasn't been merged in the kernel. The other tests (uffd-stress) aren't
+>> failing on my end and on CI [1][2]
 > 
-> We have self-explanatory constants for Intel HDA devices, let's use them instead
-> of magic numbers and code comments.
+> To be clear, hugetlb-read-hwpoison isn't failing for me, its just causing the
+> subsequent tests uffd-stress tests to fail. Both of those subsequent tests are
+> allocating hugetlbs so my guess is that since this test is marking some hugetlbs
+> as poisoned, there are no longer enough for the subsequent tests.
 > 
-> Signed-off-by: Rui Salvaterra <rsalvaterra@gmail.com>
+>>
+>> [1] https://lava.collabora.dev/scheduler/job/12577207#L3677
+>> [2] https://lava.collabora.dev/scheduler/job/12577229#L4027
+>>
+>> Maybe its configurations issue which is exposed now. Not sure. Maybe
+>> hugetlb-read-hwpoison is changing some configuration and not restoring it.
+> 
+> Well yes - its marking some hugetlb pages as HWPOISONED.
+> 
+>> Maybe your system has less number of hugetlb pages.
+> 
+> YEs probably; What is hugetlb-read-hwpoison's requirement for size and number of
+> hugetlb pages? the run_vmtests.sh script allocates the required number of
+> default-sized hugetlb pages before running any tests (I guess this value should
+> be increased for hugetlb-read-hwpoison's requirements?).
+> 
+> Additionally, our CI preallocates non-default sizes from the kernel command line
+> at boot. Happy to increase these if you can tell me what the new requirement is:
+I'm not sure about the exact requirement of the number of hugetlb for these
+tests. But I specify hugepages=1000 and tests work for me.
 
-Applied both patches now.  Thanks.
+I've sent v2 [1]. Would it be possible to run your CI on that and share
+results before we merge that one?
 
+[1]
+https://lore.kernel.org/all/20240123073615.920324-1-usama.anjum@collabora.com
 
-Takashi
+> 
+> hugepagesz=1G hugepages=0:2,1:2 hugepagesz=32M hugepages=0:2,1:2
+> default_hugepagesz=2M hugepages=0:64,1:64 hugepagesz=64K hugepages=0:2,1:2
+> 
+> Thanks,
+> Ryan
+> 
+
+-- 
+BR,
+Muhammad Usama Anjum
 
