@@ -1,135 +1,107 @@
-Return-Path: <linux-kernel+bounces-35872-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35873-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1C118397D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:37:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FE9F8397D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:38:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E51D01C26A1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:37:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F41C7B2450C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:38:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AE9F823B0;
-	Tue, 23 Jan 2024 18:37:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E54782D69;
+	Tue, 23 Jan 2024 18:37:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SYBw+EGz"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vGDOh7Y7"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F33081AB7
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 18:37:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB61D7FBB4;
+	Tue, 23 Jan 2024 18:37:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706035049; cv=none; b=qJEpprCk20nAn2vugTpo5jspx40tdx78cL6TNHb8QwOWK+W9EDfgE3sieleapJJKIgDTEhgVaul80m0fpDXmy4djlsGWjzkpfOy4ZwagE/IyYhtzsXrRVUiZmSPAkz/iH7AQsN9mXOxO4K4D8palcMWCEb7v1CT5fIlsKyFK0gw=
+	t=1706035053; cv=none; b=OxXMQ/oEcGX8vvHaDPUSZ+iOzV6CL0BpkBK1K8+CapUmqRnHaNcXVUdNS7MW/gPpO9sDUNCdsarcgWYg9shiZyPJBwyGgv3iq52Qvk/9sZgC4NYmtGVyQNdQ26CLydfzM1AerND0oU5MzwmAnTr5eI1rg/khGOSrTWoEa1Cicq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706035049; c=relaxed/simple;
-	bh=Ws0qJ7T6hmIJBBtfjJFD9PXXxGcginQP0/lng4q35BY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Vmq/vIARUa4CfsOW4+92eV3FGS7fSsiXir342EZ682yORmUMPeX7aUNLXHuymc4Rtcf3Q4M6EYuK+am8BhBkL+z4f5OWa/c0+EMD0eAUUgTUx9t7Kj79N9Wg5RyabgTIfOzb4eeCjUp4e9Qk6WZB5s6wOgy9Z6c3PxbowsLk6Zs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=SYBw+EGz; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-5100c2f7a16so595820e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 10:37:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706035046; x=1706639846; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LN9h9o0TvW1Z8h064Gtg6LetJEg8QEPXg0Gw2KimOwA=;
-        b=SYBw+EGzdDL7n2x3ElGBThcY+ooGcXCpPJ8eUwVWSBbnhKkQ9KEr4LAGNn3uUXQy/w
-         jeNUA+XJeu8vVpmd1Dh8Dyb2iyYR7rPdo1o8QhgWJekTqur4ysoy7yXXsduoZHx+r+hz
-         jVYkQ0Bv9zXFD+jHFV07tMzE2LcSqOYIGEqBx2ESC16kWJ8QUs/MnIVgX7RcOOXWFUzC
-         7ljtH9Mjp1cWAJz7LVVYiCtxPB8cpC8Z5mmb0kWTCLosfScJOdRyMtdv7oiqQpDSz27t
-         HRJWSYN06twDExHVd6rL6d/FYf2p6Pf/xeVVTZ+pKOZZYRN+UHSfElyvjiUbaNB3voUj
-         QyrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706035046; x=1706639846;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LN9h9o0TvW1Z8h064Gtg6LetJEg8QEPXg0Gw2KimOwA=;
-        b=DvuJEzCI1t2gLq2J2cWj8xxInRRO+KF5llzRFWrmF/dGxdhx58iT7SdcNqGb6O3ulX
-         6qg5m/+TpAYRA2fKwYnjbaGDe2Vim4UHLC2MnS9SOXllKgHZV1OhtA8uBz5VIGPipAva
-         AtFLNRqJNnS1mBBayTXXvJUQTldiJOdiTJmA+QAppBFB6oH+kNNozJJw71oXSe75HiN/
-         gJZhrI9/vq5Ew7iOuhGzpmPhTzZJ30diVdePM6dH+ofRqTPEtJOclx8PdOUeKleyPvU5
-         IySW6TxWydOg71yragryOgXC5aHfl6dN4eXZ4y+X6VOtmIOyUcKxpfhwJqIABTMOdv3h
-         QxwQ==
-X-Gm-Message-State: AOJu0YwfnzuleQiK2A3/RLmzGa8AT7hpmCSOwAB+xOpm9ZAUYhMegPPH
-	KFn5P5/DRd8sHwZbcxXw38YTc9FH46RtwylrAg6c1pSGwcI7PRcg37OYg00X82w=
-X-Google-Smtp-Source: AGHT+IGdznjU130QhfIccD1XLAGBKrrNO4kH7ylydwv58ERSbXCSfMuJ71lukUQeKfBodk6G4hrvRQ==
-X-Received: by 2002:ac2:5b92:0:b0:50e:7fb1:6433 with SMTP id o18-20020ac25b92000000b0050e7fb16433mr4738283lfn.28.1706035045728;
-        Tue, 23 Jan 2024 10:37:25 -0800 (PST)
-Received: from [172.30.205.123] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id c26-20020a19761a000000b0051009ef42a7sm199123lff.287.2024.01.23.10.37.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jan 2024 10:37:25 -0800 (PST)
-Message-ID: <c8d8de26-ad21-499a-a0a8-f435d7518ee3@linaro.org>
-Date: Tue, 23 Jan 2024 19:37:24 +0100
+	s=arc-20240116; t=1706035053; c=relaxed/simple;
+	bh=43X4Ckx7mjbikvmv9Y1ubNYOub49RqEzKd4SNTW3MJQ=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=lmnj/iNeLCCX2gYYPxHrazGAcdMcpN5ZKG+d51cDrtWHLRNyipq7ls92gmveT2IiHoYISL/Br/UnR5eVBkPvWn/FUnzSB7Xip9WMpD32wkrpk1VgJSNb7eJN3KBCIIKXS6X3mnDlR36ewK+M50oXH8m5GPeAbCMkQKAP74Byg68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vGDOh7Y7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7861C433C7;
+	Tue, 23 Jan 2024 18:37:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706035053;
+	bh=43X4Ckx7mjbikvmv9Y1ubNYOub49RqEzKd4SNTW3MJQ=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=vGDOh7Y764Fs/5GJoP32TnLS+PIAT/zHtQ2otJ4NkEqYbVvS3IabOIMFwn14UnlDu
+	 UfrBvTs0c6M80SPMmTR59aUBocMxdz8IxbdwRBPWjc2rR/sLWYpFxglaSps9BwDA30
+	 NUvatVAIJLAgNbAVObNJJ8ZQx2M8lxeiF0m5tvVLTt/hFaB8RlWn7a2tCPl14cg3jD
+	 0wf56rM8JLx2ye/zD7IpmFI0ZXiNJ3uqY4AWJiCoG2KJDEBikN9MTJrzA6u6mqoI0I
+	 iRCaH5rysgXgJCU9np1MrS+5cHtXfRyrkSzvzPIjhzx4YGKcja+RULE3q/AuzGPIFs
+	 8pNRhBs1M7dvA==
+Date: Tue, 23 Jan 2024 12:37:31 -0600
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] soc: qcom: aoss: Add debugfs interface for sending
- messages
-Content-Language: en-US
-To: Bjorn Andersson <quic_bjorande@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
- Stephen Hemminger <stephen@networkplumber.org>
-References: <20240117-qcom-aoss-debugfs-v2-v3-1-1aa779124822@quicinc.com>
- <2b43e7f9-9394-4ed2-b6d7-46fdc1e515c5@linaro.org>
- <20240123002932.GC2936378@hu-bjorande-lv.qualcomm.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240123002932.GC2936378@hu-bjorande-lv.qualcomm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Rob Herring <robh@kernel.org>
+To: Alexey Romanov <avromanov@salutedevices.com>
+Cc: neil.armstrong@linaro.org, clabbe@baylibre.com, khilman@baylibre.com, 
+ davem@davemloft.net, linux-crypto@vger.kernel.org, 
+ linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ kernel@salutedevices.com, linux-arm-kernel@lists.infradead.org, 
+ devicetree@vger.kernel.org, conor+dt@kernel.org, 
+ herbert@gondor.apana.org.au, jbrunet@baylibre.com, 
+ martin.blumenstingl@googlemail.com, krzysztof.kozlowski+dt@linaro.org, 
+ robh+dt@kernel.org
+In-Reply-To: <20240123165831.970023-17-avromanov@salutedevices.com>
+References: <20240123165831.970023-1-avromanov@salutedevices.com>
+ <20240123165831.970023-17-avromanov@salutedevices.com>
+Message-Id: <170603505021.1430814.1860868774735102384.robh@kernel.org>
+Subject: Re: [PATCH v2 16/20] dt-bindings: crypto: meson: add new
+ compatibles
 
 
-
-On 1/23/24 01:29, Bjorn Andersson wrote:
-> On Mon, Jan 22, 2024 at 11:44:30AM +0100, Konrad Dybcio wrote:
->> On 18.01.2024 03:31, Bjorn Andersson wrote:
->>> In addition to the normal runtime commands, the Always On Processor
->>> (AOP) provides a number of debug commands which can be used during
->>> system debugging for things such as preventing power collapse or placing
->>> floor votes for certain resources. Some of these are documented in the
->>> Robotics RB5 "Debug AOP ADB" linked below.
->>>
->>> Provide a debugfs interface for the developer/tester to send some of
->>> these commands to the AOP, which allow the user to override the DDR
->>> frequency, preventing power collapse of cx and ddr, and prevent AOSS
->>> from going to sleep.
->>>
->>> Link: https://docs.qualcomm.com/bundle/publicresource/topics/80-88500-3/85_Debugging_AOP_ADB.html
->>> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
->>> ---
->>
->> [...]
->>
->>>   
->>> +struct qmp_debugfs_entry {
->>> +	const char *name;
->>> +	const char *fmt;
->>> +	bool is_bool;
->>
->> This can also be const
->>
->>> +	const char *true_val;
->>> +	const char *false_val;
->>
->> All of these strings can be const ptrs to const data
->>
+On Tue, 23 Jan 2024 19:58:27 +0300, Alexey Romanov wrote:
+> Now we can use crypto driver at G12A/G12B/S4/A1/SM1/AXG.
 > 
-> These are all const data now, but what would the reason for enforcing it
-> in the struct definition be?
+> Signed-off-by: Alexey Romanov <avromanov@salutedevices.com>
+> ---
+>  .../bindings/crypto/amlogic,gxl-crypto.yaml   | 31 ++++++++++++++++---
+>  1 file changed, 27 insertions(+), 4 deletions(-)
+> 
 
-I've just written too much rust lately and I'm simply paranoid
-about mutability, it seems ;)
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Konrad
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/crypto/amlogic,gxl-crypto.example.dtb: crypto-engine@c883e000: compatible: 'oneOf' conditional failed, one must be fixed:
+	['amlogic,gxl-crypto'] is too short
+	'amlogic,gxl-crypto' is not one of ['amlogic,g12a-crypto', 'amlogic,s4-crypto', 'amlogic,a1-crypto']
+	from schema $id: http://devicetree.org/schemas/crypto/amlogic,gxl-crypto.yaml#
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240123165831.970023-17-avromanov@salutedevices.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
 
