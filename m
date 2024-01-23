@@ -1,115 +1,113 @@
-Return-Path: <linux-kernel+bounces-35951-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35952-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AFB983991B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:06:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32242839934
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:10:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9740296A34
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:06:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E765AB2C25B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:06:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E055212A154;
-	Tue, 23 Jan 2024 19:00:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FE1D1292D4;
+	Tue, 23 Jan 2024 19:01:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L0OZLtn2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="zJWzPdi3";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="+Dz7bE2t"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2410C129A71;
-	Tue, 23 Jan 2024 19:00:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D9FD7FBB5;
+	Tue, 23 Jan 2024 19:01:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706036447; cv=none; b=TShEXiuWz8LRP6BbOp1enwFL/6UxCeLSL3fH3lO5aV8fz3eZZud8FumnNo81699wubdd62lV1Jt6HN/zyqbPs6drQY6BsvQU2VyWaZEWb1jGCimIh15/LtgT7gRT4QfcoGvaVK63/NgkKmTIvA/pcOTH9yNcFcU3XOPi1n5CuCY=
+	t=1706036473; cv=none; b=Embd1FZmkuHH+6bhLXNnwuDJieFxv0OB0ez59LMPidWcIOPzRYtT2IPZr2a2JInQ4iQZb+lmTIGBOsEiPuPQYLcU20zR6ZI5xs+H3V/9vaHXCWH5xrWtLZAy4g+hhcXlRvSscbm5VsVtCFhCed76d9Su0kD/URXB+O4JIb6mSNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706036447; c=relaxed/simple;
-	bh=mAcYNzDoP9dhqdN5/WCgwNX1TFh0slvAugab5Iyw3Q4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gUhWncAvW8O1t5B1E5R+tkW1jM2G8ao4lnYTtF7G2KtYb4P6Eh9wx8hkCJRMr7AlU/xNIleZwipMFqFAENmqqnhjERWcfTs5hjYtSWInFv62grcQnzMsADtFG/x7pvuCfFDepu6/If/eVT+KH52ViSBi8BB3OwlpF+N2j5pSVu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L0OZLtn2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE1C4C433F1;
-	Tue, 23 Jan 2024 19:00:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706036446;
-	bh=mAcYNzDoP9dhqdN5/WCgwNX1TFh0slvAugab5Iyw3Q4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=L0OZLtn2Z/NdUeupW/M5s5pCK5P8odLNmtkcv+CKPZ4nf/oENpI/yNat+pGtFFq3X
-	 OzgyS6peNQtfc+xxDL7vh9rKXfTlzdmY7DCOubGrrQxw9pYiBOZjzfxMgmkDhp73Gw
-	 Nf6cXihcMPzsR73GINhOTYTg1j16jMYCNyJ5uRnZs7qiXHyq/0BMp2znDV5SJqkuPD
-	 LgKqLzPq4ATdWlahOMJiQvxUMAYUhYdVALWbKekfQrS1jD+fPN65nGIe38XQop9Rgn
-	 biGdPjiSlFlxrOQmtSLb/4yBvgdqOIpyBZ9oZ5ABicZykVJaGr6ovLn2RI345FShNO
-	 fBqVA3c4naZsg==
-Date: Tue, 23 Jan 2024 19:00:40 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: andi.shyti@kernel.org, arnd@arndb.de, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	alim.akhtar@samsung.com, linux-spi@vger.kernel.org,
-	linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-arch@vger.kernel.org, andre.draszik@linaro.org,
-	peter.griffin@linaro.org, semen.protsenko@linaro.org,
-	kernel-team@android.com, willmcvicker@google.com
-Subject: Re: [PATCH 00/21] spi: s3c64xx: winter cleanup and gs101 support
-Message-ID: <e233f4ff-9ed9-42bd-8ffb-17b66bcf2b5b@sirena.org.uk>
-References: <20240123153421.715951-1-tudor.ambarus@linaro.org>
+	s=arc-20240116; t=1706036473; c=relaxed/simple;
+	bh=HOc90YBHmrRGvy080ff3wBCG+qxyZsoScBH6Z0w7o/M=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=suTjJYnJHRu4yufgFHf9gXEQSjxIK0PpEhpulx+M9fijWXtUVds4ZsEiVbl2+5JU23RMCwBb/nnXunRZiyAVzLIgkcovWf3FskzjkPbnwGdNnQKEVK24lLMeyAsXYJWTg++FsvqmEZfhMxk7P3kg8uxg0qsl2En0jYlywv9fPOs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=zJWzPdi3; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=+Dz7bE2t; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 23 Jan 2024 19:01:08 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1706036469;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6eUyX0zjICeqO/1o5Aw5V5Tn9qzErub5OCFL5qwEz5A=;
+	b=zJWzPdi3kXjCo11vbCN5md1kubkqkxDjGZ4ORLqDFF7xfxoeL3I05gJVAqJGQ633S20143
+	NVreIfoJErgA/6tQpHbz6fv4u2Iq8PcEBgEglmJ8k2l8tYIBLbZThkOioe7N38Ksy2g6vW
+	8jyOO6tGdI8ptuv1xwGV0BdeIi5+89C63aicdhfzebykFM26/ekgUZm2fJftdAXdFKyP7F
+	FeaziwQUn6LYfej8tH7/6bHJczglzNnPkq1lbpcom8EqhFZmizbvlFT1/Z5nv2UJO6f/2N
+	qny2vw0yWIApAsdnIRiDDP4bQJVddhIPc8STCf5+FeLFDkQTIUGxy/smseP7Vg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1706036469;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6eUyX0zjICeqO/1o5Aw5V5Tn9qzErub5OCFL5qwEz5A=;
+	b=+Dz7bE2tcMPdATsIYPDX+lVWf6s3f2tqMx2dyVFKmP2P3sLTMLvFhDKbye9H9daWr/7aXY
+	qbq1tNwQauvv77Cw==
+From: "tip-bot2 for Borislav Petkov (AMD)" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/misc] Documentation/kernel-parameters: Add
+ spec_rstack_overflow to mitigations=off
+Cc: "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240118163600.17857-1-bp@alien8.de>
+References: <20240118163600.17857-1-bp@alien8.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ZFvdDX3POLjhPB0W"
-Content-Disposition: inline
-In-Reply-To: <20240123153421.715951-1-tudor.ambarus@linaro.org>
-X-Cookie: Stay together, drag each other down.
+Message-ID: <170603646864.398.8199127435495135105.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
+The following commit has been merged into the x86/misc branch of tip:
 
---ZFvdDX3POLjhPB0W
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Commit-ID:     49527ca264341f9b6278089e274012a2db367ebf
+Gitweb:        https://git.kernel.org/tip/49527ca264341f9b6278089e274012a2db367ebf
+Author:        Borislav Petkov (AMD) <bp@alien8.de>
+AuthorDate:    Thu, 18 Jan 2024 17:36:00 +01:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Tue, 23 Jan 2024 19:52:53 +01:00
 
-On Tue, Jan 23, 2024 at 03:33:59PM +0000, Tudor Ambarus wrote:
+Documentation/kernel-parameters: Add spec_rstack_overflow to mitigations=off
 
-> The patch set cleans a bit the driver and adds support for gs101 SPI.
->=20
-> Apart of the SPI patches, I added support for iowrite{8,16}_32 accessors
-> in asm-generic/io.h. This will allow devices that require 32 bits
-> register accesses to write data in chunks of 8 or 16 bits (a typical use
-> case is SPI, where clients can request transfers in words of 8 bits for
-> example). GS101 only allows 32bit register accesses otherwise it raisses
-> a Serror Interrupt and hangs the system, thus the accessors are needed
-> here. If the accessors are fine, I expect they'll be queued either to
-> the SPI tree or to the ASM header files tree, but by providing an
-> immutable tag, so that the other tree can merge them too.
->=20
-> The SPI patches were tested with the spi-loopback-test on the gs101
-> controller.
+mitigations=off disables the SRSO mitigation too. Add it to the list.
 
-The reformatting in this series will conflict with the SPI changes in:
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/20240118163600.17857-1-bp@alien8.de
+---
+ Documentation/admin-guide/kernel-parameters.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-   https://lore.kernel.org/r/20240120012948.8836-1-semen.protsenko@linaro.o=
-rg
-
-Can you please pull those into this series or otherwise coordinate?
-
---ZFvdDX3POLjhPB0W
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWwDNcACgkQJNaLcl1U
-h9DZOwf+Ie3iPAFWZDhGjymlNYKyWlq4LFxg7+2Vp7ig+SrrcB/PL94lyjnBRN40
-V2N6WCZ7+wHOQAjvi0p61ln9UkAdbN1AVeNPu4KNrne6NQpWCDzbV/yNatC5tHrD
-AlOjNznAsCTv4RVfJRxOLJ4RqiB2O7RglT2e+eMWF8xzNFSjYPa6j3iZnTHBeBeE
-6eZDgJj26a/NHMmdjia/TDOfUQQJVUcQfQt0QGSafk1zQL8LQRQS+adF64DP1fbj
-mZv5aIj2LRKc2AS1Arl7u0OOeqvhrn1hdV5t7au9/Ck8hsdJSm84sh49DQODaW0r
-q+GYaW+ejEf37M+7HFSdmTMocRZxcA==
-=/oRc
------END PGP SIGNATURE-----
-
---ZFvdDX3POLjhPB0W--
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 31b3a25..64960f5 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -3399,6 +3399,7 @@
+ 					       nospectre_v1 [X86,PPC]
+ 					       nospectre_v2 [X86,PPC,S390,ARM64]
+ 					       retbleed=off [X86]
++					       spec_rstack_overflow=off [X86]
+ 					       spec_store_bypass_disable=off [X86,PPC]
+ 					       spectre_v2_user=off [X86]
+ 					       srbds=off [X86,INTEL]
 
