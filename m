@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-35904-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C12D8398A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:52:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D46C8839897
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:51:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A14E31C25817
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:52:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 10CF81C25DFC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:51:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F31C12BF1C;
-	Tue, 23 Jan 2024 18:47:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 088DE12BE99;
+	Tue, 23 Jan 2024 18:47:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="mhugsTg1"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="nNOeSUJv"
 Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5FDE85C69;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9093685C66;
 	Tue, 23 Jan 2024 18:47:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706035635; cv=none; b=swhaufhGkIwm8zKwWoSVXzUsp4FuUUOnve7tXokUxddOYUkHX1CaiA1hNfdOCP5upFMxypZkQoAm6C9ag5OfvZIMVDMh99aRebwDZQV0lAAOSjLzTq4ySC2khq9CEeeBBaJiHJOBsnZpRcxsIgz67Fuiei6wvG3Nxmb49ziHDEQ=
+	t=1706035635; cv=none; b=b5ViTi9ezF6XwdQjH08mw9ISgda3Qvw5sxmdytYEuvrPH2+u3JFZY7pZu6D/86oFZ4q8IbbjVsklTufft26T6FxtN8uC9apbm/Ux0Jup/v0zkF4N6PmaGHdzkllDy/9seUEoMDZkNgkUjazDeiwKtDSjxCXDISocvxAOysXmjQQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706035635; c=relaxed/simple;
-	bh=7a7PULsrWAbyk9o4WQFw6EoMLo4uq3Z4GNa/bdfQE3w=;
+	bh=mcP13FcLt70jViAo9vNjz77UW3Km+NAIWebLZ+hBN3o=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Msr5ChaqMbavffqPw6llGwS+H1Sqll14wyVzY5D/V65ftjk4ncJYnHhHfLru5n9gEu9zW/xi6StR9Z3vgXt4vm5w3PT9lFKxqCxzqBQU8+SOj0WBEu4QXhTNqyrVoNaHLDRuF2JyWeq8yjmyo6QoyUEZ2VNCAAjCceeLG6J7hls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=mhugsTg1; arc=none smtp.client-ip=217.70.183.198
+	 In-Reply-To:To:Cc; b=fYPpQCL8cdFYWaCVvf+U6k1D+wiaT77raHFmmgZgssvTnjAeR6g4DrUqGWNBQYA9nafPGXopRk8SKzgYHDmIpphxLBxeqzZYi8kTIufGJKeXon+kEnuAwxtTC9x/gsHAWTPzKF8G6hfX7nSGYNoHXpFsT1GGl7bQ3mJEyxYzXKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=nNOeSUJv; arc=none smtp.client-ip=217.70.183.198
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1D388C0003;
+Received: by mail.gandi.net (Postfix) with ESMTPSA id E4DD2C0009;
 	Tue, 23 Jan 2024 18:47:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1706035624;
+	t=1706035625;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ALLeDsdcOzz1oO5db0iKwfD4lCc6kwOs8jwpRo0rnSg=;
-	b=mhugsTg1cC2oVa+DAg4hs8kC/QXRlGyvpQY1PDaxVlpwfmjXlaQGXHEp69SymbFAbSjnQp
-	hYk6a2BkwNKx5VSt5ZdoFdd84W1DzVndG1bLcI7N305fuFDFrMvxgmeMYje9QL3MG3ZHrh
-	QaFTiUrqCA0NDFjNYc4G57ttbQ9uAHrEjsc4OF1ImJHYJ/+7ff823KW/0v6XjWGBMt41ZI
-	XhA5IyvLAwxf8eGojwAZ29fkzBKGYQuuZnNbqv6+o5SHc0p8t5uW3MoOmCW0XyrfedQBys
-	wA14QYS0TeDfEdJDNwNzFFzFhaPw8LWe9FlYs4UPwk//zigCvYauTkiPpO2CeA==
+	bh=jyGh5PC+t14CEaCNPIcOatciMxawIJd7iXPS9OoBlF0=;
+	b=nNOeSUJvJNQcaS2b1CCel2bWOCke6t6EdiZUOhFm8AB7VZEYDg/bD6wtPuKxDlpLefquOu
+	MYUKMzWhIu9uQ5OxKkTDAYlm+ojSLtsgaflb/z4WhG7YeYkZFCbZjlK+hwRz6R3LMz8AeW
+	NP1nEYhBSRj2To+IU1t6uGnvkLhpp6kN+0Rh5jVQ+ynb0WbpZ0gbX1PjglIHRAaTRR9Sf+
+	kZkeY/GNOIfSGEfZY+qJIQ8MXWX25Uds3ztSYzDbhePJkt1W2NDGW3F0zsTVRkxAY28sCv
+	ybYckpW+5aUuJxlFDMHP9I0DwNdLk0vT+GTKbnsAGOaaKYpaEREqm3mMSblkzw==
 From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Date: Tue, 23 Jan 2024 19:46:49 +0100
-Subject: [PATCH v3 04/17] dt-bindings: soc: mobileye: add EyeQ5 OLB system
- controller
+Date: Tue, 23 Jan 2024 19:46:50 +0100
+Subject: [PATCH v3 05/17] dt-bindings: clock: mobileye,eyeq5-clk: add
+ bindings
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,7 +56,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240123-mbly-clk-v3-4-392b010b8281@bootlin.com>
+Message-Id: <20240123-mbly-clk-v3-5-392b010b8281@bootlin.com>
 References: <20240123-mbly-clk-v3-0-392b010b8281@bootlin.com>
 In-Reply-To: <20240123-mbly-clk-v3-0-392b010b8281@bootlin.com>
 To: Gregory CLEMENT <gregory.clement@bootlin.com>, 
@@ -77,109 +77,108 @@ Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
 X-Mailer: b4 0.12.4
 X-GND-Sasl: theo.lebrun@bootlin.com
 
-Add documentation to describe the "Other Logic Block" syscon.
+Add DT schema bindings for the EyeQ5 clock controller driver.
 
 Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
 ---
- .../bindings/soc/mobileye/mobileye,eyeq5-olb.yaml  | 77 ++++++++++++++++++++++
- MAINTAINERS                                        |  1 +
- 2 files changed, 78 insertions(+)
+ .../bindings/clock/mobileye,eyeq5-clk.yaml         | 41 ++++++++++++++++++++++
+ MAINTAINERS                                        |  2 ++
+ include/dt-bindings/clock/mobileye,eyeq5-clk.h     | 22 ++++++++++++
+ 3 files changed, 65 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.yaml b/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.yaml
+diff --git a/Documentation/devicetree/bindings/clock/mobileye,eyeq5-clk.yaml b/Documentation/devicetree/bindings/clock/mobileye,eyeq5-clk.yaml
 new file mode 100644
-index 000000000000..031ef6a532c1
+index 000000000000..e1813c010122
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.yaml
-@@ -0,0 +1,77 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++++ b/Documentation/devicetree/bindings/clock/mobileye,eyeq5-clk.yaml
+@@ -0,0 +1,41 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/soc/mobileye/mobileye,eyeq5-olb.yaml#
++$id: http://devicetree.org/schemas/clock/mobileye,eyeq5-clk.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Mobileye EyeQ5 SoC system controller
++title: Mobileye EyeQ5 clock controller
++
++description:
++  The EyeQ5 clock controller handles 10 read-only PLLs derived from the main
++  crystal clock. It also exposes one divider clock, a child of one of the PLLs.
++  Its registers live in a shared region called OLB.
 +
 +maintainers:
 +  - Grégory Clement <gregory.clement@bootlin.com>
 +  - Théo Lebrun <theo.lebrun@bootlin.com>
 +  - Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
 +
-+description:
-+  OLB ("Other Logic Block") is a hardware block grouping smaller blocks. Clocks,
-+  resets, pinctrl are being handled from here.
-+
 +properties:
 +  compatible:
-+    items:
-+      - const: mobileye,eyeq5-olb
-+      - const: syscon
-+      - const: simple-mfd
++    const: mobileye,eyeq5-clk
 +
-+  reg:
++  "#clock-cells":
++    const: 1
++
++  clocks:
 +    maxItems: 1
++    description:
++      Input parent clock to all PLLs. Expected to be the main crystal.
 +
-+  clock-controller:
-+    $ref: /schemas/clock/mobileye,eyeq5-clk.yaml#
-+    type: object
-+
-+  reset-controller:
-+    $ref: /schemas/reset/mobileye,eyeq5-reset.yaml#
-+    type: object
-+
-+  pinctrl-a:
-+    $ref: /schemas/pinctrl/mobileye,eyeq5-pinctrl.yaml#
-+    type: object
-+
-+  pinctrl-b:
-+    $ref: /schemas/pinctrl/mobileye,eyeq5-pinctrl.yaml#
-+    type: object
++  clock-names:
++    items:
++      - const: ref
 +
 +required:
 +  - compatible
-+  - reg
++  - "#clock-cells"
++  - clocks
++  - clock-names
 +
 +additionalProperties: false
-+
-+examples:
-+  - |
-+    system-controller@e00000 {
-+      compatible = "mobileye,eyeq5-olb", "syscon", "simple-mfd";
-+      reg = <0xe00000 0x400>;
-+
-+      clock-controller {
-+        compatible = "mobileye,eyeq5-clk";
-+        #clock-cells = <1>;
-+        clocks = <&xtal>;
-+        clock-names = "ref";
-+      };
-+
-+      reset-controller {
-+        compatible = "mobileye,eyeq5-reset";
-+        #reset-cells = <2>;
-+      };
-+
-+      pinctrl-a {
-+        compatible = "mobileye,eyeq5-a-pinctrl";
-+        #pinctrl-cells = <1>;
-+      };
-+
-+      pinctrl-b {
-+        compatible = "mobileye,eyeq5-b-pinctrl";
-+        #pinctrl-cells = <1>;
-+      };
-+    };
 diff --git a/MAINTAINERS b/MAINTAINERS
-index cb431c79c7b8..fe1270e8c983 100644
+index fe1270e8c983..45ab636b6605 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -14786,6 +14786,7 @@ M:	Théo Lebrun <theo.lebrun@bootlin.com>
+@@ -14785,11 +14785,13 @@ M:	Gregory CLEMENT <gregory.clement@bootlin.com>
+ M:	Théo Lebrun <theo.lebrun@bootlin.com>
  L:	linux-mips@vger.kernel.org
  S:	Maintained
++F:	Documentation/devicetree/bindings/clock/mobileye,eyeq5-clk.yaml
  F:	Documentation/devicetree/bindings/mips/mobileye.yaml
-+F:	Documentation/devicetree/bindings/soc/mobileye/
+ F:	Documentation/devicetree/bindings/soc/mobileye/
  F:	arch/mips/boot/dts/mobileye/
  F:	arch/mips/configs/eyeq5_defconfig
  F:	arch/mips/mobileye/board-epm5.its.S
++F:	include/dt-bindings/clock/mobileye,eyeq5-clk.h
+ F:	include/dt-bindings/soc/mobileye,eyeq5.h
+ 
+ MODULE SUPPORT
+diff --git a/include/dt-bindings/clock/mobileye,eyeq5-clk.h b/include/dt-bindings/clock/mobileye,eyeq5-clk.h
+new file mode 100644
+index 000000000000..26d8930335e4
+--- /dev/null
++++ b/include/dt-bindings/clock/mobileye,eyeq5-clk.h
+@@ -0,0 +1,22 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
++/*
++ * Copyright (C) 2024 Mobileye Vision Technologies Ltd.
++ */
++
++#ifndef _DT_BINDINGS_CLOCK_MOBILEYE_EYEQ5_CLK_H
++#define _DT_BINDINGS_CLOCK_MOBILEYE_EYEQ5_CLK_H
++
++#define EQ5C_PLL_CPU	0
++#define EQ5C_PLL_VMP	1
++#define EQ5C_PLL_PMA	2
++#define EQ5C_PLL_VDI	3
++#define EQ5C_PLL_DDR0	4
++#define EQ5C_PLL_PCI	5
++#define EQ5C_PLL_PER	6
++#define EQ5C_PLL_PMAC	7
++#define EQ5C_PLL_MPC	8
++#define EQ5C_PLL_DDR1	9
++
++#define EQ5C_DIV_OSPI	10
++
++#endif
 
 -- 
 2.43.0
