@@ -1,150 +1,126 @@
-Return-Path: <linux-kernel+bounces-35537-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35565-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BCBA8392D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:34:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 504E9839355
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:43:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CEBB1C23077
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:34:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83C501C2556E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:43:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 787366026E;
-	Tue, 23 Jan 2024 15:34:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6AB665BD4;
+	Tue, 23 Jan 2024 15:35:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aJbX/nGZ"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NcpuJDFC"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B37765FEE4
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 15:34:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89B4465BAF
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 15:35:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706024070; cv=none; b=RpvrqkVf2Kfk70LsfD3gkEd5ESNmrGeNTWqntt3odOw7E39tpFLrsNILC5z7xltN9t9rqRzyEMEnV2mHW5999MazkRMix5dszrZUkbEGZPykrtGtZnwNUJ1tq62ucYHCpuwKg4mHTV5cg7KOj8lXQuzL1OJgIdz4jgflqAZ/nh4=
+	t=1706024121; cv=none; b=tDPFz5Zn6MSVpyYwaP9wxtC3mo/nF32OIEjQE1eWf6opdU78hb/OlPPj3FfUdeKWauhsYFLbzS2rV3RgJ1Ng5n6+LditENFRFiNqgqs2UixBV+9QYFKsEWgvAUSalLlYjQ6tcHFd8xjtIgMyEB89ovOPNA0DrVJ+RccYL2zmajI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706024070; c=relaxed/simple;
-	bh=gNyD7i++uD2R8coWU2KAe3MRsCKjSQZq+dn+mnbIQ9k=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Zb8c1pxjZS9Mgf/3D9juipc3yCb96TkIPkdNSB5rO07EL/pQ9D+HkdG44P2/9AMW0XSAGsYd7JhxqxuxrPVaIIAeR0AoCGOGL5SyRHZhsh8Vn6Lr1MfZcti7LGmynQlYINg5WKLnQwH7trDWBejmLMceYdw6QutBXXlTR5s2zmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aJbX/nGZ; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40eac352733so25351465e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:34:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706024066; x=1706628866; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ziVeE+WCI2TynApAMc3yW1L2n22pt52jWdrqUi+I10A=;
-        b=aJbX/nGZDECc65oOFslfQ1KnfvXsS9zh0efYToJqx/PDuzx5jaPujA7Fr3ED7vZByW
-         oIXpH/t+G4ZTwynRofC8fSMu4OIfof1eT88+31V2juY3eZ+sj5y5C8qBapFLjJL4m8A2
-         4wZ/i06M004CCYNR453CMoRwbp0+dBzrfSaeuJ3ZELx5SsKJs6dAlR7zLpENm2SMgarX
-         +H3gw4tKbYgKz+smjLOknaw4UTP88mZp3PizDL3tJ0qLzGI8UgI7Xa6jda6Sh+aIL2uf
-         wNxfGe/89dpGHY8vmjurcUea7RD0CUC64UUFEvR2mES/MS8ESoJJsZo4bkvefz0261fe
-         Vcbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706024066; x=1706628866;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ziVeE+WCI2TynApAMc3yW1L2n22pt52jWdrqUi+I10A=;
-        b=uVQ8hKVskb/jFQes+ZIRUQ16e1ozrbe8r/HnLL8pKTvDGWawT+BS+L0HhYQslBc8s6
-         u8H4UQqqhSHv8R9JosQEl5nmSfCJvyHqFeFO+FzBcHeuSkq8Z43OIbUhahnLbittFAKO
-         Mk0QOJtsC5bDTqlAxeg3Xn1hGbtZQyqRs4x3zfRpgoke5hcwttBLCTNB3VHumuBGxvZt
-         l8dgW1mwYS8sV+GVAJeUEnfqMBBmixccwh/37Q7o6TZg5uY8/zP3hFKF2u5gt7vMYaqU
-         LFow0jtLzV9dgmImPfkoxjM8Rf3auIUUIvnu7juk6gwFBxHNE1nWrntYc6eAnmCXLWAZ
-         ermQ==
-X-Gm-Message-State: AOJu0Yz9mTzh4leB5F/Kv/QfALJ+v2nV52jBuQ16Wv/xpU+liphrI2U+
-	iS5nNjYr5mf4EC23AYcwXIFLJMhWssn3P1q+kykoE7Z0cJDzbJbSupke03GaprM=
-X-Google-Smtp-Source: AGHT+IFHJyFWUBBJs2U3QAmGmiqakyommRSeQB3esKGCGNr9xKSS2oKCzm2qjt7cgP0Zzl31M0Ydlw==
-X-Received: by 2002:a05:600c:5706:b0:40d:60b9:700 with SMTP id jv6-20020a05600c570600b0040d60b90700mr252998wmb.126.1706024065863;
-        Tue, 23 Jan 2024 07:34:25 -0800 (PST)
-Received: from ta2.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
-        by smtp.gmail.com with ESMTPSA id p21-20020a05600c359500b0040e3488f16dsm42457536wmq.12.2024.01.23.07.34.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 07:34:25 -0800 (PST)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: broonie@kernel.org,
-	andi.shyti@kernel.org,
-	arnd@arndb.de
-Cc: robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	alim.akhtar@samsung.com,
-	linux-spi@vger.kernel.org,
-	linux-samsung-soc@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-arch@vger.kernel.org,
-	andre.draszik@linaro.org,
-	peter.griffin@linaro.org,
-	semen.protsenko@linaro.org,
-	kernel-team@android.com,
-	willmcvicker@google.com,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH 00/21] spi: s3c64xx: winter cleanup and gs101 support
-Date: Tue, 23 Jan 2024 15:33:59 +0000
-Message-ID: <20240123153421.715951-1-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+	s=arc-20240116; t=1706024121; c=relaxed/simple;
+	bh=3DXhCS9gCYUo/yeEr1UEdliq7S/NZwWpa7NRrM8XxIw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=MuN798J3bXUwreNPsNOXud+3uKbuIlNqR5M3JlVeT4KRSkr55ACJO7Nk75LEN5qknadznh5spp6zgqoejwooceH4361QVbF3f3wVJe1VrWuuxbBQVBXX5vhFUDo80p/0DLR7t5iL93mCyybgI1TL+Q9v+xg4Ukil9fdBcmScn/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NcpuJDFC; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706024118;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to; bh=PF33nZUXk10Fdt+GZc2nbXSpzhr3D6HyvllQ/D4I808=;
+	b=NcpuJDFCbmAsR8F7Rfxlc+FEpwvpaug5m8ESEZeIEyvfIrVbiJpQOlEfVdU3NCJBy5f0S1
+	KVauaggHgX5Zsjs6W9JqMUUvolBdvcROZ8XgtrolBaEMp1jQBBGxYIAX3wJGD45LGRpyNT
+	5k1Bez9GX7l4AjASu1IRkUmBuH2NxK0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-19-IXos11CQPua1Sy3rPPC_Kw-1; Tue, 23 Jan 2024 10:35:15 -0500
+X-MC-Unique: IXos11CQPua1Sy3rPPC_Kw-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0B941869EC2;
+	Tue, 23 Jan 2024 15:35:15 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.197])
+	by smtp.corp.redhat.com (Postfix) with SMTP id C3D20492BFA;
+	Tue, 23 Jan 2024 15:35:13 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Tue, 23 Jan 2024 16:34:01 +0100 (CET)
+Date: Tue, 23 Jan 2024 16:34:00 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
+	Dylan Hatch <dylanbhatch@google.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH 3/3] exit: wait_task_zombie: kill the no longer necessary
+ spin_lock_irq(siglock)
+Message-ID: <20240123153359.GA21866@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240123153313.GA21832@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-Hi,
+After the recent changes nobody use siglock to read the values protected
+by stats_lock, we can kill spin_lock_irq(&current->sighand->siglock) and
+update the comment.
 
-The patch set cleans a bit the driver and adds support for gs101 SPI.
+With this patch only __exit_signal() and thread_group_start_cputime() take
+stats_lock under siglock.
 
-Apart of the SPI patches, I added support for iowrite{8,16}_32 accessors
-in asm-generic/io.h. This will allow devices that require 32 bits
-register accesses to write data in chunks of 8 or 16 bits (a typical use
-case is SPI, where clients can request transfers in words of 8 bits for
-example). GS101 only allows 32bit register accesses otherwise it raisses
-a Serror Interrupt and hangs the system, thus the accessors are needed
-here. If the accessors are fine, I expect they'll be queued either to
-the SPI tree or to the ASM header files tree, but by providing an
-immutable tag, so that the other tree can merge them too.
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+---
+ kernel/exit.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-The SPI patches were tested with the spi-loopback-test on the gs101
-controller.
-
-Thanks!
-ta
-
-Tudor Ambarus (21):
-  spi: dt-bindings: samsung: add google,gs101-spi compatible
-  spi: s3c64xx: sort headers alphabetically
-  spi: s3c64xx: remove extra blank line
-  spi: s3c64xx: remove unneeded (void *) casts in of_match_table
-  spi: s3c64xx: explicitly include <linux/bits.h>
-  spi: s3c64xx: remove else after return
-  spi: s3c64xx: use bitfield access macros
-  spi: s3c64xx: move error check up to avoid rechecking
-  spi: s3c64xx: use full mask for {RX, TX}_FIFO_LVL
-  spi: s3c64xx: move common code outside if else
-  spi: s3c64xx: check return code of dmaengine_slave_config()
-  spi: s3c64xx: propagate the dma_submit_error() error code
-  spi: s3c64xx: rename prepare_dma() to s3c64xx_prepare_dma()
-  spi: s3c64xx: return ETIMEDOUT for wait_for_completion_timeout()
-  spi: s3c64xx: simplify s3c64xx_wait_for_pio()
-  spi: s3c64xx: add missing blank line after declaration
-  spi: s3c64xx: downgrade dev_warn to dev_dbg for optional dt props
-  asm-generic/io.h: add iowrite{8,16}_32 accessors
-  spi: s3c64xx: add support for google,gs101-spi
-  spi: s3c64xx: make the SPI alias optional for newer SoCs
-  MAINTAINERS: add Tudor Ambarus as R for the samsung SPI driver
-
- .../devicetree/bindings/spi/samsung,spi.yaml  |   1 +
- MAINTAINERS                                   |   1 +
- drivers/spi/spi-s3c64xx.c                     | 447 +++++++++---------
- include/asm-generic/io.h                      |  50 ++
- 4 files changed, 276 insertions(+), 223 deletions(-)
-
+diff --git a/kernel/exit.c b/kernel/exit.c
+index 3988a02efaef..dfb963d2f862 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -1127,17 +1127,14 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
+ 		 * and nobody can change them.
+ 		 *
+ 		 * psig->stats_lock also protects us from our sub-threads
+-		 * which can reap other children at the same time. Until
+-		 * we change k_getrusage()-like users to rely on this lock
+-		 * we have to take ->siglock as well.
++		 * which can reap other children at the same time.
+ 		 *
+ 		 * We use thread_group_cputime_adjusted() to get times for
+ 		 * the thread group, which consolidates times for all threads
+ 		 * in the group including the group leader.
+ 		 */
+ 		thread_group_cputime_adjusted(p, &tgutime, &tgstime);
+-		spin_lock_irq(&current->sighand->siglock);
+-		write_seqlock(&psig->stats_lock);
++		write_seqlock_irq(&psig->stats_lock);
+ 		psig->cutime += tgutime + sig->cutime;
+ 		psig->cstime += tgstime + sig->cstime;
+ 		psig->cgtime += task_gtime(p) + sig->gtime + sig->cgtime;
+@@ -1160,8 +1157,7 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
+ 			psig->cmaxrss = maxrss;
+ 		task_io_accounting_add(&psig->ioac, &p->ioac);
+ 		task_io_accounting_add(&psig->ioac, &sig->ioac);
+-		write_sequnlock(&psig->stats_lock);
+-		spin_unlock_irq(&current->sighand->siglock);
++		write_sequnlock_irq(&psig->stats_lock);
+ 	}
+ 
+ 	if (wo->wo_rusage)
 -- 
-2.43.0.429.g432eaa2c6b-goog
+2.25.1.362.g51ebf55
 
 
