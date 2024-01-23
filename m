@@ -1,92 +1,72 @@
-Return-Path: <linux-kernel+bounces-34930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34931-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A73E5838961
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:45:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AE76838965
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:46:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2072D1F2AFF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:45:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D3E1284E22
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:46:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ADAD56B78;
-	Tue, 23 Jan 2024 08:45:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9A3D56B83;
+	Tue, 23 Jan 2024 08:46:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MVzD4C0V";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="HcTryCcg";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MVzD4C0V";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="HcTryCcg"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="KvgC4RT0"
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26D59524D3
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 08:45:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53628524D3
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 08:46:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705999519; cv=none; b=ka5wnvNvSahb6zirq0BErAhNl9ldjxfPM7oIM503DI9c+0mscfJTwaf2ZWvWxNNwEl8BH8sT0CRE1S8bP3nWFwLtSYKYIil/Lk0YnDhbQPEGU1+ZDmxgpUZlBlm7FTcOwu0CStWJajd9jWO17Z/H8PF4ihiRBfQbcKvaYbg+JQ0=
+	t=1705999588; cv=none; b=dBjuf2oSIVbvhhzv5LPoPmkMyPAxEFHAQxS6+GzYAlKfbAf+dQmy9Z7+rwaDTq2wPUwzdse12GalVDgiGtQF+YeFZMXjU/L3pZy5/a4/NXutx5dhBkbTsupwoFMww80qWrTsRRGqhpdARwlX9ZOor3uZIewsl73TMGVoBaT+R8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705999519; c=relaxed/simple;
-	bh=wfaMHmM3Awpd4S3wW8POjXWRRbqPMIhhPBh0nsH2Ntk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=trJaQ3ybc1YKkdNpz51bcK2yAiyPfBqL8v374SpI4DHJTF7ASu9pux75y5tc4cWYaCGr4ExN/iUJawdz4PPr/CRbEeR97mLpYydlNn2HObek+eAryH+yMa0yMvQ84qKbNmUZpcyZjs1yp22htF4l1lFezyaqM8EoT4Xtro6U7sY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MVzD4C0V; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=HcTryCcg; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MVzD4C0V; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=HcTryCcg; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 3C3CB1FD41;
-	Tue, 23 Jan 2024 08:45:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705999516; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZHBcb6f4SclqAqxvFO8Za6hGfvKmv8CRvtm5QGIZCC4=;
-	b=MVzD4C0VOQV5Y2z3YlnI6s6F0+kWQMoAnwiyh+OH2iZupQB849KPMoRD+OtLaYeZPkmvZZ
-	jzVqHmgYAI/OGuWYojDOCmSqu5gnqDOEFSpMDer95u7KPn0gHIFtzqVBCqhOm+vdAT52t1
-	3xCmyPcBXCXV9lzXBkdP7nK/jWwSrA0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705999516;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZHBcb6f4SclqAqxvFO8Za6hGfvKmv8CRvtm5QGIZCC4=;
-	b=HcTryCcgA69cC1p6bigLmEvjz9bnmEW0gnHte1rHh6jVC7d4RglyRrQBSTtjdvXiVY2Frm
-	6U3WNp16ua03HaBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1705999516; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZHBcb6f4SclqAqxvFO8Za6hGfvKmv8CRvtm5QGIZCC4=;
-	b=MVzD4C0VOQV5Y2z3YlnI6s6F0+kWQMoAnwiyh+OH2iZupQB849KPMoRD+OtLaYeZPkmvZZ
-	jzVqHmgYAI/OGuWYojDOCmSqu5gnqDOEFSpMDer95u7KPn0gHIFtzqVBCqhOm+vdAT52t1
-	3xCmyPcBXCXV9lzXBkdP7nK/jWwSrA0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1705999516;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZHBcb6f4SclqAqxvFO8Za6hGfvKmv8CRvtm5QGIZCC4=;
-	b=HcTryCcgA69cC1p6bigLmEvjz9bnmEW0gnHte1rHh6jVC7d4RglyRrQBSTtjdvXiVY2Frm
-	6U3WNp16ua03HaBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2481913786;
-	Tue, 23 Jan 2024 08:45:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ewSBCJx8r2WcdgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Tue, 23 Jan 2024 08:45:16 +0000
-Message-ID: <05e23c85-1bae-48a5-b1d1-cb61e0b1efdf@suse.cz>
-Date: Tue, 23 Jan 2024 09:45:15 +0100
+	s=arc-20240116; t=1705999588; c=relaxed/simple;
+	bh=DEjucHmviiNGEJdKpQ9gbgRL+p6MOiVOJ6Sm9ewxIN8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=fqcSumJwkEP596PoIaE3qIvMJGnKDeGVqncSDEZZGnQlKZeQtT67LE8+dczOW6AJ287EHcNjcBTuGNkiRDd+bRzerH2S+4z/mEk1Q8W62N3fWCsk5L2aNtLYJwrl47fnoPTUjonJp+HJm5GyUhReRupyhnFGAib2TyiI9kULYu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=KvgC4RT0; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40e7065b7bdso48145805e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:46:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705999585; x=1706604385; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xQ/kZBT815lE+ny4M2+2t9x89ILR4Uw+AHcp6Gre08U=;
+        b=KvgC4RT0JdoGvQD/VPpz5X2diVEOP7uqLKGTMMEuHu02GUSW1OGnBzdcwNbyZNoG3P
+         vu7SA+LsErKuuVVGatekzr7exSdVe6iFuNfm0b6qLXrYMewCf1wjh2RnYG01MSwVZGO8
+         S4kvMHwiob8847KhVdKypuO2Bs2z1UEkpgRrh0bcIaDxWsL0QafFMUGRO1dc40kl7vWk
+         GJRdktU/WwfiUZ5HGZTiCC/PxOdiTEmlZezBtXkWDMXR+/1iwk4+3S+0ccZM0fsLXx/X
+         EARADC9YGHXRXwmiKBONs10pnpCa45kHpZ388i7hsFK21o3zsXA23ZSQyKaewZo+kpik
+         1AiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705999585; x=1706604385;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xQ/kZBT815lE+ny4M2+2t9x89ILR4Uw+AHcp6Gre08U=;
+        b=MQ1f6YfY7KX3V8CPxMTsGSUU+Cj0+Xqz/N3q9hVakdFXujPF+k1tgeINxYLhCvl+yf
+         tKQjv7X3NjoIPoovv35iTFN2yq7KvKH2oCuYVJAvfeu3LNqPhhN8SMuraebWonF/VY5m
+         T8Hogf7oKarBCpI5RZ9k2vnDcQXD/QRiS0yxuoHZ5tzFZnitzjE7qYz6eJ7GwgP7xq2q
+         JfbilvSTwTWj03ZJXVjeU8pNnecYHrWdrYbN4ek1dFWAvEMtuIkvj71Kkd1O8gFBMTXF
+         Oe+/VVOif0eq/GQMLC941cqi81IrbIInchGHMgzXIdHH56DkDVG7Ssltz2L9dzatDalc
+         FleA==
+X-Gm-Message-State: AOJu0Yy9KB8p9BarlSGYGpnR5FlGyltHiWB9jPsmjy48kRRTUg78nUSC
+	ohP/idNfVBI80q6q3SW94wPMzYyG34GZRIWCS6mmq+RBK3g5FOwmOm4lLvFBrEs=
+X-Google-Smtp-Source: AGHT+IFqx8K7lQJcsPyqqFg6uEM5q/0vFdnheYAm2OJ5/6xMSKevABF6QpsdfJSIHe7/FCPK3LYd1w==
+X-Received: by 2002:a05:600c:5249:b0:40e:af03:5f8d with SMTP id fc9-20020a05600c524900b0040eaf035f8dmr210660wmb.8.1705999585557;
+        Tue, 23 Jan 2024 00:46:25 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id z10-20020a05600c0a0a00b0040e486bc0dfsm46097069wmp.27.2024.01.23.00.46.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jan 2024 00:46:25 -0800 (PST)
+Message-ID: <c289a167-031a-44cc-ab62-0fb0adcab2bb@linaro.org>
+Date: Tue, 23 Jan 2024 09:46:23 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,88 +74,92 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] mm/slub: remove full list manipulation for non-debug
- slab
+Subject: Re: [PATCH 1/8] ARM: dts: microchip: sam9x60_curiosity: Add
+ power-supply properties for sdmmc nodes
 Content-Language: en-US
-To: Chengming Zhou <zhouchengming@bytedance.com>,
- Hyeonggon Yoo <42.hyeyoo@gmail.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- David Rientjes <rientjes@google.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240117-slab-misc-v1-0-fd1c49ccbe70@bytedance.com>
- <20240117-slab-misc-v1-2-fd1c49ccbe70@bytedance.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240117-slab-misc-v1-2-fd1c49ccbe70@bytedance.com>
+To: Mihai Sain <mihai.sain@microchip.com>, claudiu.beznea@tuxon.dev,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240123083158.7339-1-mihai.sain@microchip.com>
+ <20240123083158.7339-2-mihai.sain@microchip.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240123083158.7339-2-mihai.sain@microchip.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -2.79
-X-Spamd-Result: default: False [-2.79 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 BAYES_HAM(-3.00)[100.00%];
-	 RCPT_COUNT_SEVEN(0.00)[10];
-	 FREEMAIL_TO(0.00)[bytedance.com,gmail.com,lge.com,linux.com,kernel.org,linux-foundation.org,linux.dev,google.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
 
-On 1/17/24 12:45, Chengming Zhou wrote:
-> Since debug slab is processed by free_to_partial_list(), and only debug
-> slab which has SLAB_STORE_USER flag would care about the full list, we
-> can remove these unrelated full list manipulations from __slab_free().
-
-Well spotted.
-
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-
+On 23/01/2024 09:31, Mihai Sain wrote:
+> The sdmmc0 and sdmmc1 controllers are powered from 3.3V regulator.
+> Add vmmc-supply and vqmmc-supply properties to sdmmc nodes.
+> 
+> Signed-off-by: Mihai Sain <mihai.sain@microchip.com>
 > ---
->  mm/slub.c | 4 ----
->  1 file changed, 4 deletions(-)
+>  arch/arm/boot/dts/microchip/at91-sam9x60_curiosity.dts | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 20c03555c97b..f0307e8b4cd2 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -4187,7 +4187,6 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
->  	 * then add it.
->  	 */
->  	if (!kmem_cache_has_cpu_partial(s) && unlikely(!prior)) {
-> -		remove_full(s, n, slab);
->  		add_partial(n, slab, DEACTIVATE_TO_TAIL);
->  		stat(s, FREE_ADD_PARTIAL);
->  	}
-> @@ -4201,9 +4200,6 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
->  		 */
->  		remove_partial(n, slab);
->  		stat(s, FREE_REMOVE_PARTIAL);
-> -	} else {
-> -		/* Slab must be on the full list */
-> -		remove_full(s, n, slab);
->  	}
->  
->  	spin_unlock_irqrestore(&n->list_lock, flags);
-> 
+> diff --git a/arch/arm/boot/dts/microchip/at91-sam9x60_curiosity.dts b/arch/arm/boot/dts/microchip/at91-sam9x60_curiosity.dts
+> index c6fbdd29019f..457c54dde0b7 100644
+> --- a/arch/arm/boot/dts/microchip/at91-sam9x60_curiosity.dts
+> +++ b/arch/arm/boot/dts/microchip/at91-sam9x60_curiosity.dts
+> @@ -452,6 +452,8 @@ &sdmmc0 {
+>  	pinctrl-0 = <&pinctrl_sdmmc0_default &pinctrl_sdmmc0_cd>;
+>  	cd-gpios = <&pioA 25 GPIO_ACTIVE_LOW>;
+>  	disable-wp;
+> +	vmmc-supply = <&vdd1_3v3>;
+> +	vqmmc-supply = <&vdd1_3v3>;
+
+For this and all other patches:
+
+It is surprising that you use the same supply for both. Looks like
+inaccurate description. It is possible, but I think unlikely because
+usually VQMMC has lower voltage than 3.3V.
+
+Best regards,
+Krzysztof
 
 
