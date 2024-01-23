@@ -1,122 +1,144 @@
-Return-Path: <linux-kernel+bounces-36096-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B138839B7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 22:53:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4420839B81
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 22:54:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0D0D1F22681
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:53:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 878A71C215F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:54:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C64024EB50;
-	Tue, 23 Jan 2024 21:53:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4145847F5D;
+	Tue, 23 Jan 2024 21:54:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=danm.net header.i=@danm.net header.b="AFuFreAq"
-Received: from mr85p00im-zteg06022001.me.com (mr85p00im-zteg06022001.me.com [17.58.23.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="aTh0YbBO"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CBCB4CB4C
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 21:53:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=17.58.23.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A8043FB09
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 21:54:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706046792; cv=none; b=TzgcHr6gu8Ihec2/vtojh+eW48xH5E+5NS4g9INbRpEehfyi5JceZo7cw0YdUE5rmtFoJqnH5f340Of8WRkflWAAd/BWNa15eph6+EuX8w5AqmG3I4dKqiLSIJu8vUDzcvukS20kB814flETaje5HcEUWMpR9eLFDcKCeIJKjsI=
+	t=1706046874; cv=none; b=BXJzWlnig+afa0m+7Mg5RaxN1z05ELlePXb0GTJmOXIGEdNatTMidq0krCoxaEBIBCmSU4MOGLvSCbb8a30KP8bsVN/aUmAHbrjstk+SfTdKHO37xmlKrXTNKwJyX4jwGnp2QwyNZvAiYTutMeI9wiv6AZejYnox8Zdo28ZoGkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706046792; c=relaxed/simple;
-	bh=nezbIq/D3ENhfCPuWNhv3F47gynsXBfOjGxNVePJ7fE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nW2259nhfe5AM2min0HWz2ImQWYGo6olDO23hshG5GmM2SO12f10+hIhxIVZIRZDiDsHTBpkTc7jTPsdKr+dfgONJGtgAFmko/w+q+jF13T8kU94SWyh4b2O0TdWbMWSGvf+AyPktBfhvMgaxf/ukxfToeU5Hb1RUpvBeGIyFQU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=danm.net; spf=pass smtp.mailfrom=danm.net; dkim=pass (2048-bit key) header.d=danm.net header.i=@danm.net header.b=AFuFreAq; arc=none smtp.client-ip=17.58.23.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=danm.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=danm.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=danm.net; s=sig1;
-	t=1706046790; bh=wNJHkz8AkFLOOTSoO2V4Be1p2DmOhk/MoD05yij4/20=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version;
-	b=AFuFreAqntFxUNMn6XQf/yaVdt6ae2KPtCS6gGRRRsUM8FOqeq9RNAiS4yANqrzZr
-	 SBmkUdPpJ8MyHjekq40rMKc64a0zguzumjIVsuM7eJorJvcYyfeqbrXuc7X/Mp5q7K
-	 /xnmfO0NRaVUro4W07pOz27CP0l1PfoVDbrHAqq64nMSoIXHr5Oj0yHR4BoPtN9Z9u
-	 Ony6bYOEY/NoGKJy0Q7lypOQYppI9j6fnr6NF5fEJ1WwTuckKrOx8zOaqnJAYwVqGf
-	 M+r8D3UGA1XfZ63bkOltZFWemzwWQbWHRWaMswONZiPFNtocL9/lRwLatNEZyE6Drn
-	 R+V2IG0qe76rA==
-Received: from hitch.danm.net (mr38p00im-dlb-asmtp-mailmevip.me.com [17.57.152.18])
-	by mr85p00im-zteg06022001.me.com (Postfix) with ESMTPSA id CE79C8002B6;
-	Tue, 23 Jan 2024 21:53:08 +0000 (UTC)
-From: Dan Moulding <dan@danm.net>
-To: song@kernel.org
-Cc: dan@danm.net,
-	gregkh@linuxfoundation.org,
-	junxiao.bi@oracle.com,
-	linux-kernel@vger.kernel.org,
-	linux-raid@vger.kernel.org,
-	regressions@lists.linux.dev,
-	stable@vger.kernel.org,
-	yukuai1@huaweicloud.com
-Subject: Re: [REGRESSION] 6.7.1: md: raid5 hang and unresponsive system; successfully bisected
-Date: Tue, 23 Jan 2024 14:53:07 -0700
-Message-ID: <20240123215307.8083-1-dan@danm.net>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <CAPhsuW7-r=UAO8f7Ok08vCx2kdVx6mZADyZ-LknNE8csnX+L8g@mail.gmail.com>
-References: <CAPhsuW7-r=UAO8f7Ok08vCx2kdVx6mZADyZ-LknNE8csnX+L8g@mail.gmail.com>
+	s=arc-20240116; t=1706046874; c=relaxed/simple;
+	bh=OyptoQZgrz1X8m1OAIxrZM7I+UrxAKsz3tc4tHk75g0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=We1Pl8XlkSH0/p0GkRHasZsEqk+2bI6kJPSNztDvIfKkqVr3XMegJJ0vKVXLAE7j6dFz4Mg5RJxeXg0CitSiP23pt66IcpqKY9QHH9MW0gY6P5JluMa3zfun6L+3BpykA0nEU869aaDZbgOEBchX/9xY904JtonQsTBYd7x8rlc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=aTh0YbBO; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6dd82bfa998so892593b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 13:54:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706046872; x=1706651672; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=16BHFWN5mZqDE+m/8++0MKdvvntMugYUqf/gfAr3/kk=;
+        b=aTh0YbBOe5KdtcoJamLZVZjRKWh7HEVknl7PbdqPBghsOwTTm4pPofn1rAuQX5dknT
+         dcbrvtIeir1jIK2hcr+Q47z6weUntBMmKytFsRYR3ZW1HVgd4uFJpSrYBnPCnR3zMams
+         uqcj2jYCWePy27CdB0EHXxfL4mKhV8Jg9D9Pk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706046872; x=1706651672;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=16BHFWN5mZqDE+m/8++0MKdvvntMugYUqf/gfAr3/kk=;
+        b=GVJBHfBkXPzjdBble7SsoI6Qhob8L96BGNMjWvLt1bFlRxtrvl5GPW7LbOkbfItwTB
+         xFI5eT9pX+KsiqRaiX9QgoAjUiFZBU59jr6xeQ9iEdfq7wjdK3oXtxSEfh0cwlQNe+US
+         dJnJBPcVuThW+zfOtTaT59n8Wol5ICtKiog7+mvOMn+F4LMH6aM9SmY0gb6Gwr8NtiPY
+         z7NnQDGAiYkxIiW1og7e9PUif0v3xSafWK3SXfr+1PKESZe7uAKIA9wuiIzj3hMPWMf1
+         PROZosUeJsq9m5w1IBVYUXvj0XkC+5hmPl0GehQpQq1VU67dJUQ0PxRrfnsvJ5zhkled
+         syKQ==
+X-Gm-Message-State: AOJu0YyUjwdHJJaRbM7NCP9Gd4wZPv17cGq6RpqVN9tr+AHYyE/ejuBR
+	zaZ+tzNl8Eolp1OqlGKR2oNq51EzR/ErEDjV7cV4MRkC1hwa6M0l4MJk3dLf4g==
+X-Google-Smtp-Source: AGHT+IE8xK8v5OyPoVXhFhlYATfCJ5ikAR9uO9SWATCJ9F5lbjhJZjmG8W8l8y+KkO6ctC60W2qk1Q==
+X-Received: by 2002:a05:6a20:6f9c:b0:19a:788a:1c6a with SMTP id gv28-20020a056a206f9c00b0019a788a1c6amr7906708pzb.79.1706046872539;
+        Tue, 23 Jan 2024 13:54:32 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id x34-20020a056a0018a200b006dd873f44e7sm371966pfh.115.2024.01.23.13.54.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jan 2024 13:54:32 -0800 (PST)
+Date: Tue, 23 Jan 2024 13:54:31 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: linux-hardening@vger.kernel.org, Will Deacon <will@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 10/82] locking/atomic/x86: Silence intentional wrapping
+ addition
+Message-ID: <202401231353.7AEF98F625@keescook>
+References: <20240122235208.work.748-kees@kernel.org>
+ <20240123002814.1396804-10-keescook@chromium.org>
+ <Za-GfqSFEA_4fUtA@FVFF77S0Q05N>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: kXPpc39gOyrjU3mX9CFKgWRDEzE30LnH
-X-Proofpoint-GUID: kXPpc39gOyrjU3mX9CFKgWRDEzE30LnH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-23_13,2024-01-23_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=917 bulkscore=0
- adultscore=0 mlxscore=0 phishscore=0 spamscore=0 malwarescore=0
- suspectscore=0 clxscore=1030 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2308100000 definitions=main-2401230162
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Za-GfqSFEA_4fUtA@FVFF77S0Q05N>
 
-> I think we still want d6e035aad6c0 in 6.7.2. We may need to revert
-> 0de40f76d567 on top of that. Could you please test it out? (6.7.1 +
-> d6e035aad6c0 + revert 0de40f76d567.
+On Tue, Jan 23, 2024 at 09:27:26AM +0000, Mark Rutland wrote:
+> On Mon, Jan 22, 2024 at 04:26:45PM -0800, Kees Cook wrote:
+> > Annotate atomic_add_return() to avoid signed overflow instrumentation.
+> > It is expected to wrap around.
+> > 
+> > Cc: Will Deacon <will@kernel.org>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Boqun Feng <boqun.feng@gmail.com>
+> > Cc: Mark Rutland <mark.rutland@arm.com>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Ingo Molnar <mingo@redhat.com>
+> > Cc: Borislav Petkov <bp@alien8.de>
+> > Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> > Cc: x86@kernel.org
+> > Cc: "H. Peter Anvin" <hpa@zytor.com>
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  arch/x86/include/asm/atomic.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/x86/include/asm/atomic.h b/arch/x86/include/asm/atomic.h
+> > index 55a55ec04350..4120cdd87da8 100644
+> > --- a/arch/x86/include/asm/atomic.h
+> > +++ b/arch/x86/include/asm/atomic.h
+> > @@ -80,7 +80,7 @@ static __always_inline bool arch_atomic_add_negative(int i, atomic_t *v)
+> >  }
+> >  #define arch_atomic_add_negative arch_atomic_add_negative
+> >  
+> > -static __always_inline int arch_atomic_add_return(int i, atomic_t *v)
+> > +static __always_inline __signed_wrap int arch_atomic_add_return(int i, atomic_t *v)
+> >  {
+> >  	return i + xadd(&v->counter, i);
+> >  }
+> 
+> I think that here (and in the arm64 patch) it'd be better to use add_wrap() on
+> the specific statement, i.e. have:
+> 
+> static __always_inline int arch_atomic_add_return(int i, atomic_t *v)
+> {
+> 	return add_wrap(i, xadd(&v->counter, i));
+> }
+> 
+> ... since otherwise the annotation could applly to the '+' or something else
+> (e.g. if the 'xadd() part is a special macro), and the annotation might
+> unexpectedly hide things if we add other statements here in future.
 
-I was operating under the assumption that the two commits were
-intended to exist as a pair (the one reverts the old fix, because the
-next commit has what is supposed to be a better fix). But since the
-regression still exists, even with both patches applied, the old fix
-must be reapplied to resolve the current regression.
+Okay, sure, I can do that. I may have some header inclusion problems,
+but I'll give it a shot.
 
-But, as you've requested, I have tested 6.7.1 + d6e035aad6c0 + revert
-0de40f76d567 and it seems fine. So I have no issue if you think it
-makes sense to accept d6e035aad6c0 on its own, even though it would
-break up the pair of commits.
-
-> OTOH, I am not able to reproduce the issue. Could you please help
-> get more information:
->   cat /proc/mdstat
-
-Here is /proc/mdstat from one of the systems where I can reproduce it:
-
-    $ cat /proc/mdstat
-    Personalities : [raid6] [raid5] [raid4]
-    md0 : active raid5 dm-0[4](J) sdc[3] sda[0] sdb[1]
-          3906764800 blocks super 1.2 level 5, 512k chunk, algorithm 2 [3/3] [UUU]
-
-    unused devices: <none>
-
-dm-0 is an LVM logical volume which is backed by an NVMe SSD. The
-others are run-of-the-mill SATA SSDs.
-
->  profile (perf, etc.) of the md thread
-
-I might need a little more pointing in the direction of what exactly
-to look for and under what conditions (i.e. should I run perf while
-the thread is stuck in the 100% CPU loop? what kind of report should I
-ask perf for?). Also, are there any debug options I could enable in
-the kernel configuration that might help gather more information?
-Maybe something in debugfs? I currently get absolutely no warnings or
-errors in dmesg when the problem occurs.
-
-Cheers,
-
--- Dan
+-- 
+Kees Cook
 
