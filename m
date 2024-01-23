@@ -1,98 +1,155 @@
-Return-Path: <linux-kernel+bounces-35041-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21B9E838AEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:52:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8091838AF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:53:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9F681F2340F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:52:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90151284B89
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:53:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F171A5DF0C;
-	Tue, 23 Jan 2024 09:50:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t/nYxYtO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2347059B7A;
+	Tue, 23 Jan 2024 09:52:55 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B7875D72F;
-	Tue, 23 Jan 2024 09:50:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C58D758ACD
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 09:52:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706003421; cv=none; b=MEivkq3r6yXjD80Byr6fUsA87Bbl5rMm8VidiYVzdOODZloO7fkwsLiMP0GxfPP5YCalQrYCArSaPOnAdqmkFgLkHsk1RHA6euDPmsB23ZXZTIc3pm8RunErXfLrsI71QeVRFcMWNtcJYu2/rNymtECL3Z33wPK9x8dea7Pkr9M=
+	t=1706003574; cv=none; b=knG/p8c+7NnfD+Mr+TghD1DGjkJrR8R+HUhkJdmqHK6pbQ+sUVl1qCwN5VdKrRJklD10jCwkYevFfxvJPSja7zYFlu3fSEwZIBGygwoFNlo8JVlrwvJ3xbH+cAtoMcggrRHCiIxgGc5+uS0KqFQCppjOiu9auu+ShhlJVGOJgUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706003421; c=relaxed/simple;
-	bh=9BExhrmqoHD9gvDqNZduVxiWMelKYXXILPkBvgv+4JE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GAv58Wx2K/JiPB5YNN+RZimaHbbUX9/WypDCkiFwo6jxF1UGWms3fSoo/Hen2YkDM0j9els1L4D+jsFQKj7KT3Yuus2plCSEffbrgbWmtqOuOSYT7v6U9X9d2gslCvt3IBCGX+rJHEoTAsxQYEwCLdUb0uMdQWLGEISnVbBkShg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t/nYxYtO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2C92C433C7;
-	Tue, 23 Jan 2024 09:50:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706003420;
-	bh=9BExhrmqoHD9gvDqNZduVxiWMelKYXXILPkBvgv+4JE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=t/nYxYtOn03LMZvMPFvgjtLjRAk8LljMm/aUiPO4yjbJSX/SSUSnxeo8a4EhpLb68
-	 o4Lcb20yoXIH7HuPQvaOaGb0fr0j7AoSbn3j/88n9XBEfCOHCX54S8qcSDVSpq/FX7
-	 /vvsQ7WErwGtTr77NYIDnDm/4PfoLS2yd3DQo5fRfTrDoNKXDsphsD2jXemIcTAYef
-	 QS7IVD2ECu6mdoBT30gagPXxeRuPbdyu99v9XaEH+tZvGAjZRow0zPTZdXGDxJrqzl
-	 8WoJR4+9cICf+op2mwuOdy2ADwSoAHFaW5BfDpbUMXDDzz3+iWVXmzbQggdYN1rz0X
-	 utoOzgsIaqDQA==
-Message-ID: <50f79727-d82a-4122-9b3e-66dd09027ab5@kernel.org>
-Date: Tue, 23 Jan 2024 11:50:13 +0200
+	s=arc-20240116; t=1706003574; c=relaxed/simple;
+	bh=/pwL8Yk8naFUcATh/l5HS01M5d9UaBR8TpR2YD6nyBQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rJynkk3H7HluLcp4bzBrk6N6mMH4gdPbINtu+JllZUeOrBdyTo/9fUaT0+TOKYDUXqgtNTYo4Gu+0Yud5N6UY9qHvg/53qNS3BpG/vQriiLh5zAFStl1pCpOHWmk1nLt9wR/TupC01/+7do0gSRXdC/zt25D+UV0hzZM8oX27Yk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rSDST-0003WN-Po; Tue, 23 Jan 2024 10:52:41 +0100
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rSDST-001nXf-8B; Tue, 23 Jan 2024 10:52:41 +0100
+Received: from mfe by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rSDST-001LYv-5H; Tue, 23 Jan 2024 10:52:41 +0100
+Date: Tue, 23 Jan 2024 10:52:41 +0100
+From: Marco Felsch <m.felsch@pengutronix.de>
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc: daniel.lezcano@linaro.org, tglx@linutronix.de, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+	linux-imx@nxp.com, devicetree@vger.kernel.org,
+	Peng Fan <peng.fan@nxp.com>, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 2/2] clocksource: timer-imx-sysctr: support i.MX95
+Message-ID: <20240123095241.66nrgkkrdth6g32w@pengutronix.de>
+References: <20240122092225.2083191-1-peng.fan@oss.nxp.com>
+ <20240122092225.2083191-2-peng.fan@oss.nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 21/22] net: fill in MODULE_DESCRIPTION()s for
- cpsw-common
-Content-Language: en-US
-To: Breno Leitao <leitao@debian.org>, kuba@kernel.org, davem@davemloft.net,
- abeni@redhat.com, edumazet@google.com,
- Siddharth Vadapalli <s-vadapalli@ti.com>,
- Ravi Gunasekaran <r-gunasekaran@ti.com>, Paolo Abeni <pabeni@redhat.com>
-Cc: dsahern@kernel.org, weiwan@google.com, Rob Herring <robh@kernel.org>,
- Alex Elder <elder@linaro.org>, Simon Horman <horms@kernel.org>,
- "open list:TI ETHERNET SWITCH DRIVER (CPSW)" <linux-omap@vger.kernel.org>,
- "open list:TI ETHERNET SWITCH DRIVER (CPSW)" <netdev@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>
-References: <20240122184543.2501493-1-leitao@debian.org>
- <20240122184543.2501493-22-leitao@debian.org>
-From: Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <20240122184543.2501493-22-leitao@debian.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240122092225.2083191-2-peng.fan@oss.nxp.com>
+User-Agent: NeoMutt/20180716
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
+Hi Peng,
 
-
-On 22/01/2024 20:45, Breno Leitao wrote:
-> W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
-> Add descriptions to the TI CPSW switch module.
+On 24-01-22, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
 > 
-> Signed-off-by: Breno Leitao <leitao@debian.org>
+> To i.MX95 System counter module, we use Read register space to get
+> the counter, not the Control register space to get the counter, because
+> System Manager firmware not allow Linux to read Control register space.
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
 > ---
->  drivers/net/ethernet/ti/cpsw-common.c | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/clocksource/timer-imx-sysctr.c | 16 +++++++++++++---
+>  1 file changed, 13 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/net/ethernet/ti/cpsw-common.c b/drivers/net/ethernet/ti/cpsw-common.c
-> index 26dc906eae90..57fe936bb177 100644
-> --- a/drivers/net/ethernet/ti/cpsw-common.c
-> +++ b/drivers/net/ethernet/ti/cpsw-common.c
-> @@ -90,4 +90,5 @@ int ti_cm_get_macid(struct device *dev, int slave, u8 *mac_addr)
->  }
->  EXPORT_SYMBOL_GPL(ti_cm_get_macid);
+> diff --git a/drivers/clocksource/timer-imx-sysctr.c b/drivers/clocksource/timer-imx-sysctr.c
+> index 5a7a951c4efc..3d3bc16388ed 100644
+> --- a/drivers/clocksource/timer-imx-sysctr.c
+> +++ b/drivers/clocksource/timer-imx-sysctr.c
+> @@ -8,9 +8,12 @@
+>  #include "timer-of.h"
 >  
-> +MODULE_DESCRIPTION("TI CPSW Switch common module");
->  MODULE_LICENSE("GPL");
+>  #define CMP_OFFSET	0x10000
+> +#define RD_OFFSET	0x20000
+>  
+>  #define CNTCV_LO	0x8
+>  #define CNTCV_HI	0xc
+> +#define CNTCV_LO_IMX95	(RD_OFFSET + 0x8)
+> +#define CNTCV_HI_IMX95	(RD_OFFSET + 0xc)
+>  #define CMPCV_LO	(CMP_OFFSET + 0x20)
+>  #define CMPCV_HI	(CMP_OFFSET + 0x24)
+>  #define CMPCR		(CMP_OFFSET + 0x2c)
+> @@ -22,6 +25,8 @@
+>  
+>  static void __iomem *sys_ctr_base __ro_after_init;
+>  static u32 cmpcr __ro_after_init;
+> +static u32 cntcv_hi = CNTCV_HI;
+> +static u32 cntcv_lo = CNTCV_LO;
+>  
+>  static void sysctr_timer_enable(bool enable)
+>  {
+> @@ -43,9 +48,9 @@ static inline u64 sysctr_read_counter(void)
+>  	u32 cnt_hi, tmp_hi, cnt_lo;
+>  
+>  	do {
+> -		cnt_hi = readl_relaxed(sys_ctr_base + CNTCV_HI);
+> -		cnt_lo = readl_relaxed(sys_ctr_base + CNTCV_LO);
+> -		tmp_hi = readl_relaxed(sys_ctr_base + CNTCV_HI);
+> +		cnt_hi = readl_relaxed(sys_ctr_base + cntcv_hi);
+> +		cnt_lo = readl_relaxed(sys_ctr_base + cntcv_lo);
+> +		tmp_hi = readl_relaxed(sys_ctr_base + cntcv_hi);
+>  	} while (tmp_hi != cnt_hi);
+>  
+>  	return  ((u64) cnt_hi << 32) | cnt_lo;
+> @@ -139,6 +144,11 @@ static int __init sysctr_timer_init(struct device_node *np)
+>  		to_sysctr.of_clk.rate /= SYS_CTR_CLK_DIV;
+>  	}
+>  
+> +	if (of_device_is_compatible(np, "nxp,imx95-sysctr-timer")) {
+> +		cntcv_hi = CNTCV_HI_IMX95;
+> +		cntcv_lo = CNTCV_LO_IMX95;
+> +	}
 
-Reviewed-by: Roger Quadros <rogerq@kernel.org>
+I'm not a fan of this, since TIMER_OF_DECLARE() can do the compat check.
+So instead of using fallback bindings just use the correct binding
+within the dts file. Also I'm not a fan of this clobal variable setting
+albeit there is just one instance _yet_ we really should instead rework
+this driver a bit and instead provide a i.MX95 specific
+sysctr_read_counter() function. This is clearly a bit more work but IMO
+a cleaner approach. Also afterwards once you add i.MX9x which is again a
+bit different would gain from this work.
 
--- 
-cheers,
--roger
+Regards,
+  Marco
+
+> +
+>  	sys_ctr_base = timer_of_base(&to_sysctr);
+>  	cmpcr = readl(sys_ctr_base + CMPCR);
+>  	cmpcr &= ~SYS_CTR_EN;
+> -- 
+> 2.37.1
+> 
+> 
+> 
 
