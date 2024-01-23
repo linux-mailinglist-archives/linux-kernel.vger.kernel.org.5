@@ -1,80 +1,89 @@
-Return-Path: <linux-kernel+bounces-34527-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34566-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27FB8837DF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:34:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D5FF8380AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:01:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7AB84289894
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:34:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 87C571F27522
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:01:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17566162E31;
-	Tue, 23 Jan 2024 00:36:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DB2E131E37;
+	Tue, 23 Jan 2024 01:03:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="D717a4+h"
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="a2Idl6M/"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D72F516274B
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:36:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 935CF130E3C
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 01:03:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705970186; cv=none; b=BAQRtWoWk3fYOaqm/smL+Vvr09fq1FJ6xEBncRmcc9tcOe0vFawbri9r9sxpXRbMZKDbUD3ZDfllyLOgyx6u75UQWh8gaDsSws2jgByEG5S19fV5q9+f+TY2YAjvl+uwo4TAV2MqW88ve3wSNua2BTvoZJAxG9s9lOtApIPZ4wQ=
+	t=1705971825; cv=none; b=tu9ZmFJx4duh/v/ezX+SRq+zqShyGOtAqHQe0a7uVZsU64K1ZbS9d7usQoK2TbiapjwGbwyYIM4USRqy9AY6B1ajRW5KQLf+aybsekA8zR9qbeCFBl9uPm2sSZNQKnz732mGtGaCczVlys/aUnhIyxryeueELEggx8m6vPMWwOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705970186; c=relaxed/simple;
-	bh=ep/lIptA9L4lr+f06tjVEEoLQ4MXnnp5iyNA3nOOpBE=;
+	s=arc-20240116; t=1705971825; c=relaxed/simple;
+	bh=2D/1q+K5ofLS3QNrb17mBia21R1L5nS1NTJwK1+Jywo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=RTFCyCag5o5n7YMF8IZGZRaiQbsIjcLHgXkyabcCqdseKmJ7AGCeerB7k9ymfeoEv730RxFUG+PcruYCAA5N1sXzUOSb8+EWcNWXpQkYyyZt6i7++x3Pjrr+ztuuJJNDCcU11z95yOJyCkNLOjrQFHMJpEEtrmw0fxk7h5k1VD0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=D717a4+h; arc=none smtp.client-ip=209.85.215.173
+	 MIME-Version; b=DINcgAdNRFH20zUtBhvdY9rnqUlGnq2t7gKrJ3hkqY/TnkkEuGSfVbzAOQA+uL+uokxVZv5zR5bEXoUAOrjVmT1mFi7ldAlScSn3d3h8B8kdLr7W24nMIJRAUVwUnrTKyUsNpEL2QklGyF5Wypd9hKzAaWizAbe9EXKYG4dTXGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=a2Idl6M/; arc=none smtp.client-ip=209.85.214.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-53fa455cd94so1775821a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 16:36:24 -0800 (PST)
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d7393de183so8875065ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 17:03:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1705970184; x=1706574984; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1705971822; x=1706576622; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Gu7JD83IcutVIpR+vN3JS6ozq09X5iWFwWB5AcENu1U=;
-        b=D717a4+hchIOaKmqCVEbuWLkT6x4LFiOyOsg9820QbdtTjnxtBvHUX6v4s6sZAbgvD
-         D4akV6dkP7oQx+px2xduOIbAhE/yLcXvQFa9oQhjhlsoZtyGFvpTPXrv6LxqsYGwZgtO
-         dX9BlM60yl+1W5Ip70JgQgCk7MGQ1OsMud9/0=
+        bh=PzCem6cup4TdiKSfzyjJWNqgMtspOXnXOALwscH4Wdk=;
+        b=a2Idl6M/nB7uU5CS8xxzI/5QidtiR6E4Q3sFDrKD1RsiwxD4SvHlSntigxg2OfCWvP
+         c8rfPE7nnYFHY2q1SxwpkUVxKwA5u1ZiZCJSyFpIRafFLbOAjEGK8VLDKHK1f0EPZK9c
+         DfyzEhjlT9cFFPR3DAiY0bQeHB4rNqJhDAha4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705970184; x=1706574984;
+        d=1e100.net; s=20230601; t=1705971822; x=1706576622;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Gu7JD83IcutVIpR+vN3JS6ozq09X5iWFwWB5AcENu1U=;
-        b=FNkH5eMguHVczx0tmGA4YGE4aybz0dDRMnFmApAzEwvwdYKTMaIVTtenWwKuqpIWAD
-         lDu0Ztz2pxNuq4B49eaQoPWaXAmfNmR4p+gynHC20adf6c/bNRB1b0vxkRLT/o2MDakI
-         Dnz+j7VaFh8fPO7dP/0uhjJnN6PqPULY8zGMTVGggB9IMcbCyix3pNZxV2fDDtws9EC0
-         TZ0yMmRR6XI5Qth0PsLTxN4P0KDKGX9D5ZNWiPcspCG3wAWTbmHWy10qj5qOZmUvB8qO
-         0CK595BJ9Wh7hIN5czLqL6bi8S5e6ofbVcCtBvzhwuNbWZZRnvXs5bA7e7LmNGUyzatu
-         vvkA==
-X-Gm-Message-State: AOJu0Yy/862tNedv6H5qc1OELhexZqSUQ2Fj5K2T7ZfKPIiVw8/c2hv/
-	afonzCpCPkot1R/4QGxCeNre+NgQm+w1bwpWPRT1T2R/rhYQ0gKnCE3ZuWQiTA==
-X-Google-Smtp-Source: AGHT+IHU9ZlgSYh0eMx7669Diqv2Km4wEiGnQJDHlmT3vbHjtvtixLA5vnHZex0ljbCE4nmOmTLkXQ==
-X-Received: by 2002:a17:90b:3443:b0:290:20:2e7d with SMTP id lj3-20020a17090b344300b0029000202e7dmr2129175pjb.47.1705970184314;
-        Mon, 22 Jan 2024 16:36:24 -0800 (PST)
+        bh=PzCem6cup4TdiKSfzyjJWNqgMtspOXnXOALwscH4Wdk=;
+        b=PpiWUg535BXXYnf1azCdpM+1kcal3j/zxCNJunJKqRAgeXyx1cCaZRkJI3RD9b9jmS
+         nmShTBV7q3+c0XPLvasQYFuq0yHD8x5qaIpdDLjMvKM9UjQGZXlZxcshZjtzfSOwDdyC
+         jNEclNRmH7lvOOunwE+HUkQi942mXOfdq7ZO5EDwp8YlaCEn1bmRSgDiiLfuho6eeMcZ
+         /vMtDFtMlvD0XoUFJqalICRDKB316z9zU3dohCcEcHSuWAww9RwweIRn4cRQuL3ezciZ
+         Hmyf7REfiIrUgBt5/CA5tEfnGylCFlHbIteQQLOdmnLhV2sJm6wEEi+gAIUa0SrfbuKs
+         o7nQ==
+X-Gm-Message-State: AOJu0YwbtX9NhcnFw9rQDvvdkYoX66RHCudC0BBqMUqiDwAR8FdH7TaS
+	ua0tQKkRCpAcOo+j8YG5Tld6E4haSlomhlcRgnz81cyHciPb2J/gKcGNk5ppdg==
+X-Google-Smtp-Source: AGHT+IEInhZKVZDWnoUM/i8YQ5PB4DUxgiRH9R14Uyh3DsT8C3iOPJNGdMjkH5Jny8EX7IKezJTeTA==
+X-Received: by 2002:a17:902:8e8a:b0:1d4:2ebf:66e9 with SMTP id bg10-20020a1709028e8a00b001d42ebf66e9mr2195121plb.66.1705971822051;
+        Mon, 22 Jan 2024 17:03:42 -0800 (PST)
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id sx7-20020a17090b2cc700b0029072c64439sm5247062pjb.5.2024.01.22.16.36.12
+        by smtp.gmail.com with ESMTPSA id k17-20020a170902f29100b001d707a14316sm7510636plc.75.2024.01.22.17.03.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 16:36:18 -0800 (PST)
+        Mon, 22 Jan 2024 17:03:38 -0800 (PST)
 From: Kees Cook <keescook@chromium.org>
 To: linux-hardening@vger.kernel.org
 Cc: Kees Cook <keescook@chromium.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Brian Foster <bfoster@redhat.com>,
-	linux-bcachefs@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org,
 	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
 	Bill Wendling <morbo@google.com>,
 	Justin Stitt <justinstitt@google.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 42/82] bcachefs: Refactor intentional wrap-around test
-Date: Mon, 22 Jan 2024 16:27:17 -0800
-Message-Id: <20240123002814.1396804-42-keescook@chromium.org>
+Subject: [PATCH 43/82] bpf: Refactor intentional wrap-around test
+Date: Mon, 22 Jan 2024 16:27:18 -0800
+Message-Id: <20240123002814.1396804-43-keescook@chromium.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240122235208.work.748-kees@kernel.org>
 References: <20240122235208.work.748-kees@kernel.org>
@@ -84,19 +93,19 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3557; i=keescook@chromium.org;
- h=from:subject; bh=ep/lIptA9L4lr+f06tjVEEoLQ4MXnnp5iyNA3nOOpBE=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlrwgI2+Elt1IhHtkv5xgC3b3FRvTtskbiERH9l
- 1ZNTeeF/b2JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZa8ICAAKCRCJcvTf3G3A
- JjCLD/9xtD8moVS+50gZifAJkdU1ZG18tKRem8TQm9iujCTKM7k0RA9Gt8uWtXoWJI2iqcmr7so
- 6wDWNya25DwDHnA6i6cJcDCSKOUIWj9scqgsnc/vc4ITbCC36C8LufYn9hTR2C8dxojAdmv+oWg
- AbBeJl5BpJ/nNaasEJCbPtG/FaEqLUr1cVCXz1f4t/JfMlxIvR3A1axBfLBZIMGjQDtJYXHkL9p
- LFdbnw42F7LQAZdMegEC8ocQU04rYslKCLVrwhOjQCcsv6Ws6kE9vl7RJy+m+9uPUWC0Sl3Du+I
- kaPcZbyCi8S96+rC+3Sqkn8nxgB0Ji3KlCWYiom6XD/SCas2mJlZV/Fsgw4ZogGoScMiYHeDVxA
- 3uTAn740ytyh0GrA0mTeQCmVpWEEgRgl8yAEEFpN/x5prVl7B7OWBB3fLqipeDFvn+08dE6MQ44
- bK5og4830KAx7t1L/91syH794xNxDXyBfKMXgc8jHBAoPFLHV3Z11nzBQfhMFaLNyc3nKMCbkiP
- HgAKEE2E/rqRQZXoovbv2UsHH9qCg3D+20pG3URgwo9T1LgXTwOm94X59lEyn4fM80SQYA4kwUq
- lecpfKL9uzLXFqhGSnccEE+zNNjAHSFYJQxxeCm4t8TK3hf2xjDUryQOdhwdB+FESFtDBAzIc48 oZI7aHBEQ8bWKPQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3267; i=keescook@chromium.org;
+ h=from:subject; bh=2D/1q+K5ofLS3QNrb17mBia21R1L5nS1NTJwK1+Jywo=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlrwgIT/Z3KUQ2veJhvQyEt4ONL7c5mrClKFuYO
+ X8phZz1OWKJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZa8ICAAKCRCJcvTf3G3A
+ JkHTD/4qgBnK24plRIXO+yoz2iQ+LnLu7ceo46R+EFzo/2zE4dZ+2u1CDIt1eEMllnG7GdIK+rx
+ pbMn643YxLdpkcs5J68KMVdKkniWV1XXHwbVnmqxCo4f3HtuQS09iFdsyX5XJs2halhjXZuW75R
+ y811Tm0ilp4N9T2dCDFe9xf02ruR51njy47egnuRN0VU3wH5eVAM2v+jk3FCeD3rlPEUpSpDQ6P
+ IbHZAs1mjAVXG/iORESIdH1l+V5XRdrAhwLvmouMutwbyBdRSeemCsROlWgyRUEMAyCYANg0N2J
+ iFtFwycRzbLWW6oOtS9lcxUUXATx7bjcDODVDigeUo9lnVhJgT4k3Eox4y7Xsl6jC7/Wo6rdWDk
+ tWxp2TXKIwFm7GrPKQ9G6WCadosfMVqMKU9XxyQU+LGrgXVuV2vtDworRcNS4cTWKdWH32fhgnm
+ PbPrx493hufpiEUxiHBg5a0Cx3Vp0nGNmEUyLl0IICmlG8MJJSdrh6iubiBRHOgFdZZIN0MGO0D
+ jipUiaIzyLiQ0IoPELof8qAAkUP239U2GzBeV6tfZDmRwot08eR3a1n4Ghqvp72J6PkxFLB94r9
+ /D9CqYn4moMTyD6tGRDSqYZ7623ETbGfVy32TpB8S7loBlaOQTbv+FJCb2GqADyXmCvziiN3rOI GVEF4TSjuaYfhyw==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 
@@ -121,78 +130,60 @@ Link: https://git.kernel.org/linus/68df3755e383e6fecf2354a67b08f92f18536594 [1]
 Link: https://github.com/KSPP/linux/issues/26 [2]
 Link: https://github.com/KSPP/linux/issues/27 [3]
 Link: https://github.com/KSPP/linux/issues/344 [4]
-Cc: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Brian Foster <bfoster@redhat.com>
-Cc: linux-bcachefs@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Song Liu <song@kernel.org>
+Cc: Yonghong Song <yonghong.song@linux.dev>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: Stanislav Fomichev <sdf@google.com>
+Cc: Hao Luo <haoluo@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: bpf@vger.kernel.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- fs/bcachefs/bkey.c  | 4 ++--
- fs/bcachefs/fs.c    | 2 +-
- fs/bcachefs/quota.c | 2 +-
- fs/bcachefs/util.c  | 2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
+ kernel/bpf/verifier.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/fs/bcachefs/bkey.c b/fs/bcachefs/bkey.c
-index 76e79a15ba08..c68f1cfd579e 100644
---- a/fs/bcachefs/bkey.c
-+++ b/fs/bcachefs/bkey.c
-@@ -448,7 +448,7 @@ static bool bkey_format_has_too_big_fields(const struct bkey_format *f)
- 			: 0;
- 		u64 field_offset = le64_to_cpu(f->field_offset[i]);
- 
--		if (packed_max + field_offset < packed_max ||
-+		if (add_would_overflow(packed_max, field_offset) ||
- 		    packed_max + field_offset > unpacked_max)
- 			return true;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 65f598694d55..21e3f30c8757 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -12901,8 +12901,8 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
+ 			dst_reg->smin_value = smin_ptr + smin_val;
+ 			dst_reg->smax_value = smax_ptr + smax_val;
+ 		}
+-		if (umin_ptr + umin_val < umin_ptr ||
+-		    umax_ptr + umax_val < umax_ptr) {
++		if (add_would_overflow(umin_ptr, umin_val) ||
++		    add_would_overflow(umax_ptr, umax_val)) {
+ 			dst_reg->umin_value = 0;
+ 			dst_reg->umax_value = U64_MAX;
+ 		} else {
+@@ -13023,8 +13023,8 @@ static void scalar32_min_max_add(struct bpf_reg_state *dst_reg,
+ 		dst_reg->s32_min_value += smin_val;
+ 		dst_reg->s32_max_value += smax_val;
  	}
-@@ -664,7 +664,7 @@ int bch2_bkey_format_invalid(struct bch_fs *c,
- 				: 0;
- 			u64 field_offset = le64_to_cpu(f->field_offset[i]);
- 
--			if (packed_max + field_offset < packed_max ||
-+			if (add_would_overflow(packed_max, field_offset) ||
- 			    packed_max + field_offset > unpacked_max) {
- 				prt_printf(err, "field %u too large: %llu + %llu > %llu",
- 					   i, packed_max, field_offset, unpacked_max);
-diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-index ec419b8e2c43..00a606171656 100644
---- a/fs/bcachefs/fs.c
-+++ b/fs/bcachefs/fs.c
-@@ -901,7 +901,7 @@ static int bch2_fiemap(struct inode *vinode, struct fiemap_extent_info *info,
- 	if (ret)
- 		return ret;
- 
--	if (start + len < start)
-+	if (add_would_overflow(start, len))
- 		return -EINVAL;
- 
- 	start >>= 9;
-diff --git a/fs/bcachefs/quota.c b/fs/bcachefs/quota.c
-index e68b34eab90a..1738b1fc1c75 100644
---- a/fs/bcachefs/quota.c
-+++ b/fs/bcachefs/quota.c
-@@ -392,7 +392,7 @@ static void __bch2_quota_transfer(struct bch_memquota *src_q,
- 				  enum quota_counters counter, s64 v)
- {
- 	BUG_ON(v > src_q->c[counter].v);
--	BUG_ON(v + dst_q->c[counter].v < v);
-+	BUG_ON(add_would_overflow(v, dst_q->c[counter].v));
- 
- 	src_q->c[counter].v -= v;
- 	dst_q->c[counter].v += v;
-diff --git a/fs/bcachefs/util.c b/fs/bcachefs/util.c
-index a135136adeee..2200c81edbd2 100644
---- a/fs/bcachefs/util.c
-+++ b/fs/bcachefs/util.c
-@@ -148,7 +148,7 @@ static int __bch2_strtou64_h(const char *cp, u64 *res)
- 		return -ERANGE;
- 
- 	f_n = div_u64(f_n * b, f_d);
--	if (v + f_n < v)
-+	if (add_would_overflow(v, f_n))
- 		return -ERANGE;
- 	v += f_n;
- 
+-	if (dst_reg->u32_min_value + umin_val < umin_val ||
+-	    dst_reg->u32_max_value + umax_val < umax_val) {
++	if (add_would_overflow(umin_val, dst_reg->u32_min_value) ||
++	    add_would_overflow(umax_val, dst_reg->u32_max_value)) {
+ 		dst_reg->u32_min_value = 0;
+ 		dst_reg->u32_max_value = U32_MAX;
+ 	} else {
+@@ -13049,8 +13049,8 @@ static void scalar_min_max_add(struct bpf_reg_state *dst_reg,
+ 		dst_reg->smin_value += smin_val;
+ 		dst_reg->smax_value += smax_val;
+ 	}
+-	if (dst_reg->umin_value + umin_val < umin_val ||
+-	    dst_reg->umax_value + umax_val < umax_val) {
++	if (add_would_overflow(umin_val, dst_reg->umin_value) ||
++	    add_would_overflow(umax_val, dst_reg->umax_value)) {
+ 		dst_reg->umin_value = 0;
+ 		dst_reg->umax_value = U64_MAX;
+ 	} else {
 -- 
 2.34.1
 
