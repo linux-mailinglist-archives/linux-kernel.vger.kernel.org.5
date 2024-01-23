@@ -1,111 +1,102 @@
-Return-Path: <linux-kernel+bounces-36191-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36192-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84EFA839D52
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 00:41:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 093EB839D57
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 00:45:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7E2B1C256C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 23:41:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E51E1F22CDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 23:45:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56A0053E19;
-	Tue, 23 Jan 2024 23:40:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 409335467D;
+	Tue, 23 Jan 2024 23:45:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EJzChJs3"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="M46sjmWU"
+Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 957A94F5F3;
-	Tue, 23 Jan 2024 23:40:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CB4E1A27C
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 23:45:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706053250; cv=none; b=k8tc1ERw55CmLFEwiM3bKV64jD5wDcR2l4u7YRRdDn6SwTyUdFD9/nwwpXRGEogQZdhM/ofQzGHNfuVEcwft9B3u5qIYy1TxNLSinNiiotSxz2BrtViGVXcKZWKbDC8RU5HiXvUt4Ko/ApWSvr88qcnNNCADMXX2XLTf6kSNhc0=
+	t=1706053545; cv=none; b=Cq1qPA12gtZW5G4EYqDBBZ8JhyhCXuWGzyK005MsR2C4Rlq8OnotudqR433EjuwVN9tsLUFbIBqwvOdNONiRsEt9LzcAsWS/FfmBD9p/YQlEhrFFw9zEWSFsryTZYyhh4kdQL9e855eiv3VU4fOWF5VlmVBnGbIGw9JzqppJqhM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706053250; c=relaxed/simple;
-	bh=J6rnNUzVj1P2Qg/1GF111rxMutxfmlksq0mYZS2yDjE=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=OEUsc8paSxPnZS45ZmjyqngKoB9XE4vzuPMd/GwnUanSWG8tsAi9+K1+BGDTcl9SmAVLVwORTEiZk/D+GjRsGoI0XeuR+FUt6s1Luir16iwuMccB3ddcznUuoxhwCUpF6MGkH1k0vCCqAyDDn5NkBfY5688ow4b1G9dmqsIkhpM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EJzChJs3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2FFE0C433A6;
-	Tue, 23 Jan 2024 23:40:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706053250;
-	bh=J6rnNUzVj1P2Qg/1GF111rxMutxfmlksq0mYZS2yDjE=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=EJzChJs3r2a0rWoG85Zs3Vj8Mh3yBc+jcmhfD9iXGVYSCT9GsOuizEx9emv6+UrOq
-	 h2wzJ5mZGQGHBhg5mXKkoAM08RBzRM2WeXA6COZ0+JmIZXJhqZ9U8AVvQFMNb/g8d0
-	 HJf177y+JHmllKMXUQX2SuCb48pHDLKdUFFGl3GwieQc3LBU0/VtJYLE8fErOyDZXR
-	 4j8/3q5/0Y5kvRY73BQhQGOSQH5pVl0ROEP3SmoJ+klAzIX1UCL99oy15sL0bQ2BLT
-	 F8Wgx71uYSIC88l1M0RRCvzFFUh27FpkUGKhjsKPzg2xFWrJ+veIMVGx9S1CXbqZRO
-	 nn0LbYJkemJrw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1894DDFF767;
-	Tue, 23 Jan 2024 23:40:50 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1706053545; c=relaxed/simple;
+	bh=j1CrBJz2L1DRJzsB2gKW/vfIAdOvL4D8ktKZk6tykvg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HBkfs/XuFUbkyI66d4tI8z3PCpgQmIKQpuASv7FgBx6+r4iPBD5om7PAlcLrvfowagRDqzNhqgeI3eGmENUUQI+bbIu6Tma+z1VQ9fu0jrYeIzQyYd3Nq47HnVX5/GIWDZrnMRwnL2CnzQJBZvoaTYbogiG7NfplBCeKajRqDq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=M46sjmWU; arc=none smtp.client-ip=209.85.160.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-21424f34003so1413622fac.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 15:45:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706053543; x=1706658343; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j1CrBJz2L1DRJzsB2gKW/vfIAdOvL4D8ktKZk6tykvg=;
+        b=M46sjmWULxTUsneMZ/vipoOQFYFTk2w2hgeZfuIWzdnT0PkPmW4maQdOr/svCn5cFb
+         fP8CgYThICcmLmxBXdqsDoOobVcwIG/h7kYTGZj3cw7MPrEPk0C7K5BrG5fhPpTaeRNz
+         f4xcvE6URpmBU9U2Gawv5Y2BjyUqlwC44tcHn9LjAzXI9o/LHlM1uAiJ0mc1+TOqWYFO
+         B7VO1jmPP1xcMnUBsTKLnKUKJZrwCza7oMhEfLh85bfKVouPKJZqHPsKYamhPMeSCqjO
+         ac9iDgw53rppV158UK66KcwbRyIaORrQGd43WT/ihgM2K1goJtbq1uoqacMnEmmEZUTN
+         j6jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706053543; x=1706658343;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j1CrBJz2L1DRJzsB2gKW/vfIAdOvL4D8ktKZk6tykvg=;
+        b=oWg+ueftRF0izX6rRf6WCX7J1EmxQqW8EQV9oHR8x6mPcb1uuwPU8CH9oYP8HOya6O
+         MlkdabvS0tmrF+FaKmg4oeeb2FgkoISXQmVDd/Mzk6rC4DXx3kErreZoxWBpqosdbW4o
+         M+wjvZyPluhyp5bXZQ2Y2DWMtOYrmaOKj67q84kAWQ+HbTqW45LjpvfaaZVJ1/0JzXOc
+         gVg/jAsR7qZz8lswQio2Bz0mK7vTBE9mu3SYbA4KFuZKrxAsqYAnSNBVJSWSv3n3PXMu
+         lSHJtHrh4f8M0HGnI31eIoU3ZOz1QWyse8KYnz8BBXtOjPV2wehB279FTLHLQ0aUYfYb
+         NK7Q==
+X-Gm-Message-State: AOJu0Yxy+JlTaJSMJdoQBFMMVnhhFKquyJTSDem5Zv4XBDfdmFGYC1qM
+	YLVWn00/8CT4231OGJNyWZcJuJAojFmWM9JLXlwaxLWl+l7/frSua08CJVrIgnEhnTHOeT6qYhB
+	plkVSAotNsBQD6SbRu2tJa0c/E2bv30GOQo2j
+X-Google-Smtp-Source: AGHT+IGvzfSbHNzjk7FgOJtSb4oWcEzwNdZ36vFtb85PuXY0lFCIGgC6oCHTP5NzniWRvjmRh7qSjzNhJUncH3IalrA=
+X-Received: by 2002:a05:6871:341d:b0:203:2192:d738 with SMTP id
+ nh29-20020a056871341d00b002032192d738mr2198209oac.92.1706053543032; Tue, 23
+ Jan 2024 15:45:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] bpf: Refactor ptr alu checking rules to allow alu explicitly
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170605325009.25186.130330660193751446.git-patchwork-notify@kernel.org>
-Date: Tue, 23 Jan 2024 23:40:50 +0000
-References: <20240117094012.36798-1-sunhao.th@gmail.com>
-In-Reply-To: <20240117094012.36798-1-sunhao.th@gmail.com>
-To: Hao Sun <sunhao.th@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, eddyz87@gmail.com, linux-kernel@vger.kernel.org
+References: <20240122155023.GA26169@redhat.com>
+In-Reply-To: <20240122155023.GA26169@redhat.com>
+From: Dylan Hatch <dylanbhatch@google.com>
+Date: Tue, 23 Jan 2024 15:45:31 -0800
+Message-ID: <CADBMgpxNUoaermXsEj0Hs0KT=Q0xRpz5y+Px=oAGDP2Efg8yyw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] getrusage: use sig->stats_lock
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, "Eric W. Biederman" <ebiederm@xmission.com>, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Mon, Jan 22, 2024 at 7:51=E2=80=AFAM Oleg Nesterov <oleg@redhat.com> wro=
+te:
+>
+> Dylan, do you have something to add?
+>
+> Oleg.
+>
 
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+I have one last question -- is there possibly an edge case in which
+the hard lockup
+can still happen? How likely is it for many writers to force enough
+readers to do a
+retry on the seqlock, disabling irq and causing the lockup? Is this
+not a concern
+because there aren't many writers?
 
-On Wed, 17 Jan 2024 10:40:12 +0100 you wrote:
-> Current checking rules are structured to disallow alu on particular ptr
-> types explicitly, so default cases are allowed implicitly. This may lead
-> to newly added ptr types being allowed unexpectedly. So restruture it to
-> allow alu explicitly. The tradeoff is mainly a bit more cases added in
-> the switch. The following table from Eduard summarizes the rules:
-> 
->         | Pointer type        | Arithmetics allowed |
->         |---------------------+---------------------|
->         | PTR_TO_CTX          | yes                 |
->         | CONST_PTR_TO_MAP    | conditionally       |
->         | PTR_TO_MAP_VALUE    | yes                 |
->         | PTR_TO_MAP_KEY      | yes                 |
->         | PTR_TO_STACK        | yes                 |
->         | PTR_TO_PACKET_META  | yes                 |
->         | PTR_TO_PACKET       | yes                 |
->         | PTR_TO_PACKET_END   | no                  |
->         | PTR_TO_FLOW_KEYS    | conditionally       |
->         | PTR_TO_SOCKET       | no                  |
->         | PTR_TO_SOCK_COMMON  | no                  |
->         | PTR_TO_TCP_SOCK     | no                  |
->         | PTR_TO_TP_BUFFER    | yes                 |
->         | PTR_TO_XDP_SOCK     | no                  |
->         | PTR_TO_BTF_ID       | yes                 |
->         | PTR_TO_MEM          | yes                 |
->         | PTR_TO_BUF          | yes                 |
->         | PTR_TO_FUNC         | yes                 |
->         | CONST_PTR_TO_DYNPTR | yes                 |
-> 
-> [...]
-
-Here is the summary with links:
-  - bpf: Refactor ptr alu checking rules to allow alu explicitly
-    https://git.kernel.org/bpf/bpf-next/c/2ce793ebe207
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Thanks,
+Dylan
 
