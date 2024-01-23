@@ -1,315 +1,280 @@
-Return-Path: <linux-kernel+bounces-35393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42BF6839050
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:39:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62E3B839051
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:39:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFFE31F2AA4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:39:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87E3D1C217EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:39:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 350815F544;
-	Tue, 23 Jan 2024 13:39:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 593AE5EE9D;
+	Tue, 23 Jan 2024 13:39:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k0sernFO"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="t2W5xnYS"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A01295EE76;
-	Tue, 23 Jan 2024 13:39:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA1145EE95
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 13:39:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706017144; cv=none; b=jdBbuVFNa7BOa31vWu9DenGL/yR20o/wbWO/sLGfoQJog68FtISAfX+AtkiRqCARu90J/3l6cUB0z0WU84Hp4T3WiaB0uYxgZlPMB+kF6C40WBtzx0EjdiOoHM4SkIwnZ7417WvaUNyVxHV6xQFwRs1jpvYbIw3EmFdo9Ue4EK0=
+	t=1706017164; cv=none; b=KkR/xOmkRdVo98cXLw/VEgt86Vxuhfl3nrt+xdP29R0fcPT1Y/+cEyQhKX3BT55+8L3kLQwgQE19qqmuntL0CIvhILsty849lw4j3eoIYAlL5og8922rrcEmL3PihWDZvXL90EQmNbNNefjQyu+9zbzhnhF+N6fQSz8d1YkN0P0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706017144; c=relaxed/simple;
-	bh=WBSKdUgV5cOeoZ1Fffr465L1E5/Iwt0hZoQjjcYdeug=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rR3pTVzwyQbyI1Y+X74YaZNkhmA+ZZyc/y9BMjqvXzBOInXouIap0cQ94866b+ASDCdvaEK4A5GYdPsPX8eG9ehBP3jnPYIQZ/q850usDDFkn5ZuztKkzY/Uc5B1PutgOYs1sTdebzUZ6hlMhg6jvONvpOAQ2Wtlh2usgr+9Hjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k0sernFO; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d730b6943bso9876915ad.2;
-        Tue, 23 Jan 2024 05:39:02 -0800 (PST)
+	s=arc-20240116; t=1706017164; c=relaxed/simple;
+	bh=PV0gotgQ8HWyyIYh2n0NsT4hz87RVuG5AXAATO5eiTo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pMUEtZlGG+h+Vp+OiRNSdHXYiCz15sSCac5mqXx3GAh6v7UWyom1CML6447YlxVrzc4c+SGCfOaEZoVsYfc7Oj2X85as6TXNRjawOrEBvinRCEfWlHqTD67ERU19TKCTnm/VCI1gJaTf/MCrStZ+GFA3pxQRPyFXIRcQmvt50Qc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=t2W5xnYS; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d746ce7d13so17650635ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 05:39:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706017142; x=1706621942; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JGyd1fR1SCxmdaNNcPfqGPYdWi8z44bAjGbNFrHnciI=;
-        b=k0sernFO6sgNBeAX4fos6xcL5ztr0A+RoZUi+Wx31zMfUB5z7ZOLAkrvifH3yev5an
-         ksRwTgFFdv6fN9n3J1+fq6IdESNbwwgA1aAoHM6dNE7qNVRX/asNkk7OvCQq9N6OS1Or
-         rceysNgHaTJcsSI6su3EXJ2qcQAs1h+FcyLQeuw2nVXAvEB+9htAoe9H9QaLPEMEaCvY
-         XjUxljKJcTW1MoxVpD25c8UDcwEexUZXkCSTAW1zZr7D9HEbpwgAXeyTvwyQ7pclnAcb
-         tfgo0qnlUqxNwyV8ezIdew4r6eGp8rTDptAbXvAOCyv08RMmvjKT25IySseqZH00U0qh
-         hqCQ==
+        d=linaro.org; s=google; t=1706017162; x=1706621962; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=fs0Mh/MI7fPMkOhdn6T/Ousz65q9LrIAscwRh6VRAwA=;
+        b=t2W5xnYSi54i5zGsN4UipF39H54v7DFpJX2v+qLBr+mnUkMs7+jlL9Ot2iqumnQFHt
+         7wiGvPauXEYDJvZ/Nsdp053ZzlnfHynpf64d2QL7ejX52i/c+5ymAFQydU9ZviYOdapN
+         bWtIHCRatAaR15o/9i65XyP/jz9YzwRP+hyxB5YLtxP05Yvi/ADw4NWUnlGLsPBaExUn
+         99WTiQQ7auD0pU1G7xduulqWlamDwSfSyIl9JWk4X2cyuU/eR+15v64imVajX5h45YZi
+         KIASgcyWmmn/rkbBPloFtWknxB1ROc51T5FuBnbwVlXqhEbtrE3qGJiS+Wgd9EqExma/
+         IHmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706017142; x=1706621942;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1706017162; x=1706621962;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=JGyd1fR1SCxmdaNNcPfqGPYdWi8z44bAjGbNFrHnciI=;
-        b=H0YJBAOmldxIc1p1O+ZRpgpOjOvsH2RPIahWxwV7x7XZfzXtL1aRPbcrBGiEU+PM//
-         ZgFFwIsTVtf2XngbORCwrgSK+8WXmmVOj4XjYSN8KWY0mfa2gsviYRCJxAvW2H4vjNLM
-         ObBiKq85zPh6Y/fdZNDMYri4sNmjAq5WpGAYROG3k2zPlNwa0UUdHlTIjaVGpFrjMhic
-         1yRKtIKFwu51SBu+aaQwvcE5D4DeLzL6O6NGBkz1K6/6b/dyZxVaw2xeVrSCLWOQ0wrj
-         GRqO7PKSu6rrmtwn40++tJ/fWnwVmTKrF4hg9NnPzTRFDC/PsHf1WvjSt/xpHY81n+6a
-         8kKg==
-X-Gm-Message-State: AOJu0Yzt034Wjr4AL2t1zTiiXbS2c9QyHNTKAE2y2WUHog0A0+FaeeS+
-	pCd4qBbmjulpQ/jNJ4jyvbE6lUgWroonoVFB2dcS4DIWGQTfreOZFPon/zAT
-X-Google-Smtp-Source: AGHT+IFbIkbS5S0VRZCs+BwFDqo+Q2c+9UqIndBlUOgUsYXQM/6F6N4Aolqxmb6zlZ0Y0aipv7ehWw==
-X-Received: by 2002:a17:903:48b:b0:1d4:be56:888b with SMTP id jj11-20020a170903048b00b001d4be56888bmr2924349plb.1.1706017141496;
-        Tue, 23 Jan 2024 05:39:01 -0800 (PST)
-Received: from rigel.home.arpa ([220.235.35.85])
-        by smtp.gmail.com with ESMTPSA id h19-20020a170902f2d300b001d5f1005096sm8933818plc.55.2024.01.23.05.38.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 05:39:00 -0800 (PST)
-From: Kent Gibson <warthog618@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	linux-gpio@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	brgl@bgdev.pl,
-	linus.walleij@linaro.org,
-	andy@kernel.org,
-	corbet@lwn.net
-Cc: Kent Gibson <warthog618@gmail.com>
-Subject: [PATCH] Documentation: gpio: describe uAPI behaviour when hardware doesn't support requested config
-Date: Tue, 23 Jan 2024 21:38:28 +0800
-Message-Id: <20240123133828.141222-1-warthog618@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        bh=fs0Mh/MI7fPMkOhdn6T/Ousz65q9LrIAscwRh6VRAwA=;
+        b=HVI6aYiSkM6jMfCRBIU22z2Lmkhxhku+jlrTDBcGdIcR7OIlQFJnX2MichhWQWtlGm
+         aN/Zhfal8mELKBSpYhn6cNkBP4tYZhNOYxrY0cQZx8+XxyDhNQlw/w0bPywM0H2ERhZE
+         3On8GuSwfbLuko7y3+qmoVidwIjNFFUVRxLRQaJcEnkWRKPAsIzxRtiZjRZ+UakI/bVA
+         5AHSKEmiDgFCodcP/9kaeoNybi+L9uwVHE6+0vhP66mVhM8r9Qnl1TDIuM4yd65n2Ly7
+         HMGCz6ozrsCYAuQ1CwgSJZ58rHJUL8NYiZw3z8KfeIFL26s0U9Tjz6N1NG6dmdy36b6D
+         8cXA==
+X-Gm-Message-State: AOJu0YyIolJDxiuD4yIFrOpyHxHJuL7hqd0oqQlpZ+7fK4Y7BdUOvDSL
+	pYCxqywPYkxCKiUHhPixbuWXaduazuaq6iaNjnM/qOYKpGCz2g+rwzSe5dhwHhEDeV095JE51kp
+	ign0hQOJ4tQSYvU5DJ8OABjoWbW2BwDh/jg4A+g==
+X-Google-Smtp-Source: AGHT+IHM4TYCsFfRdFtuqPrOTde2m0HW4yM/WwYZTHHdONty5N9CXN8S4N9+HhcF/mKbhtJ7fDyhNeQ6+XqMl1pfrEM=
+X-Received: by 2002:a17:90a:72c8:b0:28f:f863:e83a with SMTP id
+ l8-20020a17090a72c800b0028ff863e83amr2933102pjk.97.1706017161933; Tue, 23 Jan
+ 2024 05:39:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240119084548.2788-1-kprateek.nayak@amd.com> <b4f5ac150685456cf45a342e3bb1f28cdd557a53.camel@linux.intel.com>
+ <21c8694c-26e4-3bc1-edd8-2267b0164a09@amd.com> <CAKfTPtCFJ5TRdsHHiH_fz9R2TC3euz_Rp=LH+aQ9KeZx3uH+ZQ@mail.gmail.com>
+ <211132bf-3a50-bfe8-cdaf-af40ee7d0ce2@amd.com>
+In-Reply-To: <211132bf-3a50-bfe8-cdaf-af40ee7d0ce2@amd.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Tue, 23 Jan 2024 14:39:10 +0100
+Message-ID: <CAKfTPtC446Lo9CATPp7PExdkLhHQFoBuY-JMGC7agOHY4hs-Pw@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: Skip newidle_balance() when an idle CPU is
+ woken up to process an IPI
+To: K Prateek Nayak <kprateek.nayak@amd.com>
+Cc: Tim Chen <tim.c.chen@linux.intel.com>, linux-kernel@vger.kernel.org, 
+	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, 
+	gautham.shenoy@amd.com, David Vernet <void@manifault.com>
+Content-Type: text/plain; charset="UTF-8"
 
-The existing uAPI documentation does not adequately describe how the kernel
-handles the case where the underlying hardware or driver does not support
-the requested configuration.
+On Tue, 23 Jan 2024 at 11:01, K Prateek Nayak <kprateek.nayak@amd.com> wrote:
+>
+> Hello Vincent,
+>
+> On 1/23/2024 1:36 PM, Vincent Guittot wrote:
+> > On Tue, 23 Jan 2024 at 05:58, K Prateek Nayak <kprateek.nayak@amd.com> wrote:
+> >>
+> >> Hello Tim,
+> >>
+> >> On 1/23/2024 3:29 AM, Tim Chen wrote:
+> >>> On Fri, 2024-01-19 at 14:15 +0530, K Prateek Nayak wrote:
+> >>>>
+> >>>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> >>>> index b803030c3a03..1fedc7e29c98 100644
+> >>>> --- a/kernel/sched/fair.c
+> >>>> +++ b/kernel/sched/fair.c
+> >>>> @@ -8499,6 +8499,16 @@ done: __maybe_unused;
+> >>>>      if (!rf)
+> >>>>              return NULL;
+> >>>>
+> >>>> +    /*
+> >>>> +     * An idle CPU in TIF_POLLING mode might end up here after processing
+> >>>> +     * an IPI when the sender sets the TIF_NEED_RESCHED bit and avoids
+> >>>> +     * sending an actual IPI. In such cases, where an idle CPU was woken
+> >>>> +     * up only to process an interrupt, without necessarily queuing a task
+> >>>> +     * on it, skip newidle_balance() to facilitate faster idle re-entry.
+> >>>> +     */
+> >>>> +    if (prev == rq->idle)
+> >>>> +            return NULL;
+> >>>> +
+> >>>
+> >>> Should we check the call function queue directly to detect that there is
+> >>> an IPI waiting to be processed? something like
+> >>>
+> >>>       if (!llist_empty(&per_cpu(call_single_queue, rq->cpu)))
+> >>>               return NULL;
+> >>
+> >> That could be a valid check too. However, if an IPI is queued right
+> >> after this check, the processing is still delayed since
+> >> newidle_balance() only bails out for scenarios when a wakeup is trying
+> >> to queue a new task on the CPU running the newidle_balance().
+> >>
+> >>>
+> >>> Could there be cases where we want to do idle balance in this code path?
+> >>> Say a cpu is idle and a scheduling tick came in, we may try
+> >>> to look for something to run on the idle cpu.  Seems like after
+> >>> your change above, that would be skipped.
+> >>
+> >> Wouldn't scheduler_tick() do load balancing when the time comes? In my
+> >> testing, I did not see a case where the workloads I tested were
+> >> sensitive to the aspect of newidle_balance() being invoked at scheduler
+> >> tick. Have you come across a workload which might be sensitive to this
+> >> aspect that I can quickly test and verify? Meanwhile, I'll run the
+> >> workloads mentioned in the commit log on an Intel system to see if I
+> >> can spot any sensitivity to this change.
+> >
+> > Instead of trying to fix spurious need_resched in the scheduler,
+> > can't we find a way to prevent it from happening ?
+>
+> The need_resched is not spurious. It is an effect of the optimization
+> introduced by commit b2a02fc43a1f ("smp: Optimize
+> send_call_function_single_ipi()") where, to pull a CPU out of
+> TIF_POLLING out of idle (and this happens for C0 (POLL) and C1 (MWAIT)
+> on the test machine), instead of sending an IPI for
+> smp_call_function_single(), the sender sets the TIF_NEED_RESCHED flag in
+> the idle task's thread info and in the path to "schedule_idle()", the
+> call to "flush_smp_call_function_queue()" processes the function call.
 
-Add a Configuration Support section describing that behaviour to both the
-v1 and v2 documentation, and better document the errors returned where the
-requested configuration cannot be supported.
+I mean it's spurious in the sense that we don't need to resched but we
+need to pull the CPU out of the polling loop. At that time we don't
+know if there is a need to resched
 
-Signed-off-by: Kent Gibson <warthog618@gmail.com>
----
+>
+> But since "TIF_NEED_RESCHED" was set to pull the CPU out of idle, the
+> scheduler now believes a new task exists which leads to the following
+> call stack:
 
-My bad for this not being part of the recently applied documentation series,
-but it didn't occur to me that this wasn't described until about the time
-that was being applied.  OTOH this patch is far smaller than a respin of
-that series would've been.
+Exactly, TIF_NEED_RESCHED has been set so scheduler now believes it
+needs to look for a task. The solution is to not set TIF_NEED_RESCHED
+if you don't want the scheduler to look for a task including pulling
+it from another cpu
 
-I've kept it as a single patch as it is all related, even if it spans v1
-and v2.  There is also a trivial typo fix in gpio-handle-set-config-ioctl.rst
-that I noticed while I was there that in my eyes didn't warrant a separate
-patch.
+>
+>   do_idle()
+>     schedule_idle()
+>       __schedule(SM_NONE)
+>         /* local_irq_disable() */
+>         pick_next_task()
+>           __pick_next_task()
+>             pick_next_task_fair()
+>               newidle_balance()
+>               ... /* Still running with IRQs disabled */
+>
+> Since IRQs are disabled, the processing of IPIs are delayed leading
+> issue similar to the one outlined in commit 792b9f65a568 ("sched:
+> Allow newidle balancing to bail out of load_balance") when benchmarking
+> ipistorm.
 
-Cheers,
-Kent.
+IMO it's not the same because commit 792b9f65a568 wants to abort early
+if something new happened
 
- .../userspace-api/gpio/error-codes.rst        |  3 +-
- .../gpio/gpio-get-lineevent-ioctl.rst         |  6 ++
- .../gpio/gpio-get-linehandle-ioctl.rst        | 39 +++++++++++++
- .../gpio/gpio-handle-set-config-ioctl.rst     |  5 +-
- .../gpio/gpio-v2-get-line-ioctl.rst           | 57 ++++++++++++++++++-
- .../gpio/gpio-v2-line-set-config-ioctl.rst    |  3 +-
- 6 files changed, 106 insertions(+), 7 deletions(-)
+>
+> >
+> > Because of TIF_NEED_RESCHED being set when TIF_POLLING is set, idle
+> > load balances are already skipped for a less aggressive newly idle
+> > load balanced:
+> > https://lore.kernel.org/all/CAKfTPtC9Px_W84YRJqnFNkL8oofO15D-P=VTCMUUu7NJr+xwBA@mail.gmail.com/
+>
+> Are you referring to the "need_resched()" condition check in
+> "nohz_csd_func()"? Please correct me if I'm wrong.
 
-diff --git a/Documentation/userspace-api/gpio/error-codes.rst b/Documentation/userspace-api/gpio/error-codes.rst
-index edf01f2cf9d2..6bf2948990cd 100644
---- a/Documentation/userspace-api/gpio/error-codes.rst
-+++ b/Documentation/userspace-api/gpio/error-codes.rst
-@@ -65,7 +65,8 @@ GPIO Error Codes
- 
-     -  - ``ENXIO``
- 
--       -  No device corresponding to this device special file exists.
-+       -  Typically returned when a feature requiring interrupt support was
-+          requested, but the line does not support interrupts.
- 
- .. note::
- 
-diff --git a/Documentation/userspace-api/gpio/gpio-get-lineevent-ioctl.rst b/Documentation/userspace-api/gpio/gpio-get-lineevent-ioctl.rst
-index 7d0b932925c6..09a9254f38cf 100644
---- a/Documentation/userspace-api/gpio/gpio-get-lineevent-ioctl.rst
-+++ b/Documentation/userspace-api/gpio/gpio-get-lineevent-ioctl.rst
-@@ -48,6 +48,12 @@ to its default state.
- 
- Requesting a line already in use is an error (**EBUSY**).
- 
-+Requesting edge detection on a line that does not support interrupts is an
-+error (**ENXIO**).
-+
-+As with the :ref:`line handle<gpio-get-linehandle-config-support>`, the
-+bias configuration is best effort.
-+
- Closing the ``chip_fd`` has no effect on existing line events.
- 
- Configuration Rules
-diff --git a/Documentation/userspace-api/gpio/gpio-get-linehandle-ioctl.rst b/Documentation/userspace-api/gpio/gpio-get-linehandle-ioctl.rst
-index c8256afe306e..9112a9d31174 100644
---- a/Documentation/userspace-api/gpio/gpio-get-linehandle-ioctl.rst
-+++ b/Documentation/userspace-api/gpio/gpio-get-linehandle-ioctl.rst
-@@ -76,6 +76,45 @@ If no bias flags are set then the bias configuration is not changed.
- 
- Requesting an invalid configuration is an error (**EINVAL**).
- 
-+
-+.. _gpio-get-linehandle-config-support:
-+
-+Configuration Support
-+---------------------
-+
-+Where the requested configuration is not directly supported by the underlying
-+hardware and driver, the kernel applies one of these approaches:
-+
-+ - reject the request
-+ - emulate the feature in software
-+ - treat the feature as best effort
-+
-+The approach applied depends on whether the feature can reasonably be emulated
-+in software, and the impact on the hardware and userspace if the feature is not
-+supported.
-+The approach applied for each feature is as follows:
-+
-+==============   ===========
-+Feature          Approach
-+==============   ===========
-+Bias             best effort
-+Direction        reject
-+Drive            emulate
-+==============   ===========
-+
-+Bias is treated as best effort to allow userspace to apply the same
-+configuration for platforms that support internal bias as those that require
-+external bias.
-+Worst case the line floats rather than being biased as expected.
-+
-+Drive is emulated by switching the line to an input when the line should not
-+be driven.
-+
-+In all cases, the configuration reported by gpio-get-lineinfo-ioctl.rst
-+is the requested configuration, not the resulting hardware configuration.
-+Userspace cannot determine if a feature is supported in hardware, is
-+emulated, or is best effort.
-+
- Return Value
- ============
- 
-diff --git a/Documentation/userspace-api/gpio/gpio-handle-set-config-ioctl.rst b/Documentation/userspace-api/gpio/gpio-handle-set-config-ioctl.rst
-index 8f1e748dccc8..d002a84681ac 100644
---- a/Documentation/userspace-api/gpio/gpio-handle-set-config-ioctl.rst
-+++ b/Documentation/userspace-api/gpio/gpio-handle-set-config-ioctl.rst
-@@ -41,12 +41,13 @@ line or introducing potential glitches.
- 
- The configuration applies to all requested lines.
- 
--The same :ref:`gpio-get-linehandle-config-rules` that apply when requesting the
-+The same :ref:`gpio-get-linehandle-config-rules` and
-+:ref:`gpio-get-linehandle-config-support` that apply when requesting the
- lines also apply when updating the line configuration.
- 
- The motivating use case for this command is changing direction of
- bi-directional lines between input and output, but it may be used more
--generally move lines seamlessly from one configuration state to another.
-+generally to move lines seamlessly from one configuration state to another.
- 
- To only change the value of output lines, use
- gpio-handle-set-line-values-ioctl.rst.
-diff --git a/Documentation/userspace-api/gpio/gpio-v2-get-line-ioctl.rst b/Documentation/userspace-api/gpio/gpio-v2-get-line-ioctl.rst
-index d76e614c8343..56b975801b6a 100644
---- a/Documentation/userspace-api/gpio/gpio-v2-get-line-ioctl.rst
-+++ b/Documentation/userspace-api/gpio/gpio-v2-get-line-ioctl.rst
-@@ -74,7 +74,8 @@ If no bias flags are set then the bias configuration is not changed.
- 
- The edge flags, ``GPIO_V2_LINE_FLAG_EDGE_xxx``, require
- ``GPIO_V2_LINE_FLAG_INPUT`` to be set and may be combined to detect both rising
--and falling edges.
-+and falling edges.  Requesting edge detection from a line that does not support
-+it is an error (**ENXIO**).
- 
- Only one event clock flag, ``GPIO_V2_LINE_FLAG_EVENT_CLOCK_xxx``, may be set.
- If none are set then the event clock defaults to ``CLOCK_MONOTONIC``.
-@@ -86,11 +87,61 @@ The :c:type:`debounce_period_us<gpio_v2_line_attribute>` attribute may only
- be applied to lines with ``GPIO_V2_LINE_FLAG_INPUT`` set. When set, debounce
- applies to both the values returned by gpio-v2-line-get-values-ioctl.rst and
- the edges returned by gpio-v2-line-event-read.rst.  If not
--supported directly by hardware, the debouncing is performed in software by the
--kernel.
-+supported directly by hardware, debouncing is emulated in software by the
-+kernel.  Requesting debounce on a line that supports neither debounce in
-+hardware nor interrupts, as required for software emulation, is an error
-+(**ENXIO**).
- 
- Requesting an invalid configuration is an error (**EINVAL**).
- 
-+.. _gpio-v2-get-line-config-support:
-+
-+Configuration Support
-+---------------------
-+
-+Where the requested configuration is not directly supported by the underlying
-+hardware and driver, the kernel applies one of these approaches:
-+
-+ - reject the request
-+ - emulate the feature in software
-+ - treat the feature as best effort
-+
-+The approach applied depends on whether the feature can reasonably be emulated
-+in software, and the impact on the hardware and userspace if the feature is not
-+supported.
-+The approach applied for each feature is as follows:
-+
-+==============   ===========
-+Feature          Approach
-+==============   ===========
-+Bias             best effort
-+Debounce         emulate
-+Direction        reject
-+Drive            emulate
-+Edge Detection   reject
-+==============   ===========
-+
-+Bias is treated as best effort to allow userspace to apply the same
-+configuration for platforms that support internal bias as those that require
-+external bias.
-+Worst case the line floats rather than being biased as expected.
-+
-+Debounce is emulated by applying a filter to hardware interrupts on the line.
-+An edge event is generated after an edge is detected and the line remains
-+stable for the debounce period.
-+The event timestamp corresponds to the end of the debounce period.
-+
-+Drive is emulated by switching the line to an input when the line should not
-+be actively driven.
-+
-+Edge detection requires interrupt support, and is rejected if that is not
-+supported. Emulation by polling can still be performed from userspace.
-+
-+In all cases, the configuration reported by gpio-v2-get-lineinfo-ioctl.rst
-+is the requested configuration, not the resulting hardware configuration.
-+Userspace cannot determine if a feature is supported in hardware, is
-+emulated, or is best effort.
-+
- Return Value
- ============
- 
-diff --git a/Documentation/userspace-api/gpio/gpio-v2-line-set-config-ioctl.rst b/Documentation/userspace-api/gpio/gpio-v2-line-set-config-ioctl.rst
-index 126c2626ba6b..9b942a8a53ca 100644
---- a/Documentation/userspace-api/gpio/gpio-v2-line-set-config-ioctl.rst
-+++ b/Documentation/userspace-api/gpio/gpio-v2-line-set-config-ioctl.rst
-@@ -37,7 +37,8 @@ line or introducing potential glitches.
- 
- The new configuration must specify the configuration of all requested lines.
- 
--The same :ref:`gpio-v2-get-line-config-rules` that apply when requesting the lines
-+The same :ref:`gpio-v2-get-line-config-rules` and
-+:ref:`gpio-v2-get-line-config-support` that apply when requesting the lines
- also apply when updating the line configuration.
- 
- The motivating use case for this command is changing direction of
--- 
-2.39.2
+yes
 
+>
+> When I ran with sched-scoreboard
+> (https://github.com/AMDESE/sched-scoreboard/)with the patch on an idle
+> system for 60s I see the idle "load_balance count" go up in sched-stat
+
+If TIF_POLLING is not set, you will use normal IPI but otherwise, the
+wakeup for an idle load balance is skipped because need_resched is set
+and we have an newly idle load balance  which you now want to skip too
+
+>
+> Following are the data for idle balance on SMT domain for each kernel:
+>
+> o tip:sched/core
+>
+>   < ----------------------------------------  Category:  idle ----------- >
+>   load_balance count on cpu idle                             :       2678
+>   load_balance found balanced on cpu idle                    :       2678
+>     ->load_balance failed to find busier queue on cpu idle   :          0
+>     ->load_balance failed to find busier group on cpu idle   :       2678
+>   load_balance move task failed on cpu idle                  :          0
+>   *load_balance success count on cpu idle                    :          0
+>   imbalance sum on cpu idle                                  :          0
+>   pull_task count on cpu idle                                :          0
+>   *avg task pulled per successfull lb attempt (cpu idle)     :          0
+>     ->pull_task when target task was cache-hot on cpu idle   :          0
+>   -------------------------------------------------------------------------
+>
+> o tip:sched/core + patch
+>
+>   < ----------------------------------------  Category:  idle ----------- >
+>   load_balance count on cpu idle                             :       1895
+>   load_balance found balanced on cpu idle                    :       1895
+>     ->load_balance failed to find busier queue on cpu idle   :          0
+>     ->load_balance failed to find busier group on cpu idle   :       1895
+>   load_balance move task failed on cpu idle                  :          0
+>   *load_balance success count on cpu idle                    :          0
+>   imbalance sum on cpu idle                                  :          0
+>   pull_task count on cpu idle                                :          0
+>   *avg task pulled per successfull lb attempt (cpu idle)     :          0
+>     ->pull_task when target task was cache-hot on cpu idle   :          0
+>   -------------------------------------------------------------------------
+>
+> Am I missing something? Since "load_balance count" is only updated when
+> "load_balance()" is called.
+>
+> >
+> > The root of the problem is that we keep TIF_NEED_RESCHED set
+>
+> We had prototyped a TIF_NEED_IPI flag to skip calls to schedule_idle()
+> on CPUs in TIF_POLLING when the idle CPU has to only process an IPI.
+> Although it solves the problem described in the commit log, it also
+> required enabling and testing it on multiple architectures.
+
+Yes, but that's the right solution IMO and it will prevent us to then
+try to catch the needless TIF_NEED_RESCHED
+
+>
+>   $ grep -r "_TIF_POLLING" arch/ | cut -d '/' -f2 | uniq
+>   csky
+>   x86
+>   powerpc
+>   parisc
+>   openrisc
+>   sparc
+>   nios2
+>   microblaze
+>   sh
+>   alpha
+>
+> This optimization in the scheduler was the simpler of the two to achieve
+> the same result in case of ipistorm.
+>
+> >
+> >>
+> >> [..snip..]
+>
+> --
+> Thanks and Regards,
+> Prateek
 
