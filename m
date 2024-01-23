@@ -1,195 +1,195 @@
-Return-Path: <linux-kernel+bounces-34812-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34814-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FF0D8387CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:10:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E9DF8387D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:13:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBA55287F47
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:10:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2B981F2519F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:13:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1624D51C3E;
-	Tue, 23 Jan 2024 07:10:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9282F51C54;
+	Tue, 23 Jan 2024 07:13:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="ncIQN/Kh"
-Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-mr2fra01on2044.outbound.protection.outlook.com [40.107.9.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="N65QHdAN"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A9743611E
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:10:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.9.44
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705993816; cv=fail; b=bHyraWjSVq0YCKgNTXIupzIWROiwic9CjqWuKtxy1CPNmfF0Dv9CHgoHrlADXAyFPGGDpcCIt60+zgrP41BC/ecrwo+p+qKLLsg8vkUVa+JyoXbKKKnl6/yJUu+FPNmJk1RE2xk6YL9VXJbvKgTNR4NAtGHpqyBL/O0M9O7K2vs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705993816; c=relaxed/simple;
-	bh=17CT3/KEpDK7QjOCaig36KL+D6kAoeiUqDd1I2IZV5U=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=YQ22UymA5wjgfPsCb0QDz1ROXnAXBRaSRK2pteYzfHbq7gbSyodqKfIBm55gw+2n/6Dj0OY38wH63Hoe+8nxcJu3ntfKp2QZYheePqeN5z/RK7xsDwG5lgR/M2DJW1fxB9nA10TshfZJ71y+6YDVUlUSups9W123QnTxjZOzXyY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b=ncIQN/Kh; arc=fail smtp.client-ip=40.107.9.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fmA6P6jZersX1aC3NlpXl1IzpRsVXhdnoqIhc9yom+GDr/Z9R29h72+LWcvHJXrZp5yUbAzPg0qBaWj7+J6oZp+e242r8PiyKTxCUtFE6aZokItDLSC6Ho4ID0DlmY6Ip+C3C96KbHZrm6wXKsqKt6duRe3sfCFGJcPjhVcbisGMwM56iVvQg33LC2P0kzLROhTP3y2eHFdz+vEuh7qyGSI3DG47tGqz7zf6OoSLqZVbTXY92IBvXgstUoGUZUM+XLpB6qlrIa/3U2yD301HMoubTyFKmwqqncc0n8O1XMJWOK655SHTe+/bIaDMLiJJfL6q28kC4LtkbG8nasG26w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=17CT3/KEpDK7QjOCaig36KL+D6kAoeiUqDd1I2IZV5U=;
- b=WHZSyWIl26xMB4ygPaeA3czKkhHAv+dQMDIx8LWfNSsQbBamCziVheuYNSJhpidmh9ZPho9m57c7rLd5CcwccjgkmSsBfAAWM8IN3X0MxcxHWJEoTBcKMGj+yYjtsFhd5wwqRfkXRl6RFQOzjD0TfBRsZxwbptkIhy6viaUwpV+2Xr0/CUjGtaWzEJCXn/lTDUcTeOZ4iPlCR6DAeokTAq0i5rH2xKoWUBIZ8nRUqzbkxJJF0MZaO6vyjoq8c1xToYoJajLQbpNnv61WaM0NsfZAkV7iSSbBuk+oOF0plW95OtwzLSbWhG+yAOqVvmsjwSyBKcCVSZNhfKIaNx7GwQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=17CT3/KEpDK7QjOCaig36KL+D6kAoeiUqDd1I2IZV5U=;
- b=ncIQN/Kh2m3eJbYfIlOJAuZv10eEtAv6FOuGu7Idw2Ot0emPXHPCLnYNT1Css9vNAUF6yu8l5g6xCCdBu8bOtfMzVKtnQjM2ei+th7tm6sYEax8tDQ9J4kbEXOT4dprRTTeb4a87a6eiYeE5KJSXcLEuRzvIB6HdKuaU2EC5YUt5zb7JfoAMxSxpvBY9NTHzwEeHuedIbKxeGOsFvy0t/3ZA2yUHfCgy/TEH+HsMraKQ07uff/hwo1MSR6NrchR9kiJOKd9DinF8BQDdAXP0+NsrlAvotCmnJINUBpwzV8c/cfB0v9FiXSPjYQwij/j3mynILOJG0O2j2Tebgs0Lww==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by PR1P264MB3679.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:186::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.37; Tue, 23 Jan
- 2024 07:10:10 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::9f77:c0ff:cd22:ae96]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::9f77:c0ff:cd22:ae96%4]) with mapi id 15.20.7202.035; Tue, 23 Jan 2024
- 07:10:10 +0000
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Jiangfeng Xiao <xiaojiangfeng@huawei.com>, "npiggin@gmail.com"
-	<npiggin@gmail.com>, "aneesh.kumar@kernel.org" <aneesh.kumar@kernel.org>,
-	"naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
-	"mpe@ellerman.id.au" <mpe@ellerman.id.au>
-CC: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"nixiaoming@huawei.com" <nixiaoming@huawei.com>, "wangbing6@huawei.com"
-	<wangbing6@huawei.com>, "douzhaolei@huawei.com" <douzhaolei@huawei.com>,
-	"wangfangpeng1@huawei.com" <wangfangpeng1@huawei.com>
-Subject: Re: [PING PATCH] powerpc/kasan: Fix addr error caused by page
- alignment
-Thread-Topic: [PING PATCH] powerpc/kasan: Fix addr error caused by page
- alignment
-Thread-Index: AQHaTaDl24T4quok502l7CDmtuoIh7Dm+yIA
-Date: Tue, 23 Jan 2024 07:10:10 +0000
-Message-ID: <dfc07bfb-4fcc-4aa8-bfe6-3987b6741b82@csgroup.eu>
-References: <1705974359-43790-1-git-send-email-xiaojiangfeng@huawei.com>
-In-Reply-To: <1705974359-43790-1-git-send-email-xiaojiangfeng@huawei.com>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR1P264MB3679:EE_
-x-ms-office365-filtering-correlation-id: 66e4f56c-3d2f-4614-49a2-08dc1be25632
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- tR7VGl0JCVt73apKReYP4qA8GlhW7kimtlGpJmPoijIEGX8geffri40eXIoiRM2kd0B8533L27WmFFhKAijEUNuHnoE/nQwDGaBqLXdH68J1ab1t4lUV2iGLqk03i+bhCAGhMVkaHweWCp8NeXepFdygFvU/HjsSOokoSchOBTUkSA/tZIUkD6yn7xP0kAR2eoLpOXU5r6tMkwrin4zPLMI7F2iQuJpliNE3wOtyg4dh6iNhDcLnp9FAWoYQVPcUfeL4OzHzW867Ut2rbyOx/zgaRPRWNdHdK7XrJBki2W/0nNReSDsPmVJ4Og4zt2Sp1wzzPZnxxWrFUH1wYyp2a1MSncak7Z+5uOCqQeP9PaAbo15FFtF/y01TO3MrxT8+wgvLiaUjR6OllscTf6cqvKQIqyNZ4Y+zKF8PPStyHj/CbIJJm4sJqjkHKBqATT0C/A6H8y2hxii56XIB9gehmhj2KBZAx8zrvhYIiRymS4JCmcqyZJF5GfvJaOsPEcXMmXlZOs/Zim4KpFc5ou8WsGCSunoGDdGJ3dIF5lZefWqIq6lHJS9+1p9cbP7KNNlEFtuLLkiWoMhpIvur3vblBb/dzJFO3WWU3fOarFUUnmxdbA7zqwn7Y1P3OvgigmEuEnQ/yEKfQA6mxI5IZG4ZWv7aWv01qMKRSsCy2qj1iQg=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(346002)(366004)(39860400002)(396003)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(44832011)(83380400001)(4326008)(8936002)(8676002)(7416002)(86362001)(122000001)(38100700002)(31696002)(38070700009)(2906002)(41300700001)(36756003)(5660300002)(6512007)(2616005)(91956017)(110136005)(316002)(66946007)(66556008)(66446008)(76116006)(54906003)(64756008)(66476007)(31686004)(478600001)(6506007)(71200400001)(966005)(6486002)(26005)(66574015)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?OGJMV0NpSnZoaDRDeHMwamV3d2pDV3hqZHdJNGt0Tit5UGJmUDE2WFFKNTEz?=
- =?utf-8?B?QXZqOUp2TmdBMlZuUXIyN3BuMjMyM3dpSWdrMjBTSHh4bktWYmNGcEZ4c3d0?=
- =?utf-8?B?aTkvN2JuaHNoS3NhTTlyOWpEQzJsa05PakhQdjlXZndaZkdPa0VyRldiYTd2?=
- =?utf-8?B?c2dhVVF3QjFoQmdxa0p5Q1lKeFFDZHBMbTE0OHZ6TEpaUENQMTQ0Uk1uZDlF?=
- =?utf-8?B?OGVFM25vVHhIOC8vOHB6Q1ExdzFmNHEzb2t4RGNFNDhnbGNrc3BUOVRFTFds?=
- =?utf-8?B?bFJRcWNVNDVNS1NGV09OSXBubU9aVkd0bVY5NXk4dE9Wc3AwVVhhZGExc2cx?=
- =?utf-8?B?WHhLTVBjeGlOcFFPQ2dpMWQ5QklETFI5WFFpRXBLaTRjc3VxUnVjQWFyd2Ix?=
- =?utf-8?B?eHJCMTJpaUZsNUw1Y1FBZS91YWdNckd2T1luTHdkMlBnczQyekxVRWJhc1Rw?=
- =?utf-8?B?MVRNWk9KTC81UE1jd0lPbU04OEJCSGlBeHhwSzRReTZsM0d6M3U2a21KcC85?=
- =?utf-8?B?MnZHa2hobVBzRU1vVWNoN25mQkxsZHdHOHJsU2NDS3Z1RnZmakY1R3RTblVX?=
- =?utf-8?B?eW1tQk55Q1JyK1BZd2RFODZPWk5EaUZIVFF6ellMNmw2U0Jyb2NpeWZlMWd2?=
- =?utf-8?B?cVpCKzg4Y2JQMkpJNERSODVrMVIvVExMckVMUG5WVG5pZkxndCtoaEVNcWFS?=
- =?utf-8?B?NUpmYU5SMXZOTzhPYUtncTJoOXZtOGpyUFhuSE53R3JkSjJXeG9oeW14U0h0?=
- =?utf-8?B?SFRmUnUzVnhDTElFNFdEanJISHFZWWNOWWFpKzB0YUJPMCs3bXUrb21RQUUy?=
- =?utf-8?B?Q0xyYlV1ZWRpZ2FBNnUvQ0hNZkxRaTY0SGg2ZnJLaWhQeCtlajdrTEJLVVky?=
- =?utf-8?B?YzQ3NUJMUVkralNnTUI5cFE3d3JOUVZMelBXQmhRajVjU0U0M1Mzcnk1MTBu?=
- =?utf-8?B?UkZVY3RlRmdqdkV1bTFyL3lYVnBvQ01RL2pVbFludmZqa0dUNmVtRDJBZUxi?=
- =?utf-8?B?eFkxT05wdnc4cGttY0k1T1F5TU9ZQ3hzQ2U5VWZMZDNlYnBDd3JBYUNxc2FW?=
- =?utf-8?B?WVNkblNnUytwUGxrNHFmaFlUeVpuUnlQb2tXeFFSRXMyTm1EOWV4Ukd4TUhU?=
- =?utf-8?B?VlNGWmhScVJhVGZqMHdtY2FENHl1VEV2amZwbDVrWUNsNkpsVkNHbGNCcEk1?=
- =?utf-8?B?NjArSTZ4SVAvd25ydmNreVovT0t0Z1BibE05K1R3NGFyWlR4TzR0WTBXeTFi?=
- =?utf-8?B?cXovUU9pMHplbWZsN0JnZ21EdWYzSW9ZNWhZTHVXSlhJZmNqU2FJL2ZtRW9k?=
- =?utf-8?B?TjRkR09CV1c4dDFjUTBzQUtuTE9lTitwRGFBcm5QWDg2NGdBc3MyWThaOFZR?=
- =?utf-8?B?MDdNWDl5dG1ReDQzSDRpd1J5ZTBGM2tmU1E5eFpiSERiTnZrdG9TbHhyT3kv?=
- =?utf-8?B?SGZRWWtSYVhza2VpTk1CdEx4eHE5VEZHR3hsU0ltMmE0bW5HSjhUOUV2d094?=
- =?utf-8?B?YUF3Ty92bGNSc0NPZUdwMWdlMjRseFpYTmtSK2MwcUtjTk8vNVN0V3pwSURo?=
- =?utf-8?B?WmRlNGdBckJqU3ovd1BkSy8wQVVxanltc2s0WUl2QTZvbktnYldYMmRnMlVW?=
- =?utf-8?B?eHBBb3cvRTAxVjNxTExaRXFwK251VjNQbnZnNnFUanRvY0tuR1p6ZWNaZTVr?=
- =?utf-8?B?YXdFVGdINXEybGRSVjZvbCt1VkJxWDFOMFJmbjZoM2NmZmdweldDZGRXVjdh?=
- =?utf-8?B?NGhidU02c3JHTWNhc2Q0dm1ZV1M3SUJKU0V6U1FUaVZpQU90QVorVTRmMG1j?=
- =?utf-8?B?dzlwc0g5dWxObG1rbUVzaGtENzJvMU1zc0QrMENacGFYVW5rSHhoYU1tS1NB?=
- =?utf-8?B?VFFIMlIva1VENEF5MEs5S20ydU5keGd6aHlUWktiRU1YNkk3cE9UUlhHVnli?=
- =?utf-8?B?c2NYWUhCS3UxSGxFNUt6Qi9oWXlidVpoTmtzYlpxNGxsMlQ2YWxKMEhZSUJE?=
- =?utf-8?B?MUVCd3BwUW03SWErQ09SdUR3UFFHbWFraFJMdnY0NDIrakhvRFNJSlNvSmEx?=
- =?utf-8?B?VktQL0tuRHlhOGxmYTNScFhHWUZMUEFSU1lMbnlvSyt0U0lkVTdNVm0yaHVT?=
- =?utf-8?B?QUdZdjRPUXFLSnE0Rng3cDhzVWE3aGFFdXdjclRoVVM5TFoxY1B6aCtoNy9z?=
- =?utf-8?B?QWc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <ADCF58013BCD5A479CF861DECAD3F0CF@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 377C551034
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:13:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705994016; cv=none; b=N0drRtJKaMoIgRidzm/02BcaynPFm/pWdU36lOfUa1i7XI+zhJa3QNA3bmk7zkj25mIR711oOh8IviCbFqHe7xqSAzAsElU1M9mBX2aUIbJHy5UBQpet0ul8TnPO97SAmm/2hXVjYss6AUEMywuigujJn8B1f7aLWihFU4PcnK4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705994016; c=relaxed/simple;
+	bh=V9MrJ3xkqEmgfOldwHpgezsCJyTx9RPzrV6ws6QWYKQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=i/c1ezYksA0MPVbRlSuoZlCR0et7BiL9wlKHQjuyrddWBggy3MIj02q1ZH/a4thq011cXKPFJT5Kk0Mk0+n4rKPnztodp3s9Y5OCBZKaa5ZRGCY6KSYt5HUSIGIf/Z7FHyNmkr0+GcNq36/pQxTGlISEf11B6eoHosqyv/4GnKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=N65QHdAN; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a308e6824ccso117892166b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 23:13:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1705994013; x=1706598813; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=k70FL9z5OR2fcCPzPC1Tv4cFtZ4jvd++KS4IHYlFyBc=;
+        b=N65QHdANN1T5BoOmG+C880NQ81UYwT6swtOkN9PdCruWf8LQOy8eR5zTFpm4Bg/+mD
+         iyq1H7l/s4xvWWC/Hg+eRBxvIESq0mRKJo6lrHO7XrMLxWooQGMmOpwg/O3VvEjEcqnC
+         w1sLL5sMSpsb9/1tZzCDdp401d8ZpVQSmCGx7HQoDfXM1oy7t6fU/YEXPShmQZdc1OIr
+         nX0ZZHtd2/375w90zoQ0BCBEXAmIW9k4E5lCG2EAvZ5wTe7SYO8YINnG3i73L7f25kTZ
+         nXEYpV8TVgHEQqtaCoMLH9oJKVXL7uvHsRHurgTnXZVrWwj2ttqRw3ADHxo1QrS2sTjZ
+         ED7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705994013; x=1706598813;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=k70FL9z5OR2fcCPzPC1Tv4cFtZ4jvd++KS4IHYlFyBc=;
+        b=U8LQccnmtHFXVIorQvwfFqk6bIxw20vbJ+E5TStLn+TIUw+k3xErZ1H0LjhM3eexMr
+         MkqecIM00Bc/sqJvAgJ5iat2q0/vya2Qf/y/kdpRZTLk/K0MchXZYuQdcfnGfz0LBnp6
+         hRf083SfCspX7joV03MZzP0u8S0F0mIWuU4b3cBaAHfzSG8X3YmFy+LI5d25a0QtVFJd
+         DkLNDnl+6EdjzFpzYdcvJq8yhwxoUDeT37lHVE0MZFaLFIWzJwxtd1Zdph2v9XeCCaS7
+         f3MxgRfT+P/qGLI7OCUQUzqi1i9ZYjIHkQ7mtBIuXU9j0mJ99Q474uZwilTV3OBOatig
+         loYw==
+X-Gm-Message-State: AOJu0Yy4+Bx+wxJAawWoR3gmNJ4afbQL5rPhmUSLQ6cUpPe/V4ILiUmN
+	04bbQ4dJfVHg5ih8ls4fLHvYzVVoGldGm8dIBZUQRZBMmLBfmlvif3JelCL9HVY=
+X-Google-Smtp-Source: AGHT+IHSXfOQRrPeQb4qJFA6qTNr1G8f/qLCQBmHmU06J6jI0GUc4NZLGk3u4skG3IGwVbiJHRVB7A==
+X-Received: by 2002:a17:906:bf42:b0:a30:b616:caac with SMTP id ps2-20020a170906bf4200b00a30b616caacmr265146ejb.41.1705994013419;
+        Mon, 22 Jan 2024 23:13:33 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.135])
+        by smtp.gmail.com with ESMTPSA id hw15-20020a170907a0cf00b00a2ed5d9ea19sm7011693ejc.190.2024.01.22.23.13.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jan 2024 23:13:33 -0800 (PST)
+Message-ID: <2af40ace-2779-45a0-a244-e7e9e5cc510c@tuxon.dev>
+Date: Tue, 23 Jan 2024 09:13:30 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 66e4f56c-3d2f-4614-49a2-08dc1be25632
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jan 2024 07:10:10.2090
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zMB4FeKvvFiHbQ1aBal78UZpRgf9uYvuESR8XZKTQfEOyu0Hz397fmVzem2zMMD0mp7JCuLd2P6sizNnduOoy4sUV/ZHhGfZxlXdp6LI7Mc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR1P264MB3679
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 07/10] watchdog: rzg2l_wdt: Add suspend/resume support
+Content-Language: en-US
+To: Guenter Roeck <linux@roeck-us.net>, wim@linux-watchdog.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ geert+renesas@glider.be, magnus.damm@gmail.com, mturquette@baylibre.com,
+ sboyd@kernel.org, p.zabel@pengutronix.de, biju.das.jz@bp.renesas.com
+Cc: linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-clk@vger.kernel.org, Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240122111115.2861835-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240122111115.2861835-8-claudiu.beznea.uj@bp.renesas.com>
+ <a5a807c1-76ef-4cf7-a2cf-bc432c420ded@roeck-us.net>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <a5a807c1-76ef-4cf7-a2cf-bc432c420ded@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-DQoNCkxlIDIzLzAxLzIwMjQgw6AgMDI6NDUsIEppYW5nZmVuZyBYaWFvIGEgw6ljcml0wqA6DQo+
-IFtWb3VzIG5lIHJlY2V2ZXogcGFzIHNvdXZlbnQgZGUgY291cnJpZXJzIGRlIHhpYW9qaWFuZ2Zl
-bmdAaHVhd2VpLmNvbS4gRMOpY291dnJleiBwb3VycXVvaSBjZWNpIGVzdCBpbXBvcnRhbnQgw6Ag
-aHR0cHM6Ly9ha2EubXMvTGVhcm5BYm91dFNlbmRlcklkZW50aWZpY2F0aW9uIF0NCj4gDQo+IElu
-IGthc2FuX2luaXRfcmVnaW9uLCB3aGVuIGtfc3RhcnQgaXMgbm90IHBhZ2UgYWxpZ25lZCwNCj4g
-YXQgdGhlIGJlZ2luIG9mIGZvciBsb29wLCBrX2N1ciA9IGtfc3RhcnQgJiBQQUdFX01BU0sNCj4g
-aXMgbGVzcyB0aGFuIGtfc3RhcnQsIGFuZCB0aGVuIHZhID0gYmxvY2sgKyBrX2N1ciAtIGtfc3Rh
-cnQNCj4gaXMgbGVzcyB0aGFuIGJsb2NrLCB0aGUgYWRkciB2YSBpcyBpbnZhbGlkLCBiZWNhdXNl
-IHRoZQ0KPiBtZW1vcnkgYWRkcmVzcyBzcGFjZSBmcm9tIHZhIHRvIGJsb2NrIGlzIG5vdCBhbGxv
-Y2VkIGJ5DQo+IG1lbWJsb2NrX2FsbG9jLCB3aGljaCB3aWxsIG5vdCBiZSByZXNlcnZlZA0KPiBi
-eSBtZW1ibG9ja19yZXNlcnZlIGxhdGVyLCBpdCB3aWxsIGJlIHVzZWQgYnkgb3RoZXIgcGxhY2Vz
-Lg0KPiANCj4gQXMgYSByZXN1bHQsIG1lbW9yeSBvdmVyd3JpdGluZyBvY2N1cnMuDQo+IA0KPiBm
-b3IgZXhhbXBsZToNCj4gaW50IF9faW5pdCBfX3dlYWsga2FzYW5faW5pdF9yZWdpb24odm9pZCAq
-c3RhcnQsIHNpemVfdCBzaXplKQ0KPiB7DQo+IFsuLi5dDQo+ICAgICAgICAgIC8qIGlmIHNheSBi
-bG9jayhkY2Q5NzAwMCkga19zdGFydChmZWVmNzQwMCkga19lbmQoZmVlZmYzZmUpICovDQo+ICAg
-ICAgICAgIGJsb2NrID0gbWVtYmxvY2tfYWxsb2Moa19lbmQgLSBrX3N0YXJ0LCBQQUdFX1NJWkUp
-Ow0KPiAgICAgICAgICBbLi4uXQ0KPiAgICAgICAgICBmb3IgKGtfY3VyID0ga19zdGFydCAmIFBB
-R0VfTUFTSzsga19jdXIgPCBrX2VuZDsga19jdXIgKz0gUEFHRV9TSVpFKSB7DQo+ICAgICAgICAg
-ICAgICAgICAgLyogYXQgdGhlIGJlZ2luIG9mIGZvciBsb29wDQo+ICAgICAgICAgICAgICAgICAg
-ICogYmxvY2soZGNkOTcwMDApIHZhKGRjZDk2YzAwKSBrX2N1cihmZWVmNzAwMCkga19zdGFydChm
-ZWVmNzQwMCkNCj4gICAgICAgICAgICAgICAgICAgKiB2YShkY2Q5NmMwMCkgaXMgbGVzcyB0aGFu
-IGJsb2NrKGRjZDk3MDAwKSwgdmEgaXMgaW52YWxpZA0KPiAgICAgICAgICAgICAgICAgICAqLw0K
-PiAgICAgICAgICAgICAgICAgIHZvaWQgKnZhID0gYmxvY2sgKyBrX2N1ciAtIGtfc3RhcnQ7DQo+
-ICAgICAgICAgICAgICAgICAgWy4uLl0NCj4gICAgICAgICAgfQ0KPiBbLi4uXQ0KPiB9DQo+IA0K
-PiBUaGVyZWZvcmUsIHBhZ2UgYWxpZ25tZW50IGlzIHBlcmZvcm1lZCBvbiBrX3N0YXJ0IGJlZm9y
-ZQ0KPiBtZW1ibG9ja19hbGxvYyB0byBlbnN1cmUgdGhlIHZhbGlkaXR5IG9mIHRoZSBWQSBhZGRy
-ZXNzLg0KPiANCj4gRml4ZXM6IDY2M2MwYzk0OTZhNiAoInBvd2VycGMva2FzYW46IEZpeCBzaGFk
-b3cgYXJlYSBzZXQgdXAgZm9yIG1vZHVsZXMuIikNCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEppYW5n
-ZmVuZyBYaWFvIDx4aWFvamlhbmdmZW5nQGh1YXdlaS5jb20+DQoNCkJlIHBhdGllbnQsIHlvdXIg
-cGF0Y2ggaXMgbm90IGxvc3QuIE5vdyB3ZSBoYXZlIGl0IHR3aWNlLCBzZWU6DQoNCmh0dHBzOi8v
-cGF0Y2h3b3JrLm96bGFicy5vcmcvcHJvamVjdC9saW51eHBwYy1kZXYvbGlzdC8/c3VibWl0dGVy
-PTc2MzkyDQoNCj4gLS0tDQo+ICAgYXJjaC9wb3dlcnBjL21tL2thc2FuL2luaXRfMzIuYyB8IDEg
-Kw0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKQ0KPiANCj4gZGlmZiAtLWdpdCBh
-L2FyY2gvcG93ZXJwYy9tbS9rYXNhbi9pbml0XzMyLmMgYi9hcmNoL3Bvd2VycGMvbW0va2FzYW4v
-aW5pdF8zMi5jDQo+IGluZGV4IGE3MDgyOGEuLmFhOWFhMTEgMTAwNjQ0DQo+IC0tLSBhL2FyY2gv
-cG93ZXJwYy9tbS9rYXNhbi9pbml0XzMyLmMNCj4gKysrIGIvYXJjaC9wb3dlcnBjL21tL2thc2Fu
-L2luaXRfMzIuYw0KPiBAQCAtNjQsNiArNjQsNyBAQCBpbnQgX19pbml0IF9fd2VhayBrYXNhbl9p
-bml0X3JlZ2lvbih2b2lkICpzdGFydCwgc2l6ZV90IHNpemUpDQo+ICAgICAgICAgIGlmIChyZXQp
-DQo+ICAgICAgICAgICAgICAgICAgcmV0dXJuIHJldDsNCj4gDQo+ICsgICAgICAga19zdGFydCA9
-IGtfc3RhcnQgJiBQQUdFX01BU0s7DQo+ICAgICAgICAgIGJsb2NrID0gbWVtYmxvY2tfYWxsb2Mo
-a19lbmQgLSBrX3N0YXJ0LCBQQUdFX1NJWkUpOw0KPiAgICAgICAgICBpZiAoIWJsb2NrKQ0KPiAg
-ICAgICAgICAgICAgICAgIHJldHVybiAtRU5PTUVNOw0KPiAtLQ0KPiAxLjguNS42DQo+IA0K
+
+
+On 22.01.2024 19:39, Guenter Roeck wrote:
+> On 1/22/24 03:11, Claudiu wrote:
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>
+>> The RZ/G3S supports deep sleep states where power to most of the IP blocks
+>> is cut off. To ensure proper working of the watchdog when resuming from
+>> such states, the suspend function is stopping the watchdog and the resume
+>> function is starting it. There is no need to configure the watchdog
+>> in case the watchdog was stopped prior to starting suspend.
+>>
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>> ---
+>>   drivers/watchdog/rzg2l_wdt.c | 26 ++++++++++++++++++++++++++
+>>   1 file changed, 26 insertions(+)
+>>
+>> diff --git a/drivers/watchdog/rzg2l_wdt.c b/drivers/watchdog/rzg2l_wdt.c
+>> index 9333dc1a75ab..186796b739f7 100644
+>> --- a/drivers/watchdog/rzg2l_wdt.c
+>> +++ b/drivers/watchdog/rzg2l_wdt.c
+>> @@ -279,6 +279,7 @@ static int rzg2l_wdt_probe(struct platform_device *pdev)
+>>       priv->wdev.timeout = WDT_DEFAULT_TIMEOUT;
+>>         watchdog_set_drvdata(&priv->wdev, priv);
+>> +    dev_set_drvdata(dev, priv);
+>>       ret = devm_add_action_or_reset(&pdev->dev, rzg2l_wdt_pm_disable,
+>> &priv->wdev);
+>>       if (ret)
+>>           return ret;
+>> @@ -300,10 +301,35 @@ static const struct of_device_id rzg2l_wdt_ids[] = {
+>>   };
+>>   MODULE_DEVICE_TABLE(of, rzg2l_wdt_ids);
+>>   +static int rzg2l_wdt_suspend_late(struct device *dev)
+>> +{
+>> +    struct rzg2l_wdt_priv *priv = dev_get_drvdata(dev);
+>> +
+>> +    if (!watchdog_active(&priv->wdev))
+>> +        return 0;
+>> +
+>> +    return rzg2l_wdt_stop(&priv->wdev);
+>> +}
+>> +
+>> +static int rzg2l_wdt_resume_early(struct device *dev)
+>> +{
+>> +    struct rzg2l_wdt_priv *priv = dev_get_drvdata(dev);
+>> +
+>> +    if (!watchdog_active(&priv->wdev))
+>> +        return 0;
+>> +
+>> +    return rzg2l_wdt_start(&priv->wdev);
+>> +}
+>> +
+>> +static const struct dev_pm_ops rzg2l_wdt_pm_ops = {
+>> +    LATE_SYSTEM_SLEEP_PM_OPS(rzg2l_wdt_suspend_late,
+>> rzg2l_wdt_resume_early)
+>> +};
+>> +
+>>   static struct platform_driver rzg2l_wdt_driver = {
+>>       .driver = {
+>>           .name = "rzg2l_wdt",
+>>           .of_match_table = rzg2l_wdt_ids,
+>> +        .pm = pm_ptr(&rzg2l_wdt_pm_ops),
+> 
+> I think this will create a build error if CONFIG_PM=n because rzg2l_wdt_pm_ops
+> will be unused but is not marked with __maybe_unused.
+
+The necessity of __maybe_unused has been removed along with the
+introduction of LATE_SYSTEM_SLEEP_PM_OPS() and friends (and
+*SET_*LATE_SYSTEM_SLEEP_PM_OPS along with the other helpers were marked
+deprecated for that) and we can use pm_ptr() along with
+LATE_SYSTEM_SLEEP_PM_OPS() to avoid build errors you mentioned.
+
+FYI, I just build the driver with CONFIG_PM=n and all good.
+
+> But then the driver
+> won't be
+> operational with CONFIG_PM=n, so I really wonder if it makes sense to
+> include any
+> such conditional code instead of making the driver depend on CONFIG_PM.
+
+That's true. The driver wouldn't work if the CONFIG_PM=n but then it
+depends on COMPILE_TEST which is exactly for this (just to compile test it
+for platforms that don't support it). I see many watchdog drivers depends
+on COMPILE_TEST.
+
+Give this, please let me know would you like me to proceed with it.
+
+Thank you,
+Claudiu Beznea
+
+> 
+> I really don't think it is desirable to suggest that the driver would work
+> with
+> CONFIG_PM=n if that isn't really true.
+> 
+> Guenter
+> 
+>>       },
+>>       .probe = rzg2l_wdt_probe,
+>>   };
+> 
 
