@@ -1,127 +1,115 @@
-Return-Path: <linux-kernel+bounces-34912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0D6F838920
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:36:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 45A6E838924
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:36:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 815FB1F273DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:36:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1D9F1F27793
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:36:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BBBF58ACD;
-	Tue, 23 Jan 2024 08:34:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FAE856B90;
+	Tue, 23 Jan 2024 08:35:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zuyIwmHD"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oIU6KZXM"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEB4E58AB7
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 08:34:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6CE958AC4
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 08:34:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705998855; cv=none; b=dqZLKzanUqNMqxJAaWH8QO9RTajthp9mL3odUDQfrZpfgW9RTFeWzk4RWAA75pduZKh7c5mS70umyikyYEqR0Xb2CTLFca53I1y/e9HCIe3lx7b+DsQk6ln+VusGPUmuBjms/x3zYuOJtKP+vcwrMrqwz2T3mCnBUXVufeEIPLY=
+	t=1705998901; cv=none; b=KdEpjHsiZZCawzZNTwNOpAwfRFEa8YIgWFc0HCDHE4AZ/BBv4Aq7LN+2wqx29B/u36/rYwSrbl2ozkmKj4aV0Fm81UoHvL8Xw/ZBQ+ZfWYMMBTnBulkRxjqmeR0gaEfL2aJsUoWvGsSVhp8LOy5FXMDN4ggHdZLRwJBm1NPBukk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705998855; c=relaxed/simple;
-	bh=5ExUUjVENReZ6nNNRQd1DhQ3Hrey0IKfdVg+0g3aZWY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KiDKxYkgTotyTl1iFVl5GNh9+3I1in3ArNR5vvXwg8gRNGnn/HmjEyTJsSiTk5YsEpoRR1w7yIKTevU53DIsb0KXjyHnM+cpUyZ3YCEGqLi1JeSkV8Yxhqp1mxUgdgFEzBsSsOx3Ee77YP0zjjOmbls5KuAf6YSydE6P+ZL4oO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zuyIwmHD; arc=none smtp.client-ip=209.85.221.43
+	s=arc-20240116; t=1705998901; c=relaxed/simple;
+	bh=FHXdH8mw1h3Z49oeSgMQC9W3uag6VoccVDYYrZS4VX8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=kw1+9SY9Hh4+xFfqvIkbeUMU+YopSdfKBaLOG8MermFHn1zJ+GVLEBW+SUGuHSJWgKx8b2CvwzVe6Yx1DhKjwejQay6TAMg9ZfIif5ZoAGX/iekdqgbOCZkmJywxA/V4flkSXfQiUOGhVdgUNyCJFX+VpYmDPfnGKwXAdWABoyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oIU6KZXM; arc=none smtp.client-ip=209.85.128.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33934567777so2150479f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:34:13 -0800 (PST)
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40e7e2e04f0so44648025e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:34:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705998852; x=1706603652; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XO+dw9hjpAkz16g21i5T858l1Se4V6/Q5rPys97A/CY=;
-        b=zuyIwmHDGzcq0ae5Kwp2KgNkIWzvxtyKB0u5hSsz24q9m3u9ewZ0uU7Xpz0xSi6xbW
-         1VD2ODQhWy+KhAYBgiPnEykslwdymn2q3cKTdLzvCk7KuAK5Im80tJND/o/rtts6Xal3
-         /mzUrtF+J3/a5JDtJvXcs5+jfqSK69BMcTf1eksUv3Qekxq+/xfgbXjT969Bv+yxfVEF
-         inevkKCBl38OnWdU/OYDy51uGICtI69QkkK1X5+3PLk4md55liWcGXtBT3pky/Wlh/V6
-         1wX6rGwBxg9BnMyhMs62pARrGnaBZ0R5rObXSQK0ZoqHGcZdHnGFudKT18Sbuph9WoHF
-         w3tA==
+        d=linaro.org; s=google; t=1705998898; x=1706603698; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YbtYsrAEnDnBNGvU/KXT8oQTPUspz/hEFAbpuyKJTvE=;
+        b=oIU6KZXMEvOig4Ky6DQ+6tQVsdD32BXmzOnIpmYeG3D8iRji4kEqq+PMV9hqbUcRvy
+         e77/w8LWb4VXyDSDLfQrSEh9TrMrGDey6J5DF2Nw6fjlut6xR1zkYT6Rgxa2GNyyRemX
+         Bc2tP2zO3EhN4+3rK6Fnlw3mM7y6GaxV0i+1CrKURzjofZpy87F9K9FO2sysc+uWiB/e
+         aeFopaDliquH4WczDbKK0JREKEqhuy0pU/AGCiQMD9XkyR+XM4NHtVUsxFY9Vmvwdp2O
+         31xnh6zVZbqTw+cAYFVTh6N6baULiFSN0HkwFvoulJ+XWC5uWDGHUtHdU4m24aQUoGCx
+         VjTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705998852; x=1706603652;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XO+dw9hjpAkz16g21i5T858l1Se4V6/Q5rPys97A/CY=;
-        b=AO943g28myLUzJ3lK6lMzfLrV1sdZzs1e/rMI8wmmBJW6SWlxA5i6O3icpP+cy4DOQ
-         K4SPCojp5tHUKbIhprdpkA9LcIzHBiIRpsJWMvBmv1fJFhRZpmsKuH1Sl1JQBdtPl4oQ
-         na+4nnze/N06ufq6wCX/0UHX05Dh4aitnnjPKQeRI+gUQ1qreU1eIn6qRGm/kow2ED/v
-         6b/Ib9clHkgP69MV9CLNSEYbw/PdeSJzdT+Bm6GaRL3tJOTT0sp8Aeh8VRmvRlAVzLx9
-         yeN5fjwywlQDEK+lOLg7BExunnvCDS8ZotFuNyLgBCZKU2NwsBCMi4tqwfXLKcvxM9dT
-         ajvQ==
-X-Gm-Message-State: AOJu0YyUVHkqyvAylL4tCTdH+IIA3ZPm/U/7BMf9rYfqk6o+CexV84ys
-	w6IlQZ1po89/Yigdnu8yIGwcQKiMuKPRCoNzsY+ce0uhCxE3KBD/fOKTiAp4xDEXO01WcoR/C3R
-	C2Ug=
-X-Google-Smtp-Source: AGHT+IGrCAgTgEAukfsy/q0uXDaS3k3nOqy0ClJGMMZBpBzpyjTKUPVawtgMdG2hAzicgJ1/u0atxw==
-X-Received: by 2002:a05:6000:905:b0:339:359c:11c0 with SMTP id cw5-20020a056000090500b00339359c11c0mr1889379wrb.37.1705998852085;
-        Tue, 23 Jan 2024 00:34:12 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id x8-20020a5d4448000000b0033925e94c89sm8687254wrr.12.2024.01.23.00.34.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jan 2024 00:34:11 -0800 (PST)
-Message-ID: <6ddbf20c-6929-4cb0-9fdb-570cc7170b9c@linaro.org>
-Date: Tue, 23 Jan 2024 08:34:09 +0000
+        d=1e100.net; s=20230601; t=1705998898; x=1706603698;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YbtYsrAEnDnBNGvU/KXT8oQTPUspz/hEFAbpuyKJTvE=;
+        b=g0tXcSLvSpRC9HXhevFkJwhotimhFHV08uzPwKuuU09/6MRZFlzHRDken9FZaZYdwa
+         2Cx+uifbrtJ2zswBdNTCZi/X1/iopImsCaWTDNZY0etMYm6jgH6GhrgIrWzoY+1dNFb2
+         dc+ZtTzIfu7GIpMb2d3L3dC/9cc8sD+LyF/DyViu2OYVpfWeKfnxNvCaIP4HtB+g2x7M
+         GcAG8K8mwM4tyrRnut8ZiiXyl3ROniZYME21p7HA7l0sfHqbGpl8MpwoYLn20k79czqk
+         QDIEw+xpqnAjzt9h/fRyYa0oxo68ezz1Q2iZLZ2GEoMu4psYQlmM0ufx2x+jTe+NvMu4
+         PUQA==
+X-Gm-Message-State: AOJu0YwBBf3Nq2tPAcLUGU+j6We4pX4GEBfTKbkahHvtmiT+wnHHj+IF
+	Cog7iMrXyhtsvvzODAFkrq0c5GR8DEGfbKg8sXXwV/Px+2lDh1J/wG54bBllvyc=
+X-Google-Smtp-Source: AGHT+IGpSfiqLObRXf2pI7cfDcFLxyLN4hxeQLwRatDoxpu6xOq/MqtFPVGkf8qYd6ARxAUb+aUvdA==
+X-Received: by 2002:a05:600c:a06:b0:40e:7af8:d49f with SMTP id z6-20020a05600c0a0600b0040e7af8d49fmr274423wmp.121.1705998898262;
+        Tue, 23 Jan 2024 00:34:58 -0800 (PST)
+Received: from krzk-bin.. ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id p3-20020a5d6383000000b00339307d9d31sm5840017wru.112.2024.01.23.00.34.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jan 2024 00:34:57 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Maxime Ripard <mripard@kernel.org>,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] dt-bindings: sram: narrow regex for unit address to hex numbers
+Date: Tue, 23 Jan 2024 09:34:50 +0100
+Message-Id: <20240123083450.20996-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 7/8] arm64: dts: exynos: gs101: define USI8 with I2C
- configuration
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- peter.griffin@linaro.org, mturquette@baylibre.com, sboyd@kernel.org,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: andi.shyti@kernel.org, alim.akhtar@samsung.com, s.nawrocki@samsung.com,
- tomasz.figa@gmail.com, cw00.choi@samsung.com,
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
- andre.draszik@linaro.org, semen.protsenko@linaro.org,
- willmcvicker@google.com, kernel-team@android.com
-References: <20240119111132.1290455-1-tudor.ambarus@linaro.org>
- <20240119111132.1290455-8-tudor.ambarus@linaro.org>
- <9d12f4f9-1892-48f3-b8d1-8f59788cc91d@linaro.org>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <9d12f4f9-1892-48f3-b8d1-8f59788cc91d@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+Regular expression used to match the unit address part should not allow
+non-hex numbers.
 
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ .../bindings/sram/allwinner,sun4i-a10-system-control.yaml       | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 1/23/24 07:52, Krzysztof Kozlowski wrote:
-> On 19/01/2024 12:11, Tudor Ambarus wrote:
->> USI8 I2C is used to communicate with an eeprom found on the battery
->> connector. Define USI8 in I2C configuration.
->>
->> USI8 CONFIG register comes with a 0x0 reset value, meaning that USI8
->> doesn't have a default protocol (I2C, SPI, UART) at reset. Thus the
->> selection of the protocol is intentionally left for the board dts file.
-> 
-> ... and dropped, because this patch does not build:
-> https://krzk.eu/#/builders/29/builds/3869
-> and I missed weird dependency mentioned in cover letter:
-> 
-> "This patch set shall be queued after the cmu_misc clock name fixes from:"
-> 
-> Sorry, this cannot work like that. DTS for new features cannot build
-> depend on driver changes.
+diff --git a/Documentation/devicetree/bindings/sram/allwinner,sun4i-a10-system-control.yaml b/Documentation/devicetree/bindings/sram/allwinner,sun4i-a10-system-control.yaml
+index a1c96985951f..cf07b8f787a6 100644
+--- a/Documentation/devicetree/bindings/sram/allwinner,sun4i-a10-system-control.yaml
++++ b/Documentation/devicetree/bindings/sram/allwinner,sun4i-a10-system-control.yaml
+@@ -56,7 +56,7 @@ properties:
+   ranges: true
+ 
+ patternProperties:
+-  "^sram@[a-z0-9]+":
++  "^sram@[a-f0-9]+":
+     $ref: /schemas/sram/sram.yaml#
+     unevaluatedProperties: false
+ 
+-- 
+2.34.1
 
-No worries. What shall I do so that you re-consider the dropped patches?
-I'm not yet familiar with your release management, but I guess that if
-you submit your "fixes-clk" branch for integration into v6.8-rc2, and
-then merge v6.8-rc2 into your "next/dt64", you'll then be able to queue
-the dropped patches as well.
-
-Thanks,
-ta
 
