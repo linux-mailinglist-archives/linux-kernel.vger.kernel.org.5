@@ -1,228 +1,286 @@
-Return-Path: <linux-kernel+bounces-35435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35431-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3462683910E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:15:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DCE08390FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:14:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9E351F2A51D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:15:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3244D1C236AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:14:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9DCC605B0;
-	Tue, 23 Jan 2024 14:13:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3BEF5FF0B;
+	Tue, 23 Jan 2024 14:13:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VUV7wcHc"
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HfXP3yTF"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98006604B4
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 14:13:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E0845FDB4
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 14:13:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706019233; cv=none; b=Rf4GGhgIsWcszoQC3aFiCcQW7WnThArwyoIBqP/WQwUHRylKNk0ci4o4KanByl4q1Dj96mt/UJKKM0zatETNN55X2Jq0oxJiM+J7tuJOLNeJrUL/e1k0on4Oi/jS0iBLd1RQSBlKBFlaM+kThchA9lmH72FI293jYHmDL7IRKbg=
+	t=1706019223; cv=none; b=gDYDeazg4iZmL1+mgtMre6Cnn48EP1PODVZbU5GUuiZW6kdDYD+5NWXcXWsUvZSVX7nG3+ag53v01WkQn7HXTAkAUK0xVy1F9lUntSObUr/jSDKaWhvP295SRwx/GR7muf/ZF4rntnLhvDrPxsRsl1NjhnQkk0J6HqbZTvJFHbQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706019233; c=relaxed/simple;
-	bh=zd6Bmh48g7rsM+87XsXBkxNU+Zs2Yu+NMiweLujpj9I=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Zq2lsKfLzjTaHOxc/XJQP5T3rVkSbPIoK5Gm0ZdTcHezi6KZCVz3lmMUkzZUTz6L/ffe0o/8YAbG5i3Tlkf4Lm1QzeeFT/978szc2xjmuCQ038uAI3S469Rj1DzmM2lqxt1wRY+wIAdn/v1Q+Asse9d6aMgzF82TElb8VdyJbtY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VUV7wcHc; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33922b66bd7so2985993f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 06:13:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706019229; x=1706624029; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qJ0gjfKMOfp9CH0Fl1AfdBLtnAI1t5WhWrFWLERW/vA=;
-        b=VUV7wcHcc6udQnCmXkUlYNNaIXwzT45/R90OgLr6ZF9YVFWehNeLZksZ1rhDq8kso/
-         FtjfgzuXFdenYS9N9QONRHYyDNfqal2VXNCxhB2jM9o0kzTNFeXcnW3A/pOy9q3ZbFlY
-         ar7UHsOxXnVOh7eyWgvj6u6Rda4l4SPQ0lawXvvnPRiZdwYX8mEqWwWbkb+klYWcQE20
-         cg6Huqz2d9Pd5OsWOReudJDQQ05PFk1SzbRO243TBdyiqIlNJcrKNPgtuqYA+FXsOFTA
-         1637JUEZlON5rtdXKTdPX8QtuqkxIJFnP7legeuUooXNIiHY8BkaAkTs4r40N9m/HpW0
-         TCAg==
+	s=arc-20240116; t=1706019223; c=relaxed/simple;
+	bh=JXniqWhpXjjSE85A2+O+umaCKvwDugv6FvrDPXKER24=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=hps+BMTk6y8rszp9JhLqvwCWogoBkD3nMJChLDEiqSLXUxnoaey13/EqFGhLAkDXTWaVx79oy3QCbLuCmFe506QhFYmDrwTkzGc5dNEiI4eYuSaKp+hJa6xUmcgq2fNe3R0Y86W8QMgnBQB0PMRXBnWNeDnsTtxQpiGQABde2E0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HfXP3yTF; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706019220;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=RwS+5giCvfOuuu1oeULF7LgReztaNbk26JYEakmOz0E=;
+	b=HfXP3yTFCkfey2YRGQkmypRK4uBCWRDuymq743Vxogv6JUzRH7/IxlXKvoYzgIk1hvxN+K
+	UuoE5tP1b5sAhuUaI3EWPJ0GBgr2fbcn5hK4rKDOHRvHabYbv+/rlS13b38BKbzew4K6AX
+	bjQDQBZWzcRlZ8Rk4ZDkJXJQW7SnRyY=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-691-z5FTPziOPk2_0aGO1MrFIQ-1; Tue, 23 Jan 2024 09:13:38 -0500
+X-MC-Unique: z5FTPziOPk2_0aGO1MrFIQ-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-337bf78ef28so1847441f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 06:13:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706019229; x=1706624029;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qJ0gjfKMOfp9CH0Fl1AfdBLtnAI1t5WhWrFWLERW/vA=;
-        b=IzK/Em8rSDK7IcMiQhjF/Z5Mt0dzIU8BxnQZjYcpDLqn0Z13NW/GElt1HdJTd7Rfmp
-         sdZghZXzvTxoq59fntc+/1jz6wj40F8jx+7Di6LiDvRkmHlXls+DZ4PV6DJkUXT/9Hm7
-         KINTXo9nn8dr7njiGU7jMoLqqkFPOgigA+gfdmX+TWnP/OMJeOAD2RKLfMGTXLTHswTR
-         zhNfBIYhcATdE7sX0Y7YtaRNe+CUIPAm8LTTSjqdK3vjOI3pmg6unBRXvaqo/MyHJjkY
-         WXnbBe3XKkJ2vfeQJaq7jAamB/YYWUcVTde/LsVkOuJ1qh9Nmw+W+kj/6IHdhzdGOiSy
-         rQCg==
-X-Gm-Message-State: AOJu0YzyxzqfuUltarSuvbfxCGa1bhd1r4elLUloBUGjF9TcpKtuittN
-	RCCRIWRnfalz2zcDNJf0NCqgpK1ig7Id9sY0wkYXsX5nscwf9OswdQHBleog4U8=
-X-Google-Smtp-Source: AGHT+IEmbmNSvVll9puJMHID5ADLiEU47RyJFA7juTXNLnNPBn9fghYRSUWnGYd4fyil/i4UIdqrsg==
-X-Received: by 2002:a5d:5086:0:b0:337:c5fb:c84f with SMTP id a6-20020a5d5086000000b00337c5fbc84fmr3473681wrt.33.1706019229029;
-        Tue, 23 Jan 2024 06:13:49 -0800 (PST)
-Received: from krzk-bin.. ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id r8-20020adfe688000000b00337d97338b0sm12132298wrm.76.2024.01.23.06.13.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 06:13:48 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Viresh Kumar <viresh.kumar@linaro.org>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	linux-arm-msm@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-pm@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Sean Anderson <sean.anderson@seco.com>
-Subject: [PATCH v4 6/6] ASoC: codecs: wsa884x: Allow sharing reset GPIO
-Date: Tue, 23 Jan 2024 15:13:11 +0100
-Message-Id: <20240123141311.220505-7-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240123141311.220505-1-krzysztof.kozlowski@linaro.org>
-References: <20240123141311.220505-1-krzysztof.kozlowski@linaro.org>
+        d=1e100.net; s=20230601; t=1706019218; x=1706624018;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:from:content-language:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=RwS+5giCvfOuuu1oeULF7LgReztaNbk26JYEakmOz0E=;
+        b=C3bvl/3NAstHGjPBIS8G2P3zpGLg9Rk8NP6ZLJJWpBZAb2FVTxgXfdA65m/zanp2kH
+         FG0ypZElmplAxnnnZ2QxpX9GNV3djM0ScuUbikFMath7ORHi7wfhE9at7bcfgYk61GAS
+         oZqBR3svXSkl8blOqL+pu3EtvfIa8wHmCLyrnp77nyCB3sFyGOLUT5wHqWFYArpnwXEb
+         vdWk9BmTRpus//WRf8k6C/TX212ZKp8V5LECWCF9SbAAh5MlVbJ0AaLSsZ3CUDJL1anr
+         d79mOXFLBJqFpLWXJHd1xeGSYk2fc41NXovXhcg75HHqJafp9b96HazoROL9Nx/bBGH+
+         zrqQ==
+X-Gm-Message-State: AOJu0YxZ5rY4VialBoF/hFSmE2R2k3EkI2g+FTascy46L709sS17cZ5D
+	NjxWd39dbBbScCJrozEWKvSiCVON+20H71w+2GACYgRfIFBA7R8cqnlp04dFqqhVavw7SbXzwI7
+	nepZadwSMQMM+u6BpNpTVnAcVa9hrk7zZe7VcNYoyTygMOD136zdMtPJULUiqZA==
+X-Received: by 2002:a5d:5886:0:b0:337:bf93:7596 with SMTP id n6-20020a5d5886000000b00337bf937596mr3834969wrf.85.1706019217861;
+        Tue, 23 Jan 2024 06:13:37 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH5/PbDrLZ9d9AkhvRX6ylFfb0yt8+nxq8gN+w1JFxvjbUHyNqGdzjNBj/Blc446v26+82bXA==
+X-Received: by 2002:a5d:5886:0:b0:337:bf93:7596 with SMTP id n6-20020a5d5886000000b00337bf937596mr3834939wrf.85.1706019217481;
+        Tue, 23 Jan 2024 06:13:37 -0800 (PST)
+Received: from ?IPV6:2003:cb:c741:de00:bf0f:cd46:dc1c:2de9? (p200300cbc741de00bf0fcd46dc1c2de9.dip0.t-ipconnect.de. [2003:cb:c741:de00:bf0f:cd46:dc1c:2de9])
+        by smtp.gmail.com with ESMTPSA id cg13-20020a5d5ccd000000b0033927ccc725sm9100696wrb.50.2024.01.23.06.13.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jan 2024 06:13:37 -0800 (PST)
+Message-ID: <8eb5db8e-33cc-4cbf-a1bf-0da7af230fab@redhat.com>
+Date: Tue, 23 Jan 2024 15:13:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 10/11] mm/memory: ignore dirty/accessed/soft-dirty bits
+ in folio_pte_batch()
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+To: Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
+ Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, "David S. Miller"
+ <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
+References: <20240122194200.381241-1-david@redhat.com>
+ <20240122194200.381241-11-david@redhat.com>
+ <59592b50-fe89-4b32-8490-2e6c296f972f@arm.com>
+ <76740e33-9b52-4e23-b407-8ae38bac15ec@redhat.com>
+ <94d33a07-c59a-4315-9c64-8b4d959ca1f4@arm.com>
+ <c92c2460-c66a-46c7-b84f-0732965dcf73@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <c92c2460-c66a-46c7-b84f-0732965dcf73@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On some boards with multiple WSA8840/WSA8845 speakers, the reset
-(shutdown) GPIO is shared between two speakers.  Use the reset
-controller framework and its "reset-gpio" driver to handle this case.
-This allows bring-up and proper handling of all WSA884x speakers on
-X1E80100-CRD board.
+>> Although now I'm wondering if there is a race here... What happens if a page in
+>> the parent becomes dirty after you have checked it but before you write protect
+>> it? Isn't that already a problem with the current non-batched version? Why do we
+>> even to preserve dirty in the child for private mappings?
+> 
+> I suspect, because the parent could zap the anon folio. If the folio is
+> clean, but the PTE dirty, I suspect that we could lose data of the child
+> if we were to evict that clean folio (swapout).
+> 
+> So I assume we simply copy the dirty PTE bit, so the system knows that
+> that folio is actually dirty, because one PTE is dirty.
 
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Sean Anderson <sean.anderson@seco.com>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Oh, and regarding your race concern: it's undefined which page state
+would see if some write is racing with fork, so it also doesn't matter
+if we would copy the PTE dirty bit or not, if it gets set in a racy fashion.
 
+I'll not experiment with:
+
+ From 14e83ff2a422a96ce5701f9c8454a49f9ed947e3 Mon Sep 17 00:00:00 2001
+From: David Hildenbrand <david@redhat.com>
+Date: Sat, 30 Dec 2023 12:54:35 +0100
+Subject: [PATCH] mm/memory: ignore dirty/accessed/soft-dirty bits in
+  folio_pte_batch()
+
+Let's always ignore the accessed/young bit: we'll always mark the PTE
+as old in our child process during fork, and upcoming users will
+similarly not care.
+
+Ignore the dirty bit only if we don't want to duplicate the dirty bit
+into the child process during fork. Maybe, we could just set all PTEs
+in the child dirty if any PTE is dirty. For now, let's keep the behavior
+unchanged.
+
+Ignore the soft-dirty bit only if the bit doesn't have any meaning in
+the src vma.
+
+Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
+  mm/memory.c | 34 ++++++++++++++++++++++++++++++----
+  1 file changed, 30 insertions(+), 4 deletions(-)
 
-If previous patches are fine, then this commit is independent and could
-be taken via ASoC.
----
- sound/soc/codecs/wsa884x.c | 53 +++++++++++++++++++++++++++++++-------
- 1 file changed, 43 insertions(+), 10 deletions(-)
-
-diff --git a/sound/soc/codecs/wsa884x.c b/sound/soc/codecs/wsa884x.c
-index f2653df84e4a..a9767ef0e39d 100644
---- a/sound/soc/codecs/wsa884x.c
-+++ b/sound/soc/codecs/wsa884x.c
-@@ -13,6 +13,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
-+#include <linux/reset.h>
- #include <linux/slab.h>
- #include <linux/soundwire/sdw.h>
- #include <linux/soundwire/sdw_registers.h>
-@@ -699,6 +700,7 @@ struct wsa884x_priv {
- 	struct sdw_stream_runtime *sruntime;
- 	struct sdw_port_config port_config[WSA884X_MAX_SWR_PORTS];
- 	struct gpio_desc *sd_n;
-+	struct reset_control *sd_reset;
- 	bool port_prepared[WSA884X_MAX_SWR_PORTS];
- 	bool port_enable[WSA884X_MAX_SWR_PORTS];
- 	unsigned int variant;
-@@ -1799,9 +1801,22 @@ static struct snd_soc_dai_driver wsa884x_dais[] = {
- 	},
- };
- 
--static void wsa884x_gpio_powerdown(void *data)
-+static void wsa884x_reset_powerdown(void *data)
- {
--	gpiod_direction_output(data, 1);
-+	struct wsa884x_priv *wsa884x = data;
+diff --git a/mm/memory.c b/mm/memory.c
+index 7690994929d26..9aba1b0e871ca 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -953,24 +953,44 @@ static __always_inline void __copy_present_ptes(struct vm_area_struct *dst_vma,
+  	set_ptes(dst_vma->vm_mm, addr, dst_pte, pte, nr);
+  }
+  
++/* Flags for folio_pte_batch(). */
++typedef int __bitwise fpb_t;
 +
-+	if (wsa884x->sd_reset)
-+		reset_control_assert(wsa884x->sd_reset);
-+	else
-+		gpiod_direction_output(wsa884x->sd_n, 1);
++/* Compare PTEs after pte_mkclean(), ignoring the dirty bit. */
++#define FPB_IGNORE_DIRTY		((__force fpb_t)BIT(0))
++
++/* Compare PTEs after pte_clear_soft_dirty(), ignoring the soft-dirty bit. */
++#define FPB_IGNORE_SOFT_DIRTY		((__force fpb_t)BIT(1))
++
++static inline pte_t __pte_batch_clear_ignored(pte_t pte, fpb_t flags)
++{
++	if (flags & FPB_IGNORE_DIRTY)
++		pte = pte_mkclean(pte);
++	if (likely(flags & FPB_IGNORE_SOFT_DIRTY))
++		pte = pte_clear_soft_dirty(pte);
++	return pte_mkold(pte);
 +}
 +
-+static void wsa884x_reset_deassert(struct wsa884x_priv *wsa884x)
-+{
-+	if (wsa884x->sd_reset)
-+		reset_control_deassert(wsa884x->sd_reset);
-+	else
-+		gpiod_direction_output(wsa884x->sd_n, 0);
- }
- 
- static void wsa884x_regulator_disable(void *data)
-@@ -1809,6 +1824,27 @@ static void wsa884x_regulator_disable(void *data)
- 	regulator_bulk_disable(WSA884X_SUPPLIES_NUM, data);
- }
- 
-+static int wsa884x_get_reset(struct device *dev, struct wsa884x_priv *wsa884x)
-+{
-+	wsa884x->sd_reset = devm_reset_control_get_optional_shared(dev, NULL);
-+	if (IS_ERR(wsa884x->sd_reset))
-+		return dev_err_probe(dev, PTR_ERR(wsa884x->sd_reset),
-+				     "Failed to get reset\n");
-+	else if (wsa884x->sd_reset)
-+		return 0;
-+	/*
-+	 * else: NULL, so use the backwards compatible way for powerdown-gpios,
-+	 * which does not handle sharing GPIO properly.
-+	 */
-+	wsa884x->sd_n = devm_gpiod_get_optional(dev, "powerdown",
-+						GPIOD_OUT_HIGH);
-+	if (IS_ERR(wsa884x->sd_n))
-+		return dev_err_probe(dev, PTR_ERR(wsa884x->sd_n),
-+				     "Shutdown Control GPIO not found\n");
+  /*
+   * Detect a PTE batch: consecutive (present) PTEs that map consecutive
+   * pages of the same folio.
+   *
+   * All PTEs inside a PTE batch have the same PTE bits set, excluding the PFN.
++ * the accessed bit, dirty bit (with FPB_IGNORE_DIRTY) and soft-dirty bit
++ * (with FPB_IGNORE_SOFT_DIRTY).
+   */
+  static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
+-		pte_t *start_ptep, pte_t pte, int max_nr)
++		pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags)
+  {
+  	unsigned long folio_end_pfn = folio_pfn(folio) + folio_nr_pages(folio);
+  	const pte_t *end_ptep = start_ptep + max_nr;
+-	pte_t expected_pte = pte_next_pfn(pte);
++	pte_t expected_pte = __pte_batch_clear_ignored(pte_next_pfn(pte), flags);
+  	pte_t *ptep = start_ptep + 1;
+  
+  	VM_WARN_ON_FOLIO(!pte_present(pte), folio);
+  
+  	while (ptep != end_ptep) {
+-		pte = ptep_get(ptep);
++		pte = __pte_batch_clear_ignored(ptep_get(ptep), flags);
+  
+  		if (!pte_same(pte, expected_pte))
+  			break;
+@@ -1004,6 +1024,7 @@ copy_present_ptes(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma
+  {
+  	struct page *page;
+  	struct folio *folio;
++	fpb_t flags = 0;
+  	int err, nr;
+  
+  	page = vm_normal_page(src_vma, addr, pte);
+@@ -1018,7 +1039,12 @@ copy_present_ptes(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma
+  	 * by keeping the batching logic separate.
+  	 */
+  	if (unlikely(!*prealloc && folio_test_large(folio) && max_nr != 1)) {
+-		nr = folio_pte_batch(folio, addr, src_pte, pte, max_nr);
++		if (src_vma->vm_flags & VM_SHARED)
++			flags |= FPB_IGNORE_DIRTY;
++		if (!vma_soft_dirty_enabled(src_vma))
++			flags |= FPB_IGNORE_SOFT_DIRTY;
 +
-+	return 0;
-+}
-+
- static int wsa884x_probe(struct sdw_slave *pdev,
- 			 const struct sdw_device_id *id)
- {
-@@ -1838,11 +1874,9 @@ static int wsa884x_probe(struct sdw_slave *pdev,
- 	if (ret)
- 		return ret;
- 
--	wsa884x->sd_n = devm_gpiod_get_optional(dev, "powerdown",
--						GPIOD_OUT_HIGH);
--	if (IS_ERR(wsa884x->sd_n))
--		return dev_err_probe(dev, PTR_ERR(wsa884x->sd_n),
--				     "Shutdown Control GPIO not found\n");
-+	ret = wsa884x_get_reset(dev, wsa884x);
-+	if (ret)
-+		return ret;
- 
- 	dev_set_drvdata(dev, wsa884x);
- 	wsa884x->slave = pdev;
-@@ -1858,9 +1892,8 @@ static int wsa884x_probe(struct sdw_slave *pdev,
- 	pdev->prop.sink_dpn_prop = wsa884x_sink_dpn_prop;
- 	pdev->prop.scp_int1_mask = SDW_SCP_INT1_BUS_CLASH | SDW_SCP_INT1_PARITY;
- 
--	/* Bring out of reset */
--	gpiod_direction_output(wsa884x->sd_n, 0);
--	ret = devm_add_action_or_reset(dev, wsa884x_gpio_powerdown, wsa884x->sd_n);
-+	wsa884x_reset_deassert(wsa884x);
-+	ret = devm_add_action_or_reset(dev, wsa884x_reset_powerdown, wsa884x);
- 	if (ret)
- 		return ret;
- 
++		nr = folio_pte_batch(folio, addr, src_pte, pte, max_nr, flags);
+  		folio_ref_add(folio, nr);
+  		if (folio_test_anon(folio)) {
+  			if (unlikely(folio_try_dup_anon_rmap_ptes(folio, page,
 -- 
-2.34.1
+2.43.0
+
+
+-- 
+Cheers,
+
+David / dhildenb
 
 
