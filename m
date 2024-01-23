@@ -1,107 +1,166 @@
-Return-Path: <linux-kernel+bounces-34798-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34799-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFE5F83878F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:38:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52FD9838796
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:39:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 860DDB20D37
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 06:38:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0510A2830C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 06:39:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35F5F50A6F;
-	Tue, 23 Jan 2024 06:38:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BF4950261;
+	Tue, 23 Jan 2024 06:39:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pcNXm8Y7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lWqVz/x8"
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7330150261;
-	Tue, 23 Jan 2024 06:38:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E0D851010
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 06:39:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705991914; cv=none; b=DyMaq/J59oe5vTeWWwY0SlzWqhRhWz2giod5aJTKiBeSjwmFxfzRfv+RjZlKGZQd6PqFv81QsPqACo8MC5cKUa+FGtHb20sFig/S316TKQST9HZqmIZkONvFpL9IROEVTiF0qAB/ixeOIZJseixpkRlH7Aw24aE9sKBo1j0EatU=
+	t=1705991980; cv=none; b=Zxj8K6x5JoqgptYwnuraEALhT1dZwYPorXqMbUsjPU7xmPlDGzb87PhtGxCYJX1XcMqtv4yNTHBEEmUrfJm+ze36LWj7cMgWxEniS/gQEwzcBKb1MJyEJMKvD2lwxGo5yokI63lEwprHTTqLOB90h7rZgCpfdxpcoSYv/Xi/NTo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705991914; c=relaxed/simple;
-	bh=N4WnIJh6bc8rJ/bQ3UvGO2EO8A+M8+YdgxuTN4SYook=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=q11Ro2i2ruj70tUn0OKLGZDPI6yFl3RjhU+CkNCeibxi5oPX11jQV4FZYnyMmVoT9ywsth/vEfDMEGYhKlBKsWu5Yf+9euz5GuNjjGNIkvTrOYCJgJkcpCFSRxDjo8WUMmjbak5F2xp9TkZU2h0DgGo/wW57lKk7lCNIShrcpt4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pcNXm8Y7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EB45C433C7;
-	Tue, 23 Jan 2024 06:38:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705991913;
-	bh=N4WnIJh6bc8rJ/bQ3UvGO2EO8A+M8+YdgxuTN4SYook=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=pcNXm8Y7Qd/7ow9BvzhuEt9tWbOxfKqdgM4llKfmdRaGfcAH9Xf9LpwYgNbWwqCGD
-	 1M6TyMTWrFBic4HEttNUptLuWxjGdFEUhZnY0ZOHdx5aUh6mFPq5WFneAudtNw4PEe
-	 i01BPYJNvDbaGQ9FeMZEfEHaQddmvdX74nL0UfSYK7QFyc4mir2pWYHUXVs7SjSb3j
-	 4jEwAspdy7vWre3XB+o9CpdMaojdYANz5DlYCRG8yeaIxBuzuwjog3cIrLS+qIDl+M
-	 Qp6yMGz6dEK21I7B0mdgHIeW4f9y/LJ0VI6b5cAfIWQWVirB835CI8uvGVnZvy4cu6
-	 f13OIBF2KyyeQ==
-From: Kalle Valo <kvalo@kernel.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: kuba@kernel.org,  davem@davemloft.net,  abeni@redhat.com,
-  edumazet@google.com,  Arend van Spriel <aspriel@gmail.com>,  Franky Lin
- <franky.lin@broadcom.com>,  Hante Meuleman <hante.meuleman@broadcom.com>,
-  dsahern@kernel.org,  weiwan@google.com,  linux-wireless@vger.kernel.org
- (open list:BROADCOM BRCM80211 IEEE802.11n WIRELESS DRIVER),
-  brcm80211-dev-list.pdl@broadcom.com (open list:BROADCOM BRCM80211
- IEEE802.11n WIRELESS DRIVER),  linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH net-next 17/22] net: fill in MODULE_DESCRIPTION()s for
- Broadcom WLAN
-References: <20240122184543.2501493-1-leitao@debian.org>
-	<20240122184543.2501493-18-leitao@debian.org>
-Date: Tue, 23 Jan 2024 08:38:29 +0200
-In-Reply-To: <20240122184543.2501493-18-leitao@debian.org> (Breno Leitao's
-	message of "Mon, 22 Jan 2024 10:45:38 -0800")
-Message-ID: <877ck0eeqi.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=arc-20240116; t=1705991980; c=relaxed/simple;
+	bh=97fUsI3syBIh9/BxtfH9kv6054fMXX9A+KQKCKVBfXI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AISrIYDdxx9FrJH9NOOtynHe0V/+i47gRUgm1IGNhkjtSAHZ6czBw3ZCP2eXgPPpRwxFqTScpkUkjTJA0JMMjhmKb3AjvgnAYkcIsOThsHItQw9CYbvLkAtIB8Jr/XyTZe5LS0Vi2H0s1NCXgyQO6IC6n7wDOE3hRixJSYPIe5w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lWqVz/x8; arc=none smtp.client-ip=209.85.215.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5ce74ea4bf2so2519822a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 22:39:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705991978; x=1706596778; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Iwio5HJQpvc8muMFO1anj17hxV7JwhZHGw2QVILfq9g=;
+        b=lWqVz/x8tATAlQVo2yotw/ouuLHyeh1mRMSy2Lt/0VERuXzRE/t9d8RjnV60awJWg9
+         nFukiYrq9i8T+9T1EtQQwEuLZus5AG9bh5W0C2IC7K7is9tSs9DZmNUtmTVjO0G9vN1N
+         CyabPGvxsNFedVeRJcY/UOcDD2iGBSI+Smrvlsng9/+j9JnnZaQWct6Ilki4SeLj4vyT
+         3bMi6k9IZ1hGNdJAFsVsWi+gcl2M/nE0CwXUqyEW9IIUvml121OkJAGtjzMQLd8ELlAf
+         +D7Q2plp75LedHHOI/+sSKNJ6tUbDA3qERJk2/4If3YTkke68oQuTTO+cXctBo0YbxUu
+         fVMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705991978; x=1706596778;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Iwio5HJQpvc8muMFO1anj17hxV7JwhZHGw2QVILfq9g=;
+        b=RrpiI726EOPFmdbQEzTrwGfhG8R5WoVHWAd3T26/hghQgaKhB+OG3hpfePB6hy856r
+         ddBxMu06rqA6VnSm3ftb3PP0CTrsTPPIojjPlGVRD84aDKqOGyI40NJaI5Rkwan0Ry3n
+         E1nbekszb3aiBagt5nVwEGx4KZ3H9SsypuqOZ9yh+IuRM4BLIImnNVXqHYK4YCBaw/kV
+         DB4SPA4xkpO8fc/LzjzLdiWKJZYb9X9GuzR6ONv6JplZbzo5r5pahTi00oa4jd1q/dwM
+         1962cragcxSp/m2HDSef6tWdOiOLLuuwWqWc3LVp3nxl3GABWnGM0ybj4qIUpRuP2Gzf
+         qYUg==
+X-Gm-Message-State: AOJu0YwmiySO1ku9vSjkRUnIJz57EPc4DzhjEwTGDts6G3gSK2LPSF0V
+	1CSjfiPMkpUXIAfKxVrAfctXp3Xls9Bf95ffvwXisM2p5oCRc0w6lLIhz78L2Pc=
+X-Google-Smtp-Source: AGHT+IGRkUJZ64S+e5w8iA3Eig0m/KmoRJTuAHlDEoT2Bp9ReodFgcUTV4umNazpcnzIrz0lfhKWtA==
+X-Received: by 2002:a05:6a20:9f9b:b0:199:4910:fe5b with SMTP id mm27-20020a056a209f9b00b001994910fe5bmr6333136pzb.54.1705991978692;
+        Mon, 22 Jan 2024 22:39:38 -0800 (PST)
+Received: from localhost ([122.172.81.83])
+        by smtp.gmail.com with ESMTPSA id ls30-20020a056a00741e00b006dbe42b8f75sm2530831pfb.220.2024.01.22.22.39.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 22:39:38 -0800 (PST)
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Viresh Kumar <viresh.kumar@linaro.org>,
+	Nishanth Menon <nm@ti.com>,
+	Stephen Boyd <sboyd@kernel.org>
+Cc: linux-pm@vger.kernel.org,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] cpufreq: Move dev_pm_opp_{init|free}_cpufreq_table() to pm_opp.h
+Date: Tue, 23 Jan 2024 12:09:34 +0530
+Message-Id: <ace4b31b297dfd7b8c969ff5046c8128c3e025be.1705991941.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-Breno Leitao <leitao@debian.org> writes:
+Move the declaration of functions defined in the OPP core to pm_opp.h.
+These were added to cpufreq.h as it was the only user of the APIs, but
+that was a mistake perhaps. Fix it.
 
-> W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
-> Add descriptions to the Broadcom FullMac WLAN drivers.
->
-> Signed-off-by: Breno Leitao <leitao@debian.org>
-> ---
->  drivers/net/wireless/broadcom/brcm80211/brcmfmac/bca/module.c | 1 +
->  drivers/net/wireless/broadcom/brcm80211/brcmfmac/cyw/module.c | 1 +
->  drivers/net/wireless/broadcom/brcm80211/brcmfmac/wcc/module.c | 1 +
->  3 files changed, 3 insertions(+)
->
-> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bca/module.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bca/module.c
-> index d55f3271d619..c1f91dc151c2 100644
-> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bca/module.c
-> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bca/module.c
-> @@ -20,6 +20,7 @@ static void __exit brcmf_bca_exit(void)
->  	brcmf_fwvid_unregister_vendor(BRCMF_FWVENDOR_BCA, THIS_MODULE);
->  }
->  
-> +MODULE_DESCRIPTION("Broadcom FullMAC WLAN BCA driver");
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+Will take it via the OPP tree.
 
-It would be good to spell out BCA. I don't even know what it means :)
+ include/linux/cpufreq.h | 20 --------------------
+ include/linux/pm_opp.h  | 16 ++++++++++++++++
+ 2 files changed, 16 insertions(+), 20 deletions(-)
 
-> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cyw/module.c
-> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cyw/module.c
-> @@ -20,6 +20,7 @@ static void __exit brcmf_cyw_exit(void)
->  	brcmf_fwvid_unregister_vendor(BRCMF_FWVENDOR_CYW, THIS_MODULE);
->  }
->  
-> +MODULE_DESCRIPTION("Broadcom FullMAC WLAN CYW driver");
-
-Same for CYW.
-
+diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
+index afda5f24d3dd..8ff3e79727d8 100644
+--- a/include/linux/cpufreq.h
++++ b/include/linux/cpufreq.h
+@@ -694,26 +694,6 @@ struct cpufreq_frequency_table {
+ 				    * order */
+ };
+ 
+-#if defined(CONFIG_CPU_FREQ) && defined(CONFIG_PM_OPP)
+-int dev_pm_opp_init_cpufreq_table(struct device *dev,
+-				  struct cpufreq_frequency_table **table);
+-void dev_pm_opp_free_cpufreq_table(struct device *dev,
+-				   struct cpufreq_frequency_table **table);
+-#else
+-static inline int dev_pm_opp_init_cpufreq_table(struct device *dev,
+-						struct cpufreq_frequency_table
+-						**table)
+-{
+-	return -EINVAL;
+-}
+-
+-static inline void dev_pm_opp_free_cpufreq_table(struct device *dev,
+-						 struct cpufreq_frequency_table
+-						 **table)
+-{
+-}
+-#endif
+-
+ /*
+  * cpufreq_for_each_entry -	iterate over a cpufreq_frequency_table
+  * @pos:	the cpufreq_frequency_table * to use as a loop cursor.
+diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
+index 76dcb7f37bcd..f1ac8bde09cb 100644
+--- a/include/linux/pm_opp.h
++++ b/include/linux/pm_opp.h
+@@ -16,6 +16,7 @@
+ #include <linux/notifier.h>
+ 
+ struct clk;
++struct cpufreq_frequency_table;
+ struct regulator;
+ struct dev_pm_opp;
+ struct device;
+@@ -444,6 +445,21 @@ static inline int dev_pm_opp_sync_regulators(struct device *dev)
+ 
+ #endif		/* CONFIG_PM_OPP */
+ 
++#if defined(CONFIG_CPU_FREQ) && defined(CONFIG_PM_OPP)
++int dev_pm_opp_init_cpufreq_table(struct device *dev, struct cpufreq_frequency_table **table);
++void dev_pm_opp_free_cpufreq_table(struct device *dev, struct cpufreq_frequency_table **table);
++#else
++static inline int dev_pm_opp_init_cpufreq_table(struct device *dev, struct cpufreq_frequency_table **table)
++{
++	return -EINVAL;
++}
++
++static inline void dev_pm_opp_free_cpufreq_table(struct device *dev, struct cpufreq_frequency_table **table)
++{
++}
++#endif
++
++
+ #if defined(CONFIG_PM_OPP) && defined(CONFIG_OF)
+ int dev_pm_opp_of_add_table(struct device *dev);
+ int dev_pm_opp_of_add_table_indexed(struct device *dev, int index);
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+2.31.1.272.g89b43f80a514
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
