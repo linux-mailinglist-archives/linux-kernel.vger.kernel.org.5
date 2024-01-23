@@ -1,215 +1,126 @@
-Return-Path: <linux-kernel+bounces-35859-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77457839783
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:20:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8487B839785
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:20:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AAF721C27083
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:20:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 09661B26F1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:20:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DF9081AC6;
-	Tue, 23 Jan 2024 18:20:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="KfMZkqSB"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C90C823B5;
+	Tue, 23 Jan 2024 18:20:16 +0000 (UTC)
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 158948121F;
-	Tue, 23 Jan 2024 18:20:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C106B81AD5;
+	Tue, 23 Jan 2024 18:20:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706034012; cv=none; b=euX7/Aih/U+fvQOSMcvtxaZWapTGewlvjKoevNcAxIw3e4IFZGBL9yqda7B3PTpA9iPdUAOwnc+/N/iDuLNiPazOYKv+Ro/njgEZ2P64dSLxRbZA5/GEQ7eHbC0Jdvk7oI9Lu0AtjEiS564zir0Q9KO4GWDY5go60y0I7FX0n9M=
+	t=1706034016; cv=none; b=NuD7zGBx5oBP+yCRoH7TftLxaos8w71ibpY8BAl99QQK1cZXraVVIv3PYjRZB//top4etLxrV8+l6aotxMLfcRaye9WAgRoq3Xt0Y1vMD7DZim0KOJUoB8pe2DAgOYSp9+/NraZrpvOZdQhBQaePXvF1FbLYRqPGCvUnbejcyFM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706034012; c=relaxed/simple;
-	bh=Kz6Sx2HwHUtMwThwQvcZ1SzVhfnaGraII0WfWtXei18=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PtfYcpttXVFaObKvDsKL53yAUMti5CPdQ9PR63IjD34WYxp1zc8mqP/9LhGtHisvk2O7fG/Mdxpur0KnB5ZIF3l6RBwfUA0OevfZeXtGnjZcQ1y9OV1W60WTLTtxIlJxi+pezkoFqLNqhfJaRnTkOrHSh4i0vkSRdM7eu4jEkpw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=KfMZkqSB; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=xJtDwsEzxC2wRkKiDTxPnJF7Bcyhg3afuw16GcINCwM=; b=KfMZkqSBpSMz1Up8pIHrEoOmK2
-	gS72067GJZOQOPUTd0wTWjKykok1kTE4dCcBEAtrgrvvb7VXsM9FqTwumi5Ntqb8yCVazVOZ6Wp0n
-	SWrK5q4QA2TOsTegfudAQLyRGgqxNF9QlzA33ibCCQrZVHvdeIFQQuCEl66Vo0dmF0OFYnFiMyhzF
-	heFGFU0q325UHEoWKsnoe/rL3eAw4o4e6t/0qFi5Zao5+PrxjeOs+vVIdYacZNE3H5wdKxLx6gUvX
-	ldr2VrwRpbatnDdYCIf9HvSw8Mjum3/eXOGXrGqv9MXGK0aslVEdvI8jm2wuMDfSjExEkTjy3Irtk
-	X7HVzNGQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:34546)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rSLNQ-0002u1-2h;
-	Tue, 23 Jan 2024 18:20:00 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rSLNM-00029h-Kk; Tue, 23 Jan 2024 18:19:56 +0000
-Date: Tue, 23 Jan 2024 18:19:56 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-	x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
-	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-	Salil Mehta <salil.mehta@huawei.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	jianyong.wu@arm.com, justin.he@arm.com,
-	James Morse <james.morse@arm.com>
-Subject: Re: [PATCH RFC v3 05/21] ACPI: Rename ACPI_HOTPLUG_CPU to include
- 'present'
-Message-ID: <ZbADTBLDEFtdglho@shell.armlinux.org.uk>
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
- <E1rDOgD-00Dvk2-3h@rmk-PC.armlinux.org.uk>
- <CAJZ5v0g9nfLrEf9u4Ksw6BOWJQ9iv8Z-O8RsLU6jR5zk0ahxRw@mail.gmail.com>
- <20240122180013.000016d5@Huawei.com>
- <Za++/11n5KA1VS3p@shell.armlinux.org.uk>
- <CAJZ5v0h7wsLt8d3ZoLXsK1=crAx66T42WDKNoHcg8CiHpAjS8g@mail.gmail.com>
- <Za/q9jivG4OdZM0f@shell.armlinux.org.uk>
- <CAJZ5v0gwe02uzAQoX0QDHo35OTEozpbnqC6vukjM3aE6HMq9WQ@mail.gmail.com>
+	s=arc-20240116; t=1706034016; c=relaxed/simple;
+	bh=DjBxG7P4BZNDoXbPPQ3AAP8/5+IiYOHXQO3HWX5SrYk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IixlPNedqbyaD4KElqJxt1A6McOS3oK9K2IOUhPr9qONOOCQLIk9MVA7bNKwq/e8JFXwfwjB0FtfpJ6UaO+EvGD+RppY+uUabFLp55+ZQa08PLtSzkh/yII+R1BvxOFG2q6SdKD4+xJ2PWu9IS9u84b5iTkqbHiKzAawGQArgkA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3bd4df21f4eso971275b6e.1;
+        Tue, 23 Jan 2024 10:20:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706034014; x=1706638814;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2Zl0o3sQ/xs4orleB37d3h482FB9X5KwzM20ctuXltg=;
+        b=h5fbu95zhjq0X2CfSzH+eDR7p5YahB2BS0wjamIAgVl25KdhdZBYfbaaBovoypGSbA
+         FolKjwenlDAdIeyE3S3y/5vuFUMOoSTOny43Sw20y50VkRdBypQ5ucMhVkV0RKvWOEbb
+         BJbeXGSgJ7Rl6RKpuLHJn2pt7UoOlWVWfu818xPgnku2eqlyOzy8ner18UbB2wPo5b0L
+         ICC2+ZhuztprKP381kWXVD2d1DNQavkL1hQETF2uZaE0vVImk6rp6Mchp/xYT/F7I5FO
+         jksc0ESyjn2yxKOSHBTQ+XBa7QIIL+mlFOBBW7P4KCyAuvh8I9XfkZPQkZex042Fwumo
+         ni+A==
+X-Gm-Message-State: AOJu0YwD0KPbYPFju6AN7SfrR6Rm7lbk3YPv01PameFYjRwZu+6zRe0W
+	ofUcteYwBsSktR5CjZf1neU9/XK1O6nn9Yb3XuTb6tzmQTzRgUHJ1HLjg4QzVzbdf4DlyYAN54W
+	lNgs6nqMkHuxXJ+1qbsoG7iV9CNU=
+X-Google-Smtp-Source: AGHT+IGhgSapfprq6NVIcYCrJDnvbl9cZpHCQ6hCgTamtUt7jUgtSWMMLG9xq8Tiv/kMT/LsxSZqCL6ZsZYhgHd826Y=
+X-Received: by 2002:a05:6870:7029:b0:210:d66c:7c27 with SMTP id
+ u41-20020a056870702900b00210d66c7c27mr163590oae.2.1706034013592; Tue, 23 Jan
+ 2024 10:20:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0gwe02uzAQoX0QDHo35OTEozpbnqC6vukjM3aE6HMq9WQ@mail.gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <20240123180818.3994-1-mario.limonciello@amd.com>
+In-Reply-To: <20240123180818.3994-1-mario.limonciello@amd.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 23 Jan 2024 19:20:01 +0100
+Message-ID: <CAJZ5v0gWuYUg55PGezhkzFaPK7S9qFw9xvd=SoetNBHtOzQxEA@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: amd: Add IRQF_ONESHOT to the interrupt request
+To: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Basavaraj Natikar <Basavaraj.Natikar@amd.com>, 
+	Shyam Sundar S K <Shyam-sundar.S-k@amd.com>, 
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, 
+	"open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
+	"Rafael J . Wysocki" <rafael@kernel.org>, Christian Heusel <christian@heusel.eu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 23, 2024 at 06:43:59PM +0100, Rafael J. Wysocki wrote:
-> On Tue, Jan 23, 2024 at 5:36 PM Russell King (Oracle)
-> <linux@armlinux.org.uk> wrote:
-> >
-> > On Tue, Jan 23, 2024 at 05:15:54PM +0100, Rafael J. Wysocki wrote:
-> > > On Tue, Jan 23, 2024 at 2:28 PM Russell King (Oracle)
-> > > <linux@armlinux.org.uk> wrote:
-> > > >
-> > > > On Mon, Jan 22, 2024 at 06:00:13PM +0000, Jonathan Cameron wrote:
-> > > > > On Mon, 18 Dec 2023 21:35:16 +0100
-> > > > > "Rafael J. Wysocki" <rafael@kernel.org> wrote:
-> > > > >
-> > > > > > On Wed, Dec 13, 2023 at 1:49 PM Russell King <rmk+kernel@armlinux.org.uk> wrote:
-> > > > > > >
-> > > > > > > From: James Morse <james.morse@arm.com>
-> > > > > > >
-> > > > > > > The code behind ACPI_HOTPLUG_CPU allows a not-present CPU to become
-> > > > > > > present.
-> > > > > >
-> > > > > > Right.
-> > > > > >
-> > > > > > > This isn't the only use of HOTPLUG_CPU. On arm64 and riscv
-> > > > > > > CPUs can be taken offline as a power saving measure.
-> > > > > >
-> > > > > > But still there is the case in which a non-present CPU can become
-> > > > > > present, isn't it there?
-> > > > >
-> > > > > Not yet defined by the architectures (and I'm assuming it probably never will be).
-> > > > >
-> > > > > The original proposal we took to ARM was to do exactly that - they pushed
-> > > > > back hard on the basis there was no architecturally safe way to implement it.
-> > > > > Too much of the ARM arch has to exist from the start of time.
-> > > > >
-> > > > > https://lore.kernel.org/linux-arm-kernel/cbaa6d68-6143-e010-5f3c-ec62f879ad95@arm.com/
-> > > > > is one of the relevant threads of the kernel side of that discussion.
-> > > > >
-> > > > > Not to put specific words into the ARM architects mouths, but the
-> > > > > short description is that there is currently no demand for working
-> > > > > out how to make physical CPU hotplug possible, as such they will not
-> > > > > provide an architecturally compliant way to do it for virtual CPU hotplug and
-> > > > > another means is needed (which is why this series doesn't use the present bit
-> > > > > for that purpose and we have the Online capable bit in MADT/GICC)
-> > > > >
-> > > > > It was a 'fun' dance of several years to get to that clarification.
-> > > > > As another fun fact, the same is defined for x86, but I don't think
-> > > > > anyone has used it yet (GICC for ARM has an online capable bit in the flags to
-> > > > > enable this, which was remarkably similar to the online capable bit in the
-> > > > > flags of the Local APIC entries as added fairly recently).
-> > > > >
-> > > > > >
-> > > > > > > On arm64 an offline CPU may be disabled by firmware, preventing it from
-> > > > > > > being brought back online, but it remains present throughout.
-> > > > > > >
-> > > > > > > Adding code to prevent user-space trying to online these disabled CPUs
-> > > > > > > needs some additional terminology.
-> > > > > > >
-> > > > > > > Rename the Kconfig symbol CONFIG_ACPI_HOTPLUG_PRESENT_CPU to reflect
-> > > > > > > that it makes possible CPUs present.
-> > > > > >
-> > > > > > Honestly, I don't think that this change is necessary or even useful.
-> > > > >
-> > > > > Whilst it's an attempt to avoid future confusion, the rename is
-> > > > > not something I really care about so my advice to Russell is drop
-> > > > > it unless you are attached to it!
-> > > >
-> > > > While I agree that it isn't a necessity, I don't fully agree that it
-> > > > isn't useful.
-> > > >
-> > > > One of the issues will be that while Arm64 will support hotplug vCPU,
-> > > > it won't be setting ACPI_HOTPLUG_CPU because it doesn't support
-> > > > the present bit changing. So I can see why James decided to rename
-> > > > it - because with Arm64's hotplug vCPU, the idea that ACPI_HOTPLUG_CPU
-> > > > somehow enables hotplug CPU support is now no longer true.
-> > > >
-> > > > Keeping it as ACPI_HOTPLUG_CPU makes the code less obvious, because it
-> > > > leads one to assume that it ought to be enabled for Arm64's
-> > > > implementatinon, and that could well cause issues in the future if
-> > > > people make the assumption that "ACPI_HOTPLUG_CPU" means hotplug CPU
-> > > > is supported in ACPI. It doesn't anymore.
-> > >
-> > > On x86 there is no confusion AFAICS.  It's always meant "as long as
-> > > the platform supports it".
-> >
-> > That's x86, which supports physical CPU hotplug. We're introducing
-> > support for Arm64 here which doesn't support physical CPU hotplug.
-> >
-> >                                                 ACPI-based      Physical        Virtual
-> > Arch    HOTPLUG_CPU     ACPI_HOTPLUG_CPU        Hotplug         Hotplug         Hotplug
-> > Arm64   Y               N                       Y               N               Y
-> > x86     Y               Y                       Y               Y               Y
-> >
-> > So ACPI_HOTPLUG_CPU becomes totally misnamed with the introduction
-> > of hotplug on Arm64.
-> >
-> > If we want to just look at stuff from an x86 perspective, then yes,
-> > it remains correct to call it ACPI_HOTPLUG_CPU. It isn't correct as
-> > soon as we add Arm64, as I already said.
-> 
-> And if you rename it, it becomes less confusing for ARM64, but more
-> confusing for x86, which basically is my point.
-> 
-> IMO "hotplug" covers both cases well enough and "hotplug present" is
-> only accurate for one of them.
-> 
-> > And honestly, a two line quip to my reasoned argument is not IMHO
-> > an acceptable reply.
-> 
-> Well, I'm not even sure how to respond to this ...
+On Tue, Jan 23, 2024 at 7:08=E2=80=AFPM Mario Limonciello
+<mario.limonciello@amd.com> wrote:
+>
+> On some systems the interrupt is shared between GPIO controller
+> and ACPI SCI. When the interrupt is shared with the ACPI SCI the
+> flags need to be identical.
+>
+> This should fix the GPIO controller failing to work after commit
+> 7a36b901a6eb ("ACPI: OSL: Use a threaded interrupt handler for SCI").
+> ```
+> [    0.417335] genirq: Flags mismatch irq 9. 00000088 (pinctrl_amd) vs. 0=
+0002080 (acpi)
+> [    0.420073] amd_gpio: probe of AMDI0030:00 failed with error -16
+> ```
+>
+> Cc: Rafael J. Wysocki <rafael@kernel.org>
+> Reported-by: Christian Heusel <christian@heusel.eu>
+> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=3D218407
+> Fixes: 7a36b901a6eb ("ACPI: OSL: Use a threaded interrupt handler for SCI=
+")
+> Link: https://lore.kernel.org/linux-acpi/CAJZ5v0iRqUXeuKmC_+dAJtDBLWQ3x15=
+n4gRH48y7MEaLoXF+UA@mail.gmail.com/T/#mc5506014141b61e472b24e095889535a0445=
+8083
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
 
-The above explanation you give would have been useful...
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 
-I don't see how "hotplug" covers both cases. As I've tried to point
-out many times now, ACPI_HOTPLUG_CPU is N for Arm64, yet it supports
-ACPI based hotplug. How does ACPI_HOTPLUG_CPU cover Arm64 if it's
-N there? IMHO it totally doesn't, and moreover, it goes against what
-one would logically expect - and this is why I have a problem with
-your effective NAK for this change. I believe you are basically
-wrong on this for the reasons I've given - that ACPI_HOTPLUG_CPU
-will be N for Arm64 despite it supporting ACPI-based CPU hotplug.
+> ---
+>  drivers/pinctrl/pinctrl-amd.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/pinctrl/pinctrl-amd.c b/drivers/pinctrl/pinctrl-amd.=
+c
+> index ca4a247c2cd1..6a33b584976c 100644
+> --- a/drivers/pinctrl/pinctrl-amd.c
+> +++ b/drivers/pinctrl/pinctrl-amd.c
+> @@ -1162,7 +1162,7 @@ static int amd_gpio_probe(struct platform_device *p=
+dev)
+>         }
+>
+>         ret =3D devm_request_irq(&pdev->dev, gpio_dev->irq, amd_gpio_irq_=
+handler,
+> -                              IRQF_SHARED, KBUILD_MODNAME, gpio_dev);
+> +                              IRQF_SHARED | IRQF_ONESHOT, KBUILD_MODNAME=
+, gpio_dev);
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Or if adding IRQF_ONESHOT here is not acceptable, IRQF_PROBE_SHARED
+can be used too.
+
+>         if (ret)
+>                 goto out2;
+>
+> --
 
