@@ -1,125 +1,135 @@
-Return-Path: <linux-kernel+bounces-35918-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35925-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A462D8398CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:56:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 209888398DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:58:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AFE6F1C20B6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:56:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99D34B2A5D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:57:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C30886AC9;
-	Tue, 23 Jan 2024 18:49:18 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E1328613A;
-	Tue, 23 Jan 2024 18:49:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A4A7130E56;
+	Tue, 23 Jan 2024 18:49:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Xl69Zkpn"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 909E51272A6;
+	Tue, 23 Jan 2024 18:49:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706035757; cv=none; b=Mdf3PVeBBPRID2OH3Uv20ooLJ/DHCAgXZfZMVydW/yQwI/Tgl7beSYDb+288ne1tYbfBbhgkPrK8otG8kAWliyzpe8by2cHLhVYJGUtf8cKW5xmXJe+aMtz2Qlg3f4gY984PNym9uGhAs2kfTR5cM4q5Hr/9CXM3Uch+9emuqYw=
+	t=1706035763; cv=none; b=Ojm4McnLaspaIRH2bvgzWJGaw5Yu8aYt4lx4GUhHwJ9qsS1lDtRxVfV+Rs8iyCBxepU5PO3H83vIfdDwhlWMCMfMpyESGDaol5h/pbve5WuUAOiHvKRwRCG6yHs8mvkPYLRAmR0bLXYAR0sE/S7+vWMDGXYoRuBngEMX9PBwf1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706035757; c=relaxed/simple;
-	bh=77rf7zCSV26/dXTTGnsJlMJepVbnzdJ7eIMFaK/mcxY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=udQa+Q+54587vimYOalMTu8r68W6Q7jZ5O43Pnhqg7uzbc2gMW9ENQ/D4AC9936rZUO/JSgsst4hZnZZcMnLskuW7/mZA8U/ibe+hP73RYTcr5ri1SzMRXR2uYkAA0oP8YEtFflUneBadr4YSifVGn9cwetBJf+ntbgyE7Fb5E8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E76361FB;
-	Tue, 23 Jan 2024 10:49:59 -0800 (PST)
-Received: from pluto (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 653FD3F762;
-	Tue, 23 Jan 2024 10:49:13 -0800 (PST)
-Date: Tue, 23 Jan 2024 18:49:10 +0000
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: sudeep.holla@arm.com, jdelvare@suse.com, linux@roeck-us.net,
-	linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH V2] hwmon: scmi-hwmon: implement change_mode
-Message-ID: <ZbAKErJmyQY9mXMO@pluto>
-References: <20240123150526.3615901-1-peng.fan@oss.nxp.com>
+	s=arc-20240116; t=1706035763; c=relaxed/simple;
+	bh=f/UXk3eI7pPhv+84zVpn7DvL036hr2DZiqaA2LJq1JA=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=DRuuN4uAcSqLnp8xssJMgI/+ThgXipj9dA3x0E7QwUULNS8lw+C1rZ1ywdQlWuRSw+Xx1haPI+N5QON0TG3AcFHKBycW2YGCYquBgMW5Y5v9AaLhp3p5udvv7BECJQnXTann+2WVoOdTTVzvxr7e8O6qk6Dcdm0UupGWpgikFrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Xl69Zkpn; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40NInGiT090417;
+	Tue, 23 Jan 2024 12:49:16 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706035756;
+	bh=oHsVY77qQExvuwdv7UgIqo4ENzNkLIJgkSQvJCRvaBk=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=Xl69Zkpn8V9d1dgjiESsQzcssT0WVGC0ps2ooI3ARJ/VhfWv7TMpTq1d2Ovn/Pn4i
+	 v2HrnwAu0HlFTZD4RgZiMqO9jZPK9oMuZCYHr0UvpDhUM+gTF8ufWtt8VgWu4+JOVz
+	 lPyFxCJe+HHlHX83I1AAZfg0PAu5yF9g6ghCG390=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40NInFxM128537
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 23 Jan 2024 12:49:16 -0600
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 23
+ Jan 2024 12:49:15 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 23 Jan 2024 12:49:15 -0600
+Received: from lelvsmtp6.itg.ti.com ([10.249.42.149])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40NInEnM066395;
+	Tue, 23 Jan 2024 12:49:15 -0600
+From: Andrew Davis <afd@ti.com>
+To: Jai Luthra <j-luthra@ti.com>, Hari Nagalla <hnagalla@ti.com>,
+        Bjorn
+ Andersson <andersson@kernel.org>,
+        Mathieu Poirier
+	<mathieu.poirier@linaro.org>
+CC: <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Andrew
+ Davis <afd@ti.com>
+Subject: [PATCH 5/8] remoteproc: k3-dsp: Use devm_kzalloc() helper
+Date: Tue, 23 Jan 2024 12:49:10 -0600
+Message-ID: <20240123184913.725435-5-afd@ti.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240123184913.725435-1-afd@ti.com>
+References: <20240123184913.725435-1-afd@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240123150526.3615901-1-peng.fan@oss.nxp.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Tue, Jan 23, 2024 at 11:05:26PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> The sensor maybe disabled before kernel boot, so add change_mode
-> to support configuring the sensor to enabled state.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
+Use device lifecycle managed devm_kzalloc() helper function. This helps
+prevent mistakes like freeing out of order in cleanup functions and
+forgetting to free on all error paths.
 
-In general LGTM.
-It would be better clearly explaining in the commit message that this
-change is around HWMON thermal zones and also add a comment down below
-to justify why we have decided to clear out those config bits.
+Signed-off-by: Andrew Davis <afd@ti.com>
+---
+ drivers/remoteproc/ti_k3_dsp_remoteproc.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-> 
-> V2:
->  Use SCMI_SENS_CFG_IS_ENABLED & clear BIT[31:9] before update config(Thanks Cristian)
-> 
->  drivers/hwmon/scmi-hwmon.c | 32 ++++++++++++++++++++++++++++++++
->  1 file changed, 32 insertions(+)
-> 
-> diff --git a/drivers/hwmon/scmi-hwmon.c b/drivers/hwmon/scmi-hwmon.c
-> index 364199b332c0..913acd1b137b 100644
-> --- a/drivers/hwmon/scmi-hwmon.c
-> +++ b/drivers/hwmon/scmi-hwmon.c
-> @@ -151,7 +151,39 @@ static int scmi_hwmon_thermal_get_temp(struct thermal_zone_device *tz,
->  	return ret;
->  }
->  
-> +static int scmi_hwmon_thermal_change_mode(struct thermal_zone_device *tz,
-> +					  enum thermal_device_mode new_mode)
-> +{
-> +	int ret;
-> +	u32 config;
-> +	enum thermal_device_mode cur_mode = THERMAL_DEVICE_DISABLED;
-> +	struct scmi_thermal_sensor *th_sensor = thermal_zone_device_priv(tz);
-> +
-> +	ret = sensor_ops->config_get(th_sensor->ph, th_sensor->info->id,
-> +				     &config);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (SCMI_SENS_CFG_IS_ENABLED(config))
-> +		cur_mode = THERMAL_DEVICE_ENABLED;
-> +
-> +	if (cur_mode == new_mode)
-> +		return 0;
-> +
+diff --git a/drivers/remoteproc/ti_k3_dsp_remoteproc.c b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
+index 0240340a83e90..2aac25d013985 100644
+--- a/drivers/remoteproc/ti_k3_dsp_remoteproc.c
++++ b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
+@@ -659,7 +659,7 @@ struct ti_sci_proc *k3_dsp_rproc_of_get_tsp(struct device *dev,
+ 	if (ret < 0)
+ 		return ERR_PTR(ret);
+ 
+-	tsp = kzalloc(sizeof(*tsp), GFP_KERNEL);
++	tsp = devm_kzalloc(dev, sizeof(*tsp), GFP_KERNEL);
+ 	if (!tsp)
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -729,7 +729,7 @@ static int k3_dsp_rproc_probe(struct platform_device *pdev)
+ 	ret = ti_sci_proc_request(kproc->tsp);
+ 	if (ret < 0) {
+ 		dev_err_probe(dev, ret, "ti_sci_proc_request failed\n");
+-		goto free_tsp;
++		return ret;
+ 	}
+ 
+ 	ret = k3_dsp_rproc_of_get_memories(pdev, kproc);
+@@ -796,8 +796,6 @@ static int k3_dsp_rproc_probe(struct platform_device *pdev)
+ 	ret1 = ti_sci_proc_release(kproc->tsp);
+ 	if (ret1)
+ 		dev_err(dev, "failed to release proc (%pe)\n", ERR_PTR(ret1));
+-free_tsp:
+-	kfree(kproc->tsp);
+ 	return ret;
+ }
+ 
+@@ -823,8 +821,6 @@ static void k3_dsp_rproc_remove(struct platform_device *pdev)
+ 	if (ret)
+ 		dev_err(dev, "failed to release proc (%pe)\n", ERR_PTR(ret));
+ 
+-	kfree(kproc->tsp);
+-
+ 	k3_dsp_reserved_mem_exit(kproc);
+ }
+ 
+-- 
+2.39.2
 
-This config bits_clearing is worth an explanation in a comment (like we
-did in the mail thread...)
-
-> +	config &= ~(SCMI_SENS_CFG_UPDATE_SECS_MASK |
-> +		    SCMI_SENS_CFG_UPDATE_EXP_MASK |
-> +		    SCMI_SENS_CFG_ROUND_MASK);
-> +	if (new_mode == THERMAL_DEVICE_ENABLED)
-> +		config |= SCMI_SENS_CFG_SENSOR_ENABLED_MASK;
-> +	else
-> +		config &= ~SCMI_SENS_CFG_SENSOR_ENABLED_MASK;
-> +
-> +	return sensor_ops->config_set(th_sensor->ph, th_sensor->info->id,
-> +				      config);
-> +}
-> +
-
-Other than this,
-
-Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
-
-Thanks,
-Cristian
 
