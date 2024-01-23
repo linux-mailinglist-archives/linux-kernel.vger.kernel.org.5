@@ -1,195 +1,229 @@
-Return-Path: <linux-kernel+bounces-34814-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E9DF8387D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:13:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0559A8387D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:14:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2B981F2519F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:13:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF0E11F257C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:14:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9282F51C54;
-	Tue, 23 Jan 2024 07:13:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 599B252F85;
+	Tue, 23 Jan 2024 07:13:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="N65QHdAN"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="Ltm810LO"
+Received: from EUR03-VI1-obe.outbound.protection.outlook.com (mail-vi1eur03on2061.outbound.protection.outlook.com [40.107.103.61])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 377C551034
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:13:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705994016; cv=none; b=N0drRtJKaMoIgRidzm/02BcaynPFm/pWdU36lOfUa1i7XI+zhJa3QNA3bmk7zkj25mIR711oOh8IviCbFqHe7xqSAzAsElU1M9mBX2aUIbJHy5UBQpet0ul8TnPO97SAmm/2hXVjYss6AUEMywuigujJn8B1f7aLWihFU4PcnK4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705994016; c=relaxed/simple;
-	bh=V9MrJ3xkqEmgfOldwHpgezsCJyTx9RPzrV6ws6QWYKQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i/c1ezYksA0MPVbRlSuoZlCR0et7BiL9wlKHQjuyrddWBggy3MIj02q1ZH/a4thq011cXKPFJT5Kk0Mk0+n4rKPnztodp3s9Y5OCBZKaa5ZRGCY6KSYt5HUSIGIf/Z7FHyNmkr0+GcNq36/pQxTGlISEf11B6eoHosqyv/4GnKo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=N65QHdAN; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a308e6824ccso117892166b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 23:13:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1705994013; x=1706598813; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=k70FL9z5OR2fcCPzPC1Tv4cFtZ4jvd++KS4IHYlFyBc=;
-        b=N65QHdANN1T5BoOmG+C880NQ81UYwT6swtOkN9PdCruWf8LQOy8eR5zTFpm4Bg/+mD
-         iyq1H7l/s4xvWWC/Hg+eRBxvIESq0mRKJo6lrHO7XrMLxWooQGMmOpwg/O3VvEjEcqnC
-         w1sLL5sMSpsb9/1tZzCDdp401d8ZpVQSmCGx7HQoDfXM1oy7t6fU/YEXPShmQZdc1OIr
-         nX0ZZHtd2/375w90zoQ0BCBEXAmIW9k4E5lCG2EAvZ5wTe7SYO8YINnG3i73L7f25kTZ
-         nXEYpV8TVgHEQqtaCoMLH9oJKVXL7uvHsRHurgTnXZVrWwj2ttqRw3ADHxo1QrS2sTjZ
-         ED7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705994013; x=1706598813;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=k70FL9z5OR2fcCPzPC1Tv4cFtZ4jvd++KS4IHYlFyBc=;
-        b=U8LQccnmtHFXVIorQvwfFqk6bIxw20vbJ+E5TStLn+TIUw+k3xErZ1H0LjhM3eexMr
-         MkqecIM00Bc/sqJvAgJ5iat2q0/vya2Qf/y/kdpRZTLk/K0MchXZYuQdcfnGfz0LBnp6
-         hRf083SfCspX7joV03MZzP0u8S0F0mIWuU4b3cBaAHfzSG8X3YmFy+LI5d25a0QtVFJd
-         DkLNDnl+6EdjzFpzYdcvJq8yhwxoUDeT37lHVE0MZFaLFIWzJwxtd1Zdph2v9XeCCaS7
-         f3MxgRfT+P/qGLI7OCUQUzqi1i9ZYjIHkQ7mtBIuXU9j0mJ99Q474uZwilTV3OBOatig
-         loYw==
-X-Gm-Message-State: AOJu0Yy4+Bx+wxJAawWoR3gmNJ4afbQL5rPhmUSLQ6cUpPe/V4ILiUmN
-	04bbQ4dJfVHg5ih8ls4fLHvYzVVoGldGm8dIBZUQRZBMmLBfmlvif3JelCL9HVY=
-X-Google-Smtp-Source: AGHT+IHSXfOQRrPeQb4qJFA6qTNr1G8f/qLCQBmHmU06J6jI0GUc4NZLGk3u4skG3IGwVbiJHRVB7A==
-X-Received: by 2002:a17:906:bf42:b0:a30:b616:caac with SMTP id ps2-20020a170906bf4200b00a30b616caacmr265146ejb.41.1705994013419;
-        Mon, 22 Jan 2024 23:13:33 -0800 (PST)
-Received: from [192.168.50.4] ([82.78.167.135])
-        by smtp.gmail.com with ESMTPSA id hw15-20020a170907a0cf00b00a2ed5d9ea19sm7011693ejc.190.2024.01.22.23.13.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 23:13:33 -0800 (PST)
-Message-ID: <2af40ace-2779-45a0-a244-e7e9e5cc510c@tuxon.dev>
-Date: Tue, 23 Jan 2024 09:13:30 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6909C524D3;
+	Tue, 23 Jan 2024 07:13:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.103.61
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705994021; cv=fail; b=qfRnqrUfVzGDoV5ksut5CYL6VFNq7Fk2u3zJxtsiYweniQX1K/8DN1Lds416IRZsRcgEhiq61ZsWDhe85JkqPIilbacDTQzN7VKvVJFBcmpg1p6muqtDCfhS+gDsGDjApPwbmU4Wxl76Z39K1pWw14ni/KoSsiL6HxZjDRq0LnA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705994021; c=relaxed/simple;
+	bh=qBKKKqfpKPVWQq36kb42i6GvNrdjoJRG2p7b7ua8YUg=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=jSIrtZRHKULvg0CKF30/qhCA27hcTgwTEEvrInV8OnzbvljB8/4PCtWgNBOVx0xMcIEh5aYMMSjJiCWQb7raMxkEg1Jx5eN/MRsvychGtQwsZDt3YuB8t/lZ80RGsQxzPgs3zNOeLVMD2pkm0m8Yfbs8XZwXaohh55H5lpVjxqk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=Ltm810LO; arc=fail smtp.client-ip=40.107.103.61
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nNL8xmlQnN50N7nPoGVGjT4jvQZ6P/3aWDP/Lg7zRM4QCSIlMG2cUhwtbraAaSo3t7VhUcw6O8ZkylFnIP+mRzIvHM9YVBlryVdIktDTkqx8Trs4pIsLxhXAL3l9mA993sRnSDRUk83TN8J9tWiHINONJ0bt2cYS2VIIHVnsbJLQoy+og5kSujER+rUCPFo6GGDUry05h7KydUmO2sQzRINMCrMZxax5PzcuQ+VpNe5t/rg3iKVW10UNxkrCnT2/JM3FTGxGuUGlduANbUhhn8GWdm0iGaKXyxcFdY30jKVJEelru8OI1x45S6nYXc11ilJrdaiy8qbstyq5TApWlA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sijmh89hWHRcgL+TAxjFtVemMjw0lVIZpbxXk6Vzw5Y=;
+ b=lGEwQZbR2UOGGn7qtzg90z1nzr7p23Pxgxr4c0P/iyKMhhj754b8bFcK3nUQAYR839ixJHFtfG5PaKPk9RhUV9gufaWfY1a39NfZWzd/3Gz2hqJMe6Pm394Y8sgioBsiS5BqObc3gJKvgkl0uJA7lZ9evbekFFlCsD8BiPZcxo3w0x4Lpuz6PJEHrSMgN6KkkqIBd3VwvX2JVoj4Atk9/T7LGehxJXh2V8WHQhxzPVm/7JbEU4WAYrveOrqIs9lSZJ0mkNHLdvVjPP9QOrdjLqP0nmssfddilJ8fYd+H3PJPl8tw7efuvBnxnk4SaYMzC8kGmD2aGlYFNMkTuVx+kA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sijmh89hWHRcgL+TAxjFtVemMjw0lVIZpbxXk6Vzw5Y=;
+ b=Ltm810LOXeXOp0ABlLEFz3PeKVXoww/B8ncVyaPdq8XQrH6Pk4YjULJkpfmMl2fHnXSosa5BXAGwrd8FKST1BkmmKApDOzU0gF7nGIWhaBkekPMtoA+7PX50IY9eVh0uRg5zUztV1RuadgTOR/eCH+dkn/XSvbvtdktDuZs80aQ=
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by AM9PR04MB8633.eurprd04.prod.outlook.com (2603:10a6:20b:43c::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.36; Tue, 23 Jan
+ 2024 07:13:36 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::c499:8cef:9bb1:ced6]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::c499:8cef:9bb1:ced6%3]) with mapi id 15.20.7202.031; Tue, 23 Jan 2024
+ 07:13:36 +0000
+From: Peng Fan <peng.fan@nxp.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+CC: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, Jassi Brar
+	<jassisinghbrar@gmail.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+	<conor+dt@kernel.org>, Aisheng Dong <aisheng.dong@nxp.com>, Shawn Guo
+	<shawnguo@kernel.org>, Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio
+ Estevam <festevam@gmail.com>, dl-linux-imx <linux-imx@nxp.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [PATCH v2 2/3] mailbox: imx: get RR/TR registers num from
+ Parameter register
+Thread-Topic: [PATCH v2 2/3] mailbox: imx: get RR/TR registers num from
+ Parameter register
+Thread-Index: AQHaTPpbp7xyUI3B60Gv2ce5VFbv/7DliccAgAEWP0CAAFxVgIAAAGvw
+Date: Tue, 23 Jan 2024 07:13:36 +0000
+Message-ID:
+ <DU0PR04MB94173EEDEE5896D6B9C549F788742@DU0PR04MB9417.eurprd04.prod.outlook.com>
+References: <20240122-imx-mailbox-v2-0-7b3c80333b92@nxp.com>
+ <20240122-imx-mailbox-v2-2-7b3c80333b92@nxp.com>
+ <20240122090330.GR4700@pengutronix.de>
+ <DU0PR04MB9417852AC47FA4BCFB38560F88742@DU0PR04MB9417.eurprd04.prod.outlook.com>
+ <20240123070951.GA93665@pengutronix.de>
+In-Reply-To: <20240123070951.GA93665@pengutronix.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|AM9PR04MB8633:EE_
+x-ms-office365-filtering-correlation-id: 12ac7092-ef58-4433-aaca-08dc1be2d109
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ tn8h1L5rRVUQBG68sKnif2m6kGYL58y2X04PVxeAMkknbJTtkNCctCSlV183CviG6KmMldEaxi9dZ4fYvYvHToZKMGgqxS8fS5mLrqjxc6CQ0R6vanvApMzHW7w7jSuZXdzybh68+Az5S1/iHu/HLCOMFe6cAVoFHpxQCXMQAOo/4Fxh2Kc52nvivwAvOnNSjQTq/uWWyGdffOlVQIMMfotzWw3OfXrrkkgjh5d+3ACQEXAW+ynvS1E+7QY3c69e/3FlRIhuNLMMAH+/+ixjCgn2czONCb8dIp+HbItgxo8TShkd4ynEEa2oAinyC5jMj3fy7Y7UkthM9XW4kVHj19MIYE8auTEcMZJJAZvFcNcsZcGN3aBR9NXxDAAYcOlYx+EWLggOo921jVYs4gcQHdQMx9u+D3Cyz02FM6kK/OfK0kEGgqC0H6BO6n6nhQnZhznJzruk/QQ7uw3xyOtG99ujFJudw1mkHzdHl/7fZoQdhZ09hhrZhcWM3He1+xW9wi9T5MMAe3M/awELiAlbbe4MJWY3Qm7xMjY+ErwK59rotf2jSgYZxWxjclqwSoulzxMv/uIcCRhFM9LByaR5K67eWTlFt4BH5a8OU/pS7AGaZNS8pREdse6PJiHLaEnC+kLHO9ZFaMiSH3jkakrt4Q==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(136003)(376002)(346002)(396003)(230273577357003)(230922051799003)(230173577357003)(64100799003)(451199024)(1800799012)(186009)(44832011)(71200400001)(122000001)(7416002)(5660300002)(15650500001)(8936002)(8676002)(4326008)(52536014)(7696005)(478600001)(966005)(9686003)(6506007)(26005)(76116006)(66476007)(6916009)(66946007)(54906003)(66446008)(64756008)(66556008)(55016003)(38100700002)(316002)(83380400001)(86362001)(2906002)(45080400002)(33656002)(41300700001)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?NkHqJD+DFlmTjGaYT5fkjtwwWb0jHRyRqVJHE4bEUHc0Y2h4lyEZtMEhpXAU?=
+ =?us-ascii?Q?u40zftf9vca6+TxSZhGkXAg6fKnWjZJNcNBU3I9IwRwHMitHWxhFq3R4ZmTb?=
+ =?us-ascii?Q?AhEFVGKhw6yZR7x5ykGv88YkhcIs3vqruYUXhNR8C2RG+36K/fB1MF7SqhvJ?=
+ =?us-ascii?Q?lWNhbWuEvnwcE4zG2iPkggf8DgraqG86uui5tPA8M7QJ2xvmqomhxwtvWWda?=
+ =?us-ascii?Q?RkP7F285v7XC0lHVQu/p4d58xTcnc1aCKNyIyOhLYNDIwJHUzR3FU25xPeIH?=
+ =?us-ascii?Q?duBVVmoWRSxbuuYF09seZuCvQCd/d1YjfzPWcBndCRo0Ah/zXZFiictyj8sl?=
+ =?us-ascii?Q?wrUSKbb63cQxibeIkQpVd/vjRg5P7/hedoqAuWdy0rtTx1dJTpNaaNU3H/Vh?=
+ =?us-ascii?Q?Axt3XYRZVSRFdfyPS3StBJTwX/K3wepkhiD6bRygjTteY+YzcJ3iWXpP8tXa?=
+ =?us-ascii?Q?2/yjdWZ/jIoTbiz1p+V7lxn9EOsfvLDGemoYUjaBR1YOqbRi7tex2OBpcLeX?=
+ =?us-ascii?Q?/9FkHNImqPPlRD1ONwhBTMcv4ZKEYtBJkOdM4yjnZqOy9cjJD1JW73/5dg2K?=
+ =?us-ascii?Q?+Bcj/ufdQO1s2nLNMYF3H1+NRymbvSAZW7IF8qqPWC7ClHaFewIAXGf7QCAw?=
+ =?us-ascii?Q?zP+D6kTX5lsXJvsqNjZ7cmPjTe1aTpt6yWUt/s1mXEhQzK/rPTf2FelKq5r3?=
+ =?us-ascii?Q?q6ICpQ7LOhrd6fN9XgLW5woHl6V2SbmI4mn0a9MtiU0bDnpTr7VmQcZwT9cB?=
+ =?us-ascii?Q?jd+MIEhK8gwhSi7TuNRep8+WzwqD+AD44i5IjdLqFSiuaTFZqzNQmw+XInve?=
+ =?us-ascii?Q?KJDRaagi3BLWsnYgVvagkyTMi9WkUbnKVaydKyf21ifCwExd74Fj0+UjCP3x?=
+ =?us-ascii?Q?9TSD4HC56Cppq4lXXix1RPPwOe8xhucXRyUFRC0OQ/f+eIlQVKL52peBC5Ya?=
+ =?us-ascii?Q?2alnBm/j7MBr40aYKN0VgvIEw/jOegKcNmCaRrPPmQ6szN136/XaxW0y7lJ3?=
+ =?us-ascii?Q?Cn00yzi+lf4H/WrYFiphTNoqBb1/LbF+BFaLYcV6C2Kkfr/FsZ0mkPsc8oCJ?=
+ =?us-ascii?Q?SBaiB/4NywNbRt2Vwya3srjUPe8gr4OEIDQiNrbj54kQMaioxRG4XP9/o2T0?=
+ =?us-ascii?Q?9xekNi622x/23OcUpJLubmG8RpUcY/wvYjqi4Bd73PyEiEpSLEwutMYW6W9f?=
+ =?us-ascii?Q?qA7FbBWlvd5u9ZB2QUt24rLJwprk4NbspQvupawyuA1Kyu4Mh1Ds2+UpW88R?=
+ =?us-ascii?Q?eC1cFzovHSTFhKFr/LGleraDtkrMLaaWRLwng1xBkNSx6FxaMjDIt2i5cjF0?=
+ =?us-ascii?Q?Xjbus8sqgFM4NLR6mIBo7jfwpO89RhyLjCWuLncwdlB55+v6SjRzAbFmBtoQ?=
+ =?us-ascii?Q?Du/YO4urvbkkHFrjyAwhJ7wiWm/4yZ5ZPYjwrxpgCicbQTKssaXJbYESWtHH?=
+ =?us-ascii?Q?amZ0CHB/ves3XCI+GWIURKyAQnORKTfckBR+edX71EEUj7AM2fXJfFyc3reH?=
+ =?us-ascii?Q?XGVg5sOmLQbiH5avXGVPQ+IB/3HcNIwD5cOVbkvhkOfe/T1UDjtKih9XmCzt?=
+ =?us-ascii?Q?d2Zn7wd6U0ZDBdQq49k=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 07/10] watchdog: rzg2l_wdt: Add suspend/resume support
-Content-Language: en-US
-To: Guenter Roeck <linux@roeck-us.net>, wim@linux-watchdog.org,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- geert+renesas@glider.be, magnus.damm@gmail.com, mturquette@baylibre.com,
- sboyd@kernel.org, p.zabel@pengutronix.de, biju.das.jz@bp.renesas.com
-Cc: linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-clk@vger.kernel.org, Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20240122111115.2861835-1-claudiu.beznea.uj@bp.renesas.com>
- <20240122111115.2861835-8-claudiu.beznea.uj@bp.renesas.com>
- <a5a807c1-76ef-4cf7-a2cf-bc432c420ded@roeck-us.net>
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <a5a807c1-76ef-4cf7-a2cf-bc432c420ded@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 12ac7092-ef58-4433-aaca-08dc1be2d109
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jan 2024 07:13:36.2956
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ZUTLFk/TQ53cQOVcOKTBE/jpusdj3SHgaEMFQn42ysd2FrjRDX6ZQgmGBnhCCzbyYOtxCcsh8goxWqXuB1lp4g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8633
 
+> Subject: Re: [PATCH v2 2/3] mailbox: imx: get RR/TR registers num from
+> Parameter register
+>
+> On Tue, Jan 23, 2024 at 01:42:03AM +0000, Peng Fan wrote:
+> > Hi Sascha,
+> >
+> > > Subject: Re: [PATCH v2 2/3] mailbox: imx: get RR/TR registers num
+> > > from Parameter register
+> > >
+> > > Hi Peng,
+> >
+> > [snip]
+> > >
+> > > >  };
+> > > >
+> > > >  enum imx_mu_type {
+> > > > @@ -264,18 +267,17 @@ static int imx_mu_generic_rxdb(struct
+> > > > imx_mu_priv *priv,  static int imx_mu_specific_tx(struct
+> > > > imx_mu_priv *priv, struct imx_mu_con_priv *cp, void *data)  {
+> > > >     u32 *arg =3D data;
+> > > > +   u32 num_tr =3D priv->num_tr;
+> > > >     int i, ret;
+> > > >     u32 xsr;
+> > > > -   u32 size, max_size, num_tr;
+> > > > +   u32 size, max_size;
+> > > >
+> > > >     if (priv->dcfg->type & IMX_MU_V2_S4) {
+> > > >             size =3D ((struct imx_s4_rpc_msg_max *)data)->hdr.size;
+> > > >             max_size =3D sizeof(struct imx_s4_rpc_msg_max);
+> > > > -           num_tr =3D 8;
+> > >
+> > > This change looks unexpected here. num_tr used to be 8 here and now
+> > > becomes 4 at maximum. Was this a bug? If yes, this deserves a
+> > > separate patch with an explanation what was wrong here.
+> >
+> > Sorry, I could not follow you here.
+> > The num_tr is switch to use priv->num_tr now. It is not changed to 4
+> > at maximum, it is just use priv->num_tr to avoid hardcoding it to 8.
+> > As of now, all platforms has IMX_MU_V2_S4 are using 8, and the
+> > hardware register num is 8, except i.MX95 V2X MU using 4.
+>
+> I was confused by the warning you introduced:
+>
+> > > > +   if (priv->num_rr > 4 || priv->num_tr > 4) {
+> > > > +           WARN_ONCE(true, "%s not support TR/RR larger than
+> > > > + 4\n",
+> > > __func__);
+> > > > +           return;
+> > > > +   }
+>
+> It will trigger when priv->num_tr is read as 8, so I assumed it is 4 at m=
+aximum.
+> Indeed just the check is wrong and you might haven't notice the warning
+> during testing.
 
+For now, we not have platform use generic MU with TR/RR larger than 4, so
+just give a warning. I could follow your suggestion to return error in V2.
 
-On 22.01.2024 19:39, Guenter Roeck wrote:
-> On 1/22/24 03:11, Claudiu wrote:
->> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> The RZ/G3S supports deep sleep states where power to most of the IP blocks
->> is cut off. To ensure proper working of the watchdog when resuming from
->> such states, the suspend function is stopping the watchdog and the resume
->> function is starting it. There is no need to configure the watchdog
->> in case the watchdog was stopped prior to starting suspend.
->>
->> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->> ---
->>   drivers/watchdog/rzg2l_wdt.c | 26 ++++++++++++++++++++++++++
->>   1 file changed, 26 insertions(+)
->>
->> diff --git a/drivers/watchdog/rzg2l_wdt.c b/drivers/watchdog/rzg2l_wdt.c
->> index 9333dc1a75ab..186796b739f7 100644
->> --- a/drivers/watchdog/rzg2l_wdt.c
->> +++ b/drivers/watchdog/rzg2l_wdt.c
->> @@ -279,6 +279,7 @@ static int rzg2l_wdt_probe(struct platform_device *pdev)
->>       priv->wdev.timeout = WDT_DEFAULT_TIMEOUT;
->>         watchdog_set_drvdata(&priv->wdev, priv);
->> +    dev_set_drvdata(dev, priv);
->>       ret = devm_add_action_or_reset(&pdev->dev, rzg2l_wdt_pm_disable,
->> &priv->wdev);
->>       if (ret)
->>           return ret;
->> @@ -300,10 +301,35 @@ static const struct of_device_id rzg2l_wdt_ids[] = {
->>   };
->>   MODULE_DEVICE_TABLE(of, rzg2l_wdt_ids);
->>   +static int rzg2l_wdt_suspend_late(struct device *dev)
->> +{
->> +    struct rzg2l_wdt_priv *priv = dev_get_drvdata(dev);
->> +
->> +    if (!watchdog_active(&priv->wdev))
->> +        return 0;
->> +
->> +    return rzg2l_wdt_stop(&priv->wdev);
->> +}
->> +
->> +static int rzg2l_wdt_resume_early(struct device *dev)
->> +{
->> +    struct rzg2l_wdt_priv *priv = dev_get_drvdata(dev);
->> +
->> +    if (!watchdog_active(&priv->wdev))
->> +        return 0;
->> +
->> +    return rzg2l_wdt_start(&priv->wdev);
->> +}
->> +
->> +static const struct dev_pm_ops rzg2l_wdt_pm_ops = {
->> +    LATE_SYSTEM_SLEEP_PM_OPS(rzg2l_wdt_suspend_late,
->> rzg2l_wdt_resume_early)
->> +};
->> +
->>   static struct platform_driver rzg2l_wdt_driver = {
->>       .driver = {
->>           .name = "rzg2l_wdt",
->>           .of_match_table = rzg2l_wdt_ids,
->> +        .pm = pm_ptr(&rzg2l_wdt_pm_ops),
-> 
-> I think this will create a build error if CONFIG_PM=n because rzg2l_wdt_pm_ops
-> will be unused but is not marked with __maybe_unused.
+The reason for not supporting 8 here is it would introduce too much change,
+because of more channel numbers. So I leave it for future when there
+is real need.
 
-The necessity of __maybe_unused has been removed along with the
-introduction of LATE_SYSTEM_SLEEP_PM_OPS() and friends (and
-*SET_*LATE_SYSTEM_SLEEP_PM_OPS along with the other helpers were marked
-deprecated for that) and we can use pm_ptr() along with
-LATE_SYSTEM_SLEEP_PM_OPS() to avoid build errors you mentioned.
+Thanks,
+Peng.
 
-FYI, I just build the driver with CONFIG_PM=n and all good.
-
-> But then the driver
-> won't be
-> operational with CONFIG_PM=n, so I really wonder if it makes sense to
-> include any
-> such conditional code instead of making the driver depend on CONFIG_PM.
-
-That's true. The driver wouldn't work if the CONFIG_PM=n but then it
-depends on COMPILE_TEST which is exactly for this (just to compile test it
-for platforms that don't support it). I see many watchdog drivers depends
-on COMPILE_TEST.
-
-Give this, please let me know would you like me to proceed with it.
-
-Thank you,
-Claudiu Beznea
-
-> 
-> I really don't think it is desirable to suggest that the driver would work
-> with
-> CONFIG_PM=n if that isn't really true.
-> 
-> Guenter
-> 
->>       },
->>       .probe = rzg2l_wdt_probe,
->>   };
-> 
+>
+> Sascha
+>
+> --
+> Pengutronix e.K.                           |                             =
+|
+> Steuerwalder Str. 21                       |
+> http://www.p/
+> engutronix.de%2F&data=3D05%7C02%7Cpeng.fan%40nxp.com%7Cc0a6c1b5cd
+> 1d4c37940708dc1be25585%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0
+> %7C0%7C638415906104836756%7CUnknown%7CTWFpbGZsb3d8eyJWIjoi
+> MC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C30
+> 00%7C%7C%7C&sdata=3DyIw7NjXMamXh2IQNfLFU4EBblgYlRz1rYyh4nsSpHww
+> %3D&reserved=3D0  |
+> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    =
+|
+> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 =
+|
 
