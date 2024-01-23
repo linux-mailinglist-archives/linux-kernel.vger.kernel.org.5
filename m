@@ -1,120 +1,196 @@
-Return-Path: <linux-kernel+bounces-35199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F47D838D76
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:32:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45B72838D7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:33:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3EEC1B223FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:32:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 78C421C22199
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:33:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21D705D75A;
-	Tue, 23 Jan 2024 11:32:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50C0B5D8E6;
+	Tue, 23 Jan 2024 11:33:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aA88Lxg9"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="E35gdN8p"
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FA143D7B;
-	Tue, 23 Jan 2024 11:32:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01C9E5D747;
+	Tue, 23 Jan 2024 11:33:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706009553; cv=none; b=meR5CNHbefbDgyBE89cHXbwuD8QzG7et5A4Pw0pHC2EkQFqFEmNanB0XVnxKa6Z3WWaiuosffnB8rNrbmV8ADpwno3Y2yil67933ElhHqD8O0nMJokMFn6a+DXeST3RUpD/Y4ka9BV8rFpGbn3t3a0v4bT+FW9WiB9op9cjF1G0=
+	t=1706009584; cv=none; b=YF3cMeUQPuLQ5mRigg/LccwxlT5WpfzqCmOXjgh11zJ0BSoKC1EP+yoG7wqsxZU46fXu1V+wzr2Gc5S78Pk7Y39b6K+/eKgVTkC/OVGtJ089bi03m+bTXl6Ud8T39OtIW0BfEejdty754Ra+g/QW4ijGPab+1ZLxYpE1W1Kuf94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706009553; c=relaxed/simple;
-	bh=zouesPAIO0cDhcbx3mfu1OwAwsS4EMUtfV+8BsSAPX0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lQeOgsfRFrYaRsr72TOhTuZrNP+hRy2Z1ffe2AoiHrt5sbiPhsmC2vMCb6dokNS+EjuQksVWmvIymXfSjoAmiaeD/v9tyxjkYvLWb47+VbPw3YzvnaJ7Fy2/znCkp5XQwkPl9Hv5yCz10N0s3aSgTMt/Hthu0LFNW72Vwh1vRI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aA88Lxg9; arc=none smtp.client-ip=192.55.52.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706009551; x=1737545551;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=zouesPAIO0cDhcbx3mfu1OwAwsS4EMUtfV+8BsSAPX0=;
-  b=aA88Lxg9cfc65zl2DaBXmPZV1UDVOC84T2M51j69rV03jBu7J+itpMDL
-   VMk/RMi8gcigVNgZhfMovqAwhp+597aKvONOH9TOalH6Rpfo4v8dLjOhS
-   b/sEtsigpA13wZwudcxDYCmeaLsEqK3c0doGkcT+NDbbMZg4j+XVCsm8L
-   FtuyaeTYdqb51c1i8Of73qbMdxbcabFebUyYR+dVke0jqSsMb9aW95uZi
-   vyUpL8PyOAjowMyJniIQKg0dPkxHogxaKkh2o/HmkajOG/6WNaNt/Hfzo
-   hLwXn/K/D+ogGuvUtMmmJeiopSWWP7V3zcb91SHwWGn24vLTx+NhOCHWp
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="400347730"
-X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
-   d="scan'208";a="400347730"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 03:32:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
-   d="scan'208";a="1570277"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.57.4])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 03:32:26 -0800
-Message-ID: <089e43c5-1e0e-4c6e-9b91-827b01012b23@intel.com>
-Date: Tue, 23 Jan 2024 13:32:19 +0200
+	s=arc-20240116; t=1706009584; c=relaxed/simple;
+	bh=twtRZ2kll5KW9N9kkXciaYDPMJ1u2zhZUwcgEU9uU8o=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jmbOcfWe+jqaLa9R3j8pLjdwoHyc0jOcyV00QSkntgQ3WoIQgYIgc5iLMJDTrVaOsxdvkcL4Ws04Ui1O354cmdk5iwXarCxXditTALh2RyMbK2Qnak/ychzSxRTrMKUu1GiQHEY6PPggKa/IHThJc5HxMo+tWjyU75PTAO2hut8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=E35gdN8p; arc=none smtp.client-ip=67.231.152.168
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40N79viZ014543;
+	Tue, 23 Jan 2024 05:32:50 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=4
+	T+B66DEuygAYHn9hCMdllptWsqq7spVdej7e0tRy2M=; b=E35gdN8pWEmx9gHs8
+	lvLUYhxMqWBzgplu1+9LdNkLAGPvfhMO0Ik7tF15yjBaDvhqmz5AKLwFSnqKeoPf
+	DLO6QYJKQjqcNRsI53M3qyfNleTyYCvgmj7vCCKRGU1KI0y8JzIFOvo8oLr8b8Lp
+	TaNujfzpKHa6Qy2uviedcgYStPgyHEaUGm/mRBStMLu2DCtHvA6H0qqX037Wh+23
+	8AgusId4rVzQpwjAIIiCrCeGVzBit+j4GohmIXBg86XNlr2KE6jNAdfAQKVbdzNB
+	wwufnkUCQN4avlVK0oYOFtC7lZ3Ns3yYqeDR2EH2j+w9ZFN6NUkqfhC2zoJ2mnhz
+	H4FFA==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3vrbfpv08h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 23 Jan 2024 05:32:50 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 23 Jan
+ 2024 11:32:48 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40 via Frontend Transport; Tue, 23 Jan 2024 11:32:48 +0000
+Received: from upx-tgl-008-ubuntu.ad.cirrus.com (upx-tgl-008-ubuntu.ad.cirrus.com [198.90.251.167])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 5642D820246;
+	Tue, 23 Jan 2024 11:32:48 +0000 (UTC)
+From: Maciej Strozek <mstrozek@opensource.cirrus.com>
+To: Mark Brown <broonie@kernel.org>
+CC: Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood
+	<lgirdwood@gmail.com>,
+        Pierre-Louis Bossart
+	<pierre-louis.bossart@linux.intel.com>,
+        Peter Ujfalusi
+	<peter.ujfalusi@linux.intel.com>,
+        Bard Liao
+	<yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan
+	<ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen
+	<kai.vehmanen@linux.intel.com>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Maciej Strozek
+	<mstrozek@opensource.cirrus.com>
+Subject: [PATCH v3] ASoC: Intel: mtl-match: Add cs42l43_l0 cs35l56_l23 for MTL
+Date: Tue, 23 Jan 2024 11:32:46 +0000
+Message-ID: <20240123113246.75539-1-mstrozek@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/1] tools: perf: Expose sample ID / stream ID to python
- scripts
-Content-Language: en-US
-To: Ben Gainey <ben.gainey@arm.com>, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc: peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
- mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org,
- namhyung@kernel.org, irogers@google.com, will@kernel.org
-References: <20240123103137.1890779-1-ben.gainey@arm.com>
-From: Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20240123103137.1890779-1-ben.gainey@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: mPrvXXtcJcK4-aJCKt1zKhfeVQHatr58
+X-Proofpoint-GUID: mPrvXXtcJcK4-aJCKt1zKhfeVQHatr58
+X-Proofpoint-Spam-Reason: safe
 
-On 23/01/24 12:31, Ben Gainey wrote:
-> This patch modifies the perf python scripting engine so that the ID and
-> STREAM_ID are exposed as part of the sample so that they may be
-> correlated to the corresponding throttle/unthrottle event (for example).
-> 
-> NB: For scripts where perf_db_export_mode = True, this may be a breaking
-> change depending on how the script is constructed. Each field is passed
-> to `sample_table` as an argument so any script that is written as:
-> 
->     def sample_table(db_id, evsel_id, machine_id, ..., cyc_cnt, flags)
-> 
-> will now fail due to the changed number of arguments with:
-> 
->     TypeError: sample_table() takes 25 positional arguments but 27 were given
-> 
-> Scripts that use:
-> 
->     def sample_table(*args)
-> 
-> or some variation thereof will not be affected.
+The layout is configured as:
+- Link0: CS42L43 Jack and mics (2ch)
+- Link2: 2x CS35L56 Speaker (amps 3 and 4, right)
+- Link3: 2x CS35L56 Speaker (amps 1 and 2, left)
 
-That is documented in tools/perf/Documentation/db-export.txt.  It was
-anticipated that more arguments could be added, so that should be OK.
+Corresponding SOF topology:
+https://github.com/thesofproject/sof/pull/8773
 
-> 
-> When `perf_db_export_mode = False`, the script should be unaffected as
-> all the arguments are inserted into a dictionary.
-> 
-> The export-to-xxx.py scripts use the (..., *x) form so are not affected.
-> 
-> 
-> Ben Gainey (1):
->   tools: perf: Expose sample ID / stream ID to python scripts
-> 
->  tools/perf/Documentation/perf-script-python.txt        | 4 ++--
->  tools/perf/util/scripting-engines/trace-event-python.c | 8 +++++++-
->  2 files changed, 9 insertions(+), 3 deletions(-)
-> 
+Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
+---
+v2 -> v3: added layout description and link to required SOF topology
+v1 -> v2: swapped AMP3 and AMP4 prefixes
+
+ .../intel/common/soc-acpi-intel-mtl-match.c   | 57 +++++++++++++++++++
+ 1 file changed, 57 insertions(+)
+
+diff --git a/sound/soc/intel/common/soc-acpi-intel-mtl-match.c b/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
+index feb12c6c85d1..23eaf47b3f24 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
+@@ -377,6 +377,37 @@ static const struct snd_soc_acpi_adr_device cs35l56_2_adr[] = {
+ 	}
+ };
+
++static const struct snd_soc_acpi_adr_device cs35l56_2_r_adr[] = {
++	{
++		.adr = 0x00023201FA355601ull,
++		.num_endpoints = 1,
++		.endpoints = &spk_r_endpoint,
++		.name_prefix = "AMP3"
++	},
++	{
++		.adr = 0x00023301FA355601ull,
++		.num_endpoints = 1,
++		.endpoints = &spk_3_endpoint,
++		.name_prefix = "AMP4"
++	}
++
++};
++
++static const struct snd_soc_acpi_adr_device cs35l56_3_l_adr[] = {
++	{
++		.adr = 0x00033001fa355601ull,
++		.num_endpoints = 1,
++		.endpoints = &spk_l_endpoint,
++		.name_prefix = "AMP1"
++	},
++	{
++		.adr = 0x00033101fa355601ull,
++		.num_endpoints = 1,
++		.endpoints = &spk_2_endpoint,
++		.name_prefix = "AMP2"
++	}
++};
++
+ static const struct snd_soc_acpi_link_adr rt5682_link2_max98373_link0[] = {
+ 	/* Expected order: jack -> amp */
+ 	{
+@@ -554,6 +585,26 @@ static const struct snd_soc_acpi_link_adr mtl_cs42l43_cs35l56[] = {
+ 	{}
+ };
+
++static const struct snd_soc_acpi_link_adr cs42l43_link0_cs35l56_link2_link3[] = {
++	/* Expected order: jack -> amp */
++	{
++		.mask = BIT(0),
++		.num_adr = ARRAY_SIZE(cs42l43_0_adr),
++		.adr_d = cs42l43_0_adr,
++	},
++	{
++		.mask = BIT(2),
++		.num_adr = ARRAY_SIZE(cs35l56_2_r_adr),
++		.adr_d = cs35l56_2_r_adr,
++	},
++	{
++		.mask = BIT(3),
++		.num_adr = ARRAY_SIZE(cs35l56_3_l_adr),
++		.adr_d = cs35l56_3_l_adr,
++	},
++	{}
++};
++
+ /* this table is used when there is no I2S codec present */
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_mtl_sdw_machines[] = {
+ 	/* mockup tests need to be first */
+@@ -599,6 +650,12 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_mtl_sdw_machines[] = {
+ 		.drv_name = "sof_sdw",
+ 		.sof_tplg_filename = "sof-mtl-rt1318-l12-rt714-l0.tplg"
+ 	},
++	{
++		.link_mask = BIT(0) | BIT(2) | BIT(3),
++		.links = cs42l43_link0_cs35l56_link2_link3,
++		.drv_name = "sof_sdw",
++		.sof_tplg_filename = "sof-mtl-cs42l43-l0-cs35l56-l23.tplg",
++	},
+ 	{
+ 		.link_mask = GENMASK(2, 0),
+ 		.links = mtl_cs42l43_cs35l56,
+--
+2.34.1
 
 
