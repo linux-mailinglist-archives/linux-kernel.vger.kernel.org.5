@@ -1,180 +1,109 @@
-Return-Path: <linux-kernel+bounces-35119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA73C838C65
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:46:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3243C838C67
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:47:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 416EEB257D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:46:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93976B25DF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:47:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 101635D8F1;
-	Tue, 23 Jan 2024 10:45:27 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E6075D725;
-	Tue, 23 Jan 2024 10:45:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 512735DF2A;
+	Tue, 23 Jan 2024 10:45:31 +0000 (UTC)
+Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [83.223.78.240])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16C985D8F3;
+	Tue, 23 Jan 2024 10:45:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.223.78.240
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706006726; cv=none; b=OOEhna3Th67aKTWyX++KE9gE26W8wdUNjEGVzf178DOASYRsDCSS4KAeNzQ6eBdyKmzXrKGvS+GbKvenRZgo9RSEpPqokfzWG3GDpAkBAfcVndYKUMZn6OFN4tF9WhYnE/oPR/boHXEaGTFXqt3E+qaLY6K+rIkCAW99RNuq/gQ=
+	t=1706006730; cv=none; b=uJNW0UI2IeGmdltYTjXjPqcE+KCILRd7Oq2Mm32UtvdpV2Y0cv3G9AZycMcRUQngrbir58XRi098plOwonK5Y47XVUGod/dcmKCb4zGmc9roAA9as1pddS2BjZenxHPJiPn9tYCMT15QvA/DKvpuFhyLYG/dAlHzytDpg2hb1ss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706006726; c=relaxed/simple;
-	bh=Bv9tpEfskUzoIjJvF99P42BdqqUjJxhrXzxON1qU9Y0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iZK2JyGIIpnRmfrwT66PCzyCUb60d2s8X3gbMFQueN9FvC89Kldl3nnyEvBwdESPZmmLBy4BIBZb/qy7SMIm1bAz0IZEMU66Ds1dvel/vDD1/I0eXuPhjnvB+ZxnRfjQ6U1Bi/MKCMX7zlxOYf+hzUNsKCG6vV+jt3QE3o9wjuE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 689251FB;
-	Tue, 23 Jan 2024 02:46:08 -0800 (PST)
-Received: from [10.57.77.165] (unknown [10.57.77.165])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4FFE73F5A1;
-	Tue, 23 Jan 2024 02:45:19 -0800 (PST)
-Message-ID: <3d6a5076-48d3-4790-a507-d3b1584e8587@arm.com>
-Date: Tue, 23 Jan 2024 10:45:17 +0000
+	s=arc-20240116; t=1706006730; c=relaxed/simple;
+	bh=QakUB1msMWnHAe3TzOTeuX7uJ1mjP5spjvgGTHzwFuc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=b+8OZIfoAqLHOL7p0agdtP65MCT4QQlYK6hslEKKqEFYnNgY4Gj6vhvyrWjZYgUO3WfEB2DWh9eHv0zdefoeAX8tZZPUgegDr1S0fqAdvsxAmetxBekVfIHQ0R7IZ4hFnl1lv3UibtrRRxmBThKMVNQEz6uiV0XapMxSROJw5u0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=83.223.78.240
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
+	by bmailout2.hostsharing.net (Postfix) with ESMTPS id 562B62800BBC5;
+	Tue, 23 Jan 2024 11:45:19 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+	id 49DE6382E4; Tue, 23 Jan 2024 11:45:19 +0100 (CET)
+Date: Tue, 23 Jan 2024 11:45:19 +0100
+From: Lukas Wunner <lukas@wunner.de>
+To: Alex Williamson <alex.williamson@redhat.com>
+Cc: linux-pci@vger.kernel.org, bhelgaas@google.com,
+	linux-kernel@vger.kernel.org, eric.auger@redhat.com,
+	mika.westerberg@linux.intel.com, rafael.j.wysocki@intel.com,
+	Sanath.S@amd.com
+Subject: Re: [PATCH v2 2/2] PCI: Fix runtime PM race with PME polling
+Message-ID: <20240123104519.GA21747@wunner.de>
+References: <20230803171233.3810944-1-alex.williamson@redhat.com>
+ <20230803171233.3810944-3-alex.williamson@redhat.com>
+ <20240118115049.3b5efef0.alex.williamson@redhat.com>
+ <20240122221730.GA16831@wunner.de>
+ <20240122155003.587225aa.alex.williamson@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 07/11] mm/memory: factor out copying the actual PTE in
- copy_present_pte()
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
- Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, "David S. Miller"
- <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
-References: <20240122194200.381241-1-david@redhat.com>
- <20240122194200.381241-8-david@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20240122194200.381241-8-david@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240122155003.587225aa.alex.williamson@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On 22/01/2024 19:41, David Hildenbrand wrote:
-> Let's prepare for further changes.
+On Mon, Jan 22, 2024 at 03:50:03PM -0700, Alex Williamson wrote:
+> On Mon, 22 Jan 2024 23:17:30 +0100 Lukas Wunner <lukas@wunner.de> wrote:
+> > On Thu, Jan 18, 2024 at 11:50:49AM -0700, Alex Williamson wrote:
+> > > To do that I used pm_runtime_get_if_active(), but in retrospect this
+> > > requires the device to be in RPM_ACTIVE so we end up skipping anything
+> > > suspended or transitioning.  
+> > 
+> > How about dropping the calls to pm_runtime_get_if_active() and
+> > pm_runtime_put() and instead simply do:
+> > 
+> > 			if (pm_runtime_suspended(&pdev->dev) &&
+> > 			    pdev->current_state != PCI_D3cold)
+> > 				pci_pme_wakeup(pdev, NULL);
 > 
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+> Do we require that the polled device is in the RPM_SUSPENDED state?
 
-Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
+If the device is RPM_SUSPENDING, why immediately resume it for polling?
+It's sufficient to poll it the next time around, i.e. 1 second later.
 
-> ---
->  mm/memory.c | 60 ++++++++++++++++++++++++++++-------------------------
->  1 file changed, 32 insertions(+), 28 deletions(-)
-> 
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 7e1f4849463aa..2aa2051ee51d3 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -930,6 +930,29 @@ copy_present_page(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma
->  	return 0;
->  }
->  
-> +static inline void __copy_present_pte(struct vm_area_struct *dst_vma,
-> +		struct vm_area_struct *src_vma, pte_t *dst_pte, pte_t *src_pte,
-> +		pte_t pte, unsigned long addr)
-> +{
-> +	struct mm_struct *src_mm = src_vma->vm_mm;
-> +
-> +	/* If it's a COW mapping, write protect it both processes. */
-> +	if (is_cow_mapping(src_vma->vm_flags) && pte_write(pte)) {
-> +		ptep_set_wrprotect(src_mm, addr, src_pte);
-> +		pte = pte_wrprotect(pte);
-> +	}
-> +
-> +	/* If it's a shared mapping, mark it clean in the child. */
-> +	if (src_vma->vm_flags & VM_SHARED)
-> +		pte = pte_mkclean(pte);
-> +	pte = pte_mkold(pte);
-> +
-> +	if (!userfaultfd_wp(dst_vma))
-> +		pte = pte_clear_uffd_wp(pte);
-> +
-> +	set_pte_at(dst_vma->vm_mm, addr, dst_pte, pte);
-> +}
-> +
->  /*
->   * Copy one pte.  Returns 0 if succeeded, or -EAGAIN if one preallocated page
->   * is required to copy this pte.
-> @@ -939,16 +962,16 @@ copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
->  		 pte_t *dst_pte, pte_t *src_pte, unsigned long addr, int *rss,
->  		 struct folio **prealloc)
->  {
-> -	struct mm_struct *src_mm = src_vma->vm_mm;
-> -	unsigned long vm_flags = src_vma->vm_flags;
->  	pte_t pte = ptep_get(src_pte);
->  	struct page *page;
->  	struct folio *folio;
->  
->  	page = vm_normal_page(src_vma, addr, pte);
-> -	if (page)
-> -		folio = page_folio(page);
-> -	if (page && folio_test_anon(folio)) {
-> +	if (unlikely(!page))
-> +		goto copy_pte;
-> +
-> +	folio = page_folio(page);
-> +	if (folio_test_anon(folio)) {
->  		/*
->  		 * If this page may have been pinned by the parent process,
->  		 * copy the page immediately for the child so that we'll always
-> @@ -963,34 +986,15 @@ copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
->  						 addr, rss, prealloc, page);
->  		}
->  		rss[MM_ANONPAGES]++;
-> -	} else if (page) {
-> +		VM_WARN_ON_FOLIO(PageAnonExclusive(page), folio);
-> +	} else {
->  		folio_get(folio);
->  		folio_dup_file_rmap_pte(folio, page);
->  		rss[mm_counter_file(page)]++;
->  	}
->  
-> -	/*
-> -	 * If it's a COW mapping, write protect it both
-> -	 * in the parent and the child
-> -	 */
-> -	if (is_cow_mapping(vm_flags) && pte_write(pte)) {
-> -		ptep_set_wrprotect(src_mm, addr, src_pte);
-> -		pte = pte_wrprotect(pte);
-> -	}
-> -	VM_BUG_ON(page && folio_test_anon(folio) && PageAnonExclusive(page));
-> -
-> -	/*
-> -	 * If it's a shared mapping, mark it clean in
-> -	 * the child
-> -	 */
-> -	if (vm_flags & VM_SHARED)
-> -		pte = pte_mkclean(pte);
-> -	pte = pte_mkold(pte);
-> -
-> -	if (!userfaultfd_wp(dst_vma))
-> -		pte = pte_clear_uffd_wp(pte);
-> -
-> -	set_pte_at(dst_vma->vm_mm, addr, dst_pte, pte);
-> +copy_pte:
-> +	__copy_present_pte(dst_vma, src_vma, dst_pte, src_pte, pte, addr);
->  	return 0;
->  }
->  
+Likewise, if it's already RPM_RESUMING or RPM_ACTIVE anyway, no need
+to poll PME.
 
+This leaves RPM_SUSPENDED as the only state in which it makes sense to
+poll.
+
+
+> Also pm_runtime_suspended() can also only be trusted while holding the
+> device power.lock, we need a usage count reference to maintain that
+> state.
+
+Why?  Let's say there's a race and the device resumes immediately after
+we call pm_runtime_suspended() here.  So we might call pci_pme_wakeup()
+gratuitouly.  So what?  No biggie.
+
+
+> +			if (bdev) {
+> +				spin_lock_irq(&bdev->power.lock);
+
+Hm, I'd expect that lock to be internal to the PM core,
+although there *are* a few stray users outside of it.
+
+Thanks,
+
+Lukas
 
