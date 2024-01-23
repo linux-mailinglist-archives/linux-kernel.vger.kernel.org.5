@@ -1,204 +1,210 @@
-Return-Path: <linux-kernel+bounces-36036-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36037-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B5BB839A79
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:44:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EC684839A81
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:44:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 358761C277A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:44:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CDA51C277DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:44:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D997B4C81;
-	Tue, 23 Jan 2024 20:44:02 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16D9946B3;
-	Tue, 23 Jan 2024 20:43:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAFA75250;
+	Tue, 23 Jan 2024 20:44:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="o1apjl9m"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 830672109
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 20:44:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706042642; cv=none; b=TRFt8N4Au2f5ZnIuzKEd8L5srjwMWnGRCHOSQn1lrFlJc3Y+1FQNTxtTfP3eITqXPKvAFWUcmz8AfxVuydcT95HmSIg7MBqFIGoSxGxaBPf3JH/F5CBt+W5aNZVG+rYMmVDYhKuakzAQBmry6ZKKTvgIuss7MBXUbbtM4QLVuN8=
+	t=1706042684; cv=none; b=Up56T4Bd1a07sBhvzeOrVmi51XaWNp8Mf7/pN93MVn/F9b/+77ehjh+wbnIhNtAXF38Rp5KIBn5+kPAn5wxbwNGFU+mcTwSoRondxWyG+Qd9fX8j/RcdekNK7tCDpEhLB5elZb+cXGh8Mo3w1KMH7tlcuMQGZ+XrDeMu8iUZZKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706042642; c=relaxed/simple;
-	bh=BkiYqmjcGER75gNfr+z1v1ylvtolmFYCztKOkeGymvM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=opDIbc92DzS3TYEJ7DjwhgpvnO7mdlk1mc5PvSuh1qp/Kwr/hdj5r1NyYtNAMNxybN8RVZjyDHAPs+V0620qXqDTTPpsY+zsOpv4wqySoRT0RkkB5MkGmWXV1rj68HeCrEysthgVOsWTiWTRKbBLMMdidErv1mxt40J0Q0bbbwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4F4471FB;
-	Tue, 23 Jan 2024 12:44:44 -0800 (PST)
-Received: from [10.57.77.165] (unknown [10.57.77.165])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 526623F73F;
-	Tue, 23 Jan 2024 12:43:55 -0800 (PST)
-Message-ID: <f9eb630a-f0f8-4219-b74f-109c51f31eb4@arm.com>
-Date: Tue, 23 Jan 2024 20:43:53 +0000
+	s=arc-20240116; t=1706042684; c=relaxed/simple;
+	bh=3jCvRB4HD/I2qU3Zjc5yS28yBs6yYnwm+im0L/hbAtA=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Cc:Content-Type; b=Tv3Ffd3+vn6gnRhvhQm+UrHCN6qMVBrcbbDMuPWHr0/X+YAHKH6uATS0d1SzD9Qk5mTQEm1OFsZbcwwoU0PvCxQU+mPEM0yz1EPgZJboJI2cg2TvxiZjrDIy9ImvEOTHTnb1lOFSvWM+bon9hYqlkyVxcvkfuddCVgOt64h7Pps=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=o1apjl9m; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc22f3426aeso7944461276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 12:44:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706042681; x=1706647481; darn=vger.kernel.org;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=gY0AJEtwU5pTI4pJWheKjEqkk5Hi/1V7D+eNS/EusLQ=;
+        b=o1apjl9mHfWS6GeE0NOEvNp5Scywe71cfAi+6ducGQrN71mEGRRqDk9MnxIDz+Sb2R
+         pYrVV3raux06gu3x2MOWSG00DVgDCO9BD6NkZ3dmeDFJ4UUu9r8dn832NluHRoWIi59O
+         vjJBB8BOpekTpU8LU39tAhDtojaHpnXa5C4FKuOAO2JNd+UEnDdVBk1Lq9GyPwXzSfQ2
+         3WJ+B5W+UkxM46niXyD5SsM+wzf5T6nZLzkvCIwt/lwiO6tyhAXfLSqTCniLofM+wArM
+         y8qHLmwhupjRxgtq9w2COW3MtUAFiggvWEoMyYl26GQcHxDxiD/Zgiej2PV1CLJqcLKy
+         z/8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706042681; x=1706647481;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gY0AJEtwU5pTI4pJWheKjEqkk5Hi/1V7D+eNS/EusLQ=;
+        b=kU/8ABLHAFsAEYxcGK1bYE8+KtWLwWkalZUIMUDoFya8ZKGyrE/UTAJ3XBDlmsOtgk
+         9qlRy7KOcjC2mViNPn5/Stp4kjWFrRffJ5zKJ4F9Fctzl6uxBlQ+9qOpd5RAuNd8vTB1
+         b1rm6AquRsMfOjCFCBsNAxLB+3xE1BKgqjy3FId1AEXzFzEHIlKWII2Mc+Oc6iv4HPK+
+         jsjEJe4o/5NX/KMqCZdhWz916IasJ6ztJWaIJgMwR0R4q4mOVTY+5qabX0Tl/NwDNbVK
+         W7nuM9GHZMWOpwy7QkyaT0yHGyyW/7Ro1kdHJf1koMH4E2DeHPGntvcrbOaSGuJ0WkA7
+         chlg==
+X-Gm-Message-State: AOJu0YzqFcTk9xOwsx8pJDE4kbbU7PeillHMYLpxl+SXMRver0IcBrL9
+	N4nB3jPOtN9ieiYOFLKFXnJGToGGXWTp39qnAIowBYU7btw9ZR4T7aCFZJj5t4ehrb+rkObgNUw
+	Ktbtmnw==
+X-Google-Smtp-Source: AGHT+IEH+jXKjumQFQcElV3EEDQUoZ4RZrdBmfN12M0KGfM+tnT6TDt0bfOTHzC18Ac190xN55NiZcJD2MJU
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:b37:2438:2b2f:daae])
+ (user=irogers job=sendgmr) by 2002:a25:c3c7:0:b0:dbf:4359:326a with SMTP id
+ t190-20020a25c3c7000000b00dbf4359326amr55841ybf.1.1706042681557; Tue, 23 Jan
+ 2024 12:44:41 -0800 (PST)
+Date: Tue, 23 Jan 2024 12:44:37 -0800
+Message-Id: <20240123204437.1322700-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 00/11] mm/memory: optimize fork() with PTE-mapped THP
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
- Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, "David S. Miller"
- <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
-References: <20240122194200.381241-1-david@redhat.com>
- <56bee384-461e-4167-b7e9-4dd60666dd66@arm.com>
- <fa9425e8-f489-48d0-9bf5-98d1b46b6d1a@redhat.com>
- <7d92d27a-44f6-47d0-8eab-3f80bd7bd75d@arm.com>
- <33cf54a9-b855-4d2d-9926-a4936fc9068b@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <33cf54a9-b855-4d2d-9926-a4936fc9068b@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+Subject: [PATCH v2] libbpf: Add some details for BTF parsing failures
+From: Ian Rogers <irogers@google.com>
+To: Alan Maguire <alan.maguire@oracle.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 23/01/2024 20:14, David Hildenbrand wrote:
-> On 23.01.24 20:43, Ryan Roberts wrote:
->> On 23/01/2024 19:33, David Hildenbrand wrote:
->>> On 23.01.24 20:15, Ryan Roberts wrote:
->>>> On 22/01/2024 19:41, David Hildenbrand wrote:
->>>>> Now that the rmap overhaul[1] is upstream that provides a clean interface
->>>>> for rmap batching, let's implement PTE batching during fork when processing
->>>>> PTE-mapped THPs.
->>>>>
->>>>> This series is partially based on Ryan's previous work[2] to implement
->>>>> cont-pte support on arm64, but its a complete rewrite based on [1] to
->>>>> optimize all architectures independent of any such PTE bits, and to
->>>>> use the new rmap batching functions that simplify the code and prepare
->>>>> for further rmap accounting changes.
->>>>>
->>>>> We collect consecutive PTEs that map consecutive pages of the same large
->>>>> folio, making sure that the other PTE bits are compatible, and (a) adjust
->>>>> the refcount only once per batch, (b) call rmap handling functions only
->>>>> once per batch and (c) perform batch PTE setting/updates.
->>>>>
->>>>> While this series should be beneficial for adding cont-pte support on
->>>>> ARM64[2], it's one of the requirements for maintaining a total mapcount[3]
->>>>> for large folios with minimal added overhead and further changes[4] that
->>>>> build up on top of the total mapcount.
->>>>
->>>> I'm currently rebasing my contpte work onto this series, and have hit a
->>>> problem.
->>>> I need to expose the "size" of a pte (pte_size()) and skip forward to the start
->>>> of the next (cont)pte every time through the folio_pte_batch() loop. But
->>>> pte_next_pfn() only allows advancing by 1 pfn; I need to advance by nr pfns:
->>>>
->>>>
->>>> static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
->>>>          pte_t *start_ptep, pte_t pte, int max_nr, bool *any_writable)
->>>> {
->>>>      unsigned long folio_end_pfn = folio_pfn(folio) + folio_nr_pages(folio);
->>>>      const pte_t *end_ptep = start_ptep + max_nr;
->>>>      pte_t expected_pte = __pte_batch_clear_ignored(pte_next_pfn(pte));
->>>> -    pte_t *ptep = start_ptep + 1;
->>>> +    pte_t *ptep = start_ptep;
->>>> +    int vfn, nr, i;
->>>>      bool writable;
->>>>
->>>>      if (any_writable)
->>>>          *any_writable = false;
->>>>
->>>>      VM_WARN_ON_FOLIO(!pte_present(pte), folio);
->>>>
->>>> +    vfn = addr >> PAGE_SIZE;
->>>> +    nr = pte_size(pte);
->>>> +    nr = ALIGN_DOWN(vfn + nr, nr) - vfn;
->>>> +    ptep += nr;
->>>> +
->>>>      while (ptep != end_ptep) {
->>>> +        pte = ptep_get(ptep);
->>>>          nr = pte_size(pte);
->>>>          if (any_writable)
->>>>              writable = !!pte_write(pte);
->>>>          pte = __pte_batch_clear_ignored(pte);
->>>>
->>>>          if (!pte_same(pte, expected_pte))
->>>>              break;
->>>>
->>>>          /*
->>>>           * Stop immediately once we reached the end of the folio. In
->>>>           * corner cases the next PFN might fall into a different
->>>>           * folio.
->>>>           */
->>>> -        if (pte_pfn(pte) == folio_end_pfn)
->>>> +        if (pte_pfn(pte) >= folio_end_pfn)
->>>>              break;
->>>>
->>>>          if (any_writable)
->>>>              *any_writable |= writable;
->>>>
->>>> -        expected_pte = pte_next_pfn(expected_pte);
->>>> -        ptep++;
->>>> +        for (i = 0; i < nr; i++)
->>>> +            expected_pte = pte_next_pfn(expected_pte);
->>>> +        ptep += nr;
->>>>      }
->>>>
->>>>      return ptep - start_ptep;
->>>> }
->>>>
->>>>
->>>> So I'm wondering if instead of enabling pte_next_pfn() for all the arches,
->>>> perhaps its actually better to expose pte_pgprot() for all the arches. Then we
->>>> can be much more flexible about generating ptes with pfn_pte(pfn, pgprot).
->>>>
->>>> What do you think?
->>>
->>> The pte_pgprot() stuff is just nasty IMHO.
->>
->> I dunno; we have pfn_pte() which takes a pfn and a pgprot. It seems reasonable
->> that we should be able to do the reverse.
-> 
-> But pte_pgprot() is only available on a handful of architectures, no? It would
-> be nice to have a completely generic pte_next_pfn() / pte_advance_pfns(), though.
-> 
-> Anyhow, this is all "easy" to rework later. Unless I am missing something, the
-> low hanging fruit is simply using PFN_PTE_SHIFT for now that exists on most
-> archs already.
-> 
->>
->>>
->>> Likely it's best to simply convert pte_next_pfn() to something like
->>> pte_advance_pfns(). The we could just have
->>>
->>> #define pte_next_pfn(pte) pte_advance_pfns(pte, 1)
->>>
->>> That should be fairly easy to do on top (based on PFN_PTE_SHIFT). And only 3
->>> archs (x86-64, arm64, and powerpc) need slight care to replace a hardcoded "1"
->>> by an integer we pass in.
->>
->> I thought we agreed powerpc was safe to just define PFN_PTE_SHIFT? But, yeah,
->> the principle works I guess. I guess I can do this change along with my series.
-> 
-> It is, if nobody insists on that micro-optimization on powerpc.
-> 
-> If there is good reason to invest more time and effort right now on the
-> pte_pgprot approach, then please let me know :)
-> 
+As CONFIG_DEBUG_INFO_BTF is default off the existing "failed to find
+valid kernel BTF" message makes diagnosing the kernel build issue some
+what cryptic. Add a little more detail with the hope of helping users.
 
-No I think you're right. I thought pte_pgprot() was implemented by more arches,
-but there are 13 without it, so clearly a lot of effort to plug that gap. I'll
-take the approach you suggest with pte_advance_pfns(). It'll just require mods
-to x86 and arm64, +/- ppc.
+Before:
+```
+libbpf: failed to find valid kernel BTF
+libbpf: Error loading vmlinux BTF: -3
+libbpf: failed to load object 'lock_contention_bpf'
+libbpf: failed to load BPF skeleton 'lock_contention_bpf': -3
+```
+
+After no access /sys/kernel/btf/vmlinux:
+```
+libbpf: Unable to access canonical vmlinux BTF from /sys/kernel/btf/vmlinux
+libbpf: Error loading vmlinux BTF: -3
+libbpf: failed to load object 'lock_contention_bpf'
+libbpf: failed to load BPF skeleton 'lock_contention_bpf': -3
+```
+
+After no BTF /sys/kernel/btf/vmlinux:
+```
+libbpf: Failed to load vmlinux BTF from /sys/kernel/btf/vmlinux, was CONFIG_DEBUG_INFO_BTF enabled?
+libbpf: Error loading vmlinux BTF: -3
+libbpf: failed to load object 'lock_contention_bpf'
+libbpf: failed to load BPF skeleton 'lock_contention_bpf': -3
+```
+
+Closes: https://lore.kernel.org/bpf/CAP-5=fU+DN_+Y=Y4gtELUsJxKNDDCOvJzPHvjUVaUoeFAzNnig@mail.gmail.com/
+Signed-off-by: Ian Rogers <irogers@google.com>
+
+---
+v2. Try to address review comments from Andrii Nakryiko.
+---
+ tools/lib/bpf/btf.c | 49 ++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 35 insertions(+), 14 deletions(-)
+
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index ee95fd379d4d..d8a05dda0836 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -4920,16 +4920,25 @@ static int btf_dedup_remap_types(struct btf_dedup *d)
+ 	return 0;
+ }
+ 
++static struct btf *btf__load_vmlinux_btf_path(const char *path)
++{
++	struct btf *btf;
++	int err;
++
++	btf = btf__parse(path, NULL);
++	err = libbpf_get_error(btf);
++	pr_debug("loading kernel BTF '%s': %d\n", path, err);
++	return err ? NULL : btf;
++}
++
+ /*
+  * Probe few well-known locations for vmlinux kernel image and try to load BTF
+  * data out of it to use for target BTF.
+  */
+ struct btf *btf__load_vmlinux_btf(void)
+ {
++	/* fall back locations, trying to find vmlinux on disk */
+ 	const char *locations[] = {
+-		/* try canonical vmlinux BTF through sysfs first */
+-		"/sys/kernel/btf/vmlinux",
+-		/* fall back to trying to find vmlinux on disk otherwise */
+ 		"/boot/vmlinux-%1$s",
+ 		"/lib/modules/%1$s/vmlinux-%1$s",
+ 		"/lib/modules/%1$s/build/vmlinux",
+@@ -4938,29 +4947,41 @@ struct btf *btf__load_vmlinux_btf(void)
+ 		"/usr/lib/debug/boot/vmlinux-%1$s.debug",
+ 		"/usr/lib/debug/lib/modules/%1$s/vmlinux",
+ 	};
+-	char path[PATH_MAX + 1];
++	const char *location;
+ 	struct utsname buf;
+ 	struct btf *btf;
+-	int i, err;
++	int i;
+ 
+-	uname(&buf);
++	/* try canonical vmlinux BTF through sysfs first */
++	location = "/sys/kernel/btf/vmlinux";
++	if (faccessat(AT_FDCWD, location, R_OK, AT_EACCESS) == 0) {
++		btf = btf__load_vmlinux_btf_path(location);
++		if (btf)
++			return btf;
++
++		pr_warn("Failed to load vmlinux BTF from %s, was CONFIG_DEBUG_INFO_BTF enabled?\n",
++			location);
++	} else
++		pr_warn("Unable to access canonical vmlinux BTF from %s\n", location);
+ 
++	uname(&buf);
+ 	for (i = 0; i < ARRAY_SIZE(locations); i++) {
+-		snprintf(path, PATH_MAX, locations[i], buf.release);
++		char path[PATH_MAX + 1];
++
++		snprintf(path, sizeof(path), locations[i], buf.release);
+ 
++		btf = btf__load_vmlinux_btf_path(path);
+ 		if (faccessat(AT_FDCWD, path, R_OK, AT_EACCESS))
+ 			continue;
+ 
+-		btf = btf__parse(path, NULL);
+-		err = libbpf_get_error(btf);
+-		pr_debug("loading kernel BTF '%s': %d\n", path, err);
+-		if (err)
+-			continue;
++		btf = btf__load_vmlinux_btf_path(location);
++		if (btf)
++			return btf;
+ 
+-		return btf;
++		pr_warn("Failed to load vmlinux BTF from %s, was CONFIG_DEBUG_INFO_BTF enabled?\n",
++			path);
+ 	}
+ 
+-	pr_warn("failed to find valid kernel BTF\n");
+ 	return libbpf_err_ptr(-ESRCH);
+ }
+ 
+-- 
+2.43.0.429.g432eaa2c6b-goog
 
 
