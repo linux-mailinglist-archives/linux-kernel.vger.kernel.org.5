@@ -1,69 +1,72 @@
-Return-Path: <linux-kernel+bounces-35828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64DD283970B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:56:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADFA883970F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:56:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 975871C230DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:56:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65F762859BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:56:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 408948005F;
-	Tue, 23 Jan 2024 17:56:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C860B81AAB;
+	Tue, 23 Jan 2024 17:56:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="JU/tK5wa"
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dHYPbyaz"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E4DB6166F
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 17:56:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8329C81208
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 17:56:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706032565; cv=none; b=pv0SEsyuQ2CsmhP5oQfIZ+qQ2nN8Dx8F4xBZfUC8IjMhida/vYYi2OAen84fewlge9XLUNpNHe4Z6d5lbwTRNHD9yO6SwpKRLEbC+QyM0ko8pS28wf+lefOPSQEsUj1nAC225aqZgbU+/0esLunH7g+8Pp66nS2V9uQJRZD0XNE=
+	t=1706032569; cv=none; b=eNWQmCV6kKhdL20MZKgYXpRNcZqx73paTdjOCRMfFhtL82RbWBWX9+J/fSYcxHQhKH5k+NpdkGuxwJdgamWQGve3nwqu2qd4qor24cRyOWKK2nJSgKDY6KmuH1yotjM36nw+2xTqj9N87cI61C1glsqfZrbYjHiJnr5EpaxNFQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706032565; c=relaxed/simple;
-	bh=lTw2d+jEr19zQERliBwvc7vpz5HMAj1TWQn6WLETomM=;
+	s=arc-20240116; t=1706032569; c=relaxed/simple;
+	bh=Kr7w+SGEwqQihNACAI+flJSJVscpWWcaaMGKuGdc9I4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=e1Unk4HwNHQvWkN3wb/4PaSO2Biy4Co4++hdcrAD2ciF9uwPHByJ/7Xdg1/cvuB2OcGyZWllDz097HEN7oicVwLFFHRPizptDY9T2wabdocLqP1c9Ppae0MtRSq20CavSl+SQtxeDb1QTnTuhRWZ9Jxu2pImI6CanMWF3bYhhQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=JU/tK5wa; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6dd7b2bc6bfso165386b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 09:56:03 -0800 (PST)
+	 In-Reply-To:Content-Type; b=X7HOASi/dW6M/wTzpoJHLkyytxRyiUZklcvGxezSgCajtKLfbqUQo5lMbr1ViT9qlu07BgTS8snTzUB1v4sNklES4LrE5LaIzkN0OOJI3H5bUvNgqaVumpvUXZmTKFORL+gyDJRzGfyoMG+Vu7h1hMsQqmXlWWLbaE9sTQk1378=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dHYPbyaz; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2cdeb954640so53022031fa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 09:56:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1706032563; x=1706637363; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1706032565; x=1706637365; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=vW1EwQtQkDL16oAi0iCe/mJ0F+Pfw76tUi9aoHvOjRw=;
-        b=JU/tK5waHfMH8WO44+HFW1Vsar7DtylGPb1mVFd2Mmo0EGwGTUwWAKtC/83BvcSiCz
-         lfsLhOXpIM9m92iOd73LXlaKVEe531tqPyARu2x4r2XJ9inIK5FjIt/pYEm3GCaAJheA
-         WJJIklfn6wnTAGDa+Jq8VeRTTBV7BmkiI+xFs=
+        bh=WsZ4KlUHiglOsCzCfXatA2rETh1XN4ZPTM126THuUHg=;
+        b=dHYPbyaziPPSWKqT5rWuOtoNXKtw3ZOQj1AVUwhhT9ddAk2OMQq/JQUZMOhpcWKCJW
+         9vD3cHW8opbTSRbAhxJi2rS5ErzLPab2/JS4pBtxZ7IoaGkFlpRYNEQ0dTU+810V3TlA
+         eEfBVJz+2R7kd1b3CtYize6ct9ZhryKlf8JCrar9bBw9N/iJ3ZNQOX8YaJTjdUBnbiMD
+         L5zkIjX4HAG40A5TdZlFsNyO1iVpH/dk8foT02RiU4ZuSJvdhh4XpOMR04eMt8b9TGnK
+         5eXnAvmGAbRVRVV1Et1Eg9V7UvSuxx3+9Xr1y1+VTPZvUrDcBFO229ENnX7FDA+tKWrQ
+         smyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706032563; x=1706637363;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1706032565; x=1706637365;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vW1EwQtQkDL16oAi0iCe/mJ0F+Pfw76tUi9aoHvOjRw=;
-        b=PEcVZv1dM4YJLXBI3Pjl201Q2jyLDghbAqL0oI+KDe2hOXjhxfLeFi2wthCWNMCZXd
-         MOP60Y4ldxk3a7lpblN34xah7UfpiCOhpsMIQn5VlYoF5GSsK+G8KQjuvnYSW8KQd2tP
-         /RnyCAvz4dRVVMP7ZzewHiQjXepYETlEI+9sJQ5xQxS8BZSlIjw987Lv/J4DtwNOy/gd
-         1pZjDEbo1DacnIjykV2cnzp8MwERZo8HJANZ+OVqZfNEWvMwK1YlnsL8sWVZHv1mVz41
-         QI0VXBTPVV22S8DORt6JspTJKfuFbp6tg8Elv/5S292LtdFyBsstnf69TIMH9bNc5xsd
-         qHkg==
-X-Gm-Message-State: AOJu0YwLYJOifl+S+786Kndb7mFpG82RQwG+1oPCoLlkmzp+4XNrg8XD
-	NGvNdq4vq5Dda3zQfxQxZnDqfepSOeWUdbkZ1WFiY1rQS3t8ePAqGMTvJ02q3jI=
-X-Google-Smtp-Source: AGHT+IGS2tOvuR7n33KSMNw4mOSzqzR31U9JGY3psgHs+GV4iEzWcOcjv2KXq+2/qM/y0ShIPbl1Dg==
-X-Received: by 2002:a05:6a20:671b:b0:19b:7fba:7d34 with SMTP id q27-20020a056a20671b00b0019b7fba7d34mr10178109pzh.6.1706032563332;
-        Tue, 23 Jan 2024 09:56:03 -0800 (PST)
-Received: from [128.240.2.100] (rbi200e.jcresorts.com. [206.170.126.10])
-        by smtp.gmail.com with ESMTPSA id ks11-20020a056a004b8b00b006d6b91c6eb6sm12207705pfb.13.2024.01.23.09.56.00
+        bh=WsZ4KlUHiglOsCzCfXatA2rETh1XN4ZPTM126THuUHg=;
+        b=n78y5FEHy3vf2m+0s9z3xX3nRuxcyrJcv5yR8y/wBzjtYqnhiq4aB5Knc2+MZACutB
+         3916Ez5pXyut5yRzvRuEHDFKajAeYk3JngT91kCrma/8/lmx9QR98Co/x07gDCKgisYa
+         VVMlIvxVVCMEMumbyH6zPaR4qAJYKhpzJBjqSi9rXDsIdVAS7dTEz5Bv0MX0WRSInpk3
+         Gj5fjVWwgNXAfI6DyuyU79CiJKwL7fwVa+INuwdVGKj59qEiyvUX6EkM+mVJyg8xAyhe
+         0zDvlqmtJmGlocLSZ7JYlaGJBDeMkSTn1vQ8LYOmDKZh/fsoRupWYQsMRYdaQodEvzCc
+         om0w==
+X-Gm-Message-State: AOJu0Yw0Z3io5qtWiTIx9pWbMtX998q0dIqkIkPEa9/4+8GmZHnfmhHM
+	36CukByZJQcysO7Uro/c7nwJOFs3s/F268mWEmchOX5r+PIlwZQ70OvuJdXsDWs=
+X-Google-Smtp-Source: AGHT+IFmCLYzgjjZPiLgBJlOLM29I1/FO8zGdLnpI82VdMTXlCFvm48M4Uuf3x4GeJBr2Vn8ojX7mg==
+X-Received: by 2002:a05:6512:33c3:b0:50e:9a0d:d402 with SMTP id d3-20020a05651233c300b0050e9a0dd402mr3678975lfg.105.1706032565599;
+        Tue, 23 Jan 2024 09:56:05 -0800 (PST)
+Received: from [172.30.205.123] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id o9-20020a056512050900b0050ef7f44884sm2335262lfb.199.2024.01.23.09.56.04
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jan 2024 09:56:02 -0800 (PST)
-Message-ID: <1f220805-d5b8-4f84-9edd-ff3a9659eb19@linuxfoundation.org>
-Date: Tue, 23 Jan 2024 10:55:58 -0700
+        Tue, 23 Jan 2024 09:56:05 -0800 (PST)
+Message-ID: <f5784838-0386-4ef8-bc3b-195a0132a29d@linaro.org>
+Date: Tue, 23 Jan 2024 18:56:03 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,54 +74,62 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] kselftest/seccomp: Report each expectation we
- assert as a KTAP test
-To: Mark Brown <broonie@kernel.org>, Kees Cook <keescook@chromium.org>,
- Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>,
- Shuah Khan <shuah@kernel.org>
-Cc: linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
- Anders Roxell <anders.roxell@linaro.org>,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20240122-b4-kselftest-seccomp-benchmark-ktap-v3-0-785bff4c04fd@kernel.org>
- <20240122-b4-kselftest-seccomp-benchmark-ktap-v3-2-785bff4c04fd@kernel.org>
+Subject: Re: [PATCH v2 10/10] clk: qcom: Add camcc clock driver for x1e80100
 Content-Language: en-US
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240122-b4-kselftest-seccomp-benchmark-ktap-v3-2-785bff4c04fd@kernel.org>
+To: Abel Vesa <abel.vesa@linaro.org>
+Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+ Rajendra Nayak <quic_rjendra@quicinc.com>
+References: <20231214-x1e80100-clock-controllers-v2-0-2b0739bebd27@linaro.org>
+ <20231214-x1e80100-clock-controllers-v2-10-2b0739bebd27@linaro.org>
+ <624956b6-d7ea-43da-bb8d-32d9166a0272@linaro.org>
+ <Za+n4zfzoZFhhLIa@linaro.org>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <Za+n4zfzoZFhhLIa@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 1/22/24 14:08, Mark Brown wrote:
-> The seccomp benchmark test makes a number of checks on the performance it
-> measures and logs them to the output but does so in a custom format which
-> none of the automated test runners understand meaning that the chances that
-> anyone is paying attention are slim. Let's additionally log each result in
-> KTAP format so that automated systems parsing the test output will see each
-> comparison as a test case. The original logs are left in place since they
-> provide the actual numbers for analysis.
+
+
+On 1/23/24 12:49, Abel Vesa wrote:
+> On 23-12-16 14:39:48, Konrad Dybcio wrote:
+>> On 14.12.2023 17:49, Abel Vesa wrote:
+>>> From: Rajendra Nayak <quic_rjendra@quicinc.com>
+>>>
+>>> Add the camcc clock driver for x1e80100
+>>>
+>>> Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
+>>> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+>>> ---
+>> [...]
+>>
+>>> +enum {
+>>> +	DT_BI_TCXO,
+>>> +	DT_BI_TCXO_AO,
+>>> +	DT_SLEEP_CLK,
+>>> +};
+>>> +
+>>> +enum {
+>>> +	P_BI_TCXO,
+>> Please don't overload this define with DT_BI_TCXO_AO, add a new one
+>> for the active-only clock. Please also do this in other drivers in
+>> this series.
 > 
-> As part of this rework the flow for the main program so that when we skip
-> tests we still log all the tests we skip, this is because the standard KTAP
-> headers and footers include counts of the number of expected and run tests.
-> 
-> Tested-by: Anders Roxell <anders.roxell@linaro.org>
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
+> Nope, that needs to stay if we want to align the dt bindings between
+> SM8550, SM8650 and this. At least for dispcc. But I would like to have
+> the same dt schema for the rest of the clock controller drivers between
+> platforms that share basically the same ip block.
 
-> -	return 0;
-> +	if (ret) {
-> +		ksft_print_msg("Saw unexpected benchmark result. Try running again with more samples?\n");
-> +	}
-> +
+No, you're confusing the dt ordering enum (the first one) with the
+parent list enum (the one below that I'm commenting on).
 
-WARNING: braces {} are not necessary for single statement blocks
-> +	ksft_finished();
->   }
-> 
-
-Mark,
-
-Can you fix this warning. Tried fixing it --fix-inplace and no luck.
-
-thanks,
--- Shuah
+Konrad
 
