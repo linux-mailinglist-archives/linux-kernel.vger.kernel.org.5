@@ -1,195 +1,233 @@
-Return-Path: <linux-kernel+bounces-36130-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36131-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 821FF839C0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 23:24:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 730D3839C0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 23:25:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F00621F2A3E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 22:24:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2324E285CF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 22:25:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6A4D4F60D;
-	Tue, 23 Jan 2024 22:24:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD36D4F211;
+	Tue, 23 Jan 2024 22:24:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="CKRQAwtB"
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2054.outbound.protection.outlook.com [40.107.8.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="NU70CkKx"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 028264F1F2;
-	Tue, 23 Jan 2024 22:24:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.54
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706048646; cv=fail; b=caVycMed+f9VxuHn51abnJwIQAjiIjFHZzLmxwpC/cJvkBNjHaxZFMxlU4411nQXI2avnFrNmOR1i6GV1fluWu8H6ZbP7f4M8Az1RyZ1OpAHNpyseFb5DWrYiuK5gFW61n0WojlfGQlqCvcqbXbbeKJwqgji0PjDonYSBMqEVVw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706048646; c=relaxed/simple;
-	bh=no2gjZjJu1d3dpOrt5PRQJudF0lA03xQZEGYHPfcXvE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=JcqaPKZPVdnxuI3cRytRz6e2LcKvnR8DDlgoLEWEczToR/1oReRv4XJwagkY2ML3bAY0m7N+zDtihNTjwPWoFxWBta2dekY5Lh/RsFFXjSN9KchVQMnKMhzeD5VSf9xqVhiWxMSiPJNbF7GZ3ODEQzX791T5XuzCI/L1VssxcoQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=CKRQAwtB; arc=fail smtp.client-ip=40.107.8.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O7flobSQHjKIRAzJwVJva27Ep1pXYiuoVDFs+T/UXjfQ+8wdoPyD5EFs1I6kgOCBUwjytuck3s/YdgSkFwL8sfXdk3yQOmrR2xUck5HO5R5gl/wzyWV1isz238d0Z30fZk7LZi6Pso3ZpE7825czshC49FU+BvtTQHrkDv9+WZW1+9oMCnxWL3kBG/7oSKEYh/u1g+3L40uEPzmEso0cFqSwR9IQ2f8vYuT6ftPF968Dnp1WJlIZ5U4pW949KHQ01Yfb2A+eqCBBQgPxj3OYWROId5i6hnWhtUqIQLKhUkKRWkLKUqGZO+8pmZc7vaZwKlmIvMKyQmkwv1dc2a/v3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4kpuwnUUm1SC2AriM+yHwMGsoXP10yGphqlVCWvE5mk=;
- b=Kj1pB8QgMH1+bdfp7W33XuizYy8UeO6jj5npZMtrU1LmhdtTMg0vzY5DQNwqyTLf/q9ltcoDN0AY4/G9WpcV3UtZSQ5qq3oIHYohJ55u+q4wIEkv+eE8oQDbQKd1n2YzgAXtOApBQL6FP1IFFXixOHtBlqZP2zBwkPs9Goc22Erzci+9xryFQioaMiI652ybExc73rQDMh99DC+0vxIyHPUmJwme9xuB/+Zbuh6WpJ+IL8NVNGapEhfAbvzvBtGPETcUHO+Sw97TSleaZyCKDrZRshYywahesHsSU2A/hORzrO2kU5VuE1X2+tsijCckn00cBdqR2UvZr8Woup9Ymw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4kpuwnUUm1SC2AriM+yHwMGsoXP10yGphqlVCWvE5mk=;
- b=CKRQAwtBuU0VEezA6nkiavuY8A3DiNc6HGEpLk2tllGENVjgjpyrmL1HSi2hiefhcLZbjiDFUIXPrJsQxeiE7u3uhxZUeHqBi0fnZUG+GXaWwuGDyy0fhqDaVbZZObsdAT7qGM/xpW7pnKWuTtpFbzUNcQ37cX6xettJentOvuQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by PAXPR04MB9328.eurprd04.prod.outlook.com (2603:10a6:102:2b6::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.37; Tue, 23 Jan
- 2024 22:24:02 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::c8b4:5648:8948:e85c]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::c8b4:5648:8948:e85c%3]) with mapi id 15.20.7202.035; Tue, 23 Jan 2024
- 22:24:01 +0000
-Date: Tue, 23 Jan 2024 17:23:53 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Conor Dooley <conor@kernel.org>, thinh.nguyen@synopsys.com,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, balbi@kernel.org, devicetree@vger.kernel.org,
-	gregkh@linuxfoundation.org, imx@lists.linux.dev,
-	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-	mark.rutland@arm.com, mathias.nyman@intel.com, pku.leo@gmail.com,
-	sergei.shtylyov@cogentembedded.com
-Subject: Re: [PATCH 1/2] dt-bindings: usb: dwc3: Add system bus request info
-Message-ID: <ZbA8ea9Ex+hMdDDZ@lizhi-Precision-Tower-5810>
-References: <20240123170206.3702413-1-Frank.Li@nxp.com>
- <20240123-poking-geography-33be2b5ae578@spud>
- <Za/8J8MDJaZEPEKO@lizhi-Precision-Tower-5810>
- <20240123-anew-lilly-0d645bdbfb30@spud>
- <Za//LX9U6QG5A5NW@lizhi-Precision-Tower-5810>
- <20240123-nanometer-atlantic-6465b270043a@spud>
- <ZbAR/NQvjUnf2At+@lizhi-Precision-Tower-5810>
- <46781012-2678-4f6c-9aee-b020cabcbb28@linaro.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <46781012-2678-4f6c-9aee-b020cabcbb28@linaro.org>
-X-ClientProxiedBy: BY5PR17CA0046.namprd17.prod.outlook.com
- (2603:10b6:a03:167::23) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAA604F203
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 22:24:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706048691; cv=none; b=VI+H1cGN3ABUXj8TQbxRluLWh3leSFwHhfCP7DU6ITYuYr1XDsyOPiUzDzr+iqCFn5OQ//UUDq6a9vjuqFNbO0W+RUICQlLgSUZmvBb+MxjEvoInxWNOm3eGhdzTKIy+SBEuvlK02KLoMt1oHXd7LJVeKa96M717nwUrOIBvLvc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706048691; c=relaxed/simple;
+	bh=5YYFDZ+xiElaGnGPhbxpqpjoZIWsYsSg9bPLddTdmS4=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=LYMreRBh3B4SHxSakkoyaaF3iMvHC/9WwkLE++eZkKd3lDiCycb/QuPANZEWKRrVQkazoetDJEBuEdCch2Y92ldffJD+gBfNH2i6jquQtyG6dXhbjRnIhu5V/rdJp/bdZ7X9ZToDWl1mDrYPOMdW0i0j/FHHYdQuY1ISlC64imY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=NU70CkKx; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6dd7e6995c5so179754b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 14:24:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1706048688; x=1706653488; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7RZfatfnoDsLB5epaAMogBycqq4FCqlGmgqzUhE1mFQ=;
+        b=NU70CkKxIEYY1bCIuWFxGAYOmZzdBqaFCxfaWqH2rghUF33F9S8kRbPPCxf0+S0KJu
+         og3cFydKxQ59iakO3O979htF5fdFXg29lcYXrLEcBlt03EQlNbmSGtzHCG63s1IYbsZr
+         bVIttCYTFy6v1iO6yUFKaD4YohxR3288HTmcWufau2YQsno+9MSYKvrjp32thOMEVeoL
+         Pqcu9WtQWSv5G6LmZM5q2kuTiqpBNu2wlCAsILefuLJGENXdWq2Vcdtx8iInGDZJa422
+         92l35UjZtQVnu4bOYRQepeYVptzwDBooVPKlca1dI0PZbDZe/o8kXzyaWxw06NW6hrqm
+         ywKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706048688; x=1706653488;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=7RZfatfnoDsLB5epaAMogBycqq4FCqlGmgqzUhE1mFQ=;
+        b=AP99Dsqnvdnzm+YyT/VnhzMSo5XsXm8HZbeAM6ZQ4GoIT64eFt9qn2+UH37KVdNaA2
+         61VHB1cYI2y72jl2YNlOZQtdPqhcCCqtZhS2RkZP4swVTXt5i/fpTvKMPRFLLkemr/Eg
+         yedvog1gOV6kgdj7G7StkSjxwGwy18yb8RGdH5MaH7jML8H1oqXnXfNd3SISCe/AScTI
+         jlZKpxx5AOVoxvf3oC6/bRg3CC7m6hP8ijFekBn9Fos5GBV+r6nZ64yr3znT95GtyDND
+         +vHSIZv17EEDeiJt2cIM/1iT1i7qm1SV1ietRwsw9YegbB944yaQH3xu+vZeVQaNE8TC
+         mo5g==
+X-Gm-Message-State: AOJu0YyIKVmjZNTQlwvQUEWFiy0ZG69wB7YzWA5fru5Mm9QVMWEYKNUp
+	HU1YPdZh9HKZcPn+KadQ2Aj0g4TffsAhJ9H+v3gV2X82+uXRXYuLLP2X7p8MzelloHrgpZnlwo6
+	0u38=
+X-Google-Smtp-Source: AGHT+IHM2yfg8XpoA/FXW3Uu+cevk/6sOjZZCe3QgV4LKRd8bBY4QIOtYj8UFiOG0qIbxvalBIpIUQ==
+X-Received: by 2002:a05:6a21:3994:b0:199:d591:9a5a with SMTP id ad20-20020a056a21399400b00199d5919a5amr512556pzc.4.1706048688528;
+        Tue, 23 Jan 2024 14:24:48 -0800 (PST)
+Received: from [192.168.1.150] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id x2-20020aa784c2000000b006dd82bf4c1esm1217126pfn.62.2024.01.23.14.24.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jan 2024 14:24:47 -0800 (PST)
+Message-ID: <544b31f7-6d4b-42f5-a544-1420501f081f@kernel.dk>
+Date: Tue, 23 Jan 2024 15:24:46 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|PAXPR04MB9328:EE_
-X-MS-Office365-Filtering-Correlation-Id: a7c82e3e-e987-421f-9e30-08dc1c620042
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	vGzS5Y/GJ2+G9sfLrAt6DX8QQV9Vl5ImjIWlGZxF+LKTnoSYe4naxzYS3U/Y6rskaYoKkcr0RxD1btdWKoXegwy+Kuga6IvGNmCvPANhdYS7pEOKrPXekw0PmyO9yHjrcVUSDjC7NDm8o5VbAvIEmccMizwhF6n6xEVLoCBuaDmjO1n5/s0ptFzkyiWfdFIrv5re/NnsC2O49sqkUiL5q474emGqpff7vS74oDTKrhTmzXKtjvXDyR8k9PIxwIUs9Ul+w/E1OAB7iFos05sDg+faxlxImH+CwkX/rDO+HF+0D404nPSD/rKeXIahVw7rGknEm+AS3FWZJvSD4uA19E2mBeRXUKT+3HNM3XuQAcJ+tDvya1L8Tp6GHxtQ973Kg0x2q3NtFA4LbjLvUw4l4HPGlsMO8w8UgDbSQUuLy8dJzD9Rdf7akGf3A43ZF2gONLpnGPr30vR9cJurkNOVkkVHYEe4ZEiiR0PcQf6VuiIcsM1QHbL3yic2bYl5jEDlqyC8NhvaywkcoLVSTljltaW7/hZqhUPW5wLCXUFY2FsgYOUAKWtZy6++ODNw7MuD7feASn1uNWJgw/DJ1DSlC7WECwKct9aCDr6LNMD/eDcxYV4CLuX3xTOPYSVHB16T6BPAt4ts+/GWC5qeKUZVhg==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(376002)(136003)(366004)(39860400002)(346002)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(6486002)(478600001)(38100700002)(26005)(83380400001)(6512007)(9686003)(7416002)(6506007)(52116002)(53546011)(6666004)(316002)(6916009)(5660300002)(2906002)(4326008)(8936002)(8676002)(38350700005)(86362001)(66476007)(66946007)(66556008)(33716001)(41300700001)(67856001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?RPNK2RuhINVR6+IoyRXKz65jHH2RBmxhYE0BqrMK2rnBd3DMoKoOURj2P/zN?=
- =?us-ascii?Q?KMkeYNRfUwhe3iBfdLZ+7OHLirT0oAruxiR/OPQ/s4h5Y7zB8oW26W5/PmE9?=
- =?us-ascii?Q?b0mX9dGNKEza4fIodYysgCGnpX0UpbTh9MWuByd68Gpp32LEbC2MB3Z8kkwv?=
- =?us-ascii?Q?Uw+3zPsWrZtnN1sS5mc7bxH8saD2L0ugeHdDLNjoyVQAJQdmbvfEgdgRi4gu?=
- =?us-ascii?Q?jMCKs+EPZI+2DpHvP5oG8h9hKGx2Mp4A7U5P5FevO8glyIe1/i/NtG1QypeK?=
- =?us-ascii?Q?QE4xrNfLvnAgZ+lZMqTXvOtQjOYsYwwi3FIntzpp2HbPSduEYxlQQv+z0AFO?=
- =?us-ascii?Q?cZHYuucZRKwvldV/rwhVnZShCh+FXw/JjpWBeqAjze9y6f6+qTjmOWZh93FU?=
- =?us-ascii?Q?sR9wDvRV9iO/vbz8TgROzorKFt9OomTNjB9x2w+wYCFaqAcGpjgoy+1fN9ql?=
- =?us-ascii?Q?Zd7xsScALw3TEGE8nWTG+uYl2hkDWvUCMjnu91MhmcZDpGZcF8XqIldVNp5g?=
- =?us-ascii?Q?E27TXwcG4QNmTMQ7M+lV/F/VQ6tGGQwtBP0XBmrDUrHiwo2pg7O31whzq/fY?=
- =?us-ascii?Q?wOGRyhOM3VtE2BfW4Ckyza5RDx0GgyNGr7PheLMbCx12Spv4hI+V4iYorwXg?=
- =?us-ascii?Q?hdkSYtwQ66shETydp9+9IZEM6/Lueg7gFrvk5ziYbc56+zUvsVdU5m37qz1L?=
- =?us-ascii?Q?HcytMh533jy5Rjg3gvJn6zJ//FkUwQ4jOpsVcZL4Z0511NJ9NETkyRbxjH0J?=
- =?us-ascii?Q?lB3HnFQpcdlAYPxule1eiT0hTxjvExjckmMn0vutQK5I12rx61CuXmbQg5X8?=
- =?us-ascii?Q?/MRgIBeSxYmh4U26wVURgE5tE1BcNC19FV0RDZcwjHHN+T6beumJ4MvOO73D?=
- =?us-ascii?Q?j4bOTtGQ12mhPJ3bWkUupKeeMZtvhi/LXppt+RqSaxiDbWRfbjAo79AWprzM?=
- =?us-ascii?Q?kwySL4nS9HKeqpAu8l6nGtEGVPApDVj4s023PcyOo/NB6cBJO2pb6Wu3I0eM?=
- =?us-ascii?Q?f2uHd9TZerEgwdJxZ++Cc5BusJ44JnRJjMP+szBz2IsuxeEy+Y7FE2sLFJFU?=
- =?us-ascii?Q?k1EbaHBBumDO4g0k5AuoNm1M+4Q90Ui3Y/7rAYKsrsrFfDl9wWNDsNh37ZcN?=
- =?us-ascii?Q?5/c+7UAHzD3M5IZQWYYoVR6RdUoWkaWm9/nYg7C9D2GWQWUjsKFVvtSxtYkZ?=
- =?us-ascii?Q?pWBGPWbfHISer16u2cqSv+mFAVL8aKWoX/QqJD2xsgHYbEX2+Cf8u4feNgws?=
- =?us-ascii?Q?mK+SRddDZwtCBc4VleIsIO3CMOUX3RG4ZxFQ18amgHBnoHqHUufQ86FNWRXn?=
- =?us-ascii?Q?ZFuOTUGnqZKqu7eKIb9Ud0xbo2gL1ILX+SfRtBQV4rNGlC8NVh8wT0D6xcH8?=
- =?us-ascii?Q?Bbti7bSO/GJOrB8p82aKUTydiII2oBl8CpqEMysTQdjxvYmPevPIigHviX6q?=
- =?us-ascii?Q?6UTsxf+Q3bM2FXNV97eyByfVoUioU6dmB78FknWDTZ8SvL6/Rv5NemsFFF5l?=
- =?us-ascii?Q?eAw2BXfVM5DcRHNNDxQcJbnF0dGUDKNvVGKiVPFoP8984n7102gaRwsOmeb1?=
- =?us-ascii?Q?Ic3UIJcMf4yoBANltNs=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a7c82e3e-e987-421f-9e30-08dc1c620042
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jan 2024 22:24:01.8262
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VATxjQ0QGfUQYj8x8Z3Rp0MjFcuIGEXv8hiBJhS6VPfR4H4H6WtPuaLMmhw2w3srVIqCLgdP0BvzdP8FLVbY8w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9328
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Keith Busch <kbusch@kernel.org>
+From: Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH v2] iov_iter: streamline iovec/bvec alignment iteration
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jan 23, 2024 at 10:46:39PM +0100, Krzysztof Kozlowski wrote:
-> On 23/01/2024 20:22, Frank Li wrote:
-> > On Tue, Jan 23, 2024 at 06:42:27PM +0000, Conor Dooley wrote:
-> >> On Tue, Jan 23, 2024 at 01:02:21PM -0500, Frank Li wrote:
-> >>> On Tue, Jan 23, 2024 at 05:51:48PM +0000, Conor Dooley wrote:
-> >>>> On Tue, Jan 23, 2024 at 12:49:27PM -0500, Frank Li wrote:
-> >>>>> On Tue, Jan 23, 2024 at 05:27:13PM +0000, Conor Dooley wrote:
-> >>>>>> On Tue, Jan 23, 2024 at 12:02:05PM -0500, Frank Li wrote:
-> >>>>>>> Add device tree binding allow platform overwrite default value of *REQIN in
-> >>>>>>> GSBUSCFG0.
-> >>>>>>
-> >>>>>> Why might a platform actually want to do this? Why does this need to be
-> >>>>>> set at the board level and being aware of which SoC is in use is not
-> >>>>>> sufficient for the driver to set the correct values?
-> >>>>>
-> >>>>> In snps,dwc3.yaml, there are already similary proptery, such as
-> >>>>> snps,incr-burst-type-adjustment. Use this method can keep whole dwc3 usb
-> >>>>> driver keep consistent. And not all platform try enable hardware
-> >>>>> dma_cohenrence. It is configable for difference platform.
-> >>>>
-> >>>> When you say "platform", what do you mean? I understand that term to
-> >>>> mean a combination of board, soc and firmware.
-> >>>
-> >>> In my company's environment, "platform" is "board". I will use "board" in
-> >>> future. Is it big difference here?
-> >>
-> >> Nah, that's close enough that it makes no difference here.
-> >>
-> >> I'd still like an explanation for why a platform would need to actually
-> >> set these properties though, and why information about coherency cannot
-> >> be determined from whether or not the boss the usb controller is on is
-> >> communicated to be dma coherent via the existing devicetree properties
-> >> for that purpose.
-> > 
-> > Actually, I am not very clear about reason. I guest maybe treat off power
-> > consumption and performance.
-> > 
-> > What's your judgement about proptery, which should be in dts. Such as
-> > reg, clk, reset, dma and irq, which is tighted with SOC. It is the fixed
-> > value for every SOC. The board dts never change these.
-> 
-> Then it can be deduced from the compatible and there is no need for new
-> properties.
+Rewrite the alignment checking iterators for iovec and bvec to be easier
+to read, and also significantly more compact in terms of generated code.
+This saves 270 bytes of text on x86-64 for me (with clang-18) and 224
+bytes on arm64 (with gcc-13).
 
-Okay, I think "*reqinfo" match this. When new Soc(using compatible dwc usb
-controller) appear regardless dma-cohorence or not, connect by AXI3 or
-AXI4, needn't add new propterties. 
+In profiles, also saves a bit of time as well for the same workload:
 
-Frank
+     0.81%     -0.18%  [kernel.vmlinux]  [k] iov_iter_aligned_bvec
+     0.48%     -0.09%  [kernel.vmlinux]  [k] iov_iter_is_aligned
 
-> 
-> Best regards,
-> Krzysztof
-> 
+which is a nice side benefit as well.
+
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+
+---
+
+v2: do the other half of the iterators too, as suggested by Keith.
+    This further saves some text.
+
+diff --git a/lib/iov_iter.c b/lib/iov_iter.c
+index e0aa6b440ca5..15f5040709c3 100644
+--- a/lib/iov_iter.c
++++ b/lib/iov_iter.c
+@@ -714,12 +714,11 @@ EXPORT_SYMBOL(iov_iter_discard);
+ static bool iov_iter_aligned_iovec(const struct iov_iter *i, unsigned addr_mask,
+ 				   unsigned len_mask)
+ {
++	const struct iovec *iov = iter_iov(i);
+ 	size_t size = i->count;
+ 	size_t skip = i->iov_offset;
+-	unsigned k;
+ 
+-	for (k = 0; k < i->nr_segs; k++, skip = 0) {
+-		const struct iovec *iov = iter_iov(i) + k;
++	do {
+ 		size_t len = iov->iov_len - skip;
+ 
+ 		if (len > size)
+@@ -729,34 +728,36 @@ static bool iov_iter_aligned_iovec(const struct iov_iter *i, unsigned addr_mask,
+ 		if ((unsigned long)(iov->iov_base + skip) & addr_mask)
+ 			return false;
+ 
++		iov++;
+ 		size -= len;
+-		if (!size)
+-			break;
+-	}
++		skip = 0;
++	} while (size);
++
+ 	return true;
+ }
+ 
+ static bool iov_iter_aligned_bvec(const struct iov_iter *i, unsigned addr_mask,
+ 				  unsigned len_mask)
+ {
+-	size_t size = i->count;
++	const struct bio_vec *bvec = i->bvec;
+ 	unsigned skip = i->iov_offset;
+-	unsigned k;
++	size_t size = i->count;
+ 
+-	for (k = 0; k < i->nr_segs; k++, skip = 0) {
+-		size_t len = i->bvec[k].bv_len - skip;
++	do {
++		size_t len = bvec->bv_len;
+ 
+ 		if (len > size)
+ 			len = size;
+ 		if (len & len_mask)
+ 			return false;
+-		if ((unsigned long)(i->bvec[k].bv_offset + skip) & addr_mask)
++		if ((unsigned long)(bvec->bv_offset + skip) & addr_mask)
+ 			return false;
+ 
++		bvec++;
+ 		size -= len;
+-		if (!size)
+-			break;
+-	}
++		skip = 0;
++	} while (size);
++
+ 	return true;
+ }
+ 
+@@ -800,13 +801,12 @@ EXPORT_SYMBOL_GPL(iov_iter_is_aligned);
+ 
+ static unsigned long iov_iter_alignment_iovec(const struct iov_iter *i)
+ {
++	const struct iovec *iov = iter_iov(i);
+ 	unsigned long res = 0;
+ 	size_t size = i->count;
+ 	size_t skip = i->iov_offset;
+-	unsigned k;
+ 
+-	for (k = 0; k < i->nr_segs; k++, skip = 0) {
+-		const struct iovec *iov = iter_iov(i) + k;
++	do {
+ 		size_t len = iov->iov_len - skip;
+ 		if (len) {
+ 			res |= (unsigned long)iov->iov_base + skip;
+@@ -814,30 +814,31 @@ static unsigned long iov_iter_alignment_iovec(const struct iov_iter *i)
+ 				len = size;
+ 			res |= len;
+ 			size -= len;
+-			if (!size)
+-				break;
+ 		}
+-	}
++		iov++;
++		skip = 0;
++	} while (size);
+ 	return res;
+ }
+ 
+ static unsigned long iov_iter_alignment_bvec(const struct iov_iter *i)
+ {
++	const struct bio_vec *bvec = i->bvec;
+ 	unsigned res = 0;
+ 	size_t size = i->count;
+ 	unsigned skip = i->iov_offset;
+-	unsigned k;
+ 
+-	for (k = 0; k < i->nr_segs; k++, skip = 0) {
+-		size_t len = i->bvec[k].bv_len - skip;
+-		res |= (unsigned long)i->bvec[k].bv_offset + skip;
++	do {
++		size_t len = bvec->bv_len - skip;
++		res |= (unsigned long)bvec->bv_offset + skip;
+ 		if (len > size)
+ 			len = size;
+ 		res |= len;
++		bvec++;
+ 		size -= len;
+-		if (!size)
+-			break;
+-	}
++		skip = 0;
++	} while (size);
++
+ 	return res;
+ }
+ 
+-- 
+Jens Axboe
+
 
