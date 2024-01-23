@@ -1,72 +1,72 @@
-Return-Path: <linux-kernel+bounces-35525-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35526-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F2EB839274
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:18:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DEAB839275
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:19:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 318431C21762
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:18:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 919111C22AB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:19:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CA615FEEA;
-	Tue, 23 Jan 2024 15:18:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1AC860256;
+	Tue, 23 Jan 2024 15:18:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Kgq9McNE"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="R9pCU+tj"
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 382615FDA5
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 15:18:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A58260248
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 15:18:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706023110; cv=none; b=IClp+XZPyZrxmCbuNU7c/3TaDkaXQNyaQ6GrSk7KQ2TXUBVunzj5FhmvEt+Vr5g8Uoqh0VNRIwwkxA2BPT3AJZyQsdFsqVUoNg5+2YqAi9/nVHXrCjwMNt1WQyX1eW4qh10srlUTH5y4hspxb0wRsTdN3zX/rJ/hwvSYu+Yl6mI=
+	t=1706023115; cv=none; b=l0LTs1KhNNPPgB1fI6FBk189IhXm5slYR39/NslQckxXDFLX68hpiWeulrx8eDLtM3+howEJoZ8knWNLA6QMekGlm/gNRQffwCRB61em0Y99kgeUsfPbSXULHSYPCIyBNVnaD3TqcLdspJCgXBs2tgvV88WlBXaXTzvK4DifqoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706023110; c=relaxed/simple;
-	bh=Itq3NSID6Drmbq/F+9ZsSxEvJt2e0uUuK3xtMn1lMFM=;
+	s=arc-20240116; t=1706023115; c=relaxed/simple;
+	bh=C+8VjFB4RGWBx+nkDlDTjZfjhb7I6iEjJqhxQsYw1Rg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PtgqCyzkJQvNx6lV85ZzLfSXaFccp5yOqUKjZUrp/eVc+n2sKno1Dsp3eiyuGDTwG/8rY0JqTOvJR98LnZW/cTZ1eaA6/XJEtiOdOceZRkoDAdA5yU34VDH0gBZKVp0l604W1ZJiz6jDO8GreghsdynXjJMJH+8dF5WAvbQeuVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Kgq9McNE; arc=none smtp.client-ip=209.85.128.50
+	 In-Reply-To:Content-Type; b=CzRK9mXkHZA1IYY73+nQmNx45HHBCJz0uP/AnHiycClVqVZ6Y0TjjawWAEDep/fusFfTwnE2l+9Nj0jxFRFjtEmJx/IPfS8iYtZdRzFts/nKaIPwC0kyv4/CMLef5ypou0H0rgFKo1qCxOIJ3m6j5ukwHcKLxpnte0lVViCUg5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=R9pCU+tj; arc=none smtp.client-ip=209.85.128.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40ec2594544so3858335e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:18:28 -0800 (PST)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40e86a9fc4bso57202885e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:18:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706023107; x=1706627907; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1706023112; x=1706627912; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=HP6Nqo2NWBfh4azETS7uJj0+Exi59UwBvQsglRknCIk=;
-        b=Kgq9McNE2mC/HAyk+j44GpT/s1hNhmJMO/xj6WPXq9+3UkKtCayd2CHtpEQtmV8CVI
-         ixyswCZduL09cY0YsO9LmXxrj6cXEizfULrgLBnas2GvIkSYz8Mdm7PZge65AzLkml0s
-         UomK7p+RReCDPbhjbYmQZQLsqeKmvVmnlsBcCPPJIK0bKL8rnsevNHxrunDK4zkbUmFC
-         Y2ADB50Tzs3Ya6Epri3y528Ftg4eR/DWruTol7xRZAlIq2sxZUKiO43wTEKTdp0YdEKM
-         V7fVkI5brPmcv0FZAfKuQfCkxtgxD9zvdjV/w6e/o3I2930dxgOaX197i+5rFqUjS13k
-         csuw==
+        bh=bW+tKYLa+tkFyzUVmdKJmhKlp9+4kSgzkDuHD9MseGA=;
+        b=R9pCU+tjrM1LNO1FgzF7wU00Mn2EP2c4Oti9mQEHnZ0oXwDXjxRpYv9q/XyPmJl4/R
+         9p2aknAeFnwpi6fWeIwazk+e5HmhX1AjX8rfJTR2fknjQs7z3Ok8nV7tE3UAQo4AG4TC
+         UCqDxgsM5zaukK2MXCBFX9VHr6C1DCUaeWhGi2qqSC7nQTgh0p2XmH6+JvRzt9BWgcP/
+         vd0GsMOHLZggSmhyRT9ocZVALox/HOE+q/tGpa2uDWC8AnavlqIKmY0fywGvpI/TScYC
+         FR9cVrFt1AWvniBv4S9lUofTEyEBCfdXzijEONejsnvWPbRZLAO2coMuMLt2p+NlZaV+
+         DpSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706023107; x=1706627907;
+        d=1e100.net; s=20230601; t=1706023112; x=1706627912;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HP6Nqo2NWBfh4azETS7uJj0+Exi59UwBvQsglRknCIk=;
-        b=slVxqlwSPKvJKkCHoYBVHVrvW0Vo9OKqxqPI/AmysCbzRm+XwUt8toYJyurGFjqnxq
-         0NE43Zp5xNufI55zSnmym3RzopnQ/ZUccohgbPX2F3nSCvE8Vrs0q0Z7KzovyNRbuEKi
-         dqb8ZFA/5hm1/YreNn9eZ8GRkQfY005hKEyr5s7Al3XHQ6NeW9tJemoCrJHvuNFAAGAJ
-         CbIPo7JsjM/RGcSNb42HH32DRKx8yguS3Owok59kvvPdNo3oUtjnsOms1ocjNJtag27r
-         4NJIUVSAWAd6EbcK+JwM9e+D2oPSrchJcAKQgXe0kS365VZUqa3mJPaA5vKZ7C9w6mW1
-         mQVQ==
-X-Gm-Message-State: AOJu0YxUtgI6rV5/SqSzRUF/oYfUNsbDBS9wgJOTh8xBdF/yUzAFo37z
-	xscDtKeDpAWzUx4fMoSDMYrdSqgBY8lFKTtCVexCyj+Mc6+d5ZtSukgH4kngLRg=
-X-Google-Smtp-Source: AGHT+IEBl6r8NUvInlZ78GPESlOQV4s6Qol8HgXu/+AAh8XN5ZGNxSP/7yq6wSR6Oh4P3ukkhwnCUA==
-X-Received: by 2002:a05:600c:5696:b0:40e:a38b:3296 with SMTP id jt22-20020a05600c569600b0040ea38b3296mr232625wmb.145.1706023107609;
-        Tue, 23 Jan 2024 07:18:27 -0800 (PST)
+        bh=bW+tKYLa+tkFyzUVmdKJmhKlp9+4kSgzkDuHD9MseGA=;
+        b=QMDVUR9tr6xmesqRPETxG+B4+HnKpXFFQi8QqjgLfVPaUSrjAbZEueITA6Bkp4cedh
+         YTM166BGTUgsJzDEe8P032NITXQK91W8TynHY3QkFK7wNKMywa2FYu+AxNfnc3+a1l/G
+         cIu9MzhrdGoVJZcMpzISI3yn7ORmA0JoPoKuLnfc1wBXwVs6Qi2ZoAnaBhXq4vDv4Odj
+         P7+abkW7Zd+GcL6v5a3px6LsnFbvkDIqT7PCC5MWWbkc4xGiBprl/CdtzS7wbXXXusH1
+         DM+PsQiaiWm7IAdcrfypb6OhLeu2YVCBdZKVVf5t0+gISr/4pXzOK/uhu7rdLjtCzP0u
+         o6wQ==
+X-Gm-Message-State: AOJu0Yzu98zsIUAokCdpOi5WVwIlywjP6SnFEaor+bz71t5XGnZHRc0l
+	IadTpg0HmPPMz3U9yCLpW//3N5I8SBkI66rXPxfdDFuK9dNCeIh7jwWGpE8wsls=
+X-Google-Smtp-Source: AGHT+IGtXpod7BJA581jcJJN46VxNM7ZuoOBXJdQ1fdgbLkyaHvygk/gWS2eSSUBrxmZEgiNOCabWA==
+X-Received: by 2002:a05:600c:4a96:b0:40e:8d64:d9c5 with SMTP id b22-20020a05600c4a9600b0040e8d64d9c5mr249985wmp.83.1706023112273;
+        Tue, 23 Jan 2024 07:18:32 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id s16-20020a5d5110000000b0033763a9ea2dsm7458664wrt.63.2024.01.23.07.18.26
+        by smtp.gmail.com with ESMTPSA id s16-20020a5d5110000000b0033763a9ea2dsm7458664wrt.63.2024.01.23.07.18.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jan 2024 07:18:27 -0800 (PST)
-Message-ID: <1e379b3f-5310-4320-a26a-bdd9ebd6f7b2@linaro.org>
-Date: Tue, 23 Jan 2024 16:18:26 +0100
+        Tue, 23 Jan 2024 07:18:31 -0800 (PST)
+Message-ID: <0b880889-f64f-42b5-a6f9-0b98e95c3b72@linaro.org>
+Date: Tue, 23 Jan 2024 16:18:31 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,13 +74,13 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] memory: emif: Simplify code handling CONFIG_DEBUG_FS
+Subject: Re: [PATCH 2/3] memory: emif: Simplify code handling CONFIG_OF
 Content-Language: en-US
 To: =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
  Santosh Shilimkar <ssantosh@kernel.org>
 Cc: kernel@pengutronix.de, linux-kernel@vger.kernel.org
 References: <cover.1702829744.git.u.kleine-koenig@pengutronix.de>
- <2c7dd66d4a101b74b16e7e1839e30f3c88510c33.1702829744.git.u.kleine-koenig@pengutronix.de>
+ <9d53683c34a730c8579a1468b643b11d1379106e.1702829744.git.u.kleine-koenig@pengutronix.de>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -126,21 +126,22 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <2c7dd66d4a101b74b16e7e1839e30f3c88510c33.1702829744.git.u.kleine-koenig@pengutronix.de>
+In-Reply-To: <9d53683c34a730c8579a1468b643b11d1379106e.1702829744.git.u.kleine-koenig@pengutronix.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 On 17/12/2023 20:31, Uwe Kleine-König wrote:
-> Instead of using #ifdef make use of IS_ENABLED().
-> 
-> According to bloat-o-meter this patch doesn't change code sizes with
-> CONFIG_DEBUG_FS=n.
-> 
-> Also change emif_debugfs_init() to return void. The only caller doesn't
-> check the return value anyhow.
+> The first thing that of_get_memory_device_details() does is calling
+> of_parse_phandle(). With CONFIG_OF=n this returns NULL in a static
+> inline function. So the compiler can determine that
+> of_get_memory_device_details() also returns NULL. bloat-o-meter confirms
+> that this patch has no effects on the size of the generated code for
+> CONFIG_OF=n builds.
 > 
 > Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 > ---
+>  drivers/memory/emif.c | 10 ----------
+>  1 file changed, 10 deletions(-)
 
 Applied.
 
