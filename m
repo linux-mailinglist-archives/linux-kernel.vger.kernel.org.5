@@ -1,144 +1,163 @@
-Return-Path: <linux-kernel+bounces-34668-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34669-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44B8A8385EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 04:08:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B8788385EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 04:09:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7A651F272B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:08:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EC94287994
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:09:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3145615C6;
-	Tue, 23 Jan 2024 03:07:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u/LJqaXd"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95B361848;
+	Tue, 23 Jan 2024 03:08:45 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66D307F4;
-	Tue, 23 Jan 2024 03:07:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26F9A810;
+	Tue, 23 Jan 2024 03:08:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705979268; cv=none; b=E3hlSDjAN3r07Tc93UxchS1f0f82qKGfmbpaE0+eSFnWCUAd4P3ANiEuvmXqwevBUSLI1cO7XhbsNgCEcNMs0MaImlojfZVLHOKPG5AesVATq8npHF777Y1CBfzlaBh0ZAt0U9a38kTh1NTAlbh7/U0AwGAaI29VVfG1h4jxYpc=
+	t=1705979324; cv=none; b=lVzpUm/PbZdcsll3NmNyuVC3g/ImiqYtWfshBD0v1vwW3Thq+j/aOxZEr9puZsTKA47LYErio0iBXeuz2qrhKpvbtC7ozjhJ1IFDwmsFiQ+M53zA5+YPkTgJskwpXt0QY/HS+EC4B3ci07RxRPEBsZ2hfrAb27i0LXFqalmbjJk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705979268; c=relaxed/simple;
-	bh=o4wTotc931zqVVQlDr2E4b8Ny4E6Hx8p/g/DAAJBb9o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JBPAKeFZnMEbzs4iJT4F8/54PXOxRKYJIi+9ynUDFOW3YK2moNdHS9zP7H8u6owo6WAg/QPFSH/RjW2V9Gpg1iMnfZHoN4QhYvV5lrhfSP9r4AK5/Bh/59UbXe2kkU2idub1qviDu1zd9wbQuhWDR4Nbr+tnI0NNdRg/qUuEa7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u/LJqaXd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 760F9C433C7;
-	Tue, 23 Jan 2024 03:07:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705979267;
-	bh=o4wTotc931zqVVQlDr2E4b8Ny4E6Hx8p/g/DAAJBb9o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=u/LJqaXdzPXABiAWTSqIS779zZTu8NmVFjM1fkdYsmWH5Mrxz1yddNFbG7k6on1Jb
-	 Ua/9gtKCbGRNsRDzUJl9Tat56LWaHbw4oB0YXKKmEAWpDqsriwxBO29KMh2bPn3R4Y
-	 7SQ46EnkfgjAF00rMBJMLkRGDVFhDwA43LPBlKshGbH/Lb4FSYI1/XcRNze1RYII3c
-	 uYvxOQSQJNTQCt4euBud8FdXe+NZpk3ta92vlzAR+IZpVPmebK9t5BIWGqqwQYZlH+
-	 aWZ50n1R4CzLWBB5KF/dsATrTjQcLG5iBtYsqLzyy+AZIaWtpyfzqqtcbT2ojE+Tx+
-	 Xp6KjzQg1YKDg==
-Date: Mon, 22 Jan 2024 19:07:45 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Kees Cook <keescook@chromium.org>
-Cc: linux-hardening@vger.kernel.org,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	Aditya Srivastava <yashsri421@gmail.com>,
-	Randy Dunlap <rdunlap@infradead.org>, linux-crypto@vger.kernel.org,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 46/82] crypto: Refactor intentional wrap-around test
-Message-ID: <20240123030745.GA1097@sol.localdomain>
-References: <20240122235208.work.748-kees@kernel.org>
- <20240123002814.1396804-46-keescook@chromium.org>
+	s=arc-20240116; t=1705979324; c=relaxed/simple;
+	bh=nSI4BAqP3x9fASt6i5uBdW1dhisjPKtWVX5mFYjrAB4=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=eJe93iYAKn8zkf6yxuMEDoAaFFHWLsZTV8ucbPQz3wwo6IjB8msxstjiqwgb/IXS9pCVyzmmhA3F/AaadXzjN8LntpZPi+UG5+UOpbGNovrCKu3Om5wlSC0fXOjDYLTqkt7X1jxneR97Ks0clG+V4Pk3Umz2mCFhDe+YRBbq5GU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TJsSb1Wnqz29kf6;
+	Tue, 23 Jan 2024 11:06:55 +0800 (CST)
+Received: from dggpemd500003.china.huawei.com (unknown [7.185.36.29])
+	by mail.maildlp.com (Postfix) with ESMTPS id 5B1EE1406C8;
+	Tue, 23 Jan 2024 11:08:23 +0800 (CST)
+Received: from localhost.localdomain (10.175.101.6) by
+ dggpemd500003.china.huawei.com (7.185.36.29) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1258.28; Tue, 23 Jan 2024 11:08:22 +0800
+From: gaoxingwang <gaoxingwang1@huawei.com>
+To: <edumazet@google.com>
+CC: <davem@davemloft.net>, <dsahern@kernel.org>, <gaoxingwang1@huawei.com>,
+	<liaichun@huawei.com>, <linux-kernel@vger.kernel.org>,
+	<netdev@vger.kernel.org>, <pabeni@redhat.com>, <yanan@huawei.com>,
+	<yoshfuji@linux-ipv6.org>
+Subject: Re: [Discuss]iproute2: ipv6 route add fail
+Date: Tue, 23 Jan 2024 11:08:13 +0800
+Message-ID: <20240123030813.2493801-1-gaoxingwang1@huawei.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <CANn89iK05tppo0neGmKTdU-Dp8Dap6ayxda-++Z3LRp3DFrq+w@mail.gmail.com>
+References: <CANn89iK05tppo0neGmKTdU-Dp8Dap6ayxda-++Z3LRp3DFrq+w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240123002814.1396804-46-keescook@chromium.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemd500003.china.huawei.com (7.185.36.29)
 
-On Mon, Jan 22, 2024 at 04:27:21PM -0800, Kees Cook wrote:
-> In an effort to separate intentional arithmetic wrap-around from
-> unexpected wrap-around, we need to refactor places that depend on this
-> kind of math. One of the most common code patterns of this is:
-> 
-> 	VAR + value < VAR
-> 
-> Notably, this is considered "undefined behavior" for signed and pointer
-> types, which the kernel works around by using the -fno-strict-overflow
-> option in the build[1] (which used to just be -fwrapv). Regardless, we
-> want to get the kernel source to the position where we can meaningfully
-> instrument arithmetic wrap-around conditions and catch them when they
-> are unexpected, regardless of whether they are signed[2], unsigned[3],
-> or pointer[4] types.
-> 
-> Refactor open-coded wrap-around addition test to use add_would_overflow().
-> This paves the way to enabling the wrap-around sanitizers in the future.
-> 
-> Link: https://git.kernel.org/linus/68df3755e383e6fecf2354a67b08f92f18536594 [1]
-> Link: https://github.com/KSPP/linux/issues/26 [2]
-> Link: https://github.com/KSPP/linux/issues/27 [3]
-> Link: https://github.com/KSPP/linux/issues/344 [4]
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Aditya Srivastava <yashsri421@gmail.com>
-> Cc: Randy Dunlap <rdunlap@infradead.org>
-> Cc: linux-crypto@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  crypto/adiantum.c                   | 2 +-
->  drivers/crypto/amcc/crypto4xx_alg.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/crypto/adiantum.c b/crypto/adiantum.c
-> index 60f3883b736a..c2f62ca455af 100644
-> --- a/crypto/adiantum.c
-> +++ b/crypto/adiantum.c
-> @@ -190,7 +190,7 @@ static inline void le128_add(le128 *r, const le128 *v1, const le128 *v2)
->  
->  	r->b = cpu_to_le64(x + y);
->  	r->a = cpu_to_le64(le64_to_cpu(v1->a) + le64_to_cpu(v2->a) +
-> -			   (x + y < x));
-> +			   (add_would_overflow(x, y)));
->  }
->  
->  /* Subtraction in Z/(2^{128}Z) */
-> diff --git a/drivers/crypto/amcc/crypto4xx_alg.c b/drivers/crypto/amcc/crypto4xx_alg.c
-> index e0af611a95d8..33f73234ddd9 100644
-> --- a/drivers/crypto/amcc/crypto4xx_alg.c
-> +++ b/drivers/crypto/amcc/crypto4xx_alg.c
-> @@ -251,7 +251,7 @@ crypto4xx_ctr_crypt(struct skcipher_request *req, bool encrypt)
->  	 * the whole IV is a counter.  So fallback if the counter is going to
->  	 * overlow.
->  	 */
-> -	if (counter + nblks < counter) {
-> +	if (add_would_overflow(counter, nblks)) {
->  		SYNC_SKCIPHER_REQUEST_ON_STACK(subreq, ctx->sw_cipher.cipher);
->  		int ret;
+>> Hello everyone,
+>>
+>> Here is a particular problem with routing.
+>> Sometimes users can run the ip -6 route command to add a route whose destination address is the same as the gateway address, and it can be successfully added. However, adding another route with the same gateway address will fail later.
+>>
+>> Example:
+>> # ip -6 route add 2409:8080:5a0a:60c7::7/128 via 2409:8080:5a0a:60c7::7 dev eth2
+>> # ip -6 route add 2409:8080:5a0a:60c7::8/128 via 2409:8080:5a0a:60c7::7 dev eth2
+>> RTNETLINK answers: No route to host
+>>
+>> Does the kernel not support this application scenario?
+>> Or should the kernel not allow routes with the same destination address as the gateway address to be added so that other more meaningful routes can be added successfully?
+>>
+>> This question puzzles me, thank you very much if your can reply.
+>
+>try running `perf record -e fib6:*` and then run both route commands
+>above. After both have run, Ctrl-C on perf and then run `perf script`
 
-Just to double check, you really intend to forbid *unsigned* integer wraparound?
-This patch's commit message focuses on signed, and barely mentions unsigned.
-The actual code changes in this patch only deals with unsigned.
-
-Also, what's the motivation for addressing the 'x + y < x' case but not other
-cases in the same file?  For example, the le128_add() function which this patch
-modifies has two other intentional wraparounds, which this patch doesn't touch.
-Also, the le128_sub() function just below le128_add() is very similar but does
-wraparound in the other direction.  That's 6 cases in 20 lines of code, but this
-patch only addresses 1.  And of course, lots of other crypto code relies on
-unsigned wraparounds too, which this patch overlooks.  So I'm a bit confused
-about the point of this patch.  If we really wanted to explicitly annotate all
-the intentional wraparounds in a particular piece of code, so that the code can
-be run with the corresponding sanitizer enabled, wouldn't it be necessary to
-actually test the code with that sanitizer enabled to find all the cases?
-
-- Eric
+Here is the result:
+  swapper     0 [002]  5247.545507: fib6:fib6_table_lookup: table 255 oif 3 iif 1 proto 58 ff02::2/0 -> fe80::5054:ff:fe58:e86e/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+  swapper     0 [002]  5247.545511: fib6:fib6_table_lookup: table 254 oif 3 iif 1 proto 58 ff02::2/0 -> fe80::5054:ff:fe58:e86e/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+  swapper     0 [001]  5247.545549: fib6:fib6_table_lookup: table 255 oif 4 iif 1 proto 58 ff02::2/0 -> fe80::5054:ff:fe58:e86e/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+  swapper     0 [001]  5247.545554: fib6:fib6_table_lookup: table 254 oif 4 iif 1 proto 58 ff02::2/0 -> fe80::5054:ff:fe58:e86e/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [001]  5247.545562: fib6:fib6_table_lookup: table 255 oif 0 iif 4 proto 58 fe80::5054:ff:fe58:e86e/0 -> ff02::2/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+       ip 59595 [001]  5247.593130: fib6:fib6_table_lookup: table 254 oif 4 iif 0 proto 0 ::/0 -> 2409:8080:5a0a:60c7::7/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+     bash 59600 [002]  5247.598824: fib6:fib6_table_lookup: table 255 oif 0 iif 3 proto 58 fe80::5054:ff:feb7:19af/0 -> ff02::1:ffb7:19af/0 tos 0 scope 0 flags 0 ==> dev eth1 gw :: err 0
+  swapper     0 [001]  5247.598824: fib6:fib6_table_lookup: table 255 oif 0 iif 4 proto 58 fe80::5054:ff:feb7:19af/0 -> ff02::1:ffb7:19af/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [002]  5247.636429: fib6:fib6_table_lookup: table 255 oif 0 iif 3 proto 0 ::/0 -> ff02::16/0 tos 0 scope 0 flags 0 ==> dev eth1 gw :: err 0
+  swapper     0 [001]  5247.636465: fib6:fib6_table_lookup: table 255 oif 0 iif 4 proto 0 ::/0 -> ff02::16/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [002]  5247.641108: fib6:fib6_table_lookup: table 255 oif 3 iif 1 proto 17 ff02::fb/0 -> fe80::5054:ff:fe93:d0db/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+  swapper     0 [002]  5247.641112: fib6:fib6_table_lookup: table 254 oif 3 iif 1 proto 17 ff02::fb/0 -> fe80::5054:ff:fe93:d0db/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+  swapper     0 [001]  5247.641118: fib6:fib6_table_lookup: table 255 oif 4 iif 1 proto 17 ff02::fb/0 -> fe80::5054:ff:fe93:d0db/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+  swapper     0 [001]  5247.641128: fib6:fib6_table_lookup: table 254 oif 4 iif 1 proto 17 ff02::fb/0 -> fe80::5054:ff:fe93:d0db/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [001]  5247.641134: fib6:fib6_table_lookup: table 255 oif 0 iif 4 proto 17 fe80::5054:ff:fe93:d0db/0 -> ff02::fb/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [001]  5247.642525: fib6:fib6_table_lookup: table 255 oif 4 iif 1 proto 17 ff02::fb/0 -> fe80::5054:ff:fe37:e95a/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+  swapper     0 [001]  5247.642532: fib6:fib6_table_lookup: table 254 oif 4 iif 1 proto 17 ff02::fb/0 -> fe80::5054:ff:fe37:e95a/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [001]  5247.642537: fib6:fib6_table_lookup: table 255 oif 0 iif 4 proto 17 fe80::5054:ff:fe37:e95a/0 -> ff02::fb/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [002]  5247.642549: fib6:fib6_table_lookup: table 255 oif 3 iif 1 proto 17 ff02::fb/0 -> fe80::5054:ff:fe37:e95a/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+  swapper     0 [002]  5247.642552: fib6:fib6_table_lookup: table 254 oif 3 iif 1 proto 17 ff02::fb/0 -> fe80::5054:ff:fe37:e95a/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+  swapper     0 [001]  5247.689676: fib6:fib6_table_lookup: table 255 oif 4 iif 1 proto 58 ff02::2/0 -> fe80::5054:ff:fe09:14e5/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+  swapper     0 [002]  5247.689680: fib6:fib6_table_lookup: table 255 oif 3 iif 1 proto 58 ff02::2/0 -> fe80::5054:ff:fe09:14e5/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+  swapper     0 [002]  5247.689682: fib6:fib6_table_lookup: table 254 oif 3 iif 1 proto 58 ff02::2/0 -> fe80::5054:ff:fe09:14e5/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+  swapper     0 [001]  5247.689684: fib6:fib6_table_lookup: table 254 oif 4 iif 1 proto 58 ff02::2/0 -> fe80::5054:ff:fe09:14e5/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [001]  5247.689690: fib6:fib6_table_lookup: table 255 oif 0 iif 4 proto 58 fe80::5054:ff:fe09:14e5/0 -> ff02::2/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [002]  5247.716616: fib6:fib6_table_lookup: table 255 oif 0 iif 3 proto 0 ::/0 -> ff02::16/0 tos 0 scope 0 flags 0 ==> dev eth1 gw :: err 0
+  swapper     0 [001]  5247.716616: fib6:fib6_table_lookup: table 255 oif 0 iif 4 proto 0 ::/0 -> ff02::16/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [001]  5247.716845: fib6:fib6_table_lookup: table 255 oif 0 iif 4 proto 58 ::/0 -> ff02::1:ff0f:9a04/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [002]  5247.716907: fib6:fib6_table_lookup: table 255 oif 0 iif 3 proto 58 ::/0 -> ff02::1:ff0f:9a04/0 tos 0 scope 0 flags 0 ==> dev eth1 gw :: err 0
+  swapper     0 [001]  5247.778211: fib6:fib6_table_lookup: table 255 oif 0 iif 4 proto 58 ::/0 -> ff02::1:ff05:7/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [002]  5247.778243: fib6:fib6_table_lookup: table 255 oif 0 iif 3 proto 58 ::/0 -> ff02::1:ff05:7/0 tos 0 scope 0 flags 0 ==> dev eth1 gw :: err 0
+  swapper     0 [001]  5247.823813: fib6:fib6_table_lookup: table 255 oif 4 iif 1 proto 58 ff02::2/0 -> fe80::5054:ff:feba:b2fc/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+  swapper     0 [002]  5247.823816: fib6:fib6_table_lookup: table 255 oif 3 iif 1 proto 58 ff02::2/0 -> fe80::5054:ff:feba:b2fc/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+  swapper     0 [001]  5247.823818: fib6:fib6_table_lookup: table 254 oif 4 iif 1 proto 58 ff02::2/0 -> fe80::5054:ff:feba:b2fc/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [002]  5247.823821: fib6:fib6_table_lookup: table 254 oif 3 iif 1 proto 58 ff02::2/0 -> fe80::5054:ff:feba:b2fc/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+  swapper     0 [001]  5247.823824: fib6:fib6_table_lookup: table 255 oif 0 iif 4 proto 58 fe80::5054:ff:feba:b2fc/0 -> ff02::2/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [001]  5247.867777: fib6:fib6_table_lookup: table 255 oif 0 iif 4 proto 0 ::/0 -> ff02::16/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [002]  5247.867820: fib6:fib6_table_lookup: table 255 oif 0 iif 3 proto 0 ::/0 -> ff02::16/0 tos 0 scope 0 flags 0 ==> dev eth1 gw :: err 0
+  swapper     0 [002]  5247.958396: fib6:fib6_table_lookup: table 255 oif 0 iif 3 proto 0 ::/0 -> ff02::16/0 tos 0 scope 0 flags 0 ==> dev eth1 gw :: err 0
+  swapper     0 [001]  5247.958431: fib6:fib6_table_lookup: table 255 oif 0 iif 4 proto 0 ::/0 -> ff02::16/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [001]  5247.959463: fib6:fib6_table_lookup: table 255 oif 0 iif 4 proto 0 ::/0 -> ff02::16/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [002]  5247.959503: fib6:fib6_table_lookup: table 255 oif 0 iif 3 proto 0 ::/0 -> ff02::16/0 tos 0 scope 0 flags 0 ==> dev eth1 gw :: err 0
+  swapper     0 [001]  5247.960377: fib6:fib6_table_lookup: table 255 oif 0 iif 4 proto 0 ::/0 -> ff02::16/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [002]  5247.960442: fib6:fib6_table_lookup: table 255 oif 0 iif 3 proto 0 ::/0 -> ff02::16/0 tos 0 scope 0 flags 0 ==> dev eth1 gw :: err 0
+  swapper     0 [001]  5247.961515: fib6:fib6_table_lookup: table 255 oif 0 iif 4 proto 0 ::/0 -> ff02::16/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [002]  5247.961525: fib6:fib6_table_lookup: table 255 oif 0 iif 3 proto 0 ::/0 -> ff02::16/0 tos 0 scope 0 flags 0 ==> dev eth1 gw :: err 0
+  swapper     0 [002]  5247.962557: fib6:fib6_table_lookup: table 255 oif 0 iif 3 proto 0 ::/0 -> ff02::16/0 tos 0 scope 0 flags 0 ==> dev eth1 gw :: err 0
+  swapper     0 [001]  5247.962557: fib6:fib6_table_lookup: table 255 oif 0 iif 4 proto 0 ::/0 -> ff02::16/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [001]  5247.963515: fib6:fib6_table_lookup: table 255 oif 0 iif 4 proto 0 ::/0 -> ff02::16/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [002]  5247.963524: fib6:fib6_table_lookup: table 255 oif 0 iif 3 proto 0 ::/0 -> ff02::16/0 tos 0 scope 0 flags 0 ==> dev eth1 gw :: err 0
+  swapper     0 [001]  5247.965165: fib6:fib6_table_lookup: table 255 oif 0 iif 4 proto 0 ::/0 -> ff02::16/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [002]  5247.965178: fib6:fib6_table_lookup: table 255 oif 0 iif 3 proto 0 ::/0 -> ff02::16/0 tos 0 scope 0 flags 0 ==> dev eth1 gw :: err 0
+  swapper     0 [002]  5248.014889: fib6:fib6_table_lookup: table 255 oif 0 iif 3 proto 58 fe80::5054:ff:fe8f:5578/0 -> ff02::1:ff35:6cd7/0 tos 0 scope 0 flags 0 ==> dev eth1 gw :: err 0
+  swapper     0 [001]  5248.014890: fib6:fib6_table_lookup: table 255 oif 0 iif 4 proto 58 fe80::5054:ff:fe8f:5578/0 -> ff02::1:ff35:6cd7/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+       ip 59608 [002]  5248.054418: fib6:fib6_table_lookup: table 254 oif 4 iif 0 proto 0 ::/0 -> 2409:8080:5a0a:60c7::7/0 tos 0 scope 0 flags 0 ==> dev eth2 gw 2409:8080:5a0a:60c7::7 err 0
+       ip 59608 [002]  5248.054422: fib6:fib6_table_lookup: table 255 oif 4 iif 0 proto 0 ::/0 -> 2409:8080:5a0a:60c7::7/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+       ip 59608 [002]  5248.054423: fib6:fib6_table_lookup: table 254 oif 4 iif 0 proto 0 ::/0 -> 2409:8080:5a0a:60c7::7/0 tos 0 scope 0 flags 0 ==> dev eth2 gw 2409:8080:5a0a:60c7::7 err 0
+  swapper     0 [001]  5248.083555: fib6:fib6_table_lookup: table 255 oif 0 iif 4 proto 58 fe80::5054:ff:fec6:b788/0 -> ff02::1:ffc6:b788/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [002]  5248.083555: fib6:fib6_table_lookup: table 255 oif 0 iif 3 proto 58 fe80::5054:ff:fec6:b788/0 -> ff02::1:ffc6:b788/0 tos 0 scope 0 flags 0 ==> dev eth1 gw :: err 0
+  swapper     0 [001]  5248.102781: fib6:fib6_table_lookup: table 255 oif 4 iif 1 proto 58 ff02::16/0 -> fe80::5054:ff:fed0:af21/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+  swapper     0 [001]  5248.102788: fib6:fib6_table_lookup: table 254 oif 4 iif 1 proto 58 ff02::16/0 -> fe80::5054:ff:fed0:af21/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [001]  5248.102793: fib6:fib6_table_lookup: table 255 oif 0 iif 4 proto 0 fe80::5054:ff:fed0:af21/0 -> ff02::16/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [002]  5248.102801: fib6:fib6_table_lookup: table 255 oif 3 iif 1 proto 58 ff02::16/0 -> fe80::5054:ff:fed0:af21/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+  swapper     0 [002]  5248.102805: fib6:fib6_table_lookup: table 254 oif 3 iif 1 proto 58 ff02::16/0 -> fe80::5054:ff:fed0:af21/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+  swapper     0 [002]  5248.119317: fib6:fib6_table_lookup: table 255 oif 0 iif 3 proto 58 33:33::fe:1b2b/0 -> ff02::1:ff07:3b36/0 tos 0 scope 0 flags 0 ==> dev eth1 gw :: err 0
+  swapper     0 [001]  5248.119424: fib6:fib6_table_lookup: table 255 oif 0 iif 4 proto 58 33:33::fe:1b2b/0 -> ff02::1:ff07:3b36/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [001]  5248.140988: fib6:fib6_table_lookup: table 255 oif 4 iif 1 proto 17 ff02::fb/0 -> fe80::5054:ff:feea:2acb/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+  swapper     0 [001]  5248.140994: fib6:fib6_table_lookup: table 254 oif 4 iif 1 proto 17 ff02::fb/0 -> fe80::5054:ff:feea:2acb/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [001]  5248.140999: fib6:fib6_table_lookup: table 255 oif 0 iif 4 proto 17 fe80::5054:ff:feea:2acb/0 -> ff02::fb/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [002]  5248.141018: fib6:fib6_table_lookup: table 255 oif 3 iif 1 proto 17 ff02::fb/0 -> fe80::5054:ff:feea:2acb/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+  swapper     0 [002]  5248.141021: fib6:fib6_table_lookup: table 254 oif 3 iif 1 proto 17 ff02::fb/0 -> fe80::5054:ff:feea:2acb/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+  swapper     0 [001]  5248.141998: fib6:fib6_table_lookup: table 255 oif 4 iif 1 proto 17 ff02::fb/0 -> fe80::5054:ff:fe19:9964/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+  swapper     0 [001]  5248.142003: fib6:fib6_table_lookup: table 254 oif 4 iif 1 proto 17 ff02::fb/0 -> fe80::5054:ff:fe19:9964/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [002]  5248.142006: fib6:fib6_table_lookup: table 255 oif 3 iif 1 proto 17 ff02::fb/0 -> fe80::5054:ff:fe19:9964/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+  swapper     0 [001]  5248.142006: fib6:fib6_table_lookup: table 255 oif 0 iif 4 proto 17 fe80::5054:ff:fe19:9964/0 -> ff02::fb/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
+  swapper     0 [002]  5248.142009: fib6:fib6_table_lookup: table 254 oif 3 iif 1 proto 17 ff02::fb/0 -> fe80::5054:ff:fe19:9964/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+systemctl 59624 [002]  5248.165214: fib6:fib6_table_lookup: table 255 oif 3 iif 1 proto 58 ff02::16/0 -> fe80::6390:1eeb:fded:e180/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+  swapper     0 [001]  5248.165214: fib6:fib6_table_lookup: table 255 oif 4 iif 1 proto 58 ff02::16/0 -> fe80::6390:1eeb:fded:e180/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+systemctl 59624 [002]  5248.165217: fib6:fib6_table_lookup: table 254 oif 3 iif 1 proto 58 ff02::16/0 -> fe80::6390:1eeb:fded:e180/0 tos 0 scope 0 flags 0 ==> dev lo gw :: err -113
+  swapper     0 [001]  5248.165219: fib6:fib6_table_lookup: table 254 oif 4 iif 1 proto 58 ff02::16/0 -> fe80::6390:1eeb:fded:e180/0 tos 0 scope 0 flags 0 ==> dev eth2 gw :: err 0
 
