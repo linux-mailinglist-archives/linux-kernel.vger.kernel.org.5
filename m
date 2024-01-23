@@ -1,190 +1,113 @@
-Return-Path: <linux-kernel+bounces-34995-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34996-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41DD0838A4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:27:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4B8C838A4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:28:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C30871F23A5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:27:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2FD5BB23CC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:28:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3714D59B69;
-	Tue, 23 Jan 2024 09:27:33 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4078059B4A;
-	Tue, 23 Jan 2024 09:27:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 875945A0F5;
+	Tue, 23 Jan 2024 09:27:35 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB76257894;
+	Tue, 23 Jan 2024 09:27:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706002052; cv=none; b=KXTmKcrPZMC7467urmHRikfGdT6qL2NMUbBUAOX++bb0lVUYCdjfz7qhJYcrqAEK5kYZNdV3HH8yku6jCfv0/ZVRInYA7FdsryA8miZ7jrpxdxcTiPn1Pinmzlouxumc83euLjX5qyzXNSAU2xVVb/o9r/0tAapIn1inV5Vf4hQ=
+	t=1706002055; cv=none; b=ctw+aAnJQ0RImERsx6AKVX5Q6+4GdyDWlD3qwpv4hxrTLjZQT0q5vzy+UyOP8SRhSI8t89Y2JgOIBtUlSGVlsV1NI3KNjaIn8fu03I0Di6j5P2Eq/Y+t4Vc0G/A8SVsTqBxyyU1ChAr4y3buSq19OCcV0G2mtnrckHTeqiR/hDI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706002052; c=relaxed/simple;
-	bh=G0yzi1lG3fmcjNl/RGBz0t5QUu3R0RD1gtXtI6hWloQ=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GBjKR0ha1er+wuv6XsA0lRlisBqjMfFZnlRSx+1+OyTjIVVkKkXyZVbTOtbuO+XVvpSmtmHKA1xPK/WDy4KpiWK9wE9n42YPYE3kej1w3bdhyh0zeHjWXao9mtcRYbSiPePJKKcaUe2j0KlAoaoaM+G7ZdWDgrTGcxzG8wqSNeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TK1rm0gmyz6K6JX;
-	Tue, 23 Jan 2024 17:24:56 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9EBF81406AD;
-	Tue, 23 Jan 2024 17:27:26 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 23 Jan
- 2024 09:27:26 +0000
-Date: Tue, 23 Jan 2024 09:27:25 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-CC: "Rafael J. Wysocki" <rafael@kernel.org>, <linux-pm@vger.kernel.org>,
-	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
-	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-riscv@lists.infradead.org>,
-	<kvmarm@lists.linux.dev>, <x86@kernel.org>,
-	<acpica-devel@lists.linuxfoundation.org>, <linux-csky@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <linux-ia64@vger.kernel.org>,
-	<linux-parisc@vger.kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, <jianyong.wu@arm.com>,
-	<justin.he@arm.com>, James Morse <james.morse@arm.com>,
-	<vishnu@os.amperecomputing.com>, <miguel.luis@oracle.com>
-Subject: Re: [PATCH RFC v3 03/21] ACPI: processor: Register CPUs that are
- online, but not described in the DSDT
-Message-ID: <20240123092725.00004382@Huawei.com>
-In-Reply-To: <Za6mHRJVjb6M1mun@shell.armlinux.org.uk>
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
-	<E1rDOg2-00Dvjk-RI@rmk-PC.armlinux.org.uk>
-	<CAJZ5v0ju1JHgpjuFLHZVs4NZiARG6iBZN_wza6c2e0kDhZjK0w@mail.gmail.com>
-	<ZaURtUvWQyjYfiiO@shell.armlinux.org.uk>
-	<20240122160227.00002d83@Huawei.com>
-	<CAJZ5v0hamuXJ_w-TSmVb=5jGide=Lb7sCjbzzNb_rFuPrvkgxQ@mail.gmail.com>
-	<Za6mHRJVjb6M1mun@shell.armlinux.org.uk>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1706002055; c=relaxed/simple;
+	bh=JysJK2JlLSGAqooo7PY7sHFbY2NERVJ2AeZzg9T9Avs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GYITShRv65SI0CSI03bGXJWqSYw10KyF+5gNfF2PKUVcn6BJjZEw9lI2VrFKq7YGWMAPFzWE1gYYMoHn8w4gunWfxKiggJbHpLVLXu7ZBIPkjzke8kKJ5jkBQd9rZ7XJ3ohoT8ZkhdtB+5lIaBys2M181/6FVj2iqPL6+ojuk40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6F7261FB;
+	Tue, 23 Jan 2024 01:28:17 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.48.47])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C27CC3F5A1;
+	Tue, 23 Jan 2024 01:27:29 -0800 (PST)
+Date: Tue, 23 Jan 2024 09:27:26 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Kees Cook <keescook@chromium.org>
+Cc: linux-hardening@vger.kernel.org, Will Deacon <will@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 10/82] locking/atomic/x86: Silence intentional wrapping
+ addition
+Message-ID: <Za-GfqSFEA_4fUtA@FVFF77S0Q05N>
+References: <20240122235208.work.748-kees@kernel.org>
+ <20240123002814.1396804-10-keescook@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: lhrpeml500003.china.huawei.com (7.191.162.67) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240123002814.1396804-10-keescook@chromium.org>
 
-On Mon, 22 Jan 2024 17:30:05 +0000
-"Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
+On Mon, Jan 22, 2024 at 04:26:45PM -0800, Kees Cook wrote:
+> Annotate atomic_add_return() to avoid signed overflow instrumentation.
+> It is expected to wrap around.
+> 
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: x86@kernel.org
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  arch/x86/include/asm/atomic.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/include/asm/atomic.h b/arch/x86/include/asm/atomic.h
+> index 55a55ec04350..4120cdd87da8 100644
+> --- a/arch/x86/include/asm/atomic.h
+> +++ b/arch/x86/include/asm/atomic.h
+> @@ -80,7 +80,7 @@ static __always_inline bool arch_atomic_add_negative(int i, atomic_t *v)
+>  }
+>  #define arch_atomic_add_negative arch_atomic_add_negative
+>  
+> -static __always_inline int arch_atomic_add_return(int i, atomic_t *v)
+> +static __always_inline __signed_wrap int arch_atomic_add_return(int i, atomic_t *v)
+>  {
+>  	return i + xadd(&v->counter, i);
+>  }
 
-> On Mon, Jan 22, 2024 at 05:22:46PM +0100, Rafael J. Wysocki wrote:
-> > On Mon, Jan 22, 2024 at 5:02=E2=80=AFPM Jonathan Cameron
-> > <Jonathan.Cameron@huawei.com> wrote: =20
-> > >
-> > > On Mon, 15 Jan 2024 11:06:29 +0000
-> > > "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
-> > > =20
-> > > > On Mon, Dec 18, 2023 at 09:22:03PM +0100, Rafael J. Wysocki wrote: =
-=20
-> > > > > On Wed, Dec 13, 2023 at 1:49=E2=80=AFPM Russell King <rmk+kernel@=
-armlinux.org.uk> wrote: =20
-> > > > > >
-> > > > > > From: James Morse <james.morse@arm.com>
-> > > > > >
-> > > > > > ACPI has two descriptions of CPUs, one in the MADT/APIC table, =
-the other
-> > > > > > in the DSDT. Both are required. (ACPI 6.5's 8.4 "Declaring Proc=
-essors"
-> > > > > > says "Each processor in the system must be declared in the ACPI
-> > > > > > namespace"). Having two descriptions allows firmware authors to=
- get
-> > > > > > this wrong.
-> > > > > >
-> > > > > > If CPUs are described in the MADT/APIC, they will be brought on=
-line
-> > > > > > early during boot. Once the register_cpu() calls are moved to A=
-CPI,
-> > > > > > they will be based on the DSDT description of the CPUs. When CP=
-Us are
-> > > > > > missing from the DSDT description, they will end up online, but=
- not
-> > > > > > registered.
-> > > > > >
-> > > > > > Add a helper that runs after acpi_init() has completed to regis=
-ter
-> > > > > > CPUs that are online, but weren't found in the DSDT. Any CPU th=
-at
-> > > > > > is registered by this code triggers a firmware-bug warning and =
-kernel
-> > > > > > taint.
-> > > > > >
-> > > > > > Qemu TCG only describes the first CPU in the DSDT, unless cpu-h=
-otplug
-> > > > > > is configured. =20
-> > > > >
-> > > > > So why is this a kernel problem? =20
-> > > >
-> > > > So what are you proposing should be the behaviour here? What this
-> > > > statement seems to be saying is that QEMU as it exists today only
-> > > > describes the first CPU in DSDT. =20
-> > >
-> > > This confuses me somewhat, because I'm far from sure which machines t=
-his
-> > > is true for in QEMU.  I'm guessing it's a legacy thing with
-> > > some old distro version of QEMU - so we'll have to paper over it anyw=
-ay
-> > > but for current QEMU I'm not sure it's true.
-> > >
-> > > Helpfully there are a bunch of ACPI table tests so I've been checking
-> > > through all the multi CPU cases.
-> > >
-> > > CPU hotplug not enabled.
-> > > pc/DSDT.dimmpxm  - 4x Processor entries.  -smp 4
-> > > pc/DSDT.acpihmat - 2x Processor entries.  -smp 2
-> > > q35/DSDT.acpihmat - 2x Processor entries. -smp 2
-> > > virt/DSDT.acpihmatvirt - 4x ACPI0007 entries -smp 4
-> > > q35/DSDT.acpihmat-noinitiator - 4 x Processor () entries -smp 4
-> > > virt/DSDT.topology - 8x ACPI0007 entries
-> > >
-> > > I've also looked at the code and we have various types of
-> > > CPU hotplug on x86 but they all build appropriate numbers of
-> > > Processor() entries in DSDT.
-> > > Arm likewise seems to build the right number of ACPI0007 entries
-> > > (and doesn't yet have CPU HP support).
-> > >
-> > > If anyone can add a reference on why this is needed that would be very
-> > > helpful. =20
-> >=20
-> > Yes, it would.
-> >=20
-> > Personally, I would prefer to assume that it is not necessary until it
-> > turns out that (1) there is firmware with this issue actually in use
-> > and (2) updating the firmware in question to follow the specification
-> > is not practical.
-> >=20
-> > Otherwise, we'd make it easier to ship non-compliant firmware for no
-> > good reason. =20
->=20
-> If Salil can't come up with a reason, then I'm in favour of dropping
-> the patch like already done for patch 2. If the code change serves no
-> useful purpose, there's no point in making the change.
->=20
+I think that here (and in the arm64 patch) it'd be better to use add_wrap() on
+the specific statement, i.e. have:
 
-Salil's out today, but I've messaged him to follow up later in the week.
+static __always_inline int arch_atomic_add_return(int i, atomic_t *v)
+{
+	return add_wrap(i, xadd(&v->counter, i));
+}
 
-It 'might' be the odd cold plug path where QEMU half comes up, then extra
-CPUs are added, then it boots. (used by some orchestration frameworks)
-I don't have a set up for that and I won't get to creating one today anyway
-(we all love start of the year planning workshops!)
+.. since otherwise the annotation could applly to the '+' or something else
+(e.g. if the 'xadd() part is a special macro), and the annotation might
+unexpectedly hide things if we add other statements here in future.
 
-I've +CC'd a few people have run tests on the various iterations of this
-work in the past.  Maybe one of them can shed some light on this?
+Mark.
 
-Jonathan
-
-
-
-
+> -- 
+> 2.34.1
+> 
 
