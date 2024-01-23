@@ -1,120 +1,127 @@
-Return-Path: <linux-kernel+bounces-35586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35589-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 610178393B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:51:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD4168393BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:52:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15F691F2371B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:51:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E057E1C25DE4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:52:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5E336088B;
-	Tue, 23 Jan 2024 15:44:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CACEC60B8F;
+	Tue, 23 Jan 2024 15:45:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fB/DiWid"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CZeSQHkG"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2EA06BB4A;
-	Tue, 23 Jan 2024 15:44:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83FC060B8B;
+	Tue, 23 Jan 2024 15:45:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706024683; cv=none; b=f1A6UX24eLgMWP7KShHbUGdXYYo5f37io6c5VF+OizmHuncpGhOyNjN3UDwC4N8KL6YcR6fcNrm9/nXtNelbFXAxFB0VY8FtUtcS9yfL2zVqN9mG+MVWZzSQ6lC6RbY8NLgNnz3rr8hkWs81n2gxfoL44JnuHSBLzFyPvaiV7sQ=
+	t=1706024733; cv=none; b=VDDLG2+UaNvUoCuvwZN0qeovtZcIQagB6EI2Pb2UOxjpm4NiA/jhggpFOAWsalPEyYvCvvUWT+mAr/aKiq20WKQOb9+CrGZjGQjLCt1h9s/Kx1HWqqg7G4feETTVcIk6wj3PH96JhhOOZ7bfRpA2APESlGjZ6J2bnvtGA8pMKSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706024683; c=relaxed/simple;
-	bh=rVS8jGbR1XkYYdRYiPqWd3eo7KWQ9uoG2lTEv7reHhc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VkQToUSmZ0d6nVHVqJvoUHrxUZwZ3e47uw7OlYfKVHTVBcjj+e7sfJg26eGdyHE9Jx4qMvWvqrk7/3B+GTek+msY+oo5R5uN0KjqPa237gWfJIEN0pGKV4ZZj5TmX2ADyYSQZB2uZ7pEuvKnNiq3pQluNEWlPQ2dmOmj1KG+d3o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fB/DiWid; arc=none smtp.client-ip=209.85.167.49
+	s=arc-20240116; t=1706024733; c=relaxed/simple;
+	bh=hdBYdUxOFq+kbS0ASigOqpNwC+DLJhVJWkE9MFnLlNM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gfBDtEsYyPOGrly7wPLeMXP9qOBAHeQoGyj2uHl+FJmHvQl1IMmeoKpFnmNwVA8cvcg7WAeTW6jkUp9oKa5IfwcfZNufD+yjmizinWZfaCMFz+KqC3FsxqkjRzyI6o+QSKQ/Vj7m/utrO7AWv3XO+xwq4pWJN/vy9LnWbVhVIU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CZeSQHkG; arc=none smtp.client-ip=209.85.218.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-50eabfac2b7so5608743e87.0;
-        Tue, 23 Jan 2024 07:44:36 -0800 (PST)
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a2f79e79f0cso432919166b.2;
+        Tue, 23 Jan 2024 07:45:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706024674; x=1706629474; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=uyKGGaXH67qi8vCo0maX5/zi228Y+OGFXkTPJDuBuaU=;
-        b=fB/DiWidXcfoGe+tqkkxStXuslmPJHkl8TwlP9TmNeukffaZuvABIaVpxIqSgwMqr9
-         P7k7qN+N/XyK7t787EZ3DQesEEm6QkILlrIE4GpSgoC4juvJ5nVIKdeINmGzZ/2OH/iv
-         jDjn3ttUyNYTEGKYL0egvNlsDNWyyRb6Rf3VBS+4aRy5/10x1Y5elwzBgBbo4lle9hqA
-         6eHTifJPhSWgIwohEMXfo0/xvZKBujgqFLUuRvulusT/UT8cw9mFZLoRHf65OiAK4qCC
-         DnfwiqnycBuULJHc+GxBqs1HZBGNqqvGwczd+udUB+4fwhDpSjMgQBTSQuwT+BY8t6ON
-         twKQ==
+        d=gmail.com; s=20230601; t=1706024730; x=1706629530; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jtlKdxisJ1H4nXUQnaiF3tGiczuUPAFtsLVHqqe+6VI=;
+        b=CZeSQHkGMHeHcWoEL36DbEv7o+4X+RJNWCIdD8+W1P+K4k+jfUQ1YVoX4T0x2i+1jI
+         SEcl88ixaxRdtNvzOSkg3fZ91d2hf0jv2x+hGfB2GWS1j8hiH+SmA8WwHOXyJdHBiVHl
+         RcX/LnoWaCSCvKE7uGtvKVkU3aD47GIy3p2tP+T0VIcGHoyNGe26kBJ9Syh6vStbbIEk
+         WW7K9tgSgUtbJ7Wx+HrNLTvQbsVk+d0aFSq9KuwTo46llJ4sp+YSxbaATOiLbW7qf6yG
+         Gk05kK7UaJrRtT//vaX3TvKpw32CN5FE5Vvv/69QtQkJP/Bho6UhQFd7cqO0HbCClN4H
+         c3/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706024674; x=1706629474;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uyKGGaXH67qi8vCo0maX5/zi228Y+OGFXkTPJDuBuaU=;
-        b=vdBMkCumAs1lJaUHT6gBXtPjNr9tIo9MLoQqwgOcKHKfb5wT+FMcLtvRkZeVbeLBbw
-         YonfIzJN6ACkU/lGplYnudYfyp6DLyc+XLqZdcn6sEC9lFjssTjwx88GwKqvjx3YQhi8
-         1LE9xoJId/WMYp6kyrLW0R/Aa55JR1xK4xsN1ZwUIBPdOCUb0xv4hNwPDLaf56aG72We
-         cBhOnUAlvOWRamstbfZFCsslCQkaR1FD/QhFkjCrZrdMENlzPp/FDmsYjTeuO1ygcP5t
-         XlqHWRV5wRaZ9pXcsMBaYKsmr0+rgGZ4cUtqfLZGu3OQLvVyKcx5jnm2yhY4thu786L5
-         CY2w==
-X-Gm-Message-State: AOJu0Yzxm8k/ATojyEMj/cChwrV5AGsbhTry66bW7kiWevYand17vqWp
-	K/kcaMhkUrkyTnFGpdsiMl1JkMUHl/H0K9yynvc88mz4UjO8Ltq5
-X-Google-Smtp-Source: AGHT+IGvZs9WnjBR1iDMpj3ez0AwsvXopSSeTCvRBn1HLppGHnCqP0V6f1yZxITawki33y1vUZjNag==
-X-Received: by 2002:a05:6512:ac2:b0:50f:1502:79e5 with SMTP id n2-20020a0565120ac200b0050f150279e5mr3271350lfu.14.1706024674068;
-        Tue, 23 Jan 2024 07:44:34 -0800 (PST)
-Received: from skbuf ([188.25.255.36])
-        by smtp.gmail.com with ESMTPSA id vb5-20020a170907d04500b00a28aba1f56fsm158225ejc.210.2024.01.23.07.44.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 07:44:33 -0800 (PST)
-Date: Tue, 23 Jan 2024 17:44:31 +0200
-From: Vladimir Oltean <olteanv@gmail.com>
-To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Luiz Angelo Daros de Luca <luizluca@gmail.com>,
-	mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
-	Alvin =?utf-8?Q?=C5=A0ipraga?= <ALSI@bang-olufsen.dk>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net: dsa: remove OF-based MDIO bus registration
- from DSA core
-Message-ID: <20240123154431.gwhufnatxjppnm64@skbuf>
-References: <20240122053348.6589-1-arinc.unal@arinc9.com>
- <20240122053348.6589-1-arinc.unal@arinc9.com>
+        d=1e100.net; s=20230601; t=1706024730; x=1706629530;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jtlKdxisJ1H4nXUQnaiF3tGiczuUPAFtsLVHqqe+6VI=;
+        b=oU5DaUKU+rlzlr187XEJspN+VszFNMXpQjaESqYxqgw3O3Z5RYHlkWtJppgDP4i4XT
+         Zp59qzvVxXL6LQ5hfFQ8qOFwewq0xpyo1i7YZNyuKJdOmDVgsg+8F2swKrIraI7cK3gX
+         aay0s2KwEyVDLOBINmBl9IXTyCSZ5WGjA+9mMLPKJUKe7XBdCUc/lwC8wwxdw1Sk1wI6
+         4oku/6cEe3QN6H260UJaiH1uKsC8wKpKjImKPs0C6iLBYynhjo8u+yTeZbe64jgihIsY
+         1e60syNhxjFuVUQrrqEqNt+japK2hiIxVaBxXtl//rUOKTAUa2vNhfoAGc26XKX0tzas
+         4trQ==
+X-Gm-Message-State: AOJu0YyBq+Ov4xx9VJ+Mb8p5i0yxD86TRD7HVIjYm01Kw8Us0fJK1xL8
+	py0pmZw+dghZ7bxIDoR5BvBzjhaIe+n9El9yeDk88Whx4zxCHvcuw4tCdSovjsmyBC8/99lOo7V
+	7ZjedD0Jd/+IxHCs8wZO1uSuBYXk=
+X-Google-Smtp-Source: AGHT+IGeoKDAXQT1QtGkmzsvDd9O3U+IXSXTY2VIJASOG7mhjJxF1tXdrpBbCuSnLMpczZO5eE6k5hkSEaDy2eB9Yno=
+X-Received: by 2002:a17:906:da81:b0:a30:f04e:4bdd with SMTP id
+ xh1-20020a170906da8100b00a30f04e4bddmr45448ejb.68.1706024729528; Tue, 23 Jan
+ 2024 07:45:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240122053348.6589-1-arinc.unal@arinc9.com>
- <20240122053348.6589-1-arinc.unal@arinc9.com>
+References: <20240123133828.141222-1-warthog618@gmail.com>
+In-Reply-To: <20240123133828.141222-1-warthog618@gmail.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Tue, 23 Jan 2024 17:44:52 +0200
+Message-ID: <CAHp75Vd1dipGkCgQBENN3rLeUO+eQfOz9uKzz86eK755smqGag@mail.gmail.com>
+Subject: Re: [PATCH] Documentation: gpio: describe uAPI behaviour when
+ hardware doesn't support requested config
+To: Kent Gibson <warthog618@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, 
+	linux-doc@vger.kernel.org, brgl@bgdev.pl, linus.walleij@linaro.org, 
+	andy@kernel.org, corbet@lwn.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 22, 2024 at 08:33:48AM +0300, Arınç ÜNAL wrote:
-> These subdrivers which control switches [with MDIO bus] probed on OF, will
-> lose the ability to register the MDIO bus OF-based:
-> 
-> drivers/net/dsa/b53/b53_common.c
-> drivers/net/dsa/lan9303-core.c
-> drivers/net/dsa/realtek/realtek-mdio.c
-> drivers/net/dsa/vitesse-vsc73xx-core.c
-> 
-> These subdrivers let the DSA core driver register the bus:
-> - ds->ops->phy_read() and ds->ops->phy_write() are present.
-> - ds->user_mii_bus is not populated.
-> 
-> The commit fe7324b93222 ("net: dsa: OF-ware slave_mii_bus") which brought
-> OF-based MDIO bus registration on the DSA core driver is reasonably recent
-> and, in this time frame, there have been no device trees in the Linux
-> repository that started describing the MDIO bus, or dt-bindings defining
-> the MDIO bus for the switches these subdrivers control. So I don't expect
-> any devices to be affected.
+On Tue, Jan 23, 2024 at 3:39=E2=80=AFPM Kent Gibson <warthog618@gmail.com> =
+wrote:
+>
+> The existing uAPI documentation does not adequately describe how the kern=
+el
+> handles the case where the underlying hardware or driver does not support
+> the requested configuration.
+>
+> Add a Configuration Support section describing that behaviour to both the
+> v1 and v2 documentation, and better document the errors returned where th=
+e
+> requested configuration cannot be supported.
 
-IIUC, Luiz made the original patch for the realtek switches. Shouldn't
-we wait until realtek registers ds->user_mii_bus on its own, before
-reverting? Otherwise, you're basically saying that Luiz made the DSA
-core patch without needing it.
+..
+
+> +Bias             best effort
+
+So, best effort means that in some cases it won't fail. It reminds me
+of the baud rate setting in serial (TermIOS). The question here is how
+does user space know that it fell in one of such cases? (In termios
+the IOCTL updates the respective fields and then user space can get
+settings to see what has actually been applied.)
+
+Floating line is not good in some cases and user space really wants to
+know that and treat it as an error (if needed). Hence the above Q. I
+believe this needs to be explained in the documentation.
+
+..
+
+> +Bias             best effort
+
+Ditto.
+
+..
+
+Personally I would still do two patches per ABI version, but it's up
+to Bart what he wants to see at the end.
+
+--
+With Best Regards,
+Andy Shevchenko
 
