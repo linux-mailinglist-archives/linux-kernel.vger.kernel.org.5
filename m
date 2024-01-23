@@ -1,104 +1,161 @@
-Return-Path: <linux-kernel+bounces-35036-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35037-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC069838AE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:51:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09092838AE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:51:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C99928A211
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:51:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DBAA1C21FA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:51:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F10259B7A;
-	Tue, 23 Jan 2024 09:47:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F3185A109;
+	Tue, 23 Jan 2024 09:48:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cO9/a1pX"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=smile-fr.20230601.gappssmtp.com header.i=@smile-fr.20230601.gappssmtp.com header.b="08ihOTqm"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F11F59B61;
-	Tue, 23 Jan 2024 09:47:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76EBB5A0FF
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 09:48:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706003265; cv=none; b=If5eM3Vehvd8dyoCqSncFUoI2ndSTjkhdwwSoI7gOZDtDgPYJTkuvvTNgg1ZXdmshnerBig3Y48sKzD7DD0N2sMmRJ3PO1Aq93cBLQQ0jDIeUUnjI9kzW/qOiBc4YUQ2R0cTjDnonBzASXIepiEIbgkz3T8XCCrp85PnpIR97yc=
+	t=1706003335; cv=none; b=r2m5CUG0CWTwceg+d1/EZ97rN2ffh6ob8LspHrzgixcDc2M5ua/brESeXrExPUdH3F3IPRJOqVHqehEyzwANh0u/T0m/3f5HTriA/3tnSPiQChPui20Opn/6DqCfFlRMeDbYK1Xfa2nMwEJ0v0E0uOtZ1lKrya1kCFFiWQP9kN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706003265; c=relaxed/simple;
-	bh=E5DDSd9jInVCIwSyg7EZ4ScsPQilv7OKc3YaWEfLIg0=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=bQpgeGdghwtpbEr2/zSqizNigADn/x0l+GjRiTCBh+iVf6SuFnYoeM3Ttdp9werpaPod6E7oYsTVEX81HYrTeD3Vdf/4uus02zOqUa/5ZhtdiLYDdduJoB/T8DR8gWI3lXPYADnYMbWgzMzSmGkIK2spz03DpQTI/C67JMMjZ20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cO9/a1pX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB58AC433C7;
-	Tue, 23 Jan 2024 09:47:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706003265;
-	bh=E5DDSd9jInVCIwSyg7EZ4ScsPQilv7OKc3YaWEfLIg0=;
-	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-	b=cO9/a1pXRI5mzyLjPgHxSlg8GuGevociP60sK8stsTxCpRx/QWO7jSFOe2+nHHMTy
-	 JIhRL1y3m7pEBhs7wy17Eh9p4neCUaWGJAsoq5LF/BTN8RevLeo57QrS89REjGclM6
-	 axhjBOZHvuhF4vv4SVhSmL/kB5y0W/zVQ/PLryLT2GMgXvCKseLk7uSXcgdvHOep8R
-	 xlWnH1sRwaXALwJe615rjmEKaVl4J28CCJ1Ad3lKGeRZx6rg1SIMZgObWnDmywycFC
-	 Rdqr/qtbe4345nWZmFbSrqPaKkKathELPXHGxL8SaNMF7qYwtLlTeRvGR03EKxBN/M
-	 6/jnbQT1EhnCQ==
-Date: Tue, 23 Jan 2024 10:47:45 +0100 (CET)
-From: Jiri Kosina <jikos@kernel.org>
-To: Max Staudt <max@enpas.org>
-cc: Roderick Colenbrander <roderick.colenbrander@sony.com>, 
-    Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
-    linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 0/7] HID: playstation: DS4: LED bugfix, third-party
- gamepad support
-In-Reply-To: <20240115144538.12018-1-max@enpas.org>
-Message-ID: <nycvar.YFH.7.76.2401231047140.29548@cbobk.fhfr.pm>
-References: <20240115144538.12018-1-max@enpas.org>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+	s=arc-20240116; t=1706003335; c=relaxed/simple;
+	bh=+8dKFSYTTrQHy5TIeIlpTGOGgvwuQhUn3j2tZwKtHkI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NIgvh7CJySv05cbPhnVf5U9KcDU/5Pk0fBaYfh/xnCkVgPvCkbv4SKP5fiLphPWdqS188A5mOq7zp1m0Se/D1WPIUKgT22bwRnM3cMCAa69x7Wig2kXMIiSVUaz4XmL7lYode8jg0An4B0Ttn9z57ah7LiRHAEqJ9HqeKLH2IFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=smile.fr; spf=pass smtp.mailfrom=smile.fr; dkim=pass (2048-bit key) header.d=smile-fr.20230601.gappssmtp.com header.i=@smile-fr.20230601.gappssmtp.com header.b=08ihOTqm; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=smile.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=smile.fr
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-337d05b8942so4714580f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 01:48:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=smile-fr.20230601.gappssmtp.com; s=20230601; t=1706003332; x=1706608132; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PWpS1ytBrOjGWEMxlvh7MGTF7ngPjwR9i+Q5Nc+3fnk=;
+        b=08ihOTqmM4KgdQDBvXBAfZwMWTP2zetq1fWyI+15LL7l9la7qS9JN3+EjXU23pQmFz
+         XuC3tRQSif0JTdgXDR2TJKGNNUD3r2PG8CipYqZ+AtOpp1LAEG4MYagJGNhf1oeSbWjr
+         AerFKeBOS/fEkWt2fV6HeXLe+Scqnne3CNLeysgYKWK+smdHXlCvvzU1/jEn12JClxvk
+         748srIisj5jreP6Q7R8P8m56+KTfi8wMeY+usODAU3V1+dhAaQjRfuLOBCvhokbti6nh
+         9F70cvz+8gxwQErCB1fL/yGyalcYKKwdhf8aLr+URPxdsfDKW6eFQJis/0feWrVJpKE8
+         WKTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706003332; x=1706608132;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PWpS1ytBrOjGWEMxlvh7MGTF7ngPjwR9i+Q5Nc+3fnk=;
+        b=TcsXjUJV1GN+K3uppcAlwYH00WP7/je1xaJvnlTNjYwoR++BhTMQNw2tZdWSqPdWi/
+         yXtndcnv2fDYdfVCSK8dJnXqd8e9CsEyhmML5sHKtD3qb0Wi/INIV6KDsxb7sIbDsg8X
+         kc4iD274qOTmE6jpf8dFJjn5jRq88kg/SR0ch/PKXEkS7F67+4892ZFBlbGYsMYSXqBn
+         rR291WjXv69n6zKEYdD3scKf76fxhwA2ASpbWesZ6I2kUSGXSJrMiK6yGZVpvd1y7x3k
+         sbEni9B0uphBV/CBVRD7pPN1xUssRln7GGFltXgWbitAykzNsAI1DuzIaEesoCnn1ueK
+         /uCw==
+X-Gm-Message-State: AOJu0YyccQm++R/aFi3sUMSxp8kbqder2XLQKk9cfJJw16L1+MQhQPy5
+	QNZIJyWvZY0ZEo2eKiTQZElwKmY1ISNhYVbaRzBOZZXf8UyqodfxIejCqnfzlko=
+X-Google-Smtp-Source: AGHT+IHvCLtOAK0Is7t239vQ6RuH0gatFeoMENF8cPRrd/F9biXxtyj5lMGzC/7gQG4TQkAI7tOO2g==
+X-Received: by 2002:a7b:cb55:0:b0:40e:4275:5aad with SMTP id v21-20020a7bcb55000000b0040e42755aadmr385765wmj.166.1706003331642;
+        Tue, 23 Jan 2024 01:48:51 -0800 (PST)
+Received: from ?IPV6:2a01:cb05:945b:7e00:9bdc:6887:23a2:4f31? (2a01cb05945b7e009bdc688723a24f31.ipv6.abo.wanadoo.fr. [2a01:cb05:945b:7e00:9bdc:6887:23a2:4f31])
+        by smtp.gmail.com with ESMTPSA id q20-20020a05600c46d400b0040e395cd20bsm45686455wmo.7.2024.01.23.01.48.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jan 2024 01:48:51 -0800 (PST)
+Message-ID: <b5decdec-f33a-4997-a607-e31290fcd83c@smile.fr>
+Date: Tue, 23 Jan 2024 10:48:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] regulator: ti-abb: don't use
+ devm_platform_ioremap_resource_byname for shared interrupt register
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+ tony@atomide.com, lgirdwood@gmail.com, Romain Naour <romain.naour@skf.com>
+References: <20240122170442.729374-1-romain.naour@smile.fr>
+ <1b2b5afc-308f-48bb-924a-2c29371abfc9@sirena.org.uk>
+From: Romain Naour <romain.naour@smile.fr>
+In-Reply-To: <1b2b5afc-308f-48bb-924a-2c29371abfc9@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, 15 Jan 2024, Max Staudt wrote:
+Hello,
 
-> Dear hid-playstation maintainers,
+Le 22/01/2024 à 18:30, Mark Brown a écrit :
+> On Mon, Jan 22, 2024 at 06:04:42PM +0100, Romain Naour wrote:
 > 
-> Could you please have a look at the enclosed patches for the DualShock 4
-> driver in hid-playstation, and upstream them if possible?
+>> We can't use devm_platform_ioremap_resource_byname() to remap the
+>> interrupt register that can be shared between
+>> regulator-abb-{ivahd,dspeve,gpu} drivers instance.
 > 
-> There is one bugfix, and a few small patches to enable third-party
-> controllers. They sometimes don't implement features that they
-> semantically "don't need", but which currently trip the driver.
+> ...
 > 
-> For example, for the DualShock 4, we don't actually need to know the
-> firmware version in order to work with the gamepad - unlike with the
-> DualSense, which has different driver logic depending on the version.
+>> The commit b36c6b1887ff (regulator: ti-abb: Make use of the helper
+>> function devm_ioremap related) overlooked the following comment
+>> explaining why devm_ioremap() is used in this case:
 > 
-> Finally, there are two patches to add a DS4 compatible controller with
-> an unassigned VID/PID - I'd appreciate your thoughts on that.
+>> /*
+>>  * We may have shared interrupt register offsets which are
+>>  * write-1-to-clear between domains ensuring exclusivity.
+>>  */
 > 
-> If I can make it easier to upstream these patches, please let me know.
-> 
-> Thanks!
-> 
-> Max
-> 
-> Patches in this series:
->   [PATCH v1 1/7] HID: playstation: DS4: Fix LED blinking
->   [PATCH v1 2/7] HID: playstation: DS4: Don't fail on MAC address
->   [PATCH v1 3/7] HID: playstation: DS4: Don't fail on FW/HW version
->   [PATCH v1 4/7] HID: playstation: DS4: Don't fail on calibration data
->   [PATCH v1 5/7] HID: playstation: DS4: Parse minimal report 0x01
->   [PATCH v1 6/7] HID: playstation: Simplify device type ID
->   [PATCH v1 7/7] HID: playstation: DS4: Add VID/PID for SZ-MYPOWER
+> I have to say that I wouldn't infer from that comment that there is any
+> reason why _byname() won't work - one would generally expect that a
+> get_resource_by_name() followed by an ioremap() of that resource would
+> be equivalent to the combined helper.  Based on the commit log here I
+> frankly have no idea what the issue is.  You should also add something
+> to the code which makes it clear what the issue is so the same
+> conversion isn't performed again, assuming that the fix isn't in the
+> helper.
 
-Roderick, any word on this series, please?
+I'm agree with you about the existing comment that is not really crystal clear.
 
-Thanks,
+The combined helper introduce a call to devm_request_mem_region() that create a
+new busy resource region on PRM_IRQSTATUS_MPU register (0x4ae06010). The first
+devm_request_mem_region() call succeed for regulator-abb-ivahd but fail for the
+two other regulator-abb-dspeve and regulator-abb-gpu.
 
--- 
-Jiri Kosina
-SUSE Labs
+Here is the iomem content without this patch:
+# cat /proc/iomem | grep -i 4ae06
+4ae06010-4ae06013 : 4ae07e34.regulator-abb-ivahd int-address
+4ae06014-4ae06017 : 4ae07ddc.regulator-abb-mpu int-address
+
+regulator-abb-dspeve and regulator-abb-gpu are missing due to
+devm_request_mem_region() failure (EBUSY)
+
+I don't know how to fix this issue keeping
+devm_platform_ioremap_resource_byname() when the same address is used several
+time... suggestion welcome.
+
+> 
+>>
+>> Fixes:
+> 
+> You're missing the commit here.
+> 
+>> This partially reverts commit b36c6b1887ffc6b58b556120bfbd511880515247.
+> 
+> Please include human readable descriptions of things like commits and
+> issues being discussed in e-mail in your mails, this makes them much
+> easier for humans to read especially when they have no internet access.
+> I do frequently catch up on my mail on flights or while otherwise
+> travelling so this is even more pressing for me than just being about
+> making things a bit easier to read.
+
+I added such human description above in the commit log but forgot to update this
+one, sorry.
+
+Thank you for the review.
+
+Best regards,
+Romain
 
 
