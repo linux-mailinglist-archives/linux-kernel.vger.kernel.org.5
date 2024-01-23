@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-35357-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 834F8838FA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:20:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D8E7838FA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:20:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BCC01F20593
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:20:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0A8D1F202CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:20:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25BFC64CC9;
-	Tue, 23 Jan 2024 13:11:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C3D064CDF;
+	Tue, 23 Jan 2024 13:11:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="n5G0LX0y";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="BJmOWZnp"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Jtq+Cws2";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="cZHoE4U0"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50FD9634F5
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 13:11:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73C9864AAB
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 13:11:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706015477; cv=none; b=Vi/LuSv1rO8Hssrbb5M7mPwSrsAUf3PdnQFdEIGb178o8ziOwnspirrq+LJcmN2fEUSVFI+s9d1xpzEhT9D+gOT5jIZEwM2y8vx41MJTaBKoLgEtCr8AdqWw41KQTbXzRwZvYORCy21flLJDnSvCx49olt0Nt6LX/5MJVIud9tk=
+	t=1706015478; cv=none; b=EODJnAPdDARoA8gq/zggqFMfjVHLD6cvXeD7Ibiv13eiEipNVI9nd1WmARWfu0gZAxJPcXE0WbLaolJWmnfI4bN9FKtOlkzieSzoyRdosVKL7Rxvy6PAbzIO0Vjo3brtOPXrXzy7vvtbbQ1RuPvjsLufbnLY1Seeqs7C+NuAp+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706015477; c=relaxed/simple;
-	bh=Et5xySeTZi83KYXKc2FkwJnx8O9NcYHE4U3CDywajts=;
+	s=arc-20240116; t=1706015478; c=relaxed/simple;
+	bh=S/cruE/QQLGcj32pqkqPez6jg+ROsg6v+GVfWyay5bQ=;
 	h=Message-ID:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Date; b=eUM3bEWfO+kIM0nwQtDm5pKVBIQfelhOkJOm10XPaP+o9QWj5RY8YIiW0nD+oOAyjIbm0MaIx60edpXyafTPE4r4Enp//6WCkJpf50+YXmcHhMAMAhhIIe/guAWKmvn//9ieX7dTGiqb+Q5+amE4m9Tke1IKK1Rs0duNT7EMW6Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=n5G0LX0y; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=BJmOWZnp; arc=none smtp.client-ip=193.142.43.55
+	 Content-Type:Date; b=nQs12hok7XkLqf9H27KYM4PzEMH5PWyzqd3bIq7lXnIWIBDwVi0XChGY40YMai0aKOUJKKUCmKX8d+usScGaBwSt8HrIb2QVv3xcNKZ3AskMRO40ZXaMiZEtp9bnPKE91p8/83WgO4cjQ9F2IfRiVo3OZ4IyYiO/YQBd1MxP0e4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Jtq+Cws2; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=cZHoE4U0; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Message-ID: <20240118123649.343911720@linutronix.de>
+Message-ID: <20240118123649.400523172@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1706015473;
+	s=2020; t=1706015475;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=RuBXZdFRC9sP10QxOqSGogzUcdmCDoZcvEhUBHpbiVk=;
-	b=n5G0LX0ya2BbtJMTaSqZIvTvZ/o+tbfm0JnItxf1o9cnj2/2S+P3x0rgk7C4e0y98uFfqB
-	CwsOKAK469xK/cIKQOYBJKcOn7tXnn950KUcrkklGpVRL591uG6hB5CRNvyeDIst0M056u
-	IqLTeWZf7A/vMxJnQDLetwRLaLJO292o+FlNrJcYrB7sMaYKC17qmJ9exdSx+kj7e1RG40
-	ydqA9BsamCcWyqOguwpw82CQXN2FMAEfBlHITCCXKHjyTOmVc/lRVS3GYIT52RsKbvZuZP
-	oCyqyHX/NSg0niFzEpOTicVV9lj3C6ca/FdBUeawoJuiERRVETIDLsHvLAe1Bw==
+	 references:references; bh=QLEwylqGwbzhYLElVBn/i/qBFw8mgtkgqBNqA7uX2R0=;
+	b=Jtq+Cws27gkL61MWfxfl4MXJEPJjqiuIfpXkvihFthigQGCV9a1X22RUjZ9Sm6Z6nxBCGH
+	3Kuhvl9JPKKZ34W9+O9yEzDmb6ystSDlfZXfMIzj8THYPkqWiiWh8+tPOg37UDrubmVqrZ
+	TaGl324f1enLaBPNA7fQxTK4lE78PJh4qoLiTiNNbC2DIZntfxddY7KgzxXicFK3YMPFLJ
+	havJA7Wsq1QjgUoa3YcfbD3K2912qKT53ThI/SG87v3I50ou1pDb8q7xW5yHqeJ0EUZtiO
+	vMCXQCMr0DFkGzjK/XOrvOxICrn7OlLIS0mi18BL7qiXQvZRB3DjRIYCBFhwgA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1706015473;
+	s=2020e; t=1706015475;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=RuBXZdFRC9sP10QxOqSGogzUcdmCDoZcvEhUBHpbiVk=;
-	b=BJmOWZnpbD4YXaWo8JG5g/F+rHt1LJceZfvrWuGTmx2GkRp7uUXZyRECiArqRbgpdjBV5E
-	8bB0t3tx4qEnMVDA==
+	 references:references; bh=QLEwylqGwbzhYLElVBn/i/qBFw8mgtkgqBNqA7uX2R0=;
+	b=cZHoE4U0oxRAtsgopS3SZg3et7SJaY3dqUQuqDZHPvsy6fSc2fDvlcOBgUrSgEl9hzOT4m
+	evYRnpoAe7ldZdDA==
 From: Thomas Gleixner <tglx@linutronix.de>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: x86@kernel.org,
@@ -67,7 +67,7 @@ Cc: x86@kernel.org,
  Andy Shevchenko <andy@infradead.org>,
  Michael Kelley <mhklinux@outlook.com>,
  "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch v2 14/30] x86/cpu/topology: Rework possible CPU management
+Subject: [patch v2 15/30] x86/cpu: Detect real BSP on crash kernels
 References: <20240118123127.055361964@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -76,333 +76,217 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date: Tue, 23 Jan 2024 14:11:12 +0100 (CET)
+Date: Tue, 23 Jan 2024 14:11:14 +0100 (CET)
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-Managing possible CPUs is an unreadable and uncomprehensible maze. Aside of
-that it's backwards because it applies command line limits after
-registering all APICs.
+When a kdump kernel is started from a crashing CPU then there is no
+guarantee that this CPU is the real boot CPU (BSP). If the kdump kernel
+tries to online the BSP then the INIT sequence will reset the machine.
 
-Rewrite it so that it:
+There is a command line option to prevent this, but in case of nested kdump
+kernels this is wrong.
 
-  - Applies the command line limits upfront so that only the allowed amount
-    of APIC IDs can be registered.
+But that command line option is not required at all because the real
+BSP is enumerated as the first CPU by firmware. Support for the only
+known system which was different (Voyager) got removed long ago.
 
-  - Applies eventual late restrictions in an understandable way
-
-  - Uses simple min_t() calculations which are trivial to follow.
-
-  - Provides a separate function for resetting to UP mode late in the
-    bringup process.
+Detect whether the boot CPU APIC ID is the first APIC ID enumerated by
+the firmware. If the first APIC ID enumerated is not matching the boot
+CPU APIC ID then skip registering it.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-
 ---
- arch/x86/include/asm/apic.h     |    5 +
- arch/x86/include/asm/cpu.h      |   10 --
- arch/x86/include/asm/topology.h |    1 
- arch/x86/kernel/cpu/topology.c  |  176 ++++++++++++++++++++++++----------------
- arch/x86/kernel/setup.c         |    9 --
- arch/x86/kernel/smpboot.c       |    6 -
- 6 files changed, 118 insertions(+), 89 deletions(-)
+V2: Check for the first enumerated APIC ID (Rui)
 ---
---- a/arch/x86/include/asm/apic.h
-+++ b/arch/x86/include/asm/apic.h
-@@ -175,6 +175,9 @@ extern void topology_register_apic(u32 a
- extern void topology_register_boot_apic(u32 apic_id);
- extern int topology_hotplug_apic(u32 apic_id, u32 acpi_id);
- extern void topology_hotunplug_apic(unsigned int cpu);
-+extern void topology_apply_cmdline_limits_early(void);
-+extern void topology_init_possible_cpus(void);
-+extern void topology_reset_possible_cpus_up(void);
+ Documentation/admin-guide/kdump/kdump.rst       |    7 -
+ Documentation/admin-guide/kernel-parameters.txt |    9 --
+ arch/x86/kernel/cpu/topology.c                  |   99 ++++++++++++++----------
+ 3 files changed, 61 insertions(+), 54 deletions(-)
+---
+--- a/Documentation/admin-guide/kdump/kdump.rst
++++ b/Documentation/admin-guide/kdump/kdump.rst
+@@ -191,9 +191,7 @@ Dump-capture kernel config options (Arch
+    CPU is enough for kdump kernel to dump vmcore on most of systems.
  
- #else /* !CONFIG_X86_LOCAL_APIC */
- static inline void lapic_shutdown(void) { }
-@@ -190,6 +193,8 @@ static inline void apic_intr_mode_init(v
- static inline void lapic_assign_system_vectors(void) { }
- static inline void lapic_assign_legacy_vector(unsigned int i, bool r) { }
- static inline bool apic_needs_pit(void) { return true; }
-+static inline void topology_apply_cmdline_limits_early(void) { }
-+static inline void topology_init_possible_cpus(void) { }
- #endif /* !CONFIG_X86_LOCAL_APIC */
+    However, you can also specify nr_cpus=X to enable multiple processors
+-   in kdump kernel. In this case, "disable_cpu_apicid=" is needed to
+-   tell kdump kernel which cpu is 1st kernel's BSP. Please refer to
+-   admin-guide/kernel-parameters.txt for more details.
++   in kdump kernel.
  
- #ifdef CONFIG_X86_X2APIC
---- a/arch/x86/include/asm/cpu.h
-+++ b/arch/x86/include/asm/cpu.h
-@@ -9,18 +9,10 @@
- #include <linux/percpu.h>
- #include <asm/ibt.h>
+    With CONFIG_SMP=n, the above things are not related.
  
--#ifdef CONFIG_SMP
--
--extern void prefill_possible_map(void);
--
--#else /* CONFIG_SMP */
--
--static inline void prefill_possible_map(void) {}
--
-+#ifndef CONFIG_SMP
- #define cpu_physical_id(cpu)			boot_cpu_physical_apicid
- #define cpu_acpi_id(cpu)			0
- #define safe_smp_processor_id()			0
--
- #endif /* CONFIG_SMP */
+@@ -454,8 +452,7 @@ loading dump-capture kernel.
+   to use multi-thread programs with it, such as parallel dump feature of
+   makedumpfile. Otherwise, the multi-thread program may have a great
+   performance degradation. To enable multi-cpu support, you should bring up an
+-  SMP dump-capture kernel and specify maxcpus/nr_cpus, disable_cpu_apicid=[X]
+-  options while loading it.
++  SMP dump-capture kernel and specify maxcpus/nr_cpus options while loading it.
  
- struct x86_cpu {
---- a/arch/x86/include/asm/topology.h
-+++ b/arch/x86/include/asm/topology.h
-@@ -191,6 +191,7 @@ static inline bool topology_is_primary_t
- {
- 	return cpumask_test_cpu(cpu, cpu_primary_thread_mask);
- }
-+
- #else /* CONFIG_SMP */
- #define topology_max_packages()			(1)
- static inline int
+ * For s390x there are two kdump modes: If a ELF header is specified with
+   the elfcorehdr= kernel parameter, it is used by the kdump kernel as it
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -1098,15 +1098,6 @@
+ 			Disable TLBIE instruction. Currently does not work
+ 			with KVM, with HASH MMU, or with coherent accelerators.
+ 
+-	disable_cpu_apicid= [X86,APIC,SMP]
+-			Format: <int>
+-			The number of initial APIC ID for the
+-			corresponding CPU to be disabled at boot,
+-			mostly used for the kdump 2nd kernel to
+-			disable BSP to wake up multiple CPUs without
+-			causing system reset or hang due to sending
+-			INIT from AP to BSP.
+-
+ 	disable_ddw	[PPC/PSERIES]
+ 			Disable Dynamic DMA Window support. Use this
+ 			to workaround buggy firmware.
 --- a/arch/x86/kernel/cpu/topology.c
 +++ b/arch/x86/kernel/cpu/topology.c
-@@ -5,6 +5,7 @@
- #include <xen/xen.h>
+@@ -32,18 +32,13 @@ static struct {
+ 	unsigned int		nr_disabled_cpus;
+ 	unsigned int		nr_rejected_cpus;
+ 	u32			boot_cpu_apic_id;
++	u32			real_bsp_apic_id;
+ } topo_info __read_mostly = {
+ 	.nr_assigned_cpus	= 1,
+ 	.boot_cpu_apic_id	= BAD_APICID,
++	.real_bsp_apic_id	= BAD_APICID,
+ };
  
- #include <asm/apic.h>
-+#include <asm/io_apic.h>
- #include <asm/mpspec.h>
- #include <asm/smp.h>
- 
-@@ -85,73 +86,6 @@ early_initcall(smp_init_primary_thread_m
- static inline void cpu_mark_primary_thread(unsigned int cpu, unsigned int apicid) { }
- #endif
- 
--static int __initdata setup_possible_cpus = -1;
--
 -/*
-- * cpu_possible_mask should be static, it cannot change as cpu's
-- * are onlined, or offlined. The reason is per-cpu data-structures
-- * are allocated by some modules at init time, and don't expect to
-- * do this dynamically on cpu arrival/departure.
-- * cpu_present_mask on the other hand can change dynamically.
-- * In case when cpu_hotplug is not compiled, then we resort to current
-- * behaviour, which is cpu_possible == cpu_present.
-- * - Ashok Raj
-- *
-- * Three ways to find out the number of additional hotplug CPUs:
-- * - If the BIOS specified disabled CPUs in ACPI/mptables use that.
-- * - The user can overwrite it with possible_cpus=NUM
-- * - Otherwise don't reserve additional CPUs.
-- * We do this because additional CPUs waste a lot of memory.
-- * -AK
+- * Processor to be disabled specified by kernel parameter
+- * disable_cpu_apicid=<int>, mostly used for the kdump 2nd kernel to
+- * avoid undefined behaviour caused by sending INIT from AP to BSP.
 - */
--__init void prefill_possible_map(void)
--{
--	unsigned int num_processors = topo_info.nr_assigned_cpus;
--	unsigned int disabled_cpus = topo_info.nr_disabled_cpus;
--	int i, possible;
+-static u32 disabled_cpu_apicid __ro_after_init = BAD_APICID;
 -
--	i = setup_max_cpus ?: 1;
--	if (setup_possible_cpus == -1) {
--		possible = topo_info.nr_assigned_cpus;
--#ifdef CONFIG_HOTPLUG_CPU
--		if (setup_max_cpus)
--			possible += num_processors;
--#else
--		if (possible > i)
--			possible = i;
--#endif
--	} else
--		possible = setup_possible_cpus;
--
--	total_cpus = max_t(int, possible, num_processors + disabled_cpus);
--
--	/* nr_cpu_ids could be reduced via nr_cpus= */
--	if (possible > nr_cpu_ids) {
--		pr_warn("%d Processors exceeds NR_CPUS limit of %u\n",
--			possible, nr_cpu_ids);
--		possible = nr_cpu_ids;
--	}
--
--#ifdef CONFIG_HOTPLUG_CPU
--	if (!setup_max_cpus)
--#endif
--	if (possible > i) {
--		pr_warn("%d Processors exceeds max_cpus limit of %u\n",
--			possible, setup_max_cpus);
--		possible = i;
--	}
--
--	set_nr_cpu_ids(possible);
--
--	pr_info("Allowing %d CPUs, %d hotplug CPUs\n",
--		possible, max_t(int, possible - num_processors, 0));
--
--	reset_cpu_possible_mask();
--
--	for (i = 0; i < possible; i++)
--		set_cpu_possible(i, true);
--}
--
- static int topo_lookup_cpuid(u32 apic_id)
+ bool arch_match_cpu_phys_id(int cpu, u64 phys_id)
  {
- 	int i;
-@@ -294,12 +228,114 @@ void topology_hotunplug_apic(unsigned in
+ 	return phys_id == (u64)cpuid_to_apicid[cpu];
+@@ -123,34 +118,40 @@ static void topo_set_cpuids(unsigned int
+ 		cpu_mark_primary_thread(cpu, apic_id);
  }
- #endif
  
--static int __init _setup_possible_cpus(char *str)
-+#ifdef CONFIG_SMP
-+static unsigned int max_possible_cpus __initdata = NR_CPUS;
+-/**
+- * topology_register_apic - Register an APIC in early topology maps
+- * @apic_id:	The APIC ID to set up
+- * @acpi_id:	The ACPI ID associated to the APIC
+- * @present:	True if the corresponding CPU is present
+- */
+-void __init topology_register_apic(u32 apic_id, u32 acpi_id, bool present)
++static __init bool check_for_real_bsp(u32 apic_id)
+ {
+-	int cpu;
++	/*
++	 * There is no real good way to detect whether this a kdump()
++	 * kernel, but except on the Voyager SMP monstrosity which is not
++	 * longer supported, the real BSP APIC ID is the first one which is
++	 * enumerated by firmware. That allows to detect whether the boot
++	 * CPU is the real BSP. If it is not, then do not register the APIC
++	 * because sending INIT to the real BSP would reset the whole
++	 * system.
++	 *
++	 * The first APIC ID which is enumerated by firmware is detectable
++	 * because the boot CPU APIC ID is registered before that without
++	 * invoking this code.
++	 */
++	if (topo_info.real_bsp_apic_id != BAD_APICID)
++		return false;
+ 
+-	if (apic_id >= MAX_LOCAL_APIC) {
+-		pr_err_once("APIC ID %x exceeds kernel limit of: %x\n", apic_id, MAX_LOCAL_APIC - 1);
+-		topo_info.nr_rejected_cpus++;
+-		return;
++	if (apic_id == topo_info.boot_cpu_apic_id) {
++		topo_info.real_bsp_apic_id = apic_id;
++		return false;
+ 	}
+ 
+-	/* CPU numbers exhausted? */
+-	if (topo_info.nr_assigned_cpus >= nr_cpu_ids) {
+-		pr_warn_once("CPU limit of %d reached. Ignoring further CPUs\n", nr_cpu_ids);
+-		topo_info.nr_rejected_cpus++;
+-		return;
+-	}
++	pr_warn("Boot CPU APIC ID not the first enumerated APIC ID: %x > %x\n",
++		topo_info.boot_cpu_apic_id, apic_id);
++	pr_warn("Crash kernel detected. Disabling real BSP to prevent machine INIT\n");
+ 
+-	if (disabled_cpu_apicid == apic_id) {
+-		pr_info("Disabling CPU as requested via 'disable_cpu_apicid=0x%x'.\n", apic_id);
+-		topo_info.nr_rejected_cpus++;
+-		return;
+-	}
++	topo_info.real_bsp_apic_id = apic_id;
++	return true;
++}
++
++static __init void topo_register_apic(u32 apic_id, u32 acpi_id, bool present)
++{
++	int cpu;
+ 
+ 	if (present) {
+ 		/*
+@@ -173,6 +174,33 @@ void __init topology_register_apic(u32 a
+ }
+ 
+ /**
++ * topology_register_apic - Register an APIC in early topology maps
++ * @apic_id:	The APIC ID to set up
++ * @acpi_id:	The ACPI ID associated to the APIC
++ * @present:	True if the corresponding CPU is present
++ */
++void __init topology_register_apic(u32 apic_id, u32 acpi_id, bool present)
++{
++	if (apic_id >= MAX_LOCAL_APIC) {
++		pr_err_once("APIC ID %x exceeds kernel limit of: %x\n", apic_id, MAX_LOCAL_APIC - 1);
++		topo_info.nr_rejected_cpus++;
++		return;
++	}
++
++	/* CPU numbers exhausted? */
++	if (topo_info.nr_assigned_cpus >= nr_cpu_ids) {
++		pr_warn_once("CPU limit of %d reached. Ignoring further CPUs\n", nr_cpu_ids);
++		topo_info.nr_rejected_cpus++;
++		return;
++	}
++
++	if (check_for_real_bsp(apic_id))
++		return;
++
++	topo_register_apic(apic_id, acpi_id, present);
++}
 +
 +/**
-+ * topology_apply_cmdline_limits_early - Apply topology command line limits early
-+ *
-+ * Ensure that command line limits are in effect before firmware parsing
-+ * takes place.
-+ */
-+void __init topology_apply_cmdline_limits_early(void)
-+{
-+	unsigned int possible = nr_cpu_ids;
-+
-+	/* 'maxcpus=0' 'nosmp' 'nolapic' 'disableapic' 'noapic' */
-+	if (!setup_max_cpus || ioapic_is_disabled || apic_is_disabled)
-+		possible = 1;
-+
-+	/* 'possible_cpus=N' */
-+	possible = min_t(unsigned int, max_possible_cpus, possible);
-+
-+	if (possible < nr_cpu_ids) {
-+		pr_info("Limiting to %u possible CPUs\n", possible);
-+		set_nr_cpu_ids(possible);
-+	}
-+}
-+
-+static __init bool restrict_to_up(void)
-+{
-+	if (!smp_found_config || ioapic_is_disabled)
-+		return true;
-+	/*
-+	 * XEN PV is special as it does not advertise the local APIC
-+	 * properly, but provides a fake topology for it so that the
-+	 * infrastructure works. So don't apply the restrictions vs. APIC
-+	 * here.
-+	 */
-+	if (xen_pv_domain())
-+		return false;
-+
-+	return apic_is_disabled;
-+}
-+
-+void __init topology_init_possible_cpus(void)
-+{
-+	unsigned int assigned = topo_info.nr_assigned_cpus;
-+	unsigned int disabled = topo_info.nr_disabled_cpus;
-+	unsigned int total = assigned + disabled;
-+	unsigned int cpu, allowed = 1;
-+
-+	if (!restrict_to_up()) {
-+		if (WARN_ON_ONCE(assigned > nr_cpu_ids)) {
-+			disabled += assigned - nr_cpu_ids;
-+			assigned = nr_cpu_ids;
-+		}
-+		allowed = min_t(unsigned int, total, nr_cpu_ids);
-+	}
-+
-+	if (total > allowed)
-+		pr_warn("%u possible CPUs exceed the limit of %u\n", total, allowed);
-+
-+	assigned = min_t(unsigned int, allowed, assigned);
-+	disabled = allowed - assigned;
-+
-+	topo_info.nr_assigned_cpus = assigned;
-+	topo_info.nr_disabled_cpus = disabled;
-+
-+	total_cpus = allowed;
-+	set_nr_cpu_ids(allowed);
-+
-+	pr_info("Allowing %u present CPUs plus %u hotplug CPUs\n", assigned, disabled);
-+	if (topo_info.nr_rejected_cpus)
-+		pr_info("Rejected CPUs %u\n", topo_info.nr_rejected_cpus);
-+
-+	init_cpu_present(cpumask_of(0));
-+	init_cpu_possible(cpumask_of(0));
-+
-+	for (cpu = 0; cpu < allowed; cpu++) {
-+		u32 apicid = cpuid_to_apicid[cpu];
-+
-+		set_cpu_possible(cpu, true);
-+
-+		if (apicid == BAD_APICID)
-+			continue;
-+
-+		set_cpu_present(cpu, test_bit(apicid, phys_cpu_present_map));
-+	}
-+}
-+
-+/*
-+ * Late SMP disable after sizing CPU masks when APIC/IOAPIC setup failed.
-+ */
-+void __init topology_reset_possible_cpus_up(void)
- {
--	get_option(&str, &setup_possible_cpus);
-+	init_cpu_present(cpumask_of(0));
-+	init_cpu_possible(cpumask_of(0));
-+
-+	bitmap_zero(phys_cpu_present_map, MAX_LOCAL_APIC);
-+	if (topo_info.boot_cpu_apic_id != BAD_APICID)
-+		set_bit(topo_info.boot_cpu_apic_id, phys_cpu_present_map);
-+}
-+
-+static int __init setup_possible_cpus(char *str)
-+{
-+	get_option(&str, &max_possible_cpus);
- 	return 0;
+  * topology_register_boot_apic - Register the boot CPU APIC
+  * @apic_id:	The APIC ID to set up
+  *
+@@ -183,7 +211,7 @@ void __init topology_register_boot_apic(
+ 	WARN_ON_ONCE(topo_info.boot_cpu_apic_id != BAD_APICID);
+ 
+ 	topo_info.boot_cpu_apic_id = apic_id;
+-	topology_register_apic(apic_id, CPU_ACPIID_INVALID, true);
++	topo_register_apic(apic_id, CPU_ACPIID_INVALID, true);
  }
--early_param("possible_cpus", _setup_possible_cpus);
-+early_param("possible_cpus", setup_possible_cpus);
-+#endif
  
- static int __init apic_set_disabled_cpu_apicid(char *arg)
- {
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -1129,6 +1129,8 @@ void __init setup_arch(char **cmdline_p)
- 
- 	early_quirks();
- 
-+	topology_apply_cmdline_limits_early();
-+
- 	/*
- 	 * Parse SMP configuration. Try ACPI first and then the platform
- 	 * specific parser.
-@@ -1136,13 +1138,10 @@ void __init setup_arch(char **cmdline_p)
- 	acpi_boot_init();
- 	x86_init.mpparse.parse_smp_cfg();
- 
--	/*
--	 * Systems w/o ACPI and mptables might not have it mapped the local
--	 * APIC yet, but prefill_possible_map() might need to access it.
--	 */
-+	/* Last opportunity to detect and map the local APIC */
- 	init_apic_mappings();
- 
--	prefill_possible_map();
-+	topology_init_possible_cpus();
- 
- 	init_cpu_to_node();
- 	init_gi_nodes();
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -1147,11 +1147,7 @@ static __init void disable_smp(void)
- 	pr_info("SMP disabled\n");
- 
- 	disable_ioapic_support();
+ #ifdef CONFIG_ACPI_HOTPLUG_CPU
+@@ -336,12 +364,3 @@ static int __init setup_possible_cpus(ch
+ }
+ early_param("possible_cpus", setup_possible_cpus);
+ #endif
 -
--	init_cpu_present(cpumask_of(0));
--	init_cpu_possible(cpumask_of(0));
+-static int __init apic_set_disabled_cpu_apicid(char *arg)
+-{
+-	if (!arg || !get_option(&arg, &disabled_cpu_apicid))
+-		return -EINVAL;
 -
--	reset_phys_cpu_present_map(smp_found_config ? boot_cpu_physical_apicid : 0);
-+	topology_reset_possible_cpus_up();
- 
- 	cpumask_set_cpu(0, topology_sibling_cpumask(0));
- 	cpumask_set_cpu(0, topology_core_cpumask(0));
+-	return 0;
+-}
+-early_param("disable_cpu_apicid", apic_set_disabled_cpu_apicid);
 
 
