@@ -1,87 +1,68 @@
-Return-Path: <linux-kernel+bounces-35697-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13D1F839545
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:50:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5036083957E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:56:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8132D1F2F4AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:50:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 59276B22213
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:51:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DE19811EC;
-	Tue, 23 Jan 2024 16:45:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BC55823B1;
+	Tue, 23 Jan 2024 16:47:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="aRu2NBH+"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="BjTq9gpE";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Cee1Fhzz"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58F548003D;
-	Tue, 23 Jan 2024 16:45:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B22C081AD0;
+	Tue, 23 Jan 2024 16:47:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706028336; cv=none; b=TawQK+V3hpAxeegbL2M3t9IE+oLDgUuzVx/y+d+XvzQ3tc0sg705bGPRoICz7mPrM8qmaZ+nV7hOtuLuzJXq2920nqx17q1a+qE5mToZnHRTO3+L+VoF81aFnijTIGgUEX40FdLsqZUpk2ux3iDM9Vun5ex94FNSoAKBNEuOaDs=
+	t=1706028439; cv=none; b=S/Rl3TLqRSOPd/rVOnHlL30iueYEbmvZOEcizCW6LvQaBbrcPwqDF3xcNlJBgnQ7GNrr/wK2APKX/AC5e6esxvbFEiZ/kvX41s0CcB9hrxe2qwuX/GAAudUfwB2t0NBgU2biOkVaqQkg9yxhonKArXoS/q5MHBrPLgYEDzh5Vq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706028336; c=relaxed/simple;
-	bh=8LjL26PYrPwCrvs/xSN0nyOOCGfpd558CyvkBVEVt2M=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mJKRLYUWmd+pJ+edJtnNMI4ifMfT11Eh9q4VdK+fYOhqROC/3rL6RRhhqzTROo7pW/hp/OfpN/4jkNOEbhvbAPMDme5WRNqNyys1f7xhdLlGw7kGOVwM2ZU5LJpXI63kmgCm0e3GlmTPy58lv9BiyQjHapUaNVi6qNkkIp1ETPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=aRu2NBH+; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40NGimmf101836;
-	Tue, 23 Jan 2024 10:44:48 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706028288;
-	bh=6OrX3DPXnzALpnhReuLUjIJGvye7DyNGb/CoW91+Q9Y=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=aRu2NBH+Jl34untySgYsJ01x94ByIoIEXYUbivOB09rHgr91C1x3H10BrGV/WTgaN
-	 vjfxeS3UWpG+j6SPnK/fTdcYOgsuYivuoRPIM0QgP9VAbLKYoLj/kcFu0rTEg2BVEN
-	 /LXH3crLEaSPXs1UEN0suP5rAaFW876Mhopb5Xdw=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40NGimBu011494
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 23 Jan 2024 10:44:48 -0600
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 23
- Jan 2024 10:44:48 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 23 Jan 2024 10:44:48 -0600
-Received: from lelvsmtp5.itg.ti.com ([10.249.42.149])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40NGiiKJ022038;
-	Tue, 23 Jan 2024 10:44:47 -0600
-From: Andrew Davis <afd@ti.com>
-To: Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi
-	<lpieralisi@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Karol Gugala
-	<kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        Gabriel
- Somlo <gsomlo@gmail.com>, Joel Stanley <joel@jms.id.au>,
-        Mark Brown
-	<broonie@kernel.org>, Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang
-	<baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>, Lee
- Jones <lee@kernel.org>,
-        Dmitry Osipenko <dmitry.osipenko@collabora.com>
-CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        Andrew Davis
-	<afd@ti.com>
-Subject: [PATCH 4/4] firmware: ti_sci: Use devm_register_restart_handler()
-Date: Tue, 23 Jan 2024 10:44:43 -0600
-Message-ID: <20240123164443.394642-5-afd@ti.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240123164443.394642-1-afd@ti.com>
-References: <20240123164443.394642-1-afd@ti.com>
+	s=arc-20240116; t=1706028439; c=relaxed/simple;
+	bh=ABB1vlQxv/0V2+G9TW5mFcBYo1D2QEKJLsH+lva718Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YnZqM4wQTN8iJinmPtXMODqzjr7fBcy3uJH7q5yjXGthixax3W1Ctrxq1hEkSgxUdZ/8jpCuAr5tTuzKApgwpeOWk5j5gjUjj2JDd/hSIwjDTmE5z2sxcU3VUs25NMfmlySLwcgKpTUGUcPWG4CGkj9eqITBXZOTCzEDKE8sggs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=BjTq9gpE; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Cee1Fhzz; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Anna-Maria Behnsen <anna-maria@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1706028435;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=92l9Ny1uPwtTpjOT9VYGZX+1CebFF3Ee9CkJCelMiYk=;
+	b=BjTq9gpE6K+bqH9UgYcdfG0zBNSnLk7U8rkNPaZX0hdhFrsb+bNBxv0j6I+1dAtMCUKIkz
+	6e59WIhJJdqV3H1KYBDyp85spM9LbPJuHIQz89uP9TQAgn0yls2a7Aqcbm7PAa2/CN3Tb/
+	/AJbkRrK2YURWpWq/wxcB7K84J1Vb4ifam8srBIHK0VDNxUs8UOGZ2kkz57vc4vFdtPIrA
+	Cyu+jnSReTVSdNdZc0YoXO0FUlw5f5tGunPP4IzSamucW1FvTwll0l8Fto/PukM3ig1xpJ
+	A4e9v34GkDjuLmqYesVpjauB1Gu+iFZT9dbfZXz9Af3xlEVK4BOS52JoKJLyqg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1706028435;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=92l9Ny1uPwtTpjOT9VYGZX+1CebFF3Ee9CkJCelMiYk=;
+	b=Cee1FhzzonzVFWpipJGa1On/BqCneWof1t6vle79sTWaUbhLIRxSd1+VwvYmmY/Df1/3lw
+	VsX+NGM9Zr0yM9DA==
+To: linux-kernel@vger.kernel.org
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	John Stultz <jstultz@google.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Clemens Ladisch <clemens@ladisch.de>,
+	linux-doc@vger.kernel.org,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>
+Subject: [PATCH 0/8] timers and Documentation: Cleanup
+Date: Tue, 23 Jan 2024 17:46:54 +0100
+Message-Id: <20240123164702.55612-1-anna-maria@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,63 +70,81 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Use device life-cycle managed register function to simplify probe.
+Hi,
 
-Signed-off-by: Andrew Davis <afd@ti.com>
----
- drivers/firmware/ti_sci.c | 14 +++++---------
- 1 file changed, 5 insertions(+), 9 deletions(-)
+initially the plan was to simply transform already existing comments in
+timer code into kernel-doc DOC blocks, and reference them inside a *.rst
+file. After trying to get familiar with the kernel documentation by reading
+Documentation/doc-guide/* and have a look at the existing timer related
+kernel documentation (which is below Documentation/timers and also below
+Documentation/driver-api), the list what should/could be improved started
+to grow.
 
-diff --git a/drivers/firmware/ti_sci.c b/drivers/firmware/ti_sci.c
-index 8b9a2556de16d..16501aa0b84cf 100644
---- a/drivers/firmware/ti_sci.c
-+++ b/drivers/firmware/ti_sci.c
-@@ -103,7 +103,6 @@ struct ti_sci_desc {
-  */
- struct ti_sci_info {
- 	struct device *dev;
--	struct notifier_block nb;
- 	const struct ti_sci_desc *desc;
- 	struct dentry *d;
- 	void __iomem *debug_region;
-@@ -122,7 +121,6 @@ struct ti_sci_info {
- 
- #define cl_to_ti_sci_info(c)	container_of(c, struct ti_sci_info, cl)
- #define handle_to_ti_sci_info(h) container_of(h, struct ti_sci_info, handle)
--#define reboot_to_ti_sci_info(n) container_of(n, struct ti_sci_info, nb)
- 
- #ifdef CONFIG_DEBUG_FS
- 
-@@ -3254,10 +3252,9 @@ devm_ti_sci_get_resource(const struct ti_sci_handle *handle, struct device *dev,
- }
- EXPORT_SYMBOL_GPL(devm_ti_sci_get_resource);
- 
--static int tisci_reboot_handler(struct notifier_block *nb, unsigned long mode,
--				void *cmd)
-+static int tisci_reboot_handler(struct sys_off_data *data)
- {
--	struct ti_sci_info *info = reboot_to_ti_sci_info(nb);
-+	struct ti_sci_info *info = data->cb_data;
- 	const struct ti_sci_handle *handle = &info->handle;
- 
- 	ti_sci_cmd_core_reboot(handle);
-@@ -3400,10 +3397,9 @@ static int ti_sci_probe(struct platform_device *pdev)
- 	ti_sci_setup_ops(info);
- 
- 	if (reboot) {
--		info->nb.notifier_call = tisci_reboot_handler;
--		info->nb.priority = 128;
--
--		ret = register_restart_handler(&info->nb);
-+		ret = devm_register_restart_handler(dev,
-+						    tisci_reboot_handler,
-+						    info);
- 		if (ret) {
- 			dev_err(dev, "reboot registration fail(%d)\n", ret);
- 			goto out;
+So the aim of the queue is to do the first step for moving the timer
+related stuff into the 'core-api book'. It contains the following changes:
+
+- Do not expose internal hrtimer documentation (to prevent people of
+  thinking they should use it somehow directly)
+
+- Add missing documentation and update existing ones to be compatible with
+  kernel-doc/rst
+
+- Create a subfolder in core-api to make this the final destination of
+  up-to-date timer documentation. Add banner to already existing timer
+  related documentation to make sure they are really up to date before they
+  are moved to the final destination.
+
+- Move timer API from driver-api to core-api
+
+- Add two files which make (in code hidden) timer documentation accessible
+  via kernel documentation
+
+Thanks,
+
+	Anna-Maria
+
+
+Anna-Maria Behnsen (8):
+  include/hrtimers: Move hrtimer base related definitions into
+    hrtimer_defs
+  hrtimers: Update formatting of documentation
+  tick/sched: Add function description for tick_nohz_next_event()
+  timers: Add struct member description for timer_base
+  jiffies: Transform comment about time_* functions into DOC block
+  Documentation: Create a new folder for all timer internals
+  Documentation: Move "core core" api into a separate file
+  timers: Add timer wheel documentation
+
+ Documentation/core-api/core-api.rst           |  14 ++
+ Documentation/core-api/index.rst              |   5 +-
+ Documentation/core-api/kernel-api.rst         |  12 +-
+ Documentation/core-api/timers/api.rst         |  63 ++++++
+ Documentation/core-api/timers/index.rst       |  32 +++
+ .../core-api/timers/timer-list-timers.rst     |  13 ++
+ Documentation/core-api/timers/timer-wheel.rst |  38 ++++
+ Documentation/driver-api/basics.rst           |  24 ---
+ Documentation/timers/highres.rst              |   5 +
+ Documentation/timers/hpet.rst                 |   5 +
+ Documentation/timers/hrtimers.rst             |   5 +
+ Documentation/timers/index.rst                |   5 +
+ Documentation/timers/no_hz.rst                |   4 +
+ Documentation/timers/timekeeping.rst          |   5 +
+ Documentation/timers/timers-howto.rst         |   5 +
+ include/linux/hrtimer.h                       | 117 +----------
+ include/linux/hrtimer_defs.h                  | 102 ++++++++++
+ include/linux/jiffies.h                       |  15 +-
+ include/linux/timer.h                         |  15 +-
+ kernel/time/hrtimer.c                         |  18 +-
+ kernel/time/tick-sched.c                      |  10 +
+ kernel/time/timer.c                           | 184 ++++++++++++------
+ 22 files changed, 471 insertions(+), 225 deletions(-)
+ create mode 100644 Documentation/core-api/core-api.rst
+ create mode 100644 Documentation/core-api/timers/api.rst
+ create mode 100644 Documentation/core-api/timers/index.rst
+ create mode 100644 Documentation/core-api/timers/timer-list-timers.rst
+ create mode 100644 Documentation/core-api/timers/timer-wheel.rst
+
 -- 
 2.39.2
 
