@@ -1,122 +1,250 @@
-Return-Path: <linux-kernel+bounces-35943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35989-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04667839901
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:03:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D608A83999F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:35:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 991A51F2D460
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:03:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8B461C2938C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:35:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D0EF86ACB;
-	Tue, 23 Jan 2024 18:56:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2322782D77;
+	Tue, 23 Jan 2024 19:35:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GRKm9Ker"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b="Jh6DFuwS"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A70186AC2
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 18:56:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC9E3823AF
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 19:35:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706036217; cv=none; b=AA9X9iYtPENFaDJbEL0r1X5ldJbx0TucqXrB8UvdZrYFil3NgVsVJCenmX92DKy7HZKV2BxEMxrzXZS9qCgpUUVQOBsGaQjfEpdNGL8aUPl9b5wnwY2dB0sKZ8PQJA09CdrjaOJvHXUYpKk2wTz35DSLdGYkd8kbYBv1LqqL8pA=
+	t=1706038541; cv=none; b=WEMYhK7Jd8uNNmn6QcWenmTImi7OEXG6jQiqoa/komHaoka3mVLTXCQWvo7Dt1zs99Pet6V5gnvOxPETQXAsREB3hkgubE89cYyCIPoQyvOhvGCpw1FhN8flwOKtPXUx13/s5EagAyER1McUwvj4022gvcWG8KD+3IcSkPMMHN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706036217; c=relaxed/simple;
-	bh=QLm5Vz8qFoYEruw2+K1bab8WvC1tLQXi6xVjT0Rm/5o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K84i0C+l9EXclzl42/gTORzHS6ofI1nmhDtEa31HfweSsPJGG3zeP1I0rUHpe+Leggf7YKbYd7uqbXYy2HClNdRNTIYytEmWB+V89bi9k3LlFYSjHJ/WcRN0e6abF6bL5G8QB+Nx2JXA2egIaE2/S5N6kQ8ueYoLdMuz7uqA6W0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GRKm9Ker; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d72f71f222so16595125ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 10:56:55 -0800 (PST)
+	s=arc-20240116; t=1706038541; c=relaxed/simple;
+	bh=UlJXHzckCQJdamra/G6D9M8Y+u6D7yXFSqzOhtZP1dM=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 MIME-Version:Content-Type; b=pCIlaEb1HJDsg7/wK7JYyh1/+m/wefGrvNI4NDd1vdiDtbKDud4GFuYHI/66S/y3wjSgkqdkS3oWf0sRC6/yIdkuXvDi53Lirev0J2qDhXv34AgSd4Pd7ecExmkVdRGsXNgnVWLozglVOA5W/2tI7wUfy8lUwU2R5R3uLBnoCac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk; spf=none smtp.mailfrom=metaspace.dk; dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b=Jh6DFuwS; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=metaspace.dk
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a27733ae1dfso487444766b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 11:35:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706036215; x=1706641015; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VTYRquoHREccZxR1itO9s8RbRgXaZi6R4whUcjVcHgk=;
-        b=GRKm9KerLKiU4QSfDr+rjM/UPYeJ+RT6FbSn/z2oF0PJtML5i1NA/oJFAxzO9LVkfq
-         EDW8/viC7drrvMqsXVrGR2iKmgjdsNFJEAYqIMZsl//tPE4pvswToCT4NCPyzichof5/
-         R6TwZsDFArSH1H8d4N2QDCzqMnZ6pytrecA68rv61ELkyCDB2SXFG70eMUvtsZj+NwyF
-         udXiIDliUxafYU1AYQbj+Q/H6kEDEJuG6elxKDobgYje7JvM4teqv2kt2WK7OuN75TrH
-         X9IZAgfziP8/N/dWjAs4Danu5a/v1T9KBENg0tFB8+eO4/nLkOG20DbbKDxEtUw2U5ou
-         O8SQ==
+        d=metaspace-dk.20230601.gappssmtp.com; s=20230601; t=1706038536; x=1706643336; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:in-reply-to:date
+         :subject:cc:to:from:user-agent:references:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NajI3TyyQ9rVjJzigsgGZze0f+PlQKZyJBohU0PsaJA=;
+        b=Jh6DFuwSN+WUkKnMU3d4iIsjF3HOxY+RAhAvx4wswwS/kfuhwe7/1vFT7VgeGXhx+y
+         8STV8Ra3CFmg0xmKyWy8+2JUaL9jybGP0CH89Rfdvo2WaGMGpY0eopxrbmU/NxFLSz1Z
+         zbpzNp+VGBsnx/aQAiUT84qMDXqmeRU5Oa5s308nVFxl0vrrQDO3Rlnl29PKp0bBxFnC
+         d8fDSqQLwe+kf9ipBKyl/x87HzQ/ew9ruOkblgtdBKvmVOMB5AXoKJHHDqoFDs4Wf1Fu
+         J2VPPzu/5azY1E8TJxxdu17Y7VkpM6gqBb1DQ86bSEykYNWETif/Sv9Qj+oobdw23isb
+         XFvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706036215; x=1706641015;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VTYRquoHREccZxR1itO9s8RbRgXaZi6R4whUcjVcHgk=;
-        b=gk9kF/aSm9xpANubK5tjAzso6KlWoFnkIx246Ra7DVDls26/AFQe7ElxkF1vc8bnCT
-         Rwed8iELr+2zJlvvTtAA34I+Ly79UvbMY0MelxKprEWTykCYeyRrvBW2e0fzLvCR8FD1
-         3RZZmraGLH57vyaEqfUqfOsks6NSCj1/jOMaKJG1g9Q/MRB+YNuHF6tl+x/jlNu3EgFR
-         ByYs/WjorXTqRIQlJnmzNrHo+6Bvmo4uF8ZLGgnuo1nqYfzQZlSpicaB55a1acP+9r0G
-         gAw0tPZQWrp3a80YAgYZel7xjC67nzwD8zvC9zScXNWmi7ZIFtlsGAuHwAGkq8oj4jcF
-         kspw==
-X-Gm-Message-State: AOJu0YwMmSugmk81dWt+QmyVdA6ghHcGgOgAewO2XkUt8uhKo+vDPEPb
-	b5ngAdZD3SAdXeINHVa3PSMc7CXY9DNsKRNmFMvs6mjMuD+BO/M7
-X-Google-Smtp-Source: AGHT+IEMZj6K6HqsppprbY9criGaawvzXF5rp8HE28WO86V+oLIy+dJRj/61X2cyQM/T2T+v7vQiIg==
-X-Received: by 2002:a17:902:e543:b0:1d4:2a95:ec2a with SMTP id n3-20020a170902e54300b001d42a95ec2amr4497836plf.0.1706036215262;
-        Tue, 23 Jan 2024 10:56:55 -0800 (PST)
-Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
-        by smtp.gmail.com with ESMTPSA id s21-20020a17090330d500b001d6fbaaeb56sm7017528plc.145.2024.01.23.10.56.54
+        d=1e100.net; s=20230601; t=1706038536; x=1706643336;
+        h=content-transfer-encoding:mime-version:message-id:in-reply-to:date
+         :subject:cc:to:from:user-agent:references:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=NajI3TyyQ9rVjJzigsgGZze0f+PlQKZyJBohU0PsaJA=;
+        b=xUXNpanJmna/fDHAx2uGBe3rt7Fjmo+1BXXz499PetdxWNPjctVYucQr0hTvHptfG6
+         3OESPeLH0O1r7KRoKfgCAARkgoJXXsVPh3edXFbpVZx/yxvRRBIi0B5gI8UTpYzQbCJh
+         Q2tWi5t33oRXr/BipriJztZL7ImiwR7yqNLzDjXIy0ZXARa5c0lgW7sNnvH9plNxBw3A
+         oqeCYJ3VbdwzAlW2n/U/1/M9GFMn3eacOVmy6UJ+Ls/wny2yGWUsagzPAanngORPrdJ/
+         V5Kf71fdF7tLr3KXDhpdIc5ch0qguUOyNSZvEi2l8+sYfjzjZ78uj5/CNHeUlXwRg57l
+         Kogg==
+X-Gm-Message-State: AOJu0YzANMc0lA6KdyzQS7/zESqExQC0N0TuD2eTqd9xAqsLDh9//TJA
+	phJTSY/I291rW8xA6uWFj4zDx4OQgEXl+Bbzsle4X1mzJR+6KDs1owDjBUMjrCA/9b5Xt7L40FU
+	I
+X-Google-Smtp-Source: AGHT+IH+nEjpWVx0IVAFz3yVMdU+gU7oGcfJTGzNXfC0VN2oXyQ4l7UdqaC8c9fQ5/eV65g/ZF9OTg==
+X-Received: by 2002:a17:906:458:b0:a2f:c87a:385b with SMTP id e24-20020a170906045800b00a2fc87a385bmr113163eja.3.1706038535403;
+        Tue, 23 Jan 2024 11:35:35 -0800 (PST)
+Received: from localhost ([79.142.230.34])
+        by smtp.gmail.com with ESMTPSA id e13-20020a170906c00d00b00a2a1bbda0a6sm14819283ejz.175.2024.01.23.11.35.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 10:56:54 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 23 Jan 2024 08:56:53 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Marcelo Tosatti <mtosatti@redhat.com>
-Cc: Frederic Weisbecker <frederic@kernel.org>,
-	Joe Mario <jmario@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mark power efficient workqueue as unbounded if nohz_full
- enabled
-Message-ID: <ZbAL9WBNkKuaZjHj@slm.duckdns.org>
-References: <ZaqbP0QmVPAQTbYA@tpad>
- <ZasMfA-v1YykDA1i@slm.duckdns.org>
- <Za56EiAI9D5S8NuT@tpad>
+        Tue, 23 Jan 2024 11:35:34 -0800 (PST)
+References: <20230503090708.2524310-1-nmi@metaspace.dk>
+ <20230503090708.2524310-4-nmi@metaspace.dk>
+ <iL2M45BoRlK6yS9y8uo0A5yUXcZWMkdk3vtH3LRFSWXfvPVagVZ-0YC7taIKOBFUcjJYA_2xNNFPoC4WL-_ulCHOLkbqvsZlIshE_LEeYtU=@proton.me>
+ <87il3kjgk0.fsf@metaspace.dk>
+ <104a22f7-a5bb-4fb6-9ce9-aa2d4e63417f@proton.me>
+User-agent: mu4e 1.10.8; emacs 28.2.50
+From: "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
+To: Benno Lossin <benno.lossin@proton.me>
+Cc: Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>, Keith
+ Busch <kbusch@kernel.org>, Damien Le Moal <Damien.LeMoal@wdc.com>, Hannes
+ Reinecke <hare@suse.de>, lsf-pc@lists.linux-foundation.org,
+ rust-for-linux@vger.kernel.org, linux-block@vger.kernel.org, Matthew
+ Wilcox <willy@infradead.org>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor
+ <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun
+ Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj?=
+ =?utf-8?Q?=C3=B6rn?= Roy Baron
+ <bjorn3_gh@protonmail.com>, linux-kernel@vger.kernel.org,
+ gost.dev@samsung.com
+Subject: Re: [RFC PATCH 03/11] rust: block: introduce `kernel::block::mq`
+ module
+Date: Tue, 23 Jan 2024 19:39:15 +0100
+In-reply-to: <104a22f7-a5bb-4fb6-9ce9-aa2d4e63417f@proton.me>
+Message-ID: <874jf3kflx.fsf@metaspace.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Za56EiAI9D5S8NuT@tpad>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hello, Marcelo.
 
-On Mon, Jan 22, 2024 at 11:22:10AM -0300, Marcelo Tosatti wrote:
-> About the performance difference (of running locally VS running
-> remotely), can you list a few performance sensitive work queues 
-> (where per-CPU execution makes a significant difference).
+Benno Lossin <benno.lossin@proton.me> writes:
 
-Unfortunately, I have no idea. It goes way back and I'm not sure anyone
-actually tested the difference in a long time. We'd have to dig through
-history to gather some context, set up a benchmark which exercises the path
-heavily and see whether the difference is still there.
+> Hi Andreas,
+>
+> just so you know, I received this email today, so it was very late,
+> since the send date is January 12.
 
-> Because i suppose it would be safe (from a performance regression
-> perspective) to move all delayed works to housekeeping CPUs.
+My mistake. I started drafting Jan 12, but did not get time to finish
+the mail until today. I guess that is how mu4e does things, I should be
+aware and fix up the date. Thanks for letting me know =F0=9F=91=8D
 
-Yeah, replacing power_efficient with unbound should be safe.
+>
+> On 12.01.24 10:18, Andreas Hindborg (Samsung) wrote:
+>>=20
+>> Hi Benno,
+>>=20
+>> Benno Lossin <benno.lossin@proton.me> writes:
+>>=20
+>> <...>
+>>=20
+>>>> diff --git a/rust/kernel/block/mq/gen_disk.rs b/rust/kernel/block/mq/g=
+en_disk.rs
+>>>> new file mode 100644
+>>>> index 000000000000..50496af15bbf
+>>>> --- /dev/null
+>>>> +++ b/rust/kernel/block/mq/gen_disk.rs
+>>>> @@ -0,0 +1,133 @@
+>>>> +// SPDX-License-Identifier: GPL-2.0
+>>>> +
+>>>> +//! GenDisk abstraction
+>>>> +//!
+>>>> +//! C header: [`include/linux/blkdev.h`](../../include/linux/blkdev.h)
+>>>> +//! C header: [`include/linux/blk_mq.h`](../../include/linux/blk_mq.h)
+>>>> +
+>>>> +use crate::block::mq::{raw_writer::RawWriter, Operations, TagSet};
+>>>> +use crate::{
+>>>> +    bindings, error::from_err_ptr, error::Result, sync::Arc, types::F=
+oreignOwnable,
+>>>> +    types::ScopeGuard,
+>>>> +};
+>>>> +use core::fmt::{self, Write};
+>>>> +
+>>>> +/// A generic block device
+>>>> +///
+>>>> +/// # Invariants
+>>>> +///
+>>>> +///  - `gendisk` must always point to an initialized and valid `struc=
+t gendisk`.
+>>>> +pub struct GenDisk<T: Operations> {
+>>>> +    _tagset: Arc<TagSet<T>>,
+>>>> +    gendisk: *mut bindings::gendisk,
+>>>
+>>> Why are these two fields not embedded? Shouldn't the user decide where
+>>> to allocate?
+>>=20
+>> The `TagSet` can be shared between multiple `GenDisk`. Using an `Arc`
+>> seems resonable?
+>>=20
+>> For the `gendisk` field, the allocation is done by C and the address
+>> must be stable. We are owning the pointee and must drop it when it goes =
+out
+>> of scope. I could do this:
+>>=20
+>> #[repr(transparent)]
+>> struct GenDisk(Opaque<bindings::gendisk>);
+>>=20
+>> struct UniqueGenDiskRef {
+>>      _tagset: Arc<TagSet<T>>,
+>>      gendisk: Pin<&'static mut GenDisk>,
+>>=20
+>> }
+>>=20
+>> but it seems pointless. `struct GenDisk` would not be pub in that case. =
+What do you think?
+>
+> Hmm, I am a bit confused as to how you usually use a `struct gendisk`.
+> You said that a `TagSet` might be shared between multiple `GenDisk`s,
+> but that is not facilitated by the C side?
+>
+> Is it the case that on the C side you create a struct containing a
+> tagset and a gendisk for every block device you want to represent?
 
-> And also, being more extreme, why not an option to mark all workqueues
-> as unbounded (or perhaps userspace control of bounding, even for 
-> workqueues marked as "per-CPU").
+Yes, but the `struct tag_set` can be shared between multiple `struct
+gendisk`.
 
-There are correctness issues with per-cpu workqueues - e.g. accessing local
-atomic counters, cpu states and what not. Also, many per-cpu users already
-know that the cpu is hot as they're queueing on the local CPU. I'm not
-against moving more users towards unbound workqueues but that'd have be done
-case by case unfortunately.
+Let me try to elaborate:
 
-Thanks.
+In C you would first allocate a `struct tag_set` and partially
+initialize it. The allocation can be dynamic, static or part of existing
+allocation. You would then partially initialize the structure and finish
+the initialization by calling `blk_mq_alloc_tag_set()`. This populates
+the rest of the structure which includes more dynamic allocations.
 
--- 
-tejun
+You then allocate a `struct gendisk` by calling `blk_mq_alloc_disk()`,
+passing in a pointer to the `struct tag_set` you just created. This
+function will return a pointer to a `struct gendisk` on success.
+
+In the Rust abstractions, we allocate the `TagSet`:
+
+#[pin_data(PinnedDrop)]
+#[repr(transparent)]
+pub struct TagSet<T: Operations> {
+    #[pin]
+    inner: Opaque<bindings::blk_mq_tag_set>,
+    _p: PhantomData<T>,
+}
+
+with `PinInit` [^1]. The initializer will partially initialize the struct a=
+nd
+finish the initialization like C does by calling
+`blk_mq_alloc_tag_set()`. We now need a place to point the initializer.
+`Arc::pin_init()` is that place for now. It allows us to pass the
+`TagSet` reference to multiple `GenDisk` if required. Maybe we could be
+generic over `Deref<TagSet>` in the future. Bottom line is that we need
+to hold on to that `TagSet` reference until the `GenDisk` is dropped.
+
+`struct tag_set` is not reference counted on the C side. C
+implementations just take care to keep it alive, for instance by storing
+it next to a pointer to `struct gendisk` that it is servicing.
+
+> And you decided for the Rust abstractions that you want to have only a
+> single generic struct for any block device, distinguished by the generic
+> parameter?
+
+Yes, we have a single generic struct (`GenDisk`) representing the C
+`struct gendisk`, and a single generic struct (`TagSet`) representing
+the C `struct tag_set`. These are both generic over `T: Operations`.
+`Operations` represent a C vtable (`struct blk_mq_ops`) attached to the
+`struct tag_set`. This vtable is provided by the driver and holds
+function pointers that allow the kernel to perform actions such as queue
+IO requests with the driver. A C driver can instantiate multiple `struct
+gendisk` and service them with the same `struct tag_set` and thereby the
+same vtable. Or it can use separate tag sets and the same vtable. Or a
+separate tag_set and vtable for each gendisk.
+
+> I think these kinds of details would be nice to know. Not only for
+> reviewers, but also for veterans of the C APIs.
+
+I should write some module level documentation clarifying the use of
+these types. The null block driver is a simple example, but it is just
+code. I will include more docs in the next version.
+
+Best regards
+Andreas
+
+
+[^1]: This was not `PinInit` in the RFC, I changed this based on your
+feedback. The main points are still the same though.
 
