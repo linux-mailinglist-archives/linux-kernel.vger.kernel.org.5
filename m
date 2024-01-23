@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-34939-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34941-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E16A83897B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:50:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 861F183897D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:50:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D7CFD1F2B829
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:50:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A1291F2B93B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:50:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2C7C58228;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4E3C58234;
 	Tue, 23 Jan 2024 08:49:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X5xHQR+E"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AYJN+ipv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C160857896;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14A6157312;
 	Tue, 23 Jan 2024 08:49:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705999767; cv=none; b=ZGPUDbtF90X7RZHEqJN7vQJXWNHaFtsuM5i/CAGrcwl93D0WIsVH+kQbbYcWt7GDcaRNKWi4S8Jeo8Z8tne58o9b7WguR5RjgkGZHfn4+jUajZue9rBvb529TO2YKxSinYEvp4eE4q/tbqv2Pf3EDKaNlry+G7c3JG+NeAmS2lw=
+	t=1705999768; cv=none; b=R2XKSxO/SQ1xoMkzW84xR8wukpuMi9grnDOGfTwiG02wIsvCfhcDZkAdJX9T7aHHaXaatEQlKHDhs12KjnhZwiDLm5WtD59QDNh4ZI+AgVWkQ8pdh9nOD5FqAW5CBh1d/H1ci2db8DojMdpOb8aout/+GrQ53H23O83BI3fz99U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705999767; c=relaxed/simple;
-	bh=1z0TD2HxnCY4ip8bo4pCWg3cQC9dj4FCVWWjokiXC0E=;
+	s=arc-20240116; t=1705999768; c=relaxed/simple;
+	bh=7Ib1xBscd/bQp5T9ztO5WfcN+C9oAd5LPyb9/WSHBHg=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=eNh0ltfT2rzVYZCOsueGVbQ7YVZkc4/fTHvw3+YXjhCfNSc6OLnwHxWLMry517vh53KnYFpJW0mDSQoNtYv+PAUt8HzXaFWmQBPZwldGhhbtd22EXZv4FjdeyUwgSFJhv+ghB9SJ3POb2YBHa54gp+396ElwCTI2+xgVnE27YwM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X5xHQR+E; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4B890C43609;
+	 In-Reply-To:To:Cc; b=uQbr5AY/NLBPpx/e3TrCwsx8Di2eRWGfhPidZJ0F14KSCbJJDSn1NxsRwlXW/8ClhN8E7sVumTwq/ia2UimHm2TsepzkOhbyf2OqJ9xlVl1G6buR1UOtQ9fDFrxenTC5KplOITsUsWHgBOanCcx1D5z//a4PWFIfyjEma/rfX7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AYJN+ipv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 66939C433A6;
 	Tue, 23 Jan 2024 08:49:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1705999767;
-	bh=1z0TD2HxnCY4ip8bo4pCWg3cQC9dj4FCVWWjokiXC0E=;
+	bh=7Ib1xBscd/bQp5T9ztO5WfcN+C9oAd5LPyb9/WSHBHg=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=X5xHQR+Ei+Af1S67Vs2ZDSISSw1LmSsfbizjy9OVRkn4ISqa7SqWnWDDIBZjfWxEh
-	 wdTU2m1Lc1GfZKG0tUu0LVZ2vs3qVbC8F/2OUZiH4155GYn7QIOUHScGb7uX6EGP0J
-	 ueJAMpPRDWqvgRdxdRlG6jVLuzY8EJgKNl6tpHftKgFyp/mpCdjJNc+tTXJ9DS4ldC
-	 S0XpBT33Ygm3ylEZ0vqRx1p4wRfngkO1OQ2HuV1zOtSZ6ZIPvUGvCQ3xh/Y2MJ+rOF
-	 zB0PUxJc394DJL3JplBzqwvdvXGrGpO0HzSLB1N9NfZ01h1Rr8TsN1zRFqxrkUxW/k
-	 eO+V1eNutKylA==
+	b=AYJN+ipv8Gg1xNsvNHQxMYzI/s+/pkQkpCCkVQV3NUi9YXobIYTCz9dxa+/If+Djk
+	 EsSjPFGE2pPoJEqszI/Ps711Pc1wNER2cWNaQC0FBzjoFgiDJojCEThe2qlR2i6dMK
+	 MdFzmnLJklhlzDKWFHOyl+XaVXHtyHed87whogUad3orEpqgmsl/kCB/48MRgSDnDu
+	 dYYN4WjPkl5Q5+u9HOQrPky7pJixwkU+rDpVI85tArvNKQ4cHds73m2OPC8qqMfP7i
+	 76h8A7B0lPFfarQ3hral15MsbGMkUHn+45kwES+wGQ+xs4XrjkNFvc5cTbCvFv7tLM
+	 cBuFV3w6jwmpg==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 201D6C47258;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 293B3C47E49;
 	Tue, 23 Jan 2024 08:49:27 +0000 (UTC)
 From: Fenglin Wu via B4 Relay <devnull+quic_fenglinw.quicinc.com@kernel.org>
-Date: Tue, 23 Jan 2024 16:49:24 +0800
-Subject: [PATCH v2 1/2] arm64: dts: qcom: sm8650-mtp: add PM8010 regulators
+Date: Tue, 23 Jan 2024 16:49:25 +0800
+Subject: [PATCH v2 2/2] arm64: dts: qcom: sm8650-qrd: add PM8010 regulators
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,7 +54,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240123-sm8650_pm8010_support-v2-1-52f517b20a1d@quicinc.com>
+Message-Id: <20240123-sm8650_pm8010_support-v2-2-52f517b20a1d@quicinc.com>
 References: <20240123-sm8650_pm8010_support-v2-0-52f517b20a1d@quicinc.com>
 In-Reply-To: <20240123-sm8650_pm8010_support-v2-0-52f517b20a1d@quicinc.com>
 To: kernel@quicinc.com, Bjorn Andersson <andersson@kernel.org>, 
@@ -66,11 +66,11 @@ Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
  Fenglin Wu <quic_fenglinw@quicinc.com>, 
  Neil Armstrong <neil.armstrong@linaro.org>
 X-Mailer: b4 0.13-dev-83828
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1705999765; l=4167;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1705999765; l=4238;
  i=quic_fenglinw@quicinc.com; s=20230725; h=from:subject:message-id;
- bh=wnrLBlakA+25sff7egCXfN/0ljBwsmb5q7P8MR4LEuo=;
- b=qNxpZlF/38+tu3RtLE78VSN/UW8ppSFANxcW5ywqw0JvOm26sSiM2/l5yqiw2qzuSciijZNTs
- C8bWSUV8l01Bne/QM40UX/sWWu1IXsXEANJ8L4lytjNsrJj5DibPvvT
+ bh=IwF9qLfR2pA/CEp0VfIpGzDt44C9lS05rb9dAr8fPT8=;
+ b=n6xp2sxc+fI3l6sIb6iEJ9Ahsw6kKPVXlS63xd74g1/NNDYPpBJDpEj9WWNnC5zI7rpE+/YrO
+ gzRCJjHURRPDbjf4JE8PH55DphiMLoZCAFzV2lreJ8y7Um/eCpE+lhJ
 X-Developer-Key: i=quic_fenglinw@quicinc.com; a=ed25519;
  pk=hleIDz3Unk1zeiwwOnZUjoQVMMelRancDFXg927lNjI=
 X-Endpoint-Received:
@@ -80,19 +80,20 @@ Reply-To: <quic_fenglinw@quicinc.com>
 
 From: Fenglin Wu <quic_fenglinw@quicinc.com>
 
-Add PM8010 regulator device nodes for sm8650-mtp board.
+Add PM8010 regulator device nodes for sm8650-qrd board.
 
 Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+Tested-by: Neil Armstrong <neil.armstrong@linaro.org> # on SM8650-QRD
 Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
 ---
- arch/arm64/boot/dts/qcom/sm8650-mtp.dts | 118 ++++++++++++++++++++++++++++++++
+ arch/arm64/boot/dts/qcom/sm8650-qrd.dts | 118 ++++++++++++++++++++++++++++++++
  1 file changed, 118 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8650-mtp.dts b/arch/arm64/boot/dts/qcom/sm8650-mtp.dts
-index 9d916edb1c73..3791971efee6 100644
---- a/arch/arm64/boot/dts/qcom/sm8650-mtp.dts
-+++ b/arch/arm64/boot/dts/qcom/sm8650-mtp.dts
-@@ -428,6 +428,124 @@ vreg_l3i_1p2: ldo3 {
+diff --git a/arch/arm64/boot/dts/qcom/sm8650-qrd.dts b/arch/arm64/boot/dts/qcom/sm8650-qrd.dts
+index 592a67a47c78..361894fa201a 100644
+--- a/arch/arm64/boot/dts/qcom/sm8650-qrd.dts
++++ b/arch/arm64/boot/dts/qcom/sm8650-qrd.dts
+@@ -436,6 +436,124 @@ vreg_l3i_1p2: ldo3 {
  						   RPMH_REGULATOR_MODE_HPM>;
  		};
  	};
