@@ -1,162 +1,108 @@
-Return-Path: <linux-kernel+bounces-34660-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34661-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45AC58385C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:56:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6134A8385D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:57:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 781671C27C7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:56:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 194801F2279F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:57:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A58263BF;
-	Tue, 23 Jan 2024 02:55:19 +0000 (UTC)
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50BEE17CA;
+	Tue, 23 Jan 2024 02:57:03 +0000 (UTC)
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53177A40;
-	Tue, 23 Jan 2024 02:55:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7888FA3F;
+	Tue, 23 Jan 2024 02:57:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705978518; cv=none; b=Ni4igL6R/DhTvkHu+Z2QrofBQ83SByJis+LUTrArx3zSxxSEYGbuUDsGkMe4kdsOtoURV4bsQ89HFv6LS3Opi7xvYzJiO5GVk6Fwt2GAIwm44/Zzi6x4J+xcX0gNLytwbK4jnj6WELH7WvwL0zohktlj83eXivGXOVINKYBnOlc=
+	t=1705978622; cv=none; b=pSnh3rG/5+3nevo8f+Zi6D38sX7udq3FpSBu7h9gxANlg2MsCt+OMX8W5/8f9pPRNIyUJUTx76AAFtz/ImGsayE4o+tZs0ZgEXHVYS3xZAIQGqv++ua6lyu61JejywjSXWuA6pg2/z/s34dk9wCnlOZgr9cbOeNJPyjLDK+ke4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705978518; c=relaxed/simple;
-	bh=wqD3BcIyhEmryJcEFaCD5uVA14nzmG5cK5v0iik8hsM=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hieRYvErEWOQcNa3P+ZyMr9eRolS4NUcU87VVDLOT1MNwsKC2rGUPJ1DJZE0rTJ4By0sLTZqyjV1tbiHgbqPaHh368wn+wa/YeXupn5jpHxRjm0qaps8R818znKvnoIfv5lFTMoLcEdLa6DN5WdbhzrYBwr79qCPlSSRgoEqz/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TJs952mS1z1S5QL;
-	Tue, 23 Jan 2024 10:53:29 +0800 (CST)
-Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
-	by mail.maildlp.com (Postfix) with ESMTPS id D72251404D8;
-	Tue, 23 Jan 2024 10:55:12 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
- (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 23 Jan
- 2024 10:53:35 +0800
-From: Ye Bin <yebin10@huawei.com>
-To: <rostedt@goodmis.org>, <mhiramat@kernel.org>,
-	<mathieu.desnoyers@efficios.com>, <linux-trace-kernel@vger.kernel.org>
-CC: <linux-kernel@vger.kernel.org>, <yebin10@huawei.com>
-Subject: [PATCH v3 7/7] selftests/ftrace: add test cases for VFS type "%pd" and "%pD"
-Date: Tue, 23 Jan 2024 10:56:08 +0800
-Message-ID: <20240123025608.2370978-8-yebin10@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20240123025608.2370978-1-yebin10@huawei.com>
-References: <20240123025608.2370978-1-yebin10@huawei.com>
+	s=arc-20240116; t=1705978622; c=relaxed/simple;
+	bh=JOW/XeQYTThgjoVl3ERNjpuhgv/rV3WIl3niYr63tOE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=JZ8nyD3KpQ1wxmb14nWFU1WmcPfZf6zzyGfGh8KFaWQ+2wGuw9v2KgIUU7GiZPTPIM2kIXwDW5PVuQGrSiPm2JD5wkW3NnSNA1uxSh8Uukx6qZ+bifGq5Iv3KK99Ocffq4c/cUC5prMZu/veLl7F+HcAK16WJChRaAgYs9v5YJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
+Received: from dlp.unisoc.com ([10.29.3.86])
+	by SHSQR01.spreadtrum.com with ESMTP id 40N2uHJC022672;
+	Tue, 23 Jan 2024 10:56:17 +0800 (+08)
+	(envelope-from zhifeng.tang@unisoc.com)
+Received: from SHDLP.spreadtrum.com (shmbx04.spreadtrum.com [10.0.1.214])
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4TJs3r1HN8z2S7xxn;
+	Tue, 23 Jan 2024 10:48:56 +0800 (CST)
+Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx04.spreadtrum.com
+ (10.0.1.214) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Tue, 23 Jan
+ 2024 10:56:15 +0800
+From: Zhifeng Tang <zhifeng.tang@unisoc.com>
+To: Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd
+	<sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang
+	<baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+CC: <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Zhifeng Tang <zhifeng.tang23@gmail.com>,
+        Wenming Wu <wenming.wu@unisoc.com>
+Subject: [PATCH V4 0/3] Add reset controller driver for ums512
+Date: Tue, 23 Jan 2024 10:56:10 +0800
+Message-ID: <20240123025613.3976-1-zhifeng.tang@unisoc.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500010.china.huawei.com (7.192.105.118)
+X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
+ shmbx04.spreadtrum.com (10.0.1.214)
+X-MAIL:SHSQR01.spreadtrum.com 40N2uHJC022672
 
-This patch adds test cases for new print format type "%pd/%pD".The test cases
-test the following items:
-1. Test README if add "%pd/%pD" type;
-2. Test "%pd" type for dput();
-3. Test "%pD" type for vfs_read();
+From: "zhifeng.tang" <zhifeng.tang@unisoc.com>
 
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- .../ftrace/test.d/kprobe/kprobe_args_vfs.tc   | 79 +++++++++++++++++++
- 1 file changed, 79 insertions(+)
- create mode 100644 tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_vfs.tc
+In most of Sprd SOCs,The clock controller register block also
+contains reset bits for some of these peripherals,so reset
+controller and clock provider are combined together as a block,
+and put it under the driver/clk/.
 
-diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_vfs.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_vfs.tc
-new file mode 100644
-index 000000000000..1d8edd294dd6
---- /dev/null
-+++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_vfs.tc
-@@ -0,0 +1,79 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+# description: Kprobe event VFS type argument
-+# requires: kprobe_events
-+
-+case `uname -m` in
-+x86_64)
-+  ARG1=%di
-+;;
-+i[3456]86)
-+  ARG1=%ax
-+;;
-+aarch64)
-+  ARG1=%x0
-+;;
-+arm*)
-+  ARG1=%r0
-+;;
-+ppc64*)
-+  ARG1=%r3
-+;;
-+ppc*)
-+  ARG1=%r3
-+;;
-+s390*)
-+  ARG1=%r2
-+;;
-+mips*)
-+  ARG1=%r4
-+;;
-+loongarch*)
-+  ARG1=%r4
-+;;
-+riscv*)
-+  ARG1=%a0
-+;;
-+*)
-+  echo "Please implement other architecture here"
-+  exit_untested
-+esac
-+
-+: "Test argument %pd/%pD in README"
-+grep -q "%pd/%pD" README
-+
-+: "Test argument %pd with name"
-+echo "p:testprobe dput name=${ARG1}:%pd" > kprobe_events
-+echo 1 > events/kprobes/testprobe/enable
-+grep -q "1" events/kprobes/testprobe/enable
-+echo 0 > events/kprobes/testprobe/enable
-+grep "dput" trace | grep -q "enable"
-+echo "" > kprobe_events
-+echo "" > trace
-+
-+: "Test argument %pd without name"
-+echo "p:testprobe dput ${ARG1}:%pd" > kprobe_events
-+echo 1 > events/kprobes/testprobe/enable
-+grep -q "1" events/kprobes/testprobe/enable
-+echo 0 > events/kprobes/testprobe/enable
-+grep "dput" trace | grep -q "enable"
-+echo "" > kprobe_events
-+echo "" > trace
-+
-+: "Test argument %pD with name"
-+echo "p:testprobe vfs_read name=${ARG1}:%pD" > kprobe_events
-+echo 1 > events/kprobes/testprobe/enable
-+grep -q "1" events/kprobes/testprobe/enable
-+echo 0 > events/kprobes/testprobe/enable
-+grep "vfs_read" trace | grep -q "enable"
-+echo "" > kprobe_events
-+echo "" > trace
-+
-+: "Test argument %pD without name"
-+echo "p:testprobe vfs_read ${ARG1}:%pD" > kprobe_events
-+echo 1 > events/kprobes/testprobe/enable
-+grep -q "1"  events/kprobes/testprobe/enable
-+echo 0 > events/kprobes/testprobe/enable
-+grep "vfs_read" trace | grep -q "enable"
-+echo "" > kprobe_events
-+echo "" > trace
+Changes in v4:
+  - Add description why reset controller put it under the driver/clk/
+
+Changes in v3:
+  - Fix the driver patch is overwritten by cover letter
+  
+Changes in v2:
+  - The binding file is combined into one patch
+
+zhifeng.tang (3):
+  dt-bindings: reset: Add reset controller bindings for Unisoc's ums512
+  clk: sprd: Add reset controller driver for ums512
+  arm64: dts: sprd: Add reset controller driver for UMS512
+
+ .../bindings/clock/sprd,ums512-clk.yaml       |   3 +
+ arch/arm64/boot/dts/sprd/ums512.dtsi          |   9 +
+ drivers/clk/sprd/Makefile                     |   1 +
+ drivers/clk/sprd/common.c                     |   1 +
+ drivers/clk/sprd/common.h                     |   2 +
+ drivers/clk/sprd/reset.c                      |  78 ++++++
+ drivers/clk/sprd/reset.h                      |  30 +++
+ drivers/clk/sprd/ums512-clk.c                 | 240 ++++++++++++++++++
+ include/dt-bindings/reset/sprd,ums512-reset.h | 203 +++++++++++++++
+ 9 files changed, 567 insertions(+)
+ create mode 100644 drivers/clk/sprd/reset.c
+ create mode 100644 drivers/clk/sprd/reset.h
+ create mode 100644 include/dt-bindings/reset/sprd,ums512-reset.h
+
 -- 
-2.31.1
+2.17.1
 
 
