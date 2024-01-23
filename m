@@ -1,203 +1,126 @@
-Return-Path: <linux-kernel+bounces-35391-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8F03839047
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:36:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C00183904C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:38:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 181AD1C21FFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:36:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6C0B1F2A66F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:38:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BE2A5EE9E;
-	Tue, 23 Jan 2024 13:36:35 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E7AE33CC;
-	Tue, 23 Jan 2024 13:36:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23F7E5EE9A;
+	Tue, 23 Jan 2024 13:38:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="evktzCJE"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D1925EE76
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 13:38:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706016994; cv=none; b=N/1F6C8HAkDvUtkea5CG7hBHphfrtOs54mD22Pmsrodb0kV6lMzLgWSt5Ujvt0Dq8P8hZi9b0iD/HkWzAbs9axdQK54xKtL2T+45n7O6jwabQwoz1Hx6dt5fLdaot5qF1wFbQRpkYyeea4krJS73ZkC7k0KjkZuHqmCGBewiNcw=
+	t=1706017104; cv=none; b=usnaPWz7DCDgHBsxGy6IrInJ7eQKKjzGFVY1AK4ZPOk/VLMaWgQtM8xuWK+xMep0BUvyU1Oub547MotkPLQnb2K8xfJDGUaN0JOpCsYn141dmUGf/Wcr8qDQgYyBlFChPG77Xb6Fv+Wut9r9e+FNFkzCcecI6v+vS12h6AYSTT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706016994; c=relaxed/simple;
-	bh=6iQ0DISi3QxwIKFZR+AE3nFxCcqYjepQqrZX7GECL4A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Thhc3BQ+Hx+iQFtbvJDI1AEmQ6MhosdhJiH3u7Gwc1RccdTO+brcULuqa20f7Z930S3cmyS48SAlOe4K5GZDBZdXP8W8NwIKnaDPD/TE/Z7f6BwiAmLRdOqpFPlFL7eHlFro3IfQ4X8cKiIIMb3fpkEMJjqSUSjLCV1ZNzPjqFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 908CF1FB;
-	Tue, 23 Jan 2024 05:37:16 -0800 (PST)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0E5083F762;
-	Tue, 23 Jan 2024 05:36:29 -0800 (PST)
-Message-ID: <9722b637-68d7-4cba-928c-9782dd5413fa@arm.com>
-Date: Tue, 23 Jan 2024 13:36:28 +0000
+	s=arc-20240116; t=1706017104; c=relaxed/simple;
+	bh=XjIK/7Xpg144Fxy0/nUAPJZJk41v/xciwVkQI1CZ5G0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=QS3TMWIus7efuF7crMSCxoKdKLscTxdH9kIAn5zqlM0O0owqUmYGZ+jxDK75l1MuG2JrOu/rk3PvO9l+1CFS2vM60yGS+gZnIr+CEM1es6RyaPgJzF85cVRaY5TheFkVnvoXK+9WIimjLs2Yd3Uzi4yuYCrdKyyqP9LPKKfebOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=evktzCJE; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706017101;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eIEgnQ9c50Sj+zsvA8MdnvK0Mjj4Z9htr/i8+xUw1GA=;
+	b=evktzCJENuDTsxU29PZEue6YxG8/oku9YApco69+rPw0xObj9LSenxnDcPstWbLmm5n6pO
+	v2yb1Y+9ejXyr3n/ynSmq2ZtgVcBk0cEslOJO1f+1zd8zNgwDMgrjQYkbAt3FCYgQm64e4
+	lfRtQhdWZolr51rFzGL5X5S0nvmqugI=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-558-52qU3dqsPWqUM9nh68MrsQ-1; Tue, 23 Jan 2024 08:38:20 -0500
+X-MC-Unique: 52qU3dqsPWqUM9nh68MrsQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40e4caa37f5so36266455e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 05:38:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706017099; x=1706621899;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eIEgnQ9c50Sj+zsvA8MdnvK0Mjj4Z9htr/i8+xUw1GA=;
+        b=PkNRrJqSDExDESSHzf4F9t6N9lXrzL8IZIQEu12whTMW34fu0bcDVNk0gBWEF4pmZ9
+         92C5WupTGKY2R/81medQfixBo/Um/gR78TM0n1ZinhpTd832YjAKw4TDIwX+YV8AnPrA
+         O9MmjM3bamA1y+0sb2n+ziDh0Dz4RkIh7r6JPqHTKNaiGIH8gpvw47qPz0kSeoFhYxGd
+         7tqEyimX5zfCWAQBjbZhBar4XE22ImLHEjRubsOgH+oCzDaVYAh288aJEmUgDmZ1jcrC
+         Ll2Z2TT9oJLEgUBd9rPeuJ+TdEeNTbucX74SvIgWdybKCgM5y3kQ3+PhUlwKN4h4VAuZ
+         +vBg==
+X-Gm-Message-State: AOJu0YzPEcD5QscrBGNfsuc1ErldxDBKdAJ3GbgPsMLl0DmHiBjbRZSL
+	vn6B3nYCLe652zkgHP7Rwm0GtX4irn3ck7/s8BAC54DqL4J9kkjOTXMRHkVsc25jnck6J2Cc98v
+	M666wCvXe/RJwqOXEZh2/n9aWwp0Q2V2ztslokk/lWKEcDWwXD/hj3Drc/XDJ3A==
+X-Received: by 2002:a05:600c:4e88:b0:40e:b313:9da2 with SMTP id f8-20020a05600c4e8800b0040eb3139da2mr155374wmq.90.1706017098957;
+        Tue, 23 Jan 2024 05:38:18 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHXaxkDqdTjqQUUG1IEKUig0tKAlfzSQioI62GUGYo2aeuE2fALmv9NQ4rZZcK0tCK4jCvWnQ==
+X-Received: by 2002:a05:600c:4e88:b0:40e:b313:9da2 with SMTP id f8-20020a05600c4e8800b0040eb3139da2mr155365wmq.90.1706017098635;
+        Tue, 23 Jan 2024 05:38:18 -0800 (PST)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id f6-20020a05600c154600b0040e880ac6ecsm22681842wmg.35.2024.01.23.05.38.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jan 2024 05:38:18 -0800 (PST)
+From: Javier Martinez Canillas <javierm@redhat.com>
+To: Thomas Zimmermann <tzimmermann@suse.de>, chenhuacai@kernel.org
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, Thomas
+ Zimmermann <tzimmermann@suse.de>, Jaak Ristioja <jaak@ristioja.ee>, Huacai
+ Chen <chenhuacai@loongson.cn>, Thorsten Leemhuis
+ <regressions@leemhuis.info>, Jani Nikula <jani.nikula@linux.intel.com>
+Subject: Re: [PATCH] Revert "drivers/firmware: Move sysfb_init() from
+ device_initcall to subsys_initcall_sync"
+In-Reply-To: <20240123120937.27736-1-tzimmermann@suse.de>
+References: <20240123120937.27736-1-tzimmermann@suse.de>
+Date: Tue, 23 Jan 2024 14:38:17 +0100
+Message-ID: <871qa8w4om.fsf@minerva.mail-host-address-is-not-set>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 1/1] irqchip/gic-v3: Enable non-coherent
- redistributors/ITSes ACPI probing
-Content-Language: en-GB
-To: Lorenzo Pieralisi <lpieralisi@kernel.org>, linux-kernel@vger.kernel.org
-Cc: Mark Rutland <mark.rutland@arm.com>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Marc Zyngier <maz@kernel.org>,
- linux-arm-kernel@lists.infradead.org, linux-acpi@vger.kernel.org,
- acpica-devel@lists.linux.dev, Fang Xiang <fangxiang3@xiaomi.com>,
- Robert Moore <robert.moore@intel.com>
-References: <20240123110332.112797-1-lpieralisi@kernel.org>
- <20240123110332.112797-2-lpieralisi@kernel.org>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20240123110332.112797-2-lpieralisi@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On 23/01/2024 11:03 am, Lorenzo Pieralisi wrote:
-> The GIC architecture specification defines a set of registers for
-> redistributors and ITSes that control the sharebility and cacheability
-> attributes of redistributors/ITSes initiator ports on the interconnect
-> (GICR_[V]PROPBASER, GICR_[V]PENDBASER, GITS_BASER<n>).
-> 
-> Architecturally the GIC provides a means to drive shareability and
-> cacheability attributes signals but it is not mandatory for designs to
-> wire up the corresponding interconnect signals that control the
-> cacheability/shareability of transactions.
-> 
-> Redistributors and ITSes interconnect ports can be connected to
-> non-coherent interconnects that are not able to manage the
-> shareability/cacheability attributes; this implicitly makes the
-> redistributors and ITSes non-coherent observers.
-> 
-> To enable non-coherent GIC designs on ACPI based systems, parse the MADT
-> GICC/GICR/ITS subtables non-coherent flags to determine whether the
-> respective components are non-coherent observers and force the
-> shareability attributes to be programmed into the redistributors and
-> ITSes registers.
-> 
-> An ACPI global function (acpi_get_madt_revision()) is added to retrieve
-> the MADT revision, in that it is essential to check the MADT revision
-> before checking for flags that were added with MADT revision 7 so that
-> if the kernel is booted with an ACPI MADT table with revision < 7 it
-> skips parsing the newly added flags (that should be zeroed reserved
-> values for MADT versions < 7 but they could turn out to be buggy and
-> should be ignored).
+Thomas Zimmermann <tzimmermann@suse.de> writes:
 
-FWIW,
-
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
-
-I guess the most contentious parts disappeared in Marc's refactoring, so 
-what's left seems entirely straightforward and innocuous to me.
-
-I'd also agree that there seems no real value in going out of our way to 
-police the firmware for consistency - if at least one entry says to 
-apply the quirk, then applying the quirk is the right and safest thing 
-to do, so all we could really do on top of that is add extra complexity 
-to be able to say "hey, firmware did a silly thing!", but if we're 
-starting from the premise that hardware did an inadvisable thing to 
-begin with, maybe we should have similarly realistic expectations of the 
-corresponding firmware anyway :)
-
-Cheers,
-Robin.
-
-> Signed-off-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> Cc: Marc Zyngier <maz@kernel.org>
+> This reverts commit 60aebc9559492cea6a9625f514a8041717e3a2e4.
+>
+> Commit 60aebc9559492cea ("drivers/firmware: Move sysfb_init() from
+> device_initcall to subsys_initcall_sync") messes up initialization order
+> of the graphics drivers and leads to blank displays on some systems. So
+> revert the commit.
+>
+> To make the display drivers fully independent from initialization
+> order requires to track framebuffer memory by device and independently
+> from the loaded drivers. The kernel currently lacks the infrastructure
+> to do so.
+>
+> Reported-by: Jaak Ristioja <jaak@ristioja.ee>
+> Closes: https://lore.kernel.org/dri-devel/ZUnNi3q3yB3zZfTl@P70.localdomain/T/#t
+> Reported-by: Huacai Chen <chenhuacai@loongson.cn>
+> Closes: https://lore.kernel.org/dri-devel/20231108024613.2898921-1-chenhuacai@loongson.cn/
+> Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/10133
+> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+> Cc: Javier Martinez Canillas <javierm@redhat.com>
+> Cc: Thorsten Leemhuis <regressions@leemhuis.info>
+> Cc: Jani Nikula <jani.nikula@linux.intel.com>
 > ---
->   drivers/acpi/processor_core.c    | 15 +++++++++++++++
->   drivers/irqchip/irq-gic-v3-its.c |  4 ++++
->   drivers/irqchip/irq-gic-v3.c     |  9 +++++++++
->   include/linux/acpi.h             |  3 +++
->   4 files changed, 31 insertions(+)
-> 
-> diff --git a/drivers/acpi/processor_core.c b/drivers/acpi/processor_core.c
-> index b203cfe28550..915713c0e9b7 100644
-> --- a/drivers/acpi/processor_core.c
-> +++ b/drivers/acpi/processor_core.c
-> @@ -215,6 +215,21 @@ phys_cpuid_t __init acpi_map_madt_entry(u32 acpi_id)
->   	return rv;
->   }
->   
-> +int __init acpi_get_madt_revision(void)
-> +{
-> +	struct acpi_table_header *madt = NULL;
-> +	int revision;
-> +
-> +	if (ACPI_FAILURE(acpi_get_table(ACPI_SIG_MADT, 0, &madt)))
-> +		return -EINVAL;
-> +
-> +	revision = madt->revision;
-> +
-> +	acpi_put_table(madt);
-> +
-> +	return revision;
-> +}
-> +
->   static phys_cpuid_t map_mat_entry(acpi_handle handle, int type, u32 acpi_id)
->   {
->   	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
-> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-> index fec1b58470df..a60c560ce891 100644
-> --- a/drivers/irqchip/irq-gic-v3-its.c
-> +++ b/drivers/irqchip/irq-gic-v3-its.c
-> @@ -5591,6 +5591,10 @@ static int __init gic_acpi_parse_madt_its(union acpi_subtable_headers *header,
->   		goto node_err;
->   	}
->   
-> +	if (acpi_get_madt_revision() >= 7 &&
-> +	    (its_entry->flags & ACPI_MADT_ITS_NON_COHERENT))
-> +		its->flags |= ITS_FLAGS_FORCE_NON_SHAREABLE;
-> +
->   	err = its_probe_one(its);
->   	if (!err)
->   		return 0;
-> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-> index 98b0329b7154..8cb8dff86c12 100644
-> --- a/drivers/irqchip/irq-gic-v3.c
-> +++ b/drivers/irqchip/irq-gic-v3.c
-> @@ -2356,6 +2356,11 @@ gic_acpi_parse_madt_redist(union acpi_subtable_headers *header,
->   		pr_err("Couldn't map GICR region @%llx\n", redist->base_address);
->   		return -ENOMEM;
->   	}
-> +
-> +	if (acpi_get_madt_revision() >= 7 &&
-> +	    (redist->flags & ACPI_MADT_GICR_NON_COHERENT))
-> +		gic_data.rdists.flags |= RDIST_FLAGS_FORCE_NON_SHAREABLE;
-> +
->   	gic_request_region(redist->base_address, redist->length, "GICR");
->   
->   	gic_acpi_register_redist(redist->base_address, redist_base);
-> @@ -2380,6 +2385,10 @@ gic_acpi_parse_madt_gicc(union acpi_subtable_headers *header,
->   		return -ENOMEM;
->   	gic_request_region(gicc->gicr_base_address, size, "GICR");
->   
-> +	if (acpi_get_madt_revision() >= 7 &&
-> +	    (gicc->flags & ACPI_MADT_GICC_NON_COHERENT))
-> +		gic_data.rdists.flags |= RDIST_FLAGS_FORCE_NON_SHAREABLE;
-> +
->   	gic_acpi_register_redist(gicc->gicr_base_address, redist_base);
->   	return 0;
->   }
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index b7165e52b3c6..4eedab0e51c3 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -284,6 +284,9 @@ static inline bool invalid_phys_cpuid(phys_cpuid_t phys_id)
->   	return phys_id == PHYS_CPUID_INVALID;
->   }
->   
-> +
-> +int __init acpi_get_madt_revision(void);
-> +
->   /* Validate the processor object's proc_id */
->   bool acpi_duplicate_processor_id(int proc_id);
->   /* Processor _CTS control */
+
+Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
 
