@@ -1,226 +1,129 @@
-Return-Path: <linux-kernel+bounces-35263-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35278-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43C75838ED7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:52:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48E6D838EF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:57:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A6775B214A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:52:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0276A287866
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:56:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7563B5EE81;
-	Tue, 23 Jan 2024 12:52:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E5A95F54A;
+	Tue, 23 Jan 2024 12:53:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CpDqB7LQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="miusm1XE"
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A02F35EE6C
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 12:52:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF229604B7
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 12:53:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706014341; cv=none; b=c0HfXDm1HBEPayEGxWxnVXbA7s7Gp7PdaQxFjSZhiw9TMeCZpLk3OVyk9roCWouaWJvK+80wsSvcosIY/PdqE9TubYOqG+MvctIKPYkHHVdLx2mtwPo5TK/E5tFrG9o9AzseiLtE1ier4ls9XPr0x7ScoD1g/bOeCPc5qoOFEtg=
+	t=1706014435; cv=none; b=GsSheGZVJpGjnq+Qz+yfXsiWJ/j21IOS+rV8ArMF0ar7MFjPY+tRBHNO/Q7375k3p+Gxl704UOYAwnFpuB+5tsEr7koce0/nBGdKUhjXE80XxrVRniXE4D12GYK3NHUMaOhRjVVdoQFFEhprIEooYXY4rirN7/NumZ+uuVuCjQM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706014341; c=relaxed/simple;
-	bh=9Doj/gTHL3//w2tFAh8hYikUi4bc/x4E4gubWtQZ8Cg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=pQAEHU/OCjgzq69vi6FpyjsNaiwc6J2MHXLXjx3y/9MqxVyG52ScDwHVrBWD6+YI7yU6dyX+IRf/iritudMy7oNkIxIW8SO1M0YcgD0YPmaqZsHrwt6HcxbB0YBPP0Zi5bduA1vQG2CFHVjUB1oYOUwkQzbcHSR4oJ5YWT2a2m4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CpDqB7LQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4379C433C7;
-	Tue, 23 Jan 2024 12:52:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706014341;
-	bh=9Doj/gTHL3//w2tFAh8hYikUi4bc/x4E4gubWtQZ8Cg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CpDqB7LQEcEuqa3niaxIcL4o90Q2HZw/Qz+VvkXmKqwkUbR25SECSEOScNiTct7cM
-	 JjYPbk6SY8uN82M9ZYOUV+Dk6xaMl9H58VuOwLr+67E0ZD8F0N8WS7s7XqUBWUQoDA
-	 sM/3vhbNNmzC8rhwQyQu6ZR6QZiyKvEenBOO6kawF3P/ftzR4TYoQRpWIU4OZKd6Tq
-	 oKvROao5yTDUILfHMF3skeTus0E6DPY7I5iY+H14RUjmt9dkoLvLwMzsmPXeKsaYjJ
-	 bLOImNkIChGVw1fAFNWZoxI6SfbZbiWPfnAmcnuypYvOpqGZTSrdl1zJupVXs6Ogks
-	 wZo4JgrJK4Lgw==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Scott Wood <oss@buserror.net>,
-	Michael Ellerman <mpe@ellerman.id.au>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Rob Herring <robh@kernel.org>,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] powerpc: 85xx: mark local functions static
-Date: Tue, 23 Jan 2024 13:51:42 +0100
-Message-Id: <20240123125148.2004648-2-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240123125148.2004648-1-arnd@kernel.org>
-References: <20240123125148.2004648-1-arnd@kernel.org>
+	s=arc-20240116; t=1706014435; c=relaxed/simple;
+	bh=SrubDBE5WcpcfK7f3xovnFiXn5W/MQUApTBY96p2ZzE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fxiXfUeHcIQtMnRZ5WqtMCV//+Smy0DbLR9m6mnu2Xepf3UEetXyXmD2CW//UhOdj/U4bjF+A8ZpLSW0SsxtkoycTt93u99pBCYyTAkTYhuVkrjYLKMRYcaTTpIAH7JlKPszRq59emh9rQbj2CILOHtEKYOt9cE/zP4vmWaJJTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=miusm1XE; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-600094c5703so17267697b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 04:53:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706014433; x=1706619233; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z+asE/AToOCsan6HoT4XnPwjdlU0T+m2L6pRIK9YYNg=;
+        b=miusm1XEW4kveUW39ihoH7X2eavQf30EvZ5jgVfQWWY/zt/IWT22Rm+4iDYPEIVkki
+         2TLNjczpT94D4VDDycDi6L03wipZAqwwisLsWa/xIxepIGeqP0cVZxjK0dXzHL6K+jgc
+         M8ApoJ1YNlZXrp7Q80rdHzUeWd5/seBUnP06WpRchKAb4aYecJLRtYbmICvX+KWaukaP
+         TRmKIJ4zm2CDeoHgCsRBkPfphfQdDdtcJIjGzzmXmj/Q7BNpjvM2fdD/606BivVFpJxb
+         Gbu/LHx9nlo6APz1V7Hb4mJO8/IK2RmitPxp+HlO7Y8mIKJ6w+Kvjs4dXOzx1TXdAz4p
+         Stww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706014433; x=1706619233;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Z+asE/AToOCsan6HoT4XnPwjdlU0T+m2L6pRIK9YYNg=;
+        b=MgIWHOvXM39XFQ7VVt6+WofBH+CyIAmbtfvQWq1lOhTIsAyShlQUTWCDKZ6IPASvx9
+         +ZvcpjXGFQ9iZZVMUYhxo1/C92e/7/JMd7i4zTF5s+3hzJKQi/eMNp4Anpmwtn2KPqvx
+         lV0nYl6ljC1J0jfNqSGgpXdIPz4DyzPVKAEEGYTB7JTjgG0q8MRXFpwuJuN1E/CyLZyq
+         NBEi7blDHRsWmceuyqagSrMWgfXXF2o0jiSAmCQugVz6lsaw2MKKkiXgbQ7E7dUVHERl
+         hBPP/29grTYuN3rPZ3f++DlA5vdnJRIl+mArh7cE5OW48u9WhBU5H+ta/dU/Pl32AIfd
+         BweA==
+X-Gm-Message-State: AOJu0YzdMWchb1hiD3U6tN6t0PEJYrZtp/n0H/JdE7LWwC5zigyDEoO/
+	t5w86lmxsr/QsWbeXeZ+obusgF+TbAbLki4+PkZ7VFJt6m1ccw8Gd2UMYwNq3WpzjhXTT5kUlN6
+	a5xyFP+K/BPNEpNHcZc+nOxF5+XH/Tx3AIFDX3A==
+X-Google-Smtp-Source: AGHT+IF0zt7gwjJbmvCQYkLw24rgqNSfBdkANuOxWkItD7WSZEKNeUhd5CZMquNm3DCcAVEY1T/CrJcgJ5At/Eh1vmI=
+X-Received: by 2002:a81:9113:0:b0:5e3:320b:7c with SMTP id i19-20020a819113000000b005e3320b007cmr4912440ywg.37.1706014432844;
+ Tue, 23 Jan 2024 04:53:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240122-gdsc-hwctrl-v4-0-9061e8a7aa07@linaro.org> <20240122-gdsc-hwctrl-v4-1-9061e8a7aa07@linaro.org>
+In-Reply-To: <20240122-gdsc-hwctrl-v4-1-9061e8a7aa07@linaro.org>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Tue, 23 Jan 2024 13:53:17 +0100
+Message-ID: <CAPDyKFp3F16iQnR9jw6_AJStWvGv2u8CHsF4YJCZSxJj-8p0LA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/5] PM: domains: Allow devices attached to genpd to be
+ managed by HW
+To: Abel Vesa <abel.vesa@linaro.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Kevin Hilman <khilman@kernel.org>, Pavel Machek <pavel@ucw.cz>, 
+	Len Brown <len.brown@intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Andy Gross <agross@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Michael Turquette <mturquette@baylibre.com>, 
+	Stephen Boyd <sboyd@kernel.org>, Stanimir Varbanov <stanimir.k.varbanov@gmail.com>, 
+	Vikash Garodia <quic_vgarodia@quicinc.com>, "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>, 
+	Mauro Carvalho Chehab <mchehab@kernel.org>, Taniya Das <quic_tdas@quicinc.com>, 
+	Jagadeesh Kona <quic_jkona@quicinc.com>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
+	linux-media@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-From: Arnd Bergmann <arnd@arndb.de>
+[...]
 
-These functions are either used in only one file and can just be
-makde static or need an #include statement to avoid a warning:
+> +
+> +/**
+> + * dev_pm_genpd_get_hwmode - Get the HW mode setting for the device.
+> + *
+> + * @dev: Device for which the current HW-mode setting should be fetched.
+> + *
+> + * This helper function allows consumer drivers to fetch the current HW mode
+> + * setting of its the device.
+> + *
+> + * It is assumed that the users guarantee that the genpd wouldn't be detached
+> + * while this routine is getting called.
+> + */
+> +bool dev_pm_genpd_get_hwmode(struct device *dev)
+> +{
+> +       struct generic_pm_domain *genpd;
+> +
+> +       genpd = dev_to_genpd_safe(dev);
+> +       if (!genpd)
+> +               return false;
+> +
+> +       if (genpd->get_hwmode_dev)
+> +               return genpd->get_hwmode_dev(genpd, dev);
 
-arch/powerpc/platforms/85xx/mpc8536_ds.c:30:13: error: no previous prototype for 'mpc8536_ds_pic_init' [-Werror=missing-prototypes]
-arch/powerpc/platforms/85xx/p1010rdb.c:27:13: error: no previous prototype for 'p1010_rdb_pic_init' [-Werror=missing-prototypes]
-arch/powerpc/platforms/85xx/p1022_ds.c:373:6: error: no previous prototype for 'p1022ds_set_pixel_clock' [-Werror=missing-prototypes]
-arch/powerpc/platforms/85xx/p1022_ds.c:422:1: error: no previous prototype for 'p1022ds_valid_monitor_port' [-Werror=missing-prototypes]
-arch/powerpc/platforms/85xx/p1022_ds.c:435:13: error: no previous prototype for 'p1022_ds_pic_init' [-Werror=missing-prototypes]
-arch/powerpc/platforms/85xx/p1022_rdk.c:43:6: error: no previous prototype for 'p1022rdk_set_pixel_clock' [-Werror=missing-prototypes]
-arch/powerpc/platforms/85xx/p1022_rdk.c:92:1: error: no previous prototype for 'p1022rdk_valid_monitor_port' [-Werror=missing-prototypes]
-arch/powerpc/platforms/85xx/p1022_rdk.c:99:13: error: no previous prototype for 'p1022_rdk_pic_init' [-Werror=missing-prototypes]
-arch/powerpc/platforms/85xx/socrates_fpga_pic.c:273:13: error: no previous prototype for 'socrates_fpga_pic_init' [-Werror=missing-prototypes]
-arch/powerpc/platforms/85xx/xes_mpc85xx.c:40:13: error: no previous prototype for 'xes_mpc85xx_pic_init' [-Werror=missing-prototypes]
-arch/powerpc/platforms/85xx/mvme2500.c:24:13: error: no previous prototype for 'mvme2500_pic_init' [-Werror=missing-prototypes]
+Not sure why I haven't spotted this before - but we should probably
+assign dev_gpd_data(dev)->hw_mode here, rather than returning the
+result from the callback directly.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/powerpc/platforms/85xx/mpc8536_ds.c        | 2 +-
- arch/powerpc/platforms/85xx/mvme2500.c          | 2 +-
- arch/powerpc/platforms/85xx/p1010rdb.c          | 2 +-
- arch/powerpc/platforms/85xx/p1022_ds.c          | 6 +++---
- arch/powerpc/platforms/85xx/p1022_rdk.c         | 6 +++---
- arch/powerpc/platforms/85xx/socrates_fpga_pic.c | 2 ++
- arch/powerpc/platforms/85xx/xes_mpc85xx.c       | 2 +-
- 7 files changed, 12 insertions(+), 10 deletions(-)
+> +
+> +       return dev_gpd_data(dev)->hw_mode;
+> +}
+> +EXPORT_SYMBOL_GPL(dev_pm_genpd_get_hwmode);
 
-diff --git a/arch/powerpc/platforms/85xx/mpc8536_ds.c b/arch/powerpc/platforms/85xx/mpc8536_ds.c
-index e966b2ad8ecd..b3327a358eb4 100644
---- a/arch/powerpc/platforms/85xx/mpc8536_ds.c
-+++ b/arch/powerpc/platforms/85xx/mpc8536_ds.c
-@@ -27,7 +27,7 @@
- 
- #include "mpc85xx.h"
- 
--void __init mpc8536_ds_pic_init(void)
-+static void __init mpc8536_ds_pic_init(void)
- {
- 	struct mpic *mpic = mpic_alloc(NULL, 0, MPIC_BIG_ENDIAN,
- 			0, 256, " OpenPIC  ");
-diff --git a/arch/powerpc/platforms/85xx/mvme2500.c b/arch/powerpc/platforms/85xx/mvme2500.c
-index 1b59e45a0c64..19122daadb55 100644
---- a/arch/powerpc/platforms/85xx/mvme2500.c
-+++ b/arch/powerpc/platforms/85xx/mvme2500.c
-@@ -21,7 +21,7 @@
- 
- #include "mpc85xx.h"
- 
--void __init mvme2500_pic_init(void)
-+static void __init mvme2500_pic_init(void)
- {
- 	struct mpic *mpic = mpic_alloc(NULL, 0,
- 		  MPIC_BIG_ENDIAN | MPIC_SINGLE_DEST_CPU,
-diff --git a/arch/powerpc/platforms/85xx/p1010rdb.c b/arch/powerpc/platforms/85xx/p1010rdb.c
-index 10d6f1fa3327..491895ac8bcf 100644
---- a/arch/powerpc/platforms/85xx/p1010rdb.c
-+++ b/arch/powerpc/platforms/85xx/p1010rdb.c
-@@ -24,7 +24,7 @@
- 
- #include "mpc85xx.h"
- 
--void __init p1010_rdb_pic_init(void)
-+static void __init p1010_rdb_pic_init(void)
- {
- 	struct mpic *mpic = mpic_alloc(NULL, 0, MPIC_BIG_ENDIAN |
- 	  MPIC_SINGLE_DEST_CPU,
-diff --git a/arch/powerpc/platforms/85xx/p1022_ds.c b/arch/powerpc/platforms/85xx/p1022_ds.c
-index 0dd786a061a6..adc3a2ee1415 100644
---- a/arch/powerpc/platforms/85xx/p1022_ds.c
-+++ b/arch/powerpc/platforms/85xx/p1022_ds.c
-@@ -370,7 +370,7 @@ static void p1022ds_set_monitor_port(enum fsl_diu_monitor_port port)
-  *
-  * @pixclock: the wavelength, in picoseconds, of the clock
-  */
--void p1022ds_set_pixel_clock(unsigned int pixclock)
-+static void p1022ds_set_pixel_clock(unsigned int pixclock)
- {
- 	struct device_node *guts_np = NULL;
- 	struct ccsr_guts __iomem *guts;
-@@ -418,7 +418,7 @@ void p1022ds_set_pixel_clock(unsigned int pixclock)
- /**
-  * p1022ds_valid_monitor_port: set the monitor port for sysfs
-  */
--enum fsl_diu_monitor_port
-+static enum fsl_diu_monitor_port
- p1022ds_valid_monitor_port(enum fsl_diu_monitor_port port)
- {
- 	switch (port) {
-@@ -432,7 +432,7 @@ p1022ds_valid_monitor_port(enum fsl_diu_monitor_port port)
- 
- #endif
- 
--void __init p1022_ds_pic_init(void)
-+static void __init p1022_ds_pic_init(void)
- {
- 	struct mpic *mpic = mpic_alloc(NULL, 0, MPIC_BIG_ENDIAN |
- 		MPIC_SINGLE_DEST_CPU,
-diff --git a/arch/powerpc/platforms/85xx/p1022_rdk.c b/arch/powerpc/platforms/85xx/p1022_rdk.c
-index 25ab6e9c1470..6198299d95b1 100644
---- a/arch/powerpc/platforms/85xx/p1022_rdk.c
-+++ b/arch/powerpc/platforms/85xx/p1022_rdk.c
-@@ -40,7 +40,7 @@
-  *
-  * @pixclock: the wavelength, in picoseconds, of the clock
-  */
--void p1022rdk_set_pixel_clock(unsigned int pixclock)
-+static void p1022rdk_set_pixel_clock(unsigned int pixclock)
- {
- 	struct device_node *guts_np = NULL;
- 	struct ccsr_guts __iomem *guts;
-@@ -88,7 +88,7 @@ void p1022rdk_set_pixel_clock(unsigned int pixclock)
- /**
-  * p1022rdk_valid_monitor_port: set the monitor port for sysfs
-  */
--enum fsl_diu_monitor_port
-+static enum fsl_diu_monitor_port
- p1022rdk_valid_monitor_port(enum fsl_diu_monitor_port port)
- {
- 	return FSL_DIU_PORT_DVI;
-@@ -96,7 +96,7 @@ p1022rdk_valid_monitor_port(enum fsl_diu_monitor_port port)
- 
- #endif
- 
--void __init p1022_rdk_pic_init(void)
-+static void __init p1022_rdk_pic_init(void)
- {
- 	struct mpic *mpic = mpic_alloc(NULL, 0, MPIC_BIG_ENDIAN |
- 		MPIC_SINGLE_DEST_CPU,
-diff --git a/arch/powerpc/platforms/85xx/socrates_fpga_pic.c b/arch/powerpc/platforms/85xx/socrates_fpga_pic.c
-index baa12eff6d5d..60e0b8947ce6 100644
---- a/arch/powerpc/platforms/85xx/socrates_fpga_pic.c
-+++ b/arch/powerpc/platforms/85xx/socrates_fpga_pic.c
-@@ -8,6 +8,8 @@
- #include <linux/of_irq.h>
- #include <linux/io.h>
- 
-+#include "socrates_fpga_pic.h"
-+
- /*
-  * The FPGA supports 9 interrupt sources, which can be routed to 3
-  * interrupt request lines of the MPIC. The line to be used can be
-diff --git a/arch/powerpc/platforms/85xx/xes_mpc85xx.c b/arch/powerpc/platforms/85xx/xes_mpc85xx.c
-index 45f257fc1ade..2582427d8d01 100644
---- a/arch/powerpc/platforms/85xx/xes_mpc85xx.c
-+++ b/arch/powerpc/platforms/85xx/xes_mpc85xx.c
-@@ -37,7 +37,7 @@
- #define MPC85xx_L2CTL_L2I		0x40000000 /* L2 flash invalidate */
- #define MPC85xx_L2CTL_L2SIZ_MASK	0x30000000 /* L2 SRAM size (R/O) */
- 
--void __init xes_mpc85xx_pic_init(void)
-+static void __init xes_mpc85xx_pic_init(void)
- {
- 	struct mpic *mpic = mpic_alloc(NULL, 0, MPIC_BIG_ENDIAN,
- 			0, 256, " OpenPIC  ");
--- 
-2.39.2
+[...]
 
+Kind regards
+Uffe
 
