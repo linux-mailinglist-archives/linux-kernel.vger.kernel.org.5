@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-35664-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B91F8394F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:39:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32A7B83950B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:41:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D928C28B297
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:39:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DED4F291FE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:41:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD3B4823C2;
-	Tue, 23 Jan 2024 16:37:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65B5186ADF;
+	Tue, 23 Jan 2024 16:37:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="B1/FLile"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="bMxx/l9h"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C8577FBD0;
-	Tue, 23 Jan 2024 16:37:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B7098003F;
+	Tue, 23 Jan 2024 16:37:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706027826; cv=none; b=iB6lGf6rW9x4UZOtzYQZ7BVC27LoeKfmHRVyZ2j3/5DD6jrt2MuQbJbQzZP7Xj9BjNSBGRFPaPP+b+Zd9URoWrmhVNMoHDTWvmj3UOl9qt53ZLuy79eoTYmuYoDPLOeZbdB8LDVZygBn5dBzZzwhDHEtguXhot3t3djePUoGRn4=
+	t=1706027830; cv=none; b=X3ie5sEUw0Z9p5iSS7IdHaTbwVKH+Ziv0k6+HGCjJ5PMvhsoZE4lw1RXFN2w6gHaxRag4MO5R0zwNv+WA0xxFfb4aaWzpzl/DZkmTHN5gzmBmS5Ep0QrR5MWoKSqSxcj16G5KD6f+g+oOO93Qf2JWQifxPmVaYa5fzK7FxBtZ28=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706027826; c=relaxed/simple;
-	bh=SG0tJsH3HoStXzTexJWiqyPg/30P2HNXmlKCalFw/ck=;
+	s=arc-20240116; t=1706027830; c=relaxed/simple;
+	bh=fV62+saH4kX+KvcUIgx0K7XduczaJo6RzCgbuK4WLWk=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Xw5TonjbXf4O9Fpg0+OpPMIqucqgGR6QW8WjBONAVRatQuF27N1RXK20Kq4jPU7wP0esd6KI4Rw0ZuWm5vZeJ5FU5rRglthD3KbtxNeOpbTT4mL4NoVJ+M14kPlxx1A6vyMZRlsOu/6LgtO3TGGTxk5JDOWTeoO2iz9ikEXxn0A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=B1/FLile; arc=none smtp.client-ip=198.47.23.248
+	 MIME-Version:Content-Type; b=arRsPk5NFx3v9Ar8m4+yX2+nQPZSlEWCwe2gO1oqEP+nLMAR/f57U5yx+uNabQ5i4D+e24sEJjw0M0aOK02z+ITq8ePbVfZzhdlLVblAIsOiSeAVihCid8EzuGzNs+uj2GfYZIw15KyQTMKRxkIsXxAzlBT2nt4a12+FaFLBnEI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=bMxx/l9h; arc=none smtp.client-ip=198.47.19.142
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40NGaupR049958;
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40NGauRb094124;
 	Tue, 23 Jan 2024 10:36:56 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
 	s=ti-com-17Q1; t=1706027816;
-	bh=2JPyRvYo9ngjCxHxSLyHLP9idzp5Un5sLiEDVZ9MTlI=;
+	bh=diBHJatAvryPPmwR5QhjhTLQ3HogCqBjdXM5lGueG/o=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=B1/FLilebZE7BUWx0aOmBHKLYe1nlgLipTErQFgD99Qa/4aX7JEuvWUxI3kFQHOoP
-	 3j0EVoP3DyIn+f14LFZusUOLwMjJvq8DID4DOYRgY42PBp3h8YPBqBCAQMv2A3GaUP
-	 eIJ0AAj8vLLvKgBl8fwwR0JPRHLDWMb0QCTtxuZQ=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40NGaupt004193
+	b=bMxx/l9hM5use8S9QIMjbiMf0d4kn0de/4/auLbNSawJyuF9/DhOzkRujnR/AK8UL
+	 DjsX7e9lQ+cIiM79/Mk7Rv64eSJrnDZgpnp+PthZoJndHReqMQHAxRmBsXmKMkHLoy
+	 6jrtdGW98u/BrQB79ce3so2TtLt4+/uDdquZT9wM=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40NGau6s033972
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
 	Tue, 23 Jan 2024 10:36:56 -0600
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 23
  Jan 2024 10:36:56 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
  Frontend Transport; Tue, 23 Jan 2024 10:36:56 -0600
 Received: from lelvsmtp6.itg.ti.com ([10.249.42.149])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40NGarrs123403;
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40NGarrt123403;
 	Tue, 23 Jan 2024 10:36:56 -0600
 From: Andrew Davis <afd@ti.com>
 To: Sebastian Reichel <sre@kernel.org>,
@@ -66,9 +66,9 @@ To: Sebastian Reichel <sre@kernel.org>,
 CC: <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Andrew Davis
 	<afd@ti.com>
-Subject: [PATCH 06/21] power: supply: lp8788: Use devm_power_supply_register() helper
-Date: Tue, 23 Jan 2024 10:36:38 -0600
-Message-ID: <20240123163653.384385-7-afd@ti.com>
+Subject: [PATCH 07/21] power: supply: max14577: Use devm_power_supply_register() helper
+Date: Tue, 23 Jan 2024 10:36:39 -0600
+Message-ID: <20240123163653.384385-8-afd@ti.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240123163653.384385-1-afd@ti.com>
 References: <20240123163653.384385-1-afd@ti.com>
@@ -88,59 +88,33 @@ forgetting to unregister on error paths.
 
 Signed-off-by: Andrew Davis <afd@ti.com>
 ---
- drivers/power/supply/lp8788-charger.c | 21 ++++++---------------
- 1 file changed, 6 insertions(+), 15 deletions(-)
+ drivers/power/supply/max14577_charger.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/power/supply/lp8788-charger.c b/drivers/power/supply/lp8788-charger.c
-index 2c81be82a41a4..72b170b4ac46a 100644
---- a/drivers/power/supply/lp8788-charger.c
-+++ b/drivers/power/supply/lp8788-charger.c
-@@ -406,12 +406,6 @@ static const struct power_supply_desc lp8788_psy_battery_desc = {
- 	.get_property	= lp8788_battery_get_property,
- };
+diff --git a/drivers/power/supply/max14577_charger.c b/drivers/power/supply/max14577_charger.c
+index 7c23fa89ea199..1fff82b037097 100644
+--- a/drivers/power/supply/max14577_charger.c
++++ b/drivers/power/supply/max14577_charger.c
+@@ -586,8 +586,9 @@ static int max14577_charger_probe(struct platform_device *pdev)
+ 	}
  
--static void lp8788_psy_unregister(struct lp8788_charger *pchg)
--{
--	power_supply_unregister(pchg->battery);
--	power_supply_unregister(pchg->charger);
--}
--
- static void lp8788_charger_event(struct work_struct *work)
- {
- 	struct lp8788_charger *pchg =
-@@ -666,18 +660,16 @@ static int lp8788_psy_register(struct platform_device *pdev,
- 	charger_cfg.supplied_to = battery_supplied_to;
- 	charger_cfg.num_supplicants = ARRAY_SIZE(battery_supplied_to);
+ 	psy_cfg.drv_data = chg;
+-	chg->charger = power_supply_register(&pdev->dev, &max14577_charger_desc,
+-						&psy_cfg);
++	chg->charger = devm_power_supply_register(&pdev->dev,
++						  &max14577_charger_desc,
++						  &psy_cfg);
+ 	if (IS_ERR(chg->charger)) {
+ 		dev_err(&pdev->dev, "failed: power supply register\n");
+ 		ret = PTR_ERR(chg->charger);
+@@ -611,7 +612,6 @@ static void max14577_charger_remove(struct platform_device *pdev)
+ 	struct max14577_charger *chg = platform_get_drvdata(pdev);
  
--	pchg->charger = power_supply_register(&pdev->dev,
--					      &lp8788_psy_charger_desc,
--					      &charger_cfg);
-+	pchg->charger = devm_power_supply_register(&pdev->dev,
-+						   &lp8788_psy_charger_desc,
-+						   &charger_cfg);
- 	if (IS_ERR(pchg->charger))
- 		return -EPERM;
- 
--	pchg->battery = power_supply_register(&pdev->dev,
--					      &lp8788_psy_battery_desc, NULL);
--	if (IS_ERR(pchg->battery)) {
--		power_supply_unregister(pchg->charger);
-+	pchg->battery = devm_power_supply_register(&pdev->dev,
-+						   &lp8788_psy_battery_desc, NULL);
-+	if (IS_ERR(pchg->battery))
- 		return -EPERM;
--	}
- 
- 	return 0;
- }
-@@ -720,7 +712,6 @@ static void lp8788_charger_remove(struct platform_device *pdev)
- 
- 	flush_work(&pchg->charger_work);
- 	lp8788_irq_unregister(pdev, pchg);
--	lp8788_psy_unregister(pchg);
+ 	device_remove_file(&pdev->dev, &dev_attr_fast_charge_timer);
+-	power_supply_unregister(chg->charger);
  }
  
- static struct platform_driver lp8788_charger_driver = {
+ static const struct platform_device_id max14577_charger_id[] = {
 -- 
 2.39.2
 
