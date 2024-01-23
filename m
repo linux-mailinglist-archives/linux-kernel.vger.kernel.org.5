@@ -1,60 +1,73 @@
-Return-Path: <linux-kernel+bounces-35461-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35462-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2889C83918D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:39:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F02A83918F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:39:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDD771F28CBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:39:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD555B23647
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:39:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F3645026D;
-	Tue, 23 Jan 2024 14:39:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75AED5C5FF;
+	Tue, 23 Jan 2024 14:39:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="NaXfEi4h"
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iXqW0xhR"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B18512E5F;
-	Tue, 23 Jan 2024 14:39:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A1B756755
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 14:39:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706020744; cv=none; b=LBJnNMqpC6QDPC4LqJ5ToKu072jIwZZeWWLtGkVujsW1r6QdwIlRQdcfBUas6vpqQZyVbekwT8BPXYav5vwt+on99io4MPHPL6aWYG49NmngaY8+7gZyVBApckBxN7E4Cq1llCzzV1hBCp6BJJnCMnfzEvgXQQP+thxZhfy5Nzc=
+	t=1706020752; cv=none; b=qP6PJYMgoUnEIeBJso2HlAJMv4FLdnFROdwZR07aX+tWeiIUgeWLZ3o5V7F+MalWeLIaJbOvZy5H/zoQv5YzyBKFeHcdnIHi/3qVoyg9K94Xa4CPSDwJJ/r7XvaZVXBNskYbOT2C5e/Kt4e+Zgd6b3bPzH4vQth3U6/pWv+K/sA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706020744; c=relaxed/simple;
-	bh=K6zg6vTCzrzTf1j6vmjQm/wVXkYSEHPStAwuKV9vcXM=;
+	s=arc-20240116; t=1706020752; c=relaxed/simple;
+	bh=90efiydoJUFwFSGiHQI4dQGybhe96j9FBwZwRp774Eg=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Ks88iDBdxACBSPUH8/7QU+g5ttXHm7UIOGM8goiZJGW4h7alwO1y+2mxDBQqpPs9W5xwcxO9XLlMK+ta/5pycQFbOk1YFWY5cPUw9+DpGhhi1KGRpgZWiH43DahgnDJP/E308nSpNxdn4NvudKZ1D2sQGfmmFFa6NDXTW1nXhrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=NaXfEi4h; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-Received: from localhost (c-98-53-138-11.hsd1.co.comcast.net [98.53.138.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id AB4C64A2;
-	Tue, 23 Jan 2024 14:39:01 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net AB4C64A2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1706020741; bh=xhekjE4E+jF0d+dUTemSZHRd8Hc34nR/x1C+V1iVp3M=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=NaXfEi4hV/rjpmbTbBmC38fJh7E+r4XxjxZ98rDuDSQeuFrSV1mlGN2Mo2iN3heku
-	 NKRcBXljfgBH0kPmij393qvXu6RPrRkteunV8T9bsvipFp9R1Xj0mLtVtGe9MVZjpr
-	 Lb+SQm4iyZf8MKChccqv1b60iTlSvlsn8n/Ha2SMLlp3lz5+BCvwxuifCApV9rn7cI
-	 LIZE6YEgfILwPJ5qtdAd97wNo1plwowgtB+6KnAoIyhy6HCdVl7z+gYA7yQNVRw04y
-	 kLAv3i78bRo8izxjVd314b6xbZkhOb2VPosLjYH/kC3rcEscQe7z1WVdk+4cDHt+2r
-	 IR7zCaOZSAbeg==
-From: Jonathan Corbet <corbet@lwn.net>
-To: Ramona Gradinariu <ramona.gradinariu@analog.com>,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, jic23@kernel.org,
- nuno.sa@analog.com, linux-iio@vger.kernel.org
-Cc: Ramona Gradinariu <ramona.gradinariu@analog.com>
-Subject: Re: [PATCH 0/1] adis16475 driver documentation
-In-Reply-To: <20240123104548.136201-1-ramona.gradinariu@analog.com>
-References: <20240123104548.136201-1-ramona.gradinariu@analog.com>
-Date: Tue, 23 Jan 2024 07:39:00 -0700
-Message-ID: <87le8gm7wb.fsf@meer.lwn.net>
+	 MIME-Version:Content-Type; b=RAan/JSMtyxHL6Z1aLte0bOmD2Mxl6XheftphihcAkhdVAlwL9EuV9i2pirDEsDTfTzkI/w1MWr2Xe64saMzG8YeS/bYK2V9oyx2grunX0TxmRt/S32N5R7VUGLnyjbzwEU9Z4ariVmlo9iy05kmUNJwP3ESejIxUBfW8+rF04k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iXqW0xhR; arc=none smtp.client-ip=192.55.52.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706020751; x=1737556751;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=90efiydoJUFwFSGiHQI4dQGybhe96j9FBwZwRp774Eg=;
+  b=iXqW0xhRDMkzz1cUUGsfxHt5uBqOp3AOhaZaA+YiuudJWlcHrmo0X4fK
+   cizAZzR21lUHqiB2Q3OqSO7kUSMz05RDiX92qEBDqR4wkxyFHdFJn/A5L
+   hyFRZwIAKvPeuCA1dNqtHQIil65OUYyU1Bu1xxmC8dhw2BZhK4O3yCKOU
+   QHzA7f7dGCi/KlwcdlSQqAEkTdDdn2yBhLckdDAoWqoGQLoLC4dk2UH8h
+   0OeBQfbQxj+sZkjet2nqimO+FYGxEvIdaF+Ex0GlHYSqydQEidWfzXx9k
+   cWWsVgvrWuDxYeg0P0GlSm0IGBbIKaqnLG2AvGXlmoSkqzpYrw5uZNanK
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="400401583"
+X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
+   d="scan'208";a="400401583"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 06:39:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="1117272579"
+X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
+   d="scan'208";a="1117272579"
+Received: from pzsolt-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.40.183])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 06:39:04 -0800
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Thomas Zimmermann <tzimmermann@suse.de>, javierm@redhat.com,
+ chenhuacai@kernel.org
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, Thomas
+ Zimmermann <tzimmermann@suse.de>, Jaak Ristioja <jaak@ristioja.ee>, Huacai
+ Chen <chenhuacai@loongson.cn>, Thorsten Leemhuis
+ <regressions@leemhuis.info>
+Subject: Re: [PATCH] Revert "drivers/firmware: Move sysfb_init() from
+ device_initcall to subsys_initcall_sync"
+In-Reply-To: <20240123120937.27736-1-tzimmermann@suse.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240123120937.27736-1-tzimmermann@suse.de>
+Date: Tue, 23 Jan 2024 16:39:02 +0200
+Message-ID: <874jf4nmgp.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,25 +76,54 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
 
-Ramona Gradinariu <ramona.gradinariu@analog.com> writes:
-
-> Add documentation for adis16475 driver which describes
-> the driver device files and shows how the user may use the
-> ABI for various scenarios (configuration, measurement, etc.).
+On Tue, 23 Jan 2024, Thomas Zimmermann <tzimmermann@suse.de> wrote:
+> This reverts commit 60aebc9559492cea6a9625f514a8041717e3a2e4.
 >
-> Ramona Gradinariu (1):
->   docs: iio: add documentation for adis16475 driver
+> Commit 60aebc9559492cea ("drivers/firmware: Move sysfb_init() from
+> device_initcall to subsys_initcall_sync") messes up initialization order
+> of the graphics drivers and leads to blank displays on some systems. So
+> revert the commit.
 >
->  Documentation/iio/adis16475.rst | 327 ++++++++++++++++++++++++++++++++
->  1 file changed, 327 insertions(+)
->  create mode 100644 Documentation/iio/adis16475.rst
+> To make the display drivers fully independent from initialization
+> order requires to track framebuffer memory by device and independently
+> from the loaded drivers. The kernel currently lacks the infrastructure
+> to do so.
+>
+> Reported-by: Jaak Ristioja <jaak@ristioja.ee>
+> Closes: https://lore.kernel.org/dri-devel/ZUnNi3q3yB3zZfTl@P70.localdomain/T/#t
+> Reported-by: Huacai Chen <chenhuacai@loongson.cn>
+> Closes: https://lore.kernel.org/dri-devel/20231108024613.2898921-1-chenhuacai@loongson.cn/
+> Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/10133
 
-Thanks for working to improve our documentation!
+FWIW,
 
-You do, however, need to add this new file to the index.rst file in that
-directory or it won't be pulled into the documentation build.
+Acked-by: Jani Nikula <jani.nikula@intel.com>
 
-Thanks,
+but would be great to get a Tested-by from Jaak or from the gitlab issue
+reporter.
 
-jon
+Thanks.
+
+
+> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+> Cc: Javier Martinez Canillas <javierm@redhat.com>
+> Cc: Thorsten Leemhuis <regressions@leemhuis.info>
+> Cc: Jani Nikula <jani.nikula@linux.intel.com>
+> ---
+>  drivers/firmware/sysfb.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/firmware/sysfb.c b/drivers/firmware/sysfb.c
+> index 82fcfd29bc4d2..3c197db42c9d9 100644
+> --- a/drivers/firmware/sysfb.c
+> +++ b/drivers/firmware/sysfb.c
+> @@ -128,4 +128,4 @@ static __init int sysfb_init(void)
+>  }
+>  
+>  /* must execute after PCI subsystem for EFI quirks */
+> -subsys_initcall_sync(sysfb_init);
+> +device_initcall(sysfb_init);
+
+-- 
+Jani Nikula, Intel
 
