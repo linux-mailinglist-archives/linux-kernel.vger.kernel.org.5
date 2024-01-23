@@ -1,192 +1,649 @@
-Return-Path: <linux-kernel+bounces-34686-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C2E0838622
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 04:46:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE81E8385E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 04:04:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 814011C253C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:46:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F0E2292BF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:04:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C480817EB;
-	Tue, 23 Jan 2024 03:46:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3FB4185A;
+	Tue, 23 Jan 2024 03:04:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="lR6ncsxK";
-	dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b="crJn85M8"
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jQwgY6v8"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48EC5A40
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 03:45:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=210.61.82.184
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705981561; cv=fail; b=h+LWbBjcNXdzIojUvKZOOu+zCMbcfw+VMglf2QflXriRCp6PMDi0FqCnf0+RzzC3AVV95vKoRDSRitVHvZlK6s+IwF6QBj0W6NNjYU9ZUQmRJGx+CIIYOXLKO6ZH5ydS0YdiVCALMIM8l/C+NI2DM3W+cOKZ6zgg5dyV+tU7m44=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705981561; c=relaxed/simple;
-	bh=nym3tq8XJ8WXBmUWXl8Lgt6Lwse6KYpIKi4i+kpl77M=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=K31/YjF0a8pkbGEPiaaK9t07ZQjNKtgOWEx7ILUaOckgqgKMQF8sTyU6gf9Odz2Pn37AsP/0t7r1A+JqSUe+mbdPBGSxJ8RRsVJHKQ+feqISDTvvabhR79+MBKKxodqMvSsznvfpwQL26oCTyCK0mAKgWCsfkJLbDbjtBBeae0w=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=lR6ncsxK; dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b=crJn85M8; arc=fail smtp.client-ip=210.61.82.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: e392b40cb9a111eea2298b7352fd921d-20240123
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=nym3tq8XJ8WXBmUWXl8Lgt6Lwse6KYpIKi4i+kpl77M=;
-	b=lR6ncsxKD/+m6QALSMZ9qizL/3EYhT5lDHDOGCubLyRiCUTAc/uJXDuSbPLLbzoM+5Nm2XhJ9lOQFHIXMTeXC0exofJSl5QErW7rddQOvv6Vzl84QyOnf1+ebG1RUjb3eemsE2oqeDNOuKISm1ZpjBaevGHpr/1VloPSm6A9zjk=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.36,REQID:5941d36d-3c3b-45d4-87cc-b3b478c0b0f7,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:6e16cf4,CLOUDID:334b762f-1ab8-4133-9780-81938111c800,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
-	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: e392b40cb9a111eea2298b7352fd921d-20240123
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-	(envelope-from <walter.chang@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1092717496; Tue, 23 Jan 2024 11:45:45 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 23 Jan 2024 11:45:44 +0800
-Received: from HK2PR02CU002.outbound.protection.outlook.com (172.21.101.237)
- by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 23 Jan 2024 11:45:44 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OswCXbpMayESGJ4QTUUCGq4O7Dc2SKWWa0q8M5fC478OzI+AUENprs4VBo1GJKlxIABjUcZysUYcTZVUyxym5lhcYdlX/xJbvR0fu6bh9LGw4ogzlEN2eQWzikBx1df1o6kFOb2glvK1p/hg36tBmWkIXLSRcbkT3cwB4iyQ6K47CwDU2Lulpg65ixzVStvdpVX8LlltTyLPBBA34uEJ2EbRFutdFdRjHyqITQ6jink/wcplP10bEr8CA1Iseq0JYxxbQM1qMBxztzsk9tdehKRNmvXf+UadSZP69uvtxj/TIRg7LESx/n5JUmURYgTFG+z+Qtxx82A72xjGEbt8Mw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nym3tq8XJ8WXBmUWXl8Lgt6Lwse6KYpIKi4i+kpl77M=;
- b=NbCjbgh/vJGPgCmsno/K38isRIORRSOCrgmlcdCbGplntk7LiBD3hvMzIPv7EENHXuCq/kklCnQKnHsqfrc3fPFCR/SxylcTxq5j6DD442psOXGFLgByaZeQ8RayiuYj+hE80aTSeEhYkJCYJILq6bTfvlnNmJuZ9dlf4af+OEKe/fyfJVLMAkve3AgLP1GXZWteIKQIhD6LSMH4CRj/25FtD69Y9mPK5Tls6p1bKOiAAGVL0DlYfWQyowzVN78axnMy/bpQsJGkrouY/HNc0NmFsuKCiL6GgJCnUaUcXjpk/j+uOiIops3uOSeXWspwi23/802/q0vD0qEWqvtK/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nym3tq8XJ8WXBmUWXl8Lgt6Lwse6KYpIKi4i+kpl77M=;
- b=crJn85M8OsZYW7UDbAJSvE7qFSMsGe7whosyBy5PIIYzY4PbprVI1MWc/ZLeRos8U79mxdgKTkqyVb+7oAMm1on3mhzJGpwR8igPDqbXxiuwMY+wSg1xkOo1cf3N8g0j5cUy4iJrxZEFAb1im+JF9TD9KcQN+toYaJfR3C2Saws=
-Received: from KL1PR03MB5777.apcprd03.prod.outlook.com (2603:1096:820:64::14)
- by SEYPR03MB7272.apcprd03.prod.outlook.com (2603:1096:101:88::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.36; Tue, 23 Jan
- 2024 02:40:40 +0000
-Received: from KL1PR03MB5777.apcprd03.prod.outlook.com
- ([fe80::e2ac:4b70:8ac3:ba3d]) by KL1PR03MB5777.apcprd03.prod.outlook.com
- ([fe80::e2ac:4b70:8ac3:ba3d%6]) with mapi id 15.20.7202.035; Tue, 23 Jan 2024
- 02:40:40 +0000
-From: =?utf-8?B?V2FsdGVyIENoYW5nICjlvLXntq3lk7Ip?= <Walter.Chang@mediatek.com>
-To: "tglx@linutronix.de" <tglx@linutronix.de>, "daniel.lezcano@linaro.org"
-	<daniel.lezcano@linaro.org>, "matthias.bgg@gmail.com"
-	<matthias.bgg@gmail.com>, "jstultz@google.com" <jstultz@google.com>,
-	"angelogioacchino.delregno@collabora.com"
-	<angelogioacchino.delregno@collabora.com>, "macro@orcam.me.uk"
-	<macro@orcam.me.uk>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
-	wsd_upstream <wsd_upstream@mediatek.com>,
-	=?utf-8?B?Q2FzcGVyIExpICjmnY7kuK3mpq4p?= <casper.li@mediatek.com>,
-	=?utf-8?B?Q2h1bi1IdW5nIFd1ICjlt6vpp7/lro8p?= <Chun-hung.Wu@mediatek.com>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>,
-	=?utf-8?B?U3RhbmxleSBDaHUgKOacseWOn+mZnik=?= <stanley.chu@mediatek.com>,
-	=?utf-8?B?RnJlZGR5IEhzaW4gKOi+m+aBkuixkCk=?= <Freddy.Hsin@mediatek.com>
-Subject: Re: [PATCH v5 0/4] Support timer drivers as loadable modules
-Thread-Topic: [PATCH v5 0/4] Support timer drivers as loadable modules
-Thread-Index: AQHZiGcAlWtFKUKClEylT3CLdkSqYK+SicEAgVWwiQA=
-Date: Tue, 23 Jan 2024 02:40:40 +0000
-Message-ID: <6c49a9cd98e9ae2c0e81cfd51d88b5ce6c02c607.camel@mediatek.com>
-References: <20230517022557.24388-1-walter.chang@mediatek.com>
-	 <4c2f66f1-2623-306f-f1d3-83a32a0c2885@linaro.org>
-In-Reply-To: <4c2f66f1-2623-306f-f1d3-83a32a0c2885@linaro.org>
-Accept-Language: zh-TW, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=mediatek.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: KL1PR03MB5777:EE_|SEYPR03MB7272:EE_
-x-ms-office365-filtering-correlation-id: 8a7442d7-d234-4ba6-6e02-08dc1bbcb02e
-x-ld-processed: a7687ede-7a6b-4ef6-bace-642f677fbe31,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: GMs5Fmsvho+KYLH/trmMGKhcaQrWu+RdvwYuFc4oaOZF9PyPmLcYn+uA1lgGru5topO0sYXnLgGUVm4/msZMgjD/2srziCp52nr7Nop8UY7+NkRa6r1jvfuDLCtE7DqdOsI8s+TngXEx/657idbnnhFDVL1wQPUPS106YuV7DtbuMAw41xX+00s1uxN7u+ICBm3/Hnjc4712LmkwNR5juAx3Yd8Myy8vaj/YAnMicdovp6J/C8mX54F32C/CCjLjfItpvWqyU3Bnyq/idmYLrlhb9MiIA0qhOM1UwrCLkHgrMvpd5d4UiaaI72TlVlxbeuLYz+PBR2Zzp6iPyzwptxZimKN9Qk8JXJYw1/y0tPldUXUWlFBYGPAZgrdG9JdKfwnHVK2nGkRhm/yuUibU6okDzeRkIwzZHYfVBJQHG+YACNYcij2vgoeKzXu8NkwAlDm6SxAXsRN2zp87o/ZZnP+SAjct4zrA55uPLgE8/YtmBCDnP2uA1VEYfeMHbfhC7l9brLuELYelYngPrtD/+gACPuofsuPUtsG8ePEQgV2Sw8nrKZNQoZyPWkytjajhNu50A3oXBQrqm+Er+PU6a6fuvrfZrV75Ul+wxry9/knH3lWo6l3Bcd7KB8UFgETC5PzUMBbSMHdbSaG++IkOBdU+rkQfp8qmRmHVEhXlRCQ=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:KL1PR03MB5777.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(39860400002)(376002)(396003)(136003)(230273577357003)(230173577357003)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(86362001)(71200400001)(478600001)(6486002)(36756003)(85182001)(38070700009)(2616005)(107886003)(26005)(83380400001)(4744005)(110136005)(2906002)(316002)(54906003)(64756008)(6512007)(6506007)(5660300002)(8936002)(8676002)(4326008)(66446008)(41300700001)(38100700002)(66946007)(66556008)(66476007)(76116006)(122000001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?THEzMTducFBlZmUwbHVSM3FpUWUvTkoxbEdqMmJ0Y1ZwN3RSRnF6bUpBV3Zv?=
- =?utf-8?B?cU1FeURzYVFITUhyUklPWFdxMFU3bVhkVFpONnlHelRaclNQYzR2c0NHZGVB?=
- =?utf-8?B?b2YrWDlyTjVXd3NUSk0wMDZMQ21RSTk0bkUrLzVWR3ZmdTBHWmt1clRWNUtH?=
- =?utf-8?B?S05KanpLdHhtRVoreUhEQy8zZTBPdmtCb2M1Y1RvNVF1d2ZFaUdrTlU4MnV1?=
- =?utf-8?B?WHNRWWJhb3kvaE5RcU03NUlhc05LSThycUZ6amQzSzZmdnNFZ0E1VFhueFh1?=
- =?utf-8?B?S3pMQWszV1l3WE5tMWt5NjJYQ2VVZllWTnA3dEZCOG9MZVpoYithbXNNMG1s?=
- =?utf-8?B?dlpzbm45dHp6TnNvRk1DanlTNWVuYUtjSW5VZmV5V1c3QUE4NkVBVXozdnQz?=
- =?utf-8?B?MEFjbTVFbzZXd255WUlId1d6YUhZeWcxOXZQdSs3MHJBZzhDRVBLUjE1N3p6?=
- =?utf-8?B?Q0tDRmRGN1MweHpHV3MwcEJhQ1JDS1NybXI5cWZaSjN6U0lXMzF6ZXdlenpU?=
- =?utf-8?B?enQvYm9RNUduVGFzMFU3b1dPdCtyVDFFRTlHNmxMZXA0TS9scHFEY1FvT0cy?=
- =?utf-8?B?M3JuK0x4ZXY2TUcvbzY2em10WnRRWTNoRTdhbFdITU5ZemtCb2hjRzlKZ3dO?=
- =?utf-8?B?Y0JCOEozemdrNkh2RjZ1RDNGMk9ZdHo0dmRNbEtHYWo4YnNHcGFSTi9QRk52?=
- =?utf-8?B?L1k5azNwR0h5U2tiM1JtVE9kMy9DQkFiWWRqVm5hTGJhK0JxS0hjMU54Z3hk?=
- =?utf-8?B?bjl3R1lyL2JPWU02MkxlTndXRVkva3VhcUt0WFhHbmFpdk5GQ2FweUxFTjBh?=
- =?utf-8?B?WnJUODVjWERVL0EzUVZVR2RUK0x2MVNLRW5Hd1FWVEVYTm1lTU5lczRrOXRw?=
- =?utf-8?B?elNwdUNxWG1uUDFIZmpEK3NtdHFWSHpoSlhLaEpwaWtKRTV1cnlwQlBja0Rz?=
- =?utf-8?B?emV4UEN5N08vb0xlc0VwNHpNQ3NrWWpHKytMSWhMU1pwVEpCNWQ4SVg1Z2xC?=
- =?utf-8?B?YzRwMU1pOFJVem0vRit6REF6RkpjOEM3a0VILzNOeWlER3dnTmtTSG85d1JQ?=
- =?utf-8?B?aWNGUkpMOGJjU0I3dHc2UmhqQXJpSGhkVmZlY0JjSmxBeHVuRnBLR2xXS0dT?=
- =?utf-8?B?cG9sY3d3MFdyZ0pVcGtaWlJKUVM3UFpoWHR3MzNVYXF0SEl5SVRsSVZ6aU1z?=
- =?utf-8?B?YkMvdzdpSFdtNk8xQ3NzOEsyZjJ6Q2xzeXJlVkttQjIyZUgrNjdRdEpWaFhX?=
- =?utf-8?B?TmovZHM2M2pubTFaVllRQk5GTitZU2VHdXdGcGlWY3o0K3N4aDg4VE91YVh4?=
- =?utf-8?B?M3RUOXpLUnQreXpiZzJBOHhqS2pSTWJMdGdKRE44SkZCM3BpWlZORXlNNWpi?=
- =?utf-8?B?VmVHeE1hN3NpaWMzTXY4V09uemt4dURuRTE2TFcyaEEwN0d0Uzh1OWQ1WE54?=
- =?utf-8?B?UEtRNWkvVGdvQlh5Y2NBNWVIUGRkQnRTRHRqaWxCTDE1K1d0Zlo4RDRleFIy?=
- =?utf-8?B?MXJLMXpnR1FpM0RkbzNRNEZMYkVNTHVXRno5K2tkT2pXaEIxMkVVZVZicFUx?=
- =?utf-8?B?TmN5WGJiTEhadHNzdzQxc2VTZFpOMkF5d3VYd0M0YU5ESnVHT0JDaUlkSzBV?=
- =?utf-8?B?Q2M4SGNaM2N3Y205WHdjSzhpSEJrN2ErV2dsQW1RS2dMaitsUGdDRmhLS3dn?=
- =?utf-8?B?aDBKeVpYZ21IeGpnRXZTWXdTSCtPY1pUWVdlRTVTdGFEYi9BckpaYjNneGds?=
- =?utf-8?B?eWZqaUNYdkNZOVFRUmtqZkZyaExZWFlnUnFBcEUwNk85RWVPRUV3UlFxT2o3?=
- =?utf-8?B?eEg3eVdFZWJNUm1Ic0dUSlNodGVtSm91dUtJM0o0dEFNN1ZkVVROcGF4NEVH?=
- =?utf-8?B?blNLV0llNGFYKzJaYzVCR05yemJleXBxYlpYazAxNi9KV0wxTU9vdHV6Qmhz?=
- =?utf-8?B?c1lZSjhZSHdtckxBT0g5aTM3UlpITm1uZ2s5TWVQS01tZ0VrbElRMGFxOTBm?=
- =?utf-8?B?NWRKUjVlNHVlZ0VxVDY5YXBzb0oxeGdxcnRyK1F5UGdmVnZPaWs5TzJ1NE9v?=
- =?utf-8?B?ek1nazVsQ2ZhN2VIV21YMUY4NVhTSUNpSFJsdFJyQ1lQUHVLZmx0YWhiRXhK?=
- =?utf-8?B?dUFsZ3JpelV6dzFBekVjc3FtcVFGcHlMYUZKWU5rQk41d3h2cTBKMldsNU85?=
- =?utf-8?B?cUE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <809029198396F84A85E56542583462C6@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFB28139F;
+	Tue, 23 Jan 2024 03:04:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705979050; cv=none; b=NH7ouT2eHMGWFr8oTvMnZHyK9jnvIeNtXqKw/K1SlFWdKz3pVmRyxTBv/zD0yFUbmX9LH1V/5H2US/z9YQhR740m6JxOBsXlXeJTNBi+nd3H4AoNOidMf24J74LxiS3xuLCRrL/sObjU0n3tL5mRh2GMgR0LGAiCTSrWCgh3neg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705979050; c=relaxed/simple;
+	bh=KaU0ncLojMCVg+X0LQluaYE+wFoPnBxUF3NBNYOSwrE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=kiOyeeWhl/+V92w/xSTSbk0jIc22dGQXuYnXpULTPM31ItYxLpWNrsCRqr8AGt902t/YXsI4xWrbCMHENxMccTVUwD7mYHCiw/KAETGsTMgFVlSWYv5ljAuem0A0T0tNR+DYTyTLKBJ4zJ5DDC5o6ze+ZNR+r6W2IEmJhkxYVzY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jQwgY6v8; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705979048; x=1737515048;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=KaU0ncLojMCVg+X0LQluaYE+wFoPnBxUF3NBNYOSwrE=;
+  b=jQwgY6v8brqlGoYN8p4OsDPSiozxTWgMLS7tklKvBdhjtj4cSUnWNvDS
+   r5SyOA4CATUGi3Lpy48NSW78Fi2skl7DT4pD89GkZ6yQ3QM/ZU2b/0i8w
+   bfikTiBW1e/Ocn2idUOyXaecGYjZ9qRmNXlgkY4/7QUa/hUKAzcll0miq
+   SQNq9LhNktpAF/BqM7+w/mLxGjEv9y7Ekb7LDTjKxTVSXD3R8Q6B9OnV7
+   F/bFzECjKMIjidgSbUBUAOQ6q/mR6C7+bffzAyiQL+OGJbzh/XKf1gP7u
+   o0d3L1CW2xfjhTIWBznp8DW1FLZnH4+Asy09qPMpAw5mS0a69MPvTW1T4
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="295079"
+X-IronPort-AV: E=Sophos;i="6.05,213,1701158400"; 
+   d="scan'208";a="295079"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 19:04:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="785892216"
+X-IronPort-AV: E=Sophos;i="6.05,213,1701158400"; 
+   d="scan'208";a="785892216"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 19:04:00 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Gregory Price <gourry.memverge@gmail.com>
+Cc: linux-mm@kvack.org,  linux-kernel@vger.kernel.org,
+  linux-doc@vger.kernel.org,  linux-fsdevel@vger.kernel.org,
+  linux-api@vger.kernel.org,  corbet@lwn.net,  akpm@linux-foundation.org,
+  gregory.price@memverge.com,  honggyu.kim@sk.com,  rakie.kim@sk.com,
+  hyeongtak.ji@sk.com,  mhocko@kernel.org,  vtavarespetr@micron.com,
+  jgroves@micron.com,  ravis.opensrc@micron.com,  sthanneeru@micron.com,
+  emirakhur@micron.com,  Hasan.Maruf@amd.com,  seungjun.ha@samsung.com,
+  hannes@cmpxchg.org,  dan.j.williams@intel.com,  Srinivasulu Thanneeru
+ <sthanneeru.opensrc@micron.com>
+Subject: Re: [PATCH v2 3/3] mm/mempolicy: introduce MPOL_WEIGHTED_INTERLEAVE
+ for weighted interleaving
+In-Reply-To: <20240119175730.15484-4-gregory.price@memverge.com> (Gregory
+	Price's message of "Fri, 19 Jan 2024 12:57:30 -0500")
+References: <20240119175730.15484-1-gregory.price@memverge.com>
+	<20240119175730.15484-4-gregory.price@memverge.com>
+Date: Tue, 23 Jan 2024 11:02:03 +0800
+Message-ID: <87jzo0vjkk.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: KL1PR03MB5777.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8a7442d7-d234-4ba6-6e02-08dc1bbcb02e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jan 2024 02:40:40.3262
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: nARzXdGa0UwAFlz+fxYU8MyHIYbnT7135e9sWHh8/We+zHL+A429YRHaYAZQzesqBqyaMvm77jimaHLS9HOyP0DkDHk+yrRp496bFHmnM6E=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR03MB7272
+Content-Type: text/plain; charset=ascii
 
-T24gTW9uLCAyMDIzLTA2LTE5IGF0IDE4OjQ0ICswMjAwLCBEYW5pZWwgTGV6Y2FubyB3cm90ZToN
-Cj4gIAkgDQo+IEV4dGVybmFsIGVtYWlsIDogUGxlYXNlIGRvIG5vdCBjbGljayBsaW5rcyBvciBv
-cGVuIGF0dGFjaG1lbnRzIHVudGlsDQo+IHlvdSBoYXZlIHZlcmlmaWVkIHRoZSBzZW5kZXIgb3Ig
-dGhlIGNvbnRlbnQuDQo+ICANCj4gQXMgSSBhbHJlYWR5IHNhaWQsIEknbSBub3QgdmVyeSBjb21m
-b3J0YWJsZSB3aXRoIHRoZXNlIGNoYW5nZXMgYW5kDQo+IHRoZSANCj4gcG90ZW50aWFsIGltcGFj
-dCBpdCBjYW4gaGF2ZSBvbiB0aGUgb3ZlcmFsbCB0aW1lIGZyYW1ld29yay4NCj4gDQo+IEkgd2ls
-bCBwaWNrIHRoZSBzZXJpZXMgaWYgVGhvbWFzIGdpdmVzIGl0cyBBY2tlZC1ieQ0KPiANCj4gVGhh
-bmtzDQo+IA0KDQpIaSBUaG9tYXMsDQoNCkdlbnRsZSBwaW5nIGZvciB0aGlzIHNlcmllcy4NCg0K
-V2Ugd291bGQgbGlrZSB0byBrbm93IHlvdXIgb3BpbmlvbiBvbiB0aGUgdGltZSBmcmFtZXdvcmsg
-Y2hhbmdlcyB3ZSd2ZQ0KZGlzY3Vzc2VkLg0KDQpUaGFua3MsDQpXYWx0ZXIgQ2hhbmcNCg==
+Gregory Price <gourry.memverge@gmail.com> writes:
+
+> When a system has multiple NUMA nodes and it becomes bandwidth hungry,
+> using the current MPOL_INTERLEAVE could be an wise option.
+>
+> However, if those NUMA nodes consist of different types of memory such
+> as socket-attached DRAM and CXL/PCIe attached DRAM, the round-robin
+> based interleave policy does not optimally distribute data to make use
+> of their different bandwidth characteristics.
+>
+> Instead, interleave is more effective when the allocation policy follows
+> each NUMA nodes' bandwidth weight rather than a simple 1:1 distribution.
+>
+> This patch introduces a new memory policy, MPOL_WEIGHTED_INTERLEAVE,
+> enabling weighted interleave between NUMA nodes.  Weighted interleave
+> allows for proportional distribution of memory across multiple numa
+> nodes, preferably apportioned to match the bandwidth of each node.
+>
+> For example, if a system has 1 CPU node (0), and 2 memory nodes (0,1),
+> with bandwidth of (100GB/s, 50GB/s) respectively, the appropriate
+> weight distribution is (2:1).
+>
+> Weights for each node can be assigned via the new sysfs extension:
+> /sys/kernel/mm/mempolicy/weighted_interleave/
+>
+> For now, the default value of all nodes will be `1`, which matches
+> the behavior of standard 1:1 round-robin interleave. An extension
+> will be added in the future to allow default values to be registered
+> at kernel and device bringup time.
+>
+> The policy allocates a number of pages equal to the set weights. For
+> example, if the weights are (2,1), then 2 pages will be allocated on
+> node0 for every 1 page allocated on node1.
+>
+> The new flag MPOL_WEIGHTED_INTERLEAVE can be used in set_mempolicy(2)
+> and mbind(2).
+>
+> There are 3 integration points:
+>
+> weighted_interleave_nodes:
+>     Counts the number of allocations as they occur, and applies the
+>     weight for the current node.  When the weight reaches 0, switch
+>     to the next node.
+>
+> weighted_interleave_nid:
+>     Gets the total weight of the nodemask as well as each individual
+>     node weight, then calculates the node based on the given index.
+>
+> bulk_array_weighted_interleave:
+>     Gets the total weight of the nodemask as well as each individual
+>     node weight, then calculates the number of "interleave rounds" as
+>     well as any delta ("partial round").  Calculates the number of
+>     pages for each node and allocates them.
+>
+>     If a node was scheduled for interleave via interleave_nodes, the
+>     current weight (pol->cur_weight) will be allocated first, before
+>     the remaining bulk calculation is done.
+>
+> One piece of complexity is the interaction between a recent refactor
+> which split the logic to acquire the "ilx" (interleave index) of an
+> allocation and the actually application of the interleave.  The
+> calculation of the `interleave index` is done by `get_vma_policy()`,
+> while the actual selection of the node will be later appliex by the
+> relevant weighted_interleave function.
+>
+> Suggested-by: Hasan Al Maruf <Hasan.Maruf@amd.com>
+> Signed-off-by: Gregory Price <gregory.price@memverge.com>
+> Co-developed-by: Rakie Kim <rakie.kim@sk.com>
+> Signed-off-by: Rakie Kim <rakie.kim@sk.com>
+> Co-developed-by: Honggyu Kim <honggyu.kim@sk.com>
+> Signed-off-by: Honggyu Kim <honggyu.kim@sk.com>
+> Co-developed-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
+> Signed-off-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
+> Co-developed-by: Srinivasulu Thanneeru <sthanneeru.opensrc@micron.com>
+> Signed-off-by: Srinivasulu Thanneeru <sthanneeru.opensrc@micron.com>
+> Co-developed-by: Ravi Jonnalagadda <ravis.opensrc@micron.com>
+> Signed-off-by: Ravi Jonnalagadda <ravis.opensrc@micron.com>
+> ---
+>  .../admin-guide/mm/numa_memory_policy.rst     |   9 +
+>  include/linux/mempolicy.h                     |   5 +
+>  include/uapi/linux/mempolicy.h                |   1 +
+>  mm/mempolicy.c                                | 234 +++++++++++++++++-
+>  4 files changed, 246 insertions(+), 3 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/mm/numa_memory_policy.rst b/Documentation/admin-guide/mm/numa_memory_policy.rst
+> index eca38fa81e0f..a70f20ce1ffb 100644
+> --- a/Documentation/admin-guide/mm/numa_memory_policy.rst
+> +++ b/Documentation/admin-guide/mm/numa_memory_policy.rst
+> @@ -250,6 +250,15 @@ MPOL_PREFERRED_MANY
+>  	can fall back to all existing numa nodes. This is effectively
+>  	MPOL_PREFERRED allowed for a mask rather than a single node.
+>  
+> +MPOL_WEIGHTED_INTERLEAVE
+> +	This mode operates the same as MPOL_INTERLEAVE, except that
+> +	interleaving behavior is executed based on weights set in
+> +	/sys/kernel/mm/mempolicy/weighted_interleave/
+> +
+> +	Weighted interleave allocates pages on nodes according to a
+> +	weight.  For example if nodes [0,1] are weighted [5,2], 5 pages
+> +	will be allocated on node0 for every 2 pages allocated on node1.
+> +
+>  NUMA memory policy supports the following optional mode flags:
+>  
+>  MPOL_F_STATIC_NODES
+> diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
+> index 931b118336f4..c1a083eb0dd5 100644
+> --- a/include/linux/mempolicy.h
+> +++ b/include/linux/mempolicy.h
+> @@ -54,6 +54,11 @@ struct mempolicy {
+>  		nodemask_t cpuset_mems_allowed;	/* relative to these nodes */
+>  		nodemask_t user_nodemask;	/* nodemask passed by user */
+>  	} w;
+> +
+> +	/* Weighted interleave settings */
+> +	struct {
+> +		u8 cur_weight;
+> +	} wil;
+>  };
+>  
+>  /*
+> diff --git a/include/uapi/linux/mempolicy.h b/include/uapi/linux/mempolicy.h
+> index a8963f7ef4c2..1f9bb10d1a47 100644
+> --- a/include/uapi/linux/mempolicy.h
+> +++ b/include/uapi/linux/mempolicy.h
+> @@ -23,6 +23,7 @@ enum {
+>  	MPOL_INTERLEAVE,
+>  	MPOL_LOCAL,
+>  	MPOL_PREFERRED_MANY,
+> +	MPOL_WEIGHTED_INTERLEAVE,
+>  	MPOL_MAX,	/* always last member of enum */
+>  };
+>  
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index 427bddf115df..aa3b2389d3e0 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -19,6 +19,13 @@
+>   *                for anonymous memory. For process policy an process counter
+>   *                is used.
+>   *
+> + * weighted interleave
+> + *                Allocate memory interleaved over a set of nodes based on
+> + *                a set of weights (per-node), with normal fallback if it
+> + *                fails.  Otherwise operates the same as interleave.
+> + *                Example: nodeset(0,1) & weights (2,1) - 2 pages allocated
+> + *                on node 0 for every 1 page allocated on node 1.
+> + *
+>   * bind           Only allocate memory on a specific set of nodes,
+>   *                no fallback.
+>   *                FIXME: memory is allocated starting with the first node
+> @@ -313,6 +320,7 @@ static struct mempolicy *mpol_new(unsigned short mode, unsigned short flags,
+>  	policy->mode = mode;
+>  	policy->flags = flags;
+>  	policy->home_node = NUMA_NO_NODE;
+> +	policy->wil.cur_weight = 0;
+>  
+>  	return policy;
+>  }
+> @@ -425,6 +433,10 @@ static const struct mempolicy_operations mpol_ops[MPOL_MAX] = {
+>  		.create = mpol_new_nodemask,
+>  		.rebind = mpol_rebind_preferred,
+>  	},
+> +	[MPOL_WEIGHTED_INTERLEAVE] = {
+> +		.create = mpol_new_nodemask,
+> +		.rebind = mpol_rebind_nodemask,
+> +	},
+>  };
+>  
+>  static bool migrate_folio_add(struct folio *folio, struct list_head *foliolist,
+> @@ -846,7 +858,8 @@ static long do_set_mempolicy(unsigned short mode, unsigned short flags,
+>  
+>  	old = current->mempolicy;
+>  	current->mempolicy = new;
+> -	if (new && new->mode == MPOL_INTERLEAVE)
+> +	if (new && (new->mode == MPOL_INTERLEAVE ||
+> +		    new->mode == MPOL_WEIGHTED_INTERLEAVE))
+>  		current->il_prev = MAX_NUMNODES-1;
+>  	task_unlock(current);
+>  	mpol_put(old);
+> @@ -872,6 +885,7 @@ static void get_policy_nodemask(struct mempolicy *pol, nodemask_t *nodes)
+>  	case MPOL_INTERLEAVE:
+>  	case MPOL_PREFERRED:
+>  	case MPOL_PREFERRED_MANY:
+> +	case MPOL_WEIGHTED_INTERLEAVE:
+>  		*nodes = pol->nodes;
+>  		break;
+>  	case MPOL_LOCAL:
+> @@ -956,6 +970,13 @@ static long do_get_mempolicy(int *policy, nodemask_t *nmask,
+>  		} else if (pol == current->mempolicy &&
+>  				pol->mode == MPOL_INTERLEAVE) {
+>  			*policy = next_node_in(current->il_prev, pol->nodes);
+> +		} else if (pol == current->mempolicy &&
+> +				(pol->mode == MPOL_WEIGHTED_INTERLEAVE)) {
+> +			if (pol->wil.cur_weight)
+> +				*policy = current->il_prev;
+> +			else
+> +				*policy = next_node_in(current->il_prev,
+> +						       pol->nodes);
+>  		} else {
+>  			err = -EINVAL;
+>  			goto out;
+> @@ -1785,7 +1806,8 @@ struct mempolicy *get_vma_policy(struct vm_area_struct *vma,
+>  	pol = __get_vma_policy(vma, addr, ilx);
+>  	if (!pol)
+>  		pol = get_task_policy(current);
+> -	if (pol->mode == MPOL_INTERLEAVE) {
+> +	if (pol->mode == MPOL_INTERLEAVE ||
+> +	    pol->mode == MPOL_WEIGHTED_INTERLEAVE) {
+
+Should change the comments above get_vma_policy() definition too.
+
+>  		*ilx += vma->vm_pgoff >> order;
+>  		*ilx += (addr - vma->vm_start) >> (PAGE_SHIFT + order);
+>  	}
+> @@ -1835,6 +1857,28 @@ bool apply_policy_zone(struct mempolicy *policy, enum zone_type zone)
+>  	return zone >= dynamic_policy_zone;
+>  }
+>  
+> +static unsigned int weighted_interleave_nodes(struct mempolicy *policy)
+> +{
+> +	unsigned int next;
+> +	struct task_struct *me = current;
+> +	u8 __rcu *table;
+> +
+> +	next = next_node_in(me->il_prev, policy->nodes);
+> +	if (next == MAX_NUMNODES)
+> +		return next;
+> +
+> +	rcu_read_lock();
+> +	table = rcu_dereference(iw_table);
+> +	if (!policy->wil.cur_weight)
+> +		policy->wil.cur_weight = table ? table[next] : 1;
+> +	rcu_read_unlock();
+> +
+> +	policy->wil.cur_weight--;
+> +	if (!policy->wil.cur_weight)
+> +		me->il_prev = next;
+> +	return next;
+> +}
+> +
+>  /* Do dynamic interleaving for a process */
+>  static unsigned int interleave_nodes(struct mempolicy *policy)
+>  {
+> @@ -1869,6 +1913,9 @@ unsigned int mempolicy_slab_node(void)
+>  	case MPOL_INTERLEAVE:
+>  		return interleave_nodes(policy);
+>  
+> +	case MPOL_WEIGHTED_INTERLEAVE:
+> +		return weighted_interleave_nodes(policy);
+> +
+>  	case MPOL_BIND:
+>  	case MPOL_PREFERRED_MANY:
+>  	{
+> @@ -1907,6 +1954,39 @@ static unsigned int read_once_policy_nodemask(struct mempolicy *pol,
+>  	return nodes_weight(*mask);
+>  }
+>  
+> +static unsigned int weighted_interleave_nid(struct mempolicy *pol, pgoff_t ilx)
+> +{
+> +	nodemask_t nodemask;
+> +	unsigned int target, nr_nodes;
+> +	u8 __rcu *table;
+> +	unsigned int weight_total = 0;
+> +	u8 weight;
+> +	int nid;
+> +
+> +	nr_nodes = read_once_policy_nodemask(pol, &nodemask);
+> +	if (!nr_nodes)
+> +		return numa_node_id();
+> +
+> +	rcu_read_lock();
+> +	table = rcu_dereference(iw_table);
+> +	/* calculate the total weight */
+> +	for_each_node_mask(nid, nodemask)
+> +		weight_total += table ? table[nid] : 1;
+> +
+> +	/* Calculate the node offset based on totals */
+> +	target = ilx % weight_total;
+> +	nid = first_node(nodemask);
+> +	while (target) {
+> +		weight = table ? table[nid] : 1;
+> +		if (target < weight)
+> +			break;
+> +		target -= weight;
+> +		nid = next_node_in(nid, nodemask);
+> +	}
+> +	rcu_read_unlock();
+> +	return nid;
+> +}
+> +
+>  /*
+>   * Do static interleaving for interleave index @ilx.  Returns the ilx'th
+>   * node in pol->nodes (starting from ilx=0), wrapping around if ilx
+> @@ -1967,6 +2047,11 @@ static nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *pol,
+>  		*nid = (ilx == NO_INTERLEAVE_INDEX) ?
+>  			interleave_nodes(pol) : interleave_nid(pol, ilx);
+>  		break;
+> +	case MPOL_WEIGHTED_INTERLEAVE:
+> +		*nid = (ilx == NO_INTERLEAVE_INDEX) ?
+> +			weighted_interleave_nodes(pol) :
+> +			weighted_interleave_nid(pol, ilx);
+> +		break;
+>  	}
+>  
+>  	return nodemask;
+> @@ -2028,6 +2113,7 @@ bool init_nodemask_of_mempolicy(nodemask_t *mask)
+>  	case MPOL_PREFERRED_MANY:
+>  	case MPOL_BIND:
+>  	case MPOL_INTERLEAVE:
+> +	case MPOL_WEIGHTED_INTERLEAVE:
+>  		*mask = mempolicy->nodes;
+>  		break;
+>  
+> @@ -2127,7 +2213,8 @@ struct page *alloc_pages_mpol(gfp_t gfp, unsigned int order,
+>  		 * If the policy is interleave or does not allow the current
+>  		 * node in its nodemask, we allocate the standard way.
+>  		 */
+> -		if (pol->mode != MPOL_INTERLEAVE &&
+> +		if ((pol->mode != MPOL_INTERLEAVE &&
+> +		    pol->mode != MPOL_WEIGHTED_INTERLEAVE) &&
+>  		    (!nodemask || node_isset(nid, *nodemask))) {
+>  			/*
+>  			 * First, try to allocate THP only on local node, but
+> @@ -2263,6 +2350,135 @@ static unsigned long alloc_pages_bulk_array_interleave(gfp_t gfp,
+>  	return total_allocated;
+>  }
+>  
+> +static unsigned long alloc_pages_bulk_array_weighted_interleave(gfp_t gfp,
+> +		struct mempolicy *pol, unsigned long nr_pages,
+> +		struct page **page_array)
+> +{
+> +	struct task_struct *me = current;
+> +	unsigned long total_allocated = 0;
+> +	unsigned long nr_allocated;
+> +	unsigned long rounds;
+> +	unsigned long node_pages, delta;
+> +	u8 weight, resume_weight;
+> +	u8 __rcu *table;
+> +	u8 *weights;
+> +	unsigned int weight_total = 0;
+> +	unsigned long rem_pages = nr_pages;
+> +	nodemask_t nodes;
+> +	int nnodes, node, weight_nodes, resume_node;
+> +	int prev_node = NUMA_NO_NODE;
+
+It appears that we should initialize prev_node with me->il_prev?
+Details are as below.
+
+> +	bool delta_depleted = false;
+> +	int i;
+> +
+> +	if (!nr_pages)
+> +		return 0;
+> +
+> +	nnodes = read_once_policy_nodemask(pol, &nodes);
+> +	if (!nnodes)
+> +		return 0;
+> +
+> +	/* Continue allocating from most recent node and adjust the nr_pages */
+> +	if (pol->wil.cur_weight) {
+> +		node = next_node_in(me->il_prev, nodes);
+> +		node_pages = pol->wil.cur_weight;
+> +		if (node_pages > rem_pages)
+> +			node_pages = rem_pages;
+> +		nr_allocated = __alloc_pages_bulk(gfp, node, NULL, node_pages,
+> +						  NULL, page_array);
+> +		page_array += nr_allocated;
+> +		total_allocated += nr_allocated;
+> +		/* if that's all the pages, no need to interleave */
+> +		if (rem_pages <= pol->wil.cur_weight) {
+> +			pol->wil.cur_weight -= rem_pages;
+
+If "pol->wil.cur_weight == 0" here, we need to change me->il_prev?
+
+> +			return total_allocated;
+> +		}
+> +		/* Otherwise we adjust nr_pages down, and continue from there */
+> +		rem_pages -= pol->wil.cur_weight;
+> +		pol->wil.cur_weight = 0;
+> +		prev_node = node;
+> +	}
+
+        else {
+                prev_node = me->il_prev;
+        }
+
+> +
+> +	/* fetch the weights for this operation and calculate total weight */
+> +	weights = kmalloc(nnodes, GFP_KERNEL);
+> +	if (!weights)
+> +		return total_allocated;
+> +
+> +	rcu_read_lock();
+> +	table = rcu_dereference(iw_table);
+> +	weight_nodes = 0;
+
+We can replace "weight_nodes" with "i" and use a "for" loop?
+
+> +	while (weight_nodes < nnodes) {
+> +		node = next_node_in(prev_node, nodes);
+
+IIUC, "node" will not change in the loop, so all "weight" below will be
+the same value.  To keep it simple, I think we can just copy weights
+from the global iw_table and consider the default value?
+
+> +		weight = table ? table[node] : 1;
+> +		weights[weight_nodes++] = weight;
+> +		weight_total += weight;
+> +	}
+> +	rcu_read_unlock();
+> +
+> +	/*
+> +	 * Now we can continue allocating from 0 instead of an offset
+> +	 * We calculate the number of rounds and any partial rounds so
+> +	 * that we minimize the number of calls to __alloc_pages_bulk
+> +	 * This requires us to track which node we should resume from.
+> +	 *
+> +	 * if (rounds > 0) and (delta == 0), resume_node will always be
+> +	 * the current me->il_prev
+> +	 *
+> +	 * if (delta > 0) and delta is depleted exactly on a node-weight
+> +	 * boundary, resume node will be the node last allocated from when
+> +	 * delta reached 0.
+> +	 *
+> +	 * if (delta > 0) and delta is not depleted on a node-weight boundary,
+> +	 * resume node will be the node prior to the node last allocated from.
+> +	 *
+> +	 * (rounds == 0) and (delta == 0) is not possible (earlier exit)
+> +	 */
+> +	rounds = rem_pages / weight_total;
+> +	delta = rem_pages % weight_total;
+> +	/* If no delta, we'll resume from current prev_node and first weight */
+> +	for (i = 0; i < nnodes; i++) {
+> +		node = next_node_in(prev_node, nodes);
+> +		weight = weights[i];
+> +		node_pages = weight * rounds;
+> +		/* If a delta exists, add this node's portion of the delta */
+> +		if (delta >= weight) {
+> +			node_pages += weight;
+> +			delta -= weight;
+> +			resume_node = node;
+> +			resume_weight = i < (nnodes - 1) ? weights[i+1] :
+> +							   weights[0];
+> +			/* stop tracking iff (delta == weight) */
+> +			delta_depleted = !delta;
+> +		} else if (delta) { /* <= weight */
+
+The comment is unnecessary and wrong.
+
+> +			/* if delta depleted, resume from this node */
+> +			node_pages += delta;
+> +			delta = 0;
+> +			resume_node = prev_node;
+> +			resume_weight = weight - (node_pages % weight);
+> +			delta_depleted = true; /* stop tracking */
+> +		} else if (!delta_depleted) {
+> +			/* if there was no delta, track last allocated node */
+> +			resume_node = node;
+> +			resume_weight = i < (nnodes - 1) ? weights[i+1] :
+> +							   weights[0];
+> +		}
+
+Can the above code be simplified as something like below?
+
+        resume_node = prev_node;
+        resume_weight = 0;
+        for (...) {
+                ...
+                if (delta > weight) {
+			node_pages += weight;
+			delta -= weight;
+		} else if (delta) {
+			node_pages += delta;
+        		/* if delta depleted, resume from this node */
+                        if (delta < weight) {
+                                resume_node = prev_node;
+                                resume_weight = weight - delta;
+                        } else {
+                                resume_node = node;
+                        }
+			delta = 0;
+                }
+                ...
+        }
+
+--
+Best Regards,
+Huang, Ying
+
+> +		/* node_pages can be 0 if an allocation fails and rounds == 0 */
+> +		if (!node_pages)
+> +			break;
+> +		nr_allocated = __alloc_pages_bulk(gfp, node, NULL, node_pages,
+> +						  NULL, page_array);
+> +		page_array += nr_allocated;
+> +		total_allocated += nr_allocated;
+> +		if (total_allocated == nr_pages)
+> +			break;
+> +		prev_node = node;
+> +	}
+> +	/* resume allocating from the calculated node and weight */
+> +	me->il_prev = resume_node;
+> +	pol->wil.cur_weight = resume_weight;
+> +	kfree(weights);
+> +	return total_allocated;
+> +}
+> +
+>  static unsigned long alloc_pages_bulk_array_preferred_many(gfp_t gfp, int nid,
+>  		struct mempolicy *pol, unsigned long nr_pages,
+>  		struct page **page_array)
+> @@ -2303,6 +2519,10 @@ unsigned long alloc_pages_bulk_array_mempolicy(gfp_t gfp,
+>  		return alloc_pages_bulk_array_interleave(gfp, pol,
+>  							 nr_pages, page_array);
+>  
+> +	if (pol->mode == MPOL_WEIGHTED_INTERLEAVE)
+> +		return alloc_pages_bulk_array_weighted_interleave(
+> +				  gfp, pol, nr_pages, page_array);
+> +
+>  	if (pol->mode == MPOL_PREFERRED_MANY)
+>  		return alloc_pages_bulk_array_preferred_many(gfp,
+>  				numa_node_id(), pol, nr_pages, page_array);
+> @@ -2378,6 +2598,7 @@ bool __mpol_equal(struct mempolicy *a, struct mempolicy *b)
+>  	case MPOL_INTERLEAVE:
+>  	case MPOL_PREFERRED:
+>  	case MPOL_PREFERRED_MANY:
+> +	case MPOL_WEIGHTED_INTERLEAVE:
+>  		return !!nodes_equal(a->nodes, b->nodes);
+>  	case MPOL_LOCAL:
+>  		return true;
+> @@ -2514,6 +2735,10 @@ int mpol_misplaced(struct folio *folio, struct vm_area_struct *vma,
+>  		polnid = interleave_nid(pol, ilx);
+>  		break;
+>  
+> +	case MPOL_WEIGHTED_INTERLEAVE:
+> +		polnid = weighted_interleave_nid(pol, ilx);
+> +		break;
+> +
+>  	case MPOL_PREFERRED:
+>  		if (node_isset(curnid, pol->nodes))
+>  			goto out;
+> @@ -2888,6 +3113,7 @@ static const char * const policy_modes[] =
+>  	[MPOL_PREFERRED]  = "prefer",
+>  	[MPOL_BIND]       = "bind",
+>  	[MPOL_INTERLEAVE] = "interleave",
+> +	[MPOL_WEIGHTED_INTERLEAVE] = "weighted interleave",
+>  	[MPOL_LOCAL]      = "local",
+>  	[MPOL_PREFERRED_MANY]  = "prefer (many)",
+>  };
+> @@ -2947,6 +3173,7 @@ int mpol_parse_str(char *str, struct mempolicy **mpol)
+>  		}
+>  		break;
+>  	case MPOL_INTERLEAVE:
+> +	case MPOL_WEIGHTED_INTERLEAVE:
+>  		/*
+>  		 * Default to online nodes with memory if no nodelist
+>  		 */
+> @@ -3057,6 +3284,7 @@ void mpol_to_str(char *buffer, int maxlen, struct mempolicy *pol)
+>  	case MPOL_PREFERRED_MANY:
+>  	case MPOL_BIND:
+>  	case MPOL_INTERLEAVE:
+> +	case MPOL_WEIGHTED_INTERLEAVE:
+>  		nodes = pol->nodes;
+>  		break;
+>  	default:
 
