@@ -1,72 +1,74 @@
-Return-Path: <linux-kernel+bounces-35964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C45CD839943
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:12:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 218AA839946
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:12:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D9CAB271A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:11:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3BC5AB2DEB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:11:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D656212CD8B;
-	Tue, 23 Jan 2024 19:04:26 +0000 (UTC)
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60E4312C53F;
+	Tue, 23 Jan 2024 19:04:28 +0000 (UTC)
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3B8512C53F;
-	Tue, 23 Jan 2024 19:04:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 626FC12C536;
+	Tue, 23 Jan 2024 19:04:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706036666; cv=none; b=EaRRd6KsQqLPjL2QMdjUG0H7aCowJSN0YkgC7h1z9TDUx18Nf6x30j6zNs0K5h/30LOanEdO/XCM7CYVNQtMkPV9jHGfytjRnoajBDCKonl6+rexeMKghMbI3CfX9hxGPSqOJz9SP1ftRg4zTafrJkNRpdOaxJ9EwfmsXDNynVE=
+	t=1706036668; cv=none; b=bZ+bO4DmZU4c0ScDqz4fm6kXRg5cXl6+ZpDawbC/05k4izd7/00ftTeLHtkC6x2JY4As0Pr4g+o/9sgkZj9Wan4K70TYpysrorrk3Lm8o2QIzq+QSINRNhOD+1jUEcA8kcTBy5Rw2+tz4Ute1ly/moaKr0pFa8wKKT3n9l0E5eg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706036666; c=relaxed/simple;
-	bh=AYzoZA7Oo+dslJ/lV4356XB6dAQ/UV5qLQs44EJlEQ4=;
+	s=arc-20240116; t=1706036668; c=relaxed/simple;
+	bh=5ioWY6cZMA7SINIP4rC5nvm/iCXXDx+mOGXSFMiYuNs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ZvQHLaCF59Ib2lbkjhak5kqj2Sb2SIF60ppqf9+6X0CH7yEghCRimXx5c6PQq2L9pAH+ntM18FzSitmaku2W/Z4rYlLCN2BKo+Rwh5qfmLJGhzgMeGhotzsOnlX0P7aVsr6qQgxsna65wbNopQsplgc/1psOpCJ4w76bYFWaOlQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.176
+	 MIME-Version; b=kr+dr/PZfMaID3Heemc7uyKQzhDwtxmXRo+MkLOolekTlatxmnU+9/06H4iI8/uOp9JG/wgOyN6GGXV88qqVWcgl6If9S6i6spmrk1VcJ8TC8cvpOipZGPnzuVOOu9fn7UEc2FdqGT5GU7sBC1Dpl8yf3c3ndBwiKT+g6Sjj5Ho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2cd33336b32so62172141fa.0;
-        Tue, 23 Jan 2024 11:04:24 -0800 (PST)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a28fb463a28so457440766b.3;
+        Tue, 23 Jan 2024 11:04:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706036663; x=1706641463;
+        d=1e100.net; s=20230601; t=1706036664; x=1706641464;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hozx63fH37v3yPpbULyiAtnqTUiV0COnClY5PWpJRVI=;
-        b=jfoE3b8Albz1W7YGTjiCslU9HDFsVx+OVsSfrhStuJqnhoOMkoQLM88trPNLwgipDW
-         u3i4d0ui3jmqoTJ8YVsGhBevMy1L7kuTRs7cYU6uDJsJXhqXxAH8EfsR/M5GIs/9wVri
-         4YhtqrzupZCy4cE/CyWgGKp/G8U67yqxkdTbg0dyghMOnz+PbMXoWOVEp9j21QfbUJSK
-         UtU6zix6cyzSTjpD/x9qajn9bLoOKCzNwqsie8bckGfC9WgLlW8Msp8CYIGc1hBIhvoY
-         2zDvboEpz8ZIjMPdL5wFb/PvRs7q2nuLqktikT+P8HDKG6/avWfbXqdW/MknBMasFcRi
-         PJuw==
-X-Gm-Message-State: AOJu0Yxl5ZBc56cnzKWCVIbUVacjUbCsJSZrtRW/S8QlQjqBZPGTzIX9
-	Kjjfs6X3AFhC75Oh5yniVq3r+V78p4/aO4c4LQzrt6VYRzJ4ZRXb
-X-Google-Smtp-Source: AGHT+IFMWsZCAFdev1iMb/WSwMJEiNSpf709fzTmOThAKt22t4pDMIQVoQmALcbvh+s5fP11Cp/nqQ==
-X-Received: by 2002:a05:651c:b23:b0:2cc:9389:ca1 with SMTP id b35-20020a05651c0b2300b002cc93890ca1mr156292ljr.73.1706036662875;
-        Tue, 23 Jan 2024 11:04:22 -0800 (PST)
-Received: from localhost (fwdproxy-lla-120.fbsv.net. [2a03:2880:30ff:78::face:b00c])
-        by smtp.gmail.com with ESMTPSA id t34-20020a056402242200b0055823c2ae17sm15754418eda.64.2024.01.23.11.04.22
+        bh=UUjkdIPV4RyRqGQf6e4w7ul6m32fEFyDKsrtQ13Dd7k=;
+        b=mF5QvJXC6nOaEvPf2qcKBfcab/9zZwP52ghmhtI35ufuG4325vpbj4fig01cY9wiNG
+         aceWM8lNCUjib9xp9MXBMnFr+q37zmW+0aXetrXFRql/NNmH8FN3Eoaz8ymFEhSzx+HA
+         GflsTbgnocGsfRSS9mJPRGt1U7Hzx8ynJXLPIM0jOmvFkVFyZ+uTigKDXwbD+0RtanOM
+         aqO5ucdCBl0WjN3i7Rv6Kq/9vQM3fBeXPyIQlfb0tch1qWUIGpJtNoGS5EqgjQ8ckps8
+         RLYlu4DRB9ZPRrtsi8utPX9zRXCf2EBKjsTEaHprcRzHOo5ppHCzdw7SzS9XYxOKV9j/
+         0auQ==
+X-Gm-Message-State: AOJu0Yw59xETWdwQIX2l19wyoEPTtFZhcDgtAWcElXPy2sa0xLyefrbB
+	xpZVLtzLhKDvymIOh7+REzpdPPZTctT/Pmam1eV55KhWxKiOgZb/BU/5+y094wKtLQ==
+X-Google-Smtp-Source: AGHT+IH4LnkZH4pYfUZRJbum6dHs8mQx5WWsMJza3vaW4PAkBGE2tT8lYqQYRad/oprlzfaCEcoOvQ==
+X-Received: by 2002:a17:906:1cca:b0:a2f:bf0f:df53 with SMTP id i10-20020a1709061cca00b00a2fbf0fdf53mr196842ejh.92.1706036664492;
+        Tue, 23 Jan 2024 11:04:24 -0800 (PST)
+Received: from localhost (fwdproxy-lla-116.fbsv.net. [2a03:2880:30ff:74::face:b00c])
+        by smtp.gmail.com with ESMTPSA id d6-20020a170906c20600b00a28c8ab1342sm14692851ejz.96.2024.01.23.11.04.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 11:04:22 -0800 (PST)
+        Tue, 23 Jan 2024 11:04:24 -0800 (PST)
 From: Breno Leitao <leitao@debian.org>
 To: kuba@kernel.org,
 	davem@davemloft.net,
 	pabeni@redhat.com,
 	edumazet@google.com,
-	Karol Gugala <kgugala@antmicro.com>,
-	Mateusz Holenko <mholenko@antmicro.com>,
-	Gabriel Somlo <gsomlo@gmail.com>,
-	Joel Stanley <joel@jms.id.au>
+	Sunil Goutham <sgoutham@marvell.com>,
+	Linu Cherian <lcherian@marvell.com>,
+	Geetha sowjanya <gakula@marvell.com>,
+	Jerin Jacob <jerinj@marvell.com>,
+	hariprasad <hkelam@marvell.com>,
+	Subbaraya Sundeep <sbhatta@marvell.com>
 Cc: dsahern@kernel.org,
 	weiwan@google.com,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net v2 09/10] net: fill in MODULE_DESCRIPTION()s for litex
-Date: Tue, 23 Jan 2024 11:03:30 -0800
-Message-Id: <20240123190332.677489-10-leitao@debian.org>
+Subject: [PATCH net v2 10/10] net: fill in MODULE_DESCRIPTION()s for rvu_mbox
+Date: Tue, 23 Jan 2024 11:03:31 -0800
+Message-Id: <20240123190332.677489-11-leitao@debian.org>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20240123190332.677489-1-leitao@debian.org>
 References: <20240123190332.677489-1-leitao@debian.org>
@@ -79,24 +81,23 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
-Add descriptions to the LiteX Liteeth Ethernet device.
+Add descriptions to the Marvel RVU mbox driver.
 
 Signed-off-by: Breno Leitao <leitao@debian.org>
-Acked-by: Gabriel Somlo <gsomlo@gmail.com>
 ---
- drivers/net/ethernet/litex/litex_liteeth.c | 1 +
+ drivers/net/ethernet/marvell/octeontx2/af/mbox.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/litex/litex_liteeth.c b/drivers/net/ethernet/litex/litex_liteeth.c
-index 5182fe737c37..ff54fbe41bcc 100644
---- a/drivers/net/ethernet/litex/litex_liteeth.c
-+++ b/drivers/net/ethernet/litex/litex_liteeth.c
-@@ -318,4 +318,5 @@ static struct platform_driver liteeth_driver = {
- module_platform_driver(liteeth_driver);
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.c b/drivers/net/ethernet/marvell/octeontx2/af/mbox.c
+index 9690ac01f02c..b92264d0a77e 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.c
+@@ -413,4 +413,5 @@ const char *otx2_mbox_id2name(u16 id)
+ EXPORT_SYMBOL(otx2_mbox_id2name);
  
- MODULE_AUTHOR("Joel Stanley <joel@jms.id.au>");
-+MODULE_DESCRIPTION("LiteX Liteeth Ethernet driver");
- MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Marvell.");
++MODULE_DESCRIPTION("Marvell RVU NIC Mbox helpers");
+ MODULE_LICENSE("GPL v2");
 -- 
 2.39.3
 
