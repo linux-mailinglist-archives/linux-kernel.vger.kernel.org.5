@@ -1,249 +1,140 @@
-Return-Path: <linux-kernel+bounces-35257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35258-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20AF2838EAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:44:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7852A838EB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:45:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72F9DB24692
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:44:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08704B23B14
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:45:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90E7F5EE7A;
-	Tue, 23 Jan 2024 12:43:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25DAF5EE85;
+	Tue, 23 Jan 2024 12:45:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="FYfP5UPX"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RiarLDzz"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB1B5DF00;
-	Tue, 23 Jan 2024 12:43:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8BB05DF00;
+	Tue, 23 Jan 2024 12:45:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706013833; cv=none; b=lSUjG8TurWyYQqtXFIT9Y504KTRLF4zOrVrFqVY2ipc4zx1DPReRLyqIqHZSMUqTDNJ15Yf/6k8/MOGRmpmlrxdJZta7v6F5oDRpPW1aB6VALLTOARGHOMWgFhWiD166X3RqN28xSA3VX7ecsDIIX1ntPTNTbhKLPMw7laEjz1Q=
+	t=1706013910; cv=none; b=k+Yzaid5PoCgn7JiwyIp6/tiXrOx3asC3Y5P/pUCPXV92mKWdDwFlUOBwNWpBbFx1k5a5x87Fkdpqq75EhMyrULIBP3fmZ4YXZ4g70ZHcyh6TXlrOs7vofdPL0kujMEN44h5vo9V4jaNla9fryTguD+WKstXe6hM3/TE9h0WK9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706013833; c=relaxed/simple;
-	bh=UCvBeVxZH1I1W7aFnfZBfhYgFfhsl9L84uwbqQ3nMCM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=h8KGWNUjWAVlQVYll7C2+ChZoPAZ/ozJg1UaOaW8PTL98HJ833Mws8kjnvcqIIUs65b+Pr4Cb1pIMJpk6T53hCnjiXA35tmJOqVtcoNz4H1XmF7Bve2ctCPxiENj7h4xvuecgKIIx/cTpW0I+vg5eMOM+6t6DKbAIgW2gEGt+M8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=FYfP5UPX; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40NC54D4030979;
-	Tue, 23 Jan 2024 12:43:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=TooN9L+vXIdff2SYsZTJWgp3hQjbI0Ip9LJ8U0o9bcQ=; b=FY
-	fP5UPXWheHCqFQhE5URa3APBOfqtn/JraDFCKNUvdPqFu/HHAZZCpBX37YXuKWcO
-	aCbrGgV7E6HRNyauGHAl/L1WnmD5BwcrcN4zV20nw6A0pSqOMAM3EyfNEP3gm2sW
-	zL5yTvTA8eTkp/95+pf0ATh+JsSYu9/Q9913EhuBng3fDQzcTXpHu6e7dR0kgo7c
-	QBoZYhagYptRp83aJmwK/jhzlJUqHVTcBIsqYiuVoXKH541rgccFO3p9To6EE10P
-	8zENnzII0mpi2UFE77Ix/mBpCbmcVZUqOqWFWXRbhkN69WwIbrWBm57ON8Ll2cr0
-	J5ZW4j7UVfubbIsOB1yA==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vspw8ubfc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Jan 2024 12:43:33 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40NChWmh008205
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Jan 2024 12:43:32 GMT
-Received: from [10.204.67.124] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 23 Jan
- 2024 04:43:26 -0800
-Message-ID: <b9012927-b357-4875-9e8e-90df5cc8d8bb@quicinc.com>
-Date: Tue, 23 Jan 2024 18:13:22 +0530
+	s=arc-20240116; t=1706013910; c=relaxed/simple;
+	bh=m/c1lPPu1YXGObYrj+WgGUhF4RVTsLyLde300zR9Fns=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JvlT7v4oNJZkdX+HDpc7MmFP8LDHhqP7xHVAPPNs8ucsfbZQaADfb+KsmMG9/7Zk6ZBEQmSfARfDaUiL5Os/JYCI4jDarQQ6xrnljaG/19caJPCoTMeCWxhlzZBalLppDLzsqaZfMDHZKP0hfQDhyxLPfT3LmiBba+euXTA/olI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RiarLDzz; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so439119166b.0;
+        Tue, 23 Jan 2024 04:45:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706013907; x=1706618707; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oA1UQQc1JfCo+FECv9KYv1eo56zKsN80lRRNAWxIGh4=;
+        b=RiarLDzz4o7g+PNLVaiubC8q0cDjVGzxGUlNPJ+7/nGUmDRV6CThw7JFnB1I6XOWVE
+         TCgNCkFWlshDmfKsBjmQG70r20n8Cfk3nAAcYlkS2LxRPeHb5qmgXQ+6N4D43VOsHyLQ
+         IOzs6+DgzPleDLGn5GaxSmHLW2RKHnGnzIHG1VapQNXh0ccMs/AVNVrE64FgB36PNQv9
+         5HWW9jqhxgRpPxe6VdZwNqS9Kc8a/JRKiR2/mTWi0cH+14PLszKQUdUacN/q57buB+Ym
+         bdYOzORVpARoaA38V6RCZqB7tsL58jGbaCCJSWuOkHJEV61B1scbWmMSuCnbluE1aPj8
+         U4dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706013907; x=1706618707;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oA1UQQc1JfCo+FECv9KYv1eo56zKsN80lRRNAWxIGh4=;
+        b=XkWlQT6ZOCikwPh1ZiaXc4AWjG6WvkgiOptty1lltGF6kPMMPtmJKOhQyyEdNOMHM/
+         FJU6qXCxxWUxoZZ4bMKXtv8rETWcBszVlRb+7bMe7iXJj7a5Ve4C9G+JWuUYEtSaOwgB
+         oin5K4dMohLtDJeMhyHJny0Ct5Hy5C170d0fnC9yNQE+PkqZwlFK3KkOxL3XqFECqUD0
+         gGQz3gVp+K9l8/n76qMX0iKRKTA1eSuXTZ3TDjg6x+PTG8IvYvJ0u9eWMQMMpOH3K5cS
+         aBESTDJ3/5s5zkIkf/DyCqX4xbu6yMjtI+vqx51ayF8FO4K5xwzejarcq3u2e31hVLfi
+         MMFg==
+X-Gm-Message-State: AOJu0Yw7o+Q1/h1sslyGUJXZhsYwrVlkg8k8kexBEzQ7MuAXhoyWqhXR
+	FOcVbnZtwLysYVBARmmi38Q9OAdf5lF7o6UQmOJFgV9TrcpmRiP2Ng+VF2bN3cBlQvCXYutv8GQ
+	fTsg12AGMJuKtDeSMhuqdVsAgWVs=
+X-Google-Smtp-Source: AGHT+IGVOi9cJtPjLV8rCcZZAIqP8Of+wjWmyBE/0kgMRwdEcXgkHHcr8D02Phwnkk/tQc54fmCf7RPslpX8DcJ6cZg=
+X-Received: by 2002:a17:906:2b4d:b0:a30:cc38:f192 with SMTP id
+ b13-20020a1709062b4d00b00a30cc38f192mr517708ejg.96.1706013906745; Tue, 23 Jan
+ 2024 04:45:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: qcm6490-idp: add display and panel
-Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: <andersson@kernel.org>, <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <quic_bjorande@quicinc.com>, <geert+renesas@glider.be>,
-        <arnd@arndb.de>, <neil.armstrong@linaro.org>,
-        <nfraprado@collabora.com>, <m.szyprowski@samsung.com>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <quic_abhinavk@quicinc.com>, <quic_rajeevny@quicinc.com>,
-        <quic_vproddut@quicinc.com>
-References: <20240116094935.9988-1-quic_riteshk@quicinc.com>
- <20240116094935.9988-3-quic_riteshk@quicinc.com>
- <CAA8EJpp3WJ8132aB-tyzJPXsdczvQC+TvKemm9NvUNYNrEntow@mail.gmail.com>
-From: Ritesh Kumar <quic_riteshk@quicinc.com>
-In-Reply-To: <CAA8EJpp3WJ8132aB-tyzJPXsdczvQC+TvKemm9NvUNYNrEntow@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: xDS6e3yalMauhsyKjjuTFgUI0ZJslTnJ
-X-Proofpoint-ORIG-GUID: xDS6e3yalMauhsyKjjuTFgUI0ZJslTnJ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-23_06,2024-01-23_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
- adultscore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0
- clxscore=1015 suspectscore=0 impostorscore=0 mlxlogscore=999
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401230094
+References: <20240102-j7200-pcie-s2r-v1-0-84e55da52400@bootlin.com>
+ <20240102-j7200-pcie-s2r-v1-2-84e55da52400@bootlin.com> <CAHp75Verff06LE0QFaDRoun=ANpGfVU1tHknvvQZd_KyzLVP5Q@mail.gmail.com>
+ <223422cc-2a1c-417b-8fa1-20d3b3eb41ef@bootlin.com> <CAHp75VcaABafPh7o1TjrHW2txXRRSxjT443XJe33gfS1YD4bhA@mail.gmail.com>
+ <b59067f0-fdba-40d1-bb52-9f66fd833f40@bootlin.com>
+In-Reply-To: <b59067f0-fdba-40d1-bb52-9f66fd833f40@bootlin.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Tue, 23 Jan 2024 14:44:30 +0200
+Message-ID: <CAHp75VdwwfTdYYG59DcwO=kPXmPxrkShk6VjoSQPHKDi_p=iMA@mail.gmail.com>
+Subject: Re: [PATCH 02/14] pinctrl: pinctrl-single: move suspend/resume to suspend_noirq/resume_noirq
+To: Thomas Richard <thomas.richard@bootlin.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, 
+	Andy Shevchenko <andy@kernel.org>, Tony Lindgren <tony@atomide.com>, 
+	Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>, 
+	Aaro Koskinen <aaro.koskinen@iki.fi>, Janusz Krzysztofik <jmkrzyszt@gmail.com>, 
+	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>, Vinod Koul <vkoul@kernel.org>, 
+	Kishon Vijay Abraham I <kishon@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
+	Tom Joseph <tjoseph@cadence.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, 
+	linux-phy@lists.infradead.org, linux-pci@vger.kernel.org, 
+	gregory.clement@bootlin.com, theo.lebrun@bootlin.com, 
+	thomas.petazzoni@bootlin.com, u-kumar1@ti.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Jan 22, 2024 at 4:33=E2=80=AFPM Thomas Richard
+<thomas.richard@bootlin.com> wrote:
+> On 1/19/24 17:11, Andy Shevchenko wrote:
+> > On Fri, Jan 19, 2024 at 6:08=E2=80=AFPM Thomas Richard
+> > <thomas.richard@bootlin.com> wrote:
+> >> On 1/15/24 21:02, Andy Shevchenko wrote:
+> >>> On Mon, Jan 15, 2024 at 6:16=E2=80=AFPM Thomas Richard
+> >>> <thomas.richard@bootlin.com> wrote:
 
-On 1/16/2024 3:28 PM, Dmitry Baryshkov wrote:
+..
 
-> On Tue, 16 Jan 2024 at 11:49, Ritesh Kumar <quic_riteshk@quicinc.com> wrote:
->> Enable Display Subsystem with Novatek NT36672E Panel
->> on qcm6490 idp platform.
-> Is this panel always present on the IDP board or is it an optional
-> addon, like the panels for all the RBn boards?
+> >>>> +static const struct dev_pm_ops pinctrl_single_pm_ops =3D {
+> >>>> +       SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(pinctrl_single_suspend_noirq,
+> >>>> +                                     pinctrl_single_resume_noirq)
+> >>>> +};
+> >>>
+> >>> Use proper / modern macro.
+> >>
+> >> fixed, use DEFINE_NOIRQ_DEV_PM_OPS now
+> >
+> > ...
+> >
+> >>>>  #endif
+> >>>
+> >>> Why ifdeferry is needed (esp. taking into account pm_ptr() use below)=
+?
+> >>
+> >> We may have an "unused variable" warning for pinctrl_single_pm_ops if
+> >> CONFIG_PM is undefined (due to pm_ptr).
+> >
+> > This is coupled with the above. Fixing above will automatically make
+> > the right thing.
+>
+> Yes you're right.
+> By the way I can use pm_sleep_ptr instead of pm_ptr.
 
-This panel is always present on the IDP board.
+Yes, pm_sleep_ptr() is the correct one in this case.
 
->> Signed-off-by: Ritesh Kumar <quic_riteshk@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 100 +++++++++++++++++++++++
->>   1 file changed, 100 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
->> index 2a6e4907c5ee..efa5252130a1 100644
->> --- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
->> +++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
->> @@ -9,6 +9,7 @@
->>   #define PM7250B_SID 8
->>   #define PM7250B_SID1 9
->>
->> +#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
->>   #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
->>   #include "sc7280.dtsi"
->>   #include "pm7250b.dtsi"
->> @@ -38,6 +39,25 @@
->>                  stdout-path = "serial0:115200n8";
->>          };
->>
->> +       lcd_disp_bias: lcd-disp-bias-regulator {
->> +               compatible = "regulator-fixed";
->> +               regulator-name = "lcd_disp_bias";
->> +               regulator-min-microvolt = <5500000>;
->> +               regulator-max-microvolt = <5500000>;
->> +               gpio = <&pm7250b_gpios 2 GPIO_ACTIVE_HIGH>;
->> +               enable-active-high;
->> +               pinctrl-names = "default";
->> +               pinctrl-0 = <&lcd_disp_bias_en>;
->> +       };
->> +
->> +       pm8350c_pwm_backlight: backlight {
->> +               compatible = "pwm-backlight";
->> +               pwms = <&pm8350c_pwm 3 65535>;
->> +               enable-gpios = <&pm8350c_gpios 7 GPIO_ACTIVE_HIGH>;
->> +               pinctrl-names = "default";
->> +               pinctrl-0 = <&pmic_lcd_bl_en>;
->> +       };
->> +
->>          reserved-memory {
->>                  xbl_mem: xbl@80700000 {
->>                          reg = <0x0 0x80700000 0x0 0x100000>;
->> @@ -420,6 +440,86 @@
->>          };
->>   };
->>
->> +&gpu {
->> +       status = "disabled";
->> +};
->> +
->> +&mdss {
->> +       status = "okay";
->> +};
->> +
->> +&mdss_dsi {
->> +       vdda-supply = <&vreg_l6b_1p2>;
->> +       status = "okay";
->> +
->> +       panel@0 {
->> +               compatible = "novatek,nt36672e";
->> +               reg = <0>;
->> +
->> +               reset-gpios = <&tlmm 44 GPIO_ACTIVE_HIGH>;
->> +
->> +               vddi-supply = <&vreg_l8c_1p62>;
->> +               avdd-supply = <&lcd_disp_bias>;
->> +               avee-supply = <&lcd_disp_bias>;
->> +
->> +               backlight = <&pm8350c_pwm_backlight>;
->> +
->> +               port {
->> +                       panel0_in: endpoint {
->> +                               remote-endpoint = <&mdss_dsi0_out>;
->> +                       };
->> +               };
->> +       };
->> +};
->> +
->> +&mdss_dsi0_out {
->> +       remote-endpoint = <&panel0_in>;
->> +       data-lanes = <0 1 2 3>;
->> +};
->> +
->> +&mdss_dsi_phy {
->> +       vdds-supply = <&vreg_l10c_0p88>;
->> +       status = "okay";
->> +};
->> +
->> +&pm7250b_gpios {
->> +       lcd_disp_bias_en: lcd-disp-bias-en-state {
->> +               pins = "gpio2";
->> +               function = "func1";
->> +               bias-disable;
->> +               qcom,drive-strength = <PMIC_GPIO_STRENGTH_LOW>;
->> +               input-disable;
->> +               output-enable;
->> +               power-source = <0>;
->> +       };
->> +};
->> +
->> +&pm8350c_gpios {
->> +       pmic_lcd_bl_en: pmic-lcd-bl-en-state {
->> +               pins = "gpio7";
->> +               function = "normal";
->> +               bias-disable;
->> +               qcom,drive-strength = <PMIC_GPIO_STRENGTH_LOW>;
->> +               output-low;
->> +               power-source = <0>;
->> +       };
->> +
->> +       pmic_lcd_bl_pwm: pmic-lcd-bl-pwm-state {
->> +               pins = "gpio8";
->> +               function = "func1";
->> +               bias-disable;
->> +               qcom,drive-strength = <PMIC_GPIO_STRENGTH_LOW>;
->> +               output-low;
->> +               power-source = <0>;
->> +       };
->> +};
->> +
->> +&pm8350c_pwm {
->> +       pinctrl-names = "default";
->> +       pinctrl-0 = <&pmic_lcd_bl_pwm>;
->> +       status = "okay";
->> +};
->> +
->>   &qupv3_id_0 {
->>          status = "okay";
->>   };
->> --
->> 2.17.1
->>
-
-Thanks,
-Ritesh
+--=20
+With Best Regards,
+Andy Shevchenko
 
