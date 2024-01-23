@@ -1,146 +1,115 @@
-Return-Path: <linux-kernel+bounces-34823-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34830-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64A7D8387F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:34:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A12F283880B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:36:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6E2C28264B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:34:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41B92B21B12
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:36:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15D7651C3A;
-	Tue, 23 Jan 2024 07:34:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 541A052F86;
+	Tue, 23 Jan 2024 07:36:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="d/t1jmYw";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="jVAGtaaU"
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="XJBKv2O/"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F25851C52
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:34:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF86451C3A;
+	Tue, 23 Jan 2024 07:36:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705995270; cv=none; b=G+H+YqsLcoh565XhjCMn/XyLvlm9D+LZmA96LCuLWzwNEhbAOAxd+yOX6RPGbyedz47Cm9AUx+DCpDc9Cq5rbBnyA3RZtR08HtLbt8KH9L2nmBVQ1xYqsg2qwHbuYZcJ8BzqSQQCkQwgTxRONox2qkfIjShAMTSJI9Mq6S5EZ0o=
+	t=1705995386; cv=none; b=H7wao4Sm4Oe7EOdrP6UzZVwN2I4bkRMFTv6kQSXE0kaWPx8w/2yAOoMCcg+h2NJE3dWGRVrXGa+5FRjOmZRMaqaF/jaKPzJpKQIXgO65QoR1aHZ6KTDU6KifEaq1tp+RNJi0Bu7YLo7Ira4kS27ObV3y5XBosJEsTnpydtrquwk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705995270; c=relaxed/simple;
-	bh=FvWzwHTDVEyet3HZiGtusiSZVWNkuF9rpU6YASueXuo=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=EXGsBhrFqLQzMOChgfr18ICnmLe/mtYip6vVbaUu80JJtG3/VdxSurNLadpnIaPxKdKrgDeXjcFDquWI7TxhoJk1w7cNxcLshdMb2mk83PjlyQ3+XT+et+PHvwnmj8Z8Ll8NnbVYHFIdP91wlfSPkhW4D302bZARDaAthjliTzc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=d/t1jmYw; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=jVAGtaaU; arc=none smtp.client-ip=64.147.123.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id 978493200AF5;
-	Tue, 23 Jan 2024 02:34:26 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 23 Jan 2024 02:34:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1705995266; x=1706081666; bh=TWAFZjSQ6D
-	f63rcQm0mLoFKrDX1HkRJ7iYKKyR4vOb0=; b=d/t1jmYwEbp6g7avHbkITWc3wd
-	1goEo1tNaVMIJpAt67kobRXr/1wuYI6dbIzguIHLYHSkl71WlDeqVXHg/SGzGqoU
-	xiKpi4Z6z1wYeni5QoXvWUlE3ONFBWERNSJRY65pWz/Sj8IMsXtNx7YHQXslnrhi
-	G5rHwvVlR3MJ623wVrNDpTMWSoMx7iwOvGUF4NGcfd6xD89yMlFBoG+qRCFNha9k
-	LiTaUqwAKwcR8GFmEnAiFeBG7rkajJ+8cBMZRoxAwiikgP1qfUfhKOgrXGbiTL24
-	8ECPdr+rcQMUKQto37fQfPBV0ZlaXa2VPzdeXLSE5YXIyGU29/cLur2A8+bw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1705995266; x=1706081666; bh=TWAFZjSQ6Df63rcQm0mLoFKrDX1H
-	kRJ7iYKKyR4vOb0=; b=jVAGtaaU4oNW9+LiowsUYxrJDZd8xQ4fdYXQoDt0o0Pr
-	rYZc0o1bQflxH91jWzhUWSH8UoE7ki954hKoLa/qGfY1CTkxUC5bpuLZq0JcXgtT
-	g8L4qRyvhik6krVKU0NM2OsklUfT97H0Y0LvhHHMnXA0zC/QYfTiDP7eHRzKu7FC
-	56HbUvK8IDCPWWODIIvrSrFojJklplHxDBG8HIv7fRYVLL9eGzSe8LcWs4tqcLEp
-	QBMe83/fzlBJpHNUlnsaQ2p56o+fO2bp+85+WB5lhiM8Alm+TnklV82Ay11qL9Z+
-	KFR6au3fa/329RulocRIn5fm3R2ZQR46FDW/vLCriA==
-X-ME-Sender: <xms:AWyvZXEzKdynUjnxVDjbwLDx7QbYSxuTclNydqMznDzEC7hCBlFq5w>
-    <xme:AWyvZUWJ5HNXmuTQ58NsThBKGs41v4eQf-7H4SdMj6m4NBMgUVLdYcDiJ-fwg6ddq
-    qoG4Ofl6X-d8071o1U>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdekjedguddtiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeekudfggedvgfegffeffedvffelgfeludfhueefjeeiveektdevfeehjeff
-    keehveenucffohhmrghinhepfhhrvggvuggvshhkthhophdrohhrghenucevlhhushhtvg
-    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdr
-    uggv
-X-ME-Proxy: <xmx:AWyvZZLIngQF7PL50_kSnfKfZSVdZctg6rHBgUEoBxjpmpfXbyu-NQ>
-    <xmx:AWyvZVH-SWe21EYEGA09JyIq4REqB3QFDQYgyU4MsFycwrtuy-iz0w>
-    <xmx:AWyvZdXS7WG1yXXS5uebGyBElLsB300WmYC9_dGmoO2BBkvKkXos4g>
-    <xmx:AmyvZcHuxjtWK1rR5murBek_j9Wy1PMPe2kZgqhvmLAszEGAgy_tog>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 107D6B6008D; Tue, 23 Jan 2024 02:34:25 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-119-ga8b98d1bd8-fm-20240108.001-ga8b98d1b
+	s=arc-20240116; t=1705995386; c=relaxed/simple;
+	bh=UjyihoPyN6SOPFC4hXvckN7LSDeJ3FDGKGRL79wdbrI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=J8tKh+f9XwjLHyaQjH3KQPhv60ZXVdaA2A0DTcztzNF2IrTmbX9k7LecL+n9I30BZ9/jNIyD69hVChHZtgUWjIfjjsAv1teQARyV/DENK1nRyGYuqcMBsKKLE9Fzollxd1uMI6g87TXEzOP52wL6PRAXcsVxb8XPNfUosjVuy3s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=XJBKv2O/; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1705995378;
+	bh=UjyihoPyN6SOPFC4hXvckN7LSDeJ3FDGKGRL79wdbrI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=XJBKv2O/lbViF3stGvXrhrgD6QAkY3LkvT2znhJvBl8JwewmKA+W0sDCCN4Tnsm6c
+	 D1nUuRlb5LJ1l5RbF72JT4R0Mby8v1FB5Fpw0U2caKcFedUzPcv0AV6rKJEnUtTlGO
+	 29DCJMwu7QHL9vYlv7mJ151n+deebekBZGkRqXpAhcm0EyC4GG3Tcbux290jKc3u/e
+	 epJslm+MhXD5jwfuncizu2PfPCTAR1vQtxUYNFP4y9ui8vwDtcGlwUOUBoZjWW3DpW
+	 hjCSW80jWtpD7ohV4IR2LR+61z0XAUPoOhNBCL+dPDvVMFch+iBex9eUAojH5tTPRS
+	 ju3FJeDlSJWJA==
+Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 91D033782039;
+	Tue, 23 Jan 2024 07:36:16 +0000 (UTC)
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Shuah Khan <shuah@kernel.org>
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+	kernel@collabora.com,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] selftests/mm: run_vmtests.sh: add missing tests
+Date: Tue, 23 Jan 2024 12:36:13 +0500
+Message-ID: <20240123073615.920324-1-usama.anjum@collabora.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <3da403ff-365d-4cea-86f0-4009d1da6baa@app.fastmail.com>
-In-Reply-To: <efebd848-c952-41f8-9422-fe2235d92259@app.fastmail.com>
-References: <20240117104448.6852-1-arnd@kernel.org>
- <efebd848-c952-41f8-9422-fe2235d92259@app.fastmail.com>
-Date: Tue, 23 Jan 2024 08:34:04 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Janne Grunau" <j@jannau.net>, "Arnd Bergmann" <arnd@kernel.org>,
- "Alyssa Rosenzweig" <alyssa@rosenzweig.io>,
- =?UTF-8?Q?Martin_Povi=C5=A1er?= <povik+lin@cutebit.org>
-Cc: asahi@lists.linux.dev, "Hector Martin" <marcan@marcan.st>,
- "Sven Peter" <sven@svenpeter.dev>, "Asahi Lina" <lina@asahilina.net>,
- dri-devel@lists.freedesktop.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drm: apple: mark local functions static
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jan 22, 2024, at 21:50, Janne Grunau wrote:
-> On Wed, Jan 17, 2024, at 11:44, Arnd Bergmann wrote:
->> 
->> -int parse_sample_rate_bit(struct dcp_parse_ctx *handle, unsigned int 
->> *ratebit)
->> +static int parse_sample_rate_bit(struct dcp_parse_ctx *handle, 
->> unsigned int *ratebit)
->>  {
->>  	s64 rate;
->>  	int ret = parse_int(handle, &rate);
->> @@ -715,7 +715,7 @@ int parse_sample_rate_bit(struct dcp_parse_ctx 
->> *handle, unsigned int *ratebit)
->>  	return 0;
->>  }
->> 
->> -int parse_sample_fmtbit(struct dcp_parse_ctx *handle, u64 *fmtbit)
->> +static int parse_sample_fmtbit(struct dcp_parse_ctx *handle, u64 *fmtbit)
->>  {
->>  	s64 sample_size;
->>  	int ret = parse_int(handle, &sample_size);
->
-> thanks, patch included in my dev branch and will be in the next pull 
-> request I'll send to Hector.
->
-> I suppose the recipients are generated by an automated 
-> get_maintainers.pl invocation. Is that desired for out of tree drivers?
+Add missing tests to run_vmtests.sh. The mm kselftests are run through
+run_vmtests.sh. If a test isn't present in this script, it'll not run
+with run_tests or `make -C tools/testing/selftests/mm run_tests`.
 
-I was wondering about that as well, as I don't usually send
-patches for code that isn't at least in linux-next yet.
+Cc: Ryan Roberts <ryan.roberts@arm.com>
+Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+---
+Changes since v1:
+- Copy the original scripts and their dependence script to install directory as well
+---
+ tools/testing/selftests/mm/Makefile       | 3 +++
+ tools/testing/selftests/mm/run_vmtests.sh | 3 +++
+ 2 files changed, 6 insertions(+)
 
-I ended up using what is in the MAINTAINERS file for this driver
-in the branch as that is is all I have at this point:
+diff --git a/tools/testing/selftests/mm/Makefile b/tools/testing/selftests/mm/Makefile
+index 2453add65d12f..c9c8112a7262e 100644
+--- a/tools/testing/selftests/mm/Makefile
++++ b/tools/testing/selftests/mm/Makefile
+@@ -114,6 +114,9 @@ TEST_PROGS := run_vmtests.sh
+ TEST_FILES := test_vmalloc.sh
+ TEST_FILES += test_hmm.sh
+ TEST_FILES += va_high_addr_switch.sh
++TEST_FILES += charge_reserved_hugetlb.sh
++TEST_FILES += write_hugetlb_memory.sh
++TEST_FILES += hugetlb_reparenting_test.sh
+ 
+ include ../lib.mk
+ 
+diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
+index 246d53a5d7f28..12754af00b39c 100755
+--- a/tools/testing/selftests/mm/run_vmtests.sh
++++ b/tools/testing/selftests/mm/run_vmtests.sh
+@@ -248,6 +248,9 @@ CATEGORY="hugetlb" run_test ./map_hugetlb
+ CATEGORY="hugetlb" run_test ./hugepage-mremap
+ CATEGORY="hugetlb" run_test ./hugepage-vmemmap
+ CATEGORY="hugetlb" run_test ./hugetlb-madvise
++CATEGORY="hugetlb" run_test ./charge_reserved_hugetlb.sh -cgroup-v2
++CATEGORY="hugetlb" run_test ./hugetlb_reparenting_test.sh -cgroup-v2
++CATEGORY="hugetlb" run_test ./hugetlb-read-hwpoison
+ 
+ nr_hugepages_tmp=$(cat /proc/sys/vm/nr_hugepages)
+ # For this test, we need one and just one huge page
+-- 
+2.42.0
 
-APPLE DRM DISPLAY DRIVER
-M:      Alyssa Rosenzweig <alyssa@rosenzweig.io>
-L:      dri-devel@lists.freedesktop.org
-S:      Maintained
-T:      git git://anongit.freedesktop.org/drm/drm-misc
-F:      drivers/gpu/drm/apple/
-
-I left out the drivers/gpu/ maintainer addresses though. 
-
-     Arnd
 
