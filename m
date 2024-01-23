@@ -1,229 +1,301 @@
-Return-Path: <linux-kernel+bounces-35916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C46E98398C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:55:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 719B48398C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:56:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27CF5B23F18
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:55:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF5271F23987
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:56:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC38A85C74;
-	Tue, 23 Jan 2024 18:48:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A09586156;
+	Tue, 23 Jan 2024 18:48:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ISiF8abp"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="XqbRTWrT"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EDDB81AB4
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 18:48:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.15
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706035689; cv=fail; b=SDgavi9fgGkjegxzA6YnwnHoe1zyCx3Ev4rQPchgvulsxwwkoK+5hz/tHKrXUC10u4ADxpMHHhIUShNhBr/C4iPrK2RW2Z5TFnx0aDXswmX/5n3jr+xIyh9Ak2wZp3xBic4aUdDu1WNFPQKMFiX3/1hTH0bp/hQLa/sgWxBmAc0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706035689; c=relaxed/simple;
-	bh=K3lugz5OxX4EzeB2ZN2CyEt2WYmOaSIXuNCmm0D1Kio=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=h365soGqyACdQDdVQB2K3bhFbU0cb1Yb06JT8ZzGx2M6afHu0x3o2xMt4g+fvI8Bdl9Z90N4sMkoHS/MvROY5eVEjwb7ON7o2PQymTROshWNnQFA5i9Q3p9WjnAdTeJD0BjIBT5QzFoj2eqvNY96V+v25Tto6rCmUEFWEio5m70=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ISiF8abp; arc=fail smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706035688; x=1737571688;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=K3lugz5OxX4EzeB2ZN2CyEt2WYmOaSIXuNCmm0D1Kio=;
-  b=ISiF8abpNyTSqPJfSPfz79YzJq6M9hlUPMjseE77xjxXY5Arb0XMuuyg
-   pHu6Or6W6naYvpmoSQg/+TKXCHVFl48DC1CZdiUWOiFN/fXW+sTUAmNaW
-   I0nDa1ZRYy1b+EhWXu7IGPhyl6WWPqJC8O60O8K8AouluSW7FRCB6PC2A
-   Rgq6vBf6kTqxSYeKXtKEZsYftB+D0j1r/8dP0C8FrhmPIyRegTZW1pbPR
-   7ZNIcOeSPyebsrtmxCyuP2tzWC82w1+jwIm2TdbJMignVCouvGm/svyfu
-   38qkhThUqzk7QEeeDc3rRt/N/P/J9F8SDmhG48OaXY0ySM0DlL0Sg4oOv
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="1501031"
-X-IronPort-AV: E=Sophos;i="6.05,215,1701158400"; 
-   d="scan'208";a="1501031"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 10:48:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="820198155"
-X-IronPort-AV: E=Sophos;i="6.05,215,1701158400"; 
-   d="scan'208";a="820198155"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 23 Jan 2024 10:48:07 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 23 Jan 2024 10:48:06 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 23 Jan 2024 10:48:06 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 23 Jan 2024 10:48:06 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 23 Jan 2024 10:48:06 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N/R3LGC7Dqe5g3lvP7MdjgcpKPUEQz2SiLYYA1DOJuHtoZiTu3k89rZcTaP11gtps/eVlnW1IDBR2qDKF5M15igw9FW4HmzE+2Rva9oI+zzmpt3C3sJ5Pwt9j5VIPCby7sTTtDPnh0oegQY4cK4BrzSAFLENhQ5zOzY7cHh1+ECAP2FBQnreE/4SR0Lycoh0SW3kFu2ZN1uHUn3Dv+3O5xXZIcDmjGq9HNeFDKNiyBeTbTU8yLJhEDcmMPNTHuZualfBP/lkREjoQydUdopQJwN3nHHZJEJkuQ6m1MBZKreN1X2UbpVkjHpBt8fkiut8WMQHuIa0pFzFBx72lxAwtg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=E6iKf7yQZH4UWrfwohC7pMx5u8CZSsiLA23fu+y2VL0=;
- b=YbSVejI+dgen4Gpl4rKaRMH5PVIj/CXWd6PgIaurMHt5IESsBIRw/83rls6rzDP9mtw5UAehcYgRppieHFGiFTLo6HceeAQHmv3nQyZ687jk4WEvxCOaWW3kFYiTvc197vnt2uuf1jfPElpZHo0U8MirZGc/Fjm06FO5SSlA9TMVvWCOPqH37lHKsBI3CRSLgEQR0CCxiL7ihOAnb70zi2uaa7yxiyl3EzKg1K4y0pu3GETRIsf74U43dnu9bUzJb6N9CkAmKvrdanqA9MeFCvWaByApIun8C2n8xI3juhL9ZIW9CMhV5072/DPlp/blzeshpVKMI2tnu7dbF7bqhg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS7PR11MB6269.namprd11.prod.outlook.com (2603:10b6:8:97::14) by
- MW4PR11MB7128.namprd11.prod.outlook.com (2603:10b6:303:22b::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7202.24; Tue, 23 Jan 2024 18:48:03 +0000
-Received: from DS7PR11MB6269.namprd11.prod.outlook.com
- ([fe80::52c6:33d7:27be:28c5]) by DS7PR11MB6269.namprd11.prod.outlook.com
- ([fe80::52c6:33d7:27be:28c5%4]) with mapi id 15.20.7202.031; Tue, 23 Jan 2024
- 18:48:03 +0000
-Message-ID: <14dffda2-f413-4304-9932-3ac8ddfb30e4@intel.com>
-Date: Tue, 23 Jan 2024 10:48:00 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1 3/4] tsm: Allow for mapping RTMRs to TCG TPM PCRs
-To: Dan Williams <dan.j.williams@intel.com>, "Yao, Jiewen"
-	<jiewen.yao@intel.com>, Qinkun Bao <qinkun@google.com>, Samuel Ortiz
-	<sameo@rivosinc.com>, "Lu, Ken" <ken.lu@intel.com>
-CC: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20240114223532.290550-1-sameo@rivosinc.com>
- <20240114223532.290550-4-sameo@rivosinc.com>
- <1bbf8d3e-aa94-48c7-a1e4-76f9eefc4af7@linux.intel.com>
- <65a72c305291f_3b8e29484@dwillia2-xfh.jf.intel.com.notmuch>
- <5539c533-37b2-4b12-a5c5-056881cf8e3c@linux.intel.com>
- <Za1G9I+tYuIL9ser@vermeer> <CF3D8DE1-AD47-4A77-B8BD-8A12A6F7E9DB@google.com>
- <MW4PR11MB5872F46A2089C8C2D8EF7A008C752@MW4PR11MB5872.namprd11.prod.outlook.com>
- <65aecbbce09dd_107423294b7@dwillia2-xfh.jf.intel.com.notmuch>
- <c3b99264-233b-4997-9e20-c4c2693b8cdc@intel.com>
- <65aeecea827f0_37ad2948@dwillia2-xfh.jf.intel.com.notmuch>
-Content-Language: en-US
-From: "Xing, Cedric" <cedric.xing@intel.com>
-In-Reply-To: <65aeecea827f0_37ad2948@dwillia2-xfh.jf.intel.com.notmuch>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW3PR06CA0020.namprd06.prod.outlook.com
- (2603:10b6:303:2a::25) To DS7PR11MB6269.namprd11.prod.outlook.com
- (2603:10b6:8:97::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D5788613A
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 18:48:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706035705; cv=none; b=VZ+TlHxpRgP8Bize95mSPdWgPZZpMS9t9Cc2cPonfvkNoKt/8NMHdrUaGdDFU2ATXaJVaZUYkKn76FT90l2LM2/g8HBinepVBuwunjwnOB4nCK8D/oXM7DfhwYpEF29XcURXQkGcydIwWmaGMoDNeCejvzytxDZnv196QLqk+F8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706035705; c=relaxed/simple;
+	bh=VfUcvOrk9BxY84UqSKkDJFfHDt6xMvJArn1LEquLwgw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dO7dkqUhT+8AZEqkwmzTGOO4K+7i5AkJN2gCtZoQm3TQlFtUtySvjOtaXAuiiKlPWoZSSiD900fTa6Z/vfRz+LT1cupn23Jf4yZUwbKGtK7BOOOCFO5D2ceki/Q1Mx7dxSc7f9i8qpDqOmNFJlRcAiZA/exkgzJyGLLdC/mAFks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com; spf=pass smtp.mailfrom=amarulasolutions.com; dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b=XqbRTWrT; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-db3a09e96daso3837579276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 10:48:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google; t=1706035703; x=1706640503; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=N4A1bkpXast5geNOI7VeWzxxT9EBrxdFKuYfDsrMI6w=;
+        b=XqbRTWrT3D3lLlmtGuPhIeceW8UlKCTGmDY6pl022l7wck/vMCVDGDTdb6UK+/zZyw
+         eWmYGlXaZZBXVO5gObeTHblwR7cL6VUJd3z6+ER6nElZhPbc2c3TkgVkwCT+mwYqq7hD
+         oh9UgbT1r8Y6qrXmynLqzBA9C4NtRwpklNCi4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706035703; x=1706640503;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=N4A1bkpXast5geNOI7VeWzxxT9EBrxdFKuYfDsrMI6w=;
+        b=G+Q65dlf03hpkleciNwzSsm3h5AKlDl30ztzxvTSC9LJa1FfWg07esSgSsw3T7wdRp
+         mKu5WbNDIOdLuZBNtCfv5dxUJaewW6S4iLyv5+c79xfJdKFsc1crQBTRumrarWUO1a8m
+         nils1HfVtdNMaQ10ZhGKFWc5tUbvMvmFcLQzkA9Ime6FPZR0FimNzmYIy7XHak2dFrJh
+         kUe3oX3zr7iepH6me9oouy3PRA6/Q0aSpKZytXmFYcixzuzst4GbnV0Mu/DIICMEfWxy
+         WQ9YPKLNuH2uavjgvYyesFnAI+9YzI7zV3uiEsI98O2P0tnWRZD0UtTXigckW4ywaXkA
+         2TYw==
+X-Gm-Message-State: AOJu0YztAsQQkUhb/RdJW7LYcXGqUQiCT7B1W81dDTZTCjR6exHjMbFz
+	FbMEIUdN0Vy2GV6mCVNCnnFE96iUKSt8XRKiv4Wy5aAeuQpvtHT+ESDPFIgpk4tluPiplHapBrh
+	kRawKuEdhR6pwe7Ds158/X/WKk4ME7/buxEWaJA==
+X-Google-Smtp-Source: AGHT+IEmS7KDosQ2FVHBBN6itEq3pe9CYKVq+c0+vmWBYQutxKFCkMbyLj6cuouZU5fdQKnJ4Ft+m71zaiKPq3LkyDs=
+X-Received: by 2002:a25:1846:0:b0:dc2:435b:e6c2 with SMTP id
+ 67-20020a251846000000b00dc2435be6c2mr3682672yby.131.1706035703121; Tue, 23
+ Jan 2024 10:48:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR11MB6269:EE_|MW4PR11MB7128:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7f8227cc-4381-4ee5-eca8-08dc1c43d440
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8/HqZhley37my7xngbn6eUPLW7p8/p0T2FzAPa1ExUVu5c8tMEFRuPOKPNaIsvERtmk4kaGZxhOjZbXPBXiHs+N0ZKeBH1yQ4Be11ayeJXZ7TtH0S6kOVbHpxmrTboogNOeBl2Ci9Ih2quroFvb2C+t0gIdxj9y49vhpl3LFmWadXhH43U9fgDuoP46krQg4ud6x0vmMU7m/VeWCL6JO99JzS8XPSJ9Kqau+GrnJcmX36XvJaCEUZgf3wlQidXxAVImBTCuFByntU1uqIOb3sHzYGn2CrY8zrJbkcCFBkW5+TMPlsP8vAVhqvXgbKOCvf2RDvLeOeIMFJUwDOCIUyxpKgO781d0lqCI6RhbEVKkvb6EnAQwvevJ01fUUbYuepye1rdIPFCTdQF6Y1UniV2rc9mcPlzB/1Ox5jMzCFn4Zrg21ibie5zoTT1hk9VPQycI5PydqEr5i2lpRVTpUgRnBmvEUDnmevhvlKbobqWwpIwBXyBGWzUFXSPcbZUUMQYmQb4tPR7p6GFyIuxP76Q7HfH4NGfadWISorrNR+o9CPdsezvCsolUQ2f+D+dPYt8Wr3gRLT42WIfVi/BMFzFk9FxF/SiSJUZZtBBw4FK77vej+xmhQhHAqnIBhYxslUUb2uI9O5bY7W4YWDINcMg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB6269.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(396003)(376002)(136003)(346002)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(83380400001)(31686004)(6512007)(6506007)(53546011)(2616005)(26005)(6636002)(86362001)(31696002)(38100700002)(82960400001)(36756003)(41300700001)(316002)(5660300002)(8936002)(4326008)(8676002)(66556008)(2906002)(54906003)(6486002)(66946007)(66476007)(110136005)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?V1BPRlRVMmhWcE5YeSt2RzZCY0ltbjN1bzFDUnViNEhhZDlJaWcyUmxvakpL?=
- =?utf-8?B?VWZOZFhVdGcwMFN1MzFNQlllTVJ1SmIyek55UnJSRnQvak9GM2tRUHZMeFp2?=
- =?utf-8?B?eEVVYUc3V2Q0SDZRcEROWUh3STF0ZTFYRTlxd01jaVQ1NWIzQmNlQVRZcUdy?=
- =?utf-8?B?TmtROUY5OFQ4UzRoSkJ6Z21Uazg0L1JuWjY1bXpRTDkxeG9aNVJscjk1Vi96?=
- =?utf-8?B?N2tPS0xoU24yUXk1YWR6MXNmRG5PZ3ByaVZzbDA4MVBpaW5tOU9kK0wrU3Jy?=
- =?utf-8?B?ZlhNcWJPdklmTVEzU0hXdG5QNWVaSmFZWGNWM0dmcU9wRXFDaHhpYWNKekxF?=
- =?utf-8?B?YzNweSs2eDlvRmFzSmwwTkhrZG5JckpLU0F6NlFhZkxmeDdiVVlqT2pWUlZY?=
- =?utf-8?B?ZndyQVBEaXN5cTRWblNlZTFuejRTeWVnLzlYTmJ2S20yT3VHV1ZLRFV5SjRU?=
- =?utf-8?B?UmpmK294NmsxRENHTGhHYVBZczRqTUg4ZzR5WEZEdDNMK2JJNHRpN2ZUK1I1?=
- =?utf-8?B?ZCtIMkR1cWE2dDBreDgzYUFWUmhqak1aOExhM1BmUmhwb3RJUllZN1NidXcr?=
- =?utf-8?B?a3RzVWorSmdBZ01UTlg4d1FjVFd4K3YvNVJrYUV2SGtzZTNxMHExOUpRcDQr?=
- =?utf-8?B?MUF0OG14YVk4a3c0TklXcGtpKzlkWkF1VCtkMDZ3TDdtVjN0T1ovd3BlOEVW?=
- =?utf-8?B?VVA0d09ETDBBYUFjNGRES0ZaZDd0bmNJaEJnUGlWTkxXeUcvUnlBYlJERjNl?=
- =?utf-8?B?VFdWRFoyblBHMVlxdHJyV0JQRVRLcmlnYjR5UnBVUEpwWElqdTJ2cjBrVlJz?=
- =?utf-8?B?T1p6OXR3QXBCNkhQQS9uVE43TldYZGpxajRWTGVtTGlncndOdUZaN2tQb2ND?=
- =?utf-8?B?MUlTb1kwdWdmNkQrZE15cHhDNUFjYkdab0NpOXUvL05qRFdQa1RpMWpaVUt5?=
- =?utf-8?B?QUVET3BKNjJGUXkvdWJEai9McTVjalpnWkREbWRYTnhvakZRaFVtaUQ4dDVP?=
- =?utf-8?B?TXlzUENOMHh1dHR5NXgzcUMxYUVWYVJtSCszcWtRVGY1b090bkM5TDNiK1pL?=
- =?utf-8?B?NnVWQm9za3JxcFRXcFF4Tk1XRXJuS2M3MFhnTTBsc1hLMEx0bGYwdzczdysy?=
- =?utf-8?B?OTUrYU5FZWNFaFR6NXE1bVVZK0dwdlZsbnpHeTFHeld5RGhLb2ZzMHZnVXpY?=
- =?utf-8?B?TzdRMU5ZUjF4Szl0azhGRDgwK0xTSDBQQ2l1ZDFFbkZKNW93QWhEZEZaOUMx?=
- =?utf-8?B?bGF1aFo5Q1lrOW03cCs0bWEvOWRKaTZUMWdrR3IxOVVNQkRJNy9OcDgraSs2?=
- =?utf-8?B?MTU3UUF2Y1lSeWMwT2dWNzY4SnMwSGF4N2JHTTdEemkwbW14QnRrbG0ySTRW?=
- =?utf-8?B?R2hFRDVRRmhHMTErYi9QLzJrTisvN0hUekRHeE5lQ0NyNTZmNEZFSmQyMjFi?=
- =?utf-8?B?K2tIbE5URXZZSVd1ZzBhRnozSC9LdFZBT3VrTjljTlcwNVZ2cUdQeGoyZWwr?=
- =?utf-8?B?TUJubXVtOFoyUWpSajljOEVmTC9ham5lcEgyblZUUFNRdXZ0SXJtemVmNStO?=
- =?utf-8?B?N1hTU2xUL0YvMkVqQ0psSHAvWVhpakhVQ0dzakM0eVY3QnlJTVhjWWNCNDlI?=
- =?utf-8?B?U0lzUjliZUFFV0JpU3BYZGdsdDFvT0NyTklMRDBJMDNxY056OUk1dkM2d2FL?=
- =?utf-8?B?NUNROEpjSlJqK0tRenlPVXRqYlk3OERmU01BazVxS0tDYTlGdEVDUi9LK2d0?=
- =?utf-8?B?UWpsdmR1VG5zZG5LOFJLb01td2NEUWNBNWN1aDljSkR5ZkhTV2FQMjBmV1Fp?=
- =?utf-8?B?cytyK241WjBNWk5LemlIRzlCelhoa1RrRWFnK1BkcEc1VEJlZElSa3gxd2E5?=
- =?utf-8?B?WHZ4SWNQV1FjUUh1LzltMGdacm5QVFE0SUxaZWZnT1hzbC9oMitEdzRtMUJs?=
- =?utf-8?B?aUVJRldxejNoemlEQkhRdExZdFFHMHkvQzlReXphMEl4WVM2MktHSHh4QTh1?=
- =?utf-8?B?MjVSR3hKcnR3OGE1MFBxQk85UkVrajEvYjNQelF0M0Z5dlNpY1IrbnMxOFpR?=
- =?utf-8?B?d0ZrbkpXVURYREFobzVjUlYyb0tZNWFtd0MzbE9mZ1lnZXVKZTdGbmZJZVhz?=
- =?utf-8?Q?/+fmJnpcEaLk9X6tIWISWjpsh?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7f8227cc-4381-4ee5-eca8-08dc1c43d440
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB6269.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jan 2024 18:48:03.7076
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Sm3qmOGh0xAp6HFzbZPi9RKhlZu+DmEvVxF5PhRvqY3p8aYgluy0N3mu+mogIv0tQWsceYH9KBbe7kk5jAdk2Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB7128
-X-OriginatorOrg: intel.com
+References: <20240112144902.40044-1-dario.binacchi@amarulasolutions.com>
+ <20240112144902.40044-6-dario.binacchi@amarulasolutions.com> <2f3144e2-2438-4ea8-ada0-3fbdd79ee131@foss.st.com>
+In-Reply-To: <2f3144e2-2438-4ea8-ada0-3fbdd79ee131@foss.st.com>
+From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Date: Tue, 23 Jan 2024 19:48:12 +0100
+Message-ID: <CABGWkvp=5a58Byd7Kc0rqNbq8HexuR2QTzXWVEMASM=QYVD_NQ@mail.gmail.com>
+Subject: Re: [PATCH v8 5/5] ARM: dts: add stm32f769-disco-mb1225-revb03-mb1166-reva09
+To: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Cc: linux-kernel@vger.kernel.org, linux-amarula@amarulasolutions.com, 
+	Lee Jones <lee@kernel.org>, Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>, 
+	Linus Walleij <linus.walleij@linaro.org>, Andre Przywara <andre.przywara@arm.com>, 
+	Baruch Siach <baruch@tkos.co.il>, Conor Dooley <conor+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	=?UTF-8?Q?Leonard_G=C3=B6hrs?= <l.goehrs@pengutronix.de>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Peter Rosin <peda@axentia.se>, 
+	Rob Herring <robh+dt@kernel.org>, Sean Nyekjaer <sean@geanix.com>, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, 
+	linux-stm32@st-md-mailman.stormreply.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 1/22/2024 2:32 PM, Dan Williams wrote:
-> Xing, Cedric wrote:
-> [..]
->>> So, yes, the mapping should be allowed to specified by the low-level
->>> driver, but at the same time every vendor should not reinvent their own
->>> enumeration method when we have EFI for that.
->>
->> Given PCR->RTMR mapping is static, I just wonder why it needs to be kept
->> in kernel. Given that PCRs can never be 1:1 mapped to RTMRs, and that
->> TDX quotes are never TPM quotes, applications used to extend PCRs would
->> have to be changed/recompiled. Then wouldn't it suffice to define the
->> mappings as macros in an architecture specific header file?
-> 
-> I think something is wrong if applications are exposed to the PCR->RTMR
-> mapping thrash. I would hope / expect that detail is hidden behind a TPM
-> proxy layer sitting in front of this mapping on behalf of TPM-client
-> applications.
+Hi Alexandre,
 
-Hi Dan,
+On Tue, Jan 23, 2024 at 5:36=E2=80=AFPM Alexandre TORGUE
+<alexandre.torgue@foss.st.com> wrote:
+>
+> Hi Dario
+>
+> On 1/12/24 15:48, Dario Binacchi wrote:
+> > As reported in the section 8.3 (i. e. Board revision history) of docume=
+nt
+> > UM2033 (i. e. Discovery kit with STM32F769NI MCU) these are the changes
+> > related to the board revisions addressed by the patch:
+> > - Board MB1225 revision B-03:
+> >    - Memory MICRON MT48LC4M32B2B5-6A replaced by ISSI IS42S32400F-6BL
+> > - Board MB1166 revision A-09:
+> >    - LCD FRIDA FRD397B25009-D-CTK replaced by FRIDA FRD400B25025-A-CTK
+> >
+> > The patch only adds the DTS support for the new display which belongs t=
+o
+> > to the Novatek NT35510-based panel family.
+> >
+> > Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+> > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> > Reviewed-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+> >
+>
+> I still have YAML error. Do you have same on your side or maybe I missed
+> a dt-binding patch somewhere ?
+>
+> /arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.dtb:
+> dsi@40016c00: Unevaluated properties are not allowed ('interrupts',
+> 'panel-dsi@0' were unexpected)
+>         from schema $id: http://devicetree.org/schemas/display/st,stm32-d=
+si.yaml#
+> /arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.dtb:
+> panel-dsi@0: 'port' does not match any of the regexes: 'pinctrl-[0-9]+'
+>         from schema $id:
+> http://devicetree.org/schemas/display/panel/novatek,nt35510.yaml#
 
-My apology for the confusion! I think we are talking about 2 different 
-scenarios - (1) this patch alone; and (2) this patch + vTPM.
+What command do you run?
 
-Scenario 1: This patch provides RTMR access only. My assumption is, 
-there are existing application (and/or kernel modules) that extend to 
-PCRs today and would like to work in TDs where only RTMRs are available. 
-Changes are of course necessary in those applications as TPMs/PCRs are 
-no longer available, but from security perspective they would like to 
-keep the same activity log and just change to use RTMRs (in lieu of 
-PCRs) as the secure storage. Hence a PCR->RTMR mapping is necessary and 
-must be agreed upon by all those applications and relying parties. IIUC, 
-this is the intention of having PCR->RTMR mapping config maintained by 
-the kernel, as proposed by Sam O. originally.
+As reported by commit:
+commit b81c8c3b8e3847a14bd83dd1de460df3efcb3329
+Author: Benjamin Gaignard <benjamin.gaignard@st.com>
+Date:   Fri Oct 11 15:06:58 2019 +0200
 
-Scenario 2: A vTPM is implemented on top of this patch, in which case 
-the existing applications don't have to change as they can continue 
-extending to the same PCRs, which will then be emulated by the 
-underlying vTPM implementation. PCR->RTMR mapping in this scenario is 
-obviously internal to the vTPM and I agree with you completely that it 
-should be hidden inside the vTPM.
+    ARM: dts: stm32: remove useless interrupt from dsi node for stm32f469
 
-My comment in my previous email was regarding Scenario 1. I hope the 
-clarification above helps.
+    DSI driver doesn't use interrupt, remove it from the node since it
+    breaks yaml check.
 
--Cedric
+    Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
+    Signed-off-by: Alexandre Torgue <alexandre.torgue@st.com
+
+The fix could be to remove the 'interrupts' property from the dsi@40016c00
+added by the patch [2/5] "ARM: dts: stm32: add DSI support on stm32f769"
+
+>
+> Aside that, I just have a cosmetic question. Can we find a shorter name
+> for the board ? (not sure we can).
+
+In the repo https://github.com/STMicroelectronics/STM32CubeF7.git
+you can find this code:
+
+#if defined(USE_STM32F769I_DISCO_REVB03)
+/***********************NT35510
+Initialization********************************/
+
+  /* Initialize the NT35510 LCD Display IC Driver (TechShine LCD IC Driver)
+   * depending on configuration set in 'hdsivideo_handle'.
+   */
+  NT35510_Init(NT35510_FORMAT_RGB888, orientation);
+/***********************End NT35510 Initialization*************************=
+***/
+#else
+
+/***********************OTM8009A Initialization****************************=
+****/
+
+  /* Initialize the OTM8009A LCD Display IC Driver (KoD LCD IC Driver)
+  *  depending on configuration set in 'hdsivideo_handle'.
+  */
+  OTM8009A_Init(OTM8009A_FORMAT_RGB888, orientation);
+
+/***********************End OTM8009A Initialization************************=
+****/
+#endif /* USE_STM32F769I_DISCO_REVB03 */
+
+in file Drivers/BSP/STM32F769I-Discovery/stm32f769i_discovery_lcd.c.
+
+And the comment:
+
+/* USE_STM32F769I_DISCO_REVB03 */ /* Applicable only for STM32F769I
+DISCOVERY w/ MB1166-A09 LCD daughter board connected on */
+in file Drivers/BSP/STM32F769I-Discovery/stm32f769i_discovery.h.
+
+One possible approach might be to drop 'mb1225,' assuming that
+'revb03' refers to it implicitly:
+stm32f769-disco-revb03-mb1166-reva09
+
+But any suggestion is welcome.
+
+I will wait for your opinion before sending version 9.
+
+Thanks and regards,
+Dario
+>
+> Cheers
+> Alex
+>
+>
+>
+> > ---
+> >
+> > Changes in v8:
+> > - Add Reviewed-by tag of Linus Walleij
+> > - Add Reviewed-by tag of Raphael Gallais-Pou
+> >
+> > Changes in v7:
+> > - Replace .dts with .dtb in the Makefile
+> >
+> > Changes in v6:
+> > - Drop patches
+> >    - [5/8] dt-bindings: nt35510: add compatible for FRIDA FRD400B25025-=
+A-CTK
+> >    - [7/8] drm/panel: nt35510: move hardwired parameters to configurati=
+on
+> >    - [8/8] drm/panel: nt35510: support FRIDA FRD400B25025-A-CTK
+> >    because applied by the maintainer Linus Walleij
+> >
+> > Changes in v5:
+> > - Replace GPIOD_ASIS with GPIOD_OUT_HIGH in the call to devm_gpiod_get_=
+optional().
+> >
+> > Changes in v2:
+> > - Change the status of panel_backlight node to "disabled"
+> > - Delete backlight property from panel0 node.
+> > - Re-write the patch [8/8] "drm/panel: nt35510: support FRIDA FRD400B25=
+025-A-CTK"
+> >    in the same style as the original driver.
+> >
+> >   arch/arm/boot/dts/st/Makefile                  |  1 +
+> >   ...2f769-disco-mb1225-revb03-mb1166-reva09.dts | 18 +++++++++++++++++=
++
+> >   2 files changed, 19 insertions(+)
+> >   create mode 100644 arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03=
+-mb1166-reva09.dts
+> >
+> > diff --git a/arch/arm/boot/dts/st/Makefile b/arch/arm/boot/dts/st/Makef=
+ile
+> > index 7892ad69b441..aa5b50d7ac61 100644
+> > --- a/arch/arm/boot/dts/st/Makefile
+> > +++ b/arch/arm/boot/dts/st/Makefile
+> > @@ -23,6 +23,7 @@ dtb-$(CONFIG_ARCH_STM32) +=3D \
+> >       stm32f469-disco.dtb \
+> >       stm32f746-disco.dtb \
+> >       stm32f769-disco.dtb \
+> > +     stm32f769-disco-mb1225-revb03-mb1166-reva09.dtb \
+> >       stm32429i-eval.dtb \
+> >       stm32746g-eval.dtb \
+> >       stm32h743i-eval.dtb \
+> > diff --git a/arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-=
+reva09.dts b/arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva=
+09.dts
+> > new file mode 100644
+> > index 000000000000..014cac192375
+> > --- /dev/null
+> > +++ b/arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.=
+dts
+> > @@ -0,0 +1,18 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright (c) 2023 Dario Binacchi <dario.binacchi@amarulasolutions.=
+com>
+> > + */
+> > +
+> > +#include "stm32f769-disco.dts"
+> > +
+> > +&panel_backlight {
+> > +     status =3D "disabled";
+> > +};
+> > +
+> > +&panel0 {
+> > +     compatible =3D "frida,frd400b25025", "novatek,nt35510";
+> > +     vddi-supply =3D <&vcc_3v3>;
+> > +     vdd-supply =3D <&vcc_3v3>;
+> > +     /delete-property/backlight;
+> > +     /delete-property/power-supply;
+> > +};
+
+
+
+--=20
+
+Dario Binacchi
+
+Senior Embedded Linux Developer
+
+dario.binacchi@amarulasolutions.com
+
+__________________________________
+
+
+Amarula Solutions SRL
+
+Via Le Canevare 30, 31100 Treviso, Veneto, IT
+
+T. +39 042 243 5310
+info@amarulasolutions.com
+
+www.amarulasolutions.com
 
