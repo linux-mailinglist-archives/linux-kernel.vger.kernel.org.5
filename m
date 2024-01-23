@@ -1,105 +1,134 @@
-Return-Path: <linux-kernel+bounces-35954-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35955-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AFDF83991E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:07:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FCDB83992C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:09:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41DA82970D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:07:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4DC78B2CB13
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:07:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 979CC12AADF;
-	Tue, 23 Jan 2024 19:02:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uI+E/vQa"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB74582D70;
+	Tue, 23 Jan 2024 19:03:53 +0000 (UTC)
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7A7182D68;
-	Tue, 23 Jan 2024 19:02:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C167E823AC;
+	Tue, 23 Jan 2024 19:03:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706036548; cv=none; b=DMNZZ39ZIkaTuVYH3uO3nQvIGXpHF3aA1t3LrmocH41f7N5y2s+aer+C1N1qZn2gk+TvOXzHFw2rfkfdyRCuRM8xzaA2KJSYIyfHRfJmu+q4F7amQO1UMasm56zUEWMHcwSJec0tli2Bh5hvPhHhL8+ZzrNW5A+aNXvNsUTDxLg=
+	t=1706036633; cv=none; b=jJVI9HxeOafSzFs5Uyb0sVsgAy1P+/TllYTvkFAWo1hayXrrWZI/UZilkpMbRilBRvWB0Ke9os51JR+GoKVjDJWPOTdtRHAtPt7qKWRzmI+tTl3VqhCmiBdRAQbHZVO1ySiazNPn49IqzjIs2S3YqJ9x/ClB7vNMzoymmbnrslw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706036548; c=relaxed/simple;
-	bh=AMlDrC2WRr+dn3kpkOK/SkiOONKbAsdL0acAmBH3IjU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ENtregCY+vGVO4adjV4osA06lVp7WsLynR/xluEpNl37Cv1DMqMQ76BzFAaTU2vUJCZzQR/a2dA0G6BkHmMrjyAFVuOpbv6ETIWafrihXjBfoDA3XpCYtviyyGz9SfhoWROG2yijbmxfmyLZWTjtT4+6a6js/egVWxyhdLKTWVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uI+E/vQa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AC7EC433F1;
-	Tue, 23 Jan 2024 19:02:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706036548;
-	bh=AMlDrC2WRr+dn3kpkOK/SkiOONKbAsdL0acAmBH3IjU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uI+E/vQarJSnVSiAoOq2dQ+lhl/3Dg9WADb6ph2o3G24rWx9PVbPPWzvKd7z2zbon
-	 fd6tZtG/0iNYSKyscM4lFRgg2/UaexicgL6rNqJYfM30JB4KsOQL5l1oWYLoYxMR97
-	 I0EncXE4ocoHnjdEM4oyR8YA19HLvXSLEdV1HW7psOzzgaAY21cO3Nb4XpYPaphHNn
-	 90li19FKkUnbA7o2ArL4OM4cyZxrKwRsWI2pHKzDLgnvpj9HC2OuX37bFZu/sQrgcS
-	 QAhXfNIsJufrQs3TEWy/D0kEWsGaZIPkiBCz3GaZNV7kzmZoCtQU76ow+j+Afkj6Pb
-	 6VmYsmdwH/FLw==
-Date: Tue, 23 Jan 2024 19:02:23 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Kees Cook <keescook@chromium.org>
-Cc: Russell King <linux@armlinux.org.uk>, Ard Biesheuvel <ardb@kernel.org>,
-	Wang Kefeng <wangkefeng.wang@huawei.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Ben Hutchings <ben@decadent.org.uk>,
-	linux-arm-kernel@lists.infradead.org,
-	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-	Hugh Dickins <hughd@google.com>, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] ARM: fault: Implement copy_from_kernel_nofault_allowed()
-Message-ID: <4d46dafe-b5bd-4395-b680-94b11814f7c6@sirena.org.uk>
-References: <20240123011238.work.301-kees@kernel.org>
+	s=arc-20240116; t=1706036633; c=relaxed/simple;
+	bh=We19aMhbuWFsJ/v3vK0iNouYJaFw2e3+AUW20mweEw0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HQUl0oW2g2N7+GhCpDXvd0e9BkrkkzhvN7VMp1RZ+XNy8unHR3Bkv1reo9tmtG6gfd/xHBppjbOd921yHv7khamFpjK2IH95I6DsuanxRnyrmWa7Knq79Bju6UoH95YR6ea7Yg485t+3xH7lxGXK/CgUvQJ5CfoputFP2nNYuUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a271a28aeb4so502193966b.2;
+        Tue, 23 Jan 2024 11:03:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706036630; x=1706641430;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LkLWkJq+0orHwi6nAn/z0/+dex0RNyYzqHn1OEoQDF8=;
+        b=Yj9zvKBmVg2uAqEuUZu6TLH9Wom0ZRZkDPNM1Db3Toj+CRBbcPJ+Kxl6urhOgtBrfc
+         igw9/Ww6WAG5MPHocoFRNjuaV27IXnYO4/SJ4xwmar/v4OYMnblu9geUx3btNZehwirk
+         h6UEfVOwCf1gC9Y122YRiFb/bC5EbAYOylGFYQcj7l+vzoDbeE4mUHvjksIa4NZj9/fM
+         j5RUDLQ6grJnJxtO72UzBfuF2a3SoxtZRvAShe8DjBHZpbDILaERe5uDHBZdZtghZJS+
+         jMUcXwy7Z3vtwjcUNbboq88kzxYBt4msWMNFFOVkHDlvjAO3kGBvn+uMJvHcLP+PoBqJ
+         qhOQ==
+X-Gm-Message-State: AOJu0Yw23FFOk4rkaIN3W682Nyqq2FqfwGP8ecBcuA5yrkNq8y3P0uo1
+	kOcFwjDiNUfVH5XvuXOSyj2Buih9FDwPwZpegKH26tvVFjmT3khoK6z3+5iPQKU=
+X-Google-Smtp-Source: AGHT+IGDnDyQ5G4JtH1fiUeVNpZ5QlAO0wOxRl79/NJ9DKPEhvzcTj4XgZ/62uiUA1iDq7HRdaHFaw==
+X-Received: by 2002:a17:906:846a:b0:a30:bdd4:ecfd with SMTP id hx10-20020a170906846a00b00a30bdd4ecfdmr170350ejc.37.1706036629641;
+        Tue, 23 Jan 2024 11:03:49 -0800 (PST)
+Received: from localhost (fwdproxy-lla-009.fbsv.net. [2a03:2880:30ff:9::face:b00c])
+        by smtp.gmail.com with ESMTPSA id s1-20020a1709060d6100b00a2684d2e684sm14699524ejh.92.2024.01.23.11.03.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jan 2024 11:03:49 -0800 (PST)
+From: Breno Leitao <leitao@debian.org>
+To: kuba@kernel.org,
+	davem@davemloft.net,
+	pabeni@redhat.com,
+	edumazet@google.com
+Cc: dsahern@kernel.org,
+	weiwan@google.com,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net v2 00/10] Fix MODULE_DESCRIPTION() for net (p2)
+Date: Tue, 23 Jan 2024 11:03:21 -0800
+Message-Id: <20240123190332.677489-1-leitao@debian.org>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="nyrYAyHMl+yOHan+"
-Content-Disposition: inline
-In-Reply-To: <20240123011238.work.301-kees@kernel.org>
-X-Cookie: Stay together, drag each other down.
+Content-Transfer-Encoding: 8bit
 
+There are hundreds of network modules that misses MODULE_DESCRIPTION(),
+causing a warnning when compiling with W=1. Example:
 
---nyrYAyHMl+yOHan+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/arcnet/com90io.o
+        WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/arcnet/arc-rimi.o
+        WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/arcnet/com20020.o
 
-On Mon, Jan 22, 2024 at 05:12:38PM -0800, Kees Cook wrote:
-> Under PAN emulation when dumping backtraces from things like the
-> LKDTM EXEC_USERSPACE test[1], a double fault (which would hang a CPU)
-> would happen because of dump_instr() attempting to read a userspace
-> address. Make sure copy_from_kernel_nofault() does not attempt this
-> any more.
+This part2 of the patchset focus on the drivers/net/ethernet drivers.
+There are still some missing warnings in drivers/net/ethernet that will
+be fixed in an upcoming patchset.
 
-This appears to fix the original issue:
+Changelog:
+---------
+V1:
+  * https://lore.kernel.org/all/20240122184543.2501493-2-leitao@debian.org/
 
-   https://lava.sirena.org.uk/scheduler/job/497571
+V2:
+  * Limit the patchset to 10 patches.
+  * Rewrite the following module description:
+	* fec
+	* bgmac
+  * Added acknowledge in the following driver:
+	* litex
 
-(though so did your earlier patch) so:
+Breno Leitao (10):
+  net: fill in MODULE_DESCRIPTION()s for 8390
+  net: fill in MODULE_DESCRIPTION()s for Broadcom bgmac
+  net: fill in MODULE_DESCRIPTION()s for liquidio
+  net: fill in MODULE_DESCRIPTION()s for ep93xxx_eth
+  net: fill in MODULE_DESCRIPTION()s for nps_enet
+  net: fill in MODULE_DESCRIPTION()s for enetc
+  net: fill in MODULE_DESCRIPTION()s for fec
+  net: fill in MODULE_DESCRIPTION()s for fsl_pq_mdio
+  net: fill in MODULE_DESCRIPTION()s for litex
+  net: fill in MODULE_DESCRIPTION()s for rvu_mbox
 
-Tested-by: Mark Brown <broonie@kernel.org>
+ drivers/net/ethernet/8390/8390.c                 | 1 +
+ drivers/net/ethernet/8390/8390p.c                | 1 +
+ drivers/net/ethernet/8390/apne.c                 | 1 +
+ drivers/net/ethernet/8390/hydra.c                | 1 +
+ drivers/net/ethernet/8390/stnic.c                | 1 +
+ drivers/net/ethernet/8390/zorro8390.c            | 1 +
+ drivers/net/ethernet/broadcom/bcm4908_enet.c     | 1 +
+ drivers/net/ethernet/broadcom/bgmac-bcma-mdio.c  | 1 +
+ drivers/net/ethernet/broadcom/bgmac-bcma.c       | 1 +
+ drivers/net/ethernet/broadcom/bgmac-platform.c   | 1 +
+ drivers/net/ethernet/broadcom/bgmac.c            | 1 +
+ drivers/net/ethernet/cavium/liquidio/lio_core.c  | 1 +
+ drivers/net/ethernet/cirrus/ep93xx_eth.c         | 1 +
+ drivers/net/ethernet/ezchip/nps_enet.c           | 1 +
+ drivers/net/ethernet/freescale/enetc/enetc.c     | 1 +
+ drivers/net/ethernet/freescale/fec_main.c        | 1 +
+ drivers/net/ethernet/freescale/fsl_pq_mdio.c     | 1 +
+ drivers/net/ethernet/litex/litex_liteeth.c       | 1 +
+ drivers/net/ethernet/marvell/octeontx2/af/mbox.c | 1 +
+ 19 files changed, 19 insertions(+)
 
---nyrYAyHMl+yOHan+
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+2.39.3
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWwDT4ACgkQJNaLcl1U
-h9Cz8Qf/Qy2KDqML2iyqq2XSVkt1s9bKd4G6tBipnCo95/TlOxpB5ZqdYHctfIBP
-aDHBIqLHEm9S3Czkfrl3AvoWoir3p72kVBnaIYjoREM3n/33Qlg4tyR6s3ZNP4oP
-6yVQeL13bjBKf1833x0AZ2WV6ShsyHf5BFgR5H2zCoK7wxg8IyfhHsorMGOHOTOA
-TX328+5DL39ZskOyWnAwdte3d7oXTUDN9KSPUJEKav62YHjz63FWo4QhyXDTF9Hl
-rO07Q8ky6jGtc8OCFi07Z5CLth43IyU1SGNQqxsibIYhtuyziqIU6pUeb62Oli67
-UQ/nlT/qhBrOd4Ns+kX/2VQaHTvVMg==
-=d+Ba
------END PGP SIGNATURE-----
-
---nyrYAyHMl+yOHan+--
 
