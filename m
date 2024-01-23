@@ -1,86 +1,151 @@
-Return-Path: <linux-kernel+bounces-34992-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34993-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06EA8838A3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:24:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB30C838A3C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:26:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9CE99B23164
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:24:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 569711F22F95
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:26:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDA7B59B4A;
-	Tue, 23 Jan 2024 09:24:07 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 197A759B55;
+	Tue, 23 Jan 2024 09:26:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PzIa2Ovf"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DA8958ABB
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 09:24:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B7C458ABB;
+	Tue, 23 Jan 2024 09:26:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706001847; cv=none; b=cdBi7XYW5VQRPXQsCnJWHgJaSOk8STiUJsgjKSeoyYKzr61+O+qSUDMwr9HCBdqu4/zaWASfzhINaYxzdqpEHV7w5P6gy+x836ssnZJxeK7pUl+MHDgwzGn6GqBN3KlciWyzF+DEUpmkMsxIf38oYKHv5/txYDha/7mfKyp0NNw=
+	t=1706001972; cv=none; b=fV3iSjmUw15cYlFFj0dViPutoBC68BQ3/Ugm4+4/fmtqdBYeGpY2WOKtnp4o3JXLlhgsuQWPC8lr5nE93+ZCjynmfkr5W7qnuuKn6MmGGl9tsIkT1zc7RDiUYwsM/AjVAGRR6CsQUbGBX9vO+GXKeyUee8JSmSrzONfYjZiahkg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706001847; c=relaxed/simple;
-	bh=smxt9XuoM74nCGHa2KTaT8LFOM3b/ZQ7RbbKvJ23ehk=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=VOLNjYk6Bvji6D3MGYFSjW0bm8VI8QcvomLIF414wSReU8XlBK6D0xPZk1qyCij+R/eXQnjiiYfNJ/1EYDfMUGq1KsF32xL5WAkFJ6RSG27lb11Id41HYHqOrHTPZFTXZT0PA39kCTV5yItLfPRq+q0pgTlGM76O5sZUo8QIe68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3627d99cbe5so20212965ab.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 01:24:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706001845; x=1706606645;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LDKWAHGStyE66y/xlPIuFnvNH4CnxVvWeCuX7ymdLV8=;
-        b=CgiktwRn8+B5DhCmvaE4I9uiehrnuf+Qoti9r9Cm3geOClnvwZulhSfN/UJPaiJpI0
-         WkST7c8NBupJfw4uy2dt88v9Mu7aohmvv85LJ/BAGkVoyw+50BCWKiwoTtUEWqWLb6oP
-         QIoY+edqtcOLkpQ+TuWwbrb72MCQicCYN6jv1wgpMbth6ZJin7Zg8Ubyv+Em86RkkDyb
-         bM6bBeOLwOB77gK+4G71tro5rzDvUMKZw+06MidpRL+zTocRbLxxsCNytALcPucSzMmb
-         +wCzccnGA5t6TCk8ZKnDMR1fVFRE2uXy4PsHVFMfaB4i4JPJOQ1uFMGgSsxE9R/4uH/M
-         DmHg==
-X-Gm-Message-State: AOJu0YyaxP9Xb1VKZHbPWzwlGxv2V66KNZ3QVQoTLpboGc23ChxhWvLz
-	Fd3qBWasJ+WgQx5jvnuUrbVpN/5Jvt3lNl/mslBFnIrPzNW27maSVvjEswdkb7cNEEYZybwefC7
-	rKL9UDTdMEYOg3+zMFYB+vwewcWBb8xpcSspyynspxyfu/7ZS8QLOjy0=
-X-Google-Smtp-Source: AGHT+IHlnAOlbk9604ATaA0d+tElhvg2z9P+ujZDKnUufKSuKThByIn9xuZG2lkyQVL1dF8M9+A6HkRcbxs1W25H5S/E7hL6vXBJ
+	s=arc-20240116; t=1706001972; c=relaxed/simple;
+	bh=FuJ3TFWqkwrEJ3h5NAnbltorQCrpxIgD0hjhe8TN+ys=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EKvs2z14XBwanSu3BYBXRhU/KuW8YGNnQ7ycvQlBSpatTggjUCXvJxb+32V7eCvrbIqb9AjUBqNJOx5gZ1BPEEElW+X8EXPC2IocGc0bvs48mAyO/pdB27f0qPoZnyfJzmRAAAT/J8J6nJB1qPzzGkP1+8or3ouaMNI8TDriTWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PzIa2Ovf; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706001970; x=1737537970;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=FuJ3TFWqkwrEJ3h5NAnbltorQCrpxIgD0hjhe8TN+ys=;
+  b=PzIa2Ovf9Je3R2zUDF3qsMPmLN2oQKqu8Vik2z2k90oESdMO94Y70+JN
+   BsYfenpL9B9oUV8jX1KGyA+01kjBuuvc39HnRkWhlmyz/Txy3z+KQSK03
+   GUqcpKnpXgbNige1nGTZAeZr8PW9vKxdkxDYQE/O3Djd78pfA7CHt1ztN
+   DkFZ9TqbSXKXJ8B+YOPKZX5XtiwKmtXP0C6paIxDSI+2goG/NgnzVyBJX
+   F24YeeDqJHYyyT/8zM/u8zjjgx3g759i996ENwM8zuViuCIz2ngNARhEE
+   YcFrWae3AzR5FOXs0SClQ5YuClt+QE7PXrqEzQeW+R/f7tv83J7zqm3LJ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="14981139"
+X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
+   d="scan'208";a="14981139"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 01:26:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
+   d="scan'208";a="1482521"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.93.8.92]) ([10.93.8.92])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 01:26:05 -0800
+Message-ID: <09439dc1-1d07-4412-a0b5-1cded40ee40a@linux.intel.com>
+Date: Tue, 23 Jan 2024 17:26:02 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1be8:b0:35f:a338:44ae with SMTP id
- y8-20020a056e021be800b0035fa33844aemr741203ilv.3.1706001845362; Tue, 23 Jan
- 2024 01:24:05 -0800 (PST)
-Date: Tue, 23 Jan 2024 01:24:05 -0800
-In-Reply-To: <tencent_9744F767376B06D113772362E96A43A14405@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000faa7cf060f9981bd@google.com>
-Subject: Re: [syzbot] [can?] memory leak in j1939_netdev_start
-From: syzbot <syzbot+1d37bef05da87b99c5a6@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-
-Hello,
-
-syzbot tried to test the proposed patch but the build/boot failed:
-
-failed to checkout kernel repo https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git on commit 98b1cc82c4af: failed to run ["git" "fetch" "--force" "--tags" "4d52a57a3858a6eee0d0b25cc3a0c9533f747d8f" "98b1cc82c4af"]: exit status 128
-fatal: couldn't find remote ref 98b1cc82c4af
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v18 018/121] KVM: TDX: Add helper functions to
+ allocate/free TDX private host key id
+To: isaku.yamahata@intel.com
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+ erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+ Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+ chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
+References: <cover.1705965634.git.isaku.yamahata@intel.com>
+ <16ebf3b34cf1a2346ac6a58f4dc720abf74daab4.1705965634.git.isaku.yamahata@intel.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <16ebf3b34cf1a2346ac6a58f4dc720abf74daab4.1705965634.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
 
-Tested on:
+On 1/23/2024 7:52 AM, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+>
+> Add helper functions to allocate/free TDX private host key id (HKID).
+>
+> The memory controller encrypts TDX memory with the assigned TDX HKIDs.  The
+> global TDX HKID is to encrypt the TDX module, its memory, and some dynamic
+> data (TDR).  The private TDX HKID is assigned to guest TD to encrypt guest
+> memory and the related data.  When VMM releases an encrypted page for
+> reuse, the page needs a cache flush with the used HKID.  VMM needs the
+> global TDX HKID and the private TDX HKIDs to flush encrypted pages.
+>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
+> v18:
+> - Moved the functions to kvm tdx from arch/x86/virt/vmx/tdx/
+> - Drop exporting symbols as the host tdx does.
+> ---
+>   arch/x86/kvm/vmx/tdx.c | 29 +++++++++++++++++++++++++++++
+>   1 file changed, 29 insertions(+)
+>
+> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+> index 9d3f593eacb8..ee9d6a687d93 100644
+> --- a/arch/x86/kvm/vmx/tdx.c
+> +++ b/arch/x86/kvm/vmx/tdx.c
+> @@ -11,6 +11,35 @@
+>   #undef pr_fmt
+>   #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>   
+> +/*
+> + * Key id globally used by TDX module: TDX module maps TDR with this TDX global
+> + * key id.  TDR includes key id assigned to the TD.  Then TDX module maps other
+> + * TD-related pages with the assigned key id.  TDR requires this TDX global key
+> + * id for cache flush unlike other TD-related pages.
+> + */
+> +/* TDX KeyID pool */
+> +static DEFINE_IDA(tdx_guest_keyid_pool);
+> +
+> +static int __used tdx_guest_keyid_alloc(void)
+> +{
+> +	if (WARN_ON_ONCE(!tdx_guest_keyid_start || !tdx_nr_guest_keyids))
+> +		return -EINVAL;
+> +
+> +	/* The first keyID is reserved for the global key. */
+Seems no need to add the comment here any more.
 
-commit:         [unknown 
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 98b1cc82c4af
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f1b9d95ada516af
-dashboard link: https://syzkaller.appspot.com/bug?extid=1d37bef05da87b99c5a6
-compiler:       
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1401d2d7e80000
+> +	return ida_alloc_range(&tdx_guest_keyid_pool, tdx_guest_keyid_start,
+> +			       tdx_guest_keyid_start + tdx_nr_guest_keyids - 1,
+> +			       GFP_KERNEL);
+> +}
+> +
+> +static void __used tdx_guest_keyid_free(int keyid)
+> +{
+> +	/* keyid = 0 is reserved. */
+> +	if (WARN_ON_ONCE(keyid <= 0))
+
+
+Why not use tdx_guest_keyid_start and its range directly for the check?
+
+
+> +		return;
+> +
+> +	ida_free(&tdx_guest_keyid_pool, keyid);
+> +}
+> +
+>   static int __init tdx_module_setup(void)
+>   {
+>   	int ret;
 
 
