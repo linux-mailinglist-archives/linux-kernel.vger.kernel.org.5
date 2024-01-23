@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-35381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35380-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB739838FD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:28:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06CFE838FE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:29:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF6441C20E46
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:28:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35383B27343
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:28:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22387604B3;
-	Tue, 23 Jan 2024 13:21:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDBAF604AC;
+	Tue, 23 Jan 2024 13:21:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DC+b6Z1B"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Mj2IQQTB"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D128A60253
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 13:21:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A641E5FB8B
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 13:21:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706016084; cv=none; b=re0aB4BwRvbmEfJAll5I/jY5uoMfI0oRJRgJifdZ7KNFygzOIAXWz8WL5acR3V9KgDOjpfaP8dc7vbVT8pZnX6uQprla0NW06IT2mSc3R4Qdu0Lek/KsDOCv5r6UH9XSfrK09p6kFCvwYxigtXdlqZrvjEaGATzIVcLHylk+yEU=
+	t=1706016084; cv=none; b=JcyK5k8T+SSeu1Id2IlfB+uvT5ANEyc1aHH3unfLPJ6tHp4AsAjaNPKRS1rIIfnkCGAJ/+J4+h6uDDQnqQFe8oI30TgXjPRIL1XXfMkjvbXgiipT0WbUYpYxGB5qwyQi524W1EeiO6a1JLYIhWVO9DU8gUkH81R5GQKiXPVIUOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706016084; c=relaxed/simple;
-	bh=x9/qfzNBO7hwOHU0S23SWtGDd1O9B7NOV8hG078Fkrc=;
+	bh=MpVLG/UwodDdLmGV0SZN0/WbrDrYke7nzmLvuxJBZzg=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=jtJ+KnR8wqIgNPZd+5sP91fIm18PxQiWrcjdRSF2AxWTpv+lyROU+5u0TZJCf0RwyZhOaccrNLBzz+ZcHNaKRFTmJYgZd1HtIyN6O+XCGFkvs7ljKKbZnBDxZq8azij2GaF+NCOlFi9WhofuBGKwXm5nmil53/29oRcej93zsHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DC+b6Z1B; arc=none smtp.client-ip=209.85.128.41
+	 In-Reply-To:To:Cc; b=VKKtLPSQtPyfpuP8p+jbLUoJK/jy+7UMdFgy3aqF0rukVUy5aHLGaYVvxnVr4n3rf6+5c7DyhDRD+p66vHS5IUFtLVXBxsHiNu+0Lj4sF4gZH8my5QEE54TQWjVGKHsLhaVgQmR/d0vjBJSYtPShas3WXenMOJsxCRYMmwM3Dnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Mj2IQQTB; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40e7e2e04f0so47605965e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 05:21:21 -0800 (PST)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40e60e135a7so42394905e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 05:21:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706016080; x=1706620880; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1706016081; x=1706620881; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=SylnFOf7Bavuihep6FrRUZ3K4tT0YwbWb0OaRxJ1UcE=;
-        b=DC+b6Z1Bc8N4i4rsW9DRT9CpdbeZKAsOJyo7lqMDH6utBUy1rWZ9brXJTRPA5i4zDa
-         x8rI09e+TlajVr1EtHNnHsozZO6xw/hiEmIw9HvrzLUDqdmjrHePirWQL1AuJ3hu1szJ
-         9r/Fh+r0AC/FP5ArqElzbdmaZ19wrP/C6HWLJtbTlZzPNLCn5Gnebadk3gb1nDNA4sLX
-         DJ8W6NUXLfRQbZq2lTPTf36doPk5NjMB3/alNlRfjb1SU49WJi0TwtOUElehpJZLDvpc
-         6hvKpv9MMlyQa+0+XTx/rQA72trPNEzgI7QAor9g7MybvgDzFo/HvYK67XGDJ1lyUSvu
-         nbbw==
+        bh=eO3A3wF59S5J5YdoyqZ6H7kiWHm6DG64im4Af+tC8FM=;
+        b=Mj2IQQTBJ9Osigk14jnSGsNiajm32YQ4R4m/yYKv4VprF7V9z9/0OV0X/WdA1xc45R
+         7ldx1LdW5/NAp+NVhv4MPqWAz864DJh2IzVrOFW25n6B86W8jtaACRjITNxt8WpUVGvu
+         K5ermjvbu007BtaYszfPWSIyIjvsJaiVs3tcuSeusZE0Glt2Iinouwn74CnPUbc2nES9
+         BVJYcIq/FoUdFnvEMbwHIr4DK3xIP8pY/I0Fut7cSWMV2lOp0IKqp+unHamFbZn8wiPY
+         hhqQ2szobJjILh586wgnyGGRvxAy6GwZEAXj9I0Y01O2HDNQZim9xnMbKR1slKtcOxHO
+         TXgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706016080; x=1706620880;
+        d=1e100.net; s=20230601; t=1706016081; x=1706620881;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SylnFOf7Bavuihep6FrRUZ3K4tT0YwbWb0OaRxJ1UcE=;
-        b=sygM/ohoERzOAWW0PIOVlbhkswe12xYiqB3lr1C0RbC2PUYMq2r7FN45S3dgh/hU5I
-         iDtu2FIRxXD5aRF3Er85+BvUDoajW/31Kb5lQyMH2vV8pw0aYIwTRcIbN/x1JtZu5DHT
-         /Gm3RrkH/JM+Gxel5iwkNnrAiTvg6NxiQU+IwRiUPzWTRJvTYRIRoWMQLkB53lLaVU94
-         zkkEi4GNAGFRZCqiW/XcA9BE4gBCQFPR2WeB3bxbSMzSeZes1UUkV9FWFb9tsvcxIlTg
-         cK9eZHTq3ZTBS0HNT4gyXgbmdjOAy53T7OiF9UtijFTxdQRe3ZwwnpRjfsLqsYaX10n4
-         q0tQ==
-X-Gm-Message-State: AOJu0Yzwc9xE7n5z/UnGUHryBLlGd0JLyCSf2LpbZtVnbYFH937/mqvS
-	ktIuzLc0FkD86hb0DLAeAPXPmpLgyN6afIZvTnEzerVpN1u8iBURQ4gHJgj7Hzk=
-X-Google-Smtp-Source: AGHT+IFo+FHbZA94pFbra0P66oNc9pTeAk0/7cduszutwH9FEdIN2hfu3d3866ZGDxSWf2NRxvOBtw==
-X-Received: by 2002:a1c:790d:0:b0:40e:6639:6708 with SMTP id l13-20020a1c790d000000b0040e66396708mr515536wme.49.1706016080068;
+        bh=eO3A3wF59S5J5YdoyqZ6H7kiWHm6DG64im4Af+tC8FM=;
+        b=Gz+irLJcg4bkIGTCE+/rwZz9DSAL3/uxkVi2rYypK6W4263O7BNtofeONyWZhFDuXc
+         hHo2Hsdc/Q92W6f/5Wo/2LrShPS+cC64IGTykzp2JONqElwZHVKrrKEv0G0L8SLL0XYa
+         WfK0dCy1OB9LAwRrm1aZzMYUXDPGrAzYut1S8k6x1eW6dtz6q1Zi5TrTNoYwoRRltY93
+         Cy7w4SIY9rlpbA9tQS/NXbYtwRF+7meJqU1zsqwNPVlDWlP/DSbVk8IAtroi2bND4PuT
+         hXEckw3HyIScWnebLK3N1+MJ6VDe/yYdi5dEEyB5GQk+QCNvQCjuvW/P6ZNZkrQ7egzd
+         RY3g==
+X-Gm-Message-State: AOJu0YwvjJWeadED1LTIphD7e+Y5Rh8QPSO2BbgWBfl4dX6lCnyBpA6g
+	DTIN24rvQ8BGOE3JxdWSy5K6rHWmHmZwEnL7kXY527/SpoXYXN57kGvFPXmAtDw=
+X-Google-Smtp-Source: AGHT+IE1bvYl3RyRK6to8EcXBQTa0QhdvJ+5CcJXeETbCTgQwdMPCwNiBvPkrtALvvU1boq8TRjmLA==
+X-Received: by 2002:a05:600c:4694:b0:40e:736f:4d4c with SMTP id p20-20020a05600c469400b0040e736f4d4cmr636880wmo.34.1706016080900;
         Tue, 23 Jan 2024 05:21:20 -0800 (PST)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id hn33-20020a05600ca3a100b0040e621feca9sm39982445wmb.17.2024.01.23.05.21.19
+        by smtp.gmail.com with ESMTPSA id hn33-20020a05600ca3a100b0040e621feca9sm39982445wmb.17.2024.01.23.05.21.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 05:21:19 -0800 (PST)
+        Tue, 23 Jan 2024 05:21:20 -0800 (PST)
 From: Neil Armstrong <neil.armstrong@linaro.org>
-Date: Tue, 23 Jan 2024 14:21:15 +0100
-Subject: [PATCH v3 1/2] arm64: dts: qcom: sm8650-qrd: add USB-C Altmode
- Support
+Date: Tue, 23 Jan 2024 14:21:16 +0100
+Subject: [PATCH v3 2/2] arm64: defconfig: enable WCD939x USBSS driver as
+ module
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,7 +77,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240123-topic-sm8650-upstream-altmode-v3-1-300a5ac80e1e@linaro.org>
+Message-Id: <20240123-topic-sm8650-upstream-altmode-v3-2-300a5ac80e1e@linaro.org>
 References: <20240123-topic-sm8650-upstream-altmode-v3-0-300a5ac80e1e@linaro.org>
 In-Reply-To: <20240123-topic-sm8650-upstream-altmode-v3-0-300a5ac80e1e@linaro.org>
 To: Bjorn Andersson <andersson@kernel.org>, 
@@ -89,192 +89,43 @@ Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
  Neil Armstrong <neil.armstrong@linaro.org>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3408;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=686;
  i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=x9/qfzNBO7hwOHU0S23SWtGDd1O9B7NOV8hG078Fkrc=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlr71NiXn1d6ebmM3WrdSpaXkY08hClcgwBI0hJeau
- 9TbVf5qJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZa+9TQAKCRB33NvayMhJ0YMKEA
- DJtL30dRcAMqf30uxcmYeq/14W48RdF3/vJtIol053B/HovDHoxHVzKu/w1Mucp2PGM+0o36ceheU8
- dkpl2+cYdvSwwPKT6O2cupUUa3+trurBjJHsMYdkrer9ndE+ynrxQsXyFARZ6yaWSXVTX7FaZ5FH7y
- UeJavnP+mj+B0KDRdjvVbyCQXnEfzAU4LAsZj5Zr5HZfSnClKgLqQMTOkFTw6FKvafZt4YRWzIocTd
- qekYqWLNtK/D1fMEMvZ4KzJRiNIEHuHBs8Am5y2UrgQKcrw+LznsTRC+KEv41todxlqudu60XTgxU5
- WKm2bQqaUfxX6ECKrFknffSW2ZIHj7l3qVya/q+SsopxJ0/yFxwE8mxsdPn7Nh2YEo0uY6xCLJyAgT
- 1gytEU+a0QfueUisUSZCTqZwdmfc6G8tkJEXtRhp2qf/2TOQKM3wSrjS3t1difKWduesZmd2mBxLto
- jUtfsCgR8bZY/YIm5uLJjvra0TIIfVEKzcrxUHivgnDtq8wO53dA+P3eD4UhOMwHGcbqO3bRGIkIMZ
- dmcI/b3gEdCQTb3AzoEO3ib1gSPRdISBpxlS4Jj6PBwh1mKxrS9Bam+st+c+awgkrSau9qnOTgTJC7
- jCQtiv1gZqSaf0VkByQRT9AsuVZXhM0y+/mejATWvED+B4QPOdaa+apdHFHg==
+ bh=MpVLG/UwodDdLmGV0SZN0/WbrDrYke7nzmLvuxJBZzg=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlr71NbV4VBhFeFzKwpKWChVyPCUPG3WJo7SjUjgy4
+ sRbkFzOJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZa+9TQAKCRB33NvayMhJ0YDEEA
+ CMBLna5nPJSn/Hd/1/HDQu6/DvWJYTXtO4ZZi3KlJfDQ3VyPnmo65syklQu7GRBkgjzf+X6VIG/xIb
+ 0OsfPJatKyrEadHXY4q6xjSpquIVpjBeY5XRdJmJGHefJTexO2d1kzT2w42xqc7Xon1SXEPM7rgpOW
+ IimkDRrxkUV3Mss0yHwzHNut2WTucGfL+eRMGEEk/7Hf/M6NRUfg2CtzfEmpCZpwplC2V78642GX5Y
+ 70T4dvUmW4gwS22Vdq4XNORAbnG7PcCU7CRyzL5al0T50+Hj8dfLu5WOeGJvkVsaZl7coe4KeqooZ9
+ /x1USq/HrAXn18m1bsJX6iT9VN3NV7qReX15aMMYS9j73OfSOqYW15yQU2KyrNd6VLmvq6sj9271Vn
+ UFX8STLEN9V+eLtoqzXeSKXchWSlb+mPdlQtvciTO6ANSgXFgleWSCz53UJnQ2FlPT0i5hBiQZ3A4S
+ rzAZbTfgvvsO4jDhYJJbzrEESYCIRr+GrQeyEOSd104YCes0pmdQM3uhcrXYTBtTAVljGcam9VIPM8
+ I/4lzdppNnfPa1Tw6+iziSx1/pSMQA/iOVRWHCB+xqEUK0F+hW9H3kB1qX5B/oRxtyCUuOptTcMMR8
+ aI52WWHikVM+Gabphj4rTb8PiURoFXBSaKubPw3wFiMYssfyqR+assQTHN7w==
 X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
  fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 
-Add the necessary nodes to support the USB-C Altmode path by
-adding the following
-- WCD939x USBSS Mux I2C device
-- nb7vpq904m Redriver I2C device
-- Port/Endpoint graph links bettween PMIC-Glink, Mux, Redriver and USB PHY nodes.
-
-WCD939x USBSS port 2 Path to Codec will be added later when Audio support
-is added.
+Enable the Qualcomm WCD939x USBSS Type-C mux as module as
+is now used on the SM8650 QRD platform.
 
 Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- arch/arm64/boot/dts/qcom/sm8650-qrd.dts | 104 +++++++++++++++++++++++++++++++-
- 1 file changed, 102 insertions(+), 2 deletions(-)
+ arch/arm64/configs/defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8650-qrd.dts b/arch/arm64/boot/dts/qcom/sm8650-qrd.dts
-index 592a67a47c78..a6f55191e107 100644
---- a/arch/arm64/boot/dts/qcom/sm8650-qrd.dts
-+++ b/arch/arm64/boot/dts/qcom/sm8650-qrd.dts
-@@ -77,9 +77,17 @@ port@1 {
- 					reg = <1>;
- 
- 					pmic_glink_ss_in: endpoint {
--						remote-endpoint = <&usb_1_dwc3_ss>;
-+						remote-endpoint = <&redriver_ss_out>;
- 					};
- 				};
-+
-+				port@2 {
-+					reg = <2>;
-+
-+					pmic_glink_sbu: endpoint {
-+						remote-endpoint = <&wcd_usbss_sbu_mux>;
-+				    };
-+				};
- 			};
- 		};
- 	};
-@@ -446,6 +454,70 @@ &gpi_dma1 {
- 	status = "okay";
- };
- 
-+&i2c3 {
-+       status = "okay";
-+
-+       wcd_usbss: typec-mux@e {
-+		compatible = "qcom,wcd9395-usbss", "qcom,wcd9390-usbss";
-+		reg = <0xe>;
-+
-+		vdd-supply = <&vreg_l15b_1p8>;
-+		reset-gpios = <&tlmm 152 GPIO_ACTIVE_HIGH>;
-+
-+		mode-switch;
-+		orientation-switch;
-+
-+		ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@0 {
-+				reg = <0>;
-+
-+				wcd_usbss_sbu_mux: endpoint {
-+					remote-endpoint = <&pmic_glink_sbu>;
-+				};
-+			};
-+		};
-+       };
-+};
-+
-+&i2c6 {
-+	status = "okay";
-+
-+	typec-mux@1c {
-+		compatible = "onnn,nb7vpq904m";
-+		reg = <0x1c>;
-+
-+		vcc-supply = <&vreg_l15b_1p8>;
-+
-+		retimer-switch;
-+		orientation-switch;
-+
-+		ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@0 {
-+				reg = <0>;
-+
-+				redriver_ss_out: endpoint {
-+					remote-endpoint = <&pmic_glink_ss_in>;
-+				};
-+			};
-+
-+			port@1 {
-+				reg = <1>;
-+
-+				redriver_ss_in: endpoint {
-+					data-lanes = <3 2 1 0>;
-+					remote-endpoint = <&usb_dp_qmpphy_out>;
-+				};
-+			};
-+		};
-+	};
-+};
-+
- &ipa {
- 	qcom,gsi-loader = "self";
- 	memory-region = <&ipa_fw_mem>;
-@@ -495,6 +567,15 @@ &mdss_dsi0_phy {
- 	status = "okay";
- };
- 
-+&mdss_dp0 {
-+	status = "okay";
-+};
-+
-+&mdss_dp0_out {
-+	data-lanes = <0 1>;
-+	remote-endpoint = <&usb_dp_qmpphy_dp_in>;
-+};
-+
- &mdss_mdp {
- 	status = "okay";
- };
-@@ -600,6 +681,11 @@ &pmk8550_rtc {
- 	status = "okay";
- };
- 
-+&qup_i2c3_data_clk {
-+	/* Use internal I2C pull-up */
-+	bias-pull-up = <2200>;
-+};
-+
- &qupv3_id_0 {
- 	status = "okay";
- };
-@@ -787,7 +873,7 @@ &usb_1_dwc3_hs {
- };
- 
- &usb_1_dwc3_ss {
--	remote-endpoint = <&pmic_glink_ss_in>;
-+	remote-endpoint = <&usb_dp_qmpphy_usb_ss_in>;
- };
- 
- &usb_1_hsphy {
-@@ -803,9 +889,23 @@ &usb_dp_qmpphy {
- 	vdda-phy-supply = <&vreg_l3i_1p2>;
- 	vdda-pll-supply = <&vreg_l3g_0p91>;
- 
-+	orientation-switch;
-+
- 	status = "okay";
- };
- 
-+&usb_dp_qmpphy_dp_in {
-+	remote-endpoint = <&mdss_dp0_out>;
-+};
-+
-+&usb_dp_qmpphy_out {
-+	remote-endpoint = <&redriver_ss_in>;
-+};
-+
-+&usb_dp_qmpphy_usb_ss_in {
-+	remote-endpoint = <&usb_1_dwc3_ss>;
-+};
-+
- &xo_board {
- 	clock-frequency = <76800000>;
- };
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index e6cf3e5d63c3..5c8777fb5a29 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -1079,6 +1079,7 @@ CONFIG_TYPEC_HD3SS3220=m
+ CONFIG_TYPEC_MUX_FSA4480=m
+ CONFIG_TYPEC_MUX_GPIO_SBU=m
+ CONFIG_TYPEC_MUX_NB7VPQ904M=m
++CONFIG_TYPEC_MUX_WCD939X_USBSS=m
+ CONFIG_TYPEC_DP_ALTMODE=m
+ CONFIG_MMC=y
+ CONFIG_MMC_BLOCK_MINORS=32
 
 -- 
 2.34.1
