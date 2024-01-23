@@ -1,72 +1,72 @@
-Return-Path: <linux-kernel+bounces-35193-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35194-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D93EF838D5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:25:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31CE4838D60
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:25:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A68A1C21346
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:25:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 514C91C21CBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:25:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 207625D8E1;
-	Tue, 23 Jan 2024 11:25:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5E385D75A;
+	Tue, 23 Jan 2024 11:25:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QdrhGKjK"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="f67hjU82"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4AAD51C21
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 11:25:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BFCE5D759
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 11:25:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706009111; cv=none; b=rVVjLYXjn36cKImfKQ6Lq75h5hqdJgdel7UlNAIjb88ouk+ALGjF008/e27EtwGbMb7OuCDWZcvVkUIyBrg/5shxbit4ivkklT6eYGCl/bVSppyhtkoG8hRTcJfzIAhxcxafd8VJehKhdZT64TTY6w/flWu/laBrA85mvP2Odzo=
+	t=1706009139; cv=none; b=HS2ifNyyzVHbnAjBeqrqIHAPWb97MngwE4eUNhKQpvR65lfj/OUC+up7xMYDAwaKA9kji5dRR2CJzvpiQyT9+hPvaL2aTN01gWIfxSMuUIhH7gVz2tsrsjCYz+lKGfg/xgtzMGs6kfD6REBCFVq+HZICCO6HtLUqqINegMTsaqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706009111; c=relaxed/simple;
-	bh=T+SydeAX1hMQg363+8XxvYR8VPVy+KKREWJwQonft+M=;
+	s=arc-20240116; t=1706009139; c=relaxed/simple;
+	bh=wYumhNh40zvaqJnlirZhJjynOHSXtyBShcxc4yIxkxQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UbqJmblBaKuGffoMuivPH39zIJvqgqyuOQFxuCxbjTNH4UTu0cay2HxdksS6u9aWelSoNpSwI9DGSdYY4iZbtWDP5IHkxT0gaPbjK1eLQ+ItaSX81y3v9G9l7LX2xKLcbkdULArV04dPc9YdxX6J/06WT/kDi4qG83jcZ8C0ycc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QdrhGKjK; arc=none smtp.client-ip=209.85.128.48
+	 In-Reply-To:Content-Type; b=q2wtk/vqrB3gv0awZUgXvn+sX8Fletwati4No2EfM+gpHcvS/2pf30p6iWGL0NQdZnsFygLZMdiBEjAPbbHyL93DXHyhneY3QdNfTQJHcRrqeLusRKAy63yGU/ascnbOaiJZD1eyyVMOnElgG6VtDUZYPuepJ3+OypXXWrV+dWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=f67hjU82; arc=none smtp.client-ip=209.85.128.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40eacb4bfa0so21647795e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 03:25:09 -0800 (PST)
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40e60e137aaso46429795e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 03:25:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706009108; x=1706613908; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1706009136; x=1706613936; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=03LvuhJW0zeAJK06ZWWGfUGBDYLdGLRdxp7Y5UieZfk=;
-        b=QdrhGKjKRdiTLgMbdPG30cCyx5wWbTm0g8kINd+w5FHKcSaTcwiiZNUsvUqMBTfCzQ
-         fhWFQ0eVYyCoorum+M8/9o2RyZRZNWKadrcpx1LINkn5qvdYVOUBrexcZudxUuXqvGfY
-         CwNikni0JVpHAJgiXhYSfBSp1+JVPJ62yIbZ7RrhedmeheojBhe4ybqNvcpYJrlsbnSQ
-         m2bTVwwoQT1GZ9fhhLgMhspIfidFroePnxzICkTkncZIfx4vO3+q0MrshXts0lDO4F+Z
-         gkzbweTiLSnBh86JhNQSmmimHBE8cLoEkVlk7zo1Sc6DVGqtwzA/fUHNV5+ezqgsvI/c
-         NbDw==
+        bh=8zBBf/j8UaqFMIEjNVpf8BjIjinm+gPNeFEeWOU24Ag=;
+        b=f67hjU82muLN2AaXeEQzzxV0zTHDVrgho4X1oGRzdafB1SIiChlkImOhFQM3C50bJ3
+         hHMbf3b5KTynllPnZ4ez/oPInh1IguIQzNOfNP7sh9yNteSy7BXMwx1L6weEeNG8FHIZ
+         w3n+NJ9AUike/oPetEk3bpKltnT6Bt+oH9JQbSVK/Ne23MadpsDmcSLB0OHwybbbRBSG
+         XF8SyEvzAWlbahkyvkinTpYBdk2RI/J7Gpp9bY3brDRszrplLY0MmOwBvrLsIo3ppZI2
+         GbL2vRJ2RKUQLqMNiZOEnrb+lMXRByoN1vA9HubrgkhlXvVkayZLe3ovBhUaLbnnB132
+         59Xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706009108; x=1706613908;
+        d=1e100.net; s=20230601; t=1706009136; x=1706613936;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=03LvuhJW0zeAJK06ZWWGfUGBDYLdGLRdxp7Y5UieZfk=;
-        b=HBiZ6JCZrszOaVdJMsLa/MFFbb7518BbjEtgr+sthdDQjxvhOC6Ozjem0rUpt859Q9
-         kMgekDQDuFBuPftVCTdxyv3HPVKVHIrpd4d7eHevRiGgNyiMDpZ+AzSBAEgupIsk5bX6
-         B7C8ikZSyy5eZnNqW6lFHwxNcQVEGn7liRVZCXfk1Bcu/SiBlkkoeq/ruB0reP4gGUcP
-         kMQ0SNCHgWadDktjpFyoCYVaSfGMS+KNLnnOJu27LDyD7si5vpRw/ljuvczOOLjclZ6w
-         MVqx1R8BrtoOCpj6XwJTZlp+Z34gAN+UqDIK+JZk+ry4267HX7zhRtlg+xH3xZr5a41n
-         EIew==
-X-Gm-Message-State: AOJu0Yx42f3gZ8FrsnDG52Ekr36jy/AXti4Oe8UBIz3OzAS01mS4eeDQ
-	fRsgqNUBCVXYsqUr/Jvj55cw/t7JNoPBHCVlvE/iWf0z9Kus4FRFV+2YDtar0OY=
-X-Google-Smtp-Source: AGHT+IFmmR8Kxv6kbvDyl/8CqhVpSEDPM9cETmsEJ3/LQ8O63rjsztTCTtzDluVGLpBPRdvA6BTQaw==
-X-Received: by 2002:a05:600c:3f90:b0:40e:622e:7449 with SMTP id fs16-20020a05600c3f9000b0040e622e7449mr37757wmb.22.1706009108006;
-        Tue, 23 Jan 2024 03:25:08 -0800 (PST)
+        bh=8zBBf/j8UaqFMIEjNVpf8BjIjinm+gPNeFEeWOU24Ag=;
+        b=dqHu5ewBWQpk6kEt2qPlBcpNvwisGVzcKo7AuQZ6Ke6r+8iFB5UhoLcQAiPArOfTnj
+         s7MQmIUX5IKgExYREJLKYKqujKXnV+bzX5D5LB0shJr5sO7AgATeS8bn5Wc0yRouswBW
+         mYXejoZv6KWb/YRry2z9sL22uzhJKd2n6iOsi28zMadIUx6s/2R6PjEacGFo0KhLMrlp
+         EePzCdDIAQ9aU7hMkl2hAjhMAeJBaRD2Rn6OeZ6F9OyLwbBvEAlZ7dm3rfZaDIyqKx3k
+         JCDmJQwr7+mVpo9/pXjH24vW1v0/tlJ6D1iwPIPBPaq6+7xKJMFnzd/aBKTim8G4b1AA
+         Z2jQ==
+X-Gm-Message-State: AOJu0YymOySdfSly/YGrLl4CeEEAGYGXarKNUYMo2BTm1QCxWm1DZuxV
+	ogUXWLJjynvAWR/Je+VUgbKgsc4MBexFLRvN+xvBEpSYWX7XOiVQcz2K6HTgQxE=
+X-Google-Smtp-Source: AGHT+IF4f3Zyr+QsPiWN2dwrl90pAiKTc6oBZklUyrXvX7nfl8aWjrkSDDdBA21hKwTLTmapcqDySw==
+X-Received: by 2002:a05:600c:35d1:b0:40d:30fe:a7d with SMTP id r17-20020a05600c35d100b0040d30fe0a7dmr414037wmq.109.1706009135813;
+        Tue, 23 Jan 2024 03:25:35 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id j8-20020a05600c190800b0040d7b340e07sm42361437wmq.45.2024.01.23.03.25.05
+        by smtp.gmail.com with ESMTPSA id j8-20020a05600c190800b0040d7b340e07sm42361437wmq.45.2024.01.23.03.25.33
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jan 2024 03:25:07 -0800 (PST)
-Message-ID: <92c1a3f3-6b3b-47cb-a4bf-0d20e4af95e5@linaro.org>
-Date: Tue, 23 Jan 2024 12:25:04 +0100
+        Tue, 23 Jan 2024 03:25:35 -0800 (PST)
+Message-ID: <08809d8b-a474-42e8-8a25-edc94e7d9723@linaro.org>
+Date: Tue, 23 Jan 2024 12:25:33 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,8 +74,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 4/4] ASoc: dt-bindings: Create yaml file for pcm6240
- codec driver
+Subject: Re: [PATCH v1 3/4] ASoc: pcm6240: Add compile item for pcm6240 codec
+ driver
 Content-Language: en-US
 To: Shenghao Ding <shenghao-ding@ti.com>, broonie@kernel.org,
  conor+dt@kernel.org
@@ -86,7 +86,7 @@ Cc: robh+dt@kernel.org, andriy.shevchenko@linux.intel.com, kevin-lu@ti.com,
  liam.r.girdwood@intel.com, soyer@irl.hu, jkhuang3@ti.com, tiwai@suse.de,
  pdjuandi@ti.com, j-mcpherson@ti.com, navada@ti.com
 References: <20240123111411.850-1-shenghao-ding@ti.com>
- <20240123111411.850-4-shenghao-ding@ti.com>
+ <20240123111411.850-3-shenghao-ding@ti.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -132,362 +132,23 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240123111411.850-4-shenghao-ding@ti.com>
+In-Reply-To: <20240123111411.850-3-shenghao-ding@ti.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
 On 23/01/2024 12:14, Shenghao Ding wrote:
 > PCM6240 driver implements a flexible and configurable setting for register
 > and filter coefficients, to one, two or even multiple PCM6240 Family Audio
 > chips.
 > 
-
-
 > Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
-
-Subject: ASoC
-Subject: rewrite to match something similar to other commits.
-
 > 
 > ---
 > Change in v1:
->  - Create yaml file for pcm6240 codec driver
+>  - Add compile item for pcm6240 codec driver
 
-I don't understand. v1 is the first version. Against what is this change?
-
-> ---
->  .../devicetree/bindings/sound/ti,pcm6240.yaml | 303 ++++++++++++++++++
->  1 file changed, 303 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/ti,pcm6240.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/ti,pcm6240.yaml b/Documentation/devicetree/bindings/sound/ti,pcm6240.yaml
-> new file mode 100644
-> index 000000000000..59fd48aa4445
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/ti,pcm6240.yaml
-> @@ -0,0 +1,303 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# Copyright (C) 2022 - 2024 Texas Instruments Incorporated
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/ti,pcm6240.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Texas Instruments PCM6240 Family Audio ADC/DAC/Router
-> +
-> +maintainers:
-> +  - Shenghao Ding <shenghao-ding@ti.com>
-> +
-> +description: |
-> +  The PCM6240 Family driver offer a flexible architecture to set the device
-
-Describe hardware, not Linux driver.
-
-> +  number, registers and params for different filters in a bin file.
-
-I don't understand entire sentence in context of hardware.
-
-> +
-> +  Specifications about the audio chip can be found at:
-> +    https://www.ti.com/lit/gpn/tlv320adc3120
-> +    https://www.ti.com/lit/gpn/tlv320adc5120
-> +    https://www.ti.com/lit/gpn/tlv320adc6120
-> +    https://www.ti.com/lit/gpn/dix4192
-> +    https://www.ti.com/lit/gpn/pcm1690
-> +    https://www.ti.com/lit/gpn/pcm3120-q1
-> +    https://www.ti.com/lit/gpn/pcm3140-q1
-> +    https://www.ti.com/lit/gpn/pcm5120-q1
-> +    https://www.ti.com/lit/gpn/pcm6120-q1
-> +    https://www.ti.com/lit/gpn/pcm6260-q1
-> +    https://www.ti.com/lit/gpn/pcm9211
-> +    https://www.ti.com/lit/gpn/pcmd3140
-> +    https://www.ti.com/lit/gpn/pcmd3180
-> +    https://www.ti.com/lit/gpn/taa5212
-> +    https://www.ti.com/lit/gpn/tad5212
-> +
-> +properties:
-> +  compatible:
-> +    description: |
-> +      ti,adc3120: Stereo-channel, 768-kHz, Burr-Brown™ audio analog-to-
-> +      digital converter (ADC) with 106-dB SNR.
-> +
-> +      ti,adc5120: 2-Channel, 768-kHz, Burr-BrownTM Audio ADC with 120-dB SNR.
-> +
-> +      ti,adc6120: Stereo-channel, 768-kHz, Burr-Brown™ audio analog-to-
-> +      digital converter (ADC) with 123-dB SNR.
-> +
-> +      ti,pcm1690: 113dB SNR, 24-Bit, 192-kHz Sampling, Enhanced Multi-Level
-> +      ?S, Eight-Channel Audio Digital-to-Analog Converter with Differential
-> +      Outputs.
-> +
-> +      ti,pcm3120: Automotive, stereo, 106-dB SNR, 768-kHz, low-power
-> +      software-controlled audio ADC.
-> +
-> +      ti,pcm3140: Automotive, Quad-Channel, 768-kHz, Burr-BrownTM Audio ADC
-> +      with 106-dB SNR.
-> +
-> +      ti,pcm5120: Automotive, stereo, 120-dB SNR, 768-kHz, low-power
-> +      software-controlled audio ADC.
-> +
-> +      ti,pcm5140: Automotive, Quad-Channel, 768-kHz, Burr-BrownTM Audio ADC
-> +      with 120-dB SNR.
-> +
-> +      ti,pcm6120: Automotive, stereo, 123-dB SNR, 768-kHz, low-power
-> +      software-controlled audio ADC.
-> +
-> +      ti,pcm6140: Automotive, Quad-Channel, 768-kHz, Burr-BrownTM Audio ADC
-> +      with 123-dB SNR.
-> +
-> +      ti,pcm6240: Automotive 4-ch audio ADC with integrated programmable mic
-> +      bias, boost and input diagnostics.
-> +
-> +      ti,pcm6260: Automotive 6-ch audio ADC with integrated programmable mic
-> +      bias, boost and input diagnostics.
-> +
-> +      ti,pcm9211: 216-kHz Digital Audio Interface Transceiver (DIX)
-> +      With Stereo ADC and Routing.
-> +
-> +      ti,pcmd3140: Four-channel PDM-input to TDM or I�S output converter.
-> +
-> +      ti,pcmd3180: Eight-channel pulse-density-modulation input to TDM or
-> +      I�S output converter.
-> +
-> +      ti,taa5212: Low-power high-performance stereo audio ADC with 118-dB
-> +      dynamic range.
-> +
-> +      ti,tad5212: Low-power stereo audio DAC with 120-dB dynamic range.
-> +    enum:
-> +      - ti,adc3120
-> +      - ti,adc5120
-> +      - ti,adc6120
-> +      - ti,dix4192
-> +      - ti,pcm1690
-> +      - ti,pcm3120
-> +      - ti,pcm3140
-> +      - ti,pcm5120
-> +      - ti,pcm5140
-> +      - ti,pcm6120
-> +      - ti,pcm6140
-> +      - ti,pcm6240
-> +      - ti,pcm6260
-> +      - ti,pcm9211
-> +      - ti,pcmd3140
-> +      - ti,pcmd3180
-> +      - ti,pcmd512x
-> +      - ti,taa5212
-> +      - ti,taa5412
-> +      - ti,tad5212
-> +      - ti,tad5412
-
-And none of them are compatible with something?
-
-> +
-> +  reg:
-> +    description:
-> +      I2C address, in multiple pcmdevices case, all the i2c address
-> +      aggregate as one Audio Device to support multiple audio slots.
-> +    maxItems: 4
-> +    minItems: 1
-
-minItems, then maxItems.
-
-Please open existing bindings and look how it is done there.
-
-
-> +
-> +  reset-gpios:
-> +    maxItems: 1
-> +    description:
-> +      A GPIO line handling reset of the chip. As the line is active high,
-> +      it should be marked GPIO_ACTIVE_HIGH.
-
-Drop description, it's obvious. Or write something useful.
-
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +    description:
-> +      Invalid only for ti,pcm1690 because of no INT pin.
-> +
-> +  '#sound-dai-cells':
-> +    const: 0
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +allOf:
-> +  - $ref: dai-common.yaml#
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - ti,pcm1690
-> +    then:
-> +      properties:
-> +        reg:
-> +          description:
-> +            I2C address, in multiple pcmdevices case, all the i2c address
-> +            aggregate as one Audio Device to support multiple audio slots.
-> +          maxItems: 4
-> +          minItems: 1
-> +          items:
-> +            minimum: 0x4c
-> +            maximum: 0x4f
-
-Why do you repeat the reg constraints? This does not seem needed.
-
-> +        interrupts: false
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - ti,pcm3140
-> +              - ti,pcm5140
-> +              - ti,pcm6140
-> +              - ti,pcmd3180
-> +    then:
-> +      properties:
-> +        reg:
-> +          description:
-> +            I2C address, in multiple pcmdevices case, all the i2c address
-> +            aggregate as one Audio Device to support multiple audio slots.
-> +          maxItems: 4
-> +          minItems: 1
-
-Drop entire if
-
-> +          items:
-> +            minimum: 0x4c
-> +            maximum: 0x4f
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - ti,adc3120
-> +              - ti,adc5120
-> +              - ti,adc6120
-> +              - ti,pcm3120
-> +              - ti,pcm5120
-> +              - ti,pcm6120
-> +              - ti,pcmd3140
-> +    then:
-> +      properties:
-> +        reg:
-> +          description:
-> +            I2C address.
-
-Just drop description, it is obvious.
-
-> +          maxItems: 1
-> +          items:
-> +            maximum: 0x4e
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - ti,dix4192
-> +    then:
-> +      properties:
-> +        reg:
-> +          description:
-> +            I2C address, in multiple pcmdevices case, all the i2c address
-> +            aggregate as one Audio Device to support multiple audio slots.
-> +          maxItems: 4
-> +          minItems: 1
-> +          items:
-> +            minimum: 0x70
-> +            maximum: 0x73
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - ti,pcm6240
-> +              - ti,pcm6260
-> +    then:
-> +      properties:
-> +        reg:
-> +          description:
-> +            I2C address, in multiple pcmdevices case, all the i2c address
-> +            aggregate as one Audio Device to support multiple audio slots.
-> +          maxItems: 4
-> +          minItems: 1
-> +          items:
-> +            minimum: 0x48
-> +            maximum: 0x4b
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - ti,pcm9211
-> +    then:
-> +      properties:
-> +        reg:
-> +          description:
-> +            I2C address, in multiple pcmdevices case, all the i2c address
-> +            aggregate as one Audio Device to support multiple audio slots.
-> +          maxItems: 4
-> +          minItems: 1
-> +          items:
-> +            minimum: 0x40
-> +            maximum: 0x43
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - ti,taa5212
-> +              - ti,taa5412
-> +              - ti,tad5212
-> +              - ti,tad5412
-> +    then:
-> +      properties:
-> +        reg:
-> +          description:
-> +            I2C address, in multiple pcmdevices case, all the i2c address
-> +            aggregate as one Audio Device to support multiple audio slots.
-> +          maxItems: 4
-> +          minItems: 1
-> +          items:
-> +            minimum: 0x50
-> +            maximum: 0x53
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +   #include <dt-bindings/gpio/gpio.h>
-> +   i2c {
-> +     /* example for two devices with interrupt support */
-> +     #address-cells = <1>;
-> +     #size-cells = <0>;
-> +     two: pcmdevice@48 {
-
-Node names should be generic. See also an explanation and list of
-examples (not exhaustive) in DT specification:
-https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
-
-
-> +       compatible = "ti,pcm6240";
-> +       reg = <0x48>, /* primary-device */
-> +            <0x4b>; /* secondary-device */
-> +       #sound-dai-cells = <0>;
-> +       reset-gpios = < &gpio1 10 GPIO_ACTIVE_HIGH >;
-
-Drop redundant spaces.
-
-
+So before you added dead code? No, please add a working code, so squash
+the patches.
 
 Best regards,
 Krzysztof
