@@ -1,177 +1,151 @@
-Return-Path: <linux-kernel+bounces-34849-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34850-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6894A838847
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:52:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51C02838849
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:52:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C3E11C21B11
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:52:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B21428572C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:52:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFC2153E35;
-	Tue, 23 Jan 2024 07:52:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B70053E2E;
+	Tue, 23 Jan 2024 07:52:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="SPfiKPLY"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Btl067fn";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="2tgb3Y6k";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Btl067fn";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="2tgb3Y6k"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD31853E2E;
-	Tue, 23 Jan 2024 07:52:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72ED952F7E
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:52:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705996331; cv=none; b=n4E1GrgbZKgXYePcsiEc4qnauty8/Efr+uGeJrsL7omMh++Q0d0jfcK9bTIFYIQXL+uJF5a8d18V3XEzpn3Vvm3sttOq7+5mNzrYvvbc9ugbif7WPOH7BVvXYGxEBhVZiSdN8Iqb06dnP1YkODyJhAj1G4KBSG/eIcAuDCxyXmY=
+	t=1705996362; cv=none; b=ASn0WMrKbgeA8N4JCKZxHHqFm3Pwm0hjdmKskfjDPzVMYdnbofMhQl9OVf3Qv41GrzWQPve8FmSyq2SePcvidrLne4kMyWKmw5zPfOaoSNt3RU3Mkp5LBqZ1YWhwUumZoOWEC6+4pgqAPiUy8KhwSGkvZqbCwSTHqSi4yunFDLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705996331; c=relaxed/simple;
-	bh=K6k2QYxpHaMZ2H7zY/M+E12/FkVtZ9PqhUpBbAY4yvo=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=PmgwfHUIeQ+wlz8ichsNwpp/DiL4v9L1AcdQjF727QV7jODkK0IrpOc3ypPG4qurTkLwtWGvMl/yAghEWdztkJWl66E7mAzMCKvma12w4ibshf+VH47QkRPkG594AyvJ2xAonjMPAnLvXG35mZfsM4+WgUWpCGuwr9FtY1wK/k4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=SPfiKPLY; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1705996327;
-	bh=K6k2QYxpHaMZ2H7zY/M+E12/FkVtZ9PqhUpBbAY4yvo=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=SPfiKPLY5BytPAwfWFsIu6RvNfW9rLkcEqNoDbKMXsCTrz1xvBcpDNRrya6jfH+Ho
-	 m1lY6Xf0msHKHHHNmB8DcEk7e6pAnWjdti3y0epaeU2Q48Ww/HArLmm4G7iQqZwSFo
-	 tYRVhzjvokTH/g1PsYSa7/+SzvlYcO069Yk9F1cgV/b4RYvxjY00oniw8WbJBU2Ilu
-	 hxxR3VjqVlkSi0EIZt2mtZrz/6Dv6hA08xobu4BgfKA+iDURWwnmUGXUMuPJTy+r97
-	 kXulpIUNR3tlHZ70027ywlg6kyDui6XrvC6sL7FrHKOXj4nigqyH362YKVNkq7Ioie
-	 b9IPvROSQGvIw==
-Received: from [100.96.234.34] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	s=arc-20240116; t=1705996362; c=relaxed/simple;
+	bh=pFyUKCV7PckLl73NJF0nEHxcP3YgpX8KAqzVymf34Ho=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=i53NnPUV+XMpKvgKbONn7FJDVnUSB7EqQIZkEYL1IjZ/loz8iJ6vHBnT/yg/CJeQbMHgdOg1DTLt8iVPnL5B3WYpY8mMUS8VpxOPCZomDHHQquuMvkMIiaJiDni1Oz1XwrypuVl7dfiXvYRMWo/iYtrCE50o7FPDIf9YNy44mIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Btl067fn; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=2tgb3Y6k; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Btl067fn; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=2tgb3Y6k; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A1A293782066;
-	Tue, 23 Jan 2024 07:52:05 +0000 (UTC)
-Message-ID: <965acceb-9aa1-473f-a873-40eaaebe5d0c@collabora.com>
-Date: Tue, 23 Jan 2024 12:52:20 +0500
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8AC2D21F4E;
+	Tue, 23 Jan 2024 07:52:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1705996359; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=prvT3vWO52L/uHnktDoGcR4sTbjQr2MfIdjzVdS6mfY=;
+	b=Btl067fn6lRnDDq9NCXx84J6dWAQopZuYVmvqMzXRrR+RVpx9ZmBRpOGISuAvXRIHiYIQR
+	o7ZYGlM/dkzBw6ZO6ujOmDAchzYKXyaItbmEBtFAfyF5TrD3JZ5kkdcrazzltIPw+27mQJ
+	VRkLzE72/Zflb+J2SbUn5FhTimUj/Ak=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1705996359;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=prvT3vWO52L/uHnktDoGcR4sTbjQr2MfIdjzVdS6mfY=;
+	b=2tgb3Y6kVFmEynpEywD4x7MKw0O2f7l6fOCo3iHycEJMQLD8dfRqVMEe+I40RPaY6m4wyW
+	Wc/haavMLkLTnADA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1705996359; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=prvT3vWO52L/uHnktDoGcR4sTbjQr2MfIdjzVdS6mfY=;
+	b=Btl067fn6lRnDDq9NCXx84J6dWAQopZuYVmvqMzXRrR+RVpx9ZmBRpOGISuAvXRIHiYIQR
+	o7ZYGlM/dkzBw6ZO6ujOmDAchzYKXyaItbmEBtFAfyF5TrD3JZ5kkdcrazzltIPw+27mQJ
+	VRkLzE72/Zflb+J2SbUn5FhTimUj/Ak=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1705996359;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=prvT3vWO52L/uHnktDoGcR4sTbjQr2MfIdjzVdS6mfY=;
+	b=2tgb3Y6kVFmEynpEywD4x7MKw0O2f7l6fOCo3iHycEJMQLD8dfRqVMEe+I40RPaY6m4wyW
+	Wc/haavMLkLTnADA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 540D813786;
+	Tue, 23 Jan 2024 07:52:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id qlsQE0dwr2UMZgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Tue, 23 Jan 2024 07:52:39 +0000
+Date: Tue, 23 Jan 2024 08:52:38 +0100
+Message-ID: <87wms0mqpl.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Cc: Takashi Iwai <tiwai@suse.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	<alsa-devel@alsa-project.org>,
+	<patches@opensource.cirrus.com>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ALSA: hda/cs8409: Suppress vmaster control for Dolphin models
+In-Reply-To: <20240122184710.5802-1-vitalyr@opensource.cirrus.com>
+References: <20240122184710.5802-1-vitalyr@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, kernel@collabora.com,
- linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH v3 1/7] selftests/mm: hugepage-shm: conform test to TAP
- format output
-Content-Language: en-US
-To: Andrew Morton <akpm@linux-foundation.org>
-References: <20240115073247.1280266-1-usama.anjum@collabora.com>
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20240115073247.1280266-1-usama.anjum@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Btl067fn;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=2tgb3Y6k
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.69 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+	 RCPT_COUNT_FIVE(0.00)[6];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-2.18)[96.06%]
+X-Spam-Score: -4.69
+X-Rspamd-Queue-Id: 8AC2D21F4E
+X-Spam-Flag: NO
 
-Hi Andrew,
-
-There hasn't been any comment on these. I guess, they can be picked up now?
-
-Thanks,
-
-On 1/15/24 12:32 PM, Muhammad Usama Anjum wrote:
-> Conform the layout, informational and status messages to TAP. No
-> functional change is intended other than the layout of output messages.
+On Mon, 22 Jan 2024 19:47:10 +0100,
+Vitaly Rodionov wrote:
 > 
-> The "." was being printed inside for loop to indicate the writes
-> progress. This was extraneous and hence removed in the patch.
+> Customer has reported an issue with specific desktop platform
+> where two CS42L42 codecs are connected to CS8409 HDA bridge.
+> If "Master Volume Control" is created then on Ubuntu OS UCM
+> left/right balance slider in UI audio settings has no effect.
+> This patch will fix this issue for a target paltform.
 > 
-> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> ---
->  tools/testing/selftests/mm/hugepage-shm.c | 47 +++++++++++------------
->  1 file changed, 22 insertions(+), 25 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/mm/hugepage-shm.c b/tools/testing/selftests/mm/hugepage-shm.c
-> index 478bb1e989e9..f949dbbc3454 100644
-> --- a/tools/testing/selftests/mm/hugepage-shm.c
-> +++ b/tools/testing/selftests/mm/hugepage-shm.c
-> @@ -34,11 +34,10 @@
->  #include <sys/ipc.h>
->  #include <sys/shm.h>
->  #include <sys/mman.h>
-> +#include "../kselftest.h"
->  
->  #define LENGTH (256UL*1024*1024)
->  
-> -#define dprintf(x)  printf(x)
-> -
->  /* Only ia64 requires this */
->  #ifdef __ia64__
->  #define ADDR (void *)(0x8000000000000000UL)
-> @@ -54,44 +53,42 @@ int main(void)
->  	unsigned long i;
->  	char *shmaddr;
->  
-> +	ksft_print_header();
-> +	ksft_set_plan(1);
-> +
->  	shmid = shmget(2, LENGTH, SHM_HUGETLB | IPC_CREAT | SHM_R | SHM_W);
-> -	if (shmid < 0) {
-> -		perror("shmget");
-> -		exit(1);
-> -	}
-> -	printf("shmid: 0x%x\n", shmid);
-> +	if (shmid < 0)
-> +		ksft_exit_fail_msg("shmget: %s\n", strerror(errno));
-> +
-> +	ksft_print_msg("shmid: 0x%x\n", shmid);
->  
->  	shmaddr = shmat(shmid, ADDR, SHMAT_FLAGS);
->  	if (shmaddr == (char *)-1) {
-> -		perror("Shared memory attach failure");
->  		shmctl(shmid, IPC_RMID, NULL);
-> -		exit(2);
-> +		ksft_exit_fail_msg("Shared memory attach failure: %s\n", strerror(errno));
->  	}
-> -	printf("shmaddr: %p\n", shmaddr);
->  
-> -	dprintf("Starting the writes:\n");
-> -	for (i = 0; i < LENGTH; i++) {
-> +	ksft_print_msg("shmaddr: %p\n", shmaddr);
-> +
-> +	ksft_print_msg("Starting the writes:");
-> +	for (i = 0; i < LENGTH; i++)
->  		shmaddr[i] = (char)(i);
-> -		if (!(i % (1024 * 1024)))
-> -			dprintf(".");
-> -	}
-> -	dprintf("\n");
-> +	ksft_print_msg("Done.\n");
->  
-> -	dprintf("Starting the Check...");
-> +	ksft_print_msg("Starting the Check...");
->  	for (i = 0; i < LENGTH; i++)
-> -		if (shmaddr[i] != (char)i) {
-> -			printf("\nIndex %lu mismatched\n", i);
-> -			exit(3);
-> -		}
-> -	dprintf("Done.\n");
-> +		if (shmaddr[i] != (char)i)
-> +			ksft_exit_fail_msg("\nIndex %lu mismatched\n", i);
-> +	ksft_print_msg("Done.\n");
->  
->  	if (shmdt((const void *)shmaddr) != 0) {
-> -		perror("Detach failure");
->  		shmctl(shmid, IPC_RMID, NULL);
-> -		exit(4);
-> +		ksft_exit_fail_msg("Detach failure: %s\n", strerror(errno));
->  	}
->  
->  	shmctl(shmid, IPC_RMID, NULL);
->  
-> -	return 0;
-> +	ksft_test_result_pass("Completed test\n");
-> +
-> +	ksft_finished();
->  }
+> Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 
--- 
-BR,
-Muhammad Usama Anjum
+Applied, thanks.
+
+
+Takashi
 
