@@ -1,61 +1,74 @@
-Return-Path: <linux-kernel+bounces-35067-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35068-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43601838B6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:10:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18CC0838B69
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:09:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 991C928B539
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:09:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E12B1C20C8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:09:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5B1A5A10B;
-	Tue, 23 Jan 2024 10:09:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A13A05BAFC;
+	Tue, 23 Jan 2024 10:09:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hcWoL8am"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FCwqVxRq"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA26F57311;
-	Tue, 23 Jan 2024 10:09:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2570E57311;
+	Tue, 23 Jan 2024 10:09:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706004566; cv=none; b=ITrHGs3cLEQyKfReS0JV02kyRTsX/AiVp93W/BMjjyJugxsuGsvf9W7dWRby8eApbdW2pw3Hrr3kBSXAeaGLNshgnk0DVJ9pcYdDbe1qqQjGcyE6AsMm4yVgh/Tc9UjC5YSOowPVP2vhRXo0d2r2jQymXW62H3aATbGcz7+Z1jI=
+	t=1706004573; cv=none; b=dLzRgHyjTqfQerL6l7OHJESviE/texYLA60atC7gcNbAVslVr8z+PHa9SN9JFD9TUG32N82HchSJ4a0nO1Sd4xy9GPx8RzVENCW7NpEK66KOLrlaQcH/e5SrlGPF8mbOyh0GOJ2Mrw0Idj57SA4h1toV5fbSlu6qibjtDBuFV74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706004566; c=relaxed/simple;
-	bh=TCFdDzZ1US12cf3hVKANXZoZ8oTrIUTJBaYWeEq0Gbk=;
+	s=arc-20240116; t=1706004573; c=relaxed/simple;
+	bh=bkc6dtM8tWOn6AoyPD8ER51XkxCtb7qLJw9BAEpIsDU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BQWGKhK3QMjyfiYJa3qSCnkHmNkmyUWYbluYxwgdKlWFJq8oG1zMPEHQPyqJoVg6sjhLYaag4oPDwjw/896EZOJih3o2fsYn22mAMK5ddZs0FfamRJ/o1/m23Fg/lOWjuEBPkY8sH5DOJZ4r5Q0LUkcrYl8/S6bpwUE7V/CYSaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hcWoL8am; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706004565; x=1737540565;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=TCFdDzZ1US12cf3hVKANXZoZ8oTrIUTJBaYWeEq0Gbk=;
-  b=hcWoL8am29p3l0UI27UMbBywRYReLzkqokuV8go2hVXLwr1VlQo4iYCC
-   DXBasNiHtQKCzWChoGxEFOq1dpB7p/17HYrg3geIvvHN1pxA5wBQcPamc
-   00LyGlc/rSkUsukmZj7vC/AsQQMwGhgRH7mXG8kzkWCnb/telDpMTyPhg
-   FcULmZW1M02GQFzn+SoMKL+K3sSNuC7u6Z2pgH7gJFf3pmlW7FQPkVd7J
-   ukVVv8tIZih7qBPp9Lxfs/D9g6R+FqQELZpvlj48CQAPoRLQX/DkEjjyB
-   k5pEQctmRmepFEWAw6pLJCWn4FE0U8JcUCatFGWe508fXFPbQKGe/vgpL
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="8588455"
-X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
-   d="scan'208";a="8588455"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 02:09:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="929291718"
-X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
-   d="scan'208";a="929291718"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.57.4])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 02:09:18 -0800
-Message-ID: <1d0e2e26-723f-42bf-b4a5-8a56843d8dda@intel.com>
-Date: Tue, 23 Jan 2024 12:09:13 +0200
+	 In-Reply-To:Content-Type; b=V0Au1YvHgwT6EfG25H5Nrwf+rFXN4HpFH+HlaX4KZVM5La3k20aWUHJBBgBAAnHq7kStq4B1bQw85JzClFMFtR+RhCy9/+6uE7n8xQ23LHtpLmtd1XKFLiyxESVbhzw56bdfWHqrGt5WIYDEYxphzGvYwLv7CYq4dMIY+/st4fA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FCwqVxRq; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6d9b37f4804so3058666b3a.1;
+        Tue, 23 Jan 2024 02:09:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706004570; x=1706609370; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=vF3YAHXTJJCMn28KdzwGiFf2RissWmiYZiWxD+NZ6vM=;
+        b=FCwqVxRqp8BR3oGRU32hmgkbS5LWeC+XnhztlkLtp8r8Rn+T2/51tVIKZ5TCbumW6y
+         7bBNOxDDHnjq9ADxQg8NLTKojzWZMtFtfhSaNM22ScAnHEu/berGofyZJY0m732409Hv
+         GmgjME/z6UsZxAX2JtoOpFEw7CkGZNxedZs11+lVO36xBwLxOKcTopR/0g98KGqzNyQY
+         NFtvC3mN/H5pUBaYxENkPiQsewv1pw2bwkvg4hCvVOnjwkJBGeOTwTgcUzmQJvBuIRBe
+         d9LBi+ATcGYSd8oXZ4L2MsAqkqZ7zVxrFQ2zdxMG1vT72PW9zmsMXrqhYutNhRuMLP6W
+         m7Pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706004570; x=1706609370;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vF3YAHXTJJCMn28KdzwGiFf2RissWmiYZiWxD+NZ6vM=;
+        b=aRtj2/SM6cEc60l0s75P02kwKZWgK9RrPwKxMg0meGL3T1afiLSBxxgYGb8RPsvYdp
+         HHMvuBYVnXEUOCAwj9YXpz8bARVlC6mjj1PYB3rFKAzqs1cy8wOJqZnmjwZV1cqoJegu
+         b5B78An3tizTaNK3+aE9k8zOrNZ3wRgYH/7L2SvReRIuDDtfxoUBCWOH677Z3VnupjPM
+         tWV2QOVRFmRLsQSVro6AkTBLGuV8UZQo9CGOk/xfTpuucKNhbVcvL9mW2QicZuhcNAMK
+         Dlr/JlOr8XXpi+gu6SjdNhQrea+66fXHxionUoLl5bq+TVe7F4xe1+G/mS8c73kMVAHA
+         ZjWw==
+X-Gm-Message-State: AOJu0YwH0oVsuAsiQhXn4lMntw9bRoq6UGNdk2jv3gNApxQrEMxnyJWe
+	g0LSFOqH296AzoQfMfGTG+nmQzdd7IgtdaSLi9lFQUwLFL0O1k9S
+X-Google-Smtp-Source: AGHT+IHIAWmYLuWi422JcyW3PtuAK24g0dKpE66t9z7rcaaTrk3zHZtgNgaldXuzgg7lQzJgv++RUg==
+X-Received: by 2002:a05:6a21:3399:b0:19a:fe9c:e870 with SMTP id yy25-20020a056a21339900b0019afe9ce870mr7692900pzb.12.1706004570347;
+        Tue, 23 Jan 2024 02:09:30 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id y2-20020a63e242000000b005cd78f13608sm9752654pgj.13.2024.01.23.02.09.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jan 2024 02:09:29 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <d879634e-c329-4eef-928f-f296535f8838@roeck-us.net>
+Date: Tue, 23 Jan 2024 02:09:27 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,148 +76,187 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V4 01/11] perf/core: Add aux_pause, aux_resume,
- aux_start_paused
+Subject: Re: [PATCH 07/10] watchdog: rzg2l_wdt: Add suspend/resume support
 Content-Language: en-US
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Heiko Carstens <hca@linux.ibm.com>, Thomas Richter <tmricht@linux.ibm.com>,
- Hendrik Brueckner <brueckner@linux.ibm.com>,
- Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach
- <mike.leach@linaro.org>, James Clark <james.clark@arm.com>,
- coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
- Yicong Yang <yangyicong@hisilicon.com>,
- Jonathan Cameron <jonathan.cameron@huawei.com>, Will Deacon
- <will@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
- linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-References: <20240111081914.3123-1-adrian.hunter@intel.com>
- <20240111081914.3123-2-adrian.hunter@intel.com>
- <CAM9d7cjOVuMdBjLBV0cKXAOMmp_6xQYBG7h2ecE=djEKZm8aNQ@mail.gmail.com>
-From: Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <CAM9d7cjOVuMdBjLBV0cKXAOMmp_6xQYBG7h2ecE=djEKZm8aNQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+To: claudiu beznea <claudiu.beznea@tuxon.dev>, wim@linux-watchdog.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ geert+renesas@glider.be, magnus.damm@gmail.com, mturquette@baylibre.com,
+ sboyd@kernel.org, p.zabel@pengutronix.de, biju.das.jz@bp.renesas.com
+Cc: linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-clk@vger.kernel.org, Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240122111115.2861835-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240122111115.2861835-8-claudiu.beznea.uj@bp.renesas.com>
+ <a5a807c1-76ef-4cf7-a2cf-bc432c420ded@roeck-us.net>
+ <2af40ace-2779-45a0-a244-e7e9e5cc510c@tuxon.dev>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <2af40ace-2779-45a0-a244-e7e9e5cc510c@tuxon.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 19/01/24 23:40, Namhyung Kim wrote:
-> On Thu, Jan 11, 2024 at 12:19 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>
->> Hardware traces, such as instruction traces, can produce a vast amount of
->> trace data, so being able to reduce tracing to more specific circumstances
->> can be useful.
->>
->> The ability to pause or resume tracing when another event happens, can do
->> that.
->>
->> Add ability for an event to "pause" or "resume" AUX area tracing.
->>
->> Add aux_pause bit to perf_event_attr to indicate that, if the event
->> happens, the associated AUX area tracing should be paused. Ditto
->> aux_resume. Do not allow aux_pause and aux_resume to be set together.
->>
->> Add aux_start_paused bit to perf_event_attr to indicate to an AUX area
->> event that it should start in a "paused" state.
->>
->> Add aux_paused to struct perf_event for AUX area events to keep track of
->> the "paused" state. aux_paused is initialized to aux_start_paused.
->>
->> Add PERF_EF_PAUSE and PERF_EF_RESUME modes for ->stop() and ->start()
->> callbacks. Call as needed, during __perf_event_output(). Add
->> aux_in_pause_resume to struct perf_buffer to prevent races with the NMI
->> handler. Pause/resume in NMI context will miss out if it coincides with
->> another pause/resume.
->>
->> To use aux_pause or aux_resume, an event must be in a group with the AUX
->> area event as the group leader.
->>
->> Example (requires Intel PT and tools patches also):
->>
->>  $ perf record --kcore -e intel_pt/aux-action=start-paused/k,syscalls:sys_enter_newuname/aux-action=resume/,syscalls:sys_exit_newuname/aux-action=pause/ uname
->>  Linux
->>  [ perf record: Woken up 1 times to write data ]
->>  [ perf record: Captured and wrote 0.043 MB perf.data ]
->>  $ perf script --call-trace
->>  uname   30805 [000] 24001.058782799: name: 0x7ffc9c1865b0
->>  uname   30805 [000] 24001.058784424:  psb offs: 0
->>  uname   30805 [000] 24001.058784424:  cbr: 39 freq: 3904 MHz (139%)
->>  uname   30805 [000] 24001.058784629: ([kernel.kallsyms])        debug_smp_processor_id
->>  uname   30805 [000] 24001.058784629: ([kernel.kallsyms])        __x64_sys_newuname
->>  uname   30805 [000] 24001.058784629: ([kernel.kallsyms])            down_read
->>  uname   30805 [000] 24001.058784629: ([kernel.kallsyms])                __cond_resched
->>  uname   30805 [000] 24001.058784629: ([kernel.kallsyms])                preempt_count_add
->>  uname   30805 [000] 24001.058784629: ([kernel.kallsyms])                    in_lock_functions
->>  uname   30805 [000] 24001.058784629: ([kernel.kallsyms])                preempt_count_sub
->>  uname   30805 [000] 24001.058784629: ([kernel.kallsyms])            up_read
->>  uname   30805 [000] 24001.058784629: ([kernel.kallsyms])                preempt_count_add
->>  uname   30805 [000] 24001.058784838: ([kernel.kallsyms])                    in_lock_functions
->>  uname   30805 [000] 24001.058784838: ([kernel.kallsyms])                preempt_count_sub
->>  uname   30805 [000] 24001.058784838: ([kernel.kallsyms])            _copy_to_user
->>  uname   30805 [000] 24001.058784838: ([kernel.kallsyms])        syscall_exit_to_user_mode
->>  uname   30805 [000] 24001.058784838: ([kernel.kallsyms])            syscall_exit_work
->>  uname   30805 [000] 24001.058784838: ([kernel.kallsyms])                perf_syscall_exit
->>  uname   30805 [000] 24001.058784838: ([kernel.kallsyms])                    debug_smp_processor_id
->>  uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                    perf_trace_buf_alloc
->>  uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                        perf_swevent_get_recursion_context
->>  uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                            debug_smp_processor_id
->>  uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                        debug_smp_processor_id
->>  uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                    perf_tp_event
->>  uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                        perf_trace_buf_update
->>  uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                            tracing_gen_ctx_irq_test
->>  uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                        perf_swevent_event
->>  uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                            __perf_event_account_interrupt
->>  uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                                __this_cpu_preempt_check
->>  uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                            perf_event_output_forward
->>  uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                                perf_event_aux_pause
->>  uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                                    ring_buffer_get
->>  uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                                        __rcu_read_lock
->>  uname   30805 [000] 24001.058785046: ([kernel.kallsyms])                                        __rcu_read_unlock
->>  uname   30805 [000] 24001.058785254: ([kernel.kallsyms])                                    pt_event_stop
->>  uname   30805 [000] 24001.058785254: ([kernel.kallsyms])                                        debug_smp_processor_id
->>  uname   30805 [000] 24001.058785254: ([kernel.kallsyms])                                        debug_smp_processor_id
->>  uname   30805 [000] 24001.058785254: ([kernel.kallsyms])                                        native_write_msr
->>  uname   30805 [000] 24001.058785463: ([kernel.kallsyms])                                        native_write_msr
->>  uname   30805 [000] 24001.058785639: 0x0
+On 1/22/24 23:13, claudiu beznea wrote:
 > 
-> Looks great!  I think this is very similar to what Kees asked in
 > 
->   https://lore.kernel.org/linux-perf-users/202401091452.B73E21B6C@keescook/
-
-Sometimes a precisely-defined workload is needed, just so that
-running it repeatedly does not produce results that vary too much
-to tell whether one software version is better than another.
-
+> On 22.01.2024 19:39, Guenter Roeck wrote:
+>> On 1/22/24 03:11, Claudiu wrote:
+>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>
+>>> The RZ/G3S supports deep sleep states where power to most of the IP blocks
+>>> is cut off. To ensure proper working of the watchdog when resuming from
+>>> such states, the suspend function is stopping the watchdog and the resume
+>>> function is starting it. There is no need to configure the watchdog
+>>> in case the watchdog was stopped prior to starting suspend.
+>>>
+>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>> ---
+>>>    drivers/watchdog/rzg2l_wdt.c | 26 ++++++++++++++++++++++++++
+>>>    1 file changed, 26 insertions(+)
+>>>
+>>> diff --git a/drivers/watchdog/rzg2l_wdt.c b/drivers/watchdog/rzg2l_wdt.c
+>>> index 9333dc1a75ab..186796b739f7 100644
+>>> --- a/drivers/watchdog/rzg2l_wdt.c
+>>> +++ b/drivers/watchdog/rzg2l_wdt.c
+>>> @@ -279,6 +279,7 @@ static int rzg2l_wdt_probe(struct platform_device *pdev)
+>>>        priv->wdev.timeout = WDT_DEFAULT_TIMEOUT;
+>>>          watchdog_set_drvdata(&priv->wdev, priv);
+>>> +    dev_set_drvdata(dev, priv);
+>>>        ret = devm_add_action_or_reset(&pdev->dev, rzg2l_wdt_pm_disable,
+>>> &priv->wdev);
+>>>        if (ret)
+>>>            return ret;
+>>> @@ -300,10 +301,35 @@ static const struct of_device_id rzg2l_wdt_ids[] = {
+>>>    };
+>>>    MODULE_DEVICE_TABLE(of, rzg2l_wdt_ids);
+>>>    +static int rzg2l_wdt_suspend_late(struct device *dev)
+>>> +{
+>>> +    struct rzg2l_wdt_priv *priv = dev_get_drvdata(dev);
+>>> +
+>>> +    if (!watchdog_active(&priv->wdev))
+>>> +        return 0;
+>>> +
+>>> +    return rzg2l_wdt_stop(&priv->wdev);
+>>> +}
+>>> +
+>>> +static int rzg2l_wdt_resume_early(struct device *dev)
+>>> +{
+>>> +    struct rzg2l_wdt_priv *priv = dev_get_drvdata(dev);
+>>> +
+>>> +    if (!watchdog_active(&priv->wdev))
+>>> +        return 0;
+>>> +
+>>> +    return rzg2l_wdt_start(&priv->wdev);
+>>> +}
+>>> +
+>>> +static const struct dev_pm_ops rzg2l_wdt_pm_ops = {
+>>> +    LATE_SYSTEM_SLEEP_PM_OPS(rzg2l_wdt_suspend_late,
+>>> rzg2l_wdt_resume_early)
+>>> +};
+>>> +
+>>>    static struct platform_driver rzg2l_wdt_driver = {
+>>>        .driver = {
+>>>            .name = "rzg2l_wdt",
+>>>            .of_match_table = rzg2l_wdt_ids,
+>>> +        .pm = pm_ptr(&rzg2l_wdt_pm_ops),
+>>
+>> I think this will create a build error if CONFIG_PM=n because rzg2l_wdt_pm_ops
+>> will be unused but is not marked with __maybe_unused.
 > 
-> I have a couple of basic questions:
->  * Can we do that for regular events too?
-
-That would be much more complicated.  The current implementation
-can only pause / resume 1 event, the group leader, and it has to
-be supported by the PMU callbacks.
-
->  * What's the difference between start/stop and pause/resume?
->    (IOW can we do that just using start/stop callbacks?)
-
-It is using start / stop callbacks, albeit with a different mode
-parameter.  However pause / resume is not allowed unless the event
-has been started and not stopped, so it is a different state.
-
+> The necessity of __maybe_unused has been removed along with the
+> introduction of LATE_SYSTEM_SLEEP_PM_OPS() and friends (and
+> *SET_*LATE_SYSTEM_SLEEP_PM_OPS along with the other helpers were marked
+> deprecated for that) and we can use pm_ptr() along with
+> LATE_SYSTEM_SLEEP_PM_OPS() to avoid build errors you mentioned.
 > 
-> Actually I was thinking about dropping samples using a BPF filter
-> outside the target scope (e.g. a syscall) but it'd be nice if we can
-> have builtin support for that.
+> FYI, I just build the driver with CONFIG_PM=n and all good.
+> 
 
-In general, I would have thought that capturing samples does not
-produce so much data that it cannot be filtered in post-processing.
-Looking at the email thread from above, that seems to be what
-Arnaldo has proposed.
+Ok, but are you sure you did ? You just mentioned earlier that CONFIG_PM
+is set automatically through ARCH_RZG2L.
 
-AUX area tracing is different in this regard.  Intel PT can produce
-more trace data than can be written out in time, so data will be
-lost for large traces.  Also post-processing takes a long time, so
-less data captured helps a lot there also.
+>> But then the driver
+>> won't be
+>> operational with CONFIG_PM=n, so I really wonder if it makes sense to
+>> include any
+>> such conditional code instead of making the driver depend on CONFIG_PM.
+> 
+> That's true. The driver wouldn't work if the CONFIG_PM=n but then it
+> depends on COMPILE_TEST which is exactly for this (just to compile test it
+> for platforms that don't support it). I see many watchdog drivers depends
+> on COMPILE_TEST.
+> 
+> Give this, please let me know would you like me to proceed with it.
+> 
+
+FWIW, COMPILE_TEST dependencies on watchdog drivers fails for most of them.
+Regarding pm_ptr(), it is there for practical reasons and not associated with
+COMPILE_TEST. Again, if the driver depends on CONFIG_PM to work, using constructs
+such as pm_ptr() just hides that and creates the impression that it would work
+without it. I do not think that is a good idea. You can use something like
+
+	depends on (ARCH_RENESAS && PM) || COMPILE_TEST
+
+to make that explicit. Even if not, I _really_ don't see the point in using
+pm_ptr() even without above dependency. What do you see as its benefit ?
+
+Thanks,
+Guenter
+
+> Thank you,
+> Claudiu Beznea
+> 
+>>
+>> I really don't think it is desirable to suggest that the driver would work
+>> with
+>> CONFIG_PM=n if that isn't really true.
+>>
+>> Guenter
+>>
+>>>        },
+>>>        .probe = rzg2l_wdt_probe,
+>>>    };
+>>
 
 
