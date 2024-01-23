@@ -1,110 +1,164 @@
-Return-Path: <linux-kernel+bounces-35110-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35112-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03527838C45
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:41:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40CFB838C4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:43:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35D5C1C22CB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:41:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A54DC1F27795
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:43:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 904CA5C8EE;
-	Tue, 23 Jan 2024 10:40:54 +0000 (UTC)
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11A9D5C8F6;
+	Tue, 23 Jan 2024 10:43:44 +0000 (UTC)
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 444C35C619;
-	Tue, 23 Jan 2024 10:40:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.112
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50C045C8E4;
+	Tue, 23 Jan 2024 10:43:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706006454; cv=none; b=IYp+m96QVaiQKW1NU4ErEet1UnYCw18wyVJhhchBD1JRCO9IADZDjt6ACvoExYJscLtZY24o72jpuk1r0ktMbQtQCj1Sq8+aRGzQtzHsozUDlNwkUCoP02nFKKa2+/5p2/40p9tgPtF6FBqtII+6eHI/ubgs92u1VzhqPjZ/TiE=
+	t=1706006623; cv=none; b=dyLm8iyM/D31isPdegCWWeuOZ6A+FoSxQI6S+bHFF4DjJXzvFBPRBvxEnGUTQCCBnkW55Clf/zMm8s1Q1FA5d9IepSwM99KpaqkHp8FbSMGLE7JO1fXdtXaWN5t3plJ5axpTtHKCWx5wen2zbWkhQ+OsGMFBe9fj3HpCyeDrByE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706006454; c=relaxed/simple;
-	bh=x/7+wwKxczN3ej1c6k89cW/RUSox0yusws0gWmDca6o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pRqXfimOFngLIKPl1iIAWPQGG1EVYCZ87hY1DYSSw4zQXQpe+AcupVXGuCqihnPwUHJ9LrJacxBR/2VDJbabuBecqEK/DWIkW32zJX2rw10AMN3UTF4Zn+NAx9mSHNCv3sBRDlbzYo5hu/HTbh8AMR1KChRmzIxFr5ec6Clnduk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; arc=none smtp.client-ip=115.124.30.112
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0W.CZc3u_1706006441;
-Received: from 30.221.145.142(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0W.CZc3u_1706006441)
-          by smtp.aliyun-inc.com;
-          Tue, 23 Jan 2024 18:40:42 +0800
-Message-ID: <3d1d06de-cb59-40d7-b0df-110e7dc904d6@linux.alibaba.com>
-Date: Tue, 23 Jan 2024 18:40:40 +0800
+	s=arc-20240116; t=1706006623; c=relaxed/simple;
+	bh=vzNLwrmmYhN7STFc+TXskif/GgqEExZ6ensAP1JUYjQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ISNXDRCgHf4uL/CgSigLvP/qM+s4j5bb+36Efv2V7lLP9/iw95GapWAJiXOupAaY83OQODAJ6ceoWG9VYH4iJIAehYUL6D4QplXePuGOmNp9nMVZWi+Zh+buH6HyYIxB7lHfVFk+fgO7AahZppsEQIrhp2hTw3i7VfLpFTISQxQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TK3YR5zBhz1Q89Q;
+	Tue, 23 Jan 2024 18:41:47 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
+	by mail.maildlp.com (Postfix) with ESMTPS id 92A341A0172;
+	Tue, 23 Jan 2024 18:43:31 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 23 Jan 2024 18:43:31 +0800
+From: Yunsheng Lin <linyunsheng@huawei.com>
+To: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
+CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Yunsheng Lin
+	<linyunsheng@huawei.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper
+ Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
+	<bpf@vger.kernel.org>
+Subject: [PATCH net-next v3 0/5] remove page frag implementation in vhost_net
+Date: Tue, 23 Jan 2024 18:42:45 +0800
+Message-ID: <20240123104250.9103-1-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] fuse: disable support for file handle when
- FUSE_EXPORT_SUPPORT not configured
-Content-Language: en-US
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: miklos@szeredi.hu, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240123093701.94166-1-jefflexu@linux.alibaba.com>
- <CAOQ4uxgna=Eimk4KHUByk5ZRu7NKHTPJQukgV9GE_DNN_3_ztA@mail.gmail.com>
-From: Jingbo Xu <jefflexu@linux.alibaba.com>
-In-Reply-To: <CAOQ4uxgna=Eimk4KHUByk5ZRu7NKHTPJQukgV9GE_DNN_3_ztA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+
+Currently there are three implementations for page frag:
+
+1. mm/page_alloc.c: net stack seems to be using it in the
+   rx part with 'struct page_frag_cache' and the main API
+   being page_frag_alloc_align().
+2. net/core/sock.c: net stack seems to be using it in the
+   tx part with 'struct page_frag' and the main API being
+   skb_page_frag_refill().
+3. drivers/vhost/net.c: vhost seems to be using it to build
+   xdp frame, and it's implementation seems to be a mix of
+   the above two.
+
+This patchset tries to unfiy the page frag implementation a
+little bit by unifying gfp bit for order 3 page allocation
+and replacing page frag implementation in vhost.c with the
+one in page_alloc.c.
+
+After this patchset, we are not only able to unify the page
+frag implementation a little, but also able to have about
+0.5% performance boost testing by using the vhost_net_test
+introduced in the last patch.
+
+Before this patchset:
+Performance counter stats for './vhost_net_test' (10 runs):
+
+     305325.78 msec task-clock                       #    1.738 CPUs utilized               ( +-  0.12% )
+       1048668      context-switches                 #    3.435 K/sec                       ( +-  0.00% )
+            11      cpu-migrations                   #    0.036 /sec                        ( +- 17.64% )
+            33      page-faults                      #    0.108 /sec                        ( +-  0.49% )
+  244651819491      cycles                           #    0.801 GHz                         ( +-  0.43% )  (64)
+   64714638024      stalled-cycles-frontend          #   26.45% frontend cycles idle        ( +-  2.19% )  (67)
+   30774313491      stalled-cycles-backend           #   12.58% backend cycles idle         ( +-  7.68% )  (70)
+  201749748680      instructions                     #    0.82  insn per cycle
+                                              #    0.32  stalled cycles per insn     ( +-  0.41% )  (66.76%)
+   65494787909      branches                         #  214.508 M/sec                       ( +-  0.35% )  (64)
+    4284111313      branch-misses                    #    6.54% of all branches             ( +-  0.45% )  (66)
+
+       175.699 +- 0.189 seconds time elapsed  ( +-  0.11% )
 
 
+After this patchset:
+Performance counter stats for './vhost_net_test' (10 runs):
 
-On 1/23/24 6:17 PM, Amir Goldstein wrote:
-> If you somehow find a way to mitigate the regression for NFS export of
-> old fuse servers (maybe an opt-in Kconfig?), your patch is also going to
-> regress AT_HANDLE_FID functionality, which can be used by fanotify to
-> monitor fuse.
-> 
-> AT_HANDLE_FID flag to name_to_handle_at(2) means that
-> open_by_handle_at(2) is not supposed to be called on that fh.
-> 
-> The correct way to deal with that would be something like this:
-> 
-> +static const struct export_operations fuse_fid_operations = {
-> +       .encode_fh      = fuse_encode_fh,
-> +};
-> +
->  static const struct export_operations fuse_export_operations = {
->         .fh_to_dentry   = fuse_fh_to_dentry,
->         .fh_to_parent   = fuse_fh_to_parent,
-> @@ -1529,12 +1533,16 @@ static void fuse_fill_attr_from_inode(struct
-> fuse_attr *attr,
-> 
->  static void fuse_sb_defaults(struct super_block *sb)
->  {
-> +       struct fuse_mount *fm = get_fuse_mount_super(sb);
-> +
->         sb->s_magic = FUSE_SUPER_MAGIC;
->         sb->s_op = &fuse_super_operations;
->         sb->s_xattr = fuse_xattr_handlers;
->         sb->s_maxbytes = MAX_LFS_FILESIZE;
->         sb->s_time_gran = 1;
-> -       sb->s_export_op = &fuse_export_operations;
-> +       if (fm->fc->export_support)
-> +               sb->s_export_op = &fuse_export_operations;
-> +       else
-> +               sb->s_export_op = &fuse_fid_operations;
->         sb->s_iflags |= SB_I_IMA_UNVERIFIABLE_SIGNATURE;
->         if (sb->s_user_ns != &init_user_ns)
->                 sb->s_iflags |= SB_I_UNTRUSTED_MOUNTER;
-> 
-> ---
-> 
-> This would make name_to_handle_at() without AT_HANDLE_FID fail
-> and name_to_handle_at() with AT_HANDLE_FID to succeed as it should.
-> 
+     303974.38 msec task-clock                       #    1.739 CPUs utilized               ( +-  0.14% )
+       1048807      context-switches                 #    3.450 K/sec                       ( +-  0.00% )
+            14      cpu-migrations                   #    0.046 /sec                        ( +- 12.86% )
+            33      page-faults                      #    0.109 /sec                        ( +-  0.46% )
+  251289376347      cycles                           #    0.827 GHz                         ( +-  0.32% )  (60)
+   67885175415      stalled-cycles-frontend          #   27.01% frontend cycles idle        ( +-  0.48% )  (63)
+   27809282600      stalled-cycles-backend           #   11.07% backend cycles idle         ( +-  0.36% )  (71)
+  195543234672      instructions                     #    0.78  insn per cycle
+                                              #    0.35  stalled cycles per insn     ( +-  0.29% )  (69.04%)
+   62423183552      branches                         #  205.357 M/sec                       ( +-  0.48% )  (67)
+    4135666632      branch-misses                    #    6.63% of all branches             ( +-  0.63% )  (67)
 
-Oh I didn't notice this.  Many thanks!
+       174.764 +- 0.214 seconds time elapsed  ( +-  0.12% )
 
+Changelog:
+V3:
+1. Add __page_frag_alloc_align() which is passed with the align mask
+   the original function expected as suggested by Alexander.
+2. Drop patch 3 in v2 suggested by Alexander.
+3. Reorder patch 4 & 5 in v2 suggested by Alexander.
+
+Note that placing this gfp flags handing for order 3 page in an inline
+function is not considered, as we may be able to unify the page_frag
+and page_frag_cache handling.
+
+V2: Change 'xor'd' to 'masked off', add vhost tx testing for
+    vhost_net_test.
+
+V1: Fix some typo, drop RFC tag and rebase on latest net-next.
+
+
+Yunsheng Lin (5):
+  mm/page_alloc: modify page_frag_alloc_align() to accept align as an
+    argument
+  page_frag: unify gfp bits for order 3 page allocation
+  net: introduce page_frag_cache_drain()
+  vhost/net: remove vhost_net_page_frag_refill()
+  tools: virtio: introduce vhost_net_test
+
+ drivers/net/ethernet/google/gve/gve_main.c |  11 +-
+ drivers/net/ethernet/mediatek/mtk_wed_wo.c |  17 +-
+ drivers/nvme/host/tcp.c                    |   7 +-
+ drivers/nvme/target/tcp.c                  |   4 +-
+ drivers/vhost/net.c                        |  91 +---
+ include/linux/gfp.h                        |  16 +-
+ mm/page_alloc.c                            |  22 +-
+ net/core/skbuff.c                          |   6 +-
+ net/core/sock.c                            |   2 +-
+ tools/virtio/.gitignore                    |   1 +
+ tools/virtio/Makefile                      |   8 +-
+ tools/virtio/vhost_net_test.c              | 576 +++++++++++++++++++++
+ 12 files changed, 647 insertions(+), 114 deletions(-)
+ create mode 100644 tools/virtio/vhost_net_test.c
 
 -- 
-Thanks,
-Jingbo
+2.33.0
+
 
