@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-35372-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35373-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64EFF838FB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:24:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5CF8838FB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:25:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26F38289E0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:24:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7349F1F2263C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:25:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17539679EA;
-	Tue, 23 Jan 2024 13:11:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E17F867A07;
+	Tue, 23 Jan 2024 13:11:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="42W8aOdE";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="zKuaeNvg"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="wSOeptZk";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="n32UEGzM"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B08067745
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D09067759
 	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 13:11:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706015502; cv=none; b=sFLyXDaKBYmENPsS4/1InT5hF1E0lgGL1CAW7rpFOgvwwFpctWrR1GwnzEdIiiKe8GNWaJHQzqGqfcKrcI1u3j/DeVYi+0eGMtlPol0tOcrpp3pFSrnBHMp79OQJXuiHrCWxgA4FVv4cV1OUZIsfXeeHZcxvHxSiTzTZMtnh+Rk=
+	t=1706015503; cv=none; b=EcQM6ZPgq6q3rs0tmIVhufZvSlr8TeWPZ2gUlHbhoNBf0usk7s1Mx2byZSRbLk+nGRHv73lxuiKk0iV/EBW7SZ7aOI3txnV6cu1tyYKFWJADU7suKU867qvAi2gsK4bMTb3c837jnfjHSqRHzAjxlVadxN7HYKL3YFXTl1xi7Ek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706015502; c=relaxed/simple;
-	bh=a7hyVcNtgOTV6ZyFP0GW+8CW5gYxmQj62A/C5scuKns=;
+	s=arc-20240116; t=1706015503; c=relaxed/simple;
+	bh=O8PAtX8pfo+fiAW/s8V3ywe8Lrl+NxLlS4N173AWA68=;
 	h=Message-ID:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Date; b=t4oz0AmiVAatRx2mnD/UkSNQfxmFGh16aowg1TvW/0BXTBiX+oTIsBvv4kNaHwAKLfFSjLhMRQ/H5XrQx/YY+4hpEJUW04jiT7lvXLgsKmpNxv53XjFjkakLv/DWqNHS5dyG7J4bWSTpmZwCw3lJ6hOitCyCNYzQ7J/32AjF8m0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=42W8aOdE; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=zKuaeNvg; arc=none smtp.client-ip=193.142.43.55
+	 Content-Type:Date; b=cLcvGESCiyvG9TnN7kAFnhpWfTExDivUQOgoPBab94R+oaeRghgqmbghO18u2tlvGJ199jaaGZbAmIPWYTz7IiDpWZ5PR01wwrfhB1j/DwCoz9cGfrlndIIyFkEMf6cVeCteSX0clY5uw2bf1jDVsAc507k3yW+8DWOuk3B9a1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=wSOeptZk; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=n32UEGzM; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Message-ID: <20240118123650.197180058@linutronix.de>
+Message-ID: <20240118123650.253438239@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020; t=1706015499;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=NchMEj6plFXnohvx3VS5b0MwN9MQsuMGVmncnXh1rOQ=;
-	b=42W8aOdEwEdn3K3q6XuslbgC4efbM2IOiP0Fhz3ZoXmZF5eeSMorjJ+MKzDG0lV16wFJnK
-	luTuVgt1qXuhf+yaIJFa1TgrzT5fQaW4T23zpQ1hqZAHDwzFL9Oy92u7HY4wz4seAiEQcq
-	GX9jbHADZdBc312C20iLXhJZT7EMDzBMMRoLUvxUKZ3dJesJ7ueDBHlhlg+tXJoTeziCUV
-	Pa/8NQVIdKKFGZKyQWWpIv/ns1LxHI5B1lPH05Rt5gnyKzAYhoZZBXtoRjMMrS7axOoJ/U
-	6lIcd38pbFtxkwuC48Uq5GC175ah7Kiu7a63cEtnvtyZGqnIgOqP+Qq6RmxYHQ==
+	 references:references; bh=MDB9nbznSrMD/b9LoNRbLQGrccIcibNBwWGQ1PLIlrY=;
+	b=wSOeptZkfwOb1HX2TbpJY4PSgYbxcSY0BkaVpWrNPftNtskR9mOQW9vqN2XSJI2HhfoQ0d
+	xYuNg+hLR7vUuJAEesEYVOGmelkP+j4vpxlAYUtF7IO8S8CX8XMv3PIaerX3QFxfMxfZrC
+	GRtunUsnFvdXDbOCxcK/4j4FHwArxtslZIbc9hNw3MKKakME0dSiKkBN+Cp77Ymf4g7eyJ
+	rFWBj/dnyCT6SGATn12k8lOPs2uaIw37dbZY6EP4k0U6zZXbAQG8J3pf6FRwKQ+wH6GLtc
+	krH+SyPLEkcmRuvexQRdMf/PCKezdLjZEuMJzFK/qalyLj1RIIESYVdap5ZTDw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1706015499;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=NchMEj6plFXnohvx3VS5b0MwN9MQsuMGVmncnXh1rOQ=;
-	b=zKuaeNvg/k+WXNIadQ3+SuKDxFRN6mz0sowRiaks93gSgk9VHhPPlRiNWSQdEfbihloJLR
-	YeisJGt7nCFRWFDQ==
+	 references:references; bh=MDB9nbznSrMD/b9LoNRbLQGrccIcibNBwWGQ1PLIlrY=;
+	b=n32UEGzMLsBBI6jm+b/EFghYOUVuJAH0kp9HFl2EF4vyzkcfzg4c2vi61mwkLC9p7t16Cr
+	xY8EuHiWjxVYumCQ==
 From: Thomas Gleixner <tglx@linutronix.de>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: x86@kernel.org,
@@ -67,8 +67,7 @@ Cc: x86@kernel.org,
  Andy Shevchenko <andy@infradead.org>,
  Michael Kelley <mhklinux@outlook.com>,
  "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch v2 29/30] x86/cpu/topology: Provide
- __num_[cores|threads]_per_package
+Subject: [patch v2 30/30] x86/cpu/topology: Get rid of cpuinfo::x86_max_cores
 References: <20240118123127.055361964@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -77,89 +76,277 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date: Tue, 23 Jan 2024 14:11:37 +0100 (CET)
+Date: Tue, 23 Jan 2024 14:11:38 +0100 (CET)
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-Expose properly accounted information and accessors so the fiddling with
-other topology variables can be replaced.
+Now that __num_cores_per_package and __num_threads_per_package are
+available, cpuinfo::x86_max_cores and the related math all over the place
+can be replaced with the ready to consume data.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
 
 
 ---
- arch/x86/include/asm/topology.h |   12 ++++++++++++
- arch/x86/kernel/cpu/common.c    |    6 ++++++
- arch/x86/kernel/cpu/topology.c  |    8 +++++++-
- 3 files changed, 25 insertions(+), 1 deletion(-)
+ Documentation/arch/x86/topology.rst              |   24 ++++++++---------------
+ arch/x86/events/intel/uncore_nhmex.c             |    4 +--
+ arch/x86/events/intel/uncore_snb.c               |    8 +++----
+ arch/x86/events/intel/uncore_snbep.c             |   16 +++++++--------
+ arch/x86/include/asm/processor.h                 |    2 -
+ arch/x86/kernel/cpu/cacheinfo.c                  |    2 -
+ arch/x86/kernel/cpu/common.c                     |    1 
+ arch/x86/kernel/cpu/debugfs.c                    |    3 +-
+ arch/x86/kernel/cpu/mce/inject.c                 |    3 --
+ arch/x86/kernel/cpu/microcode/intel.c            |    2 -
+ arch/x86/kernel/cpu/topology_common.c            |    3 --
+ arch/x86/kernel/smpboot.c                        |    2 -
+ drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c |    2 -
+ drivers/hwmon/fam15h_power.c                     |    2 -
+ 14 files changed, 31 insertions(+), 43 deletions(-)
 ---
---- a/arch/x86/include/asm/topology.h
-+++ b/arch/x86/include/asm/topology.h
-@@ -146,6 +146,8 @@ extern const struct cpumask *cpu_cluster
- extern unsigned int __max_dies_per_package;
- extern unsigned int __max_logical_packages;
- extern unsigned int __max_threads_per_core;
-+extern unsigned int __num_threads_per_package;
-+extern unsigned int __num_cores_per_package;
+--- a/Documentation/arch/x86/topology.rst
++++ b/Documentation/arch/x86/topology.rst
+@@ -47,17 +47,21 @@ AMD nomenclature for package is 'Node'.
  
- static inline unsigned int topology_max_packages(void)
+ Package-related topology information in the kernel:
+ 
+-  - cpuinfo_x86.x86_max_cores:
++  - topology_num_threads_per_package()
+ 
+-    The number of cores in a package. This information is retrieved via CPUID.
++    The number of threads in a package.
+ 
+-  - cpuinfo_x86.x86_max_dies:
++  - topology_num_cores_per_package()
+ 
+-    The number of dies in a package. This information is retrieved via CPUID.
++    The number of cores in a package.
++
++  - topology_max_dies_per_package()
++
++    The maximum number of dies in a package.
+ 
+   - cpuinfo_x86.topo.die_id:
+ 
+-    The physical ID of the die. This information is retrieved via CPUID.
++    The physical ID of the die.
+ 
+   - cpuinfo_x86.topo.pkg_id:
+ 
+@@ -96,16 +100,6 @@ are SMT- or CMT-type threads.
+ AMDs nomenclature for a CMT core is "Compute Unit". The kernel always uses
+ "core".
+ 
+-Core-related topology information in the kernel:
+-
+-  - smp_num_siblings:
+-
+-    The number of threads in a core. The number of threads in a package can be
+-    calculated by::
+-
+-	threads_per_package = cpuinfo_x86.x86_max_cores * smp_num_siblings
+-
+-
+ Threads
+ =======
+ A thread is a single scheduling unit. It's the equivalent to a logical Linux
+--- a/arch/x86/events/intel/uncore_nhmex.c
++++ b/arch/x86/events/intel/uncore_nhmex.c
+@@ -1221,8 +1221,8 @@ void nhmex_uncore_cpu_init(void)
+ 		uncore_nhmex = true;
+ 	else
+ 		nhmex_uncore_mbox.event_descs = wsmex_uncore_mbox_events;
+-	if (nhmex_uncore_cbox.num_boxes > boot_cpu_data.x86_max_cores)
+-		nhmex_uncore_cbox.num_boxes = boot_cpu_data.x86_max_cores;
++	if (nhmex_uncore_cbox.num_boxes > topology_num_cores_per_package())
++		nhmex_uncore_cbox.num_boxes = topology_num_cores_per_package();
+ 	uncore_msr_uncores = nhmex_msr_uncores;
+ }
+ /* end of Nehalem-EX uncore support */
+--- a/arch/x86/events/intel/uncore_snb.c
++++ b/arch/x86/events/intel/uncore_snb.c
+@@ -364,8 +364,8 @@ static struct intel_uncore_type *snb_msr
+ void snb_uncore_cpu_init(void)
  {
-@@ -157,6 +159,16 @@ static inline unsigned int topology_max_
- 	return __max_dies_per_package;
+ 	uncore_msr_uncores = snb_msr_uncores;
+-	if (snb_uncore_cbox.num_boxes > boot_cpu_data.x86_max_cores)
+-		snb_uncore_cbox.num_boxes = boot_cpu_data.x86_max_cores;
++	if (snb_uncore_cbox.num_boxes > topology_num_cores_per_package())
++		snb_uncore_cbox.num_boxes = topology_num_cores_per_package();
  }
  
-+static inline unsigned int topology_num_cores_per_package(void)
-+{
-+	return __num_cores_per_package;
-+}
-+
-+static inline unsigned int topology_num_threads_per_package(void)
-+{
-+	return __num_threads_per_package;
-+}
-+
- #ifdef CONFIG_X86_LOCAL_APIC
- int topology_get_logical_id(u32 apicid, enum x86_topology_domains at_level);
- #else
+ static void skl_uncore_msr_init_box(struct intel_uncore_box *box)
+@@ -428,8 +428,8 @@ static struct intel_uncore_type *skl_msr
+ void skl_uncore_cpu_init(void)
+ {
+ 	uncore_msr_uncores = skl_msr_uncores;
+-	if (skl_uncore_cbox.num_boxes > boot_cpu_data.x86_max_cores)
+-		skl_uncore_cbox.num_boxes = boot_cpu_data.x86_max_cores;
++	if (skl_uncore_cbox.num_boxes > topology_num_cores_per_package())
++		skl_uncore_cbox.num_boxes = topology_num_cores_per_package();
+ 	snb_uncore_arb.ops = &skl_uncore_msr_ops;
+ }
+ 
+--- a/arch/x86/events/intel/uncore_snbep.c
++++ b/arch/x86/events/intel/uncore_snbep.c
+@@ -1172,8 +1172,8 @@ static struct intel_uncore_type *snbep_m
+ 
+ void snbep_uncore_cpu_init(void)
+ {
+-	if (snbep_uncore_cbox.num_boxes > boot_cpu_data.x86_max_cores)
+-		snbep_uncore_cbox.num_boxes = boot_cpu_data.x86_max_cores;
++	if (snbep_uncore_cbox.num_boxes > topology_num_cores_per_package())
++		snbep_uncore_cbox.num_boxes = topology_num_cores_per_package();
+ 	uncore_msr_uncores = snbep_msr_uncores;
+ }
+ 
+@@ -1845,8 +1845,8 @@ static struct intel_uncore_type *ivbep_m
+ 
+ void ivbep_uncore_cpu_init(void)
+ {
+-	if (ivbep_uncore_cbox.num_boxes > boot_cpu_data.x86_max_cores)
+-		ivbep_uncore_cbox.num_boxes = boot_cpu_data.x86_max_cores;
++	if (ivbep_uncore_cbox.num_boxes > topology_num_cores_per_package())
++		ivbep_uncore_cbox.num_boxes = topology_num_cores_per_package();
+ 	uncore_msr_uncores = ivbep_msr_uncores;
+ }
+ 
+@@ -2917,8 +2917,8 @@ static bool hswep_has_limit_sbox(unsigne
+ 
+ void hswep_uncore_cpu_init(void)
+ {
+-	if (hswep_uncore_cbox.num_boxes > boot_cpu_data.x86_max_cores)
+-		hswep_uncore_cbox.num_boxes = boot_cpu_data.x86_max_cores;
++	if (hswep_uncore_cbox.num_boxes > topology_num_cores_per_package())
++		hswep_uncore_cbox.num_boxes = topology_num_cores_per_package();
+ 
+ 	/* Detect 6-8 core systems with only two SBOXes */
+ 	if (hswep_has_limit_sbox(HSWEP_PCU_DID))
+@@ -3280,8 +3280,8 @@ static struct event_constraint bdx_uncor
+ 
+ void bdx_uncore_cpu_init(void)
+ {
+-	if (bdx_uncore_cbox.num_boxes > boot_cpu_data.x86_max_cores)
+-		bdx_uncore_cbox.num_boxes = boot_cpu_data.x86_max_cores;
++	if (bdx_uncore_cbox.num_boxes > topology_num_cores_per_package())
++		bdx_uncore_cbox.num_boxes = topology_num_cores_per_package();
+ 	uncore_msr_uncores = bdx_msr_uncores;
+ 
+ 	/* Detect systems with no SBOXes */
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -149,8 +149,6 @@ struct cpuinfo_x86 {
+ 	unsigned long		loops_per_jiffy;
+ 	/* protected processor identification number */
+ 	u64			ppin;
+-	/* cpuid returned max cores value: */
+-	u16			x86_max_cores;
+ 	u16			x86_clflush_size;
+ 	/* number of cores as seen by the OS: */
+ 	u16			booted_cores;
+--- a/arch/x86/kernel/cpu/cacheinfo.c
++++ b/arch/x86/kernel/cpu/cacheinfo.c
+@@ -301,7 +301,7 @@ amd_cpuid4(int leaf, union _cpuid4_leaf_
+ 	eax->split.type = types[leaf];
+ 	eax->split.level = levels[leaf];
+ 	eax->split.num_threads_sharing = 0;
+-	eax->split.num_cores_on_die = __this_cpu_read(cpu_info.x86_max_cores) - 1;
++	eax->split.num_cores_on_die = topology_num_cores_per_package();
+ 
+ 
+ 	if (assoc == 0xffff)
 --- a/arch/x86/kernel/cpu/common.c
 +++ b/arch/x86/kernel/cpu/common.c
-@@ -81,6 +81,12 @@ EXPORT_SYMBOL(__max_dies_per_package);
- unsigned int __max_logical_packages __ro_after_init = 1;
- EXPORT_SYMBOL(__max_logical_packages);
+@@ -1737,7 +1737,6 @@ static void identify_cpu(struct cpuinfo_
+ 	c->x86_model = c->x86_stepping = 0;	/* So far unknown... */
+ 	c->x86_vendor_id[0] = '\0'; /* Unset */
+ 	c->x86_model_id[0] = '\0';  /* Unset */
+-	c->x86_max_cores = 1;
+ #ifdef CONFIG_X86_64
+ 	c->x86_clflush_size = 64;
+ 	c->x86_phys_bits = 36;
+--- a/arch/x86/kernel/cpu/debugfs.c
++++ b/arch/x86/kernel/cpu/debugfs.c
+@@ -28,7 +28,8 @@ static int cpu_debug_show(struct seq_fil
+ 	seq_printf(m, "l2c_id:              %u\n", c->topo.l2c_id);
+ 	seq_printf(m, "amd_node_id:         %u\n", c->topo.amd_node_id);
+ 	seq_printf(m, "amd_nodes_per_pkg:   %u\n", topology_amd_nodes_per_pkg());
+-	seq_printf(m, "max_cores:           %u\n", c->x86_max_cores);
++	seq_printf(m, "num_threads:         %u\n", __num_threads_per_package);
++	seq_printf(m, "num_cores:           %u\n", __num_cores_per_package);
+ 	seq_printf(m, "max_dies_per_pkg:    %u\n", __max_dies_per_package);
+ 	seq_printf(m, "max_threads_per_core:%u\n", __max_threads_per_core);
+ 	return 0;
+--- a/arch/x86/kernel/cpu/mce/inject.c
++++ b/arch/x86/kernel/cpu/mce/inject.c
+@@ -430,10 +430,9 @@ static void trigger_thr_int(void *info)
  
-+unsigned int __num_cores_per_package __ro_after_init = 1;
-+EXPORT_SYMBOL(__num_cores_per_package);
-+
-+unsigned int __num_threads_per_package __ro_after_init = 1;
-+EXPORT_SYMBOL(__num_threads_per_package);
-+
- static struct ppin_info {
- 	int	feature;
- 	int	msr_ppin_ctl;
---- a/arch/x86/kernel/cpu/topology.c
-+++ b/arch/x86/kernel/cpu/topology.c
-@@ -386,7 +386,7 @@ void __init topology_init_possible_cpus(
- 	unsigned int disabled = topo_info.nr_disabled_cpus;
- 	unsigned int cnta, cntb, cpu, allowed = 1;
- 	unsigned int total = assigned + disabled;
--	u32 apicid;
-+	u32 apicid, firstid;
+ static u32 get_nbc_for_node(int node_id)
+ {
+-	struct cpuinfo_x86 *c = &boot_cpu_data;
+ 	u32 cores_per_node;
  
- 	if (!restrict_to_up()) {
- 		if (WARN_ON_ONCE(assigned > nr_cpu_ids)) {
-@@ -422,6 +422,12 @@ void __init topology_init_possible_cpus(
- 	__max_threads_per_core = 1U << (get_count_order(cntb) - get_count_order(cnta));
- 	pr_info("Max. threads per core: %3u\n", __max_threads_per_core);
+-	cores_per_node = (c->x86_max_cores * __max_threads_per_core) / topology_amd_nodes_per_pkg();
++	cores_per_node = topology_num_threads_per_package() / topology_amd_nodes_per_pkg();
+ 	return cores_per_node * node_id;
+ }
  
-+	firstid = find_first_bit(apic_maps[TOPO_SMT_DOMAIN].map, MAX_LOCAL_APIC);
-+	__num_cores_per_package = topology_unit_count(firstid, TOPO_CORE_DOMAIN, TOPO_PKG_DOMAIN);
-+	pr_info("Num. cores per package:   %3u\n", __num_cores_per_package);
-+	__num_threads_per_package = topology_unit_count(firstid, TOPO_SMT_DOMAIN, TOPO_PKG_DOMAIN);
-+	pr_info("Num. threads per package: %3u\n", __num_threads_per_package);
-+
- 	pr_info("Allowing %u present CPUs plus %u hotplug CPUs\n", assigned, disabled);
- 	if (topo_info.nr_rejected_cpus)
- 		pr_info("Rejected CPUs %u\n", topo_info.nr_rejected_cpus);
+--- a/arch/x86/kernel/cpu/microcode/intel.c
++++ b/arch/x86/kernel/cpu/microcode/intel.c
+@@ -641,7 +641,7 @@ static __init void calc_llc_size_per_cor
+ {
+ 	u64 llc_size = c->x86_cache_size * 1024ULL;
+ 
+-	do_div(llc_size, c->x86_max_cores);
++	do_div(llc_size, topology_num_cores_per_package());
+ 	llc_size_per_core = (unsigned int)llc_size;
+ }
+ 
+--- a/arch/x86/kernel/cpu/topology_common.c
++++ b/arch/x86/kernel/cpu/topology_common.c
+@@ -155,9 +155,6 @@ static void topo_set_ids(struct topo_sca
+ 	c->topo.core_id = (apicid & topo_domain_mask(TOPO_PKG_DOMAIN)) >>
+ 		x86_topo_system.dom_shifts[TOPO_SMT_DOMAIN];
+ 
+-	/* Maximum number of cores on this package */
+-	c->x86_max_cores = topology_unit_count(apicid, TOPO_CORE_DOMAIN, TOPO_PKG_DOMAIN);
+-
+ 	c->topo.amd_node_id = tscan->amd_node_id;
+ 
+ 	if (c->x86_vendor == X86_VENDOR_AMD)
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -564,7 +564,7 @@ static void __init build_sched_topology(
+ void set_cpu_sibling_map(int cpu)
+ {
+ 	bool has_smt = __max_threads_per_core > 1;
+-	bool has_mp = has_smt || boot_cpu_data.x86_max_cores > 1;
++	bool has_mp = has_smt || topology_num_cores_per_package() > 1;
+ 	struct cpuinfo_x86 *c = &cpu_data(cpu);
+ 	struct cpuinfo_x86 *o;
+ 	int i, threads;
+--- a/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
++++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
+@@ -451,7 +451,7 @@ static int vangogh_init_smc_tables(struc
+ 
+ #ifdef CONFIG_X86
+ 	/* AMD x86 APU only */
+-	smu->cpu_core_num = boot_cpu_data.x86_max_cores;
++	smu->cpu_core_num = topology_num_cores_per_package();
+ #else
+ 	smu->cpu_core_num = 4;
+ #endif
+--- a/drivers/hwmon/fam15h_power.c
++++ b/drivers/hwmon/fam15h_power.c
+@@ -209,7 +209,7 @@ static ssize_t power1_average_show(struc
+ 	 * With the new x86 topology modelling, x86_max_cores is the
+ 	 * compute unit number.
+ 	 */
+-	cu_num = boot_cpu_data.x86_max_cores;
++	cu_num = topology_num_cores_per_package();
+ 
+ 	ret = read_registers(data);
+ 	if (ret)
 
 
