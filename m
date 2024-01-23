@@ -1,104 +1,98 @@
-Return-Path: <linux-kernel+bounces-34879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D36398388AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:17:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAC958388B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:20:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D002B25061
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:17:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D9FF1F22FA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:20:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E93BC56754;
-	Tue, 23 Jan 2024 08:17:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB49A5674D;
+	Tue, 23 Jan 2024 08:20:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="OO8tkWyc"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pai4CYDW"
+Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33E592AE91;
-	Tue, 23 Jan 2024 08:16:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFB3F1F60F
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 08:20:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705997821; cv=none; b=lb19rgxvFEqguVdXb/cdD7eHIIUnvN10XQZD8t12mEmGArEPItSndbRCjD7qfEjX+JiczYEpIrZ4K34oGDaiTlsyVW0mtRYNAaeJiIGFo3qQReU2UdorqCoBf3l0N51C3TowYHfxUcxHdPZ3cM15kSk4qc8DsUJCb2G9FvP9rPI=
+	t=1705998017; cv=none; b=AyCtPizhTOBzCiITneDw7JhuXkSF6tzrf29dvKH6zo3Pj0OpTOiD80tz8baMwkGVWhjJW3J+Z/VzYitYnq620++tGH22dbGRYVMnXbdF1MPpjk0eVPqot5G4mtDSmNxP2rG5zPWEjc8seIQRfvsMelvnm4J7jpRgv6iFiPi318I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705997821; c=relaxed/simple;
-	bh=yL0/rRUOOruG/OmQchTn5YSdcONtJQUhMYQ7Vuqu9Mc=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ha8ynrBhc9YCJpYhAYm0oEJs4pQD/WJU+Go5MfwYCOaepKTdQiPrTr2AP9VaEnltqBdcv9aUz+Ct6DFGT3Kc7GxADhNpsfNfQh3iMbs0vEEjcTfOStqZPkNRkxeLqyY99Wd7yY8UiG2sfqVXUWs9wC3F4lk+4B7d7R3HQ/iDAGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=OO8tkWyc; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1705997819; x=1737533819;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=yL0/rRUOOruG/OmQchTn5YSdcONtJQUhMYQ7Vuqu9Mc=;
-  b=OO8tkWyc+zbu3GDlAGqRlIexhJWbtmruLs8COxEs7IiAbn2PM6wDe4T6
-   LBTQCqH2Z5IQbwn4ZccTUNCVHCymKigp2dYc9n4AKlNbtHgLGiS7xqB7i
-   YQl7Dtg5O2CfjBH2O0Fy65imTrOGrDgq09F2bRjHfPmltF7mCeMBAoLHY
-   4WCkUycYfJNuZAr1+sSb7gDucpRTyourBOQ3A/oJa3UDtLHgWtxDrGeLW
-   0vOcPB0YCpG6sJOheheJ/vn2uuRzuR2BSMQ+YYtZNNK7ZfUdqLhD6fAM9
-   2MS4np6sNzk5L+1kSqBXYa1EYin0t+isY99yVentGzyMAync0Ts1yPB/Q
-   g==;
-X-CSE-ConnectionGUID: k8HP9AtUSy+tUHKq9DRptg==
-X-CSE-MsgGUID: hFw3hhdgQVeUod1aWPjpow==
-X-IronPort-AV: E=Sophos;i="6.05,213,1701154800"; 
-   d="scan'208";a="16393439"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 23 Jan 2024 01:16:57 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 23 Jan 2024 01:16:29 -0700
-Received: from DEN-DL-M31836.microsemi.net (10.10.85.11) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Tue, 23 Jan 2024 01:16:27 -0700
-From: Horatiu Vultur <horatiu.vultur@microchip.com>
-To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<UNGLinuxDriver@microchip.com>, Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH net] net: lan966x: Fix port configuration when using SGMII interface
-Date: Tue, 23 Jan 2024 09:15:14 +0100
-Message-ID: <20240123081514.3625293-1-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1705998017; c=relaxed/simple;
+	bh=pWYjuVp7TeGhKmbksvD82QA7LeaebSptPXTW2lDqgHk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GYuBsuyIk21BXMw6YiSoHbM9CKv4d5Xf0dabBlfGvWqQw9tpJ14wh2J1+vqtrRKMZOHLeES/etgfVciix6sFRE3Ll2aUmd6OnO16OHXU+W5gCINdZ0JqLtAzNpibaIVZ13Q8nxWkUoBatzbM93kD4WWQQvYve0Lrj7oc/MQ8wHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pai4CYDW; arc=none smtp.client-ip=95.215.58.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <95a7a0b2-615d-49ca-b568-1376a35493c4@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1705998011;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EVIkQhPcPlKe9b1S3Oh/Jh/ARelid6N/hSItWhRruMc=;
+	b=pai4CYDWSFYrNAEz5Le4VbHGOdlkmeMmxX2x9egYjwZxK2QxyKjmbZoChEFKhKiEAhL//F
+	TffwO4uNuajr5n7sZxJmzOGhKIkDLZmIQY15V2eyP+dOO1ws+2rAto5EnpKS/o+T7bsS31
+	pC7n4hpvGcr8Uw8T6LNT16azEc7GHZ4=
+Date: Tue, 23 Jan 2024 16:20:04 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Subject: Re: [PATCH 2/5] drm/bridge: simple-bridge: Extend match support for
+ non-DT based systems
+Content-Language: en-US
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: David Airlie <airlied@gmail.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+References: <20240122163220.110788-1-sui.jingfeng@linux.dev>
+ <20240122163220.110788-3-sui.jingfeng@linux.dev>
+ <20240123012139.GD22880@pendragon.ideasonboard.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sui Jingfeng <sui.jingfeng@linux.dev>
+In-Reply-To: <20240123012139.GD22880@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-In case the interface between the MAC and the PHY is SGMII, then the bit
-GIGA_MODE on the MAC side needs to be set regardless of the speed at
-which it is running.
+Hi,
 
-Fixes: d28d6d2e37d1 ("net: lan966x: add port module support")
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
- drivers/net/ethernet/microchip/lan966x/lan966x_port.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_port.c b/drivers/net/ethernet/microchip/lan966x/lan966x_port.c
-index 92108d354051c..975a6d64a2e18 100644
---- a/drivers/net/ethernet/microchip/lan966x/lan966x_port.c
-+++ b/drivers/net/ethernet/microchip/lan966x/lan966x_port.c
-@@ -170,7 +170,8 @@ static void lan966x_port_link_up(struct lan966x_port *port)
- 	/* Also the GIGA_MODE_ENA(1) needs to be set regardless of the
- 	 * port speed for QSGMII ports.
- 	 */
--	if (phy_interface_num_ports(config->portmode) == 4)
-+	if (phy_interface_num_ports(config->portmode) == 4 ||
-+	    config->portmode == PHY_INTERFACE_MODE_SGMII)
- 		mode = DEV_MAC_MODE_CFG_GIGA_MODE_ENA_SET(1);
- 
- 	lan_wr(config->duplex | mode,
--- 
-2.34.1
+On 2024/1/23 09:21, Laurent Pinchart wrote:
+> On Tue, Jan 23, 2024 at 12:32:17AM +0800, Sui Jingfeng wrote:
+>> Which is intended to be used on non-DT environment, where the simple-bridge
+>> platform device is created by either the display controller driver side or
+>> platform firmware subsystem.
+> Could you give an example of a platform where you intend to use this ?
+
+
+For example:
+
+1) USB based display adapter, such as FL2000DX[1] which use
+    the it66121 HDMI transmitter to convert the RGB888 to HDMI.
+
+
+2) Simple 2D PCIe display controller, such as SM750(EMPV-1201)
+    which using sii9022 HDMI transmitter to convert the RGB888
+    to HDMI.
+
+
+3) Some FPGA PCIe Board (sil9136)
+
+4) Be able to run unit test of drm bridges on X86.
+  
+[1] https://github.com/FrescoLogic/FL2000
 
 
