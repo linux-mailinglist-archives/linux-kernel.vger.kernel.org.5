@@ -1,81 +1,79 @@
-Return-Path: <linux-kernel+bounces-34873-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34874-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26EE583889E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:13:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5720F8388A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:13:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC7561F26F01
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:13:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5CD51F27142
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:13:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE0F356463;
-	Tue, 23 Jan 2024 08:12:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E953D5647B;
+	Tue, 23 Jan 2024 08:13:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="A0D1hSU1"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CRsXZRir"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E75C456450
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 08:12:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEC9755E76
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 08:13:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705997576; cv=none; b=Ic8wevZGSIo/LJSqyBfB1famQOzEVWrA616eIBOL68NW0R+iy406p1bRxeiTbXaLLHC/edNhwggXjjNZT0lC05uaIaRAYIDX6dl1G0glLEGmKPM6q7Y9HK0a/5Phbjz97TAMSvRVlK2QBQJsSKusDGC8XK8ep/esfOTjxVP1HQY=
+	t=1705997596; cv=none; b=UkbM0F8e+Oo6ZmzLBYRLTkWvvdekpO2DZ/EVGjPgrODuTB0g0512kF72eg/1PFsu41M54ZIOxYmncwE+vXQ7jXEEUyh6dpTwvpAmcxgzqpJnXAKtzJ3uRGmrARYHskcFQwc5/+GqGVhKxbVOEgBf7uMxj1bpSR1whhcVR4Cryh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705997576; c=relaxed/simple;
-	bh=R7RQ/PfRCLCtq5n5pcF6Xl5ipxi0QZFoalAKE+tfwB8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jfRBncgW1oqtGBid6iNqxKDJLeTJYDgibTqckrZ/zUVAbx0T0Al+ELIJGFGi+PhnwV5aqF8+EGiBugbYEhIRKC54P3/0lQHVr/2oPDSIrYTxsc5Fp9qW8TvjXz4qNjNm3dqGuJa17AeBUWAQSK7pEDXxfbqhRcUAcOusuSXKNvg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=A0D1hSU1; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d75c97ea6aso10618105ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:12:54 -0800 (PST)
+	s=arc-20240116; t=1705997596; c=relaxed/simple;
+	bh=/sM8VvHIXE+nip92qpOPQD1wgYBeZzA3gwJx9pdbtjc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HcH7A3AQL66mThhaDS/44RWtcREdISjCw3SNVA4LuFrbybRVtCMCEtpJmK28u4EoqbMvPPg1Z3x/1aUurbaIDrht6l80bj6WNBp05UVjf/NfLFP5g0SXjISCzPCpXhsiUXirTYlVBJb3xJS3v93xp6kEMZKYhPcY8LE0ypfvpzQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CRsXZRir; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d76671e5a4so7989525ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:13:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1705997574; x=1706602374; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1705997594; x=1706602394; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=inxZJymqVSs5ffJSXOVp5zCbMBHlALxa4MBGgugNy3w=;
-        b=A0D1hSU1MCduEjtZVDWLL9LU5Tc15v33sxmMMxOfG2aAERztpLuwKI0Iy+MDB1+p4b
-         aWCfZqiQrhJEJBqmt7gLewBHqXT/0irvj3kh+LmCG3th4Ret+ZFYereZTmMtLlk9kxlC
-         IoQidMYULLOvEwslwfuDuVGfbuFv3HHM14zvJJNHH3L1anHVMS4fB064re7FPIayZIEC
-         EbMsDBvs14Ts7t60gkSidSiDLQm0oXmvgZhYbUsjbcy+zUa+QtISh6ZYhOQh2O+fcEWb
-         yE1xUjwb/95BOOwloY+7HvwncB4/0Kyaijltj1WznQB6SiErBdvL5yJ3CwyIxq7zVsax
-         VhPg==
+        bh=KcINxNqK9poEeYbYdpTS1L5ZKLd+2H3epIO3RsMgjVY=;
+        b=CRsXZRir2JdbVood6H4uIFIExAjaPdjqMbYXWfUqU4eJL8moMI26wpcW/ppRY6zEEt
+         AYQw06hThspBQrA4/ujNNf6fPEs0jIMEpBCoWImINTvlfKVbTzZ1JSFIGZBRKGBjW9xD
+         TBdTePhkSSbfZwxulAJFCEEjbE8uNnd78d1KtmYOr+451xPlY4+Cr2hO9N1eU3S1p+oK
+         4wl8Ai0yz4vp1+EN8ea/csiwTP+2owXw3D2xN3MPPjLEEzizw8oodFi7/922xPOGtSfz
+         qRZ8DNbYf6qIh2YtlK5l/I0nTxEaHBnSn+hA86DmplFhqpyLGRM3e2b5+3GpNluWY8rN
+         RnkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705997574; x=1706602374;
+        d=1e100.net; s=20230601; t=1705997594; x=1706602394;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=inxZJymqVSs5ffJSXOVp5zCbMBHlALxa4MBGgugNy3w=;
-        b=IRv0ohADEUX8qji59zPbNGvGklGUXMqjufMcLHS+pgsShEWeLz/CblogFhE1+xKSMF
-         wCWFBQx71BZzTyDrbDkU3Huv6WlmIsEp4q+b111WplWpIjz3hMocw2JyikkQNWLaWEzm
-         /uZTnK7XFr6pxuPxfNVDlhq+8V2D35tZh3/mSe6fgwmVCK8wxahRUuTtOy/7KorDMeCb
-         0QDLe3ACW/oeKik9ZhBBTmFENgIX+kVmbItSur+20WQv0a+WcSPy2sA3q1VeHfgCAr9+
-         LaUezuinknPJlYJO5ZbcsC7cB10rx3PRVX2h37P1q2Uywsf90tA3K8ua4Zzrda9TUKrg
-         u+Qg==
-X-Gm-Message-State: AOJu0Yxl2ZK1iKuLa2A10Ja38b7QY+C6s2mg7LWdHk9Yk9209YS1lVKB
-	27h9arB8B2tcyeJWEzF9nZ0G4c5D66aAg9AFfYh1EeKn/YrZqBwC45HYL+X57lA=
-X-Google-Smtp-Source: AGHT+IFm8k6VzAwvXCSNbOrkx9mrdc5qgT4K4r8v61fd8ma+XY3H46IblYtRR1lMGCX/HBClqr/TBw==
-X-Received: by 2002:a17:902:cec4:b0:1d7:7583:6d1c with SMTP id d4-20020a170902cec400b001d775836d1cmr88475plg.16.1705997574253;
-        Tue, 23 Jan 2024 00:12:54 -0800 (PST)
-Received: from ubuntu-yizhou.default.svc.cluster.local ([101.127.248.173])
-        by smtp.gmail.com with ESMTPSA id x9-20020a170902e04900b001d73f1fbdd9sm3911643plx.154.2024.01.23.00.12.52
+        bh=KcINxNqK9poEeYbYdpTS1L5ZKLd+2H3epIO3RsMgjVY=;
+        b=U4Nioe1XhocWnEf7wHkB9hk9slsRlvUirz6Ydj42OslcZ/MJMESQs6qruEUOOVFAnb
+         QUu9HCxPjK/RNK75Nv4pnNC2NvZaVSlHf8D84RkV5v+nri25De4jatvgIf9o1RdLhYyM
+         emO7soHhsLHQl7WQp+tBHbDg4PaIQ59uvaTG2kAnMe19xngNR/mEZqquEKf/RAqZ+hs6
+         0oPvc17jvkeiRU1/wUcIbGhO0G6ryUKkIa0U0qmtRBtTxe+VaW506Z0fhRpGfwq5bK81
+         WjQvY14HPHllnQMn/muYv/d+jfki6fg4UshiKbmWe8eeQKEkv6C+eXN/fAw0zA5a+fsY
+         KLMA==
+X-Gm-Message-State: AOJu0Yzhkz+a7K8yPgwOC/7p3zjUL9aHcryK5W1LwGgcRGMWe8rx0nkJ
+	FKZlBES/3+VTsDGt2NAq9T4FeF9Tfc+x8wZLysSPn2OhG5HrKyC2
+X-Google-Smtp-Source: AGHT+IErVu63V4k0+Aq4pa/jHhmVEQBrs+2RsnmDS9vb3LEMXIfyc+CDCcw5kcox8aQnrm0Z/3H8aA==
+X-Received: by 2002:a17:903:25d5:b0:1d7:808:dcfb with SMTP id jc21-20020a17090325d500b001d70808dcfbmr5123860plb.91.1705997594253;
+        Tue, 23 Jan 2024 00:13:14 -0800 (PST)
+Received: from localhost.localdomain ([2001:250:4000:8246:d59a:da76:65b9:ef0])
+        by smtp.gmail.com with ESMTPSA id u9-20020a17090341c900b001d70c6d40f3sm7798578ple.237.2024.01.23.00.13.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 00:12:53 -0800 (PST)
-From: Tang Yizhou <yizhou.tang@shopee.com>
-X-Google-Original-From: Tang Yizhou
-To: tj@kernel.org,
-	axboe@kernel.dk
-Cc: linux-block@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	chunguang.xu@shopee.com,
-	Tang Yizhou <yizhou.tang@shopee.com>
-Subject: [PATCH] blk-throttle: Eliminate redundant checks for data direction
-Date: Tue, 23 Jan 2024 16:12:48 +0800
-Message-Id: <20240123081248.3752878-1-yizhou.tang@shopee.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 23 Jan 2024 00:13:13 -0800 (PST)
+From: Wenjie Qi <qwjhust@gmail.com>
+To: jaegeuk@kernel.org,
+	chao@kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org
+Cc: hustqwj@hust.edu.cn,
+	Wenjie Qi <qwjhust@gmail.com>
+Subject: [PATCH v3] f2fs: fix zoned block device information initialization
+Date: Tue, 23 Jan 2024 16:12:58 +0800
+Message-ID: <20240123081258.700-1-qwjhust@gmail.com>
+X-Mailer: git-send-email 2.43.0.windows.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,39 +82,66 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Tang Yizhou <yizhou.tang@shopee.com>
+If the max active zones of zoned devices are less than
+the active logs of F2FS, the device may error due to
+insufficient zone resources when multiple active logs are
+being written at the same time. If this value is 0, there is no limit.
 
-After calling throtl_peek_queued(), the data direction can be determined so
-there is no need to call bio_data_dir() to check the direction again.
-
-Signed-off-by: Tang Yizhou <yizhou.tang@shopee.com>
+Signed-off-by: Wenjie Qi <qwjhust@gmail.com>
 ---
- block/blk-throttle.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/f2fs/f2fs.h  |  1 +
+ fs/f2fs/super.c | 18 ++++++++++++++++++
+ 2 files changed, 19 insertions(+)
 
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 16f5766620a4..2ad4f6cd465b 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -1098,7 +1098,7 @@ static int throtl_dispatch_tg(struct throtl_grp *tg)
- 	while ((bio = throtl_peek_queued(&sq->queued[READ])) &&
- 	       tg_may_dispatch(tg, bio, NULL)) {
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 65294e3b0bef..669f84f6b0e5 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -1551,6 +1551,7 @@ struct f2fs_sb_info {
  
--		tg_dispatch_one_bio(tg, bio_data_dir(bio));
-+		tg_dispatch_one_bio(tg, READ);
- 		nr_reads++;
+ #ifdef CONFIG_BLK_DEV_ZONED
+ 	unsigned int blocks_per_blkz;		/* F2FS blocks per zone */
++	unsigned int max_active_zones;		/* max zone resources of the zoned device */
+ #endif
  
- 		if (nr_reads >= max_nr_reads)
-@@ -1108,7 +1108,7 @@ static int throtl_dispatch_tg(struct throtl_grp *tg)
- 	while ((bio = throtl_peek_queued(&sq->queued[WRITE])) &&
- 	       tg_may_dispatch(tg, bio, NULL)) {
+ 	/* for node-related operations */
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 206d03c82d96..aef41b54098c 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -2385,6 +2385,16 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+ 	if (err)
+ 		goto restore_opts;
  
--		tg_dispatch_one_bio(tg, bio_data_dir(bio));
-+		tg_dispatch_one_bio(tg, WRITE);
- 		nr_writes++;
++#ifdef CONFIG_BLK_DEV_ZONED
++	if (sbi->max_active_zones && sbi->max_active_zones < F2FS_OPTION(sbi).active_logs) {
++		f2fs_err(sbi,
++			"zoned: max active zones %u is too small, need at least %u active zones",
++				 sbi->max_active_zones, F2FS_OPTION(sbi).active_logs);
++		err = -EINVAL;
++		goto restore_opts;
++	}
++#endif
++
+ 	/* flush outstanding errors before changing fs state */
+ 	flush_work(&sbi->s_error_work);
  
- 		if (nr_writes >= max_nr_writes)
+@@ -3932,6 +3942,14 @@ static int init_blkz_info(struct f2fs_sb_info *sbi, int devi)
+ 	if (!f2fs_sb_has_blkzoned(sbi))
+ 		return 0;
+ 
++	sbi->max_active_zones = bdev_max_active_zones(bdev);
++	if (sbi->max_active_zones && sbi->max_active_zones < F2FS_OPTION(sbi).active_logs) {
++		f2fs_err(sbi,
++			"zoned: max active zones %u is too small, need at least %u active zones",
++				 sbi->max_active_zones, F2FS_OPTION(sbi).active_logs);
++		return -EINVAL;
++	}
++
+ 	zone_sectors = bdev_zone_sectors(bdev);
+ 	if (!is_power_of_2(zone_sectors)) {
+ 		f2fs_err(sbi, "F2FS does not support non power of 2 zone sizes\n");
 -- 
-2.25.1
+2.34.1
 
 
