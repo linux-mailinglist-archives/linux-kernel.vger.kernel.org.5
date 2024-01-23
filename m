@@ -1,81 +1,84 @@
-Return-Path: <linux-kernel+bounces-34538-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BBD5837EB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:42:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88ACF837EBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:42:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EB00CB25AB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:42:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E67F290736
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:42:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C66F768F3;
-	Tue, 23 Jan 2024 00:45:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 306051272A6;
+	Tue, 23 Jan 2024 00:46:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="DhIrRYCc"
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="QsDkKLfB"
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CC84612F6
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:45:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA09A61663
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:45:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705970758; cv=none; b=ty6U9xctyGUmbC4n7sXvd4dIv8ErH0JAIsVn0SLMslkGziRiPd1kapTu8KgbYcVSxJZysPQS61RWhYNc8arOPmoUOxNs2eQnR0yjn1bN8R17OrvVdAC+Pr25Ywe6JbD9xDmAlxY+HsYOY3yjyYWZbATJIZLyj+0wFgWuZwJiwQY=
+	t=1705970759; cv=none; b=i6tVGnoa+3eIjGW4Sjn5z7lJ4QxMwEOx2SqiSx0gvIKwkfyqMfiHv40Tjut31TlUCaEKFHL7y45yN2krkTzr0hc6d4iGM9wS/gsFcKBFtBRhrFT78QacTZdW6qUw0d8+8NQOmiwxIgdJ/8b3+V3STcg9ImVH4MgkCCbdMddZ49Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705970758; c=relaxed/simple;
-	bh=TpR6teHZ/mpSlljZAe5k5kCh5DgjaXZFO8tyJAngV40=;
+	s=arc-20240116; t=1705970759; c=relaxed/simple;
+	bh=pqahPWCtiilVxi2Cwewikz7N45reJkQJ7UJUXEGvxo0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=YRLgpDcJCY8CMZOnf+IKjUoPJnR7tjXKE6uXAvamy0UOxJ0DoCL+ZqKKO7CNXtHV3dg9XEpfuDA2qFhIAFscHAWc5nTKFSZ1t7dy71OO2fZ7Zbxo81vfGBwLNnJrQMT42zJ59h7spn/t98ZWVEB1bcAKP3KAS0IeRW0Fyz5I3sQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=DhIrRYCc; arc=none smtp.client-ip=209.85.210.49
+	 MIME-Version; b=QI90Pb7AZC3DejsWondnlvQKPa7mzz+yUFGqbTbMIdPvVYp7MeOnzogQpi0u+j9h2hAKk72/ysfHrw9MQkl0n7swUfi/DnkPqqSbzp6mCE2tqePl0VCRTFg5+BgZ4wQlRlhVUu99B3WQ658+Xi0YxEZ/V1iWZ5kXT7l86Zq1iLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=QsDkKLfB; arc=none smtp.client-ip=209.85.216.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6e0d86d4659so2667870a34.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 16:45:56 -0800 (PST)
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2907748497dso1579347a91.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 16:45:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1705970755; x=1706575555; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1705970757; x=1706575557; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OiT3/py78kD8Owr5bvLrUn8dFen8dEuc/D42dgSMckc=;
-        b=DhIrRYCcvsDroyytmKzTBuWGR+vYa4okBNfNQKFOLkLerzs7SBzhm0R8SS+8YCvz9+
-         W4tj+9TgBIv6tEvUrjxrUO39yvMxrMbzaYE/nLBSJqx5wPSeJkVIqgHIQiHnV9AvSfLx
-         //dVx4d/s6CkRPdyQdd3hWj8pHXEW6ZEYb/Fg=
+        bh=cRtEgA24maRm+G5gcEke23eL30Vj6MIdNe5RQrjo/8E=;
+        b=QsDkKLfBWO7BdvpXfam5uZ0BIQsXQUO1qqd6M4QpYpsO6sd9MIZZXJRrNzTO65Y+hQ
+         VoqSbft5M1Ckz5+NXB7r1zvru8OJj2GpsyfbuQVY0xcJkP/hmvGl+woNudrUVbPI+/EG
+         fK1awRwMQqC+OwibXTaOtxGj+3ZYu6pnwWa9M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705970755; x=1706575555;
+        d=1e100.net; s=20230601; t=1705970757; x=1706575557;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OiT3/py78kD8Owr5bvLrUn8dFen8dEuc/D42dgSMckc=;
-        b=iThP5WRjTUTGdkcTEEQoXKxPHXEz5+hgNcis/WZFhuWU0ZJLbswgHBK8WJDa1x/jbK
-         H0rBzkxe2zSUq5hJUGllUjfYK/0D4gPwcf2NfWyER02s6eyrUa44Hg4xIA/QePmWAiS8
-         PItXMBjqibUWYqsBbfVc/wEoQr77DiJa85n3DxooeUkpZozcE2saWd/1py54K00DtnX5
-         TAkJ7qi2pqh5cHc2e3MNZHh/sdDDwv1owk5uLyv/BWLsCXqcJRbfOSxLEZwUXemB/f9i
-         V5LV3m+uEpafANS0oGn299MzN0NZh54N7xpGpaEbWGWQ/0AOmgJ+xA5aqfTTNXAXGBSc
-         WOEg==
-X-Gm-Message-State: AOJu0YwlglTpqcCGzOPCkl20IiEqG3BrLrqR93J/hzb5aF/53XsOSdrB
-	vZvZUVFNP3GnR3Po9LvVV1I8Sue9zSrACxN7i1Ci+DGnY6wpeXPJhyWKQsKTIg==
-X-Google-Smtp-Source: AGHT+IEbm9neBtrkf8zlMe/XQiNlvlxPGO4ufOom07ycfMTFLjsEggEqw0GSOC0u7hD3Q/8TGcH34A==
-X-Received: by 2002:a05:6358:3a14:b0:176:411b:888b with SMTP id g20-20020a0563583a1400b00176411b888bmr4129504rwe.17.1705970755473;
-        Mon, 22 Jan 2024 16:45:55 -0800 (PST)
+        bh=cRtEgA24maRm+G5gcEke23eL30Vj6MIdNe5RQrjo/8E=;
+        b=j0WiKZBXEY3bC/CxtDUrvOkXucPRO9i34wKut1I3phO52N27U4ACTk1xQE5IQ8DS4z
+         aHJWqBiEl8wQIFqwgrMMzBhLbaeSEYa8e6S3XwwVXf8T+PgC2O8AahHQsTDKBZDMAaQt
+         x+0Rfy2PvVXh9Ik32mYHbQJxHdWOUYcTDCPqFEHuXGaqUyiPIZeZ5UYsIdTO1zm6wkQF
+         KMlJrjjn/zqHyTGNUfF8dz3e9ekXyU5zuF9TJAHDRat51n+kv9GNuhVpOZlKD+6uhfel
+         GFxm0q75jLfnUns7AWjmf4cKSAnMsUpsb3OcihdxSub5Ff+Ho+l5+0ksxB0aWubsUWMk
+         Czhg==
+X-Gm-Message-State: AOJu0YwbgVI/5ZD/ai/fDKgJLIeAxFSRXGPg8fvr69v8K356LUe4UZnO
+	/CERuhRKRiDgx4dzS9x+Y9m0HVJn1RZfhjAizEcvs/zt4L/BEc2efH9Oki/3Qw==
+X-Google-Smtp-Source: AGHT+IFciWHO78/a7euH6rqJvtMdI+gSwn5MfNBM1NW2JHf/Lhr+OJ/TN/dJXuWD57I9PPPQxJ44Rw==
+X-Received: by 2002:a17:90a:3941:b0:290:caf7:7a16 with SMTP id n1-20020a17090a394100b00290caf77a16mr435126pjf.0.1705970757093;
+        Mon, 22 Jan 2024 16:45:57 -0800 (PST)
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id 32-20020a631160000000b005d32c807296sm134222pgr.68.2024.01.22.16.45.54
+        by smtp.gmail.com with ESMTPSA id so18-20020a17090b1f9200b002909c6bf228sm3237373pjb.51.2024.01.22.16.45.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 16:45:54 -0800 (PST)
+        Mon, 22 Jan 2024 16:45:55 -0800 (PST)
 From: Kees Cook <keescook@chromium.org>
 To: linux-hardening@vger.kernel.org
 Cc: Kees Cook <keescook@chromium.org>,
-	Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org,
+	Steve French <sfrench@samba.org>,
+	Paulo Alcantara <pc@manguebit.com>,
+	Ronnie Sahlberg <lsahlber@redhat.com>,
+	Shyam Prasad N <sprasad@microsoft.com>,
+	Tom Talpey <tom@talpey.com>,
+	linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org,
 	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
 	Bill Wendling <morbo@google.com>,
 	Justin Stitt <justinstitt@google.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 13/82] btrfs: Refactor intentional wrap-around calculation
-Date: Mon, 22 Jan 2024 16:26:48 -0800
-Message-Id: <20240123002814.1396804-13-keescook@chromium.org>
+Subject: [PATCH 14/82] smb: client: Refactor intentional wrap-around calculation
+Date: Mon, 22 Jan 2024 16:26:49 -0800
+Message-Id: <20240123002814.1396804-14-keescook@chromium.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240122235208.work.748-kees@kernel.org>
 References: <20240122235208.work.748-kees@kernel.org>
@@ -85,19 +88,19 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2625; i=keescook@chromium.org;
- h=from:subject; bh=TpR6teHZ/mpSlljZAe5k5kCh5DgjaXZFO8tyJAngV40=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlrwgFfeVx2CwOxlQgJ6mdRUkjPKVsQ4wxQm8Eo
- 0Fb22rxTrCJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZa8IBQAKCRCJcvTf3G3A
- JtzMD/9eNR4myrR+1tOyMuPMfapd+Ep06GScRoVLgXKneVxiu0hmGlhtdzsHV1+AssbXdzOoJoW
- QxIVv3tr8VyrsCER1WPzf8VB2OQDS1dx7+ZaUTsznUwIiIOgAKkXBPi6mkVhSSB+VX//N0JkgJP
- 9RuBQW8XpW9OuwfYclTiOjBQkejhwC5BIUuOMVKKnoOl6yVeyjCG7EnQj6qvk5sHelweXKF5xni
- rsdhQajVbbYHfPt5J0yDlhyRq7CFRRz+2g4fpAJXm7O/HZ9vaQvUZuVnMwhqvR/pBRCKtJUdxAy
- ITO7VVMQb+9gqG0S2to8c+Co6OURs7vo7MVGtt+gqIuNxs36otBVuePIz/eIhgNT/2ZHMLjct4Q
- ZyXnSbdqUzASQ7HL22SFnuTktI+YVp7uYuwPBJUFo2M7fOdsI77QWeDtrk6/omOocXBoRJ6bMZL
- 86BG+Dh0WW8OWMaqgaCqjXQNdkWx9mPXgNuDBmKae/XNAgxA1twHKiasClUXIor/5ZIavg2lUsc
- JfbVN8cw+vltYIADHJIA2E8VPpKOhlCsIc68x6+DM2Z+p2TBNr1qlDZGnHZqKlkiLt8UGhpsNLo
- aEgMRmK0YTJW6fJId38qQmkVt2IoPug3NTPqLBc6Pq6tD3UXznkmfxhYHxgBYPa2iCxUyzlwm6G 9MSor/xafFdN3yw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2356; i=keescook@chromium.org;
+ h=from:subject; bh=pqahPWCtiilVxi2Cwewikz7N45reJkQJ7UJUXEGvxo0=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlrwgF+RrezY1R+vJeoB3MoQno65kcsaFJYE8T7
+ TFT3XWlULSJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZa8IBQAKCRCJcvTf3G3A
+ JghND/9sxXRpGBChydX6oXKHlWt5zCT0j1qCewzIX5EZfL6bLAAMMvbrryh0Kxi9Sj4hqZGsIHg
+ LtEJVktXPEirje72RefP1RpOxo01UzeUOLmDOWUHMoB4B0z+XubPvEaAaQ93LFS0A5Cf2GSblOc
+ Hx+I37mBMNSY3YGAsN9F86amVO0lc8gZY8oppvXg0goQD2o031eriElKHB3uK26o2m9SokcDyZW
+ Q4di9IdRGvGZ4IPTbQ0R5Uc/QqdPqSBZ/tJyncI0bhVLAYKfqLdKCWvKzpFkbsxSnLFey7WJTtL
+ N6JxOZoVgb+cu14E6OubQIRM4a2MF6lWjK/TSXxKa741TuGCCZWHVWy8HfQg/nEehtsBojQR5Ke
+ n4ZK0eZDc+TVrnTYX09u87bgIwCCnlVBad9RNxR6MYfbB5PCTvmdApJodAX+eamo/22YvttIlV2
+ lHj7KOeoKn1Ybl67n+iX3eJgQ4EssmZnEZG7XmODkiw6AR1iDdWqIvIfoThRxBNs46UjYdzaIa/
+ KZn9l3Z/958uJ9DYefApgztvC4i06O+FIGSIYVn45yV+CgRlLA9VZjRlrzzgLoEgZrklYDey13J
+ IlbCxjn/tjXnvRrqNAWm/i7hglaOoYH5il7sEsia1iH8bIkOkbWmiSISrRcH/ojibVnpKp/vaxx ikviov4jRF0L/Hg==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 
@@ -115,7 +118,7 @@ instrument arithmetic wrap-around conditions and catch them when they
 are unexpected, regardless of whether they are signed[2], unsigned[3],
 or pointer[4] types.
 
-Refactor open-coded unsigned wrap-around addition test to use
+Refactor open-coded pointer wrap-around addition test to use
 check_add_overflow(), retaining the result for later usage (which removes
 the redundant open-coded addition). This paves the way to enabling the
 wrap-around sanitizer in the future.
@@ -124,52 +127,38 @@ Link: https://git.kernel.org/linus/68df3755e383e6fecf2354a67b08f92f18536594 [1]
 Link: https://github.com/KSPP/linux/issues/26 [2]
 Link: https://github.com/KSPP/linux/issues/27 [3]
 Link: https://github.com/KSPP/linux/issues/344 [4]
-Cc: Chris Mason <clm@fb.com>
-Cc: Josef Bacik <josef@toxicpanda.com>
-Cc: David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org
+Cc: Steve French <sfrench@samba.org>
+Cc: Paulo Alcantara <pc@manguebit.com>
+Cc: Ronnie Sahlberg <lsahlber@redhat.com>
+Cc: Shyam Prasad N <sprasad@microsoft.com>
+Cc: Tom Talpey <tom@talpey.com>
+Cc: linux-cifs@vger.kernel.org
+Cc: samba-technical@lists.samba.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- fs/btrfs/extent_map.c | 6 ++++--
- fs/btrfs/extent_map.h | 6 ++++--
- 2 files changed, 8 insertions(+), 4 deletions(-)
+ fs/smb/client/readdir.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index b61099bf97a8..29a649507857 100644
---- a/fs/btrfs/extent_map.c
-+++ b/fs/btrfs/extent_map.c
-@@ -73,9 +73,11 @@ void free_extent_map(struct extent_map *em)
- /* Do the math around the end of an extent, handling wrapping. */
- static u64 range_end(u64 start, u64 len)
- {
--	if (start + len < start)
-+	u64 sum;
-+
-+	if (check_add_overflow(start, len, &sum))
- 		return (u64)-1;
--	return start + len;
-+	return sum;
- }
+diff --git a/fs/smb/client/readdir.c b/fs/smb/client/readdir.c
+index 94255401b38d..7715297359ab 100644
+--- a/fs/smb/client/readdir.c
++++ b/fs/smb/client/readdir.c
+@@ -467,12 +467,13 @@ static char *nxt_dir_entry(char *old_entry, char *end_of_smb, int level)
+ 				pfData->FileNameLength;
+ 	} else {
+ 		u32 next_offset = le32_to_cpu(pDirInfo->NextEntryOffset);
++		char *sum;
  
- static int tree_insert(struct rb_root_cached *root, struct extent_map *em)
-diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
-index e380fc08bbe4..3c4a6b977662 100644
---- a/fs/btrfs/extent_map.h
-+++ b/fs/btrfs/extent_map.h
-@@ -108,9 +108,11 @@ static inline int extent_map_in_tree(const struct extent_map *em)
- 
- static inline u64 extent_map_end(const struct extent_map *em)
- {
--	if (em->start + em->len < em->start)
-+	u64 sum;
-+
-+	if (check_add_overflow(em->start, em->len, &sum))
- 		return (u64)-1;
--	return em->start + em->len;
-+	return sum;
- }
- 
- void extent_map_tree_init(struct extent_map_tree *tree);
+-		if (old_entry + next_offset < old_entry) {
++		if (check_add_overflow(old_entry, next_offset, &sum)) {
+ 			cifs_dbg(VFS, "Invalid offset %u\n", next_offset);
+ 			return NULL;
+ 		}
+-		new_entry = old_entry + next_offset;
++		new_entry = sum;
+ 	}
+ 	cifs_dbg(FYI, "new entry %p old entry %p\n", new_entry, old_entry);
+ 	/* validate that new_entry is not past end of SMB */
 -- 
 2.34.1
 
