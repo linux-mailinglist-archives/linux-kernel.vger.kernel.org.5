@@ -1,100 +1,84 @@
-Return-Path: <linux-kernel+bounces-36001-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36002-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 399838399EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:58:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 748098399F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:03:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86F0EB2258D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:58:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C992287DF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:03:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92B2482D8D;
-	Tue, 23 Jan 2024 19:58:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XLqHEYAp"
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7062982D8B;
+	Tue, 23 Jan 2024 20:03:48 +0000 (UTC)
+Received: from fgw21-7.mail.saunalahti.fi (fgw21-7.mail.saunalahti.fi [62.142.5.82])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B36482D7B
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 19:58:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90A6D82D6E
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 20:03:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.142.5.82
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706039917; cv=none; b=pBayuoUPWlICRp1ksolsz6eZlkSpYPCIPLFP1a/8gaeGKPYj870MtpWOa3+reEbJyc/BNqSmeO+82rnEYJ7iq9BzWM3YXJxTzGT8D5QrKfQGCFyy7yyLpswuzU1gf3XUdMpXWH42+fAxpn4ezK8FBVF9hZj1ymlK9wVJM1xAHtw=
+	t=1706040228; cv=none; b=ZCXrIShrtj7Rwttg32kBqFkItKGx0Dhzsbvx60RxI+GP8QQg6FnooXyLhUOiDgmk7tipm8z7Or5wV5kqXPWvIDe7LTjPaPsxn4PRO+GyxV1B4UV04Kbo+Rn8ihZJuCso8rn8ZAxR5KC3+rKmmE6iX0k7pDhSj39MLE3cmTiJCT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706039917; c=relaxed/simple;
-	bh=nYvo+rfNB69fdGKHBcdMDR6KR35HaCryt3kDT3duWoQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GtmWiOIrORZ+nNgz47JUMTU8+TLMPYxMQP0xLB/q+1/PxVDGcIQ24Uc2i5lJ60DjCWw8RsaTF9YytXs0ENMFwSmcfni2mnmPsn1wQXAsnM7wpYx02+RsQOaXR5bVXxNDHC8iXKa1ChP/Gaf5rN5Vv+9lUvB22fL1ndmz9rzEF54=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XLqHEYAp; arc=none smtp.client-ip=209.85.219.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dc223d20a29so3777930276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 11:58:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706039915; x=1706644715; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nYvo+rfNB69fdGKHBcdMDR6KR35HaCryt3kDT3duWoQ=;
-        b=XLqHEYApP2RjSr2hSZ6p4YNYENzVCXLFlQAe6CMdhFMEbnOs4MQUzThny1HNcEiRu5
-         24M51JSBjRYmYZTo/IHScHE4IVCRkUUG8nP6d9PCvqHUW73kTjyWAQAyRjjK+70u0n2m
-         SF6+YSP7WL0zXOBGXChwt9OQYRHNUUE+yxn4zMAkwj2kmUWBN53WLa/V0UJg/wgJOzT4
-         BH1JAq1hEJmfpfOoT/SLbuiRgwYT/F7CrAlcNWVUrZxCMCS1QHLaBz6VG9/YJ/BYQGHp
-         yv8T/pgYLodnL4QIxCvsioeL/7KFu9y4NdVKW/J2v9fDiy4Xl6yC/XUtEMefZwyvHkYW
-         03Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706039915; x=1706644715;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nYvo+rfNB69fdGKHBcdMDR6KR35HaCryt3kDT3duWoQ=;
-        b=BYS2DpoSG2h+qyekhF8Gy1F+a2iQCJd7rbTda2YeUIWax7SBZRqhujosadGBWRwDea
-         ImdIfFxAOgJ8u12fkGp9QovkJhLZCzDCfE0QO9dSAEIEvqaglJb5Kc2RFLmL+meCm2Pw
-         s6aeyGooxJHFF96gJhOlKKA2/6a9t2+fNMO5dkC8VNcoEVJGLZK1TgsMjU2fWjOMesio
-         vG4PuCjhA04KKRGubMrbZBIyd7Y/JEdJOqRn7S5Bv+ykrp/0haD+sVkuGmzn1D/jjK1c
-         ZgoCfVttIH7G4opSr5/vpGV2TuwnUOQ6OF7scd/fooJq34T2j9mydc7jtoLkp1PHUtGq
-         +rcw==
-X-Gm-Message-State: AOJu0YzxcvOx42A9nPiAd7vhIZO8zy/l4LrWRnn4HUQlo3PFwiQ336ci
-	tEqOGGKK1vWXxiTrZ7RRfC34IRS4K13ONkJCkMTJkvedWtDAm20Ar9kLjc8Ndg8fa3LB/gnc00J
-	XJFDdXIF8208Wpj9YPfBHzvOYA86qWZ8p+ss=
-X-Google-Smtp-Source: AGHT+IHGoSEchkymg5ddhczryrZhgHLXWuEEwXlE6/ePL8YyPjoBb9/I9QQxbPyGzX8/yCnShMQwB4Yciia010VzKCo=
-X-Received: by 2002:a25:2fce:0:b0:db7:dacf:6206 with SMTP id
- v197-20020a252fce000000b00db7dacf6206mr4150549ybv.88.1706039915535; Tue, 23
- Jan 2024 11:58:35 -0800 (PST)
+	s=arc-20240116; t=1706040228; c=relaxed/simple;
+	bh=dyQW3NaeVkojEhzJb3PKNuLH5mqxW5v94UTZFeODr5k=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=k1IO4h9Fi61FpPphN6ZFS0NGkFKc4PNyqIHAnfvmrqSETXEEU0k4BdaiIHzPuyj6x2LdFZR5NEebbEZJD6PPJmM7T7pCxp4+MzDPxZvlYLYBaky0mivelUCLNDL6hyXEZKe3bjFunXi/Sk0hI4Qzl3Ryexy+3OFiYRGmkmpcXo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=62.142.5.82
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
+Received: from localhost (88-113-24-108.elisa-laajakaista.fi [88.113.24.108])
+	by fgw21.mail.saunalahti.fi (Halon) with ESMTP
+	id 7ea79e9f-ba2a-11ee-abf4-005056bdd08f;
+	Tue, 23 Jan 2024 22:03:38 +0200 (EET)
+From: andy.shevchenko@gmail.com
+Date: Tue, 23 Jan 2024 22:03:37 +0200
+To: =?iso-8859-1?B?zfFpZ28=?= Huguet <ihuguet@redhat.com>
+Cc: ojeda@kernel.org, danny@kdrag0n.dev, masahiroy@kernel.org,
+	jgg@nvidia.com, mic@digikod.net, linux-kernel@vger.kernel.org,
+	corbet@lwn.net, joe@perches.com, linux@rasmusvillemoes.dk,
+	willy@infradead.org, mailhol.vincent@wanadoo.fr
+Subject: Re: [PATCH v4] Add .editorconfig file for basic formatting
+Message-ID: <ZbAbmchIO8Cd5hNd@surfacebook.localdomain>
+References: <20230601075333.14021-1-ihuguet@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <e1c27b64ae7abe2ebe647be11b71cf1bca84f677.1704855495.git.senozhatsky@chromium.org>
- <202401101646.B1C4FDA@keescook>
-In-Reply-To: <202401101646.B1C4FDA@keescook>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Tue, 23 Jan 2024 20:58:24 +0100
-Message-ID: <CANiq72nQsBvNFnr3Rp9aX17X4=G+jFQBB-7Uv3dXY3uKN+3xcA@mail.gmail.com>
-Subject: Re: [PATCHv2 1/2] Compiler Attributes: counted_by: bump min gcc version
-To: Kees Cook <keescook@chromium.org>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>, Miguel Ojeda <ojeda@kernel.org>, 
-	"Gustavo A . R . Silva" <gustavo@embeddedor.com>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230601075333.14021-1-ihuguet@redhat.com>
 
-On Thu, Jan 11, 2024 at 1:46=E2=80=AFAM Kees Cook <keescook@chromium.org> w=
-rote:
->
-> Yup, this is good. Miguel, I can take these patches if you want?
->
-> Reviewed-by: Kees Cook <keescook@chromium.org>
+Thu, Jun 01, 2023 at 09:53:33AM +0200, Íñigo Huguet kirjoitti:
+> EditorConfig is a specification to define the most basic code formatting
+> stuff, and it's supported by many editors and IDEs, either directly or
+> via plugins, including VSCode/VSCodium, Vim, emacs and more.
+> 
+> It allows to define formatting style related to indentation, charset,
+> end of lines and trailing whitespaces. It also allows to apply different
+> formats for different files based on wildcards, so for example it is
+> possible to apply different configs to *.{c,h}, *.py and *.rs.
+> 
+> In linux project, defining a .editorconfig might help to those people
+> that work on different projects with different indentation styles, so
+> they cannot define a global style. Now they will directly see the
+> correct indentation on every fresh clone of the project.
+> 
+> See https://editorconfig.org
 
-Thanks Kees -- just applied them on top of v6.8-rc1 so they should be
-in -next soon, but if you need to pick them up for another reason,
-please go ahead.
+..
 
-Cheers,
-Miguel
+> +[{*.{awk,c,dts,dtsi,dtso,h,mk,s,S},Kconfig,Makefile,Makefile.*}]
+
+Missing Kconfig.* ?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
