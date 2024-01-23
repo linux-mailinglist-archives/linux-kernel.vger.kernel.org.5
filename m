@@ -1,72 +1,57 @@
-Return-Path: <linux-kernel+bounces-35756-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35757-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E810839605
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:10:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A649839610
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:13:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D2D91C283A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:10:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DD7A1C23EE4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:13:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B88BE8003F;
-	Tue, 23 Jan 2024 17:09:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA85A7FBB8;
+	Tue, 23 Jan 2024 17:13:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="wgYAY9fY"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="QBWw90jb"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 315A27FBDE;
-	Tue, 23 Jan 2024 17:09:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E136B5F845;
+	Tue, 23 Jan 2024 17:13:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706029785; cv=none; b=W/DxjJEPu8x58FE9b7Qp300bMdhWKyN2hMPS5htjTL7hYpl2aPIuMgXX6TOqkQAOQ/aX8q8npaZfdQ0/DgOxaQC2TsAuhQcZQlc0TA/O4mlOImAk5ud3egWEqF6G1EyZannBrc1Z3X+uFtpPE+neJm3oWMnWvaRBswBGWYwvKKI=
+	t=1706029993; cv=none; b=uBH3KkZU+Jftv6/GNXGkjxCNm8VlcUOjdpL0A/CAcFV2m6CvtZLsjJeUTNYC+8sjp0/HL4YTV+Zaaq7FsROUGE9O0a8AAdNknCtk+YXQyTdJAR4iGupIvBTAYvyALMwCjt1CVVDDPYD0lngiE0A6/qZxeLawbgFTNfvzKvnsB3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706029785; c=relaxed/simple;
-	bh=f9UIkkGmIWiROu5ZoBTFMAujbrRQ5tAje4pYEsO7wuo=;
+	s=arc-20240116; t=1706029993; c=relaxed/simple;
+	bh=Xjxxwo97OkceC6n83UJzqEpt+lwD2L3ZNHvo0XwofWM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D7FN0Wp7BlDsPbE0TPKQfuwryEEJug//8ODLdPugJHZz49bbi34vVutiSlYprQ5JsDxN/aJCad+5rswxTvmuULhxR2tJKbfsl/igJjH+GULjZZwjBvvqtotN0+/84rYcfg8k7X0WBj1F3T7n1TiWsVhhfKGH6y2YqkgvDRoHRHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=wgYAY9fY; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=KxYGaRQ9BTEt7m6CX0rx1QWJ078+bbqv0JtUBpFz0ig=; b=wgYAY9fYZRzWZTuR5+OGw7/HWR
-	ikAmCEJlHMmc0SOXFTJFa9IS8b8kxgOf3yVf8xu/9wkqqKX+tBWhx6i2SK7tSBqgZL68TC21N3KC4
-	8Hp6L2orv96i+AAzQhuiZ87ayTkvpNGWhnUBt7R/uxbYSNIUUy/XI3P0zDeUyDx5cyjOhzQaKh4v1
-	rpMUIxWG1CsvUH62fWfoU8/E19SaNa9ra2R5NtcueELM28nGsA2W306KCpCMPPrHhFF4ErfNPfGN6
-	fHlpjSJZV58KpbVB4tAEBltD4oc8bP3o0u83nSXl/E/Gyn0W3gwap5FPdCmTiKxLIInnPAoZj9URf
-	fFjqdeqw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55506)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rSKHJ-0002op-1F;
-	Tue, 23 Jan 2024 17:09:37 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rSKHI-00027L-2P; Tue, 23 Jan 2024 17:09:36 +0000
-Date: Tue, 23 Jan 2024 17:09:35 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Danielle Ratson <danieller@nvidia.com>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, corbet@lwn.net, sdf@google.com,
-	kory.maincent@bootlin.com, maxime.chevallier@bootlin.com,
-	vladimir.oltean@nxp.com, przemyslaw.kitszel@intel.com,
-	ahmed.zaki@intel.com, richardcochran@gmail.com, shayagr@amazon.com,
-	paul.greenwalt@intel.com, jiri@resnulli.us,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	mlxsw@nvidia.com, petrm@nvidia.com, idosch@nvidia.com
-Subject: Re: [RFC PATCH net-next 6/9] net: sfp: Add more extended compliance
- codes
-Message-ID: <Za/yz7xcZORpZnuY@shell.armlinux.org.uk>
-References: <20240122084530.32451-1-danieller@nvidia.com>
- <20240122084530.32451-7-danieller@nvidia.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FP4Vnb+vhKubVAaFU2Mr/g5E90rBaZGCYD1vqTRX3Kia/F/P0tzyazXIJaoU23z2q8h5WxLTCNlYyDFy6XwBvUdKeqkS1qgxVaE1KVrTNILkMCajbb1Py/zGGMxczsQJyMy/FV4Hn/rZHzTVii9SPa6lnCrddiTsBN+NHidig54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=QBWw90jb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EC66C433F1;
+	Tue, 23 Jan 2024 17:13:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1706029992;
+	bh=Xjxxwo97OkceC6n83UJzqEpt+lwD2L3ZNHvo0XwofWM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=QBWw90jb/wZKUpZ53h0HG+2RJfw8HsPg0YEnPI4Y8gMWihoqcg9yefGC0Rx9CjUcZ
+	 YmdPaxTEBl1Bt9NPddQvebM+6mYyP37BHbBlfZYx1j35z+lefFpSGb5+LlHgOqdioN
+	 WXPbNXwJk403D8WqxhHIYUER1yN0v8A0j4CTfvP8=
+Date: Tue, 23 Jan 2024 09:13:05 -0800
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Jon Hunter <jonathanh@nvidia.com>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+	allen.lkml@gmail.com,
+	"linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH 5.15 000/374] 5.15.148-rc1 review
+Message-ID: <2024012303-ellipse-playing-795d@gregkh>
+References: <20240122235744.598274724@linuxfoundation.org>
+ <29eb6dc6-8fdf-48b6-8f60-1162da175b7c@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,25 +60,46 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240122084530.32451-7-danieller@nvidia.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <29eb6dc6-8fdf-48b6-8f60-1162da175b7c@nvidia.com>
 
-On Mon, Jan 22, 2024 at 10:45:27AM +0200, Danielle Ratson wrote:
-> SFF-8024 is used to define various constants re-used in several SFF
-> SFP-related specifications.
+On Tue, Jan 23, 2024 at 03:35:24PM +0000, Jon Hunter wrote:
+> Hi Greg,
 > 
-> Add SFF-8024 extended compliance code definitions for CMIS compliant
-> modules and use them in the next patch to determine the firmware flashing
-> work.
+> On 22/01/2024 23:54, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.15.148 release.
+> > There are 374 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Wed, 24 Jan 2024 23:56:49 +0000.
+> > Anything received after that time might be too late.
+> > 
+> > The whole patch series can be found in one patch at:
+> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.148-rc1.gz
+> > or in the git tree and branch at:
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> > and the diffstat can be found below.
+> > 
+> > thanks,
+> > 
+> > greg k-h
 > 
-> Signed-off-by: Danielle Ratson <danieller@nvidia.com>
-> Reviewed-by: Petr Machata <petrm@nvidia.com>
+> ...
+> > Douglas Anderson <dianders@chromium.org>
+> >      r8152: Choose our USB config with choose_configuration() rather than probe()
+> 
+> 
+> The above commit is causing a boot regression on the Tegra210 Jetson TX1
+> board and reverting this commit fixes it. This also happens with
+> linux-6.1.y, linux-6.6.y and linux-6.7.y. I am not seeing this on the
+> mainline.
 
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Ok, thanks for letting us know, I was a bit "worried" about these
+changes, so I'll back them out and push out new -rc releases.   If the
+ChromeOS developers want them backported, I'll let them provide a
+working series.
 
-Thanks!
+thanks!
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+greg k-h
 
