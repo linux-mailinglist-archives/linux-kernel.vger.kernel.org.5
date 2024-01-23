@@ -1,140 +1,135 @@
-Return-Path: <linux-kernel+bounces-34612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84C93838303
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:25:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1A3F838346
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:27:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3DD4328A4A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:25:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7842F290425
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:27:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE8EE60254;
-	Tue, 23 Jan 2024 01:51:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52FC160DCB;
+	Tue, 23 Jan 2024 01:52:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FIt0/a1T"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="nw024Zjw"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01F56604C8;
-	Tue, 23 Jan 2024 01:51:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23B5060BBD;
+	Tue, 23 Jan 2024 01:52:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705974681; cv=none; b=DWzIy/Mn776d6evBL3X661huChambW/Yci2c25VdYX61/6KmV3T1E/vEDUNBp1E3GW3dHRoWzNfdbk9hP7n0oLoG7AeFlzKR0HrQiRxxGUMM3ocZKoMGf5BRun0r6M+VUh3j/fwPdlbbYgujae7nG95XPGWx7KSOo8E9UKpcDMQ=
+	t=1705974757; cv=none; b=GVe0qPtVAxlRF376zfcje7PVQmWuPU7VjMblZwveANxG0d/BRmQpes7d6ZwLxLl/15th3xhe8HPQ7/m1D/JF330ja/LDx3T2h1JwleruRDan/7nI71rl+HuqUif2pDTBfmmyweZ3aQh1xV16dRrPdEkIAV2JQOBRraRnlwiGnqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705974681; c=relaxed/simple;
-	bh=yA2iL76hl8rgK1nibRnpqkKec6o2X7SEeiCiwxLsju4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=NXk/o+aotVTCq0NaEb4rtBhQ7HjhvWsJVR4ZtGa1sg+0XogqubwK11i9YxRWxFiyEK/R/S5zfBdDkWyEWlKb7z+zQlKfLAaSh+UfoChOxbD8Ebr8IC0OSCTxiXXYJUDDRvn9uU6RxNQxz8yCjYJUZbZIU2/PaHnJBh5fOuSBQG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FIt0/a1T; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C012C433F1;
-	Tue, 23 Jan 2024 01:51:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705974680;
-	bh=yA2iL76hl8rgK1nibRnpqkKec6o2X7SEeiCiwxLsju4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FIt0/a1TPSyl9JpwUCbsOLZFrW8Td7lzUE+atTkEXEiCwb7NY2ktqeBQaQvMuNiLn
-	 U/i7r5Z36oqGtv2qdoDypona7czv7woyx9esXGNUHjwKW09ugbPIXSEhg8wISAdTqI
-	 /ngixO2ocbpePNnaVU3CYekdbX2AMkT0KLPjw8bmCGGDFyJjquMitlpnthQiV8ribC
-	 JuGzVVMcQCs3luQytgrNsClH2cVIHK32Pa4awLwNdz4gEZNacqLTqmCeZP2ZrWrB/h
-	 c+iPlMYPnVN12wNqlmJ+ihJhXVFwJusuh2QJb268zBhr1m+n9QF7aEcnwc3uBhO87A
-	 WruOpu6vQ35WQ==
-From: SeongJae Park <sj@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org,
-	patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org,
-	akpm@linux-foundation.org,
-	linux@roeck-us.net,
-	shuah@kernel.org,
-	patches@kernelci.org,
-	lkft-triage@lists.linaro.org,
-	pavel@denx.de,
-	jonathanh@nvidia.com,
-	f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net,
-	rwarsow@gmx.de,
-	conor@kernel.org,
-	allen.lkml@gmail.com,
-	damon@lists.linux.dev,
-	SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 6.7 000/641] 6.7.2-rc1 review
-Date: Mon, 22 Jan 2024 17:51:17 -0800
-Message-Id: <20240123015117.86116-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240122235818.091081209@linuxfoundation.org>
-References: 
+	s=arc-20240116; t=1705974757; c=relaxed/simple;
+	bh=8u0AgQw2OqnO0fPDfMvidyN8sk5sZzKAvfBOInESfwI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=AB3e5OmqZ/lZfvuLvDB2N/7kCRBCJZekK2/GPf+cfM2PAJtRP77biw5PZCU7uWJ7tRv599sFHbflEa/7ImOwlwdhNdIJ+KICh2mEatPdxvSQfh9OgnBIk/CE7O04WmNMpP6yToT/R6OcnbMcA/fWTSz9MqSuHX9zSaJryeDd23w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=nw024Zjw; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1705974752;
+	bh=p4hRPKTKLs19pGw1tsRGHFw3u8tWxyLxRDhe/WLRu8o=;
+	h=Date:From:To:Cc:Subject:From;
+	b=nw024ZjwreNqT3lbQ1YINKu+7B3nesrH5scQbmofdzQFHQO7rMRWMZRnXjWha43Mp
+	 fA46Z4algPtQu9EXvAjilKYlEG3mgSfxY0Yx/ISi718HcqjTsZ+z9/7Pfar6OAFRvr
+	 MVSPGHKm4nBmVzUxSTAocGTU+dKUPwVMyZDld6d5KodF0JPl9YAEGKAAlmhbZPAT9I
+	 +g2vb3gN7/+Qmyyikf4b/eAwKV1Ztq6JKmxzH8ngobPaceJp6nA/AQTlbyaDoi3cAV
+	 gmSaCq3dHQ98WbOIoI6K/j93Qf1s59l5+uNBL75FXq1fyN94360Sap/GJFk8/gVdTA
+	 BDZ/UoPjtwUkQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TJqpl3Ls9z4xc5;
+	Tue, 23 Jan 2024 12:52:31 +1100 (AEDT)
+Date: Tue, 23 Jan 2024 12:52:27 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Baokun Li <libaokun1@huawei.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the vfs-brauner tree
+Message-ID: <20240123125227.0521c8d9@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/wwEr_+0bHO.BR4FXWEX7H1T";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Hello,
+--Sig_/wwEr_+0bHO.BR4FXWEX7H1T
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 22 Jan 2024 15:48:24 -0800 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+Hi all,
 
-> This is the start of the stable review cycle for the 6.7.2 release.
-> There are 641 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 24 Jan 2024 23:56:49 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.2-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
-> and the diffstat can be found below.
+After merging the vfs-brauner tree, today's linux-next build (powerpc
+allnoconfig) failed like this:
 
-This rc kernel passes DAMON functionality test[1] on my test machine.
-Attaching the test results summary below.  Please note that I retrieved the
-kernel from linux-stable-rc tree[2].
+In file included from <command-line>:
+In function 'i_size_read',
+    inlined from '__iomap_dio_rw' at fs/iomap/direct-io.c:570:16:
+include/linux/compiler_types.h:435:45: error: call to '__compiletime_assert=
+_229' declared with attribute error: Need native word sized stores/loads fo=
+r atomicity.
+  435 |         _compiletime_assert(condition, msg, __compiletime_assert_, =
+__COUNTER__)
+      |                                             ^
+include/linux/compiler_types.h:416:25: note: in definition of macro '__comp=
+iletime_assert'
+  416 |                         prefix ## suffix();                        =
+     \
+      |                         ^~~~~~
+include/linux/compiler_types.h:435:9: note: in expansion of macro '_compile=
+time_assert'
+  435 |         _compiletime_assert(condition, msg, __compiletime_assert_, =
+__COUNTER__)
+      |         ^~~~~~~~~~~~~~~~~~~
+include/linux/compiler_types.h:438:9: note: in expansion of macro 'compilet=
+ime_assert'
+  438 |         compiletime_assert(__native_word(t),                       =
+     \
+      |         ^~~~~~~~~~~~~~~~~~
+include/asm-generic/barrier.h:206:9: note: in expansion of macro 'compileti=
+me_assert_atomic_type'
+  206 |         compiletime_assert_atomic_type(*p);                        =
+     \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/fs.h:911:16: note: in expansion of macro 'smp_load_acquire'
+  911 |         return smp_load_acquire(&inode->i_size);
+      |                ^~~~~~~~~~~~~~~~
 
-Tested-by: SeongJae Park <sj@kernel.org>
+Caused by commit
 
-[1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] 8538581d9e8e ("Linux 6.7.2-rc1")
+  4bbd51d0f0ad ("fs: make the i_size_read/write helpers be smp_load_acquire=
+/store_release()")
 
-Thanks,
-SJ
+I have used the vfs-brauner tree from next-20240122 for today.
 
-[...]
+--=20
+Cheers,
+Stephen Rothwell
 
----
+--Sig_/wwEr_+0bHO.BR4FXWEX7H1T
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-ok 1 selftests: damon: debugfs_attrs.sh
-ok 2 selftests: damon: debugfs_schemes.sh
-ok 3 selftests: damon: debugfs_target_ids.sh
-ok 4 selftests: damon: debugfs_empty_targets.sh
-ok 5 selftests: damon: debugfs_huge_count_read_write.sh
-ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
-ok 7 selftests: damon: debugfs_rm_non_contexts.sh
-ok 8 selftests: damon: sysfs.sh
-ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
-ok 10 selftests: damon: reclaim.sh
-ok 11 selftests: damon: lru_sort.sh
-ok 1 selftests: damon-tests: kunit.sh
-ok 2 selftests: damon-tests: huge_count_read_write.sh
-ok 3 selftests: damon-tests: buffer_overflow.sh
-ok 4 selftests: damon-tests: rm_contexts.sh
-ok 5 selftests: damon-tests: record_null_deref.sh
-ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
-ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
-ok 8 selftests: damon-tests: damo_tests.sh
-ok 9 selftests: damon-tests: masim-record.sh
-ok 10 selftests: damon-tests: build_i386.sh
-ok 11 selftests: damon-tests: build_arm64.sh
-ok 12 selftests: damon-tests: build_m68k.sh
-ok 13 selftests: damon-tests: build_i386_idle_flag.sh
-ok 14 selftests: damon-tests: build_i386_highpte.sh
-ok 15 selftests: damon-tests: build_nomemcg.sh
- [33m
- [92mPASS [39m
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWvG9sACgkQAVBC80lX
+0Gx1pAf+Pp3PjPzFgxC3P/a1IpT8KMzUv2pWUgcj5V8YoY2CDrQ2GngcpGhBDOu9
+yXfMmRwl2otPoa1S91d5M/7yCd7HNnfwaKTNMfqfUKc+H/nPBwmOZjxVmDWKp4PJ
+CM8l2TgLD3ysiV3nTc0WkuiynuBx9UqH+YGSxe4JNTXJEvKdOYBxV2dbKtO8mnbJ
+79tt37I3phHjGCGbe/Kc2I0EIaHgxp0AjP34CREu2Pw8oYDTbZi0lj7orokHpCi4
+FYhtNW0TNWNDJoNEjFuXhvZj2TuZ3m0uL74itjabtkAsIbvKWEb2qt/+6Ok/8Y4L
+eoqP02gtV+uHTWlKO4OEoYJQ+/+mkA==
+=QcsJ
+-----END PGP SIGNATURE-----
+
+--Sig_/wwEr_+0bHO.BR4FXWEX7H1T--
 
