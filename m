@@ -1,144 +1,108 @@
-Return-Path: <linux-kernel+bounces-35086-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17FCD838BBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:26:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76765838BBF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:26:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6E501F22BB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:26:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12B121F22502
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:26:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16C415C5E0;
-	Tue, 23 Jan 2024 10:26:11 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A5E65BAE7;
+	Tue, 23 Jan 2024 10:26:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BSw4b3hU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E599658126;
-	Tue, 23 Jan 2024 10:26:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C08BDEEA9;
+	Tue, 23 Jan 2024 10:26:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706005570; cv=none; b=N/KEeD1T3nNmM0MshVjj4QFKtyCXGOGNo8bvvVj/Q1J4B2CyO9h5K0F//TYyqHsvG7RBgsDfl5dNxhb5KAtr3FsPI2vixaETbXSTZ5fSmwLaMXv4wwiPgAtwr9sTmAaS5Dh+CvOynkJpdWeKbjNFEXBwUTjaTcK3j7G6IBkQP0Y=
+	t=1706005601; cv=none; b=LlMoAkXiiW9xMFvwgpTn7j7iGTr/2EAFZAtSO9lOG2Vx3zYXuE1E8VQyAV1jp/1625MffLDHOYGlRN4HSCHiaGiERsZS5d1BcBufykSfZleqC+sxaizx0w27k3eRbozk2kqCGgagAlbSbgDX7O0NVWO4w8OCZmhV2WpBUtRqJeM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706005570; c=relaxed/simple;
-	bh=FUcwLqqqNQfLITWpcgPePxChaMrTvzUqpYt/KMz8MZs=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CX95qIGem2bFjX7CMCUVbQavCMvtvNoSNWyFMAnqARnDlSLdvSr1LvfB9TCug+PiKvI/nPXBwh65dsMy5/a2t4+VVWqGNhrtjItfNIpEuWnWo4uyvoZZy/Duv7VLHuexJG1vJnCeMhfEjFjb/VhwDft0AYdQkdCxMOXFNE1WvwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TK37w3nrBz6JB35;
-	Tue, 23 Jan 2024 18:23:08 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 56FC3140A86;
-	Tue, 23 Jan 2024 18:26:05 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 23 Jan
- 2024 10:26:04 +0000
-Date: Tue, 23 Jan 2024 10:26:03 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-CC: <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
-	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-	<x86@kernel.org>, <acpica-devel@lists.linuxfoundation.org>,
-	<linux-csky@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-	<linux-ia64@vger.kernel.org>, <linux-parisc@vger.kernel.org>, Salil Mehta
-	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	<jianyong.wu@arm.com>, <justin.he@arm.com>, James Morse <james.morse@arm.com>
-Subject: Re: [PATCH RFC v3 17/21] ACPI: add support to register CPUs based
- on the _STA enabled bit
-Message-ID: <20240123102603.00004244@Huawei.com>
-In-Reply-To: <20240102145320.000062f9@Huawei.com>
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
-	<E1rDOhC-00DvlI-Pp@rmk-PC.armlinux.org.uk>
-	<ZYBDJG1g7SH7AiM1@shell.armlinux.org.uk>
-	<20240102145320.000062f9@Huawei.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1706005601; c=relaxed/simple;
+	bh=DR+zgKNWJaIggO6xvI5mXauOg5o07Q+mfafKQsQ+U+E=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=shGx5TUwXby2GUti6Jm0MAQsHP/XLUthIi7AeMDHaOe1Uu1WfWWsPkDyfYfO8/ddJuF3yTJYlD3f4b7nZD59Xn/6VW+61AY+b4KDUkeEJWPbcSgfSuwU+AIsrkYg2P7Agzv0L4LM2Ru3boJr/34xQToDdkCDejYkk/hGhXLjLIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BSw4b3hU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D73EBC433C7;
+	Tue, 23 Jan 2024 10:26:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706005601;
+	bh=DR+zgKNWJaIggO6xvI5mXauOg5o07Q+mfafKQsQ+U+E=;
+	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+	b=BSw4b3hUDD75X2tFed+8I/YY6i8CeyPlTmboyQP2YuWBW2qz3NCi49Ax2yH+qVrRs
+	 tIuOrWy4J5mq/GW5BEoHwppfiQy1un2ty4AazL+fMaKwqm2KYX6k8Im5iTGVan7O7b
+	 gp/b1+e7sdPGFrh3Y76fkBAlGjiieGKiZOUh7o/wjpODIH7g37eKyMM4jIIrWK7K93
+	 rIlE8ZH2+8oWvbiuOFGh916rIqVe8NTEocmEytQNWe7aQnclTpC/0N24PHLn51SSOG
+	 Wab5IoYBlzojMG0haBzp4I15HEtjUPK93wHoqNDEjovnI7GVCe7TIej4GYJHDtzIzc
+	 8H/0U4EUtTD1g==
+Date: Tue, 23 Jan 2024 11:26:41 +0100 (CET)
+From: Jiri Kosina <jikos@kernel.org>
+To: Doug Anderson <dianders@chromium.org>
+cc: Kai-Heng Feng <kai.heng.feng@canonical.com>, benjamin.tissoires@redhat.com, 
+    Hans de Goede <hdegoede@redhat.com>, Maxime Ripard <mripard@kernel.org>, 
+    =?ISO-8859-15?Q?Thomas_Wei=DFschuh?= <linux@weissschuh.net>, 
+    Johan Hovold <johan+linaro@kernel.org>, linux-input@vger.kernel.org, 
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] HID: i2c-hid: Skip SET_POWER SLEEP for Cirque touchpad
+ on system suspend
+In-Reply-To: <CAD=FV=VCoB_uBontRk3WVn-nqzZnutSMCHBpdBqNOFwrYv=8xw@mail.gmail.com>
+Message-ID: <nycvar.YFH.7.76.2401231126300.29548@cbobk.fhfr.pm>
+References: <20240115045054.1170294-1-kai.heng.feng@canonical.com> <CAD=FV=VCoB_uBontRk3WVn-nqzZnutSMCHBpdBqNOFwrYv=8xw@mail.gmail.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=US-ASCII
 
-On Tue, 2 Jan 2024 14:53:20 +0000
-Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+On Wed, 17 Jan 2024, Doug Anderson wrote:
 
-> On Mon, 18 Dec 2023 13:03:32 +0000
-> "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
+> > There's a Cirque touchpad that wakes system up without anything 
+> > touched the touchpad. The input report is empty when this happens. The 
+> > reason is stated in HID over I2C spec, 7.2.8.2: "If the DEVICE wishes 
+> > to wake the HOST from its low power state, it can issue a wake by 
+> > asserting the interrupt."
+> >
+> > This is fine if OS can put system back to suspend by identifying input 
+> > wakeup count stays the same on resume, like Chrome OS Dark Resume [0]. 
+> > But for regular distro such policy is lacking.
+> >
+> > Though the change doesn't bring any impact on power consumption for 
+> > touchpad is minimal, other i2c-hid device may depends on SLEEP control 
+> > power. So use a quirk to limit the change scope.
+> >
+> > [0] https://chromium.googlesource.com/chromiumos/platform2/+/HEAD/power_manager/docs/dark_resume.md
+> >
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > ---
+> > v2:
+> >  - Use quirk instead of applying the change universally.
+> >
+> >  drivers/hid/hid-ids.h              | 3 +++
+> >  drivers/hid/i2c-hid/i2c-hid-core.c | 6 +++++-
+> >  2 files changed, 8 insertions(+), 1 deletion(-)
 > 
-> > On Wed, Dec 13, 2023 at 12:50:38PM +0000, Russell King wrote:  
-> > > From: James Morse <james.morse@arm.com>
-> > > 
-> > > acpi_processor_get_info() registers all present CPUs. Registering a
-> > > CPU is what creates the sysfs entries and triggers the udev
-> > > notifications.
-> > > 
-> > > arm64 virtual machines that support 'virtual cpu hotplug' use the
-> > > enabled bit to indicate whether the CPU can be brought online, as
-> > > the existing ACPI tables require all hardware to be described and
-> > > present.
-> > > 
-> > > If firmware describes a CPU as present, but disabled, skip the
-> > > registration. Such CPUs are present, but can't be brought online for
-> > > whatever reason. (e.g. firmware/hypervisor policy).
-> > > 
-> > > Once firmware sets the enabled bit, the CPU can be registered and
-> > > brought online by user-space. Online CPUs, or CPUs that are missing
-> > > an _STA method must always be registered.    
-> > 
-> > ...
-> >   
-> > > @@ -526,6 +552,9 @@ static void acpi_processor_post_eject(struct acpi_device *device)
-> > >  		acpi_processor_make_not_present(device);
-> > >  		return;
-> > >  	}
-> > > +
-> > > +	if (cpu_present(pr->id) && !(sta & ACPI_STA_DEVICE_ENABLED))
-> > > +		arch_unregister_cpu(pr->id);    
-> > 
-> > This change isn't described in the commit log, but seems to be the cause
-> > of the build error identified by the kernel build bot that is fixed
-> > later in this series. I'm wondering whether this should be in a
-> > different patch, maybe "ACPI: Check _STA present bit before making CPUs
-> > not present" ?  
+> This seems OK to me. As per my repy to v1, it doesn't feel fully 
+> explained what's going on. Why does it only wake the system without 
+> touches if you put it to sleep first? Is it truly a hardware quirk with 
+> the Cirque touchpad or is it a bug on the board you have it hooked up 
+> to? In any case, perhaps it doesn't matter since you said you measured 
+> power here and, on this touchpad it doesn't seem to save significant 
+> extra power to go into sleep mode. ...so I guess I'd be OK w/
 > 
-> Would seem a bit odd to call arch_unregister_cpu() way before the code
-> is added to call the matching arch_registers_cpu()
-> 
-> Mind you this eject doesn't just apply to those CPUs that are registered
-> later I think, but instead to all.  So we run into the spec hole that
-> there is no way to identify initially 'enabled' CPUs that might be disabled
-> later.
-> 
-> > 
-> > Or maybe my brain isn't working properly (due to being Covid positive.)
-> > Any thoughts, Jonathan?  
-> 
-> I'll go with a resounding 'not sure' on where this change belongs.
-> I blame my non existent start of the year hangover.
-> Hope you have recovered!
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
-Looking again, I think you were right, move it to that earlier patch.
+Applied, thanks.
 
-J
-> 
-> Jonathan
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+-- 
+Jiri Kosina
+SUSE Labs
 
 
