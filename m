@@ -1,138 +1,196 @@
-Return-Path: <linux-kernel+bounces-34683-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34684-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCC0B83861C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 04:41:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C30283861D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 04:42:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4145228B59B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:41:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F11C1C266EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:42:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EF6617FE;
-	Tue, 23 Jan 2024 03:41:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECF241FDB;
+	Tue, 23 Jan 2024 03:42:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="e4MVPVKA"
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MS8/nlpL"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBADA110A
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 03:41:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 607581FA5;
+	Tue, 23 Jan 2024 03:42:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705981291; cv=none; b=FjC13Cxthmymu+1daPZehGxQ9OXadJUoa6gIq29ygKD+sQJn6w8DylcqofxQTEjz4IySziZFn8BhaWrSzV6zmf9XF1uQtACKDzZ1nSZFXbZUrWccOaednGqTb2dBQYhh5wpU5EWE5ugDNVY4L1wZIBuDFjcbNwcos3sxpfVvGdI=
+	t=1705981329; cv=none; b=lloYq0+GbNV9V4pga0qdEvKI1mT87eFgdem2Z387uJh9w0ks6X9fmn+wvPQ2pzbSjcDcoeKyY4gWYdWgusGre89lLOhfP2BJlJL/9GZhZ4852RJ0R2Drpm2vQhrkf1v6P8C49OQJChl3eTecnyJ+ZswBq5He404XhwqwBDb4PZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705981291; c=relaxed/simple;
-	bh=Ig2RP/uw0YQwueq8TUo7iEgZya+f3pXFj+GEGBrXvpM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=M89AwdGCrS8WBM0gNxWRlE9QQaaaZg5xx8/CKELaops6TTQQubDmHIg1ohmnJHaDqamUm6Gwt9Se770F+HU26JoRkPOoCTkZPD6mwrm0qV0VFTCAIlfW4M5666Pu+h57xtair1RJ54WFJUhATcLPUAaoXCjSeBkq9DXlK58n7MA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=e4MVPVKA; arc=none smtp.client-ip=95.215.58.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <11da8b32-9946-9f7c-95fe-f6254b4f6e99@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705981287;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Yt3AR0W7SP2tLShyq/3MhllgHeKq9WrP4nJ6WWve3yg=;
-	b=e4MVPVKA49CpZDs0C9I8EVqSiZTtfNWwjMCyOE54+2oirnjVE8J0e0vX3mo6iDnZS9Uhik
-	0XYRyGma4KiRE+Si6AaTpFK3viNajkr9Hmk5WmlIpFSYVvGbFcmrnKmc55cr1IVdfDwTUz
-	R0A2LC1vw4WJwn8P/KEQvqiD9k9+4/o=
-Date: Tue, 23 Jan 2024 11:41:21 +0800
+	s=arc-20240116; t=1705981329; c=relaxed/simple;
+	bh=ZbYyPQ250XMcheI3heCNihkEYTt2USTXTqIHzWrYJQA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BxZmfKc90ra4quTv8xA10EyIomN5O65Q4i516mlLLsrhtQE6d0JVwtDH+Cqjl5cDFuJf+fgojZ25l5rEPg74H+CjUYIq1s6E9YkdeUQIaOmSIV+GlK4it/4syTkxvSzVWwQR76pQCaeEhAjx+MRa7Xl60LdrM3suLa5GRY36clM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MS8/nlpL; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705981327; x=1737517327;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=ZbYyPQ250XMcheI3heCNihkEYTt2USTXTqIHzWrYJQA=;
+  b=MS8/nlpLTqE1n6AZTK/lI2Ff6untbU3JnkBsq6vN/Ptd7/c4p9AMDZPR
+   nqGNdAoxAmsU7HWdYPBSF2w+wxaBo2LX5Id319QgOoaPwRmk7GLWlXLX0
+   jheLQYlPlVGsO3kmOcE3yqDTVlhfrJJL4ap3U6Wll/RHoKRdyKthFso1Z
+   YU2bO6pFQdvPNPTg5h40VFE4ja+7IUm24Y4iprBSfthiCWWzNlpGseqph
+   aD0kBtVnzcU5vckeiWqaboDla1LaWQ1sPe989c95XqizqwWlRC8yMNjPR
+   KsJFSO7ECLrDbskii75SYXcNUio1P/pDFq7oslQlH8uujvgY3oh+ML2rk
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="14920032"
+X-IronPort-AV: E=Sophos;i="6.05,213,1701158400"; 
+   d="scan'208";a="14920032"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 19:42:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,213,1701158400"; 
+   d="scan'208";a="1404792"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.93.8.92]) ([10.93.8.92])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 19:42:03 -0800
+Message-ID: <e2a27fa7-8458-4bb7-8d67-de82c1b2503b@linux.intel.com>
+Date: Tue, 23 Jan 2024 11:42:00 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] mm/mmap: introduce vma_range_init()
-Content-Language: en-US
-To: "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
- Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240111021526.3461825-1-yajun.deng@linux.dev>
- <20240122220031.pwiravglee7o7k34@revolver>
- <20240122154031.b710f834b14d9027176f439a@linux-foundation.org>
- <20240123001830.glqdmrv2qc56zfpc@revolver>
- <2a1d6a9b-f486-44c8-6d1d-e6bab4dc3ced@linux.dev>
- <20240123031906.pwbjuzdpl6hqiptj@revolver>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yajun Deng <yajun.deng@linux.dev>
-In-Reply-To: <20240123031906.pwbjuzdpl6hqiptj@revolver>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v18 007/121] KVM: VMX: Reorder vmx initialization with kvm
+ vendor initialization
+To: isaku.yamahata@intel.com
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+ erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+ Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+ chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
+References: <cover.1705965634.git.isaku.yamahata@intel.com>
+ <411a0b38c1a6f420a88b51cabf16ee871d6ca80d.1705965634.git.isaku.yamahata@intel.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <411a0b38c1a6f420a88b51cabf16ee871d6ca80d.1705965634.git.isaku.yamahata@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
 
-On 2024/1/23 11:19, Liam R. Howlett wrote:
-> * Yajun Deng <yajun.deng@linux.dev> [240122 21:23]:
->> On 2024/1/23 08:18, Liam R. Howlett wrote:
->>> * Andrew Morton <akpm@linux-foundation.org> [240122 18:40]:
->>>> On Mon, 22 Jan 2024 17:00:31 -0500 "Liam R. Howlett" <Liam.Howlett@Oracle.com> wrote:
->>>>
->>>>> * Yajun Deng <yajun.deng@linux.dev> [240110 21:15]:
->>>>>> There is a lot of code needs to set the range of vma, introduce
->>>>>> vma_range_init() to initialize the range of vma.
->>>>>>
->>>>>> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
->>>>>> ---
->>>>>>    include/linux/mm.h |  9 +++++++++
->>>>>>    mm/mmap.c          | 29 +++++++----------------------
->>>>>>    2 files changed, 16 insertions(+), 22 deletions(-)
->>>>> This isn't a whole lot of code, are there others?  We're losing code
->>>>> clarity in favour of saving 6 lines?
->>>>>
->>>> Oh.  I thought it was a nice cleanup which made things more clear.
->>> I'm not totally against it; that's why I suggested the changes below. I
->>> think a name change would go a long way for clarity. It's not as much as
->>> I though it would be though.
->>>
->>>>>> diff --git a/include/linux/mm.h b/include/linux/mm.h
->>>>>> index f5a97dec5169..abb4534be3cc 100644
->>>>>> --- a/include/linux/mm.h
->>>>>> +++ b/include/linux/mm.h
->>>>>> @@ -3516,6 +3516,15 @@ static inline bool range_in_vma(struct vm_area_struct *vma,
->>>>>>    	return (vma && vma->vm_start <= start && end <= vma->vm_end);
->>>>>>    }
->>>>>> +static inline void vma_range_init(struct vm_area_struct *vma,
->>>>> Any reason this can't be in mm/internal.h ?
->>>> That would be good.
->>> One other thing, do we trust this to be inlined correctly by the
->>> compiler or should this be __always_inline?  I'd expect it to be okay as
->>> it is, but I've been proven wrong in a perf trace before..
->>>
->> Okay, I would take __always_inline and put it in mm/internal.h in v2.
-> I'm not confident in this suggestion as the rest.
-> Please rename the function when you move it.
 
-inline is a suggestion, __always_inline is mandatory.
-I think __always_inline is better if we're demanding.
+On 1/23/2024 7:52 AM, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+>
+> To match vmx_exit cleanup.
+Do you mean vt_exit()?
+Shouldn't vt_init() and vt_exit() be symmetric right from the beginning in
+the refactor patch (006/121)?
 
->>>>> vma_range_set(), vma_set_range(), or just vma_range() might be a better
->>>>> name?  My thinking is that some of these are actually modifying the vma
->>>>> and not just initializing it, right?
->>>> I'd vote for vma_set_range().
->                        ^  This part, use vma_set_range() please.
-
-Okay.
+And also, since the reorder of kvm_x86_vendor_init() and vmx_init() is going
+to happen, can we just skip moving around the init of loaded_vmcss_on_cpu?
 
 
-By the way, I sent another patch with ("mm/mmap: simplify vma_merge()") 
-subject a few days ago.
+> Now vmx_init() is before kvm_x86_vendor_init(),
+> vmx_init() can initialize loaded_vmcss_on_cpu.  Oppertunistically move it
+> back into vmx_init().
+>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
+> v18:
+> - move the loaded_vmcss_on_cpu initialization to vmx_init().
+> - fix error path of vt_init(). by Chao and Binbin
+> ---
+>   arch/x86/kvm/vmx/main.c    | 17 +++++++----------
+>   arch/x86/kvm/vmx/vmx.c     |  6 ++++--
+>   arch/x86/kvm/vmx/x86_ops.h |  2 --
+>   3 files changed, 11 insertions(+), 14 deletions(-)
+>
+> diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
+> index 18cecf12c7c8..443db8ec5cd5 100644
+> --- a/arch/x86/kvm/vmx/main.c
+> +++ b/arch/x86/kvm/vmx/main.c
+> @@ -171,7 +171,7 @@ struct kvm_x86_init_ops vt_init_ops __initdata = {
+>   static int __init vt_init(void)
+>   {
+>   	unsigned int vcpu_size, vcpu_align;
+> -	int cpu, r;
+> +	int r;
+>   
+>   	if (!kvm_is_vmx_supported())
+>   		return -EOPNOTSUPP;
+> @@ -182,18 +182,14 @@ static int __init vt_init(void)
+>   	 */
+>   	hv_init_evmcs();
+>   
+> -	/* vmx_hardware_disable() accesses loaded_vmcss_on_cpu. */
+> -	for_each_possible_cpu(cpu)
+> -		INIT_LIST_HEAD(&per_cpu(loaded_vmcss_on_cpu, cpu));
+> -
+> -	r = kvm_x86_vendor_init(&vt_init_ops);
+> -	if (r)
+> -		return r;
+> -
+>   	r = vmx_init();
+>   	if (r)
+>   		goto err_vmx_init;
+>   
+> +	r = kvm_x86_vendor_init(&vt_init_ops);
+> +	if (r)
+> +		goto err_vendor_init;
+> +
+>   	/*
+>   	 * Common KVM initialization _must_ come last, after this, /dev/kvm is
+>   	 * exposed to userspace!
+> @@ -207,9 +203,10 @@ static int __init vt_init(void)
+>   	return 0;
+>   
+>   err_kvm_init:
+> +	kvm_x86_vendor_exit();
+> +err_vendor_init:
+>   	vmx_exit();
+>   err_vmx_init:
+> -	kvm_x86_vendor_exit();
+>   	return r;
+>   }
+>   module_init(vt_init);
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 8efb956591d5..3f4dad3acb13 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -477,7 +477,7 @@ DEFINE_PER_CPU(struct vmcs *, current_vmcs);
+>    * We maintain a per-CPU linked-list of VMCS loaded on that CPU. This is needed
+>    * when a CPU is brought down, and we need to VMCLEAR all VMCSs loaded on it.
+>    */
+> -DEFINE_PER_CPU(struct list_head, loaded_vmcss_on_cpu);
+> +static DEFINE_PER_CPU(struct list_head, loaded_vmcss_on_cpu);
+>   
+>   static DECLARE_BITMAP(vmx_vpid_bitmap, VMX_NR_VPIDS);
+>   static DEFINE_SPINLOCK(vmx_vpid_lock);
+> @@ -8528,8 +8528,10 @@ int __init vmx_init(void)
+>   	if (r)
+>   		return r;
+>   
+> -	for_each_possible_cpu(cpu)
+> +	for_each_possible_cpu(cpu) {
+> +		INIT_LIST_HEAD(&per_cpu(loaded_vmcss_on_cpu, cpu));
+>   		pi_init_cpu(cpu);
+> +	}
+>   
+>   	cpu_emergency_register_virt_callback(vmx_emergency_disable);
+>   
+> diff --git a/arch/x86/kvm/vmx/x86_ops.h b/arch/x86/kvm/vmx/x86_ops.h
+> index b936388853ab..bca2d27b3dfd 100644
+> --- a/arch/x86/kvm/vmx/x86_ops.h
+> +++ b/arch/x86/kvm/vmx/x86_ops.h
+> @@ -14,8 +14,6 @@ static inline __init void hv_init_evmcs(void) {}
+>   static inline void hv_reset_evmcs(void) {}
+>   #endif /* IS_ENABLED(CONFIG_HYPERV) */
+>   
+> -DECLARE_PER_CPU(struct list_head, loaded_vmcss_on_cpu);
+> -
+>   bool kvm_is_vmx_supported(void);
+>   int __init vmx_init(void);
+>   void vmx_exit(void);
 
-Please comment if you would like.
-
->>> Using vma_set_range() leaves vma_range() or vma_size(), which could be
->>> added for the calculations of vma->vm_end - vma->vm_start.  Davidlohr
->>> suggested such a beast a few years ago, but that one would need to live
->>> in the include/linux/mm.h as it occurs a lot more.
->>>
->>> $ git grep "vma->vm_end - vma->vm_start" | wc -l
->>> 198
->>>
->>> .. for just those named vma.
->>>
 
