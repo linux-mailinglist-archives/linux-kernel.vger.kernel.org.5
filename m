@@ -1,142 +1,130 @@
-Return-Path: <linux-kernel+bounces-35717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35718-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61A5D8395A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:01:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 34735839597
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:00:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34B67B2ED8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:57:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A63DB2BA0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:58:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B99C12BE91;
-	Tue, 23 Jan 2024 16:49:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6EF580027;
+	Tue, 23 Jan 2024 16:50:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="eCbhgJNJ"
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UAzgYyft"
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76C2912AAD5
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 16:49:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D736B5FF0C;
+	Tue, 23 Jan 2024 16:50:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706028573; cv=none; b=aAnRY2KnEnGSFPc8crbJFRHvfZ7fTuYaqCAqopglGi5lhiNvmuh6X+HV86SZnZ6hFoKNENiC7yOxZClYzYghvyWwMmP9XcG4qGy1l6WUE4QT0u7XchlN5DGUAf/OU+uEnLFXl/32sGE+/qx4zCU4VdAgFXMTFLSIrgDd4aI48Pc=
+	t=1706028636; cv=none; b=MaVwAQJ82PXOipfno96vmDiOptrrEXOh6gnP7RASdb7GkdLUoNTDdnOf0mYv1PN/USjUNOm2FxllEmUkIPl60ga+X/eg9eZiPmD2wM9hroRqNhvjI1rncjxaVfKdHHCZmzzXmcqmxKc3fjbi2mk39nJpHL3ujH1cBpEKnUjiXUY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706028573; c=relaxed/simple;
-	bh=0GodLf30+iNTBjP5Gh6/duXnvzTXZV9C69MvyxMo8U4=;
+	s=arc-20240116; t=1706028636; c=relaxed/simple;
+	bh=a88Zmqp4njTtxWiCg25rinX9YmeD6CxdtUTfyxUVraw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tZPFRO2GGirhmxsX9uRNtxmP/qoAM1TaBud07J46L0MbVVnLTHO1mNH1VYn8uOhgjPIcg+50gO/UO3fh7yR0YVVgvevAMcFB1ZbbJVjUQ+hRZ9YcbbnLLlyf9JYu1a8+tt7G88UIjBpG/pY6fV/R/J/xtMPUGBd0u3gILcBJgB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=eCbhgJNJ; arc=none smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5ff7dc53ce0so33423177b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 08:49:31 -0800 (PST)
+	 To:Cc:Content-Type; b=WJjgct4W7ITlvlzLuq9p7lsn8E78Bog8hWzflKFONA9pD9iaF+zKJPrQSuriR2Xkmqg18XlExEfG+XQFL3REhuT2D1eU0Uw1UqLhWmCbgrfYXuKdtXFaPbC5JaGnRvrJuytvMLCXJ7a8J89nrwOyxvKHNZEyfBZA+g/XeIF3S3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UAzgYyft; arc=none smtp.client-ip=209.85.215.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5cf2d73a183so3871870a12.1;
+        Tue, 23 Jan 2024 08:50:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706028570; x=1706633370; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=aXz6WQyGCVGvl5jSp/sFyNgM0abYZYPNAeAICiPwHO8=;
-        b=eCbhgJNJvcM1TmjWFhBZCwvo4N+jgvjxgMOR2MqTqudxEr99MPdQWJ+RJtEhwyxq7O
-         eUqJTMAc32WZodMqMq9bhTuKCYpFqdH2q5DQw3qWnTJJz2KXCUqmZjpse1jA47qEr2Gm
-         udGRMzYCeuPq2fQtBseRlG61FucIuhDcwa2JuYGJXldVDT2yDdKCB1vV8cZ4drdxw/ku
-         Y0Yo7IT7FeW7sreqCbCreFWytvCnP6/L7RKDOAYl6MVzXX6a5HRRwBI4p53n/ED5Fh/+
-         kq/F9dZaCW7sl3vYvWa4h9dKz/xXFsFhNfdQ7YWOTvNMFtTHN1fHXmAfkolTGRVOgRR9
-         5D0A==
+        d=gmail.com; s=20230601; t=1706028634; x=1706633434; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Z/d5m76wt4OsGM3BZpBnIBiif9rXJ89dqo98BB5XGUk=;
+        b=UAzgYyftjDM1qC7oDcXUT9vb/SgUrspTABZouLUUIDpGPHXRewSmV+DtNRpFQidMLe
+         D7Xqakc4+9geOAJRlrZbj66McHy+Gso39eDesJkQt2OlNGqSYlDlelJPl2N3/iI9lywS
+         A0HvgN2IRMqVpJwbMRP8tdidZDTgk7BNMshLUKf0y3X2uM+hzGyqg/fiR+4DYVy5BAhM
+         EsJ050BJjJ/Jchv1EeAOu7NJKy+B7UQbASonEdlfiAS6APDrJmouBBhK1JKY16awSc26
+         gumx4pUYOt8hKMDRYMtULYb5KX3Ow8b9qhMLqP7MOAv+1uVVqKZ6h+3piLPz5IBjazBn
+         OYfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706028570; x=1706633370;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aXz6WQyGCVGvl5jSp/sFyNgM0abYZYPNAeAICiPwHO8=;
-        b=AyhT9oazsstWX07Xx1aUIcV8K6QUXZ46g5nR4T4ZxAUXtwe2JWFq7fBPI0XyB/YDnV
-         adRmbX4hbxvaXxpA6ej1eZIfLI/T3Q1yZh9gFd5b0SQMQIouyXSQUCwzt+ejNzyKLXRL
-         /KpTclXduSsv5hYqa9kHRMhh7LtI97XZAxh05pcetHtotE7fcvSCwDUVdOir38LnsOiZ
-         qHNLfGwQLEP5ciZMWb9zo6bcOT6NuXHB36nhTl2vYEDgPwnEpENJwDDuztWt5v+KsVdf
-         DgC9OxZTXn/4MpjkQ0YLnFDxJzHvegf1icdn6NUzzfgToP/WeMkI5ISzxedIr6EUubMt
-         4p/w==
-X-Gm-Message-State: AOJu0YxwLvq34mtqIT7licGkKDgfpvkgppMhuYHN0Ngjc95dfjYlorsA
-	A3PbakhYqEtw2UxgixJli/Yz2KOH25xH+OFgORxniWFQIqCWoeIwe2xvKs3vAz8fCMW7npMMEMN
-	X/veBOb20PPys6fTabzDYxrPN5wklwJ9ei18+ag==
-X-Google-Smtp-Source: AGHT+IEE5iwDZNZnKWCqP0X/hJ8GqixDXEFeBY9HQDXHizFGiA1pCXIi2xw17JvVbOPkrHIwHkzBMtTYGJvnD55grhc=
-X-Received: by 2002:a0d:d50f:0:b0:5ff:9eaf:be5d with SMTP id
- x15-20020a0dd50f000000b005ff9eafbe5dmr3326432ywd.81.1706028570482; Tue, 23
- Jan 2024 08:49:30 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706028634; x=1706633434;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Z/d5m76wt4OsGM3BZpBnIBiif9rXJ89dqo98BB5XGUk=;
+        b=aV361/hZzruCuB6ufKGH2wvnDQIqn4Ug2cG+pp1F3xoObfjcoS9P3R18yeVBPji8nb
+         xmT9BGsD9j/rMAAY94DkKe4y25y2vXiuabL6XUMadfcSzefwfVleprSgYM5yXt8M3Qn6
+         SIu9NQdz4E8VtA3qikWB06TOO+nyKKmqv0Q8pu72vv5jhK9vcOuennC6ROK0A4iWtQm3
+         ja7LJQ694dVZrXn6EOKJJjpwBlNzbHfzWMt5RV5+bxjBJZZNRCPv8922xR3i/vyDP1tg
+         8tdLdqyiURW7weMJ7Q4NugkgSLvRwaNinKu3julN4j5ofTu/sFKuuICISp0lLxbfRrzJ
+         /0PA==
+X-Gm-Message-State: AOJu0YzD/4PFqYONdYNxHG8rtJZqibIuyRfTqwOpfO2i5uvnLWfrpWLe
+	n04J19YA3083gycalxWPrHw+0wc9qOqxT/cx+ZV8iq9ByVEdWNV9Uo4qC2lFFIDejIVzdmalqBD
+	XOL1ImFnKwx1Wov1unWJnYgE5AYLd39/xSWL60g==
+X-Google-Smtp-Source: AGHT+IHxf9a68FIsVrmVsskDTKcJeb1LqACbFmkg/jO9ZAJTowrip8lle2QJ9q3KZe1rH30cf2uTccw+eNPDcvK80iE=
+X-Received: by 2002:a17:90a:f0d7:b0:28e:8787:9ab7 with SMTP id
+ fa23-20020a17090af0d700b0028e87879ab7mr7137333pjb.38.1706028633969; Tue, 23
+ Jan 2024 08:50:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240123-gcc-ao-support-v1-0-6c18d5310874@quicinc.com> <20240123-gcc-ao-support-v1-2-6c18d5310874@quicinc.com>
-In-Reply-To: <20240123-gcc-ao-support-v1-2-6c18d5310874@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 23 Jan 2024 18:49:19 +0200
-Message-ID: <CAA8EJpqLZQNMzn_oC7AbzXP2f==PujUe-atfUNgFC3VaFF8=Bg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] clk: qcom: gcc-sm8150: Add gcc_parents_0_ao support
-To: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Taniya Das <quic_tdas@quicinc.com>, linux-arm-msm@vger.kernel.org, 
-	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Ajit Pandey <quic_ajipan@quicinc.com>, 
-	Imran Shaik <quic_imrashai@quicinc.com>, Jagadeesh Kona <quic_jkona@quicinc.com>
+References: <20240122-spi-multi-cs-max-v1-1-a7e98cd5f6c7@kernel.org>
+ <20240123120430.75c7ace0@bootlin.com> <cefafa30-b78d-471b-83e0-b05060d806d4@sirena.org.uk>
+ <93385fc2-7596-4f66-b0c1-07d7d5c9ed8d@csgroup.eu> <49b52941-6205-48bd-b2ae-e334018ac5cd@sirena.org.uk>
+In-Reply-To: <49b52941-6205-48bd-b2ae-e334018ac5cd@sirena.org.uk>
+From: Jonas Gorski <jonas.gorski@gmail.com>
+Date: Tue, 23 Jan 2024 17:50:22 +0100
+Message-ID: <CAOiHx==FzSyyqP3NzLTeOSVxUQYy3ZhypZrDLsc-OjGCdSzvUA@mail.gmail.com>
+Subject: Re: [PATCH] spi: Raise limit on number of chip selects
+To: Mark Brown <broonie@kernel.org>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>, Herve Codina <herve.codina@bootlin.com>, 
+	Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>, Guenter Roeck <linux@roeck-us.net>, 
+	"linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 23 Jan 2024 at 18:35, Satya Priya Kakitapalli
-<quic_skakitap@quicinc.com> wrote:
->
-> Add active_only support for gcc_parents_0, this is needed because
-> some of the clocks under it are critical which would vote on xo
-> blocking the suspend.
+Hi,
 
-The kernel should be able to work with older DT files. Please add
-support for using bi_tcxo as a fallback.
+On Tue, 23 Jan 2024 at 14:56, Mark Brown <broonie@kernel.org> wrote:
+>
+> On Tue, Jan 23, 2024 at 01:26:04PM +0000, Christophe Leroy wrote:
+> > Le 23/01/2024 =C3=A0 14:18, Mark Brown a =C3=A9crit :
+> > > On Tue, Jan 23, 2024 at 12:04:30PM +0100, Herve Codina wrote:
+>
+> > >> Moving the SPI_CS_CNT_MAX value from 4 to 8 is not enough to handle =
+my case.
+> > >> Tested moving SPI_CS_CNT_MAX to 16 and it was ok.
+>
+> > > OK, I've also heard 12 as a number which this would cover.
+>
+> > By the way the comment in include/linux/spi/spi.h is confusing. This
+> > SPI_CS_CNT_MAX is really not the max number of CS supported per SPI
+> > device but the max number of CS supported per SPI controller.
+>
+> Well, it's a combination of the comment being confusing and the
+> implementation being a bit broken - we simply shouldn't be limiting the
+> number of chip selects per controller, the per device limit is much more
+> reasonable.  So ideally the code would be changed to reflect the
+> comment.
 
->
-> Signed-off-by: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
-> ---
->  drivers/clk/qcom/gcc-sm8150.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/clk/qcom/gcc-sm8150.c b/drivers/clk/qcom/gcc-sm8150.c
-> index 05d115c52dfe..2a0608c5a104 100644
-> --- a/drivers/clk/qcom/gcc-sm8150.c
-> +++ b/drivers/clk/qcom/gcc-sm8150.c
-> @@ -123,6 +123,12 @@ static const struct clk_parent_data gcc_parents_0[] = {
->         { .hw = &gpll0_out_even.clkr.hw },
->  };
->
-> +static const struct clk_parent_data gcc_parents_0_ao[] = {
-> +       { .fw_name = "bi_tcxo_ao", .name = "bi_tcxo_ao" },
-> +       { .hw = &gpll0.clkr.hw },
-> +       { .hw = &gpll0_out_even.clkr.hw },
-> +};
-> +
->  static const struct parent_map gcc_parent_map_1[] = {
->         { P_BI_TCXO, 0 },
->         { P_GPLL0_OUT_MAIN, 1 },
-> @@ -222,8 +228,8 @@ static struct clk_rcg2 gcc_cpuss_ahb_clk_src = {
->         .freq_tbl = ftbl_gcc_cpuss_ahb_clk_src,
->         .clkr.hw.init = &(struct clk_init_data){
->                 .name = "gcc_cpuss_ahb_clk_src",
-> -               .parent_data = gcc_parents_0,
-> -               .num_parents = ARRAY_SIZE(gcc_parents_0),
-> +               .parent_data = gcc_parents_0_ao,
-> +               .num_parents = ARRAY_SIZE(gcc_parents_0_ao),
->                 .flags = CLK_SET_RATE_PARENT,
->                 .ops = &clk_rcg2_ops,
->         },
->
-> --
-> 2.25.1
->
->
+At a first glance at all places using SPI_CS_CNT_MAX I don't see
+anything being broken / reading out of bounds if a controller has more
+chipselects than SPI_CS_CNT_MAX.
 
+So I think the check of ctrl->num_chipselect in of_spi_parse_dt() is
+bogus/unnecessary and is in the wrong place, as this is for parsing a
+spi device node and not a controller node. The following check for the
+amount of chip selects defined for the spi device should just check
+against SPI_CS_CNT_MAX instead of ctrl->num_chipselects.
+__spi_add_device() later will ensure that any chip selects are valid
+chip selects, so no need for of_spi_parse_dt() to check that either.
 
--- 
-With best wishes
-Dmitry
+But I didn't do a very thorough read, or even tested it, so I might
+have easily missed something.
+
+Best Regards,
+Jonas
 
