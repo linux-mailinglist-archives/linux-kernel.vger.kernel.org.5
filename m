@@ -1,429 +1,172 @@
-Return-Path: <linux-kernel+bounces-35600-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC1168393D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:55:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15A4B8393E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:56:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 265B21F236A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:55:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AB691C22246
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:56:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B40A60BAE;
-	Tue, 23 Jan 2024 15:55:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6C4F612E0;
+	Tue, 23 Jan 2024 15:55:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vhQErZlx"
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SOUCCHvn"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D7FE60B94
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 15:55:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 545DF60BA7
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 15:55:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706025324; cv=none; b=Y2s39JBSRyfSZZnKQu+PA7y7MR8PYq7QUYwdSUcxV58jfcL7jH824/ZrxXLgUw9BsxNoJiXWC+JN+azZ4+rlvbP5z5I/lw5Aa5msai/wk39zh2lFcVNdybO0YgXtuBGykDm3y9ZRNoyEwoeapBLVM7dQNr793+2XVpvDIlueyeE=
+	t=1706025348; cv=none; b=h4ayE4WxrzVoDm6ICh1APx0mOi2f5oTpXAuQC/0tanGk2kMYfAOxUqdtqaiZQYbJrtpgHNBlnMmuDtbOKlmpnT+OaBFlHFXITaO87XDrGUcyXkL/4jaqX33DpBbMGbza8v4G/QomD2eUfIWWpxhPVbgfG0usNKG09kuD+PfxUbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706025324; c=relaxed/simple;
-	bh=90Sqy3oqcG58CRvQQ5Q8ou0x/wbc3VZnYOvFbL2VNok=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pyG5jYEd3s2mF7rsgvh/nvsFbVDc/bLSas8I5ZoyEGi6iYCS1oQ2NJ7KtB8xrk3Yfah/du77b7U+WBlfzj/IZvk74y6S3gofwkxRzecmREZIvufE66Qa12On/2N2BAHy2Zh8SJbCG/4rEu/1D5qA0/lsTbIDv24ol1GIeElb9LM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vhQErZlx; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3368abe1093so3801187f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:55:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706025320; x=1706630120; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fbmGUCtpvGsX2MG2T5Vsy8zkaT6VJaj+LUjlkN2ktUw=;
-        b=vhQErZlxbDc9bDmAje57lkPubw8J1vnxy6QDU8s+/8W6RAKzat0Wd8LjOJHt/UEjqO
-         WgxNKgg5eZJTG2TrU4Xymmqmmn/ydO/bddfRc802MEIVToTxelTZM0jSDJb0VJmc9xy/
-         CuduGgr8jHzqHm50s+zyI/4bY8ZnzybdcnlsGs+wWi//GPd16fJOMKwGDluwHlYyVi8A
-         hEVEKJjAmdELFmp/czMZTptTKnSiduZ+Qpw+DDd8xd/gLkd9n4CA1X+Zs71eTq/BqYny
-         0SVs61ltBfKy0E/LyOcVjbkYysRXS3G2ZR5DSsYLnogbiUtwo/fUA7EAe6NIMnB6ehgP
-         IObg==
+	s=arc-20240116; t=1706025348; c=relaxed/simple;
+	bh=szUZSkb5KkY1XXTL2ydXpMJbCb8a3hnlpzYn5FWYKKA=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=kmxm+wo/ghL9heSk0d3XrO2KuMuHLLEhrsWSjPMANPDzanky4YS7MP+wyNS/eHudndLsufopYr1wCibqSsYTqJGYNPs+B4+nV9OUmq8RUe15QE3WvlQ4ZoxOFo797RpRQkt0zfT5+GOmTXDoFIbkBUTZSVl41Zd+lP/g/Y+yRto=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SOUCCHvn; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706025345;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sCueOm7+YIV1uypCrFlqek9GTnabxDJ4c738N9GAnY4=;
+	b=SOUCCHvnNApRSjGpa5hFybVpP72OZck3TbeRZlMRy0hV2tttr0D6g1JupZjqwPgozqRcEk
+	9KBjuO6lxFozUCmJ0wHiNI2ZFTGbPq5vqqxy+n2fMa6YDrarCXjGqAUCA2y0OD+ue5J3SA
+	EMOvTlxceVglfTPKHp97zebg5FqXI30=
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
+ [209.85.166.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-86-7_aABfckN5myqxEldXUZsw-1; Tue, 23 Jan 2024 10:55:32 -0500
+X-MC-Unique: 7_aABfckN5myqxEldXUZsw-1
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7bf7e0c973eso379256339f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:55:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706025320; x=1706630120;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fbmGUCtpvGsX2MG2T5Vsy8zkaT6VJaj+LUjlkN2ktUw=;
-        b=DuQlt4+yXFuc/RlxX6TB5DODkq5xJfML4V592F9ZQ1a3FEloraBOn6uOF3EvIIkjUu
-         BKP3KIOBEIFCm/8jSR4u5vRsHm6yPswh5Jc0JRqn55yMDUWLgmE/IwxFCuPMx6ItyL2W
-         a4q5B5bgvMdljFeXRN/gM109cadWx3Ls0DtYa9WsURLg5O18+c59DLNbwYNkr53SAnmv
-         vyQSa17AzjdR2OkwmkurZB4sKrmOLF20fyPPjW+tSkjRuY7fN3pEjLyUrxVvltUB37HN
-         a57ZAbMkaj16VLzxJ3As8r/Ry919h87/jFAyX+0jCVxZHzt61m8NLy6eoXmS/n1KGsOd
-         WWdg==
-X-Gm-Message-State: AOJu0Yw1CBJLfKQ9YFgCpt8scaiKXKDydosTNHbBC/I9FDLQ1V/kp8Em
-	xYN3lcs7lFtX8SJYXh8C4gyKGfQJp3Z6It1Q4SSi78ZAw26xTCQPd1x0jAq/m6M=
-X-Google-Smtp-Source: AGHT+IG+R/C8YCaDFTa18cfX2wQwa06wkBpx0UU0UGrHPYEN8yENQ938bOZZytXwaxWJImBcA2FazA==
-X-Received: by 2002:a5d:640a:0:b0:339:37a2:732a with SMTP id z10-20020a5d640a000000b0033937a2732amr1950015wru.29.1706025320515;
-        Tue, 23 Jan 2024 07:55:20 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id w15-20020adfec4f000000b00338a3325331sm11730174wrn.69.2024.01.23.07.55.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jan 2024 07:55:20 -0800 (PST)
-Message-ID: <2f168df8-218f-40a0-9371-56d330120b4d@linaro.org>
-Date: Tue, 23 Jan 2024 16:55:18 +0100
+        d=1e100.net; s=20230601; t=1706025323; x=1706630123;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sCueOm7+YIV1uypCrFlqek9GTnabxDJ4c738N9GAnY4=;
+        b=KbFi0hCGzgFmF6aA82v7tKKXTQGnAcoGr4VpaMmzVCVxkaBpl7zp+vcEqWrrOMl79+
+         PUcb5tXWXSV3CBA/unO+OPbKvvTE+hDKFzzDuU94TzxsbV2gOYiBhE0UQOnAOPT5p1yw
+         LvMb/hzM2zwTrhMieqKgTVwERw+ugI5uLOMlgKESmjqi0NYCft6PAv3RT0miuBlrtq7R
+         qLDK1L0yyDQREkGBOtiMhGfhaZNdCflBAQUL1xHZ+1qFYrzOIQK/ek9qyZmzsgzWMojT
+         sG0k7OPoMBaKxDwG2fnU3BSGMpAlHrxFtruj4ezFtgZ8JVP88ZWS9L4EDrG7n1vdVZC7
+         6ABw==
+X-Gm-Message-State: AOJu0YyYo17hmIcrlFttnE5GNgD86pfKRDA51VE0fEXQR8U65EsGGVTx
+	1WzEXrL5MPFYas5Gfw8JX03XFziqjILzahVCl01DXGGrZ41nJJVPwI83546gKrWKUssAc46+6fd
+	FnpsqabYpbobiAzGRXBO6XC8vWAIZo1rhIfne08ibZ9DCC5fcWQVuJ98Xh0XWsA==
+X-Received: by 2002:a6b:6515:0:b0:7bf:705c:f9cd with SMTP id z21-20020a6b6515000000b007bf705cf9cdmr99561iob.38.1706025323695;
+        Tue, 23 Jan 2024 07:55:23 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH38iCjX+AEd64T4UT/2KKdkE95022H/qcfVu2tE/vKCgVvGn5gfiViiWPx9v0cG2g2zKjB3g==
+X-Received: by 2002:a6b:6515:0:b0:7bf:705c:f9cd with SMTP id z21-20020a6b6515000000b007bf705cf9cdmr99549iob.38.1706025323389;
+        Tue, 23 Jan 2024 07:55:23 -0800 (PST)
+Received: from redhat.com ([38.15.36.11])
+        by smtp.gmail.com with ESMTPSA id x2-20020a029482000000b0046d17aff31bsm3738272jah.157.2024.01.23.07.55.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jan 2024 07:55:22 -0800 (PST)
+Date: Tue, 23 Jan 2024 08:55:21 -0700
+From: Alex Williamson <alex.williamson@redhat.com>
+To: Lukas Wunner <lukas@wunner.de>
+Cc: linux-pci@vger.kernel.org, bhelgaas@google.com,
+ linux-kernel@vger.kernel.org, eric.auger@redhat.com,
+ mika.westerberg@linux.intel.com, rafael.j.wysocki@intel.com,
+ Sanath.S@amd.com
+Subject: Re: [PATCH v2 2/2] PCI: Fix runtime PM race with PME polling
+Message-ID: <20240123085521.07e2b978.alex.williamson@redhat.com>
+In-Reply-To: <20240123104519.GA21747@wunner.de>
+References: <20230803171233.3810944-1-alex.williamson@redhat.com>
+	<20230803171233.3810944-3-alex.williamson@redhat.com>
+	<20240118115049.3b5efef0.alex.williamson@redhat.com>
+	<20240122221730.GA16831@wunner.de>
+	<20240122155003.587225aa.alex.williamson@redhat.com>
+	<20240123104519.GA21747@wunner.de>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: regulator: microchip,mcp16502: convert to
- YAML
-Content-Language: en-US
-To: Andrei Simion <andrei.simion@microchip.com>, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- claudiu.beznea@tuxon.dev, lgirdwood@gmail.com, broonie@kernel.org
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-References: <20240123154525.157448-1-andrei.simion@microchip.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240123154525.157448-1-andrei.simion@microchip.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On 23/01/2024 16:45, Andrei Simion wrote:
-> Convert devicetree binding mcp16502-regulator.txt to YAML format.
+On Tue, 23 Jan 2024 11:45:19 +0100
+Lukas Wunner <lukas@wunner.de> wrote:
+
+> On Mon, Jan 22, 2024 at 03:50:03PM -0700, Alex Williamson wrote:
+> > On Mon, 22 Jan 2024 23:17:30 +0100 Lukas Wunner <lukas@wunner.de> wrote:  
+> > > On Thu, Jan 18, 2024 at 11:50:49AM -0700, Alex Williamson wrote:  
+> > > > To do that I used pm_runtime_get_if_active(), but in retrospect this
+> > > > requires the device to be in RPM_ACTIVE so we end up skipping anything
+> > > > suspended or transitioning.    
+> > > 
+> > > How about dropping the calls to pm_runtime_get_if_active() and
+> > > pm_runtime_put() and instead simply do:
+> > > 
+> > > 			if (pm_runtime_suspended(&pdev->dev) &&
+> > > 			    pdev->current_state != PCI_D3cold)
+> > > 				pci_pme_wakeup(pdev, NULL);  
+> > 
+> > Do we require that the polled device is in the RPM_SUSPENDED state?  
 > 
-> Signed-off-by: Andrei Simion <andrei.simion@microchip.com>
-
-Reverse subject prefixes. See: `git log --oneline -- DIRECTORY_OR_FILE`
-on the directory your patch is touching.
-
-
-> ---
->  .../bindings/regulator/mcp16502-regulator.txt | 144 --------------
->  .../regulator/microchip,mcp16502.yaml         | 182 ++++++++++++++++++
->  2 files changed, 182 insertions(+), 144 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/regulator/mcp16502-regulator.txt
->  create mode 100644 Documentation/devicetree/bindings/regulator/microchip,mcp16502.yaml
+> If the device is RPM_SUSPENDING, why immediately resume it for polling?
+> It's sufficient to poll it the next time around, i.e. 1 second later.
 > 
-> diff --git a/Documentation/devicetree/bindings/regulator/mcp16502-regulator.txt b/Documentation/devicetree/bindings/regulator/mcp16502-regulator.txt
-> deleted file mode 100644
-> index 451cc4e86b01..000000000000
-> --- a/Documentation/devicetree/bindings/regulator/mcp16502-regulator.txt
-> +++ /dev/null
-> @@ -1,144 +0,0 @@
-> -MCP16502 PMIC
-> -
-> -Required properties:
-> -- compatible: "microchip,mcp16502"
-> -- reg: I2C slave address
-> -- lpm-gpios: GPIO for LPM pin. Note that this GPIO *must* remain high during
-> -	     suspend-to-ram, keeping the PMIC into HIBERNATE mode; this
-> -	     property is optional;
-> -- regulators: A node that houses a sub-node for each regulator within
-> -              the device. Each sub-node is identified using the node's
-> -              name. The content of each sub-node is defined by the
-> -              standard binding for regulators; see regulator.txt.
-> -
-> -Regulators of MCP16502 PMIC:
-> -1) VDD_IO	- Buck (1.2 - 3.7 V)
-> -2) VDD_DDR	- Buck (0.6 - 1.85 V)
-> -3) VDD_CORE	- Buck (0.6 - 1.85 V)
-> -4) VDD_OTHER	- BUCK (0.6 - 1.85 V)
-> -5) LDO1		- LDO  (1.2 - 3.7 V)
-> -6) LDO2		- LDO  (1.2 - 3.7 V)
-> -
-> -Regulator modes:
-> -2 - FPWM: higher precision, higher consumption
-> -4 - AutoPFM: lower precision, lower consumption
-> -
-> -Each regulator is defined using the standard binding for regulators.
-> -
-> -Example:
-> -
-> -mcp16502@5b {
-> -	compatible = "microchip,mcp16502";
-> -	reg = <0x5b>;
-> -	status = "okay";
-> -	lpm-gpios = <&pioBU 7 GPIO_ACTIVE_HIGH>;
-> -
-> -	regulators {
-> -		VDD_IO {
-> -			regulator-name = "VDD_IO";
-> -			regulator-min-microvolt = <1200000>;
-> -			regulator-max-microvolt = <3700000>;
-> -			regulator-initial-mode = <2>;
-> -			regulator-allowed-modes = <2>, <4>;
-> -			regulator-always-on;
-> -
-> -			regulator-state-standby {
-> -				regulator-on-in-suspend;
-> -				regulator-mode = <4>;
-> -			};
-> -
-> -			regulator-state-mem {
-> -				regulator-off-in-suspend;
-> -				regulator-mode = <4>;
-> -			};
-> -		};
-> -
-> -		VDD_DDR {
-> -			regulator-name = "VDD_DDR";
-> -			regulator-min-microvolt = <600000>;
-> -			regulator-max-microvolt = <1850000>;
-> -			regulator-initial-mode = <2>;
-> -			regulator-allowed-modes = <2>, <4>;
-> -			regulator-always-on;
-> -
-> -			regulator-state-standby {
-> -				regulator-on-in-suspend;
-> -				regulator-mode = <4>;
-> -			};
-> -
-> -			regulator-state-mem {
-> -				regulator-on-in-suspend;
-> -				regulator-mode = <4>;
-> -			};
-> -		};
-> -
-> -		VDD_CORE {
-> -			regulator-name = "VDD_CORE";
-> -			regulator-min-microvolt = <600000>;
-> -			regulator-max-microvolt = <1850000>;
-> -			regulator-initial-mode = <2>;
-> -			regulator-allowed-modes = <2>, <4>;
-> -			regulator-always-on;
-> -
-> -			regulator-state-standby {
-> -				regulator-on-in-suspend;
-> -				regulator-mode = <4>;
-> -			};
-> -
-> -			regulator-state-mem {
-> -				regulator-off-in-suspend;
-> -				regulator-mode = <4>;
-> -			};
-> -		};
-> -
-> -		VDD_OTHER {
-> -			regulator-name = "VDD_OTHER";
-> -			regulator-min-microvolt = <600000>;
-> -			regulator-max-microvolt = <1850000>;
-> -			regulator-initial-mode = <2>;
-> -			regulator-allowed-modes = <2>, <4>;
-> -			regulator-always-on;
-> -
-> -			regulator-state-standby {
-> -				regulator-on-in-suspend;
-> -				regulator-mode = <4>;
-> -			};
-> -
-> -			regulator-state-mem {
-> -				regulator-off-in-suspend;
-> -				regulator-mode = <4>;
-> -			};
-> -		};
-> -
-> -		LDO1 {
-> -			regulator-name = "LDO1";
-> -			regulator-min-microvolt = <1200000>;
-> -			regulator-max-microvolt = <3700000>;
-> -			regulator-always-on;
-> -
-> -			regulator-state-standby {
-> -				regulator-on-in-suspend;
-> -			};
-> -
-> -			regulator-state-mem {
-> -				regulator-off-in-suspend;
-> -			};
-> -		};
-> -
-> -		LDO2 {
-> -			regulator-name = "LDO2";
-> -			regulator-min-microvolt = <1200000>;
-> -			regulator-max-microvolt = <3700000>;
-> -			regulator-always-on;
-> -
-> -			regulator-state-standby {
-> -				regulator-on-in-suspend;
-> -			};
-> -
-> -			regulator-state-mem {
-> -				regulator-off-in-suspend;
-> -			};
-> -		};
-> -
-> -	};
-> -};
-> diff --git a/Documentation/devicetree/bindings/regulator/microchip,mcp16502.yaml b/Documentation/devicetree/bindings/regulator/microchip,mcp16502.yaml
-> new file mode 100644
-> index 000000000000..13a6806b4604
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/regulator/microchip,mcp16502.yaml
-> @@ -0,0 +1,182 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/regulator/microchip,mcp16502.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: MCP16502 - High-Performance PMIC
-> +
-> +maintainers:
-> +  - Andrei Simion <andrei.simion@microchip.com>
-> +
-> +description: The MCP16502 is an optimally integrated PMIC compatible
+> Likewise, if it's already RPM_RESUMING or RPM_ACTIVE anyway, no need
+> to poll PME.
 
-Line break after "description:"
+I'm clearly not an expert on PME, but this is not obvious to me and
+before the commit that went in through this thread, PME wakeup was
+triggered regardless of the PM state.  I was trying to restore the
+behavior of not requiring a specific PM state other than deferring
+polling across transition states.
 
-> +  with Microchip's eMPUs(Embedded Microprocessor Units), requiring
-> +  Dynamic Voltage Scaling (DVS) with the use of High-Performance mode (HPM).
-> +
-> +properties:
-> +  compatible:
-> +    const: microchip,mcp16502
-> +
-> +  lpm-gpios:
-> +    description: GPIO for LPM pin.
-> +      Note that this GPIO must remain high during
-> +      suspend-to-ram, keeping the PMIC into HIBERNATE mode;
-> +    maxItems: 1
-> +
-> +  reg:
-> +    description: I2C slave address
+> This leaves RPM_SUSPENDED as the only state in which it makes sense to
+> poll.
+>
+> > Also pm_runtime_suspended() can also only be trusted while holding the
+> > device power.lock, we need a usage count reference to maintain that
+> > state.  
+> 
+> Why?  Let's say there's a race and the device resumes immediately after
+> we call pm_runtime_suspended() here.  So we might call pci_pme_wakeup()
+> gratuitouly.  So what?  No biggie.
 
-Drop description, it's obvious.
+The issue I'm trying to address is that config space of the device can
+become inaccessible while calling pci_pme_wakeup() on it, causing a
+system fault on some hardware.  So a gratuitous pci_pme_wakeup() can be
+detrimental.
 
-> +    maxItems: 1
-> +
-> +  regulators:
-> +    type: object
+We require the device config space to remain accessible, therefore the
+instantaneous test against D3cold and that the parent bridge is in D0
+is not sufficient.  I see traces where the parent bridge is in D0, but
+the PM state is RPM_SUSPENDING and the endpoint device transitions to
+D3cold while we're executing pci_pme_wakeup().
 
-additionalProperties: false
+Therefore at a minimum, I think we need to enforce that the bridge is
+in RPM_ACTIVE and remains in that state across pci_pme_wakeup(), which
+means we need to hold a usage count reference, and that usage count
+reference must be acquired under power.lock in RPM_ACTIVE state to be
+effective.
 
-> +    description: List of regulators and its properties.
-> +      A node that houses a sub-node for each regulator within
-> +      the device. Each sub-node is identified using the node's
-> +      name. The content of each sub-node is defined by the
-> +      standard binding for regulators;
-> +
-> +    patternProperties:
-> +      "^(VDD_(IO|CORE|DDR|OTHER)|LDO[1-2])$":
-> +        type: object
-> +        $ref: regulator.yaml#
-> +
-> +        properties:
-> +          regulator-name:
-> +            pattern: "^(VDD_(IO|CORE|DDR|OTHER)|LDO[1-2])$"
+> > +			if (bdev) {
+> > +				spin_lock_irq(&bdev->power.lock);  
+> 
+> Hm, I'd expect that lock to be internal to the PM core,
+> although there *are* a few stray users outside of it.
 
-regulator-name should not be enforced. Does driver actually require it?
+Right, there are.  It's possible that if we only need to hold a
+reference on the bridge we can abstract this through
+pm_runtime_get_if_active(), the semantics worked better to essentially
+open code it in this iteration though.  Thanks,
 
-> +
-> +          regulator-allowed-modes:
-> +            description: Supported modes
-> +              2 - FPWM higher precision, higher consumption
-> +              4 - AutoPFM lower precision, lower consumption
-> +            items:
-> +              enum: [2, 4]
-
-What about initial-mode?
-
-> +
-> +        unevaluatedProperties: false
-
-Please put this one just after $ref: regulator.yaml
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - regulators
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c@600 {
-
-Instead:
-
-i2c {
-
-> +      reg = <0x600 0x100>;
-
-Drop
-
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      mcp16502@5b {
-
-Node names should be generic. See also an explanation and list of
-examples (not exhaustive) in DT specification:
-https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
-E.g. pmic
-
-> +          compatible = "microchip,mcp16502";
-> +          reg = <0x5b>;
-> +
-> +          regulators {
-> +                  VDD_IO {
-
-Use 4 spaces for example indentation.
-
-> +                          regulator-name = "VDD_IO";
-> +                          regulator-min-microvolt = <3300000>;
-> +                          regulator-max-microvolt = <3300000>;
-> +                          regulator-initial-mode = <2>;
-> +                          regulator-allowed-modes = <2>, <4>;
-> +                          regulator-always-on;
-> +
-
-
-Best regards,
-Krzysztof
+Alex
 
 
