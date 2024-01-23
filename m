@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-35128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35129-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A987838C7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:49:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48AC6838C82
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:50:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D46D1C235AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:49:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B72101F29162
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:50:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 034D15C902;
-	Tue, 23 Jan 2024 10:49:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4F215C905;
+	Tue, 23 Jan 2024 10:50:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GdBE0Yme"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SqhZRflS"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30ABE5C8ED;
-	Tue, 23 Jan 2024 10:49:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 321635C8F0;
+	Tue, 23 Jan 2024 10:50:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706006982; cv=none; b=nZAdFYUbRhhJV0eayiR15gouw9ZqBTIiNfo3A0ZruzqH3qpYDKOenMB4WuBGFKWbhPMvAC4uAwfo8o/0o5+Y1S6Wr25MEUxEeE0Sq17mkWyqmCAJBwbjPTJDlHomb6ACJuFZtiWA4W2iJxnITyQIQKSIeLhgMpXXl+HMtNUihk0=
+	t=1706007009; cv=none; b=OU/uBRvgxt2cxHjHnM5qmg060AiVKkRLIxyK90Axj24jNY1btJvwjZRfIG3gXvbR2C0kvcgqx7+X4ruUi5JumOWEIiEAj7+p76/M2TgcERanhlmaG51fyIdkfcUpoktv4zxZnqeIOMkwR7EN00t1UPA2VcAHvpjzSafcKFnLFXo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706006982; c=relaxed/simple;
-	bh=gHsDyfesb/mmGoU8vrHS9IRNcLNE0C+m0hCx7hzoAdQ=;
+	s=arc-20240116; t=1706007009; c=relaxed/simple;
+	bh=NUoP5TWGl92ADNFhVXefbClOKJepyvGfwAUcpjPYGe0=;
 	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=egQgHP6yypiumoEJ4lVvWY5KwBFha6LRMl49QvBH+fci83xURu7VR4UHQvc5tDazEb/fcObVno8HpTeVzFN9vH+rTRSO6/zb5ZTX6PnNPUwgb+8ORJc6LR7adyAhYT9ULqA7pZFet6Q6d9cs7r6jtWm/MzYDCOWh1ir8qYX0vVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GdBE0Yme; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BA5AC433F1;
-	Tue, 23 Jan 2024 10:49:41 +0000 (UTC)
+	 MIME-Version:Content-Type; b=c1soBC0p93zF7MmEZEXnHgahkX/tYnxzzleU691RoI8qTxRVZBuJoPZOma4Ubwqowlmbp5B4ZTm9ChC0Vwl4Hz22owde+DXn2ZkSat96MPamuZacN5p5TMHvKLd8tBsQntW/5pvEhubByz15xJv9CnCrQ3zUPjlqJTWg7js3DUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SqhZRflS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05022C433F1;
+	Tue, 23 Jan 2024 10:50:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706006981;
-	bh=gHsDyfesb/mmGoU8vrHS9IRNcLNE0C+m0hCx7hzoAdQ=;
+	s=k20201202; t=1706007009;
+	bh=NUoP5TWGl92ADNFhVXefbClOKJepyvGfwAUcpjPYGe0=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=GdBE0YmeC5uAWTMFoCQ42sY/cye7y//Dnpf7rdVq4SvyjftkaLUOcNCG24K0gzTqA
-	 dFSGEvVyB2CRW293HZlNrP2XS9mb0CidVywNsPoJT+Nv0LlRsJGumd4HyqEzI/dQtC
-	 8cZZhQ8iYmFcmFDldNudf6GwUGERxsOqasJhzc2Jxuo+SMTJNy5VOU0cnM6d4aQvmO
-	 5VeqzCf31gC7IEg1x5zj45zAVrV5IbcjPxb0rENgCyuzdQi3e5q1BgqXI8C1GpfVSm
-	 0bpoCA9evozJgwCIHwkkZ6oy1u7sBKpsItgsjORTrYunPCbA6yYv8JWg616G6cR2A5
-	 voHUGbm3fS+VA==
+	b=SqhZRflS3o+AWzVwix/lgC2sZpWh/AIiRFB/HvgxHXTSdwTwEyuw02aSWb0t9OjGo
+	 6HJdSNQlOx9GlQmWp48UaqoRlwMiW5XjmYAvFrQD8MOuynu3v8fi6AepknKd5JYmdM
+	 cjaVsAA56G1GowgyoCjuRnmetGUQpcx6qJeKIRXsELD1ZtuxW0SUBipuI5JfrQ1JRF
+	 2nqApcfYZk7BA+9wzjzquKvSYPK1Bb0Wx3Wm9SV7do3iY+xfuVPsQW5k8NqqTZrjlW
+	 fkn7wpDrZ2svtccnvtmlVTOJlaLAeoBGiVqANUIA7e2HOVaDbnMoOCPK1qdoqGMBPV
+	 fZD+8ztB/Eniw==
 Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
 	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.95)
 	(envelope-from <maz@kernel.org>)
-	id 1rSELb-00Dw18-4f;
-	Tue, 23 Jan 2024 10:49:39 +0000
-Date: Tue, 23 Jan 2024 10:49:38 +0000
-Message-ID: <86o7dc8gu5.wl-maz@kernel.org>
+	id 1rSEM2-00Dw1i-PD;
+	Tue, 23 Jan 2024 10:50:06 +0000
+Date: Tue, 23 Jan 2024 10:50:06 +0000
+Message-ID: <86mssw8gtd.wl-maz@kernel.org>
 From: Marc Zyngier <maz@kernel.org>
 To: Kees Cook <keescook@chromium.org>
 Cc: linux-hardening@vger.kernel.org,
@@ -57,22 +57,17 @@ Cc: linux-hardening@vger.kernel.org,
 	Zenghui Yu <yuzenghui@huawei.com>,
 	Catalin Marinas <catalin.marinas@arm.com>,
 	Will Deacon <will@kernel.org>,
-	Reiji Watanabe <reijiw@google.com>,
 	Eric Auger <eric.auger@redhat.com>,
-	Ricardo Koller <ricarkol@google.com>,
-	Raghavendra Rao Ananta <rananta@google.com>,
-	Quentin Perret <qperret@google.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
 	linux-arm-kernel@lists.infradead.org,
 	kvmarm@lists.linux.dev,
 	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
 	Bill Wendling <morbo@google.com>,
 	Justin Stitt <justinstitt@google.com>,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 24/82] KVM: arm64: vgic: Refactor intentional wrap-around calculation
-In-Reply-To: <20240123002814.1396804-24-keescook@chromium.org>
+Subject: Re: [PATCH 57/82] KVM: arm64: vgic-v3: Refactor intentional wrap-around test
+In-Reply-To: <20240123002814.1396804-57-keescook@chromium.org>
 References: <20240122235208.work.748-kees@kernel.org>
-	<20240123002814.1396804-24-keescook@chromium.org>
+	<20240123002814.1396804-57-keescook@chromium.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
  FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
  (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -84,11 +79,11 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: keescook@chromium.org, linux-hardening@vger.kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, reijiw@google.com, eric.auger@redhat.com, ricarkol@google.com, rananta@google.com, qperret@google.com, jean-philippe@linaro.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, gustavoars@kernel.org, morbo@google.com, justinstitt@google.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Rcpt-To: keescook@chromium.org, linux-hardening@vger.kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, eric.auger@redhat.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, gustavoars@kernel.org, morbo@google.com, justinstitt@google.com, linux-kernel@vger.kernel.org
 X-SA-Exim-Mail-From: maz@kernel.org
 X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Tue, 23 Jan 2024 00:26:59 +0000,
+On Tue, 23 Jan 2024 00:27:32 +0000,
 Kees Cook <keescook@chromium.org> wrote:
 > 
 > In an effort to separate intentional arithmetic wrap-around from
@@ -105,10 +100,8 @@ Kees Cook <keescook@chromium.org> wrote:
 > are unexpected, regardless of whether they are signed[2], unsigned[3],
 > or pointer[4] types.
 > 
-> Refactor open-coded unsigned wrap-around addition test to use
-> check_add_overflow(), retaining the result for later usage (which removes
-> the redundant open-coded addition). This paves the way to enabling the
-> wrap-around sanitizers in the future.
+> Refactor open-coded wrap-around addition test to use add_would_overflow().
+> This paves the way to enabling the wrap-around sanitizers in the future.
 > 
 > Link: https://git.kernel.org/linus/68df3755e383e6fecf2354a67b08f92f18536594 [1]
 > Link: https://github.com/KSPP/linux/issues/26 [2]
@@ -121,81 +114,27 @@ Kees Cook <keescook@chromium.org> wrote:
 > Cc: Zenghui Yu <yuzenghui@huawei.com>
 > Cc: Catalin Marinas <catalin.marinas@arm.com>
 > Cc: Will Deacon <will@kernel.org>
-> Cc: Reiji Watanabe <reijiw@google.com>
 > Cc: Eric Auger <eric.auger@redhat.com>
-> Cc: Ricardo Koller <ricarkol@google.com>
-> Cc: Raghavendra Rao Ananta <rananta@google.com>
-> Cc: Quentin Perret <qperret@google.com>
-> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
 > Cc: linux-arm-kernel@lists.infradead.org
 > Cc: kvmarm@lists.linux.dev
 > Signed-off-by: Kees Cook <keescook@chromium.org>
 > ---
->  arch/arm64/kvm/vgic/vgic-kvm-device.c |  6 ++++--
->  arch/arm64/kvm/vgic/vgic-v2.c         | 10 ++++++----
->  2 files changed, 10 insertions(+), 6 deletions(-)
+>  arch/arm64/kvm/vgic/vgic-mmio-v3.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/arch/arm64/kvm/vgic/vgic-kvm-device.c b/arch/arm64/kvm/vgic/vgic-kvm-device.c
-> index f48b8dab8b3d..0eec5344d203 100644
-> --- a/arch/arm64/kvm/vgic/vgic-kvm-device.c
-> +++ b/arch/arm64/kvm/vgic/vgic-kvm-device.c
-> @@ -18,17 +18,19 @@ int vgic_check_iorange(struct kvm *kvm, phys_addr_t ioaddr,
->  		       phys_addr_t addr, phys_addr_t alignment,
->  		       phys_addr_t size)
->  {
-> +	phys_addr_t sum;
-> +
->  	if (!IS_VGIC_ADDR_UNDEF(ioaddr))
->  		return -EEXIST;
+> diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> index c15ee1df036a..860b774c0c13 100644
+> --- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> +++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> @@ -863,7 +863,7 @@ static int vgic_v3_alloc_redist_region(struct kvm *kvm, uint32_t index,
+>  	int ret;
 >  
->  	if (!IS_ALIGNED(addr, alignment) || !IS_ALIGNED(size, alignment))
+>  	/* cross the end of memory ? */
+> -	if (base + size < base)
+> +	if (add_would_overflow(base, size))
 >  		return -EINVAL;
 >  
-> -	if (addr + size < addr)
-> +	if (check_add_overflow(addr, size, &sum))
->  		return -EINVAL;
->  
->  	if (addr & ~kvm_phys_mask(&kvm->arch.mmu) ||
-> -	    (addr + size) > kvm_phys_size(&kvm->arch.mmu))
-> +	    sum > kvm_phys_size(&kvm->arch.mmu))
-
-nit: 'sum' doesn't mean much in this context. Something like 'end'
-would be much more descriptive.
-
->  		return -E2BIG;
->  
->  	return 0;
-> diff --git a/arch/arm64/kvm/vgic/vgic-v2.c b/arch/arm64/kvm/vgic/vgic-v2.c
-> index 7e9cdb78f7ce..c8d1e965d3b7 100644
-> --- a/arch/arm64/kvm/vgic/vgic-v2.c
-> +++ b/arch/arm64/kvm/vgic/vgic-v2.c
-> @@ -273,14 +273,16 @@ void vgic_v2_enable(struct kvm_vcpu *vcpu)
->  /* check for overlapping regions and for regions crossing the end of memory */
->  static bool vgic_v2_check_base(gpa_t dist_base, gpa_t cpu_base)
->  {
-> -	if (dist_base + KVM_VGIC_V2_DIST_SIZE < dist_base)
-> +	gpa_t dist_sum, cpu_sum;
-
-Same here: dist_end, cpu_end.
-
-> +
-> +	if (check_add_overflow(dist_base, KVM_VGIC_V2_DIST_SIZE, &dist_sum))
->  		return false;
-> -	if (cpu_base + KVM_VGIC_V2_CPU_SIZE < cpu_base)
-> +	if (check_add_overflow(cpu_base, KVM_VGIC_V2_CPU_SIZE, &cpu_sum))
->  		return false;
->  
-> -	if (dist_base + KVM_VGIC_V2_DIST_SIZE <= cpu_base)
-> +	if (dist_sum <= cpu_base)
->  		return true;
-> -	if (cpu_base + KVM_VGIC_V2_CPU_SIZE <= dist_base)
-> +	if (cpu_sum <= dist_base)
->  		return true;
->  
->  	return false;
-
-With these nits addressed, and assuming you intend to merge the whole
-series yourself:
+>  	if (list_empty(rd_regions)) {
 
 Acked-by: Marc Zyngier <maz@kernel.org>
 
