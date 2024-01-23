@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-34789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74670838779
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:34:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FB8283877B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:34:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1FB50B249A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 06:34:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 590C7B214B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 06:34:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 746B459B54;
-	Tue, 23 Jan 2024 06:29:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46FB05A0EB;
+	Tue, 23 Jan 2024 06:29:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CR7cpByZ"
-Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VbdVPkz0"
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A9D559154;
-	Tue, 23 Jan 2024 06:29:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31F5459B6F;
+	Tue, 23 Jan 2024 06:29:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705991385; cv=none; b=UeZJ9ONuRUiWGMXYcEL/VqEFpvcMAodYUyOsjiGnZ0lD7H1LqD1fMAz9K+wR2BC2hgFDdSLvEDSxyrOOnAqFZTdjafc9WP3IEBfYYp7U1tXEkINtnMe/5HE53wryp9o55HWN8mgVrK+YZJKZjTPfMuMYi3olXTzJc/K0w7LVv1I=
+	t=1705991389; cv=none; b=iCuqSzWvWPleSCk02G/g5LNf5cEoQq4fxXDJ+Ln3ojZEQG2zZ5pBwNh3e/qz8TbcaAYqraM3KThOICK3yg9jZrWqUaw/F10g2OZRlhf/Lnrb6oxlsPPOrz77KNTJrnbbQ+DHtE12KO75Hw1DL2OjH38vgeQ61IYaDqhiI6LPKz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705991385; c=relaxed/simple;
-	bh=IiUyY278CqVxfhgKrqP9nTOWuIkaA6ZM+n4Y0G/wGAw=;
+	s=arc-20240116; t=1705991389; c=relaxed/simple;
+	bh=IUqprA2TF0JnjmPM0nXsYSs+9jyX8T3LPFUNW+ZA+gM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=YZ+tawNg+uLBvyU9OtTCitCrx6Tl0Ybn5TEEw/HwvLHeEdKpirtKMfbJuHvcYjQbKMzoQiv3V7fJI1W2H7C23FDHBfypzmJJbWk9ebkFos+bCWvMI3MJOOWJNBlLy9OWOxE2ZguPueJeIWNk8QLNbvLlBLoac0KX35ggqJiIbhA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CR7cpByZ; arc=none smtp.client-ip=209.85.161.41
+	 MIME-Version; b=bfQbUb14Moy/nMBUrhtfEeMfy3LrxIqDbRtn4gCmEiiLj96gMvKjMtlvlegeDI+C4g9UFjlO6fmCp3UVMg/zsFOFMRB9f65pIDa4NLOcQ8V48oDXeOuJFth2aE+fz04UcYb+EAbJ7+dTFHK4jqCykFo6ypTZaAI8i0G5B0agEHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VbdVPkz0; arc=none smtp.client-ip=209.85.167.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-59502aa878aso1771772eaf.1;
-        Mon, 22 Jan 2024 22:29:44 -0800 (PST)
+Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3bd7c5b243dso2860956b6e.1;
+        Mon, 22 Jan 2024 22:29:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705991383; x=1706596183; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1705991387; x=1706596187; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zfmMQ6q+Rk7UQCSUv/GdFILmuXL5VoDA33Tjpgxnrs0=;
-        b=CR7cpByZ99k5pjRO9CarcL4cC8YLurUvPKp1byy1poviOIPghKcuu+2gyXdxJTFLg9
-         BBuRQwyPHoeiZFs7GPtK0lUnRlsmuvdq/0a56zJGt3brIJTX6oM8v4L/t9rhIR+Xv26s
-         iWWJasRw7ZJK0KQVOXgBFPDEWLBs+WO1+TOKoJ8PCJH1gP+4OcbssZIn3o/um3mECEuq
-         NImjx9ppJ7c3pDLZM6x/vdJNmKvBdCYKQPi+XCOg4ndzPWYOE+luU3aXoKfo0rgoyROq
-         9PRS9YttOyf5MHDS2JywH/Cf2ZunNHo3kKu95ct+eSUSL/gvg3/oRC/+FPCgvlSCAn7y
-         Ie3g==
+        bh=LAsRT3UHnSw/gnSNp2Q3xHJfdBqwbXKi0Pb7j8g0LCc=;
+        b=VbdVPkz0nXRFsnXt3aLNXC9iSiinHvfEs/Ph8aB32LCBi9swHpErlA7N8+dXol0l0e
+         QiusWCzfIScfHHUr0fHzoE2nqgIkR8aIloOgncXBsfY3uaQluhYzTeyYRku/flQjTjAA
+         dfMjAR/jCu93b4M2nApWhiilGN4x2KjFGJg3bq2bU9SYquh0GQ1oadVHwUlf0TCZe3Vp
+         kqPycCquXiQkSJqi29cw547sgkWy6NLZyCcrFPSaDp+i05CASOHv7pIXsA+S0QUIZ0OB
+         cj8uokmBZmyolxi5YF7vhM2x7yi/pJRTzuEK1HcLuPmWRQmoukDwHrg5AyFFnKlPvFF9
+         kMTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705991383; x=1706596183;
+        d=1e100.net; s=20230601; t=1705991387; x=1706596187;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zfmMQ6q+Rk7UQCSUv/GdFILmuXL5VoDA33Tjpgxnrs0=;
-        b=oufdt2HY4G3uEnIYmqwqkFiURplb9+OgwVCc+OzjnABhV1VBb1xYTZMldXBlK1gR88
-         l3WDhugPBpWVlfczJjG4pdMgwevphjD/T6fl+c36eP3W2SveGjVvLtpbmtxUPRGRDv9R
-         bWlSVCtipK6oP9wxYAaHOKm8g2aEEccQ1ocoVMWhu7DvCg2hDBnACpio5w4SgSdv9f6C
-         EEPYf0uequ5H0UBO2ISZWe+LeuFD2CKIfujuVPR10+pefgBEFPe9LGyR4ru1bDlK4Rbd
-         vLxa4czHmhSYWNRVfwBl48tVywzZAK+sx2OT9/6C5IlQ2YSK8yKsCoGw0NJ5l6X9WCna
-         fV+Q==
-X-Gm-Message-State: AOJu0Yz+w4ddfpfPmOdH/2UEeFB6l8C6UOSkfABO8V6IUWaxcHb7rEM4
-	CgPH66O6fTlnZryiRUnp0k4+vTP5lo5xQctkfIhFGwlREC1PxynM
-X-Google-Smtp-Source: AGHT+IESfDqjTxbklBtj2YiYH1ivBt1xUOm/kWAkRtJkgQMD2V6EPmYEgYPGbXCM1XSTBW+VuzNV3w==
-X-Received: by 2002:a05:6358:d59b:b0:176:2d73:64c2 with SMTP id ms27-20020a056358d59b00b001762d7364c2mr3479548rwb.16.1705991383314;
-        Mon, 22 Jan 2024 22:29:43 -0800 (PST)
+        bh=LAsRT3UHnSw/gnSNp2Q3xHJfdBqwbXKi0Pb7j8g0LCc=;
+        b=JrwwwKueFqNmkEDztoGkjUQ1/Rp+AheXmfvrKn9nLwbKjV/EibHjmzZZVxs+yE2+XK
+         qDGI6/SL4t30XaiS82B2MFx8Z+BDNLr2/lkFODOlWx5kq9lt3Rtmvx5p3+bgJP2s+rFp
+         Cs6+fEkmVMiXhmhO4fkq4NiHDcnjPeY6/Zr5AQFF/H3QuEq/YhQAzarh1SuZ9O+yBVhW
+         e7e1Y+PAC8slD3DWRLrFLGr0JWYBpAAGQsCPkIIncqebE8//QfC06augupc+RtfPLjkh
+         DEZTPvgc7B6wenPJG6gafX/MTJnU0SGAtrbM8Yk06BVmjIqoBRFj+3XzrJ2A9if7/xCm
+         g0bQ==
+X-Gm-Message-State: AOJu0YwhcTiA/lK2yYmBUQ2w2krLTmY2gZj0Y6BcdA8rzkNm3ezqfy/0
+	64vY5Zgkg2v2VW+OdVqkCITmbPcih3tQyxbmgWbAozKgSSe2ei3j
+X-Google-Smtp-Source: AGHT+IHlH5SJ11Y7vYXhpVeN7lDIZLO6jtC4viM8DKlP6EFN6EOSNKmmkyOrSsgyr6tv9MpH5A8QUw==
+X-Received: by 2002:a05:6808:3192:b0:3bd:729a:774 with SMTP id cd18-20020a056808319200b003bd729a0774mr7617803oib.50.1705991387314;
+        Mon, 22 Jan 2024 22:29:47 -0800 (PST)
 Received: from localhost.localdomain (2001-b400-e2ac-a4c6-7d2b-d8b3-ed27-1f50.emome-ip6.hinet.net. [2001:b400:e2ac:a4c6:7d2b:d8b3:ed27:1f50])
-        by smtp.gmail.com with ESMTPSA id l10-20020a056a00140a00b006d9b2694b0csm10595188pfu.200.2024.01.22.22.29.40
+        by smtp.gmail.com with ESMTPSA id l10-20020a056a00140a00b006d9b2694b0csm10595188pfu.200.2024.01.22.22.29.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 22:29:43 -0800 (PST)
+        Mon, 22 Jan 2024 22:29:47 -0800 (PST)
 From: Victor Shih <victorshihgli@gmail.com>
 To: ulf.hansson@linaro.org,
 	adrian.hunter@intel.com
@@ -76,10 +76,11 @@ Cc: linux-mmc@vger.kernel.org,
 	takahiro.akashi@linaro.org,
 	dlunev@chromium.org,
 	Victor Shih <victorshihgli@gmail.com>,
-	Ben Chuang <ben.chuang@genesyslogic.com.tw>
-Subject: [PATCH V14 19/21] mmc: sdhci-uhs2: add pre-detect_init hook
-Date: Tue, 23 Jan 2024 14:28:25 +0800
-Message-Id: <20240123062827.8525-20-victorshihgli@gmail.com>
+	Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+	Victor Shih <victor.shih@genesyslogic.com.tw>
+Subject: [PATCH V14 20/21] mmc: sdhci-pci: add UHS-II support framework
+Date: Tue, 23 Jan 2024 14:28:26 +0800
+Message-Id: <20240123062827.8525-21-victorshihgli@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240123062827.8525-1-victorshihgli@gmail.com>
 References: <20240123062827.8525-1-victorshihgli@gmail.com>
@@ -91,45 +92,101 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+From: Victor Shih <victor.shih@genesyslogic.com.tw>
 
-This "pre" hook for detect_init(), uhs2_pre_detect_init, will be required
-to enable UHS-II support, at least, on GL9755.
+This patch prepares for adding UHS-II support at a specific UHS-II
+capable sdhci-pci controller, GL9755 for now.
 
 Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
 Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
+Signed-off-by: Victor Shih <victor.shih@genesyslogic.com.tw>
 Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- drivers/mmc/host/sdhci-uhs2.c | 3 +++
- drivers/mmc/host/sdhci.h      | 1 +
- 2 files changed, 4 insertions(+)
 
-diff --git a/drivers/mmc/host/sdhci-uhs2.c b/drivers/mmc/host/sdhci-uhs2.c
-index 9f82dda93733..872ce3b767bf 100644
---- a/drivers/mmc/host/sdhci-uhs2.c
-+++ b/drivers/mmc/host/sdhci-uhs2.c
-@@ -399,6 +399,9 @@ static int sdhci_uhs2_do_detect_init(struct mmc_host *mmc)
+Updates in V8:
+ - Add config select MMC_SDHCI_UHS2 in Kconfig.
+
+---
+
+ drivers/mmc/host/Kconfig          |  1 +
+ drivers/mmc/host/sdhci-pci-core.c | 16 +++++++++++++++-
+ drivers/mmc/host/sdhci-pci.h      |  3 +++
+ 3 files changed, 19 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+index e1f47d252b06..f4c0102f9a33 100644
+--- a/drivers/mmc/host/Kconfig
++++ b/drivers/mmc/host/Kconfig
+@@ -111,6 +111,7 @@ config MMC_SDHCI_PCI
+ 	tristate "SDHCI support on PCI bus"
+ 	depends on MMC_SDHCI && PCI
+ 	select MMC_CQHCI
++	select MMC_SDHCI_UHS2
+ 	select IOSF_MBI if X86
+ 	select MMC_SDHCI_IO_ACCESSORS
+ 	help
+diff --git a/drivers/mmc/host/sdhci-pci-core.c b/drivers/mmc/host/sdhci-pci-core.c
+index 025b31aa712c..9c87898a1b03 100644
+--- a/drivers/mmc/host/sdhci-pci-core.c
++++ b/drivers/mmc/host/sdhci-pci-core.c
+@@ -40,6 +40,7 @@
+ #include "sdhci.h"
+ #include "sdhci-cqhci.h"
+ #include "sdhci-pci.h"
++#include "sdhci-uhs2.h"
  
- 	DBG("Begin do uhs2 detect init.\n");
+ static void sdhci_pci_hw_reset(struct sdhci_host *host);
  
-+	if (host->ops && host->ops->uhs2_pre_detect_init)
-+		host->ops->uhs2_pre_detect_init(host);
+@@ -2161,7 +2162,10 @@ static void sdhci_pci_remove_slot(struct sdhci_pci_slot *slot)
+ 	if (scratch == (u32)-1)
+ 		dead = 1;
+ 
+-	sdhci_remove_host(slot->host, dead);
++	if (slot->chip->fixes && slot->chip->fixes->remove_host)
++		slot->chip->fixes->remove_host(slot, dead);
++	else
++		sdhci_remove_host(slot->host, dead);
+ 
+ 	if (slot->chip->fixes && slot->chip->fixes->remove_slot)
+ 		slot->chip->fixes->remove_slot(slot, dead);
+@@ -2169,6 +2173,16 @@ static void sdhci_pci_remove_slot(struct sdhci_pci_slot *slot)
+ 	sdhci_free_host(slot->host);
+ }
+ 
++int sdhci_pci_uhs2_add_host(struct sdhci_pci_slot *slot)
++{
++	return sdhci_uhs2_add_host(slot->host);
++}
 +
- 	if (sdhci_uhs2_interface_detect(host)) {
- 		pr_warn("%s: cannot detect UHS2 interface.\n", mmc_hostname(host->mmc));
- 		return -EIO;
-diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
-index 1085942d47a9..fb10a26dc251 100644
---- a/drivers/mmc/host/sdhci.h
-+++ b/drivers/mmc/host/sdhci.h
-@@ -724,6 +724,7 @@ struct sdhci_ops {
- 				struct mmc_request *mrq);
- 	void    (*dump_vendor_regs)(struct sdhci_host *host);
- 	void	(*dump_uhs2_regs)(struct sdhci_host *host);
-+	void    (*uhs2_pre_detect_init)(struct sdhci_host *host);
- };
++void sdhci_pci_uhs2_remove_host(struct sdhci_pci_slot *slot, int dead)
++{
++	sdhci_uhs2_remove_host(slot->host, dead);
++}
++
+ static void sdhci_pci_runtime_pm_allow(struct device *dev)
+ {
+ 	pm_suspend_ignore_children(dev, 1);
+diff --git a/drivers/mmc/host/sdhci-pci.h b/drivers/mmc/host/sdhci-pci.h
+index 153704f812ed..e807c039a8b1 100644
+--- a/drivers/mmc/host/sdhci-pci.h
++++ b/drivers/mmc/host/sdhci-pci.h
+@@ -145,6 +145,7 @@ struct sdhci_pci_fixes {
+ 	int			(*probe_slot) (struct sdhci_pci_slot *);
+ 	int			(*add_host) (struct sdhci_pci_slot *);
+ 	void			(*remove_slot) (struct sdhci_pci_slot *, int);
++	void			(*remove_host) (struct sdhci_pci_slot *, int);
  
- #ifdef CONFIG_MMC_SDHCI_IO_ACCESSORS
+ #ifdef CONFIG_PM_SLEEP
+ 	int			(*suspend) (struct sdhci_pci_chip *);
+@@ -189,6 +190,8 @@ static inline void *sdhci_pci_priv(struct sdhci_pci_slot *slot)
+ 	return (void *)slot->private;
+ }
+ 
++int sdhci_pci_uhs2_add_host(struct sdhci_pci_slot *slot);
++void sdhci_pci_uhs2_remove_host(struct sdhci_pci_slot *slot, int dead);
+ #ifdef CONFIG_PM_SLEEP
+ int sdhci_pci_resume_host(struct sdhci_pci_chip *chip);
+ #endif
 -- 
 2.25.1
 
