@@ -1,219 +1,156 @@
-Return-Path: <linux-kernel+bounces-35511-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35513-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BD1D83922E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:10:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E950B839239
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:11:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1AF2294B39
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:10:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1C1B2958A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:11:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6B96604A2;
-	Tue, 23 Jan 2024 15:09:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1C825FB9E;
+	Tue, 23 Jan 2024 15:11:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="A9vb4ADN"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VXINKWz/"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 616D95FF14
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 15:09:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2F7C5FDBE
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 15:11:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706022574; cv=none; b=WznrNA8lTHdsSMvNjRWZWQibzyKJkD1HqwdgDRmLzY1Y3V0v8zFZJLswlqxuFE1dXpzIpBFestzENjN19HIF6vXjA2/bL9iVtUQcmnzuoprffMsGVs30US/3WbPPODIYUHceu33VKz2Om/yBWxWUzRmYF8tGnFN3yhVzOw/m0cA=
+	t=1706022673; cv=none; b=G7PULSSTqcB+wLD0Vp00pPc8WmT/w2gJvGGa63OvlAGjcvbQJS3cGxZMdLjAL7jvQyipqj/7fCKbOaCNHhCwNGjX+30FcUiFEBZecKEDLpqY/xQkCXJqxzdsHjgkKJU2g3/Rg2LgimRuuj3gUlrknHMEb018VXryhcfmQqx6y08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706022574; c=relaxed/simple;
-	bh=yFhqjSYMsfQsAfF+2fsdyL48rxFoZ4t0QJ4RfI6DXGc=;
+	s=arc-20240116; t=1706022673; c=relaxed/simple;
+	bh=PPm9boZjwBn6Xzyt0g83ZrbCoWDaQwNE36cwpign/kQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eL4gbirC2p6ebqw34xvphiHyywx0ddfRiXEZB/p7L7ez1j6iu80Vs+spFoCNw5uwl0I1gYm27pt9akYgYz9ZECLx2NqGJgOfHWsPz8yhXagRpc6aoBxfPB/B9QWMAiSZEBE+zEBomZfeVDnuWYFILYjyXed1wh9VyXY1aJgPTLw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=A9vb4ADN; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706022571;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UEbkk1tO4HfhPK2JUx6qrKqs0KZDvkUBuiz6BAIPH5w=;
-	b=A9vb4ADNaCSK0SBBxBetnPXxJBdWw6U9IACXdSZzdCu9lmiqVdpChMesmHfb/oyVjihc3Q
-	5m65lewlnH7Wnh5JDJ4pOrhjZBqvoxfaxJyFS3+kF+xXa85ijB86Cx4MEnIxdisWJSnWJY
-	aHgFk4TBno0sEm1eL67cYQZs/eid+OM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-627-79EebRTCNnK9c8xzYxIZzw-1; Tue, 23 Jan 2024 10:09:27 -0500
-X-MC-Unique: 79EebRTCNnK9c8xzYxIZzw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CCA1383FC21;
-	Tue, 23 Jan 2024 15:09:26 +0000 (UTC)
-Received: from localhost (unknown [10.39.195.153])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 1F41A2905;
-	Tue, 23 Jan 2024 15:09:25 +0000 (UTC)
-Date: Tue, 23 Jan 2024 10:09:24 -0500
-From: Stefan Hajnoczi <stefanha@redhat.com>
-To: mst@redhat.com
-Cc: Yi Sun <yi.sun@unisoc.com>, axboe@kernel.dk,
-	yi sun <sunyibuaa@gmail.com>, jasowang@redhat.com,
-	xuanzhuo@linux.alibaba.com, pbonzini@redhat.com,
-	virtualization@lists.linux.dev, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, zhiguo.niu@unisoc.com,
-	hongyu.jin@unisoc.com
-Subject: Re: [PATCH 2/2] virtio-blk: Ensure no requests in virtqueues before
- deleting vqs.
-Message-ID: <20240123150924.GD484337@fedora>
-References: <20240122110722.690223-1-yi.sun@unisoc.com>
- <20240122110722.690223-3-yi.sun@unisoc.com>
- <20240122154255.GA389442@fedora>
- <CALpufv0h-sQ4Qfp-Sxd7wME4onMNAMop_gi-np6Dk2R96sba0Q@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WrNwdzzN9DoBgjyAMPEW3zGjnxA2gguQIRP5oLZUNvrBxdIe84wMChYCZKuZoKFnsmpFjWha6I+aXd+/e9YSjjxY3mcyuOlB3t932ljhkF4c0gdD+taIzyi+FvnE8D6bZIMykVpYYSqm7mXGxCt+fujCpP6VU15BvqsfPnth+2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VXINKWz/; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6dd7b525cd6so478215b3a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:11:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706022670; x=1706627470; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=4TDMZtp4Rk/MyqeG91tpztAQaCoeOy1ImodF5oM5/C8=;
+        b=VXINKWz/RqJyQsbef7Qhp0b/TaaiZaU9h32F8bwFGfE2hx378WqsEsgdYNZg5X3LJO
+         n9ttFF0Bf9X9lBSRyO29FUcTtL9X6l9XA1MR2KMnPFta9wCESIMkOGyX9HlovJNP8S2I
+         fKaRsVbWuF/e5WPKhJL6pyM9XhrmwzRM8n2iWBhEbuX7oDubPOSpqPtvmMDODcYqtn4H
+         KfkK8imYEsvwpj7qAR97meraLk2jPWpzaGE6QUI5pBE9eaObSCU+7UCNkV46+e+EaF87
+         xXKGVYnyPn1m1mzu1GP7j3KRDuESiwm+RabSJ8Iv74d8hc/p+Bz+axJF00AqRKRQS8HE
+         HE2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706022670; x=1706627470;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4TDMZtp4Rk/MyqeG91tpztAQaCoeOy1ImodF5oM5/C8=;
+        b=rqeeFz784DOjlEoqRpJnwnXFKs/dBepJ1xMhfXp1FVIEMwmdGzZjn+U4kcYU2+E0Pw
+         buKSGJnJE2xHQtGm22StokWS6ZMDbgm+05J7tzJ+Qdr/va9C+TwtjWqXUq4tHAbUaGxE
+         HC3b7luGHTKwW4I/SZs/ZeFpaGMjJZilrBapYBZ7WhMR/+zuYU9ECks/K/PHQMAMaxCr
+         un4vKDnHSXMt+GBhmp8TLRvXL9l2Ct53abENMatmtuhwuVzebsda3lXQD2fdHYvjmZbh
+         FEDcHPBcl+sarApeg6zABUiuCPUoOKfkUw38CZcAPB8NB8Iu+zROgZyYGMhv0qkg+sDk
+         ii7g==
+X-Gm-Message-State: AOJu0YwSN4Ya1DXEiwLItGN0a7nOL86brWjVzGJ8xQAek+eBgGKW0cNA
+	qRcZsWwg4QngvkXMRGBmZY8CaF1eJ0Igq8SJ+UY16DauejIlHNGBX9FrCupM9g==
+X-Google-Smtp-Source: AGHT+IEOKhrSQ2AAiD6B4preFnkzitZWz56/vBVAw7INI+RAQyhQg8QHxAEyl6Hrgx0FmHXbiPe34Q==
+X-Received: by 2002:a62:5e06:0:b0:6d9:eb24:4c5f with SMTP id s6-20020a625e06000000b006d9eb244c5fmr2890544pfb.37.1706022670014;
+        Tue, 23 Jan 2024 07:11:10 -0800 (PST)
+Received: from thinkpad ([117.217.189.109])
+        by smtp.gmail.com with ESMTPSA id y22-20020a62b516000000b006dbd2405882sm6021527pfe.148.2024.01.23.07.11.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jan 2024 07:11:09 -0800 (PST)
+Date: Tue, 23 Jan 2024 20:41:02 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Eric Chanudet <echanude@redhat.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scsi: ufs: qcom: avoid re-init quirk when gears match
+Message-ID: <20240123151102.GE19029@thinkpad>
+References: <20240119185537.3091366-11-echanude@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="5XZvsWUA6IsHlc+K"
-Content-Disposition: inline
-In-Reply-To: <CALpufv0h-sQ4Qfp-Sxd7wME4onMNAMop_gi-np6Dk2R96sba0Q@mail.gmail.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
-
-
---5XZvsWUA6IsHlc+K
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240119185537.3091366-11-echanude@redhat.com>
 
-Hi Michael,
-This could potentially affect other VIRTIO drivers too. Please see
-below.
+On Fri, Jan 19, 2024 at 01:55:47PM -0500, Eric Chanudet wrote:
+> On sa8775p-ride, probing the hba will go through the
+> UFSHCD_QUIRK_REINIT_AFTER_MAX_GEAR_SWITCH path although the power info
+> are same during the second init.
+> 
+> If the host is at least v4, ufs_qcom_get_hs_gear() picked the highest
+> supported gear when setting the host_params. After the negotiation, if
+> the host and device are on the same gear, it is the highest gear
+> supported between the two. Skip the re-init to save some time.
+> 
+> Signed-off-by: Eric Chanudet <echanude@redhat.com>
+> ---
+> 
+> "trace_event=ufs:ufshcd_init" reports the time spent where the re-init
+> quirk is performed. On sa8775p-ride:
+> Baseline:
+>   0.355879: ufshcd_init: 1d84000.ufs: took 103377 usecs, dev_state: UFS_ACTIVE_PWR_MODE, link_state: UIC_LINK_ACTIVE_STATE, err 0
+> With this patch:
+>   0.297676: ufshcd_init: 1d84000.ufs: took 43553 usecs, dev_state: UFS_ACTIVE_PWR_MODE, link_state: UIC_LINK_ACTIVE_STATE, err 0
+> 
+>  drivers/ufs/host/ufs-qcom.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+> index 39eef470f8fa..f9f161340e78 100644
+> --- a/drivers/ufs/host/ufs-qcom.c
+> +++ b/drivers/ufs/host/ufs-qcom.c
+> @@ -738,8 +738,12 @@ static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
+>  		 * the second init can program the optimal PHY settings. This allows one to start
+>  		 * the first init with either the minimum or the maximum support gear.
+>  		 */
+> -		if (hba->ufshcd_state == UFSHCD_STATE_RESET)
+> +		if (hba->ufshcd_state == UFSHCD_STATE_RESET) {
+> +			if (host->hw_ver.major >= 0x4 &&
 
-On Tue, Jan 23, 2024 at 11:27:40AM +0800, yi sun wrote:
-> On Mon, Jan 22, 2024 at 11:43=E2=80=AFPM Stefan Hajnoczi <stefanha@redhat=
-=2Ecom> wrote:
-> >
-> > On Mon, Jan 22, 2024 at 07:07:22PM +0800, Yi Sun wrote:
-> > > Ensure no remaining requests in virtqueues before resetting vdev and
-> > > deleting virtqueues. Otherwise these requests will never be completed.
-> > > It may cause the system to become unresponsive. So it is better to pl=
-ace
-> > > blk_mq_quiesce_queue() in front of virtio_reset_device().
-> >
-> > QEMU's virtio-blk device implementation completes all requests during
-> > device reset. Most device implementations have to do the same to avoid
-> > leaving dangling requests in flight across device reset.
-> >
-> > Which device implementation are you using and why is it safe for the
-> > device is simply drop requests across device reset?
-> >
-> > Stefan
->=20
-> Virtio-blk device implementation completes all requests during device res=
-et, but
-> this can only ensure that the device has finished using virtqueue. We sho=
-uld
-> also consider the driver's use of virtqueue.
->=20
-> I caught such an example. Before del_vqs, the request had been processed =
-by
-> the device, but it had not been processed by the driver. Although I am
-> using kernel5.4,
-> I think this problem may also occur with the latest version of kernel.
->=20
-> The debug code I added is as follows:
-> virtblk_freeze()
-> {
->         vdev reset();
->         quiesce queue();
->         if (virtqueue->num_free !=3D 1024) //1024 is the init value.
->                 BUG_ON(1);
->         vdev del_vqs();
-> }
->=20
-> BUG_ON triggered the dump, the analysis is as follows:
->=20
-> There is one request left in request_queue.
-> crash_arm64> struct request ffffff81f0560000 | grep -e state -e __data_len
->   __data_len =3D 20480,
->   state =3D MQ_RQ_IN_FLIGHT,
->=20
-> crash_arm64> vring_virtqueue.packed,last_used_idx,broken,vq 0xffffff8086f=
-92900 |
-> grep -e num -e used_wrap_counter -e last_used_idx -e broken -e
-> num_free -e desc_state -e "desc =3D"
->         num =3D 1024,
->         desc =3D 0xffffff8085ff8000,
->       used_wrap_counter =3D false,
->       desc_state =3D 0xffffff8085610000,
->   last_used_idx =3D 487,
->   broken =3D false,
->     num_free =3D 1017,
->=20
-> Find desc based on last_used_idx. Through flags, we can know that the req=
-uest
-> has been processed by the device, but it is still in flight state
-> because it has not
-> had time to run virtblk_done().
-> crash_arm> vring_packed_desc ffffff8085ff9e70
-> struct vring_packed_desc {
->   addr =3D 10474619192,
->   len =3D 20481,
->   id =3D 667,
->   flags =3D 2
-> }
->=20
-> I'm using a closed source virtual machine, so I can't see the source
-> code for it,
-> but I'm guessing it's similar to qemu.
->=20
-> After the device completes the request, we must also ensure that the driv=
-er can
-> complete the request in virtblk_done().
->=20
+You can get rid of this check as I said in the reply.
 
-Okay, I think your approach of waiting for requests before
-virtio_device_reset() makes sense. blk_mq_complete_request() is async
-(might be deferred to an IPI or softirq) so it's not enough for
-virtblk_done() to run before virtio_device_reset() returns. There is no
-guarantee that virtblk_request_done() runs before virtio_device_reset()
-returns.
+> +			    host_params->hs_tx_gear == dev_req_params->gear_tx)
 
-A separate issue about virtio_device_reset():
+How about?
 
-Are you using virtio-mmio? virtio-mmio's vm_reset() doesn't offer the
-same guarantees as virtio-pci's reset functions. virtio-pci guarantees
-that irqs sent by the device during the reset operation complete and the
-irq handlers run before virtio_device_reset() returns. virtio-mmio does
-not.
+			/*
+			 * Skip REINIT if the negotiated gear matches with the
+			 * initial phy_gear. Otherwise, update the phy_gear to
+			 * program the optimal gear setting during REINIT.
+			 */
+			if (host->phy_gear == dev_req_params->gear_tx)
+				hba->quirks &= ~UFSHCD_QUIRK_REINIT_AFTER_MAX_GEAR_SWITCH;
+			else
+				host->phy_gear = dev_req_params->gear_tx;
 
-(On top of this, virtio_device_reset() now has
-CONFIG_VIRTIO_HARDEN_NOTIFICATION which changes the semantics. Drivers
-cannot expect to complete any in-flight requests in
-virtio_device_reset() when complied with this config option.)
+- Mani
 
-Other drivers may be affected by these inconsistent
-virtio_device_reset() semantics. I haven't audited the code.
+> +				hba->quirks &= ~UFSHCD_QUIRK_REINIT_AFTER_MAX_GEAR_SWITCH;
+>  			host->phy_gear = dev_req_params->gear_tx;
+> +		}
+>  
+>  		/* enable the device ref clock before changing to HS mode */
+>  		if (!ufshcd_is_hs_mode(&hba->pwr_info) &&
+> -- 
+> 2.43.0
+> 
 
-Stefan
-
---5XZvsWUA6IsHlc+K
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmWv1qQACgkQnKSrs4Gr
-c8jpgAf+NXHJgW/fRiaSNygOJ4hNh3a2hy8o6bZssqK9v3TAl8S3iIWCBF+IWuCA
-apnBdRbOu6nWpp9DtMjEwKzt3JAzdwRGkEpK/PbGP53Y07KihDTeJU6FhssuUxLn
-idP+j15guyV/m4+wVQJgNR6c3k9rFc+P4pH97CcxkLH7SX0uUA5dMQEBUgBN3sVb
-V+nx/vm0jTUe3BJ3mJaUzB5G4iECMAeaKTLQQj3fOoKMJ1vt8+HQGTLeHaHL9pOW
-3qeHUov5iMlp2CZpMtn0DDjqs3mX9uj3uhXGHW95BfkU1QRVHVWQypHGHE5xzAmq
-PgAw13jcz8svFhI7lztiQBHmJ5N9ug==
-=cz+B
------END PGP SIGNATURE-----
-
---5XZvsWUA6IsHlc+K--
-
+-- 
+மணிவண்ணன் சதாசிவம்
 
