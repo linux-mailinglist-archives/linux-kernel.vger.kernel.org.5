@@ -1,134 +1,250 @@
-Return-Path: <linux-kernel+bounces-34560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34443-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 353F1837FEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:55:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 166D3837BB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:05:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6556F1C2818E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:55:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0FDD0B25F4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 00:52:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91B1612C54A;
-	Tue, 23 Jan 2024 00:57:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D50F812DD80;
+	Tue, 23 Jan 2024 00:16:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="z819cun3"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gplhXR1r"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBFF66281D;
-	Tue, 23 Jan 2024 00:57:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA0D212CDB0;
+	Tue, 23 Jan 2024 00:16:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705971443; cv=none; b=DFyO9ZdoYEf8jnf7tUaEPBQqRhRFy/cA0BE0JBzfhug6HM2EKPjsDD/7PBPwmzu/zusOZM6B2DFRjIZzb/S1KJAJqExdPZ8CZOLw0otPALZa0ySXYAcc4Wwcm27A48suQ5gzvKB9TaVKlgCTkmQLGrL5L2omc744HDe51Hszukk=
+	t=1705968979; cv=none; b=kZG7zFxY07laWdILlsbcimUHkWUzzBcKhzK3UPYxw0BdNwVQ7WMRGz7exWbwubEZM3GNJz+pQ9mkjo5IJoEYLRheJ0dkhdGW3Cm9fe1AymacoHhr8328+9g8sV59YT2nxtuOe3c3P/fFFZSlHh5S+pomc5LigjaqMf8LBtPQxWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705971443; c=relaxed/simple;
-	bh=wGuN975V07rpQPfbn8kxmTghtVRXyNhe6OvU9yJ+a88=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Zl4H77qFOyZ6TzNKxcrSz23DNx4tM16aS5OEW50mzI7TAco2+yYt4UYv2C4DSMurmM6JpDXQ/JQcnBcSCeLSJz+2kbz1+OmEw4emvKKQkH8SxAIE8fx3Xs8DAAazIBX9H2MPlV4ukkN2FqDnwis7+lwawRwVqAOqjhC00p+7llo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=z819cun3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BD55C433F1;
-	Tue, 23 Jan 2024 00:57:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1705971443;
-	bh=wGuN975V07rpQPfbn8kxmTghtVRXyNhe6OvU9yJ+a88=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=z819cun3WtHtacJYyZrJ/nz3QDFeVzvw3wbG/5Go9gTxD/n7qoDRtKYOKOH4mY08A
-	 JbRjgcq+HB3Sxk7wKSMa0iWUk0gL1xdX08Exh7wj6TBPVp5E3AJYIdY2mBySLoluPo
-	 uLqBlV8rGn0pd8kwStlrRMpQrs/DJNpg1bJl0cDw=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: stable@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	patches@lists.linux.dev,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Shuah Khan <shuah@kernel.org>,
-	linux-sound@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
+	s=arc-20240116; t=1705968979; c=relaxed/simple;
+	bh=KuKxDgMYvM/akVrIEinCr43jRwN18h/B3SBovOv7FCk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Mo8EAkv1T/3EoOv+WaNUnXeLnt+mT9O42W5FfxM3Ae722XQ78m2mEOiNDqwBhsNhVAn5n03flX4qtg51wK/zkBgwO5OkE5K5DfmrUXPqrMeGznvD41N4xVYdjiAl6pQInTYb16cqXmmmXhPc9GdCj6aVYGR08+mNZfzH7wOIw44=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gplhXR1r; arc=none smtp.client-ip=134.134.136.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705968976; x=1737504976;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=KuKxDgMYvM/akVrIEinCr43jRwN18h/B3SBovOv7FCk=;
+  b=gplhXR1r8I4kLSppURBQl0BpK3TN+yElFofvIg5vBdmypodmPj0AxDGu
+   GmfHxvsdspF+do9ySD+taDoA50MbffRrwJvuCugQUfd3VDa2+MK/lOB6+
+   ju0qm9bl4T6uYSHR4EYxNH1j2moGutUr9A2YsMRZ3RNkYbHjUhttj0dA6
+   /O5SDjI+oD0JsOPzV+TF5qd7j3L56gr8S80aJXsxqD3GH2CFSzObdWF9+
+   MSuz3t5XYJvemngcBeqrmLYphOynhZJrRoQUg6KiwCDbCR6T1QUe8rS6v
+   OwdWh9AxJxkfIrbEodDCOusa116DaypSLofKOwmmxJ80edg3n2uzeaWry
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="465626022"
+X-IronPort-AV: E=Sophos;i="6.05,212,1701158400"; 
+   d="scan'208";a="465626022"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 16:16:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="785848854"
+X-IronPort-AV: E=Sophos;i="6.05,212,1701158400"; 
+   d="scan'208";a="785848854"
+Received: from powerlab.fi.intel.com ([10.237.71.25])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 16:16:11 -0800
+From: Michal Wilczynski <michal.wilczynski@intel.com>
+To: seanjc@google.com,
+	pbonzini@redhat.com,
+	mlevitsk@redhat.com
+Cc: tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com,
+	kvm@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-	Takashi Iwai <tiwai@suse.de>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 243/417] kselftest/alsa - mixer-test: Fix the print format specifier warning
-Date: Mon, 22 Jan 2024 15:56:51 -0800
-Message-ID: <20240122235800.296862359@linuxfoundation.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240122235751.480367507@linuxfoundation.org>
-References: <20240122235751.480367507@linuxfoundation.org>
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
+	dedekind1@gmail.com,
+	yuan.yao@intel.com,
+	Michal Wilczynski <michal.wilczynski@intel.com>,
+	Zheyu Ma <zheyuma97@gmail.com>
+Subject: [PATCH v2] KVM: x86: nSVM/nVMX: Fix handling triple fault on RSM instruction
+Date: Tue, 23 Jan 2024 02:15:55 +0200
+Message-ID: <20240123001555.4168188-1-michal.wilczynski@intel.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-6.1-stable review patch.  If anyone has any objections, please let me know.
+Syzkaller found a warning triggered in nested_vmx_vmexit().
+vmx->nested.nested_run_pending is non-zero, even though we're in
+nested_vmx_vmexit(). Generally, trying  to cancel a pending entry is
+considered a bug. However in this particular scenario, the kernel
+behavior seems correct.
 
-------------------
+Syzkaller scenario:
+1) Set up VCPU's
+2) Run some code with KVM_RUN in L2 as a nested guest
+3) Return from KVM_RUN
+4) Inject KVM_SMI into the VCPU
+5) Change the EFER register with KVM_SET_SREGS to value 0x2501
+6) Run some code on the VCPU using KVM_RUN
+7) Observe following behavior:
 
-From: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+kvm_smm_transition: vcpu 0: entering SMM, smbase 0x30000
+kvm_entry: vcpu 0, rip 0x8000
+kvm_entry: vcpu 0, rip 0x8000
+kvm_entry: vcpu 0, rip 0x8002
+kvm_smm_transition: vcpu 0: leaving SMM, smbase 0x30000
+kvm_nested_vmenter: rip: 0x0000000000008002 vmcs: 0x0000000000007000
+                    nested_rip: 0x0000000000000000 int_ctl: 0x00000000
+		    event_inj: 0x00000000 nested_ept=n guest
+		    cr3: 0x0000000000002000
+kvm_nested_vmexit_inject: reason: TRIPLE_FAULT ext_inf1: 0x0000000000000000
+                          ext_inf2: 0x0000000000000000 ext_int: 0x00000000
+			  ext_int_err: 0x00000000
 
-[ Upstream commit 3f47c1ebe5ca9c5883e596c7888dec4bec0176d8 ]
+What happened here is an SMI was injected immediately and the handler was
+called at address 0x8000; all is good. Later, an RSM instruction is
+executed in an emulator to return to the nested VM. em_rsm() is called,
+which leads to emulator_leave_smm(). A part of this function calls VMX/SVM
+callback, in this case vmx_leave_smm(). It attempts to set up a pending
+reentry to guest VM by calling nested_vmx_enter_non_root_mode() and sets
+vmx->nested.nested_run_pending to one. Unfortunately, later in
+emulator_leave_smm(), rsm_load_state_64() fails to write invalid EFER to
+the MSR. This results in em_rsm() calling triple_fault callback. At this
+point it's clear that the KVM should call the vmexit, but
+vmx->nested.nested_run_pending is left set to 1.
 
-The GCC 13.2.0 compiler issued the following warning:
+Similar flow goes for SVM, as the bug also reproduces on AMD platforms.
 
-mixer-test.c: In function ‘ctl_value_index_valid’:
-mixer-test.c:322:79: warning: format ‘%lld’ expects argument of type ‘long long int’, \
-			      but argument 5 has type ‘long int’ [-Wformat=]
-  322 |                         ksft_print_msg("%s.%d value %lld more than maximum %lld\n",
-      |                                                                            ~~~^
-      |                                                                               |
-      |                                                                               long long int
-      |                                                                            %ld
-  323 |                                        ctl->name, index, int64_val,
-  324 |                                        snd_ctl_elem_info_get_max(ctl->info));
-      |                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      |                                        |
-      |                                        long int
+To address this issue, reset the nested_run_pending flag in the
+triple_fault handler. However, it's crucial to note that
+nested_pending_run cannot be cleared in all cases. It should only be
+cleared for the specific instruction requiring hardware VM-Enter to
+complete the emulation, such as RSM. Previously, there were instances
+where KVM prematurely synthesized a triple fault on nested VM-Enter. In
+these cases, it is not appropriate to zero the nested_pending_run.
 
-Fixing the format specifier as advised by the compiler suggestion removes the
-warning.
+To resolve this, introduce a new emulator flag indicating the need for
+HW VM-Enter to complete emulating RSM. Based on this flag, a decision can
+be made in vendor-specific triple fault handlers about whether
+nested_pending_run needs to be cleared.
 
-Fixes: 3f48b137d88e7 ("kselftest: alsa: Factor out check that values meet constraints")
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: linux-sound@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Acked-by: Mark Brown <broonie@kernel.org>
-Link: https://lore.kernel.org/r/20240107173704.937824-3-mirsad.todorovac@alu.unizg.hr
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 759cbd59674a ("KVM: x86: nSVM/nVMX: set nested_run_pending on VM entry which is a result of RSM")
+Reported-by: Zheyu Ma <zheyuma97@gmail.com>
+Closes: https://lore.kernel.org/all/CAMhUBjmXMYsEoVYw_M8hSZjBMHh24i88QYm-RY6HDta5YZ7Wgw@mail.gmail.com
+Signed-off-by: Michal Wilczynski <michal.wilczynski@intel.com>
 ---
- tools/testing/selftests/alsa/mixer-test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v2:
+ - added new emulator flags indicating whether an instruction needs a
+   VM-Enter to complete emulation (Sean)
+ - fix in SVM nested triple_fault handler (Sean)
+ - only clear nested_run_pending on RSM instruction (Sean)
 
-diff --git a/tools/testing/selftests/alsa/mixer-test.c b/tools/testing/selftests/alsa/mixer-test.c
-index d59910658c8c..9ad39db32d14 100644
---- a/tools/testing/selftests/alsa/mixer-test.c
-+++ b/tools/testing/selftests/alsa/mixer-test.c
-@@ -358,7 +358,7 @@ static bool ctl_value_index_valid(struct ctl_data *ctl,
- 		}
+ arch/x86/kvm/emulate.c     |  4 +++-
+ arch/x86/kvm/kvm_emulate.h |  2 ++
+ arch/x86/kvm/svm/nested.c  |  9 +++++++++
+ arch/x86/kvm/vmx/nested.c  | 12 ++++++++++++
+ 4 files changed, 26 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
+index e223043ef5b2..889460432eac 100644
+--- a/arch/x86/kvm/emulate.c
++++ b/arch/x86/kvm/emulate.c
+@@ -178,6 +178,7 @@
+ #define IncSP       ((u64)1 << 54)  /* SP is incremented before ModRM calc */
+ #define TwoMemOp    ((u64)1 << 55)  /* Instruction has two memory operand */
+ #define IsBranch    ((u64)1 << 56)  /* Instruction is considered a branch. */
++#define NeedVMEnter ((u64)1 << 57)  /* Instruction needs HW VM-Enter to complete */
  
- 		if (int64_val > snd_ctl_elem_info_get_max64(ctl->info)) {
--			ksft_print_msg("%s.%d value %lld more than maximum %lld\n",
-+			ksft_print_msg("%s.%d value %lld more than maximum %ld\n",
- 				       ctl->name, index, int64_val,
- 				       snd_ctl_elem_info_get_max(ctl->info));
- 			return false;
+ #define DstXacc     (DstAccLo | SrcAccHi | SrcWrite)
+ 
+@@ -4462,7 +4463,7 @@ static const struct opcode twobyte_table[256] = {
+ 	F(DstMem | SrcReg | Src2CL | ModRM, em_shld), N, N,
+ 	/* 0xA8 - 0xAF */
+ 	I(Stack | Src2GS, em_push_sreg), I(Stack | Src2GS, em_pop_sreg),
+-	II(EmulateOnUD | ImplicitOps, em_rsm, rsm),
++	II(EmulateOnUD | ImplicitOps | NeedVMEnter, em_rsm, rsm),
+ 	F(DstMem | SrcReg | ModRM | BitOp | Lock | PageTable, em_bts),
+ 	F(DstMem | SrcReg | Src2ImmByte | ModRM, em_shrd),
+ 	F(DstMem | SrcReg | Src2CL | ModRM, em_shrd),
+@@ -4966,6 +4967,7 @@ int x86_decode_insn(struct x86_emulate_ctxt *ctxt, void *insn, int insn_len, int
+ 	}
+ 
+ 	ctxt->is_branch = opcode.flags & IsBranch;
++	ctxt->need_vm_enter = opcode.flags & NeedVMEnter;
+ 
+ 	/* Unrecognised? */
+ 	if (ctxt->d == 0)
+diff --git a/arch/x86/kvm/kvm_emulate.h b/arch/x86/kvm/kvm_emulate.h
+index e6d149825169..1e1366afa51d 100644
+--- a/arch/x86/kvm/kvm_emulate.h
++++ b/arch/x86/kvm/kvm_emulate.h
+@@ -372,6 +372,8 @@ struct x86_emulate_ctxt {
+ 	struct read_cache io_read;
+ 	struct read_cache mem_read;
+ 	bool is_branch;
++	/* instruction need a HW VM-Enter to complete correctly */
++	bool need_vm_enter;
+ };
+ 
+ #define KVM_EMULATOR_BUG_ON(cond, ctxt)		\
+diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+index dee62362a360..8c19ad5e18d4 100644
+--- a/arch/x86/kvm/svm/nested.c
++++ b/arch/x86/kvm/svm/nested.c
+@@ -1165,11 +1165,20 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
+ 
+ static void nested_svm_triple_fault(struct kvm_vcpu *vcpu)
+ {
++	struct x86_emulate_ctxt *ctxt = vcpu->arch.emulate_ctxt;
+ 	struct vcpu_svm *svm = to_svm(vcpu);
+ 
+ 	if (!vmcb12_is_intercept(&svm->nested.ctl, INTERCEPT_SHUTDOWN))
+ 		return;
+ 
++	/*
++	 * In case of a triple fault, cancel the nested reentry. This may occur
++	 * when the RSM instruction fails while attempting to restore the state
++	 * from SMRAM.
++	 */
++	if (ctxt->need_vm_enter)
++		svm->nested.nested_run_pending = 0;
++
+ 	kvm_clear_request(KVM_REQ_TRIPLE_FAULT, vcpu);
+ 	nested_svm_simple_vmexit(to_svm(vcpu), SVM_EXIT_SHUTDOWN);
+ }
+diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+index 6329a306856b..9228699b4c1e 100644
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -4950,7 +4950,19 @@ void nested_vmx_vmexit(struct kvm_vcpu *vcpu, u32 vm_exit_reason,
+ 
+ static void nested_vmx_triple_fault(struct kvm_vcpu *vcpu)
+ {
++	struct x86_emulate_ctxt *ctxt = vcpu->arch.emulate_ctxt;
++	struct vcpu_vmx *vmx = to_vmx(vcpu);
++
+ 	kvm_clear_request(KVM_REQ_TRIPLE_FAULT, vcpu);
++
++	/*
++	 * In case of a triple fault, cancel the nested reentry. This may occur
++	 * when the RSM instruction fails while attempting to restore the state
++	 * from SMRAM.
++	 */
++	if (ctxt->need_vm_enter)
++		vmx->nested.nested_run_pending = 0;
++
+ 	nested_vmx_vmexit(vcpu, EXIT_REASON_TRIPLE_FAULT, 0, 0);
+ }
+ 
 -- 
-2.43.0
-
-
+2.41.0
 
 
