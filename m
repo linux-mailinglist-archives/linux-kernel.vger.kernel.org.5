@@ -1,121 +1,93 @@
-Return-Path: <linux-kernel+bounces-35719-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D65F283958B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:58:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 369258395C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:03:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E3F81F3133A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:58:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 59A05B2F303
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:58:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0D6D811EA;
-	Tue, 23 Jan 2024 16:51:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F054D81208;
+	Tue, 23 Jan 2024 16:51:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b="GNMBobsM"
-Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="WZNluWex";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="mZRw/UG+"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D473E7FBA7;
-	Tue, 23 Jan 2024 16:51:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=157.90.84.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5F626A01D;
+	Tue, 23 Jan 2024 16:51:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706028677; cv=none; b=Y4Au2I1aBu/7pGBv3yUVI1c+7c+yU5wOK/WLqDROOAjJ6C/DKJhdkTRvuyYRK2N+i11IamGotHR8wpZbPSnaj57t7y6m6YYhDreRUzlPcFu8cnz/2hSNZqw5+9KLlsTGxhBMT/jQfkJyw72ipWKo6DzoJWk1/VJ4LwGagA8bJ30=
+	t=1706028702; cv=none; b=XcLdh7gZTy7jpqHU7130mmBt2JYrGkae86HiqsNsI2NSt/4qXzoxHwJueBdL1tPL3jqnjaWyIrW+1V8NzHG3Ljzw4RSpVw+RnqAfY6ViRU9ByKquh7WTCFWtOdlVNFcwJZoVwwD8nADdOgGWOOUdkSf5D87hh6fOgvVtD3eoBwg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706028677; c=relaxed/simple;
-	bh=VE3TwMTd3CZosuWs/YQh6GO1jbfQe0kjsCQk3Fo5jOQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=efAgRucbwvtDZaG2tnLcvkwG/3t2+BsJIIYJ3EzCw58LjKhueLLDUXHIuAHfuUyzxMQMrHz2+xQUWdMgLF6mvycWOYllf58xsfl2BZvRw0899CwRyYAs041IcfITILnJM0+FuXcVQhCsG1DKSo7BKUoQYD1G8gmbk5LZ0fU7Sxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com; spf=pass smtp.mailfrom=tuxedocomputers.com; dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b=GNMBobsM; arc=none smtp.client-ip=157.90.84.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxedocomputers.com
-Received: from [192.168.42.20] (p5de453e7.dip0.t-ipconnect.de [93.228.83.231])
-	(Authenticated sender: wse@tuxedocomputers.com)
-	by mail.tuxedocomputers.com (Postfix) with ESMTPSA id 9C3C22FC0050;
-	Tue, 23 Jan 2024 17:51:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
-	s=default; t=1706028666;
+	s=arc-20240116; t=1706028702; c=relaxed/simple;
+	bh=k3bJeIIb5jdM0JrTRo4Y2HnZMCOTaMAv+5vtQS4HJlk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=uOrsYELZcueLEuqTc7DkArbeJXDeV+ANnuicvXn2hgX0gYs4zuIqmSV2/XRQIuuE3YxqMkxMsl3vq+jLkRllVr1L2UYwAFIZnPwHe4NspGoNjYEMbxK5wzhqVXWEkLROfhYsCUZ3i8jRPK+LAxbFi+Ol+deEW6mFX4Mb0hsMTgg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=WZNluWex; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=mZRw/UG+; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 23 Jan 2024 17:51:37 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1706028699;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VdkokTZGvxcJHk9IiPC4nPROKX8TmRItLHJlrEqCNJs=;
-	b=GNMBobsM25vzbIaUJ9ZsUXY1t95zxv/x9Yb3+W+7pAvEmJYGD68iisuOJAL1aT70kBltww
-	LgcsjCrRpRcBlhU9ICKmB6aem1k8IkLgcVm+nXcdUMoKeDKUT6g+yb7SGTE3xnplyyTFTn
-	3AqrmNSNTous3svtFzJSaayp9w+UIUc=
-Authentication-Results: mail.tuxedocomputers.com;
-	auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
-Message-ID: <7df49b4f-5d9f-48f2-98bd-e2c3f567126c@tuxedocomputers.com>
-Date: Tue, 23 Jan 2024 17:51:05 +0100
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=ypjlCiyqDBcFmHfRo5K26CO3Vwl7VLB/wa7hfqhAprw=;
+	b=WZNluWexZk3v3SZmkkuisgc8BaO8N6uTafF5FN3hq78+7HbehZ+LYV/sK9ExX+9JB8cXMA
+	hO4UmzSdNKZg0wkYSfBU1nWa0VZQhyVI/rOeZDR79eQmI3i4gc0d++PF8PXgXvee/GKq9k
+	qiIiWWCs9Z0fFA+rr9c+yaOxukHTQYDCTaq+iCOEF2aKO+SfMRBQNP4TWTrxyIysZJRZS1
+	O7XCYubSDiLYxvkt7MpYCZAae48I20xhrL3YgzE/Qjs5D0ofTmyQXgESF2udx0uZ0ek0zt
+	hJNByTVVY6tsmyAbwadj3C8uUmRI3Z2kNXImVMOMNs0IzapvUcTlweLgdGR0dg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1706028699;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=ypjlCiyqDBcFmHfRo5K26CO3Vwl7VLB/wa7hfqhAprw=;
+	b=mZRw/UG+mCnQAKsrhuipL7tpnNps9HnA9xbf3+U79hJP25maXZRaCWzwUeDvXdTOvJnE65
+	Xf0+w1yq3kC5CXCQ==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, linux-rt-users@vger.kernel.org,
+	Steven Rostedt <rostedt@goodmis.org>
+Subject: [ANNOUNCE] v6.8-rc1-rt1
+Message-ID: <20240123165137.rezlkolk@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Implement per-key keyboard backlight as auxdisplay?
-Content-Language: en-US
-To: Pavel Machek <pavel@ucw.cz>, Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Jani Nikula <jani.nikula@linux.intel.com>,
- Hans de Goede <hdegoede@redhat.com>, jikos@kernel.org,
- Jelle van der Waa <jelle@vdwaa.nl>,
- Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, Lee Jones <lee@kernel.org>,
- linux-kernel@vger.kernel.org,
- "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- linux-input@vger.kernel.org, ojeda@kernel.org, linux-leds@vger.kernel.org,
- Benjamin Tissoires <benjamin.tissoires@redhat.com>
-References: <ZVvHG/Q+V6kCnfKZ@duo.ucw.cz>
- <f4137e34-c7fb-4f21-bc93-1496cbf61fdf@tuxedocomputers.com>
- <8096a042-83bd-4b9f-b633-79e86995c9b8@redhat.com>
- <f416fbca-589b-4f6a-aad6-323b66398273@tuxedocomputers.com>
- <4222268b-ff44-4b7d-bf11-e350594bbe24@redhat.com>
- <ac02143c-d417-49e5-9c6e-150cbda71ba7@tuxedocomputers.com>
- <ZaljwLe7P+dXHEHb@duo.ucw.cz>
- <6bbfdd62-e663-4a45-82f4-445069a8d690@redhat.com> <87bk9hppee.fsf@intel.com>
- <ZarAfg2_5ocfKAWo@google.com> <Zar0MFelV4gY50La@duo.ucw.cz>
-From: Werner Sembach <wse@tuxedocomputers.com>
-In-Reply-To: <Zar0MFelV4gY50La@duo.ucw.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
+Dear RT folks!
 
-Am 19.01.24 um 23:14 schrieb Pavel Machek:
-> Hi!
->
->>> And while I would personally hate it, you can imagine a use case where
->>> you'd like a keypress to have a visual effect around the key you
->>> pressed. A kind of force feedback, if you will. I don't actually know,
->>> and correct me if I'm wrong, but feels like implementing that outside of
->>> the input subsystem would be non-trivial.
->> Actually I think it does not belong to the input subsystem as it is,
->> where the goal is to deliver keystrokes and gestures to userspace.  The
->> "force feedback" kind of fits, but not really practical, again because
->> of lack of geometry info. It is also not really essential to be fully
->> and automatically handled by the kernel. So I think the best way is
->>> to
-> So that's actually big question.
->
-> If the common usage is "run bad apple demo on keyboard" than pretty
-> clearly it should be display.
->
-> If the common usage is "computer is asking yes/no question, so
-> highlight yes and no buttons", then there are good arguments why input
-> should handle that (as it does capslock led, for example).
-The common usage is "make keyboard look flashy", for some a fixed color scheme 
-is enough, other ones might probably enable one of the built in modes. Most 
-people I think will be satisfied with these 2 options, albeit both of your 
-suggestions sound cool.
->
-> Actually I could imagine "real" use when shift / control /alt
-> backlight would indicate sticky-shift keys for handicapped.
->
-> It seems they are making mice with backlit buttons. If the main use is
-> highlight this key whereever it is, then it should be input.
->
-> But I suspect may use is just fancy colors and it should be display.
->
-> Best regards,
-> 								Pavel
+I'm pleased to announce the v6.8-rc1-rt1 patch set. 
+
+Changes since v6.7-rt6
+
+  - Rebase to v6.8-rc1.
+
+Known issues
+     Pierre Gondois reported crashes on ARM64 together with "rtla timerlat
+     hist" as trigger. It is not yet understood. The report is at
+	https://lore.kernel.org/70c08728-3d4f-47a6-8a3e-114e4877d120@arm.com
+
+You can get this release via the git tree at:
+
+    https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v6.8-rc1-rt1
+
+The RT patch against v6.8-rc1 can be found here:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.8/older/patch-6.8-rc1-rt1.patch.xz
+
+The split quilt queue is available at:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.8/older/patches-6.8-rc1-rt1.tar.xz
+
+Sebastian
 
