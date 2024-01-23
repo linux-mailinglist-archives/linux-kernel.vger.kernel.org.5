@@ -1,99 +1,103 @@
-Return-Path: <linux-kernel+bounces-35376-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35377-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A967838FF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:30:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD2D0838FC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:26:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71C41B2C460
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:26:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64AF51F2908F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:26:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B4855FDB9;
-	Tue, 23 Jan 2024 13:15:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCF0D5FF03;
+	Tue, 23 Jan 2024 13:17:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iqyKIT1k"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PK3cK2S0"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7204D5FDC6;
-	Tue, 23 Jan 2024 13:15:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABC2D6024D;
+	Tue, 23 Jan 2024 13:17:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706015711; cv=none; b=Z7kWdMThmQGQRzswc5r7/pCS1o+TukAFOAzrSQT3hEN9L6g78Woz3mZBef02s5P4E3VUqfn50BhbNEryf4zS0l+DqNSvYXMEJDGhD5Aa3aqPGTG9WSmQJNubpq3SdvD1BHiC6L8JvbjKhxsVkhtDq8q2MakhLs8dog7tXXAwnyo=
+	t=1706015821; cv=none; b=o0ch9HzRChfJVsIwnpn+oGPpZoJx3kiFphXvs8F+HH4l2u+M3A6Lvt7Y6fhMpDem+zrY6CXq6sDEiK9oZHLI+EzjhvffALaTrNkLmVvZPrMfBW0d043eB5VC+CzkIx4Qzdf4nfEgHrtaiYWYEmHWgon+DDxISqLwhtnJSSB2gXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706015711; c=relaxed/simple;
-	bh=g36kRqAa0AgkhntszfW+Li1P753t4sRZLsilj77aicI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=r8DoRGzz7wxVd/FJGyCpiICR8IBI4JlNfdr8+zJZ4QdK1A1YocCDD4hXExsUJGE9mEuBFsigYOOJkWj+R3bAC03ZuZL3U1bz9BunjRU938wH7vZ9aJmKcMJzgHXfTRGmDWGJBhtI1cnhIYGs/5d9hvGnH8w03R/m92Z4TLR91/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iqyKIT1k; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7416FC43609;
-	Tue, 23 Jan 2024 13:15:09 +0000 (UTC)
+	s=arc-20240116; t=1706015821; c=relaxed/simple;
+	bh=2MHCqFKREE52/lb1JJTkk0/4DQhWwLBMl49LPFmNyAE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XCfJSDVJlSmMZnASVCCCcYTTdDhd4XJ5vpmNeorONII09Hy13E6Q9qMaKu099K4CObtonvN8jHseKo0s3p4sB9+5Ns96zlrKM/Jh04VM/tEw1ezEdgYbTLL/UivABu/XAjLSxyme0fGjZEGISHoAQCG8PIuklIzZdXYSMss3sF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PK3cK2S0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 207DDC43394;
+	Tue, 23 Jan 2024 13:16:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706015710;
-	bh=g36kRqAa0AgkhntszfW+Li1P753t4sRZLsilj77aicI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=iqyKIT1kfJYPMsJxo9qxT9J0nDYQzxvNmRvsQejyWuYop39MCb1vgQiMaQx8jvMBX
-	 AFBPjG0+uswaMuVGpteF5Xl6HNCwp/d+A2WonyvMasNQlMRpfhwJDskEAxXF4uCpJA
-	 +5SuEmWieVMdWTB4Ee7NAUE/NzPZuRAzZTEeUem4MX4bauZFqdirBJdb6EPWz+9b8A
-	 V0C+wg6MAOet67uIcsTEsoDyvghUlWdbpNA0rijXvhFRq0rs7MBOsVnBHKs9CS1CMz
-	 9mCskjhDEnctieBZa4je2CL+Z16NyDTbgn33FHW+1HHxeCFvyGeU8i9BtyhcI7H2yx
-	 tYdIOc6ZLsqLw==
-Message-ID: <5bfb2175-2470-469b-b3fa-9f14fae08536@kernel.org>
-Date: Tue, 23 Jan 2024 07:15:07 -0600
+	s=k20201202; t=1706015821;
+	bh=2MHCqFKREE52/lb1JJTkk0/4DQhWwLBMl49LPFmNyAE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PK3cK2S0uVIYb0nH+dAaxFvzxUzNZIBg0/8udSW9Rsm0JrBWT6owit61ZVb2UzjIZ
+	 4Ljz/Qrm2JRNsjcNPsdPbtQIeit1CM16Uhk5LJtJiM/vN7yVi49ZHTO6P1JlEtEa+Q
+	 hJeERk8jGJ9xHirPhqQVfVpKvatLMZepE1r4D/+pEoGlxX7z5BgFy5ndADnuGICFrc
+	 +CuU7xQOLZHfgXz1NUBckzpKdcop7nPUiD3S2F5svylCnmT7H/A8Wn9RHfOzBZ8BFK
+	 k1Os35yZm+1MG9AQFgmDVczXPPr5M021heK4nrarn1Oyn4youRPXjNY7jgzKK3B2CX
+	 20r9F5SpsjnUw==
+Date: Tue, 23 Jan 2024 13:16:55 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Ulf Hansson <ulf.hansson@linaro.org>
+Cc: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	kernel@pengutronix.de,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Yang Yingliang <yangyingliang@huawei.com>,
+	linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-spi@vger.kernel.org
+Subject: Re: [PATCH v2 11/33] mmc: mmc_spi: Follow renaming of SPI "master"
+ to "controller"
+Message-ID: <eb36cfe6-8e2c-4f75-a1bf-1a6840d8414c@sirena.org.uk>
+References: <cover.1705944943.git.u.kleine-koenig@pengutronix.de>
+ <13ba99e2578d4448fd85f516fbe328f5d05eda05.1705944943.git.u.kleine-koenig@pengutronix.de>
+ <CAPDyKFr8=4=qWM0AR7ZZ-MyGUH+kLZZRWhVE4vu94cZqB5jxnQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 65/82] nios2: Refactor intentional wrap-around test
-Content-Language: en-US
-To: Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org
-Cc: Jann Horn <jannh@google.com>, Ley Foon Tan <ley.foon.tan@intel.com>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
- linux-kernel@vger.kernel.org
-References: <20240122235208.work.748-kees@kernel.org>
- <20240123002814.1396804-65-keescook@chromium.org>
-From: Dinh Nguyen <dinguyen@kernel.org>
-In-Reply-To: <20240123002814.1396804-65-keescook@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ztJz2b4Ihuw2Pe9I"
+Content-Disposition: inline
+In-Reply-To: <CAPDyKFr8=4=qWM0AR7ZZ-MyGUH+kLZZRWhVE4vu94cZqB5jxnQ@mail.gmail.com>
+X-Cookie: Stay together, drag each other down.
 
-On 1/22/24 18:27, Kees Cook wrote:
-> In an effort to separate intentional arithmetic wrap-around from
-> unexpected wrap-around, we need to refactor places that depend on this
-> kind of math. One of the most common code patterns of this is:
-> 
-> 	VAR + value < VAR
-> 
-> Notably, this is considered "undefined behavior" for signed and pointer
-> types, which the kernel works around by using the -fno-strict-overflow
-> option in the build[1] (which used to just be -fwrapv). Regardless, we
-> want to get the kernel source to the position where we can meaningfully
-> instrument arithmetic wrap-around conditions and catch them when they
-> are unexpected, regardless of whether they are signed[2], unsigned[3],
-> or pointer[4] types.
-> 
-> Refactor open-coded wrap-around addition test to use add_would_overflow().
-> This paves the way to enabling the wrap-around sanitizers in the future.
-> 
-> Link: https://git.kernel.org/linus/68df3755e383e6fecf2354a67b08f92f18536594 [1]
-> Link: https://github.com/KSPP/linux/issues/26 [2]
-> Link: https://github.com/KSPP/linux/issues/27 [3]
-> Link: https://github.com/KSPP/linux/issues/344 [4]
-> Cc: Dinh Nguyen <dinguyen@kernel.org>
-> Cc: Jann Horn <jannh@google.com>
-> Cc: Ley Foon Tan <ley.foon.tan@intel.com>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->   arch/nios2/kernel/sys_nios2.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
 
-Acked-by: Dinh Nguyen <dinguyen@kernel.org>
+--ztJz2b4Ihuw2Pe9I
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Tue, Jan 23, 2024 at 02:09:42PM +0100, Ulf Hansson wrote:
+
+> It looks like we need a decision if this should go via Mark's tree,
+> the series altogether - or if each subsystem maintainer should apply
+> each patch separately and postpone the final cleanups.
+
+> While waiting for a conclusion, here's my ack.
+
+As far as I'm concerned at this point it's going via my tree, I've got
+it queued for -rc3.
+
+--ztJz2b4Ihuw2Pe9I
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWvvEcACgkQJNaLcl1U
+h9CuwAf+JIGRGhqdFH96AIHnCAa9mmnVoQmVOSFN0ilKLHRI+5IfR78roqbinnCV
+T8Uq9w65KAY4UL0PDTi6z1/GrNUjASu0m+kqcpAhT7aJ8QK3SMjip0wqR4BrE8Nj
+PMwYukjWyrqJsk0mOQZyp+P+Zrp5yDZHv0INR7c9uQ28/5aKhpBsYQlpW1W7HleM
+yqcyQQ7cSpJjVsvjBjgE7oFpujQGtj4njZmXUtMz2IjpdsKDKGc8Pph3FXP6DBD6
+IqeKOgCB8fSGg10v4yy0LsMnjRXThwpL6qQFFcisjyMKChR6N9lWIOeHrgm9jsIH
+mj4IOz1Mq4Gf1RYjiLoOfQsMhgll4g==
+=OhFD
+-----END PGP SIGNATURE-----
+
+--ztJz2b4Ihuw2Pe9I--
 
