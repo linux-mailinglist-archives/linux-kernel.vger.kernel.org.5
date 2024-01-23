@@ -1,59 +1,76 @@
-Return-Path: <linux-kernel+bounces-35088-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35089-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D8B1838BC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:27:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EC5FF838BC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:28:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBB28284041
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:27:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4941283F33
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:28:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A19DF5BAE3;
-	Tue, 23 Jan 2024 10:27:40 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31CC65C5E0;
-	Tue, 23 Jan 2024 10:27:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 805BA5BAF8;
+	Tue, 23 Jan 2024 10:28:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="JcZdCYmL"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E63B5A0F9;
+	Tue, 23 Jan 2024 10:28:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706005660; cv=none; b=a1c1Hqigh79kiLydpUA8yOsST90MqJuLEFg9DOQiHKzugqGcT3ZHd76MuyQmMw44d8a25NMFH43bUpI6J9p//5WfjvYm4OQZ04WsFGlFcVZiMnbJq0qtD0ZJOpNt4wzG7ZGof/GD4dUFc+HLkNjUV5WN90u+xWGi1oQho/ZZyzw=
+	t=1706005720; cv=none; b=Ei/mf06uFMMUeip003V1Hyq3evjrk6TWQTpbbeOCkmUlqRUUtbfPEQfOX1mRLJSmfXrrju+vOQgPfh6pmXfmPwznhh8Y5PloyCn75+2Ixx0JrMJLau0t3Rfi+9mAiPBEn5npyVYyktKvvN/eMPZvhK+oBNbN52bl4JVm9LbCR2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706005660; c=relaxed/simple;
-	bh=WHiIvVOL1WIlDzJWq+Wu1bVs6mBOGVTd3NVo6oCnJbQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ayLEICAnNgkCY1xc9W9PN/OTy47VwR4s3uwJUb2nch0hHwZ92n+2AclKarLJvNnaTfH8ktp+GsEamr7E/+frp7Ps4qOy8ufyl4D4RzfrGC7/cSMiDaandaZ1nBbH3dTtbhAuZKrzs3g+5D9cJheZuosb4LJqMWG8ajOjZJJW+Ts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E10731FB;
-	Tue, 23 Jan 2024 02:28:22 -0800 (PST)
-Received: from e127643.broadband (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 745813F5A1;
-	Tue, 23 Jan 2024 02:27:35 -0800 (PST)
-From: James Clark <james.clark@arm.com>
-To: linux-perf-users@vger.kernel.org,
-	irogers@google.com,
-	kan.liang@linux.intel.com
-Cc: mark.rutland@arm.com,
-	James Clark <james.clark@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Changbin Du <changbin.du@huawei.com>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] perf evlist: Fix evlist__new_default() for > 1 core PMU
-Date: Tue, 23 Jan 2024 10:27:27 +0000
-Message-Id: <20240123102728.239147-1-james.clark@arm.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240122155436.185089-1-james.clark@arm.com>
-References: <20240122155436.185089-1-james.clark@arm.com>
+	s=arc-20240116; t=1706005720; c=relaxed/simple;
+	bh=bxXPELcFHBY4/flGsm0AoN4/P4JvVKb2C8NSQ8JGZLk=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=uEbaZoh44Rp5DcB/D5sTRK1UC+zZaxj7YmN67aN9rPi9vbz9ztRU8NXDdRR4AVOm8fSi+NYG4b0fWfjr3GF9AgSjBIn+XfGQLisdoRSOLq/RGkNB7oLN0XcLypb/kx+u59gjNsMvAsEMouW3CdgvVxiraLhStKDog7BYrtm/zGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=JcZdCYmL; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40N8V05c001087;
+	Tue, 23 Jan 2024 10:28:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=6ImjNiS
+	I1CFUB7fpLoA7Gqc4wRl1CPubkUKBD/qGQAo=; b=JcZdCYmLimosUKW+I1RxtPr
+	rWtFgGhYNup1Mk8zRjZqk3srAE+KLLidpvY7De7WsxEzafftK5Oh2Hv73Wt9qg/7
+	2SV5PWgHG2CsHPE21vlxVq5XTThrwzHLfmHQE2Aa70a2PFgnMfl8THq/qhnK14Yr
+	+T0oFMqyFuaoQLziV++CQ6y4cRQok04rgAtIPpE6hYdeShMbxbFCAnGQSDFTJn6p
+	/SdmdJNK9t0u0yLoowwVxcWlVGnNBf1TwOMKOwoTJTRstcH8m5Efzq2K8A9N8cp9
+	vN4zjHl4GYIYcLqqnv/Ur9V7yB3qABYP5HsGgCiaAdeaQC+QIodN3dC0WxAyTSw=
+	=
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vssw9jchg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 23 Jan 2024 10:28:35 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40NASYa5014633
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 23 Jan 2024 10:28:34 GMT
+Received: from hu-uchheda-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 23 Jan 2024 02:28:31 -0800
+From: Umang Chheda <quic_uchheda@quicinc.com>
+To: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Umang Chheda <quic_uchheda@quicinc.com>,
+        Kamal Wadhwa <quic_kamalw@quicinc.com>
+Subject: [PATCH RESEND] arm64: dts: qcom: qcm6490-idp: Add support for PM7250B PMIC
+Date: Tue, 23 Jan 2024 15:58:17 +0530
+Message-ID: <20240123102817.2414155-1-quic_uchheda@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,94 +78,49 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: wNbCJZuV5-n6GUVYhtBe0OOmTK9_w22m
+X-Proofpoint-ORIG-GUID: wNbCJZuV5-n6GUVYhtBe0OOmTK9_w22m
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-23_05,2024-01-23_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ phishscore=0 lowpriorityscore=0 bulkscore=0 adultscore=0 spamscore=0
+ malwarescore=0 clxscore=1011 impostorscore=0 suspectscore=0
+ mlxlogscore=767 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401230076
 
-The 'Session topology' test currently fails with this message when
-evlist__new_default() opens more than one event:
+qcm6490-idp platform supports PM7250B PMIC as well.
+Add support for the same.
 
-  32: Session topology                                                :
-  --- start ---
-  templ file: /tmp/perf-test-vv5YzZ
-  Using CPUID 0x00000000410fd070
-  Opening: unknown-hardware:HG
-  ------------------------------------------------------------
-  perf_event_attr:
-    type                             0 (PERF_TYPE_HARDWARE)
-    config                           0xb00000000
-    disabled                         1
-  ------------------------------------------------------------
-  sys_perf_event_open: pid 0  cpu -1  group_fd -1  flags 0x8 = 4
-  Opening: unknown-hardware:HG
-  ------------------------------------------------------------
-  perf_event_attr:
-    type                             0 (PERF_TYPE_HARDWARE)
-    config                           0xa00000000
-    disabled                         1
-  ------------------------------------------------------------
-  sys_perf_event_open: pid 0  cpu -1  group_fd -1  flags 0x8 = 5
-  non matching sample_type
-  FAILED tests/topology.c:73 can't get session
-  ---- end ----
-  Session topology: FAILED!
-
-This is because when re-opening the file and parsing the header, Perf
-expects that any file that has more than one event has the sample ID
-flag set. Perf record already sets the flag in a similar way when there
-is more than one event, so add the same logic to evlist__new_default().
-
-evlist__new_default() is only currently used in tests, so I don't
-expect this change to have any other side effects. The other tests that
-use it don't save and re-open the file so don't hit this issue.
-
-The session topology test has been failing on Arm big.LITTLE platforms
-since commit 251aa040244a ("perf parse-events: Wildcard most
-"numeric" events") when evlist__new_default() started opening multiple
-events for 'cycles'.
-
-Fixes: 251aa040244a ("perf parse-events: Wildcard most "numeric" events")
-Closes: https://lore.kernel.org/lkml/CAP-5=fWVQ-7ijjK3-w1q+k2WYVNHbAcejb-xY0ptbjRw476VKA@mail.gmail.com/
-Tested-by: Ian Rogers <irogers@google.com>
-Reviewed-by: Ian Rogers <irogers@google.com>
-Tested-by: Kan Liang <kan.liang@linux.intel.com>
-Signed-off-by: James Clark <james.clark@arm.com>
+Signed-off-by: Umang Chheda <quic_uchheda@quicinc.com>
 ---
- tools/perf/util/evlist.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Changes since v1:
-
-  * Reduce scope of evsel variable
-  * Add argument label
-  * Change summary to be less specific about the failing test
-  * Add the closes: tag
-
-diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index 56db37fac6f6..979a6053a84d 100644
---- a/tools/perf/util/evlist.c
-+++ b/tools/perf/util/evlist.c
-@@ -95,7 +95,6 @@ struct evlist *evlist__new_default(void)
- 	struct evlist *evlist = evlist__new();
- 	bool can_profile_kernel;
- 	int err;
--	struct evsel *evsel;
+diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+index 03e97e27d16d..2a6e4907c5ee 100644
+--- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
++++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+@@ -5,8 +5,13 @@
  
- 	if (!evlist)
- 		return NULL;
-@@ -107,9 +106,12 @@ struct evlist *evlist__new_default(void)
- 		evlist = NULL;
- 	}
+ /dts-v1/;
  
--	if (evlist->core.nr_entries > 1)
-+	if (evlist->core.nr_entries > 1) {
-+		struct evsel *evsel;
++/* PM7250B is configured to use SID8/9 */
++#define PM7250B_SID 8
++#define PM7250B_SID1 9
 +
- 		evlist__for_each_entry(evlist, evsel)
--			evsel__set_sample_id(evsel, false);
-+			evsel__set_sample_id(evsel, /*can_sample_identifier=*/false);
-+	}
- 
- 	return evlist;
- }
+ #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+ #include "sc7280.dtsi"
++#include "pm7250b.dtsi"
+ #include "pm7325.dtsi"
+ #include "pm8350c.dtsi"
+ #include "pmk8350.dtsi"
 -- 
-2.34.1
+2.25.1
 
 
