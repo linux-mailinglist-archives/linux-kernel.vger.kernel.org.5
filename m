@@ -1,113 +1,113 @@
-Return-Path: <linux-kernel+bounces-34909-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0448A838914
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:35:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C79DE83891B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:36:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CB641C20F36
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:35:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D7391F26BF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:36:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8626D56B83;
-	Tue, 23 Jan 2024 08:33:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 359BF5812D;
+	Tue, 23 Jan 2024 08:34:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="T9PZtjFQ"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Yuje2f7b"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F2F056B76
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 08:33:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B914856B99;
+	Tue, 23 Jan 2024 08:34:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.93
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705998798; cv=none; b=mb48aeQPpp1i8NDbfDNrxkedJOeStwsNjhxo1CJizwj0/QtyFPC5WpThWtoGUU6VeCQvmjpBLuZyvy9loJ9ySHH1PTir14KK56rHKgLpILwUN4ef6PTdy90oHSB4HYyczNIRL0lRWNMBPV5EDM7Ml4aF5nAX09Ympsi4xtfD1LI=
+	t=1705998849; cv=none; b=SX+bhMv0mvu95RtpK88d2j2NcZ9dhHI3CVoNgGDaXcJBKqm4Zroam5AxN5MGBrd3cj4QjzcAtmE0lXfFKkKHbrmFWdgW8N3e7MYKvkvvbVYDALEKhzAc6GaW6uBPCbh6RUAPGRjGKI8usM/VWfp4FU9SA6TQjec3qhYYCe5nlk0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705998798; c=relaxed/simple;
-	bh=kDMmadRxintZS6t1DV61FQhbbc+OzjzbJOZGeGQUUKU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dM6gdIjgeOZGXo6yn1pSnJEeZsxYtCzamLmk/txo18avLF9pxnAyZxEag9CdrzAr2yjEYj+DK2iAHpLefY9IHyhWYFd3JN37GPaqZb6P2THqfL3b57+B+wV1QCWrhPgQXmS0MBplophvcliU7mxSLDX1xdnUd9LxLndK4Z0MX7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=T9PZtjFQ; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40eb0836f8dso13396565e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:33:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705998796; x=1706603596; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=uTdIy9kw7huiAlKreeQHxmogKUaEv8cQHVxD7B7SDgk=;
-        b=T9PZtjFQdsneOUi4t6ShhJ5DSC2ep2wnVAdQdcoIW5RifFRVVCF2IcGu51+jwSKBIu
-         ZbPvAdgoIDupyf2Jnc4MtiWFNxlr0b15I9rj8JdVkosN1Q0Y/TugpqJCr+VsCx9/doPj
-         nPYqr0a2t3AVL+V2N18aF0AS6QSTGGSNNgrAL7iF1nvVuGE1CjUcVcGdUzmu6NzYjyvW
-         lV25dcepqD7oQOvHFd+9otxCh5VHT4uqpb65JJcv8ABhIc3CrcYAIaG3zLnbIhV5hKe2
-         hZBc5UqJIF0tcYSigQRzM3wgFlJjIZTuwPcyl5pSExe5kl/Ft89ZHy2MQb5EH1iSmC1f
-         4JJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705998796; x=1706603596;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uTdIy9kw7huiAlKreeQHxmogKUaEv8cQHVxD7B7SDgk=;
-        b=VezkOAgLyGupgRz7rUhMDBqIFyt0iCKQg/Gw6jd5XVvD771QmCU5a9KM5cIM9eoYFH
-         35iChjUbGF4MDGj7XFjIMRF9qDPRQMF4ZQ4f64AsF7jp2ap4VnngonokaqMxT0t5p+Vj
-         QdRfLzG3P2sqGYrzopgKujfvhIg4jB6xqlepulh8W11MTYdyc1Bc8wapN9wKyC7Rp0Vj
-         2rqrdbOflpkPYOlMk76bRcqQ2N7mVP1B8X+zsWfMOZeIRYRKWQKJ/lL1rEHw9ExPN8DH
-         0/C6ly/+Csks3t4uRv+4I1dmzu5X0WtpqpjycFZLkdrLZcbAKbWjzt1hRpTklB6eSwLg
-         nctw==
-X-Gm-Message-State: AOJu0Yws3b+tl1ehEWAzC8egwFUo8ePGEYhuuQdH6VolPoB7Vy213FQZ
-	f58NEjOa8XD3CUvX50e2YEcKTZc3zBXMnu3esnTiJVoi30CRLiKYc3SKcPjJ6GA=
-X-Google-Smtp-Source: AGHT+IHm2dY1rdXAOZFlkmyEhHsd1l1Cn1MSfAttt7I3mRoU9XT/iQGyXYrfMmLXOVHNCmbUjmfqAw==
-X-Received: by 2002:a05:600c:4e86:b0:40e:af40:b4da with SMTP id f6-20020a05600c4e8600b0040eaf40b4damr324145wmq.26.1705998795679;
-        Tue, 23 Jan 2024 00:33:15 -0800 (PST)
-Received: from krzk-bin.. ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id w18-20020a05600c475200b0040d2d33312csm42145654wmo.2.2024.01.23.00.33.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 00:33:15 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Marc Zyngier <maz@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH] dt-bindings: timer: narrow regex for unit address to hex numbers
-Date: Tue, 23 Jan 2024 09:33:12 +0100
-Message-Id: <20240123083312.20808-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1705998849; c=relaxed/simple;
+	bh=ZWGRlXBFfPFOmCTbF8+Gg5VQTsULZlZZ5aaqessVmL4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mAdqjxOoOWDSrfasRfTl1mzsTSeJMfiwTlnxqjYAEFp2WIrZMr2bjqY/2M5TCRhP04Bw9B8dv1SXaVfsWvGtPVJ31zWHcuIhRsJD3WrHwJ9PcSOxYePxdFVsqbmk3q7eDYchhmHN9FZUhKWKkvf+VNAyFuA31F1PeM0We8TJw90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Yuje2f7b; arc=none smtp.client-ip=192.55.52.93
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705998847; x=1737534847;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=ZWGRlXBFfPFOmCTbF8+Gg5VQTsULZlZZ5aaqessVmL4=;
+  b=Yuje2f7bNfQ1iarhJO7JoQE5ijuTSQmV3PVhsvMmWPy4GpiNNAeiTqmR
+   Stsk4wLVk4z9qBsQQTrtg3B3ifW4mn/UpnLoWp9BiNHigrDPwhNFHS0w2
+   mN+EmMB3FTn0di2v+riXF3qFWmv1MyTDB+tBbyXVfaiFC2bSJcwOMlJHD
+   z1Ro860h+15/lSgG8n5cmLLImPPsLIgaUT32BGqa/QSWIBSq89oESHcRX
+   mF31zFDTzwpIn81KFQJyH1oyQm51B/Eyci/5069Gq0I41JsREVxb7YpJE
+   5keFzw0SnY3uEVuztBR5lcbZSilPqAcYfbbFANqDhN5Xkyy7SY+lSAmV4
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="398604198"
+X-IronPort-AV: E=Sophos;i="6.05,213,1701158400"; 
+   d="scan'208";a="398604198"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 00:34:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="909223366"
+X-IronPort-AV: E=Sophos;i="6.05,213,1701158400"; 
+   d="scan'208";a="909223366"
+Received: from hle1-mobl.amr.corp.intel.com (HELO [10.254.116.113]) ([10.254.116.113])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 00:34:02 -0800
+Message-ID: <30f022a5-7ab1-4b2d-b4c1-5a209ec67c5b@linux.intel.com>
+Date: Tue, 23 Jan 2024 09:34:00 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] ASoC: Intel: mtl-match: Add cs42l43_l0 cs35l56_l23 for
+ MTL
+Content-Language: en-US
+To: Maciej Strozek <mstrozek@opensource.cirrus.com>,
+ Mark Brown <broonie@kernel.org>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, alsa-devel@alsa-project.org,
+ patches@opensource.cirrus.com, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240122151545.69437-1-mstrozek@opensource.cirrus.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20240122151545.69437-1-mstrozek@opensource.cirrus.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Regular expression used to match the unit address part should not allow
-non-hex numbers.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- .../devicetree/bindings/timer/arm,arch_timer_mmio.yaml          | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/timer/arm,arch_timer_mmio.yaml b/Documentation/devicetree/bindings/timer/arm,arch_timer_mmio.yaml
-index 7a4a6ab85970..5b9fda2a81e0 100644
---- a/Documentation/devicetree/bindings/timer/arm,arch_timer_mmio.yaml
-+++ b/Documentation/devicetree/bindings/timer/arm,arch_timer_mmio.yaml
-@@ -60,7 +60,7 @@ properties:
-       be implemented in an always-on power domain."
- 
- patternProperties:
--  '^frame@[0-9a-z]*$':
-+  '^frame@[0-9a-f]*$':
-     type: object
-     additionalProperties: false
-     description: A timer node has up to 8 frame sub-nodes, each with the following properties.
--- 
-2.34.1
+On 1/22/24 16:15, Maciej Strozek wrote:
 
+It wouldn't hurt to add a brief commit message describing what the
+hardware layout is, specifically how the mics are handled.
+
+It's also best to submit the corresponding machine driver updates at the
+same time to check for consistency.
+
+
+>  	},
+> +	{
+> +		.link_mask = BIT(0) | BIT(2) | BIT(3),
+> +		.links = cs42l43_link0_cs35l56_link2_link3,
+> +		.drv_name = "sof_sdw",
+> +		.sof_tplg_filename = "sof-mtl-cs42l43-l0-cs35l56-l23.tplg",
+
+was this topology submitted to the SOF tree? I don't see it, usually we
+review topology/acpi/machine stuff together to avoid disconnects.
+
+> +	},
+>  	{
+>  		.link_mask = GENMASK(2, 0),
+>  		.links = mtl_cs42l43_cs35l56,
+> --
+> 2.34.1
+> 
 
