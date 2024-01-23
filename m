@@ -1,97 +1,197 @@
-Return-Path: <linux-kernel+bounces-35498-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDA6D839206
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:06:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 062A783920B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:06:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9639E28AB0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:05:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2C6E28E692
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:06:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22F6A5F861;
-	Tue, 23 Jan 2024 15:05:54 +0000 (UTC)
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4B415FB9E;
+	Tue, 23 Jan 2024 15:06:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uv0nDCxj"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B2BC12E5F
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 15:05:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6475F12E5F
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 15:06:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706022353; cv=none; b=LdnBI7lMpm6ptWElgJClPFCrk2jrkvt0vivlLaJlmWPwwXAncDOUMAobes01Sn2xLb41taOHvKmIPciEwk7xc9cL9mMJkwtpvlF2PptzvvUnnjFmTCCNjygsSAC8IgU9e1WE8NCXi+YG9WyroxUpgEIECTWLXEpM2vJD1okqbEI=
+	t=1706022402; cv=none; b=s912werNe59+uco1OBIKEgdUJWbM/qRGO4mnDZuCqPCYBdh8sgrHfNhCLutVCywG0n+Qd07sCmhD0jtfhH6SQr8kC7hzl4MylPEpEn/QLKWjApzpk8qgrH1aAWQ5cAeEATuFydbmBaxlzbslNlQHl105RI0EwshoGyHejyCVnuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706022353; c=relaxed/simple;
-	bh=wvGlVsQRlMzMaGWrgeHCND3JeOnNmKmCHpOURqz56Kg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=amx5Bsclhfnq1w6vqu6LpOBCs6/y3T1k74auyXiqLfp3Cp+B8vBXoToXHyRAkVQv3M24slTpiBcLi9OrQyrYc6F1U8CWf5JWH70Iq1FiXM+q2PKxdqikDWZhvtfM7RAj9QmfjmHpekzW2znv6ic+b7Pg71Uz3oo/tMHR9Sb/ONE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55a035669d5so5178834a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:05:51 -0800 (PST)
+	s=arc-20240116; t=1706022402; c=relaxed/simple;
+	bh=Rzv9vebhz47fokP7LiSSzv96GDQrjjYMuUYW7jzviPg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ux4+yu0kqTCeRU1Imflri929eUmEScHWGY4vVWH54DQc/7IIx0dZ6BT9SpxlLabzAH5jNOYyT13abBzZuUNDkPDu/Kt1BGO3aar3bWYgS4PASXMtUI2RHsYwiNVVyQGzQAy8k0vaHI3uM/7C/XI7FRG6xi2KlWSnhvvJFCgWkH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uv0nDCxj; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3392291b21bso3789505f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:06:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706022398; x=1706627198; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1zO5Gerp3x7bTpsg9KpkTY28DYtOnGCMLOCBNBnjsd4=;
+        b=uv0nDCxjKthCa36/rNpe9GyoB/R38O9Qw+8OvhTo0moruND7OV76V+T2vQCMdGK8P/
+         3D4Sc57wsRlpFcSwt8jSM+AHEwCcJvoqPkVQ7Q7mX1C41hUSTu6qZN0EWGZqDAbwn+n2
+         wSsAR685UonZmLFvvS8HOwWc7NIMPajcuMsrrZWiLdT4CY/YnI3NVkfRktnKsdq1s+UH
+         Ijk8YYlvZVgMxRkvij8BCBeZw0SxPW02OFBsDz3mtgWpSK7KIGrALf1bGKI2OC0YYEQb
+         vMt5yA/B0T6vt1hNm+U4ufFF/N/C00P6iWMHkMNpEja1a66IFTzlr74BXh8GsAlXYywq
+         jIRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706022350; x=1706627150;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=v1Hr4uS3fFpYg2vOteF+nJHwgU9ofLyiq0K2GCPAZ3U=;
-        b=hU44VnsXVxmS4Bqi1e1FUjqh/aOky34lVadbG7vjvlMNH8hXkQoG1xHmDFBvrdpzVe
-         AsfT4Cen2P1zHDqsoFJQ+ZgpoN57sgBCNKIq/fM1NO0yxXY8pD0mUtvKIdidjgq+a28X
-         veNjs7X3pTkg/b+sA5y2R6kC9si43tKr4MqPU7FLLcxKrTWzb0Ks9RkFSuFEswpzuC+S
-         O28OqjWTCznRKC8mMWJqV2IAG6DcCu3UVRbU2U+uZ8pBddY6K6W1k+pWvCLV74jZY+71
-         6C8p2xNeod1sm/cUSwCWrsyQ7AqESS+nd5mqKOrAMHWjWP9+b8kBHzG3bm4X+a3sX/OO
-         //TQ==
-X-Gm-Message-State: AOJu0Yy9FBI2tmsJFtsQMNFpRZ/HSauSUID6vuUnut3UunSfss2fuz24
-	SYWQSEeVpt9A4DTUhMMgOFDzJJONXNJffwnnpRgX/rDkJyzujqwG
-X-Google-Smtp-Source: AGHT+IEJCuelrF5HYkEhlcLObygXfEiaQA/TP7/ghDAOkadWYS6fenzKfsyMar6fUp2OhZU8n9xk3A==
-X-Received: by 2002:a17:906:1958:b0:a30:84aa:c2f5 with SMTP id b24-20020a170906195800b00a3084aac2f5mr7615eje.56.1706022350059;
-        Tue, 23 Jan 2024 07:05:50 -0800 (PST)
-Received: from gmail.com (fwdproxy-cln-027.fbsv.net. [2a03:2880:31ff:1b::face:b00c])
-        by smtp.gmail.com with ESMTPSA id t15-20020a17090605cf00b00a28aa4871c7sm14338053ejt.205.2024.01.23.07.05.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 07:05:49 -0800 (PST)
-Date: Tue, 23 Jan 2024 07:05:47 -0800
-From: Breno Leitao <leitao@debian.org>
-To: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc: mingo@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] x86/bugs: Add a separate config for missing
- mitigation
-Message-ID: <Za/Vy2l1VwyI4DKH@gmail.com>
-References: <20240118173213.2008115-1-leitao@debian.org>
- <20240118173213.2008115-3-leitao@debian.org>
- <20240122205821.m5dsyi4sc2ghoavd@desk>
+        d=1e100.net; s=20230601; t=1706022398; x=1706627198;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1zO5Gerp3x7bTpsg9KpkTY28DYtOnGCMLOCBNBnjsd4=;
+        b=F/OKpU/vxT4/mll40UQn8l4+ytPZGPZ4JdeFKubIVq0y3SV0oeSe5LZHDVHa0e/WM5
+         hlajvxUXb3VYyY568l7CPqD06ul3yR5e5PO17BR965KD3fj6j3hAHTrc/5W+poobT4Dl
+         8CFsPbjwb9c0TbALtAJhYD5MSixUlcCEJWRar4M4KRXYLcJqCAzK6R0IIqZ1F6ZntjlQ
+         gZQPtiHY5FOefH/1hd1e7WdjlQP1yE4JkIheiUV/N4YKiOrJdKh27ZVqYbeHTKMS1TyS
+         zBXyiBSLm6NaX8Uc6KTRX2E0/qXEAWvLngJRTwvA1+bupTwoOvOH7y0k27QaF6BSOWmB
+         TkSw==
+X-Gm-Message-State: AOJu0YxIcwxIwgpcAodYv7kUHpY8biirxhfMUIidaqO2xH6qxvjO+ZCI
+	ZYL8OsJB+lwwhAtHZ0z3KACKp+m8YS89bYvnuA30HEeH5MiAmJLZ/tCKS1026Vg=
+X-Google-Smtp-Source: AGHT+IHy3ot08fJzZ8QEE1/0yRjbwjyL7FHwkxJnn/3pfaMDfS3G4gmL90KNOb3CPtMJufjQL/PXnw==
+X-Received: by 2002:adf:fdc7:0:b0:336:6aa4:b62c with SMTP id i7-20020adffdc7000000b003366aa4b62cmr3376483wrs.49.1706022398471;
+        Tue, 23 Jan 2024 07:06:38 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id y6-20020adfee06000000b003392be82b25sm8026083wrn.86.2024.01.23.07.06.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jan 2024 07:06:38 -0800 (PST)
+Message-ID: <96190db7-96c9-4d5b-b327-b75d09a3013a@linaro.org>
+Date: Tue, 23 Jan 2024 16:06:36 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240122205821.m5dsyi4sc2ghoavd@desk>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/4] dt-bindings: mailbox: fsl,mu: add i.MX95
+ Generic/ELE/V2X MU compatible
+Content-Language: en-US
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+ Jassi Brar <jassisinghbrar@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Dong Aisheng <aisheng.dong@nxp.com>,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>
+Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, Peng Fan <peng.fan@nxp.com>
+References: <20240123-imx-mailbox-v3-0-ed932945e0bf@nxp.com>
+ <20240123-imx-mailbox-v3-1-ed932945e0bf@nxp.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240123-imx-mailbox-v3-1-ed932945e0bf@nxp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 22, 2024 at 12:58:21PM -0800, Pawan Gupta wrote:
-> On Thu, Jan 18, 2024 at 09:32:12AM -0800, Breno Leitao wrote:
-> > +config MITIGATION_RETBLEED
-> > +	bool "Mitigate RETBleed hardware bug"
-> > +	depends on CPU_SUP_INTEL || (CPU_SUP_AMD && MITIGATION_UNRET_ENTRY)
+On 23/01/2024 15:38, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
 > 
-> Atleast on Intel CPUs, Retbleed mitigation is meaningless without
-> spectre-v2 being mitigated, shouldn't this depend on MITIGATION_SPECTRE_V2?
+> Add i.MX95 Generic, Secure Enclave and V2X Message Unit compatible string.
+> And some MUs has internal RAMs for SCMI shared buffer usage.
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  .../devicetree/bindings/mailbox/fsl,mu.yaml        | 50 +++++++++++++++++++++-
+>  1 file changed, 48 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mailbox/fsl,mu.yaml b/Documentation/devicetree/bindings/mailbox/fsl,mu.yaml
+> index 12e7a7d536a3..569fabc5285c 100644
+> --- a/Documentation/devicetree/bindings/mailbox/fsl,mu.yaml
+> +++ b/Documentation/devicetree/bindings/mailbox/fsl,mu.yaml
+> @@ -29,10 +29,14 @@ properties:
+>        - const: fsl,imx8ulp-mu
+>        - const: fsl,imx8-mu-scu
+>        - const: fsl,imx8-mu-seco
+> -      - const: fsl,imx93-mu-s4
+>        - const: fsl,imx8ulp-mu-s4
+> +      - const: fsl,imx93-mu-s4
+> +      - const: fsl,imx95-mu-ele
+> +      - const: fsl,imx95-mu-v2x
+>        - items:
+> -          - const: fsl,imx93-mu
+> +          - enum:
+> +              - fsl,imx93-mu
+> +              - fsl,imx95-mu
+>            - const: fsl,imx8ulp-mu
+>        - items:
+>            - enum:
+> @@ -95,6 +99,17 @@ properties:
+>    power-domains:
+>      maxItems: 1
+>  
+> +  ranges: true
+> +
+> +  "#address-cells": true
+> +
+> +  "#size-cells": true
+> +
+> +patternProperties:
+> +  "^sram@[a-z0-9]+":
 
-I suppose it is the same for AMD, right?
+This is a friendly reminder during the review process.
 
-So, I suppose it should be something as:
+It seems my or other reviewer's previous comments were not fully
+addressed. Maybe the feedback got lost between the quotes, maybe you
+just forgot to apply it. Please go back to the previous discussion and
+either implement all requested changes or keep discussing them.
 
-	depends on (MITIGATION_SPECTRE_V2 && (CPU_SUP_INTEL || (CPU_SUP_AMD && MITIGATION_UNRET_ENTRY))
+Thank you.
 
-Is this better?
+Best regards,
+Krzysztof
 
-Thanks!
 
