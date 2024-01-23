@@ -1,210 +1,151 @@
-Return-Path: <linux-kernel+bounces-34745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34746-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F95883870C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:00:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32526838710
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:04:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F2831C22A18
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 06:00:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B666E1F237A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 06:04:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8F55CA71;
-	Tue, 23 Jan 2024 06:00:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F343B39AE5;
+	Tue, 23 Jan 2024 06:04:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="JiGB6Uqg"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NPCwJpTb"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D50017741;
-	Tue, 23 Jan 2024 06:00:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B744374F5
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 06:04:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705989635; cv=none; b=W2r/8fEhUFrj5IIg0qkCdCvx+wu13UeV/j+ZcG1DeIrDtzTT5UyNB+iVAuhCGvcq6qQ889UPs0CgrYOh66vwVAmnmjy6GK3n6WRXhs2t7cOw7MDV/48wuEXPaQ7EAPKBm9nyz6HFH1h6GRXOf7YIDwertmpdNWBXgd0R56/nYSY=
+	t=1705989874; cv=none; b=ZdNj3RgVoFk4VA4Dz8jbkn8odxJRP/PQxXZ85pyyntPkt/xwH8ozacQxyayIb5tBFyqEPi/7RlkdRsV8SgJul/MIdRIysWZYR174Y0IrMByLyjsP1TqlYIALlE/f+mv/o/RjXAix05CV3zQY5JZtZKoyPUF33HaLkY5+7uyjZeY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705989635; c=relaxed/simple;
-	bh=5hSCJZi++0Sd6LDGc/RMYR0xl0xZ3GeQ2gQnU/IwadE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=OY+EWBBrO6B9RQsV4qjgh0Inz7uYS8oVDqowptSM7IRBgwmucqsC9eqkm6KHYIf2wGgh3r1fo0S2zv207+13TZEfWPMj2ShhtaJJIg9zdAq9PqVTP7OHlerjZemqj8N8QgdJfnKNG/v9amxH5jT8TX8rWq++2krO6QO+JCfUjL8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=JiGB6Uqg; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40N5xtfY024780;
-	Tue, 23 Jan 2024 05:59:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=bbrIoepZvXLf6MShb+TMBqKlLRQn1dMUAvxBA25868I=;
- b=JiGB6Uqgh+c8YJKqwFL6yI5v4eB58MLG5WvgVL16Q2MKEoTMO9WpdskZ+Nol7zBHKe9B
- Kxxnv/adZsJXk8DUCtoV7EA9B5q8aLMR9jXdDP4azCUHXh5GOdvNpaU+x63j6GeRNqZE
- 12e8qyfweBtzvgHVRoWXioQBK/Tv28i+LDsqVjuQnvyHh+b+2NLDqpVWkg3Sa6ZoQemf
- tSGjaAv346WFkaNQ+hyVSEKTJLVKTuBHA1WDu1FOigzH97YBguU0DsZhimXYkoKMACcz
- pUzxqMhdP3HoWS+jJGMsaF7yDkNVu91kHSVCbTHCrkRIOv/yXwhO3ZPR9qZqRWuT8HI2 Xw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vt7m7g6a1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Jan 2024 05:59:57 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40N5xsHK024722;
-	Tue, 23 Jan 2024 05:59:55 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vt7m7g5qv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Jan 2024 05:59:55 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40N3t8Fa028239;
-	Tue, 23 Jan 2024 05:56:32 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vru72cu1j-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Jan 2024 05:56:32 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40N5uU8B3801640
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 23 Jan 2024 05:56:30 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7E63620043;
-	Tue, 23 Jan 2024 05:56:30 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1772820040;
-	Tue, 23 Jan 2024 05:56:30 +0000 (GMT)
-Received: from [9.152.212.51] (unknown [9.152.212.51])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 23 Jan 2024 05:56:30 +0000 (GMT)
-Message-ID: <ceffdc69-982b-4909-95df-5b6a8a277f20@linux.ibm.com>
-Date: Tue, 23 Jan 2024 06:56:29 +0100
+	s=arc-20240116; t=1705989874; c=relaxed/simple;
+	bh=7EqcWsyZ+h3svlefe6+y3WK7H6gzDUkqDW4wwAzshSo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zu/SFkxR+eX+puqeBJabyVMlFCszsGaCEApoTWzZov37D9Vtyy5SmHqTVYauEZAQEDAUdsb5/SCmgiul9HkU1FogtncJHas2CkBuY/DqGLk2LnBIXSk867zr3wiTHuBlpNL2PGNGk5Irf7V0mzHZUIT3/bAuzWBewdmH8djg1k4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NPCwJpTb; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3392b045e0aso2317635f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 22:04:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705989870; x=1706594670; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DuEzjVSg/RQQwKlc0Uyux+cdBaiyYeWCUP9YcLhjwnA=;
+        b=NPCwJpTbkwhLGQweZarLl67lFcmIBSazVk9Ka/+ALIertJbg84nPCf5zmFJwvfhZm9
+         Q5tJgB6yZPPcMYQI3Zj+ekTDsnxneGEFG8ZVbrVsc8d0iubDk4ffBFMc9I6xq0ULT68q
+         XXzKYcngIrXsEzh0lre4JXiyJYRcURZQSxXa1/aIlQDX8zGtTinDh+nXB2g0pwr+/jZU
+         dM8aJUPVSONwWLS7FWGaips3/OYFDVuXOQJcgawN3c224lAXNfn+1A3elg5PLqNXfbB4
+         CXMSDe0ss9TXUb2PPdLL3+UoLXCykFGbnC6ksNNhdIAlhY/+9o+BJ989zY7TV8CBtw9w
+         /NZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705989870; x=1706594670;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DuEzjVSg/RQQwKlc0Uyux+cdBaiyYeWCUP9YcLhjwnA=;
+        b=b/dvrBMUNdTfpksfIEaU+dQsJW9AtLwVhFUvG2cMVhZPjlq0K8VsMPhJ8N4LRnv7ga
+         mAB753R9zW0IL6BNp5U94dDdLTnU4N/kCYZ8m4rrje1+wFg0E0fDbNZnlyD7bIrgJ/ba
+         1wzWd25r49hSUZ7CP4K04Ikht5oueJHmYNowrF+CkNokA5p9lIp/d7gIc7rs22Q4iUhh
+         cVOPy4ZB7BmifrlIXJAqImntl5G9DOgGuFmCp7fs0BP5E/H1Nj2MVQ4jCrJ/X/rM0+UU
+         0wrp1gad0srEKBEmb09Qov4zPcPiC48hPrXb4e6eZUw0vZzOPidlOiYMlcBV7i0o93gk
+         9NKg==
+X-Gm-Message-State: AOJu0YzafF38ud/k9HZvYZw/4LkiTbQbzwqGdQA3pN+fJt1UA9FuZsR3
+	m9k08N6521UxOFe6qmzo9qe1BzJRASMgRu4OpJUmy/uebv+SNuGbSeNSuON8YiA=
+X-Google-Smtp-Source: AGHT+IFLHaZr+mF2sYyUABvXyhzrT4n/xOssMtnFknUGdtEhhS0RhZUa1R3tZrI36x7WhV9qUfSCLg==
+X-Received: by 2002:a5d:4208:0:b0:337:4219:3e8d with SMTP id n8-20020a5d4208000000b0033742193e8dmr3424121wrq.15.1705989870613;
+        Mon, 22 Jan 2024 22:04:30 -0800 (PST)
+Received: from localhost ([102.140.209.237])
+        by smtp.gmail.com with ESMTPSA id bl1-20020adfe241000000b0033935779a23sm4856417wrb.89.2024.01.22.22.04.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 22:04:30 -0800 (PST)
+Date: Tue, 23 Jan 2024 09:04:26 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Zhipeng Lu <alexious@zju.edu.cn>
+Cc: Parthiban Veerasooran <parthiban.veerasooran@microchip.com>,
+	Christian Gromm <christian.gromm@microchip.com>,
+	Dan Carpenter <error27@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] most: fix a memleak in audio_probe_channel
+Message-ID: <4e065b3a-240e-4cd9-acd8-53e5a56abed0@moroto.mountain>
+References: <20240122172044.3840976-1-alexious@zju.edu.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V3 0/7] Clean up perf mem
-To: kajoljain <kjain@linux.ibm.com>, "Liang, Kan"
- <kan.liang@linux.intel.com>,
-        acme@kernel.org, irogers@google.com, peterz@infradead.org,
-        mingo@redhat.com, namhyung@kernel.org, jolsa@kernel.org,
-        adrian.hunter@intel.com, john.g.garry@oracle.com, will@kernel.org,
-        james.clark@arm.com, mike.leach@linaro.org, leo.yan@linaro.org,
-        yuhaixin.yhx@linux.alibaba.com, renyu.zj@linux.alibaba.com,
-        ravi.bangoria@amd.com, atrajeev@linux.vnet.ibm.com,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20231213195154.1085945-1-kan.liang@linux.intel.com>
- <a0abfee5-4dcd-3eb5-82fe-1a0dcdade038@linux.ibm.com>
- <befb6acd-86be-4255-af96-38865affc56c@linux.intel.com>
- <8bfadc86-e137-4a9f-a9ce-0bc62464c195@linux.intel.com>
- <057a1c19-3117-1aec-41d6-4950c599b862@linux.ibm.com>
- <692e16f9-062c-4b3c-bd66-a16bac68216c@linux.intel.com>
- <cd7dc93f-ade9-6403-a732-2daca8e6cff9@linux.ibm.com>
- <a0540796-1933-4057-8282-aa219ddda4fe@linux.intel.com>
- <6ace2f9f-b073-e22b-0dd6-69c52814d49a@linux.ibm.com>
-Content-Language: en-US
-From: Thomas Richter <tmricht@linux.ibm.com>
-Organization: IBM
-In-Reply-To: <6ace2f9f-b073-e22b-0dd6-69c52814d49a@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: KL80KZcYCqfXpBJl328r9zEghtdw4rIz
-X-Proofpoint-ORIG-GUID: LA8MT5juvh_oMTjwIFViKgi192DKZSk8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-23_02,2024-01-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
- mlxlogscore=999 priorityscore=1501 lowpriorityscore=0 suspectscore=0
- mlxscore=0 clxscore=1011 spamscore=0 malwarescore=0 bulkscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401230041
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240122172044.3840976-1-alexious@zju.edu.cn>
 
-On 1/23/24 06:30, kajoljain wrote:
+On Tue, Jan 23, 2024 at 01:20:44AM +0800, Zhipeng Lu wrote:
+> When get_channel fails, audio_probe_channel should free adpt like all
+> its following error-handling paths after get_channel. Otherwise there
+> could be a memleak.
 > 
+> Fixes: 15600aea2754 ("staging: most: sound: create one sound card w/ multiple PCM devices per MOST device")
+> Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+> ---
+>  drivers/most/most_snd.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> On 1/16/24 22:07, Liang, Kan wrote:
->>
->>
->> On 2024-01-16 9:05 a.m., kajoljain wrote:
->>>> For powerpc, the patch 3 introduced a perf_mem_events_power, which
->>>> doesn't have ldlat. But it only be assigned to the pmu->is_core. I'm not
->>>> sure if it's the problem.
->>> Hi Kan,
->>>  Correct there were some small issues with patch 3, I added fix for that.
->>>
->>
->> Thanks Kajol Jain! I will fold your fix into V4.
->>
->>>> Also, S390 still uses the default perf_mem_events, which includes ldlat.
->>>> I'm not sure if S390 supports the ldlat.
->>> I checked it, I didn't find ldlat parameter defined in arch/s390
->>> directory. I think its better to make default ldlat value as false
->>> in tools/perf/util/mem-events.c file.
->>
->> The s390 may not be the only user for the default perf_mem_events[] in
->> the tools/perf/util/mem-events.c. We probably cannot change the default
->> value.
->> We may share the perf_mem_events_power[] between powerpc and s390. (We
->> did the similar share for arm and arm64.)
->>
->> How about the below patch (not tested.)
->>
->> diff --git a/tools/perf/arch/s390/util/pmu.c
->> b/tools/perf/arch/s390/util/pmu.c
->> index 225d7dc2379c..411034c984bb 100644
->> --- a/tools/perf/arch/s390/util/pmu.c
->> +++ b/tools/perf/arch/s390/util/pmu.c
->> @@ -8,6 +8,7 @@
->>  #include <string.h>
->>
->>  #include "../../../util/pmu.h"
->> +#include "../../powerpc/util/mem-events.h"
->>
->>  #define        S390_PMUPAI_CRYPTO      "pai_crypto"
->>  #define        S390_PMUPAI_EXT         "pai_ext"
->> @@ -21,5 +22,5 @@ void perf_pmu__arch_init(struct perf_pmu *pmu)
->>                 pmu->selectable = true;
->>
->>         if (pmu->is_core)
->> -               pmu->mem_events = perf_mem_events;
->> +               pmu->mem_events = perf_mem_events_power;
->>  }
->>
->>
->>
->> However, the original s390 code doesn't include any s390 specific code
->> for perf_mem. So I thought it uses the default perf_mem_events[].
->> Is there something I missed?
->>
->> Or does the s390 even support mem events? If not, I may remove the
->> mem_events from s390.
-> 
-> Hi Kan,
->    I don't have s390 system to do testing. But from my end I am fine
-> with the changes.
-> 
-> Thanks,
-> Kajol Jain
-> 
+> diff --git a/drivers/most/most_snd.c b/drivers/most/most_snd.c
+> index 45d762804c5e..6cccc9c26796 100644
+> --- a/drivers/most/most_snd.c
+> +++ b/drivers/most/most_snd.c
+> @@ -564,7 +564,8 @@ static int audio_probe_channel(struct most_interface *iface, int channel_id,
+>  	if (get_channel(iface, channel_id)) {
+>  		pr_err("channel (%s:%d) is already linked\n",
+>  		       iface->description, channel_id);
+> -		return -EEXIST;
+> +		ret = -EEXIST;
+> +		goto err_free_adpt;
 
-s390 does not support perf mem at all. Right now it is save to remove it from s390.
-Thanks
+No, this doesn't work.  Someone should add a comment here explaining
+why.
 
->>
->> Thanks,
->> Kan
-> 
+This function is a bit complicated because we sometimes allocate "adpt"
+and sometimes we don't.  Why can we not make it consistently one way or
+the other?  This is not my code and I don't know.  But presumably there
+is a good reason.  I looked up the previous discussion of this and found
+this thread.
 
--- 
-Thomas Richter, Dept 3303, IBM s390 Linux Development, Boeblingen, Germany
---
-IBM Deutschland Research & Development GmbH
+https://lore.kernel.org/all/78cc59b31042f865e947a2c09a5d10cc60ddc01c.camel@microchip.com/
 
-Vorsitzender des Aufsichtsrats: Wolfgang Wendt
+Anyway, in the end, we're trying to clean up and on the other error
+paths we're allowed to free "adpt" even though we didn't allocate it.
 
-Geschäftsführung: David Faller
+However once it's got a channel linked then we cannot.  At that stage
+"adpt" is already added to the &iface->p->channel_list list.  The
+release_adapter() adapter function will free it without removing it from
+the list so it leads to a use after free.
 
-Sitz der Gesellschaft: Böblingen / Registergericht: Amtsgericht Stuttgart, HRB 243294
+However, memory on this path is not leaked as your commit message says.
+"adpt" is still on the lists.  The stuff is in a messed up state so the
+user will need to tear it all down manually and recreate the
+configuration.  Quoting the email I linked to, "This
+involves the call to mdev_link_destroy_link_store() that cleans up
+everything."
+
+So we can't apply your patch because it leads to a use after free.  But
+we could apply a patch which adds a comment like:
+
+	/*
+	 * This error path doesn't leak.  If the channel is already set
+	 * up then something has gone badly wrong.  The user will have
+	 * to tear everything down and reconfigure from scratch.  The
+	 * memory will be released via mdev_link_destroy_link_store().
+	 *
+	 */
+
+regards,
+dan carpenter
 
 
