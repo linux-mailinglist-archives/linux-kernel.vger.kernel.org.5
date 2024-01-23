@@ -1,36 +1,37 @@
-Return-Path: <linux-kernel+bounces-35202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5373B838D85
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:34:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18ED4838D86
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:35:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0481D28601E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:34:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E2021C215DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:35:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1FD25D8E9;
-	Tue, 23 Jan 2024 11:34:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 601FD5D91C;
+	Tue, 23 Jan 2024 11:34:43 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 817325D73B;
-	Tue, 23 Jan 2024 11:34:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9CBE5D749;
+	Tue, 23 Jan 2024 11:34:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706009681; cv=none; b=tFVfdmybqNYViItE+wlI2jHwMtZMsoKyOEQOqJ2gDA9Xp/0BudfK1RldorLEYpsBaVkjEcrEonaHPQojL5UJW14pwvYfyE96aB17xm5B2/GytLoHtkGDR6GBodL4P3sxbZl/Gnf/Ja6ADR8PZ70uezDvsB78/D41sCRYCP+q7QU=
+	t=1706009682; cv=none; b=iFY1bT1xpVBygSCRctuJJDJWBlBqrb5Zak2Io0hXrcdKIk1Y6BR+KF3TEw1nDaOUXQo4bBdWvC2vMeSRmOSRln3rRWUTtUTpFfUutl656Fz0W/9krIpyaWq1BJKxE76vwFkDhi27pS+f5YF4OVt6p8+uhgrcGJDNKXHUt3qVwoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706009681; c=relaxed/simple;
-	bh=Itound2rhJr3CwxbHvsE9PKUkyqy43GCjIgaMwm/PK8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rScickD49tKApugzhu+dugYSJW2pPG77DafhsHtfxSVdyIanpYIrO07akOudpP15tmdDDOjNXcsfZCs6N9bymN/F4d+TV5/Bvzy4+vSyF/tDFwOuNWJoYO0tFmNpeVCkv2KqzU9JsuNjNceksikI7r8RevX5n1lPwACPz++FMGM=
+	s=arc-20240116; t=1706009682; c=relaxed/simple;
+	bh=Cc/p6EAOGiTANpj0L+SitTQEdRt/dqFYisZ1hnh761s=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=qips+1bHNsmBaboPYl1YvGnc+skPw0CeMHBBWvPKgzQKvsGSVnnvxAJRmarWQaSzgq1f6schv4cfBEJxXtzn/zGXUMJgsbYBVWnDwsywiwBn3lIH7qvzuH0YTVCRC8o6bk17WHFk2H+qnQUl3oyvPj+1tcy7iiXEQ/R43X5GswI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 353811FB;
-	Tue, 23 Jan 2024 03:35:23 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3A9B6FEC;
+	Tue, 23 Jan 2024 03:35:25 -0800 (PST)
 Received: from e126817.. (e126817.cambridge.arm.com [10.2.3.5])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0623B3F762;
-	Tue, 23 Jan 2024 03:34:35 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0CE1C3F762;
+	Tue, 23 Jan 2024 03:34:37 -0800 (PST)
 From: Ben Gainey <ben.gainey@arm.com>
 To: linux-perf-users@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
@@ -46,10 +47,12 @@ Cc: peterz@infradead.org,
 	adrian.hunter@intel.com,
 	will@kernel.org,
 	Ben Gainey <ben.gainey@arm.com>
-Subject: [RFC PATCH 0/2] A mechanism for efficient support for per-function metrics
-Date: Tue, 23 Jan 2024 11:34:18 +0000
-Message-ID: <20240123113420.1928154-1-ben.gainey@arm.com>
+Subject: [RFC PATCH 1/2] arm_pmu: Allow the PMU to alternate between two sample_period values.
+Date: Tue, 23 Jan 2024 11:34:19 +0000
+Message-ID: <20240123113420.1928154-2-ben.gainey@arm.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240123113420.1928154-1-ben.gainey@arm.com>
+References: <20240123113420.1928154-1-ben.gainey@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,127 +61,181 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-I've been working on an approach to supporting per-function metrics for
-aarch64 cores, which requires some changes to the arm_pmuv3 driver, and
-I'm wondering if this approach would make sense as a generic feature
-that could be used to enable the same on other architectures?
+The arm PMU does not provide any mechanism for decoupling the period over
+which counters are counted from the period between samples. This is
+problematic for building a tool to measure per-function metrics derived
+from a sampled counter group. Ideally such a tool wants a very small
+sample window in order to correctly attribute the metrics to a given
+function, but prefers a larger sample period that provides representative
+coverage without excessive probe effect, triggering throttling, or
+generating excessive amounts of data.
 
-The basic idea is as follows:
+By alternating between a long and short sample_period and subsequently
+discarding the long samples, tools may decouple the period between
+samples that the tool cares about from the window of time over which
+interesting counts are collected.
 
- * Periodically sample one or more counters as needed for the chosen
-   set of metrics.
- * Record a sample count for each symbol so as to identify hot
-   functions.
- * Accumulate counter totals for each of the counters in each of the
-   metrics *but* only do this where the previous sample's symbol
-   matches the current sample's symbol.
+It is expected that typically tools would use this feature with the
+cycles or instructions events as an approximation for time, but no
+restrictions are applied to which events this can be applied to.
 
-Discarding the counter deltas for any given sample is important to
-ensure that couters are correctly attributed to a single function,
-without this step the resulting metrics trend towards some average
-value across the top 'n' functions. It is acknowledged that it is
-possible for this heuristic to fail, for example if samples to land
-either side of a nested call, so a sufficiently small sample window
-over which the counters are collected must be used to reduce the risk
-of misattribution.
-
-So far, this can be acheived without any further modifications to perf
-tools or the kernel. However as noted it requires the counter
-collection window to be sufficiently small; in testing on
-Neoverse-N1/-V1, a window of about 300 cycles gives good results. Using
-the cycle counter with a sample_period of 300 is possible, but such an
-approach generates significant amounts of capture data, and introduces
-a lot of overhead and probe effect. Whilst the kernel will throttle
-such a configuration, which helps to mitigate a large portion of the
-bandwidth and capture overhead, it is not something that can be
-controlled for on a per event basis, or for non-root users, and because
-throttling is controlled as a percentage of time its affects vary from
-machine to machine.
-
-For this to work efficiently, it is useful to provide a means to
-decouple the sample window (time over which events are counted) from
-the sample period (time between interesting samples). This patcheset
-modifies the Arm PMU driver to support alternating between two
-sample_period values, providing a simple and inexpensive way for tools
-to separate out the sample period and the sample window. It is expected
-to be used with the cycle counter event, alternating between a long and
-short period and subsequently discarding the counter data for samples
-with the long period. The combined long and short period gives the
-overall sampling period, and the short sample period gives the sample
-window. The symbol taken from the sample at the end of the long period
-can be used by tools to ensure correct attribution as described
-previously. The cycle counter is recommended as it provides fair
-temporal distribution of samples as would be required for the
-per-symbol sample count mentioned previously, and because the PMU can
-be programmed to overflow after a sufficiently short window; this may
-not be possible with software timer (for example). This patch does not
-restrict to only the cycle counter, it is possible there could be other
-novel uses based on different events.
-
-To test this I have developed a simple `perf script` based python
-script. For a limited set of Arm PMU events it will post process a
-`perf record`-ing and generate a table of metrics. Along side this I
-have developed a benchmark application that rotates through a sequence
-of different classes of behaviour that can be detected by the Arm PMU
-(eg. mispredics, cache misses, different instruction mixes). The path
-through the benchmark can be rotated after each iteration so as to
-ensure the results don't land on some lucky harmonic with the sample
-period. The script can be used with and without the strobing patch
-allowing comparison of the results. Testing was on Juno (A53+A57), 
-N1SDP, Gravaton 2 and 3. In addition this approach has been applied to
-a few of Arm's tools projects and has correctly identified improvements
-and regressions. 
-
-Headline results from testing indicate that ~300 cycles sample window
-gives good results with or without the strobing patch. When the
-strobing patch is used, the resulting `perf.data` files are typically
-25-50x smaller that without, and take ~25x less time for the python
-script to post-process. Without strobing, the test application's
-runtime was x20 slower when sampling every 300 cycles as compared to
-every 1000000 cycles. With strobing enabled such that the long period
-was 999700 cycles and the short period was 300 cycles, the test
-applications runtime was only x1.2 slower than every 1000000 cycles.
-Notably, without the patch, L1D cache miss rates are significantly
-higher than with the patch, which we attribute to increased impact on
-the cache that trapping into the kernel every 300 cycles has. These
-results are given with `perf_cpu_time_max_percent=25`. When tested
-with `perf_cpu_time_max_percent=100` the size and time comparisons are
-more significant. Disabling throttling did not lead to obvious
-improvements in the collected metrics, suggesting that the sampling
-approach is sufficient to collect representative metrics.
-
-Cursory testing on a Xeon(R) W-2145 sampling every 300 cycles (without
-the patch) suggests this approach would work for some counters.
-Calculating branch miss rates for example appears to be correct,
-likewise UOPS_EXECUTED.THREAD seems to give something like a sensible
-cycles-per-uop value. On the other hand the fixed function instructions
-counter does not appear to sample correctly (it seems to report either
-very small or very large numbers). No idea whats going on there, so any
-insight welcome...
-
-This patch modifies the arm_pmu and introduces an additional field in
-config2 to configure the behaviour. If we think there is broad
-applicability, would it make sense to move into perf_event_attr flags
-or field, and possibly pull up into core? If we don't think so, then
-some feedback around the core header and arm_pmu modifications would
-be appreciated.
-
-A copy of the post-processing script is available at 
-https://github.com/ARM-software/gator/blob/prototypes/strobing/prototypes/strobing-patches/test-script/generate-function-metrics.py
-note that the script its self has a dependency on
-https://lore.kernel.org/linux-perf-users/20240123103137.1890779-1-ben.gainey@arm.com/
-
-
-Ben Gainey (2):
-  arm_pmu: Allow the PMU to alternate between two sample_period values.
-  arm_pmuv3: Add config bits for sample period strobing
-
+Signed-off-by: Ben Gainey <ben.gainey@arm.com>
+---
  drivers/perf/arm_pmu.c       | 74 +++++++++++++++++++++++++++++-------
- drivers/perf/arm_pmuv3.c     | 25 ++++++++++++
  include/linux/perf/arm_pmu.h |  1 +
  include/linux/perf_event.h   | 10 ++++-
- 4 files changed, 95 insertions(+), 15 deletions(-)
+ 3 files changed, 70 insertions(+), 15 deletions(-)
 
+diff --git a/drivers/perf/arm_pmu.c b/drivers/perf/arm_pmu.c
+index 8458fe2cebb4f..58e40dbabfc3f 100644
+--- a/drivers/perf/arm_pmu.c
++++ b/drivers/perf/arm_pmu.c
+@@ -99,6 +99,17 @@ static const struct pmu_irq_ops percpu_pmunmi_ops = {
+ 	.free_pmuirq = armpmu_free_percpu_pmunmi
+ };
+ 
++static inline bool armpmu_is_strobe_enabled(struct hw_perf_event *hwc)
++{
++	return hwc->strobe_period != 0;
++}
++
++void armpmu_set_strobe_period(struct hw_perf_event *hwc, u32 period)
++{
++	hwc->strobe_period = period;
++	hwc->strobe_active = false;
++}
++
+ static DEFINE_PER_CPU(struct arm_pmu *, cpu_armpmu);
+ static DEFINE_PER_CPU(int, cpu_irq);
+ static DEFINE_PER_CPU(const struct pmu_irq_ops *, cpu_irq_ops);
+@@ -202,22 +213,45 @@ int armpmu_event_set_period(struct perf_event *event)
+ 	struct arm_pmu *armpmu = to_arm_pmu(event->pmu);
+ 	struct hw_perf_event *hwc = &event->hw;
+ 	s64 left = local64_read(&hwc->period_left);
+-	s64 period = hwc->sample_period;
+-	u64 max_period;
++	s64 period_active = hwc->sample_period;
++	u64 max_period = arm_pmu_event_max_period(event);
+ 	int ret = 0;
+ 
+-	max_period = arm_pmu_event_max_period(event);
+-	if (unlikely(left <= -period)) {
+-		left = period;
+-		local64_set(&hwc->period_left, left);
+-		hwc->last_period = period;
+-		ret = 1;
+-	}
++	if (likely(!armpmu_is_strobe_enabled(hwc))) {
++		if (unlikely(left <= -period_active)) {
++			left = period_active;
++			local64_set(&hwc->period_left, left);
++			hwc->last_period = period_active;
++			ret = 1;
++		}
++
++		if (unlikely(left <= 0)) {
++			left += period_active;
++			local64_set(&hwc->period_left, left);
++			hwc->last_period = period_active;
++			ret = 1;
++		}
++	} else if (unlikely(left <= 0)) {
++		s64 new_period;
++		bool new_active;
++
++		/*
++		 * When strobing is enabled, do not attempt to adjust the
++		 * period based on the previous overflow, instead just
++		 * alternate between the two periods
++		 */
++		if (hwc->strobe_active) {
++			new_period = period_active;
++			new_active = false;
++		} else {
++			new_period = hwc->strobe_period;
++			new_active = true;
++		}
+ 
+-	if (unlikely(left <= 0)) {
+-		left += period;
++		left = new_period;
+ 		local64_set(&hwc->period_left, left);
+-		hwc->last_period = period;
++		hwc->last_period = new_period;
++		hwc->strobe_active = new_active;
+ 		ret = 1;
+ 	}
+ 
+@@ -448,6 +482,9 @@ __hw_perf_event_init(struct perf_event *event)
+ 	int mapping, ret;
+ 
+ 	hwc->flags = 0;
++	hwc->strobe_active = false;
++	hwc->strobe_period = 0;
++
+ 	mapping = armpmu->map_event(event);
+ 
+ 	if (mapping < 0) {
+@@ -456,6 +493,15 @@ __hw_perf_event_init(struct perf_event *event)
+ 		return mapping;
+ 	}
+ 
++	if (armpmu_is_strobe_enabled(hwc)) {
++		if (event->attr.freq)
++			return -EINVAL;
++		if (hwc->strobe_period == 0)
++			return -EINVAL;
++		if (hwc->strobe_period >= event->attr.sample_period)
++			return -EINVAL;
++	}
++
+ 	/*
+ 	 * We don't assign an index until we actually place the event onto
+ 	 * hardware. Use -1 to signify that we haven't decided where to put it
+@@ -488,8 +534,8 @@ __hw_perf_event_init(struct perf_event *event)
+ 		 * is far less likely to overtake the previous one unless
+ 		 * you have some serious IRQ latency issues.
+ 		 */
+-		hwc->sample_period  = arm_pmu_event_max_period(event) >> 1;
+-		hwc->last_period    = hwc->sample_period;
++		hwc->sample_period = arm_pmu_event_max_period(event) >> 1;
++		hwc->last_period = hwc->sample_period;
+ 		local64_set(&hwc->period_left, hwc->sample_period);
+ 	}
+ 
+diff --git a/include/linux/perf/arm_pmu.h b/include/linux/perf/arm_pmu.h
+index b3b34f6670cfb..3ee74382e7a93 100644
+--- a/include/linux/perf/arm_pmu.h
++++ b/include/linux/perf/arm_pmu.h
+@@ -175,6 +175,7 @@ void armpmu_free(struct arm_pmu *pmu);
+ int armpmu_register(struct arm_pmu *pmu);
+ int armpmu_request_irq(int irq, int cpu);
+ void armpmu_free_irq(int irq, int cpu);
++void armpmu_set_strobe_period(struct hw_perf_event *hwc, u32 period);
+ 
+ #define ARMV8_PMU_PDEV_NAME "armv8-pmu"
+ 
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index d2a15c0c6f8a9..7ef3f39fe6171 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -157,7 +157,15 @@ struct hw_perf_event {
+ 	union {
+ 		struct { /* hardware */
+ 			u64		config;
+-			u64		last_tag;
++			union {
++				/* for s390 and x86 */
++				u64	last_tag;
++				/* for arm_pmu */
++				struct {
++					u32 strobe_period;
++					bool strobe_active;
++				};
++			};
+ 			unsigned long	config_base;
+ 			unsigned long	event_base;
+ 			int		event_base_rdpmc;
 -- 
 2.43.0
 
