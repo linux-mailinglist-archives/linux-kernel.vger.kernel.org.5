@@ -1,197 +1,237 @@
-Return-Path: <linux-kernel+bounces-35500-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35502-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 062A783920B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:06:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCCA483920E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:07:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2C6E28E692
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:06:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E13191C214A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:07:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4B415FB9E;
-	Tue, 23 Jan 2024 15:06:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E2995FEE9;
+	Tue, 23 Jan 2024 15:06:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uv0nDCxj"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	dkim=pass (2048-bit key) header.d=vrull.eu header.i=@vrull.eu header.b="PG84TjTS"
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6475F12E5F
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 15:06:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E82C35FDD6
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 15:06:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706022402; cv=none; b=s912werNe59+uco1OBIKEgdUJWbM/qRGO4mnDZuCqPCYBdh8sgrHfNhCLutVCywG0n+Qd07sCmhD0jtfhH6SQr8kC7hzl4MylPEpEn/QLKWjApzpk8qgrH1aAWQ5cAeEATuFydbmBaxlzbslNlQHl105RI0EwshoGyHejyCVnuw=
+	t=1706022418; cv=none; b=nTlYu8M7BnAEPOR7mecP7XTHu/OFeNkWJFjYG8X7SKP7eYPYFQS0F1vi94fo6+skkOwECN4iP/qAOqoxQhGR/QcPXNVT+rCvpBX4TeE1MmlGVmI9q20NVGQG7+HyXqXnfVjMcx3N7ondnSQN3NilJAKxeHhNz7c8L7o99jPVjOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706022402; c=relaxed/simple;
-	bh=Rzv9vebhz47fokP7LiSSzv96GDQrjjYMuUYW7jzviPg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ux4+yu0kqTCeRU1Imflri929eUmEScHWGY4vVWH54DQc/7IIx0dZ6BT9SpxlLabzAH5jNOYyT13abBzZuUNDkPDu/Kt1BGO3aar3bWYgS4PASXMtUI2RHsYwiNVVyQGzQAy8k0vaHI3uM/7C/XI7FRG6xi2KlWSnhvvJFCgWkH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uv0nDCxj; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3392291b21bso3789505f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:06:40 -0800 (PST)
+	s=arc-20240116; t=1706022418; c=relaxed/simple;
+	bh=NTmyNsrucXKY9cw+aWmnWoco1HoM9ZMyvI4AhLzmiek=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ARqWXcef+nrW/p+gMx65iBOC2vDBiTCdrORyUYODP0nUFAOuVphJnOW9ZucdJOt5P3cmLJ/mwKD/u/qolAnC99595HKPRbFHk3mvtnpYYD/CVtp7g0JT2nRXeTqGhInvHLaZ5TTdIuecYzaS+ilAv20kbKSzWAvaPE6qivvX95Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vrull.eu; spf=pass smtp.mailfrom=vrull.eu; dkim=pass (2048-bit key) header.d=vrull.eu header.i=@vrull.eu header.b=PG84TjTS; arc=none smtp.client-ip=209.85.215.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vrull.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vrull.eu
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5ce0efd60ddso2527370a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:06:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706022398; x=1706627198; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1zO5Gerp3x7bTpsg9KpkTY28DYtOnGCMLOCBNBnjsd4=;
-        b=uv0nDCxjKthCa36/rNpe9GyoB/R38O9Qw+8OvhTo0moruND7OV76V+T2vQCMdGK8P/
-         3D4Sc57wsRlpFcSwt8jSM+AHEwCcJvoqPkVQ7Q7mX1C41hUSTu6qZN0EWGZqDAbwn+n2
-         wSsAR685UonZmLFvvS8HOwWc7NIMPajcuMsrrZWiLdT4CY/YnI3NVkfRktnKsdq1s+UH
-         Ijk8YYlvZVgMxRkvij8BCBeZw0SxPW02OFBsDz3mtgWpSK7KIGrALf1bGKI2OC0YYEQb
-         vMt5yA/B0T6vt1hNm+U4ufFF/N/C00P6iWMHkMNpEja1a66IFTzlr74BXh8GsAlXYywq
-         jIRw==
+        d=vrull.eu; s=google; t=1706022415; x=1706627215; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1tjKV2GUrSP7LFhHsJ97x90ExpcYsvB+JBmXfLVyyFI=;
+        b=PG84TjTSJg3ERaFtnJ8DCLDWqDoNrpdTVJJTYtXnKuIvx/PGVyxp6si+0fZCI0L1/s
+         fMMYIsoWUhRyT8XJGj1r1HCk5oJRK9d19pumhm7P2iL+wv7/kpMKh8LjG9HGZMjyEjSN
+         cCYIk+RSYJdysHL1Y2dMM574md4/owg5BOyuf1fnsTSKUhuqoK5LW9RHy3CzGfsncWkF
+         Twwwx1uyBFUVcz09Scz2ZlHm941nN6IbMAKP1WRrdKfWtxc47vGqUfgZJmpqxEu+pv8b
+         4yYWyNp+jApMhZ6knfnADk1WSl2v2IfvpiIi0KLZCT76T859x1gyW+56n7r/iFIMKTVo
+         SdSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706022398; x=1706627198;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1zO5Gerp3x7bTpsg9KpkTY28DYtOnGCMLOCBNBnjsd4=;
-        b=F/OKpU/vxT4/mll40UQn8l4+ytPZGPZ4JdeFKubIVq0y3SV0oeSe5LZHDVHa0e/WM5
-         hlajvxUXb3VYyY568l7CPqD06ul3yR5e5PO17BR965KD3fj6j3hAHTrc/5W+poobT4Dl
-         8CFsPbjwb9c0TbALtAJhYD5MSixUlcCEJWRar4M4KRXYLcJqCAzK6R0IIqZ1F6ZntjlQ
-         gZQPtiHY5FOefH/1hd1e7WdjlQP1yE4JkIheiUV/N4YKiOrJdKh27ZVqYbeHTKMS1TyS
-         zBXyiBSLm6NaX8Uc6KTRX2E0/qXEAWvLngJRTwvA1+bupTwoOvOH7y0k27QaF6BSOWmB
-         TkSw==
-X-Gm-Message-State: AOJu0YxIcwxIwgpcAodYv7kUHpY8biirxhfMUIidaqO2xH6qxvjO+ZCI
-	ZYL8OsJB+lwwhAtHZ0z3KACKp+m8YS89bYvnuA30HEeH5MiAmJLZ/tCKS1026Vg=
-X-Google-Smtp-Source: AGHT+IHy3ot08fJzZ8QEE1/0yRjbwjyL7FHwkxJnn/3pfaMDfS3G4gmL90KNOb3CPtMJufjQL/PXnw==
-X-Received: by 2002:adf:fdc7:0:b0:336:6aa4:b62c with SMTP id i7-20020adffdc7000000b003366aa4b62cmr3376483wrs.49.1706022398471;
-        Tue, 23 Jan 2024 07:06:38 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id y6-20020adfee06000000b003392be82b25sm8026083wrn.86.2024.01.23.07.06.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jan 2024 07:06:38 -0800 (PST)
-Message-ID: <96190db7-96c9-4d5b-b327-b75d09a3013a@linaro.org>
-Date: Tue, 23 Jan 2024 16:06:36 +0100
+        d=1e100.net; s=20230601; t=1706022415; x=1706627215;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1tjKV2GUrSP7LFhHsJ97x90ExpcYsvB+JBmXfLVyyFI=;
+        b=eZoMKlmqRmNpacmJESLgAnnn4uh01JWNblbdt7yQXBEqRZoiYaUlO9Nkre4JF3mBqw
+         gbKca3CEt5ntzFshoEonidGLZ2dtyrhTXVTF3FtAgRPKsl5WW2RnkX2dlwXN9RsJtnhm
+         56qb3sEWP9scYPhjguRXVLkVfK7t+ZKt5PBQJLP7PNRxtJwg3DLQjWWQplX4JnLH6uJI
+         3oqnFVqG7/6FP+nB794pAgWElMwQ6QLa3AdJTTqeKZeQjt1tl4KHba3KtaLi/wYJc+BL
+         LffWIDbTGZcSNalXN0Q+JoVM5ZdCZy93g0vIp3EliRLW39qBSTzcADL3oQg0tjFwIh4c
+         Bd0w==
+X-Gm-Message-State: AOJu0Yw07AvJZliQHCwx5HoDHVQ+Pd82xm5S8zqcJmrmK8oqCfF0nKM+
+	Z29AmO2IBnCLnPKmWjADPV2huj65EBkrhnfIJXWi7ZBny+yIUleSU2GVX19DNEia3KgWnRK6Dof
+	M7QBPX6Vhxlvb36ZFi/B+G+5tcV6xIGoZIGdXwg==
+X-Google-Smtp-Source: AGHT+IHDBHd0oeNga+xE+kyZKxq8j0hI4802+QZ38jIKhXZ5obf2QepzH8/p7HOdtFVFwKsQoAwztEPl6+jRnYSDxvs=
+X-Received: by 2002:a17:90b:606:b0:28f:f849:7c8c with SMTP id
+ gb6-20020a17090b060600b0028ff8497c8cmr2681037pjb.34.1706022414987; Tue, 23
+ Jan 2024 07:06:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/4] dt-bindings: mailbox: fsl,mu: add i.MX95
- Generic/ELE/V2X MU compatible
-Content-Language: en-US
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
- Jassi Brar <jassisinghbrar@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Dong Aisheng <aisheng.dong@nxp.com>,
- Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, Peng Fan <peng.fan@nxp.com>
-References: <20240123-imx-mailbox-v3-0-ed932945e0bf@nxp.com>
- <20240123-imx-mailbox-v3-1-ed932945e0bf@nxp.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240123-imx-mailbox-v3-1-ed932945e0bf@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240122002024.27477-1-ebiggers@kernel.org>
+In-Reply-To: <20240122002024.27477-1-ebiggers@kernel.org>
+From: =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>
+Date: Tue, 23 Jan 2024 16:06:43 +0100
+Message-ID: <CAEg0e7j6x6Fj4CmAGz2qzumVeL4mMK1D3VUT5CaQYTebsyPThg@mail.gmail.com>
+Subject: Re: [PATCH v3 00/10] RISC-V crypto with reworked asm files
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: linux-crypto@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>, 
+	Andy Chiu <andy.chiu@sifive.com>, Ard Biesheuvel <ardb@kernel.org>, Heiko Stuebner <heiko@sntech.de>, 
+	Jerry Shih <jerry.shih@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Phoebe Chen <phoebe.chen@sifive.com>, 
+	hongrong.hsu@sifive.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 23/01/2024 15:38, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> Add i.MX95 Generic, Secure Enclave and V2X Message Unit compatible string.
-> And some MUs has internal RAMs for SCMI shared buffer usage.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  .../devicetree/bindings/mailbox/fsl,mu.yaml        | 50 +++++++++++++++++++++-
->  1 file changed, 48 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mailbox/fsl,mu.yaml b/Documentation/devicetree/bindings/mailbox/fsl,mu.yaml
-> index 12e7a7d536a3..569fabc5285c 100644
-> --- a/Documentation/devicetree/bindings/mailbox/fsl,mu.yaml
-> +++ b/Documentation/devicetree/bindings/mailbox/fsl,mu.yaml
-> @@ -29,10 +29,14 @@ properties:
->        - const: fsl,imx8ulp-mu
->        - const: fsl,imx8-mu-scu
->        - const: fsl,imx8-mu-seco
-> -      - const: fsl,imx93-mu-s4
->        - const: fsl,imx8ulp-mu-s4
-> +      - const: fsl,imx93-mu-s4
-> +      - const: fsl,imx95-mu-ele
-> +      - const: fsl,imx95-mu-v2x
->        - items:
-> -          - const: fsl,imx93-mu
-> +          - enum:
-> +              - fsl,imx93-mu
-> +              - fsl,imx95-mu
->            - const: fsl,imx8ulp-mu
->        - items:
->            - enum:
-> @@ -95,6 +99,17 @@ properties:
->    power-domains:
->      maxItems: 1
->  
-> +  ranges: true
-> +
-> +  "#address-cells": true
-> +
-> +  "#size-cells": true
-> +
-> +patternProperties:
-> +  "^sram@[a-z0-9]+":
+On Mon, Jan 22, 2024 at 1:23=E2=80=AFAM Eric Biggers <ebiggers@kernel.org> =
+wrote:
+>
+> This patchset, which applies to v6.8-rc1, adds cryptographic algorithm
+> implementations accelerated using the RISC-V vector crypto extensions
+> (https://github.com/riscv/riscv-crypto/releases/download/v1.0.0/riscv-cry=
+pto-spec-vector.pdf)
+> and RISC-V vector extension
+> (https://github.com/riscv/riscv-v-spec/releases/download/v1.0/riscv-v-spe=
+c-1.0.pdf).
+> The following algorithms are included: AES in ECB, CBC, CTR, and XTS mode=
+s;
+> ChaCha20; GHASH; SHA-2; SM3; and SM4.
+>
+> In general, the assembly code requires a 64-bit RISC-V CPU with VLEN >=3D=
+ 128,
+> little endian byte order, and vector unaligned access support.  The ECB, =
+CTR,
+> XTS, and ChaCha20 code is designed to naturally scale up to larger VLEN v=
+alues.
+> Building the assembly code requires tip-of-tree binutils (future 2.42) or
+> tip-of-tree clang (future 18.x).  All algorithms pass testing in QEMU, us=
+ing
+> CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=3Dy.  Much of the assembly code is deri=
+ved from
+> OpenSSL code that was added by https://github.com/openssl/openssl/pull/21=
+923.
+> It's been cleaned up for integration with the kernel, e.g. reducing code
+> duplication, eliminating use of .inst and perlasm, and fixing a few bugs.
+>
+> This patchset incorporates the work of multiple people, including Jerry S=
+hih,
+> Heiko Stuebner, Christoph M=C3=BCllner, Phoebe Chen, Charalampos Mitrodim=
+as, and
+> myself.  This patchset went through several versions from Heiko (last ver=
+sion
+> https://lore.kernel.org/linux-crypto/20230711153743.1970625-1-heiko@sntec=
+h.de),
+> then several versions from Jerry (last version:
+> https://lore.kernel.org/linux-crypto/20231231152743.6304-1-jerry.shih@sif=
+ive.com),
+> then finally several versions from me.  Thanks to everyone who has contri=
+buted
+> to this patchset or its prerequisites.  Since v6.8-rc1, all prerequisite =
+kernel
+> patches are upstream.  I think this is now ready, and I'd like for it to =
+be
+> applied for 6.9, either to the crypto or riscv tree (at maintainers' choi=
+ce).
+>
+> Below is the changelog for my versions of the patchset.  For the changelo=
+g of
+> the older versions, see the above links.
 
-This is a friendly reminder during the review process.
+For all patches of this series:
+Reviewed-by: Christoph M=C3=BCllner <christoph.muellner@vrull.eu>
 
-It seems my or other reviewer's previous comments were not fully
-addressed. Maybe the feedback got lost between the quotes, maybe you
-just forgot to apply it. Please go back to the previous discussion and
-either implement all requested changes or keep discussing them.
+Eric, thank you for working on this!
 
-Thank you.
-
-Best regards,
-Krzysztof
-
+>
+> Changed in v3:
+>   - Fixed a bug in the AES-XTS implementation where it assumed the CPU
+>     always set vl to the maximum possible value.  This was okay for
+>     QEMU, but the vector spec allows CPUs to have different behavior.
+>   - Increased the LMUL for AES-ECB to 8, as the registers are available.
+>   - Fixed some license text that I had mistakenly changed when doing a
+>     find-and-replace of code.
+>   - Addressed a checkpatch warning by not including filename in file.
+>   - Rename some labels.
+>   - Constify a variable.
+>
+> Changed in v2:
+>   - Merged the AES modules together to prevent a build error.
+>   - Only unregister AES algorithms that were registered.
+>   - Corrected walksize properties to match the LMUL used by asm code.
+>   - Simplified the CTR and XTS glue code slightly.
+>   - Minor cleanups.
+>
+> Changed in v1:
+>   - Refer to my cover letter
+>     https://lore.kernel.org/linux-crypto/20240102064743.220490-1-ebiggers=
+@kernel.org/
+>
+> Eric Biggers (1):
+>   RISC-V: add TOOLCHAIN_HAS_VECTOR_CRYPTO
+>
+> Heiko Stuebner (2):
+>   RISC-V: add helper function to read the vector VLEN
+>   RISC-V: hook new crypto subdir into build-system
+>
+> Jerry Shih (7):
+>   crypto: riscv - add vector crypto accelerated AES-{ECB,CBC,CTR,XTS}
+>   crypto: riscv - add vector crypto accelerated ChaCha20
+>   crypto: riscv - add vector crypto accelerated GHASH
+>   crypto: riscv - add vector crypto accelerated SHA-{256,224}
+>   crypto: riscv - add vector crypto accelerated SHA-{512,384}
+>   crypto: riscv - add vector crypto accelerated SM3
+>   crypto: riscv - add vector crypto accelerated SM4
+>
+>  arch/riscv/Kbuild                             |   1 +
+>  arch/riscv/Kconfig                            |   7 +
+>  arch/riscv/crypto/Kconfig                     |  93 +++
+>  arch/riscv/crypto/Makefile                    |  23 +
+>  arch/riscv/crypto/aes-macros.S                | 156 +++++
+>  arch/riscv/crypto/aes-riscv64-glue.c          | 550 ++++++++++++++++++
+>  .../crypto/aes-riscv64-zvkned-zvbb-zvkg.S     | 312 ++++++++++
+>  arch/riscv/crypto/aes-riscv64-zvkned-zvkb.S   | 146 +++++
+>  arch/riscv/crypto/aes-riscv64-zvkned.S        | 180 ++++++
+>  arch/riscv/crypto/chacha-riscv64-glue.c       | 101 ++++
+>  arch/riscv/crypto/chacha-riscv64-zvkb.S       | 294 ++++++++++
+>  arch/riscv/crypto/ghash-riscv64-glue.c        | 168 ++++++
+>  arch/riscv/crypto/ghash-riscv64-zvkg.S        |  72 +++
+>  arch/riscv/crypto/sha256-riscv64-glue.c       | 137 +++++
+>  .../sha256-riscv64-zvknha_or_zvknhb-zvkb.S    | 225 +++++++
+>  arch/riscv/crypto/sha512-riscv64-glue.c       | 133 +++++
+>  .../riscv/crypto/sha512-riscv64-zvknhb-zvkb.S | 203 +++++++
+>  arch/riscv/crypto/sm3-riscv64-glue.c          | 112 ++++
+>  arch/riscv/crypto/sm3-riscv64-zvksh-zvkb.S    | 123 ++++
+>  arch/riscv/crypto/sm4-riscv64-glue.c          | 107 ++++
+>  arch/riscv/crypto/sm4-riscv64-zvksed-zvkb.S   | 117 ++++
+>  arch/riscv/include/asm/vector.h               |  11 +
+>  crypto/Kconfig                                |   3 +
+>  23 files changed, 3274 insertions(+)
+>  create mode 100644 arch/riscv/crypto/Kconfig
+>  create mode 100644 arch/riscv/crypto/Makefile
+>  create mode 100644 arch/riscv/crypto/aes-macros.S
+>  create mode 100644 arch/riscv/crypto/aes-riscv64-glue.c
+>  create mode 100644 arch/riscv/crypto/aes-riscv64-zvkned-zvbb-zvkg.S
+>  create mode 100644 arch/riscv/crypto/aes-riscv64-zvkned-zvkb.S
+>  create mode 100644 arch/riscv/crypto/aes-riscv64-zvkned.S
+>  create mode 100644 arch/riscv/crypto/chacha-riscv64-glue.c
+>  create mode 100644 arch/riscv/crypto/chacha-riscv64-zvkb.S
+>  create mode 100644 arch/riscv/crypto/ghash-riscv64-glue.c
+>  create mode 100644 arch/riscv/crypto/ghash-riscv64-zvkg.S
+>  create mode 100644 arch/riscv/crypto/sha256-riscv64-glue.c
+>  create mode 100644 arch/riscv/crypto/sha256-riscv64-zvknha_or_zvknhb-zvk=
+b.S
+>  create mode 100644 arch/riscv/crypto/sha512-riscv64-glue.c
+>  create mode 100644 arch/riscv/crypto/sha512-riscv64-zvknhb-zvkb.S
+>  create mode 100644 arch/riscv/crypto/sm3-riscv64-glue.c
+>  create mode 100644 arch/riscv/crypto/sm3-riscv64-zvksh-zvkb.S
+>  create mode 100644 arch/riscv/crypto/sm4-riscv64-glue.c
+>  create mode 100644 arch/riscv/crypto/sm4-riscv64-zvksed-zvkb.S
+>
+>
+> base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+> --
+> 2.43.0
+>
 
