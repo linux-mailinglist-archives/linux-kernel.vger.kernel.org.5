@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-36172-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82DBE839D00
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 00:12:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2A8E839D03
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 00:12:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 327B1286CDE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 23:12:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 341021F2517B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 23:12:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4155C57321;
-	Tue, 23 Jan 2024 23:11:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 266215A794;
+	Tue, 23 Jan 2024 23:11:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="MEdYykU8"
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="OGfAuDTF"
 Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2067.outbound.protection.outlook.com [40.107.22.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 679B655795;
-	Tue, 23 Jan 2024 23:11:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC8EE55E57;
+	Tue, 23 Jan 2024 23:11:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.67
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706051478; cv=fail; b=l1vt1+8ASoPmJzywqypO7QB8yIcTaG+vCuIPT9CFqhptw2ldaYjA4GvcPz//Srj9R8GuhXHWxOqdagklMk7sSQ7aXhjC98Q/+z8VuaffcWjTtF8awpRiIf8omjfYOUW39cDSbvZgHndyH78yLA7LGnAMFsSB4urub/ztTNdA2YI=
+	t=1706051481; cv=fail; b=qUruv1Vanbhrhd+a2H1vzi/ZtXMK8C4lywT2YaKCr6ekWo2hlgzjLxIWcIHjgkqg97EQB/2UXhRDwSBPl/ofpKydN9UGDL1gEzH5YastpUGyRxESDyevsQ5yfc3z2V+d89VSybPZnWA8Q4ryrTR2bonNy837rQAD7z2v1y/FCiU=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706051478; c=relaxed/simple;
-	bh=cbqJ8B8zoNb1wL5cvsafYdWHOXGpucToAPhTV87jaLA=;
+	s=arc-20240116; t=1706051481; c=relaxed/simple;
+	bh=CD5kjo9+4Dx/aNyWiQdbwnyptasEeCwpH/xSHn2yLWM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=e2r/GgtJJBaIfirrdLX3cu1/bEj6t7cTN280+S0BF9UXpJapTMsAbacQ+JG45xT8af/bGNzN3GVPv49uE+R0GRkHLpGE3ItsAJj79FE1kBfL3k+2tcCgq5OjGE6ALefsuEAXN9iA8lJKjgiYhAqlT16kMTVwO9iB0uSlu89PBGg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=MEdYykU8; arc=fail smtp.client-ip=40.107.22.67
+	 Content-Type:MIME-Version; b=DvUU5V+pLgShWW/ugYwSgJ18Kl3iCqTUprsSDVrkTcAYPBl9UwNNgxNrTRHGDsFxrCl4m92Bbw3YI2gYSHWhdK4x2xqaYiz3uUWEXbG1xGz1hfgnFaOfD2Zf7i3UEVleWZb9ZK8e1RgEtkq+qc9pan0eVZfNrPhggz2TmfZ2sac=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=OGfAuDTF; arc=fail smtp.client-ip=40.107.22.67
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b5yGvUhL5HplsR/B24m9rABCvZz6VKFornOA6BdLk+e1wlADKUelRZWhshT8Adqx6ZwJLDkyoSBwGwKbKIZgDTGVpLWnjjQR5oIUUfv+8xtWMV9oBiEoOO+1fZBqWESle2B+sRku0LMM6UGl5ZCnVuoc8bH5ltAH/Sg59p8UNEW/SZqCSdcSrMOrutlfXqNQrsf4Gl01nh3JqqTmNftih4SRPoqd+00H45wDcERe1gJiCtrqh/+S3aFCZdnMxXJuaXnuIG+HjKuOBonWP2uUbYbMN0ikuh1STsnl/BiLYKV3rYhrRhXtIWhyDdfgG51LETr1CH3Ll8sr8xTyay4ADQ==
+ b=dXxEN3SROqdxBDzPNpUegTjI6CdXdBheZuI9i+FYhbdizQbn/cUA2ph3Jcs/NIn5t/u2NOFDwrlK/FVUhhOQYSR6P65jdoGFPVNozhSy6uk/JX6uDDnky/q7SrVJ8s5F0eQHAbTIwqhEmYaJZHaIOLGdvC8nXAhDVw7jZrZU2NgAlITMJMYWpxIfzJk0jpntwa7shBZnV1yrWUYfhe3rtGkPN886CdFAgaodUv1wztaPerMR0ZYiluoaK/zqmQ/1XoeoevkIUFdIWjNS3x78eDCmI66zyydew6+HiLUMNaEJQQsULR+qXl36aX4V9Xjhqhmj/sw1rGd1MGK2oKvaHQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NcAD7n5DFC8zY5SMsqG6DN1S/Q3hAt3IaNHuvXjxowM=;
- b=KyZPD+kfDper0xWvB6c5pipHpcQwWUlZPfwzMjhwYUc5GiW5hw65/ys9I670iDvbbQcmOIItmIYilySQNLT6QBpijuZw+fgN66hEJgg+uVzm/tEyT6Z55yjzBt+4Ib0RmpJh1vX6SU+coRegYiTULI0p8rX6iB0ka8rTRN8zIoz4U9T4mBLdG/IDyo7LuLKVRcjHI4OvaH/YvFguYYlNFMb9PgoPJBC0zcmX/OYibM549gluLaPSvfQFBnVAnJCPqAesIIOz9kVENC5TeIA2vuWFfziY7CvKk9Dc0FLqwakxo4Pd4qFnycR/jDVZXgEHpAT3uOxpx9u/ahdB6j9Hcw==
+ bh=i9UN7ujkdLSFL/UqlRYdVA1+ucq1lYc5jQjhqBg1C2g=;
+ b=h6Rc6wAR+kzaZgAkiU3oYh2Z9ngKPDEf6dYTX4vyeWmy7ug+r3rD+TyIZaMZUbQwqNg5kR1pKMa8oNYNWCmeeInP1jdY3ApDORCGczIOK84N+NittxIEMLcJtNtClZZolHiC+MdtwGFbdYevgawq32ZTlBpBuwtsZfBQ5FMobbKwsWxR7EhpUumjt+/VpcoUY1ZLQt5OrhF6+yKNkEwB674cwXpeGmGgzmVC6Tt83RXY+MbYg7CD4EM3FzHH0UxdY0eXpsN+3T3nis+YzbPuwuHlMXzN49RJJtxoOvaQKAE1w4y0I5zpazlLJgScv5T3kLw2XLveJnWf7Sqj9Dk7Nw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NcAD7n5DFC8zY5SMsqG6DN1S/Q3hAt3IaNHuvXjxowM=;
- b=MEdYykU8PLJCHCi+n4v1YlfD/Y0rYXwnWRSY/GpldwN6YF8rvFMUSXLJldrxL9EiUD+4lp2gAKxKjeHfJn99I54U5QlrZAQQSHaghQtv6nM/PWsjtLZyCg9y4tskN4zrsmok0TYZGoP996ETcE/49oUGxaN+SBXjlJCBEwpe0ek=
+ bh=i9UN7ujkdLSFL/UqlRYdVA1+ucq1lYc5jQjhqBg1C2g=;
+ b=OGfAuDTFF4zb4SivLSRPiEch5EmlHnd1pIePPB0sJPjQ1zhHpZzX1qDltRKA2wlzCqFayOHsPsirtRbh7/Ocifv4vSWMMx1Tkzz1FczLo6k5ZEzjdYPtlCXdiqqpTJtfLlFen9EJzJ1C8rdtss22N7dA3o+FfDWYySjztbPFTnM=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nxp.com;
 Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
  by DB9PR04MB9475.eurprd04.prod.outlook.com (2603:10a6:10:367::18) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.32; Tue, 23 Jan
- 2024 23:11:12 +0000
+ 2024 23:11:16 +0000
 Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
  ([fe80::c8b4:5648:8948:e85c]) by PAXPR04MB9642.eurprd04.prod.outlook.com
  ([fe80::c8b4:5648:8948:e85c%3]) with mapi id 15.20.7202.035; Tue, 23 Jan 2024
- 23:11:12 +0000
+ 23:11:16 +0000
 From: Frank Li <Frank.Li@nxp.com>
 To: frank.li@nxp.com
 Cc: alexandre.belloni@bootlin.com,
@@ -72,9 +72,9 @@ Cc: alexandre.belloni@bootlin.com,
 	miquel.raynal@bootlin.com,
 	robh@kernel.org,
 	zbigniew.lukwinski@linux.intel.com
-Subject: [PATCH v4 3/8] Documentation: i3c: Add I3C target mode controller and function
-Date: Tue, 23 Jan 2024 18:10:38 -0500
-Message-Id: <20240123231043.3891847-4-Frank.Li@nxp.com>
+Subject: [PATCH v4 4/8] i3c: svc: Add svc-i3c-main.c and svc-i3c.h
+Date: Tue, 23 Jan 2024 18:10:39 -0500
+Message-Id: <20240123231043.3891847-5-Frank.Li@nxp.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240123231043.3891847-1-Frank.Li@nxp.com>
 References: <20240123231043.3891847-1-Frank.Li@nxp.com>
@@ -91,523 +91,237 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|DB9PR04MB9475:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6ac074e4-0621-42bd-b55e-08dc1c68975e
+X-MS-Office365-Filtering-Correlation-Id: 6171de60-6edd-4235-6059-08dc1c6899b9
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	3c0XCX/U6ummA1DB5QXXdvMuB5xgSqvEAeu4ENdp+qBLz0BVXfYle/w6UOOJo+D4cY1oYUmFf3AxiSWziu2tLvj9bqf3zfXQSOAn1oSSIoOyPGigkpaY8rF0wCd9QvQurcRfuqLnswXDMMH4hLZhb9OPuD+Nb/7crRWgLBUHn3umFOLseO679BO77l2cawlrOHHvYEEwhmL8XxY8D9aJSR8NCBTf/iWu59Yk169IpWIkP1S5CBDoxMf/v9qFsm2UF82ds9pOxCzNsh4FJXhKSz/wb0a06DT4SmsXZDGlhoLABLviVgwhJpCqWZl3QMDPz+VzQTTXltpv2USMbsh5hYrWAIbwY0r0bOp4I9ftUd/zT9HzBnCR8Ph7K7Z2/jSk9YYN6hw8ioVBRkgo6PxAjSLXsUuRGJtRk1D6nP3/AX5nWs0Q01BXv4Pa+C6P2yV3mpZCE2hk7KxaHYAtWS4PjEkjH/DsaFQKECNBpHZvPoRQGOtFIvmB8t3L8S1oYVsDg//mM47tyGqdoCf06rb1ix0n0pZBvVAll3483l/3+wr9Vs9ugYx4fGWSJYm3fz0Koh/Q3Gc+6raS+G9aYmXI8xyXvHokfVdu7iDYxp8qCf6Yf4Ob9cWeLOSLVQgdHe5g
+	KEC8KBoV8pb9qz0paEdMr7k5/l7qUDhBM3eLXV8asSrq8m6dlxwlVDKhc/CsjvZaQVXu9jRP1c/X1la+sBGJfyohbM2RDNlG5mcGF5q2tSGItWvYIb6RAnPol3N2/RFjOJ252aH8PspHGpWV6tUi7EOtaCysJAikxoq4+E3Bili9DX6GooMawZh6OELCYeBl3yYOqeq+zMP0rNCJDTe2xN0XjPbueQBNADmZl2D4LbR7rtd+NdbA+EVxypaqYUwNh/7xA5FZw2VOVngNuC5mU95sm1x8uSh14pXg+NkmLeXTAg7VxhgO86pphJ5BKtOeM5qJyuDuNVsjlkSlnJElIq++snZIhvfMPSJ9QE+V2v+L/GJjXlKgs7yigo/bYulXUYKHLmGwktuQZK0dSeOkxo2xHPZlVWsifx7a1Mslf+AMwO7mv8a/H21uUynh5EzkLy6+vUQSfvBgOyl7+jPtEDbT1NJAxpjjyed2E/aYXlbLrztCjVf/EK5MXq2LYkpCkYytLA9nCDyW+TlRAfMCzOZUYS8csdxHewwNkV9ef2W4eP+i2MFUOXXyQx3VaJU6Fw55aB32ByMCgp7zATeCh1nZOxHISh346+vClGk5qCp87R2L3MjwR4tp0U0Td1Hw
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(396003)(346002)(366004)(39860400002)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(1076003)(83380400001)(66946007)(2616005)(26005)(6506007)(6512007)(38100700002)(478600001)(2906002)(8676002)(30864003)(34206002)(8936002)(4326008)(7416002)(37006003)(52116002)(5660300002)(66476007)(6486002)(66556008)(316002)(6666004)(36756003)(38350700005)(86362001)(41300700001);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(396003)(346002)(366004)(39860400002)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(1076003)(83380400001)(66946007)(2616005)(26005)(6506007)(6512007)(38100700002)(478600001)(2906002)(8676002)(34206002)(8936002)(4326008)(7416002)(37006003)(52116002)(5660300002)(66476007)(6486002)(66556008)(316002)(6666004)(36756003)(38350700005)(86362001)(41300700001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?+7MJntf+2QKpxAPn2y/PfZS3lb1gjv3lN2118DXnbTQKstsCI9Z1CJnVo7DY?=
- =?us-ascii?Q?rDEa0wmUMldu46g3vP4a87cvWVqLXCmUOYBbobDRPl+RzhqLkia1bNhH91K0?=
- =?us-ascii?Q?ex217TN/xitvbBdkcrHUPVEhtK9ojeNQgHKRKUbHvqSfOfoq3SSKt/Kh0Ho+?=
- =?us-ascii?Q?Sv3YvlD+GxojYbBBptRpvpe1Al6ZIM3CwCwOayr3939H1LX1YWlFbOAwfD4c?=
- =?us-ascii?Q?17n7yDuYouauqwSNEA9yfjuTBD4mqNbolCEA6BfB6pizo24+EeVHWTMv4+e+?=
- =?us-ascii?Q?QxEb0GZTYVUcnNSgmmXPT7jxZVHiVqxtYeu79nkaHC2wEqSki/W5Zbl5i+Yo?=
- =?us-ascii?Q?MJrITmuu6cjpBsTPZIMiugdzJsd2s7+NnxHQDYcAnZwdcqamhH33A1pGDzao?=
- =?us-ascii?Q?qypcGlqKL9E0GpIXaxt/9SXK4qHEuCiXumFO7c83sKGH7YzyomnoAQM4J8/C?=
- =?us-ascii?Q?5Y98/vQLkfuOCsG+Z9/wwdro9jVoWaZt6wQlbZhjTYP7goxroj5t7Xp5ij2+?=
- =?us-ascii?Q?qQyCpxfRbgMPZmEF6wrz0WCayo/oOZ66CGDuiCbXTn6BiLcOYe+a8aHEZGFY?=
- =?us-ascii?Q?7Y3RDQrGRVRDUHEyRV41VCWlTHBsPbypQevnFpuP81i9C0etKgPuutoXlFcV?=
- =?us-ascii?Q?L3SPheJTe3WhHUqBBhBDN8EAoYKEWZYjT3oCH78heDC/MXSIcnkWt1/oiNWJ?=
- =?us-ascii?Q?uQSOpJTeY/CqbAGaKUCicln3vhIq/BJUSiQbhci2Ajvu7r0b6jPpJG3TzZeb?=
- =?us-ascii?Q?JbZmGikDltT1MAsrieBwiqPKmFxa2Z9UWi4PRip58R+j15nJXzJdeDDEE582?=
- =?us-ascii?Q?Ufw0gHYw63qdX9c6w973v5JJ0eYi03eZAZkkEwg7mJh91ot10pAQtugSA/QC?=
- =?us-ascii?Q?1ycVTyOo5Lhpsqbj8B96uaUBY8r7yDnbVQEthZZBGIdTjS57fZFaH3PyJMrA?=
- =?us-ascii?Q?l8xtLArc97d+ls/GoS4Q7jUebU8yU45CZr6wzo0OZMtXdBHikL6BhOEwwnyc?=
- =?us-ascii?Q?DExw98qKE0ryIFR6gXQcq2urYqT0N7IqWnOZlB2z/INZd+yJKJPR+Xxx2XPG?=
- =?us-ascii?Q?+hZHumXYnpb+GbE908FAw96wEQZXd4Q8r0Ebw9RPuKOe0sDDJP3SrmFiN3Ce?=
- =?us-ascii?Q?lkg86cIHuiqu0IxDDlGuSdluL4lceh/DbO5lLdg2zWh+ikxGyiTKRhGCH45A?=
- =?us-ascii?Q?3jkXKITSC0mFfSa9mxgZ5oerbV9EFhvm+vGoGm1/U9PiyKp9LB5dv8ci4fcE?=
- =?us-ascii?Q?OOVrHNVoNWf3148T17LPEV9DD6OMS5Xmp2YS7qIfzHJ/K+nwiRlJshBEwOtJ?=
- =?us-ascii?Q?X7runZSYfs5THBS3XnDpdC7rsCL367uMTKFkwiLMSbt2hTOv3TQGac7A5fWM?=
- =?us-ascii?Q?os8vpgQeXAiGQdWXAQc8PIzkKo074pj95x8A5YQTtphO1vCfA64TjelFzXsc?=
- =?us-ascii?Q?MJr+AfOmt6MhkEbflRqyAGd2FdgwEQ2xtJ8dZBWqasHU2Ifp2b2HTwlhX3b0?=
- =?us-ascii?Q?1LjbYJwvsFygNMIMxEg7Fozkk71+9QCTDjV9d8kVJdMHpmWB+uQ6Vf9253pO?=
- =?us-ascii?Q?Ewl3VSdwRaVxbl3cNQc1nQA4m3OaTKgqvkanChSU?=
+	=?us-ascii?Q?RK0gNy4NOu0Dk4N7nZbiCxcF6qBe0oiKFexgxziQIhGa7R8Z/CiLQWKZb0Dc?=
+ =?us-ascii?Q?vHIQMo6Q7rxJKo/QbugnjJsHPsuPthwvY1BrP1d8xwyve4sBeWHRCQMzsCH9?=
+ =?us-ascii?Q?2P0ykjzdBTXqkDtcHsWAtuIN6Nv9FGCruNFXtB5lTjN2IgnAFuWSQRg1Gxaw?=
+ =?us-ascii?Q?MtchGEtNPsVusegjPd6LsGFbz7HlvbaxUeNMmHmqJUBzTQNIKhf4/yWhIySR?=
+ =?us-ascii?Q?8NTkVjof1wWzPXe5QGj06ajqTdEsegJRNtpQ6k5yKOPVHZB1NakSUWJU8bBW?=
+ =?us-ascii?Q?0vSF9clfPS5D89ZrSi5hNgfNoDGwts0Jxt3+/F25XciQA9nEvUiWZD2DwtR5?=
+ =?us-ascii?Q?LbHV/yY3IMrvIzSTMuijujoREFeJqFLlOO0QtBMp5qw0qs1ALhGd1VuUkhcJ?=
+ =?us-ascii?Q?5N2N3JfbPxzbb1oNUA9hRGU2mRGM/p13UIFaDmHhxRFf3+N4b5ZSchkd5YI4?=
+ =?us-ascii?Q?IQo9DgJd0Km8ugmmyMIQvvSlR+CZp0zLZowxPEyo/FlYjOg2A+XfYszehgh4?=
+ =?us-ascii?Q?nKWpWtfq757Chpj79gjZRrip+P9bZj4Y+2iv1Fk9rTRqWrHk76WYM1nx8qP7?=
+ =?us-ascii?Q?E2wZgZH5C6Mv9VTdgGiLG6H4Swt1mywr9rIGHCeh10KzLSuyKSSrnwRtgD6r?=
+ =?us-ascii?Q?vtzyqkmA62s9uwrLmqfPBW933IAA3eKggzje7Por1HIzwSPFZDqhtkTlrMmL?=
+ =?us-ascii?Q?AeWLpaSbNXXmQBmfPLj1i4oyzF/wuSi2TwKqhYgzbeb/E8TRApZYlJzbG18w?=
+ =?us-ascii?Q?/Yt5NNFk/wNRVAe2GnXK323UTQe1ixwK7bF7+6lCwAXJSToyVOnD7JwRpx+U?=
+ =?us-ascii?Q?R6FInwCQSls0IRAYu77FEnf9mPlRNs80awNcaq+cTCXlMsBTT/xsxu/RCeED?=
+ =?us-ascii?Q?HNCURtmjWtKb4k82bkS12eNDHmBNiA02KaS47kjg+t0EhZ4eZN7cM0JhiEia?=
+ =?us-ascii?Q?9fUZB1D3MifBNs4bGrOMyTH5c+Gfe6+gYtmC+zdAyucO4LcNCSaxPFQof/aF?=
+ =?us-ascii?Q?TPxb6E/MPAHnFsAuArNTWqHWoljrdb3/G/zj1VlGAKM4n+qLSPt3JXFIY/iA?=
+ =?us-ascii?Q?bwUA3Y+wuFgKnvDHpanEXXDiMJWZ0HNfzcn8nIxptS+gyGYElw7VZQTjn6sz?=
+ =?us-ascii?Q?3nRaN9CijyxltFzMeBtJu6taR3oMGdhTmKc14UcDm52JMfu2cg6dzsZ6SwDp?=
+ =?us-ascii?Q?xdRzQI9MciifNMGFbdTNo3Mn5YC63jtPTAW6GohgYFEpkp1quk+TgAfrZfrF?=
+ =?us-ascii?Q?kB40p19wVpTa4LfnFKPRNgwX3xxMdnGktgatlp7JIbb8Vi+6afBT8642ro6U?=
+ =?us-ascii?Q?afv5aLuvd6J8F1b5liI+T4sFpv0y+K6JbOfebn8I9msaqNO23sXSjKaqxPJf?=
+ =?us-ascii?Q?DC9ScrpYUjQltXBH0Uk7NssR49b/oD9dAiD8d/Ryk1oDgQWX07HEvJLuR/Uz?=
+ =?us-ascii?Q?SGsbc2n39Cwcw5w39FkICDbJIrelDujUI8R3d7JYASW03mpGGdXb6xZVTpkA?=
+ =?us-ascii?Q?PHcW9oGAoO+r6pvOZPH9Xxb6L2LPechdf0xTWuptN3bYvmoG9C5k6AjiCxyu?=
+ =?us-ascii?Q?ACrvNh5ZJffiG2ndhrBsixXouoDWN7hkvkjRV2Ln?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6ac074e4-0621-42bd-b55e-08dc1c68975e
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6171de60-6edd-4235-6059-08dc1c6899b9
 X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jan 2024 23:11:12.3976
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jan 2024 23:11:16.2231
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9HU5XHq7dmptpV0dM4a6br3OeBxQ0SjWqKKHTgKWeEx4E8ChS3QFQ0E9M5z8q3hsPLPUhLWFT7Ak5rlQg4QJZg==
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9y9kIW4xJxFgmWfKRBYwDesJmfLR9Lu65SZmdHr1IU5yVKwsfqEwUzoCAA3fsU7UDrxeafjFsEDp4lwlTWZZXw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9475
 
-Add I3C target mode and tty over i3c func driver document.
+SVC i3c is a dual role controller. Move probe() into svc-i3c-main.c. This
+prepares to support target probe depending on dts "mode" settings.
 
 Signed-off-by: Frank Li <Frank.Li@nxp.com>
 ---
- Documentation/driver-api/i3c/index.rst        |   1 +
- .../driver-api/i3c/target/i3c-target-cfs.rst  | 109 ++++++++++
- .../driver-api/i3c/target/i3c-target.rst      | 189 ++++++++++++++++++
- .../driver-api/i3c/target/i3c-tty-howto.rst   | 109 ++++++++++
- Documentation/driver-api/i3c/target/index.rst |  13 ++
- 5 files changed, 421 insertions(+)
- create mode 100644 Documentation/driver-api/i3c/target/i3c-target-cfs.rst
- create mode 100644 Documentation/driver-api/i3c/target/i3c-target.rst
- create mode 100644 Documentation/driver-api/i3c/target/i3c-tty-howto.rst
- create mode 100644 Documentation/driver-api/i3c/target/index.rst
+ drivers/i3c/master/Makefile         |  3 +-
+ drivers/i3c/master/svc-i3c-main.c   | 52 +++++++++++++++++++++++++++++
+ drivers/i3c/master/svc-i3c-master.c | 34 ++++---------------
+ drivers/i3c/master/svc-i3c.h        | 11 ++++++
+ 4 files changed, 71 insertions(+), 29 deletions(-)
+ create mode 100644 drivers/i3c/master/svc-i3c-main.c
+ create mode 100644 drivers/i3c/master/svc-i3c.h
 
-diff --git a/Documentation/driver-api/i3c/index.rst b/Documentation/driver-api/i3c/index.rst
-index 783d6dad054b6..345a43c9f61b0 100644
---- a/Documentation/driver-api/i3c/index.rst
-+++ b/Documentation/driver-api/i3c/index.rst
-@@ -9,3 +9,4 @@ I3C subsystem
-    protocol
-    device-driver-api
-    master-driver-api
-+   target/index
-diff --git a/Documentation/driver-api/i3c/target/i3c-target-cfs.rst b/Documentation/driver-api/i3c/target/i3c-target-cfs.rst
+diff --git a/drivers/i3c/master/Makefile b/drivers/i3c/master/Makefile
+index 3e97960160bc8..484cb81f45821 100644
+--- a/drivers/i3c/master/Makefile
++++ b/drivers/i3c/master/Makefile
+@@ -2,5 +2,6 @@
+ obj-$(CONFIG_CDNS_I3C_MASTER)		+= i3c-master-cdns.o
+ obj-$(CONFIG_DW_I3C_MASTER)		+= dw-i3c-master.o
+ obj-$(CONFIG_AST2600_I3C_MASTER)	+= ast2600-i3c-master.o
+-obj-$(CONFIG_SVC_I3C_MASTER)		+= svc-i3c-master.o
++svc-i3c-objs				+= svc-i3c-main.o svc-i3c-master.o
++obj-$(CONFIG_SVC_I3C_MASTER)		+= svc-i3c.o
+ obj-$(CONFIG_MIPI_I3C_HCI)		+= mipi-i3c-hci/
+diff --git a/drivers/i3c/master/svc-i3c-main.c b/drivers/i3c/master/svc-i3c-main.c
 new file mode 100644
-index 0000000000000..1fcf829dc4ae2
+index 0000000000000..053b2bd9d8317
 --- /dev/null
-+++ b/Documentation/driver-api/i3c/target/i3c-target-cfs.rst
-@@ -0,0 +1,109 @@
-+.. SPDX-License-Identifier: GPL-2.0
++++ b/drivers/i3c/master/svc-i3c-main.c
+@@ -0,0 +1,52 @@
++// SPDX-License-Identifier: GPL-2.0
 +
-+=======================================
-+Configuring I3C Target Using CONFIGFS
-+=======================================
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
 +
-+:Author: Frank Li <Frank.Li@nxp.com>
++#include "svc-i3c.h"
 +
-+The I3C Target Core exposes configfs entry (i3c_target) to configure the I3C
-+target function and to bind the target function with the target controller.
-+(For introducing other mechanisms to configure the I3C Target Function refer to
-+[1]).
++static int svc_i3c_probe(struct platform_device *pdev)
++{
++	return svc_i3c_master_probe(pdev);
++}
 +
-+Mounting configfs
-+=================
++static void svc_i3c_remove(struct platform_device *pdev)
++{
++	svc_i3c_master_remove(pdev);
++}
 +
-+The I3C Target Core layer creates i3c_target directory in the mounted configfs
-+directory. configfs can be mounted using the following command::
++static int __maybe_unused svc_i3c_runtime_suspend(struct device *dev)
++{
++	return svc_i3c_master_runtime_suspend(dev);
++}
 +
-+	mount -t configfs none /sys/kernel/config
++static int __maybe_unused svc_i3c_runtime_resume(struct device *dev)
++{
++	return svc_i3c_master_runtime_resume(dev);
++}
 +
-+Directory Structure
-+===================
++static const struct dev_pm_ops svc_i3c_pm_ops = {
++	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
++				      pm_runtime_force_resume)
++	SET_RUNTIME_PM_OPS(svc_i3c_runtime_suspend,
++			   svc_i3c_runtime_resume, NULL)
++};
 +
-+The i3c_target configfs has two directories at its root: controllers and
-+functions. Every Controller device present in the system will have an entry in
-+the *controllers* directory and every Function driver present in the system will
-+have an entry in the *functions* directory.
-+::
++static const struct of_device_id svc_i3c_master_of_match_tbl[] = {
++	{ .compatible = "silvaco,i3c-master-v1"},
++	{ /* sentinel */ },
++};
++MODULE_DEVICE_TABLE(of, svc_i3c_master_of_match_tbl);
 +
-+	/sys/kernel/config/i3c_target/
-+		.. controllers/
-+		.. functions/
++static struct platform_driver svc_i3c_master = {
++	.probe = svc_i3c_probe,
++	.remove_new = svc_i3c_remove,
++	.driver = {
++		.name = "silvaco-i3c-master",
++		.of_match_table = svc_i3c_master_of_match_tbl,
++		.pm = &svc_i3c_pm_ops,
++	},
++};
++module_platform_driver(svc_i3c_master);
+\ No newline at end of file
+diff --git a/drivers/i3c/master/svc-i3c-master.c b/drivers/i3c/master/svc-i3c-master.c
+index 5ee4db68988e2..4dfe85ab17fd2 100644
+--- a/drivers/i3c/master/svc-i3c-master.c
++++ b/drivers/i3c/master/svc-i3c-master.c
+@@ -21,6 +21,8 @@
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ 
++#include "svc-i3c.h"
 +
-+Creating Function Device
-+===================
-+
-+Every registered Function driver will be listed in controllers directory. The
-+entries corresponding to Function driver will be created by the Function core.
-+::
-+
-+	/sys/kernel/config/i3c_target/functions/
-+		.. <Function Driver1>/
-+			... <Function Device 11>/
-+			... <Function Device 21>/
-+			... <Function Device 31>/
-+		.. <Function Driver2>/
-+			... <Function Device 12>/
-+			... <Function Device 22>/
-+
-+In order to create a <Function device> of the type probed by <Function Driver>,
-+the user has to create a directory inside <Function DriverN>.
-+
-+Every <Function device> directory consists of the following entries that can be
-+used to configure the standard configuration header of the target function.
-+(These entries are created by the framework when any new <Function Device> is
-+created)
-+::
-+
-+		.. <Function Driver1>/
-+			... <Function Device 11>/
-+				... vendor_id
-+				... part_id
-+				... bcr
-+				... dcr
-+				... ext_id
-+				... instance_id
-+				... max_read_len
-+				... max_write_len
-+				... vendor_info
-+
-+Controller Device
-+==========
-+
-+Every registered Controller device will be listed in controllers directory. The
-+entries corresponding to Controller device will be created by the Controller
-+core.
-+::
-+
-+	/sys/kernel/config/i3c_target/controllers/
-+		.. <Controller Device1>/
-+			... <Symlink Function Device11>/
-+		.. <Controller Device2>/
-+			... <Symlink Function Device21>/
-+
-+The <Controller Device> directory will have a list of symbolic links to
-+<Function Device>. These symbolic links should be created by the user to
-+represent the functions present in the target device. Only <Function Device>
-+that represents a physical function can be linked to a Controller device.
-+
-+::
-+
-+			 | controllers/
-+				| <Directory: Controller name>/
-+					| <Symbolic Link: Function>
-+			 | functions/
-+				| <Directory: Function driver>/
-+					| <Directory: Function device>/
-+						| vendor_id
-+						| part_id
-+						| bcr
-+						| dcr
-+						| ext_id
-+						| instance_id
-+						| max_read_len
-+						| max_write_len
-+						| vendor_info
-+
-+[1] Documentation/I3C/target/pci-target.rst
-diff --git a/Documentation/driver-api/i3c/target/i3c-target.rst b/Documentation/driver-api/i3c/target/i3c-target.rst
+ /* Master Mode Registers */
+ #define SVC_I3C_MCONFIG      0x000
+ #define   SVC_I3C_MCONFIG_MASTER_EN BIT(0)
+@@ -1613,7 +1615,7 @@ static void svc_i3c_master_unprepare_clks(struct svc_i3c_master *master)
+ 	clk_disable_unprepare(master->sclk);
+ }
+ 
+-static int svc_i3c_master_probe(struct platform_device *pdev)
++int svc_i3c_master_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+ 	struct svc_i3c_master *master;
+@@ -1706,7 +1708,7 @@ static int svc_i3c_master_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static void svc_i3c_master_remove(struct platform_device *pdev)
++void svc_i3c_master_remove(struct platform_device *pdev)
+ {
+ 	struct svc_i3c_master *master = platform_get_drvdata(pdev);
+ 
+@@ -1733,7 +1735,7 @@ static void svc_i3c_restore_regs(struct svc_i3c_master *master)
+ 	}
+ }
+ 
+-static int __maybe_unused svc_i3c_runtime_suspend(struct device *dev)
++int svc_i3c_master_runtime_suspend(struct device *dev)
+ {
+ 	struct svc_i3c_master *master = dev_get_drvdata(dev);
+ 
+@@ -1744,7 +1746,7 @@ static int __maybe_unused svc_i3c_runtime_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int __maybe_unused svc_i3c_runtime_resume(struct device *dev)
++int svc_i3c_master_runtime_resume(struct device *dev)
+ {
+ 	struct svc_i3c_master *master = dev_get_drvdata(dev);
+ 
+@@ -1756,30 +1758,6 @@ static int __maybe_unused svc_i3c_runtime_resume(struct device *dev)
+ 	return 0;
+ }
+ 
+-static const struct dev_pm_ops svc_i3c_pm_ops = {
+-	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
+-				      pm_runtime_force_resume)
+-	SET_RUNTIME_PM_OPS(svc_i3c_runtime_suspend,
+-			   svc_i3c_runtime_resume, NULL)
+-};
+-
+-static const struct of_device_id svc_i3c_master_of_match_tbl[] = {
+-	{ .compatible = "silvaco,i3c-master-v1"},
+-	{ /* sentinel */ },
+-};
+-MODULE_DEVICE_TABLE(of, svc_i3c_master_of_match_tbl);
+-
+-static struct platform_driver svc_i3c_master = {
+-	.probe = svc_i3c_master_probe,
+-	.remove_new = svc_i3c_master_remove,
+-	.driver = {
+-		.name = "silvaco-i3c-master",
+-		.of_match_table = svc_i3c_master_of_match_tbl,
+-		.pm = &svc_i3c_pm_ops,
+-	},
+-};
+-module_platform_driver(svc_i3c_master);
+-
+ MODULE_AUTHOR("Conor Culhane <conor.culhane@silvaco.com>");
+ MODULE_AUTHOR("Miquel Raynal <miquel.raynal@bootlin.com>");
+ MODULE_DESCRIPTION("Silvaco dual-role I3C master driver");
+diff --git a/drivers/i3c/master/svc-i3c.h b/drivers/i3c/master/svc-i3c.h
 new file mode 100644
-index 0000000000000..09ae26b1f311a
+index 0000000000000..0bd1f0112a071
 --- /dev/null
-+++ b/Documentation/driver-api/i3c/target/i3c-target.rst
-@@ -0,0 +1,189 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+:Author: Frank Li <Frank.Li@nxp.com>
-+
-+This document is a guide to use the I3C Target Framework in order to create
-+target controller driver, target function driver, and using configfs interface
-+to bind the function driver to the controller driver.
-+
-+Introduction
-+============
-+
-+Linux has a comprehensive I3C subsystem to support I3C controllers that
-+operates in master mode. The subsystem has capability to scan I3C bus,assign
-+i3c device address, load I3C driver (based on Manufacturer ID, part ID),
-+support other services like hot-join, In-Band Interrupt(IBI).
-+
-+However the I3C controller IP integrated in some SoCs is capable of operating
-+either in Master mode or Target mode. I3C Target Framework will add target mode
-+support in Linux. This will help to run Linux in an target system which can
-+have a wide variety of use cases from testing or validation, co-processor
-+accelerator, etc.
-+
-+I3C Target Core
-+=================
-+
-+The I3C Target Core layer comprises 3 components: the Target Controller
-+library, the Target Function library, and the configfs layer to bind the target
-+function with the target controller.
-+
-+I3C Target Controller Library
-+------------------------------------
-+
-+The Controller library provides APIs to be used by the controller that can
-+operate in target mode. It also provides APIs to be used by function
-+driver/library in order to implement a particular target function.
-+
-+APIs for the I3C Target controller Driver
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+This section lists the APIs that the I3C Target core provides to be used by the
-+I3C controller driver.
-+
-+* devm_i3c_target_ctrl_create()/i3c_target_ctrl_create()
-+
-+   The I3C controller driver should implement the following ops:
-+
-+	* set_config: ops to set i3c configuration
-+	* enable: ops to enable controller
-+	* disable: ops to disable controller
-+	* raise_ibi: ops to raise IBI to master controller
-+	* alloc_request: ops to alloc a transfer request
-+	* free_request: ops to free a transfer request
-+	* queue: ops to queue a request to transfer queue
-+	* dequeue: ops to dequeue a request from transfer queue
-+	* cancel_all_reqs: ops to cancel all request from transfer queue
-+        * fifo_status: ops to get fifo status
-+        * fifo_flush: ops to flush hardware fifo
-+	* get_features: ops to get controller supported features
-+
-+   The I3C controller driver can then create a new Controller device by
-+   invoking devm_i3c_target_ctrl_create()/i3c_target_ctrl_create().
-+
-+* devm_i3c_target_ctrl_destroy()/i3c_target_ctrl_destroy()
-+
-+   The I3C controller driver can destroy the Controller device created by
-+   either devm_i3c_target_ctrl_create() or i3c_target_ctrl_create() using
-+   devm_i3c_target_ctrl_destroy() or i3c_target_ctrl_destroy().
-+
-+I3C Target Controller APIs for the I3C Target Function Driver
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+This section lists the APIs that the I3C Target core provides to be used by the
-+I3C target function driver.
-+
-+* i3c_target_ctrl_set_config()
-+
-+   The I3C target function driver should use i3c_target_ctrl_set_config() to
-+   write i3c configuration to the target controller.
-+
-+* i3c_target_ctrl_enable()/i3c_target_ctrl_disable()
-+
-+   The I3C target function driver should use i3c_target_ctrl_enable()/
-+   i3c_target_ctrl_disable() to enable/disable i3c target controller.
-+
-+* i3c_target_ctrl_alloc_request()/i3c_target_ctrl_free_request()
-+
-+   The I3C target function driver should usei3c_target_ctrl_alloc_request() /
-+   i3c_target_ctrl_free_request() to alloc/free a i3c request.
-+
-+* i3c_target_ctrl_raise_ibi()
-+
-+   The I3C target function driver should use i3c_target_ctrl_raise_ibi() to
-+   raise IBI.
-+
-+* i3c_target_ctrl_queue()/i3c_target_ctrl_dequeue()
-+
-+   The I3C target function driver should use i3c_target_ctrl_queue()/
-+   i3c_target_ctrl_dequeue(), to queue/dequeue I3C transfer to/from transfer
-+   queue.
-+
-+* i3c_target_ctrl_get_features()
-+
-+   The I3C target function driver should use i3c_target_ctrl_get_features() to
-+   get I3C target controller supported features.
-+
-+Other I3C Target Controller APIs
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+There are other APIs provided by the Controller library. These are used for
-+binding the I3C Target Function device with Controlller device. i3c-cfs.c can
-+be used as reference for using these APIs.
-+
-+* i3c_target_ctrl_get()
-+
-+   Get a reference to the I3C target controller based on the device name of
-+   the controller.
-+
-+* i3c_target_ctrl_put()
-+
-+   Release the reference to the I3C target controller obtained using
-+   i3c_target_ctrl_get()
-+
-+* i3c_target_ctrl_add_func()
-+
-+   Add a I3C target function to a I3C target controller.
-+
-+* i3c_target_ctrl_remove_func()
-+
-+   Remove the I3C target function from I3C target controller.
-+
-+I3C Target Function Library
-+----------------------------------
-+
-+The I3C Target Function library provides APIs to be used by the function driver
-+and the Controller library to provide target mode functionality.
-+
-+I3C Target Function APIs for the I3C Target Function Driver
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+This section lists the APIs that the I3C Target core provides to be used
-+by the I3C target function driver.
-+
-+* i3c_target_func_register_driver()
-+
-+   The I3C Target Function driver should implement the following ops:
-+	 * bind: ops to perform when a Controller device has been bound to
-+	   Function device
-+	 * unbind: ops to perform when a binding has been lost between a
-+	   Controller device and Function device
-+
-+  The I3C Function driver can then register the I3C Function driver by using
-+  i3c_target_func_register_driver().
-+
-+* i3c_target_func_unregister_driver()
-+
-+  The I3C Function driver can unregister the I3C Function driver by using
-+  i3c_epf_unregister_driver().
-+
-+APIs for the I3C Target Controller Library
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+This section lists the APIs that the I3C Target core provides to be used by the
-+I3C target controller library.
-+
-+Other I3C Target APIs
-+~~~~~~~~~~~~~~~~~~~~
-+
-+There are other APIs provided by the Function library. These are used to notify
-+the function driver when the Function device is bound to the EPC device.
-+i3c-cfs.c can be used as reference for using these APIs.
-+
-+* i3c_target_func_create()
-+
-+   Create a new I3C Function device by passing the name of the I3C EPF device.
-+   This name will be used to bind the Function device to a Function driver.
-+
-+* i3c_target_func_destroy()
-+
-+   Destroy the created I3C Function device.
-+
-+* i3c_target_func_bind()
-+
-+   i3c_target_func_bind() should be invoked when the EPF device has been bound
-+   to a Controller device.
-+
-+* i3c_target_func_unbind()
-+
-+   i3c_target_func_unbind() should be invoked when the binding between EPC
-+   device and function device is lost.
-diff --git a/Documentation/driver-api/i3c/target/i3c-tty-howto.rst b/Documentation/driver-api/i3c/target/i3c-tty-howto.rst
-new file mode 100644
-index 0000000000000..43a129b18e938
---- /dev/null
-+++ b/Documentation/driver-api/i3c/target/i3c-tty-howto.rst
-@@ -0,0 +1,109 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+===================
-+I3C TTY User Guide
-+===================
-+
-+:Author: Frank Li <Frank.Li@nxp.com>
-+
-+This document is a guide to help users use i3c-target-tty function driver and
-+i3ctty master driver for testing I3C. The list of steps to be followed in the
-+master side and target side is given below.
-+
-+Endpoint Device
-+===============
-+
-+Endpoint Controller Devices
-+---------------------------
-+
-+To find the list of target controller devices in the system::
-+
-+	# ls  /sys/class/i3c_target/
-+	  44330000.i3c-target
-+
-+If CONFIG_I3C_SLAVE_CONFIGFS is enabled::
-+
-+	# ls /sys/kernel/config/i3c_target/controllers/
-+	  44330000.i3c-target
-+
-+
-+Endpoint Function Drivers
-+-------------------------
-+
-+To find the list of target function drivers in the system::
-+
-+	# ls /sys/bus/i3c_target_func/drivers
-+	  tty
-+
-+If CONFIG_I3C_SLAVE_CONFIGFS is enabled::
-+
-+	# ls /sys/kernel/config/i3c_target/functions
-+	  tty
-+
-+
-+Creating i3c-target-tty Device
-+----------------------------
-+
-+I3C target function device can be created using the configfs. To create
-+i3c-target-tty device, the following commands can be used::
-+
-+	# mount -t configfs none /sys/kernel/config
-+	# cd /sys/kernel/config/i3c_target/
-+	# mkdir functions/tty/func1
-+
-+The "mkdir func1" above creates the i3c-target-tty function device that will
-+be probed by i3c tty driver.
-+
-+The I3C target framework populates the directory with the following
-+configurable fields::
-+
-+	# ls functions/tty/func1
-+	bcr  dcr  ext_id  instance_id  max_read_len  max_write_len
-+	part_id  vendor_id  vendor_info
-+
-+The I3C target function driver populates these entries with default values when
-+the device is bound to the driver. The i3c-target-tty driver populates vendorid
-+with 0xffff and interrupt_pin with 0x0001::
-+
-+	# cat functions/tty/func1/vendor_id
-+	  0x0
-+
-+Configuring i3c-target-tty Device
-+-------------------------------
-+
-+The user can configure the i3c-target-tty device using configfs entry. In order
-+to change the vendorid, the following commands can be used::
-+
-+	# echo 0x011b > functions/tty/func1/vendor_id
-+	# echo 0x1000 > functions/tty/func1/part_id
-+	# echo 0x6 > functions/tty/t/bcr
-+
-+Binding i3c-target-tty Device to target Controller
-+------------------------------------------------
-+
-+In order for the target function device to be useful, it has to be bound to a
-+I3C target controller driver. Use the configfs to bind the function device to
-+one of the controller driver present in the system::
-+
-+	# ln -s functions/tty/func1 controllers/44330000.i3c-target/
-+
-+I3C Master Device
-+================
-+
-+Check I3C tty device is probed
-+
-+	# ls /sys/bus/i3c/devices/0-23610000000
-+	0-23610000000:0  bcr  dcr  driver  dynamic_address  hdrcap
-+	modalias  pid  power  subsystem  tty  uevent
-+
-+Using Target TTY function Device
-+-----------------------------------
-+
-+Host side:
-+	cat /dev/ttyI3C0
-+Target side
-+	echo abc >/dev/ttyI3C0
-+
-+You will see "abc" show at console.
-+
-+You can use other tty tool to test I3C target tty device.
-diff --git a/Documentation/driver-api/i3c/target/index.rst b/Documentation/driver-api/i3c/target/index.rst
-new file mode 100644
-index 0000000000000..56eabfae83aa4
---- /dev/null
-+++ b/Documentation/driver-api/i3c/target/index.rst
-@@ -0,0 +1,13 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+======================
-+I3C Target Framework
-+======================
-+
-+.. toctree::
-+   :maxdepth: 2
-+
-+   i3c-target
-+   i3c-target-cfs
-+   i3c-tty-howto
-+
++++ b/drivers/i3c/master/svc-i3c.h
+@@ -0,0 +1,11 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#ifndef SVC_I3C_H
++#define SVC_I3C_H
++
++int svc_i3c_master_probe(struct platform_device *pdev);
++void svc_i3c_master_remove(struct platform_device *pdev);
++int svc_i3c_master_runtime_suspend(struct device *dev);
++int svc_i3c_master_runtime_resume(struct device *dev);
++
++#endif
+\ No newline at end of file
 -- 
 2.34.1
 
