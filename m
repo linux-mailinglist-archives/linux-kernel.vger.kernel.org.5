@@ -1,125 +1,104 @@
-Return-Path: <linux-kernel+bounces-35684-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35685-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2064839519
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:45:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 41BB283951C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:45:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5354B1F2DFB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:45:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D7C5E1F2DFE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:45:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAF5681218;
-	Tue, 23 Jan 2024 16:39:48 +0000 (UTC)
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 015BE81AC6;
+	Tue, 23 Jan 2024 16:40:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dxZqdEO1"
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BD94811E2;
-	Tue, 23 Jan 2024 16:39:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6D577F7E2
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 16:40:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706027988; cv=none; b=PVhgVlVg1fePLiJNowEkoODvVQASAQZ/WgHv1mkMoUPPMmUYIKWeCu5jSyZVOKL7AJBolP7/6aYQQENzvdgsjF/VgXxXKxnoxK6+wYweAp3p//gGtJvTrSTG/FuB25L55QXcUvsIqer3Q2eXHFIFzbEAI82XmgCntAalVlY89MY=
+	t=1706028008; cv=none; b=rgomsW1dYS+cXp9gRpq3C9CzjxkI4u69EyFNL5WfCRm9y9RfW5Dt3ECYPsvmNPzRIRpnuOSQr1deifwsSG3wRWnjZtB2q1SvsgxHJO5ng+vZj5bIo8yamBiX22cvI4QlWO5wvwvcc9tegJf+3omt4WPNsEvgjPqYEDF+8n4lePU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706027988; c=relaxed/simple;
-	bh=dMMaPYa1wAbibTnMNj895HLSrAnGL9Jfiu4kbBdK5Lc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EwhzDIxlt6wVQNpWa/oJKtNsScfywYhVJVuLU/hCB1alDt11zYE4Gve+AHWL1U/lq3vMrTCLdOUrbpz/Da1dVdwn2eGS+3aor0hGzXevrhDDCLe+DDXHDjuzbHQDHoXvVpiu5R9JZuHwYFKEMuOWpoNLXktX9S9GB95T68+jPoU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=heusel.eu; spf=pass smtp.mailfrom=heusel.eu; arc=none smtp.client-ip=217.72.192.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=heusel.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=heusel.eu
-Received: from localhost ([147.142.156.120]) by mrelayeu.kundenserver.de
- (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MhDAi-1qwqbP43yU-00eOnC; Tue, 23 Jan 2024 17:39:26 +0100
-Date: Tue, 23 Jan 2024 17:39:24 +0100
-From: Christian Heusel <christian@heusel.eu>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>, 
-	Mario Limonciello <mario.limonciello@amd.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, 
-	Linux ACPI <linux-acpi@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Zhang Rui <rui.zhang@intel.com>, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, 
-	Michal Wilczynski <michal.wilczynski@intel.com>, Hans de Goede <hdegoede@redhat.com>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
-	christian@heusel.eu
-Subject: Re: Re: [RFT][PATCH v1] ACPI: OSL: Use a threaded interrupt handler
- for SCI
-Message-ID: <kvoclxvyhmdmrfpfgwfjr33bdltej3upw5qcnazc4xakwdgg2b@krewjw2uk42k>
-References: <5745568.DvuYhMxLoT@kreacher>
- <20231129085600.GQ1074920@black.fi.intel.com>
- <CAJZ5v0iRqUXeuKmC_+dAJtDBLWQ3x15n4gRH48y7MEaLoXF+UA@mail.gmail.com>
+	s=arc-20240116; t=1706028008; c=relaxed/simple;
+	bh=/Lxu3ibdZFwYSpIB8dDpNCNVTxZpLUd0wwrOHEKIIQI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tdoiL1Uuyrs9eO43mhFNVNlkNeGSsFswMI4yCB8vQweASMM9MNCkCPNrXeUv9dzfb7FfSO23wr9cduyXT++LYnWFP6AOvTJfQp9Sa98PTLii0p29wkLt6DKGoZw2PNfgKeKGx+qHEzgniPd3hqOzHL2mYolBDUjPKfFiYPwV3T0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dxZqdEO1; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5ff790d41bdso31702567b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 08:40:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706028006; x=1706632806; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=kYAfHM7R7rnCSNUY4kqAV2WMKXhdQppzOOG2/3x8MBw=;
+        b=dxZqdEO1gwZXch2pvaryaG1ruVjEpNldw2gEI+BcuOJsGkzssciyTeEPBs1En7uh5q
+         EXfWLKmnsDISDuT2cY/6l9h8RGTcX+hlvyv2mIp52ngVPbhdirRaewI5cU9l5eqcLQ+3
+         WT6Puk8/uxKKjGjCAQRO4Q/Hf4kVPdWi/g/AZ/pWcRthujHpiT1kU3EyyzV51pTeRrvt
+         xmLXThbQRUikjifQn3JJnG5Aeaee/RkI0TsS3jOLE//JD8b/upxGb0hfi+Lc3iuRzXbs
+         g5l6Y1Q5KX1aWqrlF/CxuoLeOu5cTmOfNzINjfpvctP2gMEqCnMI11/Lqv40jw7e805m
+         +Wug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706028006; x=1706632806;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kYAfHM7R7rnCSNUY4kqAV2WMKXhdQppzOOG2/3x8MBw=;
+        b=ArOouiF59xABmsh7tcEt57nls+zn/0Tl097Z7KPEjyag4tVwTtUw7WraoVjDXDGiXd
+         ic0FsFNw+AaRs0hBnq8a7pRaIJ8I4Cl7aFNeThq0dreTawotszB6A1Kmn8HrGexpv3s8
+         qxhLpKAMHax//9q0ksvVR7eshZC8gyYG/zvwYNj0+xXoxiSLmty1VLHZZxa/ZW26HVp0
+         melJOhw/he+v3qUx5ymshXzxXeKqsZnee5yLx3mMXF8mz4lOu3jgXVTtGil/r29ZskZx
+         VfEc366G2BNfy3f976CMi7fbNwzOCAJlRrooI6VjrkDxJLdth2b23pECxdzXZzM8jZk1
+         1/4w==
+X-Gm-Message-State: AOJu0Ywgf+4m4Hb5j8esIkx9vWx7I9QAWRottFNI9UrFwjs4xRZdMYXK
+	3J1HjkfbXfaGK1LK4ij2IMh1WQmeHvIwQjP4yfsn57pB04Jn8qYUB2E64RMrMCsUmaLsWauhFjX
+	0MXDIpFF8LGC3LSvFCs9RG4DPhP4Ydq/EliaTeA==
+X-Google-Smtp-Source: AGHT+IGC6FCCx/JUl5ZF8p8TNRTwdcBW/FXg69irqngvfoaQBTfEyAlrxYiVawNtHkSVTMOs3vcjUvi8P3kIalAiNeE=
+X-Received: by 2002:a0d:ca95:0:b0:5ff:e530:eeaf with SMTP id
+ m143-20020a0dca95000000b005ffe530eeafmr3085307ywd.2.1706028005745; Tue, 23
+ Jan 2024 08:40:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="5lwyhnohrcrn6rfz"
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0iRqUXeuKmC_+dAJtDBLWQ3x15n4gRH48y7MEaLoXF+UA@mail.gmail.com>
-X-Provags-ID: V03:K1:y0uqNSq2EKI+HrwCFqUbaCCD6hKsC61KTwWnqjVmx9yzRwAHEmf
- UpTS7H2C3pPVBpexWC9VdgXUp8CCspde07aXQH9LaDK6RKFbJmWYkMusQem4+vGoNEFJq00
- gUXZB0CVzbpOoVJIGOALufWKw4iKMYCPULCscWuXp2/H6a6Xm0IPBJAIfV4YdRcqnJVe3vU
- 4//z2/vWzaUYeFnqgZUVw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:pRyLIeEbGCQ=;lwmtfEfXeHaoZNmmuE6qHlYQ3VV
- K17uQhc8jzGwbx5x/rUIKy4lkopvqKoqVMtYF8Ozz3JqiCf0l7avt+g6BoKjq0k5SxSScS0qu
- xU9uB8gDlVW39BLGMsiqiJZblbRh6bRdAx5xKEqzXmAVO0sIbGAD0qgLX/8pSh6gku4ErtdCO
- nn8T4Gu3LaSUNELgOfzhmmA9pY+f8BMPw5IkWqtyeyG6Mx88p+/PP7jbss6n1Mee3geATdWnP
- 15auRSs4nqptnMYJY7XqbyKdNxcN/C+/WMMEqsKNRlLxEzC8+9VkfPXkYUbDOQDhRbqKeDjgr
- spdnHyCarMtcYeFwRzLMNMv9M9iFf6v8+Uxv1V47CKtd1ZlY8SlRXbSSstUIA4DVYJNVmuyNU
- CfkGvIV+FB/bp9A9Fb8hPXKrDhies3HJ8eVMkJBRVgpQxH6muUXItawLPtAuXPpMchl1v1ocA
- PGGhsMSvzfDHh/V7mrBDSjdQMTgWAj13dgsCTKcLEffiO5HayBvUPrzA4SPzA+wdUAkP9adWF
- 7x02y8XOQMQESCSevx6il5y+Fq5rLAsGohq5Hov10uBrCcUuZP6SNy39bSkpRCY6ix4YxeCkY
- JUs0zEZAMyFt430fc7pCSpOhVPM4Ti8gn6Vn3IM+6RV4tfTBE7kDnCeRLXKpIU02hg2lFAT3D
- 8Joe9TSpYn7PiUeQWKckudd+iqIbCHvM4GsqYR8Y4QtvX5XKYft4ChzhxJI2JQ/k6EBPTTtzv
- pqlf7YdBkyUZ1NZq2LKTNcuft1lAIkzZsa8rx7ktFMCklDVtX+nBxv+sQ1eEl4MRGCWCfXr9b
- FbNVIEtDIeY7Rp/MKrawnGm8dQDzUBGJZbcy0QpaC/4PS0kSig7/5q5Ikw0iPXviOfQLEtE6R
- 7wmxYYPNRC3Ce3A==
+References: <1706026160-17520-1-git-send-email-mantas@8devices.com> <1706026160-17520-3-git-send-email-mantas@8devices.com>
+In-Reply-To: <1706026160-17520-3-git-send-email-mantas@8devices.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 23 Jan 2024 18:39:54 +0200
+Message-ID: <CAA8EJpqLYmpAt5D6g01Urg21ie7PpHkj3DRuxkqm6Epanzuksw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] phy: qcom-qmp-usb: fix serdes init sequence for IPQ6018
+To: Mantas Pucka <mantas@8devices.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, Baruch Siach <baruch@tkos.co.il>, 
+	linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+
+On Tue, 23 Jan 2024 at 18:10, Mantas Pucka <mantas@8devices.com> wrote:
+>
+> Commit 23fd679249df ("phy: qcom-qmp: add USB3 PHY support for IPQ6018")
+> noted that IPQ6018 init is identical to IPQ8074. Yet downstream uses
+> separate serdes init sequence for IPQ6018. Since already existing IPQ9574
+> serdes init sequence is identical, just reuse it and fix failing USB3 mode
+> in IPQ6018.
+>
+> Fixes: 23fd679249df ("phy: qcom-qmp: add USB3 PHY support for IPQ6018")
+> Signed-off-by: Mantas Pucka <mantas@8devices.com>
+> ---
+>  drivers/phy/qualcomm/phy-qcom-qmp-usb.c | 20 +++++++++++++++++++-
+>  1 file changed, 19 insertions(+), 1 deletion(-)
+
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
 
---5lwyhnohrcrn6rfz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On 23/11/30 02:28PM, Rafael J. Wysocki wrote:
-> Hi Mika, Hi Mario,
-> Thanks for your replies and tags!
->=20
-> Given the lack of response from anyone else I'm going to move this
-> towards linux-next with 6.8 as the target.
->=20
-> Thank you!
-
-I got a stack trace in dmesg with linux6.8-rc1 that seems to be caused
-by this commit according to my bisection, see the bugzilla report for
-details / further discussion:
-
-https://bugzilla.kernel.org/show_bug.cgi?id=3D218407
-
-Cheers,
-Christian
-
---5lwyhnohrcrn6rfz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEb3ea3iR6a4oPcswTwEfU8yi1JYUFAmWv67sACgkQwEfU8yi1
-JYVFng/+PPIkhzl/+23A5fiBJAcuyo90aLSackIrL7BEVrrpBSiz3My95FlnNn3x
-1avaI09apGVvPRoS9FSTpeXj6IfBE55W7t190nUcZNpA9lCwKjBr9tKIYYeJjSuy
-n1LFJWPqEfGmuvdrFJMs2Vq27Oclomo68JXA2UIubidNNXWWtbfM0r8bRNRUsIjM
-BFAznleLBX2tkVQVikDISnX+MP29hTzYIZTpj6+PkpVaI0DB+NlGIfp6xIADDzfs
-zEgsA0acJQAed0CluMJjKiCvn5hHPITTWb/YbPexwtPp3dl32P5tQJspK9UhjHHL
-qorodrQV24RbCwYtTi/jnM7cWnPzwVBsJt+gFf7Uqwc2RNhL4okWOZq8jN8NDI6p
-L7ST0BJIGu8ZxlvZIwHjteDO+395eWB3Nrk73febOS1E+1gLJwaSameucwLPPodn
-QKuCZnSJFKOe2cOlVr4zkMvo6FwhXJoQQT9P9KTAYTGUJpLzldaXPPlIefRDJVwv
-aYwuSBRl9HY6SbTRBDGcv8KUkfDvnNN1zqIkujZjY/JJZHon+3xU+FWQcA1vdOZ1
-bLiLhDO0Lpk5fADb3mMazILulCWvOD3P1Q/hCOPwo6ZTND3nr6znIMOo1kdf4nad
-MNYST2i2HSKF7WKjVSxYuL0MMfAPKXIMNM5cSuKKQLByZtI6XRQ=
-=K2Kf
------END PGP SIGNATURE-----
-
---5lwyhnohrcrn6rfz--
+-- 
+With best wishes
+Dmitry
 
