@@ -1,141 +1,107 @@
-Return-Path: <linux-kernel+bounces-35937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7D0B8398F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:01:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AD608398F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:02:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A0C551F2C12B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:01:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07E0B1F2C46C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:02:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3379812BE96;
-	Tue, 23 Jan 2024 18:54:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2A4E12BEBF;
+	Tue, 23 Jan 2024 18:54:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="M0KNNqkR"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=svenjoac@gmx.de header.b="q7jY+PFq"
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CFF312BE81;
-	Tue, 23 Jan 2024 18:54:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2E2612BEAE;
+	Tue, 23 Jan 2024 18:54:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706036064; cv=none; b=IKl/tBonUjf9tyAZTH3TW5uOs9gTOQprPDVPAEZl7OCQuLiXa0J3cB7k0MoXFajtAJmkDhdRTM7KaAHu3k9swKFVn7F8Hsu3reVon7xYgN8gdJ3aabEz8LSF6/gCq4TbnC1tJyUGXjXMGxyptFygD8wQiNwBVCs4UjCqsUowDh8=
+	t=1706036098; cv=none; b=JPq5jULn6cl2krHXtiDn1wJZ1iDHgUyGO11AmnVOwdxnqRehCcvLDwv4SvnMtrQ1MksOsdlEBGNkoHyqWf20t4XlnBAVjp9hRJ7NCiHidJo7llh646FtT0rNP3KvLQ22r8yWtE/7WUx3A5Jb/nLLPnqc57xYbkhQhMcR+ZPCbJk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706036064; c=relaxed/simple;
-	bh=wapbg/gXJVLXNztq58z1k9mtnSNro1BIs4C5En1EkfU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=OHSmOSePdA6jJ55k6nt9Kt7rb+e1uMp62tAXEn84TNVzasPeovDnGZEZFLjNaof7x0npzTcEzrVKR7hABIlss04yb+t1ipikO/PqPd3mHK4fb5yN8XHEjDcgfDjY3cah70JQdZwBDkhrIKQo6h4mzWLohRf1P22/HeauIWPoRpc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=M0KNNqkR; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40NHIlv0003720;
-	Tue, 23 Jan 2024 18:54:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=Ik5Su9uSOfqH7bHMar+7HHjjFYHb1/D+732FGMae6dg=; b=M0
-	KNNqkRX3W9lxqzd5p1wXDdgs11Um8DG8qeTKcGBoGVEAeGuRJDPyEZDKQgtPNISm
-	fAuUzAkR99z2IBT3+pfInwAOA8ONw5KeZkpCq//ekSaFeCRyla3puMFYFPBs20uN
-	SJiFbVTwHpw95WA1ZxuSPIyBQhpgTGdn0w1j87U5KQkvdWZYEiElMMQrAZDenRKC
-	g08++p359p2gQR+IZDhazxs24+IrCo/lTpEE/du4xJOqOKFJKt0cgGlcED9ux5XE
-	8umVGUfB1fGNZYzCJ6x4xWyv8ny/OLNephkuU8biRUEggi5isQ7gHOs/gsDl30PI
-	MRmme7r+bzcIdIv9mAWA==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vthrb872x-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Jan 2024 18:54:18 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40NIsHdj014567
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Jan 2024 18:54:17 GMT
-Received: from [10.110.85.98] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 23 Jan
- 2024 10:54:17 -0800
-Message-ID: <02dc2748-e73d-f565-9879-6a05e84cbd8b@quicinc.com>
-Date: Tue, 23 Jan 2024 10:54:16 -0800
+	s=arc-20240116; t=1706036098; c=relaxed/simple;
+	bh=Zq83BY/6gby8jx+0PqbiYFZI9HfPYSVZXXbRmBjHK0U=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=hNtjO68jo2A4iNFbs41o7ULYGM/Xfd1gifSoCrVXBEPnXdihpPA/G/xDez4HMKh/Ydy2q4VLsCPX2vMXTH3CcygKK6wjJOCyYw/DfdP6ctKyWEko4fNf48eTrUlMSBti8YUuKc9D0QFkgcRJXtCTduYsfEb+1f12lPgCmA+MkDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=svenjoac@gmx.de header.b=q7jY+PFq; arc=none smtp.client-ip=212.227.15.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1706036070; x=1706640870; i=svenjoac@gmx.de;
+	bh=Zq83BY/6gby8jx+0PqbiYFZI9HfPYSVZXXbRmBjHK0U=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:In-Reply-To:References:
+	 Date;
+	b=q7jY+PFqc27lMwwc9IChsZoxlq/bXZuI3jygYu6iPCeN53rVSbd8ZWBz0K6W5E3X
+	 UBYLLMLN0Vlh6hKF6tUM7N1cQvz5zOoS3UmEfFGZEppMISphHDQogyDGChsvuXB57
+	 9Hzr53WbZ4w1CEQZB+C7O70XDdzOA0cQcnkpCu8swmx/02vSjEYLOENuaSzqjfzft
+	 EUGitjxy1RooT4N68vjWCNCCfO/ez71aMnx+Li9pymXMdQ5fPjHNARLBeKaUm9kER
+	 FiM/TDIHecWvzE4N9EaSvla8T0YJep6y1tvFmjCLz58r3bUwZ1fy66q0u4qaRUqQ2
+	 /ioA8Lq2JWFqRPnBcQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from localhost.localdomain ([79.203.86.131]) by mail.gmx.net
+ (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1MDysg-1rKgvy0Ylw-009zLT; Tue, 23 Jan 2024 19:54:30 +0100
+Received: by localhost.localdomain (Postfix, from userid 1000)
+	id 65B7380110; Tue, 23 Jan 2024 19:54:27 +0100 (CET)
+From: Sven Joachim <svenjoac@gmx.de>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org,  patches@lists.linux.dev,
+  linux-kernel@vger.kernel.org,  torvalds@linux-foundation.org,
+  akpm@linux-foundation.org,  linux@roeck-us.net,  shuah@kernel.org,
+  patches@kernelci.org,  lkft-triage@lists.linaro.org,  pavel@denx.de,
+  jonathanh@nvidia.com,  f.fainelli@gmail.com,  sudipm.mukherjee@gmail.com,
+  srw@sladewatkins.net,  rwarsow@gmx.de,  conor@kernel.org,
+  allen.lkml@gmail.com
+Subject: Re: [PATCH 6.1 000/417] 6.1.75-rc1 review
+In-Reply-To: <20240122235751.480367507@linuxfoundation.org> (Greg
+	Kroah-Hartman's message of "Mon, 22 Jan 2024 15:52:48 -0800")
+References: <20240122235751.480367507@linuxfoundation.org>
+Date: Tue, 23 Jan 2024 19:54:27 +0100
+Message-ID: <874jf3hod8.fsf@turtle.gmx.de>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH] soc: qcom: aoss: Add tracepoints in qmp_send()
-To: Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240117-qcom-aoss-tracepoints-v1-1-4f935920cf4b@quicinc.com>
-Content-Language: en-US
-From: Chris Lew <quic_clew@quicinc.com>
-In-Reply-To: <20240117-qcom-aoss-tracepoints-v1-1-4f935920cf4b@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: gXI3Fr6ZJOBmex97sEvAFM0dBOC0yxtz
-X-Proofpoint-ORIG-GUID: gXI3Fr6ZJOBmex97sEvAFM0dBOC0yxtz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-23_11,2024-01-23_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 malwarescore=0 clxscore=1011 phishscore=0 impostorscore=0
- adultscore=0 mlxscore=0 spamscore=0 priorityscore=1501 suspectscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401230140
+Content-Type: text/plain
+X-Provags-ID: V03:K1:doAmV5KqM2/Cz0caglCAVH8AQTXpevCKwLUyqEu0d176D4SdO4B
+ L3h5BhP84x8cP9EpIog+FuN2w8WBJlGKkoQCoV5FolAsgFiBKeHse7qZ33ly0kso4JvEXD5
+ uMHQqOtWjlNXe9EvOs1R4y5+Xzc99hfd1bjkvsJnRhQQSDh3+NgxRQ5chzdr0Tptp2PO74I
+ coc2EWDr2kQmhfOMrHnbA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:DklUbd5GSsE=;JoZZEj5+xUKVIKh4T+CyjC3NgTx
+ MtePDiA67uA8+xEUPDzMyP2siJ37OnpY2W9WCgc/R7cePVqPCsR7aE68/5zHQP2MR3hCxgyUH
+ LbjwAThxswzz9gCE5Nm9HqN8jpWodp8CyEWryk0zlK3o2CV+Bv8H9coNDnFqhPLjpBL7Kvzqz
+ OSzy+M+grQipkKo0FwXt0o5tRA6T/S1Wxoid8/w1I4Ij0brXTsZ2+BO/MqNKWa3vmQVgrA/Jt
+ d23V7xtzJnCs/PPtS/M7awbezgWXJfS+Hqh3y+rEVIDmb6yLmlyODNZ/AanGs47vNtrMpTRfK
+ Pnjf5zzgd9xbPASHTJq1jQzEsvli79sOkTzQjdE+YYu5DmF+ZIxi1LdTo+Alhynpt6hnMN2xX
+ M9j0FSw4+x3bCy8PaH94Lk1Gh7c+lnrlZAKPi1jT2sg1O9VdHaKD9kp8yYwGKbdNq1xNhX2cP
+ ZFbOTrniqHfCXWVFTTpalmNtvBLMnoQFCBbp58Q4RCaREfmGi+080NFmhZ3uj69Ifspg//GfV
+ jjbEyWjyQWm5kaWRJ5iiB/KAJARLudZqe/yTW1Xo7tzUdfkhKP8CPG9eyHkrprCrW5+7ce5vN
+ e9NDfS3s9OlGU5EvdIWiG6MxXVNkQrAbooXhQndXKGPOH7YhY5JdEntQBNBoIxXtaxe+rPI21
+ Pf5ciuAvXkxu04Ba45So2bkTzFzZEUDlRC+yM2+090TDPjlfIxz/h1AXXUYe9eJoQgqObju5W
+ PjJxl7pW+uq8rraYKz5PL7K6jekNJqUuC5uDYG/oKkolLLkxgTWfLa6r+p7i21U1oMewFUlbT
+ Lq4sA+cJ71a5vf0JavBMUYSEpToBTcaXdKblN/XTjXl2Ep2KE7q2+nFz6c5rupSFJ94jZnZuD
+ T+UNehTLpjeemF4JsdrL+emS8p2fEhquNragajMV39I6GirFtYipefbzaB7C7+vQ9t5YiUWlb
+ T7vFiw==
 
+On 2024-01-22 15:52 -0800, Greg Kroah-Hartman wrote:
 
+> This is the start of the stable review cycle for the 6.1.75 release.
+> There are 417 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-On 1/17/2024 7:52 PM, Bjorn Andersson wrote:
-> @@ -235,6 +238,8 @@ int qmp_send(struct qmp *qmp, const char *fmt, ...)
->   
->   	mutex_lock(&qmp->tx_lock);
->   
-> +	trace_aoss_send(buf);
-> +
->   	/* The message RAM only implements 32-bit accesses */
->   	__iowrite32_copy(qmp->msgram + qmp->offset + sizeof(u32),
->   			 buf, sizeof(buf) / sizeof(u32));
-> @@ -256,6 +261,8 @@ int qmp_send(struct qmp *qmp, const char *fmt, ...)
->   		ret = 0;
->   	}
->   
-> +	trace_aoss_send_done(buf, ret);
-> +
+Works fine for me on x86_64.
 
-As a side note, another place where we've traced before is on the 
-receiving irq to get the full timing of how long AOSS takes to process a 
-command. I think we've discussed this in the past and decided that we 
-can use kprobes if that need occurs.
+Tested-by: Sven Joachim <svenjoac@gmx.de>
 
->   	mutex_unlock(&qmp->tx_lock);
->   
->   	return ret;
-> diff --git a/drivers/soc/qcom/trace-aoss.h b/drivers/soc/qcom/trace-aoss.h
-> new file mode 100644
-> index 000000000000..48cd3f0f4cb8
-> --- /dev/null
-> +++ b/drivers/soc/qcom/trace-aoss.h
-> @@ -0,0 +1,48 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (c) 2024 Qualcomm Innovation Center, Inc. All rights reserved.
-> + */
-> +
-> +#undef TRACE_SYSTEM
-> +#define TRACE_SYSTEM qcom_aoss
-> +
-> +#if !defined(_TRACE_RPMH_H) || defined(TRACE_HEADER_MULTI_READ)
-> +#define _TRACE_RPMH_H
-
-Any Reason for this to be _TRACE_RPMH_H instead of _TRACE_AOSS_H?
-
+Cheers,
+       Sven
 
