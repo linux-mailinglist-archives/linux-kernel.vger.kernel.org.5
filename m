@@ -1,154 +1,148 @@
-Return-Path: <linux-kernel+bounces-34696-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34697-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 706F383863D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 05:08:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB717838640
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 05:08:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BDF41C2284A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 04:08:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 830451F24BD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 04:08:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD14D187A;
-	Tue, 23 Jan 2024 04:07:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CBD21866;
+	Tue, 23 Jan 2024 04:08:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H6EXCGg3"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ph/jz0pP"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16B5C626;
-	Tue, 23 Jan 2024 04:07:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 329711848;
+	Tue, 23 Jan 2024 04:08:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705982874; cv=none; b=c/Kfw11igkn4JCgrOSTIgCSHcEuOetJwP5QU7GzrUxHG6DemZeKF7MoeCRea81zE2PJlKTNDS7oKzd5i6SS+3sTc9tdS4NvI5aqh+pt/RiBTyS8Ur6Z61Osv0pGY9Gu87tphk+gprhyVn5pHaSky4RqWdYqcxOvp6mqPEBAAJqk=
+	t=1705982906; cv=none; b=odetc/PBwh9QwkuH17zgPNu0jHs6mXCE3hT+hnyZQ923ehXWSEK0gUWpS/q9dPGsUudXZY986LB3MrhMwFQjAg8gsmTitLoGzdDGwBRjyOQhNdxk/z4WYsa5P7xHP/3RDrDvVD86Tzj3VpVYR0Y3QK9AoEnPYT7X6whZjl0xDYk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705982874; c=relaxed/simple;
-	bh=F3J4VLhI3E5hi/a5J/HebUE680cU1BPix/0V2rHvQaI=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=aD2/iwsY6h9Skxqr1X+PVdQzDELK26eyNYc2Kjvc8Cjs9LWtC5Ay8ysdz06rnr0775Sx4EpHdNkOw13mWaqkZVvefeYmuK15x09UKaHqjzYYpFtbSgKlFx2B911dZT1KskQXzF1CP5lQTuy9DhU8sYbRACk+hERvTO3bDRVS6FM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H6EXCGg3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59119C433C7;
-	Tue, 23 Jan 2024 04:07:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705982873;
-	bh=F3J4VLhI3E5hi/a5J/HebUE680cU1BPix/0V2rHvQaI=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=H6EXCGg36EBzrxB0TtpKgUYdqWpGsNZRQ667Y+OkOQsWbmUx6rvuWKcVHdbMvw/07
-	 4Cr6X1PZ5bFIjWnyCxMKkloGBne5TTTudZQxIXtF7+q91hRZnD+4SpFB4ZY42NRcdq
-	 dv17RFfnP3DiUOK95LeCULP9L86Js/HyrW0F2l4+IjyUbl4XhMbY+wrRMMltpcKyzg
-	 HPvSf/4/fAE8SR6FYEOLMY0yeU2uM6lRgD3Y7MA70JaYE17pajKQY0mjUwZbS1l9Js
-	 AO0DYuRK1Qm58jBkqSaI284EFRYmoAIA3/M9ts0qPmkd8/0zsy7WDHvrBeBddeNzz5
-	 Hy+Trm+s4hZvQ==
-Date: Mon, 22 Jan 2024 20:07:52 -0800
-From: Kees Cook <kees@kernel.org>
-To: Yonghong Song <yonghong.song@linux.dev>, Kees Cook <keescook@chromium.org>,
- linux-hardening@vger.kernel.org
-CC: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- Song Liu <song@kernel.org>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 43/82] bpf: Refactor intentional wrap-around test
-User-Agent: K-9 Mail for Android
-In-Reply-To: <15d65e11-d957-4b03-bec3-0dcd58b50f97@linux.dev>
-References: <20240122235208.work.748-kees@kernel.org> <20240123002814.1396804-43-keescook@chromium.org> <15d65e11-d957-4b03-bec3-0dcd58b50f97@linux.dev>
-Message-ID: <6CE08B7D-7E0C-45E2-8A6B-32691BE40D08@kernel.org>
+	s=arc-20240116; t=1705982906; c=relaxed/simple;
+	bh=UIWLpFywju+Oooap054XNWL228gqbVBCuVvK5+/Z0Hk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aTPeLLhEgy4wrGIDoSsHs2qlsFNDocDqEID/fm/JdxSxlHQ+2ydfvWPIErBtGW65Nn8m7XCxLETbm1Q0+qKRSizo4UJbFQ8tvdOmz6LKIUWtNH/7vthBA3ZuWkpPGJk1xhXM10Dja9Fv1s+eLQVAxDAwYgUv80yn6zI8c5Y2pDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ph/jz0pP; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d5f252411aso20212125ad.2;
+        Mon, 22 Jan 2024 20:08:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705982903; x=1706587703; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=NmdQPu2DwapL3rjaJJ6hE3+x7BtIY9+ECFVDwOkzgX0=;
+        b=Ph/jz0pPCwK/9HuTkdZ+XBQyq4G9E+UXGcSTsZuuWXqFgiE7ad3rvempzNhmfrQAUN
+         8YT7qjFiY+OQe4PvnV1EnWkcuNaQnjnvXRazO/fdr4T0hwdvfnAgudRfYub2bPCatxk/
+         05kP8o5yUQ215Qo6WUGiVSYjVIYp3M1Z03g0LBVJ5LX5NWNwHeY4LgWBa0+pFMgn1DDv
+         egTBuLxJph8j3+ePXD5bjoMZFC1KjBVzXz+sFMT41kZt6oHcKRcDj8vDGNRBur1rDmzQ
+         WDtI6DBkvMNxKn/IQVpbZRhOvrMHa00zYm8fcWeV/ZsZGTywLd1XHw9EuV0tbsSfkA8w
+         USAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705982903; x=1706587703;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NmdQPu2DwapL3rjaJJ6hE3+x7BtIY9+ECFVDwOkzgX0=;
+        b=lE4tcBiqQy+ZKOJvhNU/dxw7kkCq0lw0sIVe76pIVVEmuX2TLkh6FKRwcBAFojpd84
+         amnFPBByX5uJa2HX+mkN8ysqTsrP+6KN5UohlAv80SsRWbjwFDQ3rfX/2hn+rnwEf/nN
+         Z3aGxpHtq04EtTf7M+xc7N9zu5oKLkL7DTgoM3AzPow6ZzraiNLvW/iUY5htrToMuzHM
+         Q52y3+A8zzK5PSnhuRnYBYrMtqhJ+08xwsNI7AKRjKF8fs7UriefDWoxvTgcWDtWLoZK
+         2HUO/b0NubfBf8d6cPLHtQxDhltY5oNphP0x6IYynce3o26kUQFofEIQj/s+X4bf70HH
+         /N2Q==
+X-Gm-Message-State: AOJu0Yx+Y5tlYhDlUjSRihGm1e7mBFo4/fqJaB6Nqtp8G8oHPgzTHzIq
+	vzXmn92XG+2LzQzoe9+t7CpZY7ArliKvyruIKHiJNSdelpGATBZgljiLljTZ
+X-Google-Smtp-Source: AGHT+IGNFMGce/I3hi71qXZeOfMVW3oaPmfI5DmnSUuaM7vcJZcJ6ZqWUn1a8GxnuA4oQpstobVDiQ==
+X-Received: by 2002:a17:902:bf0c:b0:1d4:2266:64bf with SMTP id bi12-20020a170902bf0c00b001d4226664bfmr2686907plb.52.1705982902562;
+        Mon, 22 Jan 2024 20:08:22 -0800 (PST)
+Received: from eldorado.. (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
+        by smtp.gmail.com with ESMTPSA id ks7-20020a170903084700b001d7083fe09asm7609658plb.187.2024.01.22.20.08.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 20:08:21 -0800 (PST)
+From: Florian Fainelli <f.fainelli@gmail.com>
+To: linux-mips@vger.kernel.org
+Cc: Florian Fainelli <f.fainelli@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] MIPS: BCM63XX: Fix missing prototypes
+Date: Mon, 22 Jan 2024 20:08:13 -0800
+Message-Id: <20240123040817.200542-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
+We have a number of missing prototypes warnings for the BCM63XX machine,
+fix those by providing adequate function prototypes.
 
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ arch/mips/include/asm/mach-bcm63xx/bcm63xx_cpu.h    | 8 ++++++++
+ arch/mips/include/asm/mach-bcm63xx/bcm63xx_timer.h  | 1 +
+ arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h | 2 ++
+ arch/mips/include/asm/mach-bcm63xx/irq.h            | 3 +++
+ 4 files changed, 14 insertions(+)
 
-On January 22, 2024 8:00:26 PM PST, Yonghong Song <yonghong=2Esong@linux=
-=2Edev> wrote:
->
->On 1/22/24 4:27 PM, Kees Cook wrote:
->> In an effort to separate intentional arithmetic wrap-around from
->> unexpected wrap-around, we need to refactor places that depend on this
->> kind of math=2E One of the most common code patterns of this is:
->>=20
->> 	VAR + value < VAR
->>=20
->> Notably, this is considered "undefined behavior" for signed and pointer
->> types, which the kernel works around by using the -fno-strict-overflow
->> option in the build[1] (which used to just be -fwrapv)=2E Regardless, w=
-e
->> want to get the kernel source to the position where we can meaningfully
->> instrument arithmetic wrap-around conditions and catch them when they
->> are unexpected, regardless of whether they are signed[2], unsigned[3],
->> or pointer[4] types=2E
->>=20
->> Refactor open-coded wrap-around addition test to use add_would_overflow=
-()=2E
->> This paves the way to enabling the wrap-around sanitizers in the future=
-=2E
->>=20
->> Link: https://git=2Ekernel=2Eorg/linus/68df3755e383e6fecf2354a67b08f92f=
-18536594 [1]
->> Link: https://github=2Ecom/KSPP/linux/issues/26 [2]
->> Link: https://github=2Ecom/KSPP/linux/issues/27 [3]
->> Link: https://github=2Ecom/KSPP/linux/issues/344 [4]
->> Cc: Alexei Starovoitov <ast@kernel=2Eorg>
->> Cc: Daniel Borkmann <daniel@iogearbox=2Enet>
->> Cc: John Fastabend <john=2Efastabend@gmail=2Ecom>
->> Cc: Andrii Nakryiko <andrii@kernel=2Eorg>
->> Cc: Martin KaFai Lau <martin=2Elau@linux=2Edev>
->> Cc: Song Liu <song@kernel=2Eorg>
->> Cc: Yonghong Song <yonghong=2Esong@linux=2Edev>
->> Cc: KP Singh <kpsingh@kernel=2Eorg>
->> Cc: Stanislav Fomichev <sdf@google=2Ecom>
->> Cc: Hao Luo <haoluo@google=2Ecom>
->> Cc: Jiri Olsa <jolsa@kernel=2Eorg>
->> Cc: bpf@vger=2Ekernel=2Eorg
->> Signed-off-by: Kees Cook <keescook@chromium=2Eorg>
->> ---
->>   kernel/bpf/verifier=2Ec | 12 ++++++------
->>   1 file changed, 6 insertions(+), 6 deletions(-)
->>=20
->> diff --git a/kernel/bpf/verifier=2Ec b/kernel/bpf/verifier=2Ec
->> index 65f598694d55=2E=2E21e3f30c8757 100644
->> --- a/kernel/bpf/verifier=2Ec
->> +++ b/kernel/bpf/verifier=2Ec
->> @@ -12901,8 +12901,8 @@ static int adjust_ptr_min_max_vals(struct bpf_v=
-erifier_env *env,
->>   			dst_reg->smin_value =3D smin_ptr + smin_val;
->>   			dst_reg->smax_value =3D smax_ptr + smax_val;
->>   		}
->> -		if (umin_ptr + umin_val < umin_ptr ||
->> -		    umax_ptr + umax_val < umax_ptr) {
->> +		if (add_would_overflow(umin_ptr, umin_val) ||
->> +		    add_would_overflow(umax_ptr, umax_val)) {
->
->Maybe you could give a reference to the definition of add_would_overflow(=
-)?
->A link or a patch with add_would_overflow() defined cc'ed to bpf program=
-=2E
+diff --git a/arch/mips/include/asm/mach-bcm63xx/bcm63xx_cpu.h b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_cpu.h
+index 1cad18e6681d..b9ab5ee1c7b2 100644
+--- a/arch/mips/include/asm/mach-bcm63xx/bcm63xx_cpu.h
++++ b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_cpu.h
+@@ -1065,4 +1065,12 @@ void bcm63xx_machine_halt(void);
+ 
+ void bcm63xx_machine_reboot(void);
+ 
++int bcm63xx_register_devices(void);
++
++int bcm63xx_rng_register(void);
++
++int bcm63xx_uart_register(unsigned int id);
++
++int bcm63xx_wdt_register(void);
++
+ #endif /* !BCM63XX_CPU_H_ */
+diff --git a/arch/mips/include/asm/mach-bcm63xx/bcm63xx_timer.h b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_timer.h
+index bcbece793fd8..f920c7274f5e 100644
+--- a/arch/mips/include/asm/mach-bcm63xx/bcm63xx_timer.h
++++ b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_timer.h
+@@ -8,5 +8,6 @@ int bcm63xx_timer_set(int id, int monotonic, unsigned int countdown_us);
+ int bcm63xx_timer_enable(int id);
+ int bcm63xx_timer_disable(int id);
+ unsigned int bcm63xx_timer_countdown(unsigned int countdown_us);
++int bcm63xx_timer_init(void);
+ 
+ #endif /* !BCM63XX_TIMER_H_ */
+diff --git a/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h b/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h
+index 830f53f28e3f..7b905c8a424d 100644
+--- a/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h
++++ b/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h
+@@ -51,4 +51,6 @@ struct board_info {
+ 	unsigned long ephy_reset_gpio_flags;
+ };
+ 
++int bcm63xx_get_fallback_sprom(struct ssb_bus *bus, struct ssb_sprom *out);
++
+ #endif /* ! BOARD_BCM963XX_H_ */
+diff --git a/arch/mips/include/asm/mach-bcm63xx/irq.h b/arch/mips/include/asm/mach-bcm63xx/irq.h
+index b016f0615d5f..cbb92a609835 100644
+--- a/arch/mips/include/asm/mach-bcm63xx/irq.h
++++ b/arch/mips/include/asm/mach-bcm63xx/irq.h
+@@ -5,4 +5,7 @@
+ #define NR_IRQS 128
+ #define MIPS_CPU_IRQ_BASE 0
+ 
++void __dispatch_internal_32(int cpu);
++void __dispatch_internal_64(int cpu);
++
+ #endif
+-- 
+2.34.1
 
-Sure! It was earlier in the series:
-https://lore=2Ekernel=2Eorg/linux-hardening/20240123002814=2E1396804-2-kee=
-scook@chromium=2Eorg/
-
-The cover letter also has more details:
-https://lore=2Ekernel=2Eorg/linux-hardening/20240122235208=2Ework=2E748-ke=
-es@kernel=2Eorg/
-
->The patch itselfs looks good to me=2E
-
-Thanks!
-
--Kees
-
---=20
-Kees Cook
 
