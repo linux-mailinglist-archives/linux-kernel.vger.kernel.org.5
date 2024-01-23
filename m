@@ -1,120 +1,103 @@
-Return-Path: <linux-kernel+bounces-35495-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35496-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A46F88391FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:04:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2C8C839202
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:04:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 447A11F25526
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:04:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52431B24E97
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:04:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4E2D60271;
-	Tue, 23 Jan 2024 15:03:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68EB0604BD;
+	Tue, 23 Jan 2024 15:03:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MNjIOkfD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NT+M63By"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 103CA6025A;
-	Tue, 23 Jan 2024 15:03:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96C14604B4;
+	Tue, 23 Jan 2024 15:03:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706022186; cv=none; b=k1JMIe8X33pn2NRv2DWNncVdF8ndRj7MHD15fPM/iSSWXv1JOYmnKv97EYBdKkelyd1B439DFZ0S6b047fnztxpTNaT4KmkoBLEuhgF5dADmj57yxR2NGATDpUVK8e/wuazBqrPlKyC6eQjE1+SNN5k+JKUp3JFMT0LLZHX0W70=
+	t=1706022207; cv=none; b=smo7uUoxnfhU9ZOeEu/1k5zZW2V2UGGVRdiB/tP6oQ1Swg/9Hk2J3HK0C8fEt5ABo5Po89UXzzQFNqcmQy021PQc3b8+Oo2pwYfHKn/lOFvpOi2Po1YtQbVYUpmxn58EVErL/yflXQBxCAn7Z7yO2EyVxEyixlwPYcAhW/YQN4w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706022186; c=relaxed/simple;
-	bh=DpFRKAv848BeIsEakfLzG1UGGofnWebodFFq+ZPLFzc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=I3xt35VktEDTD1sT9biavm2dw2O15vv/FZUZKI2qfNs03JUIE/C7Cl09OVMzWbnKOn2cKTtV18RSaSxTzoF5ujA6NGJ8ihdExvMiezgiSKnHUQjvQG0wvO3INPR/HitIYqMQHFlmFjd6sxp/rgEhLTQ1huW3Bvjrg3QuTcXO8i0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MNjIOkfD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94777C433B2;
-	Tue, 23 Jan 2024 15:03:04 +0000 (UTC)
+	s=arc-20240116; t=1706022207; c=relaxed/simple;
+	bh=q1ehO0VlSRjlEkZix2Yv8UwXgVbsdNerufMonTt1Rvk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Tclm3PQBJ+ZrKMw+OQGz/I6oZ7NE/05hp0Lc4mix8MNGJES2hU9ov0AjbAaMKOMmtS33ubcS7ozWeEWQFjQASJ21amqPEKGEza6DfvF3zoxeRlLNP3b+ugUvdprzlBhePslWHbOk3UlYmj0llqFTP7UJLDWfzR24PeOdipjTY1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NT+M63By; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AA8EC433F1;
+	Tue, 23 Jan 2024 15:03:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706022185;
-	bh=DpFRKAv848BeIsEakfLzG1UGGofnWebodFFq+ZPLFzc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MNjIOkfDtBPT8jY8NxQen69zTiSHDSrOVlENvRZEsyBxDj/tqwpecSTTDlPGvwiqj
-	 CaEmyHGdx4QSwezjaYOSd2J7TrovAkX+KIwwVZ8YtH51JGB3jlT7zG2AB0O69y0itU
-	 1F9jk7tbibrLFv2f9Q0eWt2Ymq16yKwws2VuTLBDEZRqjoWUbu/kzjI3Q6YpN5sbDU
-	 MZT/yiiJ67R92QjBF1Ru+BRtxKk0gtWyteKgcS8MNJR2AEaiLDBMjcz+pLSHWVzuKq
-	 IwVYlhRKQlu7B7QU698fY66kJNumSkY3PnDNgrJX4pS+qdEFUCkqdBEnAam2771XhQ
-	 JsuVUz2gljaNA==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-trace-kernel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] tracing/probes: Fix to set arg size and fmt after setting type from BTF
-Date: Wed, 24 Jan 2024 00:03:02 +0900
-Message-Id: <170602218196.215583.6417859469540955777.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <170602214309.215583.16731124846112910621.stgit@devnote2>
-References: <170602214309.215583.16731124846112910621.stgit@devnote2>
-User-Agent: StGit/0.19
+	s=k20201202; t=1706022207;
+	bh=q1ehO0VlSRjlEkZix2Yv8UwXgVbsdNerufMonTt1Rvk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NT+M63By3JOLNSB6AfRX73VOAsajcGYOLYmUwI6BJW9eea/qDVp8ui4HATBCbLqta
+	 aJQRALleSXScyEPXdbsBTanNjgZhs5cuisIvevP5qQSUpcJMMvxkf5B1QIdLZrx7sn
+	 dhwfse1OScXIKVs1lftoY+0nBQuSgIuJX/0pusRP9AfbsTwOWd8h9S2PB0/FYX4yLu
+	 qPqYiuCqQSUwKWgbhwu7L+RW3btUfwvRYmIwNtTw1dnRXIrCsaTFVOeCpzVxZE665K
+	 xPr1coTGmxKiax9/xI02gl6qO/vbiH9Z8bjog6KaunCNC0RlXaVp87Q9mb8c3l0amc
+	 5MpTdGsFq5EjQ==
+Date: Tue, 23 Jan 2024 16:03:20 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: David Howells <dhowells@redhat.com>
+Cc: Christian Brauner <christian@brauner.io>, 
+	Jeff Layton <jlayton@kernel.org>, Matthew Wilcox <willy@infradead.org>, netfs@lists.linux.dev, 
+	linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org, 
+	ceph-devel@vger.kernel.org, v9fs@lists.linux.dev, linux-erofs@lists.ozlabs.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/10] netfs, afs, cifs, cachefiles, erofs: Miscellaneous
+ fixes
+Message-ID: <20240123-malheur-fahrrad-9d7c2ce2e757@brauner>
+References: <20240122123845.3822570-1-dhowells@redhat.com>
+ <20240122-bezwingen-kanister-b56f5bc1bc84@brauner>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240122-bezwingen-kanister-b56f5bc1bc84@brauner>
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On Mon, Jan 22, 2024 at 04:18:08PM +0100, Christian Brauner wrote:
+> On Mon, Jan 22, 2024 at 12:38:33PM +0000, David Howells wrote:
+> > Hi Christian,
+> > 
+> > Here are some miscellaneous fixes for netfslib and a number of filesystems:
+> > 
+> >  (1) Replace folio_index() with folio->index in netfs, afs and cifs.
+> > 
+> >  (2) Fix an oops in fscache_put_cache().
+> > 
+> >  (3) Fix error handling in netfs_perform_write().
+> > 
+> >  (4) Fix an oops in cachefiles when not using erofs ondemand mode.
+> > 
+> >  (5) In afs, hide silly-rename files from getdents() to avoid problems with
+> >      tar and suchlike.
+> > 
+> >  (6) In afs, fix error handling in lookup with a bulk status fetch.
+> > 
+> >  (7) In afs, afs_dynroot_d_revalidate() is redundant, so remove it.
+> > 
+> >  (8) In afs, fix the RCU unlocking in afs_proc_addr_prefs_show().
+> > 
+> > The patches can also be found here:
+> > 
+> > 	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=netfs-fixes
+> 
+> Thank you! I can pull this in right and will send a pr together with the
+> other changes around Wednesday/Thursday for -rc2. So reviews before that
+> would be nice.
 
-Since the BTF type setting updates probe_arg::type, the type size
-calculation and setting print-fmt should be done after that.
-Without this fix, the argument size and print-fmt can be wrong.
+Pulled and pushed:
 
-Fixes: b576e09701c7 ("tracing/probes: Support function parameters if BTF is available")
-Cc: stable@vger.kernel.org
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- kernel/trace/trace_probe.c |   25 +++++++++++++------------
- 1 file changed, 13 insertions(+), 12 deletions(-)
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.netfs
 
-diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
-index c6da5923e5b9..34289f9c6707 100644
---- a/kernel/trace/trace_probe.c
-+++ b/kernel/trace/trace_probe.c
-@@ -1172,18 +1172,6 @@ static int traceprobe_parse_probe_arg_body(const char *argv, ssize_t *size,
- 		trace_probe_log_err(ctx->offset + (t ? (t - arg) : 0), BAD_TYPE);
- 		goto out;
- 	}
--	parg->offset = *size;
--	*size += parg->type->size * (parg->count ?: 1);
--
--	ret = -ENOMEM;
--	if (parg->count) {
--		len = strlen(parg->type->fmttype) + 6;
--		parg->fmt = kmalloc(len, GFP_KERNEL);
--		if (!parg->fmt)
--			goto out;
--		snprintf(parg->fmt, len, "%s[%d]", parg->type->fmttype,
--			 parg->count);
--	}
- 
- 	code = tmp = kcalloc(FETCH_INSN_MAX, sizeof(*code), GFP_KERNEL);
- 	if (!code)
-@@ -1207,6 +1195,19 @@ static int traceprobe_parse_probe_arg_body(const char *argv, ssize_t *size,
- 				goto fail;
- 		}
- 	}
-+	parg->offset = *size;
-+	*size += parg->type->size * (parg->count ?: 1);
-+
-+	if (parg->count) {
-+		len = strlen(parg->type->fmttype) + 6;
-+		parg->fmt = kmalloc(len, GFP_KERNEL);
-+		if (!parg->fmt) {
-+			ret = -ENOMEM;
-+			goto out;
-+		}
-+		snprintf(parg->fmt, len, "%s[%d]", parg->type->fmttype,
-+			 parg->count);
-+	}
- 
- 	ret = -EINVAL;
- 	/* Store operation */
-
+Timeline still the same.
 
