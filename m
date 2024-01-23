@@ -1,144 +1,122 @@
-Return-Path: <linux-kernel+bounces-34768-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D84D838749
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:22:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 06E6E838784
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:35:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4E7A28D6D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 06:22:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B361C289145
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 06:35:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CD3D5025E;
-	Tue, 23 Jan 2024 06:21:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lPvcVHky"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DADF50263;
+	Tue, 23 Jan 2024 06:32:42 +0000 (UTC)
+Received: from h3cspam02-ex.h3c.com (smtp.h3c.com [60.191.123.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF6C750242;
-	Tue, 23 Jan 2024 06:21:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A6903611E;
+	Tue, 23 Jan 2024 06:32:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.191.123.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705990913; cv=none; b=nPn+kC5cTxSJEkBCCsJ5s9kOFy6no3hUl+fw5PCpuNo8gNe3Sah5Zq1jyRUqMYLiXogKOhvXWoHcV1eNXIdoPCzllJjIuPk5NHcvUYcERa2vFAf/dv05YsleYzHy0K3FV4qE+npYI6XSiJCCF93ACq8DHkRGtPy5HKpZp79GGlo=
+	t=1705991560; cv=none; b=bE1pqiFFozB5an/pcdhiPkrO3w+epYLnAtx8HyzMJv9cM3OgOc92/NYOpNagraaYd1uqiDIMg5B3RnJu3Dyg3ezIr8iamtGtEPeGh79A4AOak0g7eEGY9/Uv++GeflwkpeAga4g9qjp7fG0s83k0ApwQCmidPb3YAdBKTB9kfUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705990913; c=relaxed/simple;
-	bh=TNQNx0qYYSetcUCpOyMQNkCTJJsrGoFBI6YDppksKeE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IZniLwXq8qp5Kqn+6Rn2cuqITOCWdlur6REGfRpm1RbKxktvBp6QkaFvPadrHIkfhaA5e3nsmebWZLeph0CcSecxTKaCD/D1LG4YLj1YOkB/mkKB4Z+akLWvX+55StKs2iK7dIP/L8+NTiEG2NaSx3sD4sjZe1mo40ia4fhmRYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lPvcVHky; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705990912; x=1737526912;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=TNQNx0qYYSetcUCpOyMQNkCTJJsrGoFBI6YDppksKeE=;
-  b=lPvcVHkynIh1oJozRNJxiKRYXnjYijalHNicYJ/M7z3IyGyR3XhrPM9D
-   CbIsNWZz7AWm090gAzCSXgV58Pyomu1remG83akKOpR7T3iKvc2B8gKCz
-   ytR7F5x/CfAgNGdZyhtMhXZHq33p5y7huO3Exiv4MizGv3SWMEXfzC5Xx
-   Sop/POzrbFRbL0LiT9LuGvEzedm4ypS/ZO2TBnbbOltTZ6n12VrPIvYMx
-   PaefJDWfW+hIXGlIRjiL9mr4a/c/fC1jeySrWD/dNsJrjbn2ov8gu5Rxe
-   kyOe2UjoaqnTfOgSLkjtT8wC+623fyQwEjT++ZAJxgfcnyaUfgmeizFkB
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="8539916"
-X-IronPort-AV: E=Sophos;i="6.05,213,1701158400"; 
-   d="scan'208";a="8539916"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 22:21:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,213,1701158400"; 
-   d="scan'208";a="1550933"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.57.4])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 22:21:46 -0800
-Message-ID: <dc3a7101-964b-46c5-a78b-374b68cd54fb@intel.com>
-Date: Tue, 23 Jan 2024 08:21:41 +0200
+	s=arc-20240116; t=1705991560; c=relaxed/simple;
+	bh=UB0JVtkwXrMLRZTn2mIH3m4UcL4y+gCZIzpUMshRf5g=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Zmx3OA8iX0w4zqORFkLw7TFyhyT9fRZc8RtdaCiUCk0uoIpiU9m4D3hV6HJjxo12IrG5KWS6MpNnlyY73NQRRXvBDbjCD9XY4hgHB4cg3Yc3TmuwkJM38P6ZUwthxeoRz9Gktf1DSyHfCoOArgbgF+HZdIjHhqXiScz1/ZLkYr0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com; spf=pass smtp.mailfrom=h3c.com; arc=none smtp.client-ip=60.191.123.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=h3c.com
+Received: from mail.maildlp.com ([172.25.15.154])
+	by h3cspam02-ex.h3c.com with ESMTP id 40N6TIvp065821;
+	Tue, 23 Jan 2024 14:29:18 +0800 (GMT-8)
+	(envelope-from hu.yadi@h3c.com)
+Received: from DAG6EX02-IMDC.srv.huawei-3com.com (unknown [10.62.14.11])
+	by mail.maildlp.com (Postfix) with ESMTP id 44C142004BC2;
+	Tue, 23 Jan 2024 14:33:57 +0800 (CST)
+Received: from localhost.localdomain (10.99.206.12) by
+ DAG6EX02-IMDC.srv.huawei-3com.com (10.62.14.11) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1258.27; Tue, 23 Jan 2024 14:29:20 +0800
+From: Hu Yadi <hu.yadi@h3c.com>
+To: <jmorris@namei.org>, <serge@hallyn.com>, <shuah@kernel.org>,
+        <mathieu.desnoyers@efficios.com>, <mic@digikod.net>,
+        <amir73il@gmail.com>, <brauner@kernel.org>, <avagin@google.com>
+CC: <linux-api@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <514118380@qq.com>,
+        <konstantin.meskhidze@huawei.com>, "Hu.Yadi"
+	<hu.yadi@h3c.com>
+Subject: [PATCH] selftests/landlock:Fix net_test build issues with old libc
+Date: Tue, 23 Jan 2024 14:26:21 +0800
+Message-ID: <20240123062621.25082-1-hu.yadi@h3c.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 69/82] perf tools: Refactor intentional wrap-around test
-To: Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
- Ian Rogers <irogers@google.com>, John Garry <john.garry@huawei.com>,
- Fangrui Song <maskray@google.com>, linux-perf-users@vger.kernel.org,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
- linux-kernel@vger.kernel.org
-References: <20240122235208.work.748-kees@kernel.org>
- <20240123002814.1396804-69-keescook@chromium.org>
-Content-Language: en-US
-From: Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20240123002814.1396804-69-keescook@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
+ DAG6EX02-IMDC.srv.huawei-3com.com (10.62.14.11)
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL:h3cspam02-ex.h3c.com 40N6TIvp065821
 
-On 23/01/24 02:27, Kees Cook wrote:
-> In an effort to separate intentional arithmetic wrap-around from
-> unexpected wrap-around, we need to refactor places that depend on this
-> kind of math. One of the most common code patterns of this is:
-> 
-> 	VAR + value < VAR
-> 
-> Notably, this is considered "undefined behavior" for signed and pointer
-> types, which the kernel works around by using the -fno-strict-overflow
-> option in the build[1] (which used to just be -fwrapv). Regardless, we
-> want to get the kernel source to the position where we can meaningfully
-> instrument arithmetic wrap-around conditions and catch them when they
-> are unexpected, regardless of whether they are signed[2], unsigned[3],
-> or pointer[4] types.
-> 
-> Refactor open-coded wrap-around addition test to use add_would_overflow().
-> This paves the way to enabling the wrap-around sanitizers in the future.
-> 
-> Link: https://git.kernel.org/linus/68df3755e383e6fecf2354a67b08f92f18536594 [1]
-> Link: https://github.com/KSPP/linux/issues/26 [2]
-> Link: https://github.com/KSPP/linux/issues/27 [3]
-> Link: https://github.com/KSPP/linux/issues/344 [4]
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: Ian Rogers <irogers@google.com>
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: John Garry <john.garry@huawei.com>
-> Cc: Fangrui Song <maskray@google.com>
-> Cc: linux-perf-users@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  tools/perf/util/dso.c                    | 2 +-
->  tools/perf/util/unwind-libdw.c           | 2 +-
->  tools/perf/util/unwind-libunwind-local.c | 2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/perf/util/dso.c b/tools/perf/util/dso.c
-> index 22fd5fa806ed..470a86f1cdfd 100644
-> --- a/tools/perf/util/dso.c
-> +++ b/tools/perf/util/dso.c
-> @@ -1122,7 +1122,7 @@ static ssize_t data_read_write_offset(struct dso *dso, struct machine *machine,
->  	if (offset > dso->data.file_size)
->  		return -1;
->  
-> -	if (offset + size < offset)
-> +	if (add_would_overflow(offset, size))
+From: "Hu.Yadi" <hu.yadi@h3c.com>
 
-perf tools has separate includes to the kernel, so does not
-seem to include add_would_overflow() in any of its include
-files at this point.  Need to update
-tools/include/linux/overflow.h first.
+Fixes: a549d055a22e ("selftests/landlock: Add network tests")
+
+one issues comes up while building selftest/landlock/net_test on my side
+(gcc 7.3/glibc-2.28/kernel-4.19)
+
+net_test.c: In function ‘set_service’:
+net_test.c:91:45: warning: implicit declaration of function ‘gettid’; [-Wimplicit-function-declaration]
+    "_selftests-landlock-net-tid%d-index%d", gettid(),
+                                             ^~~~~~
+                                             getgid
+net_test.c:(.text+0x4e0): undefined reference to `gettid'
+
+Signed-off-by: Hu Yadi <hu.yadi@h3c.com>
+Suggested-by: Jiao <jiaoxupo@h3c.com>
+Reviewed-by: Berlin <berlin@h3c.com>
+---
+ tools/testing/selftests/landlock/net_test.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/tools/testing/selftests/landlock/net_test.c b/tools/testing/selftests/landlock/net_test.c
+index 929e21c4db05..6cc1bb1a9166 100644
+--- a/tools/testing/selftests/landlock/net_test.c
++++ b/tools/testing/selftests/landlock/net_test.c
+@@ -18,9 +18,15 @@
+ #include <sys/prctl.h>
+ #include <sys/socket.h>
+ #include <sys/un.h>
+-
++#include <sys/syscall.h>
+ #include "common.h"
+
++
++static pid_t sys_gettid(void)
++{
++	return syscall(__NR_gettid);
++}
++
+ const short sock_port_start = (1 << 10);
+
+ static const char loopback_ipv4[] = "127.0.0.1";
+@@ -88,7 +94,7 @@ static int set_service(struct service_fixture *const srv,
+ 	case AF_UNIX:
+ 		srv->unix_addr.sun_family = prot.domain;
+ 		sprintf(srv->unix_addr.sun_path,
+-			"_selftests-landlock-net-tid%d-index%d", gettid(),
++			"_selftests-landlock-net-tid%d-index%d", sys_gettid(),
+ 			index);
+ 		srv->unix_addr_len = SUN_LEN(&srv->unix_addr);
+ 		srv->unix_addr.sun_path[0] = '\0';
+--
+2.23.0
 
 
