@@ -1,99 +1,72 @@
-Return-Path: <linux-kernel+bounces-35761-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40BDD839622
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:17:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFCE0839626
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:18:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC807B26673
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:15:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6769B284D5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:18:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5439C811E2;
-	Tue, 23 Jan 2024 17:14:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3147B7FBCA;
+	Tue, 23 Jan 2024 17:17:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cG7Bw6pa";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="REhpOrrQ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cG7Bw6pa";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="REhpOrrQ"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="ws1srwvS"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7B3C80044;
-	Tue, 23 Jan 2024 17:14:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF1687FBB0;
+	Tue, 23 Jan 2024 17:17:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706030081; cv=none; b=aX6GUHuaJUnkjdNFch5xugUPRm0NNBBARuAGEGzW3aGEaqe2MWTxpDOxxbunaXJScURMdaww75P+vD5Hzc9upVGmXnWvmwDClaHyM72LPZNeqf05sCtDWrP+x7Mt68IMV4JEuZxv+hMd/Ap13HcDTUeAIkXzLjAMRYubO6Nklfk=
+	t=1706030276; cv=none; b=BSxrSwOsSa2Z2j5FTXuMR1Ey0i8SeGG/F5XjqeYePhL4TiAmOn0z0VHse2F8XSrX3452lHTnCV102xEhGN9ePspdhCsR2w8Xq37ox2Lmm3s/aEFak4M3P7Ql+sA2wBgCOBToe3Xd9ppvmGvbT3bWmi4RTwp55CUFrHrIQblPKkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706030081; c=relaxed/simple;
-	bh=WX+Uh1lswzVda9hS0C5Y3z/FKafSC0KdivThygTtkJ0=;
+	s=arc-20240116; t=1706030276; c=relaxed/simple;
+	bh=/TkEZGFcHQF2SIiCdN4cqab8TBirBALqNgIZyTdGwp4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OhNRXxpYvBY71/VNBnLmhDyAUb0ej8zIu15vb25FVyFdE9NSrUAc93mlQIe683/nwATQHAJvZ0qtE6bP2CCG5GTMSO1PMhlPBjum8IXU8HW+cpVSAzwFS02BMTdiUVJZV8lICvplcIerzbwY7lcx+acnVXr7nGETiNs5bHwbDNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=cG7Bw6pa; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=REhpOrrQ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=cG7Bw6pa; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=REhpOrrQ; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B058B1F796;
-	Tue, 23 Jan 2024 17:14:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706030077; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C2RgmZOtSuZt9fbN67EhcMUCwy5FaHBbmcGPterXlLI=;
-	b=cG7Bw6paa8i61ILwnEheFXsdCJSJm0xAo9ybbr1hs3ID6p2h6I7wiQaPnbtIClJ26lAuMa
-	HF06b5YdIXxVltoK2kNUMu7ElMEhMNbR+3NAAd8B5MKv9YlIXHHKO73TRleH/NdHo0Xh9n
-	m8Neo2GbDTlaB42FG9i1J+phFyB8EgY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706030077;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C2RgmZOtSuZt9fbN67EhcMUCwy5FaHBbmcGPterXlLI=;
-	b=REhpOrrQ3wFD8ewnH8VSOfg3d6C4OBvcJ6o7YBbncSOtCAra32N8y/kA6/k3Awf0XrX0br
-	dFHYT35fGUQV2dCQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706030077; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C2RgmZOtSuZt9fbN67EhcMUCwy5FaHBbmcGPterXlLI=;
-	b=cG7Bw6paa8i61ILwnEheFXsdCJSJm0xAo9ybbr1hs3ID6p2h6I7wiQaPnbtIClJ26lAuMa
-	HF06b5YdIXxVltoK2kNUMu7ElMEhMNbR+3NAAd8B5MKv9YlIXHHKO73TRleH/NdHo0Xh9n
-	m8Neo2GbDTlaB42FG9i1J+phFyB8EgY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706030077;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C2RgmZOtSuZt9fbN67EhcMUCwy5FaHBbmcGPterXlLI=;
-	b=REhpOrrQ3wFD8ewnH8VSOfg3d6C4OBvcJ6o7YBbncSOtCAra32N8y/kA6/k3Awf0XrX0br
-	dFHYT35fGUQV2dCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 938E613786;
-	Tue, 23 Jan 2024 17:14:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id x+/9I/3zr2XyGgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 23 Jan 2024 17:14:37 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 08F3FA0803; Tue, 23 Jan 2024 18:14:37 +0100 (CET)
-Date: Tue, 23 Jan 2024 18:14:36 +0100
-From: Jan Kara <jack@suse.cz>
-To: Kees Cook <keescook@chromium.org>
-Cc: linux-hardening@vger.kernel.org, Jan Kara <jack@suse.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 76/82] udf: Refactor intentional wrap-around test
-Message-ID: <20240123171436.voqt74ekz3nhnlk5@quack3>
-References: <20240122235208.work.748-kees@kernel.org>
- <20240123002814.1396804-76-keescook@chromium.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y5rG61q/nIhaxS83Paw+U/v3BpTQA0G+MIobxcyy4mc5JswB0zov2qI2C53LmoI5e4dQfxgx03qn7mrv1XUuKl35/q+YiBi5MzcRErWCh8Xq+zMqjFum8xfSQoRt23x/9TkIt4XHrkKQH6o6qgHnMwtEmw2oKL+0s7DaoOEHdlM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=ws1srwvS; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=g/GuoEY/EPrX7DEIHhw/ru6Y5B3PMqs71NqVwZgK7L8=; b=ws1srwvSVwAbX+58wsAnsp9QmK
+	0GbH8Y7Dv3Is5d5JMI98TT5hz3xSsHdyRjUZGanaPdCbrCxTkWUs/7fOk68ek4/Oh79HwrVeZkhen
+	ZzHzdEDHTJS4hu+sNMq3svWpwIofFsUq2vZ5UbDtfYs9b43JTzOYf1jKWA3D4A5vVzYRozcZOtizQ
+	3vTyrNXsdPrzWm3VqEDZEpkYXSnTWgtUvootyJCsK8Etqwl5tdJ5KSkqc3dgm/7Nr9dy8IqUg1RbD
+	2UOdNBIX7Ee1aHtymlIMYYE9sMuif1n1gz/AKkcRqbkVpwD7XbUq/8GTy54VvJtCf+sbFlnQqRFqQ
+	Ri1ugUjA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47320)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rSKPE-0002pb-2k;
+	Tue, 23 Jan 2024 17:17:48 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rSKPC-00027Y-96; Tue, 23 Jan 2024 17:17:46 +0000
+Date: Tue, 23 Jan 2024 17:17:46 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Danielle Ratson <danieller@nvidia.com>
+Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, corbet@lwn.net, sdf@google.com,
+	kory.maincent@bootlin.com, maxime.chevallier@bootlin.com,
+	vladimir.oltean@nxp.com, przemyslaw.kitszel@intel.com,
+	ahmed.zaki@intel.com, richardcochran@gmail.com, shayagr@amazon.com,
+	paul.greenwalt@intel.com, jiri@resnulli.us,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	mlxsw@nvidia.com, petrm@nvidia.com, idosch@nvidia.com
+Subject: Re: [RFC PATCH net-next 7/9] ethtool: cmis_cdb: Add a layer for
+ supporting CDB commands
+Message-ID: <Za/0um6oUo3CQaR2@shell.armlinux.org.uk>
+References: <20240122084530.32451-1-danieller@nvidia.com>
+ <20240122084530.32451-8-danieller@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -102,98 +75,51 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240123002814.1396804-76-keescook@chromium.org>
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=cG7Bw6pa;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=REhpOrrQ
-X-Spamd-Result: default: False [-2.81 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: B058B1F796
-X-Spam-Level: 
-X-Spam-Score: -2.81
-X-Spam-Flag: NO
+In-Reply-To: <20240122084530.32451-8-danieller@nvidia.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Mon 22-01-24 16:27:51, Kees Cook wrote:
-> In an effort to separate intentional arithmetic wrap-around from
-> unexpected wrap-around, we need to refactor places that depend on this
-> kind of math. One of the most common code patterns of this is:
-> 
-> 	VAR + value < VAR
-> 
-> Notably, this is considered "undefined behavior" for signed and pointer
-> types, which the kernel works around by using the -fno-strict-overflow
-> option in the build[1] (which used to just be -fwrapv). Regardless, we
-> want to get the kernel source to the position where we can meaningfully
-> instrument arithmetic wrap-around conditions and catch them when they
-> are unexpected, regardless of whether they are signed[2], unsigned[3],
-> or pointer[4] types.
-> 
-> Refactor open-coded wrap-around addition test to use add_would_overflow().
-> This paves the way to enabling the wrap-around sanitizers in the future.
-> 
-> Link: https://git.kernel.org/linus/68df3755e383e6fecf2354a67b08f92f18536594 [1]
-> Link: https://github.com/KSPP/linux/issues/26 [2]
-> Link: https://github.com/KSPP/linux/issues/27 [3]
-> Link: https://github.com/KSPP/linux/issues/344 [4]
-> Cc: Jan Kara <jack@suse.com>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+On Mon, Jan 22, 2024 at 10:45:28AM +0200, Danielle Ratson wrote:
+> +int ethtool_cmis_page_init(struct ethtool_module_eeprom *page_data,
+> +			   u8 page, u32 offset, u32 length)
+> +{
+> +	page_data->page = page;
+> +	page_data->offset = offset;
+> +	page_data->length = length;
+> +	page_data->i2c_address = ETHTOOL_CMIS_CDB_PAGE_I2C_ADDR;
+> +	page_data->data = kmalloc(page_data->length, GFP_KERNEL);
+> +	if (!page_data->data)
+> +		return -ENOMEM;
 
-Looks good. Feel free to add:
+Hmm, so every use is forced to use kmalloc() even when it's just one
+byte? That seems rather wasteful.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+> +/* See section 9.4.1 "CMD 0040h: Module Features" in CMIS standard revision 5.2.
+> + * struct cmis_cdb_module_features_rpl is structured layout of the flat
+> + * array, ethtool_cmis_cdb_rpl::payload.
+> + */
+> +struct cmis_cdb_module_features_rpl {
+> +	u8	resv1[CMIS_CDB_MODULE_FEATURES_RESV_DATA];
+> +	__be16	max_completion_time;
+> +};
 
-								Honza
+Does this structure need to be packed? I would suggest it does to
+ensure that the __be16 is correctly placed after the 34 bytes of u8.
 
-> ---
->  fs/udf/balloc.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/udf/balloc.c b/fs/udf/balloc.c
-> index ab3ffc355949..5c88300c3de7 100644
-> --- a/fs/udf/balloc.c
-> +++ b/fs/udf/balloc.c
-> @@ -139,7 +139,7 @@ static void udf_bitmap_free_blocks(struct super_block *sb,
->  
->  	mutex_lock(&sbi->s_alloc_mutex);
->  	partmap = &sbi->s_partmaps[bloc->partitionReferenceNum];
-> -	if (bloc->logicalBlockNum + count < count ||
-> +	if (add_would_overflow(count, bloc->logicalBlockNum) ||
->  	    (bloc->logicalBlockNum + count) > partmap->s_partition_len) {
->  		udf_debug("%u < %d || %u + %u > %u\n",
->  			  bloc->logicalBlockNum, 0,
-> @@ -390,7 +390,7 @@ static void udf_table_free_blocks(struct super_block *sb,
->  
->  	mutex_lock(&sbi->s_alloc_mutex);
->  	partmap = &sbi->s_partmaps[bloc->partitionReferenceNum];
-> -	if (bloc->logicalBlockNum + count < count ||
-> +	if (add_would_overflow(count, bloc->logicalBlockNum) ||
->  	    (bloc->logicalBlockNum + count) > partmap->s_partition_len) {
->  		udf_debug("%u < %d || %u + %u > %u\n",
->  			  bloc->logicalBlockNum, 0,
-> -- 
-> 2.34.1
-> 
+Overall, I think the idea of always kmalloc()ing the data is a bad idea
+at the moment. We have no implementations that DMA to/from this buffer,
+and it means extra cycles spent, and an extra failure point each time
+we want to do a CMIS command.
+
+It also introduces extra complexity, where we could just be passing
+a pointer to a function local variable or function local structure.
+
+Unless we decide that the data pointer should be DMA-able from (in
+which case, that needs documenting as such) then I would suggest
+getting rid of the extra kmalloc()...kfree() bits.
+
+Thanks.
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
