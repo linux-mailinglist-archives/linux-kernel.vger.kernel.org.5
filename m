@@ -1,111 +1,287 @@
-Return-Path: <linux-kernel+bounces-35227-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35228-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B4CB838E23
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:05:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21B9D838E24
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:05:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF8FEB21D28
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:05:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A56C21F226F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:05:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 832375DF02;
-	Tue, 23 Jan 2024 12:05:28 +0000 (UTC)
-Received: from h3cspam02-ex.h3c.com (smtp.h3c.com [60.191.123.50])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD55A5D91B;
+	Tue, 23 Jan 2024 12:05:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="KnVGmoN+"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13E9F5C61A;
-	Tue, 23 Jan 2024 12:05:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.191.123.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 409B15C61A
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 12:05:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706011528; cv=none; b=bHiW2qlzqP0W+ARVnaNXkPvdQX1a/BCpxwiecJxltOooSgDJ6Ia1vmMI0IeAmJcb0JSV2h2zlouWP4qxEONJ47iWnNnOawiLng3btvCj+cR/YvwTbK8abbdeVPMsd/UaPssjRKvwv3CzNaGGzMyfmyHQ3Qyjq45tF/DHuvuFoQw=
+	t=1706011542; cv=none; b=iv1PlIRmKuParRRocGS+sfVWE6ZTGJclkxmCf+f1+2a2rXeQlRn7vOOVHklZlBsjip0FP3HOy8v6a0e4gs3F16mTLTvzQzxA6oOojfOJhcD3tUKi8YgcpJjtVqUKH8NNgoT3xKPJY4VMder90Zaf2P64+YSSAQhr14a00vYwYxk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706011528; c=relaxed/simple;
-	bh=GiH+wOby5YduPA4k8m2yi3D59oBZ6oK+TLaCvK0X+d4=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=LNAdStLVlzb+2/QaP/xSt4Yok2YXsO3zlIKluayqMIzrl18DOg4eIUjtXieMq9AF0Bl3pxOPhScIWO7NpKI3m0Rc4Hyt6efRg0kgk49GFMFGWCLl10uMSZBuJbQtJcwJotsclvt4vCKCbE4FgB2FgLimjFSxdhaL/UqPo749lk4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com; spf=pass smtp.mailfrom=h3c.com; arc=none smtp.client-ip=60.191.123.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=h3c.com
-Received: from mail.maildlp.com ([172.25.15.154])
-	by h3cspam02-ex.h3c.com with ESMTP id 40NC4EU4014951;
-	Tue, 23 Jan 2024 20:04:14 +0800 (GMT-8)
-	(envelope-from hu.yadi@h3c.com)
-Received: from DAG6EX14-BJD.srv.huawei-3com.com (unknown [10.153.34.16])
-	by mail.maildlp.com (Postfix) with ESMTP id CDCEF22D4AC3;
-	Tue, 23 Jan 2024 20:08:54 +0800 (CST)
-Received: from DAG6EX02-IMDC.srv.huawei-3com.com (10.62.14.11) by
- DAG6EX14-BJD.srv.huawei-3com.com (10.153.34.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.27; Tue, 23 Jan 2024 20:04:17 +0800
-Received: from DAG6EX02-IMDC.srv.huawei-3com.com ([fe80::4c21:7c89:4f9d:e4c4])
- by DAG6EX02-IMDC.srv.huawei-3com.com ([fe80::4c21:7c89:4f9d:e4c4%16]) with
- mapi id 15.02.1258.027; Tue, 23 Jan 2024 20:04:17 +0800
-From: Huyadi <hu.yadi@h3c.com>
-To: =?utf-8?B?J01pY2thw6tsIFNhbGHDvG4n?= <mic@digikod.net>
-CC: "jmorris@namei.org" <jmorris@namei.org>,
-        "serge@hallyn.com"
-	<serge@hallyn.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
-        "amir73il@gmail.com" <amir73il@gmail.com>,
-        "brauner@kernel.org"
-	<brauner@kernel.org>,
-        "avagin@google.com" <avagin@google.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org"
-	<linux-security-module@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org"
-	<linux-kselftest@vger.kernel.org>,
-        "514118380@qq.com" <514118380@qq.com>,
-        "konstantin.meskhidze@huawei.com" <konstantin.meskhidze@huawei.com>
-Subject: =?utf-8?B?5Zue5aSNOiBbUEFUQ0ggdjRdIHNlbGZ0ZXN0cy9sYW5kbG9jazpGaXggdHdv?=
- =?utf-8?Q?_build_issues?=
-Thread-Topic: [PATCH v4] selftests/landlock:Fix two build issues
-Thread-Index: AQHaR51Te/ejhd6BskWKYK0XmAmChrDgkaUAgAbFurA=
-Date: Tue, 23 Jan 2024 12:04:17 +0000
-Message-ID: <adec399e50c74b30b59480d92c431241@h3c.com>
-References: <20240115102409.19799-1-hu.yadi@h3c.com>
- <20240119.Ugaehae2ze5b@digikod.net>
-In-Reply-To: <20240119.Ugaehae2ze5b@digikod.net>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-sender-location: DAG2
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1706011542; c=relaxed/simple;
+	bh=W8vtg2/UqbJFkSl9gks8oPIFwKx3vzj5iYyGfCEpmwU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=KYymRGXjMCj2wJGlwgTZZWZT9+abifm10ifC62MbJ766XD28MWYQzXfmWSicUuUGrOmOwCv24mCN9rFxOOCExlork+wondqkLOFR1uaah2O0tSKqC1tJLwYCICwfw4Ier0/sCOJbPTgnhsxCmOI13t4PFN84WY1Ucc3OJ/U78Ew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=KnVGmoN+; arc=none smtp.client-ip=93.104.207.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1706011539; x=1737547539;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=QyowHaKSq5r48J0lIW2adI/3JjSI0PpbZix4J7mH2Dw=;
+  b=KnVGmoN+NwnR3hyfwDeu6qG82+6ZAV5Ssg29X1EiqONCAF7NMWaIuKNP
+   yIxgPioytIa0pXl66ZHPJZkTMkXsl0/qjRrrx4jl8n6s546dEeOJsffLe
+   1J73jTpr9qMj3V2AYGcoWf/n0FvUOuRj+o2zIzna2SH9uGrRv7lSTJ4mX
+   C/KzQavGVqY/LL4ZNNMGpbax5zQg0n+wBw+P37EB//+eHq8d/1Cb7TRlO
+   zPAfHWfj3UHl3XmFzhZ0LgscEGe99hw/FfKiz0nRfdUua4xEQvbDVUeYK
+   gynOChjpQwQB8jSJDIsmepz96DRXz0PXkNzEZEJj8lratAP6tZxBQ+fM3
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.05,214,1701126000"; 
+   d="scan'208";a="35030276"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 23 Jan 2024 13:05:31 +0100
+Received: from [192.168.153.128] (SCHIFFERM-M3.tq-net.de [10.121.49.135])
+	by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 3CBFC280075;
+	Tue, 23 Jan 2024 13:05:31 +0100 (CET)
+Message-ID: <effe9e2c56baca76cbef09b0262c246478670bc2.camel@ew.tq-group.com>
+Subject: Re: [PATCH] powerpc/6xx: set High BAT Enable flag on G2 cores
+From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Nicholas Piggin <npiggin@gmail.com>, "Aneesh Kumar K.V"
+ <aneesh.kumar@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, 
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux@ew.tq-group.com" <linux@ew.tq-group.com>,  Michael Ellerman
+ <mpe@ellerman.id.au>
+Date: Tue, 23 Jan 2024 13:05:30 +0100
+In-Reply-To: <f8c2f1c8-0b43-47c6-9359-9aeeb14863eb@csgroup.eu>
+References: <20231221124538.159706-1-matthias.schiffer@ew.tq-group.com>
+	 <2fad9563-09ee-4017-8a67-5958475d56c8@csgroup.eu>
+	 <b4eae5a8f451a3d253521a61b9625e3d7634f430.camel@ew.tq-group.com>
+	 <ad3d0d4d-f63b-4704-b829-e630a69a6cf3@csgroup.eu>
+	 <5610a6223b54a845185f28f54999ad72269b72f5.camel@ew.tq-group.com>
+	 <f8c2f1c8-0b43-47c6-9359-9aeeb14863eb@csgroup.eu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-DNSRBL: 
-X-SPAM-SOURCE-CHECK: pass
-X-MAIL:h3cspam02-ex.h3c.com 40NC4EU4014951
 
-DQo+PiBDaGFuZ2VzIHYzIC0+IHYyOg0KPj4gIC0gYWRkIGhlbHBlciBvZiBnZXR0aWQgaW5zdGVh
-ZCBvZiBfX05SX2dldHRpZA0KPj4gIC0gYWRkIGdjYy9nbGliYyB2ZXJzaW9uIGluZm8gaW4gY29t
-bWVudHMgQ2hhbmdlcyB2MSAtPiB2MjoNCj4+ICAtIGZpeCB3aGl0ZXNwYWNlIGVycm9yDQo+PiAg
-LSByZXBsYWNlIFNZU19nZXR0aWQgd2l0aCBfTlJfZ2V0dGlkDQo+PiANCj4+ICB0b29scy90ZXN0
-aW5nL3NlbGZ0ZXN0cy9sYW5kbG9jay9mc190ZXN0LmMgIHwgNSArKysrLSAgDQo+PiB0b29scy90
-ZXN0aW5nL3NlbGZ0ZXN0cy9sYW5kbG9jay9uZXRfdGVzdC5jIHwgNyArKysrKystDQo+PiAgMiBm
-aWxlcyBjaGFuZ2VkLCAxMCBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KPj4gDQo+PiBk
-aWZmIC0tZ2l0IGEvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvbGFuZGxvY2svZnNfdGVzdC5jIA0K
-Pj4gYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9sYW5kbG9jay9mc190ZXN0LmMNCj4+IGluZGV4
-IDE4ZTFmODZhNjIzNC4uYTk5MmNmN2MwYWQxIDEwMDY0NA0KPj4gLS0tIGEvdG9vbHMvdGVzdGlu
-Zy9zZWxmdGVzdHMvbGFuZGxvY2svZnNfdGVzdC5jDQo+PiArKysgYi90b29scy90ZXN0aW5nL3Nl
-bGZ0ZXN0cy9sYW5kbG9jay9mc190ZXN0LmMNCj4+IEBAIC00NTcyLDcgKzQ1NzIsMTAgQEAgRklY
-VFVSRV9WQVJJQU5UKGxheW91dDNfZnMpDQo+PiAgLyogY2xhbmctZm9ybWF0IG9mZiAqLw0KPj4g
-IEZJWFRVUkVfVkFSSUFOVF9BREQobGF5b3V0M19mcywgdG1wZnMpIHsNCj4+ICAJLyogY2xhbmct
-Zm9ybWF0IG9uICovDQo+PiAtCS5tbnQgPSBtbnRfdG1wLA0KPj4gKwkubW50ID0gew0KPj4gKwkJ
-LnR5cGUgPSAidG1wZnMiLA0KPj4gKwkJLmRhdGEgPSAic2l6ZT00bSxtb2RlPTcwMCIsDQo+PiAr
-CX0sDQo+DQo+SSByZXF1ZXN0ZWQgc29tZSBjaGFuZ2VzIGhlcmUuDQo+DQoNCkNvdWxkIHlvdSBn
-aXZlIG1lIHNvbWUgaW5zcGlyYXRpb24gaG93IHRvIGZpeCBpdD8gDQppdCBsb29rcyBmaW5lIHRv
-IG1lIHRvIGFzc2lnbiB2YWx1ZSBhcyBhYm92ZSwgd2hpY2ggY29uc2lzdGVudCB3aXRoIG90aGVy
-IHBzZXVkbyBGUyB0ZXN0cy4NClRoYW5rcyBpbiBhZHZhbmNlLg0KDQo+PiAgCS5maWxlX3BhdGgg
-PSBmaWxlMV9zMWQxLA0KPj4gIH07DQo+PiANCiAgDQo=
+On Fri, 2024-01-19 at 13:53 +0000, Christophe Leroy wrote:
+>=20
+> Le 19/01/2024 =C3=A0 14:41, Matthias Schiffer a =C3=A9crit=C2=A0:
+> > >=20
+> > > Thinking about it once more, can we do even more simple ?
+> > >=20
+> > > Why do we need that __setup_cpu_g2() at all ?
+> > >=20
+> > > You could just add the following into __set_cpu_603()
+> > >=20
+> > > diff --git a/arch/powerpc/kernel/cpu_setup_6xx.S
+> > > b/arch/powerpc/kernel/cpu_setup_6xx.S
+> > > index c67d32e04df9..7b41e3884866 100644
+> > > --- a/arch/powerpc/kernel/cpu_setup_6xx.S
+> > > +++ b/arch/powerpc/kernel/cpu_setup_6xx.S
+> > > @@ -21,6 +21,11 @@ BEGIN_MMU_FTR_SECTION
+> > >        li      r10,0
+> > >        mtspr   SPRN_SPRG_603_LRU,r10           /* init SW LRU trackin=
+g */
+> > >    END_MMU_FTR_SECTION_IFSET(MMU_FTR_NEED_DTLB_SW_LRU)
+> > > +BEGIN_MMU_FTR_SECTION
+> > > +     mfspr   r11,SPRN_HID2_G2
+> > > +     oris    r11,r11,HID2_HBE_G2@h
+> > > +     mtspr   SPRN_HID2_G2,r11
+> > > +END_MMU_FTR_SECTION_IFSET(MMU_FTR_USE_HIGH_BATS)
+> > >=20
+> > >    BEGIN_FTR_SECTION
+> > >        bl      __init_fpu_registers
+> > > ---
+> > >=20
+> > > By the way, as your register is named SPRN_HID2_G2, the bit would bet=
+ter
+> > > be named HID2_G2_HBE instead of HID2_HBE_G2 I think.
+> >=20
+> > My intention was to keep this consistent with the SPRN_HID2_GEKKO defin=
+e.
+>=20
+> I don't understand what you mean. I can't see any bits defined for=20
+> HID2_GEKKO.
+>=20
+> What I see which is simitar is the definition of TSC register for CELL CP=
+U.
+>=20
+> #define SPRN_TSC_CELL	0x399	/* Thread switch control on Cell */
+> #define   TSC_CELL_DEC_ENABLE_0	0x400000 /* Decrementer Interrupt */
+> #define   TSC_CELL_DEC_ENABLE_1	0x200000 /* Decrementer Interrupt */
+> #define   TSC_CELL_EE_ENABLE	0x100000 /* External Interrupt */
+> #define   TSC_CELL_EE_BOOST	0x080000 /* External Interrupt Boost */
+>=20
+>=20
+> They don't call it TSC_EE_BOOST_CELL or TSC_EE_ENABLE_CELL
+
+Ah sorry, I got things mixed up. Will change the define to HID2_G2_HBE (or =
+maybe HID_G2_LE_HBE?)
+in v2.
+
+Regards,
+Matthias
+
+
+>=20
+>=20
+> Christophe
+>=20
+> >=20
+> > Regards,
+> > Matthias
+> >=20
+> >=20
+> >=20
+> >=20
+> > >=20
+> > > Christophe
+> > >=20
+> > > >=20
+> > > > >=20
+> > > > > > +
+> > > > > > +BEGIN_FTR_SECTION
+> > > > > > +       bl      __init_fpu_registers
+> > > > > > +END_FTR_SECTION_IFCLR(CPU_FTR_FPU_UNAVAILABLE)
+> > > > > > +       bl      setup_common_caches
+> > > > > > +       bl      setup_g2_hid2
+> > > > > > +       mtlr    r5
+> > > > > > +       blr
+> > > > > >=20
+> > > > > >     /* Enable caches for 603's, 604, 750 & 7400 */
+> > > > > >     SYM_FUNC_START_LOCAL(setup_common_caches)
+> > > > > > @@ -115,6 +129,16 @@ SYM_FUNC_START_LOCAL(setup_604_hid0)
+> > > > > >            blr
+> > > > > >     SYM_FUNC_END(setup_604_hid0)
+> > > > > >=20
+> > > > > > +/* Enable high BATs for G2 (G2_LE, e300cX) */
+> > > > > > +SYM_FUNC_START_LOCAL(setup_g2_hid2)
+> > > > > > +       mfspr   r11,SPRN_HID2_G2
+> > > > > > +       oris    r11,r11,HID2_HBE_G2@h
+> > > > > > +       mtspr   SPRN_HID2_G2,r11
+> > > > > > +       sync
+> > > > > > +       isync
+> > > > > > +       blr
+> > > > > > +SYM_FUNC_END(setup_g2_hid2)
+> > > > > > +
+> > > > > >     /* 7400 <=3D rev 2.7 and 7410 rev =3D 1.0 suffer from some
+> > > > > >      * erratas we work around here.
+> > > > > >      * Moto MPC710CE.pdf describes them, those are errata
+> > > > > > @@ -495,4 +519,3 @@ _GLOBAL(__restore_cpu_setup)
+> > > > > >            mtcr    r7
+> > > > > >            blr
+> > > > > >     _ASM_NOKPROBE_SYMBOL(__restore_cpu_setup)
+> > > > > > -
+> > > > > > diff --git a/arch/powerpc/kernel/cpu_specs_book3s_32.h b/arch/p=
+owerpc/kernel/cpu_specs_book3s_32.h
+> > > > > > index 3714634d194a1..83f054fcf837c 100644
+> > > > > > --- a/arch/powerpc/kernel/cpu_specs_book3s_32.h
+> > > > > > +++ b/arch/powerpc/kernel/cpu_specs_book3s_32.h
+> > > > > > @@ -69,7 +69,7 @@ static struct cpu_spec cpu_specs[] __initdata=
+ =3D {
+> > > > > >                    .mmu_features           =3D MMU_FTR_USE_HIGH=
+_BATS,
+> > > > > >                    .icache_bsize           =3D 32,
+> > > > > >                    .dcache_bsize           =3D 32,
+> > > > > > -               .cpu_setup              =3D __setup_cpu_603,
+> > > > > > +               .cpu_setup              =3D __setup_cpu_g2,
+> > > > > >                    .machine_check          =3D machine_check_ge=
+neric,
+> > > > > >                    .platform               =3D "ppc603",
+> > > > > >            },
+> > > > > > @@ -83,7 +83,7 @@ static struct cpu_spec cpu_specs[] __initdata=
+ =3D {
+> > > > > >                    .mmu_features           =3D MMU_FTR_USE_HIGH=
+_BATS,
+> > > > > >                    .icache_bsize           =3D 32,
+> > > > > >                    .dcache_bsize           =3D 32,
+> > > > > > -               .cpu_setup              =3D __setup_cpu_603,
+> > > > > > +               .cpu_setup              =3D __setup_cpu_g2,
+> > > > > >                    .machine_check          =3D machine_check_83=
+xx,
+> > > > > >                    .platform               =3D "ppc603",
+> > > > > >            },
+> > > > > > @@ -96,7 +96,7 @@ static struct cpu_spec cpu_specs[] __initdata=
+ =3D {
+> > > > > >                    .mmu_features           =3D MMU_FTR_USE_HIGH=
+_BATS | MMU_FTR_NEED_DTLB_SW_LRU,
+> > > > > >                    .icache_bsize           =3D 32,
+> > > > > >                    .dcache_bsize           =3D 32,
+> > > > > > -               .cpu_setup              =3D __setup_cpu_603,
+> > > > > > +               .cpu_setup              =3D __setup_cpu_g2,
+> > > > > >                    .machine_check          =3D machine_check_83=
+xx,
+> > > > > >                    .platform               =3D "ppc603",
+> > > > > >            },
+> > > > > > @@ -109,7 +109,7 @@ static struct cpu_spec cpu_specs[] __initda=
+ta =3D {
+> > > > > >                    .mmu_features           =3D MMU_FTR_USE_HIGH=
+_BATS | MMU_FTR_NEED_DTLB_SW_LRU,
+> > > > > >                    .icache_bsize           =3D 32,
+> > > > > >                    .dcache_bsize           =3D 32,
+> > > > > > -               .cpu_setup              =3D __setup_cpu_603,
+> > > > > > +               .cpu_setup              =3D __setup_cpu_g2,
+> > > > > >                    .machine_check          =3D machine_check_83=
+xx,
+> > > > > >                    .num_pmcs               =3D 4,
+> > > > > >                    .platform               =3D "ppc603",
+> > > > > > @@ -123,7 +123,7 @@ static struct cpu_spec cpu_specs[] __initda=
+ta =3D {
+> > > > > >                    .mmu_features           =3D MMU_FTR_USE_HIGH=
+_BATS | MMU_FTR_NEED_DTLB_SW_LRU,
+> > > > > >                    .icache_bsize           =3D 32,
+> > > > > >                    .dcache_bsize           =3D 32,
+> > > > > > -               .cpu_setup              =3D __setup_cpu_603,
+> > > > > > +               .cpu_setup              =3D __setup_cpu_g2,
+> > > > > >                    .machine_check          =3D machine_check_83=
+xx,
+> > > > > >                    .num_pmcs               =3D 4,
+> > > > > >                    .platform               =3D "ppc603",
+> > > > > > --
+> > > > > > TQ-Systems GmbH | M=C3=BChlstra=C3=9Fe 2, Gut Delling | 82229 S=
+eefeld, Germany
+> > > > > > Amtsgericht M=C3=BCnchen, HRB 105018
+> > > > > > Gesch=C3=A4ftsf=C3=BChrer: Detlef Schneider, R=C3=BCdiger Stahl=
+, Stefan Schneider
+> > > > > > https://www.tq-group.com/
+> > > >=20
+> > > > --
+> > > > TQ-Systems GmbH | M=C3=BChlstra=C3=9Fe 2, Gut Delling | 82229 Seefe=
+ld, Germany
+> > > > Amtsgericht M=C3=BCnchen, HRB 105018
+> > > > Gesch=C3=A4ftsf=C3=BChrer: Detlef Schneider, R=C3=BCdiger Stahl, St=
+efan Schneider
+> > > > https://www.tq-group.com/
+> >=20
+> > --
+> > TQ-Systems GmbH | M=C3=BChlstra=C3=9Fe 2, Gut Delling | 82229 Seefeld, =
+Germany
+> > Amtsgericht M=C3=BCnchen, HRB 105018
+> > Gesch=C3=A4ftsf=C3=BChrer: Detlef Schneider, R=C3=BCdiger Stahl, Stefan=
+ Schneider
+> > https://www.tq-group.com/
+>=20
+
+--=20
+TQ-Systems GmbH | M=C3=BChlstra=C3=9Fe 2, Gut Delling | 82229 Seefeld, Germ=
+any
+Amtsgericht M=C3=BCnchen, HRB 105018
+Gesch=C3=A4ftsf=C3=BChrer: Detlef Schneider, R=C3=BCdiger Stahl, Stefan Sch=
+neider
+https://www.tq-group.com/
 
