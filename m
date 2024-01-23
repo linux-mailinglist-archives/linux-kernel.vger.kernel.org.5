@@ -1,89 +1,80 @@
-Return-Path: <linux-kernel+bounces-34519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34495-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75AC5837DE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:32:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C5DB837CF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:22:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 983A01C23538
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:31:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C83FF28F1F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:22:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4D2516086F;
-	Tue, 23 Jan 2024 00:36:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EFA85C90A;
+	Tue, 23 Jan 2024 00:29:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="hpL79Dbq"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="OEYgJ61F"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 588EC15F31A
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:36:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BF0F15CD49
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:29:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705970178; cv=none; b=s/BaA+VSOZswn6Asc4zQc3eU9W+WFRdmA13iYbUVRTke5ROpOdce89QLs69Al05tsI6R/mzDumkSCJVfjUJoRuZG80OP3wVhbx1c9pNso5qPmvz9qe0RzVdFvz2qKLVzBT8rOJ0gTZq6FGPtjzK/+mRUIvcpiet3n7GKZFQw70M=
+	t=1705969758; cv=none; b=fi+WRa+tj79/yLEvRxskTL+sBbQvD6ZcaEQk+y/9RjpffZYY7bmx7uFQUkshZneCLEBzWtvxQTUyIQrdKu7a0nrhD8Ods+ptBi6snxmAyAB295BpkXvSIY/9CnmpEldbO2U5HYKZP80sKlQ8YQCCwnYlRPmy3aEIkkhGN5PJ2V4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705970178; c=relaxed/simple;
-	bh=ISxb0EX289Hm6r/C1D5v5yNh7MxoLH57ssbQ8ckbm+8=;
+	s=arc-20240116; t=1705969758; c=relaxed/simple;
+	bh=E4fnTWRdYYjzKyqD4/S7hWZrsgLHeDrGLLUjsAQr6BY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Shd9PLc7b6H2X+54xOz4FtXvHOCZK/uBA8vO2iyNwYpPvm3eAUZeXu0R56cF42gZySpP3/vxfy+xTFUOzFXkfH5sHAAIRraoewQgqAJR/ETaBh0x+HqsGGbYkbnoxufG4zHBAM4CRYQMDRMqy9SPJwwMq3Q5alp+XYsGtEudMZo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=hpL79Dbq; arc=none smtp.client-ip=209.85.214.180
+	 MIME-Version; b=DeWFqCjTKrn79MigbpyajGy5Cqsl3i4ts+8xlLlL0RXCPy8BCL7qnA6kZo4QYew9oM22qgNq+lunQNlWY3OHD43CzZYUstOz+xuP5QwqDMpQX24o41xk4IupKhCADdAyRXvT6lyT9SFJZyHyyAJW0UfGTXPjtGStyLBgn506Z5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=OEYgJ61F; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d76671e5a4so6012245ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 16:36:15 -0800 (PST)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d7431e702dso10690425ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 16:29:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1705970175; x=1706574975; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1705969756; x=1706574556; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MXaD2uRSXjbWvCISCAsK9PvXAhuUUaV/f9FkaBUIbgc=;
-        b=hpL79Dbq0yRyAO4E5UL+btj2Huh/LAHlMiAwcSNUwaoSyDXeipYNy0ryyPoJeYJrXn
-         CQjE3PRMgh5J9Xsbl54XIbwycSdoOAbXIl+A9fzkPrza4Fa031Wy/2RNToGMeCDszRzv
-         0Mrg2fFGgkgBkbHCl+6AmNd79YCeySXI0n8YU=
+        bh=Ozg2hLXb4DmKd1HybaSf4vbbssFf/awskMowmtEYutc=;
+        b=OEYgJ61F8Nx+mz3V87A33fYK0ZzNj/GNdOOR490W+79OtdBN/Ee1TsRyeT2wWPzImY
+         T3fosuo6LOH1/fbvbzr20xqwCnTT4Rfzk05nvoOsiRDKMdD56x+zF0j4dMY0J6NG7KBq
+         +rLBWd04918N9pUYUPA10pNHGTIM+hy9wv1Bo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705970175; x=1706574975;
+        d=1e100.net; s=20230601; t=1705969756; x=1706574556;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MXaD2uRSXjbWvCISCAsK9PvXAhuUUaV/f9FkaBUIbgc=;
-        b=n15mcZvGkLCwSPhMqadOLufyRMSWBkkNDDq05l4r32zVzAmGREWxhf67oJVDPdr9u4
-         qA+lPooRaurxD8WF2/o71jaoDnrxPUwQmyFPjMR3ZjushxFVPR/B519Qcfs1CB6o8TYq
-         /QoZPLhVD0/pLLJQEZguh5lWhGcR8G02aSWU3anBhAVk6ctPXzIaHu2fZMBIBKa8x1cH
-         ZlYrmxnOIf3FvkVrSaPUrjaiuwpiRDf7shN59K1dUhXpGOy3f7EUehLhbYVvUo7P7aBU
-         U8EUMU47gxYcuLb7ED8tAaOtAeDTFfiyLm8Y5n1NJvkRvs7XmeP9n+Tsi3no36ZCUyJ6
-         q7pg==
-X-Gm-Message-State: AOJu0YxGyMNktu7+pfWJv67tpAvPSpFIdBMv4yDBqTMQAo9Ce8gRved6
-	82UYX4vsKxhQs9Y/vgle7AU2+IvKpUY2B2Qc5P3/67GZQS4T5lynEh79GJh4cA==
-X-Google-Smtp-Source: AGHT+IGWmDZtRBX8t4DIu1G+/5DAGjQKMndSmo0VI+PUTi/ec2cucVkWCjGhYE9pTAFe4zoXAskPqg==
-X-Received: by 2002:a17:903:1cf:b0:1d7:2b14:2af6 with SMTP id e15-20020a17090301cf00b001d72b142af6mr6463789plh.123.1705970174843;
-        Mon, 22 Jan 2024 16:36:14 -0800 (PST)
+        bh=Ozg2hLXb4DmKd1HybaSf4vbbssFf/awskMowmtEYutc=;
+        b=wY+n116wFQebgvEqn8m1HyAmJb9d2jBu8bhJOBOudIWaBEzGs1H97c3Cgz+C5/maKH
+         MaF2fKLnRsn+6xqbSZDr5LpefbC2FljT+xDjfGhTbyqvLasN55/N7HVEpUiHjKKvkOLg
+         puev1ay7H7jdWfsUsD2xXGjOyvaf/VnSLGyiWgkQVAN9jiocV/9ZQWX/PQx65+Qa7ECj
+         xv6LdEbtpjGx06FqyOW9z/G1mqUwco1xTKcpCdp01HLWraqmUF2z75ILfffGwX0422d0
+         WSg5/iK4EV5xkcR6YvYtEobjQP7GW4nxngPsm4yD2FagcxLUPLduzWuyL8u6WRVdJ9Mn
+         n4IQ==
+X-Gm-Message-State: AOJu0Yxkc1KbLUhzeC0huPRh+Ofz43T/TZrlcic3WJH1/Kka3QRhZnko
+	MGUysiBxdsx8EPrD5gcrI4aOIyMbCf6ok24OXxfjYdYUjfukMDHtysEn67quLQ==
+X-Google-Smtp-Source: AGHT+IH3xItkb51q9poV3e4gk9+5kLPIsnJ/D1iDYZ2E26EFuOHRpQfvl1dXLHU1JWWRAwr3q4sIyw==
+X-Received: by 2002:a17:902:da86:b0:1d7:510d:745 with SMTP id j6-20020a170902da8600b001d7510d0745mr1963425plx.86.1705969756440;
+        Mon, 22 Jan 2024 16:29:16 -0800 (PST)
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id 13-20020a170902e9cd00b001d403f114d2sm7788749plk.303.2024.01.22.16.36.08
+        by smtp.gmail.com with ESMTPSA id j2-20020a17090276c200b001d5d736d1b2sm7671556plt.261.2024.01.22.16.29.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 16:36:09 -0800 (PST)
+        Mon, 22 Jan 2024 16:29:08 -0800 (PST)
 From: Kees Cook <keescook@chromium.org>
 To: linux-hardening@vger.kernel.org
 Cc: Kees Cook <keescook@chromium.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	John Garry <john.garry@huawei.com>,
-	Fangrui Song <maskray@google.com>,
-	linux-perf-users@vger.kernel.org,
+	Bjorn Andersson <andersson@kernel.org>,
+	Mathieu Poirier <mathieu.poirier@linaro.org>,
+	linux-remoteproc@vger.kernel.org,
 	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
 	Bill Wendling <morbo@google.com>,
 	Justin Stitt <justinstitt@google.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 69/82] perf tools: Refactor intentional wrap-around test
-Date: Mon, 22 Jan 2024 16:27:44 -0800
-Message-Id: <20240123002814.1396804-69-keescook@chromium.org>
+Subject: [PATCH 70/82] remoteproc: Refactor intentional wrap-around test
+Date: Mon, 22 Jan 2024 16:27:45 -0800
+Message-Id: <20240123002814.1396804-70-keescook@chromium.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240122235208.work.748-kees@kernel.org>
 References: <20240122235208.work.748-kees@kernel.org>
@@ -93,19 +84,19 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3386; i=keescook@chromium.org;
- h=from:subject; bh=ISxb0EX289Hm6r/C1D5v5yNh7MxoLH57ssbQ8ckbm+8=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlrwgLpFNG1APqWmXvdolDfH8+mocaXwk0HgcGM
- VNIE3sBBkiJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZa8ICwAKCRCJcvTf3G3A
- JqWsD/4gHfuTTgS+0XmICb2SSlqKOGKBXK1LMgEpx9me/IY6PVtyCZIG+VUohcpdnaICiQtsFUU
- mImtzAjxoLI2Irht7ZKE6PZszQWlu//xBiu4J2tjYEiRBxzNLndGImZ9xkpLWcf+MOQ2fJ6CtXT
- x0EzQFGUiWY+pSAmxMzmbG/F43IXjMBKDpCrc4Kl2LgtSOf+vRh/hXGXy1G5U2LxXag7qpxaPYe
- GX30l9A5JiqF1VckkWguaIT/rLugkXZAV9gEAqKhMDgsuCYm56vVEHX3Sze++BjQwZntch3wQ03
- JI2FYzS++gQePJNhK7jY5Rfld2a2JIMlegBz+Hu3QqB0n2qt536h7AVvtInr9/Rwo9vxfb2mRkS
- DNeNvD0hpJMJaT+nnq60lc5TJcP7Iv/YakS8XosoMNvu13dzSu0LrOe5YWv6kkK8VEoBA5gHcfj
- tf+mG2bFptvj7Z6sCjfkONfPSe3FDMT8Pzcu2qTHVKl0WmmcQ1rXFGuYFlkIb0L+aExtRwUzzo4
- UOLOdmnPsOyKWxDwTG7NxbT7ryzP5PdjYN02A8pg+p5fPVExzAMKqaJR74bicaMbNL+yLAUzeeJ
- Qdvf1XAOObDb6ftvw5Bh0jKlLorh6wRY7+sJnokpHlgswERulKf6CcNyMY3q7BkoW4MUjYHoC2M X7XHeWzYBiFCDZQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3781; i=keescook@chromium.org;
+ h=from:subject; bh=E4fnTWRdYYjzKyqD4/S7hWZrsgLHeDrGLLUjsAQr6BY=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlrwgL5LhyO8lbwwC9JZQAOOgJrqb3OX0EPvh6l
+ 8bugQLiKQ2JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZa8ICwAKCRCJcvTf3G3A
+ JnhyD/47D3dgLuSjvUBevHVUX8m0J9aMINDwyLe8YOJ3pS9h4ozZClTAxPECjJJWHjtLg7OJyvy
+ xNz1BO/Z4axDLuZsrUujG5UW3sD8uYFJRWwGx0xeNzp5hLbUeLi/yJMah9zRJg9w038a3N6o53/
+ /TmiV68eAjsRlBFm3aX7XiefhKVMLDKZhTNEf6CiWF9QfNPS69ktWpDj0ZUa6ui+cDBddo9V61U
+ 8nBaGbyQHfqJtg9gJaY8hkjJB+D2yT9PKxX1Ty/L50mjkHJAMd5po+wwYKl7tkgjizogRGvsMuT
+ +vuIsRfaIQ6rcBLHGTf5vVH7rHZq1pd4CY5zUbo9L9n3uoizF0G1V60SZbG5aMW/E8CMonLRtnI
+ knnFGL334iuQo0Gw2CVpMttL4qByUtAQB6n4N1tzT5RPMdiB3T+Ra2gPKRHWQ0pvbCSF9ZdBMR/
+ CYnaCLhY5+gqCUlDxOH1w4FxQ1jT++o/5/tS3mDwe3Y4q4/SOskxXFy/lY7mXvF0mCsFY2gkdfF
+ royUCOjy+Zt4PH8x+B6LXlzHbZIk7JT57rxoZ/T1VSCghRZmXE1qagz+W1f3UvBUiuTvi4gxm/Z
+ MlAZvNbQSQN5ReZV+4nUMvwmaZhJzoKqPsXcgil6mWAuL6mKyS8mAC9pWH4z3nLENV5pftqUiJl XHm7uY9FF7gVkZw==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 
@@ -130,64 +121,64 @@ Link: https://git.kernel.org/linus/68df3755e383e6fecf2354a67b08f92f18536594 [1]
 Link: https://github.com/KSPP/linux/issues/26 [2]
 Link: https://github.com/KSPP/linux/issues/27 [3]
 Link: https://github.com/KSPP/linux/issues/344 [4]
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: John Garry <john.garry@huawei.com>
-Cc: Fangrui Song <maskray@google.com>
-Cc: linux-perf-users@vger.kernel.org
+Cc: Bjorn Andersson <andersson@kernel.org>
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: linux-remoteproc@vger.kernel.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- tools/perf/util/dso.c                    | 2 +-
- tools/perf/util/unwind-libdw.c           | 2 +-
- tools/perf/util/unwind-libunwind-local.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/remoteproc/pru_rproc.c             | 2 +-
+ drivers/remoteproc/remoteproc_elf_loader.c | 2 +-
+ drivers/remoteproc/remoteproc_virtio.c     | 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/tools/perf/util/dso.c b/tools/perf/util/dso.c
-index 22fd5fa806ed..470a86f1cdfd 100644
---- a/tools/perf/util/dso.c
-+++ b/tools/perf/util/dso.c
-@@ -1122,7 +1122,7 @@ static ssize_t data_read_write_offset(struct dso *dso, struct machine *machine,
- 	if (offset > dso->data.file_size)
- 		return -1;
+diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
+index 327f0c7ee3d6..834249ee3dd3 100644
+--- a/drivers/remoteproc/pru_rproc.c
++++ b/drivers/remoteproc/pru_rproc.c
+@@ -893,7 +893,7 @@ pru_rproc_find_interrupt_map(struct device *dev, const struct firmware *fw)
+ 			continue;
  
--	if (offset + size < offset)
-+	if (add_would_overflow(offset, size))
- 		return -1;
+ 		/* make sure we have the entire irq map */
+-		if (offset + size > fw->size || offset + size < size) {
++		if (offset + size > fw->size || add_would_overflow(size, offset)) {
+ 			dev_err(dev, ".pru_irq_map section truncated\n");
+ 			return ERR_PTR(-EINVAL);
+ 		}
+diff --git a/drivers/remoteproc/remoteproc_elf_loader.c b/drivers/remoteproc/remoteproc_elf_loader.c
+index 94177e416047..b9231cf46d68 100644
+--- a/drivers/remoteproc/remoteproc_elf_loader.c
++++ b/drivers/remoteproc/remoteproc_elf_loader.c
+@@ -278,7 +278,7 @@ find_table(struct device *dev, const struct firmware *fw)
+ 		table = (struct resource_table *)(elf_data + offset);
  
- 	return cached_io(dso, machine, offset, data, size, out);
-diff --git a/tools/perf/util/unwind-libdw.c b/tools/perf/util/unwind-libdw.c
-index 6013335a8dae..45a89cbb2c8d 100644
---- a/tools/perf/util/unwind-libdw.c
-+++ b/tools/perf/util/unwind-libdw.c
-@@ -198,7 +198,7 @@ static bool memory_read(Dwfl *dwfl __maybe_unused, Dwarf_Addr addr, Dwarf_Word *
- 	end = start + stack->size;
+ 		/* make sure we have the entire table */
+-		if (offset + size > fw_size || offset + size < size) {
++		if (offset + size > fw_size || add_would_overflow(size, offset)) {
+ 			dev_err(dev, "resource table truncated\n");
+ 			return NULL;
+ 		}
+diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
+index 83d76915a6ad..58742c666e35 100644
+--- a/drivers/remoteproc/remoteproc_virtio.c
++++ b/drivers/remoteproc/remoteproc_virtio.c
+@@ -298,7 +298,7 @@ static void rproc_virtio_get(struct virtio_device *vdev, unsigned int offset,
+ 	rsc = (void *)rvdev->rproc->table_ptr + rvdev->rsc_offset;
+ 	cfg = &rsc->vring[rsc->num_of_vrings];
  
- 	/* Check overflow. */
--	if (addr + sizeof(Dwarf_Word) < addr)
-+	if (add_would_overflow(addr, sizeof(Dwarf_Word)))
- 		return false;
+-	if (offset + len > rsc->config_len || offset + len < len) {
++	if (offset + len > rsc->config_len || add_would_overflow(len, offset)) {
+ 		dev_err(&vdev->dev, "rproc_virtio_get: access out of bounds\n");
+ 		return;
+ 	}
+@@ -316,7 +316,7 @@ static void rproc_virtio_set(struct virtio_device *vdev, unsigned int offset,
+ 	rsc = (void *)rvdev->rproc->table_ptr + rvdev->rsc_offset;
+ 	cfg = &rsc->vring[rsc->num_of_vrings];
  
- 	if (addr < start || addr + sizeof(Dwarf_Word) > end) {
-diff --git a/tools/perf/util/unwind-libunwind-local.c b/tools/perf/util/unwind-libunwind-local.c
-index dac536e28360..ac71cc7f53b9 100644
---- a/tools/perf/util/unwind-libunwind-local.c
-+++ b/tools/perf/util/unwind-libunwind-local.c
-@@ -587,7 +587,7 @@ static int access_mem(unw_addr_space_t __maybe_unused as,
- 	end = start + stack->size;
- 
- 	/* Check overflow. */
--	if (addr + sizeof(unw_word_t) < addr)
-+	if (add_would_overflow(addr, sizeof(unw_word_t)))
- 		return -EINVAL;
- 
- 	if (addr < start || addr + sizeof(unw_word_t) >= end) {
+-	if (offset + len > rsc->config_len || offset + len < len) {
++	if (offset + len > rsc->config_len || add_would_overflow(len, offset)) {
+ 		dev_err(&vdev->dev, "rproc_virtio_set: access out of bounds\n");
+ 		return;
+ 	}
 -- 
 2.34.1
 
