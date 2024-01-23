@@ -1,356 +1,358 @@
-Return-Path: <linux-kernel+bounces-34467-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34466-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA993837DC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:29:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 840E0837DA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:27:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1F11BB2350E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:13:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC798B2DB70
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:13:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D2741474AA;
-	Tue, 23 Jan 2024 00:28:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E8F514690A;
+	Tue, 23 Jan 2024 00:28:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="GySuqcW5"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="e78cyRK4"
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 348401468FA
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:28:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 767941468E8
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:28:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705969714; cv=none; b=tlp40DgecclawEUYMamENFDB2/JCHR8HJIWs2qzvKLN0N+0eHPw0YH3ZedMcAFpjNlhf3ytDnh9h8x2P9EPgiXQCwlLR7Um0T0ULzzVHSi4ML5SqkJ/6E+XontFTg2fpsCFQpSKpJmrsBTohwwfKe4YvYRpE9oaW+HXI2Jt9SAA=
+	t=1705969711; cv=none; b=qK1JBI7va7msqaSTbLMem6VoKunFIdMGQfhORWqrC/AhU4QYMjUAq8S4ocZ8RjLFMWsMVabPmYs7of96p9gzHqdkCpRQ1pAzoqbpSdtMHe/wFZlLGtCZUtNY5bz6FIaDGzhvh1scQVO/z0xe/n7TjoxWlqQ9L3brVCL/iXL9t5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705969714; c=relaxed/simple;
-	bh=/2zEGgWFHHSbGtTa4mjcGsr+YqaZ5NviJwqoVuZpJvY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=bRQrVDW1QSnvXntiIrutoDmH1IgNVzV63OOataurIDAYEbUPVJ5tB6uyaH6gZ+KU8jADNZRyRdIq39HPtbNzh1CsBCO5SgyUitubKPvQaC+7/ROl3IHoMi8unB5RzbTXfZB2q/ECNa1Kl336QP2Z0peZ3Bx8S75xtjbwzcJs6UU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=GySuqcW5; arc=none smtp.client-ip=209.85.210.171
+	s=arc-20240116; t=1705969711; c=relaxed/simple;
+	bh=GmPAxgHKHubLn9MGZBZdUQq9TsG2fUO2ZtsyyqCrjXQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=HWHqTy/sKuIDEhgMv5jrgvMGZctLVnpx5NKO8zGmN1cHwR5HnQWmOF8kpHiLpUN0Tjj06o7gpPZ9ukskMjEUo9yKN8dE0d8y94n6IgFS6UAYhGGh61CHtxCVFOp6zy31+kV1kDgwNBN4rhOhPbb4EPHLXmK7Ivj1y2MO5qSfL0M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=e78cyRK4; arc=none smtp.client-ip=209.85.215.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6dbebe4938bso804993b3a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 16:28:31 -0800 (PST)
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5d3912c9a83so2349a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 16:28:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1705969711; x=1706574511; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wTcmI4hrcuF0h9O44LCbz2SMeSAa3PwN+eu36jY3Vsw=;
-        b=GySuqcW5G46MB6aZ80nsulb7tA0xEzpORPP6eO813v0r3ZWBs4Vafiql0/ZdMav+bZ
-         wU9ZwbryRlXEbT+x3zJXPMesPjqgWy8xfVa9vc4LUflCRb9o0NMn94XBjiqfmD1nMN8I
-         Jsnivgm9wT0kS4i2bo1CzVfSLD4Y5rsoR23UU=
+        d=chromium.org; s=google; t=1705969708; x=1706574508; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lArTqUWjSpk/OeY3+qANt+dZXdElsgEYjM7TfGsNafw=;
+        b=e78cyRK4J2W1iHVEI8zdJDTYHx197PlonyDIjYn2Ih2ngXE/iccjvOD/CLy0KpbASX
+         nMt3dUjdom+vz3WOMhHDtY94QzGosA5jorPJ/tFtPC+RBDk3YmfP45XMWcl/IvYlRKT7
+         34waM7kYU0V/rUdZJv0fnyAXyX+WVlESS0j/g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705969711; x=1706574511;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wTcmI4hrcuF0h9O44LCbz2SMeSAa3PwN+eu36jY3Vsw=;
-        b=MHLjOFPWJrldYvKNhFebJR8198QIbkj4JaBcWJw/g7J8+HB2ZRYi0QM7B+18iOjfWP
-         nRquuGELb3c9GdfR0wLPyox0kp142CzMr7fTl8SJjE4bFXIoOnWNv/E/eN0rqdpatFsn
-         JV1XpWwqGchHuEoHDXHqqJv7sE2th2k6HPoZHzbd/GErmsyk+Ihbg1SV7NqktPmOdzt6
-         EyFt3sIsXVa9I+ctvDnLEy4y7FY8wXjL7i5ARSRicWgU6ZAni3gRGttEDgI6YohiYxlv
-         aKfu499nnM9462nAMce2s+WZjqWYxT9W0jwyL4F0+DdzfuwNL8wWaeh2szW3rRlSvJF9
-         qRUw==
-X-Gm-Message-State: AOJu0YyYCsoFuUbuftDyGWi51T0diC3F2tf8AwcEp/eikKwAHbsnS0Dk
-	dTYnGpIiv24bjugdBKgEWafPJRkI8g3HeksnFaNLwCqi63vMVUhUB3ZiVK1/AA==
-X-Google-Smtp-Source: AGHT+IFcasPszMC3IrsnJHA0hfgfbPHquE/np9HUjhJZfpzSK8f3LtKZ+Wb0eo/kZfZ2j/m4bpzjNQ==
-X-Received: by 2002:a62:5e82:0:b0:6db:c5db:7711 with SMTP id s124-20020a625e82000000b006dbc5db7711mr2057348pfb.26.1705969710718;
-        Mon, 22 Jan 2024 16:28:30 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705969708; x=1706574508;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lArTqUWjSpk/OeY3+qANt+dZXdElsgEYjM7TfGsNafw=;
+        b=vJzByxBi4f7ZVO0ji/rjbxjDimv4T53nmO9C9ys4AV0o2TEky5UKjvvXqhEVAO14Py
+         isgLHm4pfZWsuQf/NOf9ySpLEFHxKIHA0glYtxrsfkDEbjzpBzxPNMu+AZmGBfIl3awv
+         FFw4nsUUhD2n0pvB/K0N3+0O7FyJ1ij/2vlDdqTI0/vTe7QBfiwJ9ENYexAAi74WO7ma
+         bfuqOPJ6d0pCCjvN1RBDDsuPwO/XXypGl/aY5Fxsm1KsKTYRBTTOuaHwkI6JVzCom/Qd
+         I6Hg5UfADkqK3hmr8tggisvWAuaACXoLcdmlbL8PfTCiMBPB+uJev97sSGks++KKzdHZ
+         DwTA==
+X-Gm-Message-State: AOJu0Yyeg50jFwtFtbf/0FboU/A1VwQBWeKDrXiwobFnrqbX9Jhd6xnW
+	1/yzAw98WuLdXVJJcDuwnNRxNzKPAbIkd+BOUwPIkfq/OZNDoxp4WOgB5qI71w==
+X-Google-Smtp-Source: AGHT+IEL0OAhszuTE+DREqBy8kuie4n5JflXi9iAa/aUSzhFQ8heJUVRu/5klVCwSbJzSq+AVnRchw==
+X-Received: by 2002:a05:6a20:8f09:b0:195:2770:5b7e with SMTP id b9-20020a056a208f0900b0019527705b7emr2683349pzk.119.1705969707738;
+        Mon, 22 Jan 2024 16:28:27 -0800 (PST)
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id c4-20020a056a00008400b006dabe67bb85sm10167569pfj.216.2024.01.22.16.28.19
+        by smtp.gmail.com with ESMTPSA id j14-20020a170902da8e00b001d564115807sm7664893plx.46.2024.01.22.16.28.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 16:28:24 -0800 (PST)
+        Mon, 22 Jan 2024 16:28:23 -0800 (PST)
 From: Kees Cook <keescook@chromium.org>
 To: linux-hardening@vger.kernel.org
 Cc: Kees Cook <keescook@chromium.org>,
 	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
 	Bill Wendling <morbo@google.com>,
 	Justin Stitt <justinstitt@google.com>,
+	llvm@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 00/82] overflow: Refactor open-coded arithmetic wrap-around
-Date: Mon, 22 Jan 2024 16:26:35 -0800
-Message-Id: <20240122235208.work.748-kees@kernel.org>
+Subject: [PATCH 01/82] overflow: Expand check_add_overflow() for pointer addition
+Date: Mon, 22 Jan 2024 16:26:36 -0800
+Message-Id: <20240123002814.1396804-1-keescook@chromium.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240122235208.work.748-kees@kernel.org>
+References: <20240122235208.work.748-kees@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=13635; i=keescook@chromium.org;
- h=from:subject:message-id; bh=/2zEGgWFHHSbGtTa4mjcGsr+YqaZ5NviJwqoVuZpJvY=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlrwgDnQIlWDXkYm+e3z8Lv9+5708n8eKOSW3DC
- 3p2a//QVMeJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZa8IAwAKCRCJcvTf3G3A
- JgvjEAChhDiClIia0Lvxw5PPhFD1eI2r5gNCKbbaMo2tbBn3wI6YmPdGGNrQfTcn4/cWF2u6ypC
- Cs6utqzPrkW7t932fDMa93LeJjNKwmJCq8yG3rcVs2T9BhLpAeiP6xjQeKAnsaqplfVUdU3IQWK
- DrkccHjBeQFlqFtMFsr2SuPmERHrq9RmVpT0EVradL5DvN8YIZODYUn1/nsZbSsRMlnnzr2XSpQ
- 3L8cUbX49lgn57jtNlPuRXpKqXAF8zwFYT6JBMAjSwu0iKT+08I7zprqffMACu4Ed/+OJbuWGCL
- RCC619L9Z8H9N05mU7MxlzJbsh/1B2iBDH9q2P1qDdTO3p36soSC37xHuSFaw4rpWNQKk1qAl9z
- 141XQt0325IIXjQBa4gw8XO+sz36F8aJAwOFehLjrFcNc0rSYAmwut1CGbJ+utyM7BX+Q6GEdMQ
- 8gUw1ljXBCbk44DU+T6c8niXGXrRuHRP/U36XiK8S+ywSxxpikMhTTTZ2gIvrEFIqVev5ub91pp
- MgftMbvnDDIL4uLneIX5tDM01eAwZ66MyuyQ9/KiTp9odL5Scm2G7GTbMBFedWw5S/WoCyiBLHZ
- p8XkA270CBpjAbO2GaaRpimpW33GOLecrBMWoWgM/klqVwpwsqi7tMYncQFRLkL4hJylYyVXH2d
- 8D6UUn 4MDAbx56g==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=10628; i=keescook@chromium.org;
+ h=from:subject; bh=GmPAxgHKHubLn9MGZBZdUQq9TsG2fUO2ZtsyyqCrjXQ=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlrwgDoUKTmAuWb19BxZjUN7+ddA/jXHTbKdyVN
+ EfDFJR+7eOJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZa8IAwAKCRCJcvTf3G3A
+ JpSCEACQ5mYrM7i5JOmYbVd+Q5AkrUZpJML/LWSTJVslOGTKtFY7pOJ4b5nGs0MuTs4RA6hn1fb
+ fwi3JkVl/ohmms70RbzK9zztLs5bUM4HYuL+lomFGyZrxI/fzmKPtla94BdVgpWTXhJRWjWv5Yn
+ 2NBYey87p5SzGF/++U1RVuiMq6irTQcHecMhx7h1MYdtta20/en2Dps48cCka58pdT3v+2fASMj
+ 459rPl8qXF7VEfxqWA9kdjoCHnV7iLUFsngzMmV4T5bfSiNylZs1Quyc/XV0qHDaBvtZU8ahbmC
+ ZE7QtaJmnp303xY4TT1jeblUY/MKFrZ7gxzx9ATtJIsOXEsp/4YbFJPUff3iAc3pLczCXi8qLYL
+ extKud6V9k/5mf5uuNS7O3VlrHPELWkn9o4qIlonPGnLzkqT5F+K3Q1TNxI8uucoejBpS2nCXzz
+ LpYDCVGx3Cz9e3Etw3mQmvgQbiRvlsE1gbhqAc8KzV0rB2e7LjUrdH1pHfUvW1M5/ED8RNiI0Ni
+ evuBn4TAQKwKKykbMCeHS9Z8Nxai3n7wmHR+G1VK7TtLr389KSIRwKVsnEdaP84x07FTHGaaAtL
+ qQkir3gVSorK9Sv6pAedjKOW1Azqro0bZpCflFfsyE2QTuP22RUSNSKiKEl23FNt+1FTcexvBU8 Zxt/lP9SN8nyIPA==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 
-Hi,
+The check_add_overflow() helper is mostly a wrapper around
+__builtin_add_overflow(), but GCC and Clang refuse to operate on pointer
+arguments that would normally be allowed if the addition were open-coded.
 
-In our continuing effort to eliminate root causes of flaws in the kernel,
-this series is the start to providing a way to have sensible coverage
-for catching unexpected arithmetic wrap-around.
+For example, we have many places where pointer overflow is tested:
 
-A quick word on language: while discussing[1] the finer details of
-the C standard's view on arithmetic, I was disabused of using the term
-"overflow" when what I really mean is "wrap-around". When describing
-security vulnerabilities, "overflow" is the common term and often used
-interchangeably with "wrap-around". Strictly speaking, though, "overflow"
-applies only to signed[2] and pointer[3] types, and "wrap-around" is for
-unsigned[4]. An arithmetic "overflow" is considered undefined behavior,
-which has caused our builds pain in the past, since "impossible"
-conditions might get elided by the compiler. As a result, we build
-with -fno-strict-overflow which coverts all "overflow" conditions into
-"wrap-around" (i.e. 2s complement), regardless of type.
+	struct foo *ptr;
+	...
+	/* Check for overflow */
+	if (ptr + count < ptr) ...
 
-All this is to say I am discussing arithmetic wrap-around, which is
-the condition where the value exceeds a type's maximum value (or goes
-below its minimum value) and wraps around. I'm not interested in the
-narrow definition of "undefined behavior" -- we need to stamp out the
-_unexpected_ behavior, where the kernel operates on a pathological value
-that wrapped around without the code author's intent.
+And in order to avoid running into the overflow sanitizers in the
+future, we need to rewrite these "intended" overflow checks:
 
-As always, this is about being able disambiguate the intent of arithmetic
-in the kernel. We intentionally use wrapping arithmetic in all kinds of
-places, but we need to be able to annotate it as such going forward so
-the compiler can distinguish when it needs to perform instrumentation
-(when such instrumentation is enabled).
+	if (check_add_overflow(ptr, count, &result)) ...
 
-Getting back to my earlier mention of -fno-strict-overflow, the bulk of
-the series is refactoring for a common code pattern in the kernel where
-to test for potentially overflowing addition, the addition is performed,
-and wrap-around is tested for. This is what originally[5] caused us to
-enable -fno-strict-overflow:
+Frustratingly the argument type validation for __builtin_add_overflow()
+is done before evaluating __builtin_choose_expr(), so for arguments to
+be valid simultaneously for sizeof(*p) (when p may not be a pointer),
+and __builtin_add_overflow(a, ...) (when a may be a pointer), we must
+introduce wrappers that always produce a specific type (but they are
+only used in the places where the bogus arguments will be ignored).
 
-	var + offset < var
+To test whether a variable is a pointer or not, introduce the __is_ptr()
+helper, which uses __builtin_classify_type() to find arrays and pointers
+(via the new __is_ptr_or_array() helper), and then decays arrays into
+pointers (via the new __decay() helper), to distinguish pointers from
+arrays.
 
-For these cases we can use either check_add_overflow() or
-add_would_overflow(). These helpers will not trip the wrap-around
-instrumentation, and do not depend on the whims of the compiler options.
-(Note that I have no intention of removing -fno-strict-overflow any
-time soon, if ever. As with all these kinds of changes, we need to
-evolve our support for it, and we can't introduce undefined behavior
-into the kernel.)
+Additionally update the unit tests to cover pointer addition.
 
-This series is mainly 3 parts:
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Bill Wendling <morbo@google.com>
+Cc: Justin Stitt <justinstitt@google.com>
+Cc: llvm@lists.linux.dev
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ include/linux/compiler_types.h | 10 +++++
+ include/linux/overflow.h       | 44 ++++++++++++++++++-
+ lib/overflow_kunit.c           | 77 ++++++++++++++++++++++++++++++----
+ 3 files changed, 121 insertions(+), 10 deletions(-)
 
- - documentation, a coccinelle script, and new/improved helpers
- - (re)introduction of the overflow sanitizers
- - refactoring the "please wrap around to see if I wrapped around" tests
-
-While this work is underway in the kernel, there will be complementary
-work happening in GCC and Clang to expand the existing sanitizers
-to behave correctly with -fno-strict-overflow. In the meantime, the
-sanitizers are excluded from CONFIG_COMPILE_TEST.
-
--Kees
-
-[1] https://gcc.gnu.org/pipermail/gcc-patches/2023-September/630578.html
-[2] https://github.com/KSPP/linux/issues/26
-[3] https://github.com/KSPP/linux/issues/344
-[4] https://github.com/KSPP/linux/issues/27
-[5] https://bugzilla.kernel.org/show_bug.cgi?id=12597
-
-Kees Cook (82):
-  overflow: Expand check_add_overflow() for pointer addition
-  overflow: Introduce add_would_overflow()
-  overflow: Introduce add_wrap()
-  docs: deprecated.rst: deprecate open-coded arithmetic wrap-around
-  cocci: Refactor open-coded arithmetic wrap-around
-  overflow: Reintroduce signed and unsigned overflow sanitizers
-  overflow: Introduce CONFIG_UBSAN_POINTER_WRAP
-  iov_iter: Avoid wrap-around instrumentation in
-    copy_compat_iovec_from_user
-  select: Avoid wrap-around instrumentation in do_sys_poll()
-  locking/atomic/x86: Silence intentional wrapping addition
-  arm64: atomics: lse: Silence intentional wrapping addition
-  ipv4: Silence intentional wrapping addition
-  btrfs: Refactor intentional wrap-around calculation
-  smb: client: Refactor intentional wrap-around calculation
-  dma-buf: Refactor intentional wrap-around calculation
-  drm/nouveau/mmu: Refactor intentional wrap-around calculation
-  drm/vc4: Refactor intentional wrap-around calculation
-  ext4: Refactor intentional wrap-around calculation
-  fs: Refactor intentional wrap-around calculation
-  fpga: dfl: Refactor intentional wrap-around calculation
-  drivers/fsi: Refactor intentional wrap-around calculation
-  x86/sgx: Refactor intentional wrap-around calculation
-  KVM: Refactor intentional wrap-around calculation
-  KVM: arm64: vgic: Refactor intentional wrap-around calculation
-  KVM: SVM: Refactor intentional wrap-around calculation
-  buildid: Refactor intentional wrap-around calculation
-  m68k: Refactor intentional wrap-around calculation
-  niu: Refactor intentional wrap-around calculation
-  rds: Refactor intentional wrap-around calculation
-  s390/kexec_file: Refactor intentional wrap-around calculation
-  ARC: dw2 unwind: Refactor intentional wrap-around calculation
-  vringh: Refactor intentional wrap-around calculation
-  mm/vmalloc: Refactor intentional wrap-around calculation
-  ipc: Refactor intentional wrap-around calculation
-  ACPI: custom_method: Refactor intentional wrap-around test
-  agp: Refactor intentional wrap-around test
-  aio: Refactor intentional wrap-around test
-  arm: 3117/1: Refactor intentional wrap-around test
-  crypto: Refactor intentional wrap-around test
-  arm64: stacktrace: Refactor intentional wrap-around test
-  wil6210: Refactor intentional wrap-around test
-  bcachefs: Refactor intentional wrap-around test
-  bpf: Refactor intentional wrap-around test
-  btrfs: Refactor intentional wrap-around test
-  cifs: Refactor intentional wrap-around test
-  crypto: Refactor intentional wrap-around test
-  dm verity: Refactor intentional wrap-around test
-  drm/nouveau/mmu: Refactor intentional wrap-around test
-  drm/i915: Refactor intentional wrap-around test
-  drm/vc4: Refactor intentional wrap-around test
-  ext4: Refactor intentional wrap-around test
-  f2fs: Refactor intentional wrap-around test
-  fs: Refactor intentional wrap-around test
-  hpfs: Refactor intentional wrap-around test
-  kasan: Refactor intentional wrap-around test
-  usercopy: Refactor intentional wrap-around test
-  KVM: arm64: vgic-v3: Refactor intentional wrap-around test
-  s390/mm: Refactor intentional wrap-around test
-  lib/scatterlist: Refactor intentional wrap-around test
-  powerpc: Refactor intentional wrap-around test
-  scsi: mpt3sas: Refactor intentional wrap-around test
-  mwifiex: pcie: Refactor intentional wrap-around test
-  mm: Refactor intentional wrap-around test
-  netfilter: Refactor intentional wrap-around test
-  nios2: Refactor intentional wrap-around test
-  fs/ntfs3: Refactor intentional wrap-around test
-  ocfs2: Refactor intentional wrap-around test
-  PCI: Refactor intentional wrap-around test
-  perf tools: Refactor intentional wrap-around test
-  remoteproc: Refactor intentional wrap-around test
-  s390/mm: Refactor intentional wrap-around test
-  scsi: sd_zbc: Refactor intentional wrap-around test
-  sh: Refactor intentional wrap-around test
-  ARC: dw2 unwind: Refactor intentional wrap-around test
-  timekeeping: Refactor intentional wrap-around test
-  udf: Refactor intentional wrap-around test
-  virtio: Refactor intentional wrap-around test
-  mm/vmalloc: Refactor intentional wrap-around test
-  staging: vme_user: Refactor intentional wrap-around test
-  xen-netback: Refactor intentional wrap-around test
-  lib: zstd: Refactor intentional wrap-around test
-  mqueue: Refactor intentional wrap-around test
-
- Documentation/process/deprecated.rst          | 36 ++++++++
- arch/arc/kernel/unwind.c                      |  7 +-
- arch/arm/nwfpe/softfloat.c                    |  2 +-
- arch/arm64/include/asm/atomic_lse.h           |  8 +-
- arch/arm64/include/asm/stacktrace/common.h    |  2 +-
- arch/arm64/kvm/vgic/vgic-kvm-device.c         |  6 +-
- arch/arm64/kvm/vgic/vgic-mmio-v3.c            |  2 +-
- arch/arm64/kvm/vgic/vgic-v2.c                 | 10 ++-
- arch/m68k/kernel/sys_m68k.c                   |  5 +-
- arch/nios2/kernel/sys_nios2.c                 |  2 +-
- arch/powerpc/platforms/powernv/opal-prd.c     |  2 +-
- arch/powerpc/xmon/xmon.c                      |  2 +-
- arch/s390/include/asm/stacktrace.h            |  6 +-
- arch/s390/kernel/machine_kexec_file.c         |  5 +-
- arch/s390/mm/gmap.c                           |  4 +-
- arch/s390/mm/vmem.c                           |  2 +-
- arch/sh/kernel/sys_sh.c                       |  2 +-
- arch/x86/include/asm/atomic.h                 |  2 +-
- arch/x86/kernel/cpu/sgx/ioctl.c               |  6 +-
- arch/x86/kvm/svm/sev.c                        |  5 +-
- crypto/adiantum.c                             |  2 +-
- drivers/acpi/custom_method.c                  |  2 +-
- drivers/char/agp/generic.c                    |  2 +-
- drivers/crypto/amcc/crypto4xx_alg.c           |  2 +-
- drivers/crypto/axis/artpec6_crypto.c          |  2 +-
- drivers/dma-buf/dma-buf.c                     |  7 +-
- drivers/fpga/dfl.c                            |  5 +-
- drivers/fsi/fsi-core.c                        |  6 +-
- drivers/gpu/drm/i915/i915_vma.c               |  2 +-
- drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.c |  8 +-
- drivers/gpu/drm/vc4/vc4_validate.c            |  7 +-
- drivers/md/dm-switch.c                        |  2 +-
- drivers/md/dm-verity-target.c                 |  2 +-
- drivers/md/dm-writecache.c                    |  2 +-
- drivers/net/ethernet/sun/niu.c                |  5 +-
- drivers/net/wireless/ath/wil6210/wmi.c        |  2 +-
- drivers/net/wireless/marvell/mwifiex/pcie.c   |  6 +-
- drivers/net/xen-netback/hash.c                |  2 +-
- drivers/pci/pci.c                             |  2 +-
- drivers/remoteproc/pru_rproc.c                |  2 +-
- drivers/remoteproc/remoteproc_elf_loader.c    |  2 +-
- drivers/remoteproc/remoteproc_virtio.c        |  4 +-
- drivers/scsi/mpt3sas/mpt3sas_ctl.c            |  2 +-
- drivers/scsi/sd_zbc.c                         |  2 +-
- drivers/staging/vme_user/vme.c                |  2 +-
- drivers/vhost/vringh.c                        |  8 +-
- drivers/virtio/virtio_pci_modern_dev.c        |  4 +-
- fs/aio.c                                      |  2 +-
- fs/bcachefs/bkey.c                            |  4 +-
- fs/bcachefs/fs.c                              |  2 +-
- fs/bcachefs/quota.c                           |  2 +-
- fs/bcachefs/util.c                            |  2 +-
- fs/btrfs/extent_map.c                         |  6 +-
- fs/btrfs/extent_map.h                         |  6 +-
- fs/btrfs/ordered-data.c                       |  2 +-
- fs/ext4/block_validity.c                      |  2 +-
- fs/ext4/extents.c                             |  5 +-
- fs/ext4/resize.c                              |  2 +-
- fs/f2fs/file.c                                |  2 +-
- fs/f2fs/verity.c                              |  2 +-
- fs/hpfs/alloc.c                               |  2 +-
- fs/ntfs3/record.c                             |  4 +-
- fs/ocfs2/resize.c                             |  2 +-
- fs/read_write.c                               |  8 +-
- fs/remap_range.c                              |  2 +-
- fs/select.c                                   | 13 +--
- fs/smb/client/readdir.c                       |  5 +-
- fs/smb/client/smb2pdu.c                       |  4 +-
- fs/udf/balloc.c                               |  4 +-
- include/linux/compiler_types.h                | 29 +++++-
- include/linux/overflow.h                      | 76 +++++++++++++++-
- ipc/mqueue.c                                  |  2 +-
- ipc/shm.c                                     |  6 +-
- kernel/bpf/verifier.c                         | 12 +--
- kernel/time/timekeeping.c                     |  2 +-
- lib/Kconfig.ubsan                             | 27 ++++++
- lib/buildid.c                                 |  6 +-
- lib/iov_iter.c                                |  5 +-
- lib/overflow_kunit.c                          | 77 ++++++++++++++--
- lib/scatterlist.c                             |  2 +-
- lib/test_ubsan.c                              | 82 +++++++++++++++++
- lib/ubsan.c                                   | 89 +++++++++++++++++++
- lib/ubsan.h                                   |  5 ++
- lib/zstd/decompress/zstd_decompress.c         |  4 +-
- mm/kasan/generic.c                            |  2 +-
- mm/kasan/sw_tags.c                            |  2 +-
- mm/memory.c                                   |  4 +-
- mm/mmap.c                                     |  2 +-
- mm/mremap.c                                   |  2 +-
- mm/nommu.c                                    |  4 +-
- mm/usercopy.c                                 |  2 +-
- mm/util.c                                     |  2 +-
- mm/vmalloc.c                                  |  7 +-
- net/ipv4/route.c                              |  8 +-
- net/netfilter/xt_u32.c                        |  4 +-
- net/rds/info.c                                |  6 +-
- scripts/Makefile.ubsan                        |  3 +
- .../coccinelle/misc/add_would_overflow.cocci  | 70 +++++++++++++++
- tools/perf/util/dso.c                         |  2 +-
- tools/perf/util/unwind-libdw.c                |  2 +-
- tools/perf/util/unwind-libunwind-local.c      |  2 +-
- virt/kvm/coalesced_mmio.c                     |  6 +-
- 102 files changed, 680 insertions(+), 167 deletions(-)
- create mode 100644 scripts/coccinelle/misc/add_would_overflow.cocci
-
+diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+index 6f1ca49306d2..d27b58fddfaa 100644
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -375,6 +375,16 @@ struct ftrace_likely_data {
+ /* Are two types/vars the same type (ignoring qualifiers)? */
+ #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
+ 
++/* Is variable addressable? */
++#define __is_ptr_or_array(p)	(__builtin_classify_type(p) == 5)
++
++/* Return an array decayed to a pointer. */
++#define __decay(p)		\
++	(&*__builtin_choose_expr(__is_ptr_or_array(p), p, NULL))
++
++/* Report if variable is a pointer type. */
++#define __is_ptr(p)		__same_type(p, __decay(p))
++
+ /*
+  * __unqual_scalar_typeof(x) - Declare an unqualified scalar type, leaving
+  *			       non-scalar types unchanged.
+diff --git a/include/linux/overflow.h b/include/linux/overflow.h
+index 7b5cf4a5cd19..099f2e559aa8 100644
+--- a/include/linux/overflow.h
++++ b/include/linux/overflow.h
+@@ -51,6 +51,45 @@ static inline bool __must_check __must_check_overflow(bool overflow)
+ 	return unlikely(overflow);
+ }
+ 
++/* Always produce an integral variable expression. */
++#define __filter_integral(x)		\
++	__builtin_choose_expr(!__is_ptr(x), (x), 0)
++
++/* Always produce a pointer value. */
++#define __filter_ptr(x)			\
++	__builtin_choose_expr(__is_ptr(x), (x), NULL)
++
++/* Always produce a pointer to an integral value. */
++#define __filter_ptrint(x)		\
++	__builtin_choose_expr(!__is_ptr(*(x)), x, &(int){ 0 })
++
++/**
++ * __check_ptr_add_overflow() - Calculate pointer addition with overflow checking
++ * @a: pointer addend
++ * @b: numeric addend
++ * @d: pointer to store sum
++ *
++ * Returns 0 on success.
++ *
++ * Do not use this function directly, use check_add_overflow() instead.
++ *
++ * *@d holds the results of the attempted addition, but is not considered
++ * "safe for use" on a non-zero return value, which indicates that the
++ * sum has overflowed or been truncated.
++ */
++#define __check_ptr_add_overflow(a, b, d)		\
++	({						\
++		typeof(a) __a = (a);			\
++		typeof(b) __b = (b);			\
++		size_t __bytes;				\
++		bool __overflow;			\
++							\
++		/* we want to perform the wrap-around, but retain the result */ \
++		__overflow = __builtin_mul_overflow(sizeof(*(__a)), __b, &__bytes); \
++		__builtin_add_overflow((unsigned long)(__a), __bytes, (unsigned long *)(d)) || \
++		__overflow;				\
++	})
++
+ /**
+  * check_add_overflow() - Calculate addition with overflow checking
+  * @a: first addend
+@@ -64,7 +103,10 @@ static inline bool __must_check __must_check_overflow(bool overflow)
+  * sum has overflowed or been truncated.
+  */
+ #define check_add_overflow(a, b, d)	\
+-	__must_check_overflow(__builtin_add_overflow(a, b, d))
++	__must_check_overflow(__builtin_choose_expr(__is_ptr(a),	\
++		__check_ptr_add_overflow(__filter_ptr(a), b, d),	\
++		__builtin_add_overflow(__filter_integral(a), b,		\
++				       __filter_ptrint(d))))
+ 
+ /**
+  * check_sub_overflow() - Calculate subtraction with overflow checking
+diff --git a/lib/overflow_kunit.c b/lib/overflow_kunit.c
+index c527f6b75789..2d106e880956 100644
+--- a/lib/overflow_kunit.c
++++ b/lib/overflow_kunit.c
+@@ -45,13 +45,18 @@
+ # define SKIP_64_ON_32(t)	do { } while (0)
+ #endif
+ 
+-#define DEFINE_TEST_ARRAY_TYPED(t1, t2, t)			\
+-	static const struct test_ ## t1 ## _ ## t2 ## __ ## t {	\
++#define DEFINE_TEST_ARRAY_NAMED_TYPED(n1, n2, n, t1, t2, t)	\
++	static const struct test_ ## n1 ## _ ## n2 ## __ ## n {	\
+ 		t1 a;						\
+ 		t2 b;						\
+-		t sum, diff, prod;				\
++		t sum;						\
++		t diff;						\
++		t prod;						\
+ 		bool s_of, d_of, p_of;				\
+-	} t1 ## _ ## t2 ## __ ## t ## _tests[]
++	} n1 ## _ ## n2 ## __ ## n ## _tests[]
++
++#define DEFINE_TEST_ARRAY_TYPED(t1, t2, t)			\
++	DEFINE_TEST_ARRAY_NAMED_TYPED(t1, t2, t, t1, t2, t)
+ 
+ #define DEFINE_TEST_ARRAY(t)	DEFINE_TEST_ARRAY_TYPED(t, t, t)
+ 
+@@ -251,8 +256,10 @@ DEFINE_TEST_ARRAY(s64) = {
+ };
+ 
+ #define check_one_op(t, fmt, op, sym, a, b, r, of) do {			\
+-	int _a_orig = a, _a_bump = a + 1;				\
+-	int _b_orig = b, _b_bump = b + 1;				\
++	typeof(a + 0) _a_orig = a;					\
++	typeof(a + 0) _a_bump = a + 1;					\
++	typeof(b + 0) _b_orig = b;					\
++	typeof(b + 0) _b_bump = b + 1;					\
+ 	bool _of;							\
+ 	t _r;								\
+ 									\
+@@ -260,13 +267,13 @@ DEFINE_TEST_ARRAY(s64) = {
+ 	KUNIT_EXPECT_EQ_MSG(test, _of, of,				\
+ 		"expected "fmt" "sym" "fmt" to%s overflow (type %s)\n",	\
+ 		a, b, of ? "" : " not", #t);				\
+-	KUNIT_EXPECT_EQ_MSG(test, _r, r,				\
++	KUNIT_EXPECT_TRUE_MSG(test, _r == r,				\
+ 		"expected "fmt" "sym" "fmt" == "fmt", got "fmt" (type %s)\n", \
+ 		a, b, r, _r, #t);					\
+ 	/* Check for internal macro side-effects. */			\
+ 	_of = check_ ## op ## _overflow(_a_orig++, _b_orig++, &_r);	\
+-	KUNIT_EXPECT_EQ_MSG(test, _a_orig, _a_bump, "Unexpected " #op " macro side-effect!\n"); \
+-	KUNIT_EXPECT_EQ_MSG(test, _b_orig, _b_bump, "Unexpected " #op " macro side-effect!\n"); \
++	KUNIT_EXPECT_TRUE_MSG(test, _a_orig == _a_bump, "Unexpected " #op " macro side-effect!\n"); \
++	KUNIT_EXPECT_TRUE_MSG(test, _b_orig == _b_bump, "Unexpected " #op " macro side-effect!\n"); \
+ } while (0)
+ 
+ #define DEFINE_TEST_FUNC_TYPED(n, t, fmt)				\
+@@ -333,6 +340,55 @@ DEFINE_TEST_ARRAY_TYPED(int, int, u8) = {
+ };
+ DEFINE_TEST_FUNC_TYPED(int_int__u8, u8, "%d");
+ 
++#define DEFINE_TEST_PTR_FUNC_TYPED(n, t, fmt)				\
++static void do_ptr_test_ ## n(struct kunit *test, const struct test_ ## n *p) \
++{									\
++	/* we're only doing single-direction sums, no product or division */ \
++	check_one_op(t, fmt, add, "+", p->a, p->b, p->sum, p->s_of);\
++}									\
++									\
++static void n ## _overflow_test(struct kunit *test) {			\
++	unsigned i;							\
++									\
++	for (i = 0; i < ARRAY_SIZE(n ## _tests); ++i)			\
++		do_ptr_test_ ## n(test, &n ## _tests[i]);		\
++	kunit_info(test, "%zu %s arithmetic tests finished\n",		\
++		ARRAY_SIZE(n ## _tests), #n);				\
++}
++
++DEFINE_TEST_ARRAY_NAMED_TYPED(void, int, void, void *, int, void *) = {
++	{NULL, 0, NULL, NULL, NULL, false, false, false},
++	{(void *)0x30, 0x10, (void *)0x40, NULL, NULL, false, false, false},
++	{(void *)ULONG_MAX, 0, (void *)ULONG_MAX, NULL, NULL, false, false, false},
++	{(void *)ULONG_MAX, 1, NULL, NULL, NULL, true, false, false},
++	{(void *)ULONG_MAX, INT_MAX, (void *)(INT_MAX - 1), NULL, NULL, true, false, false},
++};
++DEFINE_TEST_PTR_FUNC_TYPED(void_int__void, void *, "%lx");
++
++struct _sized {
++	int a;
++	char b;
++};
++
++DEFINE_TEST_ARRAY_NAMED_TYPED(sized, int, sized, struct _sized *, int, struct _sized *) = {
++	{NULL, 0, NULL, NULL, NULL, false, false, false},
++	{NULL, 1, (struct _sized *)(sizeof(struct _sized)), NULL, NULL, false, false, false},
++	{NULL, 0x10, (struct _sized *)(sizeof(struct _sized) * 0x10), NULL, NULL, false, false, false},
++	{(void *)(ULONG_MAX - sizeof(struct _sized)), 1, (struct _sized *)ULONG_MAX, NULL, NULL, false, false, false},
++	{(void *)(ULONG_MAX - sizeof(struct _sized) + 1), 1, NULL, NULL, NULL, true, false, false},
++	{(void *)(ULONG_MAX - sizeof(struct _sized) + 1), 2, (struct _sized *)(sizeof(struct _sized)), NULL, NULL, true, false, false},
++	{(void *)(ULONG_MAX - sizeof(struct _sized) + 1), 3, (struct _sized *)(sizeof(struct _sized) * 2), NULL, NULL, true, false, false},
++};
++DEFINE_TEST_PTR_FUNC_TYPED(sized_int__sized, struct _sized *, "%lx");
++
++DEFINE_TEST_ARRAY_NAMED_TYPED(sized, size_t, sized, struct _sized *, size_t, struct _sized *) = {
++	{NULL, 0, NULL, NULL, NULL, false, false, false},
++	{NULL, 1, (struct _sized *)(sizeof(struct _sized)), NULL, NULL, false, false, false},
++	{NULL, 0x10, (struct _sized *)(sizeof(struct _sized) * 0x10), NULL, NULL, false, false, false},
++	{NULL, SIZE_MAX - 10, (struct _sized *)18446744073709551528UL, NULL, NULL, true, false, false},
++};
++DEFINE_TEST_PTR_FUNC_TYPED(sized_size_t__sized, struct _sized *, "%zu");
++
+ /* Args are: value, shift, type, expected result, overflow expected */
+ #define TEST_ONE_SHIFT(a, s, t, expect, of)	do {			\
+ 	typeof(a) __a = (a);						\
+@@ -1122,6 +1178,9 @@ static struct kunit_case overflow_test_cases[] = {
+ 	KUNIT_CASE(s32_s32__s32_overflow_test),
+ 	KUNIT_CASE(u64_u64__u64_overflow_test),
+ 	KUNIT_CASE(s64_s64__s64_overflow_test),
++	KUNIT_CASE(void_int__void_overflow_test),
++	KUNIT_CASE(sized_int__sized_overflow_test),
++	KUNIT_CASE(sized_size_t__sized_overflow_test),
+ 	KUNIT_CASE(u32_u32__int_overflow_test),
+ 	KUNIT_CASE(u32_u32__u8_overflow_test),
+ 	KUNIT_CASE(u8_u8__int_overflow_test),
 -- 
 2.34.1
 
