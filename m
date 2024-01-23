@@ -1,84 +1,87 @@
-Return-Path: <linux-kernel+bounces-36008-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36009-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADF87839A0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:10:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E0E1839A10
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:12:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28FF81F23C63
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:10:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CCA51C277CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:12:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E28485C73;
-	Tue, 23 Jan 2024 20:09:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B4A282D99;
+	Tue, 23 Jan 2024 20:12:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="mo2Zx6Z0"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="nJKuqU3e"
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3C7982D91;
-	Tue, 23 Jan 2024 20:09:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 601E260EE4
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 20:12:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706040590; cv=none; b=XJDoXTfmsiMGC88CLrFUGLx6dv3GCZAZCGl5QSz8new5U2gNLYGZsgawWOm288b2A7O8etZKiDx7XZ/Jw7aipPOsPEyPcxE40607RGo9k2nGscyxFpZC4uXo4MKvqDbqFxmzVA/JBkHelNpHhVaTipgqTX2d6Hn2P1B5x4VrkOM=
+	t=1706040764; cv=none; b=FOb/Qid4wimg0xCNSC3vpvhUYqSV9Hk561CbqOsuBPlhgBCOdE+AAo7RLg1Z6K3f1VsJieThEsy9UroF7NemKgYyDZUNJ76L/N7pKKqpyb8eXcDAT5tAV6J+lZ5myjeDdG4JaIKPRPv1PF/NPKAPptkVTCNsIk5oXQznlp+ViyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706040590; c=relaxed/simple;
-	bh=Gy2ZosMw33QWUPFe3CLGF4LeOxXT/dQS/f1OITEJhes=;
+	s=arc-20240116; t=1706040764; c=relaxed/simple;
+	bh=RhOsBONDInTHVMDMesY5uYaQKhwdN7vLZj/DsxcUXPY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dbPLckoGEtrO1p4kpFdoGYxOGhIhYQ6AoRGQJfs10oowiC/wxxjr7VR0A2VuznCZj41sEcKFsJ4eM7xDVP9+IXDDCVQDP5HEgu7u+UyQqOvqpkre7kBOykVXxdFsD4WMBdYetJHHPzbjKmJffFpEVId/8AtzgWLvhIPBXnHm6/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=mo2Zx6Z0; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=VIjAJAiY6Q9G9FoJG4YRBh3btkbAjBGzI4MzzPeuFAc=; b=mo2Zx6Z0lCQ+Fn5V67qu2xgiGX
-	Glqk/9IwtdbQRpWhKW+6yXdZQbtJFK1V7kjJTrjqejm/3gcOAlfcqaVJBh2jttQgu/6SoudEHU+nA
-	jkvOWxwsHK1AxcH/WIkl2YmhTgeq59PPLxgFn5BXOfi/BZSbmdatafMWkHpoBXO5LvcysxYfPqAnF
-	5vNIlvv7sK/lMKvEJy61p/9wl5gzosZutRwPuL4Frt/jMgatZWEhry6YDuYEkEYqNguuCPYR9XVyP
-	zS5mKoaVV05eNAtlqm8VtMMzC/1R4MjeukJPCGrch28HT6TPMW/1dwpLSfLeS+Z69nLev1FuAXr5q
-	LpNfuuSA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33240)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rSN5Y-00031y-2n;
-	Tue, 23 Jan 2024 20:09:40 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rSN5V-0002Do-8S; Tue, 23 Jan 2024 20:09:37 +0000
-Date: Tue, 23 Jan 2024 20:09:37 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-	x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
-	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-	Salil Mehta <salil.mehta@huawei.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	jianyong.wu@arm.com, justin.he@arm.com,
-	James Morse <james.morse@arm.com>
-Subject: Re: [PATCH RFC v3 05/21] ACPI: Rename ACPI_HOTPLUG_CPU to include
- 'present'
-Message-ID: <ZbAdAdqqfXRuY3Xj@shell.armlinux.org.uk>
-References: <CAJZ5v0g9nfLrEf9u4Ksw6BOWJQ9iv8Z-O8RsLU6jR5zk0ahxRw@mail.gmail.com>
- <20240122180013.000016d5@Huawei.com>
- <Za++/11n5KA1VS3p@shell.armlinux.org.uk>
- <CAJZ5v0h7wsLt8d3ZoLXsK1=crAx66T42WDKNoHcg8CiHpAjS8g@mail.gmail.com>
- <Za/q9jivG4OdZM0f@shell.armlinux.org.uk>
- <CAJZ5v0gwe02uzAQoX0QDHo35OTEozpbnqC6vukjM3aE6HMq9WQ@mail.gmail.com>
- <ZbADTBLDEFtdglho@shell.armlinux.org.uk>
- <CAJZ5v0jh-EdrnjkJep++UDo+Uv4hmR7VV4KYVdF4CK2K+5XLtg@mail.gmail.com>
- <ZbAMjZoybVfiAGcT@shell.armlinux.org.uk>
- <CAJZ5v0gt=MR1JGsPZnZG_AqudA-KMmb4BOa_A6H9B6+Rhe_+JQ@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=taUqid+BwelUJr/QRNWevlhxrUnjMN+DKFWucDPc0mCOSlxusNmNZu8Up/T6xcTT4tJt4+Zt2xvWJiNSz14QH/YKwRGa1PpmXgK6cgBrDs1sG79NkxiFqYIpw2LCVzLePvsyFk51uW7mnv/MH3m5yWcUQGG73oMrmPRESzH7mtU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=nJKuqU3e; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6dbbcb1aff8so3301948b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 12:12:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1706040760; x=1706645560; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=q24KVFfei+cia4T3WP6Kgi33KWd4bcIhvTEH02DjEqs=;
+        b=nJKuqU3ee1OZYkEsPgkOnnPhLwt+U/aeJAkFMzUinLBDoOQQToGOejX5mwqVioOWah
+         Dn4Q/FCG7yY1uuSPNeAu/aGz8pcvOyaNhkHCE3RHKGhMM1lbQoyGP0M6GuAWIxBMdQC4
+         SjFAXKCZMPkxVBVLZEVEqW/WZ0a3mZr9mQhdTf1srdl5KLn4tAsu9+bqgQ09LMwvV2DD
+         TvhOUisd9MH/xE8cidMX3Mxu0y0BSNwQ5Z1LLuFJY30/kZAmytj+J8F4ukkx0ivIoYfF
+         3Hkz97vQf71KDY5et/NR8EqNWQ8FSCISWHvSGZkMmSt3N7ISUaubZ76g1cUOMKPn8tb3
+         uh6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706040760; x=1706645560;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=q24KVFfei+cia4T3WP6Kgi33KWd4bcIhvTEH02DjEqs=;
+        b=DMGJHBjjekVzyLNKi5n7ee18+ZgSTrAgvUAnSrfCvTK0TklfoUN7pWs0ar/q9DaXqz
+         t+2i9Pii8rAclHWMIqE2dSXKtkx1XAis2eGaH8zkHqGlE3Kz4Napbu99zi7PXNqB3PhM
+         wm/2OHdgw5nM2eIffmIVNhxl90N1o6khPreDY21aOs1jJgBjB5F9TfIcQ1LYFtNaP1c2
+         hjuaPlCunAidq9yfSHwl5WLF3a1dOQgKHW0oo8Wpe/nUZg4lZL7rGRdzSXWG6vpynGUX
+         l5Uq8bOomNLAh8dlSmOL+drcuxxPacHfJa8r0Ktv14z7fX0lD6q64gPOdF1fnm2JVhdA
+         57BA==
+X-Gm-Message-State: AOJu0Yz4MomfeHGITHmqK3jmc8mLb6Hs+lTTJp2aP472GAhJF4jO09JW
+	rjNP1lFkfNYbkx1jbOYnmH3qj5fJWLBHd1UMhHsRQZ+xMQaVActlAvlBSHfzL04=
+X-Google-Smtp-Source: AGHT+IEcQiYu55Hik8wDlo7Ps+NIXOV8U19eTqLxlMvYghAEPGspeoISpv6RbsjOhufVhuWEsZ5o0g==
+X-Received: by 2002:a05:6a20:28a3:b0:19a:3d26:d40f with SMTP id q35-20020a056a2028a300b0019a3d26d40fmr3266995pzf.39.1706040760622;
+        Tue, 23 Jan 2024 12:12:40 -0800 (PST)
+Received: from localhost ([2620:10d:c090:400::4:e07e])
+        by smtp.gmail.com with ESMTPSA id x126-20020a626384000000b006dbd7e5bd1esm5508869pfb.52.2024.01.23.12.12.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jan 2024 12:12:40 -0800 (PST)
+Date: Tue, 23 Jan 2024 15:12:34 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Nhat Pham <nphamcs@gmail.com>, Chris Li <chrisl@kernel.org>,
+	Chengming Zhou <zhouchengming@bytedance.com>,
+	Huang Ying <ying.huang@intel.com>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] mm: zswap: remove unnecessary tree cleanups in
+ zswap_swapoff()
+Message-ID: <20240123201234.GC1745986@cmpxchg.org>
+References: <20240120024007.2850671-1-yosryahmed@google.com>
+ <20240120024007.2850671-3-yosryahmed@google.com>
+ <20240122201906.GA1567330@cmpxchg.org>
+ <CAJD7tkaATS48HVuBfbOmPM3EvRUoPFr66WhF64UC4FkyVH5exg@mail.gmail.com>
+ <20240123153851.GA1745986@cmpxchg.org>
+ <CAJD7tkasHsRnT_75-TXsEe58V9_OW6m3g6CF7Kmsvz8CKRG_EA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,187 +91,111 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0gt=MR1JGsPZnZG_AqudA-KMmb4BOa_A6H9B6+Rhe_+JQ@mail.gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <CAJD7tkasHsRnT_75-TXsEe58V9_OW6m3g6CF7Kmsvz8CKRG_EA@mail.gmail.com>
 
-On Tue, Jan 23, 2024 at 08:27:05PM +0100, Rafael J. Wysocki wrote:
-> On Tue, Jan 23, 2024 at 7:59 PM Russell King (Oracle)
-> <linux@armlinux.org.uk> wrote:
+On Tue, Jan 23, 2024 at 07:54:49AM -0800, Yosry Ahmed wrote:
+> On Tue, Jan 23, 2024 at 7:38 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
 > >
-> > On Tue, Jan 23, 2024 at 07:26:57PM +0100, Rafael J. Wysocki wrote:
-> > > On Tue, Jan 23, 2024 at 7:20 PM Russell King (Oracle)
-> > > <linux@armlinux.org.uk> wrote:
+> > On Mon, Jan 22, 2024 at 12:39:16PM -0800, Yosry Ahmed wrote:
+> > > On Mon, Jan 22, 2024 at 12:19 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
 > > > >
-> > > > On Tue, Jan 23, 2024 at 06:43:59PM +0100, Rafael J. Wysocki wrote:
-> > > > > On Tue, Jan 23, 2024 at 5:36 PM Russell King (Oracle)
-> > > > > <linux@armlinux.org.uk> wrote:
-> > > > > >
-> > > > > > On Tue, Jan 23, 2024 at 05:15:54PM +0100, Rafael J. Wysocki wrote:
-> > > > > > > On Tue, Jan 23, 2024 at 2:28 PM Russell King (Oracle)
-> > > > > > > <linux@armlinux.org.uk> wrote:
-> > > > > > > >
-> > > > > > > > On Mon, Jan 22, 2024 at 06:00:13PM +0000, Jonathan Cameron wrote:
-> > > > > > > > > On Mon, 18 Dec 2023 21:35:16 +0100
-> > > > > > > > > "Rafael J. Wysocki" <rafael@kernel.org> wrote:
-> > > > > > > > >
-> > > > > > > > > > On Wed, Dec 13, 2023 at 1:49 PM Russell King <rmk+kernel@armlinux.org.uk> wrote:
-> > > > > > > > > > >
-> > > > > > > > > > > From: James Morse <james.morse@arm.com>
-> > > > > > > > > > >
-> > > > > > > > > > > The code behind ACPI_HOTPLUG_CPU allows a not-present CPU to become
-> > > > > > > > > > > present.
-> > > > > > > > > >
-> > > > > > > > > > Right.
-> > > > > > > > > >
-> > > > > > > > > > > This isn't the only use of HOTPLUG_CPU. On arm64 and riscv
-> > > > > > > > > > > CPUs can be taken offline as a power saving measure.
-> > > > > > > > > >
-> > > > > > > > > > But still there is the case in which a non-present CPU can become
-> > > > > > > > > > present, isn't it there?
-> > > > > > > > >
-> > > > > > > > > Not yet defined by the architectures (and I'm assuming it probably never will be).
-> > > > > > > > >
-> > > > > > > > > The original proposal we took to ARM was to do exactly that - they pushed
-> > > > > > > > > back hard on the basis there was no architecturally safe way to implement it.
-> > > > > > > > > Too much of the ARM arch has to exist from the start of time.
-> > > > > > > > >
-> > > > > > > > > https://lore.kernel.org/linux-arm-kernel/cbaa6d68-6143-e010-5f3c-ec62f879ad95@arm.com/
-> > > > > > > > > is one of the relevant threads of the kernel side of that discussion.
-> > > > > > > > >
-> > > > > > > > > Not to put specific words into the ARM architects mouths, but the
-> > > > > > > > > short description is that there is currently no demand for working
-> > > > > > > > > out how to make physical CPU hotplug possible, as such they will not
-> > > > > > > > > provide an architecturally compliant way to do it for virtual CPU hotplug and
-> > > > > > > > > another means is needed (which is why this series doesn't use the present bit
-> > > > > > > > > for that purpose and we have the Online capable bit in MADT/GICC)
-> > > > > > > > >
-> > > > > > > > > It was a 'fun' dance of several years to get to that clarification.
-> > > > > > > > > As another fun fact, the same is defined for x86, but I don't think
-> > > > > > > > > anyone has used it yet (GICC for ARM has an online capable bit in the flags to
-> > > > > > > > > enable this, which was remarkably similar to the online capable bit in the
-> > > > > > > > > flags of the Local APIC entries as added fairly recently).
-> > > > > > > > >
-> > > > > > > > > >
-> > > > > > > > > > > On arm64 an offline CPU may be disabled by firmware, preventing it from
-> > > > > > > > > > > being brought back online, but it remains present throughout.
-> > > > > > > > > > >
-> > > > > > > > > > > Adding code to prevent user-space trying to online these disabled CPUs
-> > > > > > > > > > > needs some additional terminology.
-> > > > > > > > > > >
-> > > > > > > > > > > Rename the Kconfig symbol CONFIG_ACPI_HOTPLUG_PRESENT_CPU to reflect
-> > > > > > > > > > > that it makes possible CPUs present.
-> > > > > > > > > >
-> > > > > > > > > > Honestly, I don't think that this change is necessary or even useful.
-> > > > > > > > >
-> > > > > > > > > Whilst it's an attempt to avoid future confusion, the rename is
-> > > > > > > > > not something I really care about so my advice to Russell is drop
-> > > > > > > > > it unless you are attached to it!
-> > > > > > > >
-> > > > > > > > While I agree that it isn't a necessity, I don't fully agree that it
-> > > > > > > > isn't useful.
-> > > > > > > >
-> > > > > > > > One of the issues will be that while Arm64 will support hotplug vCPU,
-> > > > > > > > it won't be setting ACPI_HOTPLUG_CPU because it doesn't support
-> > > > > > > > the present bit changing. So I can see why James decided to rename
-> > > > > > > > it - because with Arm64's hotplug vCPU, the idea that ACPI_HOTPLUG_CPU
-> > > > > > > > somehow enables hotplug CPU support is now no longer true.
-> > > > > > > >
-> > > > > > > > Keeping it as ACPI_HOTPLUG_CPU makes the code less obvious, because it
-> > > > > > > > leads one to assume that it ought to be enabled for Arm64's
-> > > > > > > > implementatinon, and that could well cause issues in the future if
-> > > > > > > > people make the assumption that "ACPI_HOTPLUG_CPU" means hotplug CPU
-> > > > > > > > is supported in ACPI. It doesn't anymore.
-> > > > > > >
-> > > > > > > On x86 there is no confusion AFAICS.  It's always meant "as long as
-> > > > > > > the platform supports it".
-> > > > > >
-> > > > > > That's x86, which supports physical CPU hotplug. We're introducing
-> > > > > > support for Arm64 here which doesn't support physical CPU hotplug.
-> > > > > >
-> > > > > >                                                 ACPI-based      Physical        Virtual
-> > > > > > Arch    HOTPLUG_CPU     ACPI_HOTPLUG_CPU        Hotplug         Hotplug         Hotplug
-> > > > > > Arm64   Y               N                       Y               N               Y
-> > > > > > x86     Y               Y                       Y               Y               Y
-> > > > > >
-> > > > > > So ACPI_HOTPLUG_CPU becomes totally misnamed with the introduction
-> > > > > > of hotplug on Arm64.
-> > > > > >
-> > > > > > If we want to just look at stuff from an x86 perspective, then yes,
-> > > > > > it remains correct to call it ACPI_HOTPLUG_CPU. It isn't correct as
-> > > > > > soon as we add Arm64, as I already said.
+> > > > On Sat, Jan 20, 2024 at 02:40:07AM +0000, Yosry Ahmed wrote:
+> > > > > During swapoff, try_to_unuse() makes sure that zswap_invalidate() is
+> > > > > called for all swap entries before zswap_swapoff() is called. This means
+> > > > > that all zswap entries should already be removed from the tree. Simplify
+> > > > > zswap_swapoff() by removing the tree cleanup loop, and leaving an
+> > > > > assertion in its place.
 > > > > >
-> > > > > And if you rename it, it becomes less confusing for ARM64, but more
-> > > > > confusing for x86, which basically is my point.
-> > > > >
-> > > > > IMO "hotplug" covers both cases well enough and "hotplug present" is
-> > > > > only accurate for one of them.
-> > > > >
-> > > > > > And honestly, a two line quip to my reasoned argument is not IMHO
-> > > > > > an acceptable reply.
-> > > > >
-> > > > > Well, I'm not even sure how to respond to this ...
+> > > > > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 > > > >
-> > > > The above explanation you give would have been useful...
+> > > > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 > > > >
-> > > > I don't see how "hotplug" covers both cases. As I've tried to point
-> > > > out many times now, ACPI_HOTPLUG_CPU is N for Arm64, yet it supports
-> > > > ACPI based hotplug. How does ACPI_HOTPLUG_CPU cover Arm64 if it's
-> > > > N there?
+> > > > That's a great simplification.
+> > > >
+> > > > Removing the tree->lock made me double take, but at this point the
+> > > > swapfile and its cache should be fully dead and I don't see how any of
+> > > > the zswap operations that take tree->lock could race at this point.
 > > >
-> > > But IIUC this change is preliminary for changing it (or equivalent
-> > > option with a different name) to Y, isn't it?
-> >
-> > No. As I keep saying, ACPI_HOTPLUG_CPU ends up N on Arm64 even when
-> > it supports hotplug CPU via ACPI.
-> >
-> > Even with the full Arm64 patch set here, under arch/ we still only
-> > have:
-> >
-> > arch/loongarch/Kconfig: select ACPI_HOTPLUG_PRESENT_CPU if ACPI_PROCESSOR && HOTPLUG_CPU
-> > arch/x86/Kconfig:       select ACPI_HOTPLUG_PRESENT_CPU         if ACPI_PROCESSOR && HOTPLUG_CPU
-> >
-> > To say it yet again, ACPI_HOTPLUG_(PRESENT_)CPU is *never* set on
-> > Arm64.
-> 
-> Allright, so ARM64 is not going to use the code that is conditional on
-> ACPI_HOTPLUG_CPU today.
-> 
-> Fair enough.
-> 
-> > > > IMHO it totally doesn't, and moreover, it goes against what
-> > > > one would logically expect - and this is why I have a problem with
-> > > > your effective NAK for this change. I believe you are basically
-> > > > wrong on this for the reasons I've given - that ACPI_HOTPLUG_CPU
-> > > > will be N for Arm64 despite it supporting ACPI-based CPU hotplug.
+> > > It took me a while staring at the code to realize this loop is pointless.
 > > >
-> > > So I still have to understand how renaming it for all architectures
-> > > (including x86) is supposed to help.
+> > > However, while I have your attention on the swapoff path, there's a
+> > > slightly irrelevant problem that I think might be there, but I am not
+> > > sure.
 > > >
-> > > It will still be the same option under a different name.  How does
-> > > that change things technically?
+> > > It looks to me like swapoff can race with writeback, and there may be
+> > > a chance of UAF for the zswap tree. For example, if zswap_swapoff()
+> > > races with shrink_memcg_cb(), I feel like we may free the tree as it
+> > > is being used. For example if zswap_swapoff()->kfree(tree) happen
+> > > right before shrink_memcg_cb()->list_lru_isolate(l, item).
+> > >
+> > > Please tell me that I am being paranoid and that there is some
+> > > protection against zswap writeback racing with swapoff. It feels like
+> > > we are very careful with zswap entries refcounting, but not with the
+> > > zswap tree itself.
 > >
-> > Do you think that it makes any sense to have support for ACPI-based
-> > hotplug CPU
+> > Hm, I don't see how.
+> >
+> > Writeback operates on entries from the LRU. By the time
+> > zswap_swapoff() is called, try_to_unuse() -> zswap_invalidate() should
+> > will have emptied out the LRU and tree.
+> >
+> > Writeback could have gotten a refcount to the entry and dropped the
+> > tree->lock. But then it does __read_swap_cache_async(), and while
+> > holding the page lock checks the tree under lock once more; if that
+> > finds the entry valid, it means try_to_unuse() hasn't started on this
+> > page yet, and would be held up by the page lock/writeback state.
 > 
-> So this is all about what you and I mean by "ACPI-based hotplug CPU".
+> Consider the following race:
 > 
-> > *and* having it functional with a configuration symbol
-> > named "ACPI_HOTPLUG_CPU" to be set to N ? That's essentially what
-> > you are advocating for...
+> CPU 1                                 CPU 2
+> # In shrink_memcg_cb()     # In swap_off
+> list_lru_isolate()
+>                                             zswap_invalidate()
+>                                             ..
+>                                             zswap_swapoff() -> kfree(tree)
+> spin_lock(&tree->lock);
 > 
-> Setting ACPI_HOTPLUG_CPU to N means that you are not going to compile
-> the code that is conditional on it.
-> 
-> That code allows the processor driver to be removed from CPUs and
-> arch_unregister_cpu() to be called from within acpi_bus_trim()  (among
-> other things).  On the way up, it allows arch_register_cpu() to be
-> called from within acpi_bus_scan().  If these things are not done,
-> what I mean by "ACPI-based hotplug CPU" is not supported.
+> Isn't this a UAF or am I missing something here?
 
-Even on Arm64, arch_register_cpu() and arch_unregister_cpu() will be
-called when the CPU in the VM is hot-removed or hot-added...
+Oof. You're right, it looks like there is a bug. Digging through the
+history, I think this is actually quite old: the original backend
+shrinkers would pluck something off their LRU, drop all locks, then
+try to acquire tree->lock. There is no protection against swapoff.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+The lock that is supposed to protect this is the LRU lock. That's
+where reclaim and invalidation should synchronize. But it's not right:
+
+1. We drop the LRU lock before acquiring the tree lock. We should
+   instead trylock the tree while still holding the LRU lock to make
+   sure the tree is safe against swapoff.
+
+2. zswap_invalidate() acquires the LRU lock when refcount hits 0. But
+   it must always cycle the LRU lock before freeing the tree for that
+   synchronization to work.
+
+Once we're holding a refcount to the entry, it's safe to drop all
+locks for the next step because we'll then work against the swapcache
+and entry: __read_swap_cache_async() will try to pin and lock whatever
+swap entry is at that type+offset. This also pins the type's current
+tree. HOWEVER, if swapoff + swapon raced, this could be a different
+tree than what we had in @tree, so
+
+3. we shouldn't pass @tree to zswap_writeback_entry(). It needs to
+   look up zswap_trees[] again after __read_swap_cache_async()
+   succeeded to validate the entry.
+
+Once it succeeded, we can validate the entry. The entry is valid due
+to our refcount. The zswap_trees[type] is valid due to the cache pin.
+
+However, if validation failed and we have a non-zero writeback_result,
+there is one last bug:
+
+4. the original entry's tree is no longer valid for the entry put.
+
+The current scheme handles invalidation fine (which is good because
+that's quite common). But it's fundamentally unsynchronized against
+swapoff (which has probably gone undetected because that's rare).
+
+I can't think of an immediate solution to this, but I wanted to put my
+analysis out for comments.
 
