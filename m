@@ -1,170 +1,180 @@
-Return-Path: <linux-kernel+bounces-35458-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92D1B839184
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:36:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 090F2839185
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:36:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CA7A1F27622
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:36:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 83BBDB29949
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:36:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83CDD50A73;
-	Tue, 23 Jan 2024 14:36:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFA874EB33;
+	Tue, 23 Jan 2024 14:36:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MUnOFEmh"
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ks6Fdd+h"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9081212E5F;
+	Tue, 23 Jan 2024 14:36:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.65
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706020604; cv=none; b=dknjkR3R95i3s2oD1x2sY+tWaT+6gXjuszFdWzT+4Md4JUBVZU8KgE9Z7tWpP1M2tb3WVn8zGY797+B4RxkVhk3QKzQY6834a8Pyv1iotoGdu3Eumv2uoPmJb+EXxZIJeQ9FP8gPpFPRNcncdl2lHzpo3+LuB5dB5awTK/S4OiM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706020604; c=relaxed/simple;
+	bh=b5WsAWXcMZJ3oedYBhrg7imN/aUDHQ+7R2QdjuUQDzU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=rpDMEHsm/ElNyn6/sgrPEr8rYQnATLQbLdTzg+RXEBqjQq0eeYHfTjpV/9UTNeBGV7jZkkAwtw7Spxf44DmGuXLVbESA0oC58v5b34pTMyIiZSmX41N2xmBrxPEcGv9m4OZNT0evoVen42fB94r6pUxDQDgTFnbV9Jp5LVvUL24=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ks6Fdd+h; arc=none smtp.client-ip=134.134.136.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706020602; x=1737556602;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=b5WsAWXcMZJ3oedYBhrg7imN/aUDHQ+7R2QdjuUQDzU=;
+  b=Ks6Fdd+hiWQw3oKh6gdu62fpvKw00cGo5xg9DjpCa/ns0UXRKOXpDn5F
+   ULcBOZAhcE3MDQPhlZNvoBNpBu8kDSk1D01p/amYvnT3EG+qlLBJb+z6U
+   lXnW/YZ06qYh8i0AEK+1e14SGI6hqJmd6mXvlBGhvSlENossjLM9Rm+KD
+   CYmjTaH+9OUIKy+LEmZ9MGqiQipdTSwSuLh89tiUV/Z0LqOJH9sGOwSGC
+   3Idch6z/xUPRypuCBaJQTy14RB0KBMvF1+POUAB573B/KTvVmE3ghWvyZ
+   XB41R5Lrzsk7DwPDWo8n/6oc59lmnw3Xr2PxDY1pKAmbK1IEGRHIz+gZO
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="405295082"
+X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
+   d="scan'208";a="405295082"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 06:36:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
+   d="scan'208";a="34426302"
+Received: from linux.intel.com ([10.54.29.200])
+  by orviesa001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 06:36:42 -0800
+Received: from [10.212.112.252] (unknown [10.212.112.252])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E25495026D
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 14:36:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706020587; cv=none; b=YbfJtLiK25pdrleOxE0riBtYCKYV6iGMcvDKF2ssZ+KKyg1/xJB+zy7jr1pIx1fTGB0WNBxLRWphUuQ+uREw+l4rGt9op/mBOweIpjI5SXS7xNnFpT3KPTJZ9R6TVeTb1xmG8yzscsPJ+DkVrebjPmKv+ACUX7j+/rCmBmG2E5E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706020587; c=relaxed/simple;
-	bh=KCs4dAp32MVQLZSoY2iIieFhYKhRLJochENga8+TbuU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ebre6GsLwA5RZv9u8sAX/GjNRrJY14O67bD4eldkaQM50hpVmMPNtlCWjulnUIpy/4idJCXJV0Dk4dQDbXcHmczRmeivBg4KbmUocRVww5cQ2Tvq8Vlm0jBT/IbwP5HPPYD6Ljetev2b3W9BsTZCCDvUWxi9+vreoG0AEc+cA/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MUnOFEmh; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2903498ae21so2330460a91.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 06:36:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706020584; x=1706625384; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=rKLcX29OWFYkuH0PtL6skunmUTEl57ir3ALlBCZtCIg=;
-        b=MUnOFEmhB7wF8yZ1PzLMURL6mGxwLg01uUmmEmuQRObueJEszmlwgSbyvoRAXeoLUE
-         5698oTM+2QNuim6SpKtaXTIQS3vaPiL3tppYusLlPVWGIQ1HxGnTCtL/pXobMVr7lC8F
-         /wftkxM2PgOFyqoRlFPPcX2Rio7k6F4VlENwn2z/HzAYaZk0CpwXzWpEP+648U+y2LZA
-         FveiHdJeqkZnr5kQAru3RleOTpKCZRAkLzG/RlLLfM8isV7s7Y8IpqgGTS06M4E/Lh6L
-         OKp6q+d47rK9yn3/KdtZstpLTI36XUFj9tU5QggO3QAAF2adLc7HTi2qafSIvQA80mnI
-         JEMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706020584; x=1706625384;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rKLcX29OWFYkuH0PtL6skunmUTEl57ir3ALlBCZtCIg=;
-        b=HQcWlcosXK0Q/sw+MRowpxSNA0NKuHJb9zB2vUm7HyrHa+aBv6O878Ijwyxm0QdNp1
-         DhuB4mDGbYh+l8GJ2gYxYu95A9jt8WTDxf5zNy95Hj9ph+kPk19seo8XCdgS3lRm2kg4
-         zr6nZ+BPpMrkzh5rJUXgaOlvLk03DnLtrDgRaxb9QRhQVbscT595p7EYPu3ZbK7vnrRh
-         df9j1jBUXcjl10viFJUeXE1FevBd6FW+xiEy9sPu4Ql3Sz2c7laP5OCkpAMl1S1WSBZo
-         SZLdZpEpuF9XVAsxfjH02qIZOBQoVpujV5xiNGO78GGHtfbvDpDOy5ySSnfxFBEvdUpd
-         D8zQ==
-X-Gm-Message-State: AOJu0Yy6kZVDz3LYGqD7MrtjCfEqwGUpOEbSxa3PG6j8lTQMIG04/zbC
-	qZhNYrRCiOh3Il55+R0rcOx0FsAb61Ed3PMMcgV5drFmoJRmpohTZCtpjzjrjQ==
-X-Google-Smtp-Source: AGHT+IG3dsJ0nsLlvmUVmSWeW+v5Fy3gNBcQs+lxHbj0zWkZJViAOBXM3/pSyKOuORy9MvCzY5aF2w==
-X-Received: by 2002:a17:90a:989:b0:28e:96b:f8ca with SMTP id 9-20020a17090a098900b0028e096bf8camr2500428pjo.55.1706020584262;
-        Tue, 23 Jan 2024 06:36:24 -0800 (PST)
-Received: from thinkpad ([117.217.189.109])
-        by smtp.gmail.com with ESMTPSA id r5-20020a17090ad40500b0028e01ddb6c2sm12027335pju.12.2024.01.23.06.36.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 06:36:23 -0800 (PST)
-Date: Tue, 23 Jan 2024 20:06:15 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Eric Chanudet <echanude@redhat.com>
-Cc: Andrew Halaney <ahalaney@redhat.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: Re: Re: [PATCH] scsi: ufs: qcom: avoid re-init quirk when gears
- match
-Message-ID: <20240123143615.GD19029@thinkpad>
-References: <20240119185537.3091366-11-echanude@redhat.com>
- <3xnedre2d32rkad6n2ln4rrah7sgg6epxnzsdm54uab3zrutnz@fww7wb5mvykj>
- <otgj6524k6wiy27depeo7ckopmrr2v3xdnaoph4c5djjohnpmg@f7hyetygcyyr>
- <graeyylgohsukni35djpbxibnz5ya7laqvsydharkzcktv2iwz@knbu5uq5fa4x>
+	by linux.intel.com (Postfix) with ESMTPS id AE968580CA5;
+	Tue, 23 Jan 2024 06:36:38 -0800 (PST)
+Message-ID: <0d85e3f6-d857-4c62-8ad8-c20ac2665e91@linux.intel.com>
+Date: Tue, 23 Jan 2024 09:36:37 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <graeyylgohsukni35djpbxibnz5ya7laqvsydharkzcktv2iwz@knbu5uq5fa4x>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V3 0/7] Clean up perf mem
+To: Thomas Richter <tmricht@linux.ibm.com>, kajoljain <kjain@linux.ibm.com>,
+ acme@kernel.org, irogers@google.com, peterz@infradead.org, mingo@redhat.com,
+ namhyung@kernel.org, jolsa@kernel.org, adrian.hunter@intel.com,
+ john.g.garry@oracle.com, will@kernel.org, james.clark@arm.com,
+ mike.leach@linaro.org, leo.yan@linaro.org, yuhaixin.yhx@linux.alibaba.com,
+ renyu.zj@linux.alibaba.com, ravi.bangoria@amd.com,
+ atrajeev@linux.vnet.ibm.com, linux-kernel@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20231213195154.1085945-1-kan.liang@linux.intel.com>
+ <a0abfee5-4dcd-3eb5-82fe-1a0dcdade038@linux.ibm.com>
+ <befb6acd-86be-4255-af96-38865affc56c@linux.intel.com>
+ <8bfadc86-e137-4a9f-a9ce-0bc62464c195@linux.intel.com>
+ <057a1c19-3117-1aec-41d6-4950c599b862@linux.ibm.com>
+ <692e16f9-062c-4b3c-bd66-a16bac68216c@linux.intel.com>
+ <cd7dc93f-ade9-6403-a732-2daca8e6cff9@linux.ibm.com>
+ <a0540796-1933-4057-8282-aa219ddda4fe@linux.intel.com>
+ <6ace2f9f-b073-e22b-0dd6-69c52814d49a@linux.ibm.com>
+ <ceffdc69-982b-4909-95df-5b6a8a277f20@linux.ibm.com>
+Content-Language: en-US
+From: "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <ceffdc69-982b-4909-95df-5b6a8a277f20@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jan 19, 2024 at 04:33:10PM -0500, Eric Chanudet wrote:
-> On Fri, Jan 19, 2024 at 02:33:32PM -0600, Andrew Halaney wrote:
-> > On Fri, Jan 19, 2024 at 02:07:15PM -0600, Andrew Halaney wrote:
-> > > On Fri, Jan 19, 2024 at 01:55:47PM -0500, Eric Chanudet wrote:
-> > > > On sa8775p-ride, probing the hba will go through the
-> > > > UFSHCD_QUIRK_REINIT_AFTER_MAX_GEAR_SWITCH path although the power info
-> > > > are same during the second init.
-> > > > 
-> > > > If the host is at least v4, ufs_qcom_get_hs_gear() picked the highest
-> > > > supported gear when setting the host_params. After the negotiation, if
-> > > > the host and device are on the same gear, it is the highest gear
-> > > > supported between the two. Skip the re-init to save some time.
-> > > > 
-> > > > Signed-off-by: Eric Chanudet <echanude@redhat.com>
-> > > > ---
-> > > > 
-> > > > "trace_event=ufs:ufshcd_init" reports the time spent where the re-init
-> > > > quirk is performed. On sa8775p-ride:
-> > > > Baseline:
-> > > >   0.355879: ufshcd_init: 1d84000.ufs: took 103377 usecs, dev_state: UFS_ACTIVE_PWR_MODE, link_state: UIC_LINK_ACTIVE_STATE, err 0
-> > > > With this patch:
-> > > >   0.297676: ufshcd_init: 1d84000.ufs: took 43553 usecs, dev_state: UFS_ACTIVE_PWR_MODE, link_state: UIC_LINK_ACTIVE_STATE, err 0
-> > > > 
-> > > >  drivers/ufs/host/ufs-qcom.c | 6 +++++-
-> > > >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-> > > > index 39eef470f8fa..f9f161340e78 100644
-> > > > --- a/drivers/ufs/host/ufs-qcom.c
-> > > > +++ b/drivers/ufs/host/ufs-qcom.c
-> > > > @@ -738,8 +738,12 @@ static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
-> > > >  		 * the second init can program the optimal PHY settings. This allows one to start
-> > > >  		 * the first init with either the minimum or the maximum support gear.
-> > > >  		 */
-> > > > -		if (hba->ufshcd_state == UFSHCD_STATE_RESET)
-> > > > +		if (hba->ufshcd_state == UFSHCD_STATE_RESET) {
-> > > > +			if (host->hw_ver.major >= 0x4 &&
-> > > 
-> > > Is this check really necessary?
-> 
-> I *think* so.
-> 
-> For example, if hw_ver < 4, ufs_qcom_set_phy_gear() has a comment saying
-> "power up the PHY using minimum supported gear (UFS_HS_G2). Switching to
-> max gear will be performed during reinit if supported."
-> 
-> > > 
-> > > The initial phy_gear state is something like this (my phrasing of
-> > > ufs_qcom_set_phy_gear()):
-> > > 
-> > >     if hw_ver < 4:
-> > >         # Comments about powering up with minimum gear (with no
-> > >         # reasoning in the comment afaict), and mentions switching
-> > >         # to higher gear in reinit quirk. This is opposite of the later
-> > >         # versions which start at the max and scale down
-> > >         phy_gear = UFS_HS_G2
-> 
-> IIUC, the device would not be able to negotiate a gear higher than the
-> minimum set for the phy_gear on initialization.
-> 
-> ufshcd_init_host_params() and ufs_qcom_get_hs_gear() both set the
-> controller <v4 host_params to G3. So if the device is HS capable, the
-> re-init would set G3, instead of the G2 selected by
-> ufs_qcom_set_phy_gear().
-> 
 
-REINIT quirk is applicable for controllers starting from v4 only, because legacy
-controllers don't need separate PHY init sequences. So you can get rid of that
-check.
 
-- Mani
+On 2024-01-23 12:56 a.m., Thomas Richter wrote:
+> On 1/23/24 06:30, kajoljain wrote:
+>>
+>>
+>> On 1/16/24 22:07, Liang, Kan wrote:
+>>>
+>>>
+>>> On 2024-01-16 9:05 a.m., kajoljain wrote:
+>>>>> For powerpc, the patch 3 introduced a perf_mem_events_power, which
+>>>>> doesn't have ldlat. But it only be assigned to the pmu->is_core. I'm not
+>>>>> sure if it's the problem.
+>>>> Hi Kan,
+>>>>  Correct there were some small issues with patch 3, I added fix for that.
+>>>>
+>>>
+>>> Thanks Kajol Jain! I will fold your fix into V4.
+>>>
+>>>>> Also, S390 still uses the default perf_mem_events, which includes ldlat.
+>>>>> I'm not sure if S390 supports the ldlat.
+>>>> I checked it, I didn't find ldlat parameter defined in arch/s390
+>>>> directory. I think its better to make default ldlat value as false
+>>>> in tools/perf/util/mem-events.c file.
+>>>
+>>> The s390 may not be the only user for the default perf_mem_events[] in
+>>> the tools/perf/util/mem-events.c. We probably cannot change the default
+>>> value.
+>>> We may share the perf_mem_events_power[] between powerpc and s390. (We
+>>> did the similar share for arm and arm64.)
+>>>
+>>> How about the below patch (not tested.)
+>>>
+>>> diff --git a/tools/perf/arch/s390/util/pmu.c
+>>> b/tools/perf/arch/s390/util/pmu.c
+>>> index 225d7dc2379c..411034c984bb 100644
+>>> --- a/tools/perf/arch/s390/util/pmu.c
+>>> +++ b/tools/perf/arch/s390/util/pmu.c
+>>> @@ -8,6 +8,7 @@
+>>>  #include <string.h>
+>>>
+>>>  #include "../../../util/pmu.h"
+>>> +#include "../../powerpc/util/mem-events.h"
+>>>
+>>>  #define        S390_PMUPAI_CRYPTO      "pai_crypto"
+>>>  #define        S390_PMUPAI_EXT         "pai_ext"
+>>> @@ -21,5 +22,5 @@ void perf_pmu__arch_init(struct perf_pmu *pmu)
+>>>                 pmu->selectable = true;
+>>>
+>>>         if (pmu->is_core)
+>>> -               pmu->mem_events = perf_mem_events;
+>>> +               pmu->mem_events = perf_mem_events_power;
+>>>  }
+>>>
+>>>
+>>>
+>>> However, the original s390 code doesn't include any s390 specific code
+>>> for perf_mem. So I thought it uses the default perf_mem_events[].
+>>> Is there something I missed?
+>>>
+>>> Or does the s390 even support mem events? If not, I may remove the
+>>> mem_events from s390.
+>>
+>> Hi Kan,
+>>    I don't have s390 system to do testing. But from my end I am fine
+>> with the changes.
+>>
+>> Thanks,
+>> Kajol Jain
+>>
+> 
+> s390 does not support perf mem at all. Right now it is save to remove it from s390.
 
--- 
-மணிவண்ணன் சதாசிவம்
+Thanks for the confirmation!
+
+Thanks,
+Kan
+
+> Thanks
+> 
+>>>
+>>> Thanks,
+>>> Kan
+>>
+> 
 
