@@ -1,83 +1,81 @@
-Return-Path: <linux-kernel+bounces-34473-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34538-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DED1E837D64
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:26:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BBD5837EB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:42:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5160B25410
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:15:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EB00CB25AB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:42:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBF9C15698C;
-	Tue, 23 Jan 2024 00:28:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C66F768F3;
+	Tue, 23 Jan 2024 00:45:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="aRs2Fpzh"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="DhIrRYCc"
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E75F155A50
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:28:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CC84612F6
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:45:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705969726; cv=none; b=JBRh/+kpVbs1tnQmxBPfaahnQy3t92sz/N68JXq3VZl/BPhg8mUZ3LUHfYxKgryxwcGXJS5o9ru20OXg4uNSrI3JMf+D8OMCpuY2K6eLgKwqmjgZyDi62efqfR83zJgATTi4juekeazYqHWiREcTTzt9/kQUDB8pJZ/Y5Mr/63E=
+	t=1705970758; cv=none; b=ty6U9xctyGUmbC4n7sXvd4dIv8ErH0JAIsVn0SLMslkGziRiPd1kapTu8KgbYcVSxJZysPQS61RWhYNc8arOPmoUOxNs2eQnR0yjn1bN8R17OrvVdAC+Pr25Ywe6JbD9xDmAlxY+HsYOY3yjyYWZbATJIZLyj+0wFgWuZwJiwQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705969726; c=relaxed/simple;
-	bh=gNYUL4lkD/q4q2Iw6mvmjCERgWt/Zx4ayDxuFa3qc3A=;
+	s=arc-20240116; t=1705970758; c=relaxed/simple;
+	bh=TpR6teHZ/mpSlljZAe5k5kCh5DgjaXZFO8tyJAngV40=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XhHWUS4dEZerrtm1zdKnAMBtmFQZ2APWmdw26hOGe9pYgHxwVrjd8RGJ6vTHR0hbMUTu1IyJya0phQVetxeCgtLTpFCWUNdM51uLiPCGdW7DpuuIp5DVjORUUOHJ0G8q1MYc8i4Z9GvpdbL/jutKw6RYa5vEDKe/+kCIw6qNOBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=aRs2Fpzh; arc=none smtp.client-ip=209.85.210.178
+	 MIME-Version; b=YRLgpDcJCY8CMZOnf+IKjUoPJnR7tjXKE6uXAvamy0UOxJ0DoCL+ZqKKO7CNXtHV3dg9XEpfuDA2qFhIAFscHAWc5nTKFSZ1t7dy71OO2fZ7Zbxo81vfGBwLNnJrQMT42zJ59h7spn/t98ZWVEB1bcAKP3KAS0IeRW0Fyz5I3sQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=DhIrRYCc; arc=none smtp.client-ip=209.85.210.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6db0fdd2b8fso1781870b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 16:28:43 -0800 (PST)
+Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6e0d86d4659so2667870a34.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 16:45:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1705969723; x=1706574523; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1705970755; x=1706575555; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WnvzwX4y80p5z83E6IpBrKurnrIIBIFVjaFxfKXwLnU=;
-        b=aRs2FpzhVlwpX6B1WZcqtvJnPve6adqUUdPqokmDearzfsvYssSEJIYvCbYUSAeN37
-         0Tu6lm0QwtCkMjZvyE6guBPdsh8NHE9CPt1sayLebWOAFOrX5KpPGVZYXmde/2IvP47Y
-         6ozI5NtgJjfNtiyyig6NJyZ6KPvfCAyMidGhg=
+        bh=OiT3/py78kD8Owr5bvLrUn8dFen8dEuc/D42dgSMckc=;
+        b=DhIrRYCcvsDroyytmKzTBuWGR+vYa4okBNfNQKFOLkLerzs7SBzhm0R8SS+8YCvz9+
+         W4tj+9TgBIv6tEvUrjxrUO39yvMxrMbzaYE/nLBSJqx5wPSeJkVIqgHIQiHnV9AvSfLx
+         //dVx4d/s6CkRPdyQdd3hWj8pHXEW6ZEYb/Fg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705969723; x=1706574523;
+        d=1e100.net; s=20230601; t=1705970755; x=1706575555;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WnvzwX4y80p5z83E6IpBrKurnrIIBIFVjaFxfKXwLnU=;
-        b=cB9u0kiuY3G1ibkC24C2MJIIchE+sIa6ZFvTTwPDmkY2tRhm38CTmREN2Bo8/ebscC
-         wS4LcIh4kHdU1eYc7fbTEoBpPrHptPlzwov3JzRA9IWSKdd8k1gCr6P2lT8xcV0mGTBF
-         aIC1O2sSBnv/Hce7dY8EohliScdr0ljunikvvVrSrP8aqyz5iWZhXiHGaHrNmmeyGw2j
-         doHWmC7xGseVjPR3M2h8OQVNPXxJTsZ0xXsXMEo00T3r1d03q7/iFKZkftmXlmk9ajYr
-         mM3f3i7083qRByVMvcwVL2+QGsn0RHXGXrJfdNotHuZA5Dc8R53hgcLYWpw8ce1osWEb
-         67Sw==
-X-Gm-Message-State: AOJu0Ywh1492S9lh1Owy9SaBMQK90YbiSx6DOUR0p7j9QoBW0UDoF197
-	VlSXYJj+IA3bOZkIH5B8up6yRhDmFqOwW56/2Hqyb2v2u8hY3nM4cWZpkhOvEw==
-X-Google-Smtp-Source: AGHT+IHqWbCdbj4COoKXEiHtTaOvD5DiZiG+2we1Qlvg+cDhbkuK7H6vgq1QJRL6IheoOiqRzXhQFA==
-X-Received: by 2002:a05:6a00:2e9e:b0:6db:d040:4d05 with SMTP id fd30-20020a056a002e9e00b006dbd0404d05mr2702259pfb.22.1705969722109;
-        Mon, 22 Jan 2024 16:28:42 -0800 (PST)
+        bh=OiT3/py78kD8Owr5bvLrUn8dFen8dEuc/D42dgSMckc=;
+        b=iThP5WRjTUTGdkcTEEQoXKxPHXEz5+hgNcis/WZFhuWU0ZJLbswgHBK8WJDa1x/jbK
+         H0rBzkxe2zSUq5hJUGllUjfYK/0D4gPwcf2NfWyER02s6eyrUa44Hg4xIA/QePmWAiS8
+         PItXMBjqibUWYqsBbfVc/wEoQr77DiJa85n3DxooeUkpZozcE2saWd/1py54K00DtnX5
+         TAkJ7qi2pqh5cHc2e3MNZHh/sdDDwv1owk5uLyv/BWLsCXqcJRbfOSxLEZwUXemB/f9i
+         V5LV3m+uEpafANS0oGn299MzN0NZh54N7xpGpaEbWGWQ/0AOmgJ+xA5aqfTTNXAXGBSc
+         WOEg==
+X-Gm-Message-State: AOJu0YwlglTpqcCGzOPCkl20IiEqG3BrLrqR93J/hzb5aF/53XsOSdrB
+	vZvZUVFNP3GnR3Po9LvVV1I8Sue9zSrACxN7i1Ci+DGnY6wpeXPJhyWKQsKTIg==
+X-Google-Smtp-Source: AGHT+IEbm9neBtrkf8zlMe/XQiNlvlxPGO4ufOom07ycfMTFLjsEggEqw0GSOC0u7hD3Q/8TGcH34A==
+X-Received: by 2002:a05:6358:3a14:b0:176:411b:888b with SMTP id g20-20020a0563583a1400b00176411b888bmr4129504rwe.17.1705970755473;
+        Mon, 22 Jan 2024 16:45:55 -0800 (PST)
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id j18-20020a056a00175200b006dbd8dd4d49sm3283190pfc.112.2024.01.22.16.28.35
+        by smtp.gmail.com with ESMTPSA id 32-20020a631160000000b005d32c807296sm134222pgr.68.2024.01.22.16.45.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 16:28:37 -0800 (PST)
+        Mon, 22 Jan 2024 16:45:54 -0800 (PST)
 From: Kees Cook <keescook@chromium.org>
 To: linux-hardening@vger.kernel.org
 Cc: Kees Cook <keescook@chromium.org>,
-	Jakub Kicinski <kuba@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org,
+	Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org,
 	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
 	Bill Wendling <morbo@google.com>,
 	Justin Stitt <justinstitt@google.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 12/82] ipv4: Silence intentional wrapping addition
-Date: Mon, 22 Jan 2024 16:26:47 -0800
-Message-Id: <20240123002814.1396804-12-keescook@chromium.org>
+Subject: [PATCH 13/82] btrfs: Refactor intentional wrap-around calculation
+Date: Mon, 22 Jan 2024 16:26:48 -0800
+Message-Id: <20240123002814.1396804-13-keescook@chromium.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240122235208.work.748-kees@kernel.org>
 References: <20240122235208.work.748-kees@kernel.org>
@@ -87,74 +85,91 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2170; i=keescook@chromium.org;
- h=from:subject; bh=gNYUL4lkD/q4q2Iw6mvmjCERgWt/Zx4ayDxuFa3qc3A=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlrwgFvlBO2la5fghnKIu98p+FkONV/wNVLTQSX
- IKk33CsfLWJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZa8IBQAKCRCJcvTf3G3A
- JrmBD/9kKc8XzjSQWEXd+h2tu5y1xWCQNfVqCF8dPAmWo/5I58GZuuA5f0M1dCs8yLp/C8K+gn2
- VK1GNKHkGaTKkIuLqGdzPCV6K0KdIFC1RD9GWJCaPAKIH1ECgMvXF1pdJPgU3nVMvA5aEWn7S+l
- Yjz26ICJMWCYFnODX3nnptzdaOXv/giXZfGfPsfy8GpjWspiOnSLvKAzppic92dnlscOIYhAdzB
- qqh+Mxo7z04JwgzJT1sPoc/t0TRsmfabuJshG6qjUM6EfsCHUR/hBZP1TByMomhhjKZ6P8/pTxI
- bNZF2LT8ST8/uyEx4XzId+YeMdS66RVCa5tVAuWRQBXXzqAaDWExi+yjj1jbgBReLolsbbuOSc4
- yV+wC/7eXE0+vH6mVN2Vnae+iO0BS/UN7WUy3GJ7VJK/p+fNcuwOXVW22rI0hu5++1l09g1KUdJ
- WNNuP6lgZITL1NcGzIePLIoHjlXg2Ojobu//ovxGxWtoOoYX95DwVrnDQpO2sC0OVjAIuDgdOY4
- GOflLXPfmQWqRL53HgQNsFra7YLRm7D8mncQQRH+32SCoDsTrX+MFpKEkWwLraLheDi+0D+NjvT
- BV5/C9ql6p4WXJsvsGJB9Cu8v2eZ2Z/mv0OAWOuD0cNL8umP0Ps9I8ak+NZ7xOs+drWeBXjzu1k 0xgg6au/qio0hFg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2625; i=keescook@chromium.org;
+ h=from:subject; bh=TpR6teHZ/mpSlljZAe5k5kCh5DgjaXZFO8tyJAngV40=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlrwgFfeVx2CwOxlQgJ6mdRUkjPKVsQ4wxQm8Eo
+ 0Fb22rxTrCJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZa8IBQAKCRCJcvTf3G3A
+ JtzMD/9eNR4myrR+1tOyMuPMfapd+Ep06GScRoVLgXKneVxiu0hmGlhtdzsHV1+AssbXdzOoJoW
+ QxIVv3tr8VyrsCER1WPzf8VB2OQDS1dx7+ZaUTsznUwIiIOgAKkXBPi6mkVhSSB+VX//N0JkgJP
+ 9RuBQW8XpW9OuwfYclTiOjBQkejhwC5BIUuOMVKKnoOl6yVeyjCG7EnQj6qvk5sHelweXKF5xni
+ rsdhQajVbbYHfPt5J0yDlhyRq7CFRRz+2g4fpAJXm7O/HZ9vaQvUZuVnMwhqvR/pBRCKtJUdxAy
+ ITO7VVMQb+9gqG0S2to8c+Co6OURs7vo7MVGtt+gqIuNxs36otBVuePIz/eIhgNT/2ZHMLjct4Q
+ ZyXnSbdqUzASQ7HL22SFnuTktI+YVp7uYuwPBJUFo2M7fOdsI77QWeDtrk6/omOocXBoRJ6bMZL
+ 86BG+Dh0WW8OWMaqgaCqjXQNdkWx9mPXgNuDBmKae/XNAgxA1twHKiasClUXIor/5ZIavg2lUsc
+ JfbVN8cw+vltYIADHJIA2E8VPpKOhlCsIc68x6+DM2Z+p2TBNr1qlDZGnHZqKlkiLt8UGhpsNLo
+ aEgMRmK0YTJW6fJId38qQmkVt2IoPug3NTPqLBc6Pq6tD3UXznkmfxhYHxgBYPa2iCxUyzlwm6G 9MSor/xafFdN3yw==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 
-The overflow sanitizer quickly noticed what appears to have been an old
-sore spot involving intended wrap around:
+In an effort to separate intentional arithmetic wrap-around from
+unexpected wrap-around, we need to refactor places that depend on this
+kind of math. One of the most common code patterns of this is:
 
-[   22.192362] ------------[ cut here ]------------
-[   22.193329] UBSAN: signed-integer-overflow in ../arch/x86/include/asm/atomic.h:85:11
-[   22.194844] 1469769800 + 1671667352 cannot be represented in type 'int'
-[   22.195975] CPU: 2 PID: 2260 Comm: nmbd Not tainted 6.7.0 #1
-[   22.196927] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.0.0 02/06/2015
-[   22.198231] Call Trace:
-[   22.198641]  <TASK>
-[   22.198641]  dump_stack_lvl+0x64/0x80
-[   22.199533]  handle_overflow+0x152/0x1a0
-[   22.200382]  __ip_select_ident+0xe3/0x100
+	VAR + value < VAR
 
-Explicitly perform a wrapping addition to solve for the needed
--fno-strict-overflow behavior but still allow the sanitizers to operate
-correctly.
+Notably, this is considered "undefined behavior" for signed and pointer
+types, which the kernel works around by using the -fno-strict-overflow
+option in the build[1] (which used to just be -fwrapv). Regardless, we
+want to get the kernel source to the position where we can meaningfully
+instrument arithmetic wrap-around conditions and catch them when they
+are unexpected, regardless of whether they are signed[2], unsigned[3],
+or pointer[4] types.
 
-To see the (unchanged) assembly results more clearly, see:
-https://godbolt.org/z/EhYhz6zTT
+Refactor open-coded unsigned wrap-around addition test to use
+check_add_overflow(), retaining the result for later usage (which removes
+the redundant open-coded addition). This paves the way to enabling the
+wrap-around sanitizer in the future.
 
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: David Ahern <dsahern@kernel.org>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: netdev@vger.kernel.org
+Link: https://git.kernel.org/linus/68df3755e383e6fecf2354a67b08f92f18536594 [1]
+Link: https://github.com/KSPP/linux/issues/26 [2]
+Link: https://github.com/KSPP/linux/issues/27 [3]
+Link: https://github.com/KSPP/linux/issues/344 [4]
+Cc: Chris Mason <clm@fb.com>
+Cc: Josef Bacik <josef@toxicpanda.com>
+Cc: David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- net/ipv4/route.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/btrfs/extent_map.c | 6 ++++--
+ fs/btrfs/extent_map.h | 6 ++++--
+ 2 files changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-index 16615d107cf0..c52e85b06fe7 100644
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@ -473,11 +473,11 @@ static u32 ip_idents_reserve(u32 hash, int segs)
- 	if (old != now && cmpxchg(p_tstamp, old, now) == old)
- 		delta = get_random_u32_below(now - old);
- 
--	/* If UBSAN reports an error there, please make sure your compiler
--	 * supports -fno-strict-overflow before reporting it that was a bug
--	 * in UBSAN, and it has been fixed in GCC-8.
-+	/* If UBSAN reports an error there, please make sure your arch's
-+	 * atomic_add_return() implementation has been annotated with
-+	 * __signed_wrap.
- 	 */
--	return atomic_add_return(segs + delta, p_id) - segs;
-+	return atomic_add_return(add_wrap(segs, delta), p_id) - segs;
+diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+index b61099bf97a8..29a649507857 100644
+--- a/fs/btrfs/extent_map.c
++++ b/fs/btrfs/extent_map.c
+@@ -73,9 +73,11 @@ void free_extent_map(struct extent_map *em)
+ /* Do the math around the end of an extent, handling wrapping. */
+ static u64 range_end(u64 start, u64 len)
+ {
+-	if (start + len < start)
++	u64 sum;
++
++	if (check_add_overflow(start, len, &sum))
+ 		return (u64)-1;
+-	return start + len;
++	return sum;
  }
  
- void __ip_select_ident(struct net *net, struct iphdr *iph, int segs)
+ static int tree_insert(struct rb_root_cached *root, struct extent_map *em)
+diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
+index e380fc08bbe4..3c4a6b977662 100644
+--- a/fs/btrfs/extent_map.h
++++ b/fs/btrfs/extent_map.h
+@@ -108,9 +108,11 @@ static inline int extent_map_in_tree(const struct extent_map *em)
+ 
+ static inline u64 extent_map_end(const struct extent_map *em)
+ {
+-	if (em->start + em->len < em->start)
++	u64 sum;
++
++	if (check_add_overflow(em->start, em->len, &sum))
+ 		return (u64)-1;
+-	return em->start + em->len;
++	return sum;
+ }
+ 
+ void extent_map_tree_init(struct extent_map_tree *tree);
 -- 
 2.34.1
 
