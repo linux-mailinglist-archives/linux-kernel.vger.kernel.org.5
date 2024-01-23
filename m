@@ -1,72 +1,92 @@
-Return-Path: <linux-kernel+bounces-34886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 260958388D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:22:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB9538388D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:24:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C4D9B254F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:22:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F12CB21A7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:24:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BD2C58201;
-	Tue, 23 Jan 2024 08:21:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1D3258AB1;
+	Tue, 23 Jan 2024 08:24:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WtTViEB1"
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Q5oqOpBR";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="NaDyXDrk";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Q5oqOpBR";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="NaDyXDrk"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F27857334
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 08:21:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6127D58AA7
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 08:24:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705998111; cv=none; b=i6IXBJOh64rpUoA6U8iAvOR7T6PrIVXn2Pm+RdC16y9oeLHHokvrxRrB/k/dd9ozUEvDMxe+DXU+vH2BiJKxqfayPWlrSZ+reqHmP9meUWIMseHgl5ECXRla1U+AkQeHPxn5gikS7uOb/XMyB9S2SimjnZdHsV9Lq5lciI8FV1Y=
+	t=1705998275; cv=none; b=VymYKvrGoVrT3iK65RnCh7N8u/xp5ldYcr8DfXxrA/Ips3m+KTpK6+ANjf0bCjuaCDczF91E7w998SFtr14FhS1BkSMSZIVk8ta7+lJzLpsAxhF/T9nIaBjTkuYjuZ25VSGXj1P2XvROBxxs+ErYuTGqPFi36AzRjYJ8mgOlhAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705998111; c=relaxed/simple;
-	bh=yLmCf3LZn4vpBl6Mi3X/E4/QwFaBbTAwx3SO0oARWpE=;
+	s=arc-20240116; t=1705998275; c=relaxed/simple;
+	bh=zWhLd5BECCRa4/i2MbDWlARVwVglB8s68b7OYWk8b+8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aOl7EHelgXqjQHOmCYzlBofqTHA8aZmpgf4wYj/QGOjpMcNn5U0j7ns8COcpIE9YUVi67DpuLtyMwu0Lw3oEp23VERcp+JCa1JUom72SFHpTApzEItEn+zWbOMiQRJea+EE5W/6x8gtrafgQoKVZCNNRuiWL8DiA3b4+lWWbMxA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WtTViEB1; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-339237092dcso2834174f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:21:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705998108; x=1706602908; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Zhs/3EXWuNywd5myI2R42csthImnPa9FJe9iZYIsfrA=;
-        b=WtTViEB1j+0E5AzBwH0m5FlcIqcTIXjOtIp6GP72G8A8jf8sE8Q84736oGM6GMDM8r
-         E5XhDeto7dH/z9hFl189iEeZUGZuCrr2MLllH8bmBUiAr+HZXig/3v3/K9UYqOHhhUWc
-         RojB55CMh+2hwQefzwPXdayPjT4p/53UiL9mhG3hXMjvlxN6wqclMbn2kKeZQ+bPAWK1
-         swGnk6ataniKii90vkyZrp5zuxRoVIkL3XO3Xeoc4F0ua7ZT/XspeamiCF+XEtBtURaM
-         9wBfFR4qkvCLWE5OZiS11J5QQrO6BrgjNfITlfcAL5xPGUUjUINTGtncFEqHTnUlmmsE
-         fsDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705998108; x=1706602908;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zhs/3EXWuNywd5myI2R42csthImnPa9FJe9iZYIsfrA=;
-        b=EzTvmrBA9SuLbup9vnFxd/eb5ZZuqNed4e+/DZmhpPSx/8xtNEDVMlg4yAplSlwIju
-         tAXjsUiUlRjQvP4tlrn5QTwg8KbeJLfNERmGwW8kzPF4hYQPXkM//laYBFwRvDyWn/Pn
-         GD34aFZsidz7By5d/8Y/PPlLqW46++0f7Cr5AWV+XcjrYryLGc5uzdn1jR8ZHppd5Bd6
-         Z95Z1Rp9I0+73492btv0NAC3CvxbtN9Kw7mZct+UEv7hCeXdam0AtU9OdXXl38mHnz1N
-         xKb8jKCGZJQoLzkM8/A9uvzE7qU5djy3w7PY8Y5JzMRCWEMYVzYCUSNcwTxWVJWzcJM/
-         AaLg==
-X-Gm-Message-State: AOJu0YxFEYMMqlnQ9UP7o0awYrMjfvJPnDwDpPOMtTjv/wXRupVkMK0I
-	WbpBEqBU5zL/u9Te5i+ZUzYh6fN1N2FFCetRT91uMtAGEtXDCl4xqFoJoKUo77A=
-X-Google-Smtp-Source: AGHT+IFMNKBfaxHkYhIDB96hpHah0NfQUDbzn+gQCywMAWzaKl5qJMw4Fbz2etGtoM+OwlUljrSozw==
-X-Received: by 2002:a05:6000:18cc:b0:337:610f:56f7 with SMTP id w12-20020a05600018cc00b00337610f56f7mr3269725wrq.127.1705998108301;
-        Tue, 23 Jan 2024 00:21:48 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id h10-20020adff4ca000000b0033925aa222dsm8715975wrp.57.2024.01.23.00.21.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jan 2024 00:21:47 -0800 (PST)
-Message-ID: <05d8a712-a527-4892-aee1-4b52c21c3d32@linaro.org>
-Date: Tue, 23 Jan 2024 09:21:46 +0100
+	 In-Reply-To:Content-Type; b=aPLFj2qNvh4BbdGFpUU0x2leaHBXdFwlllRsaNEbEjlLTuF4sXAyn2PhGvjwXw26bjG9ZWZCF7Jun08hKSYieErxj8nntVZdfNsHvynO4WIH7XALWSbovPL9QoTaCVdI/7LpGkQqdJXodf9gsThrfP0/bNXnFUZVFepSVnMsQr0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Q5oqOpBR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=NaDyXDrk; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Q5oqOpBR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=NaDyXDrk; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 8DE811F76B;
+	Tue, 23 Jan 2024 08:24:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705998271; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qF9pTM2iZocrtZVj2sV+edGXZT+tYrsByVnKG403QCk=;
+	b=Q5oqOpBRfYsOK9W2ZmmZRKdqfxnIJYTZb7b/LgwHU0/R19Qvdfl3c15OBI8Bd1xw6Tl3Gz
+	WXp6vVo8X59UKcqUHvcfueP7eIH1zcuK79BgzYjs0Hlo7XfD3zjwifxNXS3GdgjqwiK9Gj
+	/6MoaqHkLTJnbylUcipN84bOwqrqfe0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705998271;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qF9pTM2iZocrtZVj2sV+edGXZT+tYrsByVnKG403QCk=;
+	b=NaDyXDrkSWboFPGhW2kgv0r+9725XNgEZdRzOuRrihNQwhuiPmUAyOV71f7yuovZQLQR4j
+	ODL5E+7FNcT+r1Aw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1705998271; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qF9pTM2iZocrtZVj2sV+edGXZT+tYrsByVnKG403QCk=;
+	b=Q5oqOpBRfYsOK9W2ZmmZRKdqfxnIJYTZb7b/LgwHU0/R19Qvdfl3c15OBI8Bd1xw6Tl3Gz
+	WXp6vVo8X59UKcqUHvcfueP7eIH1zcuK79BgzYjs0Hlo7XfD3zjwifxNXS3GdgjqwiK9Gj
+	/6MoaqHkLTJnbylUcipN84bOwqrqfe0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1705998271;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qF9pTM2iZocrtZVj2sV+edGXZT+tYrsByVnKG403QCk=;
+	b=NaDyXDrkSWboFPGhW2kgv0r+9725XNgEZdRzOuRrihNQwhuiPmUAyOV71f7yuovZQLQR4j
+	ODL5E+7FNcT+r1Aw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 754D713786;
+	Tue, 23 Jan 2024 08:24:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 7G5CHL93r2VxcAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 23 Jan 2024 08:24:31 +0000
+Message-ID: <0974c3b7-a964-44b6-a588-e08c6f79eec9@suse.cz>
+Date: Tue, 23 Jan 2024 09:24:31 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,82 +94,106 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: clock: Fix spelling mistake in
- 'tesla,fsd-clock.yaml'
+Subject: Re: [PATCH 1/3] mm/slub: directly load freelist from cpu partial slab
+ in the likely case
+To: Chengming Zhou <zhouchengming@bytedance.com>,
+ "Christoph Lameter (Ampere)" <cl@linux.com>
+Cc: Hyeonggon Yoo <42.hyeyoo@gmail.com>, Joonsoo Kim
+ <iamjoonsoo.kim@lge.com>, Pekka Enberg <penberg@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ David Rientjes <rientjes@google.com>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20240117-slab-misc-v1-0-fd1c49ccbe70@bytedance.com>
+ <20240117-slab-misc-v1-1-fd1c49ccbe70@bytedance.com>
+ <76641777-1918-2b29-b6aa-bda9b5467aa3@gentwo.org>
+ <412b8618-0941-4d9d-85df-ee480695e7f7@bytedance.com>
+ <a2132c63-99a5-7fa2-9f2a-cccf6b40fe9e@linux.com>
+ <e81d914b-8718-4dbb-a2d8-d5298fe66d1a@bytedance.com>
+ <ac0ce290-58a7-42b2-a7e4-72e241717c63@suse.cz>
+ <36964450-f45a-4f35-a187-dc493246ef59@bytedance.com>
 Content-Language: en-US
-To: Varada Pavani <v.pavani@samsung.com>, mturquette@baylibre.com,
- sboyd@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, s.nawrocki@samsung.com, tomasz.figa@gmail.com
-Cc: linux-samsung-soc@vger.kernel.org, alim.akhtar@samsung.com,
- aswani.reddy@samsung.com, pankaj.dubey@samsung.com
-References: <CGME20231219115856epcas5p371abeb4264f60309e597b90954e6d58c@epcas5p3.samsung.com>
- <20231219115834.65720-1-v.pavani@samsung.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231219115834.65720-1-v.pavani@samsung.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <36964450-f45a-4f35-a187-dc493246ef59@bytedance.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-1.59 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 BAYES_HAM(-3.00)[100.00%];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[gmail.com,lge.com,kernel.org,linux-foundation.org,linux.dev,google.com,kvack.org,vger.kernel.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -1.59
 
-On 19/12/2023 12:58, Varada Pavani wrote:
-> Fix typo 'inteernal' to 'internal' in 'Documentation/devicetree/
-> bindings/clock/tesla,fsd-clock.yaml'.
+On 1/23/24 03:51, Chengming Zhou wrote:
+> On 2024/1/23 01:13, Vlastimil Babka wrote:
+>> On 1/19/24 04:53, Chengming Zhou wrote:
+>>> On 2024/1/19 06:14, Christoph Lameter (Ampere) wrote:
+>>>> On Thu, 18 Jan 2024, Chengming Zhou wrote:
+>>>>
+>>>>> So get_freelist() has two cases to handle: cpu slab and cpu partial list slab.
+>>>>> The latter is NOT frozen, so need to remove "VM_BUG_ON(!new.frozen)" from it.
+>>>>
+>>>> Right so keep the check if it is the former?
+>>>>
+>>>
+>>> Ok, I get it. Maybe like this:
+>> 
+>> I think that's just too ugly for a VM_BUG_ON(). I'd just remove the check
+>> and be done with that.
 > 
-> Signed-off-by: Varada Pavani <v.pavani@samsung.com>
-> ---
->  Documentation/devicetree/bindings/clock/tesla,fsd-clock.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Ok with me.
+> 
+>> 
+>> I have a somewhat different point. You reused get_freelist() but in fact
+>> it's more like freeze_slab(), but that one uses slab_update_freelist() and
+>> we are under the local_lock so we want the cheaper __slab_update_freelist(),
+>> which get_freelist() has and I guess that's why you reused that one.
+> 
+> Right, we already have the lock_lock, so reuse get_freelist().
+> 
+>> 
+>> However get_freelist() also assumes it can return NULL if the freelist is
+>> empty. If that's possible to happen on the percpu partial list, we should
+>> not "goto load_freelist;" but rather create a new label above that, above
+>> the "if (!freelist) {" block that handles the case.
+>> 
+>> If that's not possible to happen (needs careful audit) and we have guarantee
+> 
+> Yes, it's not possible for now.
+> 
+>> that slabs on percpu partial list must have non-empty freelist, then we
+>> probably instead want a new __freeze_slab() variant that is like
+>> freeze_slab(), but uses __slab_update_freelist() and probably also has
+>> VM_BUG_ON(!freelist) before returning it?
+>> 
+> 
+> Instead of introducing another new function, how about still reusing get_freelist()
+> and VM_BUG_ON(!freelist) after calling it? I feel this is simpler.
 
-Applied with subject fixed.
+Could you measure if introducing new function that sets new.frozen = 1; has
+any performance benefit? If not, we can reuse get_freelist() as you say.
+Thanks!
 
-Please use subject prefixes matching the subsystem. You can get them for
-example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-your patch is touching.
-
-Best regards,
-Krzysztof
+> Thanks!
 
 
