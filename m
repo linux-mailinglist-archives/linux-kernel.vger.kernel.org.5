@@ -1,58 +1,59 @@
-Return-Path: <linux-kernel+bounces-35658-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35656-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B61F28394E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:38:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE4308394DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:37:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6622A1F29074
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:38:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6ADA28B812
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:37:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FB4880042;
-	Tue, 23 Jan 2024 16:37:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCE7C7F7D0;
+	Tue, 23 Jan 2024 16:37:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="V5Zeaq+W"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="WvcptC83"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C49487FBA9;
-	Tue, 23 Jan 2024 16:37:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4FB67F7DE;
+	Tue, 23 Jan 2024 16:37:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706027825; cv=none; b=qIyq+a8vRJq7JY40EXciq4cYeDZd2fsxeyeepNq1C+AQALEiTpElLUgY4pYr+lbsaOoP8+LHRT07SrnhlmM7wMZciHaBGs4bJkduLXZa5hT4OPT0SXd8yjWJ6swWULVTCKfAb6V7mVH4w6npiGae/3kZmcXo5h3g0S5XdzLwZmA=
+	t=1706027824; cv=none; b=DpFjF5EcuR/7/fFkohRQkolzM3acGH/o47TOvy16AKyPgJfIflZKd9EIO1qMirvhFhAElq1bJg3mj0e19PWZesN1akgl62R0p/CNue16/p4pR9GXjgLWZnWWQBnHaxY38U0LoQlN4w/D8LYlULEnSRRPcOYreEA6YPf/IZE5IuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706027825; c=relaxed/simple;
-	bh=pWH8NAHtrCvFVSYAPVsf9lKe7zVZF7vWQZ1xReqHAuY=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=AQ84sQhtPJYqNoMslH2dP/qsQqrHwHyg+/qHGoh0I3u3kgqMLEpTqUTtmY976Ml1mJ1sq8eLBfdIt4YEkn1PdUumHJqIxJwPOqy5zLcSkEkriN550Y2XhjTSE+vZNUa7xefKZ7bLlng3lSyhwXOZ1jQbdbiXPL4xrxPVL7DxqJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=V5Zeaq+W; arc=none smtp.client-ip=198.47.19.141
+	s=arc-20240116; t=1706027824; c=relaxed/simple;
+	bh=V+29UwgyDpXx8GxUdu6KJwdE/Zs8q4X5BKpdEnqZqdo=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=EY8FfGd3h5/RRACJ19dp/luYhsLWmuFEAlD3fkmXDPVRsK+MYEYpAy0V1z8KrDQD7doOFTEHCx4wYPybyL3xneGWvjTfNwepiFHgOtGgaNqQnJ5F/UD9nsEQ2IriJlI6J2cC1H03hXdsrsdmhDawKByVZIvr7F7fHrIv3GP6zpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=WvcptC83; arc=none smtp.client-ip=198.47.23.249
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40NGasLk077073;
-	Tue, 23 Jan 2024 10:36:54 -0600
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40NGatAN095550;
+	Tue, 23 Jan 2024 10:36:55 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706027814;
-	bh=q7pRp5x0RG+L6or32Q9nmMCN27zczX+N7SM2pF7W3VM=;
-	h=From:To:CC:Subject:Date;
-	b=V5Zeaq+WPMJp9Zw0v/NXFVWhBsUpMgB0ankkefCZPSaH5bKFd156fx3V2SYT/9v/4
-	 /f2ckNyaCkNIAxuJ2PA5pIlxZeN8HI963n5y3HLyXit7jKIWkuNtn8Ea9v9jslLRvS
-	 AfOvNsoOjqYdf0jEFKwIhydGWeamoblA5Ph5C79I=
+	s=ti-com-17Q1; t=1706027815;
+	bh=5Id6Oqhr9a7k5hr6AyXWKnA0e9FTJXVNCHOuwHNCchc=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=WvcptC83h5E669R034tcGgqxsyNWqYzCwbHN6wMKJqhQWKEa09NRanD6QGIJqu/FO
+	 C9HaS/7GwsmCZguGk4Ig4vJeXrpDXN5lGeZTpMysvG517TJ1E7yZNIK90rprQPij+P
+	 T3NpxBCZ6c5dUO83Mo1qIPTVM+uAoxj4vnS4//2U=
 Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40NGasnq000545
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40NGasLZ033931
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 23 Jan 2024 10:36:54 -0600
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE112.ent.ti.com
+	Tue, 23 Jan 2024 10:36:55 -0600
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE112.ent.ti.com
  (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 23
  Jan 2024 10:36:54 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
  Frontend Transport; Tue, 23 Jan 2024 10:36:54 -0600
 Received: from lelvsmtp6.itg.ti.com ([10.249.42.149])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40NGarrm123403;
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40NGarrn123403;
 	Tue, 23 Jan 2024 10:36:54 -0600
 From: Andrew Davis <afd@ti.com>
 To: Sebastian Reichel <sre@kernel.org>,
@@ -65,10 +66,12 @@ To: Sebastian Reichel <sre@kernel.org>,
 CC: <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Andrew Davis
 	<afd@ti.com>
-Subject: [PATCH 00/21] Power supply register with devm
-Date: Tue, 23 Jan 2024 10:36:32 -0600
-Message-ID: <20240123163653.384385-1-afd@ti.com>
+Subject: [PATCH 01/21] power: supply: da9030: Use devm_power_supply_register() helper
+Date: Tue, 23 Jan 2024 10:36:33 -0600
+Message-ID: <20240123163653.384385-2-afd@ti.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240123163653.384385-1-afd@ti.com>
+References: <20240123163653.384385-1-afd@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,60 +82,39 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hello all,
+Use the device lifecycle managed register function. This helps prevent
+mistakes like unregistering out of order in cleanup functions and
+forgetting to unregister on error paths.
 
-This is a semi-automated series converting several drivers
-under power/supply over to using devm_power_supply_register().
-The more trivial cases are first, the last 3 drivers needed
-a little pre-work to convert their IIO uses over to devm before
-power_supply_register() could be switched.
+Signed-off-by: Andrew Davis <afd@ti.com>
+---
+ drivers/power/supply/da9030_battery.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Thanks,
-Andrew
-
-Andrew Davis (21):
-  power: supply: da9030: Use devm_power_supply_register() helper
-  power: supply: da9052: Use devm_power_supply_register() helper
-  power: supply: ds2760: Use devm_power_supply_register() helper
-  power: supply: goldfish: Use devm_power_supply_register() helper
-  power: supply: lp8727: Use devm_power_supply_register() helper
-  power: supply: lp8788: Use devm_power_supply_register() helper
-  power: supply: max14577: Use devm_power_supply_register() helper
-  power: supply: max77693: Use devm_power_supply_register() helper
-  power: supply: max8925: Use devm_power_supply_register() helper
-  power: supply: pcf50633: Use devm_power_supply_register() helper
-  power: supply: rt5033: Use devm_power_supply_register() helper
-  power: supply: tps65090: Use devm_power_supply_register() helper
-  power: supply: wm831x: Use devm_power_supply_register() helper
-  power: supply: wm831x: Use devm_power_supply_register() helper
-  power: supply: wm8350: Use devm_power_supply_register() helper
-  power: supply: da9150: Use devm_iio_channel_get() helper
-  power: supply: da9150: Use devm_power_supply_register() helper
-  power: supply: rx51: Use devm_iio_channel_get() helper
-  power: supply: rx51: Use devm_power_supply_register() helper
-  power: supply: twl4030_madc: Use devm_iio_channel_get() helper
-  power: supply: twl4030_madc: Use devm_power_supply_register() helper
-
- drivers/power/supply/da9030_battery.c       |  6 +-
- drivers/power/supply/da9052-battery.c       |  4 +-
- drivers/power/supply/da9150-charger.c       | 72 ++++++---------------
- drivers/power/supply/ds2760_battery.c       |  4 +-
- drivers/power/supply/goldfish_battery.c     | 24 ++-----
- drivers/power/supply/lp8727_charger.c       | 35 ++--------
- drivers/power/supply/lp8788-charger.c       | 21 ++----
- drivers/power/supply/max14577_charger.c     |  6 +-
- drivers/power/supply/max77693_charger.c     |  8 +--
- drivers/power/supply/max8925_power.c        | 36 +++--------
- drivers/power/supply/pcf50633-charger.c     | 23 +++----
- drivers/power/supply/rt5033_battery.c       | 14 +---
- drivers/power/supply/rx51_battery.c         | 57 ++++------------
- drivers/power/supply/tps65090-charger.c     | 18 ++----
- drivers/power/supply/twl4030_madc_battery.c | 59 ++++-------------
- drivers/power/supply/wm831x_backup.c        | 13 +---
- drivers/power/supply/wm831x_power.c         | 24 +++----
- drivers/power/supply/wm8350_power.c         | 29 ++-------
- 18 files changed, 121 insertions(+), 332 deletions(-)
-
+diff --git a/drivers/power/supply/da9030_battery.c b/drivers/power/supply/da9030_battery.c
+index 581cf956d2d25..04e0f4162d42b 100644
+--- a/drivers/power/supply/da9030_battery.c
++++ b/drivers/power/supply/da9030_battery.c
+@@ -530,8 +530,9 @@ static int da9030_battery_probe(struct platform_device *pdev)
+ 
+ 	da9030_battery_setup_psy(charger);
+ 	psy_cfg.drv_data = charger;
+-	charger->psy = power_supply_register(&pdev->dev, &charger->psy_desc,
+-					     &psy_cfg);
++	charger->psy = devm_power_supply_register(&pdev->dev,
++						  &charger->psy_desc,
++						  &psy_cfg);
+ 	if (IS_ERR(charger->psy)) {
+ 		ret = PTR_ERR(charger->psy);
+ 		goto err_ps_register;
+@@ -563,7 +564,6 @@ static void da9030_battery_remove(struct platform_device *dev)
+ 				   DA9030_EVENT_CHIOVER | DA9030_EVENT_TBAT);
+ 	cancel_delayed_work_sync(&charger->work);
+ 	da9030_set_charge(charger, 0);
+-	power_supply_unregister(charger->psy);
+ }
+ 
+ static struct platform_driver da903x_battery_driver = {
 -- 
 2.39.2
 
