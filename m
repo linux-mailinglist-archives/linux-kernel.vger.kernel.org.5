@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-35325-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35326-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F052838F7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:11:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 41F54838F7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:12:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F39AE1F28A7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:11:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6B431F292C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:12:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB42E5FDD9;
-	Tue, 23 Jan 2024 13:10:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FA265FEF9;
+	Tue, 23 Jan 2024 13:10:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="jDZdo6LS";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="A7z7axwA"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="XeRyE49d";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="6wOstRHq"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 707665FDA5
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 13:10:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B54045FDC7
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 13:10:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706015418; cv=none; b=MfMZGo325W5KMNOg7zrZx4Dv7Po9phcN1B2zNL8UZzXjAYbiMxLp8qebmRm+IrXS2jv9Zgz4t0KJWvXxvCr98FgswzQIOlnHYAcwXaEX5wn7nnwBJutpHnDoEiCKl4vp4K91CnwWqJ2a6jJkc0noF4AFodQe/HSJ3bouhmizP8g=
+	t=1706015419; cv=none; b=EKRuW0SMsPPk4fUHUOeb0ls6km7OM7Ntfu0jNJQ67WR1wlAnE9zCrT1Uz9xqbMLQ6QF4GHfxcZBlkrxu2Nglbr+u69dr8Didpp3y9B1nnU9bIxSfK7DiNqclI+CtijGzZLPT37CspLbhW+pn07TGlKBZ04FpGbvjeXmbOlvViZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706015418; c=relaxed/simple;
-	bh=T6g/hT39N/sywjblaLhtFPkfHJM/S0Q2lKTbnj7bMGA=;
+	s=arc-20240116; t=1706015419; c=relaxed/simple;
+	bh=1SSu/NabS5LwMRyWIwnXDXIKFP3+DdJuv+OIyW62Yl8=;
 	h=Message-ID:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Date; b=EWOD0HGyf4M6trBjSOgsZ5F1N7NbC/fdQLBvJpYVd7Ex8UTSgC5J6U0IhKJWA+TMUsqoVJbhU3AfNM5EhRgO1Wwu98takBEe5eH6+CvD8UfXGnm4ZhjWH9O1r0fhC5PnVM9b68z936YIHZICTso6ZQE3SXHHjTrtx6N3gT48wHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=jDZdo6LS; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=A7z7axwA; arc=none smtp.client-ip=193.142.43.55
+	 Content-Type:Date; b=enborK9abehS2+KDgPx9koJ/c5P+Hmi2icnuxJ6LWYyY/40uWOOVi1MviiNjqmu1PzFwCfTNkQ+rKwBPSUwl7NUWjn2xQdgkJzpWoE8PC9llV6tKBqASLSuiICKQbbU7JatVdrEtZs7E6Z3VC/ZO7WN/17QImG2eEU3QyLDGdfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=XeRyE49d; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=6wOstRHq; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Message-ID: <20240117124902.796062992@linutronix.de>
+Message-ID: <20240117124902.861240618@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1706015415;
+	s=2020; t=1706015416;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=02PiQVDMPIEkOhZmUT5HS62o0+u1BLbuIRDzSb1N9/8=;
-	b=jDZdo6LSCkd0YTQPv44WbLjRnY0PusrbwlZ/IUWebs8Tb62pnLH6rJY5RmLAaRgjXcWrtb
-	6DNdZDqCRny/U8KMboewoDml5YyHvKcHDfAe82iipIwieepuzgnYmp66RiwKwRvrNRb7nS
-	kl50OzkK7CvpBE21mMhNVaoaW8euFYZz7MZqXGbQQsybxDwi/9u9VTJ6RC0clJdfnJqcfQ
-	euU0ou43izhfeWfBWmLbTdCzl3OITsC+GkumL9Cq5EdYcYF5CPdE2NcEttYctJnjvsCi2V
-	ewyiOMu4v8U3B64c2tOMe/WVN5v3SZyUyZuD67dZ9P4YD4Gz+o4+Ez3Fd+lByA==
+	 references:references; bh=8uJsB2/orXh2eFSCQKQ1fVuu3OEToa2VdsoM+LyJSCw=;
+	b=XeRyE49dWtSjZVdzIWsRFKruoHdQ6nAaNmyJceNO0tWGKWeWJH69sWKAzuaDW/VnVKAdXq
+	ZvR7dxN6TfJE2O2kxYmBhTf6VJDNyr5QIHfKXfM3/kGUzB7qvPhWcY7R6720AzoqN1nSNe
+	1kuc2SCfSA5QccaueMmqRVkd9lUE1Vebpnv8nsHrcYj4tPNaF7SdF3sdjCqlsnwW7e2FSY
+	LFppiRFnQMC9DvX+8HrzyQzJzvXZn/XWbOJHn67aPw3x90QWz2v+JxqKJOeCTy/ZtEiKB8
+	Hn2SSw6LOxuitirKK6M0Nt6rrR4neGVCiNQgAmlNJf6ZTUrzUYKfJ5VL1tCpdg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1706015415;
+	s=2020e; t=1706015416;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=02PiQVDMPIEkOhZmUT5HS62o0+u1BLbuIRDzSb1N9/8=;
-	b=A7z7axwAQrl0HoionGuqKk3r2XORumaF0t/P5xi43UfbXpfM0kHRtuZIw730hA8CdR1FtF
-	YTjppUY0OwqWkmDw==
+	 references:references; bh=8uJsB2/orXh2eFSCQKQ1fVuu3OEToa2VdsoM+LyJSCw=;
+	b=6wOstRHqBlj4A2cby5rrkQBKc7HAUeD1vzxQEQyUbOet9VBeSAzpCZ+zgJxvmD2/ZLrEFv
+	nI13717weF7c8mAg==
 From: Thomas Gleixner <tglx@linutronix.de>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: x86@kernel.org,
@@ -69,8 +69,7 @@ Cc: x86@kernel.org,
  "Peter Zijlstra (Intel)" <peterz@infradead.org>,
  Andy Shevchenko <andy.shevchenko@gmail.com>,
  Wei Liu <wei.liu@kernel.org>
-Subject: [patch V2 07/22] x86/apic: Remove check_apicid_used() and
- ioapic_phys_id_map()
+Subject: [patch V2 08/22] x86/mpparse: Rename default_find_smp_config()
 References: <20240117124704.044462658@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -79,121 +78,139 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date: Tue, 23 Jan 2024 14:10:13 +0100 (CET)
+Date: Tue, 23 Jan 2024 14:10:15 +0100 (CET)
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-No more users.
+MPTABLE is no longer the default SMP configuration mechanism.  Rename it to
+mpparse_find_mptable() because that's what it does.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
 ---
- arch/x86/include/asm/apic.h           |    3 ---
- arch/x86/include/asm/mpspec.h         |    6 ------
- arch/x86/kernel/apic/apic_noop.c      |    2 --
- arch/x86/kernel/apic/bigsmp_32.c      |   13 -------------
- arch/x86/kernel/apic/probe_32.c       |    2 --
- arch/x86/kernel/apic/x2apic_cluster.c |    2 --
- 6 files changed, 28 deletions(-)
+ arch/x86/include/asm/mpspec.h           |   13 ++++---------
+ arch/x86/include/asm/x86_init.h         |    4 ++--
+ arch/x86/kernel/mpparse.c               |    2 +-
+ arch/x86/kernel/setup.c                 |    6 ++----
+ arch/x86/kernel/x86_init.c              |    2 +-
+ arch/x86/platform/ce4100/ce4100.c       |    2 +-
+ arch/x86/platform/intel-mid/intel-mid.c |    2 +-
+ arch/x86/xen/smp_pv.c                   |    2 +-
+ 8 files changed, 13 insertions(+), 20 deletions(-)
 ---
---- a/arch/x86/include/asm/apic.h
-+++ b/arch/x86/include/asm/apic.h
-@@ -290,9 +290,7 @@ struct apic {
- 	int	(*acpi_madt_oem_check)(char *oem_id, char *oem_table_id);
- 	bool	(*apic_id_registered)(void);
- 
--	bool	(*check_apicid_used)(physid_mask_t *map, u32 apicid);
- 	void	(*init_apic_ldr)(void);
--	void	(*ioapic_phys_id_map)(physid_mask_t *phys_map, physid_mask_t *retmap);
- 	u32	(*cpu_present_to_apicid)(int mps_cpu);
- 
- 	u32	(*get_apic_id)(u32 id);
-@@ -525,7 +523,6 @@ extern int default_apic_id_valid(u32 api
- extern u32 apic_default_calc_apicid(unsigned int cpu);
- extern u32 apic_flat_calc_apicid(unsigned int cpu);
- 
--extern void default_ioapic_phys_id_map(physid_mask_t *phys_map, physid_mask_t *retmap);
- extern u32 default_cpu_present_to_apicid(int mps_cpu);
- 
- void apic_send_nmi_to_offline_cpu(unsigned int cpu);
 --- a/arch/x86/include/asm/mpspec.h
 +++ b/arch/x86/include/asm/mpspec.h
-@@ -92,12 +92,6 @@ typedef struct physid_mask physid_mask_t
- #define physids_empty(map)					\
- 	bitmap_empty((map).mask, MAX_LOCAL_APIC)
- 
--static inline void physids_promote(unsigned long physids, physid_mask_t *map)
--{
--	physids_clear(*map);
--	map->mask[0] = physids;
--}
--
- static inline void physid_set_mask_of_physid(int physid, physid_mask_t *map)
- {
- 	physids_clear(*map);
---- a/arch/x86/kernel/apic/apic_noop.c
-+++ b/arch/x86/kernel/apic/apic_noop.c
-@@ -50,8 +50,6 @@ struct apic apic_noop __ro_after_init =
- 
- 	.disable_esr			= 0,
- 
--	.check_apicid_used		= default_check_apicid_used,
--	.ioapic_phys_id_map		= default_ioapic_phys_id_map,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
- 
- 	.max_apic_id			= 0xFE,
---- a/arch/x86/kernel/apic/bigsmp_32.c
-+++ b/arch/x86/kernel/apic/bigsmp_32.c
-@@ -18,17 +18,6 @@ static u32 bigsmp_get_apic_id(u32 x)
- 	return (x >> 24) & 0xFF;
+@@ -56,21 +56,16 @@ static inline void early_get_smp_config(
+ 	x86_init.mpparse.get_smp_config(1);
  }
  
--static bool bigsmp_check_apicid_used(physid_mask_t *map, u32 apicid)
+-static inline void find_smp_config(void)
 -{
--	return false;
+-	x86_init.mpparse.find_smp_config();
 -}
 -
--static void bigsmp_ioapic_phys_id_map(physid_mask_t *phys_map, physid_mask_t *retmap)
--{
--	/* For clustered we don't have a good way to do this yet - hack */
--	physids_promote(0xFFL, retmap);
--}
--
- static void bigsmp_send_IPI_allbutself(int vector)
+ #ifdef CONFIG_X86_MPPARSE
+ extern void e820__memblock_alloc_reserved_mpc_new(void);
+ extern int enable_update_mptable;
+-extern void default_find_smp_config(void);
++extern void mpparse_find_mptable(void);
+ extern void default_get_smp_config(unsigned int early);
+ #else
+ static inline void e820__memblock_alloc_reserved_mpc_new(void) { }
+-#define enable_update_mptable 0
+-#define default_find_smp_config x86_init_noop
+-#define default_get_smp_config x86_init_uint_noop
++#define enable_update_mptable	0
++#define mpparse_find_mptable	x86_init_noop
++#define default_get_smp_config	x86_init_uint_noop
+ #endif
+ 
+ int generic_processor_info(int apicid);
+--- a/arch/x86/include/asm/x86_init.h
++++ b/arch/x86/include/asm/x86_init.h
+@@ -15,12 +15,12 @@ struct irq_domain;
+ /**
+  * struct x86_init_mpparse - platform specific mpparse ops
+  * @setup_ioapic_ids:		platform specific ioapic id override
+- * @find_smp_config:		find the smp configuration
++ * @find_mptable:		Find MPTABLE early to reserve the memory region
+  * @get_smp_config:		get the smp configuration
+  */
+ struct x86_init_mpparse {
+ 	void (*setup_ioapic_ids)(void);
+-	void (*find_smp_config)(void);
++	void (*find_mptable)(void);
+ 	void (*get_smp_config)(unsigned int early);
+ };
+ 
+--- a/arch/x86/kernel/mpparse.c
++++ b/arch/x86/kernel/mpparse.c
+@@ -587,7 +587,7 @@ static int __init smp_scan_config(unsign
+ 	return ret;
+ }
+ 
+-void __init default_find_smp_config(void)
++void __init mpparse_find_mptable(void)
  {
- 	default_send_IPI_mask_allbutself_phys(cpu_online_mask, vector);
-@@ -79,8 +68,6 @@ static struct apic apic_bigsmp __ro_afte
+ 	unsigned int address;
  
- 	.disable_esr			= 1,
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -970,10 +970,8 @@ void __init setup_arch(char **cmdline_p)
+ 	high_memory = (void *)__va(max_pfn * PAGE_SIZE - 1) + 1;
+ #endif
  
--	.check_apicid_used		= bigsmp_check_apicid_used,
--	.ioapic_phys_id_map		= bigsmp_ioapic_phys_id_map,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
+-	/*
+-	 * Find and reserve possible boot-time SMP configuration:
+-	 */
+-	find_smp_config();
++	/* Find and reserve MPTABLE area */
++	x86_init.mpparse.find_mptable();
  
- 	.max_apic_id			= 0xFE,
---- a/arch/x86/kernel/apic/probe_32.c
-+++ b/arch/x86/kernel/apic/probe_32.c
-@@ -44,9 +44,7 @@ static struct apic apic_default __ro_aft
+ 	early_alloc_pgt_buf();
  
- 	.disable_esr			= 0,
+--- a/arch/x86/kernel/x86_init.c
++++ b/arch/x86/kernel/x86_init.c
+@@ -70,7 +70,7 @@ struct x86_init_ops x86_init __initdata
  
--	.check_apicid_used		= default_check_apicid_used,
- 	.init_apic_ldr			= default_init_apic_ldr,
--	.ioapic_phys_id_map		= default_ioapic_phys_id_map,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
+ 	.mpparse = {
+ 		.setup_ioapic_ids	= x86_init_noop,
+-		.find_smp_config	= default_find_smp_config,
++		.find_mptable		= mpparse_find_mptable,
+ 		.get_smp_config		= default_get_smp_config,
+ 	},
  
- 	.max_apic_id			= 0xFE,
---- a/arch/x86/kernel/apic/x2apic_cluster.c
-+++ b/arch/x86/kernel/apic/x2apic_cluster.c
-@@ -231,9 +231,7 @@ static struct apic apic_x2apic_cluster _
+--- a/arch/x86/platform/ce4100/ce4100.c
++++ b/arch/x86/platform/ce4100/ce4100.c
+@@ -138,7 +138,7 @@ void __init x86_ce4100_early_setup(void)
+ 	x86_init.oem.arch_setup = sdv_arch_setup;
+ 	x86_init.resources.probe_roms = x86_init_noop;
+ 	x86_init.mpparse.get_smp_config = x86_init_uint_noop;
+-	x86_init.mpparse.find_smp_config = x86_init_noop;
++	x86_init.mpparse.find_mptable = x86_init_noop;
+ 	x86_init.pci.init = ce4100_pci_init;
+ 	x86_init.pci.init_irq = sdv_pci_init;
  
- 	.disable_esr			= 0,
+--- a/arch/x86/platform/intel-mid/intel-mid.c
++++ b/arch/x86/platform/intel-mid/intel-mid.c
+@@ -118,7 +118,7 @@ void __init x86_intel_mid_early_setup(vo
+ 	machine_ops.emergency_restart  = intel_mid_reboot;
  
--	.check_apicid_used		= NULL,
- 	.init_apic_ldr			= init_x2apic_ldr,
--	.ioapic_phys_id_map		= NULL,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
+ 	/* Avoid searching for BIOS MP tables */
+-	x86_init.mpparse.find_smp_config = x86_init_noop;
++	x86_init.mpparse.find_mptable = x86_init_noop;
+ 	x86_init.mpparse.get_smp_config = x86_init_uint_noop;
+ 	set_bit(MP_BUS_ISA, mp_bus_not_pci);
+ }
+--- a/arch/x86/xen/smp_pv.c
++++ b/arch/x86/xen/smp_pv.c
+@@ -455,6 +455,6 @@ void __init xen_smp_init(void)
+ 	smp_ops = xen_smp_ops;
  
- 	.max_apic_id			= UINT_MAX,
+ 	/* Avoid searching for BIOS MP tables */
+-	x86_init.mpparse.find_smp_config = x86_init_noop;
++	x86_init.mpparse.find_mptable = x86_init_noop;
+ 	x86_init.mpparse.get_smp_config = _get_smp_config;
+ }
 
 
