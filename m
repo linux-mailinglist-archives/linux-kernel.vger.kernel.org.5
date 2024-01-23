@@ -1,192 +1,210 @@
-Return-Path: <linux-kernel+bounces-35653-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35655-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 226978394D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:36:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E52A8394DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:37:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 15B651C239AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:36:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E8F828A3F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:37:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E4547FBA9;
-	Tue, 23 Jan 2024 16:36:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C95A7F7F7;
+	Tue, 23 Jan 2024 16:37:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="aI5GPVMb"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="YKfS3eVU"
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53BF3481C7;
-	Tue, 23 Jan 2024 16:36:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF62C7F7D0;
+	Tue, 23 Jan 2024 16:36:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706027779; cv=none; b=AXg/hzX82jAoYMNfaWKNGs/lB3o5cEP/D041eIdf6HaZX5qAb3mzxUUdSl+TdCc5qCvFOm+sooHGZ1ve3jc3BzeMO/7fifj/770hQuIXCDpK7XKA5B2lrqArgYSOduywl/yJ1+NJUZm2e0LJ7pxBPZCwxb7wZ45D6WHA1U3tpCo=
+	t=1706027820; cv=none; b=fkzfqrZcoPvK9dPHlZD1ESeHYaxLmoWYC1USpkgIOiInzfHum4IeNER/bwgp7+kMJh3qLxu4W1NNHvr041YO8xFGmzSBSQ6M84nBKble5YXYLeCj4doPmgM5nZHRDuGPAGIYb6lXt/VOMGYPgQ5iXuX4M4YYLQLJWntMu3U6Jfs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706027779; c=relaxed/simple;
-	bh=mg1lFDQ2Cc93Q00sMStqVpL8+TpnAXOykvzRqppkaQY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A0Scfbg1Z/gzHRuWrJjoA+z5/Ebm6hwAPcegNSscf7HLuQfnKrHblKIAcPuWODreYeaxEX+Y5fv0DfzEt3TxV5Kr8KjQ8vhpqkbvFWm1zt0oFaccUDwboWd7/raOch78pqWLT59LpiCdstos6824CI2Tu9Oxm81VmzbZQsv+yCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=aI5GPVMb; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=l/85CMUwYvGkFstcoi4Kb56LZAx3H/rR4TH74ZR+ABU=; b=aI5GPVMbgrAMQLi/sxpdR2JIEB
-	lD7i+cyhbu5o25Cq3bZOXaKDk8cy0Gmn/iCiM5grQc/Lgv5UbI2usWWgflQ0WEMXvX/i374t61Sp8
-	JXyHiJfmV1B9tBrrumUkhF4+2QzxPqvR5LjPfK1GpAcTrn3pSCZ87oSUkCMmgZSbzgtfIgXTUbGZP
-	B5aJXDK7/UCVmXh2ORo8l0dcCzSBAvDFBXvN+X/ZZMVGJlp1VT7uYvVFvsMO6r3OCSG3dac52Kz7r
-	dhMY/wsZf7J+sYDfDey0TJCtGdPZSb8do/Sgu6OnmJ1nLj94n0+uoVuMExEsGDtLPU++QWS5/6er8
-	75aVPHTQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33630)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rSJkv-0002kH-2j;
-	Tue, 23 Jan 2024 16:36:09 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rSJks-00025O-9V; Tue, 23 Jan 2024 16:36:06 +0000
-Date: Tue, 23 Jan 2024 16:36:06 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-	x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
-	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-	Salil Mehta <salil.mehta@huawei.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	jianyong.wu@arm.com, justin.he@arm.com,
-	James Morse <james.morse@arm.com>
-Subject: Re: [PATCH RFC v3 05/21] ACPI: Rename ACPI_HOTPLUG_CPU to include
- 'present'
-Message-ID: <Za/q9jivG4OdZM0f@shell.armlinux.org.uk>
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
- <E1rDOgD-00Dvk2-3h@rmk-PC.armlinux.org.uk>
- <CAJZ5v0g9nfLrEf9u4Ksw6BOWJQ9iv8Z-O8RsLU6jR5zk0ahxRw@mail.gmail.com>
- <20240122180013.000016d5@Huawei.com>
- <Za++/11n5KA1VS3p@shell.armlinux.org.uk>
- <CAJZ5v0h7wsLt8d3ZoLXsK1=crAx66T42WDKNoHcg8CiHpAjS8g@mail.gmail.com>
+	s=arc-20240116; t=1706027820; c=relaxed/simple;
+	bh=yOSEuTIzfuAVZ01EyAtyLu+wgPr4srwS3XuNrzRBEG4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=r1FkVOsKancOBkyStddnv+7egEXLflAaNPds7y44akFqVF21HHJ6YnMnA9S7WrTRqDmt/LgLqifk24Pw14B0maC5Ztm58nJjpqppQmwUNPhd7tS1G5nHEzeYpm/6/F2icdp4pF8Ur+3ExlRvfRH7KEnqqFoxHnmhERRN1Lh3Tpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=YKfS3eVU; arc=none smtp.client-ip=185.132.182.106
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40NDGPpY025074;
+	Tue, 23 Jan 2024 17:36:16 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=f4r28JTyj8rXZ4Hw+jKUzy+y+XqwXgGyRB/ME3czeEQ=; b=YK
+	fS3eVU2geFjov0jvlj6gp55G9D36a/Vtu/dBbrqUO+EmXt/PHpGaOlnatwsOHzla
+	pnceUuwDeuPJ/cJGKmqpuZrJC8dgmMRCCPoYwH9kqHFop/H2EsbWbUrl1VgOYgOT
+	msiBqbhfAciUF9eHFyB162PxPx0RL2pVG0uILjz2foGJCd4MMwjx4xAcIRifgcSK
+	APKUuzTFKj/A/dKJUa0MMWRqi8NzDmEPUL8rrd3YQu9hIQov2fGPHuJdl/5Yapb8
+	IFRNHriS5sk2Iw9pqe7+mcxCDfk3TWXBpS43WRLtZUdRl6/+g+/Gy5vgG1/ws+LS
+	FqaVhG5Tunxej4ENyxag==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3vsrxppbxv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 23 Jan 2024 17:36:16 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 117BF100056;
+	Tue, 23 Jan 2024 17:36:14 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0607628E3B4;
+	Tue, 23 Jan 2024 17:36:14 +0100 (CET)
+Received: from [10.201.21.122] (10.201.21.122) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 23 Jan
+ 2024 17:36:13 +0100
+Message-ID: <2f3144e2-2438-4ea8-ada0-3fbdd79ee131@foss.st.com>
+Date: Tue, 23 Jan 2024 17:36:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0h7wsLt8d3ZoLXsK1=crAx66T42WDKNoHcg8CiHpAjS8g@mail.gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 5/5] ARM: dts: add
+ stm32f769-disco-mb1225-revb03-mb1166-reva09
+Content-Language: en-US
+To: Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        <linux-kernel@vger.kernel.org>
+CC: <linux-amarula@amarulasolutions.com>, Lee Jones <lee@kernel.org>,
+        Raphael
+ Gallais-Pou <raphael.gallais-pou@foss.st.com>,
+        Linus Walleij
+	<linus.walleij@linaro.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Baruch
+ Siach <baruch@tkos.co.il>, Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        =?UTF-8?Q?Leonard_G=C3=B6hrs?=
+	<l.goehrs@pengutronix.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Peter
+ Rosin <peda@axentia.se>, Rob Herring <robh+dt@kernel.org>,
+        Sean Nyekjaer
+	<sean@geanix.com>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20240112144902.40044-1-dario.binacchi@amarulasolutions.com>
+ <20240112144902.40044-6-dario.binacchi@amarulasolutions.com>
+From: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+In-Reply-To: <20240112144902.40044-6-dario.binacchi@amarulasolutions.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-23_09,2024-01-23_02,2023-05-22_02
 
-On Tue, Jan 23, 2024 at 05:15:54PM +0100, Rafael J. Wysocki wrote:
-> On Tue, Jan 23, 2024 at 2:28 PM Russell King (Oracle)
-> <linux@armlinux.org.uk> wrote:
-> >
-> > On Mon, Jan 22, 2024 at 06:00:13PM +0000, Jonathan Cameron wrote:
-> > > On Mon, 18 Dec 2023 21:35:16 +0100
-> > > "Rafael J. Wysocki" <rafael@kernel.org> wrote:
-> > >
-> > > > On Wed, Dec 13, 2023 at 1:49 PM Russell King <rmk+kernel@armlinux.org.uk> wrote:
-> > > > >
-> > > > > From: James Morse <james.morse@arm.com>
-> > > > >
-> > > > > The code behind ACPI_HOTPLUG_CPU allows a not-present CPU to become
-> > > > > present.
-> > > >
-> > > > Right.
-> > > >
-> > > > > This isn't the only use of HOTPLUG_CPU. On arm64 and riscv
-> > > > > CPUs can be taken offline as a power saving measure.
-> > > >
-> > > > But still there is the case in which a non-present CPU can become
-> > > > present, isn't it there?
-> > >
-> > > Not yet defined by the architectures (and I'm assuming it probably never will be).
-> > >
-> > > The original proposal we took to ARM was to do exactly that - they pushed
-> > > back hard on the basis there was no architecturally safe way to implement it.
-> > > Too much of the ARM arch has to exist from the start of time.
-> > >
-> > > https://lore.kernel.org/linux-arm-kernel/cbaa6d68-6143-e010-5f3c-ec62f879ad95@arm.com/
-> > > is one of the relevant threads of the kernel side of that discussion.
-> > >
-> > > Not to put specific words into the ARM architects mouths, but the
-> > > short description is that there is currently no demand for working
-> > > out how to make physical CPU hotplug possible, as such they will not
-> > > provide an architecturally compliant way to do it for virtual CPU hotplug and
-> > > another means is needed (which is why this series doesn't use the present bit
-> > > for that purpose and we have the Online capable bit in MADT/GICC)
-> > >
-> > > It was a 'fun' dance of several years to get to that clarification.
-> > > As another fun fact, the same is defined for x86, but I don't think
-> > > anyone has used it yet (GICC for ARM has an online capable bit in the flags to
-> > > enable this, which was remarkably similar to the online capable bit in the
-> > > flags of the Local APIC entries as added fairly recently).
-> > >
-> > > >
-> > > > > On arm64 an offline CPU may be disabled by firmware, preventing it from
-> > > > > being brought back online, but it remains present throughout.
-> > > > >
-> > > > > Adding code to prevent user-space trying to online these disabled CPUs
-> > > > > needs some additional terminology.
-> > > > >
-> > > > > Rename the Kconfig symbol CONFIG_ACPI_HOTPLUG_PRESENT_CPU to reflect
-> > > > > that it makes possible CPUs present.
-> > > >
-> > > > Honestly, I don't think that this change is necessary or even useful.
-> > >
-> > > Whilst it's an attempt to avoid future confusion, the rename is
-> > > not something I really care about so my advice to Russell is drop
-> > > it unless you are attached to it!
-> >
-> > While I agree that it isn't a necessity, I don't fully agree that it
-> > isn't useful.
-> >
-> > One of the issues will be that while Arm64 will support hotplug vCPU,
-> > it won't be setting ACPI_HOTPLUG_CPU because it doesn't support
-> > the present bit changing. So I can see why James decided to rename
-> > it - because with Arm64's hotplug vCPU, the idea that ACPI_HOTPLUG_CPU
-> > somehow enables hotplug CPU support is now no longer true.
-> >
-> > Keeping it as ACPI_HOTPLUG_CPU makes the code less obvious, because it
-> > leads one to assume that it ought to be enabled for Arm64's
-> > implementatinon, and that could well cause issues in the future if
-> > people make the assumption that "ACPI_HOTPLUG_CPU" means hotplug CPU
-> > is supported in ACPI. It doesn't anymore.
+Hi Dario
+
+On 1/12/24 15:48, Dario Binacchi wrote:
+> As reported in the section 8.3 (i. e. Board revision history) of document
+> UM2033 (i. e. Discovery kit with STM32F769NI MCU) these are the changes
+> related to the board revisions addressed by the patch:
+> - Board MB1225 revision B-03:
+>    - Memory MICRON MT48LC4M32B2B5-6A replaced by ISSI IS42S32400F-6BL
+> - Board MB1166 revision A-09:
+>    - LCD FRIDA FRD397B25009-D-CTK replaced by FRIDA FRD400B25025-A-CTK
 > 
-> On x86 there is no confusion AFAICS.  It's always meant "as long as
-> the platform supports it".
+> The patch only adds the DTS support for the new display which belongs to
+> to the Novatek NT35510-based panel family.
+> 
+> Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Reviewed-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+> 
 
-That's x86, which supports physical CPU hotplug. We're introducing
-support for Arm64 here which doesn't support physical CPU hotplug.
+I still have YAML error. Do you have same on your side or maybe I missed 
+a dt-binding patch somewhere ?
 
-						ACPI-based	Physical	Virtual
-Arch	HOTPLUG_CPU	ACPI_HOTPLUG_CPU	Hotplug		Hotplug		Hotplug
-Arm64	Y		N			Y		N		Y
-x86	Y		Y			Y		Y		Y
+/arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.dtb: 
+dsi@40016c00: Unevaluated properties are not allowed ('interrupts', 
+'panel-dsi@0' were unexpected)
+	from schema $id: http://devicetree.org/schemas/display/st,stm32-dsi.yaml#
+/arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.dtb: 
+panel-dsi@0: 'port' does not match any of the regexes: 'pinctrl-[0-9]+'
+	from schema $id: 
+http://devicetree.org/schemas/display/panel/novatek,nt35510.yaml#
 
-So ACPI_HOTPLUG_CPU becomes totally misnamed with the introduction
-of hotplug on Arm64.
+Aside that, I just have a cosmetic question. Can we find a shorter name 
+for the board ? (not sure we can).
 
-If we want to just look at stuff from an x86 perspective, then yes,
-it remains correct to call it ACPI_HOTPLUG_CPU. It isn't correct as
-soon as we add Arm64, as I already said.
+Cheers
+Alex
 
-And honestly, a two line quip to my reasoned argument is not IMHO
-an acceptable reply.
 
-.. getting close to throwing the rag in over this.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+> ---
+> 
+> Changes in v8:
+> - Add Reviewed-by tag of Linus Walleij
+> - Add Reviewed-by tag of Raphael Gallais-Pou
+> 
+> Changes in v7:
+> - Replace .dts with .dtb in the Makefile
+> 
+> Changes in v6:
+> - Drop patches
+>    - [5/8] dt-bindings: nt35510: add compatible for FRIDA FRD400B25025-A-CTK
+>    - [7/8] drm/panel: nt35510: move hardwired parameters to configuration
+>    - [8/8] drm/panel: nt35510: support FRIDA FRD400B25025-A-CTK
+>    because applied by the maintainer Linus Walleij
+> 
+> Changes in v5:
+> - Replace GPIOD_ASIS with GPIOD_OUT_HIGH in the call to devm_gpiod_get_optional().
+> 
+> Changes in v2:
+> - Change the status of panel_backlight node to "disabled"
+> - Delete backlight property from panel0 node.
+> - Re-write the patch [8/8] "drm/panel: nt35510: support FRIDA FRD400B25025-A-CTK"
+>    in the same style as the original driver.
+> 
+>   arch/arm/boot/dts/st/Makefile                  |  1 +
+>   ...2f769-disco-mb1225-revb03-mb1166-reva09.dts | 18 ++++++++++++++++++
+>   2 files changed, 19 insertions(+)
+>   create mode 100644 arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.dts
+> 
+> diff --git a/arch/arm/boot/dts/st/Makefile b/arch/arm/boot/dts/st/Makefile
+> index 7892ad69b441..aa5b50d7ac61 100644
+> --- a/arch/arm/boot/dts/st/Makefile
+> +++ b/arch/arm/boot/dts/st/Makefile
+> @@ -23,6 +23,7 @@ dtb-$(CONFIG_ARCH_STM32) += \
+>   	stm32f469-disco.dtb \
+>   	stm32f746-disco.dtb \
+>   	stm32f769-disco.dtb \
+> +	stm32f769-disco-mb1225-revb03-mb1166-reva09.dtb \
+>   	stm32429i-eval.dtb \
+>   	stm32746g-eval.dtb \
+>   	stm32h743i-eval.dtb \
+> diff --git a/arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.dts b/arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.dts
+> new file mode 100644
+> index 000000000000..014cac192375
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/st/stm32f769-disco-mb1225-revb03-mb1166-reva09.dts
+> @@ -0,0 +1,18 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2023 Dario Binacchi <dario.binacchi@amarulasolutions.com>
+> + */
+> +
+> +#include "stm32f769-disco.dts"
+> +
+> +&panel_backlight {
+> +	status = "disabled";
+> +};
+> +
+> +&panel0 {
+> +	compatible = "frida,frd400b25025", "novatek,nt35510";
+> +	vddi-supply = <&vcc_3v3>;
+> +	vdd-supply = <&vcc_3v3>;
+> +	/delete-property/backlight;
+> +	/delete-property/power-supply;
+> +};
 
