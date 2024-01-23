@@ -1,84 +1,111 @@
-Return-Path: <linux-kernel+bounces-34935-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34936-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 572F583896D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:47:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B31C683896F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:49:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E63428921A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:47:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E53F11C258B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:49:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 394C95788F;
-	Tue, 23 Jan 2024 08:47:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28C3F5730B;
+	Tue, 23 Jan 2024 08:49:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WYbEiRNQ"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="YXBVpSK4"
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 614B557860;
-	Tue, 23 Jan 2024 08:47:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 509E756450;
+	Tue, 23 Jan 2024 08:48:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705999664; cv=none; b=d5GsMPFFTlftmX8lrH4ot49Ha7O9VdMxa5YAWisaeDnE31MmC4UKMhstoWsVIxnRDbTLtAdp2oCPgm4iJM6YtU7gEF9lg4AZbhjtq8HQ/4LXemo7oCSw1vHvhZrVveedHOn9QW1EXtFvDzuo+0DLfXq+ri5kmaUp2VPRprNk7XE=
+	t=1705999739; cv=none; b=MApQTQsIbovNGduNu/SDvFt1eOtwQU2lg/4Hx0C3i1FA1mYFlG8+ijrlCQPGUQloT6MLP7TuIBcDiYZIouEBjza5gxO9xb6u5G1SqWbI4xPx/NCJV84mhXXksE936fT+JLRAmpFhqZSExwBlNg8vMTlhmapO16HvGkY0/O399CQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705999664; c=relaxed/simple;
-	bh=8RQY7arEYehD1BOniNMroVFilVaiSnwq/CgGVP3ThIQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TEh68BOuBaLKmZhCH0jN4kWlwxhmvsWx1Iwiz1ATzOPUIaVUYqvcpMmwJlEqsN0b07iRvkXjqy+T8dO28vTKKnwiXOAbP4X7dH1FsxJE+wHXCeF4Bs8MMrYa7oBj6Gk1xcrebnKgwF5yRrRKeNdLR2Nk3WiyDAX0SFLn5U/XsQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=WYbEiRNQ; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=fSTvLztS7719yyFEnMvAe2uObBUKHJdWLKe1j3LT2Iw=; b=WYbEiRNQwbZ4vG/wMXl1gMSx1+
-	0k17q4Gx+7d7CfXLBjK8+kYuiB26pdCXTopSWlMoMezp2bZatP6vbW+rkpyLLoqgJJ7eN3Vsco30M
-	LRGxHDPLBdrSwC4x0Iu+gy6GZ+bv2T13wWlXM2ZdqG71/XQ56Eewzxwv9f6AAxKd+ZdDFQEnVIdtC
-	TFrSoMOFqjqfzPccY/64LeywGv42iXLyOIvOyqwOsKNkY7BbZ6KxBbMFPE5BPrZZgZUxG4yHdHyyu
-	snrJ1b4oMX9owN++IGdrZ+fFm3eXpyK4nyFOrU7pFKlV4TA+Wmj18jXLDyx7+BLxcuDX/bpSIyTEK
-	vSWze7tg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSCRY-00Fcoj-0I;
-	Tue, 23 Jan 2024 08:47:40 +0000
-Date: Tue, 23 Jan 2024 00:47:40 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Qais Yousef <qyousef@layalina.io>
-Cc: Jens Axboe <axboe@kernel.dk>, Ingo Molnar <mingo@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-	Sudeep Holla <sudeep.holla@arm.com>, Wei Wang <wvw@google.com>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	Bart Van Assche <bvanassche@acm.org>
-Subject: Re: [PATCH] block/blk-mq: Don't complete locally if capacities are
- different
-Message-ID: <Za99LKnQE/M6pVfM@infradead.org>
-References: <20240122224220.1206234-1-qyousef@layalina.io>
+	s=arc-20240116; t=1705999739; c=relaxed/simple;
+	bh=t2eee3p+5fYN3Cokye9kBeOsXjD6ww+E/52wz9ArAMo=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=h33dJf3gpDoSYs9wyc5fpfoz8DwkLsSQSESuHg9Zt3+cbcM/BENHpEPKftpkhXhJivD9GUwR7+QCdgHBHn/MkpB9RfTVwzFotkzxUpwO44SJ4l5Ky3urK9Jt6PGJGk3xVP7wgWRljQawuG64rw9DzrwrTR2SP+L3j20PV6Y46xc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=YXBVpSK4; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id BF24620011;
+	Tue, 23 Jan 2024 08:48:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1705999731;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m4Y70JmNATNTUUvhrItUodsxgvGUce4rjjN5KbaPrtU=;
+	b=YXBVpSK4YTRxCcvIlW+4GiBrR8mtfdKf9xzd5HHbttHWC969LXsxy5xvAbRTcNZ/TsOXnj
+	GDGKDb3QRg9GpPxMu4D3LFX8PHhRCtjdlghGUblGGUclsmgNkGn+rR4Pkpo3QtSeeHqKxJ
+	VznDgeqOfyTdO44lfHQQywdWnVOZXoaNvooOjrOzLEVGONG3I52fvWkpkOYBj4o3KWFEyy
+	+7qlmvnYD2OS4Qdy7ex5XHO8A7JJrYDS+aAIUOM2o29rsDBD5LuVvvbzdn1acewUrF+mhm
+	PsRoUf8NVQVr76HmKu+JV/m9pljp5AYmEtmEbucYooDyhzw5FrCbb5j+uhGosA==
+Date: Tue, 23 Jan 2024 09:48:49 +0100
+From: Maxime Chevallier <maxime.chevallier@bootlin.com>
+To: Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+ <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <UNGLinuxDriver@microchip.com>
+Subject: Re: [PATCH net] net: lan966x: Fix port configuration when using
+ SGMII interface
+Message-ID: <20240123094849.5ce5acc8@device-28.home>
+In-Reply-To: <20240123081514.3625293-1-horatiu.vultur@microchip.com>
+References: <20240123081514.3625293-1-horatiu.vultur@microchip.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240122224220.1206234-1-qyousef@layalina.io>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: maxime.chevallier@bootlin.com
 
-On Mon, Jan 22, 2024 at 10:42:20PM +0000, Qais Yousef wrote:
-> The logic in blk_mq_complete_need_ipi() assumes SMP systems where all
-> CPUs have equal capacities
+Hello Horatiu,
 
-What is a capacity here?
+On Tue, 23 Jan 2024 09:15:14 +0100
+Horatiu Vultur <horatiu.vultur@microchip.com> wrote:
 
-> +	return arch_scale_cpu_capacity(this_cpu) >= arch_scale_cpu_capacity(that_cpu);
+> In case the interface between the MAC and the PHY is SGMII, then the bit
+> GIGA_MODE on the MAC side needs to be set regardless of the speed at
+> which it is running.
+> 
+> Fixes: d28d6d2e37d1 ("net: lan966x: add port module support")
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> ---
+>  drivers/net/ethernet/microchip/lan966x/lan966x_port.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_port.c b/drivers/net/ethernet/microchip/lan966x/lan966x_port.c
+> index 92108d354051c..975a6d64a2e18 100644
+> --- a/drivers/net/ethernet/microchip/lan966x/lan966x_port.c
+> +++ b/drivers/net/ethernet/microchip/lan966x/lan966x_port.c
+> @@ -170,7 +170,8 @@ static void lan966x_port_link_up(struct lan966x_port *port)
+>  	/* Also the GIGA_MODE_ENA(1) needs to be set regardless of the
+>  	 * port speed for QSGMII ports.
 
-oerly long line here.
+Small nit, I think this comment above the test could also be updated to
+reflect that change.
 
-Also pleas split patches for different subsystems.
+>  	 */
+> -	if (phy_interface_num_ports(config->portmode) == 4)
+> +	if (phy_interface_num_ports(config->portmode) == 4 ||
+> +	    config->portmode == PHY_INTERFACE_MODE_SGMII)
+>  		mode = DEV_MAC_MODE_CFG_GIGA_MODE_ENA_SET(1);
+>  
+>  	lan_wr(config->duplex | mode,
 
+Besides that,
+
+Reviewed-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
+
+Thanks,
+
+Maxime
 
