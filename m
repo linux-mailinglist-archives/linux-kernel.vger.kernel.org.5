@@ -1,121 +1,152 @@
-Return-Path: <linux-kernel+bounces-35008-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04BAE838A72
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:37:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99821838A77
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:38:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B25092863F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:37:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51B57284D55
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:38:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 238F059B6D;
-	Tue, 23 Jan 2024 09:37:15 +0000 (UTC)
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D61FC59B74;
+	Tue, 23 Jan 2024 09:38:28 +0000 (UTC)
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 671A956478;
-	Tue, 23 Jan 2024 09:37:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DB7D59B5C;
+	Tue, 23 Jan 2024 09:38:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706002634; cv=none; b=nUA6aym/nynI3DBN0VLgtuuSqc0pFo7NnpITYUPBM57hTs3nsk8Z8IC6fSVzIK5rKt0DBGBk876zEjKX9S7p9u4qf+RT8JJ6+iU//f64zZRPQCKauLvahHiVSe8o/2co3OvoeN82d3NcFNORbAc97odYa29B40Ogh6c7NIJfPNE=
+	t=1706002708; cv=none; b=Qrk+wKCfQ0Cd99crTuF3K2r0oM9a2pzbmnShupzi+f0SS7VnZ17RkC7SXe5CG4n70OaKOhAI/LbdMfn2tt6lG4RikTrgSpJe2vi57gUREFCkJnGz/6u+NZgLlY+/c8mTrCFUd9kIj3vIi262PRA+cJqYPj7a2DeicKKposHluNs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706002634; c=relaxed/simple;
-	bh=9L2HdofWJcLlzgURvijzTLaL93o4p+E1h/gJ1Az/+I8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UKvNi9dJRw8kuf72aujyN9PRAfgpjXvJd9cAlss9vwTmEfTsqtlc9CPq+q/sZ1X7MQBhAmQKBQzfJJZ4ocF2ovQiXGnjZWqjrGR7ZORagxcu8nXBDC8ApVlP4pgxNGxegTNE7RcAAVVQhtZWfAsJK8LhKHJuUxZicbwtseZPXVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; arc=none smtp.client-ip=115.124.30.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0W.CRkwM_1706002621;
-Received: from localhost(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0W.CRkwM_1706002621)
-          by smtp.aliyun-inc.com;
-          Tue, 23 Jan 2024 17:37:02 +0800
-From: Jingbo Xu <jefflexu@linux.alibaba.com>
-To: miklos@szeredi.hu,
-	linux-fsdevel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Subject: [RFC] fuse: disable support for file handle when FUSE_EXPORT_SUPPORT not configured
-Date: Tue, 23 Jan 2024 17:37:01 +0800
-Message-Id: <20240123093701.94166-1-jefflexu@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
+	s=arc-20240116; t=1706002708; c=relaxed/simple;
+	bh=FxLlvg48cPCI0xTuEsv4CQppE6mL1x/n5kLFPEffL/U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ibflw5FF+nGfVZjj1yhtzI7wCFmKUAWEyoqwOtJ+iBmCYrVAX7HivKCzqlPMO7rckrH7tRoJJ5Nae4WW7OOD0H6dWHNTYeMUGIatu7lfYGOrqwcnu5+gdnIFy9Hndhcq4oOh9/VDl5P6iMyPcHWkReWJ5A8HeTviDjIoO8OK8+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
+Received: from [141.14.220.34] (g34.guest.molgen.mpg.de [141.14.220.34])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 8586861E5FE36;
+	Tue, 23 Jan 2024 10:38:10 +0100 (CET)
+Message-ID: <48fb7356-506f-40c1-ac2e-4f43c2cbebea@molgen.mpg.de>
+Date: Tue, 23 Jan 2024 10:38:09 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Bluetooth: hci_qca: Set BDA quirk bit if fwnode exists in
+ DT
+Content-Language: en-US
+To: Janaki Ramaiah Thota <quic_janathot@quicinc.com>
+Cc: Marcel Holtmann <marcel@holtmann.org>,
+ Luiz Augusto von Dentz <luiz.dentz@gmail.com>, quic_mohamull@quicinc.com,
+ quic_hbandi@quicinc.com, linux-bluetooth@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240123071523.23480-1-quic_janathot@quicinc.com>
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <20240123071523.23480-1-quic_janathot@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-I think this is more of an issue reporter.
-
-I'm not sure if it's a known issue, but we found that following a
-successful name_to_handle_at(2), open_by_handle_at(2) fails (-ESTALE,
-Stale file handle) with the given file handle when the fuse daemon is in
-"cache= none" mode.
-
-It can be reproduced by the examples from the man page of
-name_to_handle_at(2) and open_by_handle_at(2) [1], along with the
-virtiofsd daemon (C implementation) in "cache= none" mode.
-
-```
-/t_name_to_handle_at t_open_by_handle_at.c > /tmp/fh
-/t_open_by_handle_at < /tmp/fh
-t_open_by_handle_at: open_by_handle_at: Stale file handle
-```
-
-After investigation into this issue, I found the root cause is that,
-when virtiofsd is in "cache= none" mode, the entry_valid_timeout is
-configured as 0.  Thus the dput() called when name_to_handle_at(2)
-finishes will trigger iput -> evict(), in which FUSE_FORGET will be sent
-to the daemon.  The following open_by_handle_at(2) will trigger a new
-FUSE_LOOKUP request when no cached inode is found with the given file
-handle.  And then the fuse daemon fails the FUSE_LOOKUP request with
--ENOENT as the cached metadata of the requested inode has already been
-cleaned up among the previous FUSE_FORGET.
-
-This indeed confuses the application, as open_by_handle_at(2) fails in
-the condition of the previous name_to_handle_at(2) succeeds, given the
-requested file is not deleted and ready there.  It is acceptable for the
-application folks to fail name_to_handle_at(2) early in this case, in
-which they will fallback to open(2) to access files.
+Dear Janaki,
 
 
-As for this RFC patch, the idea is that if the fuse daemon is configured
-with "cache=none" mode, FUSE_EXPORT_SUPPORT should also be explicitly
-disabled and the following name_to_handle_at(2) will all fail as a
-workaround of this issue.
+Thank you for your patch.
 
-[1] https://man7.org/linux/man-pages/man2/open_by_handle_at.2.html
 
-Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
----
- fs/fuse/inode.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Am 23.01.24 um 08:15 schrieb Janaki Ramaiah Thota:
+> This change is done to avoid BT not to go UNCONFIGURED state when BDA
 
-diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-index 2a6d44f91729..9fed63be60fe 100644
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@ -1025,6 +1025,7 @@ static struct dentry *fuse_get_dentry(struct super_block *sb,
- static int fuse_encode_fh(struct inode *inode, u32 *fh, int *max_len,
- 			   struct inode *parent)
- {
-+	struct fuse_conn *fc = get_fuse_conn(inode);
- 	int len = parent ? 6 : 3;
- 	u64 nodeid;
- 	u32 generation;
-@@ -1034,6 +1035,9 @@ static int fuse_encode_fh(struct inode *inode, u32 *fh, int *max_len,
- 		return  FILEID_INVALID;
- 	}
- 
-+	if (!fc->export_support)
-+		return -EOPNOTSUPP;
-+
- 	nodeid = get_fuse_inode(inode)->nodeid;
- 	generation = inode->i_generation;
- 
--- 
-2.19.1.6.gb485710b
+“This change is done to” is redundant, and can be left out.
 
+> fwnode is not available in DT for QTI SOCs.
+
+It’d be great if you documented the test setup exactly, on how to 
+reproduce this.
+
+Please also add a Fixes: tag.
+
+> Signed-off-by: Janaki Ramaiah Thota <quic_janathot@quicinc.com>
+> ---
+>   drivers/bluetooth/hci_qca.c | 13 ++++++++++++-
+>   1 file changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+> index 94b8c406f0c0..11d66f3e5f3f 100644
+> --- a/drivers/bluetooth/hci_qca.c
+> +++ b/drivers/bluetooth/hci_qca.c
+> @@ -7,6 +7,7 @@
+>    *
+>    *  Copyright (C) 2007 Texas Instruments, Inc.
+>    *  Copyright (c) 2010, 2012, 2018 The Linux Foundation. All rights reserved.
+> + *  Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+>    *
+>    *  Acknowledgements:
+>    *  This file is based on hci_ll.c, which was...
+> @@ -1904,7 +1905,17 @@ static int qca_setup(struct hci_uart *hu)
+>   	case QCA_WCN6750:
+>   	case QCA_WCN6855:
+>   	case QCA_WCN7850:
+> -		set_bit(HCI_QUIRK_USE_BDADDR_PROPERTY, &hdev->quirks);
+> +
+> +		/* Set BDA quirk bit for reading BDA value from fwnode property
+> +		 * only if that property exist in DT.
+> +		 */
+> +		if (fwnode_property_present(dev_fwnode(hdev->dev.parent), "local-bd-address")) {
+> +			set_bit(HCI_QUIRK_USE_BDADDR_PROPERTY, &hdev->quirks);
+> +			bt_dev_info(hdev, "setting quirk bit to read BDA from fwnode later");
+> +		} else {
+> +			bt_dev_info(hdev, "Not setting quirk bit for BDA");
+
+In my opinion, the message in the else branch, should be a debug 
+message, and should also contain that `local-bd-address` is not present 
+in the devicetree..
+
+> +		}
+> +
+>   		hci_set_aosp_capable(hdev);
+>   
+>   		ret = qca_read_soc_version(hdev, &ver, soc_type);
+> 
+> base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+> prerequisite-patch-id: de5460a6c886a233feff19313b545ee6569369fb
+> prerequisite-patch-id: e18252a26d0f289afcbec18113b7f636a46a9aed
+> prerequisite-patch-id: 26e607ac96dc6d0d295793a0449a5b4c0f7ddc92
+> prerequisite-patch-id: c8d7f229399fc8075722ffe05260675ece93f691
+> prerequisite-patch-id: 554cc93ba4899eabe31585bf9591052058609d96
+> prerequisite-patch-id: 99c00a3d8d98a880c0d3a5545def0ca9ade0f903
+> prerequisite-patch-id: b1ef1add471677d1e1b60eaaab3e109abf7c7b2b
+> prerequisite-patch-id: 96131754c09914f327f353dee4daabb7ab5e6f29
+> prerequisite-patch-id: 610b5ec4a338d15cf8dba0459d5a1bfd28dccb4d
+> prerequisite-patch-id: 5172cd9d99462e123f264f0fd9a9768f2cae5498
+> prerequisite-patch-id: f57b8285516730da78089325d53f6125daaf2e6a
+> prerequisite-patch-id: 69dc26e36476660935070261f0e11cdd55c35688
+> prerequisite-patch-id: 8087dd28f6ef90fc3ad847b4bcde8a096ff721b5
+> prerequisite-patch-id: 8640fbfd7e5dcbdb4eacf5b748ea49678a2e6675
+> prerequisite-patch-id: b3613c0002cfd9cc77923f6ce781cec90a2f0cd1
+> prerequisite-patch-id: dc4f4077bfa02a5d5128bb39ef3a36dfc3db27bc
+> prerequisite-patch-id: 9c9aa8de9b4c50252d451a2dd76717c287fe1848
+> prerequisite-patch-id: 3c4a931debe7e8aa7d0b70870456421a17ff86a5
+> prerequisite-patch-id: df500031c7b6de9320021d52b060338b71340d91
+> prerequisite-patch-id: 14758d2fb4b6151aa9c27ab7e3cb8c742988f1d7
+> prerequisite-patch-id: 1c28faa0d8a4e294752229611ade87a216da0ce6
+> prerequisite-patch-id: 03680549373d9a5b0ab0e4c94260e8aaea04ef25
+> prerequisite-patch-id: cfcc27083466c9c87801628fe9c0f2131fc22dae
+
+What to do about these lines?
+
+
+Kind regards,
+
+PPaul
 
