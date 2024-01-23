@@ -1,168 +1,405 @@
-Return-Path: <linux-kernel+bounces-35474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35476-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C3398391B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:48:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D0858391B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:49:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14A0828EB54
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:48:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4717290377
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:49:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C0325FF1B;
-	Tue, 23 Jan 2024 14:47:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D3475DF3C;
+	Tue, 23 Jan 2024 14:48:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="h9DTEqP1"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MUNq2gtb"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12E955FF13;
-	Tue, 23 Jan 2024 14:46:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1209556B73
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 14:48:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706021221; cv=none; b=Hhb9nqBxIPXHoVl8d/XYMpHAbl69Xat1zzEz3lCdOKNwf3btSNNByMn83FOMTPXCGbcrDtDA927Svkk+mISaofS5d0oU6LDwXTPbi0itn0/rmptJOEDBvEBVCegJ69whBUtCXD4duCUQpW7Nd2iesdpxqx92axYwJ7i0z+Y9Fe0=
+	t=1706021306; cv=none; b=FrhQJgZ0+1fvOtG9QzVhlGVc+5YIi9J3rG25tI2RFjSRKJDIwQ+MKbmUIMFUIFXyVhbHNc0wl8/1CwmVlAscd2ey+iw82VDRCCdzLMqVmkrTcGDI2bX80DVPkA3aO9PCToZ1RYlBWQ+B+x1nDIigsbRNrfhN70uMWs1BIpTLDZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706021221; c=relaxed/simple;
-	bh=yhiKoILiKglwk3i+5fnsJXdI2aMAxyOo4taFdOcTWgM=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=peY3nNS6TlFJWLBEZKOq+2/Gu0QSNInm0MxqS2I1lNEQWExkHE2f8wVhIUzZzHES2fk8oaHjgsYwlmVZlmSxBVtG828/5VJoesnLEUyM3uKQJ5smdDkg5GfZUGGUIOPnreQFsAOLXgbfGqLPO4YaH53AHVuD2psttp21c+u+ZoI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=h9DTEqP1; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40NAhMZd004729;
-	Tue, 23 Jan 2024 14:46:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=oCZQgwZdxZL7hRAP7GPL
-	n4kDTbRd6/G2f7LHazmI3VA=; b=h9DTEqP1Ul27QPWCmejbSZYLhG3yAt+I8ohA
-	cXatrfpd5AYdgKXQ6M+Q7mhOCImUGmyGMZn09HK68MlripZVGJ/xrhopQhyOBnLF
-	Ljd4G7LvVHWtCGlEYQi/4CsoRhC0LBEwigP7cqKwcgtyZUMjwg49wk13ANArxED9
-	DzHQuvoidHlIQkjx0qQBbC05aoE2o1BMsGi2SzXWO6hjeOIRB8mYGf8Y2b0xnJ+1
-	z+vUlV68X4cp+Gslxf4y96/aZmmcliFgsXbwEC3NjGtjPLdCncI3xi8Ef0a02jA3
-	EURDMGGa4WVW82lSRvFSE49if3ACxtD7EbiHsUKz+H8DRDwXfA==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vstd9axq3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Jan 2024 14:46:41 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40NEkeSB006927
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Jan 2024 14:46:40 GMT
-Received: from hu-bibekkum-hyd.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 23 Jan 2024 06:46:34 -0800
-From: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-To: <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
-        <dmitry.baryshkov@linaro.org>, <konrad.dybcio@linaro.org>,
-        <jsnitsel@redhat.com>, <quic_bjorande@quicinc.com>, <mani@kernel.org>,
-        <quic_eberman@quicinc.com>, <robdclark@chromium.org>,
-        <u.kleine-koenig@pengutronix.de>, <robh@kernel.org>,
-        <vladimir.oltean@nxp.com>, <quic_pkondeti@quicinc.com>,
-        <quic_molvera@quicinc.com>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        Bibek Kumar Patro
-	<quic_bibekkum@quicinc.com>
-Subject: [PATCH v9 5/5] iommu/arm-smmu: add ACTLR data and support for SC7280
-Date: Tue, 23 Jan 2024 20:15:43 +0530
-Message-ID: <20240123144543.9405-6-quic_bibekkum@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240123144543.9405-1-quic_bibekkum@quicinc.com>
-References: <20240123144543.9405-1-quic_bibekkum@quicinc.com>
+	s=arc-20240116; t=1706021306; c=relaxed/simple;
+	bh=y1YqxHrgxOFc/Dj6UGRZZjBxY4p5SgEDvBp2HNCDjGY=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=cfYt2moc/lYfo5SXT69veEJ05GMqzv6WTep5jf7kJUiv1Cz9BfcGOXJxO2En2fJsUcMHcSnU3PZ90J7iWpBvo70+ZP6FtBqVjofWtjm+dXzXMd5QEZhCg6DypzLLQLxFldBzVVmsDm3kEAmS9b1o/Rwrc/3ffBGd2ynO4JH2F8U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MUNq2gtb; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706021303;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ERsvf6mTANpUBUb3AMZpzI06hkNc3Po2zrO02K/JXGs=;
+	b=MUNq2gtbdRiCJtvdSH7UnO3zgeVWz79dT6V0fmSdXDfDgiKNFd+L7r0NzFQE4qVt9YcOEW
+	XGlhE+MQUE5XF/J2GB4VoEycmrCSSlrQ67BhAtbMstBGAQW36BNP0L511uVL8YpGYGiTum
+	5VgKGmsyeiVZNMNTbRST4phW5HzzrEY=
+Received: from mail-yw1-f200.google.com (mail-yw1-f200.google.com
+ [209.85.128.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-501-29WuO3j9MRyGfuO0Hr2H9A-1; Tue, 23 Jan 2024 09:48:21 -0500
+X-MC-Unique: 29WuO3j9MRyGfuO0Hr2H9A-1
+Received: by mail-yw1-f200.google.com with SMTP id 00721157ae682-5ff7cf2fd21so45237517b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 06:48:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706021300; x=1706626100;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ERsvf6mTANpUBUb3AMZpzI06hkNc3Po2zrO02K/JXGs=;
+        b=NsXHoioZEAkr8vGVdX/nyLqQ20mO4OwEEEfFeaKcJM/TPdw3HTVvqYBJ83tnIZD50O
+         fGUOjyThZErdsyksAr8OaoTpqZulWOrsHfySSWJOzOJ4ilgFoIxY/CDktII5o/6RyLR6
+         peYhqHDMKE7ilRbHVL+ZwKkr1umW9sikOrx2s7OjArDNCCKxDzRb5c5d0zrRupvklmyb
+         ciZMwpQtBb6fWRoqvV6Ky6tek6eXgoaN0WeJ/na1FAlAfJ7gzd0az5aEsC5V0WkoSjVj
+         aSoYX1cRbcMrIl2AtpsVw0fHfZ6AtVSRAYabjoQDcVqfXcTS9eBZhGW4KvBeCuNPqoYw
+         x1Jg==
+X-Gm-Message-State: AOJu0Yz8ML/J8h3OElUlr46NBNlxXgBBS07Fd/g/hqG6peSrn+MsTNo3
+	p0Bv4MAc0nuQhJjkiiC3xxaXIN+KwvJyILSb79JKVyYMwFDh0Zp5F3Z5I8CkN0f7gGGxu2ZLRU1
+	9VGiwktq6UNCmYOCNt3SHryjONhJ+eHtwTa3rDSz+/5zmk57/zRrbu6YZznDWig==
+X-Received: by 2002:a81:9102:0:b0:600:19aa:954 with SMTP id i2-20020a819102000000b0060019aa0954mr1681041ywg.48.1706021299950;
+        Tue, 23 Jan 2024 06:48:19 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFOAzbFtfKeLNsLvac5bUIcLJ8kqIjBgULREa3MrGYDgd+HTQjDACT+IOJ99o+ep4tWCBjk/w==
+X-Received: by 2002:a81:9102:0:b0:600:19aa:954 with SMTP id i2-20020a819102000000b0060019aa0954mr1681029ywg.48.1706021299579;
+        Tue, 23 Jan 2024 06:48:19 -0800 (PST)
+Received: from [192.168.2.84] ([184.146.96.133])
+        by smtp.gmail.com with ESMTPSA id t125-20020a818383000000b005ffa352a84fsm2956124ywf.21.2024.01.23.06.48.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jan 2024 06:48:18 -0800 (PST)
+Message-ID: <08d7e86a4d46e24090812bb1dcf8555c3d0f9e5f.camel@redhat.com>
+Subject: Re: [PATCH v1] KVM: nVMX: Fix handling triple fault on RSM
+ instruction
+From: mlevitsk@redhat.com
+To: Sean Christopherson <seanjc@google.com>, Michal Wilczynski
+	 <michal.wilczynski@intel.com>
+Cc: pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+  dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+ kvm@vger.kernel.org,  linux-kernel@vger.kernel.org, zhi.a.wang@intel.com, 
+ artem.bityutskiy@linux.intel.com, yuan.yao@intel.com, Zheyu Ma
+ <zheyuma97@gmail.com>
+Date: Tue, 23 Jan 2024 09:48:08 -0500
+In-Reply-To: <ZZRqptOaukCb7rO_@google.com>
+References: <20231222164543.918037-1-michal.wilczynski@intel.com>
+	 <ZZRqptOaukCb7rO_@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-3.fc36) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: rqo9KdjESiPEW_l_aVc5N0Lt6YimgyhC
-X-Proofpoint-ORIG-GUID: rqo9KdjESiPEW_l_aVc5N0Lt6YimgyhC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-23_08,2024-01-23_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 bulkscore=0 impostorscore=0 mlxlogscore=999 mlxscore=0
- spamscore=0 priorityscore=1501 phishscore=0 malwarescore=0 adultscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401230108
 
-Add ACTLR data table for SC7280 along with support for
-same including SC7280 specific implementation operations.
+On Tue, 2024-01-02 at 11:57 -0800, Sean Christopherson wrote:
+> > > > +Maxim
+> > > >=20
+> > > > On Fri, Dec 22, 2023, Michal Wilczynski wrote:
+> > > > > > > > Syzkaller found a warning triggered in
+> > > > > > > > nested_vmx_vmexit().
+> > > > > > > > vmx->nested.nested_run_pending is non-zero, even though
+> > > > > > > > we're in
+> > > > > > > > nested_vmx_vmexit(). Generally, trying  to cancel a
+> > > > > > > > pending entry is
+> > > > > > > > considered a bug. However in this particular scenario,
+> > > > > > > > the kernel
+> > > > > > > > behavior seems correct.
+> > > > > > > >=20
+> > > > > > > > Syzkaller scenario:
+> > > > > > > > 1) Set up VCPU's
+> > > > > > > > 2) Run some code with KVM_RUN in L2 as a nested guest
+> > > > > > > > 3) Return from KVM_RUN
+> > > > > > > > 4) Inject KVM_SMI into the VCPU
+> > > > > > > > 5) Change the EFER register with KVM_SET_SREGS to value
+> > > > > > > > 0x2501
+> > > > > > > > 6) Run some code on the VCPU using KVM_RUN
+> > > > > > > > 7) Observe following behavior:
+> > > > > > > >=20
+> > > > > > > > kvm_smm_transition: vcpu 0: entering SMM, smbase
+> > > > > > > > 0x30000
+> > > > > > > > kvm_entry: vcpu 0, rip 0x8000
+> > > > > > > > kvm_entry: vcpu 0, rip 0x8000
+> > > > > > > > kvm_entry: vcpu 0, rip 0x8002
+> > > > > > > > kvm_smm_transition: vcpu 0: leaving SMM, smbase 0x30000
+> > > > > > > > kvm_nested_vmenter: rip: 0x0000000000008002 vmcs:
+> > > > > > > > 0x0000000000007000
+> > > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0nested_rip: =
+0x0000000000000000
+> > > > > > > > int_ctl: 0x00000000
+> > > > > > > > 		    event_inj: 0x00000000 nested_ept=3Dn
+> > > > > > > > guest
+> > > > > > > > 		    cr3: 0x0000000000002000
+> > > > > > > > kvm_nested_vmexit_inject: reason: TRIPLE_FAULT
+> > > > > > > > ext_inf1: 0x0000000000000000
+> > > > > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0ext_inf2: 0x0000000000000000
+> > > > > > > > ext_int: 0x00000000
+> > > > > > > > 			  ext_int_err: 0x00000000
+> > > > > > > >=20
+> > > > > > > > What happened here is an SMI was injected immediately
+> > > > > > > > and the handler was
+> > > > > > > > called at address 0x8000; all is good. Later, an RSM
+> > > > > > > > instruction is
+> > > > > > > > executed in an emulator to return to the nested VM.
+> > > > > > > > em_rsm() is called,
+> > > > > > > > which leads to emulator_leave_smm(). A part of this
+> > > > > > > > function calls VMX/SVM
+> > > > > > > > callback, in this case vmx_leave_smm(). It attempts to
+> > > > > > > > set up a pending
+> > > > > > > > reentry to guest VM by calling
+> > > > > > > > nested_vmx_enter_non_root_mode() and sets
+> > > > > > > > vmx->nested.nested_run_pending to one. Unfortunately,
+> > > > > > > > later in
+> > > > > > > > emulator_leave_smm(), rsm_load_state_64() fails to
+> > > > > > > > write invalid EFER to
+> > > > > > > > the MSR. This results in em_rsm() calling triple_fault
+> > > > > > > > callback. At this
+> > > > > > > > point it's clear that the KVM should call the vmexit,
+> > > > > > > > but
+> > > > > > > > vmx->nested.nested_run_pending is left set to 1. To fix
+> > > > > > > > this reset the
+> > > > > > > > vmx->nested.nested_run_pending flag in triple_fault
+> > > > > > > > handler.
+> > > > > > > >=20
+> > > > > > > > TL;DR (courtesy of Yuan Yao)
+> > > > > > > > Clear nested_run_pending in case of RSM failure on
+> > > > > > > > return from L2 SMM.
+> > > >=20
+> > > > KVM doesn't emulate SMM for L2.  On an injected SMI, KVM forces
+> > > > a syntethic nested
+> > > > VM-Exit to get from L2 to L1, and then emulates SMM in the
+> > > > context of L1.
+> > > >=20
+> > > > > > > > The pending VMENTRY to L2 should be cancelled due to
+> > > > > > > > such failure leads
+> > > > > > > > to triple fault which should be injected to L1.
+> > > > > > > >=20
+> > > > > > > > Possible alternative approach:
+> > > > > > > > While the proposed approach works, the concern is that
+> > > > > > > > it would be
+> > > > > > > > simpler, and more readable to cancel the
+> > > > > > > > nested_run_pending in em_rsm().
+> > > > > > > > This would, however, require introducing new callback
+> > > > > > > > e.g,
+> > > > > > > > post_leave_smm(), that would cancel nested_run_pending
+> > > > > > > > in case of a
+> > > > > > > > failure to resume from SMM.
+> > > > > > > >=20
+> > > > > > > > Additionally, while the proposed code fixes VMX
+> > > > > > > > specific issue, SVM also
+> > > > > > > > might suffer from similar problem as it also uses it's
+> > > > > > > > own
+> > > > > > > > nested_run_pending variable.
+> > > > > > > >=20
+> > > > > > > > Reported-by: Zheyu Ma <zheyuma97@gmail.com>
+> > > > > > > > Closes:
+> > > > > > > > https://lore.kernel.org/all/CAMhUBjmXMYsEoVYw_M8hSZjBMHh24i=
+88QYm-RY6HDta5YZ7Wgw@mail.gmail.com
+> > > >=20
+> > > > Fixes: 759cbd59674a ("KVM: x86: nSVM/nVMX: set
+> > > > nested_run_pending on VM entry which is a result of RSM")
+> > > >=20
+> > > > > > > > Signed-off-by: Michal Wilczynski
+> > > > > > > > <michal.wilczynski@intel.com>
+> > > > > > > > ---
+> > > > > > > > =C2=A0arch/x86/kvm/vmx/nested.c | 9 +++++++++
+> > > > > > > > =C2=A01 file changed, 9 insertions(+)
+> > > > > > > >=20
+> > > > > > > > diff --git a/arch/x86/kvm/vmx/nested.c
+> > > > > > > > b/arch/x86/kvm/vmx/nested.c
+> > > > > > > > index c5ec0ef51ff7..44432e19eea6 100644
+> > > > > > > > --- a/arch/x86/kvm/vmx/nested.c
+> > > > > > > > +++ b/arch/x86/kvm/vmx/nested.c
+> > > > > > > > @@ -4904,7 +4904,16 @@ void nested_vmx_vmexit(struct
+> > > > > > > > kvm_vcpu *vcpu, u32 vm_exit_reason,
+> > > > > > > > =C2=A0
+> > > > > > > > =C2=A0static void nested_vmx_triple_fault(struct kvm_vcpu
+> > > > > > > > *vcpu)
+> > > > > > > > =C2=A0{
+> > > > > > > > +	struct vcpu_vmx *vmx =3D to_vmx(vcpu);
+> > > > > > > > +
+> > > > > > > > =C2=A0	kvm_clear_request(KVM_REQ_TRIPLE_FAULT, vcpu);
+> > > > > > > > +
+> > > > > > > > +	/* In case of a triple fault, cancel the
+> > > > > > > > nested reentry. This may occur
+> > > >=20
+> > > > 	/*
+> > > > 	 * Multi-line comments should look like this.  Blah
+> > > > blah blab blah blah
+> > > > 	 * blah blah blah blah.
+> > > > 	 */
+> > > >=20
+> > > > > > > > +	 * when the RSM instruction fails while
+> > > > > > > > attempting to restore the state
+> > > > > > > > +	 * from SMRAM.
+> > > > > > > > +	 */
+> > > > > > > > +	vmx->nested.nested_run_pending =3D 0;
+> > > >=20
+> > > > Argh.  KVM's handling of SMIs while L2 is active is complete
+> > > > garbage.  As explained
+> > > > by the comment in vmx_enter_smm(), the L2<->SMM transitions
+> > > > should have a completely
+> > > > custom flow and not piggyback/usurp nested VM-Exit/VM-Entry.
+> > > >=20
+> > > > 	/*
+> > > > 	 * TODO: Implement custom flows for forcing the vCPU
+> > > > out/in of L2 on
+> > > > 	 * SMI and RSM.  Using the common VM-Exit + VM-Enter
+> > > > routines is wrong
+> > > > 	 * SMI and RSM only modify state that is saved and
+> > > > restored via SMRAM.
+> > > > 	 * E.g. most MSRs are left untouched, but many are
+> > > > modified by VM-Exit
+> > > > 	 * and VM-Enter, and thus L2's values may be corrupted
+> > > > on SMI+RSM.
+> > > > 	 */
+> > > >=20
+> > > > The Fixes: commit above added a hack on top of the hack.  But
+> > > > it's not entirely
+> > > > clear from the changelog exactly what was being fixed.
+> > > >=20
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0While RSM induced VM entries are not full V=
+M entries,
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0they still need to be followed by actual VM=
+ entry to
+> > > > complete it,
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0unlike setting the nested state.
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0This patch fixes boot of hyperv and SMM ena=
+bled
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0windows VM running nested on KVM, which fai=
+l due
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0to this issue combined with lack of dirty b=
+it setting.
+> > > >=20
+> > > > My first guess would be event injection, but that shouldn't be
+> > > > relevant to RSM.
+> > > > Architecturally, events (SMIs, NMIs, IRQs, etc.) are recognized
+> > > > at instruction
+> > > > boundaries, but except for SMIs (see below), KVM naturally
+> > > > defers injection until
+> > > > an instruction boundary by virtue of delivering events via the
+> > > > VMCS/VMCB, i.e. by
+> > > > waiting to deliver events until successfully re-entering the
+> > > > guest.
+> > > >=20
+> > > > Nested VM-Enter is a special snowflake because KVM needs to
+> > > > finish injecting events
+> > > > from vmcs12 before injecting any synthetic events, i.e.
+> > > > nested_run_pending ensures
+> > > > that KVM wouldn't clobber/override an L2 event coming from L1.
+> > > > In other words,
+> > > > nested_run_pending is much more specific than just needing to
+> > > > wait for an instruction
+> > > > boundary.
+> > > >=20
+> > > > So while the "wait until the CPU is at an instruction boundary"
+> > > > applies to RSM,
+> > > > it's not immediately obvious to me why setting
+> > > > nested_run_pending is necessary.
 
-Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
----
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 35 +++++++++++++++++++++-
- 1 file changed, 34 insertions(+), 1 deletion(-)
+If nested_run_pending is not set, then nested entry can be aborted by
+an event
+(e.g another #SMI, or just an interrupt since after VM entry the
+interrupts are usually enabled,
+and interrupts are intercepted usually).
 
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-index db15b1eade97..5474f242a96e 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-@@ -30,6 +30,32 @@
- #define PREFETCH_DEEP		(3 << PREFETCH_SHIFT)
- #define PREFETCH_SWITCH_GFX	(5 << 3)
+It is even possible for a nested migration to happen right after the
+RSM is executed but before
+actual VMENTER is executed.
 
-+static const struct actlr_config sc7280_apps_actlr_cfg[] = {
-+	{ 0x0800, 0x24e1, PREFETCH_DEFAULT | CMTLB },
-+	{ 0x2000, 0x0163, PREFETCH_DEFAULT | CMTLB },
-+	{ 0x2080, 0x0461, PREFETCH_DEFAULT | CMTLB },
-+	{ 0x2100, 0x0161, PREFETCH_DEFAULT | CMTLB },
-+	{ 0x0900, 0x0407, PREFETCH_SHALLOW | CPRE | CMTLB },
-+	{ 0x2180, 0x0027, PREFETCH_SHALLOW | CPRE | CMTLB },
-+	{ 0x1000, 0x07ff, PREFETCH_DEEP | CPRE | CMTLB },
-+};
-+
-+static const struct actlr_config sc7280_gfx_actlr_cfg[] = {
-+	{ 0x0000, 0x07ff, PREFETCH_SWITCH_GFX | PREFETCH_DEEP | CPRE | CMTLB },
-+};
-+
-+static const struct actlr_variant sc7280_actlr[] = {
-+	{
-+		.io_start = 0x15000000,
-+		.actlrcfg = sc7280_apps_actlr_cfg,
-+		.num_actlrcfg = ARRAY_SIZE(sc7280_apps_actlr_cfg)
-+	}, {
-+		.io_start = 0x03da0000,
-+		.actlrcfg = sc7280_gfx_actlr_cfg,
-+		.num_actlrcfg = ARRAY_SIZE(sc7280_gfx_actlr_cfg)
-+	},
-+};
-+
- static const struct actlr_config sm8550_apps_actlr_cfg[] = {
- 	{ 0x18a0, 0x0000, PREFETCH_SHALLOW | CPRE | CMTLB },
- 	{ 0x18e0, 0x0000, PREFETCH_SHALLOW | CPRE | CMTLB },
-@@ -675,6 +701,13 @@ static const struct qcom_smmu_match_data sdm845_smmu_500_data = {
- 	/* Also no debug configuration. */
- };
+> > > > And setting nested_run_pending *after* calling
+> > > > nested_vmx_enter_non_root_mode()
+> > > > is nasty.  nested_vmx_enter_non_root_mode() and its helpers use
+> > > > nested_run_pending
+> > > > to determine whether or not to enforce various consistency
+> > > > checks and other
+> > > > behaviors.  And a more minor issue is that stat.nested_run will
+> > > > be incorrectly
+> > > > incremented.
+> > > >=20
+> > > > As a stop gap, something like this patch is not awful, though I
+> > > > would strongly
+> > > > prefer to be more precise and not clear it on all triple
+> > > > faults.  We've had KVM
+> > > > bugs where KVM prematurely synthesizes triple fault on an
+> > > > actual nested VM-Enter,
+> > > > and those would be covered up by this fix.
+> > > >=20
+> > > > But due to nested_run_pending being (unnecessarily) buried in
+> > > > vendor structs, it
+> > > > might actually be easier to do a cleaner fix.  E.g. add yet
+> > > > another flag to track
+> > > > that a hardware VM-Enter needs to be completed in order to
+> > > > complete instruction
+> > > > emulation.
+> > > >=20
+> > > > And as alluded to above, there's another bug lurking.  Events
+> > > > that are *emulated*
+> > > > by KVM must not be emulated until KVM knows the vCPU is at an
+> > > > instruction boundary.
+> > > > Specifically, enter_smm() shouldn't be invoked while KVM is in
+> > > > the middle of
+> > > > instruction emulation (even if "emulation" is just setting
+> > > > registers and skipping
+> > > > the instruction).  Theoretically, that could be fixed by
+> > > > honoring the existing
+> > > > at_instruction_boundary flag for SMIs, but that'd be a rather
+> > > > large change and
+> > > > at_instruction_boundary is nowhere near accurate enough to use
+> > > > right now.
+> > > >=20
+> > > > Anyways, before we do anything, I'd like to get Maxim's input
+> > > > on what exactly was
+> > > > addressed by 759cbd59674a.
+> > > >=20
 
-+static const struct qcom_smmu_match_data sc7280_smmu_500_impl0_data = {
-+	.impl = &qcom_smmu_500_impl,
-+	.adreno_impl = &qcom_adreno_smmu_500_impl,
-+	.cfg = &qcom_smmu_impl0_cfg,
-+	.actlrvar = sc7280_actlr,
-+	.num_smmu = ARRAY_SIZE(sc7280_actlr),
-+};
+There is a good explanation in commit 759cbd59674a and
+commit=C2=A0e8efa4ff0037 that comes before it.
 
- static const struct qcom_smmu_match_data sm8550_smmu_500_impl0_data = {
- 	.impl = &qcom_smmu_500_impl,
-@@ -701,7 +734,7 @@ static const struct of_device_id __maybe_unused qcom_smmu_impl_of_match[] = {
- 	{ .compatible = "qcom,qdu1000-smmu-500", .data = &qcom_smmu_500_impl0_data  },
- 	{ .compatible = "qcom,sc7180-smmu-500", .data = &qcom_smmu_500_impl0_data },
- 	{ .compatible = "qcom,sc7180-smmu-v2", .data = &qcom_smmu_v2_data },
--	{ .compatible = "qcom,sc7280-smmu-500", .data = &qcom_smmu_500_impl0_data },
-+	{ .compatible = "qcom,sc7280-smmu-500", .data = &sc7280_smmu_500_impl0_data },
- 	{ .compatible = "qcom,sc8180x-smmu-500", .data = &qcom_smmu_500_impl0_data },
- 	{ .compatible = "qcom,sc8280xp-smmu-500", .data = &qcom_smmu_500_impl0_data },
- 	{ .compatible = "qcom,sdm630-smmu-v2", .data = &qcom_smmu_v2_data },
---
-2.17.1
+In a nutshell, there were two problems that together created
+conditions for the guest boot failure:
+
+1. When a non intercepted #SMI arrives while L2 is running, it's
+almost like a VM exit from L2 to L1, however instead of restoring
+the host state, KVM jumps to the SMI handler in real mode in L1.
+Thus to be able later to run a regular VM exit handler, KVM stores
+the host state (which is present in vmcb01) to HSAVE area and on RSM
+restores it from HSAVE to vmcb01.
+The bug was that KVM wasn't marking vmcb01 as dirty when restoring
+the host state.
+Usually this is not a problem because in this case we resume L2 and
+thus switch to vmcb02.
+
+2. Due to lack of setting the nested_run_pending, the above switch to
+vmcb02 might not complete if there are pending events, which is allowed
+because RSM doesn't have interrupt shadow, thus once we finished
+emulating RSM, we are in the L2 guest and likely with interrupts
+enabled.
+
+If the switch to vmcb02 doesn't complete we end up still running
+with vmcb01 and with lots of fields that were changed but not
+marked as dirty.
+
+Now usually this works because the CPU isn't that agressive in caching
+vmcb fields, but if the whole thing is running nested under KVM,
+then kvm always caches few 'rare' vmcb fields, like the IDTR, so
+we end up with stale IDTR and on next interrupt the guest explodes.
+
+
+PS: this is one of the mails that I forgot to send because I moved to
+Canada recently and was offline for some time due to that.
+
+Best regards,
+ Maxim Levitsky
+
+
 
 
