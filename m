@@ -1,81 +1,87 @@
-Return-Path: <linux-kernel+bounces-34494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A28E1837CF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:22:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94E7A837DD1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:29:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C49C21C24645
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:22:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DA0FB29F66
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:20:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1973615D5A9;
-	Tue, 23 Jan 2024 00:29:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C87B15B114;
+	Tue, 23 Jan 2024 00:29:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="SJQaGBFy"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="LXDP5Rb/"
 Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9753415B995
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:29:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0F0F15AADA
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:29:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705969758; cv=none; b=lMcw+evUHpIPFb/qeGOkAjeDmLhsemvPGQ0k2yjiFEdpKsaAekY9PgCfxVEg4jJrenAhnHVOq5Ru/L7YXdeDv9+rHRYQ/bSY7OfjYO7M87YaFzCsv0qfnKZmfz9eM+Fa+awT1tKS6dtER3uHiIPC418ky6Y4VeaUKhmiXrlOIwQ=
+	t=1705969752; cv=none; b=L3uoUBzFI9iGYAU2Tc8PGx5IZKWV++zmXxE0lmSCn4eiNGcPlu4kZw8rxbMx0MkDJ2vKYOwSf4WT4kSFvgv9N0rT2+aCVu61sG2BZc6hMsVdgB919zIEXz75mC0BU4z442nDCdv7HR7QKfsCB7+0OXrZL73q+m0aXC1edQ3h16k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705969758; c=relaxed/simple;
-	bh=IXC9gHJS+Pnry0+OD6RifuKC5iruziQtcHdroYUu0NY=;
+	s=arc-20240116; t=1705969752; c=relaxed/simple;
+	bh=sfFm968ER0g+7mpUBiy9zsTjSD8V36BGzdg8Ckdsgr4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=GyMSXWnvPXvWwkkWn8e6vDJABi/Tmhc+WVV5TYQiGiIM7jebx013UILFoUrw8BebiHajvGIxZYBC8TxPoR68BDJqQ4i4PMZxnJdVJ3L2m91VSy6k4vaUdBmeQr8s6CDWSKs2FQvdTSg1+POLWmSdnm4dccHvZHVfK6jvXi3CrOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=SJQaGBFy; arc=none smtp.client-ip=209.85.215.177
+	 MIME-Version; b=R2Qwt8VOlDv0BktF5aFvSdEK8+vMEsmMqr7QnrTtnKb7us+WXaAkT0B4H8IzbV0WwzBgC1+dVPWyyHtcE2lzCGoXbpSRMcqfGgnQZR7KKvRw8JVLmme0oQ4fr5ePCxb1CMOozWc/PInPmdTzHoNBiVdfKsbt1Wg9qOESJ/C8vCU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=LXDP5Rb/; arc=none smtp.client-ip=209.85.215.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5cddfe0cb64so1786534a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 16:29:16 -0800 (PST)
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5ceb3fe708eso1718952a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 16:29:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1705969756; x=1706574556; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1705969750; x=1706574550; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4R+UH41sqIFBEg2yHgSz9fASiwRmxO8UrEbFS39w0BY=;
-        b=SJQaGBFyaHQfX8ipErQPchtmgreagwEZD2Ajm7xOsT53ZYHhkdP+g1QHTIkxLJgiGo
-         2c7zlIAoka+I4U6gIDnQCLVsPEgnzUlxaHCCjq+S0sX8Ya4h9UDEd/NGrTAgqv2/cCYt
-         p6o1/RBfIP+SRbcyntIEYmRXiptwsFa5E1AoE=
+        bh=+mLSKitlZEHkOhHFi0dPXu2bMCmR94CcgGqjj67vCaY=;
+        b=LXDP5Rb/nU/4aB5TMuWOFdFA2o4C64ikbJw3TuTi7RptJKH4zfl3RJ/OR31Vgy6uKv
+         ny7OrYLKlFNheIZqyEHQcj5u4uE36ChnU1gK1WdxNj6Q0mnvgw2y9oM62WGuEP/o3ZdX
+         NpzMGzV7/O9BRvleucSJywBcIDGPxUjhW21SY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705969756; x=1706574556;
+        d=1e100.net; s=20230601; t=1705969750; x=1706574550;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4R+UH41sqIFBEg2yHgSz9fASiwRmxO8UrEbFS39w0BY=;
-        b=mbLDaQItpjxy9hmgVP6ICcMk6NTDDhxzAcuKq7R+S8k+fj3EtRfM62xs3EtNJLaMuI
-         yedFdhkSSWXJa02pXnVulhVY1c3O/s2gjHdaWC+4hT4Bm0xR1mLegp8XxVygMZuTKnKm
-         5N8wfqBAKvE7QOeHCwGDjSXQs/esk61Hi0SlXlaGtzp+qR2RxMtqM1N0Fcyb+VP7qI2b
-         11lb8Ul8ylp1B7AD2P6EDT84TaYBe1Uo4Mt73lFMmqNDRZbxCaor7DDEhShIoUTRv1Bz
-         Wtb6+59QEMOCBClbr+wAtVeavOAhU+g5O5BUkkz8n68zWtI1IFhPqUeZ1a4FyUHt7bQG
-         8uiA==
-X-Gm-Message-State: AOJu0Yy8yDVlgCiJT7gKD/7t4Ww+JLZ1B8G/b0yytNOUBv7h+atD4/0r
-	5/z82U5toKDWYBxItlgNH/QvYmH/5hiaFUg/+kxZKfOHOxKPEZtJ9ClPJ7O+Uw==
-X-Google-Smtp-Source: AGHT+IEOQPxBrxeTVknuQ85iWItECd3oDMC0wKeLvQMG9XfT1svGRvJdDWYE3hUC2zG+qCIX3weiSw==
-X-Received: by 2002:a05:6a20:1446:b0:19c:5821:1d6b with SMTP id a6-20020a056a20144600b0019c58211d6bmr373911pzi.71.1705969756091;
-        Mon, 22 Jan 2024 16:29:16 -0800 (PST)
+        bh=+mLSKitlZEHkOhHFi0dPXu2bMCmR94CcgGqjj67vCaY=;
+        b=wjutT3GBQppx49m5Dn8NpBoabugRKe5z0GtuLDLu++NTesxan/zj3QCrIitRsegEI+
+         hoxOZE3kionIWaz1zI4TZ8bk0ByPQZe9f7vxY02BehcTcHWkaA16WrX4ktgHnIZ41rEI
+         u/yceoP8EF/CX9cuB+k3ZYY7S2KVwnA1AIRskqbPnVACKIoHnooadd2wcukQMaSBDiL+
+         BIBbwjoPMtNSCr32TNpJFjQFYp+xX/IA9U2DMEEJ2mPIUhU6OvMfwy40VPXXyxvMm2DG
+         gQ12nb+Nubjms0GWpsSh0oPSwqgcirERQDFe2XfO8otvPhsXDTFqlyBbGJpiJj4cmOtl
+         5ABA==
+X-Gm-Message-State: AOJu0YwMjGbMEXmkXLV/lGZtp7pEh9PcO2ZrSRmOUGy+VdiCpXCTpxKX
+	txgot6uIlxXHf1v/MLoBuM2EFYMOLQJsnvoIL/mMsSlD6NRRRN2EgRkHEiWrqg==
+X-Google-Smtp-Source: AGHT+IGrY9MQG0ft34pGrqx+WgVWJ0LldxehDkYnLe9iXGm0anLbICr1j+vq5RPEd47+Q6ZueeEblA==
+X-Received: by 2002:a17:902:b112:b0:1d7:56c3:75f1 with SMTP id q18-20020a170902b11200b001d756c375f1mr1421910plr.122.1705969750268;
+        Mon, 22 Jan 2024 16:29:10 -0800 (PST)
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id s2-20020a17090302c200b001d707987ce3sm7513949plk.194.2024.01.22.16.29.00
+        by smtp.gmail.com with ESMTPSA id e2-20020a170902f1c200b001d7313140b1sm4196654plc.202.2024.01.22.16.29.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 22 Jan 2024 16:29:08 -0800 (PST)
 From: Kees Cook <keescook@chromium.org>
 To: linux-hardening@vger.kernel.org
 Cc: Kees Cook <keescook@chromium.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Shuah Khan <shuah@kernel.org>,
-	linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	Florian Westphal <fw@strlen.de>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
+	netdev@vger.kernel.org,
 	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
 	Bill Wendling <morbo@google.com>,
 	Justin Stitt <justinstitt@google.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 63/82] mm: Refactor intentional wrap-around test
-Date: Mon, 22 Jan 2024 16:27:38 -0800
-Message-Id: <20240123002814.1396804-63-keescook@chromium.org>
+Subject: [PATCH 64/82] netfilter: Refactor intentional wrap-around test
+Date: Mon, 22 Jan 2024 16:27:39 -0800
+Message-Id: <20240123002814.1396804-64-keescook@chromium.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240122235208.work.748-kees@kernel.org>
 References: <20240122235208.work.748-kees@kernel.org>
@@ -85,19 +91,19 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4403; i=keescook@chromium.org;
- h=from:subject; bh=IXC9gHJS+Pnry0+OD6RifuKC5iruziQtcHdroYUu0NY=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlrwgKGl7sIklkp9DpywnYDLBMy17rUJMlBDpuZ
- IF1ZnQBhjmJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZa8ICgAKCRCJcvTf3G3A
- JiG2D/9PRn4Y/k1W4IyELDW0vMaP8RPiiJfMCcL4ThXwWsfGmaqGLqfV1zQEvJXDHSGEjV3qA6f
- 1QWoI9IwuKjfA6OfO0JlksQZDvV/d4C1mTWzdQrRY2/LthSJBzsCK5VbReL0TpTAcFMajuY0JUk
- y79Nm7lQVGIPVT5kz9GE4HegEGGPsCk202fOQjGOid1P2FXfyctaxE7AC8A1oTmzBr7B6go6pES
- ZTzR/Z2fyNRTV4EbHBr9C3U447jLgO+uGVXj5FYunn/XaHZoFkbicu5CWTluotmM8My6vrUQc+R
- OVe3VQn2KHnuQsPPgENWLrMitHmaACD3nc3KGOQ5Nq6c9iVKKDGGSDopVfAm0cnC4JZNZssedWq
- QpeBszRZxgPbM6k0GMuCe73qgQg1GJuz4XqNNsDbrPNFJfH5ZXInUZt7+xx3wQ05371PA60Z8t0
- tmCrWOgNSP9F1389si16h87Pzo/PvgvSF70Hbml6OUR4kU8xvA5OMHvggCQlwJG4zIykjLq9Ggu
- inHAl1IReCphEG4kev2pugmVlUlmGGkFAeg2uA4m/PbIKGl61suJep0mr5S3biRpHUZh/FVpWS0
- dBLSKvx/lkw1jpHcmaLhj8srWr/oF+71hPZ7pLlb7R43ZReS0qw78SWDbOAttKIb6nPhBw9l//1 jTPSgii2rrZymlQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2183; i=keescook@chromium.org;
+ h=from:subject; bh=sfFm968ER0g+7mpUBiy9zsTjSD8V36BGzdg8Ckdsgr4=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlrwgKYkU8DxU6eHYCBe6vz1zpyDMyVzXW4j2c/
+ 6DTcxcBaQmJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZa8ICgAKCRCJcvTf3G3A
+ Jp+AD/46wcCh8Srst3UxH7Lyw5MG3LkRtUVrmbc4rNc6HLYVkN5hxDPTfR5v6ZnbYvrcY3DfFpt
+ 9WMJVlg/jp44Mqk4QAkWuEYAizZjTv5lwBrLJOeC0uq3FiRv7sFMT0ulGhCS+VYVkHlA7XB7vR1
+ MmG7M2/24UnH0N9fZ+7JPMVUY+pYnS9hlrpgB4se6e1XatYdKRe2/iEGCIksdXmXkaoRwEhS4OD
+ 7E6W9aO9/1ZcsdkripFuDU6Y3ZnXOZs6n6L5M3IJPMlx9UyB8ALK41BlHPkbDbifHKGXVNmhOwb
+ HmzFCqfvx56BB+0Wh3YImRj5SPxxhVIOXJLg2SL9AnxsfGlenBYt4PsP/nINeqRoK4SriXQ1ZVx
+ A8F9g7q/0fYbNlWOGnAaB+L070tVt1AO03SkXcHssyCHMj67illZ5F11k6WXyTTH/TBv56WLUbL
+ sqDjoJJaIFkU07SIQBRNMf/0pn2aDjru0143ldKfWm6UgeWUDGzBPLBuB7yCSzZTpYK7QjmIOux
+ jZNgE79r+yrBg6Cn7T5tXCBAkoRDVLME8tHidPdZGNKe0EAfi4WXXvVEwHeYboA8DPbIal0fKFl
+ 48oFeI2TLeS8cWHi576qMGc07tAXDixqU5ocHqyWj62iBwljid0v9hV7SpV2DTd13zjC96ftjzq sT9zNmIYvbNtyUg==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 
@@ -122,102 +128,39 @@ Link: https://git.kernel.org/linus/68df3755e383e6fecf2354a67b08f92f18536594 [1]
 Link: https://github.com/KSPP/linux/issues/26 [2]
 Link: https://github.com/KSPP/linux/issues/27 [3]
 Link: https://github.com/KSPP/linux/issues/344 [4]
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: linux-mm@kvack.org
-Cc: linux-kselftest@vger.kernel.org
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Jozsef Kadlecsik <kadlec@netfilter.org>
+Cc: Florian Westphal <fw@strlen.de>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: netfilter-devel@vger.kernel.org
+Cc: coreteam@netfilter.org
+Cc: netdev@vger.kernel.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- mm/memory.c | 4 ++--
- mm/mmap.c   | 2 +-
- mm/mremap.c | 2 +-
- mm/nommu.c  | 4 ++--
- mm/util.c   | 2 +-
- 5 files changed, 7 insertions(+), 7 deletions(-)
+ net/netfilter/xt_u32.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/mm/memory.c b/mm/memory.c
-index 7e1f4849463a..d47acdff7af3 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -2559,7 +2559,7 @@ int vm_iomap_memory(struct vm_area_struct *vma, phys_addr_t start, unsigned long
- 	unsigned long vm_len, pfn, pages;
+diff --git a/net/netfilter/xt_u32.c b/net/netfilter/xt_u32.c
+index 117d4615d668..8623fe2d97e9 100644
+--- a/net/netfilter/xt_u32.c
++++ b/net/netfilter/xt_u32.c
+@@ -58,11 +58,11 @@ static bool u32_match_it(const struct xt_u32 *data,
+ 				val >>= number;
+ 				break;
+ 			case XT_U32_AT:
+-				if (at + val < at)
++				if (add_would_overflow(at, val))
+ 					return false;
+ 				at += val;
+ 				pos = number;
+-				if (at + 4 < at || skb->len < at + 4 ||
++				if (add_would_overflow(at, 4) || skb->len < at + 4 ||
+ 				    pos > skb->len - at - 4)
+ 					return false;
  
- 	/* Check that the physical memory area passed in looks valid */
--	if (start + len < start)
-+	if (add_would_overflow(start, len))
- 		return -EINVAL;
- 	/*
- 	 * You *really* shouldn't map things that aren't page-aligned,
-@@ -2569,7 +2569,7 @@ int vm_iomap_memory(struct vm_area_struct *vma, phys_addr_t start, unsigned long
- 	len += start & ~PAGE_MASK;
- 	pfn = start >> PAGE_SHIFT;
- 	pages = (len + ~PAGE_MASK) >> PAGE_SHIFT;
--	if (pfn + pages < pfn)
-+	if (add_would_overflow(pfn, pages))
- 		return -EINVAL;
- 
- 	/* We start the mapping 'vm_pgoff' pages into the area */
-diff --git a/mm/mmap.c b/mm/mmap.c
-index b78e83d351d2..16501fcaf511 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -3023,7 +3023,7 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, start, unsigned long, size,
- 		return ret;
- 
- 	/* Does pgoff wrap? */
--	if (pgoff + (size >> PAGE_SHIFT) < pgoff)
-+	if (add_would_overflow(pgoff, (size >> PAGE_SHIFT)))
- 		return ret;
- 
- 	if (mmap_write_lock_killable(mm))
-diff --git a/mm/mremap.c b/mm/mremap.c
-index 38d98465f3d8..efa27019a05d 100644
---- a/mm/mremap.c
-+++ b/mm/mremap.c
-@@ -848,7 +848,7 @@ static struct vm_area_struct *vma_to_resize(unsigned long addr,
- 	/* Need to be careful about a growing mapping */
- 	pgoff = (addr - vma->vm_start) >> PAGE_SHIFT;
- 	pgoff += vma->vm_pgoff;
--	if (pgoff + (new_len >> PAGE_SHIFT) < pgoff)
-+	if (add_would_overflow(pgoff, (new_len >> PAGE_SHIFT)))
- 		return ERR_PTR(-EINVAL);
- 
- 	if (vma->vm_flags & (VM_DONTEXPAND | VM_PFNMAP))
-diff --git a/mm/nommu.c b/mm/nommu.c
-index b6dc558d3144..299bcfe19eed 100644
---- a/mm/nommu.c
-+++ b/mm/nommu.c
-@@ -202,7 +202,7 @@ EXPORT_SYMBOL(vmalloc_to_pfn);
- long vread_iter(struct iov_iter *iter, const char *addr, size_t count)
- {
- 	/* Don't allow overflow */
--	if ((unsigned long) addr + count < count)
-+	if (add_would_overflow(count, (unsigned long)addr))
- 		count = -(unsigned long) addr;
- 
- 	return copy_to_iter(addr, count, iter);
-@@ -1705,7 +1705,7 @@ int access_process_vm(struct task_struct *tsk, unsigned long addr, void *buf, in
- {
- 	struct mm_struct *mm;
- 
--	if (addr + len < addr)
-+	if (add_would_overflow(addr, len))
- 		return 0;
- 
- 	mm = get_task_mm(tsk);
-diff --git a/mm/util.c b/mm/util.c
-index 5a6a9802583b..e6beeb23b48b 100644
---- a/mm/util.c
-+++ b/mm/util.c
-@@ -567,7 +567,7 @@ unsigned long vm_mmap(struct file *file, unsigned long addr,
- 	unsigned long len, unsigned long prot,
- 	unsigned long flag, unsigned long offset)
- {
--	if (unlikely(offset + PAGE_ALIGN(len) < offset))
-+	if (unlikely(add_would_overflow(offset, PAGE_ALIGN(len))))
- 		return -EINVAL;
- 	if (unlikely(offset_in_page(offset)))
- 		return -EINVAL;
 -- 
 2.34.1
 
