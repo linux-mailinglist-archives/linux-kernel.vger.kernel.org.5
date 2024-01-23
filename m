@@ -1,192 +1,144 @@
-Return-Path: <linux-kernel+bounces-36160-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36162-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51486839C8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 23:53:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 840A5839C93
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 23:53:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BEAB71F27616
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 22:52:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6D531C22F51
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 22:53:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C2AB57877;
-	Tue, 23 Jan 2024 22:51:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26F6B54663;
+	Tue, 23 Jan 2024 22:52:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=seco.com header.i=@seco.com header.b="S/66t+jD";
-	dkim=pass (2048-bit key) header.d=seco.com header.i=@seco.com header.b="S/66t+jD"
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2083.outbound.protection.outlook.com [40.107.6.83])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="C0NzgG/D"
+Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE7645579C;
-	Tue, 23 Jan 2024 22:51:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.83
-ARC-Seal:i=3; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706050311; cv=fail; b=K7/2Rci1fJGCZND2VMn9GVFjYBHHP7j6KCG0zTEqP7O9A+DqsRLVLHtj3DBSzkJttY9pd9lOoCAYPz9+AdEgjDuMw4CflI/jvlcH9BDI7TgNiImX5DxcRzDgi1ihkb5xlMP7U7InLlkyN89INyeg0c7ZepQLd9ZA0YX5ZdMUtGE=
-ARC-Message-Signature:i=3; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706050311; c=relaxed/simple;
-	bh=bBFNxyKCqMbbqEC3lQqJ7YpRcDP93E+zGlTTHc6lDWc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=sWQlTq/urp5h1aUntj7G6u+1hmUEWtx5RiIMyTmzD3+oBtaozR6G53ATkVaE6N+l1yNoIHHdE5Jy8nlgiQNBbM37zvb+RzGX29RDlPccROQ+ts9fcrcFTAbVq24/gMzLhAUYSll5Q9mp54rzHTbAsyi9jU7nIy7EJ+62AiomfYc=
-ARC-Authentication-Results:i=3; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=seco.com; spf=pass smtp.mailfrom=seco.com; dkim=pass (2048-bit key) header.d=seco.com header.i=@seco.com header.b=S/66t+jD; dkim=pass (2048-bit key) header.d=seco.com header.i=@seco.com header.b=S/66t+jD; arc=fail smtp.client-ip=40.107.6.83
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=seco.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=seco.com
-ARC-Seal: i=2; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=pass;
- b=Fzf56AtHV3LcVSlrjVXPysQMMKOdBr+QJiOtPPjBGwV0Z9oSwVQOJ5K5i5+vvlZa1MXhD2bvuRcAykhHwnznzcnXE6fXEVZU3A+KNxhI71AyPBEE55obpYPA6FbsL7o0yQtsuWpFHmK0bBy1lXJCVrVaJk1BbF092R604mKQLvvZQydQF2Ok+Wpdva1VZMPdK/D9fzmxgpXr27iHCTBjbh82itEJETnoXAs3rBlB3kHMNVrBVnbGQaBsZ4swFIqdzQ4oq/ZB3G9l4R3n4jKxM/gRA/7Kru6d2k1CVLv990qIOSuXTSW5x/YFWnzyWkje5qMJrEzswMunGxqAD/+eZg==
-ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=q8sybV/71v3h0YGhOB/V1pRtcF6A37dYKfB0RiFZMNY=;
- b=FCA91st7k2ilBGipZeYpSvbVzYJAAn3Z/baEZDhLnIkzUt9Qo9NUXZ6Wvaq56zpCqiOmOF9msYza8BHonnqqI3d1bE1AkD9TC9s4XKM8uwFuGlJ4mldYdcjL1OZEQubTpIfnOVE3lqAnkR6mEeo/L+7Lj4t9RpwYRyZ7gRItG0HvrmQSzVfhAsRR0SfCJZYU9tRgy+dfwlRkkNg9iT6RuQI4YhTyKdqLnysTbfHWRuu1zIEDxFAqW6Qm/zZKKFIPHaDXGzcOcxXOPOJQ1zDbQqN+oR6drmVo1QEWVjzvhVYpu9ZMiILZhFlSsAqIBLgF88fmTkjz45hkbsg9cO3A9w==
-ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=pass (sender ip is
- 20.160.56.85) smtp.rcpttodomain=free.fr smtp.mailfrom=seco.com; dmarc=pass
- (p=reject sp=reject pct=100) action=none header.from=seco.com; dkim=pass
- (signature was verified) header.d=seco.com; arc=pass (0 oda=1 ltdi=1
- spf=[1,1,smtp.mailfrom=seco.com] dkim=[1,1,header.d=seco.com]
- dmarc=[1,1,header.from=seco.com])
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seco.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=q8sybV/71v3h0YGhOB/V1pRtcF6A37dYKfB0RiFZMNY=;
- b=S/66t+jDjch9O7FuSTeA4PPGC6S70crhSZkCic52TqpOTuqE26CQstqfwZgf15xwj9GiIECHMYml7u4hDrDOEiypuKp2UKVh5LKovMxbVqS+ZJqTdE1QJq8vV0aSlokqlBCNU7T9d6rAO7/ui6FZenUWYdT6JABRYxfxf3KIaaRfnLRPGE1QUAxYL6c+IXoBSiJEeo3s9NSdM1eyxK0OJHdExbaROqP0B1BEMLTNazHUJMKeX047uOMoTBjMeabh0ql6rArtB8YE9xUgE9x2uZOnOGj9dgczA8hQCzI5z+K200apYLtklAtJxds03n9oCZYmkjCM4LuiJHfpBxU2pw==
-Received: from AM0PR02CA0200.eurprd02.prod.outlook.com (2603:10a6:20b:28f::7)
- by VI1PR03MB10158.eurprd03.prod.outlook.com (2603:10a6:800:1c9::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.37; Tue, 23 Jan
- 2024 22:51:45 +0000
-Received: from VI1EUR05FT021.eop-eur05.prod.protection.outlook.com
- (2603:10a6:20b:28f:cafe::bc) by AM0PR02CA0200.outlook.office365.com
- (2603:10a6:20b:28f::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.37 via Frontend
- Transport; Tue, 23 Jan 2024 22:51:44 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 20.160.56.85)
- smtp.mailfrom=seco.com; dkim=pass (signature was verified)
- header.d=seco.com;dmarc=pass action=none header.from=seco.com;
-Received-SPF: Pass (protection.outlook.com: domain of seco.com designates
- 20.160.56.85 as permitted sender) receiver=protection.outlook.com;
- client-ip=20.160.56.85; helo=repost-eu.tmcas.trendmicro.com; pr=C
-Received: from repost-eu.tmcas.trendmicro.com (20.160.56.85) by
- VI1EUR05FT021.mail.protection.outlook.com (10.233.243.28) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7228.20 via Frontend Transport; Tue, 23 Jan 2024 22:51:44 +0000
-Received: from outmta (unknown [192.168.82.132])
-	by repost-eu.tmcas.trendmicro.com (Trend Micro CAS) with ESMTP id 4359320083980;
-	Tue, 23 Jan 2024 22:51:44 +0000 (UTC)
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (unknown [104.47.17.168])
-	by repre.tmcas.trendmicro.com (Trend Micro CAS) with ESMTPS id 0BB1A2008006E;
-	Tue, 23 Jan 2024 22:51:41 +0000 (UTC)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SiibGJKqFUQeWSx4ApiE5zFsSNuLdiZ2W3zGF1dTb8AzMShfyTVINE5ZhGVGflEV2b9GMra4O8Mg9MbtOTEQR/MzmBpb6B5a1SvPYbuWWMUg1c4XaYkReQo1Y0s9EsIR4au351edhPmTtdnaEXMXlnBrCco89jcqquThHFr32Ti7547H0Kf+MtrZwFN1a8ZI0U2PAERARlQzZRwS/yPXlluS503B/yNWOz/p8sSayAsUVHUaMz+D8+chSh2qDQWweyOXqle5SYoqJZyO0TKLA6pYh6M6Umlzv8P3H4Nt/sdYXsCo0BbWcJTaONCvf8VKoJHze72iwaDpAW5+vskHTg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=q8sybV/71v3h0YGhOB/V1pRtcF6A37dYKfB0RiFZMNY=;
- b=EmkPBTi61wv8XKZ4HpxOAKYRabu2vfEWsNvh+RnAF834G/9QAHyvq5RWPxpKWyQZQ5MAUntwPOfvk+5ZLp21fe42Tzieu8OqCzpg5oPkj4WSpyyeHpLaNtWLwUKtZh5rfayTrU+21aghwYHWg05sO/nBX3Kyi5znDAdn1yEetG56COiWw//RNG7DLYtD8WO8/A8ECuGLpIaZArBsjoyy5t8PzWNsX85Lco66GVza8vNXqNC4GZK7NDV4agOwTYLrdv7K5/u6q8tOpZfm4ku8uvMuff9mqYCZIRLSVmBZx5SIgTYYfnpFPQBh8z2McS/DeA0Y7umPqj2TmOvMY/bBWA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=seco.com; dmarc=pass action=none header.from=seco.com;
- dkim=pass header.d=seco.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seco.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=q8sybV/71v3h0YGhOB/V1pRtcF6A37dYKfB0RiFZMNY=;
- b=S/66t+jDjch9O7FuSTeA4PPGC6S70crhSZkCic52TqpOTuqE26CQstqfwZgf15xwj9GiIECHMYml7u4hDrDOEiypuKp2UKVh5LKovMxbVqS+ZJqTdE1QJq8vV0aSlokqlBCNU7T9d6rAO7/ui6FZenUWYdT6JABRYxfxf3KIaaRfnLRPGE1QUAxYL6c+IXoBSiJEeo3s9NSdM1eyxK0OJHdExbaROqP0B1BEMLTNazHUJMKeX047uOMoTBjMeabh0ql6rArtB8YE9xUgE9x2uZOnOGj9dgczA8hQCzI5z+K200apYLtklAtJxds03n9oCZYmkjCM4LuiJHfpBxU2pw==
-Authentication-Results-Original: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=seco.com;
-Received: from DB9PR03MB8847.eurprd03.prod.outlook.com (2603:10a6:10:3dd::13)
- by AS2PR03MB9792.eurprd03.prod.outlook.com (2603:10a6:20b:608::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.37; Tue, 23 Jan
- 2024 22:51:39 +0000
-Received: from DB9PR03MB8847.eurprd03.prod.outlook.com
- ([fe80::ec0a:c3a4:c8f9:9f84]) by DB9PR03MB8847.eurprd03.prod.outlook.com
- ([fe80::ec0a:c3a4:c8f9:9f84%7]) with mapi id 15.20.7202.031; Tue, 23 Jan 2024
- 22:51:39 +0000
-From: Sean Anderson <sean.anderson@seco.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-usb@vger.kernel.org
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
-	Felipe Balbi <balbi@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Mike Looijmans <mike.looijmans@topic.nl>,
-	Jules Maselbas <jmaselbas@kalray.eu>,
-	linux-kernel@vger.kernel.org,
-	Sean Anderson <sean.anderson@seco.com>
-Subject: [PATCH v3 4/4] usb: phy: generic: Disable vbus on removal
-Date: Tue, 23 Jan 2024 17:51:11 -0500
-Message-Id: <20240123225111.1629405-5-sean.anderson@seco.com>
-X-Mailer: git-send-email 2.35.1.1320.gc452695387.dirty
-In-Reply-To: <20240123225111.1629405-1-sean.anderson@seco.com>
-References: <20240123225111.1629405-1-sean.anderson@seco.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BL0PR0102CA0069.prod.exchangelabs.com
- (2603:10b6:208:25::46) To DB9PR03MB8847.eurprd03.prod.outlook.com
- (2603:10a6:10:3dd::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7D5D2C1B3
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 22:52:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.43
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706050355; cv=none; b=f1COlWA8X8L7BkUPbuINQ8Q6XINeATRXpqvGyOPnSizWohknGV77SVB+UAdjnTKekNHkxI0fJ7qy3fwaL08wWNSjoFE1Z7WU8mYU2yIteSNUpiSSji3gxX9fpDGnUr/ZwYl0Du28DWVUgakN4iRDIsMzN0p+SyRUL5TTtIdtLDY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706050355; c=relaxed/simple;
+	bh=cM1u6TyGETJjhtJrO6J7JSwAWml7G37TEKeViMrmnfg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=quOnSYLsFnGFPrVJC6Ej9/moOC8uqHpRB2at/VG4kObRlS7Y/nz0ZHRUJ6pUZrm6zjVymSml/BpLQ0ebWm9Ji3gAf4+vpdhUczTUoNMJkQX+FfWsEqJuDpW6MoAu10bi4QA33RrrgNl2PK5nJ19ErhB3UW9/8hGWQwz8RaFcXIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=C0NzgG/D; arc=none smtp.client-ip=209.85.161.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-59612e4a21eso1888528eaf.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 14:52:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706050353; x=1706655153; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+8OzyRNimHg6MWBPPPferJ7a6OpiMFAs+H+g4XMLgls=;
+        b=C0NzgG/Dtgm+JZP1sZbWdF2MiEiKlGVX+chQ+apBliQQPqDWONqY4GsZUHsOZ/l4Tn
+         VefDp4FH0thNeBBWbqtlKuOcCaOLGBwYxYIk+IpCz8DDHVTD3a2GUMX7ciLC3Uo+Wj7K
+         h3otUX+cogjgJNcr3/aviv5gOGCdMxmi2JtKI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706050353; x=1706655153;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+8OzyRNimHg6MWBPPPferJ7a6OpiMFAs+H+g4XMLgls=;
+        b=CnMBPUdVtwy/BaauXAXiGqMAif4/7kaBQdjiRAJv/lOOJPdbTbrP+2QzSi3YoBeWRz
+         4u2EJ8NbbFgwgYXguHS+9PU1J0LQf1LaGVK+7VTMUlu1HZpAmXSgKX/jbUOXF9LsCMFD
+         aBfo1LxnF3yGCjuU14/JlE32nRcyTXZOaIRM7sQhalkdx/LogKblwZAxR1Qj/hUlo+du
+         1Z2sgorlamkoiN6EYOHA5V1/Sut/hZnSePrd3waD7xocrAg6RcfoyghMGGmboWn+fjtH
+         zGadcAzsyADoqNRHTU0MTxRoiLB/e4OEmPI3AaWm28eqkbqLItkpfG2ulgTL1FYf71TX
+         TZuQ==
+X-Gm-Message-State: AOJu0YzmyqLSieu8m1nsEybhnqNh+A2aytN+n5B1X0ZIN/nb2tA3j/Et
+	EATMy+kiZiigpd8XknxFyFE0+DhWcVrfhKMr+8l/N1Ko8TgXKkr8DgYWr5tYftIhF3dqJ8otX7L
+	r2Q==
+X-Google-Smtp-Source: AGHT+IHDl/6I1rG7FFOH5TLpxkcvik0AXWrRwPOVODwTcq5RC8mUYxoyhnLKMEDwXanwWecFPslILA==
+X-Received: by 2002:a05:6358:7e49:b0:176:3715:3c32 with SMTP id p9-20020a0563587e4900b0017637153c32mr3147609rwm.3.1706050353056;
+        Tue, 23 Jan 2024 14:52:33 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id e33-20020a631e21000000b005d0796e779bsm2079685pge.12.2024.01.23.14.52.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jan 2024 14:52:32 -0800 (PST)
+Date: Tue, 23 Jan 2024 14:52:31 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Kalle Valo <kvalo@kernel.org>
+Cc: linux-hardening@vger.kernel.org,
+	Johannes Berg <johannes.berg@intel.com>,
+	Max Chen <mxchen@codeaurora.org>, Yang Shen <shenyang39@huawei.com>,
+	linux-wireless@vger.kernel.org,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 41/82] wil6210: Refactor intentional wrap-around test
+Message-ID: <202401231452.2A37D157C@keescook>
+References: <20240123002814.1396804-41-keescook@chromium.org>
+ <170601063238.3962299.12030024839048269322.kvalo@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-TrafficTypeDiagnostic:
-	DB9PR03MB8847:EE_|AS2PR03MB9792:EE_|VI1EUR05FT021:EE_|VI1PR03MB10158:EE_
-X-MS-Office365-Filtering-Correlation-Id: e1505d66-841c-434e-bfd6-08dc1c65df7c
-X-TrendMicro-CAS-OUT-LOOP-IDENTIFIER: 656f966764b7fb185830381c646b41a1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam-Untrusted: BCL:0;
-X-Microsoft-Antispam-Message-Info-Original:
- jeiQAm9Cw22zxl4morB+b3v6v2pYKm4QDWgqKfM0JCj6JRdfdDirgzb1iBkWq4gaeYH44wMaiR4hpY49Bx95xGTD8EgjKrulqXlnBMqCRV5l7+5GQpDVlDbXJRaGOMR8U+RU5ofEyqqCHNwBptNtn4w6TZkhd4baELQRcWQM4JepQl0v7gvSlbzr4CqwYMorGW6ixdtJZwLvQHRWJEGmdTXVuRkq6haSaWDw/r0cByDijF6QyVTxDMydZsDA/VdWbfI4DKvbPJJbSLtqzPGA1cnRQaQWua524TyphvMc7hlGNO9flycYxZXK/7ds2HyO9m9y6i3Gzthfi37MzQ6K0Uu8R5Rktpd8okAj79hgkoIglfVhBDnQXLelsS9f6Tu8fKMaAbfUgMzxu4s/3w1yG53uumCl4hdFVfjOE+f2tmCooYFLRF3C/S/CLdDT/Lk9VcGfMkqBDi723meMbkDdUQhzXDspNfthwyGwEnIhNFNnoK8gm/xzbTaHgQR/bB+I/2AZmUyWZ2ksTNgkamocUnBcTWHiKSGB4Ak8fof+V4ZlmiO8ZSv1fkGnwZF0TAy77scJs+z5GvGWjlSPyowb5T65R4iy7kBNNkRHwJrowBcYtn1PBnfUjO/M/Pn/LQbb8ud1hR1MwzIavA17hhCVrMnVpJL/ay7wGg/UIRNAL48=
-X-Forefront-Antispam-Report-Untrusted:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR03MB8847.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39850400004)(366004)(376002)(136003)(346002)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(6666004)(38350700005)(66556008)(86362001)(66476007)(54906003)(107886003)(316002)(36756003)(2616005)(41300700001)(66946007)(6512007)(52116002)(4326008)(8936002)(38100700002)(1076003)(26005)(8676002)(2906002)(4744005)(5660300002)(6506007)(44832011)(478600001)(6486002)(41533002)(41080700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR03MB9792
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped:
- VI1EUR05FT021.eop-eur05.prod.protection.outlook.com
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id-Prvs:
-	7cb7f4ee-d894-43d0-87ce-08dc1c65dc5f
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	NnWS9/ePXecFS9sRobzscrObhZnwx2gU36/+KanCQOVyGedAShvDjGeo+QWPjL+s/GlUXnxshHn5Os1y9zjpjyfxQqpm2DVdnRuAFuTb63A7w6V/TbLlAeWL5X0RlazFl06coNQ1Y5duO6mo3n8rYAbrwFOVi+9sA2T2Beui5jUFvTWaxiCLRWXGh7DBfjbE/oo6B+0lTK8NXvbcHRvw6sm9X5j0mwn/YzXLQrYcpRS+6cDw2Inj6pinBhJoeAiuponTDLYLiF5CRYSW30GdNvN8PK2kucGkZCmmYdxKYkfKOmUckiINNgbuiNOSFX5lMWsfKE6KYk8jfpvEPzjhJRACyfu3h3L/Cpq0motVHkS60Nu3Qvd3Q7zRCDRvLFxykf3NsfyTTJFPmm+4+4IZFj3VChEy0C+j9ujOBkpjiD03F3QIB4FY/5GuKc4yk15ZkLlib/YKzjTItOplpx2a49AUmNsHqwGTAAFxURSfFO/3oa9IyAij5dVpfs9PDTHKG6HK9RCW+7/EvYw4D2AYzqunHJxfuR7FqxEYNHI/TJeXmQwinkaMBDAtu4yIfqCTjV732j8evd58h1JbQaB2yD637e+xT1got7R77p0vd5ne83NyUFKGOu1uQSCvVoGCTYu3gk7+burjv7GMpKgemtpbV4hLpbGo5eW0STgZSisCgJtG8gWFqR+B3HfH08sJNoQlnJOGWcMkoR+CzsuMCWIdjAzztf3UlSucdm0D0jfQabTWIXxRN0H3RfJlmRxbajdnBLd6i4gkKV6h0lVKlw4iCZlWipAOXybbd/QMa5g=
-X-Forefront-Antispam-Report:
-	CIP:20.160.56.85;CTRY:NL;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:repost-eu.tmcas.trendmicro.com;PTR:repost-eu.tmcas.trendmicro.com;CAT:NONE;SFS:(13230031)(39850400004)(396003)(136003)(346002)(376002)(230922051799003)(1800799012)(82310400011)(186009)(451199024)(64100799003)(36840700001)(46966006)(40480700001)(2616005)(5660300002)(1076003)(8676002)(6486002)(4326008)(336012)(6512007)(44832011)(8936002)(47076005)(316002)(6666004)(6506007)(54906003)(70206006)(70586007)(478600001)(26005)(107886003)(34070700002)(36860700001)(356005)(7636003)(82740400003)(7596003)(4744005)(2906002)(36756003)(41300700001)(86362001)(41533002)(41080700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: seco.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jan 2024 22:51:44.5755
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e1505d66-841c-434e-bfd6-08dc1c65df7c
-X-MS-Exchange-CrossTenant-Id: bebe97c3-6438-442e-ade3-ff17aa50e733
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=bebe97c3-6438-442e-ade3-ff17aa50e733;Ip=[20.160.56.85];Helo=[repost-eu.tmcas.trendmicro.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	VI1EUR05FT021.eop-eur05.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR03MB10158
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <170601063238.3962299.12030024839048269322.kvalo@kernel.org>
 
-If we enabled vbus, we need to balance that with a disable.
+On Tue, Jan 23, 2024 at 11:50:34AM +0000, Kalle Valo wrote:
+> Kees Cook <keescook@chromium.org> wrote:
+> 
+> > In an effort to separate intentional arithmetic wrap-around from
+> > unexpected wrap-around, we need to refactor places that depend on this
+> > kind of math. One of the most common code patterns of this is:
+> > 
+> > 	VAR + value < VAR
+> > 
+> > Notably, this is considered "undefined behavior" for signed and pointer
+> > types, which the kernel works around by using the -fno-strict-overflow
+> > option in the build[1] (which used to just be -fwrapv). Regardless, we
+> > want to get the kernel source to the position where we can meaningfully
+> > instrument arithmetic wrap-around conditions and catch them when they
+> > are unexpected, regardless of whether they are signed[2], unsigned[3],
+> > or pointer[4] types.
+> > 
+> > Refactor open-coded wrap-around addition test to use add_would_overflow().
+> > This paves the way to enabling the wrap-around sanitizers in the future.
+> > 
+> > Link: https://git.kernel.org/linus/68df3755e383e6fecf2354a67b08f92f18536594 [1]
+> > Link: https://github.com/KSPP/linux/issues/26 [2]
+> > Link: https://github.com/KSPP/linux/issues/27 [3]
+> > Link: https://github.com/KSPP/linux/issues/344 [4]
+> > Cc: Kalle Valo <kvalo@kernel.org>
+> > Cc: Johannes Berg <johannes.berg@intel.com>
+> > Cc: Max Chen <mxchen@codeaurora.org>
+> > Cc: Yang Shen <shenyang39@huawei.com>
+> > Cc: linux-wireless@vger.kernel.org
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > Acked-by: Kalle Valo <kvalo@kernel.org>
+> 
+> If you can edit before commit please add "wifi:" prefix to the wireless patches:
+> 
+> ERROR: 'wifi:' prefix missing: '[PATCH 41/82] wil6210: Refactor intentional wrap-around test'
+> ERROR: 'wifi:' prefix missing: '[PATCH 62/82] mwifiex: pcie: Refactor intentional wrap-around test'
 
-Signed-off-by: Sean Anderson <sean.anderson@seco.com>
----
+Ah yes, thank you! I will adjust them.
 
-(no changes since v1)
+-Kees
 
- drivers/usb/phy/phy-generic.c | 3 +++
- 1 file changed, 3 insertions(+)
+> 
+> 2 patches set to Not Applicable.
+> 
+> 13526631 [41/82] wil6210: Refactor intentional wrap-around test
+> 13526632 [62/82] mwifiex: pcie: Refactor intentional wrap-around test
+> 
+> -- 
+> https://patchwork.kernel.org/project/linux-wireless/patch/20240123002814.1396804-41-keescook@chromium.org/
+> 
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> 
 
-diff --git a/drivers/usb/phy/phy-generic.c b/drivers/usb/phy/phy-generic.c
-index f7db24b5ed5c..8f735a86cd19 100644
---- a/drivers/usb/phy/phy-generic.c
-+++ b/drivers/usb/phy/phy-generic.c
-@@ -337,6 +337,9 @@ static void usb_phy_generic_remove(struct platform_device *pdev)
- 	struct usb_phy_generic *nop = platform_get_drvdata(pdev);
- 
- 	usb_remove_phy(&nop->phy);
-+
-+	if (nop->vbus_draw && nop->vbus_draw_enabled)
-+		regulator_disable(nop->vbus_draw);
- }
- 
- static const struct of_device_id nop_xceiv_dt_ids[] = {
 -- 
-2.35.1.1320.gc452695387.dirty
-
+Kees Cook
 
