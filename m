@@ -1,168 +1,145 @@
-Return-Path: <linux-kernel+bounces-36198-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65D2B839D65
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 00:52:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D351A839D67
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 00:52:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AF861C2572D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 23:52:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7046E1F26D27
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 23:52:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6E4354F80;
-	Tue, 23 Jan 2024 23:52:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6279D54FB4;
+	Tue, 23 Jan 2024 23:52:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="pOxiiqov"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2082.outbound.protection.outlook.com [40.107.243.82])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SGRqu58n"
+Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25E5154279;
-	Tue, 23 Jan 2024 23:51:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.82
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706053920; cv=fail; b=gb57iqWR5yL+UxPjHTbfuKzxFHL9vFObMDkoTg7n3OWPK0ySZQcvyYU8RQ5XTbgJesGdIjL7ptHeMV+hl9Jk7FWrguQNBsxWmL/CmL5iLj7fGVciq3pz/1hOpQ5/Fd/Mima66KP2UxlbPZW8Y+H78T++hPYcOrgH3UFpdAS167g=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706053920; c=relaxed/simple;
-	bh=NqxRvSTQyoRKXt3tmzF5NVxt89X1ZOKw7m4wj6eWflQ=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=VyfbA+T3vSfuynYeaKe2zsTf/i1cn43s1ByOpQk6xATM3yMXKcPLM6qsV0RdmEzC8+EsUYZxNNCwE3ld4LlN4wlFAF02FC90Zdi52UehBwHaRFEKy86lXK7tzOSq8loV7pFtNj9p4C0jKZ2U+VZKI5RXZZvZnWFAoUw1+oJCJWE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=pOxiiqov; arc=fail smtp.client-ip=40.107.243.82
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QCInVQP9YqBwvfwkGUHYo8mG9wJL1lX3BzX7VZAjfirtF2WCEgOS48TTZXaG/yNnyw4TMJiVNcFW23zPFEbGWXTsrfh4BRiyb7M90wtG8jvt4oLrM+rsOmBC9Q6FtviTvZcXdXqbbJIOiMXMoriJjXXeyS3MRn43gSOdVDCqygUUBfEdggeyntmo51sH52uko7x6BdhjYujjUYGpmPk0Qqmd6K3zTw5Yi2gFJNUDF++6AZ+gcVB69n9gC33jdbEsELytwSgs77C4lEWOVwO3JXrVOmNIncOjYKrpjYRUrfFyTShzMkRWKhm5/EuldZB0h2AASJHDKgozXkPY4QoMyA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mUvZyZeEyAKy1Q9MxG5SF//0HE+AqfLvar/e0N9dwVg=;
- b=OSRU0tBSpoHGKDUziwOSRva3tcbOsGbdvfnLm09nTXKJVpooSfu41FDfSYkrw677DoXVNT14JKB6nmNFEFNNpaOT0HH/31hHoZNfJqDFgKGo/FM/pGBrMRpLGDHcD3cndg8OGr4pmOixgZw8M8841ju8NBoEwEddOZLqGx9M1E9EryxmbMAddd+/XVZ4RBRoPg7lFCCYVvsgkYmd4M4V3wawPXZIMAC3g4fqv42x5kQUyuIjGCdzM3G2v0h+VU3SuAHST0a25qajU1wV2BI3jRJ7h5n53YbBXxxaGWSE2Ii/+5oIrJ7BPmi261m6OuSwtz7VcZ6W0XLG5OCY3lDRfQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mUvZyZeEyAKy1Q9MxG5SF//0HE+AqfLvar/e0N9dwVg=;
- b=pOxiiqov3EhYK7BJDqBQVhhVHCqQ+0o0UgU1u7JOY4E3PDSW9XDK1eW0d3Vo+ri7jKPQFPEe9iWtKNOJJqS137yDg1+Kqyn6pf4AFZbLFd/ousNY03ozlQDIsP2dGbZ7P1aUU6HaCEin6GjWRPP73fMwZ3ZLChGgcRv80RRxjCg=
-Received: from BL0PR0102CA0044.prod.exchangelabs.com (2603:10b6:208:25::21) by
- BN9PR12MB5130.namprd12.prod.outlook.com (2603:10b6:408:137::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7202.37; Tue, 23 Jan 2024 23:51:57 +0000
-Received: from MN1PEPF0000ECD5.namprd02.prod.outlook.com
- (2603:10b6:208:25:cafe::ab) by BL0PR0102CA0044.outlook.office365.com
- (2603:10b6:208:25::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.32 via Frontend
- Transport; Tue, 23 Jan 2024 23:51:56 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- MN1PEPF0000ECD5.mail.protection.outlook.com (10.167.242.133) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7202.16 via Frontend Transport; Tue, 23 Jan 2024 23:51:56 +0000
-Received: from titanite-d354host.amd.com (10.180.168.240) by
- SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 23 Jan 2024 17:51:56 -0600
-From: Avadhut Naik <avadhut.naik@amd.com>
-To: <linux-trace-kernel@vger.kernel.org>, <linux-edac@vger.kernel.org>
-CC: <rostedt@goodmis.org>, <tony.luck@intel.com>, <bp@alien8.de>,
-	<x86@kernel.org>, <linux-kernel@vger.kernel.org>, <yazen.ghannam@amd.com>,
-	<avadnaik@amd.com>
-Subject: [PATCH] tracing: Include PPIN in mce_record tracepoint
-Date: Tue, 23 Jan 2024 17:51:50 -0600
-Message-ID: <20240123235150.3744089-1-avadhut.naik@amd.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 348EC54BD0
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 23:52:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706053954; cv=none; b=jew2ICbily/K4Hkv/vzpnDwDiMIdbTQ2IV8YCg5fLE9Rj+J34fXsJVrYHzlAu8BsHV6/zfsk7D3r6A8K5vOftixrTfXoLx4kpwGkfaq4ckQRpTgIUKQ8WeqS8hPFz8hEwhImZNc8rlYMa5e4dNeMHbb5LSGu1fkp55UBJzDc+Ds=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706053954; c=relaxed/simple;
+	bh=3L3IL+2D+SMgdaVONy0zP+GHvj410YwKBXkFH6FiJDY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gI1ysV7r+grDXxzcZJ4BVn/hTkstFgLdxlGZlWbjAh0ctCBPGs8hEQ8HZjOhofoRSkDUDgYzXn4Pn48/XfUHzsLKllcVR4Q3Px1td4C2RHj2HrVn3i6L+WZkLrZmiWg4ZAhYr4lRmG/TQrMZL6f6GYTeeUkMZWeJKwgi6AzpKJM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SGRqu58n; arc=none smtp.client-ip=209.85.160.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-2142c746270so2096259fac.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 15:52:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706053952; x=1706658752; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kvRkL2paV0pbOYNTMneWlAG3SYsPIxZwPdfU91UWToE=;
+        b=SGRqu58nxoi+75kHE3mDSx5yDNME71sizjOVuJVl7KMV0+e9YLfw9BQP5RPhGGVqb7
+         YBM7OKSUCylU2woaMND833Pv5DSsh/I00UBHiD9TxK2t5J8qxXYzodT/wXzRj2ok/lJG
+         ICI2JHeetAyzfFIzdBIBd3uCyt1MqJ8Yx3PxMusvZJzAnFpKLOg42lievT9y3wYPxY2H
+         nwSL6cEhYUoi1YG427T29+wtJRGS6wotz0Ygk3WTpOwODls/47MbLiE3rMXDpu0zmYiP
+         bRGDSQk+6teuTje9+RhjPNhQ1mID0Fi6kp9NlikQWsUCBxS2ze/8RLq1Kj9SIfdXHJ4r
+         lmng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706053952; x=1706658752;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kvRkL2paV0pbOYNTMneWlAG3SYsPIxZwPdfU91UWToE=;
+        b=ujT2Qo8KsCPxwUvDv1hVz3qJHdCneuNSOOhDq2eBYP0V4XV2+z00xHCKHf1CN5nJMH
+         o46a3LnG+JTCKT7uwIJl/ab6KH/zHuHmdxm76ZwKBzXANpf1hpVymMHdUQnCroK8oZF6
+         nekIW6/Mlpe2ET+kY/0dzUOoEQhtjRJe6zSJHSBms6LnRRA9o46vKi7YwO2se8QI8XQY
+         ouzp7UV3dj7MhPUhNvdumdxbbULMXlNIgT6jYGXUsEarwjtQrg7iiDhZVzbs7iY90sDo
+         9V8uHjpe2RVCymYqi24itphm9eKhEoDBWz46aK2LBxoT1kHhy9r8UGBE3RgPFL8mn+Q3
+         j4FQ==
+X-Gm-Message-State: AOJu0Yz//kDVpf/fYBiGGToT/0TxpwanbdZ5KK+qaUcwFW2ayPfbK3rj
+	A8s3nhVGH+cajju3xnhzsq1rDrRB223cFJGah48lFkFksBDys4MyPHlgWrBO7rwRRfZq/4556SH
+	t8A0ZQQ9xgsOvMDSoURoi7hpsrXraD8A3V3zdTjS5DKXMmXXuC4lZ
+X-Google-Smtp-Source: AGHT+IFq2gwdR80pul+rqMg35HsEdTnFxB76+k9DJJ5gcrUtnSwBAVIDxj7pGEpHRI2zHDw+LjxSsTTgsQvo7NNhlNY=
+X-Received: by 2002:a05:6870:1642:b0:214:8233:fd94 with SMTP id
+ c2-20020a056870164200b002148233fd94mr2225261oae.12.1706053952140; Tue, 23 Jan
+ 2024 15:52:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN1PEPF0000ECD5:EE_|BN9PR12MB5130:EE_
-X-MS-Office365-Filtering-Correlation-Id: 50638fa1-d48e-49e5-8a08-08dc1c6e4897
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	THJreMWjqAy1Wy0JDwA7UV24b1B7KTMvzFh+gSBlohowsasDIgDUeHb7h5AFe1boltQEuW4svDBNQbSxnpEVSxrm9z/riAjtCm8Cy5Z1/FZvm0ez9gcKt8Z2MDxEA/Sy2qiHUibrCWtUQy+vcbp1D98WvKWAUfC9q0Wy0ZozqF6ubYdM1n2Ee+nSMNM7EoC6rRK7+QSSbjCFuknpZHXOgzWMXFqOhud5COjeeOFmD8khFTUvwcSRA2LL6jF3GgskQBUegIqmBtFrq25vUYK7cZNfKvE402h9COVq8J9W12qpRLpoPnz9lJCP/lgew00mcrUfG1DZ7i6pvJjdxIjiA+2dMXOhSnzJNHmGU1BJnTjE7Ez8KrbOuXhI7rku1cZUbi2crv7jwg+X50Sbjg8fBdsaFOmQURC1tRf6ZqyWQ6kIonOvCic0Uc0mfRezNTm0aTVExB3XUM+MUa+QnV2oe+pRCKTpWnNrco6PEswXUJuPXTCRfqhZtxeyA8hDOLDioc6RlN/JXf7umyxooRtSglIrvDEvtY1Bla8f82Nn9T1dpRc6Xq+bd/AL2EuSD35LLtMSbquF++9l9jhvhSKOSxDbFhPxeb4q3r53iWp07SoyU+ztvJJIW1Mg2Y85hTHUkUrV7vhA6Uwtk0SjIpOd8l+7/vuaHcD319TvyMR3VD7Ync94L+rUhKP1S/tvgfnQ40cZ6Ch+pu7t/YdCuDML1KlRlKD+RERPWLnaFgHR7JOONMSXvX2Ivi6JAvjNmUfFIbjOI1LK2Uzqqb1LYtMJSA==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(346002)(376002)(136003)(230922051799003)(1800799012)(82310400011)(186009)(451199024)(64100799003)(36840700001)(46966006)(40470700004)(40480700001)(40460700003)(2616005)(1076003)(8676002)(426003)(4326008)(336012)(83380400001)(44832011)(8936002)(47076005)(316002)(7696005)(6666004)(70206006)(54906003)(70586007)(478600001)(5660300002)(26005)(110136005)(16526019)(36860700001)(356005)(81166007)(82740400003)(2906002)(36756003)(41300700001)(86362001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jan 2024 23:51:56.9170
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 50638fa1-d48e-49e5-8a08-08dc1c6e4897
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	MN1PEPF0000ECD5.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5130
+References: <20240123153313.GA21832@redhat.com> <20240123153359.GA21866@redhat.com>
+In-Reply-To: <20240123153359.GA21866@redhat.com>
+From: Dylan Hatch <dylanbhatch@google.com>
+Date: Tue, 23 Jan 2024 15:52:21 -0800
+Message-ID: <CADBMgpwhH4VyADf7ajYee=FFhdfwSQF3iAjCHTHWPv5FOoYRPQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] exit: wait_task_zombie: kill the no longer necessary spin_lock_irq(siglock)
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, "Eric W. Biederman" <ebiederm@xmission.com>, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Machine Check Error information from struct mce is exported to userspace
-through the mce_record tracepoint.
+On Tue, Jan 23, 2024 at 7:35=E2=80=AFAM Oleg Nesterov <oleg@redhat.com> wro=
+te:
+>
+> After the recent changes nobody use siglock to read the values protected
+> by stats_lock, we can kill spin_lock_irq(&current->sighand->siglock) and
+> update the comment.
+>
+> With this patch only __exit_signal() and thread_group_start_cputime() tak=
+e
+> stats_lock under siglock.
+>
+> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+> ---
+>  kernel/exit.c | 10 +++-------
+>  1 file changed, 3 insertions(+), 7 deletions(-)
+>
+> diff --git a/kernel/exit.c b/kernel/exit.c
+> index 3988a02efaef..dfb963d2f862 100644
+> --- a/kernel/exit.c
+> +++ b/kernel/exit.c
+> @@ -1127,17 +1127,14 @@ static int wait_task_zombie(struct wait_opts *wo,=
+ struct task_struct *p)
+>                  * and nobody can change them.
+>                  *
+>                  * psig->stats_lock also protects us from our sub-threads
+> -                * which can reap other children at the same time. Until
+> -                * we change k_getrusage()-like users to rely on this loc=
+k
+> -                * we have to take ->siglock as well.
+> +                * which can reap other children at the same time.
+>                  *
+>                  * We use thread_group_cputime_adjusted() to get times fo=
+r
+>                  * the thread group, which consolidates times for all thr=
+eads
+>                  * in the group including the group leader.
+>                  */
+>                 thread_group_cputime_adjusted(p, &tgutime, &tgstime);
+> -               spin_lock_irq(&current->sighand->siglock);
+> -               write_seqlock(&psig->stats_lock);
+> +               write_seqlock_irq(&psig->stats_lock);
+>                 psig->cutime +=3D tgutime + sig->cutime;
+>                 psig->cstime +=3D tgstime + sig->cstime;
+>                 psig->cgtime +=3D task_gtime(p) + sig->gtime + sig->cgtim=
+e;
+> @@ -1160,8 +1157,7 @@ static int wait_task_zombie(struct wait_opts *wo, s=
+truct task_struct *p)
+>                         psig->cmaxrss =3D maxrss;
+>                 task_io_accounting_add(&psig->ioac, &p->ioac);
+>                 task_io_accounting_add(&psig->ioac, &sig->ioac);
+> -               write_sequnlock(&psig->stats_lock);
+> -               spin_unlock_irq(&current->sighand->siglock);
+> +               write_sequnlock_irq(&psig->stats_lock);
+>         }
+>
+>         if (wo->wo_rusage)
+> --
+> 2.25.1.362.g51ebf55
+>
 
-Currently, however, the PPIN (Protected Processor Inventory Number) field
-of struct mce is not exported through the tracepoint.
-
-Export PPIN through the tracepoint as it may provide useful information
-for debug and analysis.
-
-Signed-off-by: Avadhut Naik <avadhut.naik@amd.com>
----
- include/trace/events/mce.h | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/include/trace/events/mce.h b/include/trace/events/mce.h
-index 1391ada0da3b..657b93ec8176 100644
---- a/include/trace/events/mce.h
-+++ b/include/trace/events/mce.h
-@@ -25,6 +25,7 @@ TRACE_EVENT(mce_record,
- 		__field(	u64,		ipid		)
- 		__field(	u64,		ip		)
- 		__field(	u64,		tsc		)
-+		__field(	u64,		ppin	)
- 		__field(	u64,		walltime	)
- 		__field(	u32,		cpu		)
- 		__field(	u32,		cpuid		)
-@@ -45,6 +46,7 @@ TRACE_EVENT(mce_record,
- 		__entry->ipid		= m->ipid;
- 		__entry->ip		= m->ip;
- 		__entry->tsc		= m->tsc;
-+		__entry->ppin		= m->ppin;
- 		__entry->walltime	= m->time;
- 		__entry->cpu		= m->extcpu;
- 		__entry->cpuid		= m->cpuid;
-@@ -55,7 +57,7 @@ TRACE_EVENT(mce_record,
- 		__entry->cpuvendor	= m->cpuvendor;
- 	),
- 
--	TP_printk("CPU: %d, MCGc/s: %llx/%llx, MC%d: %016Lx, IPID: %016Lx, ADDR/MISC/SYND: %016Lx/%016Lx/%016Lx, RIP: %02x:<%016Lx>, TSC: %llx, PROCESSOR: %u:%x, TIME: %llu, SOCKET: %u, APIC: %x",
-+	TP_printk("CPU: %d, MCGc/s: %llx/%llx, MC%d: %016Lx, IPID: %016Lx, ADDR/MISC/SYND: %016Lx/%016Lx/%016Lx, RIP: %02x:<%016Lx>, TSC: %llx, PPIN: %llx, PROCESSOR: %u:%x, TIME: %llu, SOCKET: %u, APIC: %x",
- 		__entry->cpu,
- 		__entry->mcgcap, __entry->mcgstatus,
- 		__entry->bank, __entry->status,
-@@ -63,6 +65,7 @@ TRACE_EVENT(mce_record,
- 		__entry->addr, __entry->misc, __entry->synd,
- 		__entry->cs, __entry->ip,
- 		__entry->tsc,
-+		__entry->ppin,
- 		__entry->cpuvendor, __entry->cpuid,
- 		__entry->walltime,
- 		__entry->socketid,
-
-base-commit: 451b2bc29430fa147e36a48348f8b6b615fd6820
--- 
-2.34.1
-
+Signed-off-by: Dylan Hatch <dylanbhatch@google.com>
 
