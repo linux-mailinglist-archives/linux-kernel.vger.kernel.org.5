@@ -1,101 +1,110 @@
-Return-Path: <linux-kernel+bounces-35072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F9D0838B83
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:16:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B704A838B84
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:16:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A23B41C220DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:16:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17EFBB210DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:16:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A29E5A781;
-	Tue, 23 Jan 2024 10:16:30 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43DC45A780;
+	Tue, 23 Jan 2024 10:16:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="INQkBDVk"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D38665A11A
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 10:16:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3C1F5A110
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 10:16:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706004989; cv=none; b=E2Y/ObZihcfe+E636m6zuAwYloMa9qgbg5Ytcu7VHB+BMcyruYNibucg7Mvbb7azU4qJeJ4j5qRppKw6PS5M9OgIuMz8TGTN5oPVfI1mc52wdZz1bYU+oQU/4+zvFU7qwbbh7T7fz6P7CxjmK7j6Y0B54f9jfKjq/ZoTbEWzA94=
+	t=1706005002; cv=none; b=JtqNc+j0WIP29YtUT9BWL121+Cv4uKAjNawdKa+i9rGFBLF+XXz0L4J+gOjHtjpzsWaC81pXH8pPRwtBtbn8JJBcYTKO1p+9Az5wj/2PLCFGCKmIc5I/GZcyjsyMN3rBv66aGPbSR9WuOuZN1qLNcRQ67xNtznnJd3a3nZR6npE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706004989; c=relaxed/simple;
-	bh=ZJzzt+kCw+JOY/lQZt/D5cRgMP0CjOuRiNu9AtaiFBk=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=HYpen2iJ2bLZsVIWwxX+WgbxFvtn3q+Pu36JQiK1PizMlgUXf58LLTCu5HnE4OHw+7CH3cb2A7g+2TlSEPwb2PZloNoVwOS57SrC7o8FoT7rYBQauawhUb7TatHIMElDkYv31K4N4nSWtntsVgeyQQ4YeOvwzNGFURjESR0vE4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-76-TSOlSA3yNlmz_Bo-aU5ewQ-1; Tue, 23 Jan 2024 10:16:23 +0000
-X-MC-Unique: TSOlSA3yNlmz_Bo-aU5ewQ-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 23 Jan
- 2024 10:16:06 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Tue, 23 Jan 2024 10:16:06 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Guenter Roeck' <linux@roeck-us.net>, Charlie Jenkins
-	<charlie@rivosinc.com>, Palmer Dabbelt <palmer@dabbelt.com>
-CC: Conor Dooley <conor@kernel.org>, "samuel.holland@sifive.com"
-	<samuel.holland@sifive.com>, "xiao.w.wang@intel.com" <xiao.w.wang@intel.com>,
-	Evan Green <evan@rivosinc.com>, "guoren@kernel.org" <guoren@kernel.org>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, Paul Walmsley
-	<paul.walmsley@sifive.com>, "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-	Arnd Bergmann <arnd@arndb.de>
-Subject: RE: [PATCH v15 5/5] kunit: Add tests for csum_ipv6_magic and
- ip_fast_csum
-Thread-Topic: [PATCH v15 5/5] kunit: Add tests for csum_ipv6_magic and
- ip_fast_csum
-Thread-Index: AQHaTVGn8AUolzpWZEe7KQadoytUPLDmCvsQgAAHpwCAAEjwsIAAOnOOgACYElA=
-Date: Tue, 23 Jan 2024 10:16:06 +0000
-Message-ID: <86411bbab15c42b8819aeb923fe42644@AcuMS.aculab.com>
-References: <be959a4bb660466faba5ade7976485c8@AcuMS.aculab.com>
- <mhng-b5f26a34-7632-4423-9f07-3224170bae9f@palmer-ri-x1c9>
- <Za8AXnKCm4cPyVbp@ghost> <e548f697-650e-4333-9f39-19a472b7d90a@roeck-us.net>
-In-Reply-To: <e548f697-650e-4333-9f39-19a472b7d90a@roeck-us.net>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1706005002; c=relaxed/simple;
+	bh=lIRmt8mPE9r83SAhg8C8ZQT8Qke7OTanSFB0FbO1ZOM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Z+Yz8Is0jgADgJvYJU6QcrXeG0LakrpcISbtZf1jEkZuDvjqHetdeW6zgznGOPxfR5HgFBUyQvdQkwMHlwDAsU9tJoaDH36Xqpwv9gDQ+rYzVcgyYkOMUYLKPcq70tqhJaTkPW7qnBjbBaVym4t2rts2ApLbnJmE40jtieHvsdQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=INQkBDVk; arc=none smtp.client-ip=134.134.136.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706005000; x=1737541000;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=lIRmt8mPE9r83SAhg8C8ZQT8Qke7OTanSFB0FbO1ZOM=;
+  b=INQkBDVkDbaNR9lpDGxlvbQLAP2DPUCnIObU+BqJWTcwB8oe5/UH1oQt
+   HhToVzQOKEl3JlDd7g5FOe9+D1lu00uwvYu7EjlHio+f80wR7gSJYdLA6
+   V4aW+sQe95GKCl3jzw1NTBRjN5nYZm2XuIgV8L8TPHyWCt7oeeR7cj0uP
+   vHjmrNHOyo1IlSTMclFzTQQ/c+jlP/vt4K1E28WfLhrp2eRRdTLg6AgjF
+   kP/nXJae+UFIrcT1T4ID1QMPT3qvuFerW50hml0GCddVqmlQsTGoStgeb
+   EJSzk1U+alMUI3ZgMyjAxeILMHeZ2cKjLStwXysB9vXn8GpzamOPhT94x
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="391900155"
+X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
+   d="scan'208";a="391900155"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 02:16:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
+   d="scan'208";a="1549598"
+Received: from twinkler-lnx.jer.intel.com ([10.12.231.216])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 02:16:37 -0800
+From: Tomas Winkler <tomas.winkler@intel.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Alexander Usyskin <alexander.usyskin@intel.com>,
+	Vitaly Lubart <vitaly.lubart@intel.com>,
+	linux-kernel@vger.kernel.org,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Tomas Winkler <tomas.winkler@intel.com>
+Subject: [char-misc-next 1/5] mei: gsc: add support for auxiliary device created by Xe driver
+Date: Tue, 23 Jan 2024 12:16:21 +0200
+Message-ID: <20240123101625.220365-1-tomas.winkler@intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 
-RnJvbTogR3VlbnRlciBSb2Vjaw0KPiBTZW50OiAyMyBKYW51YXJ5IDIwMjQgMDE6MDYNCi4uLg0K
-PiA+PiAgICAgKyNkZWZpbmUgU1VQUE9SVEVEX0FMSUdOTUVOVCAoMSA8PCBORVRfSVBfQUxJR04p
-DQo+ID4+ICAgICAgLyogVmFsdWVzIGZvciBhIGxpdHRsZSBlbmRpYW4gQ1BVLiBCeXRlIHN3YXAg
-ZWFjaCBoYWxmIG9uIGJpZyBlbmRpYW4gQ1BVLiAqLw0KPiA+PiAgICAgIHN0YXRpYyBjb25zdCB1
-MzIgcmFuZG9tX2luaXRfc3VtID0gMHgyODQ3YWFiOw0KPiA+PiAgICAgQEAgLTQ4Niw3ICs0ODgs
-NyBAQCBzdGF0aWMgdm9pZCB0ZXN0X2NzdW1fZml4ZWRfcmFuZG9tX2lucHV0cyhzdHJ1Y3Qga3Vu
-aXQgKnRlc3QpDQo+ID4+ICAgICAgCV9fc3VtMTYgcmVzdWx0LCBleHBlYzsNCj4gPj4gICAgICAJ
-YXNzZXJ0X3NldHVwX2NvcnJlY3QodGVzdCk7DQo+ID4+ICAgICAtCWZvciAoYWxpZ24gPSAwOyBh
-bGlnbiA8IFRFU1RfQlVGTEVOOyArK2FsaWduKSB7DQo+ID4+ICAgICArCWZvciAoYWxpZ24gPSAw
-OyBhbGlnbiA8IFRFU1RfQlVGTEVOOyBhbGlnbiArPSBTVVBQT1JURURfQUxJR05NRU5UKSB7DQou
-Li4NCg0KVGhhdCBpcyBhbGwgd3JvbmcuDQpORVRfSVBfQUxJR04gaXMgdGhlIG9mZnNldCBmb3Ig
-dGhlIGJhc2Ugb2YgZXRoZXJuZXQgZnJhbWVzLg0KSWYgemVybyB0aGUgSVAgaGVhZGVyIHdpbGwg
-KHVzdWFsbHkpIGJlIG1pc2FsaWduZWQuDQpJZiB0d28gdGhlIG1hYyBhZGRyZXNzZXMgYXJlIG1p
-c2FsaWduZWQgaW4gb3JkZXIgdG8gYWxpZ24NCnRoZSBJUCBoZWFkZXIgKDYrNisyIGJ5dGVzIGlu
-KS4NCkkgZG9uJ3QgdGhpbmsgYW55IG90aGVyIHZhbHVlcyBhcmUgYWN0dWFsbHkgdmFsaWQsIGJ1
-dA0KdGhlcmUgaXMgYWx3YXlzIHRoYXQgcG9zc2liaWxpdHkuDQoNClNvIHRoZSBkZWZpbml0aW9u
-IHNob3VsZCByZWFsbHkgYmU6DQojZGVmaW5lIFNVUFBPUlRFRF9BTElHTk1FTlQgKE5FVF9JUF9B
-TElHTiA/IDQgOiAxKQ0KDQooV2hpY2ggbWlnaHQgaGFwcGVuIHRvIGJlIHRoZSBzYW1lIHZhbHVl
-cyA6LSkNCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxl
-eSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0
-aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+From: Vitaly Lubart <vitaly.lubart@intel.com>
+
+Add support for gsc mei auxiliary device created by Xe driver
+
+Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Signed-off-by: Vitaly Lubart <vitaly.lubart@intel.com>
+Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+---
+ drivers/misc/mei/gsc-me.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/misc/mei/gsc-me.c b/drivers/misc/mei/gsc-me.c
+index 6be8f1cc052c13be3607432f..9e558ec2ea1d5cef1aee7fb3 100644
+--- a/drivers/misc/mei/gsc-me.c
++++ b/drivers/misc/mei/gsc-me.c
+@@ -292,6 +292,10 @@ static const struct auxiliary_device_id mei_gsc_id_table[] = {
+ 		.name = "i915.mei-gscfi",
+ 		.driver_data = MEI_ME_GSCFI_CFG,
+ 	},
++	{
++		.name = "xe.mei-gscfi",
++		.driver_data = MEI_ME_GSCFI_CFG,
++	},
+ 	{
+ 		/* sentinel */
+ 	}
+@@ -312,5 +316,6 @@ module_auxiliary_driver(mei_gsc_driver);
+ MODULE_AUTHOR("Intel Corporation");
+ MODULE_ALIAS("auxiliary:i915.mei-gsc");
+ MODULE_ALIAS("auxiliary:i915.mei-gscfi");
++MODULE_ALIAS("auxiliary:xe.mei-gscfi");
+ MODULE_DESCRIPTION("Intel(R) Graphics System Controller");
+ MODULE_LICENSE("GPL");
+-- 
+2.43.0
 
 
