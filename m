@@ -1,155 +1,183 @@
-Return-Path: <linux-kernel+bounces-36003-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1EE88399F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:06:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 824268399F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:07:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4E641C2781D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:06:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DEB61F2C1BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:07:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B50182D92;
-	Tue, 23 Jan 2024 20:06:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81FB582D93;
+	Tue, 23 Jan 2024 20:06:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="UxL+L9NL"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Izhsrruw"
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DAEE63511;
-	Tue, 23 Jan 2024 20:06:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6945981207;
+	Tue, 23 Jan 2024 20:06:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706040371; cv=none; b=cZ/PrgUupvO1pNmarddrkkYKb70mkQXcbEr9GmfGhbHy2nu5QZrwCpSur/f3+aZAdMjnsby0i3R25Db2Z0xwj+vex1IGlmvf3efxooNuF9znIH7PTCw5huaFTj9AT3oEOhM0to1Nd8fUQ3oqntO72aZg1VsZkX33O4vzskitG40=
+	t=1706040416; cv=none; b=CpLDO8RERGPKochCmxC4Z61W4L9ymzqXuZxZhO8P2nbJ6InZlx94MuyrsKr76ZzSHuEV05pnJLOPWZLOm4a/9fFNY/51YJuGCZE2o7QvP5OqykARDB8PC0wQ/405CzrKt3OedKJt7RbZ6/wVgYCzoQaWeGewAflhZe1KAnrjX5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706040371; c=relaxed/simple;
-	bh=GzhJCzJzKpc9xeFhTpsdwMvee7CM5aTLill6q4USv3U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=nNgJFY8pYQz6l4ko0JKZD3FJAdN9fhcX/lWv6sOp50QtlENpWQFLUZFjJzcTRw3L1jmm0+HqJx3cuRWHqWFmHODhYbJND0Ndr/1dn16kOA0x+sSPjxGC/BIsal7c7ArZTm5lIyKgl5tKfrseSOLvP1nWYdns9qRCo90Ed/u+M2U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=UxL+L9NL; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40NGPRR5029341;
-	Tue, 23 Jan 2024 20:06:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=hUYsYhKG8zh/NNdalZUM0dorkIoNrzpo0eGcmzdbCH4=; b=Ux
-	L+L9NL7W3fcIBkONqHWLOW36dZTeWbd+HPbi4EFcKAV6JZr41W7+xaANSML/P/cb
-	9G7Qw+65VseuGMlWiNptOiO9ViqhfdjEBRyeDNfN7vF/+AiTtDh/PkV7Ep0onY50
-	6vb3yAz1BmjO8J4hOvuLsmAMEqostsCsyXR4ndGZ/lDme8zDforBZnF6Pkja2E7O
-	eYB8L0A4tOHPp8R7Q/5iXdMdw+25u6THmb/Ee43t+OKpbb98OhLvfmo34QllQdm/
-	TlYQEa87hfYRdb5xzrl4LUBSRo31DUGGlfR8rkJD6qCyAAgPI3DGcy0d/1bmbOKI
-	MEhkJsOjMX/ehg7PpstQ==
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vtesch2a5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Jan 2024 20:06:01 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40NK60r0023727
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Jan 2024 20:06:00 GMT
-Received: from [10.110.28.150] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 23 Jan
- 2024 12:05:56 -0800
-Message-ID: <fd2c8c1b-02f3-2750-3449-f93fc119fda2@quicinc.com>
-Date: Tue, 23 Jan 2024 12:05:56 -0800
+	s=arc-20240116; t=1706040416; c=relaxed/simple;
+	bh=wW46K2JahqhRKU03msV9qq5C0Se51/VCy1Zx5rMOsJA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BnpGYg06sJ9u4hFUdO7sSA599yqi3Tur4p8OLzO43cfyZ36xH5YVrXEGYvBhtgph9cuccABp7VtBIRILrAd13ZVzkz5hElSNfIMsSK+JDJ0DDkzk1e8mrikwzfIhoVtZSK5WdjvGXYmtial8T0UY3OiB5JNuhTjgV04Fh79xhNM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Izhsrruw; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6dd80d3d419so706591b3a.3;
+        Tue, 23 Jan 2024 12:06:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706040415; x=1706645215; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m/ygAm/dAvsvevheGo6sbfcERkpvXDy/mrpdBQjBTGE=;
+        b=Izhsrruw/BtstDLeBwkc2vRVVpYYFkh3IFtird6yqU8OwkNF0pxgtRmMDuplGaaOsc
+         ghQOPzqRvEgPQSHjOcYZxisNfTak+TrmY05zdrcmWtsH37zDMUO3zvi+hAjvSGzJfa8I
+         UHuu4irfP7xE1BHvYjCFt3qh+OH/ORUzi7CYUFiyLP4v3VsMq9JtwkeopofyGDFi1rXh
+         UFdp17LrCh/HmOfF1f3oos8jXmg1zRoqr8JvqG6ibQQBq34XJs3ThnayJw4rWj3U2B6u
+         kqWoOPf6yx7vFC5g5tN2xRxXyMlc3KPXj+vz+xAtgj/6zCbMQb0UgP4C8e6bWW3854lK
+         U/tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706040415; x=1706645215;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=m/ygAm/dAvsvevheGo6sbfcERkpvXDy/mrpdBQjBTGE=;
+        b=l6cs6KsOunymf+m65lmuTyIrn3RzwUISFCz0usp6Bj6WO7NIo5pTk0eQt3khckMzNF
+         79Btk7aP7AG6xXGiaszB6q8gX3IaJkvEGIej17ztzLSb9KhQEu1TwVELGxpErWQkw4l6
+         TtVdVHUGBbXLz7VbvZUGpILdMCVsT75l+kLSUr4uktq/zS26gK4CyIoaChRliJ2tZYHs
+         pnIrWTNrdsle3jCoZxaVOOEvuUT0td0xzi2Z5wQiybzBG207M6bLLdNTsh+MsLkz53Od
+         PJ1KaCWJYqCGJvAl2at1M0Xn+3s8SmuxR6s+oFeHX4OaeCLqG+pZNqYpC8BfydzTPdRR
+         Bswg==
+X-Gm-Message-State: AOJu0Yxpz+Q3iK0jCQaHfLHwRXQmC98S2mY8TvxyT+T/Md5VSpRmZ6UR
+	cRhrRk4xybLNii+f90QjydmM/3EYJm2Ghhjbvn5xEV9dItdXtVQKuWLHQmNZbNYEvc/Wua+cqCS
+	S8xHVpOuMCxjiigiqSDraRzyWe2w=
+X-Google-Smtp-Source: AGHT+IHR6c12R9FRlx8FOYsRoe5jJ/R3x83LBY3RtM3VfhHOIiEN5Vz/B5j3402bc5pvty/nUHR+tw81ZVGLDphzmy0=
+X-Received: by 2002:aa7:8e81:0:b0:6d9:8f56:106b with SMTP id
+ a1-20020aa78e81000000b006d98f56106bmr6687722pfr.39.1706040414577; Tue, 23 Jan
+ 2024 12:06:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 1/2] dt-bindings: hwinfo: Introduce board-id
-Content-Language: en-US
-To: Elliot Berman <quic_eberman@quicinc.com>,
-        Amrit Anand
-	<quic_amrianan@quicinc.com>
-CC: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <agross@kernel.org>, <konrad.dybcio@linaro.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>,
-        Conor Dooley
-	<conor@kernel.org>, <andersson@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski@linaro.org>
-References: <1705749649-4708-1-git-send-email-quic_amrianan@quicinc.com>
- <1705749649-4708-2-git-send-email-quic_amrianan@quicinc.com>
- <6e40dd60-884f-be23-0052-d14f7194f844@quicinc.com>
- <f21bc259-45fa-d14b-a556-625b813287f4@quicinc.com>
- <499320f4-f6b1-4582-9512-89ab505305b6@linaro.org>
- <20240123-sterilize-flap-8971aa3bad4b@spud>
- <1941558d-d1e0-43b7-9208-65b9ba191bc2@quicinc.com>
-From: Trilok Soni <quic_tsoni@quicinc.com>
-In-Reply-To: <1941558d-d1e0-43b7-9208-65b9ba191bc2@quicinc.com>
+References: <20240123195449.1303643-1-irogers@google.com>
+In-Reply-To: <20240123195449.1303643-1-irogers@google.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 23 Jan 2024 12:06:42 -0800
+Message-ID: <CAEf4BzY04bASavt2LTVBR6kFZb4ebci4Bs+V6rv91xo8OAYHNw@mail.gmail.com>
+Subject: Re: [PATCH v1] libbpf: Add some details for BTF parsing failures
+To: Ian Rogers <irogers@google.com>
+Cc: Alan Maguire <alan.maguire@oracle.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Tbf2azYCNSayz4Q5wH74QmTAEgBJ7PpC
-X-Proofpoint-ORIG-GUID: Tbf2azYCNSayz4Q5wH74QmTAEgBJ7PpC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-23_11,2024-01-23_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 malwarescore=0
- bulkscore=0 spamscore=0 phishscore=0 mlxscore=0 mlxlogscore=892
- impostorscore=0 suspectscore=0 lowpriorityscore=0 priorityscore=1501
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2401230148
+Content-Transfer-Encoding: quoted-printable
 
-On 1/23/2024 10:51 AM, Elliot Berman wrote:
-> 
-> 
-> On 1/23/2024 9:18 AM, Conor Dooley wrote:
->> On Tue, Jan 23, 2024 at 12:50:07PM +0100, Krzysztof Kozlowski wrote:
->>> On 22/01/2024 11:10, Amrit Anand wrote:
->>>>
->>>> On 1/21/2024 12:40 AM, Trilok Soni wrote:
->>>>> On 1/20/2024 3:20 AM, Amrit Anand wrote:
->>>>>> From: Elliot Berman <quic_eberman@quicinc.com>
->>>>>>
->>>>>> Device manufacturers frequently ship multiple boards or SKUs under a
->>>>>> single software package. These software packages will ship multiple
->>>>>> devicetree blobs and require some mechanism to pick the correct DTB for
->>>>>> the board the software package was deployed. Introduce a common
->>>>>> definition for adding board identifiers to device trees. board-id
->>>>>> provides a mechanism for bootloaders to select the appropriate DTB which
->>>>>> is vendor/OEM-agnostic.
->>>>> Please extend CC list to more architectures? linux-arm-kernel, risc-v etc; since
->>>>> the proposal below is not specific to ARM but any architecture is using the
->>>>> devicetree.
->>>> Wouldn't devicetree@vger.kernel.org will have concern folks from all the 
->>>> architectures?
->>>> Please correct me.
->>>
->>> No.
->>
->> The chromium guys should get a CC on future versions of this stuff,
->> since they like doing wacky things with compatible strings in their
->> bootloader and this problem is one they also face. Doug Anderson and the
->> mediatek chromebook folks would be a good start.
->>
-> 
-> Please CC Peter Griffin from Linaro as he helped restart this 
-> discussion at Plumbers.
-> 
-> Peter Griffin <peter.griffin@linaro.org>
-> 
-> Also, for the oneplus boards:
-> Caleb Connolly <caleb.connolly@linaro.org>
+On Tue, Jan 23, 2024 at 11:54=E2=80=AFAM Ian Rogers <irogers@google.com> wr=
+ote:
+>
+> As CONFIG_DEBUG_INFO_BTF is default off the existing "failed to find
+> valid kernel BTF" message makes diagnosing the kernel build issue some
+> what cryptic. Add a little more detail with the hope of helping users.
+>
+> Before:
+> ```
+> libbpf: failed to find valid kernel BTF
+> libbpf: Error loading vmlinux BTF: -3
+> libbpf: failed to load object 'lock_contention_bpf'
+> libbpf: failed to load BPF skeleton 'lock_contention_bpf': -3
+> ```
+>
+> After no access:
+> ```
+> libbpf: failed to find a kernel (typically /sys/kernel/btf/vmlinux) for B=
+TF data
+> libbpf: Error loading vmlinux BTF: -3
+> libbpf: failed to load object 'lock_contention_bpf'
+> libbpf: failed to load BPF skeleton 'lock_contention_bpf': -3
+> ```
+>
+> After no BTF:
+> ```
+> libbpf: failed to find BTF in kernel (was CONFIG_DEBUG_INFO_BTF enabled?)
+> libbpf: Error loading vmlinux BTF: -3
+> libbpf: failed to load object 'lock_contention_bpf'
+> libbpf: failed to load BPF skeleton 'lock_contention_bpf': -3
+> ```
+>
+> Closes: https://lore.kernel.org/bpf/CAP-5=3DfU+DN_+Y=3DY4gtELUsJxKNDDCOvJ=
+zPHvjUVaUoeFAzNnig@mail.gmail.com/
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/lib/bpf/btf.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> index ee95fd379d4d..505c0fb2d1ed 100644
+> --- a/tools/lib/bpf/btf.c
+> +++ b/tools/lib/bpf/btf.c
+> @@ -4942,6 +4942,7 @@ struct btf *btf__load_vmlinux_btf(void)
+>         struct utsname buf;
+>         struct btf *btf;
+>         int i, err;
+> +       bool found_path =3D false;
+>
+>         uname(&buf);
+>
+> @@ -4951,6 +4952,7 @@ struct btf *btf__load_vmlinux_btf(void)
+>                 if (faccessat(AT_FDCWD, path, R_OK, AT_EACCESS))
+>                         continue;
+>
+> +               found_path =3D true;
+>                 btf =3D btf__parse(path, NULL);
+>                 err =3D libbpf_get_error(btf);
+>                 pr_debug("loading kernel BTF '%s': %d\n", path, err);
+> @@ -4960,7 +4962,11 @@ struct btf *btf__load_vmlinux_btf(void)
+>                 return btf;
+>         }
+>
+> -       pr_warn("failed to find valid kernel BTF\n");
+> +       if (found_path)
 
-Thank you everyone. Amrit - please take care of above comments
-when you post next revision and as suggested please add other
-architecture mailing lists using the devicetree. Thank you. 
+wrong condition, should be !found_path (or rather swap below pr_warns)?
 
--- 
----Trilok Soni
+> +               pr_warn("failed to find BTF in kernel (was CONFIG_DEBUG_I=
+NFO_BTF enabled?)\n");
+> +       else
+> +               pr_warn("failed to find a kernel (typically /sys/kernel/b=
+tf/vmlinux) for BTF data\n");
 
+"find a kernel for BTF data"? a) "kernel for BTF" reads weird and b)
+we found it (found_path=3D=3Dtrue), we just failed to load it. So how
+about:
+
+  "failed to load kernel BTF data (typically at /sys/kernel/btf/vmlinux)"?
+
+But I'd say we should do a bit better here. If /sys/kernel/btf/vmlinux
+is there, we should probably stop and not even try fallback paths. And
+so if we fail loading /sys/kernel/btf/vmlinux, then report failure
+(probably with error code as well). If we have to fallback, then we
+can remember the path we did find, but failed to load, and report that
+(instead of wrongly reporting /sys/kernel/btf/vmlinux).
+
+
+> +
+>         return libbpf_err_ptr(-ESRCH);
+>  }
+>
+> --
+> 2.43.0.429.g432eaa2c6b-goog
+>
 
