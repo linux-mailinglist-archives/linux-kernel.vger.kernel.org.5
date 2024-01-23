@@ -1,792 +1,207 @@
-Return-Path: <linux-kernel+bounces-35528-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35529-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 811FB83927E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:20:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D23D839284
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:22:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5F7A1C22E24
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:20:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F0211F2937A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:22:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21E6B5FEF9;
-	Tue, 23 Jan 2024 15:19:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3E4C5FDBE;
+	Tue, 23 Jan 2024 15:22:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IWkmjfpC"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ycPf6fz5"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27B145FDC2
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 15:19:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CC525FBB9
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 15:22:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706023187; cv=none; b=Yg0gXLMshutT1gs6bFkIUB4r3KjGLLGMnKnfYyE6BDx+vQO8M9OfybaSnlHyoUWqcD09+urH19lnSuGPbubAlmqrRyk17yCP8mVqho5cK0acXEhNE085OaeVR2bmlFYVyrbgTtaE+deB27/KB2ZbjSCiFjyfA8VG0gRbgiBtLvE=
+	t=1706023325; cv=none; b=Y/4HUPfPINz6xY3p4xVE2OoYt2nRegDpOYeRX72dfDxba54LWpIUgvTq8oJ5VDYsG+QcUMHejPHHe3L+/erJgVzMOQfqzJr0jqSOAHsfTkkxsaFtNpAgcLqtbnrreBxAwpGegYMlgJmGO8z1zh2y5AYUthabQJwZyYQt1La2Jik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706023187; c=relaxed/simple;
-	bh=NF+mz2jKLiduR6BZaLTs8VgCi20RB059mZWbGjBxlIw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=plhCiT3NZec2j8Kr7IGU3Wuv106oMP7aOEkY89pmaRJkyDeh99zlt7RVeVMQu0dpW65ttJ8qgP28Ns/A5XS5Zl8DdqvE0OnKY9KVZQr4HxXtI1B/95EiCVMUOcf2HnHHmtfqxQ9nNlKf4+d1pqCjgfugNHftQaTdT22hSOv0zcI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IWkmjfpC; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706023184;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AoSpFDFK44DR8MwXxh+Ac0jJE9pNgV7MZIDwRdgh1to=;
-	b=IWkmjfpClaLhIxYyaYYZnHIxGd0TmtRBpPeVvC89jP3xfwLGnmJ2wrOxWuauoXUbk+cVs7
-	JRZRegVAps0oomQ1UeQay9VqEl2VmL2M2ZaiocflEzcyE5V3oj18Xl+JhlOkG3zIrmNmyU
-	gqRrT5A3ZXtGztx6VLOwAKL/Xh2krQ4=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-314-iOgBQLgcNNOIdh0xEieoXA-1; Tue, 23 Jan 2024 10:19:42 -0500
-X-MC-Unique: iOgBQLgcNNOIdh0xEieoXA-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40e8d72e1b3so45545945e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:19:42 -0800 (PST)
+	s=arc-20240116; t=1706023325; c=relaxed/simple;
+	bh=F80sAY6BWL4epMSCunVWUrYTS0DAbdgdYqbysLTIzZQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AxAd0yx/rb8GteWK03NP5o8UR93ygisxu607AXYy+QjrQelwbbsJYb7zl8L3MCF99t+wKKrGLFsDh6C1KoL1jM9/aWgMXtsb7oF60nsIyph55OsFJN+7OhNrYCoUF4+uip/sidWPRn+cEM+7EXm8ho6en1ZEmpf8vrTxkTN5Ap0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ycPf6fz5; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40e8fec0968so57348475e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:22:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706023322; x=1706628122; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+iqbrl7Faj43DJR0cDgctJVgU3zqJadpG4Ot13HktmM=;
+        b=ycPf6fz5csXGfS31zj7oyV48O+XTY9UO6VS32OljeyLVpMPhlQCyGxFtUGeq+xhWyF
+         KkdMf8UQ8qvE0QmrtAeZ7Y6hsgxmKhm3EdSbfUBqXD7u4nO1VlhXTMwLRQ1bAz+lOvGH
+         c7AP5KSeiD+WrFbLURVmEcBZ1GcfuLvZ24kgvG/LRkQRXFOtn32ATeyoWzAjGA1YAzFp
+         TWLEGcQpa/0CpgXak7MC5Ku53QTltrGdLcDX9n4aLDZ1xctJi9fFMPnXIdOiC2XpaJ4e
+         Y+eNPoUN6kCaduavLn+1gxEX+1CVeWSZv56LWDrdlE/yS7l/jztekksysM7Hnrdjz1PK
+         +Zfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706023181; x=1706627981;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AoSpFDFK44DR8MwXxh+Ac0jJE9pNgV7MZIDwRdgh1to=;
-        b=StEVA50iYMMib8tcZaNkDpd/QhdBDH0WT4D1kgj1tmPf0eg2ahHS7qamqzJlmhB08J
-         x+lC3AMcYlhI8JfiVqd8Xg+pWkCxPXr97BAKvCOu/rHbx0lFKSoGt/mrj4sW0SiBtaD1
-         s0ZSAJ7BwZFO6tIlV1xXHQxO1aHOKz15etSupPWHUPkyBm+OlYCaYoUNETsZKmIVmwu3
-         3aKh65bAY9UVBGOb95hLD9XZaWvizaEPp1G3z0NWWenH8k8lhkqTweBxi+dWv2JDgMTR
-         4oCESIXK5KmR7j02eoef78WtubQYjz4BV+dwQ5QzgjVNIb5r6p8w4KLki3SnbcAKpRWE
-         iOug==
-X-Gm-Message-State: AOJu0YzU0buohJNjgTpnTHDvGdbctYMMMzM+0Kv9s/p5T3qFqGC0lJ/w
-	SotTkZ2P+iPKGFmsC5eG7NomNLbEme0hDQn1eHlBH4YC2w4EzRjo2JCkP98UW6k3Q4Ktiq/aS77
-	orDLT95niHkWTTHmRniezCgqmfABmxRmS3bn1G5wkFKp/sd9xQDG21n/9WxjvmMdhJEIlpQ==
-X-Received: by 2002:a05:600c:4356:b0:40e:44de:d2a9 with SMTP id r22-20020a05600c435600b0040e44ded2a9mr248909wme.208.1706023180840;
-        Tue, 23 Jan 2024 07:19:40 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFN2FU5rN6r3P/E+17g6thuqOhuaIEZugIHPWOXklwHnyZFi+dzUnRZqQO244WDRgjzGz8LIA==
-X-Received: by 2002:a05:600c:4356:b0:40e:44de:d2a9 with SMTP id r22-20020a05600c435600b0040e44ded2a9mr248899wme.208.1706023180325;
-        Tue, 23 Jan 2024 07:19:40 -0800 (PST)
-Received: from redhat.com ([2.52.15.165])
-        by smtp.gmail.com with ESMTPSA id h5-20020a05600c314500b0040d7c3d5454sm46737741wmo.3.2024.01.23.07.19.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 07:19:39 -0800 (PST)
-Date: Tue, 23 Jan 2024 10:19:35 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc: Stefan Hajnoczi <stefanha@redhat.com>,
-	Stefano Garzarella <sgarzare@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Bobby Eshleman <bobby.eshleman@bytedance.com>, kvm@vger.kernel.org,
-	virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel@sberdevices.ru,
-	oxffffaa@gmail.com
-Subject: Re: [PATCH net-next v2] vsock/test: add '--peer-port' input argument
-Message-ID: <20240123101913-mutt-send-email-mst@kernel.org>
-References: <20240123072750.4084181-1-avkrasnov@salutedevices.com>
+        d=1e100.net; s=20230601; t=1706023322; x=1706628122;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+iqbrl7Faj43DJR0cDgctJVgU3zqJadpG4Ot13HktmM=;
+        b=fUADURt9MRZiUt+Wprtb/xucFPbXLLWVGZnhMLbggUUZV/6du80LDO+TX2b0rfaHPi
+         k2JNV0Tn8zaAFEAMkCl+J0L8KYV8EXwTSp3yldoxEvm+EQz1/6s+CFnxrxNSmnYwaLGW
+         CahemaxfmlaHDO4u8nNzohEWV18LdQiabJ8Cl3RXMG+0/BkjQeVANdeYCKDrGDjxafBs
+         vvRVQzzMGI1NoKWbMNagyRIYmwVmuOH0k4SmhwM/19V0jkz4Z1/VTQ6Gvb/DRIi4BnC8
+         ajcvMi/tUEjAf14T7DnAfSiLS4T/1CLLvO/v2iRr6IYtkdE7bwEAS6FctMs0IpKbC/vI
+         QeFQ==
+X-Gm-Message-State: AOJu0YyA7oToorF/Bb6yEg3eOJ5jLwx+bsk5qy0g/dw2sX0KaBlEg/XG
+	F1p4x5Rny/kbZMKtMutn2acR4L2hn3wv94J6P6curGubFeIeo9c+kREn8qx7Y3s=
+X-Google-Smtp-Source: AGHT+IEOXfl3wIkINoGBo2a9LOinro00BQdph/9bUAlnOgmOSaOIUWOLM6CynErJPfMMOPU57jtqng==
+X-Received: by 2002:a05:600c:63c4:b0:40e:76b7:e8e3 with SMTP id dx4-20020a05600c63c400b0040e76b7e8e3mr239893wmb.226.1706023322336;
+        Tue, 23 Jan 2024 07:22:02 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id m22-20020a05600c4f5600b0040ebf603a89sm1880424wmq.11.2024.01.23.07.22.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jan 2024 07:22:01 -0800 (PST)
+Message-ID: <75ab9162-ed02-479d-92a1-7cfabff6b32e@linaro.org>
+Date: Tue, 23 Jan 2024 16:22:00 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240123072750.4084181-1-avkrasnov@salutedevices.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: clock: support NXP i.MX95
+Content-Language: en-US
+To: Peng Fan <peng.fan@nxp.com>, "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "conor+dt@kernel.org" <conor+dt@kernel.org>,
+ "abelvesa@kernel.org" <abelvesa@kernel.org>,
+ "mturquette@baylibre.com" <mturquette@baylibre.com>,
+ "sboyd@kernel.org" <sboyd@kernel.org>,
+ "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+ "kernel@pengutronix.de" <kernel@pengutronix.de>,
+ "festevam@gmail.com" <festevam@gmail.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ dl-linux-imx <linux-imx@nxp.com>,
+ "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20240121114623.1418597-1-peng.fan@oss.nxp.com>
+ <273a80a7-2a60-4490-9c3c-c33dc14be9e7@linaro.org>
+ <DU0PR04MB9417A8F4230D2C7C76D1550988742@DU0PR04MB9417.eurprd04.prod.outlook.com>
+ <78e296fb-a3dc-4e00-94bc-91dab7294887@linaro.org>
+ <DU0PR04MB94173B34D426181D285B995088742@DU0PR04MB9417.eurprd04.prod.outlook.com>
+ <7afbabca-e0bb-48a9-8c5a-7582f7ae3a6e@linaro.org>
+ <DU0PR04MB9417187117429F7C7BE856F188742@DU0PR04MB9417.eurprd04.prod.outlook.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <DU0PR04MB9417187117429F7C7BE856F188742@DU0PR04MB9417.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jan 23, 2024 at 10:27:50AM +0300, Arseniy Krasnov wrote:
-> Implement port for given CID as input argument instead of using
-> hardcoded value '1234'. This allows to run different test instances
-> on a single CID. Port argument is not required parameter and if it is
-> not set, then default value will be '1234' - thus we preserve previous
-> behaviour.
+On 23/01/2024 16:13, Peng Fan wrote:
+>> Subject: Re: [PATCH] dt-bindings: clock: support NXP i.MX95
+>>
+>> On 23/01/2024 14:59, Peng Fan wrote:
+>>>> Subject: Re: [PATCH] dt-bindings: clock: support NXP i.MX95
+>>>>
+>>>> On 23/01/2024 14:08, Peng Fan wrote:
+>>>>> Hi Conor, Krzysztof
+>>>>>
+>>>>> I replied you both here.
+>>>>>
+>>>>>> Subject: Re: [PATCH] dt-bindings: clock: support NXP i.MX95
+>>>>>>
+>>>>>> On 21/01/2024 12:46, Peng Fan (OSS) wrote:
+>>>>>>> From: Peng Fan <peng.fan@nxp.com>
+>>>>>>>
+>>>>>>> Add i.MX95 clock dt-binding header file
+>>>>>>>
+>>>>>>> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+>>>>>>
+>>>>>> This should be squashed with respective binding patch.
+>>>>>
+>>>>> i.MX95 use SCMI firmware, the SCP processor handles
+>>>>> clock/power/pinmux/reset/performance and etc.
+>>>>>
+>>>>> I just add the index that SCMI exports, and Linux/UBoot will use the
+>>>>> index and go through SCMI to do real HW configuration.
+>>>>>
+>>>>> In such case, should I still add HW information in a yaml binding doc?
+>>>>> I am not sure what should be added if yes.
+>>>>
+>>>> Then why do you need it in the binding? I don't see any use of this.
+>>>
+>>> ok, should I just add the clk index header in same folder as soc dtsi?
+>>
+>> I don't know yet. How are these being used, except SCMI firmware?
 > 
-> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+> Yeah. The clock module is managed by SCMI firmware, others are
+> not able to access because of Trusted Resource Domain controller
+> blocked the access from linux or else.
+> 
+> The linux side use such a node, and pass clk index to let SCMI configure.
+>                         scmi_clk: protocol@14 {                                                     
+>                                 reg = <0x14>;                                                       
+>                                 #clock-cells = <1>;                                                 
+>                         };
+> 
 
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
+OK, then my usual recommendation is that this does not go to the binding
+and use numbers directly in the DTS. There is no binding here between
+Linux drivers and DTS.
 
-> ---
->  Changelog:
->  v1 -> v2:
->   * Reword usage message.
->   * Add commas after last field in 'opts' declaration.
->   * 'RFC' -> 'net-next'.
-> 
->  tools/testing/vsock/util.c                |  17 +++-
->  tools/testing/vsock/util.h                |   4 +
->  tools/testing/vsock/vsock_diag_test.c     |  21 +++--
->  tools/testing/vsock/vsock_test.c          | 102 +++++++++++++---------
->  tools/testing/vsock/vsock_test_zerocopy.c |  12 +--
->  tools/testing/vsock/vsock_uring_test.c    |  17 +++-
->  6 files changed, 115 insertions(+), 58 deletions(-)
-> 
-> diff --git a/tools/testing/vsock/util.c b/tools/testing/vsock/util.c
-> index ae2b33c21c45..554b290fefdc 100644
-> --- a/tools/testing/vsock/util.c
-> +++ b/tools/testing/vsock/util.c
-> @@ -33,8 +33,7 @@ void init_signals(void)
->  	signal(SIGPIPE, SIG_IGN);
->  }
->  
-> -/* Parse a CID in string representation */
-> -unsigned int parse_cid(const char *str)
-> +static unsigned int parse_uint(const char *str, const char *err_str)
->  {
->  	char *endptr = NULL;
->  	unsigned long n;
-> @@ -42,12 +41,24 @@ unsigned int parse_cid(const char *str)
->  	errno = 0;
->  	n = strtoul(str, &endptr, 10);
->  	if (errno || *endptr != '\0') {
-> -		fprintf(stderr, "malformed CID \"%s\"\n", str);
-> +		fprintf(stderr, "malformed %s \"%s\"\n", err_str, str);
->  		exit(EXIT_FAILURE);
->  	}
->  	return n;
->  }
->  
-> +/* Parse a CID in string representation */
-> +unsigned int parse_cid(const char *str)
-> +{
-> +	return parse_uint(str, "CID");
-> +}
-> +
-> +/* Parse a port in string representation */
-> +unsigned int parse_port(const char *str)
-> +{
-> +	return parse_uint(str, "port");
-> +}
-> +
->  /* Wait for the remote to close the connection */
->  void vsock_wait_remote_close(int fd)
->  {
-> diff --git a/tools/testing/vsock/util.h b/tools/testing/vsock/util.h
-> index 03c88d0cb861..e95e62485959 100644
-> --- a/tools/testing/vsock/util.h
-> +++ b/tools/testing/vsock/util.h
-> @@ -12,10 +12,13 @@ enum test_mode {
->  	TEST_MODE_SERVER
->  };
->  
-> +#define DEFAULT_PEER_PORT	1234
-> +
->  /* Test runner options */
->  struct test_opts {
->  	enum test_mode mode;
->  	unsigned int peer_cid;
-> +	unsigned int peer_port;
->  };
->  
->  /* A test case definition.  Test functions must print failures to stderr and
-> @@ -35,6 +38,7 @@ struct test_case {
->  
->  void init_signals(void);
->  unsigned int parse_cid(const char *str);
-> +unsigned int parse_port(const char *str);
->  int vsock_stream_connect(unsigned int cid, unsigned int port);
->  int vsock_bind_connect(unsigned int cid, unsigned int port,
->  		       unsigned int bind_port, int type);
-> diff --git a/tools/testing/vsock/vsock_diag_test.c b/tools/testing/vsock/vsock_diag_test.c
-> index fa927ad16f8a..9d61b1f1c4c3 100644
-> --- a/tools/testing/vsock/vsock_diag_test.c
-> +++ b/tools/testing/vsock/vsock_diag_test.c
-> @@ -342,7 +342,7 @@ static void test_listen_socket_server(const struct test_opts *opts)
->  	} addr = {
->  		.svm = {
->  			.svm_family = AF_VSOCK,
-> -			.svm_port = 1234,
-> +			.svm_port = opts->peer_port,
->  			.svm_cid = VMADDR_CID_ANY,
->  		},
->  	};
-> @@ -378,7 +378,7 @@ static void test_connect_client(const struct test_opts *opts)
->  	LIST_HEAD(sockets);
->  	struct vsock_stat *st;
->  
-> -	fd = vsock_stream_connect(opts->peer_cid, 1234);
-> +	fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->  	if (fd < 0) {
->  		perror("connect");
->  		exit(EXIT_FAILURE);
-> @@ -403,7 +403,7 @@ static void test_connect_server(const struct test_opts *opts)
->  	LIST_HEAD(sockets);
->  	int client_fd;
->  
-> -	client_fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
-> +	client_fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->  	if (client_fd < 0) {
->  		perror("accept");
->  		exit(EXIT_FAILURE);
-> @@ -461,6 +461,11 @@ static const struct option longopts[] = {
->  		.has_arg = required_argument,
->  		.val = 'p',
->  	},
-> +	{
-> +		.name = "peer-port",
-> +		.has_arg = required_argument,
-> +		.val = 'q',
-> +	},
->  	{
->  		.name = "list",
->  		.has_arg = no_argument,
-> @@ -481,7 +486,7 @@ static const struct option longopts[] = {
->  
->  static void usage(void)
->  {
-> -	fprintf(stderr, "Usage: vsock_diag_test [--help] [--control-host=<host>] --control-port=<port> --mode=client|server --peer-cid=<cid> [--list] [--skip=<test_id>]\n"
-> +	fprintf(stderr, "Usage: vsock_diag_test [--help] [--control-host=<host>] --control-port=<port> --mode=client|server --peer-cid=<cid> [--peer-port=<port>] [--list] [--skip=<test_id>]\n"
->  		"\n"
->  		"  Server: vsock_diag_test --control-port=1234 --mode=server --peer-cid=3\n"
->  		"  Client: vsock_diag_test --control-host=192.168.0.1 --control-port=1234 --mode=client --peer-cid=2\n"
-> @@ -503,9 +508,11 @@ static void usage(void)
->  		"  --control-port <port>  Server port to listen on/connect to\n"
->  		"  --mode client|server   Server or client mode\n"
->  		"  --peer-cid <cid>       CID of the other side\n"
-> +		"  --peer-port <port>     AF_VSOCK port used for the test [default: %d]\n"
->  		"  --list                 List of tests that will be executed\n"
->  		"  --skip <test_id>       Test ID to skip;\n"
-> -		"                         use multiple --skip options to skip more tests\n"
-> +		"                         use multiple --skip options to skip more tests\n",
-> +		DEFAULT_PEER_PORT
->  		);
->  	exit(EXIT_FAILURE);
->  }
-> @@ -517,6 +524,7 @@ int main(int argc, char **argv)
->  	struct test_opts opts = {
->  		.mode = TEST_MODE_UNSET,
->  		.peer_cid = VMADDR_CID_ANY,
-> +		.peer_port = DEFAULT_PEER_PORT,
->  	};
->  
->  	init_signals();
-> @@ -544,6 +552,9 @@ int main(int argc, char **argv)
->  		case 'p':
->  			opts.peer_cid = parse_cid(optarg);
->  			break;
-> +		case 'q':
-> +			opts.peer_port = parse_port(optarg);
-> +			break;
->  		case 'P':
->  			control_port = optarg;
->  			break;
-> diff --git a/tools/testing/vsock/vsock_test.c b/tools/testing/vsock/vsock_test.c
-> index 66246d81d654..f851f8961247 100644
-> --- a/tools/testing/vsock/vsock_test.c
-> +++ b/tools/testing/vsock/vsock_test.c
-> @@ -34,7 +34,7 @@ static void test_stream_connection_reset(const struct test_opts *opts)
->  	} addr = {
->  		.svm = {
->  			.svm_family = AF_VSOCK,
-> -			.svm_port = 1234,
-> +			.svm_port = opts->peer_port,
->  			.svm_cid = opts->peer_cid,
->  		},
->  	};
-> @@ -70,7 +70,7 @@ static void test_stream_bind_only_client(const struct test_opts *opts)
->  	} addr = {
->  		.svm = {
->  			.svm_family = AF_VSOCK,
-> -			.svm_port = 1234,
-> +			.svm_port = opts->peer_port,
->  			.svm_cid = opts->peer_cid,
->  		},
->  	};
-> @@ -112,7 +112,7 @@ static void test_stream_bind_only_server(const struct test_opts *opts)
->  	} addr = {
->  		.svm = {
->  			.svm_family = AF_VSOCK,
-> -			.svm_port = 1234,
-> +			.svm_port = opts->peer_port,
->  			.svm_cid = VMADDR_CID_ANY,
->  		},
->  	};
-> @@ -138,7 +138,7 @@ static void test_stream_client_close_client(const struct test_opts *opts)
->  {
->  	int fd;
->  
-> -	fd = vsock_stream_connect(opts->peer_cid, 1234);
-> +	fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->  	if (fd < 0) {
->  		perror("connect");
->  		exit(EXIT_FAILURE);
-> @@ -152,7 +152,7 @@ static void test_stream_client_close_server(const struct test_opts *opts)
->  {
->  	int fd;
->  
-> -	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
-> +	fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->  	if (fd < 0) {
->  		perror("accept");
->  		exit(EXIT_FAILURE);
-> @@ -173,7 +173,7 @@ static void test_stream_server_close_client(const struct test_opts *opts)
->  {
->  	int fd;
->  
-> -	fd = vsock_stream_connect(opts->peer_cid, 1234);
-> +	fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->  	if (fd < 0) {
->  		perror("connect");
->  		exit(EXIT_FAILURE);
-> @@ -194,7 +194,7 @@ static void test_stream_server_close_server(const struct test_opts *opts)
->  {
->  	int fd;
->  
-> -	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
-> +	fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->  	if (fd < 0) {
->  		perror("accept");
->  		exit(EXIT_FAILURE);
-> @@ -215,7 +215,7 @@ static void test_stream_multiconn_client(const struct test_opts *opts)
->  	int i;
->  
->  	for (i = 0; i < MULTICONN_NFDS; i++) {
-> -		fds[i] = vsock_stream_connect(opts->peer_cid, 1234);
-> +		fds[i] = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->  		if (fds[i] < 0) {
->  			perror("connect");
->  			exit(EXIT_FAILURE);
-> @@ -239,7 +239,7 @@ static void test_stream_multiconn_server(const struct test_opts *opts)
->  	int i;
->  
->  	for (i = 0; i < MULTICONN_NFDS; i++) {
-> -		fds[i] = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
-> +		fds[i] = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->  		if (fds[i] < 0) {
->  			perror("accept");
->  			exit(EXIT_FAILURE);
-> @@ -267,9 +267,9 @@ static void test_msg_peek_client(const struct test_opts *opts,
->  	int i;
->  
->  	if (seqpacket)
-> -		fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
-> +		fd = vsock_seqpacket_connect(opts->peer_cid, opts->peer_port);
->  	else
-> -		fd = vsock_stream_connect(opts->peer_cid, 1234);
-> +		fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->  
->  	if (fd < 0) {
->  		perror("connect");
-> @@ -295,9 +295,9 @@ static void test_msg_peek_server(const struct test_opts *opts,
->  	int fd;
->  
->  	if (seqpacket)
-> -		fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
-> +		fd = vsock_seqpacket_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->  	else
-> -		fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
-> +		fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->  
->  	if (fd < 0) {
->  		perror("accept");
-> @@ -363,7 +363,7 @@ static void test_seqpacket_msg_bounds_client(const struct test_opts *opts)
->  	int msg_count;
->  	int fd;
->  
-> -	fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
-> +	fd = vsock_seqpacket_connect(opts->peer_cid, opts->peer_port);
->  	if (fd < 0) {
->  		perror("connect");
->  		exit(EXIT_FAILURE);
-> @@ -434,7 +434,7 @@ static void test_seqpacket_msg_bounds_server(const struct test_opts *opts)
->  	struct msghdr msg = {0};
->  	struct iovec iov = {0};
->  
-> -	fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
-> +	fd = vsock_seqpacket_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->  	if (fd < 0) {
->  		perror("accept");
->  		exit(EXIT_FAILURE);
-> @@ -505,7 +505,7 @@ static void test_seqpacket_msg_trunc_client(const struct test_opts *opts)
->  	int fd;
->  	char buf[MESSAGE_TRUNC_SZ];
->  
-> -	fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
-> +	fd = vsock_seqpacket_connect(opts->peer_cid, opts->peer_port);
->  	if (fd < 0) {
->  		perror("connect");
->  		exit(EXIT_FAILURE);
-> @@ -524,7 +524,7 @@ static void test_seqpacket_msg_trunc_server(const struct test_opts *opts)
->  	struct msghdr msg = {0};
->  	struct iovec iov = {0};
->  
-> -	fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
-> +	fd = vsock_seqpacket_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->  	if (fd < 0) {
->  		perror("accept");
->  		exit(EXIT_FAILURE);
-> @@ -575,7 +575,7 @@ static void test_seqpacket_timeout_client(const struct test_opts *opts)
->  	time_t read_enter_ns;
->  	time_t read_overhead_ns;
->  
-> -	fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
-> +	fd = vsock_seqpacket_connect(opts->peer_cid, opts->peer_port);
->  	if (fd < 0) {
->  		perror("connect");
->  		exit(EXIT_FAILURE);
-> @@ -620,7 +620,7 @@ static void test_seqpacket_timeout_server(const struct test_opts *opts)
->  {
->  	int fd;
->  
-> -	fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
-> +	fd = vsock_seqpacket_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->  	if (fd < 0) {
->  		perror("accept");
->  		exit(EXIT_FAILURE);
-> @@ -639,7 +639,7 @@ static void test_seqpacket_bigmsg_client(const struct test_opts *opts)
->  
->  	len = sizeof(sock_buf_size);
->  
-> -	fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
-> +	fd = vsock_seqpacket_connect(opts->peer_cid, opts->peer_port);
->  	if (fd < 0) {
->  		perror("connect");
->  		exit(EXIT_FAILURE);
-> @@ -671,7 +671,7 @@ static void test_seqpacket_bigmsg_server(const struct test_opts *opts)
->  {
->  	int fd;
->  
-> -	fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
-> +	fd = vsock_seqpacket_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->  	if (fd < 0) {
->  		perror("accept");
->  		exit(EXIT_FAILURE);
-> @@ -692,7 +692,7 @@ static void test_seqpacket_invalid_rec_buffer_client(const struct test_opts *opt
->  	unsigned char *buf2;
->  	int buf_size = getpagesize() * 3;
->  
-> -	fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
-> +	fd = vsock_seqpacket_connect(opts->peer_cid, opts->peer_port);
->  	if (fd < 0) {
->  		perror("connect");
->  		exit(EXIT_FAILURE);
-> @@ -732,7 +732,7 @@ static void test_seqpacket_invalid_rec_buffer_server(const struct test_opts *opt
->  	int flags = MAP_PRIVATE | MAP_ANONYMOUS;
->  	int i;
->  
-> -	fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
-> +	fd = vsock_seqpacket_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->  	if (fd < 0) {
->  		perror("accept");
->  		exit(EXIT_FAILURE);
-> @@ -808,7 +808,7 @@ static void test_stream_poll_rcvlowat_server(const struct test_opts *opts)
->  	int fd;
->  	int i;
->  
-> -	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
-> +	fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->  	if (fd < 0) {
->  		perror("accept");
->  		exit(EXIT_FAILURE);
-> @@ -839,7 +839,7 @@ static void test_stream_poll_rcvlowat_client(const struct test_opts *opts)
->  	short poll_flags;
->  	int fd;
->  
-> -	fd = vsock_stream_connect(opts->peer_cid, 1234);
-> +	fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->  	if (fd < 0) {
->  		perror("connect");
->  		exit(EXIT_FAILURE);
-> @@ -906,9 +906,9 @@ static void test_inv_buf_client(const struct test_opts *opts, bool stream)
->  	int fd;
->  
->  	if (stream)
-> -		fd = vsock_stream_connect(opts->peer_cid, 1234);
-> +		fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->  	else
-> -		fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
-> +		fd = vsock_seqpacket_connect(opts->peer_cid, opts->peer_port);
->  
->  	if (fd < 0) {
->  		perror("connect");
-> @@ -941,9 +941,9 @@ static void test_inv_buf_server(const struct test_opts *opts, bool stream)
->  	int fd;
->  
->  	if (stream)
-> -		fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
-> +		fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->  	else
-> -		fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
-> +		fd = vsock_seqpacket_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->  
->  	if (fd < 0) {
->  		perror("accept");
-> @@ -986,7 +986,7 @@ static void test_stream_virtio_skb_merge_client(const struct test_opts *opts)
->  {
->  	int fd;
->  
-> -	fd = vsock_stream_connect(opts->peer_cid, 1234);
-> +	fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->  	if (fd < 0) {
->  		perror("connect");
->  		exit(EXIT_FAILURE);
-> @@ -1015,7 +1015,7 @@ static void test_stream_virtio_skb_merge_server(const struct test_opts *opts)
->  	unsigned char buf[64];
->  	int fd;
->  
-> -	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
-> +	fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->  	if (fd < 0) {
->  		perror("accept");
->  		exit(EXIT_FAILURE);
-> @@ -1108,7 +1108,7 @@ static void test_stream_shutwr_client(const struct test_opts *opts)
->  
->  	sigaction(SIGPIPE, &act, NULL);
->  
-> -	fd = vsock_stream_connect(opts->peer_cid, 1234);
-> +	fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->  	if (fd < 0) {
->  		perror("connect");
->  		exit(EXIT_FAILURE);
-> @@ -1130,7 +1130,7 @@ static void test_stream_shutwr_server(const struct test_opts *opts)
->  {
->  	int fd;
->  
-> -	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
-> +	fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->  	if (fd < 0) {
->  		perror("accept");
->  		exit(EXIT_FAILURE);
-> @@ -1151,7 +1151,7 @@ static void test_stream_shutrd_client(const struct test_opts *opts)
->  
->  	sigaction(SIGPIPE, &act, NULL);
->  
-> -	fd = vsock_stream_connect(opts->peer_cid, 1234);
-> +	fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->  	if (fd < 0) {
->  		perror("connect");
->  		exit(EXIT_FAILURE);
-> @@ -1170,7 +1170,7 @@ static void test_stream_shutrd_server(const struct test_opts *opts)
->  {
->  	int fd;
->  
-> -	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
-> +	fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->  	if (fd < 0) {
->  		perror("accept");
->  		exit(EXIT_FAILURE);
-> @@ -1193,7 +1193,7 @@ static void test_double_bind_connect_server(const struct test_opts *opts)
->  	struct sockaddr_vm sa_client;
->  	socklen_t socklen_client = sizeof(sa_client);
->  
-> -	listen_fd = vsock_stream_listen(VMADDR_CID_ANY, 1234);
-> +	listen_fd = vsock_stream_listen(VMADDR_CID_ANY, opts->peer_port);
->  
->  	for (i = 0; i < 2; i++) {
->  		control_writeln("LISTENING");
-> @@ -1226,7 +1226,13 @@ static void test_double_bind_connect_client(const struct test_opts *opts)
->  		/* Wait until server is ready to accept a new connection */
->  		control_expectln("LISTENING");
->  
-> -		client_fd = vsock_bind_connect(opts->peer_cid, 1234, 4321, SOCK_STREAM);
-> +		/* We use 'peer_port + 1' as "some" port for the 'bind()'
-> +		 * call. It is safe for overflow, but must be considered,
-> +		 * when running multiple test applications simultaneously
-> +		 * where 'peer-port' argument differs by 1.
-> +		 */
-> +		client_fd = vsock_bind_connect(opts->peer_cid, opts->peer_port,
-> +					       opts->peer_port + 1, SOCK_STREAM);
->  
->  		close(client_fd);
->  	}
-> @@ -1246,7 +1252,7 @@ static void test_stream_rcvlowat_def_cred_upd_client(const struct test_opts *opt
->  	void *buf;
->  	int fd;
->  
-> -	fd = vsock_stream_connect(opts->peer_cid, 1234);
-> +	fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->  	if (fd < 0) {
->  		perror("connect");
->  		exit(EXIT_FAILURE);
-> @@ -1282,7 +1288,7 @@ static void test_stream_credit_update_test(const struct test_opts *opts,
->  	void *buf;
->  	int fd;
->  
-> -	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
-> +	fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->  	if (fd < 0) {
->  		perror("accept");
->  		exit(EXIT_FAILURE);
-> @@ -1542,6 +1548,11 @@ static const struct option longopts[] = {
->  		.has_arg = required_argument,
->  		.val = 'p',
->  	},
-> +	{
-> +		.name = "peer-port",
-> +		.has_arg = required_argument,
-> +		.val = 'q',
-> +	},
->  	{
->  		.name = "list",
->  		.has_arg = no_argument,
-> @@ -1562,7 +1573,7 @@ static const struct option longopts[] = {
->  
->  static void usage(void)
->  {
-> -	fprintf(stderr, "Usage: vsock_test [--help] [--control-host=<host>] --control-port=<port> --mode=client|server --peer-cid=<cid> [--list] [--skip=<test_id>]\n"
-> +	fprintf(stderr, "Usage: vsock_test [--help] [--control-host=<host>] --control-port=<port> --mode=client|server --peer-cid=<cid> [--peer-port=<port>] [--list] [--skip=<test_id>]\n"
->  		"\n"
->  		"  Server: vsock_test --control-port=1234 --mode=server --peer-cid=3\n"
->  		"  Client: vsock_test --control-host=192.168.0.1 --control-port=1234 --mode=client --peer-cid=2\n"
-> @@ -1577,6 +1588,9 @@ static void usage(void)
->  		"connect to.\n"
->  		"\n"
->  		"The CID of the other side must be given with --peer-cid=<cid>.\n"
-> +		"During the test, two AF_VSOCK ports will be used: the port\n"
-> +		"specified with --peer-port=<port> (or the default port)\n"
-> +		"and the next one.\n"
->  		"\n"
->  		"Options:\n"
->  		"  --help                 This help message\n"
-> @@ -1584,9 +1598,11 @@ static void usage(void)
->  		"  --control-port <port>  Server port to listen on/connect to\n"
->  		"  --mode client|server   Server or client mode\n"
->  		"  --peer-cid <cid>       CID of the other side\n"
-> +		"  --peer-port <port>     AF_VSOCK port used for the test [default: %d]\n"
->  		"  --list                 List of tests that will be executed\n"
->  		"  --skip <test_id>       Test ID to skip;\n"
-> -		"                         use multiple --skip options to skip more tests\n"
-> +		"                         use multiple --skip options to skip more tests\n",
-> +		DEFAULT_PEER_PORT
->  		);
->  	exit(EXIT_FAILURE);
->  }
-> @@ -1598,6 +1614,7 @@ int main(int argc, char **argv)
->  	struct test_opts opts = {
->  		.mode = TEST_MODE_UNSET,
->  		.peer_cid = VMADDR_CID_ANY,
-> +		.peer_port = DEFAULT_PEER_PORT,
->  	};
->  
->  	srand(time(NULL));
-> @@ -1626,6 +1643,9 @@ int main(int argc, char **argv)
->  		case 'p':
->  			opts.peer_cid = parse_cid(optarg);
->  			break;
-> +		case 'q':
-> +			opts.peer_port = parse_port(optarg);
-> +			break;
->  		case 'P':
->  			control_port = optarg;
->  			break;
-> diff --git a/tools/testing/vsock/vsock_test_zerocopy.c b/tools/testing/vsock/vsock_test_zerocopy.c
-> index a16ff76484e6..04c376b6937f 100644
-> --- a/tools/testing/vsock/vsock_test_zerocopy.c
-> +++ b/tools/testing/vsock/vsock_test_zerocopy.c
-> @@ -152,9 +152,9 @@ static void test_client(const struct test_opts *opts,
->  	int fd;
->  
->  	if (sock_seqpacket)
-> -		fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
-> +		fd = vsock_seqpacket_connect(opts->peer_cid, opts->peer_port);
->  	else
-> -		fd = vsock_stream_connect(opts->peer_cid, 1234);
-> +		fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->  
->  	if (fd < 0) {
->  		perror("connect");
-> @@ -248,9 +248,9 @@ static void test_server(const struct test_opts *opts,
->  	int fd;
->  
->  	if (sock_seqpacket)
-> -		fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
-> +		fd = vsock_seqpacket_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->  	else
-> -		fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
-> +		fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->  
->  	if (fd < 0) {
->  		perror("accept");
-> @@ -323,7 +323,7 @@ void test_stream_msgzcopy_empty_errq_client(const struct test_opts *opts)
->  	ssize_t res;
->  	int fd;
->  
-> -	fd = vsock_stream_connect(opts->peer_cid, 1234);
-> +	fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->  	if (fd < 0) {
->  		perror("connect");
->  		exit(EXIT_FAILURE);
-> @@ -347,7 +347,7 @@ void test_stream_msgzcopy_empty_errq_server(const struct test_opts *opts)
->  {
->  	int fd;
->  
-> -	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
-> +	fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->  	if (fd < 0) {
->  		perror("accept");
->  		exit(EXIT_FAILURE);
-> diff --git a/tools/testing/vsock/vsock_uring_test.c b/tools/testing/vsock/vsock_uring_test.c
-> index d976d35f0ba9..6c3e6f70c457 100644
-> --- a/tools/testing/vsock/vsock_uring_test.c
-> +++ b/tools/testing/vsock/vsock_uring_test.c
-> @@ -66,7 +66,7 @@ static void vsock_io_uring_client(const struct test_opts *opts,
->  	struct msghdr msg;
->  	int fd;
->  
-> -	fd = vsock_stream_connect(opts->peer_cid, 1234);
-> +	fd = vsock_stream_connect(opts->peer_cid, opts->peer_port);
->  	if (fd < 0) {
->  		perror("connect");
->  		exit(EXIT_FAILURE);
-> @@ -120,7 +120,7 @@ static void vsock_io_uring_server(const struct test_opts *opts,
->  	void *data;
->  	int fd;
->  
-> -	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
-> +	fd = vsock_stream_accept(VMADDR_CID_ANY, opts->peer_port, NULL);
->  	if (fd < 0) {
->  		perror("accept");
->  		exit(EXIT_FAILURE);
-> @@ -247,6 +247,11 @@ static const struct option longopts[] = {
->  		.has_arg = required_argument,
->  		.val = 'p',
->  	},
-> +	{
-> +		.name = "peer-port",
-> +		.has_arg = required_argument,
-> +		.val = 'q',
-> +	},
->  	{
->  		.name = "help",
->  		.has_arg = no_argument,
-> @@ -257,7 +262,7 @@ static const struct option longopts[] = {
->  
->  static void usage(void)
->  {
-> -	fprintf(stderr, "Usage: vsock_uring_test [--help] [--control-host=<host>] --control-port=<port> --mode=client|server --peer-cid=<cid>\n"
-> +	fprintf(stderr, "Usage: vsock_uring_test [--help] [--control-host=<host>] --control-port=<port> --mode=client|server --peer-cid=<cid> [--peer-port=<port>]\n"
->  		"\n"
->  		"  Server: vsock_uring_test --control-port=1234 --mode=server --peer-cid=3\n"
->  		"  Client: vsock_uring_test --control-host=192.168.0.1 --control-port=1234 --mode=client --peer-cid=2\n"
-> @@ -271,6 +276,8 @@ static void usage(void)
->  		"  --control-port <port>  Server port to listen on/connect to\n"
->  		"  --mode client|server   Server or client mode\n"
->  		"  --peer-cid <cid>       CID of the other side\n"
-> +		"  --peer-port <port>     AF_VSOCK port used for the test [default: %d]\n",
-> +		DEFAULT_PEER_PORT
->  		);
->  	exit(EXIT_FAILURE);
->  }
-> @@ -282,6 +289,7 @@ int main(int argc, char **argv)
->  	struct test_opts opts = {
->  		.mode = TEST_MODE_UNSET,
->  		.peer_cid = VMADDR_CID_ANY,
-> +		.peer_port = DEFAULT_PEER_PORT,
->  	};
->  
->  	init_signals();
-> @@ -309,6 +317,9 @@ int main(int argc, char **argv)
->  		case 'p':
->  			opts.peer_cid = parse_cid(optarg);
->  			break;
-> +		case 'q':
-> +			opts.peer_port = parse_port(optarg);
-> +			break;
->  		case 'P':
->  			control_port = optarg;
->  			break;
-> -- 
-> 2.25.1
+Best regards,
+Krzysztof
 
 
