@@ -1,126 +1,183 @@
-Return-Path: <linux-kernel+bounces-35239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08024838E5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:18:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76557838E5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:18:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3ABBF1C22DFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:18:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E67191F24E13
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:18:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18A625DF2F;
-	Tue, 23 Jan 2024 12:18:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F68A5EE66;
+	Tue, 23 Jan 2024 12:18:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zaFv2H3l"
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rz/KJf5q"
+Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EBFC5C909
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 697225DF11
 	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 12:18:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706012311; cv=none; b=qcZBdR2eZ1733UakXjyOZHtPmK6EDjF2LNRqsN9PSJ4ANonvE6fn+P+3aK8QBZnSsoc6VMbxyZWQIAgq699thYFSv/+4t8gtpSBnRwtg2D2se28SIq8n7qB0dRkMXMzlYwWo/a30KT/bI1W7kVbR1S+Xg3TuI9F8kXtD2SX0Cig=
+	t=1706012312; cv=none; b=USPbzPPGuhx74VcVpIIeQTyxsvWTXMIhjlGq4jsll2bJfNmxRmuzFHY+fU3JlzTG4qG0gT2orlsBGaeU184kFvR14tS2w02NX2uOoG0FUoNYEQPGfQSalxLw2KKUdtLX2gNBWzCWkie9TomUjVyPpXAxMyc1fGRwXdkjKh2JmWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706012311; c=relaxed/simple;
-	bh=2V+Bx4FIrH1pc364z+9nImn5SzIBGQp/BaM/gj1sj74=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lBQ3CoynWmE6Etv00FpKP9s+ia6IQkpyady9qlV1tguolY7kVFjokPQuntj+Cw6eqK3I7iTw7Yqv1IEQV5YvXrkJXoIxGmb/caW0HlwbiSXHEpYWaHHD8lHWger8qBAQRH0RnmqyGC2hGa8kHkZgatRV/UkzQstFe5wyiC+RqlM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zaFv2H3l; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so2798879276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 04:18:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706012308; x=1706617108; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gh62vRSBG030L7L0RyJ3ueU0okLJVyWTJjLMCyBYbyQ=;
-        b=zaFv2H3lY3gABTnim+cZ7p7QZGduWasw8MPaooj0p39PDsq41Juu/MbsiS3eLvGWDC
-         UoUzDK64eFNlK88tnlfhzSekUweYP1csobrEpfVVPoiH53zaXmRkiwkQh13bAQxuyEJB
-         gJ+97+7BIrLannpyPKn+lXFtGnSCyiGa5wK5uOFPnmydgS1tZEJWnzmuzqfILH+/H40z
-         y/GcaRL5oH9aE4HrQHl3XKcSatiRq8s6XYgHo1bLUIY0/mI1U/d76NHpIqfNfC7Rlhob
-         rXLX5Og9wjuDFEyZ7Ip8NrjqcfMQ1bFBWyzErVq5vCVL7Y6hVFNKUz5XdHd5QfFNwO/P
-         JC8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706012308; x=1706617108;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Gh62vRSBG030L7L0RyJ3ueU0okLJVyWTJjLMCyBYbyQ=;
-        b=F9XPi1XqcUeSnBwkuZqMHbbINeGK9AJa+KWUtiGeE5rE3UtMuDDDxSvx6sqTMhhotx
-         YqCxy8vOJEkMCFqLTaUolouF5RJ0g0FGHUwmuC6P6N3ZV7H8f+Vsl6wxlrVUL/f11SuU
-         qMnKx2yZ8lS/VUX3R24U/tIs3neHrj+Rbu1m8XhmK3GamN5a6gR63sKdZ+fMMLNPmTpC
-         s1msoT/A2Om4mpbVh5KRpAZ3GOBMcRz3437iimXtTjpizW2ZRptCfNQhK485INe4O8jg
-         rRslmX2CvkxKdx5FhmiEGyY2cNgma6EBAarfOFmT9s5pCA+dgD1hJHhEtMtzxa2qm4D7
-         vutA==
-X-Gm-Message-State: AOJu0YzHAyOacRn71/Sfj4DsAqxqlBxzDffA+Cu+TVmp/wZAAijFfpI+
-	F5wQgCiuI6Cl3ryB25MeRe17ocaveAhPTAQ5FSqEcPomWJxotxgYbdJP2YZVztKAmrBTheO+GXP
-	jOmYdTcZk22hHYLq+y2A7g2AueNud+y2Nvtcprw==
-X-Google-Smtp-Source: AGHT+IE3HOE1WBjbwtEXORZxD29BZLU+G+gsdsCkXBrEeww2LPidC5QdtJcqX1/Wzpcr8U8LXecicY1xPGse7G9nY4E=
-X-Received: by 2002:a25:c791:0:b0:dc2:3cf6:9bc3 with SMTP id
- w139-20020a25c791000000b00dc23cf69bc3mr2811724ybe.58.1706012308255; Tue, 23
- Jan 2024 04:18:28 -0800 (PST)
+	s=arc-20240116; t=1706012312; c=relaxed/simple;
+	bh=vGdTHyxXjfiHI3G6K8/20CRZRw6/LiMwHfpC1+xKVRA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=U5rJ5y1qbIKLTzTMMLJliVTkcPBk74SWGerASN+ZN9wzCOnyTieZoZyGa/Imak3kNGiPqm/3DuiZOvC2na17HFEItpbf+67R0LoyWiHznPyFA9iExxDdHMKPyJ6lxjIZlZLg3imDkvvlEiAq1cDgqn/xZn5XqAyqTvOMhHaX/hk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rz/KJf5q; arc=none smtp.client-ip=95.215.58.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <7f5e1c37-a637-494a-ab52-cad83095f2a6@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1706012307;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+RO8ZCOEQWp5sHoJ0tZq1/hmNsM9aQ9KeKI5CJdul+0=;
+	b=rz/KJf5qy/FCuopbgX4LHM1yr0wPGONIwaJw7xK+IKkJGAV9FHVKllK9KNUByeZWgbtyQC
+	lYJNRcMSU8J2p2+21yWKKPA5Bxmqet8DA60QdXighTJJdBCoPsBzYxcMl3P65Srgizuqsx
+	37d5DYun7fCiISbaJ8CsuAvJO0tzeHA=
+Date: Tue, 23 Jan 2024 20:18:22 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240123102817.2414155-1-quic_uchheda@quicinc.com>
-In-Reply-To: <20240123102817.2414155-1-quic_uchheda@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 23 Jan 2024 14:18:17 +0200
-Message-ID: <CAA8EJppwboaEbKFFACr3LO0OHg4iOJPapKRqoH2EGEYcjV6HfA@mail.gmail.com>
-Subject: Re: [PATCH RESEND] arm64: dts: qcom: qcm6490-idp: Add support for
- PM7250B PMIC
-To: Umang Chheda <quic_uchheda@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Kamal Wadhwa <quic_kamalw@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH 3/5] drm/bridge: simple-bridge: Allow acquiring the next
+ bridge with fwnode API
+Content-Language: en-US
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: David Airlie <airlied@gmail.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+References: <20240122163220.110788-1-sui.jingfeng@linux.dev>
+ <20240122163220.110788-4-sui.jingfeng@linux.dev>
+ <20240123011859.GB22880@pendragon.ideasonboard.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sui Jingfeng <sui.jingfeng@linux.dev>
+In-Reply-To: <20240123011859.GB22880@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, 23 Jan 2024 at 12:28, Umang Chheda <quic_uchheda@quicinc.com> wrote:
->
-> qcm6490-idp platform supports PM7250B PMIC as well.
-> Add support for the same.
-
-The platform can not "support" PMIC. Please fix the commit message.
-
->
-> Signed-off-by: Umang Chheda <quic_uchheda@quicinc.com>
-> ---
->  arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-> index 03e97e27d16d..2a6e4907c5ee 100644
-> --- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-> +++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-> @@ -5,8 +5,13 @@
->
->  /dts-v1/;
->
-> +/* PM7250B is configured to use SID8/9 */
-> +#define PM7250B_SID 8
-> +#define PM7250B_SID1 9
-> +
->  #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
->  #include "sc7280.dtsi"
-> +#include "pm7250b.dtsi"
->  #include "pm7325.dtsi"
->  #include "pm8350c.dtsi"
->  #include "pmk8350.dtsi"
-> --
-> 2.25.1
->
->
+Hi,
 
 
--- 
-With best wishes
-Dmitry
+On 2024/1/23 09:18, Laurent Pinchart wrote:
+> On Tue, Jan 23, 2024 at 12:32:18AM +0800, Sui Jingfeng wrote:
+>> Which make it possible to use this driver on non-DT based systems,
+>> meanwhile, made no functional changes for DT based systems.
+>>
+>> Signed-off-by: Sui Jingfeng <sui.jingfeng@linux.dev>
+>> ---
+>>   drivers/gpu/drm/bridge/simple-bridge.c | 51 ++++++++++++++++++++++----
+>>   1 file changed, 44 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/bridge/simple-bridge.c b/drivers/gpu/drm/bridge/simple-bridge.c
+>> index 595f672745b9..cfea5a67cc5b 100644
+>> --- a/drivers/gpu/drm/bridge/simple-bridge.c
+>> +++ b/drivers/gpu/drm/bridge/simple-bridge.c
+>> @@ -184,6 +184,39 @@ static const void *simple_bridge_get_match_data(const struct device *dev)
+>>   	return NULL;
+>>   }
+>>   
+>> +static int simple_bridge_get_next_bridge_by_fwnode(struct device *dev,
+>> +						   struct drm_bridge **next_bridge)
+>> +{
+>> +	struct drm_bridge *bridge;
+>> +	struct fwnode_handle *ep;
+>> +	struct fwnode_handle *remote;
+>> +
+>> +	ep = fwnode_graph_get_endpoint_by_id(dev->fwnode, 1, 0, 0);
+>> +	if (!ep) {
+>> +		dev_err(dev, "The endpoint is unconnected\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	remote = fwnode_graph_get_remote_port_parent(ep);
+>> +	fwnode_handle_put(ep);
+>> +	if (!remote) {
+>> +		dev_err(dev, "No valid remote node\n");
+>> +		return -ENODEV;
+>> +	}
+>> +
+>> +	bridge = drm_bridge_find_by_fwnode(remote);
+>> +	fwnode_handle_put(remote);
+>> +
+>> +	if (!bridge) {
+>> +		dev_warn(dev, "Next bridge not found, deferring probe\n");
+>> +		return -EPROBE_DEFER;
+>> +	}
+>> +
+>> +	*next_bridge = bridge;
+>> +
+>> +	return 0;
+>> +}
+>> +
+> Hmmmm yes, this convinces me further that we should switch to fwnode,
+> not implement fwnode and OF side-by-side.
+>
+
+OK, I'm agree with you.
+
+
+But this means that I have to make the drm_bridge_find_by_fwnode() function works
+on both DT systems and non-DT systems. This is also means that we will no longer
+need to call of_drm_find_bridge() function anymore. This will eventually lead to
+completely remove of_drm_find_bridge()?
+
+
+As far as I can see, if I follow you suggestion, drm/bridge subsystem will
+encountering a *big* refactor. My 'side-by-side' approach allows co-exist.
+It is not really meant to purge OF. I feel it is a little bit of aggressive.
+
+hello Maxime, are you watching this? what do you think?
+
+
+>>   static int simple_bridge_probe(struct platform_device *pdev)
+>>   {
+>>   	struct simple_bridge *sbridge;
+>> @@ -199,14 +232,17 @@ static int simple_bridge_probe(struct platform_device *pdev)
+>>   	else
+>>   		sbridge->info = simple_bridge_get_match_data(&pdev->dev);
+>>   
+>> -	/* Get the next bridge in the pipeline. */
+>> -	remote = of_graph_get_remote_node(pdev->dev.of_node, 1, -1);
+>> -	if (!remote)
+>> -		return -EINVAL;
+>> -
+>> -	sbridge->next_bridge = of_drm_find_bridge(remote);
+>> -	of_node_put(remote);
+>> +	if (pdev->dev.of_node) {
+>> +		/* Get the next bridge in the pipeline. */
+>> +		remote = of_graph_get_remote_node(pdev->dev.of_node, 1, -1);
+>> +		if (!remote)
+>> +			return -EINVAL;
+>>   
+>> +		sbridge->next_bridge = of_drm_find_bridge(remote);
+>> +		of_node_put(remote);
+>> +	} else {
+>> +		simple_bridge_get_next_bridge_by_fwnode(&pdev->dev, &sbridge->next_bridge);
+>> +	}
+>>   	if (!sbridge->next_bridge) {
+>>   		dev_dbg(&pdev->dev, "Next bridge not found, deferring probe\n");
+>>   		return -EPROBE_DEFER;
+>> @@ -231,6 +267,7 @@ static int simple_bridge_probe(struct platform_device *pdev)
+>>   	/* Register the bridge. */
+>>   	sbridge->bridge.funcs = &simple_bridge_bridge_funcs;
+>>   	sbridge->bridge.of_node = pdev->dev.of_node;
+>> +	sbridge->bridge.fwnode = pdev->dev.fwnode;
+>>   	sbridge->bridge.timings = sbridge->info->timings;
+>>   
+>>   	drm_bridge_add(&sbridge->bridge);
+>> -- 
+>> 2.25.1
+>>
 
