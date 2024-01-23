@@ -1,61 +1,76 @@
-Return-Path: <linux-kernel+bounces-34744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34747-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16235838706
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 06:51:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EEFE9838714
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:06:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C15D128703C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 05:51:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A779289BFC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 06:06:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78420443E;
-	Tue, 23 Jan 2024 05:50:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64F814EB2A;
+	Tue, 23 Jan 2024 06:06:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UmunmPdf"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jbuM46BZ"
+Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E24E10965
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 05:50:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1F794E1D1;
+	Tue, 23 Jan 2024 06:06:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705989056; cv=none; b=TU1M/YZ75ZEG44AjmuT50jRMAHI4KfsjFNHeVjUIGKw+El57VJYXi+mg+HABhQuMwd6ioRp2Vicho60bSTSy15wLAOSOFpSC/DvN6Iy47lyuJyMIPVT4/tSBgzGRvm7OtkxNTwGAR3qUKv/BidlM7xYZzi0+cpzhqKgxS7iDmjw=
+	t=1705989986; cv=none; b=os/c2JKZRuwPlhWTvN0dNUJ9PUh4RupSvHpSFrNsJtd6Oz8gi+h8I91QNoR7nnrvubZQexSm+xjbABzAMMIa9j7Nb00X1t+9AD4N93xc1uILRl+i8OJZPdgHwQTHnWb5qdwhxCmhbAPSkcjAVZeOi26t6918iULRCqCEJypcsmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705989056; c=relaxed/simple;
-	bh=uUGqYPWkqLqAuYLajkHeoiaksi8vyt5EtObg/cfEv0A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=k/ZFF3117wQgfVPxs9Af4h0b4jZ8QmJVrTermEsdo3WgNJLM7uxfGhD/f9zEA5wX/YQPn0tHtJJL3LCEUnLHCytKJqSpgizjugdHpG8nDKL9xIBcC8H1T/kseyO4E5NI6JwsuBSpfPM7z6Gxunerm8TUIX7/LJz2mDDx1rwTKE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UmunmPdf; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705989054;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=H+rMK0KBBnQyaHb54gBf8clNL10ejkmGqcBgOHn7Pt4=;
-	b=UmunmPdfnT+GnT51x1QezQdsFNCsmbCpPelURaiH6XW5cVekYX+1AB8mjTttha783UyoiC
-	B4Q0KeSB+jkLgPuOwCvfJOF5dwEhqlaHnuQE5HMXt141oi4pnIvHpoWoT3nPE7HiqyLOz1
-	0CYVphKPOL8WwvqllzYDysuBG/d2gmM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-375-JHn3VzyfMY6lUkIpG0Vk8Q-1; Tue, 23 Jan 2024 00:50:48 -0500
-X-MC-Unique: JHn3VzyfMY6lUkIpG0Vk8Q-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9386885A588;
-	Tue, 23 Jan 2024 05:50:46 +0000 (UTC)
-Received: from [10.22.8.107] (unknown [10.22.8.107])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id D71B9492BC6;
-	Tue, 23 Jan 2024 05:50:40 +0000 (UTC)
-Message-ID: <8075b1d2-1260-4f1d-a757-dc991d95710c@redhat.com>
-Date: Mon, 22 Jan 2024 21:50:40 -0800
+	s=arc-20240116; t=1705989986; c=relaxed/simple;
+	bh=T6sQjSVZoDPqa9QnD1KIBSNd8H86TmcVZKXVVSAGVs4=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=ogAX21q/xplCxBAeAF9CC870rTz9e0XSjAVybt1reM87MFD3UT4vA6JN3ET/02nw1Pnq5RMY941wmwRXBBdCUAu0zNopQrBnl74Kj2eN8ArIpvcwnVlpUN0/8i+1m21nvffWObGULAJfS7zJ/Qnw89wXSPl4T7/9liHMvOJstjw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jbuM46BZ; arc=none smtp.client-ip=209.85.160.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-206689895bfso2017844fac.1;
+        Mon, 22 Jan 2024 22:06:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705989983; x=1706594783; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:cc:to:from:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=FyasXNOru482cNRTIapaiSgeT6NkIVhvCSkzZTrAFxM=;
+        b=jbuM46BZ7qiRDI1Cd5I0Mou4/F0xtY1R2cYwSWuFb3jZP2H6tS4Q5t3/CJHL5qyoSv
+         Uf59M9l+nGGi1Xty8FzIqR3tHl/szUIqEVwprL+kkANufKLuGv7WTdEeqA03LhSrnYi1
+         70M1Og+4/S+ltijpkUAEwjSG1WYaQxoRk8D+411RuDF2HbkpwpmU7KMgdwnf/ylBxocV
+         chCE8GuPKuv2eSVhX0juI2/EXY/jBCxLMxL4fqOwgp9ZequZ7amwK3kBDZBrNVTH9clJ
+         GfVfRlPEek5QB07kbp8Olg8cQKOgGNt2CmBKPE5W76/xSmWfpCvO+l5XyziSM9wQvCvS
+         tPqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705989983; x=1706594783;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:cc:to:from:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FyasXNOru482cNRTIapaiSgeT6NkIVhvCSkzZTrAFxM=;
+        b=Nsu/An/jkA7Tb4pB6YpflxFyHXFZ++tjtL5MXh782idqhlh27h5KL4CaFe2baO30VN
+         9ahCgx4IwchaxOk7VskhPZhyp2bGFwfayXLIeBqfB6iy++Oo3Q8YPsKfhhdHV96xtr2l
+         5V07vNKHIIswdjnjVoNBjxc8CKL+7WBIO7FlIK0gG6CmHpyypq6iP5/n1av+fjbksJFA
+         dLKixU79NfsBULkDkOKSXOhMfHeuwwjDLjupDiOVzjvCMmg0heEzls9/HmpGRPVMob0U
+         Rk64jfDCbYpBmbiATkAZ1ceNEL0UeXmBubhBtr1Oo9jIW3+QSg3qPJ1VYxFVvX8lGQDO
+         A7iw==
+X-Gm-Message-State: AOJu0YxRhwDz69G6LLRXjkJke5Sk65ARLk67+09sKKIYd6lfngs5dovU
+	GrIWwXQ9sS/KpGml6CVDLFPVztaPqzScO4bceq14hlJwcgiOvE+5CKtQo3f7AsQ=
+X-Google-Smtp-Source: AGHT+IE4D1JuAkCSQ7Fb326LiGuRPqMBr/ykQ7H891Gii8X/IMt/rqHAe3qD7m1pSz+B2DzUP5bcVw==
+X-Received: by 2002:a05:6870:4154:b0:210:e532:af4a with SMTP id r20-20020a056870415400b00210e532af4amr943465oad.119.1705989983048;
+        Mon, 22 Jan 2024 22:06:23 -0800 (PST)
+Received: from ddawson.local ([2602:ae:1f29:8500:aaa1:59ff:fe2b:a859])
+        by smtp.gmail.com with ESMTPSA id j8-20020a63e748000000b005c6e8fa9f24sm9115992pgk.49.2024.01.22.22.06.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 22:06:22 -0800 (PST)
+Received: from [127.0.0.1] (unknown [127.0.0.1])
+	by ddawson.local (Postfix) with ESMTP id 5A7E1301E2DA;
+	Mon, 22 Jan 2024 21:56:33 -0800 (PST)
+Message-ID: <358aaf68-0618-41e6-9adf-04e211eb690e@gmail.com>
+Date: Mon, 22 Jan 2024 21:56:28 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,68 +78,62 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 0/8] cgroup/cpuset: Support RCU_NOCB on isolated
- partitions
+Subject: Re: [inline_data] ext4: Stale flags before sync when convert to
+ non-inline
+From: Daniel Dawson <danielcdawson@gmail.com>
+To: Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>
+Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <5189fe60-c3e3-4bc6-89d4-1033cf4337c3@gmail.com>
 Content-Language: en-US
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
- Johannes Weiner <hannes@cmpxchg.org>,
- Frederic Weisbecker <frederic@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Neeraj Upadhyay <quic_neeraju@quicinc.com>,
- Joel Fernandes <joel@joelfernandes.org>,
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- Davidlohr Bueso <dave@stgolabs.net>, Shuah Khan <shuah@kernel.org>,
- cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>,
- Ryan Phillips <rphillips@redhat.com>, Brent Rowsell <browsell@redhat.com>,
- Peter Hunt <pehunt@redhat.com>, Cestmir Kalina <ckalina@redhat.com>,
- Nicolas Saenz Julienne <nsaenz@kernel.org>,
- Alex Gladkov <agladkov@redhat.com>, Marcelo Tosatti <mtosatti@redhat.com>,
- Phil Auld <pauld@redhat.com>, Paul Gortmaker <paul.gortmaker@windriver.com>,
- Daniel Bristot de Oliveira <bristot@kernel.org>,
- Juri Lelli <juri.lelli@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Costa Shulyupin <cshulyup@redhat.com>
-References: <20240117163511.88173-1-longman@redhat.com>
- <bql5g22ovp2dm33llmq5oxpmuuhysvdyppj7j6xvrm643xuniv@pkqrwvmqzneh>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <bql5g22ovp2dm33llmq5oxpmuuhysvdyppj7j6xvrm643xuniv@pkqrwvmqzneh>
+Autocrypt: addr=danielcdawson@gmail.com; keydata=
+ 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
+ bi1gCpm8
+In-Reply-To: <5189fe60-c3e3-4bc6-89d4-1033cf4337c3@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+Content-Transfer-Encoding: 7bit
+
+On 11/28/23 10:15 PM, Daniel Dawson wrote:
+> When a file is converted from inline to non-inline, it has stale flags 
+> until sync.
+
+> Why is this a problem? Because some code will fail under such a 
+> condition, for example, lseek(..., SEEK_HOLE) will result in ENOENT.
 
 
-On 1/22/24 10:07, Michal Koutný wrote:
-> Hello Waiman.
->
-> On Wed, Jan 17, 2024 at 11:35:03AM -0500, Waiman Long <longman@redhat.com> wrote:
->> This patch series is based on the RFC patch from Frederic [1]. Instead
->> of offering RCU_NOCB as a separate option, it is now lumped into a
->> root-only cpuset.cpus.isolation_full flag that will enable all the
->> additional CPU isolation capabilities available for isolated partitions
->> if set. RCU_NOCB is just the first one to this party. Additional dynamic
->> CPU isolation capabilities will be added in the future.
-> IIUC this is similar to what I suggested back in the day and you didn't
-> consider it [1]. Do I read this right that you've changed your mind?
+Just tested. Still happening on 6.8-rc1.
 
-I didn't said that we were not going to do this at the time. It's just 
-that more evaluation will need to be done before we are going to do 
-this. I was also looking to see if there were use cases where such 
-capabilities were needed. Now I am aware that such use cases do exist 
-and we should start looking into it.
-
->
-> (It's fine if you did, I'm only asking to follow the heading of cpuset
-> controller.)
-
-OK, the title of the cover-letter may be too specific. I will make it 
-more general in the next version.
-
-Cheers,
-Longman
+-- 
+PGP fingerprint: 5BBD5080FEB0EF7F142F8173D572B791F7B4422A
 
 
