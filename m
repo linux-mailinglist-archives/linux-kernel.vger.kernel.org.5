@@ -1,191 +1,150 @@
-Return-Path: <linux-kernel+bounces-35564-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35537-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64705839353
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:43:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BCBA8392D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:34:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D670286F0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:43:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CEBB1C23077
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:34:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A838665BB3;
-	Tue, 23 Jan 2024 15:35:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 787366026E;
+	Tue, 23 Jan 2024 15:34:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eqIHx5e/"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aJbX/nGZ"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C56C657C8
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 15:35:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B37765FEE4
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 15:34:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706024119; cv=none; b=a0XLO9FxGuY6jJDIWOtN8ZEed1yI/B4/pfUWNwLaKPfb0OlDzYCHcOTXlwCfHlS/pIUpwVkI1raTR4tAh6g0xz+4+N4k52QM8WAUrNkR0Hcmu4k6nDrTKLO4+FCzqKXYEOEN8KnlqtoE+j6idj/cZVItoVq5MBbS/6ynOIm6TTk=
+	t=1706024070; cv=none; b=RpvrqkVf2Kfk70LsfD3gkEd5ESNmrGeNTWqntt3odOw7E39tpFLrsNILC5z7xltN9t9rqRzyEMEnV2mHW5999MazkRMix5dszrZUkbEGZPykrtGtZnwNUJ1tq62ucYHCpuwKg4mHTV5cg7KOj8lXQuzL1OJgIdz4jgflqAZ/nh4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706024119; c=relaxed/simple;
-	bh=c9BEPFAZqOS2AQyRU1oFe2mQJ0crzzdirNWDHZqIiqg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=c5fa3i1gzktNT0qFiXeIVWMU3ZQGq1HSiZZscJS4h/7GbnIORpcQKHw7pbsYB/kmPYKQKMYG3EU44j+A75OVf0FXPMGmqr13i93EHRu3h7tEUOjWnhKiPw5L/ZWmD3J7QN1isd2plyBsybbJR1e7+z0zQ35PReTDEi3UlrwYzwk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eqIHx5e/; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706024116;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to; bh=zQhQsMWn8/u+MgzIhKjJc4Zf9WV6/GJZobpLAxElXGE=;
-	b=eqIHx5e/MruKNzHNfw2DwDPD7lJM1cWjx+D7DTUHBkbf+/e4RpNZuqNnZzOWzDOH8g4VaM
-	tJj1c7+oW5KAHpduSrjwFrDzMHI8LOmzvU2ZSPeq71QDwtuKn4vSvtfR+9839GS38kKQAL
-	UOrCwFrRlGKtePv6OWghTtzc+8WCngo=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-299-DVWFydYbPvavkDDHE0upJw-1; Tue, 23 Jan 2024 10:35:13 -0500
-X-MC-Unique: DVWFydYbPvavkDDHE0upJw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 782F310B02B1;
-	Tue, 23 Jan 2024 15:35:12 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.197])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 3D69B200E1BF;
-	Tue, 23 Jan 2024 15:35:11 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Tue, 23 Jan 2024 16:33:59 +0100 (CET)
-Date: Tue, 23 Jan 2024 16:33:57 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
-	Dylan Hatch <dylanbhatch@google.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] fs/proc: do_task_stat: use sig->stats_lock to gather the
- threads/children stats
-Message-ID: <20240123153357.GA21857@redhat.com>
+	s=arc-20240116; t=1706024070; c=relaxed/simple;
+	bh=gNyD7i++uD2R8coWU2KAe3MRsCKjSQZq+dn+mnbIQ9k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Zb8c1pxjZS9Mgf/3D9juipc3yCb96TkIPkdNSB5rO07EL/pQ9D+HkdG44P2/9AMW0XSAGsYd7JhxqxuxrPVaIIAeR0AoCGOGL5SyRHZhsh8Vn6Lr1MfZcti7LGmynQlYINg5WKLnQwH7trDWBejmLMceYdw6QutBXXlTR5s2zmU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aJbX/nGZ; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40eac352733so25351465e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:34:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706024066; x=1706628866; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ziVeE+WCI2TynApAMc3yW1L2n22pt52jWdrqUi+I10A=;
+        b=aJbX/nGZDECc65oOFslfQ1KnfvXsS9zh0efYToJqx/PDuzx5jaPujA7Fr3ED7vZByW
+         oIXpH/t+G4ZTwynRofC8fSMu4OIfof1eT88+31V2juY3eZ+sj5y5C8qBapFLjJL4m8A2
+         4wZ/i06M004CCYNR453CMoRwbp0+dBzrfSaeuJ3ZELx5SsKJs6dAlR7zLpENm2SMgarX
+         +H3gw4tKbYgKz+smjLOknaw4UTP88mZp3PizDL3tJ0qLzGI8UgI7Xa6jda6Sh+aIL2uf
+         wNxfGe/89dpGHY8vmjurcUea7RD0CUC64UUFEvR2mES/MS8ESoJJsZo4bkvefz0261fe
+         Vcbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706024066; x=1706628866;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ziVeE+WCI2TynApAMc3yW1L2n22pt52jWdrqUi+I10A=;
+        b=uVQ8hKVskb/jFQes+ZIRUQ16e1ozrbe8r/HnLL8pKTvDGWawT+BS+L0HhYQslBc8s6
+         u8H4UQqqhSHv8R9JosQEl5nmSfCJvyHqFeFO+FzBcHeuSkq8Z43OIbUhahnLbittFAKO
+         Mk0QOJtsC5bDTqlAxeg3Xn1hGbtZQyqRs4x3zfRpgoke5hcwttBLCTNB3VHumuBGxvZt
+         l8dgW1mwYS8sV+GVAJeUEnfqMBBmixccwh/37Q7o6TZg5uY8/zP3hFKF2u5gt7vMYaqU
+         LFow0jtLzV9dgmImPfkoxjM8Rf3auIUUIvnu7juk6gwFBxHNE1nWrntYc6eAnmCXLWAZ
+         ermQ==
+X-Gm-Message-State: AOJu0Yz9mTzh4leB5F/Kv/QfALJ+v2nV52jBuQ16Wv/xpU+liphrI2U+
+	iS5nNjYr5mf4EC23AYcwXIFLJMhWssn3P1q+kykoE7Z0cJDzbJbSupke03GaprM=
+X-Google-Smtp-Source: AGHT+IFHJyFWUBBJs2U3QAmGmiqakyommRSeQB3esKGCGNr9xKSS2oKCzm2qjt7cgP0Zzl31M0Ydlw==
+X-Received: by 2002:a05:600c:5706:b0:40d:60b9:700 with SMTP id jv6-20020a05600c570600b0040d60b90700mr252998wmb.126.1706024065863;
+        Tue, 23 Jan 2024 07:34:25 -0800 (PST)
+Received: from ta2.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
+        by smtp.gmail.com with ESMTPSA id p21-20020a05600c359500b0040e3488f16dsm42457536wmq.12.2024.01.23.07.34.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jan 2024 07:34:25 -0800 (PST)
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+To: broonie@kernel.org,
+	andi.shyti@kernel.org,
+	arnd@arndb.de
+Cc: robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	alim.akhtar@samsung.com,
+	linux-spi@vger.kernel.org,
+	linux-samsung-soc@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-arch@vger.kernel.org,
+	andre.draszik@linaro.org,
+	peter.griffin@linaro.org,
+	semen.protsenko@linaro.org,
+	kernel-team@android.com,
+	willmcvicker@google.com,
+	Tudor Ambarus <tudor.ambarus@linaro.org>
+Subject: [PATCH 00/21] spi: s3c64xx: winter cleanup and gs101 support
+Date: Tue, 23 Jan 2024 15:33:59 +0000
+Message-ID: <20240123153421.715951-1-tudor.ambarus@linaro.org>
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240123153313.GA21832@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+Content-Transfer-Encoding: 8bit
 
-lock_task_sighand() can trigger a hard lockup. If NR_CPUS threads call
-do_task_stat() at the same time and the process has NR_THREADS, it will
-spin with irqs disabled O(NR_CPUS * NR_THREADS) time.
+Hi,
 
-Change do_task_stat() to use sig->stats_lock to gather the statistics
-outside of ->siglock protected section, in the likely case this code
-will run lockless.
+The patch set cleans a bit the driver and adds support for gs101 SPI.
 
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
----
- fs/proc/array.c | 58 +++++++++++++++++++++++++++----------------------
- 1 file changed, 32 insertions(+), 26 deletions(-)
+Apart of the SPI patches, I added support for iowrite{8,16}_32 accessors
+in asm-generic/io.h. This will allow devices that require 32 bits
+register accesses to write data in chunks of 8 or 16 bits (a typical use
+case is SPI, where clients can request transfers in words of 8 bits for
+example). GS101 only allows 32bit register accesses otherwise it raisses
+a Serror Interrupt and hangs the system, thus the accessors are needed
+here. If the accessors are fine, I expect they'll be queued either to
+the SPI tree or to the ASM header files tree, but by providing an
+immutable tag, so that the other tree can merge them too.
 
-diff --git a/fs/proc/array.c b/fs/proc/array.c
-index 45ba91863808..34a47fb0c57f 100644
---- a/fs/proc/array.c
-+++ b/fs/proc/array.c
-@@ -477,13 +477,13 @@ static int do_task_stat(struct seq_file *m, struct pid_namespace *ns,
- 	int permitted;
- 	struct mm_struct *mm;
- 	unsigned long long start_time;
--	unsigned long cmin_flt = 0, cmaj_flt = 0;
--	unsigned long  min_flt = 0,  maj_flt = 0;
--	u64 cutime, cstime, utime, stime;
--	u64 cgtime, gtime;
-+	unsigned long cmin_flt, cmaj_flt, min_flt, maj_flt;
-+	u64 cutime, cstime, cgtime, utime, stime, gtime;
- 	unsigned long rsslim = 0;
- 	unsigned long flags;
- 	int exit_code = task->exit_code;
-+	struct signal_struct *sig = task->signal;
-+	unsigned int seq = 1;
- 
- 	state = *get_task_state(task);
- 	vsize = eip = esp = 0;
-@@ -511,12 +511,8 @@ static int do_task_stat(struct seq_file *m, struct pid_namespace *ns,
- 
- 	sigemptyset(&sigign);
- 	sigemptyset(&sigcatch);
--	cutime = cstime = 0;
--	cgtime = gtime = 0;
- 
- 	if (lock_task_sighand(task, &flags)) {
--		struct signal_struct *sig = task->signal;
--
- 		if (sig->tty) {
- 			struct pid *pgrp = tty_get_pgrp(sig->tty);
- 			tty_pgrp = pid_nr_ns(pgrp, ns);
-@@ -527,27 +523,9 @@ static int do_task_stat(struct seq_file *m, struct pid_namespace *ns,
- 		num_threads = get_nr_threads(task);
- 		collect_sigign_sigcatch(task, &sigign, &sigcatch);
- 
--		cmin_flt = sig->cmin_flt;
--		cmaj_flt = sig->cmaj_flt;
--		cutime = sig->cutime;
--		cstime = sig->cstime;
--		cgtime = sig->cgtime;
- 		rsslim = READ_ONCE(sig->rlim[RLIMIT_RSS].rlim_cur);
- 
--		/* add up live thread stats at the group level */
- 		if (whole) {
--			struct task_struct *t;
--
--			__for_each_thread(sig, t) {
--				min_flt += t->min_flt;
--				maj_flt += t->maj_flt;
--				gtime += task_gtime(t);
--			}
--
--			min_flt += sig->min_flt;
--			maj_flt += sig->maj_flt;
--			gtime += sig->gtime;
--
- 			if (sig->flags & (SIGNAL_GROUP_EXIT | SIGNAL_STOP_STOPPED))
- 				exit_code = sig->group_exit_code;
- 		}
-@@ -562,6 +540,34 @@ static int do_task_stat(struct seq_file *m, struct pid_namespace *ns,
- 	if (permitted && (!whole || num_threads < 2))
- 		wchan = !task_is_running(task);
- 
-+	do {
-+		seq++; /* 2 on the 1st/lockless path, otherwise odd */
-+		flags = read_seqbegin_or_lock_irqsave(&sig->stats_lock, &seq);
-+
-+		cmin_flt = sig->cmin_flt;
-+		cmaj_flt = sig->cmaj_flt;
-+		cutime = sig->cutime;
-+		cstime = sig->cstime;
-+		cgtime = sig->cgtime;
-+
-+		if (whole) {
-+			struct task_struct *t;
-+
-+			min_flt = sig->min_flt;
-+			maj_flt = sig->maj_flt;
-+			gtime = sig->gtime;
-+
-+			rcu_read_lock();
-+			__for_each_thread(sig, t) {
-+				min_flt += t->min_flt;
-+				maj_flt += t->maj_flt;
-+				gtime += task_gtime(t);
-+			}
-+			rcu_read_unlock();
-+		}
-+	} while (need_seqretry(&sig->stats_lock, seq));
-+	done_seqretry_irqrestore(&sig->stats_lock, seq, flags);
-+
- 	if (whole) {
- 		thread_group_cputime_adjusted(task, &utime, &stime);
- 	} else {
+The SPI patches were tested with the spi-loopback-test on the gs101
+controller.
+
+Thanks!
+ta
+
+Tudor Ambarus (21):
+  spi: dt-bindings: samsung: add google,gs101-spi compatible
+  spi: s3c64xx: sort headers alphabetically
+  spi: s3c64xx: remove extra blank line
+  spi: s3c64xx: remove unneeded (void *) casts in of_match_table
+  spi: s3c64xx: explicitly include <linux/bits.h>
+  spi: s3c64xx: remove else after return
+  spi: s3c64xx: use bitfield access macros
+  spi: s3c64xx: move error check up to avoid rechecking
+  spi: s3c64xx: use full mask for {RX, TX}_FIFO_LVL
+  spi: s3c64xx: move common code outside if else
+  spi: s3c64xx: check return code of dmaengine_slave_config()
+  spi: s3c64xx: propagate the dma_submit_error() error code
+  spi: s3c64xx: rename prepare_dma() to s3c64xx_prepare_dma()
+  spi: s3c64xx: return ETIMEDOUT for wait_for_completion_timeout()
+  spi: s3c64xx: simplify s3c64xx_wait_for_pio()
+  spi: s3c64xx: add missing blank line after declaration
+  spi: s3c64xx: downgrade dev_warn to dev_dbg for optional dt props
+  asm-generic/io.h: add iowrite{8,16}_32 accessors
+  spi: s3c64xx: add support for google,gs101-spi
+  spi: s3c64xx: make the SPI alias optional for newer SoCs
+  MAINTAINERS: add Tudor Ambarus as R for the samsung SPI driver
+
+ .../devicetree/bindings/spi/samsung,spi.yaml  |   1 +
+ MAINTAINERS                                   |   1 +
+ drivers/spi/spi-s3c64xx.c                     | 447 +++++++++---------
+ include/asm-generic/io.h                      |  50 ++
+ 4 files changed, 276 insertions(+), 223 deletions(-)
+
 -- 
-2.25.1.362.g51ebf55
+2.43.0.429.g432eaa2c6b-goog
 
 
