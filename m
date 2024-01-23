@@ -1,108 +1,154 @@
-Return-Path: <linux-kernel+bounces-35087-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35088-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76765838BBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:26:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D8B1838BC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:27:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12B121F22502
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:26:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBB28284041
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:27:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A5E65BAE7;
-	Tue, 23 Jan 2024 10:26:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BSw4b3hU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C08BDEEA9;
-	Tue, 23 Jan 2024 10:26:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A19DF5BAE3;
+	Tue, 23 Jan 2024 10:27:40 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31CC65C5E0;
+	Tue, 23 Jan 2024 10:27:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706005601; cv=none; b=LlMoAkXiiW9xMFvwgpTn7j7iGTr/2EAFZAtSO9lOG2Vx3zYXuE1E8VQyAV1jp/1625MffLDHOYGlRN4HSCHiaGiERsZS5d1BcBufykSfZleqC+sxaizx0w27k3eRbozk2kqCGgagAlbSbgDX7O0NVWO4w8OCZmhV2WpBUtRqJeM=
+	t=1706005660; cv=none; b=a1c1Hqigh79kiLydpUA8yOsST90MqJuLEFg9DOQiHKzugqGcT3ZHd76MuyQmMw44d8a25NMFH43bUpI6J9p//5WfjvYm4OQZ04WsFGlFcVZiMnbJq0qtD0ZJOpNt4wzG7ZGof/GD4dUFc+HLkNjUV5WN90u+xWGi1oQho/ZZyzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706005601; c=relaxed/simple;
-	bh=DR+zgKNWJaIggO6xvI5mXauOg5o07Q+mfafKQsQ+U+E=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=shGx5TUwXby2GUti6Jm0MAQsHP/XLUthIi7AeMDHaOe1Uu1WfWWsPkDyfYfO8/ddJuF3yTJYlD3f4b7nZD59Xn/6VW+61AY+b4KDUkeEJWPbcSgfSuwU+AIsrkYg2P7Agzv0L4LM2Ru3boJr/34xQToDdkCDejYkk/hGhXLjLIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BSw4b3hU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D73EBC433C7;
-	Tue, 23 Jan 2024 10:26:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706005601;
-	bh=DR+zgKNWJaIggO6xvI5mXauOg5o07Q+mfafKQsQ+U+E=;
-	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-	b=BSw4b3hUDD75X2tFed+8I/YY6i8CeyPlTmboyQP2YuWBW2qz3NCi49Ax2yH+qVrRs
-	 tIuOrWy4J5mq/GW5BEoHwppfiQy1un2ty4AazL+fMaKwqm2KYX6k8Im5iTGVan7O7b
-	 gp/b1+e7sdPGFrh3Y76fkBAlGjiieGKiZOUh7o/wjpODIH7g37eKyMM4jIIrWK7K93
-	 rIlE8ZH2+8oWvbiuOFGh916rIqVe8NTEocmEytQNWe7aQnclTpC/0N24PHLn51SSOG
-	 Wab5IoYBlzojMG0haBzp4I15HEtjUPK93wHoqNDEjovnI7GVCe7TIej4GYJHDtzIzc
-	 8H/0U4EUtTD1g==
-Date: Tue, 23 Jan 2024 11:26:41 +0100 (CET)
-From: Jiri Kosina <jikos@kernel.org>
-To: Doug Anderson <dianders@chromium.org>
-cc: Kai-Heng Feng <kai.heng.feng@canonical.com>, benjamin.tissoires@redhat.com, 
-    Hans de Goede <hdegoede@redhat.com>, Maxime Ripard <mripard@kernel.org>, 
-    =?ISO-8859-15?Q?Thomas_Wei=DFschuh?= <linux@weissschuh.net>, 
-    Johan Hovold <johan+linaro@kernel.org>, linux-input@vger.kernel.org, 
-    linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] HID: i2c-hid: Skip SET_POWER SLEEP for Cirque touchpad
- on system suspend
-In-Reply-To: <CAD=FV=VCoB_uBontRk3WVn-nqzZnutSMCHBpdBqNOFwrYv=8xw@mail.gmail.com>
-Message-ID: <nycvar.YFH.7.76.2401231126300.29548@cbobk.fhfr.pm>
-References: <20240115045054.1170294-1-kai.heng.feng@canonical.com> <CAD=FV=VCoB_uBontRk3WVn-nqzZnutSMCHBpdBqNOFwrYv=8xw@mail.gmail.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+	s=arc-20240116; t=1706005660; c=relaxed/simple;
+	bh=WHiIvVOL1WIlDzJWq+Wu1bVs6mBOGVTd3NVo6oCnJbQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=ayLEICAnNgkCY1xc9W9PN/OTy47VwR4s3uwJUb2nch0hHwZ92n+2AclKarLJvNnaTfH8ktp+GsEamr7E/+frp7Ps4qOy8ufyl4D4RzfrGC7/cSMiDaandaZ1nBbH3dTtbhAuZKrzs3g+5D9cJheZuosb4LJqMWG8ajOjZJJW+Ts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E10731FB;
+	Tue, 23 Jan 2024 02:28:22 -0800 (PST)
+Received: from e127643.broadband (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 745813F5A1;
+	Tue, 23 Jan 2024 02:27:35 -0800 (PST)
+From: James Clark <james.clark@arm.com>
+To: linux-perf-users@vger.kernel.org,
+	irogers@google.com,
+	kan.liang@linux.intel.com
+Cc: mark.rutland@arm.com,
+	James Clark <james.clark@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Changbin Du <changbin.du@huawei.com>,
+	Yang Jihong <yangjihong1@huawei.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] perf evlist: Fix evlist__new_default() for > 1 core PMU
+Date: Tue, 23 Jan 2024 10:27:27 +0000
+Message-Id: <20240123102728.239147-1-james.clark@arm.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240122155436.185089-1-james.clark@arm.com>
+References: <20240122155436.185089-1-james.clark@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 
-On Wed, 17 Jan 2024, Doug Anderson wrote:
+The 'Session topology' test currently fails with this message when
+evlist__new_default() opens more than one event:
 
-> > There's a Cirque touchpad that wakes system up without anything 
-> > touched the touchpad. The input report is empty when this happens. The 
-> > reason is stated in HID over I2C spec, 7.2.8.2: "If the DEVICE wishes 
-> > to wake the HOST from its low power state, it can issue a wake by 
-> > asserting the interrupt."
-> >
-> > This is fine if OS can put system back to suspend by identifying input 
-> > wakeup count stays the same on resume, like Chrome OS Dark Resume [0]. 
-> > But for regular distro such policy is lacking.
-> >
-> > Though the change doesn't bring any impact on power consumption for 
-> > touchpad is minimal, other i2c-hid device may depends on SLEEP control 
-> > power. So use a quirk to limit the change scope.
-> >
-> > [0] https://chromium.googlesource.com/chromiumos/platform2/+/HEAD/power_manager/docs/dark_resume.md
-> >
-> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > ---
-> > v2:
-> >  - Use quirk instead of applying the change universally.
-> >
-> >  drivers/hid/hid-ids.h              | 3 +++
-> >  drivers/hid/i2c-hid/i2c-hid-core.c | 6 +++++-
-> >  2 files changed, 8 insertions(+), 1 deletion(-)
-> 
-> This seems OK to me. As per my repy to v1, it doesn't feel fully 
-> explained what's going on. Why does it only wake the system without 
-> touches if you put it to sleep first? Is it truly a hardware quirk with 
-> the Cirque touchpad or is it a bug on the board you have it hooked up 
-> to? In any case, perhaps it doesn't matter since you said you measured 
-> power here and, on this touchpad it doesn't seem to save significant 
-> extra power to go into sleep mode. ...so I guess I'd be OK w/
-> 
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+  32: Session topology                                                :
+  --- start ---
+  templ file: /tmp/perf-test-vv5YzZ
+  Using CPUID 0x00000000410fd070
+  Opening: unknown-hardware:HG
+  ------------------------------------------------------------
+  perf_event_attr:
+    type                             0 (PERF_TYPE_HARDWARE)
+    config                           0xb00000000
+    disabled                         1
+  ------------------------------------------------------------
+  sys_perf_event_open: pid 0  cpu -1  group_fd -1  flags 0x8 = 4
+  Opening: unknown-hardware:HG
+  ------------------------------------------------------------
+  perf_event_attr:
+    type                             0 (PERF_TYPE_HARDWARE)
+    config                           0xa00000000
+    disabled                         1
+  ------------------------------------------------------------
+  sys_perf_event_open: pid 0  cpu -1  group_fd -1  flags 0x8 = 5
+  non matching sample_type
+  FAILED tests/topology.c:73 can't get session
+  ---- end ----
+  Session topology: FAILED!
 
-Applied, thanks.
+This is because when re-opening the file and parsing the header, Perf
+expects that any file that has more than one event has the sample ID
+flag set. Perf record already sets the flag in a similar way when there
+is more than one event, so add the same logic to evlist__new_default().
 
+evlist__new_default() is only currently used in tests, so I don't
+expect this change to have any other side effects. The other tests that
+use it don't save and re-open the file so don't hit this issue.
+
+The session topology test has been failing on Arm big.LITTLE platforms
+since commit 251aa040244a ("perf parse-events: Wildcard most
+"numeric" events") when evlist__new_default() started opening multiple
+events for 'cycles'.
+
+Fixes: 251aa040244a ("perf parse-events: Wildcard most "numeric" events")
+Closes: https://lore.kernel.org/lkml/CAP-5=fWVQ-7ijjK3-w1q+k2WYVNHbAcejb-xY0ptbjRw476VKA@mail.gmail.com/
+Tested-by: Ian Rogers <irogers@google.com>
+Reviewed-by: Ian Rogers <irogers@google.com>
+Tested-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: James Clark <james.clark@arm.com>
+---
+ tools/perf/util/evlist.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+Changes since v1:
+
+  * Reduce scope of evsel variable
+  * Add argument label
+  * Change summary to be less specific about the failing test
+  * Add the closes: tag
+
+diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+index 56db37fac6f6..979a6053a84d 100644
+--- a/tools/perf/util/evlist.c
++++ b/tools/perf/util/evlist.c
+@@ -95,7 +95,6 @@ struct evlist *evlist__new_default(void)
+ 	struct evlist *evlist = evlist__new();
+ 	bool can_profile_kernel;
+ 	int err;
+-	struct evsel *evsel;
+ 
+ 	if (!evlist)
+ 		return NULL;
+@@ -107,9 +106,12 @@ struct evlist *evlist__new_default(void)
+ 		evlist = NULL;
+ 	}
+ 
+-	if (evlist->core.nr_entries > 1)
++	if (evlist->core.nr_entries > 1) {
++		struct evsel *evsel;
++
+ 		evlist__for_each_entry(evlist, evsel)
+-			evsel__set_sample_id(evsel, false);
++			evsel__set_sample_id(evsel, /*can_sample_identifier=*/false);
++	}
+ 
+ 	return evlist;
+ }
 -- 
-Jiri Kosina
-SUSE Labs
+2.34.1
 
 
