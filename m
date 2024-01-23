@@ -1,79 +1,73 @@
-Return-Path: <linux-kernel+bounces-35241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF6BF838E62
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:19:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD81C838E69
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:22:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21D3AB22809
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:19:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FD011F24FFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:22:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A312F5DF29;
-	Tue, 23 Jan 2024 12:19:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B5645DF36;
+	Tue, 23 Jan 2024 12:22:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ETZtzkPd"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dKYM/PiY"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42CFC5C8E2
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 12:19:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 167C65DF18
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 12:22:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706012382; cv=none; b=tQDBDiZ87qHeXlvYnT8Ze3QneWxgKdo1PpYQTYOhZMPopHGVz7Sron+fx3ljP3c2lVNP/05DGtWQnmKuh8mD0ZMpvRZ71JVBJto7uxG1EhVWuNt64i6tKIJNZTJJXkqsLEHNSmFnLfGJMN2r2Qu+1N4w4057mkSSn1ZxohR92Qc=
+	t=1706012537; cv=none; b=G86c7VfkujLSkwbxp3qweDoMARdWsmzM4Lmkg20Pi8WB1UCybhkL9AM14/OIwTlXJVVe8PPgg3krk7Jg0WZngFLxua56w9dALK5Iu2PR37pF0w7UmhXg3L0ACg3r7cGe1tXHy4KjPam92qJKlv60jqJplp9TGnVEV1e9meR+l8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706012382; c=relaxed/simple;
-	bh=PeAKds+p59yTNuVLPUqk71ahP3VMyxuyYuj/tT5V0ZM=;
+	s=arc-20240116; t=1706012537; c=relaxed/simple;
+	bh=RxjltIb2tnevyFQ2UZ8jKYTWxSpg4QN8Ti3mX5vGGFA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=d8Ub1yzX5zTZt8cl8nRjrZq+y3t1PWA9XKJSFXaocueyauHZE1X8JCtSHT5vw5X+9tjjL0vBurmD0FpygeT8PbgyxyJKFx/ixqep52PK6yHduPSdSR35wkFyLBW4wRl9k3vCMOOD9M+njhdAoRALELRg8LScpU9MJPV0wBwDUqk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ETZtzkPd; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706012380;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=X/GElDPRN0NBVzcYw+fvqfvfgtwx2bhjdwkQ5wKWbFM=;
-	b=ETZtzkPd2D3FgUbhZdgswhu2pnC/gD2mVA5NSaQSisYPPLJcspW7d2wC+t5zJaSZKgaC6M
-	+pSH05WewvnNFUgX+pPfEOPgUBOswY20qZPu+/RRObziEW7OG9/Znv2PWOF0YMdREwe/vs
-	LhUA7oCi5U5NCZdQr5fEFrbh7gvbB+8=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-218-1Kekr_lGPOOR17657ilVnA-1; Tue, 23 Jan 2024 07:19:38 -0500
-X-MC-Unique: 1Kekr_lGPOOR17657ilVnA-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40e89a9a76fso32296785e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 04:19:38 -0800 (PST)
+	 In-Reply-To:Content-Type; b=jGRlpbDkmq1s8atQseI4BcBuJ5E9ARGrPGaKSIhD0cjaviRe/KJXkKbTg5IN0gJHX6LmXp7QZ+capyVK/iIN2viNTgvt5ZW+0qPSRlsGlBkcCtspWoon+K8d72oM4uWLzQuL0oPLjobAEzPIMXll+1wryqgICiqzvXJmzdDtfHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dKYM/PiY; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40ec048e0c1so2518265e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 04:22:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706012533; x=1706617333; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3Xh4hoiszx6vPtNJtgIPNAsItrI2Mq/OMaWZXX1X6Pc=;
+        b=dKYM/PiYRdpa4/0zBPLAOiac0dj4S2rPhGZoGb7CJdp58Dp/Z0nJX4hhStRb0wyMKW
+         9JV38dpJI+JzYSCbsyWxgZzRVBBB2ZQrNyda5cZdHkrY4Dir7TOHVgy4+9atf560vK33
+         SFYEWnkP5sG62Noi7FFhOK/0/usMZKiE6UNqi2a12BwbLxUwHb7c2o/wphWQSh1HJSkC
+         6nV1/BRTKHIJCjoIaUqsXwVZSnqWthJeUjMkrCXcm52RkO1VHsMBVunO0Z0+9WrnwCN3
+         XB/qw7wXbX44ODKXozJiQus3dLVF3f3BOJsikA+XbpQCjFFnktz7XRaEt92QvYyLFRbh
+         ITpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706012377; x=1706617177;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X/GElDPRN0NBVzcYw+fvqfvfgtwx2bhjdwkQ5wKWbFM=;
-        b=wXlG/fQJacti6tt7+KF4N7CezMNdLwD20xlRIU84mT/msAqDb5sCFu6nnqmeTxXqW8
-         hPX+1WCURWms2WYT/d4d8x24N7cSaSaperSaGbEevuLJDZQdy0n0KhOWj9m9LsFAXScW
-         CBZMqLb5Z0hW+QZW3CetsZrlk95NLsYs294zUEBDrsCxx5oBs56Emon4UcwaADQ8H21L
-         cd3ilCHcpn5zLUHCVk+EVqHl90koqzRD9bUUNpx3nK7KAhORRhia/WgNgX9N5AT3juHz
-         v/q+vrYPM8gyCeuoJ457erBg8GW2e5COwg4q9ryo4vbguNIUmPfwfjILwzx8QKK+c1CO
-         kg9A==
-X-Gm-Message-State: AOJu0YxUZ8q6OtIq+fx1KhOFbBmO31CzzSNt6aUDChyjTb3zFJDRgkN/
-	UgOhL25aszLVEeAd/qmrStHKnznAeatFENR+WzJODRHPJoJefk6jUX4RWd6A+epLM/hMmAkIfj1
-	WOhwLfI13tYzUz1PU5bProCOpVfKSNd1GuDCHzO2NfS7ozCAXysV5gsedieUzLQ==
-X-Received: by 2002:a05:600c:2252:b0:40e:6cf9:506e with SMTP id a18-20020a05600c225200b0040e6cf9506emr568012wmm.96.1706012377618;
-        Tue, 23 Jan 2024 04:19:37 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEiO1TgrMoQCs5Jr/juHQivfPPHAMW0rIO6fj55v7fOTl2Rf6O3NzPt6TOAltNzV3LQyRp3GA==
-X-Received: by 2002:a05:600c:2252:b0:40e:6cf9:506e with SMTP id a18-20020a05600c225200b0040e6cf9506emr567992wmm.96.1706012377224;
-        Tue, 23 Jan 2024 04:19:37 -0800 (PST)
-Received: from ?IPV6:2003:cb:c741:de00:bf0f:cd46:dc1c:2de9? (p200300cbc741de00bf0fcd46dc1c2de9.dip0.t-ipconnect.de. [2003:cb:c741:de00:bf0f:cd46:dc1c:2de9])
-        by smtp.gmail.com with ESMTPSA id s8-20020a05600c45c800b0040e527602c8sm46523956wmo.9.2024.01.23.04.19.35
+        d=1e100.net; s=20230601; t=1706012533; x=1706617333;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3Xh4hoiszx6vPtNJtgIPNAsItrI2Mq/OMaWZXX1X6Pc=;
+        b=CZZ6SssZAPWr06PMyK1+IqUHhHFGZrxZ+/IjInY95S28wk/k4uWbkHnHYs/z6sr0Iq
+         jVLK/Sm6I2fRdiwGtGNDk39223aEAWQHV2cakyze++rMIcJH243qPYuyOtguWqMzjC4G
+         aiWa22YzG84prRAPrSkSZhyB1WtNyCGkBWM7LJa2sS19Vdssz6m18+y/PXAe1WC2PQfL
+         2PmqMQXKeDl+PQan4G4VJTMr0us9vR6Pc6Ip/nbgPoZ5GiCXxGKxMs7Mtfs2DqXqoX/Z
+         z7xg5i9GCwOKClh7tExG7yB/nqAaQ9jIpmzzIGYPmqFUSL/WBkQuerbQq3kjCD++5u2N
+         nXPQ==
+X-Gm-Message-State: AOJu0Ywg5BD7zC8Afwa8tnhSqqZ1N8m8d7djwK65ExpsnegMAo1Halgm
+	w5s6TsWykSEZKTNYQjLTIKsENuU7SsQ3svYMVSo4mJGBshB+K+qbDLPXKXMXcgzpxA6xfOHTI7l
+	l
+X-Google-Smtp-Source: AGHT+IGccBIX6QiHEm6StMHteGiq7t8STHchgC5xenXi4ifW3VwAcmeyLDLRMdZevyTxKo2oKmw3Mw==
+X-Received: by 2002:a05:600c:45d2:b0:40e:397e:16e7 with SMTP id s18-20020a05600c45d200b0040e397e16e7mr529388wmo.3.1706012533288;
+        Tue, 23 Jan 2024 04:22:13 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id je14-20020a05600c1f8e00b0040e3635ca65sm46144602wmb.2.2024.01.23.04.22.11
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jan 2024 04:19:36 -0800 (PST)
-Message-ID: <31a0661e-fa69-419c-9936-98bfe168d5a7@redhat.com>
-Date: Tue, 23 Jan 2024 13:19:35 +0100
+        Tue, 23 Jan 2024 04:22:12 -0800 (PST)
+Message-ID: <0d3505ae-b227-438a-9077-4556ffb64e79@linaro.org>
+Date: Tue, 23 Jan 2024 13:22:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,156 +75,85 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 09/11] mm/memory: optimize fork() with PTE-mapped THP
+Subject: Re: [PATCH 2/7] dt-bindings: spi: samsung: Add Exynos850 SPI
 Content-Language: en-US
-To: Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
- Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, "David S. Miller"
- <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
-References: <20240122194200.381241-1-david@redhat.com>
- <20240122194200.381241-10-david@redhat.com>
- <63be0c3c-bf34-4cbb-b47b-7c9be0e65058@arm.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <63be0c3c-bf34-4cbb-b47b-7c9be0e65058@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Sam Protsenko <semen.protsenko@linaro.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Andi Shyti <andi.shyti@kernel.org>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
+Cc: Alim Akhtar <alim.akhtar@samsung.com>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Tomasz Figa <tomasz.figa@gmail.com>, Chanwoo Choi <cw00.choi@samsung.com>,
+ linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org
+References: <20240120012948.8836-1-semen.protsenko@linaro.org>
+ <20240120012948.8836-3-semen.protsenko@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240120012948.8836-3-semen.protsenko@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-[...]
-
+On 20/01/2024 02:29, Sam Protsenko wrote:
+> Document samsung,exynos850-spi compatible which will be used on
+> Exynos850 SoC. Exynos850 doesn't have ioclk, so only two clocks are
+> needed (bus clock and functional SPI clock).
 > 
-> I wrote some documentation for this (based on Matthew's docs for set_ptes() in
-> my version. Perhaps it makes sense to add it here, given this is overridable by
-> the arch.
-> 
-> /**
->   * wrprotect_ptes - Write protect a consecutive set of pages.
->   * @mm: Address space that the pages are mapped into.
->   * @addr: Address of first page to write protect.
->   * @ptep: Page table pointer for the first entry.
->   * @nr: Number of pages to write protect.
->   *
->   * May be overridden by the architecture, else implemented as a loop over
->   * ptep_set_wrprotect().
->   *
->   * Context: The caller holds the page table lock. The PTEs are all in the same
->   * PMD.
->   */
-> 
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/spi/samsung,spi.yaml | 1 +
 
-I could have sworn I had a documentation at some point. Let me add some, 
-thanks.
 
-[...]
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
->> +
->> +	/*
->> +	 * If we likely have to copy, just don't bother with batching. Make
->> +	 * sure that the common "small folio" case stays as fast as possible
->> +	 * by keeping the batching logic separate.
->> +	 */
->> +	if (unlikely(!*prealloc && folio_test_large(folio) && max_nr != 1)) {
->> +		nr = folio_pte_batch(folio, addr, src_pte, pte, max_nr);
->> +		if (folio_test_anon(folio)) {
->> +			folio_ref_add(folio, nr);
->> +			if (unlikely(folio_try_dup_anon_rmap_ptes(folio, page,
->> +								  nr, src_vma))) {
-> 
-> What happens if its not the first page of the batch that fails here? Aren't you
-> signalling that you need a prealloc'ed page for the wrong pte? Shouldn't you
-> still batch copy all the way up to the failing page first? Perhaps it all comes
-> out in the wash and these events are so infrequent that we don't care about the
-> lost batching opportunity?
+I assume this will go via SPI tree. Probably better to send SPI patches
+separately with fixed subject prefix (spi: dt-bindings: samsung:)
 
-I assume you mean the weird corner case that some folio pages in the 
-range have PAE set, others don't -- and the folio maybe pinned.
-
-In that case, we fallback to individual pages, and might have 
-preallocated a page although we wouldn't have to preallocate one for 
-processing the next page (that doesn't have PAE set).
-
-It should all work, although not optimized to the extreme, and as it's a 
-corner case, we don't particularly care. Hopefully, in the future we'll 
-only have a single PAE flag per folio.
-
-Or am I missing something?
-
-> 
->> +				folio_ref_sub(folio, nr);
->> +				return -EAGAIN;
->> +			}
->> +			rss[MM_ANONPAGES] += nr;
->> +			VM_WARN_ON_FOLIO(PageAnonExclusive(page), folio);
->> +		} else {
->> +			folio_ref_add(folio, nr);
-> 
-> Perhaps hoist this out to immediately after folio_pte_batch() since you're
-> calling it on both branches?
-
-Makes sense, thanks.
-
--- 
-Cheers,
-
-David / dhildenb
+Best regards,
+Krzysztof
 
 
