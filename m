@@ -1,170 +1,117 @@
-Return-Path: <linux-kernel+bounces-36150-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36151-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFF2C839C46
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 23:32:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 739C1839C5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 23:37:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A8DFB2B3AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 22:32:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A61A41C26CFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 22:37:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C03F855C06;
-	Tue, 23 Jan 2024 22:30:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9DBD53808;
+	Tue, 23 Jan 2024 22:36:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TGXJzSl8"
-Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dNLkpDN4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 980AC54BD6
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 22:30:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04C846ADE;
+	Tue, 23 Jan 2024 22:36:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706049050; cv=none; b=CQdYUz+BnZBnvHnT2I6XtQskiRByYSRj5FSTiRClv9tO6pJWLaw3k2nV0TIxdayieDo6XUG+sal1lgIV0ckQWq0jzEArd8RWJijEYsy5XueDh3FdeRQM1wwTS/6DaTLYkEqoI0mhAL5Na5IJodqTbfaT/DOOhcXC+h+bu/26HRg=
+	t=1706049411; cv=none; b=V09aFliwMFz6RtyUDhPBODM0oRIEV0+E0nDuqDRv0mkBHuLNc7m0p4fXSd7HW84gCnmTn+A+HnAl4kShlbjSbzubtm4o8DuYQImLjg1wMd9U8sfLqRIVIUz4qsCgtQYelkWloAfmQ4212j4JrAz+ZSJJ3APeoo8j1MdQtMCjm8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706049050; c=relaxed/simple;
-	bh=56wzal+YXRtHQbn7T/LWphhUaXqmgxriKJa43MLSexQ=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=fYDOM5vewvV72TbsdLzQi57UwPF8AnwC1LD8I3D0RjJKmSJ+MW1aVoiFL0ldpjYz5+IPu9MCJDYDfkJ+p2ljMg1iyl9qMuNkkHK8eNODcV4A8bRvuul1pjPkFdefp/bLTbTNIcwUrijhfgPrbxGWVYCnn4F5zSboqFQMn1rtnZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--abhishekpandit.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TGXJzSl8; arc=none smtp.client-ip=209.85.210.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--abhishekpandit.bounces.google.com
-Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6dbcdfde0eeso2444837b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 14:30:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706049048; x=1706653848; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KK7B2Hpvjem/TGRGJEqxUJ5QCI/gm35D+XD8uCyWzO0=;
-        b=TGXJzSl8thIqjktun7+24Jdfz3Is/4acLKMif0NBATu7HoQ2f/j3wM6vHvpw79dB6x
-         Ndx0ev+nghQxAoRlnwmg5IELEkuVSxdies5SyA0svatxm5gTubq4Onexjg/q1bH6ueJW
-         mifsV+oeWKk2BDsjj1JLZVE4Udn2Wd9q+VmzA+J0h3MvanCUZBeG4zCi/fCcrcNeeSWt
-         IeJ++qFV+XDmuBI480XN7sLogNoAQ+ep3Jus7cvFEU/rKJYWFMf5S17/kAhmUDyT6U2m
-         igjXAB63t4IhuE46sjiXhoMgfC6KAXEs2+2AvUYIPmO+IOVq8OYhDVLCozlrc9v96ReY
-         wC4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706049048; x=1706653848;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KK7B2Hpvjem/TGRGJEqxUJ5QCI/gm35D+XD8uCyWzO0=;
-        b=IaGGwbNianKrcHBkCmTlQ7vg8XV/MhWBnnmTbaY3KI2q8HJ2n0arYAb7Ng1NKelW6o
-         8HFbCc6Ky7yGUlaL+w4xEtz9SKH3YITVEIKtwSdPyimxQUBCUzmIP4ZPC1rG3QVuo+lI
-         8vjvtnUDaNvxRXtaYIJl31Vc1AH15wtMt02jlzVE84ColZepSn6vwYQLLwSiZPWJSvYw
-         y7ZTtOxUKFoh0R5WyMfwWOPokk2DoUfvEsuho/QoPnVA2eGPNyXwcNDB7S3ZHNGn8s/L
-         VhC9DPaSHLNPs5MNLaRP1UiVDbk4RH/uqu+AfVVqOb/2uoJcExGDcSHIjLriI+b5M8nd
-         itAg==
-X-Gm-Message-State: AOJu0Yzf4zkuB3imvdOfu200pB64VMSHXVZHffAl4W8JJCzKN97ozMUZ
-	nVnLQmkOXM7GZF1//lboKxwulBR0M7W4jlgy+NmeluCaABWoTYr3OgzsoGpwoQbLu8mUzIAZTB4
-	Cmw3SOOZ6T1R0oh94w25pAzIwqrsQOjHdxg==
-X-Google-Smtp-Source: AGHT+IEnuDdXdhLH74mIfU2LZBClUJix1OyeyVi9+KxSoc17xKuUBC9JdyNf43QVD0DklslMm62r6qbMEKDk348MegIQ9w==
-X-Received: from abps.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:9b4])
- (user=abhishekpandit job=sendgmr) by 2002:a05:6a00:985:b0:6db:d97b:6c98 with
- SMTP id u5-20020a056a00098500b006dbd97b6c98mr617462pfg.2.1706049047859; Tue,
- 23 Jan 2024 14:30:47 -0800 (PST)
-Date: Tue, 23 Jan 2024 14:30:36 -0800
-In-Reply-To: <20240123223039.1471557-1-abhishekpandit@google.com>
+	s=arc-20240116; t=1706049411; c=relaxed/simple;
+	bh=i3m70T+5zzUlf58J0B9B0D1OflXZeDncmnHWK4wEutg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=BvjWNXSLPvA76SvJo21+SEeue7vz95MuV37hGAlWySwA1IyUlrMYYxLPJ5dYDj7bysgiUtVATu0FAa4jUbBtkhfth0kHl0nK/FIPVOBjLpp0lPS0kQTLXpgNJCn3I2mdZ3REopUGYeyFVxWXd4YdVoA7kMxYG+sOT81GihY0xJ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dNLkpDN4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43FC1C433C7;
+	Tue, 23 Jan 2024 22:36:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706049410;
+	bh=i3m70T+5zzUlf58J0B9B0D1OflXZeDncmnHWK4wEutg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=dNLkpDN4H52ijtCLMWY2NA6XJSHRlAjeRammwO5Rm8QwmskNN21hKO/5tx9+lK34W
+	 kOmk6rkQUwb3MseYXDOzyskrEUIYN2Kdkl6+L/dHW8Bi6W6kmfPtKDrkRQjW7aWVxU
+	 zh/4js6IAEy6R31SrT5nMi++OHZcglvHJVUDsTy+Ex4cLxNE+nLC1532YEV/Ng7zvY
+	 bBOmENC4l7GTfh6QhncACTf5lzIlnd/AKDRlO/S4K0cEj7KvU4nd5z0aX0S6Eafafn
+	 QmEkV3OMLWUsjRuqAOHd/Jnpdn74/nlvpsCxMoO5bnVUWRb6+28YHQrHrIFJWvVzyT
+	 cHApnliKCa7Bg==
+Date: Tue, 23 Jan 2024 16:36:48 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Johan Hovold <johan@kernel.org>
+Cc: Michael Schaller <michael@5challer.de>,
+	Kai-Heng Feng <kai.heng.feng@canonical.com>,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	regressions@lists.linux.dev,
+	"Maciej W . Rozycki" <macro@orcam.me.uk>,
+	Ajay Agarwal <ajayagarwal@google.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org,
+	regressions@leemhuis.info
+Subject: Re: PCI/ASPM locking regression in 6.7-final (was: Re: [PATCH]
+ Revert "PCI/ASPM: Remove pcie_aspm_pm_state_change()")
+Message-ID: <20240123223648.GA331671@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240123223039.1471557-1-abhishekpandit@google.com>
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-Message-ID: <20240123143026.v1.3.Idf7d373c3cbb54058403cb951d644f1f09973d15@changeid>
-Subject: [PATCH v1 3/3] usb: typec: ucsi: Get PD revision for partner
-From: Abhishek Pandit-Subedi <abhishekpandit@google.com>
-To: Heikki Krogerus <heikki.krogerus@linux.intel.com>, linux-usb@vger.kernel.org
-Cc: pmalani@chromium.org, jthies@google.com, 
-	Abhishek Pandit-Subedi <abhishekpandit@chromium.org>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Bjorn Andersson <andersson@kernel.org>, 
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Fabrice Gasnier <fabrice.gasnier@foss.st.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Hans de Goede <hdegoede@redhat.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Saranya Gopal <saranya.gopal@intel.com>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Za_2oKTUksw8Di5E@hovoldconsulting.com>
 
-From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+On Tue, Jan 23, 2024 at 06:25:52PM +0100, Johan Hovold wrote:
+> On Mon, Jan 22, 2024 at 12:26:15PM -0600, Bjorn Helgaas wrote:
+> > On Mon, Jan 22, 2024 at 11:53:35AM +0100, Johan Hovold wrote:
+> > > I never got a reply to this one so resending with updated Subject in
+> > > case it got buried in your inbox.
+> > 
+> > I did see it but decided it was better to fix the problem with resume
+> > causing an unintended reboot, even though fixing that meant breaking
+> > lockdep again, since I don't think we have user reports of the
+> > potential deadlock lockdep finds.
+> 
+> That may be because I fixed the previous regression in 6.7-rc1 before
+> any users had a chance to hit the deadlock on Qualcomm platforms.
+> 
+> I can easily trigger a deadlock on the X13s by instrumenting 6.7-final
+> with a delay to increase the race window.
+> 
+> And any user hitting this occasionally is likely not going to be able to
+> track it down to this lock inversion (unless they have lockdep enabled).
 
-PD major revision for the port partner is described in
-GET_CONNECTOR_CAPABILITY and is only valid on UCSI 2.0 and newer. Update
-the pd_revision on the partner if the UCSI version is 2.0 or newer.
+I agree, it's a problem we need to fix.
 
-Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
----
-$ cat /sys/class/typec/port2-partner/usb_power_delivery_revision
-3.0
+> > 08d0cc5f3426 ("PCI/ASPM: Remove pcie_aspm_pm_state_change()") was a
+> > start at fixing other problems and also improving the ASPM style, so I
+> > hope somebody steps up to fix both it and the lockdep issue.  I
+> > haven't looked at it enough to have a preference for *how* to fix it.
+> 
+> Ok, but since you were the one introducing the locking regression in
+> 6.7-final shouldn't you look into fixing it?
+> 
+> Especially if there were alternatives to restoring the offending commit
+> which would solve the underlying issue for the resume failure without
+> breaking other platforms.
 
- drivers/usb/typec/ucsi/ucsi.c | 25 +++++++++++++++++++++++++
- drivers/usb/typec/ucsi/ucsi.h |  3 +++
- 2 files changed, 28 insertions(+)
+Did somebody propose an alternate patch?  If so, I missed it, but we
+could look at it now.
 
-diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
-index 4edf785d203b..8e0a512853ba 100644
---- a/drivers/usb/typec/ucsi/ucsi.c
-+++ b/drivers/usb/typec/ucsi/ucsi.c
-@@ -782,6 +782,8 @@ static int ucsi_register_partner(struct ucsi_connector *con)
- 	}
- 
- 	desc.usb_pd = pwr_opmode == UCSI_CONSTAT_PWR_OPMODE_PD;
-+	desc.pd_revision =
-+		UCSI_CONCAP_FLAG_PARTNER_PD_MAJOR_REV_AS_BCD(con->cap.flags);
- 
- 	partner = typec_register_partner(con->port, &desc);
- 	if (IS_ERR(partner)) {
-@@ -856,6 +858,28 @@ static void ucsi_partner_change(struct ucsi_connector *con)
- 			con->num, u_role);
- }
- 
-+static int ucsi_check_connector_capability(struct ucsi_connector *con)
-+{
-+	u64 command;
-+	int ret;
-+
-+	if (!con->partner && !IS_MIN_VERSION_2_0(con->ucsi))
-+		return 0;
-+
-+	command = UCSI_GET_CONNECTOR_CAPABILITY | UCSI_CONNECTOR_NUMBER(con->num);
-+	ret = ucsi_send_command(con->ucsi, command, &con->cap, sizeof(con->cap));
-+	if (ret < 0) {
-+		dev_err(con->ucsi->dev, "GET_CONNECTOR_CAPABILITY failed (%d)\n", ret);
-+		return ret;
-+	}
-+
-+	typec_partner_set_pd_revision(
-+		con->partner,
-+		UCSI_CONCAP_FLAG_PARTNER_PD_MAJOR_REV_AS_BCD(con->cap.flags));
-+
-+	return ret;
-+}
-+
- static int ucsi_check_connection(struct ucsi_connector *con)
- {
- 	u8 prev_flags = con->status.flags;
-@@ -925,6 +949,7 @@ static void ucsi_handle_connector_change(struct work_struct *work)
- 		if (con->status.flags & UCSI_CONSTAT_CONNECTED) {
- 			ucsi_register_partner(con);
- 			ucsi_partner_task(con, ucsi_check_connection, 1, HZ);
-+			ucsi_partner_task(con, ucsi_check_connector_capability, 1, HZ);
- 
- 			if (UCSI_CONSTAT_PWR_OPMODE(con->status.flags) ==
- 			    UCSI_CONSTAT_PWR_OPMODE_PD)
-diff --git a/drivers/usb/typec/ucsi/ucsi.h b/drivers/usb/typec/ucsi/ucsi.h
-index 94b373378f63..5e60328f398e 100644
---- a/drivers/usb/typec/ucsi/ucsi.h
-+++ b/drivers/usb/typec/ucsi/ucsi.h
-@@ -36,6 +36,9 @@ struct dentry;
- #define UCSI_BCD_GET_MINOR(_v_)		(((_v_) >> 4) & 0x0F)
- #define UCSI_BCD_GET_SUBMINOR(_v_)	((_v_) & 0x0F)
- 
-+#define IS_MIN_VERSION(ucsi, min_ver)	((ucsi)->version >= min_ver)
-+#define IS_MIN_VERSION_2_0(ucsi)	IS_MIN_VERSION(ucsi, UCSI_VERSION_2_0)
-+
- /* Command Status and Connector Change Indication (CCI) bits */
- #define UCSI_CCI_CONNECTOR(_c_)		(((_c_) & GENMASK(7, 1)) >> 1)
- #define UCSI_CCI_LENGTH(_c_)		(((_c_) & GENMASK(15, 8)) >> 8)
--- 
-2.43.0.429.g432eaa2c6b-goog
+> I don't want to spend more time on this if the offending commit could
+> simply be reverted.
 
+I don't quite follow.  By simply reverting, do you mean to revert
+f93e71aea6c6 ("Revert "PCI/ASPM: Remove
+pcie_aspm_pm_state_change()"")?  IIUC that would break Michael's
+machine again.
+
+Bjorn
 
