@@ -1,352 +1,122 @@
-Return-Path: <linux-kernel+bounces-35373-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35374-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5CF8838FB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:25:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED896838FBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:25:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7349F1F2263C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:25:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D83161C23C2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:25:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E17F867A07;
-	Tue, 23 Jan 2024 13:11:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA72867E69;
+	Tue, 23 Jan 2024 13:12:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="wSOeptZk";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="n32UEGzM"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gGu8sojm"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D09067759
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 13:11:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30C2667E66
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 13:12:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706015503; cv=none; b=EcQM6ZPgq6q3rs0tmIVhufZvSlr8TeWPZ2gUlHbhoNBf0usk7s1Mx2byZSRbLk+nGRHv73lxuiKk0iV/EBW7SZ7aOI3txnV6cu1tyYKFWJADU7suKU867qvAi2gsK4bMTb3c837jnfjHSqRHzAjxlVadxN7HYKL3YFXTl1xi7Ek=
+	t=1706015534; cv=none; b=HBWJzGs8r/uzclx2WlkMDoesOSew/17p/d4ab/frmSd9MIerKiT9MhIhunPvRhVy3XH9ccJRM+06nElc/raEyjXWnomrIszrgNu5YxIh9Kf4/ZNDYmJDSUbzVQ9Z33T0SpA2ZHTdsf1+OYn24C9jIOsqI3l2WqX/xsQXbZXrqZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706015503; c=relaxed/simple;
-	bh=O8PAtX8pfo+fiAW/s8V3ywe8Lrl+NxLlS4N173AWA68=;
-	h=Message-ID:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Date; b=cLcvGESCiyvG9TnN7kAFnhpWfTExDivUQOgoPBab94R+oaeRghgqmbghO18u2tlvGJ199jaaGZbAmIPWYTz7IiDpWZ5PR01wwrfhB1j/DwCoz9cGfrlndIIyFkEMf6cVeCteSX0clY5uw2bf1jDVsAc507k3yW+8DWOuk3B9a1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=wSOeptZk; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=n32UEGzM; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Message-ID: <20240118123650.253438239@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1706015499;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=MDB9nbznSrMD/b9LoNRbLQGrccIcibNBwWGQ1PLIlrY=;
-	b=wSOeptZkfwOb1HX2TbpJY4PSgYbxcSY0BkaVpWrNPftNtskR9mOQW9vqN2XSJI2HhfoQ0d
-	xYuNg+hLR7vUuJAEesEYVOGmelkP+j4vpxlAYUtF7IO8S8CX8XMv3PIaerX3QFxfMxfZrC
-	GRtunUsnFvdXDbOCxcK/4j4FHwArxtslZIbc9hNw3MKKakME0dSiKkBN+Cp77Ymf4g7eyJ
-	rFWBj/dnyCT6SGATn12k8lOPs2uaIw37dbZY6EP4k0U6zZXbAQG8J3pf6FRwKQ+wH6GLtc
-	krH+SyPLEkcmRuvexQRdMf/PCKezdLjZEuMJzFK/qalyLj1RIIESYVdap5ZTDw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1706015499;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=MDB9nbznSrMD/b9LoNRbLQGrccIcibNBwWGQ1PLIlrY=;
-	b=n32UEGzMLsBBI6jm+b/EFghYOUVuJAH0kp9HFl2EF4vyzkcfzg4c2vi61mwkLC9p7t16Cr
-	xY8EuHiWjxVYumCQ==
-From: Thomas Gleixner <tglx@linutronix.de>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: x86@kernel.org,
- Tom Lendacky <thomas.lendacky@amd.com>,
- Andrew Cooper <andrew.cooper3@citrix.com>,
- Arjan van de Ven <arjan@linux.intel.com>,
- Huang Rui <ray.huang@amd.com>,
- Juergen Gross <jgross@suse.com>,
- Dimitri Sivanich <dimitri.sivanich@hpe.com>,
- Sohil Mehta <sohil.mehta@intel.com>,
- K Prateek Nayak <kprateek.nayak@amd.com>,
- Kan Liang <kan.liang@linux.intel.com>,
- Zhang Rui <rui.zhang@intel.com>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Feng Tang <feng.tang@intel.com>,
- Andy Shevchenko <andy@infradead.org>,
- Michael Kelley <mhklinux@outlook.com>,
- "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch v2 30/30] x86/cpu/topology: Get rid of cpuinfo::x86_max_cores
-References: <20240118123127.055361964@linutronix.de>
+	s=arc-20240116; t=1706015534; c=relaxed/simple;
+	bh=ueru+mw1cE0XRlZEGPUaiKo7r27Ceou9vCB7MrFSjAE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aEhI08ZzmVJBLEekmAIMltSpgjmjD0o7vY+BlhLVXa+HhHlHVT2Z1r5tzFeE8/jLkvtRRL6h5sMjXRusxoiCoMqLB+DwBd78c5s5L8+3bTqrkD1MSA0nRx10sG1So9VOKU8JYvYPrtCirEeSJs8mEqcHuoEQk7ViTbEE+J3HL54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gGu8sojm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D932C43390
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 13:12:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706015533;
+	bh=ueru+mw1cE0XRlZEGPUaiKo7r27Ceou9vCB7MrFSjAE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=gGu8sojmykuWlHHtnhyPY+0ZtEO+PukTGSgIo6Dz3zo9o2W6lzcCxz/tJArjxiLqk
+	 w8CGzYTNVmRd0v45K0Pn1bx4rSk5w3Xmw1+TVlWlDX57f5o7dpeCPAr8CnUCKGB9i+
+	 6w90I3r/AQp/G3hdWsQ6tN72nvOy5PRItQ8Oo/purfPQ5Ktuz5Zi7lts+g0sgjBQ0e
+	 EYhWgFp5iMmd5PxMknCsTDOd/fsXhw/nB8oAbZElYi5ZpG6ZSfEk5gcdrU9omBbguB
+	 kwC0JO+2s8cqjvqgKkGZHf5gNp2xXKHCKpIC7hhXE76vt8x37o0CcOjZyrpeqzO2WJ
+	 eRSCE5r4CtCSw==
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40e9101b5f9so48041655e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 05:12:13 -0800 (PST)
+X-Gm-Message-State: AOJu0Yw1jdyiDHF0zV1lh/GsWHrkuiVwCQb6cMHf4nkd0V3VQ8PPNp8V
+	jg+s42g9d2Qo9WC4io/iblhtue+R0z8/AnIyPZoHh9CoxmJbCY540NxOh8gA86XkK0/8tMdANR7
+	IAT7aU/4mZFgSPjICWQ/jwL8cRoY=
+X-Google-Smtp-Source: AGHT+IEqHaafUVaYlL/dBnjdbyP0fljln5ORzbWGDdirMJ4HGsgSzWIh9KlIGx7RsG6VnsKDDs8KO4xQIApwjVc5wqo=
+X-Received: by 2002:a05:600c:538e:b0:40e:6d7a:f9dd with SMTP id
+ hg14-20020a05600c538e00b0040e6d7af9ddmr138840wmb.47.1706015532072; Tue, 23
+ Jan 2024 05:12:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 23 Jan 2024 14:11:38 +0100 (CET)
+References: <20240123120937.27736-1-tzimmermann@suse.de>
+In-Reply-To: <20240123120937.27736-1-tzimmermann@suse.de>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Tue, 23 Jan 2024 21:12:00 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H6z1mNqbyq-0ZhgkVgWXf-WK+XAxG8hTREhaM_R3J+s3g@mail.gmail.com>
+Message-ID: <CAAhV-H6z1mNqbyq-0ZhgkVgWXf-WK+XAxG8hTREhaM_R3J+s3g@mail.gmail.com>
+Subject: Re: [PATCH] Revert "drivers/firmware: Move sysfb_init() from
+ device_initcall to subsys_initcall_sync"
+To: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: javierm@redhat.com, dri-devel@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org, Jaak Ristioja <jaak@ristioja.ee>, 
+	Huacai Chen <chenhuacai@loongson.cn>, Thorsten Leemhuis <regressions@leemhuis.info>, 
+	Jani Nikula <jani.nikula@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Thomas Gleixner <tglx@linutronix.de>
+I'm very sorry to hear that, If Jaak can respond, I think I can find
+the root cause and fix that...
 
-Now that __num_cores_per_package and __num_threads_per_package are
-available, cpuinfo::x86_max_cores and the related math all over the place
-can be replaced with the ready to consume data.
+Huacai
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-
-
-
----
- Documentation/arch/x86/topology.rst              |   24 ++++++++---------------
- arch/x86/events/intel/uncore_nhmex.c             |    4 +--
- arch/x86/events/intel/uncore_snb.c               |    8 +++----
- arch/x86/events/intel/uncore_snbep.c             |   16 +++++++--------
- arch/x86/include/asm/processor.h                 |    2 -
- arch/x86/kernel/cpu/cacheinfo.c                  |    2 -
- arch/x86/kernel/cpu/common.c                     |    1 
- arch/x86/kernel/cpu/debugfs.c                    |    3 +-
- arch/x86/kernel/cpu/mce/inject.c                 |    3 --
- arch/x86/kernel/cpu/microcode/intel.c            |    2 -
- arch/x86/kernel/cpu/topology_common.c            |    3 --
- arch/x86/kernel/smpboot.c                        |    2 -
- drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c |    2 -
- drivers/hwmon/fam15h_power.c                     |    2 -
- 14 files changed, 31 insertions(+), 43 deletions(-)
----
---- a/Documentation/arch/x86/topology.rst
-+++ b/Documentation/arch/x86/topology.rst
-@@ -47,17 +47,21 @@ AMD nomenclature for package is 'Node'.
- 
- Package-related topology information in the kernel:
- 
--  - cpuinfo_x86.x86_max_cores:
-+  - topology_num_threads_per_package()
- 
--    The number of cores in a package. This information is retrieved via CPUID.
-+    The number of threads in a package.
- 
--  - cpuinfo_x86.x86_max_dies:
-+  - topology_num_cores_per_package()
- 
--    The number of dies in a package. This information is retrieved via CPUID.
-+    The number of cores in a package.
-+
-+  - topology_max_dies_per_package()
-+
-+    The maximum number of dies in a package.
- 
-   - cpuinfo_x86.topo.die_id:
- 
--    The physical ID of the die. This information is retrieved via CPUID.
-+    The physical ID of the die.
- 
-   - cpuinfo_x86.topo.pkg_id:
- 
-@@ -96,16 +100,6 @@ are SMT- or CMT-type threads.
- AMDs nomenclature for a CMT core is "Compute Unit". The kernel always uses
- "core".
- 
--Core-related topology information in the kernel:
--
--  - smp_num_siblings:
--
--    The number of threads in a core. The number of threads in a package can be
--    calculated by::
--
--	threads_per_package = cpuinfo_x86.x86_max_cores * smp_num_siblings
--
--
- Threads
- =======
- A thread is a single scheduling unit. It's the equivalent to a logical Linux
---- a/arch/x86/events/intel/uncore_nhmex.c
-+++ b/arch/x86/events/intel/uncore_nhmex.c
-@@ -1221,8 +1221,8 @@ void nhmex_uncore_cpu_init(void)
- 		uncore_nhmex = true;
- 	else
- 		nhmex_uncore_mbox.event_descs = wsmex_uncore_mbox_events;
--	if (nhmex_uncore_cbox.num_boxes > boot_cpu_data.x86_max_cores)
--		nhmex_uncore_cbox.num_boxes = boot_cpu_data.x86_max_cores;
-+	if (nhmex_uncore_cbox.num_boxes > topology_num_cores_per_package())
-+		nhmex_uncore_cbox.num_boxes = topology_num_cores_per_package();
- 	uncore_msr_uncores = nhmex_msr_uncores;
- }
- /* end of Nehalem-EX uncore support */
---- a/arch/x86/events/intel/uncore_snb.c
-+++ b/arch/x86/events/intel/uncore_snb.c
-@@ -364,8 +364,8 @@ static struct intel_uncore_type *snb_msr
- void snb_uncore_cpu_init(void)
- {
- 	uncore_msr_uncores = snb_msr_uncores;
--	if (snb_uncore_cbox.num_boxes > boot_cpu_data.x86_max_cores)
--		snb_uncore_cbox.num_boxes = boot_cpu_data.x86_max_cores;
-+	if (snb_uncore_cbox.num_boxes > topology_num_cores_per_package())
-+		snb_uncore_cbox.num_boxes = topology_num_cores_per_package();
- }
- 
- static void skl_uncore_msr_init_box(struct intel_uncore_box *box)
-@@ -428,8 +428,8 @@ static struct intel_uncore_type *skl_msr
- void skl_uncore_cpu_init(void)
- {
- 	uncore_msr_uncores = skl_msr_uncores;
--	if (skl_uncore_cbox.num_boxes > boot_cpu_data.x86_max_cores)
--		skl_uncore_cbox.num_boxes = boot_cpu_data.x86_max_cores;
-+	if (skl_uncore_cbox.num_boxes > topology_num_cores_per_package())
-+		skl_uncore_cbox.num_boxes = topology_num_cores_per_package();
- 	snb_uncore_arb.ops = &skl_uncore_msr_ops;
- }
- 
---- a/arch/x86/events/intel/uncore_snbep.c
-+++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -1172,8 +1172,8 @@ static struct intel_uncore_type *snbep_m
- 
- void snbep_uncore_cpu_init(void)
- {
--	if (snbep_uncore_cbox.num_boxes > boot_cpu_data.x86_max_cores)
--		snbep_uncore_cbox.num_boxes = boot_cpu_data.x86_max_cores;
-+	if (snbep_uncore_cbox.num_boxes > topology_num_cores_per_package())
-+		snbep_uncore_cbox.num_boxes = topology_num_cores_per_package();
- 	uncore_msr_uncores = snbep_msr_uncores;
- }
- 
-@@ -1845,8 +1845,8 @@ static struct intel_uncore_type *ivbep_m
- 
- void ivbep_uncore_cpu_init(void)
- {
--	if (ivbep_uncore_cbox.num_boxes > boot_cpu_data.x86_max_cores)
--		ivbep_uncore_cbox.num_boxes = boot_cpu_data.x86_max_cores;
-+	if (ivbep_uncore_cbox.num_boxes > topology_num_cores_per_package())
-+		ivbep_uncore_cbox.num_boxes = topology_num_cores_per_package();
- 	uncore_msr_uncores = ivbep_msr_uncores;
- }
- 
-@@ -2917,8 +2917,8 @@ static bool hswep_has_limit_sbox(unsigne
- 
- void hswep_uncore_cpu_init(void)
- {
--	if (hswep_uncore_cbox.num_boxes > boot_cpu_data.x86_max_cores)
--		hswep_uncore_cbox.num_boxes = boot_cpu_data.x86_max_cores;
-+	if (hswep_uncore_cbox.num_boxes > topology_num_cores_per_package())
-+		hswep_uncore_cbox.num_boxes = topology_num_cores_per_package();
- 
- 	/* Detect 6-8 core systems with only two SBOXes */
- 	if (hswep_has_limit_sbox(HSWEP_PCU_DID))
-@@ -3280,8 +3280,8 @@ static struct event_constraint bdx_uncor
- 
- void bdx_uncore_cpu_init(void)
- {
--	if (bdx_uncore_cbox.num_boxes > boot_cpu_data.x86_max_cores)
--		bdx_uncore_cbox.num_boxes = boot_cpu_data.x86_max_cores;
-+	if (bdx_uncore_cbox.num_boxes > topology_num_cores_per_package())
-+		bdx_uncore_cbox.num_boxes = topology_num_cores_per_package();
- 	uncore_msr_uncores = bdx_msr_uncores;
- 
- 	/* Detect systems with no SBOXes */
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -149,8 +149,6 @@ struct cpuinfo_x86 {
- 	unsigned long		loops_per_jiffy;
- 	/* protected processor identification number */
- 	u64			ppin;
--	/* cpuid returned max cores value: */
--	u16			x86_max_cores;
- 	u16			x86_clflush_size;
- 	/* number of cores as seen by the OS: */
- 	u16			booted_cores;
---- a/arch/x86/kernel/cpu/cacheinfo.c
-+++ b/arch/x86/kernel/cpu/cacheinfo.c
-@@ -301,7 +301,7 @@ amd_cpuid4(int leaf, union _cpuid4_leaf_
- 	eax->split.type = types[leaf];
- 	eax->split.level = levels[leaf];
- 	eax->split.num_threads_sharing = 0;
--	eax->split.num_cores_on_die = __this_cpu_read(cpu_info.x86_max_cores) - 1;
-+	eax->split.num_cores_on_die = topology_num_cores_per_package();
- 
- 
- 	if (assoc == 0xffff)
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1737,7 +1737,6 @@ static void identify_cpu(struct cpuinfo_
- 	c->x86_model = c->x86_stepping = 0;	/* So far unknown... */
- 	c->x86_vendor_id[0] = '\0'; /* Unset */
- 	c->x86_model_id[0] = '\0';  /* Unset */
--	c->x86_max_cores = 1;
- #ifdef CONFIG_X86_64
- 	c->x86_clflush_size = 64;
- 	c->x86_phys_bits = 36;
---- a/arch/x86/kernel/cpu/debugfs.c
-+++ b/arch/x86/kernel/cpu/debugfs.c
-@@ -28,7 +28,8 @@ static int cpu_debug_show(struct seq_fil
- 	seq_printf(m, "l2c_id:              %u\n", c->topo.l2c_id);
- 	seq_printf(m, "amd_node_id:         %u\n", c->topo.amd_node_id);
- 	seq_printf(m, "amd_nodes_per_pkg:   %u\n", topology_amd_nodes_per_pkg());
--	seq_printf(m, "max_cores:           %u\n", c->x86_max_cores);
-+	seq_printf(m, "num_threads:         %u\n", __num_threads_per_package);
-+	seq_printf(m, "num_cores:           %u\n", __num_cores_per_package);
- 	seq_printf(m, "max_dies_per_pkg:    %u\n", __max_dies_per_package);
- 	seq_printf(m, "max_threads_per_core:%u\n", __max_threads_per_core);
- 	return 0;
---- a/arch/x86/kernel/cpu/mce/inject.c
-+++ b/arch/x86/kernel/cpu/mce/inject.c
-@@ -430,10 +430,9 @@ static void trigger_thr_int(void *info)
- 
- static u32 get_nbc_for_node(int node_id)
- {
--	struct cpuinfo_x86 *c = &boot_cpu_data;
- 	u32 cores_per_node;
- 
--	cores_per_node = (c->x86_max_cores * __max_threads_per_core) / topology_amd_nodes_per_pkg();
-+	cores_per_node = topology_num_threads_per_package() / topology_amd_nodes_per_pkg();
- 	return cores_per_node * node_id;
- }
- 
---- a/arch/x86/kernel/cpu/microcode/intel.c
-+++ b/arch/x86/kernel/cpu/microcode/intel.c
-@@ -641,7 +641,7 @@ static __init void calc_llc_size_per_cor
- {
- 	u64 llc_size = c->x86_cache_size * 1024ULL;
- 
--	do_div(llc_size, c->x86_max_cores);
-+	do_div(llc_size, topology_num_cores_per_package());
- 	llc_size_per_core = (unsigned int)llc_size;
- }
- 
---- a/arch/x86/kernel/cpu/topology_common.c
-+++ b/arch/x86/kernel/cpu/topology_common.c
-@@ -155,9 +155,6 @@ static void topo_set_ids(struct topo_sca
- 	c->topo.core_id = (apicid & topo_domain_mask(TOPO_PKG_DOMAIN)) >>
- 		x86_topo_system.dom_shifts[TOPO_SMT_DOMAIN];
- 
--	/* Maximum number of cores on this package */
--	c->x86_max_cores = topology_unit_count(apicid, TOPO_CORE_DOMAIN, TOPO_PKG_DOMAIN);
--
- 	c->topo.amd_node_id = tscan->amd_node_id;
- 
- 	if (c->x86_vendor == X86_VENDOR_AMD)
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -564,7 +564,7 @@ static void __init build_sched_topology(
- void set_cpu_sibling_map(int cpu)
- {
- 	bool has_smt = __max_threads_per_core > 1;
--	bool has_mp = has_smt || boot_cpu_data.x86_max_cores > 1;
-+	bool has_mp = has_smt || topology_num_cores_per_package() > 1;
- 	struct cpuinfo_x86 *c = &cpu_data(cpu);
- 	struct cpuinfo_x86 *o;
- 	int i, threads;
---- a/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
-@@ -451,7 +451,7 @@ static int vangogh_init_smc_tables(struc
- 
- #ifdef CONFIG_X86
- 	/* AMD x86 APU only */
--	smu->cpu_core_num = boot_cpu_data.x86_max_cores;
-+	smu->cpu_core_num = topology_num_cores_per_package();
- #else
- 	smu->cpu_core_num = 4;
- #endif
---- a/drivers/hwmon/fam15h_power.c
-+++ b/drivers/hwmon/fam15h_power.c
-@@ -209,7 +209,7 @@ static ssize_t power1_average_show(struc
- 	 * With the new x86 topology modelling, x86_max_cores is the
- 	 * compute unit number.
- 	 */
--	cu_num = boot_cpu_data.x86_max_cores;
-+	cu_num = topology_num_cores_per_package();
- 
- 	ret = read_registers(data);
- 	if (ret)
-
+On Tue, Jan 23, 2024 at 8:09=E2=80=AFPM Thomas Zimmermann <tzimmermann@suse=
+de> wrote:
+>
+> This reverts commit 60aebc9559492cea6a9625f514a8041717e3a2e4.
+>
+> Commit 60aebc9559492cea ("drivers/firmware: Move sysfb_init() from
+> device_initcall to subsys_initcall_sync") messes up initialization order
+> of the graphics drivers and leads to blank displays on some systems. So
+> revert the commit.
+>
+> To make the display drivers fully independent from initialization
+> order requires to track framebuffer memory by device and independently
+> from the loaded drivers. The kernel currently lacks the infrastructure
+> to do so.
+>
+> Reported-by: Jaak Ristioja <jaak@ristioja.ee>
+> Closes: https://lore.kernel.org/dri-devel/ZUnNi3q3yB3zZfTl@P70.localdomai=
+n/T/#t
+> Reported-by: Huacai Chen <chenhuacai@loongson.cn>
+> Closes: https://lore.kernel.org/dri-devel/20231108024613.2898921-1-chenhu=
+acai@loongson.cn/
+> Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/10133
+> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+> Cc: Javier Martinez Canillas <javierm@redhat.com>
+> Cc: Thorsten Leemhuis <regressions@leemhuis.info>
+> Cc: Jani Nikula <jani.nikula@linux.intel.com>
+> ---
+>  drivers/firmware/sysfb.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/firmware/sysfb.c b/drivers/firmware/sysfb.c
+> index 82fcfd29bc4d2..3c197db42c9d9 100644
+> --- a/drivers/firmware/sysfb.c
+> +++ b/drivers/firmware/sysfb.c
+> @@ -128,4 +128,4 @@ static __init int sysfb_init(void)
+>  }
+>
+>  /* must execute after PCI subsystem for EFI quirks */
+> -subsys_initcall_sync(sysfb_init);
+> +device_initcall(sysfb_init);
+> --
+> 2.43.0
+>
 
