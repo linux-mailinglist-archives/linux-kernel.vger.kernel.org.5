@@ -1,102 +1,156 @@
-Return-Path: <linux-kernel+bounces-34578-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34579-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 229EF8381AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:10:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34D1F8381B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:11:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B41971F24C0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:10:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 686441C23CA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:11:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFFBE2C1BF;
-	Tue, 23 Jan 2024 01:13:42 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A3DB4F611;
+	Tue, 23 Jan 2024 01:17:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="DHEyNI9M"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 492E3BE71;
-	Tue, 23 Jan 2024 01:13:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA60C4A1A
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 01:17:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705972422; cv=none; b=gIAVwbxDTtHEjCMDvRbHp4Quh7m+pads84CKd/IIEY/2flMBeKrKWJHl30u0kEE6eujJ2Sgd1cwcyGiYimhVXUzYZmAC0rFbZzwnw0NseckWBbcZJCut66FMluHx76svvqkfcg8Lx8xzKC1h7X+EEgxUIcq+mqeRjuMWLO1+3Zk=
+	t=1705972632; cv=none; b=eEI8sAbUrvW7bdBXbc+pRbGM0D+xU4jB6fd4pefJhfXiMHqRFKpgzkXgbWEIBAt5daq0t+6Cyfj6Gmhd96RieEFz+NMcOXnKOOsVCZdLNa8qbWQfLVL5l763C547c6+it0qmM+0vWrFb+9kaKByGhG4Fg1dYL1vWz8Wi+/fMkAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705972422; c=relaxed/simple;
-	bh=eswOY/7LacnPItq2MBgGY1hsNbWUj9aRuO7FiWkWpZs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=kZtWCilkPuXxosJTqPrGvCg+6Ozm7ytYS8lSOPCknsK0P66iD4VsQCIYdj0Xg2w1Jnn89QEvnjI/N0IojoFNGfvZEHf1quYVFy5rXlJx567lkfedFl39PVFf3uv72whZJ1tW0dxf8oxD7u+OGm0IoSiDM6EpSF7u5b7kdv+358U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 725ac9349c914a659c5fe5d0b26b1356-20240123
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:d72e2702-ade4-47e0-8027-c05a7342ce5f,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:-5
-X-CID-INFO: VERSION:1.1.35,REQID:d72e2702-ade4-47e0-8027-c05a7342ce5f,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-5
-X-CID-META: VersionHash:5d391d7,CLOUDID:ee268a8e-e2c0-40b0-a8fe-7c7e47299109,B
-	ulkID:240123091336YQ1JJ9EN,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
-	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
-	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 725ac9349c914a659c5fe5d0b26b1356-20240123
-X-User: liucong2@kylinos.cn
-Received: from localhost.localdomain [(116.128.244.171)] by mailgw
-	(envelope-from <liucong2@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 1484640778; Tue, 23 Jan 2024 09:13:33 +0800
-From: Cong Liu <liucong2@kylinos.cn>
-To: Brett Creeley <brett.creeley@amd.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>
-Cc: Cong Liu <liucong2@kylinos.cn>,
-	kvm@vger.kernel.org,
+	s=arc-20240116; t=1705972632; c=relaxed/simple;
+	bh=22dELSQHTcOkyOJDCSy4w/O6DClPqBTUGM3zbVdN6Pk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tSHdc67/dXaSa2T/+8Hh3/gopyK0uNiIdPXNfYdZIaW4ZfV2TjLoq7hGwwAWq4hk5+X+o4ooPDG/bB3Qaunwq9Ih86bCzBJDen7c0ygbowJLc/ebSJDhZ9HWerBfVUtApmMnNmxV7f+H2CexZ6kIPnYo7kPBoFXUZkd10DOkiYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=DHEyNI9M; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (89-27-53-110.bb.dnainternet.fi [89.27.53.110])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0185D1574;
+	Tue, 23 Jan 2024 02:15:53 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1705972554;
+	bh=22dELSQHTcOkyOJDCSy4w/O6DClPqBTUGM3zbVdN6Pk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=DHEyNI9MQcgQqsDstVKdkIn0e4tjkwezLEPzlaGFvGfrx6lFCnCgQ1kCrAmw+nvUJ
+	 2tUl5mfEMZWrVXMX5B/EU0uG/LOt98szZnc88Hz6z1u8SOtnSGofbw0muQiTbowv5j
+	 8/Zwci8dRWlgTQM/wEE3wYnPW87uv8zYCvKTxMVo=
+Date: Tue, 23 Jan 2024 03:17:10 +0200
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Sui Jingfeng <sui.jingfeng@linux.dev>
+Cc: David Airlie <airlied@gmail.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] vfio/pds: Potential memory leak in pds_vfio_dirty_enable()
-Date: Tue, 23 Jan 2024 09:13:19 +0800
-Message-Id: <20240123011319.6954-1-liucong2@kylinos.cn>
-X-Mailer: git-send-email 2.34.1
+Subject: Re: [PATCH 1/5] drm/bridge: Add drm_bridge_find_by_fwnode() helper
+Message-ID: <20240123011710.GA22880@pendragon.ideasonboard.com>
+References: <20240122163220.110788-1-sui.jingfeng@linux.dev>
+ <20240122163220.110788-2-sui.jingfeng@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240122163220.110788-2-sui.jingfeng@linux.dev>
 
-the patch releases the region_info memory if the interval_tree_iter_first()
-function fails.
+Hi Sui,
 
-Signed-off-by: Cong Liu <liucong2@kylinos.cn>
----
- drivers/vfio/pci/pds/dirty.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Thank you for the patch.
 
-diff --git a/drivers/vfio/pci/pds/dirty.c b/drivers/vfio/pci/pds/dirty.c
-index 8ddf4346fcd5..67919b5db127 100644
---- a/drivers/vfio/pci/pds/dirty.c
-+++ b/drivers/vfio/pci/pds/dirty.c
-@@ -291,8 +291,11 @@ static int pds_vfio_dirty_enable(struct pds_vfio_pci_device *pds_vfio,
- 	len = num_ranges * sizeof(*region_info);
- 
- 	node = interval_tree_iter_first(ranges, 0, ULONG_MAX);
--	if (!node)
--		return -EINVAL;
-+	if (!node) {
-+		err = -EINVAL;
-+		goto out_free_region_info;
-+	}
-+
- 	for (int i = 0; i < num_ranges; i++) {
- 		struct pds_lm_dirty_region_info *ri = &region_info[i];
- 		u64 region_size = node->last - node->start + 1;
+On Tue, Jan 23, 2024 at 12:32:16AM +0800, Sui Jingfeng wrote:
+> Because ACPI based systems only has the fwnode associated, the of_node
+> member of struct device is NULL. To order to move things forward, we add
+> drm_bridge_find_by_fwnode() to extend the support.
+> 
+> Signed-off-by: Sui Jingfeng <sui.jingfeng@linux.dev>
+
+Could we switch completely to fwnode, instead of maintaining the fwnode
+and OF options side-by-side ?
+
+> ---
+>  drivers/gpu/drm/drm_bridge.c | 33 +++++++++++++++++++++++++++++++++
+>  include/drm/drm_bridge.h     |  4 ++++
+>  2 files changed, 37 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
+> index cee3188adf3d..ffd969adc2fb 100644
+> --- a/drivers/gpu/drm/drm_bridge.c
+> +++ b/drivers/gpu/drm/drm_bridge.c
+> @@ -1347,6 +1347,39 @@ struct drm_bridge *of_drm_find_bridge(struct device_node *np)
+>  EXPORT_SYMBOL(of_drm_find_bridge);
+>  #endif
+>  
+> +/**
+> + * drm_bridge_find_by_fwnode - Find the bridge corresponding to the associated fwnode
+> + *
+> + * @fwnode: fwnode for which to find the matching drm_bridge
+> + *
+> + * This function looks up a drm_bridge based on its associated fwnode.
+> + *
+> + * RETURNS:
+> + * A reference to the drm_bridge control structure if found, NULL on failure.
+> + */
+> +struct drm_bridge *drm_bridge_find_by_fwnode(struct fwnode_handle *fwnode)
+> +{
+> +	struct drm_bridge *ret = NULL;
+> +	struct drm_bridge *bridge;
+> +
+> +	if (!fwnode)
+> +		return NULL;
+> +
+> +	mutex_lock(&bridge_lock);
+> +
+> +	list_for_each_entry(bridge, &bridge_list, list) {
+> +		if (bridge->fwnode == fwnode) {
+> +			ret = bridge;
+> +			break;
+> +		}
+> +	}
+> +
+> +	mutex_unlock(&bridge_lock);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(drm_bridge_find_by_fwnode);
+> +
+>  MODULE_AUTHOR("Ajay Kumar <ajaykumar.rs@samsung.com>");
+>  MODULE_DESCRIPTION("DRM bridge infrastructure");
+>  MODULE_LICENSE("GPL and additional rights");
+> diff --git a/include/drm/drm_bridge.h b/include/drm/drm_bridge.h
+> index e39da5807ba7..fe3d5f4bf37f 100644
+> --- a/include/drm/drm_bridge.h
+> +++ b/include/drm/drm_bridge.h
+> @@ -720,6 +720,8 @@ struct drm_bridge {
+>  	struct list_head chain_node;
+>  	/** @of_node: device node pointer to the bridge */
+>  	struct device_node *of_node;
+> +	/** @fwnode: associated fwnode supplied by platform firmware */
+> +	struct fwnode_handle *fwnode;
+>  	/** @list: to keep track of all added bridges */
+>  	struct list_head list;
+>  	/**
+> @@ -796,6 +798,8 @@ static inline struct drm_bridge *of_drm_find_bridge(struct device_node *np)
+>  }
+>  #endif
+>  
+> +struct drm_bridge *drm_bridge_find_by_fwnode(struct fwnode_handle *fwnode);
+> +
+>  /**
+>   * drm_bridge_get_next_bridge() - Get the next bridge in the chain
+>   * @bridge: bridge object
+
 -- 
-2.34.1
+Regards,
 
+Laurent Pinchart
 
