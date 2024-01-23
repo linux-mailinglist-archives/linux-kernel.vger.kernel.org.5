@@ -1,205 +1,102 @@
-Return-Path: <linux-kernel+bounces-35098-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35106-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C848E838C27
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:34:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EC5F838C3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:37:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7FC51C22A75
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:34:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F17ECB215AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:37:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34A385C8E1;
-	Tue, 23 Jan 2024 10:34:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 120E45C914;
+	Tue, 23 Jan 2024 10:37:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z1//IP1t"
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="JdFwYTNY"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1C925C610;
-	Tue, 23 Jan 2024 10:34:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B65655C8FB;
+	Tue, 23 Jan 2024 10:37:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706006086; cv=none; b=LgiG4NrvQVvOXyo24xYLL6+vgcBWhkS9hgM7rISH3qFwxJR9uBZjUP1pdwFqBvwfxoSdwfrWiBsxjvBQbu3Pq+gml2jedn3UQ49Iub9hP+lnzwNIIOJ6evDu9IdatC2Pq4inib9AqyH4/Yzw5oJaGWb1YZL7yKuylehFl4zDHXM=
+	t=1706006229; cv=none; b=EKEZzE4c75nEn3U60Bp/jxoqmKb9FF0y/qdCYNAMyGaAwbHdmC16zuXbLH6VC0XmWA0g/UutYlHHKBdoUizurTDsZibfFGTTBrPmWyrZl7at7M3cDp5+BB9umktu0YCo5PFOodl/53Ed0sy3Sm/I482k6NMvyfXGVkG6xMOlAPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706006086; c=relaxed/simple;
-	bh=n8EVx1KnsxT023JauzBveoILnBLCXi0WB1yyp0yg88E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FT7THHOfrQOkkLKJFtL5HPFcUsBLOENz/SvtNOjIEGENNZVlOSw45djM+H1WTUbAQGj6PR2KA/mK4xlwl2oEvsg3NTA3PaTY0pYQbielqdBhMwiCsr0iYtTx5REfILmE2cvUYjOWtSK8iqcAjIXG3pK/rEWLvbmbYo5O0hN2Z+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z1//IP1t; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-28bec6ae0ffso1987169a91.3;
-        Tue, 23 Jan 2024 02:34:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706006084; x=1706610884; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gf2YaREmVYXxOJZhUokIKRBOvqtSAWNcOsE6VEYJ3QI=;
-        b=Z1//IP1tUBhzo4bn4vSZbEqYl+EQsZ+78t38uqNA69vn+YslND2HVWgK3HbGgfTpPT
-         j1WMuL/DIi3FyVOpuvQr5HJ9Wf6SOJ9DvUVg42burj2t0pcZ6skHvWqNxsJ7ema3btaQ
-         4YSFDrVCYEBH1airbRdSdvKrTSUWREcxXNig75w9kh05uQ4QqEPQvHbRAGc7GQMkxG93
-         SXgUbO8SSkOS/YN0j3X/meiBeCLnFw1Urs+GIKG9naOxoz/c4DxSzwO5Y7ICGBZo6tfN
-         9d58UauGIsTLYcc3FHnMO/l91PnGC3dnaqy4cbL5tWJbo4dh9FcUgcdDtjoULeO+Nz0S
-         kkhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706006084; x=1706610884;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Gf2YaREmVYXxOJZhUokIKRBOvqtSAWNcOsE6VEYJ3QI=;
-        b=WFryIEq2S9VHx8DIgXgak5NBZfwWW4Mpb7gyIMhlUrCaCtcko6zNdQVamMbLjzD+NF
-         OWttLH7vcyukiSAK8k+KYV/T5Zg90XgZZmB+Zi5atcRXZufjWPYTPdAcTQnIjoScoDYZ
-         eqXaZYUFVK0ZUxhtHW7dvFrATG21LAMgbhqI/khsbjP3lX2XFDvtM7nmXCtbg2LoItwP
-         +uDLae+F6oxOPwCTpLExwmxJNRV3+bkTFpycGXeUhK65XvzqfCm7lBmf/S2V5aUZcR4X
-         i6M1qN2Q0oX8A2PILfeqJqohPChPBM93ENfcAoZSH2clwUZMSesoN0EfmcLh+FQaFEMi
-         XAKg==
-X-Gm-Message-State: AOJu0YzVHjYzFeh6KtSPhzm+nUStVUt6xMK1R5pJq4UBfpANlLZ2RqkW
-	6DvN/RZ+l5PN7M8B7bqaAphJQdoYUMRnjmB5zmTDi9ekz0XMeJa7iKiWPQ1lgb8KyARHz6074Bq
-	nnpgfvIYyHlf5gBy8QCezfB0ZiFSYR7qttmw=
-X-Google-Smtp-Source: AGHT+IGtLI4G6LyMbWMUQB8P4MTNxrKBQrJ79HxJ8bP4yLpCab9rJ66u1Flg526m0fJyc9ODaJKxJjZvD7pQkLmg+ws=
-X-Received: by 2002:a17:90b:228f:b0:28e:82bb:746f with SMTP id
- kx15-20020a17090b228f00b0028e82bb746fmr2297885pjb.97.1706006084311; Tue, 23
- Jan 2024 02:34:44 -0800 (PST)
+	s=arc-20240116; t=1706006229; c=relaxed/simple;
+	bh=ISBqSBU1eibSK1yROlAd67P1p3xOWCAZQTrxGAsc76M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gb9Ii5tzVOLvE5B6bs+GoSdzPqU8hHrhlvCirRauSSy7tNKzX9f/KSnoD+o+80ys23CHinsM6h5Bv7katuzBeqDs23tr9HUovJ4PveKZ7z7bkz/3teFqukoTBChHcEpMahS6wnIjc2dPiFSD+quQLshF0Yy1UhvukhH97d8L6Cs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=JdFwYTNY; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 075CA40E01B4;
+	Tue, 23 Jan 2024 10:37:04 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id m_71YppLYEYe; Tue, 23 Jan 2024 10:37:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1706006221; bh=tE/UEHD9KI7AAS+HbKBmjA2d1BJnju/TAX6dJiWwRsY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JdFwYTNY5byPwgxwpSXquxkSQTnC4ZQiDXI3CNWF83P8psvQshzU6vZJXWlwtMtnM
+	 M5+HokrAiyHCafRJ3RGjEYEy+qP+/HdmqMkv2K7GmsN6GEviPYygF2rc9v7icbs+2v
+	 xFHS1sCGSPIkA+rjXhuiwtCmht7aX31Jp9Va73BAIxCMua6Dd0gRiNR7MiTJQ6eV5t
+	 8cSCA2RCiMx2a/i5pDrfnLaiyiCOP0N6DwZoio/iGRWWu+0gO1jnDOr4DfQ+vTkOtJ
+	 aaQmXVeZG8HdQfe9YI/MnVhA2tuI/Ny4ikvBqNSwu7lgsNa7g6ZOwycnUNtWTeQaWV
+	 rdrr4uXgLLnKB5yfKE0yZaGxH1GDIXmIzEmUyLEf2uLXUKh6EO2Qg/q+F6ucm/jJjd
+	 YfZyjcRQ+IXhQyTg9j33Y44vBu5sOyPEzvfJg7j4f+viUF//N5U7rbwq1DoC3w0Cp1
+	 uEcY6ZvedRqjZaff0J5OlzBa9Kp2mdcvygOzx1nrIV2XNDsqVJVQA9teMBaSSN+6vw
+	 anO0crzovgkEvuTr4rwLZHLrQLFNtQPi9t1lDFXVLZzhDJOpfJ2mGnglShYgFIMQ2W
+	 KV97r85jzooDZy+rq7zrYl+xULWwsVJ4BkUK9mKprDOqfccrUyseu9vwVB0Z/EDCpC
+	 nDgF3rlVDf+g/6RTKzqY8h58=
+Received: from zn.tnic (pd953099d.dip0.t-ipconnect.de [217.83.9.157])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 385BD40E01A9;
+	Tue, 23 Jan 2024 10:36:31 +0000 (UTC)
+Date: Tue, 23 Jan 2024 11:36:23 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Babu Moger <babu.moger@amd.com>
+Cc: corbet@lwn.net, fenghua.yu@intel.com, reinette.chatre@intel.com,
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, hpa@zytor.com, paulmck@kernel.org,
+	rdunlap@infradead.org, tj@kernel.org, peterz@infradead.org,
+	seanjc@google.com, kim.phillips@amd.com, jmattson@google.com,
+	ilpo.jarvinen@linux.intel.com, jithu.joseph@intel.com,
+	kan.liang@linux.intel.com, nikunj@amd.com,
+	daniel.sneddon@linux.intel.com, pbonzini@redhat.com,
+	rick.p.edgecombe@intel.com, rppt@kernel.org,
+	maciej.wieczor-retman@intel.com, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, eranian@google.com,
+	peternewman@google.com, dhagiani@amd.com
+Subject: Re: [PATCH v5 1/2] x86/resctrl: Remove hard-coded memory bandwidth
+ limit
+Message-ID: <20240123103623.GAZa-Wp79DMgeArPJz@fat_crate.local>
+References: <20231201005720.235639-1-babu.moger@amd.com>
+ <c26a8ca79d399ed076cf8bf2e9fbc58048808289.1705359148.git.babu.moger@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240118195356.133391-1-dregan@broadcom.com> <20240118195356.133391-2-dregan@broadcom.com>
- <CAOiHx=k2Wn+UaVFbB-n2XKmFuBss4LKmLSW45YME07z=7zg0ww@mail.gmail.com> <c1fc163b-1f4f-42a5-91c3-b31ad33a9741@broadcom.com>
-In-Reply-To: <c1fc163b-1f4f-42a5-91c3-b31ad33a9741@broadcom.com>
-From: Jonas Gorski <jonas.gorski@gmail.com>
-Date: Tue, 23 Jan 2024 11:34:32 +0100
-Message-ID: <CAOiHx=n62Ap8bGbTu0xcKMHcqgpaLZ-GNjsW2DQ5XPrnsxmAJw@mail.gmail.com>
-Subject: Re: [PATCH v2 01/10] dt-bindings: mtd: brcmnand: Updates for bcmbca SoCs
-To: William Zhang <william.zhang@broadcom.com>
-Cc: dregan@broadcom.com, dregan@mail.com, miquel.raynal@bootlin.com, 
-	richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	computersforpeace@gmail.com, kdasu.kdev@gmail.com, 
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, joel.peshkin@broadcom.com, 
-	tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com, 
-	anand.gore@broadcom.com, kursad.oney@broadcom.com, 
-	florian.fainelli@broadcom.com, rafal@milecki.pl, 
-	bcm-kernel-feedback-list@broadcom.com, andre.przywara@arm.com, 
-	baruch@tkos.co.il, linux-arm-kernel@lists.infradead.org, 
-	dan.carpenter@linaro.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <c26a8ca79d399ed076cf8bf2e9fbc58048808289.1705359148.git.babu.moger@amd.com>
 
-On Mon, 22 Jan 2024 at 18:34, William Zhang <william.zhang@broadcom.com> wrote:
->
-> Hi,
->
-> On 1/22/24 03:48, Jonas Gorski wrote:
-> > Hi,
-> >
-> > On Thu, 18 Jan 2024 at 20:56, <dregan@broadcom.com> wrote:
-> >>
-> >> From: William Zhang <william.zhang@broadcom.com>
-> >>
-> >> Update the descriptions to reflect different families of broadband SoC and
-> >> use the general name bcmbca for ARM based SoC.
-> >>
-> >> Add brcm,nand-use-wp property to have an option for disabling this
-> >> feature on broadband board design that does not use write protection.
-> >>
-> >> Add brcm,nand-ecc-use-strap to get ecc setting from board boot strap for
-> >> broadband board designs because they do not specify ecc setting in dts
-> >> but rather using the strap setting.
-> >>
-> >> Remove the requirement of interrupts property to reflect the driver
-> >> code. Also add myself to the list of maintainers.
-> >>
-> >> Signed-off-by: William Zhang <william.zhang@broadcom.com>
-> >> Reviewed-by: David Regan <dregan@broadcom.com>
-> >> ---
-> >> Changes in v2:
-> >> - Revert the new compatible string nand-bcmbca
-> >> - Drop the BCM63168 compatible fix to avoid any potential ABI
-> >> incompatibility issue
-> >> - Simplify the explanation for brcm,nand-use-wp
-> >> - Keep the interrupt name requirement when interrupt number is specified
-> >> ---
-> >>   .../bindings/mtd/brcm,brcmnand.yaml           | 36 +++++++++++++++----
-> >>   1 file changed, 30 insertions(+), 6 deletions(-)
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-> >> index f57e96374e67..56176ec1a992 100644
-> >> --- a/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-> >> +++ b/Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml
-> >> @@ -9,6 +9,7 @@ title: Broadcom STB NAND Controller
-> >>   maintainers:
-> >>     - Brian Norris <computersforpeace@gmail.com>
-> >>     - Kamal Dasu <kdasu.kdev@gmail.com>
-> >> +  - William Zhang <william.zhang@broadcom.com>
-> >>
-> >>   description: |
-> >>     The Broadcom Set-Top Box NAND controller supports low-level access to raw NAND
-> >> @@ -18,9 +19,10 @@ description: |
-> >>     supports basic PROGRAM and READ functions, among other features.
-> >>
-> >>     This controller was originally designed for STB SoCs (BCM7xxx) but is now
-> >> -  available on a variety of Broadcom SoCs, including some BCM3xxx, BCM63xx, and
-> >> -  iProc/Cygnus. Its history includes several similar (but not fully register
-> >> -  compatible) versions.
-> >> +  available on a variety of Broadcom SoCs, including some BCM3xxx, MIPS based
-> >> +  Broadband SoC (BCM63xx), ARM based Broadband SoC (BCMBCA) and iProc/Cygnus.
-> >> +  Its history includes several similar (but not fully register compatible)
-> >> +  versions.
-> >>
-> >>     -- Additional SoC-specific NAND controller properties --
-> >>
-> >> @@ -53,7 +55,7 @@ properties:
-> >>                 - brcm,brcmnand-v7.2
-> >>                 - brcm,brcmnand-v7.3
-> >>             - const: brcm,brcmnand
-> >> -      - description: BCM63138 SoC-specific NAND controller
-> >> +      - description: BCMBCA SoC-specific NAND controller
-> >>           items:
-> >>             - const: brcm,nand-bcm63138
-> >>             - enum:
-> >> @@ -65,7 +67,7 @@ properties:
-> >>             - const: brcm,nand-iproc
-> >>             - const: brcm,brcmnand-v6.1
-> >>             - const: brcm,brcmnand
-> >> -      - description: BCM63168 SoC-specific NAND controller
-> >> +      - description: BCM63xx SoC-specific NAND controller
-> >
-> > Only the BCM63268 family has a v4.0 NAND controller with support for
-> > ONFI and raw access; BCM6368 has a v2.1, and BCM6328 and BCM6362 have
-> > a v2.2.
-> >
-> > So claiming this is a generic binding is wrong; you would need to add
-> > the appropriate variants first. Or add another one for the BCM6368
-> > NAND v2.x controllers, which is missing. You can find them used in
-> > arch/mips/boot/dts/brcm/bcm63{28,62,68}.dtsi.
-> >
-> I am not changing binding here but jsut update the description to
-> identify these MIPS based chip as bcm63xx family. This convention is
-> used in other IP blocks too.  And yes this binding is not correct and I
-> noticed the same v2.x usage in the dtsi files you pointed out. So I
-> actually updated this binding in my v1 here
-> https://lore.kernel.org/lkml/20230606231252.94838-6-william.zhang@broadcom.com/
-> but there was some concern as it could possibly break the ABI in that
-> thread's discussion.
+On Mon, Jan 15, 2024 at 04:52:27PM -0600, Babu Moger wrote:
+> Fixes: 4d05bf71f157 ("x86/resctrl: Introduce AMD QOS feature")
 
-That change did change the ABI that would have (AFAICT) broken it for BCM63168.
+What's the point of this Fixes tag? You want this backported to stable?
 
-My point is: This binding in its current state is valid *only* for the
-BCM63168 NAND controller, and not for any other BCM63xx NAND
-controllers.
+-- 
+Regards/Gruss,
+    Boris.
 
-So changing the description to BCM63xx is wrong, unless you extend it
-to also match the BCM6328/6362/6368 NAND controller bindings as used.
-
-I can send a patch adding the missing binding parts, I actually have a
-WIP one lying around as I started trying to address dts issues in the
-MIPS bcm63xx dts(i) files a while ago.
-
-Best Regards,
-Jonas
+https://people.kernel.org/tglx/notes-about-netiquette
 
