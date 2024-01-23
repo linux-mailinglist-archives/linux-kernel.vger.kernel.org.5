@@ -1,79 +1,72 @@
-Return-Path: <linux-kernel+bounces-35207-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DABFF838D9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:40:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CC4F838DA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:41:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D0921F24C52
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:40:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2844289A3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:41:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D0A15D8E7;
-	Tue, 23 Jan 2024 11:40:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 055075EE8C;
+	Tue, 23 Jan 2024 11:41:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YvhrH7+b"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="lcyuR77k"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2812C5D73B
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 11:40:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBDBD5D901
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 11:40:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706010032; cv=none; b=d+rQrg/sgiTqF/XIVC0xaQYq3XbYwabjVQfWxTygkfyhhkzgqVXytvIAjASL5Kyf8DJGboEPQksLd8oVkdvK4nqlIVXQtzps4TgHXaa8NNOMW2gX/dgEWszes9/j11PG8rZf4tOjP2fL/8kcg3ZKtxun4CXHRZwmtJZ3p4i+sdQ=
+	t=1706010060; cv=none; b=FzWech1sewk7O3qC5hfKDxHPFC0ev6B37PaRJ5Z4jrGXQz7/S/sYMEzQWxW6+PyN9QUKclYbd2qGpKee4a8J0scuOfzzxL2C/eynOLBwotvwEI6KAqYq542omWxgXoffWjVRgMg9gJhzRYF6HnodgX+GzlzXA1/oaJOoDv9UP8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706010032; c=relaxed/simple;
-	bh=3lw6fkEeKPQQpby9h20PCdsfOK4dXffCnjpHFKUVZKE=;
+	s=arc-20240116; t=1706010060; c=relaxed/simple;
+	bh=710I6WzqsSfHr68RspnqWJQuFL/mvNMKYPLGztWH0JY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ITx0SWfZzF4pXOLco0Ah/sy2TvJQwOVutHFYuv5n9ivyO3ya5ztZ6bFBxWof8fOVrvw55mFSWCeNgk5SvArhafuNLT45r7BNvzJd1B5j8lmrJOAWOwvS2Ofxmtkfe9qTQhTxj9Dxv40Z/JTTkpjI2A9Lipu1215aoxtmgPWtnWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YvhrH7+b; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706010030;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=mHQJhRmmFuVPQzf2Ks7ba/QVJg0CSBYgTnFxRHPHOBc=;
-	b=YvhrH7+bS2kujALY3KWebTiqVv+qOsGbouiXaxtxBHmIjIcOEeJ/EL13WDwR1E0oSBOZ3G
-	tMtjJg/waM5+xBUxk0KToisheBU9igyZx1FuFgTGfvEmiYNgcnV1PqRzzcCKZWP/kyNeIH
-	cxUgbb4EShNiodgVpChy59Q67mabzQA=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-534-jJclY4itPTaHPSiViRKNfw-1; Tue, 23 Jan 2024 06:40:28 -0500
-X-MC-Unique: jJclY4itPTaHPSiViRKNfw-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-33920ab4159so2050473f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 03:40:28 -0800 (PST)
+	 In-Reply-To:Content-Type; b=b5J3FKns7lg4P1onWnJoUy/pJO6s/k5IhoNPBeBtxoQgZXl4NY6XCj/7cWGLzQnH8BObDf0ab+A+9QV/4klAIYf3kJR3bFfxpEWtzvxlRVNjf7qKBLdarQ3ihPpPCIxpS+qmhHK//uu3qRq87xnzSzSrNXRkf2SusoHLZiGSAx0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=lcyuR77k; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40e60e137aaso46578835e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 03:40:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1706010056; x=1706614856; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zj96yae6rL4tZLm1hgmOGwk+fliZHrdqlIWBhxFmrLs=;
+        b=lcyuR77kRw512UiFPC694rgh0Xo5MExaPJY1n3EdoZEDvmNl3tX8YcLRIP+OXuWZ+L
+         QSIOzm40WGFcv0e7LqfMsC1eek1x1w6mCnT2Q44O9GyTzhuQhP8LvpuO64mu/E9SQPCa
+         lCC121E0duWNJvXxN3Cf4UB97NQOwAu3kY8ZibGcQ1/CLnPB/MEZJ06GwmVqwCTiHVlL
+         6eAJCW3hwNgJD8Zr4bALUrC2c8dkAoWL7OyQbHo92elYIHLT495fIHjPcOPcLGTMv7SR
+         fhOFxqHJyVTwQQSjEabiigL53RKWxD07HV9OwQ5rnzgHj7XDf4+OMjfno4DQ3LB+1PkV
+         SY5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706010027; x=1706614827;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mHQJhRmmFuVPQzf2Ks7ba/QVJg0CSBYgTnFxRHPHOBc=;
-        b=fYiMmdtAay9AlM5MrOhudECUoz28KjvFz2+SYgBGNIk5LbjAF0j5pEpITccOmg5S8e
-         UQEIioBo3LMNrbzrcA8+l6wo1RBgeEP7SQJ5+YB5Vvbs4xcdYJasLhPWoXPF6Va0nA7h
-         JDojUM8mVI2N/vIs97tD4kcSHFNalomJI5KESfypvVcyTfbwzOLjAHBH4ilpIVdlOv8v
-         nvK6rbdzt0oJOGZwdSSkdlaZlRylp1Hw4Gls+5OoXSDbZ0Om26HkUeDBetE6MLkP0PMq
-         31FooBMjvlAeg42Wb0mY1dxGvomjX/1HQASt3v1CCn/eTfxa5KX/lJkNYn5OxTeLZr56
-         tXuw==
-X-Gm-Message-State: AOJu0Yx+7XIOrMRwpPax+hTWnbjsMtZ9svVP7KwXiB6Pibo1xFVrz8j4
-	mMr6HvYc/RGD1R8SgvdkfzknjTyIa9owyxfFDKE8lzT3xcrprUEZSkwaqbyThH/8bGEMr9hhF68
-	EVYfdUpWmBEcj5TvuUx+Hgh0kehRFkOICBMwkFuLHs5dvomfDhtg7fsekdkRJlg==
-X-Received: by 2002:a05:600c:4f12:b0:40e:bf59:8246 with SMTP id l18-20020a05600c4f1200b0040ebf598246mr46519wmq.117.1706010027562;
-        Tue, 23 Jan 2024 03:40:27 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF1kFvm+DlgIqRqwbxyQH1B05JVSmcOI99Tf5Z/okgQJwonXU9OBUcVluhtsVk4NbD4ebx2hg==
-X-Received: by 2002:a05:600c:4f12:b0:40e:bf59:8246 with SMTP id l18-20020a05600c4f1200b0040ebf598246mr46493wmq.117.1706010027150;
-        Tue, 23 Jan 2024 03:40:27 -0800 (PST)
-Received: from ?IPV6:2003:cb:c741:de00:bf0f:cd46:dc1c:2de9? (p200300cbc741de00bf0fcd46dc1c2de9.dip0.t-ipconnect.de. [2003:cb:c741:de00:bf0f:cd46:dc1c:2de9])
-        by smtp.gmail.com with ESMTPSA id jb13-20020a05600c54ed00b0040e418494absm41219877wmb.46.2024.01.23.03.40.25
+        d=1e100.net; s=20230601; t=1706010056; x=1706614856;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zj96yae6rL4tZLm1hgmOGwk+fliZHrdqlIWBhxFmrLs=;
+        b=EiPMfh+y6/FOEg7F8OqMqbxSfbQ/yJ28pSAzr9L5o5lhCgu9Tlt66cr2+mWBnjSfzg
+         MIySYfl9RS3AUd1bGn2cHTmZ+3OhZVVF3AvJengG8BiZPZW9eOhPnRRzjWzRf9Acaf64
+         A2PKB0zl51MUl5kZl6aMG1slWC2BvwiUassKb+mV5Q5hS1gXK1fnkBVr2ferQQEAFAme
+         xqWlc3v15uK3wThUrxKcNERetNMZp7sz6VdnNRh0fI09tE0wlx7PUe4YvwjUVHBVnpFy
+         m19yPeGk9jvFBigSM3tA2WAGhE+INGxQJP76jwYcM0JtJOsYYVhHqMTK6b00lbCH/sDq
+         utLA==
+X-Gm-Message-State: AOJu0YzQJXJvFmHrcOWngoBrmR7xIbgRP5tyy/t9fieMYv7Wa5sPi7qb
+	3pBpN1oKAH/Mg/oQSj7tETD4op+PXn+lBRgtodxfJ0sjA1HxswRB2ph/jhbbJ8Q=
+X-Google-Smtp-Source: AGHT+IF4M/aIYe8VuEI9FnITlWjNOyii2rrR0XWzenXfI/8NS3mGe0VpzOf6u3sp1RbZY/Gzouareg==
+X-Received: by 2002:a05:600c:3110:b0:40e:addd:8567 with SMTP id g16-20020a05600c311000b0040eaddd8567mr460253wmo.124.1706010055719;
+        Tue, 23 Jan 2024 03:40:55 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.135])
+        by smtp.gmail.com with ESMTPSA id p12-20020a05600c468c00b0040e56830a35sm42198649wmo.18.2024.01.23.03.40.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jan 2024 03:40:26 -0800 (PST)
-Message-ID: <794c1dc3-520c-4030-b0fe-e24782576347@redhat.com>
-Date: Tue, 23 Jan 2024 12:40:24 +0100
+        Tue, 23 Jan 2024 03:40:55 -0800 (PST)
+Message-ID: <74b39ef8-b2b9-415f-a104-2471c240f4e5@tuxon.dev>
+Date: Tue, 23 Jan 2024 13:40:53 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,138 +74,172 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 01/11] arm/pgtable: define PFN_PTE_SHIFT on arm and
- arm64
+Subject: Re: [PATCH 07/10] watchdog: rzg2l_wdt: Add suspend/resume support
 Content-Language: en-US
-To: Ryan Roberts <ryan.roberts@arm.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
-Cc: "linux-mm@kvack.org" <linux-mm@kvack.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
- Nicholas Piggin <npiggin@gmail.com>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, "David S. Miller"
- <davem@davemloft.net>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
- "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
- "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
- "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>
-References: <20240122194200.381241-1-david@redhat.com>
- <20240122194200.381241-2-david@redhat.com>
- <fdaeb9a5-d890-499a-92c8-d171df43ad01@arm.com>
- <46080ac1-7789-499b-b7f3-0231d7bd6de7@redhat.com>
- <6703b648-10ab-4fea-b7f1-75421319465b@arm.com>
- <ae3d826f-758f-4738-b72a-e99f098bb2b3@csgroup.eu>
- <3a970289-a72f-418e-b43c-89f67f0d5283@redhat.com>
- <e0d9caab-39c7-446a-aeef-5d914d321c72@arm.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <e0d9caab-39c7-446a-aeef-5d914d321c72@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Guenter Roeck <linux@roeck-us.net>, wim@linux-watchdog.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ geert+renesas@glider.be, magnus.damm@gmail.com, mturquette@baylibre.com,
+ sboyd@kernel.org, p.zabel@pengutronix.de, biju.das.jz@bp.renesas.com
+Cc: linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-clk@vger.kernel.org, Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240122111115.2861835-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240122111115.2861835-8-claudiu.beznea.uj@bp.renesas.com>
+ <a5a807c1-76ef-4cf7-a2cf-bc432c420ded@roeck-us.net>
+ <2af40ace-2779-45a0-a244-e7e9e5cc510c@tuxon.dev>
+ <d879634e-c329-4eef-928f-f296535f8838@roeck-us.net>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <d879634e-c329-4eef-928f-f296535f8838@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 23.01.24 12:38, Ryan Roberts wrote:
-> On 23/01/2024 11:31, David Hildenbrand wrote:
+
+
+On 23.01.2024 12:09, Guenter Roeck wrote:
+> On 1/22/24 23:13, claudiu beznea wrote:
+>>
+>>
+>> On 22.01.2024 19:39, Guenter Roeck wrote:
+>>> On 1/22/24 03:11, Claudiu wrote:
+>>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 >>>>
->>>>> If high bits are used for
->>>>> something else, then we might produce a garbage PTE on overflow, but that
->>>>> shouldn't really matter I concluded for folio_pte_batch() purposes, we'd not
->>>>> detect "belongs to this folio batch" either way.
+>>>> The RZ/G3S supports deep sleep states where power to most of the IP blocks
+>>>> is cut off. To ensure proper working of the watchdog when resuming from
+>>>> such states, the suspend function is stopping the watchdog and the resume
+>>>> function is starting it. There is no need to configure the watchdog
+>>>> in case the watchdog was stopped prior to starting suspend.
 >>>>
->>>> Exactly.
+>>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>> ---
+>>>>    drivers/watchdog/rzg2l_wdt.c | 26 ++++++++++++++++++++++++++
+>>>>    1 file changed, 26 insertions(+)
 >>>>
->>>>>
->>>>> Maybe it's likely cleaner to also have a custom pte_next_pfn() on ppc, I just
->>>>> hope that we don't lose any other arbitrary PTE bits by doing the pte_pgprot().
->>>>
->>>> I don't see the need for ppc to implement pte_next_pfn().
+>>>> diff --git a/drivers/watchdog/rzg2l_wdt.c b/drivers/watchdog/rzg2l_wdt.c
+>>>> index 9333dc1a75ab..186796b739f7 100644
+>>>> --- a/drivers/watchdog/rzg2l_wdt.c
+>>>> +++ b/drivers/watchdog/rzg2l_wdt.c
+>>>> @@ -279,6 +279,7 @@ static int rzg2l_wdt_probe(struct platform_device
+>>>> *pdev)
+>>>>        priv->wdev.timeout = WDT_DEFAULT_TIMEOUT;
+>>>>          watchdog_set_drvdata(&priv->wdev, priv);
+>>>> +    dev_set_drvdata(dev, priv);
+>>>>        ret = devm_add_action_or_reset(&pdev->dev, rzg2l_wdt_pm_disable,
+>>>> &priv->wdev);
+>>>>        if (ret)
+>>>>            return ret;
+>>>> @@ -300,10 +301,35 @@ static const struct of_device_id rzg2l_wdt_ids[] = {
+>>>>    };
+>>>>    MODULE_DEVICE_TABLE(of, rzg2l_wdt_ids);
+>>>>    +static int rzg2l_wdt_suspend_late(struct device *dev)
+>>>> +{
+>>>> +    struct rzg2l_wdt_priv *priv = dev_get_drvdata(dev);
+>>>> +
+>>>> +    if (!watchdog_active(&priv->wdev))
+>>>> +        return 0;
+>>>> +
+>>>> +    return rzg2l_wdt_stop(&priv->wdev);
+>>>> +}
+>>>> +
+>>>> +static int rzg2l_wdt_resume_early(struct device *dev)
+>>>> +{
+>>>> +    struct rzg2l_wdt_priv *priv = dev_get_drvdata(dev);
+>>>> +
+>>>> +    if (!watchdog_active(&priv->wdev))
+>>>> +        return 0;
+>>>> +
+>>>> +    return rzg2l_wdt_start(&priv->wdev);
+>>>> +}
+>>>> +
+>>>> +static const struct dev_pm_ops rzg2l_wdt_pm_ops = {
+>>>> +    LATE_SYSTEM_SLEEP_PM_OPS(rzg2l_wdt_suspend_late,
+>>>> rzg2l_wdt_resume_early)
+>>>> +};
+>>>> +
+>>>>    static struct platform_driver rzg2l_wdt_driver = {
+>>>>        .driver = {
+>>>>            .name = "rzg2l_wdt",
+>>>>            .of_match_table = rzg2l_wdt_ids,
+>>>> +        .pm = pm_ptr(&rzg2l_wdt_pm_ops),
 >>>
->>> Agreed.
+>>> I think this will create a build error if CONFIG_PM=n because
+>>> rzg2l_wdt_pm_ops
+>>> will be unused but is not marked with __maybe_unused.
 >>
->> So likely we should then do on top for powerpc (whitespace damage):
+>> The necessity of __maybe_unused has been removed along with the
+>> introduction of LATE_SYSTEM_SLEEP_PM_OPS() and friends (and
+>> *SET_*LATE_SYSTEM_SLEEP_PM_OPS along with the other helpers were marked
+>> deprecated for that) and we can use pm_ptr() along with
+>> LATE_SYSTEM_SLEEP_PM_OPS() to avoid build errors you mentioned.
 >>
->> diff --git a/arch/powerpc/mm/pgtable.c b/arch/powerpc/mm/pgtable.c
->> index a04ae4449a025..549a440ed7f65 100644
->> --- a/arch/powerpc/mm/pgtable.c
->> +++ b/arch/powerpc/mm/pgtable.c
->> @@ -220,10 +220,7 @@ void set_ptes(struct mm_struct *mm, unsigned long addr,
->> pte_t *ptep,
->>                          break;
->>                  ptep++;
->>                  addr += PAGE_SIZE;
->> -               /*
->> -                * increment the pfn.
->> -                */
->> -               pte = pfn_pte(pte_pfn(pte) + 1, pte_pgprot((pte)));
->> +               pte = pte_next_pfn(pte);
->>          }
->>   }
+>> FYI, I just build the driver with CONFIG_PM=n and all good.
+>>
 > 
-> Looks like commit 47b8def9358c ("powerpc/mm: Avoid calling
-> arch_enter/leave_lazy_mmu() in set_ptes") changed from doing the simple
-> increment to this more complex approach, but the log doesn't say why.
+> Ok, but are you sure you did ? You just mentioned earlier that CONFIG_PM
+> is set automatically through ARCH_RZG2L.
 
-@Aneesh, was that change on purpose?
+Yes, I disabled everything that selected the CONFIG_PM, checked that
+CONFIG_PM is disabled in my .config, enabled COMPILE_TEST and
+RENESAS_RZG2LWDT (sorry, I missed to mention all these).
 
--- 
-Cheers,
+> 
+>>> But then the driver
+>>> won't be
+>>> operational with CONFIG_PM=n, so I really wonder if it makes sense to
+>>> include any
+>>> such conditional code instead of making the driver depend on CONFIG_PM.
+>>
+>> That's true. The driver wouldn't work if the CONFIG_PM=n but then it
+>> depends on COMPILE_TEST which is exactly for this (just to compile test it
+>> for platforms that don't support it). I see many watchdog drivers depends
+>> on COMPILE_TEST.
+>>
+>> Give this, please let me know would you like me to proceed with it.
+>>
+> 
+> FWIW, COMPILE_TEST dependencies on watchdog drivers fails for most of them.
+> Regarding pm_ptr(), it is there for practical reasons and not associated with
+> COMPILE_TEST. Again, if the driver depends on CONFIG_PM to work, using
+> constructs
+> such as pm_ptr() just hides that and creates the impression that it would work
+> without it. 
+> I do not think that is a good idea. You can use something like
+> 
+>     depends on (ARCH_RENESAS && PM) || COMPILE_TEST
+>
 
-David / dhildenb
+Ok, I don't have anything against. I'm not sure if this will trigger any
+circular dependency for Kconfig. I'll check it.
 
+> to make that explicit. Even if not, I _really_ don't see the point in using
+> pm_ptr() even without above dependency. What do you see as its benefit ?
+
+I remember it comes on the same package with the LATE_SYSTEM_SLEEP_PM_OPS()
+kind of macros. Looking at it's definition I see it useful because it sets
+properly the struct platform_driver::driver::pm. AFAIK, at the moment there
+are no checks on this member in the driver core code so we should be safe
+w/o using it. I checked the compilation w/ COMPILE_TEST=y and CONFIG_PM=n
+and compilation is good, too.
+
+Thank you,
+Claudiu Beznea
+
+> 
+> Thanks,
+> Guenter
+> 
+>> Thank you,
+>> Claudiu Beznea
+>>
+>>>
+>>> I really don't think it is desirable to suggest that the driver would work
+>>> with
+>>> CONFIG_PM=n if that isn't really true.
+>>>
+>>> Guenter
+>>>
+>>>>        },
+>>>>        .probe = rzg2l_wdt_probe,
+>>>>    };
+>>>
+> 
 
