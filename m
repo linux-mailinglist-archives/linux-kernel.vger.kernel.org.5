@@ -1,130 +1,94 @@
-Return-Path: <linux-kernel+bounces-35213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8243F838DCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:46:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 267B2838DD1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:47:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 224D51F235E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:46:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2E5428AE13
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:47:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B9575D8FC;
-	Tue, 23 Jan 2024 11:46:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83ADF5D8F7;
+	Tue, 23 Jan 2024 11:47:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=futuring-girl-com.20230601.gappssmtp.com header.i=@futuring-girl-com.20230601.gappssmtp.com header.b="IbWTGkWD"
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HrEemFLR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5793C5D8E0
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 11:46:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEE2E5D906;
+	Tue, 23 Jan 2024 11:47:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706010382; cv=none; b=nX46xAfc8ZobHV3v4rhigKhDwxMNQxO2sAfsI7Sl9QN2ow28xrkJtgYUEleZTrqgufwSWNwnner14sozYWIeAJacIFJajjvy7jP2Fa1Pgv/3m4O/6RJGNrC0RfkFT+ejOamXS3YxjG7BMc926AHsWAgltYsLoEiUX5QEcpu5U88=
+	t=1706010426; cv=none; b=MJwawKsDYIp7k8wRD5iU2UVc0uMnDH5C6pMO+0okaXNYTdBpNKHm9aJ9t2TclgR9pB3OunXO2HxsW6NDQ3glolMoiXsrtFb6MTvUjYK5VWu9Bs7IWK9fnutRdhCmDfsbLcn135BeTvx55i9bsnxa129aCxUbphZWHgF5mPpw1oM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706010382; c=relaxed/simple;
-	bh=u+vnMh0bDwsz8C9HM93KCNUrx9aKpW+7M6cJvDcuWDI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BzQFROZ20ABWn+QWLmyBrtnzLDEIiMkY1n3fLG+FlZZA9Zkm+SxPqSEwxnVaACj8ZV7M9P9heA3He4vz5nPAlDbd8b+TywXTPl6ox+VygdUqqlO0DBw+mXiVi8WDc6Zy1uVLiXnh+jH2dzf0d2qOt3ckIhj4wmsTBX1clv4j4/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=futuring-girl.com; spf=pass smtp.mailfrom=futuring-girl.com; dkim=pass (2048-bit key) header.d=futuring-girl-com.20230601.gappssmtp.com header.i=@futuring-girl-com.20230601.gappssmtp.com header.b=IbWTGkWD; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=futuring-girl.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=futuring-girl.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-29041136f73so2041843a91.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 03:46:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=futuring-girl-com.20230601.gappssmtp.com; s=20230601; t=1706010379; x=1706615179; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LwSEZTvPmPib/iq3ufXx/1zhqV62G5jcQEWDJ/1dtko=;
-        b=IbWTGkWDJSVPJpCRMxStkmeCiKbjxdbbQL9elf6Fvsfd1WvyeDc6EymTBw/4VftOcz
-         /a2mhVDMUe9tvAVqHPNW3bQ2SSMOdVDgy9ZERgmwQ0UZfSSW4EFTlhnF7FMZZq5fcM0i
-         +RbUBNLh+Swp6QkNRJ7gd3rRnuqOjulLO6+vv11UgIuqDQSxeZs6hQEHhnvLfdSf5EtJ
-         mZu6Ktgo49r2y8sbkFKt8On9aJg+ouSAT4ZPXhTPPfOS5Bv+bX8L9XJUVFP+i9pZBQ9m
-         cFscjJOkmRW3KfM4KnMcS6NwAfxLBa0oWDfaxrtO8GPfJ7NERdt/5UChf2TGriac5oxW
-         /XMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706010379; x=1706615179;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LwSEZTvPmPib/iq3ufXx/1zhqV62G5jcQEWDJ/1dtko=;
-        b=i4ViDxJiIO1dlT2mWsWivE9/mpmgkjHVT4Ql2ZhwhBZwvnqBnzUgw/iV5VNeK2IUF1
-         Yco81dkQ3oNfnDTi3mLpd/90zp5uIi3Fq0BeLDtnp9WyWSGZfpCpu7Nyn5AKSx0Q/6K/
-         HNOagALIB0vZEx5NWY+/mhzJELmC3MRFMC5cA3zWUvTlocrdZTezmguyE67gs0pAMDqL
-         UiP+PXwTe1hn6rSgUQgoilRsaIXyAFYD4vvQus3Yp44rTCdmqGOdL2x0Jy0wQFRdDs+2
-         qQHfkyj6on2Wg6AoEgWyt75L4iSs0uMO+/ZwSHzkS5GR+8m6uPMc2A0zxr94WcnD/9gW
-         vxZw==
-X-Gm-Message-State: AOJu0YxFiE86YkavuieBiOTwp5+8QZQ3aKut7/w5G3gItTETLd7UZSai
-	wpi+tymDG4r7oB0uNw6FwYtlBzqY3obLdyoRdLSCeqEOlEKNe699Ci1UNJ2PcWM2sk0elUIsMpR
-	xgwsV+cLWViY53JUbIhVqII2sG8qxHt7mhmkYKw==
-X-Google-Smtp-Source: AGHT+IEACBp9H8QI1TqOIOZDLZgpEkwSJrj7m5dkRr4i9ZL9tXNUnb1GT+Fl2iLJmxsq+b68QpV00sU4bXL7cu2SlKk=
-X-Received: by 2002:a17:90b:10f:b0:28d:f182:b85 with SMTP id
- p15-20020a17090b010f00b0028df1820b85mr2536584pjz.87.1706010379397; Tue, 23
- Jan 2024 03:46:19 -0800 (PST)
+	s=arc-20240116; t=1706010426; c=relaxed/simple;
+	bh=yyc0UBjK4EUFBLtUwuO/rwe82t1uGPWprWflRUnPq0c=;
+	h=Content-Type:MIME-Version:Subject:From:In-Reply-To:References:To:
+	 Cc:Message-ID:Date; b=BBvEqDpSiVc5gh9+2eyJVL+aoBjbsNkSrXcajQUB0LpwTo1mwVcxyl9Ov9U4itZ/MsrvyMVXJ5PgpxTAy8RkZmOoRRcYoxIJv8ubWqdY5YYBK5yqkRkFyIO9kWqjPdwAZj9G5MqtJYh3f0EQOhlIOaFmWqSSENY2E3gS8cn36Gw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HrEemFLR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48E8CC433C7;
+	Tue, 23 Jan 2024 11:47:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706010426;
+	bh=yyc0UBjK4EUFBLtUwuO/rwe82t1uGPWprWflRUnPq0c=;
+	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+	b=HrEemFLRdXJWrzxmiy4hCQ4vp4pjIEjDTdRiPg4G8J/VQAYw8AcIHTPAqtNtu2O3w
+	 yryVtlSEgRdHixuUkauNr+x6f/x0FBW+o04qdcqMBAGKqU7x3K1JD7U5vbb2CGxNIX
+	 e6rIZ2cOrmfAybhhCg0TkSfjX8mQ75lJ5b/uZy0qCm0v+aWmTCPvyDhjYPYGGt82+i
+	 4nJvzjqXdH0ppTI7VRzE3RCZ3mVp33Bxfo1gy4upZBdQ5rhOStyg6D1BnL5gkrwKd4
+	 NMx2akrupbsOXNg8NcfAQKrW5e3KotnyIKoOS5uXw58J93dEyAEwQdpQJ2l3+d6WyS
+	 LhHUaEMSiRiQQ==
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122235812.238724226@linuxfoundation.org>
-In-Reply-To: <20240122235812.238724226@linuxfoundation.org>
-From: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
-Date: Tue, 23 Jan 2024 20:46:08 +0900
-Message-ID: <CAKL4bV55aK_qpQ-ubYKGrZ+=2tnr5zLqTgdaGuMUEVvNEe2w4Q@mail.gmail.com>
-Subject: Re: [PATCH 6.6 000/583] 6.6.14-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH net-next 17/22] net: fill in MODULE_DESCRIPTION()s for
+ Broadcom WLAN
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20240122184543.2501493-18-leitao@debian.org>
+References: <20240122184543.2501493-18-leitao@debian.org>
+To: Breno Leitao <leitao@debian.org>
+Cc: kuba@kernel.org, davem@davemloft.net, abeni@redhat.com,
+ edumazet@google.com, Arend van Spriel <aspriel@gmail.com>,
+ Franky Lin <franky.lin@broadcom.com>,
+ Hante Meuleman <hante.meuleman@broadcom.com>, dsahern@kernel.org,
+ weiwan@google.com,
+ linux-wireless@vger.kernel.org (open list:BROADCOM BRCM80211 IEEE802.11n
+ WIRELESS DRIVER),
+ brcm80211-dev-list.pdl@broadcom.com (open list:BROADCOM BRCM80211 IEEE802.11n
+ WIRELESS DRIVER), linux-kernel@vger.kernel.org (open list)
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <170601042141.3962299.17995367561123702242.kvalo@kernel.org>
+Date: Tue, 23 Jan 2024 11:47:03 +0000 (UTC)
 
-Hi Greg
+Breno Leitao <leitao@debian.org> wrote:
 
-On Tue, Jan 23, 2024 at 11:17=E2=80=AFAM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.6.14 release.
-> There are 583 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 24 Jan 2024 23:56:49 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.6.14-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.6.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+> W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
+> Add descriptions to the Broadcom FullMac WLAN drivers.
+> 
+> Signed-off-by: Breno Leitao <leitao@debian.org>
 
-6.6.14-rc1 tested.
+Wireless patches should use "wifi: " prefix:
 
-Build successfully completed.
-Boot successfully completed.
-No dmesg regressions.
-Video output normal.
-Sound output normal.
+ERROR: 'wifi:' prefix missing: '[PATCH net-next 17/22] net: fill in MODULE_DESCRIPTION()s for Broadcom WLAN'
+ERROR: 'wifi:' prefix missing: '[PATCH net-next 18/22] net: fill in MODULE_DESCRIPTION()s for wlcore'
+ERROR: 'wifi:' prefix missing: '[PATCH net-next 19/22] net: fill in MODULE_DESCRIPTION()s for wl1251 and wl12xx'
 
-Lenovo ThinkPad X1 Carbon Gen10(Intel i7-1260P(x86_64) arch linux)
+3 patches set to Changes Requested.
 
-[    0.000000] Linux version 6.6.14-rc1rv
-(takeshi@ThinkPadX1Gen10J0764) (gcc (GCC) 13.2.1 20230801, GNU ld (GNU
-Binutils) 2.41.0) #1 SMP PREEMPT_DYNAMIC Tue Jan 23 20:11:26 JST 2024
+13526063 [net-next,17/22] net: fill in MODULE_DESCRIPTION()s for Broadcom WLAN
+13526064 [net-next,18/22] net: fill in MODULE_DESCRIPTION()s for wlcore
+13526065 [net-next,19/22] net: fill in MODULE_DESCRIPTION()s for wl1251 and wl12xx
 
-Thanks
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20240122184543.2501493-18-leitao@debian.org/
 
-Tested-by: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
