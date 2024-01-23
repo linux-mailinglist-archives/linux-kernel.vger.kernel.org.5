@@ -1,109 +1,140 @@
-Return-Path: <linux-kernel+bounces-35247-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35204-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 313F7838E89
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:29:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33FB3838D89
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:35:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63EC51C23513
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:29:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA3A2B21A8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:35:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59C945EE74;
-	Tue, 23 Jan 2024 12:29:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZjxEFgFE"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC34B5DF1D;
-	Tue, 23 Jan 2024 12:29:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D32175DF2E;
+	Tue, 23 Jan 2024 11:34:44 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A27E55D8FE;
+	Tue, 23 Jan 2024 11:34:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706012942; cv=none; b=V9KnUrldA0le+P+xWBgwvxoodSBePKu38bD9S3/gD8MYY24BFVWVLrfN5fUpBSnkGXdrjui7y1J/Cl+3YOxOfPE4mka+U71UzOMAV3azXJTWDGz8S//+2i6kfAXnN1Bdx2pzZNCl/4bWBEkLrXbHb0ABcAPb4dd8FToLWpr6xQ8=
+	t=1706009684; cv=none; b=pJZLN9ahEWkzuim2h72HC/PcCdn1bizF7i9KtEqL8rHk78oA7IzMUHqnZWsXeUvLXF8pT612NUlYAss9K6fanQr82syg+0bd6iso4dBGzqtA1Zguc7O8x3asOdRfzmAFJBWHNCvcYeC5Uw8t7qWcooj+t8BjzfROA9ZmdSd5UGc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706012942; c=relaxed/simple;
-	bh=fa13xu/t9vD3MafwP+nS2cWhEeHXrK5C1PsxHCLZJHI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b5xx34fPumssO3KOC1fQhlusAiYTB2Qopw5J0P53qs8IIdPWy/Q6VkU71BxAfVC/cNBMgbuv5H24YcqDyfye8l92yE/Rw6cvB87ZAp5mU6RMKkdGsqKPrEmhzMdOFDQAojezhgysdGyb1uRFdY9bXtUlPo6zYN1SegDOKl9pTEY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZjxEFgFE; arc=none smtp.client-ip=192.55.52.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706012941; x=1737548941;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=fa13xu/t9vD3MafwP+nS2cWhEeHXrK5C1PsxHCLZJHI=;
-  b=ZjxEFgFEeQmd42aOsCYA7TW1xjHjMp6aPFTz71Nt0KvDksV5LikOERed
-   0UDB06G/sF7H7XSwsIeWWiiFkzYFoQuHW+AdyOad/du9+H90h9+Zfcw/i
-   wl0+InBEzbj8F4NdWqla3Rp54gZA+1+hr7A3CJNVof1wU9MXs2ZEqLaTP
-   3Ff47BmEChijV0k5xcCTH9+flaLOHNH6XejdVVkyOjLQuvQrT+3ffOmOn
-   b/DLk3lCTLzHrCI9LI+HTj5mscTsfLRFLdTbZaJPuE4p4vUvC7a5ohRs3
-   RJNUcLNWDKcpTSc2cl2ZpZ5AM2h0fsu1Dg/HunFclSuzh2TI8eyKpN5D5
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="432662304"
-X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
-   d="scan'208";a="432662304"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 04:28:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="786050302"
-X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
-   d="scan'208";a="786050302"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga002.jf.intel.com with ESMTP; 23 Jan 2024 04:28:57 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-	id BCDE4483; Tue, 23 Jan 2024 13:34:19 +0200 (EET)
-Date: Tue, 23 Jan 2024 13:34:19 +0200
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Andreas Noever <andreas.noever@gmail.com>,
-	Michael Jamet <michael.jamet@intel.com>,
-	Yehezkel Bernat <YehezkelShB@gmail.com>,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	linux-usb@vger.kernel.org
-Subject: Re: [PATCH] thunderbolt: Remove usage of the deprecated
- ida_simple_xx() API
-Message-ID: <20240123113419.GN2543524@black.fi.intel.com>
-References: <7fce4c8c4345d283dbfadd3cea60fdc49f9ca087.1705007397.git.christophe.jaillet@wanadoo.fr>
- <20240122112922.GH2543524@black.fi.intel.com>
- <d11852b1-6d9c-4ced-83cb-96e753edd45d@wanadoo.fr>
+	s=arc-20240116; t=1706009684; c=relaxed/simple;
+	bh=Ev/78lNrKeEn0GKrbVaNQkMKhQsuAjKk6QQf3ZBpTYE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=KPIrecwmKVn+60hgWVZ4zPvyEIyVTLpqi8FTsmdIDcGhXwQ8nlcDQdvrNHHt6MS8qdLfdBQpRWGr17iu2DZvGO4yIZVgcaGBELCkKoAUa46nGzjRRAiNCNpZxcT4cCGsyxiX3ROv+qbLLPhPUDbFNOc0sVpKvRIBPptcwWHMkyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 40622106F;
+	Tue, 23 Jan 2024 03:35:27 -0800 (PST)
+Received: from e126817.. (e126817.cambridge.arm.com [10.2.3.5])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 130203F762;
+	Tue, 23 Jan 2024 03:34:39 -0800 (PST)
+From: Ben Gainey <ben.gainey@arm.com>
+To: linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Cc: peterz@infradead.org,
+	mingo@redhat.com,
+	acme@kernel.org,
+	mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org,
+	namhyung@kernel.org,
+	irogers@google.com,
+	adrian.hunter@intel.com,
+	will@kernel.org,
+	Ben Gainey <ben.gainey@arm.com>
+Subject: [RFC PATCH 2/2] arm_pmuv3: Add config bits for sample period strobing
+Date: Tue, 23 Jan 2024 11:34:20 +0000
+Message-ID: <20240123113420.1928154-3-ben.gainey@arm.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240123113420.1928154-1-ben.gainey@arm.com>
+References: <20240123113420.1928154-1-ben.gainey@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <d11852b1-6d9c-4ced-83cb-96e753edd45d@wanadoo.fr>
 
-On Mon, Jan 22, 2024 at 06:57:42PM +0100, Christophe JAILLET wrote:
-> Le 22/01/2024 à 12:29, Mika Westerberg a écrit :
-> > On Thu, Jan 11, 2024 at 10:10:21PM +0100, Christophe JAILLET wrote:
-> > > ida_alloc() and ida_free() should be preferred to the deprecated
-> > > ida_simple_get() and ida_simple_remove().
-> > > 
-> > > Note that the upper limit of ida_simple_get() is exclusive, but the one of
-> > > ida_alloc_range()/ida_alloc_max() is inclusive. So a -1 has been added
-> > > when needed.
-> > 
-> > Looks tood to me but wanted to check if you tested this on a real
-> > hardware or you just build tested?
-> > 
-> > 
-> 
-> Hi,
-> 
-> It was compile tested only.
-> 
-> Transformation has been done with the help of the cocci script below.
+To expose the ability to alternate between sample periods to tools.
+The field `strobe_period` is defined for config2 to hold the alternate
+sample period. A non-zero value will enable strobing.
 
-Okay that's what I thought too. I ran some testing on a real hardware
-and did not see any issues.
+Signed-off-by: Ben Gainey <ben.gainey@arm.com>
+---
+ drivers/perf/arm_pmuv3.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-Applied to thunderbolt.git/next, thanks!
+diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
+index 23fa6c5da82c4..66b0219111bb8 100644
+--- a/drivers/perf/arm_pmuv3.c
++++ b/drivers/perf/arm_pmuv3.c
+@@ -318,6 +318,9 @@ static const struct attribute_group armv8_pmuv3_events_attr_group = {
+ #define ATTR_CFG_FLD_threshold_CFG		config1 /* PMEVTYPER.TH */
+ #define ATTR_CFG_FLD_threshold_LO		5
+ #define ATTR_CFG_FLD_threshold_HI		16
++#define ATTR_CFG_FLD_strobe_period_CFG		config2
++#define ATTR_CFG_FLD_strobe_period_LO		0
++#define ATTR_CFG_FLD_strobe_period_HI		31
+ 
+ GEN_PMU_FORMAT_ATTR(event);
+ GEN_PMU_FORMAT_ATTR(long);
+@@ -325,6 +328,7 @@ GEN_PMU_FORMAT_ATTR(rdpmc);
+ GEN_PMU_FORMAT_ATTR(threshold_count);
+ GEN_PMU_FORMAT_ATTR(threshold_compare);
+ GEN_PMU_FORMAT_ATTR(threshold);
++GEN_PMU_FORMAT_ATTR(strobe_period);
+ 
+ static int sysctl_perf_user_access __read_mostly;
+ 
+@@ -352,6 +356,16 @@ static u8 armv8pmu_event_threshold_control(struct perf_event_attr *attr)
+ 	return (th_compare << 1) | th_count;
+ }
+ 
++static inline u32 armv8pmu_event_strobe_period(struct perf_event *event)
++{
++	return ATTR_CFG_GET_FLD(&event->attr, strobe_period);
++}
++
++static inline bool armv8pmu_event_want_strobe(struct perf_event *event)
++{
++	return armv8pmu_event_strobe_period(event) != 0;
++}
++
+ static struct attribute *armv8_pmuv3_format_attrs[] = {
+ 	&format_attr_event.attr,
+ 	&format_attr_long.attr,
+@@ -359,6 +373,7 @@ static struct attribute *armv8_pmuv3_format_attrs[] = {
+ 	&format_attr_threshold.attr,
+ 	&format_attr_threshold_compare.attr,
+ 	&format_attr_threshold_count.attr,
++	&format_attr_strobe_period.attr,
+ 	NULL,
+ };
+ 
+@@ -1125,6 +1140,16 @@ static int __armv8_pmuv3_map_event(struct perf_event *event,
+ 	if (armv8pmu_event_is_64bit(event))
+ 		event->hw.flags |= ARMPMU_EVT_64BIT;
+ 
++	/*
++	 * Support alternating between two sample periods
++	 */
++	if (armv8pmu_event_want_strobe(event)) {
++		u32 strobe_period = armv8pmu_event_strobe_period(event);
++		armpmu_set_strobe_period(&(event->hw), strobe_period);
++	} else {
++		armpmu_set_strobe_period(&(event->hw), 0);
++	}
++
+ 	/*
+ 	 * User events must be allocated into a single counter, and so
+ 	 * must not be chained.
+-- 
+2.43.0
+
 
