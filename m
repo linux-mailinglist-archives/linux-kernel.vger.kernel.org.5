@@ -1,155 +1,136 @@
-Return-Path: <linux-kernel+bounces-35790-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35791-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12527839696
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:40:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DC378396A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:41:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF1FE28398D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:40:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D312F1F24443
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:41:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C069E80052;
-	Tue, 23 Jan 2024 17:40:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 907E180047;
+	Tue, 23 Jan 2024 17:41:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d3HEU7me"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="x/Kzn2VW"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 082217FBA1;
-	Tue, 23 Jan 2024 17:40:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A4697FBA1
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 17:41:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706031611; cv=none; b=LqZzVbHPujIDCksMxpoWVhedaHryKJqe5a3bCIracQbgHUr3id4lDu3+5JgLMaj+sHoQPZYj1Gn21xRclsHiRbP3bcrL+Qg0PWvmZtoMCTnez2BPB81MZb3voaHFCyrv57MwFwrHCK+PX3vD7JkdK26o0MxfEww+wwFvoyoonzI=
+	t=1706031692; cv=none; b=PuEjwWZ2XxjECc9xmgedMhBkSjMqmR4AHUMcOYewly+cQSxWDz9H6TjiVpDJ+E4U6IKfeWLo5/rb+Bg716agtE9x5UaMuzmUTNlZFNIQHNwWJjE58aAwgj8CFdTEQ9ssjLmvvQ1osfRzWQhp1umJx/nKI5wtFaTdIXddImzDTd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706031611; c=relaxed/simple;
-	bh=3StveZ7O01KUMKkYSW0OiZTG31utUIkqY45LlOjxvBw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AJuxxWaaec25KBNQBa8uJEXpbghAlVSK6BEvW/hLxGBQTdMx02GSMgzxqr/XgfGRnKZdGT0YkhErtqJ/o1D/boDnRqA1z6z5HiQ6hwOkZtpeFGw23guJz/t736tEmfC99J2sXnQVndHsSisCMye3yHhqf9hRdTRtQn27LrAnFf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d3HEU7me; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEC2AC433F1;
-	Tue, 23 Jan 2024 17:40:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706031610;
-	bh=3StveZ7O01KUMKkYSW0OiZTG31utUIkqY45LlOjxvBw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=d3HEU7meYerxBi+D51f6kVazcNp4V04WVj8EZprWX19a4JQnMEKWvD+QQTAb7Nb5T
-	 25d4jPu+ddlrrnp3tlkUvyki8ElAjECaCLRnYan5JHntJm4sQ3WgDyjghdmk5DrRNq
-	 MAxa6wXR0MG8oSvStdYv18Z4YQ87KUIb/OeDr5auu/OCkUn+8ZwAV0sTa2XJai9rS2
-	 wyhab2tfozpAGfRKUc3tfWnp2EY1PXdLxnNtO0SoY+0hsIiHdJI0EqR7CoCUfmZAjX
-	 RsCj1YwMUHCOpFah/sgiPnUVYfkMqWFsw4lztEtwfB64WfdCn10n7JW5AvBfxvKl6A
-	 4lMs3PwwmznSg==
-Date: Tue, 23 Jan 2024 17:40:02 +0000
-From: Simon Horman <horms@kernel.org>
-To: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, cake@lists.bufferbloat.net,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jamal Hadi Salim <jhs@mojatatu.com>,
-	Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
-	Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-	Stephen Hemminger <stephen@networkplumber.org>,
-	Petr Pavlu <ppavlu@suse.cz>, Michal Kubecek <mkubecek@suse.cz>,
-	Martin Wilck <mwilck@suse.com>,
-	Pedro Tammela <pctammela@mojatatu.com>
-Subject: Re: [PATCH v4 3/4] net/sched: Load modules via their alias
-Message-ID: <20240123174002.GN254773@kernel.org>
-References: <20240123135242.11430-1-mkoutny@suse.com>
- <20240123135242.11430-4-mkoutny@suse.com>
+	s=arc-20240116; t=1706031692; c=relaxed/simple;
+	bh=xz348oKU6AvMF1pO21pNvmncLBLDSSGLwTjoIJaj5OE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TKOiYWYRVamUSb2cnfFK9XRVrBIAS0meMp0ownBK54udAF+FSuJifFfpuKnsKfi3LC4j+uS3gitA13DXGuiT06zyijVCeWaeZPfxcLa4VXJ57ZXHdoR7m1F4bkSs1FGp6TwowudL2Y/LyUnjgCPfZTqSmfFUFjAJtXRY9T9AuyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=x/Kzn2VW; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d72d240c69so153175ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 09:41:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706031691; x=1706636491; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=I71cbz0+z/l7EjukDSABLEPiSb/P+c5sQG7mnaPl+5s=;
+        b=x/Kzn2VWDhz9WTQl6dEYtrNNECqIO9zDn4Df0er99ZX/WmgSwd7BlQ+GSWYxujgjNK
+         KQOQ9rNcVrHVXRY9xiR6lNuCfW1I1O3tClboalao+RUemvTtCpPdMCdSKp0cGN8A4nn3
+         RE162K5PAlPw51EZVhZkl1b3AX+JMV9oibLnClEkTA69Z2o05BUZuidmUcl6Huc0EB06
+         5cIoa8xnruakkO0PiTUVZZWaibH4wolLSIp+tBpQcFRW31ieUzRxpGqmuVrPCxEt8osb
+         0NE+DcTQ7YpmzGmN9C/oLE/tMC2cOkKMNQ89atPcrkrs6zb3Y8Ew8JYSh+qgqylQKPKI
+         rRvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706031691; x=1706636491;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=I71cbz0+z/l7EjukDSABLEPiSb/P+c5sQG7mnaPl+5s=;
+        b=Esw/HtJm1wyBuhI3URXgNgIhNpOBfqrkGBI52TT1tV7J/Y0eI7rz33ROP4SadaG1I/
+         ZCgRyWasCNSSJ6nBVxy1FOKT09ZsX86iK8JD5TA7rs1GXZbwceXdOTPAmEjK3s2lC3Be
+         /uTzwMVy4gAwl1GCs37GIDjOpVJzKQnTUUPVZt/gfdkVZsOArxbJhNCSOHA/zJZ9EdY8
+         QVTLhczCMrhjkfFPEQUQsYoiKwBLGfzCYhY6QKUO9Ort41db/sRa9T6Qx0vFouZPtLJE
+         N2Sxwd95NFTAkxyoBnYpYv4q3WhZpO9A0W/NFItrh4CWHjL2hVCu/NjrfhzyKubWbbRY
+         sfRw==
+X-Gm-Message-State: AOJu0YxZmAZ85OgvVPQcSIWfbfUTi0mIrQfdboaW/cnmwoCnMFRiaRly
+	OPXvqq7Y9D2P/FMc1b9+1a/w2CIOIwBXclywRMXAXWw8hjQRpLLNJLkucD9zVy8pZMj+mof86sQ
+	SO28rovTaWTgtBRAXik3lF6kGEL62UOC8MscW
+X-Google-Smtp-Source: AGHT+IFtIvLah28e+SbECgqi2o0hZS7gomDPxhoryyoEQNbKVSOKVjqoHW7sYfr7E0fwzLjqlMkIjW/+2y3hjtBSFJk=
+X-Received: by 2002:a17:902:dac1:b0:1d5:76a6:6402 with SMTP id
+ q1-20020a170902dac100b001d576a66402mr29236plx.17.1706031690641; Tue, 23 Jan
+ 2024 09:41:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240123135242.11430-4-mkoutny@suse.com>
+References: <20240123163903.350306-1-james.clark@arm.com> <20240123163903.350306-3-james.clark@arm.com>
+In-Reply-To: <20240123163903.350306-3-james.clark@arm.com>
+From: Ian Rogers <irogers@google.com>
+Date: Tue, 23 Jan 2024 09:41:19 -0800
+Message-ID: <CAP-5=fX4QQYNzEY7-6GyqWJTuH-RQxxc3jB5B1k8HZtDZCHmFw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] perf test: Skip test_arm_callgraph_fp.sh if unwinding
+ isn't built in
+To: James Clark <james.clark@arm.com>
+Cc: linux-perf-users@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Kajol Jain <kjain@linux.ibm.com>, 
+	Spoorthy S <spoorts2@in.ibm.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 23, 2024 at 02:52:41PM +0100, Michal Koutný wrote:
-> The cls_,sch_,act_ modules may be loaded lazily during network
-> configuration but without user's awareness and control.
-> 
-> Switch the lazy loading from canonical module names to a module alias.
-> This allows finer control over lazy loading, the precedent from
-> commit 7f78e0351394 ("fs: Limit sys_mount to only request filesystem
-> modules.") explains it already:
-> 
-> 	Using aliases means user space can control the policy of which
-> 	filesystem^W net/sched modules are auto-loaded by editing
-> 	/etc/modprobe.d/*.conf with blacklist and alias directives.
-> 	Allowing simple, safe, well understood work-arounds to known
-> 	problematic software.
-> 
-> By default, nothing changes. However, if a specific module is
-> blacklisted (its canonical name), it won't be modprobe'd when requested
-> under its alias (i.e. kernel auto-loading). It would appear as if the
-> given module was unknown.
-> 
-> The module can still be loaded under its canonical name, which is an
-> explicit (privileged) user action.
-> 
-> Signed-off-by: Michal Koutný <mkoutny@suse.com>
+On Tue, Jan 23, 2024 at 8:39=E2=80=AFAM James Clark <james.clark@arm.com> w=
+rote:
+>
+> Even though this is a frame pointer unwind test, it's testing that a
+> frame pointer stack can be augmented correctly with a partial
+> Dwarf unwind. So add a feature check so that this test skips instead of
+> fails if Dwarf unwinding isn't present.
+
+Hi James,
+
+Is there value in testing without the partial Dwarf unwind? Presumably
+that is covered by the existing dwarf unwind test?
+https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
+ee/tools/perf/tests/dwarf-unwind.c?h=3Dperf-tools-next
+If the issue is inlined functions I'm surprised addr2line isn't doing
+the job properly. Is there an addr2line perf script issue here?
+
+Thanks,
+Ian
+
+> Signed-off-by: James Clark <james.clark@arm.com>
 > ---
->  net/sched/act_api.c | 2 +-
->  net/sched/cls_api.c | 2 +-
->  net/sched/sch_api.c | 4 ++--
->  3 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/net/sched/act_api.c b/net/sched/act_api.c
-> index 3e30d7260493..60c0fadfac6d 100644
-> --- a/net/sched/act_api.c
-> +++ b/net/sched/act_api.c
-> @@ -1363,7 +1363,7 @@ struct tc_action_ops *tc_action_load_ops(struct nlattr *nla, u32 flags,
->  
->  		if (rtnl_held)
->  			rtnl_unlock();
-> -		request_module("act_%s", act_name);
-> +		request_module(NET_ACT_ALIAS_PREFIX "%s", name);
-
-Hi Michal,
-
-name doesn't exist in this context, perhaps the line above should be:
-
-		request_module(NET_ACT_ALIAS_PREFIX "%s", act_name);
-
->  		if (rtnl_held)
->  			rtnl_lock();
->  
-> diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
-> index 92a12e3d0fe6..b31b832598e7 100644
-> --- a/net/sched/cls_api.c
-> +++ b/net/sched/cls_api.c
-> @@ -257,7 +257,7 @@ tcf_proto_lookup_ops(const char *kind, bool rtnl_held,
->  #ifdef CONFIG_MODULES
->  	if (rtnl_held)
->  		rtnl_unlock();
-> -	request_module("cls_%s", kind);
-> +	request_module(NET_CLS_ALIAS_PREFIX "%s", name);
-
-Likewise, perhaps the line above should be:
-
-	request_module(NET_CLS_ALIAS_PREFIX "%s", kind);
-
->  	if (rtnl_held)
->  		rtnl_lock();
->  	ops = __tcf_proto_lookup_ops(kind);
-
-..
-
--- 
-pw-bot: changes-requested
+>  tools/perf/tests/shell/test_arm_callgraph_fp.sh | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/tools/perf/tests/shell/test_arm_callgraph_fp.sh b/tools/perf=
+/tests/shell/test_arm_callgraph_fp.sh
+> index e342e6c8aa50..83b53591b1ea 100755
+> --- a/tools/perf/tests/shell/test_arm_callgraph_fp.sh
+> +++ b/tools/perf/tests/shell/test_arm_callgraph_fp.sh
+> @@ -8,6 +8,12 @@ shelldir=3D$(dirname "$0")
+>
+>  lscpu | grep -q "aarch64" || exit 2
+>
+> +if perf version --build-options | grep HAVE_DWARF_UNWIND_SUPPORT | grep =
+-q OFF
+> +then
+> +  echo "Skipping, no dwarf unwind support"
+> +  exit 2
+> +fi
+> +
+>  skip_test_missing_symbol leafloop
+>
+>  PERF_DATA=3D$(mktemp /tmp/__perf_test.perf.data.XXXXX)
+> --
+> 2.34.1
+>
 
