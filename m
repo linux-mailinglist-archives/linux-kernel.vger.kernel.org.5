@@ -1,193 +1,172 @@
-Return-Path: <linux-kernel+bounces-35445-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35446-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1347883914B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:23:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94C7C83914C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:24:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91EFCB23BBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:23:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30C351F214C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:24:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BB6F5FBA8;
-	Tue, 23 Jan 2024 14:23:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="2W3ovG/2"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2060.outbound.protection.outlook.com [40.107.94.60])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3174C5FB80;
+	Tue, 23 Jan 2024 14:24:31 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8378C5D754;
-	Tue, 23 Jan 2024 14:23:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.60
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706019798; cv=fail; b=L45nR3WGpaA2VFb4r4THuMNNj28ykZiQ36HnEAlgIcjetqA3Df+YE6ylD9sGuYRX45MIxFrDIm/jqCwWFW4DUxMf4DbMht55Tb0faVJgB0ACOmBRLoTwRZstGF012YlD8RnqUqGEM51HMuFWMaj5wp1I1AHYGydiU1YhkMS0Pyk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706019798; c=relaxed/simple;
-	bh=P07PE+toNdidJQS+gibm3ff5FvuVLac4OV/xkGnYWvE=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=OPloHXk7CL2NonATd31f3kj9CuJCijUw2MswBFDCsT48LkfiqC9CnVXD3REZQJ7ryQTJyNy3QTVnaSEPkq+gDSYisFzdGq4DDuvw8vkRTxjaysPI+mG17gDvHjv7CCcqmqrjS+Or4hjayjrOdsrmM/XHD8Xdqwa+9kZDeHiS/i0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=2W3ovG/2; arc=fail smtp.client-ip=40.107.94.60
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OTqg+AQjrwEai4dBvB/byJPGb1+MC06D7ufce0gPj+UUSYsAWf4lDN3l3g3DgYwCwhQ0SNL5+Epu0l63xn9NSz0zZcH5YUPp9W3Mta7UDhIIpzQKa+47V8xlZWpFJBVmckvvtcwahzwuTb/cOZ9HzMmGYHgvOG4bnjAnhbyxe9T0YLK9b6B/wKriMX0gIxbn5kaooFYeSCWUKJznc8enOe4GEASKDLUrZrCrg64RnKO+Hes8fWBe1SmYY3p0D6rIPjTn+oJaq7ZpVYjGVG0SAiSHTOq4gTalX7vl8k40mub7VNMJYKt7jgMXaS8TTJ5VLpydYjuLEfh+3GobX2xyPQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9P6eM/W78isU0igirvDu2GeAM1fTilXw2YbTVHe0Yz0=;
- b=Xg4ouY6mZsfYM9JgFcsK32jFhU6yM5IJLhnVp/AUsNy05YnpMi0gmD8Axv/q3o+c0+lygrmRskF+6Ea3/iTms7+J4okkkrS6qdfnaqkttVqQkJTNsmrQO3kYlt5FGVgQuZt3Ff9lIQL/TjQM47CVPKj9WYQwLSgJxDTqN0AEqwz4w1dX5L1syFYYzbgcSfENrH93+WMZbSdQgRrYyKesHExjP2vWUT6Yld6qm6K+ILPo5OstL6z86ecoNwWn412FT49l3W6jepKbkP4XQaiklY8l8g46J6ZuiuqfhTQivuJig0Q/hZkmWy25JOw4CRaZx9XE6YP7juw+VAFLdUtBLg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9P6eM/W78isU0igirvDu2GeAM1fTilXw2YbTVHe0Yz0=;
- b=2W3ovG/2FG+cY9kr8rFu3enb0Lz066b+u8sA8xfLvn7bmvK7owE2tsaP6VQrE7uS/l6pM4Lvz2YyxaRmAejzS+Laie4336G495tCGplXxMNFBX7Rd/gjGEd9i9Hfo+1WDGzdr7s4zXR6jjtgIOs2ceflHRJ7u0PqaVZSgFiLeJM=
-Received: from MW4PR03CA0273.namprd03.prod.outlook.com (2603:10b6:303:b5::8)
- by LV8PR12MB9358.namprd12.prod.outlook.com (2603:10b6:408:201::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.32; Tue, 23 Jan
- 2024 14:23:13 +0000
-Received: from MWH0EPF000989E8.namprd02.prod.outlook.com
- (2603:10b6:303:b5:cafe::52) by MW4PR03CA0273.outlook.office365.com
- (2603:10b6:303:b5::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22 via Frontend
- Transport; Tue, 23 Jan 2024 14:23:12 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- MWH0EPF000989E8.mail.protection.outlook.com (10.167.241.135) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7202.16 via Frontend Transport; Tue, 23 Jan 2024 14:23:12 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Tue, 23 Jan
- 2024 08:23:10 -0600
-From: Michal Simek <michal.simek@amd.com>
-To: <linux-kernel@vger.kernel.org>, <monstr@monstr.eu>,
-	<michal.simek@xilinx.com>, <git@xilinx.com>
-CC: Conor Dooley <conor+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh+dt@kernel.org>, "open
- list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
-	<devicetree@vger.kernel.org>, "moderated list:ARM/ZYNQ ARCHITECTURE"
-	<linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH] dt-bindings: soc: xilinx: Add support for KV260 CC
-Date: Tue, 23 Jan 2024 15:23:08 +0100
-Message-ID: <14c184225cc4f0a61da5f8c98bc0767f8deba0df.1706019781.git.michal.simek@amd.com>
-X-Mailer: git-send-email 2.36.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEB9A5EE8E
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 14:24:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706019870; cv=none; b=maHt6uanfFDzCUZLpw1nk6fN5Gzu//NpTzLI4eULPAtWh6q6+LDB+36r3cnPWgLTs2fHQQg60dif7i4wGUnjc4K3I2AKkLNipueoCVbD5HTRwEfrOOme9vXsvuVIGNFIJPQcJFYZrn3/MsJpuLXdn5gkEEBL+GHkOquUcdjwib4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706019870; c=relaxed/simple;
+	bh=OqwBKZG+HAM9Z/m1JbNtARLUkXeFQAw6q0XphWXmSYE=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=fvpnw2t/0EKholZblnVujYGA3R3NS400gGnucBMNaCC3IE7+cLFyK8SYAGcwSoniHoghzvLKWMXM+bZWUSx4vMUSoBdiQKGLTrD9NOb+I9D4fYJFZPCoHbyg6VzMqyD4nEkUKSVwC7MO1Prs9tIW7PahuK219ZQTiKXX6TcZ3VI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB9F5C433C7;
+	Tue, 23 Jan 2024 14:24:29 +0000 (UTC)
+Date: Tue, 23 Jan 2024 09:26:00 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Petr Pavlu <petr.pavlu@suse.com>, Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] tracing: Fixes for eventfs and histograms
+Message-ID: <20240123092600.39d78909@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2768; i=michal.simek@amd.com; h=from:subject:message-id; bh=P07PE+toNdidJQS+gibm3ff5FvuVLac4OV/xkGnYWvE=; b=owGbwMvMwCR4yjP1tKYXjyLjabUkhtT1p4/t1D/uJWF0blnJjDnMdnPunNhTynctjS3Yye7D0 dCsVddaO2JZGASZGGTFFFmkba6c2Vs5Y4rwxcNyMHNYmUCGMHBxCsBE1nUxLOh0PWWsfLL15B7Z DssNt96tuZR3KZFhnubOONlJ1usO/HLUZnbwkbpa+SF8LQA=
-X-Developer-Key: i=michal.simek@amd.com; a=openpgp; fpr=67350C9BF5CCEE9B5364356A377C7F21FE3D1F91
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000989E8:EE_|LV8PR12MB9358:EE_
-X-MS-Office365-Filtering-Correlation-Id: 70ec4ea8-ee1d-4dcd-957a-08dc1c1ed4eb
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	TXkBLxKoGIBaGlPzNZlsFHXPzECkIJNUb+9DwpvHXLtnetDplRmcHtf80Vjl5rUDZuybBlAoSKfdbD2cDGGuD+q8fLwKxQO9wgKDO5J3ZymQ4djHOBeJIHos1sydVUYqlvTiApnjyeNFTfPDRa1tr4yM3zoDHvLtJNYCyBdBmqwlbnisQnycnTYogc9oqFNlphqMjP348MGnpF6xyW/YpYo3L4dPEmKVXu6efuVzgkIAnlKwvI/Z9TUi/GLq6NlVn0bzru0PyC/5ZF79Wpzw+NSWuUSl8L+7do/mfAHhmoBxVsTVyFc3PrXyIivDf/xWl2TW7atluG4rUd2B/egvNMJZa0euVhq1ABtjqQ7QhT2OImc4ce81oYT4urWPkhRLqucNBMr4nlfUw5KfvqJbjwprcCkit0jUYIuxrHZXxUvr0NhWa66IXXxsVl/FFNjREgrVJPuofU2IjLscJCNGcahmiOvBHgFT2SfQWS4O1OZpcn+7SvTcQynAhx46rziZrpuCTQX6i8NI+iCb6PzawPGfziyig57YpZX8xaohRQCCEDz/CZ1uIAotZKqiyqXKYmc1Qqr8jev0RnGOX/BoHYZQX59Tih7veD/61dyPQVVs0Sv3mWQ7SyhHekYxP6Oc6tIfe2gib3gQ7sTFUxjqXV0FG4W8X9fcnAGqeFtM4I5ygP6Yvtzc0nyMcvvGTEyktnRDur0eFmx5vHjjMCbhQwY55JQ9x1KJ9xGxeOuyLLph75mzrRtzyVqPLVid4B4UJJUMYulSEJWXcPaOYHWrW7bF8P5Jdmj6kKa3rhZggv0=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(136003)(376002)(39860400002)(230922051799003)(451199024)(82310400011)(1800799012)(64100799003)(186009)(36840700001)(46966006)(40470700004)(83380400001)(47076005)(40460700003)(40480700001)(426003)(336012)(26005)(16526019)(356005)(44832011)(4326008)(70206006)(82740400003)(478600001)(110136005)(70586007)(316002)(8936002)(5660300002)(54906003)(81166007)(2906002)(86362001)(966005)(36756003)(36860700001)(2616005)(41300700001)(8676002)(2101003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jan 2024 14:23:12.5167
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 70ec4ea8-ee1d-4dcd-957a-08dc1c1ed4eb
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	MWH0EPF000989E8.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9358
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-When DT overlay is applied at run time compatible string or model AFAIK is
-not updated. But when fdtoverlay tool is used it actually creates full
-description for used SOM and carrier card(CC). That's why there is no
-reason to use generic SOM name and its compatible strings because they are
-not properly reflected in newly created DT.
-Composing dt overlays together was introduced by commit 7a4c31ee877a
-("arm64: zynqmp: Add support for Xilinx Kria SOM board") and later renamed
-by commit 45fe0dc4ea2e ("arm64: xilinx: Use zynqmp prefix for SOM dt
-overlays").
-DTB selection is done prior booting OS that's why there is no need to do
-run time composition for SOM and CC combination. And user space can use
-compatible string and all listed revisions to figured it out which SOM and
-CC combinations OS is running at.
 
-Signed-off-by: Michal Simek <michal.simek@amd.com>
----
+Linus,
 
-We are using U-Boot DTB reselection feature to identify SOM + CC
-combination.
+Tracing and eventfs fixes for 6.8:
 
-This patch depends on
-https://lore.kernel.org/r/90e1a393154c3d87e8ee7dc9eef07fc937c1eaf7.1706019397.git.michal.simek@amd.com
+- Fix histogram tracing_map insertion.
+  The tracing_map_insert copies the value into the elt variable and
+  then assigns the elt to the entry value. But it is possible that
+  the entry value becomes visible on other CPUs before the elt is
+  fully initialized. This is fixed by adding a wmb() between the
+  initialization of the elt variable and assigning it.
 
----
- .../bindings/soc/xilinx/xilinx.yaml           | 34 +++++++++++++++++++
- 1 file changed, 34 insertions(+)
+- Have eventfs directory have unique inode numbers. Having them be
+  all the same proved to be a failure as the find application will
+  think that the directories are causing loops, as it checks for
+  directory loops via their inodes. Have the evenfs dir entries
+  get their inodes assigned when they are referenced and then save
+  them in the eventfs_inode structure.
 
-diff --git a/Documentation/devicetree/bindings/soc/xilinx/xilinx.yaml b/Documentation/devicetree/bindings/soc/xilinx/xilinx.yaml
-index 7c75dbb4f307..131aba5ed9f4 100644
---- a/Documentation/devicetree/bindings/soc/xilinx/xilinx.yaml
-+++ b/Documentation/devicetree/bindings/soc/xilinx/xilinx.yaml
-@@ -148,6 +148,40 @@ properties:
-           - contains:
-               const: xlnx,zynqmp-smk-k26
+
+Please pull the latest trace-v6.8-rc1 tree, which can be found at:
+
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
+trace-v6.8-rc1
+
+Tag SHA1: 729afc0bff83ae580a1151b1de10618ce04cb6dd
+Head SHA1: 834bf76add3e6168038150f162cbccf1fd492a67
+
+
+Petr Pavlu (1):
+      tracing: Ensure visibility when inserting an element into tracing_map
+
+Steven Rostedt (Google) (1):
+      eventfs: Save directory inodes in the eventfs_inode structure
+
+----
+ fs/tracefs/event_inode.c   | 14 +++++++++++---
+ fs/tracefs/internal.h      |  7 ++++---
+ kernel/trace/tracing_map.c |  7 ++++++-
+ 3 files changed, 21 insertions(+), 7 deletions(-)
+---------------------------
+diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+index 6795fda2af19..6b211522a13e 100644
+--- a/fs/tracefs/event_inode.c
++++ b/fs/tracefs/event_inode.c
+@@ -34,7 +34,15 @@ static DEFINE_MUTEX(eventfs_mutex);
  
-+      - description: Xilinx Kria SOM KV260 revA/Y/Z
-+        minItems: 3
-+        items:
-+          enum:
-+            - xlnx,zynqmp-sk-kv260-revA
-+            - xlnx,zynqmp-sk-kv260-revY
-+            - xlnx,zynqmp-sk-kv260-revZ
-+            - xlnx,zynqmp-sk-kv260
-+            - xlnx,zynqmp
-+        allOf:
-+          - contains:
-+              const: xlnx,zynqmp-sk-kv260-revA
-+          - contains:
-+              const: xlnx,zynqmp-sk-kv260
-+          - contains:
-+              const: xlnx,zynqmp
+ /* Choose something "unique" ;-) */
+ #define EVENTFS_FILE_INODE_INO		0x12c4e37
+-#define EVENTFS_DIR_INODE_INO		0x134b2f5
 +
-+      - description: Xilinx Kria SOM KV260 rev2/1/B
-+        minItems: 3
-+        items:
-+          enum:
-+            - xlnx,zynqmp-sk-kv260-rev2
-+            - xlnx,zynqmp-sk-kv260-rev1
-+            - xlnx,zynqmp-sk-kv260-revB
-+            - xlnx,zynqmp-sk-kv260
-+            - xlnx,zynqmp
-+        allOf:
-+          - contains:
-+              const: xlnx,zynqmp-sk-kv260-revB
-+          - contains:
-+              const: xlnx,zynqmp-sk-kv260
-+          - contains:
-+              const: xlnx,zynqmp
++/* Just try to make something consistent and unique */
++static int eventfs_dir_ino(struct eventfs_inode *ei)
++{
++	if (!ei->ino)
++		ei->ino = get_next_ino();
 +
-       - description: AMD MicroBlaze V (QEMU)
-         items:
-           - const: qemu,mbv
--- 
-2.36.1
-
++	return ei->ino;
++}
+ 
+ /*
+  * The eventfs_inode (ei) itself is protected by SRCU. It is released from
+@@ -396,7 +404,7 @@ static struct dentry *create_dir(struct eventfs_inode *ei, struct dentry *parent
+ 	inode->i_fop = &eventfs_file_operations;
+ 
+ 	/* All directories will have the same inode number */
+-	inode->i_ino = EVENTFS_DIR_INODE_INO;
++	inode->i_ino = eventfs_dir_ino(ei);
+ 
+ 	ti = get_tracefs(inode);
+ 	ti->flags |= TRACEFS_EVENT_INODE;
+@@ -802,7 +810,7 @@ static int eventfs_iterate(struct file *file, struct dir_context *ctx)
+ 
+ 		name = ei_child->name;
+ 
+-		ino = EVENTFS_DIR_INODE_INO;
++		ino = eventfs_dir_ino(ei_child);
+ 
+ 		if (!dir_emit(ctx, name, strlen(name), ino, DT_DIR))
+ 			goto out_dec;
+diff --git a/fs/tracefs/internal.h b/fs/tracefs/internal.h
+index 12b7d0150ae9..45397df9bb65 100644
+--- a/fs/tracefs/internal.h
++++ b/fs/tracefs/internal.h
+@@ -55,6 +55,10 @@ struct eventfs_inode {
+ 	struct eventfs_attr		*entry_attrs;
+ 	struct eventfs_attr		attr;
+ 	void				*data;
++	unsigned int			is_freed:1;
++	unsigned int			is_events:1;
++	unsigned int			nr_entries:30;
++	unsigned int			ino;
+ 	/*
+ 	 * Union - used for deletion
+ 	 * @llist:	for calling dput() if needed after RCU
+@@ -64,9 +68,6 @@ struct eventfs_inode {
+ 		struct llist_node	llist;
+ 		struct rcu_head		rcu;
+ 	};
+-	unsigned int			is_freed:1;
+-	unsigned int			is_events:1;
+-	unsigned int			nr_entries:30;
+ };
+ 
+ static inline struct tracefs_inode *get_tracefs(const struct inode *inode)
+diff --git a/kernel/trace/tracing_map.c b/kernel/trace/tracing_map.c
+index c774e560f2f9..a4dcf0f24352 100644
+--- a/kernel/trace/tracing_map.c
++++ b/kernel/trace/tracing_map.c
+@@ -574,7 +574,12 @@ __tracing_map_insert(struct tracing_map *map, void *key, bool lookup_only)
+ 				}
+ 
+ 				memcpy(elt->key, key, map->key_size);
+-				entry->val = elt;
++				/*
++				 * Ensure the initialization is visible and
++				 * publish the elt.
++				 */
++				smp_wmb();
++				WRITE_ONCE(entry->val, elt);
+ 				atomic64_inc(&map->hits);
+ 
+ 				return entry->val;
 
