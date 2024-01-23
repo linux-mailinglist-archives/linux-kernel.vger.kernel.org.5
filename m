@@ -1,247 +1,194 @@
-Return-Path: <linux-kernel+bounces-35642-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35643-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E68A83948E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:19:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B5098839494
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:24:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF20B1F2B003
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:19:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61A5D1F26742
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:24:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05B32664C2;
-	Tue, 23 Jan 2024 16:19:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SB7sFiAG"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42A446281F;
-	Tue, 23 Jan 2024 16:19:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DB7D64A82;
+	Tue, 23 Jan 2024 16:24:02 +0000 (UTC)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com [210.160.252.171])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1063762A0A
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 16:23:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.160.252.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706026760; cv=none; b=q+feC5LvqDJDadZyXqsBl3vdfr1t8kYsmIXKD6p5lc4KQOp/n/twVr81N6RXpWP33JDWBdSB/s3gsfN53VcuhsbuEFAD25fOOs4F/C81bhQkQYtUoapZdtxF7VeAHfvMFg0be27SgFYGU6JIs7fv+1dc5BeZ4eTB0O7jKzIQm3c=
+	t=1706027041; cv=none; b=J9u/MknNDVZn6D2/8XGEyOKG3yYSxclvYitgeZw+3ABtpwoFpTOLUAjI0IkotcvmBhF25HIIaWMMjFOZNJh43zaZb4ZfllLERYI1Nrk0UXgfWll5TJovo5rfRCkzOAz0BJuTKTfyNz3+fzXRG83fTSFqETzw5Q/PcIlykadaVzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706026760; c=relaxed/simple;
-	bh=/ApKXRNT1KVzfZ6kukPu6+bsMy5rMlGsIXDqu39eeD0=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=LJud2HBqPv4ydoSrakrUPjIiE1TWPfOMbLEF8FxES0CeJoQD5mCXFK7C6ktNbdtMJ3ord5jFh09v0rg4thpqj1LoSKe2iCDfIXjVICGBRtqzARDCkBVEG2/WEBahIxPuvKaLQHTuTXjBVLBrWUS9degV8AUAfjmhBgKQFjxvYSU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SB7sFiAG; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706026758; x=1737562758;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=/ApKXRNT1KVzfZ6kukPu6+bsMy5rMlGsIXDqu39eeD0=;
-  b=SB7sFiAGg2GIzzEjnxSQT/Wbv3WaQhF3gTN9j48AZG7Z9sN8UOpPfPcQ
-   MNZo8y8EeJcUl9bbf6dz/jLy3rxuXOCNmJSGhdh3bGI8d1sTr+kmigTom
-   u4To5fIQj3t4vMB/yikFB1xz5hWDXr5XFPXtwH88XcS7TQb4xdHMNWmfF
-   +tIWcHqxxrTzTGmcmwFzgpeX90vvm6EC36lnfrAMG6MgsifD1eYptvHhM
-   wgJ2uk97X0LJv9OTWfOOQ6B041IvI13ncvrPiqayyL8Gzy80HZdbLcEg6
-   BlXlIQOrICXzdzxCZrb8fGLGMDF4jCygJMOrVgKIk2NNRIJnIDVbGOqJg
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="15086993"
-X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
-   d="scan'208";a="15086993"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 08:19:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
-   d="scan'208";a="34455278"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 23 Jan 2024 08:19:15 -0800
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: dave.hansen@linux.intel.com, tj@kernel.org, mkoutny@suse.com,
- linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
- cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
- hpa@zytor.com, sohil.mehta@intel.com, "Jarkko Sakkinen" <jarkko@kernel.org>
-Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
- zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
- yangjie@microsoft.com
-Subject: Re: [PATCH v7 01/15] cgroup/misc: Add per resource callbacks for CSS
- events
-References: <20240122172048.11953-1-haitao.huang@linux.intel.com>
- <20240122172048.11953-2-haitao.huang@linux.intel.com>
- <CYLIDNAH2GKZ.2GZXE5Z7EXKSI@suppilovahvero>
-Date: Tue, 23 Jan 2024 10:19:11 -0600
+	s=arc-20240116; t=1706027041; c=relaxed/simple;
+	bh=B/+qV11QSrMu+hiOf6dsxPzCSJR74DeS4TsuLSCz/AQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jdCDlE0xklvUGlVYpzF3WL5keSU52HY4l1Eiy/jKE8yKrr3RCKtrKSPdPaIbSVScT9yQF7GdTUKH5JRmdiAk+9R9v1GlhkORueTJG6fOZ+Jaji0tSPpYrDd4BY6UXYepUUsJm7MEDXBLdCAgWgqoAW9sa7AUPMIsMvsHZcBgx6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; arc=none smtp.client-ip=210.160.252.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
+X-IronPort-AV: E=Sophos;i="6.05,214,1701097200"; 
+   d="asc'?scan'208";a="191449826"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie5.idc.renesas.com with ESMTP; 24 Jan 2024 01:23:57 +0900
+Received: from [10.226.92.178] (unknown [10.226.92.178])
+	by relmlir5.idc.renesas.com (Postfix) with ESMTP id 988F64003EBB;
+	Wed, 24 Jan 2024 01:23:52 +0900 (JST)
+Message-ID: <75f0bfc7-fb95-409a-a5d9-b00732e892f0@bp.renesas.com>
+Date: Tue, 23 Jan 2024 16:23:51 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2h0cx9pdwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <CYLIDNAH2GKZ.2GZXE5Z7EXKSI@suppilovahvero>
-User-Agent: Opera Mail/1.0 (Win32)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Resend PATCH] topology: Set capacity_freq_ref in all cases
+Content-Language: en-GB
+To: Vincent Guittot <vincent.guittot@linaro.org>, mingo@redhat.com,
+ peterz@infradead.org, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+ rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+ bristot@redhat.com, vschneid@redhat.com, sudeep.holla@arm.com,
+ gregkh@linuxfoundation.org, rafael@kernel.org, linux-kernel@vger.kernel.org
+Cc: lukasz.luba@arm.com, ionela.voinescu@arm.com
+References: <20240117190545.596057-1-vincent.guittot@linaro.org>
+From: Paul Barker <paul.barker.ct@bp.renesas.com>
+In-Reply-To: <20240117190545.596057-1-vincent.guittot@linaro.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------B5ReO8lV4wENvIWB0bKVqZad"
 
-On Mon, 22 Jan 2024 14:14:01 -0600, Jarkko Sakkinen <jarkko@kernel.org>  
-wrote:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------B5ReO8lV4wENvIWB0bKVqZad
+Content-Type: multipart/mixed; boundary="------------z25ZUkkX88nYTC0Hf3QNheKh";
+ protected-headers="v1"
+From: Paul Barker <paul.barker.ct@bp.renesas.com>
+To: Vincent Guittot <vincent.guittot@linaro.org>, mingo@redhat.com,
+ peterz@infradead.org, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+ rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+ bristot@redhat.com, vschneid@redhat.com, sudeep.holla@arm.com,
+ gregkh@linuxfoundation.org, rafael@kernel.org, linux-kernel@vger.kernel.org
+Cc: lukasz.luba@arm.com, ionela.voinescu@arm.com
+Message-ID: <75f0bfc7-fb95-409a-a5d9-b00732e892f0@bp.renesas.com>
+Subject: Re: [Resend PATCH] topology: Set capacity_freq_ref in all cases
+References: <20240117190545.596057-1-vincent.guittot@linaro.org>
+In-Reply-To: <20240117190545.596057-1-vincent.guittot@linaro.org>
 
-> On Mon Jan 22, 2024 at 7:20 PM EET, Haitao Huang wrote:
->> From: Kristen Carlson Accardi <kristen@linux.intel.com>
->>
->> The misc cgroup controller (subsystem) currently does not perform
->> resource type specific action for Cgroups Subsystem State (CSS) events:
->> the 'css_alloc' event when a cgroup is created and the 'css_free' event
->> when a cgroup is destroyed.
->>
->> Define callbacks for those events and allow resource providers to
->> register the callbacks per resource type as needed. This will be
->> utilized later by the EPC misc cgroup support implemented in the SGX
->> driver.
->>
->> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
->> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
->> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
->> ---
->> V7:
->> - Make ops one per resource type and store them in array (Michal)
->> - Rename the ops struct to misc_res_ops, and enforce the constraints of  
->> required callback
->> functions (Jarkko)
->> - Moved addition of priv field to patch 4 where it was used first.  
->> (Jarkko)
->>
->> V6:
->> - Create ops struct for per resource callbacks (Jarkko)
->> - Drop max_write callback (Dave, Michal)
->> - Style fixes (Kai)
->> ---
->>  include/linux/misc_cgroup.h | 11 +++++++
->>  kernel/cgroup/misc.c        | 60 +++++++++++++++++++++++++++++++++++--
->>  2 files changed, 68 insertions(+), 3 deletions(-)
->>
->> diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
->> index e799b1f8d05b..0806d4436208 100644
->> --- a/include/linux/misc_cgroup.h
->> +++ b/include/linux/misc_cgroup.h
->> @@ -27,6 +27,16 @@ struct misc_cg;
->>
->>  #include <linux/cgroup.h>
->>
->> +/**
->> + * struct misc_res_ops: per resource type callback ops.
->> + * @alloc: invoked for resource specific initialization when cgroup is  
->> allocated.
->> + * @free: invoked for resource specific cleanup when cgroup is  
->> deallocated.
->> + */
->> +struct misc_res_ops {
->> +	int (*alloc)(struct misc_cg *cg);
->> +	void (*free)(struct misc_cg *cg);
->> +};
->> +
->>  /**
->>   * struct misc_res: Per cgroup per misc type resource
->>   * @max: Maximum limit on the resource.
->> @@ -56,6 +66,7 @@ struct misc_cg {
->>
->>  u64 misc_cg_res_total_usage(enum misc_res_type type);
->>  int misc_cg_set_capacity(enum misc_res_type type, u64 capacity);
->> +int misc_cg_set_ops(enum misc_res_type type, const struct misc_res_ops  
->> *ops);
->>  int misc_cg_try_charge(enum misc_res_type type, struct misc_cg *cg,  
->> u64 amount);
->>  void misc_cg_uncharge(enum misc_res_type type, struct misc_cg *cg, u64  
->> amount);
->>
->> diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
->> index 79a3717a5803..b8c32791334c 100644
->> --- a/kernel/cgroup/misc.c
->> +++ b/kernel/cgroup/misc.c
->> @@ -39,6 +39,9 @@ static struct misc_cg root_cg;
->>   */
->>  static u64 misc_res_capacity[MISC_CG_RES_TYPES];
->>
->> +/* Resource type specific operations */
->> +static const struct misc_res_ops *misc_res_ops[MISC_CG_RES_TYPES];
->> +
->>  /**
->>   * parent_misc() - Get the parent of the passed misc cgroup.
->>   * @cgroup: cgroup whose parent needs to be fetched.
->> @@ -105,6 +108,36 @@ int misc_cg_set_capacity(enum misc_res_type type,  
->> u64 capacity)
->>  }
->>  EXPORT_SYMBOL_GPL(misc_cg_set_capacity);
->>
->> +/**
->> + * misc_cg_set_ops() - set resource specific operations.
->> + * @type: Type of the misc res.
->> + * @ops: Operations for the given type.
->> + *
->> + * Context: Any context.
->> + * Return:
->> + * * %0 - Successfully registered the operations.
->> + * * %-EINVAL - If @type is invalid, or the operations missing any  
->> required callbacks.
->> + */
->> +int misc_cg_set_ops(enum misc_res_type type, const struct misc_res_ops  
->> *ops)
->> +{
->> +	if (!valid_type(type))
->> +		return -EINVAL;
->> +
->> +	if (!ops->alloc) {
->> +		pr_err("%s: alloc missing\n", __func__);
->> +		return -EINVAL;
->> +	}
->> +
->> +	if (!ops->free) {
->> +		pr_err("%s: free missing\n", __func__);
->> +		return -EINVAL;
->> +	}
->> +
->> +	misc_res_ops[type] = ops;
->> +	return 0;
->> +}
->> +EXPORT_SYMBOL_GPL(misc_cg_set_ops);
->> +
->>  /**
->>   * misc_cg_cancel_charge() - Cancel the charge from the misc cgroup.
->>   * @type: Misc res type in misc cg to cancel the charge from.
->> @@ -383,23 +416,37 @@ static struct cftype misc_cg_files[] = {
->>  static struct cgroup_subsys_state *
->>  misc_cg_alloc(struct cgroup_subsys_state *parent_css)
->>  {
->> +	struct misc_cg *parent_cg, *cg;
->>  	enum misc_res_type i;
->> -	struct misc_cg *cg;
->> +	int ret;
->>
->>  	if (!parent_css) {
->> -		cg = &root_cg;
->> +		parent_cg = cg = &root_cg;
->>  	} else {
->>  		cg = kzalloc(sizeof(*cg), GFP_KERNEL);
->>  		if (!cg)
->>  			return ERR_PTR(-ENOMEM);
->> +		parent_cg = css_misc(parent_css);
->>  	}
->>
->>  	for (i = 0; i < MISC_CG_RES_TYPES; i++) {
->>  		WRITE_ONCE(cg->res[i].max, MAX_NUM);
->>  		atomic64_set(&cg->res[i].usage, 0);
->> +		if (misc_res_ops[i]) {
->> +			ret = misc_res_ops[i]->alloc(cg);
->> +			if (ret)
->> +				goto alloc_err;
->
-> So I'd consider pattern like this to avoid repetition:
->
-> 			if (ret) {
-> 				__misc_cg_free(cg);
-> 				return PERR_PTR(ret);
-> 			}
->
-> and call __misc_cg_free() also in misc_cg_free().
->
-Will change to do that.
-Thanks
-Haitao
+--------------z25ZUkkX88nYTC0Hf3QNheKh
+Content-Type: multipart/mixed; boundary="------------EYn76Hs2EPerobwQepFAbRoR"
+
+--------------EYn76Hs2EPerobwQepFAbRoR
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+On 17/01/2024 19:05, Vincent Guittot wrote:
+> If "capacity-dmips-mhz" is not set, raw_capacity is null and we skip th=
+e
+> normalization step which includes setting per_cpu capacity_freq_ref.
+> Always register the notifier but skip the capacity normalization if
+> raw_capacity is null.
+>=20
+> Fixes: 9942cb22ea45 ("sched/topology: Add a new arch_scale_freq_ref() m=
+ethod")
+> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+
+We've had some Ethernet performance issues with linux-next and v6.8-rc1
+on the Renesas RZ/G2L and RZ/G2UL arm64 SoCs. I've confirmed that the
+CPU frequency is stuck at the minimum (150MHz) in v6.8-rc1, even when
+running iperf3. Applying this patch allows the SoC to switch up the the
+maximum frequency (1200MHz) when needed and fixes our Ethernet
+performance.
+
+iperf3 results in Mbps for RZ/G2L SMARC evaluation board:
+                TCP TX    TCP RX    UDP TX    UDP RX
+v6.8-rc1        255       175       102       (*)
++this patch     874       650       802       948
+
+(*) Testing UDP RX in v6.8-rc1 with a server sending traffic at 1Gbps
+locks up our NFS rootfs mount so we don't get any result at all.
+
+Results with v6.8-rc1 + this patch are in line with what we see in v6.7.
+
+Tested-by: Paul Barker <paul.barker.ct@bp.renesas.com>
+--------------EYn76Hs2EPerobwQepFAbRoR
+Content-Type: application/pgp-keys; name="OpenPGP_0x27F4B3459F002257.asc"
+Content-Disposition: attachment; filename="OpenPGP_0x27F4B3459F002257.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+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3D
+=3DsIIN
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------EYn76Hs2EPerobwQepFAbRoR--
+
+--------------z25ZUkkX88nYTC0Hf3QNheKh--
+
+--------------B5ReO8lV4wENvIWB0bKVqZad
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wnsEABYIACMWIQSiu8gv1Xr0fIw/aoLbaV4Vf/JGvQUCZa/oFwUDAAAAAAAKCRDbaV4Vf/JGvWjv
+AQC0oj2QJv7YsV8+8MA+RxGu+DNQ4yPpJSFlZ9YTfSwYywEA9kwKv5q7wCjkbDH09pRY3gq413fW
+ar8MOfJMJxmhhwg=
+=qqSC
+-----END PGP SIGNATURE-----
+
+--------------B5ReO8lV4wENvIWB0bKVqZad--
 
