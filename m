@@ -1,72 +1,73 @@
-Return-Path: <linux-kernel+bounces-34851-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34853-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E54C83884E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:53:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DCB9838855
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:54:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D375A28582E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:53:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D20522855B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:54:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B586556478;
-	Tue, 23 Jan 2024 07:52:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A9DB56750;
+	Tue, 23 Jan 2024 07:54:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oYDUBnRP"
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rxEONhGT"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5890356473
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:52:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CCE45647E
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:54:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705996368; cv=none; b=WsTby02yVWtNtSLrz4qfn02Wm7SFwJfTVJSK7s3r1CTvC32AC9UPfxAFtK4oGVpT48q68HjBLOngknyIGkPkZvS6Hh3799zWGgxa0fb4BhO58RWS92JQSbrOnDchDDnSybnA//s8UMz3QRX3x06nD4tlnO9NlRNX4WmXZyytLYM=
+	t=1705996451; cv=none; b=s5RLbq4Hf/piKDKAKQ/hQRyGehg4BoasXCpkTG7k2n2kjjUK/JwRLmCGAakKS39Xdr5T6DCVu5hac7CZMXJcn4mfW/cI0wvFRM1kx7hPNOQsS0FLBnuHsaOZCDrwY6RHQpR/QJFvFjjuQ67pHLTy74TNnIjWGN+LqUrOZsepCOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705996368; c=relaxed/simple;
-	bh=6o+5pT45dHRAhli14TjwEXDbKi/FTEHCMKECgpqUaH4=;
+	s=arc-20240116; t=1705996451; c=relaxed/simple;
+	bh=tBedCUbIDi7cJALz8lSeQBwe+VGtSCa0w1XsjaYRfzs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EFBLyJDMkvGfp3b/If5W4tQ0GqnZ6DeGkAuCQrMYYRHh2tHu3LjFIntv43uSxYqLgoQVvST/fe8rRAOXPX3DFM4vVM6SjcHpeggHd0IKzkEu2yIfwR2FFWpX0Qm4mjhltOZD2VdWqj8jKgvcnw3xU3FLzYpCVx1JLEcOXxFpWJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oYDUBnRP; arc=none smtp.client-ip=209.85.221.47
+	 In-Reply-To:Content-Type; b=f2us7D9qiaqkCWrfSNULke0uH1XwjDyD9sYYztRlS/WlfCuS5Sz3MsBR4P0VfTI1yTFyO0SCkTc6SlMKOOv68Vte4zLVLamdgPfOnXH0Dh3yET5EW1s2iqQNTttz+3weHveSz/HpBHbwrhYTXxKocExJHE7CYgtWpoCy9veMMUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rxEONhGT; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-33922d2cb92so3585071f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 23:52:47 -0800 (PST)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40e60e137aaso44406625e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 23:54:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1705996365; x=1706601165; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1705996447; x=1706601247; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=sgMx3t0D01iLikPnPU/I8l76IP5yCZgP3fM27oqjNzY=;
-        b=oYDUBnRP2U29Psvgo3t66M9g9+y3XYtVK7E1xnOW82TMWdmRrBh3J5AeEEipaUXrnQ
-         oYLc4uBa790jy9b9Br2dn6HZW+tx1XIfQgjKeSIvh3XAeKneCLFcgSPs8VCI3b834/iF
-         EU5gnlhgCNJN6j2fIkKtbhnwxgdNtW2Om326cc7z0xvye9QOf8wBFga8kBwf5YqnDFJz
-         jpOb3MUwrTY0NwREnrAC5J/on4d+WxR2cOklog+LDoSE0pvS6Afx0inaPerRBV3/2nJV
-         nkRHYfsrAtndKJCh0+W+1Zd9GPfcTJhuRKsGFWkUEnsFxiV3NkECHtPH+Li+Furcah0z
-         T+fQ==
+        bh=CfgHqLSG+kbIYFl/TKr0M3FGr205aNe5wCYQPgU7e6g=;
+        b=rxEONhGTPWYbuXN9d0P5aF0g4OaI/YA0bthzAFQLzjm3apxFmYSGEjwaKSSxGPzGwW
+         JsCxdbuHaBFhMySGb0KbIj3elMXcvIF2wRzAmN+yxjNRxaFNMMpq9eVGv/x3L0o8aj0q
+         RFF9Afi4snewc5zxr0cm38Ow4/SKMC6XFzxyH73TDJa6tWujnTCiC1y3NrFHe+dnopAI
+         XsnsC+ggEd7odpme93YORM/zX1KjDp1gB5J6wnNFTLEVUXAW0n319qwcowvGGDR7Ols8
+         tB7+px/6vaV+TClEwfrxXYmtMDUqNGaofIfwyhgVpHfriq0Sxr/sBUwc1WN60Li2VSXW
+         cjOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705996365; x=1706601165;
+        d=1e100.net; s=20230601; t=1705996447; x=1706601247;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sgMx3t0D01iLikPnPU/I8l76IP5yCZgP3fM27oqjNzY=;
-        b=JSd4kZ6seEhbE/jUpa7lV/1wFrR0DlL7Vl1mzPfhRcL/RLVfd0M38tnNMX0uK5t6ti
-         nn6r9ZX5WepFSBGEaaqYKAwsk+kYu158mvTTTrg5+tm6kVTwKxr0B4T+URCphMpa7TGz
-         oa5+hXGvsmMdgGbyRgdcvrA+8AfhoS5Vu2lE1awvANseMFIruY0F7NjrABObdSZaQx8w
-         1DVvvXYsdRHtZxmJrcwequfJ3YW2oyG+Fhe3OKFAFLIFxEwrZIhslj/jfST7KULPeJWv
-         UZSlDmL9XkvVSJX50zI4oQoBbd4uN7r559+N5L3gmsxk8Dqtt+HbBMQSf90xayY1Te6j
-         wNDA==
-X-Gm-Message-State: AOJu0YwdJIot2I+f8Cfg3gSWyD4QYOB4NfTjBe62UL66/gVrtEfyi5Uz
-	nMaqJbE/qMLJnbXqN6KZCmSSPAUOL+AM2st0Oqcw4dFt4pAXvjV8hLAPvOvxO1A=
-X-Google-Smtp-Source: AGHT+IEqbL6mPW+8uNIsQRzZuRza5M+QnmmY4AchnhG1cgu9rNMkz3MaqVG1KJKcp08YIvcfUqZNQA==
-X-Received: by 2002:a05:6000:1b08:b0:337:bfa5:ef90 with SMTP id f8-20020a0560001b0800b00337bfa5ef90mr1414324wrz.236.1705996365611;
-        Mon, 22 Jan 2024 23:52:45 -0800 (PST)
+        bh=CfgHqLSG+kbIYFl/TKr0M3FGr205aNe5wCYQPgU7e6g=;
+        b=djx8BNA9TXzQsFlpNPfjbwhsHdN4hvZ0X3iXdQBafPcSH5JyGxYYx5oNeKjdJaxClh
+         j1rlopIqVR3bk9QIJp36z6Boey4vzMeiGRGFtSoXYypXOptoU4tl+JOGtjbCsXvunQ+q
+         z2FAeQKqpDPMKtx0HhkzhpliChTwHlBbIQWevCKm4BTnuR1zeQPfV7GEbrBWPHpP35Iw
+         zPZLyDjkC1ejIIah3SHJK4WZNaw/9GbmPM9OamD20g41n41KuVGiEuXT6ZB7xOsUUSue
+         AgsgbVYu6lJbfMCdFqAEArxASST1wEEudTQNOqc0Iwa9VrClTNn2swVDlFUiJAJBgeI3
+         82VA==
+X-Gm-Message-State: AOJu0YxTlQHwjTuquHaBnmdQDeAjhGytzEFEPn/ut4sClvCvdGsnW+Ea
+	f6qiOn1zSXrVv6jPILgnSizy4VmFdDneb1+55T0FUeW6RycZdL728UcaO1lOyFxVr6jAYUuCDi8
+	p
+X-Google-Smtp-Source: AGHT+IHyMx08HfAIrd4A6qIuCbAsUgXRxlH9n7hQifYqmSGq2OJCSKSW1PCH2zqRw3u5loabHLdwIQ==
+X-Received: by 2002:a05:600c:210a:b0:40e:b178:40ac with SMTP id u10-20020a05600c210a00b0040eb17840acmr264357wml.156.1705996447549;
+        Mon, 22 Jan 2024 23:54:07 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id v2-20020a5d4a42000000b003392b1ebf5csm7591526wrs.59.2024.01.22.23.52.43
+        by smtp.gmail.com with ESMTPSA id v2-20020a5d4a42000000b003392b1ebf5csm7591526wrs.59.2024.01.22.23.54.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 23:52:45 -0800 (PST)
-Message-ID: <9d12f4f9-1892-48f3-b8d1-8f59788cc91d@linaro.org>
-Date: Tue, 23 Jan 2024 08:52:42 +0100
+        Mon, 22 Jan 2024 23:54:07 -0800 (PST)
+Message-ID: <b7ee9d75-6647-4708-8d49-2cef8912395f@linaro.org>
+Date: Tue, 23 Jan 2024 08:54:04 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,8 +75,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 7/8] arm64: dts: exynos: gs101: define USI8 with I2C
- configuration
+Subject: Re: [PATCH v4 6/8] arm64: dts: exynos: gs101: update USI UART to use
+ peric0 clocks
 Content-Language: en-US
 To: Tudor Ambarus <tudor.ambarus@linaro.org>, peter.griffin@linaro.org,
  mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
@@ -88,7 +89,7 @@ Cc: andi.shyti@kernel.org, alim.akhtar@samsung.com, s.nawrocki@samsung.com,
  andre.draszik@linaro.org, semen.protsenko@linaro.org,
  willmcvicker@google.com, kernel-team@android.com
 References: <20240119111132.1290455-1-tudor.ambarus@linaro.org>
- <20240119111132.1290455-8-tudor.ambarus@linaro.org>
+ <20240119111132.1290455-7-tudor.ambarus@linaro.org>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -134,26 +135,24 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240119111132.1290455-8-tudor.ambarus@linaro.org>
+In-Reply-To: <20240119111132.1290455-7-tudor.ambarus@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 19/01/2024 12:11, Tudor Ambarus wrote:
-> USI8 I2C is used to communicate with an eeprom found on the battery
-> connector. Define USI8 in I2C configuration.
+> Get rid of the dummy clock and start using the cmu_peric0 clocks
+> for the usi_uart and serial_0 nodes.
 > 
-> USI8 CONFIG register comes with a 0x0 reset value, meaning that USI8
-> doesn't have a default protocol (I2C, SPI, UART) at reset. Thus the
-> selection of the protocol is intentionally left for the board dts file.
+> Tested the serial at 115200, 1000000 and 3000000 baudrates,
+> everthing went fine.
+> 
+> Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 
-.. and dropped, because this patch does not build:
-https://krzk.eu/#/builders/29/builds/3869
-and I missed weird dependency mentioned in cover letter:
+This also fails to build (and also cannot depend on driver changes
+because it is a new DTS).
 
-"This patch set shall be queued after the cmu_misc clock name fixes from:"
-
-Sorry, this cannot work like that. DTS for new features cannot build
-depend on driver changes.
+Dropped.
 
 Best regards,
 Krzysztof
