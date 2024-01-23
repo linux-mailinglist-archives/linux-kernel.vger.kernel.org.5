@@ -1,111 +1,123 @@
-Return-Path: <linux-kernel+bounces-35825-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35826-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17D33839703
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:54:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11F12839707
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:54:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1FF21F229E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:54:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5FB4FB28E93
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:54:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 050F88005F;
-	Tue, 23 Jan 2024 17:54:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92F3781215;
+	Tue, 23 Jan 2024 17:54:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W1RxQXQP"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	dkim=pass (2048-bit key) header.d=easyb-ch.20230601.gappssmtp.com header.i=@easyb-ch.20230601.gappssmtp.com header.b="awsL7LRn"
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D01558004C;
-	Tue, 23 Jan 2024 17:54:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AC6B8004C
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 17:54:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706032444; cv=none; b=ZdVOQX0nLeHwgZrMd7BkTYwGQiTIroFozS+DtIiIx0XDjyerq7Kh8uUKLTMJrjc/DJpzLg+Bcpq+0BzAjkOm7oFWotVy9kdYBcs7/GUcZ7/J8wgp39YUPukZPHQX+7SzGzBarULijjDveXQTiRE1ExqYygrnIb91nmQKFi3v5Ns=
+	t=1706032463; cv=none; b=PfKI7YSm2WunxnttKgTJ8KZ/+LIo/wHRZi8LPycFt6OlRZ0UpGQm3eelgAovBQJLMqGRMpEvcJDUC/tBPUnn05vhXW/a0hFflbv2Z5c4o06fMqYmzzzxcQcgpLRem4XwFceMKSbOG+vZtcPYMy5FQnxXE2knUrY7E6dRT3afL7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706032444; c=relaxed/simple;
-	bh=/Lf65r0jEFfaCyx/YVAM+/B+UJeshYc86BaIyXbVHIM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TtH+MO3EX4rPPhNaDHjAN6KePAnSQ8+BVQr7IsQ/YzDC78i97iGYCg1RWJTYtDRjSnnD/HP8x2bfu1YjG/s0dWsrl0rZs52KjmrPYr9VM+wNSmm3JR3mshJtb3RG54yTJWn2CfkrtmeKYWt/U5ZEi3eUbA4zbcQunsrBFVugtoY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W1RxQXQP; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40eacb6067dso28879555e9.1;
-        Tue, 23 Jan 2024 09:54:02 -0800 (PST)
+	s=arc-20240116; t=1706032463; c=relaxed/simple;
+	bh=ymav3I7OIfk8X1HSTDNWXcyiXMBoEN1DizaaPQT1+Og=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FkK6KqJHsr15C3wobAu6ZscBFqGvGRb9qHid/6t/24Tb9Bdemt09RJdfJS3Tq+ZNDvz5FLYrBpOc8KClAXJ6RG7kwcL1jtKgAS/NsgwoCy5652i1miXXjx8RX/KSIY+DGN8Mw5NLgYPUsGMcULr8Ij5cyTcZ8LvY0tDNxlExeIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=easyb.ch; spf=none smtp.mailfrom=easyb.ch; dkim=pass (2048-bit key) header.d=easyb-ch.20230601.gappssmtp.com header.i=@easyb-ch.20230601.gappssmtp.com header.b=awsL7LRn; arc=none smtp.client-ip=209.85.208.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=easyb.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=easyb.ch
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2cddf459ba2so9814671fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 09:54:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706032441; x=1706637241; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T9axCURSdPj5O6k/8fwokenEz2T/EczgGrNIrYgrSFE=;
-        b=W1RxQXQPxmgC4hjde1Xra6NULCtL8wQd2yIwEfjwHTwRCf3E53PObHwNcWEOc6Jo5g
-         2wAOZu6VEh4QwXFFo4EexEcJezUBIUzLrHdZam78peBnD/K5aPT/PtqB1d6TffFpnVHy
-         B6FwUsydRWP9LBo/gk/9I8W+P7kPrXQNgwHrI7J+xAu+p5nhHVoRakBT6/01Zvc/nkiJ
-         8ufAjOreZuIsGvc6KvhII6NgAKAV8zelkG3OpPStipRoIXpNZyEuSfgBj+aHnaZRtRen
-         l/qs5cRKNryR7lrxhy5BSPHzjU7IM9nWXp7UXqoWC2Xw3LArVQSqjaC3NiUc03k1d0p2
-         cw9A==
+        d=easyb-ch.20230601.gappssmtp.com; s=20230601; t=1706032458; x=1706637258; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ymav3I7OIfk8X1HSTDNWXcyiXMBoEN1DizaaPQT1+Og=;
+        b=awsL7LRn7JEfeF1hk0qJTTdCauxlTXCXZZx3udaLATagpbJ9lUB+woVFHISSU97Rkj
+         /b3pnEAs8b0HZFXvFHDJN9hNLSJfgND8sP/ii3FS+ktAOdvasdJEHlD6BtrBpfv2PHhk
+         vDmtxceOJdSlSSUT51I3up/845QAAcWcl3B+ZDbmLzVsMpRqQSbZyvQE8u9okHzrBodT
+         h7GYLsGtuxTQPgw+I4EKy64sslZCV1bDWdTTnvAxjNHZtH5BmmKrOfXq9eQ3m2eMFE/o
+         Rb2j9ThuPGgft6f/qjO2mWCMW/YSiavirFECJ5dzILEs5/FC+gmh7M5PqVzbJnhhI+aX
+         IMmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706032441; x=1706637241;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=T9axCURSdPj5O6k/8fwokenEz2T/EczgGrNIrYgrSFE=;
-        b=i3fd0V+uJBBIpFUUOlLbjeo4Qd4EY0dobjE2+8hDPzKf2pLTWcwMDz00ADsVUC6ALZ
-         IhLzkJU1uitd82reQlo8biGUS2eVc2M2Vd+QxgBbNbPXqN9cFxJJ7kWB//rE2q4V3hsc
-         VSZBKkuqUezB/fA3COZSbZE8fjDs1ppzbs3SS1RT+vqaqHpkz0vEKMAA/sOf0FDgH4E7
-         Hqiu9mcLm7Ofjd15sIIGeDZG65ne+Kd9g/zT4s6k0OuiU2BzGqpgClS6nTI57D0maqA1
-         HoOZmwSShyK0XvJV7zJ4ieVnzqECW117DJtH54yjlFMzxa2wZ6gETaJvOIkv096xCUvQ
-         HFMw==
-X-Gm-Message-State: AOJu0YwNPMD/ldS5Y+FYW5X8hwjPR2jZb7yPmcYJV/agSPuA+R8PSTNe
-	fYBEoY3NBe6rpd02wamIywpaRAjB5kmqLu+uhJeePlFfD/vsmq35bc2biGvNhWM=
-X-Google-Smtp-Source: AGHT+IHfolV3zQWbsCi6txDpI6lqMV3lpStI7mStzT3HOm8ywicmpEIYK00D6kIX3ljjceGHtRFaog==
-X-Received: by 2002:a05:600c:4657:b0:40e:5afe:a42e with SMTP id n23-20020a05600c465700b0040e5afea42emr409342wmo.247.1706032441017;
-        Tue, 23 Jan 2024 09:54:01 -0800 (PST)
-Received: from jernej-laptop.localnet (86-58-14-70.dynamic.telemach.net. [86.58.14.70])
-        by smtp.gmail.com with ESMTPSA id f18-20020a05600c155200b0040d87100733sm43414126wmg.39.2024.01.23.09.53.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 09:54:00 -0800 (PST)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Samuel Holland <samuel@sholland.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Vinod Koul <vkoul@kernel.org>, Chen-Yu Tsai <wens@kernel.org>
-Cc: Chen-Yu Tsai <wens@csie.org>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
- linux-sound@vger.kernel.org, dmaengine@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 7/7] arm64: dts: allwinner: h616: Add SPDIF device node
-Date: Tue, 23 Jan 2024 18:53:59 +0100
-Message-ID: <3786260.kQq0lBPeGt@jernej-laptop>
-In-Reply-To: <20240122170518.3090814-8-wens@kernel.org>
-References:
- <20240122170518.3090814-1-wens@kernel.org>
- <20240122170518.3090814-8-wens@kernel.org>
+        d=1e100.net; s=20230601; t=1706032458; x=1706637258;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ymav3I7OIfk8X1HSTDNWXcyiXMBoEN1DizaaPQT1+Og=;
+        b=tSJQ0Rq0gdIYJQWl0ZIE9Mz5uVkjRHfFf+0WL7ailJ7TRDozbTEu7KC9RsJyTk6edy
+         KT2if7zr6RwWTouCfzquydZ0whCnEN3XARya1eQfYnCsnCNnIE8q6o8lQ/0lQa4Tnm5z
+         oInm3XONTprm0oE6dQVsi1PVOy1vQLHZjbufoO6enk2bkGgLJt23ocrVdyqLZ4ChzyNo
+         tZuijWaVE+viphzTglHnoy5GOvBC/CVjTjuTLfs9NwNUYVlm43gpJh8FLdnTFHLGdtXq
+         ndYb14Ym96E4qqKkshCi/YpwQ0fCZ6gOZLhlPMysw0OVb8CAy0/WflByZaLzsSYZzTCB
+         gcrQ==
+X-Gm-Message-State: AOJu0Yy9OCASVAWzGzA5JdWb5dLdQn9gLNhDYYofVpR/hvNKTEH7DodR
+	4bJSMVsunMaRICi8r/FdCWHjrWLtcwS5HwOsWqle1S3Q3rRcqjnlo5Hbe4uoWOai7BdLyoZis/V
+	2t2eWPwuY/5ouEjzeRSm/NyDhUQ+g7t8/UvozZA==
+X-Google-Smtp-Source: AGHT+IH5dOs4rVeRzijl7xfb6jmnW4/fJGG1C3+Cm0MCoVfunHt5sFT98pbl+4uKUnCzDyMItW8DhqfNf16B6C/6jm0=
+X-Received: by 2002:a2e:a4d7:0:b0:2cf:d52:6ded with SMTP id
+ p23-20020a2ea4d7000000b002cf0d526dedmr1804740ljm.3.1706032457838; Tue, 23 Jan
+ 2024 09:54:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20220413083824.247136-1-gch981213@gmail.com> <20220413145843.46a3d9b5@xps13>
+ <CAJsYDV+3J0ipbR+N-xE=DH-WXsjierdHe_pJtKf1Xbt7fdaiWw@mail.gmail.com>
+In-Reply-To: <CAJsYDV+3J0ipbR+N-xE=DH-WXsjierdHe_pJtKf1Xbt7fdaiWw@mail.gmail.com>
+From: Ezra Buehler <ezra@easyb.ch>
+Date: Tue, 23 Jan 2024 19:54:06 +0200
+Message-ID: <CAM1KZS=tvEi6fed=BoynpkjfzZqKGb-wv+CVbVmAPYz5tNaNkQ@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: spinand: add support for ESMT F50x1G41LB
+To: Chuanhong Guo <gch981213@gmail.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
+	Patrice Chotard <patrice.chotard@foss.st.com>, 
+	Boris Brezillon <boris.brezillon@collabora.com>, 
+	Christophe Kerello <christophe.kerello@foss.st.com>, Mark Brown <broonie@kernel.org>, 
+	Daniel Palmer <daniel@0x0f.com>, open list <linux-kernel@vger.kernel.org>, quic_sridsn@quicinc.com, 
+	quic_mdalam@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
 
-Dne ponedeljek, 22. januar 2024 ob 18:05:18 CET je Chen-Yu Tsai napisal(a):
-> From: Chen-Yu Tsai <wens@csie.org>
-> 
-> The H616 SoC has an SPDIF transmitter hardware block, which has the same
-> layout as the one in the H6, minus the receiver side.
-> 
-> Add a device node for it, and a default pinmux.
-> 
-> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+Hi Chuanhong Guo,
 
-Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+On Wed, 13 Apr 2022 22:50:43 +0800 Chuanhong Guo <gch981213@gmail.com> wrote:
+> Their device ID aren't conflicting yet, so nothing will happen
+> at the moment.
 
-Best regards,
-Jernej
+Since commit aa08bf187f32 ("mtd: spinand: esmt: add support for
+F50D2G41KA") we have a conflict with the GigaDevice GD5F1GQ5UExxG
+(manufacturer ID 0xC8, device ID 0x51), preventing our board from
+booting.
 
+> There is a solution for future conflict: Recent SPI-NAND chips
+> contain a parameter page which has the exact chip vendor
+> and model. We can do one more detection with the parameter
+> page content.
+> Winbond W25N01KV is a 2k+96 SPI-NAND with 4-bit ECC.
+> It uses the exact same chip id as the current W25N01GV
+> (2k+64 1-bit ECC). We need to support detection using
+> parameter page for this crazy decision by Winbond anyway.
+> I'll try to code something for this with my free time.
+>
+> My current idea is: We first do a detection based on chip id.
+> If that failed, try to read the parameter page. If we got a
+> valid one, match the chip vendor and model string.
 
+According to the datasheets, the ESMT chips actually have a 5 byte ID,
+the last 3 bytes being 0x7F (JEDEC Maker Code Continuation Code). Why
+can't we simply extend the ID in esmt.c (as you had it in your original
+patch) and increase SPINAND_MAX_ID_LEN to 5? Or, alternatively, only
+extend the ID to 4 bytes?
+
+If that is the way to go, I would be happy to provide the patches.
+
+Cheers,
+Ezra.
 
