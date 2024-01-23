@@ -1,200 +1,151 @@
-Return-Path: <linux-kernel+bounces-36077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09A59839B2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 22:29:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA728839B33
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 22:29:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AEF1128508C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:29:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF5871C227F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:29:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 783FF3984D;
-	Tue, 23 Jan 2024 21:27:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE4473986F;
+	Tue, 23 Jan 2024 21:29:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b="kV4svIQG"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2087.outbound.protection.outlook.com [40.107.94.87])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hqJrzDMq"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF8AE53AB;
-	Tue, 23 Jan 2024 21:27:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.87
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706045270; cv=fail; b=a1tsSgrUJBnfJJ0XRy/36Sso1s/SGZ+GPmoLwJR/bb5ZzkfkppnuFS6ewNvYd5cUVvVfRMDhrHSjmeMKH9JmXkMD+HcAkSGcbxsz/VWdcPfsbHY3hZ/vnegN7T3M+iI7g7GVbrHQmNBoDPBAsAcRpXCOTZ7dPzBp4uEpqVHgdWI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706045270; c=relaxed/simple;
-	bh=5Il5MnLnNBOSnK6cz3YR7ynIM3PfFg4KqZu0/Y/uTuc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=r/CXEsEJxGq5ydIcOR0X9Bhw48kgLL48QbxyclEucnFKsMLZ4NPM6Ozsw1rA2RqwAyU7bGrRCa0vcDatRanerrZccrfgwcv5stL8oW7C2ggI/OG1T2+qW1vg21tazkEXUTXRmij0ARSKVsJ9RlBVmP1y5Xcq9H6Am5e2IrF67d0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com; spf=pass smtp.mailfrom=memverge.com; dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b=kV4svIQG; arc=fail smtp.client-ip=40.107.94.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=memverge.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O5bnl28pQbwDk5ae4FoMvZ+xkiKLh7XKD6U3kioM9UTBz63uu4phsIWkah/xixL98qgpwo5aUt7t5kNAO5mH7JvOmoVoOYY/wsD6HD7eXQWK1WwERhoLgbyoYa9SCqrKaKUkRHmvEnoUBky+wLBHzm5oAmIJEPMmX2wmcCicp2NHvKEsBsopjo13uIvYvoQv+iwfI8ee+7i/rKnjAacFFiiEjARz3F4I5mcnJBp7tHmGB2snfv9FiBpjkhKRRdGIh59kP6J4iziZrp07AF1Ov1ZV9WYwRTLarToOLLlUNp6BJXbRBG8CQ+2k0pv4FVGwAc73XoR86PjIOowylhooyA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+uXAFGAn15May1pEX86LSoUj9Hyv7thC8GPpKvWgC3g=;
- b=QevWbTw13R0MGBMGM0biLYFJsqaLORS7A86aCgfk9J64o9ddJHel89p3JBA5Fe6V65qdUJUjFG1kkGpWeQ/2vS01Vl4+NQfHBH4XOKdryXUy7paQJh7N9ntNEprUsh5ZMK0oMaf1i2hEwlWTGZgzsTbMIonRfjS8Yuw+qbBnzu6GqgyfpCLdniilN6sWi0m8a2v/zSG5Fh3BhAUu5JQhDze5y/DN+7CSCjqYiBE9z3ViVk2OoVoyDk19DKZF3fhgbetK8ORjipcHeOu4OpNKdAJ+EntMBEaeBMkXeWhD3UcBD4+XRMlpguuh6Xl+kuBQ7idnlypn9jdSAPxRblGUtg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
- dkim=pass header.d=memverge.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+uXAFGAn15May1pEX86LSoUj9Hyv7thC8GPpKvWgC3g=;
- b=kV4svIQGC37SjUBMtESne5cG3GGHWAtzbEMEPkb1V6qVwwdefcZ79Ce5cKYnh1fV+8agjui/JN07zXikTLYM3XGsoj/QHYe7til4fxJ4TH+tF9LrmBLgBKUlBq/HTrI4XMiCy6YVE0SdJkq4bEq0hn/q/eBpsMK30qvkJVNoL2M=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=memverge.com;
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
- by PH0PR17MB4374.namprd17.prod.outlook.com (2603:10b6:510:1d::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22; Tue, 23 Jan
- 2024 21:27:44 +0000
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::7a04:dc86:2799:2f15]) by SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::7a04:dc86:2799:2f15%5]) with mapi id 15.20.7202.034; Tue, 23 Jan 2024
- 21:27:44 +0000
-Date: Tue, 23 Jan 2024 16:27:35 -0500
-From: Gregory Price <gregory.price@memverge.com>
-To: "Huang, Ying" <ying.huang@intel.com>
-Cc: Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-	corbet@lwn.net, akpm@linux-foundation.org, honggyu.kim@sk.com,
-	rakie.kim@sk.com, hyeongtak.ji@sk.com, mhocko@kernel.org,
-	vtavarespetr@micron.com, jgroves@micron.com,
-	ravis.opensrc@micron.com, sthanneeru@micron.com,
-	emirakhur@micron.com, Hasan.Maruf@amd.com, seungjun.ha@samsung.com,
-	hannes@cmpxchg.org, dan.j.williams@intel.com,
-	Srinivasulu Thanneeru <sthanneeru.opensrc@micron.com>
-Subject: Re: [PATCH v2 3/3] mm/mempolicy: introduce MPOL_WEIGHTED_INTERLEAVE
- for weighted interleaving
-Message-ID: <ZbAvR+U+tyLvsh8R@memverge.com>
-References: <20240119175730.15484-1-gregory.price@memverge.com>
- <20240119175730.15484-4-gregory.price@memverge.com>
- <87jzo0vjkk.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <Za9GiqsZtcfKXc5m@memverge.com>
- <Za9LnN59SBWwdFdW@memverge.com>
- <87a5owv454.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87a5owv454.fsf@yhuang6-desk2.ccr.corp.intel.com>
-X-ClientProxiedBy: SJ0PR03CA0023.namprd03.prod.outlook.com
- (2603:10b6:a03:33a::28) To SJ0PR17MB5512.namprd17.prod.outlook.com
- (2603:10b6:a03:394::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7436536B10
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 21:29:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706045383; cv=none; b=mqnU7OPnD3K7zl+m86rz6X2cc+j0rGG68fWO4+yvD4Qv9xkkey1Nf1GTfAATG1CWfVgseeNgZGpqJn7IMzDuEvk8vZfU6F+xOrLM2r2OGIZc7DvWBHiouw+zwaBvaDhCUEFOvMZbrpvKoDF3ACMx05XUKSnVWYPzWOydfPqLMd0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706045383; c=relaxed/simple;
+	bh=sINYbXEH1qJH0gpRv8KVFye65WquQpM8MGdYM8M3HlQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bA8tQlOHrUe1NMkJtwohZuvUyUpE4qFRfAfmJnj8O/gFP2rEJwgbtgjw/prMSQuh8un3MmWkugO9ln9fCyYLP6nfRAQr9ULBZKlm6lMYvP82ekBCLAlkfK06PbuMG77REfJuS7/zDBTxnybsPFajqEOHBs0cH+XiOIGTMozRdm0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hqJrzDMq; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40e86a9fc4bso61959595e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 13:29:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706045380; x=1706650180; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GBKF+Xtw8nNf8Z3k8KrFF4LUUxKcX4saG2T7m2Shp8E=;
+        b=hqJrzDMqJcjKEKbcOqDXzfS/5J+IlPBCiTUUI17s3Nxp8p2SkUFAKz9bZ4iQondxSy
+         y1LpcdoZekIKyl5wI3sahcG87FG/rmWL6ZgHzsUAs880kIgzMkdid+fBhdGxRqYvjYvw
+         SxPyErxhqTU1RBO2TsTvVk/8/gWJjHK8qhWK2rOuq3rCCOfiuNpiruV4Uwbmi+Ln7C0U
+         6eNxhonz/aupkzHhtRk8YeXVSjDNhRwn0cXFbY15YOyj2eCysYJbbMVJopl/k2wO8DXw
+         tJNl6H05Ymxe3tjn/lg4C5Z/SmsFpXmXJ1Q9gbj0PMyC/ozDiroD2eYD5ujVMH2BtZvO
+         L18w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706045380; x=1706650180;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GBKF+Xtw8nNf8Z3k8KrFF4LUUxKcX4saG2T7m2Shp8E=;
+        b=CeZwVq0YIq4MaSLT6wIg4x3uyoEqREKtuxZW2c6CpPsxkh3tMI3pT30fqprce6OHCf
+         Sy7CMcoFakbJIa0lk3GZCJ9wlWotvkfOS5asoM93V1zrkZSgvzWw5A/r5qP1Mey2HmKE
+         hTPftH4e5+LBhk31OoJOpBOZW0z/aV7gnw0esyeGbfyPwqmEq3fcF96piMH18CMAi0uO
+         BNDYde3zDjL/uonUB4Wsg+ZcdnanACjZSB+FjGULbJnlACQ4FvsF08tOGSbzOzavyWza
+         XmjlVFiwhlmwDcp2ZugFfMrf6khUrgxyn42qymvBIIcNovZB/aR6imz/Z+3QB406TYlj
+         LyAA==
+X-Gm-Message-State: AOJu0YwSqpHmom/3Qwomgw4KWerX7V1q7X3qnnr71TSS456eMzueFb+n
+	NWoQ+Y6xpbIhxXitvARj8m+mIE7LIwnM0zhldNv2Ia6nnQTqmrExOyZoDYEaxOQ=
+X-Google-Smtp-Source: AGHT+IE3sTASROr2k3nuLgN9SLWF1S8/C6fwfapcWIMBQGvJ9+yhe6rs+MtnmTIsL3U7DUr5jB7H7Q==
+X-Received: by 2002:a05:600c:54d1:b0:40e:671e:5406 with SMTP id iw17-20020a05600c54d100b0040e671e5406mr503719wmb.80.1706045379570;
+        Tue, 23 Jan 2024 13:29:39 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id t5-20020a05600c450500b0040d6d755c90sm43768183wmo.42.2024.01.23.13.29.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jan 2024 13:29:39 -0800 (PST)
+Message-ID: <101fda87-7ee6-45ea-8103-7158ff92b848@linaro.org>
+Date: Tue, 23 Jan 2024 22:29:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|PH0PR17MB4374:EE_
-X-MS-Office365-Filtering-Correlation-Id: de1dc1d1-f7af-4aec-e6e6-08dc1c5a22ea
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	AAAaxjHUfWiiKCz+X4zRhd6F6idczRjmGEcrJd6oWgRe9Prw08fbMDY0jnDBHLykvh/jqTcbTrsbu0XZdWfYzH+8Kd+L1FJHxGJGFg0qbbLyMXFzj8g8zhkKJb48DrSwAMiIfRX+3vIuvuolD8vo4ngxPJLRhNXwXXVGLVKN0MwJoFsC3+8RpA6Qnccu1bf04zw9zUvWNayNhGAFH15UHDvnncWksn8K/Gps8ytWRSShx+S22z/eErp989923FYRNWSvCGKraSQZOsA9y63wP4iqWzgcZRdX/7/PqgbHazxHmut9YoeRj7koMLWlfFiWRz7ZQAD+UdkN+V5WN5jv+H1uK7VWw7QyUO+kVK/2o0ZpO5a9+VGJtlmxWiBB3OHrxP4mO2DCFLLo/niQ1lsWjtsKdof/IEP/N3Hr02ddCGzdBTuJKyUy6ZZVTXeF6PgzeCCbktkJkqHGAsxj9gBK5aOdZ69y3JDvPN8Ep50nskQKG+1Dfok/ynwW5ZP/IG8yUv+dXf8v83u0bj3WzhSTQeigYU0Ak4mJQ+K2IyIPgcZhsM5CNVpYYh7F87L9Vn4V6516nwCSiAz+cNYti40M1IEJ2QS/4vkZBDdskbmUUS0=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39840400004)(366004)(396003)(136003)(346002)(376002)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(2906002)(7416002)(5660300002)(44832011)(316002)(6916009)(66556008)(66476007)(54906003)(66946007)(4326008)(8676002)(8936002)(6486002)(6666004)(478600001)(36756003)(38100700002)(86362001)(26005)(6512007)(41300700001)(2616005)(6506007)(16393002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?9osMhT33FDTSV7W1injJrk7wydqL2ha16DL7sq6V5Bkda5C65V6Hu4z2YQuq?=
- =?us-ascii?Q?/cWctv26+Xk0amJETwQ4t4CP0CfJqQyKF4z4Ov+jlTuNvtAFxVq+5rl6ve0w?=
- =?us-ascii?Q?ruUPQc/XbLxPirEuiBHvSvnuCT6PFzf7E46wULvgJMyqA3huikTK0gwKHV6p?=
- =?us-ascii?Q?A6u5EF8itTHvddgJmgFKKhw7hZMu7kHipKnrY1qoPP3Z/0wH8nszn65Pkom2?=
- =?us-ascii?Q?ym/VOBOCrFb8y+vzqioXeaifAJIFWY4zVHhqwar9fEqJXUjTbPu+KQ8vZnue?=
- =?us-ascii?Q?GbCvv7ET00l2xsoriBT2oRRpuyggwAbxsbPlQePL1R8/Wn/RBGFQCbD8hxnr?=
- =?us-ascii?Q?DvOAPLwy8BjJ6NrBhIC6APYJ2adYnYFMCSmZp77tBtfpqs7Zo61rP2A7wi6O?=
- =?us-ascii?Q?bT1rBo+74tfBW3HmO2kk9oCZESInYiZfLnqR72GY4tdsqtd3J8fya2IGyD/y?=
- =?us-ascii?Q?2j+Lz5PlYEghH9QGaQ5KumW47+zUWAQKZGEKPTyp8KtOpgkhH+MmBZ6+bKXa?=
- =?us-ascii?Q?0YnfDdoFhJPBTgFIokJrCG3QaZ+WToYQCXUgmb6sts6Iv5b9O2y4oQNKbueO?=
- =?us-ascii?Q?q5lipnzfAiWOoggBnRhlQi+q+bZIZPMOnt3VMIPVtyir4Djx/Kd79dtZ3zVL?=
- =?us-ascii?Q?SboXFXS9ynEf72pWeOhxuGdk+kZwDtNhedL4P7WFPeDQltqXdin2XbSZUpYj?=
- =?us-ascii?Q?s2yXWOTNil18KfF1bmbuIwZvK2tMxfw1R4oQ+0rerNi3kl04lL+7p4YjpV2Y?=
- =?us-ascii?Q?bnwWzBlLklHrX3o+gZmbrTcsnih9p8Rsfpa5nkXv6LpH/lxg03+kqkCFwFy3?=
- =?us-ascii?Q?m0DZtsYMq7hPSs0Px3IzEH2ETvMcZ1faGoVs24lqlQTaLHXPTU27/rjCF+Y7?=
- =?us-ascii?Q?0lgk74VW4wkr1HiGeFeNWfsaDKoP3pNsPcIAX6wbqff0/Gm+OEsmQrMdf6WV?=
- =?us-ascii?Q?p4q+23mEWOfilNeeNwWO1fvhfrBt57cO5jukN57fg438xQ8H+ZcU8xn1AB8k?=
- =?us-ascii?Q?qnet48SjS7M7F5Uh67q9HRedLOxdsNTK4mXQUg3HD7oXtFFcgu7ryPt/rXOr?=
- =?us-ascii?Q?rPzIjpqEU7sH773sWUKMgH8xOiCUpuh4eN7fDhkwEFwax6W7dYNmaRzsQ6cw?=
- =?us-ascii?Q?nc9OS/T6Z6r86A6YCdC73Ci0GrStPmxZxeyjEt/kSI7xsxdWaWpZ98+UA+Jj?=
- =?us-ascii?Q?QPbYeFXKqWq3jZ0ojH/dLBFxWeRPwEbgNvupsbfgQhLNk3HpEkBZWiLLXvi+?=
- =?us-ascii?Q?9r295ou8IBzo6/54jWmUqZKKrUC1FdiEgzT4eED0qI8O8T57C7rqENzmC1rV?=
- =?us-ascii?Q?wdEbK5gfcBKdl5JWbQ4yrS7YKJ/4/OGccwPa8YCMMKWEGyS3yJBPDaPiRotQ?=
- =?us-ascii?Q?FqujcnllVTsuVUIC4qoIzWkoT2jziN8/Lbf7mzYcgC8nAQ/nJ4LM9NPxGuG0?=
- =?us-ascii?Q?ZUVu3loctVIb6WdAaHdtRk6eS89b56aQ93ynmEW1W18uSjrA6wNFe65ywQTt?=
- =?us-ascii?Q?sMJR4X7TUCCDv636coW26QaMIX4y+TCbY7yZrqH1j3gK8OHpAerUZNoVwN5I?=
- =?us-ascii?Q?ztCPpsGUENXne++qXqopmd5gKnhDR+oip5oJolGKHWW1xaK5+Ppq2v2G0qSk?=
- =?us-ascii?Q?ZQ=3D=3D?=
-X-OriginatorOrg: memverge.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: de1dc1d1-f7af-4aec-e6e6-08dc1c5a22ea
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jan 2024 21:27:43.9741
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HJXAQFCME7akKKtGG+e4MkTWxTJFff70lYwI9qBx352jtMFvcgtKOfZQUOI5BhoGd29DfJpm8d9KfSVGI5ne3OHVexPQEpYuk7jsuMZGvc8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR17MB4374
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/21] spi: dt-bindings: samsung: add google,gs101-spi
+ compatible
+Content-Language: en-US
+To: Tudor Ambarus <tudor.ambarus@linaro.org>, broonie@kernel.org,
+ andi.shyti@kernel.org, arnd@arndb.de
+Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, alim.akhtar@samsung.com, linux-spi@vger.kernel.org,
+ linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-arch@vger.kernel.org, andre.draszik@linaro.org,
+ peter.griffin@linaro.org, semen.protsenko@linaro.org,
+ kernel-team@android.com, willmcvicker@google.com
+References: <20240123153421.715951-1-tudor.ambarus@linaro.org>
+ <20240123153421.715951-2-tudor.ambarus@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240123153421.715951-2-tudor.ambarus@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jan 23, 2024 at 04:35:19PM +0800, Huang, Ying wrote:
-> Gregory Price <gregory.price@memverge.com> writes:
+On 23/01/2024 16:34, Tudor Ambarus wrote:
+> Add "google,gs101-spi" dedicated compatible for representing SPI of
+> Google GS101 SoC.
 > 
-> > On Mon, Jan 22, 2024 at 11:54:34PM -0500, Gregory Price wrote:
-> >> > 
-> >> > Can the above code be simplified as something like below?
-> >> > 
-> >> >         resume_node = prev_node;
-> > ---         resume_weight = 0;
-> > +++         resume_weight = weights[node];
-> >> >         for (...) {
-> >> >                 ...
-> >> >         }
-> >> > 
-> >> 
-> >> I'll take another look at it, but this logic is annoying because of the
-> >> corner case:  me->il_prev can be NUMA_NO_NODE or an actual numa node.
-> >> 
-> >
-> > After a quick look, as long as no one objects to (me->il_prev) remaining
-> > NUMA_NO_NODE
-> 
-> MAX_NUMNODES-1 ?
-> 
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 
-When setting a new policy, the il_prev gets set to NUMA_NO_NODE. It's
-not harmful and is just (-1), which is functionally the same as
-(MAX_NUMNODES-1) for the purpose of iterating the nodemask with
-next_node_in(). So it's fine to set (resume_node = me->il_prev)
-as discussed.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-I have a cleaned up function I'll push when i fix up a few other spots.
+Best regards,
+Krzysztof
 
-> > while having a weight assigned to pol->wil.cur_weight,
-> 
-> I think that it is OK.
-> 
-> And, IIUC, pol->wil.cur_weight can be 0, as in
-> weighted_interleave_nodes(), if it's 0, it will be assigned to default
-> weight for the node.
-> 
-
-cur_weight is different than the global weights.  cur_weight tells us
-how many pages are remaining to allocate for the current node.
-
-(cur_weight = 0) can happen in two scenarios:
-  - initial setting of mempolicy (NUMA_NO_NODE w/ cur_weight=0)
-  - weighted_interleave_nodes decrements it down to 0
-
-Now that i'm looking at it - the second condition should not exist, and
-we can eliminate it. The logic in weighted_interleave_nodes is actually
-annoyingly unclear at the moment, so I'm going to re-factor it a bit to
-be more explicit.
-
-~Gregory
 
