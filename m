@@ -1,196 +1,201 @@
-Return-Path: <linux-kernel+bounces-34684-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34685-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C30283861D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 04:42:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9CE0838620
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 04:44:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F11C1C266EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:42:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8210628C71F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:44:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECF241FDB;
-	Tue, 23 Jan 2024 03:42:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B281F4403;
+	Tue, 23 Jan 2024 03:44:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MS8/nlpL"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="a0DD+lDr"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 607581FA5;
-	Tue, 23 Jan 2024 03:42:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52CCD3C2D
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 03:44:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.115
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705981329; cv=none; b=lloYq0+GbNV9V4pga0qdEvKI1mT87eFgdem2Z387uJh9w0ks6X9fmn+wvPQ2pzbSjcDcoeKyY4gWYdWgusGre89lLOhfP2BJlJL/9GZhZ4852RJ0R2Drpm2vQhrkf1v6P8C49OQJChl3eTecnyJ+ZswBq5He404XhwqwBDb4PZQ=
+	t=1705981463; cv=none; b=tB4dvqxQEVzD9D3jOtTg9OUQ+5/MZkSbSviBIwYU3etn2ahSqDEPbjpR5AD9K8jFTui7usKWxVArvAy2/pFh0e1ifqmfvEiq6iDYL+P0ep3FxgM3Wbbbvg+el4n0ZYsaiFGSwD5L95UMrcUC5YB3Be900/UWLlY1WdzgumFE1Zw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705981329; c=relaxed/simple;
-	bh=ZbYyPQ250XMcheI3heCNihkEYTt2USTXTqIHzWrYJQA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BxZmfKc90ra4quTv8xA10EyIomN5O65Q4i516mlLLsrhtQE6d0JVwtDH+Cqjl5cDFuJf+fgojZ25l5rEPg74H+CjUYIq1s6E9YkdeUQIaOmSIV+GlK4it/4syTkxvSzVWwQR76pQCaeEhAjx+MRa7Xl60LdrM3suLa5GRY36clM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MS8/nlpL; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1705981463; c=relaxed/simple;
+	bh=0QFl14KU9CPQfyc3U9smbcZC9DRQhUktE9JIHe9F0tw=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=EyK5cjgrtKgosygw3fntMWYPJxbzppJpwVgFdN1onGiGom6btuQtTX1xohYombOgldNbnsZMAtKyTe5q7qyOds87aOJyrevS3u2KyIXCYZ71NzqQ33prjcEBa1QOO6ZMepP6qIUzuGc12EsdMZe5i+9RTpEZ8USBD4mcapjkJjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=a0DD+lDr; arc=none smtp.client-ip=192.55.52.115
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705981327; x=1737517327;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=ZbYyPQ250XMcheI3heCNihkEYTt2USTXTqIHzWrYJQA=;
-  b=MS8/nlpLTqE1n6AZTK/lI2Ff6untbU3JnkBsq6vN/Ptd7/c4p9AMDZPR
-   nqGNdAoxAmsU7HWdYPBSF2w+wxaBo2LX5Id319QgOoaPwRmk7GLWlXLX0
-   jheLQYlPlVGsO3kmOcE3yqDTVlhfrJJL4ap3U6Wll/RHoKRdyKthFso1Z
-   YU2bO6pFQdvPNPTg5h40VFE4ja+7IUm24Y4iprBSfthiCWWzNlpGseqph
-   aD0kBtVnzcU5vckeiWqaboDla1LaWQ1sPe989c95XqizqwWlRC8yMNjPR
-   KsJFSO7ECLrDbskii75SYXcNUio1P/pDFq7oslQlH8uujvgY3oh+ML2rk
+  t=1705981462; x=1737517462;
+  h=date:from:to:cc:subject:message-id;
+  bh=0QFl14KU9CPQfyc3U9smbcZC9DRQhUktE9JIHe9F0tw=;
+  b=a0DD+lDrlbQEU8EFMPHPOwCns2kY2grNexDHkRbr3/VGOLtM9H250RdH
+   0tP6ciFMqiDBI5YuLNKOEHbNgsEeW8ifD99Rj+Kft//woHtb3AF0C61RH
+   igW+gRKhRVLuP42xBnvEBN7rHNLb4NuoxJmQVOYkornXtYGygtWsLsaVo
+   cWvNNjXVd6MChi8uJhig4oa0EnnSxiwbxWqpZoI2Ua3bwlcJPZy7BU7Rd
+   OXzHDq1X8Y7lkQi0xl08OFxi2HNN0j+DjxVEY/TLfLuM82ncnEq/E98Fj
+   n/PsGFMGh/EaodtTvDznXz7RpdPa0woBYoYEc2b3Gr3JV3s4omJOTcUZe
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="14920032"
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="401061077"
 X-IronPort-AV: E=Sophos;i="6.05,213,1701158400"; 
-   d="scan'208";a="14920032"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 19:42:06 -0800
+   d="scan'208";a="401061077"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 19:44:21 -0800
 X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="856182100"
 X-IronPort-AV: E=Sophos;i="6.05,213,1701158400"; 
-   d="scan'208";a="1404792"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.93.8.92]) ([10.93.8.92])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 19:42:03 -0800
-Message-ID: <e2a27fa7-8458-4bb7-8d67-de82c1b2503b@linux.intel.com>
-Date: Tue, 23 Jan 2024 11:42:00 +0800
+   d="scan'208";a="856182100"
+Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 22 Jan 2024 19:44:20 -0800
+Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rS7hy-00079Q-1R;
+	Tue, 23 Jan 2024 03:44:18 +0000
+Date: Tue, 23 Jan 2024 11:43:37 +0800
+From: kernel test robot <lkp@intel.com>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars:testing/6.8-rc1-Wstringop-overflow] BUILD
+ SUCCESS a5e0ace04fbf56c1794b1a2fa7a93672753b3fc7
+Message-ID: <202401231134.liEAF2wF-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v18 007/121] KVM: VMX: Reorder vmx initialization with kvm
- vendor initialization
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
-References: <cover.1705965634.git.isaku.yamahata@intel.com>
- <411a0b38c1a6f420a88b51cabf16ee871d6ca80d.1705965634.git.isaku.yamahata@intel.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <411a0b38c1a6f420a88b51cabf16ee871d6ca80d.1705965634.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/6.8-rc1-Wstringop-overflow
+branch HEAD: a5e0ace04fbf56c1794b1a2fa7a93672753b3fc7  init: Kconfig: Disable -Wstringop-overflow for GCC-11
 
+elapsed time: 1585m
 
-On 1/23/2024 7:52 AM, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
->
-> To match vmx_exit cleanup.
-Do you mean vt_exit()?
-Shouldn't vt_init() and vt_exit() be symmetric right from the beginning in
-the refactor patch (006/121)?
+configs tested: 112
+configs skipped: 2
 
-And also, since the reorder of kvm_x86_vendor_init() and vmx_init() is going
-to happen, can we just skip moving around the init of loaded_vmcss_on_cpu?
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                               defconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                          axs103_defconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240123   gcc  
+arc                   randconfig-002-20240123   gcc  
+arm                               allnoconfig   gcc  
+arm                         at91_dt_defconfig   gcc  
+arm                                 defconfig   clang
+arm                            mps2_defconfig   gcc  
+arm                   randconfig-001-20240123   gcc  
+arm                   randconfig-002-20240123   gcc  
+arm                   randconfig-003-20240123   gcc  
+arm                   randconfig-004-20240123   gcc  
+arm                       spear13xx_defconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240123   gcc  
+arm64                 randconfig-002-20240123   gcc  
+arm64                 randconfig-003-20240123   gcc  
+arm64                 randconfig-004-20240123   gcc  
+csky                              allnoconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240123   gcc  
+csky                  randconfig-002-20240123   gcc  
+hexagon                           allnoconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240123   clang
+hexagon               randconfig-002-20240123   clang
+i386                             allmodconfig   clang
+i386                              allnoconfig   clang
+i386                             allyesconfig   clang
+i386         buildonly-randconfig-001-20240122   clang
+i386         buildonly-randconfig-002-20240122   clang
+i386         buildonly-randconfig-003-20240122   clang
+i386         buildonly-randconfig-004-20240122   clang
+i386         buildonly-randconfig-005-20240122   clang
+i386         buildonly-randconfig-006-20240122   clang
+i386                                defconfig   gcc  
+i386                  randconfig-001-20240122   clang
+i386                  randconfig-002-20240122   clang
+i386                  randconfig-003-20240122   clang
+i386                  randconfig-004-20240122   clang
+i386                  randconfig-005-20240122   clang
+i386                  randconfig-006-20240122   clang
+i386                  randconfig-011-20240122   gcc  
+i386                  randconfig-012-20240122   gcc  
+i386                  randconfig-013-20240122   gcc  
+i386                  randconfig-014-20240122   gcc  
+i386                  randconfig-015-20240122   gcc  
+i386                  randconfig-016-20240122   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240123   gcc  
+loongarch             randconfig-002-20240123   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                          amiga_defconfig   gcc  
+m68k                          atari_defconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   clang
+mips                             allyesconfig   gcc  
+mips                     cu1830-neo_defconfig   clang
+mips                      maltaaprp_defconfig   clang
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240123   gcc  
+nios2                 randconfig-002-20240123   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240123   gcc  
+parisc                randconfig-002-20240123   gcc  
+parisc64                            defconfig   gcc  
+powerpc                      acadia_defconfig   clang
+powerpc                           allnoconfig   gcc  
+powerpc                       eiger_defconfig   gcc  
+powerpc                   lite5200b_defconfig   clang
+powerpc               randconfig-001-20240123   gcc  
+powerpc               randconfig-002-20240123   gcc  
+powerpc               randconfig-003-20240123   gcc  
+powerpc64             randconfig-001-20240123   gcc  
+powerpc64             randconfig-002-20240123   gcc  
+powerpc64             randconfig-003-20240123   gcc  
+riscv                             allnoconfig   clang
+riscv                 randconfig-001-20240123   gcc  
+riscv                 randconfig-002-20240123   gcc  
+s390                  randconfig-001-20240123   clang
+s390                  randconfig-002-20240123   clang
+sh                               allmodconfig   gcc  
+sh                    randconfig-001-20240123   gcc  
+sh                    randconfig-002-20240123   gcc  
+sparc64               randconfig-001-20240123   gcc  
+sparc64               randconfig-002-20240123   gcc  
+um                    randconfig-001-20240123   gcc  
+um                    randconfig-002-20240123   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   clang
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                randconfig-001-20240123   gcc  
+xtensa                randconfig-002-20240123   gcc  
 
-> Now vmx_init() is before kvm_x86_vendor_init(),
-> vmx_init() can initialize loaded_vmcss_on_cpu.  Oppertunistically move it
-> back into vmx_init().
->
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
-> v18:
-> - move the loaded_vmcss_on_cpu initialization to vmx_init().
-> - fix error path of vt_init(). by Chao and Binbin
-> ---
->   arch/x86/kvm/vmx/main.c    | 17 +++++++----------
->   arch/x86/kvm/vmx/vmx.c     |  6 ++++--
->   arch/x86/kvm/vmx/x86_ops.h |  2 --
->   3 files changed, 11 insertions(+), 14 deletions(-)
->
-> diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
-> index 18cecf12c7c8..443db8ec5cd5 100644
-> --- a/arch/x86/kvm/vmx/main.c
-> +++ b/arch/x86/kvm/vmx/main.c
-> @@ -171,7 +171,7 @@ struct kvm_x86_init_ops vt_init_ops __initdata = {
->   static int __init vt_init(void)
->   {
->   	unsigned int vcpu_size, vcpu_align;
-> -	int cpu, r;
-> +	int r;
->   
->   	if (!kvm_is_vmx_supported())
->   		return -EOPNOTSUPP;
-> @@ -182,18 +182,14 @@ static int __init vt_init(void)
->   	 */
->   	hv_init_evmcs();
->   
-> -	/* vmx_hardware_disable() accesses loaded_vmcss_on_cpu. */
-> -	for_each_possible_cpu(cpu)
-> -		INIT_LIST_HEAD(&per_cpu(loaded_vmcss_on_cpu, cpu));
-> -
-> -	r = kvm_x86_vendor_init(&vt_init_ops);
-> -	if (r)
-> -		return r;
-> -
->   	r = vmx_init();
->   	if (r)
->   		goto err_vmx_init;
->   
-> +	r = kvm_x86_vendor_init(&vt_init_ops);
-> +	if (r)
-> +		goto err_vendor_init;
-> +
->   	/*
->   	 * Common KVM initialization _must_ come last, after this, /dev/kvm is
->   	 * exposed to userspace!
-> @@ -207,9 +203,10 @@ static int __init vt_init(void)
->   	return 0;
->   
->   err_kvm_init:
-> +	kvm_x86_vendor_exit();
-> +err_vendor_init:
->   	vmx_exit();
->   err_vmx_init:
-> -	kvm_x86_vendor_exit();
->   	return r;
->   }
->   module_init(vt_init);
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 8efb956591d5..3f4dad3acb13 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -477,7 +477,7 @@ DEFINE_PER_CPU(struct vmcs *, current_vmcs);
->    * We maintain a per-CPU linked-list of VMCS loaded on that CPU. This is needed
->    * when a CPU is brought down, and we need to VMCLEAR all VMCSs loaded on it.
->    */
-> -DEFINE_PER_CPU(struct list_head, loaded_vmcss_on_cpu);
-> +static DEFINE_PER_CPU(struct list_head, loaded_vmcss_on_cpu);
->   
->   static DECLARE_BITMAP(vmx_vpid_bitmap, VMX_NR_VPIDS);
->   static DEFINE_SPINLOCK(vmx_vpid_lock);
-> @@ -8528,8 +8528,10 @@ int __init vmx_init(void)
->   	if (r)
->   		return r;
->   
-> -	for_each_possible_cpu(cpu)
-> +	for_each_possible_cpu(cpu) {
-> +		INIT_LIST_HEAD(&per_cpu(loaded_vmcss_on_cpu, cpu));
->   		pi_init_cpu(cpu);
-> +	}
->   
->   	cpu_emergency_register_virt_callback(vmx_emergency_disable);
->   
-> diff --git a/arch/x86/kvm/vmx/x86_ops.h b/arch/x86/kvm/vmx/x86_ops.h
-> index b936388853ab..bca2d27b3dfd 100644
-> --- a/arch/x86/kvm/vmx/x86_ops.h
-> +++ b/arch/x86/kvm/vmx/x86_ops.h
-> @@ -14,8 +14,6 @@ static inline __init void hv_init_evmcs(void) {}
->   static inline void hv_reset_evmcs(void) {}
->   #endif /* IS_ENABLED(CONFIG_HYPERV) */
->   
-> -DECLARE_PER_CPU(struct list_head, loaded_vmcss_on_cpu);
-> -
->   bool kvm_is_vmx_supported(void);
->   int __init vmx_init(void);
->   void vmx_exit(void);
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
