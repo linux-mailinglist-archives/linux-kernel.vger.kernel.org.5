@@ -1,184 +1,134 @@
-Return-Path: <linux-kernel+bounces-35743-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A35EE8395D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:05:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D4058395D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:06:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F200829492D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:05:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DAFFE294B87
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:06:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFF8981AB2;
-	Tue, 23 Jan 2024 17:00:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44EFC7FBB0;
+	Tue, 23 Jan 2024 17:01:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iuL/nTaK"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EkGZ+/og"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97DBD81AA8
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 17:00:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.115
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 802835733D;
+	Tue, 23 Jan 2024 17:01:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706029251; cv=none; b=ghIEJdyinYyQB0ctabulByBcSrOB8w2b4nSdT2Hv0FqLGZE3l7PFtypuMRGS6kihTrm4gRnvio5X56D/Fpc8s1YqyDon30psbnHio735dp1X5gZ2EvlxrcqmWBFtbv6ZsNVuT5C0N/mJwCcpUl0TgJ19ZWqRPRSLHymxHtNwVEw=
+	t=1706029280; cv=none; b=L4E56axpdT15SWmrqPEf6JowHZ/28znO4ql/ITgff1nlpOCIqZmqwLiMUIA4WgFVWrVs23QkoFf/pP6HBCOG4LY1/CGpgluWaLq5Mwfj/ud6gAz0ZIateriunyQ9uHR8XeWR1FdTs5MXZ6hWy53l31SAPb0G7N7rZ8c3aHLi3EM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706029251; c=relaxed/simple;
-	bh=yFf76mF6MHvjP7qOKecUFTqNvS+JlUcJHnmCWixyXW8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LIfdX7joIWaURKhVUHc4f+jRIRedA/hNtE3149wBs/jLI0bw0UpHacBdoH2j/n3l/7y/cLM9NaqEOWj5x1K3Rq0fzwwsDEFKn2aFptuWwpvg7e7FG3KYU4bNuMR9TeN5pjEAgXUmKes/6V3jAtGGftUp9v5iX8uFB4mkZkOZSUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iuL/nTaK; arc=none smtp.client-ip=192.55.52.115
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706029249; x=1737565249;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=yFf76mF6MHvjP7qOKecUFTqNvS+JlUcJHnmCWixyXW8=;
-  b=iuL/nTaKa8AzuBW2JUOrcFIem+S8I7Oa7ElnOxTWiXPxp9gsJS94qUV7
-   SFsrmLinwkoEGTi6CHNTDwNDMoghYoRD3V3Qx20B4D3cGLY99FQg0GHiX
-   pV7U3ax7KnLKA2IpzdLjXkmlyxKodhR+HOS4xgjdwJX8EvEVZxLM7gn/f
-   Ea4cG4oevC5+Oi6ilzDBJH4WSLNW2h4mePCfcAeFK2eeSmSmlI36gHm6y
-   GhRukrbsxx5mt8PeqGvIMm1iiab8PE70Wl8YMqJyyE0K5wN00jXrc70Q+
-   Mbgnk8ioybje90Jr1drDEM68c1RrAPSPNRZKgrOWBv+mXYVwv3jMkGb1C
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="401242325"
-X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
-   d="scan'208";a="401242325"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 09:00:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
-   d="scan'208";a="1590369"
-Received: from gsrivast-mobl.amr.corp.intel.com (HELO [10.212.204.58]) ([10.212.204.58])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 09:00:46 -0800
-Message-ID: <784a6843-c5fb-46eb-a472-5d96101478a9@intel.com>
-Date: Tue, 23 Jan 2024 09:00:45 -0800
+	s=arc-20240116; t=1706029280; c=relaxed/simple;
+	bh=V+pi3c5KR+NexGtTEkvtMJ8NNNixuoR/P6ynDkGNHog=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TLmBCEdc1AIihlhGG2V1yKB27VAUih26GQwCnRVocBC3KFOOl3jkBQAZmA2Z8cwk3X7667fGPp/+LbeEe4yI7lcKBaW8WPg+N2pNEeFCNLB6KmHGoatpkHnPEFSMXDS3kwuYd1xEAtZ4LN8Esg1RpUKgyXbY8zDrP6/GM4Vid1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EkGZ+/og; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B2FBC433F1;
+	Tue, 23 Jan 2024 17:01:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706029279;
+	bh=V+pi3c5KR+NexGtTEkvtMJ8NNNixuoR/P6ynDkGNHog=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EkGZ+/ogS6+hCHS8WHjmlSxTgntXLY5/EvV7KM/I0UJQsFIvfYFISudTysjnMMAtm
+	 XBN8NJ1rWx0kgM3kDM3ITGf+2vNTRV5P70FmMznXtyuaO/VZVvKJy/EIPztnP4fY8b
+	 fMhzPv3e/J8qlgnYBt5k9wMH2ZqDGtqkCuEeOgOZf4E+zdf7KQeLHXyAoLVbHeyuy7
+	 ypaKJbkV6koOWVdtRSWwXeybmQyzWHpyqUVXZQBJLlid3iUCUsGSaQgDjp2VLEpDjc
+	 NTH3uZG2rSC8dWPP2DSbD5Jd3wsbUr2TeN6Lp/ysx/0OjMe71Z7r7VpGpddE9Hn3bJ
+	 MI4xI7Pgdt9lw==
+Date: Tue, 23 Jan 2024 17:01:13 +0000
+From: Conor Dooley <conor@kernel.org>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: "Jason-JH.Lin" <jason-jh.lin@mediatek.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	Chun-Kuang Hu <chunkuang.hu@kernel.org>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, dri-devel@lists.freedesktop.org,
+	linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+	Jason-ch Chen <jason-ch.chen@mediatek.com>,
+	Johnson Wang <johnson.wang@mediatek.com>,
+	Singo Chang <singo.chang@mediatek.com>,
+	Nancy Lin <nancy.lin@mediatek.com>,
+	Shawn Sung <shawn.sung@mediatek.com>,
+	Project_Global_Chrome_Upstream_Group@mediatek.com
+Subject: Re: [PATCH v3 1/3] dt-bindings: mailbox: Add mediatek,gce-props.yaml
+Message-ID: <20240123-powwow-drainable-77dfd6158b05@spud>
+References: <20240119063224.29671-1-jason-jh.lin@mediatek.com>
+ <20240119063224.29671-2-jason-jh.lin@mediatek.com>
+ <20240119-demote-fragment-624a35367a87@spud>
+ <9c447297-2738-4b63-9da9-0d004660e65d@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86/mm: Simplify redundant overlap calculation
-Content-Language: en-US
-To: David Binderman <dcb314@hotmail.com>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>
-References: <20240123163623.1342917-1-dave.hansen@linux.intel.com>
- <AS8PR02MB10217E3448DF6D70285CA3D1D9C742@AS8PR02MB10217.eurprd02.prod.outlook.com>
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <AS8PR02MB10217E3448DF6D70285CA3D1D9C742@AS8PR02MB10217.eurprd02.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="2CTCg0wQKdRlifcE"
+Content-Disposition: inline
+In-Reply-To: <9c447297-2738-4b63-9da9-0d004660e65d@collabora.com>
 
-On 1/23/24 08:54, David Binderman wrote:
->> Remove the second condition.  It is exactly the same as the first.
-> I don't think the first condition is sufficient. I suspect something like
-> 
->        return (r2_start <= r1_start && r1_start <= r2_end) ||
->                (r2_start <= r1_end && r1_end <= r2_end);
-> 
-> Given the range [r2_start .. r2_end], then if r1_start or r1_end
-> are in that range, you have overlap.
-> 
-> Unless you know different.
 
-First of all, I've gotten these bounds checks wrong in code more times
-than I can count.  I have zero trust that I'll get them right. :)
+--2CTCg0wQKdRlifcE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-But the compiler seems to know different at least:
+On Mon, Jan 22, 2024 at 11:38:15AM +0100, AngeloGioacchino Del Regno wrote:
+> Il 19/01/24 17:44, Conor Dooley ha scritto:
+> > Rob,
+> >=20
+> > On Fri, Jan 19, 2024 at 02:32:22PM +0800, Jason-JH.Lin wrote:
+> > > Add mediatek,gce-props.yaml for common GCE properties that is used for
+> > > both mailbox providers and consumers. We place the common property
+> > > "mediatek,gce-events" in this binding currently.
+> > >=20
+> > > The property "mediatek,gce-events" is used for GCE event ID correspon=
+ding
+> > > to a hardware event signal sent by the hardware or a sofware driver.
+> > > If the mailbox providers or consumers want to manipulate the value of
+> > > the event ID, they need to know the specific event ID.
+> > >=20
+> > > Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+> > > ---
+> > >   .../bindings/mailbox/mediatek,gce-props.yaml  | 52 ++++++++++++++++=
++++
+> >=20
+> > Is bindings/mailbox the correct directory to put this in?
+> >=20
+>=20
+> Well, the GCE is a mailbox :-)
+>=20
+> ...but I get why you're asking... and I don't think that this should go to
+> arm/mediatek/ as it's really just only referring to extra properties for =
+kind of
+> "special" mailbox client events...
 
-int  overlaps1(unsigned long r1_start, unsigned long r1_end,
-	      unsigned long r2_start, unsigned long r2_end)
-{
-	return  (r1_start <= r2_end && r1_end >= r2_start) ||
-		(r2_start <= r1_end && r2_end >= r1_start);
-}
+gce is a mailbox, but this isn't a binding for the mailbox itself, hence
+me wondering. I haven't been able to think of something better though,
+so
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
-int  overlaps2(unsigned long r1_start, unsigned long r1_end,
-	      unsigned long r2_start, unsigned long r2_end)
-{
-	return (r1_start <= r2_end && r1_end >= r2_start);
-}
+Cheers,
+Conor.
 
-Results in:
+--2CTCg0wQKdRlifcE
+Content-Type: application/pgp-signature; name="signature.asc"
 
-0000000000001180 <overlaps1>:
-    1180:	f3 0f 1e fa          	endbr64
-    1184:	48 39 cf             	cmp    %rcx,%rdi
-    1187:	49 89 d0             	mov    %rdx,%r8
-    118a:	0f 96 c2             	setbe  %dl
-    118d:	31 c0                	xor    %eax,%eax
-    118f:	4c 39 c6             	cmp    %r8,%rsi
-    1192:	0f 93 c0             	setae  %al
-    1195:	21 d0                	and    %edx,%eax
-    1197:	c3                   	ret
-    1198:	0f 1f 84 00 00 00 00 	nopl   0x0(%rax,%rax,1)
-    119f:	00
+-----BEGIN PGP SIGNATURE-----
 
-00000000000011a0 <overlaps2>:
-    11a0:	f3 0f 1e fa          	endbr64
-    11a4:	48 39 cf             	cmp    %rcx,%rdi
-    11a7:	49 89 d0             	mov    %rdx,%r8
-    11aa:	0f 96 c2             	setbe  %dl
-    11ad:	31 c0                	xor    %eax,%eax
-    11af:	4c 39 c6             	cmp    %r8,%rsi
-    11b2:	0f 93 c0             	setae  %al
-    11b5:	21 d0                	and    %edx,%eax
-    11b7:	c3                   	ret
-    11b8:	0f 1f 84 00 00 00 00 	nopl   0x0(%rax,%rax,1)
-    11bf:	00
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZa/w2QAKCRB4tDGHoIJi
+0mVkAQD1E1YROaciJvV15+DoVLqDPd5wy0CwA0/B+tXa1nnLGAEAx7CXc/CtIrWm
+h/V9z3ZETpXmdBl0DoEl6myfpxb9pgc=
+=/QkO
+-----END PGP SIGNATURE-----
 
-I also wrote a quick program to throw random numbers into both versions
-and see if they differ.  They never did, which they obviously can't if
-they're the exact same instructions.
+--2CTCg0wQKdRlifcE--
 
