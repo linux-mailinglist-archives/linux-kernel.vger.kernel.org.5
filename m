@@ -1,172 +1,306 @@
-Return-Path: <linux-kernel+bounces-35603-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35604-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15A4B8393E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:56:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 600058393E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:56:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AB691C22246
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:56:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84F251C23624
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:56:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6C4F612E0;
-	Tue, 23 Jan 2024 15:55:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4334060ECC;
+	Tue, 23 Jan 2024 15:56:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SOUCCHvn"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XPFVMk8u"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 545DF60BA7
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 15:55:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 599EB60DF9
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 15:56:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706025348; cv=none; b=h4ayE4WxrzVoDm6ICh1APx0mOi2f5oTpXAuQC/0tanGk2kMYfAOxUqdtqaiZQYbJrtpgHNBlnMmuDtbOKlmpnT+OaBFlHFXITaO87XDrGUcyXkL/4jaqX33DpBbMGbza8v4G/QomD2eUfIWWpxhPVbgfG0usNKG09kuD+PfxUbs=
+	t=1706025371; cv=none; b=gOAW5PdSt5XreiysrdlrsJaEHPcA1jcTavqyRDRvz/heF/m5JpqsNsBO4iKOSmrvMegBP9qZpsZ5lDmHvE2yb1drXt/lcEbFdBFStM0SnGCHuO9f1hWQdMYGu5PoFeg2xyblj68kk6LjBO/oXzQDUAtM5dqT7OxhuK6GIwqDcqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706025348; c=relaxed/simple;
-	bh=szUZSkb5KkY1XXTL2ydXpMJbCb8a3hnlpzYn5FWYKKA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kmxm+wo/ghL9heSk0d3XrO2KuMuHLLEhrsWSjPMANPDzanky4YS7MP+wyNS/eHudndLsufopYr1wCibqSsYTqJGYNPs+B4+nV9OUmq8RUe15QE3WvlQ4ZoxOFo797RpRQkt0zfT5+GOmTXDoFIbkBUTZSVl41Zd+lP/g/Y+yRto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SOUCCHvn; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706025345;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sCueOm7+YIV1uypCrFlqek9GTnabxDJ4c738N9GAnY4=;
-	b=SOUCCHvnNApRSjGpa5hFybVpP72OZck3TbeRZlMRy0hV2tttr0D6g1JupZjqwPgozqRcEk
-	9KBjuO6lxFozUCmJ0wHiNI2ZFTGbPq5vqqxy+n2fMa6YDrarCXjGqAUCA2y0OD+ue5J3SA
-	EMOvTlxceVglfTPKHp97zebg5FqXI30=
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
- [209.85.166.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-86-7_aABfckN5myqxEldXUZsw-1; Tue, 23 Jan 2024 10:55:32 -0500
-X-MC-Unique: 7_aABfckN5myqxEldXUZsw-1
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7bf7e0c973eso379256339f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:55:24 -0800 (PST)
+	s=arc-20240116; t=1706025371; c=relaxed/simple;
+	bh=5CfcWw/r+gLO0GSTpJ86WRXjYekj43jcIrHUeThvUVk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Cyq3NNgk9MpOQpPEEGyQ4uaZpGINCJLXuMsgDqICtIhy/I0Xf4HxwHHrxnUCFnY2IZiAQRm5JcVRbL1yTtzOJxDl/U0m3N4j/R51U4KOz0RxYBcB6VL5fNMqOx9b45YDNMEtNwuBDas6k3hkbAlf9loqQkoCAqQK7z+acxC0cUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=XPFVMk8u; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-50e70d8273fso2800e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:56:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706025367; x=1706630167; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=EBv30KMy0zvXmwC7oxK4cZSZ9HSjQvy5SlIH3Zj4wIY=;
+        b=XPFVMk8u59Y61d9/SI45ew5cPQEyjsNPpOBzDQMmnb8g7o/a8TVNbhfCK1nbPA9Euv
+         MZ9qj2bCjOWBb6vNVc3KVHqfko/h0IAKcTcm7nCewbxKrwcq1tdwc1tRr60T7AaLIVpM
+         YLK0wNteUsYPrkzwzb8ikrRmAHSyAAkQ0N/Lki0jovkohzYmf9wL69q0DoqC4Qyp/uT6
+         Fnq3BsKK18sZmxF4G6caxSlbGKRPmTDmfN59gdfOLbVfxvTFLONPCGnz5lF1fWQtDmzI
+         zKRql8HGz3Qhf2bJwrfRlzvh04EGeMlfyen72RBQrEpAD6jcFVtlr/yzQFBemL58Azfk
+         jZhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706025323; x=1706630123;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sCueOm7+YIV1uypCrFlqek9GTnabxDJ4c738N9GAnY4=;
-        b=KbFi0hCGzgFmF6aA82v7tKKXTQGnAcoGr4VpaMmzVCVxkaBpl7zp+vcEqWrrOMl79+
-         PUcb5tXWXSV3CBA/unO+OPbKvvTE+hDKFzzDuU94TzxsbV2gOYiBhE0UQOnAOPT5p1yw
-         LvMb/hzM2zwTrhMieqKgTVwERw+ugI5uLOMlgKESmjqi0NYCft6PAv3RT0miuBlrtq7R
-         qLDK1L0yyDQREkGBOtiMhGfhaZNdCflBAQUL1xHZ+1qFYrzOIQK/ek9qyZmzsgzWMojT
-         sG0k7OPoMBaKxDwG2fnU3BSGMpAlHrxFtruj4ezFtgZ8JVP88ZWS9L4EDrG7n1vdVZC7
-         6ABw==
-X-Gm-Message-State: AOJu0YyYo17hmIcrlFttnE5GNgD86pfKRDA51VE0fEXQR8U65EsGGVTx
-	1WzEXrL5MPFYas5Gfw8JX03XFziqjILzahVCl01DXGGrZ41nJJVPwI83546gKrWKUssAc46+6fd
-	FnpsqabYpbobiAzGRXBO6XC8vWAIZo1rhIfne08ibZ9DCC5fcWQVuJ98Xh0XWsA==
-X-Received: by 2002:a6b:6515:0:b0:7bf:705c:f9cd with SMTP id z21-20020a6b6515000000b007bf705cf9cdmr99561iob.38.1706025323695;
-        Tue, 23 Jan 2024 07:55:23 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH38iCjX+AEd64T4UT/2KKdkE95022H/qcfVu2tE/vKCgVvGn5gfiViiWPx9v0cG2g2zKjB3g==
-X-Received: by 2002:a6b:6515:0:b0:7bf:705c:f9cd with SMTP id z21-20020a6b6515000000b007bf705cf9cdmr99549iob.38.1706025323389;
-        Tue, 23 Jan 2024 07:55:23 -0800 (PST)
-Received: from redhat.com ([38.15.36.11])
-        by smtp.gmail.com with ESMTPSA id x2-20020a029482000000b0046d17aff31bsm3738272jah.157.2024.01.23.07.55.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 07:55:22 -0800 (PST)
-Date: Tue, 23 Jan 2024 08:55:21 -0700
-From: Alex Williamson <alex.williamson@redhat.com>
-To: Lukas Wunner <lukas@wunner.de>
-Cc: linux-pci@vger.kernel.org, bhelgaas@google.com,
- linux-kernel@vger.kernel.org, eric.auger@redhat.com,
- mika.westerberg@linux.intel.com, rafael.j.wysocki@intel.com,
- Sanath.S@amd.com
-Subject: Re: [PATCH v2 2/2] PCI: Fix runtime PM race with PME polling
-Message-ID: <20240123085521.07e2b978.alex.williamson@redhat.com>
-In-Reply-To: <20240123104519.GA21747@wunner.de>
-References: <20230803171233.3810944-1-alex.williamson@redhat.com>
-	<20230803171233.3810944-3-alex.williamson@redhat.com>
-	<20240118115049.3b5efef0.alex.williamson@redhat.com>
-	<20240122221730.GA16831@wunner.de>
-	<20240122155003.587225aa.alex.williamson@redhat.com>
-	<20240123104519.GA21747@wunner.de>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        d=1e100.net; s=20230601; t=1706025367; x=1706630167;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EBv30KMy0zvXmwC7oxK4cZSZ9HSjQvy5SlIH3Zj4wIY=;
+        b=bt6qTtN4WHnMAwV6U8WbwyzYFtXFIiaJSbl1bvU+QXrLD/5aOqACPJCtc39Pafkttx
+         BiHKPdEELkOcPesp6VyKRllg9uY0eRSoJr20TEfg15QhBqthN6DbeOouNiEQurn6C9vi
+         lQjjDQ2rmfKU2UHJ7ELa/JY9dly1mFfRpxbNssuBgzghIva2Qnl3GiWEjECfV6nBBabl
+         +Y6BenM6OOM6OWOfBmbyxV4BCe3PkSI0TycHGgN5q8C6q1aATjwwIsA0mng3RisJV2+Y
+         AJt8NXGMeRR7I8varzVPX+jRI74ziWEuarZl4Dt9l90/IEl4WD/rtwbrjlA6ELK9j0hZ
+         i0yw==
+X-Gm-Message-State: AOJu0YxS/jYeVh8yxqoPyy8FOvmMmIvdEZW1VHfD41/5ja6HabaolV4f
+	bRPyOg4p9LJG7VijBeDnY2y13NkTiHRaOzS3Aqy/xdM3/ZEcZs2aTRiKsjI17OlZrbz6YWtr2yt
+	qDwb1PUVv5WeDOhr/NGWzqVwth8sQk3vbVcJi
+X-Google-Smtp-Source: AGHT+IGX7ORTrUQQYto8V+zR0lNs54Y7uli6s5LaFoyrmcVGLPjD8aENG1Gjzi2/hwj9N+EQj1O9ExjUZAXgyclAJFg=
+X-Received: by 2002:ac2:4d85:0:b0:50e:7be0:3ac1 with SMTP id
+ g5-20020ac24d85000000b0050e7be03ac1mr149756lfe.6.1706025367012; Tue, 23 Jan
+ 2024 07:56:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240122171215.319440-2-elver@google.com> <Za_g6QkbGoAcXBNH@elver.google.com>
+In-Reply-To: <Za_g6QkbGoAcXBNH@elver.google.com>
+From: Dmitry Vyukov <dvyukov@google.com>
+Date: Tue, 23 Jan 2024 16:55:54 +0100
+Message-ID: <CACT4Y+ZcWsArFZs5E8actLz1q2L4-juptLAcVPp2BcjkdscCtQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] stackdepot: use variable size records for
+ non-evictable entries
+To: Marco Elver <elver@google.com>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Alexander Potapenko <glider@google.com>, Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, kasan-dev@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 23 Jan 2024 11:45:19 +0100
-Lukas Wunner <lukas@wunner.de> wrote:
-
-> On Mon, Jan 22, 2024 at 03:50:03PM -0700, Alex Williamson wrote:
-> > On Mon, 22 Jan 2024 23:17:30 +0100 Lukas Wunner <lukas@wunner.de> wrote:  
-> > > On Thu, Jan 18, 2024 at 11:50:49AM -0700, Alex Williamson wrote:  
-> > > > To do that I used pm_runtime_get_if_active(), but in retrospect this
-> > > > requires the device to be in RPM_ACTIVE so we end up skipping anything
-> > > > suspended or transitioning.    
-> > > 
-> > > How about dropping the calls to pm_runtime_get_if_active() and
-> > > pm_runtime_put() and instead simply do:
-> > > 
-> > > 			if (pm_runtime_suspended(&pdev->dev) &&
-> > > 			    pdev->current_state != PCI_D3cold)
-> > > 				pci_pme_wakeup(pdev, NULL);  
-> > 
-> > Do we require that the polled device is in the RPM_SUSPENDED state?  
-> 
-> If the device is RPM_SUSPENDING, why immediately resume it for polling?
-> It's sufficient to poll it the next time around, i.e. 1 second later.
-> 
-> Likewise, if it's already RPM_RESUMING or RPM_ACTIVE anyway, no need
-> to poll PME.
-
-I'm clearly not an expert on PME, but this is not obvious to me and
-before the commit that went in through this thread, PME wakeup was
-triggered regardless of the PM state.  I was trying to restore the
-behavior of not requiring a specific PM state other than deferring
-polling across transition states.
-
-> This leaves RPM_SUSPENDED as the only state in which it makes sense to
-> poll.
+On Tue, 23 Jan 2024 at 16:53, Marco Elver <elver@google.com> wrote:
 >
-> > Also pm_runtime_suspended() can also only be trusted while holding the
-> > device power.lock, we need a usage count reference to maintain that
-> > state.  
-> 
-> Why?  Let's say there's a race and the device resumes immediately after
-> we call pm_runtime_suspended() here.  So we might call pci_pme_wakeup()
-> gratuitouly.  So what?  No biggie.
+> And on top of this we can make KASAN generic happier again:
+>
+> Objections?
 
-The issue I'm trying to address is that config space of the device can
-become inaccessible while calling pci_pme_wakeup() on it, causing a
-system fault on some hardware.  So a gratuitous pci_pme_wakeup() can be
-detrimental.
+Not doing refcounting/aux locking for generic KASAN makes sense to me.
 
-We require the device config space to remain accessible, therefore the
-instantaneous test against D3cold and that the parent bridge is in D0
-is not sufficient.  I see traces where the parent bridge is in D0, but
-the PM state is RPM_SUSPENDING and the endpoint device transitions to
-D3cold while we're executing pci_pme_wakeup().
-
-Therefore at a minimum, I think we need to enforce that the bridge is
-in RPM_ACTIVE and remains in that state across pci_pme_wakeup(), which
-means we need to hold a usage count reference, and that usage count
-reference must be acquired under power.lock in RPM_ACTIVE state to be
-effective.
-
-> > +			if (bdev) {
-> > +				spin_lock_irq(&bdev->power.lock);  
-> 
-> Hm, I'd expect that lock to be internal to the PM core,
-> although there *are* a few stray users outside of it.
-
-Right, there are.  It's possible that if we only need to hold a
-reference on the bridge we can abstract this through
-pm_runtime_get_if_active(), the semantics worked better to essentially
-open code it in this iteration though.  Thanks,
-
-Alex
-
+> ------ >8 ------
+>
+> From: Marco Elver <elver@google.com>
+> Date: Tue, 23 Jan 2024 12:11:36 +0100
+> Subject: [PATCH RFC] kasan: revert eviction of stack traces in generic mode
+>
+> This partially reverts commits cc478e0b6bdf, 63b85ac56a64, 08d7c94d9635,
+> a414d4286f34, and 773688a6cb24 to make use of variable-sized stack depot
+> records, since eviction of stack entries from stack depot forces fixed-
+> sized stack records. Care was taken to retain the code cleanups by the
+> above commits.
+>
+> Eviction was added to generic KASAN as a response to alleviating the
+> additional memory usage from fixed-sized stack records, but this still
+> uses more memory than previously.
+>
+> With the re-introduction of variable-sized records for stack depot, we
+> can just switch back to non-evictable stack records again, and return
+> back to the previous performance and memory usage baseline.
+>
+> Before (observed after a KASAN kernel boot):
+>
+>   pools: 597
+>   allocations: 29657
+>   frees: 6425
+>   in_use: 23232
+>   freelist_size: 3493
+>
+> After:
+>
+>   pools: 315
+>   allocations: 28964
+>   frees: 0
+>   in_use: 28964
+>   freelist_size: 0
+>
+> As can be seen from the number of "frees", with a generic KASAN config,
+> evictions are no longer used but due to using variable-sized records, I
+> observe a reduction of 282 stack depot pools (saving 4512 KiB).
+>
+> Fixes: cc478e0b6bdf ("kasan: avoid resetting aux_lock")
+> Fixes: 63b85ac56a64 ("kasan: stop leaking stack trace handles")
+> Fixes: 08d7c94d9635 ("kasan: memset free track in qlink_free")
+> Fixes: a414d4286f34 ("kasan: handle concurrent kasan_record_aux_stack calls")
+> Fixes: 773688a6cb24 ("kasan: use stack_depot_put for Generic mode")
+> Signed-off-by: Marco Elver <elver@google.com>
+> Cc: Alexander Potapenko <glider@google.com>
+> Cc: Andrey Konovalov <andreyknvl@gmail.com>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> ---
+>  mm/kasan/common.c  |  3 +--
+>  mm/kasan/generic.c | 54 ++++++----------------------------------------
+>  mm/kasan/kasan.h   |  8 -------
+>  3 files changed, 8 insertions(+), 57 deletions(-)
+>
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index 610efae91220..ad32803e34e9 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -65,8 +65,7 @@ void kasan_save_track(struct kasan_track *track, gfp_t flags)
+>  {
+>         depot_stack_handle_t stack;
+>
+> -       stack = kasan_save_stack(flags,
+> -                       STACK_DEPOT_FLAG_CAN_ALLOC | STACK_DEPOT_FLAG_GET);
+> +       stack = kasan_save_stack(flags, STACK_DEPOT_FLAG_CAN_ALLOC);
+>         kasan_set_track(track, stack);
+>  }
+>
+> diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+> index df6627f62402..8bfb52b28c22 100644
+> --- a/mm/kasan/generic.c
+> +++ b/mm/kasan/generic.c
+> @@ -485,16 +485,6 @@ void kasan_init_object_meta(struct kmem_cache *cache, const void *object)
+>         if (alloc_meta) {
+>                 /* Zero out alloc meta to mark it as invalid. */
+>                 __memset(alloc_meta, 0, sizeof(*alloc_meta));
+> -
+> -               /*
+> -                * Prepare the lock for saving auxiliary stack traces.
+> -                * Temporarily disable KASAN bug reporting to allow instrumented
+> -                * raw_spin_lock_init to access aux_lock, which resides inside
+> -                * of a redzone.
+> -                */
+> -               kasan_disable_current();
+> -               raw_spin_lock_init(&alloc_meta->aux_lock);
+> -               kasan_enable_current();
+>         }
+>
+>         /*
+> @@ -506,18 +496,8 @@ void kasan_init_object_meta(struct kmem_cache *cache, const void *object)
+>
+>  static void release_alloc_meta(struct kasan_alloc_meta *meta)
+>  {
+> -       /* Evict the stack traces from stack depot. */
+> -       stack_depot_put(meta->alloc_track.stack);
+> -       stack_depot_put(meta->aux_stack[0]);
+> -       stack_depot_put(meta->aux_stack[1]);
+> -
+> -       /*
+> -        * Zero out alloc meta to mark it as invalid but keep aux_lock
+> -        * initialized to avoid having to reinitialize it when another object
+> -        * is allocated in the same slot.
+> -        */
+> -       __memset(&meta->alloc_track, 0, sizeof(meta->alloc_track));
+> -       __memset(meta->aux_stack, 0, sizeof(meta->aux_stack));
+> +       /* Zero out alloc meta to mark it as invalid. */
+> +       __memset(meta, 0, sizeof(*meta));
+>  }
+>
+>  static void release_free_meta(const void *object, struct kasan_free_meta *meta)
+> @@ -526,9 +506,6 @@ static void release_free_meta(const void *object, struct kasan_free_meta *meta)
+>         if (*(u8 *)kasan_mem_to_shadow(object) != KASAN_SLAB_FREE_META)
+>                 return;
+>
+> -       /* Evict the stack trace from the stack depot. */
+> -       stack_depot_put(meta->free_track.stack);
+> -
+>         /* Mark free meta as invalid. */
+>         *(u8 *)kasan_mem_to_shadow(object) = KASAN_SLAB_FREE;
+>  }
+> @@ -571,8 +548,6 @@ static void __kasan_record_aux_stack(void *addr, depot_flags_t depot_flags)
+>         struct kmem_cache *cache;
+>         struct kasan_alloc_meta *alloc_meta;
+>         void *object;
+> -       depot_stack_handle_t new_handle, old_handle;
+> -       unsigned long flags;
+>
+>         if (is_kfence_address(addr) || !slab)
+>                 return;
+> @@ -583,33 +558,18 @@ static void __kasan_record_aux_stack(void *addr, depot_flags_t depot_flags)
+>         if (!alloc_meta)
+>                 return;
+>
+> -       new_handle = kasan_save_stack(0, depot_flags);
+> -
+> -       /*
+> -        * Temporarily disable KASAN bug reporting to allow instrumented
+> -        * spinlock functions to access aux_lock, which resides inside of a
+> -        * redzone.
+> -        */
+> -       kasan_disable_current();
+> -       raw_spin_lock_irqsave(&alloc_meta->aux_lock, flags);
+> -       old_handle = alloc_meta->aux_stack[1];
+>         alloc_meta->aux_stack[1] = alloc_meta->aux_stack[0];
+> -       alloc_meta->aux_stack[0] = new_handle;
+> -       raw_spin_unlock_irqrestore(&alloc_meta->aux_lock, flags);
+> -       kasan_enable_current();
+> -
+> -       stack_depot_put(old_handle);
+> +       alloc_meta->aux_stack[0] = kasan_save_stack(0, depot_flags);
+>  }
+>
+>  void kasan_record_aux_stack(void *addr)
+>  {
+> -       return __kasan_record_aux_stack(addr,
+> -                       STACK_DEPOT_FLAG_CAN_ALLOC | STACK_DEPOT_FLAG_GET);
+> +       return __kasan_record_aux_stack(addr, STACK_DEPOT_FLAG_CAN_ALLOC);
+>  }
+>
+>  void kasan_record_aux_stack_noalloc(void *addr)
+>  {
+> -       return __kasan_record_aux_stack(addr, STACK_DEPOT_FLAG_GET);
+> +       return __kasan_record_aux_stack(addr, 0);
+>  }
+>
+>  void kasan_save_alloc_info(struct kmem_cache *cache, void *object, gfp_t flags)
+> @@ -620,7 +580,7 @@ void kasan_save_alloc_info(struct kmem_cache *cache, void *object, gfp_t flags)
+>         if (!alloc_meta)
+>                 return;
+>
+> -       /* Evict previous stack traces (might exist for krealloc or mempool). */
+> +       /* Invalidate previous stack traces (might exist for krealloc or mempool). */
+>         release_alloc_meta(alloc_meta);
+>
+>         kasan_save_track(&alloc_meta->alloc_track, flags);
+> @@ -634,7 +594,7 @@ void kasan_save_free_info(struct kmem_cache *cache, void *object)
+>         if (!free_meta)
+>                 return;
+>
+> -       /* Evict previous stack trace (might exist for mempool). */
+> +       /* Invalidate previous stack trace (might exist for mempool). */
+>         release_free_meta(object, free_meta);
+>
+>         kasan_save_track(&free_meta->free_track, 0);
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index d0f172f2b978..216ae0ef1e4b 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -6,7 +6,6 @@
+>  #include <linux/kasan.h>
+>  #include <linux/kasan-tags.h>
+>  #include <linux/kfence.h>
+> -#include <linux/spinlock.h>
+>  #include <linux/stackdepot.h>
+>
+>  #if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
+> @@ -265,13 +264,6 @@ struct kasan_global {
+>  struct kasan_alloc_meta {
+>         struct kasan_track alloc_track;
+>         /* Free track is stored in kasan_free_meta. */
+> -       /*
+> -        * aux_lock protects aux_stack from accesses from concurrent
+> -        * kasan_record_aux_stack calls. It is a raw spinlock to avoid sleeping
+> -        * on RT kernels, as kasan_record_aux_stack_noalloc can be called from
+> -        * non-sleepable contexts.
+> -        */
+> -       raw_spinlock_t aux_lock;
+>         depot_stack_handle_t aux_stack[2];
+>  };
+>
+> --
+> 2.43.0.429.g432eaa2c6b-goog
+>
 
