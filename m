@@ -1,113 +1,141 @@
-Return-Path: <linux-kernel+bounces-34833-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34834-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 032D2838818
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:40:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3206C83881B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:41:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 359D81C220F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:40:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 65B261C22258
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:41:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C102F52F71;
-	Tue, 23 Jan 2024 07:40:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 878B952F73;
+	Tue, 23 Jan 2024 07:41:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="IipoaWVK"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="moWrO3nP"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E3B1810;
-	Tue, 23 Jan 2024 07:40:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 596B255E6C;
+	Tue, 23 Jan 2024 07:41:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705995643; cv=none; b=pGaaqyQhm7c8f/keLCjcfZIFr56T7SLLWa2CN2vWt9wIoaW6ra84nS2LcMWl0Sx5C3N3rspG3Flh3y9/18csUSRwa5J1LQjrRXPVCsQvAItlazm+mjazXPapPi9J/YFGYjGAvn/9PDVHsmFDic6cm8slrLniqkoZIvhSCWtyRw8=
+	t=1705995665; cv=none; b=SobFmT2eADhqnwLEm0+xJEKqHk8UPVCHBRuwQZuIhqtw4EgFun+dBBi3g/ZPto2nwEK+BkFA9ELajBANMtXkPEE6bXJ1VOZPXVAvIvaFIiBnD7IKWipfnJj2Vnf8I3IvTeHA0MUJnid+Z64qMEphIjXcC2pQvPf/iC9xwSkYkQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705995643; c=relaxed/simple;
-	bh=ZoqLbtBF8i+gzadYvqr5JJ9kHSwfg9TbADroP5aIfWc=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d25tqcZgHq3fXQU8vCHbw30NlRwfbr1z04kKe8pP9hFZiegTPSNLk5s+fYyLwK0wJs0vgJSiZPSDGJj0wh/CiYzfcY0pEOUVUamPkCu1j7cquam6z92dZUxvKp5jWGadF54fwg0p/IBILUsre4SsN53FUCq31FdAv1IjS07J+lg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=IipoaWVK; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1705995641; x=1737531641;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ZoqLbtBF8i+gzadYvqr5JJ9kHSwfg9TbADroP5aIfWc=;
-  b=IipoaWVKjgHjdqfmkSe5jj7suz6mk5xWFg4R7ir7a7Nkw3uh/zHwKgJ6
-   hRl1QKFHmdxPyUc7fzCOv8WPvEaneinhvU+Vzxp+JGFsjTB5GOLJ7Y/Fb
-   LZMyg3Dq5QYw2y6shoe6u/p9NjJaJk7F9vDGE0B0VwdsvVDLlq0SWfsXJ
-   FENtmxR5Xf7ChMv9Xyy1DBfh5dsYHpxknoU/ZrDqlPEbaf1WB/u1lIpDp
-   Ni6v5euIXs1ecuqTHMqHgFsabl2pChS+4f97YO43fBdO2SNkLyaQsN0cF
-   aHbiCOabi05thctaZRrKh91KPXn8ajj+Eq2yXedQXk8YLyoSr5LUJjYsV
-   g==;
-X-CSE-ConnectionGUID: w/pk/xxkRa+jFa3DU5zIZw==
-X-CSE-MsgGUID: hyNmLgQ4Tda7JxR6YODDzA==
-X-IronPort-AV: E=Sophos;i="6.05,213,1701154800"; 
-   d="scan'208";a="15629781"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 23 Jan 2024 00:40:34 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 23 Jan 2024 00:40:24 -0700
-Received: from localhost (10.10.85.11) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Tue, 23 Jan 2024 00:40:24 -0700
-Date: Tue, 23 Jan 2024 08:40:23 +0100
-From: Horatiu Vultur <horatiu.vultur@microchip.com>
-To: Breno Leitao <leitao@debian.org>
-CC: <kuba@kernel.org>, <davem@davemloft.net>, <abeni@redhat.com>,
-	<edumazet@google.com>, Vladimir Oltean <vladimir.oltean@nxp.com>, "Claudiu
- Manoil" <claudiu.manoil@nxp.com>, Alexandre Belloni
-	<alexandre.belloni@bootlin.com>, <UNGLinuxDriver@microchip.com>, Paolo Abeni
-	<pabeni@redhat.com>, <dsahern@kernel.org>, <weiwan@google.com>, "open
- list:OCELOT ETHERNET SWITCH DRIVER" <netdev@vger.kernel.org>, open list
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 14/22] net: fill in MODULE_DESCRIPTION()s for
- ocelot
-Message-ID: <20240123074023.pu5hqjarvhawufmc@DEN-DL-M31836.microchip.com>
-References: <20240122184543.2501493-1-leitao@debian.org>
- <20240122184543.2501493-15-leitao@debian.org>
+	s=arc-20240116; t=1705995665; c=relaxed/simple;
+	bh=/Nj6Ph18ng8jZRZ3LBRkgzpbuV/nCr07jTP0oi3cSvg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=UV5JPqiXLbFI/BJ4iiZ62MCIKxLAOo3jE0MUtKHbb8vRRjsvvlrUNey9lF8HjBKfPGdgK9pPq3N684M/FhzC+5VRFPFJrhbwQ/LcaNszQslCeJbzdtjrlLadWj6AN+dGEgF3+FBySxgk9yq9vkB+I7VtEJDpYNRVTDO9ckemmDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=moWrO3nP; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40N7Mm0E005591;
+	Tue, 23 Jan 2024 07:40:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=jL8XLZCLgn5P6ZASj4WFD/DFDJQlaY/Mg8ngb9CqzhI=; b=mo
+	WrO3nP9yDomJuTFb9V7sKFG3eC5yN/NwcxGMgIEKS433amUHIi9z8687WqqqBWQ4
+	iCJZwQGBcV4VTQCKvvfuiCC4YK+0BmzpK6cO3ri0wWU+rPHhTfv2Ohr6p92LdDT6
+	x/yEJNr2dv/Tn9wdMDBpBQyP/++pdJ7W9JAYg2A2gofkY40S4Jf8qg8IA4/zdvC1
+	epABJhKjQqBXO3xtQUCoqgbh6HQF3IRwZ5/62WujA5bcfy2szw1sHlRhnBv4fD4O
+	/YoHx9qO2mZmCjKIduEZXqg25bZp6uXXyxVx99xOI6AZx+sqlC5QwRI8VbqCfJwn
+	Q4fnlpk00sIL6KB8Xz2w==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vspw8tqak-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 23 Jan 2024 07:40:49 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40N7em5c009560
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 23 Jan 2024 07:40:48 GMT
+Received: from [10.216.24.76] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 22 Jan
+ 2024 23:40:44 -0800
+Message-ID: <6fab57f0-13b5-455a-9109-1f9d475b7c3a@quicinc.com>
+Date: Tue, 23 Jan 2024 13:10:39 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20240122184543.2501493-15-leitao@debian.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: qcom: ipq5018-rdp432-c2: correct board name
+Content-Language: en-US
+To: Ziyang Huang <hzyitc@outlook.com>, <agross@kernel.org>
+CC: <andersson@kernel.org>, <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <TYZPR01MB55564BE24CE8718DBD4644A2C9762@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
+ <ac35936e-2fc0-4ca5-b746-25fa0e31afac@quicinc.com>
+ <TYZPR01MB55569715C43B7B1EBE613B86C9752@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
+From: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+In-Reply-To: <TYZPR01MB55569715C43B7B1EBE613B86C9752@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: qogMIMhHGYxe0Ztr-CuEH76k2_h1wH39
+X-Proofpoint-ORIG-GUID: qogMIMhHGYxe0Ztr-CuEH76k2_h1wH39
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-23_02,2024-01-23_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
+ adultscore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0
+ clxscore=1015 suspectscore=0 impostorscore=0 mlxlogscore=697
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2401230053
 
-The 01/22/2024 10:45, Breno Leitao wrote:
-> W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
-> Add descriptions to the Ocelot SoCs (VSC7514) helpers driver.
-> 
-> Signed-off-by: Breno Leitao <leitao@debian.org>
 
-Reviewed-by: Horatiu Vultur <horatiu.vultur@microchip.com>
 
-> ---
->  drivers/net/ethernet/mscc/ocelot.c | 1 +
->  1 file changed, 1 insertion(+)
+On 1/22/2024 10:27 PM, Ziyang Huang wrote:
+> 在 2024/1/23 0:03, Kathiravan Thirumoorthy 写道:
+>>
+>>
+>> On 1/21/2024 6:22 PM, Ziyang Huang wrote:
+>>> According to Qualcomm document:
+>>>    MP03.1 is RDP404
+>>>    RDP432 is MP03.5
+>>>
+>>> Signed-off-by: Ziyang Huang <hzyitc@outlook.com>
+>>> ---
+>>>   arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts | 2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts 
+>>> b/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
+>>> index 074b78d7939c..f7e8b5af6b44 100644
+>>> --- a/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
+>>> +++ b/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
+>>> @@ -1,6 +1,6 @@
+>>>   // SPDX-License-Identifier: GPL-2.0+ OR BSD-3-Clause
+>>>   /*
+>>> - * IPQ5018 MP03.1-C2 board device tree source
+>>> + * IPQ5018 MP03.5-C2 board device tree source
+>>
+>>
+>> I suggest to use the RDP number itself here...
 > 
-> diff --git a/drivers/net/ethernet/mscc/ocelot.c b/drivers/net/ethernet/mscc/ocelot.c
-> index 56ccbd4c37fe..12999d9be3af 100644
-> --- a/drivers/net/ethernet/mscc/ocelot.c
-> +++ b/drivers/net/ethernet/mscc/ocelot.c
-> @@ -3078,4 +3078,5 @@ void ocelot_deinit_port(struct ocelot *ocelot, int port)
->  }
->  EXPORT_SYMBOL(ocelot_deinit_port);
-> 
-> +MODULE_DESCRIPTION("Ocelot SoCs (VSC7514) helpers");
->  MODULE_LICENSE("Dual MIT/GPL");
-> --
-> 2.39.3
-> 
+> Here is an embarrassing thing. AP/MPxx.x name is more common in the 
+> entire QSDK while RDP number is almost never appeared.
 
--- 
-/Horatiu
+
+That was the case but not anymore. We decided to switch to RDP number 
+instead of AP/XXXX.. So it would better if we stick with RDP number for 
+consistency.
+
+> 
+>>
+>>
+>>>    *
+>>>    * Copyright (c) 2023 The Linux Foundation. All rights reserved.
+>>>    */
+> 
 
