@@ -1,92 +1,39 @@
-Return-Path: <linux-kernel+bounces-35118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCA16838C61
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:46:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA73C838C65
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:46:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A0FD1F2915A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:46:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 416EEB257D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:46:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A8075C8F0;
-	Tue, 23 Jan 2024 10:45:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iIQj/O7K";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wVhHOvKK";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iIQj/O7K";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wVhHOvKK"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1FDB5C8EA
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 10:45:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 101635D8F1;
+	Tue, 23 Jan 2024 10:45:27 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E6075D725;
+	Tue, 23 Jan 2024 10:45:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706006721; cv=none; b=Bp5uyZIOIZG1zYNuSEjKCm5JazYGGI3kSjOy7ZSh36rum1V+95zB/YwejvGWMwyPOO7j6Xzb8QBFZif4Fu6YyBkpv/SsILXq9PoW9d0oYtOG0TqCLvYMg9Rp2e/pESrJEC01v6CU858dtgJb8U+bt2UcLhBk8iHIHNOtg7HadAw=
+	t=1706006726; cv=none; b=OOEhna3Th67aKTWyX++KE9gE26W8wdUNjEGVzf178DOASYRsDCSS4KAeNzQ6eBdyKmzXrKGvS+GbKvenRZgo9RSEpPqokfzWG3GDpAkBAfcVndYKUMZn6OFN4tF9WhYnE/oPR/boHXEaGTFXqt3E+qaLY6K+rIkCAW99RNuq/gQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706006721; c=relaxed/simple;
-	bh=2eMXaf6dULvi1BWEq+jE8JXbIt+P5SulgaYJpE7SUZA=;
+	s=arc-20240116; t=1706006726; c=relaxed/simple;
+	bh=Bv9tpEfskUzoIjJvF99P42BdqqUjJxhrXzxON1qU9Y0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eEMrvSVM3e9qpMcQuEnEj8/KHRqDH4yyjoMdfDqwNIvrAffp6dClbM9JPV0DFkrDI9OqnV8IVO4GEDiJkEW8rhtN4po28i+IH3guOsaElvBS5rM01rH4NNWlZYqY38KavW/dWkbVmZRvrs70Pqpp8G7Ro5g+X+r+JioNKQNti8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iIQj/O7K; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wVhHOvKK; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iIQj/O7K; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wVhHOvKK; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 5570622010;
-	Tue, 23 Jan 2024 10:45:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706006717; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mih7XdVI+Iwz3YuWyyMA7tblNDBveldYhxzqx9RD90Y=;
-	b=iIQj/O7K8yGgQSqQeR6sEk000e9de5gXOXyGQbA8pwWDd3iIxOXA5s+0Yod6Eh046KRsfS
-	Xi4E1p6hvBh3d7fDd8GHhq20NNqQr6yv/Iu197BOA9LlkcGFOuIumRsk2IWe4vIIMqO4Cy
-	65PPj+p8/y5mMBxias2hZ9NdvWD5iIk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706006717;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mih7XdVI+Iwz3YuWyyMA7tblNDBveldYhxzqx9RD90Y=;
-	b=wVhHOvKKsrooVKt+L5rDFHhLtuVtzVZBeivax6H3VIM9LV6V6lvE1lwy911jTF+pLuzj5R
-	R8kIY5Qd2lIAWMAQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706006717; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mih7XdVI+Iwz3YuWyyMA7tblNDBveldYhxzqx9RD90Y=;
-	b=iIQj/O7K8yGgQSqQeR6sEk000e9de5gXOXyGQbA8pwWDd3iIxOXA5s+0Yod6Eh046KRsfS
-	Xi4E1p6hvBh3d7fDd8GHhq20NNqQr6yv/Iu197BOA9LlkcGFOuIumRsk2IWe4vIIMqO4Cy
-	65PPj+p8/y5mMBxias2hZ9NdvWD5iIk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706006717;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mih7XdVI+Iwz3YuWyyMA7tblNDBveldYhxzqx9RD90Y=;
-	b=wVhHOvKKsrooVKt+L5rDFHhLtuVtzVZBeivax6H3VIM9LV6V6lvE1lwy911jTF+pLuzj5R
-	R8kIY5Qd2lIAWMAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3378A13786;
-	Tue, 23 Jan 2024 10:45:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id qjo7DL2Yr2UrHwAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Tue, 23 Jan 2024 10:45:17 +0000
-Message-ID: <05413732-9225-4b3b-8d3e-d5fc7eb4d796@suse.cz>
-Date: Tue, 23 Jan 2024 11:45:16 +0100
+	 In-Reply-To:Content-Type; b=iZK2JyGIIpnRmfrwT66PCzyCUb60d2s8X3gbMFQueN9FvC89Kldl3nnyEvBwdESPZmmLBy4BIBZb/qy7SMIm1bAz0IZEMU66Ds1dvel/vDD1/I0eXuPhjnvB+ZxnRfjQ6U1Bi/MKCMX7zlxOYf+hzUNsKCG6vV+jt3QE3o9wjuE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 689251FB;
+	Tue, 23 Jan 2024 02:46:08 -0800 (PST)
+Received: from [10.57.77.165] (unknown [10.57.77.165])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4FFE73F5A1;
+	Tue, 23 Jan 2024 02:45:19 -0800 (PST)
+Message-ID: <3d6a5076-48d3-4790-a507-d3b1584e8587@arm.com>
+Date: Tue, 23 Jan 2024 10:45:17 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,130 +41,140 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/3] mm/slub: directly load freelist from cpu partial
- slab in the likely case
-Content-Language: en-US
-To: Chengming Zhou <zhouchengming@bytedance.com>,
- Joonsoo Kim <iamjoonsoo.kim@lge.com>, David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>, Pekka Enberg
- <penberg@kernel.org>, Christoph Lameter <cl@linux.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20240117-slab-misc-v2-0-81766907896e@bytedance.com>
- <20240117-slab-misc-v2-1-81766907896e@bytedance.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240117-slab-misc-v2-1-81766907896e@bytedance.com>
+Subject: Re: [PATCH v1 07/11] mm/memory: factor out copying the actual PTE in
+ copy_present_pte()
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
+ Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, "David S. Miller"
+ <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
+References: <20240122194200.381241-1-david@redhat.com>
+ <20240122194200.381241-8-david@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240122194200.381241-8-david@redhat.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="iIQj/O7K";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=wVhHOvKK
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.00 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[10];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FREEMAIL_TO(0.00)[bytedance.com,lge.com,google.com,linux.dev,kernel.org,linux.com,linux-foundation.org,gmail.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-3.00)[100.00%];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: -3.00
-X-Rspamd-Queue-Id: 5570622010
-X-Spam-Flag: NO
 
-On 1/23/24 10:33, Chengming Zhou wrote:
-> The likely case is that we get a usable slab from the cpu partial list,
-> we can directly load freelist from it and return back, instead of going
-> the other way that need more work, like reenable interrupt and recheck.
+On 22/01/2024 19:41, David Hildenbrand wrote:
+> Let's prepare for further changes.
 > 
-> But we need to remove the "VM_BUG_ON(!new.frozen)" in get_freelist()
-> for reusing it, since cpu partial slab is not frozen. It seems
-> acceptable since it's only for debug purpose.
-> 
-> And get_freelist() also assumes it can return NULL if the freelist is
-> empty, which is not possible for the cpu partial slab case, so we
-> add "VM_BUG_ON(!freelist)" after get_freelist() to make it explicit.
-> 
-> There is some small performance improvement too, which shows by:
-> perf bench sched messaging -g 5 -t -l 100000
-> 
->             mm-stable   slub-optimize
-> Total time      7.473    7.209
-> 
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-
-I'm including the series to slab/for-6.9/optimize-get-freelist and
-slab/for-next, thanks!
+Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
 
 > ---
->  mm/slub.c | 21 +++++++++++----------
->  1 file changed, 11 insertions(+), 10 deletions(-)
+>  mm/memory.c | 60 ++++++++++++++++++++++++++++-------------------------
+>  1 file changed, 32 insertions(+), 28 deletions(-)
 > 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 2ef88bbf56a3..fda402b2d649 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -3326,7 +3326,6 @@ static inline void *get_freelist(struct kmem_cache *s, struct slab *slab)
->  		counters = slab->counters;
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 7e1f4849463aa..2aa2051ee51d3 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -930,6 +930,29 @@ copy_present_page(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma
+>  	return 0;
+>  }
 >  
->  		new.counters = counters;
-> -		VM_BUG_ON(!new.frozen);
->  
->  		new.inuse = slab->objects;
->  		new.frozen = freelist != NULL;
-> @@ -3498,18 +3497,20 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
->  
->  		slab = slub_percpu_partial(c);
->  		slub_set_percpu_partial(c, slab);
-> -		local_unlock_irqrestore(&s->cpu_slab->lock, flags);
-> -		stat(s, CPU_PARTIAL_ALLOC);
->  
-> -		if (unlikely(!node_match(slab, node) ||
-> -			     !pfmemalloc_match(slab, gfpflags))) {
-> -			slab->next = NULL;
-> -			__put_partials(s, slab);
-> -			continue;
-> +		if (likely(node_match(slab, node) &&
-> +			   pfmemalloc_match(slab, gfpflags))) {
-> +			c->slab = slab;
-> +			freelist = get_freelist(s, slab);
-> +			VM_BUG_ON(!freelist);
-> +			stat(s, CPU_PARTIAL_ALLOC);
-> +			goto load_freelist;
->  		}
->  
-> -		freelist = freeze_slab(s, slab);
-> -		goto retry_load_slab;
-> +		local_unlock_irqrestore(&s->cpu_slab->lock, flags);
+> +static inline void __copy_present_pte(struct vm_area_struct *dst_vma,
+> +		struct vm_area_struct *src_vma, pte_t *dst_pte, pte_t *src_pte,
+> +		pte_t pte, unsigned long addr)
+> +{
+> +	struct mm_struct *src_mm = src_vma->vm_mm;
 > +
-> +		slab->next = NULL;
-> +		__put_partials(s, slab);
->  	}
->  #endif
+> +	/* If it's a COW mapping, write protect it both processes. */
+> +	if (is_cow_mapping(src_vma->vm_flags) && pte_write(pte)) {
+> +		ptep_set_wrprotect(src_mm, addr, src_pte);
+> +		pte = pte_wrprotect(pte);
+> +	}
+> +
+> +	/* If it's a shared mapping, mark it clean in the child. */
+> +	if (src_vma->vm_flags & VM_SHARED)
+> +		pte = pte_mkclean(pte);
+> +	pte = pte_mkold(pte);
+> +
+> +	if (!userfaultfd_wp(dst_vma))
+> +		pte = pte_clear_uffd_wp(pte);
+> +
+> +	set_pte_at(dst_vma->vm_mm, addr, dst_pte, pte);
+> +}
+> +
+>  /*
+>   * Copy one pte.  Returns 0 if succeeded, or -EAGAIN if one preallocated page
+>   * is required to copy this pte.
+> @@ -939,16 +962,16 @@ copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+>  		 pte_t *dst_pte, pte_t *src_pte, unsigned long addr, int *rss,
+>  		 struct folio **prealloc)
+>  {
+> -	struct mm_struct *src_mm = src_vma->vm_mm;
+> -	unsigned long vm_flags = src_vma->vm_flags;
+>  	pte_t pte = ptep_get(src_pte);
+>  	struct page *page;
+>  	struct folio *folio;
 >  
-> 
+>  	page = vm_normal_page(src_vma, addr, pte);
+> -	if (page)
+> -		folio = page_folio(page);
+> -	if (page && folio_test_anon(folio)) {
+> +	if (unlikely(!page))
+> +		goto copy_pte;
+> +
+> +	folio = page_folio(page);
+> +	if (folio_test_anon(folio)) {
+>  		/*
+>  		 * If this page may have been pinned by the parent process,
+>  		 * copy the page immediately for the child so that we'll always
+> @@ -963,34 +986,15 @@ copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+>  						 addr, rss, prealloc, page);
+>  		}
+>  		rss[MM_ANONPAGES]++;
+> -	} else if (page) {
+> +		VM_WARN_ON_FOLIO(PageAnonExclusive(page), folio);
+> +	} else {
+>  		folio_get(folio);
+>  		folio_dup_file_rmap_pte(folio, page);
+>  		rss[mm_counter_file(page)]++;
+>  	}
+>  
+> -	/*
+> -	 * If it's a COW mapping, write protect it both
+> -	 * in the parent and the child
+> -	 */
+> -	if (is_cow_mapping(vm_flags) && pte_write(pte)) {
+> -		ptep_set_wrprotect(src_mm, addr, src_pte);
+> -		pte = pte_wrprotect(pte);
+> -	}
+> -	VM_BUG_ON(page && folio_test_anon(folio) && PageAnonExclusive(page));
+> -
+> -	/*
+> -	 * If it's a shared mapping, mark it clean in
+> -	 * the child
+> -	 */
+> -	if (vm_flags & VM_SHARED)
+> -		pte = pte_mkclean(pte);
+> -	pte = pte_mkold(pte);
+> -
+> -	if (!userfaultfd_wp(dst_vma))
+> -		pte = pte_clear_uffd_wp(pte);
+> -
+> -	set_pte_at(dst_vma->vm_mm, addr, dst_pte, pte);
+> +copy_pte:
+> +	__copy_present_pte(dst_vma, src_vma, dst_pte, src_pte, pte, addr);
+>  	return 0;
+>  }
+>  
 
 
