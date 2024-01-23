@@ -1,287 +1,171 @@
-Return-Path: <linux-kernel+bounces-35228-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21B9D838E24
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:05:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 992FC838E2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:09:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A56C21F226F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:05:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51CFFB21F34
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:08:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD55A5D91B;
-	Tue, 23 Jan 2024 12:05:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF9D05DF0E;
+	Tue, 23 Jan 2024 12:08:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="KnVGmoN+"
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="b88dfteY"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2066.outbound.protection.outlook.com [40.107.93.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 409B15C61A
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 12:05:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706011542; cv=none; b=iv1PlIRmKuParRRocGS+sfVWE6ZTGJclkxmCf+f1+2a2rXeQlRn7vOOVHklZlBsjip0FP3HOy8v6a0e4gs3F16mTLTvzQzxA6oOojfOJhcD3tUKi8YgcpJjtVqUKH8NNgoT3xKPJY4VMder90Zaf2P64+YSSAQhr14a00vYwYxk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706011542; c=relaxed/simple;
-	bh=W8vtg2/UqbJFkSl9gks8oPIFwKx3vzj5iYyGfCEpmwU=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=KYymRGXjMCj2wJGlwgTZZWZT9+abifm10ifC62MbJ766XD28MWYQzXfmWSicUuUGrOmOwCv24mCN9rFxOOCExlork+wondqkLOFR1uaah2O0tSKqC1tJLwYCICwfw4Ier0/sCOJbPTgnhsxCmOI13t4PFN84WY1Ucc3OJ/U78Ew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=KnVGmoN+; arc=none smtp.client-ip=93.104.207.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1706011539; x=1737547539;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=QyowHaKSq5r48J0lIW2adI/3JjSI0PpbZix4J7mH2Dw=;
-  b=KnVGmoN+NwnR3hyfwDeu6qG82+6ZAV5Ssg29X1EiqONCAF7NMWaIuKNP
-   yIxgPioytIa0pXl66ZHPJZkTMkXsl0/qjRrrx4jl8n6s546dEeOJsffLe
-   1J73jTpr9qMj3V2AYGcoWf/n0FvUOuRj+o2zIzna2SH9uGrRv7lSTJ4mX
-   C/KzQavGVqY/LL4ZNNMGpbax5zQg0n+wBw+P37EB//+eHq8d/1Cb7TRlO
-   zPAfHWfj3UHl3XmFzhZ0LgscEGe99hw/FfKiz0nRfdUua4xEQvbDVUeYK
-   gynOChjpQwQB8jSJDIsmepz96DRXz0PXkNzEZEJj8lratAP6tZxBQ+fM3
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.05,214,1701126000"; 
-   d="scan'208";a="35030276"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 23 Jan 2024 13:05:31 +0100
-Received: from [192.168.153.128] (SCHIFFERM-M3.tq-net.de [10.121.49.135])
-	by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 3CBFC280075;
-	Tue, 23 Jan 2024 13:05:31 +0100 (CET)
-Message-ID: <effe9e2c56baca76cbef09b0262c246478670bc2.camel@ew.tq-group.com>
-Subject: Re: [PATCH] powerpc/6xx: set High BAT Enable flag on G2 cores
-From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Nicholas Piggin <npiggin@gmail.com>, "Aneesh Kumar K.V"
- <aneesh.kumar@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, 
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux@ew.tq-group.com" <linux@ew.tq-group.com>,  Michael Ellerman
- <mpe@ellerman.id.au>
-Date: Tue, 23 Jan 2024 13:05:30 +0100
-In-Reply-To: <f8c2f1c8-0b43-47c6-9359-9aeeb14863eb@csgroup.eu>
-References: <20231221124538.159706-1-matthias.schiffer@ew.tq-group.com>
-	 <2fad9563-09ee-4017-8a67-5958475d56c8@csgroup.eu>
-	 <b4eae5a8f451a3d253521a61b9625e3d7634f430.camel@ew.tq-group.com>
-	 <ad3d0d4d-f63b-4704-b829-e630a69a6cf3@csgroup.eu>
-	 <5610a6223b54a845185f28f54999ad72269b72f5.camel@ew.tq-group.com>
-	 <f8c2f1c8-0b43-47c6-9359-9aeeb14863eb@csgroup.eu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21CAB14A96;
+	Tue, 23 Jan 2024 12:08:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.66
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706011723; cv=fail; b=uB7Aec2ADq7+NCAmXZXvzJO9fO4L6rbVTQ3h5h0MY5B7aE4Rn2CR6tXQIsjWog/TtnIwPtl7tQ6y0Vb/Rqwhr077Pzx5YLK56TEx4ypqASu86ZaFS7ekLwXMbkMjG8HdR84to1dRPAfcs1bMfqFg7ofi67NZ+rIoz/f22TLoTLI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706011723; c=relaxed/simple;
+	bh=wrbC6et2U52n8l5E9onDFYPfd7efqVlBviIxkAk1lFs=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=RFme1RfPDTR7/ZAofZiS6lbbT7PW25d8kAKH9XNTk7rruldtx5i7skyk1BK+l/9TKfDl3ENHkMuwcmwGKUpFLnlDO5QGKjzQQZqxRz6ZxJXLG3QkE4b6X26St8Zy2fbyAxGFIdtpZbna9zq8ptiA71cqy01XJmu6pZ0t9VZA5y8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=b88dfteY; arc=fail smtp.client-ip=40.107.93.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dkOGfGI6Y784G67WB/ZjOKU/F57m24lh4jdaDA4x2JXRNEBPn6gVAoMTDmmNgk3xyhw62wkgCPjeXYscIusI27GSk13JW2E6AXhHgbnpkJAShEAeu/8tTrDbfPcq5D8y1W9i1iasNj/rD4oW89cGz9gyUXVVlyIFlR29ma6Yd/rKF0ygDZ2YGkfDi5q82C5jShAn5qE+RBYSdz82w4P2PnQ3hdyBomh/i3RJyg6FXYBKStYuzVQrHHVNtJNnF+UX0lQ7wqxgdTjugv28gDRNeifbZP1UZvsw/5sXkcR3hISGg71HLF/Vo3n4TA3/OD9nDgCRNBfr2bAjIOsFHMEDUQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wrbC6et2U52n8l5E9onDFYPfd7efqVlBviIxkAk1lFs=;
+ b=Dm5abzNZ18FakzfjvdMWTumFsDK9NMgLsTNPu424fWvSw5X0T/sPQp0dW8K1F8rWZoXF28EbePhhG+uWX1Vb9E/VtFvCGPirG0zrTQxNrgnbozjQEDmhGsrCIbSUDA96UHsmCoWr3L/Dj4b6re7MPRV/3l8j1SKAVdj9FwFl1sih1MrgEDz/JbPDEfyUEisnqsJ5CODFiIkRZyl5X+IlkZP4WnfdvhG1Az6IgnosrizXLd4ZMcgCcMy/MDxquE8Hu7ynb8uOW9kjbki68UemoxKBnifJFKOK8sv/wayLWrCspyxmCy8VHOxq7V1uHgLnbMzHCXYQavznTSU5DXgiBA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wrbC6et2U52n8l5E9onDFYPfd7efqVlBviIxkAk1lFs=;
+ b=b88dfteY8WebwyiVuUERwbUDSpj4NONlQ1EedF5PbT3hr/hE+WXGGIe22vcCTmFiSdct/ip9IP69rmH22J1rKQultdAT6v1bdCYnZ1hr5lTxcj/Kyl74yEHWD8xwZAYu8axGYtJAyMz1OIqIuMn4py4QYScsI6HaA0dij74HngqMS9KG77sYwFEoXolifZK+zZhocGRo82pNmXZx4XtUzYy3TLdR/B3XsUMRS/vW9dJ7KZtv/SZEPiAa0KV25NHT44ObKWbq787FljTMb9q6fMA2kRcrf7Ami7nQutrbIVRl13EYjQHb3kSgfkVQZzV17Ac87eeAESYlyKWm6gMqng==
+Received: from DM6PR12MB4516.namprd12.prod.outlook.com (2603:10b6:5:2ac::20)
+ by SN7PR12MB7855.namprd12.prod.outlook.com (2603:10b6:806:343::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.37; Tue, 23 Jan
+ 2024 12:08:37 +0000
+Received: from DM6PR12MB4516.namprd12.prod.outlook.com
+ ([fe80::fa7e:d2b7:5f80:2dd4]) by DM6PR12MB4516.namprd12.prod.outlook.com
+ ([fe80::fa7e:d2b7:5f80:2dd4%5]) with mapi id 15.20.7202.034; Tue, 23 Jan 2024
+ 12:08:37 +0000
+From: Danielle Ratson <danieller@nvidia.com>
+To: Jakub Kicinski <kuba@kernel.org>
+CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "davem@davemloft.net"
+	<davem@davemloft.net>, "edumazet@google.com" <edumazet@google.com>,
+	"pabeni@redhat.com" <pabeni@redhat.com>, "corbet@lwn.net" <corbet@lwn.net>,
+	"linux@armlinux.org.uk" <linux@armlinux.org.uk>, "sdf@google.com"
+	<sdf@google.com>, "kory.maincent@bootlin.com" <kory.maincent@bootlin.com>,
+	"maxime.chevallier@bootlin.com" <maxime.chevallier@bootlin.com>,
+	"vladimir.oltean@nxp.com" <vladimir.oltean@nxp.com>,
+	"przemyslaw.kitszel@intel.com" <przemyslaw.kitszel@intel.com>,
+	"ahmed.zaki@intel.com" <ahmed.zaki@intel.com>, "richardcochran@gmail.com"
+	<richardcochran@gmail.com>, "shayagr@amazon.com" <shayagr@amazon.com>,
+	"paul.greenwalt@intel.com" <paul.greenwalt@intel.com>, "jiri@resnulli.us"
+	<jiri@resnulli.us>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, mlxsw
+	<mlxsw@nvidia.com>, Petr Machata <petrm@nvidia.com>, Ido Schimmel
+	<idosch@nvidia.com>
+Subject: RE: [RFC PATCH net-next 8/9] ethtool: cmis_fw_update: add a layer for
+ supporting firmware update using CDB
+Thread-Topic: [RFC PATCH net-next 8/9] ethtool: cmis_fw_update: add a layer
+ for supporting firmware update using CDB
+Thread-Index: AQHaTQ+JuBaUr5zIUk25fyEO1jnyhLDm05uAgAB74VA=
+Date: Tue, 23 Jan 2024 12:08:37 +0000
+Message-ID:
+ <DM6PR12MB45169D3312CEF3324B95B1CBD8742@DM6PR12MB4516.namprd12.prod.outlook.com>
+References: <20240122084530.32451-1-danieller@nvidia.com>
+	<20240122084530.32451-9-danieller@nvidia.com>
+ <20240122204435.5a72b485@kernel.org>
+In-Reply-To: <20240122204435.5a72b485@kernel.org>
+Accept-Language: he-IL, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM6PR12MB4516:EE_|SN7PR12MB7855:EE_
+x-ms-office365-filtering-correlation-id: a232e561-74e5-4551-a12b-08dc1c0c07f6
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ q875LooBo98/oBKTf3Qn8LJdQbN88fTJy7sJwkrV0V+L1a7PdA0/KDwk4y99mvvt/dlIGV8ZLTGUOPjrG/tS6nx9CzqSYwBJ9jwmt2XPyar5EX8veJiPX+ivbpV2vYgAdIqeDfLwUQ9yup/w1WN5mCZyriI2pMbtzyvLKtJFhIVLyQNAHzqvaC4Naekz/B0fqjmY7qs+IxBthAfU9czW9P1TBEWVSqRmVADn3orO0kDviecvRQeRfiiS3vIUqSThedXYnqCJX+NwiRLZYMgORAdq0rDjyz+8bP7PiI2UaRjMgCRuW9736LMYVxd9gNxPLuPuIuYOsMb3aD2ehtCSl19m+0P87neLBXdhpepbH8teb8qO9v9BYlnYPPVFjO5/sXXthLP9dyoTEEVMdBHrXwYt3DUtgm7XLlEQWvQUfMED/sMfGHEltReAjc4O7CYm2dcqZoR8j7G06SKLWHFCtTSW/Sna+QC0/rPqRL8cIrUugagXRpKVgvV7un6dZbZOn4R1gZhct7KQy/NnsVr2BEbCBoYbePUR7q4mrdgJDJ0Vm+Vuul9ZgSDSgX8+kJe2aY4sXpOwPNyaGScc2y/Qu8D4I/FQ2rqeNbic9aetiQnwVWEJQSSCnP2u3Z03NYJx
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4516.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(346002)(396003)(366004)(136003)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(55016003)(83380400001)(76116006)(33656002)(41300700001)(38070700009)(86362001)(38100700002)(122000001)(26005)(107886003)(9686003)(7696005)(6916009)(5660300002)(478600001)(66446008)(2906002)(66946007)(66476007)(64756008)(316002)(54906003)(66556008)(6506007)(71200400001)(8676002)(8936002)(4744005)(4326008)(7416002)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?VnUwbmlWam1RcTR0RUdPSkx2dkw3UGhYRlIzV2xKY3NLQmdlQVU0MzZXYVdz?=
+ =?utf-8?B?Z25iTVRMYVp0OTM4TzBPVUtIMk9QS2hQRWN1K1ZMMXhFVzV5blY0TGwxVyto?=
+ =?utf-8?B?dXh1L2JOUFF3a2JYNi9nYlZ6YTN1RUZrWGh5ZDBGK0VTb3BVYmJuREx6cE5Z?=
+ =?utf-8?B?akp1NUhxUkZFREJ5Y0txc0svTXNrR3lQWmVMSExnU2dISVJqaUZOUVM3aVBE?=
+ =?utf-8?B?SXI3dlBvbzFlTmwxeUVVbGY3ZEhNMHRTVUVwSmJXTW9ITnNZT1RaeWYwMjNa?=
+ =?utf-8?B?dEYwYUJPZVF1Nk9ST0RQU1hDSk9XS2tGbU1JNWdON2dua3lhTnhFRkh1RHBL?=
+ =?utf-8?B?b0pYdU1MZWlPR1NXWWR4OWlKRENnODd6c3Jxa0E0SDZCNDRodkpERWgwQUFI?=
+ =?utf-8?B?dkIxOVdaSlhDTjVJOG9yR1J4TzhqT21BM1ZIV3NWUW1JVm1PcmpZdXdWQ3Ur?=
+ =?utf-8?B?dVRtSlUwRmplSWVvb3lSL2doQVBOUFoyS08zVVR4MUpwM1V4M2ZjZXNIcThy?=
+ =?utf-8?B?L2s2azdQT1djZWoxVFhBZFBJVWlnc2kzNmk3aWFGdUFJdUJXajlyRk1NVWZZ?=
+ =?utf-8?B?NjJmZ1BHMDlFdzZxcHRNak40NDhVN0J4UDU1enBNUzBSNWg4NlJGNjExMHg0?=
+ =?utf-8?B?SEtSd2JVeldFNXZXTEVTMUJpUlVLeFVvTWdkdUpVU1ptZ3JNQTB4T3NqM0hY?=
+ =?utf-8?B?MHRjZHpXT0JHbklBaUtxb1V4MWphTnJ4bVFRVkliU1p4RW0ybHZSNzdiR2F3?=
+ =?utf-8?B?Wi9RbGs5NFNGMnVVeGpYTFZhblduM3hNUkR2a1phZWNQRnNjYmF1Z01ISkc4?=
+ =?utf-8?B?bkpLRjdOWjZjbytnZmxDRVpTejVSWXVEQ0hOUGRaNFEyYUVyMXVOMmJMNFNK?=
+ =?utf-8?B?RlgybUtad2htRkZtUmlBbVVCU1Y3RmNrOU5DZWNVNDhXL3V4Qk1GcGxSbkp6?=
+ =?utf-8?B?TUd2RlczRU95Y3Z0ZGE2bmRBQUc0a2R0K0FGOEQ2WnBzeE51VjJSWkJZb21E?=
+ =?utf-8?B?eEZXRGJOdkFZZ3N6VkNjOFdFemtDZzFWOXpKcG8rZXhtZitaSTJ5UkJza24x?=
+ =?utf-8?B?MGtkT0tEK1pPMEFtRUJUVkJ2ZkpYdVF2UUVFaGo1QkJqVU00WEsvS0x2aWJn?=
+ =?utf-8?B?Q1kvUHJiQjN6MWlsaXpKeEhUbUp1OURvY3pYVE8rNmlUNi9yN1JTMndaQVho?=
+ =?utf-8?B?N0xsTWVZNjBUaGErSGFIWTd4NGhXTC9BSE5pL0djOEUvSWtDakI0VGZwb3gw?=
+ =?utf-8?B?Q1ZoeXFWNW1kRGM4MVo1b1RZVHA4YWFwMURndExUWGVXUVBpK2l6YWdMNGVs?=
+ =?utf-8?B?cDBMTUppTUxOSk1ZaFdtUG9pWW9uTURHYmVjZWRkOWpWa29YTVJQQWdZR1FE?=
+ =?utf-8?B?NEVWUVdxUWtYLytlN1NDd1VmMHhmNk4rd2ZZM0NmVzRhNkhWcjQ2ek0yNkpn?=
+ =?utf-8?B?M2VtSGI3NlRGRTRpbnNLTkUxaWE5Tjc2eEpENk56OEFiSDZWZ2lSS0dzRmJh?=
+ =?utf-8?B?dXhLUVF6MkxoRU1sVjRqdWJUbXB2WjRUd281K3hXdXBRdzgzWDF0bUJsNTR0?=
+ =?utf-8?B?Si80VUxFSmxhUEljcTEzM3JZK0tYZHNTT2o2eGJUcjJUbWFPVjFwT1JsTnE0?=
+ =?utf-8?B?TFZ5MFpoYVVjRVBYeERROGhodWs5U3V3NG95WmxQT2E4N1RMU050RVdCMjV6?=
+ =?utf-8?B?ZnZuM3V2ZzVZQ0hkRnhtZEhvdURYQlNWODBGTHZyTjMyK3hUblAxWFpncEhB?=
+ =?utf-8?B?RzExUEJzenhJYjQ0aDQxaHlGTzVSRTdXTzM1TitSdWRlVnMwNGsyM3BXTWRQ?=
+ =?utf-8?B?aENuQzNMUGk1SXFoWFVzWXUweDlNM3RpNXBiVTQyMS9sMmpJYW55UFhGN0FN?=
+ =?utf-8?B?cWVwTlMzYTN5amRaUkM3NCt4VlRSeVNpMTRxb2xqTEtTUWt1KzNOQ2VLWXYx?=
+ =?utf-8?B?Vm1XVmF2WS9mMVJWS1V6bzVOZWxhRFFtZkRPdVVkZlhXV3Q2anpFaTZUU3BK?=
+ =?utf-8?B?eFp2ek9VZ3lLZTRLeHNNcElkS3ZNeGs3dGRzT0dXN3Erc1hodkxQQU1JM2Rw?=
+ =?utf-8?B?bUxXeUZlTElJMHZ1MENiQXhoRHl0ZVpoNG9JRjNZTlFFRFlCaDZ2Z1NJZ3I2?=
+ =?utf-8?Q?KFZvygoQfhCWJ3geh4S9nClFd?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4516.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a232e561-74e5-4551-a12b-08dc1c0c07f6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jan 2024 12:08:37.8301
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: LOXyPAzTTDILkuggtxPFRlBIUAsgatkSi/IG/c7dflWjBM9oGQuSNwAz3d3oqPY/dDYs/X0ZVO/3VSN/oUOMqg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7855
 
-On Fri, 2024-01-19 at 13:53 +0000, Christophe Leroy wrote:
->=20
-> Le 19/01/2024 =C3=A0 14:41, Matthias Schiffer a =C3=A9crit=C2=A0:
-> > >=20
-> > > Thinking about it once more, can we do even more simple ?
-> > >=20
-> > > Why do we need that __setup_cpu_g2() at all ?
-> > >=20
-> > > You could just add the following into __set_cpu_603()
-> > >=20
-> > > diff --git a/arch/powerpc/kernel/cpu_setup_6xx.S
-> > > b/arch/powerpc/kernel/cpu_setup_6xx.S
-> > > index c67d32e04df9..7b41e3884866 100644
-> > > --- a/arch/powerpc/kernel/cpu_setup_6xx.S
-> > > +++ b/arch/powerpc/kernel/cpu_setup_6xx.S
-> > > @@ -21,6 +21,11 @@ BEGIN_MMU_FTR_SECTION
-> > >        li      r10,0
-> > >        mtspr   SPRN_SPRG_603_LRU,r10           /* init SW LRU trackin=
-g */
-> > >    END_MMU_FTR_SECTION_IFSET(MMU_FTR_NEED_DTLB_SW_LRU)
-> > > +BEGIN_MMU_FTR_SECTION
-> > > +     mfspr   r11,SPRN_HID2_G2
-> > > +     oris    r11,r11,HID2_HBE_G2@h
-> > > +     mtspr   SPRN_HID2_G2,r11
-> > > +END_MMU_FTR_SECTION_IFSET(MMU_FTR_USE_HIGH_BATS)
-> > >=20
-> > >    BEGIN_FTR_SECTION
-> > >        bl      __init_fpu_registers
-> > > ---
-> > >=20
-> > > By the way, as your register is named SPRN_HID2_G2, the bit would bet=
-ter
-> > > be named HID2_G2_HBE instead of HID2_HBE_G2 I think.
-> >=20
-> > My intention was to keep this consistent with the SPRN_HID2_GEKKO defin=
-e.
->=20
-> I don't understand what you mean. I can't see any bits defined for=20
-> HID2_GEKKO.
->=20
-> What I see which is simitar is the definition of TSC register for CELL CP=
-U.
->=20
-> #define SPRN_TSC_CELL	0x399	/* Thread switch control on Cell */
-> #define   TSC_CELL_DEC_ENABLE_0	0x400000 /* Decrementer Interrupt */
-> #define   TSC_CELL_DEC_ENABLE_1	0x200000 /* Decrementer Interrupt */
-> #define   TSC_CELL_EE_ENABLE	0x100000 /* External Interrupt */
-> #define   TSC_CELL_EE_BOOST	0x080000 /* External Interrupt Boost */
->=20
->=20
-> They don't call it TSC_EE_BOOST_CELL or TSC_EE_ENABLE_CELL
-
-Ah sorry, I got things mixed up. Will change the define to HID2_G2_HBE (or =
-maybe HID_G2_LE_HBE?)
-in v2.
-
-Regards,
-Matthias
-
-
->=20
->=20
-> Christophe
->=20
-> >=20
-> > Regards,
-> > Matthias
-> >=20
-> >=20
-> >=20
-> >=20
-> > >=20
-> > > Christophe
-> > >=20
-> > > >=20
-> > > > >=20
-> > > > > > +
-> > > > > > +BEGIN_FTR_SECTION
-> > > > > > +       bl      __init_fpu_registers
-> > > > > > +END_FTR_SECTION_IFCLR(CPU_FTR_FPU_UNAVAILABLE)
-> > > > > > +       bl      setup_common_caches
-> > > > > > +       bl      setup_g2_hid2
-> > > > > > +       mtlr    r5
-> > > > > > +       blr
-> > > > > >=20
-> > > > > >     /* Enable caches for 603's, 604, 750 & 7400 */
-> > > > > >     SYM_FUNC_START_LOCAL(setup_common_caches)
-> > > > > > @@ -115,6 +129,16 @@ SYM_FUNC_START_LOCAL(setup_604_hid0)
-> > > > > >            blr
-> > > > > >     SYM_FUNC_END(setup_604_hid0)
-> > > > > >=20
-> > > > > > +/* Enable high BATs for G2 (G2_LE, e300cX) */
-> > > > > > +SYM_FUNC_START_LOCAL(setup_g2_hid2)
-> > > > > > +       mfspr   r11,SPRN_HID2_G2
-> > > > > > +       oris    r11,r11,HID2_HBE_G2@h
-> > > > > > +       mtspr   SPRN_HID2_G2,r11
-> > > > > > +       sync
-> > > > > > +       isync
-> > > > > > +       blr
-> > > > > > +SYM_FUNC_END(setup_g2_hid2)
-> > > > > > +
-> > > > > >     /* 7400 <=3D rev 2.7 and 7410 rev =3D 1.0 suffer from some
-> > > > > >      * erratas we work around here.
-> > > > > >      * Moto MPC710CE.pdf describes them, those are errata
-> > > > > > @@ -495,4 +519,3 @@ _GLOBAL(__restore_cpu_setup)
-> > > > > >            mtcr    r7
-> > > > > >            blr
-> > > > > >     _ASM_NOKPROBE_SYMBOL(__restore_cpu_setup)
-> > > > > > -
-> > > > > > diff --git a/arch/powerpc/kernel/cpu_specs_book3s_32.h b/arch/p=
-owerpc/kernel/cpu_specs_book3s_32.h
-> > > > > > index 3714634d194a1..83f054fcf837c 100644
-> > > > > > --- a/arch/powerpc/kernel/cpu_specs_book3s_32.h
-> > > > > > +++ b/arch/powerpc/kernel/cpu_specs_book3s_32.h
-> > > > > > @@ -69,7 +69,7 @@ static struct cpu_spec cpu_specs[] __initdata=
- =3D {
-> > > > > >                    .mmu_features           =3D MMU_FTR_USE_HIGH=
-_BATS,
-> > > > > >                    .icache_bsize           =3D 32,
-> > > > > >                    .dcache_bsize           =3D 32,
-> > > > > > -               .cpu_setup              =3D __setup_cpu_603,
-> > > > > > +               .cpu_setup              =3D __setup_cpu_g2,
-> > > > > >                    .machine_check          =3D machine_check_ge=
-neric,
-> > > > > >                    .platform               =3D "ppc603",
-> > > > > >            },
-> > > > > > @@ -83,7 +83,7 @@ static struct cpu_spec cpu_specs[] __initdata=
- =3D {
-> > > > > >                    .mmu_features           =3D MMU_FTR_USE_HIGH=
-_BATS,
-> > > > > >                    .icache_bsize           =3D 32,
-> > > > > >                    .dcache_bsize           =3D 32,
-> > > > > > -               .cpu_setup              =3D __setup_cpu_603,
-> > > > > > +               .cpu_setup              =3D __setup_cpu_g2,
-> > > > > >                    .machine_check          =3D machine_check_83=
-xx,
-> > > > > >                    .platform               =3D "ppc603",
-> > > > > >            },
-> > > > > > @@ -96,7 +96,7 @@ static struct cpu_spec cpu_specs[] __initdata=
- =3D {
-> > > > > >                    .mmu_features           =3D MMU_FTR_USE_HIGH=
-_BATS | MMU_FTR_NEED_DTLB_SW_LRU,
-> > > > > >                    .icache_bsize           =3D 32,
-> > > > > >                    .dcache_bsize           =3D 32,
-> > > > > > -               .cpu_setup              =3D __setup_cpu_603,
-> > > > > > +               .cpu_setup              =3D __setup_cpu_g2,
-> > > > > >                    .machine_check          =3D machine_check_83=
-xx,
-> > > > > >                    .platform               =3D "ppc603",
-> > > > > >            },
-> > > > > > @@ -109,7 +109,7 @@ static struct cpu_spec cpu_specs[] __initda=
-ta =3D {
-> > > > > >                    .mmu_features           =3D MMU_FTR_USE_HIGH=
-_BATS | MMU_FTR_NEED_DTLB_SW_LRU,
-> > > > > >                    .icache_bsize           =3D 32,
-> > > > > >                    .dcache_bsize           =3D 32,
-> > > > > > -               .cpu_setup              =3D __setup_cpu_603,
-> > > > > > +               .cpu_setup              =3D __setup_cpu_g2,
-> > > > > >                    .machine_check          =3D machine_check_83=
-xx,
-> > > > > >                    .num_pmcs               =3D 4,
-> > > > > >                    .platform               =3D "ppc603",
-> > > > > > @@ -123,7 +123,7 @@ static struct cpu_spec cpu_specs[] __initda=
-ta =3D {
-> > > > > >                    .mmu_features           =3D MMU_FTR_USE_HIGH=
-_BATS | MMU_FTR_NEED_DTLB_SW_LRU,
-> > > > > >                    .icache_bsize           =3D 32,
-> > > > > >                    .dcache_bsize           =3D 32,
-> > > > > > -               .cpu_setup              =3D __setup_cpu_603,
-> > > > > > +               .cpu_setup              =3D __setup_cpu_g2,
-> > > > > >                    .machine_check          =3D machine_check_83=
-xx,
-> > > > > >                    .num_pmcs               =3D 4,
-> > > > > >                    .platform               =3D "ppc603",
-> > > > > > --
-> > > > > > TQ-Systems GmbH | M=C3=BChlstra=C3=9Fe 2, Gut Delling | 82229 S=
-eefeld, Germany
-> > > > > > Amtsgericht M=C3=BCnchen, HRB 105018
-> > > > > > Gesch=C3=A4ftsf=C3=BChrer: Detlef Schneider, R=C3=BCdiger Stahl=
-, Stefan Schneider
-> > > > > > https://www.tq-group.com/
-> > > >=20
-> > > > --
-> > > > TQ-Systems GmbH | M=C3=BChlstra=C3=9Fe 2, Gut Delling | 82229 Seefe=
-ld, Germany
-> > > > Amtsgericht M=C3=BCnchen, HRB 105018
-> > > > Gesch=C3=A4ftsf=C3=BChrer: Detlef Schneider, R=C3=BCdiger Stahl, St=
-efan Schneider
-> > > > https://www.tq-group.com/
-> >=20
-> > --
-> > TQ-Systems GmbH | M=C3=BChlstra=C3=9Fe 2, Gut Delling | 82229 Seefeld, =
-Germany
-> > Amtsgericht M=C3=BCnchen, HRB 105018
-> > Gesch=C3=A4ftsf=C3=BChrer: Detlef Schneider, R=C3=BCdiger Stahl, Stefan=
- Schneider
-> > https://www.tq-group.com/
->=20
-
---=20
-TQ-Systems GmbH | M=C3=BChlstra=C3=9Fe 2, Gut Delling | 82229 Seefeld, Germ=
-any
-Amtsgericht M=C3=BCnchen, HRB 105018
-Gesch=C3=A4ftsf=C3=BChrer: Detlef Schneider, R=C3=BCdiger Stahl, Stefan Sch=
-neider
-https://www.tq-group.com/
+PiA+ICtlcnJfY29tbWl0X2ltYWdlOg0KPiA+ICtlcnJfcnVuX2ltYWdlOg0KPiA+ICtlcnJfZG93
+bmxvYWRfaW1hZ2U6DQo+ID4gK2Vycl9md19tbmdfZmVhdHVyZXNfZ2V0Og0KPiANCj4gbmFtZSBs
+YWJlbHMgYWZ0ZXIgdGhlIHRhcmdldA0KPiANCj4gPiArCWV0aHRvb2xfY21pc19jZGJfZmluaShj
+ZGIpOw0KPiA+ICtlcnJfY2RiX2luaXQ6DQo+ID4gKwlldGhubF9tb2R1bGVfZndfZmxhc2hfbnRm
+X2Vycihtb2R1bGVfZnctPmRldiwgTlVMTCk7DQo+ID4gK291dDoNCj4gPiArCW5ldGRldl9wdXQo
+bW9kdWxlX2Z3LT5kZXYsICZtb2R1bGVfZnctPmRldl90cmFja2VyKTsNCj4gPiArCW1vZHVsZV9m
+dy0+ZGV2LT5tb2R1bGVfZndfZmxhc2hfaW5fcHJvZ3Jlc3MgPSBmYWxzZTsNCj4gPiArCXJlbGVh
+c2VfZmlybXdhcmUobW9kdWxlX2Z3LT5mdyk7DQo+ID4gKwlrZnJlZShtb2R1bGVfZncpOw0KPiA+
+ICt9DQo+ID4gK0VYUE9SVF9TWU1CT0xfR1BMKGV0aHRvb2xfY21pc19md191cGRhdGUpOw0KPiAN
+Cj4gZG9lcyB0aGlzIHJlYWxseSBuZWVkIHRvIGJlIGV4cG9ydGVkPw0KDQpJdCBpcyBhY3R1YWxs
+eSBjYW4gYmUgZHJvcHBlZCBub3csIHRoYW5rcy4NCg==
 
