@@ -1,271 +1,286 @@
-Return-Path: <linux-kernel+bounces-36010-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36011-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73EFB839A12
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:13:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D91D6839A17
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:15:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7EB928AEAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:13:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80D90286F0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:15:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF8B285C46;
-	Tue, 23 Jan 2024 20:13:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7517785C45;
+	Tue, 23 Jan 2024 20:15:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AUFvj68+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AAjRDWIh"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C753150276;
-	Tue, 23 Jan 2024 20:13:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0C9482D8D
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 20:14:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706040798; cv=none; b=kS5og9xGRDPj34O5Y/nVQOmDpFqeNIaBaVMyekb8K9A8C53WA7JXwTC9kzW7OcT/57Lfgz4deVfVYXFX4wIjuNq56/ZHDiaQLc4/OkJYFjbNXVkmQG/nUvmCk4xEQHPztX2TmOGV3xm/7EPcSv8awMotX9afp209bHYQT7pnzm8=
+	t=1706040899; cv=none; b=aDmiOb2CVnLdns1nsW1AMZFjbqq64sg+Gb3T6L1z+Kepka+f6rAFFhVmIUtYZ+G0h3abBwHCLzj/ABaXjNYhSzSOXcnF2Hz9k+s/AspbJWhyhoPQNEd+Ufg1mNgVg1vN+3JzQdqEF67TqNffL9r2wp8rxRoGLYZxObpea60uZvs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706040798; c=relaxed/simple;
-	bh=pi03UgEe3I8Y1AABCY6ECn63w3R2NG8aaETp+FeROkc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VEnkSh2ctnxDGRJ4B6Rtpm1L4I5rKebbQVprpI+1qY5sGUdiXGk4k3QHWqCnuXvqrbNW3sMXOCAHNTRqgP/zOfPQrffpJVQ+8Em0ZRGvpEhR4QziPshegCiL6dYiFm0hB9hzm1nUIe+khtSu9HGKiPDdpGjuxtNtFCCQ04GLRwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AUFvj68+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6B9AC433C7;
-	Tue, 23 Jan 2024 20:13:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706040798;
-	bh=pi03UgEe3I8Y1AABCY6ECn63w3R2NG8aaETp+FeROkc=;
-	h=From:To:Cc:Subject:Date:From;
-	b=AUFvj68+PlEQlAL1OjBmIp7/r04ae7VChrDLYP72S6y8GORvuzyMiTOTENKNkhyNn
-	 QDDs9w+uNNifScWlw0xllKg+dV2ZFIuZy3+gdQYBtSeZllgI0osaFY2tv8DVzSI9sV
-	 pu/yQZZtCT6z25c6Z7KhWoHF3DUn33siUVsEQ65+Q3/JY0iOcBCE54+V57yKKy7bnK
-	 luCGR1/+k3JGUMdQ62k8qEy4eOiOtCjn3wO9IHGf950itCaCgwk4eSrQFrzASX15p+
-	 iyJzTIDg6zycFKTsgLt+8cl+AVVEkY/q3B+x/flk14z8kjTlkJAJA4l1GNlKIvFV0i
-	 LIKzxmw3R3ZRw==
-From: Roger Quadros <rogerq@kernel.org>
-To: nm@ti.com,
-	vigneshr@ti.com
-Cc: afd@ti.com,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	srk@ti.com,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Roger Quadros <rogerq@kernel.org>
-Subject: [PATCH v3] arm64: dts: ti: am642-evm: Add overlay for NAND expansion card
-Date: Tue, 23 Jan 2024 22:13:12 +0200
-Message-Id: <20240123201312.23187-1-rogerq@kernel.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706040899; c=relaxed/simple;
+	bh=fkuLTj+x9l6U+87QkBIz8izyeWsEZ16izfPMRKaFgJo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iPIPZFhWQbS731epur5fdtuoHNPPjwcAPcaPUZnTm1a4jR9Ul3yZc5LDwVg5Ry5R2zjhal/qwGzFpJbhu3OMS2nDjAHMlCY7SH6OKPcwLd5PYcjtSIv1L26etOFSc8Q5KPrugP9GFuKov4pfERq/Hk2rqH3D0X6EQDmkveptQu0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AAjRDWIh; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706040896;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=x8q0QE4RXreMrUY0KqZ16GPCZvSP52kIQEUXy5f60Hg=;
+	b=AAjRDWIhmorx4gBT77//wqlwkZ4IWViXqelgnzr62RoCdgK7d0DhKon5m1dkx5iDJp+FFb
+	aGEBcLwxnJeRfB+phpHy/jJS5HNdzOewktWxdGv+KCD0L90+XGgrrFmbKesF6xB4AL2s2A
+	6w8BxdhxaKeElM56t7Zq+v808cLvKe4=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-696-RU_0M471P5yK-2g2KJNC0g-1; Tue, 23 Jan 2024 15:14:54 -0500
+X-MC-Unique: RU_0M471P5yK-2g2KJNC0g-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3392c5e6dcdso1336026f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 12:14:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706040893; x=1706645693;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x8q0QE4RXreMrUY0KqZ16GPCZvSP52kIQEUXy5f60Hg=;
+        b=Y5v7G8aivjKqBA+0caVS5XBhqHLE4uxEc1p+r4eqISvecdek2POE87NG85WPrxSwT8
+         KgpSFYZIWarNhqtCnZfdaSNN6ZZXwre8yUqw35BS+xt60mQVoSR4G8X3qeYosQqb3hEg
+         SYNHIA6ts+UWI8WOZrRlgc6nY/HOx96Ry+7mIqwGVCran1Y8VM22qf3CxHOik1Pm1MZ/
+         VKqLO1jqirfY6UKbC/ETqrbrJQdUkb8l/bpzybpSYaSF21Dvl5EHAILJEk12IOn3ml5W
+         P9bVZKIXhkXtmjUArvys7OeMrSrDts8G70R7zP4adV2I9NsIdVWdy+CA/NUEWsxJuSAw
+         5LWQ==
+X-Gm-Message-State: AOJu0YxzVL5cE3YbNclRe9wjO6iweoFk7NTot3BLiHG1ZPqgCpPHo/Cf
+	6j8KSWEH+avmC/s0IBIft3Qf7I9PspaEEUUFA6UvVPilveFGiFEozbmFekJ2M6L99bIEGv7iGPK
+	tmX/zd2A1hEZJysGq7VvSS90hoGynKrPBSBBwD3XAcbSqOMz+zBTSFHsAeg/CtA==
+X-Received: by 2002:a7b:c319:0:b0:40d:1d1c:ffaa with SMTP id k25-20020a7bc319000000b0040d1d1cffaamr67658wmj.169.1706040893524;
+        Tue, 23 Jan 2024 12:14:53 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG00aujylvnt2mbsUYznhzKly9WyPA4ZPsKsYSYKdizveJ1XQAgPUyPuBCfXE+JyFJNAq4BfQ==
+X-Received: by 2002:a7b:c319:0:b0:40d:1d1c:ffaa with SMTP id k25-20020a7bc319000000b0040d1d1cffaamr67637wmj.169.1706040893112;
+        Tue, 23 Jan 2024 12:14:53 -0800 (PST)
+Received: from ?IPV6:2003:cb:c741:de00:bf0f:cd46:dc1c:2de9? (p200300cbc741de00bf0fcd46dc1c2de9.dip0.t-ipconnect.de. [2003:cb:c741:de00:bf0f:cd46:dc1c:2de9])
+        by smtp.gmail.com with ESMTPSA id bi13-20020a05600c3d8d00b0040e8800fcf3sm23416639wmb.5.2024.01.23.12.14.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jan 2024 12:14:52 -0800 (PST)
+Message-ID: <33cf54a9-b855-4d2d-9926-a4936fc9068b@redhat.com>
+Date: Tue, 23 Jan 2024 21:14:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 00/11] mm/memory: optimize fork() with PTE-mapped THP
+Content-Language: en-US
+To: Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
+ Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, "David S. Miller"
+ <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
+References: <20240122194200.381241-1-david@redhat.com>
+ <56bee384-461e-4167-b7e9-4dd60666dd66@arm.com>
+ <fa9425e8-f489-48d0-9bf5-98d1b46b6d1a@redhat.com>
+ <7d92d27a-44f6-47d0-8eab-3f80bd7bd75d@arm.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <7d92d27a-44f6-47d0-8eab-3f80bd7bd75d@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-The NAND expansion card plugs in over the HSE (High Speed Expansion)
-connector. Add support for it.
+On 23.01.24 20:43, Ryan Roberts wrote:
+> On 23/01/2024 19:33, David Hildenbrand wrote:
+>> On 23.01.24 20:15, Ryan Roberts wrote:
+>>> On 22/01/2024 19:41, David Hildenbrand wrote:
+>>>> Now that the rmap overhaul[1] is upstream that provides a clean interface
+>>>> for rmap batching, let's implement PTE batching during fork when processing
+>>>> PTE-mapped THPs.
+>>>>
+>>>> This series is partially based on Ryan's previous work[2] to implement
+>>>> cont-pte support on arm64, but its a complete rewrite based on [1] to
+>>>> optimize all architectures independent of any such PTE bits, and to
+>>>> use the new rmap batching functions that simplify the code and prepare
+>>>> for further rmap accounting changes.
+>>>>
+>>>> We collect consecutive PTEs that map consecutive pages of the same large
+>>>> folio, making sure that the other PTE bits are compatible, and (a) adjust
+>>>> the refcount only once per batch, (b) call rmap handling functions only
+>>>> once per batch and (c) perform batch PTE setting/updates.
+>>>>
+>>>> While this series should be beneficial for adding cont-pte support on
+>>>> ARM64[2], it's one of the requirements for maintaining a total mapcount[3]
+>>>> for large folios with minimal added overhead and further changes[4] that
+>>>> build up on top of the total mapcount.
+>>>
+>>> I'm currently rebasing my contpte work onto this series, and have hit a problem.
+>>> I need to expose the "size" of a pte (pte_size()) and skip forward to the start
+>>> of the next (cont)pte every time through the folio_pte_batch() loop. But
+>>> pte_next_pfn() only allows advancing by 1 pfn; I need to advance by nr pfns:
+>>>
+>>>
+>>> static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
+>>>          pte_t *start_ptep, pte_t pte, int max_nr, bool *any_writable)
+>>> {
+>>>      unsigned long folio_end_pfn = folio_pfn(folio) + folio_nr_pages(folio);
+>>>      const pte_t *end_ptep = start_ptep + max_nr;
+>>>      pte_t expected_pte = __pte_batch_clear_ignored(pte_next_pfn(pte));
+>>> -    pte_t *ptep = start_ptep + 1;
+>>> +    pte_t *ptep = start_ptep;
+>>> +    int vfn, nr, i;
+>>>      bool writable;
+>>>
+>>>      if (any_writable)
+>>>          *any_writable = false;
+>>>
+>>>      VM_WARN_ON_FOLIO(!pte_present(pte), folio);
+>>>
+>>> +    vfn = addr >> PAGE_SIZE;
+>>> +    nr = pte_size(pte);
+>>> +    nr = ALIGN_DOWN(vfn + nr, nr) - vfn;
+>>> +    ptep += nr;
+>>> +
+>>>      while (ptep != end_ptep) {
+>>> +        pte = ptep_get(ptep);
+>>>          nr = pte_size(pte);
+>>>          if (any_writable)
+>>>              writable = !!pte_write(pte);
+>>>          pte = __pte_batch_clear_ignored(pte);
+>>>
+>>>          if (!pte_same(pte, expected_pte))
+>>>              break;
+>>>
+>>>          /*
+>>>           * Stop immediately once we reached the end of the folio. In
+>>>           * corner cases the next PFN might fall into a different
+>>>           * folio.
+>>>           */
+>>> -        if (pte_pfn(pte) == folio_end_pfn)
+>>> +        if (pte_pfn(pte) >= folio_end_pfn)
+>>>              break;
+>>>
+>>>          if (any_writable)
+>>>              *any_writable |= writable;
+>>>
+>>> -        expected_pte = pte_next_pfn(expected_pte);
+>>> -        ptep++;
+>>> +        for (i = 0; i < nr; i++)
+>>> +            expected_pte = pte_next_pfn(expected_pte);
+>>> +        ptep += nr;
+>>>      }
+>>>
+>>>      return ptep - start_ptep;
+>>> }
+>>>
+>>>
+>>> So I'm wondering if instead of enabling pte_next_pfn() for all the arches,
+>>> perhaps its actually better to expose pte_pgprot() for all the arches. Then we
+>>> can be much more flexible about generating ptes with pfn_pte(pfn, pgprot).
+>>>
+>>> What do you think?
+>>
+>> The pte_pgprot() stuff is just nasty IMHO.
+> 
+> I dunno; we have pfn_pte() which takes a pfn and a pgprot. It seems reasonable
+> that we should be able to do the reverse.
 
-We add the ranges property to the GPMC node instead of the NAND
-overlay file to prevent below warnings.
+But pte_pgprot() is only available on a handful of architectures, no? It 
+would be nice to have a completely generic pte_next_pfn() / 
+pte_advance_pfns(), though.
 
-/fragment@3/__overlay__: Relying on default #address-cells value
-/fragment@3/__overlay__: Relying on default #size-cells value
+Anyhow, this is all "easy" to rework later. Unless I am missing 
+something, the low hanging fruit is simply using PFN_PTE_SHIFT for now 
+that exists on most archs already.
 
-As GPMC is dedicated for NAND use on this board, it should be OK.
+> 
+>>
+>> Likely it's best to simply convert pte_next_pfn() to something like
+>> pte_advance_pfns(). The we could just have
+>>
+>> #define pte_next_pfn(pte) pte_advance_pfns(pte, 1)
+>>
+>> That should be fairly easy to do on top (based on PFN_PTE_SHIFT). And only 3
+>> archs (x86-64, arm64, and powerpc) need slight care to replace a hardcoded "1"
+>> by an integer we pass in.
+> 
+> I thought we agreed powerpc was safe to just define PFN_PTE_SHIFT? But, yeah,
+> the principle works I guess. I guess I can do this change along with my series.
 
-Signed-off-by: Roger Quadros <rogerq@kernel.org>
----
+It is, if nobody insists on that micro-optimization on powerpc.
 
-Notes:
-    Changelog:
-    v3:
-    - Fix dtc warning by moving ranges property into the GPMC node
-    - update licence to GPL-2.0-only OR MIT and Copyright year to 2024
-    - don't drop k3-am642-evm.dtb target from Makefile
-    
-    v2:
-    - Don't leave k3-am642-evm-nand.dtbo as an orphan. Make k3-am642-evm-nand.dtb
-    with the overlay applied on the base board.
+If there is good reason to invest more time and effort right now on the 
+pte_pgprot approach, then please let me know :)
 
- arch/arm64/boot/dts/ti/Makefile               |   2 +
- arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso | 139 ++++++++++++++++++
- arch/arm64/boot/dts/ti/k3-am642-evm.dts       |   4 +
- 3 files changed, 145 insertions(+)
- create mode 100644 arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso
-
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index 52c1dc910308..cb03d0013fca 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -38,6 +38,8 @@ dtb-$(CONFIG_ARCH_K3) += k3-am62x-sk-hdmi-audio.dtbo
- 
- # Boards with AM64x SoC
- dtb-$(CONFIG_ARCH_K3) += k3-am642-evm.dtb
-+k3-am642-evm-nand-dtbs := k3-am642-evm.dtb k3-am642-evm-nand.dtbo
-+dtb-$(CONFIG_ARCH_K3) += k3-am642-evm-nand.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am642-phyboard-electra-rdk.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am642-sk.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl.dtb
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso b/arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso
-new file mode 100644
-index 000000000000..3d1c2111ec88
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am642-evm-nand.dtso
-@@ -0,0 +1,139 @@
-+// SPDX-License-Identifier: GPL-2.0-only OR MIT
-+/**
-+ * DT overlay for HSE NAND expansion card on AM642 EVM
-+ *
-+ * Copyright (C) 2021-2024 Texas Instruments Incorporated - https://www.ti.com/
-+ */
-+
-+/dts-v1/;
-+/plugin/;
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
-+#include "k3-pinctrl.h"
-+
-+&main_pmx0 {
-+	gpmc0_pins_default: gpmc0-pins-default {
-+		pinctrl-single,pins = <
-+			AM64X_IOPAD(0x0094, PIN_INPUT, 7) /* (T19) GPMC0_BE1n.GPIO0_36 */
-+
-+			AM64X_IOPAD(0x003c, PIN_INPUT, 0) /* (T20) GPMC0_AD0 */
-+			AM64X_IOPAD(0x0040, PIN_INPUT, 0) /* (U21) GPMC0_AD1 */
-+			AM64X_IOPAD(0x0064, PIN_INPUT, 0) /* (R16) GPMC0_AD10 */
-+			AM64X_IOPAD(0x0068, PIN_INPUT, 0) /* (W20) GPMC0_AD11 */
-+			AM64X_IOPAD(0x006c, PIN_INPUT, 0) /* (W21) GPMC0_AD12 */
-+			AM64X_IOPAD(0x0070, PIN_INPUT, 0) /* (V18) GPMC0_AD13 */
-+			AM64X_IOPAD(0x0074, PIN_INPUT, 0) /* (Y21) GPMC0_AD14 */
-+			AM64X_IOPAD(0x0078, PIN_INPUT, 0) /* (Y20) GPMC0_AD15 */
-+			AM64X_IOPAD(0x0044, PIN_INPUT, 0) /* (T18) GPMC0_AD2 */
-+			AM64X_IOPAD(0x0048, PIN_INPUT, 0) /* (U20) GPMC0_AD3 */
-+			AM64X_IOPAD(0x004c, PIN_INPUT, 0) /* (U18) GPMC0_AD4 */
-+			AM64X_IOPAD(0x0050, PIN_INPUT, 0) /* (U19) GPMC0_AD5 */
-+			AM64X_IOPAD(0x0054, PIN_INPUT, 0) /* (V20) GPMC0_AD6 */
-+			AM64X_IOPAD(0x0058, PIN_INPUT, 0) /* (V21) GPMC0_AD7 */
-+			AM64X_IOPAD(0x005c, PIN_INPUT, 0) /* (V19) GPMC0_AD8 */
-+			AM64X_IOPAD(0x0060, PIN_INPUT, 0) /* (T17) GPMC0_AD9 */
-+			AM64X_IOPAD(0x0098, PIN_INPUT_PULLUP, 0) /* (W19) GPMC0_WAIT0 */
-+			AM64X_IOPAD(0x009c, PIN_INPUT_PULLUP, 0) /* (Y18) GPMC0_WAIT1 */
-+			AM64X_IOPAD(0x00a8, PIN_OUTPUT_PULLUP, 0) /* (R19) GPMC0_CSn0 */
-+			AM64X_IOPAD(0x00ac, PIN_OUTPUT_PULLUP, 0) /* (R20) GPMC0_CSn1 */
-+			AM64X_IOPAD(0x00b0, PIN_OUTPUT_PULLUP, 0) /* (P19) GPMC0_CSn2 */
-+			AM64X_IOPAD(0x00b4, PIN_OUTPUT_PULLUP, 0) /* (R21) GPMC0_CSn3 */
-+			AM64X_IOPAD(0x007c, PIN_OUTPUT, 0) /* (R17) GPMC0_CLK */
-+			AM64X_IOPAD(0x0084, PIN_OUTPUT, 0) /* (P16) GPMC0_ADVn_ALE */
-+			AM64X_IOPAD(0x0088, PIN_OUTPUT, 0) /* (R18) GPMC0_OEn_REn */
-+			AM64X_IOPAD(0x008c, PIN_OUTPUT, 0) /* (T21) GPMC0_WEn */
-+			AM64X_IOPAD(0x0090, PIN_OUTPUT, 0) /* (P17) GPMC0_BE0n_CLE */
-+			AM64X_IOPAD(0x00a0, PIN_OUTPUT_PULLUP, 0) /* (N16) GPMC0_WPn */
-+			AM64X_IOPAD(0x00a4, PIN_OUTPUT, 0) /* (N17) GPMC0_DIR */
-+		>;
-+	};
-+};
-+
-+&main_gpio0 {
-+	gpio0-36 {
-+		gpio-hog;
-+		gpios = <36 0>;
-+		input;
-+		line-name = "GPMC0_MUX_DIR";
-+	};
-+};
-+
-+&elm0 {
-+	status = "okay";
-+};
-+
-+&gpmc0 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&gpmc0_pins_default>;
-+	#address-cells = <2>;
-+	#size-cells = <1>;
-+
-+	nand@0,0 {
-+		compatible = "ti,am64-nand";
-+		reg = <0 0 64>;		/* device IO registers */
-+		interrupt-parent = <&gpmc0>;
-+		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
-+			     <1 IRQ_TYPE_NONE>;	/* termcount */
-+		rb-gpios = <&gpmc0 0 GPIO_ACTIVE_HIGH>;	/* gpmc_wait0 */
-+		ti,nand-xfer-type = "prefetch-polled";
-+		ti,nand-ecc-opt = "bch8";	/* BCH8: Bootrom limitation */
-+		ti,elm-id = <&elm0>;
-+		nand-bus-width = <8>;
-+		gpmc,device-width = <1>;
-+		gpmc,sync-clk-ps = <0>;
-+		gpmc,cs-on-ns = <0>;
-+		gpmc,cs-rd-off-ns = <40>;
-+		gpmc,cs-wr-off-ns = <40>;
-+		gpmc,adv-on-ns = <0>;
-+		gpmc,adv-rd-off-ns = <25>;
-+		gpmc,adv-wr-off-ns = <25>;
-+		gpmc,we-on-ns = <0>;
-+		gpmc,we-off-ns = <20>;
-+		gpmc,oe-on-ns = <3>;
-+		gpmc,oe-off-ns = <30>;
-+		gpmc,access-ns = <30>;
-+		gpmc,rd-cycle-ns = <40>;
-+		gpmc,wr-cycle-ns = <40>;
-+		gpmc,bus-turnaround-ns = <0>;
-+		gpmc,cycle2cycle-delay-ns = <0>;
-+		gpmc,clk-activation-ns = <0>;
-+		gpmc,wr-access-ns = <40>;
-+		gpmc,wr-data-mux-bus-ns = <0>;
-+
-+		partitions {
-+			compatible = "fixed-partitions";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			partition@0 {
-+				label = "NAND.tiboot3";
-+				reg = <0x00000000 0x00200000>;	/* 2M */
-+			};
-+			partition@200000 {
-+				label = "NAND.tispl";
-+				reg = <0x00200000 0x00200000>;	/* 2M */
-+			};
-+			partition@400000 {
-+				label = "NAND.tiboot3.backup";	/* 2M */
-+				reg = <0x00400000 0x00200000>;	/* BootROM looks at 4M */
-+			};
-+			partition@600000 {
-+				label = "NAND.u-boot";
-+				reg = <0x00600000 0x00400000>;	/* 4M */
-+			};
-+			partition@a00000 {
-+				label = "NAND.u-boot-env";
-+				reg = <0x00a00000 0x00040000>;	/* 256K */
-+			};
-+			partition@a40000 {
-+				label = "NAND.u-boot-env.backup";
-+				reg = <0x00a40000 0x00040000>;	/* 256K */
-+			};
-+			partition@a80000 {
-+				label = "NAND.file-system";
-+				reg = <0x00a80000 0x3f580000>;
-+			};
-+		};
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-index 8c5651d2cf5d..9c7ed3fd361d 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-@@ -731,3 +731,7 @@ &main_mcan1 {
- 	pinctrl-0 = <&main_mcan1_pins_default>;
- 	phys = <&transceiver2>;
- };
-+
-+&gpmc0 {
-+	ranges = <0 0 0x00 0x51000000 0x01000000>; /* CS0 space. Min partition = 16MB */
-+};
-
-base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
 -- 
-2.34.1
+Cheers,
+
+David / dhildenb
 
 
