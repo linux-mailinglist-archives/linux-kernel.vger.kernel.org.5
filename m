@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-34609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 957C983840F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:32:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 162638382DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:24:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8AFAFB2C248
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:23:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4F44285877
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:24:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF6EF5251;
-	Tue, 23 Jan 2024 01:49:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B8895FBB9;
+	Tue, 23 Jan 2024 01:50:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K8BHWW1i"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H71nqtsc"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5C8E2B9C7;
-	Tue, 23 Jan 2024 01:49:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86CFB5FBA8;
+	Tue, 23 Jan 2024 01:50:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705974588; cv=none; b=qR63kwCws2weaGeevgNwDvqFeKtXt8Eswe/tffWiRkTwJj+vmbdM/skn2TLUEdAJe/zHO9FXQTDS1cmAfOI93Rj54Z0oCl15brLWsh7TjovO8PnBAr5Bx6LhZGf1dGBC7W20YmRcwQP/H2Lrs6mSL6Lcs3Fc9rJl7zVIFy2Ytds=
+	t=1705974639; cv=none; b=iSxr2qdpglPDBk/HGqEuH/TqCyYuFOx1xQNzEzAv9UyWu+H24lP/OFhq4hi+a/ObQUo/9CGjCpan8Vuz5omI4u8nzc+l/IxVgQP7nt6Bvm/4pbCP3DgPNfjRIVoe9x0R2YdqVe4caUErOuWxW/mMIc7dofvTDyLzZkzwxZmgZUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705974588; c=relaxed/simple;
-	bh=sLWuNVpVOcAxllqOLHduNAyE/ya0tJXpWnsLROvwI34=;
+	s=arc-20240116; t=1705974639; c=relaxed/simple;
+	bh=2HjXezvYI1CqF/0WtU4wIKOIXylNgaNAyhQ5kNTQs98=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FL34vhczvyJWGfI5LTSbduh7BKIfNYrbzXOUGDAnEmDqmyIgxEuc7ZpN1VtMOTdJMjIzy1YCKv26Mi/wA1XYrz4Rd5+u6HGkh2BXyP4169CuYZ1jbQ3sEB089AC4VPyYIaUXDdPzlzzHnOS1tSexrrRsxb89eAWOHwfqPVgEvjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K8BHWW1i; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F27BC433C7;
-	Tue, 23 Jan 2024 01:49:46 +0000 (UTC)
+	 MIME-Version; b=DmssQmkligyCmaHl7m9DhuXahZYKULClpOcGgIbScTCGjIQxubquqDMceGnPzuhOMIcAiqVLRSoK6xM4y4wb8h4nvjC+G6VP9kaTQOD1xgSJEM7QFz9vPWkWAyNVhLNva/VeYoQYX1jvG/tJb6Q6aeoFuMDtA9v9018Pu5PuzwE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H71nqtsc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EECBDC433F1;
+	Tue, 23 Jan 2024 01:50:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705974587;
-	bh=sLWuNVpVOcAxllqOLHduNAyE/ya0tJXpWnsLROvwI34=;
+	s=k20201202; t=1705974639;
+	bh=2HjXezvYI1CqF/0WtU4wIKOIXylNgaNAyhQ5kNTQs98=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=K8BHWW1iHfKDI4qTMxwXHEfZI/UTi2M9NhQAG2wywXMHhHcCwyLpEdbG9TItCGoRR
-	 T4Jo8DAPCYytEZRApLN/egoBOkyqWsoH67E0CXWxICbL2f8ARKvcCdDgUv/CQyOei+
-	 FCoWMdBHecKvDzGXIYjNQv2rkrzzJ1XMrOfXxfkH4tvxYjGCu4zvtmjhCQtfba6UYQ
-	 lysYYZpO3Qrcgq4Z86bL8RAOtJ3zN9F3ukbW5Bi2sjVKHoYV1YFbNZE5LFzmuix0u3
-	 up2+Ded96aw7VsxeEX6ZzSosmbLpSqg3OsDqa5a8/xARzLWluKBXCN4keCuPcScW2C
-	 VUGmGA9AlLAVw==
+	b=H71nqtsc0Ink2mEoAf/cGsny89ehMI7nY91Mo11nMq2/lPMTMRllKco54uo6SdSpx
+	 HAiM57NIyaOY0N/rM89X/urKl72lVrNbl5X5V/ZsDP3YcpziVHOfGNs6SSwt84FtWm
+	 7eASKPOXjNILgaC0DvwtYUW7qJFrtRXE/cgBDrAnB0NlwdPrB8Uux7FubntTNMeE4z
+	 rnWfUlsa0eoNcXOPUEDOfaRI66LD+yGpo7hJk0NECZSHDavxHl1dKXJ91WGbggT3p+
+	 gIKSH8zOzA39MCAW5y2qMEAQDidUmx/ZcnTsbMDupye6kJYPbYV/RqKqOFlfz61Mvj
+	 +gLTEF/4Yhjag==
 From: SeongJae Park <sj@kernel.org>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: stable@vger.kernel.org,
@@ -61,11 +61,11 @@ Cc: stable@vger.kernel.org,
 	allen.lkml@gmail.com,
 	damon@lists.linux.dev,
 	SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 6.1 000/417] 6.1.75-rc1 review
-Date: Mon, 22 Jan 2024 17:49:44 -0800
-Message-Id: <20240123014944.85840-1-sj@kernel.org>
+Subject: Re: [PATCH 6.6 000/583] 6.6.14-rc1 review
+Date: Mon, 22 Jan 2024 17:50:36 -0800
+Message-Id: <20240123015036.86096-1-sj@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240122235751.480367507@linuxfoundation.org>
+In-Reply-To: <20240122235812.238724226@linuxfoundation.org>
 References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -77,10 +77,10 @@ Content-Transfer-Encoding: 8bit
 
 Hello,
 
-On Mon, 22 Jan 2024 15:52:48 -0800 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+On Mon, 22 Jan 2024 15:50:51 -0800 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-> This is the start of the stable review cycle for the 6.1.75 release.
-> There are 417 patches in this series, all will be posted as a response
+> This is the start of the stable review cycle for the 6.6.14 release.
+> There are 583 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 > 
@@ -88,9 +88,9 @@ On Mon, 22 Jan 2024 15:52:48 -0800 Greg Kroah-Hartman <gregkh@linuxfoundation.or
 > Anything received after that time might be too late.
 > 
 > The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.75-rc1.gz
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.14-rc1.gz
 > or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
 > and the diffstat can be found below.
 
 This rc kernel passes DAMON functionality test[1] on my test machine.
@@ -100,7 +100,7 @@ kernel from linux-stable-rc tree[2].
 Tested-by: SeongJae Park <sj@kernel.org>
 
 [1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] b74a57f4a549 ("Linux 6.1.75-rc1")
+[2] 8f8e522b6a7a ("Linux 6.6.14-rc1")
 
 Thanks,
 SJ
@@ -115,7 +115,11 @@ ok 3 selftests: damon: debugfs_target_ids.sh
 ok 4 selftests: damon: debugfs_empty_targets.sh
 ok 5 selftests: damon: debugfs_huge_count_read_write.sh
 ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
-ok 7 selftests: damon: sysfs.sh
+ok 7 selftests: damon: debugfs_rm_non_contexts.sh
+ok 8 selftests: damon: sysfs.sh
+ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
+ok 10 selftests: damon: reclaim.sh
+ok 11 selftests: damon: lru_sort.sh
 ok 1 selftests: damon-tests: kunit.sh
 ok 2 selftests: damon-tests: huge_count_read_write.sh
 ok 3 selftests: damon-tests: buffer_overflow.sh
