@@ -1,132 +1,137 @@
-Return-Path: <linux-kernel+bounces-34628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34632-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0630883855F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:40:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12CD483856E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:41:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A3911F295C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:40:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 463CC1C2A357
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:41:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EDDB2582;
-	Tue, 23 Jan 2024 02:12:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A7365392;
+	Tue, 23 Jan 2024 02:23:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="BCY2542/"
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="goO5vUZ4"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E3362109
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 02:12:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 757DF2570;
+	Tue, 23 Jan 2024 02:23:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705975970; cv=none; b=WV5SfKqRJggDnMo6yGU1XsBPcn5kzvU4nBP8I67Iad2dr6WjOz+253wnoOpz3uLwdij+Ku/URur3sAJbn3v6Ph3eOTvhgp0+Uj9eeJL75PuHfiZnaXx0PJVjNhCU1aDI2JlB9mBuziB60Hv+Hs80LTTz8BNTgrd96kYDhX2YRak=
+	t=1705976630; cv=none; b=dsLgyBQb3xTqJCdphOqIuul87XQN2B6Ppm3aCkjq30Vmz/i54qhSceo3nK71sKeswo3rVG3zy6vk0d1f8YiOvK68WVg6sG+uQu/DO/3W1sIrU06CRjhvXGpDJnqpWBiktaAZ0MkS4v+uZpJVOK6lWk0YjlWVDuaE9osCxIerKYY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705975970; c=relaxed/simple;
-	bh=diarVyQXDUNoSTg9ELLmNUjuBHEmmtNPPO/s5sxsFwQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=L4EXi9DzRTuDHHSfC+n2LUFjmvVUQeM9fFVZ7VTY+PdKTmszvAuBCPER3UADp6g62m1Ws77RfezjOi0tjLm+3Yz9M8TYbKt+nPhz5ZU1LfKBmsQcoKHEBf90s217BXEgwHzl6Zm8kbatoxxbN0XtIo+2Dd3kdb1Hr8U2iCtoSwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=BCY2542/; arc=none smtp.client-ip=95.215.58.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <829fb129-f643-4960-a2da-cd38e5ee8f39@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705975966;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JiqFJ3djgll3P+M/6YrFMCqE2soJCrfxlM6Qkrb0hJo=;
-	b=BCY2542/N2/xlwmhTkgJ/YNu5Darjyl7TDWNmulm13er7a3H3uBw9LbPYgVz4DC4PACdWS
-	pbjyfMHhyUcmDLDA1wp3PeNNIgbWYuh2XdtdxUKRUg/WQmpgEJ/M3ladQMN1PXx8RmVDVz
-	FzYcU23dmCsIQqbnZlo8PLEU3kf9WxY=
-Date: Tue, 23 Jan 2024 10:12:18 +0800
+	s=arc-20240116; t=1705976630; c=relaxed/simple;
+	bh=JeB4i+pR0KhtpVTA4opmZxB6zloih/QMQdza1YMB5Sk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ozTBd5be3op9yIBavyCKChjjm9W3a0mNumQTjzibVK1Novf//NAfrwO8Gv+Sor/FmMl88oNmz03Vo+SHOPSzKE5kg5BB0DPhuJJ4C0epZfAtqA4sDj8ff3oj8UDvJApXDxPUrhNCuk+EfVynid02ZCIWanzlS7bYRPvEXWOeTrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=goO5vUZ4; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705976629; x=1737512629;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=JeB4i+pR0KhtpVTA4opmZxB6zloih/QMQdza1YMB5Sk=;
+  b=goO5vUZ4S/LftCGbsM8qOix7k+tT6udCc3oFolYGAAReVzNYglNnCyBW
+   d3oGW5JL/mxR23w8pXQjwS0s7xCRwVJndeDtwht26VWZKpuTaob+iErNp
+   EuLJF+z9a9m/SCoKWTBKHAotrwZ8sPkKX9A8k/sbKqJ5Ixr6Hhnxi0ytY
+   2sUAlX4RIVL6fsAbOkTCli5ynHpymDK4WkEk0xVC8W2QVBtQUZE6Ypplw
+   Tyt6S7qXhmtanCfTT7eP7qwo6m4NR05Zjq3DWy6muruOSk4l9Ac9C6NlS
+   A3aSqbunnJ9SXfVL1A6WKeIPqGJrHZRfGldyh27qnMf7dJMUw/3ApPT+0
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="1272591"
+X-IronPort-AV: E=Sophos;i="6.05,213,1701158400"; 
+   d="scan'208";a="1272591"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 18:23:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,213,1701158400"; 
+   d="scan'208";a="1431375"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by fmviesa003.fm.intel.com with ESMTP; 22 Jan 2024 18:23:45 -0800
+Date: Tue, 23 Jan 2024 10:20:29 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+Cc: hao.wu@intel.com, trix@redhat.com, mdf@kernel.org, yilun.xu@intel.com,
+	linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fpga: dfl: afu: update initialization of port_hdr driver
+Message-ID: <Za8ibeJc82Xkbpct@yilunxu-OptiPlex-7050>
+References: <20240122172433.537525-1-matthew.gerlach@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 6/7] hugetlb: parallelize 2M hugetlb allocation and
- initialization
-Content-Language: en-US
-To: Muchun Song <muchun.song@linux.dev>
-Cc: David Hildenbrand <david@redhat.com>, David Rientjes
- <rientjes@google.com>, Mike Kravetz <mike.kravetz@oracle.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Tim Chen <tim.c.chen@linux.intel.com>, Linux-MM <linux-mm@kvack.org>,
- Gang Li <gang.li@linux.dev>, LKML <linux-kernel@vger.kernel.org>,
- Gang Li <ligang.bdlg@bytedance.com>
-References: <20240118123911.88833-1-gang.li@linux.dev>
- <20240118123911.88833-7-gang.li@linux.dev>
- <ddf37da4-4cbc-478a-be9b-3060b0aebc90@linux.dev>
- <14e38e95-2bc6-4571-b502-4e3954b4bcc4@linux.dev>
- <849D7EA4-BCF4-4587-8A78-F3B35B63EAE9@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Gang Li <gang.li@linux.dev>
-In-Reply-To: <849D7EA4-BCF4-4587-8A78-F3B35B63EAE9@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240122172433.537525-1-matthew.gerlach@linux.intel.com>
 
-On 2024/1/22 19:30, Muchun Song wrote:
->> On Jan 22, 2024, at 18:12, Gang Li <gang.li@linux.dev> wrote:
->>
->> On 2024/1/22 15:10, Muchun Song wrote:> On 2024/1/18 20:39, Gang Li wrote:
->>>> +static void __init hugetlb_alloc_node(unsigned long start, unsigned long end, void *arg)
->>>>    {
->>>> -    unsigned long i;
->>>> +    struct hstate *h = (struct hstate *)arg;
->>>> +    int i, num = end - start;
->>>> +    nodemask_t node_alloc_noretry;
->>>> +    unsigned long flags;
->>>> +    int next_node = 0;
->>> This should be first_online_node which may be not zero.
->>
->> That's right. Thanks!
->>
->>>> -    for (i = 0; i < h->max_huge_pages; ++i) {
->>>> -        if (!alloc_bootmem_huge_page(h, NUMA_NO_NODE))
->>>> +    /* Bit mask controlling how hard we retry per-node allocations.*/
->>>> +    nodes_clear(node_alloc_noretry);
->>>> +
->>>> +    for (i = 0; i < num; ++i) {
->>>> +        struct folio *folio = alloc_pool_huge_folio(h, &node_states[N_MEMORY],
->>>> +                        &node_alloc_noretry, &next_node);
->>>> +        if (!folio)
->>>>                break;
->>>> +        spin_lock_irqsave(&hugetlb_lock, flags);
->>>> I suspect there will more contention on this lock when parallelizing.
->>
->> In the worst case, there are only 'numa node number' of threads in
->> contention. And in my testing, it doesn't degrade performance, but
->> rather improves performance due to the reduced granularity.
+On Mon, Jan 22, 2024 at 09:24:33AM -0800, Matthew Gerlach wrote:
+> Revision 2 of the Device Feature List (DFL) Port feature has
+> slightly different requirements than revision 1. Revision 2
+> does not need the port to reset at driver startup. In fact,
+
+Please help illustrate what's the difference between Revision 1 & 2, and
+why revision 2 needs not.
+
+> performing a port reset during driver initialization can cause
+> driver race conditions when the port is connected to a different
+
+Please reorganize this part, in this description there seems be a
+software racing bug and the patch is a workaround. But the fact is port
+reset shouldn't been done for a new HW.
+
+BTW: Is there a way to tell whether the port is connected to a different
+PF? Any guarantee that revision 3, 4 ... would need a port reset or not?
+
+Thanks,
+Yilun
+
+> PCIe Physical Function (PF) than the management PF performing
+> the actual port reset.
 > 
-> So, the performance does not change if you move the lock out of
-> loop?
->
+> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> ---
+>  drivers/fpga/dfl-afu-main.c | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/fpga/dfl-afu-main.c b/drivers/fpga/dfl-afu-main.c
+> index c0a75ca360d6..7d7f80cd264f 100644
+> --- a/drivers/fpga/dfl-afu-main.c
+> +++ b/drivers/fpga/dfl-afu-main.c
+> @@ -417,7 +417,18 @@ static const struct attribute_group port_hdr_group = {
+>  static int port_hdr_init(struct platform_device *pdev,
+>  			 struct dfl_feature *feature)
+>  {
+> -	port_reset(pdev);
+> +	void __iomem *base;
+> +	u8 rev;
+> +
+> +	base = dfl_get_feature_ioaddr_by_id(&pdev->dev, PORT_FEATURE_ID_HEADER);
+> +
+> +	rev = dfl_feature_revision(base);
+> +
+> +	if (rev < 2)
+> +		port_reset(pdev);
+> +
+> +	if (rev > 2)
+> +		dev_info(&pdev->dev, "unexpected port feature revision, %u\n", rev);
 
-If we move the lock out of loop, then multi-threading becomes 
-single-threading, which definitely reduces performance.
+Remove the print. It is indicating an error but the function returns OK.
 
-```
-+       spin_lock_irqsave(&hugetlb_lock, flags);
-         for (i = 0; i < num; ++i) {
-                 struct folio *folio = alloc_pool_huge_folio(h, 
-&node_states[N_MEMORY],
-                                                 &node_alloc_noretry, 
-&next_node);
-                 if (!folio)
-                         break;
--               spin_lock_irqsave(&hugetlb_lock, flags);
-                 __prep_account_new_huge_page(h, folio_nid(folio));
-                 enqueue_hugetlb_folio(h, folio);
--               spin_unlock_irqrestore(&hugetlb_lock, flags);
-                 cond_resched();
-         }
-+       spin_unlock_irqrestore(&hugetlb_lock, flags);
-  }
-```
+Thanks,
+Yilun
 
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.34.1
+> 
+> 
 
