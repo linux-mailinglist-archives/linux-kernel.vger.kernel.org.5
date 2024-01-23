@@ -1,131 +1,104 @@
-Return-Path: <linux-kernel+bounces-34844-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34845-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF910838838
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:46:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5320C83883C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:48:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97B8D28A44C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:46:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 249AEB22EBC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:48:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A04F52F7E;
-	Tue, 23 Jan 2024 07:46:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3E885473D;
+	Tue, 23 Jan 2024 07:48:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="ZPs6vU17"
-Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="BWUI8qL+"
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65EC22AE91
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:46:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D673C2AE91;
+	Tue, 23 Jan 2024 07:48:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705995993; cv=none; b=P80VsOOwrzkTz44z53Nj72EreQ8CsdELBq5texmj3hrf1cxxyI+yZlDVmfwP6uoHieFrhmfL/zQ/zkWjfet3LgWRaIJThaWFa53oGYkLcyGucnbOn8a7/WXTxqKD02JkZoab0uAZn45TlJ1c3wiuZfS7v2isuHrSCm3nuRkJcLc=
+	t=1705996119; cv=none; b=uVN2ScmMOnDI2ouG9AWnWUFnO+ko3ji9/60ursEa70UEcNQYniXov69RurFuBshGEJdcNd8yvKUU27qcYG3faWkGomzWlYDUZc76QmnHQOnlQ2QKAN1vXN0zoXCcPD2a6q4RA6wqn4zUFEK1O1q69KmbAwKkY0t0rLhiWBHCL5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705995993; c=relaxed/simple;
-	bh=hoPao9tbGJ9KjiTRhQfBNtRT2yMUls7NC9FEvroT+Rc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jFbpGwu2ob70LstnWT1oQS7PjL6yZVrX3ICRboAehPskN0bDIFqqyoc1mDa8Qn2c8bp/R6hsVQkWOXpKWBc8Y1BokLpLkNODs9iyLtqyrQhfX6IbOIUUoH/gUjJ1N7y+0QYhHtSjn94xw7xMVSMMe9vr6lT6zkEehAbZ9b4duGo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=ZPs6vU17; arc=none smtp.client-ip=209.85.210.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6ddf1e88e51so3109490a34.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 23:46:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1705995990; x=1706600790; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jicH4Sl95+680VziAGp6RFmScRJlie55hSPce6vSEjk=;
-        b=ZPs6vU17sXmArMIb7vx6PrKPwmAxjoIghVpjvZPd2nD10KYeycw/gyIrcZeddMpi6O
-         rwhZnZSiGd3qPwogS/OT71mJDbdTTzBNreR3LvjXlltLaldKh5iX4Ats7Df7ABKT6a37
-         qLhO4ryAowlzzTkGF/JDJczUPK3z+IXm1TZ2GvL0npRKptNbz6eSKrGmKwfinHxf/4gZ
-         Oefd9zWxgfYRduCZ7SC/gmP8h3yzJa3E2qr63xMbOYMd5rT/OTnu6t99ut6kG7Wg/jKH
-         Id4nleOJ1/+0PUKeEVcDj0o5eo1faUXx+Fo//atTke/KJo6oQ+njAPUvlS6FkS+mpktP
-         v7yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705995990; x=1706600790;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jicH4Sl95+680VziAGp6RFmScRJlie55hSPce6vSEjk=;
-        b=P9pNVT0q4Ag+LsMs5aO4j4Ha8DoOiQyT/367rHaYMSJt6YRkPe3nAXtJOFarw/xRNi
-         b81t4UKSoPnZL5pSQUshWzFtHljrrxcZUXSsgY1P4tkc77ZAh4Pp6K+kUcjD54dtotDN
-         ioc4maRcz1n9nSLAV8RQ2OwI8udQhZjnQaNvu7Hinldwzj9SGVnD5XxJpMVw+APA25zW
-         1rm3DVpS3AYar57BSMia8jLdltIHRJU5DO0LWWcl67SsS5znLF3DXnQ7pRC2ERBSyLu4
-         m1RGTlJTvIVppzM6zDjYvRlIJlJRWD/QC7DXCx4MwXd0KH+M9PuiuMahorqd/ILgxBDi
-         ZhFg==
-X-Gm-Message-State: AOJu0Yxo7AdSGUGRJA70qmZ+VjjBtbHwKu+63B+Ibp2lrLtgiLiQh6oJ
-	ZmR/eZ885k17u0XDegq8HutyOvWZDs9X3fvKXsOAhhPKKZzIppf3WsqOfqTPKnA=
-X-Google-Smtp-Source: AGHT+IEyLatL3kiKb/pIE8x0tVAWeU3x117UaL4efqa2LhFOIFOXEQGR6LS/dXAEI0BIpr01OrVCCQ==
-X-Received: by 2002:a05:6358:281a:b0:176:5e4:cb8d with SMTP id k26-20020a056358281a00b0017605e4cb8dmr4210665rwb.51.1705995990275;
-        Mon, 22 Jan 2024 23:46:30 -0800 (PST)
-Received: from [10.254.236.83] ([139.177.225.255])
-        by smtp.gmail.com with ESMTPSA id h20-20020a62b414000000b006d9a9727a8esm11199033pfn.178.2024.01.22.23.46.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jan 2024 23:46:29 -0800 (PST)
-Message-ID: <572bfa89-83c3-45ed-abc6-d71b9519813c@bytedance.com>
-Date: Tue, 23 Jan 2024 15:46:25 +0800
+	s=arc-20240116; t=1705996119; c=relaxed/simple;
+	bh=FOaUGUAAPTmWN3a9feloa0W95Ay+xWAJhmLKNf/SkB4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=maXCkh07tCUjZTZlGfPbIYauSH7HJCkfkE0yv9nBohEdL/ORfOAm5MH87ta21IOmG4lIC7VHJDksHtLR3ePIYwc6LrnhYBL0zoxDnWhbNpAOhIJQl0x8VV8IqEwdRXdukHreVsrSTaos0hzVo3+2FNG1B9nTh8toPfbulPlNy7A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=BWUI8qL+; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3929920004;
+	Tue, 23 Jan 2024 07:48:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1705996108;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pUT2brhMEPIx4srIoyzG1PnPuZrNbL8eu4Saokysw2c=;
+	b=BWUI8qL+fMLKZcw+A3+49Cy2mH3c85xLY8ey+cP4qoIBCOtro34o0HHSTOhrK8Uwm1fQZj
+	L6r0+IWw68OPwv0QJvxtG9RMIR/FYvYOjScbGw9R+kRAuNCes9xWIVKrVB91lmmSDT+icr
+	UBFnd4J7XYlRjAaJfthiT6WsHZ1RC6HC+dE6DGwSyp0asZ8m13IRLzcOiMymexvRFoTTmO
+	7Z5qxho2o04PAHF1DWRcF8qPCSJYCIterTn4V+wL+mlyoQMmdVt1t6lldWN/NlDzSPda11
+	DAJHn8Wy2vaUZE80aZl6HChUOn5KbEI3oewr/oLrjWxsr7hdAKS/0qheEIEbPg==
+Date: Tue, 23 Jan 2024 08:48:26 +0100
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: Breno Leitao <leitao@debian.org>
+Cc: kuba@kernel.org, davem@davemloft.net, abeni@redhat.com,
+	edumazet@google.com, Vladimir Oltean <vladimir.oltean@nxp.com>,
+	Claudiu Manoil <claudiu.manoil@nxp.com>,
+	UNGLinuxDriver@microchip.com, Paolo Abeni <pabeni@redhat.com>,
+	dsahern@kernel.org, weiwan@google.com,
+	"open list:OCELOT ETHERNET SWITCH DRIVER" <netdev@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 14/22] net: fill in MODULE_DESCRIPTION()s for
+ ocelot
+Message-ID: <20240123074826330a374e@mail.local>
+References: <20240122184543.2501493-1-leitao@debian.org>
+ <20240122184543.2501493-15-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] mm/zswap: split zswap rb-tree
-Content-Language: en-US
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>,
- Chris Li <chriscli@google.com>, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>
-References: <20240117-b4-zswap-lock-optimize-v2-0-b5cc55479090@bytedance.com>
- <20240117-b4-zswap-lock-optimize-v2-2-b5cc55479090@bytedance.com>
- <CAJD7tkbYv_TfEZ3Dj1JE=NXA323MdxGR9ib34PUoCmbfFaSCRQ@mail.gmail.com>
-From: Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <CAJD7tkbYv_TfEZ3Dj1JE=NXA323MdxGR9ib34PUoCmbfFaSCRQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240122184543.2501493-15-leitao@debian.org>
+X-GND-Sasl: alexandre.belloni@bootlin.com
 
-On 2024/1/23 03:49, Yosry Ahmed wrote:
-> On Fri, Jan 19, 2024 at 3:22 AM Chengming Zhou
-> <zhouchengming@bytedance.com> wrote:
->>
->> Each swapfile has one rb-tree to search the mapping of swp_entry_t to
->> zswap_entry, that use a spinlock to protect, which can cause heavy lock
->> contention if multiple tasks zswap_store/load concurrently.
->>
->> Optimize the scalability problem by splitting the zswap rb-tree into
->> multiple rb-trees, each corresponds to SWAP_ADDRESS_SPACE_PAGES (64M),
->> just like we did in the swap cache address_space splitting.
->>
->> Although this method can't solve the spinlock contention completely, it
->> can mitigate much of that contention. Below is the results of kernel build
->> in tmpfs with zswap shrinker enabled:
->>
->>      linux-next  zswap-lock-optimize
->> real 1m9.181s    1m3.820s
->> user 17m44.036s  17m40.100s
->> sys  7m37.297s   4m54.622s
->>
->> So there are clearly improvements.
+Hello,
+
+On 22/01/2024 10:45:35-0800, Breno Leitao wrote:
+> W=1 builds now warn if module is built without a MODULE_DESCRIPTION().
+> Add descriptions to the Ocelot SoCs (VSC7514) helpers driver.
 > 
-> If/when you respin this, can you mention that testing was done with a
-> single swapfile? I assume the improvements will be less with multiple
-> swapfiles as lock contention should be better.
+> Signed-off-by: Breno Leitao <leitao@debian.org>
+> ---
+>  drivers/net/ethernet/mscc/ocelot.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/net/ethernet/mscc/ocelot.c b/drivers/net/ethernet/mscc/ocelot.c
+> index 56ccbd4c37fe..12999d9be3af 100644
+> --- a/drivers/net/ethernet/mscc/ocelot.c
+> +++ b/drivers/net/ethernet/mscc/ocelot.c
+> @@ -3078,4 +3078,5 @@ void ocelot_deinit_port(struct ocelot *ocelot, int port)
+>  }
+>  EXPORT_SYMBOL(ocelot_deinit_port);
+>  
+> +MODULE_DESCRIPTION("Ocelot SoCs (VSC7514) helpers");
+
+Shouldn't that mention that this is related to the Ethernet switch?
+
+>  MODULE_LICENSE("Dual MIT/GPL");
+> -- 
+> 2.39.3
 > 
 
-Ok. Not sure how much improvement, may do some tests later.
-
->>
->> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
->> Acked-by: Nhat Pham <nphamcs@gmail.com>
-> 
-> I think the diff in zswap_swapoff() should be much simpler with the
-> tree(s) cleanup removed. Otherwise LGTM.
-> 
-> Acked-by: Yosry Ahmed <yosryahmed@google.com>
-
-Right, thanks!
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
