@@ -1,102 +1,180 @@
-Return-Path: <linux-kernel+bounces-35005-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35000-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F363F838A69
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:35:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C2E5838A63
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:33:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77BE1B24BD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:35:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52DECB23B19
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:33:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25C385C8E1;
-	Tue, 23 Jan 2024 09:34:02 +0000 (UTC)
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 948CE59B69;
+	Tue, 23 Jan 2024 09:33:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="S+BrXl9K";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="S+BrXl9K"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34F8A5C60B
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 09:34:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FA8959B4C;
+	Tue, 23 Jan 2024 09:33:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706002441; cv=none; b=soAlfNT7Xebd5hEzed/LB9AAXZigBbU/TW3svVkn8uv+Ry6oWxRBniEywPpGY4aaeUdr0XFS6DzJOPeBDIKFK2szQiq0YkVGrs1+om8iMEmFs7h9OlHmHqsce2A3moaEjDMozismDM5dygx7Rg0cKJqu7qNZfIieCtYNGK3m4+Y=
+	t=1706002420; cv=none; b=AW5dlAvX5/9XJ3j6YG1rSTE3EHwUg1YXMlyCsrOYSHVWBmozGppQhtTLeip12OCZbVbPq1/Eq/MByxJV0kO1119C0HIRdlm/enFCqUeQFDQEqhhvwzeYChT34V7nLuzb0U3BM7/uLTKi3JFwoKs1yXBlrt8DJ6F5Y/IVfrv5MPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706002441; c=relaxed/simple;
-	bh=ZXzd5ZM1kPfc29nku387qFGBNfMPhmyqnVdI70QYk5o=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Xb7lwhhICTDvoxEZF38oWVYN/kcZ2Hwcssl7DOb0VyNKjuoSpBe47Y4bboapkHCJ1yrhbjzWfxBCyc19FK4yCcCnu15sGqtSZiEU1RWgh+lSPx40dl3S4cO2oeVN7nsjUKQ62bMQeFutGg6GRX/O8jbMu8Cqek1Je5UDd7Y0ssg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=linux.dev; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Chengming Zhou <zhouchengming@bytedance.com>
-Date: Tue, 23 Jan 2024 09:33:31 +0000
-Subject: [PATCH v2 3/3] mm/slub: remove unused parameter in next_freelist_entry()
+	s=arc-20240116; t=1706002420; c=relaxed/simple;
+	bh=2KnS/m/aJXF9pgC7sa33Pkk2SdNYQMgvjyWG/WyoxTs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FqMPnLs3ItmhDv5lsRW81fvzHegP85mwv4+l9VsqzC5/d2braGMMR82/VGdw0Ecvc8r1wYi9igxjkWiLETxWJRuUUQ6v9SrW0g8SUsqVPF3LdGSsbebJFQ1gBso4tLVurBENLX5n7RFNaUJfOGyBoD3QX+IPh8/tBy/RMwGOqV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=S+BrXl9K; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=S+BrXl9K; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 3249622177;
+	Tue, 23 Jan 2024 09:33:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706002417; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vr0dVSL74POTu+Iy/t8VsndcOHjm5FnK2rIR21aIjBA=;
+	b=S+BrXl9K9p1cn9yvSqLBO6VScZ2ywrf6is1PxTTlOrOQLKR/o1eBgNPpxkLlrCuQiXFQQl
+	ppba9WHp4P1Rk+Xl+nS5t5H/PqltWHfRSpGhUke8SVx0Y9i2fBBGEWEMzWKRzzqxG8e32f
+	9YiuDQWiNDXvvemyB6ndXo393rAodMo=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706002417; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vr0dVSL74POTu+Iy/t8VsndcOHjm5FnK2rIR21aIjBA=;
+	b=S+BrXl9K9p1cn9yvSqLBO6VScZ2ywrf6is1PxTTlOrOQLKR/o1eBgNPpxkLlrCuQiXFQQl
+	ppba9WHp4P1Rk+Xl+nS5t5H/PqltWHfRSpGhUke8SVx0Y9i2fBBGEWEMzWKRzzqxG8e32f
+	9YiuDQWiNDXvvemyB6ndXo393rAodMo=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 13D05136A4;
+	Tue, 23 Jan 2024 09:33:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id bXbOAfGHr2VMBwAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Tue, 23 Jan 2024 09:33:37 +0000
+Date: Tue, 23 Jan 2024 10:33:36 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>, android-mm@google.com,
+	yuzhao@google.com, yangyifei03@kuaishou.com,
+	cgroups@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Revert "mm:vmscan: fix inaccurate reclaim during
+ proactive reclaim"
+Message-ID: <Za-H8NNW9bL-I4gj@tiehlicka>
+References: <20240121214413.833776-1-tjmercier@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240117-slab-misc-v2-3-81766907896e@bytedance.com>
-References: <20240117-slab-misc-v2-0-81766907896e@bytedance.com>
-In-Reply-To: <20240117-slab-misc-v2-0-81766907896e@bytedance.com>
-To: Joonsoo Kim <iamjoonsoo.kim@lge.com>, Vlastimil Babka <vbabka@suse.cz>, David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>, Pekka Enberg <penberg@kernel.org>, Christoph Lameter <cl@linux.com>,
- Andrew Morton <akpm@linux-foundation.org>, Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org, Chengming Zhou <zhouchengming@bytedance.com>,
- linux-mm@kvack.org, "Christoph Lameter (Ampere)" <cl@linux.com>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1706002427; l=1540;
- i=zhouchengming@bytedance.com; s=20231204; h=from:subject:message-id;
- bh=ZXzd5ZM1kPfc29nku387qFGBNfMPhmyqnVdI70QYk5o=;
- b=eO3C/qpMGEax+MfzVtLNHcbDe+c64BixN/5g6zrbrjsUMaxGOraPVsgUT0dI0grRB+ucrDO2l
- j/WoJtVo5iuD79mh2KmwA9Hx/yNMXxarI/hcbm5mwl8odmEhDnXWi2x
-X-Developer-Key: i=zhouchengming@bytedance.com; a=ed25519;
- pk=xFTmRtMG3vELGJBUiml7OYNdM393WOMv0iWWeQEVVdA=
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240121214413.833776-1-tjmercier@google.com>
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=S+BrXl9K
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DWL_DNSWL_MED(-2.00)[suse.com:dkim];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[12];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -3.01
+X-Rspamd-Queue-Id: 3249622177
+X-Spam-Flag: NO
 
-The parameter "struct slab *slab" is unused in next_freelist_entry(),
-so just remove it.
+On Sun 21-01-24 21:44:12, T.J. Mercier wrote:
+> This reverts commit 0388536ac29104a478c79b3869541524caec28eb.
+> 
+> Proactive reclaim on the root cgroup is 10x slower after this patch when
+> MGLRU is enabled, and completion times for proactive reclaim on much
+> smaller non-root cgroups take ~30% longer (with or without MGLRU).
 
-Acked-by: Christoph Lameter (Ampere) <cl@linux.com>
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
----
- mm/slub.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+What is the reclaim target in these pro-active reclaim requests?
 
-diff --git a/mm/slub.c b/mm/slub.c
-index 5c6fbeef05a8..7f235fa6592d 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -2243,7 +2243,7 @@ static void __init init_freelist_randomization(void)
- }
+> With
+> root reclaim before the patch, I observe average reclaim rates of
+> ~70k pages/sec before try_to_free_mem_cgroup_pages starts to fail and
+> the nr_retries counter starts to decrement, eventually ending the
+> proactive reclaim attempt.
+
+Do I understand correctly that the reclaim target is over estimated and
+you expect that the reclaim process breaks out early>
+
+> After the patch the reclaim rate is
+> consistently ~6.6k pages/sec due to the reduced nr_pages value causing
+> scan aborts as soon as SWAP_CLUSTER_MAX pages are reclaimed. The
+> proactive reclaim doesn't complete after several minutes because
+> try_to_free_mem_cgroup_pages is still capable of reclaiming pages in
+> tiny SWAP_CLUSTER_MAX page chunks and nr_retries is never decremented.
+
+I do not understand this part. How does a smaller reclaim target manages
+to have reclaimed > 0 while larger one doesn't?
  
- /* Get the next entry on the pre-computed freelist randomized */
--static void *next_freelist_entry(struct kmem_cache *s, struct slab *slab,
-+static void *next_freelist_entry(struct kmem_cache *s,
- 				unsigned long *pos, void *start,
- 				unsigned long page_limit,
- 				unsigned long freelist_count)
-@@ -2282,13 +2282,12 @@ static bool shuffle_freelist(struct kmem_cache *s, struct slab *slab)
- 	start = fixup_red_left(s, slab_address(slab));
- 
- 	/* First entry is used as the base of the freelist */
--	cur = next_freelist_entry(s, slab, &pos, start, page_limit,
--				freelist_count);
-+	cur = next_freelist_entry(s, &pos, start, page_limit, freelist_count);
- 	cur = setup_object(s, cur);
- 	slab->freelist = cur;
- 
- 	for (idx = 1; idx < slab->objects; idx++) {
--		next = next_freelist_entry(s, slab, &pos, start, page_limit,
-+		next = next_freelist_entry(s, &pos, start, page_limit,
- 			freelist_count);
- 		next = setup_object(s, next);
- 		set_freepointer(s, cur, next);
+> The docs for memory.reclaim say, "the kernel can over or under reclaim
+> from the target cgroup" which this patch was trying to fix. Revert it
+> until a less costly solution is found.
+> 
+> Signed-off-by: T.J. Mercier <tjmercier@google.com>
+> ---
+>  mm/memcontrol.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index e4c8735e7c85..cee536c97151 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -6956,8 +6956,8 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+>  			lru_add_drain_all();
+>  
+>  		reclaimed = try_to_free_mem_cgroup_pages(memcg,
+> -					min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
+> -					GFP_KERNEL, reclaim_options);
+> +						nr_to_reclaim - nr_reclaimed,
+> +						GFP_KERNEL, reclaim_options);
+>  
+>  		if (!reclaimed && !nr_retries--)
+>  			return -EAGAIN;
+> -- 
+> 2.43.0.429.g432eaa2c6b-goog
+> 
 
 -- 
-b4 0.10.1
+Michal Hocko
+SUSE Labs
 
