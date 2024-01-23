@@ -1,88 +1,101 @@
-Return-Path: <linux-kernel+bounces-35071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35072-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41B42838B7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:15:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F9D0838B83
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:16:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99D67B22B13
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:15:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A23B41C220DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:16:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E8955A780;
-	Tue, 23 Jan 2024 10:15:30 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD8465A0EB;
-	Tue, 23 Jan 2024 10:15:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A29E5A781;
+	Tue, 23 Jan 2024 10:16:30 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D38665A11A
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 10:16:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706004930; cv=none; b=OaII2NXuE9AgSP0iFaMsojEHhE+F5mX1bhYUUjzZC/AmvRQXiaoH1Dub3jWW+IUcMDIhxuOkFY9K+c2BRk6ix14UmbsPemqfR5IOthjKDE/GOd50B9K5U0LNsWjJLV44RLFq7auLYJK2byMm+Bu+TmJeCC9T1rAUw9y7ba4JTYo=
+	t=1706004989; cv=none; b=E2Y/ObZihcfe+E636m6zuAwYloMa9qgbg5Ytcu7VHB+BMcyruYNibucg7Mvbb7azU4qJeJ4j5qRppKw6PS5M9OgIuMz8TGTN5oPVfI1mc52wdZz1bYU+oQU/4+zvFU7qwbbh7T7fz6P7CxjmK7j6Y0B54f9jfKjq/ZoTbEWzA94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706004930; c=relaxed/simple;
-	bh=qgJAvwjqadOAFVHNp00pGGzUi/Sz+qHJ/cHPAJhKjYg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YY5scCwMnIdiKwjp198DU7j5Zwu611RY0Bjhv6ctFR9kYHHIaH6f8XoaC2fvJ0BySsLNIILYKkUVReE1yTUf400w3Jj4kwh5jhnHS52WfisEnb/Xx1dkCA0Mwz+bYrE3B2CaVrncihcZN9usxuwVbtBm6tZnWy1CtJkQwwKUtkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 778521FB;
-	Tue, 23 Jan 2024 02:16:06 -0800 (PST)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3F35F3F5A1;
-	Tue, 23 Jan 2024 02:15:19 -0800 (PST)
-Date: Tue, 23 Jan 2024 10:15:16 +0000
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: Viresh Kumar <viresh.kumar@linaro.org>
-Cc: Sibi Sankar <quic_sibis@quicinc.com>, cristian.marussi@arm.com,
-	rafael@kernel.org, morten.rasmussen@arm.com,
-	Sudeep Holla <sudeep.holla@arm.com>, dietmar.eggemann@arm.com,
-	lukasz.luba@arm.com, sboyd@kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, quic_mdtipton@quicinc.com,
-	linux-arm-msm@vger.kernel.org, nm@ti.com
-Subject: Re: [PATCH 0/3] cpufreq: scmi: Add boost frequency support
-Message-ID: <Za-RtBrSxI-j4Jdx@bogus>
-References: <20240117110443.2060704-1-quic_sibis@quicinc.com>
- <20240123060827.a3vszziftj6pszt3@vireshk-i7>
+	s=arc-20240116; t=1706004989; c=relaxed/simple;
+	bh=ZJzzt+kCw+JOY/lQZt/D5cRgMP0CjOuRiNu9AtaiFBk=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=HYpen2iJ2bLZsVIWwxX+WgbxFvtn3q+Pu36JQiK1PizMlgUXf58LLTCu5HnE4OHw+7CH3cb2A7g+2TlSEPwb2PZloNoVwOS57SrC7o8FoT7rYBQauawhUb7TatHIMElDkYv31K4N4nSWtntsVgeyQQ4YeOvwzNGFURjESR0vE4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-76-TSOlSA3yNlmz_Bo-aU5ewQ-1; Tue, 23 Jan 2024 10:16:23 +0000
+X-MC-Unique: TSOlSA3yNlmz_Bo-aU5ewQ-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 23 Jan
+ 2024 10:16:06 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Tue, 23 Jan 2024 10:16:06 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Guenter Roeck' <linux@roeck-us.net>, Charlie Jenkins
+	<charlie@rivosinc.com>, Palmer Dabbelt <palmer@dabbelt.com>
+CC: Conor Dooley <conor@kernel.org>, "samuel.holland@sifive.com"
+	<samuel.holland@sifive.com>, "xiao.w.wang@intel.com" <xiao.w.wang@intel.com>,
+	Evan Green <evan@rivosinc.com>, "guoren@kernel.org" <guoren@kernel.org>,
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, Paul Walmsley
+	<paul.walmsley@sifive.com>, "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+	Arnd Bergmann <arnd@arndb.de>
+Subject: RE: [PATCH v15 5/5] kunit: Add tests for csum_ipv6_magic and
+ ip_fast_csum
+Thread-Topic: [PATCH v15 5/5] kunit: Add tests for csum_ipv6_magic and
+ ip_fast_csum
+Thread-Index: AQHaTVGn8AUolzpWZEe7KQadoytUPLDmCvsQgAAHpwCAAEjwsIAAOnOOgACYElA=
+Date: Tue, 23 Jan 2024 10:16:06 +0000
+Message-ID: <86411bbab15c42b8819aeb923fe42644@AcuMS.aculab.com>
+References: <be959a4bb660466faba5ade7976485c8@AcuMS.aculab.com>
+ <mhng-b5f26a34-7632-4423-9f07-3224170bae9f@palmer-ri-x1c9>
+ <Za8AXnKCm4cPyVbp@ghost> <e548f697-650e-4333-9f39-19a472b7d90a@roeck-us.net>
+In-Reply-To: <e548f697-650e-4333-9f39-19a472b7d90a@roeck-us.net>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240123060827.a3vszziftj6pszt3@vireshk-i7>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 
-On Tue, Jan 23, 2024 at 11:38:27AM +0530, Viresh Kumar wrote:
-> On 17-01-24, 16:34, Sibi Sankar wrote:
-> > This series adds provision to mark dynamic opps as boost capable and adds
-> > boost frequency support to the scmi cpufreq driver.
-> > 
-> > Depends on:
-> > HW pressure v4: https://patchwork.kernel.org/project/linux-arm-msm/cover/20240109164655.626085-1-vincent.guittot@linaro.org/
-> > scmi notification v2: https://patchwork.kernel.org/project/linux-arm-msm/cover/20240117104116.2055349-1-quic_sibis@quicinc.com/
-> > 
-> > Sibi Sankar (3):
-> >   OPP: Extend dev_pm_opp_data with turbo support
-> >   firmware: arm_scmi: Add support for marking certain frequencies as
-> >     boost
-> >   cpufreq: scmi: Enable boost support
-> 
-> Sudeep, please lemme know if you are okay with the changes. Will apply
-> them.
+RnJvbTogR3VlbnRlciBSb2Vjaw0KPiBTZW50OiAyMyBKYW51YXJ5IDIwMjQgMDE6MDYNCi4uLg0K
+PiA+PiAgICAgKyNkZWZpbmUgU1VQUE9SVEVEX0FMSUdOTUVOVCAoMSA8PCBORVRfSVBfQUxJR04p
+DQo+ID4+ICAgICAgLyogVmFsdWVzIGZvciBhIGxpdHRsZSBlbmRpYW4gQ1BVLiBCeXRlIHN3YXAg
+ZWFjaCBoYWxmIG9uIGJpZyBlbmRpYW4gQ1BVLiAqLw0KPiA+PiAgICAgIHN0YXRpYyBjb25zdCB1
+MzIgcmFuZG9tX2luaXRfc3VtID0gMHgyODQ3YWFiOw0KPiA+PiAgICAgQEAgLTQ4Niw3ICs0ODgs
+NyBAQCBzdGF0aWMgdm9pZCB0ZXN0X2NzdW1fZml4ZWRfcmFuZG9tX2lucHV0cyhzdHJ1Y3Qga3Vu
+aXQgKnRlc3QpDQo+ID4+ICAgICAgCV9fc3VtMTYgcmVzdWx0LCBleHBlYzsNCj4gPj4gICAgICAJ
+YXNzZXJ0X3NldHVwX2NvcnJlY3QodGVzdCk7DQo+ID4+ICAgICAtCWZvciAoYWxpZ24gPSAwOyBh
+bGlnbiA8IFRFU1RfQlVGTEVOOyArK2FsaWduKSB7DQo+ID4+ICAgICArCWZvciAoYWxpZ24gPSAw
+OyBhbGlnbiA8IFRFU1RfQlVGTEVOOyBhbGlnbiArPSBTVVBQT1JURURfQUxJR05NRU5UKSB7DQou
+Li4NCg0KVGhhdCBpcyBhbGwgd3JvbmcuDQpORVRfSVBfQUxJR04gaXMgdGhlIG9mZnNldCBmb3Ig
+dGhlIGJhc2Ugb2YgZXRoZXJuZXQgZnJhbWVzLg0KSWYgemVybyB0aGUgSVAgaGVhZGVyIHdpbGwg
+KHVzdWFsbHkpIGJlIG1pc2FsaWduZWQuDQpJZiB0d28gdGhlIG1hYyBhZGRyZXNzZXMgYXJlIG1p
+c2FsaWduZWQgaW4gb3JkZXIgdG8gYWxpZ24NCnRoZSBJUCBoZWFkZXIgKDYrNisyIGJ5dGVzIGlu
+KS4NCkkgZG9uJ3QgdGhpbmsgYW55IG90aGVyIHZhbHVlcyBhcmUgYWN0dWFsbHkgdmFsaWQsIGJ1
+dA0KdGhlcmUgaXMgYWx3YXlzIHRoYXQgcG9zc2liaWxpdHkuDQoNClNvIHRoZSBkZWZpbml0aW9u
+IHNob3VsZCByZWFsbHkgYmU6DQojZGVmaW5lIFNVUFBPUlRFRF9BTElHTk1FTlQgKE5FVF9JUF9B
+TElHTiA/IDQgOiAxKQ0KDQooV2hpY2ggbWlnaHQgaGFwcGVuIHRvIGJlIHRoZSBzYW1lIHZhbHVl
+cyA6LSkNCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxl
+eSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0
+aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-I was planning to look at it once Lukasz/Dietmar confirm that this concept
-doesn't change anything fundamental in the way EAS related changes work
-today. I know I suggested the change as that seem to be right way to do
-but I haven't analysed if this has any negative impact on the existing
-features as this change will impact all the existing platform with OPPs
-above sustained performance/frequency advertised from the SCMI platform
-firmware.
-
--- 
-Regards,
-Sudeep
 
