@@ -1,106 +1,246 @@
-Return-Path: <linux-kernel+bounces-34906-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA9C483890D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:34:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 454C48388F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:32:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5AF6BB23461
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:34:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B16EFB21D7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:32:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E9B25A109;
-	Tue, 23 Jan 2024 08:32:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDE1353812;
+	Tue, 23 Jan 2024 08:32:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="jU5CfT80"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pXHintKM"
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F2255914C;
-	Tue, 23 Jan 2024 08:32:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67A92134C2
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 08:32:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705998777; cv=none; b=sIxAp1KTIOH8t+FOr6LEHIZTHQXJsC2U9gMTgNCx1P/s/M35C7cgmFBMh5e6bfMOBm+99J4LoDTsoHtgt7kJS/ewG+1Aqr2L5W8Gu5HZ9VwYy5Kex1wYza/4oLMlTOcJsktdUdf38/mfZYl8M8PI4jjymtQoNfWhf2xXhJMr73s=
+	t=1705998750; cv=none; b=CaBsZdAL/VJGCC6G1ABAZM3mYqvZ18dzBYUmx3uFB79Td7wUbBkLYkPUpUiUyp5jLrLj5orVMK6QTT0oDeAVMH2Nl4ytrH4cAhZy1xmy1cGXh0N8rFkH7x3v9Lux/rXM7igNAwfGFtO9g2eqVzTPmNbqput8xSKjMdmYcC4cawg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705998777; c=relaxed/simple;
-	bh=w0dxjFqQ8zn2yUDvgz8hDY7YiqyUIy+jKDWe65fPdMA=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=k2ZWQ5s7suFKmd3746VYqf10e86Ss6Bs5pl1n5Cp70PpxEkuGeN1RYn24nrWLMgihpwgVOZzwPLlzgDtFUpIcWoaORJtdFQftLb4eR9KJEOh6G7HUNNBGTsd2e34/hui5pTL3/fZCd7Wp1vl2glGepN8UNKSuUsTezaNrKbceBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=jU5CfT80; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1705998777; x=1737534777;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=w0dxjFqQ8zn2yUDvgz8hDY7YiqyUIy+jKDWe65fPdMA=;
-  b=jU5CfT80pvQ3H2dova4dI8ykCvdJjjv2VW1Tab3jZrqCLVGRXK6IGtTC
-   u54DwoUg16UdzvivzSFaQLm/67Jv4RdYdQTsSySYlPdnuo2pCR61mCcVR
-   pTtHt5ve2wnY55nfkPL6AiKR4I/o+vc+rp6MDD/LsSeoxAf+YTxjxGs3q
-   CmgyyFj9Hz9J9N7u4mGHBGl+TviO1BL8H0Kh5WbdVjrJBXOWVyVIyT82Q
-   H2nMvT0R54H6VUjh2PZkm6w2R8JcKjM/ZzVLAF6Cj9W3cn1XrexG9GMtQ
-   CccgdEGZawmzdg2zOia88GyvnvDGRNxIV1JPjA2VjGniE2Ca8OoGp/I1p
-   Q==;
-X-CSE-ConnectionGUID: 8Z0MiRbqTTiGlgq+aKWHzg==
-X-CSE-MsgGUID: cAO7RWtvSVamJ62rejuhUQ==
-X-IronPort-AV: E=Sophos;i="6.05,213,1701154800"; 
-   d="scan'208";a="15154468"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 23 Jan 2024 01:32:53 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 23 Jan 2024 01:32:44 -0700
-Received: from virtualbox.microchip.com (10.10.85.11) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Tue, 23 Jan 2024 01:32:42 -0700
-From: Mihai Sain <mihai.sain@microchip.com>
-To: <claudiu.beznea@tuxon.dev>, <robh+dt@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-	<nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-	<devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-CC: Mihai Sain <mihai.sain@microchip.com>
-Subject: [PATCH 8/8] ARM: dts: microchip: sama5d2_xplained: Add power-supply property for sdmmc0 node
-Date: Tue, 23 Jan 2024 10:31:58 +0200
-Message-ID: <20240123083158.7339-9-mihai.sain@microchip.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240123083158.7339-1-mihai.sain@microchip.com>
-References: <20240123083158.7339-1-mihai.sain@microchip.com>
+	s=arc-20240116; t=1705998750; c=relaxed/simple;
+	bh=T6PbmXuTc2XnNqGgLEZCpmWnaOzMXXw64Ie7SzNqQfY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UAYGs8STSvN3GB4Vqm1WIHR3qeOvAypwR6ADZ3RwY7FbGFeEkOG9Ob0IzRsH8gqorRuaKHfuQX4uvOsTy5+yYUkv000q6g/XkxzLIo/isUS5+R7z2dBFFsnbf8C0EaRSIXNRwh2MtFae5kwS3rOkBU58Sn9a6qcbrJy3g3ZKcjA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pXHintKM; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6dd80d3d419so89920b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:32:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1705998749; x=1706603549; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=dab06sjdKIpTPjV6PQYmokEqjfInIDZyaKpkRpvx1vY=;
+        b=pXHintKMNX52l5Mem3cO59llh1wuUdmzF98277E1BXY9iyQKunuMP5o1R3YfZJ0dyc
+         L1W2Bshw+K3pfHJVL/sSclI92Mr3MP4l9E0rnMunFM6DaV96VOnunvmvEZmIF8fAmgP7
+         jaeMiXKvXx9hgjythWVff3GMV9mTQ8yHjW5Rzb3gAUTrCCiRSTz+jhextWkBDbdiqiWJ
+         CZIsu3g3kisEJ8hNzTU/KFxDJMq20DgsktW+7qKhUlRj+nK0TyRnmBocc+HQd6NbCgNb
+         v0AXE3F5/6PwS2IEl7rcW3jJ5q69S5VdrNYduH50rn1rMdQsvdPgWk1Wjt3UZuCZ5U4J
+         AVZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705998749; x=1706603549;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dab06sjdKIpTPjV6PQYmokEqjfInIDZyaKpkRpvx1vY=;
+        b=FkROVcRDoQulLRcGFYdg757whOviT8puR3mD2eytEDHzQxoBCyNlBUOppcP1eWH5PM
+         GfmqgXfrRx8AjlxMm39nb+alpsYkuodhmxYAY4SqPE+y2x+KWkn8JVlbOkFFkwuhppYR
+         U3YD9C6fb+gQGtLULGb/TB9EEs6cYeQG2UhrYjPj0Yom/mS6KwmmYZd1NjjaR8ngLBg4
+         uD0lqbZpvKbNsAH5xi9bT35/ymMQLI17CR2vBNbGUXA5ePQHPbYNIq3SXFtNwHa1Wm0I
+         94RiXZQGS03HK2C3RSepT1Tqv9iyKt+2keLExuJhs7LsAUWpSx7eJ52bkvsXeT3p0f90
+         vnyQ==
+X-Gm-Message-State: AOJu0YykghNgMg4CxEICgefqviNXEz3LNCjLJN7hlt/GbDr0Nwd3n/NS
+	0sN3QtmRJP67dlKZSowsb5VHEqEd+guG1zkjO8HJqoXbSqO+VPbAXUuw0z4K9ETcl7JpGRPHEJh
+	/upFytlkE2iwSh57DgKQ/GS687s5dTjfdZ3g8HQ==
+X-Google-Smtp-Source: AGHT+IFwICqS9Iu4ri6CaqLtLQMcaPt6zdoeXaQomzQUmB3UoxZyfyJzL6rwc3PLLb1X4rwH41vFFItzHFC0PQlMuKE=
+X-Received: by 2002:a05:6a20:12d1:b0:19c:50e2:7a7 with SMTP id
+ v17-20020a056a2012d100b0019c50e207a7mr1675120pzg.5.1705998748748; Tue, 23 Jan
+ 2024 00:32:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <20240105222014.1025040-1-qyousef@layalina.io> <20240105222014.1025040-2-qyousef@layalina.io>
+ <213f94df-cc36-4281-805d-9f56cbfef796@arm.com>
+In-Reply-To: <213f94df-cc36-4281-805d-9f56cbfef796@arm.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Tue, 23 Jan 2024 09:32:17 +0100
+Message-ID: <CAKfTPtCfYcD_zPr7PqgL5hRYny=n3KW8hr6GY8q7zkoyRN7gQg@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] sched/fair: Check a task has a fitting cpu when
+ updating misfit
+To: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: Qais Yousef <qyousef@layalina.io>, Ingo Molnar <mingo@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org, 
+	Pierre Gondois <Pierre.Gondois@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 
-The sdmmc0 controller is powered from 3.3V regulator.
-Add vmmc-supply and vqmmc-supply properties to sdmmc0 node.
+On Mon, 22 Jan 2024 at 10:59, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+>
+> On 05/01/2024 23:20, Qais Yousef wrote:
+> > From: Qais Yousef <qais.yousef@arm.com>
+> >
+> > If a misfit task is affined to a subset of the possible cpus, we need to
+> > verify that one of these cpus can fit it. Otherwise the load balancer
+> > code will continuously trigger needlessly leading the balance_interval
+> > to increase in return and eventually end up with a situation where real
+> > imbalances take a long time to address because of this impossible
+> > imbalance situation.
+> >
+> > This can happen in Android world where it's common for background tasks
+> > to be restricted to little cores.
+> >
+> > Similarly if we can't fit the biggest core, triggering misfit is
+> > pointless as it is the best we can ever get on this system.
+> >
+> > To be able to detect that; we use asym_cap_list to iterate through
+> > capacities in the system to see if the task is able to run at a higher
+> > capacity level based on its p->cpus_ptr. To do so safely, we convert the
+> > list to be RCU protected.
+> >
+> > To be able to iterate through capacity levels, export asym_cap_list to
+> > allow for fast traversal of all available capacity levels in the system.
+> >
+> > Test:
+> > =====
+> >
+> > Add
+> >
+> >       trace_printk("balance_interval = %lu\n", interval)
+> >
+> > in get_sd_balance_interval().
+> >
+> > run
+> >       if [ "$MASK" != "0" ]; then
+> >               adb shell "taskset -a $MASK cat /dev/zero > /dev/null"
+> >       fi
+> >       sleep 10
+> >       // parse ftrace buffer counting the occurrence of each valaue
+> >
+> > Where MASK is either:
+> >
+> >       * 0: no busy task running
+>
+> ... no busy task stands for no misfit scenario?
+>
+> >       * 1: busy task is pinned to 1 cpu; handled today to not cause
+> >         misfit
+> >       * f: busy task pinned to little cores, simulates busy background
+> >         task, demonstrates the problem to be fixed
+> >
+>
+> [...]
+>
+> > +     /*
+> > +      * If the task affinity is not set to default, make sure it is not
+> > +      * restricted to a subset where no CPU can ever fit it. Triggering
+> > +      * misfit in this case is pointless as it has no where better to move
+> > +      * to. And it can lead to balance_interval to grow too high as we'll
+> > +      * continuously fail to move it anywhere.
+> > +      */
+> > +     if (!cpumask_equal(p->cpus_ptr, cpu_possible_mask)) {
+>
+> Shouldn't this be cpu_active_mask ?
+>
+> include/linux/cpumask.h
+>
+>  * cpu_possible_mask- has bit 'cpu' set iff cpu is populatable
+>  * cpu_present_mask - has bit 'cpu' set iff cpu is populated
+>  * cpu_online_mask  - has bit 'cpu' set iff cpu available to scheduler
+>  * cpu_active_mask  - has bit 'cpu' set iff cpu available to migration
+>
+>
+> > +             unsigned long clamped_util = clamp(util, uclamp_min, uclamp_max);
+> > +             bool has_fitting_cpu = false;
+> > +             struct asym_cap_data *entry;
+> > +
+> > +             rcu_read_lock();
+> > +             list_for_each_entry_rcu(entry, &asym_cap_list, link) {
+> > +                     if (entry->capacity > cpu_cap) {
+> > +                             cpumask_t *cpumask;
+> > +
+> > +                             if (clamped_util > entry->capacity)
+> > +                                     continue;
+> > +
+> > +                             cpumask = cpu_capacity_span(entry);
+> > +                             if (!cpumask_intersects(p->cpus_ptr, cpumask))
+> > +                                     continue;
+> > +
+> > +                             has_fitting_cpu = true;
+> > +                             break;
+> > +                     }
+> > +             }
+>
+> What happen when we hotplug out all CPUs of one CPU capacity value?
+> IMHO, we don't call asym_cpu_capacity_scan() with !new_topology
+> (partition_sched_domains_locked()).
+>
+> > +             rcu_read_unlock();
+> > +
+> > +             if (!has_fitting_cpu)
+> > +                     goto out;
+> >       }
+> >
+> >       /*
+> > @@ -5083,6 +5127,9 @@ static inline void update_misfit_status(struct task_struct *p, struct rq *rq)
+> >        * task_h_load() returns 0.
+> >        */
+> >       rq->misfit_task_load = max_t(unsigned long, task_h_load(p), 1);
+> > +     return;
+> > +out:
+> > +     rq->misfit_task_load = 0;
+> >  }
+> >
+> >  #else /* CONFIG_SMP */
+> > @@ -9583,9 +9630,7 @@ check_cpu_capacity(struct rq *rq, struct sched_domain *sd)
+> >   */
+> >  static inline int check_misfit_status(struct rq *rq, struct sched_domain *sd)
+> >  {
+> > -     return rq->misfit_task_load &&
+> > -             (arch_scale_cpu_capacity(rq->cpu) < rq->rd->max_cpu_capacity ||
+> > -              check_cpu_capacity(rq, sd));
+> > +     return rq->misfit_task_load && check_cpu_capacity(rq, sd);
+>
+> You removed 'arch_scale_cpu_capacity(rq->cpu) <
+> rq->rd->max_cpu_capacity' here. Why? I can see that with the standard
+> setup (max CPU capacity equal 1024) which is what we probably use 100%
+> of the time now. It might get useful again when Vincent will introduce
+> his 'user space system pressure' implementation?
 
-Signed-off-by: Mihai Sain <mihai.sain@microchip.com>
----
- arch/arm/boot/dts/microchip/at91-sama5d2_xplained.dts | 2 ++
- 1 file changed, 2 insertions(+)
+That's interesting because I'm doing the opposite in the user space
+system pressure that I'm preparing:
+I keep something similar to (arch_scale_cpu_capacity(rq->cpu) <
+rq->rd->max_cpu_capacity but I remove check_cpu_capacity(rq, sd) which
+seems to be useless because it's already used earlier in
+nohz_balancer_kick()
 
-diff --git a/arch/arm/boot/dts/microchip/at91-sama5d2_xplained.dts b/arch/arm/boot/dts/microchip/at91-sama5d2_xplained.dts
-index 6680031387e8..9b7e56790a5a 100644
---- a/arch/arm/boot/dts/microchip/at91-sama5d2_xplained.dts
-+++ b/arch/arm/boot/dts/microchip/at91-sama5d2_xplained.dts
-@@ -67,6 +67,8 @@ sdmmc0: sdio-host@a0000000 {
- 			pinctrl-0 = <&pinctrl_sdmmc0_default>;
- 			non-removable;
- 			mmc-ddr-3_3v;
-+			vmmc-supply = <&vdd_3v3_reg>;
-+			vqmmc-supply = <&vdd_3v3_reg>;
- 			status = "okay";
- 		};
- 
--- 
-2.43.0
-
+>
+> >  }
+>
+> [...]
+>
+> > @@ -1423,8 +1418,8 @@ static void asym_cpu_capacity_scan(void)
+> >
+> >       list_for_each_entry_safe(entry, next, &asym_cap_list, link) {
+> >               if (cpumask_empty(cpu_capacity_span(entry))) {
+> > -                     list_del(&entry->link);
+> > -                     kfree(entry);
+> > +                     list_del_rcu(&entry->link);
+> > +                     call_rcu(&entry->rcu, free_asym_cap_entry);
+>
+> Looks like there could be brief moments in which one CPU capacity group
+> of CPUs could be twice in asym_cap_list. I'm thinking about initial
+> startup + max CPU frequency related adjustment of CPU capacity
+> (init_cpu_capacity_callback()) for instance. Not sure if this is really
+> an issue?
+>
+> [...]
+>
 
