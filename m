@@ -1,141 +1,160 @@
-Return-Path: <linux-kernel+bounces-35710-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07209839570
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:54:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99A1A839574
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:55:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B27671F307BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:54:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39C0B1F30755
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:55:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D63E88612D;
-	Tue, 23 Jan 2024 16:48:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F96186AC3;
+	Tue, 23 Jan 2024 16:48:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="PA70v2ZZ"
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="L7zxGhFK"
+Received: from mail-wm1-f73.google.com (mail-wm1-f73.google.com [209.85.128.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8C8F85C7F
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 16:48:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3998186153
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 16:48:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706028508; cv=none; b=oVihGXr91ehcaZ26aN/1E5rGIZqL78kYtAB3v7WPJQYUzhY8dQ0ec/WozF45tnqDqoCZ5SryGKDwju2NR9pAHa3A72HOTFqLfMySmqOl1bSGlnv7/N95en1VZ+fJ4PGIShUoOMhK2hx5bbPGcBRZRzAcnq0u7vFxXibWyOomrGQ=
+	t=1706028518; cv=none; b=S355Gy7A21yH438D32tHARKJ3dVCz6f9Gka50rU295YbhyLPbWXX0ZTQuvLcVwEtVFp8cw4/rl2VmV7Qh9/d0ffWBFA0YB/y1rW0tMdmy7H1XjFEmz+i3bFsyEQuLPMKPO39PjimPa0xmHKLBwzhcgFavY9+N3zr+iuJVi0IBMM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706028508; c=relaxed/simple;
-	bh=K+Id2pHFvW1zQtjRoC+3WBupoAqObAViI/JK0/PN30A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N3YgbMMEMiiQy1KM+LhcqF92bBxby6SApg435+hzrcJcbaWziw+NdUMEoueGH3k7RJ+4zwHk3tGaQfbPAcaAvhIix7ZxMxJoh8I/ejClZXq1+GJXHYZ9P6kaA9NGIoCDM5hc2wrZ3euhAWZthOh1Iq+igMFLS/ns66fNBFS5pFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=PA70v2ZZ; arc=none smtp.client-ip=209.85.167.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3bdc2759468so655406b6e.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 08:48:25 -0800 (PST)
+	s=arc-20240116; t=1706028518; c=relaxed/simple;
+	bh=xeMH/PTY9RvVC0crS+oE1ldLHgl6NeMg+38kZCLwc40=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=VyEGbXE5aMktEk7SUcv1zQHO6Eis/mXYCqUdaJze+Rq0ln2iaNkL/xZQgiy+9PDSx0WwjspWK1waIgZ3MOglRUOqCz7wsP8hWQa3Rz2rihxiY5nlDryf4p/EDGvMXWUDROYoFe20UGP2Gh3TFF5eRGTJ+8WLfDDfvEU5pe6I5Iw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--sebastianene.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=L7zxGhFK; arc=none smtp.client-ip=209.85.128.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--sebastianene.bounces.google.com
+Received: by mail-wm1-f73.google.com with SMTP id 5b1f17b1804b1-40eaed9b181so18982935e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 08:48:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1706028504; x=1706633304; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gbO1hM7Gq1MMQFtxk3PHCAqmC2ittFH3Mus5UZlycCs=;
-        b=PA70v2ZZHYuoAZqpmB7fz+85LCW0+TO6VG2b4x3NOu0ussKVZ4AXHelDYjuLQ2G1jC
-         1+VLfSTrXGHXIKxA/A+fzbkiRAk8ItEk7xbiJKsy0Ei+8mPYiRYRoKB17IJRNwUy9U9M
-         EB/1kzw4McDl34441AI1fwHHwVRpgwBTtyF+joV/UYlD9lNX06WQ50QSnLqXmRdxu9/I
-         kmpIjyOCbOmpdmzyg+KtLo2NQDbI7A8bAn+n4buF7qNXa/k8S1nDEADjIMVUhNHu7iyH
-         ejaJ8EVtQLPtZGMFbwVn9VPUtKaLtNMpTIc8Q8bHs0XFv48IQ18LTm4UwqXNNkgxYbNs
-         taIg==
+        d=google.com; s=20230601; t=1706028515; x=1706633315; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=OBfCCDyzKoRpaf1abp6hy1jxU0Vk3dNquTbtYZnKWbE=;
+        b=L7zxGhFKy7FtlxaeEt2ZTtalxk9MbHeWeLtUNTV+tGdIoXzWFzdCv2WnCe5Vj3Luv+
+         OuhOq9jd6du87x1MBp4Wre00ADYn5lkIGF2VWfrtSEMDdWMwiWZuvLQPcbgfGAcKcCXY
+         8zlzPnN74BmDS4JC9a+v6YCMFn6bkDfEolH0rm5IDB/xn2hFEhrjSPj0ynsjJ4A9dZSh
+         VtRRZpVkcIBOvHvvAt5+jRPCjo1U8RgdaI+KxtAI+IoUrrifIXs2D2J6dX3YAEKxlW4S
+         s+lR2r63QNUcwtO4ljcbnlBC7a31C9oPvi7VyT68Xt+aefXiOfjAi33tXNoOLy6LPn6P
+         Pbcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706028504; x=1706633304;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gbO1hM7Gq1MMQFtxk3PHCAqmC2ittFH3Mus5UZlycCs=;
-        b=Or2zGkGjYRa/qKLO6jjBjUQLOqnjewcUS5Pkw9T+dxcaV4Mvoa6ZPFmcTk4jWqxd+Z
-         ICxCCQ3i3udrAKVHGFxrUfGbxXjmTwa6BlqG7hK9FqQMXSg9FSTquks/n20T9CLD90d7
-         RivRk9M17QUthTKKamUJzM+R+9m21pAOWYDYdgB/roK30zYuLolKo2NW1Zr5qY9eAfKi
-         e7uch2x4xUQW1fZtGtdL9yTU/R2mAnZBkkKyeRmyqzrEL5mXLT/GaY2ljYRJVQZy1XEK
-         CGnSb6E9uLUfmNe6ZOJbDbdrO+c3g+Q7WpeO0P1gZhVIn05sFORbwDOUoLzBL8XBe5+w
-         sDrQ==
-X-Gm-Message-State: AOJu0YyIroeCXJ6wF2JFotMxP+9V2aKsw0Mcg++dewhoSrfpP/O3ugQh
-	Jw8s6W6LEUO1ubQEnds7xcJuSj4NuQt14qSaFSgvV6h8UiCZEiO1oH6GnGSjgO4=
-X-Google-Smtp-Source: AGHT+IHUG7S/rv/R7wA+Z9UIIztYDf0v6Sh7d9fO6fdN0c9sFxPRFzPESC1XVa3Mb1iV3eCC4V2oUg==
-X-Received: by 2002:a05:6808:399a:b0:3bd:cbb2:4614 with SMTP id gq26-20020a056808399a00b003bdcbb24614mr185240oib.68.1706028504592;
-        Tue, 23 Jan 2024 08:48:24 -0800 (PST)
-Received: from localhost (2603-7000-0c01-2716-97cf-7b55-44af-acd6.res6.spectrum.com. [2603:7000:c01:2716:97cf:7b55:44af:acd6])
-        by smtp.gmail.com with ESMTPSA id bk21-20020a05620a1a1500b0078353f07523sm3256413qkb.1.2024.01.23.08.48.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 08:48:24 -0800 (PST)
-Date: Tue, 23 Jan 2024 11:48:19 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: "T.J. Mercier" <tjmercier@google.com>
-Cc: Michal Hocko <mhocko@suse.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>, android-mm@google.com,
-	yuzhao@google.com, yangyifei03@kuaishou.com,
-	cgroups@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "mm:vmscan: fix inaccurate reclaim during
- proactive reclaim"
-Message-ID: <20240123164819.GB1745986@cmpxchg.org>
-References: <20240121214413.833776-1-tjmercier@google.com>
- <Za-H8NNW9bL-I4gj@tiehlicka>
- <CABdmKX2K4MMe9rsKfWi9RxUS5G1RkLVzuUkPnovt5O2hqVmbWA@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1706028515; x=1706633315;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OBfCCDyzKoRpaf1abp6hy1jxU0Vk3dNquTbtYZnKWbE=;
+        b=VYUfJKrJpHUUj9v8V6MjjhT8ig6y7jN5abOB5LyKJ/OR0Bdqn/Bllisu7mdm0J/+AI
+         X+U+uM5Lj/WlbcejIbyUgeSCdg95FNfJQeUBwHWhqe2NQYXnVjvhY8HhC0TAZwRQ6KPi
+         fhksQuBROok+7py8WgpxWryg6Bc5R3DuTR8t21KVIQ7pXLiRewo70ortpCgedDqlIsUa
+         tgAw5sjWIsUu1UBKkAkMiQ7//VTbTYYB5s03OZhXf94NXah9OXkOSZ8EId4tsNePkOOu
+         kWq5Zfc8CtmIbHjRPcRQmlEosCpgLrjOYmMstxCr+73hit853/nSgjSZK3i4Um5RTwJ+
+         4Sjw==
+X-Gm-Message-State: AOJu0YwpZMYUNsrQEtSun33mYnAWqqztuwV/qHWe/b9IgHMJwBwDyLBI
+	BMBQy4vfzvqys4t58pakZMKE6koRvwJ/FrE7/uz7KnG0WN88fLlH8IychHHHsVNP+HEdUWBZSmn
+	hdn9fkou/FOJdOtPIUG3iChgKtQ==
+X-Google-Smtp-Source: AGHT+IH+Mlr6tHRfY6bx2hXJSMKsnWPJRGl4NYKa0sp9VUfpgnmD9gh0uN5EJJTqznNM7e5Ct5DDTXdfW1jXBoCyNNc=
+X-Received: from sebkvm.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:cd5])
+ (user=sebastianene job=sendgmr) by 2002:a05:600c:4e50:b0:40e:bf1e:9e84 with
+ SMTP id e16-20020a05600c4e5000b0040ebf1e9e84mr17364wmq.5.1706028515271; Tue,
+ 23 Jan 2024 08:48:35 -0800 (PST)
+Date: Tue, 23 Jan 2024 16:48:19 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABdmKX2K4MMe9rsKfWi9RxUS5G1RkLVzuUkPnovt5O2hqVmbWA@mail.gmail.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+Message-ID: <20240123164818.1306122-2-sebastianene@google.com>
+Subject: [PATCH] KVM: arm64: Fix circular locking dependency
+From: Sebastian Ene <sebastianene@google.com>
+To: Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
+	James Morse <james.morse@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
+	Zenghui Yu <yuzenghui@huawei.com>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, kernel-team@android.com, 
+	Sebastian Ene <sebastianene@google.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-The revert isn't a straight-forward solution.
+The rule inside kvm enforces that the vcpu->mutex is taken *inside*
+kvm->lock. The rule is violated by the pkvm_create_hyp_vm which acquires
+the kvm->lock while already holding the vcpu->mutex lock from
+kvm_vcpu_ioctl. Follow the rule by taking the config lock while getting the
+VM handle and make sure that this is cleaned on VM destroy under the
+same lock.
 
-The patch you're reverting fixed conventional reclaim and broke
-MGLRU. Your revert fixes MGLRU and breaks conventional reclaim.
+Signed-off-by: Sebastian Ene <sebastianene@google.com>
+Cc: stable@vger.kernel.org
+---
+ arch/arm64/kvm/pkvm.c | 27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
 
-On Tue, Jan 23, 2024 at 05:58:05AM -0800, T.J. Mercier wrote:
-> They both are able to make progress. The main difference is that a
-> single iteration of try_to_free_mem_cgroup_pages with MGLRU ends soon
-> after it reclaims nr_to_reclaim, and before it touches all memcgs. So
-> a single iteration really will reclaim only about SWAP_CLUSTER_MAX-ish
-> pages with MGLRU. WIthout MGLRU the memcg walk is not aborted
-> immediately after nr_to_reclaim is reached, so a single call to
-> try_to_free_mem_cgroup_pages can actually reclaim thousands of pages
-> even when sc->nr_to_reclaim is 32. (I.E. MGLRU overreclaims less.)
-> https://lore.kernel.org/lkml/20221201223923.873696-1-yuzhao@google.com/
+diff --git a/arch/arm64/kvm/pkvm.c b/arch/arm64/kvm/pkvm.c
+index 8350fb8fee0b..b7be96a53597 100644
+--- a/arch/arm64/kvm/pkvm.c
++++ b/arch/arm64/kvm/pkvm.c
+@@ -101,6 +101,17 @@ void __init kvm_hyp_reserve(void)
+ 		 hyp_mem_base);
+ }
+ 
++static void __pkvm_destroy_hyp_vm(struct kvm *host_kvm)
++{
++	if (host_kvm->arch.pkvm.handle) {
++		WARN_ON(kvm_call_hyp_nvhe(__pkvm_teardown_vm,
++					  host_kvm->arch.pkvm.handle));
++	}
++
++	host_kvm->arch.pkvm.handle = 0;
++	free_hyp_memcache(&host_kvm->arch.pkvm.teardown_mc);
++}
++
+ /*
+  * Allocates and donates memory for hypervisor VM structs at EL2.
+  *
+@@ -181,7 +192,7 @@ static int __pkvm_create_hyp_vm(struct kvm *host_kvm)
+ 	return 0;
+ 
+ destroy_vm:
+-	pkvm_destroy_hyp_vm(host_kvm);
++	__pkvm_destroy_hyp_vm(host_kvm);
+ 	return ret;
+ free_vm:
+ 	free_pages_exact(hyp_vm, hyp_vm_sz);
+@@ -194,23 +205,19 @@ int pkvm_create_hyp_vm(struct kvm *host_kvm)
+ {
+ 	int ret = 0;
+ 
+-	mutex_lock(&host_kvm->lock);
++	mutex_lock(&host_kvm->arch.config_lock);
+ 	if (!host_kvm->arch.pkvm.handle)
+ 		ret = __pkvm_create_hyp_vm(host_kvm);
+-	mutex_unlock(&host_kvm->lock);
++	mutex_unlock(&host_kvm->arch.config_lock);
+ 
+ 	return ret;
+ }
+ 
+ void pkvm_destroy_hyp_vm(struct kvm *host_kvm)
+ {
+-	if (host_kvm->arch.pkvm.handle) {
+-		WARN_ON(kvm_call_hyp_nvhe(__pkvm_teardown_vm,
+-					  host_kvm->arch.pkvm.handle));
+-	}
+-
+-	host_kvm->arch.pkvm.handle = 0;
+-	free_hyp_memcache(&host_kvm->arch.pkvm.teardown_mc);
++	mutex_lock(&host_kvm->arch.config_lock);
++	__pkvm_destroy_hyp_vm(host_kvm);
++	mutex_unlock(&host_kvm->arch.config_lock);
+ }
+ 
+ int pkvm_init_host_vm(struct kvm *host_kvm)
+-- 
+2.43.0.429.g432eaa2c6b-goog
 
-Is that a feature or a bug?
-
- * 1. Memcg LRU only applies to global reclaim, and the round-robin incrementing
- *    of their max_seq counters ensures the eventual fairness to all eligible
- *    memcgs. For memcg reclaim, it still relies on mem_cgroup_iter().
-
-If it bails out exactly after nr_to_reclaim, it'll overreclaim
-less. But with steady reclaim in a complex subtree, it will always hit
-the first cgroup returned by mem_cgroup_iter() and then bail. This
-seems like a fairness issue.
-
-We should figure out what the right method for balancing fairness with
-overreclaim is, regardless of reclaim implementation. Because having
-two different approaches and reverting dependent things back and forth
-doesn't make sense.
-
-Using an LRU to rotate through memcgs over multiple reclaim cycles
-seems like a good idea. Why is this specific to MGLRU? Shouldn't this
-be a generic piece of memcg infrastructure?
-
-Then there is the question of why there is an LRU for global reclaim,
-but not for subtree reclaim. Reclaiming a container with multiple
-subtrees would benefit from the fairness provided by a container-level
-LRU order just as much; having fairness for root but not for subtrees
-would produce different reclaim and pressure behavior, and can cause
-regressions when moving a service from bare-metal into a container.
-
-Figuring out these differences and converging on a method for cgroup
-fairness would be the better way of fixing this. Because of the
-regression risk to the default reclaim implementation, I'm inclined to
-NAK this revert.
 
