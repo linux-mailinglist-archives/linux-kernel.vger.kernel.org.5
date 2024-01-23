@@ -1,242 +1,109 @@
-Return-Path: <linux-kernel+bounces-35203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35247-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18ED4838D86
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:35:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 313F7838E89
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:29:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E2021C215DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:35:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63EC51C23513
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:29:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 601FD5D91C;
-	Tue, 23 Jan 2024 11:34:43 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9CBE5D749;
-	Tue, 23 Jan 2024 11:34:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59C945EE74;
+	Tue, 23 Jan 2024 12:29:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZjxEFgFE"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC34B5DF1D;
+	Tue, 23 Jan 2024 12:29:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706009682; cv=none; b=iFY1bT1xpVBygSCRctuJJDJWBlBqrb5Zak2Io0hXrcdKIk1Y6BR+KF3TEw1nDaOUXQo4bBdWvC2vMeSRmOSRln3rRWUTtUTpFfUutl656Fz0W/9krIpyaWq1BJKxE76vwFkDhi27pS+f5YF4OVt6p8+uhgrcGJDNKXHUt3qVwoA=
+	t=1706012942; cv=none; b=V9KnUrldA0le+P+xWBgwvxoodSBePKu38bD9S3/gD8MYY24BFVWVLrfN5fUpBSnkGXdrjui7y1J/Cl+3YOxOfPE4mka+U71UzOMAV3azXJTWDGz8S//+2i6kfAXnN1Bdx2pzZNCl/4bWBEkLrXbHb0ABcAPb4dd8FToLWpr6xQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706009682; c=relaxed/simple;
-	bh=Cc/p6EAOGiTANpj0L+SitTQEdRt/dqFYisZ1hnh761s=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qips+1bHNsmBaboPYl1YvGnc+skPw0CeMHBBWvPKgzQKvsGSVnnvxAJRmarWQaSzgq1f6schv4cfBEJxXtzn/zGXUMJgsbYBVWnDwsywiwBn3lIH7qvzuH0YTVCRC8o6bk17WHFk2H+qnQUl3oyvPj+1tcy7iiXEQ/R43X5GswI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3A9B6FEC;
-	Tue, 23 Jan 2024 03:35:25 -0800 (PST)
-Received: from e126817.. (e126817.cambridge.arm.com [10.2.3.5])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0CE1C3F762;
-	Tue, 23 Jan 2024 03:34:37 -0800 (PST)
-From: Ben Gainey <ben.gainey@arm.com>
-To: linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Cc: peterz@infradead.org,
-	mingo@redhat.com,
-	acme@kernel.org,
-	mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org,
-	namhyung@kernel.org,
-	irogers@google.com,
-	adrian.hunter@intel.com,
-	will@kernel.org,
-	Ben Gainey <ben.gainey@arm.com>
-Subject: [RFC PATCH 1/2] arm_pmu: Allow the PMU to alternate between two sample_period values.
-Date: Tue, 23 Jan 2024 11:34:19 +0000
-Message-ID: <20240123113420.1928154-2-ben.gainey@arm.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240123113420.1928154-1-ben.gainey@arm.com>
-References: <20240123113420.1928154-1-ben.gainey@arm.com>
+	s=arc-20240116; t=1706012942; c=relaxed/simple;
+	bh=fa13xu/t9vD3MafwP+nS2cWhEeHXrK5C1PsxHCLZJHI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=b5xx34fPumssO3KOC1fQhlusAiYTB2Qopw5J0P53qs8IIdPWy/Q6VkU71BxAfVC/cNBMgbuv5H24YcqDyfye8l92yE/Rw6cvB87ZAp5mU6RMKkdGsqKPrEmhzMdOFDQAojezhgysdGyb1uRFdY9bXtUlPo6zYN1SegDOKl9pTEY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZjxEFgFE; arc=none smtp.client-ip=192.55.52.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706012941; x=1737548941;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=fa13xu/t9vD3MafwP+nS2cWhEeHXrK5C1PsxHCLZJHI=;
+  b=ZjxEFgFEeQmd42aOsCYA7TW1xjHjMp6aPFTz71Nt0KvDksV5LikOERed
+   0UDB06G/sF7H7XSwsIeWWiiFkzYFoQuHW+AdyOad/du9+H90h9+Zfcw/i
+   wl0+InBEzbj8F4NdWqla3Rp54gZA+1+hr7A3CJNVof1wU9MXs2ZEqLaTP
+   3Ff47BmEChijV0k5xcCTH9+flaLOHNH6XejdVVkyOjLQuvQrT+3ffOmOn
+   b/DLk3lCTLzHrCI9LI+HTj5mscTsfLRFLdTbZaJPuE4p4vUvC7a5ohRs3
+   RJNUcLNWDKcpTSc2cl2ZpZ5AM2h0fsu1Dg/HunFclSuzh2TI8eyKpN5D5
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="432662304"
+X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
+   d="scan'208";a="432662304"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 04:28:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="786050302"
+X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
+   d="scan'208";a="786050302"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga002.jf.intel.com with ESMTP; 23 Jan 2024 04:28:57 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+	id BCDE4483; Tue, 23 Jan 2024 13:34:19 +0200 (EET)
+Date: Tue, 23 Jan 2024 13:34:19 +0200
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Andreas Noever <andreas.noever@gmail.com>,
+	Michael Jamet <michael.jamet@intel.com>,
+	Yehezkel Bernat <YehezkelShB@gmail.com>,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+	linux-usb@vger.kernel.org
+Subject: Re: [PATCH] thunderbolt: Remove usage of the deprecated
+ ida_simple_xx() API
+Message-ID: <20240123113419.GN2543524@black.fi.intel.com>
+References: <7fce4c8c4345d283dbfadd3cea60fdc49f9ca087.1705007397.git.christophe.jaillet@wanadoo.fr>
+ <20240122112922.GH2543524@black.fi.intel.com>
+ <d11852b1-6d9c-4ced-83cb-96e753edd45d@wanadoo.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <d11852b1-6d9c-4ced-83cb-96e753edd45d@wanadoo.fr>
 
-The arm PMU does not provide any mechanism for decoupling the period over
-which counters are counted from the period between samples. This is
-problematic for building a tool to measure per-function metrics derived
-from a sampled counter group. Ideally such a tool wants a very small
-sample window in order to correctly attribute the metrics to a given
-function, but prefers a larger sample period that provides representative
-coverage without excessive probe effect, triggering throttling, or
-generating excessive amounts of data.
+On Mon, Jan 22, 2024 at 06:57:42PM +0100, Christophe JAILLET wrote:
+> Le 22/01/2024 à 12:29, Mika Westerberg a écrit :
+> > On Thu, Jan 11, 2024 at 10:10:21PM +0100, Christophe JAILLET wrote:
+> > > ida_alloc() and ida_free() should be preferred to the deprecated
+> > > ida_simple_get() and ida_simple_remove().
+> > > 
+> > > Note that the upper limit of ida_simple_get() is exclusive, but the one of
+> > > ida_alloc_range()/ida_alloc_max() is inclusive. So a -1 has been added
+> > > when needed.
+> > 
+> > Looks tood to me but wanted to check if you tested this on a real
+> > hardware or you just build tested?
+> > 
+> > 
+> 
+> Hi,
+> 
+> It was compile tested only.
+> 
+> Transformation has been done with the help of the cocci script below.
 
-By alternating between a long and short sample_period and subsequently
-discarding the long samples, tools may decouple the period between
-samples that the tool cares about from the window of time over which
-interesting counts are collected.
+Okay that's what I thought too. I ran some testing on a real hardware
+and did not see any issues.
 
-It is expected that typically tools would use this feature with the
-cycles or instructions events as an approximation for time, but no
-restrictions are applied to which events this can be applied to.
-
-Signed-off-by: Ben Gainey <ben.gainey@arm.com>
----
- drivers/perf/arm_pmu.c       | 74 +++++++++++++++++++++++++++++-------
- include/linux/perf/arm_pmu.h |  1 +
- include/linux/perf_event.h   | 10 ++++-
- 3 files changed, 70 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/perf/arm_pmu.c b/drivers/perf/arm_pmu.c
-index 8458fe2cebb4f..58e40dbabfc3f 100644
---- a/drivers/perf/arm_pmu.c
-+++ b/drivers/perf/arm_pmu.c
-@@ -99,6 +99,17 @@ static const struct pmu_irq_ops percpu_pmunmi_ops = {
- 	.free_pmuirq = armpmu_free_percpu_pmunmi
- };
- 
-+static inline bool armpmu_is_strobe_enabled(struct hw_perf_event *hwc)
-+{
-+	return hwc->strobe_period != 0;
-+}
-+
-+void armpmu_set_strobe_period(struct hw_perf_event *hwc, u32 period)
-+{
-+	hwc->strobe_period = period;
-+	hwc->strobe_active = false;
-+}
-+
- static DEFINE_PER_CPU(struct arm_pmu *, cpu_armpmu);
- static DEFINE_PER_CPU(int, cpu_irq);
- static DEFINE_PER_CPU(const struct pmu_irq_ops *, cpu_irq_ops);
-@@ -202,22 +213,45 @@ int armpmu_event_set_period(struct perf_event *event)
- 	struct arm_pmu *armpmu = to_arm_pmu(event->pmu);
- 	struct hw_perf_event *hwc = &event->hw;
- 	s64 left = local64_read(&hwc->period_left);
--	s64 period = hwc->sample_period;
--	u64 max_period;
-+	s64 period_active = hwc->sample_period;
-+	u64 max_period = arm_pmu_event_max_period(event);
- 	int ret = 0;
- 
--	max_period = arm_pmu_event_max_period(event);
--	if (unlikely(left <= -period)) {
--		left = period;
--		local64_set(&hwc->period_left, left);
--		hwc->last_period = period;
--		ret = 1;
--	}
-+	if (likely(!armpmu_is_strobe_enabled(hwc))) {
-+		if (unlikely(left <= -period_active)) {
-+			left = period_active;
-+			local64_set(&hwc->period_left, left);
-+			hwc->last_period = period_active;
-+			ret = 1;
-+		}
-+
-+		if (unlikely(left <= 0)) {
-+			left += period_active;
-+			local64_set(&hwc->period_left, left);
-+			hwc->last_period = period_active;
-+			ret = 1;
-+		}
-+	} else if (unlikely(left <= 0)) {
-+		s64 new_period;
-+		bool new_active;
-+
-+		/*
-+		 * When strobing is enabled, do not attempt to adjust the
-+		 * period based on the previous overflow, instead just
-+		 * alternate between the two periods
-+		 */
-+		if (hwc->strobe_active) {
-+			new_period = period_active;
-+			new_active = false;
-+		} else {
-+			new_period = hwc->strobe_period;
-+			new_active = true;
-+		}
- 
--	if (unlikely(left <= 0)) {
--		left += period;
-+		left = new_period;
- 		local64_set(&hwc->period_left, left);
--		hwc->last_period = period;
-+		hwc->last_period = new_period;
-+		hwc->strobe_active = new_active;
- 		ret = 1;
- 	}
- 
-@@ -448,6 +482,9 @@ __hw_perf_event_init(struct perf_event *event)
- 	int mapping, ret;
- 
- 	hwc->flags = 0;
-+	hwc->strobe_active = false;
-+	hwc->strobe_period = 0;
-+
- 	mapping = armpmu->map_event(event);
- 
- 	if (mapping < 0) {
-@@ -456,6 +493,15 @@ __hw_perf_event_init(struct perf_event *event)
- 		return mapping;
- 	}
- 
-+	if (armpmu_is_strobe_enabled(hwc)) {
-+		if (event->attr.freq)
-+			return -EINVAL;
-+		if (hwc->strobe_period == 0)
-+			return -EINVAL;
-+		if (hwc->strobe_period >= event->attr.sample_period)
-+			return -EINVAL;
-+	}
-+
- 	/*
- 	 * We don't assign an index until we actually place the event onto
- 	 * hardware. Use -1 to signify that we haven't decided where to put it
-@@ -488,8 +534,8 @@ __hw_perf_event_init(struct perf_event *event)
- 		 * is far less likely to overtake the previous one unless
- 		 * you have some serious IRQ latency issues.
- 		 */
--		hwc->sample_period  = arm_pmu_event_max_period(event) >> 1;
--		hwc->last_period    = hwc->sample_period;
-+		hwc->sample_period = arm_pmu_event_max_period(event) >> 1;
-+		hwc->last_period = hwc->sample_period;
- 		local64_set(&hwc->period_left, hwc->sample_period);
- 	}
- 
-diff --git a/include/linux/perf/arm_pmu.h b/include/linux/perf/arm_pmu.h
-index b3b34f6670cfb..3ee74382e7a93 100644
---- a/include/linux/perf/arm_pmu.h
-+++ b/include/linux/perf/arm_pmu.h
-@@ -175,6 +175,7 @@ void armpmu_free(struct arm_pmu *pmu);
- int armpmu_register(struct arm_pmu *pmu);
- int armpmu_request_irq(int irq, int cpu);
- void armpmu_free_irq(int irq, int cpu);
-+void armpmu_set_strobe_period(struct hw_perf_event *hwc, u32 period);
- 
- #define ARMV8_PMU_PDEV_NAME "armv8-pmu"
- 
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index d2a15c0c6f8a9..7ef3f39fe6171 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -157,7 +157,15 @@ struct hw_perf_event {
- 	union {
- 		struct { /* hardware */
- 			u64		config;
--			u64		last_tag;
-+			union {
-+				/* for s390 and x86 */
-+				u64	last_tag;
-+				/* for arm_pmu */
-+				struct {
-+					u32 strobe_period;
-+					bool strobe_active;
-+				};
-+			};
- 			unsigned long	config_base;
- 			unsigned long	event_base;
- 			int		event_base_rdpmc;
--- 
-2.43.0
-
+Applied to thunderbolt.git/next, thanks!
 
