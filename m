@@ -1,50 +1,63 @@
-Return-Path: <linux-kernel+bounces-34592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63CCB8381DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:15:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 33DD28381E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 03:15:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3B6C28BCF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:15:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84EC22864ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:15:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 130CC5674B;
-	Tue, 23 Jan 2024 01:34:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EE2B51C5F;
+	Tue, 23 Jan 2024 01:37:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UkZppsaU"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C57D5644F
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 01:34:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56FB73DBBB;
+	Tue, 23 Jan 2024 01:37:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705973664; cv=none; b=f7/1v5RzzFLvDoYb5bIRciyZXWS8Sp9XAoCVOy7pXnjpXDh5laW5a6/H/Mubw5KxTNbQAR5OHjc9ViS12/3LfG+pwMe2o7072aPuSbY7nu7KGEGjmGXd+X6pmMkvHLAHB9+z1+ehe9Y6XGRelK9hWg2E2jj5q9bbj8oMDA8xeOE=
+	t=1705973847; cv=none; b=dHAlWM/WWUQ1KOHJyPGBu653ig7aihabPmKg9vt9NHjljdsBXxeTapg5GqUuqJwMA2tr5AdTFVM7Xtd+oM3jX8CA508IAn9RQNF31/kbcyJbJICMn5z78h9/9AqNER0pqSwtTHAE2YxFyDo7RHQr6MN5V5lYDcRQVt/6o+1vOyg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705973664; c=relaxed/simple;
-	bh=dq5g7WPUL5YMpbRJHlT9UsHcaC74VI7W43l+aqkk4OI=;
+	s=arc-20240116; t=1705973847; c=relaxed/simple;
+	bh=h3vnDNkAYaV+G7RInADtQwllk0xfCCVaONUbSnERixA=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qV3SseRrIQ8j/8NGbdl9sIBWpd9Fce9XfQOeDqzY8b2EOexEtiw2rP7sZjfc/8McsQVGTRO++XMr0VgYY2IdRUKHSqfyzuyleloWO9nc2esidwp9+uzPYdjd0jWXdKGjmnANVRJr9MatH7Yoldirl6lfMoRRhZc621kF2M4bojk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47E61C43390;
-	Tue, 23 Jan 2024 01:34:23 +0000 (UTC)
-Date: Mon, 22 Jan 2024 20:35:52 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Bhardwaj, Rajneesh" <rajneesh.bhardwaj@amd.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, LKML
- <linux-kernel@vger.kernel.org>, Felix Kuehling <Felix.Kuehling@amd.com>,
- Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
- dri-devel@lists.freedesktop.org, Fedor Pchelkin <pchelkin@ispras.ru>
-Subject: Re: [BUG] BUG: kernel NULL pointer dereference at
- ttm_device_init+0xb4
-Message-ID: <20240122203552.529eeb20@gandalf.local.home>
-In-Reply-To: <27c3d1e9-5933-47a9-9c33-ff8ec13f40d3@amd.com>
-References: <20240122180605.28daf23a@gandalf.local.home>
-	<20240122181547.16b029d6@gandalf.local.home>
-	<20240122181901.05a3b9ab@gandalf.local.home>
-	<CAHk-=whry+-JUDiiCkDkDn2TDg7SA5OvZpPbcQ_jkM_J5=ySdA@mail.gmail.com>
-	<27c3d1e9-5933-47a9-9c33-ff8ec13f40d3@amd.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	 MIME-Version:Content-Type; b=NVaMhKeBhAi8/vn///tflvfWZsjnFPf6CafKzsQScBfaAhCpqPrYFjcVfb1IHbt9ul2A6+KtAFrY7miOLWz0S23X7c9vRHCK9svMXFLH8+zyvjarJH8dwSGwzrglO3/8QD7c+ywcJJIse28wnIos6hkwmnv4bQNCmPoQeIYIAN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UkZppsaU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 201D1C433F1;
+	Tue, 23 Jan 2024 01:37:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705973846;
+	bh=h3vnDNkAYaV+G7RInADtQwllk0xfCCVaONUbSnERixA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=UkZppsaUOiQ3f9b0KTQkhZTQ7C9u+FoevxvEzavxBelMVgjDYcXvKHIbe4wToIjB+
+	 ZAZxqLBcPT6EloK+OdENnJ1wGpvcPvPzt2IjOeYwcegOA46XGW1KK+3e31DpdU9sfg
+	 BEmigZVVZp/JIhih4WoQTvdQZJ9aAivBh9a+0Mmd071N/B5bd6+vq1p5akxQA0ODop
+	 jb+2dx2/5Q8ONMojclMHD90Igj2w+BLnbdz//KLwLsVzj1TXAvuBgO+6wjWY215tX3
+	 mwFtlUOdYoM4lWnnT7T463SEfoh4ifao+YdUxr+jOBWXTRYvlsJhOD9nIxDUhuZrYh
+	 zu8l19VOvmHRQ==
+Date: Mon, 22 Jan 2024 17:37:25 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Danielle Ratson <danieller@nvidia.com>
+Cc: <netdev@vger.kernel.org>, <davem@davemloft.net>, <edumazet@google.com>,
+ <pabeni@redhat.com>, <corbet@lwn.net>, <linux@armlinux.org.uk>,
+ <sdf@google.com>, <kory.maincent@bootlin.com>,
+ <maxime.chevallier@bootlin.com>, <vladimir.oltean@nxp.com>,
+ <przemyslaw.kitszel@intel.com>, <ahmed.zaki@intel.com>,
+ <richardcochran@gmail.com>, <shayagr@amazon.com>,
+ <paul.greenwalt@intel.com>, <jiri@resnulli.us>,
+ <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <mlxsw@nvidia.com>, <petrm@nvidia.com>, <idosch@nvidia.com>
+Subject: Re: [RFC PATCH net-next 3/9] ethtool: Add an interface for flashing
+ transceiver modules' firmware
+Message-ID: <20240122173725.066420c0@kernel.org>
+In-Reply-To: <20240122084530.32451-4-danieller@nvidia.com>
+References: <20240122084530.32451-1-danieller@nvidia.com>
+	<20240122084530.32451-4-danieller@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,28 +67,23 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Mon, 22 Jan 2024 19:56:08 -0500
-"Bhardwaj, Rajneesh" <rajneesh.bhardwaj@amd.com> wrote:
+On Mon, 22 Jan 2024 10:45:24 +0200 Danielle Ratson wrote:
+> +        name: status
+> +        type: u8
 
-> 
-> On 1/22/2024 7:43 PM, Linus Torvalds wrote:
-> > On Mon, 22 Jan 2024 at 15:17, Steven Rostedt<rostedt@goodmis.org>  wrote:
-> >> Perhaps this is the real fix?
-> > If you send a signed-off version, I'll apply it asap.
-> 
-> 
-> I think a fix might already be in flight. Please see Linux-Kernel 
-> Archive: Re: [PATCH] drm/ttm: fix ttm pool initialization for 
-> no-dma-device drivers (iu.edu) 
-> <https://lkml.iu.edu/hypermail/linux/kernel/2401.1/06778.html>
+u32, also - it'd be nice to define the enum values in the spec and link
+it here by
+           enum: ...
 
-Please use lore links. They are much easier to follow and use.
+> +      -
+> +        name: status-msg
+> +        type: string
+> +      -
+> +        name: done
+> +        type: u64
+> +      -
+> +        name: total
+> +        type: u64
 
-  https://lore.kernel.org/lkml/20240113213347.9562-1-pchelkin@ispras.ru/
-
-is the patch I believe you are referencing.
-
-The fix doesn't need to be mine, but this should be in Linus's tree ASAP.
-
--- Steve
+perhaps u64 -> uint?
 
