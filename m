@@ -1,118 +1,91 @@
-Return-Path: <linux-kernel+bounces-36090-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A9F5839B71
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 22:51:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7582839B73
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 22:51:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 239601C2198A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:51:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D81AD1C21880
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:51:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F10047793;
-	Tue, 23 Jan 2024 21:51:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0251E46525;
+	Tue, 23 Jan 2024 21:51:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gGZ4b20x"
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="qZgG31NJ"
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 175B54E1C6
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 21:51:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 013664CB4C;
+	Tue, 23 Jan 2024 21:51:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706046665; cv=none; b=Wn596d6c37i1+JbrSBgKtXbIMV4aZk6VrwHyMj4umabnjejykH/xIjoGdOeQjTknwREgE2el/Mvwwy1GZaSOIX8L2lVyJNGmDcH5x25Wg2f2qesoXMl66Xpk3kwSRB+Hj7/2GWWxTdsTexMv4+qewVbkghQ79ZPPc/CORcF9e0w=
+	t=1706046690; cv=none; b=uhWHiabNzTU9w7Pptl9Q8HLzUQBwmaSwkQBQNEOD4ilEUs1ImyTQj8cDO85rkTuGEwicB1gPe/vpCGJKe2q2haLgVKLsRe+fc98JfRzZ/SYOgmXXr5Sa+NdDe+Aurpkrk0N06cc0m1CWU75svxStrI9hM57rzJ/SpjLIvqzV6yU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706046665; c=relaxed/simple;
-	bh=YrH0Mk72e0Geo0pjj83tbehqhSDH4BMYk+a62Q7MQhA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eAmq6A0AP7l6381mZhlt3M7VqrjaW5gkzIlTZyG2NoMOrcfC5TPgITEPDnMW0YlESDO368/WsieD4ZVq58hw8PoZKKYRzsV9FzxMq4LNL/KhXhsNvDBWzFG4bvBjziafvjvXQsPx0Gq/Oq2h1AaGwP0DI7EITyYhqjq/puWYVGI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gGZ4b20x; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5f15a1052b3so46449747b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 13:51:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706046663; x=1706651463; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YrH0Mk72e0Geo0pjj83tbehqhSDH4BMYk+a62Q7MQhA=;
-        b=gGZ4b20x2KsL6YqGrYbzNuqtbRXedQJ/EIfYLe8umOPGLlqm+ItAygcSwPCXxyGaHT
-         iKSranz1YnxydmwXF5Wq6zF9cNEpjQcVZT5l8b4ym9Mx40Xo2ekqz3c8c4U5cOtw8AUt
-         rbP6VEJLePDNQCqwVSjZFJDUMFQ/o36XMv5oWBqPs5Y/c8RKuS/lfqxV0rYHi8n+kRJK
-         SZ3HWSqT5GZD6CLEsy3neC6zOFahYlE/0xi7nu/8GJCpHh/Tv1ejucKYu5nkBLvYA8tZ
-         SkrEXnWwWm7dKNcCEBNsFzPcMiGf/BJsoAqPGeQOUUi4lVprfA+9uZdQ4d7JFYsdZAPh
-         yAnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706046663; x=1706651463;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YrH0Mk72e0Geo0pjj83tbehqhSDH4BMYk+a62Q7MQhA=;
-        b=Kx7ItzGCy6J5Rh4G+V8v+SR9dS5C3k03GglASbkexMHNbwZP0nYpgqb7cJwiiVfkm/
-         PIi4eE2HV2L2JUCnDq1g3VH4aVzZ4ubypIUz2BOmuoNCGDmDcUzw8FjU6FGt5m2Feh3b
-         U1X2YWWZi0GA132swjqVLme/vLPmRSvoKKbZwp9owvfmQRD7Hr8aG9FIT6KbSzVtP9Lj
-         P9ogpsmBo7RrNElfvHztQSe0hy2abctIE3Ekl9ysV7yoJ2VxQHVf2ndrG4xGB25lbjqq
-         17oiFPgvHnLUyZvXCKnmB6sQY/F0xcIwo/pxVGJMKCZjTJ1lfyI6w+BiSO6MSCPFXRk2
-         ETgA==
-X-Gm-Message-State: AOJu0YxBnIGCVEDHyPD1fkcZU1vXAFoBSSx9EI+0tG0Hs+ldw+11Z3Iy
-	d8hUeEZPi1SLzbo/UFxuRjByfKuaOdi1H0TwJCR15C6VAEqUMVGhwkJKO/qUf4uK95A2gKYZ22C
-	kV04MIW6q599FAmDIx3w/yDn8DJls6grD0GE0iQ==
-X-Google-Smtp-Source: AGHT+IH2FMDyN6ueLjCPaNNWCV3PAu2KG9eyC8NO3af4YSd+wriNlJ4CtEruIB9dItADoNu4VsAUQ6vmhPFfv7oQ1QY=
-X-Received: by 2002:a81:a24d:0:b0:5ff:483d:d156 with SMTP id
- z13-20020a81a24d000000b005ff483dd156mr5784703ywg.23.1706046663155; Tue, 23
- Jan 2024 13:51:03 -0800 (PST)
+	s=arc-20240116; t=1706046690; c=relaxed/simple;
+	bh=o1go1rbBgqYQFZPuiDmWmGHOfPaetZGgRJT+sNw8b3c=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=R4jOZLfqk3ys40VCBtL49GpZQZgNOdyfUxwH1IHPZ8OyhRACYBPsLMAzYknjIVEVnojwTHtbHivmEhiWNz2FM+S47jRTBrbhv9kuIlUnU4Ok2gWcMeXkhkyGh954HvNwczfpeD9LNcgyeiETaDvyyb79Sfz6YrOvBwYun4IiGbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=qZgG31NJ; arc=none smtp.client-ip=45.79.88.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
+Received: from localhost (c-98-53-138-11.hsd1.co.comcast.net [98.53.138.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ms.lwn.net (Postfix) with ESMTPSA id 40C857A98;
+	Tue, 23 Jan 2024 21:51:28 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 40C857A98
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+	t=1706046688; bh=NBOwjV8ejMEGoa0MCW8TB2MIhju55eTiqjnLlpQsCUs=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=qZgG31NJ4ruefnlfEUoT/M59z1fgfyPlBqxJwi6RpMrLKQpbrhRA2FDobvBnSECBJ
+	 uE9SNROMP2XzP9wwH3QSB0lWNMLManl7XXDBUcIcIIRIKEG7TOd8hKGiEiSGcL6PZd
+	 zsO5nNzl/sFfPbcQhE0buO8ZKCELU1YG9Y3lzjcmXKXRqGIjsnDcVki4NqaFhk7Dwj
+	 3GwtgVZLXc0ywYmEv7tX4AfRXXn14HhzeUg519wUKjoNv26FM2OI44Ddbet7c+LsRg
+	 Xr442FmH2aFpWW+Ez4Is0x3I67w/w6T5HKISb878ufbsED+N3iUr+ljvwhpLP5FMLI
+	 4Y/yJJWAzOM8Q==
+From: Jonathan Corbet <corbet@lwn.net>
+To: Dhruva Gole <d-gole@ti.com>
+Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, Dhruva Gole
+ <d-gole@ti.com>
+Subject: Re: [PATCH] Documentation: index: Minor re-arrangement and
+ improvements
+In-Reply-To: <20240104073317.19709-1-d-gole@ti.com>
+References: <20240104073317.19709-1-d-gole@ti.com>
+Date: Tue, 23 Jan 2024 14:51:27 -0700
+Message-ID: <87bk9bk9b4.fsf@meer.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240121103505.26475-1-kimseer.paller@analog.com>
- <20240121103505.26475-3-kimseer.paller@analog.com> <CAMRc=MeGVAO8Fr4U5ai-OgEmX5gXeddLDKyRC+FQia1TH64m+Q@mail.gmail.com>
- <PH0PR03MB7141E0C8822D4887E04A3F06F9742@PH0PR03MB7141.namprd03.prod.outlook.com>
-In-Reply-To: <PH0PR03MB7141E0C8822D4887E04A3F06F9742@PH0PR03MB7141.namprd03.prod.outlook.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Tue, 23 Jan 2024 22:50:52 +0100
-Message-ID: <CACRpkdYePmAmrZN=GS58muzhxPUPKkenbgPQZmcct-0G5Ohc_g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] gpio: gpio-adg1414: New driver
-To: "Paller, Kim Seer" <KimSeer.Paller@analog.com>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, 
-	"linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, 
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-Hi Kim,
+Dhruva Gole <d-gole@ti.com> writes:
 
-On Tue, Jan 23, 2024 at 11:31=E2=80=AFAM Paller, Kim Seer
-<KimSeer.Paller@analog.com> wrote:
-
-> > Locking here is simple enough that you could use the SPI regmap and
-> > get it to do the serialization for you. And then you could possibly
-> > reuse the gpio-regmap abstraction and get an even smaller footprint.
+> * It seems odd that a develper is forced to look at the licensing rules
+>   even before they get to the doc or coding guide.
+>   This belongs under the "Working with the development community" / "All
+>   development docs" page where it does reside even today.
+> * Rearrange the section for Internal API manuals to go lower because
+>   generally one would want to look at the tools and processes and admin
+>   guide pages first and then move onto something deeper like the API
+>   manuals.
+> * Reword the Dev tools section and title to something a bit more suitable.
 >
-> I could not seem to figure out how to use the SPI regmap in this case.
-> Since the number of daisy-chained devices depends on the length of
-> data transferred with continuous transaction, I could not determine
-> how to implement that using the SPI regmap. Or maybe I misunderstood
-> the statement. However, is it still acceptable to use the current approac=
-h?
+> Signed-off-by: Dhruva Gole <d-gole@ti.com>
 
-You just override or wrap with your own read/write callbacks if necessary
-by defining a custom static struct regmap_bus.
+As a general rule, multiple items in the changelog like this suggest
+that you need to break a patch up.
 
-For example in drivers/gpu/drm/panel/panel-ilitek-ili9322.c
-I do this.
+In this case, though, I guess I don't see the reason why we would want
+to churn this page this way.  The ordering of the items on the front
+page was thought through and discussed the last time we did this; why
+should we revisit it now?
 
-It may not save a lot of code in this case but it's still worth it because
-we understand what regmap_read/write/update_bits do and reading
-and understanding adg1414_set/get cognitively require more from us
-as maintainers.
+Thanks,
 
-Yours,
-Linus Walleij
+jon
 
