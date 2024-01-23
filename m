@@ -1,138 +1,107 @@
-Return-Path: <linux-kernel+bounces-34558-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 227F3837FBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:54:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A01F6837FE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:55:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B319D1F2A5F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:54:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F41A2859C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:55:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E36912AAF3;
-	Tue, 23 Jan 2024 00:55:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C665012BF39;
+	Tue, 23 Jan 2024 00:57:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TY8M2Mvp"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=pass (2048-bit key) header.d=danm.net header.i=@danm.net header.b="OzH+f9lN"
+Received: from mr85p00im-zteg06021901.me.com (mr85p00im-zteg06021901.me.com [17.58.23.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5478E64CDA
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:55:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BF1C12BF27
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:57:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=17.58.23.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705971333; cv=none; b=kuH36VCkvaqS+P9s7OA+nzd2U0B+p7/rIsj3P14AGcopKDzBiqOMz4gwvweWKt/+G5MYw3uou9qkzZVrNXDhFnEybW0jeqH/bvOCuscAEppfhQOLvT8qJ0YSrusaTUiD/DjDQWvjbbQH55W+diyijbkVK1fCE0zde5ggU/RT8wM=
+	t=1705971431; cv=none; b=UdTEnCkfK9fTB8RpsyKwXh6ZcAsEmaYQQKmQQUJ7jMsHvKJuiBwaRyE7E3Xs1387roOx3n0Aptgvoi14+R+l6z6Uyd/QxcOPFeEsgSS5TdX8nrZnhkXD1yZwkioaQq+SeUwCg35621a4Q4z2/LNxSEIvkqBBdUTI6z7fR2ORRJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705971333; c=relaxed/simple;
-	bh=4qawhNGO6wKxMSuceG7kbjXMOkTOZFYEvmKvx8RGwqI=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=KJhPCwE6Jl2jLw1UV2a9uTX4FestzEFdPVBtL10R6AexMGxygGZ65GwVVafeVB5DUf1nAxtC1zLSkmwPceSQX6UOMx3kZ0L3cBCuMfi0BWjFEMm1pfVcBJzPECpPqPvXQRmlfrKbSQC9MKInPvd+4FLPvqCnIj5JJVkkJgJMBhU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TY8M2Mvp; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705971332; x=1737507332;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=4qawhNGO6wKxMSuceG7kbjXMOkTOZFYEvmKvx8RGwqI=;
-  b=TY8M2MvpSz9snQBS7YODyHah04bLksfgBu/aRpO1VSBCII5CJX3ima3l
-   TZMWKq/+mE2q6xRcY4PjWiLuI+OtcEFJ3PGcuyMFRuBgBBq309B4PaMgY
-   A0eqdbft/TjaHHGwoIfJ04CccbMKILVM0izFYiVp0rFb8R7esCAaYVIAF
-   XGh6AmD9Kl443OZYjyOVAv+5KdQW6rEWb3N0Jmurv74StORloBbOuN64Y
-   oDCl3wZBxDU7ceKx0oOTu1m3Y0U+J25ykFSjv2k9/hOOhEnfR0e0mg4cS
-   DlgJR5siygnlFoKDXrlFWDP5k9o3hHbaYwVXFy0Sd2cZrvKpAZEoUepSL
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="8739556"
-X-IronPort-AV: E=Sophos;i="6.05,212,1701158400"; 
-   d="scan'208";a="8739556"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 16:55:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,212,1701158400"; 
-   d="scan'208";a="20157410"
-Received: from guoxuanl-mobl.ccr.corp.intel.com (HELO [10.254.212.246]) ([10.254.212.246])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 16:55:30 -0800
-Message-ID: <42b53bff-4027-4cb6-a457-e26fd62895e5@linux.intel.com>
-Date: Tue, 23 Jan 2024 08:55:28 +0800
+	s=arc-20240116; t=1705971431; c=relaxed/simple;
+	bh=QuFQTE9exHrJRr35+dJ3UyDgS7P65rSpnJVRQHYSrNQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rAGFAfjfftNElh3JtJYFgzk9W7mLXpMQjt3HJtyN7jM1GCGbPf65U3uHHQL4clfdursoip/ksGxLjxJ7R52pHVUHzurDUzu5ZbF0P2qIBThiZRGBmSeHRfpP+hhX+O/M4tKps5dPnEmfTLsu3kljYuLVPyn7h4JzRV1i3Isszfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=danm.net; spf=pass smtp.mailfrom=danm.net; dkim=pass (2048-bit key) header.d=danm.net header.i=@danm.net header.b=OzH+f9lN; arc=none smtp.client-ip=17.58.23.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=danm.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=danm.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=danm.net; s=sig1;
+	t=1705971428; bh=i6qwIcb65hKUVeZw2T4gWRTYt29i3qmG0p6UeSGRy4Q=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=OzH+f9lNDTKyqDq+9UkocpvxWjiRST4Pn44zrNJZ4u7atAUlTTeX9W4UCrCgzZHu8
+	 fZtynv2toBLM5fBgmcyJi4ZrMOyUpJ9EbU3Aw/4bERZUipTpc7o0zPIk7vyYzNipXs
+	 R/sgifIZ6nnVjKBdxQkAIPrurSFXQfpw6ICGxENGL9UB9kgC89CJecN1IQxBpvf9OA
+	 eJUP28lrNuQe7HDPq8Lv/lJhGDoLLhWiIusqVUr0EL1B603X1BWXJzjG3Rznap+1E5
+	 8p8KuC5zFYvM9Eo1rRMukvHtj/+m1UhrOrytrTWr2SFV8rb3ATaRMZRKfVCrFC52xS
+	 O6TUR7tNx1jHQ==
+Received: from hitch.danm.net (mr38p00im-dlb-asmtp-mailmevip.me.com [17.57.152.18])
+	by mr85p00im-zteg06021901.me.com (Postfix) with ESMTPSA id 9522A740228;
+	Tue, 23 Jan 2024 00:57:07 +0000 (UTC)
+From: Dan Moulding <dan@danm.net>
+To: Song Liu <song@kernel.org>
+Cc: regressions@lists.linux.dev,
+	linux-raid@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	Junxiao Bi <junxiao.bi@oracle.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Dan Moulding <dan@danm.net>
+Subject: [REGRESSION] 6.7.1: md: raid5 hang and unresponsive system; successfully bisected
+Date: Mon, 22 Jan 2024 17:56:58 -0700
+Message-ID: <20240123005700.9302-1-dan@danm.net>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, =?UTF-8?B?SsO2cmcgUsO2ZGVs?= <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, iommu@lists.linux.dev,
- linux-kernel@vger.kernel.org
-Subject: Re: DMAR-IR: IRQ remapping was enabled on dmar6 but we are not in
- kdump mode
-To: Paul Menzel <pmenzel@molgen.mpg.de>
-References: <5517f76a-94ad-452c-bae6-34ecc0ec4831@molgen.mpg.de>
- <433452d0-589a-49c8-8044-dcc93d5be90a@linux.intel.com>
- <24bf9a11-6abd-4ccf-9ca1-3cf75c45d374@molgen.mpg.de>
-Content-Language: en-US
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <24bf9a11-6abd-4ccf-9ca1-3cf75c45d374@molgen.mpg.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-GUID: roqiKP-niqHYz2b0Fa5A3TKVMmmoX9S6
+X-Proofpoint-ORIG-GUID: roqiKP-niqHYz2b0Fa5A3TKVMmmoX9S6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-22_12,2024-01-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=4 mlxlogscore=137 mlxscore=4
+ clxscore=1030 suspectscore=0 bulkscore=0 phishscore=0 spamscore=4
+ malwarescore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2308100000 definitions=main-2401230006
 
-On 2024/1/22 22:53, Paul Menzel wrote:
-> Am 22.01.24 um 13:38 schrieb Baolu Lu:
->> On 2024/1/19 22:45, Paul Menzel wrote:
->>>
->>> On a Dell PowerEdge T640, Linux 5.9 and 6.6.12 warn about kdump:
->>>
->>>      [    2.728445] DMAR-IR: IRQ remapping was enabled on dmar6 but 
->>> we are not in kdump mode
->>>      [    2.736544] DMAR-IR: IRQ remapping was enabled on dmar5 but 
->>> we are not in kdump mode
->>>      [    2.744620] DMAR-IR: IRQ remapping was enabled on dmar4 but 
->>> we are not in kdump mode
->>>      [    2.752695] DMAR-IR: IRQ remapping was enabled on dmar3 but 
->>> we are not in kdump mode
->>>      [    2.760774] DMAR-IR: IRQ remapping was enabled on dmar2 but 
->>> we are not in kdump mode
->>>      [    2.768847] DMAR-IR: IRQ remapping was enabled on dmar1 but 
->>> we are not in kdump mode
->>>      [    2.776922] DMAR-IR: IRQ remapping was enabled on dmar0 but 
->>> we are not in kdump mode
->>>      [    2.784999] DMAR-IR: IRQ remapping was enabled on dmar7 but 
->>> we are not in kdump mode
->>>
->>> Looking through the logs, this only happens when using kexec to 
->>> restart the system.
->>
->> The code that warned this is,
->>
->>   599         if (ir_pre_enabled(iommu)) {
->>   600                 if (!is_kdump_kernel()) {
->>   601                         pr_warn("IRQ remapping was enabled on %s 
->> but we are not in kdump mode\n",
->>   602                                 iommu->name);
->>   603                         clear_ir_pre_enabled(iommu);
->>   604                         iommu_disable_irq_remapping(iommu);
->>   605                 }
->>
->> The VT-d interrupt remapping is enabled during boot, but this is not a
->> kdump kernel.
->>
->> Do you mind checking whether the disable interrupt remapping callback
->> was called during kexec reboot?
->>
->> 1121 struct irq_remap_ops intel_irq_remap_ops = {
->> 1122         .prepare                = intel_prepare_irq_remapping,
->> 1123         .enable                 = intel_enable_irq_remapping,
->> 1124         .disable                = disable_irq_remapping,
->> 1125         .reenable               = reenable_irq_remapping,
->> 1126         .enable_faulting        = enable_drhd_fault_handling,
->> 1127 };
-> 
-> Is there a way to check this without rebuilding the Linux kernel?
+After upgrading from 6.7.0 to 6.7.1 a couple of my systems with md
+RAID-5 arrays started experiencing hangs. It starts with some
+processes which write to the array getting stuck. The whole system
+eventually becomes unresponsive and unclean shutdown must be performed
+(poweroff and reboot don't work).
 
-I am not sure, but you can check whether any messages are dumped in the
-path of .disable callback? or try to use ftrace?
+While trying to diagnose the issue, I noticed that the md0_raid5
+kernel thread consumes 100% CPU after the issue occurs. No relevant
+warnings or errors were found in dmesg.
 
-Best regards,
-baolu
+On 6.7.1, I can reproduce the issue somewhat reliably by copying a
+large amount of data to the array. I am unable to reproduce the issue
+at all on 6.7.0. The bisection was a bit difficult since I don't have
+a 100% reliable method to reproduce the problem, but with some
+perseverence I eventually managed to whittle it down to commit
+0de40f76d567 ("Revert "md/raid5: Wait for MD_SB_CHANGE_PENDING in
+raid5d"). After reverting that commit (i.e. reapplying the reverted
+commit) on top of 6.7.1 I can no longer reproduce the problem at all.
+
+Some details that might be relevant:
+- Both systems are running MD RAID-5 with a journal device.
+- mdadm in monitor mode is always running on both systems.
+- Both systems were previously running 6.7.0 and earlier just fine.
+- The older of the two systems has been running a raid5 array without
+  incident for many years (kernel going back to at least 5.1) -- this
+  is the first raid5 issue it has encountered.
+
+Please let me know if there is any other helpful information that I
+might be able to provide.
+
+-- Dan
+
+#regzbot introduced: 0de40f76d567133b871cd6ad46bb87afbce46983
 
