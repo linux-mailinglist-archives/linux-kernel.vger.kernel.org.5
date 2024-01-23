@@ -1,104 +1,119 @@
-Return-Path: <linux-kernel+bounces-35584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC78B8393AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:51:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8F8A8393AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:50:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1C27B20DDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:50:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB13D1C26323
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 15:50:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9AE7604B7;
-	Tue, 23 Jan 2024 15:44:32 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B335C5FF07;
-	Tue, 23 Jan 2024 15:44:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B23616A336;
+	Tue, 23 Jan 2024 15:44:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="XmvUj9ZN"
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4E9E524A4
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 15:44:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706024672; cv=none; b=ZXQ84dO1Ia2jcgGhYOuSZGl/igBobDiuVlMHfK6utD/aWvqRyaoy34bc4WzUyfvifi/u7jX1SqVhEzi5+Cq0BjAIeneKoBG56cH6VXG8TvFFyFBE4yihW9CavAJuW1UqGZk4+lbhLmqpiVR2gItgltu5vTOM31fBPIvg17MyaGA=
+	t=1706024673; cv=none; b=GXROjm5NNbePW1rqXv0tNL3jVWKvQW+wokcuYpdneOG8ZPnJM+Fv7ieO1zx98sZMXhq3M8ANzvIm1o78tws3EB+zid6SNuafTacCHXZSXXg4lNTNxcdmjuvb7FfPXVaHj25AZq/cQ6UFNjKGGB9icjR0ycUPw5EcjshqqicB2Uo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706024672; c=relaxed/simple;
-	bh=+UBMBwqjM4LUVFP6+vP3hZIWmeh/+RFBlTBKRI4wpMM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ii/HgVgFQwn9JzHVmOGDqZzJYvbFtkdWLowQ+Co2A8l6w0teJhcXS95ZmcoAKC5rjV++O1Kmfprjoq7AI7XxC3acvnLtNDxV7yL2r5zOJiyyZ/MDNHtg5num2DNkbH3W+xLA/Qm8HqyuGNJ1cqjRe+5nup4xrAuby7qGjtEHpgo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 178871FB;
-	Tue, 23 Jan 2024 07:45:12 -0800 (PST)
-Received: from e133380.arm.com (e133380.arm.com [10.1.197.58])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AC65E3F5A1;
-	Tue, 23 Jan 2024 07:44:25 -0800 (PST)
-Date: Tue, 23 Jan 2024 15:44:23 +0000
-From: Dave Martin <Dave.Martin@arm.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Edmund Grimley-Evans <edmund.grimley-evans@arm.com>
-Subject: Re: [PATCH 1/4] arm64/sve: Remove bitrotted comment about syscall
- behaviour
-Message-ID: <Za/e15zUOEaa1b7d@e133380.arm.com>
-References: <20240122-arm64-sve-sme-doc-v1-0-3d492e45265b@kernel.org>
- <20240122-arm64-sve-sme-doc-v1-1-3d492e45265b@kernel.org>
+	s=arc-20240116; t=1706024673; c=relaxed/simple;
+	bh=cZsWIGSnswkpJfNQ1zY6Bc/UlVwQs6ttZZj85VwnUUA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BIR2Gx9q9+KfppbjQXeQjWTe1V8OoJVAgRC/9PwRohqzsZKsF8Iqx7J92R+9U/Z+M2V2WRwPhE5u7lyqgOEUjSmGlRRS9qpKCJ+x4TJCxuSLl3pU9OH+IG1i1IoEKNhmnsYH1Nqa+oCUwssNBFXVKx80vntTXHWuSQJw2j/pJMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=XmvUj9ZN; arc=none smtp.client-ip=209.85.160.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-429ca07044eso33965821cf.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:44:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1706024670; x=1706629470; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cZsWIGSnswkpJfNQ1zY6Bc/UlVwQs6ttZZj85VwnUUA=;
+        b=XmvUj9ZN40RHlUCTOCAgYOQgAiJHqXLpcFsmMcc8mS9kIi6MqpkDYkFshzF7Q9GNET
+         hi4k81s8LGhlVbLAZ7EU4Qxvg+I3sS4M6GQmUTYGK9PFlu/ncqA3Qan4I8Cx+DZtzGG7
+         xRwxpmG+txe6B8HLuzLQAPP0J+brjbmRR7Ito=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706024670; x=1706629470;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cZsWIGSnswkpJfNQ1zY6Bc/UlVwQs6ttZZj85VwnUUA=;
+        b=V7gffx04A98o4AaTotwKMYmT7+B2/46W8vMUtk4ns6ihKs2D1EwOu8rtla2q0CLeM+
+         HtfqcVmZSQP9AHsDyagNxg+aQ2U4NJNAoDOAr60j6NAo2FSXA0DEAbz0diIAOcTAtSBG
+         SYGCObXpD2BWdZ3jG1OoQ8I10y42S5t4GAj7xF93uyo6bpvzEHVjLw/JnJDJGoAyZ7On
+         6gC7ZyqGKmOc8s+mvnS/XzCbDOdpYm+ZbV4XyQ4aWwPIU6KebO/2p19dAScw2Q3BlHhO
+         +57ZHQ0DElHAkN+v4EZ7FXrP+n3e6GPHfOFt2IH4l+IkVLykM8vcj5tKyFUdAbm+Lka9
+         Uc+g==
+X-Gm-Message-State: AOJu0YyHzrprOj4pypl9RTqAsMIvgIyrWvV4tBJ3hQnci39WYJdzdKPd
+	gxQGSqEfLW3Dd3ApLD6E1OLLevpk9u/SW7pG16pEAHIqyfCf8rFpZEI03uEosq8=
+X-Google-Smtp-Source: AGHT+IEa+M6myW1ZUclUpAeTXxs7+k+AQmHTNgsak6oyXNySB845AQqeFG9zgDjQsIVwAk2yXjhIVw==
+X-Received: by 2002:a05:620a:25cc:b0:783:26fd:6055 with SMTP id y12-20020a05620a25cc00b0078326fd6055mr7463575qko.110.1706024670501;
+        Tue, 23 Jan 2024 07:44:30 -0800 (PST)
+Received: from [10.5.0.2] ([45.88.220.198])
+        by smtp.gmail.com with ESMTPSA id v18-20020a05620a091200b00783534c512bsm3231784qkv.32.2024.01.23.07.44.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jan 2024 07:44:29 -0800 (PST)
+Message-ID: <0454a852-5e61-4181-b8cd-518e1cb45b58@joelfernandes.org>
+Date: Tue, 23 Jan 2024 10:44:27 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240122-arm64-sve-sme-doc-v1-1-3d492e45265b@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 7/7] sched/fair: Fair server interface
+Content-Language: en-US
+To: Daniel Bristot de Oliveira <bristot@redhat.com>,
+ Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
+ linux-kernel@vger.kernel.org, Luca Abeni <luca.abeni@santannapisa.it>,
+ Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Vineeth Pillai <vineeth@bitbyteword.org>,
+ Shuah Khan <skhan@linuxfoundation.org>, Phil Auld <pauld@redhat.com>,
+ suleiman@google.com
+References: <cover.1699095159.git.bristot@kernel.org>
+ <26adad2378c8b15533e4f6216c2863341e587f57.1699095159.git.bristot@kernel.org>
+ <20240119015513.GA2187855@google.com>
+ <3f002616-0975-49b8-a2bf-04abd0446b95@redhat.com>
+From: Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <3f002616-0975-49b8-a2bf-04abd0446b95@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 22, 2024 at 08:41:51PM +0000, Mark Brown wrote:
-> When we documented that we always clear state not shared with FPSIMD we
+On 1/22/2024 9:14 AM, Daniel Bristot de Oliveira wrote:
+> Interesting, does it keep any task hung? I am having a case where I see
+> a hung task, but I do not get the splat because the system freezes (printk
+> with rq_lock I guess)...
 
-Where / when?
+I missed replying to this part of your email. We see it as a syzkaller report
+with splats, so it is not clear if a task was hung at the time of a splat.
+syzkaller runs in its own separate VM instance.
 
-> didn't catch all of the places that mentioned that state might not be
-> cleared, remove a lingering reference.
-> 
-> Reported-by: Edmund Grimley-Evans <edmund.grimley-evans@arm.com>
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
->  Documentation/arch/arm64/sve.rst | 5 -----
->  1 file changed, 5 deletions(-)
-> 
-> diff --git a/Documentation/arch/arm64/sve.rst b/Documentation/arch/arm64/sve.rst
-> index 0d9a426e9f85..b45a2da19bf1 100644
-> --- a/Documentation/arch/arm64/sve.rst
-> +++ b/Documentation/arch/arm64/sve.rst
-> @@ -117,11 +117,6 @@ the SVE instruction set architecture.
->  * The SVE registers are not used to pass arguments to or receive results from
->    any syscall.
->  
-> -* In practice the affected registers/bits will be preserved or will be replaced
-> -  with zeros on return from a syscall, but userspace should not make
-> -  assumptions about this.  The kernel behaviour may vary on a case-by-case
-> -  basis.
-> -
+The fun part is though, I found a way to do ftrace dump on it without having to
+pass any boot parameters (that's another issue that we can't pass it boot
+parameters). So we have that tool in our debug arsenal for these issues, thankfully.
 
-This was originally an intentionally conservative statement, to allow
-the kernel the flexibility to relax the register zeroing behaviour in
-the future.  It would have permitted not always disabling a task's SVE
-across a syscall, for example.  There were some concerns about security
-and testability that meant that we didn't use this flexibility to begin
-with.
+> It might be the same problem.
 
-If we are making an irrevocable commitment not to use this flexibility
-ever, then this comment can go, but if we're not totally sure then I
-think it would be harmless to keep it (?)
+True, possibly.
 
-(Feel free to point me to the relevant past discussion that I may have
-missed.)
+thanks,
 
-[...]
-
-Cheers
----Dave
+ - Joel
 
