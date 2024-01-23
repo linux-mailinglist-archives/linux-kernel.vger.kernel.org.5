@@ -1,113 +1,108 @@
-Return-Path: <linux-kernel+bounces-35952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32242839934
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:10:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1349483991D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:07:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E765AB2C25B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:06:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C10AD28E751
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:07:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FE1D1292D4;
-	Tue, 23 Jan 2024 19:01:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DAE312AAC5;
+	Tue, 23 Jan 2024 19:01:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="zJWzPdi3";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="+Dz7bE2t"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VZykyNES"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D9FD7FBB5;
-	Tue, 23 Jan 2024 19:01:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E3FE8612D
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 19:01:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706036473; cv=none; b=Embd1FZmkuHH+6bhLXNnwuDJieFxv0OB0ez59LMPidWcIOPzRYtT2IPZr2a2JInQ4iQZb+lmTIGBOsEiPuPQYLcU20zR6ZI5xs+H3V/9vaHXCWH5xrWtLZAy4g+hhcXlRvSscbm5VsVtCFhCed76d9Su0kD/URXB+O4JIb6mSNA=
+	t=1706036499; cv=none; b=GdQGHYmx0+VLfLFFTbpuYM/gQzIEWZ8xKX2FPEzYOh9DHmTPvjiwTeAH2AMrO5yJXOOEOUDaCSqF6aTbTG+PpYjDb0INe9VXKM5oiBRiLgUPdrn4inp5HpANEKS1YtUg1dOrJ5sSwSRdWUgtParKKLZ0q81BayaNc144WS4oX+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706036473; c=relaxed/simple;
-	bh=HOc90YBHmrRGvy080ff3wBCG+qxyZsoScBH6Z0w7o/M=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=suTjJYnJHRu4yufgFHf9gXEQSjxIK0PpEhpulx+M9fijWXtUVds4ZsEiVbl2+5JU23RMCwBb/nnXunRZiyAVzLIgkcovWf3FskzjkPbnwGdNnQKEVK24lLMeyAsXYJWTg++FsvqmEZfhMxk7P3kg8uxg0qsl2En0jYlywv9fPOs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=zJWzPdi3; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=+Dz7bE2t; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 23 Jan 2024 19:01:08 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1706036469;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6eUyX0zjICeqO/1o5Aw5V5Tn9qzErub5OCFL5qwEz5A=;
-	b=zJWzPdi3kXjCo11vbCN5md1kubkqkxDjGZ4ORLqDFF7xfxoeL3I05gJVAqJGQ633S20143
-	NVreIfoJErgA/6tQpHbz6fv4u2Iq8PcEBgEglmJ8k2l8tYIBLbZThkOioe7N38Ksy2g6vW
-	8jyOO6tGdI8ptuv1xwGV0BdeIi5+89C63aicdhfzebykFM26/ekgUZm2fJftdAXdFKyP7F
-	FeaziwQUn6LYfej8tH7/6bHJczglzNnPkq1lbpcom8EqhFZmizbvlFT1/Z5nv2UJO6f/2N
-	qny2vw0yWIApAsdnIRiDDP4bQJVddhIPc8STCf5+FeLFDkQTIUGxy/smseP7Vg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1706036469;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6eUyX0zjICeqO/1o5Aw5V5Tn9qzErub5OCFL5qwEz5A=;
-	b=+Dz7bE2tcMPdATsIYPDX+lVWf6s3f2tqMx2dyVFKmP2P3sLTMLvFhDKbye9H9daWr/7aXY
-	qbq1tNwQauvv77Cw==
-From: "tip-bot2 for Borislav Petkov (AMD)" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/misc] Documentation/kernel-parameters: Add
- spec_rstack_overflow to mitigations=off
-Cc: "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240118163600.17857-1-bp@alien8.de>
-References: <20240118163600.17857-1-bp@alien8.de>
+	s=arc-20240116; t=1706036499; c=relaxed/simple;
+	bh=n52gmQelYh1QZN+wh8CLuxnOS417zyDahjhNaQJIO38=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=k1gxneyxpgFthE3zQswRhxMv7Ki0zB36Nhp0iOKzqk51PpcSgvlg5Mv1QQPeO/zIeR5NzZ+hZrrkdPd9yYTogr7OZeEDq3dezjkLdg5y7RpMDOelv7z8gbznxgRwCc2WnkrJQ7E5QPDa9IOvCteDCi5gdU5yNfQ07og7pQV2KRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VZykyNES; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d70b0e521eso33982855ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 11:01:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706036498; x=1706641298; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=QftPz4jN6kiEorTzivfoGB9qpSpYd51y/PnesCdYvNE=;
+        b=VZykyNESt5cVSiXwHR4uUunzF3lMuwrRqdlPZnuFZ/6w1iciEUZZa8B8lx3T3BaXlF
+         6x5GKYU/4L2RgqOJHcQ+rA5XsTGyJmvFHGH1pV9/TvKUl1lCnU/SoPTMIMrLnCV/gD8I
+         9vDGsAdPt7UZ1ck8obJnA/WQMFXkoCpG10+HtRmRriAd34HmPSK5rbLLIbumcv9qBMhQ
+         kcjrHQp54tD3hNd/S/kFpPESZUcXBfTtZO96MKb/hKDnzaz0FfnfI+VamK2HitJN7mEj
+         Lhh3euUEeucQ171WAkzuSlYuK6IXekHaDiUzlPjJU/CC1qLHO4RwpiH0WSTrzA6umQl0
+         x35w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706036498; x=1706641298;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QftPz4jN6kiEorTzivfoGB9qpSpYd51y/PnesCdYvNE=;
+        b=v4WiW9yVczlJzvzWmn9nh1Cm57iVOtSdJtI6vk7kyMdL2We4Au9TSMYQ4gkx4Aqlt2
+         3rZ8zFYtq/jfL2/neEF3DzcDnI4Gz2SH6QfXr7ENhRZL3r/uitUVC5DmqMu/jlBAkfOM
+         0+8GtiIxaXJY+KD3jaAhM1ZKFJoFwNKqttg9hx3D/t29/giR08GbT7DcMkUxtvsDAtvI
+         goQWD9J0ShwO5KY1oBcFgyec9Ftz61WTk+cC3n+92dwn48w6A7sdeHE04ujZ99HGYrS8
+         zSb556UPsus/49YSj62m2MgpxwhPT1llOhQAA04jiyV2qqBaI7m+FaJjlA+rrInM+LVD
+         8YgA==
+X-Gm-Message-State: AOJu0YwDvC8gRh/pTnQ7luGuCcnFp120KAvqiJrkTGYnYO1g/ErHxwvn
+	KICFISJRSyLYQOv0jxG4LabduAVfJWHW4bYeDHNPTdxux3CB/ioD8mWfoo0KzkI=
+X-Google-Smtp-Source: AGHT+IGSBclA+Hqx0rOpncJoFhZkG7syO/DKiq9G4IhsfvHgLmfHisQAwDJNkh3QWq8BBP9daPAqKg==
+X-Received: by 2002:a17:902:ebc6:b0:1d7:78ed:4b7e with SMTP id p6-20020a170902ebc600b001d778ed4b7emr909437plg.35.1706036497410;
+        Tue, 23 Jan 2024 11:01:37 -0800 (PST)
+Received: from p14s ([2604:3d09:148c:c800:e343:f944:5fc8:eec1])
+        by smtp.gmail.com with ESMTPSA id m10-20020a170902db0a00b001d7069c0302sm8956884plx.272.2024.01.23.11.01.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jan 2024 11:01:37 -0800 (PST)
+Date: Tue, 23 Jan 2024 12:01:34 -0700
+From: Mathieu Poirier <mathieu.poirier@linaro.org>
+To: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH 0/2] remoteproc: stm32: Fix sparse warnings
+Message-ID: <ZbANDtaHHY5CkC43@p14s>
+References: <20240117135312.3381936-1-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170603646864.398.8199127435495135105.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240117135312.3381936-1-arnaud.pouliquen@foss.st.com>
 
-The following commit has been merged into the x86/misc branch of tip:
+On Wed, Jan 17, 2024 at 02:53:10PM +0100, Arnaud Pouliquen wrote:
+> Fix warnings reported by sparse using make option "C=1"
+> 
+> Arnaud Pouliquen (2):
+>   remoteproc: stm32: Fix incorrect type in assignment for va
+>   remoteproc: stm32: Fix incorrect type assignment returned by
+>     stm32_rproc_get_loaded_rsc_tablef
+> 
+>  drivers/remoteproc/stm32_rproc.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
 
-Commit-ID:     49527ca264341f9b6278089e274012a2db367ebf
-Gitweb:        https://git.kernel.org/tip/49527ca264341f9b6278089e274012a2db367ebf
-Author:        Borislav Petkov (AMD) <bp@alien8.de>
-AuthorDate:    Thu, 18 Jan 2024 17:36:00 +01:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Tue, 23 Jan 2024 19:52:53 +01:00
+I have applied this set.
 
-Documentation/kernel-parameters: Add spec_rstack_overflow to mitigations=off
+Thanks,
+Mathieu
 
-mitigations=off disables the SRSO mitigation too. Add it to the list.
-
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20240118163600.17857-1-bp@alien8.de
----
- Documentation/admin-guide/kernel-parameters.txt | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 31b3a25..64960f5 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3399,6 +3399,7 @@
- 					       nospectre_v1 [X86,PPC]
- 					       nospectre_v2 [X86,PPC,S390,ARM64]
- 					       retbleed=off [X86]
-+					       spec_rstack_overflow=off [X86]
- 					       spec_store_bypass_disable=off [X86,PPC]
- 					       spectre_v2_user=off [X86]
- 					       srbds=off [X86,INTEL]
+> 
+> base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
+> -- 
+> 2.25.1
+> 
 
