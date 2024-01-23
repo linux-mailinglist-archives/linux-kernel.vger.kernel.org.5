@@ -1,39 +1,72 @@
-Return-Path: <linux-kernel+bounces-35166-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35171-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 748FC838D02
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:10:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5029E838D0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:11:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B4331F23DC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:10:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1C772884EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:11:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EC725F55A;
-	Tue, 23 Jan 2024 11:08:46 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B4535C915;
-	Tue, 23 Jan 2024 11:08:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 922565D747;
+	Tue, 23 Jan 2024 11:09:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PZ7NFDik"
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E16E5FB87
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 11:09:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706008126; cv=none; b=mlaH8dhPKPPirkPUJvjAN8meHQ/ViZ5ejQ4ANCEB6MEvd8X+FloZYe4JqdyNXVb0iO7aG9kEr97UQidCytzfo4HrmaT4OU8s8BSNFzxODrPzGfMoUzrKFwflZjzxEZSN1+xwl4Fj6ZPLqAOpvI/asHVYTcBExwiGweSKL9aAHtI=
+	t=1706008190; cv=none; b=ojG8nJlWgtnIh9ty9gZQh5LDI/hO9Py8VM1VAyyEjpYoTsAl1lcVdPGNg4q8OcHH9IagKLW4em+S9EYsDcllockcDUCEJ8z8jA+k4+EOlMviF4n3/nGhpBzpLCsYIKiZ96g5R+d0L2gQSporO3ykNRkxqvYU67ZAo2ppJLUUMg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706008126; c=relaxed/simple;
-	bh=IEDrR/qz7Pwhp6nM55h9cFxHdv2zsdeuJaKINfhH6jo=;
+	s=arc-20240116; t=1706008190; c=relaxed/simple;
+	bh=o+lGwSiL0/7ZhlJK6sNMEAhxlS1WWUMmQvT5gavzsBg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=a7bsKclblzHV0zju/5Y3Z2Bq9LeCe2esfvH1bGCUB5s2ZY4m9oY1lsHDVgr5SbW3qkp2ScV6DkUhoffRShFeZ5mzlM6vlGLa55s/l+L/l2bjeY5fmACzdYjpIqZjEF0djjsk6nvvYAd7p9Ucylyhub2oWTC3bn+sdmcbgcYW37Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0AADC1FB;
-	Tue, 23 Jan 2024 03:09:26 -0800 (PST)
-Received: from [10.57.77.165] (unknown [10.57.77.165])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3DDC23F762;
-	Tue, 23 Jan 2024 03:08:35 -0800 (PST)
-Message-ID: <6703b648-10ab-4fea-b7f1-75421319465b@arm.com>
-Date: Tue, 23 Jan 2024 11:08:33 +0000
+	 In-Reply-To:Content-Type; b=pXWTxMRS40hQWQidp/mLRD3kME+fKaWqcp6UNGvXvdIIDraF/s5QKNmMwQuliFgzOSyKxO85bK7ZW57XoA0/TBZZ3v5PMfoWpwSQeMbhK/aockzoJTQDh3gQfhUNU1mPrxIWJaxnCjU7dNEek5vHhcBnK5505tKSsjUpHq9gz1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=PZ7NFDik; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3392291b21bso3556890f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 03:09:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706008187; x=1706612987; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=saChjE5934f5E63zbgUdcL7IVIHk3zxmNuY4UswKNwI=;
+        b=PZ7NFDikSKqHhkCqsT3vM1TpPfCdEHdx0VrH6MNPVImmYaGX+TkWN9RDiqaOKA58Qv
+         HWFvlY97vBnvFW2gWYjCQ8zpoEUU4UMR4Pix43ogvffLcaPfB3nxbcze8CK5zm6kdk4W
+         9PEkLTJDuWqSfr3qNJ/YVfPzk0u5ynZ6jA+YUb13iROHfK8oYJCgno6sIqeNiZO58wAi
+         T6OOAUBp6gxFVSQQXL+iBqcf/6//b7LX3lHMxugsgoxmYWAkhirEbAwxpGyv7hUJT0XA
+         xp5PTKkHY+Fsbc9isszLeaUF8x/4bK+pAu2YgI5TtupDL6wsuMWimKjR4tndcbqmRZ+E
+         B4iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706008187; x=1706612987;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=saChjE5934f5E63zbgUdcL7IVIHk3zxmNuY4UswKNwI=;
+        b=tMhLReTN5Fdt5sS5Cffvddw/RNI19muObIGWUmccudXcqHVfuXi3yZ0rE6HI2u/VfX
+         vICoxdB1dUaGHtB8+eP5f4or4u8OXDaP9a1u0P8TQU05ElqTv5YOMsjAKqY4OURrpRZ+
+         sDVTreJz9quIS4dEazn+xkCDKNXdwC9KZSALu7Fe26dERRm+2Lcwgbn2XIkCpxdfjjlE
+         WBrhnxw5vDP8FK1e6Iy7w8S3HtW+1BFga5by57lJLTJla1gCELxtHLEbwc99LfAMYbNs
+         fwhOANnW7uiq47WbLEi4+YAJTVxA4m70Hee1JeZYwGiUuARyQjsXdQ34oqL/kgJaYgZE
+         34cA==
+X-Gm-Message-State: AOJu0YyrAStzaRXa9B+MqWVpzGz3nq3rYmlas4p48GQTE0uvF5eFLhGX
+	E78R49M2W4LazN9eBEnP4wFAWC5VT7FKxoLYr8QZTVU/B7S/BOhyVG0BijXswP8=
+X-Google-Smtp-Source: AGHT+IENIfxNapkGjdNnGoC5nbQiWcKNaXL452T8QGuptfa68QxmjyQwJvD3kTUJ7yFEKluscF7zwA==
+X-Received: by 2002:adf:f210:0:b0:336:6ba1:556d with SMTP id p16-20020adff210000000b003366ba1556dmr2806898wro.84.1706008187503;
+        Tue, 23 Jan 2024 03:09:47 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id f11-20020adff98b000000b00337d5cd0d8asm12922259wrr.90.2024.01.23.03.09.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jan 2024 03:09:47 -0800 (PST)
+Message-ID: <b350d7c1-8da7-4212-bae2-b06201fd2568@linaro.org>
+Date: Tue, 23 Jan 2024 12:09:44 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,139 +74,97 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 01/11] arm/pgtable: define PFN_PTE_SHIFT on arm and
- arm64
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
- Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, "David S. Miller"
- <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
-References: <20240122194200.381241-1-david@redhat.com>
- <20240122194200.381241-2-david@redhat.com>
- <fdaeb9a5-d890-499a-92c8-d171df43ad01@arm.com>
- <46080ac1-7789-499b-b7f3-0231d7bd6de7@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <46080ac1-7789-499b-b7f3-0231d7bd6de7@redhat.com>
+Subject: Re: [PATCH 1/9] dt-bindings: watchdog: samsung-wdt: deprecate
+ samsung,syscon-phandle
+Content-Language: en-US
+To: Peter Griffin <peter.griffin@linaro.org>, arnd@arndb.de,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, linux@roeck-us.net,
+ wim@linux-watchdog.org, conor+dt@kernel.org, alim.akhtar@samsung.com,
+ jaewon02.kim@samsung.com, chanho61.park@samsung.com,
+ semen.protsenko@linaro.org
+Cc: kernel-team@android.com, tudor.ambarus@linaro.org,
+ andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com,
+ linux-fsd@tesla.com, linux-watchdog@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org
+References: <20240122225710.1952066-1-peter.griffin@linaro.org>
+ <20240122225710.1952066-2-peter.griffin@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240122225710.1952066-2-peter.griffin@linaro.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 23/01/2024 10:48, David Hildenbrand wrote:
-> On 23.01.24 11:34, Ryan Roberts wrote:
->> On 22/01/2024 19:41, David Hildenbrand wrote:
->>> We want to make use of pte_next_pfn() outside of set_ptes(). Let's
->>> simpliy define PFN_PTE_SHIFT, required by pte_next_pfn().
->>>
->>> Signed-off-by: David Hildenbrand <david@redhat.com>
->>> ---
->>>   arch/arm/include/asm/pgtable.h   | 2 ++
->>>   arch/arm64/include/asm/pgtable.h | 2 ++
->>>   2 files changed, 4 insertions(+)
->>>
->>> diff --git a/arch/arm/include/asm/pgtable.h b/arch/arm/include/asm/pgtable.h
->>> index d657b84b6bf70..be91e376df79e 100644
->>> --- a/arch/arm/include/asm/pgtable.h
->>> +++ b/arch/arm/include/asm/pgtable.h
->>> @@ -209,6 +209,8 @@ static inline void __sync_icache_dcache(pte_t pteval)
->>>   extern void __sync_icache_dcache(pte_t pteval);
->>>   #endif
->>>   +#define PFN_PTE_SHIFT        PAGE_SHIFT
->>> +
->>>   void set_ptes(struct mm_struct *mm, unsigned long addr,
->>>                 pte_t *ptep, pte_t pteval, unsigned int nr);
->>>   #define set_ptes set_ptes
->>> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
->>> index 79ce70fbb751c..d4b3bd96e3304 100644
->>> --- a/arch/arm64/include/asm/pgtable.h
->>> +++ b/arch/arm64/include/asm/pgtable.h
->>> @@ -341,6 +341,8 @@ static inline void __sync_cache_and_tags(pte_t pte,
->>> unsigned int nr_pages)
->>>           mte_sync_tags(pte, nr_pages);
->>>   }
->>>   +#define PFN_PTE_SHIFT        PAGE_SHIFT
->>
->> I think this is buggy. And so is the arm64 implementation of set_ptes(). It
->> works fine for 48-bit output address, but for 52-bit OAs, the high bits are not
->> kept contigously, so if you happen to be setting a mapping for which the
->> physical memory block straddles bit 48, this won't work.
+On 22/01/2024 23:57, Peter Griffin wrote:
+> The watchdog driver no longer requires a phandle to obtain a regmap
+> to the PMU registers. So mark this as deprecated.
 > 
-> Right, as soon as the PTE bits are not contiguous, this stops working, just like
-> set_ptes() would, which I used as orientation.
+> Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
+> ---
+>  .../devicetree/bindings/watchdog/samsung-wdt.yaml | 15 +--------------
+>  1 file changed, 1 insertion(+), 14 deletions(-)
 > 
->>
->> Today, only the 64K base page config can support 52 bits, and for this,
->> OA[51:48] are stored in PTE[15:12]. But 52 bits for 4K and 16K base pages is
->> coming (hopefully v6.9) and in this case OA[51:50] are stored in PTE[9:8].
->> Fortunately we already have helpers in arm64 to abstract this.
->>
->> So I think arm64 will want to define its own pte_next_pfn():
->>
->> #define pte_next_pfn pte_next_pfn
->> static inline pte_t pte_next_pfn(pte_t pte)
->> {
->>     return pfn_pte(pte_pfn(pte) + 1, pte_pgprot(pte));
->> }
->>
->> I'll do a separate patch to fix the already broken arm64 set_ptes()
->> implementation.
-> 
-> Make sense.
-> 
->>
->> I'm not sure if this type of problem might also apply to other arches?
-> 
-> I saw similar handling in the PPC implementation of set_ptes, but was not able
-> to convince me that it is actually required there.
-> 
-> pte_pfn on ppc does:
-> 
-> static inline unsigned long pte_pfn(pte_t pte)
-> {
->     return (pte_val(pte) & PTE_RPN_MASK) >> PTE_RPN_SHIFT;
-> }
-> 
-> But that means that the PFNs *are* contiguous.
+> diff --git a/Documentation/devicetree/bindings/watchdog/samsung-wdt.yaml b/Documentation/devicetree/bindings/watchdog/samsung-wdt.yaml
+> index 77a5ddd0426e..3970d6bf8576 100644
+> --- a/Documentation/devicetree/bindings/watchdog/samsung-wdt.yaml
+> +++ b/Documentation/devicetree/bindings/watchdog/samsung-wdt.yaml
+> @@ -56,6 +56,7 @@ properties:
+>      description:
+>        Phandle to the PMU system controller node (in case of Exynos5250,
+>        Exynos5420, Exynos7, Exynos850 and gs101).
+> +    deprecated: true
 
-all the ppc pfn_pte() implementations also only shift the pfn, so I think ppc is
-safe to just define PFN_PTE_SHIFT. Although 2 of the 3 implementations shift by
-PTE_RPN_SHIFT and the other shifts by PAGE_SIZE, so you might want to define
-PFN_PTE_SHIFT separately for all 3 configs?
+I don't see how your driver handles probe or suspend ordering, so I
+don't think this is correct approach.
 
-> If high bits are used for
-> something else, then we might produce a garbage PTE on overflow, but that
-> shouldn't really matter I concluded for folio_pte_batch() purposes, we'd not
-> detect "belongs to this folio batch" either way.
+Handling of the watchdog requires poking PMU, thus the watchdog device
+node must have reference to the PMU node. Removing it from DTS makes the
+hardware representation incomplete, beside mentioned driver issue.
 
-Exactly.
-
-> 
-> Maybe it's likely cleaner to also have a custom pte_next_pfn() on ppc, I just
-> hope that we don't lose any other arbitrary PTE bits by doing the pte_pgprot().
-
-I don't see the need for ppc to implement pte_next_pfn().
-
-pte_pgprot() is not a "proper" arch interface (its only required by the core-mm
-if the arch implements a certain Kconfig IIRC). For arm64, all bits that are not
-pfn are pgprot, so there are no bits lost.
-
-> 
-> 
-> I guess pte_pfn() implementations should tell us if anything special needs to
-> happen.
-> 
+Best regards,
+Krzysztof
 
 
