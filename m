@@ -1,183 +1,131 @@
-Return-Path: <linux-kernel+bounces-34854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34855-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB402838858
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:55:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B40C783885E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 08:56:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BBD41C244A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:55:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1BFC6B24A7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 07:56:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BD4C55E70;
-	Tue, 23 Jan 2024 07:55:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E564F53E2E;
+	Tue, 23 Jan 2024 07:55:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="sZDQqx5I"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="elGjg72i"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EDCA55E5E;
-	Tue, 23 Jan 2024 07:55:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 737406121
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 07:55:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705996504; cv=none; b=u9rkwv5NFsoLTEoGZwd9O1U++faPxoCWV9q9iC8rK9+Hw1lpl0X3dj1vPO/X207ts/DQw/BX3KcymcYkHdvZW+v5UXQfCNDkJ/5/q7eeBKeJDqAGXbBn7XwCFpPOTK9KG2nhubr/vTRy5kzAY6J60J+6ebOlooaoRRqzlMt1LyA=
+	t=1705996553; cv=none; b=N1HkubHQvZB4a1f7yb8sRrNTu1LLNvVox7HVBPz73x6oH5EHVZZp9s2j3vsWhtMFfLckfIok7HucfvL7ituL3sAzsDaPq5OxF48hG7+Pkt/tQ/pNGVjWH41xPqTmpadd6DT5G2vydxNtOUyd4TMN1Ep9nz4Hu8yOZaF99wSC+Xg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705996504; c=relaxed/simple;
-	bh=rG4IlkvUI98zN+9rP6/dFnbsvmYEZGuK7Zu5Ohzy8Hs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qtwa1se1qj9pIwVgyVpDBkgSe765XW44BnT5vKks+KNKAJ9vWCcAtTLOk+poibXZ/pVnust+nIJGvc/UkbX/EWF8w5ggxX+xgVw8A1Wol80zqmvNddpL8LrcL3LaECRzv8ZG9iEYe3elZhSljNaZdvWgvSdk5szMJk/AjSt7RTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=sZDQqx5I; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40N6LJfO019564;
-	Tue, 23 Jan 2024 07:54:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=ny7R+kElPrm261ozh2Fn0CGVqgiQor3Hw3T/bLpZKzw=;
- b=sZDQqx5IsNuEyj1XzrNPIMcjCPqW8/42kckY6tThr98FgOTQsO5WxouxdloHa/L6O8LH
- TtiYnrLLJUIg9a4Xb3cj95CRJiouQFNX5b+ePQV8O83mERwuKUkUY7YsRZk4IjpO2HD0
- hWYqyPm1hqdD/5j54KBajz2KWX02NbDuHo3wA973aCIj7I3JhoL26CuoCv/5FHOfl2+Q
- MjrX8YItAjBhHNh9rVrhlW97aO6CNaKjChi/S12fSf7AJYWk+2clFjExxXtVTmW3S7SH
- 57Dnj1jgZWsfH9UOl04vDA8YcNou/Hsj+0gaDBHpsUtgEI/R82b4g4YH3VRmnxrbbWw5 3w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vt7aub94k-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Jan 2024 07:54:49 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40N7M1U3028447;
-	Tue, 23 Jan 2024 07:54:49 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vt7aub944-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Jan 2024 07:54:48 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40N6wmba025253;
-	Tue, 23 Jan 2024 07:54:48 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vrtqk5evf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Jan 2024 07:54:48 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40N7sjcB63832410
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 23 Jan 2024 07:54:45 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 3C53D20040;
-	Tue, 23 Jan 2024 07:54:45 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5F28920049;
-	Tue, 23 Jan 2024 07:54:40 +0000 (GMT)
-Received: from li-c6426e4c-27cf-11b2-a85c-95d65bc0de0e.ibm.com (unknown [9.43.74.138])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Tue, 23 Jan 2024 07:54:40 +0000 (GMT)
-Date: Tue, 23 Jan 2024 13:24:36 +0530
-From: Gautam Menghani <Gautam.Menghani@linux.ibm.com>
-To: Amit Machhiwal <amachhiw@linux.ibm.com>
-Cc: linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, Vaibhav Jain <vaibhav@linux.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Amit Machhiwal <amit.machhiwal@ibm.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: PPC: Book3S HV: Fix L2 guest reboot failure due to
- empty 'arch_compat'
-Message-ID: <ml6sjj7wxq2jah4skqbsrujwfytga7ignd56sgz6z6g3zcnysk@in7tt3hwjvxw>
-References: <20240118095653.2588129-1-amachhiw@linux.ibm.com>
+	s=arc-20240116; t=1705996553; c=relaxed/simple;
+	bh=rMGf+CVc1XpOboA/v5hnPFBLZuvKbP8V2WzhkUVFjJU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AdARO2r7tjOHxq1n30/pj+r5WmLhsDf7TQoagiLMkPPJ/96buZBNrFF+epOHkQcPCJmmIiQqDmnMbXPNl1MwTXObx+YhDYwnjvtoGt8mMA6+n8N5GHnpw0mIqoLSvG+lY9/Rx/GjQ+xQ7pVYx3eptJ6H+rUBt6J/yczjS3CM8S0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=elGjg72i; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2cdeb954640so44384681fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 23:55:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1705996548; x=1706601348; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TcDZ9mN+FRhUYNa88zGuloBXNab4ChQevtTM4gkLaHM=;
+        b=elGjg72idNRYQE6o04kBl6eJWZhk7gMZ3D//pQiiDNlEgeNyCeeKMRipWiHknYd/eA
+         bEDgwCKkT0/83ikHRWiUNq2LHrpOhFzqe5AyvqCR/L/HVkuGBLBGd1XMPcQ5vShWxG/K
+         6gA17/9szoraGXDG+6qQQ97TgBa/DAhWrkYtoCefjEiS0XSj1N2dDsyySHolukS1l6uE
+         XXYwy/K7O6PO99rnlUjK2PnkJfh/gIEHso/OUSXJy2AsECgl54vBA9ge0RAFifNV1Ptl
+         wKh9XfosC9cgRJVJBpkbe87hB0CMqc3h/+0OEsepqANi4S5+gI/dSpJMKgvOHebs36vc
+         lVxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705996548; x=1706601348;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TcDZ9mN+FRhUYNa88zGuloBXNab4ChQevtTM4gkLaHM=;
+        b=hOUd/XwgAzpHnaHRC/oi1jwumOgj00KD/T0QrTClJOveM/cFpWKMgbKXwu5TkJ2IDJ
+         GULDR2LIZH7IS+yrpxBc3bbV26WZ1vpBBS47g7ZTa0vNM4G5DmQ3DXQ56ZqZwQvOdbSr
+         3I017G5mVxovaZ/EYbWWapz7aRNaRaxMMNvoBDe1c/WydPPQSDEC3KxQ9w+fniFpmimn
+         +aJQ2hwV2Gr5WmbV4D5uwIs/0snU/CS4qHwXy7Hcot/cqaELqDTvGpR98TGMvBSrxh19
+         HScmfYXQjihwx7i9OY/KPwwZgWZN5UPT+TOXzUA8NMHcRT8hZCK0ujqlc1Pj42p9E1qO
+         AcUQ==
+X-Gm-Message-State: AOJu0YyhxT+Kn7exuu3B33MFQ7XAtI6o2m0/zP7TstOTfB76OPUEybf1
+	AVCDwhsfo44Dq2m9z62t27EQo5EZETADnytuHzsN6xfTm0kHgCOO4kXo91Fr5A==
+X-Google-Smtp-Source: AGHT+IGOFZkXrAicjcWyVjNqJjubZsBeK8Mb6x8RXvRNYGfYb5g2wOo5JsA3FPRz9L6sUcwYs42zyg==
+X-Received: by 2002:a05:651c:b0c:b0:2cf:124b:a2aa with SMTP id b12-20020a05651c0b0c00b002cf124ba2aamr266588ljr.2.1705996548598;
+        Mon, 22 Jan 2024 23:55:48 -0800 (PST)
+Received: from [10.156.60.236] (ip-037-024-206-209.um08.pools.vodafone-ip.de. [37.24.206.209])
+        by smtp.gmail.com with ESMTPSA id a8-20020a029408000000b0046edc723291sm1426989jai.78.2024.01.22.23.55.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jan 2024 23:55:48 -0800 (PST)
+Message-ID: <35ff4947-7863-40da-b0e7-3b84e17c6163@suse.com>
+Date: Tue, 23 Jan 2024 08:55:44 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240118095653.2588129-1-amachhiw@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: qYoXp4ZVQhYlQLgKQZkNuyYOQnQScGkJ
-X-Proofpoint-GUID: 0Er9RsKa2iXAgt7hgYAq1EIEBGKEdHc5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-23_02,2024-01-23_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- clxscore=1011 adultscore=0 mlxscore=0 mlxlogscore=858 lowpriorityscore=0
- impostorscore=0 priorityscore=1501 suspectscore=0 malwarescore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401230056
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 80/82] xen-netback: Refactor intentional wrap-around test
+Content-Language: en-US
+To: Kees Cook <keescook@chromium.org>
+Cc: Wei Liu <wei.liu@kernel.org>, Paul Durrant <paul@xen.org>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20240122235208.work.748-kees@kernel.org>
+ <20240123002814.1396804-80-keescook@chromium.org>
+From: Jan Beulich <jbeulich@suse.com>
+Autocrypt: addr=jbeulich@suse.com; keydata=
+ xsDiBFk3nEQRBADAEaSw6zC/EJkiwGPXbWtPxl2xCdSoeepS07jW8UgcHNurfHvUzogEq5xk
+ hu507c3BarVjyWCJOylMNR98Yd8VqD9UfmX0Hb8/BrA+Hl6/DB/eqGptrf4BSRwcZQM32aZK
+ 7Pj2XbGWIUrZrd70x1eAP9QE3P79Y2oLrsCgbZJfEwCgvz9JjGmQqQkRiTVzlZVCJYcyGGsD
+ /0tbFCzD2h20ahe8rC1gbb3K3qk+LpBtvjBu1RY9drYk0NymiGbJWZgab6t1jM7sk2vuf0Py
+ O9Hf9XBmK0uE9IgMaiCpc32XV9oASz6UJebwkX+zF2jG5I1BfnO9g7KlotcA/v5ClMjgo6Gl
+ MDY4HxoSRu3i1cqqSDtVlt+AOVBJBACrZcnHAUSuCXBPy0jOlBhxPqRWv6ND4c9PH1xjQ3NP
+ nxJuMBS8rnNg22uyfAgmBKNLpLgAGVRMZGaGoJObGf72s6TeIqKJo/LtggAS9qAUiuKVnygo
+ 3wjfkS9A3DRO+SpU7JqWdsveeIQyeyEJ/8PTowmSQLakF+3fote9ybzd880fSmFuIEJldWxp
+ Y2ggPGpiZXVsaWNoQHN1c2UuY29tPsJgBBMRAgAgBQJZN5xEAhsDBgsJCAcDAgQVAggDBBYC
+ AwECHgECF4AACgkQoDSui/t3IH4J+wCfQ5jHdEjCRHj23O/5ttg9r9OIruwAn3103WUITZee
+ e7Sbg12UgcQ5lv7SzsFNBFk3nEQQCACCuTjCjFOUdi5Nm244F+78kLghRcin/awv+IrTcIWF
+ hUpSs1Y91iQQ7KItirz5uwCPlwejSJDQJLIS+QtJHaXDXeV6NI0Uef1hP20+y8qydDiVkv6l
+ IreXjTb7DvksRgJNvCkWtYnlS3mYvQ9NzS9PhyALWbXnH6sIJd2O9lKS1Mrfq+y0IXCP10eS
+ FFGg+Av3IQeFatkJAyju0PPthyTqxSI4lZYuJVPknzgaeuJv/2NccrPvmeDg6Coe7ZIeQ8Yj
+ t0ARxu2xytAkkLCel1Lz1WLmwLstV30g80nkgZf/wr+/BXJW/oIvRlonUkxv+IbBM3dX2OV8
+ AmRv1ySWPTP7AAMFB/9PQK/VtlNUJvg8GXj9ootzrteGfVZVVT4XBJkfwBcpC/XcPzldjv+3
+ HYudvpdNK3lLujXeA5fLOH+Z/G9WBc5pFVSMocI71I8bT8lIAzreg0WvkWg5V2WZsUMlnDL9
+ mpwIGFhlbM3gfDMs7MPMu8YQRFVdUvtSpaAs8OFfGQ0ia3LGZcjA6Ik2+xcqscEJzNH+qh8V
+ m5jjp28yZgaqTaRbg3M/+MTbMpicpZuqF4rnB0AQD12/3BNWDR6bmh+EkYSMcEIpQmBM51qM
+ EKYTQGybRCjpnKHGOxG0rfFY1085mBDZCH5Kx0cl0HVJuQKC+dV2ZY5AqjcKwAxpE75MLFkr
+ wkkEGBECAAkFAlk3nEQCGwwACgkQoDSui/t3IH7nnwCfcJWUDUFKdCsBH/E5d+0ZnMQi+G0A
+ nAuWpQkjM1ASeQwSHEeAWPgskBQL
+In-Reply-To: <20240123002814.1396804-80-keescook@chromium.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jan 18, 2024 at 03:26:53PM +0530, Amit Machhiwal wrote:
-> Currently, rebooting a pseries nested qemu-kvm guest (L2) results in
-> below error as L1 qemu sends PVR value 'arch_compat' == 0 via
-> ppc_set_compat ioctl. This triggers a condition failure in
-> kvmppc_set_arch_compat() resulting in an EINVAL.
-> 
-> qemu-system-ppc64: Unable to set CPU compatibility mode in KVM: Invalid
-> 
-> This patch updates kvmppc_set_arch_compat() to use the host PVR value if
-> 'compat_pvr' == 0 indicating that qemu doesn't want to enforce any
-> specific PVR compat mode.
-> 
-> Signed-off-by: Amit Machhiwal <amachhiw@linux.ibm.com>
-> ---
->  arch/powerpc/kvm/book3s_hv.c          |  2 +-
->  arch/powerpc/kvm/book3s_hv_nestedv2.c | 12 ++++++++++--
->  2 files changed, 11 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
-> index 1ed6ec140701..9573d7f4764a 100644
-> --- a/arch/powerpc/kvm/book3s_hv.c
-> +++ b/arch/powerpc/kvm/book3s_hv.c
-> @@ -439,7 +439,7 @@ static int kvmppc_set_arch_compat(struct kvm_vcpu *vcpu, u32 arch_compat)
->  	if (guest_pcr_bit > host_pcr_bit)
->  		return -EINVAL;
+On 23.01.2024 01:27, Kees Cook wrote:
+> --- a/drivers/net/xen-netback/hash.c
+> +++ b/drivers/net/xen-netback/hash.c
+> @@ -345,7 +345,7 @@ u32 xenvif_set_hash_mapping(struct xenvif *vif, u32 gref, u32 len,
+>  		.flags = GNTCOPY_source_gref
+>  	}};
 >  
-> -	if (kvmhv_on_pseries() && kvmhv_is_nestedv2()) {
-> +	if (kvmhv_on_pseries() && kvmhv_is_nestedv2() && arch_compat) {
->  		if (!(cap & nested_capabilities))
->  			return -EINVAL;
->  	}
-> diff --git a/arch/powerpc/kvm/book3s_hv_nestedv2.c b/arch/powerpc/kvm/book3s_hv_nestedv2.c
-> index fd3c4f2d9480..069a1fcfd782 100644
-> --- a/arch/powerpc/kvm/book3s_hv_nestedv2.c
-> +++ b/arch/powerpc/kvm/book3s_hv_nestedv2.c
-> @@ -138,6 +138,7 @@ static int gs_msg_ops_vcpu_fill_info(struct kvmppc_gs_buff *gsb,
->  	vector128 v;
->  	int rc, i;
->  	u16 iden;
-> +	u32 arch_compat = 0;
->  
->  	vcpu = gsm->data;
->  
-> @@ -347,8 +348,15 @@ static int gs_msg_ops_vcpu_fill_info(struct kvmppc_gs_buff *gsb,
->  			break;
->  		}
->  		case KVMPPC_GSID_LOGICAL_PVR:
-> -			rc = kvmppc_gse_put_u32(gsb, iden,
-> -						vcpu->arch.vcore->arch_compat);
-> +			if (!vcpu->arch.vcore->arch_compat) {
-> +				if (cpu_has_feature(CPU_FTR_ARCH_31))
-> +					arch_compat = PVR_ARCH_31;
-> +				else if (cpu_has_feature(CPU_FTR_ARCH_300))
-> +					arch_compat = PVR_ARCH_300;
-> +			} else {
-> +				arch_compat = vcpu->arch.vcore->arch_compat;
-> +			}
-> +			rc = kvmppc_gse_put_u32(gsb, iden, arch_compat);
->  			break;
->  		}
->  
-> -- 
-> 2.43.0
-> 
+> -	if ((off + len < off) || (off + len > vif->hash.size) ||
+> +	if ((add_would_overflow(off, len)) || (off + len > vif->hash.size) ||
 
-I tested this patch on pseries Power 10  machine with KVM support : 
-Without this patch, with the latest mainline as host,the kvm guest on 
-pseries/powervm fails to reboot and with this patch, reboot works fine.
+I'm not maintainer of this code, but if I was I would ask that the
+excess parentheses be removed, to improve readability.
 
-Tested-by: Gautam Menghani <gautam@linux.ibm.com>
+Jan
 
