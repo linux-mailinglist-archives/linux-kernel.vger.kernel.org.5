@@ -1,156 +1,215 @@
-Return-Path: <linux-kernel+bounces-35194-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35195-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31CE4838D60
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:25:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E217838D62
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:27:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 514C91C21CBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:25:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F22F3287DEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:27:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5E385D75A;
-	Tue, 23 Jan 2024 11:25:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 137215D74A;
+	Tue, 23 Jan 2024 11:26:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="f67hjU82"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="IGF0aFyC"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BFCE5D759
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 11:25:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB7795D720
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 11:26:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706009139; cv=none; b=HS2ifNyyzVHbnAjBeqrqIHAPWb97MngwE4eUNhKQpvR65lfj/OUC+up7xMYDAwaKA9kji5dRR2CJzvpiQyT9+hPvaL2aTN01gWIfxSMuUIhH7gVz2tsrsjCYz+lKGfg/xgtzMGs6kfD6REBCFVq+HZICCO6HtLUqqINegMTsaqk=
+	t=1706009216; cv=none; b=O2rrEEde3Z9MMoltAwWGb2s7BBDS5re7p5Ol1EdAHLxSGBsFyAnFbeu06dXnoSswGBAqQ1F0X1IdJSrs8Iz5dsQQ//idktwq6J8SfQZPlzE1cZG03W1Byx0z8Ka5fKz462Ftf8NC82JF/Tkri3mwlEEMrVor83NDXsUzjgHHHa0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706009139; c=relaxed/simple;
-	bh=wYumhNh40zvaqJnlirZhJjynOHSXtyBShcxc4yIxkxQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=q2wtk/vqrB3gv0awZUgXvn+sX8Fletwati4No2EfM+gpHcvS/2pf30p6iWGL0NQdZnsFygLZMdiBEjAPbbHyL93DXHyhneY3QdNfTQJHcRrqeLusRKAy63yGU/ascnbOaiJZD1eyyVMOnElgG6VtDUZYPuepJ3+OypXXWrV+dWQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=f67hjU82; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40e60e137aaso46429795e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 03:25:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706009136; x=1706613936; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8zBBf/j8UaqFMIEjNVpf8BjIjinm+gPNeFEeWOU24Ag=;
-        b=f67hjU82muLN2AaXeEQzzxV0zTHDVrgho4X1oGRzdafB1SIiChlkImOhFQM3C50bJ3
-         hHMbf3b5KTynllPnZ4ez/oPInh1IguIQzNOfNP7sh9yNteSy7BXMwx1L6weEeNG8FHIZ
-         w3n+NJ9AUike/oPetEk3bpKltnT6Bt+oH9JQbSVK/Ne23MadpsDmcSLB0OHwybbbRBSG
-         XF8SyEvzAWlbahkyvkinTpYBdk2RI/J7Gpp9bY3brDRszrplLY0MmOwBvrLsIo3ppZI2
-         GbL2vRJ2RKUQLqMNiZOEnrb+lMXRByoN1vA9HubrgkhlXvVkayZLe3ovBhUaLbnnB132
-         59Xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706009136; x=1706613936;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8zBBf/j8UaqFMIEjNVpf8BjIjinm+gPNeFEeWOU24Ag=;
-        b=dqHu5ewBWQpk6kEt2qPlBcpNvwisGVzcKo7AuQZ6Ke6r+8iFB5UhoLcQAiPArOfTnj
-         s7MQmIUX5IKgExYREJLKYKqujKXnV+bzX5D5LB0shJr5sO7AgATeS8bn5Wc0yRouswBW
-         mYXejoZv6KWb/YRry2z9sL22uzhJKd2n6iOsi28zMadIUx6s/2R6PjEacGFo0KhLMrlp
-         EePzCdDIAQ9aU7hMkl2hAjhMAeJBaRD2Rn6OeZ6F9OyLwbBvEAlZ7dm3rfZaDIyqKx3k
-         JCDmJQwr7+mVpo9/pXjH24vW1v0/tlJ6D1iwPIPBPaq6+7xKJMFnzd/aBKTim8G4b1AA
-         Z2jQ==
-X-Gm-Message-State: AOJu0YymOySdfSly/YGrLl4CeEEAGYGXarKNUYMo2BTm1QCxWm1DZuxV
-	ogUXWLJjynvAWR/Je+VUgbKgsc4MBexFLRvN+xvBEpSYWX7XOiVQcz2K6HTgQxE=
-X-Google-Smtp-Source: AGHT+IF4f3Zyr+QsPiWN2dwrl90pAiKTc6oBZklUyrXvX7nfl8aWjrkSDDdBA21hKwTLTmapcqDySw==
-X-Received: by 2002:a05:600c:35d1:b0:40d:30fe:a7d with SMTP id r17-20020a05600c35d100b0040d30fe0a7dmr414037wmq.109.1706009135813;
-        Tue, 23 Jan 2024 03:25:35 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id j8-20020a05600c190800b0040d7b340e07sm42361437wmq.45.2024.01.23.03.25.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jan 2024 03:25:35 -0800 (PST)
-Message-ID: <08809d8b-a474-42e8-8a25-edc94e7d9723@linaro.org>
-Date: Tue, 23 Jan 2024 12:25:33 +0100
+	s=arc-20240116; t=1706009216; c=relaxed/simple;
+	bh=MX7FTiphx3ByTo0Q61XpSxbHsVcB1BXGvp1XkoqI3Oc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lGVOMp4a/2Zgzkr3aj/zVXf7NTcuaOdQxW6btRBnT4WIdALAJHSNnGrz7uWdVJ4XDcK+mVVfDP7fZnF5xErZ3Rq8/mYX651Xm0cDgpbMFzxzxDmL2wNhYF/MiVKDA8+yi/wzCWR5U0vnBlA5ReJ1NAd1ptMBjpJ+8rARV/T44VA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=fail (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=IGF0aFyC reason="signature verification failed"; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 138A040E01BB;
+	Tue, 23 Jan 2024 11:26:51 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=fail (4096-bit key)
+	reason="fail (body has been altered)" header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id BgJnHJaPJdCI; Tue, 23 Jan 2024 11:26:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1706009207; bh=7LXfm7XElOBij+WLqGVs9ad6dE4CTkuurUWn+UOIq0s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IGF0aFyCwjcMSG6X6rrOug7/lQ0fxAVANCPYZrdR2AM/+V6x19KE/wdhjIowlfsMF
+	 0r45/zSxd/rFmrEg7pE+csLgoeh3ci559X3itw2H04LcFsiBdA31abtymIot4tRn1z
+	 vDKv1FQNqV9W3YI9l/aWLl+A0Dvy0N5iQcWsm9uFxmHP8iJS7A3brU2pY+tEEPKDF7
+	 3o2F6O7Sg2kes6guRyVuiNU4XnL4xCG/DN8SqNYCijJtG/J6+b8Nkp3KahZ945aoXP
+	 qrUXZHEIYLqjXJEsHiJ8mG+j8uXqwD3kl1gktJN4S4fBaTo6rLZo2pwxMnZtHa20mf
+	 Nim2TGmshnj4tSMo+u1GiiIrB/oiyHCeA8dxdPeojOPoeypbyleMxcUQ5llBdlJ0ho
+	 u8iBmvTPzcyL5eno81hcHpCpVDx20SsUH+8TcfQ+QgjDr20Gm+a5f6VTPFJFrKtHaf
+	 P7oOZBrCdPBX2qjb4UJz4Ie06zBo2Xi2AAdQqgueyx0eZ8a1z5qAnzum+A+Bvw/fQ5
+	 SyVvG9QY6lrSL2ElAOn4p1y7TGMk0Rc1nTJIkz/GFPidmNMN0w3kd09Fh0gGb72XxD
+	 GdPv0CFRLTOfq25yfTRxpq0uQfCZJ80vouSeGzr+gCgiEo53y/l8D8et5cLG1DiEw/
+	 +peCVtEYNqU240vRD4LdPmFM=
+Received: from zn.tnic (pd953099d.dip0.t-ipconnect.de [217.83.9.157])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4DAE440E00C5;
+	Tue, 23 Jan 2024 11:26:31 +0000 (UTC)
+Date: Tue, 23 Jan 2024 12:26:24 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: NOMURA =?utf-8?B?SlVOSUNISSjph47mnZHjgIDmt7PkuIAp?= <junichi.nomura@nec.com>
+Cc: "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+	"mingo@redhat.com" <mingo@redhat.com>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+	"ardb@kernel.org" <ardb@kernel.org>,
+	"david@redhat.com" <david@redhat.com>,
+	"nikunj@amd.com" <nikunj@amd.com>,
+	"thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+	"debarbos@redhat.com" <debarbos@redhat.com>,
+	"jlelli@redhat.com" <jlelli@redhat.com>,
+	"lgoncalv@redhat.com" <lgoncalv@redhat.com>,
+	"dzickus@redhat.com" <dzickus@redhat.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] x86/boot: Add a message about ignored early NMIs
+Message-ID: <20240123112624.GBZa-iYP1l9SSYtr-V@fat_crate.local>
+References: <ZaEe8FC767f+sxRQ@jeru.linux.bs1.fc.nec.co.jp>
+ <20240112120616.5zjojjmjeqg5egb7@box>
+ <ZaTziftQSSg/v5Np@jeru.linux.bs1.fc.nec.co.jp>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 3/4] ASoc: pcm6240: Add compile item for pcm6240 codec
- driver
-Content-Language: en-US
-To: Shenghao Ding <shenghao-ding@ti.com>, broonie@kernel.org,
- conor+dt@kernel.org
-Cc: robh+dt@kernel.org, andriy.shevchenko@linux.intel.com, kevin-lu@ti.com,
- baojun.xu@ti.com, devicetree@vger.kernel.org, lgirdwood@gmail.com,
- perex@perex.cz, pierre-louis.bossart@linux.intel.com, 13916275206@139.com,
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
- liam.r.girdwood@intel.com, soyer@irl.hu, jkhuang3@ti.com, tiwai@suse.de,
- pdjuandi@ti.com, j-mcpherson@ti.com, navada@ti.com
-References: <20240123111411.850-1-shenghao-ding@ti.com>
- <20240123111411.850-3-shenghao-ding@ti.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240123111411.850-3-shenghao-ding@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZaTziftQSSg/v5Np@jeru.linux.bs1.fc.nec.co.jp>
+Content-Transfer-Encoding: quoted-printable
 
-On 23/01/2024 12:14, Shenghao Ding wrote:
-> PCM6240 driver implements a flexible and configurable setting for register
-> and filter coefficients, to one, two or even multiple PCM6240 Family Audio
-> chips.
-> 
-> Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
-> 
-> ---
-> Change in v1:
->  - Add compile item for pcm6240 codec driver
+On Mon, Jan 15, 2024 at 08:57:45AM +0000, NOMURA JUNICHI(=E9=87=8E=E6=9D=91=
+ =E6=B7=B3=E4=B8=80) wrote:
+> +	if (spurious_nmi_count) {
+> +		error_putstr("Spurious early NMI ignored. Number of NMIs: 0x");
+> +		error_puthex(spurious_nmi_count);
+> +		error_putstr("\n");
 
-So before you added dead code? No, please add a working code, so squash
-the patches.
+Uff, that's just silly:
 
-Best regards,
-Krzysztof
+Spurious early NMIs ignored: 0x0000000000000017
 
+Would you like to add a error_putnum() or so in a prepatch which would
+make this output
+
+Spurious early NMIs ignored: 23.
+
+?
+
+So that it is human readable and doesn't make me wonder what that hex
+value is supposed to mean?
+
+Thx.
+
+Btw, please use this version when sending next time:
+
+---
+From: =3D?UTF-8?q?NOMURA=3D20JUNICHI=3D28=3DE9=3D87=3D8E=3DE6=3D9D=3D91=3D=
+20=3DE6=3DB7=3DB3=3DE4=3DB8=3D80?=3D
+ =3D?UTF-8?q?=3D29?=3D <junichi.nomura@nec.com>
+Date: Mon, 15 Jan 2024 08:57:45 +0000
+Subject: [PATCH] x86/boot: Add a message about ignored early NMIs
+
+Commit
+
+  78a509fba9c9 ("x86/boot: Ignore NMIs during very early boot")
+
+added an empty handler in early boot stage to avoid boot failure due to
+spurious NMIs.
+
+Add a diagnostic message to show when early NMIs have occurred and/or
+what happened to them.
+
+  [ bp: Touchups. ]
+
+Suggested-by: Borislav Petkov <bp@alien8.de>
+Suggested-by: H. Peter Anvin <hpa@zytor.com>
+Signed-off-by: Jun'ichi Nomura <junichi.nomura@nec.com>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Link: https://lore.kernel.org/lkml/20231130103339.GCZWhlA196uRklTMNF@fat_=
+crate.local
+---
+ arch/x86/boot/compressed/ident_map_64.c | 2 +-
+ arch/x86/boot/compressed/misc.c         | 7 +++++++
+ arch/x86/boot/compressed/misc.h         | 1 +
+ 3 files changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/boot/compressed/ident_map_64.c b/arch/x86/boot/comp=
+ressed/ident_map_64.c
+index ff09ca6dbb87..909f2a35b60c 100644
+--- a/arch/x86/boot/compressed/ident_map_64.c
++++ b/arch/x86/boot/compressed/ident_map_64.c
+@@ -389,5 +389,5 @@ void do_boot_page_fault(struct pt_regs *regs, unsigne=
+d long error_code)
+=20
+ void do_boot_nmi_trap(struct pt_regs *regs, unsigned long error_code)
+ {
+-	/* Empty handler to ignore NMI during early boot */
++	spurious_nmi_count++;
+ }
+diff --git a/arch/x86/boot/compressed/misc.c b/arch/x86/boot/compressed/m=
+isc.c
+index b99e08e6815b..e7f4eb24a9a4 100644
+--- a/arch/x86/boot/compressed/misc.c
++++ b/arch/x86/boot/compressed/misc.c
+@@ -52,6 +52,7 @@ struct port_io_ops pio_ops;
+=20
+ memptr free_mem_ptr;
+ memptr free_mem_end_ptr;
++int spurious_nmi_count;
+=20
+ static char *vidmem;
+ static int vidport;
+@@ -493,6 +494,12 @@ asmlinkage __visible void *extract_kernel(void *rmod=
+e, unsigned char *output)
+ 	/* Disable exception handling before booting the kernel */
+ 	cleanup_exception_handling();
+=20
++	if (spurious_nmi_count) {
++		error_putstr("Spurious early NMIs ignored: 0x");
++		error_puthex(spurious_nmi_count);
++		error_putstr("\n");
++	}
++
+ 	return output + entry_offset;
+ }
+=20
+diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compressed/m=
+isc.h
+index bc2f0f17fb90..b858d6aa648c 100644
+--- a/arch/x86/boot/compressed/misc.h
++++ b/arch/x86/boot/compressed/misc.h
+@@ -59,6 +59,7 @@ extern char _head[], _end[];
+ /* misc.c */
+ extern memptr free_mem_ptr;
+ extern memptr free_mem_end_ptr;
++extern int spurious_nmi_count;
+ void *malloc(int size);
+ void free(void *where);
+ void __putstr(const char *s);
+--=20
+2.43.0
+
+
+
+--=20
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
