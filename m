@@ -1,206 +1,143 @@
-Return-Path: <linux-kernel+bounces-35842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35844-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50509839736
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:05:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFE6883973A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:06:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D34EF1F21EDD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:05:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FEE71F2B36C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:06:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16F7C8121C;
-	Tue, 23 Jan 2024 18:05:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6A5281214;
+	Tue, 23 Jan 2024 18:06:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QM2uDo9t"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="SXl8Q/ec"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85AB681208
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 18:05:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10F208120A
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 18:06:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706033105; cv=none; b=WzWHml1qfZFKP7w6D+bLuKGKeul+hhunrjqJ3Zkq6MgFqN4llpMHffgdArKfcEjyfmRu3UpVkRX4g5Omn3NZlTJ2xvu6juSzP60pAGPfNO0k4eNEgF9AKPtAP82jnDeQAKw/l/21M9enfxX5BLxrsBvznFrRTs0WGSlwejjYe00=
+	t=1706033194; cv=none; b=KXXBM8X/YdSzjcqeQAx8s8pyofBPjNrm9KxPfLZQGPmSHFGeBvDVp9EXRAQnTShK+9aLGaPPKWDfrfOYLRImb6CdlCC5nZYDQRCeEj0MoB3RBiubhZWK8tX7QpdyoIZbTI7GNjiVrVhkHlE4zhc2sKLnceVAqIq0nAiseoPH4/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706033105; c=relaxed/simple;
-	bh=gsXUKdJc7wRra5pgHweHxeJz0Mz3gnHrJb85noNs6uk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CL/EQcWTMw+i81gd+p2LI+qD/pJgf4J9+BPJB+E0Zj3iaYzF1nW4hTvbehANxD9j1VaetKKdlQ0/n6uczod203dN4sJvNcID5/fm0oZoFOM3sXEIb9zpNY/OZkaggE6WCuyHimzbvUJmkGJVkCEvJXuL1nCq1IwGPesqiBk29HM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QM2uDo9t; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-50e7abe4be4so6279328e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 10:05:03 -0800 (PST)
+	s=arc-20240116; t=1706033194; c=relaxed/simple;
+	bh=DSKd2JcJ2/mza9EM+Xnm+jdVYiFpr3Vkuf4kEF/SCIw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fNBOifAECOqZCM5Fa0yWiDOn7eaNMIuDIliOX2oEftKK9khXPfvCYcGUSiXryopLIFLN9PwVhT+YiR6oaicDpoBjoO3lTqs+hNqO5247GwvvUnYLCPV3dUrR0OHtwhPvk8QqtMmKmxAu2FyTkkWVLIR2eE2zNkBHxMQ2cjFYWqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=SXl8Q/ec; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-55a3a875f7fso5091673a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 10:06:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706033101; x=1706637901; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jhUxqAeCnBFu1QAeXMQuhkGVHepSO7xrReBByIkm20w=;
-        b=QM2uDo9t/xpX4oLnioITpfo6tG7CyRW+mnZDDyY9r7aTPR/rl8dXc8hIfst0GkCvd4
-         5p78UZZ7xGQRfRsYy3i4xBAaELdicZMY5jlKNDH6Fl6YN/N5szvJzaCxfBWAEz284lur
-         vNz9n8/A3SfwdPpU0OAGFVLcXqYwIz6AJl3Z16u2gyTzNon5tunJDzfmBrbswninorip
-         6a8uOgD5BFyUPIWL3PYVWGB/Hdc4BME/1f1+Tuds/OyMYR8yCWEpICfEOhxBAjMoQJwd
-         HP1FvCHLJSWBMOCiwMRoAbzsAvx1H25WowDS6PIZhgG4Jn2Td19WmS6X/Vv+dmjHv8Kz
-         LB+w==
+        d=linux-foundation.org; s=google; t=1706033191; x=1706637991; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=sPOVFQl2tkZfe3QyiMSbVqeq8qtXQuoltOLEZXEAb4Y=;
+        b=SXl8Q/ecMZB/UMQysXz88PMxEHev6hL077NpL5gsMW0TCuAY6Qi4bOPVjKrRIksIgR
+         x2PfsxlrYyrbtec2IZKHXirj/fN+YmY2ITshai5EaHMNKEezjye6HWUsAwvkgJ6KEQ1Y
+         wkDBxgZphwqfTAI2QGvHisqkiDS+3EfNAzQp4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706033101; x=1706637901;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jhUxqAeCnBFu1QAeXMQuhkGVHepSO7xrReBByIkm20w=;
-        b=XR4wDfbjeVcEmMcWRoB/MDkc5yS+GLHC49KPc8wK3Z/tqGTOVJg+lMT5HMh5hXpwl1
-         6j0r9aJlAistGPtvyUNsPXhm/Bk/Jbv1iEN/5j/XeG7dB+XJqXVcNBCwuGFw2T98Zn/e
-         b2RjuuuNurERZXO0QTgMa4URqYHzNSLDFhrLRD+FA0Pfnki5YoTpvBxOfRu3vCYz5hJ4
-         hFOZTkW1UEJrFjfU2gjBAq32AvT8gEizcveE7EFuUIvngkOYMWrSFVd0I3En8aJsZJ4U
-         wa3OB8EDP8m/w7/FCFVsa1zDpa0IgWFg8CRO9ymBcmM52dMc4ceDtEeZ9ON59UPOu5BD
-         brXw==
-X-Gm-Message-State: AOJu0YwpV/dnPSOGL2cXB+guIjNw+ADyHUPwAgq9e2c1QUpCf8Jfrcs0
-	5r8sGEY2UNAWOQA6hyi9hzZNuXnq+x42SX38L8Ju5ylYgZ9oafoeZ+7ycgkOdbI=
-X-Google-Smtp-Source: AGHT+IGUagvilGdAPFParze+DvIy1PHzFc4+kDXXDtaPTzsMuztDgG4YMCi6Uj1xWvA6rOePhkbkhA==
-X-Received: by 2002:a05:6512:3192:b0:50e:74e2:af58 with SMTP id i18-20020a056512319200b0050e74e2af58mr4121827lfe.52.1706033101479;
-        Tue, 23 Jan 2024 10:05:01 -0800 (PST)
-Received: from [172.30.205.123] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id s9-20020a197709000000b0050ffd0a3728sm645760lfc.63.2024.01.23.10.05.00
+        d=1e100.net; s=20230601; t=1706033191; x=1706637991;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sPOVFQl2tkZfe3QyiMSbVqeq8qtXQuoltOLEZXEAb4Y=;
+        b=e97DUPTzNvWWPrvxVjDLyjwV6FVQMtWO+1qd6vzwZyf7iAd7dhPLYldu6q7GQznYFO
+         QYPjEAkrYIaSmGJoFbwAhivLLCWx0vJdMsruCgjOLwvgcFKWe086n1ZOVkoeenQNGIap
+         2TiHs69qIB2D9OkDG0dxPuNseVx9zAvnitZ8Ueag1HkcPZ2k2qCzKItl0wzjPPSZxOII
+         Uv9SxAm5IfsIVingyGRkZJcwNKYxfGqDGWHaC2sjHXdpBMNvBe7+h6E+i1dpMoRR+R6Y
+         mPLM5BUxeBlnj8f46UCVGoBx2OxX4XYZdss4pWhvCdOqI/7pnLBasFqbRDUSCL3HYt+6
+         vyCQ==
+X-Gm-Message-State: AOJu0YzzqU31KgjEzSrPpoqHjj/PDfOUZjHJJXBhUE9PRxPRRbfYtO7T
+	J60XYWvx5H8txSpM8hFgTgQfTOED95dnAoPOr106Xd+5z32DV4f/oObSlN+ifsD9QgnZIljE1B7
+	jOKPMlQ==
+X-Google-Smtp-Source: AGHT+IGuCpCKRJ4FDd1KtYXNPnslibBkt0oY7DoecV/2/jGdZ6Krdp+ioznD2JIKYpXi+We222DN4Q==
+X-Received: by 2002:aa7:dd44:0:b0:558:251b:3bd1 with SMTP id o4-20020aa7dd44000000b00558251b3bd1mr1078528edw.37.1706033191009;
+        Tue, 23 Jan 2024 10:06:31 -0800 (PST)
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com. [209.85.128.42])
+        by smtp.gmail.com with ESMTPSA id x9-20020aa7cd89000000b00558e0481b2fsm14224968edv.47.2024.01.23.10.06.30
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jan 2024 10:05:01 -0800 (PST)
-Message-ID: <9d1c684f-51ac-4d9c-a189-940ff65e0cab@linaro.org>
-Date: Tue, 23 Jan 2024 19:04:59 +0100
+        Tue, 23 Jan 2024 10:06:30 -0800 (PST)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40ea5653f6bso43304865e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 10:06:30 -0800 (PST)
+X-Received: by 2002:a05:600c:42cb:b0:40e:4ab9:70df with SMTP id
+ j11-20020a05600c42cb00b0040e4ab970dfmr368030wme.245.1706033189635; Tue, 23
+ Jan 2024 10:06:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: qcm6490-idp: add display and panel
-Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Ritesh Kumar <quic_riteshk@quicinc.com>
-Cc: andersson@kernel.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- catalin.marinas@arm.com, will@kernel.org, quic_bjorande@quicinc.com,
- geert+renesas@glider.be, arnd@arndb.de, neil.armstrong@linaro.org,
- nfraprado@collabora.com, m.szyprowski@samsung.com,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- quic_abhinavk@quicinc.com, quic_rajeevny@quicinc.com,
- quic_vproddut@quicinc.com
-References: <20240116094935.9988-1-quic_riteshk@quicinc.com>
- <20240116094935.9988-3-quic_riteshk@quicinc.com>
- <20a8efd1-e243-434e-8f75-aa786ac8014f@linaro.org>
- <CAA8EJpqQVuS+yqXQ2y5sNQrRVg7tcQAJ3ywsEjg+O=7TkUZWLQ@mail.gmail.com>
- <99a9a562-9f6f-411c-be1c-0a28fc2524dd@quicinc.com>
- <CAA8EJppj+cDnw7p4yANvF0FmEhX3+L5xUq8w3TeevAGhcpo1Yg@mail.gmail.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <CAA8EJppj+cDnw7p4yANvF0FmEhX3+L5xUq8w3TeevAGhcpo1Yg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240122235208.work.748-kees@kernel.org> <20240123002814.1396804-34-keescook@chromium.org>
+ <CAHk-=whS7FSbBoo1gxe+83twO2JeGNsUKMhAcfWymw9auqBvjg@mail.gmail.com> <202401221713.3FCABC9290@keescook>
+In-Reply-To: <202401221713.3FCABC9290@keescook>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 23 Jan 2024 10:06:12 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgMPVv-mDxA2qcywpLCRLojtaKmP13h7bVo4m=XN202xA@mail.gmail.com>
+Message-ID: <CAHk-=wgMPVv-mDxA2qcywpLCRLojtaKmP13h7bVo4m=XN202xA@mail.gmail.com>
+Subject: Re: [PATCH 34/82] ipc: Refactor intentional wrap-around calculation
+To: Kees Cook <keescook@chromium.org>
+Cc: linux-hardening@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Mark Brown <broonie@kernel.org>, 
+	Mike Kravetz <mike.kravetz@oracle.com>, Vasily Averin <vasily.averin@linux.dev>, 
+	Alexander Mikhalitsyn <alexander@mihalicyn.com>, "Gustavo A. R. Silva" <gustavoars@kernel.org>, 
+	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+On Mon, 22 Jan 2024 at 17:38, Kees Cook <keescook@chromium.org> wrote:
+>
+> I've tried to find the right balance between not enough details and too
+> much. I guess I got it wrong.
 
+My complaint isn't about the level of detail.
 
-On 1/23/24 16:12, Dmitry Baryshkov wrote:
-> On Tue, 23 Jan 2024 at 15:43, Ritesh Kumar <quic_riteshk@quicinc.com> wrote:
->>
->>
->> On 1/16/2024 6:27 PM, Dmitry Baryshkov wrote:
->>
->>> On Tue, 16 Jan 2024 at 14:06, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
->>>>
->>>>
->>>> On 1/16/24 10:49, Ritesh Kumar wrote:
->>>>> Enable Display Subsystem with Novatek NT36672E Panel
->>>>> on qcm6490 idp platform.
->>>>>
->>>>> Signed-off-by: Ritesh Kumar <quic_riteshk@quicinc.com>
->>>>> ---
->>>>>     arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 100 +++++++++++++++++++++++
->>>>>     1 file changed, 100 insertions(+)
->>>>>
->>>>> diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
->>>>> index 2a6e4907c5ee..efa5252130a1 100644
->>>>> --- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
->>>>> +++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
->>>>> @@ -9,6 +9,7 @@
->>>>>     #define PM7250B_SID 8
->>>>>     #define PM7250B_SID1 9
->>>>>
->>>>> +#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
->>>>>     #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
->>>>>     #include "sc7280.dtsi"
->>>>>     #include "pm7250b.dtsi"
->>>>> @@ -38,6 +39,25 @@
->>>>>                 stdout-path = "serial0:115200n8";
->>>>>         };
->>>>>
->>>>> +     lcd_disp_bias: lcd-disp-bias-regulator {
->>>>> +             compatible = "regulator-fixed";
->>>>> +             regulator-name = "lcd_disp_bias";
->>>>> +             regulator-min-microvolt = <5500000>;
->>>>> +             regulator-max-microvolt = <5500000>;
->>>>> +             gpio = <&pm7250b_gpios 2 GPIO_ACTIVE_HIGH>;
->>>>> +             enable-active-high;
->>>>> +             pinctrl-names = "default";
->>>>> +             pinctrl-0 = <&lcd_disp_bias_en>;
->>>> property-n
->>>> property-names
->>>>
->>>> all throughout the patch
->>
->> Thanks, I will update in the new version.
->>
->>>>> +&gpu {
->>>>> +     status = "disabled";
->>>>> +};
->>>> Hm.. generally we disable the GPU in the SoC DT, but that doesn't
->>>> seem to have happened here..
->>>>
->>>> Thinking about it more, is disabling it here necessary? Does it
->>>> not fail gracefully?
->>> Missed this.
->>>
->>> I'd say, I don't see a reason to disable it at all. The GPU should be
->>> working on sc7280 / qcm4290.
->>
->> With GPU device node enabled, adreno_bind failure is seen as the
->> "speed_bin" was not populated on QCM6490 target which leads to display
->> bind failure.
-> 
-> Excuse me please. The GPU node for sc7280 already has speed_bin, which
-> points to qfprom + 0x1e9, bits 5 to 9.
-> 
-> Do you mean that qcm6490 uses different speed bin location? Or
-> different values for the speed bins?
-> 
->> Spoke with GPU team and on QCM6490 board, only CPU rendering is
->> supported for now and there is no plan to enable GPU rendering in near
->> future.
-> 
-> This sounds like having the feature disabled for no particular reason.
-> Both the kernel and Mesa have supported the Adreno 635 for quite a
-> while.
+My complaint is about how the commit log IS ACTIVELY MISLEADING
+GARBAGE and does not match the actual patch in any way, shape, or
+form.
 
-643 [1], [2]
+It talks about completely irrelevant issues that simply have nothing
+to do with it.
 
-> 
->> In this regard, what do you suggest
->>
->> 1) Disable GPU in QCM6490 DT (as per the current patch)
->> 2) Disable GPU in the SoC DT, but enable it in other platform DTs. (This
->> will prompt change in all the dt's and we don't have all the devices to
->> test)
-> 
-> The second option definitely follows what is present on other platforms.
-> 
->> Please let me know your views on it.
-> 
-> Please enable the GPU instead.
+It talks about undefined behavior and about a "unsigned wrap-around
+sanitizer[2]", which is nonsensical, since there is no undefined
+behavior to sanitize. It literally gives a link to a github "issue"
+for that claim, but when you follow the link, it's actually about
+*signed* overflow, which is something entirely different.
 
-+1
+And honestly, the patch itself is garbage. The code is fine. Any
+"sanitizer" that complains about that code is pure and utter shite.
 
-Konrad
+Really.
 
-[1] https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/25408/diffs?commit_id=b1e851d66c3a3e53f1a464023f675f3f6cbd3503
-[2] https://patches.linaro.org/project/linux-arm-msm/cover/20230926-topic-a643-v1-0-7af6937ac0a3@linaro.org/
+If you actually have some real "detect unsigned wraparound" tool
+(NOTE: that is *NOT* undefined behavior, and that is *NOT* a
+"sanitizer", it's at most some helpful checker), then such a tool had
+better recognize the perfectly fine traditional idiom for this, which
+is to do the addition and check that the result is smaller. Like the
+code does.
+
+See what I'm saying? The patch is garbage. Any sanitizer that would
+complain about the old code is garbage. And the commit message is
+worse than garbage, it is actively misleading to the point that I'd
+call it lying, trying to confuse the issues by bringing up things that
+are utterly and entirely irrelevant to the patch.
+
+So:
+
+ - get rid of that commit message that is lying garbage
+
+ - fix the so-called "sanitizer".
+
+ - stop calling the unsigned wrap-around a "sanitizer" and talking
+about "undefined behavior" in the same sentence, since it's neither.
+
+Do you really not see why I think that thing is actively *WRONG*?
+
+           Linus
 
