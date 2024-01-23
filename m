@@ -1,128 +1,144 @@
-Return-Path: <linux-kernel+bounces-35783-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35784-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1E6D839675
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:32:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB0AB839678
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:33:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7CB2B23661
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:32:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D8F41F232EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:33:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA0A57FBD9;
-	Tue, 23 Jan 2024 17:32:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 818BE80021;
+	Tue, 23 Jan 2024 17:33:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BJXCGcAM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=timschumi@gmx.de header.b="et0LCry3"
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B40EE80041;
-	Tue, 23 Jan 2024 17:32:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E4BB5F555;
+	Tue, 23 Jan 2024 17:33:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706031123; cv=none; b=qM0+zKp6yPADujUJJ+dnCWpZSJAP1SnB6AiFuo4U0+Y7GKUi0gZpmsx6oyuA8v4ayTuhLOV0Mn1e+KlXGbm4VBvv/gXeRYHnte32EvazLn4INiqVaysfEPf6VzDAxyyTKrYwWjbDA38T1ahOrbLPBacPLnjbQoQuYxtTOS+AsCs=
+	t=1706031194; cv=none; b=g2LmpHwJsl397KIbzUQ/UxwUwtBZfnEXSu4acm5CQ6J62uZc0TeyFdhbHZcYC/l4M89njDO3me+M5rIwXvJKsVIDwweFldG2QLbcqQBf8Ej6uoBR2MwnUzTx/sj1WrZl7bSUMIbtCDXTTns4jjaoYgsqKPvjflPjbnzUmbwKj/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706031123; c=relaxed/simple;
-	bh=vnQPALudVridAeOMTUYJfy1JXdOlGYJ/2iBszYF0y1c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uvNKXcA4/iqQbOixMbAMBQPTV34IBSBnXuGvSf/DI5pOIx/V7odTMInFjM5dIBaOBKBQD+kRE+aWHjsAnnVyfsB0wGrRJD7uUxvKAEuSqR/N4G/sKTMIrwcs0cUZ4lHyWpBk2qS0GW6JFa3myIQEZA9xUmF0W5BtZRE+yKRJdbE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BJXCGcAM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53C84C433F1;
-	Tue, 23 Jan 2024 17:32:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706031123;
-	bh=vnQPALudVridAeOMTUYJfy1JXdOlGYJ/2iBszYF0y1c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BJXCGcAMreUU3SZda8JNybHRCNdxaVUb9TCrzM/U8zlIbMPugud/RZL+Lu6913Mlk
-	 6KHgOHWnCYW4pUKhk9C6dFyK9TBK11vzGOXydBcO72VeESZXT/tGh+hrOOViUrcaAh
-	 32Xy8I5XTpK0iWv/yf3F+CX3XLp7LE3L7yOE9iF0QkpuccmyeiMhLkW2xfjLCVkl34
-	 pgMqfuuPStmQh4h2ZhgtLglNrXfTi65EjGQ2gllF0o6syNo6tyXGohA1VFvphOqgiQ
-	 K3MrlLzpUv5Rh/ilgJ/gdR8rjjnk2vl8SHnhS1+ZSyTLK4eUaQk3sP4km/UdhVPVEM
-	 jtrYUP7Qt9Avw==
-Date: Tue, 23 Jan 2024 17:31:58 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Dave Martin <Dave.Martin@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Edmund Grimley-Evans <edmund.grimley-evans@arm.com>
-Subject: Re: [PATCH 1/4] arm64/sve: Remove bitrotted comment about syscall
- behaviour
-Message-ID: <991d84b4-e184-4fd6-900f-601f8c31d518@sirena.org.uk>
-References: <20240122-arm64-sve-sme-doc-v1-0-3d492e45265b@kernel.org>
- <20240122-arm64-sve-sme-doc-v1-1-3d492e45265b@kernel.org>
- <Za/e15zUOEaa1b7d@e133380.arm.com>
+	s=arc-20240116; t=1706031194; c=relaxed/simple;
+	bh=7dxmIkN4TzELfKmvnFNOowNx6VkitytmDjVpjZpsq2k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WKSPxuvQHLShPkGu5sPJqbTZW3p+ay+SCU2NFf603wUQPQjQUl5ZB2+O1WBRBADi7sgTPAJgBvmm3VYDAThYrKU7m6KKctVesk4dQeOVzrMezClKQ0QXkejwHtHn1uOwwVN/Eu7p0v9726VX0Wk0Sh+f+kS5ohxSBt9L7jJw0NI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=timschumi@gmx.de header.b=et0LCry3; arc=none smtp.client-ip=212.227.15.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1706031181; x=1706635981; i=timschumi@gmx.de;
+	bh=7dxmIkN4TzELfKmvnFNOowNx6VkitytmDjVpjZpsq2k=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=et0LCry3JZ3bB/eMf/kEuNJr4d2unIoVaJUuYYUrjBuyAt3CHt5qSVo3mkT0t7xW
+	 qplqNJIvMjelWxlcO3tT7JehHdKHj/+FHH+5bruh4qzGbkBPyvLlg8mmkVdmbO69b
+	 zDGXAbWPxBQb1ZVvC41gs0aOmWWBuy9/AYuJejMzJBezKeAtDKgA94dxVC0yUu7FV
+	 QcNfHQW4Z5gxVeWhFrSISYTDP98q+vMwn3gtfDMp5XcdyxjH2IIy4U6mQS90iyCbY
+	 XJwFyFNkA3XUd67UW44jATgrmLbdZW4tYdsEIhrgoO65esfc/Zex1XcbwhuRpugv3
+	 AX2PAzcyoGXpE6QuWA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [10.222.0.4] ([93.218.111.23]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1N3KTo-1r195j1Uh8-010Q4F; Tue, 23
+ Jan 2024 18:33:01 +0100
+Message-ID: <b58a112f-767f-4918-8262-63ac1dbfebbf@gmx.de>
+Date: Tue, 23 Jan 2024 18:33:00 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Wv42auelfj9rWUAH"
-Content-Disposition: inline
-In-Reply-To: <Za/e15zUOEaa1b7d@e133380.arm.com>
-X-Cookie: Stay together, drag each other down.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] efivarfs: Iterate variables with increasing name buffer
+ sizes
+Content-Language: en-US
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: Matthew Garrett <mjg59@srcf.ucam.org>, Peter Jones <pjones@redhat.com>,
+ linux-efi@vger.kernel.org, Jeremy Kerr <jk@ozlabs.org>,
+ linux-kernel@vger.kernel.org, timschumi@gmx.de
+References: <20240122231507.1307793-1-timschumi@gmx.de>
+ <CAMj1kXHSSRacU3hp6D3sdUKDESi1FoD33Qi=5Df+=_biZ-vqhA@mail.gmail.com>
+ <223a4e75-2e06-4bc6-a70c-823f0eb308d7@gmx.de>
+ <CAMj1kXEKF_a6wLtoMYCwBKEVDo6k1u=Cas-=4Ar4WnANHNu+cg@mail.gmail.com>
+From: Tim Schumacher <timschumi@gmx.de>
+In-Reply-To: <CAMj1kXEKF_a6wLtoMYCwBKEVDo6k1u=Cas-=4Ar4WnANHNu+cg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:+oQnGZQ4pztJWaJsbDVw/lgyljs39a8hkfXXOQvQ0J7KeParFwe
+ XleV9fUjCihbrX0MABg0upbwl6v8byOLfXn7M+qTVdRO0YnF4dPN2KXaFQ++mi5rVnUqFxj
+ z2LXpvlQaXfhfQLpZhjDoovdGnOIHaH3mOncFXIt5MG1+qSyZd8BKcT+81oTb/JFb6PiF0t
+ bN5SfhMuokNFV5pHQZ6xA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:HGf5fHXhNAQ=;vQCG0pYDuT95aDxR/yC+WTgX1Ln
+ XBnGKoGAz+AmKD3j8pFeqn+gQatPfqw/VsZCaSlF+iEjJkKWdVzw5hHTMtlEW2XqdugSUvqzs
+ xJMUhAfGTmauMlZpgMADbaC4X8e3lfnU+N9n9uqw4CWI1aOVVo+c5ikpCbUquR88Q0F/WMMp1
+ pbEiuW5Pi+RpZyvPi8o3pJE009NKzOXOYKWkpHdyvP9tyQHphcbKQEaPmh6CZRMLJROpc9qyq
+ NgWb0RcwNj832UBQv1rDssKMLrYA6d6HruLXT+iAkUwEcreH0sH8RmqJmj/JL59xSFJXAdHUo
+ B37dtWaA3SEqmapRANRKzWr4W4ZoukNl5oEIUGKJ/TFEcJi/tSEHNxwCN+RRoPKMZz+iRRa9e
+ w8gMPiWT68xu/vp1NmlkPBisrHb8WhoaZKr3NXmJufSFjND1qiPoGUGFWAL5kT70CnC5d6OcH
+ /PSJXPRnmeRlVyHes/SNoeqB8XmPvIS7DpkpkhR6lAeFbLFzJg75uglsWx5O/7TmVnayfzDPF
+ Oyzt2X1ElNlnheUt0WmKerXW/MhSfzbY6DCRJJ20cDALVbP8gULTS3NhM+UzFvLmqcQm6ow4N
+ 9NWgb6XISQ9bmpL3liv+Z0PjwU+e0LNKniexcxwlObGEXlrr8yVMIKLpWQRoKdF0nWcEBQAnt
+ 9Dv6KU+SZnjXZizhIQNeFipgoeczShUDRNCAlyOOYXtmKnJQmSSl6KMXoiLcoYs1U0evNkJdP
+ qMLMSzbumQJenGSaanOH0iePOm1x0iF4cTbjHVSchVRbr4C/HJs4JcYt+hKHZPVEh2k0n92LR
+ 3WXU7Sxl/LbdqVzcxOgW2B1p1+GP/uZyMcK9XkYIt7rzJjC0f1SjmUsxqAuuoYrx8uTmLcNra
+ M29rx7BY0DAR/glLeqjNoEL/9wx6eABiCeCN4R0Gawz1ELC3iA7iPaivrgRiESCPnUN+XYte5
+ qNJGFZC9fTvGOG/m/LvsIwyRDTw=
 
+On 23.01.24 15:09, Ard Biesheuvel wrote:
+> On Tue, 23 Jan 2024 at 14:55, Tim Schumacher <timschumi@gmx.de> wrote:
+>>
+>> I'd rather avoid introducing deviations from the specifications on the
+>> kernel side as well.
+>
+> Which specification would this deviate from?
 
---Wv42auelfj9rWUAH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The preexisting comment claims "Per EFI spec", and it appears that I got
+mislead by that. Neither the UEFI specification, nor the newest revision
+of the EFI specification (which I guess is what would have been current
+back in 2004, when this comment was introduced) seem to make any mention
+of a maximum length for the variable name.
 
-On Tue, Jan 23, 2024 at 03:44:23PM +0000, Dave Martin wrote:
-> On Mon, Jan 22, 2024 at 08:41:51PM +0000, Mark Brown wrote:
-> > When we documented that we always clear state not shared with FPSIMD we
+I'll look into updating it appropriately when doing my changes (or remove
+it entirely, since it seems to serve no other purpose than justifying the
+starting buffer size).
 
-> Where / when?
+>> In regards to complexity of the proposed solution, how about we approac=
+h
+>> this from the other side? Start off with advertising 1024 bytes of
+>> buffer storage, and cut that value in half (without actually resizing
+>> the buffer) as long as we get `EFI_INVALID_PARAMETER` while on the firs=
+t
+>> run.
+>>
+>> If we ever get `EFI_BUFFER_TOO_SMALL`, we know that something is wrong
+>> with the UEFI implementation (because that either means that something
+>> claims to be larger than 1024 bytes, or that our assumptions about the
+>> quirk don't hold up) and can bail out and log as appropriate. That woul=
+d
+>> limit the complexity to the machines that need it, completely omit the
+>> need for resize logic, and would still be specification compliant.
+>
+> Yes, I would prefer to keep this as simple as possible.
 
-In the document that is being modified when it was written.
+I'll prepare a v2 with those changes then. The 1024 bytes may not be
+an actual limit, but I'll keep it as the default size for the second
+revision to ensure that we don't break any existing setups.
 
-> > -* In practice the affected registers/bits will be preserved or will be replaced
-> > -  with zeros on return from a syscall, but userspace should not make
-> > -  assumptions about this.  The kernel behaviour may vary on a case-by-case
-> > -  basis.
+If this is still considered not simple enough, we can go back to looking
+at just doing s/1024/512/ for the static buffer size.
 
-> This was originally an intentionally conservative statement, to allow
-> the kernel the flexibility to relax the register zeroing behaviour in
-> the future.  It would have permitted not always disabling a task's SVE
-> across a syscall, for example.  There were some concerns about security
-> and testability that meant that we didn't use this flexibility to begin
-> with.
+Thank you for the feedback, I greatly appreciate it.
 
-> If we are making an irrevocable commitment not to use this flexibility
-> ever, then this comment can go, but if we're not totally sure then I
-> think it would be harmless to keep it (?)
+Tim
 
-I think everyone except for Catalin had felt that the original
-discussion had concluded that there was a commitment to always clear the
-non-shared bits and was disappointed to learn that the documentation
-said otherwise.  When I tried to take advantage of this as part of
-optimising the system call overhead for SVE there were eventually
-complaints.
-
-> (Feel free to point me to the relevant past discussion that I may have
-> missed.)
-
-See the discussion on my syscall optimisation series:
-
-    https://lore.kernel.org/all/20220620124158.482039-8-broonie@kernel.org/
-
---Wv42auelfj9rWUAH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWv+A0ACgkQJNaLcl1U
-h9DaTQf/VjPt7AYgYvOmXYGPovG834fzOlz6CVgNxigTvGcW3z+gY79+oinyH3q6
-SPl5DS4zSoGVMu1vR41R+l+TdmTCphxjEZIVLmk+wuMommfT+71leHQj4Gr7nNSj
-N8R/mUpOe0y4FgGyPvs6ljvso5Cyls6WtTR0j8syqAkRH08f5fnY7piCt1oHaeBm
-i0USNyjfJWShZmvsLqw8MSObZMZfZhlkPmIuNbqPbujiAIIybcvBQIevf5rSnUef
-NgwBhKTP4+HHBsTcVTOgMphiN5zJBjQnEv/NJlAk6iW7lcxTdbSW4i7luACv2DZs
-GWtM3WgGNAQP1pAITjoRPNzzGLOmog==
-=I+eN
------END PGP SIGNATURE-----
-
---Wv42auelfj9rWUAH--
+PS: Apologies in case my previous message ended up with a messed up line
+wrap. Thunderbird apparently shows the message with automatic line wrap
+while composing, but doesn't actually send it like that (or lines are
+magically unwrapped again when displaying the message afterwards).
 
