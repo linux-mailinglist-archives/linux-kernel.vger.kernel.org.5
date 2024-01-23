@@ -1,93 +1,79 @@
-Return-Path: <linux-kernel+bounces-36102-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36103-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14F51839BA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 22:59:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3EE5839BA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 23:00:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8E641F23EC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:59:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C988281E24
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 22:00:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA74B4F61B;
-	Tue, 23 Jan 2024 21:58:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F41B54EB46;
+	Tue, 23 Jan 2024 22:00:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="dtuXTYpG"
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gBtaPSbI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C25FC4E1CD;
-	Tue, 23 Jan 2024 21:58:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30BFB33CC6;
+	Tue, 23 Jan 2024 22:00:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706047101; cv=none; b=A0L7hYfg3f6QGVeQEHtb5aNvv8JgVJeNxIrcHnJ1fY68pFU8Q3jC4p7KzfGOgMKpQqsthWTrykLPwQZqm+qMtXiBi33vPhL/QLxG8tONEzB5FUTh1arBjyme+vK/sQfuY3p7b3JG1xyJQglUGxwg98S60WIzZ//KP9WX/zQbNWQ=
+	t=1706047210; cv=none; b=k01eF5cFMw8pmYggI2dOU8TCvmLzC2lGaZqP40xEo7wPY+NPS3XC6Mz6g3nCdWbnyE3pKev2opwqqYfxEmVGlbETDDkv6+ZC1Om2sJqf7yScIJHKMdRfDkzANfIR3cC+90zqXQhNrEAI9Q+LqgcediIy6iyhluNGLoq83RXQdHM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706047101; c=relaxed/simple;
-	bh=Ndega+sIAkIq1YFNOA0L1EWMuFio0gyq0Wio7QvD9wI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ULMacQrVizq5aNsqaShIN2Jls58azRDmul5QI6nAc0qTCcUifU/96QODzv7Ac/GvYIHX3RkAoAoBma56YiRSugHMrbM0lLn8hF545lTKru0XgJfOFknaLANNB9X3pRC1XtsYmbbWF7w5g3Dw2ikb8SzlY1xfp/PmuAtmCW68Ifs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=dtuXTYpG; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-Received: from localhost (c-98-53-138-11.hsd1.co.comcast.net [98.53.138.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id 11D037ABF;
-	Tue, 23 Jan 2024 21:58:19 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 11D037ABF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1706047099; bh=cOSWOI6kz4AsfGTEdILlw4SPtuYI5N874fprPojluJw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=dtuXTYpGX+sLT38a1XQ2kHia94Fv81/IcD+AXCuQ/FYF3kpyS/FWig4mio9NihnqC
-	 MelEaaWjFy2AjKszWNbxQbuXUGPWHStcJ79hgvPipLc4HhLIr8h8sTFr5VzWyuZfbR
-	 UeRthCMbk+UiB1Y+KRNfOrGHIUoVlDgEe2aHKubs7Lq/NSbWExtD86mCyr94pvdNAe
-	 oZ3Phlm82aZYv2hQ4qBKdvd6KuFQRHzYjQKw17IoM0nsx+xXxQdpd6q2kn/PSVw4G+
-	 p5y84JnOuytowvza9ty84vv9e5Fz3zMml6cVKoslBkSyqC1bPnyIMhRVhKklsgx4Iq
-	 ndhDKBmuTV77Q==
-From: Jonathan Corbet <corbet@lwn.net>
-To: Vlastimil Babka <vbabka@suse.cz>, Lukas Bulwahn
- <lukas.bulwahn@gmail.com>, linux-doc@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: admin-guide: remove obsolete advice related to
- SLAB allocator
-In-Reply-To: <f0353b3e-9cb3-4009-9c2e-4e0912f28dc2@suse.cz>
-References: <20231130095515.21586-1-lukas.bulwahn@gmail.com>
- <f0353b3e-9cb3-4009-9c2e-4e0912f28dc2@suse.cz>
-Date: Tue, 23 Jan 2024 14:58:18 -0700
-Message-ID: <8734unk8zp.fsf@meer.lwn.net>
+	s=arc-20240116; t=1706047210; c=relaxed/simple;
+	bh=g2mYLhCDrXzCdeaeoBJ2c7RtSg3dAXTbQLawvcW29iE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hLGaY9MqsKhezsMO/D8ZZMhYJdBEuflmnfUDzQBjNb6OCClJbKWnwKdehUrP4jNfSjVf33qc32qxux8ZiAX9WgmyE21+xUZnlhflgbF1cEqE1EMOuZCyOlaOmngjjLbYfMYr804juCeD8IgM460UHIdRFeyFZ7jD14eCD6QXhlY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gBtaPSbI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65CAAC43390;
+	Tue, 23 Jan 2024 22:00:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706047209;
+	bh=g2mYLhCDrXzCdeaeoBJ2c7RtSg3dAXTbQLawvcW29iE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gBtaPSbIFKwjzvp3mBYifFfVsYLOkNMj0pCayo56rJ/qBbxxLf6kowWPkwyKA/eVw
+	 lfmBEF5vpF6IhvAJYgLi74jGoRPGYml5YGQuzcZW2PxGqahb/oOrDL+5Nw+sLPDbSk
+	 mjN9h8DxSOXK8RdDF6XvsLXkYug9IkLLyjyYCI1Wdg+oSm2zUhAshVTBypDnV8xd6w
+	 QrIK60Ub2GACqOA/QimaYOzeGDlUZ5M0WxwUiT7yEPoPzpzmD+Dc8vExh3hDJ+YnIN
+	 DYsuW/XZosg/ym/1KUMC1i/jtEz3AnPuqG8WQjMX0sxiIOHrO9R2j+hOkdGpWrFanl
+	 EhbufKPbNWEMQ==
+Date: Tue, 23 Jan 2024 23:00:03 +0100
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: broonie@kernel.org, arnd@arndb.de, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, alim.akhtar@samsung.com, 
+	linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org, 
+	andre.draszik@linaro.org, peter.griffin@linaro.org, semen.protsenko@linaro.org, 
+	kernel-team@android.com, willmcvicker@google.com
+Subject: Re: [PATCH 01/21] spi: dt-bindings: samsung: add google,gs101-spi
+ compatible
+Message-ID: <xk2gauu2putvc3fs2sap7t7kcmupfnsuxvrbcfve237w4sw2mg@tf4g3cbwhro5>
+References: <20240123153421.715951-1-tudor.ambarus@linaro.org>
+ <20240123153421.715951-2-tudor.ambarus@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240123153421.715951-2-tudor.ambarus@linaro.org>
 
-Vlastimil Babka <vbabka@suse.cz> writes:
+Hi Tudor,
 
-> On 11/30/23 10:55, Lukas Bulwahn wrote:
->> Commit 1db9d06aaa55 ("mm/slab: remove CONFIG_SLAB from all Kconfig and
->
-> Note that's a -next (from slab/for-next) commit which might still change at
-> this point.
->
->> Makefile") removes the config SLAB and makes the SLUB allocator the only
->> default allocator in the kernel. Hence, the advice on reducing OS jitter
->> due to kworker kernel threads to build with CONFIG_SLUB instead of
->> CONFIG_SLAB is obsolete.
->> 
->> Remove the obsolete advice to build with SLUB instead of SLAB.
->> 
->> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
->
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
->
-> But due to above, maybe it's best to wait after the removal goes through.
+On Tue, Jan 23, 2024 at 03:34:00PM +0000, Tudor Ambarus wrote:
+> Add "google,gs101-spi" dedicated compatible for representing SPI of
+> Google GS101 SoC.
+> 
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 
-That has definitely happened, so I've applied this now.
+Acked-by: Andi Shyti <andi.shyti@kernel.org>
 
 Thanks,
-
-jon
+Andi
 
