@@ -1,54 +1,35 @@
-Return-Path: <linux-kernel+bounces-35107-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35108-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 580F2838C3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:39:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67010838C40
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:39:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BB061C232AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:38:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DDED1F260DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:39:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C14D45C8E7;
-	Tue, 23 Jan 2024 10:38:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ZuLuyXeb"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB98C5C8E9;
+	Tue, 23 Jan 2024 10:39:05 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72FFA5C5FE;
-	Tue, 23 Jan 2024 10:38:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50A695C8E3;
+	Tue, 23 Jan 2024 10:39:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706006332; cv=none; b=eGDnRNrh0mqo7ZyDDb1+u3O+SrfnkiCDHofRnhVH8omge8oivSaWJl7263OsgPsXjDemTHhya9AvPp4t4oKBvqa72pGGUAzg/FIilSAjI2FP+yMiTgaS/K33on9jq/pG6Hf9c2HzDjHtTnL/NTNDOoIiKZuN70TTo9pp7KDDrRg=
+	t=1706006345; cv=none; b=tzcnucRWZRvyvUG4M6Ie1xJyUDrEK7DDD0SSTp1E0S7fL0/yzgm3yTAg95xVoU0AVqAKwde6GFn3bavVVrl9ThfUN+gyXgkGhLksXQmVIhIvRHhhLcTzp/GoIn4c/FjJ9wnCc0yOVutzSFRHnO745wKeRzfT+jxlGk4u6oQMXKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706006332; c=relaxed/simple;
-	bh=fwg7iBzcpslli0ryw+wtduKrPGzNpgD5nM2Zx1ePlms=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aNU6BMSeVvg4Qy4oogNqQu6HK0wS5SoOosglScypZ0gWTMOWQHFUH1Zi/Y/genXc8LT4xSlc6yQsvJcpVGE+ZzVkkfDm4Et9vFRatFlpjEKrtEFlz+T8at64nSFmaW9zkuKpYEmvXvRSjLwvtNlVzw9ixQvQRngv65bkweq+xAU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=ZuLuyXeb; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706006323;
-	bh=fwg7iBzcpslli0ryw+wtduKrPGzNpgD5nM2Zx1ePlms=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ZuLuyXebqQIG3hIBTdPltslzYWi3LxwHi0JJG2YvYJ6+6y5UJctBEG01QbcZTCcbN
-	 c543IXvAmNSM9qIAPV0m+Neeqw6MNEVnDrv2FOtWaExL0sPflG6UmOghjGowu4EHOc
-	 vFeSrVENN8IcvU9mz5airnhfaMnf2jmSuzmHFtD2FRzAExoAcIQq/NebZ2gyys5U+T
-	 3OgF3UF+BEByuo9EAGYYjyPWlqSsCx1eYLYIlqk7NSI9WMtwMUjps5J6UxuEFF3OdI
-	 diUJ4azfCCzcG7zodhGSX7SbyPk1vdb+WnU0kUMUWeuO3LKSVBAWaEwGMN4ZBoG7Ph
-	 a59aoE63yQdTg==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B9DB137820A9;
-	Tue, 23 Jan 2024 10:38:42 +0000 (UTC)
-Message-ID: <cfee57f3-5940-44c3-a93b-3a5160dc8351@collabora.com>
-Date: Tue, 23 Jan 2024 11:38:42 +0100
+	s=arc-20240116; t=1706006345; c=relaxed/simple;
+	bh=ibWco0qwRsQhGlxe5LirL6XlKz9BmJx5hlGiH39HD2g=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=CBVHqis+m7oDrc+gQp51KEbDDgvcBadEQjP0jR2BXlpWYLoA2DLnSIwv+CzKM4JBPqavlZ0VSvOZvRU6cxAnYRIjnGv95Lcyjax4EFwPEX8AZBhwTQIV5K5vopBJ+WkDzCBZe6KOGgIMCOFeY5TeC/gdtSIhX4vzOaF+iqFVO7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23D97C433C7;
+	Tue, 23 Jan 2024 10:39:02 +0000 (UTC)
+Message-ID: <a67a75da-a506-48c4-ac5e-21d84cfae2e3@xs4all.nl>
+Date: Tue, 23 Jan 2024 11:39:00 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,100 +37,65 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND v2] arm64: dts: mt8195-cherry-tomato: change
- watchdog reset boot flow
-To: Chen-Yu Tsai <wenst@chromium.org>,
- Matthias Brugger <matthias.bgg@gmail.com>
-Cc: Hsin-Te Yuan <yuanhsinte@chromium.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-mediatek@lists.infradead.org,
- =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= <nfraprado@collabora.com>
-References: <20231228105717.719624-1-yuanhsinte@chromium.org>
- <CAGXv+5H-mpXZ_0H_HchDWeTgx+4Nkxh6651DEs1C62mrXczTkA@mail.gmail.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-In-Reply-To: <CAGXv+5H-mpXZ_0H_HchDWeTgx+4Nkxh6651DEs1C62mrXczTkA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Subject: Re: [Linux Kernel Bugs] KASAN: slab-use-after-free Read in
+ cec_queue_msg_fh and 4 other crashes in the cec device (`cec_ioctl`)
+Content-Language: en-US, nl
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+To: "Yang, Chenyuan" <cy54@illinois.edu>,
+ "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: "jani.nikula@intel.com" <jani.nikula@intel.com>,
+ "syzkaller@googlegroups.com" <syzkaller@googlegroups.com>,
+ "mchehab@kernel.org" <mchehab@kernel.org>, "Zhao, Zijie"
+ <zijie4@illinois.edu>, "Zhang, Lingming" <lingming@illinois.edu>
+References: <PH7PR11MB57688E64ADE4FE82E658D86DA09EA@PH7PR11MB5768.namprd11.prod.outlook.com>
+ <f985d664-d907-48ed-9b3d-dc956c178b88@xs4all.nl>
+ <89FAADA9-D4EC-4C27-9F8F-1D86B7416DE1@illinois.edu>
+ <382c37c0-15c1-48ad-a8d0-a6bc4bd7160a@xs4all.nl>
+In-Reply-To: <382c37c0-15c1-48ad-a8d0-a6bc4bd7160a@xs4all.nl>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Il 23/01/24 05:03, Chen-Yu Tsai ha scritto:
-> +CC Nicolas
-> 
-> On Thu, Dec 28, 2023 at 6:57 PM Hsin-Te Yuan <yuanhsinte@chromium.org> wrote:
+On 23/01/2024 09:02, Hans Verkuil wrote:
+> On 22/01/2024 20:11, Yang, Chenyuan wrote:
+>> Hi Hans,
 >>
->> The external output reset signal was originally disabled and sent from
->> firmware. However, an unfixed bug in the firmware on tomato prevents
->> the signal from being sent, causing the device to fail to boot. To fix
->> this, enable external output reset signal to allow the device to reboot
->> normally.
+>> Thank you very much for providing the patch!
 >>
->> Signed-off-by: Hsin-Te Yuan <yuanhsinte@chromium.org>
+>> After running the reproducible programs and 24-hour fuzzing, it seems that this patch could fix the issues 1, 2, 3 and 5.
 > 
-> Friendly ping?
+> Ah, that's good news.
 > 
-> Also wondering if you folks hit this, or if you haven't triggered the
-> watchdog at all.
+>>
+>> The 4th issue, "INFO: task hung in cec_claim_log_addrs", is still triggered after applying the patch.
 > 
+> I'll dig a bit deeper into this one, see if I can figure out the cause.
+> 
+> Thank you for your help in testing this!
 
-I have never seen any watchdog timeout on Tomato R2.
+Can you do another testrun with this patch on top of the previous one?
 
-In any case - this commit misses a Fixes tag...
+Thank you!
 
-Cheers,
-Angelo
+Regards,
 
-> ChenYu
-> 
->> ---
->>
->> Changes in v2:
->> - Limit the effect only on tomato.
->>
->> ---
->>   arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts | 4 ++++
->>   arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts | 4 ++++
->>   arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts | 4 ++++
->>   3 files changed, 12 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts
->> index 2d5e8f371b6d..a82d716f10d4 100644
->> --- a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts
->> +++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts
->> @@ -23,3 +23,7 @@ &sound {
->>   &ts_10 {
->>          status = "okay";
->>   };
->> +
->> +&watchdog {
->> +       /delete-property/ mediatek,disable-extrst;
->> +};
->> diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts
->> index 2586c32ce6e6..2fe20e0dad83 100644
->> --- a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts
->> +++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts
->> @@ -43,3 +43,7 @@ &sound {
->>   &ts_10 {
->>          status = "okay";
->>   };
->> +
->> +&watchdog {
->> +       /delete-property/ mediatek,disable-extrst;
->> +};
->> diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts
->> index f54f9477b99d..dd294ca98194 100644
->> --- a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts
->> +++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts
->> @@ -44,3 +44,7 @@ &sound {
->>   &ts_10 {
->>          status = "okay";
->>   };
->> +
->> +&watchdog {
->> +       /delete-property/ mediatek,disable-extrst;
->> +};
->> --
->> 2.43.0.472.g3155946c3a-goog
->>
+	Hans
+
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+---
+diff --git a/drivers/media/cec/core/cec-adap.c b/drivers/media/cec/core/cec-adap.c
+index 079c3b142d91..7b5dcdf775cc 100644
+--- a/drivers/media/cec/core/cec-adap.c
++++ b/drivers/media/cec/core/cec-adap.c
+@@ -935,7 +935,8 @@ int cec_transmit_msg_fh(struct cec_adapter *adap, struct cec_msg *msg,
+ 	 * Release the lock and wait, retake the lock afterwards.
+ 	 */
+ 	mutex_unlock(&adap->lock);
+-	wait_for_completion_killable(&data->c);
++	wait_for_completion_killable_timeout(&data->c,
++				msecs_to_jiffies(adap->xfer_timeout_ms + 1000));
+ 	cancel_delayed_work_sync(&data->work);
+ 	mutex_lock(&adap->lock);
+
+
 
