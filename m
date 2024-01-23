@@ -1,150 +1,140 @@
-Return-Path: <linux-kernel+bounces-35329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35318-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B45A838F82
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:12:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED604838F71
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:10:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10C561F2A8A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:12:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C0E61C259C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:10:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48DF560260;
-	Tue, 23 Jan 2024 13:10:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5FD25EE8D;
+	Tue, 23 Jan 2024 13:10:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MR33zzv1"
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="UKpc2djB";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="DxImnPBo"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9708E5FEED
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 13:10:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9114F5EE74
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 13:10:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706015422; cv=none; b=MUyJ/N9JdZ8tYR0NpmIdx/M2wksxED+cqVZWpvvm3ocvqPys0jfzJhXqWtnjeASvzVNi/7ZaKimwS/PALmu+bLwGpvDms68MxiMhoiXukCK2AkAZxleWVvjDXlR2e9qIn1oRZGgm4zNgDVPgrcXuElb2fs3RdvuBEnu8A0g8mOs=
+	t=1706015407; cv=none; b=Xws3Dh+izC6eihAFI2o3xo5MP/WOPo8FqLX2PREvDsKHsYT8Av6z//Dp7fXVnniti10AiDEZ7vqmPolktnzKfiWwzaVSvvC8YKq8KXtcGb/X1BY2p60htqgOyw7mQ+JcxlYPz51IGTqOOLZvgNb4yQ1/O2oP0Trznf1HQav6NZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706015422; c=relaxed/simple;
-	bh=S8Dj3R8prRqV+AGEE3+JoAYYKm0kKP9XmwiZ7qnLb7Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HF1SLnV8yT2LX2u05+ssFiTWyX49QuGGkqF7tFP7LucuXmHZ1oAdINhL1PyfrokkT033/VZOg2sK+ciGakZvvWhxw/nP6y6wRQg06hM4cAMSVhU7TzIj+6Z9h3DWi2+tkhqwVTG5HIxSaazyLFXMgOd8xaC7XHUwH0pK4tZ4QHM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MR33zzv1; arc=none smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5ff821b9acfso38555907b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 05:10:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706015418; x=1706620218; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ClWdOeIIsl1FRVjuiLa2Y1YzPPvokp0yG8BguuXnqc0=;
-        b=MR33zzv1dMLfOlp2DyTnpO8VSm44CSkBBMt8RazjoKHX03SNdOib5O3TQz2ZIR1PwV
-         kbJSOOHl8q1MZQ4mwxHksEl+4RHE9M6TfgqCihvK6zEiYUQImxxnFuJnJx4HWKBITgLn
-         XJDPWzi7z44a4mYx2dcF8+V/0uyrUoaVLNizJhys8b9ajq7V3PIqM7UM4x/OM5iPyP06
-         uF4PB/Rnl5qO1UI0jxAVoMNW5+59UQTVc4gcaOpZrZneDWzgZohKSH8laWUlUNXl7Bmu
-         eF+DfZQ0JDYyNUfR/z4TP5it9t4BQ/3q55ejAwNCPhVQIU5zZdHUigE7wT5nBxGp/hAk
-         KEqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706015418; x=1706620218;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ClWdOeIIsl1FRVjuiLa2Y1YzPPvokp0yG8BguuXnqc0=;
-        b=oYLPF2ugiFa4Zmt2dw9WnjbJ9sCEiU7jWik/VD3HaRfKOvnBPynkOryLSidoshlCSU
-         KjpnC3LPLzhrlhA/SMdqB4wlWcVmJKy2AeC5tVAEDRC/UL8uxRU60u9hPkJQVRW430tx
-         ony3BnoZSZlKWgfWsD9uCnpzKwAYI6Ug23jM92EUMm0joLo4EURa7B7xAvVo11uBaGBc
-         pyso6xNBSbv5xLbn2sQyHiDbY36CMsEmSQH56ESQiviyUIY1eo2QhsfHFYbyioPNLGP8
-         07F4aLJSmwB1CEOjGB+AGn/plNzVPq6yoRUT2jpbW7p7MojuNnQNah1AozAOCGplMUOy
-         G71w==
-X-Gm-Message-State: AOJu0YxJn+mFN9qkMicxncGquNBx1R2M7nKGUHIjLbqs/MrubfALRpzk
-	wZzGLOClMTgrgs0ubj+39ElWg+faeVxvQ78Skq1G52yi+75PZHiCSkHaUEb3T73feTqfzmikl9f
-	tv4LUqOR5its0wjSFa/b0nuF83UkI/Z362NymgQ==
-X-Google-Smtp-Source: AGHT+IEB3Cxo0INGCf0y2wXya0QKY/fgxTBzH8Ng/kwVYdAssiWSk0LizxhqKtTwMuP+AZRocKYHManbRbjqV6LExu8=
-X-Received: by 2002:a81:8306:0:b0:5ff:4281:a6a with SMTP id
- t6-20020a818306000000b005ff42810a6amr4578656ywf.8.1706015418575; Tue, 23 Jan
- 2024 05:10:18 -0800 (PST)
+	s=arc-20240116; t=1706015407; c=relaxed/simple;
+	bh=bGVBAZlY0x7DSwAyeKfr/If8lLjIpCFiLDXRX28FEg4=;
+	h=Message-ID:From:To:Cc:Subject:Date; b=qC/ruzejGUVoBZF9tud/SQWrvznUAKwPE4UR4GnT7/RsKnZoeJmUn+J9M6NiwzAK48tu4hDMJMMDHSiD10JwZ/pvpPOojBJjQDCvZOtUq9dZ7qkjshueOfohTMx0GUfgs0peqPtCOvtUpF1qqsGUF9QnNku0Tf7S2XRgvQXK9RQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=UKpc2djB; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=DxImnPBo; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Message-ID: <20240117124704.044462658@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1706015403;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc; bh=ElgRLHgjdgKvlWt1OxX82ZuXGnBuxeJDyrHpld0uVRU=;
+	b=UKpc2djBj45ZxjjLmhJsrMf5x9gQO23utVB2TZ9PHdzZz6U00UNR0KMiOJM3AJG9ydYPCH
+	QyXbiTz/0/YwHxdb8rVpZQigsXgZyiBo91HRhwYBdMaUSMayQLDcM4RHW1ZooYRCu1JCL2
+	v4maqW/sLkwKre9NLrvBsPWdAMVv/FrNtWzL2iPoNkDv/Cqnu4x0SMAmAc0yOSRnUDU2Ye
+	S3z+jdQh13YKpiLY1R8eSqT/ohbBDySLcyn5pamGu7vN+KfOCyCEP5Nea7GCv9QtMLebPF
+	0alfduM3rmzOzMSi47JE1AFYcqgcBTdyqtO+DUm1EknDita5JXNi+UFNmy2BTA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1706015403;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc; bh=ElgRLHgjdgKvlWt1OxX82ZuXGnBuxeJDyrHpld0uVRU=;
+	b=DxImnPBovmCWVsfWnZTnh97es4c0aStS613TSYbPs6i1coDOfP4vkG0m7f+1bfqK+qGGmt
+	PCsH2gZAXU5W9gBw==
+From: Thomas Gleixner <tglx@linutronix.de>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: x86@kernel.org,
+ Tom Lendacky <thomas.lendacky@amd.com>,
+ Andrew Cooper <andrew.cooper3@citrix.com>,
+ Arjan van de Ven <arjan@linux.intel.com>,
+ Huang Rui <ray.huang@amd.com>,
+ Juergen Gross <jgross@suse.com>,
+ Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+ Sohil Mehta <sohil.mehta@intel.com>,
+ K Prateek Nayak <kprateek.nayak@amd.com>,
+ Kan Liang <kan.liang@linux.intel.com>,
+ Zhang Rui <rui.zhang@intel.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Feng Tang <feng.tang@intel.com>,
+ Andy Shevchenko <andy@infradead.org>,
+ Michael Kelley <mhklinux@outlook.com>,
+ "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+ Andy Shevchenko <andy.shevchenko@gmail.com>,
+ Wei Liu <wei.liu@kernel.org>
+Subject: [patch V2 00/22] x86/topology: More cleanups and preparatory work
+Date: Tue, 23 Jan 2024 14:10:02 +0100 (CET)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <cover.1705944943.git.u.kleine-koenig@pengutronix.de> <13ba99e2578d4448fd85f516fbe328f5d05eda05.1705944943.git.u.kleine-koenig@pengutronix.de>
-In-Reply-To: <13ba99e2578d4448fd85f516fbe328f5d05eda05.1705944943.git.u.kleine-koenig@pengutronix.de>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Tue, 23 Jan 2024 14:09:42 +0100
-Message-ID: <CAPDyKFr8=4=qWM0AR7ZZ-MyGUH+kLZZRWhVE4vu94cZqB5jxnQ@mail.gmail.com>
-Subject: Re: [PATCH v2 11/33] mmc: mmc_spi: Follow renaming of SPI "master" to "controller"
-To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Yang Yingliang <yangyingliang@huawei.com>, 
-	linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-spi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, 22 Jan 2024 at 19:08, Uwe Kleine-K=C3=B6nig
-<u.kleine-koenig@pengutronix.de> wrote:
->
-> In commit 8caab75fd2c2 ("spi: Generalize SPI "master" to "controller"")
-> some functions and struct members were renamed. To not break all drivers
-> compatibility macros were provided.
->
-> To be able to remove these compatibility macros push the renaming into
-> this driver.
->
-> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+This is a follow up to and a breakout from:
 
-It looks like we need a decision if this should go via Mark's tree,
-the series altogether - or if each subsystem maintainer should apply
-each patch separately and postpone the final cleanups.
+  https://lore.kernel.org/all/20230807130108.853357011@linutronix.de
 
-While waiting for a conclusion, here's my ack.
+It's mostly mopping up technical debt and preparing for the actual APIC ID
+management rework, which is required to handle asymmetric configurations
+like P/E systems correctly.
 
-Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
+Changes vs. the original series:
 
-Kind regards
-Uffe
+  - Split out the preparatory work
 
-> ---
->  drivers/mmc/host/mmc_spi.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/mmc/host/mmc_spi.c b/drivers/mmc/host/mmc_spi.c
-> index b8dda8160c4e..bf35761f783a 100644
-> --- a/drivers/mmc/host/mmc_spi.c
-> +++ b/drivers/mmc/host/mmc_spi.c
-> @@ -935,7 +935,7 @@ static void mmc_spi_request(struct mmc_host *mmc, str=
-uct mmc_request *mrq)
->  #endif
->
->         /* request exclusive bus access */
-> -       spi_bus_lock(host->spi->master);
-> +       spi_bus_lock(host->spi->controller);
->
->  crc_recover:
->         /* issue command; then optionally data and stop */
-> @@ -967,7 +967,7 @@ static void mmc_spi_request(struct mmc_host *mmc, str=
-uct mmc_request *mrq)
->         }
->
->         /* release the bus */
-> -       spi_bus_unlock(host->spi->master);
-> +       spi_bus_unlock(host->spi->controller);
->
->         mmc_request_done(host->mmc, mrq);
->  }
-> @@ -1157,7 +1157,7 @@ static int mmc_spi_probe(struct spi_device *spi)
->         /* We rely on full duplex transfers, mostly to reduce
->          * per-transfer overheads (by making fewer transfers).
->          */
-> -       if (spi->master->flags & SPI_CONTROLLER_HALF_DUPLEX)
-> +       if (spi->controller->flags & SPI_CONTROLLER_HALF_DUPLEX)
->                 return -EINVAL;
->
->         /* MMC and SD specs only seem to care that sampling is on the
-> --
-> 2.43.0
->
+  - Address review feedback (Andy)
+
+It applies on top of:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git topo-cpuid-v5
+
+and is available from git:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git topo-cleanup-v2
+
+Thanks,
+
+	tglx
+---
+ hyperv/hv_vtl.c                |    5 +-
+ include/asm/apic.h             |   11 +----
+ include/asm/io_apic.h          |    1 
+ include/asm/mpspec.h           |   64 ++++++-----------------------
+ include/asm/prom.h             |    4 -
+ include/asm/x86_init.h         |   10 ++--
+ kernel/apic/apic.c             |   29 ++-----------
+ kernel/apic/apic_common.c      |   15 ------
+ kernel/apic/apic_flat_64.c     |    9 ----
+ kernel/apic/apic_noop.c        |    2 
+ kernel/apic/apic_numachip.c    |   12 -----
+ kernel/apic/bigsmp_32.c        |   14 ------
+ kernel/apic/io_apic.c          |   90 +++++++++++++++--------------------------
+ kernel/apic/local.h            |    4 -
+ kernel/apic/probe_32.c         |    3 -
+ kernel/apic/x2apic_cluster.c   |    3 -
+ kernel/apic/x2apic_phys.c      |    6 --
+ kernel/apic/x2apic_uv_x.c      |    6 --
+ kernel/cpu/common.c            |   15 ------
+ kernel/cpu/topology_common.c   |   12 +++++
+ kernel/devicetree.c            |    2 
+ kernel/jailhouse.c             |   28 ++++++------
+ kernel/mpparse.c               |   14 +++++-
+ kernel/setup.c                 |   18 +++-----
+ kernel/smpboot.c               |    8 +--
+ kernel/x86_init.c              |    5 +-
+ mm/amdtopology.c               |    7 ---
+ platform/ce4100/ce4100.c       |   14 +++---
+ platform/intel-mid/intel-mid.c |    5 +-
+ xen/apic.c                     |    7 ---
+ xen/enlighten_hvm.c            |    2 
+ xen/smp_pv.c                   |   10 +---
+ 32 files changed, 140 insertions(+), 295 deletions(-)
+
+
+
+
 
