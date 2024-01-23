@@ -1,116 +1,204 @@
-Return-Path: <linux-kernel+bounces-36035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36036-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43581839A76
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:43:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B5BB839A79
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:44:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECC4828A813
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:43:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 358761C277A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 20:44:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB3925C9A;
-	Tue, 23 Jan 2024 20:43:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Px2kLZaw"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3FB0524B;
-	Tue, 23 Jan 2024 20:43:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D997B4C81;
+	Tue, 23 Jan 2024 20:44:02 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16D9946B3;
+	Tue, 23 Jan 2024 20:43:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706042612; cv=none; b=QZmIfCn4ha12MBgZQbK18ncDgIbWRXvwQMnJ4Lrgj33lwJKMs5vB2fTVSuiKyOM6kOvCUugxENjtmhR2g7WMuluU5i6YXd/InRLTVwvHkTsF9tPBz1UuqMAyJO0Us5Pr7N+D+K1kBBawZg7Q7yeMoxrSLDsShCeo5B2h8uNmhvI=
+	t=1706042642; cv=none; b=TRFt8N4Au2f5ZnIuzKEd8L5srjwMWnGRCHOSQn1lrFlJc3Y+1FQNTxtTfP3eITqXPKvAFWUcmz8AfxVuydcT95HmSIg7MBqFIGoSxGxaBPf3JH/F5CBt+W5aNZVG+rYMmVDYhKuakzAQBmry6ZKKTvgIuss7MBXUbbtM4QLVuN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706042612; c=relaxed/simple;
-	bh=W6mOyfoMO3KQ+hVc2pxuF/PZik6KXYBzJZcB2hwsfiM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bJG2r6VLJAAA1zHtwMhpydbIey6P7lAw5agOj4XDEqJ1cwsXQuYy76rk8sS4tDFuuajj1OcglGRCbSfRzIDHunVMAYY0WjCk3dz53ajhCgNc85RNe3d6o3hvQ8RtuxGrqd34DwtBIqbF0yKTSN+krizU8oe/UIVj6FuFzmAyw/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Px2kLZaw; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d748d43186so18306195ad.0;
-        Tue, 23 Jan 2024 12:43:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706042610; x=1706647410; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0/M64QxEWn2HynUowyBZgYrVqasAYN5VNMIeSyQ1vgk=;
-        b=Px2kLZawBPBjDka7aQZqYY3b9ouwXhSmttWfY97I7mriT1adn0da9c6HNr1+TdXxd3
-         NEa6Zc/zHvAN8lhFo9xdkJJQKPUIFXkO53x7sM913ITi4ypngiGXhUxFNz7vSkOTWVyi
-         BsFOuIt4FMSYt2teDUyot9wcJ5cfrX0OL/XR6VyRm/1KOrMaLXAkl9QG7l+9FpbkJQSX
-         XKW/E4a+bVNtSMeOEMW3W7o6LPSBaVn3a1kQeRR2uUjLnUIcdB2u8M61RUG6qEB5t+bZ
-         XW2kza09FXTacr1YpqARNpU5DsNOdrdldk6dF1S9//JyFk1goMo0cf2umtsdB72tfnbQ
-         5snA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706042610; x=1706647410;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0/M64QxEWn2HynUowyBZgYrVqasAYN5VNMIeSyQ1vgk=;
-        b=cfdRKOr9AgdnclDiVmu1rXcSr6Lx+Mpj0VdLNhhyEvmc9YJ7WUmucqV7ZLofimYA9p
-         1KHQ6ZzrQqnFeJ9BpgZ4t4/XJPBTeZf9yJXjrSrqxT8CcyGGDuJvIU4XyJwuMOmO2ieE
-         0VPMpNbh7fYK+vKLqQV8NiV9cusmrD+GkKlOomWbfNFq9H63B0uWdFIDAKVnLAjjrnM5
-         HfIvpMx9N4Zy2edMLNYdTq0FaN4gIO9rKmbQ4A3E9atnmQhUP0sLOF3W3ldKEYZKh77a
-         +u+IR4PBOe7nG5d1xV7J2KrfukaNWf9WnKJpb7K+jWt6qFgMPqWFr2WszN/b88xnBZJs
-         pMJg==
-X-Gm-Message-State: AOJu0YycoNuVHIzNjhveYnSfFvXkAhzIjpxkK965eiwF+pXAI8QxDQ02
-	69DM95EPdelpCx/DXWiQGJDZHZLVllcRYZOxswTfmc60VBWXmzwC
-X-Google-Smtp-Source: AGHT+IFkwmV6/GQzYxMoUXFdqmuslTw5E1Fh5A73QIDIocbRUdPwz7AmIQvOP3orOG+CWkXPoEU4lA==
-X-Received: by 2002:a17:903:32d0:b0:1d7:562f:67ec with SMTP id i16-20020a17090332d000b001d7562f67ecmr2594794plr.102.1706042609936;
-        Tue, 23 Jan 2024 12:43:29 -0800 (PST)
-Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
-        by smtp.gmail.com with ESMTPSA id l12-20020a170902e2cc00b001d70af5be17sm8832683plc.229.2024.01.23.12.43.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 12:43:29 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 23 Jan 2024 10:43:28 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: willy@infradead.org, akpm@linux-foundation.org,
-	hcochran@kernelspring.com, mszeredi@redhat.com, axboe@kernel.dk,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] mm: correct calculation of cgroup wb's bg_thresh in
- wb_over_bg_thresh
-Message-ID: <ZbAk8HfnzHoSSFWC@slm.duckdns.org>
-References: <20240123183332.876854-1-shikemeng@huaweicloud.com>
- <20240123183332.876854-3-shikemeng@huaweicloud.com>
+	s=arc-20240116; t=1706042642; c=relaxed/simple;
+	bh=BkiYqmjcGER75gNfr+z1v1ylvtolmFYCztKOkeGymvM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=opDIbc92DzS3TYEJ7DjwhgpvnO7mdlk1mc5PvSuh1qp/Kwr/hdj5r1NyYtNAMNxybN8RVZjyDHAPs+V0620qXqDTTPpsY+zsOpv4wqySoRT0RkkB5MkGmWXV1rj68HeCrEysthgVOsWTiWTRKbBLMMdidErv1mxt40J0Q0bbbwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4F4471FB;
+	Tue, 23 Jan 2024 12:44:44 -0800 (PST)
+Received: from [10.57.77.165] (unknown [10.57.77.165])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 526623F73F;
+	Tue, 23 Jan 2024 12:43:55 -0800 (PST)
+Message-ID: <f9eb630a-f0f8-4219-b74f-109c51f31eb4@arm.com>
+Date: Tue, 23 Jan 2024 20:43:53 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240123183332.876854-3-shikemeng@huaweicloud.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 00/11] mm/memory: optimize fork() with PTE-mapped THP
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
+ Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, "David S. Miller"
+ <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
+References: <20240122194200.381241-1-david@redhat.com>
+ <56bee384-461e-4167-b7e9-4dd60666dd66@arm.com>
+ <fa9425e8-f489-48d0-9bf5-98d1b46b6d1a@redhat.com>
+ <7d92d27a-44f6-47d0-8eab-3f80bd7bd75d@arm.com>
+ <33cf54a9-b855-4d2d-9926-a4936fc9068b@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <33cf54a9-b855-4d2d-9926-a4936fc9068b@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 24, 2024 at 02:33:29AM +0800, Kemeng Shi wrote:
-> The wb_calc_thresh will calculate wb's share in global wb domain. We need
-> to wb's share in mem_cgroup_wb_domain for mdtc. Call __wb_calc_thresh
-> instead of wb_calc_thresh to fix this.
+On 23/01/2024 20:14, David Hildenbrand wrote:
+> On 23.01.24 20:43, Ryan Roberts wrote:
+>> On 23/01/2024 19:33, David Hildenbrand wrote:
+>>> On 23.01.24 20:15, Ryan Roberts wrote:
+>>>> On 22/01/2024 19:41, David Hildenbrand wrote:
+>>>>> Now that the rmap overhaul[1] is upstream that provides a clean interface
+>>>>> for rmap batching, let's implement PTE batching during fork when processing
+>>>>> PTE-mapped THPs.
+>>>>>
+>>>>> This series is partially based on Ryan's previous work[2] to implement
+>>>>> cont-pte support on arm64, but its a complete rewrite based on [1] to
+>>>>> optimize all architectures independent of any such PTE bits, and to
+>>>>> use the new rmap batching functions that simplify the code and prepare
+>>>>> for further rmap accounting changes.
+>>>>>
+>>>>> We collect consecutive PTEs that map consecutive pages of the same large
+>>>>> folio, making sure that the other PTE bits are compatible, and (a) adjust
+>>>>> the refcount only once per batch, (b) call rmap handling functions only
+>>>>> once per batch and (c) perform batch PTE setting/updates.
+>>>>>
+>>>>> While this series should be beneficial for adding cont-pte support on
+>>>>> ARM64[2], it's one of the requirements for maintaining a total mapcount[3]
+>>>>> for large folios with minimal added overhead and further changes[4] that
+>>>>> build up on top of the total mapcount.
+>>>>
+>>>> I'm currently rebasing my contpte work onto this series, and have hit a
+>>>> problem.
+>>>> I need to expose the "size" of a pte (pte_size()) and skip forward to the start
+>>>> of the next (cont)pte every time through the folio_pte_batch() loop. But
+>>>> pte_next_pfn() only allows advancing by 1 pfn; I need to advance by nr pfns:
+>>>>
+>>>>
+>>>> static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
+>>>>          pte_t *start_ptep, pte_t pte, int max_nr, bool *any_writable)
+>>>> {
+>>>>      unsigned long folio_end_pfn = folio_pfn(folio) + folio_nr_pages(folio);
+>>>>      const pte_t *end_ptep = start_ptep + max_nr;
+>>>>      pte_t expected_pte = __pte_batch_clear_ignored(pte_next_pfn(pte));
+>>>> -    pte_t *ptep = start_ptep + 1;
+>>>> +    pte_t *ptep = start_ptep;
+>>>> +    int vfn, nr, i;
+>>>>      bool writable;
+>>>>
+>>>>      if (any_writable)
+>>>>          *any_writable = false;
+>>>>
+>>>>      VM_WARN_ON_FOLIO(!pte_present(pte), folio);
+>>>>
+>>>> +    vfn = addr >> PAGE_SIZE;
+>>>> +    nr = pte_size(pte);
+>>>> +    nr = ALIGN_DOWN(vfn + nr, nr) - vfn;
+>>>> +    ptep += nr;
+>>>> +
+>>>>      while (ptep != end_ptep) {
+>>>> +        pte = ptep_get(ptep);
+>>>>          nr = pte_size(pte);
+>>>>          if (any_writable)
+>>>>              writable = !!pte_write(pte);
+>>>>          pte = __pte_batch_clear_ignored(pte);
+>>>>
+>>>>          if (!pte_same(pte, expected_pte))
+>>>>              break;
+>>>>
+>>>>          /*
+>>>>           * Stop immediately once we reached the end of the folio. In
+>>>>           * corner cases the next PFN might fall into a different
+>>>>           * folio.
+>>>>           */
+>>>> -        if (pte_pfn(pte) == folio_end_pfn)
+>>>> +        if (pte_pfn(pte) >= folio_end_pfn)
+>>>>              break;
+>>>>
+>>>>          if (any_writable)
+>>>>              *any_writable |= writable;
+>>>>
+>>>> -        expected_pte = pte_next_pfn(expected_pte);
+>>>> -        ptep++;
+>>>> +        for (i = 0; i < nr; i++)
+>>>> +            expected_pte = pte_next_pfn(expected_pte);
+>>>> +        ptep += nr;
+>>>>      }
+>>>>
+>>>>      return ptep - start_ptep;
+>>>> }
+>>>>
+>>>>
+>>>> So I'm wondering if instead of enabling pte_next_pfn() for all the arches,
+>>>> perhaps its actually better to expose pte_pgprot() for all the arches. Then we
+>>>> can be much more flexible about generating ptes with pfn_pte(pfn, pgprot).
+>>>>
+>>>> What do you think?
+>>>
+>>> The pte_pgprot() stuff is just nasty IMHO.
+>>
+>> I dunno; we have pfn_pte() which takes a pfn and a pgprot. It seems reasonable
+>> that we should be able to do the reverse.
+> 
+> But pte_pgprot() is only available on a handful of architectures, no? It would
+> be nice to have a completely generic pte_next_pfn() / pte_advance_pfns(), though.
+> 
+> Anyhow, this is all "easy" to rework later. Unless I am missing something, the
+> low hanging fruit is simply using PFN_PTE_SHIFT for now that exists on most
+> archs already.
+> 
+>>
+>>>
+>>> Likely it's best to simply convert pte_next_pfn() to something like
+>>> pte_advance_pfns(). The we could just have
+>>>
+>>> #define pte_next_pfn(pte) pte_advance_pfns(pte, 1)
+>>>
+>>> That should be fairly easy to do on top (based on PFN_PTE_SHIFT). And only 3
+>>> archs (x86-64, arm64, and powerpc) need slight care to replace a hardcoded "1"
+>>> by an integer we pass in.
+>>
+>> I thought we agreed powerpc was safe to just define PFN_PTE_SHIFT? But, yeah,
+>> the principle works I guess. I guess I can do this change along with my series.
+> 
+> It is, if nobody insists on that micro-optimization on powerpc.
+> 
+> If there is good reason to invest more time and effort right now on the
+> pte_pgprot approach, then please let me know :)
+> 
 
-That function is calculating the wb's portion of wb portion in the whole
-system so that threshold can be distributed accordingly. So, it has to be
-compared in the global domain. If you look at the comment on top of struct
-wb_domain, it says:
+No I think you're right. I thought pte_pgprot() was implemented by more arches,
+but there are 13 without it, so clearly a lot of effort to plug that gap. I'll
+take the approach you suggest with pte_advance_pfns(). It'll just require mods
+to x86 and arm64, +/- ppc.
 
-/*
- * A wb_domain represents a domain that wb's (bdi_writeback's) belong to
- * and are measured against each other in.  There always is one global
- * domain, global_wb_domain, that every wb in the system is a member of.
- * This allows measuring the relative bandwidth of each wb to distribute
- * dirtyable memory accordingly.
- */
-
-Also, how is this tested? Was there a case where the existing code
-misbehaved that's improved by this patch? Or is this just from reading code?
-
-Thanks.
-
--- 
-tejun
 
