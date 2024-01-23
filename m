@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-35159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFD62838CF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:08:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E0CB5838CF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 12:08:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BC6628D4B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:08:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9058C28D8D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:08:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8F025D8F1;
-	Tue, 23 Jan 2024 11:08:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC4CF5D911;
+	Tue, 23 Jan 2024 11:08:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0r/UmeY1"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ghj0L04f"
+Received: from mail-wm1-f74.google.com (mail-wm1-f74.google.com [209.85.128.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8C585D72C
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 11:08:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03C245D8F6
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 11:08:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706008088; cv=none; b=i6HPW0xET2d5hknEANZf9sh0MF3UUHOgvlg6W4x9F7UFO9HH0RCaxYr4OQXciUzXpXlI2fs0wukc7ob34Mb9xSUlvgTtJSSrXrCscfNKKT33luyq8ZRkQQwfBcKfEHwSKyHtx3T6a0o+iGp0zXSSdlIqq7nXABVbEtobtkp/dO0=
+	t=1706008091; cv=none; b=qnMns1/6goiv6ac++Uo3mkU2pnuQPQ+wHZ7lJIYyw4sJtwjQJCrsVgmB7wvcTi7ZblsTJTWDLsgDY2EteUF+0Be88nDKQ56juQltj0/ZIVCZMJ3ue/QQ6N6cbtPCfDQ+YnAdXcBIrTEziV3FCS/oCdblbmoGGd0nVh9pYqbBdiU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706008088; c=relaxed/simple;
-	bh=L7NI50aDDQNa7i7oPwFFzpwUIH5NwtqQCHEB/tffkCk=;
+	s=arc-20240116; t=1706008091; c=relaxed/simple;
+	bh=L2LAOFcpz374aq8+MhwwriEORj7D1Fxmja4Be/sRvZQ=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=fD1XkdNZaf3fwBOtE/oMAsZXUZRwL14Te3ghlNh1Uh6ReL2K1NwOy4uYReyLNYJSsE3MfSScFSB3ICEnOyvhRb3gFO1OMkM4mOOO0aMVsjV+ycF/Z0DIWCUaLu3dqDJ2zHGqzpLX3pU1DWVN6fZ7m857jiL4hvGc9OoKCSv5hR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--vdonnefort.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0r/UmeY1; arc=none smtp.client-ip=209.85.219.202
+	 To:Cc:Content-Type; b=Ozw+8jeLYz19ZxMX2bB0lOraZwX6mtmOf30MSy9Sm5F98I+/KwlCHvNLnJMdagfLYBMY298S0MztMdoZMvt9303XODQq9sn9KFatb8Ekan9YYN6xzLqzTaqx4apOTC4gob7Gy53/6g7NNYzNavuxdb1cFUTOOGVJ3hErZ/8uISs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--vdonnefort.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ghj0L04f; arc=none smtp.client-ip=209.85.128.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--vdonnefort.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbea2ea8363so3151893276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 03:08:06 -0800 (PST)
+Received: by mail-wm1-f74.google.com with SMTP id 5b1f17b1804b1-40eba1f0aa7so5172415e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 03:08:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706008085; x=1706612885; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1706008088; x=1706612888; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ERslFwXmtViiX7Q5k4o2C2xcWADYFZJI/gC7YgScktg=;
-        b=0r/UmeY1xhjUpPxVgLMQM1ql6b7NqFKOa9xYuyn2Maysn+AguJ+ivHfyKInkXsQ9bU
-         cxktap6zr2WPfT3nU0esSschNLBV5Sc4McbblzcNB46g+wmE+1ks4FmCoI40ZeONuC0s
-         D5O7t/0Eput9JKY/T6DwD/D7J9xt7as/u+7SnHiNCWlEb7S4LEtMOuHvNpcNgaUHwMYL
-         Yvx8sM97lSyY8JAyvtpWEzitbvp1exA6CqIuEft7eqYkZ/5z6UXd5AQliT94/pR9vbRI
-         JZwTEpHKJfds1aW4p+sFToluVDjy+H5633qp2UKZAHKKzf3qzF2o+s+HuP7l+GmAZaIN
-         v0+A==
+        bh=C10/Kn1e0NHjWL/pUEbGc+DKo3L2nbmZjaNGz+IRIn0=;
+        b=Ghj0L04fB+IXnYlTr3pePiNnxWIVK8qXhXledyGj3StiR+73dXLqwVbANwlQb11QYV
+         Bj8TnG7VcoptP3MDSscf3rQSf1uDap5X36i0doGDg1A/AvcdJuDOlT5Co4LB78cY3tdx
+         Ccj1Nmu+ak3TNAQP3CNlbOk1Uf6cO9u9eabgLjn4EzAXSK3PxnOIxx9bQXRciovdPRP9
+         Isfi0SuvrFGhKu7mQ7MdX/hOVROHIsdf7+uhx4FHIRP6qqC47MVskbLDmPU4JTH5PU19
+         3oynR6+WCJAEFyRhuNhxvXw9Qn3b6G+AkSGb3JxIq4q58hXCRvUPEtf0CUCg+yG4DqkE
+         yddQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706008085; x=1706612885;
+        d=1e100.net; s=20230601; t=1706008088; x=1706612888;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ERslFwXmtViiX7Q5k4o2C2xcWADYFZJI/gC7YgScktg=;
-        b=oXEvELxpimxrwljozionuff/2VL5Y1BDRT+U0zDAuy54Axk2lNZMQTOqe3FeJB9f1+
-         GtfzrIFJR4bOrv0q1Ks+lq0Vl895LfWEp45tZT/xXKxdxacoXmpZVuhUvk6jR5UfkZbj
-         3VC7Wr6MluTvlCYMQBuWUx+WP105bzJ43MooEuyyBXo6IN7L5n7OQImTOVMot/Fzeuji
-         1IZxDJud0L7xCVi0YOG6CqtcoIloBrXh5FqpK3d3uFKZvMOKUp/UGLuDIlT7//K9o5Z7
-         eLPk9y5Nl/h/2tdoKbvIYfmBpzAlRj07GNJ/99ZDReUKrjy33kwBH4eHiPPPLPGodQ35
-         GApQ==
-X-Gm-Message-State: AOJu0YzHlyNpqyGJGeJvJ18cE534LZ5i6u6cN5MFxS40WQgrwZb8UJWM
-	R2uWdUE9V30aZE5K9uRgRVnHjsbmvLYwmDiBSZHl5BrQbsfNoccgCXVPsS/q5eP4NhewO4wYtMe
-	avHk3QKWXY5M8tzj4dQ==
-X-Google-Smtp-Source: AGHT+IFVdPUBDi9GQdlv4Y48ePe+iFNVloNsMr2rBlX03cxZvnSC38N/JGbe+ffFXEe+ETf0Z3AFA1NTDdf0yK4r
+        bh=C10/Kn1e0NHjWL/pUEbGc+DKo3L2nbmZjaNGz+IRIn0=;
+        b=FiJzV1tA617rWbr9mdtnNTk0HdoXL6jtiSrrpTVi+JK8BM1CJh230P1NDNq0mOHVhV
+         dnCXD4/04fSFrdvD8sup2ZmaCw9yV5SAmuAR1wyIqK97hOo9yGNj2d9eMPtuK7xopPoA
+         SQZKTt1PRmXtWvbTEwOAmWwD/TBIxVUVUk4aqSJOePdvbnYZxDYoSwmhfIqymRBfELsL
+         fjYwvS7kNsZMrEW+wXZ8TcPTLP5gHN+rWq2AAyXWJTcvTqJAQhZzuCT0MoCZt+bm21q4
+         +EP4DkV9EAzwekEXxOkHqWIccwXrDeMoZwjqhHQ8Irogc/tRuW04w9E2AG/7M+fL0mgV
+         xVcg==
+X-Gm-Message-State: AOJu0YyxO1CvN4AqbY1ClP+b1JAoTw4R2aGVb1RJsY4maoI/tTvDcnwB
+	H04CVGQNygf+Cu00+GTvrWJ3EHo6J8XLuEQTuV3cMZg4ulXKuldh7Slj6j9/voLOR5k4MSoF3Rk
+	j4PK/kfzG54aNFZ2qZA==
+X-Google-Smtp-Source: AGHT+IETut/KeUEf/hyk0DzZNYHBiDsdkOSjSLyD8KgYdpxYYFNiOA07t2gQdW1neiibQsN+R5V32m0jfeL9hJ8y
 X-Received: from vdonnefort.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:2eea])
- (user=vdonnefort job=sendgmr) by 2002:a25:840d:0:b0:dc2:3fba:40ba with SMTP
- id u13-20020a25840d000000b00dc23fba40bamr312083ybk.7.1706008085659; Tue, 23
- Jan 2024 03:08:05 -0800 (PST)
-Date: Tue, 23 Jan 2024 11:07:53 +0000
+ (user=vdonnefort job=sendgmr) by 2002:a05:600c:1d90:b0:40e:b31e:7a5b with
+ SMTP id p16-20020a05600c1d9000b0040eb31e7a5bmr30139wms.0.1706008088208; Tue,
+ 23 Jan 2024 03:08:08 -0800 (PST)
+Date: Tue, 23 Jan 2024 11:07:54 +0000
 In-Reply-To: <20240123110757.3657908-1-vdonnefort@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -72,8 +72,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240123110757.3657908-1-vdonnefort@google.com>
 X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-Message-ID: <20240123110757.3657908-3-vdonnefort@google.com>
-Subject: [PATCH v12 2/6] ring-buffer: Introducing ring-buffer mapping functions
+Message-ID: <20240123110757.3657908-4-vdonnefort@google.com>
+Subject: [PATCH v12 3/6] tracing: Add snapshot refcount
 From: Vincent Donnefort <vdonnefort@google.com>
 To: rostedt@goodmis.org, mhiramat@kernel.org, linux-kernel@vger.kernel.org, 
 	linux-trace-kernel@vger.kernel.org
@@ -81,503 +81,308 @@ Cc: mathieu.desnoyers@efficios.com, kernel-team@android.com,
 	Vincent Donnefort <vdonnefort@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-In preparation for allowing the user-space to map a ring-buffer, add
-a set of mapping functions:
-
-  ring_buffer_{map,unmap}()
-  ring_buffer_map_fault()
-
-And controls on the ring-buffer:
-
-  ring_buffer_map_get_reader()  /* swap reader and head */
-
-Mapping the ring-buffer also involves:
-
-  A unique ID for each subbuf of the ring-buffer, currently they are
-  only identified through their in-kernel VA.
-
-  A meta-page, where are stored ring-buffer statistics and a
-  description for the current reader
-
-The linear mapping exposes the meta-page, and each subbuf of the
-ring-buffer, ordered following their unique ID, assigned during the
-first mapping.
-
-Once mapped, no subbuf can get in or out of the ring-buffer: the buffer
-size will remain unmodified and the splice enabling functions will in
-reality simply memcpy the data instead of swapping subbufs.
+When a ring-buffer is memory mapped by user-space, no trace or
+ring-buffer swap is possible. This means the snapshot feature is
+mutually exclusive with the memory mapping. Having a refcount on
+snapshot users will help to know if a mapping is possible or not.
 
 Signed-off-by: Vincent Donnefort <vdonnefort@google.com>
 
-diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
-index fa802db216f9..0841ba8bab14 100644
---- a/include/linux/ring_buffer.h
-+++ b/include/linux/ring_buffer.h
-@@ -6,6 +6,8 @@
- #include <linux/seq_file.h>
- #include <linux/poll.h>
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 46dbe22121e9..ac59321a8d95 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -1300,6 +1300,52 @@ static void free_snapshot(struct trace_array *tr)
+ 	tr->allocated_snapshot = false;
+ }
  
-+#include <uapi/linux/trace_mmap.h>
++static int tracing_arm_snapshot_locked(struct trace_array *tr)
++{
++	int ret;
 +
- struct trace_buffer;
- struct ring_buffer_iter;
++	lockdep_assert_held(&trace_types_lock);
++
++	if (tr->snapshot == UINT_MAX)
++		return -EBUSY;
++
++	ret = tracing_alloc_snapshot_instance(tr);
++	if (ret)
++		return ret;
++
++	tr->snapshot++;
++
++	return 0;
++}
++
++static void tracing_disarm_snapshot_locked(struct trace_array *tr)
++{
++	lockdep_assert_held(&trace_types_lock);
++
++	if (WARN_ON(!tr->snapshot))
++		return;
++
++	tr->snapshot--;
++}
++
++int tracing_arm_snapshot(struct trace_array *tr)
++{
++	int ret;
++
++	mutex_lock(&trace_types_lock);
++	ret = tracing_arm_snapshot_locked(tr);
++	mutex_unlock(&trace_types_lock);
++
++	return ret;
++}
++
++void tracing_disarm_snapshot(struct trace_array *tr)
++{
++	mutex_lock(&trace_types_lock);
++	tracing_disarm_snapshot_locked(tr);
++	mutex_unlock(&trace_types_lock);
++}
++
+ /**
+  * tracing_alloc_snapshot - allocate snapshot buffer.
+  *
+@@ -1373,10 +1419,6 @@ int tracing_snapshot_cond_enable(struct trace_array *tr, void *cond_data,
  
-@@ -221,4 +223,9 @@ int trace_rb_cpu_prepare(unsigned int cpu, struct hlist_node *node);
- #define trace_rb_cpu_prepare	NULL
+ 	mutex_lock(&trace_types_lock);
+ 
+-	ret = tracing_alloc_snapshot_instance(tr);
+-	if (ret)
+-		goto fail_unlock;
+-
+ 	if (tr->current_trace->use_max_tr) {
+ 		ret = -EBUSY;
+ 		goto fail_unlock;
+@@ -1395,6 +1437,10 @@ int tracing_snapshot_cond_enable(struct trace_array *tr, void *cond_data,
+ 		goto fail_unlock;
+ 	}
+ 
++	ret = tracing_arm_snapshot_locked(tr);
++	if (ret)
++		goto fail_unlock;
++
+ 	local_irq_disable();
+ 	arch_spin_lock(&tr->max_lock);
+ 	tr->cond_snapshot = cond_snapshot;
+@@ -1439,6 +1485,8 @@ int tracing_snapshot_cond_disable(struct trace_array *tr)
+ 	arch_spin_unlock(&tr->max_lock);
+ 	local_irq_enable();
+ 
++	tracing_disarm_snapshot(tr);
++
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(tracing_snapshot_cond_disable);
+@@ -6579,11 +6627,12 @@ int tracing_set_tracer(struct trace_array *tr, const char *buf)
+ 		 */
+ 		synchronize_rcu();
+ 		free_snapshot(tr);
++		tracing_disarm_snapshot_locked(tr);
+ 	}
+ 
+-	if (t->use_max_tr && !tr->allocated_snapshot) {
+-		ret = tracing_alloc_snapshot_instance(tr);
+-		if (ret < 0)
++	if (t->use_max_tr) {
++		ret = tracing_arm_snapshot_locked(tr);
++		if (ret)
+ 			goto out;
+ 	}
+ #else
+@@ -6592,8 +6641,11 @@ int tracing_set_tracer(struct trace_array *tr, const char *buf)
+ 
+ 	if (t->init) {
+ 		ret = tracer_init(t, tr);
+-		if (ret)
++		if (ret) {
++			if (t->use_max_tr)
++				tracing_disarm_snapshot_locked(tr);
+ 			goto out;
++		}
+ 	}
+ 
+ 	tr->current_trace = t;
+@@ -7695,10 +7747,11 @@ tracing_snapshot_write(struct file *filp, const char __user *ubuf, size_t cnt,
+ 		if (tr->allocated_snapshot)
+ 			ret = resize_buffer_duplicate_size(&tr->max_buffer,
+ 					&tr->array_buffer, iter->cpu_file);
+-		else
+-			ret = tracing_alloc_snapshot_instance(tr);
+-		if (ret < 0)
++
++		ret = tracing_arm_snapshot_locked(tr);
++		if (ret)
+ 			break;
++
+ 		/* Now, we're going to swap */
+ 		if (iter->cpu_file == RING_BUFFER_ALL_CPUS) {
+ 			local_irq_disable();
+@@ -7708,6 +7761,7 @@ tracing_snapshot_write(struct file *filp, const char __user *ubuf, size_t cnt,
+ 			smp_call_function_single(iter->cpu_file, tracing_swap_cpu_buffer,
+ 						 (void *)tr, 1);
+ 		}
++		tracing_disarm_snapshot_locked(tr);
+ 		break;
+ 	default:
+ 		if (tr->allocated_snapshot) {
+@@ -8832,8 +8886,13 @@ ftrace_trace_snapshot_callback(struct trace_array *tr, struct ftrace_hash *hash,
+ 
+ 	ops = param ? &snapshot_count_probe_ops :  &snapshot_probe_ops;
+ 
+-	if (glob[0] == '!')
+-		return unregister_ftrace_function_probe_func(glob+1, tr, ops);
++	if (glob[0] == '!') {
++		ret = unregister_ftrace_function_probe_func(glob+1, tr, ops);
++		if (!ret)
++			tracing_disarm_snapshot(tr);
++
++		return ret;
++	}
+ 
+ 	if (!param)
+ 		goto out_reg;
+@@ -8852,12 +8911,13 @@ ftrace_trace_snapshot_callback(struct trace_array *tr, struct ftrace_hash *hash,
+ 		return ret;
+ 
+  out_reg:
+-	ret = tracing_alloc_snapshot_instance(tr);
++	ret = tracing_arm_snapshot(tr);
+ 	if (ret < 0)
+ 		goto out;
+ 
+ 	ret = register_ftrace_function_probe(glob, tr, ops, count);
+-
++	if (ret < 0)
++		tracing_disarm_snapshot(tr);
+  out:
+ 	return ret < 0 ? ret : 0;
+ }
+diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+index 00f873910c5d..3aa06bd5e48d 100644
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -334,6 +334,7 @@ struct trace_array {
+ 	 */
+ 	struct array_buffer	max_buffer;
+ 	bool			allocated_snapshot;
++	unsigned int		snapshot;
+ #endif
+ #ifdef CONFIG_TRACER_MAX_TRACE
+ 	unsigned long		max_latency;
+@@ -1973,12 +1974,16 @@ static inline void trace_event_eval_update(struct trace_eval_map **map, int len)
+ #ifdef CONFIG_TRACER_SNAPSHOT
+ void tracing_snapshot_instance(struct trace_array *tr);
+ int tracing_alloc_snapshot_instance(struct trace_array *tr);
++int tracing_arm_snapshot(struct trace_array *tr);
++void tracing_disarm_snapshot(struct trace_array *tr);
+ #else
+ static inline void tracing_snapshot_instance(struct trace_array *tr) { }
+ static inline int tracing_alloc_snapshot_instance(struct trace_array *tr)
+ {
+ 	return 0;
+ }
++static inline int tracing_arm_snapshot(struct trace_array *tr) { return 0; }
++static inline void tracing_disarm_snapshot(struct trace_array *tr) { }
  #endif
  
-+int ring_buffer_map(struct trace_buffer *buffer, int cpu);
-+int ring_buffer_unmap(struct trace_buffer *buffer, int cpu);
-+struct page *ring_buffer_map_fault(struct trace_buffer *buffer, int cpu,
-+				   unsigned long pgoff);
-+int ring_buffer_map_get_reader(struct trace_buffer *buffer, int cpu);
- #endif /* _LINUX_RING_BUFFER_H */
-diff --git a/include/uapi/linux/trace_mmap.h b/include/uapi/linux/trace_mmap.h
-new file mode 100644
-index 000000000000..5468afc94be7
---- /dev/null
-+++ b/include/uapi/linux/trace_mmap.h
-@@ -0,0 +1,44 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+#ifndef _TRACE_MMAP_H_
-+#define _TRACE_MMAP_H_
+ #ifdef CONFIG_PREEMPT_TRACER
+diff --git a/kernel/trace/trace_events_trigger.c b/kernel/trace/trace_events_trigger.c
+index 46439e3bcec4..d41bf64741e2 100644
+--- a/kernel/trace/trace_events_trigger.c
++++ b/kernel/trace/trace_events_trigger.c
+@@ -597,20 +597,9 @@ static int register_trigger(char *glob,
+ 	return ret;
+ }
+ 
+-/**
+- * unregister_trigger - Generic event_command @unreg implementation
+- * @glob: The raw string used to register the trigger
+- * @test: Trigger-specific data used to find the trigger to remove
+- * @file: The trace_event_file associated with the event
+- *
+- * Common implementation for event trigger unregistration.
+- *
+- * Usually used directly as the @unreg method in event command
+- * implementations.
+- */
+-static void unregister_trigger(char *glob,
+-			       struct event_trigger_data *test,
+-			       struct trace_event_file *file)
++static bool __unregister_trigger(char *glob,
++				 struct event_trigger_data *test,
++				 struct trace_event_file *file)
+ {
+ 	struct event_trigger_data *data = NULL, *iter;
+ 
+@@ -626,8 +615,32 @@ static void unregister_trigger(char *glob,
+ 		}
+ 	}
+ 
+-	if (data && data->ops->free)
+-		data->ops->free(data);
++	if (data) {
++		if (data->ops->free)
++			data->ops->free(data);
 +
-+#include <linux/types.h>
++		return true;
++	}
++
++	return false;
++}
 +
 +/**
-+ * struct trace_buffer_meta - Ring-buffer Meta-page description
-+ * @meta_page_size:	Size of this meta-page.
-+ * @meta_struct_len:	Size of this structure.
-+ * @subbuf_size:	Size of each subbuf, including the header.
-+ * @nr_subbufs:		Number of subbfs in the ring-buffer.
-+ * @reader.lost_events:	Number of events lost at the time of the reader swap.
-+ * @reader.id:		subbuf ID of the current reader. From 0 to @nr_subbufs - 1
-+ * @reader.read:	Number of bytes read on the reader subbuf.
-+ * @entries:		Number of entries in the ring-buffer.
-+ * @overrun:		Number of entries lost in the ring-buffer.
-+ * @read:		Number of entries that have been read.
-+ * @subbufs_touched:	Number of subbufs that have been filled.
-+ * @subbufs_lost:	Number of subbufs lost to overrun.
-+ * @subbufs_read:	Number of subbufs that have been read.
++ * unregister_trigger - Generic event_command @unreg implementation
++ * @glob: The raw string used to register the trigger
++ * @test: Trigger-specific data used to find the trigger to remove
++ * @file: The trace_event_file associated with the event
++ *
++ * Common implementation for event trigger unregistration.
++ *
++ * Usually used directly as the @unreg method in event command
++ * implementations.
 + */
-+struct trace_buffer_meta {
-+	__u32		meta_page_size;
-+	__u32		meta_struct_len;
-+
-+	__u32		subbuf_size;
-+	__u32		nr_subbufs;
-+
-+	struct {
-+		__u64	lost_events;
-+		__u32	id;
-+		__u32	read;
-+	} reader;
-+
-+	__u64	entries;
-+	__u64	overrun;
-+	__u64	read;
-+
-+	__u64	subbufs_touched;
-+	__u64	subbufs_lost;
-+};
-+
-+#endif /* _TRACE_MMAP_H_ */
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index db73e326fa04..e7b39f7a1c74 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -338,6 +338,7 @@ struct buffer_page {
- 	local_t		 entries;	/* entries on this page */
- 	unsigned long	 real_end;	/* real end of data */
- 	unsigned	 order;		/* order of the page */
-+	u32		 id;		/* ID for external mapping */
- 	struct buffer_data_page *page;	/* Actual data page */
- };
- 
-@@ -484,6 +485,12 @@ struct ring_buffer_per_cpu {
- 	u64				read_stamp;
- 	/* pages removed since last reset */
- 	unsigned long			pages_removed;
-+
-+	int				mapped;
-+	struct mutex			mapping_lock;
-+	unsigned long			*subbuf_ids;	/* ID to addr */
-+	struct trace_buffer_meta	*meta_page;
-+
- 	/* ring buffer pages to update, > 0 to add, < 0 to remove */
- 	long				nr_pages_to_update;
- 	struct list_head		new_pages; /* new pages to add */
-@@ -1542,6 +1549,7 @@ rb_allocate_cpu_buffer(struct trace_buffer *buffer, long nr_pages, int cpu)
- 	init_irq_work(&cpu_buffer->irq_work.work, rb_wake_up_waiters);
- 	init_waitqueue_head(&cpu_buffer->irq_work.waiters);
- 	init_waitqueue_head(&cpu_buffer->irq_work.full_waiters);
-+	mutex_init(&cpu_buffer->mapping_lock);
- 
- 	bpage = kzalloc_node(ALIGN(sizeof(*bpage), cache_line_size()),
- 			    GFP_KERNEL, cpu_to_node(cpu));
-@@ -5160,6 +5168,22 @@ static void rb_clear_buffer_page(struct buffer_page *page)
- 	page->read = 0;
++static void unregister_trigger(char *glob,
++			       struct event_trigger_data *test,
++			       struct trace_event_file *file)
++{
++	__unregister_trigger(glob, test, file);
  }
  
-+static void rb_update_meta_page(struct ring_buffer_per_cpu *cpu_buffer)
-+{
-+	struct trace_buffer_meta *meta = cpu_buffer->meta_page;
-+
-+	WRITE_ONCE(meta->reader.read, cpu_buffer->reader_page->read);
-+	WRITE_ONCE(meta->reader.id, cpu_buffer->reader_page->id);
-+	WRITE_ONCE(meta->reader.lost_events, cpu_buffer->lost_events);
-+
-+	WRITE_ONCE(meta->entries, local_read(&cpu_buffer->entries));
-+	WRITE_ONCE(meta->overrun, local_read(&cpu_buffer->overrun));
-+	WRITE_ONCE(meta->read, cpu_buffer->read);
-+
-+	WRITE_ONCE(meta->subbufs_touched, local_read(&cpu_buffer->pages_touched));
-+	WRITE_ONCE(meta->subbufs_lost, local_read(&cpu_buffer->pages_lost));
-+}
-+
- static void
- rb_reset_cpu(struct ring_buffer_per_cpu *cpu_buffer)
- {
-@@ -5204,6 +5228,9 @@ rb_reset_cpu(struct ring_buffer_per_cpu *cpu_buffer)
- 	cpu_buffer->lost_events = 0;
- 	cpu_buffer->last_overrun = 0;
- 
-+	if (cpu_buffer->mapped)
-+		rb_update_meta_page(cpu_buffer);
-+
- 	rb_head_page_activate(cpu_buffer);
- 	cpu_buffer->pages_removed = 0;
- }
-@@ -5418,6 +5445,11 @@ int ring_buffer_swap_cpu(struct trace_buffer *buffer_a,
- 	cpu_buffer_a = buffer_a->buffers[cpu];
- 	cpu_buffer_b = buffer_b->buffers[cpu];
- 
-+	if (READ_ONCE(cpu_buffer_a->mapped) || READ_ONCE(cpu_buffer_b->mapped)) {
-+		ret = -EBUSY;
-+		goto out;
-+	}
-+
- 	/* At least make sure the two buffers are somewhat the same */
- 	if (cpu_buffer_a->nr_pages != cpu_buffer_b->nr_pages)
- 		goto out;
-@@ -5682,7 +5714,8 @@ int ring_buffer_read_page(struct trace_buffer *buffer,
- 	 * Otherwise, we can simply swap the page with the one passed in.
- 	 */
- 	if (read || (len < (commit - read)) ||
--	    cpu_buffer->reader_page == cpu_buffer->commit_page) {
-+	    cpu_buffer->reader_page == cpu_buffer->commit_page ||
-+	    cpu_buffer->mapped) {
- 		struct buffer_data_page *rpage = cpu_buffer->reader_page->page;
- 		unsigned int rpos = read;
- 		unsigned int pos = 0;
-@@ -5901,6 +5934,11 @@ int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order)
- 
- 		cpu_buffer = buffer->buffers[cpu];
- 
-+		if (cpu_buffer->mapped) {
-+			err = -EBUSY;
-+			goto error;
-+		}
-+
- 		/* Update the number of pages to match the new size */
- 		nr_pages = old_size * buffer->buffers[cpu]->nr_pages;
- 		nr_pages = DIV_ROUND_UP(nr_pages, buffer->subbuf_size);
-@@ -6002,6 +6040,295 @@ int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order)
- }
- EXPORT_SYMBOL_GPL(ring_buffer_subbuf_order_set);
- 
-+#define subbuf_page(off, start) \
-+	virt_to_page((void *)(start + (off << PAGE_SHIFT)))
-+
-+#define foreach_subbuf_page(sub_order, start, page)		\
-+	page = subbuf_page(0, (start));				\
-+	for (int __off = 0; __off < (1 << (sub_order));		\
-+	     __off++, page = subbuf_page(__off, (start)))
-+
-+static inline void subbuf_map_prepare(unsigned long subbuf_start, int order)
-+{
-+	struct page *page;
-+
-+	/*
-+	 * When allocating order > 0 pages, only the first struct page has a
-+	 * refcount > 1. Increasing the refcount here ensures none of the struct
-+	 * page composing the sub-buffer is freeed when the mapping is closed.
-+	 */
-+	foreach_subbuf_page(order, subbuf_start, page)
-+		page_ref_inc(page);
-+}
-+
-+static inline void subbuf_unmap(unsigned long subbuf_start, int order)
-+{
-+	struct page *page;
-+
-+	foreach_subbuf_page(order, subbuf_start, page) {
-+		page_ref_dec(page);
-+		page->mapping = NULL;
-+	}
-+}
-+
-+static void rb_free_subbuf_ids(struct ring_buffer_per_cpu *cpu_buffer)
-+{
-+	int sub_id;
-+
-+	for (sub_id = 0; sub_id < cpu_buffer->nr_pages + 1; sub_id++)
-+		subbuf_unmap(cpu_buffer->subbuf_ids[sub_id],
-+			     cpu_buffer->buffer->subbuf_order);
-+
-+	kfree(cpu_buffer->subbuf_ids);
-+	cpu_buffer->subbuf_ids = NULL;
-+}
-+
-+static int rb_alloc_meta_page(struct ring_buffer_per_cpu *cpu_buffer)
-+{
-+	if (cpu_buffer->meta_page)
-+		return 0;
-+
-+	cpu_buffer->meta_page = page_to_virt(alloc_page(GFP_USER | __GFP_ZERO));
-+	if (!cpu_buffer->meta_page)
-+		return -ENOMEM;
-+
-+	return 0;
-+}
-+
-+static void rb_free_meta_page(struct ring_buffer_per_cpu *cpu_buffer)
-+{
-+	unsigned long addr = (unsigned long)cpu_buffer->meta_page;
-+
-+	virt_to_page((void *)addr)->mapping = NULL;
-+	free_page(addr);
-+	cpu_buffer->meta_page = NULL;
-+}
-+
-+static void rb_setup_ids_meta_page(struct ring_buffer_per_cpu *cpu_buffer,
-+				   unsigned long *subbuf_ids)
-+{
-+	struct trace_buffer_meta *meta = cpu_buffer->meta_page;
-+	unsigned int nr_subbufs = cpu_buffer->nr_pages + 1;
-+	struct buffer_page *first_subbuf, *subbuf;
-+	int id = 0;
-+
-+	subbuf_ids[id] = (unsigned long)cpu_buffer->reader_page->page;
-+	subbuf_map_prepare(subbuf_ids[id], cpu_buffer->buffer->subbuf_order);
-+	cpu_buffer->reader_page->id = id++;
-+
-+	first_subbuf = subbuf = rb_set_head_page(cpu_buffer);
-+	do {
-+		if (id >= nr_subbufs) {
-+			WARN_ON(1);
-+			break;
-+		}
-+
-+		subbuf_ids[id] = (unsigned long)subbuf->page;
-+		subbuf->id = id;
-+		subbuf_map_prepare(subbuf_ids[id], cpu_buffer->buffer->subbuf_order);
-+
-+		rb_inc_page(&subbuf);
-+		id++;
-+	} while (subbuf != first_subbuf);
-+
-+	/* install subbuf ID to kern VA translation */
-+	cpu_buffer->subbuf_ids = subbuf_ids;
-+
-+	meta->meta_page_size = PAGE_SIZE;
-+	meta->meta_struct_len = sizeof(*meta);
-+	meta->nr_subbufs = nr_subbufs;
-+	meta->subbuf_size = cpu_buffer->buffer->subbuf_size + BUF_PAGE_HDR_SIZE;
-+
-+	rb_update_meta_page(cpu_buffer);
-+}
-+
-+static inline struct ring_buffer_per_cpu *
-+rb_get_mapped_buffer(struct trace_buffer *buffer, int cpu)
-+{
-+	struct ring_buffer_per_cpu *cpu_buffer;
-+
-+	if (!cpumask_test_cpu(cpu, buffer->cpumask))
-+		return ERR_PTR(-EINVAL);
-+
-+	cpu_buffer = buffer->buffers[cpu];
-+
-+	mutex_lock(&cpu_buffer->mapping_lock);
-+
-+	if (!cpu_buffer->mapped) {
-+		mutex_unlock(&cpu_buffer->mapping_lock);
-+		return ERR_PTR(-ENODEV);
-+	}
-+
-+	return cpu_buffer;
-+}
-+
-+static inline void rb_put_mapped_buffer(struct ring_buffer_per_cpu *cpu_buffer)
-+{
-+	mutex_unlock(&cpu_buffer->mapping_lock);
-+}
-+
-+int ring_buffer_map(struct trace_buffer *buffer, int cpu)
-+{
-+	struct ring_buffer_per_cpu *cpu_buffer;
-+	unsigned long flags, *subbuf_ids;
-+	int err = 0;
-+
-+	if (!cpumask_test_cpu(cpu, buffer->cpumask))
-+		return -EINVAL;
-+
-+	cpu_buffer = buffer->buffers[cpu];
-+
-+	mutex_lock(&cpu_buffer->mapping_lock);
-+
-+	if (cpu_buffer->mapped) {
-+		if (cpu_buffer->mapped == INT_MAX)
-+			err = -EBUSY;
-+		else
-+			WRITE_ONCE(cpu_buffer->mapped, cpu_buffer->mapped + 1);
-+		mutex_unlock(&cpu_buffer->mapping_lock);
-+		return err;
-+	}
-+
-+	/* prevent another thread from changing buffer sizes */
-+	mutex_lock(&buffer->mutex);
-+
-+	err = rb_alloc_meta_page(cpu_buffer);
-+	if (err)
-+		goto unlock;
-+
-+	/* subbuf_ids include the reader while nr_pages does not */
-+	subbuf_ids = kzalloc(sizeof(*subbuf_ids) * (cpu_buffer->nr_pages + 1),
-+			   GFP_KERNEL);
-+	if (!subbuf_ids) {
-+		rb_free_meta_page(cpu_buffer);
-+		err = -ENOMEM;
-+		goto unlock;
-+	}
-+
-+	atomic_inc(&cpu_buffer->resize_disabled);
-+
-+	/*
-+	 * Lock all readers to block any subbuf swap until the subbuf IDs are
-+	 * assigned.
-+	 */
-+	raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
-+
-+	rb_setup_ids_meta_page(cpu_buffer, subbuf_ids);
-+
-+	WRITE_ONCE(cpu_buffer->mapped, 1);
-+
-+	raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
-+unlock:
-+	mutex_unlock(&buffer->mutex);
-+	mutex_unlock(&cpu_buffer->mapping_lock);
-+
-+	return err;
-+}
-+
-+int ring_buffer_unmap(struct trace_buffer *buffer, int cpu)
-+{
-+	struct ring_buffer_per_cpu *cpu_buffer;
-+	int err = 0;
-+
-+	if (!cpumask_test_cpu(cpu, buffer->cpumask))
-+		return -EINVAL;
-+
-+	cpu_buffer = buffer->buffers[cpu];
-+
-+	mutex_lock(&cpu_buffer->mapping_lock);
-+
-+	if (!cpu_buffer->mapped) {
-+		err = -ENODEV;
-+		goto unlock;
-+	}
-+
-+	WRITE_ONCE(cpu_buffer->mapped, cpu_buffer->mapped - 1);
-+	if (!cpu_buffer->mapped) {
-+		/* Wait for the writer and readers to observe !mapped */
-+		synchronize_rcu();
-+
-+		rb_free_subbuf_ids(cpu_buffer);
-+		rb_free_meta_page(cpu_buffer);
-+		atomic_dec(&cpu_buffer->resize_disabled);
-+	}
-+unlock:
-+	mutex_unlock(&cpu_buffer->mapping_lock);
-+
-+	return err;
-+}
-+
-+/*
-+ *   +--------------+  pgoff == 0
-+ *   |   meta page  |
-+ *   +--------------+  pgoff == 1
-+ *   | subbuffer 0  |
-+ *   +--------------+  pgoff == 1 + (1 << subbuf_order)
-+ *   | subbuffer 1  |
-+ *         ...
-+ */
-+struct page *ring_buffer_map_fault(struct trace_buffer *buffer, int cpu,
-+				   unsigned long pgoff)
-+{
-+	struct ring_buffer_per_cpu *cpu_buffer = buffer->buffers[cpu];
-+	unsigned long subbuf_id, subbuf_offset, addr;
-+	struct page *page;
-+
-+	if (!pgoff)
-+		return virt_to_page((void *)cpu_buffer->meta_page);
-+
-+	pgoff--;
-+
-+	subbuf_id = pgoff >> buffer->subbuf_order;
-+	if (subbuf_id > cpu_buffer->nr_pages)
-+		return NULL;
-+
-+	subbuf_offset = pgoff & ((1UL << buffer->subbuf_order) - 1);
-+	addr = cpu_buffer->subbuf_ids[subbuf_id] + (subbuf_offset * PAGE_SIZE);
-+	page = virt_to_page((void *)addr);
-+
-+	return page;
-+}
-+
-+int ring_buffer_map_get_reader(struct trace_buffer *buffer, int cpu)
-+{
-+	struct ring_buffer_per_cpu *cpu_buffer;
-+	unsigned long reader_size;
-+	unsigned long flags;
-+
-+	cpu_buffer = rb_get_mapped_buffer(buffer, cpu);
-+	if (IS_ERR(cpu_buffer))
-+		return (int)PTR_ERR(cpu_buffer);
-+
-+	raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
-+consume:
-+	if (rb_per_cpu_empty(cpu_buffer))
-+		goto out;
-+
-+	reader_size = rb_page_size(cpu_buffer->reader_page);
-+
-+	/*
-+	 * There are data to be read on the current reader page, we can
-+	 * return to the caller. But before that, we assume the latter will read
-+	 * everything. Let's update the kernel reader accordingly.
-+	 */
-+	if (cpu_buffer->reader_page->read < reader_size) {
-+		while (cpu_buffer->reader_page->read < reader_size)
-+			rb_advance_reader(cpu_buffer);
-+		goto out;
-+	}
-+
-+	if (WARN_ON(!rb_get_reader_page(cpu_buffer)))
-+		goto out;
-+
-+	goto consume;
-+out:
-+	rb_update_meta_page(cpu_buffer);
-+	raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
-+	rb_put_mapped_buffer(cpu_buffer);
-+
-+	return 0;
-+}
-+
  /*
-  * We only allocate new buffers, never free them if the CPU goes down.
-  * If we were to free the buffer, then the user would lose any trace that was in
+@@ -1470,12 +1483,20 @@ register_snapshot_trigger(char *glob,
+ 			  struct event_trigger_data *data,
+ 			  struct trace_event_file *file)
+ {
+-	if (tracing_alloc_snapshot_instance(file->tr) != 0)
++	if (tracing_arm_snapshot(file->tr))
+ 		return 0;
+ 
+ 	return register_trigger(glob, data, file);
+ }
+ 
++static void unregister_snapshot_trigger(char *glob,
++					struct event_trigger_data *data,
++					struct trace_event_file *file)
++{
++	if (__unregister_trigger(glob, data, file))
++		tracing_disarm_snapshot(file->tr);
++}
++
+ static int
+ snapshot_trigger_print(struct seq_file *m, struct event_trigger_data *data)
+ {
+@@ -1508,7 +1529,7 @@ static struct event_command trigger_snapshot_cmd = {
+ 	.trigger_type		= ETT_SNAPSHOT,
+ 	.parse			= event_trigger_parse,
+ 	.reg			= register_snapshot_trigger,
+-	.unreg			= unregister_trigger,
++	.unreg			= unregister_snapshot_trigger,
+ 	.get_trigger_ops	= snapshot_get_trigger_ops,
+ 	.set_filter		= set_trigger_filter,
+ };
 -- 
 2.43.0.429.g432eaa2c6b-goog
 
