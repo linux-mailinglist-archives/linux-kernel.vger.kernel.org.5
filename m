@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-35696-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35697-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39CB0839540
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:50:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 13D1F839545
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:50:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF30F1F2F28D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:50:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8132D1F2F4AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:50:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62AC18004C;
-	Tue, 23 Jan 2024 16:45:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DE19811EC;
+	Tue, 23 Jan 2024 16:45:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="XQ+TBGu7"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="aRu2NBH+"
 Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21FA78003C;
-	Tue, 23 Jan 2024 16:45:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58F548003D;
+	Tue, 23 Jan 2024 16:45:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706028335; cv=none; b=vC3jzeOv6HOHQtWiV4I7WZWkcnquoytVhquJK547TEDJS9Y9IpfHYUrie3QTeYmD2lYeDotu/SGopO8o96ddZyqxOZ0j+ub+XPdQvUSPTiJ6U59YEH35DGmzsuOmnU2ZM06hlt8x9YjWc44bk8PCu10R01mv/pcpSmHBPLmF6t8=
+	t=1706028336; cv=none; b=TawQK+V3hpAxeegbL2M3t9IE+oLDgUuzVx/y+d+XvzQ3tc0sg705bGPRoICz7mPrM8qmaZ+nV7hOtuLuzJXq2920nqx17q1a+qE5mToZnHRTO3+L+VoF81aFnijTIGgUEX40FdLsqZUpk2ux3iDM9Vun5ex94FNSoAKBNEuOaDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706028335; c=relaxed/simple;
-	bh=ZglZxMe91KASK/v+IW0btwDbCnQ9sigjhDoQmmAsN6M=;
+	s=arc-20240116; t=1706028336; c=relaxed/simple;
+	bh=8LjL26PYrPwCrvs/xSN0nyOOCGfpd558CyvkBVEVt2M=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Mq2x/jOUtAza2Khw/3zIQeV8RoFr5gBoTW4830ZMRueaqa4tb3nKNUcaxH1Hmf2M6ZfipNrkpZ1r+0jGkQN70lFPX6R9uUSSs8qmfYU6HHxR2D9S0hMG8zURKEt6V1a5Fw1HQ8SxhuFbTnfSO+kzA/xEtFmNRCbBEDjwr/f8ODc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=XQ+TBGu7; arc=none smtp.client-ip=198.47.23.249
+	 MIME-Version:Content-Type; b=mJKRLYUWmd+pJ+edJtnNMI4ifMfT11Eh9q4VdK+fYOhqROC/3rL6RRhhqzTROo7pW/hp/OfpN/4jkNOEbhvbAPMDme5WRNqNyys1f7xhdLlGw7kGOVwM2ZU5LJpXI63kmgCm0e3GlmTPy58lv9BiyQjHapUaNVi6qNkkIp1ETPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=aRu2NBH+; arc=none smtp.client-ip=198.47.23.249
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40NGilni101831;
-	Tue, 23 Jan 2024 10:44:47 -0600
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40NGimmf101836;
+	Tue, 23 Jan 2024 10:44:48 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706028287;
-	bh=oKxZn4Uy08vRh9Z4twvXFEfHH30BeCJ4RW0dN5sv5z8=;
+	s=ti-com-17Q1; t=1706028288;
+	bh=6OrX3DPXnzALpnhReuLUjIJGvye7DyNGb/CoW91+Q9Y=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=XQ+TBGu7qpd8prpUtoiX4QquV6MDTGYJkGA99SBthNePlOtrETBsqqBYkjwRr5Z+7
-	 GCrpHTHIp03tWeQXOuVYFiCBETiGlwmkIaID9YgM4lzjqgYyUR8g0trLctCvyhNz1j
-	 Et7+isys2JxBKFURnMNl5KMzSq6jduv09RPdz3mo=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40NGilFK041335
+	b=aRu2NBH+Jl34untySgYsJ01x94ByIoIEXYUbivOB09rHgr91C1x3H10BrGV/WTgaN
+	 vjfxeS3UWpG+j6SPnK/fTdcYOgsuYivuoRPIM0QgP9VAbLKYoLj/kcFu0rTEg2BVEN
+	 /LXH3crLEaSPXs1UEN0suP5rAaFW876Mhopb5Xdw=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40NGimBu011494
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 23 Jan 2024 10:44:47 -0600
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+	Tue, 23 Jan 2024 10:44:48 -0600
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 23
- Jan 2024 10:44:47 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ Jan 2024 10:44:48 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 23 Jan 2024 10:44:47 -0600
+ Frontend Transport; Tue, 23 Jan 2024 10:44:48 -0600
 Received: from lelvsmtp5.itg.ti.com ([10.249.42.149])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40NGiiKI022038;
-	Tue, 23 Jan 2024 10:44:46 -0600
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40NGiiKJ022038;
+	Tue, 23 Jan 2024 10:44:47 -0600
 From: Andrew Davis <afd@ti.com>
 To: Mark Rutland <mark.rutland@arm.com>,
         Lorenzo Pieralisi
@@ -76,9 +76,9 @@ CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
         <linux-pm@vger.kernel.org>, <linux-spi@vger.kernel.org>,
         Andrew Davis
 	<afd@ti.com>
-Subject: [PATCH 3/4] firmware: psci: Use register_sys_off_handler(SYS_OFF_MODE_RESTART)
-Date: Tue, 23 Jan 2024 10:44:42 -0600
-Message-ID: <20240123164443.394642-4-afd@ti.com>
+Subject: [PATCH 4/4] firmware: ti_sci: Use devm_register_restart_handler()
+Date: Tue, 23 Jan 2024 10:44:43 -0600
+Message-ID: <20240123164443.394642-5-afd@ti.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240123164443.394642-1-afd@ti.com>
 References: <20240123164443.394642-1-afd@ti.com>
@@ -92,49 +92,60 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Function register_restart_handler() is deprecated. Using this new API
-removes our need to keep and manage a struct notifier_block.
+Use device life-cycle managed register function to simplify probe.
 
 Signed-off-by: Andrew Davis <afd@ti.com>
 ---
- drivers/firmware/psci/psci.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ drivers/firmware/ti_sci.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
-index d9629ff878619..767a5af5384b4 100644
---- a/drivers/firmware/psci/psci.c
-+++ b/drivers/firmware/psci/psci.c
-@@ -305,8 +305,7 @@ static int get_set_conduit_method(const struct device_node *np)
- 	return 0;
- }
+diff --git a/drivers/firmware/ti_sci.c b/drivers/firmware/ti_sci.c
+index 8b9a2556de16d..16501aa0b84cf 100644
+--- a/drivers/firmware/ti_sci.c
++++ b/drivers/firmware/ti_sci.c
+@@ -103,7 +103,6 @@ struct ti_sci_desc {
+  */
+ struct ti_sci_info {
+ 	struct device *dev;
+-	struct notifier_block nb;
+ 	const struct ti_sci_desc *desc;
+ 	struct dentry *d;
+ 	void __iomem *debug_region;
+@@ -122,7 +121,6 @@ struct ti_sci_info {
  
--static int psci_sys_reset(struct notifier_block *nb, unsigned long action,
--			  void *data)
-+static int psci_sys_reset(struct sys_off_data *data)
+ #define cl_to_ti_sci_info(c)	container_of(c, struct ti_sci_info, cl)
+ #define handle_to_ti_sci_info(h) container_of(h, struct ti_sci_info, handle)
+-#define reboot_to_ti_sci_info(n) container_of(n, struct ti_sci_info, nb)
+ 
+ #ifdef CONFIG_DEBUG_FS
+ 
+@@ -3254,10 +3252,9 @@ devm_ti_sci_get_resource(const struct ti_sci_handle *handle, struct device *dev,
+ }
+ EXPORT_SYMBOL_GPL(devm_ti_sci_get_resource);
+ 
+-static int tisci_reboot_handler(struct notifier_block *nb, unsigned long mode,
+-				void *cmd)
++static int tisci_reboot_handler(struct sys_off_data *data)
  {
- 	if ((reboot_mode == REBOOT_WARM || reboot_mode == REBOOT_SOFT) &&
- 	    psci_system_reset2_supported) {
-@@ -323,11 +322,6 @@ static int psci_sys_reset(struct notifier_block *nb, unsigned long action,
- 	return NOTIFY_DONE;
- }
+-	struct ti_sci_info *info = reboot_to_ti_sci_info(nb);
++	struct ti_sci_info *info = data->cb_data;
+ 	const struct ti_sci_handle *handle = &info->handle;
  
--static struct notifier_block psci_sys_reset_nb = {
--	.notifier_call = psci_sys_reset,
--	.priority = 129,
--};
+ 	ti_sci_cmd_core_reboot(handle);
+@@ -3400,10 +3397,9 @@ static int ti_sci_probe(struct platform_device *pdev)
+ 	ti_sci_setup_ops(info);
+ 
+ 	if (reboot) {
+-		info->nb.notifier_call = tisci_reboot_handler;
+-		info->nb.priority = 128;
 -
- static void psci_sys_poweroff(void)
- {
- 	invoke_psci_fn(PSCI_0_2_FN_SYSTEM_OFF, 0, 0, 0);
-@@ -623,7 +617,7 @@ static void __init psci_0_2_set_functions(void)
- 		.migrate_info_type = psci_migrate_info_type,
- 	};
- 
--	register_restart_handler(&psci_sys_reset_nb);
-+	register_sys_off_handler(SYS_OFF_MODE_RESTART, 129, psci_sys_reset, NULL);
- 
- 	pm_power_off = psci_sys_poweroff;
- }
+-		ret = register_restart_handler(&info->nb);
++		ret = devm_register_restart_handler(dev,
++						    tisci_reboot_handler,
++						    info);
+ 		if (ret) {
+ 			dev_err(dev, "reboot registration fail(%d)\n", ret);
+ 			goto out;
 -- 
 2.39.2
 
