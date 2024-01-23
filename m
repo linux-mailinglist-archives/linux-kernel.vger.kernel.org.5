@@ -1,44 +1,45 @@
-Return-Path: <linux-kernel+bounces-36056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36055-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1D2A839ACE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 22:05:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16279839ACD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 22:05:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81413B2499C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:05:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3A6128AAF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 21:05:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3605B47793;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F22E46525;
 	Tue, 23 Jan 2024 21:04:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b="Ve4vV3h8"
+	dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b="CtKF7IDS"
 Received: from ahti.lucaweiss.eu (ahti.lucaweiss.eu [128.199.32.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4B8D12E7B;
-	Tue, 23 Jan 2024 21:04:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCCE519BDC;
+	Tue, 23 Jan 2024 21:04:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=128.199.32.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706043877; cv=none; b=U0jRS9uNs8TYjLFaJgWGqJxTjHaVqHY2j92sEU7G+BLZos5doD9Mf4xTMu5aSZPTrbzCwA4XUnc8+v5Kb4dvVKguxCV0wkRPrbqUPvoQWqUErzaqyCVWt+tpZOmkI+pFszPEbb0NLuVwjnUOuF8WC7n34tLbrB+EeOHCCLk968A=
+	t=1706043877; cv=none; b=dNRj/GDGZOiT9x6xWTuxATKa8M2Ks9L8Rx88ZmBVaHzI2n220qVZy/0s6kk1UkUY57x5L9wKqKuUnIKJ1K2+X1km7fhbWjYPfrYoh/iZQXKiKdB0HSvslbDD95fjRgiirexWuTZ2A8u6W4Kip1jxS8omWIw2ax3HGRcvMw68ClQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706043877; c=relaxed/simple;
-	bh=CKtMfO6Bfzyox+5EUVJ1yI9kA2uCj8V8lQP91cG1mvA=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=eJ74qBBhz2uBoZbJqIAcLTp61CvhJMQ+IT+toVYKeFAOoQUdClRpUBndoFRVJYDCpd1UQKcSYLj53x2Fjal1ThY2u23X+xBbhOCwaZiIpW77K/e2OgLYgBX3bV+W0vYwceiblxhwIBlRmBIkJFr8sA0FGTDXvihRv2CsPtcxYDY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz; spf=pass smtp.mailfrom=z3ntu.xyz; dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b=Ve4vV3h8; arc=none smtp.client-ip=128.199.32.197
+	bh=fKNOuDoTzwcVzhQKQRV0risOvkUSvEE2mxGjG+qiGFM=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=HLvVYL/AwqHiUCxp2CxS0xd0z3OFg1u0nEMpY1jzaMhqFHBIn8Yo1++dvR2uBw7ySxDrXGbkEWI+fZzLUVdFjRongXEH8xEL5YClrH3SjUQzEdScs7Y/2Z61YTNOUSVizneLNZ9JdPt7cH0vaqmdYmFNjB5R+QPFtDFK3qN7kxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz; spf=pass smtp.mailfrom=z3ntu.xyz; dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b=CtKF7IDS; arc=none smtp.client-ip=128.199.32.197
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=z3ntu.xyz
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=s1;
-	t=1706043866; bh=CKtMfO6Bfzyox+5EUVJ1yI9kA2uCj8V8lQP91cG1mvA=;
-	h=From:Subject:Date:To:Cc;
-	b=Ve4vV3h83HsNyUHx0wDQAQrD/AtjaoMoh+H+4DnOVWwYZFSHaPUhfvPGh1nrM87cn
-	 WwMYzpdGemNdpcw2sgM/Wcjz1TdImDZUjdJ5FmMYe22+NT6cwKi8YRNSMGj6tHqzol
-	 S+5g0UDvr/W+VEYXIOSpoUoSGde7REYzYPF1UcUg=
+	t=1706043866; bh=fKNOuDoTzwcVzhQKQRV0risOvkUSvEE2mxGjG+qiGFM=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc;
+	b=CtKF7IDSkGMIKSDjrC1pkNtds5M2ywxHYrRxbtNMREIAyL4pUvLKsGB5vQDWoKh9h
+	 U8BS2PosNaOpKKPaenf9PzHQ5EnbVAIeOE5V8yPMnWQWt9DlDaYjV32aaSxorELBLV
+	 1YAr45GvXy8ID20tQgnYD+bebzFZhr1iPq4WywyM=
 From: Luca Weiss <luca@z3ntu.xyz>
-Subject: [PATCH 0/3] Add MDSS_BCR reset for MSM8953
-Date: Tue, 23 Jan 2024 22:03:54 +0100
-Message-Id: <20240123-msm8953-mdss-reset-v1-0-bb8c6d3ce897@z3ntu.xyz>
+Date: Tue, 23 Jan 2024 22:03:55 +0100
+Subject: [PATCH 1/3] dt-bindings: clock: gcc-msm8953: add reset for MDSS
+ subsystem
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -47,9 +48,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIALopsGUC/x2MQQqAIBAAvxJ7TjDNsL4SHSTX2oMWbkQg/T3pN
- MxhpgBjJmSYmgIZb2I6UpWubWDdXdpQkK8OSqpedkqLyNGOptIzi4yMlxisltZJHUIwUMMzY6D
- nn87L+35ar2NRZAAAAA==
+Message-Id: <20240123-msm8953-mdss-reset-v1-1-bb8c6d3ce897@z3ntu.xyz>
+References: <20240123-msm8953-mdss-reset-v1-0-bb8c6d3ce897@z3ntu.xyz>
+In-Reply-To: <20240123-msm8953-mdss-reset-v1-0-bb8c6d3ce897@z3ntu.xyz>
 To: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
  Bjorn Andersson <andersson@kernel.org>, 
  Konrad Dybcio <konrad.dybcio@linaro.org>, 
@@ -61,43 +62,48 @@ Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Luca Weiss <luca@z3ntu.xyz>, Vladimir Lypak <vladimir.lypak@gmail.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=758; i=luca@z3ntu.xyz;
- h=from:subject:message-id; bh=CKtMfO6Bfzyox+5EUVJ1yI9kA2uCj8V8lQP91cG1mvA=;
- b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBlsCnVCCHHoC3NJac8mzXQRwG4STJPMvdCDV3LN
- BKhPFfN5m6JAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZbAp1QAKCRBy2EO4nU3X
- VkkxD/48FVfzjdGeBTusDywMmrPM+JjWI6YgcN9Ys473zlgjt7DtSuYr4mM/l7229VHt3LT7/zx
- MJQG5e+XQPCXa/wYqZ3izEkygl/anbiCglAkCNQu4uoc2ET8KGUyx5qZVbwie+61jMjNG0Gj4C0
- W5uCWYprbt8Wpi92P2rqVuUPdh/LnSbNL2wIXjuvDMoCIgJKUdAcoyORzIUD6YlETVnRDgP/+3K
- v/zdH3dfXl+I4OaxXFHpBPIxhIJyR5H1bWX1+maD4wxk1eWyvVVfHgoVlmkrIpNqoIRWM43Uq0O
- NVbZkME+23RnEOwxetPnuScaxk6GqzvYPlWVk6Oh92xltAqdBSC1fWJqyl1C5HTUqfcaLLJSU3F
- JS+q4hxku2Kcyt4/f0bXvoTS/WcCLj/9jpCeUPtmQFqgWuHmXUakIuy2bkZ+zSA0xcGa2iHhtHz
- 77tXDnc4BdaGPdxqJXX373I6HuGkT35er34XYx0RiFpTlkuSJzxK+iuxYE1wHG0q+UJRXqR2Bo4
- p+6EeDLTY4WYJ/Fp0dPC1g+T7H0C0uyJO/PH5kFeiahlsIU/+dV4WY4UsGxth1YyF914GJfnj2B
- VYd390Qk0jf55wKU3O/ThS+3dOEPX8YhWV3ZFyQvUtU9XatZ+eQ5n0sy9yto5UahLpeRXCH6yhu
- HJ+En5+GQYB7f2A==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=736; i=luca@z3ntu.xyz;
+ h=from:subject:message-id; bh=nowTyNlcYWdBQrzi/O5J4gsbaEoQ6NuvDACFQUsNsms=;
+ b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBlsCnWW0r9jBCJrtoQbLrBv0ZaFIeW9WTt/l0Iq
+ xYcLVturdyJAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZbAp1gAKCRBy2EO4nU3X
+ VoivEACI0QI2XZfoqVKppuc4WBE91IwWNshNwI/+dbesUmPY5DQjl1UerOfNMOzMYQ248FULlgI
+ B2vih7/EmjR9dPfsjO0BLHcYSagtV2kzA6Cygwzod0iTc0zf3lXmwTRjMTeb7ZcgpR3DwbF1a3t
+ F1LG6VzYVqeU+dXQDGTXjFS8Q7SaE/4VL1195xE62eidr2ruh74QVBqKMkYbCKjwd6SxpVAYdFy
+ X7V24Ba/YxQK4MXGXUibclPuUoUSjisaKUOPxcWRKP0U5bWAm7vq1QCxd8LGM+aJSUHRhFBPJ9e
+ /fpsXHlrSX4LBTUEZozSlHlK6kj/fkuCmjxay+7PDNOM6jPJrrmCystrdUMhmwkiARZKtEEmMgI
+ KCrRbs6+rVA8W5MS5yPvOkIFrlRToebabO8/lCFRvKCgKhORGAg/KaqO+69bFurkrEP3eSYMZXy
+ yC7zhRa/xy3tM4lYMoA1LqEjbi9Auu6VMVx5D2R2uTLkhtIIAmYj3Y20xYzEy3Et8MfsBJzL1ra
+ 1uKWrYyEcc3f/qDvp4WMic/xf5SWPdnCxUE67YF2QcP9b+uqgYI1j3C9Kzixu0+r1SxEQntbPNo
+ vdEcSBuVVEYtpAI5rSW7u/+oAxx8k7CFWPYybFseFMGfNvsqFS/5Z57PfRkIXoh4q9WQ+tBxyIn
+ DDUXoCbBQ3lgPtw==
 X-Developer-Key: i=luca@z3ntu.xyz; a=openpgp;
  fpr=BD04DA24C971B8D587B2B8D7FAF69CF6CD2D02CD
 
-Add the MDSS_BCR reset that is found in the GCC of MSM8953 so we can
-make sure the MDSS gets properly reset before Linux starts using it.
+From: Vladimir Lypak <vladimir.lypak@gmail.com>
 
+Add a new define for the GCC_MDSS_BCR found on MSM8953.
+
+Signed-off-by: Vladimir Lypak <vladimir.lypak@gmail.com>
+[luca: expand commit message]
 Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
 ---
-Vladimir Lypak (3):
-      dt-bindings: clock: gcc-msm8953: add reset for MDSS subsystem
-      clk: qcom: gcc-msm8953: add MDSS_BCR reset
-      arm64: dts: qcom: msm8953: add reset for display subsystem
-
- arch/arm64/boot/dts/qcom/msm8953.dtsi        | 2 ++
- drivers/clk/qcom/gcc-msm8953.c               | 1 +
  include/dt-bindings/clock/qcom,gcc-msm8953.h | 1 +
- 3 files changed, 4 insertions(+)
----
-base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
-change-id: 20240123-msm8953-mdss-reset-68308a03fff5
+ 1 file changed, 1 insertion(+)
 
-Best regards,
+diff --git a/include/dt-bindings/clock/qcom,gcc-msm8953.h b/include/dt-bindings/clock/qcom,gcc-msm8953.h
+index 783162da6148..28090f9d7f24 100644
+--- a/include/dt-bindings/clock/qcom,gcc-msm8953.h
++++ b/include/dt-bindings/clock/qcom,gcc-msm8953.h
+@@ -218,6 +218,7 @@
+ #define GCC_USB3PHY_PHY_BCR			3
+ #define GCC_USB3_PHY_BCR			4
+ #define GCC_USB_30_BCR				5
++#define GCC_MDSS_BCR				6
+ 
+ /* GDSCs */
+ #define CPP_GDSC				0
+
 -- 
-Luca Weiss <luca@z3ntu.xyz>
+2.43.0
 
 
