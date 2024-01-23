@@ -1,143 +1,222 @@
-Return-Path: <linux-kernel+bounces-35065-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35066-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A84C838B5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:05:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94D70838B65
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:08:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E8961C230CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:05:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E7AC1F271BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:08:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11D975A10B;
-	Tue, 23 Jan 2024 10:05:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="YQmDWkOh";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="YQmDWkOh"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C4025A781;
+	Tue, 23 Jan 2024 10:08:29 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DA6D5C5ED;
-	Tue, 23 Jan 2024 10:05:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F9E459B70;
+	Tue, 23 Jan 2024 10:08:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706004318; cv=none; b=ZR3HR1VU0vIxOe0XkUh1eJATKbiTlYtNbwY6knWypLJ5PNHFU5Oh2cTt2p8c7nOli9qfe82Fryot4ObuezLD4Wi+vVzwcGrxvPJW+hgTIwDEbchRjEoJM4b5laz2ZjI1eYbslBlCfsSi/9Wp+FfKa4oHITpO6qUJ2CezrnVnfO0=
+	t=1706004508; cv=none; b=ddyGWwV1gA66SLrcGloWwMwQeDOuEATuRf4dleLc3Dc787bzaAsj2G1LN8pDHvF3HS+dc+gB3v4PCcTsIBeQjnQ/L2Su/sNnQZYtALboU9v5e48vMFZO9MQn9ANW/2jnnNJAIljGoELt/wu+oAgSseSnr0O9PE91fL3pugtnnWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706004318; c=relaxed/simple;
-	bh=dod4ySizz+UXy9hLArED1qnGN6vM5M8n8D354HPBERk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S2r/1ALIJLhpAM+Dn1ZWHExYC0LwM7EAfBmnTSdbdKwf62o8qntORTu1IUDHiyQEyWojjfClN9V/PAvy2G6kzsaRxEnZWdG+8dCf9ff77zHFtZJKS1PHHRuOzK9Z32c+/uhRUsfwRhbPeQLrLwCHTKHs0+FK9TO7PXUpV5/mQ2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=YQmDWkOh; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=YQmDWkOh; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 7B4221FD48;
-	Tue, 23 Jan 2024 10:05:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706004314; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hCbpUW79UBQklyQUgghM/5s8J/FybqEF+7dXOs7C6RM=;
-	b=YQmDWkOho0o9ZGR4Yz5FT2ornPOxmnaXzF1wFcirQzSlzqcZ1+L9N59/6ddEgse4ImivCc
-	h/g0vRBjHe/GxLL9CXT3pnbv5FNc+gHynszHaDZQFNAQ2/8oVRsQ/UzBCijfdt/1eVnLLg
-	jeAmopyVcBKlmkgDTg/Cxt2GNC4BZ70=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706004314; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hCbpUW79UBQklyQUgghM/5s8J/FybqEF+7dXOs7C6RM=;
-	b=YQmDWkOho0o9ZGR4Yz5FT2ornPOxmnaXzF1wFcirQzSlzqcZ1+L9N59/6ddEgse4ImivCc
-	h/g0vRBjHe/GxLL9CXT3pnbv5FNc+gHynszHaDZQFNAQ2/8oVRsQ/UzBCijfdt/1eVnLLg
-	jeAmopyVcBKlmkgDTg/Cxt2GNC4BZ70=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 55E5013786;
-	Tue, 23 Jan 2024 10:05:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id CuWXElqPr2WJEQAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Tue, 23 Jan 2024 10:05:14 +0000
-Date: Tue, 23 Jan 2024 11:05:13 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-Cc: "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-	"david@redhat.com" <david@redhat.com>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-	"mgorman@techsingularity.net" <mgorman@techsingularity.net>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"quic_pkondeti@quicinc.com" <quic_pkondeti@quicinc.com>,
-	"vbabka@suse.cz" <vbabka@suse.cz>,
-	"quic_charante@quicinc.com" <quic_charante@quicinc.com>,
-	"stable@vger.kernel.org" <stable@vger.kernel.org>,
-	"quic_cgoldswo@quicinc.com" <quic_cgoldswo@quicinc.com>
-Subject: Re: [RESEND PATCH V2] mm: page_alloc: unreserve highatomic page
- blocks before oom
-Message-ID: <Za-PWcwmHFl3wmth@tiehlicka>
-References: <1700823445-27531-1-git-send-email-quic_charante@quicinc.com>
- <3fe3b3edd33cd784071dd9b459d20a79605ec918.camel@infinera.com>
- <2024012205-undrilled-those-2435@gregkh>
- <PH0PR10MB461565CEE892267025BC697BF4752@PH0PR10MB4615.namprd10.prod.outlook.com>
- <2024012210-outshoot-dragonish-fe8e@gregkh>
- <01010dd280badd149291cf4d2a4a88847113cf6d.camel@infinera.com>
+	s=arc-20240116; t=1706004508; c=relaxed/simple;
+	bh=kxaW1bi7sX+liEnGkuJfF9UhGpIIxLkLIuBsEeev57w=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LxkpexyNEOwdz1v7GOdXfEfLH3VA3mO6Y1cMmY/9ehQBG8DiWa3ackABLHxbYUczDA4hwYBA69n29zNHaAsrCPfZ6Ds0ESGMSHvaCPyUgkvqTbp8n7ovPoNBP8UCldrxj+JIoE4bPwfVWjqcF0euBTNDvneRRS8R/yBUlJ1oKaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TK2lV0mHxz67hqY;
+	Tue, 23 Jan 2024 18:05:26 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id DCC251404F5;
+	Tue, 23 Jan 2024 18:08:22 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 23 Jan
+ 2024 10:08:22 +0000
+Date: Tue, 23 Jan 2024 10:08:21 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC: <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+	<x86@kernel.org>, <acpica-devel@lists.linuxfoundation.org>,
+	<linux-csky@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<linux-ia64@vger.kernel.org>, <linux-parisc@vger.kernel.org>, Salil Mehta
+	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	<jianyong.wu@arm.com>, <justin.he@arm.com>, James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v3 14/21] irqchip/gic-v3: Don't return errors from
+ gic_acpi_match_gicc()
+Message-ID: <20240123100821.00000064@Huawei.com>
+In-Reply-To: <ZZ2eGLwlkqZrh0In@shell.armlinux.org.uk>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+	<E1rDOgx-00Dvkv-Bb@rmk-PC.armlinux.org.uk>
+	<20231215163301.0000183a@Huawei.com>
+	<ZZ2eGLwlkqZrh0In@shell.armlinux.org.uk>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <01010dd280badd149291cf4d2a4a88847113cf6d.camel@infinera.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: 0.70
-X-Spamd-Result: default: False [0.70 / 50.00];
-	 TO_DN_EQ_ADDR_SOME(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 NEURAL_HAM_SHORT(-0.20)[-0.996];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.01)[45.75%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWELVE(0.00)[13];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Mon 22-01-24 23:14:59, Joakim Tjernlund wrote:
-> On Mon, 2024-01-22 at 15:04 -0800, Greg KH wrote:
-[...]
-> > For mm patches like this, that are not explicitly tagged by the
-> > maintainers to be included in the stable tree, we need their ack to be
-> > able to apply them based on their requests.  So can you get that for
-> > this change and provide tested patches, we will be glad to queue them
-> > up.
+On Tue, 9 Jan 2024 19:27:20 +0000
+"Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
+
+> On Fri, Dec 15, 2023 at 04:33:01PM +0000, Jonathan Cameron wrote:
+> > On Wed, 13 Dec 2023 12:50:23 +0000
+> > Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
+> >   
+> > > From: James Morse <james.morse@arm.com>
+> > > 
+> > > gic_acpi_match_gicc() is only called via gic_acpi_count_gicr_regions().
+> > > It should only count the number of enabled redistributors, but it
+> > > also tries to sanity check the GICC entry, currently returning an
+> > > error if the Enabled bit is set, but the gicr_base_address is zero.
+> > > 
+> > > Adding support for the online-capable bit to the sanity check
+> > > complicates it, for no benefit. The existing check implicitly
+> > > depends on gic_acpi_count_gicr_regions() previous failing to find
+> > > any GICR regions (as it is valid to have gicr_base_address of zero if
+> > > the redistributors are described via a GICR entry).
+> > > 
+> > > Instead of complicating the check, remove it. Failures that happen
+> > > at this point cause the irqchip not to register, meaning no irqs
+> > > can be requested. The kernel grinds to a panic() pretty quickly.
+> > > 
+> > > Without the check, MADT tables that exhibit this problem are still
+> > > caught by gic_populate_rdist(), which helpfully also prints what
+> > > went wrong:
+> > > | CPU4: mpidr 100 has no re-distributor!
+> > > 
+> > > Signed-off-by: James Morse <james.morse@arm.com>
+> > > Reviewed-by: Gavin Shan <gshan@redhat.com>
+> > > Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> > > Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> > > Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+> > > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> > > ---
+> > >  drivers/irqchip/irq-gic-v3.c | 18 ++++++------------
+> > >  1 file changed, 6 insertions(+), 12 deletions(-)
+> > > 
+> > > diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+> > > index 98b0329b7154..ebecd4546830 100644
+> > > --- a/drivers/irqchip/irq-gic-v3.c
+> > > +++ b/drivers/irqchip/irq-gic-v3.c
+> > > @@ -2420,21 +2420,15 @@ static int __init gic_acpi_match_gicc(union acpi_subtable_headers *header,
+> > >  
+> > >  	/*
+> > >  	 * If GICC is enabled and has valid gicr base address, then it means
+> > > -	 * GICR base is presented via GICC
+> > > +	 * GICR base is presented via GICC. The redistributor is only known to
+> > > +	 * be accessible if the GICC is marked as enabled. If this bit is not
+> > > +	 * set, we'd need to add the redistributor at runtime, which isn't
+> > > +	 * supported.
+> > >  	 */
+> > > -	if (acpi_gicc_is_usable(gicc) && gicc->gicr_base_address) {
+> > > +	if (gicc->flags & ACPI_MADT_ENABLED && gicc->gicr_base_address)  
+> > 
+> > I was very vague in previous review.  I think the reasons you are switching
+> > from acpi_gicc_is_useable(gicc) to the gicc->flags & ACPI_MADT_ENABLED
+> > needs calling out as I'm fairly sure that this point in the series at least
+> > acpi_gicc_is_usable is same as current upstream:
+> > 
+> > static inline bool acpi_gicc_is_usable(struct acpi_madt_generic_interrupt *gicc)
+> > {
+> > 	return gicc->flags & ACPI_MADT_ENABLED;
+> > }  
 > 
-> I asked the author and he acknowledged it could be backported. Charan, please chim in.
+> In a previous patch adding acpi_gicc_is_usable() c54e52f84d7a ("arm64,
+> irqchip/gic-v3, ACPI: Move MADT GICC enabled check into a helper") this
+> was:
+> 
+> -       if ((gicc->flags & ACPI_MADT_ENABLED) && gicc->gicr_base_address) {
+> +       if (acpi_gicc_is_usable(gicc) && gicc->gicr_base_address) {
+> 
+> so effectively this is undoing that particular change, which raises in
+> my mind why the change was made in the first place if it's just going
+> to be reverted in a later patch (because in a following patch,
+> acpi_gicc_is_usable() has an additional condition added to it that
+> isn't applicable here.) which effectively makes acpi_gicc_is_usable()
+> return true if either ACPI_MADT_ENABLED _or_
+> ACPI_MADT_GICC_ONLINE_CAPABLE (as it is now known) are set.
 
-The patch itself is safe to backport but it would be great to here what
-kind of problem you are trying to deal with. The issue fixed by this
-patch is more on a corner case side than something that many users
-should see. Could you share oom report you are seeing?
--- 
-Michal Hocko
-SUSE Labs
+Ok. So maybe just calling out that we are about to change the meaning
+of acpi_gicc_is_usable() so need to partly revert that earlier patch
+to make use of it everywhere.
+
+Or perhaps introduce
+acpi_gicc_is_enabled() which is called by acpi_gicc_is_usable()
+along with the new conditions when they are added though as you
+say later, what does usable mean?
+
+> 
+> However, if ACPI_MADT_GICC_ONLINE_CAPABLE is set, does that actually
+> mean that the GICC is usable? I'm not sure it does. ACPI v6.5 says that
+> this bit indicates that the system supports enabling this processor
+> later. Is the GICC of a currently disabled processor "usable"...
+
+I agree, this is confusing.
+
+acpi_gicc_may_be_usable()?
+
+Or invert it in all places to give a cleaner meaning
+!acpi_gicc_never_usable()
+
+Bit of a pain to change this throughout again, but maybe necessary
+to avoid confusion in future.
+
+> 
+> Clearly, the intention of this change is not to count this GICC entry
+> if it is marked ACPI_MADT_GICC_ONLINE_CAPABLE, but I feel that isn't
+> described in the commit message.
+
+Agreed, though that only happens in the next patch so easier to describe
+there or via a patch adding initially identical multiple helper functions
+that then diverge in following patch?
+
+Whilst a helper for this one location seems silly it would let us put
+the two helpers next to each other where the distinction is obvious.
+
+> 
+> Moreover, I am getting the feeling that there are _two_ changes going
+> on here - there's the change that's talked about in the commit message
+> (the complex validation that seems unnecessary) and then there's the
+> preparation for the change to acpi_gicc_is_usable() - which maybe
+> should be in the following patch where it would be less confusing.
+
+Agreed.
+
+> 
+> Would you agree?
+> 
+Yes, the move would help as then it's obvious why this needs to change
+and that is separate from the naming question.
+
+So in conclusion, I agree with everything you've called out on this one,
+up to you to pick which solution cleans this up. I think options are.
+1) Just move the change to the next patch where it's easier to describe.
+   Leaves the odd 'usable' behind.
+2) Rename the useable() to something else, maybe inverting logic as
+   !never is easier than now_or_maybe_later.
+3) Possibly add another helper for this new case which starts as matching
+   the existing one, but diverges in a later patch (Should still not be
+   in this patch which as you observer is doing something else and I think
+   is actually a bug fix anyway, be it one that has never mattered for
+   any shipping firmware).
+
+Jonathan
+
+
 
