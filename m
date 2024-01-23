@@ -1,52 +1,72 @@
-Return-Path: <linux-kernel+bounces-35412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35411-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00975839096
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:56:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58FAB839094
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:55:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE6E5286673
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:55:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4E561F230C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:55:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 193E45EE87;
-	Tue, 23 Jan 2024 13:55:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7687A5F842;
+	Tue, 23 Jan 2024 13:55:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=timschumi@gmx.de header.b="FmYtP6f1"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AXVfmAyO"
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EF2E5F573;
-	Tue, 23 Jan 2024 13:55:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E72C75D8E2
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 13:55:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706018144; cv=none; b=mFruxO+YW4O6VuZys/K8md0gGvK+qVuZsRtqkPi6pA/Lv4YKN4Bt41QgVAtTB3z1wQgTUoNWhA9BqTeyvdiK2H8bqnRp8G1JweDG6S42awrlBl7AyKDQtldwgYH9cpv0zpp1DyrTHSdxlIIFxJTt94NQDYNMIl/uNIHsyG7ena4=
+	t=1706018135; cv=none; b=uIQj2/VyK4o0U8KZEt+D0Xcpr+KYPB8x4cCrSeGCfXNohbPyhNSDxXBk/053HoenoLCUNbfiBT1X7LLv2gvemPgzG7EibYJLksxCWcpoAnn18pffGBrv3agKx1Kbtm69/d9oz/FHD4Jd34LHOkwDnrI2cA03orAzmkqnmnykBqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706018144; c=relaxed/simple;
-	bh=3OyV8v5LLPqhjlL5KP/T8LBQ34VCIfqmKY3lEyUONQc=;
+	s=arc-20240116; t=1706018135; c=relaxed/simple;
+	bh=99xEFdwuEmJa0szQk3ftvlnaVsfzfuVj2jwniqsIkK4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=K/dpC/CD4xqRdi0G+yQD2ZhfD7tiFHoz51qJt8hKgmvdMRKVRqs+BHP/rAmELxFrc+6etfjTRjoBNEwBGsoz0P4TdpY4LfNexgX/XlV+L2SF4F6+oWvXTA1a/yUAt0Jzy2SoZ4BgVSacSLH/8ENhpY1SVuW0D06+MnSnshGhbRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=timschumi@gmx.de header.b=FmYtP6f1; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1706018131; x=1706622931; i=timschumi@gmx.de;
-	bh=3OyV8v5LLPqhjlL5KP/T8LBQ34VCIfqmKY3lEyUONQc=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=FmYtP6f10+n+a3weDkYSizyzo6FtJlAv2WkX/NAf7apprADBHPpCOcw6dU3tg6dp
-	 2Dta4+2ugesDk11T2mDFyPESuNNvTJN/lRZU/nfc1kxEbBUI3QJvKfCP8wQMIDbi8
-	 APWgpPclJSetdpWipeJfOpIhOJ+bBrmPyyxTt/T6Fu2OEH8TNWFqxMDvY9fWx7gdn
-	 IL76bbR4uaTYTxJ9lrSw0AEMe5YkXJmM7wD7NHWEXyGVkEQAGwRtn7zG4LfZHDXq4
-	 z/J2DNM1Vgy0QU+xS4v4y6kzS7uB+1AZUK2Talu+Jj2vz3Bqqb1NLYemQFpkVNYPi
-	 ftGZXVW9FCKcOnCzoA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [10.222.0.4] ([93.218.111.23]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MF3DW-1rLjoJ2FXE-00FTEX; Tue, 23
- Jan 2024 14:55:31 +0100
-Message-ID: <223a4e75-2e06-4bc6-a70c-823f0eb308d7@gmx.de>
-Date: Tue, 23 Jan 2024 14:55:27 +0100
+	 In-Reply-To:Content-Type; b=dQ8vCsPe5ykInzRtp02ppNtgu9QGI/VJyIF6IcmM4tIn/YwZEFv8sjd2m9EYFIy4ncc/ef+6fNdCz2ifh1cu1OxpCiW/S6+pMlJfgqU+HYUvQXz6/Meo2lD7M7lUBFm6mQN1S5+eva2amJAhkVllyj7jMcfSaXbTjrgmDCCz0sM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AXVfmAyO; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-339231c062bso2993891f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 05:55:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706018131; x=1706622931; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kZ1hKv5VDOr5/44Jp2vD0q8l5uuzQgADOI66zgGp3Gc=;
+        b=AXVfmAyOghnopjfgLqZJet29JPg45HmphFrC1dwTpSDux1m1S4aNw+5XXm3SPXI1aw
+         Yg3EfVU5kGFWacCEDeMfKgjE2WV4PGiouruWiMeaYKf4XBwAYisFMQITArqGS5ST0knD
+         FdODGoR0WuitFk9eY1tyaVzWx41x6KxlE4NephQoCFJQkg1eRndMWXbV4a0bbnrVulSc
+         ZclrW28+Km0+yVYjGzmS79oEVgiLhEq0m1xLYWi3hLjCJGWOTIzgP122N9bRnqBoYD9j
+         fRhC0NR5rJT9Pwd6DZSH/5jEqyjRrOXxsyOF06RxdMvkWXMU/MX6uYqLZhAGKqKeiKO3
+         /EYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706018131; x=1706622931;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kZ1hKv5VDOr5/44Jp2vD0q8l5uuzQgADOI66zgGp3Gc=;
+        b=VTUCvLIno1ny93H5TyLczyV9e0M0I93s/A0HL/5fYTKEKlBxf8KiSpGtvMz9Zm9U9J
+         ZRhMQjNkWyacfP8MDQLSKxmjdQVXpjJDpS8CZtCau1IQ5KZv4rRIVAx1G71iLP+nUo0q
+         NgfvXlWXiWVV33OU/boVBNwQfKh81xxLxjuyQ+s1BUpOJFKq93mVwCaFIxWnRccXntIW
+         vsGvu/7lq3nmAozyFOMafLV7RCjv8xi2ayV2MPhnOajHCXJZhhxk8Ju8DENmjxZII4v9
+         zkuk1y427vrdxkTB4Q43qYT541lNBTTwozoA45gEy/OFe5UhcGNdY75i63/FqbeevD/O
+         auag==
+X-Gm-Message-State: AOJu0YyWoGTgEy0XxaigOueZLOTJOxpXp1dsMdaQ7LFL4k11tXfmjcUo
+	LHnzJ+VgvQhXpMRkyPV7EPxbkqd+ExeqVoui8jQtZ/uSAkwx4EWwvYcdPRwqgCA=
+X-Google-Smtp-Source: AGHT+IHocjplUQdh1eO7JOaIhz8tihztwFBxV3+rfPDQ6Zm14OlHLC1nxnCx5TTphoukhfxu5TxXwg==
+X-Received: by 2002:a05:600c:d6:b0:40e:540b:1b51 with SMTP id u22-20020a05600c00d600b0040e540b1b51mr160268wmm.132.1706018131172;
+        Tue, 23 Jan 2024 05:55:31 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id b5-20020a5d4d85000000b00337d5aa55cdsm13344989wru.53.2024.01.23.05.55.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jan 2024 05:55:30 -0800 (PST)
+Message-ID: <78e296fb-a3dc-4e00-94bc-91dab7294887@linaro.org>
+Date: Tue, 23 Jan 2024 14:55:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,75 +74,107 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] efivarfs: Iterate variables with increasing name buffer
- sizes
+Subject: Re: [PATCH] dt-bindings: clock: support NXP i.MX95
 Content-Language: en-US
-To: Ard Biesheuvel <ardb@kernel.org>, Matthew Garrett <mjg59@srcf.ucam.org>,
- Peter Jones <pjones@redhat.com>
-Cc: linux-efi@vger.kernel.org, Jeremy Kerr <jk@ozlabs.org>,
- linux-kernel@vger.kernel.org
-References: <20240122231507.1307793-1-timschumi@gmx.de>
- <CAMj1kXHSSRacU3hp6D3sdUKDESi1FoD33Qi=5Df+=_biZ-vqhA@mail.gmail.com>
-From: Tim Schumacher <timschumi@gmx.de>
-In-Reply-To: <CAMj1kXHSSRacU3hp6D3sdUKDESi1FoD33Qi=5Df+=_biZ-vqhA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:6NUN+h/cC+a0ZuA/ypHftrOHY+j+X9TGcJQMD7jsBA9WCAIx2Gj
- jkh9ob0br2qFqvCtVBooik+GlcGZb1jeBp9+plncfdBIceqPFnuqO6BS/r5R4Bd4dY37On3
- loPB7SDmqXP9CZhXL/t94IHRGjZ2/h8jglE7hbb90U1y4a7lM7doJivSrJJtWtJt9S+qvYW
- KLVzMVnhdfOjO0n/0P/3Q==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:l9QfBb6Avjk=;CVtajfVn/ov+5nD+4lYgvKjPGnI
- qlW3e0LXqNfU2rBzJ8K18xi5VxjwkW9msjUbM2P+qEx6Hm1CGfIxZ8Cj6Bq+gv7s0JTWHXS10
- oZpvA8V0PXAmfIN/TkR0eWas3GPP4VWUTGmoiGsoZHgvkEaauJwzfeboar+tdHn2OaU8qtlmO
- Z3cdCARtoD2+EdM+bfFshXtCWoM8vvueBC6Hv7iVTc0dD0eMOWWIWm1CI5s9wH8On9A8FIg8Q
- GWXNVwGIdokW/uwrHKi4/8SCt8+Yn5FmqfF0fSxmGdsOicdtETTV/PcUGehJVKSaFEjlM4ZNI
- PS6lwdKpIvEHX2363EcWfyr9Av5o/oCG4z1EY2zwIpk+HeEvqk7aImdnGDhXB0cT30Hh0WA2N
- eSWxmmmQLhkrha8ldNPkWGaYLMWsEgqz9Ip3I1D4kwMoiaglfqWNBvEBWt4/0R+5fAVrojilj
- omHO/W++Vim8N5g6OGgmImuIKcfQ1lUIvhkuf0WWDT6cZpVmuycNSf8A3C8Yd7kby+yuwMlQs
- E7+3pd19IyIqnPSlvAlbyWZhIuNUVUMGZ9gg05XgXTuWmkdI+1EYhxORT/OptMEK115Qc0m+4
- tjaG/RWcA1IFgnDgeW8oPsCwBOdZJ+n1ce5qOCw7tdMe1ks4Gu+vX+OfAYdoytn3IquOKq3HM
- 9UvP1p02U3Jk1CWteLvTJpWSINAr79ikK/AeQ84KcCpHNA4vYEE99JxOXiOSqnCGhpn0sjoS+
- E2AzOcVjgL390cOgu+4OQ2nWx5WcbBAmQAN7lwOj/1siwdm67YPRZ0En4LaMDUnoHm1MJuuMP
- rEzz33ahaIQld2CmbzDgBl/Kvvrbnc8BCKJh61gumQHHh8VN5DrJA0cGl0aeMmvku1ugBT9Og
- S+zTOIoRSXjpycverfSvDomrcCfhC6H4Wgm9S8VhF8674WRnysDO2xD+94OZ7C4m99U9PLNyr
- yhfOqvLXDS5GFpwqBZO1GLNeySs=
+To: Peng Fan <peng.fan@nxp.com>, "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "conor+dt@kernel.org" <conor+dt@kernel.org>,
+ "abelvesa@kernel.org" <abelvesa@kernel.org>,
+ "mturquette@baylibre.com" <mturquette@baylibre.com>,
+ "sboyd@kernel.org" <sboyd@kernel.org>,
+ "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+ "kernel@pengutronix.de" <kernel@pengutronix.de>,
+ "festevam@gmail.com" <festevam@gmail.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ dl-linux-imx <linux-imx@nxp.com>,
+ "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20240121114623.1418597-1-peng.fan@oss.nxp.com>
+ <273a80a7-2a60-4490-9c3c-c33dc14be9e7@linaro.org>
+ <DU0PR04MB9417A8F4230D2C7C76D1550988742@DU0PR04MB9417.eurprd04.prod.outlook.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <DU0PR04MB9417A8F4230D2C7C76D1550988742@DU0PR04MB9417.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 23.01.24 12:24, Ard Biesheuvel wrote:
-> On Tue, 23 Jan 2024 at 00:15, Tim Schumacher <timschumi@gmx.de> wrote:
+On 23/01/2024 14:08, Peng Fan wrote:
+> Hi Conor, Krzysztof
+> 
+> I replied you both here.
+> 
+>> Subject: Re: [PATCH] dt-bindings: clock: support NXP i.MX95
 >>
->> This sidesteps a quirk in a few old (2011-ish) UEFI implementations,
->> where a call to `GetNextVariableName` with a buffer size larger than 51=
-2
->> bytes will always return `EFI_INVALID_PARAMETER`.
->
-> I wonder if we might just reduce this to 512 and be done with it.
-> Presumably, Windows boots fine in UEFI mode on these machines, which
-> suggests that it passes a value <=3D 512 too, and I don't recall ever
-> encountering systems using extremely long variable names (i.e., longer
-> than 512 byte)
+>> On 21/01/2024 12:46, Peng Fan (OSS) wrote:
+>>> From: Peng Fan <peng.fan@nxp.com>
+>>>
+>>> Add i.MX95 clock dt-binding header file
+>>>
+>>> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+>>
+>> This should be squashed with respective binding patch.
+> 
+> i.MX95 use SCMI firmware, the SCP processor handles
+> clock/power/pinmux/reset/performance and etc.
+> 
+> I just add the index that SCMI exports, and Linux/UBoot
+> will use the index and go through SCMI to do real HW
+> configuration.
+> 
+> In such case, should I still add HW information in
+> a yaml binding doc? I am not sure what should be added
+> if yes.
 
-I'd rather avoid introducing deviations from the specifications on the
-kernel side as well. Someone or something might legitimately set a large
-variable name, so we'd have to have resize logic anyways (to resize from
-512 to 512+). Also, as mentioned on the patch, I'm entirely unsure what
-the size ends up being used for, so I'd rather err on the side of
-caution (most importantly in regards to the buffer size).
+Then why do you need it in the binding? I don't see any use of this.
 
-Windows _does_ boot fine (and is able to read all the variables), so
-they presumably start off with 512 or smaller. FreeBSD definitely starts
-from 512, but they also implement additional resize logic.
+Best regards,
+Krzysztof
 
-In regards to complexity of the proposed solution, how about we approach
-this from the other side? Start off with advertising 1024 bytes of
-buffer storage, and cut that value in half (without actually resizing
-the buffer) as long as we get `EFI_INVALID_PARAMETER` while on the first
-run.
-
-If we ever get `EFI_BUFFER_TOO_SMALL`, we know that something is wrong
-with the UEFI implementation (because that either means that something
-claims to be larger than 1024 bytes, or that our assumptions about the
-quirk don't hold up) and can bail out and log as appropriate. That would
-limit the complexity to the machines that need it, completely omit the
-need for resize logic, and would still be specification compliant.
 
