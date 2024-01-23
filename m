@@ -1,193 +1,357 @@
-Return-Path: <linux-kernel+bounces-34462-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CA0C837C4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:10:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA993837DC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:29:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DAFC1C24B86
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:10:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1F11BB2350E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:13:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6424E145344;
-	Tue, 23 Jan 2024 00:26:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D2741474AA;
+	Tue, 23 Jan 2024 00:28:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y2VrkRWg"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="GySuqcW5"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB55A23C6;
-	Tue, 23 Jan 2024 00:26:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.10
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705969572; cv=fail; b=iQO4Tgf7pacJbq02/tfw7FMrzeEJgFZXFUFU2AI9Wr7tms2+jB3CuBMR6xuNj6kAObCbNGZmn75PJ4LKa4zjFgmhLV1xXEODW9Lh/xhtM1TOa1Oi4HVrOsaEFWSBSqW/512eG+o1ehFF4ctAMAgb0zrvYtQlt6nvsZjaiamdQYQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705969572; c=relaxed/simple;
-	bh=GxDYPEwrS3j+tetyaplKZ8WojOz588hC2Vt3VjE5Voo=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=AWgn6BxueLdYsF1JdqNjvL9LAhafBWKbSGT0ikc3BBBCfp+/L3hG2PJTnUI3QdxYAmqPu74vuU5iN2hyg1XJd43eCILl8NRojIF6k5J0R5VBVxDDQHujDnOmcP/c7WkmtIHlEHcpRnmXI8Nq1cuNcztUpkCkwbl3dstwomcZnzI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y2VrkRWg; arc=fail smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705969571; x=1737505571;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=GxDYPEwrS3j+tetyaplKZ8WojOz588hC2Vt3VjE5Voo=;
-  b=Y2VrkRWg1RmUOlpB2Aoi2iz6Pc+qmMqdib43YgGTv4GmGApbWdKj4d9J
-   fO31CyS/Lvyb3NVYbVDrKhpL4pEzrmTsNInmuOpl5H52d5n3vig4BDLG1
-   nYQxXuIvgvZZSVcsloULs38Tems/B3UBI8EPBJBMXdGLfuuoG9YAtirbG
-   4sAr/LiRNVj4kokvy39/Me4t+7Xhv/ktGFA1LBEEu/TEXREf5mhPc2imh
-   o8OiOgV1eZ01Qjwm+D6Y+OGl152NoNeVQvYOGAJCg3o2deG9Y+l/ZXBV1
-   HXbGMUnkkQtlpxp2AC2NJ7jmPVD5Vcs3ywOOdzD4IOi6SR/XM+TYaqFFI
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="8764707"
-X-IronPort-AV: E=Sophos;i="6.05,212,1701158400"; 
-   d="scan'208";a="8764707"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 16:26:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="819897875"
-X-IronPort-AV: E=Sophos;i="6.05,212,1701158400"; 
-   d="scan'208";a="819897875"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Jan 2024 16:26:08 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 22 Jan 2024 16:26:08 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 22 Jan 2024 16:26:07 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 22 Jan 2024 16:26:07 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 22 Jan 2024 16:26:07 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hQMggIE03sj2xb4sgn/ShF/qDWGtoqCuefCynRBMYFx6/rtk4exAwrf53R4joW+/79LYPPUxqIlmpHMmy1DIZOdwtsI/m1uA/GU+X6jxP3/xp9dfWoT4SEM6tq+Iz+5hJ6/AY1csloKJ5yIUzL9kasId/mB8MSECExVSnzR5N8FPmLWo0MBenFpu980PP85A5rfSr6RzCHyk8kcO0vGw31/N17CKBWZWWNVS7ieTuSS1QGTmfuo2ZxCJiLc+ecFOQ7cejzU4YAukJGzQGZ4wBpZVRKEAFdBagGX8XrlpTxekzeL0xt7vYBK76GUb3coG5FEiCqrtMJ2xtRJBjsBETw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JNtedI4H7v0GJj5Wz0+arXyM4kbipd4b0DcBEs1eoUM=;
- b=cZFbbGLF0vS0n8RJVUHopMXNdYYqK2HcSXSqFtFyP3JgRn+b97aklVySjLdIlZjKY8gOETuBJXc0MAB3ClOMXdO/kKGAvqzvhnz8JINCNQHrXroNl4vPcmfW7CE3MUuQFW9cg+WD9r+hLcTXGqgcMjlHMii1WQZRM1imSDmG2Wpmw0uKWhoiJtVFN0yt/MfPNhSk0H3hTuMA0koMeNF9tx/qgE93IUDe86+vGVGh6LbPXK3fl2Jc6f97cicvvUOeZW/nipxMULgrapcO8eJZ30NzQ0B4qiYZ2+Rlhm6Sq7ev/eFZ4AkvbqNoPc2F2We7oCC+qi8pnjbYY6fXDQ1c0g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BYAPR11MB3320.namprd11.prod.outlook.com (2603:10b6:a03:18::25)
- by SA3PR11MB8003.namprd11.prod.outlook.com (2603:10b6:806:2f7::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.32; Tue, 23 Jan
- 2024 00:26:00 +0000
-Received: from BYAPR11MB3320.namprd11.prod.outlook.com
- ([fe80::c3aa:f75e:c0ed:e15f]) by BYAPR11MB3320.namprd11.prod.outlook.com
- ([fe80::c3aa:f75e:c0ed:e15f%3]) with mapi id 15.20.7202.031; Tue, 23 Jan 2024
- 00:26:00 +0000
-Message-ID: <1c260ab1-d4c0-48e6-bf2b-df69bf083d27@intel.com>
-Date: Mon, 22 Jan 2024 16:25:58 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf 3/3] selftest/bpf: Test the read of vsyscall page
- under x86-64
-Content-Language: en-US
-To: Hou Tao <houtao@huaweicloud.com>, <x86@kernel.org>, <bpf@vger.kernel.org>
-CC: Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski
-	<luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner
-	<tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
-	<bp@alien8.de>, "H . Peter Anvin" <hpa@zytor.com>,
-	<linux-kernel@vger.kernel.org>, xingwei lee <xrivendell7@gmail.com>, "Jann
- Horn" <jannh@google.com>, <houtao1@huawei.com>
-References: <20240119073019.1528573-1-houtao@huaweicloud.com>
- <20240119073019.1528573-4-houtao@huaweicloud.com>
-From: Sohil Mehta <sohil.mehta@intel.com>
-In-Reply-To: <20240119073019.1528573-4-houtao@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0092.namprd03.prod.outlook.com
- (2603:10b6:a03:333::7) To BYAPR11MB3320.namprd11.prod.outlook.com
- (2603:10b6:a03:18::25)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 348401468FA
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:28:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705969714; cv=none; b=tlp40DgecclawEUYMamENFDB2/JCHR8HJIWs2qzvKLN0N+0eHPw0YH3ZedMcAFpjNlhf3ytDnh9h8x2P9EPgiXQCwlLR7Um0T0ULzzVHSi4ML5SqkJ/6E+XontFTg2fpsCFQpSKpJmrsBTohwwfKe4YvYRpE9oaW+HXI2Jt9SAA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705969714; c=relaxed/simple;
+	bh=/2zEGgWFHHSbGtTa4mjcGsr+YqaZ5NviJwqoVuZpJvY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=bRQrVDW1QSnvXntiIrutoDmH1IgNVzV63OOataurIDAYEbUPVJ5tB6uyaH6gZ+KU8jADNZRyRdIq39HPtbNzh1CsBCO5SgyUitubKPvQaC+7/ROl3IHoMi8unB5RzbTXfZB2q/ECNa1Kl336QP2Z0peZ3Bx8S75xtjbwzcJs6UU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=GySuqcW5; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6dbebe4938bso804993b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 16:28:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1705969711; x=1706574511; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wTcmI4hrcuF0h9O44LCbz2SMeSAa3PwN+eu36jY3Vsw=;
+        b=GySuqcW5G46MB6aZ80nsulb7tA0xEzpORPP6eO813v0r3ZWBs4Vafiql0/ZdMav+bZ
+         wU9ZwbryRlXEbT+x3zJXPMesPjqgWy8xfVa9vc4LUflCRb9o0NMn94XBjiqfmD1nMN8I
+         Jsnivgm9wT0kS4i2bo1CzVfSLD4Y5rsoR23UU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705969711; x=1706574511;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wTcmI4hrcuF0h9O44LCbz2SMeSAa3PwN+eu36jY3Vsw=;
+        b=MHLjOFPWJrldYvKNhFebJR8198QIbkj4JaBcWJw/g7J8+HB2ZRYi0QM7B+18iOjfWP
+         nRquuGELb3c9GdfR0wLPyox0kp142CzMr7fTl8SJjE4bFXIoOnWNv/E/eN0rqdpatFsn
+         JV1XpWwqGchHuEoHDXHqqJv7sE2th2k6HPoZHzbd/GErmsyk+Ihbg1SV7NqktPmOdzt6
+         EyFt3sIsXVa9I+ctvDnLEy4y7FY8wXjL7i5ARSRicWgU6ZAni3gRGttEDgI6YohiYxlv
+         aKfu499nnM9462nAMce2s+WZjqWYxT9W0jwyL4F0+DdzfuwNL8wWaeh2szW3rRlSvJF9
+         qRUw==
+X-Gm-Message-State: AOJu0YyYCsoFuUbuftDyGWi51T0diC3F2tf8AwcEp/eikKwAHbsnS0Dk
+	dTYnGpIiv24bjugdBKgEWafPJRkI8g3HeksnFaNLwCqi63vMVUhUB3ZiVK1/AA==
+X-Google-Smtp-Source: AGHT+IFcasPszMC3IrsnJHA0hfgfbPHquE/np9HUjhJZfpzSK8f3LtKZ+Wb0eo/kZfZ2j/m4bpzjNQ==
+X-Received: by 2002:a62:5e82:0:b0:6db:c5db:7711 with SMTP id s124-20020a625e82000000b006dbc5db7711mr2057348pfb.26.1705969710718;
+        Mon, 22 Jan 2024 16:28:30 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id c4-20020a056a00008400b006dabe67bb85sm10167569pfj.216.2024.01.22.16.28.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 16:28:24 -0800 (PST)
+From: Kees Cook <keescook@chromium.org>
+To: linux-hardening@vger.kernel.org
+Cc: Kees Cook <keescook@chromium.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 00/82] overflow: Refactor open-coded arithmetic wrap-around
+Date: Mon, 22 Jan 2024 16:26:35 -0800
+Message-Id: <20240122235208.work.748-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR11MB3320:EE_|SA3PR11MB8003:EE_
-X-MS-Office365-Filtering-Correlation-Id: dde707eb-2979-41fd-53f2-08dc1ba9dfeb
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1kzTmZ7sJzmoGBBOmrJEnfhPibfTdz/YaGwU0UaHacSxJT+H8mZBA72v+2qVrbaEH7Vo7C2NAHCAEWClcwFGFrZ6T4Yjb7oh8/QyqAyJz6BSnXuCBbomPwkiEjaVWM20fOSKRZej8ax9OqiBYOFQQiMNMOTS9YAXyUC4V3oM8j2jxRWmntoVq7da0y37IrDn6qjdwcTv1dWGwN9WdGzDsWSiOAjsTEj4LCewS6BuxCqzBqLAFT0jgafOHuomiqyHFUSSb4yGtnfCPfvBHZHG4zNuZ6BxlGHIFQpu3/eYoALfy+lp7IWg6rq2P2NXOC42s8eqivKkkNsRpMWLv9WvXo4xgf3+7cQrwEM9WMH1jPFuaXkyPY8CN/WxrGv0dTgo4/uscp9hUmnrHWaOvsouV8XMDmOBNZNlul0mzjKWqnyNkU1/NZDJqJ8Kd6xs3lr1yOzFsw89dFBDPlKm6oiDOsiJubdTDC/RV4u60C7psRhVcua8apVxTbj2N24/tx2ing7FEdKHPxuKJBmM/WRLOskcNNrcZ74xrEjz+AHjaRP9AGyze5gXFOJmd4SJMWo3oqOUD4pQICYnZ8XYV33c5UxJ0rk5YPSgxIcJkw7F0/0tMN1fdFUR3niQ8lutHihPD6Qk2VeICHRP60EcrwihYA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3320.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(376002)(366004)(396003)(346002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(4744005)(31696002)(41300700001)(36756003)(86362001)(82960400001)(83380400001)(38100700002)(8676002)(478600001)(6506007)(4326008)(6512007)(316002)(54906003)(66946007)(7416002)(66476007)(26005)(6486002)(66556008)(2906002)(8936002)(53546011)(44832011)(5660300002)(2616005)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZVJhRzBIY1FjYTl6d2taZGpITUdaOVBlcmZ5cnVJRXplMTcwZnp6YUVRclo1?=
- =?utf-8?B?SmFEWVZ4QVRnb1I0RVRQU3RucURqdkNTakNwTHpnQ0Z6WnRCcDFsMytpdWpI?=
- =?utf-8?B?ZEg2bUdnNmRiQ0NTdTFtdTBjS2JBbE5MQ2pjdmJTNzR1Wnc4eVc1TEE0Qytm?=
- =?utf-8?B?b3NPaWdjRmZXK2lYQ002MTNCY0tMdUFWT2FWNmxKdDk4cHVJWVIvc1NWU0Jp?=
- =?utf-8?B?WTcvZ05ua2xZZEVNaWxEaVY5RWpoREFYeWMxRVM4aDdTRnlLbFZQSCtURFlx?=
- =?utf-8?B?VVExTTIreEMxK3ZkTXJPNWd1c25ybWhmVGZXd1RtMTcwWGFLSnNqMnFmcVhM?=
- =?utf-8?B?d2RibHZzRHFaQmlFSXpCb1RUaThrUTZJaE9qV1lURjEySUcrZUZEd0lYMFVL?=
- =?utf-8?B?VmxIbzgzS3hkUkhsdjBjbWZ2OFFQMmVlZllFczVkYTlvcTNtSnZDY3RMd3lm?=
- =?utf-8?B?S3JFU0Fzdm1SUVU2WlZEWlR0TzM0alJlWG1NcW5jZ0RVbCtWaHlGSndWRjYr?=
- =?utf-8?B?RWVIZDRLY0pXbGtzR3MyUEpVYnU0ZUlKZkhsNEdxNEVGYzMxTnB0aTFlUStT?=
- =?utf-8?B?bkpZRS84b056eGRRcjl6aHdTN1RnaFgyTTd1K09hUGl5eGpxdVloU0xjZEJE?=
- =?utf-8?B?UmdGT0NSZjYwZWRZRi9wN2lYQTNZNHFpR0hqYXp5dHpHdGRET2N2RGtnYnk4?=
- =?utf-8?B?Q1NteFJHdU53MGFoQkUxS0s5Ym9kR2Z1SHV1UU5xa0VMY01yMTlRcHN4ckVQ?=
- =?utf-8?B?TVZlY00reDRSZ294SXFjMllMTGxKZVNwcmF1bEtTUnpVUjhGcDZBT3RvWnJu?=
- =?utf-8?B?OU1DUFJOL2sxbDBnY1AzWStsOVhzM2VFTUpNdGVVVGlBNmhaeHFQcFdLcmk3?=
- =?utf-8?B?emxQamx4ZGJnZ3ZDRnV4Yk5NK3hCR2hiMzF4N0RUWnlHa2UrSklLNmoyM3RV?=
- =?utf-8?B?UFhtb1ZYRTlJa2tWN2t3T2NXTTBlMXFUVFRHS2dIY1ViL2ZuTElWUTFrV3Zl?=
- =?utf-8?B?S1B2cTFFODR1MGNBVExNdENDT1M5RkFiZTJRREdFQXAxUjFHS1pTVXZUUDNI?=
- =?utf-8?B?MW43Mnc2WW93YVlMZXhnU0xLeU93SnArRUZJTWpDV0FHb1BsbmxGMGNkS1Fx?=
- =?utf-8?B?azBaYTl2QWhsNWVuRTVJSDk5U0U5eTBkWW4xcHl6Y0NJVkYxaVQ4TU9WRlZj?=
- =?utf-8?B?V2lIN2FlckxGYWVmTGNZV0YvVWJrVUJ4NXlGSkxZUEJnSnJ1Qm9MRXRqeitO?=
- =?utf-8?B?TVdmNjBQUGZBNms2L3IrSGltNTNDZFFsSGJKaTc2aEsvZTdPa1BxbHBEeEFy?=
- =?utf-8?B?ajI1Z09HVEpXLzlNNEJUVHVYdmlhZFlMcmJzTCtmYW53Z3hRN3VpbU5EZU9p?=
- =?utf-8?B?Y2VpSVlXYW8ydVNJdHR3UXMwVGM4cHZoY0JuZENSOHgzK0lJRFZsOElLRW5T?=
- =?utf-8?B?UjVUMlVsNnFPbkVnM0hoL01JNFAxc0dNOGJRN1VzYW1jOGRjWFJEeE9XZWo4?=
- =?utf-8?B?cyt3R1QvUHlMRmJ3Rmg0VGFwYmRXcmEvT3hhSDhoNXk3dldTditYclZ3UjNT?=
- =?utf-8?B?OElKdnUvLzl1dlUzOHJrSU1JUmJsRXVVMGNRajZxaVYrVU9kQ1JTR05ZOGla?=
- =?utf-8?B?a3AzVmwzYTdIQmZ2NVFKV3BZSHA1WE8rTTlFOTY1N2VpOG42N2RuQy9SbVNl?=
- =?utf-8?B?cFJjWEhFcWk5MDJHYnJEaGpiWUliR0MzeGg3NEVXMzc0Qjk0bzFQOVYveGpP?=
- =?utf-8?B?a1FXUzNqQVBFT1JOWEVvZWVXaE9kUnlZUnZ6NDNMNUtRVGZKVndlOTdDejJt?=
- =?utf-8?B?eGFDZ1lBa055cENGTHNjbFpDNTVQaEdCNmsxQU5xd0xEdmlJK1Z4RXNuc2FK?=
- =?utf-8?B?R3pFTXhqR2JybGxiNnlYK2ZOaXNUQUY1WVBzU1BmS0Z4RUpYZWJnbk8vRkFa?=
- =?utf-8?B?cnFOLzg4RkN0ajB2SEUrcTd2VUNJc2t2TDc1di8rWDF6bkNBdEJBbldhdW5o?=
- =?utf-8?B?VHd0NHA0S0ZsSGdlakp6dGNzcjFVcmN5cEdBTkRaaFY4eEhEOFdDeFZRS0lX?=
- =?utf-8?B?VTZqWGJnNEk1ZVZSL0d6QWR4K3JzdVlRdnhsTytTNmROeXhGZVpsdnBveVYv?=
- =?utf-8?Q?bHpOp9bX5aOrTj/c6FM8eXh6U?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: dde707eb-2979-41fd-53f2-08dc1ba9dfeb
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3320.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jan 2024 00:26:00.2429
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hLCpmlMWLcqHA7jjVZe6cQbZsJrVpeM0QOyVTQjmERPV3Qiibge7SBYqArRcEO8VC+eQq98U5MHbwb/adTl1Xw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR11MB8003
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=13635; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=/2zEGgWFHHSbGtTa4mjcGsr+YqaZ5NviJwqoVuZpJvY=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlrwgDnQIlWDXkYm+e3z8Lv9+5708n8eKOSW3DC
+ 3p2a//QVMeJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZa8IAwAKCRCJcvTf3G3A
+ JgvjEAChhDiClIia0Lvxw5PPhFD1eI2r5gNCKbbaMo2tbBn3wI6YmPdGGNrQfTcn4/cWF2u6ypC
+ Cs6utqzPrkW7t932fDMa93LeJjNKwmJCq8yG3rcVs2T9BhLpAeiP6xjQeKAnsaqplfVUdU3IQWK
+ DrkccHjBeQFlqFtMFsr2SuPmERHrq9RmVpT0EVradL5DvN8YIZODYUn1/nsZbSsRMlnnzr2XSpQ
+ 3L8cUbX49lgn57jtNlPuRXpKqXAF8zwFYT6JBMAjSwu0iKT+08I7zprqffMACu4Ed/+OJbuWGCL
+ RCC619L9Z8H9N05mU7MxlzJbsh/1B2iBDH9q2P1qDdTO3p36soSC37xHuSFaw4rpWNQKk1qAl9z
+ 141XQt0325IIXjQBa4gw8XO+sz36F8aJAwOFehLjrFcNc0rSYAmwut1CGbJ+utyM7BX+Q6GEdMQ
+ 8gUw1ljXBCbk44DU+T6c8niXGXrRuHRP/U36XiK8S+ywSxxpikMhTTTZ2gIvrEFIqVev5ub91pp
+ MgftMbvnDDIL4uLneIX5tDM01eAwZ66MyuyQ9/KiTp9odL5Scm2G7GTbMBFedWw5S/WoCyiBLHZ
+ p8XkA270CBpjAbO2GaaRpimpW33GOLecrBMWoWgM/klqVwpwsqi7tMYncQFRLkL4hJylYyVXH2d
+ 8D6UUn 4MDAbx56g==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
-On 1/18/2024 11:30 PM, Hou Tao wrote:
+Hi,
 
-> vsyscall page could be disabled by CONFIG_LEGACY_VSYSCALL_NONE or
-> vsyscall=none boot cmd-line, but it doesn't affect the reproduce of the
-> problem and the returned error codes.
-> 
+In our continuing effort to eliminate root causes of flaws in the kernel,
+this series is the start to providing a way to have sensible coverage
+for catching unexpected arithmetic wrap-around.
 
-With vsyscall=emulate a direct read of the vsyscall address from
-userspace is expected to go through. This is mode deprecated so maybe it
-wouldn't matter much. Without the fix in patch 2/3, do you see the same
-behavior with vsyscall=emulate set in the cmdline?
+A quick word on language: while discussing[1] the finer details of
+the C standard's view on arithmetic, I was disabused of using the term
+"overflow" when what I really mean is "wrap-around". When describing
+security vulnerabilities, "overflow" is the common term and often used
+interchangeably with "wrap-around". Strictly speaking, though, "overflow"
+applies only to signed[2] and pointer[3] types, and "wrap-around" is for
+unsigned[4]. An arithmetic "overflow" is considered undefined behavior,
+which has caused our builds pain in the past, since "impossible"
+conditions might get elided by the compiler. As a result, we build
+with -fno-strict-overflow which coverts all "overflow" conditions into
+"wrap-around" (i.e. 2s complement), regardless of type.
 
-Sohil
+All this is to say I am discussing arithmetic wrap-around, which is
+the condition where the value exceeds a type's maximum value (or goes
+below its minimum value) and wraps around. I'm not interested in the
+narrow definition of "undefined behavior" -- we need to stamp out the
+_unexpected_ behavior, where the kernel operates on a pathological value
+that wrapped around without the code author's intent.
+
+As always, this is about being able disambiguate the intent of arithmetic
+in the kernel. We intentionally use wrapping arithmetic in all kinds of
+places, but we need to be able to annotate it as such going forward so
+the compiler can distinguish when it needs to perform instrumentation
+(when such instrumentation is enabled).
+
+Getting back to my earlier mention of -fno-strict-overflow, the bulk of
+the series is refactoring for a common code pattern in the kernel where
+to test for potentially overflowing addition, the addition is performed,
+and wrap-around is tested for. This is what originally[5] caused us to
+enable -fno-strict-overflow:
+
+	var + offset < var
+
+For these cases we can use either check_add_overflow() or
+add_would_overflow(). These helpers will not trip the wrap-around
+instrumentation, and do not depend on the whims of the compiler options.
+(Note that I have no intention of removing -fno-strict-overflow any
+time soon, if ever. As with all these kinds of changes, we need to
+evolve our support for it, and we can't introduce undefined behavior
+into the kernel.)
+
+This series is mainly 3 parts:
+
+ - documentation, a coccinelle script, and new/improved helpers
+ - (re)introduction of the overflow sanitizers
+ - refactoring the "please wrap around to see if I wrapped around" tests
+
+While this work is underway in the kernel, there will be complementary
+work happening in GCC and Clang to expand the existing sanitizers
+to behave correctly with -fno-strict-overflow. In the meantime, the
+sanitizers are excluded from CONFIG_COMPILE_TEST.
+
+-Kees
+
+[1] https://gcc.gnu.org/pipermail/gcc-patches/2023-September/630578.html
+[2] https://github.com/KSPP/linux/issues/26
+[3] https://github.com/KSPP/linux/issues/344
+[4] https://github.com/KSPP/linux/issues/27
+[5] https://bugzilla.kernel.org/show_bug.cgi?id=12597
+
+Kees Cook (82):
+  overflow: Expand check_add_overflow() for pointer addition
+  overflow: Introduce add_would_overflow()
+  overflow: Introduce add_wrap()
+  docs: deprecated.rst: deprecate open-coded arithmetic wrap-around
+  cocci: Refactor open-coded arithmetic wrap-around
+  overflow: Reintroduce signed and unsigned overflow sanitizers
+  overflow: Introduce CONFIG_UBSAN_POINTER_WRAP
+  iov_iter: Avoid wrap-around instrumentation in
+    copy_compat_iovec_from_user
+  select: Avoid wrap-around instrumentation in do_sys_poll()
+  locking/atomic/x86: Silence intentional wrapping addition
+  arm64: atomics: lse: Silence intentional wrapping addition
+  ipv4: Silence intentional wrapping addition
+  btrfs: Refactor intentional wrap-around calculation
+  smb: client: Refactor intentional wrap-around calculation
+  dma-buf: Refactor intentional wrap-around calculation
+  drm/nouveau/mmu: Refactor intentional wrap-around calculation
+  drm/vc4: Refactor intentional wrap-around calculation
+  ext4: Refactor intentional wrap-around calculation
+  fs: Refactor intentional wrap-around calculation
+  fpga: dfl: Refactor intentional wrap-around calculation
+  drivers/fsi: Refactor intentional wrap-around calculation
+  x86/sgx: Refactor intentional wrap-around calculation
+  KVM: Refactor intentional wrap-around calculation
+  KVM: arm64: vgic: Refactor intentional wrap-around calculation
+  KVM: SVM: Refactor intentional wrap-around calculation
+  buildid: Refactor intentional wrap-around calculation
+  m68k: Refactor intentional wrap-around calculation
+  niu: Refactor intentional wrap-around calculation
+  rds: Refactor intentional wrap-around calculation
+  s390/kexec_file: Refactor intentional wrap-around calculation
+  ARC: dw2 unwind: Refactor intentional wrap-around calculation
+  vringh: Refactor intentional wrap-around calculation
+  mm/vmalloc: Refactor intentional wrap-around calculation
+  ipc: Refactor intentional wrap-around calculation
+  ACPI: custom_method: Refactor intentional wrap-around test
+  agp: Refactor intentional wrap-around test
+  aio: Refactor intentional wrap-around test
+  arm: 3117/1: Refactor intentional wrap-around test
+  crypto: Refactor intentional wrap-around test
+  arm64: stacktrace: Refactor intentional wrap-around test
+  wil6210: Refactor intentional wrap-around test
+  bcachefs: Refactor intentional wrap-around test
+  bpf: Refactor intentional wrap-around test
+  btrfs: Refactor intentional wrap-around test
+  cifs: Refactor intentional wrap-around test
+  crypto: Refactor intentional wrap-around test
+  dm verity: Refactor intentional wrap-around test
+  drm/nouveau/mmu: Refactor intentional wrap-around test
+  drm/i915: Refactor intentional wrap-around test
+  drm/vc4: Refactor intentional wrap-around test
+  ext4: Refactor intentional wrap-around test
+  f2fs: Refactor intentional wrap-around test
+  fs: Refactor intentional wrap-around test
+  hpfs: Refactor intentional wrap-around test
+  kasan: Refactor intentional wrap-around test
+  usercopy: Refactor intentional wrap-around test
+  KVM: arm64: vgic-v3: Refactor intentional wrap-around test
+  s390/mm: Refactor intentional wrap-around test
+  lib/scatterlist: Refactor intentional wrap-around test
+  powerpc: Refactor intentional wrap-around test
+  scsi: mpt3sas: Refactor intentional wrap-around test
+  mwifiex: pcie: Refactor intentional wrap-around test
+  mm: Refactor intentional wrap-around test
+  netfilter: Refactor intentional wrap-around test
+  nios2: Refactor intentional wrap-around test
+  fs/ntfs3: Refactor intentional wrap-around test
+  ocfs2: Refactor intentional wrap-around test
+  PCI: Refactor intentional wrap-around test
+  perf tools: Refactor intentional wrap-around test
+  remoteproc: Refactor intentional wrap-around test
+  s390/mm: Refactor intentional wrap-around test
+  scsi: sd_zbc: Refactor intentional wrap-around test
+  sh: Refactor intentional wrap-around test
+  ARC: dw2 unwind: Refactor intentional wrap-around test
+  timekeeping: Refactor intentional wrap-around test
+  udf: Refactor intentional wrap-around test
+  virtio: Refactor intentional wrap-around test
+  mm/vmalloc: Refactor intentional wrap-around test
+  staging: vme_user: Refactor intentional wrap-around test
+  xen-netback: Refactor intentional wrap-around test
+  lib: zstd: Refactor intentional wrap-around test
+  mqueue: Refactor intentional wrap-around test
+
+ Documentation/process/deprecated.rst          | 36 ++++++++
+ arch/arc/kernel/unwind.c                      |  7 +-
+ arch/arm/nwfpe/softfloat.c                    |  2 +-
+ arch/arm64/include/asm/atomic_lse.h           |  8 +-
+ arch/arm64/include/asm/stacktrace/common.h    |  2 +-
+ arch/arm64/kvm/vgic/vgic-kvm-device.c         |  6 +-
+ arch/arm64/kvm/vgic/vgic-mmio-v3.c            |  2 +-
+ arch/arm64/kvm/vgic/vgic-v2.c                 | 10 ++-
+ arch/m68k/kernel/sys_m68k.c                   |  5 +-
+ arch/nios2/kernel/sys_nios2.c                 |  2 +-
+ arch/powerpc/platforms/powernv/opal-prd.c     |  2 +-
+ arch/powerpc/xmon/xmon.c                      |  2 +-
+ arch/s390/include/asm/stacktrace.h            |  6 +-
+ arch/s390/kernel/machine_kexec_file.c         |  5 +-
+ arch/s390/mm/gmap.c                           |  4 +-
+ arch/s390/mm/vmem.c                           |  2 +-
+ arch/sh/kernel/sys_sh.c                       |  2 +-
+ arch/x86/include/asm/atomic.h                 |  2 +-
+ arch/x86/kernel/cpu/sgx/ioctl.c               |  6 +-
+ arch/x86/kvm/svm/sev.c                        |  5 +-
+ crypto/adiantum.c                             |  2 +-
+ drivers/acpi/custom_method.c                  |  2 +-
+ drivers/char/agp/generic.c                    |  2 +-
+ drivers/crypto/amcc/crypto4xx_alg.c           |  2 +-
+ drivers/crypto/axis/artpec6_crypto.c          |  2 +-
+ drivers/dma-buf/dma-buf.c                     |  7 +-
+ drivers/fpga/dfl.c                            |  5 +-
+ drivers/fsi/fsi-core.c                        |  6 +-
+ drivers/gpu/drm/i915/i915_vma.c               |  2 +-
+ drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.c |  8 +-
+ drivers/gpu/drm/vc4/vc4_validate.c            |  7 +-
+ drivers/md/dm-switch.c                        |  2 +-
+ drivers/md/dm-verity-target.c                 |  2 +-
+ drivers/md/dm-writecache.c                    |  2 +-
+ drivers/net/ethernet/sun/niu.c                |  5 +-
+ drivers/net/wireless/ath/wil6210/wmi.c        |  2 +-
+ drivers/net/wireless/marvell/mwifiex/pcie.c   |  6 +-
+ drivers/net/xen-netback/hash.c                |  2 +-
+ drivers/pci/pci.c                             |  2 +-
+ drivers/remoteproc/pru_rproc.c                |  2 +-
+ drivers/remoteproc/remoteproc_elf_loader.c    |  2 +-
+ drivers/remoteproc/remoteproc_virtio.c        |  4 +-
+ drivers/scsi/mpt3sas/mpt3sas_ctl.c            |  2 +-
+ drivers/scsi/sd_zbc.c                         |  2 +-
+ drivers/staging/vme_user/vme.c                |  2 +-
+ drivers/vhost/vringh.c                        |  8 +-
+ drivers/virtio/virtio_pci_modern_dev.c        |  4 +-
+ fs/aio.c                                      |  2 +-
+ fs/bcachefs/bkey.c                            |  4 +-
+ fs/bcachefs/fs.c                              |  2 +-
+ fs/bcachefs/quota.c                           |  2 +-
+ fs/bcachefs/util.c                            |  2 +-
+ fs/btrfs/extent_map.c                         |  6 +-
+ fs/btrfs/extent_map.h                         |  6 +-
+ fs/btrfs/ordered-data.c                       |  2 +-
+ fs/ext4/block_validity.c                      |  2 +-
+ fs/ext4/extents.c                             |  5 +-
+ fs/ext4/resize.c                              |  2 +-
+ fs/f2fs/file.c                                |  2 +-
+ fs/f2fs/verity.c                              |  2 +-
+ fs/hpfs/alloc.c                               |  2 +-
+ fs/ntfs3/record.c                             |  4 +-
+ fs/ocfs2/resize.c                             |  2 +-
+ fs/read_write.c                               |  8 +-
+ fs/remap_range.c                              |  2 +-
+ fs/select.c                                   | 13 +--
+ fs/smb/client/readdir.c                       |  5 +-
+ fs/smb/client/smb2pdu.c                       |  4 +-
+ fs/udf/balloc.c                               |  4 +-
+ include/linux/compiler_types.h                | 29 +++++-
+ include/linux/overflow.h                      | 76 +++++++++++++++-
+ ipc/mqueue.c                                  |  2 +-
+ ipc/shm.c                                     |  6 +-
+ kernel/bpf/verifier.c                         | 12 +--
+ kernel/time/timekeeping.c                     |  2 +-
+ lib/Kconfig.ubsan                             | 27 ++++++
+ lib/buildid.c                                 |  6 +-
+ lib/iov_iter.c                                |  5 +-
+ lib/overflow_kunit.c                          | 77 ++++++++++++++--
+ lib/scatterlist.c                             |  2 +-
+ lib/test_ubsan.c                              | 82 +++++++++++++++++
+ lib/ubsan.c                                   | 89 +++++++++++++++++++
+ lib/ubsan.h                                   |  5 ++
+ lib/zstd/decompress/zstd_decompress.c         |  4 +-
+ mm/kasan/generic.c                            |  2 +-
+ mm/kasan/sw_tags.c                            |  2 +-
+ mm/memory.c                                   |  4 +-
+ mm/mmap.c                                     |  2 +-
+ mm/mremap.c                                   |  2 +-
+ mm/nommu.c                                    |  4 +-
+ mm/usercopy.c                                 |  2 +-
+ mm/util.c                                     |  2 +-
+ mm/vmalloc.c                                  |  7 +-
+ net/ipv4/route.c                              |  8 +-
+ net/netfilter/xt_u32.c                        |  4 +-
+ net/rds/info.c                                |  6 +-
+ scripts/Makefile.ubsan                        |  3 +
+ .../coccinelle/misc/add_would_overflow.cocci  | 70 +++++++++++++++
+ tools/perf/util/dso.c                         |  2 +-
+ tools/perf/util/unwind-libdw.c                |  2 +-
+ tools/perf/util/unwind-libunwind-local.c      |  2 +-
+ virt/kvm/coalesced_mmio.c                     |  6 +-
+ 102 files changed, 680 insertions(+), 167 deletions(-)
+ create mode 100644 scripts/coccinelle/misc/add_would_overflow.cocci
+
+-- 
+2.34.1
 
 
