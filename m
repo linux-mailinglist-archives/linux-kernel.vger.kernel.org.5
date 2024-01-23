@@ -1,68 +1,70 @@
-Return-Path: <linux-kernel+bounces-35883-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35884-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10047839823
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:46:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0B53839826
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:46:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DDDE1F252D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:46:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76AA11F26E63
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:46:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3295A823BC;
-	Tue, 23 Jan 2024 18:46:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B3CE82D7B;
+	Tue, 23 Jan 2024 18:46:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CuQDEgZd"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a/iIC96H"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE2A581217
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 18:45:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA7F2823CE
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 18:46:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706035561; cv=none; b=hQipIvqs6jjVlyIxIdbrZeGhAWzxgMaSbNyngTkFebXDmpXwKYGW4QA4m9+veIqmVqkPD2mQG+IPctiy+ZGX2GbtYHxdmO7MWrKFnTWRV4eAmLSrThkbIVt8pumYdObVgY+t1i+tNiR+cVeJBlQxgu/6p1Un0eAZEG77nN3FE/I=
+	t=1706035564; cv=none; b=n82uhof7wHeXk/ra7ew+RmK+Vq1Bt+auEYq+cfEy7xb68A3bw8+8ZFY4xGaVV/ETbfHEAGb3MgB2Kl4kPyEkQSeMLQ90JvrP6zTnhKzyoEY/imSsI3utGjwN3jZT/SbmPjkikNeWAhK6yU/+pB67Utsmr2y+p4m67ozEXfMEhW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706035561; c=relaxed/simple;
-	bh=owxqIseSlumBRRdDHl0OytbX/BgcnFQjn6aKUzuarYA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=l28ereUg6nw/HhuKhOWUXBdYPD85fM/Pxkz3wpiEY9eXtXBveGPSUHU5Tq841/7PXUEL3DvA38KKPkAKSACOXHq3DkJz1gGqFhpigZDmvQkwwjv7d2Q6wCmPZvrhXQwojfsJo0LQ02B7Qx7uG0QEEjBs2v8ZALsynKGKxNKkOgo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CuQDEgZd; arc=none smtp.client-ip=209.85.214.172
+	s=arc-20240116; t=1706035564; c=relaxed/simple;
+	bh=pUJVm7bcozh/5KgKizUKApaz91PNtWNQEpLGeh1RoSc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=WKpAR+a3m6UEArXIRDyHq0m+MDpXkVJUJQY9wzOj7K4MSvJ6emaOoxyrDNe07FdDpop2MUutprIseaOAwS5k4mdMXF5sncYY4MHM3tlxprTUV8cjyx7fGd/VuW3WvnHaqv7BGPbb2pose8VnGh2sSrTtn7ekCaTiKIqiXvk+4J0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a/iIC96H; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d70a986c4aso20228715ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 10:45:59 -0800 (PST)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d75ea3a9b6so18104685ad.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 10:46:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706035559; x=1706640359; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:reply-to:message-id:date
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=R0gfHlWpVUijxd+/zOQuAtY2BByIFtyAPQHUVgEt0ks=;
-        b=CuQDEgZdoAaN8v4XGrNhaC+Gh/K62PDPhBJMuH0DuEILcvmjKPbqWjjQquDGo3tJ5t
-         37/iNtrjN9GTaXfNF9RS6ScDp3igc7h1iwmmEqCeWs6WyvBnMi/DM1j+NejBxmkLLLvq
-         7yoqCE0YbqlrFNn5Qlmf/HqTmuSz07V/kcXBBo0yKNnnCgMWpMHQMEkk0cnSlqlaiswh
-         LunqBpzqjPhTua1lx5vLi7VFMICJUZ0p82jLzgz4RbE/EMrRzzVeRqAvv3ewq0VJfsGg
-         opvj7Mw2/ccwO7nwAME0tNe+yvB40lw90FwvbtRrXg9oR+/cRFWgb/92k2atPrMaSIjf
-         vm+A==
+        d=gmail.com; s=20230601; t=1706035562; x=1706640362; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:reply-to:references
+         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=4tUupe0pRs64+ug0l5Lv4L/wYRNFF+WyGC/Eo0dQs5k=;
+        b=a/iIC96HNMAGu3lomm1coyyOEQ37dAAcMmgvciHVallQj4g9zSzVylSuWojnDFX2NP
+         VTz2YBKPIoy4rm1peNvWvmiBv8k2ztykdfreI2vlnWE3SqpgaiXSGr4qIxfE22o8BWSf
+         MEs2bhWejMq72xccNenWCayISmgP3brOYgJ1DD/82FCIPYUpRKrqIQ47mlL/ghKnRF61
+         pXai4r7riqDMIYsbfuO6L9AXcd+qbP/kjGkp3jqRqzvTnLeOFghWrXm4OxGjhdJQaF1m
+         8YwoJTn6BiqYCV0+roYzUaNjDgWrBxUhbuUQ4PxZgZ8ovKNQr9R8fEGXEthk1Rs2iBwW
+         NxpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706035559; x=1706640359;
-        h=content-transfer-encoding:mime-version:reply-to:message-id:date
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R0gfHlWpVUijxd+/zOQuAtY2BByIFtyAPQHUVgEt0ks=;
-        b=Q1Myu71GMLN5r88gr2L1/Jtj3wMgtOPxZn3CxzL/buLQlH1TSS1c593afUj954Ml1m
-         nWo4RQNpJ6ufe/YeD7XCUWFVuErSntn73uhQEvPSnp2f/tksXAJBMkLs8oR57YHLJtwb
-         yUIjHwsCvgc8UXTUgi1JFMzxt590uFITetVwRG0lsEvhOS2gmVf4kYGOpLBTIenXdNN7
-         HSPJimJCE3JU6U/NVnnOOFo3m2/GGCnxMFUzBMGyN4DZE/nEtRdoYD49ryL65NJXDub9
-         YOMHw1F5jufrUj9B5cBBS09nVrLT/5cQKqgNztkNCn5xIsFqgGdQ2/0AoHiwtJDoL/IR
-         +NZg==
-X-Gm-Message-State: AOJu0YwTOslnWAK2SI04SF7/iD5ro09cZtVpK8D3LUtW3a39pi/q43fw
-	VDQACkfqrUzuSmHaU4/m78oE+qldyhkruXwbNsWee3LEqw1pt9gQ
-X-Google-Smtp-Source: AGHT+IGON/iWnemM36uXYUE9iFJrD/NcRYwOXW0byNszw6qV2WjB4uiKaurl4vKO+wse/3YxjfK+XA==
-X-Received: by 2002:a17:902:b205:b0:1d5:ebbb:973c with SMTP id t5-20020a170902b20500b001d5ebbb973cmr3865892plr.1.1706035559165;
-        Tue, 23 Jan 2024 10:45:59 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706035562; x=1706640362;
+        h=content-transfer-encoding:mime-version:reply-to:references
+         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4tUupe0pRs64+ug0l5Lv4L/wYRNFF+WyGC/Eo0dQs5k=;
+        b=XJxfvlgM673suA57xoOxXo3oLlj43fVTROkr7my57qYzxtjIlEFwaNfBuK/QBC1m+X
+         U13RA1h23tJolIjPg7+L9vXRmMCE/SQdBU/U19J5VErqm8WvaNnLq1yRlRi5ovM5FNzj
+         pBrZfuiUt/oXIN2ML83SNa29ZarRAgOznsLS7fnAfm6TVR3YXLqQNFtRwkxBmYxkPbi/
+         E09r1YElIUpqd2qAN3UaYIN7HVafSkkyCjugxT/Jv5XfxVlgGkDEj3AlizqbrY7QAOLw
+         zc7MPJ5A2X4AKpnFDqL16/bcukfjX22qMog70ra0/9WFDv0QDHophjB7/QN5OFh0BocQ
+         MpOw==
+X-Gm-Message-State: AOJu0YxAN7C/rYfAeynrieBTWqB4WM0S5Sou8JLFBRg330jCpodnHu8f
+	P8vOHHgpkAGoiEbkhK+o+78Pm3VgNERISb7vSmAB8NVC8zhdz2Rb
+X-Google-Smtp-Source: AGHT+IHzOTaNc2ALEPfuFIm2wjtMBHoRPdcf8S7u1UHGQhnOuc8VCGjIMwWrNjGtijcUP07sJotD5A==
+X-Received: by 2002:a17:902:bc41:b0:1d7:2bd6:23e6 with SMTP id t1-20020a170902bc4100b001d72bd623e6mr6093896plz.128.1706035562123;
+        Tue, 23 Jan 2024 10:46:02 -0800 (PST)
 Received: from KASONG-MB2.tencent.com ([1.203.117.98])
-        by smtp.gmail.com with ESMTPSA id d5-20020a170902b70500b001d74c285b55sm4035196pls.67.2024.01.23.10.45.56
+        by smtp.gmail.com with ESMTPSA id d5-20020a170902b70500b001d74c285b55sm4035196pls.67.2024.01.23.10.45.59
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 23 Jan 2024 10:45:58 -0800 (PST)
+        Tue, 23 Jan 2024 10:46:01 -0800 (PST)
 From: Kairui Song <ryncsn@gmail.com>
 To: linux-mm@kvack.org
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -72,10 +74,12 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Matthew Wilcox <willy@infradead.org>,
 	linux-kernel@vger.kernel.org,
 	Kairui Song <kasong@tencent.com>
-Subject: [PATCH v3 0/3] mm, lru_gen: batch update pages when aging
-Date: Wed, 24 Jan 2024 02:45:49 +0800
-Message-ID: <20240123184552.59758-1-ryncsn@gmail.com>
+Subject: [PATCH v3 1/3] mm, lru_gen: try to prefetch next page when scanning LRU
+Date: Wed, 24 Jan 2024 02:45:50 +0800
+Message-ID: <20240123184552.59758-2-ryncsn@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240123184552.59758-1-ryncsn@gmail.com>
+References: <20240123184552.59758-1-ryncsn@gmail.com>
 Reply-To: Kairui Song <kasong@tencent.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -87,23 +91,8 @@ Content-Transfer-Encoding: 8bit
 
 From: Kairui Song <kasong@tencent.com>
 
-Link V1:
-https://lore.kernel.org/linux-mm/20231222102255.56993-1-ryncsn@gmail.com/
-
-Link V2:
-https://lore.kernel.org/linux-mm/20240111183321.19984-1-ryncsn@gmail.com/
-
-Currently when MGLRU ages, it moves the pages one by one and updates mm
-counter page by page, which is correct but the overhead can be optimized
-by batching these operations.
-
-I did a rebase and applied more tests to see if there are any regressions or
-improvements, it seems everything looks OK except the memtier test where I
-tuned down the repeat time (-x) compared to V1 and V2 and simply test more
-times instead. It now seems to have a minor regression. If it's true,
-it's caused by the prefetch patch. But the noise (Standard Deviation) is
-a bit high so not sure if that test is credible. The test result of each
-individual patch is in the commit message.
+Prefetch for inactive/active LRU have been long exiting, apply the same
+optimization for MGLRU.
 
 Test 1: Ramdisk fio ro test in a 4G memcg on a EPYC 7K62:
   fio -name=mglru --numjobs=16 --directory=/mnt --size=960m \
@@ -112,13 +101,13 @@ Test 1: Ramdisk fio ro test in a 4G memcg on a EPYC 7K62:
     --rw=randread --random_distribution=zipf:0.5 --norandommap \
     --time_based --ramp_time=1m --runtime=6m --group_reporting
 
-Before this series:
+Before this patch:
 bw (  MiB/s): min= 7758, max= 9239, per=100.00%, avg=8747.59, stdev=16.51, samples=11488
 iops        : min=1986251, max=2365323, avg=2239380.87, stdev=4225.93, samples=11488
 
-After this series (+7.1%):
-bw (  MiB/s): min= 8359, max= 9796, per=100.00%, avg=9367.29, stdev=15.75, samples=11488
-iops        : min=2140113, max=2507928, avg=2398024.65, stdev=4033.07, samples=11488
+After this patch (+7.2%):
+bw (  MiB/s): min= 8360, max= 9771, per=100.00%, avg=9381.31, stdev=15.67, samples=11488
+iops        : min=2140296, max=2501385, avg=2401613.91, stdev=4010.41, samples=11488
 
 Test 2: Ramdisk fio hybrid test for 30m in a 4G memcg on a EPYC 7K62 (3 times):
   fio --buffered=1 --numjobs=8 --size=960m --directory=/mnt \
@@ -128,35 +117,36 @@ Test 2: Ramdisk fio hybrid test for 30m in a 4G memcg on a EPYC 7K62 (3 times):
     --name=mglru-ro --rw=randread --random_distribution=zipf:0.7 \
     --name=mglru-rw --rw=randrw --random_distribution=zipf:0.7
 
-Before this series:
- READ: 6622.0 MiB/s, Stdev: 22.090722
-WRITE: 1256.3 MiB/s, Stdev: 5.249339
+Before this patch:
+ READ: 6622.0 MiB/s. Stdev: 22.090722
+WRITE: 1256.3 MiB/s. Stdev: 5.249339
 
-After this series (+5.4%, +3.9%):
- READ: 6981.0 MiB/s, Stdev: 15.556349
-WRITE: 1305.7 MiB/s, Stdev: 2.357023
+After this patch (+4.6%, +3.3%):
+ READ: 6926.6 MiB/s, Stdev: 37.950260
+WRITE: 1297.3 MiB/s, Stdev: 7.408704
 
-Test 3: 30m of MySQL test in 6G memcg with swap (12 times):
+Test 3: 30m of MySQL test in 6G memcg (12 times):
   echo 'set GLOBAL innodb_buffer_pool_size=16106127360;' | \
     mysql -u USER -h localhost --password=PASS
+
   sysbench /usr/share/sysbench/oltp_read_only.lua \
     --mysql-user=USER --mysql-password=PASS --mysql-db=DB \
     --tables=48 --table-size=2000000 --threads=16 --time=1800 run
 
-Before this series
+Before this patch
 Avg: 134743.714545 qps. Stdev: 582.242189
 
-After this series (+0.3%):
-Avg: 135099.210000 qps. Stdev: 351.488863
+After this patch (+0.2%):
+Avg: 135005.779091 qps. Stdev: 295.299027
 
-Test 4: Build linux kernel in 2G memcg with make -j48 with swap
+Test 4: Build linux kernel in 2G memcg with make -j48 with SSD swap
         (for memory stress, 18 times):
 
-Before this series:
+Before this patch:
 Avg: 1456.768899 s. Stdev: 20.106973
 
-After this series (-0.5%):
-Avg: 1464.178154 s. Stdev: 17.992974
+After this patch (+0.0%):
+Avg: 1455.659254 s. Stdev: 15.274481
 
 Test 5: Memtier test in a 4G cgroup using brd as swap (18 times):
   memcached -u nobody -m 16384 -s /tmp/memcached.socket \
@@ -166,29 +156,86 @@ Test 5: Memtier test in a 4G cgroup using brd as swap (18 times):
     --key-minimum=1 --key-maximum=16000000 -d 1024 \
     --ratio=1:0 --key-pattern=P:P -c 1 -t 16 --pipeline 8 -x 3
 
-Before this series:
+Before this patch:
 Avg: 50317.984000 Ops/sec. Stdev: 2568.965458
 
-After this series (-2.7%):
-Avg: 48959.374118 Ops/sec. Stdev: 3488.559744
+After this patch (-5.7%):
+Avg: 47691.343500 Ops/sec. Stdev: 3925.772473
 
-Updates from V2:
-- Add more tests and simplify patch 2/3 to contain only one gen info for
-  batch, as Wei Xu suggests that the batch struct may use too much stack.
-- Add more tests, and test individual patch as requested by Wei Xu.
-- Fix typo as pointed out by Andrew Morton.
+It seems prefetch is helpful in most cases, but the memtier test is
+either hitting a case where prefetch causes higher cache miss or it's
+just too noisy (high stdev).
 
-Update from V1:
-- Fix function argument type as suggested by Chris Li.
+Signed-off-by: Kairui Song <kasong@tencent.com>
+---
+ mm/vmscan.c | 30 ++++++++++++++++++++++++++----
+ 1 file changed, 26 insertions(+), 4 deletions(-)
 
-Kairui Song (3):
-  mm, lru_gen: try to prefetch next page when scanning LRU
-  mm, lru_gen: batch update counters on aging
-  mm, lru_gen: move pages in bulk when aging
-
- mm/vmscan.c | 145 ++++++++++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 125 insertions(+), 20 deletions(-)
-
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 4f9c854ce6cc..03631cedb3ab 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -3681,15 +3681,26 @@ static bool inc_min_seq(struct lruvec *lruvec, int type, bool can_swap)
+ 	/* prevent cold/hot inversion if force_scan is true */
+ 	for (zone = 0; zone < MAX_NR_ZONES; zone++) {
+ 		struct list_head *head = &lrugen->folios[old_gen][type][zone];
++		struct folio *prev = NULL;
+ 
+-		while (!list_empty(head)) {
+-			struct folio *folio = lru_to_folio(head);
++		if (!list_empty(head))
++			prev = lru_to_folio(head);
++
++		while (prev) {
++			struct folio *folio = prev;
+ 
+ 			VM_WARN_ON_ONCE_FOLIO(folio_test_unevictable(folio), folio);
+ 			VM_WARN_ON_ONCE_FOLIO(folio_test_active(folio), folio);
+ 			VM_WARN_ON_ONCE_FOLIO(folio_is_file_lru(folio) != type, folio);
+ 			VM_WARN_ON_ONCE_FOLIO(folio_zonenum(folio) != zone, folio);
+ 
++			if (unlikely(list_is_first(&folio->lru, head))) {
++				prev = NULL;
++			} else {
++				prev = lru_to_folio(&folio->lru);
++				prefetchw(&prev->flags);
++			}
++
+ 			new_gen = folio_inc_gen(lruvec, folio, false);
+ 			list_move_tail(&folio->lru, &lrugen->folios[new_gen][type][zone]);
+ 
+@@ -4341,11 +4352,15 @@ static int scan_folios(struct lruvec *lruvec, struct scan_control *sc,
+ 	for (i = MAX_NR_ZONES; i > 0; i--) {
+ 		LIST_HEAD(moved);
+ 		int skipped_zone = 0;
++		struct folio *prev = NULL;
+ 		int zone = (sc->reclaim_idx + i) % MAX_NR_ZONES;
+ 		struct list_head *head = &lrugen->folios[gen][type][zone];
+ 
+-		while (!list_empty(head)) {
+-			struct folio *folio = lru_to_folio(head);
++		if (!list_empty(head))
++			prev = lru_to_folio(head);
++
++		while (prev) {
++			struct folio *folio = prev;
+ 			int delta = folio_nr_pages(folio);
+ 
+ 			VM_WARN_ON_ONCE_FOLIO(folio_test_unevictable(folio), folio);
+@@ -4355,6 +4370,13 @@ static int scan_folios(struct lruvec *lruvec, struct scan_control *sc,
+ 
+ 			scanned += delta;
+ 
++			if (unlikely(list_is_first(&folio->lru, head))) {
++				prev = NULL;
++			} else {
++				prev = lru_to_folio(&folio->lru);
++				prefetchw(&prev->flags);
++			}
++
+ 			if (sort_folio(lruvec, folio, sc, tier))
+ 				sorted += delta;
+ 			else if (isolate_folio(lruvec, folio, sc)) {
 -- 
 2.43.0
 
