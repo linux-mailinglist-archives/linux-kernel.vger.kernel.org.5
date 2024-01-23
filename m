@@ -1,202 +1,94 @@
-Return-Path: <linux-kernel+bounces-34727-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B80778386CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 06:36:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1E138386CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 06:41:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB9CD1C2441C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 05:36:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECBCA282E36
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 05:41:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1343442E;
-	Tue, 23 Jan 2024 05:36:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49F62443E;
+	Tue, 23 Jan 2024 05:41:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rxuJVbct"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MCjN2pT4"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3239323BC;
-	Tue, 23 Jan 2024 05:36:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF9A15384;
+	Tue, 23 Jan 2024 05:40:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705988194; cv=none; b=QSCzVAUX++kgOgoyhAwApebySuz3Xrk5yFL6CY0+kbYmJ9Zt6s+ZrkhR3uJdf6dpgsFqx5vESlYgEzMG240fog3q6ZvVJ8C1GxlPQz0mb9X1rw9T6canaSQtRHA4/qTPh9gJzPT9nB0zkrylZg8vVSKOzuMTRDDZ4mrcAFObMLE=
+	t=1705988460; cv=none; b=Eih+9fwBmYOUy4oWZ5voWBMSA7tyP3/kjzbsP1pjSLS0jAuhy8vbiEVBcnLsJYrSB9RfArUU5cptne8xfeKKvcH89+a5E4RrsFlHvUTWGdzZy6W3GsuRzUCU1FSEAgxiewUz3zUEHPMFlQU8rOrvCVYaLix6aTnotd13294Ss5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705988194; c=relaxed/simple;
-	bh=XcUyx0Kg5/x6d2IpLX/qANXj9xdB4k83aNsft2ltqyo=;
+	s=arc-20240116; t=1705988460; c=relaxed/simple;
+	bh=usqTaUXKEgQoY2T5x0AaG8q/SrqHWXmUVAmFQbDu13I=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LPHMyGf/+qQAUzWQOO1pXFyPJiGV/YXzxDsEGh+fkhsEbo03Zonx7bCdAc9QH6SV2NDFO9JBmkBll9XD70nTukDSLntVGEeOxPszu+zevx1evl/TZmeedWudmIb6VU2s+N2Jg5dJDj8Z4raTzEaVzIhzwK1gFhDyWd9P9lFS72k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rxuJVbct; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 342CEC433C7;
-	Tue, 23 Jan 2024 05:36:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705988193;
-	bh=XcUyx0Kg5/x6d2IpLX/qANXj9xdB4k83aNsft2ltqyo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rxuJVbctGlVRuiog03AjfM1ofgpReV8yuZ06WUjRbYUOC/oCSz8MXnhmA/zpfb52u
-	 7N0hYad1xKNfHz5mX8mctlhMVgNDdICvXb5HDFWfZXdq9osHoHb7DmFLncMZ5sn5Lx
-	 szxArnmT1njinY0L1HohpN1axVehymgshEHtcj8tA1hgXmGSlb8MEXHabJFAczN9q4
-	 mU4jPxrKw2775+vyPE+Fg2EtnyNa8HjDCVbxcPJdC9PAOJNSoQvb7B6fWOA/slwl23
-	 yXS6B8pOECKegN8x1T8kzua8LH8sjlEjiXtoulTKIASXYExb5Ekddw+9O+RxTDWhcL
-	 LKvYZPRaRvlrw==
-From: SeongJae Park <sj@kernel.org>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: akpm@linux-foundation.org,
-	viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	jack@suse.cz,
-	dchinner@redhat.com,
-	casey@schaufler-ca.com,
-	ben.wolsieffer@hefring.com,
-	paulmck@kernel.org,
-	david@redhat.com,
-	avagin@google.com,
-	usama.anjum@collabora.com,
-	peterx@redhat.com,
-	hughd@google.com,
-	ryan.roberts@arm.com,
-	wangkefeng.wang@huawei.com,
-	Liam.Howlett@Oracle.com,
-	yuzhao@google.com,
-	axelrasmussen@google.com,
-	lstoakes@gmail.com,
-	talumbau@google.com,
-	willy@infradead.org,
-	vbabka@suse.cz,
-	mgorman@techsingularity.net,
-	jhubbard@nvidia.com,
-	vishal.moola@gmail.com,
-	mathieu.desnoyers@efficios.com,
-	dhowells@redhat.com,
-	jgg@ziepe.ca,
-	sidhartha.kumar@oracle.com,
-	andriy.shevchenko@linux.intel.com,
-	yangxingui@huawei.com,
-	keescook@chromium.org,
-	linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org,
-	kernel-team@android.com
-Subject: Re: [PATCH 3/3] mm/maps: read proc/pid/maps under RCU
-Date: Mon, 22 Jan 2024 21:36:29 -0800
-Message-Id: <20240123053629.365673-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240122071324.2099712-3-surenb@google.com>
-References: 
+	 MIME-Version; b=pdhuslRZecBFmgDDx0uqOCVSYUjdgYPXpqZL4Pg0IClCGhgMx4trSBPIRH/In1vTd2bK/tjc9HYJDSOrJbqYbIynncFgmlfodvrByqIVb6qYfTA+1/ptqdHkFtKJlLN2oFklpZqyTMuuP2hB+ucJg7JFNIGA5x9a2/I8CxmvDSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MCjN2pT4; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705988460; x=1737524460;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=usqTaUXKEgQoY2T5x0AaG8q/SrqHWXmUVAmFQbDu13I=;
+  b=MCjN2pT4UbE7nSJEasC52lY7t5pWbnvgvcjAVQfxvtlowaZZiVQQucI/
+   jE+27rl2wVa5CDzQyfVOV94hNplZAmu7Lc0EfCUPP5u8z3c0x9/ZVg3VM
+   Kqxxc3hT8g+XAbty2ep086RyCtJng0XqVYwIKr7rIfld9sttRLZu3/aOT
+   YAznmGN9xHsp8+PmB/LdZ7Z6hH27riJydog0YvH0LHS01jVWkEkvXAG3L
+   tXz94WJ0m//AmjfzDDZEiyLchFoIRv+8ZD1E6GfTjF2DS17K8ZluuixGV
+   1TqO8syxK+UnQy+bKg+Lghj90CnEIAEyEn5ZQT576nTOPE/5qEwOom8nS
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="14770134"
+X-IronPort-AV: E=Sophos;i="6.05,213,1701158400"; 
+   d="scan'208";a="14770134"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 21:40:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,213,1701158400"; 
+   d="scan'208";a="1471954"
+Received: from junxiaochang.bj.intel.com ([10.238.157.86])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 21:40:42 -0800
+From: Junxiao Chang <junxiao.chang@intel.com>
+To: bigeasy@linutronix.de,
+	tglx@linutronix.de,
+	rostedt@goodmis.org,
+	linux-kernel@vger.kernel.org
+Cc: john.ogness@linutronix.de,
+	hao3.li@intel.com,
+	lili.li@intel.com,
+	jianfeng.gao@intel.com,
+	linux-rt-users@vger.kernel.org
+Subject: [PATCH 0/2] nbcon locking issue with v6.6.10-rt18 kernel
+Date: Tue, 23 Jan 2024 13:40:31 +0800
+Message-Id: <20240123054033.183114-1-junxiao.chang@intel.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <BN9PR11MB5370AED9C562F9DA75093557EC742@BN9PR11MB5370.namprd11.prod.outlook.com>
+References: <BN9PR11MB5370AED9C562F9DA75093557EC742@BN9PR11MB5370.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Hi Suren,
+There are two serial port devices in one Intel ADL hardware, one is 8250 lpss, another is 8250 dw. Multiple uart devices are enumerated as ttyS0, ttyS4, ttyS5,... With 6.6.10 rt18 kernel, booting hangs in nbcon_release if console is enabled by appending "console=ttySx,115200n8" to kernel command line. According to nbcon author John's suggestion, lock flag is moved from console structure to uart_port. Another patch is to add uart_is_nbcon checking in nbcon_release. 
 
-On Sun, 21 Jan 2024 23:13:24 -0800 Suren Baghdasaryan <surenb@google.com> wrote:
+Junxiao Chang (2):
+  printk: nbcon: move locked_port flag to struct uart_port
+  printk: nbcon: check uart port is nbcon or not in nbcon_release
 
-> With maple_tree supporting vma tree traversal under RCU and per-vma locks
-> making vma access RCU-safe, /proc/pid/maps can be read under RCU and
-> without the need to read-lock mmap_lock. However vma content can change
-> from under us, therefore we make a copy of the vma and we pin pointer
-> fields used when generating the output (currently only vm_file and
-> anon_name). Afterwards we check for concurrent address space
-> modifications, wait for them to end and retry. That last check is needed
-> to avoid possibility of missing a vma during concurrent maple_tree
-> node replacement, which might report a NULL when a vma is replaced
-> with another one. While we take the mmap_lock for reading during such
-> contention, we do that momentarily only to record new mm_wr_seq counter.
-> This change is designed to reduce mmap_lock contention and prevent a
-> process reading /proc/pid/maps files (often a low priority task, such as
-> monitoring/data collection services) from blocking address space updates.
-> 
-> Note that this change has a userspace visible disadvantage: it allows for
-> sub-page data tearing as opposed to the previous mechanism where data
-> tearing could happen only between pages of generated output data.
-> Since current userspace considers data tearing between pages to be
-> acceptable, we assume is will be able to handle sub-page data tearing
-> as well.
-> 
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> ---
->  fs/proc/internal.h |   2 +
->  fs/proc/task_mmu.c | 114 ++++++++++++++++++++++++++++++++++++++++++---
->  2 files changed, 109 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/proc/internal.h b/fs/proc/internal.h
-> index a71ac5379584..e0247225bb68 100644
-> --- a/fs/proc/internal.h
-> +++ b/fs/proc/internal.h
-> @@ -290,6 +290,8 @@ struct proc_maps_private {
->  	struct task_struct *task;
->  	struct mm_struct *mm;
->  	struct vma_iterator iter;
-> +	unsigned long mm_wr_seq;
-> +	struct vm_area_struct vma_copy;
->  #ifdef CONFIG_NUMA
->  	struct mempolicy *task_mempolicy;
->  #endif
-> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> index 3f78ebbb795f..3886d04afc01 100644
-> --- a/fs/proc/task_mmu.c
-> +++ b/fs/proc/task_mmu.c
-> @@ -126,11 +126,96 @@ static void release_task_mempolicy(struct proc_maps_private *priv)
->  }
->  #endif
->  
-> -static struct vm_area_struct *proc_get_vma(struct proc_maps_private *priv,
-> -						loff_t *ppos)
-> +#ifdef CONFIG_PER_VMA_LOCK
-> +
-> +static const struct seq_operations proc_pid_maps_op;
-> +/*
-> + * Take VMA snapshot and pin vm_file and anon_name as they are used by
-> + * show_map_vma.
-> + */
-> +static int get_vma_snapshow(struct proc_maps_private *priv, struct vm_area_struct *vma)
->  {
-> +	struct vm_area_struct *copy = &priv->vma_copy;
-> +	int ret = -EAGAIN;
-> +
-> +	memcpy(copy, vma, sizeof(*vma));
-> +	if (copy->vm_file && !get_file_rcu(&copy->vm_file))
-> +		goto out;
-> +
-> +	if (copy->anon_name && !anon_vma_name_get_rcu(copy))
-> +		goto put_file;
+ include/linux/console.h     |  2 --
+ include/linux/serial_core.h |  1 +
+ kernel/printk/nbcon.c       | 11 +++++++----
+ 3 files changed, 8 insertions(+), 6 deletions(-)
 
-From today updated mm-unstable which containing this patch, I'm getting below
-build error when CONFIG_ANON_VMA_NAME is not set.  Seems this patch needs to
-handle the case?
+-- 
+2.34.1
 
-    .../linux/fs/proc/task_mmu.c: In function ‘get_vma_snapshow’:
-    .../linux/fs/proc/task_mmu.c:145:19: error: ‘struct vm_area_struct’ has no member named ‘anon_name’; did you mean ‘anon_vma’?
-      145 |         if (copy->anon_name && !anon_vma_name_get_rcu(copy))
-          |                   ^~~~~~~~~
-          |                   anon_vma
-    .../linux/fs/proc/task_mmu.c:161:19: error: ‘struct vm_area_struct’ has no member named ‘anon_name’; did you mean ‘anon_vma’?
-      161 |         if (copy->anon_name)
-          |                   ^~~~~~~~~
-          |                   anon_vma
-    .../linux/fs/proc/task_mmu.c:162:41: error: ‘struct vm_area_struct’ has no member named ‘anon_name’; did you mean ‘anon_vma’?
-      162 |                 anon_vma_name_put(copy->anon_name);
-          |                                         ^~~~~~~~~
-          |                                         anon_vma
-    .../linux/fs/proc/task_mmu.c: In function ‘put_vma_snapshot’:
-    .../linux/fs/proc/task_mmu.c:174:18: error: ‘struct vm_area_struct’ has no member named ‘anon_name’; did you mean ‘anon_vma’?
-      174 |         if (vma->anon_name)
-          |                  ^~~~~~~~~
-          |                  anon_vma
-    .../linux/fs/proc/task_mmu.c:175:40: error: ‘struct vm_area_struct’ has no member named ‘anon_name’; did you mean ‘anon_vma’?
-      175 |                 anon_vma_name_put(vma->anon_name);
-          |                                        ^~~~~~~~~
-          |                                        anon_vma
-
-[...]
-
-
-Thanks,
-SJ
 
