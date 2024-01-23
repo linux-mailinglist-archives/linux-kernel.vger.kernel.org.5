@@ -1,38 +1,37 @@
-Return-Path: <linux-kernel+bounces-35003-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9698B838A67
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:34:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 207DC838A68
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:34:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA2D21C23F1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:34:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2F391F26B04
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 09:34:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C27A5BAF8;
-	Tue, 23 Jan 2024 09:33:57 +0000 (UTC)
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70DE55C5FB;
+	Tue, 23 Jan 2024 09:33:59 +0000 (UTC)
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3624A5A0EA
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 09:33:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 970AB5C5E1
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 09:33:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706002436; cv=none; b=NTnBxZNjJeDZVHUvQDgFmpChY8gxDZbWLJ0aMz0YAdTHly+caH00nrOgpf7gfVbE6XqiSVqHW0VEQkuXZPAXAhi/wFCgc8edexsctWFwjlY/n20e/ktX2qP97FB7gcndLhEsQvm7f3mvXDPTUtQs8W6X25FHapPh0WE42DFF+w4=
+	t=1706002439; cv=none; b=SOg4cWxOF3ysqJ0IPiGKqWHhbWB0gpv5W822Ff2jNy7HvR9r/wHKmj5dHpV+PzrPCNidQq8o08OvtQKoV4TRmC3CubYVzolrlymPKiD/LEEShK2uuJ16AVtLioJAjdZRf+uRs36ByOBADwB+DU/y9OeA8kQ8gRG5xgNfIA5negs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706002436; c=relaxed/simple;
-	bh=RxryMU48iVU4pnALkZXNrPy7bZDqLdaz2AEx4p3Ji5Q=;
+	s=arc-20240116; t=1706002439; c=relaxed/simple;
+	bh=cuwSKTPtiNqZTZ2D9xT7/HRhzSDVJccC9FWGQ4Ep0yw=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=INOmBbQUA8jqguzGAUJtfx8joJcoWd1/ogekWUedhgr0oGQ/K4ZnpmAPm3+/57cvh7YmFEL+rUlUVsIQK1MfohSEKIXQf6J+b02idxNRmVvpr5MHev86HG8XtRHNyPOLroBjazmP4R1p59JCN0rVS5SXtg8lC87soviN9CjnBnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=linux.dev; arc=none smtp.client-ip=95.215.58.178
+	 In-Reply-To:To:Cc; b=IHjkiNIMSKozfrwDzPAtpEvP8LJIljWX5feNXbIuPPiuR8NCxw1p1ugs8AGLEy9Y2n3NkGV0+tSuq50deZZxyQtsb55zSN9rTC2wVpRHA6N8xRjz0HCHAbBZGfu+QyCrd/ixAURrjbECTPo94SM7YD5yxl3oouKOgGRPrBzQmt4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=linux.dev; arc=none smtp.client-ip=95.215.58.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Chengming Zhou <zhouchengming@bytedance.com>
-Date: Tue, 23 Jan 2024 09:33:29 +0000
-Subject: [PATCH v2 1/3] mm/slub: directly load freelist from cpu partial slab in the
- likely case
+Date: Tue, 23 Jan 2024 09:33:30 +0000
+Subject: [PATCH v2 2/3] mm/slub: remove full list manipulation for non-debug slab
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,7 +40,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240117-slab-misc-v2-1-81766907896e@bytedance.com>
+Message-Id: <20240117-slab-misc-v2-2-81766907896e@bytedance.com>
 References: <20240117-slab-misc-v2-0-81766907896e@bytedance.com>
 In-Reply-To: <20240117-slab-misc-v2-0-81766907896e@bytedance.com>
 To: Joonsoo Kim <iamjoonsoo.kim@lge.com>, Vlastimil Babka <vbabka@suse.cz>, David Rientjes <rientjes@google.com>,
@@ -49,80 +48,48 @@ To: Joonsoo Kim <iamjoonsoo.kim@lge.com>, Vlastimil Babka <vbabka@suse.cz>, Davi
  Andrew Morton <akpm@linux-foundation.org>, Hyeonggon Yoo <42.hyeyoo@gmail.com>
 Cc: Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org, Chengming Zhou <zhouchengming@bytedance.com>,
  linux-mm@kvack.org, "Christoph Lameter (Ampere)" <cl@linux.com>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1706002427; l=2205;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1706002427; l=1153;
  i=zhouchengming@bytedance.com; s=20231204; h=from:subject:message-id;
- bh=RxryMU48iVU4pnALkZXNrPy7bZDqLdaz2AEx4p3Ji5Q=;
- b=378yGXlTZX4OD1uYzqIEJLiYJiKugeTycFRTFrJPpwzMaIF7wNnhWL/62RFkkKgtmJbEawLdi
- XuPcUkfqgQcAYhCGSKbsn/raWfAV9nLnWfdn7JURg7bvvxzMP/mmbwK
+ bh=cuwSKTPtiNqZTZ2D9xT7/HRhzSDVJccC9FWGQ4Ep0yw=;
+ b=mJdc+YnrEwU86ZPAWNO2hIOji1KtwvraB80SdFXY8/3S14XjUgouN7U9QY4VsPfbv0iWMF2qa
+ jNF2VdpUcx9CAUqOdk6g8VKSrJo7sg3GFd7D/n6FIaKYhdVOjnloqeD
 X-Developer-Key: i=zhouchengming@bytedance.com; a=ed25519;
  pk=xFTmRtMG3vELGJBUiml7OYNdM393WOMv0iWWeQEVVdA=
 X-Migadu-Flow: FLOW_OUT
 
-The likely case is that we get a usable slab from the cpu partial list,
-we can directly load freelist from it and return back, instead of going
-the other way that need more work, like reenable interrupt and recheck.
+Since debug slab is processed by free_to_partial_list(), and only debug
+slab which has SLAB_STORE_USER flag would care about the full list, we
+can remove these unrelated full list manipulations from __slab_free().
 
-But we need to remove the "VM_BUG_ON(!new.frozen)" in get_freelist()
-for reusing it, since cpu partial slab is not frozen. It seems
-acceptable since it's only for debug purpose.
-
-And get_freelist() also assumes it can return NULL if the freelist is
-empty, which is not possible for the cpu partial slab case, so we
-add "VM_BUG_ON(!freelist)" after get_freelist() to make it explicit.
-
-There is some small performance improvement too, which shows by:
-perf bench sched messaging -g 5 -t -l 100000
-
-            mm-stable   slub-optimize
-Total time      7.473    7.209
-
+Acked-by: Christoph Lameter (Ampere) <cl@linux.com>
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 ---
- mm/slub.c | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+ mm/slub.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index 2ef88bbf56a3..fda402b2d649 100644
+index fda402b2d649..5c6fbeef05a8 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -3326,7 +3326,6 @@ static inline void *get_freelist(struct kmem_cache *s, struct slab *slab)
- 		counters = slab->counters;
- 
- 		new.counters = counters;
--		VM_BUG_ON(!new.frozen);
- 
- 		new.inuse = slab->objects;
- 		new.frozen = freelist != NULL;
-@@ -3498,18 +3497,20 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 
- 		slab = slub_percpu_partial(c);
- 		slub_set_percpu_partial(c, slab);
--		local_unlock_irqrestore(&s->cpu_slab->lock, flags);
--		stat(s, CPU_PARTIAL_ALLOC);
- 
--		if (unlikely(!node_match(slab, node) ||
--			     !pfmemalloc_match(slab, gfpflags))) {
--			slab->next = NULL;
--			__put_partials(s, slab);
--			continue;
-+		if (likely(node_match(slab, node) &&
-+			   pfmemalloc_match(slab, gfpflags))) {
-+			c->slab = slab;
-+			freelist = get_freelist(s, slab);
-+			VM_BUG_ON(!freelist);
-+			stat(s, CPU_PARTIAL_ALLOC);
-+			goto load_freelist;
- 		}
- 
--		freelist = freeze_slab(s, slab);
--		goto retry_load_slab;
-+		local_unlock_irqrestore(&s->cpu_slab->lock, flags);
-+
-+		slab->next = NULL;
-+		__put_partials(s, slab);
+@@ -4188,7 +4188,6 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
+ 	 * then add it.
+ 	 */
+ 	if (!kmem_cache_has_cpu_partial(s) && unlikely(!prior)) {
+-		remove_full(s, n, slab);
+ 		add_partial(n, slab, DEACTIVATE_TO_TAIL);
+ 		stat(s, FREE_ADD_PARTIAL);
  	}
- #endif
+@@ -4202,9 +4201,6 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
+ 		 */
+ 		remove_partial(n, slab);
+ 		stat(s, FREE_REMOVE_PARTIAL);
+-	} else {
+-		/* Slab must be on the full list */
+-		remove_full(s, n, slab);
+ 	}
  
+ 	spin_unlock_irqrestore(&n->list_lock, flags);
 
 -- 
 b4 0.10.1
