@@ -1,67 +1,67 @@
-Return-Path: <linux-kernel+bounces-35075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E464838B88
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:17:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05421838B89
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 11:17:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B120F1C22299
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:17:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B4C81F22EF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 10:17:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB7835C60B;
-	Tue, 23 Jan 2024 10:16:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E8275C8FE;
+	Tue, 23 Jan 2024 10:16:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GWpbcT8j"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Le9JZqav"
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A64785A784
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 10:16:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 115B25C60F
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 10:16:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706005005; cv=none; b=oVJ3ZyYEYLHqxoOAnEOsyFo07D9L/MLehENIpR6//553nPLKOZ+aNB56cCMm9vW991e0ZxcKfs/EioJQV9qraJYOlmV1xkEmxpZueIJRCOwjcRnzrtqNyV08ECzdXjxmc+pLGUstGXUlN6TS1ULQUGzUKC/u1CtchEYQaneINRg=
+	t=1706005007; cv=none; b=MhU6M6B7ArvDTCk09Lu2Wtv3H6DfrP0Au8JeVLuZBuInFP/0NL8kbb+Qyv8pLN5roQyF1v70dniybaG5fgYceSchR9pVGNn0XmeTMmgDYJPZtnxPfqRlMBGgI6a1O/fCKBAR8uc0wlvTXytfKZEHXhl7XLCfkac684ovebuNstc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706005005; c=relaxed/simple;
-	bh=7muHkE1cUkSSeR+RpQkM/dqAaGPD92XQ9cr6XmMCYOo=;
+	s=arc-20240116; t=1706005007; c=relaxed/simple;
+	bh=D/FrcL7O9l3Ac/VsbOMpDPHKOYkGoJEwugRMmrbB2PQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=agfgD0XyfTV4U92Zcbf7rFtho5bXddiXuD3FTJ+7M1T5QGwz43jl3DI37831CWxVokj4UbES7u2VTGUN68L2VjB152GOcljVhQ5+Se8pQ/+rnn7rV01cjDxJ/mkLBBUSudTWQnKZBB/QbeK35EBoCimodVSDK4wBq3oAahwvAiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GWpbcT8j; arc=none smtp.client-ip=134.134.136.20
+	 MIME-Version; b=EWwTu8HTtT6lwSS+hBr/G165PM2F7W0YMrvUQ/TwlMVXL4kuXoXLn5gJEKzJ+b9uUsrCvRrM+dKjDI2FD+wuyBFlaal/0/zr9SqPbPr7i5HfBycqDljldTM2p8cyULlLZZhTu6cWhLh9H9SeCA3vTqVoKWNq0qTsXZzgB9GMBls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Le9JZqav; arc=none smtp.client-ip=134.134.136.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706005003; x=1737541003;
+  t=1706005005; x=1737541005;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=7muHkE1cUkSSeR+RpQkM/dqAaGPD92XQ9cr6XmMCYOo=;
-  b=GWpbcT8j/eItoNAEEL4vAFvPBTIzUu3QJtH+K43bW+sVR/vUOcQjvrKq
-   /MaeKaSCxZaeizt00UinHBmKvnFKH+aZKEtvRXj8isY8nntnXIGCN+TX1
-   bDvdYvd3PdLJQvv606Gu6FVhF20m+9J1vr9yxHII0XUttkmClmBOuJtZT
-   qrbjTZ7Eq3WbJZ05EKhu9zsf8tcJXYbOLQNV/9WXIj4GtaVlG7cSSLt9g
-   5MyqX8IGRwtR63S/gz/ZyeoDVIO6uSKsEPs9f0IYdlviu/iScGoENjjou
-   V9LEoe+XiZCFOSevGc96MaJY93y0LkEPfw1jLh0TkspsQ3n1lcoGBTqWa
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="391900193"
+  bh=D/FrcL7O9l3Ac/VsbOMpDPHKOYkGoJEwugRMmrbB2PQ=;
+  b=Le9JZqav9PQeyxQRXl4Gfg1W9p0QbOPABx6BwvsRnZEhntBYnni6ah8s
+   wAu/ulhe25TJ4FATvp3lvmXmKq2x7zJC9NCLD3ty576PZ4HU1XNW8JSYS
+   u/rXMvvaE5BOLW5F6TBuNGGFSQsFKExdBw/tzI1mpk2BiDbNDd83J6xnS
+   FUhGns6DJ3qS3UTMSVm7V03UbTCQMBqiFPTc12r7hbeLo5/bN4yTIe8gn
+   sD8lARsUfUNAP60BUi1z6L1R0BBQqoKFQ3Nxx0Jclcj35U3Z8Lg3V4dbe
+   dsNudyzKDZ/atbL1faMM8z88e5ylIuWgTqOoEmkgXeGDNHj0lg4C06Wqr
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="391900207"
 X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
-   d="scan'208";a="391900193"
+   d="scan'208";a="391900207"
 Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 02:16:43 -0800
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 02:16:45 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
-   d="scan'208";a="1549616"
+   d="scan'208";a="1549625"
 Received: from twinkler-lnx.jer.intel.com ([10.12.231.216])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 02:16:41 -0800
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 02:16:43 -0800
 From: Tomas Winkler <tomas.winkler@intel.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: Alexander Usyskin <alexander.usyskin@intel.com>,
 	Vitaly Lubart <vitaly.lubart@intel.com>,
 	linux-kernel@vger.kernel.org,
 	Tomas Winkler <tomas.winkler@intel.com>
-Subject: [char-misc-next 3/5] mei: pxp: match without driver name
-Date: Tue, 23 Jan 2024 12:16:23 +0200
-Message-ID: <20240123101625.220365-3-tomas.winkler@intel.com>
+Subject: [char-misc-next 4/5] mei: hdcp: add dependency on Xe driver
+Date: Tue, 23 Jan 2024 12:16:24 +0200
+Message-ID: <20240123101625.220365-4-tomas.winkler@intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240123101625.220365-1-tomas.winkler@intel.com>
 References: <20240123101625.220365-1-tomas.winkler@intel.com>
@@ -75,53 +75,27 @@ Content-Transfer-Encoding: 8bit
 
 From: Alexander Usyskin <alexander.usyskin@intel.com>
 
-Xe driver uses this component too, but current match function
-matches by i915 driver name.
-Remove dependency on i915 driver name in component_match function.
-Use PCI header information to match Intel graphics device.
+Optionally depend on either i915 or Xe drivers.
 
 Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
 Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
 ---
- drivers/misc/mei/pxp/mei_pxp.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ drivers/misc/mei/hdcp/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/misc/mei/pxp/mei_pxp.c b/drivers/misc/mei/pxp/mei_pxp.c
-index 787c6a27a4be60f9322c6aad..b1e4c23b31a32957c616f0ed 100644
---- a/drivers/misc/mei/pxp/mei_pxp.c
-+++ b/drivers/misc/mei/pxp/mei_pxp.c
-@@ -13,6 +13,7 @@
+diff --git a/drivers/misc/mei/hdcp/Kconfig b/drivers/misc/mei/hdcp/Kconfig
+index 9be312ec798de96fb362e0dc..631dd9651d7c9dbc0f812725 100644
+--- a/drivers/misc/mei/hdcp/Kconfig
++++ b/drivers/misc/mei/hdcp/Kconfig
+@@ -4,7 +4,7 @@
+ config INTEL_MEI_HDCP
+ 	tristate "Intel HDCP2.2 services of ME Interface"
+ 	depends on INTEL_MEI_ME
+-	depends on DRM_I915
++	depends on DRM_I915 || DRM_XE
+ 	help
+ 	  MEI Support for HDCP2.2 Services on Intel platforms.
  
- #include <linux/delay.h>
- #include <linux/module.h>
-+#include <linux/pci.h>
- #include <linux/slab.h>
- #include <linux/mei.h>
- #include <linux/mei_cl_bus.h>
-@@ -225,12 +226,21 @@ static int mei_pxp_component_match(struct device *dev, int subcomponent,
- 				   void *data)
- {
- 	struct device *base = data;
-+	struct pci_dev *pdev;
- 
- 	if (!dev)
- 		return 0;
- 
--	if (!dev->driver || strcmp(dev->driver->name, "i915") ||
--	    subcomponent != I915_COMPONENT_PXP)
-+	if (!dev_is_pci(dev))
-+		return 0;
-+
-+	pdev = to_pci_dev(dev);
-+
-+	if (pdev->class != (PCI_CLASS_DISPLAY_VGA << 8) ||
-+	    pdev->vendor != PCI_VENDOR_ID_INTEL)
-+		return 0;
-+
-+	if (subcomponent != I915_COMPONENT_PXP)
- 		return 0;
- 
- 	base = base->parent;
 -- 
 2.43.0
 
