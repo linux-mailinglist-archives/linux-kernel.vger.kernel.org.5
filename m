@@ -1,133 +1,215 @@
-Return-Path: <linux-kernel+bounces-35858-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2584839778
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:19:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77457839783
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 19:20:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 889FA1F2D745
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:19:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AAF721C27083
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 18:20:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0AA981AB9;
-	Tue, 23 Jan 2024 18:19:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DF9081AC6;
+	Tue, 23 Jan 2024 18:20:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OpKuEnyi"
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="KfMZkqSB"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E37195FDA8;
-	Tue, 23 Jan 2024 18:19:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 158948121F;
+	Tue, 23 Jan 2024 18:20:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706033952; cv=none; b=Fu1/RJVBh329XGOpZYVBYuLenxcIBg+C3DpKhRab1waOwc4cqDzaGqVr1W+gvCbof3D5ls52KKGD0x6QqbSajxJdRFh2OZA2/DieQRNhUdzxPsmM0FqEy1FlJyPB4Z3a8Smc6y4z9Lp1f0duhSbZGqvLAAO6N5nhUaxNBi3KjtI=
+	t=1706034012; cv=none; b=euX7/Aih/U+fvQOSMcvtxaZWapTGewlvjKoevNcAxIw3e4IFZGBL9yqda7B3PTpA9iPdUAOwnc+/N/iDuLNiPazOYKv+Ro/njgEZ2P64dSLxRbZA5/GEQ7eHbC0Jdvk7oI9Lu0AtjEiS564zir0Q9KO4GWDY5go60y0I7FX0n9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706033952; c=relaxed/simple;
-	bh=I7EaLHyv+zjRWE7JLMFlBZeY21iA0/68G15sTjitmic=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VlEZ8+E0CWPs/O/7QsO1NJ1IeASvmBW5LVxwlRWbgyZA0DySqtGpP6Mzn+mm/2uq3KuZylL7hHqZwtCcWfBlw2YjZvJ7dwlK9uU1yd3JYD6TC10dZcDZs12SPvkbY5fCSd1zGNCvDvF09w+MMQLN+19oMdjtks/l9aj+XMvx034=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OpKuEnyi; arc=none smtp.client-ip=209.85.128.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5ff828b93f0so40325947b3.3;
-        Tue, 23 Jan 2024 10:19:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706033949; x=1706638749; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=I7EaLHyv+zjRWE7JLMFlBZeY21iA0/68G15sTjitmic=;
-        b=OpKuEnyir1x2y+q7QGDmN4HZJwzbE7+t38KTBW5nYmK6SaSZ6nzo1O2xTx94Lznt8h
-         M38E8Kksd7gbXMhrCXKnvE+80snY5ENgq8G0Vm6M8z7tW7g5MLDUV25i3F2TgeqRFYlU
-         T2S+QThcyY5miRic2uoRbDVFKymm4MpLJR6l/G313zZPb9F69LZCNujYBfa6/28+ARGP
-         BgoPvl10NT5D/I2GKhElcdt1yhSEYp3991HVW/2yH+quvMzrmu5WhsEy4QyPd8pe5hyz
-         bfcN4LI3ioEGs3aB8lsoLhH7+HODzKQDqcIiPwswamIAkK8uhGTIuzK/B0GtrlW+ieLL
-         qHTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706033949; x=1706638749;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=I7EaLHyv+zjRWE7JLMFlBZeY21iA0/68G15sTjitmic=;
-        b=jfqiRQ3LqQ5M1p/TV2h9iw9dAXRINEvbDhCB5/8Etbjnpl+vXsF9PiGJAwNwyYPraB
-         Ds7VIX474/S9tuRz++nsm4t04eMQ8FSBDQQvhSEWw2D0uN/fVCN4ATxGztx1MVSMcfPx
-         Xo+X6G/865WVri67aVr4Z39ubWwlyzeZEvZYgSfdhzXWHJtat43J2uZWWLNgpip4aNPv
-         hQfmYiyLiz0Axs6tiIEBtzAlIgpuLU1TtK6XUXRyRZXW65fIS8typVsJrqyDkXC99l5I
-         K53k0Y7hRB5VW9uUziTlgGveR/bpnWXMvwD+cGqrxsdNPnAj7kT0+jl36toecZy/zAAK
-         fw6A==
-X-Gm-Message-State: AOJu0YzBNmEyS3Z6OCH/3B+qxj+k1jmodbN2/TfAeGhXmKH/fKCZDuw0
-	3zeLwfCoZtkS0/WK/pdN3hxt5r9MkHHCFA5DJxrleh2or6cXJG7j42yOUPdt3+ejmzx3mQJnDDn
-	6MTiYYiLLyb8dWGm3Jwv5ptbdzFs=
-X-Google-Smtp-Source: AGHT+IHyUT8MHOsF6IBmTbANIqwgs2PT5BNWkCdv0dyAFhLayi1VUmpCSrLIW3NTLwOzJOUEEgLOK72SK+ulDnc30KU=
-X-Received: by 2002:a81:69d4:0:b0:5ff:9555:79df with SMTP id
- e203-20020a8169d4000000b005ff955579dfmr4955779ywc.92.1706033948768; Tue, 23
- Jan 2024 10:19:08 -0800 (PST)
+	s=arc-20240116; t=1706034012; c=relaxed/simple;
+	bh=Kz6Sx2HwHUtMwThwQvcZ1SzVhfnaGraII0WfWtXei18=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PtfYcpttXVFaObKvDsKL53yAUMti5CPdQ9PR63IjD34WYxp1zc8mqP/9LhGtHisvk2O7fG/Mdxpur0KnB5ZIF3l6RBwfUA0OevfZeXtGnjZcQ1y9OV1W60WTLTtxIlJxi+pezkoFqLNqhfJaRnTkOrHSh4i0vkSRdM7eu4jEkpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=KfMZkqSB; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=xJtDwsEzxC2wRkKiDTxPnJF7Bcyhg3afuw16GcINCwM=; b=KfMZkqSBpSMz1Up8pIHrEoOmK2
+	gS72067GJZOQOPUTd0wTWjKykok1kTE4dCcBEAtrgrvvb7VXsM9FqTwumi5Ntqb8yCVazVOZ6Wp0n
+	SWrK5q4QA2TOsTegfudAQLyRGgqxNF9QlzA33ibCCQrZVHvdeIFQQuCEl66Vo0dmF0OFYnFiMyhzF
+	heFGFU0q325UHEoWKsnoe/rL3eAw4o4e6t/0qFi5Zao5+PrxjeOs+vVIdYacZNE3H5wdKxLx6gUvX
+	ldr2VrwRpbatnDdYCIf9HvSw8Mjum3/eXOGXrGqv9MXGK0aslVEdvI8jm2wuMDfSjExEkTjy3Irtk
+	X7HVzNGQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:34546)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rSLNQ-0002u1-2h;
+	Tue, 23 Jan 2024 18:20:00 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rSLNM-00029h-Kk; Tue, 23 Jan 2024 18:19:56 +0000
+Date: Tue, 23 Jan 2024 18:19:56 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+	x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
+	linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+	Salil Mehta <salil.mehta@huawei.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	jianyong.wu@arm.com, justin.he@arm.com,
+	James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v3 05/21] ACPI: Rename ACPI_HOTPLUG_CPU to include
+ 'present'
+Message-ID: <ZbADTBLDEFtdglho@shell.armlinux.org.uk>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+ <E1rDOgD-00Dvk2-3h@rmk-PC.armlinux.org.uk>
+ <CAJZ5v0g9nfLrEf9u4Ksw6BOWJQ9iv8Z-O8RsLU6jR5zk0ahxRw@mail.gmail.com>
+ <20240122180013.000016d5@Huawei.com>
+ <Za++/11n5KA1VS3p@shell.armlinux.org.uk>
+ <CAJZ5v0h7wsLt8d3ZoLXsK1=crAx66T42WDKNoHcg8CiHpAjS8g@mail.gmail.com>
+ <Za/q9jivG4OdZM0f@shell.armlinux.org.uk>
+ <CAJZ5v0gwe02uzAQoX0QDHo35OTEozpbnqC6vukjM3aE6HMq9WQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122184608.11863-1-dakr@redhat.com> <2024012252-attempt-tables-e3fc@gregkh>
- <Za7uampZiG2IP8dE@cassiopeiae> <2024012251-geriatric-morphine-a275@gregkh> <Za_2WuQh9vr2Na7S@pollux>
-In-Reply-To: <Za_2WuQh9vr2Na7S@pollux>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Tue, 23 Jan 2024 19:18:57 +0100
-Message-ID: <CANiq72=mrbRXcKGOC9M5=-_cP5ShnYGLF7t8Dt7WDCP+xffK-A@mail.gmail.com>
-Subject: Re: [PATCH] rust: str: add to_ascii_{upper,lower}case() to CString
-To: Danilo Krummrich <dakr@redhat.com>
-Cc: Greg KH <gregkh@linuxfoundation.org>, ojeda@kernel.org, alex.gaynor@gmail.com, 
-	wedsonaf@gmail.com, boqun.feng@gmail.com, gary@garyguo.net, 
-	bjorn3_gh@protonmail.com, benno.lossin@proton.me, a.hindborg@samsung.com, 
-	aliceryhl@google.com, rust-for-linux@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0gwe02uzAQoX0QDHo35OTEozpbnqC6vukjM3aE6HMq9WQ@mail.gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Tue, Jan 23, 2024 at 6:24=E2=80=AFPM Danilo Krummrich <dakr@redhat.com> =
-wrote:
->
-> We also need to consider that simply wrapping tolower() and toupper() wou=
-ld make
-> slice::make_ascii_{lower,upper]case(), str::make_ascii_{lower,upper]case(=
-),
-> char::make_ascii_{lower,upper]case() and CString::make_ascii_{lower,upper=
-]case()
-> inconsistent. The former ones already only consider 'a' to 'z' and 'A' to=
- 'Z'
-> respectively.
+On Tue, Jan 23, 2024 at 06:43:59PM +0100, Rafael J. Wysocki wrote:
+> On Tue, Jan 23, 2024 at 5:36 PM Russell King (Oracle)
+> <linux@armlinux.org.uk> wrote:
+> >
+> > On Tue, Jan 23, 2024 at 05:15:54PM +0100, Rafael J. Wysocki wrote:
+> > > On Tue, Jan 23, 2024 at 2:28 PM Russell King (Oracle)
+> > > <linux@armlinux.org.uk> wrote:
+> > > >
+> > > > On Mon, Jan 22, 2024 at 06:00:13PM +0000, Jonathan Cameron wrote:
+> > > > > On Mon, 18 Dec 2023 21:35:16 +0100
+> > > > > "Rafael J. Wysocki" <rafael@kernel.org> wrote:
+> > > > >
+> > > > > > On Wed, Dec 13, 2023 at 1:49 PM Russell King <rmk+kernel@armlinux.org.uk> wrote:
+> > > > > > >
+> > > > > > > From: James Morse <james.morse@arm.com>
+> > > > > > >
+> > > > > > > The code behind ACPI_HOTPLUG_CPU allows a not-present CPU to become
+> > > > > > > present.
+> > > > > >
+> > > > > > Right.
+> > > > > >
+> > > > > > > This isn't the only use of HOTPLUG_CPU. On arm64 and riscv
+> > > > > > > CPUs can be taken offline as a power saving measure.
+> > > > > >
+> > > > > > But still there is the case in which a non-present CPU can become
+> > > > > > present, isn't it there?
+> > > > >
+> > > > > Not yet defined by the architectures (and I'm assuming it probably never will be).
+> > > > >
+> > > > > The original proposal we took to ARM was to do exactly that - they pushed
+> > > > > back hard on the basis there was no architecturally safe way to implement it.
+> > > > > Too much of the ARM arch has to exist from the start of time.
+> > > > >
+> > > > > https://lore.kernel.org/linux-arm-kernel/cbaa6d68-6143-e010-5f3c-ec62f879ad95@arm.com/
+> > > > > is one of the relevant threads of the kernel side of that discussion.
+> > > > >
+> > > > > Not to put specific words into the ARM architects mouths, but the
+> > > > > short description is that there is currently no demand for working
+> > > > > out how to make physical CPU hotplug possible, as such they will not
+> > > > > provide an architecturally compliant way to do it for virtual CPU hotplug and
+> > > > > another means is needed (which is why this series doesn't use the present bit
+> > > > > for that purpose and we have the Online capable bit in MADT/GICC)
+> > > > >
+> > > > > It was a 'fun' dance of several years to get to that clarification.
+> > > > > As another fun fact, the same is defined for x86, but I don't think
+> > > > > anyone has used it yet (GICC for ARM has an online capable bit in the flags to
+> > > > > enable this, which was remarkably similar to the online capable bit in the
+> > > > > flags of the Local APIC entries as added fairly recently).
+> > > > >
+> > > > > >
+> > > > > > > On arm64 an offline CPU may be disabled by firmware, preventing it from
+> > > > > > > being brought back online, but it remains present throughout.
+> > > > > > >
+> > > > > > > Adding code to prevent user-space trying to online these disabled CPUs
+> > > > > > > needs some additional terminology.
+> > > > > > >
+> > > > > > > Rename the Kconfig symbol CONFIG_ACPI_HOTPLUG_PRESENT_CPU to reflect
+> > > > > > > that it makes possible CPUs present.
+> > > > > >
+> > > > > > Honestly, I don't think that this change is necessary or even useful.
+> > > > >
+> > > > > Whilst it's an attempt to avoid future confusion, the rename is
+> > > > > not something I really care about so my advice to Russell is drop
+> > > > > it unless you are attached to it!
+> > > >
+> > > > While I agree that it isn't a necessity, I don't fully agree that it
+> > > > isn't useful.
+> > > >
+> > > > One of the issues will be that while Arm64 will support hotplug vCPU,
+> > > > it won't be setting ACPI_HOTPLUG_CPU because it doesn't support
+> > > > the present bit changing. So I can see why James decided to rename
+> > > > it - because with Arm64's hotplug vCPU, the idea that ACPI_HOTPLUG_CPU
+> > > > somehow enables hotplug CPU support is now no longer true.
+> > > >
+> > > > Keeping it as ACPI_HOTPLUG_CPU makes the code less obvious, because it
+> > > > leads one to assume that it ought to be enabled for Arm64's
+> > > > implementatinon, and that could well cause issues in the future if
+> > > > people make the assumption that "ACPI_HOTPLUG_CPU" means hotplug CPU
+> > > > is supported in ACPI. It doesn't anymore.
+> > >
+> > > On x86 there is no confusion AFAICS.  It's always meant "as long as
+> > > the platform supports it".
+> >
+> > That's x86, which supports physical CPU hotplug. We're introducing
+> > support for Arm64 here which doesn't support physical CPU hotplug.
+> >
+> >                                                 ACPI-based      Physical        Virtual
+> > Arch    HOTPLUG_CPU     ACPI_HOTPLUG_CPU        Hotplug         Hotplug         Hotplug
+> > Arm64   Y               N                       Y               N               Y
+> > x86     Y               Y                       Y               Y               Y
+> >
+> > So ACPI_HOTPLUG_CPU becomes totally misnamed with the introduction
+> > of hotplug on Arm64.
+> >
+> > If we want to just look at stuff from an x86 perspective, then yes,
+> > it remains correct to call it ACPI_HOTPLUG_CPU. It isn't correct as
+> > soon as we add Arm64, as I already said.
+> 
+> And if you rename it, it becomes less confusing for ARM64, but more
+> confusing for x86, which basically is my point.
+> 
+> IMO "hotplug" covers both cases well enough and "hotplug present" is
+> only accurate for one of them.
+> 
+> > And honestly, a two line quip to my reasoned argument is not IMHO
+> > an acceptable reply.
+> 
+> Well, I'm not even sure how to respond to this ...
 
-Latter, right? i.e. the kernel ones are the ones that consider the
-extended ones.
+The above explanation you give would have been useful...
 
-> Just to clarify, personally I'm not worried about whether we consider the
-> extended range in this specific case or not. I think it's more interestin=
-g to
-> generlly figure out if, for such modules, we want the caller to expect C
-> bindings to be called or C logic to applied respectively, or if we want t=
-he
-> caller to expect that everything is aligned with the Rust std library.
+I don't see how "hotplug" covers both cases. As I've tried to point
+out many times now, ACPI_HOTPLUG_CPU is N for Arm64, yet it supports
+ACPI based hotplug. How does ACPI_HOTPLUG_CPU cover Arm64 if it's
+N there? IMHO it totally doesn't, and moreover, it goes against what
+one would logically expect - and this is why I have a problem with
+your effective NAK for this change. I believe you are basically
+wrong on this for the reasons I've given - that ACPI_HOTPLUG_CPU
+will be N for Arm64 despite it supporting ACPI-based CPU hotplug.
 
-Yeah, it is normal to provide Rust abstractions that follow the naming
-and logic of the C side. Having said that, in this particular case, as
-you say, since some of these APIs are already in Rust's `core`, I
-think it is OK to have the Rust ones completed for `CString` etc. But
-if we are to provide the C logic, then we should use the C names.
-
-In other words, in general, what we should definitely avoid is mixing
-them, i.e. using the C logic when Rust std names are used, or vice
-versa. And maybe we need both the C and the Rust ones in some cases
-(should be rare, since it is likely only to come up for things in
-`core` like this or perhaps for well-known things in, say, `std`, but
-at least for those we do not use them in the kernel so it is a bit
-less confusing).
-
-Similarly, it does not hurt to mention whether an API has any subtle
-difference (or not) with a similar C API. Sadly, we cannot (easily) do
-that also for the existing ones already in `core` too, but it is not a
-big deal.
-
-Cheers,
-Miguel
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
