@@ -1,280 +1,151 @@
-Return-Path: <linux-kernel+bounces-35394-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35395-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62E3B839051
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:39:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C9EF839056
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 14:42:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87E3D1C217EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:39:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F4B3286DFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 13:42:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 593AE5EE9D;
-	Tue, 23 Jan 2024 13:39:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="t2W5xnYS"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA1145EE95
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 13:39:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 367765F54A;
+	Tue, 23 Jan 2024 13:42:38 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 997B25F542;
+	Tue, 23 Jan 2024 13:42:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706017164; cv=none; b=KkR/xOmkRdVo98cXLw/VEgt86Vxuhfl3nrt+xdP29R0fcPT1Y/+cEyQhKX3BT55+8L3kLQwgQE19qqmuntL0CIvhILsty849lw4j3eoIYAlL5og8922rrcEmL3PihWDZvXL90EQmNbNNefjQyu+9zbzhnhF+N6fQSz8d1YkN0P0=
+	t=1706017357; cv=none; b=jGBUy1xufhgc7//h6zETeWYq9PFsLrCASE1EFMNK8fvXz6+d6QE+OlmUg8+NiqtJQh2bGsoaLywttHmp2aQmPXgwjzMisp8x0zofBRBK5q+vP5GYU3erPFsx6yk/J+dHPjKAkjC9ivpNVB9oOFsKH0lY8FqL/RuSUvMhKcGV794=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706017164; c=relaxed/simple;
-	bh=PV0gotgQ8HWyyIYh2n0NsT4hz87RVuG5AXAATO5eiTo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pMUEtZlGG+h+Vp+OiRNSdHXYiCz15sSCac5mqXx3GAh6v7UWyom1CML6447YlxVrzc4c+SGCfOaEZoVsYfc7Oj2X85as6TXNRjawOrEBvinRCEfWlHqTD67ERU19TKCTnm/VCI1gJaTf/MCrStZ+GFA3pxQRPyFXIRcQmvt50Qc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=t2W5xnYS; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d746ce7d13so17650635ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 05:39:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706017162; x=1706621962; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=fs0Mh/MI7fPMkOhdn6T/Ousz65q9LrIAscwRh6VRAwA=;
-        b=t2W5xnYSi54i5zGsN4UipF39H54v7DFpJX2v+qLBr+mnUkMs7+jlL9Ot2iqumnQFHt
-         7wiGvPauXEYDJvZ/Nsdp053ZzlnfHynpf64d2QL7ejX52i/c+5ymAFQydU9ZviYOdapN
-         bWtIHCRatAaR15o/9i65XyP/jz9YzwRP+hyxB5YLtxP05Yvi/ADw4NWUnlGLsPBaExUn
-         99WTiQQ7auD0pU1G7xduulqWlamDwSfSyIl9JWk4X2cyuU/eR+15v64imVajX5h45YZi
-         KIASgcyWmmn/rkbBPloFtWknxB1ROc51T5FuBnbwVlXqhEbtrE3qGJiS+Wgd9EqExma/
-         IHmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706017162; x=1706621962;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fs0Mh/MI7fPMkOhdn6T/Ousz65q9LrIAscwRh6VRAwA=;
-        b=HVI6aYiSkM6jMfCRBIU22z2Lmkhxhku+jlrTDBcGdIcR7OIlQFJnX2MichhWQWtlGm
-         aN/Zhfal8mELKBSpYhn6cNkBP4tYZhNOYxrY0cQZx8+XxyDhNQlw/w0bPywM0H2ERhZE
-         3On8GuSwfbLuko7y3+qmoVidwIjNFFUVRxLRQaJcEnkWRKPAsIzxRtiZjRZ+UakI/bVA
-         5AHSKEmiDgFCodcP/9kaeoNybi+L9uwVHE6+0vhP66mVhM8r9Qnl1TDIuM4yd65n2Ly7
-         HMGCz6ozrsCYAuQ1CwgSJZ58rHJUL8NYiZw3z8KfeIFL26s0U9Tjz6N1NG6dmdy36b6D
-         8cXA==
-X-Gm-Message-State: AOJu0YyIolJDxiuD4yIFrOpyHxHJuL7hqd0oqQlpZ+7fK4Y7BdUOvDSL
-	pYCxqywPYkxCKiUHhPixbuWXaduazuaq6iaNjnM/qOYKpGCz2g+rwzSe5dhwHhEDeV095JE51kp
-	ign0hQOJ4tQSYvU5DJ8OABjoWbW2BwDh/jg4A+g==
-X-Google-Smtp-Source: AGHT+IHM4TYCsFfRdFtuqPrOTde2m0HW4yM/WwYZTHHdONty5N9CXN8S4N9+HhcF/mKbhtJ7fDyhNeQ6+XqMl1pfrEM=
-X-Received: by 2002:a17:90a:72c8:b0:28f:f863:e83a with SMTP id
- l8-20020a17090a72c800b0028ff863e83amr2933102pjk.97.1706017161933; Tue, 23 Jan
- 2024 05:39:21 -0800 (PST)
+	s=arc-20240116; t=1706017357; c=relaxed/simple;
+	bh=uUJ2HO+3UqHTTrvrYPI/QJXNZTXarf00MBuJxNlTReI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DIE5RD/2XfE6wfD1em51zp9HV9D1+EnBEkx2ektx7dWcQb8hfDQd61iE/vQpFyxmz7ZfpgY0XhoCa4k9hrLu9TzOjioiX0d4TQNcc1eOx1Y+y6RbyAITLSaLh8rFr2BWbnhZzJfPIUCy6Vz8tIw7CUM+2yu+iQSH/xjnDAfGAic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5D631FEC;
+	Tue, 23 Jan 2024 05:43:20 -0800 (PST)
+Received: from [10.57.77.165] (unknown [10.57.77.165])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A8BB63F762;
+	Tue, 23 Jan 2024 05:42:30 -0800 (PST)
+Message-ID: <94d33a07-c59a-4315-9c64-8b4d959ca1f4@arm.com>
+Date: Tue, 23 Jan 2024 13:42:29 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240119084548.2788-1-kprateek.nayak@amd.com> <b4f5ac150685456cf45a342e3bb1f28cdd557a53.camel@linux.intel.com>
- <21c8694c-26e4-3bc1-edd8-2267b0164a09@amd.com> <CAKfTPtCFJ5TRdsHHiH_fz9R2TC3euz_Rp=LH+aQ9KeZx3uH+ZQ@mail.gmail.com>
- <211132bf-3a50-bfe8-cdaf-af40ee7d0ce2@amd.com>
-In-Reply-To: <211132bf-3a50-bfe8-cdaf-af40ee7d0ce2@amd.com>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Tue, 23 Jan 2024 14:39:10 +0100
-Message-ID: <CAKfTPtC446Lo9CATPp7PExdkLhHQFoBuY-JMGC7agOHY4hs-Pw@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: Skip newidle_balance() when an idle CPU is
- woken up to process an IPI
-To: K Prateek Nayak <kprateek.nayak@amd.com>
-Cc: Tim Chen <tim.c.chen@linux.intel.com>, linux-kernel@vger.kernel.org, 
-	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, 
-	gautham.shenoy@amd.com, David Vernet <void@manifault.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 10/11] mm/memory: ignore dirty/accessed/soft-dirty bits
+ in folio_pte_batch()
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Dinh Nguyen <dinguyen@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
+ Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, "David S. Miller"
+ <davem@davemloft.net>, linux-arm-kernel@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
+References: <20240122194200.381241-1-david@redhat.com>
+ <20240122194200.381241-11-david@redhat.com>
+ <59592b50-fe89-4b32-8490-2e6c296f972f@arm.com>
+ <76740e33-9b52-4e23-b407-8ae38bac15ec@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <76740e33-9b52-4e23-b407-8ae38bac15ec@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, 23 Jan 2024 at 11:01, K Prateek Nayak <kprateek.nayak@amd.com> wrote:
->
-> Hello Vincent,
->
-> On 1/23/2024 1:36 PM, Vincent Guittot wrote:
-> > On Tue, 23 Jan 2024 at 05:58, K Prateek Nayak <kprateek.nayak@amd.com> wrote:
-> >>
-> >> Hello Tim,
-> >>
-> >> On 1/23/2024 3:29 AM, Tim Chen wrote:
-> >>> On Fri, 2024-01-19 at 14:15 +0530, K Prateek Nayak wrote:
-> >>>>
-> >>>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> >>>> index b803030c3a03..1fedc7e29c98 100644
-> >>>> --- a/kernel/sched/fair.c
-> >>>> +++ b/kernel/sched/fair.c
-> >>>> @@ -8499,6 +8499,16 @@ done: __maybe_unused;
-> >>>>      if (!rf)
-> >>>>              return NULL;
-> >>>>
-> >>>> +    /*
-> >>>> +     * An idle CPU in TIF_POLLING mode might end up here after processing
-> >>>> +     * an IPI when the sender sets the TIF_NEED_RESCHED bit and avoids
-> >>>> +     * sending an actual IPI. In such cases, where an idle CPU was woken
-> >>>> +     * up only to process an interrupt, without necessarily queuing a task
-> >>>> +     * on it, skip newidle_balance() to facilitate faster idle re-entry.
-> >>>> +     */
-> >>>> +    if (prev == rq->idle)
-> >>>> +            return NULL;
-> >>>> +
-> >>>
-> >>> Should we check the call function queue directly to detect that there is
-> >>> an IPI waiting to be processed? something like
-> >>>
-> >>>       if (!llist_empty(&per_cpu(call_single_queue, rq->cpu)))
-> >>>               return NULL;
-> >>
-> >> That could be a valid check too. However, if an IPI is queued right
-> >> after this check, the processing is still delayed since
-> >> newidle_balance() only bails out for scenarios when a wakeup is trying
-> >> to queue a new task on the CPU running the newidle_balance().
-> >>
-> >>>
-> >>> Could there be cases where we want to do idle balance in this code path?
-> >>> Say a cpu is idle and a scheduling tick came in, we may try
-> >>> to look for something to run on the idle cpu.  Seems like after
-> >>> your change above, that would be skipped.
-> >>
-> >> Wouldn't scheduler_tick() do load balancing when the time comes? In my
-> >> testing, I did not see a case where the workloads I tested were
-> >> sensitive to the aspect of newidle_balance() being invoked at scheduler
-> >> tick. Have you come across a workload which might be sensitive to this
-> >> aspect that I can quickly test and verify? Meanwhile, I'll run the
-> >> workloads mentioned in the commit log on an Intel system to see if I
-> >> can spot any sensitivity to this change.
-> >
-> > Instead of trying to fix spurious need_resched in the scheduler,
-> > can't we find a way to prevent it from happening ?
->
-> The need_resched is not spurious. It is an effect of the optimization
-> introduced by commit b2a02fc43a1f ("smp: Optimize
-> send_call_function_single_ipi()") where, to pull a CPU out of
-> TIF_POLLING out of idle (and this happens for C0 (POLL) and C1 (MWAIT)
-> on the test machine), instead of sending an IPI for
-> smp_call_function_single(), the sender sets the TIF_NEED_RESCHED flag in
-> the idle task's thread info and in the path to "schedule_idle()", the
-> call to "flush_smp_call_function_queue()" processes the function call.
+On 23/01/2024 13:06, David Hildenbrand wrote:
+> On 23.01.24 13:25, Ryan Roberts wrote:
+>> On 22/01/2024 19:41, David Hildenbrand wrote:
+>>> Let's ignore these bits: they are irrelevant for fork, and will likely
+>>> be irrelevant for upcoming users such as page unmapping.
+>>>
+>>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>>> ---
+>>>   mm/memory.c | 10 ++++++++--
+>>>   1 file changed, 8 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/mm/memory.c b/mm/memory.c
+>>> index f563aec85b2a8..341b2be845b6e 100644
+>>> --- a/mm/memory.c
+>>> +++ b/mm/memory.c
+>>> @@ -953,24 +953,30 @@ static __always_inline void __copy_present_ptes(struct
+>>> vm_area_struct *dst_vma,
+>>>       set_ptes(dst_vma->vm_mm, addr, dst_pte, pte, nr);
+>>>   }
+>>>   +static inline pte_t __pte_batch_clear_ignored(pte_t pte)
+>>> +{
+>>> +    return pte_clear_soft_dirty(pte_mkclean(pte_mkold(pte)));
+>>> +}
+>>> +
+>>>   /*
+>>>    * Detect a PTE batch: consecutive (present) PTEs that map consecutive
+>>>    * pages of the same folio.
+>>>    *
+>>>    * All PTEs inside a PTE batch have the same PTE bits set, excluding the PFN.
+>>
+>> nit: last char should be a comma (,) not a full stop (.)
+>>
+>>> + * the accessed bit, dirty bit and soft-dirty bit.
+>>>    */
+>>>   static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
+>>>           pte_t *start_ptep, pte_t pte, int max_nr)
+>>>   {
+>>>       unsigned long folio_end_pfn = folio_pfn(folio) + folio_nr_pages(folio);
+>>>       const pte_t *end_ptep = start_ptep + max_nr;
+>>> -    pte_t expected_pte = pte_next_pfn(pte);
+>>> +    pte_t expected_pte = __pte_batch_clear_ignored(pte_next_pfn(pte));
+>>>       pte_t *ptep = start_ptep + 1;
+>>>         VM_WARN_ON_FOLIO(!pte_present(pte), folio);
+>>>         while (ptep != end_ptep) {
+>>> -        pte = ptep_get(ptep);
+>>> +        pte = __pte_batch_clear_ignored(ptep_get(ptep));
+>>>             if (!pte_same(pte, expected_pte))
+>>>               break;
+>>
+>> I think you'll lose dirty information in the child for private mappings? If the
+>> first pte in a batch is clean, but a subsequent page is dirty, you will end up
+>> setting all the pages in the batch as clean in the child. Previous behavior
+>> would preserve dirty bit for private mappings.
+>>
+>> In my version (v3) that did arbitrary batching, I had some fun and games
+>> tracking dirty, write and uffd_wp:
+>> https://lore.kernel.org/linux-arm-kernel/20231204105440.61448-2-ryan.roberts@arm.com/
+>>
+>> Also, I think you will currently either set soft dirty on all or none of the
+>> pages in the batch, depending on the value of the first. I previously convinced
+>> myself that the state was unimportant so always cleared it in the child to
+>> provide consistency.
+> 
+> Good points regarding dirty and soft-dirty. I wanted to avoid passing flags to
+> folio_pte_batch(), but maybe that's just what we need to not change behavior.
 
-I mean it's spurious in the sense that we don't need to resched but we
-need to pull the CPU out of the polling loop. At that time we don't
-know if there is a need to resched
+I think you could not bother with the enforce_uffd_wp - just always enforce
+uffd-wp. So that's one simplification vs mine. Then you just need an any_dirty
+flag following the same pattern as your any_writable. Then just set dirty on the
+whole batch in the child if any were dirty in the parent.
 
->
-> But since "TIF_NEED_RESCHED" was set to pull the CPU out of idle, the
-> scheduler now believes a new task exists which leads to the following
-> call stack:
+Although now I'm wondering if there is a race here... What happens if a page in
+the parent becomes dirty after you have checked it but before you write protect
+it? Isn't that already a problem with the current non-batched version? Why do we
+even to preserve dirty in the child for private mappings?
 
-Exactly, TIF_NEED_RESCHED has been set so scheduler now believes it
-needs to look for a task. The solution is to not set TIF_NEED_RESCHED
-if you don't want the scheduler to look for a task including pulling
-it from another cpu
-
->
->   do_idle()
->     schedule_idle()
->       __schedule(SM_NONE)
->         /* local_irq_disable() */
->         pick_next_task()
->           __pick_next_task()
->             pick_next_task_fair()
->               newidle_balance()
->               ... /* Still running with IRQs disabled */
->
-> Since IRQs are disabled, the processing of IPIs are delayed leading
-> issue similar to the one outlined in commit 792b9f65a568 ("sched:
-> Allow newidle balancing to bail out of load_balance") when benchmarking
-> ipistorm.
-
-IMO it's not the same because commit 792b9f65a568 wants to abort early
-if something new happened
-
->
-> >
-> > Because of TIF_NEED_RESCHED being set when TIF_POLLING is set, idle
-> > load balances are already skipped for a less aggressive newly idle
-> > load balanced:
-> > https://lore.kernel.org/all/CAKfTPtC9Px_W84YRJqnFNkL8oofO15D-P=VTCMUUu7NJr+xwBA@mail.gmail.com/
->
-> Are you referring to the "need_resched()" condition check in
-> "nohz_csd_func()"? Please correct me if I'm wrong.
-
-yes
-
->
-> When I ran with sched-scoreboard
-> (https://github.com/AMDESE/sched-scoreboard/)with the patch on an idle
-> system for 60s I see the idle "load_balance count" go up in sched-stat
-
-If TIF_POLLING is not set, you will use normal IPI but otherwise, the
-wakeup for an idle load balance is skipped because need_resched is set
-and we have an newly idle load balance  which you now want to skip too
-
->
-> Following are the data for idle balance on SMT domain for each kernel:
->
-> o tip:sched/core
->
->   < ----------------------------------------  Category:  idle ----------- >
->   load_balance count on cpu idle                             :       2678
->   load_balance found balanced on cpu idle                    :       2678
->     ->load_balance failed to find busier queue on cpu idle   :          0
->     ->load_balance failed to find busier group on cpu idle   :       2678
->   load_balance move task failed on cpu idle                  :          0
->   *load_balance success count on cpu idle                    :          0
->   imbalance sum on cpu idle                                  :          0
->   pull_task count on cpu idle                                :          0
->   *avg task pulled per successfull lb attempt (cpu idle)     :          0
->     ->pull_task when target task was cache-hot on cpu idle   :          0
->   -------------------------------------------------------------------------
->
-> o tip:sched/core + patch
->
->   < ----------------------------------------  Category:  idle ----------- >
->   load_balance count on cpu idle                             :       1895
->   load_balance found balanced on cpu idle                    :       1895
->     ->load_balance failed to find busier queue on cpu idle   :          0
->     ->load_balance failed to find busier group on cpu idle   :       1895
->   load_balance move task failed on cpu idle                  :          0
->   *load_balance success count on cpu idle                    :          0
->   imbalance sum on cpu idle                                  :          0
->   pull_task count on cpu idle                                :          0
->   *avg task pulled per successfull lb attempt (cpu idle)     :          0
->     ->pull_task when target task was cache-hot on cpu idle   :          0
->   -------------------------------------------------------------------------
->
-> Am I missing something? Since "load_balance count" is only updated when
-> "load_balance()" is called.
->
-> >
-> > The root of the problem is that we keep TIF_NEED_RESCHED set
->
-> We had prototyped a TIF_NEED_IPI flag to skip calls to schedule_idle()
-> on CPUs in TIF_POLLING when the idle CPU has to only process an IPI.
-> Although it solves the problem described in the commit log, it also
-> required enabling and testing it on multiple architectures.
-
-Yes, but that's the right solution IMO and it will prevent us to then
-try to catch the needless TIF_NEED_RESCHED
-
->
->   $ grep -r "_TIF_POLLING" arch/ | cut -d '/' -f2 | uniq
->   csky
->   x86
->   powerpc
->   parisc
->   openrisc
->   sparc
->   nios2
->   microblaze
->   sh
->   alpha
->
-> This optimization in the scheduler was the simpler of the two to achieve
-> the same result in case of ipistorm.
->
-> >
-> >>
-> >> [..snip..]
->
-> --
-> Thanks and Regards,
-> Prateek
 
