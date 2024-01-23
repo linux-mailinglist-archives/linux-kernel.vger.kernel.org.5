@@ -1,169 +1,299 @@
-Return-Path: <linux-kernel+bounces-35638-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-35639-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 238BC83947A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:16:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 554CD83947F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 17:17:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9128C1F23FB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:16:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4B7B1F237E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 16:17:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 610B4664D2;
-	Tue, 23 Jan 2024 16:16:09 +0000 (UTC)
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E1716351D;
+	Tue, 23 Jan 2024 16:16:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nypCMCh/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EC0761674;
-	Tue, 23 Jan 2024 16:16:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16F226281F;
+	Tue, 23 Jan 2024 16:16:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706026568; cv=none; b=ediqZnRvtNZJjelby/Sn+YZPJjLQ8IfWJxnJJ4GXmFPIM427X/4iF81Mv+GUT/Yi5pDHmlglyTroq3QdzSZxaf6of6tv5UDzmVFvf1Ysg1iqv2jJxAloq2BEO3uCb0nSJma1cAL1nRJ3ZZGWcrsiWbMJj+xk60VFIRlM1qGMU6s=
+	t=1706026615; cv=none; b=qzqt0WZbzbBBhz0scYfU20hH6OpFC+NMPdQOE0JBBEAmDrHqb9mTeEXxY9Uq+VoZCYtODTTNoIXLbn5Z720rL1uJolhrnlqhZ3zZlOdCblCxWUpTkWG3jK94PhNmC6vDcsagH6m7RDP0pB05En/IOmb4Z3VSGYSk1XCa/9XC588=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706026568; c=relaxed/simple;
-	bh=w3+AYXUdBPT1k1chiYw1nvRpK0AKwcZFytOy9qQHdiM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mydW34joNzZQ5GFphB968f7z/i8uG6eSLhdpisEoXarGxkEU8WYE4Kxg4hULDt4J63aaZYN3H2oba/Xg+jdHAulZOvjIsnTV/q07niJtR21ybOw02Y22WIr7UFkBEV3EeKB90f4PvE0UukkT31K4M6wT1GdoSSjWNBY8v79PxPo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6dbc2bf4e8dso902859a34.1;
-        Tue, 23 Jan 2024 08:16:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706026566; x=1706631366;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yJEIU7VR+3J2Yia1miwsBzYF1liLE8jqQNwwQ3tqywA=;
-        b=BVXybsR8i8+Q94fqKbNu65fNCDxERYr1EwBDYE4uDfZomW0ecJcrNZUQNDVSlz7rSY
-         +VZ/kbFwCoT/ym3lc10W3xpU7w8RDBwFwAgLoCXcUexLvPc+NYOiI1PDSLkjv0498BX4
-         aAzrJqrFX0sg47eW125TFLs3at+5DG7NdPIWox89IHARfsqeY7TT+2+OjclrVUOJcCsw
-         K12grXX5NzyM8EDNp8F1dlqcb4wqyam58e6/N+9GFYImyNkcpEl7E1N0VESfzJcM27AH
-         hOQLp8QG0S3x2WdtBIroeIRYW/Yn2r/830tXCuQLLw42rvRCxtP+Nh9qj0C2GilaShBM
-         QUjA==
-X-Gm-Message-State: AOJu0Yz2XrrpP23i7jIWUWw7f0zjQyZhlm0juwYCJfO9ydnEJeuzVLgx
-	MQPQO/EnWqHBBTuWeMAu0/L1OhggYLJEKn2Ih5WUKrrYHxfiG602PbFE1TcVrN8jCnaId7oe5DR
-	phZM9E0cBPoU39C21btV0odXVg8cfRJXA
-X-Google-Smtp-Source: AGHT+IHQzsBW5twpX6SIjbULqATUBQ0vqIkaZWwGQH4D7Ygegig4qDUNFIf/V4v9BHOfqKgEoP5iIqbc4ar0eQw6LMM=
-X-Received: by 2002:a05:6808:f10:b0:3bd:c5eb:451c with SMTP id
- m16-20020a0568080f1000b003bdc5eb451cmr2255072oiw.1.1706026566440; Tue, 23 Jan
- 2024 08:16:06 -0800 (PST)
+	s=arc-20240116; t=1706026615; c=relaxed/simple;
+	bh=FGEKPh5UgO+09RlhEkiGERyeV2Hwl3pBDJzoOdlKXRI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qCbDduSso8iBY8qp+6KnzTtdYfW5I7nhQWB5AbEcarCDVKwkTvSY3f8nXKK5qPjC1bKoKaBEvOp/baNFsTIn73wvrQ94GHLj846H/Ej0vawn1rI0sBnZqrVTw6gwNhq1YO4iArGKX/lvAMMNDFmw1UXVMkOOiweGyD7Gqvv4EAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nypCMCh/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83B3BC433C7;
+	Tue, 23 Jan 2024 16:16:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706026614;
+	bh=FGEKPh5UgO+09RlhEkiGERyeV2Hwl3pBDJzoOdlKXRI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nypCMCh/Y0zwo8q4Chxsh1dGqTO7avqXDiKuQ+y1w6rGbJmU8kSgNv/URGXaTOwuA
+	 ixLpHYaUFx+cYd4qqDGmlC+BMDlk2mtGYbqLWpj3KRBbNAN25c6F8F4vRSnTZrw9vw
+	 p6afztS6oh/RtN7xl/LyIlHm0Jb0CQZdc+VMRB0gNDyHcWdOkJntZ0wU3+CJervcBJ
+	 EqSFGNncw0XHtRzxtmQ5zUuVeAT/edlg87Uc7rq6wIaaxkTMg5Hs8f+IHQKDczcGfx
+	 djJzSBNNfZD8auXVL6wd4g93cIoitvEeeXaOckLnsgG2R4PoZALYIKXdkc936GvJdL
+	 OYRzKY+C2xRsQ==
+Date: Tue, 23 Jan 2024 16:16:49 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Kim Seer Paller <kimseer.paller@analog.com>
+Cc: linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Michael Hennerich <Michael.Hennerich@analog.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Crt Mori <cmo@melexis.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Nuno =?iso-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+Subject: Re: [PATCH v8 1/2] dt-bindings: iio: frequency: add admfm2000
+Message-ID: <20240123-curled-affront-e37d2d6b1826@spud>
+References: <20240123081059.5746-1-kimseer.paller@analog.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk> <E1rDOgD-00Dvk2-3h@rmk-PC.armlinux.org.uk>
- <CAJZ5v0g9nfLrEf9u4Ksw6BOWJQ9iv8Z-O8RsLU6jR5zk0ahxRw@mail.gmail.com>
- <20240122180013.000016d5@Huawei.com> <Za++/11n5KA1VS3p@shell.armlinux.org.uk>
-In-Reply-To: <Za++/11n5KA1VS3p@shell.armlinux.org.uk>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 23 Jan 2024 17:15:54 +0100
-Message-ID: <CAJZ5v0h7wsLt8d3ZoLXsK1=crAx66T42WDKNoHcg8CiHpAjS8g@mail.gmail.com>
-Subject: Re: [PATCH RFC v3 05/21] ACPI: Rename ACPI_HOTPLUG_CPU to include 'present'
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	linux-pm@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, 
-	acpica-devel@lists.linuxfoundation.org, linux-csky@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>, 
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, jianyong.wu@arm.com, justin.he@arm.com, 
-	James Morse <james.morse@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="x20s1Wl4HrobLnOi"
+Content-Disposition: inline
+In-Reply-To: <20240123081059.5746-1-kimseer.paller@analog.com>
+
+
+--x20s1Wl4HrobLnOi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 23, 2024 at 2:28=E2=80=AFPM Russell King (Oracle)
-<linux@armlinux.org.uk> wrote:
->
-> On Mon, Jan 22, 2024 at 06:00:13PM +0000, Jonathan Cameron wrote:
-> > On Mon, 18 Dec 2023 21:35:16 +0100
-> > "Rafael J. Wysocki" <rafael@kernel.org> wrote:
-> >
-> > > On Wed, Dec 13, 2023 at 1:49=E2=80=AFPM Russell King <rmk+kernel@arml=
-inux.org.uk> wrote:
-> > > >
-> > > > From: James Morse <james.morse@arm.com>
-> > > >
-> > > > The code behind ACPI_HOTPLUG_CPU allows a not-present CPU to become
-> > > > present.
-> > >
-> > > Right.
-> > >
-> > > > This isn't the only use of HOTPLUG_CPU. On arm64 and riscv
-> > > > CPUs can be taken offline as a power saving measure.
-> > >
-> > > But still there is the case in which a non-present CPU can become
-> > > present, isn't it there?
-> >
-> > Not yet defined by the architectures (and I'm assuming it probably neve=
-r will be).
-> >
-> > The original proposal we took to ARM was to do exactly that - they push=
-ed
-> > back hard on the basis there was no architecturally safe way to impleme=
-nt it.
-> > Too much of the ARM arch has to exist from the start of time.
-> >
-> > https://lore.kernel.org/linux-arm-kernel/cbaa6d68-6143-e010-5f3c-ec62f8=
-79ad95@arm.com/
-> > is one of the relevant threads of the kernel side of that discussion.
-> >
-> > Not to put specific words into the ARM architects mouths, but the
-> > short description is that there is currently no demand for working
-> > out how to make physical CPU hotplug possible, as such they will not
-> > provide an architecturally compliant way to do it for virtual CPU hotpl=
-ug and
-> > another means is needed (which is why this series doesn't use the prese=
-nt bit
-> > for that purpose and we have the Online capable bit in MADT/GICC)
-> >
-> > It was a 'fun' dance of several years to get to that clarification.
-> > As another fun fact, the same is defined for x86, but I don't think
-> > anyone has used it yet (GICC for ARM has an online capable bit in the f=
-lags to
-> > enable this, which was remarkably similar to the online capable bit in =
-the
-> > flags of the Local APIC entries as added fairly recently).
-> >
-> > >
-> > > > On arm64 an offline CPU may be disabled by firmware, preventing it =
-from
-> > > > being brought back online, but it remains present throughout.
-> > > >
-> > > > Adding code to prevent user-space trying to online these disabled C=
-PUs
-> > > > needs some additional terminology.
-> > > >
-> > > > Rename the Kconfig symbol CONFIG_ACPI_HOTPLUG_PRESENT_CPU to reflec=
-t
-> > > > that it makes possible CPUs present.
-> > >
-> > > Honestly, I don't think that this change is necessary or even useful.
-> >
-> > Whilst it's an attempt to avoid future confusion, the rename is
-> > not something I really care about so my advice to Russell is drop
-> > it unless you are attached to it!
->
-> While I agree that it isn't a necessity, I don't fully agree that it
-> isn't useful.
->
-> One of the issues will be that while Arm64 will support hotplug vCPU,
-> it won't be setting ACPI_HOTPLUG_CPU because it doesn't support
-> the present bit changing. So I can see why James decided to rename
-> it - because with Arm64's hotplug vCPU, the idea that ACPI_HOTPLUG_CPU
-> somehow enables hotplug CPU support is now no longer true.
->
-> Keeping it as ACPI_HOTPLUG_CPU makes the code less obvious, because it
-> leads one to assume that it ought to be enabled for Arm64's
-> implementatinon, and that could well cause issues in the future if
-> people make the assumption that "ACPI_HOTPLUG_CPU" means hotplug CPU
-> is supported in ACPI. It doesn't anymore.
+On Tue, Jan 23, 2024 at 04:10:58PM +0800, Kim Seer Paller wrote:
+> Dual microwave down converter module with input RF and LO frequency
+> ranges from 0.5 to 32 GHz and an output IF frequency range from 0.1 to
+> 8 GHz. It consists of a LNA, mixer, IF filter, DSA, and IF amplifier
+> for each down conversion path.
+>=20
+> Signed-off-by: Kim Seer Paller <kimseer.paller@analog.com>
 
-On x86 there is no confusion AFAICS.  It's always meant "as long as
-the platform supports it".
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+
+Thanks for the updates. One comment below that I missed previvously, but
+is not worth a resend.
+
+
+> ---
+> V7 -> V8: Added adequate description for mixer mode property. Modified de=
+scription
+>           for switch gpio property.
+> V6 -> V7: Changed RF path mode property to boolean.
+> V5 -> V6: Moved array of switch and attenuation GPIOs to the channel node.
+>           Changed pin coords with friendly names. Removed Reviewed-by tag.
+> V4 -> V5: Added Reviewed-by tag.
+> V3 -> V4: Updated the description of the properties with multiple entries=
+ and
+>           defined the order.
+> V2 -> V3: Adjusted indentation to resolve wrong indentation warning.=20
+>           Changed node name to converter. Updated the descriptions to cla=
+rify
+>           the properties.
+> V1 -> V2: Removed '|' after description. Specified the pins connected to
+>           the GPIOs. Added additionalProperties: false. Changed node name=
+ to gpio.
+>           Aligned < syntax with the previous syntax in the examples.
+>=20
+>  .../bindings/iio/frequency/adi,admfm2000.yaml | 127 ++++++++++++++++++
+>  MAINTAINERS                                   |   7 +
+>  2 files changed, 134 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/frequency/adi,a=
+dmfm2000.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/iio/frequency/adi,admfm200=
+0.yaml b/Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml
+> new file mode 100644
+> index 000000000000..2bcf4bbc12e4
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml
+> @@ -0,0 +1,127 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright 2024 Analog Devices Inc.
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/frequency/adi,admfm2000.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: ADMFM2000 Dual Microwave Down Converter
+> +
+> +maintainers:
+> +  - Kim Seer Paller <kimseer.paller@analog.com>
+> +
+> +description:
+> +  Dual microwave down converter module with input RF and LO frequency ra=
+nges
+> +  from 0.5 to 32 GHz and an output IF frequency range from 0.1 to 8 GHz.
+> +  It consists of a LNA, mixer, IF filter, DSA, and IF amplifier for each=
+ down
+> +  conversion path.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - adi,admfm2000
+
+If you do not have other devices to add to this binding, the enum: can be
+become a const:
+
+Cheers,
+Conor.
+
+> +
+> +  '#address-cells':
+> +    const: 1
+> +
+> +  '#size-cells':
+> +    const: 0
+> +
+> +patternProperties:
+> +  "^channel@[0-1]$":
+> +    type: object
+> +    description: Represents a channel of the device.
+> +
+> +    additionalProperties: false
+> +
+> +    properties:
+> +      reg:
+> +        description:
+> +          The channel number.
+> +        minimum: 0
+> +        maximum: 1
+> +
+> +      adi,mixer-mode:
+> +        description:
+> +          Enable mixer mode for the channel. It downconverts RF between =
+5 GHz
+> +          and 32 GHz to IF between 0.5 GHz and 8 GHz. If not present, th=
+e channel
+> +          is in direct IF mode which bypasses the mixer and downconverts=
+ RF
+> +          between 2 GHz and 8 GHz to IF between 0.5 GHz and 8 GHz.
+> +        type: boolean
+> +
+> +      switch-gpios:
+> +        description: |
+> +          GPIOs to select the RF path for the channel. The same state of=
+ CTRL-A
+> +          and CTRL-B GPIOs is not permitted.
+> +          CTRL-A   CTRL-B    CH1 Status        CH2 Status
+> +          1        0         Direct IF mode    Mixer mode
+> +          0        1         Mixer mode        Direct IF mode
+> +
+> +        items:
+> +          - description: CTRL-A GPIO
+> +          - description: CTRL-B GPIO
+> +
+> +      attenuation-gpios:
+> +        description: |
+> +          Choice of attenuation:
+> +          DSA-V4  DSA-V3  DSA-V2  DSA-V1  DSA-V0
+> +          1       1       1       1       1        0 dB
+> +          1       1       1       1       0        -1 dB
+> +          1       1       1       0       1        -2 dB
+> +          1       1       0       1       1        -4 dB
+> +          1       0       1       1       1        -8 dB
+> +          0       1       1       1       1        -16 dB
+> +          0       0       0       0       0        -31 dB
+> +
+> +        items:
+> +          - description: DSA-V0 GPIO
+> +          - description: DSA-V1 GPIO
+> +          - description: DSA-V2 GPIO
+> +          - description: DSA-V3 GPIO
+> +          - description: DSA-V4 GPIO
+> +
+> +    required:
+> +      - reg
+> +      - switch-gpios
+> +      - attenuation-gpios
+> +
+> +required:
+> +  - compatible
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    converter {
+> +      compatible =3D "adi,admfm2000";
+> +
+> +      #address-cells =3D <1>;
+> +      #size-cells =3D <0>;
+> +
+> +      channel@0 {
+> +        reg =3D <0>;
+> +        switch-gpios =3D <&gpio 1 GPIO_ACTIVE_LOW>,
+> +                       <&gpio 2 GPIO_ACTIVE_HIGH>;
+> +
+> +        attenuation-gpios =3D <&gpio 17 GPIO_ACTIVE_LOW>,
+> +                            <&gpio 22 GPIO_ACTIVE_LOW>,
+> +                            <&gpio 23 GPIO_ACTIVE_LOW>,
+> +                            <&gpio 24 GPIO_ACTIVE_LOW>,
+> +                            <&gpio 25 GPIO_ACTIVE_LOW>;
+> +      };
+> +
+> +      channel@1 {
+> +        reg =3D <1>;
+> +        adi,mixer-mode;
+> +        switch-gpios =3D <&gpio 3 GPIO_ACTIVE_LOW>,
+> +                       <&gpio 4 GPIO_ACTIVE_HIGH>;
+> +
+> +        attenuation-gpios =3D <&gpio 0 GPIO_ACTIVE_LOW>,
+> +                            <&gpio 5 GPIO_ACTIVE_LOW>,
+> +                            <&gpio 6 GPIO_ACTIVE_LOW>,
+> +                            <&gpio 16 GPIO_ACTIVE_LOW>,
+> +                            <&gpio 26 GPIO_ACTIVE_LOW>;
+> +      };
+> +    };
+> +...
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 8d1052fa6a69..1f7cd2e848de 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -1267,6 +1267,13 @@ W:	https://ez.analog.com/linux-software-drivers
+>  F:	Documentation/devicetree/bindings/hwmon/adi,adm1177.yaml
+>  F:	drivers/hwmon/adm1177.c
+> =20
+> +ANALOG DEVICES INC ADMFM2000 DRIVER
+> +M:	Kim Seer Paller <kimseer.paller@analog.com>
+> +L:	linux-iio@vger.kernel.org
+> +S:	Supported
+> +W:	https://ez.analog.com/linux-software-drivers
+> +F:	Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml
+> +
+>  ANALOG DEVICES INC ADMV1013 DRIVER
+>  M:	Antoniu Miclaus <antoniu.miclaus@analog.com>
+>  L:	linux-iio@vger.kernel.org
+>=20
+> base-commit: 7ed2632ec7d72e926b9e8bcc9ad1bb0cd37274bf
+> --=20
+> 2.34.1
+>=20
+
+--x20s1Wl4HrobLnOi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZa/mcQAKCRB4tDGHoIJi
+0rEpAPwIcfqFI+Vhdhdxdrd9q11kMB8IqDj1QeeysO8Lzl2LHgEA1EmmJQF+jt4E
+S19/S8QxggnODO6zG1Cup05kHRoAhwA=
+=HnaZ
+-----END PGP SIGNATURE-----
+
+--x20s1Wl4HrobLnOi--
 
