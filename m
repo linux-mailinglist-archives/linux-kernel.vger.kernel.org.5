@@ -1,83 +1,81 @@
-Return-Path: <linux-kernel+bounces-34490-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34494-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6ECBD837CE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:21:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A28E1837CF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:22:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D91421F24D03
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:21:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C49C21C24645
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:22:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30AD715B967;
-	Tue, 23 Jan 2024 00:29:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1973615D5A9;
+	Tue, 23 Jan 2024 00:29:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Z7EUVBVk"
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="SJQaGBFy"
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D17DC15B0EE
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:29:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9753415B995
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 00:29:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705969754; cv=none; b=UAd2jwAIuXx4QGIwQ1s94JTlQ+A3d5Da6evVhwGJKiETNIiNLrLMYbTnIh1N4dBSaL0Zscfoae/VRn3VUKCqEhA3SuZl9t9B6sD45ZMTB1qX172xNYg1Slt9YYC6VHtu90uGe1eEg993TP4vu+4b7fCA4ipLuKGNWDezvktoZfk=
+	t=1705969758; cv=none; b=lMcw+evUHpIPFb/qeGOkAjeDmLhsemvPGQ0k2yjiFEdpKsaAekY9PgCfxVEg4jJrenAhnHVOq5Ru/L7YXdeDv9+rHRYQ/bSY7OfjYO7M87YaFzCsv0qfnKZmfz9eM+Fa+awT1tKS6dtER3uHiIPC418ky6Y4VeaUKhmiXrlOIwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705969754; c=relaxed/simple;
-	bh=7JUW6Se3ttck3u03IUn6h22SlYY5f4wzvv59fMMlk7U=;
+	s=arc-20240116; t=1705969758; c=relaxed/simple;
+	bh=IXC9gHJS+Pnry0+OD6RifuKC5iruziQtcHdroYUu0NY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=T3PCjvZAZdupwN9dIAefAQkYNqd6nZKpkLQP4qLnPss09vr3NCWOYQUSqT29y1fGhJPYFy8lsMnfeavw9UVjOFBKnd9OfSesphD5/9B6Al9KnZLqR4L+9vrAYlugcQ+fZrk4NRqgZ4GmmIFagntnRUQIguPzsSAm/pOS5XPU1/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Z7EUVBVk; arc=none smtp.client-ip=209.85.210.54
+	 MIME-Version; b=GyMSXWnvPXvWwkkWn8e6vDJABi/Tmhc+WVV5TYQiGiIM7jebx013UILFoUrw8BebiHajvGIxZYBC8TxPoR68BDJqQ4i4PMZxnJdVJ3L2m91VSy6k4vaUdBmeQr8s6CDWSKs2FQvdTSg1+POLWmSdnm4dccHvZHVfK6jvXi3CrOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=SJQaGBFy; arc=none smtp.client-ip=209.85.215.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6e0a64d9449so2432903a34.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 16:29:11 -0800 (PST)
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5cddfe0cb64so1786534a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jan 2024 16:29:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1705969751; x=1706574551; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1705969756; x=1706574556; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ie3OTr5sznD5HalHa+6zn+LnARRkCye1/EzAPt6ehMc=;
-        b=Z7EUVBVkONDMsQtdqm0Q343HbVNgU8Ys/Z1cwQJbcFaj/ZUQG6Oz2Ld0TAwsIhtuU0
-         foBw3rYg05H3K9uYPSn7jWhi6AlCFucQAR1dmLqUUITT1cCGz0/sPecGal2vu62vlSge
-         EZHiPWRMVfxkD1BgS1wGMVtLzX16pAcvvYxDw=
+        bh=4R+UH41sqIFBEg2yHgSz9fASiwRmxO8UrEbFS39w0BY=;
+        b=SJQaGBFyaHQfX8ipErQPchtmgreagwEZD2Ajm7xOsT53ZYHhkdP+g1QHTIkxLJgiGo
+         2c7zlIAoka+I4U6gIDnQCLVsPEgnzUlxaHCCjq+S0sX8Ya4h9UDEd/NGrTAgqv2/cCYt
+         p6o1/RBfIP+SRbcyntIEYmRXiptwsFa5E1AoE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705969751; x=1706574551;
+        d=1e100.net; s=20230601; t=1705969756; x=1706574556;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ie3OTr5sznD5HalHa+6zn+LnARRkCye1/EzAPt6ehMc=;
-        b=wfWnmqh3MX6L2fKhjvBIZNBHbspcFBi9tFxO/5cfAQDOYAiq+q36sqJnk7NMLRZAm5
-         QjBRAK6bPXzDS2x3tcvKWvQjtR5XnZEBkBeXUOmh9T2jJ9sgzX+LuTA9yL7eQ42kLhuA
-         O76nvh8aGIyen80UAdA9/kuiUFBaM58Cn1znaQ76Ltb46LhEr+XCtDB6Ks19gvKYobVv
-         VmTWiqgQLClGlU6LCNzRBeJdJNQzw5TDzdIX8dxXQWcn4vZbcKWkHcHotfXNSjUMnJMI
-         iUjDZmQYF7HYbNTtLb2KEyWJFmPCwk6c0RZa2txakdXwW0htjdVR0ScEnLGc5G1077l9
-         FWqA==
-X-Gm-Message-State: AOJu0YyDptG/sY2vLtEYfqqawsjTfqyO68kDc/NcPEWwMtqqfj4v1AzE
-	e8Um8O6JJ3I+aP3c4FbG+qSXVrOnxCcuvS+a1tm1puj+HKiLOK+I/QYv9rca7g==
-X-Google-Smtp-Source: AGHT+IFu1VaQEw9sFXv+HjTUE3GiTFvw/CXFMuGTa+QFdqe8mKXPpftBjYBhP/mp26Aucx61/cVbWQ==
-X-Received: by 2002:a05:6358:1804:b0:176:5d73:3778 with SMTP id u4-20020a056358180400b001765d733778mr1791008rwm.36.1705969750988;
-        Mon, 22 Jan 2024 16:29:10 -0800 (PST)
+        bh=4R+UH41sqIFBEg2yHgSz9fASiwRmxO8UrEbFS39w0BY=;
+        b=mbLDaQItpjxy9hmgVP6ICcMk6NTDDhxzAcuKq7R+S8k+fj3EtRfM62xs3EtNJLaMuI
+         yedFdhkSSWXJa02pXnVulhVY1c3O/s2gjHdaWC+4hT4Bm0xR1mLegp8XxVygMZuTKnKm
+         5N8wfqBAKvE7QOeHCwGDjSXQs/esk61Hi0SlXlaGtzp+qR2RxMtqM1N0Fcyb+VP7qI2b
+         11lb8Ul8ylp1B7AD2P6EDT84TaYBe1Uo4Mt73lFMmqNDRZbxCaor7DDEhShIoUTRv1Bz
+         Wtb6+59QEMOCBClbr+wAtVeavOAhU+g5O5BUkkz8n68zWtI1IFhPqUeZ1a4FyUHt7bQG
+         8uiA==
+X-Gm-Message-State: AOJu0Yy8yDVlgCiJT7gKD/7t4Ww+JLZ1B8G/b0yytNOUBv7h+atD4/0r
+	5/z82U5toKDWYBxItlgNH/QvYmH/5hiaFUg/+kxZKfOHOxKPEZtJ9ClPJ7O+Uw==
+X-Google-Smtp-Source: AGHT+IEOQPxBrxeTVknuQ85iWItECd3oDMC0wKeLvQMG9XfT1svGRvJdDWYE3hUC2zG+qCIX3weiSw==
+X-Received: by 2002:a05:6a20:1446:b0:19c:5821:1d6b with SMTP id a6-20020a056a20144600b0019c58211d6bmr373911pzi.71.1705969756091;
+        Mon, 22 Jan 2024 16:29:16 -0800 (PST)
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id v6-20020aa78086000000b006dbda1b19f7sm3156587pff.159.2024.01.22.16.28.58
+        by smtp.gmail.com with ESMTPSA id s2-20020a17090302c200b001d707987ce3sm7513949plk.194.2024.01.22.16.29.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 16:29:06 -0800 (PST)
+        Mon, 22 Jan 2024 16:29:08 -0800 (PST)
 From: Kees Cook <keescook@chromium.org>
 To: linux-hardening@vger.kernel.org
 Cc: Kees Cook <keescook@chromium.org>,
-	Brian Norris <briannorris@chromium.org>,
-	Kalle Valo <kvalo@kernel.org>,
-	=?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
-	Dmitry Antipov <dmantipov@yandex.ru>,
-	Tsuchiya Yuto <kitakar@gmail.com>,
-	linux-wireless@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Shuah Khan <shuah@kernel.org>,
+	linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org,
 	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
 	Bill Wendling <morbo@google.com>,
 	Justin Stitt <justinstitt@google.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 62/82] mwifiex: pcie: Refactor intentional wrap-around test
-Date: Mon, 22 Jan 2024 16:27:37 -0800
-Message-Id: <20240123002814.1396804-62-keescook@chromium.org>
+Subject: [PATCH 63/82] mm: Refactor intentional wrap-around test
+Date: Mon, 22 Jan 2024 16:27:38 -0800
+Message-Id: <20240123002814.1396804-63-keescook@chromium.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240122235208.work.748-kees@kernel.org>
 References: <20240122235208.work.748-kees@kernel.org>
@@ -87,20 +85,19 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2776; i=keescook@chromium.org;
- h=from:subject; bh=7JUW6Se3ttck3u03IUn6h22SlYY5f4wzvv59fMMlk7U=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlrwgKEfuOUm8gdUPZ8vO/KuClWsfQ2f3pzbTem
- aIxnbAM+fGJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZa8ICgAKCRCJcvTf3G3A
- JonQD/9WVyaa9kGcf/DTeFmgfzqdX7xnM18yRtPWxEh32TPyVUA9IygNLB2Mzz7Mzf/1z1oLx5q
- y6Uf/vyz4gMUfg0RBu4V8FJXTNaL+fZtfonFGhqdJJClaBBDFVd+vTLW4YjC2SBU3KoLfkXXOq2
- 7bkrtOFIv7f20UQSh0t9WqD3TpID+zmHpIZvvP9d1x9ZqTkzcibWw0o5ZMuGl0KUOlFccvvXP+o
- t5jfiwQoOn9vESyzTRCcdLFh+EvH3+0EqK2qvNuTBuuHD2rKuFauD7WFvMSJHXrvqzrig23cJRh
- 2zz4ePXncay641mG9MIX2AghTvd0BXeUoNdMT2XoIc/G4FPNL62a0r04JF25hoDFE9uYhE7HOUr
- py+wlbBwWORaTtcW5nC4dkTB8JgNhmBvm17GrHAPIu6mqlZHRb7dzU/INOEZaMNSwDAhXjjrRjO
- NSmZSSPrUmkcJLxcAk3hFfbiT62Ad8EBnkaTXnMfLammAc/mmAlnOtABI64GIfFYBXc359RDmbq
- T/ikhjpd19tZo9mFB6ePKrrqeXpNz6UJO8M1WUi7y+9calE0yGanCbvnXGPAgnq51BkvTXMU44k
- iFtizJzAsxk+HlRrziOXDHeWih6lFTrScEFVxBGE/7wFBi4xSw5Te7dWdKwU8Olt009JASnOl+g iafvZ3vYcSNfmBw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4403; i=keescook@chromium.org;
+ h=from:subject; bh=IXC9gHJS+Pnry0+OD6RifuKC5iruziQtcHdroYUu0NY=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlrwgKGl7sIklkp9DpywnYDLBMy17rUJMlBDpuZ
+ IF1ZnQBhjmJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZa8ICgAKCRCJcvTf3G3A
+ JiG2D/9PRn4Y/k1W4IyELDW0vMaP8RPiiJfMCcL4ThXwWsfGmaqGLqfV1zQEvJXDHSGEjV3qA6f
+ 1QWoI9IwuKjfA6OfO0JlksQZDvV/d4C1mTWzdQrRY2/LthSJBzsCK5VbReL0TpTAcFMajuY0JUk
+ y79Nm7lQVGIPVT5kz9GE4HegEGGPsCk202fOQjGOid1P2FXfyctaxE7AC8A1oTmzBr7B6go6pES
+ ZTzR/Z2fyNRTV4EbHBr9C3U447jLgO+uGVXj5FYunn/XaHZoFkbicu5CWTluotmM8My6vrUQc+R
+ OVe3VQn2KHnuQsPPgENWLrMitHmaACD3nc3KGOQ5Nq6c9iVKKDGGSDopVfAm0cnC4JZNZssedWq
+ QpeBszRZxgPbM6k0GMuCe73qgQg1GJuz4XqNNsDbrPNFJfH5ZXInUZt7+xx3wQ05371PA60Z8t0
+ tmCrWOgNSP9F1389si16h87Pzo/PvgvSF70Hbml6OUR4kU8xvA5OMHvggCQlwJG4zIykjLq9Ggu
+ inHAl1IReCphEG4kev2pugmVlUlmGGkFAeg2uA4m/PbIKGl61suJep0mr5S3biRpHUZh/FVpWS0
+ dBLSKvx/lkw1jpHcmaLhj8srWr/oF+71hPZ7pLlb7R43ZReS0qw78SWDbOAttKIb6nPhBw9l//1 jTPSgii2rrZymlQ==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 
@@ -125,48 +122,102 @@ Link: https://git.kernel.org/linus/68df3755e383e6fecf2354a67b08f92f18536594 [1]
 Link: https://github.com/KSPP/linux/issues/26 [2]
 Link: https://github.com/KSPP/linux/issues/27 [3]
 Link: https://github.com/KSPP/linux/issues/344 [4]
-Cc: Brian Norris <briannorris@chromium.org>
-Cc: Kalle Valo <kvalo@kernel.org>
-Cc: "Jonas Dreßler" <verdre@v0yd.nl>
-Cc: Dmitry Antipov <dmantipov@yandex.ru>
-Cc: Tsuchiya Yuto <kitakar@gmail.com>
-Cc: linux-wireless@vger.kernel.org
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: linux-mm@kvack.org
+Cc: linux-kselftest@vger.kernel.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/net/wireless/marvell/mwifiex/pcie.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ mm/memory.c | 4 ++--
+ mm/mmap.c   | 2 +-
+ mm/mremap.c | 2 +-
+ mm/nommu.c  | 4 ++--
+ mm/util.c   | 2 +-
+ 5 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/pcie.c b/drivers/net/wireless/marvell/mwifiex/pcie.c
-index 5f997becdbaa..e69347e65f0e 100644
---- a/drivers/net/wireless/marvell/mwifiex/pcie.c
-+++ b/drivers/net/wireless/marvell/mwifiex/pcie.c
-@@ -2086,7 +2086,7 @@ static int mwifiex_extract_wifi_fw(struct mwifiex_adapter *adapter,
+diff --git a/mm/memory.c b/mm/memory.c
+index 7e1f4849463a..d47acdff7af3 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -2559,7 +2559,7 @@ int vm_iomap_memory(struct vm_area_struct *vma, phys_addr_t start, unsigned long
+ 	unsigned long vm_len, pfn, pages;
  
- 		switch (dnld_cmd) {
- 		case MWIFIEX_FW_DNLD_CMD_1:
--			if (offset + data_len < data_len) {
-+			if (add_would_overflow(data_len, offset)) {
- 				mwifiex_dbg(adapter, ERROR, "bad FW parse\n");
- 				ret = -1;
- 				goto done;
-@@ -2110,7 +2110,7 @@ static int mwifiex_extract_wifi_fw(struct mwifiex_adapter *adapter,
- 		case MWIFIEX_FW_DNLD_CMD_5:
- 			first_cmd = true;
- 			/* Check for integer overflow */
--			if (offset + data_len < data_len) {
-+			if (add_would_overflow(data_len, offset)) {
- 				mwifiex_dbg(adapter, ERROR, "bad FW parse\n");
- 				ret = -1;
- 				goto done;
-@@ -2120,7 +2120,7 @@ static int mwifiex_extract_wifi_fw(struct mwifiex_adapter *adapter,
- 		case MWIFIEX_FW_DNLD_CMD_6:
- 			first_cmd = true;
- 			/* Check for integer overflow */
--			if (offset + data_len < data_len) {
-+			if (add_would_overflow(data_len, offset)) {
- 				mwifiex_dbg(adapter, ERROR, "bad FW parse\n");
- 				ret = -1;
- 				goto done;
+ 	/* Check that the physical memory area passed in looks valid */
+-	if (start + len < start)
++	if (add_would_overflow(start, len))
+ 		return -EINVAL;
+ 	/*
+ 	 * You *really* shouldn't map things that aren't page-aligned,
+@@ -2569,7 +2569,7 @@ int vm_iomap_memory(struct vm_area_struct *vma, phys_addr_t start, unsigned long
+ 	len += start & ~PAGE_MASK;
+ 	pfn = start >> PAGE_SHIFT;
+ 	pages = (len + ~PAGE_MASK) >> PAGE_SHIFT;
+-	if (pfn + pages < pfn)
++	if (add_would_overflow(pfn, pages))
+ 		return -EINVAL;
+ 
+ 	/* We start the mapping 'vm_pgoff' pages into the area */
+diff --git a/mm/mmap.c b/mm/mmap.c
+index b78e83d351d2..16501fcaf511 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -3023,7 +3023,7 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, start, unsigned long, size,
+ 		return ret;
+ 
+ 	/* Does pgoff wrap? */
+-	if (pgoff + (size >> PAGE_SHIFT) < pgoff)
++	if (add_would_overflow(pgoff, (size >> PAGE_SHIFT)))
+ 		return ret;
+ 
+ 	if (mmap_write_lock_killable(mm))
+diff --git a/mm/mremap.c b/mm/mremap.c
+index 38d98465f3d8..efa27019a05d 100644
+--- a/mm/mremap.c
++++ b/mm/mremap.c
+@@ -848,7 +848,7 @@ static struct vm_area_struct *vma_to_resize(unsigned long addr,
+ 	/* Need to be careful about a growing mapping */
+ 	pgoff = (addr - vma->vm_start) >> PAGE_SHIFT;
+ 	pgoff += vma->vm_pgoff;
+-	if (pgoff + (new_len >> PAGE_SHIFT) < pgoff)
++	if (add_would_overflow(pgoff, (new_len >> PAGE_SHIFT)))
+ 		return ERR_PTR(-EINVAL);
+ 
+ 	if (vma->vm_flags & (VM_DONTEXPAND | VM_PFNMAP))
+diff --git a/mm/nommu.c b/mm/nommu.c
+index b6dc558d3144..299bcfe19eed 100644
+--- a/mm/nommu.c
++++ b/mm/nommu.c
+@@ -202,7 +202,7 @@ EXPORT_SYMBOL(vmalloc_to_pfn);
+ long vread_iter(struct iov_iter *iter, const char *addr, size_t count)
+ {
+ 	/* Don't allow overflow */
+-	if ((unsigned long) addr + count < count)
++	if (add_would_overflow(count, (unsigned long)addr))
+ 		count = -(unsigned long) addr;
+ 
+ 	return copy_to_iter(addr, count, iter);
+@@ -1705,7 +1705,7 @@ int access_process_vm(struct task_struct *tsk, unsigned long addr, void *buf, in
+ {
+ 	struct mm_struct *mm;
+ 
+-	if (addr + len < addr)
++	if (add_would_overflow(addr, len))
+ 		return 0;
+ 
+ 	mm = get_task_mm(tsk);
+diff --git a/mm/util.c b/mm/util.c
+index 5a6a9802583b..e6beeb23b48b 100644
+--- a/mm/util.c
++++ b/mm/util.c
+@@ -567,7 +567,7 @@ unsigned long vm_mmap(struct file *file, unsigned long addr,
+ 	unsigned long len, unsigned long prot,
+ 	unsigned long flag, unsigned long offset)
+ {
+-	if (unlikely(offset + PAGE_ALIGN(len) < offset))
++	if (unlikely(add_would_overflow(offset, PAGE_ALIGN(len))))
+ 		return -EINVAL;
+ 	if (unlikely(offset_in_page(offset)))
+ 		return -EINVAL;
 -- 
 2.34.1
 
