@@ -1,147 +1,160 @@
-Return-Path: <linux-kernel+bounces-34447-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-34453-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F48B837CA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:13:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1724837C5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 02:11:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE19BB28103
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 00:59:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BFFA1B2892C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jan 2024 01:04:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24A9214C59B;
-	Tue, 23 Jan 2024 00:21:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8949A14FD1C;
+	Tue, 23 Jan 2024 00:22:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="NR/AlsA7"
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AZwbK56h"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C02B514AD2B;
-	Tue, 23 Jan 2024 00:21:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15FE314DB74;
+	Tue, 23 Jan 2024 00:22:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705969269; cv=none; b=IlyxtpcUI2EZS6ivS8enF4XZSvlRjnw0r7ePWsK8Pevm9/3fVMXTRlGk/9QFXZIsLVc5UGv09MEOl//uwV/SELL84YCMxH0ghuPEnytFyR5uIaAM9iWNckYjPuHlzUA5o45fMTv7w43YkX820HD2EgAfKULZFbgDk0paYucWQ/s=
+	t=1705969362; cv=none; b=Zq1Gt3oID4JhKRge6oR2c0lBO8h1oPQLayh1BxQ74RLtJ0U5G35ecVKTklgqtnEjj7/EqXqP4GqGKkDQoUbqxmdZsO9zOmPBOJU0lMCcXWaC9bt2YznIRUI7sM/WuHwhslvxrHbmLFh6MmIgf1C+yIkYljmC9iE1ehVi5oyD4Kk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705969269; c=relaxed/simple;
-	bh=m55lPpC+NBSE/XcmCcD0E6mFq9o/I9MNWdauqqDofbk=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=liJsnAWKL7UqpFgQyy2vA+WRWaS+h2d31h89skP4AMlVG9JMHh5g0df7F8wDKL1pLsPsCCP3ZCCNh96OnqAveMeyMQU2uxhLI6RYLQ/yk8+fqGJc+tic1eW9vy/TwTfQmvVrj2ECIxgixR7apGslRXWsRFobtxD8J7a1cnnJJEY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=NR/AlsA7; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [127.0.0.1] ([76.133.66.138])
-	(authenticated bits=0)
-	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 40N0HoLc2798528
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Mon, 22 Jan 2024 16:17:50 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 40N0HoLc2798528
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2024011201; t=1705969072;
-	bh=naevb4PslKTi+uWE0rIwkjLfQkOH3+GqKQddGwCKH50=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=NR/AlsA7je5VAyZlNPTZHvXBBzujylBLOIxmnxF4bzZa+iaBvnN8bscZ+p5JkQaJH
-	 ktK2PFVspY/AnvBR1rDjgiy5C0pQbhgGOCSnz2c+7QoE2VKG/r5QNRvd9rUsX6u926
-	 B18RybD5ChPM2oeC+/dkh75st/RyLCw4gBhEDZ/8NXV1GEGVVBn5HwNKITtSiD+b6B
-	 RNxHsmhbX42aaKRVUIOUymXOHS/xUCX8Nxf7gg67sU9XnG8TdgCwPUGRJ89WxOxQA0
-	 OHPPuDDGIkVBhGIrtxVa5Ur7uJX/H/QbZqQXpUttoMMbAuhTGzmigvLcbNcDG5iX8f
-	 xhMr6LuORnThg==
-Date: Mon, 22 Jan 2024 16:17:48 -0800
-From: "H. Peter Anvin" <hpa@zytor.com>
-To: Alexey Makhalov <alexey.makhalov@broadcom.com>,
-        Dave Hansen <dave.hansen@intel.com>, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux.dev, bp@alien8.de,
-        dave.hansen@linux.intel.com, mingo@redhat.com, tglx@linutronix.de
-CC: x86@kernel.org, netdev@vger.kernel.org, richardcochran@gmail.com,
-        linux-input@vger.kernel.org, dmitry.torokhov@gmail.com,
-        zackr@vmware.com, linux-graphics-maintainer@vmware.com,
-        pv-drivers@vmware.com, namit@vmware.com, timothym@vmware.com,
-        akaher@vmware.com, jsipek@vmware.com, dri-devel@lists.freedesktop.org,
-        daniel@ffwll.ch, airlied@gmail.com, tzimmermann@suse.de,
-        mripard@kernel.org, maarten.lankhorst@linux.intel.com,
-        horms@kernel.org, kirill.shutemov@linux.intel.com
-Subject: Re: [PATCH v6 7/7] x86/vmware: Add TDX hypercall support
-User-Agent: K-9 Mail for Android
-In-Reply-To: <c01cecef-db06-49d8-aa2e-548908c65861@broadcom.com>
-References: <20240109084052.58661-1-amakhalov@vmware.com> <20240109084052.58661-8-amakhalov@vmware.com> <ff370e42-f48b-4c62-9b44-9d4031cd78b0@intel.com> <4CF87BC4-E8C8-4584-A275-5A985D5A18A1@zytor.com> <c01cecef-db06-49d8-aa2e-548908c65861@broadcom.com>
-Message-ID: <351B1153-9CBE-4774-9FAF-770F9F36856E@zytor.com>
+	s=arc-20240116; t=1705969362; c=relaxed/simple;
+	bh=Xx29hkn+VuZzl9NNsCbqSpiFZ4s0wixGphpqZM+kOB0=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=jgKbB/6YJ9Az5wZv0liU6GGPj/sq7Itwy5OgrMR1/UzATlUeEHiw1aorXtmuEQHcKMJH6yJWOPVyuw8nqM+n4/jIjpG9cA8mcVecy/nCMqiESI1IQQv8y3/U4kl2DIwGsEJU98F86OX+MQoH5IOyU1VD4XKJWGbxCZ76oSi8EFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AZwbK56h; arc=none smtp.client-ip=134.134.136.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705969361; x=1737505361;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=Xx29hkn+VuZzl9NNsCbqSpiFZ4s0wixGphpqZM+kOB0=;
+  b=AZwbK56hVAtv8IIAo9ah8RZhFnLZpw1KDs8AqIiJKpE01vS1TEyoDkim
+   4bMTyNQLMky0ia3yS05pX+6suUjdADtz/mgk1gHFt+9ja2PTQOt0LLVBM
+   FzMxfiqEgluL2DDg5ZYrqvI/aAdi+3ylIL8774wEJPXK4+7Mw0Qgvscsh
+   V4VaqzgV47WcnLBU+wBxPG2qKKfkuRClAvyLwcNCntLGu8MC23pl2N9S7
+   MTTLrQ0nBR9hImEqO6ELxYZaqYsEx1i5MtqlbSSICj1Ucxis3HjPGiICR
+   d4QGFNJVNGgf9VzG+WaTEmAj39zRVbUFUS3F0ycvMocxh3NBQ8l4uPtMG
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10961"; a="405125666"
+X-IronPort-AV: E=Sophos;i="6.05,212,1701158400"; 
+   d="scan'208";a="405125666"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 16:22:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,212,1701158400"; 
+   d="scan'208";a="27825643"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2024 16:22:38 -0800
+From: isaku.yamahata@intel.com
+To: kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: isaku.yamahata@intel.com,
+	isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>,
+	Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com,
+	hang.yuan@intel.com,
+	tina.zhang@intel.com,
+	Xiaoyao Li <xiaoyao.li@intel.com>
+Subject: [PATCH v7 05/13] KVM: MMU: Introduce level info in PFERR code
+Date: Mon, 22 Jan 2024 16:22:20 -0800
+Message-Id: <3eadceecdf5e0ed2677dbcd9d0d58963f7fa038b.1705965958.git.isaku.yamahata@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1705965958.git.isaku.yamahata@intel.com>
+References: <cover.1705965958.git.isaku.yamahata@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On January 22, 2024 4:04:33 PM PST, Alexey Makhalov <alexey=2Emakhalov@broa=
-dcom=2Ecom> wrote:
->
->
->On 1/22/24 10:28 AM, H=2E Peter Anvin wrote:
->> On January 22, 2024 8:32:22 AM PST, Dave Hansen <dave=2Ehansen@intel=2E=
-com> wrote:
->>> On 1/9/24 00:40, Alexey Makhalov wrote:
->>>> +#ifdef CONFIG_INTEL_TDX_GUEST
->>>> +unsigned long vmware_tdx_hypercall(unsigned long cmd,
->>>> +				   struct tdx_module_args *args)
->>>> +{
->>>> +	if (!hypervisor_is_type(X86_HYPER_VMWARE))
->>>> +		return ULONG_MAX;
->>>> +
->>>> +	if (cmd & ~VMWARE_CMD_MASK) {
->>>> +		pr_warn_once("Out of range command %lx\n", cmd);
->>>> +		return ULONG_MAX;
->>>> +	}
->>>> +
->>>> +	args->r10 =3D VMWARE_TDX_VENDOR_LEAF;
->>>> +	args->r11 =3D VMWARE_TDX_HCALL_FUNC;
->>>> +	args->r12 =3D VMWARE_HYPERVISOR_MAGIC;
->>>> +	args->r13 =3D cmd;
->>>> +	args->r15 =3D 0; /* CPL */
->>>> +
->>>> +	__tdx_hypercall(args);
->>>> +
->>>> +	return args->r12;
->>>> +}
->>>> +EXPORT_SYMBOL_GPL(vmware_tdx_hypercall);
->>>> +#endif
->>>=20
->>> This is the kind of wrapper that I was hoping for=2E  Thanks=2E
->>>=20
->>> Acked-by: Dave Hansen <dave=2Ehansen@linux=2Eintel=2Ecom>
->>>=20
->>=20
->> I'm slightly confused by this TBH=2E
->>=20
->> Why are the arguments passed in as a structure, which is modified by th=
-e wrapper to boot? This is analogous to a system call interface=2E
->>=20
->> Furthermore, this is an out-of-line function; it should never be called=
- with !X86_HYPER_VMWARE or you are introducing overhead for other hyperviso=
-rs; I believe a pr_warn_once() is in order at least, just as you have for t=
-he out-of-range test=2E
->>=20
->
->This patch series introduces vmware_hypercall family of functions similar=
- to kvm_hypercall=2E Similarity: both vmware and kvm implementations are st=
-atic inline functions and both of them use __tdx_hypercall (global not expo=
-rted symbol)=2E Difference: kvm_hypercall functions are used _only_ within =
-the kernel, but vmware_hypercall are also used by modules=2E
->Exporting __tdx_hypercall function is an original Dave's concern=2E
->So we ended up with exporting wrapper, not generic, but VMware specific w=
-ith added checks against arbitrary use=2E
->vmware_tdx_hypercall is not designed for !X86_HYPER_VMWARE callers=2E But=
- such a calls are not forbidden=2E
->Arguments in a structure is an API for __tdx_hypercall()=2E Input and out=
-put argument handling are done by vmware_hypercall callers, while VMware sp=
-ecific dress up is inside the wrapper=2E
->
->Peter, do you think code comments are required to make it clear for the r=
-eader?
->
->
+From: Xiaoyao Li <xiaoyao.li@intel.com>
 
-TBH that explanation didn't make much sense to me=2E=2E=2E
+For TDX, EPT violation can happen when TDG.MEM.PAGE.ACCEPT.
+And TDG.MEM.PAGE.ACCEPT contains the desired accept page level of TD guest.
+
+1. KVM can map it with 4KB page while TD guest wants to accept 2MB page.
+
+  TD guest will get TDX_PAGE_SIZE_MISMATCH and it should try to accept
+  4KB size.
+
+2. KVM can map it with 2MB page while TD guest wants to accept 4KB page.
+
+  KVM needs to honor it because
+  a) there is no way to tell guest KVM maps it as 2MB size. And
+  b) guest accepts it in 4KB size since guest knows some other 4KB page
+     in the same 2MB range will be used as shared page.
+
+For case 2, it need to pass desired page level to KVM MMU page fault
+handler. Use bit 29:31 of kvm PF error code for this purpose.
+
+Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
+Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+---
+ arch/x86/include/asm/kvm_host.h | 5 +++++
+ arch/x86/kvm/mmu/mmu.c          | 5 +++++
+ 2 files changed, 10 insertions(+)
+
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index b83a790b01c8..3a2237ed9dba 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -262,6 +262,8 @@ enum x86_intercept_stage;
+ #define PFERR_FETCH_BIT 4
+ #define PFERR_PK_BIT 5
+ #define PFERR_SGX_BIT 15
++#define PFERR_LEVEL_START_BIT 29
++#define PFERR_LEVEL_END_BIT 31
+ #define PFERR_GUEST_FINAL_BIT 32
+ #define PFERR_GUEST_PAGE_BIT 33
+ #define PFERR_GUEST_ENC_BIT 34
+@@ -274,6 +276,7 @@ enum x86_intercept_stage;
+ #define PFERR_FETCH_MASK	BIT(PFERR_FETCH_BIT)
+ #define PFERR_PK_MASK		BIT(PFERR_PK_BIT)
+ #define PFERR_SGX_MASK		BIT(PFERR_SGX_BIT)
++#define PFERR_LEVEL_MASK	GENMASK_ULL(PFERR_LEVEL_END_BIT, PFERR_LEVEL_START_BIT)
+ #define PFERR_GUEST_FINAL_MASK	BIT_ULL(PFERR_GUEST_FINAL_BIT)
+ #define PFERR_GUEST_PAGE_MASK	BIT_ULL(PFERR_GUEST_PAGE_BIT)
+ #define PFERR_GUEST_ENC_MASK	BIT_ULL(PFERR_GUEST_ENC_BIT)
+@@ -283,6 +286,8 @@ enum x86_intercept_stage;
+ 				 PFERR_WRITE_MASK |		\
+ 				 PFERR_PRESENT_MASK)
+ 
++#define PFERR_LEVEL(err_code)	(((err_code) & PFERR_LEVEL_MASK) >> PFERR_LEVEL_START_BIT)
++
+ /* apic attention bits */
+ #define KVM_APIC_CHECK_VAPIC	0
+ /*
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 53eb9508cde2..971dbd9c95cc 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -4611,6 +4611,11 @@ bool __kvm_mmu_honors_guest_mtrrs(bool vm_has_noncoherent_dma)
+ 
+ int kvm_tdp_page_fault(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
+ {
++	u8 err_level = PFERR_LEVEL(fault->error_code);
++
++	if (err_level)
++		fault->max_level = min(fault->max_level, err_level);
++
+ 	/*
+ 	 * If the guest's MTRRs may be used to compute the "real" memtype,
+ 	 * restrict the mapping level to ensure KVM uses a consistent memtype
+-- 
+2.25.1
+
 
