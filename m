@@ -1,58 +1,59 @@
-Return-Path: <linux-kernel+bounces-36310-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36311-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA444839F31
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:33:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89152839F35
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:34:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85E1F286742
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 02:33:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E9951F28056
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 02:34:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DFB646BF;
-	Wed, 24 Jan 2024 02:33:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB1E1BE45;
+	Wed, 24 Jan 2024 02:33:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="D7j5D5XD"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="GIF6WPtW"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58D824402;
-	Wed, 24 Jan 2024 02:33:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8229C46B8;
+	Wed, 24 Jan 2024 02:33:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706063620; cv=none; b=GqHOU52vhvXdwKZ44kvyQ2OEpl3qj+dnbHED6vczKX+oqJbH8kNoF/LdnBBH8LW1h1syHVWFmWtJd1bQl8E5+Zvq/2I4UAyufAGVshr2PYzWDTfMjpFvMJyliIQoNnweQOf9MMoKEl6TI1i8P8NniKhs0P9oMBL8efSYMZIqjo8=
+	t=1706063623; cv=none; b=UHzqtmhL4mrAgXQ0Tttl2e2ZHiKPbV6vYqE7AY7xSjRtQ3SZGzz/d/tSr/h6GXSHsKOKRTmitMALXZjg2bNItXzuKBdqqDJu0fjV+F3ZRQO7KC+TEv9euGC1qATuIBvvjS2jiTTsXn0HAecI6nOtOofO8cadhAWa7Ak5QHXHhMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706063620; c=relaxed/simple;
-	bh=FL+pr4dyrSEYYZj9+gnRMdPMX6n5TMwj+txbGf5lE3k=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cfUN1TeK0z+0nzC2lXwuYMQbSvmZIS3WBtasPvMHptZHVe00B05edCvb2uxPIxHxB6+x9TSvMZlUeJiJzwWOUeIuv0uKwIWe2Sy9ZKmE2MBwAUHhd3cILY0+EYh+rVJzXeOiY7RzV7WTAAJITNMwVEv3oSzpdAcbqSXhfQyym8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=D7j5D5XD; arc=none smtp.client-ip=205.220.180.131
+	s=arc-20240116; t=1706063623; c=relaxed/simple;
+	bh=oBj4cUvOmEQkDk7mx0oiNf6rouHb04eHY2m+jPYhUzA=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=KmaZvuRUzn2ro9iTeWsnrhEBNWa/q5cPN0mL+oO/xHENcPtjb/UpDmZYoAkwULNEwrosIe+WXdy88deyF9hQSI0vKTu2mrvh8oFaUmFULJHwSMeL5n2Vs3Vwt9aEnfOv78d3RVCco+0aP8GaiFW9IjmOsxS/4s6jIJm5d12EC/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=GIF6WPtW; arc=none smtp.client-ip=205.220.168.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40O0UEln027872;
-	Wed, 24 Jan 2024 02:33:35 GMT
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40O0JYhK006806;
+	Wed, 24 Jan 2024 02:33:38 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	qcppdkim1; bh=aphJM1OrJDGrU1DnpiZruNE4xg1uwTRC5GcBTmn2ics=; b=D7
-	j5D5XDfF4EphNhepoVoyF770hUDe8mF4pJu4sjpHqOpdvYHHd4OKvw2seVONMwIC
-	+xjg0goZJTpXHMQrVfN1m62dWdA4WxPU8L0MoMMttwWn4pLUXwZRbniY3M2ANLoR
-	uB2RJ8D/vfXpoS5aHr8xImsQVwq/4or6cRJNUFo+kmWyU6o6iktH2bs2OekxutcF
-	AgLD0oxDML6r2w030ZHwF6SgmzmWdIZRhdNJsbgfdXEkzVc3CWUWUBpIWxMHVgYr
-	sT34gfxMvp4txQS0O+wa47/ER7gfK4qHlNwZ/cqI6WmffImqRY2NBtHl6Y2vA98a
-	CmsKovJjYfULnvWj+gEQ==
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-type; s=qcppdkim1; bh=nqYU8qWnfg/5NERgRIwH
+	iT1shcUzfnzUaH//2QLuUOw=; b=GIF6WPtWRvYe0GAdO4xxKnPaO459uOaq7x5/
+	l22pfTi6pONiQXptGuqdfrtVz/SoXGdLkgwMsVn8QZR5brzdLEZXHuLMd55mYXMv
+	McfZMP8KqNZW1T/88isRo9yuaYlDRp1MhfbHibca6iJUCBNuHO/f7igBvnbxWlZB
+	1d/THLTousveIzqRLbDHokRCfyKNr1E7isBknzzVqbMnpxXn+w2a5DXbJM0Jg/84
+	yx5FZse8LO25EO6cBiyeSBBBU+l3zyV+r2ivHXztmOganN31+XhfY9sarW+hYxjJ
+	1JF6p8849AiHn9t2LqYJPG08yOEdgGdpmdv6/uBFXVu60jGxRg==
 Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vtmhrgjm9-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vtmh00jdf-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Jan 2024 02:33:35 +0000 (GMT)
+	Wed, 24 Jan 2024 02:33:38 +0000 (GMT)
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40O2XYJs011207
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40O2Xb3c011214
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Jan 2024 02:33:34 GMT
+	Wed, 24 Jan 2024 02:33:37 GMT
 Received: from tengfan2-gv.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 23 Jan 2024 18:33:28 -0800
+ 15.2.1118.40; Tue, 23 Jan 2024 18:33:32 -0800
 From: Tengfei Fan <quic_tengfan@quicinc.com>
 To: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
         <linus.walleij@linaro.org>, <robh+dt@kernel.org>,
@@ -60,10 +61,12 @@ To: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
 CC: <linux-arm-msm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <kernel@quicinc.com>, Tengfei Fan <quic_tengfan@quicinc.com>
-Subject: [PATCH 0/2] dt-bindings: pinctrl: qcom: update SM4450 pinctrl
-Date: Wed, 24 Jan 2024 10:33:03 +0800
-Message-ID: <20240124023305.15755-1-quic_tengfan@quicinc.com>
+Subject: [PATCH 1/2] dt-bindings: pinctrl: qcom: modify the wrong compatible name
+Date: Wed, 24 Jan 2024 10:33:04 +0800
+Message-ID: <20240124023305.15755-2-quic_tengfan@quicinc.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20240124023305.15755-1-quic_tengfan@quicinc.com>
+References: <20240124023305.15755-1-quic_tengfan@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,32 +78,38 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Fgf2iqPYXS4AYbjbYEOdY6RkATjjAogC
-X-Proofpoint-ORIG-GUID: Fgf2iqPYXS4AYbjbYEOdY6RkATjjAogC
+X-Proofpoint-GUID: l7U2a16MhGio4OoCJ8n5qmQbK8G88qv5
+X-Proofpoint-ORIG-GUID: l7U2a16MhGio4OoCJ8n5qmQbK8G88qv5
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-01-23_15,2024-01-23_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 suspectscore=0 clxscore=1011 impostorscore=0 phishscore=0
- mlxscore=0 bulkscore=0 malwarescore=0 mlxlogscore=681 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
+ spamscore=0 adultscore=0 malwarescore=0 suspectscore=0 mlxlogscore=796
+ priorityscore=1501 lowpriorityscore=0 bulkscore=0 mlxscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2401190000 definitions=main-2401240018
 
-Fix the wrong compatible name and consolidate functions in SM4450
-pinctrl dt-bindings document.
+Use right compatible name "qcom,sm4450-tlmm" instead of
+"qcom,sm4450-pinctrl".
 
 Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
 ---
+ Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Tengfei Fan (2):
-  dt-bindings: pinctrl: qcom: modify the wrong compatible name
-  dt-bindings: pinctrl: qcom: consolidate functions
-
- .../bindings/pinctrl/qcom,sm4450-tlmm.yaml    | 53 +++++++------------
- 1 file changed, 18 insertions(+), 35 deletions(-)
-
-
-base-commit: 774551425799cb5bbac94e1768fd69eec4f78dd4
+diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.yaml
+index bb08ca5a1509..bb675c8ec220 100644
+--- a/Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.yaml
++++ b/Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.yaml
+@@ -17,7 +17,7 @@ allOf:
+ 
+ properties:
+   compatible:
+-    const: qcom,sm4450-pinctrl
++    const: qcom,sm4450-tlmm
+ 
+   reg:
+     maxItems: 1
 -- 
 2.17.1
 
