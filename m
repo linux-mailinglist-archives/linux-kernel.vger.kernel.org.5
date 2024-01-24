@@ -1,119 +1,141 @@
-Return-Path: <linux-kernel+bounces-37800-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37801-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB9AD83B59B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 00:35:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6222D83B59E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 00:35:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 519A42869F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:35:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C0B8286AAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:35:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 939AF13666A;
-	Wed, 24 Jan 2024 23:35:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 042CB13666C;
+	Wed, 24 Jan 2024 23:35:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="UZLptB3o"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hzuOPRo4"
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11BFC86157;
-	Wed, 24 Jan 2024 23:35:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 757D213665E
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 23:35:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706139314; cv=none; b=Uu8ncRb7nMnYkKjv3sPvCJaTZ6KmYL7IkCME2CpxJlMBkhMMRgRZyrJMbDr9jKA8oJlfQ+SDB0cvhkcAPlJexnfk+wimkQQzT8RJDRaGjWtaihj4MAAOXo1xjzgft+UN4T9KewtR41jt3PYIpJRaHKT3BeeGCHkIB8uZN7aR5ek=
+	t=1706139326; cv=none; b=OAK5SNhtdyzRZ9ApgGbFLFRfuVhcUJlqVE5tPsc4CUJHVOnhlH8oZ6gR1ZG7dyOnL+A+frSDlkYpnIuJ12HhLna67v15nviwRKWtqu36RvAsAAkKwSLP5L+68VlOkVWrvobRUpY8Qo5VxDkBnMvCfg4RYhxwUTkS8bsDcZ3Amwc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706139314; c=relaxed/simple;
-	bh=B9ZuBkYtPDcqQGNhV8S2cg57wPrNScoCs6eFSdQ7a74=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TH4GD159FfpfyOyeS3Q5VXEjpsNF1ZJyOIntRPwubA55bazGjcPcb7Bw+4hVVWzpr512igmPt57hoOsNZi8wxhpAUwCQdpU5++jadg7viCKwH15fyll7PQqM+p0yX1MTbrhct0PgpdvLcCHeBeA6lS9oDO/UyJPr3sN4hjkO5z4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=UZLptB3o; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id ECBAF40E01AE;
-	Wed, 24 Jan 2024 23:35:08 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 3CeVuIp7DbQF; Wed, 24 Jan 2024 23:35:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1706139305; bh=AiocZRU0PQo3Ni6J+eCR9ApFRQfM8ohWp82T0Fa/txM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UZLptB3oYvNE0fgdlnRs4XFctf8QE3qvTWcCvDlnbOvvXVjYwmAfnESOi/7Rh7c01
-	 F3UGFXYVLF5PidbXtHZShp+uhCy60tmXLOekgtBSFC2gJbsjJ3qOMf8KciGGBrcU51
-	 u6igrxi01uq1zUcr25zTlonhDptCLKKMOH2RaPMIhwShO4KGctD12SHw0DqfEkJ/1j
-	 EsgVq+ENYWRHx9LYNPc1Kp1CL0Gnj9c1iFrtojSp7G+HTcECMHYge+0z5R5Fx17a9U
-	 2uu05jyhatfLE36JiCaBAD1iHqNUIlyLQeM4C9UdqoAurYzc2d4ZL2UgLfnhk2Wee9
-	 CbsCxNZyhOcLIXGeRCdmy2VFew2GdJhj8IlW6Em+271OrVileWqHh1pCdKY87u/RMO
-	 XdbHyKB6jKd9MEPQMvf/N9oGXEQ5bYvxAeIK8rRaUXBWgsIjQRoiRdaEX8HRgw7z2N
-	 p5ljk5/AeU3BAd+TNnhBoR62TYckdp77+dicIvdaCcqHi2kUIglO2EeSAstxjShUFo
-	 9a7rV039ZNDbZ+XPS7z0LrvDo4/xzYryNBWfW+8DGpmJyi7dqDN/96xe8sh6OAKXmI
-	 5DYT3D2sn4aA1TQ5UHHUvkem14J3bKioAN/o7eJI/pFCD4So0mrsYeTXNIIswUrI4H
-	 FpKeWHcE4MOUkjkzm9r178Ug=
-Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7667740E01A9;
-	Wed, 24 Jan 2024 23:34:31 +0000 (UTC)
-Date: Thu, 25 Jan 2024 00:34:24 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Reinette Chatre <reinette.chatre@intel.com>
-Cc: Babu Moger <babu.moger@amd.com>, corbet@lwn.net, fenghua.yu@intel.com,
-	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-	x86@kernel.org, hpa@zytor.com, paulmck@kernel.org,
-	rdunlap@infradead.org, tj@kernel.org, peterz@infradead.org,
-	yanjiewtw@gmail.com, kim.phillips@amd.com, lukas.bulwahn@gmail.com,
-	seanjc@google.com, jmattson@google.com, leitao@debian.org,
-	jpoimboe@kernel.org, rick.p.edgecombe@intel.com,
-	kirill.shutemov@linux.intel.com, jithu.joseph@intel.com,
-	kai.huang@intel.com, kan.liang@linux.intel.com,
-	daniel.sneddon@linux.intel.com, pbonzini@redhat.com,
-	sandipan.das@amd.com, ilpo.jarvinen@linux.intel.com,
-	peternewman@google.com, maciej.wieczor-retman@intel.com,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	eranian@google.com
-Subject: Re: [PATCH] x86/resctrl: Fix unneeded variable warning reported by
- kernel test robot
-Message-ID: <20240124233424.GLZbGegG_5eUaGBOlz@fat_crate.local>
-References: <84128a3c83654493f637b8349153af10d69e2752.1706118776.git.babu.moger@amd.com>
- <39c4501e-4937-49de-b12b-742e6201df6f@intel.com>
- <20240124183153.GFZbFXmTKTLEpwZshW@fat_crate.local>
- <e96df7ac-f0b4-4300-8546-7c1df836dea2@intel.com>
- <20240124191429.GGZbFhldYr3K85H9cg@fat_crate.local>
- <6635c607-cab2-45f4-a0fe-ff4f53b36849@intel.com>
- <20240124204525.GIZbF25bekUME2flt0@fat_crate.local>
- <7d6e3d39-ce53-40e4-bba5-242911a1522a@intel.com>
- <20240124224657.GKZbGTYTjN2m8VirbF@fat_crate.local>
- <abf569d6-9634-424f-97b3-a71716b3cde5@intel.com>
+	s=arc-20240116; t=1706139326; c=relaxed/simple;
+	bh=pLOxL3uGdu3PEt3PgpGpSLPDrGG85JqWleyeZmTGcXE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ue7PrwbuK3wwQUWQiX3nZ2XmliNErga2ubYWdicdaAmJyd9tF3/HrqwUrp00QnomOlfzZM7E3UCmo12NgCX0N39UkQuaKLQMthOk5azF0Ol6dJb8ZCx/gEQMvMN6xvEuZBKhwQVaEnMRtlQwa3IFd1mt/KoaOlSXnb1Kxo5Jdnc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hzuOPRo4; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cf338e1438so2140801fa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 15:35:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706139322; x=1706744122; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Qe/DnSocfVSs8fWiqOrlmqzT+M3JYs+S/nJyZuNxraM=;
+        b=hzuOPRo4I9F89b35ypvRbHQWNiHyq46re6KUhwZuYQNG34EfYxX71MEPCpt1WXD2QD
+         5nQgQM0oRmCevc2vQPmCvSo4XNXGj6qMpHxUVuVzq1ljsggzUDg+6Aq0MJZyZh2p2F3S
+         xJDMN2RSOSwo8uAWU01Wftn0OqyuQSDq0JXu0teEqLDfMTWkTqRxxwsCkFSZWXyEIoES
+         U8HE1OE4gB+7bstLTL90anQW9Fy4giNFkCrA4ZXZ0d9PSn0ncvl8m/E7kuAYawsYO8zX
+         tztNXcCUR4tabCJm/G/JwJEe4SpudREo0M0j1YcNtjM4fGput/J9IVIetfUutP3RKXuz
+         iytA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706139322; x=1706744122;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Qe/DnSocfVSs8fWiqOrlmqzT+M3JYs+S/nJyZuNxraM=;
+        b=t9UVZXK/+gUKP6LAvlBpjRPxIhnTPhGqAdtGQ4G9JZ3OpKl7sjLmIdyQEzqBwVd/hl
+         hTeCLyM5/fBAJVUWN0pLXZlt23dnEr0vr10On+rHFQDUROT4VQpUDypfPdu36GAfA/BM
+         aUQQlDpG7KD5rrmyPkf7iNYqQ95ZFw49T1kYun/hGsOu9IBDXDaq5Gqc2M/T3dUI2TXp
+         lSfKsR87CexhB/guGqdEMqTftHPi0TcX7sDIkg5+HATB786mbKkeuIc37vWZRB+5mjrs
+         LyXmvHWeY8KwUfAObvf6jg+cSEgcwT8CGoBsdSPILaQevKXzGU+bYFAzuK7ougMIfCME
+         69Ew==
+X-Gm-Message-State: AOJu0YzDyqsV7E1IxxHHpwRuUKtXY++H+aE3XpZT/Zs/Cr9UI/TtauHF
+	3J43DAtyDUnvt0kttXq1DWIUz5PHAbbjaOy8ngn+wnhRzCbdlEnOSeWJu0RIv7I=
+X-Google-Smtp-Source: AGHT+IF45ww99YyzdSWE+qA57c4PFAaCgYeKd2Czeg2UE2VYoSBeUmQAX31VZC9Jt73KkYa45836oA==
+X-Received: by 2002:a05:651c:169b:b0:2cf:1b2b:6a73 with SMTP id bd27-20020a05651c169b00b002cf1b2b6a73mr38987ljb.19.1706139322326;
+        Wed, 24 Jan 2024 15:35:22 -0800 (PST)
+Received: from [172.30.205.155] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id t6-20020a2e9546000000b002cf15a1d917sm104841ljh.105.2024.01.24.15.35.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Jan 2024 15:35:21 -0800 (PST)
+Message-ID: <e7457703-fcd1-448a-bcb1-d5aa31bbb1fc@linaro.org>
+Date: Thu, 25 Jan 2024 00:35:20 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <abf569d6-9634-424f-97b3-a71716b3cde5@intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Revert "power: supply: qcom_battmgr: Register the power
+ supplies after PDR is up"
+To: Johan Hovold <johan+linaro@kernel.org>, Sebastian Reichel <sre@kernel.org>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+ Marijn Suijten <marijn.suijten@somainline.org>,
+ Neil Armstrong <neil.armstrong@linaro.org>, Xilin Wu <wuxilin123@gmail.com>,
+ linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240123160053.18331-1-johan+linaro@kernel.org>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240123160053.18331-1-johan+linaro@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 24, 2024 at 03:03:15PM -0800, Reinette Chatre wrote:
-> Since you are the one that decides the rules for inclusion you can make this
-> check to be one where checkpatch.pl can be ignored. No objection from me if
-> you choose to do so (and I will note the precedent for future patches).
 
-Nah, that's not nearly as important for you to change your workflow.
 
-What I'd suggest, though, is to sanity-check what checkpatch suggests and
-ask yourself whether it always makes sense.
+On 1/23/24 17:00, Johan Hovold wrote:
+> This reverts commit b43f7ddc2b7a5a90447d96cb4d3c6d142dd4a810.
+> 
+> The offending commit deferred power-supply class device registration
+> until the service-started notification is received.
+> 
+> This triggers a NULL pointer dereference during boot of the Lenovo
+> ThinkPad X13s and SC8280XP CRD as battery status notifications can be
+> received before the service-start notification:
+> 
+> 	Unable to handle kernel NULL pointer dereference at virtual address 00000000000005c0
+> 	...
+> 	Call trace:
+> 	 _acquire+0x338/0x2064
+> 	 acquire+0x1e8/0x318
+> 	 spin_lock_irqsave+0x60/0x88
+> 	 _supply_changed+0x2c/0xa4
+> 	 battmgr_callback+0x1d4/0x60c [qcom_battmgr]
+> 	 pmic_glink_rpmsg_callback+0x5c/0xa4 [pmic_glink]
+> 	 qcom_glink_native_rx+0x58c/0x7e8
+> 	 qcom_glink_smem_intr+0x14/0x24 [qcom_glink_smem]
+> 	 __handle_irq_event_percpu+0xb0/0x2d4
+> 	 handle_irq_event+0x4c/0xb8
+> 
+> As trying to serialise this is non-trivial and risks missing
+> notifications, let's revert to registration during probe so that the
+> driver data is all set up once the service goes live.
+> 
+> The warning message during resume in case the aDSP firmware is not
+> running that motivated the change can be considered a feature and should
+> not be suppressed.
+> 
+> Fixes: b43f7ddc2b7a ("power: supply: qcom_battmgr: Register the power supplies after PDR is up")
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> ---
 
-Thx.
+Johan and I talked off-list and decided reverting this is the best
+way to go forward for now, the problem that my original commit
+solved (or well, tried to, anyway) is only an issue with a
+configuration that's not quite supported (i.e. missing all
+pieces of the puzzle for a functional battmgr) and more work would
+need to be put into supporting that. I *may* do it in the future,
+but for now both of us need to work on different things.
 
--- 
-Regards/Gruss,
-    Boris.
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Konrad
 
