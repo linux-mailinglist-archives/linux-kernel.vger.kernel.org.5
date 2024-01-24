@@ -1,129 +1,131 @@
-Return-Path: <linux-kernel+bounces-37077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50B8983AB2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:51:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 428F383AB2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:52:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AFD72B23D92
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:50:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 765AF1C28659
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:52:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61F2A77F3E;
-	Wed, 24 Jan 2024 13:50:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65E297A70A;
+	Wed, 24 Jan 2024 13:52:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="BEXRqT/F"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kxsssozW"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F304A77F25;
-	Wed, 24 Jan 2024 13:50:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2952E604B2;
+	Wed, 24 Jan 2024 13:52:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706104246; cv=none; b=nhplZCg98m236u1rrwf5jmpolw1FVXR1nlprf1XSKIhdl6fii2iAErXFpqUXareAv/y59VnEYGe7oyXJxiGutKI19j/50j4b6BrzAPrZtoy4EGqRYUe2rGNg4c8M5V27AVQDT9/t47KSt3V5EXBxKmKds4bSwU0idd1Zi33+KQo=
+	t=1706104325; cv=none; b=RmlzDuyu65gc/qfEPpGA2aVznWZfr8SJj0meUTQ20WoflX1DFWdV5HZleztKS7iG09sTGS0lvoNEp1BMpFZ8SHfNvhyYU1rNWXwy4pNXsV7NrkAYuzslHl82fvaZ/acSI1pPyBtrZBGz4oz7BimhcxLgMKzoD09Vqf7YA8KDAaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706104246; c=relaxed/simple;
-	bh=qv1XCCmrpEelMNYD86CEC9P5gBGzAUCiISJyBzk4RZ0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Gs/yf+mIX264q6gN7uFM8OJaX5SGvn+xXXzbCwOs6ExmQOXlFZKfFBVfN/Wzykt97nfJlnOgkD5lk0qTPIRiJNuY5a161wqF67U6D1tTNYXyTqVAI30uYzGTwje5JEllUUPKvmlpNVuS5On0hRezeTNfFroJqXh6Etca9UkBId0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=BEXRqT/F; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4F0F91C0003;
-	Wed, 24 Jan 2024 13:50:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1706104236;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Aj6ZQfg/DQIXs3PgkhqXH6sZRgoGEcYx3M5juw4r4UA=;
-	b=BEXRqT/FMI6b2tciHLBA1R9XyZWtEnOWl2cS45kZukK1HrYvVzy2FJ/dx8HjzXtGXyviVm
-	mdMuItxi5TjLPLloMGqUV4Kif3QcnfsTbt/mXf+uvMoJ8lWW2y6s0HYUKAX9ixB7oRgxiS
-	KAJ9cCI+cHZi+myA2AdFsgB8ldZZVQR+gPKhrLqFBn8iXV2gt9gNdLQ97u+Kc180/FexiN
-	FSq95iZ9m+CGZ8PFOhpIVe5SRtIQ0IhlhserDqm+TnAGcLvvBiPJonqOro4TuROqyVWT5U
-	XVBtHDxzbWKQkX4PdGRtMu6EqTXAQ62sNc7r5EKqZPRz25NyPaXzE1TVf5utHQ==
-Date: Wed, 24 Jan 2024 14:50:33 +0100
-From: Maxime Chevallier <maxime.chevallier@bootlin.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- thomas.petazzoni@bootlin.com, Eric Dumazet <edumazet@google.com>, Paolo
- Abeni <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>,
- linux-arm-kernel@lists.infradead.org, Christophe Leroy
- <christophe.leroy@csgroup.eu>, Herve Codina <herve.codina@bootlin.com>,
- Florian Fainelli <f.fainelli@gmail.com>, Heiner Kallweit
- <hkallweit1@gmail.com>, Vladimir Oltean <vladimir.oltean@nxp.com>,
- =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>, Jesse Brandeburg
- <jesse.brandeburg@intel.com>, Jonathan Corbet <corbet@lwn.net>, Marek
- =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>, Piergiorgio Beruto
- <piergiorgio.beruto@gmail.com>, Oleksij Rempel <o.rempel@pengutronix.de>,
- =?UTF-8?B?Tmljb2zDsg==?= Veronese <nicveronese@gmail.com>, Simon Horman
- <horms@kernel.org>
-Subject: Re: [PATCH net-next v5 07/13] net: ethtool: Introduce a command to
- list PHYs on an interface
-Message-ID: <20240124145033.1c711fd1@device-28.home>
-In-Reply-To: <2c955f94-7c95-4f66-b739-f0967ec9c171@lunn.ch>
-References: <20231221180047.1924733-1-maxime.chevallier@bootlin.com>
-	<20231221180047.1924733-8-maxime.chevallier@bootlin.com>
-	<20240104153401.08ff9809@kernel.org>
-	<20240105104311.03a35622@device-28.home>
-	<2c955f94-7c95-4f66-b739-f0967ec9c171@lunn.ch>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1706104325; c=relaxed/simple;
+	bh=rbpT+I5DAbw9inpKn+MsXkzmp0NlzvzL9aVI6prsA2s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G4S5go10PIB7YtdkC0ux7t6W/vI8MnVOVhqEMr0feXMdUhDzbTZnTnNEbogR24DcfwN4WiZBtKH2nLJbvmdISXaPyYv8r8E+U6ALzcSPCXizQMjISFo8vKvXj6Xbt4i9uT4f+rlCXKRVE1m96hKCRQQTUO1mjnuskiu1p8eRUas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kxsssozW; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706104324; x=1737640324;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=rbpT+I5DAbw9inpKn+MsXkzmp0NlzvzL9aVI6prsA2s=;
+  b=kxsssozWlxGeGLB/DLcnihnl7d6doOla+Quxm6NKC/Cuv3rYrKUW/g69
+   +uRlrESMq1iQbyVBWFuaynba6G0fAp6cBKOQMJo+qyUjyz9t4BCVefeeE
+   eoT6VWf7ph3hDDlRf+w6HwCw1USO/db43E4+fKB417iJkdHRCTAdRsUj/
+   XafAvg74y/VdxXgXmwCnyRRmV5Y9Ugy3LYQ3/ahOYaVSKinXmXyf69yFx
+   kWnt5H976yIWa+zfB/+UHOiWOUsY0LLKNgkb2juzTwiEBnpYfUfmjzjL0
+   8cX2U+tpIUNDYKuoIdn/PydALeS2PN+Iw6aJuZIFYftxVdMTIuVzmBt7R
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="8519424"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="8519424"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 05:52:03 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="929688219"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="929688219"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by fmsmga001.fm.intel.com with SMTP; 24 Jan 2024 05:51:59 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 24 Jan 2024 15:51:58 +0200
+Date: Wed, 24 Jan 2024 15:51:58 +0200
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To: Prashant Malani <pmalani@chromium.org>
+Cc: Abhishek Pandit-Subedi <abhishekpandit@google.com>,
+	linux-usb@vger.kernel.org, jthies@google.com,
+	Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Saranya Gopal <saranya.gopal@intel.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/3] usb: typec: ucsi: Limit read size on v1.2
+Message-ID: <ZbEV/qp/EhUkHVhA@kuha.fi.intel.com>
+References: <20240123223039.1471557-1-abhishekpandit@google.com>
+ <20240123143026.v1.1.Iacf5570a66b82b73ef03daa6557e2fc0db10266a@changeid>
+ <CACeCKaftJSGba3ebs58=cB5aRLuOnbvhQX2V6+5=t9GPC08_Uw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: maxime.chevallier@bootlin.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACeCKaftJSGba3ebs58=cB5aRLuOnbvhQX2V6+5=t9GPC08_Uw@mail.gmail.com>
 
-Hello Andrew,
-
-On Fri, 5 Jan 2024 14:17:10 +0100
-Andrew Lunn <andrew@lunn.ch> wrote:
-
-> > > > +int ethnl_phy_dumpit(struct sk_buff *skb, struct netlink_callback *cb)
-> > > > +{
-> > > > +	struct ethnl_phy_dump_ctx *ctx = (void *)cb->ctx;
-> > > > +	struct net *net = sock_net(skb->sk);
-> > > > +	unsigned long ifindex = 1;    
-> > > 
-> > > This doesn't look right, if dump gets full you gotta pick up
-> > > when previous call left off.  
-> > 
-> > I wasn't aware that this was the expected DUMP behaviour. So I should
-> > keep track of the last dev and last phy_index dumped in the dump_ctx I
-> > guess ? I'm not sure how I'm going to test this though, I only have
-> > devices with at most 2 PHYs :(  
+On Wed, Jan 24, 2024 at 12:12:26AM -0800, Prashant Malani wrote:
+> Hi Abhishek,
 > 
-> At a guess....
+> On Tue, Jan 23, 2024 at 2:30 PM Abhishek Pandit-Subedi
+> <abhishekpandit@google.com> wrote:
+> >
+> > From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> >
+> > Between UCSI 1.2 and UCSI 2.0, the size of the MESSAGE_IN region was
+> > increased from 16 to 256. In order to avoid overflowing reads for older
+> > systems, add a mechanism to use the read UCSI version to truncate read
+> > sizes on UCSI v1.2.
+> >
+> > Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> I have one nit (mentioned in side-band but reproducing here for consistency),
+> but will defer to the maintainer on that.
 > 
-> You are supposed to dump until you are out of space in the buffer. You
-> then return what you have, and expect another call so you can continue
-> with the rest.
+> The above notwithstanding, FWIW:
+> Reviewed-by: Prashant Malani<pmalani@chromium.org>
 > 
-> Rather than fill the buffer, just hack the code to only put in a
-> single PHY, and then return with the same condition of a full
-> buffer. Hopefully you should get a second call, and you can then test
-> your logic for picking up from where you left off.
+> > @@ -1556,6 +1569,15 @@ int ucsi_register(struct ucsi *ucsi)
+> >         if (!ucsi->version)
+> >                 return -ENODEV;
+> >
+> > +       /*
+> > +        * Version format is JJ.M.N (JJ = Major version, M = Minor version,
+> > +        * N = sub-minor version).
+> > +        */
+> > +       dev_info(ucsi->dev, "Registered UCSI interface with version %x.%x.%x",
+> > +                UCSI_BCD_GET_MAJOR(ucsi->version),
+> > +                UCSI_BCD_GET_MINOR(ucsi->version),
+> > +                UCSI_BCD_GET_SUBMINOR(ucsi->version));
 > 
-> Another option might be to add PHY support to netdevsim. Add a debugfs
-> interface to allow you to create arbitrary PHY topologies? You can
-> then even add a test script.
+> nit: I think this doesn't need to be dev_info() and can be just
+> dev_dbg(), but will
+> defer to the maintainer.
 
-Sorry for the delayed answer, I just took a few hours to give it a try,
-and I was able to spin some very basic PHY support for the netdevsim,
-allowing to attach arbitrary instances of fixed_phy devices. I can
-therefore use that as a mean of testing the dump operation, I'll try to
-include that in the next iteration, that should pave the way for some
-testability of more PHY stuff hopefully.
+I think that's okay.
 
-Thanks for the suggestion,
+Reviewewd-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-Maxime
+-- 
+heikki
 
