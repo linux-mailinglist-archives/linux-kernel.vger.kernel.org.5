@@ -1,144 +1,162 @@
-Return-Path: <linux-kernel+bounces-36952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 385C883A96D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:17:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EC2683A972
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:17:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E00A42829F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:17:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7217C1C21674
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:17:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 712AD62A1E;
-	Wed, 24 Jan 2024 12:17:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="eY2C3aO6"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 291A762A19
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 12:17:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A7C46310E;
+	Wed, 24 Jan 2024 12:17:31 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD5D262A1E;
+	Wed, 24 Jan 2024 12:17:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706098633; cv=none; b=j6cAVxzyZY8xNSUyqI8d+eAKhybXaVl6+OcOn1yXZUWtdw5PCbbAV6EMaH1cT4TdN28lDlUDWQ/1sE1kBk4pvCLkdz4Hlecu7JiOfUONP6JwouOZyyDTE7WO4u7tqn9ZHzOWOic30bx9GXJ3bK7VhgxiQzEGfro9H//+7nuEyKw=
+	t=1706098650; cv=none; b=MOHXhtdbQ5PK71wDRc19EQB2GQWIMlGq/iQNM0dM1OMdZxDALMeHc+p1kixsq8c9BmDKsGLeDBtJ9y+sZVe//y6TTAqMYgJejs9F5WKtsDQIelAtZAbKuROTa0UgxQfJSKhVOxI9qZ1J2NEuv1MbJfeyEXXL9Ta4Ro2g521phJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706098633; c=relaxed/simple;
-	bh=9rIW4BZC82xuUDbZFWKobPmRbLgwvfViOByLftgM8f0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BLL3B4kbreH+ea84J6hfG9ifna+5G3LK+YibjIqe7KQUEZ2WH8KmrCgRZcTty9OFXQ6HHu24m9Hdw4rQ2mKC3Z6namBJA/aJkhpeC5769tFigQ7Q9jgC6PPV83dnzfrQLT0V13/ah0PQRShabP3aGuyYFRQmwb0C4P02WWrj8Qg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=eY2C3aO6; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a310409589aso103002666b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 04:17:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1706098628; x=1706703428; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=R534gPYSNr7qXXwj05XS3LR+Dft8ZupD8G2mc4eLBbQ=;
-        b=eY2C3aO6WLIbI3GT251VVVbSFjASKKxtAzhUmudwDd6PxAXES28URJT61sXMPCvdN+
-         qBKu5kDHelOLa/vJEcyuWN3SMyhXFyxWO3qBQ/RzOQfcwJywNdgZ03mfXbNfU8Mkjb5i
-         I9Xjdyvb3AMBZo1DFN1+ycalxUOPQVcELysNg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706098628; x=1706703428;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=R534gPYSNr7qXXwj05XS3LR+Dft8ZupD8G2mc4eLBbQ=;
-        b=rAfJ4JP70LVZHu+b59wmCDiq/WOrL0a4748sDLlqIXuV8vxkPu9j1GDFN+Cps9YFtG
-         q8Lg1tIWDka7d1U/YI99Sf6gNDhNzJSdI7fAnF/5I50uBEpQtBeAmUvE2LxldTxaXr+i
-         4qByXcEN3pwJCt3H0j62DABWaMDlE8Fo1RrQwymN42SMqQSNyqX553ha4bwSCuRTWKaT
-         unnn8Eb7ARqHv3yboI85QodNX6l4AtLjVaDozNs9mimYuwDfrdVQiyvcRinG8qIw3EzJ
-         JdyVWsa40GaRxPh1OxcEJ2z1J17GP88zKagFmlpLqEP0j8ZOcx07Zk7h3knzooFlZaeO
-         6oNw==
-X-Gm-Message-State: AOJu0YyvQ9iS/5VxmXRpQNruI1B1rIjk7jJ+uP8VE4iPTPvqfMHsyr9k
-	9vtntnHn7jCxd59p5W5ZnslGEuc63d1aUVot1ddfyzI7OWCRaMz/O6j3aDwH86AmMYcMIH2oa0s
-	v68WPG5lggzfkD+9ADQCV8o4QnKwwdCLRFI0r7Q==
-X-Google-Smtp-Source: AGHT+IHRFw0weEHminhg3Rf758vsNvpsMk749Qr5zmuq35Cat1GtfJfvnBtbd7XR7W+WKZpKiC/GEmFSgxd7bOxchBw=
-X-Received: by 2002:a17:907:a805:b0:a31:4083:4d06 with SMTP id
- vo5-20020a170907a80500b00a3140834d06mr121802ejc.85.1706098628041; Wed, 24 Jan
- 2024 04:17:08 -0800 (PST)
+	s=arc-20240116; t=1706098650; c=relaxed/simple;
+	bh=qsXWo+HrmIFDIhLLli/+May0uzYFgdFB7nfDG1YuS9U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AjHVFs8/B6ZX8QdpkMvsPWW2TJlFLJx/mH6mJFFjIbZrL/bUT7iEP+3ZJAHOnMLymgknxcrsQuayjHfYtlAE18gokWehuLBNLSo1sdQkG4jisDPDuwOiZkOSBUoh1HDmgkhDGkPnBYu9adan6/QLlvw1QLKTfuRB/FQeAuWQ++U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E2E681FB;
+	Wed, 24 Jan 2024 04:18:12 -0800 (PST)
+Received: from [10.57.77.165] (unknown [10.57.77.165])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 715B63F5A1;
+	Wed, 24 Jan 2024 04:17:24 -0800 (PST)
+Message-ID: <edfade67-269e-4a49-8db6-40617131e283@arm.com>
+Date: Wed, 24 Jan 2024 12:17:23 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124113042.44300-1-jefflexu@linux.alibaba.com>
-In-Reply-To: <20240124113042.44300-1-jefflexu@linux.alibaba.com>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Wed, 24 Jan 2024 13:16:56 +0100
-Message-ID: <CAJfpegtkSgRO-24bdnA4xUMFW5vFwSDQ7WkcowNR69zmbRwKqQ@mail.gmail.com>
-Subject: Re: [PATCH] fuse: add support for explicit export disabling
-To: Jingbo Xu <jefflexu@linux.alibaba.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	amir73il@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 02/10] mm: Non-pmd-mappable, large folios for
+ folio_add_new_anon_rmap()
+Content-Language: en-GB
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Sven Schnelle <svens@linux.ibm.com>, David Hildenbrand
+ <david@redhat.com>, Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Yin Fengwei <fengwei.yin@intel.com>,
+ Yu Zhao <yuzhao@google.com>, Catalin Marinas <catalin.marinas@arm.com>,
+ Anshuman Khandual <anshuman.khandual@arm.com>, Yang Shi
+ <shy828301@gmail.com>, "Huang, Ying" <ying.huang@intel.com>,
+ Zi Yan <ziy@nvidia.com>, Luis Chamberlain <mcgrof@kernel.org>,
+ Itaru Kitayama <itaru.kitayama@gmail.com>,
+ "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ John Hubbard <jhubbard@nvidia.com>, David Rientjes <rientjes@google.com>,
+ Vlastimil Babka <vbabka@suse.cz>, Hugh Dickins <hughd@google.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, Barry Song <21cnbao@gmail.com>,
+ Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Barry Song <v-songbaohua@oppo.com>, linux-s390@vger.kernel.org
+References: <20231207161211.2374093-1-ryan.roberts@arm.com>
+ <20231207161211.2374093-3-ryan.roberts@arm.com> <ZaMR2EWN-HvlCfUl@krava>
+ <41dc7dff-1ea8-4894-a487-88d46ec2b2d8@redhat.com> <ZaRKMwKJIBmh8-lD@krava>
+ <1188e67e-5c04-4bb5-b242-78d92c3fc85c@arm.com>
+ <yt9d1qa7x9qv.fsf@linux.ibm.com> <ZbDyLzoIm0GdQzZA@krava>
+ <6caaced7-a9d7-4fe4-823a-11b96be83e46@arm.com> <ZbD9YdCmZ3_uTj_k@krava>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <ZbD9YdCmZ3_uTj_k@krava>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, 24 Jan 2024 at 12:30, Jingbo Xu <jefflexu@linux.alibaba.com> wrote:
->
-> open_by_handle_at(2) can fail with -ESTALE with a valid handle returned
-> by a previous name_to_handle_at(2) for evicted fuse inodes, which is
-> especially common when entry_valid_timeout is 0, e.g. when the fuse
-> daemon is in "cache=none" mode.
->
-> The time sequence is like:
->
->         name_to_handle_at(2)    # succeed
->         evict fuse inode
->         open_by_handle_at(2)    # fail
->
-> The root cause is that, with 0 entry_valid_timeout, the dput() called in
-> name_to_handle_at(2) will trigger iput -> evict(), which will send
-> FUSE_FORGET to the daemon.  The following open_by_handle_at(2) will send
-> a new FUSE_LOOKUP request upon inode cache miss since the previous inode
-> eviction.  Then the fuse daemon may fail the FUSE_LOOKUP request with
-> -ENOENT as the cached metadata of the requested inode has already been
-> cleaned up during the previous FUSE_FORGET.  The returned -ENOENT is
-> treated as -ESTALE when open_by_handle_at(2) returns.
->
-> This confuses the application somehow, as open_by_handle_at(2) fails
-> when the previous name_to_handle_at(2) succeeds.  The returned errno is
-> also confusing as the requested file is not deleted and already there.
-> It is reasonable to fail name_to_handle_at(2) early in this case, after
-> which the application can fallback to open(2) to access files.
->
-> Since this issue typically appears when entry_valid_timeout is 0 which
-> is configured by the fuse daemon, the fuse daemon is the right person to
-> explicitly disable the export when required.
->
-> Also considering FUSE_EXPORT_SUPPORT actually indicates the support for
-> lookups of "." and "..", and there are existing fuse daemons supporting
-> export without FUSE_EXPORT_SUPPORT set, for compatibility, we add a new
-> INIT flag for such purpose.
+On 24/01/2024 12:06, Jiri Olsa wrote:
+> On Wed, Jan 24, 2024 at 12:02:53PM +0000, Ryan Roberts wrote:
+>> On 24/01/2024 11:19, Jiri Olsa wrote:
+>>> On Wed, Jan 24, 2024 at 12:15:52PM +0100, Sven Schnelle wrote:
+>>>> Ryan Roberts <ryan.roberts@arm.com> writes:
+>>>>
+>>>>> On 14/01/2024 20:55, Jiri Olsa wrote:
+>>>>>> On Sun, Jan 14, 2024 at 06:33:56PM +0100, David Hildenbrand wrote:
+>>>>>>> On 13.01.24 23:42, Jiri Olsa wrote:
+>>>>>>>> On Thu, Dec 07, 2023 at 04:12:03PM +0000, Ryan Roberts wrote:
+>>>>>>>>> In preparation for supporting anonymous multi-size THP, improve
+>>>>>>>>> folio_add_new_anon_rmap() to allow a non-pmd-mappable, large folio to be
+>>>>>>>>> passed to it. In this case, all contained pages are accounted using the
+>>>>>>>>> order-0 folio (or base page) scheme.
+>>>>>>>>>
+>>>>>>>>> Reviewed-by: Yu Zhao <yuzhao@google.com>
+>>>>>>>>> Reviewed-by: Yin Fengwei <fengwei.yin@intel.com>
+>>>>>>>>> Reviewed-by: David Hildenbrand <david@redhat.com>
+>>>>>>>>> Reviewed-by: Barry Song <v-songbaohua@oppo.com>
+>>>>>>>>> Tested-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+>>>>>>>>> Tested-by: John Hubbard <jhubbard@nvidia.com>
+>>>>>>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>>>>>>>> ---
+>>>>>>>>>   mm/rmap.c | 28 ++++++++++++++++++++--------
+>>>>>>>>>   1 file changed, 20 insertions(+), 8 deletions(-)
+>>>>>>>>>
+>>>>>>>>> diff --git a/mm/rmap.c b/mm/rmap.c
+>>>>>>>>> index 2a1e45e6419f..846fc79f3ca9 100644
+>>>>>>>>> --- a/mm/rmap.c
+>>>>>>>>> +++ b/mm/rmap.c
+>>>>>>>>> @@ -1335,32 +1335,44 @@ void page_add_anon_rmap(struct page *page, struct vm_area_struct *vma,
+>>>>>>>>>    * This means the inc-and-test can be bypassed.
+>>>>>>>>>    * The folio does not have to be locked.
+>>>>>>>>>    *
+>>>>>>>>> - * If the folio is large, it is accounted as a THP.  As the folio
+>>>>>>>>> + * If the folio is pmd-mappable, it is accounted as a THP.  As the folio
+>>>>>>>>>    * is new, it's assumed to be mapped exclusively by a single process.
+>>>>>>>>>    */
+>>>>>>>>>   void folio_add_new_anon_rmap(struct folio *folio, struct vm_area_struct *vma,
+>>>>>>>>>   		unsigned long address)
+>>>>>>>>>   {
+>>>>>>>>> -	int nr;
+>>>>>>>>> +	int nr = folio_nr_pages(folio);
+>>>>>>>>> -	VM_BUG_ON_VMA(address < vma->vm_start || address >= vma->vm_end, vma);
+>>>>>>>>> +	VM_BUG_ON_VMA(address < vma->vm_start ||
+>>>>>>>>> +			address + (nr << PAGE_SHIFT) > vma->vm_end, vma);
+>>>>>>>>
+>>>>>>>> hi,
+>>>>>>>> I'm hitting this bug (console output below) with adding uprobe
+>>>>>>>> on simple program like:
+>>>>>>>>
+>>>>>>>>    $ cat up.c
+>>>>>>>>    int main(void)
+>>>>>>>>    {
+>>>>>>>>       return 0;
+>>>>>>>>    }
+>>>>>>>>
+>>>>>>>>    # bpftrace -e 'uprobe:/home/jolsa/up:_start {}'
+>>>>>>>>
+>>>>>>>>    $ ./up
+>>>>>>>>
+>>>>>>>> it's on top of current linus tree master:
+>>>>>>>>    052d534373b7 Merge tag 'exfat-for-6.8-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/linkinjeon/exfat
+>>>>>>>>
+>>>>>>>> before this patch it seems to work, I can send my .config if needed
+>>>>>
+>>>>> Thanks for the bug report!
+>>>>
+>>>> I just hit the same bug in our CI, but can't find the fix in -next. Is
+>>>> this in the queue somewhere?
+>>>
+>>> we hit it as well, but I can see the fix in linux-next/master
+>>>
+>>>   4c137bc28064 uprobes: use pagesize-aligned virtual address when replacing pages
+>>
+>> Yes that's the one. Just to confirm: you are still hitting the VM_BUG_ON despite
+>> having this change in your kernel? Could you please send over the full bug log?
+> 
+> ah sorry.. I meant the change fixes the problem for us, it just did not
+> yet propagate through the merge cycle into bpf trees.. but I can see it
+> in linux-next tree, so it's probably just matter of time
 
-This looks good overall.
+OK great! How about you, Sven? Do you have this change in your kernel? Hopefully
+it should fix your problem.
 
->
-> Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
-> ---
-> RFC: https://lore.kernel.org/all/20240123093701.94166-1-jefflexu@linux.alibaba.com/
-> ---
->  fs/fuse/inode.c           | 11 ++++++++++-
->  include/uapi/linux/fuse.h |  2 ++
->  2 files changed, 12 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-> index 2a6d44f91729..851940c0e930 100644
-> --- a/fs/fuse/inode.c
-> +++ b/fs/fuse/inode.c
-> @@ -1110,6 +1110,11 @@ static struct dentry *fuse_get_parent(struct dentry *child)
->         return parent;
->  }
->
-> +/* only for fid encoding; no support for file handle */
-> +static const struct export_operations fuse_fid_operations = {
+> 
+> jirka
 
-Nit: I'd call this fuse_no_export_operations (or something else that
-emphasizes the fact that this is only for encoding and not for full
-export support).
-
-Thanks,
-Miklos
 
