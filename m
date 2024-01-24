@@ -1,109 +1,107 @@
-Return-Path: <linux-kernel+bounces-37366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37355-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86FFA83AEDA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:57:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0AA183AEAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:48:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9E651C22966
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:57:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F943285166
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:48:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 412117E777;
-	Wed, 24 Jan 2024 16:56:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CECE87E57F;
+	Wed, 24 Jan 2024 16:48:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="erE85xfv"
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ZP+vhr00"
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4C0F7E574;
-	Wed, 24 Jan 2024 16:56:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.120.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B8EE77638;
+	Wed, 24 Jan 2024 16:48:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706115397; cv=none; b=Di4gTiagbnGrG5FYVHvYle1x9WsSn3E4SNwq7mYbsftcRSYRTmxvQqHuUEPqyQYrGWDtyAPuzs4zfLo5AilCLBzxIIjm2Rsvk+QJI+PsYZ8YrLXTEcEfhcPRW7N7ESgon0hRIYX/L8WV2Nf2EluEOIq1zxnjJAPOvJevO92+SfM=
+	t=1706114889; cv=none; b=aD/jhEFbdsKDTiGkJ64YD/S17lCq56fDvFgMA7EVLdWCNTu9A1BzatDEjBsV9O2lB4r0X7WnZOaeVqUmEYJayovkG8Drknnt4fObrx4hyIlMu06dG1Sg+l0JpaaNed9NlkU8uW26XbiVpIs2eykVSenVKfEMNp6HgDAi3ybP6Q0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706115397; c=relaxed/simple;
-	bh=N/kGM6SSHeoHMJ/i/c2gY34ro1FC3sWkupBy+t0cAyk=;
-	h=From:To:Cc:Date:Message-Id:In-Reply-To:References:MIME-Version:
-	 Subject; b=ATmSc2h5G9mBrKQzpQpcleckVbR3jpsYRPzJ2BvOWa8MC71W24Aqn9c3Nij3XsqyVDZwpdOxQAsMSfrrmu43I+uCmgM5bNVInoSo/YCvNMJDdj3dHNkSysDh+EMziiRFfxlmH3krh7ss4kCuSV0xIxojrsQvCptUmpl7Ad0ADSI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=erE85xfv; arc=none smtp.client-ip=162.243.120.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-	; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
-	:From:subject:date:message-id:reply-to;
-	bh=BprktDcYRExOw/27QWQGvLSVRCiQlLMf3BAYhVwKXac=; b=erE85xfvepTFm0ptxWkoTE1IAC
-	KqNdeL+oXb//LAH9P2RczM1XWDJD/cwUeHdGSqB6qRKIuc9rRkjdsfxZB/vdVp0Z4KY1fTambXfjS
-	ByjSNrPWbGrgj7YkgpEEVAknRU6aJDfG+xBA527PDAUk5ywLjBh8Q2zIXGYh6REoPCAo=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:45420 helo=pettiford.lan)
-	by mail.hugovil.com with esmtpa (Exim 4.92)
-	(envelope-from <hugo@hugovil.com>)
-	id 1rSgY9-0007ym-At; Wed, 24 Jan 2024 11:56:29 -0500
-From: Hugo Villeneuve <hugo@hugovil.com>
-To: robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	shawnguo@kernel.org,
-	s.hauer@pengutronix.de,
-	kernel@pengutronix.de,
-	festevam@gmail.com,
-	linux-imx@nxp.com,
-	leoyang.li@nxp.com,
-	hvilleneuve@dimonoff.com
-Cc: krzysztof.kozlowski@linaro.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	hugo@hugovil.com,
-	andy.shevchenko@gmail.com
-Date: Wed, 24 Jan 2024 11:46:46 -0500
-Message-Id: <20240124164646.1506814-3-hugo@hugovil.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240124164646.1506814-1-hugo@hugovil.com>
-References: <20240124164646.1506814-1-hugo@hugovil.com>
+	s=arc-20240116; t=1706114889; c=relaxed/simple;
+	bh=S7DJ3+JCBTXNJeT3R+rQ9rFrdxAQ0AW7yvX18psweRM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=NUVchtMeWbz840I5O/FxxH5lXuIZAXGAB2BF6YYTkhn+ZQwYwZ+SmWBNyBhG+5ukidZRQFmsS52/lncD+m0BLW2kw7FI2zaGSePPIj3/gxkX0K+LTVFUL0xqNNJXCaWDWb/ZF2lJu4UeW/58dCpwBEHn8ASElL9UeeTHDHvkz+w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ZP+vhr00; arc=none smtp.client-ip=217.70.183.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 681F260006;
+	Wed, 24 Jan 2024 16:48:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1706114884;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Hve7mVwzFpKlUFRjGUurQPnaxwP0/IowvX0am3el6Vc=;
+	b=ZP+vhr00cn+7xRAMlu/e3C3oKegJdereg0UiMsYWIOFkp/kXdX7C0czffAtbcw0mCJvj9t
+	4FXEo2tEHTcTX0O9CQshe8PJJu6j/DtBETUyDU1o3szcdZBVskVKrJ7CvCZKDPiKW03JUa
+	PpJ7sJI0I4FuHwr53IMtFmqgd9zaZ2cq5KQjq63grYm4B2Wv3KZO94Q23IpGcoPqyo3dsv
+	0XBizSKr+MDTD3LASFpdWYe1xEDep4L4ELywcImBWNXnLqc+MxbR/XFrXUjz8S6CCxeD7S
+	DFhGCNOkUo7WgwV4YsrrYZd0n+MxTePiuUQsi8jn0necVuv6n8lHDwwo/G7sjw==
+Date: Wed, 24 Jan 2024 17:48:02 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Stefan Schmidt <stefan@datenfreihafen.org>
+Cc: Breno Leitao <leitao@debian.org>, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, Alexander Aring
+ <alex.aring@gmail.com>, netdev@vger.kernel.org, "open list:IEEE 802.15.4
+ SUBSYSTEM" <linux-wpan@vger.kernel.org>, open list
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 06/10] net: fill in MODULE_DESCRIPTION()s for
+ ieee802154
+Message-ID: <20240124174802.0b5910a5@xps-13>
+In-Reply-To: <45711bec-e0f3-43c2-b8f2-b9a55654710b@datenfreihafen.org>
+References: <20240108181610.2697017-1-leitao@debian.org>
+	<20240108181610.2697017-7-leitao@debian.org>
+	<45711bec-e0f3-43c2-b8f2-b9a55654710b@datenfreihafen.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
-X-Spam-Level: 
-X-Spam-Report: 
-	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
-Subject: [PATCH v2 2/2] arm64: dts: imx8mn-rve-gateway: remove redundant company name
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 
-From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Hi,
 
-Company name in compatible description appears twice, which is not really
-helpful, so remove it from product name.
+stefan@datenfreihafen.org wrote on Tue, 9 Jan 2024 08:25:21 +0100:
 
-Fixes: 67275c2f3d9b ("arm64: dts: freescale: introduce rve-gateway board")
-Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
----
- arch/arm64/boot/dts/freescale/imx8mn-rve-gateway.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Hello.
+>=20
+> On 08.01.24 19:16, Breno Leitao wrote:
+> > W=3D1 builds now warn if module is built without a MODULE_DESCRIPTION().
+> > Add descriptions to ieee802154 modules.
+> >=20
+> > Signed-off-by: Breno Leitao <leitao@debian.org>
+> > ---
+> >   net/ieee802154/6lowpan/core.c | 1 +
+> >   net/ieee802154/socket.c       | 1 +
+> >   2 files changed, 2 insertions(+)
+> >=20
+> > diff --git a/net/ieee802154/6lowpan/core.c b/net/ieee802154/6lowpan/cor=
+e.c
+> > index 2c087b7f17c5..b88f6a96d961 100644
+> > --- a/net/ieee802154/6lowpan/core.c
+> > +++ b/net/ieee802154/6lowpan/core.c
+> > @@ -280,5 +280,6 @@ static void __exit lowpan_cleanup_module(void) =20
+> >   >   module_init(lowpan_init_module); =20
+> >   module_exit(lowpan_cleanup_module);
+> > +MODULE_DESCRIPTION("IPv6 over Low power Wireless Personal Area Network=
+ IEEE802154.4 core"); =20
+>=20
+> If we want to nitpick you could write it as IEEE 802.15.4.
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn-rve-gateway.dts b/arch/arm64/boot/dts/freescale/imx8mn-rve-gateway.dts
-index 1b633bd1ebb6..ea1855171fb0 100644
---- a/arch/arm64/boot/dts/freescale/imx8mn-rve-gateway.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mn-rve-gateway.dts
-@@ -10,7 +10,7 @@
- 
- / {
- 	model = "RVE gateway";
--	compatible = "rve,rve-gateway", "variscite,var-som-mx8mn", "fsl,imx8mn";
-+	compatible = "rve,gateway", "variscite,var-som-mx8mn", "fsl,imx8mn";
- 
- 	crystal_duart_24m: crystal-duart-24m {
- 		compatible = "fixed-clock";
--- 
-2.39.2
+Also agreed, can you please post an update?
 
+Thanks,
+Miqu=C3=A8l
 
