@@ -1,180 +1,135 @@
-Return-Path: <linux-kernel+bounces-37298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37299-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABFE283ADF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:05:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C04283ADF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:08:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AC773B27E51
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:05:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3481628D729
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:08:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DCEE7CF34;
-	Wed, 24 Jan 2024 16:05:22 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 279D67C0B5;
-	Wed, 24 Jan 2024 16:05:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BB8D7CF18;
+	Wed, 24 Jan 2024 16:07:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AkpFFABp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 779257A725;
+	Wed, 24 Jan 2024 16:07:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706112321; cv=none; b=E00/0VIrWvdKApo0WAmb/9nmBqYpIIy43encKnAkP9iNSlFx864CKidu3lQb1Bz/xIVrJ8f5UJJArxJWand33YccQ/PFwDJ8xu0sYOGrKnvafhsxPFsLNq1Efsdff+val8R+C3d44mq0TDESCcc+GC2KNSoOAok3izqyORj+T8Q=
+	t=1706112474; cv=none; b=W+97xLwZ+60Qxukcj9cEW3onbfs8VwSl9uVSER9KwCxOoHN2YgzK70bjq3eMGe+c9vH6A2LxxzCdcOo5RWu2Wn77TJTLFGXzX68pO753lLCPeh3nilTM4DHPvH7EcxGgDXblqK4YsnJu70WX+t3HzK7zLMEueKYZOPY/eLnB3lY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706112321; c=relaxed/simple;
-	bh=xR+eAowDFzR1npV7eV+Jm86dpVDcurED+9TbIgQEPvI=;
+	s=arc-20240116; t=1706112474; c=relaxed/simple;
+	bh=T7a150d0tNI47ue4XaQznSfvq2Kxgb5U4vfbNPnQC8A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=joyc6FvkBdjPylgCqwZaNIqp6G+B3d1g0tuONkqDfE5ZkjL6zMGJ93p+RFN4q04UB/rjW2p0b1/ljmAl65eDLtjB3nt6kHNQHwLUwl/jBf7qGDeJYmXUJKqW+wwco8ni69AtD38CbJWM3YZCjBGXnYNssbbrXGrQeTiPM+flJb4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6D2DD1FB;
-	Wed, 24 Jan 2024 08:06:03 -0800 (PST)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.30.162])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 63B9C3F762;
-	Wed, 24 Jan 2024 08:05:16 -0800 (PST)
-Date: Wed, 24 Jan 2024 16:05:13 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
-	Hector Martin <marcan@marcan.st>, Ian Rogers <irogers@google.com>,
-	acme@redhat.com, james.clark@arm.com, john.g.garry@oracle.com,
-	leo.yan@linaro.org, linux-arm-kernel@lists.infradead.org,
-	linux-perf-users@vger.kernel.org, mike.leach@linaro.org,
-	suzuki.poulose@arm.com, tmricht@linux.ibm.com, will@kernel.org,
-	Ravi Bangoria <ravi.bangoria@amd.com>
-Subject: Re: [PATCH] perf print-events: make is_event_supported() more robust
-Message-ID: <ZbE1OawXbQbqcdaV@FVFF77S0Q05N.cambridge.arm.com>
-References: <20240116170348.463479-1-mark.rutland@arm.com>
- <8734uwxrca.wl-maz@kernel.org>
- <ZafEFU7kwf6W0_Qx@FVFF77S0Q05N.cambridge.arm.com>
- <CAM9d7ciYEzX1EQ2tXT-FFK2z6Nid9vM6WgSYDFm-rzx=AWsxOA@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZJRpGgOh3VcydrvIhOr3qXUP+Cb+fWLx7aqp1/WkPx7TigNt9Q6iynQZhV21tbuzM7vZumDQYTNh8XyIL3libYFHq70G2dLOJpGJdW1iDY2PtqIKP41XEk5G+wiPciOjL7O1ywXFwSZF9m/pRK7j+UxycDvRCy4O63RUaIPHDUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AkpFFABp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09351C433C7;
+	Wed, 24 Jan 2024 16:07:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706112473;
+	bh=T7a150d0tNI47ue4XaQznSfvq2Kxgb5U4vfbNPnQC8A=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AkpFFABpJpTm/W1yHzgIqYaAmRMtNDO5b92DqnfpJ9VvStTZi3E6ggtnDYcXTOVlB
+	 iNx4pUbYzt0tcyikh5RqvEpp0BEO3jkA1R0Y/85ophbqGpAqrdZhQntlarok19SYWv
+	 tawp6S6Up5fHCAESVLn9OyiV0mshvWYYRBLl+1fLzsLpWUicgiOt6d9FbsjK/td7yd
+	 kk0IiuVM/FrFcaNjzCWwDQ0vJ9gmg34xBicaLGB3OaT831MO9mZ4mxl95DOVM9rx6t
+	 BcvznleZzDNrXOtRRAB8BjbnRSQbKUyzkmms6eDFIC4iblaWvabJ6ChrazHprXFXF9
+	 H0tXWbdwMy2sA==
+Date: Wed, 24 Jan 2024 16:07:48 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Esben Haabendal <esben@geanix.com>
+Cc: devicetree@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+	Jose Abreu <joabreu@synopsys.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] dt-bindings: net: snps,dwmac: Add
+ time-based-scheduling property
+Message-ID: <20240124-reptilian-icing-a95b20f123be@spud>
+References: <b365dc6f756a3fad4dfaa2675c98f4078aba8a55.1706105494.git.esben@geanix.com>
+ <30ce8f45b8752c603acc861ebb2f18d74d2f8a07.1706105494.git.esben@geanix.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="orGn1OOIBTBi4VY0"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAM9d7ciYEzX1EQ2tXT-FFK2z6Nid9vM6WgSYDFm-rzx=AWsxOA@mail.gmail.com>
+In-Reply-To: <30ce8f45b8752c603acc861ebb2f18d74d2f8a07.1706105494.git.esben@geanix.com>
 
-On Thu, Jan 18, 2024 at 09:57:32PM -0800, Namhyung Kim wrote:
-> Hello,
-> 
-> Adding Ravi to CC.
-> 
-> On Wed, Jan 17, 2024 at 4:12 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> >
-> > On Wed, Jan 17, 2024 at 09:05:25AM +0000, Marc Zyngier wrote:
-> > > Hi Mark,
-> > >
-> > > On Tue, 16 Jan 2024 17:03:48 +0000,
-> > > Mark Rutland <mark.rutland@arm.com> wrote:
-> > > >
-> > > > Currently the perf tool doesn't deteect support for extneded event types
-> > > > on Apple M1/M2 systems, and will not auto-expand plain PERF_EVENT_TYPE
-> > > > hardware events into per-PMU events. This is due to the detection of
-> > > > extended event types not handling mandatory filters required by the
-> > > > M1/M2 PMU driver.
-> > >
-> > > Thanks for looking into this.
-> > >
-> > > I've given your patch a go on my M1 box, and it indeed makes things
-> > > substantially better:
-> > >
-> > > $ sudo ./perf stat -e cycles ~/hackbench 100 process 1000
-> > > Running with 100*40 (== 4000) tasks.
-> > > Time: 3.419
-> > >
-> > >  Performance counter stats for '/home/maz/hackbench 100 process 1000':
-> > >
-> > >    174,783,472,090      apple_firestorm_pmu/cycles/                                             (93.10%)
-> > >     39,134,744,813      apple_icestorm_pmu/cycles/                                              (71.86%)
-> > >
-> > >        3.568145595 seconds time elapsed
-> > >
-> > >       12.203084000 seconds user
-> > >       55.135271000 seconds sys
-> >
-> > Thanks for giving that a spin!
-> >
-> > > However, I'm seeing some slightly odd behaviours:
-> > >
-> > > $ sudo ./perf stat -e cycles:k ~/hackbench 100 process 1000
-> > > Running with 100*40 (== 4000) tasks.
-> > > Time: 3.313
-> > >
-> > >  Performance counter stats for '/home/maz/hackbench 100 process 1000':
-> > >
-> > >    <not supported>      apple_firestorm_pmu/cycles:k/
-> > >    <not supported>      apple_icestorm_pmu/cycles:k/
-> 
-> Hmm.. I guess this should look like apple_firestorm_pmu/cycles/k.
 
-Yeah, the ":k" within the slashes isn't right, and I suspect that's due to the
-way the event gets expanded.
+--orGn1OOIBTBi4VY0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Ian, is that something you're aware of already?
+On Wed, Jan 24, 2024 at 03:33:06PM +0100, Esben Haabendal wrote:
+> Time Based Scheduling can be enabled per TX queue, if supported by the
+> controller.
 
-> IIRC there was a thread for this, right?
+If time based scheduling is not supported by the controller, then the
+property should not be present! The presence of a property like this
+should mean that the feature is supported, using it is up to the
+operating system.
 
-I'm not aware of a thread for the way filters get applied to expanded events.
+That said, why is this a property that should be in DT? If support is
+per controller is it not sufficient to use the compatible to determine
+if this is supported?
 
-> > >
-> > >        3.467568841 seconds time elapsed
-> > >
-> > >       13.080111000 seconds user
-> > >       53.162099000 seconds sys
-> > >
-> > > I would have expected it to count, but it didn't. For that to work, I
-> > > have to add the 'H' modifier:
-> >
-> > Ok, so that'll have something to do with the way the tool chooses which
-> > perf_evant_attr::exclude_* bits to set. I thought that was the same for plain
-> > events and pmu_name/event/ events, but I could be mistaken.
-> 
-> I think it sets the attr.exclude_guest by event_attr_init().  Maybe
-> it's deleted during the missing feature detection logic.  But IIUC
-> it should work on each PMU separately.
+Thanks,
+Conor.
 
-I'll try to look into this a bit more.
+>=20
+> Signed-off-by: Esben Haabendal <esben@geanix.com>
+> ---
+>  Documentation/devicetree/bindings/net/snps,dwmac.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Docu=
+mentation/devicetree/bindings/net/snps,dwmac.yaml
+> index 5c2769dc689a..301e9150ecc3 100644
+> --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> @@ -399,6 +399,12 @@ properties:
+>              type: boolean
+>              description: TX checksum offload is unsupported by the TX qu=
+eue.
+> =20
+> +          snps,time-based-scheduling:
+> +            type: boolean
+> +            description:
+> +              Time Based Scheduling will be enabled for TX queue.
+> +              This is typically not supported for TX queue 0.
+> +
+>          allOf:
+>            - if:
+>                required:
+> --=20
+> 2.43.0
+>=20
 
-> By the way, I really hope the kernel exports caps/exclude_bits
-> for PMUs so that tools can see which bits are supported.  For
-> example AMD IBS has CAP_NO_EXCLUDE so setting exclude_guest
-> will fail to open.  Then it disables the new features added after
-> that in the missing feature detection logic.
+--orGn1OOIBTBi4VY0
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I'm ok in principle with exposing some info on the supported exclude_*
-configuration, but it's worth noting that event where a PMU supports specific
-filters, it might not support all combinations of filters for all events. For
-example, s390 doesn't support exclude_* filters on RAW events, and doesn't
-support kernel-only counters. Given that, I'm not sure how we can expose that
-in a useful way.
+-----BEGIN PGP SIGNATURE-----
 
-Mark.
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbE11AAKCRB4tDGHoIJi
+0v8wAP9TtkDEdLKEVA0n+83492ltV8gpozpt7NTDo9bSA8pPRwEAk2CFLW1Ac02u
+hfaJxQ8KnrIuHQjJ9wb8ToaEVgPN9Ag=
+=Q0u6
+-----END PGP SIGNATURE-----
 
-> If we know if it doesn't support any exclude bits, then tools can try other
-> features after removing the bit first.
-> 
-> Thanks,
-> Namhyung
-> 
-> >
-> > Is that something you had tried prior to this patch, and did that "just work"
-> > with the explicit pmu_name/event/ syntax prior to this patch?
-> >
-> > e.g. did something like:
-> >
-> >         perf stat -e apple_firestorm_pmu/cycles/k -e apple_icestorm_pmu/cycles/k ./workload
-> >
-> > ... happen to work withiout requiring the addition of 'H'?
-> >
-> > If so, does that behave the same before/after this patch?
-> >
-> > ... and could you run that with '-vvv' and dump the output for comparison?
-> >
-> > Thanks,
-> > Mark.
+--orGn1OOIBTBi4VY0--
 
