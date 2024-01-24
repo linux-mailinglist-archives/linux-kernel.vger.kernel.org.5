@@ -1,195 +1,238 @@
-Return-Path: <linux-kernel+bounces-37552-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37554-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C719983B17F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:52:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A618183B192
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:55:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77B362881AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:52:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55B6C284E94
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:55:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3764813175F;
-	Wed, 24 Jan 2024 18:52:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15F9B13175C;
+	Wed, 24 Jan 2024 18:55:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="q7+oXeBU"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="1yoC7uC/"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA3F81292FC
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 18:52:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E4E81EA85
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 18:55:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706122336; cv=none; b=P8NGOWST9RF5eHYobFpWyW21bfIjSWHEWLaFiu7FBEq6H1xgDvdDOma6XELGQlZADEJOY+Pj+2xH9x8G1w4QXY1z+wWuSovLClbDYueGjrPMF9vM5nUS69vh6koVAOmWnt93slff/Dt1D2X2xtfo6L50SOw7+UtoNeRpqJEe/pQ=
+	t=1706122521; cv=none; b=Zf3PcaHzKSm88lgvX7MNrzZxoo0wUQGpcJtzuSJENpXYnaPjurGlCCWuDNuWfTT44jhQWoDP9146FsuUWxBfEfOvU6WqBn/5pgCYNQz3Mmmc/+q5PlQh73X6PsEpi43utf4eAyzNuTV5Y4CvQa/ypMWsMJshIqSVG3a5v+TSvME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706122336; c=relaxed/simple;
-	bh=6TdjO5UfgWZZjNe38ds4eqkhex4saa37TCe+orCZRj4=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=u+NtTOOPkp7VUILU4LUEhF/hfOcBl6ZadtBdRBVYUTazZUC4+WbYY977CXqibSg9MFAf2U2T0vt1b+dwVYIVTdRKR9Tw/LCfdVu1DpGrxAtdkpEsCNiIXRAJl4gpp++Topmlqja9mEOIpPbyd649+zuXbnYjt9qvfRPNYGgwlnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=q7+oXeBU; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc3645c083aso5221129276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:52:14 -0800 (PST)
+	s=arc-20240116; t=1706122521; c=relaxed/simple;
+	bh=oWD5VLSXRA+rwKDmOK0WcQfre24wTxNEWYYxv4RGXoA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UqdbV16vF1F08/sI0eet2JZ5AWa16HH8pSG+fkfpciZ87XSSLS1mvBJg1I58fE0AHwE3Vi9SBU7ttRLzrcYsUYy5DUA33bH2jbog4zCoGbXU3KF+O3UE32p3nVif5tkw9yUIomfdTP2iBliuwwIFSqVMMMrRv4SP1G7oOjgzH98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=1yoC7uC/; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d7431e702dso27666445ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:55:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706122334; x=1706727134; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DeJXI63JE4NpBTBWR+qtr9gFEncQ6Y/JV8zIyVI58iM=;
-        b=q7+oXeBU8qQTEM5vlvc6PjXdjLVmJC1sF0xIsI2Zy1xH4bF+FFku/H0v9MHpsFeDUp
-         LDsY6zKZOZR13YPdgHskId2eewbODH3SN7k1XAmg4T5YhUR57+Z633fion4BD3bR/ng/
-         E4SGJ8JRZV1RqyVhOe26wDC6GWKBtpletTZl/BhwkeataDFlzSWm6+rd9jFGYDuf7Dz+
-         n/JP4yTE8pMWEgmVBrXFCtGviPhS/f5MNs+/oH20uSZfNjcADbWIFD8trjx4lLYaZS9k
-         4nqMTlSjZc7O10nTo/wuxuOAJoy8oLcK4eLtJ03SjVnChgH99HLTXvHXL9Ll5EukVRAY
-         xikA==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706122519; x=1706727319; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jDj/r0j6wjrBeKVb5gL0FLzmDiXz6FHRYIwfCvn46Xc=;
+        b=1yoC7uC/hCY8BTp//3vVQjs2fRNi6cyFkfIHtPN6N6jHHHktsbh7IlTpm6c5kf+Gws
+         QQzmoGSw0qCswbL2GozTeiEoDhFcskhTFsHK3Jarwkk4id+wtSV5N5rg76d6X2FTPGMD
+         q8MRneyYV4rGpab3Lq5qJsnUTNcmfdlyFXDXHs6KjT+19e9JRglz9l31kTsF3EkyurWI
+         W3stkLM6awyOJBw/ko7XbHRMWrTb6lBDoj6R7EsDL2GkYBdKhVnEiTShZ35HOUQ+gv/t
+         YXN0uGkVTsDnZYUSHSShiGP541XuSDHzJPH3Hm9XU55D9JkxmnLErCuZpmO9JnIj/uoc
+         9k2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706122334; x=1706727134;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DeJXI63JE4NpBTBWR+qtr9gFEncQ6Y/JV8zIyVI58iM=;
-        b=TL88IStQqV+6p1XBMxLVljVh/hAj70MZzfTuamNsP8xPMrs2Njvh59sEQEkbuV8ATR
-         c6MmEtrzwZzAU4aUS41bAvsT5EGMZoFeEmB88aQAEX01UD1e57FKz1059da2sPGEls90
-         3axJH7ql+EGZLsLFGTLF6xkxeZhNu5qkLmISjUl56728gHfJKUuOJd6fT1bbnUE0QgVj
-         w/bgCK5M7FBgfwg63xJ8c1U7PSwjHZMEvLmsflLONf488lwyexNzAMF65/Gb8z4q4d/p
-         VZSCsf7w7gLjMzsLa4rcuh/FVf/E3/jCZTo08mzsyFSXk6P1wqQEO5REhTBUzIHAWZu/
-         i6yg==
-X-Gm-Message-State: AOJu0YzK4tlDztwazpeDZ3OjwBp6ZIDUVn2ejy2iXFPQnPsM+Z7iyOHw
-	3X3ujz7GcbZW1XN53vZvYOaNWwA+6ENlnMfQhW0fHpba+jm4f+l7lXHJIHkypeKhYFErzRcvEeu
-	i+Q==
-X-Google-Smtp-Source: AGHT+IEAV+1+iqSEN/dEkDSeXdzloc8d7SaECvFvbanSnYtiz5oBCgilhNs0kNWqA3W+IGo3T6P9dYzHyV0=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:e10:b0:dc2:45ad:de34 with SMTP id
- df16-20020a0569020e1000b00dc245adde34mr573846ybb.11.1706122333987; Wed, 24
- Jan 2024 10:52:13 -0800 (PST)
-Date: Wed, 24 Jan 2024 10:52:12 -0800
-In-Reply-To: <Zavj4U2LYeOsnXOh@yilunxu-OptiPlex-7050>
+        d=1e100.net; s=20230601; t=1706122519; x=1706727319;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jDj/r0j6wjrBeKVb5gL0FLzmDiXz6FHRYIwfCvn46Xc=;
+        b=e6tZi8BzoKpAe+GwWm7HgaujA0kPlU4/aBaCZQlOuIeGA+9n3ork+nIZlc7MQTfI6p
+         80ztfT+gBWrmnMM3056ZZBcZbZogOciJH9SuI1YO3yyKgHvbx3pUTLGVp7DM4IHWzm7d
+         zzzbsqByf/6adR0q2wzlvXMKZi9o5G8XHHK1AXpzmrscvmaN4HM2vVRd3QZWR8ihkown
+         Iqpz3DQ49EC1Y9d9X+siYpdCXm4iWNxLkBbQ29aAgUhXkxaBdSbssu+BgjrzMKoTHAQ0
+         1k0CuuhGZKUswRfAWPw5gcb1iJoyDoE/ZQ/xdmSCImAvrEc+iK7pVW9ZSW7MKuGwwGg0
+         fF+w==
+X-Gm-Message-State: AOJu0YxPBsadvcMktdv8DIEI3Y7Xs6gvkZgul66C3S9S0kG5uy1BURD0
+	q4Pt47QTKUzaT2PAxGcmDlbW1Xl6ltWGPqH9NZ7EDhB5/X6fergvuixqHydkK9A=
+X-Google-Smtp-Source: AGHT+IEIpZf36EhWLz+OQgHES8qLiyZ0UwP9vaFkyqYaaf3TE93IIKGP2XO1CzR3BfCEE2NcFO6xbw==
+X-Received: by 2002:a17:902:d4ce:b0:1d7:8e11:14a0 with SMTP id o14-20020a170902d4ce00b001d78e1114a0mr887617plg.91.1706122518713;
+        Wed, 24 Jan 2024 10:55:18 -0800 (PST)
+Received: from ghost ([12.44.203.122])
+        by smtp.gmail.com with ESMTPSA id z7-20020a1709028f8700b001d71935e5c1sm9210654plo.195.2024.01.24.10.55.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 10:55:18 -0800 (PST)
+Date: Wed, 24 Jan 2024 10:55:16 -0800
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Alexandre Ghiti <alex@ghiti.fr>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Jonathan Corbet <corbet@lwn.net>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Atish Patra <atishp@atishpatra.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, Atish Patra <atishp@rivosinc.com>
+Subject: Re: [PATCH v9 2/2] documentation: Document
+ PR_RISCV_SET_ICACHE_FLUSH_CTX prctl
+Message-ID: <ZbFdFARPQzjRd2g8@ghost>
+References: <20240123-fencei-v9-0-71411bfe8d71@rivosinc.com>
+ <20240123-fencei-v9-2-71411bfe8d71@rivosinc.com>
+ <26808f34-d9c4-404a-bf09-45c4aff139ad@ghiti.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240110011533.503302-1-seanjc@google.com> <20240110011533.503302-4-seanjc@google.com>
- <Zavj4U2LYeOsnXOh@yilunxu-OptiPlex-7050>
-Message-ID: <ZbFcXB5ctGOMEr22@google.com>
-Subject: Re: [PATCH 3/4] KVM: Get reference to VM's address space in the async
- #PF worker
-From: Sean Christopherson <seanjc@google.com>
-To: Xu Yilun <yilun.xu@linux.intel.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	David Matlack <dmatlack@google.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <26808f34-d9c4-404a-bf09-45c4aff139ad@ghiti.fr>
 
-On Sat, Jan 20, 2024, Xu Yilun wrote:
-> On Tue, Jan 09, 2024 at 05:15:32PM -0800, Sean Christopherson wrote:
-> > Get a reference to the target VM's address space in async_pf_execute()
-> > instead of gifting a reference from kvm_setup_async_pf().  Keeping the
-> > address space alive just to service an async #PF is counter-productive,
-> > i.e. if the process is exiting and all vCPUs are dead, then NOT doing
-> > get_user_pages_remote() and freeing the address space asap is desirable.
+On Wed, Jan 24, 2024 at 08:19:42AM +0100, Alexandre Ghiti wrote:
+> On 24/01/2024 00:29, Charlie Jenkins wrote:
+> > Provide documentation that explains how to properly do CMODX in riscv.
 > > 
-> > Handling the mm reference entirely within async_pf_execute() also
-> > simplifies the async #PF flows as a whole, e.g. it's not immediately
-> > obvious when the worker task vs. the vCPU task is responsible for putting
-> > the gifted mm reference.
-> > 
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > Reviewed-by: Atish Patra <atishp@rivosinc.com>
 > > ---
-> >  include/linux/kvm_host.h |  1 -
-> >  virt/kvm/async_pf.c      | 32 ++++++++++++++++++--------------
-> >  2 files changed, 18 insertions(+), 15 deletions(-)
+> >   Documentation/arch/riscv/cmodx.rst | 96 ++++++++++++++++++++++++++++++++++++++
+> >   Documentation/arch/riscv/index.rst |  1 +
+> >   2 files changed, 97 insertions(+)
 > > 
-> > diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> > index 7e7fd25b09b3..bbfefd7e612f 100644
-> > --- a/include/linux/kvm_host.h
-> > +++ b/include/linux/kvm_host.h
-> > @@ -238,7 +238,6 @@ struct kvm_async_pf {
-> >  	struct list_head link;
-> >  	struct list_head queue;
-> >  	struct kvm_vcpu *vcpu;
-> > -	struct mm_struct *mm;
-> >  	gpa_t cr2_or_gpa;
-> >  	unsigned long addr;
-> >  	struct kvm_arch_async_pf arch;
-> > diff --git a/virt/kvm/async_pf.c b/virt/kvm/async_pf.c
-> > index d5dc50318aa6..c3f4f351a2ae 100644
-> > --- a/virt/kvm/async_pf.c
-> > +++ b/virt/kvm/async_pf.c
-> > @@ -46,8 +46,8 @@ static void async_pf_execute(struct work_struct *work)
-> >  {
-> >  	struct kvm_async_pf *apf =
-> >  		container_of(work, struct kvm_async_pf, work);
-> > -	struct mm_struct *mm = apf->mm;
-> >  	struct kvm_vcpu *vcpu = apf->vcpu;
-> > +	struct mm_struct *mm = vcpu->kvm->mm;
-> >  	unsigned long addr = apf->addr;
-> >  	gpa_t cr2_or_gpa = apf->cr2_or_gpa;
-> >  	int locked = 1;
-> > @@ -56,16 +56,24 @@ static void async_pf_execute(struct work_struct *work)
-> >  	might_sleep();
-> >  
-> >  	/*
-> > -	 * This work is run asynchronously to the task which owns
-> > -	 * mm and might be done in another context, so we must
-> > -	 * access remotely.
-> > +	 * Attempt to pin the VM's host address space, and simply skip gup() if
-> > +	 * acquiring a pin fail, i.e. if the process is exiting.  Note, KVM
-> > +	 * holds a reference to its associated mm_struct until the very end of
-> > +	 * kvm_destroy_vm(), i.e. the struct itself won't be freed before this
-> > +	 * work item is fully processed.
-> >  	 */
-> > -	mmap_read_lock(mm);
-> > -	get_user_pages_remote(mm, addr, 1, FOLL_WRITE, NULL, &locked);
-> > -	if (locked)
-> > -		mmap_read_unlock(mm);
-> > -	mmput(mm);
-> > +	if (mmget_not_zero(mm)) {
-> > +		mmap_read_lock(mm);
-> > +		get_user_pages_remote(mm, addr, 1, FOLL_WRITE, NULL, &locked);
-> > +		if (locked)
-> > +			mmap_read_unlock(mm);
-> > +		mmput(mm);
-> > +	}
-> >  
-> > +	/*
-> > +	 * Notify and kick the vCPU even if faulting in the page failed, e.g.
+> > diff --git a/Documentation/arch/riscv/cmodx.rst b/Documentation/arch/riscv/cmodx.rst
+> > new file mode 100644
+> > index 000000000000..2ad46129d812
+> > --- /dev/null
+> > +++ b/Documentation/arch/riscv/cmodx.rst
+> > @@ -0,0 +1,96 @@
+> > +.. SPDX-License-Identifier: GPL-2.0
+> > +
+> > +==============================================================================
+> > +Concurrent Modification and Execution of Instructions (CMODX) for RISC-V Linux
+> > +==============================================================================
+> > +
+> > +CMODX is a programming technique where a program executes instructions that were
+> > +modified by the program itself. Instruction storage and the instruction cache
+> > +(icache) are not guaranteed to be synchronized on RISC-V hardware. Therefore, the
+> > +program must enforce its own synchronization with the unprivileged fence.i
+> > +instruction.
+> > +
+> > +However, the default Linux ABI prohibits the use of fence.i in userspace
+> > +applications. At any point the scheduler may migrate a task onto a new hart. If
+> > +migration occurs after the userspace synchronized the icache and instruction
+> > +storage with fence.i, the icache will no longer be clean. This is due to the
 > 
-> How about when the process is exiting? Could we just skip the following?
+> 
+> Nit: I think you mean "the icache on the new hart will no longer be clean".
 
-Maybe?  I'm not opposed to trimming this down even more, but I doubt it will make
-much of a difference.  The vCPU can't be running so async_pf.lock shouldn't be
-contended, no IPIs will be issued for kicks, etc.  So for this patch at least,
-I want to take the most conservative approach while still cleaning up the mm_struct
-usage.
+Aw yes, that should be more explicit.
 
-> > +	 * so that the vCPU can retry the fault synchronously.
-> > +	 */
-> >  	if (IS_ENABLED(CONFIG_KVM_ASYNC_PF_SYNC))
-> >  		kvm_arch_async_page_present(vcpu, apf);
-> >  
-> > @@ -129,10 +137,8 @@ void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu)
-> >  #ifdef CONFIG_KVM_ASYNC_PF_SYNC
-> >  		flush_work(&work->work);
-> >  #else
-> > -		if (cancel_work_sync(&work->work)) {
-> > -			mmput(work->mm);
-> > +		if (cancel_work_sync(&work->work))
-> >  			kmem_cache_free(async_pf_cache, work);
-> > -		}
-> >  #endif
-> >  		spin_lock(&vcpu->async_pf.lock);
-> >  	}
-> > @@ -211,8 +217,6 @@ bool kvm_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
-> >  	work->cr2_or_gpa = cr2_or_gpa;
-> >  	work->addr = hva;
-> >  	work->arch = *arch;
-> > -	work->mm = current->mm;
-> > -	mmget(work->mm);
-> >  
-> >  	INIT_WORK(&work->work, async_pf_execute);
-> >  
-> > -- 
-> > 2.43.0.472.g3155946c3a-goog
+- Charlie
+
+> 
+> 
+> > +behavior of fence.i only affecting the hart that it is called on. Thus, the hart
+> > +that the task has been migrated to may not have synchronized instruction storage
+> > +and icache.
+> > +
+> > +There are two ways to solve this problem: use the riscv_flush_icache() syscall,
+> > +or use the ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` prctl() and emit fence.i in
+> > +userspace. The syscall performs a one-off icache flushing operation. The prctl
+> > +changes the Linux ABI to allow userspace to emit icache flushing operations.
+> > +
+> > +As an aside, "deferred" icache flushes can sometimes be triggered in the kernel.
+> > +At the time of writing, this only occurs during the riscv_flush_icache() syscall
+> > +and when the kernel uses copy_to_user_page(). These deferred flushes happen only
+> > +when the memory map being used by a hart changes. If the prctl() context caused
+> > +an icache flush, this deferred icache flush will be skipped as it is redundant.
+> > +Therefore, there will be no additional flush when using the riscv_flush_icache()
+> > +syscall inside of the prctl() context.
+> > +
+> > +prctl() Interface
+> > +---------------------
+> > +
+> > +Call prctl() with ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` as the first argument. The
+> > +remaining arguments will be delegated to the riscv_set_icache_flush_ctx
+> > +function detailed below.
+> > +
+> > +.. kernel-doc:: arch/riscv/mm/cacheflush.c
+> > +	:identifiers: riscv_set_icache_flush_ctx
+> > +
+> > +Example usage:
+> > +
+> > +The following files are meant to be compiled and linked with each other. The
+> > +modify_instruction() function replaces an add with 0 with an add with one,
+> > +causing the instruction sequence in get_value() to change from returning a zero
+> > +to returning a one.
+> > +
+> > +cmodx.c::
+> > +
+> > +	#include <stdio.h>
+> > +	#include <sys/prctl.h>
+> > +
+> > +	extern int get_value();
+> > +	extern void modify_instruction();
+> > +
+> > +	int main()
+> > +	{
+> > +		int value = get_value();
+> > +		printf("Value before cmodx: %d\n", value);
+> > +
+> > +		// Call prctl before first fence.i is called inside modify_instruction
+> > +		prctl(PR_RISCV_SET_ICACHE_FLUSH_CTX_ON, PR_RISCV_CTX_SW_FENCEI, PR_RISCV_SCOPE_PER_PROCESS);
+> > +		modify_instruction();
+> > +
+> > +		value = get_value();
+> > +		printf("Value after cmodx: %d\n", value);
+> > +		return 0;
+> > +	}
+> > +
+> > +cmodx.S::
+> > +
+> > +	.option norvc
+> > +
+> > +	.text
+> > +	.global modify_instruction
+> > +	modify_instruction:
+> > +	lw a0, new_insn
+> > +	lui a5,%hi(old_insn)
+> > +	sw  a0,%lo(old_insn)(a5)
+> > +	fence.i
+> > +	ret
+> > +
+> > +	.section modifiable, "awx"
+> > +	.global get_value
+> > +	get_value:
+> > +	li a0, 0
+> > +	old_insn:
+> > +	addi a0, a0, 0
+> > +	ret
+> > +
+> > +	.data
+> > +	new_insn:
+> > +	addi a0, a0, 1
+> > diff --git a/Documentation/arch/riscv/index.rst b/Documentation/arch/riscv/index.rst
+> > index 4dab0cb4b900..eecf347ce849 100644
+> > --- a/Documentation/arch/riscv/index.rst
+> > +++ b/Documentation/arch/riscv/index.rst
+> > @@ -13,6 +13,7 @@ RISC-V architecture
+> >       patch-acceptance
+> >       uabi
+> >       vector
+> > +    cmodx
+> >       features
 > > 
+> 
+> I don't know how man pages are synchronized with new additions in the
+> kernel, do you? It would be nice to have this new prctl documented for
+> userspace.
+> 
+> Thanks,
+> 
+> Alex
+> 
 
