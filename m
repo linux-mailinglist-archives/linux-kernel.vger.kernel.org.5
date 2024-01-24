@@ -1,190 +1,166 @@
-Return-Path: <linux-kernel+bounces-37232-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37233-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD4E083ACF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:15:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6138583ACFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:15:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C1481C222C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:15:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 878CB1C251A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:15:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2141B7C099;
-	Wed, 24 Jan 2024 15:14:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D9477A709;
+	Wed, 24 Jan 2024 15:15:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BSbIBw3k"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CKfKiWGw"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49B537C084;
-	Wed, 24 Jan 2024 15:14:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3959022085;
+	Wed, 24 Jan 2024 15:15:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.115
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706109248; cv=none; b=k8a0RjLgtmxsSPp8dA1v/wBfHVQYsuHSMbptWXYtuuTybstNCoJ3of09BjGu7kqcyC+58KHTSGQDDsNJojE8sATHEMT3btMsNHgT1D6TxzDY8WE+RByZKIwDY+CRmgqcaDSwqu0h+O39JhwUTpPtWYOHe15yeMCbzCTSJZ7e2nI=
+	t=1706109315; cv=none; b=eyrYAWWh29TaLG4PLJ3ASNHAWr0m2SCVQbLJY3cID4Mp6t7Rk3EGi2iFor5nEKR91RZ2pgs4X53ho1Oi2cluZwuBkgHDAi1KG7BxXMoifq42wFNfW+FcdcH1Y/970xVGev/jcXJScqpfWqXNrEu+C/MfUaPtLUZiwJ1R6cmpL5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706109248; c=relaxed/simple;
-	bh=lvaCYClRxgNlHDnQz/s2U/iDr+6UL1dxY0a0fQAXT9Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ruty46cPGCqtzm7E1J+mfaAsJSjLUdVIDr0HF5ICcQUfrhSmcjR9JBeN/DATREaeKRK7tAQkaK7zh7Bd8wdFaui4YzlLEDswNFvohM4bbVsbkDsTGgzGEAq2WgixK12G3XGBiDh+MMrFKvrC/y1N32d0LqJyhj3RPO0d5VIGIvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BSbIBw3k; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA801C433F1;
-	Wed, 24 Jan 2024 15:14:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706109247;
-	bh=lvaCYClRxgNlHDnQz/s2U/iDr+6UL1dxY0a0fQAXT9Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BSbIBw3kzo6Z8y3CldCjPlFmJVXs4DfMbWMk3BxWhtiC21cqBvVecnukro17HgBrs
-	 e36bl6Zfrb4/KDy2qO2+Jx66ggkv3gYrOPH41fzQy3mI6pB1wPvoUby1N8qtQ2R8p0
-	 vnVIITD7LaLjGqEB0vYBBWgYM/yWh8SlBpNemWv0R5FgMtEZVyJy02ZlkVbCz3OciX
-	 nXiNbMAOchaWY3hZa2GKgHqhJ9cki/IAjjSHiZ3ikM5Z4DFDp/7Gi7X+wJQKx2r4iX
-	 COSSi8LHQIxBiP6s+3ug52+TnzlabTiuj7oArgdMpgKWgRtINniqN8+5UvzZhFKvA9
-	 StXpbBIN+R/9Q==
-Date: Wed, 24 Jan 2024 09:14:05 -0600
-From: Rob Herring <robh@kernel.org>
-To: =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>
-Cc: Gregory CLEMENT <gregory.clement@bootlin.com>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	linux-mips@vger.kernel.org, linux-clk@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-	linux-gpio@vger.kernel.org
-Subject: Re: [PATCH v3 04/17] dt-bindings: soc: mobileye: add EyeQ5 OLB
- system controller
-Message-ID: <20240124151405.GA930997-robh@kernel.org>
-References: <20240123-mbly-clk-v3-0-392b010b8281@bootlin.com>
- <20240123-mbly-clk-v3-4-392b010b8281@bootlin.com>
+	s=arc-20240116; t=1706109315; c=relaxed/simple;
+	bh=uzQLDGWYhf9xfb4Lm9GWu2gEumrrxwpUwu6HE1AQ6n0=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=BmOjgYyQiGGIhkV9tebnCiC0cXqAxbLwU1qyfWqlL0rn+jjTiESDIuNqgBCn6QGwaU3ulQJfsxnamWuTqMGBe9Pe2z5CGOgagK27XjfGKXyIDy/gzEMyeOXd3anSxeA7ToRD45vQ+benDcQ0JqMpAQRqKJcspuHeLgw7J5orFng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CKfKiWGw; arc=none smtp.client-ip=192.55.52.115
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706109313; x=1737645313;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=uzQLDGWYhf9xfb4Lm9GWu2gEumrrxwpUwu6HE1AQ6n0=;
+  b=CKfKiWGwxLJ/ImggqwJZZj1DS9Lzky2rl0zD5cEOI4B2SCJ5CZvudmFN
+   EpGvLCVEDsP0sWmqqwV4VVcO2GPHc26vcTFqEyk/I1O+CCrj9SQZ6Xcgn
+   2ZmJLOf6HyTFsP81J+s9qzzsuVAR1hvzs5MXqbU6aot/NITLumDJ95hXo
+   OeHGC9vfFNyMx6YYsTQpOcd3xA77uEO0wNYFPDx0i6O1gSyQMRBlJMhXZ
+   50cRkQ0VctI4+ktrR6cDH38YFKr/YJL5OMD5jsZOkzd0xaJociA1JlB9f
+   yYC6V5GXn+leeVCKMW9ShoWhLPMhWkOcdD2HSPSj3NlRhk/DQAdNHdBd7
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="401529939"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="401529939"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 07:15:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="2072375"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.48.46])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 07:15:06 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Wed, 24 Jan 2024 17:15:01 +0200 (EET)
+To: Frank Li <Frank.Li@nxp.com>
+cc: alexandre.belloni@bootlin.com, conor.culhane@silvaco.com, 
+    devicetree@vger.kernel.org, gregkh@linuxfoundation.org, 
+    imx@lists.linux.dev, jirislaby@kernel.org, joe@perches.com, 
+    krzysztof.kozlowski+dt@linaro.org, krzysztof.kozlowski@linaro.org, 
+    linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org, 
+    linux-serial@vger.kernel.org, miquel.raynal@bootlin.com, robh@kernel.org, 
+    zbigniew.lukwinski@linux.intel.com
+Subject: Re: [PATCH v4 6/8] i3c: target: func: add tty driver
+In-Reply-To: <20240123231043.3891847-7-Frank.Li@nxp.com>
+Message-ID: <744bf8d6-48a3-81b4-baa8-d8c06500a971@linux.intel.com>
+References: <20240123231043.3891847-1-Frank.Li@nxp.com> <20240123231043.3891847-7-Frank.Li@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240123-mbly-clk-v3-4-392b010b8281@bootlin.com>
+Content-Type: text/plain; charset=US-ASCII
 
-On Tue, Jan 23, 2024 at 07:46:49PM +0100, Théo Lebrun wrote:
-> Add documentation to describe the "Other Logic Block" syscon.
+On Tue, 23 Jan 2024, Frank Li wrote:
+
+> Add tty over I3C target function driver.
 > 
-> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
-> ---
->  .../bindings/soc/mobileye/mobileye,eyeq5-olb.yaml  | 77 ++++++++++++++++++++++
->  MAINTAINERS                                        |  1 +
->  2 files changed, 78 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.yaml b/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.yaml
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+
+> diff --git a/drivers/i3c/func/tty.c b/drivers/i3c/func/tty.c
 > new file mode 100644
-> index 000000000000..031ef6a532c1
+> index 0000000000000..bad99c08be0ac
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.yaml
-> @@ -0,0 +1,77 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/soc/mobileye/mobileye,eyeq5-olb.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +++ b/drivers/i3c/func/tty.c
+> @@ -0,0 +1,475 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2023 NXP
+> + * Author: Frank Li <Frank.Li@nxp.com>
+> + */
 > +
-> +title: Mobileye EyeQ5 SoC system controller
+> +#include <linux/iopoll.h>
+> +#include <linux/i3c/target.h>
+> +#include <linux/serial_core.h>
+> +#include <linux/slab.h>
+> +#include <linux/tty_flip.h>
 > +
-> +maintainers:
-> +  - Grégory Clement <gregory.clement@bootlin.com>
-> +  - Théo Lebrun <theo.lebrun@bootlin.com>
-> +  - Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
+> +static DEFINE_IDR(i3c_tty_minors);
 > +
-> +description:
-> +  OLB ("Other Logic Block") is a hardware block grouping smaller blocks. Clocks,
-> +  resets, pinctrl are being handled from here.
+> +static struct tty_driver *i3c_tty_driver;
 > +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - const: mobileye,eyeq5-olb
-> +      - const: syscon
-> +      - const: simple-mfd
+> +#define I3C_TTY_MINORS		8
 > +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clock-controller:
-> +    $ref: /schemas/clock/mobileye,eyeq5-clk.yaml#
-> +    type: object
-> +
-> +  reset-controller:
-> +    $ref: /schemas/reset/mobileye,eyeq5-reset.yaml#
-> +    type: object
-> +
-> +  pinctrl-a:
-> +    $ref: /schemas/pinctrl/mobileye,eyeq5-pinctrl.yaml#
-> +    type: object
-> +
-> +  pinctrl-b:
-> +    $ref: /schemas/pinctrl/mobileye,eyeq5-pinctrl.yaml#
-> +    type: object
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    system-controller@e00000 {
-> +      compatible = "mobileye,eyeq5-olb", "syscon", "simple-mfd";
-> +      reg = <0xe00000 0x400>;
-> +
-> +      clock-controller {
-> +        compatible = "mobileye,eyeq5-clk";
-> +        #clock-cells = <1>;
-> +        clocks = <&xtal>;
-> +        clock-names = "ref";
-> +      };
-> +
-> +      reset-controller {
-> +        compatible = "mobileye,eyeq5-reset";
-> +        #reset-cells = <2>;
-> +      };
-> +
-> +      pinctrl-a {
-> +        compatible = "mobileye,eyeq5-a-pinctrl";
-> +        #pinctrl-cells = <1>;
+> +#define I3C_TX_NOEMPTY		BIT(0)
+> +#define I3C_TTY_TRANS_SIZE	16
+> +#define I3C_TTY_IBI_TX		BIT(0)
 
-Sure you need this? Generally only pinctrl-single uses this.
+Lacking #include for BIT()
 
-> +      };
+
+> +	do {
+> +		req = i3c_target_ctrl_alloc_request(func->ctrl, GFP_KERNEL);
+> +		if (!req)
+> +			goto err_alloc_req;
 > +
-> +      pinctrl-b {
-> +        compatible = "mobileye,eyeq5-b-pinctrl";
-> +        #pinctrl-cells = <1>;
-> +      };
-> +    };
+> +		req->buf = (void *) (sport->buffer + offset);
 
-This can all be simplified to:
+Casting to void is unnecessary.
 
-system-controller@e00000 {
-    compatible = "mobileye,eyeq5-olb", "syscon";
-    reg = <0xe00000 0x400>;
-    #reset-cells = <2>;
-    #clock-cells = <1>;
-    clocks = <&xtal>;
-    clock-names = "ref";
+> +		req->length = rxfifo_size;
+> +		req->context = sport;
+> +		req->complete = i3c_target_tty_rx_complete;
+> +		offset += rxfifo_size;
+> +
+> +		if (i3c_target_ctrl_queue(req, GFP_KERNEL))
+> +			goto err_alloc_req;
+> +	} while (req && (offset + rxfifo_size) < UART_XMIT_SIZE);
 
-    pins { ... };
-};
+Extra ().
 
-There is no need for sub nodes unless you have reusable blocks or each 
-block has its own resources in DT.
+> +static void i3c_port_shutdown(struct tty_port *port)
+> +{
+> +	struct ttyi3c_port *sport =
+> +		container_of(port, struct ttyi3c_port, port);
 
-Rob
+Just put this to a single line, nothing important is lost even on 80 char
+screen.
+
+> +static void i3c_port_destruct(struct tty_port *port)
+> +{
+> +	struct ttyi3c_port *sport =
+> +		container_of(port, struct ttyi3c_port, port);
+
+Ditto.
+
+> +	if (i3c_target_ctrl_set_config(func->ctrl, func)) {
+> +		dev_err(&func->dev, "failure set i3c config\n");
+
+failed to set i3c config
+
+
+> +	read_poll_timeout(i3c_target_ctrl_fifo_status, val, !val, 100, timeout, false,
+> +			  sport->i3cdev->ctrl, true);
+> +
+> +	i3c_target_ctrl_set_status_format1(sport->i3cdev->ctrl, sport->status & (~I3C_TX_NOEMPTY));
+
+Unnecessary ().
+
+-- 
+ i.
+
 
