@@ -1,386 +1,233 @@
-Return-Path: <linux-kernel+bounces-37791-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37792-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D654C83B562
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 00:03:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4F2583B564
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 00:03:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39CC4B21996
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:03:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7218328511D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:03:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3B6D136651;
-	Wed, 24 Jan 2024 23:03:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4569135403;
+	Wed, 24 Jan 2024 23:03:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="jLZWvnNi"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11olkn2017.outbound.protection.outlook.com [40.92.18.17])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y0u+tkc4"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9C0886157;
-	Wed, 24 Jan 2024 23:02:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.18.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 009F1135A40;
+	Wed, 24 Jan 2024 23:03:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.9
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706137379; cv=fail; b=nqyx+PPFY/JCfZodl2WQ0KZZx7kWq48KXrzWNJC4K4JchuWopnlKWkbvRPe1wUnwgX/SBuRWyRhM+s0fg+3ouo1KOWgbPhD5JLEcgMC2Ccyq9PNriVhzi2nIt4vNS6O5dBhcT2QOxnNgJMkqPfxD18CgrXxTZH9OB++JYveCTUI=
+	t=1706137409; cv=fail; b=tUHw/wX+zn2hElmzZUn3LKUkH4pcTiV9EwDYwJlW3GCirwNmJck17RM5HxSKu4Sc2HwvhGO41QBrzb8iLjO9yav7lq7or7zXxrVj54PqcUS6hXeK32J0CfU9gj43ZwXy+ag3Jat7ZONz5v6o0B2i8kBf8/Cy2rvmMXatyOmx7Gk=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706137379; c=relaxed/simple;
-	bh=j0XBZt2tctelZSSxsWc8wkjC2CF72s5Pg3I9A1zugbg=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=sT7YtaUsKDv88suZ2qNaAL8878eHlftxyBvHLAbtbQiOC8eE1xqKHGb8VqIH7nJC/ZRQgJ146m2bIlGID9HiM69qw2UgUZrVWr8vyKh5pyo0eWt0FkpBC+TUx7gCnmyoo+qlbRwqp7eIb4DgCuoVmghKxarKCkoLLrqvWnGHAMU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=jLZWvnNi; arc=fail smtp.client-ip=40.92.18.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+	s=arc-20240116; t=1706137409; c=relaxed/simple;
+	bh=TbFnSJoYROVHbOIWu7L8BuzhRrB0CVavwWy4A4XGvrg=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=EcWd37BDK23it6pU5U3qb0Peqc/g7vOVrn+23rm8kTwAMdryHqEVrkXq+D77B22pUrK7X172KZvqjB52AKYTDmnoUXeub7lodvtgn3U0CVDigQApXNjE3ZlygkVFQ8FznPsV7eu7FOxVHXXUloXHLxcxGSZFPZb6bX3jvaTii+w=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y0u+tkc4; arc=fail smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706137408; x=1737673408;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=TbFnSJoYROVHbOIWu7L8BuzhRrB0CVavwWy4A4XGvrg=;
+  b=Y0u+tkc4Xat/mtv9Q4blUjYc4UmzkyZQVpWcINpIlnWhn62QE8LPXcHA
+   ricW5QQ52YSUMe4GCX8p0nNuiaDnbfg0SQAKwYf85MYuDgR9lpX1E8yzh
+   AjApW0V9CVvFt9Y+tPIWFpQ/O86kvUdkGDOJrlF14hzfdiBpT502mB32H
+   ha/BAyK/osUq8npafPTTPHYRSRJ/zLDA0bk3ND/17tjoST6OVxD4aykuT
+   YmlbekXfeKbM5YjYADxJl9ZSiaBtvyufaUSCVxwZiqJEXAgbm1j9ekGEh
+   CzFeDQNSt2oeHXmoQd09wXK/RxHEtAzdygk7H5JbqcdWpBN6228keAyYr
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="20552066"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="20552066"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 15:03:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="856871367"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="856871367"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 24 Jan 2024 15:03:26 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 24 Jan 2024 15:03:25 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 24 Jan 2024 15:03:24 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 24 Jan 2024 15:03:24 -0800
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.40) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 24 Jan 2024 15:03:24 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PepvoakWM74EeLPjj/LRAArRVY+IjpLX/FWpy/AnaKTHYeE1FOPgug5cWizZGf1wAlsH3nwxWALDe3etGDCfJGETYeOgBImp6Pa5Eqb1JvRvNHBMf22N9Y3WYG84/uPVKLHTLoEFgleHeRI7EjddOwT8T4Oc96CaZ9ezgjSwoOi87JOHDn+EX/WoKhXwoVvnZlJuDI05/oP+CEwdeQ4M0jqgdEOZRL4tZuvj6dj5h3mnpKJ12AqkQT5gs2RtQEBgZsEQR39rsxbhwpIE48XSPRQbmiOP2HYLmwZRPCOfUHMzx/cpWDgt0aLjDq8zEz9di4kGhPB6hpsa+NywafZ5Og==
+ b=jw+EgUl09B0E7DfmBLUCc4xVrRd4nT+0rBPgDBd2nHP4McodlrGhaBEVBdNtE7QEXE39k+gW/JlTXo7Uel/TmfwD0JOUT4svty9XZO9ZMSFbfGEVWsLNJ5FqP0maUA6PmfNA9IT9NkI6ei5Rk7YH7NEUZtWCD5XSmQ0kQyFsFgqXxLUqI3i+ijzQ7lo4we3GQUb2e9vj6oDXLac5y9ZEou9x4XvQagmGZiJhNVSohhwVGvAD4VASk0SMUOWeenmfcr7oazT35yv/nhaKAtHlyAF9MZnJt5muYnlq4XLagfsB5OmiekjNEEQcQuf0H6p/uuqtKmenRackaZ3gQ9WRrw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4l6Ns8rTYdxWO1Ya2TTU0dhX0x/0LTN2nSiiDkHoKbs=;
- b=FYKx9YChlkpjzWaoAx9eCyI+4jfmc8cOpMZ3Ai08M5DjXwIPa6BEIZEwibWzukaILKA1HaTEI58UT8b7fCsT4OzQzYadca9cb3Uyr9IxISgLsCs752zSb/c+6rnE1P5Pwi+aiTkbH/nt+OsbV7zRSEohJCTrqhkk08loerShQjOFw3lDekOUNFrt1nu8y8oM1ibD6nclrXa+OSF2S1rZb9K0t/r7wJKgfMTXmLRL5Ex2sqTEjxkPetcAew3bIN/o3lzAObP5FOGkUOaF1EFHxPPIpuwSnvXYwPVsK690qkSps7wi68bbsgzw/IBM4pKfPRX4vg7ipv8FtC7IP3kQqg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4l6Ns8rTYdxWO1Ya2TTU0dhX0x/0LTN2nSiiDkHoKbs=;
- b=jLZWvnNiaD6PC3KYozx0QATx95YXv4qTfQQBy92TMr5paROYM5bRlsSaMIdgiO8Lq3Kg932jA6zLCc2EhschVFKz+CkxXfPcqVCYHYUpO/sfLiulRjDJ//Lusubh4a8vwtRZBWFXWV+wiVKs5K8gmxuDqAgC8AgnvSGpUatX5JYP7geQ1SGrOmHfUlT7nUMrDHD2fDzmVz0aVVrFRiwMadBuD8qWkMPNq3ZpxzFJU0eG+EpKqf3fXIuByQpteVhJMoz42HMEF9QyB3QzRzCrpX7L1eIkVJvJDReF2d222IolXGOb/WTEVQ7WFVjMj43S4+47pM8A74SR9DXPLHUd4A==
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
- by CO6PR02MB8834.namprd02.prod.outlook.com (2603:10b6:303:145::13) with
+ bh=uC0forVM7JtzMMwJqqhAxTq1TGPMLkVXRkxGWiiW88A=;
+ b=LODaR25DDdiQTlHHCaOGhUEGy9+OD5lc8l6pINDQ/6FA+qcAYvhTQY8TzBSrmGkdX5UOAbEx++8wq5LP/VqT6ipdyyvvAz5+WiY2DC+jKLRbUH5odEgnpALiVO9iZFpUGkRg/O5LTgASXw7ruJ/RYYqzIFONgsM7fcipOEm+as5aufuviCVg6RIS6d9C/tA8LkoZ65nDweDsKRQ7v67zj5NqjE8TTR37yy8EymULP5cy58T2EFu69QvxaNwhX/IUf5MpP5hkZ0/qPQ49yXYibaR4bl9ZMeBLYxnMGZ3T9eFseDE4uPXVCUKE228I2xGh3KQ7tV3B3z1WUzQCfe3gkg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by IA1PR11MB6124.namprd11.prod.outlook.com (2603:10b6:208:3ec::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.34; Wed, 24 Jan
- 2024 23:02:54 +0000
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::67a9:f3c0:f57b:86dd]) by SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::67a9:f3c0:f57b:86dd%5]) with mapi id 15.20.7228.022; Wed, 24 Jan 2024
- 23:02:54 +0000
-From: Michael Kelley <mhklinux@outlook.com>
-To: Baoquan He <bhe@redhat.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-CC: "kexec@lists.infradead.org" <kexec@lists.infradead.org>, "x86@kernel.org"
-	<x86@kernel.org>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linuxppc-dev@lists.ozlabs.org"
-	<linuxppc-dev@lists.ozlabs.org>, "linux-s390@vger.kernel.org"
-	<linux-s390@vger.kernel.org>, "linux-sh@vger.kernel.org"
-	<linux-sh@vger.kernel.org>, "linux-mips@vger.kernel.org"
-	<linux-mips@vger.kernel.org>, "linux-riscv@lists.infradead.org"
-	<linux-riscv@lists.infradead.org>, "loongarch@lists.linux.dev"
-	<loongarch@lists.linux.dev>, "akpm@linux-foundation.org"
-	<akpm@linux-foundation.org>, "ebiederm@xmission.com" <ebiederm@xmission.com>,
-	"hbathini@linux.ibm.com" <hbathini@linux.ibm.com>, "piliu@redhat.com"
-	<piliu@redhat.com>, "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>
-Subject: RE: [PATCH linux-next v3 06/14] x86, crash: wrap crash dumping code
- into crash related ifdefs
-Thread-Topic: [PATCH linux-next v3 06/14] x86, crash: wrap crash dumping code
- into crash related ifdefs
-Thread-Index: AQHaToRG7EZBXaVit0yb4RXbyvoNjrDpkK1g
-Date: Wed, 24 Jan 2024 23:02:54 +0000
-Message-ID:
- <SN6PR02MB4157931105FA68D72E3D3DB8D47B2@SN6PR02MB4157.namprd02.prod.outlook.com>
-References: <20240124051254.67105-1-bhe@redhat.com>
- <20240124051254.67105-7-bhe@redhat.com>
-In-Reply-To: <20240124051254.67105-7-bhe@redhat.com>
-Accept-Language: en-US
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22; Wed, 24 Jan
+ 2024 23:03:20 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::c903:6ee5:ed69:f4fa]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::c903:6ee5:ed69:f4fa%7]) with mapi id 15.20.7202.034; Wed, 24 Jan 2024
+ 23:03:18 +0000
+Message-ID: <abf569d6-9634-424f-97b3-a71716b3cde5@intel.com>
+Date: Wed, 24 Jan 2024 15:03:15 -0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] x86/resctrl: Fix unneeded variable warning reported by
+ kernel test robot
 Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-tmn: [op7zH1Au+oeYF86X+kKmdQs2MzIdeyA9]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|CO6PR02MB8834:EE_
-x-ms-office365-filtering-correlation-id: 4b5968da-bb37-4619-e097-08dc1d309949
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- ku3k2L/WLldwXurBOby3xSDRfdxLPUz4FK6zagX6zdtdUr7+PAoK8MXi2Ykd7amB3pdYUItfIDy0TJi/Vw+pzSPK9mAugL1zP6xpRELzDIGbvqyDxvxEvdqyrs9xTwtQeXCCnJImHCVmBuziO+5WDJ8DyvtK0Ycfk2DhyRgmLn8VYDopAT0DOWXfSVRUAe3zdUkZxvZLde38piBCsEAFbovRlshgfHrc8knWQ9I87ULQZytZHBy8H3kHM3r02/urmw+bohaG0mL5vrq9KlbtjSd4tq1jyGADy292bpE3h04X/mDHLHdZpQdVtg1vQJiARRmIRQ0fqXbcGVu8b9+plX7bMJD1mYwiTTftNoRdLZCE6IjbXARE3F874pImzRDXx1k2NzkrhTzGqckw1/a24BHjK3oAx791rZeVos4IGpxl6gBQeIxR2SNcrspQZoYvHVPzfuZAikmEE/b2zd8agIYpbLmxt2gdMxFMTa1JUQw8RUofvlJb8ZNcunlaIH6Tan1KuEUbaddG1g4RdH4jDiAuuPnc5LCmR68/vmIeUZTZUXYYbPT9y7bC71XSyzZ+
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?8i3Z4LI8SB7vkm6bFj40SG4cpXdkzFIElDGTjz9f4LPnUSJUz0PKcM2ELVst?=
- =?us-ascii?Q?R3Bvif3axS8xdX0wsr7jTveErDdeBbIrD0o13sJU1vncE0OH+Qn6MVi8P8tg?=
- =?us-ascii?Q?wjk9M6kVEBJjXrAhMgaFI5fVbV6ftS9S8EKe4wZ8rPDLSgyfMQrB/YR0/LwS?=
- =?us-ascii?Q?nls3w7cpyvAwx91ByWf3lXd+Lelrc5DM60Ab9rv+ZVW+VH/xafFODnKflIid?=
- =?us-ascii?Q?wIy51I/JsoCb6pvkg2WH563ZxMx6UfOAL1lo/jcmgPzgIaJmOq+V7v7cEo52?=
- =?us-ascii?Q?5KFdfuWRDdLkQ2fWdvcA5NA9UwkLh4nRdNUvJlxci4FUq+8NgvTBY8QNC0fr?=
- =?us-ascii?Q?eX42hISrIUXtMZYo1Fm10yUKpJp2QrxSCWl66svAzG3E47X/qW6NMOc5V8Xw?=
- =?us-ascii?Q?DWLL5BsyvJsUwHdfKtdFNoGThpS26XCLWczju3BMjnhlLmUetP4gKiozcisd?=
- =?us-ascii?Q?RAu4Si2OYp5XiRCtC0eS+i28xNr/cnuJKNE7fYDKhdxDaRR3vx+xUGEQowVN?=
- =?us-ascii?Q?vb4Ug5rY2nryKYV8yxAATnBoTwUFW5zxCdj0rU1TQOVBLy8rsAlZZvrI3XPZ?=
- =?us-ascii?Q?IevjWoFOqJ0dVsYtAhGlue5tSut8OQfOdzFGZGfwIo30vCHqhkFnuxjAfGIp?=
- =?us-ascii?Q?IY1gW6cktkJT3VVJwh9MhuqqBAe8THavM6dPLPcCL2oUPaPgdQjsgnkkMzz+?=
- =?us-ascii?Q?4UysoDGKodFPGeasOkrIRssvL8CAq2oYL8DtiEvVmzPw8VJ7no3tJUxyzF1n?=
- =?us-ascii?Q?eNuPwM5nI5qe+BKfnXqQkA4HffRWyDOLoZR1wf+Rw3UCZHdVOFZXSUsEsxSV?=
- =?us-ascii?Q?uu4J4/ZXhAmUoDTRKwwqquNIHlsXsw93WSO8PvpZt8U5WL015AdlVXt3cU3t?=
- =?us-ascii?Q?FxH9yX1DPKIPwc/sBHpD2ExAbdXe9oHs1f7HQbF3GZcMdYwq+b4R7AGAao5Y?=
- =?us-ascii?Q?7Fi0Zwix4zag5dvX108IPSUsirI6x8gThahayKQW4XqCbaoncBct5yYXyimy?=
- =?us-ascii?Q?ddHxZ25GP6kH2C0mBxOmBoL6uvFDl53GJK8YCynbSv4R28utM/uPOF3qe8B+?=
- =?us-ascii?Q?MxaT2SIV1msA1tOV+pY46w935RozxjRdd8uQ4kxq5JKkCulchNjYstDoO/wR?=
- =?us-ascii?Q?E3Q7vsYP46HaqtnaIpo3ZEAtHK6U79kx7Wv1k6QvQkJq6sq6/7cEwRHsI+QB?=
- =?us-ascii?Q?BGd++I1TVn4jzYTpZitqFyuU8PbLemqMeAc51Q=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+To: Borislav Petkov <bp@alien8.de>
+CC: Babu Moger <babu.moger@amd.com>, <corbet@lwn.net>, <fenghua.yu@intel.com>,
+	<tglx@linutronix.de>, <mingo@redhat.com>, <dave.hansen@linux.intel.com>,
+	<x86@kernel.org>, <hpa@zytor.com>, <paulmck@kernel.org>,
+	<rdunlap@infradead.org>, <tj@kernel.org>, <peterz@infradead.org>,
+	<yanjiewtw@gmail.com>, <kim.phillips@amd.com>, <lukas.bulwahn@gmail.com>,
+	<seanjc@google.com>, <jmattson@google.com>, <leitao@debian.org>,
+	<jpoimboe@kernel.org>, <rick.p.edgecombe@intel.com>,
+	<kirill.shutemov@linux.intel.com>, <jithu.joseph@intel.com>,
+	<kai.huang@intel.com>, <kan.liang@linux.intel.com>,
+	<daniel.sneddon@linux.intel.com>, <pbonzini@redhat.com>,
+	<sandipan.das@amd.com>, <ilpo.jarvinen@linux.intel.com>,
+	<peternewman@google.com>, <maciej.wieczor-retman@intel.com>,
+	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<eranian@google.com>
+References: <202401241810.jbd8Ipa1-lkp@intel.com>
+ <84128a3c83654493f637b8349153af10d69e2752.1706118776.git.babu.moger@amd.com>
+ <39c4501e-4937-49de-b12b-742e6201df6f@intel.com>
+ <20240124183153.GFZbFXmTKTLEpwZshW@fat_crate.local>
+ <e96df7ac-f0b4-4300-8546-7c1df836dea2@intel.com>
+ <20240124191429.GGZbFhldYr3K85H9cg@fat_crate.local>
+ <6635c607-cab2-45f4-a0fe-ff4f53b36849@intel.com>
+ <20240124204525.GIZbF25bekUME2flt0@fat_crate.local>
+ <7d6e3d39-ce53-40e4-bba5-242911a1522a@intel.com>
+ <20240124224657.GKZbGTYTjN2m8VirbF@fat_crate.local>
+From: Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <20240124224657.GKZbGTYTjN2m8VirbF@fat_crate.local>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW2PR16CA0028.namprd16.prod.outlook.com (2603:10b6:907::41)
+ To SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|IA1PR11MB6124:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8d0095ae-9b5a-4193-29bb-08dc1d30a70f
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: I+jXjQxN38s9NPpPUG9P1mPKaS5UfgfnjLDg9bhXZe3BFYkKKhDw7+j9waD79axFhDYIrrvf9oZjJWzXd58YFA43ShpnycV5xpADstrC9e3dhFIQ9l7xJ5EQC/pHtvU8X4uKxWv1KCwPEqz0VZSr808mryxCaLnaXhhrtSTKer9PJTAsF3/W805F26GuXNaUrY6E/PwcxY7LASRAA/14XmAy40GawPMeDtUxcaSOLxLkU/tqivt2yWGjWP2WtviZZumWolOCj7bYRAUY/XzfpUNLcM7CVOJ7udlNe6liEP2+rwGnJ4Ttn2jii29WlpZggf1lKW3zQbCW/amGvCD7e6TcfVPGYLkC6VFE1rxYTuru8yZMbLmz0BbOwTRqgqHydiwK6u+Ej4muDut94FzacW6gqnjAEiEpDln0Hv2JoTNwnJD4B2a/i0S6muYr3U1dMhRuXupMvE9g70ZSGjJoFdBoY89ITOJyGzKNU8L5Sz9WGxQp4b+FyT79+6A+yDrIAfxtVZKkDTwBE73POHJrbkAic7FCM8tldogSnixVS9iWv2HbbN9oKC5kZyDDOMY4slsByQOR8A+G7q1FrO2zaU32lBdG0R+QBcOpqLO+2BGGVuMd615Oqd27JqoykhtS3njOFkRlb6vDSrg91V5WFA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(376002)(136003)(39860400002)(366004)(230922051799003)(186009)(1800799012)(451199024)(64100799003)(6666004)(6486002)(478600001)(31686004)(38100700002)(6506007)(6512007)(2616005)(26005)(53546011)(83380400001)(82960400001)(86362001)(36756003)(6916009)(41300700001)(66556008)(66476007)(66946007)(316002)(7416002)(2906002)(4326008)(8936002)(8676002)(31696002)(44832011)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dWwwWHNnL0JIU0hmK1FoVU5pMy9mbmhBNis0WG12Uzdxdk9XM2NUL3N5Z3hD?=
+ =?utf-8?B?dnNON3hVemY1YVFTQ0lpVVMxQmhNYTJiQklWRDBaUzBreWt1Vk1aK05MckhX?=
+ =?utf-8?B?ZXBEZ2hBS0N3SU5XaGlpZkR4RU9uQk94N1IrN24xMmk3YU5FVHJYT0VvVU01?=
+ =?utf-8?B?UlN6VHVFaHRRZm9IV3lsdTE3cUt5NjJiVkpNZHRvWWdWWTZjZ0VueTlrdlZw?=
+ =?utf-8?B?VHV1MzFjeFlpbVR0UEJZYSt3WFBHQ2pXVHhrOEVNMm5lb3FwWjNINkxkRG95?=
+ =?utf-8?B?ckovVVN4OWR4RkJLbEtqYXA5bXMwTkF3K3hudzJXQmpjSDMwVGZUcEFRTmZG?=
+ =?utf-8?B?dkc1QVBxaThZNXVHSk9KVkJsbzgyNWlvRDF6MkE2dFlpT2ZvWmJmTEFPRlB4?=
+ =?utf-8?B?ZnFHSXBXSTc5b1ovUEwvbkdMbnlpeXRlTDgvRVlmNkt3NEhNMnl3aDRLcHhY?=
+ =?utf-8?B?cy9NNWNPUlpraFNrVEQweHp1NWRTRDdoaURzVmprcmdJS3RVN0hTanBkMFZm?=
+ =?utf-8?B?eWtPV3lUWUMwOVQvTFV6WmNhY0ZFLzlJaGNkZVA1NjhCaFR0VXN1SkRVRnFy?=
+ =?utf-8?B?eFREdG1XaTVXY3VyMDFJYnFYZ0hleVpnUEM0eXVsb3dMVUI5b01VQmtkY1VZ?=
+ =?utf-8?B?LzE3VlRLSVo0VVJBTUxVZGFZTWNXa3prd1BXQnBVWks1VXBDdnJQR1pLUUI2?=
+ =?utf-8?B?ZWdQZGNYQ3lIOTB4UzRMaDBxaW9YcGhuK0djNER4L0NMcmdpaEtUd2g0dUQ2?=
+ =?utf-8?B?dHZYUnM2bCtjSkdoVU5pZEpuM3haRENRa2hIUWRuWS8vOW93VHpFQ2FZa0RU?=
+ =?utf-8?B?bDZJakthclBLMGZMYTc5S1JTSUVLY09EdnVsNGdaNkk1OVBYWk85Vk5UZWE0?=
+ =?utf-8?B?WmNDRWZHTnZkdWUwNWhYOC9FUzV5c25CcldyaEgvZUIzaElPRm9wd2lKbWhv?=
+ =?utf-8?B?Nm8xL3RwbTRUL2J1TXFPeFVsMlJpVWJybTJhdHhtRVhZNGxhbVpBN3RnbGJZ?=
+ =?utf-8?B?dmQvSTk0Ly9KaDBEeHo3UThNdG5YUlV3MWdDNm1oVndtQWFGTWlIR0pRalZK?=
+ =?utf-8?B?OElXN0luazhnb2VZT2NoRHFBdGNlQTdPRUxTYzRDREFxcVdQUEpyMnd0Sy8w?=
+ =?utf-8?B?N05wV1RnWSsva2ppZTBBNGlFUE85WFFYRXJrV3BOdzZxUFpkKzN2UDdvazJq?=
+ =?utf-8?B?SGxlM1EyWlVvZVUrcmtXNFY2MkExNEZVZ05WTEtFYm9VaDhOaW5pMTlYT0o5?=
+ =?utf-8?B?NlJwZnpON3I4aFRXMVYyRGZtYUdmdTUvVmdVbkdCb2xqRVBlNm9GTng1ZzVi?=
+ =?utf-8?B?R21yLzg0RUxlTENNY0ZidGNrVGEzTll4T1VoY1lHVXFXeHpkUTBNaTJqQWRF?=
+ =?utf-8?B?a1p2dXFYbiszK1htUG90N3R1eTNyaDk5TnNoT1dsdlVrZTBDTitlbGkrZTJ0?=
+ =?utf-8?B?R3pXajRzRzhvNVc5RXhmWVlnc2dtbVBjdm95RVBrLy9iYnpYWWlvWmZJNmo3?=
+ =?utf-8?B?UnM4MEZEMDhOcVI5RTVGOXk1ditZVVJnRisxVTBGZC9Zc29NdWtTcWJFckgx?=
+ =?utf-8?B?QkJnekJnYzdZWEt2QklOSllMMCtuSmFxTnNGVU9TaVV6ZXVuK0JZNFhkY1RO?=
+ =?utf-8?B?N25Ea1pJSEtXU2pnb2hSZE51bHJ0RHRMZHdoanIxcU94aU9YUVlhblQ4aW11?=
+ =?utf-8?B?b0pOSmxNYnJ6R2prTlNIeERGRi9DbmJwMmkwblFBR01TblcvQzdJSllzTXB4?=
+ =?utf-8?B?aHVvLzNMTjZwMG1wc1lsakp1OUYxWUFUTjY3YWt2VmQ5dldnbG0rY2JkZHRx?=
+ =?utf-8?B?WkpQT2xwWlEwNXJXOGprTFg4ekVSZi9YeDV3RWZpYjZnc2NzeVVwOGhCWlR1?=
+ =?utf-8?B?bTRzZFZRc01jL1k2c2hJaHVKSzZYNWRhZ3V6Y1huT01RdFA3V3hjR09WYnZO?=
+ =?utf-8?B?RlgrbktRWm9KOEhMVGV1U1ZwYy93OVNpN1gzeDRhMkZSMTd6b0J2dHk3WE9L?=
+ =?utf-8?B?VW5ScU5QQWRUdlh1NEc0L1dTWFlDVXlXWmkxZzVKTGF0cHBkeWFMeDNtVTB6?=
+ =?utf-8?B?S3F1ZXVzTk9FZk54NXdCWk5iTnJBSzlva3pUTU95UCt2NVB4UlVGaHJ5MjIw?=
+ =?utf-8?B?VVQrdkpiY2l0ZnZwVFJDaTEyR3FwR1pqWDlFZDVpZWd3aUNKaUlhZFRub3Y3?=
+ =?utf-8?B?RlE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8d0095ae-9b5a-4193-29bb-08dc1d30a70f
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4b5968da-bb37-4619-e097-08dc1d309949
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jan 2024 23:02:54.6871
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jan 2024 23:03:17.9846
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR02MB8834
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: d1q6WHywadMgOZxuOh/P9PJK2ZPzUHWcEuK/L/rIeWsfl5uU8LN2Em79/yyRD8pTIoh8LZw1c8P1FcT9fZ9EdxQMU7YvPPGnASfNr/SsBVg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB6124
+X-OriginatorOrg: intel.com
 
-From: Baoquan He <bhe@redhat.com>  Sent: Tuesday, January 23, 2024 9:13 PM
->=20
-> Now crash codes under kernel/ folder has been split out from kexec
-> code, crash dumping can be separated from kexec reboot in config
-> items on x86 with some adjustments.
->=20
-> Here, also change some ifdefs or IS_ENABLED() check to more appropriate
-> ones, e,g
->  - #ifdef CONFIG_KEXEC_CORE -> #ifdef CONFIG_CRASH_DUMP
->  - (!IS_ENABLED(CONFIG_KEXEC_CORE)) - >
-> (!IS_ENABLED(CONFIG_CRASH_RESERVE))
->=20
-> Signed-off-by: Baoquan He <bhe@redhat.com>
-> ---
->  arch/x86/kernel/Makefile           | 4 ++--
->  arch/x86/kernel/cpu/mshyperv.c     | 4 ++++
->  arch/x86/kernel/kexec-bzimage64.c  | 4 ++++
->  arch/x86/kernel/kvm.c              | 4 ++--
->  arch/x86/kernel/machine_kexec_64.c | 3 +++
->  arch/x86/kernel/reboot.c           | 2 +-
->  arch/x86/kernel/setup.c            | 2 +-
->  arch/x86/kernel/smp.c              | 2 +-
->  arch/x86/xen/enlighten_hvm.c       | 4 ++++
->  9 files changed, 22 insertions(+), 7 deletions(-)
->=20
-> diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-> index 913d4022131e..3668b1edef2d 100644
-> --- a/arch/x86/kernel/Makefile
-> +++ b/arch/x86/kernel/Makefile
-> @@ -100,9 +100,9 @@ obj-$(CONFIG_TRACING)		+=3D trace.o
->  obj-$(CONFIG_RETHOOK)		+=3D rethook.o
->  obj-$(CONFIG_VMCORE_INFO)	+=3D vmcore_info_$(BITS).o
->  obj-$(CONFIG_KEXEC_CORE)	+=3D machine_kexec_$(BITS).o
-> -obj-$(CONFIG_KEXEC_CORE)	+=3D relocate_kernel_$(BITS).o crash.o
-> +obj-$(CONFIG_KEXEC_CORE)	+=3D relocate_kernel_$(BITS).o
->  obj-$(CONFIG_KEXEC_FILE)	+=3D kexec-bzimage64.o
-> -obj-$(CONFIG_CRASH_DUMP)	+=3D crash_dump_$(BITS).o
-> +obj-$(CONFIG_CRASH_DUMP)	+=3D crash_dump_$(BITS).o crash.o
->  obj-y				+=3D kprobes/
->  obj-$(CONFIG_MODULES)		+=3D module.o
->  obj-$(CONFIG_X86_32)		+=3D doublefault_32.o
-> diff --git a/arch/x86/kernel/cpu/mshyperv.c
-> b/arch/x86/kernel/cpu/mshyperv.c
-> index 01fa06dd06b6..f8163a59026b 100644
-> --- a/arch/x86/kernel/cpu/mshyperv.c
-> +++ b/arch/x86/kernel/cpu/mshyperv.c
-> @@ -210,6 +210,7 @@ static void hv_machine_shutdown(void)
->  		hyperv_cleanup();
->  }
->=20
-> +#ifdef CONFIG_CRASH_DUMP
->  static void hv_machine_crash_shutdown(struct pt_regs *regs)
->  {
->  	if (hv_crash_handler)
-> @@ -221,6 +222,7 @@ static void hv_machine_crash_shutdown(struct
-> pt_regs *regs)
->  	/* Disable the hypercall page when there is only 1 active CPU. */
->  	hyperv_cleanup();
->  }
-> +#endif
->  #endif /* CONFIG_KEXEC_CORE */
+Hi Boris,
 
-Note that the #ifdef CONFIG_CRASH_DUMP is nested inside
-#ifdef CONFIG_KEXEC_CODE here, and in the other Hyper-V code
-just below.   It's also nested in xen_hvm_guest_init() at the bottom
-of this patch.  But the KVM case of setting crash_shutdown is
-not nested -- you changed #ifdef CONFIG_KEXEC_CORE to #ifdef
-CONFIG_CRASH_DUMP.
+On 1/24/2024 2:46 PM, Borislav Petkov wrote:
+> On Wed, Jan 24, 2024 at 01:31:01PM -0800, Reinette Chatre wrote:
+>> I do not know the motivation for that requirement. From what I can tell the
+>> change [1] that added that check went in as first version without discussion.
+>> [1] starts by saying that the format is "preferred" so I assume there is
+>> some history that I am not familiar with.
+> 
+> My main goal with commit messages, code comments and every other *text*
+> you have in the code is to be as succinct and understandable as possible
+> for time considerations, clarity, etc.
+> 
+> If I see a 12-char sha1 followed by a title, to me that is a commit. No
+> need to say "commit" too. But as already said, if you prefer to have
+> "commit" there, I'll add it - no biggie.
 
-I think both approaches work because CONFIG_CRASH_DUMP implies
-CONFIG_KEXEC_CORE, but I wonder if it would be better to *not* nest
-in all cases.  I'd like to see the cases be consistent so in the future
-someone doesn't wonder why there's a difference (unless there's
-a reason for the difference that I missed).
+I totally understand your sentiment. I am just the messenger here.
 
->  #endif /* CONFIG_HYPERV */
->=20
-> @@ -497,7 +499,9 @@ static void __init ms_hyperv_init_platform(void)
->=20
->  #if IS_ENABLED(CONFIG_HYPERV) && defined(CONFIG_KEXEC_CORE)
->  	machine_ops.shutdown =3D hv_machine_shutdown;
-> +#ifdef CONFIG_CRASH_DUMP
->  	machine_ops.crash_shutdown =3D hv_machine_crash_shutdown;
-> +#endif
->  #endif
->  	if (ms_hyperv.features & HV_ACCESS_TSC_INVARIANT) {
->  		/*
-> diff --git a/arch/x86/kernel/kexec-bzimage64.c b/arch/x86/kernel/kexec-
-> bzimage64.c
-> index 2a422e00ed4b..b55737b83a84 100644
-> --- a/arch/x86/kernel/kexec-bzimage64.c
-> +++ b/arch/x86/kernel/kexec-bzimage64.c
-> @@ -263,11 +263,13 @@ setup_boot_parameters(struct kimage *image,
-> struct boot_params *params,
->  	memset(&params->hd0_info, 0, sizeof(params->hd0_info));
->  	memset(&params->hd1_info, 0, sizeof(params->hd1_info));
->=20
-> +#ifdef CONFIG_CRASH_DUMP
->  	if (image->type =3D=3D KEXEC_TYPE_CRASH) {
->  		ret =3D crash_setup_memmap_entries(image, params);
->  		if (ret)
->  			return ret;
->  	} else
-> +#endif
->  		setup_e820_entries(params);
->=20
->  	nr_e820_entries =3D params->e820_entries;
-> @@ -433,12 +435,14 @@ static void *bzImage64_load(struct kimage *image, c=
-har *kernel,
->  		return ERR_PTR(-EINVAL);
->  	}
->=20
-> +#ifdef CONFIG_CRASH_DUMP
->  	/* Allocate and load backup region */
->  	if (image->type =3D=3D KEXEC_TYPE_CRASH) {
->  		ret =3D crash_load_segments(image);
->  		if (ret)
->  			return ERR_PTR(ret);
->  	}
-> +#endif
->=20
->  	/*
->  	 * Load purgatory. For 64bit entry point, purgatory  code can be
-> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-> index dfe9945b9bec..acfc2d3183bc 100644
-> --- a/arch/x86/kernel/kvm.c
-> +++ b/arch/x86/kernel/kvm.c
-> @@ -769,7 +769,7 @@ static struct notifier_block kvm_pv_reboot_nb =3D {
->   * won't be valid. In cases like kexec, in which you install a new kerne=
-l, this
->   * means a random memory location will be kept being written.
->   */
-> -#ifdef CONFIG_KEXEC_CORE
-> +#ifdef CONFIG_CRASH_DUMP
->  static void kvm_crash_shutdown(struct pt_regs *regs)
->  {
->  	kvm_guest_cpu_offline(true);
-> @@ -852,7 +852,7 @@ static void __init kvm_guest_init(void)
->  	kvm_guest_cpu_init();
->  #endif
->=20
-> -#ifdef CONFIG_KEXEC_CORE
-> +#ifdef CONFIG_CRASH_DUMP
->  	machine_ops.crash_shutdown =3D kvm_crash_shutdown;
->  #endif
->=20
-> diff --git a/arch/x86/kernel/machine_kexec_64.c
-> b/arch/x86/kernel/machine_kexec_64.c
-> index bc0a5348b4a6..b180d8e497c3 100644
-> --- a/arch/x86/kernel/machine_kexec_64.c
-> +++ b/arch/x86/kernel/machine_kexec_64.c
-> @@ -508,6 +508,8 @@ int arch_kimage_file_post_load_cleanup(struct
-> kimage *image)
->  }
->  #endif /* CONFIG_KEXEC_FILE */
->=20
-> +#ifdef CONFIG_CRASH_DUMP
-> +
->  static int
->  kexec_mark_range(unsigned long start, unsigned long end, bool protect)
->  {
-> @@ -552,6 +554,7 @@ void arch_kexec_unprotect_crashkres(void)
->  {
->  	kexec_mark_crashkres(false);
->  }
-> +#endif
->=20
->  /*
->   * During a traditional boot under SME, SME will encrypt the kernel,
-> diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
-> index 830425e6d38e..1287b0d5962f 100644
-> --- a/arch/x86/kernel/reboot.c
-> +++ b/arch/x86/kernel/reboot.c
-> @@ -796,7 +796,7 @@ struct machine_ops machine_ops __ro_after_init =3D {
->  	.emergency_restart =3D native_machine_emergency_restart,
->  	.restart =3D native_machine_restart,
->  	.halt =3D native_machine_halt,
-> -#ifdef CONFIG_KEXEC_CORE
-> +#ifdef CONFIG_CRASH_DUMP
->  	.crash_shutdown =3D native_machine_crash_shutdown,
->  #endif
->  };
+Without the "commit" this patch triggers a loud:
 
-Also in arch/x86/kernel/reboot.c, should the function
-machine_crash_shutdown() be updated with
-#ifdef CONFIG_CRASH_SHUTDOWN instead of #ifdef
-CONFIG_KEXEC_CORE?
+ERROR: Please use git commit description style 'commit <12+ chars of sha1> ("<title line>")' - ie: 'commit 92bd5a139033 ("x86/resctrl: Add interface to write mbm_total_bytes_config")'
+#15:
+  92bd5a139033 ("x86/resctrl: Add interface to write mbm_total_bytes_config")
 
-Michael
+I usually (unless, for example, following checkpatch.pl advice causes a change
+to fall out of place with surrounding code) try to format my patches to get a
+clean slate from checkpatch.pl with the goal to eliminate obstacles to the
+patch getting included.
+Since you are the one that decides the rules for inclusion you can make this
+check to be one where checkpatch.pl can be ignored. No objection from me if
+you choose to do so (and I will note the precedent for future patches).
 
-> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> index 84201071dfac..899d839a2954 100644
-> --- a/arch/x86/kernel/setup.c
-> +++ b/arch/x86/kernel/setup.c
-> @@ -471,7 +471,7 @@ static void __init arch_reserve_crashkernel(void)
->  	bool high =3D false;
->  	int ret;
->=20
-> -	if (!IS_ENABLED(CONFIG_KEXEC_CORE))
-> +	if (!IS_ENABLED(CONFIG_CRASH_RESERVE))
->  		return;
->=20
->  	ret =3D parse_crashkernel(cmdline, memblock_phys_mem_size(),
-> diff --git a/arch/x86/kernel/smp.c b/arch/x86/kernel/smp.c
-> index 2908e063d7d8..18266cc3d98c 100644
-> --- a/arch/x86/kernel/smp.c
-> +++ b/arch/x86/kernel/smp.c
-> @@ -286,7 +286,7 @@ struct smp_ops smp_ops =3D {
->  	.smp_cpus_done		=3D native_smp_cpus_done,
->=20
->  	.stop_other_cpus	=3D native_stop_other_cpus,
-> -#if defined(CONFIG_KEXEC_CORE)
-> +#if defined(CONFIG_CRASH_DUMP)
->  	.crash_stop_other_cpus	=3D kdump_nmi_shootdown_cpus,
->  #endif
->  	.smp_send_reschedule	=3D native_smp_send_reschedule,
-> diff --git a/arch/x86/xen/enlighten_hvm.c b/arch/x86/xen/enlighten_hvm.c
-> index 3f8c34707c50..09e3db7ff990 100644
-> --- a/arch/x86/xen/enlighten_hvm.c
-> +++ b/arch/x86/xen/enlighten_hvm.c
-> @@ -149,12 +149,14 @@ static void xen_hvm_shutdown(void)
->  		xen_reboot(SHUTDOWN_soft_reset);
->  }
->=20
-> +#ifdef CONFIG_CRASH_DUMP
->  static void xen_hvm_crash_shutdown(struct pt_regs *regs)
->  {
->  	native_machine_crash_shutdown(regs);
->  	xen_reboot(SHUTDOWN_soft_reset);
->  }
->  #endif
-> +#endif
->=20
->  static int xen_cpu_up_prepare_hvm(unsigned int cpu)
->  {
-> @@ -236,8 +238,10 @@ static void __init xen_hvm_guest_init(void)
->=20
->  #ifdef CONFIG_KEXEC_CORE
->  	machine_ops.shutdown =3D xen_hvm_shutdown;
-> +#ifdef CONFIG_CRASH_DUMP
->  	machine_ops.crash_shutdown =3D xen_hvm_crash_shutdown;
->  #endif
-> +#endif
->  }
->=20
->  static __init int xen_parse_nopv(char *arg)
-> --
-> 2.41.0
->=20
+Reinette
+
+
 
 
