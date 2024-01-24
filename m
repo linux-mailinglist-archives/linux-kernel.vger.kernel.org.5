@@ -1,125 +1,170 @@
-Return-Path: <linux-kernel+bounces-36769-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36770-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68C2F83A64A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:02:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D55583A651
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:03:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C5421C233C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:02:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 273A7B2D0C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:03:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE6F91865A;
-	Wed, 24 Jan 2024 10:02:26 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0A3718651;
-	Wed, 24 Jan 2024 10:02:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7873218C3B;
+	Wed, 24 Jan 2024 10:02:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CTZ1JlSz"
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2539818E0C
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:02:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706090546; cv=none; b=YuTh/AohmMl5rfCrdBgkjy3vB0QwRKjFoqhtMnjrwIXJOmv9/810ReRgNOFgRq7KnfwV2q6ahQxFptF4RKiAgGrXqFQHVY8YKowkwjGLc1zI1nfaF6LsuwUKT1Dg+qgixp2661fv6dZgNMWAcS65RlwplgocMhfQorr1KDPN/O0=
+	t=1706090562; cv=none; b=IYEErwxxKhpCvO2ZtSV3wtm0Ot66hS32Ez8eL9TApqimUCeipqcCQg3wBEV/+ke2FuSuRjSXDi66FR6zitFmDhCBsG9pcQPkHJ9jgQDNlbbpSk0670Pxl6MpyuWzhhXOkocZeeZKyFfTZUWyxp8fZ42Xavu1gVJbx2JoCN6d8eM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706090546; c=relaxed/simple;
-	bh=h2xRIgUBWah2xuZNBy/h1M5DjGAq7+qqu9ARggmGvTk=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=EA7iWVARFJHbhJ8c4Aq50988w/1oXvD6MSiDGA8HTX/YyU3NYSbl5BfreyvqAik/p1q6GOuX0UiqRHju/H1o7c22mSPQmv+S+3OG2G/q0faqZcLsSpwJ9gG01wAPDb7dq5F2DwjhCrIu66+NoQ8CbWLmVOeBEq0dW8E62ZfDzg8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.20.42.173])
-	by gateway (Coremail) with SMTP id _____8DxmfAu4LBltbAEAA--.18903S3;
-	Wed, 24 Jan 2024 18:02:22 +0800 (CST)
-Received: from [10.20.42.173] (unknown [10.20.42.173])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8BxVMwt4LBls6QWAA--.39609S3;
-	Wed, 24 Jan 2024 18:02:21 +0800 (CST)
-Subject: Re: [PATCH v3 3/3] irqchip/loongson-eiointc: Typo fix in function
- eiointc_domain_alloc
-To: Huacai Chen <chenhuacai@kernel.org>
-Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>,
- Thomas Gleixner <tglx@linutronix.de>, linux-mips@vger.kernel.org,
- linux-kernel@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omp.ru>,
- lvjianmin@loongson.cn
-References: <20240118121542.748351-1-maobibo@loongson.cn>
- <20240118121542.748351-4-maobibo@loongson.cn>
- <CAAhV-H4q0B3fXjkwtEQaCLk789UkLbWe8Zd8L7bMLWea1yq70w@mail.gmail.com>
-From: maobibo <maobibo@loongson.cn>
-Message-ID: <7b3f2afe-c82c-e193-6427-0107d1da0bb5@loongson.cn>
-Date: Wed, 24 Jan 2024 18:02:21 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+	s=arc-20240116; t=1706090562; c=relaxed/simple;
+	bh=eZb8KsVdKCKnn8GCgoqYmSVfuu/Q0go0ckHPs8r4gHo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pmJtDQ/limyI5H0+j79FC4GbaH2b7oj7+Pea0ZKzksBW1ZZQ2B94hh8xNX+BWuBs9WJ6DuXCoietlchITVrq1r9uG674dVN5ZO9ZHd1KNqEePuPZ9FfMOMcQLG9gScNm7jckSDf2qKKCFdEORYuyk4Pdlel6wmzbsmEE8gjUP6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CTZ1JlSz; arc=none smtp.client-ip=209.85.210.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6e0df9aa43dso4108022a34.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 02:02:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706090559; x=1706695359; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yUpwH1vvlbubZBmKYelxmGkgmJALQKDTM110+USmxN4=;
+        b=CTZ1JlSzmYzjW/1gSgdcic0Rofquz1rTBIhY4ClIHvHBhe6TG2uLDpolg2+eNbQTpV
+         YZdSjloomPoZccsNH16ltOmkIRusBP/mds7dp6pvlpF6x9newN11amR7eIn+3dC2cLI6
+         R7mi73lny74n82ZDmEVoheuOW1kauPqm8+f1755CG65kR3s/RhMPIaW26Ym72OrOHNOU
+         Umv3vThfXvBPYVQR4IMuyhTxNPdYuOoggI8FEaertHZTfxjNiBJgcz0VVMdoRQSWL7xu
+         YhYxw9eDzGYRvaY79lsCfvqScYAPKQtqs4CorlNR5+StMSyM+YavfKERuo17xo2lJFCB
+         sgkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706090559; x=1706695359;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yUpwH1vvlbubZBmKYelxmGkgmJALQKDTM110+USmxN4=;
+        b=seEYC25kX1ODOAtig/qEaL6XuanSMTJsENOWJhX/V/z+R+eV8bzT5AZWWDD3zy6QdB
+         oSK8Q6JwnIthb5hRzvc3lwk+q3TJlztZTbsVAxCS1iBEDzzoHOla280C6JGNuMW31yAn
+         nxlIP0J3jWusO6yDPI9XVfEFl77LCfYaSjADmdESYw3Yfgjxkn4LtCi1goanaVGUe1MS
+         27UfOs1ZlL59a3A1nBB+Jz1rjtrgvZVFSusu3sZy44iS72g9bz3dP9O5ahfmztg6Z7iN
+         l0sYd1k0sJT6NfTrWdwagXDVQGsEw+FhcYyG9I0xXZw7MVu5WDNyvw3qIEBDLAJ704ei
+         FZ1w==
+X-Gm-Message-State: AOJu0YxZmgHuKWM6Euf6oT174c5WFeU831xruTbZXBiSqgENiD7B/aBF
+	C6oHewzXwBGb6j/pJg5L5EIn+E2bI9gM9zi0ZEGSQPWjQrUTH0zQDDRorVSQK7FluteJh/gtdJf
+	jhxBLUxTr8+HKuwc7nzt2VVFqmJkJvvw4xDPw+g==
+X-Google-Smtp-Source: AGHT+IE79HSwfv0oyaKG/O5pd/o2yGI9NCIYgU09VQo436h6rDnZM1AO/HGfrAmwLFfRmFGKRkbG+6cW5fHWetbuYc8=
+X-Received: by 2002:a9d:6305:0:b0:6dd:eb93:5b20 with SMTP id
+ q5-20020a9d6305000000b006ddeb935b20mr1341915otk.21.1706090559206; Wed, 24 Jan
+ 2024 02:02:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAAhV-H4q0B3fXjkwtEQaCLk789UkLbWe8Zd8L7bMLWea1yq70w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8BxVMwt4LBls6QWAA--.39609S3
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoW7KrykWw4kAryUuFW8CFykZwc_yoW8GFy8pF
-	WUA3Wqkr45AFyUC3sIgr4UZFyav3s0qrZ7KayxtrW2vrZ8Jw1DGF45CayDCrn2yw4xGF12
-	9F4Fqr15uF15A3cCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUB2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-	tVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
-	8JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
-	Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0
-	cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8V
-	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
-	14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU4AhLUUUUU
+References: <20240122225710.1952066-1-peter.griffin@linaro.org>
+ <20240122225710.1952066-3-peter.griffin@linaro.org> <CAPLW+4=G5YiTZaZ5k=H1YciUwOEjKSF0w9Hd8rwymA71UmJnRQ@mail.gmail.com>
+In-Reply-To: <CAPLW+4=G5YiTZaZ5k=H1YciUwOEjKSF0w9Hd8rwymA71UmJnRQ@mail.gmail.com>
+From: Peter Griffin <peter.griffin@linaro.org>
+Date: Wed, 24 Jan 2024 10:02:27 +0000
+Message-ID: <CADrjBPqbToXYUBx=reE5_W4U4aUUJRFs+FC5AHsrQ6mRYB9iAA@mail.gmail.com>
+Subject: Re: [PATCH 2/9] soc: samsung: exynos-pmu: Add exynos_pmu_update/read/write
+ APIs and SoC quirks
+To: Sam Protsenko <semen.protsenko@linaro.org>
+Cc: arnd@arndb.de, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
+	linux@roeck-us.net, wim@linux-watchdog.org, conor+dt@kernel.org, 
+	alim.akhtar@samsung.com, jaewon02.kim@samsung.com, chanho61.park@samsung.com, 
+	kernel-team@android.com, tudor.ambarus@linaro.org, andre.draszik@linaro.org, 
+	saravanak@google.com, willmcvicker@google.com, linux-fsd@tesla.com, 
+	linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi Sam,
 
+Thanks for the review feedback.
 
-On 2024/1/24 下午5:52, Huacai Chen wrote:
-> Acked-by: Huacai Chen <chenhuacai@loongson.cn>
-> 
-> But I think moving this simplest patch to the first one is better.
-Huacai,
+On Tue, 23 Jan 2024 at 18:56, Sam Protsenko <semen.protsenko@linaro.org> wr=
+ote:
+>
+> On Mon, Jan 22, 2024 at 4:57=E2=80=AFPM Peter Griffin <peter.griffin@lina=
+ro.org> wrote:
+> >
+> > Newer Exynos SoCs have atomic set/clear bit hardware for PMU registers =
+as
+> > these registers can be accessed by multiple masters. Some platforms als=
+o
+> > protect the PMU registers for security hardening reasons so they can't =
+be
+> > written by normal world and are only write acessible in el3 via a SMC c=
+all.
+> >
+> > Add support for both of these usecases using SoC specific quirks that a=
+re
+> > determined from the DT compatible string.
+> >
+> > Drivers which need to read and write PMU registers should now use these
+> > new exynos_pmu_*() APIs instead of obtaining a regmap using
+> > syscon_regmap_lookup_by_phandle()
+> >
+> > Depending on the SoC specific quirks, the exynos_pmu_*() APIs will acce=
+ss
+> > the PMU register in the appropriate way.
+> >
+> > Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
+> > ---
+> >  drivers/soc/samsung/exynos-pmu.c       | 209 ++++++++++++++++++++++++-
+> >  drivers/soc/samsung/exynos-pmu.h       |   4 +
+> >  include/linux/soc/samsung/exynos-pmu.h |  28 ++++
+> >  3 files changed, 234 insertions(+), 7 deletions(-)
+> >
+>
+> [snip]
+>
+> > +
+> > +int exynos_pmu_update_bits(unsigned int offset, unsigned int mask,
+> > +                          unsigned int val)
+> > +{
+> > +       if (pmu_context->pmu_data &&
+> > +           pmu_context->pmu_data->quirks & QUIRK_PMU_ALIVE_WRITE_SEC)
+> > +               return rmw_priv_reg(pmu_context->pmu_base_pa + offset,
+> > +                                   mask, val);
+> > +
+> > +       return regmap_update_bits(pmu_context->pmureg, offset, mask, va=
+l);
+> > +}
+> > +EXPORT_SYMBOL(exynos_pmu_update_bits);
+> > +
+>
+> This seems a bit hacky, from the design perspective. This way the user
+> will have to worry about things like driver dependencies, making sure
+> everything is instantiated in a correct order, etc. It also hides the
+> details otherwise visible through "syscon-phandle" property in the
+> device tree.
 
-Thanks for reviewing the patch, will do in next version.
+In v2 I will keep the phandle to pmu_system_controller in DT, and add
+some -EPROBE_DEFER logic (See my email with Krzysztof).
 
-Regards
-Bibo Mao
+> Can we instead rework it by overriding regmap
+> implementation for Exynos specifics, and then continue to use it in
+> the leaf drivers via "syscon-phandle" property?
 
-> 
-> Huacai
-> 
-> On Thu, Jan 18, 2024 at 8:15 PM Bibo Mao <maobibo@loongson.cn> wrote:
->>
->> There is small typo in function eiointc_domain_alloc, and there is no
->> definition about struct eiointc, instead it should be struct eiointc_priv.
->> It is strange that there is no warning with gcc compiler. This patch
->> fixes the typo issue.
->>
->> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
->> ---
->>   drivers/irqchip/irq-loongson-eiointc.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/irqchip/irq-loongson-eiointc.c b/drivers/irqchip/irq-loongson-eiointc.c
->> index 86f4faad0695..1a25e0613d50 100644
->> --- a/drivers/irqchip/irq-loongson-eiointc.c
->> +++ b/drivers/irqchip/irq-loongson-eiointc.c
->> @@ -252,7 +252,7 @@ static int eiointc_domain_alloc(struct irq_domain *domain, unsigned int virq,
->>          int ret;
->>          unsigned int i, type;
->>          unsigned long hwirq = 0;
->> -       struct eiointc *priv = domain->host_data;
->> +       struct eiointc_priv *priv = domain->host_data;
->>
->>          ret = irq_domain_translate_onecell(domain, arg, &hwirq, &type);
->>          if (ret)
->> --
->> 2.39.3
->>
+I did look at that possibility first, as like you say it would avoid
+updating the leaf drivers to use the new API. Unfortunately a SMC
+backend to regmap was already tried and nacked upstream pretty hard.
+See here https://lore.kernel.org/lkml/20210723163759.GI5221@sirena.org.uk/T=
+/
 
+regards,
+
+Peter.
 
