@@ -1,232 +1,208 @@
-Return-Path: <linux-kernel+bounces-36986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D16E783A9D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:33:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 571CC83A9D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:34:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EDB5AB20AB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:33:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C62A1C21E66
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:34:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2384277F07;
-	Wed, 24 Jan 2024 12:33:27 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6A797A735;
+	Wed, 24 Jan 2024 12:33:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="WerqKHpc"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16FA87691E
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 12:33:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E46877F19;
+	Wed, 24 Jan 2024 12:33:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706099606; cv=none; b=ZqKBMCfBbIB+8RfVGGEqRgiWUVa0rOzF7TtgBLPivwCFLNgz/iYNBCCGuw8ROTZjs6SHTNwMhHJZ0yXaRonbcOe+iG98MnLeWDOAjjpJ0aedxEnSUQD9hrQk2pV4irqo30N8FLKOYupPnFwAEoIWipnuStNdWKTkLhpaQsVRjUU=
+	t=1706099609; cv=none; b=bHi90UIbL8vgJwpSmX14bxxAW7y4Rld8R/Mjt3nWdNvXN3g56wtzUfnGLK1wABPmbBybGP45LeuA+aGoqV3UsK4F+fjJiwYHfm/rNbXYxJXMWxowF1vuUvtVeFay1yiCULoqK6AOUHW5xFQbjuUyOIymhRUNgxi4qviztyrBrbM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706099606; c=relaxed/simple;
-	bh=4aPJJecww9GOMWDNhV+Os9xjhao/fFA0y9gRuox/9/U=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=OBn68uCeydEpJLyQ+QYOEOTqvREOuZmxJB7eU66sAXCmrU9kJc9NhfkJydAUZdo2Th7JlC+gQeg/NcOQYLN0D6k1L/J3AoLtOyr7j5nhTBeWzBNBTs9DairfT6yE5+gTnA7khEh3q4MvSUwsDG17yBNykTOJEzsKGKsFEvG+8zo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rScRR-0000I1-6l; Wed, 24 Jan 2024 13:33:17 +0100
-Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rScRP-0023bS-Ax; Wed, 24 Jan 2024 13:33:15 +0100
-Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rScRP-0035Ap-0o;
-	Wed, 24 Jan 2024 13:33:15 +0100
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: "David S. Miller" <davem@davemloft.net>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Eric Dumazet <edumazet@google.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	Woojung Huh <woojung.huh@microchip.com>,
-	Arun Ramadoss <arun.ramadoss@microchip.com>
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
-	Vladimir Oltean <vladimir.oltean@nxp.com>,
-	kernel@pengutronix.de,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	UNGLinuxDriver@microchip.com,
-	=?UTF-8?q?S=C3=B8ren=20Andersen?= <san@skov.dk>
-Subject: [PATCH net-next v4 3/3] net: dsa: microchip: implement PHY loopback configuration for KSZ8794 and KSZ8873
-Date: Wed, 24 Jan 2024 13:33:14 +0100
-Message-Id: <20240124123314.734815-4-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240124123314.734815-1-o.rempel@pengutronix.de>
-References: <20240124123314.734815-1-o.rempel@pengutronix.de>
+	s=arc-20240116; t=1706099609; c=relaxed/simple;
+	bh=ZMh7iqIZgYI902YIRrVcFsxLdtDLtRhbiBT/Ncsnml8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=vCln79Ufw5W3OQqp9g9zg4Y1yARwfKDP1jHHTROq2nL5CknLK/MjUR3Z8ZltrgQBgx/7mdjaD2P8Uze7JZinx5niUEbJ7N/XRgyXSf32EK4ME+1o+sExqG/3++N+KnnazKQ/lwKxN4f47K5hquCKO7j/zqH90xkX7ceZdz9TMJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=WerqKHpc; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1706099599;
+	bh=ZMh7iqIZgYI902YIRrVcFsxLdtDLtRhbiBT/Ncsnml8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=WerqKHpc45Lp24f8eTua8oih5ZL9z1gcOG2ODNaWNOFzUfASve9em1n64H1F+l6x6
+	 73dfgZQm3x9qGAW13N6liRMSxmQkXNVjs2noqqzXzT9MiRX0Y7nHyu55k+4VZlKtXe
+	 YgUs9Opr0bfXzXHKMmSFMucgK4O2ivclSQBn8Gx/rATyYHAecgJUFZR0DSORUK754S
+	 dzD0lyDypgDzvL1Xy0aVwiR6WzxTFIBHN0LXRDRsDKAzHNbPHLhGTR5P/QptSjF3av
+	 INd2FDogojLmsndck7v9meID/NOA/6NgdWe+I3sMPiHhuN9vRVgVaCezEGlikaAaZ7
+	 i1YXF4Pfz9lcQ==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id CCBFE378207B;
+	Wed, 24 Jan 2024 12:33:18 +0000 (UTC)
+Message-ID: <62fca33c-eb1a-42ad-b7f7-31b14f0aa446@collabora.com>
+Date: Wed, 24 Jan 2024 13:33:18 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: media: convert Mediatek consumer IR to the
+ json-schema
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>,
+ Sean Wang <sean.wang@mediatek.com>, linux-media@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+References: <20240124095230.25704-1-zajec5@gmail.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <20240124095230.25704-1-zajec5@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Correct the PHY loopback bit handling in the ksz8_w_phy_bmcr and
-ksz8_r_phy_bmcr functions for KSZ8794 and KSZ8873 variants in the ksz8795
-driver. Previously, the code erroneously used Bit 7 of port register 0xD
-for both chip variants, which is actually for LED configuration. This
-update ensures the correct registers and bits are used for the PHY
-loopback feature:
+Il 24/01/24 10:52, Rafał Miłecki ha scritto:
+> From: Rafał Miłecki <rafal@milecki.pl>
+> 
+> This helps validating DTS files. Introduced changes:
+> 1. Reworded title
+> 2. Added required #include-s and adjusted "reg" in example
+> 
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> ---
+>   .../bindings/media/mediatek,mt7622-cir.yaml   | 81 +++++++++++++++++++
+>   .../devicetree/bindings/media/mtk-cir.txt     | 28 -------
+>   2 files changed, 81 insertions(+), 28 deletions(-)
+>   create mode 100644 Documentation/devicetree/bindings/media/mediatek,mt7622-cir.yaml
+>   delete mode 100644 Documentation/devicetree/bindings/media/mtk-cir.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/media/mediatek,mt7622-cir.yaml b/Documentation/devicetree/bindings/media/mediatek,mt7622-cir.yaml
+> new file mode 100644
+> index 000000000000..a2d0eed33292
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/mediatek,mt7622-cir.yaml
+> @@ -0,0 +1,81 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/mediatek,mt7622-cir.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Mediatek consumer IR on-SoC controller
 
-- For KSZ8794: Use 0xF / Bit 7.
-- For KSZ8873: Use 0xD / Bit 0.
+title: MediaTek Consumer Infrared Receiver on-SoC Controller
 
-The lack of loopback support was seen on KSZ8873 system by using
-"ethtool -t lanX". After this patch, the ethtool selftest will work,
-but only if port is not part of a bridge.
+> +
+> +maintainers:
+> +  - Sean Wang <sean.wang@mediatek.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - mediatek,mt7622-cir
+> +      - mediatek,mt7623-cir
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    minItems: 1
+> +    maxItems: 2
+> +
+> +  clock-names:
+> +    minItems: 1
+> +    items:
+> +      - const: clk
+> +      - const: bus
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Acked-by: Arun Ramadoss <arun.ramadoss@microchip.com>
----
- drivers/net/dsa/microchip/ksz8795.c     | 76 ++++++++++++++++++++++---
- drivers/net/dsa/microchip/ksz8795_reg.h |  1 +
- 2 files changed, 70 insertions(+), 7 deletions(-)
+The driver says:
 
-diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
-index 51e0194453df..50351cef6ca5 100644
---- a/drivers/net/dsa/microchip/ksz8795.c
-+++ b/drivers/net/dsa/microchip/ksz8795.c
-@@ -632,6 +632,57 @@ static void ksz8_w_vlan_table(struct ksz_device *dev, u16 vid, u16 vlan)
- 	ksz8_w_table(dev, TABLE_VLAN, addr, buf);
- }
- 
-+/**
-+ * ksz879x_get_loopback - KSZ879x specific function to get loopback
-+ *                        configuration status for a specific port
-+ * @dev: Pointer to the device structure
-+ * @port: Port number to query
-+ * @val: Pointer to store the result
-+ *
-+ * This function reads the SMI registers to determine whether loopback mode
-+ * is enabled for a specific port.
-+ *
-+ * Return: 0 on success, error code on failure.
-+ */
-+static int ksz879x_get_loopback(struct ksz_device *dev, u16 port,
-+				u16 *val)
-+{
-+	u8 stat3;
-+	int ret;
-+
-+	ret = ksz_pread8(dev, port, REG_PORT_STATUS_3, &stat3);
-+	if (ret)
-+		return ret;
-+
-+	if (stat3 & PORT_PHY_LOOPBACK)
-+		*val |= BMCR_LOOPBACK;
-+
-+	return 0;
-+}
-+
-+/**
-+ * ksz879x_set_loopback - KSZ879x specific function  to set loopback mode for
-+ *			  a specific port
-+ * @dev: Pointer to the device structure.
-+ * @port: Port number to modify.
-+ * @val: Value indicating whether to enable or disable loopback mode.
-+ *
-+ * This function translates loopback bit of the BMCR register into the
-+ * corresponding hardware register bit value and writes it to the SMI interface.
-+ *
-+ * Return: 0 on success, error code on failure.
-+ */
-+static int ksz879x_set_loopback(struct ksz_device *dev, u16 port, u16 val)
-+{
-+	u8 stat3 = 0;
-+
-+	if (val & BMCR_LOOPBACK)
-+		stat3 |= PORT_PHY_LOOPBACK;
-+
-+	return ksz_prmw8(dev, port, REG_PORT_STATUS_3, PORT_PHY_LOOPBACK,
-+			 stat3);
-+}
-+
- /**
-  * ksz8_r_phy_ctrl - Translates and reads from the SMI interface to a MIIM PHY
-  *		     Control register (Reg. 31).
-@@ -731,16 +782,20 @@ static int ksz8_r_phy_bmcr(struct ksz_device *dev, u16 port, u16 *val)
- 	if (ret)
- 		return ret;
- 
--	if (restart & PORT_PHY_LOOPBACK)
--		*val |= BMCR_LOOPBACK;
--
- 	if (ctrl & PORT_FORCE_100_MBIT)
- 		*val |= BMCR_SPEED100;
- 
- 	if (ksz_is_ksz88x3(dev)) {
-+		if (restart & KSZ8873_PORT_PHY_LOOPBACK)
-+			*val |= BMCR_LOOPBACK;
-+
- 		if ((ctrl & PORT_AUTO_NEG_ENABLE))
- 			*val |= BMCR_ANENABLE;
- 	} else {
-+		ret = ksz879x_get_loopback(dev, port, val);
-+		if (ret)
-+			return ret;
-+
- 		if (!(ctrl & PORT_AUTO_NEG_DISABLE))
- 			*val |= BMCR_ANENABLE;
- 	}
-@@ -1001,8 +1056,7 @@ static int ksz8_w_phy_bmcr(struct ksz_device *dev, u16 port, u16 val)
- 
- 	restart = 0;
- 	restart_mask = PORT_LED_OFF | PORT_TX_DISABLE | PORT_AUTO_NEG_RESTART |
--		PORT_POWER_DOWN | PORT_AUTO_MDIX_DISABLE | PORT_FORCE_MDIX |
--		PORT_PHY_LOOPBACK;
-+		PORT_POWER_DOWN | PORT_AUTO_MDIX_DISABLE | PORT_FORCE_MDIX;
- 
- 	if (val & KSZ886X_BMCR_DISABLE_LED)
- 		restart |= PORT_LED_OFF;
-@@ -1022,8 +1076,16 @@ static int ksz8_w_phy_bmcr(struct ksz_device *dev, u16 port, u16 val)
- 	if (val & KSZ886X_BMCR_FORCE_MDI)
- 		restart |= PORT_FORCE_MDIX;
- 
--	if (val & BMCR_LOOPBACK)
--		restart |= PORT_PHY_LOOPBACK;
-+	if (ksz_is_ksz88x3(dev)) {
-+		restart_mask |= KSZ8873_PORT_PHY_LOOPBACK;
-+
-+		if (val & BMCR_LOOPBACK)
-+			restart |= KSZ8873_PORT_PHY_LOOPBACK;
-+	} else {
-+		ret = ksz879x_set_loopback(dev, port, val);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	return ksz_prmw8(dev, port, regs[P_NEG_RESTART_CTRL], restart_mask,
- 			 restart);
-diff --git a/drivers/net/dsa/microchip/ksz8795_reg.h b/drivers/net/dsa/microchip/ksz8795_reg.h
-index beca974e0171..7c9341ef73b0 100644
---- a/drivers/net/dsa/microchip/ksz8795_reg.h
-+++ b/drivers/net/dsa/microchip/ksz8795_reg.h
-@@ -265,6 +265,7 @@
- #define PORT_AUTO_MDIX_DISABLE		BIT(2)
- #define PORT_FORCE_MDIX			BIT(1)
- #define PORT_MAC_LOOPBACK		BIT(0)
-+#define KSZ8873_PORT_PHY_LOOPBACK	BIT(0)
- 
- #define REG_PORT_1_STATUS_2		0x1E
- #define REG_PORT_2_STATUS_2		0x2E
--- 
-2.39.2
+	ir->bus = devm_clk_get(dev, "bus");
+	if (IS_ERR(ir->bus)) {
+		/*
+		 * For compatibility with older device trees try unnamed
+		 * ir->bus uses the same clock as ir->clock.
+		 */
+		ir->bus = ir->clk;
+	}
+
+This makes me think that requiring *one* clock on MT7623 would be a mistake
+and the devicetree should use clk, bus - CLK_INFRA_IRRX_PD, CLK_TOP_F10M_REF_SEL.
+
+Seen that - I'm sure that setting maxItems: 1 on mediatek,mt7623-cir would as
+well be a mistake.
+
+> +
+> +required:
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +
+> +allOf:
+> +  - $ref: rc.yaml#
+> +  - if:
+
+The solution would be to simply delete those if branches and, to keep compatibility
+with the already present mt7623.dtsi file, keep min/max items to 1 and 2 (of course
+in the case of clock-names, maxItems shall not be declared, as it's dictated by the
+consts).
+
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: mediatek,mt7622-cir
+> +    then:
+> +      properties:
+> +        clocks:
+> +          minItems: 2
+> +
+> +        clock-names:
+> +          minItems: 2
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: mediatek,mt7623-cir
+> +    then:
+> +      properties:
+> +        clocks:
+> +          maxItems: 1
+> +
+> +        clock-names:
+> +          maxItems: 1
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/mt2701-clk.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +
+> +    ir@10013000 {
+
+Please use a common generic name, as seen in gpio-ir-receiver.yaml and in
+amlogic,meson6-ir.yaml:
+
+ir-receiver@10013000 {
+
+Cheers,
+Angelo
 
 
