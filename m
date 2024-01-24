@@ -1,139 +1,203 @@
-Return-Path: <linux-kernel+bounces-37022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37028-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7641783AA59
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:53:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F22B83AA6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:57:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F48928BB24
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:53:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F373C28BACD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:57:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1847D77656;
-	Wed, 24 Jan 2024 12:53:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 289E67A72E;
+	Wed, 24 Jan 2024 12:56:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pv5ubDch"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KDJxUsCt"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FEEB134CA;
-	Wed, 24 Jan 2024 12:53:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F10737764C
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 12:56:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706100792; cv=none; b=f4oyi3Tbpi90ohyOEgHxC/wDFzAPuyXQ5ldE2/nAXgha3YY2+XID/sGKYCNoo+QGrRBSJiLIR7TAU6ShWaG6cl0R8e4aZZf1X/kuXtJrVAHiOp8Xwa3rBxszJlqaZgEjPYbqYO/aUYOi7Wbz/8aWk+JsAXE3hp5cp4Bh3uZbweY=
+	t=1706101016; cv=none; b=JHy70DblMTeDfL5ZQFUUrEAxrGyNhvx+k8KvY9qplmZbE4zJXP92fHghCyrnhQrWi70N+Kegv4wZmpmv81xmhzBVneJZUL/TZIL9LrhQ0lCqrlmVwkVir9SuyMGBDqtFoU8MpMokWyl8WNuVzFA33qK3GZTt/fmle35wch4tPcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706100792; c=relaxed/simple;
-	bh=n6rll6s7gTiLTrIT6eIcRRrA5/96I1nCBmqQ+A92tjI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ic+ZAAz6z1dvFuDn2uXJy7r1PkvHu8sSuaf/dB9T9lAdndSG32ez7cARNRIKk8NjEx3f1307n3OWufcUSL+Sm0fb8G/meQeP1WzWo9J1Ac/dVDqoRHpehAgRND9xs4sIZZjhun8qi+A7cHSz8YM8pHA6pKZ5Z+MfbMBQ0Qwl5zs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pv5ubDch; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C6FEC433C7;
-	Wed, 24 Jan 2024 12:53:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706100791;
-	bh=n6rll6s7gTiLTrIT6eIcRRrA5/96I1nCBmqQ+A92tjI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Pv5ubDchPLmyMxslb3G/fj5ng/UziQOhc0yp3+tmoYBZhOGgFRgdb+OaUHDBoz2LV
-	 TjoaXjq4UmTakQDZABTQTimHC1Mxcik0tXG5mAU390CgQ1MK5832SpYJw4AxM8P/V/
-	 WGnyZHcbs6/5RWkcwNq+nfgEPa+NddQbr8aCa1V009KGcMl1y3C5XU9vCP8SK9xWiR
-	 zS43/dhUWKrZei6BrqPv5J7z4JqXufCBCXyMXSf6gPJfGyiSBCsTVLA4EiocfgjBYC
-	 PWPoJFlxspizRDo5iuTBMYCEfKqRiBFtecTkhYOYI+MG9V2AvXUHhCziwD9jd+FEPc
-	 QevqdHFJt9hvw==
-Date: Wed, 24 Jan 2024 13:53:07 +0100
-From: Andi Shyti <andi.shyti@kernel.org>
-To: JiSheng Teoh <jisheng.teoh@starfivetech.com>
-Cc: Michal Simek <michal.simek@amd.com>, 
-	Leyfoon Tan <leyfoon.tan@starfivetech.com>, 
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 RESEND] i2c: cadence: Add system suspend and resume PM
- support
-Message-ID: <y2sxh2jkvujnaxeknbunogkumywjlohp3hi6dkf5dkc3qko27s@vg2qggq7lzrz>
-References: <20240119013326.3405484-1-jisheng.teoh@starfivetech.com>
- <ko44i4n5synf3uugp4wmjoe6eikyw3bzjtmarduwvskmk4d3dr@uewx27aa6ake>
- <ZQ0PR01MB1160390D00404D24A31A1522EB75A@ZQ0PR01MB1160.CHNPR01.prod.partner.outlook.cn>
- <3w4vaxoderuhwkqec6rwem2wrjlvql2ohyh77zqpwege7ercpl@5ac4p5mw7nhp>
- <ZQ0PR01MB1160DC63A1CC70F79036057EEB7BA@ZQ0PR01MB1160.CHNPR01.prod.partner.outlook.cn>
+	s=arc-20240116; t=1706101016; c=relaxed/simple;
+	bh=rtKx+ZVm92UFnnaQ4chH94Uu1HaaniYnTqI2DxYbcL4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=k9AqtDW80QB3DO0nGx1BsLs5xD8Z0abIcPG4heoTvChRIuHX5QGJJBTdNVT4oqkjTbOd5Ipc9bIbGhDRc0r5ZQIa7DDo5Tq/SGFM3RmGZYcuT9kgcxsss5pQ3nQCXGYIP3+7CE5Gb5FYYB/2p07dlc59VbvUgnJ19fYeXFt2M5g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.helo=mgamail.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KDJxUsCt; arc=none smtp.client-ip=134.134.136.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mgamail.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706101014; x=1737637014;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=rtKx+ZVm92UFnnaQ4chH94Uu1HaaniYnTqI2DxYbcL4=;
+  b=KDJxUsCtVA7jqpYlYauKNKm7VP2DNu/x8VOHrF/AWKka7vMY3HycUu2U
+   aTRJ+vfZXAMkX9e74/FL8K9qpGRUQ48s2/sll8hCzplDX6yjcgP64VDt/
+   pxP0Kz3K8jf6Nd+NRTbKYOzp8+A+d5VjAvCWe1T2k1SyfcCjG6XaM2a4Y
+   IHc6h7jWETjKZ2VbsUBtP1bqtrl9Smde8DFue5pwlJt+PWY9W0xJl7MTF
+   REKVSwxlGDS3QDhtrFpYAM5sN80TbZ8ClR5fxRK9f9B/uJ/rdeLpYque7
+   tAmPA4thcuJs/XCfm9YM1aX9rtiM49DJHz42zUrF5Pg1+MkZJynIYu1EE
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="466110115"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="466110115"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 04:56:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="735924074"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="735924074"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga003.jf.intel.com with ESMTP; 24 Jan 2024 04:56:47 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id F125B9F; Wed, 24 Jan 2024 14:56:01 +0200 (EET)
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	Elena Reshetova <elena.reshetova@intel.com>,
+	Jun Nakajima <jun.nakajima@intel.com>,
+	Rick Edgecombe  <rick.p.edgecombe@intel.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	"Kalra, Ashish" <ashish.kalra@amd.com>,
+	Sean Christopherson <seanjc@google.com>,
+	"Huang, Kai" <kai.huang@intel.com>,
+	Baoquan He <bhe@redhat.com>,
+	kexec@lists.infradead.org,
+	linux-coco@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: [PATCHv6 00/16] x86/tdx: Add kexec support
+Date: Wed, 24 Jan 2024 14:55:41 +0200
+Message-ID: <20240124125557.493675-1-kirill.shutemov@linux.intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZQ0PR01MB1160DC63A1CC70F79036057EEB7BA@ZQ0PR01MB1160.CHNPR01.prod.partner.outlook.cn>
+Content-Transfer-Encoding: 8bit
 
-Hi Jisheng,
+The patchset adds bits and pieces to get kexec (and crashkernel) work on
+TDX guest.
 
-On Wed, Jan 24, 2024 at 04:46:43AM +0000, JiSheng Teoh wrote:
-> Hi Andi,
-> > 
-> > ...
-> > 
-> > > > > +static int __maybe_unused cdns_i2c_resume(struct device *dev) {
-> > > > > +	struct cdns_i2c *xi2c = dev_get_drvdata(dev);
-> > > > > +	int err;
-> > > > > +
-> > > > > +	err = cdns_i2c_runtime_resume(dev);
-> > > > > +	if (err)
-> > > > > +		return err;
-> > > > > +
-> > > > > +	if (pm_runtime_status_suspended(dev)) {
-> > > > > +		err = cdns_i2c_runtime_suspend(dev);
-> > > > > +		if (err)
-> > > > > +			return err;
-> > > >
-> > > > We call the cdns_i2c_resume() functions to come up from a suspended
-> > > > state. But, if we fail to resume, we call the suspend and return '0' (because this always returns '0').
-> > > >
-> > > > In other words, if we take this path, we call resume, but we still end up suspended and return success.
-> > > >
-> > > > Andi
-> > > >
-> > >
-> > > My understanding is that during system level resume 'cdns_i2c_resume()', the i2c device itself can still be held in runtime suspend
-> > regardless of the change in system level PM.
-> > > Looking back at this, we invoke cdns_i2c_runtime_resume() to enable clock and init the i2c device, the runtime PM state is still
-> > unchanged and kept suspended.
-> > > pm_runtime_status_suspended() will be evaluated as true, and runtime suspend 'cdns_i2c_runtime_suspend()' is invoked to
-> > disable the clock. This balances the clock count enabled earlier.
-> > 
-> > If this is your issue, what if we do not enable the clock during resume? and we just mark the device as resumed?
-> > 
-> That will work as well. The i2c device will be runtime resumed again during cdns_i2c_master_xfer() anyway, but thought that it
-> would be a good idea to check if the i2c device is able runtime resume during a system level resume.
+The last patch implements CPU offlining according to the approved ACPI
+spec change poposal[1]. It unlocks kexec with all CPUs visible in the target
+kernel. It requires BIOS-side enabling. If it missing we fallback to booting
+2nd kernel with single CPU.
 
-That's fine, I think it might work this way, as well, so let's
-keept it at your original implementation.
+Please review. I would be glad for any feedback.
 
-If we save here, we add complication somewhere else.
+[1] https://lore.kernel.org/all/13356251.uLZWGnKmhe@kreacher
 
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+v6:
+  - Rebased to v6.8-rc1;
+  - Provide default noop callbacks from .enc_kexec_stop_conversion and
+    .enc_kexec_unshare_mem;
+  - Split off patch that introduces .enc_kexec_* callbacks;
+  - asm_acpi_mp_play_dead(): program CR3 directly from RSI, no MOV to RAX
+    required;
+  - Restructure how smp_ops.stop_this_cpu() hooked up in crash_nmi_callback();
+  - kvmclock patch got merged via KVM tree;
+v5:
+  - Rename smp_ops.crash_play_dead to smp_ops.stop_this_cpu and use it in
+    stop_this_cpu();
+  - Split off enc_kexec_stop_conversion() from enc_kexec_unshare_mem();
+  - Introduce kernel_ident_mapping_free();
+  - Add explicit include for alternatives and stringify.
+  - Add barrier() after setting conversion_allowed to false;
+  - Mark cpu_hotplug_offline_disabled __ro_after_init;
+  - Print error if failed to hand over CPU to BIOS;
+  - Update comments and commit messages;
+v4:
+  - Fix build for !KEXEC_CORE;
+  - Cleaner ATLERNATIVE use;
+  - Update commit messages and comments;
+  - Add Reviewed-bys;
+v3:
+  - Rework acpi_mp_crash_stop_other_cpus() to avoid invoking hotplug state
+    machine;
+  - Free page tables if reset vector setup failed;
+  - Change asm_acpi_mp_play_dead() to pass reset vector and PGD as arguments;
+  - Mark acpi_mp_* variables as static and __ro_after_init;
+  - Use u32 for apicid;
+  - Disable CPU offlining if reset vector setup failed;
+  - Rename madt.S -> madt_playdead.S;
+  - Mark tdx_kexec_unshare_mem() as static;
+  - Rebase onto up-to-date tip/master;
+  - Whitespace fixes;
+  - Reorder patches;
+  - Add Reviewed-bys;
+  - Update comments and commit messages;
+v2:
+  - Rework how unsharing hook ups into kexec codepath;
+  - Rework kvmclock_disable() fix based on Sean's;
+  - s/cpu_hotplug_not_supported()/cpu_hotplug_disable_offlining()/;
+  - use play_dead_common() to implement acpi_mp_play_dead();
+  - cond_resched() in tdx_shared_memory_show();
+  - s/target kernel/second kernel/;
+  - Update commit messages and comments;
 
-Before applying the patch I will read it again to make sure all
-is balanced.
+Kirill A. Shutemov (16):
+  x86/acpi: Extract ACPI MADT wakeup code into a separate file
+  x86/apic: Mark acpi_mp_wake_* variables as __ro_after_init
+  cpu/hotplug: Add support for declaring CPU offlining not supported
+  cpu/hotplug, x86/acpi: Disable CPU offlining for ACPI MADT wakeup
+  x86/kexec: Keep CR4.MCE set during kexec for TDX guest
+  x86/mm: Make x86_platform.guest.enc_status_change_*() return errno
+  x86/mm: Return correct level from lookup_address() if pte is none
+  x86/tdx: Account shared memory
+  x86/mm: Adding callbacks to prepare encrypted memory for kexec
+  x86/tdx: Convert shared memory back to private on kexec
+  x86/mm: Make e820_end_ram_pfn() cover E820_TYPE_ACPI ranges
+  x86/acpi: Rename fields in acpi_madt_multiproc_wakeup structure
+  x86/acpi: Do not attempt to bring up secondary CPUs in kexec case
+  x86/smp: Add smp_ops.stop_this_cpu() callback
+  x86/mm: Introduce kernel_ident_mapping_free()
+  x86/acpi: Add support for CPU offlining for ACPI MADT wakeup method
 
-Thanks,
-Andi
+ arch/x86/Kconfig                     |   7 +
+ arch/x86/coco/core.c                 |   1 -
+ arch/x86/coco/tdx/tdx.c              | 209 ++++++++++++++++++-
+ arch/x86/hyperv/ivm.c                |   9 +-
+ arch/x86/include/asm/acpi.h          |   7 +
+ arch/x86/include/asm/init.h          |   3 +
+ arch/x86/include/asm/pgtable_types.h |   1 +
+ arch/x86/include/asm/smp.h           |   1 +
+ arch/x86/include/asm/x86_init.h      |   6 +-
+ arch/x86/kernel/acpi/Makefile        |  11 +-
+ arch/x86/kernel/acpi/boot.c          |  86 +-------
+ arch/x86/kernel/acpi/madt_playdead.S |  28 +++
+ arch/x86/kernel/acpi/madt_wakeup.c   | 292 +++++++++++++++++++++++++++
+ arch/x86/kernel/crash.c              |   5 +
+ arch/x86/kernel/e820.c               |   9 +-
+ arch/x86/kernel/process.c            |   7 +
+ arch/x86/kernel/reboot.c             |  18 ++
+ arch/x86/kernel/relocate_kernel_64.S |   5 +
+ arch/x86/kernel/x86_init.c           |   8 +-
+ arch/x86/mm/ident_map.c              |  73 +++++++
+ arch/x86/mm/mem_encrypt_amd.c        |   8 +-
+ arch/x86/mm/pat/set_memory.c         |  17 +-
+ include/acpi/actbl2.h                |  19 +-
+ include/linux/cc_platform.h          |  10 -
+ include/linux/cpu.h                  |   2 +
+ kernel/cpu.c                         |  12 +-
+ 26 files changed, 714 insertions(+), 140 deletions(-)
+ create mode 100644 arch/x86/kernel/acpi/madt_playdead.S
+ create mode 100644 arch/x86/kernel/acpi/madt_wakeup.c
 
-> > > The runtime PM state is only resumed during cdns_i2c_master_xfer() through pm_runtime_resume_and_get(), and subsequently
-> > kept suspended through pm_runtime_put_autosuspend().
-> > > Since the cdns_i2c_runtime_suspend() always return '0', I will simplify them as follow:
-> > > +if (pm_runtime_status_suspended(dev))
-> > > +	cdns_i2c_runtime_suspend(dev);
-> > 
-> > I'd prefer checking the error value, even though we are sure on the expected return. It's more future proof.
-> > 
-> > Andi
-> > 
-> Ok, I will keep the original changes.
-> 
-> > > > > +	}
-> > > > > +
-> > > > > +	i2c_mark_adapter_resumed(&xi2c->adap);
-> > > > > +
-> > > > > +	return 0;
-> > > > > +}
+-- 
+2.43.0
+
 
