@@ -1,172 +1,189 @@
-Return-Path: <linux-kernel+bounces-37408-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37410-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 496D783AF67
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:15:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11D2D83AF6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:16:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 251CF1C20947
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:15:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3733A1C21717
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:16:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 823E47E784;
-	Wed, 24 Jan 2024 17:14:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C1407FBD4;
+	Wed, 24 Jan 2024 17:15:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CPeAVYvT"
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rN9o9h/K"
+Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com [209.85.222.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41FA27E77D
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 17:14:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16DBF7E798
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 17:15:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706116495; cv=none; b=Q/ytsJOBKSZLvSfONQMpvSi7c8Af3pVCqNOcKM94c0NMnGMMLBRg2+P5nvzzHvcZU6oAM2tmpVheqoshfdOVDbvTX5j8O2BTEi5ebKI521CqJ6uHflkuFvscDpYtjI0jl3e0+hbUGjkajtj5hwwS3ZRnqjIykd/tJkxJnPBXVGM=
+	t=1706116545; cv=none; b=DqtNjVGpIFOmJnUYiQDG8CulTm3+ktIMk4Dt0a3GlXDltO93K59LmKbVfQNc79g6M9fgOM1OqOaxVJdOEHUt7F3wnjkzbAMWfCnnfVHRQwd02C88/bS5Iw+ataqeNuYMUxCsjPeuQ8QEpUMAgjx7YjNz8o+n5vBENV5ThWaAHBQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706116495; c=relaxed/simple;
-	bh=L+uKNZ2WLPla/ZZDd2j6xgzXzpDBrpy/IS7/1AiSgck=;
+	s=arc-20240116; t=1706116545; c=relaxed/simple;
+	bh=t5IGydsPTxpNyHN66k8U6CTE14hh9iXkhF9jbwqknaE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FfB9tLRG7ucZ/CVnDaHkXH95C0jrw/2mFRqSke/f8LQpVAgsxsBPP76WXVnQzBGqaSlA3rEPkg/cISf6zmWUZ9k4six2sS7YToZ8D+2JnkBXaSoBeh+Dfhf3DesIq/JYNTb7PMyeLS1G5idQhatdv7kfiq7ehH+mQ2YPof+bgvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CPeAVYvT; arc=none smtp.client-ip=209.85.219.180
+	 To:Cc:Content-Type; b=VffuAvk/lTkfS70HVx3m4QfgeHEarq5Xm6dp3VSfArByiKWMKT0SNVZ3lBav1kgChJi+NA3aKX5T+SW4nzv+r/3b++TIhaCl7XrTJ8Rh8b2Dg1bCsD5iEVifCpKM2X5bjNnaGMqkP0MIULi1kKjGKNmH1UJTtvBtIoudexnZij0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rN9o9h/K; arc=none smtp.client-ip=209.85.222.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dc226dca91aso5387356276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 09:14:54 -0800 (PST)
+Received: by mail-ua1-f46.google.com with SMTP id a1e0cc1a2514c-7d2e1a0337bso1799125241.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 09:15:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706116493; x=1706721293; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=L+uKNZ2WLPla/ZZDd2j6xgzXzpDBrpy/IS7/1AiSgck=;
-        b=CPeAVYvTubcUE0/pvNwCEz8yfdrflu1o9zIVOin0UVri8VWAA100tK8PukmKo/zQLE
-         ODxhSrpP6ZfYEnnAIEMXWB5W+5dOPzYzNnSCplOYRjc7mT9+vvM/GuPCAR/jEdboF0A8
-         TqdjgQxfPsqzCOyhuADmaextTaRgWvFxxWMsjIDI/27svjYhQCYsj1LnnBQw6z6V6TyJ
-         lmEhGDwPenhcluRGaO77d5GwlZP2N63+GtOTnbEaK6X8tmEPPNxUqDFGSsIwzt1+r8RJ
-         UZLk6W+JaMY7stoehrX6mkAwKAb0ptVm7gztmTjkAIVRIV5tQ12HC9plcx0p/Ip+om6L
-         waKg==
+        d=google.com; s=20230601; t=1706116543; x=1706721343; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=CBltU6iTnXDDudf22oqs+fdl0wSad9suT+55PGOStXc=;
+        b=rN9o9h/KWg1/LpDIV1oRyPEThG4Vbm/Bhd0Ah+DMNma8z7dj6uaNkvM7m9b/beoYD4
+         zVn8DUmsITeB285mxYIemklkepUQF5lDsk9oTJsUjtnA3L5+hb7enAm4owR83bLdX3hZ
+         nkO7hJXWonqe2Y8N5y50O1KstNRShMe9dJmOymN1awGpbVKXraY0k4T7flWLgVc17Jn5
+         84X4eNwq7Df3D6OhFe1KxkSkOOrsKSNGsk7+h0MQcbGxW62JiJXQJV55G0ETo+lZ5jDM
+         /syuMInNCnL0IReoLNS4m3ZSbFUZnadG2yJx95bVArOVl4d+mak7IsXHARuSI4wYy2Mp
+         9lqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706116493; x=1706721293;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=L+uKNZ2WLPla/ZZDd2j6xgzXzpDBrpy/IS7/1AiSgck=;
-        b=RFmpn2y8pgZDzqzxuKQyRexUYQeaXi4ztZeTP2OP+3VaWVhfAuw4PG23YPyJi2bs7F
-         8f9gTR+GFLVERpedJwvzPpOyfGtn5N3uEm0pWs93lzbZ5NzmHMUkqfTvrXWhrcEWvCEi
-         eFdd3kKHt24UB4D1qO12vdzrlgd3dcr4n1cM6kEJtVCfXe3iY2kI1QZEgdAcv1C6L/ld
-         I/EAdhiB64TcRpfp2I6YgQtc0xbpRtHiLX/YasI2v/QZlnJCanLQdAOZf6QHv+tWhVhc
-         tieSdGSnlwtsgL/NpY0RCfPFfOm4W8gcxJEnBk95kIdIpFGQco4Q4URUZpfuev5adk/v
-         049A==
-X-Gm-Message-State: AOJu0YwWBEI4rx7zCCznGG23wt7Ik0l0vuo08vzIDbTANeOe0Gx10cqS
-	/uScsXz42gINbKY0IGn587y0MkLZg50va1n+KypUM5mLPTxVEs309m36yRXHSu7o5Qxx1ryWKuT
-	Ius9NQ3u5mAZCK598ePXBgpdi9QcXpTTrOx5oykaXQUhN+XO+YmCI
-X-Google-Smtp-Source: AGHT+IEyp81Xa3DtWhJJgEOzKJKQ9s20e1ls6AY//91B3LGvmFlTYsSm8FpcvIUZCb4scVB2oR6nq9DljRkSRMJJDKE=
-X-Received: by 2002:a25:c78f:0:b0:dc2:2f4f:757 with SMTP id
- w137-20020a25c78f000000b00dc22f4f0757mr978740ybe.7.1706116492806; Wed, 24 Jan
- 2024 09:14:52 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706116543; x=1706721343;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CBltU6iTnXDDudf22oqs+fdl0wSad9suT+55PGOStXc=;
+        b=KazASc6XPi+LlZuJp4vnvZJ2Ncn9tRtcU8AhPmHiJgYktULoA2bguXV5hrjc/HvSkO
+         qq8eUC2OW1WO2UeoHXPFRjYMdZgw0sd8ISDam1jXKB4d+WEgnUcJiFGOszedWfHdqxru
+         8IUsZd7vRv1/EiI7hqw5LzpQMz/1s3lk6CwLn91nL2C4CV4OGDCBwaEpXlKR4cvSNIzU
+         h+UvUo0jIyj8XKMd9n7YdQyeyTq+6n6Bt16CN7X3y+B29ScVkxwpeUCyQmy+hTTORX0i
+         OiBYOMEe3C2zEo8Tn0aMZr0kGwYiL7tnh1SUPUzed11SZ9kEUy6E4Uzs7+nybqNDmjY+
+         s5nQ==
+X-Gm-Message-State: AOJu0Yz494av/rcvVXtdxxGaFrNWl7cnz48JZYOCgcQR9JOOvzPVvsrD
+	CEEn2zUBE1JJSnTG5VSF+WYklqzJb0ZQ7OEwxI8WmJy4DT2TO5n7RDNokSabTf3rTssaefosd1P
+	nkEtEB4TNf2KbHRCKKoLwR9NqRhg2iA3mYS4k
+X-Google-Smtp-Source: AGHT+IHXa1B91nQv5quzIFRRmEI+jn6X4HE0E9upQHh7HSHIAVIGfrH1VLoqq6fnvybWVIGkXPToihp/9GWlCaOxZSc=
+X-Received: by 2002:a05:6122:181c:b0:4bd:5537:c9bd with SMTP id
+ ay28-20020a056122181c00b004bd5537c9bdmr1784548vkb.12.1706116542805; Wed, 24
+ Jan 2024 09:15:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240121214413.833776-1-tjmercier@google.com> <Za-H8NNW9bL-I4gj@tiehlicka>
- <CABdmKX2K4MMe9rsKfWi9RxUS5G1RkLVzuUkPnovt5O2hqVmbWA@mail.gmail.com> <Za_m9Pymh0y-lzgX@tiehlicka>
-In-Reply-To: <Za_m9Pymh0y-lzgX@tiehlicka>
-From: "T.J. Mercier" <tjmercier@google.com>
-Date: Wed, 24 Jan 2024 09:14:40 -0800
-Message-ID: <CABdmKX3kPXAv18+AezoqAeb3ALCbLxcth+ZHv2jZGXsZG5C6hw@mail.gmail.com>
-Subject: Re: [PATCH] Revert "mm:vmscan: fix inaccurate reclaim during
- proactive reclaim"
-To: Michal Hocko <mhocko@suse.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, android-mm@google.com, yuzhao@google.com, 
-	yangyifei03@kuaishou.com, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
+References: <20240124164211.1141742-1-glider@google.com>
+In-Reply-To: <20240124164211.1141742-1-glider@google.com>
+From: Marco Elver <elver@google.com>
+Date: Wed, 24 Jan 2024 18:15:04 +0100
+Message-ID: <CANpmjNP-9hV_d3zEHhUSpdUYpM1BAFKmTTzWwe5o5ubtwTvQAQ@mail.gmail.com>
+Subject: Re: [PATCH] mm: kmsan: remove runtime checks from kmsan_unpoison_memory()
+To: Alexander Potapenko <glider@google.com>
+Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, kasan-dev@googlegroups.com, 
+	Dmitry Vyukov <dvyukov@google.com>, Ilya Leoshkevich <iii@linux.ibm.com>, 
+	Nicholas Miehlbradt <nicholas@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 23, 2024 at 8:19=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
-e:
+On Wed, 24 Jan 2024 at 17:42, 'Alexander Potapenko' via kasan-dev
+<kasan-dev@googlegroups.com> wrote:
 >
-> On Tue 23-01-24 05:58:05, T.J. Mercier wrote:
-> > On Tue, Jan 23, 2024 at 1:33=E2=80=AFAM Michal Hocko <mhocko@suse.com> =
-wrote:
-> > >
-> > > On Sun 21-01-24 21:44:12, T.J. Mercier wrote:
-> > > > This reverts commit 0388536ac29104a478c79b3869541524caec28eb.
-> > > >
-> > > > Proactive reclaim on the root cgroup is 10x slower after this patch=
- when
-> > > > MGLRU is enabled, and completion times for proactive reclaim on muc=
-h
-> > > > smaller non-root cgroups take ~30% longer (with or without MGLRU).
-> > >
-> > > What is the reclaim target in these pro-active reclaim requests?
-> >
-> > Two targets:
-> > 1) /sys/fs/cgroup/memory.reclaim
-> > 2) /sys/fs/cgroup/uid_0/memory.reclaim (a bunch of Android system servi=
-ces)
+> Similarly to what's been done in commit ff444efbbb9be ("kmsan: allow
+> using __msan_instrument_asm_store() inside runtime"), it should be safe
+> to call kmsan_unpoison_memory() from within the runtime, as it does not
+> allocate memory or take locks. Remove the redundant runtime checks.
 >
-> OK, I was not really clear. I was curious about nr_to_reclaim.
+> This should fix false positives seen with CONFIG_DEBUG_LIST=y when
+> the non-instrumented lib/stackdepot.c failed to unpoison the memory
+> chunks later checked by the instrumented lib/list_debug.c
 >
-> > Note that lru_gen_shrink_node is used for 1, but shrink_node_memcgs is
-> > used for 2.
-> >
-> > The 10x comes from the rate of reclaim (~70k pages/sec vs ~6.6k
-> > pages/sec) for 1. After this revert the root reclaim took only about
-> > 10 seconds. Before the revert it's still running after about 3 minutes
-> > using a core at 100% the whole time, and I'm too impatient to wait
-> > longer to record times for comparison.
-> >
-> > The 30% comes from the average of a few runs for 2:
-> > Before revert:
-> > $ adb wait-for-device && sleep 120 && adb root && adb shell -t 'time
-> > echo "" > /sys/fs/cgroup/uid_0/memory.reclaim'
+> Also replace the implementation of kmsan_unpoison_entry_regs() with
+> a call to kmsan_unpoison_memory().
 >
-> Ohh, so you want to reclaim all of it (resp. as much as possible).
->
-Right, the main use-case here is we decide an application should be
-backgrounded and its cgroup frozen. Before freezing, reclaim as much
-as possible so that the frozen processes' RAM use is as low as
-possible while they're dormant.
+> Signed-off-by: Alexander Potapenko <glider@google.com>
+> Cc: Marco Elver <elver@google.com>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Ilya Leoshkevich <iii@linux.ibm.com>
+> Cc: Nicholas Miehlbradt <nicholas@linux.ibm.com>
 
-> [...]
->
-> > > > After the patch the reclaim rate is
-> > > > consistently ~6.6k pages/sec due to the reduced nr_pages value caus=
-ing
-> > > > scan aborts as soon as SWAP_CLUSTER_MAX pages are reclaimed. The
-> > > > proactive reclaim doesn't complete after several minutes because
-> > > > try_to_free_mem_cgroup_pages is still capable of reclaiming pages i=
-n
-> > > > tiny SWAP_CLUSTER_MAX page chunks and nr_retries is never decrement=
-ed.
-> > >
-> > > I do not understand this part. How does a smaller reclaim target mana=
-ges
-> > > to have reclaimed > 0 while larger one doesn't?
-> >
-> > They both are able to make progress. The main difference is that a
-> > single iteration of try_to_free_mem_cgroup_pages with MGLRU ends soon
-> > after it reclaims nr_to_reclaim, and before it touches all memcgs. So
-> > a single iteration really will reclaim only about SWAP_CLUSTER_MAX-ish
-> > pages with MGLRU. WIthout MGLRU the memcg walk is not aborted
-> > immediately after nr_to_reclaim is reached, so a single call to
-> > try_to_free_mem_cgroup_pages can actually reclaim thousands of pages
-> > even when sc->nr_to_reclaim is 32. (I.E. MGLRU overreclaims less.)
-> > https://lore.kernel.org/lkml/20221201223923.873696-1-yuzhao@google.com/
->
-> OK, I do see how try_to_free_mem_cgroup_pages might over reclaim but I
-> do not really follow how increasing the batch actually fixes the issue
-> that there is always progress being made and therefore memory_reclaim
-> takes ages to terminates?
+Tested-by: Marco Elver <elver@google.com>
 
-Oh, because the page reclaim rate with a small batch is just much
-lower than with a very large batch. We have to restart reclaim from
-fresh each time a batch is completed before we get to a place where
-we're actually freeing/swapping pages again. That setup cost is
-amortized over many more pages with a large batch size, but appears to
-be pretty significant for small batch sizes.
+Nice - this fixes the false positives I've seen in testing the new
+stack depot changes.
+
+But I think this version of the patch wasn't compile-tested, see below.
+
+> ---
+>  mm/kmsan/hooks.c | 36 +++++++++++++-----------------------
+>  1 file changed, 13 insertions(+), 23 deletions(-)
+>
+> diff --git a/mm/kmsan/hooks.c b/mm/kmsan/hooks.c
+> index 5d6e2dee5692a..8a990cbf6d670 100644
+> --- a/mm/kmsan/hooks.c
+> +++ b/mm/kmsan/hooks.c
+> @@ -359,6 +359,12 @@ void kmsan_handle_dma_sg(struct scatterlist *sg, int nents,
+>  }
+>
+>  /* Functions from kmsan-checks.h follow. */
+> +
+> +/*
+> + * To create an origin, kmsan_poison_memory() unwinds the stacks and stores it
+> + * into the stack depot. This may cause deadlocks if done from within KMSAN
+> + * runtime, therefore we bail out if kmsan_in_runtime().
+> + */
+>  void kmsan_poison_memory(const void *address, size_t size, gfp_t flags)
+>  {
+>         if (!kmsan_enabled || kmsan_in_runtime())
+> @@ -371,47 +377,31 @@ void kmsan_poison_memory(const void *address, size_t size, gfp_t flags)
+>  }
+>  EXPORT_SYMBOL(kmsan_poison_memory);
+>
+> +/*
+> + * Unlike kmsan_poison_memory(), this function can be used from within KMSAN
+> + * runtime, because it does not trigger allocations or call instrumented code.
+> + */
+>  void kmsan_unpoison_memory(const void *address, size_t size)
+>  {
+>         unsigned long ua_flags;
+>
+> -       if (!kmsan_enabled || kmsan_in_runtime())
+> +       if (!kmsan_enabled)
+>                 return;
+>
+>         ua_flags = user_access_save();
+> -       kmsan_enter_runtime();
+>         /* The users may want to poison/unpoison random memory. */
+>         kmsan_internal_unpoison_memory((void *)address, size,
+>                                        KMSAN_POISON_NOCHECK);
+> -       kmsan_leave_runtime();
+>         user_access_restore(ua_flags);
+>  }
+>  EXPORT_SYMBOL(kmsan_unpoison_memory);
+>
+>  /*
+> - * Version of kmsan_unpoison_memory() that can be called from within the KMSAN
+> - * runtime.
+> - *
+> - * Non-instrumented IRQ entry functions receive struct pt_regs from assembly
+> - * code. Those regs need to be unpoisoned, otherwise using them will result in
+> - * false positives.
+> - * Using kmsan_unpoison_memory() is not an option in entry code, because the
+> - * return value of in_task() is inconsistent - as a result, certain calls to
+> - * kmsan_unpoison_memory() are ignored. kmsan_unpoison_entry_regs() ensures that
+> - * the registers are unpoisoned even if kmsan_in_runtime() is true in the early
+> - * entry code.
+> + * Version of kmsan_unpoison_memory() called from IRQ entry functions.
+>   */
+>  void kmsan_unpoison_entry_regs(const struct pt_regs *regs)
+>  {
+> -       unsigned long ua_flags;
+> -
+> -       if (!kmsan_enabled)
+> -               return;
+> -
+> -       ua_flags = user_access_save();
+> -       kmsan_internal_unpoison_memory((void *)regs, sizeof(*regs),
+> -                                      KMSAN_POISON_NOCHECK);
+> -       user_access_restore(ua_flags);
+> +       kmsan_unpoison_memory((void *)regs, sizeof(*regs);
+
+missing ')', probably:
+
++       kmsan_unpoison_memory((void *)regs, sizeof(*regs));
 
