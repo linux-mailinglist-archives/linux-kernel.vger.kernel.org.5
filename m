@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-37505-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37507-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8C9983B105
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:23:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DC4B83B109
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:24:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED0071C221B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:23:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADFC71C226DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:24:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D296512AADA;
-	Wed, 24 Jan 2024 18:23:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA74512BE96;
+	Wed, 24 Jan 2024 18:24:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="097l/vib"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OyL1Mj7W"
+Received: from mail-il1-f169.google.com (mail-il1-f169.google.com [209.85.166.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 779201272DD
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 18:23:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6690812AADD
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 18:24:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706120593; cv=none; b=gm/N/ZpD0ADsl62sE9lqhAwHpWtlf2DicFIbeBJzNQ8kb2r52twK/mAtzWuJPCt0Y52czFid+La/iuSL+lUrKYOyktri/NiKubscaKZBXDcTW6RsOll7dMqrNELOEtaO/EQrYQ4F2oTNAjQHTRVqKkoO+xxuAXxw4QL8JZx33hY=
+	t=1706120641; cv=none; b=qLe9hHrxQ0WPzmpS4f/Musw+49Jq2f7ohc9cPOy4tuh65J0dpkc7TNLWUF8eCKxJD2JcQGHOrqmtg92SchUP2bqR6UBdw682bRo+ykgNObcI5mICcKOVTLpLnCo58MEhkW8S9xQbuKktb66T8sCwApCwCa3WV/qsDTRJ/O63mRQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706120593; c=relaxed/simple;
-	bh=2mXvrAHHwck2/+NZUSDwz1ny21p8dc8cBOMPp/7aqvw=;
+	s=arc-20240116; t=1706120641; c=relaxed/simple;
+	bh=aLdlWpro750gZBi5PSU2dkOK4wHdU0GzZ1iWLys3CjE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=W2mfQPRfqHxjom36B5tsYey4dkNFeHzQf7Q49LcTooQMMSus8rBUuPc912S/wfN2m+PtQoHavqtDiWr0nIAyCUqOo4OV9S9x2BWu6dFMOS8/q0niFOCmW04h/g11hHrQdeJWeKMsmqjhDh2WZr3CpkFige3SoVrpLUinuJNTsnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=097l/vib; arc=none smtp.client-ip=209.85.214.170
+	 To:Cc:Content-Type; b=PhubBWeNnxUoW5wxDba9eNi3GU/D2CYs/FLXJIGzijj0Pju0xoT0eCbXD3EE0S32bFpobOgif0duHNmakpX79KXXNr+6IBxd99dcKziq4bXn2TtdE3JCoKQ+XLjRvgrxseL4TWYLMu2L6iuX69srgpBuTWhZ74H4jc/TZ/hLz8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OyL1Mj7W; arc=none smtp.client-ip=209.85.166.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d72d240c69so7215ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:23:11 -0800 (PST)
+Received: by mail-il1-f169.google.com with SMTP id e9e14a558f8ab-361a829e012so4455ab.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:24:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706120591; x=1706725391; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1706120639; x=1706725439; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MBSlGGzC+ndsfxMntMp63Rfkey8ww42uOli1u6PEN00=;
-        b=097l/vibJUV614gykJEaTlVs6BqkaMBIUeywHHtJgZ5XKF94DtX6puy3c2mBtFi+cw
-         di21L+0RxqAeUiXeyyKJRuqYclXkDDjjTVO37lHe9Nth4Hpa5o1RcOk5Hlf9eAXVHTwc
-         vwrd3lR4e9Al23IJBB5KwOyJjayWWiLgS266YCcQuF/oMIujiP5y/BWrBUa0pqlx+Pj9
-         d6t47R+QadTEbmt3F+PoryWVHUT5x215B/enEUFaGacELjxDrhd3zCOqO/CtAJN9iqm2
-         jNVpc4ARzeqkFGar6C3CWM+TJcdTGcbAVTKM0mlQBk3RBlX309L9r+HSyMEUjAuNxJFO
-         pZIw==
+        bh=FYoVBveLHDJjbciWP+DoYEiv2kBqglZOhr3fp6u4H2I=;
+        b=OyL1Mj7WaLOFYDFsqeV+OXlDuf26js9ZcKsCb9omX9r1pVTG83RBsCacS4ZW6O2sDe
+         mDri1+h6AprVyh7p8OKEJ/DZT7Y7eefVnvsTvCnAc9foHo5FhbusAdotY2SGAzvTKGbH
+         f6Tz/GR/kzlr+ojhRkuPFqJpTEBdyLFliEKea3tslVbIPRiWL5OAY/TqEVSOmkvx8k0Y
+         5stp9x1VD4+od45Lo0sM9NQSrLIlJaEWXg6AO+vjr3T9jkGk9UGBxkpTgchSulfK236b
+         +rCxPh1gLMR5Nw4RMof7t8HJ6LG+Gcs6BmNJSRsL2KEB+ULrZ6S64bvO5KcdJ4Uh8Kki
+         qBpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706120591; x=1706725391;
+        d=1e100.net; s=20230601; t=1706120639; x=1706725439;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MBSlGGzC+ndsfxMntMp63Rfkey8ww42uOli1u6PEN00=;
-        b=ls/0oEotSjoR0bYDNPExX2eW7GZhfme1stSanXZlncpsNVgdtXBdGJiDYvaFzT/Dni
-         VmVaNNJ15TCbWx1x1muIrv0NXVyV6LVoMzgBYzzN0JHu/mspx/BXout3nFlnyY58qkEm
-         Yp1zhGrWjYx/pjbAM4OALCtrb1KehHTMN6t3lXAmA+/vMMK9Iax6GT7SNsx+RJZHJgm4
-         39HIZuyrfozdwQ8vMM1ptiInQ+EkOkqK1unyywWRv1bMwJVJkH+gVJvLjXJjzMPHi+Xg
-         /20kAfmeNzuJQKxkeB5zTXhReNisc+WJ+wIRiDEKUWXIFULjuZVZxjhp8k1tC8Fp2hiW
-         /d7g==
-X-Gm-Message-State: AOJu0YzR+uI24OxVHTZJ1CiGnE2oH2ONVzhVrfUdN/OGkj6Vup5qo4fs
-	Ms7kUeQ6q+2kWq2u00ws7+Xn56yd8M6Z1nLjnY4T5zzt4wDCqA0CsCsD7+J0LEVlM+AG8jekY6q
-	FqHuShjcO6qPN06QA3E9W/ro4Fg+jhZYEgK5J
-X-Google-Smtp-Source: AGHT+IGB8cGJJ/pFXDswRQL3IHeDH/3NQA7pnTuUCdyhwdXibmDEqjKMpvDavHlMfPT5MSYOfGyDn+hWonc7OGeb7BU=
-X-Received: by 2002:a17:902:ec84:b0:1d7:4b04:108e with SMTP id
- x4-20020a170902ec8400b001d74b04108emr186100plg.15.1706120590477; Wed, 24 Jan
- 2024 10:23:10 -0800 (PST)
+        bh=FYoVBveLHDJjbciWP+DoYEiv2kBqglZOhr3fp6u4H2I=;
+        b=uWVwafIA2ErxRu56JDHwFUc1DM1/KZDwUwW7V+fLHC3hqauUnAiEXSLEQgDp8JjH8/
+         /AaJnAn+ZeNt64Qz+pI424jNSRzbfj9INzYzbwKoyhGYDcHAPRZlhpRcFvVTF7lBc9Pr
+         EvdXUIL5ML3t6nL8mlKlbNZ980dlAbGRC3JuA+05SBnxQuAZTi9jcqr/g4jVqndNm4Ef
+         3M8yVrybiKukpwexEjj1sf36wiEV2zcnI2QS4byoaxX22QH5H57uwW05oYnmytP6bOch
+         6MPd3TTIkVqH5PNL+YHYMWaggpvJ/rK2QIN6PijVgn2kY7QD3G0JDssPnLN147aznUZl
+         3A2A==
+X-Gm-Message-State: AOJu0Yz8UdFbS7oKFWFtpPInarNitdosBbRbvsLzK6otcEYgYemJqs2F
+	4vuraNtMRVx+aIMmLtUBCBahRo6PBvrQ49NgI4V4miZsxcYzl2Pb1lS29mEiFkGgMq0g/X7CaAV
+	LK7yk5QfePTN3LE+enQM7si0/p/+UK+eIzMHa
+X-Google-Smtp-Source: AGHT+IGB8WZaSPaA7Tut29f0/08UMT2HYAcBLpp6bk7rKBB6ojPrYFXh6ES9Uk5r8AqrBCM5UG29AmCO6rAeO/M6as4=
+X-Received: by 2002:a92:c801:0:b0:360:5e25:5c22 with SMTP id
+ v1-20020a92c801000000b003605e255c22mr15253iln.8.1706120639249; Wed, 24 Jan
+ 2024 10:23:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240123185036.3461837-1-kan.liang@linux.intel.com> <20240123185036.3461837-7-kan.liang@linux.intel.com>
-In-Reply-To: <20240123185036.3461837-7-kan.liang@linux.intel.com>
+References: <20240123185036.3461837-1-kan.liang@linux.intel.com> <20240123185036.3461837-8-kan.liang@linux.intel.com>
+In-Reply-To: <20240123185036.3461837-8-kan.liang@linux.intel.com>
 From: Ian Rogers <irogers@google.com>
-Date: Wed, 24 Jan 2024 10:22:59 -0800
-Message-ID: <CAP-5=fWhvkeo7CCcn0p4+fSo9vv7G9t9Pvp4HxjahfKTCr14ug@mail.gmail.com>
-Subject: Re: [PATCH V4 6/7] perf mem: Clean up perf_mem_events__record_args()
+Date: Wed, 24 Jan 2024 10:23:48 -0800
+Message-ID: <CAP-5=fVc1PYFr=wJMBvQVPnHon4uDOLWFFMPP2VYyne8S+M_ag@mail.gmail.com>
+Subject: Re: [PATCH V4 7/7] perf mem: Clean up perf_pmus__num_mem_pmus()
 To: kan.liang@linux.intel.com
 Cc: acme@kernel.org, namhyung@kernel.org, peterz@infradead.org, 
 	mingo@redhat.com, jolsa@kernel.org, adrian.hunter@intel.com, 
@@ -90,223 +90,153 @@ On Tue, Jan 23, 2024 at 10:51=E2=80=AFAM <kan.liang@linux.intel.com> wrote:
 >
 > From: Kan Liang <kan.liang@linux.intel.com>
 >
-> The current code iterates all memory PMUs. It doesn't matter if the
-> system has only one memory PMU or multiple PMUs. The check of
-> perf_pmus__num_mem_pmus() is not required anymore.
+> The number of mem PMUs can be calculated by searching the
+> perf_pmus__scan_mem().
 >
-> The rec_tmp is not used in c2c and mem. Removing them as well.
+> Remove the ARCH specific perf_pmus__num_mem_pmus()
 >
-> Suggested-by: Leo Yan <leo.yan@linaro.org>
 > Tested-by: Leo Yan <leo.yan@linaro.org>
 > Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 
 Reviewed-by: Ian Rogers <irogers@google.com>
 
-Thanks for the cleanup!
+Thanks,
 Ian
 
 > ---
->  tools/perf/builtin-c2c.c     | 15 ++-------------
->  tools/perf/builtin-mem.c     | 18 ++----------------
->  tools/perf/util/mem-events.c | 34 ++++++++++++----------------------
->  tools/perf/util/mem-events.h |  3 +--
->  4 files changed, 17 insertions(+), 53 deletions(-)
+>  tools/perf/arch/x86/util/pmu.c | 10 ----------
+>  tools/perf/builtin-c2c.c       |  2 +-
+>  tools/perf/builtin-mem.c       |  2 +-
+>  tools/perf/util/mem-events.c   | 14 ++++++++++++++
+>  tools/perf/util/mem-events.h   |  1 +
+>  tools/perf/util/pmus.c         |  6 ------
+>  tools/perf/util/pmus.h         |  1 -
+>  7 files changed, 17 insertions(+), 19 deletions(-)
 >
+> diff --git a/tools/perf/arch/x86/util/pmu.c b/tools/perf/arch/x86/util/pm=
+u.c
+> index 0f49ff13cfe2..c3d89d6ba1bf 100644
+> --- a/tools/perf/arch/x86/util/pmu.c
+> +++ b/tools/perf/arch/x86/util/pmu.c
+> @@ -42,13 +42,3 @@ void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_=
+unused)
+>                         pmu->mem_events =3D perf_mem_events_intel;
+>         }
+>  }
+> -
+> -int perf_pmus__num_mem_pmus(void)
+> -{
+> -       /* AMD uses IBS OP pmu and not a core PMU for perf mem/c2c */
+> -       if (x86__is_amd_cpu())
+> -               return 1;
+> -
+> -       /* Intel uses core pmus for perf mem/c2c */
+> -       return perf_pmus__num_core_pmus();
+> -}
 > diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
-> index 838481505e08..3bcb903b6b38 100644
+> index 3bcb903b6b38..16b40f5d43db 100644
 > --- a/tools/perf/builtin-c2c.c
 > +++ b/tools/perf/builtin-c2c.c
-> @@ -3245,9 +3245,8 @@ static const char * const *record_mem_usage =3D __u=
-sage_record;
->
->  static int perf_c2c__record(int argc, const char **argv)
->  {
-> -       int rec_argc, i =3D 0, j, rec_tmp_nr =3D 0;
-> +       int rec_argc, i =3D 0, j;
->         const char **rec_argv;
-> -       char **rec_tmp;
->         int ret;
->         bool all_user =3D false, all_kernel =3D false;
->         bool event_set =3D false;
-> @@ -3285,12 +3284,6 @@ static int perf_c2c__record(int argc, const char *=
-*argv)
->         if (!rec_argv)
->                 return -1;
->
-> -       rec_tmp =3D calloc(rec_argc + 1, sizeof(char *));
-> -       if (!rec_tmp) {
-> -               free(rec_argv);
-> -               return -1;
-> -       }
-> -
->         rec_argv[i++] =3D "record";
->
->         if (!event_set) {
-> @@ -3319,7 +3312,7 @@ static int perf_c2c__record(int argc, const char **=
+> @@ -3278,7 +3278,7 @@ static int perf_c2c__record(int argc, const char **=
 argv)
->         rec_argv[i++] =3D "--phys-data";
->         rec_argv[i++] =3D "--sample-cpu";
+>                              PARSE_OPT_KEEP_UNKNOWN);
 >
-> -       ret =3D perf_mem_events__record_args(rec_argv, &i, rec_tmp, &rec_=
-tmp_nr);
-> +       ret =3D perf_mem_events__record_args(rec_argv, &i);
->         if (ret)
->                 goto out;
+>         /* Max number of arguments multiplied by number of PMUs that can =
+support them. */
+> -       rec_argc =3D argc + 11 * perf_pmus__num_mem_pmus();
+> +       rec_argc =3D argc + 11 * (perf_pmu__mem_events_num_mem_pmus(pmu) =
++ 1);
 >
-> @@ -3346,10 +3339,6 @@ static int perf_c2c__record(int argc, const char *=
-*argv)
->
->         ret =3D cmd_record(i, rec_argv);
->  out:
-> -       for (i =3D 0; i < rec_tmp_nr; i++)
-> -               free(rec_tmp[i]);
-> -
-> -       free(rec_tmp);
->         free(rec_argv);
->         return ret;
->  }
+>         rec_argv =3D calloc(rec_argc + 1, sizeof(char *));
+>         if (!rec_argv)
 > diff --git a/tools/perf/builtin-mem.c b/tools/perf/builtin-mem.c
-> index ef64bae77ca7..1d92e309c97c 100644
+> index 1d92e309c97c..5b851e64e4a1 100644
 > --- a/tools/perf/builtin-mem.c
 > +++ b/tools/perf/builtin-mem.c
-> @@ -72,10 +72,9 @@ static const char * const *record_mem_usage =3D __usag=
-e;
->
->  static int __cmd_record(int argc, const char **argv, struct perf_mem *me=
-m)
->  {
-> -       int rec_argc, i =3D 0, j, tmp_nr =3D 0;
-> +       int rec_argc, i =3D 0, j;
->         int start, end;
->         const char **rec_argv;
-> -       char **rec_tmp;
->         int ret;
->         bool all_user =3D false, all_kernel =3D false;
->         struct perf_mem_event *e;
-> @@ -116,15 +115,6 @@ static int __cmd_record(int argc, const char **argv,=
- struct perf_mem *mem)
->         if (!rec_argv)
->                 return -1;
->
-> -       /*
-> -        * Save the allocated event name strings.
-> -        */
-> -       rec_tmp =3D calloc(rec_argc + 1, sizeof(char *));
-> -       if (!rec_tmp) {
-> -               free(rec_argv);
-> -               return -1;
-> -       }
-> -
->         rec_argv[i++] =3D "record";
->
->         e =3D perf_pmu__mem_events_ptr(pmu, PERF_MEM_EVENTS__LOAD_STORE);
-> @@ -163,7 +153,7 @@ static int __cmd_record(int argc, const char **argv, =
+> @@ -106,7 +106,7 @@ static int __cmd_record(int argc, const char **argv, =
 struct perf_mem *mem)
->                 rec_argv[i++] =3D "--data-page-size";
+>                              PARSE_OPT_KEEP_UNKNOWN);
 >
->         start =3D i;
-> -       ret =3D perf_mem_events__record_args(rec_argv, &i, rec_tmp, &tmp_=
-nr);
-> +       ret =3D perf_mem_events__record_args(rec_argv, &i);
->         if (ret)
->                 goto out;
->         end =3D i;
-> @@ -193,10 +183,6 @@ static int __cmd_record(int argc, const char **argv,=
- struct perf_mem *mem)
+>         /* Max number of arguments multiplied by number of PMUs that can =
+support them. */
+> -       rec_argc =3D argc + 9 * perf_pmus__num_mem_pmus();
+> +       rec_argc =3D argc + 9 * (perf_pmu__mem_events_num_mem_pmus(pmu) +=
+ 1);
 >
->         ret =3D cmd_record(i, rec_argv);
->  out:
-> -       for (i =3D 0; i < tmp_nr; i++)
-> -               free(rec_tmp[i]);
-> -
-> -       free(rec_tmp);
->         free(rec_argv);
->         return ret;
->  }
+>         if (mem->cpu_list)
+>                 rec_argc +=3D 2;
 > diff --git a/tools/perf/util/mem-events.c b/tools/perf/util/mem-events.c
-> index 7d7df3d0b2b9..a20611b4fb1b 100644
+> index a20611b4fb1b..637cbd4a7bfb 100644
 > --- a/tools/perf/util/mem-events.c
 > +++ b/tools/perf/util/mem-events.c
-> @@ -218,14 +218,14 @@ void perf_pmu__mem_events_list(struct perf_pmu *pmu=
+> @@ -62,6 +62,20 @@ struct perf_pmu *perf_mem_events_find_pmu(void)
+>         return perf_pmus__scan_mem(NULL);
+>  }
+>
+> +/**
+> + * perf_pmu__mem_events_num_mem_pmus - Get the number of mem PMUs since =
+the given pmu
+> + * @pmu: Start pmu. If it's NULL, search the entire PMU list.
+> + */
+> +int perf_pmu__mem_events_num_mem_pmus(struct perf_pmu *pmu)
+> +{
+> +       int num =3D 0;
+> +
+> +       while ((pmu =3D perf_pmus__scan_mem(pmu)) !=3D NULL)
+> +               num++;
+> +
+> +       return num;
+> +}
+> +
+>  static const char *perf_pmu__mem_events_name(int i, struct perf_pmu *pmu=
 )
->         }
->  }
->
-> -int perf_mem_events__record_args(const char **rec_argv, int *argv_nr,
-> -                                char **rec_tmp, int *tmp_nr)
-> +int perf_mem_events__record_args(const char **rec_argv, int *argv_nr)
 >  {
->         const char *mnt =3D sysfs__mount();
->         struct perf_pmu *pmu =3D NULL;
-> -       int i =3D *argv_nr, k =3D 0;
 >         struct perf_mem_event *e;
-> -
-> +       int i =3D *argv_nr;
-> +       const char *s;
-> +       char *copy;
->
->         while ((pmu =3D perf_pmus__scan_mem(pmu)) !=3D NULL) {
->                 for (int j =3D 0; j < PERF_MEM_EVENTS__MAX; j++) {
-> @@ -240,30 +240,20 @@ int perf_mem_events__record_args(const char **rec_a=
-rgv, int *argv_nr,
->                                 return -1;
->                         }
->
-> -                       if (perf_pmus__num_mem_pmus() =3D=3D 1) {
-> -                               rec_argv[i++] =3D "-e";
-> -                               rec_argv[i++] =3D perf_pmu__mem_events_na=
-me(j, pmu);
-> -                       } else {
-> -                               const char *s =3D perf_pmu__mem_events_na=
-me(j, pmu);
-> -
-> -                               if (!perf_pmu__mem_events_supported(mnt, =
-pmu, e))
-> -                                       continue;
-> +                       s =3D perf_pmu__mem_events_name(j, pmu);
-> +                       if (!s || !perf_pmu__mem_events_supported(mnt, pm=
-u, e))
-> +                               continue;
->
-> -                               rec_argv[i++] =3D "-e";
-> -                               if (s) {
-> -                                       char *copy =3D strdup(s);
-> -                                       if (!copy)
-> -                                               return -1;
-> +                       copy =3D strdup(s);
-> +                       if (!copy)
-> +                               return -1;
->
-> -                                       rec_argv[i++] =3D copy;
-> -                                       rec_tmp[k++] =3D copy;
-> -                               }
-> -                       }
-> +                       rec_argv[i++] =3D "-e";
-> +                       rec_argv[i++] =3D copy;
->                 }
->         }
->
->         *argv_nr =3D i;
-> -       *tmp_nr =3D k;
->         return 0;
->  }
->
 > diff --git a/tools/perf/util/mem-events.h b/tools/perf/util/mem-events.h
-> index f817a507b106..c97cd3caa766 100644
+> index c97cd3caa766..15d5f0320d27 100644
 > --- a/tools/perf/util/mem-events.h
 > +++ b/tools/perf/util/mem-events.h
-> @@ -46,8 +46,7 @@ struct perf_pmu *perf_mem_events_find_pmu(void);
+> @@ -43,6 +43,7 @@ int perf_pmu__mem_events_init(struct perf_pmu *pmu);
+>
+>  struct perf_mem_event *perf_pmu__mem_events_ptr(struct perf_pmu *pmu, in=
+t i);
+>  struct perf_pmu *perf_mem_events_find_pmu(void);
+> +int perf_pmu__mem_events_num_mem_pmus(struct perf_pmu *pmu);
 >  bool is_mem_loads_aux_event(struct evsel *leader);
 >
 >  void perf_pmu__mem_events_list(struct perf_pmu *pmu);
-> -int perf_mem_events__record_args(const char **rec_argv, int *argv_nr,
-> -                                char **rec_tmp, int *tmp_nr);
-> +int perf_mem_events__record_args(const char **rec_argv, int *argv_nr);
+> diff --git a/tools/perf/util/pmus.c b/tools/perf/util/pmus.c
+> index ce4931461741..16505071d362 100644
+> --- a/tools/perf/util/pmus.c
+> +++ b/tools/perf/util/pmus.c
+> @@ -345,12 +345,6 @@ const struct perf_pmu *perf_pmus__pmu_for_pmu_filter=
+(const char *str)
+>         return NULL;
+>  }
 >
->  int perf_mem__tlb_scnprintf(char *out, size_t sz, struct mem_info *mem_i=
-nfo);
->  int perf_mem__lvl_scnprintf(char *out, size_t sz, struct mem_info *mem_i=
-nfo);
+> -int __weak perf_pmus__num_mem_pmus(void)
+> -{
+> -       /* All core PMUs are for mem events. */
+> -       return perf_pmus__num_core_pmus();
+> -}
+> -
+>  /** Struct for ordering events as output in perf list. */
+>  struct sevent {
+>         /** PMU for event. */
+> diff --git a/tools/perf/util/pmus.h b/tools/perf/util/pmus.h
+> index 4c67153ac257..94d2a08d894b 100644
+> --- a/tools/perf/util/pmus.h
+> +++ b/tools/perf/util/pmus.h
+> @@ -17,7 +17,6 @@ struct perf_pmu *perf_pmus__scan_core(struct perf_pmu *=
+pmu);
+>
+>  const struct perf_pmu *perf_pmus__pmu_for_pmu_filter(const char *str);
+>
+> -int perf_pmus__num_mem_pmus(void);
+>  void perf_pmus__print_pmu_events(const struct print_callbacks *print_cb,=
+ void *print_state);
+>  bool perf_pmus__have_event(const char *pname, const char *name);
+>  int perf_pmus__num_core_pmus(void);
 > --
 > 2.35.1
 >
