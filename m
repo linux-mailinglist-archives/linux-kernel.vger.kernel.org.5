@@ -1,118 +1,107 @@
-Return-Path: <linux-kernel+bounces-37467-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37468-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A037D83B078
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:53:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED80483B081
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:53:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54C9D1F24402
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:53:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CAEB1C2148F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:53:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7E3312AAD1;
-	Wed, 24 Jan 2024 17:50:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8291812BF10;
+	Wed, 24 Jan 2024 17:51:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VejsDasd"
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b="ivKBBJjR"
+Received: from mail.codeweavers.com (mail.codeweavers.com [4.36.192.163])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C94917E764;
-	Wed, 24 Jan 2024 17:50:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65C7C12BF05;
+	Wed, 24 Jan 2024 17:51:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=4.36.192.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706118652; cv=none; b=UcqNy75aO48UFYw6QtKoblE8DdT59WPXe3FEZd6ONdoUbVs1IIMeb2Ww9Am/UJi4TdVFqKMxu7ghKeBVomgmWPyA6HIiJ409VEZ+pSLEzVlUSZ6YXY9r9T1IfaWWVedzXf7g5hdsSdvtfMwKb22dUcCXv5BIatzgYRQokG2eQLg=
+	t=1706118689; cv=none; b=bGIHhIe1sNUnT8blep+maY+oTlucC8jrNFTDzPgC6EA2My8cvfsqwAWUGv1vOv2PcH76Ju6YqyuAwYlttep9rHSYNtD0KEh9cljmjecLVdEFXJphOxqxtlq/y2cp7Jkza500+y7Lsph4u4Ewk020D3dv9fYcR2y5mBorxkDanEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706118652; c=relaxed/simple;
-	bh=zmpMtbPNi11VZtlC6OMkLjiOFt4LIwYNYu/Xb3aM49c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=B/GZj6HjfYROjIZ3c39Q0GiSkqN2aIrkgVV/9W7ny7crYMkrDQyE5P+iM3k/TQMQT9GeJL7/i4UAcpZDeBEINTex9B0GiinLyxbU29BVtJ1kqLewTg0oCcT7oeQVpWp7GeCs2xReSTzAhGx4DPIsXAyI+cLqfdaAC+p/g2/X8IY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VejsDasd; arc=none smtp.client-ip=209.85.222.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-783137d8049so479997385a.2;
-        Wed, 24 Jan 2024 09:50:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706118649; x=1706723449; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mV/Ca+SH/xfxgnTjXdWX10lc/dyq1IqSKNfOcSnfkFc=;
-        b=VejsDasdff59RUJATFdEDIyfjqTkzCG94r3lTz9Ps2TnR2rf1XkWRwo1GlNiTRfd6C
-         XnwJFqcHWVwCBGIT8Cq3qDwfIw1NewsjsJrzq62k5xeuwJ05Yijuf1UqOdwAtCjqBSXz
-         vj7GBgUjpygCjWpbhvcNdZyEfV7OOxIvu96s3bptN2zqDa+QbhrDGjww07P5AavquuMp
-         939wdD8ki6PDPrEzS/W7/qV7Y9bNe4LXsFF4APknDNSjvHuCm50V/4KPiQfzh8jSa7eg
-         M/k3eDND/SkQzLd3NHqdTyuDKYeQ7q+Ut8ZTJ4sd/pUtsnJbiPZ2nRwVyZJsU8IhtXst
-         oh1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706118649; x=1706723449;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mV/Ca+SH/xfxgnTjXdWX10lc/dyq1IqSKNfOcSnfkFc=;
-        b=JSa0JmcQ3dMlPjI7fxeQPKlkf51o8YIDRD4IE6DWBmWYG28qoKzOeCO8S92ZsgcdPi
-         jJOPwf6qp5UIn+E2ygyHaC6/HO9z7OHYSzrHqn13Uya0snGisIQWHkEmyI2PL60MNA7x
-         sfdff6smwNE22ptkgq6HPIEjCMW18o2JWMGctkWfqjnymgwXMCEL5ZsB/GXHtpGqODiM
-         y3/G5cDk2azZNK8yctP/hAn7okNRWfIUrwladQLB8vC8w0LnBPAUZEmgZdiWGGNYR4y+
-         A+IVl3reBMc02Ec0NxL7ztKpBwcv+XSNMkbQG9C5/abH4q/vwrcbZJYVufjv7scOpK93
-         29DQ==
-X-Gm-Message-State: AOJu0YwriS4SR5cZXkpT3uErOBw11wsnWqepuqBD3kbE1ZlTp6JhTmC0
-	vrxzRLPW3J+P/ppNv12xGLheA0wG2AMeMdCwQNPWoIDuHsuw5Ps5
-X-Google-Smtp-Source: AGHT+IHbcuCuw0k1Q4GLr7cIkKxGbFEY+cx8KBkgDCxdC9f5fRfvBRz8LAbmIQf/xPV8AMaZMIJ2gQ==
-X-Received: by 2002:ad4:5dec:0:b0:686:acd2:9b60 with SMTP id jn12-20020ad45dec000000b00686acd29b60mr1685402qvb.46.1706118649605;
-        Wed, 24 Jan 2024 09:50:49 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id d15-20020a056214184f00b006819a4354basm4705402qvy.37.2024.01.24.09.50.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jan 2024 09:50:48 -0800 (PST)
-Message-ID: <95210b70-38e6-4d7c-acb9-d2681261f8c7@gmail.com>
-Date: Wed, 24 Jan 2024 09:50:46 -0800
+	s=arc-20240116; t=1706118689; c=relaxed/simple;
+	bh=g/sT0ZEANu/3hTClYbuhcQsedyor1GAxRK6GqvanH2I=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=C3hbSV41bTHnlmvmKj6uPYwUhU3XEAoLnc52tfpxD7PXT6WTAPVrXLfXis9CRTsX/cYzKjG0JAYqW9m87Bpi+s91zOwTEHt0tPt1mgJKn7foFZFd+dIrnXNA0NREalhgG2Dh1WGK+QoA16BYZIywrK4m1F9E3lltm0UkWeswR1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com; spf=pass smtp.mailfrom=codeweavers.com; dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b=ivKBBJjR; arc=none smtp.client-ip=4.36.192.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeweavers.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=codeweavers.com; s=s1; h=Message-ID:Date:Subject:Cc:To:From:Sender;
+	bh=E6tlfXJaHpkSHmWMRyZbFYGYiDDsxY+9eqdCUY3ZKA8=; b=ivKBBJjRDz27qMiWctzt/M/PlA
+	22Ypw0cTFROfDOzakN0aZD3OZCzxi5ETs1RvMgCM2ZVje7LNrH60byWD9jcnL7Z+De7YfkdTlbMN9
+	SvzpTurHBh2iqZZBApKUcIqagTd2IxJnfeUap02H0HwzzRpVlN9u5fiphEsvsm3vZmMShNbzonyOc
+	UyN5kgfcNxKJyzMhrD6f5z58iCRLU6ru3uCqcso68+6B+dVVQAJnI8FdKZVAet4wnrJsb4ADifrH0
+	uFdpW5+yf9nu0IPu+Jl09qOHuE607eue+8Zrqr4jGXqoRcm9fSaFhJpzotjoTTRkyhSpQ6zQG1GZ7
+	mbp/vgVw==;
+Received: from cw137ip160.mn.codeweavers.com ([10.69.137.160] helo=camazotz.localnet)
+	by mail.codeweavers.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <zfigura@codeweavers.com>)
+	id 1rShPF-00EJwf-2f;
+	Wed, 24 Jan 2024 11:51:21 -0600
+From: Elizabeth Figura <zfigura@codeweavers.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+ Arnd Bergmann <arnd@arndb.de>
+Cc: wine-devel@winehq.org,
+ =?ISO-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
+ Wolfram Sang <wsa@kernel.org>, Arkadiusz Hiler <ahiler@codeweavers.com>,
+ Peter Zijlstra <peterz@infradead.org>
+Subject:
+ Re: [RFC PATCH 1/9] ntsync: Introduce the ntsync driver and character device.
+Date: Wed, 24 Jan 2024 11:51:21 -0600
+Message-ID: <2716075.mvXUDI8C0e@camazotz>
+In-Reply-To: <bd3f6fcb-2239-4fd3-bb9a-c772bbce5a44@app.fastmail.com>
+References:
+ <20240124004028.16826-1-zfigura@codeweavers.com>
+ <20240124004028.16826-2-zfigura@codeweavers.com>
+ <bd3f6fcb-2239-4fd3-bb9a-c772bbce5a44@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.7 000/638] 6.7.2-rc2 review
-Content-Language: en-US
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
- conor@kernel.org, allen.lkml@gmail.com
-References: <20240123174544.648088948@linuxfoundation.org>
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20240123174544.648088948@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-On 1/23/24 09:47, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.7.2 release.
-> There are 638 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Wednesday, 24 January 2024 01:38:52 CST Arnd Bergmann wrote:
+> On Wed, Jan 24, 2024, at 01:40, Elizabeth Figura wrote:
+> > ntsync uses a misc device as the simplest and least intrusive uAPI interface.
+> >
+> > Each file description on the device represents an isolated NT instance, intended
+> > to correspond to a single NT virtual machine.
+> >
+> > Signed-off-by: Elizabeth Figura <zfigura@codeweavers.com>
 > 
-> Responses should be made by Thu, 25 Jan 2024 17:44:25 +0000.
-> Anything received after that time might be too late.
+> I'm looking at the ioctl interface to ensure it's well-formed.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.2-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
-> and the diffstat can be found below.
+> Your patches look ok from that perspective, but there are a
+> few minor things I would check for consistency here:
 > 
-> thanks,
+> > +
+> > +static const struct file_operations ntsync_fops = {
+> > +	.owner		= THIS_MODULE,
+> > +	.open		= ntsync_char_open,
+> > +	.release	= ntsync_char_release,
+> > +	.unlocked_ioctl	= ntsync_char_ioctl,
+> > +	.compat_ioctl	= ntsync_char_ioctl,
+> > +	.llseek		= no_llseek,
+> > +};
 > 
-> greg k-h
+> The .compat_ioctl pointer should point to compat_ptr_ioctl()
+> since the actual ioctl commands all take pointers instead
+> of interpreting the argument as a number.
+> 
+> On x86 and arm64 this won't make a difference as compat_ptr()
+> is a nop.
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+Thanks; will fix.
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
 
 
