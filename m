@@ -1,183 +1,144 @@
-Return-Path: <linux-kernel+bounces-36398-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36400-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A58E83A008
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 04:22:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC5CA83A014
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 04:30:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13BF3284A32
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:22:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF36F1C290EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:30:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB30F53B9;
-	Wed, 24 Jan 2024 03:22:14 +0000 (UTC)
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C44B63AA;
+	Wed, 24 Jan 2024 03:29:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kCoUQYNO"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E84F524C;
-	Wed, 24 Jan 2024 03:22:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A3CA1381
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 03:29:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706066534; cv=none; b=bDbsL26+ywuuzXQEx2vAXpeyesAQU/a+kOegCYLqjDMpTuq8QI+5NfgCrlX8SqMwcexh8HvCINwORglJD5bbWqRSNxwZudPbzklxraj43pqJqmGZJya7ut5p/5Tye5vhDYw7CBwqfeZoGVMGHziZB54m1UHPCJlmQR+lnaozyCo=
+	t=1706066997; cv=none; b=ZkvdEsp8+2tLMDB12qrxvTyipeCoSq0a0WP/3PgwxKovIyD7gZU2Yc4lctH6L9qLrU6YkSRgFoSkkCamyBVC/HrEldejBNgmd3lQGlhL0RR7Wo6lJQHu3iWfz8sv8nf///H78SxbaIJS75GxGvJ8BMEBz4MkVySgO73os+3gBmc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706066534; c=relaxed/simple;
-	bh=QIZBf1kkH+VXUncxbQEtkWRVJgkIw5LyVIjqmrdxNRg=;
-	h=Subject:To:References:CC:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=pfv+UZjkWMqagifQb+JGR7kGzFptdXqSu30idL5Mw3l4a0DLJ4bR8/BtFXoCUy35/V5aQawq6IEV6CXpu0EoIiuC5RmOH/TIhxyKMIIoFcjmgEyA56pQyKKv+x+o+JDNhUSzTVBmQgAmsajb4tTnETFur2zGi9tWO7fNyVzBs8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TKTjf6c3pz1Q8Ck;
-	Wed, 24 Jan 2024 11:20:22 +0800 (CST)
-Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
-	by mail.maildlp.com (Postfix) with ESMTPS id 4258B140516;
-	Wed, 24 Jan 2024 11:21:52 +0800 (CST)
-Received: from [10.174.178.185] (10.174.178.185) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 24 Jan 2024 11:21:46 +0800
-Subject: Re: [PATCH v4 7/7] selftests/ftrace: add test cases for VFS type
- "%pd" and "%pD"
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-References: <20240123092139.3698375-1-yebin10@huawei.com>
- <20240123092139.3698375-8-yebin10@huawei.com>
- <20240124103201.6dd8d466b1b734796418c1c4@kernel.org>
-CC: <rostedt@goodmis.org>, <mathieu.desnoyers@efficios.com>,
-	<linux-trace-kernel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-From: "yebin (H)" <yebin10@huawei.com>
-Message-ID: <65B08249.6050704@huawei.com>
-Date: Wed, 24 Jan 2024 11:21:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+	s=arc-20240116; t=1706066997; c=relaxed/simple;
+	bh=rSaAlk94pMBR8JXrSQ+PW4+MqsgT6LSmV+ZN3ZU7qKo=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ld5eQ6lWkcQBlgazvD3eOXU1uLK38oh51YAUkv6SIFjKt0s1NjPiiU7g8adsyEy6RxsCL7axU67cf6qGS9DQd88i8NiQodq6glEg6QBLkiAynOqPW5h35N6PwA1OIk17obm89DSgjpgZ+VzeOdBaGRJS64+Kb4AwNzGEcgQ6qqQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kCoUQYNO; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706066996; x=1737602996;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=rSaAlk94pMBR8JXrSQ+PW4+MqsgT6LSmV+ZN3ZU7qKo=;
+  b=kCoUQYNOgStJgcYAzeOXLu3UGUS1EdqI+wssLpIfy6ixlKum6rsIfgep
+   Zsa52R7cTQosKkLMDSJUL2xtgbrYuzF4FEGryO0H8k2TIPEzpIp7d5cXk
+   cyIRIafKrDX50icJoqvGS/YTQ3hKUGUvKjkpOfwSRQld3EyuQ47aBFtgQ
+   WIzvqcxrhGu22g5gW3zlhkS0aV+Q+5VR1J+kK/2AwTUlQ+l1U2PBNjtfP
+   ORxQqd0xuQuUmUNf/AgtN0oyEKtFNK9gCMtcP89rhiNfATMxiJ03Uzk+L
+   A6j6kuvcOodC88ESYQLxvKMZaMWhFfneW65TYJKGt4pX7cvn048AW4Ch0
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="1614996"
+X-IronPort-AV: E=Sophos;i="6.05,215,1701158400"; 
+   d="scan'208";a="1614996"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 19:29:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,215,1701158400"; 
+   d="scan'208";a="28251243"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 19:29:53 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,  Johannes Weiner
+ <hannes@cmpxchg.org>,  Nhat Pham <nphamcs@gmail.com>,  Chris Li
+ <chrisl@kernel.org>,  Chengming Zhou <zhouchengming@bytedance.com>,
+  linux-mm@kvack.org,  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mm: swap: update inuse_pages after all cleanups are
+ done
+In-Reply-To: <CAJD7tkbKxfuy-uWrOMVnOeDpx-TuJwosxk2jG_0Gx4bi1tUBog@mail.gmail.com>
+	(Yosry Ahmed's message of "Tue, 23 Jan 2024 19:20:17 -0800")
+References: <20240120024007.2850671-1-yosryahmed@google.com>
+	<20240120024007.2850671-2-yosryahmed@google.com>
+	<87wms0toh4.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<CAJD7tkb=-0mP1CXEmAd4QjMXKgep7myHShiwUSNnY1cjfRqfJA@mail.gmail.com>
+	<878r4ftodl.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<CAJD7tkbKxfuy-uWrOMVnOeDpx-TuJwosxk2jG_0Gx4bi1tUBog@mail.gmail.com>
+Date: Wed, 24 Jan 2024 11:27:56 +0800
+Message-ID: <874jf3tnpf.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240124103201.6dd8d466b1b734796418c1c4@kernel.org>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- canpemm500010.china.huawei.com (7.192.105.118)
+Content-Type: text/plain; charset=ascii
 
+Yosry Ahmed <yosryahmed@google.com> writes:
 
-
-On 2024/1/24 9:32, Masami Hiramatsu (Google) wrote:
-> On Tue, 23 Jan 2024 17:21:39 +0800
-> Ye Bin <yebin10@huawei.com> wrote:
->
->> This patch adds test cases for new print format type "%pd/%pD".The test cases
->> test the following items:
->> 1. Test README if add "%pd/%pD" type;
->> 2. Test "%pd" type for dput();
->> 3. Test "%pD" type for vfs_read();
+>> > In swap_range_free, we want to make sure that the write to
+>> > si->inuse_pages in swap_range_free() happens *after* the cleanups
+>> > (specifically zswap_invalidate() in this case).
+>> > In swap_off, we want to make sure that the cleanups following
+>> > try_to_unuse() (e.g. zswap_swapoff) happen *after* reading
+>> > si->inuse_pages == 0 in try_to_unuse().
+>> >
+>> > So I think we want smp_wmb() in swap_range_free() and smp_mb() in
+>> > try_to_unuse(). Does the below look correct to you?
+>> >
+>> > diff --git a/mm/swapfile.c b/mm/swapfile.c
+>> > index 2fedb148b9404..a2fa2f65a8ddd 100644
+>> > --- a/mm/swapfile.c
+>> > +++ b/mm/swapfile.c
+>> > @@ -750,6 +750,12 @@ static void swap_range_free(struct
+>> > swap_info_struct *si, unsigned long offset,
+>> >                 offset++;
+>> >         }
+>> >         clear_shadow_from_swap_cache(si->type, begin, end);
+>> > +
+>> > +       /*
+>> > +        * Make sure that try_to_unuse() observes si->inuse_pages reaching 0
+>> > +        * only after the above cleanups are done.
+>> > +        */
+>> > +       smp_wmb();
+>> >         atomic_long_add(nr_entries, &nr_swap_pages);
+>> >         WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
+>> >  }
+>> > @@ -2130,6 +2136,11 @@ static int try_to_unuse(unsigned int type)
+>> >                 return -EINTR;
+>> >         }
+>> >
+>> > +       /*
+>> > +        * Make sure that further cleanups after try_to_unuse() returns happen
+>> > +        * after swap_range_free() reduces si->inuse_pages to 0.
+>> > +        */
+>> > +       smp_mb();
+>> >         return 0;
+>> >  }
 >>
->> Signed-off-by: Ye Bin <yebin10@huawei.com>
->> ---
->>   .../ftrace/test.d/kprobe/kprobe_args_vfs.tc   | 79 +++++++++++++++++++
->>   1 file changed, 79 insertions(+)
->>   create mode 100644 tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_vfs.tc
->>
->> diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_vfs.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_vfs.tc
->> new file mode 100644
->> index 000000000000..1d8edd294dd6
->> --- /dev/null
->> +++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_vfs.tc
->> @@ -0,0 +1,79 @@
->> +#!/bin/sh
->> +# SPDX-License-Identifier: GPL-2.0
->> +# description: Kprobe event VFS type argument
->> +# requires: kprobe_events
->> +
->> +case `uname -m` in
->> +x86_64)
->> +  ARG1=%di
->> +;;
->> +i[3456]86)
->> +  ARG1=%ax
->> +;;
->> +aarch64)
->> +  ARG1=%x0
->> +;;
->> +arm*)
->> +  ARG1=%r0
->> +;;
->> +ppc64*)
->> +  ARG1=%r3
->> +;;
->> +ppc*)
->> +  ARG1=%r3
-> You can merge this ppc* and ppc64* cases :)
+>> We need to take care of "si->inuse_pages" checking at the beginning of
+>> try_to_unuse() too.  Otherwise, it looks good to me.
 >
->> +;;
->> +s390*)
->> +  ARG1=%r2
->> +;;
->> +mips*)
->> +  ARG1=%r4
->> +;;
->> +loongarch*)
->> +  ARG1=%r4
->> +;;
->> +riscv*)
->> +  ARG1=%a0
-> Anyway, I wonder why don't you use '$arg1' instead of these registers.
-> Is there any reason?
->
-> Thank you,
-I looked at the parameter parsing code again, and using "$arg1" requires 
-the kernel to
-enable the CONFIG_HAVE_FUNCTION_ARG_ACCESS_API configuration.
->> +;;
->> +*)
->> +  echo "Please implement other architecture here"
->> +  exit_untested
->> +esac
->> +
->> +: "Test argument %pd/%pD in README"
->> +grep -q "%pd/%pD" README
->> +
->> +: "Test argument %pd with name"
->> +echo "p:testprobe dput name=${ARG1}:%pd" > kprobe_events
->> +echo 1 > events/kprobes/testprobe/enable
->> +grep -q "1" events/kprobes/testprobe/enable
->> +echo 0 > events/kprobes/testprobe/enable
->> +grep "dput" trace | grep -q "enable"
->> +echo "" > kprobe_events
->> +echo "" > trace
->> +
->> +: "Test argument %pd without name"
->> +echo "p:testprobe dput ${ARG1}:%pd" > kprobe_events
->> +echo 1 > events/kprobes/testprobe/enable
->> +grep -q "1" events/kprobes/testprobe/enable
->> +echo 0 > events/kprobes/testprobe/enable
->> +grep "dput" trace | grep -q "enable"
->> +echo "" > kprobe_events
->> +echo "" > trace
->> +
->> +: "Test argument %pD with name"
->> +echo "p:testprobe vfs_read name=${ARG1}:%pD" > kprobe_events
->> +echo 1 > events/kprobes/testprobe/enable
->> +grep -q "1" events/kprobes/testprobe/enable
->> +echo 0 > events/kprobes/testprobe/enable
->> +grep "vfs_read" trace | grep -q "enable"
->> +echo "" > kprobe_events
->> +echo "" > trace
->> +
->> +: "Test argument %pD without name"
->> +echo "p:testprobe vfs_read ${ARG1}:%pD" > kprobe_events
->> +echo 1 > events/kprobes/testprobe/enable
->> +grep -q "1"  events/kprobes/testprobe/enable
->> +echo 0 > events/kprobes/testprobe/enable
->> +grep "vfs_read" trace | grep -q "enable"
->> +echo "" > kprobe_events
->> +echo "" > trace
->> -- 
->> 2.31.1
->>
->
+> Hmm, why isn't one barrier at the end of the function enough? I think
+> all we need is that before we return from try_to_unuse(), all the
+> cleanups in swap_range_free() are taken care of, which the barrier at
+> the end should be doing. We just want instructions after
+> try_to_unuse() to not get re-ordered before si->inuse_pages is read as
+> 0, right?
 
+Because at the begin of try_to_unuse() as below, after reading, function
+returns directly without any memory barriers.
+
+  if (!READ_ONCE(si->inuse_pages))
+        return 0;
+
+--
+Best Regards,
+Huang, Ying
 
