@@ -1,94 +1,94 @@
-Return-Path: <linux-kernel+bounces-36875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36876-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B088683A7FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:34:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 46EA583A7FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:35:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D7F8295879
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:34:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0235E295DA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:35:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A834879E;
-	Wed, 24 Jan 2024 11:33:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FF214F602;
+	Wed, 24 Jan 2024 11:35:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="Z9r59h8G"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EVZPvN+v"
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1BE83B19D
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 11:33:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 585DB4F5E9;
+	Wed, 24 Jan 2024 11:35:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706096033; cv=none; b=sitSTo2LcNhyQwASBPGrogM8j6ZKIj0sGiYf4EBLnnrc6OY5hIcYq9VBxVWC2fNC6EJJajqJ2cl2bR1NRh0RX3X1keBhu9V/N34b4KBgLm2JY6KykZM9OmS/PGm7T5QuhGDIuOcj3OVIdYKIVr6JGfjkxE1cVxRf/m5Qd4pHT3M=
+	t=1706096107; cv=none; b=uxiIYoXDLFTeM/mYxphh/7Un9SkJ/AbA03tW62R2Czw0MoPagY89qWSLZVSDGsOILQ41VS9yi0PPABKSTtKMPIA0yEwK0uleJCddHFe5apg+lCX3Apl47h5uytk7VGRZ3TmZ44B7IcyH/5CxWKnoq5FBFelgjbKu+TDCkRVCPgQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706096033; c=relaxed/simple;
-	bh=dsaLXM6d6VoM5fds1fg66U6p8ESQSb1n2t/G/QC0das=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GvOiKT4Dl/w5Vdjt6x4aA4cLT87JvQYpLd2b5qXpgbhpnXq1TZSK3jVoonnu6S1HTWw0R9T9+tjp9OhcUl3yG4LWcjD+NMYILrZlTHLNxbsNUztkuIfaY8kRHzSLogngUbqtE148H4N8ntoXPKTWKjVDrreck7jdv/yEv1cFqDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com; spf=pass smtp.mailfrom=amarulasolutions.com; dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b=Z9r59h8G; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40e913e3f03so66996895e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 03:33:51 -0800 (PST)
+	s=arc-20240116; t=1706096107; c=relaxed/simple;
+	bh=P87B/NJmEx20+ry47oVcoCNzd+QWvtcpba/ysVCMEEc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CP4JKz856rC99QC2iy2fwQIMCKqi8RtXzF05t5D5ICjGGjsJd7UHbEjOW5eS2VE5zoM7wdQjeUhS8xuIS6iNsINrIYXkT6puwW1SDO8uto3oOIwWbp5WUwjQKVsXzHchqY+cOIQadXNcjSHN2PP7ODzPqipYPIVcnJ4SKI3htk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EVZPvN+v; arc=none smtp.client-ip=209.85.167.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3bd9030d68fso3264249b6e.3;
+        Wed, 24 Jan 2024 03:35:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1706096030; x=1706700830; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IOQZaSpXnX8V6pHXUpEolZJOMPm1LbqrSXgyPId9gEI=;
-        b=Z9r59h8Ga+z9CDZbjQBV7X95CDbpZ7dMcIwH+BsRYMI8jCkIZWHFvQMAZ5QgdUbWYJ
-         1bc45sRoQsi+c+dAwSv91ue7TOZMPEgnIo54FVoi3GYb7J33slSF+ZEtzatrVG05ay3R
-         Rnne3b8bkspZGItsHuz1+pAdm9xBVwdQmjMbU=
+        d=gmail.com; s=20230601; t=1706096105; x=1706700905; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=C9dLmB1UBk2lcc6K0p3fcasn7wjRUeWpHrr479fQHwU=;
+        b=EVZPvN+vjkGSqbk0xy1pNd30FiFLn+wCMmNxaisov4PUYZO0M651jiQU+1Yp+pZCIM
+         EuL0YppZ2NVcuDDr+mpQrwVYugUD3lU/klLM4Fj3rKw6O8oVZZ0ZoQ6ZMQCsZsakk1SB
+         5niPPIvwOjzdf4mWbj+0VarasTrLv0kzXvAAWOoJCRkQbw6a3cHyXXmwmxww3mp6sc7+
+         8PRL4lNAj01ZaQLeImX2i/Lvc4k6tMaF7m8FLsTmNznLFd2124a6kliyl8TVt2thezE0
+         44EGqsrsGZocF3BE/eEIjqOs/68cVa8+4PfTuAHSuVJP09cWEmgJAEdzIey7ih8o50G/
+         77yA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706096030; x=1706700830;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IOQZaSpXnX8V6pHXUpEolZJOMPm1LbqrSXgyPId9gEI=;
-        b=LvRmwi+SVNd/FFQNKBbWqooAmeb2ChoQwMR1r3W54oP0O/hO1S4POVAqbpscbL2uS0
-         52lJYIvXdq36Tdw1LSF7ue1w2GC7DVLpXHI9Rlqi2uc2XJvK8P9u672l2t9reA1zFy3X
-         0P2UcpuzUSEOR+ywGAfQqQxCGzxzf4t8DFClc8Xvrdr1R9xvemV6pJeY3Dk+9kgVuZpl
-         10qFfKrv+n6ZP+ltkUDqBdL9A/Jm5ePZ2ESIRTfyA6dfF+UC6WOT0Lu+Ha5kAg6b4k5q
-         MFhmhTxJkqH+OW2NI8CiSjfgu2CmfxPofqr8VWA2GAuwR2S2EM/E2/1C2lEU2C9cPTFR
-         sfLw==
-X-Gm-Message-State: AOJu0YwBWx22BFvixQxSk3uLzjjXLK/XyyYiQzJDOmeXqUt8aZYo6e6w
-	cUGCRUbcW8rw1Dy9Uq8PwjbXWl3xUpKphmonELDODmh0tDdAtHz/7psO+YY8QRNmp6GMk0k9KrJ
-	+
-X-Google-Smtp-Source: AGHT+IEc2/t24TiypZzLOtZozXe9B31TgvFV2ZIB41NCVDDfBJgbU2Gbg0Bp9YpYhOwZIUcySoBkeQ==
-X-Received: by 2002:a05:600c:22cf:b0:40d:6c97:edde with SMTP id 15-20020a05600c22cf00b0040d6c97eddemr1061615wmg.156.1706096029843;
-        Wed, 24 Jan 2024 03:33:49 -0800 (PST)
-Received: from dario-ThinkPad-T14s-Gen-2i.. (mob-5-90-60-192.net.vodafone.it. [5.90.60.192])
-        by smtp.gmail.com with ESMTPSA id i18-20020adffdd2000000b003393249d5dbsm8447950wrs.4.2024.01.24.03.33.48
+        d=1e100.net; s=20230601; t=1706096105; x=1706700905;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=C9dLmB1UBk2lcc6K0p3fcasn7wjRUeWpHrr479fQHwU=;
+        b=WK46SV7WhWJ912BAVJERSbFahNE66UoNFz9jIVEizkLVefyMfzTdtdXSx/NjA4SoE6
+         bqgVO4nztkh4G3AbojeXm+WN6sy3zc9eBYbG4pW8jgO6M2jfz3/wlSgrxmEcslbxtwzM
+         wWdeqCta8uCQGSiZ2XUnvIWtJkA+6FNE7rq5aVJEh4UgCet9O+1koSjkpml41Oin2Y6C
+         WwPSMEJwEK7aJ2Iik1x6RAnrlsE2nNWKGzC1zwN8p7wxJHTKg1U2PT8VCLvOpUupPDYB
+         +3wZ7qIOsgHNQwlQ4WQxhDU8eKLP39lB3ZHoAKV5SYccT+6cFPYsT4FRla/j+tzGGw88
+         Q5YQ==
+X-Gm-Message-State: AOJu0YwamzmT651cOwdhYP1a540I6f+O5JB6DgOcYEme8TOHRGJEPIfn
+	lA0Qy/qKWXszp0EQiw0xYkkfVjdcx62nam+lywT78qIzzAoyfvBH
+X-Google-Smtp-Source: AGHT+IEt3aCxUIfMjDOEuHL1g4y3s4edufzn/iCQAQWHFDxaD8a0GWx+ZQUtTyZrxSqIBvLi9y7ivA==
+X-Received: by 2002:a05:6808:3a09:b0:3bd:4df7:db85 with SMTP id gr9-20020a0568083a0900b003bd4df7db85mr1859788oib.69.1706096105325;
+        Wed, 24 Jan 2024 03:35:05 -0800 (PST)
+Received: from localhost.localdomain ([43.132.141.3])
+        by smtp.gmail.com with ESMTPSA id c15-20020a63d50f000000b00578b8fab907sm11727820pgg.73.2024.01.24.03.35.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 03:33:49 -0800 (PST)
-From: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-To: linux-kernel@vger.kernel.org
-Cc: linux-amarula@amarulasolutions.com,
-	Lee Jones <lee@kernel.org>,
-	Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Andre Przywara <andre.przywara@arm.com>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Jesper Nilsson <jesper.nilsson@axis.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	=?UTF-8?q?Leonard=20G=C3=B6hrs?= <l.goehrs@pengutronix.de>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Sean Nyekjaer <sean@geanix.com>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH v9 5/5] ARM: dts: add stm32f769-disco-mb1166-reva09
-Date: Wed, 24 Jan 2024 12:33:14 +0100
-Message-ID: <20240124113336.658198-6-dario.binacchi@amarulasolutions.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240124113336.658198-1-dario.binacchi@amarulasolutions.com>
-References: <20240124113336.658198-1-dario.binacchi@amarulasolutions.com>
+        Wed, 24 Jan 2024 03:35:04 -0800 (PST)
+From: Yi Wang <up2wing@gmail.com>
+X-Google-Original-From: Yi Wang <foxywang@tencent.com>
+To: seanjc@google.com,
+	pbonzini@redhat.com,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com,
+	kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	wanpengli@tencent.com,
+	foxywang@tencent.com,
+	oliver.upton@linux.dev,
+	maz@kernel.org,
+	anup@brainfault.org,
+	atishp@atishpatra.org,
+	borntraeger@linux.ibm.com,
+	frankja@linux.ibm.com,
+	imbrenda@linux.ibm.com
+Cc: up2wing@gmail.com
+Subject: [v3 0/3] KVM: irqchip: synchronize srcu only if needed
+Date: Wed, 24 Jan 2024 19:34:43 +0800
+Message-Id: <20240124113446.2977003-1-foxywang@tencent.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -97,91 +97,48 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-As reported in the section 8.3 (i. e. Board revision history) of document
-UM2033 (i. e. Discovery kit with STM32F769NI MCU) these are the changes
-related to the board revision addressed by the patch:
-- Board MB1166 revision A-09:
-  - LCD FRIDA FRD397B25009-D-CTK replaced by FRIDA FRD400B25025-A-CTK
+From: Yi Wang <foxywang@tencent.com>
 
-The patch adds the DTS support for the new display which belongs to the
-the Novatek NT35510-based panel family.
+We found that it may cost more than 20 milliseconds very accidentally
+to enable cap of KVM_CAP_SPLIT_IRQCHIP on a host which has many vms
+already.
 
-Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Reviewed-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+The reason is that when vmm(qemu/CloudHypervisor) invokes
+KVM_CAP_SPLIT_IRQCHIP kvm will call synchronize_srcu_expedited() and
+might_sleep and kworker of srcu may cost some delay during this period.
+One way makes sence is setup empty irq routing when creating vm and
+so that x86/s390 don't need to setup empty/dummy irq routing.
 
----
+Note: I have no s390 machine so the s390 patch has not been tested.
 
-Changes in v9:
-- Change commit message
-- Rename stm32f769-disco-mb1225-revb03-mb1166-reva09 to
-  stm32f769-disco-mb1166-reva09
+Changelog:
+----------
+v3:
+  - squash setup empty routing function and use of that into one commit
+  - drop the comment in s390 part
 
-Changes in v8:
-- Add Reviewed-by tag of Linus Walleij
-- Add Reviewed-by tag of Raphael Gallais-Pou
+v2:
+  - setup empty irq routing in kvm_create_vm
+  - don't setup irq routing in x86 KVM_CAP_SPLIT_IRQCHIP
+  - don't setup irq routing in s390 KVM_CREATE_IRQCHIP
 
-Changes in v7:
-- Replace .dts with .dtb in the Makefile
+v1: https://lore.kernel.org/kvm/20240112091128.3868059-1-foxywang@tencent.com/
 
-Changes in v6:
-- Drop patches
-  - [5/8] dt-bindings: nt35510: add compatible for FRIDA FRD400B25025-A-CTK
-  - [7/8] drm/panel: nt35510: move hardwired parameters to configuration
-  - [8/8] drm/panel: nt35510: support FRIDA FRD400B25025-A-CTK
-  because applied by the maintainer Linus Walleij
+Yi Wang (3):
+  KVM: setup empty irq routing when create vm
+  KVM: x86: don't setup empty irq routing when KVM_CAP_SPLIT_IRQCHIP
+  KVM: s390: don't setup dummy routing when KVM_CREATE_IRQCHIP
 
-Changes in v5:
-- Replace GPIOD_ASIS with GPIOD_OUT_HIGH in the call to devm_gpiod_get_optional().
+ arch/s390/kvm/kvm-s390.c |  9 +--------
+ arch/x86/kvm/irq.h       |  1 -
+ arch/x86/kvm/irq_comm.c  |  5 -----
+ arch/x86/kvm/x86.c       |  3 ---
+ include/linux/kvm_host.h |  1 +
+ virt/kvm/irqchip.c       | 19 +++++++++++++++++++
+ virt/kvm/kvm_main.c      |  4 ++++
+ 7 files changed, 25 insertions(+), 17 deletions(-)
 
-Changes in v2:
-- Change the status of panel_backlight node to "disabled"
-- Delete backlight property from panel0 node.
-- Re-write the patch [8/8] "drm/panel: nt35510: support FRIDA FRD400B25025-A-CTK"
-  in the same style as the original driver.
-
- arch/arm/boot/dts/st/Makefile                  |  1 +
- .../dts/st/stm32f769-disco-mb1166-reva09.dts   | 18 ++++++++++++++++++
- 2 files changed, 19 insertions(+)
- create mode 100644 arch/arm/boot/dts/st/stm32f769-disco-mb1166-reva09.dts
-
-diff --git a/arch/arm/boot/dts/st/Makefile b/arch/arm/boot/dts/st/Makefile
-index 7892ad69b441..9fedd6776208 100644
---- a/arch/arm/boot/dts/st/Makefile
-+++ b/arch/arm/boot/dts/st/Makefile
-@@ -23,6 +23,7 @@ dtb-$(CONFIG_ARCH_STM32) += \
- 	stm32f469-disco.dtb \
- 	stm32f746-disco.dtb \
- 	stm32f769-disco.dtb \
-+	stm32f769-disco-mb1166-reva09.dtb \
- 	stm32429i-eval.dtb \
- 	stm32746g-eval.dtb \
- 	stm32h743i-eval.dtb \
-diff --git a/arch/arm/boot/dts/st/stm32f769-disco-mb1166-reva09.dts b/arch/arm/boot/dts/st/stm32f769-disco-mb1166-reva09.dts
-new file mode 100644
-index 000000000000..014cac192375
---- /dev/null
-+++ b/arch/arm/boot/dts/st/stm32f769-disco-mb1166-reva09.dts
-@@ -0,0 +1,18 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2023 Dario Binacchi <dario.binacchi@amarulasolutions.com>
-+ */
-+
-+#include "stm32f769-disco.dts"
-+
-+&panel_backlight {
-+	status = "disabled";
-+};
-+
-+&panel0 {
-+	compatible = "frida,frd400b25025", "novatek,nt35510";
-+	vddi-supply = <&vcc_3v3>;
-+	vdd-supply = <&vcc_3v3>;
-+	/delete-property/backlight;
-+	/delete-property/power-supply;
-+};
 -- 
-2.43.0
+2.39.3
 
 
