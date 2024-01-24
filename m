@@ -1,135 +1,146 @@
-Return-Path: <linux-kernel+bounces-36489-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36491-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D28A683A199
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 06:56:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD92C83A1A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 06:57:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6551DB22C7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 05:56:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 777EA1F23AEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 05:57:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D454CF501;
-	Wed, 24 Jan 2024 05:56:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9656F9C1;
+	Wed, 24 Jan 2024 05:56:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="B5gNBuZd"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Rq0W828s"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 699FBE541;
-	Wed, 24 Jan 2024 05:56:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D42816428;
+	Wed, 24 Jan 2024 05:56:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706075778; cv=none; b=rdh3NJUmXH5/D4XGRf5hbd9jylsiVpNpeSSJyAArVrQYeNhU1f7FJbs7JdPeVT/L/dVW9uraBVmPfnh18+S3IGtyPkQ6fdeOGBrzE2p3iUgN8wWsydHx5oQ0NNvtc4oZOZxkbtBos7OaRky9BaWU4AIViY0xUoHM4eAqziznq0o=
+	t=1706075792; cv=none; b=PyVWvwEc5eQKfzjZOJus4lH66dXjq722uO1XXB8coQ6MqussoKFVMD3x2gDjyVJMK34IsEbOtDNHT+l6vfjwG2uFjlt5es4HHBjgqRDnrMLfmxf2jmmrmZeqaTar+xWO88h82fUsORU63j8TtHfCFwQoeAABy6p2P7Q55mb/JcI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706075778; c=relaxed/simple;
-	bh=Mtv9huBRB3XLSzYzkY5yNwfFSuBXgm9+U9XhIB4rkkw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=g6ei1Qb+b1Au4ZaGE+U07m+Z56gJMNiTWuNO7WfpIWdKKd0iXLqKVdy8NYHgAEym7BkaQmWCLjKABsHb7kXMz2ttwM9gCdWS3/Xx+8XWOWOkw+ps+/Ptbs4S6xMdRQxK4oQQ+3Ca1/5iGR995ouM/QvxRDHLWNz6w021tIpTPjA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=B5gNBuZd; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40O5u4M1010724;
-	Tue, 23 Jan 2024 23:56:04 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706075764;
-	bh=gUkEY0JOHv9rnjrrLI9cNW4bj/5kjOFDACovw2GyPXE=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=B5gNBuZdRqNUBbhY5NO6JIke2EgW3FSs+B8zmvPXjDDyR8nu0k+HHaBz+8a3nbnSR
-	 z4AkkIfyLDYeRjQ0hd8/WgROgkuhiCNBqvDt3KmOqdX1hSm9/HnM1G+iKs3ytggTND
-	 rwndFTjPiBH1WeL8sgjyVgansZ0+Ie4j3mS/XfG4=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40O5u4sx009517
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 23 Jan 2024 23:56:04 -0600
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 23
- Jan 2024 23:56:04 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 23 Jan 2024 23:56:04 -0600
-Received: from [172.24.227.112] (jayesh-hp-probook-440-g8-notebook-pc.dhcp.ti.com [172.24.227.112])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40O5u02l019754;
-	Tue, 23 Jan 2024 23:56:01 -0600
-Message-ID: <0fcec921-0220-4251-afa4-44db5e80d2ef@ti.com>
-Date: Wed, 24 Jan 2024 11:26:00 +0530
+	s=arc-20240116; t=1706075792; c=relaxed/simple;
+	bh=U7AxjWtl76YYVN9AAQAMePamqK7lCwTpHiJ55ysuw5Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CgerRX6AJLeQ0NW7henO4Ql3TdCpLD6Kb2k6Bd1l7hMbgKSQWZ6guDhQSzzGaebk0asKqyzQ7kyVEqZa6BNduQzV0MvL/XUVqjJeznuAFzo0NZ+BEtyb2LSegMpyvLxrJdtgaRgEJTctp6gcZggO4ndSGyT7sxcIjqdowwj/FXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Rq0W828s; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40O5fNUB006082;
+	Wed, 24 Jan 2024 05:56:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=tmGJ2Whbetk9jP/5DWFCYsWaq8KXKVaywMbIOCxezE0=;
+ b=Rq0W828sSVJPRtwhxNgKxvyXVXU3iG4YkjTr5GABDCSgBWXHkrdsqEPUPsiIfkDsZMTE
+ O8zje0SDdaCf/XBTtOA56bT2Xg5+yl19GzPhJx2OkEW79YSyBZEAClAD856ZGxW7edR6
+ NJHrk5PJ8WQ2rWfoBpv7EL8J42l7uMt7K/Iz6LPsNpDyvQXlg7plcWScXkGYd49fViO2
+ MYoNrGXgKrdTFQbaH3umC8+UJyqeXXiCaGohW82O6RgRXoE81h9ov6+1TcMuRICq2PQV
+ b1/t4gU+536XSqueSm+HtYgWSxQnRMcz5H6G7C2RTRMvH9IPDisvL95dMfOdt/emBP/7 rw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vttepb2mc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Jan 2024 05:56:22 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40O4qv2K023794;
+	Wed, 24 Jan 2024 05:56:22 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vttepb2m6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Jan 2024 05:56:22 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40O4QBBa022429;
+	Wed, 24 Jan 2024 05:56:21 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vrt0m3ugy-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Jan 2024 05:56:21 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40O5uJ8t23921156
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 24 Jan 2024 05:56:19 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3ADAA20043;
+	Wed, 24 Jan 2024 05:56:19 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4805420040;
+	Wed, 24 Jan 2024 05:56:17 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.109.253.82])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Wed, 24 Jan 2024 05:56:17 +0000 (GMT)
+Date: Wed, 24 Jan 2024 11:26:14 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: Pavel Machek <pavel@denx.de>
+Cc: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Ritesh Harjani <ritesh.list@gmail.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 6.1 08/14] ext4: enable dioread_nolock as default
+ for bs < ps case
+Message-ID: <ZbCmfu90bKwA2Xvq@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <20240116010642.218876-1-sashal@kernel.org>
+ <20240116010642.218876-8-sashal@kernel.org>
+ <ZabrcCOi/hIsKk5I@duo.ucw.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: ti: k3-am62p-mcu/wakeup: Disable MCU and
- wakeup R5FSS nodes
-Content-Language: en-US
-To: Vaishnav Achath <vaishnav.a@ti.com>, <nm@ti.com>, <vigneshr@ti.com>,
-        <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC: <bb@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <u-kumar1@ti.com>
-References: <20240121134017.374992-1-vaishnav.a@ti.com>
-From: Jayesh Choudhary <j-choudhary@ti.com>
-In-Reply-To: <20240121134017.374992-1-vaishnav.a@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZabrcCOi/hIsKk5I@duo.ucw.cz>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: -c33VtLZ1QNIZt1TzvKhfdFqaML-_uX6
+X-Proofpoint-GUID: zSxOjyDFyk1hjVt9Vp2rG_mXURwFjid8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-24_02,2024-01-23_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=1 impostorscore=0 bulkscore=0
+ malwarescore=0 priorityscore=1501 adultscore=0 spamscore=1 clxscore=1031
+ phishscore=0 suspectscore=0 mlxscore=1 mlxlogscore=190 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2401240041
 
-Hello Vaishnav,
-
-On 21/01/24 19:10, Vaishnav Achath wrote:
-> K3 Remoteproc R5 driver requires reserved memory carveouts and
-> mailbox configuration to instantiate the cores successfully.
-> Since this is a board level dependency, keep the R5 subsytem
-> disabled at SoC dtsi, otherwise it results in probe errors like
-> below during AM62P SK boot:
+On Tue, Jan 16, 2024 at 09:47:44PM +0100, Pavel Machek wrote:
+> Hi!
+> > 
+> > [ Upstream commit e89fdcc425b6feea4dfb33877e9256757905d763 ]
+> > 
+> > dioread_nolock was originally disabled as a default option for bs < ps
+> > scenarios due to a data corruption issue. Since then, we've had some
+> > fixes in this area which address such issues. Enable dioread_nolock by
+> > default and remove the experimental warning message for bs < ps path.
+> > 
+> > dioread for bs < ps has been tested on a 64k pagesize machine using:
+> > 
+> > kvm-xfstest -C 3 -g auto
+> > 
+> > with the following configs:
+> > 
+> > 64k adv bigalloc_4k bigalloc_64k data_journal encrypt
+> > dioread_nolock dioread_nolock_4k ext3 ext3conv nojournal
+> > 
+> > And no new regressions were seen compared to baseline kernel.
 > 
-> r5fss@79000000: reserved memory init failed, ret = -22
-> r5fss@79000000: k3_r5_cluster_rproc_init failed, ret = -22
-> r5fss@78000000: reserved memory init failed, ret = -22
-> r5fss@78000000: k3_r5_cluster_rproc_init failed, ret = -22
+> But no fixes, either, so not suitable for stable.
 > 
-> Fixes: b5080c7c1f7e ("arm64: dts: ti: k3-am62p: Add nodes for more IPs")
+> BR,
+> 								Pavel
+
+Hi Pavel, Sasha,
+
+I agree, this can be dropped from stable since it is not a bug fix.
+
+- ojaswin
 > 
-> Signed-off-by: Vaishnav Achath <vaishnav.a@ti.com>
+> -- 
+> DENX Software Engineering GmbH,        Managing Director: Erika Unter
+> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
-Reviewed-by: Jayesh Choudhary <j-choudhary@ti.com>
 
-> ---
->   arch/arm64/boot/dts/ti/k3-am62p-mcu.dtsi    | 2 ++
->   arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi | 1 +
->   2 files changed, 3 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62p-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-mcu.dtsi
-> index c4b0b91d70cf..14eb9ba836d3 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62p-mcu.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62p-mcu.dtsi
-> @@ -187,6 +187,8 @@ mcu_r5fss0: r5fss@79000000 {
->   		ranges = <0x79000000 0x00 0x79000000 0x8000>,
->   			 <0x79020000 0x00 0x79020000 0x8000>;
->   		power-domains = <&k3_pds 7 TI_SCI_PD_EXCLUSIVE>;
-> +		status = "disabled";
-> +
->   		mcu_r5fss0_core0: r5f@79000000 {
->   			compatible = "ti,am62-r5f";
->   			reg = <0x79000000 0x00008000>,
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
-> index 19f42b39394e..10a7059b2d9b 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
-> @@ -78,6 +78,7 @@ wkup_r5fss0: r5fss@78000000 {
->   		ranges = <0x78000000 0x00 0x78000000 0x8000>,
->   			 <0x78100000 0x00 0x78100000 0x8000>;
->   		power-domains = <&k3_pds 119 TI_SCI_PD_EXCLUSIVE>;
-> +		status = "disabled";
->   
->   		wkup_r5fss0_core0: r5f@78000000 {
->   			compatible = "ti,am62-r5f";
-
-Thanks.
 
