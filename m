@@ -1,320 +1,228 @@
-Return-Path: <linux-kernel+bounces-36659-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0CD483A499
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:54:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F88483A49E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:56:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2213C1C22157
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:54:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 282641F2307F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:56:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F55417BA0;
-	Wed, 24 Jan 2024 08:54:10 +0000 (UTC)
-Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 324D1179BD;
+	Wed, 24 Jan 2024 08:56:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="OuIxrTZR";
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="Ojb7TFxK"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0DC017988;
-	Wed, 24 Jan 2024 08:54:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706086449; cv=none; b=CrpGF40HE1JxGw3/WRsoO/E95JkntUsKkNRAqNBPxESAmJskkp3xTxmaXgM4vNBZE2XPlOMBz5rBNE8ob1aCVcJneW1Hj/5PsCtfzIX8ywC0ESD4YPdihzhRhMMK4zuHHu8WGb4YCSrwXioARRxpIdJTgH6hdcuTNokXCPFII4Q=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706086449; c=relaxed/simple;
-	bh=ySIlbHNgPgmFNXuPufK1d6T2joCFnbD/Rz6ABm+LREA=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=YXZ10oR+vSA5TDkTIocaID5Yte62klCYfnFanQa4JNIc/YiskOH6cSmrU5YJ0hOW1MCxTbqfYrPWH+3RAoRDuZ7yHZvjT+UFXxL1Qutu+h69kSDgEO4Z3vgEJzyCTHVgFoUzNuVikxgqbkgC29e9u4TXK+o87zqd37KnyUb14y8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
-Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 40O8ri7H079908;
-	Wed, 24 Jan 2024 16:53:44 +0800 (+08)
-	(envelope-from zhaoyang.huang@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4TKcxm5Mm5z2Rm6Zh;
-	Wed, 24 Jan 2024 16:46:20 +0800 (CST)
-Received: from bj03382pcu01.spreadtrum.com (10.0.73.40) by
- BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Wed, 24 Jan 2024 16:53:42 +0800
-From: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
-To: Jens Axboe <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Zhaoyang Huang <huangzhaoyang@gmail.com>, <steve.kang@unisoc.com>
-Subject: [PATCHv2 1/1] block: introduce content activity based ioprio
-Date: Wed, 24 Jan 2024 16:53:34 +0800
-Message-ID: <20240124085334.3060748-1-zhaoyang.huang@unisoc.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5F50168DA;
+	Wed, 24 Jan 2024 08:55:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.153.233
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706086560; cv=fail; b=JVZZrZFs5q7Cy8hvbDhNspPAoBRDdM8EQSINzGfhzLr0lxi4Mxdn/mi+j/D3THP1Z40IYXSqDflRAl+Me0FBnM1xtpwQyPcc5GG4EwAfM648kmUBp6KtVDK3Zd6jv/N34gg1azS8D2kOZM3i8v9u81lBLyxBkzHrafjs75eus5U=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706086560; c=relaxed/simple;
+	bh=DyxwFVB4PqIPfj3RPf1P7XuRnkrb8BL7r0a9akcFhBw=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=B5oaxol9JPcq+FPycsCgPj+pvO+KQ2FBWY1YSuLwAvUNnas4ngoVhlXcL162XMUyCRP8sWF92Guu6Z9Qvpsj3ZATGSfxoT4hUMBv+tvBUAGK75/jiW0Ngd5hhIssDqvi/qc2JLFj20uizVSVBXvQkzVEtopEbsrRLLiFaDt59Po=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=OuIxrTZR; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=Ojb7TFxK; arc=fail smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1706086559; x=1737622559;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=DyxwFVB4PqIPfj3RPf1P7XuRnkrb8BL7r0a9akcFhBw=;
+  b=OuIxrTZRxfXvzeCte35pPr+EunEA1M7xR7t5wNLbWozAyWjVfOVth3yw
+   k1zwrnpjGAOAwkniibP+yRT51ZQpBUK5cZFQ6x7tC2dBxREeItpWu+fIR
+   T94hMn4K6UiWrKBagUcXwXL5YIDZH5nH/SiZWZAb7o8SX696Z6myRuMrA
+   3pCEfV1/vgQQYZL8pDLrMl2tk92q3U+j0twkHFfFsN5MbwqGTIhlbdkqI
+   EZad/65k3UnD5Fno1BOPeF6pEsBbaHYAgFB3GCzIxOx17spJy+eTFCBBp
+   6JNbzy6MPMF8+rzLitKQChkzrdKLxMf4XKWFQhRGovR3i7yQrHg/bPZCL
+   w==;
+X-CSE-ConnectionGUID: QvwX5V0rTsesejUVGrstEg==
+X-CSE-MsgGUID: OqkQ9UL9RQGMFWEaGxlRaw==
+X-IronPort-AV: E=Sophos;i="6.05,216,1701154800"; 
+   d="scan'208";a="15218132"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 24 Jan 2024 01:55:52 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 24 Jan 2024 01:55:51 -0700
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (10.10.215.250)
+ by email.microchip.com (10.10.87.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 24 Jan 2024 01:55:50 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YHfXFJh3p3N2csz2X0U3rxJMJ8izuKtUYX6f8FpgK/t2zmRn/vhXhDlKLqwmREKp0OlcEUWNq5d6jF+j4Q35MWc2vGvHT6T2IkCmVUaE2bo9AlIRTngKYEHTGRBFCNszakbCZdpGzcCcbqhXkTdFslTUR0XAmK7PsrZuGI5MTwa5NOErN6xoQMOZnSf3H+yNQZ+TJRdJpFItf2VIMFLPjg/AEHjEKMmpAFMdnvSjQkjexFFWfMtVC96KN2+GSbRbceNQrXRdnu7AIEFhv/pPwSsBZborRP+NN8qn8neSW7VwtRfL7AeM8hMEUWmeCqIIfn2vVbqgTHlzDWyRAzNh/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DyxwFVB4PqIPfj3RPf1P7XuRnkrb8BL7r0a9akcFhBw=;
+ b=lx4W7/+MJg6RIBrO45pIy//b4JPl7Dv9+Mbhs6Wi/Vy2eWVii+vawypDLIyWRLOSzcxipRAk7bs4HIJHe/yDUKQk3MQKFx5lgmrzUuNCSOMQjePZqT678GJrJvaC/ipbsDC18XPnVuT6BIX8/BfTomDNPaFutzIYRdp9MDUZ6MJuAP/vXFKVfEfG3ZLt7Y3XSNKXeMfUXxEgTtQTMvUSk4wdfnGUSzJJy1ObAeV2D+Zt+MT2yTTMjao46RTvp+IaK3ogTqX0NvcvSd3nnU+YHyBnUywDgGWOUcbySxQcoCXC7nQs/heF8ZeO94wSkXXzRZKjeFGMWAmKXntj7dnsrg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DyxwFVB4PqIPfj3RPf1P7XuRnkrb8BL7r0a9akcFhBw=;
+ b=Ojb7TFxKT+dzrU5SQCgsKcq8sJBZo+/rlFat8QwoqmZP8Uvux3oa/sU2rrWs6Yzc7WXT+TvNHfZpxjdB5uJSXp+8LLBUJaUu/qa1ETp9TkZ9HSMaVSqxovUbTRCmZz6X/zTklUlOyOPRrQohjiWZ/l6wf4DHRFsRm+5kcOwj72bHiL2k/dQat0LeL8oMkpDB6EfYYnFIbuglD4OHpfM1m6LkNziEQXMxDkVmjwKyOi8r0ZuAQs+x/euppSyrgOFX1Pyhp17NB+2W26zIV61WN4XDBsgsUoksaDdSHKy8i9dYjpK06dgg3htRu6vLFYA3BcYMVEaou8KRDiFnZ/Z3dg==
+Received: from PH7PR11MB6451.namprd11.prod.outlook.com (2603:10b6:510:1f4::16)
+ by BN9PR11MB5559.namprd11.prod.outlook.com (2603:10b6:408:104::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.37; Wed, 24 Jan
+ 2024 08:55:48 +0000
+Received: from PH7PR11MB6451.namprd11.prod.outlook.com
+ ([fe80::80b9:80a3:e88a:57ee]) by PH7PR11MB6451.namprd11.prod.outlook.com
+ ([fe80::80b9:80a3:e88a:57ee%3]) with mapi id 15.20.7228.022; Wed, 24 Jan 2024
+ 08:55:48 +0000
+From: <Dharma.B@microchip.com>
+To: <sam@ravnborg.org>
+CC: <robh@kernel.org>, <Linux4Microchip@microchip.com>,
+	<linux-pwm@vger.kernel.org>, <alexandre.belloni@bootlin.com>,
+	<dri-devel@lists.freedesktop.org>, <Nicolas.Ferre@microchip.com>,
+	<Conor.Dooley@microchip.com>, <thierry.reding@gmail.com>,
+	<krzysztof.kozlowski+dt@linaro.org>, <claudiu.beznea@tuxon.dev>,
+	<airlied@gmail.com>, <lee@kernel.org>, <u.kleine-koenig@pengutronix.de>,
+	<devicetree@vger.kernel.org>, <conor+dt@kernel.org>, <tzimmermann@suse.de>,
+	<mripard@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<bbrezillon@kernel.org>, <linux-kernel@vger.kernel.org>, <daniel@ffwll.ch>
+Subject: Re: [PATCH v3 0/3] Convert Microchip's HLCDC Text based DT bindings
+ to JSON schema
+Thread-Topic: [PATCH v3 0/3] Convert Microchip's HLCDC Text based DT bindings
+ to JSON schema
+Thread-Index: AQHaSfBtFpABnI0MwEGuolZ8EVFW4bDf9cIAgAGYQICAASXzAIAChPKAgADMmICAAqzegA==
+Date: Wed, 24 Jan 2024 08:55:48 +0000
+Message-ID: <c9931a97-ea2c-4cf0-84ce-3b6e88c280a8@microchip.com>
+References: <20240118092612.117491-1-dharma.b@microchip.com>
+ <20240118193040.GA223383@ravnborg.org>
+ <20240119195151.GB938671-robh@kernel.org>
+ <20240120132356.GA345206@ravnborg.org>
+ <6c6e4ddc-b3df-484e-961f-6efbd52defd6@microchip.com>
+ <20240122160433.GB511247@ravnborg.org>
+In-Reply-To: <20240122160433.GB511247@ravnborg.org>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR11MB6451:EE_|BN9PR11MB5559:EE_
+x-ms-office365-filtering-correlation-id: a52847a5-d035-4390-a840-08dc1cba4282
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bqh+DIKOh3ieng45zh2JBAN6gcnKL2Da0wkNp4baTzXeHpKlzjOPGB3ct5HNlQ2feDH3zqIsJCbTFAoQbv1OeQVBMHI1OWAmNb9z6Ihurfd+u2yQDGBOZ0vnfttJs7TJ9lY81gMdtNXoByYPdPfWzQjor+8YYJgsewvb6Wz/OoAF2aQVkI8ruRtBjq8ox+pk5LJNFm1SbQEmBHHFpy+zv31/AeIiz14aXjiRqskHQeP0hZRb4AHywwECZ+N0VjY+yglZz7bgSYLrO+R5xcCtoeU6ngCLYY6UvvOI/5+WNCNmO809nCkwNG7mbtlXi7hOY3uRIZdG/jM7EJUZOvYri3/QhCsP3LDDPLsk3WK7SLUC3ux2dWBsQafyqrrgCUIQ+7JBEleo1YsUzDSEvh3ESovJ0klH2Bhc5R2fEDmGcr5p1IUvWFFTgJ67O5CJlOQzBIqhZ/W2RDML5VjMNJ3h2CY3XGz8Ug+L/RSjQzYuOhqcISdbbPVKB+n37XKPVGFH1mwFxyrYNrhH8gfpEq/uiNujHPOkCQDYYu4lqE4VKTWsjGp9boyv9jgXpLDq6lz73yuiH2VXuPzSxdVThLVb5j8UHgUhP8rg6PmBn7Hh7EpMMBdb2T+LrTCwtWwqSUKs6sYITLhFk1OWCq8ueV9t3iaVHKvfE2WVfiqSqnMVWTi5VZeUsXHPNArse//alGBeIsRzpJ0o27cCb9MqrXecwz3aEjjD9qIzSYLh6m45wls=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB6451.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(396003)(136003)(39860400002)(366004)(230922051799003)(230373577357003)(230173577357003)(230273577357003)(230473577357003)(64100799003)(186009)(1800799012)(451199024)(31686004)(83380400001)(38070700009)(86362001)(41300700001)(36756003)(91956017)(31696002)(4326008)(2616005)(122000001)(38100700002)(6506007)(26005)(6512007)(7416002)(71200400001)(6486002)(966005)(66946007)(66446008)(64756008)(478600001)(6916009)(316002)(66476007)(76116006)(54906003)(53546011)(2906002)(5660300002)(66556008)(8936002)(8676002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bkVjUEYzNzlTM0J4R3hCbkpDTW1SK2hhenpZMnA5RzJpQjF5M2dUTmkzOHBy?=
+ =?utf-8?B?UGR4T05BMnZOOUFRVHpCS1oxQWpZT0ZQWjVoY3I4Y1dRQi9EckorQUlSOGZP?=
+ =?utf-8?B?bVBTeXdqbVVzNCs2YzE3TmVTa0FncVN6UEQ0c0xpa3gwVnYzVTJPS29JUnht?=
+ =?utf-8?B?U29jc2VrRG5mSDdIOFdsV292cmJZaE83U09LeEpnQ3VoeVo0ekVINjMrZ0gy?=
+ =?utf-8?B?MW5jbzd2SlBvZGlYTCsrWWE5cmlpUDVvRi9ub1ltS0EyYXcxeVJmWFdFYUFD?=
+ =?utf-8?B?N0hSNWNrays0N2lVSDhKa1NkQ0dEWDZLY1Q3OW5BT0MwZEp3bmtXT0FLQWRY?=
+ =?utf-8?B?TS9zWlJIeXdSR1dMeUE4SDhQZS9TMWZENUdZVHZxOGI0ZEtSa0FPUFFZVW1F?=
+ =?utf-8?B?OHhvQjlyb3oxcHFoMnVFeTMyVU9uQjl2NGJaZ1FCT2x4VHdpZkFBd1pFNHU2?=
+ =?utf-8?B?cUU4eXZKYlFNT3NmOE5mNXdZRmgyanJZaVZYV21iMjJPZnMwcVZ2ZWtMa3FD?=
+ =?utf-8?B?Q2k1UHlmVDhGaVYzaGNGRnNZSVBMY0FqemVUTGRESE1GTU0yTkZNaFZhWFY5?=
+ =?utf-8?B?YTh5bk13dG1rdldhaGZOcWFIdWhkZ2lEV2k1Ty90MlpIWUp6dlMyQ3NPWFVj?=
+ =?utf-8?B?b1lmbnY4em9lNktncEpFeHYrWTZOa2ZtTlE1WVZCbzlLOSsvcm9MTitwNmN2?=
+ =?utf-8?B?VWtqZnl3YlRzR1pPT2V1Z2wraW9pZVZPRmtpZ3ZWN0FsNlVOSjdoQnNEL0pD?=
+ =?utf-8?B?bVFnWWVDd0N6ZkZnRXB5UGRCUStOa2Y3WlRoQ21HdDROamM0VG5KaWtSWWZ6?=
+ =?utf-8?B?VHhGUGFxKzhvVE5BWWh5eG44eGpmTExaUVhhSDBiU1dlWi8xV2hRSVArakVD?=
+ =?utf-8?B?Wi9nSUI2Y2kzbWRHZVQ5b0xCbFZ3eHFMRmtwc3VEZmpmZjBVZ3pkcjNQS1hm?=
+ =?utf-8?B?YWx1UFpEdjlsRmVOanFLbkxzc3pDYW9jV1JaNzA1TENYNWticnBRcmdVNzhi?=
+ =?utf-8?B?NlBTWUVXTUR1c3YvVVRDVmhsOGhjYlBoYmFiMG9pNlljMmhlL0pWNU1jUm5z?=
+ =?utf-8?B?dGRYajFVcllTRFk5c1Z1b2IyTzFSYXF5c1IvN3F1RTYxdHh0RXhXeGx0Tk1r?=
+ =?utf-8?B?Ym1Tcy9CaVBPeWp3cWdXamRWOWpCMHNGUGdDNGhEWTYzUTNwNENZNkVnK08y?=
+ =?utf-8?B?YnVNYmZQcnNrUjl0T0xxUVZhMTBpanhhN09zMU1WbmcvZnNjM2dvYklvU1JV?=
+ =?utf-8?B?N1JpTy90TjhXWWtlMiszdjR3cVdxLysxSFNSY2toa0FrcjhqYTZVYWpSUjVO?=
+ =?utf-8?B?U3RYcHRKM2ExMVlpYmthL2VpTS9VU05FeUxqNm4wakJiVGhWSEFpQ0ZDV1g2?=
+ =?utf-8?B?VmFpT0NIOWM4RWhGeDNRYnZTSlBaRnFYZnpCWmtTU0ZMSzJpeGE5YjloSmkv?=
+ =?utf-8?B?dnllcm5KTlNqek4rME5YTmU2UnhoallZTXNFaUJnL2NKaVVrZkxxMFB2SWZl?=
+ =?utf-8?B?MG92UzM0ZFlrcmZvSGxKVytZS09Bd0Zxbmpnc2ZGRml3QkVmQUQwZkIvWjJK?=
+ =?utf-8?B?UWdxMEdrbGlza2M0REp2SHYzSGhPbm5Ib1JiMjBBc2x3bmtNVDM2emdzU0tu?=
+ =?utf-8?B?VFNhTjcxeXpCZTdRLzhsb1ZzczlKK1ZidkV4L0pFSWxNdTMrTlBCY3lCVEdZ?=
+ =?utf-8?B?MFBBSGlXQlZ0QS83THhTQWpISUdCREczczRXQlFiZE9UdHFyOGRKWUlNdk9h?=
+ =?utf-8?B?Y082b0llZk5kc0JCN2xOb2h6empLTEQ5MjhvTElKbTBSM3B6OEhHelUxbGR4?=
+ =?utf-8?B?ZC9MRnRSVDYvdTNSU1JKTkRseFBSdVZFRnJnODEwVHN4YmVXQ29wdkdiL1pX?=
+ =?utf-8?B?VDZmd0tpNzZMeVoxeVM4TDJQNGlva0taam1XNnh5cXgxSmZwYmFDMEQ3UEcv?=
+ =?utf-8?B?YWdQcnk0RXo5eWc0b2NvNURMd2Qyc29KUDBHNFdrSWxhNDN0TDlhYzd4UXVv?=
+ =?utf-8?B?R045eUU4MXpQVXR6K2pPTEkwaW1uR1NpRnNhVjZqbncwd1NnUFM4d0o2eDhu?=
+ =?utf-8?B?SkpReEZaaWQxWUk1eWN2QThHZzhLbXdXVmtBQ2puZHBqWlJIaDF0ZjYyWVVn?=
+ =?utf-8?Q?wxm7JfAWjH6ITaU5MfCo9YrDH?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <F260D2C136615944B567567119BC5C8A@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- BJMBX01.spreadtrum.com (10.0.64.7)
-X-MAIL:SHSQR01.spreadtrum.com 40O8ri7H079908
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB6451.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a52847a5-d035-4390-a840-08dc1cba4282
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jan 2024 08:55:48.5026
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: mOByB1fhH8QMsM5DpbuMGzLm513BgEmGY1NJckTUUjlmKi8vcVXfqglvWXdVnNt7Q7/0JwwFi1g3XFu8TgiUyg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5559
 
-From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-
-Currently, request's ioprio are set via task's schedule priority(when no
-blkcg configured), which has high priority tasks possess the privilege on
-both of CPU and IO scheduling.
-This commit try to introduce a feature which adjust the request ioprio
-based on the folio's activity. The original idea comes from LRU_GEN
-which provides more precised folio activity than before. This commit try
-to adjust the request's ioprio when certain part of its folios are hot,
-which indicate that this request carry important contents and need be
-scheduled ealier.
-
-This commit is verified on a v6.6 6GB RAM android14 system via 3 test cases.
-Case 1:
-script[a] which get significant improved fault time as expected[b]
-where dd's cost also shrink from 55s to 40s.
-(1). fault_latency.bin is an ebpf based test tool which measure all task's
-   iowait latency during page fault when scheduled out/in.
-(2). costmem generate page fault by mmaping a file and access the VA.
-(3). dd generate concurrent vfs io.
-
-[a]
-/fault_latency.bin 1 5 > /data/dd_costmem &
-costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
-costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
-costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
-costmem -c0 -a2048000 -b128000 -o0 1>/dev/null &
-dd if=/dev/block/sda of=/data/ddtest bs=1024 count=2048000 &
-dd if=/dev/block/sda of=/data/ddtest1 bs=1024 count=2048000 &
-dd if=/dev/block/sda of=/data/ddtest2 bs=1024 count=2048000 &
-dd if=/dev/block/sda of=/data/ddtest3 bs=1024 count=2048000
-[b]
-                       mainline		commit
-io wait                836us            156us
-
-Case 2:
-fio -filename=/dev/block/by-name/userdata -rw=randread -direct=0 -bs=4k -size=2000M -numjobs=8 -group_reporting -name=mytest
-mainline: 513MiB/s
-READ: bw=531MiB/s (557MB/s), 531MiB/s-531MiB/s (557MB/s-557MB/s), io=15.6GiB (16.8GB), run=30137-30137msec
-READ: bw=543MiB/s (569MB/s), 543MiB/s-543MiB/s (569MB/s-569MB/s), io=15.6GiB (16.8GB), run=29469-29469msec
-READ: bw=474MiB/s (497MB/s), 474MiB/s-474MiB/s (497MB/s-497MB/s), io=15.6GiB (16.8GB), run=33724-33724msec
-READ: bw=535MiB/s (561MB/s), 535MiB/s-535MiB/s (561MB/s-561MB/s), io=15.6GiB (16.8GB), run=29928-29928msec
-READ: bw=523MiB/s (548MB/s), 523MiB/s-523MiB/s (548MB/s-548MB/s), io=15.6GiB (16.8GB), run=30617-30617msec
-READ: bw=492MiB/s (516MB/s), 492MiB/s-492MiB/s (516MB/s-516MB/s), io=15.6GiB (16.8GB), run=32518-32518msec
-READ: bw=533MiB/s (559MB/s), 533MiB/s-533MiB/s (559MB/s-559MB/s), io=15.6GiB (16.8GB), run=29993-29993msec
-READ: bw=524MiB/s (550MB/s), 524MiB/s-524MiB/s (550MB/s-550MB/s), io=15.6GiB (16.8GB), run=30526-30526msec
-READ: bw=529MiB/s (554MB/s), 529MiB/s-529MiB/s (554MB/s-554MB/s), io=15.6GiB (16.8GB), run=30269-30269msec
-READ: bw=449MiB/s (471MB/s), 449MiB/s-449MiB/s (471MB/s-471MB/s), io=15.6GiB (16.8GB), run=35629-35629msec
-
-commit: 633MiB/s
-READ: bw=668MiB/s (700MB/s), 668MiB/s-668MiB/s (700MB/s-700MB/s), io=15.6GiB (16.8GB), run=23952-23952msec
-READ: bw=589MiB/s (618MB/s), 589MiB/s-589MiB/s (618MB/s-618MB/s), io=15.6GiB (16.8GB), run=27164-27164msec
-READ: bw=638MiB/s (669MB/s), 638MiB/s-638MiB/s (669MB/s-669MB/s), io=15.6GiB (16.8GB), run=25071-25071msec
-READ: bw=714MiB/s (749MB/s), 714MiB/s-714MiB/s (749MB/s-749MB/s), io=15.6GiB (16.8GB), run=22409-22409msec
-READ: bw=600MiB/s (629MB/s), 600MiB/s-600MiB/s (629MB/s-629MB/s), io=15.6GiB (16.8GB), run=26669-26669msec
-READ: bw=592MiB/s (621MB/s), 592MiB/s-592MiB/s (621MB/s-621MB/s), io=15.6GiB (16.8GB), run=27036-27036msec
-READ: bw=691MiB/s (725MB/s), 691MiB/s-691MiB/s (725MB/s-725MB/s), io=15.6GiB (16.8GB), run=23150-23150msec
-READ: bw=569MiB/s (596MB/s), 569MiB/s-569MiB/s (596MB/s-596MB/s), io=15.6GiB (16.8GB), run=28142-28142msec
-READ: bw=563MiB/s (590MB/s), 563MiB/s-563MiB/s (590MB/s-590MB/s), io=15.6GiB (16.8GB), run=28429-28429msec
-READ: bw=712MiB/s (746MB/s), 712MiB/s-712MiB/s (746MB/s-746MB/s), io=15.6GiB (16.8GB), run=22478-22478msec
-
-Case 3:
-This commit is also verified by the case of launching camera APP which is
-usually considered as heavy working load on both of memory and IO, which
-shows 12%-24% improvement.
-
-		ttl = 0		ttl = 50	ttl = 100
-mainline        2267ms		2420ms		2316ms
-commit          1992ms          1806ms          1998ms
-
-Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
----
-change of v2: calculate page's activity via helper function
----
----
- block/Kconfig               |  8 ++++++++
- block/bio.c                 | 10 ++++++++++
- block/blk-mq.c              | 21 +++++++++++++++++++++
- fs/buffer.c                 |  6 ++++++
- include/linux/buffer_head.h |  1 +
- include/uapi/linux/ioprio.h | 20 +++++++++++++++-----
- 6 files changed, 61 insertions(+), 5 deletions(-)
-
-diff --git a/block/Kconfig b/block/Kconfig
-index f1364d1c0d93..8d6075575eae 100644
---- a/block/Kconfig
-+++ b/block/Kconfig
-@@ -228,6 +228,14 @@ config BLOCK_HOLDER_DEPRECATED
- config BLK_MQ_STACKING
- 	bool
- 
-+config CONTENT_ACT_BASED_IOPRIO
-+	bool "Enable content activity based ioprio"
-+	depends on LRU_GEN
-+	default y
-+	help
-+	This item enable the feature of adjust bio's priority by
-+	calculating its content's activity.
-+
- source "block/Kconfig.iosched"
- 
- endif # BLOCK
-diff --git a/block/bio.c b/block/bio.c
-index 816d412c06e9..1228e2a4940f 100644
---- a/block/bio.c
-+++ b/block/bio.c
-@@ -24,6 +24,7 @@
- #include "blk.h"
- #include "blk-rq-qos.h"
- #include "blk-cgroup.h"
-+#include "blk-ioprio.h"
- 
- #define ALLOC_CACHE_THRESHOLD	16
- #define ALLOC_CACHE_MAX		256
-@@ -1069,12 +1070,21 @@ EXPORT_SYMBOL_GPL(bio_add_zone_append_page);
- void __bio_add_page(struct bio *bio, struct page *page,
- 		unsigned int len, unsigned int off)
- {
-+	int class, level, hint, activity;
-+
-+	class = IOPRIO_PRIO_CLASS(bio->bi_ioprio);
-+	level = IOPRIO_PRIO_LEVEL(bio->bi_ioprio);
-+	hint = IOPRIO_PRIO_HINT(bio->bi_ioprio);
-+	activity = IOPRIO_PRIO_ACTIVITY(bio->bi_ioprio);
-+
- 	WARN_ON_ONCE(bio_flagged(bio, BIO_CLONED));
- 	WARN_ON_ONCE(bio_full(bio, len));
- 
- 	bvec_set_page(&bio->bi_io_vec[bio->bi_vcnt], page, len, off);
- 	bio->bi_iter.bi_size += len;
- 	bio->bi_vcnt++;
-+	activity += bio_page_if_active(bio, page, IOPRIO_NR_ACTIVITY);
-+	bio->bi_ioprio = IOPRIO_PRIO_VALUE_ACTIVITY(class, level, hint, activity);
- }
- EXPORT_SYMBOL_GPL(__bio_add_page);
- 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 1fafd54dce3c..05cdd3adde94 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -2939,6 +2939,26 @@ static inline struct request *blk_mq_get_cached_request(struct request_queue *q,
- 	return rq;
- }
- 
-+#ifdef CONFIG_CONTENT_ACT_BASED_IOPRIO
-+static void bio_set_ioprio(struct bio *bio)
-+{
-+	int class, level, hint, activity;
-+
-+	class = IOPRIO_PRIO_CLASS(bio->bi_ioprio);
-+	level = IOPRIO_PRIO_LEVEL(bio->bi_ioprio);
-+	hint = IOPRIO_PRIO_HINT(bio->bi_ioprio);
-+	activity = IOPRIO_PRIO_ACTIVITY(bio->bi_ioprio);
-+
-+	if (activity >= bio->bi_vcnt / 2)
-+		class = IOPRIO_CLASS_RT;
-+	else if (activity >= bio->bi_vcnt / 4)
-+		class = max(IOPRIO_PRIO_CLASS(get_current_ioprio()), IOPRIO_CLASS_BE);
-+
-+	bio->bi_ioprio = IOPRIO_PRIO_VALUE_ACTIVITY(class, level, hint, activity);
-+
-+	blkcg_set_ioprio(bio);
-+}
-+#else
- static void bio_set_ioprio(struct bio *bio)
- {
- 	/* Nobody set ioprio so far? Initialize it based on task's nice value */
-@@ -2946,6 +2966,7 @@ static void bio_set_ioprio(struct bio *bio)
- 		bio->bi_ioprio = get_current_ioprio();
- 	blkcg_set_ioprio(bio);
- }
-+#endif
- 
- /**
-  * blk_mq_submit_bio - Create and send a request to block device.
-diff --git a/fs/buffer.c b/fs/buffer.c
-index 12e9a71c693d..b15bff481706 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -2832,6 +2832,12 @@ void submit_bh(blk_opf_t opf, struct buffer_head *bh)
- }
- EXPORT_SYMBOL(submit_bh);
- 
-+int bio_page_if_active(struct bio *bio, struct page *page, unsigned short limit)
-+{
-+	return (bio->bi_vcnt <= limit && PageWorkingset(page)) ? 1 : 0;
-+}
-+EXPORT_SYMBOL(bio_page_if_active);
-+
- void write_dirty_buffer(struct buffer_head *bh, blk_opf_t op_flags)
- {
- 	lock_buffer(bh);
-diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
-index 44e9de51eedf..9a374f5965ec 100644
---- a/include/linux/buffer_head.h
-+++ b/include/linux/buffer_head.h
-@@ -248,6 +248,7 @@ int bh_uptodate_or_lock(struct buffer_head *bh);
- int __bh_read(struct buffer_head *bh, blk_opf_t op_flags, bool wait);
- void __bh_read_batch(int nr, struct buffer_head *bhs[],
- 		     blk_opf_t op_flags, bool force_lock);
-+int bio_page_if_active(struct bio *bio, struct page *page, unsigned short limit);
- 
- /*
-  * Generic address_space_operations implementations for buffer_head-backed
-diff --git a/include/uapi/linux/ioprio.h b/include/uapi/linux/ioprio.h
-index bee2bdb0eedb..d1c6081e796b 100644
---- a/include/uapi/linux/ioprio.h
-+++ b/include/uapi/linux/ioprio.h
-@@ -71,12 +71,18 @@ enum {
-  * class and level.
-  */
- #define IOPRIO_HINT_SHIFT		IOPRIO_LEVEL_NR_BITS
--#define IOPRIO_HINT_NR_BITS		10
-+#define IOPRIO_HINT_NR_BITS		3
- #define IOPRIO_NR_HINTS			(1 << IOPRIO_HINT_NR_BITS)
- #define IOPRIO_HINT_MASK		(IOPRIO_NR_HINTS - 1)
- #define IOPRIO_PRIO_HINT(ioprio)	\
- 	(((ioprio) >> IOPRIO_HINT_SHIFT) & IOPRIO_HINT_MASK)
- 
-+#define IOPRIO_ACTIVITY_SHIFT		(IOPRIO_HINT_NR_BITS + IOPRIO_LEVEL_NR_BITS)
-+#define IOPRIO_ACTIVITY_NR_BITS		7
-+#define IOPRIO_NR_ACTIVITY		(1 << IOPRIO_ACTIVITY_NR_BITS)
-+#define IOPRIO_ACTIVITY_MASK		(IOPRIO_NR_ACTIVITY - 1)
-+#define IOPRIO_PRIO_ACTIVITY(ioprio)	\
-+	(((ioprio) >> IOPRIO_ACTIVITY_SHIFT) & IOPRIO_ACTIVITY_MASK)
- /*
-  * I/O hints.
-  */
-@@ -108,20 +114,24 @@ enum {
-  * Return an I/O priority value based on a class, a level and a hint.
-  */
- static __always_inline __u16 ioprio_value(int prioclass, int priolevel,
--					  int priohint)
-+					  int priohint, int activity)
- {
- 	if (IOPRIO_BAD_VALUE(prioclass, IOPRIO_NR_CLASSES) ||
- 	    IOPRIO_BAD_VALUE(priolevel, IOPRIO_NR_LEVELS) ||
--	    IOPRIO_BAD_VALUE(priohint, IOPRIO_NR_HINTS))
-+	    IOPRIO_BAD_VALUE(priohint, IOPRIO_NR_HINTS) ||
-+	    IOPRIO_BAD_VALUE(activity, IOPRIO_NR_ACTIVITY))
- 		return IOPRIO_CLASS_INVALID << IOPRIO_CLASS_SHIFT;
- 
- 	return (prioclass << IOPRIO_CLASS_SHIFT) |
-+		(activity << IOPRIO_ACTIVITY_SHIFT) |
- 		(priohint << IOPRIO_HINT_SHIFT) | priolevel;
- }
- 
- #define IOPRIO_PRIO_VALUE(prioclass, priolevel)			\
--	ioprio_value(prioclass, priolevel, IOPRIO_HINT_NONE)
-+	ioprio_value(prioclass, priolevel, IOPRIO_HINT_NONE, 0)
- #define IOPRIO_PRIO_VALUE_HINT(prioclass, priolevel, priohint)	\
--	ioprio_value(prioclass, priolevel, priohint)
-+	ioprio_value(prioclass, priolevel, priohint, 0)
-+#define IOPRIO_PRIO_VALUE_ACTIVITY(prioclass, priolevel, priohint, activity)	\
-+	ioprio_value(prioclass, priolevel, priohint, activity)
- 
- #endif /* _UAPI_LINUX_IOPRIO_H */
--- 
-2.25.1
-
+T24gMjIvMDEvMjQgOTozNCBwbSwgU2FtIFJhdm5ib3JnIHdyb3RlOg0KPiBbWW91IGRvbid0IG9m
+dGVuIGdldCBlbWFpbCBmcm9tIHNhbUByYXZuYm9yZy5vcmcuIExlYXJuIHdoeSB0aGlzIGlzIGlt
+cG9ydGFudCBhdCBodHRwczovL2FrYS5tcy9MZWFybkFib3V0U2VuZGVySWRlbnRpZmljYXRpb24g
+XQ0KPiANCj4gRVhURVJOQUwgRU1BSUw6IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFj
+aG1lbnRzIHVubGVzcyB5b3Uga25vdyB0aGUgY29udGVudCBpcyBzYWZlDQo+IA0KPiBIaSBEaGFy
+bWEsDQo+IE9uIE1vbiwgSmFuIDIyLCAyMDI0IGF0IDAzOjUyOjE3QU0gKzAwMDAsIERoYXJtYS5C
+QG1pY3JvY2hpcC5jb20gd3JvdGU6DQo+PiBPbiAyMC8wMS8yNCA2OjUzIHBtLCBTYW0gUmF2bmJv
+cmcgd3JvdGU6DQo+Pj4gW1lvdSBkb24ndCBvZnRlbiBnZXQgZW1haWwgZnJvbSBzYW1AcmF2bmJv
+cmcub3JnLiBMZWFybiB3aHkgdGhpcyBpcyBpbXBvcnRhbnQgYXQgaHR0cHM6Ly9ha2EubXMvTGVh
+cm5BYm91dFNlbmRlcklkZW50aWZpY2F0aW9uIF0NCj4+Pg0KPj4+IEVYVEVSTkFMIEVNQUlMOiBE
+byBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxlc3MgeW91IGtub3cgdGhl
+IGNvbnRlbnQgaXMgc2FmZQ0KPj4+IEhpIFNhbSAmIFJvYiwNCj4+PiBIaSBEaGFybWEgJiBSb2Iu
+DQo+Pj4NCj4+Pj4+IFRvIG1ha2UgdGhlIERUIGJpbmRpbmcgYmFja3dhcmQgY29tcGF0aWJsZSB5
+b3UgbGlrZWx5IG5lZWQgdG8gYWRkIGEgZmV3DQo+Pj4+PiBjb21wYXRpYmxlIHRoYXQgb3RoZXJ3
+aXNlIHdvdWxkIGhhdmUgYmVlbiBsZWZ0IG91dCAtIGJ1dCB0aGF0IHNob3VsZCBkbw0KPj4+Pj4g
+dGhlIHRyaWNrLg0KPj4+Pj4NCj4+Pj4+IFRoZSBjdXJyZW50IGF0bWVsIGhsY2RjIGRyaXZlciB0
+aGF0IGlzIHNwbGl0IGluIHRocmVlIGlzIElNTyBhbg0KPj4+Pj4gb3Zlci1lbmdpbmVlcmluZywg
+YW5kIHRoZSBkcml2ZXIgY291bGQgYmVuZWZpdCBtZXJnaW5nIGl0IGFsbCBpbiBvbmUuDQo+Pj4+
+PiBBbmQgdGhlIGJpbmRpbmcgc2hvdWxkIG5vdCBwcmV2ZW50IHRoaXMuDQo+Pj4+DQo+Pj4+IEkg
+YWdyZWUgb24gYWxsIHRoaXMsIGJ1dCBhIGNvbnZlcnNpb24gaXMgbm90IHJlYWxseSB0aGUgdGlt
+ZSB0byByZWRlc2lnbg0KPj4+PiB0aGluZ3MuIFRydXN0IG1lLCBJJ3ZlIHdhbnRlZCB0byBvbiBs
+b3RzIG9mIGNvbnZlcnNpb25zLiBJdCBzaG91bGQgYmUNCj4+Pj4gcG9zc2libGUgdG8gc2ltcGxp
+ZnkgdGhlIGRyaXZlciBzaWRlIHdoaWxlIGtlZXBpbmcgdGhlIERUIGFzLWlzLiBKdXN0DQo+Pj4+
+IG1ha2UgdGhlIGRpc3BsYXkgZHJpdmVyIGJpbmQgdG8gdGhlIE1GRCBub2RlIGluc3RlYWQuIEFm
+dGVyIHRoYXQsIHRoZW4NCj4+Pj4gb25lIGNvdWxkIGxvb2sgYXQgZmxhdHRlbmluZyBldmVyeXRo
+aW5nIHRvIDEgbm9kZS4NCj4+Pg0KPj4+IFVuZGVyc3Rvb2QgYW5kIHRoaW5raW5nIGEgYml0IGFi
+b3V0IGl0IGZ1bGx5IGFncmVlZCBhcyB3ZWxsLg0KPj4+IERoYXJtYSAtIHBsZWFzZSBzZWUgbXkg
+Y29tbWVudHMgb25seSBhcyBpZGVhcyBmb3IgdGhlIGZ1dHVyZSwgYW5kDQo+Pj4gaWdub3JlIHRo
+ZW0gaW4gdGhpcyBmaW5lIHJld3JpdGUgeW91IGRvLg0KPj4+DQo+Pj4gICAgICAgICAgIFNhbQ0K
+Pj4gQmFzZWQgb24geW91ciBpbnNpZ2h0cywgSSdtIGNvbnRlbXBsYXRpbmcgdGhlIGRlY2lzaW9u
+IHRvIG1lcmdlIFBhdGNoIDINCj4+IFtQV00gYmluZGluZ10gd2l0aCBQYXRjaCAzW01GRCBiaW5k
+aW5nXS4gSXQgc2VlbXMgcmVkdW5kYW50IGdpdmVuIHRoYXQNCj4+IHdlIGFscmVhZHkgaGF2ZSBh
+IFBXTSBub2RlIGV4YW1wbGUgaW4gdGhlIE1GRCBiaW5kaW5nLg0KPj4NCj4+IEluc3RlYWQgb2Yg
+aW50cm9kdWNpbmcgYSBuZXcgUFdNIGJpbmRpbmcsDQo+PiAgICAgcHdtOg0KPj4gICAgICAgJHJl
+ZjogL3NjaGVtYXMvcHdtL2F0bWVsLGhsY2RjLXB3bS55YW1sDQo+Pg0KPj4gSSB3aWxsIHVwZGF0
+ZSB0aGUgZXhpc3RpbmcgTUZEIGJpbmRpbmcgYXMgZm9sbG93czoNCj4+DQo+PiBwcm9wZXJ0aWVz
+Og0KPj4gICAgIGNvbXBhdGlibGU6DQo+PiAgICAgICBjb25zdDogYXRtZWwsaGxjZGMtcHdtDQo+
+Pg0KPj4gICAgICIjcHdtLWNlbGxzIjoNCj4+ICAgICAgIGNvbnN0OiAzDQo+Pg0KPj4gcmVxdWly
+ZWQ6DQo+PiAgICAgLSBjb21wYXRpYmxlDQo+PiAgICAgLSAiI3B3bS1jZWxscyINCj4+DQo+IEFz
+IGFscmVhZHkgY29tbWVudGVkLCB0aGlzIGxvb2tzIG5pY2UuDQo+IEJ1dCBhcyBSb2Igc2FpZCwg
+dGhpcyBzaG91bGQgYmUgYSAxOjEgY29udmVyc2lvbiBmcm9tIHRleHQgdG8geWFtbCwNCj4gYW5k
+IHRoZW4gY2xlYW4tdXAgY2FuIGNvbWUgaW4gdGhlIHNlY29uZCBzdGVwLg0KDQpGaW5lLCBJIHdp
+bGwgc2VuZCB2NCB3aXRoIG5vIGNoYW5nZXMgaW4gW1BBVENIIDJdIFBXTSBiaW5kaW5nLCBJIHdp
+bGwgDQpzZW5kIGFub3RoZXIgc2VwYXJhdGUgcGF0Y2ggZm9yIHRoaXMgY2xlYW4gdXAuDQoNCi0t
+IA0KVGhhbmtzLA0KRGhhcm1hIEIuDQoNCj4gDQo+ICAgICAgICAgIFNhbQ0KDQoNCg0K
 
