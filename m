@@ -1,105 +1,170 @@
-Return-Path: <linux-kernel+bounces-36287-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36288-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 380F8839E67
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 02:50:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 796EE839E72
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 02:53:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DB301C26B92
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:50:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94BDC1C23835
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:53:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E891C15D2;
-	Wed, 24 Jan 2024 01:50:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F04A20E3;
+	Wed, 24 Jan 2024 01:53:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="FpB9LoIe"
-Received: from out203-205-251-72.mail.qq.com (out203-205-251-72.mail.qq.com [203.205.251.72])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mkF8tY6k"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F240C15BB
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 01:50:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B3921860;
+	Wed, 24 Jan 2024 01:53:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706061017; cv=none; b=MDJfLrVkCdxEhe9H3vfNvJxDIHdO7Gqo1AnjqLuNVRictmuZWQNyWBmNeSHc2nED8+/Nx8TgDpu1/jQM7iSzYaxAqROtEdXRIVdXAEQNEqrB4Qxi93VxABaxrP+v50tAOmyny8kuY8JMebsRhdjuNol5JnxpXBX0hMlbxaWJbrg=
+	t=1706061206; cv=none; b=M32b8EH0YP+ddVDpBPk3fzZ50r/yIfuD89Ugsab7hmnPY0fCzTTfrZFQuDGyE//gD8gPtiGGtLirtlUqq2dtLCxk6JtbujUBewaaQPUApkMXIR8eCWeO7k9mRBlniOpoY12ETUow4v8XlSKqNLwBPI5UQFej15js/Aqmdu7y34E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706061017; c=relaxed/simple;
-	bh=l9E1JQFz1baO/04TA2XGeR+Y0ZuDOFDuO9EI5AWvjQw=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=HsPTVKa615/X1DlBa/GNqF4sEWhcRrDkpKJM13FLj7OMas2lCBk33+a5urwPy1yyALrMvVMO1QGxM1a+mKNEQphau/AvlmpF0m+Z+rAuS+954eqpmdZPSdYrHLGYL3vFWC+6N+5wndWVwOxH9+P1F9sxHjFzZP97noj0lvI9UzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=FpB9LoIe; arc=none smtp.client-ip=203.205.251.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1706060705; bh=U2weu1yWJfpc5ss8U0c8YLdbhDWFzKGSGPcTt9qG428=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=FpB9LoIeE+05GVtxHF92H2Sf55Tnh94qCyXmyx4qf6Xe/c3iKBbfoe54NpsewngET
-	 eJhsDK9dFmzCAc08+esfeYg6jo39vlWSD0bSI04sd6J8cVL9KfIUZJnJTjxawopSqs
-	 h1dBx21XPWQtUrYJu7egQG9DazEysSErefyyS09Q=
-Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
-	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
-	id B43B4A67; Wed, 24 Jan 2024 09:45:03 +0800
-X-QQ-mid: xmsmtpt1706060703tbk1yspru
-Message-ID: <tencent_85364A4A447431779D67703D19366A97C009@qq.com>
-X-QQ-XMAILINFO: N2/jAoEINgTT6wupcecJiu2uV1fJiqccKsqY3vxg3IHhK7ixV4v4RXEznaJID0
-	 Hl19M1a+fCCEGOzc23NVZDbH2UpNAPnBGh07o2Pqra840nj4J2KkfPCRHst9/UOTH+Kd/7CsWAMm
-	 zJlwP8QyHkwCGwTTYooCb5XS0SBok1ZJYZUB7udEm/0JeFgneeT9gYnXqOq+TfZBNOjCdej0KiNr
-	 ZGbI3UrWvSjQbAvB38qh0Kje9fy/7gLOQPC49jy/Ot1ClCD9dkLIB3vNlk4JWwVJ0Hj3llQb9QkL
-	 2PySQWdj7dm5rn2YUdVQbRiou+YeTqmqdDgtCuhrRCK8jWiN6rkEfE82mToymMVKqQNrTZokwfvb
-	 m4ijNge9hM5Ovk1Zcz6zzGD4+PDGSHROwDfFo3EDEaISlI7SDmqdwHWbDyGP0PG4r7nCfoJ8HUj/
-	 GZC0qNzUk3nZEwkq9md+0/Ny8zm2FeRHdnS2UqTx1SvPqhVTpmjct3Ctt8gOjvn55xz9t95p3whn
-	 b6jBMF9xXXBx0gTKcg2MJeZ3oK1+qSnw6AakkksXuuxDkr7le/eThaFVt9DNDwW7C5vfSj+Ed5NW
-	 Rh9zglohOienylXPWrkVDe45gpVz50ddfkQ5idObv2bBWm21DacmqTrcmNNeCV8eiLJwo40ZXlRC
-	 n2iGsrLZ8baA2JG2hMoyycxZ2nzBSS3L5sauLJ8QxF51wDnYISkAgLIf4HM6zzzxfiU5aCgPWuT5
-	 W4wcxk/WnBQLqFTr5UMSnX5WHcFA9nbo9SLvirdwD3PZeJRMfn5tPUuH9MxqY8z+Efnqjc4GGRP7
-	 yn8BrsZWeYidbMKCorYv9oZMH/cx5NGkquhoxWUhSVsvE6w0MlJZN5gvak0w6aFau3NKLoaqWTXP
-	 Tv7EtPWCANQ3wCnkkv3o/4xA9lfNbwPpcE01wlV5JBglsFEV2hAc32cwDg5+/L+mruV/FoYgcjxW
-	 uvoYiZ+ge27CKb20UiI/tyTEimg/Ep
-X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+ab18fa9c959320611727@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [jfs?] WARNING in dbAdjTree
-Date: Wed, 24 Jan 2024 09:45:04 +0800
-X-OQ-MSGID: <20240124014503.4183791-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <000000000000ad0392060f337207@google.com>
-References: <000000000000ad0392060f337207@google.com>
+	s=arc-20240116; t=1706061206; c=relaxed/simple;
+	bh=6anV9bsED/SQ83dHNmfrmB1sPazrK8p7SLusz+eOn4Q=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=kwrCqbwisiTMakuBvjQxyvJrlzf+0olHGTOxJN1Mau6wb8zwQ6mBdBC+vIOZndhwZRxPuIywBQaA3z6HHxQuBNSKQgUp7KdpN7jnpCpN1dwWxGnDBGVwus4n7x41skdSUKSM888FogYqhJyFhJxh87eYtPbg/GJ0D90WIZ1Ucfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mkF8tY6k; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706061205; x=1737597205;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=6anV9bsED/SQ83dHNmfrmB1sPazrK8p7SLusz+eOn4Q=;
+  b=mkF8tY6kXhBA4rmMuxP2coiDvD99jJBJLm2CjCeOzWJpN5GbnTqQYLYl
+   SJ6VaHFpRW2eFmkGZPAGpsZA310CB9n+RYPXWBMKj8Utvxsv7cNWiELqi
+   GXDL6wHUtvTu0ggikyvPzbZ546VjcWIBiJwDlwuxjzm3GP29xYyYevE0J
+   WU/x1nnN7lqn1mmOVcFo+A+1xC3Y9XZLbYjTx9EO3UZPI8Kq8uqsuLgbP
+   R7ds2DlwQy/9dqewnGYlthWLhkiva0jnYZOQK6HWodkRNo4TcWeBQWtZd
+   BtyejV6DSuLbsQ74EJzoaPps6ELHo7NMb8qSBg6bHZFWLNfzKo4Fk+0Qd
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="9101883"
+X-IronPort-AV: E=Sophos;i="6.05,215,1701158400"; 
+   d="scan'208";a="9101883"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 17:53:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="735757106"
+X-IronPort-AV: E=Sophos;i="6.05,215,1701158400"; 
+   d="scan'208";a="735757106"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 17:53:17 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Gregory Price <gregory.price@memverge.com>
+Cc: Gregory Price <gourry.memverge@gmail.com>,  <linux-mm@kvack.org>,
+  <linux-kernel@vger.kernel.org>,  <linux-doc@vger.kernel.org>,
+  <linux-fsdevel@vger.kernel.org>,  <linux-api@vger.kernel.org>,
+  <corbet@lwn.net>,  <akpm@linux-foundation.org>,  <honggyu.kim@sk.com>,
+  <rakie.kim@sk.com>,  <hyeongtak.ji@sk.com>,  <mhocko@kernel.org>,
+  <vtavarespetr@micron.com>,  <jgroves@micron.com>,
+  <ravis.opensrc@micron.com>,  <sthanneeru@micron.com>,
+  <emirakhur@micron.com>,  <Hasan.Maruf@amd.com>,
+  <seungjun.ha@samsung.com>,  <hannes@cmpxchg.org>,
+  <dan.j.williams@intel.com>,  Srinivasulu Thanneeru
+ <sthanneeru.opensrc@micron.com>
+Subject: Re: [PATCH v2 3/3] mm/mempolicy: introduce MPOL_WEIGHTED_INTERLEAVE
+ for weighted interleaving
+In-Reply-To: <ZbAvR+U+tyLvsh8R@memverge.com> (Gregory Price's message of "Tue,
+	23 Jan 2024 16:27:35 -0500")
+References: <20240119175730.15484-1-gregory.price@memverge.com>
+	<20240119175730.15484-4-gregory.price@memverge.com>
+	<87jzo0vjkk.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<Za9GiqsZtcfKXc5m@memverge.com> <Za9LnN59SBWwdFdW@memverge.com>
+	<87a5owv454.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<ZbAvR+U+tyLvsh8R@memverge.com>
+Date: Wed, 24 Jan 2024 09:51:20 +0800
+Message-ID: <87jznzts6f.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ascii
 
-please test WARNING in dbAdjTree
+Gregory Price <gregory.price@memverge.com> writes:
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> On Tue, Jan 23, 2024 at 04:35:19PM +0800, Huang, Ying wrote:
+>> Gregory Price <gregory.price@memverge.com> writes:
+>> 
+>> > On Mon, Jan 22, 2024 at 11:54:34PM -0500, Gregory Price wrote:
+>> >> > 
+>> >> > Can the above code be simplified as something like below?
+>> >> > 
+>> >> >         resume_node = prev_node;
+>> > ---         resume_weight = 0;
+>> > +++         resume_weight = weights[node];
+>> >> >         for (...) {
+>> >> >                 ...
+>> >> >         }
+>> >> > 
+>> >> 
+>> >> I'll take another look at it, but this logic is annoying because of the
+>> >> corner case:  me->il_prev can be NUMA_NO_NODE or an actual numa node.
+>> >> 
+>> >
+>> > After a quick look, as long as no one objects to (me->il_prev) remaining
+>> > NUMA_NO_NODE
+>> 
+>> MAX_NUMNODES-1 ?
+>> 
+>
+> When setting a new policy, the il_prev gets set to NUMA_NO_NODE. It's
 
-diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
-index 8eec84c651bf..bed14d5169f8 100644
---- a/fs/jfs/jfs_dmap.c
-+++ b/fs/jfs/jfs_dmap.c
-@@ -2294,6 +2294,7 @@ static int dbFreeBits(struct bmap * bmp, struct dmap * dp, s64 blkno,
- 	 */
- 	dbitno = blkno & (BPERDMAP - 1);
- 	word = dbitno >> L2DBWORD;
-+	printk("dbitno: %d, blkno: %ld, word: %d, %s\n", dbitno, blkno, word, __func__);
+IIUC, it is set to MAX_NUMNODES-1 as below,
+
+@@ -846,7 +858,8 @@ static long do_set_mempolicy(unsigned short mode, unsigned short flags,
  
- 	/* block range better be within the dmap.
- 	 */
-@@ -2875,8 +2876,9 @@ static void dbAdjTree(dmtree_t *tp, int leafno, int newval, bool is_ctl)
- 	/* pick up the index of the leaf for this leafno.
- 	 */
- 	lp = leafno + le32_to_cpu(tp->dmt_leafidx);
-+	printk("lp: %d, leafno: %d, tp: %p, %s\n", lp, leafno, tp,  __func__);
- 
--	if (WARN_ON_ONCE(lp >= size || lp < 0))
-+	if (lp >= size || lp < 0)
- 		return;
- 
- 	/* is the current value the same as the old value ?  if so,
+ 	old = current->mempolicy;
+ 	current->mempolicy = new;
+-	if (new && new->mode == MPOL_INTERLEAVE)
++	if (new && (new->mode == MPOL_INTERLEAVE ||
++		    new->mode == MPOL_WEIGHTED_INTERLEAVE))
+ 		current->il_prev = MAX_NUMNODES-1;
+ 	task_unlock(current);
+ 	mpol_put(old);
 
+I don't think we need to change this.
+
+> not harmful and is just (-1), which is functionally the same as
+> (MAX_NUMNODES-1) for the purpose of iterating the nodemask with
+> next_node_in(). So it's fine to set (resume_node = me->il_prev)
+> as discussed.
+>
+> I have a cleaned up function I'll push when i fix up a few other spots.
+>
+>> > while having a weight assigned to pol->wil.cur_weight,
+>> 
+>> I think that it is OK.
+>> 
+>> And, IIUC, pol->wil.cur_weight can be 0, as in
+>> weighted_interleave_nodes(), if it's 0, it will be assigned to default
+>> weight for the node.
+>> 
+>
+> cur_weight is different than the global weights.  cur_weight tells us
+> how many pages are remaining to allocate for the current node.
+>
+> (cur_weight = 0) can happen in two scenarios:
+>   - initial setting of mempolicy (NUMA_NO_NODE w/ cur_weight=0)
+>   - weighted_interleave_nodes decrements it down to 0
+>
+> Now that i'm looking at it - the second condition should not exist, and
+> we can eliminate it. The logic in weighted_interleave_nodes is actually
+> annoyingly unclear at the moment, so I'm going to re-factor it a bit to
+> be more explicit.
+
+I am OK with either way.  Just a reminder, the first condition may be
+true in alloc_pages_bulk_array_weighted_interleave() and perhaps some
+other places.
+
+--
+Best Regards,
+Huang, Ying
 
