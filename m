@@ -1,132 +1,194 @@
-Return-Path: <linux-kernel+bounces-37638-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37662-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C576A83B2EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 21:16:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D58FE83B336
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 21:49:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 046621C226AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 20:16:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F0F2283C52
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 20:49:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F0E0133426;
-	Wed, 24 Jan 2024 20:16:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ak4Ozkqu"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DBAE1350FC;
+	Wed, 24 Jan 2024 20:48:54 +0000 (UTC)
+Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08603133423
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 20:16:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECD0C13474A;
+	Wed, 24 Jan 2024 20:48:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.28.154.113
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706127371; cv=none; b=AsSluvc53w4J7AxEhjuz6sks8MXBNKE+eS72Du5ENQt/4Ki5v9uqNnHdXEtVm86CWN5jK9DyCAlHKFjj4IE8AXYBo7ONKCoA9MMaAPTiZ333EUd/h6oInzm2Y4G9TbdriEtG+M5VtCVSwkwx32tH9Whmn/mmPP+r5v8Anfe8isQ=
+	t=1706129333; cv=none; b=KrH+amEL1VLGQGgx8yvh57wp7NKXLQmEfwnOP5J0VU+83S7x+qAbJW7CIe1i8gT1vqEEI7oHYXOOF1ESHUsLMJY9+1+m7POLVBS1D8lTWvKowu4PmOOhEi/ZXa2kKMVylUoxjjVIyMbtwsyId3uZdHYVIM5OhXuLig5iePXmlKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706127371; c=relaxed/simple;
-	bh=AXDCwXx73owg7wj63GSw7ngnDK8Hm+d9fCiD3naBQM8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rtF3RWO+JYV6j1Sz89FyXYXJLikhW9NQkJxuxokfnVkjcNLPb7IeVQOw62gCpIjy5Qqv/Y2l9E8NSlg0BpoqBbKzR23XWsY5QXHtlXDqqIFaRbsyZ+VtnYzFY0u28Cez3zeYbYjJz4J/qXaGWoc0zo7+OB0xV2ElATvg2hEG3Cs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ak4Ozkqu; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d780a392fdso11126175ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 12:16:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706127369; x=1706732169; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=M9ZXapP4CBzb1A7zLIfbhm/sqmLOdGM3rVISnRAyWrU=;
-        b=ak4OzkqudJOZiRpN3nm/SZuMEENLUmjgNOFhpt5rgM2ASt6P0HxiqdOf7Q3puiLZj2
-         JD3Hmyr21NO1KbWXRub9TD0xkfOvPibPJts3HtAp0sVsDoQniqzRp5QT/5uMIwCV5gt4
-         jDNhY1emRTtWGv+h40IibHV5FOdcXh9t1R1u4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706127369; x=1706732169;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=M9ZXapP4CBzb1A7zLIfbhm/sqmLOdGM3rVISnRAyWrU=;
-        b=xGzyj8WsPT1pltZmOghd6mp8wJZNbDFiAph/CYTCeZhGE9luGIEoptdMGbiuDiqsKp
-         MxU38B7jeARuRT2+1x0v9GBXgnjt3hSJdN+1OW7NreiqZtTz7t3x/Z8fCV94B/2Vm40T
-         JN4EZsJMUwvPPQQVkHu/sy5yTIHUP0WULI7wLU0PMbqK41Y0n1wKJN94DwIB3BbfrF5I
-         CaWbR6ZgiyqHVuIN1cBBXNKCouAo9QhJGS/Z/MdbWk5Oqo00BQ6PKiPuAcqqlGFGL4qj
-         FZPKHLSUFjZ6j8iqbes9qVQsx1pt5QqoU+FYSpYOriAG0L1TvxnC1KFY1685ChIElB+w
-         KodA==
-X-Gm-Message-State: AOJu0YydBogONTWghYjjGAq+upCKBfEHP/zhXzU3WJRMcYRwfKzhbAff
-	dM/Oo1HzVR3WkNrTXKcda6mh7HecNSX4c+BEOtPZJTYtWzIZ4BcFCqAadu7OjA==
-X-Google-Smtp-Source: AGHT+IGHchkhtFJWS8YRr7A4F/OJ0bBqhApewB8XUKYtacaZB9fZnHw7eK4j5Pe/5pPgkaOZuifTkA==
-X-Received: by 2002:a17:90a:9417:b0:28d:6230:c1a2 with SMTP id r23-20020a17090a941700b0028d6230c1a2mr87254pjo.50.1706127369470;
-        Wed, 24 Jan 2024 12:16:09 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id f18-20020a17090aa79200b00290ffbe5ca3sm44874pjq.55.2024.01.24.12.16.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 12:16:08 -0800 (PST)
-Date: Wed, 24 Jan 2024 12:16:08 -0800
-From: Kees Cook <keescook@chromium.org>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: linux-hardening@vger.kernel.org, Len Brown <lenb@kernel.org>,
-	linux-acpi@vger.kernel.org,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 35/82] ACPI: custom_method: Refactor intentional
- wrap-around test
-Message-ID: <202401241215.32C7B45EF@keescook>
-References: <20240122235208.work.748-kees@kernel.org>
- <20240123002814.1396804-35-keescook@chromium.org>
- <CAJZ5v0gLr69vzLr_+yhP4z96nzFZjDfaPR-sTdkiv08vHbBe7w@mail.gmail.com>
+	s=arc-20240116; t=1706129333; c=relaxed/simple;
+	bh=6FC/0e29kJXWgGL2yi5/vbe6wptoY2zpI5hp51jovMo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MJCM9CZavBxuUh+xrit494KulpjJvcMHLrghZw2J9yRrXZ4RBqg0wQPGw0HExAoP7aLBXcJt1Q1f0OkDGZLpF0hkjLKQ5ioHs3GlrqMYbONsqRogHSmb7AHs2icdEMrZlD8LDb67SzRxdv14ZHuDa1pS4oOi/5eTQKCoCQUvixM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maciej.szmigiero.name; spf=pass smtp.mailfrom=maciej.szmigiero.name; arc=none smtp.client-ip=37.28.154.113
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maciej.szmigiero.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=maciej.szmigiero.name
+Received: from MUA
+	by vps-vb.mhejs.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mail@maciej.szmigiero.name>)
+	id 1rSjhi-0003sJ-QU; Wed, 24 Jan 2024 21:18:34 +0100
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+To: Paolo Bonzini <pbonzini@redhat.com>,
+	Sean Christopherson <seanjc@google.com>
+Cc: Maxim Levitsky <mlevitsk@redhat.com>,
+	kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] KVM: x86: Give a hint when Win2016 might fail to boot due to XSAVES erratum
+Date: Wed, 24 Jan 2024 21:18:21 +0100
+Message-ID: <b83ab45c5e239e5d148b0ae7750133a67ac9575c.1706127425.git.maciej.szmigiero@oracle.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0gLr69vzLr_+yhP4z96nzFZjDfaPR-sTdkiv08vHbBe7w@mail.gmail.com>
 
-On Wed, Jan 24, 2024 at 08:52:48PM +0100, Rafael J. Wysocki wrote:
-> On Tue, Jan 23, 2024 at 2:03 AM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > In an effort to separate intentional arithmetic wrap-around from
-> > unexpected wrap-around, we need to refactor places that depend on this
-> > kind of math. One of the most common code patterns of this is:
-> >
-> >         VAR + value < VAR
-> >
-> > Notably, this is considered "undefined behavior" for signed and pointer
-> > types, which the kernel works around by using the -fno-strict-overflow
-> > option in the build[1] (which used to just be -fwrapv). Regardless, we
-> > want to get the kernel source to the position where we can meaningfully
-> > instrument arithmetic wrap-around conditions and catch them when they
-> > are unexpected, regardless of whether they are signed[2], unsigned[3],
-> > or pointer[4] types.
-> >
-> > Refactor open-coded wrap-around addition test to use add_would_overflow().
-> > This paves the way to enabling the wrap-around sanitizers in the future.
-> >
-> > Link: https://git.kernel.org/linus/68df3755e383e6fecf2354a67b08f92f18536594 [1]
-> > Link: https://github.com/KSPP/linux/issues/26 [2]
-> > Link: https://github.com/KSPP/linux/issues/27 [3]
-> > Link: https://github.com/KSPP/linux/issues/344 [4]
-> > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> > Cc: Len Brown <lenb@kernel.org>
-> > Cc: linux-acpi@vger.kernel.org
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  drivers/acpi/custom_method.c | 2 +-
-> 
-> I may attempt to drop custom_method.c in this cycle, is there a
-> problem if I take this into my tree for now?
+From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
 
-The helper doesn't exist in tree yet, but it may be a bit before these
-refactors land, so if custom_method vanishes before then, that's great!
-:)
+Since commit b0563468eeac ("x86/CPU/AMD: Disable XSAVES on AMD family 0x17")
+kernel unconditionally clears the XSAVES CPU feature bit on Zen1/2 CPUs.
 
--Kees
+Because KVM CPU caps are initialized from the kernel boot CPU features this
+makes the XSAVES feature also unavailable for KVM guests in this case.
+At the same time the XSAVEC feature is left enabled.
 
--- 
-Kees Cook
+Unfortunately, having XSAVEC but no XSAVES in CPUID breaks Hyper-V enabled
+Windows Server 2016 VMs that have more than one vCPU.
+
+Let's at least give users hint in the kernel log what could be wrong since
+these VMs currently simply hang at boot with a black screen - giving no
+clue what suddenly broke them and how to make them work again.
+
+Trigger the kernel message hint based on the particular guest ID written to
+the Guest OS Identity Hyper-V MSR implemented by KVM.
+
+Defer this check to when the L1 Hyper-V hypervisor enables SVM in EFER
+since we want to limit this message to Hyper-V enabled Windows guests only
+(Windows session running nested as L2) but the actual Guest OS Identity MSR
+write is done by L1 and happens before it enables SVM.
+
+Fixes: b0563468eeac ("x86/CPU/AMD: Disable XSAVES on AMD family 0x17")
+Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
+---
+ arch/x86/include/asm/kvm_host.h |  2 ++
+ arch/x86/kvm/hyperv.c           | 48 +++++++++++++++++++++++++++++++++
+ arch/x86/kvm/hyperv.h           |  3 +++
+ arch/x86/kvm/x86.c              |  4 +++
+ 4 files changed, 57 insertions(+)
+
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 7bc1daf68741..c4b63be775df 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1145,6 +1145,8 @@ struct kvm_hv {
+ 	unsigned int synic_auto_eoi_used;
+ 
+ 	struct kvm_hv_syndbg hv_syndbg;
++
++	bool xsaves_xsavec_warned;
+ };
+ #endif
+ 
+diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+index 238afd7335e4..41485ae35b23 100644
+--- a/arch/x86/kvm/hyperv.c
++++ b/arch/x86/kvm/hyperv.c
+@@ -1322,6 +1322,54 @@ static bool hv_check_msr_access(struct kvm_vcpu_hv *hv_vcpu, u32 msr)
+ 	return false;
+ }
+ 
++#define KVM_HV_WIN2016_GUEST_ID 0x1040a00003839
++#define KVM_HV_WIN2016_GUEST_ID_MASK (~GENMASK_ULL(23, 16)) /* mask out the service version */
++
++/*
++ * Hyper-V enabled Windows Server 2016 SMP VMs fail to boot in !XSAVES && XSAVEC
++ * configuration.
++ * Such configuration can result from, for example, AMD Erratum 1386 workaround.
++ *
++ * Print a notice so users aren't left wondering what's suddenly gone wrong.
++ */
++static void kvm_hv_xsaves_xsavec_maybe_warn_unlocked(struct kvm_vcpu *vcpu)
++{
++	struct kvm *kvm = vcpu->kvm;
++	struct kvm_hv *hv = to_kvm_hv(kvm);
++
++	if (hv->xsaves_xsavec_warned)
++		return;
++
++	if (!vcpu->arch.hyperv_enabled)
++		return;
++
++	if ((hv->hv_guest_os_id & KVM_HV_WIN2016_GUEST_ID_MASK) !=
++	    KVM_HV_WIN2016_GUEST_ID)
++		return;
++
++	/* UP configurations aren't affected */
++	if (atomic_read(&kvm->online_vcpus) < 2)
++		return;
++
++	if (boot_cpu_has(X86_FEATURE_XSAVES) ||
++	    !guest_cpuid_has(vcpu, X86_FEATURE_XSAVEC))
++		return;
++
++	pr_notice_ratelimited("Booting SMP Windows KVM VM with !XSAVES && XSAVEC. "
++			      "If it fails to boot try disabling XSAVEC in the VM config.\n");
++
++	hv->xsaves_xsavec_warned = true;
++}
++
++void kvm_hv_xsaves_xsavec_maybe_warn(struct kvm_vcpu *vcpu)
++{
++	struct kvm_hv *hv = to_kvm_hv(vcpu->kvm);
++
++	mutex_lock(&hv->hv_lock);
++	kvm_hv_xsaves_xsavec_maybe_warn_unlocked(vcpu);
++	mutex_unlock(&hv->hv_lock);
++}
++
+ static int kvm_hv_set_msr_pw(struct kvm_vcpu *vcpu, u32 msr, u64 data,
+ 			     bool host)
+ {
+diff --git a/arch/x86/kvm/hyperv.h b/arch/x86/kvm/hyperv.h
+index 1dc0b6604526..923e64903da9 100644
+--- a/arch/x86/kvm/hyperv.h
++++ b/arch/x86/kvm/hyperv.h
+@@ -182,6 +182,8 @@ void kvm_hv_setup_tsc_page(struct kvm *kvm,
+ 			   struct pvclock_vcpu_time_info *hv_clock);
+ void kvm_hv_request_tsc_page_update(struct kvm *kvm);
+ 
++void kvm_hv_xsaves_xsavec_maybe_warn(struct kvm_vcpu *vcpu);
++
+ void kvm_hv_init_vm(struct kvm *kvm);
+ void kvm_hv_destroy_vm(struct kvm *kvm);
+ int kvm_hv_vcpu_init(struct kvm_vcpu *vcpu);
+@@ -267,6 +269,7 @@ int kvm_hv_vcpu_flush_tlb(struct kvm_vcpu *vcpu);
+ static inline void kvm_hv_setup_tsc_page(struct kvm *kvm,
+ 					 struct pvclock_vcpu_time_info *hv_clock) {}
+ static inline void kvm_hv_request_tsc_page_update(struct kvm *kvm) {}
++static inline void kvm_hv_xsaves_xsavec_maybe_warn(struct kvm_vcpu *vcpu) {}
+ static inline void kvm_hv_init_vm(struct kvm *kvm) {}
+ static inline void kvm_hv_destroy_vm(struct kvm *kvm) {}
+ static inline int kvm_hv_vcpu_init(struct kvm_vcpu *vcpu)
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 27e23714e960..db0a2c40d749 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -1782,6 +1782,10 @@ static int set_efer(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 	if ((efer ^ old_efer) & KVM_MMU_EFER_ROLE_BITS)
+ 		kvm_mmu_reset_context(vcpu);
+ 
++	if (guest_cpuid_is_amd_or_hygon(vcpu) &&
++	    efer & EFER_SVME)
++		kvm_hv_xsaves_xsavec_maybe_warn(vcpu);
++
+ 	return 0;
+ }
+ 
 
