@@ -1,111 +1,88 @@
-Return-Path: <linux-kernel+bounces-36738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69E6783A5D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:47:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F12CB83A5D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:47:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CC852844BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:47:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9E49287049
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:47:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1B6C182BD;
-	Wed, 24 Jan 2024 09:46:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A64281803D;
+	Wed, 24 Jan 2024 09:47:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="VFBWV2IP"
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="uOem8iJx";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="HOzolg7d"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF533182AB;
-	Wed, 24 Jan 2024 09:46:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86CAF175AB;
+	Wed, 24 Jan 2024 09:47:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706089607; cv=none; b=myhuFTHiXkfJCSlXheWFrLGERxm/Rcz57WKflTecmfukR3yVKvYs82c8AxEU7BbXAs40PXcEa9t3i62FoTRLG/Exzun9BuD/xSDZf4ET6pwMFp7Rfd0fuN3j1W7i9gVbL6vjbDUXgqDy7qJAvPLIzCco3iStFzDuEq3XYGeY0W4=
+	t=1706089640; cv=none; b=o9uHEWcbH7nV31wjhhIbJsClO9/l1D3tB/uMeenvoVfyyvbiJhjqVgPdvtFYcpJ2W7vhszOA8r/zu66EsjBJE5N3wPrwIu+b66rA/ocIkaU5ZYro2a0xH1MMhMO9z29/D7hEJiPqSD3VXAtutljv+E8Y8P/JAHS1hxgJxuXKKDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706089607; c=relaxed/simple;
-	bh=g88xxGggv15/xdqsSHg5R7sXTHhEp+krTJy1ll1lV4U=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=MKEuZaS2q7zQYUn0W/1o+tbOcOpC6UeaTQBEdG0xlAxzyMiibaBMHncqJ6bQzk9FNU4ZXz2TH9H4eWQNO9lPxqQ9HSSsnegUBSYcRR40cMXEeCI8n6KWvs5sxHgqj9Tp6dEUZb/hrFb9QxjKVrf0fCXHcfLUzNdL0VPfrnK0LRE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=VFBWV2IP; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=bA7AsA7CeLFm30KGGEVuSKCxjLezcEyRJ3yCntSdgy0=; b=VFBWV2IPxHc2UVAaJtQ1i0QTwo
-	8EMjQINaWYOQBlG9wxWmCqAISdREh9sfQNAaCKABeW5zAHOAtviEVOnOrTou6vyHdWhL7RjDtAoWm
-	wMdNiWj6Yp8i4W7EU/3KpzE5Nln/wljg96lY9xzrUUr3+MSRziMUKAs36jwEqjoZ557c0tOE/zL2u
-	LA5FDakV3oasErJ2ZDivV1tqRLM9RHig8vM9mTfupxuJ5Q/vXyIy3ryYLitYvP53QtFdIatksExrE
-	2I2IdUGUK0MOTbcdfS9vOUHT7U6qoDLEeff3hQ6E4bsONYlAkBvyj7Gf15V2sgq6KQEmI+cZRH+M/
-	uD92dAKw==;
-Received: from sslproxy07.your-server.de ([78.47.199.104])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rSZq7-000K6v-HJ; Wed, 24 Jan 2024 10:46:35 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rSZq6-0007cZ-2v;
-	Wed, 24 Jan 2024 10:46:34 +0100
-Subject: Re: linux-next: manual merge of the bpf-next tree with the mm tree
-To: Andrew Morton <akpm@linux-foundation.org>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux Next Mailing List <linux-next@vger.kernel.org>,
- Nathan Chancellor <nathan@kernel.org>
-References: <20240124121605.1c4cc5bc@canb.auug.org.au>
- <CAADnVQKBCpkwx1HVaNy1wmHqVrekgkd4LEZm9UzqOkOBniTOyw@mail.gmail.com>
- <20240124001808.bfff657f089afe10e5b0824c@linux-foundation.org>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <8cd3a7f4-db72-dc8f-581c-40d115562c55@iogearbox.net>
-Date: Wed, 24 Jan 2024 10:46:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	s=arc-20240116; t=1706089640; c=relaxed/simple;
+	bh=8ChCn7BnUC2Ra2qH1XEh6xfcFp4o5YyhARENMBZPK1s=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=dzLQccLnFXrjzXgq0A4HDcpmHM84T6HQCruH7uzTAr8lK9IaVj1bPPBRFbmCMQTPV7InFegyusROIM7QQo5QguzqWwbVRWMdWGlyNAS4pzqyqHtTH/4W+g695n52h6UZPeBgsDVFcCto3LNHboycvp3NwJcctqfRj2hyijWdZXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=uOem8iJx; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=HOzolg7d; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1706089636;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8ChCn7BnUC2Ra2qH1XEh6xfcFp4o5YyhARENMBZPK1s=;
+	b=uOem8iJxhr+RJ+vL+x7ujlYNCrsCKwZl0FUe6Jzi0qCfUt5PU9gWQ2sd+ivORtnOh2ios/
+	H1yGHwAcRgk/Cd+j4DfMFq+PsfGloLn2IDLgo9iwP8RvS2/AwhxjYOsaQlczLzNhy1zJBq
+	U3RQ+EaOR3erZuPx+Qg02bG7W+cB1R88GjpoULb1RZ6Q0Egk5pl1wRuM5OXLvMxG8MDL4t
+	L8nAfFJt37oKwL1XpA94eGJyvzUMMV9n1AK+X8m6sxDdE4UnvAEm7hkzt25TGfuOM9NBFH
+	u9M1FV+wbNCJlK4bCflsJApVZEBpqgs5IXNRjYvln5aZ2c96wcHPiFuwBPBOnw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1706089636;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8ChCn7BnUC2Ra2qH1XEh6xfcFp4o5YyhARENMBZPK1s=;
+	b=HOzolg7djKXwbPIRObqTQzCtNM0iLjCuPQlOcYuIhJ6pKTCM057teONezZNSTEc2kSMciU
+	rasfiXI3DlmGVyAA==
+To: Junxiao Chang <junxiao.chang@intel.com>, bigeasy@linutronix.de,
+ tglx@linutronix.de, rostedt@goodmis.org, linux-kernel@vger.kernel.org
+Cc: hao3.li@intel.com, lili.li@intel.com, jianfeng.gao@intel.com,
+ linux-rt-users@vger.kernel.org
+Subject: Re: [PATCH 1/2] printk: nbcon: move locked_port flag to struct
+ uart_port
+In-Reply-To: <20240123054033.183114-2-junxiao.chang@intel.com>
+References: <BN9PR11MB5370AED9C562F9DA75093557EC742@BN9PR11MB5370.namprd11.prod.outlook.com>
+ <20240123054033.183114-1-junxiao.chang@intel.com>
+ <20240123054033.183114-2-junxiao.chang@intel.com>
+Date: Wed, 24 Jan 2024 10:53:10 +0106
+Message-ID: <87le8f9i75.fsf@jogness.linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240124001808.bfff657f089afe10e5b0824c@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27163/Tue Jan 23 10:42:11 2024)
+Content-Type: text/plain
 
-On 1/24/24 9:18 AM, Andrew Morton wrote:
-> On Tue, 23 Jan 2024 17:18:55 -0800 Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> 
->>> Today's linux-next merge of the bpf-next tree got a conflict in:
->>>
->>>    tools/testing/selftests/bpf/README.rst
->>>
->>> between commit:
->>>
->>>    0d57063bef1b ("selftests/bpf: update LLVM Phabricator links")
->>>
->>> from the mm-nonmm-unstable branch of the mm tree and commit:
->>>
->>>    f067074bafd5 ("selftests/bpf: Update LLVM Phabricator links")
->>>
->>> from the bpf-next tree.
->>
->> Andrew,
->> please drop the bpf related commit from your tree.
-> 
-> um, please don't cherry-pick a single patch from a multi-patch series
-> which I have already applied.
+On 2024-01-23, Junxiao Chang <junxiao.chang@intel.com> wrote:
+> Console pointer in uart_port might be shared among multiple uart
+> ports.
 
-The BPF one was actually a stand-alone patch targetted at bpf-next:
+I still want to investigate why the pointer is shared. This sounds
+sloppy or dangerous.
 
-https://lore.kernel.org/bpf/20240111-bpf-update-llvm-phabricator-links-v2-1-9a7ae976bd64@kernel.org/
+> Flag port locked by nbcon should be saved in uart_port
+> structure instead of in console structure.
+
+If it turns out that the pointer sharing is necessary, this patch will
+fix the reported problem.
+
+Reviewed-by: John Ogness <john.ogness@linutronix.de>
 
