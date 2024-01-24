@@ -1,115 +1,279 @@
-Return-Path: <linux-kernel+bounces-36263-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36264-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CAB0839E16
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 02:16:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76F10839E1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 02:17:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44EEF28DB7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:16:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DCA4AB28B7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:17:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B805715D2;
-	Wed, 24 Jan 2024 01:16:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 256361842;
+	Wed, 24 Jan 2024 01:17:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="iFn+xfyu"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ihbeHqJ3"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D91710EF;
-	Wed, 24 Jan 2024 01:16:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDE441FAE;
+	Wed, 24 Jan 2024 01:17:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706058974; cv=none; b=Nxg9a2W2+7GTNNGYxM2k2la0DHGpwXEnWSiPzOF23KrjRy1A0R7ntupk5bZRooa7JHAWrf4kVe4gHFEMNF2o/hkh1UyjsQxOCabpuQaad6jNK01xdjNG9hnr6wRNKP2q6ZGc76YcOzxN2/PXl1sO6UjTwgx67L9vc+7vGuCHeew=
+	t=1706059044; cv=none; b=UsYHM0lgbxjL4iyzfLtvy2UI+aPXua5/GsF99kDml46c5R4rHwVOfymnK6r7ugyqZMhDCc82uohlvcB1fGCX1EWfjL/fa4z0wAkF5kkLTVFBVsUPzgTyIMFN4S3OBzrJlziLyR5zhq1SVmYC9oIZYMs+//eEYRln4OCJYtVIRuM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706058974; c=relaxed/simple;
-	bh=wRseWmJPXz7aqNO/ctjSMnoJYjhzaRL5IflagLmEnQE=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=oxxZDGHaRN/S8NKIDTjWEqWC6Y1VvJro9mi1SLaRkq/jxG03KoR6Pd5sJ1YQ6UwZrnXxMDSCEauKN4xXSvCJaElVDLMClaan/99an0nBnFEktEgtI1+tjRFBMm6P+IVECCxoVylCDP8YXLfL4WYG8Wvi3Kt8opUiSMDfG6BNja8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=iFn+xfyu; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1706058967;
-	bh=IzCdaQPRMP0/kNniT6G5izBxADuefXsXFjHRaSBV0zI=;
-	h=Date:From:To:Cc:Subject:From;
-	b=iFn+xfyuznGV+LTDi85MMQbc4VR5C9tq8qyc9ATaoqinIz5e6EyqS9M0GW7jI3TjF
-	 1HvU7pX/a0Z9T9EW+oG6cZd0y4ILXqKen880XUimDZ7S+rYURjvKuOGG6RTOe3YfHu
-	 vGMvKM7CesppNsu8oyuPCSapA5Rv+9PDW+n0ca7YJcFVwrKVbLyOREHe3uChTdulTX
-	 RGbpY8nOQkt/+lcA6fvny363eRyQXv8ee45Dgc5/6BV2X7EAII1+M23coHrV8Qccai
-	 eleu1nHB16kwbcfOMhZGvxyrP8Cvf25YqCvqO8NV/o4LJdtvTArpUNLGyARsvSQecW
-	 wNAge6947xv3A==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TKQyH01wyz4wcK;
-	Wed, 24 Jan 2024 12:16:06 +1100 (AEDT)
-Date: Wed, 24 Jan 2024 12:16:05 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
- <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Andrew Morton
- <akpm@linux-foundation.org>
-Cc: bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>, Linux
- Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>, Nathan Chancellor <nathan@kernel.org>
-Subject: linux-next: manual merge of the bpf-next tree with the mm tree
-Message-ID: <20240124121605.1c4cc5bc@canb.auug.org.au>
+	s=arc-20240116; t=1706059044; c=relaxed/simple;
+	bh=yf/C8zWO8pYJeNeDwU13LG1tKl8LbfCbMbVHrALRRMo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=I8Opux5h/blIBImybQT9t8CQStgJo9S0+VICQ7ZjXT9GOtsojvi9tVvu4ix76kKOkGTeZIk9LQv88hYV+fWdVpCniX54+fLNrwPIYjOGmQVLs9S15qWcY9+wOGQpJqYS7RqZeaKEtwcz3cRO/ck4+sps+sJWrNiLIBPOogGs2as=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ihbeHqJ3; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706059043; x=1737595043;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=yf/C8zWO8pYJeNeDwU13LG1tKl8LbfCbMbVHrALRRMo=;
+  b=ihbeHqJ3rAO9Blw8VFkEfrk99dD+/qQwhxt5LvCF3NPJoGs391+AeTTF
+   asYHCAuOtmlKUrzyhxZDQ31UhijZDSxvMcZSsYnQsVYDxT0VNiF8f7zfI
+   FTYhkBw9fOowJzDukSlboWDlMejr8OcwN5dxQRWgmVJBFQhVYabjyCXGD
+   of35OrshJPtM8jzAvAMCjWC2cqo0UgkT9VacpYbROlyfRKsltiQ+JuDZ9
+   V/H/rulTraa1r6yz2QuFw8WsFF3L8ZSNq0slULpJVxnY7hI/0fy++/7vR
+   Cq4IEuB8OYiT+23S/qpPPypIGccdQasKJATfzD2BthEZ5ESR+z3p5L35Y
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="20263051"
+X-IronPort-AV: E=Sophos;i="6.05,215,1701158400"; 
+   d="scan'208";a="20263051"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 17:17:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="1117463617"
+X-IronPort-AV: E=Sophos;i="6.05,215,1701158400"; 
+   d="scan'208";a="1117463617"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.49]) ([10.238.10.49])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 17:17:17 -0800
+Message-ID: <7cc28677-f7d1-4aba-8557-66c685115074@linux.intel.com>
+Date: Wed, 24 Jan 2024 09:17:15 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/bcC3kCdxM15K5zgImia09FZ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v18 023/121] KVM: TDX: Make KVM_CAP_MAX_VCPUS backend
+ specific
+To: isaku.yamahata@intel.com
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+ erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+ Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+ chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
+References: <cover.1705965634.git.isaku.yamahata@intel.com>
+ <ed33ebe29b231e8e657cd610a983fa603b10f530.1705965634.git.isaku.yamahata@intel.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <ed33ebe29b231e8e657cd610a983fa603b10f530.1705965634.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
---Sig_/bcC3kCdxM15K5zgImia09FZ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-Today's linux-next merge of the bpf-next tree got a conflict in:
+On 1/23/2024 7:52 AM, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+>
+> TDX has its own limitation on the maximum number of vcpus that the guest
+> can accommodate.  Allow x86 kvm backend to implement its own KVM_ENABLE_CAP
+> handler and implement TDX backend for KVM_CAP_MAX_VCPUS.  user space VMM,
+> e.g. qemu, can specify its value instead of KVM_MAX_VCPUS.
+For legacy VM, KVM just provides the interface to query the max_vcpus.
+Why TD needs to provide a interface for userspace to set the limitation?
+What's the scenario?
 
-  tools/testing/selftests/bpf/README.rst
 
-between commit:
+>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
+> v18:
+> - use TDX instead of "x86, tdx" in subject
+> - use min(max_vcpu, TDX_MAX_VCPU) instead of
+>    min3(max_vcpu, KVM_MAX_VCPU, TDX_MAX_VCPU)
+> - make "if (KVM_MAX_VCPU) and if (TDX_MAX_VCPU)" into one if statement
+> ---
+>   arch/x86/include/asm/kvm-x86-ops.h |  2 ++
+>   arch/x86/include/asm/kvm_host.h    |  2 ++
+>   arch/x86/kvm/vmx/main.c            | 22 ++++++++++++++++++++++
+>   arch/x86/kvm/vmx/tdx.c             | 29 +++++++++++++++++++++++++++++
+>   arch/x86/kvm/vmx/x86_ops.h         |  5 +++++
+>   arch/x86/kvm/x86.c                 |  4 ++++
+>   6 files changed, 64 insertions(+)
+>
+> diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
+> index 943b21b8b106..2f976c0f3116 100644
+> --- a/arch/x86/include/asm/kvm-x86-ops.h
+> +++ b/arch/x86/include/asm/kvm-x86-ops.h
+> @@ -21,6 +21,8 @@ KVM_X86_OP(hardware_unsetup)
+>   KVM_X86_OP(has_emulated_msr)
+>   KVM_X86_OP(vcpu_after_set_cpuid)
+>   KVM_X86_OP(is_vm_type_supported)
+> +KVM_X86_OP_OPTIONAL(max_vcpus);
+> +KVM_X86_OP_OPTIONAL(vm_enable_cap)
+>   KVM_X86_OP(vm_init)
+>   KVM_X86_OP_OPTIONAL(vm_destroy)
+>   KVM_X86_OP_OPTIONAL_RET0(vcpu_precreate)
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 26f4668b0273..db44a92e5659 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1602,7 +1602,9 @@ struct kvm_x86_ops {
+>   	void (*vcpu_after_set_cpuid)(struct kvm_vcpu *vcpu);
+>   
+>   	bool (*is_vm_type_supported)(unsigned long vm_type);
+> +	int (*max_vcpus)(struct kvm *kvm);
+>   	unsigned int vm_size;
+> +	int (*vm_enable_cap)(struct kvm *kvm, struct kvm_enable_cap *cap);
+>   	int (*vm_init)(struct kvm *kvm);
+>   	void (*vm_destroy)(struct kvm *kvm);
+>   
+> diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
+> index 50da807d7aea..4611f305a450 100644
+> --- a/arch/x86/kvm/vmx/main.c
+> +++ b/arch/x86/kvm/vmx/main.c
+> @@ -6,6 +6,7 @@
+>   #include "nested.h"
+>   #include "pmu.h"
+>   #include "tdx.h"
+> +#include "tdx_arch.h"
+>   
+>   static bool enable_tdx __ro_after_init;
+>   module_param_named(tdx, enable_tdx, bool, 0444);
+> @@ -16,6 +17,17 @@ static bool vt_is_vm_type_supported(unsigned long type)
+>   		(enable_tdx && tdx_is_vm_type_supported(type));
+>   }
+>   
+> +static int vt_max_vcpus(struct kvm *kvm)
+> +{
+> +	if (!kvm)
+> +		return KVM_MAX_VCPUS;
+> +
+> +	if (is_td(kvm))
+> +		return min(kvm->max_vcpus, TDX_MAX_VCPUS);
+> +
+> +	return kvm->max_vcpus;
+> +}
+> +
+>   static int vt_hardware_enable(void)
+>   {
+>   	int ret;
+> @@ -54,6 +66,14 @@ static void vt_hardware_unsetup(void)
+>   	vmx_hardware_unsetup();
+>   }
+>   
+> +static int vt_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
+> +{
+> +	if (is_td(kvm))
+> +		return tdx_vm_enable_cap(kvm, cap);
+> +
+> +	return -EINVAL;
+> +}
+> +
+>   static int vt_vm_init(struct kvm *kvm)
+>   {
+>   	if (is_td(kvm))
+> @@ -91,7 +111,9 @@ struct kvm_x86_ops vt_x86_ops __initdata = {
+>   	.has_emulated_msr = vmx_has_emulated_msr,
+>   
+>   	.is_vm_type_supported = vt_is_vm_type_supported,
+> +	.max_vcpus = vt_max_vcpus,
+>   	.vm_size = sizeof(struct kvm_vmx),
+> +	.vm_enable_cap = vt_vm_enable_cap,
+>   	.vm_init = vt_vm_init,
+>   	.vm_destroy = vmx_vm_destroy,
+>   
+> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+> index 8c463407f8a8..876ad7895b88 100644
+> --- a/arch/x86/kvm/vmx/tdx.c
+> +++ b/arch/x86/kvm/vmx/tdx.c
+> @@ -100,6 +100,35 @@ struct tdx_info {
+>   /* Info about the TDX module. */
+>   static struct tdx_info *tdx_info;
+>   
+> +int tdx_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
+> +{
+> +	int r;
+> +
+> +	switch (cap->cap) {
+> +	case KVM_CAP_MAX_VCPUS: {
+> +		if (cap->flags || cap->args[0] == 0)
+> +			return -EINVAL;
+> +		if (cap->args[0] > KVM_MAX_VCPUS ||
+> +		    cap->args[0] > TDX_MAX_VCPUS)
+> +			return -E2BIG;
+> +
+> +		mutex_lock(&kvm->lock);
+> +		if (kvm->created_vcpus)
+> +			r = -EBUSY;
+> +		else {
+> +			kvm->max_vcpus = cap->args[0];
+> +			r = 0;
+> +		}
+> +		mutex_unlock(&kvm->lock);
+> +		break;
+> +	}
+> +	default:
+> +		r = -EINVAL;
+> +		break;
+> +	}
+> +	return r;
+> +}
+> +
+>   static int tdx_get_capabilities(struct kvm_tdx_cmd *cmd)
+>   {
+>   	struct kvm_tdx_capabilities __user *user_caps;
+> diff --git a/arch/x86/kvm/vmx/x86_ops.h b/arch/x86/kvm/vmx/x86_ops.h
+> index 6e238142b1e8..3a3be66888da 100644
+> --- a/arch/x86/kvm/vmx/x86_ops.h
+> +++ b/arch/x86/kvm/vmx/x86_ops.h
+> @@ -139,12 +139,17 @@ int __init tdx_hardware_setup(struct kvm_x86_ops *x86_ops);
+>   void tdx_hardware_unsetup(void);
+>   bool tdx_is_vm_type_supported(unsigned long type);
+>   
+> +int tdx_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap);
+>   int tdx_vm_ioctl(struct kvm *kvm, void __user *argp);
+>   #else
+>   static inline int tdx_hardware_setup(struct kvm_x86_ops *x86_ops) { return -EOPNOTSUPP; }
+>   static inline void tdx_hardware_unsetup(void) {}
+>   static inline bool tdx_is_vm_type_supported(unsigned long type) { return false; }
+>   
+> +static inline int tdx_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
+> +{
+> +	return -EINVAL;
+> +};
+>   static inline int tdx_vm_ioctl(struct kvm *kvm, void __user *argp) { return -EOPNOTSUPP; }
+>   #endif
+>   
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index dd3a23d56621..a1389ddb1b33 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -4726,6 +4726,8 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+>   		break;
+>   	case KVM_CAP_MAX_VCPUS:
+>   		r = KVM_MAX_VCPUS;
+> +		if (kvm_x86_ops.max_vcpus)
+> +			r = static_call(kvm_x86_max_vcpus)(kvm);
+>   		break;
+>   	case KVM_CAP_MAX_VCPU_ID:
+>   		r = KVM_MAX_VCPU_IDS;
+> @@ -6683,6 +6685,8 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
+>   		break;
+>   	default:
+>   		r = -EINVAL;
+> +		if (kvm_x86_ops.vm_enable_cap)
+> +			r = static_call(kvm_x86_vm_enable_cap)(kvm, cap);
+>   		break;
+>   	}
+>   	return r;
 
-  0d57063bef1b ("selftests/bpf: update LLVM Phabricator links")
-
-from the mm-nonmm-unstable branch of the mm tree and commit:
-
-  f067074bafd5 ("selftests/bpf: Update LLVM Phabricator links")
-
-from the bpf-next tree.
-
-I fixed it up (the latter has one more digit in a SHA1 in a URL, so
-I used that) and can carry the fix as necessary. This is now fixed as
-far as linux-next is concerned, but any non trivial conflicts should be
-mentioned to your upstream maintainer when your tree is submitted for
-merging.  You may also want to consider cooperating with the maintainer
-of the conflicting tree to minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/bcC3kCdxM15K5zgImia09FZ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWwZNUACgkQAVBC80lX
-0GyyUQf/d5uTmSG4zpZtl0z6FSlZCyVLnwvSa5t84gqsWZCuk1cq+lMpzA0ue/iL
-NMOcXYIvG5/vQuEqpG+PrFgfUnml//o+kSF6Nxlt+wLWtmAFKx2ZNu5jZgpNeobw
-Pjm8MC3a9rGwia18M2FOdsEhmJkxYY/aecL6m0mf5mzO66hComaT06uLgxwnM47v
-hQh61L+/7nZGnsVnNnNpO76wNhzSovyY+rc2AdlhnSImADQ/u6OhG2rdRYJRd7aU
-Tyj4igaSDU1aUqwSW/asV40HhVdqdQF65teBEWrNi/ixS2y8W8/Kz9i1LsBZJ7iU
-Eqm+If5a/YttmwLJU3STXSyEx7djfA==
-=a589
------END PGP SIGNATURE-----
-
---Sig_/bcC3kCdxM15K5zgImia09FZ--
 
