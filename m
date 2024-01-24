@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-37649-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0212583B30C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 21:31:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F6EC83B30E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 21:31:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D71AB24587
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 20:31:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F1AD81F22F4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 20:31:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F6E01350DE;
-	Wed, 24 Jan 2024 20:30:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 221D9134723;
+	Wed, 24 Jan 2024 20:30:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VlbCS7dN"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dc0cSr1P"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1094913475C;
-	Wed, 24 Jan 2024 20:30:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABE4F13399B;
+	Wed, 24 Jan 2024 20:30:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706128234; cv=none; b=uOo3yboxAZDntLJuJ0+J3odIETvmqBurV4qLpzZLVY9GJ2SYotH7qQMzxbYyi/Myu6Q4BHVnfB9f2JNN2tozbUFuEn7gJwKcPqDsrg5afqXIUvcuq+jSMISKLB2nIBWKz1LPSJ70D+gkkj7eLhbLQm9q2n9l2rccuVoksnFSHsc=
+	t=1706128239; cv=none; b=sg7o8D4GCBaKFox2nvxMMs+k3bj0D+MIxAGAtPo+7gESvBt7lWHNWhZm9gSOTcaL41yUkdmJOtFylH6yspewqMIoX3kw/CJxYoqchFyzasM7EKXxVtVAUkJTBD1irAl/kye10qWsnVJQO+TPx7TFAXzW8A9bw5H2vkn7uiSUIEA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706128234; c=relaxed/simple;
-	bh=WL2tRjg8ew8DqItHe5VMXx4XizhzUARbkSBb7xc+JjU=;
+	s=arc-20240116; t=1706128239; c=relaxed/simple;
+	bh=bZ/Ku33h3h7tLZHhbK7X7TnJBS+ojPkPkQBizuVj/J8=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=fHNUpguBqKihkIGLeE4wKnnZl+JKwY7PcwchrigPYqjB0MudsOof14hFBpRtgmYSvRHx4V+aJ7+WT3/+G9Kbm518xzZscJ6eSm/q1H0c03tMaLcuzmWWq+SfpfGrdzxfAmGSHHdJdMF1Z1OXg85RrSFANM5ynI0V6iihGZVgdTg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VlbCS7dN; arc=none smtp.client-ip=209.85.128.54
+	 In-Reply-To:To:Cc; b=Io/75CT2etLAra0881JuIkjRlLjy5/IK59JImX6beBPvjfJbhNH92X4ontor5bZSEBCaY1qizroDoErEfJfdzznR/Ci0WUo8XJmzKj/TFZUHgqm3WUhYxfmpIXrqCeh6s4az0TWP7HDv2rfuHTi27bHPYrXitADEqMhQCkAWo6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dc0cSr1P; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40eb0836f8dso33037655e9.2;
-        Wed, 24 Jan 2024 12:30:32 -0800 (PST)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40ec715f1efso9593695e9.2;
+        Wed, 24 Jan 2024 12:30:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706128231; x=1706733031; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706128236; x=1706733036; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=rwDZ7OaLOoaTgMtKqR7jNk1DW8NZBJVNMOjbsbiqpKw=;
-        b=VlbCS7dNhqmZAGH0N+edGGQOmfbdh9D+ArAXZ+yJzTNUxh9Hnrot2HBOlMbhYLbf7d
-         1jkzhvUh0vZ/i/Z8/bTVhfKY47+5y8YN4moCSqP9X2z7hy+cuk7c9tw8sOW5YMkNNQGr
-         D8thE3sIvUJhVUx3DHmvFtR3Ql8B4CBkYwZ3nX6CxfqLeKNOs6XGY5ql9vW5nxxb6kDb
-         gJIaYn6cqXN3UYUMjbfoqfYxwH4kj5/Wn6+tJRaamGkL74W9r/kNih5JPR7Sqkhjn3/F
-         MHcSmZAOlw/oVf2KwWVZ5BPvQAIkezENz1b2RplFSXSJJKWiYjiFDFbXr4QH4tA/57En
-         81Aw==
+        bh=Z3ca0jnd9j+2aNrco01AKV5rkL7ji04a+DuuunuBda4=;
+        b=Dc0cSr1PwMC8zP3nYgKRDo0Yb0jWiRC1aVAkuC3C6jnLkhP1EomTK7g0Ge5sp3Hdk1
+         BmMQ377S4dKrTE5uI1bSzdcKVejbJLhCW3w8Ym6UXMyL3EYXaFk32qiyAXHFAdkUT0Tw
+         DfOSoJoxlUgu1WNfdOeHW6tVJw3n6w3m0pLagRvG0uOVt1ju2YEvgmPH82orj8cFuPwK
+         +x2QvxvPi2eMQyiugujy1NZ8YbJzV5Usz3LCh9Y1gZU7qQlCJaBJt61vlQ28icqQvI3A
+         Gft5zIDHXetoMJmFuTDo8T/cFpDCmcX2p6UBfTE5LcsYnVg4F4KrkQXKlGoXI2xGPmmB
+         COiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706128231; x=1706733031;
+        d=1e100.net; s=20230601; t=1706128236; x=1706733036;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rwDZ7OaLOoaTgMtKqR7jNk1DW8NZBJVNMOjbsbiqpKw=;
-        b=Eyrn/xkZsOm9zNPH+gGEGzB5UtSquS85qautdblMlsnVDzjoEc7FXCEAenSdQ0zap5
-         qhNgRLT2dbsTDlWL49qM1zfP6vOBraZBCjiKIxK7dtWxfjAKn4SAoh6Lup4jGXJ7E8vS
-         jUbrimFhU+Kk+BwUbDi9OYD+CNbP/9fCjpXZnPhlFkEhV1pLP0Tuer5fa1iO7UOSAkCm
-         SMWbhVEHhuUGs3y7wBYEBiMPspznOcxR9K1kI3HFuKRiS1qx+6KDRWsWIVIaLiIVqn0l
-         8zUUdQ7Dwe42ZDK2gvqFWParz8swC+SEbBBv/G5jAjzQwky/uHD6VpqwBqT5NET9AOLu
-         bymw==
-X-Gm-Message-State: AOJu0YwZ3XjQi1Xjoj0QZIlUTS6M35ai6jqNmk/Cnmhd1em4dwIUq/a+
-	gyOuLfE7QEIn0862/lNB5PLe16lwfPhq0djsDLCQx/aCXHSa781p
-X-Google-Smtp-Source: AGHT+IGXbvOJHTK/rThOmT1crecXWEtTPAc8HXU8nW+Eq1Sw4iCNC6eKKbn+Ps8UFppe9Zq+1UH1kQ==
-X-Received: by 2002:a05:600c:2d8a:b0:40e:86eb:9e7e with SMTP id i10-20020a05600c2d8a00b0040e86eb9e7emr1405413wmg.142.1706128230991;
-        Wed, 24 Jan 2024 12:30:30 -0800 (PST)
+        bh=Z3ca0jnd9j+2aNrco01AKV5rkL7ji04a+DuuunuBda4=;
+        b=tiNQtaHAms4wg9m9qYyDfmba5kYYGxX+M0+s0aG9vi0VpW64hEcZmsR1SAZQ7vbP83
+         q9cmLKFfBi+pQLUgR42O3m0JUHUVz2Irtf2XX8Ma3a0X5sWYOcRZfKSvzFWmsHuxdyxE
+         FqPONOy/DYKGiks6vcT4U6ktcDxG6kKbO2pxHHw2bJs4W+5hrILZTrkwd//gxO30LqH4
+         fN3pF5KCBJjaAIyK2Q4S/mNzcOXVKMgPQnmyLyNXudntZnJmxwRrE65gGm1oryK06ZVn
+         KPN50YRiPTXrshrOIs81UJ0w9Xw3R/SvsfvgQ80dguwxK12xnKPLP+5f+KdDtpAOSKJi
+         m97A==
+X-Gm-Message-State: AOJu0YxTYedun7+sgC/ZBwf1x49V0Fgy5P+aG9cRehA6U/1gvjdByhm6
+	hoDd2KvtIH72P4w5GtJOHnkKhoe5R0NNXkGrLEb0YSEDegl2rY0K4c99/y1OPlN+2Q==
+X-Google-Smtp-Source: AGHT+IGbydoCGkGeBHV8wihvYw3DZSaWysGkFdyH6pwvnawkRmgiVYqqL/OBW+Q7g6b6iIomR4frKw==
+X-Received: by 2002:a05:600c:9a3:b0:40e:5996:2291 with SMTP id w35-20020a05600c09a300b0040e59962291mr1781320wmp.138.1706128235667;
+        Wed, 24 Jan 2024 12:30:35 -0800 (PST)
 Received: from [172.30.32.188] ([2001:8f8:183b:50fb::d35])
-        by smtp.gmail.com with ESMTPSA id r15-20020a05600c458f00b0040d62f89381sm174073wmo.35.2024.01.24.12.30.28
+        by smtp.gmail.com with ESMTPSA id r15-20020a05600c458f00b0040d62f89381sm174073wmo.35.2024.01.24.12.30.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 12:30:30 -0800 (PST)
+        Wed, 24 Jan 2024 12:30:35 -0800 (PST)
 From: Alexey Charkov <alchark@gmail.com>
-Date: Thu, 25 Jan 2024 00:30:04 +0400
-Subject: [PATCH 1/4] arm64: dts: rockchip: add rfkill node for M.2 Key E
- WiFi on rock-5b
+Date: Thu, 25 Jan 2024 00:30:05 +0400
+Subject: [PATCH 2/4] arm64: dts: rockchip: enable built-in thermal
+ monitoring on rk3588
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,7 +77,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240125-rk-dts-additions-v1-1-5879275db36f@gmail.com>
+Message-Id: <20240125-rk-dts-additions-v1-2-5879275db36f@gmail.com>
 References: <20240125-rk-dts-additions-v1-0-5879275db36f@gmail.com>
 In-Reply-To: <20240125-rk-dts-additions-v1-0-5879275db36f@gmail.com>
 To: Rob Herring <robh+dt@kernel.org>, 
@@ -88,43 +88,204 @@ Cc: Daniel Lezcano <daniel.lezcano@linaro.org>,
  linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, 
  linux-kernel@vger.kernel.org, Alexey Charkov <alchark@gmail.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1706128223; l=1054;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1706128223; l=4885;
  i=alchark@gmail.com; s=20240125; h=from:subject:message-id;
- bh=WL2tRjg8ew8DqItHe5VMXx4XizhzUARbkSBb7xc+JjU=;
- b=zUPpF+OtMc0JFVxYHKKr0Q3E8J3khN2xHdZhW5GT1e0hcSNmOdPXmJJg0T/SqCHyAK1DRPw26
- ni6pTFSKc+TBft41+kwwrqfotSizXxL3GtEJwgKSxcEx/hSWQEW6UsV
+ bh=bZ/Ku33h3h7tLZHhbK7X7TnJBS+ojPkPkQBizuVj/J8=;
+ b=i07iNxqPSC1JCmuGjfx9B7DczeuyAJWfhY5fMC/Swk//raeORACzzOzr3C99W4a6z0SHHPHWC
+ 60hFkjtkxMqCao/u1EZTx/FEHcYsXXW7YAUKAi+j7FF3aAH9XTAw6jt
 X-Developer-Key: i=alchark@gmail.com; a=ed25519;
  pk=xRO8VeD3J5jhwe0za0aHt2LDumQr8cm0Ls7Jz3YGimk=
 
-By default the GPIO pin that connects to the WiFi enable signal
-inside the M.2 Key E slot is driven low, resulting in impossibility
-to connect to any network. Add a DT node to expose it as an RFKILL
-device, which lets the WiFi driver or userspace toggle it as
-required.
+Include thermal zones information in device tree for rk3588 variants
 
 Signed-off-by: Alexey Charkov <alchark@gmail.com>
 ---
- arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 165 ++++++++++++++++++++++++++++++
+ 1 file changed, 165 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
-index a0e303c3a1dc..9b7bf6cec8bd 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
-@@ -58,6 +58,13 @@ fan: pwm-fan {
- 		#cooling-cells = <2>;
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+index 36b1b7acfe6a..131b9eb21398 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+@@ -10,6 +10,7 @@
+ #include <dt-bindings/reset/rockchip,rk3588-cru.h>
+ #include <dt-bindings/phy/phy.h>
+ #include <dt-bindings/ata/ahci.h>
++#include <dt-bindings/thermal/thermal.h>
+ 
+ / {
+ 	compatible = "rockchip,rk3588";
+@@ -2228,6 +2229,170 @@ tsadc: tsadc@fec00000 {
+ 		status = "disabled";
  	};
  
-+	rfkill {
-+		compatible = "rfkill-gpio";
-+		label = "rfkill-pcie-wlan";
-+		radio-type = "wlan";
-+		shutdown-gpios = <&gpio4 RK_PA2 GPIO_ACTIVE_HIGH>;
++	thermal_zones: thermal-zones {
++		/* sensor near the center of the whole chip */
++		package_thermal: package-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsadc 0>;
++
++			trips {
++				package_crit: package-crit {
++					temperature = <115000>;
++					hysteresis = <0>;
++					type = "critical";
++				};
++			};
++		};
++
++		/* sensor between A76 cores 0 and 1 */
++		bigcore0_thermal: bigcore0-thermal {
++			polling-delay-passive = <20>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsadc 1>;
++
++			trips {
++				bigcore0_alert0: bigcore0-alert0 {
++					temperature = <75000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++				bigcore0_alert1: bigcore0-alert1 {
++					temperature = <85000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++				bigcore0_crit: bigcore0-crit {
++					temperature = <115000>;
++					hysteresis = <0>;
++					type = "critical";
++				};
++			};
++			cooling-maps {
++				map0 {
++					trip = <&bigcore0_alert1>;
++					cooling-device =
++						<&cpu_b0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++						<&cpu_b1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
++					contribution = <1024>;
++				};
++			};
++		};
++
++		/* sensor between A76 cores 2 and 3 */
++		bigcore2_thermal: bigcore2-thermal {
++			polling-delay-passive = <20>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsadc 2>;
++
++			trips {
++				bigcore2_alert0: bigcore2-alert0 {
++					temperature = <75000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++				bigcore2_alert1: bigcore2-alert1 {
++					temperature = <85000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++				bigcore2_crit: bigcore2-crit {
++					temperature = <115000>;
++					hysteresis = <0>;
++					type = "critical";
++				};
++			};
++			cooling-maps {
++				map1 {
++					trip = <&bigcore2_alert1>;
++					cooling-device =
++						<&cpu_b2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++						<&cpu_b3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
++					contribution = <1024>;
++				};
++			};
++		};
++
++		/* sensor between the four A55 cores */
++		little_core_thermal: littlecore-thermal {
++			polling-delay-passive = <20>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsadc 3>;
++
++			trips {
++				littlecore_alert0: littlecore-alert0 {
++					temperature = <75000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++				littlecore_alert1: littlecore-alert1 {
++					temperature = <85000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++				littlecore_crit: littlecore-crit {
++					temperature = <115000>;
++					hysteresis = <0>;
++					type = "critical";
++				};
++			};
++			cooling-maps {
++				map2 {
++					trip = <&littlecore_alert1>;
++					cooling-device =
++						<&cpu_l0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++						<&cpu_l1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++						<&cpu_l2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++						<&cpu_l3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
++					contribution = <1024>;
++				};
++			};
++		};
++
++		/* sensor near the PD_CENTER power domain */
++		center_thermal: center-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsadc 4>;
++
++			trips {
++				center_crit: center-crit {
++					temperature = <115000>;
++					hysteresis = <0>;
++					type = "critical";
++				};
++			};
++		};
++
++		gpu_thermal: gpu-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsadc 5>;
++
++			trips {
++				gpu_crit: gpu-crit {
++					temperature = <115000>;
++					hysteresis = <0>;
++					type = "critical";
++				};
++			};
++		};
++
++		npu_thermal: npu-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsadc 6>;
++
++			trips {
++				npu_crit: npu-crit {
++					temperature = <115000>;
++					hysteresis = <0>;
++					type = "critical";
++				};
++			};
++		};
 +	};
 +
- 	vcc3v3_pcie2x1l0: vcc3v3-pcie2x1l0-regulator {
- 		compatible = "regulator-fixed";
- 		enable-active-high;
+ 	saradc: adc@fec10000 {
+ 		compatible = "rockchip,rk3588-saradc";
+ 		reg = <0x0 0xfec10000 0x0 0x10000>;
 
 -- 
 2.43.0
