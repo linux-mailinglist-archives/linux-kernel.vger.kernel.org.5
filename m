@@ -1,174 +1,167 @@
-Return-Path: <linux-kernel+bounces-37453-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37454-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C5C183B050
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:46:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D443A83B052
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:46:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D7BF286CC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:46:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 054051C22829
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:46:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0D6585C7E;
-	Wed, 24 Jan 2024 17:46:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 633AC1272C5;
+	Wed, 24 Jan 2024 17:46:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=arista.com header.i=@arista.com header.b="kWaJ5OPD"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HMyTAmrs"
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4963885C54
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 17:46:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 187641272BC
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 17:46:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706118381; cv=none; b=eQhIXCu1iCcTeK+rGamSkc+4V91uj70OfxY/bztEw5quriXPOoYkYWfotHfDlmGk5xCwDpLQChpzu7+iuCDj2mUXWjwCIdVbN+DCopdYJDO+QNEfywTQ2wbSWuODOZGXvfSckGKdIdtrbZAyF0QFpcXR9i+JnVK8MlhxfiWmYwU=
+	t=1706118397; cv=none; b=Y38Fk4iaAIDHqC7iEF4qwVuyNMX0i/a3wkD5N9Gfol63kUj/dAvkt/AixSWBLAu3RqDC9mI72neJBYILrPlqEWW5kms1WSE3ixnhOdTVLRJDojHpHT4mzS6+BYjp5Xi47eXhnA76ejQyz/YtmGF1+hDmc3/5sCXNC6CRTv1Rf4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706118381; c=relaxed/simple;
-	bh=rx8lKKZcE3A1/FLTzYEVMlsLvAtjy/Y784aKerx64Ng=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Z2Af3gMYe8+kOzL6BlkUx9AIIW36mmkhEngIiqVp3vxuIoheWYPoVQq5yVRd9QZhy/1ETAYZmFtm1uKlOkp+xmwhCuF3+qffsF6H4vUNxLTF3D8Oof5EtMOUjSs8ObPZy+jHSzkZc64NcLjZGHHqPdQ4LBaQK4dCHurafN94Ra8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com; spf=pass smtp.mailfrom=arista.com; dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b=kWaJ5OPD; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arista.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40ebf373130so20699155e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 09:46:19 -0800 (PST)
+	s=arc-20240116; t=1706118397; c=relaxed/simple;
+	bh=85X4MSVhu6FZyouQ/Vf2EMa2KnP6pI2T2c6pSfjhuGs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mEq3IFcUU44Zgu9NGcUYJFckk2Tdb2AbLKU0ypp9oYuF4heSSoKo5H8UQXcIlBwGFaeh51kvJoCEpY+HwcrVueG7Tk58/bYeSwkRVU06OOD+JDMgIyvWK0iLRtAkoBkKVjw6vRWPSXtzNuG0lbARqR8LbwXfb8IQAA6ySdQCXIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HMyTAmrs; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5ffcb478512so29858297b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 09:46:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1706118377; x=1706723177; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eVCU/WWHCSDI7BYE4p1QCv3tn8rHzFU9AC6i2z5h3qE=;
-        b=kWaJ5OPD8SWrPQNFWepde48nJ3rr7QNB5TTRhyPau0Hzz3/iFmfcn/mMWPVy3JYDuh
-         iD4mCt7zW3M0UUHhr7sbRct9Aekarntzc/UlEMInZtHgjzDFgf0diskPME6cctQasXx/
-         6uBZ2JQVnXqqTurTCZuJzDM7HIbkzfnZ5YlyF+McBEWroB7biM2kGvHsDRleO1wqVksJ
-         kS0B/jzLusmgcckI258iJU4zv2OA9AVrTVFap/AkaSORK6ORhWWXS0QwwvNbJcnlS0jd
-         9oGnpqK2Ab9/vgveCStQia7rNnorHnGfFZej9cAPccihoG62wgkbA3bQLIFGKmw+lY0a
-         j5Pw==
+        d=google.com; s=20230601; t=1706118395; x=1706723195; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZcrjU1rXiL0wUCSwbKfLMXGroLa5TBhUecGAmJobD/I=;
+        b=HMyTAmrsiXetH6P5VydKM0Vcw4WVkpfcVzjQh2vRhvBmUwYiHkShOidKwUJT/soYI2
+         XaSxIODvBaYvS3536EVYAH/wD+/YoCnELYv3QIIS9rzO4oSik9O/Dq2fWlqpFMtB6NcC
+         /TcMFDI2Q1h/qEQ7DowwDupEFChFwUbSncRzkBWerK5leK6WadX+qAeaDcCP8QKSUnhU
+         ntcujFh0XHmUw3Zjg48PGFCojMs5KLBoPbjnCqaBpOX4OG+xvijnOMjAVYURmcEZDi4q
+         1Wmc5ZkhZw8hhcuM/vfZ2B3KL3VvHJW0GXJ8RAIGuvh0uBPBCRwD1PeByazGUkA+0/wD
+         JkDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706118377; x=1706723177;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eVCU/WWHCSDI7BYE4p1QCv3tn8rHzFU9AC6i2z5h3qE=;
-        b=JGGSil2eNbyyBeSVZ8zv1Rgk4l/Xdul+WCFlTYf5GbJP726dHN3QadwsQRSZPqxmvh
-         /ydA73bZU2duh7WethpFvwXoQXipQKzBbkojho67kLAGH1Sf4Eiah9joSM+DtjaNCk3P
-         DIysrB5DZCa2NXlP6TnlI/X8w0fn0bkziaVIMOSxB6xLI9iMO4buu2uRdX5zmm4bFD4Q
-         K1HayfYRTeAm7VbO9vWJiWVzmwsfw66iMLSoOG+DWN62gnLS4A6CMEjHMuvnqHpYeOhx
-         gdD28W96H0lUy4UBw38IvL2i1FwhieD9exylZVOvWx5f8pKEG1Zs/tsrvNyVl5BCn7AJ
-         Jong==
-X-Gm-Message-State: AOJu0YwusW7CPLKojQih0TX1n7dEP72C+/pOkzdN6qC7AasyZwvzxqO4
-	4h5sK9YDQ2hDMjFj9JpRIYXfp8NR0S27h10BrstZjkWljYkCOUQrUR4IGF/9fQ==
-X-Google-Smtp-Source: AGHT+IEkmMRSyW5Nf156YVrdFBl3DnSZXbv256Xf9R4g4JKrV5a1JNhJ61YPNG9vJ0fA/sMCWjitww==
-X-Received: by 2002:a05:600c:4e49:b0:40e:c59d:95ef with SMTP id e9-20020a05600c4e4900b0040ec59d95efmr833207wmq.149.1706118377430;
-        Wed, 24 Jan 2024 09:46:17 -0800 (PST)
-Received: from [10.83.37.178] ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id bi11-20020a05600c3d8b00b0040e6b0a1bc1sm356339wmb.12.2024.01.24.09.46.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jan 2024 09:46:16 -0800 (PST)
-Message-ID: <1ad64e3d-5252-4aaf-82be-5162edd1e781@arista.com>
-Date: Wed, 24 Jan 2024 17:46:10 +0000
+        d=1e100.net; s=20230601; t=1706118395; x=1706723195;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZcrjU1rXiL0wUCSwbKfLMXGroLa5TBhUecGAmJobD/I=;
+        b=tymcUGERxyHzXqtbjiOrd4DNuTvDHAYRAf+N0k8kymlx/wrVYJdvcglipstnaIiUwJ
+         d8zrW+YnCuPsRxvZo7klE+6GOCyBBzzGBELvkK84WWyfNpPjQR5O1fgU+J3XfdKm7QM7
+         VTgOAm6kykV6RfJHFGA641sFNhXF5DeOKpzlvYSqvIG8D6yvAMYZcTI1S1i/AeD+vEdI
+         I3jcLOSKw7ZioPN70Ik+R6alJ5icUe1SU5dSEeoz3PkHQqoYzpjM2MjkLm1bSy34BaMP
+         H5ZanyaVQm3JOYjQVV7p3uXVQxiiOH4OZSNBs46isL+c1hFJHtkikPWWHsESB5W9owHR
+         E+eA==
+X-Gm-Message-State: AOJu0YwsTrYVh3q/m68Tee/Y61cbtjiKY92tmpyuL26MLAvPmzTtDjC6
+	Vt9dU2Udkldiuin7FORRonrtlTzZhWFGCOyOvNxAlrbKNDWEDqsIDSxyEdMN91ojBy7WMLh3VwG
+	hn3kagc4GV4CdDH753wykGjFtEVq/uzZtZGy3
+X-Google-Smtp-Source: AGHT+IGzutMsHILIshINx/VyFhlmwzviKnVmCZccXt19IOpc00/Klu99g2L+eiYhp7VbIDr/mDW1lxNH0NqhwmeCZNM=
+X-Received: by 2002:a81:ae21:0:b0:5ff:a961:d91c with SMTP id
+ m33-20020a81ae21000000b005ffa961d91cmr19539ywh.1.1706118394850; Wed, 24 Jan
+ 2024 09:46:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] selftests/net: A couple of typos fixes in
- key-management test
-Content-Language: en-US
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Shuah Khan <shuah@kernel.org>, Dmitry Safonov <0x7f454c46@gmail.com>,
- Mohammad Nassiri <mnassiri@ciena.com>, netdev@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240118-tcp-ao-test-key-mgmt-v1-0-3583ca147113@arista.com>
- <20240118085129.6313054b@kernel.org>
- <358faa27-3ea3-4e63-a76f-7b5deeed756d@arista.com>
- <20240118091327.173f3cb0@kernel.org>
- <a9a5378d-c908-4a83-a63d-3e9928733a3d@arista.com>
- <20240124071229.6a7262cc@kernel.org>
-From: Dmitry Safonov <dima@arista.com>
-In-Reply-To: <20240124071229.6a7262cc@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240121214413.833776-1-tjmercier@google.com> <Za-H8NNW9bL-I4gj@tiehlicka>
+ <CABdmKX2K4MMe9rsKfWi9RxUS5G1RkLVzuUkPnovt5O2hqVmbWA@mail.gmail.com> <20240123164819.GB1745986@cmpxchg.org>
+In-Reply-To: <20240123164819.GB1745986@cmpxchg.org>
+From: "T.J. Mercier" <tjmercier@google.com>
+Date: Wed, 24 Jan 2024 09:46:23 -0800
+Message-ID: <CABdmKX1uDsnFSG2YCyToZHD2R+A9Vr=SKeLgSqPocUgWd16+XA@mail.gmail.com>
+Subject: Re: [PATCH] Revert "mm:vmscan: fix inaccurate reclaim during
+ proactive reclaim"
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@suse.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, android-mm@google.com, yuzhao@google.com, 
+	yangyifei03@kuaishou.com, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Jakub,
+On Tue, Jan 23, 2024 at 8:48=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
+> wrote:
+>
+> The revert isn't a straight-forward solution.
+>
+> The patch you're reverting fixed conventional reclaim and broke
+> MGLRU. Your revert fixes MGLRU and breaks conventional reclaim.
+>
+> On Tue, Jan 23, 2024 at 05:58:05AM -0800, T.J. Mercier wrote:
+> > They both are able to make progress. The main difference is that a
+> > single iteration of try_to_free_mem_cgroup_pages with MGLRU ends soon
+> > after it reclaims nr_to_reclaim, and before it touches all memcgs. So
+> > a single iteration really will reclaim only about SWAP_CLUSTER_MAX-ish
+> > pages with MGLRU. WIthout MGLRU the memcg walk is not aborted
+> > immediately after nr_to_reclaim is reached, so a single call to
+> > try_to_free_mem_cgroup_pages can actually reclaim thousands of pages
+> > even when sc->nr_to_reclaim is 32. (I.E. MGLRU overreclaims less.)
+> > https://lore.kernel.org/lkml/20221201223923.873696-1-yuzhao@google.com/
+>
+> Is that a feature or a bug?
 
-On 1/24/24 15:12, Jakub Kicinski wrote:
-> On Fri, 19 Jan 2024 18:39:14 +0000 Dmitry Safonov wrote:
->>> You probably want something smaller to be honest.
->>> tools/testing/selftests/net/config has a lot of stuff in it 
->>> and it's actually missing a lot more. I'm working thru adding
->>> the missing options to tools/testing/selftests/net/config 
->>> right now so far I got:  
->>
->> Thanks!
->>
->> I'll send a patch for it in version 2 (as I anyway need to address
->> Simon's feedback).
-> 
-> Hi Dmitry!
-> 
-> I put TCP_AO and VETH in the config and the tests seem to fail with
+Feature!
 
-Thanks for wiring it up and for https://netdev.bots.linux.dev/status.html!
+>  * 1. Memcg LRU only applies to global reclaim, and the round-robin incre=
+menting
+>  *    of their max_seq counters ensures the eventual fairness to all elig=
+ible
+>  *    memcgs. For memcg reclaim, it still relies on mem_cgroup_iter().
+>
+> If it bails out exactly after nr_to_reclaim, it'll overreclaim
+> less. But with steady reclaim in a complex subtree, it will always hit
+> the first cgroup returned by mem_cgroup_iter() and then bail. This
+> seems like a fairness issue.
 
-> selftests: net/tcp_ao: rst_ipv4
-> not ok 1 # error 834[lib/kconfig.c:143] Failed to initialize kconfig 2: No such file or directory
-> # Planned tests != run tests (0 != 1)
-> # Totals: pass:0 fail:0 xfail:0 xpass:0 skip:0 error:1
+Right. Because the memcg LRU is maintained in pg_data_t and not in
+each cgroup, I think we are currently forced to have the iteration
+across all child memcgs for non-root memcg reclaim for fairness.
 
-Hehe, yeah I wanted to detect kernels with !CONFIG_TCP_AO, to SKIP the
-test, rather than FAIL it, which this lib/kconfig.c does.
-But from a glance, I think it's failing in your run because there are
-checks with and without TCP_AO, but I didn't think of checking for
-the hashing algorithms support.
+> We should figure out what the right method for balancing fairness with
+> overreclaim is, regardless of reclaim implementation. Because having
+> two different approaches and reverting dependent things back and forth
+> doesn't make sense.
+>
+> Using an LRU to rotate through memcgs over multiple reclaim cycles
+> seems like a good idea. Why is this specific to MGLRU? Shouldn't this
+> be a generic piece of memcg infrastructure?
 
-I think what happens is has_tcp_ao():
-: strcpy(tmp.alg_name, "hmac(sha1)");
-..
-: if (setsockopt(sk, IPPROTO_TCP, TCP_AO_ADD_KEY, &tmp, sizeof(tmp)) < 0)
+It would be pretty sweet if it were. I haven't tried to measure this
+part in isolation, but I know we had to abandon attempts to use
+per-app memcgs in the past (2018?) because the perf overhead was too
+much. In recent tests where this feature is used, I see some perf
+gains which I think are probably attributable to this.
 
-Could you check that what I suppose is failing, is actually failing?
-[dima@Mindolluin linux-master]$ grep -e '\<CONFIG_CRYPTO_SHA1\>' -e
-'\<CONFIG_CRYPTO_HMAC\>' .config
-CONFIG_CRYPTO_HMAC=y
-CONFIG_CRYPTO_SHA1=y
+> Then there is the question of why there is an LRU for global reclaim,
+> but not for subtree reclaim. Reclaiming a container with multiple
+> subtrees would benefit from the fairness provided by a container-level
+> LRU order just as much; having fairness for root but not for subtrees
+> would produce different reclaim and pressure behavior, and can cause
+> regressions when moving a service from bare-metal into a container.
+>
+> Figuring out these differences and converging on a method for cgroup
+> fairness would be the better way of fixing this. Because of the
+> regression risk to the default reclaim implementation, I'm inclined to
+> NAK this revert.
 
-If that's the case, I'll  add the detection for hashing algorithms to
-lib/kconfig.c (together with a patch for
-tools/testing/selftests/net/config).
-And also heads up for key-management.c - that tries a bunch of hashing
-algorithms to check that the work and that the key rotation between
-different algorithms works:
+In the meantime, instead of a revert how about changing the batch size
+geometrically instead of the SWAP_CLUSTER_MAX constant:
 
-: const char *test_algos[] = {
-: 	"cmac(aes128)",
-: 	"hmac(sha1)", "hmac(sha512)", "hmac(sha384)", "hmac(sha256)",
-: 	"hmac(sha224)", "hmac(sha3-512)",
-: 	/* only if !CONFIG_FIPS */
-: #define TEST_NON_FIPS_ALGOS	2
-: 	"hmac(rmd160)", "hmac(md5)"
-: };
+                reclaimed =3D try_to_free_mem_cgroup_pages(memcg,
+-                                       min(nr_to_reclaim -
+nr_reclaimed, SWAP_CLUSTER_MAX),
++                                       (nr_to_reclaim - nr_reclaimed)/2,
+                                        GFP_KERNEL, reclaim_options);
 
-
-> The script does:
-> 
-> target=net/tcp_ao
-> make mrproper
-> 
-> vng -v -b -f tools/testing/selftests/$target
-> # build the scripts
-> make headers
-> make -C tools/testing/selftests/$target
-> 
-> vng -v -r arch/x86/boot/bzImage --user root
-> # inside the VM
-> make -C tools/testing/selftests TARGETS=$target run_tests
-
-Thanks,
-            Dmitry
-
+I think that should address the overreclaim concern (it was mentioned
+that the upper bound of overreclaim was 2 * request), and this should
+also increase the reclaim rate for root reclaim with MGLRU closer to
+what it was before.
 
