@@ -1,57 +1,59 @@
-Return-Path: <linux-kernel+bounces-37117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD7EE83ABBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:29:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E20883ABBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:29:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF65E1C22A66
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:29:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F2D91C22093
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:29:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27C8C7C09D;
-	Wed, 24 Jan 2024 14:28:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AF597E575;
+	Wed, 24 Jan 2024 14:28:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uVvUEiSI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dc7rMO2r"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63C1A7C08D;
-	Wed, 24 Jan 2024 14:28:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 157267C0B8;
+	Wed, 24 Jan 2024 14:28:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706106504; cv=none; b=VGooVF911qeYrgKA3YGR8zZfsfrDp2ukdNRXcbinEGyZKOKDE0oiDNVjnl1sNfZsCSOxRQzRzOBnMvvLAZCeS/muNEK5H16tbjvs8lZSrJYm0ka5BBomoYcqJfK8GHa7HAq5LZ9D7Fm5G3PGte+mdHPQcFZ1crz9k1bWUqD321k=
+	t=1706106507; cv=none; b=PTjzjVuTkEfi22pVL9J9nPVxe+9Uvo5HYt2T0AZxX+RjtrhcIXM483lMeHkUXpq8TMWN+fQeZ+uay/BPbcLQ13xUAzsoOnPnNS3NgCqGB2x6cD4Jr9z94WEpCw5+Pa008nkexel8LYlbD998L7AbjZfeXyLk8465YrJ+ltl8dV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706106504; c=relaxed/simple;
-	bh=yn0wNLPBUdOJdf2VETHLWfkGVU+MRAK5BYDWXbwCY50=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qGMCQr5LR2M7kPnbyg1zc0ycQEVJZnd5KB9BxjbQNbLxC4voUUKcaJfcuh7r9Txn2sHfQPIuPsmjG2gl1pEFNdBRq2pkcGdDSRxBC4JqtrWAivZeKrEg4cZrOwm4jVFlJllCvgH2bQ4QLDoTJ+D+KnJT8JuhyYQMN6xwkcCOpp4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uVvUEiSI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D995C433A6;
-	Wed, 24 Jan 2024 14:28:22 +0000 (UTC)
+	s=arc-20240116; t=1706106507; c=relaxed/simple;
+	bh=OYia0AtsnKf67CdsbSIm04KyjzCViV9xEqkqRkan7fg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=MTvVp6zpJM/PTwzBkDwQDxu6lP5jKdaI0VAW3KKKirvcqHxw7LdynlFkMUhJA5PZZ4q+Oxs6nid585jv0vSie0PerJmAcuQybR5IteHkU+N9bZoGnEIUN1vx/LYj9G+Dgfrk/jMx1agf/50uXmcDcga1dXjEeLkDmJomxziOogU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dc7rMO2r; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E8CDC433A6;
+	Wed, 24 Jan 2024 14:28:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706106503;
-	bh=yn0wNLPBUdOJdf2VETHLWfkGVU+MRAK5BYDWXbwCY50=;
-	h=From:To:Cc:Subject:Date:From;
-	b=uVvUEiSI5AJzJSJxwuXj3kkbPOE3kiDx9aqOxa+30lrYQSlTLF6KX+RRSqZKRWPiY
-	 o3Dub9pZOCXoegbvYrtPfxUfZ+JqIrnqvzxZOg/UGmeh5mIeukv0AHewfQ/Ujv4VSL
-	 fbEvEbHgU72R1/6Mp/081a/jkjRIQP/9vZ62d2Sqmst5y2lD/ohtCPr0UfAiXJr3Qq
-	 gYiAbr1NQgAYRD118UlMS0UYhfcmUr3Kt7uu5EFhxQI3ZvLIh92mg2tZYTZ1rxINrA
-	 6Hnum0HAttvJ8EJmn5r78iaUj9joFle7cmiomvmlBcjkfNbdwWJUy2emkcNmB6Xh4d
-	 dGCJ0uhC9CFEw==
+	s=k20201202; t=1706106506;
+	bh=OYia0AtsnKf67CdsbSIm04KyjzCViV9xEqkqRkan7fg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Dc7rMO2rCI3XpSWoRKOcryjtr4m+jP1bXdASFV5pMDDw5KwiQlDWkhWc+CmtDNLMU
+	 F+n4QLnkphaym3ZpBJRWBZ+iUTHTzdsxXiKpEvg7H+PNhKAxplzVm0YbEyVZBRhm6p
+	 hjM+Elrkuis24X5/yps7ogg+iObzSVUiY0h1oRUWUDqbgSZTBdyyehoSK0Mmy1RSTe
+	 4kEnKzY3XKllR2eDgJtI4R3IhcEeZ8StKgH8KG1F5HLq1s/QOJltc5HOQsP4P8XxPv
+	 0I1x66QgJ+g9UaO2sKdaVIbKWlPD9nBH+QsoG0nFzeO3VsOVImGzWUdeco6czcJD8t
+	 pf1D968GHj7wQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
+Cc: Heiner Kallweit <hkallweit1@gmail.com>,
+	Lee Jones <lee@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	andy@kernel.org,
-	linus.walleij@linaro.org,
-	linux-gpio@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 01/13] pinctrl: baytrail: Fix types of config value in byt_pin_config_set()
-Date: Wed, 24 Jan 2024 09:27:54 -0500
-Message-ID: <20240124142820.1283206-1-sashal@kernel.org>
+	pavel@ucw.cz,
+	linux-leds@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 02/13] leds: trigger: panic: Don't register panic notifier if creating the trigger failed
+Date: Wed, 24 Jan 2024 09:27:55 -0500
+Message-ID: <20240124142820.1283206-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240124142820.1283206-1-sashal@kernel.org>
+References: <20240124142820.1283206-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,40 +65,40 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.1
 Content-Transfer-Encoding: 8bit
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Heiner Kallweit <hkallweit1@gmail.com>
 
-[ Upstream commit 1a856a22e6036c5f0d6da7568b4550270f989038 ]
+[ Upstream commit afacb21834bb02785ddb0c3ec197208803b74faa ]
 
-When unpacked, the config value is split to two of different types.
-Fix the types accordingly.
+It doesn't make sense to register the panic notifier if creating the
+panic trigger failed.
 
-Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+Link: https://lore.kernel.org/r/8a61e229-5388-46c7-919a-4d18cc7362b2@gmail.com
+Signed-off-by: Lee Jones <lee@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/intel/pinctrl-baytrail.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/leds/trigger/ledtrig-panic.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/intel/pinctrl-baytrail.c b/drivers/pinctrl/intel/pinctrl-baytrail.c
-index 3cd0798ee631..f1af21dbd5fb 100644
---- a/drivers/pinctrl/intel/pinctrl-baytrail.c
-+++ b/drivers/pinctrl/intel/pinctrl-baytrail.c
-@@ -918,13 +918,14 @@ static int byt_pin_config_set(struct pinctrl_dev *pctl_dev,
- 			      unsigned int num_configs)
+diff --git a/drivers/leds/trigger/ledtrig-panic.c b/drivers/leds/trigger/ledtrig-panic.c
+index 64abf2e91608..5a6b21bfeb9a 100644
+--- a/drivers/leds/trigger/ledtrig-panic.c
++++ b/drivers/leds/trigger/ledtrig-panic.c
+@@ -64,10 +64,13 @@ static long led_panic_blink(int state)
+ 
+ static int __init ledtrig_panic_init(void)
  {
- 	struct intel_pinctrl *vg = pinctrl_dev_get_drvdata(pctl_dev);
--	unsigned int param, arg;
- 	void __iomem *conf_reg = byt_gpio_reg(vg, offset, BYT_CONF0_REG);
- 	void __iomem *val_reg = byt_gpio_reg(vg, offset, BYT_VAL_REG);
- 	void __iomem *db_reg = byt_gpio_reg(vg, offset, BYT_DEBOUNCE_REG);
- 	u32 conf, val, db_pulse, debounce;
-+	enum pin_config_param param;
- 	unsigned long flags;
- 	int i, ret = 0;
-+	u32 arg;
++	led_trigger_register_simple("panic", &trigger);
++	if (!trigger)
++		return -ENOMEM;
++
+ 	atomic_notifier_chain_register(&panic_notifier_list,
+ 				       &led_trigger_panic_nb);
  
- 	raw_spin_lock_irqsave(&byt_lock, flags);
- 
+-	led_trigger_register_simple("panic", &trigger);
+ 	panic_blink = led_panic_blink;
+ 	return 0;
+ }
 -- 
 2.43.0
 
