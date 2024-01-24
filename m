@@ -1,117 +1,99 @@
-Return-Path: <linux-kernel+bounces-37416-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37414-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3554283AFB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:26:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C709083AFB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:25:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E32FF28C940
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:26:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8029328C7F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:25:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F79885C76;
-	Wed, 24 Jan 2024 17:21:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 813277E798;
+	Wed, 24 Jan 2024 17:21:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="YYTuWMd+"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fXK9nLAM"
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1BF185C49
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 17:21:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33FD77E789
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 17:21:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706116880; cv=none; b=OS+OwxvQrDtMIJmE0EV5dx96WK2huMZ3l0kU7YJdba969uTmFX22xN3bLaFsnB+oe4NOOiLJzTvKCHbEGKJRihwLWx58jYPB0IL1fJOpg/HdSuwbylsxtL8FiDoeNhiyhIcun9Bi3OoaD53MFPJ8w7KXvhyjh1S45OnwwYybPYU=
+	t=1706116874; cv=none; b=OOqgRL6gWC8NEVyHUWTiCsVfHay7rHYig7y12VDE/AVDQmZ/aC2MH8K262SM4vWkFfZgO5FS8fLJvF2CiNujRFgKEblY4VnXqe9xuojXAmYq2WhW5F3GxFIOiSYoX66YRmTKk1eji2CWevGOCZCczVqcwgMIIHrjh3pC3orPLZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706116880; c=relaxed/simple;
-	bh=EiCoJPnTL7TGvTbryiqXAzqyBUxETLyJiebAgcz5L/w=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VgKvRR77wK0IH+vmQ1fzvQoof5wLwNSaTgPLgGiQfPEE6aqNC/JZzHl0AazVYn5hW3Wukw1r7q5Y73Z5dzRJFGk8hvx8w2ggKJKNB37NClm5lslozAV3gUWEz6fLL+BtdgWZjr2qmGEwDIe4StzJ0EkrnCObmSfWdRHhmf0T3uM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=YYTuWMd+; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40OHL7rb067789;
-	Wed, 24 Jan 2024 11:21:07 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706116867;
-	bh=yBzQPwPqylVFT4fC7f7c6TpIfQpRU+mNF8bt8vOP0RI=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=YYTuWMd+VqQqixMPYVaJrIaRb0oiXc8dJAQNi6YtpBdBmT4CBeWLfqPho9JLW8/yK
-	 CRCR8BlqijCOXfiYQHQSiXq0RVDGhbk8OytiBm1Dh2yYbXVU6m2/PO0HU1IFlbcqob
-	 SP2k+MqPp3trOOhVymbosReVCY0IuYlCQpTrw9VE=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40OHL7YK091589
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 24 Jan 2024 11:21:07 -0600
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 24
- Jan 2024 11:21:07 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 24 Jan 2024 11:21:07 -0600
-Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40OHL7lj047860;
-	Wed, 24 Jan 2024 11:21:07 -0600
-Date: Wed, 24 Jan 2024 11:21:07 -0600
-From: Nishanth Menon <nm@ti.com>
-To: Andrew Davis <afd@ti.com>
-CC: Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Santosh Shilimkar
-	<ssantosh@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] ARM: multi_v7_defconfig: Add more TI Keystone support
-Message-ID: <20240124172107.un5xltsefttn3xzu@affected>
-References: <20240124162857.111915-1-afd@ti.com>
- <20240124164141.e6sdftiqxoxr6k7t@ravage>
- <1e6a94e7-1b88-450e-825f-bf4b56afb748@ti.com>
+	s=arc-20240116; t=1706116874; c=relaxed/simple;
+	bh=4xiz0GcQG54/BySvte8DcHDS1R9W9I7lbxkZQ/Iv5WA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Mvn8lSj1E82xNBLws16fmCY59IBuAs3o14WUnPxSdC7eOlB+aNLJi2i/fU05LdxfPiH2Pfti8CEyx/KaGDDzAWGpA3rBkhxc6/ibcTnO2mDLdKQvggMLcRazGsxwnEUr9J4MTiaZUCS1H0BQzqRog1o/Ot/cfbjOhz/NsE1+dIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fXK9nLAM; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40ebf373130so20427045e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 09:21:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706116871; x=1706721671; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4xiz0GcQG54/BySvte8DcHDS1R9W9I7lbxkZQ/Iv5WA=;
+        b=fXK9nLAMsX16J9E/9Qf8l/kbYDzwLwQKvReg3QVxLVWpCGvOK9GO42gMDxq4CJRoWi
+         aBf5jMkWE1otqL8yOhAO76nYg+OJ9oDDBHRkt1NVfL3A6kmjRFoplrYN9HjrdblSvARe
+         Lf1HxiQSBUW5MSbNX9Gg2XcrYoUI/I0Hho6laYX93Hz8W1vmzLTSrqvBAiWd7ejUt6In
+         KM58vJ+ZCYwyGfQD8j1ONeW/9O3blMiByEGgfi1hmK3kidHv1rAAidfwderSTIVhJZhc
+         HAZgPsIYqcXvZio2jEV64J82xyg8wvyco/yXTQvJeBLL4ce2DAThhui6MNSaOZefon1f
+         1IpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706116871; x=1706721671;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4xiz0GcQG54/BySvte8DcHDS1R9W9I7lbxkZQ/Iv5WA=;
+        b=esHBDiW56pklsh9TV3RtqtQissxRWGS6VJA/Tu5IQQ/dKUjThhoJD6Zb5AxKTIrLHc
+         8/xkoZ551VSYimOW/rWF5udSku9/qPUnTwgWjSou4Szj2483goH8K7b3QRkPBOUg8/9q
+         y68yDZqaogrVduzmu4p6FmIAAntURIH9cmSqNJrdgFPeWJDHHxtNPsy2qj06FvgYqqEw
+         80wnWtFRlc1DWe/wBvF1AmCt9b9gODXZNacgKamXTEtFoTBcaHolYFuNChLmKouFVREg
+         vWDpKpaLFcmfhVcp5QA2oLECrRnueJLU9hKYS84GAegI7uiK4f9rgdoQaNNRdmewj4rl
+         vziQ==
+X-Gm-Message-State: AOJu0YxuGeCGYTnlPEok46r6gQK9DHr7zLU478M7N08avCxI89ZLlBSs
+	8c+vWl5doZc37cP5FVv29W2ml4osBNfOkWpSDXPq1zQVXfWOjCXtvOB0wLbdXbQ=
+X-Google-Smtp-Source: AGHT+IGAFW4D80dnsAHiW82tmDEk0cyiMsQBq0972I3W5BOphHDe6lKpbk/KrXx73htiztW7fMICCg==
+X-Received: by 2002:a05:600c:3d13:b0:40e:c428:4a6b with SMTP id bh19-20020a05600c3d1300b0040ec4284a6bmr889987wmb.13.1706116871447;
+        Wed, 24 Jan 2024 09:21:11 -0800 (PST)
+Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
+        by smtp.gmail.com with ESMTPSA id w3-20020a05600c474300b0040e549c77a1sm279382wmo.32.2024.01.24.09.21.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 09:21:10 -0800 (PST)
+Date: Wed, 24 Jan 2024 17:21:09 +0000
+From: Daniel Thompson <daniel.thompson@linaro.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Lee Jones <lee@kernel.org>,
+	Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH v1 2/4] backlight: hx8357: Move OF table closer to its
+ consumer
+Message-ID: <20240124172109.GA15685@aspen.lan>
+References: <20240114152759.1040563-1-andriy.shevchenko@linux.intel.com>
+ <20240114152759.1040563-3-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1e6a94e7-1b88-450e-825f-bf4b56afb748@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20240114152759.1040563-3-andriy.shevchenko@linux.intel.com>
 
-On 10:59-20240124, Andrew Davis wrote:
-> On 1/24/24 10:41 AM, Nishanth Menon wrote:
-> > On 10:28-20240124, Andrew Davis wrote:
-> > > The Keystone platforms used their own keystone_defconfig mostly to
-> > > enable CONFIG_ARM_LPAE which could not be added to the multi_v7 config.
-> > > Now that we have multi_v7_lpae_defconfig/lpae.config target we can and
-> > > should use that defconfig for Keystone. Add the remaining must have
-> > > options for Keystone support to multi_v7_defconfig.
-> > > 
-> > 
-> > Please state bloat-o-meter impact on vmlinux.
-> > 
-> 
-> $ ./scripts/bloat-o-meter build/vmlinux.baseline build/vmlinux
-> add/remove: 387/0 grow/shrink: 6/0 up/down: 130945/0 (130945)
-> ...
-> Total: Before=22791863, After=22922808, chg +0.57%
-> 
-> 
-> Seems half of that is TI_KEYSTONE_NETCP, if we don't think
-> anyone will need nfs rootfs boot then we could make it a module:
-> 
-> 
-> $ ./scripts/bloat-o-meter build/vmlinux.baseline build/vmlinux
-> add/remove: 286/0 grow/shrink: 4/0 up/down: 64393/0 (64393)
-> ...
-> Total: Before=22791863, After=22856256, chg +0.28%
+On Sun, Jan 14, 2024 at 05:25:09PM +0200, Andy Shevchenko wrote:
+> Move OF table near to the user.
+>
+> While at it, drop comma at terminator entry.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Please add that to commit message - the delta and rationale for the
-config params you think we need to add in.
+Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+
+Daniel.
 
