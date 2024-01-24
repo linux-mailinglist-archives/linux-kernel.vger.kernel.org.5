@@ -1,98 +1,151 @@
-Return-Path: <linux-kernel+bounces-37726-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37727-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9849583B47C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:09:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D4CC183B47E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:11:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4979E2837A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:09:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81F43283672
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:11:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C0FC135A45;
-	Wed, 24 Jan 2024 22:09:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9723813541F;
+	Wed, 24 Jan 2024 22:10:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Bm1uM0Iu"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rBD5fHhj"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 738DE135413
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 22:09:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57CEA131E26
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 22:10:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706134182; cv=none; b=f14e58vZSoKGHCGWnRsZMINR28Fh7rYKjXl83OtcQcMnGt/2lBt9KnhqxLUDmMbPk5jx4kbxVD4BDto+NKVOEMcy+C9+4zeaFYtReJTyGrZK2da3tgyzAxDe+qRXrCyH4TJBjc27Bed9pJf9fsSVx5lC3YZLAxOHoLWQx2DNR28=
+	t=1706134252; cv=none; b=ij2ARQnyjSWgAJ84fBPHhL1rgDS2PUxBM0o5yNuhOeB3qdvwFL1oDb9dwkFj3EGj5ZLHHgstxi1gw7fUfcCsFCzplK+9lu7Mrs2iitfvOPr1OhJFn/H1prIMuQLDng2IZgQaRyGCRJFd3LgX3Pb3ktGKPWNV2NrTQOjMJGUH2HU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706134182; c=relaxed/simple;
-	bh=UQmXMpFOIh4kaKkMBDQ4eCuMf1Sn6QVhCPFE62Hwr5U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hRxwsIr74bx/zZLTNrnp5XBDX6N8JMHyM899BzJr54qVQTtAELBe0WF3lVzg97VTeyPBT0P4XKkIjjQ3Doq9PwYAVfH+9RULijK2iPjs3epB6KF92bjx0qxa1E87zYHlkiEzFULoaDq9Rbp1aAxNF75rso6DiLvWRIfz3yHGh9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Bm1uM0Iu; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d76943baafso23946445ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 14:09:41 -0800 (PST)
+	s=arc-20240116; t=1706134252; c=relaxed/simple;
+	bh=qf1Bz4aoFrb6jzFeqw/Ih99tCsZ4qQQIkj71i8O1boA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=tuUkrCX6WVRdAbicBqGhvAKQEhFOZ6doJa5KPVOuPHpIh1J81Y89jAHfpLEQ5MHAlOpZgwV32mO8eMYzRYBpGwoWjfC5V4ITU58Fv/zyUMm6+8fbA7lbBdcBEqz/NC78tFTFGBH3gQ64X/7S7jfcuAum6ltbEcA9JztCLD+OXeQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rBD5fHhj; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d72043fa06so9475ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 14:10:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706134181; x=1706738981; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+2HfF9lupAEm1OXAQn6hzn1NaSwJWDcoC+WNHu+TurA=;
-        b=Bm1uM0IuP1+QnewQhVXpyXRow9FD25u+xJffrKC4wMTBzaLmSABFDKIzqIM2bx/SmM
-         t0tfn0eMt2jaRHmC+liWPK1juyfVJmT4Me/jviogAndspfKZ/ROKj1yxDrZK0+Dgocwy
-         2C1+ShExPYRU5V5n0du+wD1RhcllEGiHcAemM=
+        d=google.com; s=20230601; t=1706134250; x=1706739050; darn=vger.kernel.org;
+        h=mime-version:user-agent:message-id:date:references:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Of8y99/fZ6gvxjBPOuJPhzGycvWjT9wPG4BDRVEpUOo=;
+        b=rBD5fHhjCxDKMm1IaVbSPPi8b3xnXl8BSRNCu+TprOKToqAUmKufXEvLNS9q7qENqR
+         wXGtkcnZxxMRpvEMKir2Otkiwf2BdupGY8hhWlnOuc+TcxoZJEB3JG3uMMAksJVTPmIs
+         BSj0EYBeVrJfvHpcvdV10AXpjVTDygo0fHXHtQAwdb5ztRdSiLVxbJV0RWXos6k4yIAQ
+         4g73FdPoB8mKd+fp4IBSNq0jaXyRrwwSu/B8xPYEmqv3vwFSTIZxXl6WyPDNm4w5sTzz
+         VxhgZVi4NI7mEQVaqQIE3nCWaLGHsb+X6FKdaNlsODfN5RgU7EUju72gpltOmB7stbSB
+         t+vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706134181; x=1706738981;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1706134250; x=1706739050;
+        h=mime-version:user-agent:message-id:date:references:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+2HfF9lupAEm1OXAQn6hzn1NaSwJWDcoC+WNHu+TurA=;
-        b=mDPDNUN9K5c5umrxI/SYfbGdIdyG60HkrSPA4Qetz5iLomui110l74qyNVvFmcMv6+
-         xG8A02YPHAsWN9pUncwamI9kpXF4NnwOJbsDEkI2EfQuLsWf2cZDmJS+4DMlh1yYOa1+
-         bgJcWwh2qNsQdqak2I1vrb9hB3x0L32TJBaIOq8Vp/AYePsA72/AbJBtnB54Mt5eulSs
-         cmUSJ2qz0+e1xqmtNo3FZ+TYOXaD9MSV0HtasCiOKA/f/UDYHa3Lo4o7GwmBOX+XQH1B
-         m1eicJBjlpDcCt8aWPigiNB3kBUZ16gcwXa0hvPuheXfmKajCof2xvMJNfZybM3XW11U
-         Clpw==
-X-Gm-Message-State: AOJu0YwFz3FnuzYuDDnhuKdJUfv1Vv6EkD9rWrdJUewdYJaS33ZMS/xc
-	SzeK7cEe0yVM8Jtw69ZY6Z2paVqAel+h8iIwKuEsvgO4SR7c1/arIi0aCy9FXw==
-X-Google-Smtp-Source: AGHT+IHwjfVcQfQSMaltTGpvSx5H8mpO1d+72MKHAgocTXkrSUI+xD0uCoBa7P9UapqyrXYteTG9ug==
-X-Received: by 2002:a17:902:c3c5:b0:1d7:1b61:579e with SMTP id j5-20020a170902c3c500b001d71b61579emr51632plj.89.1706134180745;
-        Wed, 24 Jan 2024 14:09:40 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id g9-20020a1709026b4900b001d75044fb5bsm5572290plt.141.2024.01.24.14.09.40
+        bh=Of8y99/fZ6gvxjBPOuJPhzGycvWjT9wPG4BDRVEpUOo=;
+        b=oSo4zG0ed5dAte76SZw0I6ZkUZISsG3dijnCJkHtQVcJy454yjff34xCReSnjcj2J6
+         dRr51doQcZyTEEUADGJKCFGl/uBNzAOl+/ictTlLm6sbippkrorXPG1B1/2pHw0Uifk6
+         FCeymgLvLipOuSehQqnOYbO9zZSrZwCC8nKJtPaLBvm5GdBHJMDzn6edNfDlL80M+sME
+         G+M/T9+s5sWp5kppvZrxkUBpKZ2N8UbZnVkph1bMSuSRmFTs6bAgUJq4QG1XIH2/LrXz
+         sFV0xmqCoyIFlYAgpDAnTHXFa/eMIxQRPKwml3IpcfnUcfRV8KwZGNKp2onlJUOIQfQM
+         DrIA==
+X-Gm-Message-State: AOJu0YxMWT+/GYqNchILd3bRthq2yPwPMAhISU9upt8YCMYIzM/x5I6r
+	tog6RWjBtB/xDnujvHJkWBfE7ft5D9ezI8Eb6/E/PR1MNV8xYquQdGeOY0ziwtNRG1giBi2q44k
+	Qyg==
+X-Google-Smtp-Source: AGHT+IF8MuebQLnkd4Io7E+CqCjdzUlAXM1QZ/u2YFj/nQlkbAX6M2kaOV1kNZApOwXd36+cpgNL2w==
+X-Received: by 2002:a17:903:32cf:b0:1d5:a556:7662 with SMTP id i15-20020a17090332cf00b001d5a5567662mr25291plr.9.1706134249956;
+        Wed, 24 Jan 2024 14:10:49 -0800 (PST)
+Received: from bsegall-linux.svl.corp.google.com.localhost ([2620:15c:2a3:200:8bb1:6f4c:997b:e7c3])
+        by smtp.gmail.com with ESMTPSA id ku11-20020a170903288b00b001d72846e441sm8183171plb.72.2024.01.24.14.10.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 14:09:40 -0800 (PST)
-Date: Wed, 24 Jan 2024 14:09:39 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Kevin Locke <kevin@kevinlocke.name>
-Cc: Jann Horn <jannh@google.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Eric Biederman <ebiederm@xmission.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] exec: Remove __FMODE_EXEC from uselib()
-Message-ID: <202401241409.AD68CE57A@keescook>
-References: <20240124220619.work.227-kees@kernel.org>
+        Wed, 24 Jan 2024 14:10:49 -0800 (PST)
+From: Benjamin Segall <bsegall@google.com>
+To: Hillf Danton <hdanton@sina.com>
+Cc: Peter Zijlstra <peterz@infradead.org>,  Ingo Molnar <mingo@redhat.com>,
+  Will Deacon <will@kernel.org>,  Waiman Long <longman@redhat.com>,  Boqun
+ Feng <boqun.feng@gmail.com>,  linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] locking/percpu-rwsem: do not do lock handoff in
+ percpu_up_write
+In-Reply-To: <20240123150541.1508-1-hdanton@sina.com> (Hillf Danton's message
+	of "Tue, 23 Jan 2024 23:05:41 +0800")
+References: <xm26zfwx7z5p.fsf@google.com>
+	<20240123150541.1508-1-hdanton@sina.com>
+Date: Wed, 24 Jan 2024 14:10:43 -0800
+Message-ID: <xm26v87imlgc.fsf@bsegall-linux.svl.corp.google.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240124220619.work.227-kees@kernel.org>
+Content-Type: text/plain
 
-On Wed, Jan 24, 2024 at 02:06:23PM -0800, Kees Cook wrote:
-> Path-based LSMs will bypass uselib() "open" checks since commit
-> 4759ff71f23e ("exec: Check __FMODE_EXEC instead of in_execve for LSMs"),
-> so don't set __FMODE_EXEC during uselib(). The LSM "open" and eventual
-> "mmap" hooks will be restored. (uselib() never set current->in_execve.)
+Hillf Danton <hdanton@sina.com> writes:
 
-Ah, nevermind, I see Linux's commit has taken care of this already:
-https://git.kernel.org/linus/3eab830189d94f0f80f34cbff609b5bb54002679
+> On Mon, 22 Jan 2024 14:59:14 -0800 Benjamin Segall <bsegall@google.com>
+>> The waitq wakeup in percpu_up_write necessarily runs the wake function
+>> immediately in the current thread. With it calling
+>> __percpu_rwsem_trylock on behalf of the thread being woken, the lock is
+>> extremely fair and FIFO, with the window for unfairness merely being the
+>> time between the release of sem->block and the completion of a relevant
+>> trylock.
+>> 
+>> However, the woken threads that now hold the lock may not be chosen to
+>> run for a long time, and it would be useful to have more of this window
+>> available for a currently running thread to unfairly take the lock
+>> immediately and use it.
+>
+> It makes no sense for lock acquirer to probe owner's activity except for
+> spining on owner. Nor for owner to guess if any acquirer comes soon.
 
--- 
-Kees Cook
+The code is not doing that; this text is just describing why we might
+choose a less fair heuristic for which thread gets the lock.
+
+>
+>> This can result in priority-inversion issues
+>> with high contention or things like CFS_BANDWIDTH quotas.
+>
+> Given mutex could not avoid PI (priority-inversion) and deadlock, why is
+> percpu-rwsem special wrt PI?
+
+I was going to say that mutex/rwsem have SPIN_ON_OWNER that dodge this
+somewhat (and percpu-rwsem cannot do that). Switching
+cgroup_threadgroup_rwsem to an actual rwsem and even disabling read-side
+RWSEM_FLAG_HANDOFF doesn't actually help noticeably for my artificial
+benchmark though, so the test may not be as representative as I hoped.
+
+The most obvious possibility is that with the real problem
+solving/not-causing the internal contention issues was sufficient, and
+that also attacking it from the percpu-rwsem angle was overkill. It
+wasn't sufficient for the artificial test, but cranking up the load to
+get a reliable test could easily have blown past the point where the
+other fix was sufficient.
+
+>> 
+>> Signed-off-by: Ben Segall <bsegall@google.com>
+>> 
+>> ---
+>> 
+>> So the actual problem we saw was that one job had severe slowdowns
+>> during startup with certain other jobs on the machine, and the slowdowns
+>> turned out to be some cgroup moves it did during startup. The antagonist
+>> jobs were spawning huge numbers of threads and some other internal bugs
+>> were exacerbating their contention. The lock handoff meant that a batch
+>> of antagonist threads would receive the read lock of
+>> cgroup_threadgroup_rwsem and at least some of those threads would take a
+>> long time to be scheduled.
+>
+> If you want to avoid starved lock waiter, take a look at RWSEM_FLAG_HANDOFF
+> in rwsem_down_read_slowpath().
+
+rwsem's HANDOFF flag is the exact opposite of what this patch is doing.
+Percpu-rwsem's current code has perfect handoff for read->write, and a very
+short window for write->read (or write->write) to be beaten by a new writer.
 
