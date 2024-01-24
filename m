@@ -1,218 +1,308 @@
-Return-Path: <linux-kernel+bounces-37249-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 755FE83AD44
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:27:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE68183AD4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:27:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90F161C23904
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:27:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2020D1C22550
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:27:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3F8B7A70C;
-	Wed, 24 Jan 2024 15:26:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 421ED7A732;
+	Wed, 24 Jan 2024 15:27:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="XOOstg60"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="a/GI0v9C"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03B7F22085;
-	Wed, 24 Jan 2024 15:26:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 785BE2BAE5;
+	Wed, 24 Jan 2024 15:27:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706110015; cv=none; b=D3Zfqqq/ZJxSgtmhGp/PQshmEX0OGMYlYVi3hsl2u6w6xNcan6vyFqlJO/9TErlIANNX68NbxiSLhfHVnJO67RFeszZQ4sNzpnXDYKYxe0m4tCYOnGSAIEDgMdenZFsIKYBdm4/8RNs9bab2cqF8G5V1MTldpDSI5lQbtAQ9Abw=
+	t=1706110029; cv=none; b=UWHl8DJIMqCXGWVWDD+3mtk0tLuDCIVDTdqTRZVutj2YIVs1gHg0rqJlsVm7VUzd1CbiDNmag1qAKiZVv7gSq187Asu+yPSbljRs6R50cHJCMZPIiutwOS2SmxPNBu1n29WyPwY02Jq+gE9jTIuwwtSDxBemz+TRqz448oPAzlg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706110015; c=relaxed/simple;
-	bh=4P57sBKVCs3MY83Hd0Fp0MqjqaVsRdjUHDjmEhi/6eI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XdLHPPeHW97QED7v3Z2Ks7Lm3vU4JCUckTy7OKjc+n3Hi0NlCK2vc0drO9Ezyr2sCjj4pXjN7S1W4n+d3B75P3xBhPb+cwWH5+ldAE76bK5ymdWlI7B5qeVwe9zBA1m5/kNEj9rjLVG2GVjYslYnNeLqm3eJYUQjLibZa8hwPrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=XOOstg60; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A345160007;
-	Wed, 24 Jan 2024 15:26:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1706110010;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TGKqb8PfNbcdc7vOG6mzmbB70CQFl8QHgJOa/gqXS78=;
-	b=XOOstg60KgIbgyGgmgT6sVR+BznJZGxgtuMaNvi2uKxrvRhNy0pjmLTdmOBWrHpbzQOpxS
-	gUiZyRRXGNu/gasgAWh7ilfgenSA6py0gC5+riKvq+4tO+vAfjwYeezowvUng4cyc4v/Mt
-	oGwBLecvDGt1t2XaQfjyOaYG/KulXg4RiGl8yVc+xE//JvRuqhAxWcw7bAA6+Eewl1AViQ
-	/MUZjmldwWdDWBo8f4Vws99TzRH2Y4MtOhK/JhxY8OFw/Cy7f2GTJtGR7xmQwLRH+897pa
-	5Z2z5yCNRuXSmtflltBdnP2vfasJ9Lm/Do09I6ql4bK1psTTfe//1/331v8bTA==
-Date: Wed, 24 Jan 2024 16:26:46 +0100
-From: Herve Codina <herve.codina@bootlin.com>
-To: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, Andrew Lunn <andrew@lunn.ch>, Mark Brown
- <broonie@kernel.org>, Christophe Leroy <christophe.leroy@csgroup.eu>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 3/4] net: wan: fsl_qmc_hdlc: Add runtime timeslots
- changes support
-Message-ID: <20240124162646.24bf9235@bootlin.com>
-In-Reply-To: <fc421c38-66b7-4d4e-abfa-051eccbf793c@linux.dev>
-References: <20240123164912.249540-1-herve.codina@bootlin.com>
-	<20240123164912.249540-4-herve.codina@bootlin.com>
-	<fc421c38-66b7-4d4e-abfa-051eccbf793c@linux.dev>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1706110029; c=relaxed/simple;
+	bh=eWgI5cQzGgxjU8IqhiNLaIrbAIei/iVfjxJTyMVtWCw=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=nEMzSRpFhbuYi58QsJHmPIsx9gv1dtZb6ndqVoReQuN7AhhQHXp+eCauw9WGu6PhfCsIAvpL1yKLmTsDPCWk89nP29wX6wBAYQ1hLkyUL/Fvi4zTPLY4Ie13RksnL8ZjmDSn0nvKg62BDgKV1w8yJwcCtipHyNPBRpv86+x7zi4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=a/GI0v9C; arc=none smtp.client-ip=192.55.52.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706110026; x=1737646026;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=eWgI5cQzGgxjU8IqhiNLaIrbAIei/iVfjxJTyMVtWCw=;
+  b=a/GI0v9CdeJzNMJE9SdbZs++m0rOwtAev/4Y1kW9iFOrclVpjKIz153E
+   dUO8KnZO49m5Vvx3h86P017S/uSbyBkLELZUwOv6lK4srKJoYLHMp4MOe
+   jObWMrf4Bi/t6jyiL0219zzL3oxUOZ1rNfczbut4K25WTquP2T8Q+c23m
+   8o/F0KGIxXewPuuKqgZnhNv8CVv7f09IQVMp3awrFtTE2zue+fCGwOSm1
+   ee12UGCHItnxEjlAA1pB9OZuINyf7YvX37NqAs8IwKAIAXRXN8OFdruX7
+   k6MAFRE3PHjT3eJRxqOnrpz2MiYCHBFAQKiY4WIqFL2Wuf6nMwyFUP18Q
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="400730354"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="400730354"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 07:27:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="2073769"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.48.46])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 07:27:00 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Wed, 24 Jan 2024 17:26:55 +0200 (EET)
+To: Frank Li <Frank.Li@nxp.com>
+cc: alexandre.belloni@bootlin.com, conor.culhane@silvaco.com, 
+    devicetree@vger.kernel.org, 
+    Greg Kroah-Hartman <gregkh@linuxfoundation.org>, imx@lists.linux.dev, 
+    Jiri Slaby <jirislaby@kernel.org>, joe@perches.com, 
+    krzysztof.kozlowski+dt@linaro.org, krzysztof.kozlowski@linaro.org, 
+    linux-i3c@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>, 
+    linux-serial <linux-serial@vger.kernel.org>, miquel.raynal@bootlin.com, 
+    robh@kernel.org, zbigniew.lukwinski@linux.intel.com
+Subject: Re: [PATCH v4 8/8] tty: i3c: add TTY over I3C master support
+In-Reply-To: <20240123231043.3891847-9-Frank.Li@nxp.com>
+Message-ID: <a2716dab-8681-3bce-d0fb-b83789c51362@linux.intel.com>
+References: <20240123231043.3891847-1-Frank.Li@nxp.com> <20240123231043.3891847-9-Frank.Li@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+Content-Type: text/plain; charset=US-ASCII
 
-Hi Vadim,
+On Tue, 23 Jan 2024, Frank Li wrote:
 
-On Wed, 24 Jan 2024 10:10:46 +0000
-Vadim Fedorenko <vadim.fedorenko@linux.dev> wrote:
-
-[...]
-> > +static int qmc_hdlc_xlate_slot_map(struct qmc_hdlc *qmc_hdlc,
-> > +				   u32 slot_map, struct qmc_chan_ts_info *ts_info)
-> > +{
-> > +	u64 ts_mask_avail;
-> > +	unsigned int bit;
-> > +	unsigned int i;
-> > +	u64 ts_mask;
-> > +	u64 map;
-> > +
-> > +	/* Tx and Rx masks must be identical */
-> > +	if (ts_info->rx_ts_mask_avail != ts_info->tx_ts_mask_avail) {
-> > +		dev_err(qmc_hdlc->dev, "tx and rx available timeslots mismatch (0x%llx, 0x%llx)\n",
-> > +			ts_info->rx_ts_mask_avail, ts_info->tx_ts_mask_avail);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	ts_mask_avail = ts_info->rx_ts_mask_avail;
-> > +	ts_mask = 0;
-> > +	map = slot_map;
-> > +	bit = 0;
-> > +	for (i = 0; i < 64; i++) {
-> > +		if (ts_mask_avail & BIT_ULL(i)) {
-> > +			if (map & BIT_ULL(bit))
-> > +				ts_mask |= BIT_ULL(i);
-> > +			bit++;
-> > +		}
-> > +	}
-> > +
-> > +	if (hweight64(ts_mask) != hweight64(map)) {
-> > +		dev_err(qmc_hdlc->dev, "Cannot translate timeslots 0x%llx -> (0x%llx,0x%llx)\n",
-> > +			map, ts_mask_avail, ts_mask);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	ts_info->tx_ts_mask = ts_mask;
-> > +	ts_info->rx_ts_mask = ts_mask;
-> > +	return 0;
-> > +}
-> > +
-> > +static int qmc_hdlc_xlate_ts_info(struct qmc_hdlc *qmc_hdlc,
-> > +				  const struct qmc_chan_ts_info *ts_info, u32 *slot_map)
-> > +{
-> > +	u64 ts_mask_avail;
-> > +	unsigned int bit;
-> > +	unsigned int i;
-> > +	u64 ts_mask;
-> > +	u64 map;
-> > +  
+> In typical embedded Linux systems, UART consoles require at least two pins,
+> TX and RX. In scenarios where I2C/I3C devices like sensors or PMICs are
+> present, we can save these two pins by using this driver. Pins is crucial
+> resources, especially in small chip packages.
 > 
-> Starting from here ...
+> This introduces support for using the I3C bus to transfer console tty data,
+> effectively replacing the need for dedicated UART pins. This not only
+> conserves valuable pin resources but also facilitates testing of I3C's
+> advanced features, including early termination, in-band interrupt (IBI)
+> support, and the creation of more complex data patterns. Additionally,
+> it aids in identifying and addressing issues within the I3C controller
+> driver.
 > 
-> > +	/* Tx and Rx masks must be identical */
-> > +	if (ts_info->rx_ts_mask_avail != ts_info->tx_ts_mask_avail) {
-> > +		dev_err(qmc_hdlc->dev, "tx and rx available timeslots mismatch (0x%llx, 0x%llx)\n",
-> > +			ts_info->rx_ts_mask_avail, ts_info->tx_ts_mask_avail);
-> > +		return -EINVAL;
-> > +	}
-> > +	if (ts_info->rx_ts_mask != ts_info->tx_ts_mask) {
-> > +		dev_err(qmc_hdlc->dev, "tx and rx timeslots mismatch (0x%llx, 0x%llx)\n",
-> > +			ts_info->rx_ts_mask, ts_info->tx_ts_mask);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	ts_mask_avail = ts_info->rx_ts_mask_avail;
-> > +	ts_mask = ts_info->rx_ts_mask;
-> > +	map = 0;
-> > +	bit = 0;
-> > +	for (i = 0; i < 64; i++) {
-> > +		if (ts_mask_avail & BIT_ULL(i)) {
-> > +			if (ts_mask & BIT_ULL(i))
-> > +				map |= BIT_ULL(bit);
-> > +			bit++;
-> > +		}
-> > +	}
-> > +
-> > +	if (hweight64(ts_mask) != hweight64(map)) {
-> > +		dev_err(qmc_hdlc->dev, "Cannot translate timeslots (0x%llx,0x%llx) -> 0x%llx\n",
-> > +			ts_mask_avail, ts_mask, map);
-> > +		return -EINVAL;
-> > +	}
-> > +  
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
 > 
-> till here the block looks like copy of the block from previous function.
-> It worth to make a separate function for it, I think.
+> Notes:
+>     Notes:
+>         Version number use i3c target patches.
+>         Change from v3 to v4
+>         - add static at i3c_remove()
+>         Change v2
+>         - using system_unbound_wq working queue
+>         - fixed accoring to Jiri Slaby's comments
+>     
+>         Change before send with i3c target support
+>     
+>         Change from v4 to v5
+>         - send in i3c improvememtn patches.
+>     
+>         Change from v2 to v4
+>         - none
+>     
+>         Change from v1 to v2
+>         - update commit message.
+>         - using goto for err handle
+>         - using one working queue for all tty-i3c device
+>         - fixed typo found by js
+>         - update kconfig help
+>         - using kfifo
+>     
+>         Still below items not be fixed (according to Jiri Slaby's comments)
+>         - rxwork thread: need trigger from two position.
+>         - common thread queue: need some suggestion
 > 
-> > +	if (map >= BIT_ULL(32)) {
-> > +		dev_err(qmc_hdlc->dev, "Slot map out of 32bit (0x%llx,0x%llx) -> 0x%llx\n",
-> > +			ts_mask_avail, ts_mask, map);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	*slot_map = map;
-> > +	return 0;
-> > +}
-> > +
-[...]
+>  drivers/tty/Kconfig   |  13 ++
+>  drivers/tty/Makefile  |   1 +
+>  drivers/tty/i3c_tty.c | 426 ++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 440 insertions(+)
+>  create mode 100644 drivers/tty/i3c_tty.c
+> 
+> diff --git a/drivers/tty/Kconfig b/drivers/tty/Kconfig
+> index 5646dc6242cd9..9ab4cd480e9f8 100644
+> --- a/drivers/tty/Kconfig
+> +++ b/drivers/tty/Kconfig
+> @@ -412,6 +412,19 @@ config RPMSG_TTY
+>  	  To compile this driver as a module, choose M here: the module will be
+>  	  called rpmsg_tty.
+>  
+> +config I3C_TTY
+> +	tristate "TTY over I3C"
+> +	depends on I3C
+> +	help
+> +	  Select this option to use TTY over I3C master controller.
+> +
+> +	  This makes it possible for user-space programs to send and receive
+> +	  data as a standard tty protocol. I3C provide relatively higher data
+> +	  transfer rate and less pin numbers, SDA/SCL are shared with other
+> +	  devices.
+> +
+> +	  If unsure, say N
+> +
+>  endif # TTY
+>  
+>  source "drivers/tty/serdev/Kconfig"
+> diff --git a/drivers/tty/Makefile b/drivers/tty/Makefile
+> index 07aca5184a55d..f329f9c7d308a 100644
+> --- a/drivers/tty/Makefile
+> +++ b/drivers/tty/Makefile
+> @@ -27,5 +27,6 @@ obj-$(CONFIG_GOLDFISH_TTY)	+= goldfish.o
+>  obj-$(CONFIG_MIPS_EJTAG_FDC_TTY) += mips_ejtag_fdc.o
+>  obj-$(CONFIG_VCC)		+= vcc.o
+>  obj-$(CONFIG_RPMSG_TTY)		+= rpmsg_tty.o
+> +obj-$(CONFIG_I3C_TTY)		+= i3c_tty.o
+>  
+>  obj-y += ipwireless/
+> diff --git a/drivers/tty/i3c_tty.c b/drivers/tty/i3c_tty.c
+> new file mode 100644
+> index 0000000000000..8f4e87dfa01cd
+> --- /dev/null
+> +++ b/drivers/tty/i3c_tty.c
+> @@ -0,0 +1,426 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright 2023 NXP.
+> + *
+> + * Author: Frank Li <Frank.Li@nxp.com>
+> + */
+> +
+> +#include <linux/delay.h>
+> +#include <linux/kernel.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/module.h>
+> +#include <linux/i3c/device.h>
+> +#include <linux/i3c/master.h>
+> +#include <linux/slab.h>
+> +#include <linux/console.h>
+> +#include <linux/serial_core.h>
+> +#include <linux/interrupt.h>
 
-I am not so sure. There are slighty differences between the two functions.
-The error messages and, in particular, the loop in qmc_hdlc_xlate_slot_map() is:
-	--- 8< ---
-	ts_mask_avail = ts_info->rx_ts_mask_avail;
-	ts_mask = 0;
-	map = slot_map;
-	bit = 0;
-	for (i = 0; i < 64; i++) {
-		if (ts_mask_avail & BIT_ULL(i)) {
-			if (map & BIT_ULL(bit))
-				ts_mask |= BIT_ULL(i);
-			bit++;
-		}
-	}
-	--- 8< ---
+Do you need this header.
 
-whereas it is the following in qmc_hdlc_xlate_ts_info():
-	--- 8< ---
-	ts_mask_avail = ts_info->rx_ts_mask_avail;
-	ts_mask = ts_info->rx_ts_mask;
-	map = 0;
-	bit = 0;
-	for (i = 0; i < 64; i++) {
-		if (ts_mask_avail & BIT_ULL(i)) {
-			if (ts_mask & BIT_ULL(i))
-				map |= BIT_ULL(bit);
-			bit++;
-		}
-	}
-	--- 8< ---
+> +#include <linux/workqueue.h>
+> +#include <linux/tty_flip.h>
+> +
+> +static DEFINE_IDR(i3c_tty_minors);
+> +static DEFINE_MUTEX(i3c_tty_minors_lock);
+> +
+> +static struct tty_driver *i3c_tty_driver;
+> +
+> +#define I3C_TTY_MINORS		8
+> +#define I3C_TTY_TRANS_SIZE	16
+> +#define I3C_TTY_RX_STOP		0
+> +#define I3C_TTY_RETRY		20
+> +#define I3C_TTY_YIELD_US	100
+> +
+> +struct ttyi3c_port {
+> +	struct tty_port port;
 
-ts_map and map initializations are not the same, i and bit are not used for
-the same purpose and the computed value is not computed based on the same
-information.
+Missing #include
 
-With that pointed, I am not sure that having some common code for both
-function will be relevant. Your opinion ?
+> +	int minor;
+> +	spinlock_t xlock; /* protect xmit */
 
-Best regards,
-Hervé
+Missing #include
+
+> +	u8 tx_buff[I3C_TTY_TRANS_SIZE];
+> +	u8 rx_buff[I3C_TTY_TRANS_SIZE];
+> +	struct i3c_device *i3cdev;
+> +	struct work_struct txwork;
+> +	struct work_struct rxwork;
+> +	struct completion txcomplete;
+
+Missing #include
+
+> +	unsigned long status;
+> +	u32 buf_overrun;
+> +};
+
+> +static void i3c_port_shutdown(struct tty_port *port)
+> +{
+> +	struct ttyi3c_port *sport =
+> +		container_of(port, struct ttyi3c_port, port);
+
+On one line.
+
+> +
+> +	i3c_device_disable_ibi(sport->i3cdev);
+> +	tty_port_free_xmit_buf(port);
+> +}
+> +
+> +static void i3c_port_destruct(struct tty_port *port)
+> +{
+> +	struct ttyi3c_port *sport =
+> +		container_of(port, struct ttyi3c_port, port);
+
+Ditto.
+
+> +static void tty_i3c_rxwork(struct work_struct *work)
+> +{
+> +	struct ttyi3c_port *sport = container_of(work, struct ttyi3c_port, rxwork);
+> +	struct i3c_priv_xfer xfers;
+> +	u32 retry = I3C_TTY_RETRY;
+> +	u16 status = BIT(0);
+
+Unnecessary initialization.
+
+> +	int ret;
+> +
+> +	memset(&xfers, 0, sizeof(xfers));
+> +	xfers.data.in = sport->rx_buff;
+> +	xfers.len = I3C_TTY_TRANS_SIZE;
+> +	xfers.rnw = 1;
+> +
+> +	do {
+> +		if (test_bit(I3C_TTY_RX_STOP, &sport->status))
+> +			break;
+> +
+> +		i3c_device_do_priv_xfers(sport->i3cdev, &xfers, 1);
+> +
+> +		if (xfers.actual_len) {
+> +			ret = tty_insert_flip_string(&sport->port, sport->rx_buff,
+> +						     xfers.actual_len);
+> +			if (ret < xfers.actual_len)
+> +				sport->buf_overrun++;
+> +
+> +			retry = I3C_TTY_RETRY;
+> +			continue;
+> +		}
+> +
+> +		status = BIT(0);
+
+Can this BIT(0) be named with a #define?
+
+> +		i3c_device_getstatus_format1(sport->i3cdev, &status);
+> +		/*
+> +		 * Target side needs some time to fill data into fifo. Target side may not
+> +		 * have hardware update status in real time. Software update status always
+> +		 * needs some delays.
+> +		 *
+> +		 * Generally, target side have circular buffer in memory, it will be moved
+> +		 * into FIFO by CPU or DMA. 'status' just show if circular buffer empty. But
+> +		 * there are gap, especially CPU have not response irq to fill FIFO in time.
+> +		 * So xfers.actual will be zero, wait for little time to avoid flood
+> +		 * transfer in i3c bus.
+> +		 */
+> +		usleep_range(I3C_TTY_YIELD_US, 10 * I3C_TTY_YIELD_US);
+> +		retry--;
+> +
+> +	} while (retry && (status & BIT(0)));
+
+Name with define?
+
+
+-- 
+ i.
+
 
