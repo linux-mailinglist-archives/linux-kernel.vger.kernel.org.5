@@ -1,90 +1,91 @@
-Return-Path: <linux-kernel+bounces-36491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36490-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD92C83A1A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 06:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A513083A19C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 06:56:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 777EA1F23AEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 05:57:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55E771F23622
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 05:56:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9656F9C1;
-	Wed, 24 Jan 2024 05:56:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 798D110795;
+	Wed, 24 Jan 2024 05:56:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Rq0W828s"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CQUPI0Gy"
+Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D42816428;
-	Wed, 24 Jan 2024 05:56:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38B05F9F8
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 05:56:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706075792; cv=none; b=PyVWvwEc5eQKfzjZOJus4lH66dXjq722uO1XXB8coQ6MqussoKFVMD3x2gDjyVJMK34IsEbOtDNHT+l6vfjwG2uFjlt5es4HHBjgqRDnrMLfmxf2jmmrmZeqaTar+xWO88h82fUsORU63j8TtHfCFwQoeAABy6p2P7Q55mb/JcI=
+	t=1706075784; cv=none; b=pgc5uM5EadHPkapGy2t+ih3h+QWa6mVXg+frz1rG+TSfn4E0tlCg81qxhr/6QmlT+d2OMiKJGLh+ZRiueivedx+AAeoqibRnCwL4VF170qCp6FuWtqKoLlmwfj1ij3ofuWfBKpd6cZSxlbXelh6jmE8vP/qEmtRjep3zIdSKe90=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706075792; c=relaxed/simple;
-	bh=U7AxjWtl76YYVN9AAQAMePamqK7lCwTpHiJ55ysuw5Q=;
+	s=arc-20240116; t=1706075784; c=relaxed/simple;
+	bh=3n6qbepBC/quy189WMpUt5s0sJ7FlfcHVamtdO7egM8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CgerRX6AJLeQ0NW7henO4Ql3TdCpLD6Kb2k6Bd1l7hMbgKSQWZ6guDhQSzzGaebk0asKqyzQ7kyVEqZa6BNduQzV0MvL/XUVqjJeznuAFzo0NZ+BEtyb2LSegMpyvLxrJdtgaRgEJTctp6gcZggO4ndSGyT7sxcIjqdowwj/FXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Rq0W828s; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40O5fNUB006082;
-	Wed, 24 Jan 2024 05:56:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=tmGJ2Whbetk9jP/5DWFCYsWaq8KXKVaywMbIOCxezE0=;
- b=Rq0W828sSVJPRtwhxNgKxvyXVXU3iG4YkjTr5GABDCSgBWXHkrdsqEPUPsiIfkDsZMTE
- O8zje0SDdaCf/XBTtOA56bT2Xg5+yl19GzPhJx2OkEW79YSyBZEAClAD856ZGxW7edR6
- NJHrk5PJ8WQ2rWfoBpv7EL8J42l7uMt7K/Iz6LPsNpDyvQXlg7plcWScXkGYd49fViO2
- MYoNrGXgKrdTFQbaH3umC8+UJyqeXXiCaGohW82O6RgRXoE81h9ov6+1TcMuRICq2PQV
- b1/t4gU+536XSqueSm+HtYgWSxQnRMcz5H6G7C2RTRMvH9IPDisvL95dMfOdt/emBP/7 rw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vttepb2mc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Jan 2024 05:56:22 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40O4qv2K023794;
-	Wed, 24 Jan 2024 05:56:22 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vttepb2m6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Jan 2024 05:56:22 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40O4QBBa022429;
-	Wed, 24 Jan 2024 05:56:21 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vrt0m3ugy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Jan 2024 05:56:21 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40O5uJ8t23921156
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 24 Jan 2024 05:56:19 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 3ADAA20043;
-	Wed, 24 Jan 2024 05:56:19 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4805420040;
-	Wed, 24 Jan 2024 05:56:17 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.109.253.82])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed, 24 Jan 2024 05:56:17 +0000 (GMT)
-Date: Wed, 24 Jan 2024 11:26:14 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: Pavel Machek <pavel@denx.de>
-Cc: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Ritesh Harjani <ritesh.list@gmail.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.1 08/14] ext4: enable dioread_nolock as default
- for bs < ps case
-Message-ID: <ZbCmfu90bKwA2Xvq@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <20240116010642.218876-1-sashal@kernel.org>
- <20240116010642.218876-8-sashal@kernel.org>
- <ZabrcCOi/hIsKk5I@duo.ucw.cz>
+	 Content-Type:Content-Disposition:In-Reply-To; b=lIRqxsizWD53iyFtGtqVW6fDNzikhhbERWwNhNKpTbJrTw0vA8JQRj0MfYI8rzJ4nGokPZW9Uphju3vOI+Wi2xj1yC+Rfn8cGCO7bgABQPlPQ4DB3YzaVsVXuxgEcBxVNZ7YkNN2chyT3XziXeKL8fvnqzC3sBZxwUIjnSnlSFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CQUPI0Gy; arc=none smtp.client-ip=209.85.167.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3bd562d17dcso4074503b6e.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 21:56:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706075782; x=1706680582; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=F7SahGLtspE/3Wi9Cd+JOw7KlfpX4OF2RIxiyIP7SV0=;
+        b=CQUPI0Gyf7iMVcA10t0J6r04j6YDF4Q6PiMRKcRAEg+WVj6KxdR5iSjMSH9izVJw1I
+         eWEctJIUL9aPKNRO8yJ0lyN7bSV/jDY1WG9r8EcyShbbGJe/c5xN79ViXN+JORHMajDY
+         3lVFKRVel0lAAFxssdot+ARQPurXeBX6M9tre1yECT9ZrE3S4aN4izbkIobsxqrD+gB2
+         PqqDggyVIjCgWAll2xtReuBmYA/XAr4VvzisMbLenDYR0AcUbxsn+W6KD51fBPCjDLml
+         IzviHy1wIPcxQkBILW8Wy4+qLFo6TwfpiR4yy3p0elIznif5BQuoB2TOGUB6aIO6pp1h
+         gYeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706075782; x=1706680582;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=F7SahGLtspE/3Wi9Cd+JOw7KlfpX4OF2RIxiyIP7SV0=;
+        b=LReo4Ez8c58EMtqe4ag0sJdsl+84i92cZeuFMPfidWfiBHpAk3Tul52V1mPrcx9mzZ
+         NtxCoEY1cZijdMKF3Xfo5/R7Lk62qbmu3Cc6rBUWGl50r/SGaHzfp1StEwneqk1xgpvH
+         Y3ifQ0woZXFojChXXwz4G8onQf8+EfcbMv/29+qjroRlBmytBrj4PBIfVFXiKFd0DKID
+         oPE5pBNQQ3FJYh5uicdt9ffUlAJnSOoQx3Lhi5VbGBKgqMIkjfpfB9sdfCyt2Fwub0li
+         mizP3Mpi3hPr7Yjs8HpiYNBR3EzAuwXxkYk8MFXDR/AQnEuLH91XU5JgnMjjKlA0aHc+
+         guCQ==
+X-Gm-Message-State: AOJu0YygpVsXBT0GNoTpxTqR32YKpunnFTmEZDsA+Ur86NUw7PEXCMd4
+	8Fbdf46Vc/XSFIlgkoSHVkUMmShZo4DvsPXNKP0TrQ1mlmi4af8AiNx4GknVhj0=
+X-Google-Smtp-Source: AGHT+IGiCI/sj/mAtB23fTMLULvqgI87+dSZUJXZCXN7hV/stz02CWQa7d9iE2R5I1NHRIlUItj1Gw==
+X-Received: by 2002:a05:6808:10c2:b0:3bd:a6ea:1c6c with SMTP id s2-20020a05680810c200b003bda6ea1c6cmr1180274ois.116.1706075782222;
+        Tue, 23 Jan 2024 21:56:22 -0800 (PST)
+Received: from localhost ([122.172.81.83])
+        by smtp.gmail.com with ESMTPSA id ko18-20020a056a00461200b006dab0d72cd0sm12721062pfb.214.2024.01.23.21.56.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jan 2024 21:56:20 -0800 (PST)
+Date: Wed, 24 Jan 2024 11:26:18 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH v4 2/6] cpufreq: do not open-code of_phandle_args_equal()
+Message-ID: <20240124055618.5xppexdpvwnv6zng@vireshk-i7>
+References: <20240123141311.220505-1-krzysztof.kozlowski@linaro.org>
+ <20240123141311.220505-3-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -93,54 +94,38 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZabrcCOi/hIsKk5I@duo.ucw.cz>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: -c33VtLZ1QNIZt1TzvKhfdFqaML-_uX6
-X-Proofpoint-GUID: zSxOjyDFyk1hjVt9Vp2rG_mXURwFjid8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-24_02,2024-01-23_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=1 impostorscore=0 bulkscore=0
- malwarescore=0 priorityscore=1501 adultscore=0 spamscore=1 clxscore=1031
- phishscore=0 suspectscore=0 mlxscore=1 mlxlogscore=190 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2401240041
+In-Reply-To: <20240123141311.220505-3-krzysztof.kozlowski@linaro.org>
 
-On Tue, Jan 16, 2024 at 09:47:44PM +0100, Pavel Machek wrote:
-> Hi!
-> > 
-> > [ Upstream commit e89fdcc425b6feea4dfb33877e9256757905d763 ]
-> > 
-> > dioread_nolock was originally disabled as a default option for bs < ps
-> > scenarios due to a data corruption issue. Since then, we've had some
-> > fixes in this area which address such issues. Enable dioread_nolock by
-> > default and remove the experimental warning message for bs < ps path.
-> > 
-> > dioread for bs < ps has been tested on a 64k pagesize machine using:
-> > 
-> > kvm-xfstest -C 3 -g auto
-> > 
-> > with the following configs:
-> > 
-> > 64k adv bigalloc_4k bigalloc_64k data_journal encrypt
-> > dioread_nolock dioread_nolock_4k ext3 ext3conv nojournal
-> > 
-> > And no new regressions were seen compared to baseline kernel.
+On 23-01-24, 15:13, Krzysztof Kozlowski wrote:
+> Use newly added of_phandle_args_equal() helper to compare two
+> of_phandle_args.
 > 
-> But no fixes, either, so not suitable for stable.
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > 
-> BR,
-> 								Pavel
-
-Hi Pavel, Sasha,
-
-I agree, this can be dropped from stable since it is not a bug fix.
-
-- ojaswin
+> ---
 > 
-> -- 
-> DENX Software Engineering GmbH,        Managing Director: Erika Unter
-> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+> Depends on previous of change.
+> ---
+>  include/linux/cpufreq.h | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
+> index afda5f24d3dd..3cd06dafb04b 100644
+> --- a/include/linux/cpufreq.h
+> +++ b/include/linux/cpufreq.h
+> @@ -1149,8 +1149,7 @@ static inline int of_perf_domain_get_sharing_cpumask(int pcpu, const char *list_
+>  		if (ret < 0)
+>  			continue;
+>  
+> -		if (pargs->np == args.np && pargs->args_count == args.args_count &&
+> -		    !memcmp(pargs->args, args.args, sizeof(args.args[0]) * args.args_count))
+> +		if (of_phandle_args_equal(pargs, &args))
+>  			cpumask_set_cpu(cpu, cpumask);
+>  
+>  		of_node_put(args.np);
 
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
+-- 
+viresh
 
