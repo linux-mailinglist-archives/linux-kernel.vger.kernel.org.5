@@ -1,152 +1,164 @@
-Return-Path: <linux-kernel+bounces-36959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36960-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9749583A985
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:20:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E67DD83A988
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:21:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50FFC283D27
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:19:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98F20281865
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:21:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECBAC63126;
-	Wed, 24 Jan 2024 12:19:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4D896310E;
+	Wed, 24 Jan 2024 12:21:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VVh+Owxx"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="CgWvxt/m"
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2059.outbound.protection.outlook.com [40.107.92.59])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D96CD63115;
-	Wed, 24 Jan 2024 12:19:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706098784; cv=none; b=UqCKH1yeE0Gspkj0quwpSEJ2RIzap+ZJpxBjbSj0I72CBuynQUNtTxt4L3BJnMQOxIjSPIpNeVszkxvlr2u6pAYeuSyQkNW77E3+MLXWMXGOHN7l0d01E6I1MQWpAP+PXQZBj6ZXb+SbBjRJvUhVyTCkC90ftUkiFUYMi0KVyd0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706098784; c=relaxed/simple;
-	bh=9Ku4BKxZ6bGsXYD+z5ODPIV3wgtHmNAQqGbIzS9G2b0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UQLIcdJyX1MRuvlmBBtATY+jmjkYrqYSmp1h+mv1hx1pwTcTA3Q0kQz5SCnUxgBqYeyOW4hjUq8sxayyxGY6MaSpnBEuCYrFSGVVxqivX0bUHGpJIMPqIgNbp/4b+EruO2BJWyqXv3qzrVFFdpI54X6aLrxGK4si1ystM4yTZto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VVh+Owxx; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d720c7fc04so30618155ad.2;
-        Wed, 24 Jan 2024 04:19:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706098782; x=1706703582; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vx+0cl1ZNPikMxNrIrAgJ2neRZewXxRa0JMeCuH3m4Q=;
-        b=VVh+OwxxksfZiQQ9QoOzm5tMiC0U0V6yHy9C7qfzHPTrJyjGURESdMaBPp9Iw1uuc1
-         DGhCt7zzXDe8FY2p2k88JHBp2a0Aosjmpt5vfC96w8A8aq5DrQZZVYYjA2mYPIwRdw2q
-         0eKf7WzwRJpSeJW11hfNUvp+vJn9hYxFQgXGVEnTapUgtnqcdkmKFbDXqyy6Q4vo0q3S
-         ejYrw1GgJkjhB4Uk9nE2pMi7FwZ13ZI74SmjuUNUH0p1gsKzuYCzxqm0p6DVpsSCn3yf
-         G1G9t4RqVFR8fbPYpyTy5RwrnVWMOtbim2wi9I73wysbckOdcrm+XByA7CzsZR8r0NX/
-         4p2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706098782; x=1706703582;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Vx+0cl1ZNPikMxNrIrAgJ2neRZewXxRa0JMeCuH3m4Q=;
-        b=KiKbnf1k5bZ1eHNxKuTS/iFsPlJpTexKILF44v+G1zmiy+SsfI85TAmoftMNZA930H
-         pJLZ9wffGcV2W2dFGp9ydvGtuFkGBvqcipn5qlW6GE+t4tVA3cPsWhMsP7tny9AcF97J
-         EFvNHsG6reEtN+eH1M7cTwe5T6SxSlbIrzb0TvrHmqV6k+ZZIw9wnP1UIkYjKZ1sOrC4
-         j/gl1A9ckm1oNPWQrbLa3oZp5jIVih8cBh1TN2Ypeq2wXoj4UD5craFnblDR53YH/ECy
-         k2GCu0cajTYjmARn2RVlN4FjaRlmbQuGMiqoBU3/V6tibKuDcdDrXctZeAKlX3Czt68x
-         3wcg==
-X-Gm-Message-State: AOJu0Yyu8TR45DLVhkxR0LA9TRjlhufcZAmFxRM7urcwSBqF/C+2m053
-	sZGEnywx60asConyjkD/dh66HyOtWlfwoA//ReydsuP0+Xpk+EWc43HE7dW1
-X-Google-Smtp-Source: AGHT+IFdNny+bWLyCfvWrvX9wp+Ixz9vTCKjCQ7pHqqxwX+5BepJrnXdP5Gu12nxVi5HTuYQOsC4Eg==
-X-Received: by 2002:a17:903:191:b0:1d7:2d44:576b with SMTP id z17-20020a170903019100b001d72d44576bmr733561plg.59.1706098781952;
-        Wed, 24 Jan 2024 04:19:41 -0800 (PST)
-Received: from carrot.. (i223-218-154-72.s42.a014.ap.plala.or.jp. [223.218.154.72])
-        by smtp.gmail.com with ESMTPSA id j17-20020a170902f25100b001d70e83f9c3sm9816456plc.242.2024.01.24.04.19.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 04:19:40 -0800 (PST)
-From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-nilfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] nilfs2: fix data corruption in dsync block recovery for small block sizes
-Date: Wed, 24 Jan 2024 21:19:36 +0900
-Message-Id: <20240124121936.10575-1-konishi.ryusuke@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AF691A726;
+	Wed, 24 Jan 2024 12:21:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.59
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706098870; cv=fail; b=LDhdgy0XOGdSkM990DrBOJ+z/Qw9zGKCHc+n49X5GNe0lBOHBKlOX/siqLEAPtt9HSQVB8O7ST2BWBsWiYT9shLbIYstRNDJy9AgZdMPPJcN5H4iRcr92X3SHBlUCyqy1WqJZqL4NJTpc6mlxP7VNMWs6BDhdmB8LHcFiqvcT2E=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706098870; c=relaxed/simple;
+	bh=OOz9tYhb7bRZAp/1Hm+e/oECh4ZK5MZ17QA9cP9e7wQ=;
+	h=From:To:CC:Subject:In-Reply-To:References:Content-Type:
+	 MIME-Version:Message-ID:Date; b=DFO76vyREzTvY386mxARfwAI82spO7k2cxabvhogFBcVCRjAweUUf1Sy0ho0M07v9pEoI2WgLGdpDl/X0KMTA6w+H1dRbkI/ezuP5Rk+6AM1PQSjj7U+pRMXZBzFX9/1vFl1AkjnRWA/hOWf4rPcbB2NlkZVliWBBhwIF9gUCVI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=CgWvxt/m; arc=fail smtp.client-ip=40.107.92.59
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=asOrOIItKSfPWFqyeEKiN+Jh9ktR4m0Ju7GrBV9XT0ep1lv+ws6PfH4LV/YcCXiAhmP0Ls35UkFigMoXM1ElLGTai8ylGbCbXh9OLrQCFqOMKLbB4/4XHTGXUCvAKKXa4nXz7HS6ljP/MpujTf1GSnkH4yn12qlO+/ttjkC+dHUHu9cZj8tIhbjk26LVAoPm8p7LgB45uTnrBEKWQQuv45Xv4TeWYr+MGLxkn3+9luktdkApFaoRFYRSGpGmiR0KJmM2o9ybSIV8dKj5DVEHlQ1L8i74dfOU4lhF5YcWCRqxMB22orfWtbjY8glHAkoLuqDZZlvZ0rUcPY24Dp95oA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SPYxk2MMuqkyVwO7D92XgM1xY+LS4F+S2503ougdZgA=;
+ b=ZD+RI/Rdq2V7WODMZOd9Ckq31/JXKWM5EOUdjJmaj+T1WqCWunU5S9R+6IJTaKfs3Q000PDpv5gYY6qd/ygrPm4vlaX3piZ7Yn73tVJXEsFAfTHSRESLIgpFea7CEGOAJ3QRQEaCW10lPM9z5XFHum+vedyVGuRjBOZ1mdIGcWgNPEa9FbsO13zxPR7tt/6fRyw3DtZxbddcQsAkTYnHoQSE/Y32PZl91BNw5DWh8r1E16rGV+RePBreBZJQta7+gXm/38wjZWMaR7VbNKLTm9wBzVHMwpEW3SEyGiuBuKE0JTxI3wSHYnh8IFaKeBHgpuA/aZg9iLpEojMsw9kq7Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=linuxfoundation.org
+ smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SPYxk2MMuqkyVwO7D92XgM1xY+LS4F+S2503ougdZgA=;
+ b=CgWvxt/mekrHCgwpGbChRKDfjjm9hLfIIEQnTwGiK+mJJz0g+ktzeT5ttYUssHNdMYHOsLFSjgwnR+T6Am5/xdvOIzifNfs5TOv8LWdRfQLM1+TnnWD9Rb1gby2IAy53c8n5/gmvgSIJB6hw24gU1aQj2R2urgDyktBhWmazKYhbs/zYb2J98CJLMfGSx1H+0yccxcj1RGPo9nfCbCr+oByLw5D9yFziQGXdqoRRrtPpIbjN4epo0xVYXOUoengfs6BntMgvqVJr4idvLaNANzAZdJRmnGYwqGQmhDnb/gnyXA/0sk0obw+y0FyDL7p7hd6ZfWl0ZSbnc3JTXAu2+Q==
+Received: from MN2PR15CA0003.namprd15.prod.outlook.com (2603:10b6:208:1b4::16)
+ by BY5PR12MB4949.namprd12.prod.outlook.com (2603:10b6:a03:1df::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22; Wed, 24 Jan
+ 2024 12:21:05 +0000
+Received: from MN1PEPF0000ECD9.namprd02.prod.outlook.com
+ (2603:10b6:208:1b4:cafe::fe) by MN2PR15CA0003.outlook.office365.com
+ (2603:10b6:208:1b4::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22 via Frontend
+ Transport; Wed, 24 Jan 2024 12:21:05 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ MN1PEPF0000ECD9.mail.protection.outlook.com (10.167.242.138) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7202.16 via Frontend Transport; Wed, 24 Jan 2024 12:21:04 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 24 Jan
+ 2024 04:20:48 -0800
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 24 Jan
+ 2024 04:20:48 -0800
+Received: from jonathanh-vm-01.nvidia.com (10.127.8.9) by mail.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
+ Transport; Wed, 24 Jan 2024 04:20:48 -0800
+From: Jon Hunter <jonathanh@nvidia.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	<patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+	<torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+	<linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+	<lkft-triage@lists.linaro.org>, <pavel@denx.de>, <jonathanh@nvidia.com>,
+	<f.fainelli@gmail.com>, <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
+	<rwarsow@gmx.de>, <conor@kernel.org>, <allen.lkml@gmail.com>,
+	<linux-tegra@vger.kernel.org>, <stable@vger.kernel.org>
+Subject: Re: [PATCH 5.4 000/193] 5.4.268-rc2 review
+In-Reply-To: <20240123174434.819712739@linuxfoundation.org>
+References: <20240123174434.819712739@linuxfoundation.org>
+X-NVConfidentiality: public
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <802878ca-cc70-440c-b0e8-b28beb8b60c5@rnnvmail205.nvidia.com>
+Date: Wed, 24 Jan 2024 04:20:48 -0800
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN1PEPF0000ECD9:EE_|BY5PR12MB4949:EE_
+X-MS-Office365-Filtering-Correlation-Id: eb9b3a9e-2b7d-42a7-64be-08dc1cd6efaa
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	YS2475cCgoQUtog9L3kxcvgebPyRAC+ajcP5yJ4RUZVhg7rwHKTTFO5vNVt5glqfg90bwhmc2zTvaj4N1jo/EGgfMgXPQbIWqw5716YXHMAL1wKTbOmaXHoizAmI9stdelUhfB0NT0im6YFOdYyJKdMcsC0C4+xbG5c0RszQq3MyV2SAAcSJKDPviSYQuUyt56OlcDNCk0uDMqtKOxuXft/Gm5GMt0QiJCYxJ+OfJljJAHp8HvbawuCpH/MXO20GcWPH6ID+iytMsqk3T0M8fNwLXTHUq5CxBIrwipQmfEezRB5rrAMs9NUHMDGVIDL+tZy9fUFv3U/9ggFWkI6D+NpCOPU0c1nuhkSHoXCwEA8ZuvOn9JsKaxUK6Ccc6VHa2I5t2ylHn407B8NqMV283Md2/FJX4uZjPDR4Z6N3+CPb5xq3FB6UzWgO3nRmkN7Cral/SNnJolW0P7bkpm13wf7DS746ZEpNZumDhxz8icvVOpA92huzMDfYyUj57IGkAKoyPYIpr8/ptZGb+kT3wiLF5j83iAr0r87lugYp8QxjcOnCX05LwBRMQEiYIAbF2VVkXnX/g8IbjTcJmGbJ8EVXqLOMw4UQx3zKH5YVtJ5KtQm6ZIF23PtrXyfWnxV9GJnKOWbZtz5hrwN5sdm/PikmyyBBLZ2h7+Asdh9oqUtMa6XBY63tSuHYgtpODzvENNfBoG7ZtfXfhpCm8Jj8pUY7SnXiKHfdI/01I+/MRAnVEQDkL+cCOFYHChKqAB7agdeBIzfvOolCokghZrFb6nVIHWos8LZ5ziEHidXYlgE=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(136003)(376002)(396003)(346002)(39860400002)(230922051799003)(186009)(64100799003)(82310400011)(451199024)(1800799012)(46966006)(36840700001)(40470700004)(47076005)(82740400003)(31686004)(41300700001)(6916009)(316002)(70586007)(70206006)(40480700001)(40460700003)(966005)(5660300002)(356005)(7416002)(54906003)(2906002)(336012)(426003)(7636003)(8936002)(8676002)(478600001)(4326008)(36860700001)(31696002)(26005)(86362001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jan 2024 12:21:04.7393
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: eb9b3a9e-2b7d-42a7-64be-08dc1cd6efaa
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	MN1PEPF0000ECD9.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4949
 
-The helper function nilfs_recovery_copy_block() of
-nilfs_recovery_dsync_blocks(), which recovers data from logs created by
-data sync writes during a mount after an unclean shutdown, incorrectly
-calculates the on-page offset when copying repair data to the file's page
-cache.  In environments where the block size is smaller than the page size,
-this flaw can cause data corruption and leak uninitialized memory bytes
-during the recovery process.
+On Tue, 23 Jan 2024 09:46:22 -0800, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.268 release.
+> There are 193 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 25 Jan 2024 17:44:10 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.268-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Fix these issues by correcting this byte offset calculation on the page.
+All tests passing for Tegra ...
 
-Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Tested-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Cc: <stable@vger.kernel.org>
----
-Andrew, please apply this patch as a bug fix.
+Test results for stable-v5.4:
+    10 builds:	10 pass, 0 fail
+    24 boots:	24 pass, 0 fail
+    54 tests:	54 pass, 0 fail
 
-This patch may conflict with the first patch of the kmap conversion series
-that I posted earlier.
+Linux version:	5.4.268-rc2-g6207e0931754
+Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
+                tegra194-p2972-0000, tegra20-ventana,
+                tegra210-p2371-2180, tegra210-p3450-0000,
+                tegra30-cardhu-a04
 
-Since this fix should be a priority, I made it against the mainline
-so that it can be applied before the kmap conversion patches.
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
 
-If the conflict ia a problem for your patch handling, please drop the
-first patch of the kmap conversion series (it can be dropped independently).
-In that case, I will repost the patch that resolves the conflict.
-
-
-Thanks,
-Ryusuke Konishi
-
- fs/nilfs2/recovery.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/fs/nilfs2/recovery.c b/fs/nilfs2/recovery.c
-index 0955b657938f..a9b8d77c8c1d 100644
---- a/fs/nilfs2/recovery.c
-+++ b/fs/nilfs2/recovery.c
-@@ -472,9 +472,10 @@ static int nilfs_prepare_segment_for_recovery(struct the_nilfs *nilfs,
- 
- static int nilfs_recovery_copy_block(struct the_nilfs *nilfs,
- 				     struct nilfs_recovery_block *rb,
--				     struct page *page)
-+				     loff_t pos, struct page *page)
- {
- 	struct buffer_head *bh_org;
-+	size_t from = pos & ~PAGE_MASK;
- 	void *kaddr;
- 
- 	bh_org = __bread(nilfs->ns_bdev, rb->blocknr, nilfs->ns_blocksize);
-@@ -482,7 +483,7 @@ static int nilfs_recovery_copy_block(struct the_nilfs *nilfs,
- 		return -EIO;
- 
- 	kaddr = kmap_atomic(page);
--	memcpy(kaddr + bh_offset(bh_org), bh_org->b_data, bh_org->b_size);
-+	memcpy(kaddr + from, bh_org->b_data, bh_org->b_size);
- 	kunmap_atomic(kaddr);
- 	brelse(bh_org);
- 	return 0;
-@@ -521,7 +522,7 @@ static int nilfs_recover_dsync_blocks(struct the_nilfs *nilfs,
- 			goto failed_inode;
- 		}
- 
--		err = nilfs_recovery_copy_block(nilfs, rb, page);
-+		err = nilfs_recovery_copy_block(nilfs, rb, pos, page);
- 		if (unlikely(err))
- 			goto failed_page;
- 
--- 
-2.34.1
-
+Jon
 
