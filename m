@@ -1,208 +1,126 @@
-Return-Path: <linux-kernel+bounces-37092-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37187-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCC9C83AB70
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:14:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF36583AC63
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:49:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EDD6292443
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:14:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 823CD2990C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:49:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 878DC7A73F;
-	Wed, 24 Jan 2024 14:14:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 438F07A729;
+	Wed, 24 Jan 2024 14:32:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PTpM7b4B"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="erz5Nwxg"
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED1E17A728;
-	Wed, 24 Jan 2024 14:14:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52A5D7C0AC
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 14:32:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706105657; cv=none; b=D7i+b/1JL5rC5ZlXm13aQJvESsT/UEYlzEPOPn867TuTDYcUbkEk3nl6/54b76VrPdNbnuj3JvOIBtR3G4mah/raVmgxjatJwiVoh/bKsN0JrqR4CqwHpzfz2Xzwo+dO4doVOD6Kkz/3MoAkOVl4UUMxJsLtA0NkPCYIzYtT59I=
+	t=1706106776; cv=none; b=CYHu0ejkhal2oKS3jQCoivN1xZqJGx3x8WUM2jPhZvZzs0Xu2Pgp/S8Dr3acBEI79ZgzsUUgqZ/eaztoXozSsILWRUHiopfUCm27ierrq5OPFKua4uCLzBgtz1Cwn74ArCAduAsL+g5uBVGn87QRLypFGctsVlU70w0N9zSE1q4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706105657; c=relaxed/simple;
-	bh=1WwHCAFVV2NPEEod/8TMiSCLMQEPAuQYnS/MCqWE71s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ez6ZyBb5ghfFQP+7Ab/I6W9JpSa9ikDqmzEFjeYGmlse6KRlcZbtsWzq8s9HXLvCGip45RcgqJaAccbOFRf9kIgfFnHbq8/BV/0ZNuibbX/VGhB+kz7OWY8kzEd+TCBrMcZ5pHCftPediMmBncs6uOBYQbzTLa+qo3krPtGNBsA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PTpM7b4B; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706105657; x=1737641657;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=1WwHCAFVV2NPEEod/8TMiSCLMQEPAuQYnS/MCqWE71s=;
-  b=PTpM7b4B/TO+B9dlLqazbFGHDluU3mhbG04PvroppKlatU2MAcxHlyRT
-   JpqbImgTbSyV9G8bA+smylfknE2yEoZfPdPmH2E0e7hD8+3A2FflJtC9Y
-   /fpR6PHmdZpbiXbfieRIB0qpQHZnlZ4wVC4E8GN5iR7QlURAcJynNTYxl
-   72x0JxU4+BXrcR6/1IAPWXVt+Xa3uSWga70lcEK6th0nDsZferbesfxjZ
-   xH0ap6vPUYXgpLUc3IUSS0vfTfRJzEaVGYGRwisr0CEwUrD/2AgjsVcxL
-   izssAaX7SQmRWw6/6IQwAQ/5D5XIA+VmTR8luGpOEWBv6D0Qyx9kOIBlJ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="15200454"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="15200454"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 06:14:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="929694783"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="929694783"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga001.fm.intel.com with SMTP; 24 Jan 2024 06:14:10 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 24 Jan 2024 16:14:10 +0200
-Date: Wed, 24 Jan 2024 16:14:10 +0200
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To: Abhishek Pandit-Subedi <abhishekpandit@google.com>
-Cc: linux-usb@vger.kernel.org, pmalani@chromium.org, jthies@google.com,
-	Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Saranya Gopal <saranya.gopal@intel.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/3] usb: typec: ucsi: Update connector cap and status
-Message-ID: <ZbEbMvzSr4JR3s/9@kuha.fi.intel.com>
-References: <20240123223039.1471557-1-abhishekpandit@google.com>
- <20240123143026.v1.2.I3d909e3c9a200621e3034686f068a3307945fd87@changeid>
+	s=arc-20240116; t=1706106776; c=relaxed/simple;
+	bh=SGy6w76d9qMQU6Gymdvkz8zKWoqqWnDIAnzRUBVn5f0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qcTtdBmyQKTvKcDlcoKlAMyrsw0KSx7cfOMFUbOqPB6AX7zsaL2wcL7UHiYkYaSUFvPjf/vDd7csjMbez6DWP/Y0CwDZufr/4BGvzZ1UkZ/JxVxcF8rZ/2JaBJbwrYNAW0MiwehvidS59tR3UoS2itjZq5u/1C9C3BuzGhC+hok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=erz5Nwxg; arc=none smtp.client-ip=213.97.179.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=KSCRQ8Cern7/I4IZd68USYEPrfyEIj1eh/gSvT2+TPU=; b=erz5NwxgWEGVusRpKvzE5vQ4b8
+	bE/65fMuNzDQuoHMN3o9guy3LZnX59cNLY7KzL2HIs0BCIOLcsUi0TMcJ7VunM/NdyJQOlR4biefv
+	OyKRB2k8vjp743kGgWu7a4uRAt1+BTrrmqG6Wlq5MHeruGJyOV8jztHPHCPTKVcx82WAcpASXzPiV
+	VdxrePLiP5Ctm91ERBezXhxF1hQGrHMGHQtXrfa/rHMY20B2L1IJStm7Dxie7vxEfvRTlS0OSVG86
+	5934s8EqhWI9hcJZG1vUDABwx2kPXAPraixPlQx0pfSfNX5jxMfo5U4KeEI8ZDqx2cc9vYJsXUVQk
+	T195PLjQ==;
+Received: from 201-42-129-194.dsl.telesp.net.br ([201.42.129.194] helo=[192.168.1.111])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+	id 1rSe1e-009f2o-84; Wed, 24 Jan 2024 15:14:46 +0100
+Message-ID: <68171ce1-3ccb-4699-8577-434d9b717acf@igalia.com>
+Date: Wed, 24 Jan 2024 11:14:40 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240123143026.v1.2.I3d909e3c9a200621e3034686f068a3307945fd87@changeid>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] drm/amdgpu: Implement check_async_props for planes
+Content-Language: en-US
+To: =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc: dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, kernel-dev@igalia.com,
+ alexander.deucher@amd.com, christian.koenig@amd.com,
+ Simon Ser <contact@emersion.fr>, Pekka Paalanen <ppaalanen@gmail.com>,
+ daniel@ffwll.ch, Daniel Stone <daniel@fooishbar.org>,
+ =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
+ Dave Airlie <airlied@gmail.com>, Xaver Hugl <xaver.hugl@gmail.com>,
+ Joshua Ashton <joshua@froggi.es>, =?UTF-8?Q?Michel_D=C3=A4nzer?=
+ <michel.daenzer@mailbox.org>
+References: <20240119181235.255060-1-andrealmeid@igalia.com>
+ <20240119181235.255060-3-andrealmeid@igalia.com> <Zaq-r7UZpEy7_Rrn@intel.com>
+From: =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
+In-Reply-To: <Zaq-r7UZpEy7_Rrn@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 23, 2024 at 02:30:35PM -0800, Abhishek Pandit-Subedi wrote:
-> From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> 
-> Update the data structures for ucsi_connector_capability and
-> ucsi_connector_status to UCSIv3.
-> 
-> Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> ---
-> Connector status has several unaligned bitfields (16-bit) that result in
-> difficult to maintain macros. It may be better if we simply re-define
-> these structs as u8[] and add bit range macros to access and cast these
-> values.
-> 
-> i.e.
-> struct ucsi_connector_status {
->   u8 raw_data[18];
-> 
-> ...
-> \#define UCSI_CONSTAT_CONNECTOR_STATUS          FIELD(u16, 15, 0)
-> \#define UCSI_CONSTAT_BCD_PD_VER_OPER_MODE      FIELD(u16, 85, 70)
-> }
-> 
-> GET_UCSI_FIELD(con->status, UCSI_CONSTAT_CONNECTOR_STATUS);
-> SET_UCSI_FIELD(con->status, UCSI_CONSTAT_CONNECTOR_STATUS, 0);
-> 
-> I didn't find a clear example of an existing mechanism to do this. Would
-> love some pointers here if it already exists and some feedback from the
-> maintainer if this is a direction you want to go.
+Hi Ville,
 
-I'll ask around if anybody has any ideas on our side, but I think we
-can go forward with this in any case. We can always fine tune these
-later.
-
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-
->  drivers/usb/typec/ucsi/ucsi.h | 50 ++++++++++++++++++++++++++++++++---
->  1 file changed, 46 insertions(+), 4 deletions(-)
+Em 19/01/2024 15:25, Ville Syrjälä escreveu:
+> On Fri, Jan 19, 2024 at 03:12:35PM -0300, André Almeida wrote:
+>> AMD GPUs can do async flips with changes on more properties than just
+>> the FB ID, so implement a custom check_async_props for AMD planes.
+>>
+>> Allow amdgpu to do async flips with IN_FENCE_ID and FB_DAMAGE_CLIPS
+>> properties. For userspace to check if a driver support this two
+>> properties, the strategy for now is to use TEST_ONLY commits.
+>>
+>> Signed-off-by: André Almeida <andrealmeid@igalia.com>
+>> ---
+>> v2: Drop overlay plane option for now
+>>
+>>   .../amd/display/amdgpu_dm/amdgpu_dm_plane.c   | 29 +++++++++++++++++++
+>>   1 file changed, 29 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
+>> index 116121e647ca..7afe8c1b62d4 100644
+>> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
+>> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
+>> @@ -25,6 +25,7 @@
+>>    */
+>>   
+>>   #include <drm/drm_atomic_helper.h>
+>> +#include <drm/drm_atomic_uapi.h>
+>>   #include <drm/drm_blend.h>
+>>   #include <drm/drm_gem_atomic_helper.h>
+>>   #include <drm/drm_plane_helper.h>
+>> @@ -1430,6 +1431,33 @@ static void amdgpu_dm_plane_drm_plane_destroy_state(struct drm_plane *plane,
+>>   	drm_atomic_helper_plane_destroy_state(plane, state);
+>>   }
+>>   
+>> +static int amdgpu_dm_plane_check_async_props(struct drm_property *prop,
+>> +					  struct drm_plane *plane,
+>> +					  struct drm_plane_state *plane_state,
+>> +					  struct drm_mode_object *obj,
+>> +					  u64 prop_value, u64 old_val)
+>> +{
+>> +	struct drm_mode_config *config = &plane->dev->mode_config;
+>> +	int ret;
+>> +
+>> +	if (prop != config->prop_fb_id &&
+>> +	    prop != config->prop_in_fence_fd &&
 > 
-> diff --git a/drivers/usb/typec/ucsi/ucsi.h b/drivers/usb/typec/ucsi/ucsi.h
-> index bec920fa6b8a..94b373378f63 100644
-> --- a/drivers/usb/typec/ucsi/ucsi.h
-> +++ b/drivers/usb/typec/ucsi/ucsi.h
-> @@ -3,6 +3,7 @@
->  #ifndef __DRIVER_USB_TYPEC_UCSI_H
->  #define __DRIVER_USB_TYPEC_UCSI_H
->  
-> +#include <asm-generic/unaligned.h>
->  #include <linux/bitops.h>
->  #include <linux/device.h>
->  #include <linux/power_supply.h>
-> @@ -214,9 +215,29 @@ struct ucsi_connector_capability {
->  #define UCSI_CONCAP_OPMODE_USB2			BIT(5)
->  #define UCSI_CONCAP_OPMODE_USB3			BIT(6)
->  #define UCSI_CONCAP_OPMODE_ALT_MODE		BIT(7)
-> -	u8 flags;
-> +	u32 flags;
->  #define UCSI_CONCAP_FLAG_PROVIDER		BIT(0)
->  #define UCSI_CONCAP_FLAG_CONSUMER		BIT(1)
-> +#define UCSI_CONCAP_FLAG_SWAP_TO_DFP		BIT(2)
-> +#define UCSI_CONCAP_FLAG_SWAP_TO_UFP		BIT(3)
-> +#define UCSI_CONCAP_FLAG_SWAP_TO_SRC		BIT(4)
-> +#define UCSI_CONCAP_FLAG_SWAP_TO_SINK		BIT(5)
-> +#define UCSI_CONCAP_FLAG_EX_OP_MODE(_f_) \
-> +	(((_f_) & GENMASK(13, 6)) >> 6)
-> +#define   UCSI_CONCAP_EX_OP_MODE_USB4_GEN2	BIT(0)
-> +#define   UCSI_CONCAP_EX_OP_MODE_EPR_SRC	BIT(1)
-> +#define   UCSI_CONCAP_EX_OP_MODE_EPR_SINK	BIT(2)
-> +#define   UCSI_CONCAP_EX_OP_MODE_USB4_GEN3	BIT(3)
-> +#define   UCSI_CONCAP_EX_OP_MODE_USB4_GEN4	BIT(4)
-> +#define UCSI_CONCAP_FLAG_MISC_CAPS(_f_) \
-> +	(((_f_) & GENMASK(17, 14)) >> 14)
-> +#define   UCSI_CONCAP_MISC_CAP_FW_UPDATE	BIT(0)
-> +#define   UCSI_CONCAP_MISC_CAP_SECURITY		BIT(1)
-> +#define UCSI_CONCAP_FLAG_REV_CURR_PROT_SUPPORT	BIT(18)
-> +#define UCSI_CONCAP_FLAG_PARTNER_PD_MAJOR_REV(_f_) \
-> +	(((_f_) & GENMASK(20, 19)) >> 19)
-> +#define UCSI_CONCAP_FLAG_PARTNER_PD_MAJOR_REV_AS_BCD(_f_) \
-> +	(UCSI_CONCAP_FLAG_PARTNER_PD_MAJOR_REV(_f_) << 8)
->  } __packed;
->  
->  struct ucsi_altmode {
-> @@ -276,15 +297,36 @@ struct ucsi_connector_status {
->  #define   UCSI_CONSTAT_PARTNER_TYPE_DEBUG	5
->  #define   UCSI_CONSTAT_PARTNER_TYPE_AUDIO	6
->  	u32 request_data_obj;
-> -	u8 pwr_status;
-> -#define UCSI_CONSTAT_BC_STATUS(_p_)		((_p_) & GENMASK(2, 0))
-> +
-> +	u8 pwr_status[3];
-> +#define UCSI_CONSTAT_BC_STATUS(_p_)		((_p_[0]) & GENMASK(1, 0))
->  #define   UCSI_CONSTAT_BC_NOT_CHARGING		0
->  #define   UCSI_CONSTAT_BC_NOMINAL_CHARGING	1
->  #define   UCSI_CONSTAT_BC_SLOW_CHARGING		2
->  #define   UCSI_CONSTAT_BC_TRICKLE_CHARGING	3
-> -#define UCSI_CONSTAT_PROVIDER_CAP_LIMIT(_p_)	(((_p_) & GENMASK(6, 3)) >> 3)
-> +#define UCSI_CONSTAT_PROVIDER_CAP_LIMIT(_p_)	(((_p_[0]) & GENMASK(5, 2)) >> 2)
->  #define   UCSI_CONSTAT_CAP_PWR_LOWERED		0
->  #define   UCSI_CONSTAT_CAP_PWR_BUDGET_LIMIT	1
-> +#define UCSI_CONSTAT_PROVIDER_PD_VERSION_OPER_MODE(_p_)	\
-> +	((get_unaligned_le32(_p_) & GENMASK(21, 6)) >> 6)
-> +#define UCSI_CONSTAT_ORIENTATION(_p_)		(((_p_[2]) & GENMASK(6, 6)) >> 6)
-> +#define   UCSI_CONSTAT_ORIENTATION_DIRECT	0
-> +#define   UCSI_CONSTAT_ORIENTATION_FLIPPED	1
-> +#define UCSI_CONSTAT_SINK_PATH_STATUS(_p_)	(((_p_[2]) & GENMASK(7, 7)) >> 7)
-> +#define   UCSI_CONSTAT_SINK_PATH_DISABLED	0
-> +#define   UCSI_CONSTAT_SINK_PATH_ENABLED	1
-> +	u8 pwr_readings[9];
-> +#define UCSI_CONSTAT_REV_CURR_PROT_STATUS(_p_)	((_p_[0]) & 0x1)
-> +#define UCSI_CONSTAT_PWR_READING_VALID(_p_)	(((_p_[0]) & GENMASK(1, 1)) >> 1)
-> +#define UCSI_CONSTAT_CURRENT_SCALE(_p_)		(((_p_[0]) & GENMASK(4, 2)) >> 2)
-> +#define UCSI_CONSTAT_PEAK_CURRENT(_p_) \
-> +	((get_unaligned_le32(_p_) & GENMASK(20, 5)) >> 5)
-> +#define UCSI_CONSTAT_AVG_CURRENT(_p_) \
-> +	((get_unaligned_le32(&(_p_)[2]) & GENMASK(20, 5)) >> 5)
-> +#define UCSI_CONSTAT_VOLTAGE_SCALE(_p_) \
-> +	((get_unaligned_le16(&(_p_)[4]) & GENMASK(8, 5)) >> 5)
-> +#define UCSI_CONSTAT_VOLTAGE_READING(_p_) \
-> +	((get_unaligned_le32(&(_p_)[5]) & GENMASK(16, 1)) >> 1)
->  } __packed;
->  
->  /* -------------------------------------------------------------------------- */
-> -- 
-> 2.43.0.429.g432eaa2c6b-goog
+> IN_FENCE should just be allowed always.
 
--- 
-heikki
+Do you mean that the common path should allow IN_FENCE_FD for all drivers?
 
