@@ -1,108 +1,194 @@
-Return-Path: <linux-kernel+bounces-37704-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37705-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0CE783B423
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:38:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD2F983B425
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:38:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6895F28388F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 21:38:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFEF61C2425E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 21:38:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE94B13540E;
-	Wed, 24 Jan 2024 21:37:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5512213541C;
+	Wed, 24 Jan 2024 21:37:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="YtH9TzG7"
-Received: from sonic315-27.consmr.mail.ne1.yahoo.com (sonic315-27.consmr.mail.ne1.yahoo.com [66.163.190.153])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="cptojg5V";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="iaTBekRT"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F177135403
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 21:37:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.190.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B59C9131E26;
+	Wed, 24 Jan 2024 21:37:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706132231; cv=none; b=g/XRaoKxCadBJP4QbxEBQJCK0XbtfSDRQzCZ+isTOzEClYJsI59Xqx4x5FIo2z3kkWjcHjiCgKP7OFG68+2a1yAWQKhIkrH4dbpsV8hgOmV5JRCucpNiWKGQMhMJ26UxgropmoL4lHxvPJWp6ybn37reI7F7OmdXkdaF5qLklUI=
+	t=1706132278; cv=none; b=USt9KO5FzNF8vwLb+0bATSPQ+CQiZVpSxE78SwLvhEA/LUfZVXLpdhSK44UKD+7O7XLsVD0e8NEKz8j6eChqi4IbeVZQzebHwZ9sTMEWkljrsHVrDeShKdfTzmH/i2MqMawqmVIsi+ENua2ZwfGWvztizE3PNbIRgW6gKkLAhZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706132231; c=relaxed/simple;
-	bh=j9iyNJ1EOsrzQxpUtTqvr0ncAwltHc1F/url79CFuYo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KFDj27pErZedis27X7LF54Hdtj1r0fwghulCSWhFVhq/7POxtllGnMvkCnJQPodfFzMEoBvgJVb1Z2P0mFc7ptDqrILTXEOypmgrfxNFb83TiVzjAT3grl5QkHOTKG/8vL3Ce3uxo1N7MJ6dx6drGfxb6Qf6i+2+70itGvvwaHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com; spf=none smtp.mailfrom=schaufler-ca.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=YtH9TzG7; arc=none smtp.client-ip=66.163.190.153
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=schaufler-ca.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1706132228; bh=0A6MdijwVgm70s9hlUr7/2Vkpj41FkL308wLk6/luXs=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=YtH9TzG7Brd9lvvSvaRyhGHvfjLq7I39yrZ7fzklWx3hPRvA3p4Un6+Uy2eneKz4pETjI6Oj8ErTSsHIye3/xd8rWAuyPWXXv7lXi1lb7NlrvEf+qKM8CIQjT8m6y1mhpn/Gtjx2ptiVX/wYqWLIWC2t0GFK57rbGExwvbmvvHdE8vADO8U6ZpyNqRWoyn9akhOOCIHkWf+fXnQsmfjNKU3NMNbVq/RrfTrqG3vwW04zG+s0Yri5DP/aBv6WYWr560BMO5WEegRplUVW2h8EMWDJIq9TjplpY7jfncWnOKO9Yx6s4DBeXNFEmJKvnJv9aU1dNNGiKkAm1Z/flllc8A==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1706132228; bh=kpUXfrUS7KrSm6/np/axz8QMGK42ZhDGTA3MzPb3Kxi=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=J1ti84borgZs6rkZT+KegLBxkLayiouh4eLstjQG5WkgEPULlW/WsqWdIgrF5US7PoOd6Q1sIVDD4Tb1D4IhGkrMq+n06FKeT2qxZxK3tRBYpPcDSkLIWFlNJcByyB+lGXgUAYG/OZSNXETuj5xslVcZj6wbsdNUZsVmcasmmdtQxQLdW7VPOWDinlwHuUWPdBtnPkXSlxsVu4Tuc+pO3HfTQA6Vas4UJKqf3qFEXEPnNo0yPRRfYGeTG50adNzMDFM6QmLA0bEyW1BYTQYgRvtfkhkTBeHwtCxvZjt/TjbjRyzwTac6E1FIwOekeoVSfuSlJg/AexsHsB9nle4ofA==
-X-YMail-OSG: AESbeFYVM1kOCB.un0EO9apSvGSDM1WIt_OiCsVYliJzzgYf9M5KIagvdah1xaf
- sbynUH4qlmDryiU9zS38E0t15wMVh9q7XoBtSq5TC2DhbWkJuYuPunCK1HuuCQg2pP8lI4EhsfC9
- HzDg5PgM7GxnPrYmVQ03I4fjE7dpUJDYnRuY0sd9xToxlbBBQ_1hySb_HNy5EwvVcKsvixjjUwGZ
- TpJG5yL3oI.azHE2wkTVKIqRhPduPmB63oOseD4NHZp9QwpIyA6ig4ImOzaaWp9yzDvNn4c54OZJ
- bK5iGVznDh6IVxsN2d2Nw9WHXaSbMDKYV_7mwSNaT1C4W5ElQR_PY8iifY7H0sxuTkc1E_PEVczy
- mhexNTKSqx_gA8T1v.fkJ0f5uQh1_x5I9RXeE0h1hVCnPtVnG79CnTEUG5pHgx9gHqnIEObN3aRR
- UARuZkjaUlzwR7AoRAwlRn7_HLu.FEhrFhLhJg3djVyRjtYgCaF7NIy3p5B2CzJUp_LPw8eHOQ4x
- KjTjA7RiJom_88.9dDdkP1v3SkVp3LUSTLM94IiKcxr_neqRF6oLV2zclzrpA1CDyB59HjLIMuq7
- PHBCeOCATUKxxU2gVcLlAkdUB43u2FrQdmdianP0BCly0rbd8Rb7UD2m.ffHQdt29HWZ8Ee9ef57
- fLHjKIjA.FgABXRexLl0roeqOp_.da2R0ibhhEHcskVTwieIBFtBUJ5fbUv_is47n9MtRRDuQNIy
- S7P8jWO.9GbL8ZqIXrCyDfmYXGgsYZQ6yFaccWf5qwKtNlimByH4g8hBP9igz7VEEyg.tIgxtF7E
- FSbhJKyX630hvX92PWUMiDeiwpTmZ4rnPXKpmxPGQphXSo_T2jRZT0W.tiBwB0UjPnlZwnZNuY4b
- 7yJqlHlZzgkQMuyQNB8gmM89MOEA5kyl6O8Un_1HIun1WNjhRvep54MMCQos8yRrwfqn34X8eWsn
- lek53F48XZIZkWngXSmYbOiZPLjRKQ2tODGAwr0tdkGd91cWg4.Ve0KkQ4EuACwQVxQdprTmD8HH
- EDnJ.stpEjV0fShesQCJhBLJ8w7qG_eYaMn52BbakZxzusglNaGybN6_flM3K.Q32SGnhXYX7w2g
- gDMb4lum5iG6Hu.7S5t0Y0lolVbCkXEaAoT04KHf9MTFAL8lC.z6DeOrAOuMzWZ8SMOt2NWwKoKi
- 13Spq_vuG33FA0lPFeA4lfurmxLRVarsBwpzC7MB6Q5xEV6rOoHKLI9p2H7G3Lu0Xfmlp9p5xf9z
- vVaLL6YVdmSKxLrUXV46.d1lIBYDwJhwOkcv.jKwZf6CGJpM.Ws9DbaXtg_xl3k0lPxW0NTSS56O
- jfsZ61D33BJ7wBaX0nXGPjhXYEJB46TN4GbzR392OPFG9RYG3uBu5nMn261zY3U1yCk7Immy9hyT
- w61iuUzJmmbOrrzWl46EGY.eYThb5UpakpMRj7VouyFqXDjDK7lGDXXPXdLFIsL.R32HQWOSGiQj
- LFI.UgsNKwwfoPlFgW0CDWX5yoAOKn1.P164TijLS.0vRFHJkPUNUHDGo2wE7yd3kyfTEBHyHxpp
- xyfwT5TE644IUvVCWC4PIrUd77d6fi1UIW.fktEYPU0aaqC.eYMA0cxLZOqnCKSqhvsA_b5NkhhK
- ubEGR9IgnUJOTwKymRwerEt93oMmppQ_.d9h6CmaDu3q7bTR1u3ys5Mpt03QF.qCYIHGnT5XAG9I
- TT4CFfEuy31sIqhVlAFe2WAI4W1JSJS6ktd8PxMPG1r3vygvTrI5ImsVpdFU6D1CksRCP3y8jaE2
- GwLo7XQsUDuapRvqd0HwKQrQ6VqN6_VFRpI.FToAnSkvgK.LJaqySDDsthlys26izKDCRo7H93cO
- W9K3OVcbTIKbuslzx7eKMd9o.CBakwYRxkonbuuLxgMzycaLAAzHrzsQRQZiZlKS_JG3Zc3RK.XA
- XdvWKKsGDUUVY40qpjNi2LgSxGLFS8vHypa9LMXdBDlmIkgYM._O2vYGY0w9K.x48rPFa31OCKxJ
- ZOWjutmP9EhtiBsnI2BXsGqqkysugy_A2aF8ZgOeF8R8VAfWTjUGwFWFJxZygk.51zag33kthBJN
- MXx._kmd3_dYrsQopMaMwhWWFFAbPxPk3DN8X.Cv7KvDv4774HaQmc3EY7EQnGZbNwMmNi6Uh5fm
- axty00VQbbOaF14TbFuihhJABHaJkwszhucFH57j2LnG_vCOThQcZm.ky0ccNhr2HJDJ0KBndlkV
- EPQPqmK2zhB95T_5MQvTfVvDoB2otWX__vHbPs91fqok8eeHVdBuW5xnU..MKcVCKNbrdeMAiB_7
- EVg--
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: a7823e1d-bb67-4c11-98e0-cb460a567784
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic315.consmr.mail.ne1.yahoo.com with HTTP; Wed, 24 Jan 2024 21:37:08 +0000
-Received: by hermes--production-gq1-78d49cd6df-xrrtm (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 27de38ab2d7ec3af79905f5602158dac;
-          Wed, 24 Jan 2024 21:37:06 +0000 (UTC)
-Message-ID: <04cd0a0a-63e6-4acb-b80e-a77e4d7d8d84@schaufler-ca.com>
-Date: Wed, 24 Jan 2024 13:37:04 -0800
+	s=arc-20240116; t=1706132278; c=relaxed/simple;
+	bh=v5JsH8tHWjq5Q0A+2MP2G+hmruLvrSRUbQVVzJNqX3Y=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=nYA91oZ/WuMugDOducDoD+3U9O9e6b02DGP/xaIly1ynHxvUG9BEqdj8L4b80KPqB+2Gae7i2chkBfslmha0rqCQr56nk2i/J8s5pAa/9OGDyTaiQ+xC4GeLQ7J9fH3Nuo3OUc54QhSMNliEzwMR2XA8KUz5CfmSV0Z47ifapIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=cptojg5V; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=iaTBekRT; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 24 Jan 2024 21:37:53 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1706132274;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=k8xWwnsrfWs37M4gapdLyCA1xFMKKptPVYI5zbGOyaM=;
+	b=cptojg5VytT6aBmBMog0FoqeJsr9+gIpQwmiF8CyL7ogX50MEbblOmntYj30wt9KLkW0h8
+	SGUnrk0P4pUJPRbbPqolV2caS9LxQlnc704eV/+L0UB38l7z19HLbgd8n4F76Xnei2a+iW
+	6HzZRRe9l9uyo7ir6o93OHtaNIQwaysGaSCdS+32vgOYhli3tcEX27oVf0NquJvOISNcAa
+	V3t/HFkEN1nfTc5yMTJl9hnBLiIGe6CjWVoJshYHqpFjJMqpbSzHtyZUztshuwi09aF4eC
+	ku0sQSsjq2LCgvfekc6zJQkoFoJikTe+Jg54byAIG3u1e2NIJcMsxb4eFkq0Jw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1706132274;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=k8xWwnsrfWs37M4gapdLyCA1xFMKKptPVYI5zbGOyaM=;
+	b=iaTBekRTv8MEJQb6V8NZNd/gDbMA1IaUL8n24HO82817Ww2E7gmOKbOWgGtgroFuW0i2nz
+	zWzPm1wgfpEil1CA==
+From: "tip-bot2 for Kirill A. Shutemov" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/sev] x86/mm: Fix memory encryption features advertisement
+Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ "Borislav Petkov (AMD)" <bp@alien8.de>,
+ Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>,
+ Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+ Tom Lendacky <thomas.lendacky@amd.com>, Kai Huang <kai.huang@intel.com>,
+ x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240124140217.533748-1-kirill.shutemov@linux.intel.com>
+References: <20240124140217.533748-1-kirill.shutemov@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: linux-next: Signed-off-by missing for commit in the smack tree
-Content-Language: en-US
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux Next Mailing List <linux-next@vger.kernel.org>,
- Casey Schaufler <casey@schaufler-ca.com>
-References: <20240125083229.6bba94ec@canb.auug.org.au>
-From: Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <20240125083229.6bba94ec@canb.auug.org.au>
-Content-Type: text/plain; charset=UTF-8
+Message-ID: <170613227352.398.393464651879909773.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.22046 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 
-On 1/24/2024 1:32 PM, Stephen Rothwell wrote:
-> Hi all,
->
-> Commits
->
->   39fcdc643c23 ("smack: Initialize the in-memory inode in smack_inode_init_security()")
->   ea2d37d1b553 ("smack: Always determine inode labels in smack_inode_init_security()")
->   da5bea06bde0 ("smack: Handle SMACK64TRANSMUTE in smack_inode_setsecurity()")
->   9c5589ad9d82 ("smack: Set SMACK64TRANSMUTE only for dirs in smack_inode_setxattr()")
->
-> are missing a Signed-off-by from their committer.
+The following commit has been merged into the x86/sev branch of tip:
 
-Bugger. Sorry, will repair.
+Commit-ID:     0410516aaef4bf08030845547fb94f4ff989fac0
+Gitweb:        https://git.kernel.org/tip/0410516aaef4bf08030845547fb94f4ff989fac0
+Author:        Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+AuthorDate:    Wed, 24 Jan 2024 16:02:16 +02:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Wed, 24 Jan 2024 22:27:59 +01:00
 
+x86/mm: Fix memory encryption features advertisement
+
+When memory encryption is enabled, the kernel prints the encryption
+flavor that the system supports.
+
+The check assumes that everything is AMD SME/SEV if it doesn't have
+the TDX CPU feature set.
+
+Hyper-V vTOM sets cc_vendor to CC_VENDOR_INTEL when it runs as L2 guest
+on top of TDX, but not X86_FEATURE_TDX_GUEST. Hyper-V only needs memory
+encryption enabled for I/O without the rest of CoCo enabling.
+
+To avoid confusion, check the cc_vendor directly.
+
+  [ bp: Massage commit message. ]
+
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Reviewed-by: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Acked-by: Kai Huang <kai.huang@intel.com>
+Link: https://lore.kernel.org/r/20240124140217.533748-1-kirill.shutemov@linux.intel.com
+---
+ arch/x86/mm/mem_encrypt.c | 56 ++++++++++++++++++++------------------
+ 1 file changed, 30 insertions(+), 26 deletions(-)
+
+diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+index c290c55..d035bce 100644
+--- a/arch/x86/mm/mem_encrypt.c
++++ b/arch/x86/mm/mem_encrypt.c
+@@ -42,38 +42,42 @@ bool force_dma_unencrypted(struct device *dev)
+ 
+ static void print_mem_encrypt_feature_info(void)
+ {
+-	pr_info("Memory Encryption Features active:");
++	pr_info("Memory Encryption Features active: ");
+ 
+-	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST)) {
+-		pr_cont(" Intel TDX\n");
+-		return;
+-	}
+-
+-	pr_cont(" AMD");
++	switch (cc_vendor) {
++	case CC_VENDOR_INTEL:
++		pr_cont("Intel TDX\n");
++		break;
++	case CC_VENDOR_AMD:
++		pr_cont("AMD");
+ 
+-	/* Secure Memory Encryption */
+-	if (cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT)) {
++		/* Secure Memory Encryption */
++		if (cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT)) {
+ 		/*
+ 		 * SME is mutually exclusive with any of the SEV
+ 		 * features below.
+-		 */
+-		pr_cont(" SME\n");
+-		return;
++		*/
++			pr_cont(" SME\n");
++			return;
++		}
++
++		/* Secure Encrypted Virtualization */
++		if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
++			pr_cont(" SEV");
++
++		/* Encrypted Register State */
++		if (cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT))
++			pr_cont(" SEV-ES");
++
++		/* Secure Nested Paging */
++		if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP))
++			pr_cont(" SEV-SNP");
++
++		pr_cont("\n");
++		break;
++	default:
++		pr_cont("Unknown\n");
+ 	}
+-
+-	/* Secure Encrypted Virtualization */
+-	if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
+-		pr_cont(" SEV");
+-
+-	/* Encrypted Register State */
+-	if (cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT))
+-		pr_cont(" SEV-ES");
+-
+-	/* Secure Nested Paging */
+-	if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP))
+-		pr_cont(" SEV-SNP");
+-
+-	pr_cont("\n");
+ }
+ 
+ /* Architecture __weak replacement functions */
 
