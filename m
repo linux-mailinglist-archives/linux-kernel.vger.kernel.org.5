@@ -1,106 +1,166 @@
-Return-Path: <linux-kernel+bounces-37760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37761-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 324BC83B4DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:38:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C615983B4DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:39:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E347B26306
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:38:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A45A28A3A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:39:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEC3713664A;
-	Wed, 24 Jan 2024 22:38:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FDB6135A6D;
+	Wed, 24 Jan 2024 22:38:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="vpA42fg/"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="fcGVCah8"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 354B5134750;
-	Wed, 24 Jan 2024 22:38:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 851DF134750
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 22:38:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706135906; cv=none; b=si2OdLl8cLX50Co3X+yeedHMniduhGQqdnGu8Lt/zK6LRh1zaW6/F86MKexRaZCvzpzZXso2yV60RDlyGHjw6ydbPQsHGuOuCa3x9HFHQ1uNwSzNxFKAjLgPD0UOuV4Kz8IPXzQdCA/OCrEcQYtfCH4kUks06nfVNOd0tD3SaWQ=
+	t=1706135927; cv=none; b=rg9mlSA2P2PG1JClXy3sjQ4ZnRdYnCqbFgleIe/ZYQWJhDve+LlWycUNxBrwd87H1JPCq1qYaslGzm4YvMuFjNI6JJ6Dkc17Fp0L2mJN46Y5H9E5cpCLoVviO031paa1FqpKfBZ/LUICH2+fqOSzVfxPQDswbuFJQ5rr2gI3gHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706135906; c=relaxed/simple;
-	bh=DTrll0FOkAbkEqdZ2vp/TWJw7W7v966osQ+uN/3YWkM=;
+	s=arc-20240116; t=1706135927; c=relaxed/simple;
+	bh=xjeJlV55+kPHUU5TbYsfmkt4Ye/0S6xdDaU/VwH/rko=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X4DCpu+VnnT/MX6mDCd5LKMYu+Oa+zoFrETcPmIjfb68dEp6Fy6kki1qwiMLrELBIYrprQR4/8jfXxYE6uSJLDGSLXu7/TCu6saMMmoBvsxXxpO2hPQdlw8ggahvKRkvD5IqOqWLjO5AXRR6aZ6LksXl+HiP6dqaWwiYk8h/7yU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=vpA42fg/; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=m89aTmxIORDpdqFWg3Gk7PEdhQXgqNhKa+YwoQCM5Dg=; b=vpA42fg/VmuC9/m9LxgKbDN78e
-	XQR8plsmgZuKLvoZRHVRlwNXUEVu1QwxxRhXs/TOIJ6MbNDs2rjJjuFVr8u6MqiWJ0kcMtjq1aSSd
-	4UxNRiNS30In28+LvoP6DhIo8NGhTZhSS9OPgIfHjMNCV5jub9mnS+bP/oFw3+eHpIJQ=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rSlss-0062N8-K5; Wed, 24 Jan 2024 23:38:14 +0100
-Date: Wed, 24 Jan 2024 23:38:14 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Christian Marangi <ansuelsmth@gmail.com>
-Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Robert Marko <robert.marko@sartura.hr>,
-	linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH 1/3] dt-bindings: net: ipq4019-mdio: document
- now supported clock-frequency
-Message-ID: <9a63b6b1-ecf9-4a9f-9b6a-283367b2a219@lunn.ch>
-References: <20240124213640.7582-1-ansuelsmth@gmail.com>
- <20240124213640.7582-2-ansuelsmth@gmail.com>
- <010becc5-51f6-44c1-863e-f5092ca5018c@lunn.ch>
- <65b18ecb.5d0a0220.e8e31.c94c@mx.google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=K8MVg8rs47SzgyNwoQ3HjFwLeHB797QKG62Mu1FVWsy/UP7ZC0YFu4LBhm/jctgh4qIWDBB0hr+ryMul/zieCZqT61GQHJJUoSp3HIr47LXgybXL01FbYyGLOVU0lv2M9xneAAav1bfc33cjkptB5D6nMRpsaBHM85NPxPFWQsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=fcGVCah8; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40ece18638fso2238285e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 14:38:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1706135923; x=1706740723; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Lzjx1bk00QTl7T0INBKVmgz2bdGhTs7haxC4/89GTjA=;
+        b=fcGVCah8otFYwboL/xYWVgVAD3xGVP2UQLD1kMZGhZjwyWsooH167JuTJljIYUecCI
+         IEGsBGahqZmaU38gGaAMeAMlz0drhBdfRRDuCqjDhXrox6H5lMEAW+YIwOBP/Ti92WZo
+         TjPaUGV+cd/odHjhG4DcKa/+R+FTMTuUecmI7xDEYunTI+36qag1NqIZ4HJ56yaQMNUN
+         2F+ooK8HP9S+TNLLQXeuCIowzGHHt34dogJ0s9xu5sYTfksSr3nvXX6uncf+kAYOn3bA
+         mELF9oCkuG9+vIRWa/djswaKTxQwYjsaX3qcXswdq1pvo/k8y8SXtu6Vba6xP5xFb+Am
+         gFGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706135923; x=1706740723;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Lzjx1bk00QTl7T0INBKVmgz2bdGhTs7haxC4/89GTjA=;
+        b=HJ943VywOOFQhz3sFtda3+0ZWV08+IZAZL7EKgU300pXkMJG04z+yUMKb3mnsdmwt1
+         KyQAS2dQiYmJhPS7LPbjttPKDKnzblIqH5BSQKgZu/kHv8RzHPSWvUdoQTL/MyiAcBse
+         FTIyoz7cncv5dytsKhk9zj4CLIicGgOtjWKeRKJnUv8RWgkh2lXW6PlQeS0s/AERBiVJ
+         qbu7iVEWPMH52gBSgGpMpx27WRauk6wLwYkM0UNjfocfe18a3/nvyh2ZD2OWP1TeC2kc
+         goy3toRm47cP9w8jLkOs4S6OBR+LTAy8C22DTZCPY1D4T6aZ0IIPO7iiS7cBMCgpJw73
+         2+vQ==
+X-Gm-Message-State: AOJu0Yyktu65K4425TYsvCoJrRJwMt56QuL51oPZ2lhE4j+VhBa6x6qO
+	v/PvPX20cGmj5bJbN9m/ZODPKj1LV+kx6ddGKISGkgnW6upb/0ZcBtabcV2eUxY=
+X-Google-Smtp-Source: AGHT+IHlcl13KTHwkOTr9igfdgcOupv0gL0ONh9LvtU3R327wDiNXFqp6hH77jC4GxwRmzmkYe9bAQ==
+X-Received: by 2002:a05:600c:1c98:b0:40e:50ac:d24e with SMTP id k24-20020a05600c1c9800b0040e50acd24emr2162428wms.13.1706135923674;
+        Wed, 24 Jan 2024 14:38:43 -0800 (PST)
+Received: from airbuntu ([213.122.231.14])
+        by smtp.gmail.com with ESMTPSA id f16-20020a05600c155000b0040ebf5956absm449116wmg.29.2024.01.24.14.38.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 14:38:43 -0800 (PST)
+Date: Wed, 24 Jan 2024 22:38:42 +0000
+From: Qais Yousef <qyousef@layalina.io>
+To: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	linux-kernel@vger.kernel.org,
+	Pierre Gondois <Pierre.Gondois@arm.com>
+Subject: Re: [PATCH v4 1/2] sched/fair: Check a task has a fitting cpu when
+ updating misfit
+Message-ID: <20240124223842.zjsolwhp26w7vowu@airbuntu>
+References: <20240105222014.1025040-1-qyousef@layalina.io>
+ <20240105222014.1025040-2-qyousef@layalina.io>
+ <CAKfTPtBTbudKM3Lxv0dQ4EXchLW9G8LszArzp6phzhND4O7XSw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <65b18ecb.5d0a0220.e8e31.c94c@mx.google.com>
+In-Reply-To: <CAKfTPtBTbudKM3Lxv0dQ4EXchLW9G8LszArzp6phzhND4O7XSw@mail.gmail.com>
 
-On Wed, Jan 24, 2024 at 11:27:20PM +0100, Christian Marangi wrote:
-> On Wed, Jan 24, 2024 at 11:23:05PM +0100, Andrew Lunn wrote:
-> > > +  clock-frequency:
-> > > +    description:
-> > > +      The MDIO bus clock that must be output by the MDIO bus hardware, if
-> > > +      absent, the default hardware values are used.
-> > > +
-> > > +      MDC rate is feed by an external clock (fixed 100MHz) and is divider
-> > > +      internally. The default divider is /256 resulting in the default rate
-> > > +      applied of 390KHz.
-> > > +    enum: [ 390625, 781250, 1562500, 3125000, 6250000, 12500000 ]
-> > 
-> > Hi Christian
-> > 
-> > 802.3 says the clock should be up to 2.5MHz by default. So the nearest
-> > would be 1562500. Please document that if not set, it defaults to
-> > this. And make the driver actually default to that.
+On 01/23/24 18:22, Vincent Guittot wrote:
+
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index bcea3d55d95d..0830ceb7ca07 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -5065,17 +5065,61 @@ static inline int task_fits_cpu(struct task_struct *p, int cpu)
 > >
+> >  static inline void update_misfit_status(struct task_struct *p, struct rq *rq)
+> >  {
+> > +       unsigned long uclamp_min, uclamp_max;
+> > +       unsigned long util, cpu_cap;
+> > +       int cpu = cpu_of(rq);
+> > +
+> >         if (!sched_asym_cpucap_active())
+> >                 return;
+> >
+> > -       if (!p || p->nr_cpus_allowed == 1) {
+> > -               rq->misfit_task_load = 0;
+> > -               return;
+> > -       }
+> > +       if (!p || p->nr_cpus_allowed == 1)
+> > +               goto out;
+> >
+> > -       if (task_fits_cpu(p, cpu_of(rq))) {
+> > -               rq->misfit_task_load = 0;
+> > -               return;
+> > +       cpu_cap = arch_scale_cpu_capacity(cpu);
+> > +
+> > +       /* If we can't fit the biggest CPU, that's the best we can ever get. */
+> > +       if (cpu_cap == SCHED_CAPACITY_SCALE)
+> > +               goto out;
+> > +
+> > +       uclamp_min = uclamp_eff_value(p, UCLAMP_MIN);
+> > +       uclamp_max = uclamp_eff_value(p, UCLAMP_MAX);
+> > +       util = task_util_est(p);
+> > +
+> > +       if (util_fits_cpu(util, uclamp_min, uclamp_max, cpu) > 0)
+> > +               goto out;
+> > +
+> > +       /*
+> > +        * If the task affinity is not set to default, make sure it is not
+> > +        * restricted to a subset where no CPU can ever fit it. Triggering
+> > +        * misfit in this case is pointless as it has no where better to move
+> > +        * to. And it can lead to balance_interval to grow too high as we'll
+> > +        * continuously fail to move it anywhere.
+> > +        */
+> > +       if (!cpumask_equal(p->cpus_ptr, cpu_possible_mask)) {
+> > +               unsigned long clamped_util = clamp(util, uclamp_min, uclamp_max);
+> > +               bool has_fitting_cpu = false;
+> > +               struct asym_cap_data *entry;
+> > +
+> > +               rcu_read_lock();
+> > +               list_for_each_entry_rcu(entry, &asym_cap_list, link) {
 > 
-> As I said, this is very fk up and default value is 390KHz unless anyone
-> in the chain sets it (sometime uboot does it but it's not that common...
-> default qsdk uboot doesn't do that for example)... Ok I have to change
-> this to default to 1562500.
+> Do we really want to potentially do this loop at every pick_next task ?
 
-I doubt you will cause any regression by defaulting to 2.5HHz
-instead. That is what the standard says it should be. All devices on
-the bus should support that.
+The common case should return quickly as the biggest CPU should be present
+in every task by default. And after sorting the biggest CPU will be the first
+entry and we should return after one check.
 
-    Andrew
+Could we move the update to another less expensive location instead?
+
+We could try to do better tracking for CPUs that has their affinity changed,
+but I am not keen on sprinkling more complexity else where to deal with this.
+
+We could keep the status quouo and just prevent the misfit load balancing from
+increment nr_failed similar to newidle_balance too. I think this should have
+a similar effect. Not ideal but if this is considered too expensive still
+I can't think of other options that don't look ugly to me FWIW.
+
+
+Thanks
+
+--
+Qais Yousef
 
