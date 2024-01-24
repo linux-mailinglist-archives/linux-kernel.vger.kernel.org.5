@@ -1,241 +1,263 @@
-Return-Path: <linux-kernel+bounces-36761-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36760-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D105F83A627
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:59:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 127FB83A621
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:59:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 032561C20ADD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:59:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B099A284B48
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:59:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A855182CA;
-	Wed, 24 Jan 2024 09:59:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9061182D8;
+	Wed, 24 Jan 2024 09:59:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="H6+u+w3a";
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="0NYM/q/K"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Q2YwMxYI"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E74DD18641;
-	Wed, 24 Jan 2024 09:59:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.153.233
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706090368; cv=fail; b=lyTfU9Dye5uVo+KeCL1ZjvGFKTi4/ovdzNbY5bBCwCHG1X/jH7/m/y/EZx6zEq7bSSV0dj2eQulN253WzHJaqf51Wop/nyuRkYG8NviuvQVT2G0sBrCmHoVaaaTlhgY0Fs6enV8/7Ii/fXzP7XvnatnXInl4TIprjOHjZfSJQ9o=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706090368; c=relaxed/simple;
-	bh=eDHCqpnalzsn7Pgl/inq/kCeKF+dyyKcc0+BaFgJBmk=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=HpG8tpEnMYljLtJB6v2Gq0iPurfIzpmoIEgHfu17D3W2MrJQpbwahemEhRqa5AbsJTqc2DO7zi1OoxKweXyXCL0vBz8NDwdGyiJIwKn60z8I5dOZeUgS+NhZAQnG8w4gE/8hSFSuUCOjMbJui/jxcuVi86KTpPxSXMbIlhFKzL4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=H6+u+w3a; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=0NYM/q/K; arc=fail smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1706090367; x=1737626367;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=eDHCqpnalzsn7Pgl/inq/kCeKF+dyyKcc0+BaFgJBmk=;
-  b=H6+u+w3aTekVRbwpuj68cHzC1z4nQQzz8PVY07UNFzwzpH9L4N1tEIKd
-   vOZjR/XM6vcDyQoULyV+0XtAmeARAciaqFWGGrZPGzNT56ATujEHjfuKW
-   C1DMOFYS+w6Ukr6JhOwJEB0jnFFaRkUVbcDPmO1kyZPUQ7XxHsb96Ktgt
-   i4zrgjEku6J9flN2bB/JWjueMqsVbi/LqXTfHoP2FTB6DGzkS9ge4bBWa
-   snc3EFogx2uLrKkczL0FAozrvWijPkWXca5Hk63y0fuPaPwdue0R7ZkPW
-   sdgqzE/dmq34O+pxeds9tclWgDeefFd9VzxGDMy13t8d23XlcHfgkG3Cs
-   w==;
-X-CSE-ConnectionGUID: cojQwK14R4mmQ77dAkzMOg==
-X-CSE-MsgGUID: SG37yC98TNiPy8d3QFBE1g==
-X-IronPort-AV: E=Sophos;i="6.05,216,1701154800"; 
-   d="scan'208";a="245937421"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 24 Jan 2024 02:59:25 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 24 Jan 2024 02:58:49 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (10.10.215.250)
- by email.microchip.com (10.10.87.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 24 Jan 2024 02:58:49 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ar1TkVoI+nDe02LIP+wJeaTi2Qax7U1Yn8iZZ4MZMqgfm/oDGD04FXLMErMd0JCV3h6ww7aI02GdD+cEAz+fomQHTakDn3gtn7OFAlSG24Mo11cooBZP3QygPvOf5jdv+ndmwC4R/W+dzjzgBJ44RnAR6DU1PXeE7oDVEjWZGOaC7Ugtd9EMhwBR8F1wryoVzdUqnBdPyySG1ysBpnkZbOLM0hlZbipOT+ZcZsuBT13Wo4T4FftPVEq9EwhUb97EpJGWw/bzE3iWLje6NYuOrmCfX7MmUESG6EdnpN/7IYAN1Jq9heZJUi7QykPxzaXaytlfJInKLPmvR3ez8/EQbg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eDHCqpnalzsn7Pgl/inq/kCeKF+dyyKcc0+BaFgJBmk=;
- b=SoEN/UoMRvRs5Jbx/Qw7QS62pmsi7+VK2LmETmwNCG9ztxHOHxurVfxeTwu6k/YTq0wG6dVcq6lxlyyMHxmcLcwyWHi3QRhnqNv8CZMk/kNKMcw19LXgbgw17slORnwQ6MsbIul6OKOZq6OVfou/XI3dcaN9m5jtrUdLjuJfQn4DLQELgGF0J7m+WV5mSc/h3piWh6QbhrpGehK88UFqklPZDYBAXVBKMRE54JnvITA/0btLETdp/nAOu3/o3CrCI1FxacuhrvR7plANmKr4FqeK0WhLUxZs7Cxy646WoTK/Rou/kZR6bhCrlKObpByYmVk9UPsaGa6U830igdGIgg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eDHCqpnalzsn7Pgl/inq/kCeKF+dyyKcc0+BaFgJBmk=;
- b=0NYM/q/KHyzTTcv7bQ4c243Ro8gjyByERB5aR21EelXQPLJNUzIaNVFN3PtYGWl/QouM68WBtlMNBg5nmbXOqGpLTzpSpXRCO4RqtcCza78YzeXK6u+mKat6w7j19ERXbVir3OJjBuTVSAaIeP9Mw0PdaDTiCAfw/0ewoMTLbV1Fz6WcLdm1+ktJhHZez40KyDtI1qmorOp4wXYhjFCys3RdMtI6MhZ4U9MWJ+EsnILpaZth09xUqWzAGCmIt/stZ6bl58bmjyBIqTOEpZtI+QDIOdpidQlDEdpgKn5q5tUIcnrI7yVGtMqI7AT+16bqNxSapKUX63RvzDaPLk6kag==
-Received: from PH7PR11MB6451.namprd11.prod.outlook.com (2603:10b6:510:1f4::16)
- by SA2PR11MB5001.namprd11.prod.outlook.com (2603:10b6:806:118::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22; Wed, 24 Jan
- 2024 09:58:47 +0000
-Received: from PH7PR11MB6451.namprd11.prod.outlook.com
- ([fe80::80b9:80a3:e88a:57ee]) by PH7PR11MB6451.namprd11.prod.outlook.com
- ([fe80::80b9:80a3:e88a:57ee%3]) with mapi id 15.20.7228.022; Wed, 24 Jan 2024
- 09:58:47 +0000
-From: <Dharma.B@microchip.com>
-To: <robh@kernel.org>
-CC: <Conor.Dooley@microchip.com>, <sam@ravnborg.org>, <bbrezillon@kernel.org>,
-	<maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
-	<tzimmermann@suse.de>, <airlied@gmail.com>, <daniel@ffwll.ch>,
-	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-	<Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-	<claudiu.beznea@tuxon.dev>, <dri-devel@lists.freedesktop.org>,
-	<devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <lee@kernel.org>, <thierry.reding@gmail.com>,
-	<u.kleine-koenig@pengutronix.de>, <linux-pwm@vger.kernel.org>,
-	<Linux4Microchip@microchip.com>
-Subject: Re: [PATCH v3 2/3] dt-bindings: atmel,hlcdc: convert pwm bindings to
- json-schema
-Thread-Topic: [PATCH v3 2/3] dt-bindings: atmel,hlcdc: convert pwm bindings to
- json-schema
-Thread-Index: AQHaSfB3xKaoSF1iTEm2rEaqjzNrorDhjEEAgAc3tIA=
-Date: Wed, 24 Jan 2024 09:58:46 +0000
-Message-ID: <58641356-8039-47c4-9e5c-36c6c76877cd@microchip.com>
-References: <20240118092612.117491-1-dharma.b@microchip.com>
- <20240118092612.117491-3-dharma.b@microchip.com>
- <20240119194534.GA938671-robh@kernel.org>
-In-Reply-To: <20240119194534.GA938671-robh@kernel.org>
-Accept-Language: en-GB, en-US
-Content-Language: en-GB
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH7PR11MB6451:EE_|SA2PR11MB5001:EE_
-x-ms-office365-filtering-correlation-id: c2b292ae-e8db-4f0a-5476-08dc1cc30ea9
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: MW3/DKW70AwRfp/uRP5irY7UrNf9gfEAYU64xAboDBKqhq6X2W4e1oLXUnge7VQ8A+vF4C23tGO4gwUKqI8iibX3EZs6ATwai8okn2wzn91GSQWy2GhKElm74fiS01SOtjzobDCssqtECF8ypruYBuajimsRdE/7vU5I6nMJXPTWH+3gDdfhnDFP9AmM0KwzIPOTCam3/TfmP9u1hLU1pJXVWuaSNO9AKrwmYSmm9yAkY8pejzDeVz4EcrkXyfRUdNApXoyBmdCtl46/ruOXETFjlO1Y7TwSng1NDsbOqPNdSoCbLmGvoA7TRTLLAySsH4VklANPjZN/y7NhOQlj3NUPKFtz0fqCrc6CwyPvnEnsBT9KBZ8Gdxygv0qc+zwxCDxorqORCpvqUw9EbUICgwe1oJZTV/Ogqoy6a3nh7DQdya8OMS+cU8nRx7WkjIPsevL4UH8BXTi3JNFElR19B291EhfApDL4DRXo9f3TeqUIUw62RIeyrskxpwp8mgvaQ1vvcQK3SxY24v6JApVBKiIEG5TO8mLxMUIn49il2ge5o0gyqmFl7ibjJy5w3qiW3QgZYkKhzNHT0BkJbYeKbG4N7xfb0yzg3N/gzSptCoAU42x25zKMicXVt2sUWgm8+HiFFgbb11rHa8JdJ4ROlm1Jeyhb6rdzdUei5GZoGkmA1lubDSfHQTBBNz419SP2hIszm5BNb6bWFacsVAaBs16yHwLqAdGmBmPUgB7zYhs=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB6451.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(396003)(376002)(39860400002)(136003)(230273577357003)(230173577357003)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(26005)(107886003)(71200400001)(2616005)(6512007)(53546011)(5660300002)(6506007)(66556008)(8936002)(7416002)(8676002)(2906002)(4326008)(76116006)(966005)(478600001)(41300700001)(6486002)(66476007)(316002)(38100700002)(66446008)(54906003)(38070700009)(6916009)(64756008)(91956017)(83380400001)(66946007)(31686004)(122000001)(36756003)(31696002)(86362001)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?SG1keU8ra3o2U1JodVUwc0Q3bDlpeGhKOFUvQk9YK05GVDFXSzNZbVQ0NmFS?=
- =?utf-8?B?WkowZHFaQ29KVUlSSHNDMVFoLzNQd2I1aDdjQ1V2VVZ0b1dCQjN1Q0thMU1x?=
- =?utf-8?B?em14Sk16RVFHdVNlNjdsQVpWaS84L25vK1Z4K3R2ZmkwejRydEp4bGtaT2xU?=
- =?utf-8?B?OC8rQk1lR2xsTjJDZ0o5NFhVRE11N2VlMzNEL2Z4bllNRlNYN3FhSjJWanNW?=
- =?utf-8?B?Z3paOTFXQnhpamxMVW9KNmZkOFRkUGFha1ZRMUNRYXF5ZjdKRmI3Y1Nxc3Rt?=
- =?utf-8?B?SzI5TjJUWk50WW9EMU5peWp4MEkwUENPamFXTTRYaEt4RGlZU1BDRG9HNE1H?=
- =?utf-8?B?aXZjRnZnQ2JVMjU1MlJaSzJtUHZWd2xqSW00UFNrVTlEL1ZqZ1grQ3pETDdD?=
- =?utf-8?B?K0FPRDNGNEFucGZRdk5zY2tYNjZjaDJjenB1ODFwRnRBNEs5alhSM3dvRytm?=
- =?utf-8?B?WldZVUxNNWs5NGllVUcyVmRjQzRyWGxsZllWN294R0RXWHQyRGZqSlgrUWFU?=
- =?utf-8?B?Qk9uRG9Od0xuTkRsbzBCOWNMVWZZeEw2c1FUSkVMRWY3VTlybFdqcXo5UkFE?=
- =?utf-8?B?a1didEkvWEtXdisxL3pPRVZEY3Yxb3Y0czNZWFoxcUNWTy9sL2hKR3R1dUI3?=
- =?utf-8?B?a085d3VrM0oyM1NvR2g5U2tzZ25lUVJiWlFpRVo2TVRSY2FLSytVS0xqZlo1?=
- =?utf-8?B?cmthcHdpK3BWdFhtelUyejEyMDU0Wll1OUtkQkMrMHdyUmRWcXJLTWVJeXpP?=
- =?utf-8?B?Y2pHRytPUHQzcUNKSWI2SVFSdXh4UmozSkpnbU1EQzluOUpLMUxQU1NnODJC?=
- =?utf-8?B?R0xYRGRqY1kvcThQb3ZVcW5wS3NzVVQxUmFvRXdWbzVPTC9kMHFtbU1CNlFG?=
- =?utf-8?B?TnFKSTRMNjdrMVVQekNnNVp6Wk9weVRZNXFWV0dqUk5HTUhXMWhDNk1BRTBJ?=
- =?utf-8?B?V3ZkUHBzV3FMenJmRG1qaXl1QVRvdUpqN2t4QUNVNTF3RE93TVJoTTRobWR4?=
- =?utf-8?B?Q2NMemNORUh4WG04NkpvQ1IxZGk1N2VmNlI0U0NKN0JMYXZkZzVyUDBDNVpO?=
- =?utf-8?B?STlWUmExU01paUZ2YVJ2ZW9IZEZYemhJUC9UY1NmTlVZWVF6L0tXVEVCYlk3?=
- =?utf-8?B?NXlyYTVUdVQxSEtZdHBMUGUzSE12OWVnTFBLeExOd2hwK1ROdmw3dGpaQWpu?=
- =?utf-8?B?ejNLVjVpaFlRK0tPNW5UM3FGQ2lsS1BXTXgvWmE4NUtyK1hIdVV6WDBlQW0y?=
- =?utf-8?B?MENMYytOQ2p3blptbjM3a3FFcjFCYWwxZFh0K3NRSWJQVW4zSkhuSkdKNC9j?=
- =?utf-8?B?MEdUSHRaYTYvUFBQYXhnREJiWWptTHB0QVcvRnhpMFRiM0cyaDVNSkNBWWxy?=
- =?utf-8?B?RzlPaEJiSnErb1hIeDhXT25kSUZwcW1Zd1Bub3E1S0pncktVOCtHenVLMUhP?=
- =?utf-8?B?ZDZZRnJ4SmNJSDY3bU9QL1h0Vi9qM2NDZkxSM3phVWxwRCtKRG5FL3hwem12?=
- =?utf-8?B?N1JaMXluOFgvYmdxcU9uZXpUOThhWDRiZ09YdCtETTJZamZWUGJqK3Yzb3c4?=
- =?utf-8?B?ckd5aU9ZSjFDQWtySzNFRnl1OVl5Zko3Ym1XSmYzQ0Z3UkkrYzZMY2FjTmZu?=
- =?utf-8?B?L1RRbjNVRHgrSHRYandQbWZZb3RSNnJiNzFub3lMODRCZXNNTWNUazRicHF5?=
- =?utf-8?B?V3RERTY2L3kvYWxURTZJNjByRUhBNVlqU2ZsYkZUb09RVjcrODRlbCtFTkRk?=
- =?utf-8?B?TWRtclZKWUljUWx6WG9JNUgvUmN1dFdCS1FmZkpSYzZkY1NlelJUK3hmYThi?=
- =?utf-8?B?S1dpa2lxc0tnNWQ4bS9LZUh1YWdXbElBaW9ibWM0SWJla1c3TTB0c1V2Qmpz?=
- =?utf-8?B?RUh5cHFDcmpWdnNjOXA2K3BNeWZHOEhIZG9Pc1EwRkRqWVhXU1hqeGRxZlBX?=
- =?utf-8?B?ZzZTY0hhN25UNnhYMFNNeDEvbGlYb1NyRkNQcUpOUU93dnp6TmlGaC90T3NZ?=
- =?utf-8?B?Q1l1S0tnaGt6MTRVaTZVWkJWM3ZWN01IR3RIL2syS0srQWZMM0JLU2xaZHVo?=
- =?utf-8?B?OU90eHBaazFZNW5qaVppUEE5NWRKNHlWbTNwTmpySDRXOTlmVGN3ZmFpTmJh?=
- =?utf-8?Q?VzMS/zg4WcwvcTojPFlyYrz4M?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <077299D0E5B444438C56539192E1E749@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65E0F18049
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 09:59:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706090352; cv=none; b=SPrEHfiyAqIijIyXs2VEIvKc9RQFsiusdAow/1jIB5EFETRlCqdVQjyQSZwXdbc2obCMIznWklxUUFL7nhEWVVCzlnamC3FK6IUccxfqu7AGAi0rEPPw+Deweuyge7SUHIl+tga9h8LzcC9rh7/PN2iNX7gDHVejudoWKclUwH8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706090352; c=relaxed/simple;
+	bh=15Q4F0kE4qahoEyJ6HulrWZpeQdJz1QfwlrrMXu0l60=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=umrmPzys09nO0tssAsASNHuz+nriLy4Qr0FgiWis0hWyQ5H8x/kORBRhHHZ97gYqx6/7sRBl7ZHrLtmxhGBSH7ErIWPAix+2NpEmn5v4JPV6zfuhm04YR5QCptcJkmThjs2GOTcfh1QgZ0p/SjICiMhBbFqsWrksCvWhN4ssRZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Q2YwMxYI; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706090349;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ycwyiuq6MSu6fJ8T9ykxWOzW0MDrM+yl5NgqcP5LEEo=;
+	b=Q2YwMxYIKaMhNNdhbUbK5IAMH4BTuo3eUZZZKhdvWyFz+fkX24v3gJQp0WatAQqidiMUVi
+	N4GB15dtlHOKOJL6WVQLrx/8rxZ3/SpdvLBWJCQH13MBNBKWTV0DJiZqLDACorxOJGQUcg
+	UNgydm6hrayvuYvevW6L5qE55fTybrw=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-90-Ys-px2dtOqOlbc5ocZcr_Q-1; Wed, 24 Jan 2024 04:59:07 -0500
+X-MC-Unique: Ys-px2dtOqOlbc5ocZcr_Q-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a309495ba10so129813166b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 01:59:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706090346; x=1706695146;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ycwyiuq6MSu6fJ8T9ykxWOzW0MDrM+yl5NgqcP5LEEo=;
+        b=wwvhARirx2NL70sz6JZhTc9Hvxx2aeFEzkVLQHKA3XATQWscy7326m29nS+7RWeRPw
+         gu6V63mrAezk12f5BSqLJ35ZJVQk1jrcKOO9nVBuGEWWKM5Oqo+aefhhWhxgeOxwbzf9
+         2Vvqb4/aKBwMdjUfkUlhucAfn2d+FReo73z2dtww/PYe1GgG1pN0EWEVALDKaLOwQZfp
+         SwyDbzOygzSm41Zekqle1rA4nzb3HKdRU3pSAHrFc+k7t3vVBXtgfC5yHzos3rtcJiht
+         7mUMAA0fxaUnUPjsEbOUs/jUul5Ufo7kJPbkrRsuW2Vste67nPPh7BQr0FxpM6FuP0pR
+         j29Q==
+X-Gm-Message-State: AOJu0YxVs5bsZKFBloTjbRFKb/4eA1QLtQhh0BF+8WeYeGyba6QgRwLW
+	biUnSEn9C5kKeUUGOqZENTk8tFDro9KkpdDn6b23ZaEpTaEDXnJE5jHjXXMP2C2fvinO7s730Ke
+	XOVWj9/iuyw/8JDHz5Q4u1k5ZioTigWVFNpquh8PipGDt4ofUBAjcUw4qx1dlgxoTpPWlLOFSUN
+	NFYDw0IyT+R8+SHG/XKagho4Tt/yilgU9MTtsd
+X-Received: by 2002:a17:907:8748:b0:a28:c217:ce8e with SMTP id qo8-20020a170907874800b00a28c217ce8emr759043ejc.124.1706090346420;
+        Wed, 24 Jan 2024 01:59:06 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEPu5nlNtWGHZaLtZ37i6pNs7lvberqRiX4p3cwtvFz0zIWKs9cFdhli4kiokFcEr5hYFR3LhDmpONRZqAnA+A=
+X-Received: by 2002:a17:907:8748:b0:a28:c217:ce8e with SMTP id
+ qo8-20020a170907874800b00a28c217ce8emr759038ejc.124.1706090346097; Wed, 24
+ Jan 2024 01:59:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB6451.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c2b292ae-e8db-4f0a-5476-08dc1cc30ea9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jan 2024 09:58:46.9362
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pUDLdH1e8GojR6n0ECRD1AO5k7R1+bhe87wF1bFwRWCYmptS4Nz18XSbFG9EzxVqixdXhc39LxFW+VV10BsznA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5001
+References: <20240123-b4-hid-bpf-fixes-v1-0-aa1fac734377@kernel.org>
+ <20240123-b4-hid-bpf-fixes-v1-2-aa1fac734377@kernel.org> <CAEf4BzbE-YHR1FuXfG7ryi_77H=nzF0XBoppqrbG4Uh1uPz8Lg@mail.gmail.com>
+In-Reply-To: <CAEf4BzbE-YHR1FuXfG7ryi_77H=nzF0XBoppqrbG4Uh1uPz8Lg@mail.gmail.com>
+From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date: Wed, 24 Jan 2024 10:58:53 +0100
+Message-ID: <CAO-hwJL4UMQMOC-CQKXZ_Np2b7H2rSnAji=Yypc62k_+GejwcA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] HID: bpf: use __bpf_kfunc instead of noinline
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Benjamin Tissoires <bentiss@kernel.org>, Jiri Kosina <jikos@kernel.org>, 
+	Dan Carpenter <dan.carpenter@linaro.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-SGkgUm9iLA0KT24gMjAvMDEvMjQgMToxNSBhbSwgUm9iIEhlcnJpbmcgd3JvdGU6DQo+IEVYVEVS
-TkFMIEVNQUlMOiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxlc3Mg
-eW91IGtub3cgdGhlIGNvbnRlbnQgaXMgc2FmZQ0KPiANCj4gT24gVGh1LCBKYW4gMTgsIDIwMjQg
-YXQgMDI6NTY6MTFQTSArMDUzMCwgRGhhcm1hIEJhbGFzdWJpcmFtYW5pIHdyb3RlOg0KPj4gQ29u
-dmVydCBkZXZpY2UgdHJlZSBiaW5kaW5ncyBmb3IgQXRtZWwncyBITENEQyBQV00gY29udHJvbGxl
-ciB0byBZQU1MDQo+PiBmb3JtYXQuDQo+Pg0KPj4gU2lnbmVkLW9mZi1ieTogRGhhcm1hIEJhbGFz
-dWJpcmFtYW5pIDxkaGFybWEuYkBtaWNyb2NoaXAuY29tPg0KPj4gUmV2aWV3ZWQtYnk6IENvbm9y
-IERvb2xleSA8Y29ub3IuZG9vbGV5QG1pY3JvY2hpcC5jb20+DQo+PiAtLS0NCj4+IGNoYW5nZWxv
-Zw0KPj4gdjIgLT4gdjMNCj4+IC0gUmVtb3ZlICd8JyBpbiBkZXNjcmlwdGlvbiwgYXMgdGhlcmUg
-aXMgbm8gZm9ybWF0dGluZyB0byBwcmVzZXJ2ZS4NCj4+IC0gRGVsZXRlIHRoZSBkZXNjcmlwdGlv
-biBmb3IgcHdtLWNlbGxzLg0KPj4gLSBEcm9wIHRoZSBsYWJlbCBmb3IgcHdtIG5vZGUgYXMgaXQg
-bm90IHVzZWQuDQo+PiB2MSAtPiB2Mg0KPj4gLSBSZW1vdmUgdGhlIGV4cGxpY2l0IGNvcHlyaWdo
-dHMuDQo+PiAtIE1vZGlmeSB0aXRsZSAobm90IGluY2x1ZGUgd29yZHMgbGlrZSBiaW5kaW5nL2Ry
-aXZlcikuDQo+PiAtIE1vZGlmeSBkZXNjcmlwdGlvbiBhY3R1YWxseSBkZXNjcmliaW5nIHRoZSBo
-YXJkd2FyZSBhbmQgbm90IHRoZSBkcml2ZXIuDQo+PiAtIFJlbW92ZSBwaW5jdHJsIHByb3BlcnRp
-ZXMgd2hpY2ggYXJlbid0IHJlcXVpcmVkLg0KPj4gLSBEcm9wIHBhcmVudCBub2RlIGFuZCBpdCdz
-IG90aGVyIHN1Yi1kZXZpY2Ugbm9kZSB3aGljaCBhcmUgbm90IHJlbGF0ZWQgaGVyZS4NCj4+IC0t
-LQ0KPj4gICAuLi4vYmluZGluZ3MvcHdtL2F0bWVsLGhsY2RjLXB3bS55YW1sICAgICAgICAgfCA0
-NCArKysrKysrKysrKysrKysrKysrDQo+PiAgIC4uLi9iaW5kaW5ncy9wd20vYXRtZWwtaGxjZGMt
-cHdtLnR4dCAgICAgICAgICB8IDI5IC0tLS0tLS0tLS0tLQ0KPj4gICAyIGZpbGVzIGNoYW5nZWQs
-IDQ0IGluc2VydGlvbnMoKyksIDI5IGRlbGV0aW9ucygtKQ0KPj4gICBjcmVhdGUgbW9kZSAxMDA2
-NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3B3bS9hdG1lbCxobGNkYy1wd20u
-eWFtbA0KPj4gICBkZWxldGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
-bmRpbmdzL3B3bS9hdG1lbC1obGNkYy1wd20udHh0DQo+Pg0KPj4gZGlmZiAtLWdpdCBhL0RvY3Vt
-ZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9wd20vYXRtZWwsaGxjZGMtcHdtLnlhbWwgYi9E
-b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcHdtL2F0bWVsLGhsY2RjLXB3bS55YW1s
-DQo+PiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPj4gaW5kZXggMDAwMDAwMDAwMDAwLi40ZjRjYzIx
-ZmU0ZjcNCj4+IC0tLSAvZGV2L251bGwNCj4+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJl
-ZS9iaW5kaW5ncy9wd20vYXRtZWwsaGxjZGMtcHdtLnlhbWwNCj4+IEBAIC0wLDAgKzEsNDQgQEAN
-Cj4+ICsjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiAoR1BMLTIuMC1vbmx5IE9SIEJTRC0yLUNs
-YXVzZSkNCj4+ICslWUFNTCAxLjINCj4+ICstLS0NCj4+ICskaWQ6IGh0dHA6Ly9kZXZpY2V0cmVl
-Lm9yZy9zY2hlbWFzL3B3bS9hdG1lbCxobGNkYy1wd20ueWFtbCMNCj4+ICskc2NoZW1hOiBodHRw
-Oi8vZGV2aWNldHJlZS5vcmcvbWV0YS1zY2hlbWFzL2NvcmUueWFtbCMNCj4+ICsNCj4+ICt0aXRs
-ZTogQXRtZWwncyBITENEQydzIFBXTSBjb250cm9sbGVyDQo+PiArDQo+PiArbWFpbnRhaW5lcnM6
-DQo+PiArICAtIE5pY29sYXMgRmVycmUgPG5pY29sYXMuZmVycmVAbWljcm9jaGlwLmNvbT4NCj4+
-ICsgIC0gQWxleGFuZHJlIEJlbGxvbmkgPGFsZXhhbmRyZS5iZWxsb25pQGJvb3RsaW4uY29tPg0K
-Pj4gKyAgLSBDbGF1ZGl1IEJlem5lYSA8Y2xhdWRpdS5iZXpuZWFAdHV4b24uZGV2Pg0KPj4gKw0K
-Pj4gK2Rlc2NyaXB0aW9uOg0KPj4gKyAgVGhlIExDREMgaW50ZWdyYXRlcyBhIFB1bHNlIFdpZHRo
-IE1vZHVsYXRpb24gKFBXTSkgQ29udHJvbGxlci4gVGhpcyBibG9jaw0KPj4gKyAgZ2VuZXJhdGVz
-IHRoZSBMQ0QgY29udHJhc3QgY29udHJvbCBzaWduYWwgKExDRF9QV00pIHRoYXQgY29udHJvbHMg
-dGhlDQo+PiArICBkaXNwbGF5J3MgY29udHJhc3QgYnkgc29mdHdhcmUuIExDRENfUFdNIGlzIGFu
-IDgtYml0IFBXTSBzaWduYWwgdGhhdCBjYW4gYmUNCj4+ICsgIGNvbnZlcnRlZCB0byBhbiBhbmFs
-b2cgdm9sdGFnZSB3aXRoIGEgc2ltcGxlIHBhc3NpdmUgZmlsdGVyLiBMQ0QgZGlzcGxheQ0KPj4g
-KyAgcGFuZWxzIGhhdmUgZGlmZmVyZW50IGJhY2tsaWdodCBzcGVjaWZpY2F0aW9ucyBpbiB0ZXJt
-cyBvZiBtaW5pbXVtL21heGltdW0NCj4+ICsgIHZhbHVlcyBmb3IgUFdNIGZyZXF1ZW5jeS4gSWYg
-dGhlIExDREMgUFdNIGZyZXF1ZW5jeSByYW5nZSBkb2VzIG5vdCBtYXRjaCB0aGUNCj4+ICsgIExD
-RCBkaXNwbGF5IHBhbmVsLCBpdCBpcyBwb3NzaWJsZSB0byB1c2UgdGhlIHN0YW5kYWxvbmUgUFdN
-IENvbnRyb2xsZXIgdG8NCj4+ICsgIGRyaXZlIHRoZSBiYWNrbGlnaHQuDQo+PiArDQo+PiArcHJv
-cGVydGllczoNCj4+ICsgIGNvbXBhdGlibGU6DQo+PiArICAgIGNvbnN0OiBhdG1lbCxobGNkYy1w
-d20NCj4+ICsNCj4+ICsgICIjcHdtLWNlbGxzIjoNCj4+ICsgICAgY29uc3Q6IDMNCj4+ICsNCj4+
-ICtyZXF1aXJlZDoNCj4+ICsgIC0gY29tcGF0aWJsZQ0KPj4gKyAgLSAiI3B3bS1jZWxscyINCj4+
-ICsNCj4+ICthZGRpdGlvbmFsUHJvcGVydGllczogZmFsc2UNCj4+ICsNCj4+ICtleGFtcGxlczoN
-Cj4+ICsgIC0gfA0KPj4gKyAgICBwd20gew0KPj4gKyAgICAgIGNvbXBhdGlibGUgPSAiYXRtZWws
-aGxjZGMtcHdtIjsNCj4+ICsgICAgICBwaW5jdHJsLW5hbWVzID0gImRlZmF1bHQiOw0KPj4gKyAg
-ICAgIHBpbmN0cmwtMCA9IDwmcGluY3RybF9sY2RfcHdtPjsNCj4+ICsgICAgICAjcHdtLWNlbGxz
-ID0gPDM+Ow0KPj4gKyAgICB9Ow0KPiANCj4gTW92ZSB0aGUgZXhhbXBsZSB0byB0aGUgTUZEIHNj
-aGVtYS4gT3IganVzdCBkcm9wIGlmIGFscmVhZHkgdGhlcmUuDQoNCkFzIFNhbSBzdWdnZXN0ZWQg
-SSB3aWxsIHNlbmQgdjQgc2VyaWVzIHdpdGggdGhpcyBiaW5kaW5nIGFzIGl0IGlzIGFuZCANCndp
-bGwgc2VuZCB0aGUgY2xlYW4gdXAgcGF0Y2ggbGF0ZXIuDQoNCi0tIA0KVGhhbmtzLA0KRGhhcm1h
-IEIuDQo+IA0KPiBSb2INCg0KDQoNCg==
+On Tue, Jan 23, 2024 at 8:57=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, Jan 23, 2024 at 8:46=E2=80=AFAM Benjamin Tissoires <bentiss@kerne=
+l.org> wrote:
+> >
+> > Follow the docs at Documentation/bpf/kfuncs.rst:
+> > - declare the function with `__bpf_kfunc`
+> > - disables missing prototype warnings, which allows to remove them from
+> >   include/linux/hid-bpf.h
+> >
+> > Removing the prototypes is not an issue because we currently have to
+> > redeclare them when writing the BPF program. They will eventually be
+> > generated by bpftool directly AFAIU.
+> >
+> > Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> > ---
+> >  drivers/hid/bpf/hid_bpf_dispatch.c | 22 +++++++++++++++++-----
+> >  include/linux/hid_bpf.h            | 11 -----------
+> >  2 files changed, 17 insertions(+), 16 deletions(-)
+> >
+> > diff --git a/drivers/hid/bpf/hid_bpf_dispatch.c b/drivers/hid/bpf/hid_b=
+pf_dispatch.c
+> > index 5111d1fef0d3..119e4f03df55 100644
+> > --- a/drivers/hid/bpf/hid_bpf_dispatch.c
+> > +++ b/drivers/hid/bpf/hid_bpf_dispatch.c
+> > @@ -143,6 +143,11 @@ u8 *call_hid_bpf_rdesc_fixup(struct hid_device *hd=
+ev, u8 *rdesc, unsigned int *s
+> >  }
+> >  EXPORT_SYMBOL_GPL(call_hid_bpf_rdesc_fixup);
+> >
+> > +/* Disables missing prototype warnings */
+> > +__diag_push();
+> > +__diag_ignore_all("-Wmissing-prototypes",
+> > +                 "Global kfuncs as their definitions will be in BTF");
+> > +
+>
+> would it be possible to use __bpf_kfunc_start_defs() and
+> __bpf_kfunc_end_defs() macros instead of explicit __diag push/pop
+> pairs? It's defined in include/linux/btf.h
+
+Sure, I'll use them in v2.
+
+I also realized that I had some memory leaks because I never called
+put_device() after bus_find_device(), so I need to add another fix to
+this series.
+
+Cheers,
+Benjamin
+
+>
+> >  /**
+> >   * hid_bpf_get_data - Get the kernel memory pointer associated with th=
+e context @ctx
+> >   *
+> > @@ -152,7 +157,7 @@ EXPORT_SYMBOL_GPL(call_hid_bpf_rdesc_fixup);
+> >   *
+> >   * @returns %NULL on error, an %__u8 memory pointer on success
+> >   */
+> > -noinline __u8 *
+> > +__bpf_kfunc __u8 *
+> >  hid_bpf_get_data(struct hid_bpf_ctx *ctx, unsigned int offset, const s=
+ize_t rdwr_buf_size)
+> >  {
+> >         struct hid_bpf_ctx_kern *ctx_kern;
+> > @@ -167,6 +172,7 @@ hid_bpf_get_data(struct hid_bpf_ctx *ctx, unsigned =
+int offset, const size_t rdwr
+> >
+> >         return ctx_kern->data + offset;
+> >  }
+> > +__diag_pop(); /* missing prototype warnings */
+> >
+> >  /*
+> >   * The following set contains all functions we agree BPF programs
+> > @@ -274,6 +280,11 @@ static int do_hid_bpf_attach_prog(struct hid_devic=
+e *hdev, int prog_fd, struct b
+> >         return fd;
+> >  }
+> >
+> > +/* Disables missing prototype warnings */
+> > +__diag_push();
+> > +__diag_ignore_all("-Wmissing-prototypes",
+> > +                 "Global kfuncs as their definitions will be in BTF");
+> > +
+> >  /**
+> >   * hid_bpf_attach_prog - Attach the given @prog_fd to the given HID de=
+vice
+> >   *
+> > @@ -286,7 +297,7 @@ static int do_hid_bpf_attach_prog(struct hid_device=
+ *hdev, int prog_fd, struct b
+> >   * is pinned to the BPF file system).
+> >   */
+> >  /* called from syscall */
+> > -noinline int
+> > +__bpf_kfunc int
+> >  hid_bpf_attach_prog(unsigned int hid_id, int prog_fd, __u32 flags)
+> >  {
+> >         struct hid_device *hdev;
+> > @@ -328,7 +339,7 @@ hid_bpf_attach_prog(unsigned int hid_id, int prog_f=
+d, __u32 flags)
+> >   *
+> >   * @returns A pointer to &struct hid_bpf_ctx on success, %NULL on erro=
+r.
+> >   */
+> > -noinline struct hid_bpf_ctx *
+> > +__bpf_kfunc struct hid_bpf_ctx *
+> >  hid_bpf_allocate_context(unsigned int hid_id)
+> >  {
+> >         struct hid_device *hdev;
+> > @@ -359,7 +370,7 @@ hid_bpf_allocate_context(unsigned int hid_id)
+> >   * @ctx: the HID-BPF context to release
+> >   *
+> >   */
+> > -noinline void
+> > +__bpf_kfunc void
+> >  hid_bpf_release_context(struct hid_bpf_ctx *ctx)
+> >  {
+> >         struct hid_bpf_ctx_kern *ctx_kern;
+> > @@ -380,7 +391,7 @@ hid_bpf_release_context(struct hid_bpf_ctx *ctx)
+> >   *
+> >   * @returns %0 on success, a negative error code otherwise.
+> >   */
+> > -noinline int
+> > +__bpf_kfunc int
+> >  hid_bpf_hw_request(struct hid_bpf_ctx *ctx, __u8 *buf, size_t buf__sz,
+> >                    enum hid_report_type rtype, enum hid_class_request r=
+eqtype)
+> >  {
+> > @@ -448,6 +459,7 @@ hid_bpf_hw_request(struct hid_bpf_ctx *ctx, __u8 *b=
+uf, size_t buf__sz,
+> >         kfree(dma_data);
+> >         return ret;
+> >  }
+> > +__diag_pop(); /* missing prototype warnings */
+> >
+> >  /* our HID-BPF entrypoints */
+> >  BTF_SET8_START(hid_bpf_fmodret_ids)
+> > diff --git a/include/linux/hid_bpf.h b/include/linux/hid_bpf.h
+> > index 840cd254172d..7118ac28d468 100644
+> > --- a/include/linux/hid_bpf.h
+> > +++ b/include/linux/hid_bpf.h
+> > @@ -77,17 +77,6 @@ enum hid_bpf_attach_flags {
+> >  int hid_bpf_device_event(struct hid_bpf_ctx *ctx);
+> >  int hid_bpf_rdesc_fixup(struct hid_bpf_ctx *ctx);
+> >
+> > -/* Following functions are kfunc that we export to BPF programs */
+> > -/* available everywhere in HID-BPF */
+> > -__u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx, unsigned int offset, c=
+onst size_t __sz);
+> > -
+> > -/* only available in syscall */
+> > -int hid_bpf_attach_prog(unsigned int hid_id, int prog_fd, __u32 flags)=
+;
+> > -int hid_bpf_hw_request(struct hid_bpf_ctx *ctx, __u8 *buf, size_t buf_=
+_sz,
+> > -                      enum hid_report_type rtype, enum hid_class_reque=
+st reqtype);
+> > -struct hid_bpf_ctx *hid_bpf_allocate_context(unsigned int hid_id);
+> > -void hid_bpf_release_context(struct hid_bpf_ctx *ctx);
+> > -
+> >  /*
+> >   * Below is HID internal
+> >   */
+> >
+> > --
+> > 2.43.0
+> >
+> >
+>
+
 
