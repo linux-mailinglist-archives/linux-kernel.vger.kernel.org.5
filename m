@@ -1,93 +1,111 @@
-Return-Path: <linux-kernel+bounces-36982-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36983-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E000D83A9C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:32:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11FE583A9CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:33:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 974931F25943
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:32:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E906EB278A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:32:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBB1F7691F;
-	Wed, 24 Jan 2024 12:32:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5BAD7762B;
+	Wed, 24 Jan 2024 12:32:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="HsMsFxQv"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QiJkpf6h"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F010576918;
-	Wed, 24 Jan 2024 12:32:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AABD76918
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 12:32:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706099536; cv=none; b=sXd0UaH1ER/Nhg3Gozib6jiOzKcldv1aWizge1HcRWrQNXuTZMqorLHbbbvxzBcr06mq4qQcubCL0QKKXJMm+NEyfin38Q8P039XJN00yGxJNJ/KYbLhKPcMOVqW15q5j+4s0THg1PPW0gR7UXPHlpqMx/OrZaHSoOCNClw72j0=
+	t=1706099568; cv=none; b=BaCT8aximqVR7pZwfwXiaMLpDLYvi9Z/3mtVMugBD7fh42wBq/qFubi77NcLSyk1hefloBPQXP6ui8CmSUjcWtVIVABh8rk9ERxW5YJh4EkxIB/vCRJUqbyvtqTA0Np97gArJ6PpFbOft3/hCtpbGG77cOhIuhEvqdc50C8mnlg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706099536; c=relaxed/simple;
-	bh=GD414r5uUfQKTl7+Hf0W3x6sPSQMHCgSnh3nUJhrXYo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C+e13Aig0vqOP9ObEIZsmkO7wWPQGyTHi+iPcgJwOgHuabE+i7XTp/pqfeGhNntXRb6CpKDZs1L17Du28r4xhUlMf0dusiYS2f2h7GMLkfSCrwldTndl+upqh+U7661oDIiSSiMMdbcI9XjOfk89M/49LYpUpL7j9Jp8Uc3hyvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=HsMsFxQv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44392C433C7;
-	Wed, 24 Jan 2024 12:32:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1706099535;
-	bh=GD414r5uUfQKTl7+Hf0W3x6sPSQMHCgSnh3nUJhrXYo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HsMsFxQvYgqF/Nv7icAxBXrrdGaKv9+JWouJ+YFp0z1+A/tURCyu6VSW3kZNLiDR7
-	 942VuXoSIPVa2hsTj2P/WzCRrun9XNtQudqe503xDFqrGM6yqqIVg6b2iQ2XeZOAsi
-	 20YoFp+69COLxtwHyucg+E0Q7m4kIpm3BnFN/OMg=
-Date: Wed, 24 Jan 2024 04:32:13 -0800
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Elizabeth Figura <zfigura@codeweavers.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-	linux-api@vger.kernel.org, wine-devel@winehq.org,
-	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
-	Wolfram Sang <wsa@kernel.org>,
-	Arkadiusz Hiler <ahiler@codeweavers.com>,
-	Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [RFC PATCH 2/9] ntsync: Reserve a minor device number and ioctl
- range.
-Message-ID: <2024012454-cosmos-sprint-7db7@gregkh>
-References: <20240124004028.16826-1-zfigura@codeweavers.com>
- <20240124004028.16826-3-zfigura@codeweavers.com>
- <2024012356-dove-duke-f7f6@gregkh>
- <1875326.tdWV9SEqCh@terabithia>
+	s=arc-20240116; t=1706099568; c=relaxed/simple;
+	bh=gW4Q5dgcJo/w+lcQ9ZV1dV+kkIgRmsKKEjic8VggVWU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PdQ7R8YaYhi3bXBCeGvp1ZCxJUn4tJkRQiMReOeLO8V9JdizTxpn+k3wbdFsQ2UfqTbCdfxLra6lX8jYN/JkWVKTX5Yh7tqz8FcVcCq/TB9Jf0aCaq8ITa8Bp9JcTZVifb/utH/8wx3LuyEXBH2mgrF4fz4eiK1yFybzc5xj2dk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QiJkpf6h; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5100c3f7df1so1767490e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 04:32:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706099564; x=1706704364; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AqPAahlzSVSD7Radk/ZPw7KMkRpgnqXYTwyUoIGu6qs=;
+        b=QiJkpf6hKlWSGHEc8sNBx6i9B7QRKGtjJXdkKpSF1M/Pmk3csbtRUk13KIqK+sQmCV
+         j2pHvwyeK1QSnXa8p962V3b6133eN35oftBUJ5QSBh1vJJGYlVSi8cdor0WdULfObRjD
+         ccHG8fx4nlnz6wi8/ssLIFy5QpxpgA80ZFpsQT5hRHeW1KLaw5kvZO/TZx7jphXHT935
+         VWb/bTsF6G/RAvvVxciq3+DXkrQxUbdrIb4SrJ7Q4TTSujbGO/99rNJXGEUODmAcSgQQ
+         T3urwoxsDJR/5TAJYhMZxyFHoDQiOnip5Cfo968KnGN1nwlO0g1r0TMxX3L8V5C0u5cD
+         jtkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706099564; x=1706704364;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AqPAahlzSVSD7Radk/ZPw7KMkRpgnqXYTwyUoIGu6qs=;
+        b=SU5r7FXOG07KbP4CXItC61M/GWgzV7Qq56lU/E8wZohXr5FtjSRa/ZAzCGYuIS8Mkk
+         i02wMPEq6yOl4s5r5wDUc6pZkTzKW7NdEflfanCVzlHtGP/BWMP6wO0NLPHqqygA9993
+         Q4slMLx+9al95vAN6M1lnoj++oVvuUHsJwB+H8lyp/0izCRIYRNggRBvgZENOaq6Vl3y
+         zV9EyJmfP+Huox9EkVn02beRFnZwEPo/pMdJE8Whn4AsfroKLAuOaqb6GCwNUaYIiCkH
+         iANm8gecOYIpSabHow7bot2gJOIWBxCEDH3/zl37jhCtuMguGPMD7HBlN4jZ+Xfr7Aiz
+         J+Ig==
+X-Gm-Message-State: AOJu0Yw2tAtLxfBk6YJoI4pIktPLX1FHZX7RunJaHMYzN6vz1ULschO1
+	ffP9Um6D0PRfColLVP847Dnj3XnsrHFhL12BMMEHktmRvPybHmvXPRTWNPVc2cg=
+X-Google-Smtp-Source: AGHT+IFrTFWo9bWEH+c+SGSHh0D6uNxjEvNOgfsn42ra3rVSTjZMGwHmL9WzsduGBjgSsmB+M8qQBw==
+X-Received: by 2002:a05:6512:110d:b0:50e:504e:6c34 with SMTP id l13-20020a056512110d00b0050e504e6c34mr4557809lfg.3.1706099564366;
+        Wed, 24 Jan 2024 04:32:44 -0800 (PST)
+Received: from [172.30.205.123] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id p26-20020a19f01a000000b005100ed58b76sm207756lfc.308.2024.01.24.04.32.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Jan 2024 04:32:44 -0800 (PST)
+Message-ID: <bbd011b2-a17e-4310-8b9b-aa58defbe6e6@linaro.org>
+Date: Wed, 24 Jan 2024 13:32:43 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1875326.tdWV9SEqCh@terabithia>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: msm8953: add reset for display
+ subsystem
+Content-Language: en-US
+To: Luca Weiss <luca@z3ntu.xyz>, ~postmarketos/upstreaming@lists.sr.ht,
+ phone-devel@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Vladimir Lypak <vladimir.lypak@gmail.com>
+References: <20240123-msm8953-mdss-reset-v1-0-bb8c6d3ce897@z3ntu.xyz>
+ <20240123-msm8953-mdss-reset-v1-3-bb8c6d3ce897@z3ntu.xyz>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240123-msm8953-mdss-reset-v1-3-bb8c6d3ce897@z3ntu.xyz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jan 23, 2024 at 09:43:09PM -0600, Elizabeth Figura wrote:
-> > Why do you need a fixed minor number?  Can't your userspace handle
-> > dynamic numbers?  What systems require a static value?
+
+
+On 1/23/24 22:03, Luca Weiss wrote:
+> From: Vladimir Lypak <vladimir.lypak@gmail.com>
 > 
-> I believe I added this because it's necessary for MODULE_ALIAS (and, more 
-> broadly, because I was following the example of vaguely comparable devices 
-> like /dev/loop-control). I suppose I could instead just remove MODULE_ALIAS 
-> (or even remove the ability to compile ntsync as a module entirely).
+> With this reset we can avoid situations like IRQ storms from DSI host
+> before it even started probing (because boot-loader left DSI IRQs on).
+> 
+> Signed-off-by: Vladimir Lypak <vladimir.lypak@gmail.com>
+> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+> ---
 
-Do you really need MODULE_ALIAS()?  Having it for char devices to be
-auto-loaded is not generally considered a good idea anymore as systems
-should have the module loaded before userspace goes and asks for it.
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-It also reduces suprises when any random userspace program can cause
-kernel modules to be loaded for no real reason.
-
-> It's a bit difficult to figure out what's the preferred way to organize things 
-> like this (there not being a lot of precedent for this kind of driver) so I'd 
-> appreciate any direction.
-
-For now, I'd just stick to a dynamic id, no module alias, and if it's
-ever needed in the future, it can be added.  But if you add it now, we
-can't ever remove it as it's user-visible functionality.
-
-thanks,
-
-greg k-h
+Konrad
 
