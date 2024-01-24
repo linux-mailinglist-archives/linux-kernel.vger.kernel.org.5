@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-37750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37757-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9F4883B4C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:35:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 94AE883B4CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:36:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82529288A3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:35:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B4F6288B6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:36:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D509813AA38;
-	Wed, 24 Jan 2024 22:33:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13FC513D4E5;
+	Wed, 24 Jan 2024 22:33:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="RN9y/4ct"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="QrEmGNw4"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF9D2136651;
-	Wed, 24 Jan 2024 22:33:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93792137C40;
+	Wed, 24 Jan 2024 22:33:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706135600; cv=none; b=lUppW+Ol0mS+dsDx3yoISzBX7xG+LNRZ1RQC6KwQcUtwy8vDdvYYLKq/3GlhSQLPuoNYElLviQo7TqMhRc+uy9+0KwbMVMr5hG8M1JPkWM+Rv0rmhtWTTyV6ziRX5GJ1fZZ4bvwwaxKP+YqHaIrEhwcxtBqGfofpgBXggj4SLLk=
+	t=1706135602; cv=none; b=um8BVYkxipYqP7i4x73y7zL66VnNOWp0gFAZt0amh/VtvAfGxzv+5HcFp8WYOX9Meb3VARqS9pQanAq2wZopYLJoDmnGtrHwR7hR7SywQBI123pU78fW/KY9GM6JSHrCSv2T/YoUs24OjNcsvX6jqXcsH50aCqyFh+3/bfZWSs4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706135600; c=relaxed/simple;
-	bh=qomwzeZ0+VdI6mZ2yu+WT993r+YiIAfvdX9TkSDmq08=;
+	s=arc-20240116; t=1706135602; c=relaxed/simple;
+	bh=86IbXZg2D8dZ14CMAOHu2fJ9DPKToZGpqc5c/wgcbic=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LvtE096BYOxyLAYFJStrEx3Ga1t3t2CjXrULx/NCH3E+klbUmrHjYEf9qoIbb/uAJ755q3zqh4DuvNElconqPf3qPOoDMZmLeFbPJ6laX6voES+jYalz6jFrFLGxavQ5Xw9jvcmQm8D41puGRDUdSTVj3WQWxus8KgxNNI7phyc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=RN9y/4ct; arc=none smtp.client-ip=212.227.17.22
+	 MIME-Version; b=C6rheg8hGFXG7I5rNc9WKN8b2tP5cBR0EHTyFikj1ZV1NKTF9mmXrdb1caAH9t9X3TTMfKCHptTDPf4U7jrYYoTx5XQLfrrT2X2rugzBZ2CeXi6OV3ejZthFes6TPl/cq+TUtcWyLTtfEFBQfvnWdZikE3W9ya2SsfvcGhZAGEI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=QrEmGNw4; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
 	s=s31663417; t=1706135563; x=1706740363; i=wahrenst@gmx.net;
-	bh=qomwzeZ0+VdI6mZ2yu+WT993r+YiIAfvdX9TkSDmq08=;
+	bh=86IbXZg2D8dZ14CMAOHu2fJ9DPKToZGpqc5c/wgcbic=;
 	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
 	 References;
-	b=RN9y/4ctJFpF3bqorIIKKoX6tEIqUXGLM65tihxfggrHmF8H7xqotvmpsYbz5yXO
-	 p9EC+WsSbHBkPeLNIswS0emRMyMb9xyLKrP1l4j3HwG+jMmS5NggF0JniRGaoNgcL
-	 6sCyfM16zmkYXUZ+uispQrE1mYZZmHIAlhoPZ/vaIFYlkE4ZXuhSOEnuXBzZ877hG
-	 f/2XJn7zvG0zy9y6v4mlVXmr2Gi05SblwcBW8H9qqrGD43y2jpzCoHfpQwc4NMdcx
-	 fpWLN+acuxmDoB7EWhHxU1NhDq9oaKS0ioyTb8TO8bLfXdIqwIpXe8/lX43CLwU2t
-	 GGQisCIG3j8i+Fdg4A==
+	b=QrEmGNw49fdFCnb9BqA7tcRfqzGBhuN9iZPjkVmzmBkuFNQLWTUSzBksGe0oQu6I
+	 pBmvYP6ZowcfwDE1MCSkxvSu7o7jlrYKaqK1V4MuvLhwUqpr82frU0fDw4b0sJOMd
+	 AKHw/t7XAl+rDz+5ml6Bzkj5l89YQfraWj5dFu2tNflIPbD5B2neCsJRqS4HgP220
+	 +NUgvRMSgo7KD8RfGdZi01xBnrHKJi0quQ21XUrBMxUWu1mLCgLN6TDdwLIxrIlMV
+	 5kEBVvqFeabFNJOGuiEuqOhN6SuOixN2G9pRSoRuO7MyXNuQ8HjOxuVeUHmO9Dilk
+	 gp+ZdIN7DqqViyOG8w==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from stefanw-SCHENKER ([37.4.248.43]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M6lpG-1rSDZN0LNu-008InS; Wed, 24
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N2E1G-1r6Ce5293W-013ecc; Wed, 24
  Jan 2024 23:32:43 +0100
 From: Stefan Wahren <wahrenst@gmx.net>
 To: "David S. Miller" <davem@davemloft.net>,
@@ -55,9 +55,9 @@ Cc: Lino Sanfilippo <LinoSanfilippo@gmx.de>,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Stefan Wahren <wahrenst@gmx.net>
-Subject: [PATCH V3 13/14 next] mailmap: add entry for Stefan Wahren
-Date: Wed, 24 Jan 2024 23:32:10 +0100
-Message-Id: <20240124223211.4687-14-wahrenst@gmx.net>
+Subject: [PATCH V3 14/14 next] MAINTAINERS: add entry for qca7k driver(s)
+Date: Wed, 24 Jan 2024 23:32:11 +0100
+Message-Id: <20240124223211.4687-15-wahrenst@gmx.net>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240124223211.4687-1-wahrenst@gmx.net>
 References: <20240124223211.4687-1-wahrenst@gmx.net>
@@ -67,51 +67,55 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:YvVG3RKT34IC/0QHC/pRgLRH4saf1SaSfj6zVwL6L1JmhH6unri
- KwWjTh4rmzviK1sL6EgRECqznvz7eH0BQ1w4/unCD3WEHP/H8sJdF70IMyqZae91g75/LZD
- W9ZL4Z5j/ZL7Nd5eFuKBw0kythuKEL7yQVT2vVVMLr/wlF0nGs+lf/2Zszya667dxCcQoVt
- wBpOaUh72q9X0eRVXFmmQ==
+X-Provags-ID: V03:K1:An8E5MmPXOy0Qfm6lQu1YYOOU2P8WzbmtkdufPdgrrGHAjI0V7G
+ u5Wd1TrEMwb5QVMDWkLoL9WRYGmgy5VkmxYVKLwnK+f6DDAWijKkFED/8T2O7HUTjq+UTKC
+ FG9eznhdJdjAxaGaFq6wnd473nFEmymuS+5Log5UJ7nbhRmqx3vLpohFXP157AyR4isI8T8
+ y+O4pZERFrEwYsRJmmJCg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:iBC/vrINn5k=;FX0F+DH5/dJMmVAgy8RdOCzM5Ou
- fr9OnPM62P+9dcLlnlFSjQ1kSxCstegu7cXaFY2bAKDshHvWQr/wniARP4LlRKevGF3dp93SL
- C0spCZRugw5SOIu3K7XQITA56PEYc1PgaRU7EaoEkgkthcSAc7iUpnlKu2sovCUvZEmzm/MiN
- TG1gL3heJCXLrU4uFF9pEDijW+fhbTQDgW4iIlGr3MYsBz00YMpgqS/GjMoz+VHJEKQ1YZ6JD
- Ur6dqv+sB7ebYBG2Qlwz0cPeNgx6yoZ0CdZXC9ECoOhkWtGKFxP/afLBSDnOrZajqQC9yj3h6
- Q7LRZSdVUUOiMVIZCgZ9ihf4iLqy3ij4uRs6NJoNgqq59moYZOa/A7TSga9OZNwKZGppL7NkK
- uApVIukrr+2MjIa6/O2KE2Y5J3wLM54QLUS++EZGRRzB0unXwsGIF/BFt7CXLQzbELdcpPSld
- 8BIcWt0//VrsspyjI6WSyP9aYnbBKEYSDJnpqs72im1gPM89FYbezpxAO8B4LaSm+s7AJO8nk
- rOMd316h6y3Ef63j41fo8UCYG9CH6GyxrKLZ/ocjKPZYGnNWps+1C305Xyl1T2LGrpv0Xffwh
- XsB43UII1sb7SMjIJ1wQBmTBOIeOmw3gezB3m/bMgj7Twwblgagq+jY4ui0bRmC/osAdQE+5t
- RULFvpEtYoW7tyL0y/poUNDDCHypDVEq94u/sqP8uIDxjei2xAAWFbcVRdp7s3KvELxewNQAB
- hQT0PyV+ST8gwFQXLJN/k1W9O6Kh0byduegAMJBUCx5LOd4PcZ6pSjfF6LnsL5KmQDfhbmrJI
- w22GXVqG73/aQdnhb06VjFm70MxajN7CYc4FEfkshcghgOuWmDIEgtA4v3vui6Hbze9FgGQ7A
- n70fFGgOlLY/GTfLu0m7VroMNMZwsLAvB3mvuNSMR+WgDvi9xuPm2UPyvMTNsnuKxJfDRAh8z
- ysO1oA==
+UI-OutboundReport: notjunk:1;M01:P0:jhNNaGn7XvM=;fMxvYjVDhqTxkoA8NMapSUXoR+x
+ UFJsFxwwh18uQ/8whJreOnD+MkwmqfaI4m2mFm24K2k/mdq941hY7V4ezWkMdry4Zts4q1l+U
+ jZafyJYMdFuR9kTfzkk6dofGRLGzam9DQffYVb1T9LBoJ5428ac/NFF+GAGNMLF1aZM33gNwm
+ QX9J1crfBsYId0KIOLa1DQlXYekTzD4obok5mtmv8TezRwgAgEbqjr18Vs0xx7rJs1x7pVpi7
+ QDYcq6YIZHh5dDWZFU9PEagnw002SKA1agoEA2RSjMeqJMzu0flW7NpRawC42tFmqeSqs3C5Z
+ d2BQw/Hmti5AyJXGkN8QEV0u1eH+EYTrVAzaLj93mUn2u3kiH2ql1s4ZbM+icZU76d30DhJxK
+ acsttIZhPOSiG7V1VPzdHCQZIq22nKMAPxvcvrLv5rhoW5cxOlos54WtiUzipLr/XrX6ufmVZ
+ EeVJUMwXcx8KQqoDabDd9Q6dLKrNZ+tAjZT653PE8S3JASKOiPEWBVHm0O1tMDKFoE8XrvLnk
+ i2a7B1S+oQhBY8RyEPBtfwQNACLhfhTtjSxa7UtUSgx955+zx3szdk9lSzVsOtRAJL3cWzo8O
+ AW4gkND/F3KsJ0u16qGOvqD9bbgKNyyPD5FBsmBNaeIifVuvSzt4WOo0v9uq9NNrkhWaI2/LK
+ OiVy+xHScJJY+vOs3+Os4BCPoPLcrIv4dyFaILKOG7eLFWr3173uYWmI8XZtC1mXqNGCQ5rKD
+ FrHRUMzuD/LAXlcrcC9LKz6AFVRoruVyRmRJhPs60qdGvr4fh14JazA/uTG2k9sSZAnNQYkx8
+ /lRcu+MpM6D6UYQO1ZksQBBPkA4/4v+fvICyChBgbeB0mhZwouTwD4qEPIeyMo0UCumbAjF0j
+ n8iPqM1zuJGYTg3bOI7rQQiAuaYJEL7yBk70z8a5Pqk2OT2DqQnu/PtlJD29AecjkBpwVeCpW
+ tE+3Wg==
 
-Add a .mailmap entry because my old i2se.com address will be
-deactivated in the near future.
+Since upstreaming i contributed a lot to this driver(s),
+so add myself as a maintainer.
 
 Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
 =2D--
- .mailmap | 1 +
- 1 file changed, 1 insertion(+)
+ MAINTAINERS | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/.mailmap b/.mailmap
-index 04998f7bda81..95b4fe465cc6 100644
-=2D-- a/.mailmap
-+++ b/.mailmap
-@@ -568,6 +568,7 @@ Simon Kelley <simon@thekelleys.org.uk>
- Sricharan Ramabadhran <quic_srichara@quicinc.com> <sricharan@codeaurora.o=
-rg>
- Srinivas Ramana <quic_sramana@quicinc.com> <sramana@codeaurora.org>
- Sriram R <quic_srirrama@quicinc.com> <srirrama@codeaurora.org>
-+Stefan Wahren <wahrenst@gmx.net> <stefan.wahren@i2se.com>
- St=C3=A9phane Witzmann <stephane.witzmann@ubpmes.univ-bpclermont.fr>
- Stephen Hemminger <stephen@networkplumber.org> <shemminger@linux-foundati=
-on.org>
- Stephen Hemminger <stephen@networkplumber.org> <shemminger@osdl.org>
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 8d1052fa6a69..5808f06b4ccf 100644
+=2D-- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -18009,6 +18009,13 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/=
+git/kvalo/ath.git
+ F:	Documentation/devicetree/bindings/net/wireless/qca,ath9k.yaml
+ F:	drivers/net/wireless/ath/ath9k/
+
++QUALCOMM ATHEROS QCA7K ETHERNET DRIVER
++M:	Stefan Wahren <wahrenst@gmx.net>
++L:	netdev@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/net/qca,qca7000.txt
++F:	drivers/net/ethernet/qualcomm/qca*
++
+ QUALCOMM BAM-DMUX WWAN NETWORK DRIVER
+ M:	Stephan Gerhold <stephan@gerhold.net>
+ L:	netdev@vger.kernel.org
 =2D-
 2.34.1
 
