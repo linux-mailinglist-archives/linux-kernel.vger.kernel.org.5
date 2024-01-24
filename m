@@ -1,156 +1,149 @@
-Return-Path: <linux-kernel+bounces-36802-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36803-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B084783A6F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:39:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B38883A6F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:39:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AAD628E426
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:39:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CDF41C21F0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:39:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FE2C18627;
-	Wed, 24 Jan 2024 10:38:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3DDD1097D;
+	Wed, 24 Jan 2024 10:39:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="SaW/7DRX"
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZZFDiDgr"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7B1415EB0
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:38:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4624DF9D8
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:39:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706092735; cv=none; b=flI/0I2M25bw/g3NmMMzZOdwI2lIyYOFYUW1IHKZGdFHYGDLOu9bu1CeBgClvHDtd6k8wtIsEUPtXK86PbOCniAG6sJP5haDDezhPd3Wo3y/wL9CS8smdYQVfboNXc1usZLNced6tFqE/IwltmH1e/NI/jMfmPD0dQOUULYIPgU=
+	t=1706092747; cv=none; b=VI1TIhhXBhs3CL6US+h5N3Hsi85iOK6RDr5zRJpPGS8ZAPb1irmwSUyeWpFUQ/soChUv5/HiqyzGN0jD113DzfRVDi12DdTQtE26yidAq6DJXg+qISAcrhWSSvp607g4FjHLlNJjssZAkQ4GUBU/57F2V1eujCsgcT2ocI2HgdA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706092735; c=relaxed/simple;
-	bh=hRK3Ghni/2xQovMkagRkxRaEHsmob4cVksHfnDrX0mI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=pqWsbVXNAqhRxiDxxm68xTsucb3AZiObPlsEVuBhzHCJP41b0oCIjF1K5X9dl1R7sxW7/RinONX0/+V+VLJ1WRoBnnvy73TROiOPFpyP+qbAuavzYQ2zGIDDzsuP5JpUSBPCyvg2DMk0k0KnR8In8ugn4qu9o+WdNMtP6LSdELY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=SaW/7DRX; arc=none smtp.client-ip=93.104.207.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+	s=arc-20240116; t=1706092747; c=relaxed/simple;
+	bh=jiESq4xR9OvldWIpk10iFyGXA9g6If22mzcQSmu5KPw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ITT+7Qk7IPnj2K+oRq7nyBTO7YoYhBn4VDH0FzaXIamxexFRffHWSE1gin1iaZ7KRx54SJB3L6gxCkmJ4gpynbwf1YKp953N0jCAxNVBwbP5BHKlahJwL/skaCjM2Q5CvTgUoIitD5f7gIO98Ylcwncej1MDwWwGOqTAJHBiE1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZZFDiDgr; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a309c0a5593so242662466b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 02:39:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1706092732; x=1737628732;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=ZHAby7cD7PMq0P+q1/GjggviwD+0cQAXXFSp7X8XpCU=;
-  b=SaW/7DRX6guI1BPm3ffOw0jvu4zAc8jMRzdyGstiwvkv46LzyPzMe1Pq
-   3tZFglK+nys1cO/ansa8RJ722wa5pRue9kljo5IZpgHL4FFUPw+zDpcNB
-   YLBlSOzCTov43YXPpk8DM40Q9KHP44hIxtZBPITDDnA88emdiHNeHFypi
-   qSyDgMpZNTx9kq9+6kZi3yurKlM6XvD11At+y3tLaNfR5qRVgu/1WBb1Q
-   b82lToJfR6Uf2OfOaebpFc5htr2NY8PzUxL5Td3x3uQuOEuAt/4gUdBtC
-   lLoHEPiMp0HAggLWI1fB+xlwoKuJFfoGnxOJvXufc14nGD8YHM6gx2an1
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.05,216,1701126000"; 
-   d="scan'208";a="35052514"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 24 Jan 2024 11:38:49 +0100
-Received: from schifferm-ubuntu.tq-net.de (SCHIFFERM-M3.tq-net.de [10.121.49.135])
-	by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 159E2280075;
-	Wed, 24 Jan 2024 11:38:49 +0100 (CET)
-From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To: Michael Ellerman <mpe@ellerman.id.au>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Nicholas Piggin <npiggin@gmail.com>,
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org,
-	linux@ew.tq-group.com,
-	Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH v2] powerpc/6xx: set High BAT Enable flag on G2_LE cores
-Date: Wed, 24 Jan 2024 11:38:38 +0100
-Message-ID: <20240124103838.43675-1-matthias.schiffer@ew.tq-group.com>
-X-Mailer: git-send-email 2.43.0
+        d=gmail.com; s=20230601; t=1706092743; x=1706697543; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tTlKKIlgcuM6TP6i9JNElWzB/e2CBTO16ZN9E1BZjtc=;
+        b=ZZFDiDgrePdF98B96RezKpp7Ln8ETF5T25fyXTDbAfWridan/mk2Z2xV7lms3+Oufp
+         Ty9mfVg29zfHqW1YyiyAb4b/meQe3IwbMCQiln1Taxz+pbFJeHGbPnd2QS0s7VVQUFoP
+         QQiB6SaKcsoRfV0AwR8n2Z8/h6S4SX+dEPENhqvSAQdloJUNsozSUzZoXV8kDMpwmNIy
+         ybFMxzgu4kIezyuWFfmG8k+hQbYHVuHvRaS65+kk8hANBQuA3dMVeOsoNX9JOsJ3hpmB
+         /CFQ07KKNinppeMZ+ZTYJh6CM1YqLMaM6tUBPLxmdONIvL92rSPKK4X04qog4BdybwQX
+         HhjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706092743; x=1706697543;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tTlKKIlgcuM6TP6i9JNElWzB/e2CBTO16ZN9E1BZjtc=;
+        b=veQ6fe7jixJ9LEyWVHCiirXj+P6ihDfAJDcxbQOknFo1TnYA2JzdcmbA3ZPenhZrhg
+         cvKAX28M4qjKMa8dFwsY8qfebOeWT66nnMEluLnTCEKOwf4/O6QCPLQb/sqPqy+17BR1
+         gsCpItZuE8qcn7vSkoQGcLg5eeUbXQg51MdPC5t0+4JRldMJNtVUG/hDVzexVUumn36B
+         g29QukKCKF2RDwD+0a3rKHfiaMCs9rv15S62ccdkbnh1rFtck++4KJzNIeYgagRTir0f
+         Pft67/31XDRuK55SOVpoP7CimShVPoITTnImHkCuXQ6mtVt6zOHxdW+mCezJPHdogF2D
+         pCpw==
+X-Gm-Message-State: AOJu0Yzqae9NICUtp+C+Ys91QEAdl9t0sbQQDz/O0Qi+oE5vrPkSTpgD
+	VLqokgvSlkpjWwItR6gFJ/Ilrr2Tq8sUthaqCZWnACBhKX8OZJjS
+X-Google-Smtp-Source: AGHT+IE+ijkssgkDlSbmj69sf+O5YIUS5bvfntyQAIMQGaHj5cAWYkUwHZVBMpu8EMuveV18zbTwoA==
+X-Received: by 2002:a17:906:3950:b0:a31:10f5:cf15 with SMTP id g16-20020a170906395000b00a3110f5cf15mr277113eje.196.1706092743208;
+        Wed, 24 Jan 2024 02:39:03 -0800 (PST)
+Received: from localhost.si (84-255-245-182.static.t-2.net. [84.255.245.182])
+        by smtp.gmail.com with ESMTPSA id ps11-20020a170906bf4b00b00a2f1888ddecsm7124755ejb.166.2024.01.24.02.39.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 02:39:03 -0800 (PST)
+From: Uros Bizjak <ubizjak@gmail.com>
+To: x86@kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Uros Bizjak <ubizjak@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH] x86/asm: Use 32bit xor to clear registers
+Date: Wed, 24 Jan 2024 11:38:59 +0100
+Message-Id: <20240124103859.611372-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-MMU_FTR_USE_HIGH_BATS is set for G2_LE cores and derivatives like e300cX,
-but the high BATs need to be enabled in HID2 to work. Add register
-definitions and add the needed setup to __setup_cpu_603.
+x86_64 zero extends 32bit operations, so for 64bit operands,
+XORL r32,r32 is functionally equal to XORQ r64,r64, but avoids
+a REX prefix byte when legacy registers are used.
 
-This fixes boot on CPUs like the MPC5200B with STRICT_KERNEL_RWX enabled
-on systems where the flag has not been set by the bootloader already.
-
-Fixes: e4d6654ebe6e ("powerpc/mm/32s: rework mmu_mapin_ram()")
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
 ---
+ arch/x86/kernel/head_64.S         | 6 +++---
+ arch/x86/kernel/sev_verify_cbit.S | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-v2:
-- Use the G2_LE name for cores that have this HID2 register
-- Extend __setup_cpu_603 instead of introducing a new setup function
-
-
- arch/powerpc/include/asm/reg.h      |  2 ++
- arch/powerpc/kernel/cpu_setup_6xx.S | 20 +++++++++++++++++++-
- 2 files changed, 21 insertions(+), 1 deletion(-)
-
-diff --git a/arch/powerpc/include/asm/reg.h b/arch/powerpc/include/asm/reg.h
-index 4ae4ab9090a2..ade5f094dbd2 100644
---- a/arch/powerpc/include/asm/reg.h
-+++ b/arch/powerpc/include/asm/reg.h
-@@ -617,6 +617,8 @@
- #endif
- #define SPRN_HID2	0x3F8		/* Hardware Implementation Register 2 */
- #define SPRN_HID2_GEKKO	0x398		/* Gekko HID2 Register */
-+#define SPRN_HID2_G2_LE	0x3F3		/* G2_LE HID2 Register */
-+#define  HID2_G2_LE_HBE	(1<<18)		/* High BAT Enable (G2_LE) */
- #define SPRN_IABR	0x3F2	/* Instruction Address Breakpoint Register */
- #define SPRN_IABR2	0x3FA		/* 83xx */
- #define SPRN_IBCR	0x135		/* 83xx Insn Breakpoint Control Reg */
-diff --git a/arch/powerpc/kernel/cpu_setup_6xx.S b/arch/powerpc/kernel/cpu_setup_6xx.S
-index f29ce3dd6140..bfd3f442e5eb 100644
---- a/arch/powerpc/kernel/cpu_setup_6xx.S
-+++ b/arch/powerpc/kernel/cpu_setup_6xx.S
-@@ -26,6 +26,15 @@ BEGIN_FTR_SECTION
- 	bl	__init_fpu_registers
- END_FTR_SECTION_IFCLR(CPU_FTR_FPU_UNAVAILABLE)
- 	bl	setup_common_caches
-+
-+	/*
-+	 * This assumes that all cores using __setup_cpu_603 with
-+	 * MMU_FTR_USE_HIGH_BATS are G2_LE compatible
-+	 */
-+BEGIN_MMU_FTR_SECTION
-+	bl      setup_g2_le_hid2
-+END_MMU_FTR_SECTION_IFSET(MMU_FTR_USE_HIGH_BATS)
-+
- 	mtlr	r5
- 	blr
- _GLOBAL(__setup_cpu_604)
-@@ -115,6 +124,16 @@ SYM_FUNC_START_LOCAL(setup_604_hid0)
- 	blr
- SYM_FUNC_END(setup_604_hid0)
+diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+index cc3a81852e4a..ed287170c126 100644
+--- a/arch/x86/kernel/head_64.S
++++ b/arch/x86/kernel/head_64.S
+@@ -171,7 +171,7 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
+ 	ANNOTATE_NOENDBR
  
-+/* Enable high BATs for G2_LE and derivatives like e300cX */
-+SYM_FUNC_START_LOCAL(setup_g2_le_hid2)
-+	mfspr	r11,SPRN_HID2_G2_LE
-+	oris	r11,r11,HID2_G2_LE_HBE@h
-+	mtspr	SPRN_HID2_G2_LE,r11
-+	sync
-+	isync
-+	blr
-+SYM_FUNC_END(setup_g2_le_hid2)
-+
- /* 7400 <= rev 2.7 and 7410 rev = 1.0 suffer from some
-  * erratas we work around here.
-  * Moto MPC710CE.pdf describes them, those are errata
-@@ -495,4 +514,3 @@ _GLOBAL(__restore_cpu_setup)
- 	mtcr	r7
- 	blr
- _ASM_NOKPROBE_SYMBOL(__restore_cpu_setup)
--
+ 	/* Clear %R15 which holds the boot_params pointer on the boot CPU */
+-	xorq	%r15, %r15
++	xorl	%r15d, %r15d
+ 
+ 	/*
+ 	 * Retrieve the modifier (SME encryption mask if SME is active) to be
+@@ -180,7 +180,7 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
+ #ifdef CONFIG_AMD_MEM_ENCRYPT
+ 	movq	sme_me_mask, %rax
+ #else
+-	xorq	%rax, %rax
++	xorl	%eax, %eax
+ #endif
+ 
+ 	/* Form the CR3 value being sure to include the CR3 modifier */
+@@ -297,7 +297,7 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
+ 
+ .Llookup_AP:
+ 	/* EAX contains the APIC ID of the current CPU */
+-	xorq	%rcx, %rcx
++	xorl	%ecx, %ecx
+ 	leaq	cpuid_to_apicid(%rip), %rbx
+ 
+ .Lfind_cpunr:
+diff --git a/arch/x86/kernel/sev_verify_cbit.S b/arch/x86/kernel/sev_verify_cbit.S
+index 3355e27c69eb..1ab65f6c6ae7 100644
+--- a/arch/x86/kernel/sev_verify_cbit.S
++++ b/arch/x86/kernel/sev_verify_cbit.S
+@@ -77,7 +77,7 @@ SYM_FUNC_START(sev_verify_cbit)
+ 	 * The check failed, prevent any forward progress to prevent ROP
+ 	 * attacks, invalidate the stack and go into a hlt loop.
+ 	 */
+-	xorq	%rsp, %rsp
++	xorl	%esp, %esp
+ 	subq	$0x1000, %rsp
+ 2:	hlt
+ 	jmp 2b
 -- 
-TQ-Systems GmbH | Mühlstraße 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht München, HRB 105018
-Geschäftsführer: Detlef Schneider, Rüdiger Stahl, Stefan Schneider
-https://www.tq-group.com/
+2.31.1
 
 
