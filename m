@@ -1,118 +1,177 @@
-Return-Path: <linux-kernel+bounces-37688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37689-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9DE383B3DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:25:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 17BF383B3DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:25:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27E941C225DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 21:25:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B5EA1C22DAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 21:25:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BB2B1353E9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF2261353F7;
 	Wed, 24 Jan 2024 21:25:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="V/C7nsy2"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SGZlKiRy"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B92712AACC
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 21:25:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FE951350F4
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 21:25:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706131540; cv=none; b=DZ5iSikbFDU7Tw0Ijp+cwLojikhZopyigD5S9Vgpqzn7kSwyoht5d2fZtdYT17yYIu5h5QzpJ47WhZdVvykwarSjQqdpopflh5cDziPG6q3Iw/g9g2oCGh0YErcY2mYb5dQ6ZrKo9WvjdJhad0KRUQktFfWSmxEBP9EPqVLPFNU=
+	t=1706131541; cv=none; b=oxrvXJqzX434EhZJwJXf41rnoX1iS5S8KoRlnXE+zH9r7FJOWa5uu45FLy5BKssn+a0mZAgaG2E9gtKREuxAk1/Yg7S3vFONMFIahn78/4zJi6/ZPLTU58Nph/i8sx1qlKRZ/CKMnQ1vogteHMMkiMsPHT847r4lx6JX31t8LxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706131540; c=relaxed/simple;
-	bh=41yr/k9pg0nXDa50lJm3KIxoZszGdUcvNpLuv1FNMxk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=in9aMxtFWc86Lws6YOXyJHawEMfu29VTk22mRTByq/9R5VDFBkIuD/ep5v55I4fNkTnh1HY16htRcUC0eAaFrJRj0oUo7syORbju0vVpzEOB4x/QSMyyVYNDOu61lhBgIic0Ww+ySFdvjZEf4wgqyXRj0B0W1TKX9wrtAYrsuP0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=V/C7nsy2; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1706131541; c=relaxed/simple;
+	bh=HuUOuWantkAKX+ti0Jp2nZHKDM3edFfqbLcfxdOCet8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MVRjy4jg2P6oGd+RPnmj26cT27xmCoD/cQ8UskEXceCnZOQ4be6J8WN5yYK2qM+/6OA/U3b0ycPcorc5Y2n1I/qV+z2OyBow4a0FYendSLrKxAAdGUVATOiQEQmWmlzfJIE+uQ/mPS0lcpjtjwQgIz3qSNBT+x+DQfI1noQWzTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SGZlKiRy; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
 	s=mimecast20190719; t=1706131538;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ZsZGAZvBdhZK7fdXjVzGYu8HkXRsJN03PHr+uP2R2GM=;
-	b=V/C7nsy2rVjbBENTdKhbMl4UO+3rHi7ouy5EGUtQSYPwbL06RhQyyRuSEXTfLFs8WMYoSd
-	Sw/pVwC74qQr/eBZUfYqBiKECYC5mzDcf2FmaExB7ztMmSr9ldbeNyUbEE1/uD+6peoZ2r
-	pX4sOQlg9P/Er0KQimE30LW7TnVvJgY=
-Received: from mail-ua1-f71.google.com (mail-ua1-f71.google.com
- [209.85.222.71]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=9avYiMTv0hqg3Mmfl01DZD9y6IDaHIlmiTGpdT11gAU=;
+	b=SGZlKiRyyruZ8owoFAismsLGmLqYt38hZVCKXD58fe5HAm7c1rVTkW2KgKIjL06qTUBiNq
+	2Tgk1nQu1ydU1ElB87ND0RXGf+oBO6LGJOM4l0oejGoat/nY4SEZLmlWINAGgchR//S1w3
+	Bh+OwvKQQE6QYELKDbtLVbmWm1EyJM4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-660-Ef-nDVuoMGW10z7y76fRig-1; Wed, 24 Jan 2024 16:25:36 -0500
-X-MC-Unique: Ef-nDVuoMGW10z7y76fRig-1
-Received: by mail-ua1-f71.google.com with SMTP id a1e0cc1a2514c-7d0ac939b9fso1857826241.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 13:25:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706131535; x=1706736335;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZsZGAZvBdhZK7fdXjVzGYu8HkXRsJN03PHr+uP2R2GM=;
-        b=iROSoj6W2l985vZ9Slji3w7+wn96m6ODjuw1OQlTPvlSP7I/Uf9MgIGkof2xJ8CYhu
-         YpVmVBQZeFGkcm7bWk+sVoD3Q3mVKFm9aOMbMCE9qHLWSGhKgbwoGkBaBhERE8TWFr6O
-         qquC5m+yeyeAzQ4rxnMP4cjEwdBbh1Vp5vtHeWKsH5Kwmrk2H2Rc9jjYB2wkDvj7/218
-         nhlVOToO6mtxDAmCRFfw2n32rD41eCrB67X0zJCEpMXphu+wGwIhuQvMwNBysZvurV/W
-         ZGzAJmuNQqT1u2GwKOeBRv06d48GwPuidwu44yAVCCDIdhHlA2+Yn7arbh/1l5g6QOcV
-         aI5g==
-X-Gm-Message-State: AOJu0YyZTuuX75aMG9Ln2moeSD7H4x+eQExsT1X9k4VO1r2o1Bb261Jt
-	s5zMSChbqsPmQu9/SWgtVD49m9vDw5SuSZmmmdY4oNMqTIHNOQUUa52v+3GJp6Go6Sw2NN7ii+j
-	dZyEyQVo97vs0mW2Bw6S+lX0/6xZ5FOz/E5NqU3DuSAQwXBaPYxvVhnaW1YhqeiaTRv/mwqSTn1
-	GyQCs9vG6OIWzJUDdoKW2M80WNAZU9v8J0cIIu
-X-Received: by 2002:a05:6102:3214:b0:46a:fc04:53ea with SMTP id r20-20020a056102321400b0046afc0453eamr28313vsf.3.1706131535601;
-        Wed, 24 Jan 2024 13:25:35 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFq1ByprCP/A0i5Yz3VCDF5P4Zz+Tk86Ju97ahmxF9yt3vgZYZAHX7wEgWPN68BT8aAbgU9AomLahqu+Ay58d8=
-X-Received: by 2002:a05:6102:3214:b0:46a:fc04:53ea with SMTP id
- r20-20020a056102321400b0046afc0453eamr28304vsf.3.1706131535251; Wed, 24 Jan
- 2024 13:25:35 -0800 (PST)
+ us-mta-473-9Dh7MRAbPg280EmbqsZO3w-1; Wed, 24 Jan 2024 16:25:34 -0500
+X-MC-Unique: 9Dh7MRAbPg280EmbqsZO3w-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 051EB185A782;
+	Wed, 24 Jan 2024 21:25:34 +0000 (UTC)
+Received: from localhost (unknown [10.39.192.88])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 5FB551121306;
+	Wed, 24 Jan 2024 21:25:33 +0000 (UTC)
+Date: Wed, 24 Jan 2024 16:25:31 -0500
+From: Stefan Hajnoczi <stefanha@redhat.com>
+To: Alexander Potapenko <glider@google.com>
+Cc: syzbot <syzbot+d7521c1e3841ed075a42@syzkaller.appspotmail.com>,
+	jasowang@redhat.com, linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com, virtualization@lists.linux.dev,
+	xuanzhuo@linux.alibaba.com, bonzini@redhat.com,
+	"Michael S. Tsirkin" <mst@redhat.com>
+Subject: Re: [syzbot] [virtualization?] KMSAN: uninit-value in virtqueue_add
+ (4)
+Message-ID: <20240124212531.GA609846@fedora>
+References: <000000000000fd588e060de27ef4@google.com>
+ <20240102080315-mutt-send-email-mst@kernel.org>
+ <20240104204531.GB954424@fedora>
+ <CAG_fn=XmxeUePHFth5asQvHvo3=QSL4tB4yS5_3UVHWYJ=VRnw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122231507.1307793-1-timschumi@gmx.de> <CAMj1kXHSSRacU3hp6D3sdUKDESi1FoD33Qi=5Df+=_biZ-vqhA@mail.gmail.com>
- <223a4e75-2e06-4bc6-a70c-823f0eb308d7@gmx.de> <CAMj1kXEKF_a6wLtoMYCwBKEVDo6k1u=Cas-=4Ar4WnANHNu+cg@mail.gmail.com>
- <b58a112f-767f-4918-8262-63ac1dbfebbf@gmx.de>
-In-Reply-To: <b58a112f-767f-4918-8262-63ac1dbfebbf@gmx.de>
-From: Peter Jones <pjones@redhat.com>
-Date: Wed, 24 Jan 2024 16:25:24 -0500
-Message-ID: <CA+g+hrh_REk-bcTt-D+eSngofxdejeRXuXKhf1O15wzn+qMy6Q@mail.gmail.com>
-Subject: Re: [PATCH] efivarfs: Iterate variables with increasing name buffer sizes
-To: Tim Schumacher <timschumi@gmx.de>
-Cc: Ard Biesheuvel <ardb@kernel.org>, Matthew Garrett <mjg59@srcf.ucam.org>, linux-efi@vger.kernel.org, 
-	Jeremy Kerr <jk@ozlabs.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="+9Fevo6zOXwDxbTS"
+Content-Disposition: inline
+In-Reply-To: <CAG_fn=XmxeUePHFth5asQvHvo3=QSL4tB4yS5_3UVHWYJ=VRnw@mail.gmail.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+
+
+--+9Fevo6zOXwDxbTS
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 23, 2024 at 12:33=E2=80=AFPM Tim Schumacher <timschumi@gmx.de> =
-wrote:
->
-> On 23.01.24 15:09, Ard Biesheuvel wrote:
-> > On Tue, 23 Jan 2024 at 14:55, Tim Schumacher <timschumi@gmx.de> wrote:
-> >>
-> >> I'd rather avoid introducing deviations from the specifications on the
-> >> kernel side as well.
+On Wed, Jan 24, 2024 at 11:47:32AM +0100, Alexander Potapenko wrote:
+> On Thu, Jan 4, 2024 at 9:45=E2=80=AFPM Stefan Hajnoczi <stefanha@redhat.c=
+om> wrote:
 > >
-> > Which specification would this deviate from?
->
-> The preexisting comment claims "Per EFI spec", and it appears that I got
-> mislead by that. Neither the UEFI specification, nor the newest revision
-> of the EFI specification (which I guess is what would have been current
-> back in 2004, when this comment was introduced) seem to make any mention
-> of a maximum length for the variable name.
+> > On Tue, Jan 02, 2024 at 08:03:46AM -0500, Michael S. Tsirkin wrote:
+> > > On Mon, Jan 01, 2024 at 05:38:24AM -0800, syzbot wrote:
+> > > > Hello,
+> > > >
+> > > > syzbot found the following issue on:
+> > > >
+> > > > HEAD commit:    fbafc3e621c3 Merge tag 'for_linus' of git://git.ker=
+nel.org..
+> > > > git tree:       upstream
+> > > > console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D173df3e=
+9e80000
+> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3De0c7078=
+a6b901aa3
+> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=3Dd7521c1e3=
+841ed075a42
+> > > > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils f=
+or Debian) 2.40
+> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1300b=
+4a1e80000
+> > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D130b037=
+9e80000
+> > > >
+> > > > Downloadable assets:
+> > > > disk image: https://storage.googleapis.com/syzbot-assets/1520f7b6da=
+a4/disk-fbafc3e6.raw.xz
+> > > > vmlinux: https://storage.googleapis.com/syzbot-assets/8b490af009d5/=
+vmlinux-fbafc3e6.xz
+> > > > kernel image: https://storage.googleapis.com/syzbot-assets/202ca200=
+f4a4/bzImage-fbafc3e6.xz
+> > > >
+> > > > IMPORTANT: if you fix the issue, please add the following tag to th=
+e commit:
+> > > > Reported-by: syzbot+d7521c1e3841ed075a42@syzkaller.appspotmail.com
+> > > >
+> > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+> >
+> > Hi Alexander,
+> > Please take a look at this KMSAN failure. The uninitialized memory was
+> > created for the purpose of writing a coredump. vring_map_one_sg() should
+> > have direction=3DDMA_TO_DEVICE.
+> >
+> Hi Stefan,
+>=20
+> I took a closer look, and am pretty confident this is a false positive.
+> I tried adding memset(..., 0xab, PAGE_SIZE << order) to alloc_pages()
+> and never saw
+> the 0xab pattern in the buffers for which KMSAN reported an error.
+>=20
+> This probably isn't an error in 88938359e2df ("virtio: kmsan:
+> check/unpoison scatterlist in
+> vring_map_one_sg()"), which by itself should be doing a sane thing:
+> report an error if an
+> uninitialized buffer is passed to it. It is more likely that we're
+> missing some initialization that
+> happens in coredump.c
+>=20
+> Does anyone have an idea where coredump.c is supposed to be
+> initializing these pages?
+> Maybe there are some inline assembly functions involved in copying the da=
+ta?
 
-Curiously, I can't find it in the 1.02 spec (the oldest I can find)
-either.  When I inherited efibootmgr around 2013, this was a
-limitation there, but I don't see anything in that tree that claims
-it's a spec limitation either.  My suspicion is this is a former
-Itanium firmware limit that got promoted to "the spec says" by word of
-mouth, or was in some very early ia64 implementation spec.
+Thanks for your time looking into this!
 
--- Peter
+Stefan
+
+--+9Fevo6zOXwDxbTS
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmWxgEsACgkQnKSrs4Gr
+c8g5nggAnQrG/GK26Vn5GTy1wTUizYD03FNIfC70/y/8Rd9SrJFdeWXRMzpZ2qiv
+Z6Cb3iKUk0deWxwy6XfuL2aS98DOB1kb2YbaN9cGh4tvEYNZ+zCOL0aoY6o93G6k
+aUwv8tX/DoeMi92qcZjF537N5P+JjACbyRHUHpp3d1t1wM+YIaxRk4bHdCkp+F64
+Hb8Uo6VCzMjJxAb6Cpmx8KtOybo+CjDTISxKyVLPcQWYQP48Ase97qJzrqM7rkLw
+2EbToh3I9fesLeK90qxJUE3oaxPIjN/YVq1+LEODn2xySDethoaF8TjRYNqwSgES
+at7PN1XJQXF4GI1RuvU7AzQz4MC4MQ==
+=gWOt
+-----END PGP SIGNATURE-----
+
+--+9Fevo6zOXwDxbTS--
 
 
