@@ -1,134 +1,114 @@
-Return-Path: <linux-kernel+bounces-36571-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 627BF83A334
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:41:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E5E383A339
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:42:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D0CA28300A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 07:41:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B11221C228B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 07:42:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F337171A3;
-	Wed, 24 Jan 2024 07:39:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E50051773D;
+	Wed, 24 Jan 2024 07:39:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="QOzbeEOU";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="dkOCgmY7"
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UHLsnCQ1"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C2D817550;
-	Wed, 24 Jan 2024 07:39:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E3081773A;
+	Wed, 24 Jan 2024 07:39:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706081957; cv=none; b=FA1KXYh2ac4DZL5oH0UReHdvELlbf8uzldoEYhEIpydjq6wACb6XsaU2fxtd68O7vFey6hfdnrQcJKqyLiMVdnA+C+VsvBynbK48UIAONjYs8tHA3gh3sM897xvScXHSBlzZZedQ43GiygVfHCJFwZi3/F0pCWonWTqZjHzAAPU=
+	t=1706081987; cv=none; b=G1CR/TgwSzMwRqC3VkGYVGj8X1Ryw/RzfLIc10CawPoMkG5mq5yzyLIo6Rpkxt8U2MTw6vGMsmqXRB3izKV52UxXIgEkA3nrU9ehqkhfp7O69C2F42/ZuL2T3v5BvjVC1Ar+IpLh2s5CdLjqwf0lpbAGKEtQWckeTpdzBYl8Z/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706081957; c=relaxed/simple;
-	bh=D9xiLc3ZLn+kzRd73I0utR9rOr5+qDorAUvhecrJ/GQ=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=rk4d+uuo93C88/uLgtr1UPobC9sYW3ZgiZFcmRcIVSERq1tcPBbV5cLI1gHUge9Lm4TQwMtUrreJzMeqGbN+oYJopnOmCfcqULrQB6KPw4DtOqwS68qOwv/eE0UHcDWsznJF2tcq2BGEaXYAZOsd+kAz8H+t7GgPNC7GwBFMomQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=QOzbeEOU; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=dkOCgmY7; arc=none smtp.client-ip=64.147.123.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id A8DFF3200B11;
-	Wed, 24 Jan 2024 02:39:13 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 24 Jan 2024 02:39:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1706081953; x=1706168353; bh=wS35TwK0K3
-	MUqOLWKIEUN4XToREr5MJPwePHWgqnUXE=; b=QOzbeEOUxsmmwCRvwyDa6uJOd0
-	V6VxJ1hz0dq/Z8IIYvaP+2gGafTMn8ojm5vuQiyMRLInJDVxnF5Ypf5p7I4Tltcr
-	J6JmwuZPrh+M/OdhQd/MF27syr1H0DRkpZRhE5nHzDRto0cS7zGVKql0XBXr20S9
-	UGATx6ivIusF0G4MY7ZagIwQ8CyyYJa0927bOUYOENJeSoqXSVohrjqN6zh1Yw85
-	uInG0bbNs7BkU6tCCFmvhsBiqrv7wp6AmbDFrRIfaNU2w8Gyt+5wDGskO0ddjtmk
-	HEddPhvQhlnC0UnWvbt23FV1lZvy7mHhvYWah8vWXC/8e2N2xLK+x+wfzCAQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1706081953; x=1706168353; bh=wS35TwK0K3MUqOLWKIEUN4XToREr
-	5MJPwePHWgqnUXE=; b=dkOCgmY7rJ8pgQjO+69dAeru9JMOqksLU/t8+Ej8tncT
-	P52reVCASyRKqwkrrawkhL3UlGknrUhzGH+W2v3DAHX5uO2Qp9lVAmw6G6njUrIG
-	kPQwQV2pWGtzOWEpTF6MxVAiWT8MTAAUnBJW0iAfIaPx46j2SDDYyIiuj4p00lIn
-	Z7vFQCoSxRthkybGOWFc92SgrW51nSpC8o07Qf5E4apnLuI/xq0tNGihTRfVgCao
-	krfcn8nYH2YDWSzeHYx4U7091KpDDIqDuyJC0m+kW+3DhdZ6iltX/MGxIRZgn7dR
-	PAL44zp+zc9HpBGy+uLANFYsuM9+ks9BEUPQy1zqbQ==
-X-ME-Sender: <xms:oL6wZVs90lvtw8jOEuZEd7hfbi6nC3pIj2JZd4JJoK1uXBwWlz4_Qg>
-    <xme:oL6wZef9fb0WVH6goh1IkMWO91itL7O0PVoMR-RDMbr4N3Rf3AeCenzj0bUVTSN-A
-    0IXbtC-HCxJIaLqQE0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeltddgjeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:oL6wZYz9FjsvzEyjoS8bBg4jqi4PO5j3_sMN-j5aR8dInOBrS78YIg>
-    <xmx:oL6wZcMoiTpfelET3n5Lmn211_fohn0s0nVP40M3lXuiftsOWA_lzw>
-    <xmx:oL6wZV9RDRHGxeYLCEAEKIaFmCO9djhUsx7jGJl0n3nHzoZhB3T_cg>
-    <xmx:ob6wZVyvhY3tU3wPVckvSAFaJbtnUas_uS0Kz2rixbRBUf-VRO86xw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id BDB43B6008F; Wed, 24 Jan 2024 02:39:12 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-119-ga8b98d1bd8-fm-20240108.001-ga8b98d1b
+	s=arc-20240116; t=1706081987; c=relaxed/simple;
+	bh=91grIYIx9OkFtRlDhcvytYmNOKGOQX3yknnlFt+vEew=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=YJBZidezx7f9X/AX91UgQZjIkEC7qa9xdORSu6jnLjYVvrIoLxVfqj+SCPeGXFnkV2310ylYIZ8hWX2abLDJES5mzWUTm3OZwIZsG0fYz2HMqWSP42UpUMxEn531Lue8fSv9KhQ32SelzTo06A0R9weV7VKjG8uxMfBRgkRpNqs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UHLsnCQ1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F3E6C433F1;
+	Wed, 24 Jan 2024 07:39:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706081986;
+	bh=91grIYIx9OkFtRlDhcvytYmNOKGOQX3yknnlFt+vEew=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=UHLsnCQ1dUShb1uVeOf7TkGdla3aigkHLEvLXzWs42kwKOTgVFt2D1NWvBsm4WO3X
+	 H5k/EQg5Px4owCmhHLRBNGwlw4mmPQ+XdwWow9DNqNBijEnlCvhuVWxViCyAvDUdl6
+	 TfScqKcste9zFamQJs0/AV0Yv4acCb7nNWvakLWgjKcQas/vzZ/INICfFG97v+htT5
+	 cmAIu4A2ApnTcoREmT+wAy1VgsHIHCWVTKoknVHXvVgNkYju1K+TgWsqFikALl0301
+	 MpkcmybZR9mY4KlUuPprphfjD2HbEiPWmQJpkkbBk10qXOqFOvhXj0O3Q+d0qsI5MO
+	 mYGQi0CH3g03Q==
+Date: Wed, 24 Jan 2024 01:39:45 -0600
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <bd3f6fcb-2239-4fd3-bb9a-c772bbce5a44@app.fastmail.com>
-In-Reply-To: <20240124004028.16826-2-zfigura@codeweavers.com>
-References: <20240124004028.16826-1-zfigura@codeweavers.com>
- <20240124004028.16826-2-zfigura@codeweavers.com>
-Date: Wed, 24 Jan 2024 08:38:52 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Elizabeth Figura" <zfigura@codeweavers.com>,
- "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
- linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
-Cc: wine-devel@winehq.org,
- =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
- "Wolfram Sang" <wsa@kernel.org>, "Arkadiusz Hiler" <ahiler@codeweavers.com>,
- "Peter Zijlstra" <peterz@infradead.org>
-Subject: Re: [RFC PATCH 1/9] ntsync: Introduce the ntsync driver and character device.
-Content-Type: text/plain
+From: Rob Herring <robh@kernel.org>
+To: Billy Tsai <billy_tsai@aspeedtech.com>
+Cc: robh+dt@kernel.org, devicetree@vger.kernel.org, 
+ linux-doc@vger.kernel.org, linux-pwm@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, naresh.solanki@9elements.com, 
+ linux@roeck-us.net, p.zabel@pengutronix.de, 
+ linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org, 
+ BMC-SW@aspeedtech.com, patrick@stwcx.xyz, conor+dt@kernel.org, 
+ corbet@lwn.net, linux-aspeed@lists.ozlabs.org, 
+ u.kleine-koenig@pengutronix.de, jdelvare@suse.com, joel@jms.id.au, 
+ andrew@codeconstruct.com.au, krzysztof.kozlowski+dt@linaro.org
+In-Reply-To: <20240124060705.1342461-3-billy_tsai@aspeedtech.com>
+References: <20240124060705.1342461-1-billy_tsai@aspeedtech.com>
+ <20240124060705.1342461-3-billy_tsai@aspeedtech.com>
+Message-Id: <170608198415.3412038.3874422575074669118.robh@kernel.org>
+Subject: Re: [PATCH v13 2/3] dt-bindings: hwmon: Support Aspeed g6 PWM TACH
+ Control
 
-On Wed, Jan 24, 2024, at 01:40, Elizabeth Figura wrote:
-> ntsync uses a misc device as the simplest and least intrusive uAPI interface.
->
-> Each file description on the device represents an isolated NT instance, intended
-> to correspond to a single NT virtual machine.
->
-> Signed-off-by: Elizabeth Figura <zfigura@codeweavers.com>
 
-I'm looking at the ioctl interface to ensure it's well-formed.
+On Wed, 24 Jan 2024 14:07:04 +0800, Billy Tsai wrote:
+> Document the compatible for aspeed,ast2600-pwm-tach device, which can
+> support up to 16 PWM outputs and 16 fan tach input.
+> 
+> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+> ---
+>  .../bindings/hwmon/aspeed,g6-pwm-tach.yaml    | 73 +++++++++++++++++++
+>  1 file changed, 73 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-tach.yaml
+> 
 
-Your patches look ok from that perspective, but there are a
-few minor things I would check for consistency here:
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-> +
-> +static const struct file_operations ntsync_fops = {
-> +	.owner		= THIS_MODULE,
-> +	.open		= ntsync_char_open,
-> +	.release	= ntsync_char_release,
-> +	.unlocked_ioctl	= ntsync_char_ioctl,
-> +	.compat_ioctl	= ntsync_char_ioctl,
-> +	.llseek		= no_llseek,
-> +};
+yamllint warnings/errors:
 
-The .compat_ioctl pointer should point to compat_ptr_ioctl()
-since the actual ioctl commands all take pointers instead
-of interpreting the argument as a number.
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-tach.example.dtb: pwm-tach-controller@1e610000: fan-0: Unevaluated properties are not allowed ('compatible' was unexpected)
+	from schema $id: http://devicetree.org/schemas/hwmon/aspeed,g6-pwm-tach.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-tach.example.dtb: pwm-tach-controller@1e610000: fan-1: Unevaluated properties are not allowed ('compatible' was unexpected)
+	from schema $id: http://devicetree.org/schemas/hwmon/aspeed,g6-pwm-tach.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-tach.example.dtb: fan-0: 'tach-ch' does not match any of the regexes: 'pinctrl-[0-9]+'
+	from schema $id: http://devicetree.org/schemas/hwmon/pwm-fan.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-tach.example.dtb: fan-1: 'tach-ch' does not match any of the regexes: 'pinctrl-[0-9]+'
+	from schema $id: http://devicetree.org/schemas/hwmon/pwm-fan.yaml#
 
-On x86 and arm64 this won't make a difference as compat_ptr()
-is a nop.
+doc reference errors (make refcheckdocs):
 
-     Arnd
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240124060705.1342461-3-billy_tsai@aspeedtech.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
 
