@@ -1,131 +1,143 @@
-Return-Path: <linux-kernel+bounces-36490-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36492-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A513083A19C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 06:56:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FB5E83A1A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 06:57:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55E771F23622
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 05:56:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D62E1F245F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 05:57:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 798D110795;
-	Wed, 24 Jan 2024 05:56:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EADA101CA;
+	Wed, 24 Jan 2024 05:56:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CQUPI0Gy"
-Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="In7+ica4"
+Received: from smtp.smtpout.orange.fr (smtp-15.smtpout.orange.fr [80.12.242.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38B05F9F8
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 05:56:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1370D308;
+	Wed, 24 Jan 2024 05:56:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706075784; cv=none; b=pgc5uM5EadHPkapGy2t+ih3h+QWa6mVXg+frz1rG+TSfn4E0tlCg81qxhr/6QmlT+d2OMiKJGLh+ZRiueivedx+AAeoqibRnCwL4VF170qCp6FuWtqKoLlmwfj1ij3ofuWfBKpd6cZSxlbXelh6jmE8vP/qEmtRjep3zIdSKe90=
+	t=1706075813; cv=none; b=QJf+s928x74LGlkUxFmilKuPczXE0Vx1xpuvRdvL/O0sfGFHVKMXhBUUSLp1rHOB/AmPolb9/4TqtEN4VUVar+KRN5Lkg4Yw60OyPZ9VpgZPMA+aIz+GQyqjSXf9swJ/yO816aDmPU6Oxpyt0nsxwXGdlJVNYkYfSwoKXl6+yHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706075784; c=relaxed/simple;
-	bh=3n6qbepBC/quy189WMpUt5s0sJ7FlfcHVamtdO7egM8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lIRqxsizWD53iyFtGtqVW6fDNzikhhbERWwNhNKpTbJrTw0vA8JQRj0MfYI8rzJ4nGokPZW9Uphju3vOI+Wi2xj1yC+Rfn8cGCO7bgABQPlPQ4DB3YzaVsVXuxgEcBxVNZ7YkNN2chyT3XziXeKL8fvnqzC3sBZxwUIjnSnlSFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CQUPI0Gy; arc=none smtp.client-ip=209.85.167.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3bd562d17dcso4074503b6e.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 21:56:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706075782; x=1706680582; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=F7SahGLtspE/3Wi9Cd+JOw7KlfpX4OF2RIxiyIP7SV0=;
-        b=CQUPI0Gyf7iMVcA10t0J6r04j6YDF4Q6PiMRKcRAEg+WVj6KxdR5iSjMSH9izVJw1I
-         eWEctJIUL9aPKNRO8yJ0lyN7bSV/jDY1WG9r8EcyShbbGJe/c5xN79ViXN+JORHMajDY
-         3lVFKRVel0lAAFxssdot+ARQPurXeBX6M9tre1yECT9ZrE3S4aN4izbkIobsxqrD+gB2
-         PqqDggyVIjCgWAll2xtReuBmYA/XAr4VvzisMbLenDYR0AcUbxsn+W6KD51fBPCjDLml
-         IzviHy1wIPcxQkBILW8Wy4+qLFo6TwfpiR4yy3p0elIznif5BQuoB2TOGUB6aIO6pp1h
-         gYeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706075782; x=1706680582;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F7SahGLtspE/3Wi9Cd+JOw7KlfpX4OF2RIxiyIP7SV0=;
-        b=LReo4Ez8c58EMtqe4ag0sJdsl+84i92cZeuFMPfidWfiBHpAk3Tul52V1mPrcx9mzZ
-         NtxCoEY1cZijdMKF3Xfo5/R7Lk62qbmu3Cc6rBUWGl50r/SGaHzfp1StEwneqk1xgpvH
-         Y3ifQ0woZXFojChXXwz4G8onQf8+EfcbMv/29+qjroRlBmytBrj4PBIfVFXiKFd0DKID
-         oPE5pBNQQ3FJYh5uicdt9ffUlAJnSOoQx3Lhi5VbGBKgqMIkjfpfB9sdfCyt2Fwub0li
-         mizP3Mpi3hPr7Yjs8HpiYNBR3EzAuwXxkYk8MFXDR/AQnEuLH91XU5JgnMjjKlA0aHc+
-         guCQ==
-X-Gm-Message-State: AOJu0YygpVsXBT0GNoTpxTqR32YKpunnFTmEZDsA+Ur86NUw7PEXCMd4
-	8Fbdf46Vc/XSFIlgkoSHVkUMmShZo4DvsPXNKP0TrQ1mlmi4af8AiNx4GknVhj0=
-X-Google-Smtp-Source: AGHT+IGiCI/sj/mAtB23fTMLULvqgI87+dSZUJXZCXN7hV/stz02CWQa7d9iE2R5I1NHRIlUItj1Gw==
-X-Received: by 2002:a05:6808:10c2:b0:3bd:a6ea:1c6c with SMTP id s2-20020a05680810c200b003bda6ea1c6cmr1180274ois.116.1706075782222;
-        Tue, 23 Jan 2024 21:56:22 -0800 (PST)
-Received: from localhost ([122.172.81.83])
-        by smtp.gmail.com with ESMTPSA id ko18-20020a056a00461200b006dab0d72cd0sm12721062pfb.214.2024.01.23.21.56.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 21:56:20 -0800 (PST)
-Date: Wed, 24 Jan 2024 11:26:18 +0530
-From: Viresh Kumar <viresh.kumar@linaro.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Banajit Goswami <bgoswami@quicinc.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH v4 2/6] cpufreq: do not open-code of_phandle_args_equal()
-Message-ID: <20240124055618.5xppexdpvwnv6zng@vireshk-i7>
-References: <20240123141311.220505-1-krzysztof.kozlowski@linaro.org>
- <20240123141311.220505-3-krzysztof.kozlowski@linaro.org>
+	s=arc-20240116; t=1706075813; c=relaxed/simple;
+	bh=WkkVH6MZ9Ei/ds3QjmKHNo/z+L5Xn6aFoSNurUu4m4g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
+	 In-Reply-To:Content-Type; b=lAEyD1SaGLB/cyI3wJ1DT/+szB/jFJqmneIqottLoKBvUOOoT8ZOiwBVoOGoV1ao8HF8UZVGEnyab2NUEUyzAJj4tixbbswlc4opBFSyuYMz9/20eHsk+gkm3YLIbUnvj1/156UTDnLlivTZb7Y2kmg4aBNyljGILwsqu3xt/ks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=In7+ica4; arc=none smtp.client-ip=80.12.242.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from [192.168.1.18] ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id SWFarRZez8jVDSWFarqsnB; Wed, 24 Jan 2024 06:56:42 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1706075802;
+	bh=g0PHiMiElhrW6soL6QZ3bDs9/Q+9VEvAsCekTMuIHKE=;
+	h=Date:Subject:To:References:From:Cc:In-Reply-To;
+	b=In7+ica4uVuNs9ushLtua0BX9YGc5x3ELrA7TG7V1NfNWpaJS8I4emw0dhbluV5NR
+	 IOYz+3rwVI75dfhPKdiwqcnr7ADc1TvWwt08J5aiS85Tc+HXHqSp5id8eU3myridRW
+	 bYHGvyZBLpp/nyxJtoYL1jNlOHjWcE+si2MaKy94nQkW/+2AnhRClDOhf5+UKKuSA8
+	 wfmi4YaPiEpYVo5A8aZjnFqEI/uxbrEI1P87X4D2Y8O5L8ZfBVRJt9zgMm6MYhysaL
+	 eN3RMvYvO80GSRLXub9KfGyHTqi+Ig0nk9rorf8dmqszJ1LYhktkRYx0Pgbelj1TnA
+	 CrLkeBcgb9EsQ==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 24 Jan 2024 06:56:42 +0100
+X-ME-IP: 92.140.202.140
+Message-ID: <e2d00e0f-0211-43c6-a868-7a36655847ab@wanadoo.fr>
+Date: Wed, 24 Jan 2024 06:56:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240123141311.220505-3-krzysztof.kozlowski@linaro.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Intel-wired-lan] [PATCH] ixgbe: Fix an error handling path in
+ ixgbe_read_iosf_sb_reg_x550()
+To: "Pucha, HimasekharX Reddy" <himasekharx.reddy.pucha@intel.com>
+References: <d39bbffb8817499cc2ae636cdef3b9c1eba59618.1705771534.git.christophe.jaillet@wanadoo.fr>
+ <CYYPR11MB8429776D3D1D830E140F5D64BD7B2@CYYPR11MB8429.namprd11.prod.outlook.com>
+Content-Language: en-MW
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>,
+ Tony Nguyen <anthony.l.nguyen@intel.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+ Mark Rustad <mark.d.rustad@intel.com>, linux-kernel@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+ netdev@vger.kernel.org
+In-Reply-To: <CYYPR11MB8429776D3D1D830E140F5D64BD7B2@CYYPR11MB8429.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 23-01-24, 15:13, Krzysztof Kozlowski wrote:
-> Use newly added of_phandle_args_equal() helper to compare two
-> of_phandle_args.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
+
+Le 24/01/2024 à 05:00, Pucha, HimasekharX Reddy a écrit :
+> Hi,
+>
+> Can you share testing hints for this patch.
+
+Hi,
+
+No I can't.
+
+It was spotted by one of my cocci script that tries to find issues 
+related to direct return when a function also has an error handling path 
++ manual review so see if it looks like a real issue.
+
+As said in the patch, "This patch is speculative, review with care.". 
+That means that it was not tested from my side.
+I don't have the hardware, and don't know how to trigger the issue.
+
+All I know is that the code looks wrong *to me*.
+
+Maybe someone at intel.com could give this hint? :)
+
+CJ
+
+
+> Regards,
+> Himasekhar Reddy.
+>
+> -----Original Message-----
+> From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of Christophe JAILLET
+> Sent: Saturday, January 20, 2024 10:56 PM
+> To: Brandeburg, Jesse <jesse.brandeburg@intel.com>; Nguyen, Anthony L <anthony.l.nguyen@intel.com>; David S. Miller <davem@davemloft.net>; Eric Dumazet <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>; Paolo Abeni <pabeni@redhat.com>; Jeff Kirsher <jeffrey.t.kirsher@intel.com>; Rustad, Mark D <mark.d.rustad@intel.com>
+> Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>; intel-wired-lan@lists.osuosl.org; kernel-janitors@vger.kernel.org; linux-kernel@vger.kernel.org; netdev@vger.kernel.org
+> Subject: [Intel-wired-lan] [PATCH] ixgbe: Fix an error handling path in ixgbe_read_iosf_sb_reg_x550()
+>
+> All error handling paths, except this one, go to 'out' where
+> release_swfw_sync() is called.
+> This call balances the acquire_swfw_sync() call done at the beginning of
+> the function.
+>
+> Branch to the error handling path in order to correctly release some
+> resources in case of error.
+>
+> Fixes: ae14a1d8e104 ("ixgbe: Fix IOSF SB access issues")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > ---
-> 
-> Depends on previous of change.
+> This patch is speculative, review with care.
 > ---
->  include/linux/cpufreq.h | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
-> index afda5f24d3dd..3cd06dafb04b 100644
-> --- a/include/linux/cpufreq.h
-> +++ b/include/linux/cpufreq.h
-> @@ -1149,8 +1149,7 @@ static inline int of_perf_domain_get_sharing_cpumask(int pcpu, const char *list_
->  		if (ret < 0)
->  			continue;
->  
-> -		if (pargs->np == args.np && pargs->args_count == args.args_count &&
-> -		    !memcmp(pargs->args, args.args, sizeof(args.args[0]) * args.args_count))
-> +		if (of_phandle_args_equal(pargs, &args))
->  			cpumask_set_cpu(cpu, cpumask);
->  
->  		of_node_put(args.np);
-
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-
--- 
-viresh
+>   drivers/net/ethernet/intel/ixgbe/ixgbe_x550.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_x550.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_x550.c
+> index 6208923e29a2..c1adc94a5a65 100644
+> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_x550.c
+> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_x550.c
+> @@ -716,7 +716,8 @@ static s32 ixgbe_read_iosf_sb_reg_x550(struct ixgbe_hw *hw, u32 reg_addr,
+>   	if ((command & IXGBE_SB_IOSF_CTRL_RESP_STAT_MASK) != 0) {
+>   		error = FIELD_GET(IXGBE_SB_IOSF_CTRL_CMPL_ERR_MASK, command);
+>   		hw_dbg(hw, "Failed to read, error %x\n", error);
+> -		return -EIO;
+> +		ret = -EIO;
+> +		goto out;
+>   	}
+>   
+>   	if (!ret)
 
