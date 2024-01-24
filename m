@@ -1,108 +1,134 @@
-Return-Path: <linux-kernel+bounces-37211-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37213-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42AEF83ACA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:59:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 321B183ACA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:00:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE31A29E134
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:59:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCD1A29E2A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:00:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DDF641745;
-	Wed, 24 Jan 2024 14:59:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 412CF1E49D;
+	Wed, 24 Jan 2024 14:59:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NuZ8QmMh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Cil6swvt"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFE35747A;
-	Wed, 24 Jan 2024 14:59:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B46057C088;
+	Wed, 24 Jan 2024 14:59:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706108373; cv=none; b=jlD2vp8tY32hyJVf5sIQ8tJDMuLD9rDs7wH/JfNUJhZOaEi34Y2n1lFxjSOv5mCkTe0OFwp5LRaNNRo3DoaPdbSxgk0Ha+M+/R2tXmByFMDrzQlIfq/AONVvvfZ3yx0n37wCqB0lYMI3awsVoPmU3B45HN+abXjXm7YtCp1wnzw=
+	t=1706108389; cv=none; b=Zl9+fIb4elOuAYJ8NigjYJNj+EAn1iaf6OnDkx+43n+muajD+dQtxvtGq/0cX1tlAu+S/yrN/CsNkhRJrlnccTOye7M6cMdYf3hgTVjrsJevQXZ/ObZ0jyRdYH6tPpWtuVSp7B2ygynmwZy8xJzNMt3A6caUmMBqeHlVa+GS6bY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706108373; c=relaxed/simple;
-	bh=mQX8DybNDvtTD7Nup5eK6kH6t/XOvTabhBOUYwFOo4U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SxvFdnx/zCBaJjE2BJ4K8LWZcgwHt1T+PNu+jp+MA7OjCHkhcQMrWzqQuvPV9OijFnIdN76o3I+b+/hKuB+IGpeKJFzixEnvhR82Acv2y2kZGBR4/y2OBi0ggzkJ5MqZWLMVHW5YSGcjnFMszrcBTzI4XWZByV2s56jxDqPDk40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NuZ8QmMh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BC43C433F1;
-	Wed, 24 Jan 2024 14:59:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706108373;
-	bh=mQX8DybNDvtTD7Nup5eK6kH6t/XOvTabhBOUYwFOo4U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NuZ8QmMhiN671TRNUiYJ3XpiFzKtt2BdruF7nkBLdgfBdkc/KCxqcm1eyNt0vk5nG
-	 URwZrZvh0550YeVU5mqYPUDgDTgWn4ktYHF0U6nge3j86IG+PPIY40tYEppM5N9LSr
-	 s1ZqtwRC6cjTYX+l6tsvF5monjIdQ6vstwX74cZ9GP5nMjFo+6hRxE7dKhe/d4VO/A
-	 uuFMglQsv13pvR4vyUh+lYl3pZXA44rIb2dRVux6LUm3eTL+i51yvkXXIMHK3ZVf+3
-	 4tlz33A8VSZmYpUYqW3ibET/8xl/hyuxrPDz3UXji2MDs/yJngg6hZKxwBlYMUkLzr
-	 dXMPF5EuCCM7A==
-Date: Wed, 24 Jan 2024 14:59:28 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Jonas Gorski <jonas.gorski@gmail.com>
-Cc: Guenter Roeck <linux@roeck-us.net>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Herve Codina <herve.codina@bootlin.com>,
-	Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
-	"linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH] spi: Raise limit on number of chip selects
-Message-ID: <38630519-733c-4598-97a7-19a5e6306513@sirena.org.uk>
-References: <20240122-spi-multi-cs-max-v1-1-a7e98cd5f6c7@kernel.org>
- <20240123120430.75c7ace0@bootlin.com>
- <cefafa30-b78d-471b-83e0-b05060d806d4@sirena.org.uk>
- <93385fc2-7596-4f66-b0c1-07d7d5c9ed8d@csgroup.eu>
- <49b52941-6205-48bd-b2ae-e334018ac5cd@sirena.org.uk>
- <CAOiHx==FzSyyqP3NzLTeOSVxUQYy3ZhypZrDLsc-OjGCdSzvUA@mail.gmail.com>
- <801eecbe-4bf9-4bb8-9de0-1a7ca6673ddf@roeck-us.net>
- <CAOiHx=mM7kpzR-MOshsgXZM+CSB0nawfWxMhpt=tuhmJyMTCzQ@mail.gmail.com>
+	s=arc-20240116; t=1706108389; c=relaxed/simple;
+	bh=RzDbhYSEcmLvl0Tieidy5sjp9uAbbBuDzPRK5lNr8Tk=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=gPLWkjiuT279M3Etqdd1mpr8Dyln82k5HGxFDFcgFq9OOVG3r4zJtDlAdQOBNFF7TnCEpDf0I12CgAePzjTXZyP68/PMXq4rwWUCttMY6+5qeHApSW4jj3A1P3I4n7SkVMe1HJHoma/9guuSs4ZPgu+xuO2VamUslfEjtZ+uLMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Cil6swvt; arc=none smtp.client-ip=134.134.136.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706108386; x=1737644386;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=RzDbhYSEcmLvl0Tieidy5sjp9uAbbBuDzPRK5lNr8Tk=;
+  b=Cil6swvtNfZ92Cyy1GGmLzszogBQnu1QF5g+xBVoZ+t6GfUXP/FrFt6/
+   vNdiqyE3EnEd2uZShAz2Qg8nZXvbmhe6tv1wWwAM9KBcVQ1N4EBibHKmx
+   c8LmWpWMay06ynyunvaib7uTPldTVNxGfNbJjDr4JvvdrBVQjSqB3lJOu
+   7RpbYvg12YOsjPJX5NgGzSiU9tDoUd9skZD6TLcOf3IRFlidpxDjBOSfp
+   OqUwLOL3vzEiCYjZtXw3860DbJydtEGXQa+JRZS0GeOS1HWoXqrxSsW0L
+   bqTh8tOMvNwQjnfHjvJxooQMwDsEEv3uAIoHshTuT/9zKct1eDz8EQUoe
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="405616927"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="405616927"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 06:59:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="1932880"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.48.46])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 06:59:40 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Wed, 24 Jan 2024 16:59:36 +0200 (EET)
+To: Frank Li <Frank.Li@nxp.com>
+cc: alexandre.belloni@bootlin.com, conor.culhane@silvaco.com, 
+    devicetree@vger.kernel.org, 
+    Greg Kroah-Hartman <gregkh@linuxfoundation.org>, imx@lists.linux.dev, 
+    Jiri Slaby <jirislaby@kernel.org>, joe@perches.com, 
+    krzysztof.kozlowski+dt@linaro.org, krzysztof.kozlowski@linaro.org, 
+    linux-i3c@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>, 
+    linux-serial <linux-serial@vger.kernel.org>, miquel.raynal@bootlin.com, 
+    robh@kernel.org, zbigniew.lukwinski@linux.intel.com
+Subject: Re: [PATCH v4 4/8] i3c: svc: Add svc-i3c-main.c and svc-i3c.h
+In-Reply-To: <20240123231043.3891847-5-Frank.Li@nxp.com>
+Message-ID: <bb434214-0607-4054-dd04-a870db9e7f5d@linux.intel.com>
+References: <20240123231043.3891847-1-Frank.Li@nxp.com> <20240123231043.3891847-5-Frank.Li@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="U3up3TFtYv/V8tb0"
-Content-Disposition: inline
-In-Reply-To: <CAOiHx=mM7kpzR-MOshsgXZM+CSB0nawfWxMhpt=tuhmJyMTCzQ@mail.gmail.com>
-X-Cookie: To err is human, to moo bovine.
+Content-Type: text/plain; charset=US-ASCII
+
+On Tue, 23 Jan 2024, Frank Li wrote:
+
+> SVC i3c is a dual role controller. Move probe() into svc-i3c-main.c. This
+> prepares to support target probe depending on dts "mode" settings.
+> 
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  drivers/i3c/master/Makefile         |  3 +-
+>  drivers/i3c/master/svc-i3c-main.c   | 52 +++++++++++++++++++++++++++++
+>  drivers/i3c/master/svc-i3c-master.c | 34 ++++---------------
+>  drivers/i3c/master/svc-i3c.h        | 11 ++++++
+>  4 files changed, 71 insertions(+), 29 deletions(-)
+>  create mode 100644 drivers/i3c/master/svc-i3c-main.c
+>  create mode 100644 drivers/i3c/master/svc-i3c.h
+> 
+> diff --git a/drivers/i3c/master/Makefile b/drivers/i3c/master/Makefile
+> index 3e97960160bc8..484cb81f45821 100644
+> --- a/drivers/i3c/master/Makefile
+> +++ b/drivers/i3c/master/Makefile
+> @@ -2,5 +2,6 @@
+>  obj-$(CONFIG_CDNS_I3C_MASTER)		+= i3c-master-cdns.o
+>  obj-$(CONFIG_DW_I3C_MASTER)		+= dw-i3c-master.o
+>  obj-$(CONFIG_AST2600_I3C_MASTER)	+= ast2600-i3c-master.o
+> -obj-$(CONFIG_SVC_I3C_MASTER)		+= svc-i3c-master.o
+> +svc-i3c-objs				+= svc-i3c-main.o svc-i3c-master.o
+> +obj-$(CONFIG_SVC_I3C_MASTER)		+= svc-i3c.o
+>  obj-$(CONFIG_MIPI_I3C_HCI)		+= mipi-i3c-hci/
+> diff --git a/drivers/i3c/master/svc-i3c-main.c b/drivers/i3c/master/svc-i3c-main.c
+> new file mode 100644
+> index 0000000000000..053b2bd9d8317
+> --- /dev/null
+> +++ b/drivers/i3c/master/svc-i3c-main.c
+
+..
+
+> +module_platform_driver(svc_i3c_master);
+> \ No newline at end of file
+
+> diff --git a/drivers/i3c/master/svc-i3c.h b/drivers/i3c/master/svc-i3c.h
+> new file mode 100644
+> index 0000000000000..0bd1f0112a071
+> --- /dev/null
+> +++ b/drivers/i3c/master/svc-i3c.h
+
+..
+
+> +#endif
+> \ No newline at end of file
+
+Add the trailing newline characters.
 
 
---U3up3TFtYv/V8tb0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+-- 
+ i.
 
-On Wed, Jan 24, 2024 at 02:41:03PM +0100, Jonas Gorski wrote:
-
-> For some reason we don't store neither the actual number of supported
-> parallel chipselects in the controller, nor the amount of chipselects
-> used by the spi device, so all loops always  need to iterate
-> SPI_CS_CNT_MAX times and check for the chipselect numbers not being
-> 0xff instead of limiting by the (possible to know) actual number of
-> chip selects in use.
-
-Yes, we really can do a lot better here if we keep a bit more data
-around.
-
---U3up3TFtYv/V8tb0
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWxJc8ACgkQJNaLcl1U
-h9D6LAf/dKoXrvJDfpSrT4W9m+K05QQbrpK+vBrXnoQfnSRPB6PhUHDrgZEHfOHC
-2gewO4lWzvu974wpl2oilNc6y68hYT7Vhxw/PuYg7ML+SO3pnhoTvEYqwaaz11+o
-TTf+2VlXzjHRHtB4vKZDV3DtNhZZ/keiVIXeNmSkr6e3zBnQoAOZIfBe/+i6cDoS
-aF03gP7NzVqJgQ142eWIQfp5BdHqw31p0nKeNrY/mzHCif2F7Qdv4o2Vrfmary90
-/mcrWWxf05lsckAp2A4JHZeSWgQxw0LXt96q4CQfq71CHcn4E9xtYbXbW17JJZUt
-Kw+M0M793MlQUjjgskoPo+jXC+M4gw==
-=M4HS
------END PGP SIGNATURE-----
-
---U3up3TFtYv/V8tb0--
 
