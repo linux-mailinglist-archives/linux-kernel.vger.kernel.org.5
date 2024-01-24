@@ -1,100 +1,126 @@
-Return-Path: <linux-kernel+bounces-37271-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37272-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D27C83AD8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:40:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D351683AD91
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:41:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D203B282B72
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:40:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 757101F25CE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:41:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2F6F7C0A8;
-	Wed, 24 Jan 2024 15:40:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 992787C0B5;
+	Wed, 24 Jan 2024 15:40:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="1wYFMkBw"
-Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Yly5wDB0"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C14D97C0A6
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 15:40:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B3207A73A;
+	Wed, 24 Jan 2024 15:40:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706110832; cv=none; b=FxmziOrXBRZ8wqHNaW3eGegNamhGBMCtLsWra+mccMHWtoScq7TgfoAySUAfpm3+MHhXnAqjr2kGUMzw7wobq6SM55hcFu6MKjyYz4Mb1yA4jOpZdQcZNOMpI36uehzCXI/MBa0D7X19AGaDG28ZEwcC6KDeD1DttGarzXoRiS8=
+	t=1706110848; cv=none; b=RQ3qmGgsjSNPv1VwzPTFw4guYxHhssITUkfxsmHG8aJx+wrUarDzrLbzf6SHzdI96zN9jeqUYM6KY9fKRiRKF1byP0wP4OVLoLlgM2hzjR2nHWdpfW7BsfIrpng17AB9GRIJ3hjE8wVcCUbUN5taaraHSYbWBCMpxcHQpBWYLSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706110832; c=relaxed/simple;
-	bh=HmA5/Of8RA57iGWfYNJOIJnsqWGKdGPvKLPPKII9WVw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lpwl03xYi+wjmrX7arVrQSwHZrR3JswSlzBsU5xJ5HoWlkAm8iuGZAxcw+k1lrtePyNksvifbkrYuZkhoOoUZjpQVyzx9McJihkpG63M3y+o3jGVUFkcMsVeKwhDAMk7SvYFEE5UeCFMpTSZ3ibp46L/gaNJZzoufyL5aJQEfNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=1wYFMkBw; arc=none smtp.client-ip=209.85.166.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7bbdd28a52aso70554739f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 07:40:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1706110830; x=1706715630; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Sp30z39qJ5sIlGwmXa8064qBxWqWmADfo1Qv+7GX/z4=;
-        b=1wYFMkBwxT9H6Ek12BTig87oWFLw5/ow3hgEQK3TicbDHwYuhI3xGPeLASGx5lXFaf
-         8j+xlnIEzZ1PRqazoDaanmfAfYomKkWKXyzJ7ZhMjWIXeBLYO/eVXsOW9N2syPb5pzR6
-         5rQRoWB8VJsym7y9Ms/mRzisvhSr4te4F8qqpXfk/DH04Nv2GAeNQKunTmqUd8m9dnIp
-         p1JEN2opiTTdarIEiTey9BR9jghRvCUmtohVyy5a7a4qd/r9HhlbcaDVKyxNlxjOCwVb
-         hN8XPIL/tgU4YnHTp/RVxogQW2xCQXf2zzEBHFRJBOrumEO29lu++rsqJMxBgVDIVVmR
-         Ttzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706110830; x=1706715630;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Sp30z39qJ5sIlGwmXa8064qBxWqWmADfo1Qv+7GX/z4=;
-        b=aSEG7sZzoTJBUm1z6YH9mTduD3/9npZML3Se2BjxRH5ggeTqP9UQeLbENmjTStdIiv
-         EtS02Bq9KsGaGxInZVEKOHIJKhndj6cs+NlvnzLB4Vz8WaggR7MLhOcvsenSgicyXOB2
-         GZdXuM+4RuXMB5+ohr1QrOLHEbmYP3ESSEUVBsmE8wsKyrj/KkEggvtN130oZqYtVpZe
-         bXT7kK9+pxz6JCLeT7tzpkTh7H3P1C6ueyrQU83wIdmt2rzMWGPD9TXyNdzebk2ZLzhM
-         4QLx8GjDSVtkJxtWmx8BynTkWVkj0PoH3yX0D99bi8BfDU6r5Vd+sDzFcaCwx062yETY
-         q6OA==
-X-Gm-Message-State: AOJu0Yzhp6tDXSRiXdfpVaE6yBnWdIXPFVDxvyn6Y8oHMqm9cX/Mst4f
-	1e6O7rFQnvRdNwSxurfAZb98S1S1tAsYZ/GYsHzsauF4DxK9H5yppBnm2TbN+nw=
-X-Google-Smtp-Source: AGHT+IFPlmLegu6UaxmmOMcq0IbOOnny9YxFFPLKn1lRDPjZsbjV+UoKWJadiitSxpImMLFrcagtjg==
-X-Received: by 2002:a05:6e02:219a:b0:360:7937:6f7 with SMTP id j26-20020a056e02219a00b00360793706f7mr3125990ila.3.1706110829953;
-        Wed, 24 Jan 2024 07:40:29 -0800 (PST)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id j26-20020a056e02221a00b00361a166564csm4476442ilf.4.2024.01.24.07.40.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jan 2024 07:40:29 -0800 (PST)
-Message-ID: <be690355-03c6-42e2-a13f-b593ad1c0edd@kernel.dk>
-Date: Wed, 24 Jan 2024 08:40:28 -0700
+	s=arc-20240116; t=1706110848; c=relaxed/simple;
+	bh=VqpleTLhuvFRc9potlgECTlRx8Wy9YNqUOuKN2i6GvY=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=Gf7MbY4+MngVI6pJPkQjYlp008pdlVoZ+4Y/RP/Sn8XldmwfMDDkE0ZfaRWcyBYo7VRYMZppMJ+gefpp4IEZtgb3derSWyTCrNa11uVA5SG/1gFLHw0nSsa4EpDbqxsjlvM1I9FjZA1qwnCOdM0j1B7Hm5BVyscu4NOIjq8kb9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Yly5wDB0; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706110847; x=1737646847;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=VqpleTLhuvFRc9potlgECTlRx8Wy9YNqUOuKN2i6GvY=;
+  b=Yly5wDB0WzjrzJMvoosBt2qx5Qn9Y/rrb7ya2dJVzRnzL9LFZ4yjzUO4
+   uyfVECsfRG3o2XSFdOhWOAaX/rcciYOsxzJc6Gkc4hxzmfQBX6lgzwWLi
+   d4FC4DsOSg3PZjaX0/Iv3ZdqxCCSvXQaDIA97yhKMrjxAjNH7QnJCJMsy
+   8DYid0eHCMhiLItnyrVHu3XDPMoLv57zVLY0i8hkGJ4uv+swrKzg+hC5h
+   MqLScX+Yvmr1h2vP6L7a0cmNBgs3FV1wuQe9RiQUbiGk/Por/0qBYQ2FN
+   1NK9nxXGnV9Wprsc0VNOl+BO+BpkusIzWL6psp+ZN/nGqszfy9/5s5+u2
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="8985204"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="8985204"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 07:40:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="1938318"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.48.46])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 07:40:42 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Wed, 24 Jan 2024 17:40:39 +0200 (EET)
+To: Dan Carpenter <dan.carpenter@linaro.org>
+cc: Niklas Cassel <niklas.cassel@wdc.com>, Jingoo Han <jingoohan1@gmail.com>, 
+    Gustavo Pimentel <gustavo.pimentel@synopsys.com>, 
+    Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
+    Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+    =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>, 
+    Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
+    linux-pci@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
+    kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] PCI: dwc: Fix a 64bit bug in
+ dw_pcie_ep_raise_msix_irq()
+In-Reply-To: <888c23ff-1ee4-4795-8c24-7631c6c37da6@moroto.mountain>
+Message-ID: <98ad8aad-ba7c-7689-3286-bc1f4afec943@linux.intel.com>
+References: <888c23ff-1ee4-4795-8c24-7631c6c37da6@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH, RFC] block: set noio context in submit_bio_noacct_nocheck
-Content-Language: en-US
-To: Christoph Hellwig <hch@lst.de>
-Cc: linux-block@vger.kernel.org, tj@kernel.org, jiangshanlai@gmail.com,
- linux-kernel@vger.kernel.org
-References: <20240124093941.2259199-1-hch@lst.de>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20240124093941.2259199-1-hch@lst.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 
-On 1/24/24 2:39 AM, Christoph Hellwig wrote:
-> Make sure all in-line block layer submission runs in noio reclaim
-> context.  This is a big step towards allowing GFP_NOIO, the other
-> one would be to have noio (and nofs for that matter) workqueues for
-> kblockd and driver internal workqueues.
+On Wed, 24 Jan 2024, Dan Carpenter wrote:
 
-I really don't like adding this for no good reason. Who's doing non NOIO
-allocations down from this path?
+> The "msg_addr" variable is u64.  However, the "aligned_offset" is an
+> unsigned int.  This means that when the code does:
+> 
+>         msg_addr &= ~aligned_offset;
+> 
+> it will unintentionally zero out the high 32 bits.  Use ALIGN_DOWN()
+> to do the alignment instead.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 2217fffcd63f ("PCI: dwc: endpoint: Fix dw_pcie_ep_raise_msix_irq() alignment support")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Reviewed-by: Niklas Cassel <cassel@kernel.org>
+> ---
+> v4: Add stable and r-b from Niklas
+> v3: Use ALIGN_DOWN()
+> v2: fix typo in commit message
+> 
+>  drivers/pci/controller/dwc/pcie-designware-ep.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
+> index 5befed2dc02b..51679c6702cf 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
+> @@ -551,7 +551,7 @@ int dw_pcie_ep_raise_msix_irq(struct dw_pcie_ep *ep, u8 func_no,
+>  	}
+>  
+>  	aligned_offset = msg_addr & (epc->mem->window.page_size - 1);
+> -	msg_addr &= ~aligned_offset;
+> +	msg_addr = ALIGN_DOWN(msg_addr, epc->mem->window.page_size);
+>  	ret = dw_pcie_ep_map_addr(epc, func_no, 0, ep->msi_mem_phys, msg_addr,
+>  				  epc->mem->window.page_size);
+>  	if (ret)
+
+Hi Dan,
+
+You should also add the include for it:
+
+#include <linux/align.h>
+
 
 -- 
-Jens Axboe
+ i.
 
 
