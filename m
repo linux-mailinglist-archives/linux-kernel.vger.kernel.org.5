@@ -1,342 +1,727 @@
-Return-Path: <linux-kernel+bounces-37236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B73183AD2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:23:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDE4683AD16
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:20:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C597AB2C3BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:20:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A4921F23D53
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:20:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A730A7C09F;
-	Wed, 24 Jan 2024 15:19:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6574077F33;
+	Wed, 24 Jan 2024 15:19:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="Jv4x0F0g"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kNX72MJY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB9BB77F33
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 15:19:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1D787C0B4;
+	Wed, 24 Jan 2024 15:19:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706109588; cv=none; b=f/6DsCJXJSZRRuHjR4kSyEyvcWjEGspG4DY+1IBot69fkaWzq0DkHqX3dfin7HETSDgXMmTvgI6qsXqjVqRTUEQZCJqeMxP7a0z/XEm510sZjNP5GVMRWnC+radVkb9kFxp5qDGBh7eEzNThioAV1N9Tr/9qCOB1woYnJJHm3pw=
+	t=1706109592; cv=none; b=hZhE4efBqTrXh0tlnOaihuj8/3PsUCJte69xN8KTXX5f12tTHroMNUBJdcjYNSYvcr+FWqIpOO0icAMf2+8a2Ufjb1v795/JQVyGjgBuu8emV41g6Tg84pjNzjEzX8mjzDSOZD+x2FP+crHQ4XdquorwPvfNuh4gX48mvvwuQLY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706109588; c=relaxed/simple;
-	bh=OIusJLxhbXxmyhNGE3F6m6Lh/80U12JwHeDjWP3XY3k=;
+	s=arc-20240116; t=1706109592; c=relaxed/simple;
+	bh=ZURhkfoBIu/ov9n3JHHi/kkQu+gBec7s6ViAq6yT8jI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E8CAXb167PGWWKJTLSp9VACXDoeoG4OUL3foMI1xUpt0qD0Eur5SlLBDY0v6PdaUQBQd95Rq2Vk4czYEeDHuBGDglEcONSLR2Y96xa1PdMKez96cpFy5mM8GBb05RSe9Dm7brEoVWgHv/SzA+jSVt/eF3Nz/n2W4YD2jNUh8tlA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=Jv4x0F0g; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d731314e67so19040255ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 07:19:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1706109586; x=1706714386; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-transfer-encoding
-         :content-disposition:mime-version:references:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GCPTIfro7gjKwSczT715QvfI3dAQ+k5lX6+XNUimdv4=;
-        b=Jv4x0F0gAn2ZAubQjaDcY95+9yt9UUUTKgBXbDVpxv3rcQKBcwYG7JVNXbCNiHI17B
-         SH1bx4+pNBMsYK8QznFiBPFUIG13UQ+DDv0swfu8X3G2uFk4K09xvdT7CwGgD6+hKaCv
-         Aaq8RP/iBEJVBMOlQX6ZQfoEWaMSYOWeKGCsA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706109586; x=1706714386;
-        h=user-agent:in-reply-to:content-transfer-encoding
-         :content-disposition:mime-version:references:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GCPTIfro7gjKwSczT715QvfI3dAQ+k5lX6+XNUimdv4=;
-        b=BPMSHMhcgStLjbBgnjXE9WfPEjGWdDJAu7SdildZxlcEqWM0CWWpgpnpWEo1gnUd25
-         jOLsttmilcGARiL3m0NDZYdxuiKB7r81wqcLgd9NoNknEb+644omvS7xfz9zBR9hLliN
-         rpZO+jMQd9l0k7bjAG7l3sMG5CSaQGW8Q+i8wMZX/f5Qy6I85zeA0qqR6VnfeoOu/glv
-         Zx7ePC+RzN3K6Cy4d2MZZyX42uxLhZiZxIqP/9Hfq+Y5aHhICFLffn4vbzSXlXBPiBE1
-         g5qgNrEo1rQsXKc1rok/2pkDVU24VF2bqm7FuO9/n0RPWFNj7OUthvBJWpniwgXzwKr7
-         pJVQ==
-X-Gm-Message-State: AOJu0YxWVHuDvB8bDj5WG3rGlB4lFr51LJYPPSFF8b6WFFioPzdWUGeJ
-	uZonVdcBX5NxH77lUtBc3creTU5cqYsnokoYycE0WGK8LKXB7sv2g983lgbRTR8=
-X-Google-Smtp-Source: AGHT+IFA6eRfCnUa7nllifPe0kGwNy09ZT1EBgLxXjqWc/wnwS38sfPlHpqeDvHgeYXekHXe/mN89Q==
-X-Received: by 2002:a17:903:41d2:b0:1d7:2279:15e9 with SMTP id u18-20020a17090341d200b001d7227915e9mr913512ple.122.1706109586064;
-        Wed, 24 Jan 2024 07:19:46 -0800 (PST)
-Received: from fastly.com (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
-        by smtp.gmail.com with ESMTPSA id jf7-20020a170903268700b001d76b1029c6sm3132620plb.2.2024.01.24.07.19.44
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 24 Jan 2024 07:19:45 -0800 (PST)
-Date: Wed, 24 Jan 2024 07:19:43 -0800
-From: Joe Damato <jdamato@fastly.com>
-To: Eric Dumazet <edumazet@google.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	chuck.lever@oracle.com, jlayton@kernel.org,
-	linux-api@vger.kernel.org, brauner@kernel.org, davem@davemloft.net,
-	alexander.duyck@gmail.com, sridhar.samudrala@intel.com,
-	kuba@kernel.org, Wei Wang <weiwan@google.com>
-Subject: Re: [net-next 0/3] Per epoll context busy poll support
-Message-ID: <20240124151942.GA6565@fastly.com>
-References: <20240124025359.11419-1-jdamato@fastly.com>
- <CANn89i+YKwrgpt8VnHrw4eeVpqRamLkTSr4u+g1mRDMZa6b+7Q@mail.gmail.com>
- <20240124142008.GA1448@fastly.com>
- <CANn89i+UiCRpu6M-hDga=dSTk1F5MjkgV=kKS6zC31pvOh78DQ@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=dZUmeHMnmXcof1VpkKK2/tdVKFuerNUQV4IVhdYlOFvtKZ1q9zAUMSMDa77ol2eYgzbg1R//sKwSz8GZPx3N+hNsuY7jYdnzGDYldHSBXiIPjkyNCL6jo5G1dbEBNmmtcgSfqE6//gyNbHs423MEIDRHNhgCdF/N+nfDYh4F7vs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kNX72MJY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFD5EC433C7;
+	Wed, 24 Jan 2024 15:19:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706109592;
+	bh=ZURhkfoBIu/ov9n3JHHi/kkQu+gBec7s6ViAq6yT8jI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kNX72MJYR6kV+dKqVzFiMbldnnl1rWyaw2Ur7qb730db/we9qj5nupBC5+x6M6Tm0
+	 TjB6t/FxyiJ5sjtOpNGcVjCSV69trZxP+I8MVQFzLCMOSjvGtiFaMxka1ZmusvdrMQ
+	 0PjEBtuCl7BHrd6wOmpSFQION2rzq1Z+V8FVUUIvrfadbBEw0yp8qGw8L0SFILJjXv
+	 k13I9YYd2rG5L1AH8wTkA/WjagCO/yg4+CXDE7w64za/Sk27uXkN5RFU7vl3Gfc65R
+	 eq0bXa4EtePlYOz1uiBeRMGaixpxkpm2cTrzyfgFS0QnL6Qu+vUfpHH4XqAeHccKqd
+	 Uh66IhYIXE5xA==
+Date: Wed, 24 Jan 2024 09:19:49 -0600
+From: Rob Herring <robh@kernel.org>
+To: =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>
+Cc: Gregory CLEMENT <gregory.clement@bootlin.com>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+	linux-mips@vger.kernel.org, linux-clk@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+	linux-gpio@vger.kernel.org
+Subject: Re: [PATCH v3 10/17] pinctrl: eyeq5: add platform driver
+Message-ID: <20240124151949.GB930997-robh@kernel.org>
+References: <20240123-mbly-clk-v3-0-392b010b8281@bootlin.com>
+ <20240123-mbly-clk-v3-10-392b010b8281@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANn89i+UiCRpu6M-hDga=dSTk1F5MjkgV=kKS6zC31pvOh78DQ@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20240123-mbly-clk-v3-10-392b010b8281@bootlin.com>
 
-On Wed, Jan 24, 2024 at 03:38:19PM +0100, Eric Dumazet wrote:
-> On Wed, Jan 24, 2024 at 3:20â€¯PM Joe Damato <jdamato@fastly.com> wrote:
-> >
-> > On Wed, Jan 24, 2024 at 09:20:09AM +0100, Eric Dumazet wrote:
-> > > On Wed, Jan 24, 2024 at 3:54â€¯AM Joe Damato <jdamato@fastly.com> wrote:
-> > > >
-> > > > Greetings:
-> > > >
-> > > > TL;DR This builds on commit bf3b9f6372c4 ("epoll: Add busy poll support to
-> > > > epoll with socket fds.") by allowing user applications to enable
-> > > > epoll-based busy polling and set a busy poll packet budget on a per epoll
-> > > > context basis.
-> > > >
-> > > > To allow for this, two ioctls have been added for epoll contexts for
-> > > > getting and setting a new struct, struct epoll_params.
-> > > >
-> > > > This makes epoll-based busy polling much more usable for user
-> > > > applications than the current system-wide sysctl and hardcoded budget.
-> > > >
-> > > > Longer explanation:
-> > > >
-> > > > Presently epoll has support for a very useful form of busy poll based on
-> > > > the incoming NAPI ID (see also: SO_INCOMING_NAPI_ID [1]).
-> > > >
-> > > > This form of busy poll allows epoll_wait to drive NAPI packet processing
-> > > > which allows for a few interesting user application designs which can
-> > > > reduce latency and also potentially improve L2/L3 cache hit rates by
-> > > > deferring NAPI until userland has finished its work.
-> > > >
-> > > > The documentation available on this is, IMHO, a bit confusing so please
-> > > > allow me to explain how one might use this:
-> > > >
-> > > > 1. Ensure each application thread has its own epoll instance mapping
-> > > > 1-to-1 with NIC RX queues. An n-tuple filter would likely be used to
-> > > > direct connections with specific dest ports to these queues.
-> > > >
-> > > > 2. Optionally: Setup IRQ coalescing for the NIC RX queues where busy
-> > > > polling will occur. This can help avoid the userland app from being
-> > > > pre-empted by a hard IRQ while userland is running. Note this means that
-> > > > userland must take care to call epoll_wait and not take too long in
-> > > > userland since it now drives NAPI via epoll_wait.
-> > > >
-> > > > 3. Ensure that all incoming connections added to an epoll instance
-> > > > have the same NAPI ID. This can be done with a BPF filter when
-> > > > SO_REUSEPORT is used or getsockopt + SO_INCOMING_NAPI_ID when a single
-> > > > accept thread is used which dispatches incoming connections to threads.
-> > > >
-> > > > 4. Lastly, busy poll must be enabled via a sysctl
-> > > > (/proc/sys/net/core/busy_poll).
-> > > >
-> > > > The unfortunate part about step 4 above is that this enables busy poll
-> > > > system-wide which affects all user applications on the system,
-> > > > including epoll-based network applications which were not intended to
-> > > > be used this way or applications where increased CPU usage for lower
-> > > > latency network processing is unnecessary or not desirable.
-> > > >
-> > > > If the user wants to run one low latency epoll-based server application
-> > > > with epoll-based busy poll, but would like to run the rest of the
-> > > > applications on the system (which may also use epoll) without busy poll,
-> > > > this system-wide sysctl presents a significant problem.
-> > > >
-> > > > This change preserves the system-wide sysctl, but adds a mechanism (via
-> > > > ioctl) to enable or disable busy poll for epoll contexts as needed by
-> > > > individual applications, making epoll-based busy poll more usable.
-> > > >
-> > >
-> > > I think this description missed the napi_defer_hard_irqs and
-> > > gro_flush_timeout settings ?
-> >
-> > I'm not sure if those settings are strictly related to the change I am
-> > proposing which makes epoll-based busy poll something that can be
-> > enabled/disabled on a per-epoll context basis and allows the budget to be
-> > set as well, but maybe I am missing something? Sorry for my
-> > misunderstanding if so.
-> >
-> > IMHO: a single system-wide busy poll setting is difficult to use
-> > properly and it is unforunate that the packet budget is hardcoded. It would
-> > be extremely useful to be able to set both of these on a per-epoll basis
-> > and I think my suggested change helps to solve this.
-> >
-> > Please let me know.
-> >
-> > Re the two settings you noted:
-> >
-> > I didn't mention those in the interest of brevity, but yes they can be used
-> > instead of or in addition to what I've described above.
-> >
-> > While those settings are very useful, IMHO, they have their own issues
-> > because they are system-wide as well. If they were settable per-NAPI, that
-> > would make it much easier to use them because they could be enabled for the
-> > NAPIs which are being busy-polled by applications that support busy-poll.
-> >
-> > Imagine you have 3 types of apps running side-by-side:
-> >   - A low latency epoll-based busy poll app,
-> >   - An app where latency doesn't matter as much, and
-> >   - A latency sensitive legacy app which does not yet support epoll-based
-> >     busy poll.
-> >
-> > In the first two cases, the settings you mention would be helpful or not
-> > make any difference, but in the third case the system-wide impact might be
-> > undesirable because having IRQs fire might be important to keep latency
-> > down.
-> >
-> > If your comment was more that my cover letter should have mentioned these,
-> > I can include that in a future cover letter or suggest some kernel
-> > documentation which will discuss all of these features and how they relate
-> > to each other.
-> >
-> > >
-> > > I would think that if an application really wants to make sure its
-> > > thread is the only one
-> > > eventually calling napi->poll(), we must make sure NIC interrupts stay masked.
-> > >
-> > > Current implementations of busy poll always release NAPI_STATE_SCHED bit when
-> > > returning to user space.
-> > >
-> > > It seems you want to make sure the application and only the
-> > > application calls the napi->poll()
-> > > at chosen times.
-> > >
-> > > Some kind of contract is needed, and the presence of the hrtimer
-> > > (currently only driven from dev->@gro_flush_timeout)
-> > > would allow to do that correctly.
-> > >
-> > > Whenever we 'trust' user space to perform the napi->poll shortly, we
-> > > also want to arm the hrtimer to eventually detect
-> > > the application took too long, to restart the other mechanisms (NIC irq based)
-> >
-> > There is another change [1] I've been looking at from a research paper [2]
-> > which does something similar to what you've described above -- it keeps
-> > IRQs suppressed during busy polling. The paper suggests a performance
-> > improvement is measured when using a mechanism like this to keep IRQs off.
-> > Please see the paper for more details.
-> >
-> > I haven't had a chance to reach out to the authors or to tweak this patch
-> > to attempt an RFC / submission for it, but it seems fairly promising in my
-> > initial synthetic tests.
-> >
-> > When I tested their patch, as you might expect, no IRQs were generated at
-> > all for the NAPIs that were being busy polled, but the rest of the
-> > NAPIs and queues were generating IRQs as expected.
-> >
-> > Regardless of the above patch: I think my proposed change is helpful and
-> > the IRQ suppression bit can be handled in a separate change in the future.
-> > What do you think?
-> >
-> > > Note that we added the kthread based napi polling, and we are working
-> > > to add a busy polling feature to these kthreads.
-> > > allowing to completely mask NIC interrupts and further reduce latencies.
-> >
-> > I am aware of kthread based NAPI polling, yes, but I was not aware that
-> > busy polling was being considered as a feature for them, thanks for the
-> > head's up.
-> >
-> > > Thank you
-> >
-> > Thanks for your comments - I appreciate your time and attention.
-> >
-> > Could you let me know if your comments are meant as a n-ack or similar?
+On Tue, Jan 23, 2024 at 07:46:55PM +0100, Théo Lebrun wrote:
+> Add the Mobileye EyeQ5 pin controller driver. It might grow to add later
+> support of other platforms from Mobileye. It belongs to a syscon region
+> called OLB.
 > 
-> Patch #2 needs the 'why' part, and why would we allow user space to
-> ask to poll up to 65535 packets...
-> There is a reason we have a warning in place when a driver attempts to
-> set a budget bigger than 64.
-
-Sure, thanks for pointing this out.
-
-I am happy to cap the budget to 64 if a user app requests a larger amount
-and I can add a netdev_warn when this happens, if you'd like.
-
-The 'why' has two reasons:
-  - Increasing the budget for fast NICs can help improve throughput
-    under load (i.e. the hardcoded amount might be too low for some users)
-  - other poll methods have user-configurable budget amounts
-    (SO_BUSY_POLL_BUDGET), so epoll stands out as an edge case where the
-    budget is hardcoded.
-
-I hope that reasoning is sufficient and I can include that more explicitly
-in the commit message.
-
-FWIW: My reading of SO_BUSY_POLL_BUDGET suggests that any budget amount
-up to U16_MAX will be accepted. I probably missed it somewhere, but I
-didn't see a warning in this case.
-
-I think in a v2 SO_BUSY_POLL_BUDGET and the epoll ioctl budget should
-be capped at the same amount for consistency and I am happy to agree to 64
-or 128 or similar as a cap.
-
-Let me know what you think and thanks again for your thoughts and detailed
-response.
-
-> You cited recent papers,  I wrote this one specific to linux busy
-> polling ( https://netdevconf.info/2.1/papers/BusyPollingNextGen.pdf )
-
-Thanks for sending this link, I'll need to take a closer look, but a quick
-read surfaced two things:
-
-  Their use is very limited, since they enforce busy polling
-  for all sockets, which is not desirable
-
-We agree on the limited usefulness of system-wide settings ;)
-
-  Another big problem is that Busy Polling was not really
-  deployed in production, because it works well when having
-  no more than one thread per NIC RX queue.
-
-I've been testing epoll-based busy poll in production with a few different
-NICs and application setups and it has been pretty helpful, but I agree
-that this is application architecture specific as you allude to in
-your next paragraph about the scheduler.
-
-Thanks for linking to the paper.
-
-It would be great if all of this context and information could be put in
-one place in the kernel docs. If I have time in the future, I'll propose a
-doc change to try to outline all of this.
-
-> Busy polling had been in the pipe, when Wei sent her patches and follow ups.
+> Existing pins and their function live statically in the driver code
+> rather than in the devicetree, see compatible match data.
 > 
-> cb038357937ee4f589aab2469ec3896dce90f317 net: fix race between napi
-> kthread mode and busy poll
-> 5fdd2f0e5c64846bf3066689b73fc3b8dddd1c74 net: add sysfs attribute to
-> control napi threaded mode
-> 29863d41bb6e1d969c62fdb15b0961806942960e net: implement threaded-able
-> napi poll loop support
+> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+> ---
+>  MAINTAINERS                     |   1 +
+>  drivers/pinctrl/Kconfig         |  15 +
+>  drivers/pinctrl/Makefile        |   1 +
+>  drivers/pinctrl/pinctrl-eyeq5.c | 595 ++++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 612 insertions(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index dd3b5834386f..9c423a4feb86 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -14794,6 +14794,7 @@ F:	arch/mips/boot/dts/mobileye/
+>  F:	arch/mips/configs/eyeq5_defconfig
+>  F:	arch/mips/mobileye/board-epm5.its.S
+>  F:	drivers/clk/clk-eyeq5.c
+> +F:	drivers/pinctrl/pinctrl-eyeq5.c
+>  F:	drivers/reset/reset-eyeq5.c
+>  F:	include/dt-bindings/clock/mobileye,eyeq5-clk.h
+>  F:	include/dt-bindings/soc/mobileye,eyeq5.h
+> diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
+> index 8163a5983166..abe94de85b3d 100644
+> --- a/drivers/pinctrl/Kconfig
+> +++ b/drivers/pinctrl/Kconfig
+> @@ -195,6 +195,21 @@ config PINCTRL_EQUILIBRIUM
+>  	  desired pin functions, configure GPIO attributes for LGM SoC pins.
+>  	  Pin muxing and pin config settings are retrieved from device tree.
+>  
+> +config PINCTRL_EYEQ5
+> +	bool "Mobileye EyeQ5 pinctrl driver"
+> +	depends on OF
+> +	depends on MACH_EYEQ5 || COMPILE_TEST
+> +	select PINMUX
+> +	select GENERIC_PINCONF
+> +	select MFD_SYSCON
+> +	default MACH_EYEQ5
+> +	help
+> +	  Pin controller driver for the Mobileye EyeQ5 platform. It does both
+> +	  pin config & pin muxing. It does not handle GPIO.
+> +
+> +	  Pin muxing supports two functions for each pin: first is GPIO, second
+> +	  is pin-dependent. Pin config is about bias & drive strength.
+> +
+>  config PINCTRL_GEMINI
+>  	bool
+>  	depends on ARCH_GEMINI
+> diff --git a/drivers/pinctrl/Makefile b/drivers/pinctrl/Makefile
+> index 1071f301cc70..0033940914d9 100644
+> --- a/drivers/pinctrl/Makefile
+> +++ b/drivers/pinctrl/Makefile
+> @@ -22,6 +22,7 @@ obj-$(CONFIG_PINCTRL_DA850_PUPD) += pinctrl-da850-pupd.o
+>  obj-$(CONFIG_PINCTRL_DA9062)	+= pinctrl-da9062.o
+>  obj-$(CONFIG_PINCTRL_DIGICOLOR)	+= pinctrl-digicolor.o
+>  obj-$(CONFIG_PINCTRL_EQUILIBRIUM)   += pinctrl-equilibrium.o
+> +obj-$(CONFIG_PINCTRL_EYEQ5)	+= pinctrl-eyeq5.o
+>  obj-$(CONFIG_PINCTRL_GEMINI)	+= pinctrl-gemini.o
+>  obj-$(CONFIG_PINCTRL_INGENIC)	+= pinctrl-ingenic.o
+>  obj-$(CONFIG_PINCTRL_K210)	+= pinctrl-k210.o
+> diff --git a/drivers/pinctrl/pinctrl-eyeq5.c b/drivers/pinctrl/pinctrl-eyeq5.c
+> new file mode 100644
+> index 000000000000..2d8e5b2168bd
+> --- /dev/null
+> +++ b/drivers/pinctrl/pinctrl-eyeq5.c
+> @@ -0,0 +1,595 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Pinctrl driver for the Mobileye EyeQ5 platform.
+> + *
+> + * The registers are located in a syscon region called OLB. There are two pin
+> + * banks, each being controlled by 5 registers (see enum eq5p_regs) for
+> + * pull-down, pull-up, drive strength and muxing.
+> + *
+> + * For each pin, muxing is between two functions: (0) GPIO or (1) another one
+> + * that is pin-dependent. Functions are declared statically in this driver.
+> + *
+> + * We create pinctrl groups that are 1:1 equivalent to pins: each group has a
+> + * single pin, and its index/selector is the pin number/offset.
+> + *
+> + * We use eq5p_ as prefix, as-in "EyeQ5 Pinctrl", but way shorter.
+> + *
+> + * Copyright (C) 2024 Mobileye Vision Technologies Ltd.
+> + */
+> +#include <linux/mfd/syscon.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+> +#include <linux/pinctrl/pinconf-generic.h>
+> +#include <linux/pinctrl/pinconf.h>
+> +#include <linux/pinctrl/pinctrl.h>
+> +#include <linux/pinctrl/pinmux.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +#include <linux/seq_file.h>
+> +
+> +#include "core.h"
+> +#include "pinctrl-utils.h"
+> +
+> +#define GPIO_FUNC_SELECTOR 0
+> +
+> +struct eq5p_pinctrl {
+> +	struct pinctrl_desc desc;
+> +
+> +	struct regmap *olb;
+> +	const unsigned int *regs; /* array of size EQ5P_REG_MAX */
+> +
+> +	const struct eq5p_function *funcs;
+> +	unsigned int nfuncs;
+> +};
+> +
+> +struct eq5p_function {
+> +	const char *name;
+> +	const char * const *groups;
+> +	unsigned int ngroups;
+> +};
+> +
+> +/* OLB registers; those are offsets in an array of address offsets. */
+> +enum eq5p_regs {
+> +	EQ5P_PD,
+> +	EQ5P_PU,
+> +	EQ5P_DS_LOW,
+> +	EQ5P_DS_HIGH,
+> +	EQ5P_IOCR,
+> +
+> +	EQ5P_REG_MAX
+> +};
+> +
+> +static int eq5p_pinctrl_get_groups_count(struct pinctrl_dev *pctldev)
+> +{
+> +	return pctldev->desc->npins;
+> +}
+> +
+> +static const char *eq5p_pinctrl_get_group_name(struct pinctrl_dev *pctldev,
+> +					       unsigned int selector)
+> +{
+> +	return pctldev->desc->pins[selector].name;
+> +}
+> +
+> +static int eq5p_pinctrl_get_group_pins(struct pinctrl_dev *pctldev,
+> +				       unsigned int selector,
+> +				       const unsigned int **pins,
+> +				       unsigned int *num_pins)
+> +{
+> +	*pins = &pctldev->desc->pins[selector].number;
+> +	*num_pins = 1;
+> +	return 0;
+> +}
+> +
+> +static int eq5p_pinconf_get(struct pinctrl_dev *pctldev, unsigned int offset,
+> +			    unsigned long *config);
+> +
+> +static void eq5p_pinctrl_pin_dbg_show(struct pinctrl_dev *pctldev,
+> +				      struct seq_file *s,
+> +				      unsigned int offset)
+> +{
+> +	struct eq5p_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+> +	const char *pin_name = pctrl->desc.pins[offset].name;
+> +	const char *func_name, *bias;
+> +	unsigned int val_pd, val_pu, val_iocr;
+> +	unsigned long ds_config;
+> +	u32 drive_strength;
+> +	bool pd, pu;
+> +	int i, j;
+> +
+> +	/* First, let's get the function name. */
+> +	regmap_read(pctrl->olb, pctrl->regs[EQ5P_IOCR], &val_iocr);
+> +	if ((val_iocr & BIT(offset)) == 0) {
+> +		func_name = pctrl->funcs[GPIO_FUNC_SELECTOR].name;
+> +	} else {
+> +		/* All pins have only two functions: GPIO and something else. We
+> +		 * look for this something else.
+> +		 */
+> +		func_name = NULL;
+> +		for (i = 0; i < pctrl->nfuncs; i++) {
+> +			if (i == GPIO_FUNC_SELECTOR)
+> +				continue;
+> +
+> +			for (j = 0; j < pctrl->funcs[i].ngroups; j++) {
+> +				/* Groups and pins are the same thing for us. */
+> +				const char *x = pctrl->funcs[i].groups[j];
+> +
+> +				if (strcmp(x, pin_name) == 0) {
+> +					func_name = pctrl->funcs[i].name;
+> +					break;
+> +				}
+> +			}
+> +
+> +			if (func_name)
+> +				break;
+> +		}
+> +
+> +		/* We have not found the function attached to this pin, this
+> +		 * should never occur as all pins have exactly two functions.
+> +		 */
+> +		if (!func_name)
+> +			func_name = "unknown";
+> +	}
+> +
+> +	/* Second, we retrieve the bias. */
+> +	regmap_read(pctrl->olb, pctrl->regs[EQ5P_PD], &val_pd);
+> +	pd = (val_pd & BIT(offset)) != 0;
+> +	regmap_read(pctrl->olb, pctrl->regs[EQ5P_PU], &val_pu);
+> +	pu = (val_pu & BIT(offset)) != 0;
+> +	if (pd && pu)
+> +		bias = "both";
+> +	else if (pd && !pu)
+> +		bias = "pulldown";
+> +	else if (!pd && pu)
+> +		bias = "pullup";
+> +	else
+> +		bias = "none";
+> +
+> +	/* Third, we get the drive strength. */
+> +	ds_config = pinconf_to_config_packed(PIN_CONFIG_DRIVE_STRENGTH, 0);
+> +	eq5p_pinconf_get(pctldev, offset, &ds_config);
+> +	drive_strength = pinconf_to_config_argument(ds_config);
+> +
+> +	seq_printf(s, "function=%s bias=%s drive_strength=%d",
+> +		   func_name, bias, drive_strength);
+> +}
+> +
+> +static const struct pinctrl_ops eq5p_pinctrl_ops = {
+> +	.get_groups_count = eq5p_pinctrl_get_groups_count,
+> +	.get_group_name = eq5p_pinctrl_get_group_name,
+> +	.get_group_pins = eq5p_pinctrl_get_group_pins,
+> +	.pin_dbg_show = eq5p_pinctrl_pin_dbg_show,
+> +	.dt_node_to_map = pinconf_generic_dt_node_to_map_pin,
+> +	.dt_free_map = pinctrl_utils_free_map,
+> +};
+> +
+> +static int eq5p_pinmux_get_functions_count(struct pinctrl_dev *pctldev)
+> +{
+> +	struct eq5p_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+> +
+> +	return pctrl->nfuncs;
+> +}
+> +
+> +static const char *eq5p_pinmux_get_function_name(struct pinctrl_dev *pctldev,
+> +						 unsigned int selector)
+> +{
+> +	struct eq5p_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+> +
+> +	return pctrl->funcs[selector].name;
+> +}
+> +
+> +static int eq5p_pinmux_get_function_groups(struct pinctrl_dev *pctldev,
+> +					   unsigned int selector,
+> +					   const char * const **groups,
+> +					   unsigned int *num_groups)
+> +{
+> +	struct eq5p_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+> +
+> +	*groups = pctrl->funcs[selector].groups;
+> +	*num_groups = pctrl->funcs[selector].ngroups;
+> +	return 0;
+> +}
+> +
+> +static int eq5p_pinmux_set_mux(struct pinctrl_dev *pctldev,
+> +			       unsigned int func_selector, unsigned int offset)
+> +{
+> +	const char *group_name = pctldev->desc->pins[offset].name;
+> +	struct eq5p_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+> +	const char *func_name = pctrl->funcs[func_selector].name;
+> +	bool is_gpio = func_selector == GPIO_FUNC_SELECTOR;
+> +	unsigned int reg, mask, val;
+> +
+> +	dev_dbg(pctldev->dev, "%s: func=%s group=%s\n", __func__, func_name,
+> +		group_name);
+> +
+> +	reg = pctrl->regs[EQ5P_IOCR];
+> +	mask = BIT(offset);
+> +	val = is_gpio ? 0 : U32_MAX;
+> +
+> +	regmap_update_bits(pctrl->olb, reg, mask, val);
+> +
+> +	return 0;
+> +}
+> +
+> +static int eq5p_pinmux_gpio_request_enable(struct pinctrl_dev *pctldev,
+> +					   struct pinctrl_gpio_range *range,
+> +					   unsigned int offset)
+> +{
+> +	/* Pin offsets and group selectors are the same thing in our case. */
+> +	return eq5p_pinmux_set_mux(pctldev, GPIO_FUNC_SELECTOR, offset);
+> +}
+> +
+> +static const struct pinmux_ops eq5p_pinmux_ops = {
+> +	.get_functions_count = eq5p_pinmux_get_functions_count,
+> +	.get_function_name = eq5p_pinmux_get_function_name,
+> +	.get_function_groups = eq5p_pinmux_get_function_groups,
+> +	.set_mux = eq5p_pinmux_set_mux,
+> +	.gpio_request_enable = eq5p_pinmux_gpio_request_enable,
+> +	.strict = true,
+> +};
+> +
+> +static int eq5p_pinconf_get(struct pinctrl_dev *pctldev, unsigned int offset,
+> +			    unsigned long *config)
+> +{
+> +	enum pin_config_param param = pinconf_to_config_param(*config);
+> +	struct eq5p_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+> +	unsigned int reg, val_pd, val_pu, val_ds;
+> +	bool pd, pu;
+> +	u32 arg = 0;
+> +
+> +	regmap_read(pctrl->olb, pctrl->regs[EQ5P_PD], &val_pd);
+> +	pd = (val_pd & BIT(offset)) != 0;
+> +	regmap_read(pctrl->olb, pctrl->regs[EQ5P_PU], &val_pu);
+> +	pu = (val_pu & BIT(offset)) != 0;
+> +
+> +	switch (param) {
+> +	case PIN_CONFIG_BIAS_DISABLE:
+> +		arg = !(pd || pu);
+> +		break;
+> +	case PIN_CONFIG_BIAS_PULL_DOWN:
+> +		arg = pd;
+> +		break;
+> +	case PIN_CONFIG_BIAS_PULL_UP:
+> +		arg = pu;
+> +		break;
+> +	case PIN_CONFIG_DRIVE_STRENGTH:
+> +		offset *= 2; /* two bits per pin */
+> +		if (offset >= 32) {
+> +			reg = pctrl->regs[EQ5P_DS_HIGH];
+> +			offset -= 32;
+> +		} else {
+> +			reg = pctrl->regs[EQ5P_DS_LOW];
+> +		}
+> +		regmap_read(pctrl->olb, reg, &val_ds);
+> +		arg = (val_ds >> offset) & 0b11;
+> +		break;
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	*config = pinconf_to_config_packed(param, arg);
+> +	return 0;
+> +}
+> +
+> +static int eq5p_pinconf_set_drive_strength(struct pinctrl_dev *pctldev,
+> +					   unsigned int offset, u32 arg)
+> +{
+> +	struct eq5p_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+> +	unsigned int reg, mask, val;
+> +
+> +	if (arg > 3) {
+> +		dev_err(pctldev->dev, "Unsupported drive strength: %u\n", arg);
+> +		return -EINVAL;
+> +	}
+> +
+> +	offset *= 2; /* two bits per pin */
+> +
+> +	if (offset >= 32) {
+> +		reg = pctrl->regs[EQ5P_DS_HIGH];
+> +		offset -= 32;
+> +	} else {
+> +		reg = pctrl->regs[EQ5P_DS_LOW];
+> +	}
+> +
+> +	mask = 0b11 << offset;
+> +	val = arg << offset;
+> +	regmap_update_bits(pctrl->olb, reg, mask, val);
+> +	return 0;
+> +}
+> +
+> +static int eq5p_pinconf_set(struct pinctrl_dev *pctldev, unsigned int offset,
+> +			    unsigned long *configs, unsigned int num_configs)
+> +{
+> +	struct eq5p_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+> +	const char *pin_name = pctldev->desc->pins[offset].name;
+> +	struct device *dev = pctldev->dev;
+> +	unsigned int i, val, reg_pd, reg_pu;
+> +
+> +	val = BIT(offset);
+> +	reg_pd = pctrl->regs[EQ5P_PD];
+> +	reg_pu = pctrl->regs[EQ5P_PU];
+> +
+> +	for (i = 0; i < num_configs; i++) {
+> +		enum pin_config_param param = pinconf_to_config_param(configs[i]);
+> +		u32 arg = pinconf_to_config_argument(configs[i]);
+> +
+> +		switch (param) {
+> +		case PIN_CONFIG_BIAS_DISABLE:
+> +			dev_dbg(dev, "%s: pin=%s BIAS_DISABLE\n",
+> +				__func__, pin_name);
+> +			regmap_clear_bits(pctrl->olb, reg_pd, val);
+> +			regmap_clear_bits(pctrl->olb, reg_pu, val);
+> +			break;
+> +		case PIN_CONFIG_BIAS_PULL_DOWN:
+> +			dev_dbg(dev, "%s: pin=%s BIAS_PULL_DOWN arg=%u\n",
+> +				__func__, pin_name, arg);
+> +			if (arg == 0) /* cannot connect to GND */
+> +				return -EOPNOTSUPP;
+> +			regmap_set_bits(pctrl->olb, reg_pd, val);
+> +			regmap_clear_bits(pctrl->olb, reg_pu, val);
+> +			break;
+> +		case PIN_CONFIG_BIAS_PULL_UP:
+> +			dev_dbg(dev, "%s: pin=%s BIAS_PULL_UP arg=%u\n",
+> +				__func__, pin_name, arg);
+> +			if (arg == 0) /* cannot connect to VDD */
+> +				return -EOPNOTSUPP;
+> +			regmap_clear_bits(pctrl->olb, reg_pd, val);
+> +			regmap_set_bits(pctrl->olb, reg_pu, val);
+> +			break;
+> +		case PIN_CONFIG_DRIVE_STRENGTH:
+> +			dev_dbg(dev, "%s: pin=%s DRIVE_STRENGTH arg=%u\n",
+> +				__func__, pin_name, arg);
+> +			eq5p_pinconf_set_drive_strength(pctldev, offset, arg);
+> +			break;
+> +		default:
+> +			dev_err(dev, "Unsupported pinconf %u\n", param);
+> +			return -EOPNOTSUPP;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct pinconf_ops eq5p_pinconf_ops = {
+> +	.is_generic = true,
+> +	.pin_config_get = eq5p_pinconf_get,
+> +	.pin_config_set = eq5p_pinconf_set,
+> +	/* Pins and groups are equivalent in this driver. */
+> +	.pin_config_group_get = eq5p_pinconf_get,
+> +	.pin_config_group_set = eq5p_pinconf_set,
+> +};
+> +
+> +/*
+> + * Comments to the right of each pin are the "signal name" in the datasheet.
+> + */
+> +
+> +static const struct pinctrl_pin_desc eq5p_pins_a[] = { /* Bank A */
+> +	PINCTRL_PIN(0,  "PA0"),  /* A0_TIMER0_CK */
+> +	PINCTRL_PIN(1,  "PA1"),  /* A1_TIMER0_EOC */
+> +	PINCTRL_PIN(2,  "PA2"),  /* A2_TIMER1_CK */
+> +	PINCTRL_PIN(3,  "PA3"),  /* A3_TIMER1_EOC */
+> +	PINCTRL_PIN(4,  "PA4"),  /* A4_TIMER2_CK */
+> +	PINCTRL_PIN(5,  "PA5"),  /* A5_TIMER2_EOC */
+> +	PINCTRL_PIN(6,  "PA6"),  /* A6_TIMER5_EXT_INCAP1 */
+> +	PINCTRL_PIN(7,  "PA7"),  /* A7_TIMER5_EXT_INCAP2 */
+> +	PINCTRL_PIN(8,  "PA8"),  /* A8_TIMER5_EXT_OUTCMP1 */
+> +	PINCTRL_PIN(9,  "PA9"),  /* A9_TIMER5_EXT_OUTCMP2 */
+> +	PINCTRL_PIN(10, "PA10"), /* A10_UART_0_TX */
+> +	PINCTRL_PIN(11, "PA11"), /* A11_UART_0_RX */
+> +	PINCTRL_PIN(12, "PA12"), /* A12_UART_1_TX */
+> +	PINCTRL_PIN(13, "PA13"), /* A13_UART_1_RX */
+> +	PINCTRL_PIN(14, "PA14"), /* A14_CAN_0_TX */
+> +	PINCTRL_PIN(15, "PA15"), /* A15_CAN_0_RX */
+> +	PINCTRL_PIN(16, "PA16"), /* A16_CAN_1_TX */
+> +	PINCTRL_PIN(17, "PA17"), /* A17_CAN_1_RX */
+> +	PINCTRL_PIN(18, "PA18"), /* A18_SPI_0_DO */
+> +	PINCTRL_PIN(19, "PA19"), /* A19_SPI_0_DI */
+> +	PINCTRL_PIN(20, "PA20"), /* A20_SPI_0_CK */
+> +	PINCTRL_PIN(21, "PA21"), /* A21_SPI_0_CS0 */
+> +	PINCTRL_PIN(22, "PA22"), /* A22_SPI_0_CS1 */
+> +	PINCTRL_PIN(23, "PA23"), /* A23_SPI_1_DO */
+> +	PINCTRL_PIN(24, "PA24"), /* A24_SPI_1_DI */
+> +	PINCTRL_PIN(25, "PA25"), /* A25_SPI_1_CK */
+> +	PINCTRL_PIN(26, "PA26"), /* A26_SPI_1_CS0 */
+> +	PINCTRL_PIN(27, "PA27"), /* A27_SPI_1_CS1 */
+> +	PINCTRL_PIN(28, "PA28"), /* A28_REF_CLK0 */
+> +};
+> +
+> +static const struct pinctrl_pin_desc eq5p_pins_b[] = { /* Bank B */
+> +	PINCTRL_PIN(0,  "PB0"),  /* B0_TIMER3_CK */
+> +	PINCTRL_PIN(1,  "PB1"),  /* B1_TIMER3_EOC */
+> +	PINCTRL_PIN(2,  "PB2"),  /* B2_TIMER4_CK */
+> +	PINCTRL_PIN(3,  "PB3"),  /* B3_TIMER4_EOC */
+> +	PINCTRL_PIN(4,  "PB4"),  /* B4_TIMER6_EXT_INCAP1 */
+> +	PINCTRL_PIN(5,  "PB5"),  /* B5_TIMER6_EXT_INCAP2 */
+> +	PINCTRL_PIN(6,  "PB6"),  /* B6_TIMER6_EXT_OUTCMP1 */
+> +	PINCTRL_PIN(7,  "PB7"),  /* B7_TIMER6_EXT_OUTCMP2 */
+> +	PINCTRL_PIN(8,  "PB8"),  /* B8_UART_2_TX */
+> +	PINCTRL_PIN(9,  "PB9"),  /* B9_UART_2_RX */
+> +	PINCTRL_PIN(10, "PB10"), /* B10_CAN_2_TX */
+> +	PINCTRL_PIN(11, "PB11"), /* B11_CAN_2_RX */
+> +	PINCTRL_PIN(12, "PB12"), /* B12_SPI_2_DO */
+> +	PINCTRL_PIN(13, "PB13"), /* B13_SPI_2_DI */
+> +	PINCTRL_PIN(14, "PB14"), /* B14_SPI_2_CK */
+> +	PINCTRL_PIN(15, "PB15"), /* B15_SPI_2_CS0 */
+> +	PINCTRL_PIN(16, "PB16"), /* B16_SPI_2_CS1 */
+> +	PINCTRL_PIN(17, "PB17"), /* B17_SPI_3_DO */
+> +	PINCTRL_PIN(18, "PB18"), /* B18_SPI_3_DI */
+> +	PINCTRL_PIN(19, "PB19"), /* B19_SPI_3_CK */
+> +	PINCTRL_PIN(20, "PB20"), /* B20_SPI_3_CS0 */
+> +	PINCTRL_PIN(21, "PB21"), /* B21_SPI_3_CS1 */
+> +	PINCTRL_PIN(22, "PB22"), /* B22_MCLK0 */
+> +};
+> +
+> +/* Groups of functions on bank A */
+> +static const char * const gpioa_groups[] = {
+> +	"PA0", "PA1", "PA2", "PA3", "PA4", "PA5", "PA6", "PA7", "PA8", "PA9",
+> +	"PA10", "PA11", "PA12", "PA13", "PA14", "PA15", "PA16", "PA17", "PA18",
+> +	"PA19", "PA20", "PA21", "PA22", "PA23", "PA24", "PA25", "PA26", "PA27",
+> +	"PA28",
+> +};
+> +static const char * const timer0_groups[] = { "PA0", "PA1" };
+> +static const char * const timer1_groups[] = { "PA2", "PA3" };
+> +static const char * const timer2_groups[] = { "PA4", "PA5" };
+> +static const char * const timer5_groups[] = { "PA6", "PA7", "PA8", "PA9" };
+> +static const char * const uart0_groups[] = { "PA10", "PA11" };
+> +static const char * const uart1_groups[] = { "PA12", "PA13" };
+> +static const char * const can0_groups[] = { "PA14", "PA15" };
+> +static const char * const can1_groups[] = { "PA16", "PA17" };
+> +static const char * const spi0_groups[] = { "PA18", "PA19", "PA20", "PA21", "PA22" };
+> +static const char * const spi1_groups[] = { "PA23", "PA24", "PA25", "PA26", "PA27" };
+> +static const char * const refclk0_groups[] = { "PA28" };
+> +
+> +/* Groups of functions on bank B */
+> +static const char * const gpiob_groups[] = {
+> +	"PB0", "PB1", "PB2", "PB3", "PB4", "PB5", "PB6", "PB7", "PB8", "PB9",
+> +	"PB10", "PB11", "PB12", "PB13", "PB14", "PB15", "PB16", "PB17", "PB18",
+> +	"PB19", "PB20", "PB21", "PB22",
+> +};
+> +static const char * const timer3_groups[] = { "PB0", "PB1" };
+> +static const char * const timer4_groups[] = { "PB2", "PB3" };
+> +static const char * const timer6_groups[] = { "PB4", "PB5", "PB6", "PB7" };
+> +static const char * const uart2_groups[] = { "PB8", "PB9" };
+> +static const char * const can2_groups[] = { "PB10", "PB11" };
+> +static const char * const spi2_groups[] = { "PB12", "PB13", "PB14", "PB15", "PB16" };
+> +static const char * const spi3_groups[] = { "PB17", "PB18", "PB19", "PB20", "PB21" };
+> +static const char * const mclk0_groups[] = { "PB22" };
+> +
+> +#define FUNCTION(a, b) { .name = a, .groups = b, .ngroups = ARRAY_SIZE(b) }
+> +
+> +static const struct eq5p_function eq5p_functions_a[] = {
+> +	/* GPIO having a fixed index is depended upon, see GPIO_FUNC_SELECTOR. */
+> +	FUNCTION("gpio", gpioa_groups),
+> +
+> +	FUNCTION("timer0", timer0_groups),
+> +	FUNCTION("timer1", timer1_groups),
+> +	FUNCTION("timer2", timer2_groups),
+> +	FUNCTION("timer5", timer5_groups),
+> +	FUNCTION("uart0", uart0_groups),
+> +	FUNCTION("uart1", uart1_groups),
+> +	FUNCTION("can0", can0_groups),
+> +	FUNCTION("can1", can1_groups),
+> +	FUNCTION("spi0", spi0_groups),
+> +	FUNCTION("spi1", spi1_groups),
+> +	FUNCTION("refclk0", refclk0_groups),
+> +};
+> +
+> +static const struct eq5p_function eq5p_functions_b[] = {
+> +	/* GPIO having a fixed index is depended upon, see GPIO_FUNC_SELECTOR. */
+> +	FUNCTION("gpio", gpiob_groups),
+> +
+> +	FUNCTION("timer3", timer3_groups),
+> +	FUNCTION("timer4", timer4_groups),
+> +	FUNCTION("timer6", timer6_groups),
+> +	FUNCTION("uart2", uart2_groups),
+> +	FUNCTION("can2", can2_groups),
+> +	FUNCTION("spi2", spi2_groups),
+> +	FUNCTION("spi3", spi3_groups),
+> +	FUNCTION("mclk0", mclk0_groups),
+> +};
+> +
+> +struct eq5p_match {
+> +	unsigned int regs[EQ5P_REG_MAX];
+> +	const struct pinctrl_pin_desc *pins;
+> +	unsigned int npins;
+> +	const struct eq5p_function *funcs;
+> +	unsigned int nfuncs;
+> +};
+> +
+> +static int eq5p_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct device_node *np = dev->of_node;
+> +	struct device_node *parent_np = of_get_parent(np);
+> +	const struct eq5p_match *match = of_device_get_match_data(dev);
+> +	struct pinctrl_dev *pctldev;
+> +	struct eq5p_pinctrl *pctrl;
+> +	int ret;
+> +
+> +	pctrl = devm_kzalloc(dev, sizeof(*pctrl), GFP_KERNEL);
+> +	if (!pctrl)
+> +		return -ENOMEM;
+> +
+> +	pctrl->olb = ERR_PTR(-ENODEV);
+> +	if (parent_np)
+> +		pctrl->olb = syscon_node_to_regmap(parent_np);
+> +	if (IS_ERR(pctrl->olb))
+> +		pctrl->olb = syscon_regmap_lookup_by_phandle(np, "mobileye,olb");
+> +	if (IS_ERR(pctrl->olb))
+> +		return PTR_ERR(pctrl->olb);
+> +
+> +	pctrl->regs = match->regs;
+> +	pctrl->funcs = match->funcs;
+> +	pctrl->nfuncs = match->nfuncs;
+> +
+> +	pctrl->desc.name = dev_name(dev);
+> +	pctrl->desc.pins = match->pins;
+> +	pctrl->desc.npins = match->npins;
+> +	pctrl->desc.pctlops = &eq5p_pinctrl_ops;
+> +	pctrl->desc.pmxops = &eq5p_pinmux_ops;
+> +	pctrl->desc.confops = &eq5p_pinconf_ops;
+> +	pctrl->desc.owner = THIS_MODULE;
+> +
+> +	ret = devm_pinctrl_register_and_init(dev, &pctrl->desc, pctrl, &pctldev);
+> +	if (ret) {
+> +		dev_err(dev, "Failed registering pinctrl device: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = pinctrl_enable(pctldev);
+> +	if (ret) {
+> +		dev_err(dev, "Failed enabling pinctrl device: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	dev_info(dev, "probed\n");
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct eq5p_match eq5p_match_a = {
+> +	.regs = {
+> +		[EQ5P_PD] = 0x0C0,
+> +		[EQ5P_PU] = 0x0C4,
+> +		[EQ5P_DS_LOW] = 0x0D0,
+> +		[EQ5P_DS_HIGH] = 0x0D4,
+> +		[EQ5P_IOCR] = 0x0B0,
+> +	},
+> +	.pins = eq5p_pins_a,
+> +	.npins = ARRAY_SIZE(eq5p_pins_a),
+> +	.funcs = eq5p_functions_a,
+> +	.nfuncs = ARRAY_SIZE(eq5p_functions_a),
+> +};
+> +
+> +static const struct eq5p_match eq5p_match_b = {
+> +	.regs = {
+> +		[EQ5P_PD] = 0x0C8,
+> +		[EQ5P_PU] = 0x0CC,
+> +		[EQ5P_DS_LOW] = 0x0D8,
+> +		[EQ5P_DS_HIGH] = 0x0DC,
+> +		[EQ5P_IOCR] = 0x0B4,
+> +	},
 
-Thanks for letting me know. I think I'd seen these in passing, but hadn't
-remembered until you mentioned it now.
+These are all the same relative offsets, so you really only need to 
+store the base offset.
 
-> I am saying that I am currently working to implement the kthread busy
-> polling implementation,
-> after fixing two bugs in SCTP and UDP (making me wondering if busy
-> polling is really used these days)
+The use of 2 compatibles is a bit questionable as the programming model 
+appears to be the same and only which pins differ. Surely there are 
+some other pinctrl drivers handling mutiple instances.
 
-Ah, I see. FWIW, I have so far only been trying to use it for TCP and so
-far I haven't hit any bugs.
-
-I was planning to use it with UDP in the future, though, once the TCP
-epoll-based busy polling stuff I am working on is done... so thanks in
-advance for the bug fixes in UDP.
-
-> I am also considering unifying napi_threaded_poll() and the
-> napi_busy_loop(), and seeing your patches
-> coming make this work more challenging.
-
-Sorry about that. I am happy to make modifications to my patches if there's
-anything I could do which would make your work easier in the future.
-
-Thanks,
-Joe
+Rob
 
