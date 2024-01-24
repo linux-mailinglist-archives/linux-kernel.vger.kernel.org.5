@@ -1,68 +1,70 @@
-Return-Path: <linux-kernel+bounces-36369-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36370-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 949AE839FBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 04:00:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DD2B839FC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 04:00:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7F121C211AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:00:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F0571C26A31
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:00:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6CA55251;
-	Wed, 24 Jan 2024 03:00:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7107B63A8;
+	Wed, 24 Jan 2024 03:00:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZSot2sfZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DkIFnIGN"
 Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B32B5244
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26A1A524C
 	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 03:00:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706065212; cv=none; b=SWftObUa7ZRiQy16wyaRfLnWFI2bVoSr20K0bKD9fmHQNIU9cWNC0lduq2YgYttqs3y+0V4E1NqVEIeohkDdUz+uw3FoMiJ3sh6pVSHsMdqX85Ok3xDqa0XAIQTGHk3noDIv4XT6RtLVXk9UThufeowzDKaxAVoumkrV7CsSvQ8=
+	t=1706065212; cv=none; b=N2IzPlEsDfkHKlH9ZcRxmIaeHgoljUVCUoc2USWiJukfibkpb6M3pZu1DgU26gEK5zzCGGI7+ExI9iuM6+otgbcbgKiCW2UX/d8dBzb6bSeLkI9aKRCiwHmog4zBjcVVZhChKs/gJnIv7niBaEnGo0vsTEWoSfdrJa3h9JWl1U4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706065212; c=relaxed/simple;
-	bh=0DGzwexjLclMIj2G+51Iqdi2yzqVqG67+wo+Tos3BnQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=gzvq5oAwrmkXbyR9xc9qS5oRIoQm8MMkqlk/cU7UBCAGWei29tALC4xp1kCgCg3Ar2QW/DyfNCI0guYj3iZXOh/gpxIGn+ESmZnMVoUPpb/54lhewSbyrHRH4AjwBcyWIPr8UjDyjxM3sAKSw6/nDAiMr6Npt9mUM9Q9i7A/+10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZSot2sfZ; arc=none smtp.client-ip=209.85.221.53
+	bh=WBAYWOzQrbynmcMq5FlSAIF+vKVyihci8yxoGQ6j4w4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=dsE4DAMry/peMyitQTGKg7cjoTP58KZTgZQZEFD+cdjsMyBCQYfhBibTrtUVWnKrP3CUFs6YWpAljkwTSaX8GIVGEaVpB3qJGFoQToC7jK/in0VrFFmNwvkPceuUOueEpicGccuZar7rjFPwRREmwI9l8WkqHUOH4WoXkZR2edk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DkIFnIGN; arc=none smtp.client-ip=209.85.221.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-337d90030bfso4362984f8f.2
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-337cc8e72f5so4567033f8f.1
         for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 19:00:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706065208; x=1706670008; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=C1360rsVcUfkyEFKvnwoRZUEjTgSXHZgyaxAgVpcjy0=;
-        b=ZSot2sfZpY5GhcEETJzg9zh3WDBofy3CPBnFgLV0lKYea+DsNtja5SRiAOJtL5+FwQ
-         BerBo+TDuh8Svi3vQfLR4D7DeAHeHheyBz9DyJozPEuGku926a8JL1UvZyHyRV103aHC
-         GYU3zh/vhbrxYNx9UWhcitiAIzRqNln1sXqntUN2ioxd0FcUZ7J6nlH3G31NobufcOtl
-         fGWmWOtptlnJFurBaxRU2FeqFE2uP/X/TRJ7XckVBH7lOOW0Fl/8Hq+E4lZPI51g3Nqo
-         WnQtql2qd6197UP0FV3UIQ0Zx5eTOygcxU7fBs61Hj1r++V7qsBgn/GA5s0hE+f5Dlm+
-         KHoQ==
+        d=gmail.com; s=20230601; t=1706065209; x=1706670009; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2lKvsANFUcNVxLXJxZjgiBTj8Zdtr64bBDmNrQ/dGYc=;
+        b=DkIFnIGNQDtfNae+yjEMkg7iZZtj7u2TmhVHPZWJAwHA8SpJZD4FvhhjRnOyvsMG/Y
+         lONFa96d1POwZD9IypxrjK4d3aiMP4m07E1KIfCsmF8iEI2nVAJW0r4TlOK6THfqAldJ
+         zSmz6RGIkz3BKRuHWu35izLVeEleQrSAA5T7eorQ8380FORBqnf/zoi4fVetydQrsSK2
+         s9VclITpziQ7/HpWTJjZVH0515gO0x9vcgDy49S5jZogvOEa2u1EvUNQbERJGbqa4PdQ
+         rbM0Ta5O/zWUAhjU9HlHVexKQbj7N5yasAQUM8Yd6hb15++gaOQ3+G8TIStouI8JeQsa
+         r+SA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706065208; x=1706670008;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=C1360rsVcUfkyEFKvnwoRZUEjTgSXHZgyaxAgVpcjy0=;
-        b=TGW1I6x0PDf5Y48iz2/n1YogdVjnKqutlz2ZGNU+IyZwNY18W8mBE/u3VN/LqaXbvv
-         unvwvB+tEdQEhXKbaYT2w6nFoOhe5gt8dJVBr2T3aVkhxhO7Bk+UaAQyo7dkzDinNJ7i
-         Z9jXs9vCwE7IDfSHfsfjSjvBlWycvFw5aK13UZCafr5podsn2+zyeEjCN77orOuF+7YJ
-         xroakIm6DHnqKyyqXbPNUo/fgYAk2pCFfg+/lLq2XWK6Nzvn2cOg64kdT89auot7zKCn
-         STQI5cvkweyOxU0f4zbKl25X5mAk8QqiRuN1Knhv4EXhr3oAlWpz4FhQvuEpHvPoJRvP
-         8Oxg==
-X-Gm-Message-State: AOJu0Yytxjo3kziOVhEyRTQaJVRx0k+8uJRfdlH69Vv7wkHMmdjOokE4
-	k2sJNzLu2aiBf7Ib+yRW+zNgCkGD+ZgD/EUWVUA7znZLkLYqNKVP
-X-Google-Smtp-Source: AGHT+IFNvK8jVLAW43M53dxq/xZnF+II50JMUfdmJD7TTTDRnFU0EbdDhlFtmzEGVNhr51i6+nNWzg==
-X-Received: by 2002:a7b:c350:0:b0:40e:88b1:95be with SMTP id l16-20020a7bc350000000b0040e88b195bemr603402wmj.304.1706065208438;
-        Tue, 23 Jan 2024 19:00:08 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706065209; x=1706670009;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2lKvsANFUcNVxLXJxZjgiBTj8Zdtr64bBDmNrQ/dGYc=;
+        b=o9QTAeZOtHwSjLjbbbCBn0cn0x7T3XMB8XWsmqCI2rkt/8z+cViUyzbZUxsaoXDlbm
+         QIM0sRDL4doNVyFTPoB/MjRhhl23YkX2TW29/+jEfE0BibxbDq+vNZvXofKBnkmcND2Z
+         By+rWX5uuZCX2WMwkFMgsWigE13OVngWym7gLp2IjRsU5ABOwQ0SjvPK6cQZQvpcMLm2
+         N/9e3bD2zvztOJxJCBh0dhsrH0dmFKldQOL6VCXrLQ269scB7WoVE0JUQkE9uCl68Xde
+         khZ22E4ydH1u2UoEQ0i7Dkhk1fOHFVTzC+50ndaKYmIyrCbPkIikLzzCTcL9QSM+Q9wm
+         MEYw==
+X-Gm-Message-State: AOJu0YxM0MvuxBk/G0tua7hJtTaCAkmyroKR4RiDINm1dcLZwNK5rrZt
+	N5XIA9Oc6dq4wlJSTFqBB72VL9tOhlD6TDw1crjx7NUAMgk58wyg
+X-Google-Smtp-Source: AGHT+IFZ8JyJ3TC2xfMqcNV5Q5aHuhj3gsNkRM4/2otX+tMjwjVWKRVsJK9h8YN3NMi+Ch1oqtildg==
+X-Received: by 2002:a05:600c:5399:b0:40e:9675:8416 with SMTP id hg25-20020a05600c539900b0040e96758416mr721099wmb.169.1706065209410;
+        Tue, 23 Jan 2024 19:00:09 -0800 (PST)
 Received: from mosaic.enunes.eu (ip-78-45-66-209.bb.vodafone.cz. [78.45.66.209])
-        by smtp.gmail.com with ESMTPSA id dj17-20020a05640231b100b00559bb146ecbsm9637914edb.6.2024.01.23.19.00.07
+        by smtp.gmail.com with ESMTPSA id dj17-20020a05640231b100b00559bb146ecbsm9637914edb.6.2024.01.23.19.00.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 19:00:07 -0800 (PST)
+        Tue, 23 Jan 2024 19:00:08 -0800 (PST)
 From: Erico Nunes <nunes.erico@gmail.com>
 To: Qiang Yu <yuq825@gmail.com>,
 	anarsoul@gmail.com,
@@ -77,66 +79,57 @@ Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
 	Sumit Semwal <sumit.semwal@linaro.org>,
 	linux-kernel@vger.kernel.org,
 	Erico Nunes <nunes.erico@gmail.com>
-Subject: [PATCH v2 0/8] drm/lima: fixes and improvements to error recovery
-Date: Wed, 24 Jan 2024 03:59:39 +0100
-Message-ID: <20240124025947.2110659-1-nunes.erico@gmail.com>
+Subject: [PATCH v2 1/8] drm/lima: reset async_reset on pp hard reset
+Date: Wed, 24 Jan 2024 03:59:40 +0100
+Message-ID: <20240124025947.2110659-2-nunes.erico@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240124025947.2110659-1-nunes.erico@gmail.com>
+References: <20240124025947.2110659-1-nunes.erico@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-v1 reference:
-https://patchwork.kernel.org/project/dri-devel/cover/20240117031212.1104034-1-nunes.erico@gmail.com/
+Lima pp jobs use an async reset to avoid having to wait for the soft
+reset right after a job. The soft reset is done at the end of a job and
+a reset_complete flag is expected to be set at the next job.
+However, in case the user runs into a job timeout from any application,
+a hard reset is issued to the hardware. This hard reset clears the
+reset_complete flag, which causes an error message to show up before the
+next job.
+This is probably harmless for the execution but can be very confusing to
+debug, as it blames a reset timeout on the next application to submit a
+job.
+Reset the async_reset flag when doing the hard reset so that we don't
+get that message.
 
-Changes v1 -> v2:
-- Dropped patch 1 which aimed to fix
-https://gitlab.freedesktop.org/mesa/mesa/-/issues/8415 .
-That will require more testing and an actual fix to the irq/timeout
-handler race. It can be solved separately so I am deferring it to a
-followup patch and keeping that issue open.
+Signed-off-by: Erico Nunes <nunes.erico@gmail.com>
+Reviewed-by: Vasily Khoruzhick <anarsoul@gmail.com>
+---
+ drivers/gpu/drm/lima/lima_pp.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-- Added patches 2 and 4 to cover "reset time out" and bus stop bit to
-hard reset in gp as well.
-
-- Added handling of all processors in synchronize_irq in patch 5 to
-cover multiple pp. Dropped unnecessary duplicate fence in patch 5.
-
-- Added patch 7 in v2. After some discussion in patch 4 (v1), it seems
-to be reasonable to bump our timeout value so that we further decrease
-the chance of users actually hitting any of these timeouts by default.
-
-- Reworked patch 8 in v2. Since I broadened the work to not only focus
-in pp anymore, I also included the change to the other blocks as well.
-
-- Collected some reviews and acks in unmodified patches.
-
-
-Erico Nunes (8):
-  drm/lima: reset async_reset on pp hard reset
-  drm/lima: reset async_reset on gp hard reset
-  drm/lima: set pp bus_stop bit before hard reset
-  drm/lima: set gp bus_stop bit before hard reset
-  drm/lima: handle spurious timeouts due to high irq latency
-  drm/lima: remove guilty drm_sched context handling
-  drm/lima: increase default job timeout to 10s
-  drm/lima: standardize debug messages by ip name
-
- drivers/gpu/drm/lima/lima_ctx.c      |  2 +-
- drivers/gpu/drm/lima/lima_ctx.h      |  1 -
- drivers/gpu/drm/lima/lima_gp.c       | 39 +++++++++++++++++++++-------
- drivers/gpu/drm/lima/lima_l2_cache.c |  6 +++--
- drivers/gpu/drm/lima/lima_mmu.c      | 18 ++++++-------
- drivers/gpu/drm/lima/lima_pmu.c      |  3 ++-
- drivers/gpu/drm/lima/lima_pp.c       | 37 ++++++++++++++++++++------
- drivers/gpu/drm/lima/lima_sched.c    | 38 ++++++++++++++++++++++-----
- drivers/gpu/drm/lima/lima_sched.h    |  3 +--
- 9 files changed, 107 insertions(+), 40 deletions(-)
-
+diff --git a/drivers/gpu/drm/lima/lima_pp.c b/drivers/gpu/drm/lima/lima_pp.c
+index a5c95bed08c0..a8f8f63b8295 100644
+--- a/drivers/gpu/drm/lima/lima_pp.c
++++ b/drivers/gpu/drm/lima/lima_pp.c
+@@ -191,6 +191,13 @@ static int lima_pp_hard_reset(struct lima_ip *ip)
+ 	pp_write(LIMA_PP_PERF_CNT_0_LIMIT, 0);
+ 	pp_write(LIMA_PP_INT_CLEAR, LIMA_PP_IRQ_MASK_ALL);
+ 	pp_write(LIMA_PP_INT_MASK, LIMA_PP_IRQ_MASK_USED);
++
++	/*
++	 * if there was an async soft reset queued,
++	 * don't wait for it in the next job
++	 */
++	ip->data.async_reset = false;
++
+ 	return 0;
+ }
+ 
 -- 
 2.43.0
 
