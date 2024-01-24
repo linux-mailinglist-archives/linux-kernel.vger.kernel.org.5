@@ -1,109 +1,125 @@
-Return-Path: <linux-kernel+bounces-37796-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37797-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25B5183B588
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 00:20:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7375183B58E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 00:23:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3861285043
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:20:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A71351C22657
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:23:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6E5713667A;
-	Wed, 24 Jan 2024 23:20:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E632136666;
+	Wed, 24 Jan 2024 23:23:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rJtdk+MB"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="dpNIy7eC"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0363D136656;
-	Wed, 24 Jan 2024 23:20:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED1A412BE97;
+	Wed, 24 Jan 2024 23:23:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706138428; cv=none; b=WkXev9tR7QYJb+PpUVpqPVgAgQOuAyr0Jk8qqhDcYkoVG+GGslyCppkFsKiVY0gLzfvMVcz2XsOec9gY4wCmf/CojU7sCF4e185KUWrW2RcrsG02YKN24XfSwa6B/eGIf/Ugas9ChzpF7Q8YmndYWGaR5bjUdcny7uQ4WSCkGnA=
+	t=1706138626; cv=none; b=LnjtBtKehgbUm/voSUTX6aFUDkC/tDbeQVL6IhEx9219bXzer0vjYSsJbMrxexOKkesnA30uhDLD68redGA4BDrn9atZYi0TrsAQjCVXN32QzkssiFR9yjpI28NKiytUClHQnoEMb/UO0937kx6CHNv5gIp7inmc0V5CSv+z4eE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706138428; c=relaxed/simple;
-	bh=7GTQG8sFoJ4iYeZM7dgnESy6/9cSufsoQj9M/N6s+Wc=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=LgXflqpJ4/gCbSjEOVpui9XeX4AibchfSMDTEoc1H+F9xLb86d6kTxhjc7pJfnu4PSBXwCqyjVwCtymJKb0gH14InrH0cJ0ZvRIq0B5DXKfmfxNtK7VIJmyTTwIMRrQCh/yqHQ8dzWbE5B5M6XRkad7z3PJi3OWBzOlsE7iEcyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rJtdk+MB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8F4C2C433F1;
-	Wed, 24 Jan 2024 23:20:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706138427;
-	bh=7GTQG8sFoJ4iYeZM7dgnESy6/9cSufsoQj9M/N6s+Wc=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=rJtdk+MBGaaN+9nrJ1RHyMSKdGvhusnXbLDYy5cRETFREbKQ8GOPaBI+0/gtcPkqK
-	 VIFoFo79l6uMpgGK2OmdXczTLqmuM4N+AlROxft5/Mo756IX7/XcViiINy+G/1mXhj
-	 bUiMpiRF4Gs+OZ03+tn+WOuwq8+RdRV+DRdM/8hzEQMt5Voy2Q0qvwqKZ2Rt5brPzh
-	 Gt9EYpUBR8weTsckxKlySa5H5uSf16/yPE5X33zfe8bFiN4ohCpolMzJjKI/8uaLrD
-	 kD37m3XWzlKCBTeJfggWyTCbmxQJkf0o4o5FTh7OzyHxy3Ht4EWjeSq4vBjCDLRd1O
-	 dvwRtYV92IXZg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 771F2D8C966;
-	Wed, 24 Jan 2024 23:20:27 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1706138626; c=relaxed/simple;
+	bh=u5B2VE4u4ABSVPxnKB6KqdGSyAr4IT2Dlx50a65DClA=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=hZixw500D7PTkwvKofFAwQ0pUSkTlCC9GyASWtPsEXrU/d/oZ8wk3Zfh8UXKG8Hlwvtl/cbkl5Ye9aWHgNLi9OLyV2KuMgklk/+SiYMp1WMkIxgtt3audGvKGeaf69arkKTqFqb2PtOKq8T76b7arRkfUNlUoui7PQAlwVpIf8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=dpNIy7eC; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1706138615;
+	bh=x8eIRKNYdF+5HBm++fuUSbMGNNhIF6Q2DRYnZpGEVAk=;
+	h=Date:From:To:Cc:Subject:From;
+	b=dpNIy7eCTafiUBmvgX+bf3OoVPHvJP+1FWOW03qsUXGaLdb27YMzvEdNGc8gz53X4
+	 s+U3spltwCy4p98YCqhAs70QUmOD8/C62r318ISmDGx+4lsBZECCpp56iFFxgkVz7j
+	 sXOQ6AzEW4C2o7NWlagb16GXh614g0uR+g5SABH0OPPrzVkRQPWwYA35a4QU6D10Zj
+	 i/glY/Xq7Yxy0eFNZmqcWHWNP/H2kYgjx0EcQzaFmdpvIxTjBoGL9M08x8YKsIASVm
+	 ZLXqeIXf/89CONAE18Y553Wse4X9cLgkWH1kJSgis6K0xkPnk3WOTTWKnGE50Le5P0
+	 weHyuwuBUklJA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TL0Py6Z9Nz4wcJ;
+	Thu, 25 Jan 2024 10:23:34 +1100 (AEDT)
+Date: Thu, 25 Jan 2024 10:23:33 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Baoquan He <bhe@redhat.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the mm tree
+Message-ID: <20240125102333.6701aa08@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v2 00/10] Fix MODULE_DESCRIPTION() for net (p2)
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170613842748.28029.10890542758483405613.git-patchwork-notify@kernel.org>
-Date: Wed, 24 Jan 2024 23:20:27 +0000
-References: <20240123190332.677489-1-leitao@debian.org>
-In-Reply-To: <20240123190332.677489-1-leitao@debian.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
- edumazet@google.com, dsahern@kernel.org, weiwan@google.com,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; boundary="Sig_/Prsahim64JxKlDIN+=xOm.9";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Hello:
+--Sig_/Prsahim64JxKlDIN+=xOm.9
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This series was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+Hi all,
 
-On Tue, 23 Jan 2024 11:03:21 -0800 you wrote:
-> There are hundreds of network modules that misses MODULE_DESCRIPTION(),
-> causing a warnning when compiling with W=1. Example:
-> 
->         WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/arcnet/com90io.o
->         WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/arcnet/arc-rimi.o
->         WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/arcnet/com20020.o
-> 
-> [...]
+After merging the mm tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
 
-Here is the summary with links:
-  - [net,v2,01/10] net: fill in MODULE_DESCRIPTION()s for 8390
-    https://git.kernel.org/netdev/net/c/f5e414167be7
-  - [net,v2,02/10] net: fill in MODULE_DESCRIPTION()s for Broadcom bgmac
-    https://git.kernel.org/netdev/net/c/39535d7ff6c1
-  - [net,v2,03/10] net: fill in MODULE_DESCRIPTION()s for liquidio
-    https://git.kernel.org/netdev/net/c/bb567fbbbbb4
-  - [net,v2,04/10] net: fill in MODULE_DESCRIPTION()s for ep93xxx_eth
-    https://git.kernel.org/netdev/net/c/53c83e2d3648
-  - [net,v2,05/10] net: fill in MODULE_DESCRIPTION()s for nps_enet
-    https://git.kernel.org/netdev/net/c/27881ca8c8e1
-  - [net,v2,06/10] net: fill in MODULE_DESCRIPTION()s for enetc
-    https://git.kernel.org/netdev/net/c/07c42d237567
-  - [net,v2,07/10] net: fill in MODULE_DESCRIPTION()s for fec
-    https://git.kernel.org/netdev/net/c/2e8757648855
-  - [net,v2,08/10] net: fill in MODULE_DESCRIPTION()s for fsl_pq_mdio
-    https://git.kernel.org/netdev/net/c/8183c470c176
-  - [net,v2,09/10] net: fill in MODULE_DESCRIPTION()s for litex
-    https://git.kernel.org/netdev/net/c/07d1e0ce8743
-  - [net,v2,10/10] net: fill in MODULE_DESCRIPTION()s for rvu_mbox
-    https://git.kernel.org/netdev/net/c/bdc6734115d7
+make[4]: *** No rule to make target 'kernel/elfcorehdr.o', needed by 'kerne=
+l/built-in.a'.  Stop.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Presumably caused by commit
 
+  1777bfb42f56 ("crash: remove dependency of FA_DUMP on CRASH_DUMP")
 
+from the mm-unstable branch of the mm tree.  It looks like the expected
+file rename did not happen.
+
+I have applied the following (git) patch for today.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Thu, 25 Jan 2024 09:58:54 +1100
+Subject: [PATCH] fix up for "crash: remove dependency of FA_DUMP on
+ CRASH_DUMP"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ kernel/{crash_dump.c =3D> elfcorehdr.c} | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ rename kernel/{crash_dump.c =3D> elfcorehdr.c} (100%)
+
+diff --git a/kernel/crash_dump.c b/kernel/elfcorehdr.c
+similarity index 100%
+rename from kernel/crash_dump.c
+rename to kernel/elfcorehdr.c
+--=20
+2.43.0
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Prsahim64JxKlDIN+=xOm.9
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWxm/UACgkQAVBC80lX
+0GygPQf+J9cWCByRYqKmzZKMU033t515y4zmjieSlRos88nnawAYsTEGgcbdU841
+4oXJgAiRguRNAIocyLU67LBmnpQAFW6xKLzUU2xtpdgN5e9k8A08FJtMqsWcnvdN
+6IlFCic7GcW22FY+NYQ5sK2V44zmOPQmhBsqa8G+i8hEJT0RmD93THQ1Y6f5drQ1
+8pvei8ajGofj0xtErRGrLK5macxivy7T5j3P5h8mJ9NRvaken3ATn1QPupsp8In8
+Uc2bDN8NfDeUllIOeUOzaxiynnjYcmrkJpbiXGlSb5TRvC0aXVrOmbL/2YT9ui2g
+47bki6QeDvtODJY/B9ZaoKWwu1c5Hg==
+=LhPh
+-----END PGP SIGNATURE-----
+
+--Sig_/Prsahim64JxKlDIN+=xOm.9--
 
