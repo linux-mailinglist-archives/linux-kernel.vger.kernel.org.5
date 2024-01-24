@@ -1,279 +1,169 @@
-Return-Path: <linux-kernel+bounces-36264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76F10839E1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 02:17:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB940839E22
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 02:19:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DCA4AB28B7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:17:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8544328D50E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:19:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 256361842;
-	Wed, 24 Jan 2024 01:17:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 225E0137C;
+	Wed, 24 Jan 2024 01:19:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ihbeHqJ3"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=cs.cmu.edu header.i=@cs.cmu.edu header.b="ZJraEpcl"
+Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDE441FAE;
-	Wed, 24 Jan 2024 01:17:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 208B6EC5
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 01:18:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706059044; cv=none; b=UsYHM0lgbxjL4iyzfLtvy2UI+aPXua5/GsF99kDml46c5R4rHwVOfymnK6r7ugyqZMhDCc82uohlvcB1fGCX1EWfjL/fa4z0wAkF5kkLTVFBVsUPzgTyIMFN4S3OBzrJlziLyR5zhq1SVmYC9oIZYMs+//eEYRln4OCJYtVIRuM=
+	t=1706059139; cv=none; b=Hp3pbg3Izu2qivILu7QM4O1+xUA0DQEgfL7JlluET5nWsgOOGwHVPV92mhWEllTQCPjyhPLG8n3Pcdx5uCC+25MGcAsArSzizPLbAZ7/4TmdAvzNsOEbk4+Oc8/dh1mpK8oWfyYtLF8Yeqf4okY9jGvSRxzOBuMj34UO73TH0+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706059044; c=relaxed/simple;
-	bh=yf/C8zWO8pYJeNeDwU13LG1tKl8LbfCbMbVHrALRRMo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=I8Opux5h/blIBImybQT9t8CQStgJo9S0+VICQ7ZjXT9GOtsojvi9tVvu4ix76kKOkGTeZIk9LQv88hYV+fWdVpCniX54+fLNrwPIYjOGmQVLs9S15qWcY9+wOGQpJqYS7RqZeaKEtwcz3cRO/ck4+sps+sJWrNiLIBPOogGs2as=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ihbeHqJ3; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706059043; x=1737595043;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=yf/C8zWO8pYJeNeDwU13LG1tKl8LbfCbMbVHrALRRMo=;
-  b=ihbeHqJ3rAO9Blw8VFkEfrk99dD+/qQwhxt5LvCF3NPJoGs391+AeTTF
-   asYHCAuOtmlKUrzyhxZDQ31UhijZDSxvMcZSsYnQsVYDxT0VNiF8f7zfI
-   FTYhkBw9fOowJzDukSlboWDlMejr8OcwN5dxQRWgmVJBFQhVYabjyCXGD
-   of35OrshJPtM8jzAvAMCjWC2cqo0UgkT9VacpYbROlyfRKsltiQ+JuDZ9
-   V/H/rulTraa1r6yz2QuFw8WsFF3L8ZSNq0slULpJVxnY7hI/0fy++/7vR
-   Cq4IEuB8OYiT+23S/qpPPypIGccdQasKJATfzD2BthEZ5ESR+z3p5L35Y
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="20263051"
-X-IronPort-AV: E=Sophos;i="6.05,215,1701158400"; 
-   d="scan'208";a="20263051"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 17:17:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="1117463617"
-X-IronPort-AV: E=Sophos;i="6.05,215,1701158400"; 
-   d="scan'208";a="1117463617"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.49]) ([10.238.10.49])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 17:17:17 -0800
-Message-ID: <7cc28677-f7d1-4aba-8557-66c685115074@linux.intel.com>
-Date: Wed, 24 Jan 2024 09:17:15 +0800
+	s=arc-20240116; t=1706059139; c=relaxed/simple;
+	bh=t/X1nR/dlSd60tJeBcYC4x/1XABmgwxC0l6zCDXYUv0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WPKgcZ6xYmTzwvvwuOeT9VB4YYgASNE+S5DJysK1O5Z/Gk4HLHqc7TJSICe0zBZbccp8CoYRn3zOl7laDHPRMCL2Q/pylNcGF0wTQ0JB0X4EnmOiHmvQzOo2+9Evf7SSFkj27EzrfHWjq6h0nES7E8Vz2px6MFvC+2M8cSRCOTM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cs.cmu.edu; spf=pass smtp.mailfrom=andrew.cmu.edu; dkim=pass (2048-bit key) header.d=cs.cmu.edu header.i=@cs.cmu.edu header.b=ZJraEpcl; arc=none smtp.client-ip=209.85.219.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cs.cmu.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=andrew.cmu.edu
+Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-68196a09e2eso29806346d6.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 17:18:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cs.cmu.edu; s=google-2021; t=1706059133; x=1706663933; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jzOCm5wYtnoBm7flYhqkMXyh0L013AvfZt8QYlUBMZc=;
+        b=ZJraEpcli65wTDLCGC1/IIV/etji4CvJWjGWb0oURfX0ZP9Q+Bb+l0PSwi47XeuRKI
+         wYWhES8l8+GerEqiqNfYsOJrzbqPy/WyzIwiTrK8jG0jAQ4e+NOZGNXK4X6XO0vflvkJ
+         O4Msrw/2StO7bgoZoeA24DMCZI1iyqvJpL4nEWCwOAQC7Mt/C19XbnOyXbsHeWYK+Yxp
+         cegqUowO3lG5FeN8JuPboON0bye5DUNJngSORYyDxAxZdfg93+RztqpDAT0yJ968M+vI
+         DPNxV2jBjQg+OZoNQ904HmPXsFtEopmMyPKlaewg+615+TBbwOIxbf5LIrggrXg14EZ5
+         DDdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706059133; x=1706663933;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jzOCm5wYtnoBm7flYhqkMXyh0L013AvfZt8QYlUBMZc=;
+        b=fd/NmX9JM78pt1fFrjrcFMnrWvt7Kh+7QMx4MgkJoYa+zXTziMBjIsc2tBd2ZKKbaZ
+         f5+wgLBnpn8V34ms2+Ch4PS+mQ0neyI2dp5mD9jHrCS4WEDtfjRFWkqcu53wAS0ko2Ui
+         ayfvHSgzMMKcH+Eu/TuCuXxrUIZe6szQD6aCfiPcLJfwqEzl5hi/ShsH7irE/rvN94Gx
+         A6OefQbZfeJpT5YiVaBjUVSZVlWIJ/yrhFpt2TLzs8gBGYo1rf4SIRxH7xDWMbTVFEJO
+         XAD3OrrlqgNdChalts9+La7Y2xKaPjSE2Ks2sLq+xqSAIHowwG2AZ9I3VrDyb16QexKU
+         XX5Q==
+X-Gm-Message-State: AOJu0YxPwCaA1x9DuxTYlecFXO3MoqrGNRG8FW8PM3TTGPcGSW3SeP6G
+	8ZIn4Nl2UqEPtTLPkynVDeClq3MYSym6NFIqqIrQoYyK1kNlRQ9QpNZOpYpsiLHi+/hOJouGn7s
+	=
+X-Google-Smtp-Source: AGHT+IGReTPF9uro0MMPnXtuBwx9j2YPj4LtLfgv/x5LMGd9mJj2i35gtn4P0JCrtdAZdMJIepVXzg==
+X-Received: by 2002:a05:6214:5186:b0:685:56e3:cb90 with SMTP id kl6-20020a056214518600b0068556e3cb90mr2358485qvb.26.1706059133009;
+        Tue, 23 Jan 2024 17:18:53 -0800 (PST)
+Received: from cs.cmu.edu (hurricane.elijah.cs.cmu.edu. [128.2.209.191])
+        by smtp.gmail.com with ESMTPSA id ma8-20020a0562145b0800b00686a0102df9sm1191328qvb.128.2024.01.23.17.18.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jan 2024 17:18:52 -0800 (PST)
+Date: Tue, 23 Jan 2024 20:18:50 -0500
+From: Jan Harkes <jaharkes@cs.cmu.edu>
+To: Yang Li <yang.lee@linux.alibaba.com>
+Cc: linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] fs: coda: Remove unused variable 'outp' in
+ venus_rmdir
+Message-ID: <20240124011850.h46azfxgrzvyttzv@cs.cmu.edu>
+References: <20240124010322.94782-1-yang.lee@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v18 023/121] KVM: TDX: Make KVM_CAP_MAX_VCPUS backend
- specific
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
-References: <cover.1705965634.git.isaku.yamahata@intel.com>
- <ed33ebe29b231e8e657cd610a983fa603b10f530.1705965634.git.isaku.yamahata@intel.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <ed33ebe29b231e8e657cd610a983fa603b10f530.1705965634.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240124010322.94782-1-yang.lee@linux.alibaba.com>
+
+Thank you, but you sent the same patch in April 2021 and it resulted in
+compile errors in the expansion of UPARG.
+
+I assume this one will result in the same errors.
+
+Jan
 
 
+    [auto build test ERROR on linus/master]
+    [also build test ERROR on v5.12-rc5 next-20210401]
+    [If your patch is applied to the wrong git tree, kindly drop us a note.
+    And when submitting patch, we suggest to use '--base' as documented in
+    https://git-scm.com/docs/git-format-patch]
 
-On 1/23/2024 7:52 AM, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
->
-> TDX has its own limitation on the maximum number of vcpus that the guest
-> can accommodate.  Allow x86 kvm backend to implement its own KVM_ENABLE_CAP
-> handler and implement TDX backend for KVM_CAP_MAX_VCPUS.  user space VMM,
-> e.g. qemu, can specify its value instead of KVM_MAX_VCPUS.
-For legacy VM, KVM just provides the interface to query the max_vcpus.
-Why TD needs to provide a interface for userspace to set the limitation?
-What's the scenario?
+    url:
+    https://github.com/0day-ci/linux/commits/Yang-Li/coda-Remove-various-instances-of-an-unused-variable-outp/20210402-173111
+    base:
+    https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+    1678e493d530e7977cce34e59a86bb86f3c5631e
+    config: arc-randconfig-r014-20210402 (attached as .config)
+    compiler: arceb-elf-gcc (GCC) 9.3.0
+    reproduce (this is a W=1 build):
+            wget
+    https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross
+    -O ~/bin/make.cross
+            chmod +x ~/bin/make.cross
+            # https://github.com/0day-ci/linux/commit/b6484bc8a589df437829010ab82b49c48d56ee46
+            git remote add linux-review https://github.com/0day-ci/linux
+            git fetch --no-tags linux-review
+    Yang-Li/coda-Remove-various-instances-of-an-unused-variable-outp/20210402-173111
+            git checkout b6484bc8a589df437829010ab82b49c48d56ee46
+            # save the attached .config to linux build tree
+            COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross
+    ARCH=arc
+
+    If you fix the issue, kindly add following tag as appropriate
+    Reported-by: kernel test robot <lkp@intel.com>
+
+    All errors (new ones prefixed by >>):
+
+       fs/coda/upcall.c: In function 'venus_setattr':
+    >> fs/coda/upcall.c:65:9: error: 'outp' undeclared (first use in this
+    >> function); did you mean 'outl'?
+          65 |         outp = (union outputArgs *)(inp); \
+             |         ^~~~
+       fs/coda/upcall.c:118:2: note: in expansion of macro 'UPARG'
+         118 |  UPARG(CODA_SETATTR);
+             |  ^~~~~
+       fs/coda/upcall.c:65:9: note: each undeclared identifier is reported
+    only once for each function it appears in
+          65 |         outp = (union outputArgs *)(inp); \
+             |         ^~~~
 
 
->
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+On Wed, Jan 24, 2024 at 09:03:22AM +0800, Yang Li wrote:
+> The variable 'outp' is declared but not used in the venus_rmdir
+> function within the Coda filesystem module. This causes a compiler
+> warning about the variable being set but not used.
+> 
+> To clean up the code and address the compiler warning, this patch
+> removes the declaration of the unused 'outp' variable.
+> 
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 > ---
-> v18:
-> - use TDX instead of "x86, tdx" in subject
-> - use min(max_vcpu, TDX_MAX_VCPU) instead of
->    min3(max_vcpu, KVM_MAX_VCPU, TDX_MAX_VCPU)
-> - make "if (KVM_MAX_VCPU) and if (TDX_MAX_VCPU)" into one if statement
-> ---
->   arch/x86/include/asm/kvm-x86-ops.h |  2 ++
->   arch/x86/include/asm/kvm_host.h    |  2 ++
->   arch/x86/kvm/vmx/main.c            | 22 ++++++++++++++++++++++
->   arch/x86/kvm/vmx/tdx.c             | 29 +++++++++++++++++++++++++++++
->   arch/x86/kvm/vmx/x86_ops.h         |  5 +++++
->   arch/x86/kvm/x86.c                 |  4 ++++
->   6 files changed, 64 insertions(+)
->
-> diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
-> index 943b21b8b106..2f976c0f3116 100644
-> --- a/arch/x86/include/asm/kvm-x86-ops.h
-> +++ b/arch/x86/include/asm/kvm-x86-ops.h
-> @@ -21,6 +21,8 @@ KVM_X86_OP(hardware_unsetup)
->   KVM_X86_OP(has_emulated_msr)
->   KVM_X86_OP(vcpu_after_set_cpuid)
->   KVM_X86_OP(is_vm_type_supported)
-> +KVM_X86_OP_OPTIONAL(max_vcpus);
-> +KVM_X86_OP_OPTIONAL(vm_enable_cap)
->   KVM_X86_OP(vm_init)
->   KVM_X86_OP_OPTIONAL(vm_destroy)
->   KVM_X86_OP_OPTIONAL_RET0(vcpu_precreate)
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 26f4668b0273..db44a92e5659 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1602,7 +1602,9 @@ struct kvm_x86_ops {
->   	void (*vcpu_after_set_cpuid)(struct kvm_vcpu *vcpu);
->   
->   	bool (*is_vm_type_supported)(unsigned long vm_type);
-> +	int (*max_vcpus)(struct kvm *kvm);
->   	unsigned int vm_size;
-> +	int (*vm_enable_cap)(struct kvm *kvm, struct kvm_enable_cap *cap);
->   	int (*vm_init)(struct kvm *kvm);
->   	void (*vm_destroy)(struct kvm *kvm);
->   
-> diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
-> index 50da807d7aea..4611f305a450 100644
-> --- a/arch/x86/kvm/vmx/main.c
-> +++ b/arch/x86/kvm/vmx/main.c
-> @@ -6,6 +6,7 @@
->   #include "nested.h"
->   #include "pmu.h"
->   #include "tdx.h"
-> +#include "tdx_arch.h"
->   
->   static bool enable_tdx __ro_after_init;
->   module_param_named(tdx, enable_tdx, bool, 0444);
-> @@ -16,6 +17,17 @@ static bool vt_is_vm_type_supported(unsigned long type)
->   		(enable_tdx && tdx_is_vm_type_supported(type));
->   }
->   
-> +static int vt_max_vcpus(struct kvm *kvm)
-> +{
-> +	if (!kvm)
-> +		return KVM_MAX_VCPUS;
-> +
-> +	if (is_td(kvm))
-> +		return min(kvm->max_vcpus, TDX_MAX_VCPUS);
-> +
-> +	return kvm->max_vcpus;
-> +}
-> +
->   static int vt_hardware_enable(void)
->   {
->   	int ret;
-> @@ -54,6 +66,14 @@ static void vt_hardware_unsetup(void)
->   	vmx_hardware_unsetup();
->   }
->   
-> +static int vt_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
-> +{
-> +	if (is_td(kvm))
-> +		return tdx_vm_enable_cap(kvm, cap);
-> +
-> +	return -EINVAL;
-> +}
-> +
->   static int vt_vm_init(struct kvm *kvm)
->   {
->   	if (is_td(kvm))
-> @@ -91,7 +111,9 @@ struct kvm_x86_ops vt_x86_ops __initdata = {
->   	.has_emulated_msr = vmx_has_emulated_msr,
->   
->   	.is_vm_type_supported = vt_is_vm_type_supported,
-> +	.max_vcpus = vt_max_vcpus,
->   	.vm_size = sizeof(struct kvm_vmx),
-> +	.vm_enable_cap = vt_vm_enable_cap,
->   	.vm_init = vt_vm_init,
->   	.vm_destroy = vmx_vm_destroy,
->   
-> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> index 8c463407f8a8..876ad7895b88 100644
-> --- a/arch/x86/kvm/vmx/tdx.c
-> +++ b/arch/x86/kvm/vmx/tdx.c
-> @@ -100,6 +100,35 @@ struct tdx_info {
->   /* Info about the TDX module. */
->   static struct tdx_info *tdx_info;
->   
-> +int tdx_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
-> +{
-> +	int r;
-> +
-> +	switch (cap->cap) {
-> +	case KVM_CAP_MAX_VCPUS: {
-> +		if (cap->flags || cap->args[0] == 0)
-> +			return -EINVAL;
-> +		if (cap->args[0] > KVM_MAX_VCPUS ||
-> +		    cap->args[0] > TDX_MAX_VCPUS)
-> +			return -E2BIG;
-> +
-> +		mutex_lock(&kvm->lock);
-> +		if (kvm->created_vcpus)
-> +			r = -EBUSY;
-> +		else {
-> +			kvm->max_vcpus = cap->args[0];
-> +			r = 0;
-> +		}
-> +		mutex_unlock(&kvm->lock);
-> +		break;
-> +	}
-> +	default:
-> +		r = -EINVAL;
-> +		break;
-> +	}
-> +	return r;
-> +}
-> +
->   static int tdx_get_capabilities(struct kvm_tdx_cmd *cmd)
->   {
->   	struct kvm_tdx_capabilities __user *user_caps;
-> diff --git a/arch/x86/kvm/vmx/x86_ops.h b/arch/x86/kvm/vmx/x86_ops.h
-> index 6e238142b1e8..3a3be66888da 100644
-> --- a/arch/x86/kvm/vmx/x86_ops.h
-> +++ b/arch/x86/kvm/vmx/x86_ops.h
-> @@ -139,12 +139,17 @@ int __init tdx_hardware_setup(struct kvm_x86_ops *x86_ops);
->   void tdx_hardware_unsetup(void);
->   bool tdx_is_vm_type_supported(unsigned long type);
->   
-> +int tdx_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap);
->   int tdx_vm_ioctl(struct kvm *kvm, void __user *argp);
->   #else
->   static inline int tdx_hardware_setup(struct kvm_x86_ops *x86_ops) { return -EOPNOTSUPP; }
->   static inline void tdx_hardware_unsetup(void) {}
->   static inline bool tdx_is_vm_type_supported(unsigned long type) { return false; }
->   
-> +static inline int tdx_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
-> +{
-> +	return -EINVAL;
-> +};
->   static inline int tdx_vm_ioctl(struct kvm *kvm, void __user *argp) { return -EOPNOTSUPP; }
->   #endif
->   
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index dd3a23d56621..a1389ddb1b33 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -4726,6 +4726,8 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
->   		break;
->   	case KVM_CAP_MAX_VCPUS:
->   		r = KVM_MAX_VCPUS;
-> +		if (kvm_x86_ops.max_vcpus)
-> +			r = static_call(kvm_x86_max_vcpus)(kvm);
->   		break;
->   	case KVM_CAP_MAX_VCPU_ID:
->   		r = KVM_MAX_VCPU_IDS;
-> @@ -6683,6 +6685,8 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
->   		break;
->   	default:
->   		r = -EINVAL;
-> +		if (kvm_x86_ops.vm_enable_cap)
-> +			r = static_call(kvm_x86_vm_enable_cap)(kvm, cap);
->   		break;
->   	}
->   	return r;
-
+>  fs/coda/upcall.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/fs/coda/upcall.c b/fs/coda/upcall.c
+> index cd6a3721f6f6..d97e0e4374f9 100644
+> --- a/fs/coda/upcall.c
+> +++ b/fs/coda/upcall.c
+> @@ -303,7 +303,6 @@ int venus_rmdir(struct super_block *sb, struct CodaFid *dirfid,
+>  		    const char *name, int length)
+>  {
+>          union inputArgs *inp;
+> -        union outputArgs *outp;
+>          int insize, outsize, error;
+>          int offset;
+>  
+> -- 
+> 2.20.1.7.g153144c
+> 
+> 
 
