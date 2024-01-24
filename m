@@ -1,118 +1,105 @@
-Return-Path: <linux-kernel+bounces-37243-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37234-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34DD383AD32
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:25:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3695683ACFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:16:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3B311F22AB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:25:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E35A32845B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:16:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4C087A721;
-	Wed, 24 Jan 2024 15:25:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2593777656;
+	Wed, 24 Jan 2024 15:16:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b="jLfK4Ir+";
-	dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b="RqAwVMX2"
-Received: from gofer.mess.org (gofer.mess.org [88.97.38.141])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E4IeEzzt"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12BA62BAE5;
-	Wed, 24 Jan 2024 15:25:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=88.97.38.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AB6A382;
+	Wed, 24 Jan 2024 15:16:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706109934; cv=none; b=LntcJpn59oG1Uh6JzMBcXyCx5AUimmXf9c4gOIBdiB0E7gQidyr6TLVqKWJpryFxdCVyWkYg48yd8ZeF9Iqq7vgA3WUs0UCnvv9CwGAm4iTkwkWtGJ5qy8re6RlDWcvf9cczMa8IH+csY2ljGVlXatU+PmUCJ8p72jE84TUQYgg=
+	t=1706109390; cv=none; b=BD8DejuLCiycdg817pUczG9ZMYxA3weZiDcZibOsWuDt8JFglj1kHgvZ/EZmnfa4AbQUIkWFZ3YK+UaNV3A25gTzFktX6sJi6YDRHPbbzEPwe9nj6ECjAQG6ZkCSk89kK5FQUoL9omFjLWadc1DXlcTLlc6A9NP6j+UaRr4Yvd8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706109934; c=relaxed/simple;
-	bh=h6gKgCOyMbUEFd07PJSrDnDe9rMzxnKmjXzcvpqKJlw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=RXlrp0txbOmKRcvQEbpPzJRmdrGPNnSG8fp2+MmFpWyOYoGfNbUw7wIdR3j+FtBJgSfOtB6nLpMUwdTaO13mKXfmre4+wl1saBcYMI3hctIX02qYN7g3zpN3QwjS8kTsIZdS2SNlUYa7XGP2/85fgfpY2Ne9yJwfgVifeX09ZwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mess.org; spf=pass smtp.mailfrom=mess.org; dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b=jLfK4Ir+; dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b=RqAwVMX2; arc=none smtp.client-ip=88.97.38.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mess.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mess.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-	t=1706109334; bh=h6gKgCOyMbUEFd07PJSrDnDe9rMzxnKmjXzcvpqKJlw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=jLfK4Ir+PWEN6fIkcwK5gNMUQhN1Dgk1VL7yKyzUD6YuZVgMfFgEoCEImOJUD8LbY
-	 LNjkWRyIcuBzTRViycy3KJF7g+jTG8tTOsnt7OWMAr0vSgFIl+10QtZ4/HGLiEzHOV
-	 NkPOIxxJzBR0fpSaY5f5KkA+7HdzSZmTslBj2rOM6xfvxoqLLUFutYP9iuVeQKoW0D
-	 2lPz/oSwj+IeDdmVvaSCYnxo25E/HeDxAG/WiG0cWo7XOT/SLa/NGNO5iy61pbkYyN
-	 G1FhCtinZOAPvJctgoSNUb+bk4OKLgkkhJyMLRjhWJs038HjIvwCrKImQCuhxF9t7L
-	 x2TOSwJZ/KZfA==
-Received: by gofer.mess.org (Postfix, from userid 501)
-	id C3E35100741; Wed, 24 Jan 2024 15:15:34 +0000 (GMT)
-X-Spam-Level: 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-	t=1706109333; bh=h6gKgCOyMbUEFd07PJSrDnDe9rMzxnKmjXzcvpqKJlw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=RqAwVMX2dDzUvfbJsEf/2lu1BSNBVcNjxvPnCbrBPJb3OM6v3dMW4ObwXtnFSf2a6
-	 F0eivZNyHX+gW6uYsgzuS1q8wFxJXahffSeOf/RgtY9r1300p9U7+iqC/WtZZbjr8g
-	 Ccwp/9GX0AGIUgA1aEezGlgPHo2J2tZu18ymWcs981OQxbSxjcieHi5peFzlV4mVWf
-	 t8KjgpMgws4uSGAT2ifzWrTzJIM+J5ZZRoiYV7AKfxCrXQER1EA/Xf1xTwPz1kw7Nk
-	 NSuURE6ZHYifrtBY3HoIyDlfVXqmqUtlkBNNv2ciGo/hiIE7Jk2+kynnBGp7HTSzlZ
-	 RYKZL/PiYZToA==
-Received: from bigcore.mess.org (bigcore.local [IPv6:2a02:8011:d000:212:bc3c:1b4a:a6fa:362f])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by gofer.mess.org (Postfix) with ESMTPSA id 2B9671000B2;
-	Wed, 24 Jan 2024 15:15:33 +0000 (GMT)
-From: Sean Young <sean@mess.org>
-To: Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Cc: Sean Young <sean@mess.org>,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ALSA: usb-audio: add quirk for RODE NT-USB+
-Date: Wed, 24 Jan 2024 15:15:24 +0000
-Message-ID: <20240124151524.23314-1-sean@mess.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706109390; c=relaxed/simple;
+	bh=teEG/HE5cVE8qRdJoU3arSGKdBLpBxrZ1kXz0DlNeQ0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NT/SDI3TuwRNKMxxHIbYFRW/gReKRQW0oFlKxO5YidX4rauqusV+o2EzDuWaj8I0xt3U8y77AqcWgcEm/XHympYqqVtxP3ezWy3ScjJW2ANX2Jt+I5dAYv/nTGdVM/29EsKssziejFkhVbhx3A4HMZd95+SuWQRD51X8k5aLbOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E4IeEzzt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84823C433F1;
+	Wed, 24 Jan 2024 15:16:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706109389;
+	bh=teEG/HE5cVE8qRdJoU3arSGKdBLpBxrZ1kXz0DlNeQ0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=E4IeEzzt8PL7Pq3Tv+Y3kdLw8a3QLEHW6MaQrtF4v1lSjv+qa+J+exdrrMMuvHQAY
+	 8C5wkdWbVDKSMU1wVujfpwYxmNJnSg3YGPd4kgD0Oo8lAMwAaa2m88jIPvsBkni/c7
+	 OiFS9ZiY1OgcATvhch9/nGMOZZc/Rzc4UHYgmxNySDv2UPOr2J0YG/rP98vQIiHk0h
+	 vlNZ83gU47NtaEVsIlFFJcoPXZVdGmVHEjtNuF22JlnzyWAnIeFSutSjFjVTjt3rz1
+	 M6//f9lqcS+XSyWlTowDywBA3HqTKu3z7jTiXGowSkaVrd58r25FfpfoWFY6kt6JY5
+	 EB8iijR1l3e/A==
+Date: Wed, 24 Jan 2024 15:16:25 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: lee@kernel.org, alsa-devel@alsa-project.org,
+	patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+	linux-spi@vger.kernel.org
+Subject: Re: [PATCH 6/6] spi: cs42l43: Tidy up header includes
+Message-ID: <8b8fcdbd-b1c8-4618-acf8-e31b6ab33be7@sirena.org.uk>
+References: <20240124151222.1448570-1-ckeepax@opensource.cirrus.com>
+ <20240124151222.1448570-6-ckeepax@opensource.cirrus.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="555fmk7VPc9JdOqq"
+Content-Disposition: inline
+In-Reply-To: <20240124151222.1448570-6-ckeepax@opensource.cirrus.com>
+X-Cookie: To err is human, to moo bovine.
 
-The RODE NT-USB+ is marketed as a professional usb microphone, however the
-usb audio interface is a mess:
 
-[    1.130977] usb 1-5: new full-speed USB device number 2 using xhci_hcd
-[    1.503906] usb 1-5: config 1 has an invalid interface number: 5 but max is 4
-[    1.503912] usb 1-5: config 1 has no interface number 4
-[    1.519689] usb 1-5: New USB device found, idVendor=19f7, idProduct=0035, bcdDevice= 1.09
-[    1.519695] usb 1-5: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-[    1.519697] usb 1-5: Product: RØDE NT-USB+
-[    1.519699] usb 1-5: Manufacturer: RØDE
-[    1.519700] usb 1-5: SerialNumber: 1D773A1A
-[    8.327495] usb 1-5: 1:1: cannot get freq at ep 0x82
-[    8.344500] usb 1-5: 1:2: cannot get freq at ep 0x82
-[    8.365499] usb 1-5: 2:1: cannot get freq at ep 0x2
+--555fmk7VPc9JdOqq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Add QUIRK_FLAG_GET_SAMPLE_RATE to work around the broken sample rate get.
-I have asked Rode support to fix it, but they show no interest.
+On Wed, Jan 24, 2024 at 03:12:22PM +0000, Charles Keepax wrote:
+> Including some missing headers.
+>=20
+> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> ---
+>=20
+> The changes to the MFD headers necessitate the inclusion of of.h here to
+> keep things building, hence my including this SPI change in the this MFD
+> series. The rest of the SPI fixups will be sent separately, as they are
+> also not dependent on this change.
 
-Signed-off-by: Sean Young <sean@mess.org>
----
- sound/usb/quirks.c | 2 ++
- 1 file changed, 2 insertions(+)
+If this is needed to keep things building then presumably it should be
+before or part of whatever change introduces the requirement, otherwise
+we have a bisection issue.  Anyway:
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 07cc6a201579a..6f1f0712e7dc5 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -2179,6 +2179,8 @@ static const struct usb_audio_quirk_flags_table quirk_flags_table[] = {
- 		   QUIRK_FLAG_FIXED_RATE),
- 	DEVICE_FLG(0x1bcf, 0x2283, /* NexiGo N930AF FHD Webcam */
- 		   QUIRK_FLAG_GET_SAMPLE_RATE),
-+	DEVICE_FLG(0x19f7, 0x0035, /* RODE NT-USB+ */
-+		   QUIRK_FLAG_GET_SAMPLE_RATE),
- 
- 	/* Vendor matches */
- 	VENDOR_FLG(0x045e, /* MS Lifecam */
--- 
-2.43.0
+Acked-by: Mark Brown <broonie@kernel.org>
 
+--555fmk7VPc9JdOqq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWxKcgACgkQJNaLcl1U
+h9Ai1Qf+Iwy4hQvX006euDyDS3MsQArWK4ZhxwxVt9gRfwug+2P5Krqwe0yE1X/2
+H5KXUz1D8h8mb75KTMpjkFH1Inhg2xYvh6Ib+SeIkOTms3yHZV+WVCD7lOQvgz5I
+1vGDBg4Rpxo7pQdxDU0yO2tBkFcAyUdLLkzl09Sfl/gwotNc1xAV1RfOZJgvXSFi
+tlX/OK36m1R1iuKBX+OjF+Imn8ItunzXt9D4zoKerZ8FBHqeXNuoVT7IO9c89/K5
+OWt+Wamf9D1ce+DJiY07sMRP6ZpThempR/uAR0S5ruNd43iNKirI45l43MXBzxHA
+rbZOc23OXifJwDHx51yXx0pIOdS0Cg==
+=Sfm2
+-----END PGP SIGNATURE-----
+
+--555fmk7VPc9JdOqq--
 
