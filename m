@@ -1,167 +1,158 @@
-Return-Path: <linux-kernel+bounces-37697-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65B3583B3F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:33:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 266E983B40A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:35:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D0B4286B2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 21:33:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B5071C2274B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 21:35:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCF37135401;
-	Wed, 24 Jan 2024 21:33:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD2CC13540E;
+	Wed, 24 Jan 2024 21:35:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="jmoWAk0q"
-Received: from xry111.site (xry111.site [89.208.246.23])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Lo+4DfvP"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FF6613540E;
-	Wed, 24 Jan 2024 21:33:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96F4C1350F5
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 21:35:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706131987; cv=none; b=X1q/k8WcY1nHaqOAcaF6blAPNTv/kHNNYDDgVKNr4rXmWIakTudIsYw6r78nmFmPKYJFQA1ttUelGgQtTY1BBkFfD+abRH0N87y2tJJRuMfdUxjHigyaKrXLbXUmKP/llmVdJD0c09wpkXHhqmkXsQS7hVyHQgUvILBmPpgM8uQ=
+	t=1706132126; cv=none; b=egeGR9b0+Nh6k71k/YfzI3xcJ34c+HlikkMMZXCmZT+fcNuGyS3Rn+1LJDkoC+7FtnHiEAriYNDUOWeHi7O3PJb2Q642j7Z9XkMI7/hw76Gpeh5kQh1OHCS1Drkci2ZXo/YZDCHvbl8+uYukckKKOsa8/wo8kgE+pLQxwTiYWbY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706131987; c=relaxed/simple;
-	bh=ziTHwcQqcapg3pVzdE+ZardjAdUN8XTv3xGQCPYdaz4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=lNjXWAwWHjSbdmwDI01Q65lh9X9f6rxExYoui5O3Z1Mq+eWeoVNSa4OIJPilQunS282tTbiF6cRo895g7qWZuO/joxOhL2p9STvdlvngI+ZxmROy88oSmQFXN7MdA+t4VW5jdxd9kcVShQa8BwrPZJScykebw6KZ1eKGRcPPahw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=jmoWAk0q; arc=none smtp.client-ip=89.208.246.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-	s=default; t=1706131982;
-	bh=ziTHwcQqcapg3pVzdE+ZardjAdUN8XTv3xGQCPYdaz4=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=jmoWAk0qhYPXnrmgEfpUhBIlc9h6qrS2t4yfbrlqa4zq9d2UhFbys18mSH7qZcRsI
-	 JzjseQtUzh4MjZZM/bdv10PK5EKZ32QN23xv9KDGZ/og2yUnlR/4Wsw5X8uk99DuKP
-	 teJsIFsYgSBB6Bt7d6KvF/fCL++xh0VnHxIQpzkk=
-Received: from [127.0.0.1] (unknown [IPv6:2001:470:683e::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id 08FDE66A79;
-	Wed, 24 Jan 2024 16:33:00 -0500 (EST)
-Message-ID: <e8583a3ab0522b4e75ba0ada47b6f093b186fa81.camel@xry111.site>
-Subject: Re: Strange EFAULT on mips64el returned by syscall when another
- thread is forking
-From: Xi Ruoyao <xry111@xry111.site>
-To: Andreas Schwab <schwab@suse.de>, Ben Hutchings <ben@decadent.org.uk>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, Jiaxun Yang
- <jiaxun.yang@flygoat.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-  libc-alpha@sourceware.org, Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 25 Jan 2024 05:32:59 +0800
-In-Reply-To: <0be1203c9df55432548c92281c8392dfa2f7d6bf.camel@xry111.site>
-References: <75e9fd7b08562ad9b456a5bdaacb7cc220311cc9.camel@xry111.site>
-	 <mvmplxraqmd.fsf@suse.de>
-	 <9481b6d9d015aea25d8f2563bf7bd6f6462f758f.camel@xry111.site>
-	 <0be1203c9df55432548c92281c8392dfa2f7d6bf.camel@xry111.site>
-Autocrypt: addr=xry111@xry111.site; prefer-encrypt=mutual;
- keydata=mDMEYnkdPhYJKwYBBAHaRw8BAQdAsY+HvJs3EVKpwIu2gN89cQT/pnrbQtlvd6Yfq7egugi0HlhpIFJ1b3lhbyA8eHJ5MTExQHhyeTExMS5zaXRlPoiTBBMWCgA7FiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQrKrSDhnnEOPHFgD8D9vUToTd1MF5bng9uPJq5y3DfpcxDp+LD3joA3U2TmwA/jZtN9xLH7CGDHeClKZK/ZYELotWfJsqRcthOIGjsdAPuDgEYnkdPhIKKwYBBAGXVQEFAQEHQG+HnNiPZseiBkzYBHwq/nN638o0NPwgYwH70wlKMZhRAwEIB4h4BBgWCgAgFiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwwACgkQrKrSDhnnEOPjXgD/euD64cxwqDIqckUaisT3VCst11RcnO5iRHm6meNIwj0BALLmWplyi7beKrOlqKfuZtCLbiAPywGfCNg8LOTt4iMD
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1706132126; c=relaxed/simple;
+	bh=vy2eQcXuP8J+89WHubqOmUDL6fntpzonJvK8RD/C8Zo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Z2hQ/0t6CcBMFR9TQ/Eu4qqwrbKDM8S/JF4o7N9pW+mcBwFKw8qOXNCoElj88WDSKwuXWQdSrCqbDhjIqiigBTCMoS7xbMcUcAw/WdDh5LEG7uW+j6jbv2Q7G4CKC3lZXamuna5IIreHElJbfEEwyD0VrHLXaDDXOj2i4eW8smQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Lo+4DfvP; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d74045c463so28784765ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 13:35:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706132124; x=1706736924; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=R02kkjm9zZZALeIAu8OyIiBbwYldvv1po8aujCvgxCc=;
+        b=Lo+4DfvPcbZAIp9UbKEWYLXIJIcEicEMgfszjEA+dHd4meIfvchp0cmxZPFJi4cdDC
+         VvT1GBoOV/cELPKOvtssF0J0xP7v/Pxl0SlcC+YOxsJ+TUkS7cFz8PwzoQgwJmCFUSPG
+         fXhWOnwqf7/ylOBk9aydYvu1MyYRXDIun8LRc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706132124; x=1706736924;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R02kkjm9zZZALeIAu8OyIiBbwYldvv1po8aujCvgxCc=;
+        b=B6I8eV0ZohsLcnppAs2yyv61Ev/NOMukZqREH/fq0BwzdEP89nAm9n9pHplmuGWc9T
+         97mfnZ7b8Ell3jor6bptm5aY/TF1bPrmAGLItQbC7AUkFuQSYtO4yc1P8NzSk5kBxpXE
+         I1awsqyfYtN2L7j6vzxjBug11lRp74WxXpHc3XbgMloYjTKjrQlEoTzSrc5Ew7ZNCPFl
+         E1Sxpz3GYYhYSF3l1uMo8xw1xgEkbVq7Ji77a+YghaGw8p8eC7sjvINLgBXHBcIFI4DU
+         J9hytm2BljYClcsxQS5SJQLdiCmG6uiyCGQptnxi5wv7hJ9Oxh6yrFX8LTxwOraOWcAZ
+         yK1A==
+X-Gm-Message-State: AOJu0YxUKW1fKLrikdhBWa+SlELI+a5KcYM8pN++z6bW2u7tER3KWkOg
+	MHeUqUJO89CFYNJaLosCgBPuUclJsp0HgY8F4+hQgIaLMrTs1PW5lXkJW0sv9Q==
+X-Google-Smtp-Source: AGHT+IHcICz0Mfn9SvjnkuBQXJnezLd9Usm4kNxOTm+k+tyC0AhF5zlKsrJeWSD40yUZv9HJJFvwgg==
+X-Received: by 2002:a17:902:ee0c:b0:1d5:b82a:939 with SMTP id z12-20020a170902ee0c00b001d5b82a0939mr16459plb.125.1706132124053;
+        Wed, 24 Jan 2024 13:35:24 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id mj11-20020a1709032b8b00b001d73a2acc2bsm6701572plb.142.2024.01.24.13.35.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 13:35:23 -0800 (PST)
+Date: Wed, 24 Jan 2024 13:35:23 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Jann Horn <jannh@google.com>, Josh Triplett <josh@joshtriplett.org>,
+	Kevin Locke <kevin@kevinlocke.name>,
+	John Johansen <john.johansen@canonical.com>,
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>,
+	Kentaro Takeda <takedakn@nttdata.co.jp>,
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Eric Biederman <ebiederm@xmission.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] exec: Check __FMODE_EXEC instead of in_execve for LSMs
+Message-ID: <202401241334.670AFDD@keescook>
+References: <20240124192228.work.788-kees@kernel.org>
+ <CAG48ez017tTwxXbxdZ4joVDv5i8FLWEjk=K_z1Vf=pf0v1=cTg@mail.gmail.com>
+ <202401241206.031E2C75B@keescook>
+ <CAHk-=wiUwRG7LuR=z5sbkFVGQh+7qVB6_1NM0Ny9SVNL1Un4Sw@mail.gmail.com>
+ <202401241310.0A158998@keescook>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202401241310.0A158998@keescook>
 
-On Thu, 2024-01-25 at 00:13 +0800, Xi Ruoyao wrote:
-> On Wed, 2024-01-24 at 20:49 +0800, Xi Ruoyao wrote:
-> > On Wed, 2024-01-24 at 12:59 +0100, Andreas Schwab wrote:
-> > > On Jan 24 2024, Xi Ruoyao wrote:
-> > >=20
-> > > > Now I'm suspecting this might be a kernel bug.=C2=A0 Any pointer to=
- further
-> > > > triage?
-> > >=20
-> > > Is this a regression?
-> >=20
-> > Initially I guessed it was perhaps a Glibc regression related to the
-> > newly introduced clone3 usage on MIPS, but it fails with Glibc-2.35 too=
-.
-> >=20
-> > Not sure if this is a kernel regression, I'll try different kernels in
-> > several hours (once I can physically access the system).
->=20
-> Not happening with kernel 5.18.1.=C2=A0 I can do a bisection but it will =
-take
-> several days, I guess.
+On Wed, Jan 24, 2024 at 01:32:02PM -0800, Kees Cook wrote:
+> On Wed, Jan 24, 2024 at 12:47:34PM -0800, Linus Torvalds wrote:
+> > On Wed, 24 Jan 2024 at 12:15, Kees Cook <keescook@chromium.org> wrote:
+> > >
+> > > Hmpf, and frustratingly Ubuntu (and Debian) still builds with
+> > > CONFIG_USELIB, even though it was reported[2] to them almost 4 years ago.
+> 
+> For completeness, Fedora hasn't had CONFIG_USELIB for a while now.
+> 
+> > Well, we could just remove the __FMODE_EXEC from uselib.
+> > 
+> > It's kind of wrong anyway.
+> 
+> Yeah.
+> 
+> > So I think just removing __FMODE_EXEC would just do the
+> > RightThing(tm), and changes nothing for any sane situation.
+> 
+> Agreed about these:
+> 
+> - fs/fcntl.c is just doing a bitfield sanity check.
+> 
+> - nfs_open_permission_mask(), as you say, is only checking for
+>   unreadable case.
+> 
+> - fsnotify would also see uselib() as a read, but afaict,
+>   that's what it would see for an mmap(), so this should
+>   be functionally safe.
+> 
+> This one, though, I need some more time to examine:
+> 
+> - AppArmor, TOMOYO, and LandLock will see uselib() as an
+>   open-for-read, so that might still be a problem? As you
+>   say, it's more of a mmap() call, but that would mean
+>   adding something a call like security_mmap_file() into
+>   uselib()...
+> 
+> The issue isn't an insane "support uselib() under AppArmor" case, but
+> rather "Can uselib() be used to bypass exec/mmap checks?"
+> 
+> This totally untested patch might give appropriate coverage:
+> 
+> diff --git a/fs/exec.c b/fs/exec.c
+> index d179abb78a1c..0c9265312c8d 100644
+> --- a/fs/exec.c
+> +++ b/fs/exec.c
+> @@ -143,6 +143,10 @@ SYSCALL_DEFINE1(uselib, const char __user *, library)
+>  	if (IS_ERR(file))
+>  		goto out;
+>  
+> +	error = security_mmap_file(file, PROT_READ | PROT_EXEC, MAP_FIXED | MAP_SHARED);
 
-Hmm, not so time-consuming as I expected.
+Actually, this should probably match was load_shlib() uses:
 
-4bce37a68ff884e821a02a731897a8119e0c37b7 is the first bad commit
-commit 4bce37a68ff884e821a02a731897a8119e0c37b7
-Author: Ben Hutchings <ben@decadent.org.uk>
-Date:   Thu Jun 22 18:47:40 2023 +0200
+                        PROT_READ | PROT_WRITE | PROT_EXEC,
+                        MAP_FIXED_NOREPLACE | MAP_PRIVATE,
 
-    mips/mm: Convert to using lock_mm_and_find_vma()
-
-Re-posting the broken test case for Ben (I also added a waitpid call to
-prevent PID exhaustion):
-
-#include <stdlib.h>
-#include <errno.h>
-#include <pthread.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/wait.h>
-
-void *
-test_thread (void *)
-{
-  char buf[16] =3D {};
-  int fd =3D open("/dev/zero", O_RDONLY);
-  while (1)
-    {
-      ssize_t ret =3D read (fd, buf, 7);
-      if (ret =3D=3D -1 && errno =3D=3D EFAULT)
-        abort ();
-    }
-}
-
-void *
-fork_thread (void *)
-{
-  while (1)
-    {
-      pid_t p =3D fork ();
-      if (!p)
-        _exit (0);
-      waitpid (p, NULL, 0);
-    }
-}
-
-int
-main (void)
-{
-  pthread_t test_th;
-  pthread_t fork_th;
-
-  pthread_create (&test_th, NULL, test_thread, NULL);
-  pthread_create (&fork_th, NULL, fork_thread, NULL);
-  pthread_join (test_th, NULL);
-  pthread_join (fork_th, NULL);
-}
-
-and the context where this issue was detected:
-
-https://sourceware.org/glibc/wiki/Testing/Tests/stdlib/tst-arc4random-threa=
-d
-
-and the "interesting" aspects:
-
-1. If I change the third parameter of "read" to any value >=3D 8, it no
-longer fails.  But it fails with any integer in [1, 8).
-2. It fails no matter if I initialize buf.
-3. It does not fail on arm64 (the only other port using
-lock_mm_and_find_vma I have access to).
-
---=20
-Xi Ruoyao <xry111@xry111.site>
-School of Aerospace Science and Technology, Xidian University
+-- 
+Kees Cook
 
