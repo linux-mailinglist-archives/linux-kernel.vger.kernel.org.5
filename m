@@ -1,197 +1,126 @@
-Return-Path: <linux-kernel+bounces-37216-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02F2883ACAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:01:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 121C783ACAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:02:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4C0429E25E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:01:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD97E1F260CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:02:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C3891E49D;
-	Wed, 24 Jan 2024 15:01:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E6017A720;
+	Wed, 24 Jan 2024 15:01:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="osrFdeJe";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1zn3uQlo";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="osrFdeJe";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1zn3uQlo"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dyhySwho"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE35D1874
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 15:01:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3021363124
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 15:01:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706108505; cv=none; b=kmhDevgYtQbBOUtZ4rV0AAMgNShxylAz4hv1aJgnTydOgyo0PxCIY3CQbs5+NRZZUU7v4+v9IUTLf5OYU1MY/pMgOR29iiC0umwhk0fJHIZtE2U8xXkZUYy2dZNS+x7MfAtG1vEWttsSLWoDqLnZGyUTqFq68AGnx9kKjVV8hz8=
+	t=1706108510; cv=none; b=epFKZMkAmaH7Nr5+4bdUceB6ntagfIHPw8cqgsov88qJujpLirbCs/7pLS3dQs3GpPEV2zngwmVjVCxzsC7ksW2K2aei2FYlOOCZ4RG71I7ApeYXgfyt0vSXGfF0kKaXhoxUfkMghoYpw5r34pL6gI8iAEYVNF5fEoGgK1bVrIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706108505; c=relaxed/simple;
-	bh=1GUIdRqBnwjIbprBMhEYmiQmVeW6ibg6LAGTfTN3sdI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=N43YBAZXL6OsuaNtJEAFqLCeshGvZpmGvyBNql3alP/wU5Zk1jEvY6N4L32olne6h8RjCOa3Bw83/E3OoCyJt/v5BWZ8s0RHFBVlyHLjYirGEaHCRuvd+E82WmsPF8TVIcTp5EHDNu4Tw365wtItCd8p4b0WhaijuP+yx9E5xVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=osrFdeJe; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1zn3uQlo; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=osrFdeJe; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1zn3uQlo; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4FB6F2230C;
-	Wed, 24 Jan 2024 15:01:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706108501; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DajeaSEzTnB3arsXBMutuR8UGsQIe50M5bLSZDHRxaE=;
-	b=osrFdeJe+V6nUTIDy8yaKQkD/1OyHRoFPIrq5mH+nFwR3NPWP87uEhJxWITLIarWKRjscI
-	vOJNb4uTZTLyaelqM2HzekkgMbmgipIQlJOuXVy6b3pzJwMyHWS4Ez/EIC0tPwi0G/wUtp
-	Bs33w+ShJDAV+ClFEN0XVInOrNS3/C0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706108501;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DajeaSEzTnB3arsXBMutuR8UGsQIe50M5bLSZDHRxaE=;
-	b=1zn3uQloqriIk5Ye9paPiS8PDE/zNsCqDYI5Ok7l4OKEcC/C1Ug/OGu+0ztnu3FYdMhBTC
-	XUfp843i6MaM7UDQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706108501; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DajeaSEzTnB3arsXBMutuR8UGsQIe50M5bLSZDHRxaE=;
-	b=osrFdeJe+V6nUTIDy8yaKQkD/1OyHRoFPIrq5mH+nFwR3NPWP87uEhJxWITLIarWKRjscI
-	vOJNb4uTZTLyaelqM2HzekkgMbmgipIQlJOuXVy6b3pzJwMyHWS4Ez/EIC0tPwi0G/wUtp
-	Bs33w+ShJDAV+ClFEN0XVInOrNS3/C0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706108501;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DajeaSEzTnB3arsXBMutuR8UGsQIe50M5bLSZDHRxaE=;
-	b=1zn3uQloqriIk5Ye9paPiS8PDE/zNsCqDYI5Ok7l4OKEcC/C1Ug/OGu+0ztnu3FYdMhBTC
-	XUfp843i6MaM7UDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3BBD513786;
-	Wed, 24 Jan 2024 15:01:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Zwv7DVUmsWXwBgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 24 Jan 2024 15:01:41 +0000
-Message-ID: <2faccc1a-7fdd-499b-aa0a-bd54f4068f3e@suse.cz>
-Date: Wed, 24 Jan 2024 16:01:40 +0100
+	s=arc-20240116; t=1706108510; c=relaxed/simple;
+	bh=vXo7kwrg/JEtFg5VNFewRcL3UlxCm3whtvjszAzZPYw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=CMITfJncLSdMjssUUWnTvdL/dQUBFoIz+xyjkodZ2V0wM8Hw8AMdW+9fkOmdmiiJWV6FMGSf5LcgwHSlmpRMnOHG+8igXsniohdGV4RK9E3BHfcvjwBUg/fySLtlKRoU0OOL62easx2QmWaeuNMXVj3k0VhS3wMm4Etc0bA5USQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dyhySwho; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3387ef9fc62so5153492f8f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 07:01:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706108507; x=1706713307; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wddH6dLZWFvD4sBtP23ayzipvN9tjMLSLEUIemLS/70=;
+        b=dyhySwhofWH+JkOgzDfSLBlzS9igtUKpI70OvObtint2kwDXlu+crjO9IJGnpK4TI2
+         zjwSGBmTDmNyZ7UsPFTWn0XgAcLA7cHnQWozb14ep80vxlgnCsvKc+XAsee6vFQ1xw74
+         mxZT2wKqj1JIJ4Gl2MdzeWGElr85Lnyj8ss65BMn02is8cLtiQ7IBXMPhsEiuH/h2dKa
+         By74+WvCjk4lIxVaq0FoAZ/8kq1IgZPlYsZhnFWSn7W5SOkn87eXMhJm3pnHB170beGM
+         G0IUm0/bhnKz38V3tnQKWNqS+GnfnxrSZ8W8tVTQRGJSmzbjdbyXOIygJTVc1MOh3CMC
+         7f3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706108507; x=1706713307;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wddH6dLZWFvD4sBtP23ayzipvN9tjMLSLEUIemLS/70=;
+        b=aEqGdfVCjJRLqqHYX6xIByuMQQOIVMVzQ1DqXP27TWUg2m2XUU9tXNpBZv0FS18rWo
+         kvNZ6tcATnNQIVB7rYtYKH2QJd/HcRqTj93RXJyoCJNrVIkjJPijwcGtqfTBVUt8F5A/
+         nmTwo7tUspTooCRzUXg6O+A0+MYmQM6OIdQSHrBEAp1ydvNqzuVybOSWBINy6nkeG0c3
+         FKegWzC+zupvlWbo4sPlLTmE1nc3HqpoxaC6jhfsb4W6fJ5LK4wgSyhnzmXmnqTTJToj
+         gjcPHDII4vbUDGR2aotcwkYf/1wbjU47ONPlsIumO9cv+AhX590mf8L3a9zQBIc2Ir83
+         R2zw==
+X-Gm-Message-State: AOJu0YzziEBAHYs1r1ryNEvqCoPnTbnhGiMLIaKPQWASykHGnYQ+oqiO
+	4h9SsqAGRjpBlfWUQ3ykIcHcsDTW0UA8IZWnBWpHeO6wAJGpg1JovqQ9kZ+mTv0=
+X-Google-Smtp-Source: AGHT+IHXHhrcwAHRLUnkX2s024mT8pEXvkb38AMMNc+9E2uH9gcDtJhJhoQ9GTqAP9FJosVbKHujPg==
+X-Received: by 2002:adf:ef12:0:b0:337:bf29:b6ca with SMTP id e18-20020adfef12000000b00337bf29b6camr701919wro.23.1706108507315;
+        Wed, 24 Jan 2024 07:01:47 -0800 (PST)
+Received: from localhost ([102.140.209.237])
+        by smtp.gmail.com with ESMTPSA id o10-20020a5d62ca000000b00337d4ce6ab4sm15999360wrv.20.2024.01.24.07.01.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 07:01:46 -0800 (PST)
+Date: Wed, 24 Jan 2024 18:01:42 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Niklas Cassel <niklas.cassel@wdc.com>
+Cc: Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: [PATCH v4 1/2] PCI: dwc: Fix a 64bit bug in
+ dw_pcie_ep_raise_msix_irq()
+Message-ID: <888c23ff-1ee4-4795-8c24-7631c6c37da6@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [git pull] drm for 6.8
-To: Dave Airlie <airlied@gmail.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: dri-devel <dri-devel@lists.freedesktop.org>,
- LKML <linux-kernel@vger.kernel.org>,
- Linux regressions mailing list <regressions@lists.linux.dev>
-References: <CAPM=9twKBmO2Svky-zeP+KS8qWHFj9zrgeBqW9y__tUwcAYZhw@mail.gmail.com>
-Content-Language: en-US
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <CAPM=9twKBmO2Svky-zeP+KS8qWHFj9zrgeBqW9y__tUwcAYZhw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-3.09 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCPT_COUNT_FIVE(0.00)[6];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 TO_DN_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 FREEMAIL_TO(0.00)[gmail.com,linux-foundation.org,ffwll.ch];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -3.09
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
 
-On 1/10/24 20:49, Dave Airlie wrote:
-> Hi Linus,
-> 
-> This is the main drm pull request for 6.8.
+The "msg_addr" variable is u64.  However, the "aligned_offset" is an
+unsigned int.  This means that when the code does:
 
-When testing the rc1 on my openSUSE Tumbleweed desktop, I've started
-experiencing "frozen desktop" (KDE/Wayland) issues. The symptoms are that
-everything freezes including mouse cursor. After a while it either resolves,
-or e.g. firefox crashes (if it was actively used when it froze) or it's
-frozen for too long and I reboot with alt-sysrq-b. When it's frozen I can
-still ssh to the machine, and there's nothing happening in dmesg.
-The machine is based on Amd Ryzen 7 2700 and Radeon RX7600.
+        msg_addr &= ~aligned_offset;
 
-I've bisected the merge commits so far and now will try to dig into this
-one. I've noticed there was also a drm fixes PR later in the merge window but
-since it was also merged into rc1 and thus didn't prevent the issue for me,
-I guess it's not relevant here?
+it will unintentionally zero out the high 32 bits.  Use ALIGN_DOWN()
+to do the alignment instead.
 
-Because the reproduction wasn't very deterministic I considered a commit bad
-even if it didn't lead to completely frozen desktop and a forced reboot.
-Even the multi-second hangs that resolved were a regression compared to 6.7
-anyway.
+Cc: stable@vger.kernel.org
+Fixes: 2217fffcd63f ("PCI: dwc: endpoint: Fix dw_pcie_ep_raise_msix_irq() alignment support")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+Reviewed-by: Niklas Cassel <cassel@kernel.org>
+---
+v4: Add stable and r-b from Niklas
+v3: Use ALIGN_DOWN()
+v2: fix typo in commit message
 
-If there are known issues and perhaps candidate fixes already, please do tell.
+ drivers/pci/controller/dwc/pcie-designware-ep.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Vlastimil
-
-git bisect start '--first-parent'
-# status: waiting for both good and bad commits
-# bad: [6613476e225e090cc9aad49be7fa504e290dd33d] Linux 6.8-rc1
-git bisect bad 6613476e225e090cc9aad49be7fa504e290dd33d
-# status: waiting for good commit(s), bad commit known
-# good: [0dd3ee31125508cd67f7e7172247f05b7fd1753a] Linux 6.7
-git bisect good 0dd3ee31125508cd67f7e7172247f05b7fd1753a
-# bad: [b4442cadca2f97239c8b80f64af7937897b867b1] Merge tag 'x86_tdx_for_6.8' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
-git bisect bad b4442cadca2f97239c8b80f64af7937897b867b1
-# bad: [c4c6044d35f06a93115e691e79436839962c203e] Merge tag 'for-linus' of git://git.armlinux.org.uk/~rmk/linux-arm
-git bisect bad c4c6044d35f06a93115e691e79436839962c203e
-# bad: [42bff4d0f9b9c8b669c5cef25c5116f41eb45c6b] Merge tag 'pwm/for-6.8-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm
-git bisect bad 42bff4d0f9b9c8b669c5cef25c5116f41eb45c6b
-# good: [32720aca900b226653c843bb4e06b8125312f214] Merge tag 'fsnotify_for_v6.8-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs
-git bisect good 32720aca900b226653c843bb4e06b8125312f214
-# good: [5bad490858c3ebdbb47e622e8f9049f828d2abba] Merge tag 'soc-defconfig-6.8' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc
-git bisect good 5bad490858c3ebdbb47e622e8f9049f828d2abba
-# good: [70d201a40823acba23899342d62bc2644051ad2e] Merge tag 'f2fs-for-6.8-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs
-git bisect good 70d201a40823acba23899342d62bc2644051ad2e
-# bad: [141d9c6e003b806d8faeddeec7053ee2691ea61a] Merge tag 'firewire-updates-6.8' of git://git.kernel.org/pub/scm/linux/kernel/git/ieee1394/linux1394
-git bisect bad 141d9c6e003b806d8faeddeec7053ee2691ea61a
-# bad: [61f4c3e6711477b8a347ca5fe89e5e6613e0a147] Merge tag 'linux-watchdog-6.8-rc1' of git://www.linux-watchdog.org/linux-watchdog
-git bisect bad 61f4c3e6711477b8a347ca5fe89e5e6613e0a147
-# bad: [7912a6391f3ee7eb9f9a69227a209d502679bc0c] Merge tag 'sound-6.8-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound
-git bisect bad 7912a6391f3ee7eb9f9a69227a209d502679bc0c
-# bad: [cf65598d5909acf5e7b7dc9e21786e386356bc81] Merge tag 'drm-next-2024-01-10' of git://anongit.freedesktop.org/drm/drm
-git bisect bad cf65598d5909acf5e7b7dc9e21786e386356bc81
-# first bad commit: [cf65598d5909acf5e7b7dc9e21786e386356bc81] Merge tag 'drm-next-2024-01-10' of git://anongit.freedesktop.org/drm/drm
-
-
-
-
-
+diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
+index 5befed2dc02b..51679c6702cf 100644
+--- a/drivers/pci/controller/dwc/pcie-designware-ep.c
++++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
+@@ -551,7 +551,7 @@ int dw_pcie_ep_raise_msix_irq(struct dw_pcie_ep *ep, u8 func_no,
+ 	}
+ 
+ 	aligned_offset = msg_addr & (epc->mem->window.page_size - 1);
+-	msg_addr &= ~aligned_offset;
++	msg_addr = ALIGN_DOWN(msg_addr, epc->mem->window.page_size);
+ 	ret = dw_pcie_ep_map_addr(epc, func_no, 0, ep->msi_mem_phys, msg_addr,
+ 				  epc->mem->window.page_size);
+ 	if (ret)
+-- 
+2.43.0
 
 
