@@ -1,228 +1,111 @@
-Return-Path: <linux-kernel+bounces-36605-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36607-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2052E83A3B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:05:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 007C683A3B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:06:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD19C294299
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:05:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACBA0294AFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:06:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13DE8171DD;
-	Wed, 24 Jan 2024 08:05:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g7ywL5M+"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E3D81754B;
+	Wed, 24 Jan 2024 08:06:21 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04035171AB
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 08:04:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CE42171AB;
+	Wed, 24 Jan 2024 08:06:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706083501; cv=none; b=rPHeV13NEH3ZZBowRySKR9Q+kabwRx/7I2oSt+NG8e/Zr4vM2VLiTKph3wiUCWcnAw4UH3+o1br6eNIPh/J8ESe+eLB9ffzh3TqixqGKPQoaF5D1EdgECh5A+juM7VArCO79mHfghBlv4wRNVJGNcWWzme56B7x7zcxdI/Fu1Hk=
+	t=1706083580; cv=none; b=oqAasfi+H2s9wPPchkljT/d37RJIL6Qc+bCEcpCNmp9rnjfisCtUPZh9b9LbK5IQ1Hzel6PrytgK/Sr7xhNoa4MYWHxoeg2DiOEU02ibjqBhWzmacF0eaW7yqtbvmIQQdlng8Ojv8nneieKS/XhYFVIzfYRKVSugLLiPP12Krxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706083501; c=relaxed/simple;
-	bh=LFjrW/3gncxzl/A3TUIYstXciGL965aXTzTWUjho538=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=FFClTvQX/EcguWLn8NWulsr7bsxYEMeCHYHoTbEozvoK53HOFM4YQCZ5kErzavdF3VSceD6PiA34v/fJjCOrTno+QHRoUCjBXFcM+fra5TNOSvRWULzxTSRW87epTBLtbSUPf/5TZnE+G4T8cINwjqah44WTu63mjuqDXlG39AQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g7ywL5M+; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706083499; x=1737619499;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=LFjrW/3gncxzl/A3TUIYstXciGL965aXTzTWUjho538=;
-  b=g7ywL5M+noTxdVisTpQfBO/tXBKHxYf6CoOo1VLCHphb529YohVqxf3M
-   BgIlapwrmhMYM1TkUnvLc7yE2Bb0qTqnmJLLTU8aqZeA88O4qg4xywMsk
-   KUGlexa9TtXW0WKitINhCT6L6P07KYy9RvGp1L1tM1STT+DVkJpHA7x+5
-   T9Mb9/jYeni6rX91AXDUh/eQFh7FH67f6hFwpDMPsUbNUdWewbuJQhqrb
-   tYQ7GFjca2Vqe58p2ihO63cqpTN7kRX/lGvWadDnfukIgc8nIDUsJQb76
-   zY3ITbEfIPLnOVY3XhYtnxXUbUWQLBNI0cynCl92ug9M7RgQFTiungc7l
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="8425190"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="8425190"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 00:04:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="1928230"
-Received: from komalav-mobl2.gar.corp.intel.com (HELO localhost) ([10.252.41.195])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 00:04:55 -0800
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Lucas De Marchi <lucas.demarchi@intel.com>, Yury Norov
- <yury.norov@gmail.com>
-Cc: linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, Andy
- Shevchenko <andriy.shevchenko@linux.intel.com>,
- intel-xe@lists.freedesktop.org, intel-gfx@lists.freedesktop.org, Lucas De
- Marchi <lucas.demarchi@intel.com>
-Subject: Re: [PATCH 3/3] drm/i915: Convert REG_GENMASK* to fixed-width
- GENMASK_*
-In-Reply-To: <20240124050205.3646390-4-lucas.demarchi@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240124050205.3646390-1-lucas.demarchi@intel.com>
- <20240124050205.3646390-4-lucas.demarchi@intel.com>
-Date: Wed, 24 Jan 2024 10:04:52 +0200
-Message-ID: <87r0i7kvh7.fsf@intel.com>
+	s=arc-20240116; t=1706083580; c=relaxed/simple;
+	bh=DtyfKITA4pnakpz/HIXhooug2MJu65n2wbaOdYeeJW8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=hiM+4ma1vxj1sC2uGFhMsFIkP59k6Ssmxv2HTSJuBdmgUKiepLFeFBiWd0GpTjyr+7MiBIP0gT8LxqFwx/0/rxJ/A+Zfj0XUT/Ame0N0r9Nh0M2OxwZ4XrRaqegm/fh3DFiK+7S5a1z/8YRENtpsoYDfBGKXwuZfohRjhR808ZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TKc2H3ZFfzsWCm;
+	Wed, 24 Jan 2024 16:05:11 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
+	by mail.maildlp.com (Postfix) with ESMTPS id 37E0B140487;
+	Wed, 24 Jan 2024 16:06:14 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 24 Jan 2024 16:06:13 +0800
+Message-ID: <222c5c22-702f-44e7-734a-872a2b25d639@huawei.com>
+Date: Wed, 24 Jan 2024 16:06:13 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH 0/2] fs: make the i_size_read/write helpers be
+ smp_load_acquire/store_release()
+Content-Language: en-US
+To: Jan Kara <jack@suse.cz>, Christian Brauner <brauner@kernel.org>
+CC: <torvalds@linux-foundation.org>, <viro@zeniv.linux.org.uk>,
+	<willy@infradead.org>, <akpm@linux-foundation.org>,
+	<linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
+	<yangerkun@huawei.com>, <yukuai3@huawei.com>,
+	<linux-fsdevel@vger.kernel.org>, Baokun Li <libaokun1@huawei.com>
+References: <20240122094536.198454-1-libaokun1@huawei.com>
+ <20240122-gepokert-mitmachen-6d6ba8d2f0a8@brauner>
+ <20240123185622.ssscyrrw5mjqjdyh@quack3>
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20240123185622.ssscyrrw5mjqjdyh@quack3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
 
-On Tue, 23 Jan 2024, Lucas De Marchi <lucas.demarchi@intel.com> wrote:
-> Now that include/linux/bits.h implements fixed-width GENMASK_*, use them
-> to implement the i915/xe specific macros. Converting each driver to use
-> the generic macros are left for later, when/if other driver-specific
-> macros are also generalized.
-
-With the type-specific max checks added to GENMASK_*, this would be
-great.
-
-BR,
-Jani.
-
+On 2024/1/24 2:56, Jan Kara wrote:
+> On Mon 22-01-24 12:14:52, Christian Brauner wrote:
+>> On Mon, 22 Jan 2024 17:45:34 +0800, Baokun Li wrote:
+>>> This patchset follows the linus suggestion to make the i_size_read/write
+>>> helpers be smp_load_acquire/store_release(), after which the extra smp_rmb
+>>> in filemap_read() is no longer needed, so it is removed.
+>>>
+>>> Functional tests were performed and no new problems were found.
+>>>
+>>> Here are the results of unixbench tests based on 6.7.0-next-20240118 on
+>>> arm64, with some degradation in single-threading and some optimization in
+>>> multi-threading, but overall the impact is not significant.
+>>>
+>>> [...]
+>> Hm, we can certainly try but I wouldn't rule it out that someone will
+>> complain aobut the "non-significant" degradation in single-threading.
+>> We'll see. Let that performance bot chew on it for a bit as well.
+> Yeah, over 5% regression in buffered read/write cost is a bit hard to
+> swallow. I somewhat wonder why this is so much - maybe people call
+> i_size_read() without thinking too much and now it becomes atomic op on
+> arm? Also LKP tests only on x86 (where these changes are going to be
+> for noop) and I'm not sure anybody else runs performance tests on
+> linux-next, even less so on ARM... So not sure anybody will complain until
+> this gets into some distro (such as Android).
 >
-> Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
-> ---
->  drivers/gpu/drm/i915/i915_reg_defs.h | 108 +++------------------------
->  1 file changed, 11 insertions(+), 97 deletions(-)
+>> But I agree that the smp_load_acquire()/smp_store_release() is clearer
+>> than the open-coded smp_rmb().
+> Agreed, conceptually this is nice and it will also silence some KCSAN
+> warnings about i_size updates vs reads.
 >
-> diff --git a/drivers/gpu/drm/i915/i915_reg_defs.h b/drivers/gpu/drm/i915/i915_reg_defs.h
-> index a685db1e815d..52f99eb96f86 100644
-> --- a/drivers/gpu/drm/i915/i915_reg_defs.h
-> +++ b/drivers/gpu/drm/i915/i915_reg_defs.h
-> @@ -9,76 +9,19 @@
->  #include <linux/bitfield.h>
->  #include <linux/bits.h>
->  
-> -/**
-> - * REG_BIT() - Prepare a u32 bit value
-> - * @__n: 0-based bit number
-> - *
-> - * Local wrapper for BIT() to force u32, with compile time checks.
-> - *
-> - * @return: Value with bit @__n set.
-> - */
-> -#define REG_BIT(__n)							\
-> -	((u32)(BIT(__n) +						\
-> -	       BUILD_BUG_ON_ZERO(__is_constexpr(__n) &&		\
-> -				 ((__n) < 0 || (__n) > 31))))
-> -
-> -/**
-> - * REG_BIT8() - Prepare a u8 bit value
-> - * @__n: 0-based bit number
-> - *
-> - * Local wrapper for BIT() to force u8, with compile time checks.
-> - *
-> - * @return: Value with bit @__n set.
-> - */
-> -#define REG_BIT8(__n)                                                   \
-> -	((u8)(BIT(__n) +                                                \
-> -	       BUILD_BUG_ON_ZERO(__is_constexpr(__n) &&         \
-> -				 ((__n) < 0 || (__n) > 7))))
-> -
-> -/**
-> - * REG_GENMASK() - Prepare a continuous u32 bitmask
-> - * @__high: 0-based high bit
-> - * @__low: 0-based low bit
-> - *
-> - * Local wrapper for GENMASK() to force u32, with compile time checks.
-> - *
-> - * @return: Continuous bitmask from @__high to @__low, inclusive.
-> - */
-> -#define REG_GENMASK(__high, __low)					\
-> -	((u32)(GENMASK(__high, __low) +					\
-> -	       BUILD_BUG_ON_ZERO(__is_constexpr(__high) &&	\
-> -				 __is_constexpr(__low) &&		\
-> -				 ((__low) < 0 || (__high) > 31 || (__low) > (__high)))))
-> -
-> -/**
-> - * REG_GENMASK64() - Prepare a continuous u64 bitmask
-> - * @__high: 0-based high bit
-> - * @__low: 0-based low bit
-> - *
-> - * Local wrapper for GENMASK_ULL() to force u64, with compile time checks.
-> - *
-> - * @return: Continuous bitmask from @__high to @__low, inclusive.
-> +/*
-> + * Wrappers over the generic BIT_* and GENMASK_* implementations,
-> + * for compatibility reasons with previous implementation
->   */
-> -#define REG_GENMASK64(__high, __low)					\
-> -	((u64)(GENMASK_ULL(__high, __low) +				\
-> -	       BUILD_BUG_ON_ZERO(__is_constexpr(__high) &&		\
-> -				 __is_constexpr(__low) &&		\
-> -				 ((__low) < 0 || (__high) > 63 || (__low) > (__high)))))
-> +#define REG_GENMASK(__high, __low)	GENMASK_U32(__high, __low)
-> +#define REG_GENMASK64(__high, __low)	GENMASK_U64(__high, __low)
-> +#define REG_GENMASK16(__high, __low)	GENMASK_U16(__high, __low)
-> +#define REG_GENMASK8(__high, __low)	GENMASK_U8(__high, __low)
->  
-> -/**
-> - * REG_GENMASK8() - Prepare a continuous u8 bitmask
-> - * @__high: 0-based high bit
-> - * @__low: 0-based low bit
-> - *
-> - * Local wrapper for GENMASK() to force u8, with compile time checks.
-> - *
-> - * @return: Continuous bitmask from @__high to @__low, inclusive.
-> - */
-> -#define REG_GENMASK8(__high, __low)                                     \
-> -	((u8)(GENMASK(__high, __low) +                                  \
-> -	       BUILD_BUG_ON_ZERO(__is_constexpr(__high) &&      \
-> -				 __is_constexpr(__low) &&               \
-> -				 ((__low) < 0 || (__high) > 7 || (__low) > (__high)))))
-> +#define REG_BIT(__n)			BIT_U32(__n)
-> +#define REG_BIT64(__n)			BIT_U64(__n)
-> +#define REG_BIT16(__n)			BIT_U16(__n)
-> +#define REG_BIT8(__n)			BIT_U8(__n)
->  
->  /*
->   * Local integer constant expression version of is_power_of_2().
-> @@ -143,35 +86,6 @@
->   */
->  #define REG_FIELD_GET64(__mask, __val)	((u64)FIELD_GET(__mask, __val))
->  
-> -/**
-> - * REG_BIT16() - Prepare a u16 bit value
-> - * @__n: 0-based bit number
-> - *
-> - * Local wrapper for BIT() to force u16, with compile time
-> - * checks.
-> - *
-> - * @return: Value with bit @__n set.
-> - */
-> -#define REG_BIT16(__n)                                                   \
-> -	((u16)(BIT(__n) +                                                \
-> -	       BUILD_BUG_ON_ZERO(__is_constexpr(__n) &&         \
-> -				 ((__n) < 0 || (__n) > 15))))
-> -
-> -/**
-> - * REG_GENMASK16() - Prepare a continuous u8 bitmask
-> - * @__high: 0-based high bit
-> - * @__low: 0-based low bit
-> - *
-> - * Local wrapper for GENMASK() to force u16, with compile time
-> - * checks.
-> - *
-> - * @return: Continuous bitmask from @__high to @__low, inclusive.
-> - */
-> -#define REG_GENMASK16(__high, __low)                                     \
-> -	((u16)(GENMASK(__high, __low) +                                  \
-> -	       BUILD_BUG_ON_ZERO(__is_constexpr(__high) &&      \
-> -				 __is_constexpr(__low) &&               \
-> -				 ((__low) < 0 || (__high) > 15 || (__low) > (__high)))))
->  
->  /**
->   * REG_FIELD_PREP16() - Prepare a u16 bitfield value
+> 								Honza
+Hello Honza!
 
+Are there any other performance tests you'd like to perform?
+I can test it on my machine if you have any.
+
+Cheers!
 -- 
-Jani Nikula, Intel
+With Best Regards,
+Baokun Li
+.
 
