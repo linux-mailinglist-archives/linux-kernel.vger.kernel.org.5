@@ -1,166 +1,118 @@
-Return-Path: <linux-kernel+bounces-37233-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37243-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6138583ACFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:15:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34DD383AD32
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:25:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 878CB1C251A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:15:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3B311F22AB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:25:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D9477A709;
-	Wed, 24 Jan 2024 15:15:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4C087A721;
+	Wed, 24 Jan 2024 15:25:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CKfKiWGw"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+	dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b="jLfK4Ir+";
+	dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b="RqAwVMX2"
+Received: from gofer.mess.org (gofer.mess.org [88.97.38.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3959022085;
-	Wed, 24 Jan 2024 15:15:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.115
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12BA62BAE5;
+	Wed, 24 Jan 2024 15:25:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=88.97.38.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706109315; cv=none; b=eyrYAWWh29TaLG4PLJ3ASNHAWr0m2SCVQbLJY3cID4Mp6t7Rk3EGi2iFor5nEKR91RZ2pgs4X53ho1Oi2cluZwuBkgHDAi1KG7BxXMoifq42wFNfW+FcdcH1Y/970xVGev/jcXJScqpfWqXNrEu+C/MfUaPtLUZiwJ1R6cmpL5Y=
+	t=1706109934; cv=none; b=LntcJpn59oG1Uh6JzMBcXyCx5AUimmXf9c4gOIBdiB0E7gQidyr6TLVqKWJpryFxdCVyWkYg48yd8ZeF9Iqq7vgA3WUs0UCnvv9CwGAm4iTkwkWtGJ5qy8re6RlDWcvf9cczMa8IH+csY2ljGVlXatU+PmUCJ8p72jE84TUQYgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706109315; c=relaxed/simple;
-	bh=uzQLDGWYhf9xfb4Lm9GWu2gEumrrxwpUwu6HE1AQ6n0=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=BmOjgYyQiGGIhkV9tebnCiC0cXqAxbLwU1qyfWqlL0rn+jjTiESDIuNqgBCn6QGwaU3ulQJfsxnamWuTqMGBe9Pe2z5CGOgagK27XjfGKXyIDy/gzEMyeOXd3anSxeA7ToRD45vQ+benDcQ0JqMpAQRqKJcspuHeLgw7J5orFng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CKfKiWGw; arc=none smtp.client-ip=192.55.52.115
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706109313; x=1737645313;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=uzQLDGWYhf9xfb4Lm9GWu2gEumrrxwpUwu6HE1AQ6n0=;
-  b=CKfKiWGwxLJ/ImggqwJZZj1DS9Lzky2rl0zD5cEOI4B2SCJ5CZvudmFN
-   EpGvLCVEDsP0sWmqqwV4VVcO2GPHc26vcTFqEyk/I1O+CCrj9SQZ6Xcgn
-   2ZmJLOf6HyTFsP81J+s9qzzsuVAR1hvzs5MXqbU6aot/NITLumDJ95hXo
-   OeHGC9vfFNyMx6YYsTQpOcd3xA77uEO0wNYFPDx0i6O1gSyQMRBlJMhXZ
-   50cRkQ0VctI4+ktrR6cDH38YFKr/YJL5OMD5jsZOkzd0xaJociA1JlB9f
-   yYC6V5GXn+leeVCKMW9ShoWhLPMhWkOcdD2HSPSj3NlRhk/DQAdNHdBd7
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="401529939"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="401529939"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 07:15:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="2072375"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.48.46])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 07:15:06 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Wed, 24 Jan 2024 17:15:01 +0200 (EET)
-To: Frank Li <Frank.Li@nxp.com>
-cc: alexandre.belloni@bootlin.com, conor.culhane@silvaco.com, 
-    devicetree@vger.kernel.org, gregkh@linuxfoundation.org, 
-    imx@lists.linux.dev, jirislaby@kernel.org, joe@perches.com, 
-    krzysztof.kozlowski+dt@linaro.org, krzysztof.kozlowski@linaro.org, 
-    linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org, 
-    linux-serial@vger.kernel.org, miquel.raynal@bootlin.com, robh@kernel.org, 
-    zbigniew.lukwinski@linux.intel.com
-Subject: Re: [PATCH v4 6/8] i3c: target: func: add tty driver
-In-Reply-To: <20240123231043.3891847-7-Frank.Li@nxp.com>
-Message-ID: <744bf8d6-48a3-81b4-baa8-d8c06500a971@linux.intel.com>
-References: <20240123231043.3891847-1-Frank.Li@nxp.com> <20240123231043.3891847-7-Frank.Li@nxp.com>
+	s=arc-20240116; t=1706109934; c=relaxed/simple;
+	bh=h6gKgCOyMbUEFd07PJSrDnDe9rMzxnKmjXzcvpqKJlw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=RXlrp0txbOmKRcvQEbpPzJRmdrGPNnSG8fp2+MmFpWyOYoGfNbUw7wIdR3j+FtBJgSfOtB6nLpMUwdTaO13mKXfmre4+wl1saBcYMI3hctIX02qYN7g3zpN3QwjS8kTsIZdS2SNlUYa7XGP2/85fgfpY2Ne9yJwfgVifeX09ZwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mess.org; spf=pass smtp.mailfrom=mess.org; dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b=jLfK4Ir+; dkim=pass (2048-bit key) header.d=mess.org header.i=@mess.org header.b=RqAwVMX2; arc=none smtp.client-ip=88.97.38.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mess.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mess.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
+	t=1706109334; bh=h6gKgCOyMbUEFd07PJSrDnDe9rMzxnKmjXzcvpqKJlw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=jLfK4Ir+PWEN6fIkcwK5gNMUQhN1Dgk1VL7yKyzUD6YuZVgMfFgEoCEImOJUD8LbY
+	 LNjkWRyIcuBzTRViycy3KJF7g+jTG8tTOsnt7OWMAr0vSgFIl+10QtZ4/HGLiEzHOV
+	 NkPOIxxJzBR0fpSaY5f5KkA+7HdzSZmTslBj2rOM6xfvxoqLLUFutYP9iuVeQKoW0D
+	 2lPz/oSwj+IeDdmVvaSCYnxo25E/HeDxAG/WiG0cWo7XOT/SLa/NGNO5iy61pbkYyN
+	 G1FhCtinZOAPvJctgoSNUb+bk4OKLgkkhJyMLRjhWJs038HjIvwCrKImQCuhxF9t7L
+	 x2TOSwJZ/KZfA==
+Received: by gofer.mess.org (Postfix, from userid 501)
+	id C3E35100741; Wed, 24 Jan 2024 15:15:34 +0000 (GMT)
+X-Spam-Level: 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
+	t=1706109333; bh=h6gKgCOyMbUEFd07PJSrDnDe9rMzxnKmjXzcvpqKJlw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=RqAwVMX2dDzUvfbJsEf/2lu1BSNBVcNjxvPnCbrBPJb3OM6v3dMW4ObwXtnFSf2a6
+	 F0eivZNyHX+gW6uYsgzuS1q8wFxJXahffSeOf/RgtY9r1300p9U7+iqC/WtZZbjr8g
+	 Ccwp/9GX0AGIUgA1aEezGlgPHo2J2tZu18ymWcs981OQxbSxjcieHi5peFzlV4mVWf
+	 t8KjgpMgws4uSGAT2ifzWrTzJIM+J5ZZRoiYV7AKfxCrXQER1EA/Xf1xTwPz1kw7Nk
+	 NSuURE6ZHYifrtBY3HoIyDlfVXqmqUtlkBNNv2ciGo/hiIE7Jk2+kynnBGp7HTSzlZ
+	 RYKZL/PiYZToA==
+Received: from bigcore.mess.org (bigcore.local [IPv6:2a02:8011:d000:212:bc3c:1b4a:a6fa:362f])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by gofer.mess.org (Postfix) with ESMTPSA id 2B9671000B2;
+	Wed, 24 Jan 2024 15:15:33 +0000 (GMT)
+From: Sean Young <sean@mess.org>
+To: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Cc: Sean Young <sean@mess.org>,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: usb-audio: add quirk for RODE NT-USB+
+Date: Wed, 24 Jan 2024 15:15:24 +0000
+Message-ID: <20240124151524.23314-1-sean@mess.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, 23 Jan 2024, Frank Li wrote:
+The RODE NT-USB+ is marketed as a professional usb microphone, however the
+usb audio interface is a mess:
 
-> Add tty over I3C target function driver.
-> 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+[    1.130977] usb 1-5: new full-speed USB device number 2 using xhci_hcd
+[    1.503906] usb 1-5: config 1 has an invalid interface number: 5 but max is 4
+[    1.503912] usb 1-5: config 1 has no interface number 4
+[    1.519689] usb 1-5: New USB device found, idVendor=19f7, idProduct=0035, bcdDevice= 1.09
+[    1.519695] usb 1-5: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+[    1.519697] usb 1-5: Product: RØDE NT-USB+
+[    1.519699] usb 1-5: Manufacturer: RØDE
+[    1.519700] usb 1-5: SerialNumber: 1D773A1A
+[    8.327495] usb 1-5: 1:1: cannot get freq at ep 0x82
+[    8.344500] usb 1-5: 1:2: cannot get freq at ep 0x82
+[    8.365499] usb 1-5: 2:1: cannot get freq at ep 0x2
 
-> diff --git a/drivers/i3c/func/tty.c b/drivers/i3c/func/tty.c
-> new file mode 100644
-> index 0000000000000..bad99c08be0ac
-> --- /dev/null
-> +++ b/drivers/i3c/func/tty.c
-> @@ -0,0 +1,475 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2023 NXP
-> + * Author: Frank Li <Frank.Li@nxp.com>
-> + */
-> +
-> +#include <linux/iopoll.h>
-> +#include <linux/i3c/target.h>
-> +#include <linux/serial_core.h>
-> +#include <linux/slab.h>
-> +#include <linux/tty_flip.h>
-> +
-> +static DEFINE_IDR(i3c_tty_minors);
-> +
-> +static struct tty_driver *i3c_tty_driver;
-> +
-> +#define I3C_TTY_MINORS		8
-> +
-> +#define I3C_TX_NOEMPTY		BIT(0)
-> +#define I3C_TTY_TRANS_SIZE	16
-> +#define I3C_TTY_IBI_TX		BIT(0)
+Add QUIRK_FLAG_GET_SAMPLE_RATE to work around the broken sample rate get.
+I have asked Rode support to fix it, but they show no interest.
 
-Lacking #include for BIT()
+Signed-off-by: Sean Young <sean@mess.org>
+---
+ sound/usb/quirks.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-
-> +	do {
-> +		req = i3c_target_ctrl_alloc_request(func->ctrl, GFP_KERNEL);
-> +		if (!req)
-> +			goto err_alloc_req;
-> +
-> +		req->buf = (void *) (sport->buffer + offset);
-
-Casting to void is unnecessary.
-
-> +		req->length = rxfifo_size;
-> +		req->context = sport;
-> +		req->complete = i3c_target_tty_rx_complete;
-> +		offset += rxfifo_size;
-> +
-> +		if (i3c_target_ctrl_queue(req, GFP_KERNEL))
-> +			goto err_alloc_req;
-> +	} while (req && (offset + rxfifo_size) < UART_XMIT_SIZE);
-
-Extra ().
-
-> +static void i3c_port_shutdown(struct tty_port *port)
-> +{
-> +	struct ttyi3c_port *sport =
-> +		container_of(port, struct ttyi3c_port, port);
-
-Just put this to a single line, nothing important is lost even on 80 char
-screen.
-
-> +static void i3c_port_destruct(struct tty_port *port)
-> +{
-> +	struct ttyi3c_port *sport =
-> +		container_of(port, struct ttyi3c_port, port);
-
-Ditto.
-
-> +	if (i3c_target_ctrl_set_config(func->ctrl, func)) {
-> +		dev_err(&func->dev, "failure set i3c config\n");
-
-failed to set i3c config
-
-
-> +	read_poll_timeout(i3c_target_ctrl_fifo_status, val, !val, 100, timeout, false,
-> +			  sport->i3cdev->ctrl, true);
-> +
-> +	i3c_target_ctrl_set_status_format1(sport->i3cdev->ctrl, sport->status & (~I3C_TX_NOEMPTY));
-
-Unnecessary ().
-
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 07cc6a201579a..6f1f0712e7dc5 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -2179,6 +2179,8 @@ static const struct usb_audio_quirk_flags_table quirk_flags_table[] = {
+ 		   QUIRK_FLAG_FIXED_RATE),
+ 	DEVICE_FLG(0x1bcf, 0x2283, /* NexiGo N930AF FHD Webcam */
+ 		   QUIRK_FLAG_GET_SAMPLE_RATE),
++	DEVICE_FLG(0x19f7, 0x0035, /* RODE NT-USB+ */
++		   QUIRK_FLAG_GET_SAMPLE_RATE),
+ 
+ 	/* Vendor matches */
+ 	VENDOR_FLG(0x045e, /* MS Lifecam */
 -- 
- i.
+2.43.0
 
 
