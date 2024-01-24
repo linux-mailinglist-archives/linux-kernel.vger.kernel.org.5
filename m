@@ -1,104 +1,107 @@
-Return-Path: <linux-kernel+bounces-37378-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37379-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8672483AF21
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:05:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D55783AF24
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:05:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C9AF1F21DFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:05:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 915C01C243B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:05:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E42147E798;
-	Wed, 24 Jan 2024 17:04:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B4E97E789;
+	Wed, 24 Jan 2024 17:05:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="lUzNe8Zi"
-Received: from mout.web.de (mout.web.de [217.72.192.78])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QGhzjmEw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF57B7E777;
-	Wed, 24 Jan 2024 17:04:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3B697E77D
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 17:05:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706115897; cv=none; b=gqV19nY2Ums5KZ7qY6fX+0rVd3dKpvYvtZDswwMuDAgYzWoSmLiTB4zKUF4maPng4UlKgbw9Gywr3b1JU5SRF7E5vseYvrDqq/16DQHck/yuTFQJAs5CgP0k+e4uAbodkj863ShZn9gJLGtnOedY+0FSatLDEDvLoPNbBr/yokg=
+	t=1706115909; cv=none; b=kgQvlJ5qJyHZ+kfyzo9fx5/89A/0d5koeAJnUBaCgFcibPod0wK/T83XZOrStu9v1jkPowlim9fdDRqSqrucGkoU5NakUC1m3Tq95pniRTlqvLv6PIwzCGnz3YWksf1hNxbRTjiWpCpn6V+0HgfTjlAAbS0nfpeb3j64ZUjqa6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706115897; c=relaxed/simple;
-	bh=eZik0NQgHnxRTjoOGVz1jiYozSbIVj3TpK7roxu/iQA=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=a6XIrilOIWNpl23bt/VGhkiNDcv/5ZbkJAa6Hxoo6WawTfdVjyL+nKo+c8qCU0pu3cHZhhdFSMIMLldK9Kf0l2a26m/KCzyVE2ATg+DbK1KUqddR9OMpn+Bt/amHhN0IOb78vG2KwjhpqY4Jatpd4SsEgwX+9snzhdNr03YJ9OA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=lUzNe8Zi; arc=none smtp.client-ip=217.72.192.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1706115865; x=1706720665; i=markus.elfring@web.de;
-	bh=eZik0NQgHnxRTjoOGVz1jiYozSbIVj3TpK7roxu/iQA=;
-	h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:
-	 In-Reply-To;
-	b=lUzNe8ZiAq2MtvUEprmZ7EUvfWha/ciK83fW1jtjO1KG97cq8HD7DEUVcrJ6UMY5
-	 Qs4Hwls5hj8t2jZzEw5N0WFMfg/6nUVICxOecQB7277thIoQ9UVHKnvD7SzBynOI7
-	 pCp/xfGzh9HsvjxlEvR212xtgwuwNHWwthS5fYHP+Fll0DobrSso+oc3S9k2bvc0z
-	 hGROvaEH6gI52kZci6kko+X8kJPZrqsQMAYtGN1xyAToYeyeKiZyN6R89dlfGaLDq
-	 3qa/7zQ2CO5cAmpZ/qaicC7/SGIlZTrW4cNlIvsPqhLj3flC+cUuvalspifrIBYwh
-	 VdnF1Qjam4AZ3d7NLw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.81.95]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MrwwJ-1qhJAi0Kl3-00nxrY; Wed, 24
- Jan 2024 18:04:25 +0100
-Message-ID: <791da036-5c0d-4c96-b252-24726bc7f2f7@web.de>
-Date: Wed, 24 Jan 2024 18:04:20 +0100
+	s=arc-20240116; t=1706115909; c=relaxed/simple;
+	bh=3QVdSsNIVHd+XBav0xMnzNX9FzcXdVijbP2sd6UI4JU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kfM3KP52f5Ut+uQJWcMMFsSJsBxWJFE6Q2//W8yVWjrukxi6X3PtAWRxZmH1Cz8D61Ddkt7/TTlNELeIGRAkqow44uFAvMntyTWhGgGOH8sF+TIlQZ21jl58Sdjfifs7DM+aKTpLJ1W/0FctXmZwLzWgq6/L3mSVF9+0UGxpJhE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QGhzjmEw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28B41C433F1;
+	Wed, 24 Jan 2024 17:05:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706115909;
+	bh=3QVdSsNIVHd+XBav0xMnzNX9FzcXdVijbP2sd6UI4JU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=QGhzjmEwWVrlhGuHSAZC8ODXiRdA+FVI22xCDwKGT8RbetWLOU3fTVpibzJtTHEbu
+	 13+mp0sRzQi9JJicOw6Y1mHYwMvI8/Dmy6RCCYGi2lYlb/AMJoTvinwhvKq0U1lev5
+	 wZz9+8OxnGAWDloSirQhRprvoJk126oPM8cqm1bD7V0M1NBHNF6b1evuI0YcVLusMY
+	 59Xhg0ysDQN9XdGMWJBhl5HVdl5e6fQfDG3FFDGKSl/roCAaYn/CUnyxxFCQpOiTZT
+	 rk7DOBdoNfDwDI4/bqgy3FeE37LjTPikujAcAn1KnWXYJhfGr3Dxtbs3uBsvqixqJz
+	 wMKnV+SG6FWrA==
+From: Frederic Weisbecker <frederic@kernel.org>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@kernel.org>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Peng Liu <liupeng17@lenovo.com>,
+	Joel Fernandes <joel@joelfernandes.org>
+Subject: [PATCH 00/15] timers/nohz cleanups and hotplug reorganization
+Date: Wed, 24 Jan 2024 18:04:44 +0100
+Message-ID: <20240124170459.24850-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Kunwu Chan <chentao@kylinos.cn>, kvm@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, kernel-janitors@vger.kernel.org,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Nicholas Piggin <npiggin@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <20240124093647.479176-1-chentao@kylinos.cn>
-Subject: Re: [PATCH] KVM: PPC: code cleanup for kvmppc_book3s_irqprio_deliver
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240124093647.479176-1-chentao@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:G0go2dhXVu0Sv5YnVpAY+1uRg0zK0HLp5MnOCn5FVZtO4VRVTPf
- k9q/daeBYgsA02NjvmzAn4KOMTlyCurrP5801Mdn4mKysomJU90WRw7ePlw6upIqpTkv7NZ
- hx/J7+hpeY2aNw8FtxcAp9ZkhAB5CRqbr5+4a8zmkttepfuC0gyOPkIB8mqwSrMnlOyi3gS
- ZF2+m+O5P1khKJKI0Qlvg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:1oU2Xjxbha8=;At8CAKPHdhpSpJ4OpBdIp3LKFLr
- vOfrhGBmQDuZg4cInC8Ro6jNNr4L6V730p0jo2gsRI1198t3VOaCBw7A3/PHuI7c+R7fOGhbU
- 1ar5VdgTdbK8i7XYXxAl5+Xh40qMGejjJFlbLMIWWSvV8q9MdQDbaIl/1OCrAyYF3WZ7raAmT
- HTLSwwQ5HCG5oHdbcJmJxUxPvyjiGvprh0qpsu8pGzXUHpZunBZyo1oIDpJGpIXMC7h91snfu
- FIHXwHnrsNcILE8MV2e7drcq6hemITAFrMuHn4mBMTsbnwCH3p1wEIMBw6C9c4cIjE1xlrsNQ
- vU8l9J/G0G+p21hquVCSI17cKB3HJESWAA/2BGWVEhkgPCnQp+l83rvWBX3n2ZVBQzSehIEvR
- IOaaNPIGX4dfLTcbsdMHkcFI6CilYiKUwO0HJVutXHKrIT3ZShB6iu6FFQHdgPWGh2cLNnJP5
- nTW4+At2h4n/dUdG7iOTVeJbH7F5P4ZOAdYPbQBJkUfYvgJJuIJXKm5TBvbWN9ESXjaoBHM33
- LXNCxZ54wO+26YV7ju5g4pADhA43EgL+irNEdeg7KUiGmkzG2VDuA0/VkLt1FTdkL/shD0NdW
- CqxzWj4siqs/N07Xet8xHSUpcafqGAwRn7K5irlsLYtTd24BFquP1+lyIhHyHo4tPqHPKV4Bo
- /BTlN4lG7oCQDET9qdcgCOieffkWSqHCu/+gBGX5zcIrIcf4WsJfI2J84Mc/Es+vT0MZEm3Qp
- PebXQtt2Oh4GuwXRoZJGw9RAm80CyY2PqcXhbUbGJp7GXGgQNonDF+e3Y5UDVpOweJsskRiN7
- jv7vTAOcKlT9HtMFpQCcxJskmy/kBO2CQj7OwmFflVIJ4COI6nv+Z3QEGWPdt01Y8pJwXtP+k
- yxnEgDix+ycFKqxEgW00L7TXQIB7tjZVDCTJ4gHNNvIL5TdCkA+TwPr3HNtML7UR+e0QbTGSe
- 2TJaAQhtU+C2QwwlhvUcOjK4qOU=
+Content-Transfer-Encoding: 8bit
 
-> If there are no plans to enable this part code in the future,
+Hi,
 
-Will the word combination =E2=80=9Ccode part=E2=80=9D become preferred for
-a subsequent change description?
+Here are some cleanups here and there and also some more rational tick
+related CPU hotplug code reorganization.
+
+git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+	timers/hotplug
+
+HEAD: 378e195ce2fd96d90ed7c1cde9033cb7079a7274
+
+Thanks,
+	Frederic
+---
+
+Frederic Weisbecker (13):
+      tick: Remove useless oneshot ifdeffery
+      tick: Use IS_ENABLED() whenever possible
+      tick: s/tick_nohz_stop_sched_tick/tick_nohz_full_stop_tick
+      tick: No need to clear ts->next_tick again
+      tick: Start centralizing tick related CPU hotplug operations
+      tick: Move tick cancellation up to CPUHP_AP_TICK_DYING
+      tick: Move broadcast cancellation up to CPUHP_AP_TICK_DYING
+      tick: Assume the tick can't be stopped in NOHZ_MODE_INACTIVE mode
+      tick: Move got_idle_tick away from common flags
+      tick: Move individual bit features to debuggable mask accesses
+      tick: Split nohz and highres features from nohz_mode
+      tick: Shut down low-res tick from dying CPU
+      tick: Assume timekeeping is correctly handed over upon last offline idle call
+
+Peng Liu (2):
+      tick/nohz: Remove duplicate between tick_nohz_switch_to_nohz() and tick_setup_sched_timer()
+      tick/nohz: Remove duplicate between lowres and highres handlers
 
 
-> we can remove this dead code.
-
-And omit another blank line accordingly?
-
-Regards,
-Markus
+ include/linux/cpuhotplug.h  |   1 +
+ include/linux/tick.h        |  16 +--
+ kernel/cpu.c                |  11 +-
+ kernel/sched/idle.c         |   1 -
+ kernel/time/hrtimer.c       |   4 +-
+ kernel/time/tick-common.c   |  31 +++--
+ kernel/time/tick-internal.h |   2 +
+ kernel/time/tick-sched.c    | 296 ++++++++++++++++++++++----------------------
+ kernel/time/tick-sched.h    |  40 +++---
+ kernel/time/timer_list.c    |  10 +-
+ 10 files changed, 213 insertions(+), 199 deletions(-)
 
