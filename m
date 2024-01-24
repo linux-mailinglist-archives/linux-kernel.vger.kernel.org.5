@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-37749-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37751-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 782E383B4C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:35:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BA4983B4C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:35:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C1A01C20C34
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:35:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B10921F24B3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:35:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F15E713AA43;
-	Wed, 24 Jan 2024 22:33:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49C001386A5;
+	Wed, 24 Jan 2024 22:33:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="msbJGOvh"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="uAFsImG1"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 235F7135403;
-	Wed, 24 Jan 2024 22:33:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C62E13665A;
+	Wed, 24 Jan 2024 22:33:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706135600; cv=none; b=Pzm4vJZBwp7SNM0EjjWNzGRahp/k2x3ueF8K1ltISc+J/XZmPOmvQg8Q6lGykjXAh7R0TS8PkhVCvoVGqD60J85VzTmO0JeXv0iZv66lUfELDAFa8lwA74aKVY/PFcNBhSWZhCTQ9dmwd5E200vewGJE4ZQu8JtE7RfKEPqglpM=
+	t=1706135600; cv=none; b=UON93yz/yFM/B2itUPXWngMXNFXkqlSfwRA1Nf3KD9PsU7M0WyFMyFSajey/0Z1c38zFA2k0+OzZ3To30poalmIrE64Yua90uOBpm12L7PpMUv2T8B2Mxs/dXSYRqV4wRD8JLfKfqDLLAguDNdztuNrRY14Ts4JIMT5EcKDUBMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706135600; c=relaxed/simple;
-	bh=a5awrOpTPwikDiOyOVG3aK1l4bf9XY8Ggcl++Tz/DlI=;
+	bh=2d30L/9cmkRO/WDG+K1BNz5a2b/Cm1vGtAAK89cu4K8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Rs1WN0Y84SKyiOzKDKK47iQ3viwLP9Mex2mDZEWkZsYbD3SARD3PvxWq7Sjj9vc/e81NouGhxXyNA7ebcSVFUoww+AfqXxzzgqzZpu1BJIyuTO4uIIZvw5KD3kWstm+i7+uzxHkAgURl72KoTk0I2L0pYpKOo0oi+Zotmu5dYjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=msbJGOvh; arc=none smtp.client-ip=212.227.17.21
+	 MIME-Version; b=c9iWfNjx6yyGV3Far0kv7Qz6n49XNrEDuTKe+PJ7ekp7huvMfdr0HTDTZNNhyOHXptWoSrCkSQyWCY03HdfE3z02DFCeKZxlswRahdP8VmzfInU5nBbczMj2URT9F+LFbCEbBnC/cRJUZEtwHLEuuIeKBAe6KrZxKYUIxBj3SlQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=uAFsImG1; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
 	s=s31663417; t=1706135560; x=1706740360; i=wahrenst@gmx.net;
-	bh=a5awrOpTPwikDiOyOVG3aK1l4bf9XY8Ggcl++Tz/DlI=;
+	bh=2d30L/9cmkRO/WDG+K1BNz5a2b/Cm1vGtAAK89cu4K8=;
 	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
 	 References;
-	b=msbJGOvhIeZnY1lQSzyrRFGyzr3bQQmeY6qUSftUI4bYpmKakXWJpGZI6uhx40Jv
-	 GZXVNtoXNVTyDDWWTaxzAClZo7y1xbqmQ8QzsOgnlStHDcXReiFIpdmWdG01gxnbD
-	 qJGu7y95ZwBm9+ByNaLGifHEYgJlQennMnGjg8UCtM8f1IcbPpK3PMbXvGBbvPM4D
-	 F7X1Wmz9tAkxOhKkCGNV53OKKz8/YGgG9YGY6Jn6DBpYYjambZoSB7Yxn93Mz+Ums
-	 ywWIlnaHcw6yiEwlyIsM1/mbTC0vQ3uXRsZ3W27ZcWRfRzhAL5pCaMIgSjPalaTGS
-	 VAVdykHR7VSqHf3Qsw==
+	b=uAFsImG1Wf/jyi8h5ZXtWNZuZRmEOgIRZb+2vS8yz05LjJtMF2cgskiK5ub2Sjc2
+	 5BBZrDVqDymmz5pMiWQ9pCyW0kG7a6NhyJ+rHY8X7D1NYNXB2N7sdSJoSF/EOk6BE
+	 NwOpr4WhX/y52BnJz89RzNOiyswRb603O0ViS1JGTg4jnfAn7GGyQp1uYEaHTGWS9
+	 hqwMbJs9kFX6XxCXZwazAtj2zyENe6MD7NBCr6B8KbETduSXEWkDeexCPuZWNDk2O
+	 khedraDLHHZD7N2Sre+68XEJYR2u6DHAtvhAeN3Ok5agLXZzfTIiJ8rCuKJxhiD/h
+	 Z5C2aiz3qLmxYjOZJg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from stefanw-SCHENKER ([37.4.248.43]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MnJlc-1qlm5538dg-00jF7o; Wed, 24
- Jan 2024 23:32:39 +0100
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N6bjy-1r1mnm13fC-0184Sw; Wed, 24
+ Jan 2024 23:32:40 +0100
 From: Stefan Wahren <wahrenst@gmx.net>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -56,9 +56,9 @@ Cc: Lino Sanfilippo <LinoSanfilippo@gmx.de>,
 	linux-kernel@vger.kernel.org,
 	Stefan Wahren <wahrenst@gmx.net>,
 	Jacob Keller <jacob.e.keller@intel.com>
-Subject: [PATCH V3 06/14 next] qca_spi: Add QCASPI prefix to ring defines
-Date: Wed, 24 Jan 2024 23:32:03 +0100
-Message-Id: <20240124223211.4687-7-wahrenst@gmx.net>
+Subject: [PATCH V3 07/14 next] qca_spi: Introduce QCASPI_RX_MAX_FRAMES
+Date: Wed, 24 Jan 2024 23:32:04 +0100
+Message-Id: <20240124223211.4687-8-wahrenst@gmx.net>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240124223211.4687-1-wahrenst@gmx.net>
 References: <20240124223211.4687-1-wahrenst@gmx.net>
@@ -69,114 +69,65 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:V0hZf6rafJ9IERZbp0y+4Wh5HTXNAjXNZ4uOSpS7zDkXS/9o0K5
- K1CLQCFsEMpBCU98eSC2Tg7vV0v/BKounoFNmgDTwsiDzblQo/pJrRjklOm83J/XOLkIkoF
- zp9LkKr1gClWQSzbenvZi2kZMKdCq+ZrJ/Qw6bGZi35BSxKh1uKQ1gZTxSzJii8PxK3Tx2d
- +FJapMMyXm+PL21+LbDHw==
+X-Provags-ID: V03:K1:pNkWmArcSJL/MHR69zQw6xo3lRLg87y3skKCJrkSglOuOE2z9qd
+ ff/Swto1BMY5T2WHf9azhuRBNMWdPQmKa3grlFoR6d3EiDh1GWJCcHK3Z1S1cgldLehF9FR
+ +8SXmoe0mSLmN4LQ1MA3Gk3sE3A4kAlIRxsrST73e4m14OlnbJlYRihGJ+SaZv/XMZy9cGw
+ q5U7vtNGkZ8jueplyeUng==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Xl/9Ft5BOxw=;WJmBDu5UWoHf8xhT0WtnHW0zLwV
- 1NQQgtGjLhqB11H9pM83WbI8UBS6UWwwaHOjtqHZQ0cHnDJcrxw9oYkRTk7erFOzigWgsavjV
- 9wUBgi3xDKCM/7keQX7kPDkxt4Jws3dDYf1x+hFaMx4CFsFSapEumzmqCIOvycbN31kGjmjtv
- /t17HH3C2J8eGAFeat5XYSD02TXpP0LBd6YYrRA7Ps4kAssa9xJSV2BFYawId3WwOJrrIHYf/
- 73F4CxtftGh0hevyM44B0BPDEPiTuHS3ch8UdiBLPuzwzybjDbrf+Mu49T/1oYOVZIsdloTjD
- jS27zNk2GGFxWcM08nZxw+vbptZX3OQkQtvQ04+gCchXBXEP0NGJfvAp15R5QawdTTHGCtcvm
- OQ6Sg/xMXYFSBFAKXWn9TxOVyfknBik8sLDKTPX7IG6ifWHtRauIczKIAl5EWq1P9hbu5gJKJ
- eGCiNJ1TdqiaGR0eXNGb955tH5Vd0Azi3i4X5ROk2Qnp4nafWyvnaCXFPixy9eW4o5ompHMqv
- NtpLY9BtT1b0gHbNwzZJfW90Pj9izHbSyOvPl+ksj59TstXoE4NPa1V5gugbZa16kAoFE5Hpq
- +5a8Xt8GJCjvyXTwfHvm1yNw99XWSNjh7KccVCfHMjnzuRrveEMC0gSyDa7e+XzvOKKk7XaY2
- HSEstPyG1jNimi4ETCNp5K1aiqbaREnKpiLzxA+gvxoUUQX6it2hFkJ0A4WTPYbnCBMseIOWR
- 3selW0VKw17EJ4w+EMLr9L11q1LA2ksxZqCuo41nDz5M33d2zSl5Lr9+fkOvivfp1cG0Lczww
- m/33eawEd+Gcc4Ud+K9a3RQKtU55R5yb4/k1bwtfTKf2hcmTlx8+L6+LJJJM/iaXTVVsD9013
- mSBD4LH5kdUVBF99HG0gFrkpYiBYCxWogfvF76TDz++8w7rWRmHn20diqXeSb74njLXHJHyHy
- ZIHDdQ==
+UI-OutboundReport: notjunk:1;M01:P0:Qw5q0iuuywM=;6Y+cs0RRIy8Wmjncvhepicx5uS5
+ d9HGWomSamtw3OjimSWLB2BafCkf8d9jQoAgq/q6vDfxGPg0vUTd3KWujYyKvLhxhSScH3vJH
+ ntmkBDkht5jquApRvwbWGiYt2yPvgEQEFUQxP1wGcgk1svqtJpVPdIeVxKXu/sJq3plD7nE2k
+ 2F7C9+QZo4dBjoviLYz726hEUMcxLvl08ApZLve+8z4IciPDOrhMnIhR0kbyOUpCtri59yhWW
+ +YBWKSLThybtVIonlRxJRdsIunnmTg2PV4brg0VmTRVYdhqIkVAoIvxpBEDYo0AyU6xPn1cFC
+ WO5pt/E3fVH+ygTvyV/BWQ0eoKMeOFW79iJUPWdu1QFyUliHVc1HrOn93NfGCJuz4kOTTR8Bn
+ XouqY6MEKczsAMetSAcYAMT5nu5crE3eqCf6YMhe4bMnhlaRzLaXYNziuz7VY6eKnmpKfSKkJ
+ k3XZKaYbzo67+axt4c3OX9JZAmaEzB8TiHo+/gKYmhnzG2fY3x34FFTtEf+6c9s1MdV/l/NtL
+ kXri5cdhut8wS/U9VESjqr1t1/BAZOvL5o3pTAr64EwB7sZRsAxWIy4aty1u90c7iCPwpgqep
+ LTn2TFdp2jBu3D5cj1f/jki83hPengnKhGM/i5OZ+FR6Qri8jZsCZt7nbsBAjpRizI4Q3hW+I
+ qnTujRoWOjzKyqo3L0VTkX+iZQ6KuAJcnT1DfH8LPqPa1dcSj5B/v0QRur9hJCpoT1fif18UB
+ a4j94uk0ZD4eSBEtwDoP9pb1w+uOVO39F67HYDZuqRfCeI+FxWaUB1mlh+BW1w0lxgPw1WK9k
+ wwhEPxQqhO2B3DJ8ta5wLKOJCWiAmLSsZyW74xEh/v4FwXfgTagTEPpMzKvJwNjkn2c9MrPG/
+ +qQo1xO2f1vqR9L/uuyniY/5YgBxHyWwBVhLsemO50pDxPx6dTDJ1JshESmQvi82CjPBQxJtr
+ jVVQDw==
 
-All defines in qca_spi.h except of the two ring limit defines have
-a QCASPI prefix. Since the name is quite generic add the QCASPI prefix
-to avoid possible name conflicts.
+Currently qca_spi reserves enough space for 4 complete Ethernet over SPI
+frames in the receive buffer. Unfortunately this is hidden under a magic
+number. So replace it with a more self explaining define.
 
 Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
 Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
 =2D--
- drivers/net/ethernet/qualcomm/qca_debug.c | 6 +++---
- drivers/net/ethernet/qualcomm/qca_spi.c   | 4 ++--
- drivers/net/ethernet/qualcomm/qca_spi.h   | 6 +++---
- 3 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/net/ethernet/qualcomm/qca_spi.c | 2 +-
+ drivers/net/ethernet/qualcomm/qca_spi.h | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/qualcomm/qca_debug.c b/drivers/net/ether=
-net/qualcomm/qca_debug.c
-index 1822f2ad8f0d..857883d0b5ed 100644
-=2D-- a/drivers/net/ethernet/qualcomm/qca_debug.c
-+++ b/drivers/net/ethernet/qualcomm/qca_debug.c
-@@ -255,7 +255,7 @@ qcaspi_get_ringparam(struct net_device *dev, struct et=
-htool_ringparam *ring,
- 	struct qcaspi *qca =3D netdev_priv(dev);
-
- 	ring->rx_max_pending =3D QCASPI_RX_MAX_FRAMES;
--	ring->tx_max_pending =3D TX_RING_MAX_LEN;
-+	ring->tx_max_pending =3D QCASPI_TX_RING_MAX_LEN;
- 	ring->rx_pending =3D QCASPI_RX_MAX_FRAMES;
- 	ring->tx_pending =3D qca->txr.count;
- }
-@@ -275,8 +275,8 @@ qcaspi_set_ringparam(struct net_device *dev, struct et=
-htool_ringparam *ring,
- 	if (qca->spi_thread)
- 		kthread_park(qca->spi_thread);
-
--	qca->txr.count =3D max_t(u32, ring->tx_pending, TX_RING_MIN_LEN);
--	qca->txr.count =3D min_t(u16, qca->txr.count, TX_RING_MAX_LEN);
-+	qca->txr.count =3D max_t(u32, ring->tx_pending, QCASPI_TX_RING_MIN_LEN);
-+	qca->txr.count =3D min_t(u16, qca->txr.count, QCASPI_TX_RING_MAX_LEN);
-
- 	if (qca->spi_thread)
- 		kthread_unpark(qca->spi_thread);
 diff --git a/drivers/net/ethernet/qualcomm/qca_spi.c b/drivers/net/etherne=
 t/qualcomm/qca_spi.c
-index 919a400412cb..2ca25844d91c 100644
+index 2ca25844d91c..80182f8a4a50 100644
 =2D-- a/drivers/net/ethernet/qualcomm/qca_spi.c
 +++ b/drivers/net/ethernet/qualcomm/qca_spi.c
-@@ -476,7 +476,7 @@ qcaspi_flush_tx_ring(struct qcaspi *qca)
- 	 * has been replaced by netif_tx_lock_bh() and so on.
- 	 */
- 	netif_tx_lock_bh(qca->net_dev);
--	for (i =3D 0; i < TX_RING_MAX_LEN; i++) {
-+	for (i =3D 0; i < QCASPI_TX_RING_MAX_LEN; i++) {
- 		if (qca->txr.skb[i]) {
- 			dev_kfree_skb(qca->txr.skb[i]);
- 			qca->txr.skb[i] =3D NULL;
-@@ -889,7 +889,7 @@ qcaspi_netdev_setup(struct net_device *dev)
- 	memset(qca, 0, sizeof(struct qcaspi));
+@@ -814,7 +814,7 @@ qcaspi_netdev_init(struct net_device *dev)
+ 	qca->burst_len =3D qcaspi_burst_len;
+ 	qca->spi_thread =3D NULL;
+ 	qca->buffer_size =3D (dev->mtu + VLAN_ETH_HLEN + QCAFRM_HEADER_LEN +
+-		QCAFRM_FOOTER_LEN + 4) * 4;
++		QCAFRM_FOOTER_LEN + 4) * QCASPI_RX_MAX_FRAMES;
 
- 	memset(&qca->txr, 0, sizeof(qca->txr));
--	qca->txr.count =3D TX_RING_MAX_LEN;
-+	qca->txr.count =3D QCASPI_TX_RING_MAX_LEN;
- }
+ 	memset(&qca->stats, 0, sizeof(struct qcaspi_stats));
 
- static const struct of_device_id qca_spi_of_match[] =3D {
 diff --git a/drivers/net/ethernet/qualcomm/qca_spi.h b/drivers/net/etherne=
 t/qualcomm/qca_spi.h
-index 3067356106f0..dcecb072b8eb 100644
+index dcecb072b8eb..f735ad77402f 100644
 =2D-- a/drivers/net/ethernet/qualcomm/qca_spi.h
 +++ b/drivers/net/ethernet/qualcomm/qca_spi.h
-@@ -39,8 +39,8 @@
+@@ -41,6 +41,7 @@
 
- #define QCASPI_GOOD_SIGNATURE 0xAA55
-
--#define TX_RING_MAX_LEN 10
--#define TX_RING_MIN_LEN 2
-+#define QCASPI_TX_RING_MAX_LEN 10
-+#define QCASPI_TX_RING_MIN_LEN 2
+ #define QCASPI_TX_RING_MAX_LEN 10
+ #define QCASPI_TX_RING_MIN_LEN 2
++#define QCASPI_RX_MAX_FRAMES 4
 
  /* sync related constants */
  #define QCASPI_SYNC_UNKNOWN 0
-@@ -54,7 +54,7 @@
- #define QCASPI_EVENT_CPUON  1
-
- struct tx_ring {
--	struct sk_buff *skb[TX_RING_MAX_LEN];
-+	struct sk_buff *skb[QCASPI_TX_RING_MAX_LEN];
- 	u16 head;
- 	u16 tail;
- 	u16 size;
 =2D-
 2.34.1
 
