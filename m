@@ -1,72 +1,37 @@
-Return-Path: <linux-kernel+bounces-36533-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36534-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B7CC83A2A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:05:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89DFF83A2A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:13:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B976B23BBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 07:05:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AED5D1C2147F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 07:13:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0262316428;
-	Wed, 24 Jan 2024 07:05:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PBpEhQrr"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C008C1642B;
+	Wed, 24 Jan 2024 07:13:07 +0000 (UTC)
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7927A1428F
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 07:05:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F9F5156E4;
+	Wed, 24 Jan 2024 07:13:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706079944; cv=none; b=XHLShRnFdBgpyKHmUDS+Lr9tQa+MWCmzP7v51YUAwrVUHoeKB4O6XRkIJysIdmbKtJjnsNrWbrj/EVm2J3pjArhy7ksd/GU3/ZJbPTjoOnV8vIdteFI26/nElRBCvX2p5VHb+C18E6En+WBmsKLnSH9JN6sJRtsNWbONlgiZf/M=
+	t=1706080387; cv=none; b=DjZuwRjXLB79JAn1iWYj8ZnrrmEc+Qo2kthJHcfLvszvXTEXDnTPWFj4XVZZ8ZprQ0/Z5IWjbUonCDvamGO1/pqVL2/3HCSO//vp3cqBAUnTB2Wm+HfdGBFRFT6G7G4b469VuRnTUULUiB+p8va+za8ppzRH4ZeawmIC7cmzSpE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706079944; c=relaxed/simple;
-	bh=Zj5tnw4jopb0rTKmkovPBqBq8nwSE/xJiBlkRKTkq6M=;
+	s=arc-20240116; t=1706080387; c=relaxed/simple;
+	bh=tSelJtgo0n3PiRGZBvM/sTQ6dH9xpytYfgJDX1EyXWY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=US2AipmguYCsBIfkDAMbXRyNBbZ6I4eG3lphe00L4TH4SfruVCAUUhqnr+9msEriDEPupxbdd9OOdCdbU0kXbHPGHU56tCxqNVgRCoVMPBSGFJdmZzn6t0JcEmW4VeQbo5gD1U7mMpk+vQyOMRUKUlZqLVMktJPr1VVMnINkJ1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=PBpEhQrr; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55a86795a3bso5025684a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 23:05:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706079941; x=1706684741; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cNh642ztM9/JIoi6gRH/DDCNqKXOoK1COb5sZK4/5nY=;
-        b=PBpEhQrrHgi9HZbnr5XsKmpdB6EmsDrwEhXugKSQSvPDEymgxdMb1hzpatiKdvNalY
-         h9LQ2NQLCwQRivcUMRchKwFxTot75840OcR3CxszpH9K3V0utr6vMXaCh4JMC3t5AUFG
-         jr1btrg4RXgEbu9/f/HobYIj7DRMPb752D6ZtLdCf79RuKhB/zpjS53NeyVxwujSPl9Y
-         JIOKRc3sMRMFBNmgBb97OrXh3MQ8MhxqiFrgdE+MEf5XwWaerCBItbdi1XOsWC2c1y9R
-         Q0ds+LouvdV+iOOcuvQYqCHqN3Vqkxd49IZ//D9MM6buxd/UJOI2lH21izgNcvSQFwnp
-         k7Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706079941; x=1706684741;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cNh642ztM9/JIoi6gRH/DDCNqKXOoK1COb5sZK4/5nY=;
-        b=s66f1qpf0kpjgbdpxg2JkiBRxbvjJiVDsIivkLRWP/z7PqmXVkkQlvEQ+lR9/vhpdz
-         vqT0EcQGj5lX3cmNO0oskiZ6SEyQawtBxdLtYCKVKgr3uv46lkGofhJ6GMf9MYly678z
-         46VUN7Q6IwjXg45MSdrqi/rfOIXB3CwG0BDW1EzGcbPlys8ZJNFzF9ZWPxf0ZwIRCrAn
-         3AMT2UU2joWhrjFmsGSBMOHn54sFyPdWWxgpYAdBe+RfhVDJJL9HOK7BSW41IEquuK0R
-         +GVkrcbxiA8RLexoNY6Tsor48esgAf7Gl8TtJsqyKQz8CqkQOdlM9PwnKIInrhHgF3Sm
-         CIRg==
-X-Gm-Message-State: AOJu0Yx0pvy1Q5GqS7cORcEk5IoqxGeMQtNK/YZXiMUa68gjgrHlTyia
-	FYEehKJ7Nn34+TrhR7rEiDenaY+FipIfNEce77t1IY08L2H61v7uKCXYM1FdA5Q=
-X-Google-Smtp-Source: AGHT+IE+B/bzZTkN3YO9vqMT1INobm1x/DmdeR4af9NrfWeqRBgmTbxK71v+Fgo6vHAYR38oOWNrKg==
-X-Received: by 2002:a05:6402:1358:b0:55c:ccd4:7cc3 with SMTP id y24-20020a056402135800b0055cccd47cc3mr81823edw.49.1706079940797;
-        Tue, 23 Jan 2024 23:05:40 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id ch27-20020a0564021bdb00b0055c4a251205sm2823463edb.90.2024.01.23.23.05.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jan 2024 23:05:39 -0800 (PST)
-Message-ID: <127fd51b-cd64-4e00-99d6-7be9b79f2dcc@linaro.org>
-Date: Wed, 24 Jan 2024 08:05:37 +0100
+	 In-Reply-To:Content-Type; b=ruAgCMG04M1e0ss29jeVysLotzU6EUTT0N2QwOd4T0qeo9b5HkRNZZ+t6kkV2ka02LDDivglFj/SRWXdZxQ32Qt9BSexvfo7FW6/+m5ZXINB5ppqiZ/gM4fcR6pONELlobY8iCcbbbXLrug/kBlU3VFwUqch5j+SjG1q6ba/4fM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 99C1860007;
+	Wed, 24 Jan 2024 07:12:57 +0000 (UTC)
+Message-ID: <7b15e9c0-58f5-4bc3-899e-671ce2c31548@ghiti.fr>
+Date: Wed, 24 Jan 2024 08:12:57 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,142 +39,318 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 08/17] clk: eyeq5: add platform driver
+Subject: Re: [PATCH v9 1/2] riscv: Include riscv_set_icache_flush_ctx prctl
 Content-Language: en-US
-To: =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
- Gregory CLEMENT <gregory.clement@bootlin.com>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Linus Walleij <linus.walleij@linaro.org>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>, Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
- linux-mips@vger.kernel.org, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Tawfik Bayouk <tawfik.bayouk@mobileye.com>, linux-gpio@vger.kernel.org
-References: <20240123-mbly-clk-v3-0-392b010b8281@bootlin.com>
- <20240123-mbly-clk-v3-8-392b010b8281@bootlin.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240123-mbly-clk-v3-8-392b010b8281@bootlin.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+To: Charlie Jenkins <charlie@rivosinc.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Jonathan Corbet <corbet@lwn.net>, Conor Dooley <conor.dooley@microchip.com>,
+ =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
+ Atish Patra <atishp@atishpatra.org>, Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, Atish Patra <atishp@rivosinc.com>
+References: <20240123-fencei-v9-0-71411bfe8d71@rivosinc.com>
+ <20240123-fencei-v9-1-71411bfe8d71@rivosinc.com>
+From: Alexandre Ghiti <alex@ghiti.fr>
+In-Reply-To: <20240123-fencei-v9-1-71411bfe8d71@rivosinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: alex@ghiti.fr
 
-On 23/01/2024 19:46, Théo Lebrun wrote:
-> Add the Mobileye EyeQ5 clock controller driver. It might grow to add
-> support for other platforms from Mobileye.
-> 
-> It handles 10 read-only PLLs derived from the main crystal on board. It
-> exposes a table-based divider clock used for OSPI. Other platform
-> clocks are not configurable and therefore kept as fixed-factor
-> devicetree nodes.
-> 
-> Two PLLs are required early on and are therefore registered at
-> of_clk_init(). Those are pll-cpu for the GIC timer and pll-per for the
-> UARTs.
-> 
+Hi Charlie,
 
-
-> +#define OLB_PCSR1_RESET				BIT(0)
-> +#define OLB_PCSR1_SSGC_DIV			GENMASK(4, 1)
-> +/* Spread amplitude (% = 0.1 * SPREAD[4:0]) */
-> +#define OLB_PCSR1_SPREAD			GENMASK(9, 5)
-> +#define OLB_PCSR1_DIS_SSCG			BIT(10)
-> +/* Down-spread or center-spread */
-> +#define OLB_PCSR1_DOWN_SPREAD			BIT(11)
-> +#define OLB_PCSR1_FRAC_IN			GENMASK(31, 12)
+On 24/01/2024 00:29, Charlie Jenkins wrote:
+> Support new prctl with key PR_RISCV_SET_ICACHE_FLUSH_CTX to enable
+> optimization of cross modifying code. This prctl enables userspace code
+> to use icache flushing instructions such as fence.i with the guarantee
+> that the icache will continue to be clean after thread migration.
+>
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> Reviewed-by: Atish Patra <atishp@rivosinc.com>
+> ---
+>   arch/riscv/include/asm/mmu.h       |  2 ++
+>   arch/riscv/include/asm/processor.h |  7 ++++
+>   arch/riscv/include/asm/switch_to.h | 13 ++++++++
+>   arch/riscv/mm/cacheflush.c         | 67 ++++++++++++++++++++++++++++++++++++++
+>   arch/riscv/mm/context.c            | 14 ++++++--
+>   include/uapi/linux/prctl.h         |  6 ++++
+>   kernel/sys.c                       |  6 ++++
+>   7 files changed, 112 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/riscv/include/asm/mmu.h b/arch/riscv/include/asm/mmu.h
+> index 355504b37f8e..60be458e94da 100644
+> --- a/arch/riscv/include/asm/mmu.h
+> +++ b/arch/riscv/include/asm/mmu.h
+> @@ -19,6 +19,8 @@ typedef struct {
+>   #ifdef CONFIG_SMP
+>   	/* A local icache flush is needed before user execution can resume. */
+>   	cpumask_t icache_stale_mask;
+> +	/* Force local icache flush on all migrations. */
+> +	bool force_icache_flush;
+>   #endif
+>   #ifdef CONFIG_BINFMT_ELF_FDPIC
+>   	unsigned long exec_fdpic_loadmap;
+> diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
+> index f19f861cda54..1cad05f579ad 100644
+> --- a/arch/riscv/include/asm/processor.h
+> +++ b/arch/riscv/include/asm/processor.h
+> @@ -84,6 +84,10 @@ struct thread_struct {
+>   	unsigned long vstate_ctrl;
+>   	struct __riscv_v_ext_state vstate;
+>   	unsigned long align_ctl;
+> +#ifdef CONFIG_SMP
+> +	bool force_icache_flush;
+> +	unsigned int prev_cpu;
+> +#endif
+>   };
+>   
+>   /* Whitelist the fstate from the task_struct for hardened usercopy */
+> @@ -145,6 +149,9 @@ extern int set_unalign_ctl(struct task_struct *tsk, unsigned int val);
+>   #define GET_UNALIGN_CTL(tsk, addr)	get_unalign_ctl((tsk), (addr))
+>   #define SET_UNALIGN_CTL(tsk, val)	set_unalign_ctl((tsk), (val))
+>   
+> +#define RISCV_SET_ICACHE_FLUSH_CTX(arg1, arg2)	riscv_set_icache_flush_ctx(arg1, arg2)
+> +extern int riscv_set_icache_flush_ctx(unsigned long ctx, unsigned long per_thread);
 > +
-> +static struct clk_hw_onecell_data *eq5c_clk_data;
-> +static struct regmap *eq5c_olb;
-
-Drop these two. No file-scope regmaps for drivers. Use private container
-structures.
-
-..
-
-> +static void __init eq5c_init(struct device_node *np)
+>   #endif /* __ASSEMBLY__ */
+>   
+>   #endif /* _ASM_RISCV_PROCESSOR_H */
+> diff --git a/arch/riscv/include/asm/switch_to.h b/arch/riscv/include/asm/switch_to.h
+> index f90d8e42f3c7..72c032d4277e 100644
+> --- a/arch/riscv/include/asm/switch_to.h
+> +++ b/arch/riscv/include/asm/switch_to.h
+> @@ -8,6 +8,7 @@
+>   
+>   #include <linux/jump_label.h>
+>   #include <linux/sched/task_stack.h>
+> +#include <linux/mm_types.h>
+>   #include <asm/vector.h>
+>   #include <asm/cpufeature.h>
+>   #include <asm/processor.h>
+> @@ -73,6 +74,15 @@ static __always_inline bool has_fpu(void) { return false; }
+>   extern struct task_struct *__switch_to(struct task_struct *,
+>   				       struct task_struct *);
+>   
+> +static inline bool switch_to_should_flush_icache(struct task_struct *task)
 > +{
-> +	struct device_node *parent_np = of_get_parent(np);
-> +	int i, ret;
+> +	bool stale_mm = task->mm && (task->mm->context.force_icache_flush);
+> +	bool stale_thread = task->thread.force_icache_flush &&
+> +			    (smp_processor_id() != task->thread.prev_cpu);
 > +
-> +	eq5c_clk_data = kzalloc(struct_size(eq5c_clk_data, hws, EQ5C_NB_CLKS),
-> +				GFP_KERNEL);
-> +	if (!eq5c_clk_data) {
-> +		ret = -ENOMEM;
-> +		goto err;
+> +	return stale_mm || stale_thread;
+
+
+Here stale_mm will flush the icache even if there isn't any migration, 
+you should check if there is a migration and then check if either the 
+process or the thread is setup to flush the icache. So the condition 
+should be:
+
+return ((smp_processor_id() != task->thread.prev_cpu) && ((task->mm && 
+(task->mm->context.force_icache_flush)) || task->thread.force_icache_flush);
+
+
+> +}
+> +
+>   #define switch_to(prev, next, last)			\
+>   do {							\
+>   	struct task_struct *__prev = (prev);		\
+> @@ -81,7 +91,10 @@ do {							\
+>   		__switch_to_fpu(__prev, __next);	\
+>   	if (has_vector())					\
+>   		__switch_to_vector(__prev, __next);	\
+> +	if (switch_to_should_flush_icache(__next))	\
+> +		local_flush_icache_all();		\
+>   	((last) = __switch_to(__prev, __next));		\
+> +	__next->thread.prev_cpu = smp_processor_id();	\
+
+
+Hmm shouldn't you save prev_cpu *before* __switch_to()? Because here, 
+you save prev_cpu only after __prev is actually rescheduled right? And 
+then __next may have been rescheduled already or __prev may be 
+rescheduled on another cpu.
+
+
+>   } while (0)
+>   
+>   #endif /* _ASM_RISCV_SWITCH_TO_H */
+> diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
+> index 55a34f2020a8..ff545f19f07a 100644
+> --- a/arch/riscv/mm/cacheflush.c
+> +++ b/arch/riscv/mm/cacheflush.c
+> @@ -5,6 +5,7 @@
+>   
+>   #include <linux/acpi.h>
+>   #include <linux/of.h>
+> +#include <linux/prctl.h>
+>   #include <asm/acpi.h>
+>   #include <asm/cacheflush.h>
+>   
+> @@ -152,3 +153,69 @@ void __init riscv_init_cbo_blocksizes(void)
+>   	if (cboz_block_size)
+>   		riscv_cboz_block_size = cboz_block_size;
+>   }
+> +
+> +/**
+> + * riscv_set_icache_flush_ctx() - Enable/disable icache flushing instructions in
+> + * userspace.
+> + * @ctx: Set the type of icache flushing instructions permitted/prohibited in
+> + *	 userspace. Supported values described below.
+> + *
+> + * Supported values for ctx:
+> + *
+> + * * %PR_RISCV_CTX_SW_FENCEI_ON: Allow fence.i in userspace.
+> + *
+> + * * %PR_RISCV_CTX_SW_FENCEI_OFF: Disallow fence.i in userspace. When ``scope ==
+> + *   PR_RISCV_SCOPE_PER_PROCESS``, this will effect all threads in a process.
+> + *   Therefore, caution must be taken -- only use this flag when you can
+> + *   guarantee that no thread in the process will emit fence.i from this point
+> + *   onward.
+> + *
+> + * @scope: Set scope of where icache flushing instructions are allowed to be
+> + *	   emitted. Supported values described below.
+> + *
+> + * Supported values for scope:
+> + *
+> + * * PR_RISCV_SCOPE_PER_PROCESS: Ensure the icache of any thread in this process
+> + *                               is coherent with instruction storage upon
+> + *                               migration.
+> + *
+> + * * PR_RISCV_SCOPE_PER_THREAD: Ensure the icache of the current thread is
+> + *                              coherent with instruction storage upon
+> + *                              migration.
+> + *
+> + * When ``scope == PR_RISCV_SCOPE_PER_PROCESS``, all threads in the process are
+> + * permitted to emit icache flushing instructions. Whenever any thread in the
+> + * process is migrated, the corresponding hart's icache will be guaranteed to be
+> + * consistent with instruction storage. Note this does not enforce any
+> + * guarantees outside of migration. If a thread modifies an instruction that
+> + * another thread may attempt to execute, the other thread must still emit an
+> + * icache flushing instruction before attempting to execute the potentially
+> + * modified instruction. This must be performed by the userspace program.
+> + *
+> + * In per-thread context (eg. ``scope == PR_RISCV_SCOPE_PER_THREAD``), only the
+> + * thread calling this function is permitted to emit icache flushing
+> + * instructions. When the thread is migrated, the corresponding hart's icache
+> + * will be guaranteed to be consistent with instruction storage.
+> + *
+> + * On kernels configured without SMP, this function is a nop as migrations
+> + * across harts will not occur.
+> + */
+> +int riscv_set_icache_flush_ctx(unsigned long ctx, unsigned long scope)
+> +{
+> +#ifdef CONFIG_SMP
+> +	switch (ctx) {
+> +	case PR_RISCV_CTX_SW_FENCEI_ON:
+> +		switch (scope) {
+> +		case PR_RISCV_SCOPE_PER_PROCESS:
+> +			current->mm->context.force_icache_flush = true;
+> +			break;
+> +		case PR_RISCV_SCOPE_PER_THREAD:
+> +			current->thread.force_icache_flush = true;
+> +			break;
+> +		default:
+> +			return -EINVAL;
+> +		}
 > +	}
+> +#endif
+> +	return 0;
+> +}
+> diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
+> index 217fd4de6134..b059dc0fae91 100644
+> --- a/arch/riscv/mm/context.c
+> +++ b/arch/riscv/mm/context.c
+> @@ -15,6 +15,7 @@
+>   #include <asm/tlbflush.h>
+>   #include <asm/cacheflush.h>
+>   #include <asm/mmu_context.h>
+> +#include <asm/switch_to.h>
+>   
+>   #ifdef CONFIG_MMU
+>   
+> @@ -297,19 +298,26 @@ static inline void set_mm(struct mm_struct *prev,
+>    *
+>    * The "cpu" argument must be the current local CPU number.
+>    */
+> -static inline void flush_icache_deferred(struct mm_struct *mm, unsigned int cpu)
+> +static inline void flush_icache_deferred(struct mm_struct *mm, unsigned int cpu,
+> +					 struct task_struct *task)
+>   {
+>   #ifdef CONFIG_SMP
+>   	cpumask_t *mask = &mm->context.icache_stale_mask;
+>   
+>   	if (cpumask_test_cpu(cpu, mask)) {
+>   		cpumask_clear_cpu(cpu, mask);
 > +
-> +	eq5c_clk_data->num = EQ5C_NB_CLKS;
+
+
+^ newline here
+
+
+>   		/*
+>   		 * Ensure the remote hart's writes are visible to this hart.
+>   		 * This pairs with a barrier in flush_icache_mm.
+>   		 */
+>   		smp_mb();
+> -		local_flush_icache_all();
 > +
-> +	/*
-> +	 * Mark all clocks as deferred. We register some now and others at
-> +	 * platform device probe.
-> +	 */
-> +	for (i = 0; i < EQ5C_NB_CLKS; i++)
-> +		eq5c_clk_data->hws[i] = ERR_PTR(-EPROBE_DEFER);
+> +		/*
+> +		 * If cache will be flushed in switch_to, no need to flush here.
+> +		 */
+> +		if (!(task && switch_to_should_flush_icache(task)))
+> +			local_flush_icache_all();
+>   	}
+>   
+>   #endif
+> @@ -332,5 +340,5 @@ void switch_mm(struct mm_struct *prev, struct mm_struct *next,
+>   
+>   	set_mm(prev, next, cpu);
+>   
+> -	flush_icache_deferred(next, cpu);
+> +	flush_icache_deferred(next, cpu, task);
+>   }
+> diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
+> index 370ed14b1ae0..524d546d697b 100644
+> --- a/include/uapi/linux/prctl.h
+> +++ b/include/uapi/linux/prctl.h
+> @@ -306,4 +306,10 @@ struct prctl_mm_map {
+>   # define PR_RISCV_V_VSTATE_CTRL_NEXT_MASK	0xc
+>   # define PR_RISCV_V_VSTATE_CTRL_MASK		0x1f
+>   
+> +#define PR_RISCV_SET_ICACHE_FLUSH_CTX	71
+> +# define PR_RISCV_CTX_SW_FENCEI_ON	0
+> +# define PR_RISCV_CTX_SW_FENCEI_OFF	1
+> +# define PR_RISCV_SCOPE_PER_PROCESS	0
+> +# define PR_RISCV_SCOPE_PER_THREAD	1
 > +
-> +	/*
-> +	 * Currently, if OLB is not available, we log an error, fail init then
+>   #endif /* _LINUX_PRCTL_H */
+> diff --git a/kernel/sys.c b/kernel/sys.c
+> index 420d9cb9cc8e..e806a8a67c36 100644
+> --- a/kernel/sys.c
+> +++ b/kernel/sys.c
+> @@ -146,6 +146,9 @@
+>   #ifndef RISCV_V_GET_CONTROL
+>   # define RISCV_V_GET_CONTROL()		(-EINVAL)
+>   #endif
+> +#ifndef RISCV_SET_ICACHE_FLUSH_CTX
+> +# define RISCV_SET_ICACHE_FLUSH_CTX(a, b)	(-EINVAL)
+> +#endif
+>   
+>   /*
+>    * this is where the system-wide overflow UID and GID are defined, for
+> @@ -2739,6 +2742,9 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
+>   	case PR_RISCV_V_GET_CONTROL:
+>   		error = RISCV_V_GET_CONTROL();
+>   		break;
+> +	case PR_RISCV_SET_ICACHE_FLUSH_CTX:
+> +		error = RISCV_SET_ICACHE_FLUSH_CTX(arg2, arg3);
+> +		break;
+>   	default:
+>   		error = -EINVAL;
+>   		break;
+>
 
-How it could be not available? Only with broken initcall ordering. Fix
-your initcall ordering and then simplify all this weird code.
+Thanks,
 
-> +	 * fail probe. We might want to change this behavior and assume all
-> +	 * clocks are in bypass mode; this is what is being done in the vendor
-> +	 * driver.
-> +	 *
-> +	 * It is unclear if there are valid situations where the OLB region
-> +	 * would be inaccessible.
-
-
-
-Best regards,
-Krzysztof
+Alex
 
 
