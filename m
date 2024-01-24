@@ -1,252 +1,250 @@
-Return-Path: <linux-kernel+bounces-36776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAA6C83A65F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:08:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1529383A660
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:09:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84617B24A04
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:08:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA5A0284FE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:09:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DB6D1863B;
-	Wed, 24 Jan 2024 10:07:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0179918627;
+	Wed, 24 Jan 2024 10:09:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="hLKOyjLV"
-Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="m1/T8JR3"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D342518624;
-	Wed, 24 Jan 2024 10:07:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09B99182CF
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:09:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.88
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706090877; cv=none; b=tAVtBN/Mp/VBvCL7etKyPVxKXbtoBak30oPtABqjFsc/YlS+ATqDT6oBwa/v0ybI2vlwDiTzTm8T0hzewDaWNETiDiO4XTjpNlX+OiqRybGiT1DZUvdCLbnGQ2HaDJ6E0Iui0Mkf3tdd5pylOQIbPl1tsVc1fgZzq1S/myhU1m0=
+	t=1706090944; cv=none; b=BINoQ54CFQBx0z+WcILUkAyIpFuHm5A2zr/XjKkYhzf+7iaJl0wvMTPTkRSqN84ON3Uft4c1yAMUgAZUKUN2e3Nbi8XzEO8o5ToO6HVPnNtgOJnOi3TZPf8vQew5oB+fwRdATbrtAzc195T2XfoA19cpg22z/lNkJfS16FY0d8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706090877; c=relaxed/simple;
-	bh=aL/a4co3TwpDRjGVNeGMmp1wmNR972BLDxLJ4qWZqIc=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=k+5tVH5kIUhIk4z+dDkvJzHVExCcZeZekbXCrlrq6vI+JLjspy4Ctu7wDxb+wLqArHe5NhOqrhS93smF0Wclb04HiTIx9S6zUPStLUuG2N0rgt+hBNqGV+E9QvoIJSDE6Cu1QoCNnVFzLpglgDr/3W5JkkdF/1JHsxpVLheybS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=hLKOyjLV; arc=none smtp.client-ip=185.70.40.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1706090867; x=1706350067;
-	bh=r286NmNLGtOoEjkp4oNKdRo5j35gCJsWTNX5/gVttkU=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=hLKOyjLVKYoxvgcVKstb5dGVsPWA+k7a/sMPwNlhMAapjyEwvryC/iqCEjDYj9pYx
-	 5mja9PUorlz4jo9BE1TWi0s3Ax18cxo9NcyirX59B03n5fpoFnY782QAwU+gD75n5s
-	 27uf/g8W7S4HtTt3obZciLaG7wC8+3mSCBwOhUqReqzG0aE77XaDEcuQrcrP/sOXNF
-	 yCPVsXuLC1yqzftc8Ilpx9tEZaPLHaOQbXyAe6BNFDYbkZVcfrrDMTQSA25JFsO8DZ
-	 VBXHaTS9PP8xTiuWDY5ZjJgQB+lRUXf4DbON9cMFv9A4hkG80kQ73/i+fHjapV1gUU
-	 B9u5kVrK4BITg==
-Date: Wed, 24 Jan 2024 10:07:40 +0000
-To: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Peter Zijlstra <peterz@infradead.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Dan Williams <dan.j.williams@intel.com>, Kees Cook <keescook@chromium.org>, Matthew Wilcox <willy@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 8/9] rust: file: add `DeferredFdCloser`
-Message-ID: <899fab69-e051-4d6b-bf6c-452779ed8190@proton.me>
-In-Reply-To: <20240118-alice-file-v3-8-9694b6f9580c@google.com>
-References: <20240118-alice-file-v3-0-9694b6f9580c@google.com> <20240118-alice-file-v3-8-9694b6f9580c@google.com>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1706090944; c=relaxed/simple;
+	bh=yIfmTIvjF9rFFLgppXl3MTS5v52yjQDv02ZpwxEON08=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=H1eMQkBGnIusPFa82joG3laiXcpYGAIws6+EwoXuSf0MUaiH5HjsLhiOOjvCuFnK2Xl7HEH1+wky7R1IY9py286IahuUf4t5+aiAXy8Me4K4Sc9yYdjosaWYEcnvBQz51m5EbAUjeOcR03fGMlFgPT8kr1r3XvIRxHQLjycIOp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=m1/T8JR3; arc=none smtp.client-ip=192.55.52.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706090942; x=1737626942;
+  h=date:from:to:cc:subject:message-id;
+  bh=yIfmTIvjF9rFFLgppXl3MTS5v52yjQDv02ZpwxEON08=;
+  b=m1/T8JR3xgeWTUwOQ0yro5DuqAH8KhEvzLeE6rJG7jfjjoh8RKyP3qwB
+   A+dITEI3tq9s27hxDk/5KmkMMH2THzahbkmHuQmNNGQBHxJJi815ZLTx2
+   tHxQMY1i0yKbyElD510jOygZwUVVuSeP+tPKnwZHTS2txET6y2T6c5S+5
+   JfIak4bqUrwNw/u32DG3b8j31Zz9smoKHLSIzDzkaGzoz260xObn736xB
+   y9kucMy7sIcoadf+Xs3HnoOUlbUFwKOT+sh/+EwvMDH+pf8nOwh4LP2rd
+   bK0dzlZbr0Z4VThLszysLgTza0oP0YgbEH/i74m6cpmQeqJgyh5Zjg8nm
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="432952131"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="432952131"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 02:09:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="929630090"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="929630090"
+Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 24 Jan 2024 02:08:59 -0800
+Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rSaBk-00082d-2f;
+	Wed, 24 Jan 2024 10:08:56 +0000
+Date: Wed, 24 Jan 2024 18:08:45 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:x86/merge] BUILD SUCCESS
+ 4b323027574fc89d5e3e0b3a5cfed69c0f13e244
+Message-ID: <202401241842.tIfbajmZ-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
 
-On 18.01.24 15:36, Alice Ryhl wrote:
-> +    /// Schedule a task work that closes the file descriptor when this t=
-ask returns to userspace.
-> +    ///
-> +    /// Fails if this is called from a context where we cannot run work =
-when returning to
-> +    /// userspace. (E.g., from a kthread.)
-> +    pub fn close_fd(self, fd: u32) -> Result<(), DeferredFdCloseError> {
-> +        use bindings::task_work_notify_mode_TWA_RESUME as TWA_RESUME;
-> +
-> +        // In this method, we schedule the task work before closing the =
-file. This is because
-> +        // scheduling a task work is fallible, and we need to know wheth=
-er it will fail before we
-> +        // attempt to close the file.
-> +
-> +        // Task works are not available on kthreads.
-> +        let current =3D crate::current!();
-> +        if current.is_kthread() {
-> +            return Err(DeferredFdCloseError::TaskWorkUnavailable);
-> +        }
-> +
-> +        // Transfer ownership of the box's allocation to a raw pointer. =
-This disables the
-> +        // destructor, so we must manually convert it back to a Box to d=
-rop it.
-> +        //
-> +        // Until we convert it back to a `Box`, there are no aliasing re=
-quirements on this
-> +        // pointer.
-> +        let inner =3D Box::into_raw(self.inner);
-> +
-> +        // The `callback_head` field is first in the struct, so this cas=
-t correctly gives us a
-> +        // pointer to the field.
-> +        let callback_head =3D inner.cast::<bindings::callback_head>();
-> +        // SAFETY: This pointer offset operation does not go out-of-boun=
-ds.
-> +        let file_field =3D unsafe { core::ptr::addr_of_mut!((*inner).fil=
-e) };
-> +
-> +        let current =3D current.as_raw();
-> +
-> +        // SAFETY: This function currently has exclusive access to the `=
-DeferredFdCloserInner`, so
-> +        // it is okay for us to perform unsynchronized writes to its `ca=
-llback_head` field.
-> +        unsafe { bindings::init_task_work(callback_head, Some(Self::do_c=
-lose_fd)) };
-> +
-> +        // SAFETY: This inserts the `DeferredFdCloserInner` into the tas=
-k workqueue for the current
-> +        // task. If this operation is successful, then this transfers ex=
-clusive ownership of the
-> +        // `callback_head` field to the C side until it calls `do_close_=
-fd`, and we don't touch or
-> +        // invalidate the field during that time.
-> +        //
-> +        // When the C side calls `do_close_fd`, the safety requirements =
-of that method are
-> +        // satisfied because when a task work is executed, the callback =
-is given ownership of the
-> +        // pointer.
-> +        //
-> +        // The file pointer is currently null. If it is changed to be no=
-n-null before `do_close_fd`
-> +        // is called, then that change happens due to the write at the e=
-nd of this function, and
-> +        // that write has a safety comment that explains why the refcoun=
-t can be dropped when
-> +        // `do_close_fd` runs.
-> +        let res =3D unsafe { bindings::task_work_add(current, callback_h=
-ead, TWA_RESUME) };
-> +
-> +        if res !=3D 0 {
-> +            // SAFETY: Scheduling the task work failed, so we still have=
- ownership of the box, so
-> +            // we may destroy it.
-> +            unsafe { drop(Box::from_raw(inner)) };
-> +
-> +            return Err(DeferredFdCloseError::TaskWorkUnavailable);
-> +        }
-> +
-> +        // SAFETY: This is safe no matter what `fd` is. If the `fd` is v=
-alid (that is, if the
-> +        // pointer is non-null), then we call `filp_close` on the return=
-ed pointer as required by
-> +        // `close_fd_get_file`.
-> +        let file =3D unsafe { bindings::close_fd_get_file(fd) };
-> +        if file.is_null() {
-> +            // We don't clean up the task work since that might be expen=
-sive if the task work queue
-> +            // is long. Just let it execute and let it clean up for itse=
-lf.
-> +            return Err(DeferredFdCloseError::BadFd);
-> +        }
-> +
-> +        // Acquire a refcount to the file.
-> +        //
-> +        // SAFETY: The `file` pointer points at a file with a non-zero r=
-efcount.
-> +        unsafe { bindings::get_file(file) };
-> +
-> +        // SAFETY: The `file` pointer is valid. Passing `current->files`=
- as the file table to close
-> +        // it in is correct, since we just got the `fd` from `close_fd_g=
-et_file` which also uses
-> +        // `current->files`.
-> +        //
-> +        // This method closes the fd. There could be active light refcou=
-nts created from that fd,
-> +        // so we must ensure that the file has a positive refcount for t=
-he duration of those active
-> +        // light refcounts.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/merge
+branch HEAD: 4b323027574fc89d5e3e0b3a5cfed69c0f13e244  Merge branch 'x86/percpu' into x86/merge, to ease integration testing
 
-This doesn't seem to be part of the SAFETY comment, so maybe move
-this comment above it?
+elapsed time: 1473m
 
-> +        //
-> +        // Note: fl_owner_t is currently a void pointer.
-> +        unsafe { bindings::filp_close(file, (*current).files as bindings=
-::fl_owner_t) };
-> +
-> +        // We update the file pointer that the task work is supposed to =
-fput. This transfers
-> +        // ownership of our last refcount.
+configs tested: 161
+configs skipped: 3
 
-I think it is very good that you mention how many refcounts you have
-here, but I am missing that in the code above. IIRC `closed_fd_get_file`
-acquires a refcount and `filp_close` consumes one.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> +        //
-> +        // INVARIANT: This changes the `file` field of a `DeferredFdClos=
-erInner` from null to
-> +        // non-null. This doesn't break the type invariant for `Deferred=
-FdCloserInner` because we
-> +        // still own a refcount to the file, so we can pass ownership of=
- that refcount to the
-> +        // `DeferredFdCloserInner`.
-> +        //
-> +        // SAFETY: Task works are executed on the current thread right b=
-efore we return to
-> +        // userspace, so this write is guaranteed to happen before `do_c=
-lose_fd` is called, which
-> +        // means that a race is not possible here.
-> +        //
-> +        // When `do_close_fd` runs, it must be safe for it to `fput` the=
- refcount. However, this is
-> +        // the case because all light refcounts that are associated with=
- the fd we closed
-> +        // previously must be dropped when `do_close_fd`, since light re=
-fcounts must be dropped
-> +        // before returning to userspace.
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240123   gcc  
+arc                   randconfig-002-20240123   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                   randconfig-001-20240123   gcc  
+arm                   randconfig-002-20240123   gcc  
+arm                   randconfig-003-20240123   gcc  
+arm                   randconfig-004-20240123   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240123   gcc  
+arm64                 randconfig-002-20240123   gcc  
+arm64                 randconfig-003-20240123   gcc  
+arm64                 randconfig-004-20240123   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240123   gcc  
+csky                  randconfig-002-20240123   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240123   clang
+hexagon               randconfig-002-20240123   clang
+i386                             allmodconfig   clang
+i386                              allnoconfig   clang
+i386                             allyesconfig   clang
+i386         buildonly-randconfig-001-20240123   gcc  
+i386         buildonly-randconfig-002-20240123   gcc  
+i386         buildonly-randconfig-003-20240123   gcc  
+i386         buildonly-randconfig-004-20240123   gcc  
+i386         buildonly-randconfig-005-20240123   gcc  
+i386         buildonly-randconfig-006-20240123   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20240123   gcc  
+i386                  randconfig-002-20240123   gcc  
+i386                  randconfig-003-20240123   gcc  
+i386                  randconfig-004-20240123   gcc  
+i386                  randconfig-005-20240123   gcc  
+i386                  randconfig-006-20240123   gcc  
+i386                  randconfig-011-20240123   clang
+i386                  randconfig-012-20240123   clang
+i386                  randconfig-013-20240123   clang
+i386                  randconfig-014-20240123   clang
+i386                  randconfig-015-20240123   clang
+i386                  randconfig-016-20240123   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240123   gcc  
+loongarch             randconfig-002-20240123   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   clang
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240123   gcc  
+nios2                 randconfig-002-20240123   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240123   gcc  
+parisc                randconfig-002-20240123   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   clang
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc               randconfig-001-20240123   gcc  
+powerpc               randconfig-002-20240123   gcc  
+powerpc               randconfig-003-20240123   gcc  
+powerpc64             randconfig-001-20240123   gcc  
+powerpc64             randconfig-002-20240123   gcc  
+powerpc64             randconfig-003-20240123   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   clang
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20240123   gcc  
+riscv                 randconfig-002-20240123   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20240123   clang
+s390                  randconfig-002-20240123   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20240123   gcc  
+sh                    randconfig-002-20240123   gcc  
+sparc                            allmodconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240123   gcc  
+sparc64               randconfig-002-20240123   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240123   gcc  
+um                    randconfig-002-20240123   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240124   clang
+x86_64       buildonly-randconfig-002-20240124   clang
+x86_64       buildonly-randconfig-003-20240124   clang
+x86_64       buildonly-randconfig-004-20240124   clang
+x86_64       buildonly-randconfig-005-20240124   clang
+x86_64       buildonly-randconfig-006-20240124   clang
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240124   gcc  
+x86_64                randconfig-002-20240124   gcc  
+x86_64                randconfig-003-20240124   gcc  
+x86_64                randconfig-004-20240124   gcc  
+x86_64                randconfig-005-20240124   gcc  
+x86_64                randconfig-006-20240124   gcc  
+x86_64                randconfig-011-20240124   clang
+x86_64                randconfig-012-20240124   clang
+x86_64                randconfig-013-20240124   clang
+x86_64                randconfig-014-20240124   clang
+x86_64                randconfig-015-20240124   clang
+x86_64                randconfig-016-20240124   clang
+x86_64                randconfig-071-20240124   clang
+x86_64                randconfig-072-20240124   clang
+x86_64                randconfig-073-20240124   clang
+x86_64                randconfig-074-20240124   clang
+x86_64                randconfig-075-20240124   clang
+x86_64                randconfig-076-20240124   clang
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240123   gcc  
+xtensa                randconfig-002-20240123   gcc  
 
-This also doesn't seem to be part of the SAFETY comment.
-
---=20
-Cheers,
-Benno
-
-> +        unsafe { *file_field =3D file };
-> +
-> +        Ok(())
-> +    }
-> +
-> +    /// # Safety
-> +    ///
-> +    /// The provided pointer must point at the `twork` field of a `Defer=
-redFdCloserInner` stored in
-> +    /// a `Box`, and the caller must pass exclusive ownership of that `B=
-ox`. Furthermore, if the
-> +    /// file pointer is non-null, then it must be okay to release the re=
-fcount by calling `fput`.
-> +    unsafe extern "C" fn do_close_fd(inner: *mut bindings::callback_head=
-) {
-> +        // SAFETY: The caller just passed us ownership of this box.
-> +        let inner =3D unsafe { Box::from_raw(inner.cast::<DeferredFdClos=
-erInner>()) };
-> +        if !inner.file.is_null() {
-> +            // SAFETY: By the type invariants, we own a refcount to this=
- file, and the caller
-> +            // guarantees that dropping the refcount now is okay.
-> +            unsafe { bindings::fput(inner.file) };
-> +        }
-> +        // The allocation is freed when `inner` goes out of scope.
-> +    }
-> +}
-
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
