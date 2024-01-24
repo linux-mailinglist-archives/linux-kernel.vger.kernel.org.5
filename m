@@ -1,194 +1,93 @@
-Return-Path: <linux-kernel+bounces-37705-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37706-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD2F983B425
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:38:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85D5083B427
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:39:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFEF61C2425E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 21:38:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3DDB9288CDE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 21:39:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5512213541C;
-	Wed, 24 Jan 2024 21:37:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 248C7135A59;
+	Wed, 24 Jan 2024 21:38:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="cptojg5V";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="iaTBekRT"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="Cvu/QdE/"
+Received: from xry111.site (xry111.site [89.208.246.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B59C9131E26;
-	Wed, 24 Jan 2024 21:37:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8CF21353F5;
+	Wed, 24 Jan 2024 21:38:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706132278; cv=none; b=USt9KO5FzNF8vwLb+0bATSPQ+CQiZVpSxE78SwLvhEA/LUfZVXLpdhSK44UKD+7O7XLsVD0e8NEKz8j6eChqi4IbeVZQzebHwZ9sTMEWkljrsHVrDeShKdfTzmH/i2MqMawqmVIsi+ENua2ZwfGWvztizE3PNbIRgW6gKkLAhZk=
+	t=1706132302; cv=none; b=t6FdT3gEad3j+mFyNOqnEl1xe8Y8ZvLsxasSxUU8e3uqLh7tGH7r+fUbHcy4yy4wCVudScIR868JrvqWX8fdH6Ka3LA4hatdyVjIsF9vQyXK1hcrcwhgms4wESVuYg+60EqJQ0CuFo7AGW4g6NVGvVSbLjZGoSx13Zje9vatC08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706132278; c=relaxed/simple;
-	bh=v5JsH8tHWjq5Q0A+2MP2G+hmruLvrSRUbQVVzJNqX3Y=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=nYA91oZ/WuMugDOducDoD+3U9O9e6b02DGP/xaIly1ynHxvUG9BEqdj8L4b80KPqB+2Gae7i2chkBfslmha0rqCQr56nk2i/J8s5pAa/9OGDyTaiQ+xC4GeLQ7J9fH3Nuo3OUc54QhSMNliEzwMR2XA8KUz5CfmSV0Z47ifapIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=cptojg5V; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=iaTBekRT; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 24 Jan 2024 21:37:53 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1706132274;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=k8xWwnsrfWs37M4gapdLyCA1xFMKKptPVYI5zbGOyaM=;
-	b=cptojg5VytT6aBmBMog0FoqeJsr9+gIpQwmiF8CyL7ogX50MEbblOmntYj30wt9KLkW0h8
-	SGUnrk0P4pUJPRbbPqolV2caS9LxQlnc704eV/+L0UB38l7z19HLbgd8n4F76Xnei2a+iW
-	6HzZRRe9l9uyo7ir6o93OHtaNIQwaysGaSCdS+32vgOYhli3tcEX27oVf0NquJvOISNcAa
-	V3t/HFkEN1nfTc5yMTJl9hnBLiIGe6CjWVoJshYHqpFjJMqpbSzHtyZUztshuwi09aF4eC
-	ku0sQSsjq2LCgvfekc6zJQkoFoJikTe+Jg54byAIG3u1e2NIJcMsxb4eFkq0Jw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1706132274;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=k8xWwnsrfWs37M4gapdLyCA1xFMKKptPVYI5zbGOyaM=;
-	b=iaTBekRTv8MEJQb6V8NZNd/gDbMA1IaUL8n24HO82817Ww2E7gmOKbOWgGtgroFuW0i2nz
-	zWzPm1wgfpEil1CA==
-From: "tip-bot2 for Kirill A. Shutemov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/sev] x86/mm: Fix memory encryption features advertisement
-Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
- "Borislav Petkov (AMD)" <bp@alien8.de>,
- Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>,
- Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
- Tom Lendacky <thomas.lendacky@amd.com>, Kai Huang <kai.huang@intel.com>,
- x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240124140217.533748-1-kirill.shutemov@linux.intel.com>
-References: <20240124140217.533748-1-kirill.shutemov@linux.intel.com>
+	s=arc-20240116; t=1706132302; c=relaxed/simple;
+	bh=6mY4cj8CJ8vFPelnuieKviTWwDNiq9cImboGHDPjJGw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=trGMtY82uilfPTb9li6tEd8YieaLvqxZg60pVz5vKVJnDMWU/YvuE7xHnm6ATSGT8sigDq0Mp5FYMbFBDG2FrrE3qNf3n12zrTAgRxVmwE8Rvs2Au8BzMZnBaYA2hjZk6oM5Tu7rWJqmrNarkzQ1e3tuS+VBs0a2rR/1QcfD3VE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=Cvu/QdE/; arc=none smtp.client-ip=89.208.246.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
+	s=default; t=1706132299;
+	bh=6mY4cj8CJ8vFPelnuieKviTWwDNiq9cImboGHDPjJGw=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=Cvu/QdE/iY9Wn/zxodNq1CDkCTJGGqfdWZhJ2wYw1v9hR4ZQ9oNJQjMfGdTJKVivL
+	 jcR/yN454i8ljQpK97RdlB1tankDiqCgW12C186nJ2K+98F/AUkdJ1pFK2OnJkHmXT
+	 qYl2tbVW6BFaQdLYH7ltIEkJn8B5bykC/pPLPkFc=
+Received: from [127.0.0.1] (unknown [IPv6:2001:470:683e::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384))
+	(Client did not present a certificate)
+	(Authenticated sender: xry111@xry111.site)
+	by xry111.site (Postfix) with ESMTPSA id ADD6B66A7E;
+	Wed, 24 Jan 2024 16:38:17 -0500 (EST)
+Message-ID: <0625c3286a515ccb2ff5f7f58fd2019f81dd512e.camel@xry111.site>
+Subject: Re: Strange EFAULT on mips64el returned by syscall when another
+ thread is forking
+From: Xi Ruoyao <xry111@xry111.site>
+To: Andreas Schwab <schwab@suse.de>, Ben Hutchings <ben@decadent.org.uk>
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, Jiaxun Yang
+ <jiaxun.yang@flygoat.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+  libc-alpha@sourceware.org, Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 25 Jan 2024 05:38:16 +0800
+In-Reply-To: <e8583a3ab0522b4e75ba0ada47b6f093b186fa81.camel@xry111.site>
+References: <75e9fd7b08562ad9b456a5bdaacb7cc220311cc9.camel@xry111.site>
+	 <mvmplxraqmd.fsf@suse.de>
+	 <9481b6d9d015aea25d8f2563bf7bd6f6462f758f.camel@xry111.site>
+	 <0be1203c9df55432548c92281c8392dfa2f7d6bf.camel@xry111.site>
+	 <e8583a3ab0522b4e75ba0ada47b6f093b186fa81.camel@xry111.site>
+Autocrypt: addr=xry111@xry111.site; prefer-encrypt=mutual;
+ keydata=mDMEYnkdPhYJKwYBBAHaRw8BAQdAsY+HvJs3EVKpwIu2gN89cQT/pnrbQtlvd6Yfq7egugi0HlhpIFJ1b3lhbyA8eHJ5MTExQHhyeTExMS5zaXRlPoiTBBMWCgA7FiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQrKrSDhnnEOPHFgD8D9vUToTd1MF5bng9uPJq5y3DfpcxDp+LD3joA3U2TmwA/jZtN9xLH7CGDHeClKZK/ZYELotWfJsqRcthOIGjsdAPuDgEYnkdPhIKKwYBBAGXVQEFAQEHQG+HnNiPZseiBkzYBHwq/nN638o0NPwgYwH70wlKMZhRAwEIB4h4BBgWCgAgFiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwwACgkQrKrSDhnnEOPjXgD/euD64cxwqDIqckUaisT3VCst11RcnO5iRHm6meNIwj0BALLmWplyi7beKrOlqKfuZtCLbiAPywGfCNg8LOTt4iMD
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170613227352.398.393464651879909773.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
 
-The following commit has been merged into the x86/sev branch of tip:
+On Thu, 2024-01-25 at 05:32 +0800, Xi Ruoyao wrote:
 
-Commit-ID:     0410516aaef4bf08030845547fb94f4ff989fac0
-Gitweb:        https://git.kernel.org/tip/0410516aaef4bf08030845547fb94f4ff989fac0
-Author:        Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-AuthorDate:    Wed, 24 Jan 2024 16:02:16 +02:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Wed, 24 Jan 2024 22:27:59 +01:00
+/* snip */
 
-x86/mm: Fix memory encryption features advertisement
+> and the "interesting" aspects:
+>=20
+> 1. If I change the third parameter of "read" to any value >=3D 8, it no
+> longer fails.=C2=A0 But it fails with any integer in [1, 8).
+> 2. It fails no matter if I initialize buf.
+> 3. It does not fail on arm64 (the only other port using
+> lock_mm_and_find_vma I have access to).
 
-When memory encryption is enabled, the kernel prints the encryption
-flavor that the system supports.
+Correction: I'd not realized many ports use lock_mm_and_find_vma even
+before this series of changes.  I also have access to x86_64 and
+loongarch64, and the failure seems specific to MIPS.
 
-The check assumes that everything is AMD SME/SEV if it doesn't have
-the TDX CPU feature set.
-
-Hyper-V vTOM sets cc_vendor to CC_VENDOR_INTEL when it runs as L2 guest
-on top of TDX, but not X86_FEATURE_TDX_GUEST. Hyper-V only needs memory
-encryption enabled for I/O without the rest of CoCo enabling.
-
-To avoid confusion, check the cc_vendor directly.
-
-  [ bp: Massage commit message. ]
-
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Reviewed-by: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
-Acked-by: Kai Huang <kai.huang@intel.com>
-Link: https://lore.kernel.org/r/20240124140217.533748-1-kirill.shutemov@linux.intel.com
----
- arch/x86/mm/mem_encrypt.c | 56 ++++++++++++++++++++------------------
- 1 file changed, 30 insertions(+), 26 deletions(-)
-
-diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-index c290c55..d035bce 100644
---- a/arch/x86/mm/mem_encrypt.c
-+++ b/arch/x86/mm/mem_encrypt.c
-@@ -42,38 +42,42 @@ bool force_dma_unencrypted(struct device *dev)
- 
- static void print_mem_encrypt_feature_info(void)
- {
--	pr_info("Memory Encryption Features active:");
-+	pr_info("Memory Encryption Features active: ");
- 
--	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST)) {
--		pr_cont(" Intel TDX\n");
--		return;
--	}
--
--	pr_cont(" AMD");
-+	switch (cc_vendor) {
-+	case CC_VENDOR_INTEL:
-+		pr_cont("Intel TDX\n");
-+		break;
-+	case CC_VENDOR_AMD:
-+		pr_cont("AMD");
- 
--	/* Secure Memory Encryption */
--	if (cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT)) {
-+		/* Secure Memory Encryption */
-+		if (cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT)) {
- 		/*
- 		 * SME is mutually exclusive with any of the SEV
- 		 * features below.
--		 */
--		pr_cont(" SME\n");
--		return;
-+		*/
-+			pr_cont(" SME\n");
-+			return;
-+		}
-+
-+		/* Secure Encrypted Virtualization */
-+		if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
-+			pr_cont(" SEV");
-+
-+		/* Encrypted Register State */
-+		if (cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT))
-+			pr_cont(" SEV-ES");
-+
-+		/* Secure Nested Paging */
-+		if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP))
-+			pr_cont(" SEV-SNP");
-+
-+		pr_cont("\n");
-+		break;
-+	default:
-+		pr_cont("Unknown\n");
- 	}
--
--	/* Secure Encrypted Virtualization */
--	if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
--		pr_cont(" SEV");
--
--	/* Encrypted Register State */
--	if (cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT))
--		pr_cont(" SEV-ES");
--
--	/* Secure Nested Paging */
--	if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP))
--		pr_cont(" SEV-SNP");
--
--	pr_cont("\n");
- }
- 
- /* Architecture __weak replacement functions */
+--=20
+Xi Ruoyao <xry111@xry111.site>
+School of Aerospace Science and Technology, Xidian University
 
