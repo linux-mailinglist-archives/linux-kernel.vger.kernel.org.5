@@ -1,228 +1,287 @@
-Return-Path: <linux-kernel+bounces-36660-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36661-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F88483A49E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:56:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4899F83A4AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:57:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 282641F2307F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:56:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBD791F224C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:57:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 324D1179BD;
-	Wed, 24 Jan 2024 08:56:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16F2117BA0;
+	Wed, 24 Jan 2024 08:56:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="OuIxrTZR";
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="Ojb7TFxK"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Wm7G64nC"
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5F50168DA;
-	Wed, 24 Jan 2024 08:55:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.153.233
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706086560; cv=fail; b=JVZZrZFs5q7Cy8hvbDhNspPAoBRDdM8EQSINzGfhzLr0lxi4Mxdn/mi+j/D3THP1Z40IYXSqDflRAl+Me0FBnM1xtpwQyPcc5GG4EwAfM648kmUBp6KtVDK3Zd6jv/N34gg1azS8D2kOZM3i8v9u81lBLyxBkzHrafjs75eus5U=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706086560; c=relaxed/simple;
-	bh=DyxwFVB4PqIPfj3RPf1P7XuRnkrb8BL7r0a9akcFhBw=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=B5oaxol9JPcq+FPycsCgPj+pvO+KQ2FBWY1YSuLwAvUNnas4ngoVhlXcL162XMUyCRP8sWF92Guu6Z9Qvpsj3ZATGSfxoT4hUMBv+tvBUAGK75/jiW0Ngd5hhIssDqvi/qc2JLFj20uizVSVBXvQkzVEtopEbsrRLLiFaDt59Po=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=OuIxrTZR; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=Ojb7TFxK; arc=fail smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1706086559; x=1737622559;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=DyxwFVB4PqIPfj3RPf1P7XuRnkrb8BL7r0a9akcFhBw=;
-  b=OuIxrTZRxfXvzeCte35pPr+EunEA1M7xR7t5wNLbWozAyWjVfOVth3yw
-   k1zwrnpjGAOAwkniibP+yRT51ZQpBUK5cZFQ6x7tC2dBxREeItpWu+fIR
-   T94hMn4K6UiWrKBagUcXwXL5YIDZH5nH/SiZWZAb7o8SX696Z6myRuMrA
-   3pCEfV1/vgQQYZL8pDLrMl2tk92q3U+j0twkHFfFsN5MbwqGTIhlbdkqI
-   EZad/65k3UnD5Fno1BOPeF6pEsBbaHYAgFB3GCzIxOx17spJy+eTFCBBp
-   6JNbzy6MPMF8+rzLitKQChkzrdKLxMf4XKWFQhRGovR3i7yQrHg/bPZCL
-   w==;
-X-CSE-ConnectionGUID: QvwX5V0rTsesejUVGrstEg==
-X-CSE-MsgGUID: OqkQ9UL9RQGMFWEaGxlRaw==
-X-IronPort-AV: E=Sophos;i="6.05,216,1701154800"; 
-   d="scan'208";a="15218132"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 24 Jan 2024 01:55:52 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 24 Jan 2024 01:55:51 -0700
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (10.10.215.250)
- by email.microchip.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 24 Jan 2024 01:55:50 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YHfXFJh3p3N2csz2X0U3rxJMJ8izuKtUYX6f8FpgK/t2zmRn/vhXhDlKLqwmREKp0OlcEUWNq5d6jF+j4Q35MWc2vGvHT6T2IkCmVUaE2bo9AlIRTngKYEHTGRBFCNszakbCZdpGzcCcbqhXkTdFslTUR0XAmK7PsrZuGI5MTwa5NOErN6xoQMOZnSf3H+yNQZ+TJRdJpFItf2VIMFLPjg/AEHjEKMmpAFMdnvSjQkjexFFWfMtVC96KN2+GSbRbceNQrXRdnu7AIEFhv/pPwSsBZborRP+NN8qn8neSW7VwtRfL7AeM8hMEUWmeCqIIfn2vVbqgTHlzDWyRAzNh/g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DyxwFVB4PqIPfj3RPf1P7XuRnkrb8BL7r0a9akcFhBw=;
- b=lx4W7/+MJg6RIBrO45pIy//b4JPl7Dv9+Mbhs6Wi/Vy2eWVii+vawypDLIyWRLOSzcxipRAk7bs4HIJHe/yDUKQk3MQKFx5lgmrzUuNCSOMQjePZqT678GJrJvaC/ipbsDC18XPnVuT6BIX8/BfTomDNPaFutzIYRdp9MDUZ6MJuAP/vXFKVfEfG3ZLt7Y3XSNKXeMfUXxEgTtQTMvUSk4wdfnGUSzJJy1ObAeV2D+Zt+MT2yTTMjao46RTvp+IaK3ogTqX0NvcvSd3nnU+YHyBnUywDgGWOUcbySxQcoCXC7nQs/heF8ZeO94wSkXXzRZKjeFGMWAmKXntj7dnsrg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DyxwFVB4PqIPfj3RPf1P7XuRnkrb8BL7r0a9akcFhBw=;
- b=Ojb7TFxKT+dzrU5SQCgsKcq8sJBZo+/rlFat8QwoqmZP8Uvux3oa/sU2rrWs6Yzc7WXT+TvNHfZpxjdB5uJSXp+8LLBUJaUu/qa1ETp9TkZ9HSMaVSqxovUbTRCmZz6X/zTklUlOyOPRrQohjiWZ/l6wf4DHRFsRm+5kcOwj72bHiL2k/dQat0LeL8oMkpDB6EfYYnFIbuglD4OHpfM1m6LkNziEQXMxDkVmjwKyOi8r0ZuAQs+x/euppSyrgOFX1Pyhp17NB+2W26zIV61WN4XDBsgsUoksaDdSHKy8i9dYjpK06dgg3htRu6vLFYA3BcYMVEaou8KRDiFnZ/Z3dg==
-Received: from PH7PR11MB6451.namprd11.prod.outlook.com (2603:10b6:510:1f4::16)
- by BN9PR11MB5559.namprd11.prod.outlook.com (2603:10b6:408:104::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.37; Wed, 24 Jan
- 2024 08:55:48 +0000
-Received: from PH7PR11MB6451.namprd11.prod.outlook.com
- ([fe80::80b9:80a3:e88a:57ee]) by PH7PR11MB6451.namprd11.prod.outlook.com
- ([fe80::80b9:80a3:e88a:57ee%3]) with mapi id 15.20.7228.022; Wed, 24 Jan 2024
- 08:55:48 +0000
-From: <Dharma.B@microchip.com>
-To: <sam@ravnborg.org>
-CC: <robh@kernel.org>, <Linux4Microchip@microchip.com>,
-	<linux-pwm@vger.kernel.org>, <alexandre.belloni@bootlin.com>,
-	<dri-devel@lists.freedesktop.org>, <Nicolas.Ferre@microchip.com>,
-	<Conor.Dooley@microchip.com>, <thierry.reding@gmail.com>,
-	<krzysztof.kozlowski+dt@linaro.org>, <claudiu.beznea@tuxon.dev>,
-	<airlied@gmail.com>, <lee@kernel.org>, <u.kleine-koenig@pengutronix.de>,
-	<devicetree@vger.kernel.org>, <conor+dt@kernel.org>, <tzimmermann@suse.de>,
-	<mripard@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<bbrezillon@kernel.org>, <linux-kernel@vger.kernel.org>, <daniel@ffwll.ch>
-Subject: Re: [PATCH v3 0/3] Convert Microchip's HLCDC Text based DT bindings
- to JSON schema
-Thread-Topic: [PATCH v3 0/3] Convert Microchip's HLCDC Text based DT bindings
- to JSON schema
-Thread-Index: AQHaSfBtFpABnI0MwEGuolZ8EVFW4bDf9cIAgAGYQICAASXzAIAChPKAgADMmICAAqzegA==
-Date: Wed, 24 Jan 2024 08:55:48 +0000
-Message-ID: <c9931a97-ea2c-4cf0-84ce-3b6e88c280a8@microchip.com>
-References: <20240118092612.117491-1-dharma.b@microchip.com>
- <20240118193040.GA223383@ravnborg.org>
- <20240119195151.GB938671-robh@kernel.org>
- <20240120132356.GA345206@ravnborg.org>
- <6c6e4ddc-b3df-484e-961f-6efbd52defd6@microchip.com>
- <20240122160433.GB511247@ravnborg.org>
-In-Reply-To: <20240122160433.GB511247@ravnborg.org>
-Accept-Language: en-GB, en-US
-Content-Language: en-GB
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH7PR11MB6451:EE_|BN9PR11MB5559:EE_
-x-ms-office365-filtering-correlation-id: a52847a5-d035-4390-a840-08dc1cba4282
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: bqh+DIKOh3ieng45zh2JBAN6gcnKL2Da0wkNp4baTzXeHpKlzjOPGB3ct5HNlQ2feDH3zqIsJCbTFAoQbv1OeQVBMHI1OWAmNb9z6Ihurfd+u2yQDGBOZ0vnfttJs7TJ9lY81gMdtNXoByYPdPfWzQjor+8YYJgsewvb6Wz/OoAF2aQVkI8ruRtBjq8ox+pk5LJNFm1SbQEmBHHFpy+zv31/AeIiz14aXjiRqskHQeP0hZRb4AHywwECZ+N0VjY+yglZz7bgSYLrO+R5xcCtoeU6ngCLYY6UvvOI/5+WNCNmO809nCkwNG7mbtlXi7hOY3uRIZdG/jM7EJUZOvYri3/QhCsP3LDDPLsk3WK7SLUC3ux2dWBsQafyqrrgCUIQ+7JBEleo1YsUzDSEvh3ESovJ0klH2Bhc5R2fEDmGcr5p1IUvWFFTgJ67O5CJlOQzBIqhZ/W2RDML5VjMNJ3h2CY3XGz8Ug+L/RSjQzYuOhqcISdbbPVKB+n37XKPVGFH1mwFxyrYNrhH8gfpEq/uiNujHPOkCQDYYu4lqE4VKTWsjGp9boyv9jgXpLDq6lz73yuiH2VXuPzSxdVThLVb5j8UHgUhP8rg6PmBn7Hh7EpMMBdb2T+LrTCwtWwqSUKs6sYITLhFk1OWCq8ueV9t3iaVHKvfE2WVfiqSqnMVWTi5VZeUsXHPNArse//alGBeIsRzpJ0o27cCb9MqrXecwz3aEjjD9qIzSYLh6m45wls=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB6451.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(396003)(136003)(39860400002)(366004)(230922051799003)(230373577357003)(230173577357003)(230273577357003)(230473577357003)(64100799003)(186009)(1800799012)(451199024)(31686004)(83380400001)(38070700009)(86362001)(41300700001)(36756003)(91956017)(31696002)(4326008)(2616005)(122000001)(38100700002)(6506007)(26005)(6512007)(7416002)(71200400001)(6486002)(966005)(66946007)(66446008)(64756008)(478600001)(6916009)(316002)(66476007)(76116006)(54906003)(53546011)(2906002)(5660300002)(66556008)(8936002)(8676002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bkVjUEYzNzlTM0J4R3hCbkpDTW1SK2hhenpZMnA5RzJpQjF5M2dUTmkzOHBy?=
- =?utf-8?B?UGR4T05BMnZOOUFRVHpCS1oxQWpZT0ZQWjVoY3I4Y1dRQi9EckorQUlSOGZP?=
- =?utf-8?B?bVBTeXdqbVVzNCs2YzE3TmVTa0FncVN6UEQ0c0xpa3gwVnYzVTJPS29JUnht?=
- =?utf-8?B?U29jc2VrRG5mSDdIOFdsV292cmJZaE83U09LeEpnQ3VoeVo0ekVINjMrZ0gy?=
- =?utf-8?B?MW5jbzd2SlBvZGlYTCsrWWE5cmlpUDVvRi9ub1ltS0EyYXcxeVJmWFdFYUFD?=
- =?utf-8?B?N0hSNWNrays0N2lVSDhKa1NkQ0dEWDZLY1Q3OW5BT0MwZEp3bmtXT0FLQWRY?=
- =?utf-8?B?TS9zWlJIeXdSR1dMeUE4SDhQZS9TMWZENUdZVHZxOGI0ZEtSa0FPUFFZVW1F?=
- =?utf-8?B?OHhvQjlyb3oxcHFoMnVFeTMyVU9uQjl2NGJaZ1FCT2x4VHdpZkFBd1pFNHU2?=
- =?utf-8?B?cUU4eXZKYlFNT3NmOE5mNXdZRmgyanJZaVZYV21iMjJPZnMwcVZ2ZWtMa3FD?=
- =?utf-8?B?Q2k1UHlmVDhGaVYzaGNGRnNZSVBMY0FqemVUTGRESE1GTU0yTkZNaFZhWFY5?=
- =?utf-8?B?YTh5bk13dG1rdldhaGZOcWFIdWhkZ2lEV2k1Ty90MlpIWUp6dlMyQ3NPWFVj?=
- =?utf-8?B?b1lmbnY4em9lNktncEpFeHYrWTZOa2ZtTlE1WVZCbzlLOSsvcm9MTitwNmN2?=
- =?utf-8?B?VWtqZnl3YlRzR1pPT2V1Z2wraW9pZVZPRmtpZ3ZWN0FsNlVOSjdoQnNEL0pD?=
- =?utf-8?B?bVFnWWVDd0N6ZkZnRXB5UGRCUStOa2Y3WlRoQ21HdDROamM0VG5KaWtSWWZ6?=
- =?utf-8?B?VHhGUGFxKzhvVE5BWWh5eG44eGpmTExaUVhhSDBiU1dlWi8xV2hRSVArakVD?=
- =?utf-8?B?Wi9nSUI2Y2kzbWRHZVQ5b0xCbFZ3eHFMRmtwc3VEZmpmZjBVZ3pkcjNQS1hm?=
- =?utf-8?B?YWx1UFpEdjlsRmVOanFLbkxzc3pDYW9jV1JaNzA1TENYNWticnBRcmdVNzhi?=
- =?utf-8?B?NlBTWUVXTUR1c3YvVVRDVmhsOGhjYlBoYmFiMG9pNlljMmhlL0pWNU1jUm5z?=
- =?utf-8?B?dGRYajFVcllTRFk5c1Z1b2IyTzFSYXF5c1IvN3F1RTYxdHh0RXhXeGx0Tk1r?=
- =?utf-8?B?Ym1Tcy9CaVBPeWp3cWdXamRWOWpCMHNGUGdDNGhEWTYzUTNwNENZNkVnK08y?=
- =?utf-8?B?YnVNYmZQcnNrUjl0T0xxUVZhMTBpanhhN09zMU1WbmcvZnNjM2dvYklvU1JV?=
- =?utf-8?B?N1JpTy90TjhXWWtlMiszdjR3cVdxLysxSFNSY2toa0FrcjhqYTZVYWpSUjVO?=
- =?utf-8?B?U3RYcHRKM2ExMVlpYmthL2VpTS9VU05FeUxqNm4wakJiVGhWSEFpQ0ZDV1g2?=
- =?utf-8?B?VmFpT0NIOWM4RWhGeDNRYnZTSlBaRnFYZnpCWmtTU0ZMSzJpeGE5YjloSmkv?=
- =?utf-8?B?dnllcm5KTlNqek4rME5YTmU2UnhoallZTXNFaUJnL2NKaVVrZkxxMFB2SWZl?=
- =?utf-8?B?MG92UzM0ZFlrcmZvSGxKVytZS09Bd0Zxbmpnc2ZGRml3QkVmQUQwZkIvWjJK?=
- =?utf-8?B?UWdxMEdrbGlza2M0REp2SHYzSGhPbm5Ib1JiMjBBc2x3bmtNVDM2emdzU0tu?=
- =?utf-8?B?VFNhTjcxeXpCZTdRLzhsb1ZzczlKK1ZidkV4L0pFSWxNdTMrTlBCY3lCVEdZ?=
- =?utf-8?B?MFBBSGlXQlZ0QS83THhTQWpISUdCREczczRXQlFiZE9UdHFyOGRKWUlNdk9h?=
- =?utf-8?B?Y082b0llZk5kc0JCN2xOb2h6empLTEQ5MjhvTElKbTBSM3B6OEhHelUxbGR4?=
- =?utf-8?B?ZC9MRnRSVDYvdTNSU1JKTkRseFBSdVZFRnJnODEwVHN4YmVXQ29wdkdiL1pX?=
- =?utf-8?B?VDZmd0tpNzZMeVoxeVM4TDJQNGlva0taam1XNnh5cXgxSmZwYmFDMEQ3UEcv?=
- =?utf-8?B?YWdQcnk0RXo5eWc0b2NvNURMd2Qyc29KUDBHNFdrSWxhNDN0TDlhYzd4UXVv?=
- =?utf-8?B?R045eUU4MXpQVXR6K2pPTEkwaW1uR1NpRnNhVjZqbncwd1NnUFM4d0o2eDhu?=
- =?utf-8?B?SkpReEZaaWQxWUk1eWN2QThHZzhLbXdXVmtBQ2puZHBqWlJIaDF0ZjYyWVVn?=
- =?utf-8?Q?wxm7JfAWjH6ITaU5MfCo9YrDH?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F260D2C136615944B567567119BC5C8A@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51927179A6;
+	Wed, 24 Jan 2024 08:56:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706086612; cv=none; b=Zlk7CeSHs64gjTqup7po0iikvPka40bSNgFfevaO4nz8A8kVqQtuDkjdMNXm43EUOFeLBDtSoe5M73tpRWHtttTe9CiAg2Acf9Sncmb2QVaGm8SS8RdwLSwtQg9djWkDQnCal8UZ9KySX53JtyTlCYJoiLHjsCbVEXuPHj/JE7c=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706086612; c=relaxed/simple;
+	bh=/OD/2t1TGBsqUf0HAmljucfP4HVknb+V4wrjgny/K/g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=c5C2G8m5G6jJBuE2NyaWXHR/KeTq5UMfInnM6oxVzhVoNfH10nnVh31WdBdbNIcTFtRQQ2H/yptMeelqk/i29qeFnlFJSbrPhKLXnLoLFL7aaaidOBIUvdVRV+5NxugfJ3Q2KdikD3gtFYy+xshBiWPXNFRMSySlbjB+BuV8uWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Wm7G64nC; arc=none smtp.client-ip=217.70.183.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 6FD3A6000F;
+	Wed, 24 Jan 2024 08:56:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1706086607;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dF9DvtTO2eIsCU2bgzByEO8VGGB2vesiCczCBU+W1pQ=;
+	b=Wm7G64nCNIrNzMPw3lSWmtdk+9mxBKQCtEtvj/NY7RvCo1o50gz0X4YTJjZdMfW7tTgPWc
+	/ebrHmoflEiO8tRKJM5+g/xAcrZNRg46FfNOjQKLby0pRvJq/cumMVN/Nm1AZFLGTx74RM
+	EgS2znhNWkdG+fOilYaVe3dgY1j8eAHgA7WE11QYDUGS1/Ve7Qj+voEnMZ60Di7cVq0E+h
+	M6lawpcHqjWzSL+rXIFcadQdwhj1GCmZuBOj4VHWguXVVutuBdlnN2xws5JD6uHDUXqqwF
+	Kgooaxax88pA6KjUEBx7Mi7nIokr3NILjaM34p0Xzy4U9GS90/DQeFWYLn8ZIQ==
+Message-ID: <41a5c85b-073d-4083-be9e-830452f88438@bootlin.com>
+Date: Wed, 24 Jan 2024 09:56:44 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB6451.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a52847a5-d035-4390-a840-08dc1cba4282
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jan 2024 08:55:48.5026
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mOByB1fhH8QMsM5DpbuMGzLm513BgEmGY1NJckTUUjlmKi8vcVXfqglvWXdVnNt7Q7/0JwwFi1g3XFu8TgiUyg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5559
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] thermal: k3_j72xx_bandgap: implement suspend/resume
+ support
+Content-Language: en-US
+To: rafael@kernel.org, daniel.lezcano@linaro.org, J KEERTHY <j-keerthy@ti.com>
+Cc: rui.zhang@intel.com, lukasz.luba@arm.com, linux-pm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
+ gregory.clement@bootlin.com, theo.lebrun@bootlin.com, u-kumar1@ti.com
+References: <20231130164953.2043305-1-thomas.richard@bootlin.com>
+From: Thomas Richard <thomas.richard@bootlin.com>
+In-Reply-To: <20231130164953.2043305-1-thomas.richard@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: thomas.richard@bootlin.com
 
-T24gMjIvMDEvMjQgOTozNCBwbSwgU2FtIFJhdm5ib3JnIHdyb3RlOg0KPiBbWW91IGRvbid0IG9m
-dGVuIGdldCBlbWFpbCBmcm9tIHNhbUByYXZuYm9yZy5vcmcuIExlYXJuIHdoeSB0aGlzIGlzIGlt
-cG9ydGFudCBhdCBodHRwczovL2FrYS5tcy9MZWFybkFib3V0U2VuZGVySWRlbnRpZmljYXRpb24g
-XQ0KPiANCj4gRVhURVJOQUwgRU1BSUw6IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFj
-aG1lbnRzIHVubGVzcyB5b3Uga25vdyB0aGUgY29udGVudCBpcyBzYWZlDQo+IA0KPiBIaSBEaGFy
-bWEsDQo+IE9uIE1vbiwgSmFuIDIyLCAyMDI0IGF0IDAzOjUyOjE3QU0gKzAwMDAsIERoYXJtYS5C
-QG1pY3JvY2hpcC5jb20gd3JvdGU6DQo+PiBPbiAyMC8wMS8yNCA2OjUzIHBtLCBTYW0gUmF2bmJv
-cmcgd3JvdGU6DQo+Pj4gW1lvdSBkb24ndCBvZnRlbiBnZXQgZW1haWwgZnJvbSBzYW1AcmF2bmJv
-cmcub3JnLiBMZWFybiB3aHkgdGhpcyBpcyBpbXBvcnRhbnQgYXQgaHR0cHM6Ly9ha2EubXMvTGVh
-cm5BYm91dFNlbmRlcklkZW50aWZpY2F0aW9uIF0NCj4+Pg0KPj4+IEVYVEVSTkFMIEVNQUlMOiBE
-byBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxlc3MgeW91IGtub3cgdGhl
-IGNvbnRlbnQgaXMgc2FmZQ0KPj4+IEhpIFNhbSAmIFJvYiwNCj4+PiBIaSBEaGFybWEgJiBSb2Iu
-DQo+Pj4NCj4+Pj4+IFRvIG1ha2UgdGhlIERUIGJpbmRpbmcgYmFja3dhcmQgY29tcGF0aWJsZSB5
-b3UgbGlrZWx5IG5lZWQgdG8gYWRkIGEgZmV3DQo+Pj4+PiBjb21wYXRpYmxlIHRoYXQgb3RoZXJ3
-aXNlIHdvdWxkIGhhdmUgYmVlbiBsZWZ0IG91dCAtIGJ1dCB0aGF0IHNob3VsZCBkbw0KPj4+Pj4g
-dGhlIHRyaWNrLg0KPj4+Pj4NCj4+Pj4+IFRoZSBjdXJyZW50IGF0bWVsIGhsY2RjIGRyaXZlciB0
-aGF0IGlzIHNwbGl0IGluIHRocmVlIGlzIElNTyBhbg0KPj4+Pj4gb3Zlci1lbmdpbmVlcmluZywg
-YW5kIHRoZSBkcml2ZXIgY291bGQgYmVuZWZpdCBtZXJnaW5nIGl0IGFsbCBpbiBvbmUuDQo+Pj4+
-PiBBbmQgdGhlIGJpbmRpbmcgc2hvdWxkIG5vdCBwcmV2ZW50IHRoaXMuDQo+Pj4+DQo+Pj4+IEkg
-YWdyZWUgb24gYWxsIHRoaXMsIGJ1dCBhIGNvbnZlcnNpb24gaXMgbm90IHJlYWxseSB0aGUgdGlt
-ZSB0byByZWRlc2lnbg0KPj4+PiB0aGluZ3MuIFRydXN0IG1lLCBJJ3ZlIHdhbnRlZCB0byBvbiBs
-b3RzIG9mIGNvbnZlcnNpb25zLiBJdCBzaG91bGQgYmUNCj4+Pj4gcG9zc2libGUgdG8gc2ltcGxp
-ZnkgdGhlIGRyaXZlciBzaWRlIHdoaWxlIGtlZXBpbmcgdGhlIERUIGFzLWlzLiBKdXN0DQo+Pj4+
-IG1ha2UgdGhlIGRpc3BsYXkgZHJpdmVyIGJpbmQgdG8gdGhlIE1GRCBub2RlIGluc3RlYWQuIEFm
-dGVyIHRoYXQsIHRoZW4NCj4+Pj4gb25lIGNvdWxkIGxvb2sgYXQgZmxhdHRlbmluZyBldmVyeXRo
-aW5nIHRvIDEgbm9kZS4NCj4+Pg0KPj4+IFVuZGVyc3Rvb2QgYW5kIHRoaW5raW5nIGEgYml0IGFi
-b3V0IGl0IGZ1bGx5IGFncmVlZCBhcyB3ZWxsLg0KPj4+IERoYXJtYSAtIHBsZWFzZSBzZWUgbXkg
-Y29tbWVudHMgb25seSBhcyBpZGVhcyBmb3IgdGhlIGZ1dHVyZSwgYW5kDQo+Pj4gaWdub3JlIHRo
-ZW0gaW4gdGhpcyBmaW5lIHJld3JpdGUgeW91IGRvLg0KPj4+DQo+Pj4gICAgICAgICAgIFNhbQ0K
-Pj4gQmFzZWQgb24geW91ciBpbnNpZ2h0cywgSSdtIGNvbnRlbXBsYXRpbmcgdGhlIGRlY2lzaW9u
-IHRvIG1lcmdlIFBhdGNoIDINCj4+IFtQV00gYmluZGluZ10gd2l0aCBQYXRjaCAzW01GRCBiaW5k
-aW5nXS4gSXQgc2VlbXMgcmVkdW5kYW50IGdpdmVuIHRoYXQNCj4+IHdlIGFscmVhZHkgaGF2ZSBh
-IFBXTSBub2RlIGV4YW1wbGUgaW4gdGhlIE1GRCBiaW5kaW5nLg0KPj4NCj4+IEluc3RlYWQgb2Yg
-aW50cm9kdWNpbmcgYSBuZXcgUFdNIGJpbmRpbmcsDQo+PiAgICAgcHdtOg0KPj4gICAgICAgJHJl
-ZjogL3NjaGVtYXMvcHdtL2F0bWVsLGhsY2RjLXB3bS55YW1sDQo+Pg0KPj4gSSB3aWxsIHVwZGF0
-ZSB0aGUgZXhpc3RpbmcgTUZEIGJpbmRpbmcgYXMgZm9sbG93czoNCj4+DQo+PiBwcm9wZXJ0aWVz
-Og0KPj4gICAgIGNvbXBhdGlibGU6DQo+PiAgICAgICBjb25zdDogYXRtZWwsaGxjZGMtcHdtDQo+
-Pg0KPj4gICAgICIjcHdtLWNlbGxzIjoNCj4+ICAgICAgIGNvbnN0OiAzDQo+Pg0KPj4gcmVxdWly
-ZWQ6DQo+PiAgICAgLSBjb21wYXRpYmxlDQo+PiAgICAgLSAiI3B3bS1jZWxscyINCj4+DQo+IEFz
-IGFscmVhZHkgY29tbWVudGVkLCB0aGlzIGxvb2tzIG5pY2UuDQo+IEJ1dCBhcyBSb2Igc2FpZCwg
-dGhpcyBzaG91bGQgYmUgYSAxOjEgY29udmVyc2lvbiBmcm9tIHRleHQgdG8geWFtbCwNCj4gYW5k
-IHRoZW4gY2xlYW4tdXAgY2FuIGNvbWUgaW4gdGhlIHNlY29uZCBzdGVwLg0KDQpGaW5lLCBJIHdp
-bGwgc2VuZCB2NCB3aXRoIG5vIGNoYW5nZXMgaW4gW1BBVENIIDJdIFBXTSBiaW5kaW5nLCBJIHdp
-bGwgDQpzZW5kIGFub3RoZXIgc2VwYXJhdGUgcGF0Y2ggZm9yIHRoaXMgY2xlYW4gdXAuDQoNCi0t
-IA0KVGhhbmtzLA0KRGhhcm1hIEIuDQoNCj4gDQo+ICAgICAgICAgIFNhbQ0KDQoNCg0K
+Added Keerthy
+
+On 11/30/23 17:49, Thomas Richard wrote:
+> From: Théo Lebrun <theo.lebrun@bootlin.com>
+> 
+> This add suspend-to-ram support.
+> 
+> The derived_table is kept-as is, so the resume is only about
+> pm_runtime_* calls and restoring the same registers as the probe.
+> 
+> Extract the hardware initialization procedure to a function called at
+> both probe-time & resume-time.
+> 
+> The probe-time loop is split in two to ensure doing the hardware
+> initialization before registering thermal zones. That ensures our
+> callbacks cannot be called while in bad state.
+> 
+> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+> Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
+> ---
+> 
+> v2:
+> - Fix warnings/errors reported by kernel test robot
+> 
+>  drivers/thermal/k3_j72xx_bandgap.c | 112 ++++++++++++++++++++---------
+>  1 file changed, 79 insertions(+), 33 deletions(-)
+> 
+> diff --git a/drivers/thermal/k3_j72xx_bandgap.c b/drivers/thermal/k3_j72xx_bandgap.c
+> index c74094a86982..4ad23c8bf73b 100644
+> --- a/drivers/thermal/k3_j72xx_bandgap.c
+> +++ b/drivers/thermal/k3_j72xx_bandgap.c
+> @@ -178,6 +178,7 @@ struct k3_j72xx_bandgap {
+>  	void __iomem *base;
+>  	void __iomem *cfg2_base;
+>  	struct k3_thermal_data *ts_data[K3_VTM_MAX_NUM_TS];
+> +	int cnt;
+>  };
+>  
+>  /* common data structures */
+> @@ -338,24 +339,53 @@ static void print_look_up_table(struct device *dev, int *ref_table)
+>  		dev_dbg(dev, "%d       %d %d\n", i, derived_table[i], ref_table[i]);
+>  }
+>  
+> +static void k3_j72xx_bandgap_init_hw(struct k3_j72xx_bandgap *bgp)
+> +{
+> +	struct k3_thermal_data *data;
+> +	int id, high_max, low_temp;
+> +	u32 val;
+> +
+> +	for (id = 0; id < bgp->cnt; id++) {
+> +		data = bgp->ts_data[id];
+> +		val = readl(bgp->cfg2_base + data->ctrl_offset);
+> +		val |= (K3_VTM_TMPSENS_CTRL_MAXT_OUTRG_EN |
+> +			K3_VTM_TMPSENS_CTRL_SOC |
+> +			K3_VTM_TMPSENS_CTRL_CLRZ | BIT(4));
+> +		writel(val, bgp->cfg2_base + data->ctrl_offset);
+> +	}
+> +
+> +	/*
+> +	 * Program TSHUT thresholds
+> +	 * Step 1: set the thresholds to ~123C and 105C WKUP_VTM_MISC_CTRL2
+> +	 * Step 2: WKUP_VTM_TMPSENS_CTRL_j set the MAXT_OUTRG_EN  bit
+> +	 *         This is already taken care as per of init
+> +	 * Step 3: WKUP_VTM_MISC_CTRL set the ANYMAXT_OUTRG_ALERT_EN  bit
+> +	 */
+> +	high_max = k3_j72xx_bandgap_temp_to_adc_code(MAX_TEMP);
+> +	low_temp = k3_j72xx_bandgap_temp_to_adc_code(COOL_DOWN_TEMP);
+> +
+> +	writel((low_temp << 16) | high_max, bgp->cfg2_base + K3_VTM_MISC_CTRL2_OFFSET);
+> +	mdelay(100);
+> +	writel(K3_VTM_ANYMAXT_OUTRG_ALERT_EN, bgp->cfg2_base + K3_VTM_MISC_CTRL_OFFSET);
+> +}
+> +
+>  struct k3_j72xx_bandgap_data {
+>  	const bool has_errata_i2128;
+>  };
+>  
+>  static int k3_j72xx_bandgap_probe(struct platform_device *pdev)
+>  {
+> -	int ret = 0, cnt, val, id;
+> -	int high_max, low_temp;
+> -	struct resource *res;
+> +	const struct k3_j72xx_bandgap_data *driver_data;
+> +	struct thermal_zone_device *ti_thermal;
+>  	struct device *dev = &pdev->dev;
+> +	bool workaround_needed = false;
+>  	struct k3_j72xx_bandgap *bgp;
+>  	struct k3_thermal_data *data;
+> -	bool workaround_needed = false;
+> -	const struct k3_j72xx_bandgap_data *driver_data;
+> -	struct thermal_zone_device *ti_thermal;
+> -	int *ref_table;
+>  	struct err_values err_vals;
+>  	void __iomem *fuse_base;
+> +	int ret = 0, val, id;
+> +	struct resource *res;
+> +	int *ref_table;
+>  
+>  	const s64 golden_factors[] = {
+>  		-490019999999999936,
+> @@ -422,10 +452,10 @@ static int k3_j72xx_bandgap_probe(struct platform_device *pdev)
+>  
+>  	/* Get the sensor count in the VTM */
+>  	val = readl(bgp->base + K3_VTM_DEVINFO_PWR0_OFFSET);
+> -	cnt = val & K3_VTM_DEVINFO_PWR0_TEMPSENS_CT_MASK;
+> -	cnt >>= __ffs(K3_VTM_DEVINFO_PWR0_TEMPSENS_CT_MASK);
+> +	bgp->cnt = val & K3_VTM_DEVINFO_PWR0_TEMPSENS_CT_MASK;
+> +	bgp->cnt >>= __ffs(K3_VTM_DEVINFO_PWR0_TEMPSENS_CT_MASK);
+>  
+> -	data = devm_kcalloc(bgp->dev, cnt, sizeof(*data), GFP_KERNEL);
+> +	data = devm_kcalloc(bgp->dev, bgp->cnt, sizeof(*data), GFP_KERNEL);
+>  	if (!data) {
+>  		ret = -ENOMEM;
+>  		goto err_alloc;
+> @@ -449,8 +479,8 @@ static int k3_j72xx_bandgap_probe(struct platform_device *pdev)
+>  	else
+>  		init_table(3, ref_table, pvt_wa_factors);
+>  
+> -	/* Register the thermal sensors */
+> -	for (id = 0; id < cnt; id++) {
+> +	/* Precompute the derived table & fill each thermal sensor struct */
+> +	for (id = 0; id < bgp->cnt; id++) {
+>  		data[id].bgp = bgp;
+>  		data[id].ctrl_offset = K3_VTM_TMPSENS0_CTRL_OFFSET + id * 0x20;
+>  		data[id].stat_offset = data[id].ctrl_offset +
+> @@ -470,13 +500,13 @@ static int k3_j72xx_bandgap_probe(struct platform_device *pdev)
+>  		else if (id == 0 && !workaround_needed)
+>  			memcpy(derived_table, ref_table, TABLE_SIZE * 4);
+>  
+> -		val = readl(data[id].bgp->cfg2_base + data[id].ctrl_offset);
+> -		val |= (K3_VTM_TMPSENS_CTRL_MAXT_OUTRG_EN |
+> -			K3_VTM_TMPSENS_CTRL_SOC |
+> -			K3_VTM_TMPSENS_CTRL_CLRZ | BIT(4));
+> -		writel(val, data[id].bgp->cfg2_base + data[id].ctrl_offset);
+> -
+>  		bgp->ts_data[id] = &data[id];
+> +	}
+> +
+> +	k3_j72xx_bandgap_init_hw(bgp);
+> +
+> +	/* Register the thermal sensors */
+> +	for (id = 0; id < bgp->cnt; id++) {
+>  		ti_thermal = devm_thermal_of_zone_register(bgp->dev, id, &data[id],
+>  							   &k3_of_thermal_ops);
+>  		if (IS_ERR(ti_thermal)) {
+> @@ -486,21 +516,7 @@ static int k3_j72xx_bandgap_probe(struct platform_device *pdev)
+>  		}
+>  	}
+>  
+> -	/*
+> -	 * Program TSHUT thresholds
+> -	 * Step 1: set the thresholds to ~123C and 105C WKUP_VTM_MISC_CTRL2
+> -	 * Step 2: WKUP_VTM_TMPSENS_CTRL_j set the MAXT_OUTRG_EN  bit
+> -	 *         This is already taken care as per of init
+> -	 * Step 3: WKUP_VTM_MISC_CTRL set the ANYMAXT_OUTRG_ALERT_EN  bit
+> -	 */
+> -	high_max = k3_j72xx_bandgap_temp_to_adc_code(MAX_TEMP);
+> -	low_temp = k3_j72xx_bandgap_temp_to_adc_code(COOL_DOWN_TEMP);
+> -
+> -	writel((low_temp << 16) | high_max, data[0].bgp->cfg2_base +
+> -	       K3_VTM_MISC_CTRL2_OFFSET);
+> -	mdelay(100);
+> -	writel(K3_VTM_ANYMAXT_OUTRG_ALERT_EN, data[0].bgp->cfg2_base +
+> -	       K3_VTM_MISC_CTRL_OFFSET);
+> +	platform_set_drvdata(pdev, bgp);
+>  
+>  	print_look_up_table(dev, ref_table);
+>  	/*
+> @@ -527,6 +543,35 @@ static void k3_j72xx_bandgap_remove(struct platform_device *pdev)
+>  	pm_runtime_disable(&pdev->dev);
+>  }
+>  
+> +static int __maybe_unused k3_j72xx_bandgap_suspend(struct device *dev)
+> +{
+> +	pm_runtime_put_sync(dev);
+> +	pm_runtime_disable(dev);
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused k3_j72xx_bandgap_resume(struct device *dev)
+> +{
+> +	struct k3_j72xx_bandgap *bgp = dev_get_drvdata(dev);
+> +	int ret;
+> +
+> +	pm_runtime_enable(dev);
+> +	ret = pm_runtime_get_sync(dev);
+> +	if (ret < 0) {
+> +		pm_runtime_put_noidle(dev);
+> +		pm_runtime_disable(dev);
+> +		return ret;
+> +	}
+> +
+> +	k3_j72xx_bandgap_init_hw(bgp);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct dev_pm_ops k3_j72xx_bandgap_pm_ops = {
+> +	SET_SYSTEM_SLEEP_PM_OPS(k3_j72xx_bandgap_suspend, k3_j72xx_bandgap_resume)
+> +};
+> +
+>  static const struct k3_j72xx_bandgap_data k3_j72xx_bandgap_j721e_data = {
+>  	.has_errata_i2128 = true,
+>  };
+> @@ -554,6 +599,7 @@ static struct platform_driver k3_j72xx_bandgap_sensor_driver = {
+>  	.driver = {
+>  		.name = "k3-j72xx-soc-thermal",
+>  		.of_match_table	= of_k3_j72xx_bandgap_match,
+> +		.pm = &k3_j72xx_bandgap_pm_ops,
+>  	},
+>  };
+>  
+-- 
+Thomas Richard, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
 
