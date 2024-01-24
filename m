@@ -1,165 +1,130 @@
-Return-Path: <linux-kernel+bounces-36942-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C765683A931
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:10:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FFCB83A8A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:00:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC7EF1C22613
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:10:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC2D71F249A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:00:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39ED06DD11;
-	Wed, 24 Jan 2024 12:00:19 +0000 (UTC)
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CD7067E71;
-	Wed, 24 Jan 2024 12:00:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B10B60DF9;
+	Wed, 24 Jan 2024 11:59:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="rABzFyZf";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="eDXqHNek";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="rABzFyZf";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="eDXqHNek"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8C6560DE6;
+	Wed, 24 Jan 2024 11:59:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706097618; cv=none; b=WSjvNfCGXjnO3DiTFYyRHTSzNtfW0g0xPpt54CH40FuE9wSGjfbLfd2d7Le3H4WgkBy0YF5kFgQPPvYEcr6y8VaDvTK7bRkL9wyN4cInJHkwGPr9C8Bm/Y1dw/iPCaZFnPLKhRFZNkNwF9GL//HNc4fkiebTUErv23JClAMxAMk=
+	t=1706097598; cv=none; b=PwrEk+Cvoo0h8zfgpx1R97m014CLJ/CvXM6t4zSPGJbd9KXKJX/6Cu21pHPGl6cDmJitvaAVTw+BXn5bnTJXgVmJnqsp8bGWSBC7qtLvoZl0n2SVJUICjF3Xi6xAEiYMKzrQQYZgjniLp2LqJvhR1YGbS5wWbbeW/fAztjGoHMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706097618; c=relaxed/simple;
-	bh=VZqpdCT23a4FLYa7casjJexKzDefLDFZjLgIXAUOM2A=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=dn04dRZ9CNFxEIUTdPo6bkr0IGQ/FSIHmLDS70KN9DYlnFzT4DaWH/3csme5qzQeDs1vvj3o8SRvLNyiZgDixESWzrUUoz+R9sbCpCgbe6gGFp5nzsYgpDWw2RfraHnzscmb4aF6O34b3WZ9H7u0CUmS3KoNP2B2ZIAAW2puYnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d85ff70000001748-d3-65b0fbb8fd1e
-From: Byungchul Park <byungchul@sk.com>
-To: linux-kernel@vger.kernel.org
-Cc: kernel_team@skhynix.com,
-	torvalds@linux-foundation.org,
-	damien.lemoal@opensource.wdc.com,
-	linux-ide@vger.kernel.org,
-	adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org,
-	mingo@redhat.com,
-	peterz@infradead.org,
-	will@kernel.org,
-	tglx@linutronix.de,
-	rostedt@goodmis.org,
-	joel@joelfernandes.org,
-	sashal@kernel.org,
-	daniel.vetter@ffwll.ch,
-	duyuyang@gmail.com,
-	johannes.berg@intel.com,
-	tj@kernel.org,
-	tytso@mit.edu,
-	willy@infradead.org,
-	david@fromorbit.com,
-	amir73il@gmail.com,
-	gregkh@linuxfoundation.org,
-	kernel-team@lge.com,
-	linux-mm@kvack.org,
-	akpm@linux-foundation.org,
-	mhocko@kernel.org,
-	minchan@kernel.org,
-	hannes@cmpxchg.org,
-	vdavydov.dev@gmail.com,
-	sj@kernel.org,
-	jglisse@redhat.com,
-	dennis@kernel.org,
-	cl@linux.com,
-	penberg@kernel.org,
-	rientjes@google.com,
-	vbabka@suse.cz,
-	ngupta@vflare.org,
-	linux-block@vger.kernel.org,
-	josef@toxicpanda.com,
-	linux-fsdevel@vger.kernel.org,
-	viro@zeniv.linux.org.uk,
-	jack@suse.cz,
-	jlayton@kernel.org,
-	dan.j.williams@intel.com,
-	hch@infradead.org,
-	djwong@kernel.org,
-	dri-devel@lists.freedesktop.org,
-	rodrigosiqueiramelo@gmail.com,
-	melissa.srw@gmail.com,
-	hamohammed.sa@gmail.com,
-	42.hyeyoo@gmail.com,
-	chris.p.wilson@intel.com,
-	gwan-gyeong.mun@intel.com,
-	max.byungchul.park@gmail.com,
-	boqun.feng@gmail.com,
-	longman@redhat.com,
-	hdanton@sina.com,
-	her0gyugyu@gmail.com
-Subject: [PATCH v11 26/26] locking/lockdep, fs/jbd2: Use a weaker annotation in journal handling
-Date: Wed, 24 Jan 2024 20:59:37 +0900
-Message-Id: <20240124115938.80132-27-byungchul@sk.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240124115938.80132-1-byungchul@sk.com>
-References: <20240124115938.80132-1-byungchul@sk.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAAzWSbUyTZxiF9zzvZzu6vOsIvIrJli5mDhQURe8ZZ1hitmfLjDNmf1wiNvYN
-	NBYkLZ9LNICoyJdKhPqBs6CptRSLBQ0KJQwjgsSCQqAiNEAIA6RA0DbryqaUbX/uXDnn5OT+
-	cXhK+ZBZy2vTMiR9mlqnYuW03BtWs6k52CBtrvdEwIXSzeB7W0RDtd3GQt+dOgS2pnwMM4+/
-	gyH/HILgs14KjJV9CGrGRylo6vQgcFoKWOif/AgGfAssdFeWsHDyhp2F56+XMYxUVWCoc+yF
-	nvO1GNoDf9BgnGHhqvEkXjnTGAJmKwfmvPUwYbnCwfL4Fuj2DDLgHI6By7+NsNDq7Kahs3kC
-	Q//DahY8tncM9HR20dB3oYyB+vlaFl77zRSYfQscvGg3YWgoXCk6/eYfBp6UtWM4ffMuhoGX
-	LQjaisYwOGyDLDzyzWFodFRS8Netxwgmyr0cnCoNcHA1vxxByakqGnr/fsJA4UgCBP+sZhN3
-	kkdzCxQpbMwmTr+JJk9rRfLgyihHCtuGOWJyZJJGSzS50TqDSc2SjyEO61mWOJYqOFLsHcBk
-	3uXiSNelIE0mB4z4p6iD8l0aSafNkvRxuw/LUxY902z6XVlOgfkBk4eCXDGS8aKwTSy4OUkX
-	I36VrV5NSGaFL0S3O0CFOFz4TGwsm2KKkZynhDMfipbFZ2zI+EQ4LHa+WVgN0cJ60V10G4dY
-	IWwXL5Y/Z/7t/1Ssa2hfzchW9PrLw3SIlUKCOGY9x4VKRaFEJp6ZafrvoTXi7xY3fR4pTOgD
-	K1Jq07JS1VrdttiU3DRtTuyRY6kOtLIo8/HlX5rRUt+BDiTwSBWmSLTaJSWjzjLkpnYgkadU
-	4Qr3mjuSUqFR5/4q6Y8l6TN1kqEDRfG0KlIR78/WKIVkdYZ0VJLSJf3/LuZla/NQTOnUgQBq
-	8R/cYZg12dsyut++WjxxfVPuZHxYzvzHO69H5Rza802+K+t74muuvkfG9zdEbK1K32Bftjm4
-	+8lDvovGlri4a4mxR/r3HL205CuPKLrlCki28J7MrumMH0brX83mxciTvv6yav+6jb37fvw8
-	Mvlbj9NQsU7X+pWm5+dsl4o2pKi3RFN6g/o93sw5bE0DAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAAzWSe0hTcRzF+/3u09XitsRu2UMWURS9SONb9vorL0FR/2hFD1deckxnbGrZ
-	g6YzM01T0ZnOQq2WTVObPazUlqJpkY80M7OV2kNRW2gTbfZwQv8cPpxzOH8dlpDlUPNYpTpc
-	1KgVIXJaQkp2+epXPnSWimu6JjZC6qU14PgZT0JOSRENzcWFCIruRWPor/WDt6ODCJyvmgjI
-	zGhGkNf9gYB7dTYElQUxNLR+ngltDjsNDRmJNOivl9DQMjCBocuQhqHQshNepuRjsI5/IyGz
-	nwZjph5PSh+GcZOZAZNuCfQUZDMw0b0WGmztFNRcbaCgsnMFZF3roqGisoGEuvIeDK2Pc2iw
-	Ff2l4GVdPQnNqUkU3PmeT8PAqIkAk8POwGtrLobS2Mm1uJE/FDxPsmKIu3EXQ9u7Jwiq4j9h
-	sBS101DjGMRQZskg4NetWgQ9yUMMnL80zoAxOhlB4nkDCU2/n1MQ2+UDzrEcepuvUDNoJ4TY
-	shNC5WguKbzI54VH2R8YIbaqkxFyLRFCWcFy4XpFPxbyhh2UYDFfpAXLcBojJAy1YeF7YyMj
-	1F9xksLntky8e/5+yaYgMUQZKWpWbwmUBP+w9dHH77qdjDE9onTIySQgluU5b948FJSA3Fia
-	W8p3dIwTLnbnvPiypK9UApKwBHdhOl/w4xXtCmZzgXzdiH2qRHJL+I7429jFUm49n57cQrmY
-	5xbxhaXWqY7bpH8nq5N0sYzz4T+ZLzMpSJKLppmRu1IdGapQhvis0qqCo9TKk6uOhoVa0ORn
-	TGcnUsvRz1a/asSxSD5Dus1cIsooRaQ2KrQa8Swhd5d2zC0WZdIgRdQpURN2WBMRImqrkSdL
-	yudIdwSIgTLumCJcVInicVHzP8Ws2zwdWl/V5GkI9M+b9WDgo7rl97oFuw3LSus773v5djc9
-	8JHNaXltVJ027NFlmw8Vp2+3Ru+znzD4Z5T3Rg3n92/9ZrRdO6f3YFQHjBEevX2bA/QjGxYe
-	OfzeviHduj15bHXS2N4YXYD/DG+vo/V4MfO0N/Qg7KutULU/DvsSf7P1zLM3TjmpDVasXU5o
-	tIp/akcm2y8DAAA=
-X-CFilter-Loop: Reflected
+	s=arc-20240116; t=1706097598; c=relaxed/simple;
+	bh=JvuIjypDvkkdN9ibt0BBKV8d8snZJ5FLk81yKrdEgSI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=dUofORVlBQVK3t8pJ+tbzNguJhowbq9wDrg3hyE943he3LJ7obZ8vEGhtB4Ct8FpWofvSmQDBCf5IqXu7Ab4/KUV6eusr0RrjpPiPnVBDMHnZXetKDljxJuUWqf5QWE4ihnwearsd0qAAUiQ92cLaH84ouK7LDsXfwQHI3IJ7VI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=rABzFyZf; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=eDXqHNek; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=rABzFyZf; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=eDXqHNek; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from hawking.nue2.suse.org (unknown [10.168.4.11])
+	by smtp-out1.suse.de (Postfix) with ESMTP id 0F7CC222F1;
+	Wed, 24 Jan 2024 11:59:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1706097595; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZZVqt4zJTdAbKIcvjcw57N6juLTvcK2zWsqCYdTEkzE=;
+	b=rABzFyZfdgfGTIN6EqHqjzCwkFbrZGeYaR23huV2qj1Y1POshzhbj2fcHtpQiUOa3eEzwK
+	DFb1i4OKJBR2vBJeiGOBztSPd+CpmsP9Duf8DCYe2acUDT89VCLKzA2odd8Cm0eGjYOwf3
+	8etjhPdCq56aTIeWCJmvV0pnAsGV5g8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1706097595;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZZVqt4zJTdAbKIcvjcw57N6juLTvcK2zWsqCYdTEkzE=;
+	b=eDXqHNek1XSv/H1vmu8SrDWDhmtIaJ4kuylg7jvmq0lh8t75j3VboHCzSfgG6yC2Kg8/TF
+	6CgGhucIQjkbrICQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1706097595; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZZVqt4zJTdAbKIcvjcw57N6juLTvcK2zWsqCYdTEkzE=;
+	b=rABzFyZfdgfGTIN6EqHqjzCwkFbrZGeYaR23huV2qj1Y1POshzhbj2fcHtpQiUOa3eEzwK
+	DFb1i4OKJBR2vBJeiGOBztSPd+CpmsP9Duf8DCYe2acUDT89VCLKzA2odd8Cm0eGjYOwf3
+	8etjhPdCq56aTIeWCJmvV0pnAsGV5g8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1706097595;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZZVqt4zJTdAbKIcvjcw57N6juLTvcK2zWsqCYdTEkzE=;
+	b=eDXqHNek1XSv/H1vmu8SrDWDhmtIaJ4kuylg7jvmq0lh8t75j3VboHCzSfgG6yC2Kg8/TF
+	6CgGhucIQjkbrICQ==
+Received: by hawking.nue2.suse.org (Postfix, from userid 17005)
+	id E7C9E4A04B3; Wed, 24 Jan 2024 12:59:54 +0100 (CET)
+From: Andreas Schwab <schwab@suse.de>
+To: Xi Ruoyao <xry111@xry111.site>
+Cc: linux-mips@vger.kernel.org,  linux-kernel@vger.kernel.org,  Jiaxun Yang
+ <jiaxun.yang@flygoat.com>,  Thomas Bogendoerfer
+ <tsbogend@alpha.franken.de>,  libc-alpha@sourceware.org
+Subject: Re: Strange EFAULT on mips64el returned by syscall when another
+ thread is forking
+In-Reply-To: <75e9fd7b08562ad9b456a5bdaacb7cc220311cc9.camel@xry111.site> (Xi
+	Ruoyao's message of "Wed, 24 Jan 2024 18:42:30 +0800")
+References: <75e9fd7b08562ad9b456a5bdaacb7cc220311cc9.camel@xry111.site>
+X-Yow: ...It's REAL ROUND..  And it's got a POINTY PART right in the MIDDLE!!
+ The shape is SMOOTH..  ..And COLD.. It feels very COMFORTABLE on my
+ CHEEK..  I'm getting EMOTIONAL..
+Date: Wed, 24 Jan 2024 12:59:54 +0100
+Message-ID: <mvmplxraqmd.fsf@suse.de>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -1.42
+X-Spamd-Result: default: False [-1.42 / 50.00];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCPT_COUNT_FIVE(0.00)[6];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.01)[-0.038];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_COUNT_ZERO(0.00)[0];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 BAYES_HAM(-0.31)[75.41%]
+X-Spam-Flag: NO
 
-jbd2 journal handling code doesn't want any jbd2_might_wait_for_commit()
-to be between start_this_handle() and stop_this_handle(). So it marks
-the region with rwsem_acquire_read() and rwsem_release().
+On Jan 24 2024, Xi Ruoyao wrote:
 
-However, the annotation is too strong for that purpose. We don't have to
-use more than try lock annotation for that.
+> Now I'm suspecting this might be a kernel bug.  Any pointer to further
+> triage?
 
-Furthermore, now that Dept was introduced, false positive alarms was
-reported by that. Replaced it with try lock annotation.
+Is this a regression?
 
-Signed-off-by: Byungchul Park <byungchul@sk.com>
----
- fs/jbd2/transaction.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index 5f08b5fd105a..2c159a547e15 100644
---- a/fs/jbd2/transaction.c
-+++ b/fs/jbd2/transaction.c
-@@ -460,7 +460,7 @@ static int start_this_handle(journal_t *journal, handle_t *handle,
- 	read_unlock(&journal->j_state_lock);
- 	current->journal_info = handle;
- 
--	rwsem_acquire_read(&journal->j_trans_commit_map, 0, 0, _THIS_IP_);
-+	rwsem_acquire_read(&journal->j_trans_commit_map, 0, 1, _THIS_IP_);
- 	jbd2_journal_free_transaction(new_transaction);
- 	/*
- 	 * Ensure that no allocations done while the transaction is open are
 -- 
-2.17.1
-
+Andreas Schwab, SUSE Labs, schwab@suse.de
+GPG Key fingerprint = 0196 BAD8 1CE9 1970 F4BE  1748 E4D4 88E3 0EEA B9D7
+"And now for something completely different."
 
