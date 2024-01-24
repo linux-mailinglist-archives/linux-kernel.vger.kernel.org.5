@@ -1,244 +1,153 @@
-Return-Path: <linux-kernel+bounces-36806-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36809-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54F9083A70E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:43:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4576783A719
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:44:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05567289CBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:43:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08BCB28D729
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:44:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8AA518E1F;
-	Wed, 24 Jan 2024 10:42:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42E0A1B299;
+	Wed, 24 Jan 2024 10:43:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="mMpXXIRf";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="TnqR0Lgc"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="welx1qfB"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3731117551;
-	Wed, 24 Jan 2024 10:42:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E98B31B273
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:43:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706092979; cv=none; b=mjTwSPFvv/3YlpkrKQtYCl+cCGIqRJxwAe0qZ5LeDYo/ODcrubAv4oZ+uDA1hJEUwNjMeZzKFhk5iBhdKSbsGrqJ9qVqa40nRTVLDnfD5U/2ElDQ7qRJPduSLZ/gHYO2MSh5pPapKSBAE/Fy6TIAL7eHkHBYPbA3bj7Ai8yGMik=
+	t=1706092991; cv=none; b=DN3yxqRHTMg0yInejtFphYtEK5RyI9Xv2/vn9koxTiC4Eosd3sS0042UUSXNbnr6Wijj+a/zIq2gAIYGU0Rxzv5DQdJ0WMo/+meFTaJUrQuO39RWu/DY4X1VatVJ9UET5o0XOZBVOeQTsoBk5WLftgnIuut9+4YE1MoKQJ/Y5VY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706092979; c=relaxed/simple;
-	bh=oxmjWtPvBx5rEhH4YdjT7eWZot350oQd77Q9C4n8EQI=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=fWf+Dg3T5eqmqboyhB/L0i6phkdNT1cqN6Nejru4fwSaqs0rJw7SoG/+QcWPG4vzoLtaolRtveiMWVwrLgvE9ohKs9dU7Zb5/wOt9BSrKrnbQe0FTmP9tq0jLO2q50azXrn0cSH1SS3MwxOuabJTtvxL6ObwCTD8kdLC1R3P988=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=mMpXXIRf; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=TnqR0Lgc; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 24 Jan 2024 10:42:54 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1706092975;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oxjl9tdgLylb446oB4wTQBq/k8U/wbxYM/OPAQBZMQk=;
-	b=mMpXXIRf5If4pma6AMsDv06fkhFZAqX9rqY27x2v7SRcANRp1c5zx76g2E6WwVfAhHZnAJ
-	SepXZw2Pco0Ayn1uPzSwB427clVz4JjjmDn8yDK1cLWpvXvu95OpAesDouoTnoz+1Xu54o
-	g2FQCK/I+WSESVaHAd2Vmb8d3f0ODp5Kbr9qg4b477BtzHIKnwAopFZ9xeClK2rar9STCM
-	NTp8jfDEdDChcV6+qgMDhjSL6HTn1Aax2NeFXsEzZOIk4H0ezd5FDTQjhqcn3h6cegEJpw
-	KAlKLhhsj+HW5bRJ4zn+VyLo/qTksKqxC9uxbxY9jIlRGhXVWc1XvC3ghWi7Gg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1706092975;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oxjl9tdgLylb446oB4wTQBq/k8U/wbxYM/OPAQBZMQk=;
-	b=TnqR0LgcfAhDyWGoPHViG2LonnOL8fGCRUo1nIufonWhtWxi5Texl6ZVOdl+gou+6j0zOG
-	zV/Qg0EnZ0kn6sAg==
-From: "tip-bot2 for Tony Luck" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject:
- [tip: x86/cache] x86/resctrl: Implement new mba_MBps throttling heuristic
-Cc: Xiaochen Shen <xiaochen.shen@intel.com>, Tony Luck <tony.luck@intel.com>,
- "Borislav Petkov (AMD)" <bp@alien8.de>,
- Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240122180807.70518-1-tony.luck@intel.com>
-References: <20240122180807.70518-1-tony.luck@intel.com>
+	s=arc-20240116; t=1706092991; c=relaxed/simple;
+	bh=tm8SYL6OBqZKJ3UXZA0SZY268RFJ9rT+2W3TJ8wRTfM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Z2lyXGAf+X4x2TNOyIDo/b81LJVnjjPICB49pMuNgwqzFyt+3naeWX/7XRfrU5ux6KfBqAlS8h6VkG/vTzgAdLvxWTAXtKaLCkuqjh/JHjIHS+Pk9xjhUMI5FRuL7/Pezoismt0eMnvTpcddXazLR6KtGu0WWkMmYW+1/v1Gcgg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=welx1qfB; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-55c89dbef80so6139a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 02:43:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706092988; x=1706697788; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zqCT08+MvCKkOTXY4Y0tOOr9UtqwBr/HZdtw0FsPlto=;
+        b=welx1qfBG8rQ0qTKu6refLligzZY+FgISLKCihmtE3zHP/JhtWgOq//RkkzxEkSibe
+         nKTRGPzn2A/4j8nGpvpN6SJvBd4R2GQgweHlkAKyIBEG7NfRQxcvbdErUwbB+8pR40qo
+         KSCFvZrK5qOwDLXo0r1VmttiRyJimak12eJQcZoH4Uofdfzs68t85LnQxU/8mZhCJl0/
+         0ml7dEPwhiDepB5DvT6DWF+io7faIYHq/LW3NndftKn8mbT5T6MmlYLF9jdPVa9Y4ywh
+         nazoH1832EyVvdSVUYWsDyGV6RRUn+hcHLdv6Z9yh11ZSUlOc3cK9k5BLsUb2BrAyTWo
+         ThEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706092988; x=1706697788;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zqCT08+MvCKkOTXY4Y0tOOr9UtqwBr/HZdtw0FsPlto=;
+        b=Ps7LP4/ZSK0Yhj3gRbdaR9nbGCPssgGqOI2iFZfSOd3D92t+siajU6CVyNGzkv/aC+
+         BxKxyQkUfRezxaPxZ93JfStrN06L0bpUYYrG8eEVRcxy9/eMTm3whg+kcaVaNDBA8nx5
+         mIxNPagsFNp19WBKmglMvlU9GZuWvfcJisnSS+O7kqkZpULTb75hV5S+jaRM2uuE6M22
+         GYvVywDDwdkQBOUURWn62ytsXHfbguRlcLf9AYHHHAG8uYexQfTUgcWMEZqJ0gKRoBTG
+         6ww56HCqRoe1enjerZ82dqOmh3CwLg7kVXQVcAJrZjcv8yHhIGQ0IYHff00ZhJOB4Ona
+         t+rQ==
+X-Gm-Message-State: AOJu0YyLSMl6/iEuWmrWsuDCztrUss/fHPulmD87ThalLseUZEecyzzN
+	rbOOAykhEYSbJ9PCVJ3RvIPnfUdDyT42+XwtWRzZ5qR2nvnZDzsrIjgtk8sUk1iXkrG1tZ9m/HB
+	XmUQ47qJ739Sa49Jp21l+VrcZ7q57xSZ87dpo
+X-Google-Smtp-Source: AGHT+IFA4Tc1j4sf2WdSd9/PHzO6hw9s+bdVXHkMEgmkV/sJrLFCLqNCgSWRThpV968rVYpmG1ZNtjXk5o4YzlQpA2I=
+X-Received: by 2002:a05:6402:3109:b0:55c:6037:c237 with SMTP id
+ dc9-20020a056402310900b0055c6037c237mr99964edb.6.1706092987914; Wed, 24 Jan
+ 2024 02:43:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170609297426.398.11727734850392673356.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20240124101404.161655-1-kovalev@altlinux.org> <20240124101404.161655-2-kovalev@altlinux.org>
+In-Reply-To: <20240124101404.161655-2-kovalev@altlinux.org>
+From: Eric Dumazet <edumazet@google.com>
+Date: Wed, 24 Jan 2024 11:42:54 +0100
+Message-ID: <CANn89iKxC5KiqZ-NS7qkgX-6qcUYBJVsdbesXwrAOKTh=oJyZg@mail.gmail.com>
+Subject: Re: [PATCH 1/1] gtp: fix use-after-free and null-ptr-deref in gtp_genl_dump_pdp()
+To: kovalev@altlinux.org
+Cc: pablo@netfilter.org, laforge@gnumonks.org, davem@davemloft.net, 
+	kuba@kernel.org, pabeni@redhat.com, osmocom-net-gprs@lists.osmocom.org, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, nickel@altlinux.org, 
+	oficerovas@altlinux.org, dutyrok@altlinux.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The following commit has been merged into the x86/cache branch of tip:
+On Wed, Jan 24, 2024 at 11:14=E2=80=AFAM <kovalev@altlinux.org> wrote:
+>
+> From: Vasiliy Kovalev <kovalev@altlinux.org>
+>
+> After unloading the module, an instance continues to exist that accesses
+> outdated memory addresses.
+>
+> To prevent this, the dump_pdp_en flag has been added, which blocks the
+> dump of pdp contexts by a false value. And only after these checks can
+> the net_generic() function be called.
+>
+> These errors were found using the syzkaller program:
+>
+> Syzkaller hit 'general protection fault in gtp_genl_dump_pdp' bug.
+> gtp: GTP module loaded (pdp ctx size 104 bytes)
+> gtp: GTP module unloaded
+> general protection fault, probably for non-canonical address
+> 0xdffffc0000000001:0000 [#1] SMP KASAN NOPTI
+> KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
+> CPU: 0 PID: 2782 Comm: syz-executor139 Not tainted 5.10.200-std-def-alt1 =
+#1
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.0-alt1
+> RIP: 0010:gtp_genl_dump_pdp+0x1b1/0x790 [gtp]
+> ...
+> Call Trace:
+>  genl_lock_dumpit+0x6b/0xa0 net/netlink/genetlink.c:623
+>  netlink_dump+0x575/0xc70 net/netlink/af_netlink.c:2271
+>  __netlink_dump_start+0x64e/0x910 net/netlink/af_netlink.c:2376
+>  genl_family_rcv_msg_dumpit+0x2b8/0x310 net/netlink/genetlink.c:686
+>  genl_family_rcv_msg net/netlink/genetlink.c:780 [inline]
+>  genl_rcv_msg+0x450/0x5a0 net/netlink/genetlink.c:800
+>  netlink_rcv_skb+0x150/0x440 net/netlink/af_netlink.c:2497
+>  genl_rcv+0x29/0x40 net/netlink/genetlink.c:811
+>  netlink_unicast_kernel net/netlink/af_netlink.c:1322 [inline]
+>  netlink_unicast+0x54e/0x800 net/netlink/af_netlink.c:1348
+>  netlink_sendmsg+0x914/0xe00 net/netlink/af_netlink.c:1916
+>  sock_sendmsg_nosec net/socket.c:651 [inline]
+>  __sock_sendmsg+0x159/0x190 net/socket.c:663
+>  ____sys_sendmsg+0x712/0x870 net/socket.c:2376
+>  ___sys_sendmsg+0xf8/0x170 net/socket.c:2430
+>  __sys_sendmsg+0xea/0x1b0 net/socket.c:2459
+>  do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x62/0xc7
+> RIP: 0033:0x7f2ea16c2d49
+>
+> Fixes: 94a6d9fb88df ("gtp: fix wrong condition in gtp_genl_dump_pdp()")
+> Signed-off-by: Vasiliy Kovalev <kovalev@altlinux.org>
+> ---
+>  drivers/net/gtp.c | 18 +++++++++++++++---
+>  1 file changed, 15 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/net/gtp.c b/drivers/net/gtp.c
+> index 477b4d4f860bd3..3fc4639711cd83 100644
+> --- a/drivers/net/gtp.c
+> +++ b/drivers/net/gtp.c
+> @@ -1675,6 +1675,8 @@ static int gtp_genl_get_pdp(struct sk_buff *skb, st=
+ruct genl_info *info)
+>         return err;
+>  }
+>
+> +static bool dump_pdp_en;
+> +
 
-Commit-ID:     c2427e70c1630d98966375fffc2b713ab9768a94
-Gitweb:        https://git.kernel.org/tip/c2427e70c1630d98966375fffc2b713ab9768a94
-Author:        Tony Luck <tony.luck@intel.com>
-AuthorDate:    Mon, 22 Jan 2024 10:08:07 -08:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Wed, 24 Jan 2024 11:32:01 +01:00
+Hmm, it seems there is a missing try_module_get() somewhere...
 
-x86/resctrl: Implement new mba_MBps throttling heuristic
-
-The mba_MBps feedback loop increases throttling when a group is using
-more bandwidth than the target set by the user in the schemata file, and
-decreases throttling when below target.
-
-To avoid possibly stepping throttling up and down on every poll a flag
-"delta_comp" is set whenever throttling is changed to indicate that the
-actual change in bandwidth should be recorded on the next poll in
-"delta_bw". Throttling is only reduced if the current bandwidth plus
-delta_bw is below the user target.
-
-This algorithm works well if the workload has steady bandwidth needs.
-But it can go badly wrong if the workload moves to a different phase
-just as the throttling level changed. E.g. if the workload becomes
-essentially idle right as throttling level is increased, the value
-calculated for delta_bw will be more or less the old bandwidth level.
-If the workload then resumes, Linux may never reduce throttling because
-current bandwidth plus delta_bw is above the target set by the user.
-
-Implement a simpler heuristic by assuming that in the worst case the
-currently measured bandwidth is being controlled by the current level of
-throttling. Compute how much it may increase if throttling is relaxed to
-the next higher level. If that is still below the user target, then it
-is ok to reduce the amount of throttling.
-
-Fixes: ba0f26d8529c ("x86/intel_rdt/mba_sc: Prepare for feedback loop")
-Reported-by: Xiaochen Shen <xiaochen.shen@intel.com>
-Signed-off-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-Tested-by: Xiaochen Shen <xiaochen.shen@intel.com>
-Link: https://lore.kernel.org/r/20240122180807.70518-1-tony.luck@intel.com
----
- arch/x86/kernel/cpu/resctrl/internal.h |  4 +--
- arch/x86/kernel/cpu/resctrl/monitor.c  | 42 +++++--------------------
- 2 files changed, 10 insertions(+), 36 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index e3dc35a..52e7e7d 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -295,14 +295,10 @@ struct rftype {
-  * struct mbm_state - status for each MBM counter in each domain
-  * @prev_bw_bytes: Previous bytes value read for bandwidth calculation
-  * @prev_bw:	The most recent bandwidth in MBps
-- * @delta_bw:	Difference between the current and previous bandwidth
-- * @delta_comp:	Indicates whether to compute the delta_bw
-  */
- struct mbm_state {
- 	u64	prev_bw_bytes;
- 	u32	prev_bw;
--	u32	delta_bw;
--	bool	delta_comp;
- };
- 
- /**
-diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-index acca577..3a6c069 100644
---- a/arch/x86/kernel/cpu/resctrl/monitor.c
-+++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-@@ -440,9 +440,6 @@ static void mbm_bw_count(u32 rmid, struct rmid_read *rr)
- 
- 	cur_bw = bytes / SZ_1M;
- 
--	if (m->delta_comp)
--		m->delta_bw = abs(cur_bw - m->prev_bw);
--	m->delta_comp = false;
- 	m->prev_bw = cur_bw;
- }
- 
-@@ -520,11 +517,11 @@ static void update_mba_bw(struct rdtgroup *rgrp, struct rdt_domain *dom_mbm)
- {
- 	u32 closid, rmid, cur_msr_val, new_msr_val;
- 	struct mbm_state *pmbm_data, *cmbm_data;
--	u32 cur_bw, delta_bw, user_bw;
- 	struct rdt_resource *r_mba;
- 	struct rdt_domain *dom_mba;
- 	struct list_head *head;
- 	struct rdtgroup *entry;
-+	u32 cur_bw, user_bw;
- 
- 	if (!is_mbm_local_enabled())
- 		return;
-@@ -543,7 +540,6 @@ static void update_mba_bw(struct rdtgroup *rgrp, struct rdt_domain *dom_mbm)
- 
- 	cur_bw = pmbm_data->prev_bw;
- 	user_bw = dom_mba->mbps_val[closid];
--	delta_bw = pmbm_data->delta_bw;
- 
- 	/* MBA resource doesn't support CDP */
- 	cur_msr_val = resctrl_arch_get_config(r_mba, dom_mba, closid, CDP_NONE);
-@@ -555,49 +551,31 @@ static void update_mba_bw(struct rdtgroup *rgrp, struct rdt_domain *dom_mbm)
- 	list_for_each_entry(entry, head, mon.crdtgrp_list) {
- 		cmbm_data = &dom_mbm->mbm_local[entry->mon.rmid];
- 		cur_bw += cmbm_data->prev_bw;
--		delta_bw += cmbm_data->delta_bw;
- 	}
- 
- 	/*
- 	 * Scale up/down the bandwidth linearly for the ctrl group.  The
- 	 * bandwidth step is the bandwidth granularity specified by the
- 	 * hardware.
--	 *
--	 * The delta_bw is used when increasing the bandwidth so that we
--	 * dont alternately increase and decrease the control values
--	 * continuously.
--	 *
--	 * For ex: consider cur_bw = 90MBps, user_bw = 100MBps and if
--	 * bandwidth step is 20MBps(> user_bw - cur_bw), we would keep
--	 * switching between 90 and 110 continuously if we only check
--	 * cur_bw < user_bw.
-+	 * Always increase throttling if current bandwidth is above the
-+	 * target set by user.
-+	 * But avoid thrashing up and down on every poll by checking
-+	 * whether a decrease in throttling is likely to push the group
-+	 * back over target. E.g. if currently throttling to 30% of bandwidth
-+	 * on a system with 10% granularity steps, check whether moving to
-+	 * 40% would go past the limit by multiplying current bandwidth by
-+	 * "(30 + 10) / 30".
- 	 */
- 	if (cur_msr_val > r_mba->membw.min_bw && user_bw < cur_bw) {
- 		new_msr_val = cur_msr_val - r_mba->membw.bw_gran;
- 	} else if (cur_msr_val < MAX_MBA_BW &&
--		   (user_bw > (cur_bw + delta_bw))) {
-+		   (user_bw > (cur_bw * (cur_msr_val + r_mba->membw.min_bw) / cur_msr_val))) {
- 		new_msr_val = cur_msr_val + r_mba->membw.bw_gran;
- 	} else {
- 		return;
- 	}
- 
- 	resctrl_arch_update_one(r_mba, dom_mba, closid, CDP_NONE, new_msr_val);
--
--	/*
--	 * Delta values are updated dynamically package wise for each
--	 * rdtgrp every time the throttle MSR changes value.
--	 *
--	 * This is because (1)the increase in bandwidth is not perfectly
--	 * linear and only "approximately" linear even when the hardware
--	 * says it is linear.(2)Also since MBA is a core specific
--	 * mechanism, the delta values vary based on number of cores used
--	 * by the rdtgrp.
--	 */
--	pmbm_data->delta_comp = true;
--	list_for_each_entry(entry, head, mon.crdtgrp_list) {
--		cmbm_data = &dom_mbm->mbm_local[entry->mon.rmid];
--		cmbm_data->delta_comp = true;
--	}
- }
- 
- static void mbm_update(struct rdt_resource *r, struct rdt_domain *d, int rmid)
+__netlink_dump_start() does one, so perhaps we reach __netlink_dump_start()
+with a NULL in control->module ?
 
