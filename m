@@ -1,118 +1,141 @@
-Return-Path: <linux-kernel+bounces-37440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37439-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FA5683B027
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:37:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB9FE83B017
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:34:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 05408B215EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:34:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A367428DC67
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:34:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C30EA1272BE;
-	Wed, 24 Jan 2024 17:32:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADFA786AF8;
+	Wed, 24 Jan 2024 17:32:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="bwBDisSK"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="nmJQe8B2"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58F7B1272B0
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 17:32:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D69168613D;
+	Wed, 24 Jan 2024 17:32:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706117541; cv=none; b=tUkJS2W/ClbomZw8syaOkurF6A3jxi6sDg0/kUCgOTfPlbCGMIaK0mmeBhq6TCC3EndKjJfn2dkU+mBV1hYIf1XN+DMJNxx9t7urdq+DdtzhR9ltN+Di5Q27EjcNHAZgoNH6DaqhxuoD9CH7zB0AB385WwEJyvIK5nGC/vdS4CI=
+	t=1706117537; cv=none; b=kda3Aw/kigbGjXi78HoAlQoBLc7qicv1nPl0VwOlwY7tle7CW/3nrqr5Da4dbqhDhpygMrOKqs0QDS50N68uJSzrY2nNkIoACIAis+RW4pL5H0g6WOH2c+QGj/shRhvuZt+mycZfP9jv83o5Basx0u2YkfCErb8jd/6CwLotJWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706117541; c=relaxed/simple;
-	bh=L9WwAHFBlNfwynoK+bz4ENy/mk9uymDQGuGkhJ92QG8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=TKxEy4HX0nj+Op8+p9B0V5rITSxYkrzxopm9b40VxDpilr4UybhHb+WVxzr70XfUQoXkmEWrVEQlCBfLcFD8E2NM9z8CVeVa5aCpY0nu9AP7n0HocFIOGbkHOmXF3mzAJ8R487HShH0Cu8C7eTb1c8catKFDAExw8nC9jLf+JyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=bwBDisSK; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40OHW0kD059675;
-	Wed, 24 Jan 2024 11:32:00 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706117520;
-	bh=WifEWBVAqtT7VDYyujVHllrGH/B8fDTWzGvePRInBgI=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=bwBDisSKIG0jOFW4SPsd9u96vh1/QO0vVFqSecaUsDCk6uBb0FU9hsstPvmKw1L9U
-	 8uKN5mCuvNWw5mdnBMp91Y3A8E74Hq3t1nobulDEMX2lLbZjPerqQKrth8+uMrnMUZ
-	 Q+h57sxitWy+uKSdTMJeZ4XTllCkYyMp0EmtuEuA=
-Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40OHW0Mu049176
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 24 Jan 2024 11:32:00 -0600
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 24
- Jan 2024 11:31:59 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 24 Jan 2024 11:31:59 -0600
-Received: from [10.249.42.149] ([10.249.42.149])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40OHVxQS061836;
-	Wed, 24 Jan 2024 11:31:59 -0600
-Message-ID: <0ab47165-3ba3-4d34-aea0-9bc12fd5ff31@ti.com>
-Date: Wed, 24 Jan 2024 11:31:59 -0600
+	s=arc-20240116; t=1706117537; c=relaxed/simple;
+	bh=TxZ56d8Oz9RWmCGvMMps0htj1F9xyGSeaGqs7QVJ/lA=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ImQZh0UVeAKhWhCiPXsK3PZOu14f3ZldUjSWxkGO4WqWN67wC4R4iBq2u/e707ZPxpbHdooCggYBjxocVUWaeFdZh1nhWA1ApwFNsCZDwYTeSUDmoMwjTkCzCnuZAIeQf6fLyvnvZSyUlkfYjSZql0jqQov23HHqxXmLLsSBMBI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=nmJQe8B2; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B943E1BF207;
+	Wed, 24 Jan 2024 17:32:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1706117532;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vNQYUSii9IjmdDn/Eb+hTpvR6w3u80ExSZv/+b1sAR0=;
+	b=nmJQe8B2zb5cM/dskpVL/QljwU7tZ7EygdQYNJY5H+r6ur3QxzLR63BdYwrVGVBAAVz8oE
+	f4dDfPhiZjkkSClGTfGwZ0hmYQdv0Kti0MciANI+m95RAwbnYuSvSmkdJdu5gO35Jtfwaw
+	+vEoi1MuBYArur6IIgtKv1KMLdBcDN7helz+kEfosN7n5SvVxDzogQ6GMbPvB4jaHw2aai
+	qGYALCoCVhbp91Py7SzTrj1m2dx42VJZkUDdC4KyUVJU17OONEjIhbgdMkjmSGCqOhLyr8
+	zy2/DvI4Q55fFqygmXd6kauIiykFiMA1B8P8Zfvu9zBkqdEECPQ243YCargCdA==
+Date: Wed, 24 Jan 2024 18:32:07 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: David Regan <dregan@broadcom.com>
+Cc: dregan@mail.com, richard@nod.at, vigneshr@ti.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ computersforpeace@gmail.com, kdasu.kdev@gmail.com,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, joel.peshkin@broadcom.com,
+ tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com,
+ william.zhang@broadcom.com, anand.gore@broadcom.com,
+ kursad.oney@broadcom.com, florian.fainelli@broadcom.com, rafal@milecki.pl,
+ bcm-kernel-feedback-list@broadcom.com, andre.przywara@arm.com,
+ baruch@tkos.co.il, linux-arm-kernel@lists.infradead.org,
+ dan.carpenter@linaro.org
+Subject: Re: [PATCH v3 06/10] mtd: rawnand: brcmnand: Add support for
+ getting ecc setting from strap
+Message-ID: <20240124183207.5898cbfd@xps-13>
+In-Reply-To: <20240124030458.98408-7-dregan@broadcom.com>
+References: <20240124030458.98408-1-dregan@broadcom.com>
+	<20240124030458.98408-7-dregan@broadcom.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] ARM: configs: keystone: Remove this defconfig
-Content-Language: en-US
-To: Nishanth Menon <nm@ti.com>
-CC: Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Santosh Shilimkar
-	<ssantosh@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20240124162857.111915-1-afd@ti.com>
- <20240124162857.111915-2-afd@ti.com>
- <20240124164116.k5ah56xvuclfkxdr@despise>
-From: Andrew Davis <afd@ti.com>
-In-Reply-To: <20240124164116.k5ah56xvuclfkxdr@despise>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 
-On 1/24/24 10:41 AM, Nishanth Menon wrote:
-> On 10:28-20240124, Andrew Davis wrote:
->> TI Keystone devices can and should use the common multi-v7 defconfig.
->> Currently it is not clear which defconfig should be used and so config
->> options for Keystone boards are added to either both defconfigs, or only
->> one or the other. As nice as it is to have a config just for this platform
->> it is a maintenance burden. As it is not used by generic distros it is not
->> very useful to continue to maintain. Remove this defconfig.
->>
->> Signed-off-by: Andrew Davis <afd@ti.com>
->> ---
->>   arch/arm/configs/keystone_defconfig | 238 ----------------------------
->>   1 file changed, 238 deletions(-)
->>   delete mode 100644 arch/arm/configs/keystone_defconfig
->>
-> 
-> There are a bunch of downstream folks who will have recipe fails etc if
-> we do that. I am not sure we need to go down that route.
-> 
+Hi David,
 
-That is the point of this patch, we want to stop any remaining downstream
-folks from using this defconfig. It is not maintained nor updated like
-the multi_v7_defconfig, any new or needed options will only be added to
-multi-v7 defconfig.
+> @@ -2622,19 +2667,43 @@ static int brcmnand_setup_dev(struct brcmnand_hos=
+t *host)
+>  		nanddev_get_memorg(&chip->base);
+>  	struct brcmnand_controller *ctrl =3D host->ctrl;
+>  	struct brcmnand_cfg *cfg =3D &host->hwcfg;
+> -	char msg[128];
+> +	struct device_node *np =3D nand_get_flash_node(chip);
+>  	u32 offs, tmp, oob_sector;
+> -	int ret;
+> +	int ret, sector_size_1k =3D 0;
+> +	bool use_strap =3D false;
+> +	char msg[128];
+> =20
+>  	memset(cfg, 0, sizeof(*cfg));
+> +	use_strap =3D of_property_read_bool(np, "brcm,nand-ecc-use-strap");
+> =20
+> -	ret =3D of_property_read_u32(nand_get_flash_node(chip),
+> -				   "brcm,nand-oob-sector-size",
+> +	/*
+> +	 * Set ECC size and strength based on hw configuration from strap
+> +	 * if device tree does not specify them and use strap property is set
+> +	 * If ecc strength is set in dts, don't use strap setting.
+> +	 */
 
-> I know we had intent on multi_v7_defconfig -> but as far as I recollect,
-> at least during armv7 it did'nt exactly pan out as it did on armv8.
-> 
+You would have to use the strap settings only if the property is set.
+If not property is set, the default from the core should apply I guess.
 
-It worked for ARMv8 as it wasn't allowed go spin up custom defconfigs for
-every random platform. It will work here for many/most platforms just the
-same if they do what I'm doing here and remove their old unneeded defconfigs.
+> +	if (chip->ecc.strength)
+> +		use_strap =3D 0;
+> +
+> +	if (use_strap) {
+> +		chip->ecc.strength =3D brcmnand_get_ecc_strength(host);
+> +		sector_size_1k =3D brcmnand_get_sector_size_1k(host);
+> +		if (chip->ecc.size =3D=3D 0) {
+> +			if (sector_size_1k < 0)
+> +				chip->ecc.size =3D 512;
+> +			else
+> +				chip->ecc.size =3D 512 << sector_size_1k;
+> +		}
+> +	}
+> +
+> +	ret =3D of_property_read_u32(np, "brcm,nand-oob-sector-size",
+>  				   &oob_sector);
+>  	if (ret) {
+> -		/* Use detected size */
+> -		cfg->spare_area_size =3D mtd->oobsize /
+> -					(mtd->writesize >> FC_SHIFT);
+> +		if (use_strap)
+> +			cfg->spare_area_size =3D brcmnand_get_spare_size(host);
+> +		else
+> +			/* Use detected size */
+> +			cfg->spare_area_size =3D mtd->oobsize /
+> +						(mtd->writesize >> FC_SHIFT);
+>  	} else {
+>  		cfg->spare_area_size =3D oob_sector;
+>  	}
 
-Andrew
+
+Thanks,
+Miqu=C3=A8l
 
