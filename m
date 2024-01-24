@@ -1,176 +1,171 @@
-Return-Path: <linux-kernel+bounces-37680-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37681-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E525C83B388
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:04:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2849883B393
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:07:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 563391F24610
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 21:04:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C0CF1C22808
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 21:07:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8BAD1350F2;
-	Wed, 24 Jan 2024 21:04:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05CC91350F0;
+	Wed, 24 Jan 2024 21:07:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="rlaBaD8y"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bhlaR2Yf";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="IW/ecCj4";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bhlaR2Yf";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="IW/ecCj4"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAD261350E7
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 21:04:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 759C313473C;
+	Wed, 24 Jan 2024 21:07:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706130273; cv=none; b=Yp3i36G5g0yK+Bj5Ii/9XT5JB8cCkgYNB4FMs2cwsCF0uqcXTCW2QcOZu1VySb360xGoZ3CGIcrqYj9v4D7oJzt4gdDSCA7eKu3X0luWz2qTjVKHDQ7GFNEfR5EAgaqtPPqU+1O0DUqct7HYHDuDPuiTwx62qgUwH/+L9xiPJfw=
+	t=1706130465; cv=none; b=CDFriMddATtE2zgzjHEzqtnE0750y8ChJ64G6+WuGXrsGuLgA+3wT30DVhlJAVUTNVNjKyHvoSFgI4476cONAuHuDrGu9PRPO56oMXuiXmAk1feoVIGwIoMcyq27UKS1opTmFwteBbvsX72TGls99LDy1bwL3iLpKkkOs6GmjtM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706130273; c=relaxed/simple;
-	bh=rnqQksO6jKPLFgx/+tiUJsLCt73PVeCSgVfenkMhb+w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ph4Ak8Yqy6NNi998S3GzzKsRWOyw6rOVO7UMIz5xZF8Gtkcq42O+aYytM3aN6tiUpnkRluFzAd7U3Ii45TBqR8mpYVnK+1+ds6rj1HzuPVQnyslwbYNefG8PhkgU6BwXWscsw3JCXFs6KcN6ILR2BMRfEEGYzuVxA1uhXzXNl48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rlaBaD8y; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d76f1e3e85so37305ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 13:04:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706130271; x=1706735071; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XizRQUBlHaAbu9XxeiCMQdYmbPWgy6XwF09TqKGHj34=;
-        b=rlaBaD8yYapAsfo/sc1/AUAR9EjfFlgiPFFR4hHFagiDFpWv9DTAQVkh76Vd87toxI
-         YBAX6OqVwtxtshh9r9mAaJgXKeD29qTRq9s6AUZYyHVvQWNlEdyhlVPB3zVPiOHgq4om
-         IJ3QP5MSoVsWhzELd8d5GH76+HLgFZyLXlrqbvHiaDB9+8rIdpzo1ArR9gldYas56Y3N
-         +hzvHAYvLEk0egR9oDbgxhrLfKvK7sKatWohT0AwtwASwcO86xEo5rOsHXcmjbegS+U/
-         kydQOCKFUI9c4zzslHnjYTbFdBIvU1AfHOusHf9td6tBE9eg7WZuf2gZ41mfXD7TZzBK
-         NWUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706130271; x=1706735071;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XizRQUBlHaAbu9XxeiCMQdYmbPWgy6XwF09TqKGHj34=;
-        b=Lm832b1INm00ymkppgfgCipgOYtcBF9bzruJArZDi3UM/kR5f/Nwe0K7AosUvHCRtQ
-         CKfiROjkysPaMT1+Ecq3iBnzATUt9vnBgUuJ7yReYZ9+9UZW7eb+W9LvAgwYPeuyopB2
-         1RE5rLQZUl5ObpT51o+Glsl82luuaj620MYDx8bheALFd/AXBNTemMU8yGWFAeHWzyiQ
-         RM4r3zVlXVPIsli1iqiQYgEQwRDsMeR6r8etdGh7Nw5EVwDj9HboU0yEAWqu4n3sxd6O
-         Y3vuq0/hsD75kRRwBPtt7kZsRhMHWCGS9gXZuJabDVQxuplSZuXRis4enwSaQo+WfX3V
-         AiNQ==
-X-Gm-Message-State: AOJu0YwGiykKkqK8a78PYN7hTCNm9w4sqWDLEap/UN8ds2hNoVFMqm4M
-	0LUik+Wpg9Wx/zEf+Sty7dEyW+JxToLaKH361YNFuEEx9JzVzkuBK2f5B3BdeRWifEAxhY6QNOC
-	ky/cygT4R//Nr9nDeuS5N0y6AUG59kx/eOD2l
-X-Google-Smtp-Source: AGHT+IGTJBa4VEZI289z7a8SPKOIESK1qdc/0dgaW79HDpgK0RplBVCGi/9lVBA37rZn3yjqGtJuzXKpqssmRPybJ5A=
-X-Received: by 2002:a17:903:32c2:b0:1d5:ea14:cd89 with SMTP id
- i2-20020a17090332c200b001d5ea14cd89mr8229plr.1.1706130270686; Wed, 24 Jan
- 2024 13:04:30 -0800 (PST)
+	s=arc-20240116; t=1706130465; c=relaxed/simple;
+	bh=kJlN+UTDIEQ6+eaqc7+8C81gK2cUGa2ixRad25rlMX0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dTztQjMhOIYUiMNUfERT7ya3q7adQN0Sxalkz74UsOM9agxXmQsnOBRXvxFbVa1oLr158ZMX2jwqTXuvRS6Z6F//2l5QCinKUG4Kr24XpU6dvo6y/5v7DKMk2ryuNnc3ZIK52Z0LRcl+xWSoYVzAaY2zDUQNz7rPLbdkLdNre6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bhlaR2Yf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=IW/ecCj4; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bhlaR2Yf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=IW/ecCj4; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 774101FD85;
+	Wed, 24 Jan 2024 21:07:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706130460;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kJlN+UTDIEQ6+eaqc7+8C81gK2cUGa2ixRad25rlMX0=;
+	b=bhlaR2YfxB7uY2qDCArefuiHcH7mMFEfJlnP32LbHYgZ5HNmR0xr14LsJSeVq9fsi2Naoz
+	7gAkO2Zrp95ev5eXzFbUECiLW/QnPiJH6+P1B0mZIge7f5kP2M2YaPd6jt7JOzthXnex0H
+	BqPUa+zxlbqn2t0ZDp0OqaCTtg2Uwks=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706130460;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kJlN+UTDIEQ6+eaqc7+8C81gK2cUGa2ixRad25rlMX0=;
+	b=IW/ecCj47EDOsBR5afQ28U83EFPkaC9NbkePVxVBnRGgxpZZXuDT3j2fly/bqBx3hf4wno
+	xUYBfSWWxl3edTBA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706130460;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kJlN+UTDIEQ6+eaqc7+8C81gK2cUGa2ixRad25rlMX0=;
+	b=bhlaR2YfxB7uY2qDCArefuiHcH7mMFEfJlnP32LbHYgZ5HNmR0xr14LsJSeVq9fsi2Naoz
+	7gAkO2Zrp95ev5eXzFbUECiLW/QnPiJH6+P1B0mZIge7f5kP2M2YaPd6jt7JOzthXnex0H
+	BqPUa+zxlbqn2t0ZDp0OqaCTtg2Uwks=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706130460;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kJlN+UTDIEQ6+eaqc7+8C81gK2cUGa2ixRad25rlMX0=;
+	b=IW/ecCj47EDOsBR5afQ28U83EFPkaC9NbkePVxVBnRGgxpZZXuDT3j2fly/bqBx3hf4wno
+	xUYBfSWWxl3edTBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 09E0F13786;
+	Wed, 24 Jan 2024 21:07:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id LQSyORt8sWXZdAAAD6G6ig
+	(envelope-from <pvorel@suse.cz>); Wed, 24 Jan 2024 21:07:39 +0000
+Date: Wed, 24 Jan 2024 22:07:38 +0100
+From: Petr Vorel <pvorel@suse.cz>
+To: Thomas Bertschinger <tahbertschinger@gmail.com>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, ltp@lists.linux.it
+Subject: Re: bcachefs fails to mount loop device on kernel
+Message-ID: <20240124210738.GA352616@pevik>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+References: <20240124200032.GA343522@pevik>
+ <20240124205149.GA268968@fedora-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124003858.3954822-1-mizhang@google.com> <20240124003858.3954822-2-mizhang@google.com>
- <ZbExcMMl-IAzJrfx@google.com>
-In-Reply-To: <ZbExcMMl-IAzJrfx@google.com>
-From: Aaron Lewis <aaronlewis@google.com>
-Date: Wed, 24 Jan 2024 13:04:18 -0800
-Message-ID: <CAAAPnDFAvJBuETUsBScX6WqSbf_j=5h_CpWwrPHwXdBxDg_LFQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] KVM: x86/pmu: Reset perf_capabilities in vcpu to 0 if
- PDCM is disabled
-To: Sean Christopherson <seanjc@google.com>
-Cc: Mingwei Zhang <mizhang@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	"H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240124205149.GA268968@fedora-laptop>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -1.08
+X-Spamd-Result: default: False [-1.08 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[pvorel@suse.cz];
+	 REPLYTO_EQ_FROM(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 RCPT_COUNT_FIVE(0.00)[6];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FREEMAIL_TO(0.00)[gmail.com];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.58)[81.45%]
+X-Spam-Flag: NO
 
-On Wed, Jan 24, 2024 at 7:49=E2=80=AFAM Sean Christopherson <seanjc@google.=
-com> wrote:
->
-> On Wed, Jan 24, 2024, Mingwei Zhang wrote:
-> > Reset vcpu->arch.perf_capabilities to 0 if PDCM is disabled in guest cp=
-uid.
-> > Without this, there is an issue in live migration. In particular, to
-> > migrate a VM with no PDCM enabled, VMM on the source is able to retriev=
-e a
-> > non-zero value by reading the MSR_IA32_PERF_CAPABILITIES. However, VMM =
-on
-> > the target is unable to set the value. This creates confusions on the u=
-ser
-> > side.
-> >
-> > Fundamentally, it is because vcpu->arch.perf_capabilities as the cached
-> > value of MSR_IA32_PERF_CAPABILITIES is incorrect, and there is nothing
-> > wrong on the kvm_get_msr_common() which just reads
-> > vcpu->arch.perf_capabilities.
-> >
-> > Fix the issue by adding the reset code in kvm_vcpu_after_set_cpuid(), i=
-e.
-> > early in VM setup time.
-> >
-> > Cc: Aaron Lewis <aaronlewis@google.com>
-> > Signed-off-by: Mingwei Zhang <mizhang@google.com>
-> > ---
-> >  arch/x86/kvm/cpuid.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> > index adba49afb5fe..416bee03c42a 100644
-> > --- a/arch/x86/kvm/cpuid.c
-> > +++ b/arch/x86/kvm/cpuid.c
-> > @@ -369,6 +369,9 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcp=
-u *vcpu)
-> >       vcpu->arch.maxphyaddr =3D cpuid_query_maxphyaddr(vcpu);
-> >       vcpu->arch.reserved_gpa_bits =3D kvm_vcpu_reserved_gpa_bits_raw(v=
-cpu);
-> >
-> > +     /* Reset MSR_IA32_PERF_CAPABILITIES guest value to 0 if PDCM is o=
-ff. */
-> > +     if (!guest_cpuid_has(vcpu, X86_FEATURE_PDCM))
-> > +             vcpu->arch.perf_capabilities =3D 0;
->
-> No, this is just papering over the underlying bug.  KVM shouldn't be stuf=
-fing
-> vcpu->arch.perf_capabilities without explicit writes from host userspace.=
-  E.g
-> KVM_SET_CPUID{,2} is allowed multiple times, at which point KVM could clo=
-bber a
-> host userspace write to MSR_IA32_PERF_CAPABILITIES.  It's unlikely any us=
-erspace
-> actually does something like that, but KVM overwriting guest state is alm=
-ost
-> never a good thing.
->
-> I've been meaning to send a patch for a long time (IIRC, Aaron also ran i=
-nto this?).
-> KVM needs to simply not stuff vcpu->arch.perf_capabilities.  I believe we=
- are
-> already fudging around this in our internal kernels, so I don't think the=
-re's a
-> need to carry a hack-a-fix for the destination kernel.
->
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 27e23714e960..fdef9d706d61 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -12116,7 +12116,6 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
->
->         kvm_async_pf_hash_reset(vcpu);
->
-> -       vcpu->arch.perf_capabilities =3D kvm_caps.supported_perf_cap;
+> On Wed, Jan 24, 2024 at 09:00:32PM +0100, Petr Vorel wrote:
+> > Hi all,
 
-Yeah, that will fix the issue we are seeing.  The only thing that's
-not clear to me is if userspace should expect KVM to set this or if
-KVM should expect userspace to set this.  How is that generally
-decided?
+> > bcachefs fails to mount loop device on kernel on both 6.7 and 6.8.0-rc1.
+> > Is mounting loop even supported?
 
->         kvm_pmu_init(vcpu);
->
->         vcpu->arch.pending_external_vector =3D -1;
->
-> >       kvm_pmu_refresh(vcpu);
-> >       vcpu->arch.cr4_guest_rsvd_bits =3D
-> >           __cr4_reserved_bits(guest_cpuid_has, vcpu);
-> > --
-> > 2.43.0.429.g432eaa2c6b-goog
-> >
+> > [...]
+
+> > bcachefs mount /dev/loop0 /mnt
+> > => Unknown command mount
+
+> What version of the bcachefs CLI tool are you using? Is it distribution
+> provided or did you build it yourself?
+
+Official openSUSE Tumbleweed package:
+
+$ rpm -qf $(which bcachefs)
+bcachefs-tools-1.4.0-1.1.x86_64
+
+BTW this was found with LTP, which has 2 APIs: C API, which uses mount(2)
+which works well and shell API which uses mount (which uses bcachefs) and here
+it fails.
+
+Kind regards,
+Petr
+
+> The mount command has been implemented in Rust for a while (since
+> 28f703cc256f "Rust now integrated into bcachefs binary") and if building
+> without Rust support (BCACHEFS_NO_RUST defined), that command won't be
+> included in the binary.
+
+> In more recent versions of bcachefs-tools, building without Rust is not
+> supported at all.
+
+> I don't think this has anything to do with loop devices specifically.
+
+> - Thomas Bertschinger
 
