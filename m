@@ -1,138 +1,234 @@
-Return-Path: <linux-kernel+bounces-36711-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7248983A555
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:25:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DC5983A55B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:26:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C7F629065B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:25:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D458B1F27C53
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:26:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 258DB18636;
-	Wed, 24 Jan 2024 09:22:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D06A018625;
+	Wed, 24 Jan 2024 09:24:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="B2BGTB20"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dmmdIwz4"
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B694617BD5
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 09:22:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D02A1802E
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 09:24:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706088177; cv=none; b=oLb2MMRo3RyVQqCtJ926gA9uGVESswga1+AJWC9kSikcI/AwNSjzti2FzmYteazu8m82FYG7oKLzLHb8xhdRcnTqSt037mF/mecmmTlpsveczjN1N8nQr4q7FlVT+q0Qppg/iVFjBFX+0kuB1pl9LMshGwHodtn7coLPObiwWkk=
+	t=1706088247; cv=none; b=tat3wtC6yYuuJnvrcGRUe7aIYu+GIr/euwkY8n32xp+IWnVmCeHGsQtDYdqa68MtMCvpdz/nxV5hQ3p1LAzRu8EEJbcJqulfg899jWLfFMhj7R82KlNFqRLfjaEpvg6JWvulOveJ7kj8D/ovlLXTyOMGI1Zzi10kzrnBqWR+j3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706088177; c=relaxed/simple;
-	bh=RvnstN+NQtpHBGLJ1c4pR3cxTU/16Rx2Upex7re0PLU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E6h04VEAeEyfgiaoQ0ynmnoa2scf+Et/aSR9siUVIwultqYJuCH7Eadfyeba2bPKYfwe9v8tj26Ms+cmOgmFeND3XUFKIwS24HD8/Kph+sxbz7ozI/vVuVN1n2PVs2IxSMij+O3gE00ytfGefmFU/n7ZIO2b0P6iHsvOq17Y0Ak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=B2BGTB20; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55a50649ff6so5777175a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 01:22:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706088174; x=1706692974; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sR9zPble25AhmUNn+7x39sNPQF5UdEiml7UIrsN5jbk=;
-        b=B2BGTB20b5UXlN9sUOASVlxIooM9/v55LjQozjD8DCsgomzq0X92Q7aBEoYB+zHcXo
-         CE/oI5iCe2IFg6LC+WRpRgQ56zFGGa6MJ+1mgQJZPA+HhVHOVe+7fluNtzjV0cLYt/yQ
-         7FbBMocf3RVQGZLKRMQ7d9JhBC2teYMjwc+5SM50knfuE9W7imKvbYFTu9t/Ev8ryhIm
-         CK4JPMHBz+idWPM1qDbEBrnzve8kMCXXiczBD+xC9B21yw7fl/c0XyUEPnoZPIb+gvvx
-         nCb2b4gC/e/ynYUSGgC8IHDjEji982pXZ1nOhtjbszzGsGI6HCBzC6H86GUTF3P8Tiz2
-         q23Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706088174; x=1706692974;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sR9zPble25AhmUNn+7x39sNPQF5UdEiml7UIrsN5jbk=;
-        b=W2JRZqvf+0Dz4boLFVwfL9tjqDHfeb5CQydZtD+MeWcr9zW00lq9i0voUL1heT/5py
-         CpfhE0V+aAF0N/qkEsJPwv9SAPf3d8t4cUYOzBJBrjLR4a6BYPoKiZVWsDavmNSPae4p
-         OXf8OP1hRpvEeVXr7DVI5Nc6PA/z7M0kDvINfVs+kRH8ZXZg6sx1Vlro+ubv7xnshunf
-         3Y76/MLVvx0M8nmqJAn+gZrCFe+UiYpRlbbCqdIqUOnyqqFiDW5TOtV8s3W1hfUX3GGh
-         +S0nf3aaZSw9aRZSLqz8rx/l/bR4MAcVtxyNxADfca7cmr7eC5HFD2PKCCpz+oAXgndd
-         5w0w==
-X-Gm-Message-State: AOJu0Yx/R91odAqaLqJGrIexPxXuYToJWn3bdYWr/BU+1g960lYMaA+o
-	pM0fqIYyHuH0yPrH0YpWtMA+kTdjyyOJZfuP3Tu8Z2smv+pWJupsxfnxW+KKuDk=
-X-Google-Smtp-Source: AGHT+IFdHK7IwG9O5huGr481sKlTD4E6DbBxhdu32Sit5PoGIT0INmXPy3MH1E6DiFAnsTKSOS6+Jg==
-X-Received: by 2002:a17:906:c4c1:b0:a2f:68cb:dbe3 with SMTP id cl1-20020a170906c4c100b00a2f68cbdbe3mr627050ejb.75.1706088173863;
-        Wed, 24 Jan 2024 01:22:53 -0800 (PST)
-Received: from linaro.org ([79.115.23.25])
-        by smtp.gmail.com with ESMTPSA id ss3-20020a170907c00300b00a2eb3d16fa9sm8688546ejc.144.2024.01.24.01.22.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 01:22:53 -0800 (PST)
-Date: Wed, 24 Jan 2024 11:22:51 +0200
-From: Abel Vesa <abel.vesa@linaro.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-	Rajendra Nayak <quic_rjendra@quicinc.com>
-Subject: Re: [PATCH v2 10/10] clk: qcom: Add camcc clock driver for x1e80100
-Message-ID: <ZbDW6zKX5FqG+6Qy@linaro.org>
-References: <20231214-x1e80100-clock-controllers-v2-0-2b0739bebd27@linaro.org>
- <20231214-x1e80100-clock-controllers-v2-10-2b0739bebd27@linaro.org>
- <624956b6-d7ea-43da-bb8d-32d9166a0272@linaro.org>
- <Za+n4zfzoZFhhLIa@linaro.org>
- <f5784838-0386-4ef8-bc3b-195a0132a29d@linaro.org>
+	s=arc-20240116; t=1706088247; c=relaxed/simple;
+	bh=o5T2fkq8IzyhrnT47Fuo6g/GKUDC/vwmjiJtymo+mEc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UDkR65EPn+sFGPwlVBUezOTtADFU4lgtQ2RSMstoZ+DsV6B97CUgVsXjbJTgKLDCYqvvZHBPWBMUaYg/QY2smAaPYQvVK/qgsI8PbaYmEbSinigdctwt1nXdxssxNFSrlVXROdx5fPwRLZsrqZf4nBqY1XiMy4PnHfOVH5YST5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dmmdIwz4; arc=none smtp.client-ip=95.215.58.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <da1258e3-f828-4bbc-a2c2-8fe1ef808c9a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1706088242;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aXczTWGvMzh/VCc+f846O9vk5+VdwIdB/+WD5XP2dcE=;
+	b=dmmdIwz4nFUxVAXyTv4cPoiMSwN9MpQPn6wOWLRNAGPTZP5An7ppCIdsY+/q4ScnzVRMga
+	Z07sxQioiYG9aFTFeau6a8qo/Hu6jRmVBCwRtjbDYwZFpSZIDJAton6/tr9e2s7vQXHYkh
+	2enZu9eeXKHcjTMFyxGGR8BroFtYj7w=
+Date: Wed, 24 Jan 2024 17:23:34 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f5784838-0386-4ef8-bc3b-195a0132a29d@linaro.org>
+Subject: Re: [PATCH v4 7/7] hugetlb: parallelize 1G hugetlb initialization
+To: Gang Li <gang.li@linux.dev>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ ligang.bdlg@bytedance.com, David Hildenbrand <david@redhat.com>,
+ David Rientjes <rientjes@google.com>, Mike Kravetz
+ <mike.kravetz@oracle.com>, Andrew Morton <akpm@linux-foundation.org>,
+ Tim Chen <tim.c.chen@linux.intel.com>
+References: <20240118123911.88833-1-gang.li@linux.dev>
+ <20240118123911.88833-8-gang.li@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20240118123911.88833-8-gang.li@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On 24-01-23 18:56:03, Konrad Dybcio wrote:
-> 
-> 
-> On 1/23/24 12:49, Abel Vesa wrote:
-> > On 23-12-16 14:39:48, Konrad Dybcio wrote:
-> > > On 14.12.2023 17:49, Abel Vesa wrote:
-> > > > From: Rajendra Nayak <quic_rjendra@quicinc.com>
-> > > > 
-> > > > Add the camcc clock driver for x1e80100
-> > > > 
-> > > > Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
-> > > > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> > > > ---
-> > > [...]
-> > > 
-> > > > +enum {
-> > > > +	DT_BI_TCXO,
-> > > > +	DT_BI_TCXO_AO,
-> > > > +	DT_SLEEP_CLK,
-> > > > +};
-> > > > +
-> > > > +enum {
-> > > > +	P_BI_TCXO,
-> > > Please don't overload this define with DT_BI_TCXO_AO, add a new one
-> > > for the active-only clock. Please also do this in other drivers in
-> > > this series.
-> > 
-> > Nope, that needs to stay if we want to align the dt bindings between
-> > SM8550, SM8650 and this. At least for dispcc. But I would like to have
-> > the same dt schema for the rest of the clock controller drivers between
-> > platforms that share basically the same ip block.
-> 
-> No, you're confusing the dt ordering enum (the first one) with the
-> parent list enum (the one below that I'm commenting on).
 
-Got it. P_BI_TCXO_AO it is then.
 
-> 
-> Konrad
+On 2024/1/18 20:39, Gang Li wrote:
+> Optimizing the initialization speed of 1G huge pages through
+> parallelization.
+>
+> 1G hugetlbs are allocated from bootmem, a process that is already
+> very fast and does not currently require optimization. Therefore,
+> we focus on parallelizing only the initialization phase in
+> `gather_bootmem_prealloc`.
+>
+> Here are some test results:
+>          test          no patch(ms)   patched(ms)   saved
+>   ------------------- -------------- ------------- --------
+>    256c2t(4 node) 1G           4745          2024   57.34%
+
+What does "256c2t" mean?
+
+>    128c1t(2 node) 1G           3358          1712   49.02%
+>        12t        1G          77000         18300   76.23%
+>
+> Signed-off-by: Gang Li <gang.li@linux.dev>
+> Tested-by: David Rientjes <rientjes@google.com>
+> ---
+>   include/linux/hugetlb.h |  2 +-
+>   mm/hugetlb.c            | 42 +++++++++++++++++++++++++++++++++--------
+>   2 files changed, 35 insertions(+), 9 deletions(-)
+>
+> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> index c1ee640d87b1..77b30a8c6076 100644
+> --- a/include/linux/hugetlb.h
+> +++ b/include/linux/hugetlb.h
+> @@ -178,7 +178,7 @@ pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct *vma,
+>   struct address_space *hugetlb_page_mapping_lock_write(struct page *hpage);
+>   
+>   extern int sysctl_hugetlb_shm_group;
+> -extern struct list_head huge_boot_pages;
+> +extern struct list_head huge_boot_pages[MAX_NUMNODES];
+>   
+>   /* arch callbacks */
+>   
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 9b348ba418f5..2f4b77630ada 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -69,7 +69,7 @@ static bool hugetlb_cma_folio(struct folio *folio, unsigned int order)
+>   #endif
+>   static unsigned long hugetlb_cma_size __initdata;
+>   
+> -__initdata LIST_HEAD(huge_boot_pages);
+> +__initdata struct list_head huge_boot_pages[MAX_NUMNODES];
+>   
+>   /* for command line parsing */
+>   static struct hstate * __initdata parsed_hstate;
+> @@ -3301,7 +3301,7 @@ int alloc_bootmem_huge_page(struct hstate *h, int nid)
+>   int __alloc_bootmem_huge_page(struct hstate *h, int nid)
+>   {
+>   	struct huge_bootmem_page *m = NULL; /* initialize for clang */
+> -	int nr_nodes, node;
+> +	int nr_nodes, node = nid;
+
+Why not use nid directly in the following list_add()?
+
+>   
+>   	/* do node specific alloc */
+>   	if (nid != NUMA_NO_NODE) {
+> @@ -3339,7 +3339,7 @@ int __alloc_bootmem_huge_page(struct hstate *h, int nid)
+>   		huge_page_size(h) - PAGE_SIZE);
+>   	/* Put them into a private list first because mem_map is not up yet */
+>   	INIT_LIST_HEAD(&m->list);
+> -	list_add(&m->list, &huge_boot_pages);
+> +	list_add(&m->list, &huge_boot_pages[node]);
+>   	m->hstate = h;
+>   	return 1;
+>   }
+> @@ -3390,8 +3390,6 @@ static void __init prep_and_add_bootmem_folios(struct hstate *h,
+>   	/* Send list for bulk vmemmap optimization processing */
+>   	hugetlb_vmemmap_optimize_folios(h, folio_list);
+>   
+> -	/* Add all new pool pages to free lists in one lock cycle */
+> -	spin_lock_irqsave(&hugetlb_lock, flags);
+>   	list_for_each_entry_safe(folio, tmp_f, folio_list, lru) {
+>   		if (!folio_test_hugetlb_vmemmap_optimized(folio)) {
+>   			/*
+> @@ -3404,23 +3402,27 @@ static void __init prep_and_add_bootmem_folios(struct hstate *h,
+>   					HUGETLB_VMEMMAP_RESERVE_PAGES,
+>   					pages_per_huge_page(h));
+>   		}
+> +		/* Subdivide locks to achieve better parallel performance *
+> +		spin_lock_irqsave(&hugetlb_lock, flags);
+>   		__prep_account_new_huge_page(h, folio_nid(folio));
+>   		enqueue_hugetlb_folio(h, folio);
+> +		spin_unlock_irqrestore(&hugetlb_lock, flags);
+>   	}
+> -	spin_unlock_irqrestore(&hugetlb_lock, flags);
+>   }
+>   
+>   /*
+>    * Put bootmem huge pages into the standard lists after mem_map is up.
+>    * Note: This only applies to gigantic (order > MAX_PAGE_ORDER) pages.
+>    */
+> -static void __init gather_bootmem_prealloc(void)
+> +static void __init __gather_bootmem_prealloc(unsigned long start, unsigned long end, void *arg)
+
+This function name could be gather_bootmem_prealloc_node.
+
+> +
+>   {
+> +	int nid = start;
+>   	LIST_HEAD(folio_list);
+>   	struct huge_bootmem_page *m;
+>   	struct hstate *h = NULL, *prev_h = NULL;
+>   
+> -	list_for_each_entry(m, &huge_boot_pages, list) {
+> +	list_for_each_entry(m, &huge_boot_pages[nid], list) {
+>   		struct page *page = virt_to_page(m);
+>   		struct folio *folio = (void *)page;
+>   
+> @@ -3453,6 +3455,22 @@ static void __init gather_bootmem_prealloc(void)
+>   	prep_and_add_bootmem_folios(h, &folio_list);
+>   }
+>   
+> +static void __init gather_bootmem_prealloc(void)
+> +{
+> +	struct padata_mt_job job = {
+> +		.thread_fn	= __gather_bootmem_prealloc,
+> +		.fn_arg		= NULL,
+> +		.start		= 0,
+> +		.size		= num_node_state(N_MEMORY),
+> +		.align		= 1,
+> +		.min_chunk	= 1,
+> +		.max_threads	= num_node_state(N_MEMORY),
+> +		.numa_aware	= true,
+> +	};
+> +
+> +	padata_do_multithreaded(&job);
+> +}
+> +
+>   static void __init hugetlb_hstate_alloc_pages_onenode(struct hstate *h, int nid)
+>   {
+>   	unsigned long i;
+> @@ -3602,6 +3620,14 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
+>   		return;
+>   	}
+>   
+> +	/* hugetlb_hstate_alloc_pages will be called many times, init huge_boot_pages once*/
+
+s/init/initialize/g
+
+And you miss a black right before "*/".
+
+> +	if (huge_boot_pages[0].next == NULL) {
+
+It it not intuitive. I'd like to use a 'initialied' variable
+to indicate whether it has been initialized. BTW, it can be
+marked as __initdata.
+
+> +		int i = 0;
+> +
+> +		for (i = 0; i < MAX_NUMNODES; i++)
+> +			INIT_LIST_HEAD(&huge_boot_pages[i]);
+> +	}
+> +
+>   	/* do node specific alloc */
+>   	if (hugetlb_hstate_alloc_pages_specific_nodes(h))
+>   		return;
+
 
