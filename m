@@ -1,60 +1,61 @@
-Return-Path: <linux-kernel+bounces-37028-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37031-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F22B83AA6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:57:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B40C383AA75
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:58:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F373C28BACD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:57:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 415601F28EE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:58:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 289E67A72E;
-	Wed, 24 Jan 2024 12:56:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E9787C0BC;
+	Wed, 24 Jan 2024 12:57:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KDJxUsCt"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nkP5dTZ3"
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F10737764C
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 12:56:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADA9B7C0A2
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 12:56:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706101016; cv=none; b=JHy70DblMTeDfL5ZQFUUrEAxrGyNhvx+k8KvY9qplmZbE4zJXP92fHghCyrnhQrWi70N+Kegv4wZmpmv81xmhzBVneJZUL/TZIL9LrhQ0lCqrlmVwkVir9SuyMGBDqtFoU8MpMokWyl8WNuVzFA33qK3GZTt/fmle35wch4tPcQ=
+	t=1706101021; cv=none; b=Trfp5XA085iP/B1MwFZlv4IfyYP7B+ZuOfhDM/NgjXvmrUJJwLhPgzkhKW2kUrVLaBcQ6GJ91pB9vaPrP2IC0tEAPo6wQUdQGvn73/87d2zuG7aJvEaK/3Gb5vRABKrexp2ZzBsZOzQJ6c3xSZ9SXI5An5Yo8vefR1ZyX3nis7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706101016; c=relaxed/simple;
-	bh=rtKx+ZVm92UFnnaQ4chH94Uu1HaaniYnTqI2DxYbcL4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=k9AqtDW80QB3DO0nGx1BsLs5xD8Z0abIcPG4heoTvChRIuHX5QGJJBTdNVT4oqkjTbOd5Ipc9bIbGhDRc0r5ZQIa7DDo5Tq/SGFM3RmGZYcuT9kgcxsss5pQ3nQCXGYIP3+7CE5Gb5FYYB/2p07dlc59VbvUgnJ19fYeXFt2M5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.helo=mgamail.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KDJxUsCt; arc=none smtp.client-ip=134.134.136.31
+	s=arc-20240116; t=1706101021; c=relaxed/simple;
+	bh=qz1krj0wC55JXx44sTGWHpxuKY8Fuz6UzO1qVRE49gA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=S89KOwiT0y7AcRUvrt9r5F/b8E5+0KHkZdG3Rc9hytDA7svn0EwUuGJs/938BI0+/af8Gmqlwkn+cp/4AlrSMakRStta5/qt2Xylj4XFi2oB31tpggzJdTTaZcxY3QfzRLKW4Gqt+TL6t54+0Oy9Ff3kA3m4y099ivAs1VDbioA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.helo=mgamail.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nkP5dTZ3; arc=none smtp.client-ip=134.134.136.31
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mgamail.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706101014; x=1737637014;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=rtKx+ZVm92UFnnaQ4chH94Uu1HaaniYnTqI2DxYbcL4=;
-  b=KDJxUsCtVA7jqpYlYauKNKm7VP2DNu/x8VOHrF/AWKka7vMY3HycUu2U
-   aTRJ+vfZXAMkX9e74/FL8K9qpGRUQ48s2/sll8hCzplDX6yjcgP64VDt/
-   pxP0Kz3K8jf6Nd+NRTbKYOzp8+A+d5VjAvCWe1T2k1SyfcCjG6XaM2a4Y
-   IHc6h7jWETjKZ2VbsUBtP1bqtrl9Smde8DFue5pwlJt+PWY9W0xJl7MTF
-   REKVSwxlGDS3QDhtrFpYAM5sN80TbZ8ClR5fxRK9f9B/uJ/rdeLpYque7
-   tAmPA4thcuJs/XCfm9YM1aX9rtiM49DJHz42zUrF5Pg1+MkZJynIYu1EE
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="466110115"
+  t=1706101019; x=1737637019;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=qz1krj0wC55JXx44sTGWHpxuKY8Fuz6UzO1qVRE49gA=;
+  b=nkP5dTZ3CjT15KJceI6ISJEF1BOhWpnaRs/o8WB/GG3WbX2QcCfcTrhp
+   PudA8CBZ5gQgbu4WeNuhmq9TOVsKEssuGJw4KgG9n5wb1050X9cGNdQLN
+   eS3IgswTd3WVXRdEoB0Hxb5Bw96Skf4Bc7rLyBDCLb8giEAEwn9RFLg/L
+   /A2AaYmf0LXgzmhPWd2OS79rEChrcxJjL3S8H/BnWpzkDDaAFW0lEJh7k
+   GgV/J2vcqH74Ymvyr9qraUpcU373JGYCnZYic7ubCG2UbuIGxWvYKFlwY
+   4bWShqHAMBn/nGMJhcV3x/loor9K8vq/LG+5G0Fp+dRc/G9KPm2l4GXjT
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="466110213"
 X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="466110115"
+   d="scan'208";a="466110213"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 04:56:53 -0800
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 04:56:59 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="735924074"
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="735924094"
 X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="735924074"
+   d="scan'208";a="735924094"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga003.jf.intel.com with ESMTP; 24 Jan 2024 04:56:47 -0800
+  by orsmga003.jf.intel.com with ESMTP; 24 Jan 2024 04:56:53 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id F125B9F; Wed, 24 Jan 2024 14:56:01 +0200 (EET)
+	id 14EF287; Wed, 24 Jan 2024 14:56:02 +0200 (EET)
 From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 To: Thomas Gleixner <tglx@linutronix.de>,
 	Ingo Molnar <mingo@redhat.com>,
@@ -77,10 +78,12 @@ Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
 	linux-coco@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
 	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCHv6 00/16] x86/tdx: Add kexec support
-Date: Wed, 24 Jan 2024 14:55:41 +0200
-Message-ID: <20240124125557.493675-1-kirill.shutemov@linux.intel.com>
+Subject: [PATCHv6 01/16] x86/acpi: Extract ACPI MADT wakeup code into a separate file
+Date: Wed, 24 Jan 2024 14:55:42 +0200
+Message-ID: <20240124125557.493675-2-kirill.shutemov@linux.intel.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240124125557.493675-1-kirill.shutemov@linux.intel.com>
+References: <20240124125557.493675-1-kirill.shutemov@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,114 +92,288 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The patchset adds bits and pieces to get kexec (and crashkernel) work on
-TDX guest.
+In order to prepare for the expansion of support for the ACPI MADT
+wakeup method, move the relevant code into a separate file.
 
-The last patch implements CPU offlining according to the approved ACPI
-spec change poposal[1]. It unlocks kexec with all CPUs visible in the target
-kernel. It requires BIOS-side enabling. If it missing we fallback to booting
-2nd kernel with single CPU.
+Introduce a new configuration option to clearly indicate dependencies
+without the use of ifdefs.
 
-Please review. I would be glad for any feedback.
+There have been no functional changes.
 
-[1] https://lore.kernel.org/all/13356251.uLZWGnKmhe@kreacher
-
-v6:
-  - Rebased to v6.8-rc1;
-  - Provide default noop callbacks from .enc_kexec_stop_conversion and
-    .enc_kexec_unshare_mem;
-  - Split off patch that introduces .enc_kexec_* callbacks;
-  - asm_acpi_mp_play_dead(): program CR3 directly from RSI, no MOV to RAX
-    required;
-  - Restructure how smp_ops.stop_this_cpu() hooked up in crash_nmi_callback();
-  - kvmclock patch got merged via KVM tree;
-v5:
-  - Rename smp_ops.crash_play_dead to smp_ops.stop_this_cpu and use it in
-    stop_this_cpu();
-  - Split off enc_kexec_stop_conversion() from enc_kexec_unshare_mem();
-  - Introduce kernel_ident_mapping_free();
-  - Add explicit include for alternatives and stringify.
-  - Add barrier() after setting conversion_allowed to false;
-  - Mark cpu_hotplug_offline_disabled __ro_after_init;
-  - Print error if failed to hand over CPU to BIOS;
-  - Update comments and commit messages;
-v4:
-  - Fix build for !KEXEC_CORE;
-  - Cleaner ATLERNATIVE use;
-  - Update commit messages and comments;
-  - Add Reviewed-bys;
-v3:
-  - Rework acpi_mp_crash_stop_other_cpus() to avoid invoking hotplug state
-    machine;
-  - Free page tables if reset vector setup failed;
-  - Change asm_acpi_mp_play_dead() to pass reset vector and PGD as arguments;
-  - Mark acpi_mp_* variables as static and __ro_after_init;
-  - Use u32 for apicid;
-  - Disable CPU offlining if reset vector setup failed;
-  - Rename madt.S -> madt_playdead.S;
-  - Mark tdx_kexec_unshare_mem() as static;
-  - Rebase onto up-to-date tip/master;
-  - Whitespace fixes;
-  - Reorder patches;
-  - Add Reviewed-bys;
-  - Update comments and commit messages;
-v2:
-  - Rework how unsharing hook ups into kexec codepath;
-  - Rework kvmclock_disable() fix based on Sean's;
-  - s/cpu_hotplug_not_supported()/cpu_hotplug_disable_offlining()/;
-  - use play_dead_common() to implement acpi_mp_play_dead();
-  - cond_resched() in tdx_shared_memory_show();
-  - s/target kernel/second kernel/;
-  - Update commit messages and comments;
-
-Kirill A. Shutemov (16):
-  x86/acpi: Extract ACPI MADT wakeup code into a separate file
-  x86/apic: Mark acpi_mp_wake_* variables as __ro_after_init
-  cpu/hotplug: Add support for declaring CPU offlining not supported
-  cpu/hotplug, x86/acpi: Disable CPU offlining for ACPI MADT wakeup
-  x86/kexec: Keep CR4.MCE set during kexec for TDX guest
-  x86/mm: Make x86_platform.guest.enc_status_change_*() return errno
-  x86/mm: Return correct level from lookup_address() if pte is none
-  x86/tdx: Account shared memory
-  x86/mm: Adding callbacks to prepare encrypted memory for kexec
-  x86/tdx: Convert shared memory back to private on kexec
-  x86/mm: Make e820_end_ram_pfn() cover E820_TYPE_ACPI ranges
-  x86/acpi: Rename fields in acpi_madt_multiproc_wakeup structure
-  x86/acpi: Do not attempt to bring up secondary CPUs in kexec case
-  x86/smp: Add smp_ops.stop_this_cpu() callback
-  x86/mm: Introduce kernel_ident_mapping_free()
-  x86/acpi: Add support for CPU offlining for ACPI MADT wakeup method
-
- arch/x86/Kconfig                     |   7 +
- arch/x86/coco/core.c                 |   1 -
- arch/x86/coco/tdx/tdx.c              | 209 ++++++++++++++++++-
- arch/x86/hyperv/ivm.c                |   9 +-
- arch/x86/include/asm/acpi.h          |   7 +
- arch/x86/include/asm/init.h          |   3 +
- arch/x86/include/asm/pgtable_types.h |   1 +
- arch/x86/include/asm/smp.h           |   1 +
- arch/x86/include/asm/x86_init.h      |   6 +-
- arch/x86/kernel/acpi/Makefile        |  11 +-
- arch/x86/kernel/acpi/boot.c          |  86 +-------
- arch/x86/kernel/acpi/madt_playdead.S |  28 +++
- arch/x86/kernel/acpi/madt_wakeup.c   | 292 +++++++++++++++++++++++++++
- arch/x86/kernel/crash.c              |   5 +
- arch/x86/kernel/e820.c               |   9 +-
- arch/x86/kernel/process.c            |   7 +
- arch/x86/kernel/reboot.c             |  18 ++
- arch/x86/kernel/relocate_kernel_64.S |   5 +
- arch/x86/kernel/x86_init.c           |   8 +-
- arch/x86/mm/ident_map.c              |  73 +++++++
- arch/x86/mm/mem_encrypt_amd.c        |   8 +-
- arch/x86/mm/pat/set_memory.c         |  17 +-
- include/acpi/actbl2.h                |  19 +-
- include/linux/cc_platform.h          |  10 -
- include/linux/cpu.h                  |   2 +
- kernel/cpu.c                         |  12 +-
- 26 files changed, 714 insertions(+), 140 deletions(-)
- create mode 100644 arch/x86/kernel/acpi/madt_playdead.S
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Acked-by: Kai Huang <kai.huang@intel.com>
+---
+ arch/x86/Kconfig                   |  7 +++
+ arch/x86/include/asm/acpi.h        |  5 ++
+ arch/x86/kernel/acpi/Makefile      | 11 ++--
+ arch/x86/kernel/acpi/boot.c        | 86 +-----------------------------
+ arch/x86/kernel/acpi/madt_wakeup.c | 82 ++++++++++++++++++++++++++++
+ 5 files changed, 101 insertions(+), 90 deletions(-)
  create mode 100644 arch/x86/kernel/acpi/madt_wakeup.c
 
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 5edec175b9bf..1c1c06f6c0f1 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1108,6 +1108,13 @@ config X86_LOCAL_APIC
+ 	depends on X86_64 || SMP || X86_32_NON_STANDARD || X86_UP_APIC || PCI_MSI
+ 	select IRQ_DOMAIN_HIERARCHY
+ 
++config X86_ACPI_MADT_WAKEUP
++	def_bool y
++	depends on X86_64
++	depends on ACPI
++	depends on SMP
++	depends on X86_LOCAL_APIC
++
+ config X86_IO_APIC
+ 	def_bool y
+ 	depends on X86_LOCAL_APIC || X86_UP_IOAPIC
+diff --git a/arch/x86/include/asm/acpi.h b/arch/x86/include/asm/acpi.h
+index f896eed4516c..2625b915ae7f 100644
+--- a/arch/x86/include/asm/acpi.h
++++ b/arch/x86/include/asm/acpi.h
+@@ -76,6 +76,11 @@ static inline bool acpi_skip_set_wakeup_address(void)
+ 
+ #define acpi_skip_set_wakeup_address acpi_skip_set_wakeup_address
+ 
++union acpi_subtable_headers;
++
++int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
++			      const unsigned long end);
++
+ /*
+  * Check if the CPU can handle C2 and deeper
+  */
+diff --git a/arch/x86/kernel/acpi/Makefile b/arch/x86/kernel/acpi/Makefile
+index fc17b3f136fe..8c7329c88a75 100644
+--- a/arch/x86/kernel/acpi/Makefile
++++ b/arch/x86/kernel/acpi/Makefile
+@@ -1,11 +1,12 @@
+ # SPDX-License-Identifier: GPL-2.0
+ 
+-obj-$(CONFIG_ACPI)		+= boot.o
+-obj-$(CONFIG_ACPI_SLEEP)	+= sleep.o wakeup_$(BITS).o
+-obj-$(CONFIG_ACPI_APEI)		+= apei.o
+-obj-$(CONFIG_ACPI_CPPC_LIB)	+= cppc.o
++obj-$(CONFIG_ACPI)			+= boot.o
++obj-$(CONFIG_ACPI_SLEEP)		+= sleep.o wakeup_$(BITS).o
++obj-$(CONFIG_ACPI_APEI)			+= apei.o
++obj-$(CONFIG_ACPI_CPPC_LIB)		+= cppc.o
++obj-$(CONFIG_X86_ACPI_MADT_WAKEUP)	+= madt_wakeup.o
+ 
+ ifneq ($(CONFIG_ACPI_PROCESSOR),)
+-obj-y				+= cstate.o
++obj-y					+= cstate.o
+ endif
+ 
+diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
+index 85a3ce2a3666..df3384dc42c7 100644
+--- a/arch/x86/kernel/acpi/boot.c
++++ b/arch/x86/kernel/acpi/boot.c
+@@ -67,13 +67,6 @@ static bool has_lapic_cpus __initdata;
+ static bool acpi_support_online_capable;
+ #endif
+ 
+-#ifdef CONFIG_X86_64
+-/* Physical address of the Multiprocessor Wakeup Structure mailbox */
+-static u64 acpi_mp_wake_mailbox_paddr;
+-/* Virtual address of the Multiprocessor Wakeup Structure mailbox */
+-static struct acpi_madt_multiproc_wakeup_mailbox *acpi_mp_wake_mailbox;
+-#endif
+-
+ #ifdef CONFIG_X86_IO_APIC
+ /*
+  * Locks related to IOAPIC hotplug
+@@ -370,60 +363,6 @@ acpi_parse_lapic_nmi(union acpi_subtable_headers * header, const unsigned long e
+ 
+ 	return 0;
+ }
+-
+-#ifdef CONFIG_X86_64
+-static int acpi_wakeup_cpu(u32 apicid, unsigned long start_ip)
+-{
+-	/*
+-	 * Remap mailbox memory only for the first call to acpi_wakeup_cpu().
+-	 *
+-	 * Wakeup of secondary CPUs is fully serialized in the core code.
+-	 * No need to protect acpi_mp_wake_mailbox from concurrent accesses.
+-	 */
+-	if (!acpi_mp_wake_mailbox) {
+-		acpi_mp_wake_mailbox = memremap(acpi_mp_wake_mailbox_paddr,
+-						sizeof(*acpi_mp_wake_mailbox),
+-						MEMREMAP_WB);
+-	}
+-
+-	/*
+-	 * Mailbox memory is shared between the firmware and OS. Firmware will
+-	 * listen on mailbox command address, and once it receives the wakeup
+-	 * command, the CPU associated with the given apicid will be booted.
+-	 *
+-	 * The value of 'apic_id' and 'wakeup_vector' must be visible to the
+-	 * firmware before the wakeup command is visible.  smp_store_release()
+-	 * ensures ordering and visibility.
+-	 */
+-	acpi_mp_wake_mailbox->apic_id	    = apicid;
+-	acpi_mp_wake_mailbox->wakeup_vector = start_ip;
+-	smp_store_release(&acpi_mp_wake_mailbox->command,
+-			  ACPI_MP_WAKE_COMMAND_WAKEUP);
+-
+-	/*
+-	 * Wait for the CPU to wake up.
+-	 *
+-	 * The CPU being woken up is essentially in a spin loop waiting to be
+-	 * woken up. It should not take long for it wake up and acknowledge by
+-	 * zeroing out ->command.
+-	 *
+-	 * ACPI specification doesn't provide any guidance on how long kernel
+-	 * has to wait for a wake up acknowledgement. It also doesn't provide
+-	 * a way to cancel a wake up request if it takes too long.
+-	 *
+-	 * In TDX environment, the VMM has control over how long it takes to
+-	 * wake up secondary. It can postpone scheduling secondary vCPU
+-	 * indefinitely. Giving up on wake up request and reporting error opens
+-	 * possible attack vector for VMM: it can wake up a secondary CPU when
+-	 * kernel doesn't expect it. Wait until positive result of the wake up
+-	 * request.
+-	 */
+-	while (READ_ONCE(acpi_mp_wake_mailbox->command))
+-		cpu_relax();
+-
+-	return 0;
+-}
+-#endif /* CONFIG_X86_64 */
+ #endif /* CONFIG_X86_LOCAL_APIC */
+ 
+ #ifdef CONFIG_X86_IO_APIC
+@@ -1159,29 +1098,6 @@ static int __init acpi_parse_madt_lapic_entries(void)
+ 	}
+ 	return 0;
+ }
+-
+-#ifdef CONFIG_X86_64
+-static int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
+-				     const unsigned long end)
+-{
+-	struct acpi_madt_multiproc_wakeup *mp_wake;
+-
+-	if (!IS_ENABLED(CONFIG_SMP))
+-		return -ENODEV;
+-
+-	mp_wake = (struct acpi_madt_multiproc_wakeup *)header;
+-	if (BAD_MADT_ENTRY(mp_wake, end))
+-		return -EINVAL;
+-
+-	acpi_table_print_madt_entry(&header->common);
+-
+-	acpi_mp_wake_mailbox_paddr = mp_wake->base_address;
+-
+-	apic_update_callback(wakeup_secondary_cpu_64, acpi_wakeup_cpu);
+-
+-	return 0;
+-}
+-#endif				/* CONFIG_X86_64 */
+ #endif				/* CONFIG_X86_LOCAL_APIC */
+ 
+ #ifdef	CONFIG_X86_IO_APIC
+@@ -1378,7 +1294,7 @@ static void __init acpi_process_madt(void)
+ 				smp_found_config = 1;
+ 			}
+ 
+-#ifdef CONFIG_X86_64
++#ifdef CONFIG_X86_ACPI_MADT_WAKEUP
+ 			/*
+ 			 * Parse MADT MP Wake entry.
+ 			 */
+diff --git a/arch/x86/kernel/acpi/madt_wakeup.c b/arch/x86/kernel/acpi/madt_wakeup.c
+new file mode 100644
+index 000000000000..7f164d38bd0b
+--- /dev/null
++++ b/arch/x86/kernel/acpi/madt_wakeup.c
+@@ -0,0 +1,82 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++#include <linux/acpi.h>
++#include <linux/io.h>
++#include <asm/apic.h>
++#include <asm/barrier.h>
++#include <asm/processor.h>
++
++/* Physical address of the Multiprocessor Wakeup Structure mailbox */
++static u64 acpi_mp_wake_mailbox_paddr;
++
++/* Virtual address of the Multiprocessor Wakeup Structure mailbox */
++static struct acpi_madt_multiproc_wakeup_mailbox *acpi_mp_wake_mailbox;
++
++static int acpi_wakeup_cpu(u32 apicid, unsigned long start_ip)
++{
++	/*
++	 * Remap mailbox memory only for the first call to acpi_wakeup_cpu().
++	 *
++	 * Wakeup of secondary CPUs is fully serialized in the core code.
++	 * No need to protect acpi_mp_wake_mailbox from concurrent accesses.
++	 */
++	if (!acpi_mp_wake_mailbox) {
++		acpi_mp_wake_mailbox = memremap(acpi_mp_wake_mailbox_paddr,
++						sizeof(*acpi_mp_wake_mailbox),
++						MEMREMAP_WB);
++	}
++
++	/*
++	 * Mailbox memory is shared between the firmware and OS. Firmware will
++	 * listen on mailbox command address, and once it receives the wakeup
++	 * command, the CPU associated with the given apicid will be booted.
++	 *
++	 * The value of 'apic_id' and 'wakeup_vector' must be visible to the
++	 * firmware before the wakeup command is visible.  smp_store_release()
++	 * ensures ordering and visibility.
++	 */
++	acpi_mp_wake_mailbox->apic_id	    = apicid;
++	acpi_mp_wake_mailbox->wakeup_vector = start_ip;
++	smp_store_release(&acpi_mp_wake_mailbox->command,
++			  ACPI_MP_WAKE_COMMAND_WAKEUP);
++
++	/*
++	 * Wait for the CPU to wake up.
++	 *
++	 * The CPU being woken up is essentially in a spin loop waiting to be
++	 * woken up. It should not take long for it wake up and acknowledge by
++	 * zeroing out ->command.
++	 *
++	 * ACPI specification doesn't provide any guidance on how long kernel
++	 * has to wait for a wake up acknowledgment. It also doesn't provide
++	 * a way to cancel a wake up request if it takes too long.
++	 *
++	 * In TDX environment, the VMM has control over how long it takes to
++	 * wake up secondary. It can postpone scheduling secondary vCPU
++	 * indefinitely. Giving up on wake up request and reporting error opens
++	 * possible attack vector for VMM: it can wake up a secondary CPU when
++	 * kernel doesn't expect it. Wait until positive result of the wake up
++	 * request.
++	 */
++	while (READ_ONCE(acpi_mp_wake_mailbox->command))
++		cpu_relax();
++
++	return 0;
++}
++
++int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
++			      const unsigned long end)
++{
++	struct acpi_madt_multiproc_wakeup *mp_wake;
++
++	mp_wake = (struct acpi_madt_multiproc_wakeup *)header;
++	if (BAD_MADT_ENTRY(mp_wake, end))
++		return -EINVAL;
++
++	acpi_table_print_madt_entry(&header->common);
++
++	acpi_mp_wake_mailbox_paddr = mp_wake->base_address;
++
++	apic_update_callback(wakeup_secondary_cpu_64, acpi_wakeup_cpu);
++
++	return 0;
++}
 -- 
 2.43.0
 
