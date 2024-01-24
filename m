@@ -1,103 +1,109 @@
-Return-Path: <linux-kernel+bounces-36609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D40A983A3BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:08:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D713B83A3BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:08:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5479BB28B41
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:08:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5EA91B28E9A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:08:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABDAA171D2;
-	Wed, 24 Jan 2024 08:08:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC1601754D;
+	Wed, 24 Jan 2024 08:08:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nVK5oPfz"
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="biSQO9qu"
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A726E171DC
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 08:08:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A2E9171B8
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 08:08:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706083689; cv=none; b=OX8RU/uErI0BfqJPd1c66b5WQsrSalobHs42PiwRQRZPDMC71nN7T/0icrfe6oew5VbnUQFPlmil/Q0DmBgQ8NK+9UNzKcCgFzf9eusanmlQhk8DsFqeiV+MK4s5zt1KpSgGmiNTCCmkMI4GgbSOZfTG89One7asIYxP9T/oK5Y=
+	t=1706083703; cv=none; b=c5x26XGcwL1Erx6tNZBVVmXq61aKazEFY2NGX5HMus1aqt+HtFFS7WoqShKnpUfWhdBKD4n6c5CG45TpvJp6wYh0yLZPSaIpVqBRyAD6MuKg7/m1i6gpmA8IRrbyZHTq4IRzFTDQsdFF56WYFWP/cCRtXbcg8eGefpwTJHrawn8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706083689; c=relaxed/simple;
-	bh=91SKWZKxZZJ9JjqBsEeN2LxEmIvX4sQqPRYAQaqFWFI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ED2A7ym/jVzo7MdIQBprf+eyoqXfAocVm1gHIB1orPSqxtG4RrDssXPPrVIZQEy7JvdPSrTydknqqMrVb1aVK4UUWQwQFoUEN+Le27MD3sD8JcNvgTJA5tKr1cHQlsC603HIPU20AxzZfpjw273+ca5OJKVL3yO5XAQ6MNwhsuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nVK5oPfz; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dc223463ee4so4585244276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 00:08:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706083686; x=1706688486; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=2oicDxJ90c/wDJuJ0lxNnczG+6khLtrNzAW2IGNICIQ=;
-        b=nVK5oPfzig3WsPDO+hAml4Kdf/SzPC0EMKjA6TIbVgAjx+vUbtCV54PVybfwapXHvD
-         cGsT39mZjYQ4MV8gPM9TTVBu8QBZhs9jVJvVYGHWtF0T+hN8IxuXSb7Rvw9htO9fTvbc
-         wuoK5cBMk9+64KENbLpLLI83JQK7eFbnIzG8wcDeVUFHVl8y+SwVh8AbL9WdKleB8hD1
-         QWqaluE1OT2ejxcRHJNvrjgIsV4OokG6RMMlXGxCJvyG9/GOBaITIJ2iS32j9s6Pyy8w
-         A0IH9gTyB6yj0uEdHGkcoXYaz1e3S5grxwNzBFoeAtx8ZOanPuxcm6d1tXifljtXDgJh
-         qTmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706083686; x=1706688486;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2oicDxJ90c/wDJuJ0lxNnczG+6khLtrNzAW2IGNICIQ=;
-        b=JOXIGecqEIRB3tKwqB3aE6jpUZjLB6c4D5GsrqjqF6Yg0GUXv6fA9yrhfrKxLvy/wy
-         9pJKWRJ2x+DZPg3x/6RQxwawO/1pRTqTVotBwWP72nOIVCYOMmw73/WO/0bgAJGI/Odh
-         jEfU8/jFirnBkxmjLHFSY44hgAHp64y74yO0ppm0tYHYz9l6yIFb1soptwM0WI6YAzEq
-         7l4HiOtumtywBu3u/7fgIbylH9Digou/eI1fRi/DpPnI6mVtAmY9qbtZeqAsVXifSC33
-         ALV58vYrQgh4ZjcL89Wq57Q2v+YkdnNqV9ws2YTGkugLjuHVo3YVLUlB/Cx6fmSoGcSG
-         F7EQ==
-X-Gm-Message-State: AOJu0YyE5aNNcefeSNi/CLsubmRqr17NLKNJBmNeqe1sDXt1u6QwNA01
-	y4s/uW3NudYg1uv2lr/BGSvOKYfo8MTEOAssV19xv3ZW2ikyEAsvYQ2N5oi1RbM8CdaKb7F7oX9
-	YyGCbY135PQKiCqOce/pAR9rl3kamQhcOjmM1mQ==
-X-Google-Smtp-Source: AGHT+IEBx+hbv8cP9QQzl1nlNfUSW8zsGd6/0L2c4D7VdKAIm+FH6gkg6c1ug2KhF8rkgn0s4KWP1B+MHSfUQwurYAE=
-X-Received: by 2002:a25:bfcb:0:b0:dc2:303b:db2f with SMTP id
- q11-20020a25bfcb000000b00dc2303bdb2fmr308783ybm.101.1706083686675; Wed, 24
- Jan 2024 00:08:06 -0800 (PST)
+	s=arc-20240116; t=1706083703; c=relaxed/simple;
+	bh=WuTsA4t0XYhq2dKRx42Ldt/2+0SYfNeIClfxM3tW+0o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YGwBsV4T/4kYZbpUoV3EbOUtkYbPE6mjg4r6LGXAqV3uzugv7TZvCC42sHJqHr7corg2RNUeeg40dfxb5+PJSjJNRvAn4oIbQS9GdgdJCKJ1qA/UDfTlRzDSvIX16b4QJhlUTrNdllYMqrSpS7vtYXEwQ5H8Teb2UU/O7n9Rupc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=biSQO9qu; arc=none smtp.client-ip=95.215.58.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <f40f9aa9-e722-0264-2d4d-bc9062472f12@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1706083696;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=p7MnCXuD88u4ilrUq6w2umVtP5EOnFHzJ9de6V4YW6Y=;
+	b=biSQO9quUA/W3uKimuqqoTTQdqD7VSMuYwRKATFiSecYDpujfoY8ORUJlpFmEBCeAV65Gb
+	+YxKHFHs+5YQZUgxn7uDYSDL7qjiAX7igl/AH+qXmvk2z9u0oQqzDYlvNcroz6bGhKpPPP
+	r5pWJ30N5Gz6ZBWuSBszBraU1MJIciw=
+Date: Wed, 24 Jan 2024 16:08:05 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124023305.15755-1-quic_tengfan@quicinc.com>
- <20240124023305.15755-2-quic_tengfan@quicinc.com> <88e8cffb-024d-4f4d-ba1f-e0be9ee85e31@linaro.org>
-In-Reply-To: <88e8cffb-024d-4f4d-ba1f-e0be9ee85e31@linaro.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 24 Jan 2024 10:07:55 +0200
-Message-ID: <CAA8EJpqXS97FXoTwiLaSeHHEDOeBFRPRbCNR6WF-ArDm22tu-Q@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: qcom: modify the wrong
- compatible name
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Tengfei Fan <quic_tengfan@quicinc.com>, andersson@kernel.org, 
-	konrad.dybcio@linaro.org, linus.walleij@linaro.org, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v2 1/2] sched/fair: Return NULL when entity isn't a task
+ in task_of()
+Content-Language: en-US
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+ vincent.guittot@linaro.org, dietmar.eggemann@arm.com, bsegall@google.com,
+ mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+ linux-kernel@vger.kernel.org
+References: <20231206063400.3206346-1-yajun.deng@linux.dev>
+ <20231206063400.3206346-2-yajun.deng@linux.dev>
+ <20240122224852.6ab9b498@gandalf.local.home>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yajun Deng <yajun.deng@linux.dev>
+In-Reply-To: <20240122224852.6ab9b498@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, 24 Jan 2024 at 08:38, Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
+
+On 2024/1/23 11:48, Steven Rostedt wrote:
+> On Wed,  6 Dec 2023 14:33:59 +0800
+> Yajun Deng <yajun.deng@linux.dev> wrote:
 >
-> On 24/01/2024 03:33, Tengfei Fan wrote:
-> > Use right compatible name "qcom,sm4450-tlmm" instead of
-> > "qcom,sm4450-pinctrl".
+>> Before calling task_of(), we need to make sure that the entity is a task.
+>> There is also a warning in task_of() if the entity isn't a task. That
+>> means we need to check the entity twice. If the entity isn't a task,
+> Does it really check it twice? Have you disassembled it to see if the code
+> is any better?
 >
-> Why do you claim this one is right and other is wrong? Provide
-> arguments. To me the compatible looks correct.
+> #define entity_is_task(se)	(!se->my_q)
+> static inline struct task_struct *task_of(struct sched_entity *se)
+> {
+> 	SCHED_WARN_ON(!entity_is_task(se));
+> 	return container_of(se, struct task_struct, se);
+> }
+>
+> The above is a macro and a static inline, which means that the compiler
+> should optimized out that second check.
 
-Yeah, but the driver (and the dtsi) use -tlmm
+
+Yes, the second check should be optimized.
+
+>
+>> return the task struct is meaningless.
+>>
+>> Return NULL when entity isn't a task in task_of(), and call task_of()
+>> instead of entity_is_task() when we need a task_struct.
+> I'm not against the change, as it could be considered a clean up. But it is
+> up to the sched maintainers to decide if it's worth the churn.
 
 
--- 
-With best wishes
-Dmitry
+Return NULL in task_of() makes the code cleaner.
+
+>
+> -- Steve
+>
+>
+>> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
 
