@@ -1,144 +1,183 @@
-Return-Path: <linux-kernel+bounces-36397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36398-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAC6983A007
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 04:21:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A58E83A008
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 04:22:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A30E1C23D7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:21:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13BF3284A32
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:22:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F34F95392;
-	Wed, 24 Jan 2024 03:20:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Zc2Jy78C"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB30F53B9;
+	Wed, 24 Jan 2024 03:22:14 +0000 (UTC)
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A33325C85
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 03:20:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E84F524C;
+	Wed, 24 Jan 2024 03:22:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706066458; cv=none; b=Cw8lA2+YfAsO8HpfnvCq+cWpSF4qd0qhUoEAuYvbfkse455DrXHj7KAJm368SRoa7gFAxwOWsj6ZVwerGK7l6yUxF5n19SkkKIKYYyjP+EQmnaau6F8JfAOwNbdK69kDFwOFr/Zdw5jjGxd64RIGY3ukL3HjpLUXAOkDZyxto6k=
+	t=1706066534; cv=none; b=bDbsL26+ywuuzXQEx2vAXpeyesAQU/a+kOegCYLqjDMpTuq8QI+5NfgCrlX8SqMwcexh8HvCINwORglJD5bbWqRSNxwZudPbzklxraj43pqJqmGZJya7ut5p/5Tye5vhDYw7CBwqfeZoGVMGHziZB54m1UHPCJlmQR+lnaozyCo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706066458; c=relaxed/simple;
-	bh=agwPmDihLYdvwGlc0JnDhON85wkS8jgIYwKErH9Z/K8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hDHKRoKbcWVLgEm660yhvug44ZlljWBUYQiD+5HKUqOFJaABpvtjUznvH2x8Wh76mQLusf3N34iApLzDesfNmHalkuMNLefwr4j6LCh4J4JSNvBTufkkUsh4tZvgxru7wLiKoaEYzUOX6bmFlPMOkmb1O0em4ZWd2YtXt0/0ZRA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Zc2Jy78C; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-337d05b8942so5726364f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 19:20:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706066455; x=1706671255; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=KAePt3EbboVv3TxbwUCofAP8uUAMMkWJoXv+3X6ccPI=;
-        b=Zc2Jy78CmFWDyplXwjE9OTxXZayfJSXj3ziERUK/5Ynrsr/crhWaNw+8DQ0g6OCzfy
-         TKPmV/12vdstSItx8sNGQ8yPW+/0wd+lVcD5e7OqdLVKXEC3jBP3Dp5Y22Qv2ecoXn/Q
-         8QqPvzpE2FXvHiRrj4jsMWa6j3aTI4wtmxS5GckmAwe2F2V/eoWTginhbzHKqhD+ypfj
-         tApBjORg6YhdlxCE0l7JTCe/Uhe1lF4xbHmGaPssmqF2uOkWXoO7Ujwg/mSezc1ykfk7
-         e+2DzQB0mq/ZC6aEmkMTPPTnV03juE2Ze5uHywkGhHRTmjjp8D+cADG7I3cmdP1sN9KJ
-         mQeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706066455; x=1706671255;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KAePt3EbboVv3TxbwUCofAP8uUAMMkWJoXv+3X6ccPI=;
-        b=fa3kxteRQ3u8jhkwHg1hVuUKecqLS/WMq2lXtk2sYsecMi2QwzfA+hFlhXt6xOx/XL
-         +kk8cHuWTosRccLkIMI9C6YmcJ3lTLESm4Wo1DFKqQex90FKGjX3UQC1H3ZlDyqWHdtG
-         AcGvn3CcCPNJ6pqL3rauejJqqLgMj7rXFFov1/QB2SQiiOFCJCl1AFtPk+6C81U8VAoU
-         kJISROLX75/T8V3Om7TDV5qn2hrK3E7mLj6N+AN5+oRJ/Q318IatPzKmWKniY0VewSAD
-         QZWCq6Ft1+PgmvByf/OIOVeKwgk7sl9KwWpd6ZYXM73+kdznZLPmMIvuj89YnphYsmr0
-         6Ppg==
-X-Gm-Message-State: AOJu0YxzrCAFwxc5FAwPJhPWIt/VQ7iM1ElzrQYbVXSUP8D8xmYZEjUb
-	MTnWOSWlVGA89ukgp30Dj32g1au2V7slJp4b315dAQaWWu9qMkotcFTGZCYsvx9hkraCLhfkxPu
-	WtiDnPpFgATGulMf8/ziYB2prAmEw8xLTFuc+
-X-Google-Smtp-Source: AGHT+IG52SOXahv8KuKJM5amdkEJrHh+itGyuLplJrEk2YxxxRBnMyB3thEL7drxZ7rWTHHm76P8VMONmx+BrYEP4UE=
-X-Received: by 2002:a5d:448a:0:b0:337:c6b6:7e30 with SMTP id
- j10-20020a5d448a000000b00337c6b67e30mr124733wrq.36.1706066454776; Tue, 23 Jan
- 2024 19:20:54 -0800 (PST)
+	s=arc-20240116; t=1706066534; c=relaxed/simple;
+	bh=QIZBf1kkH+VXUncxbQEtkWRVJgkIw5LyVIjqmrdxNRg=;
+	h=Subject:To:References:CC:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=pfv+UZjkWMqagifQb+JGR7kGzFptdXqSu30idL5Mw3l4a0DLJ4bR8/BtFXoCUy35/V5aQawq6IEV6CXpu0EoIiuC5RmOH/TIhxyKMIIoFcjmgEyA56pQyKKv+x+o+JDNhUSzTVBmQgAmsajb4tTnETFur2zGi9tWO7fNyVzBs8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TKTjf6c3pz1Q8Ck;
+	Wed, 24 Jan 2024 11:20:22 +0800 (CST)
+Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
+	by mail.maildlp.com (Postfix) with ESMTPS id 4258B140516;
+	Wed, 24 Jan 2024 11:21:52 +0800 (CST)
+Received: from [10.174.178.185] (10.174.178.185) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 24 Jan 2024 11:21:46 +0800
+Subject: Re: [PATCH v4 7/7] selftests/ftrace: add test cases for VFS type
+ "%pd" and "%pD"
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+References: <20240123092139.3698375-1-yebin10@huawei.com>
+ <20240123092139.3698375-8-yebin10@huawei.com>
+ <20240124103201.6dd8d466b1b734796418c1c4@kernel.org>
+CC: <rostedt@goodmis.org>, <mathieu.desnoyers@efficios.com>,
+	<linux-trace-kernel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From: "yebin (H)" <yebin10@huawei.com>
+Message-ID: <65B08249.6050704@huawei.com>
+Date: Wed, 24 Jan 2024 11:21:45 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240120024007.2850671-1-yosryahmed@google.com>
- <20240120024007.2850671-2-yosryahmed@google.com> <87wms0toh4.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <CAJD7tkb=-0mP1CXEmAd4QjMXKgep7myHShiwUSNnY1cjfRqfJA@mail.gmail.com> <878r4ftodl.fsf@yhuang6-desk2.ccr.corp.intel.com>
-In-Reply-To: <878r4ftodl.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Tue, 23 Jan 2024 19:20:17 -0800
-Message-ID: <CAJD7tkbKxfuy-uWrOMVnOeDpx-TuJwosxk2jG_0Gx4bi1tUBog@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mm: swap: update inuse_pages after all cleanups are done
-To: "Huang, Ying" <ying.huang@intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Nhat Pham <nphamcs@gmail.com>, Chris Li <chrisl@kernel.org>, 
-	Chengming Zhou <zhouchengming@bytedance.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20240124103201.6dd8d466b1b734796418c1c4@kernel.org>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500010.china.huawei.com (7.192.105.118)
 
-> > In swap_range_free, we want to make sure that the write to
-> > si->inuse_pages in swap_range_free() happens *after* the cleanups
-> > (specifically zswap_invalidate() in this case).
-> > In swap_off, we want to make sure that the cleanups following
-> > try_to_unuse() (e.g. zswap_swapoff) happen *after* reading
-> > si->inuse_pages == 0 in try_to_unuse().
-> >
-> > So I think we want smp_wmb() in swap_range_free() and smp_mb() in
-> > try_to_unuse(). Does the below look correct to you?
-> >
-> > diff --git a/mm/swapfile.c b/mm/swapfile.c
-> > index 2fedb148b9404..a2fa2f65a8ddd 100644
-> > --- a/mm/swapfile.c
-> > +++ b/mm/swapfile.c
-> > @@ -750,6 +750,12 @@ static void swap_range_free(struct
-> > swap_info_struct *si, unsigned long offset,
-> >                 offset++;
-> >         }
-> >         clear_shadow_from_swap_cache(si->type, begin, end);
-> > +
-> > +       /*
-> > +        * Make sure that try_to_unuse() observes si->inuse_pages reaching 0
-> > +        * only after the above cleanups are done.
-> > +        */
-> > +       smp_wmb();
-> >         atomic_long_add(nr_entries, &nr_swap_pages);
-> >         WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
-> >  }
-> > @@ -2130,6 +2136,11 @@ static int try_to_unuse(unsigned int type)
-> >                 return -EINTR;
-> >         }
-> >
-> > +       /*
-> > +        * Make sure that further cleanups after try_to_unuse() returns happen
-> > +        * after swap_range_free() reduces si->inuse_pages to 0.
-> > +        */
-> > +       smp_mb();
-> >         return 0;
-> >  }
+
+
+On 2024/1/24 9:32, Masami Hiramatsu (Google) wrote:
+> On Tue, 23 Jan 2024 17:21:39 +0800
+> Ye Bin <yebin10@huawei.com> wrote:
 >
-> We need to take care of "si->inuse_pages" checking at the beginning of
-> try_to_unuse() too.  Otherwise, it looks good to me.
-
-Hmm, why isn't one barrier at the end of the function enough? I think
-all we need is that before we return from try_to_unuse(), all the
-cleanups in swap_range_free() are taken care of, which the barrier at
-the end should be doing. We just want instructions after
-try_to_unuse() to not get re-ordered before si->inuse_pages is read as
-0, right?
-
+>> This patch adds test cases for new print format type "%pd/%pD".The test cases
+>> test the following items:
+>> 1. Test README if add "%pd/%pD" type;
+>> 2. Test "%pd" type for dput();
+>> 3. Test "%pD" type for vfs_read();
+>>
+>> Signed-off-by: Ye Bin <yebin10@huawei.com>
+>> ---
+>>   .../ftrace/test.d/kprobe/kprobe_args_vfs.tc   | 79 +++++++++++++++++++
+>>   1 file changed, 79 insertions(+)
+>>   create mode 100644 tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_vfs.tc
+>>
+>> diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_vfs.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_vfs.tc
+>> new file mode 100644
+>> index 000000000000..1d8edd294dd6
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_vfs.tc
+>> @@ -0,0 +1,79 @@
+>> +#!/bin/sh
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +# description: Kprobe event VFS type argument
+>> +# requires: kprobe_events
+>> +
+>> +case `uname -m` in
+>> +x86_64)
+>> +  ARG1=%di
+>> +;;
+>> +i[3456]86)
+>> +  ARG1=%ax
+>> +;;
+>> +aarch64)
+>> +  ARG1=%x0
+>> +;;
+>> +arm*)
+>> +  ARG1=%r0
+>> +;;
+>> +ppc64*)
+>> +  ARG1=%r3
+>> +;;
+>> +ppc*)
+>> +  ARG1=%r3
+> You can merge this ppc* and ppc64* cases :)
 >
-> > Alternatively, we may just hold the spinlock in try_to_unuse() when we
-> > check si->inuse_pages at the end. This will also ensure that any calls
-> > to swap_range_free() have completed. Let me know what you prefer.
+>> +;;
+>> +s390*)
+>> +  ARG1=%r2
+>> +;;
+>> +mips*)
+>> +  ARG1=%r4
+>> +;;
+>> +loongarch*)
+>> +  ARG1=%r4
+>> +;;
+>> +riscv*)
+>> +  ARG1=%a0
+> Anyway, I wonder why don't you use '$arg1' instead of these registers.
+> Is there any reason?
 >
-> Personally, I prefer memory barriers here.
+> Thank you,
+I looked at the parameter parsing code again, and using "$arg1" requires 
+the kernel to
+enable the CONFIG_HAVE_FUNCTION_ARG_ACCESS_API configuration.
+>> +;;
+>> +*)
+>> +  echo "Please implement other architecture here"
+>> +  exit_untested
+>> +esac
+>> +
+>> +: "Test argument %pd/%pD in README"
+>> +grep -q "%pd/%pD" README
+>> +
+>> +: "Test argument %pd with name"
+>> +echo "p:testprobe dput name=${ARG1}:%pd" > kprobe_events
+>> +echo 1 > events/kprobes/testprobe/enable
+>> +grep -q "1" events/kprobes/testprobe/enable
+>> +echo 0 > events/kprobes/testprobe/enable
+>> +grep "dput" trace | grep -q "enable"
+>> +echo "" > kprobe_events
+>> +echo "" > trace
+>> +
+>> +: "Test argument %pd without name"
+>> +echo "p:testprobe dput ${ARG1}:%pd" > kprobe_events
+>> +echo 1 > events/kprobes/testprobe/enable
+>> +grep -q "1" events/kprobes/testprobe/enable
+>> +echo 0 > events/kprobes/testprobe/enable
+>> +grep "dput" trace | grep -q "enable"
+>> +echo "" > kprobe_events
+>> +echo "" > trace
+>> +
+>> +: "Test argument %pD with name"
+>> +echo "p:testprobe vfs_read name=${ARG1}:%pD" > kprobe_events
+>> +echo 1 > events/kprobes/testprobe/enable
+>> +grep -q "1" events/kprobes/testprobe/enable
+>> +echo 0 > events/kprobes/testprobe/enable
+>> +grep "vfs_read" trace | grep -q "enable"
+>> +echo "" > kprobe_events
+>> +echo "" > trace
+>> +
+>> +: "Test argument %pD without name"
+>> +echo "p:testprobe vfs_read ${ARG1}:%pD" > kprobe_events
+>> +echo 1 > events/kprobes/testprobe/enable
+>> +grep -q "1"  events/kprobes/testprobe/enable
+>> +echo 0 > events/kprobes/testprobe/enable
+>> +grep "vfs_read" trace | grep -q "enable"
+>> +echo "" > kprobe_events
+>> +echo "" > trace
+>> -- 
+>> 2.31.1
+>>
+>
 
-Ack.
 
