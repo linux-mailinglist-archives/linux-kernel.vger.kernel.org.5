@@ -1,227 +1,106 @@
-Return-Path: <linux-kernel+bounces-37759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37760-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6007483B4D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:38:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 324BC83B4DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:38:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD55E1F2538C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:38:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E347B26306
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:38:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3710C13667F;
-	Wed, 24 Jan 2024 22:37:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEC3713664A;
+	Wed, 24 Jan 2024 22:38:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gZbU0dR8"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="vpA42fg/"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 482DE13666C;
-	Wed, 24 Jan 2024 22:37:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.10
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706135868; cv=fail; b=PDDqKWAa1cBdWzmCa6Ate8fCiYd9g3n68TQ8jUfDYlrew6w2C+LAhNz6zFNbB6E78yEhn59lxO9LBxkdD+ucuoptMiYTLW/mrwl2b5ylkIcots1h8JCud7O1OkF3JkOYSq1dVrPolLZb2eB9+kBnTRSUH3DKzKM9JaeI4K8QgyU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706135868; c=relaxed/simple;
-	bh=vJ8t7RNedy3OI+ybC9dAk0r2dz5Hz49O7ZBJVz1Fm5M=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=oQfhNc0AQ7bi1V+qRHNYU7aLSL42lojWEG9BwTuSHbYHIMVHov9rSDWJ9vnOvzW3B9sRa4VSbSfeOSXM3D0Ky1Zipo2UeApkUJckxcv9vKDjhH+JSTK4tu4IhB8KduPHso9SNgJCKVh+sZTZlNXVuFNuIYae9PirDXrtsj+N34E=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gZbU0dR8; arc=fail smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706135866; x=1737671866;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=vJ8t7RNedy3OI+ybC9dAk0r2dz5Hz49O7ZBJVz1Fm5M=;
-  b=gZbU0dR8904lMfz5PK3A6LjzKRzF3DykDHCs5b0vprsmrht0Di2mkZpo
-   0C32b78CT4aPcw5cEYrHpOO4j8eZB7IpG8Ih7oHUcdpaTTUzgdBZJW/5S
-   1dphwrbGVlfjG8q6mNNYEGoO2H3zYVJBoBJBf8TJiY16Rm8eArGK3vyg+
-   Xz1MQPnnUlwNo4hBlqpALefP7hcQ18BFRO9KA/bhsRT075TuJQ1whz8wv
-   MwUVEMUYAt68YRE2Ms64i3Ah7O3kqYAPsVSaaVs7rOF/BN+E8jDez4pci
-   NfJ2F71giHm8p5wzf4haf3G7PpTaw35RZKMOXqj5nUyUY+LKj3FUG9ZV6
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="9375905"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="9375905"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 14:37:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="876844292"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="876844292"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by FMSMGA003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 24 Jan 2024 14:37:45 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 24 Jan 2024 14:37:44 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 24 Jan 2024 14:37:44 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 24 Jan 2024 14:37:44 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 24 Jan 2024 14:37:43 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iEU2XrM2eXMKNmKTrxk8H0enMOvXyIcsZgy86WMGKPYyYGa6VBNUoE7T232YAEpj064TRbU24h/YT7KdL5Q0KKuq57hZSCghjeimWVNzq6vvLcBp2EipBGoVTQcSzyYYhEnj4UOj8fA1jbuzYP0YFWo5VCSABM4PiGnfbUYhwSWQWFpl50AIm0zCpFBcfpqcQNaUAs5RrhrqxrXhvlZKYUiNeOiSZIklr7Zv8qodOAQzhN+aPL9YCHpEwmVPeUCDQ2VtxNrtWgH7cXFFIHUikDlocehTGJB07DlEGeBbH1m1we5Vue+JrrAmqVj1z/UsD7rtiVJJr0rprwrMI+6FSA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=aU0qwAWPXDOHvNk6VvARR78uMLoIprouoP8acCNUdiw=;
- b=kuIoelG8MQFzHem/A/6J7cRazN2eU4srod5RDCop8O00QGy4+B3xbnfKCDqbuNogpKNRTK5zU1+DDDq/gkGoovGfkDM6qs4F9pWm74sTilEWpcD0yaK6+IzwXWf8f7IKG7WL/UxzQyQ0Px/f25SGH4LAQR71bP6DuRyLKoam7qynmCro8bQ63l4st4wUIpCDGdjcaC5eNxdCuv4v20tKaJ8IoYWM6lHts9/8gdvrdAks2EZ7SQleKxoxnL5Z7H0818HWt7UcBfKBIg6DcK7aPOPRAMO25cPvbXzrnfIdlg3Ez7YTOtbaZrrAoN33VlBPQvSHdKZPWHrU+b6XQ2LNbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from IA0PR11MB7185.namprd11.prod.outlook.com (2603:10b6:208:432::20)
- by SA0PR11MB4592.namprd11.prod.outlook.com (2603:10b6:806:98::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.39; Wed, 24 Jan
- 2024 22:37:36 +0000
-Received: from IA0PR11MB7185.namprd11.prod.outlook.com
- ([fe80::cbc8:6370:5df2:b2df]) by IA0PR11MB7185.namprd11.prod.outlook.com
- ([fe80::cbc8:6370:5df2:b2df%4]) with mapi id 15.20.7228.022; Wed, 24 Jan 2024
- 22:37:36 +0000
-From: "Kasireddy, Vivek" <vivek.kasireddy@intel.com>
-To: Andrew Davis <afd@ti.com>, Gerd Hoffmann <kraxel@redhat.com>, Sumit Semwal
-	<sumit.semwal@linaro.org>, =?iso-8859-1?Q?Christian_K=F6nig?=
-	<christian.koenig@amd.com>, Paul Cercueil <paul@crapouillou.net>
-CC: "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
-Subject: RE: [PATCH 3/3] udmabuf: Use module_misc_device() to register this
- device
-Thread-Topic: [PATCH 3/3] udmabuf: Use module_misc_device() to register this
- device
-Thread-Index: AQHaTklTbYB3YNw8AkevdQa0HClb0LDpjxhg
-Date: Wed, 24 Jan 2024 22:37:36 +0000
-Message-ID: <IA0PR11MB71855122BCF73421B7B531AEF87B2@IA0PR11MB7185.namprd11.prod.outlook.com>
-References: <20240123221227.868341-1-afd@ti.com>
- <20240123221227.868341-3-afd@ti.com>
-In-Reply-To: <20240123221227.868341-3-afd@ti.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: IA0PR11MB7185:EE_|SA0PR11MB4592:EE_
-x-ms-office365-filtering-correlation-id: 72509d9c-2f6c-4431-d989-08dc1d2d1075
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: cnuhEP8HFBeY7JGsTTpK765qRWb7MZYPQH1/vsBiA2jhANeSfwR9Ku4rNW+fsqUUbnx5OREA0NvIEQIMOI993vYlBYLrfBT0WGMe6ZAKaWYxL1nuQkLRH+ssNXILPNqov6Inai6OJlLEBIRoIabiXV4AdySoYALgUdCeARZbTWUTMcBBsROqIpgp4+033eEx7j/VD6FxYteaTOw/iIUBJeYEM2vCz00rUj4ixyWyWpQNavK2ArJYI5Yf3Mi14vsjYzqH6fyxBsfep6RLwhHpUlyIWNtWegSitBu+nVbISaOr2U6wfGqMH3p0HMdGErjVavTSIus1MrJEz+o2CtURGNf0cnT0SB2tkiALJDU+8u4uzVqaXcglxEfJZ0iZuH7FannxoE4w8JKDZgvbitVyHPr/Zp5lD9+AK1yXTm8GTvRRTIa8Hie4TPmbzx5hSk+ecIjje++At/ePbmEC1uSv1M4g638WcY5ciKIko98fxPikIYVrancmpkWSzdmdmB0BvrCH3kE+LXas8KQYXF0iq6Wz8OHZmaZ1i2M/vSs5yJVdcx6kPPwZ+QxfEg3vlB1dQxeKicti2Ag7bZhiD8UDDJTz8od1/TroX0xB0KEFww7G7c3c3XrX0jXKVIpenFFM
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA0PR11MB7185.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(136003)(346002)(366004)(396003)(230922051799003)(64100799003)(1800799012)(186009)(451199024)(55016003)(83380400001)(41300700001)(86362001)(33656002)(82960400001)(38070700009)(122000001)(38100700002)(9686003)(2906002)(26005)(71200400001)(66946007)(66446008)(316002)(64756008)(110136005)(6506007)(66556008)(4326008)(7696005)(52536014)(76116006)(54906003)(66476007)(478600001)(8676002)(8936002)(5660300002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?9MOIZudVVNHug0posfUbn9pzRx5tofKsdX2Ntr1AnepfxhYN2MTlsjh4o3?=
- =?iso-8859-1?Q?n42nZErG1+xMXB7e2mG8P0SW30TjcUQ2IzTKSQt2mV2mfqmPjmy8nESH36?=
- =?iso-8859-1?Q?Shdi3JAe5Tl9mm5NUYa9Hzci0xKFhJ78SpW6L7/1MrRn8CpZjaudTrgYB5?=
- =?iso-8859-1?Q?UO3OhJ6+Ddox3DBckaWqcWmNMPrhSSnbvkvf011aOee2bH8ZBXyX6RgtF4?=
- =?iso-8859-1?Q?LKLIKnLIcFCaXj40iP+MfbgXINTc4+FWXHVMhkG2rMEzoGPC7whJ+OR0x0?=
- =?iso-8859-1?Q?S5G7IsK5jiefevxRYIaoRWUHzo93TGrG/LKg/mPPm4V5Hc+in0SUnfzldD?=
- =?iso-8859-1?Q?X5KdKwny3N22SWmpOHRvDhuznKW6ZZQemce8sLLsEa1rL6LXvT+nFqpTWG?=
- =?iso-8859-1?Q?lHW1RNHnNnxALRdjVDTtiT1eHF2axxBRDlbb0LvPEqadTf+P1WHtQT/GMl?=
- =?iso-8859-1?Q?xrHQeUnhNfcln+Hvf/JSzd/UYULMtGuHbZsRNXAS8KrapDLvdu3593aMHs?=
- =?iso-8859-1?Q?KjbfKCKmM7+eqlYAvM2hU36XWxRjOROFmY5mMghcZz5KDk5/ZqswWauuUi?=
- =?iso-8859-1?Q?JnI2o+LPcwiMj1ZUQyj6TXv+ODLNYN6f5P7YjfV12V+BZFAIDWHOMQGbNS?=
- =?iso-8859-1?Q?k7LFXsy8t8FoGwtjzfk8ezASzQ1LmdeckCeamKScj3+vR4wamyhye3IuzQ?=
- =?iso-8859-1?Q?7KJQrM1lXtzKaWNq2aE78pkRmVbj+QZMj/U6pQert2CNLIJEhSjrn0z/a0?=
- =?iso-8859-1?Q?yPZvE3EyBDy1FM7I/dPESZ2MxfLY7/kjl4bkLTvDedQSh9DEsa8hFo2pvF?=
- =?iso-8859-1?Q?05GOXCGI1QnfLhca38fj+dw/EFDJWz0EKDi713bDbflcUox/CUBc+VCJ+A?=
- =?iso-8859-1?Q?s3Y+Tj5uOHZSJElUw/FV+zzLqRjjIZwa04moPxO2ioUMm0jM+unRCbvJVz?=
- =?iso-8859-1?Q?jd6Gy7luFfG0im87X/G0igEDmI2CJfb305xOvO4Db9R5eAe2WDFk22/KSL?=
- =?iso-8859-1?Q?oq9M/pt/8uETYinug6p2eRwOwIny9YnfaJdyTolPOPfJ6GA0kzVG30THrU?=
- =?iso-8859-1?Q?gvNQ/f2bue5f42+jrMcy5rdWJNiqjysk/aMbS21t0fgI0v76Shcg+c5vmG?=
- =?iso-8859-1?Q?TCatZc9zuI+BXr9OGiEh/vwhvhTVaQeyiRA0qoPGZgTOD8xIOb0cUFsKPz?=
- =?iso-8859-1?Q?M8RB8OFl/VN3iYTxScQtVn/dqpOE/GB/3haJJS/MvIQVfc5vA2PgHQOyVa?=
- =?iso-8859-1?Q?/RvKImnnjZUJ+uao/bGmV99qVQYcEnmyvfZLoGlWsWrvFJYeownIM5RrZa?=
- =?iso-8859-1?Q?x80yZ3bknZMLH/beHDo26KvmbzVjXNSOlDRBpUNsRTOBrp7uoJRfccxTvl?=
- =?iso-8859-1?Q?FmZjuvXu0JzBEYNmLL5DwqoXeiWp8eoqo9oFKa8z9AYPAnes+Gml02XHrI?=
- =?iso-8859-1?Q?xLslrnyA5NHVwms8U4IZTSTlsV/t7Sb9bBVrQe6x1Nza2l1AW2j1NOKc9H?=
- =?iso-8859-1?Q?/HlEQhbpOtzSwWzwpWpDQgFzT2QMjCryyQr526faqgqbJvDv6rRm+Yj8TP?=
- =?iso-8859-1?Q?ysoW9AtyMZmLmUb+O/SmU0D0hp30wWqRx0Z41IYrPEuGJj5VAyvEJeN0aK?=
- =?iso-8859-1?Q?BCd+WDo4NAXp1D78oDL+KXQxz31V9vSkW1?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 354B5134750;
+	Wed, 24 Jan 2024 22:38:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706135906; cv=none; b=si2OdLl8cLX50Co3X+yeedHMniduhGQqdnGu8Lt/zK6LRh1zaW6/F86MKexRaZCvzpzZXso2yV60RDlyGHjw6ydbPQsHGuOuCa3x9HFHQ1uNwSzNxFKAjLgPD0UOuV4Kz8IPXzQdCA/OCrEcQYtfCH4kUks06nfVNOd0tD3SaWQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706135906; c=relaxed/simple;
+	bh=DTrll0FOkAbkEqdZ2vp/TWJw7W7v966osQ+uN/3YWkM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X4DCpu+VnnT/MX6mDCd5LKMYu+Oa+zoFrETcPmIjfb68dEp6Fy6kki1qwiMLrELBIYrprQR4/8jfXxYE6uSJLDGSLXu7/TCu6saMMmoBvsxXxpO2hPQdlw8ggahvKRkvD5IqOqWLjO5AXRR6aZ6LksXl+HiP6dqaWwiYk8h/7yU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=vpA42fg/; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=m89aTmxIORDpdqFWg3Gk7PEdhQXgqNhKa+YwoQCM5Dg=; b=vpA42fg/VmuC9/m9LxgKbDN78e
+	XQR8plsmgZuKLvoZRHVRlwNXUEVu1QwxxRhXs/TOIJ6MbNDs2rjJjuFVr8u6MqiWJ0kcMtjq1aSSd
+	4UxNRiNS30In28+LvoP6DhIo8NGhTZhSS9OPgIfHjMNCV5jub9mnS+bP/oFw3+eHpIJQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rSlss-0062N8-K5; Wed, 24 Jan 2024 23:38:14 +0100
+Date: Wed, 24 Jan 2024 23:38:14 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Robert Marko <robert.marko@sartura.hr>,
+	linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH 1/3] dt-bindings: net: ipq4019-mdio: document
+ now supported clock-frequency
+Message-ID: <9a63b6b1-ecf9-4a9f-9b6a-283367b2a219@lunn.ch>
+References: <20240124213640.7582-1-ansuelsmth@gmail.com>
+ <20240124213640.7582-2-ansuelsmth@gmail.com>
+ <010becc5-51f6-44c1-863e-f5092ca5018c@lunn.ch>
+ <65b18ecb.5d0a0220.e8e31.c94c@mx.google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: IA0PR11MB7185.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 72509d9c-2f6c-4431-d989-08dc1d2d1075
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jan 2024 22:37:36.6153
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: qrddnmXo4W1xU+84KQMKV1vfVlFpo1rpFClrJajWuZQGgpdRjXigRPFSFCzaE1DYm0+997Ff1w0NhfWQxMyU0FndX3pIdk6/Y0tciYgbGhE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4592
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <65b18ecb.5d0a0220.e8e31.c94c@mx.google.com>
 
-Acked-by: Vivek Kasireddy <vivek.kasireddy@intel.com>
+On Wed, Jan 24, 2024 at 11:27:20PM +0100, Christian Marangi wrote:
+> On Wed, Jan 24, 2024 at 11:23:05PM +0100, Andrew Lunn wrote:
+> > > +  clock-frequency:
+> > > +    description:
+> > > +      The MDIO bus clock that must be output by the MDIO bus hardware, if
+> > > +      absent, the default hardware values are used.
+> > > +
+> > > +      MDC rate is feed by an external clock (fixed 100MHz) and is divider
+> > > +      internally. The default divider is /256 resulting in the default rate
+> > > +      applied of 390KHz.
+> > > +    enum: [ 390625, 781250, 1562500, 3125000, 6250000, 12500000 ]
+> > 
+> > Hi Christian
+> > 
+> > 802.3 says the clock should be up to 2.5MHz by default. So the nearest
+> > would be 1562500. Please document that if not set, it defaults to
+> > this. And make the driver actually default to that.
+> >
+> 
+> As I said, this is very fk up and default value is 390KHz unless anyone
+> in the chain sets it (sometime uboot does it but it's not that common...
+> default qsdk uboot doesn't do that for example)... Ok I have to change
+> this to default to 1562500.
 
->=20
-> Now that we do not need to call dma_coerce_mask_and_coherent() on our
-> miscdevice device, use the module_misc_device() helper for registering an=
-d
-> module init/exit.
->=20
-> Signed-off-by: Andrew Davis <afd@ti.com>
-> ---
->  drivers/dma-buf/udmabuf.c | 30 +-----------------------------
->  1 file changed, 1 insertion(+), 29 deletions(-)
->=20
-> diff --git a/drivers/dma-buf/udmabuf.c b/drivers/dma-buf/udmabuf.c index
-> ab6764322523c..3028ac3fd9f6a 100644
-> --- a/drivers/dma-buf/udmabuf.c
-> +++ b/drivers/dma-buf/udmabuf.c
-> @@ -392,34 +392,6 @@ static struct miscdevice udmabuf_misc =3D {
->  	.name           =3D "udmabuf",
->  	.fops           =3D &udmabuf_fops,
->  };
-> -
-> -static int __init udmabuf_dev_init(void) -{
-> -	int ret;
-> -
-> -	ret =3D misc_register(&udmabuf_misc);
-> -	if (ret < 0) {
-> -		pr_err("Could not initialize udmabuf device\n");
-> -		return ret;
-> -	}
-> -
-> -	ret =3D dma_coerce_mask_and_coherent(udmabuf_misc.this_device,
-> -					   DMA_BIT_MASK(64));
-> -	if (ret < 0) {
-> -		pr_err("Could not setup DMA mask for udmabuf device\n");
-> -		misc_deregister(&udmabuf_misc);
-> -		return ret;
-> -	}
-> -
-> -	return 0;
-> -}
-> -
-> -static void __exit udmabuf_dev_exit(void) -{
-> -	misc_deregister(&udmabuf_misc);
-> -}
-> -
-> -module_init(udmabuf_dev_init)
-> -module_exit(udmabuf_dev_exit)
-> +module_misc_device(udmabuf_misc);
->=20
->  MODULE_AUTHOR("Gerd Hoffmann <kraxel@redhat.com>");
-> --
-> 2.39.2
+I doubt you will cause any regression by defaulting to 2.5HHz
+instead. That is what the standard says it should be. All devices on
+the bus should support that.
 
+    Andrew
 
