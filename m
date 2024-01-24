@@ -1,225 +1,240 @@
-Return-Path: <linux-kernel+bounces-37586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9407883B223
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 20:19:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BA7583B225
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 20:19:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B99761C21A6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:19:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C91101F215C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:19:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAFF713342D;
-	Wed, 24 Jan 2024 19:17:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1822F132C2A;
+	Wed, 24 Jan 2024 19:18:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="X7SYcYpr"
-Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2047.outbound.protection.outlook.com [40.107.247.47])
+	dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b="8eGYLoF5"
+Received: from cvs.openbsd.org (cvs.openbsd.org [199.185.137.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0CFB6A004;
-	Wed, 24 Jan 2024 19:17:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.247.47
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706123855; cv=fail; b=h14hccwfUVwJVnb9PDyIn9QNIItxtOAjFuqnhG3gWluoT4DGPGjSUbx0a2cn05eByh5JCci9DBeebEJRmXFjaZNQKwtOKzlIK8cR6pb/jkJLyjJv2rhQxJyvCuqbcIm3b8H9hD7RAXVGLB4HEc/avCnEZX/Mu5DaJ0IAnwGTBwA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706123855; c=relaxed/simple;
-	bh=4sIFmmStZYQDBQe9dphds9sUZcLw/8CDAU9cNkRZ5Jk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=dAGL6nspydBDVpsDFoEXkvUCwUVapf0E4CCf7kOzOZ1X5O2OgGLosc3STCqi5S7ggTtV26PoKtM1YHXHndu1pASOAZ00ij5KrXPK9RuAt6hnP8NK1nB/5hynTgutH8mkRF3AWatlR968k/5y+uqkA1VD3b7aMZR+d80M6T60lac=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=X7SYcYpr; arc=fail smtp.client-ip=40.107.247.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZZi33zKqJMmx8YF/iN4INcd0BL6ECQq6vSh1hhyKoyBH+8ZwbLQVMq2ifLeW9V2JOTLPbn9dsLllZcqkGc4GWrBcRpx0Jo0mNDpjrbIoK6O5EAs5t6ggaEQRXYN9HZpTnn6CvkONhgVYNUWKeID4UHshTnfJWgojs4GyRr5g6l40KZQ4LThbSEhBKTwdNWlw90EfiAGuqYoOCXN5q2D3RNCCpWGsAx2ss6HBDVgZ7ze8nFCUTFKuC9gyhnwknNeJlbfbiXsabTWYb4v7pQvkCBgeHr6MN2TDZsjSoGsKFxz3+a3xkxvBQcoWl2NW0vf4h9cjZyI+OTkzo2IRISe5jg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=q992kzM/sPoX7UYEyQdJmbbflSDpkchG/s7GDsYQxa0=;
- b=enp/OAhVnHt3oIzoG2l8VLbMjglMZc9a0fMRoXSzNLnKpIPi0aRpEV//rBRRPdk2rsDC4T1iY2KNai/azUI0YuaWWcUGsshS09iOjRjhGS91sESoeqnt/MUkJhxGrJ6S7bcfQXgTl9I81GMMdETXaPR+VDKBSTdAUjEPizBp0zIkEG6TnaT8xwaFsEQAKBZK2I5RGnAUzqtov+M7IbvjyDd86SQXgQoeXXA7jHJvJJj6LDjGjw0bwXer06lM3PHDZyMpSp+4lnbWGiA4ymaoFzO8PZy6kDX5UiQtpgwsUVaZYNoF34iGgG73mlVf+1CahazOA+agQLp/dPWbDQgdLw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=q992kzM/sPoX7UYEyQdJmbbflSDpkchG/s7GDsYQxa0=;
- b=X7SYcYpr4EbmtgSWF75F2yEbY1KW8frE0tqbotbg3cSkYsVuw69zC4/9pKkvT+sirppluqX8U3uR9JGGkals4nfXJDqEpnvzOgGjVXp6y+MoM/1Gc1ptfqHkPmTleVktuSrrhG8soUu3djeB9LpoNC2czO906JxU0xT6V8YHUZ0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by VI1PR04MB7006.eurprd04.prod.outlook.com (2603:10a6:803:137::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22; Wed, 24 Jan
- 2024 19:17:30 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::c8b4:5648:8948:e85c]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::c8b4:5648:8948:e85c%3]) with mapi id 15.20.7202.035; Wed, 24 Jan 2024
- 19:17:30 +0000
-Date: Wed, 24 Jan 2024 14:17:22 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Conor Dooley <conor@kernel.org>
-Cc: ran.wang_1@nxp.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Felipe Balbi <balbi@kernel.org>,
-	"open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>,
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>, mark.rutland@arm.com,
-	pku.leo@gmail.com, sergei.shtylyov@cogentembedded.com
-Subject: Re: [PATCH 1/2] dt-bindings: usb: dwc3: Add snps,host-vbus-glitches
- avoiding vbus glitch
-Message-ID: <ZbFiQmD1VRVzFSa+@lizhi-Precision-Tower-5810>
-References: <20240119213130.3147517-1-Frank.Li@nxp.com>
- <20240124-unclothed-dodgy-c78b1fffa752@spud>
- <ZbFNIvEaAJCxC2VB@lizhi-Precision-Tower-5810>
- <20240124-video-lumpiness-178c4e317f5a@spud>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240124-video-lumpiness-178c4e317f5a@spud>
-X-ClientProxiedBy: SJ0PR13CA0166.namprd13.prod.outlook.com
- (2603:10b6:a03:2c7::21) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5CC9132C07;
+	Wed, 24 Jan 2024 19:18:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.185.137.3
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706123885; cv=none; b=jXmpfKT7/nsyn2ZFBTGYqqr7LVqRKLAYkRyAimBOZsMORftZ1PJJHc/Z4Or5sfL+NuIB2DjeEhODUSngKqsSlZxQwlOE4O5NZr2ihU1OM4BK874X98K6TYFKIX7YV+nRFqoiSZQhOhYsSK6foCLbDJNlhGoSHtdSw+htiPqti9Y=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706123885; c=relaxed/simple;
+	bh=ReYkUQG85kGHUHFtNFQl5xEK393GXYEVdMweirQJr0U=;
+	h=From:To:cc:Subject:In-reply-to:References:MIME-Version:
+	 Content-Type:Date:Message-ID; b=pdjXlkJ+kIm86UixVhxSUy7/8i1yiGPlOGc+TrOSLOf+czdblyoDmSG9uKboRycl/vuhUt0cuTVztx6Cg2atxKMK8XDGnSrt0CBQ7aTowXcobklOXQsMjci5exUsYzxF6aSfcBHXWbRFbDNaOzyzoDEQOLZD60SgNKSiaxM+xUo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org; spf=pass smtp.mailfrom=openbsd.org; dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b=8eGYLoF5; arc=none smtp.client-ip=199.185.137.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openbsd.org
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; s=selector1; bh=ReYkUQG85k
+	GHUHFtNFQl5xEK393GXYEVdMweirQJr0U=; h=date:references:in-reply-to:
+	subject:cc:to:from; d=openbsd.org; b=8eGYLoF51oSLNz47nVjX2lYWbixsRNTU3
+	B95QGBDHDK7GpVzhWJLtDEosQLjHa4hyIier8N4pj/6FFhc1V0Y+fVO7XNS0ljpdJHzr3X
+	x7gf0/FK1AUVi69SM3Jz5VEmR6LvN2X7lAt7aqz+f2N8uy+00bZjZ1tmdUjLZTEsGg4cda
+	9Go6/2Qwh3AKZOv4sewMfMYIFV2Ptf/9pptsehb0b2gXrjzzFSAarpleN2w5nyrW2qVrRs
+	xdMVaGo1TwCpH67kKBkKiLmFB9w4DxHq4IjT4n+9jQNHdGnjyAXrO7oNIT+7AcsEjHoVpq
+	FelOaohIR6w1q5jTX+ZeQHvLtNWBw==
+Received: from cvs.openbsd.org (localhost [127.0.0.1])
+	by cvs.openbsd.org (OpenSMTPD) with ESMTP id b7887865;
+	Wed, 24 Jan 2024 12:17:56 -0700 (MST)
+From: "Theo de Raadt" <deraadt@openbsd.org>
+To: Jeff Xu <jeffxu@chromium.org>
+cc: akpm@linux-foundation.org, keescook@chromium.org, jannh@google.com,
+    sroettger@google.com, willy@infradead.org,
+    gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
+    usama.anjum@collabora.com, rdunlap@infradead.org, jeffxu@google.com,
+    jorgelo@chromium.org, groeck@chromium.org,
+    linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+    linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com,
+    linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v7 0/4] Introduce mseal()
+In-reply-to: <CABi2SkXrMC_8Ew7uA=Tufyy1YJObkrFJWbJtZuONCw5XHv2LYQ@mail.gmail.com>
+References: <20240122152905.2220849-1-jeffxu@chromium.org> <726.1705938579@cvs.openbsd.org> <CABi2SkXrnUZsWvpqS61mHw-SqDBOodqpcfjdoTTyeeYG9tRJGA@mail.gmail.com> <86181.1705962897@cvs.openbsd.org> <CABi2SkXrMC_8Ew7uA=Tufyy1YJObkrFJWbJtZuONCw5XHv2LYQ@mail.gmail.com>
+Comments: In-reply-to Jeff Xu <jeffxu@chromium.org>
+   message dated "Wed, 24 Jan 2024 10:55:39 -0800."
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|VI1PR04MB7006:EE_
-X-MS-Office365-Filtering-Correlation-Id: 43ad719a-5efb-48a3-c9a8-08dc1d111c2a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	C36gswx+nbQkqmy3Ojvx3muQGMWhsrPgdxjIua6nYbnVdWrwajBmwk0DjFHBHy6W3HSantm/vaDXgNd2AaTKjKOqDmIHN2SggqywRfDtpp+vrDXC6XfjtehPO8JddzjQiEar3+No5A+Geo+KJ7X713lPESqC4qQmh5vvWFq4+kcM5Wnve+NNrugzDGWeKYuxDRSmggwFIuk/3VBb7m/fUIK2cAIchOCE9BI0U8xypaupIEFNn5IBe8R/+oaTJV0GlEE/O3+a1URxCVVfJwDIu6RUPjDiNCIeHgi12d7V/WoGeo+e0NttwsSkqE9RY82h0AmFjE5apvPgWDjTb3JqlxwwU1M2M9a26m0SWGg6+d77i0cYGHW+66qYcfarvWSO5CgQ6FLDPvTBLUfhosr6cQD00dzS/3dDzR7Orxqt8hH9ofJugnd7H9wFpxuu7gDE1K7ipIFdd2kRd8JSr292xGryXVMUWhHDCKkDd4tP6gIghsCgAwZLUrKMw2TXIH3vj+LJht1nVIIm9JVnp8qX4OFRv2iaYdNBWa8NIroS5YzyP/d9+2wjuWXgkr33jpxY06gNe8/QeATIVp7dEvsNbo2WoFYpP4JrY+5CIumZWOIjZO1RdW1nGH01IPfUX7UZaotA9dahEIo/psHaJUznPw==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(136003)(346002)(366004)(39860400002)(396003)(230922051799003)(230273577357003)(230173577357003)(451199024)(1800799012)(186009)(64100799003)(316002)(54906003)(6916009)(4326008)(66946007)(66476007)(66556008)(83380400001)(38350700005)(5660300002)(7416002)(38100700002)(2906002)(8936002)(8676002)(33716001)(86362001)(41300700001)(478600001)(26005)(966005)(6486002)(6666004)(6506007)(52116002)(6512007)(9686003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?EbMfxEQNwJf/3I5PBvXGN4y4ta+Xa/BO3ejyENQqdDFwpjVssOPzLa+gplPy?=
- =?us-ascii?Q?yvBk4A8vTZxp3JEtF7MNSpiBAxXYsErApqGksIxcVf+rY+lDgjcUIpZ4tUkc?=
- =?us-ascii?Q?528rLftgjF8rax6RA9UEQLMRvhVz+oJMscyWMJ2jKp3JCzaY7w/1wNK2sWZb?=
- =?us-ascii?Q?ZoIzsnR6fL342YpzQl4P4VulzDZj4W+C4nC6J6IjOfinNfUdCZv2aigSlcdH?=
- =?us-ascii?Q?7BxJl7ecbgbfKgruyEW6sOxndn5BcqzjfKfJOe9fIiPtEixxfxBJB8I2JSD+?=
- =?us-ascii?Q?u1/s/FDD/IEY9L/NvDvsk/sqMvI/6d8H2UZV4xPvzdxK56667DGkOO+7lCPL?=
- =?us-ascii?Q?VwFB70fy4fyN3Fj2JMf/king/prVJZ/nyAkfFkHn24iegp3EBTf7NKxoOanU?=
- =?us-ascii?Q?4HJ/OfVusCNlJVFhav+jT3m0Ld08vz55KaXUp4otC+wPmbM6NY8gLGhuQp0R?=
- =?us-ascii?Q?7w0wFFhoknxlJR7JamYL6rk7Z5DKR/mI9ifSLh+6R2L3dkliuCvAIMxEfScr?=
- =?us-ascii?Q?VqnjN2/9gm8/HYXts9QXMH7mSW9jtyB0+rsvprpclMiCPRMmT8AIlDvZhB19?=
- =?us-ascii?Q?vPDfgr4yyOWjKm4YiY5JxSnNi17okp6uxmOa7EXuYGApM6faQoh8iONT5Cd5?=
- =?us-ascii?Q?n1vpAOM0LrecY5oKeXbPVJ/y5L/XB9VHP4mjlN83yGhcH4Dvo9X3/7fziGbP?=
- =?us-ascii?Q?kZb3wEd6fJWRv5UT+UaG7/eOIdA8LwxvzSNmB9FRnI+9H95jeRBWhH+Rg1y7?=
- =?us-ascii?Q?3BoTuezfz0qWmD65xgFfjQ7AJI8mxcrEwBebbQh+m4fSDhYNU7mTbBscAuG0?=
- =?us-ascii?Q?BZXkyNl6rXEIPW2KjKvWwWwpzK/m+yJySFNkgYlGih7gNAFC4t6jRdW32PBx?=
- =?us-ascii?Q?FId8+tkl8xcFQpPYKsSfydBPT7IbLcS/O0qdn/KG3+o5Xu9ePcfviBnCUp+X?=
- =?us-ascii?Q?29gwHaiwBAmZv9na9bYtbeRM6MbsChUbIr0yyz6RkT60CJLqz5oRdVV7U0J5?=
- =?us-ascii?Q?YouKJcb/nLJHZeSYQQ18B2so2B9LmhvK1FhYkmtkoeAMaOYBk04seixCx5aF?=
- =?us-ascii?Q?r6TPNvwXZRo/X4y7wNYTcIksNmUQzPZNU+k+nw9xBXuaXqC9IThkzlAAEcwm?=
- =?us-ascii?Q?q0k0zZkuPZnAuyjiJD0DWqcs48Xvc6X1KrPl4V6Cy65hmU8b160fNm5412H0?=
- =?us-ascii?Q?/Wa0iRD/3Lwqrdh55K6EFeSq5U2zhkXB45O99vEooc4hQZGIx5E0gAILO1V6?=
- =?us-ascii?Q?OtDByBBPwGAB0UXbbxgmQQVjq+yVRb3b7Ov8AamRqNEgbvv65AeU2F8EqV5r?=
- =?us-ascii?Q?CqlALtFDdfTjYMizZ2SQkvHrmJecRvPhNIVkoNHZPW93GfQ3IznZshAr7DSr?=
- =?us-ascii?Q?e5542rxDsflFwbcAba79dkO5q8LVkQNohsxnh/C59GDXMJBqup0OEsn0q4el?=
- =?us-ascii?Q?LzvkcGY+2kpxm9RO13COvjh69iSkqwRQSzsYfGzulAhgmNoBe0ud+67ojSfL?=
- =?us-ascii?Q?tsN+flFPUGvCYpbsB4Zkvn6/zybS3tOn4ZrCPqBYNboYlQTywZkqPaPlatbC?=
- =?us-ascii?Q?Q7RH7zZ0wnMsxHOpObPdA8hvmIdzcMtLnP/hInk3?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 43ad719a-5efb-48a3-c9a8-08dc1d111c2a
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jan 2024 19:17:30.5910
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jdqG3q1RqhadmACZMZZyKWgeNCdsn6O8Lu98g/VJIJ4GTWWL3I8CB+p1e8L1//Jll9DxZpBbrtvBNMDOGHcNDw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7006
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <84351.1706123876.1@cvs.openbsd.org>
+Date: Wed, 24 Jan 2024 12:17:56 -0700
+Message-ID: <54500.1706123876@cvs.openbsd.org>
 
-On Wed, Jan 24, 2024 at 05:59:00PM +0000, Conor Dooley wrote:
-> On Wed, Jan 24, 2024 at 12:47:14PM -0500, Frank Li wrote:
-> > On Wed, Jan 24, 2024 at 05:36:42PM +0000, Conor Dooley wrote:
-> > > On Fri, Jan 19, 2024 at 04:31:28PM -0500, Frank Li wrote:
-> > > > From: Ran Wang <ran.wang_1@nxp.com>
-> > > > 
-> > > > When DWC3 is set to host mode by programming register DWC3_GCTL, VBUS
-> > > > (or its control signal) will turn on immediately on related Root Hub
-> > > > ports. Then the VBUS will be de-asserted for a little while during xhci
-> > > > reset (conducted by xhci driver) for a little while and back to normal.
-> > > > 
-> > > > This VBUS glitch might cause some USB devices emuration fail if kernel
-> > > > boot with them connected. One SW workaround which can fix this is to
-> > > > program all PORTSC[PP] to 0 to turn off VBUS immediately after setting
-> > > > host mode in DWC3 driver(per signal measurement result, it will be too
-> > > > late to do it in xhci-plat.c or xhci.c).
-> > > > 
-> > > > Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
-> > > > Reviewed-by: Peter Chen <peter.chen@nxp.com>
-> > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > > ---
-> > > >  Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 7 +++++++
-> > > >  1 file changed, 7 insertions(+)
-> > > > 
-> > > > diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-> > > > index 203a1eb66691f..dbf272b76e0b5 100644
-> > > > --- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-> > > > +++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-> > > > @@ -273,6 +273,13 @@ properties:
-> > > >        with an external supply.
-> > > >      type: boolean
-> > > >  
-> > > > +  snps,host-vbus-glitches:
-> > > > +    description:
-> > > > +      When set, power off all Root Hub ports immediately after
-> > > > +      setting host mode to avoid vbus (negative) glitch happen in later
-> > > > +      xhci reset. And the vbus will back to 5V automatically when reset done.
+Jeff Xu <jeffxu@chromium.org> wrote:
+
+> > I don't have a feeling about it.
+> >
+> > I spent a year engineering a complete system which exercises the maximum
+> > amount of memory you can lock.
+> >
+> > I saw nothing like what you are describing.  I had PROT_IMMUTABLE in my
+> > drafts, and saw it turning into a dangerous anti-pattern.
+> >
+> I'm sorry, I have never looked at one line of openBSD code, prototype
+> or not, nor did I install openBSD before.
+
+That is really disingeneous.
+
+It is obvious to everyone that mseal is a derivative of the mimmutable
+mechanism, the raw idea stems directly from this and you didn't need to
+stay at a Holiday Express Inn.
+
+> Because of this situation on my side, I failed to understand why you
+> have such a strong opinion on PROC_SEAL in mmap() in linux kernel,
+> based on your own OpenBSD's experience ?
+
+Portable and compatible interfaces are good.
+
+Historically, incompatible interfaces are less good.
+
+> For PROT_SEAL in mmap(), I see it as a good and reasonable suggestion
+> raised during the RFC process, and incorporate it into the patch set,
+> there is nothing more and nothing less.
+
+Yet, you and those who suggested it don't have a single line of userland
+code ready which will use this.
+ 
+> If openBSD doesn't want it, that is fine to me, it is not that I'm
+> trying to force this into openBSD's kernel, I understand it is a
+> different code base.
+
+This has nothing to do with code base.
+
+It is about attempting to decrease differences between systems; this
+approach which has always been valuable.
+
+Divergence has always been painful.
+
+> > > > OpenBSD now uses this for a high percent of the address space.  It might
+> > > > be worth re-reading a description of the split of responsibility regarding
+> > > > who locks different types of memory in a process;
+> > > > - kernel (the majority, based upon what ELF layout tell us),
+> > > > - shared library linker (the next majority, dealing with shared
+> > > >   library mappings and left-overs not determinable at kernel time),
+> > > > - libc (a small minority, mostly regarding forced mutable objects)
+> > > > - and the applications themselves (only 1 application today)
+> > > >
+> > > >     https://lwn.net/Articles/915662/
+> > > >
+> > > > > The MAP_SEALABLE bit in the flags field of mmap(). When present, it marks
+> > > > > the map as sealable. A map created without MAP_SEALABLE will not support
+> > > > > sealing, i.e. mseal() will fail.
+> > > >
+> > > > We definately won't be doing this.  We allow a process to lock any and all
+> > > > it's memory that isn't locked already, even if it means it is shooting
+> > > > itself in the foot.
+> > > >
+> > > > I think you are going to severely hurt the power of this mechanism,
+> > > > because you won't be able to lock memory that has been allocated by a
+> > > > different callsite not under your source-code control which lacks the
+> > > > MAP_SEALABLE flag.  (Which is extremely common with the system-parts of
+> > > > a process, meaning not just libc but kernel allocated objects).
+> > > >
+> > > MAP_SEALABLE was an open discussion item called out on V3 [2] and V4 [3].
+> > >
+> > > I acknowledge that additional coordination would be required if
+> > > mapping were to be allocated by one software component and sealed in
+> > > another. However, this is feasible.
+> > >
+> > > Considering the side effect of not having this flag (as discussed in
+> > > V3/V4) and the significant implications of altering the lifetime of
+> > > the mapping (since unmapping would not be possible), I believe it is
+> > > reasonable to expect developers to exercise additional care and
+> > > caution when utilizing memory sealing.
+> > >
+> > > [2] https://lore.kernel.org/linux-mm/20231212231706.2680890-2-jeffxu@chromium.org/
+> > > [3] https://lore.kernel.org/all/20240104185138.169307-1-jeffxu@chromium.org/
+> >
+> > I disagree *strongly*.  Developers need to exercise additional care on
+> > memory, period.  Memory sealing issues is the least of their worries.
+> >
+> > (Except for handling RELRO, but only the ld.so developers will lose
+> > their hair).
+> >
+> >
+> > OK, so mseal and mimmutable are very different.
+> >
+> > mimmutable can be used by any developer on the address space easily.
+> >
+> > mseal requires control of the whole stack between allocation and consumption.
+> >
+> > I'm sorry, but I don't think you understand how dangerous this MAP_SEALABLE
+> > proposal is because of the difficulties it will create for use.
+> >
+> > The immutable memory management we have today in OpenBSD would completely
+> > impossible with such a flag.  Seperation between allocator (that doesn't know
+> > what is going to happen), and consumer (that does know), is completely common
+> > in the systems environment (meaning the interaction between DSO, libc, other
+> > libraries, and the underside of applications).
+> >
+> > This is not not like an application where you can simply sprinkle the flag
+> > into the mmap() calls that cause you problems.  That mmap() call is now in
+> > someone else's code, and you CANNOT gain security advantage unless you
+> > convince them to gain an understanding of what that flag means -- and it is
+> > a flag that other Linux variants don't have, not even in their #include
+> > files.
+> >
+> I respect your reasoning with OpenBSD, but do you have a real example
+> that this will be problematic for linux ?
+
+See below.
+
+> In my opinion, the extra communication part with mmap()'s owner has
+> its pros and cons.
+
+See below.
+
+> The cons is what you mentioned: extra time for convincing and approval.
+
+No, it is much worse than that.  See below.
+
+> The pro is that there won't be unexpected behavior from the code owner
+> point of view, once this communication process is completed. It can
+> reduce the possibility of introducing bugs.
 > 
-> nit: "will return to"
-> 
-> > > > +    type: boolean
-> > > 
-> > > Why do we want to have a property for this at all? The commit message
-> > > seems to describe a problem that's limited to specific configurations
-> > > and appears to be somethng the driver should do unconditionally.
-> > > 
-> > > Could you explain why this cannot be done unconditionally please?
-> > 
-> > It depends on board design, not all system vbus can be controller by root
-> > hub port. If it is always on, it will not trigger this issue.
-> 
-> Okay, that seems reasonable to have a property for. Can you add that
-> info to the commit message please?
+> So far, I do not have enough information to say this is a bad idea.
+> if you can provide a real example in the context of linux, e.g. DSO
+> and libc you mentioned with details, that will be helpful.
 
-By the way, I sent v4 at
-https://lore.kernel.org/imx/20240124152525.3910311-1-Frank.Li@nxp.com/T/#t
+Does the kernel map the main program's text segment, data segment, bss
+segment, and stack with MAP_SEALABLE or without MAP_SEALABLE?
 
-How about add below sentence?
+Once it is mapped, userland starts running.
 
-This was only happen when PORTSC[PP} can control vbus. Needn't set it if
-vbus is always on.
+If those objects don't have MAP_SEALABLE, then ld.so and libc cannot
+perform locking of those mappings.  And ld.so or libc must do some of
+those lockings later, some of these map lockings cannot be performed in
+the kernel because userland makes data modifications and permission modifications
+before proceeding into main().
 
-> 
-> On another note, I like it when the property name explains why you would
-> add it, rather than the thing it is trying to solve.
-> Named after the disease, rather than the symptoms, if you get me. I
-> tried to come up with a name here, but could not really suggest
-> something good. If you can think of something, that'd be good, but don't
-> stress it.
+This is unavoidable, because of RELRO; binaries with text relocation; binaries
+with W|X mappings; it is probably required for IFUNC setup; and I strongly
+suspect there are additional circumstances which require this, *just for glibc*
+to use the mechanism.
 
-snps,host-vbus-glitches change to snps,host-vbus-glitches-quirk.
+If the kernel does map those regions with MAP_SEALABLE, then it seems
+the most important parts of the address space are going to have MAP_SEALABLE
+anyways.  So what were you trying to defend against?
 
-How about use below description:
+So why are you doing this MAP_SEALABLE dance?   It makes no sense.
 
-When set, power off all Root Hub ports immediately after
-setting host mode to avoid vbus (negative) glitch happen in later
-xhci reset. That may cause some USB devices emuration fail when kernel boot
-with device connected and PORTSC[PP] control vbus in board desgin.
+I'm sorry, but it is you who must justify these strange semantics which
+you are introducing -- to change a mechanism previously engineered and
+fully deployed in another operating system.  To me, not being able to
+justify these behavious seems to be based on intentional ignorance.
+"Not Invented Here", is what I see.
 
-Frank
-> 
-> Thanks,
-> Conor.
-> 
+You say glibc will use this.  I call bollocks.  I see a specific behaviour
+which will prevent use by glibc.  I designed my mechanism with libc specifically
+considered -- it was a whole system environment.
 
-
+You work on chrome.  You don't work on glibc.  The glibc people aren't publically
+talking about this.  From my perspective, this is looking really dumb.
 
