@@ -1,107 +1,127 @@
-Return-Path: <linux-kernel+bounces-36950-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36951-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C01483A94C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:13:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49D2883A952
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:15:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3EFC71C21DE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:13:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 005971F213AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:15:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0845C60DD4;
-	Wed, 24 Jan 2024 12:12:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0B9E63107;
+	Wed, 24 Jan 2024 12:15:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I1ikGent"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="SZKl63VK"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AD9D18622;
-	Wed, 24 Jan 2024 12:12:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AD9462A18;
+	Wed, 24 Jan 2024 12:15:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706098345; cv=none; b=h+nHvcUzns4imWLsx+Mosxa9D8g5MbLLXh43dOgBDRJJosgnyGLd59kPpfpk67CsDEi/bOItZlgU6sWc9mSP8xwm5n3kNlE8ZMp0HWnpLaqhaLVDB3Z31pqAbogZLbNPWSIFh+MIlqyhsDWhmiaLqPBtui17TcFxERnr+MSANYQ=
+	t=1706098535; cv=none; b=UWMRKElb+i+5yDwr62aKLRZyNfhuWc8PGaUvMWIAQUrgd7Kv0KiZwG13ZF98Be1rhIN4yHWh21olg2XxirX4nWqu33CHXZ4UdYRIYev5k4CgxpZSs7Vzjfp6JaoOMISB83E0xpDdsM8t/KEN3Vg8xL4Sw6MynEH5RtJaSeCjJrA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706098345; c=relaxed/simple;
-	bh=NvFZcTkuq6TdnuxdMQv6/07eRqV9jkT+b+3hi2RFLD4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=njuN2URZgb4hDnQzzdUAXb2dO1poQ5NMd20mf2PoVmKUmy3ZJVse9TzHVJPndW9zADFXDoXdTVNurkxb5SYVT3TK0LvZcjx6t9f/DzLZk8VWZUpxitrNOPnHp6BN9mLAYbV1YHVVUVBFNEC9dGJZgaEjQ17rKqbPqBwa1YTjKNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I1ikGent; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA2ADC433C7;
-	Wed, 24 Jan 2024 12:12:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706098343;
-	bh=NvFZcTkuq6TdnuxdMQv6/07eRqV9jkT+b+3hi2RFLD4=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=I1ikGentxd5rtiAoXXcbDUTsVt74I0bcFtZUnfJAKicv9kLBIcjNIsU2B0EBQ0FPK
-	 krEhw5xBqynIuWfF6mAZSZZXlzrAUvSTDO4A7+1JEMkMbEk78m7Z0XaNshrObBxWWK
-	 qTmjtdNjg/M5LFA7rHfzTpuGMLCrUk2Q5rw0v5+Jkd5xK7E48mOgzJWGaFGR+6g6Dv
-	 WsdXBotDkYAqQ01XaYdrCsMcE/DmxO6YsBHeS9Mjv4vFz1bdHkScVzYmN52aM8n4TT
-	 hJs+9RkPgoaGHlipP9U8rb7Ohsvbud9HrPGU6oyYQJnmbdF1Sw3fNAcp4lxoZocKLc
-	 UlRpOp34gZurA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 41C63CE0EDF; Wed, 24 Jan 2024 04:12:23 -0800 (PST)
-Date: Wed, 24 Jan 2024 04:12:23 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Jiri Wiesner <jwiesner@suse.de>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the rcu tree
-Message-ID: <6b5c4acc-f184-4ad9-9029-dd7967fe4a04@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240124151743.052082af@canb.auug.org.au>
- <20240124094954.GL3303@incl>
+	s=arc-20240116; t=1706098535; c=relaxed/simple;
+	bh=9/TY5HmYPm8E0G1A05/PyJFft8ngdFb+/07JFazSGiM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=jFjCdQz/srZZO/H0oeOdaxyunmJMVgSeQD2hz2qMWU+rNrpSLGHWvx1d38kI4PxOKQKB+ywO6NrUUWVqEaVcRTWQnEhGJ4k60ZOivIvDHbTyOiaPPRi5cDQ3Gs2JDIAsuYBzdfwy9fRkPpjJw0aYKmLG2kWqHCD9y8wwSEyn9TI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=SZKl63VK; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40OBTUQw020659;
+	Wed, 24 Jan 2024 12:14:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=h5QTFvOXySrnlCSLejUWbzN7R0IzvqRuBOyzN1TZrJI=;
+ b=SZKl63VKVv1zAp3tpsPHAbpGMaWfgnKtkYZCE5Mrvsfcf2ghZM6EKRlZDJ5My8WdhKcO
+ F7IM29RlDlnlQluLl+m291CjXqnI0RTROcmf5kPlIe2SE2hLGO0EDGrLHseOQEAxORHP
+ HXN8ej6fAf4YfOVn3X0FRYwX6p+8uJNVIBmixyr/M0k8Ffnbc+jeK/adZ0P05ugDoEUP
+ baXK5wSz7BRJd/YJ8Q+PIkGj4xsbDiE2aAjovHx49IeUSFAc389dM/NQHiNxlEAW+lEm
+ BNQIuYJpC6bRtBu/Wf2N+cns6jmmXuCiy+/1gDSNCRie4sxrvaBeIBA4GpL2YEZL0cV7 3g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vu05gbejq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Jan 2024 12:14:45 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40OBFAYe027101;
+	Wed, 24 Jan 2024 12:14:45 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vu05gbej7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Jan 2024 12:14:45 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40OAoCKh025653;
+	Wed, 24 Jan 2024 12:14:44 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vrsgp5mnt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Jan 2024 12:14:44 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40OCEfwO21824006
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 24 Jan 2024 12:14:41 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 16EB520040;
+	Wed, 24 Jan 2024 12:14:41 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B5B1220043;
+	Wed, 24 Jan 2024 12:14:40 +0000 (GMT)
+Received: from [9.152.224.222] (unknown [9.152.224.222])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 24 Jan 2024 12:14:40 +0000 (GMT)
+Message-ID: <f898e36f-ba02-4c52-a3be-06caac13323e@linux.ibm.com>
+Date: Wed, 24 Jan 2024 13:14:40 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240124094954.GL3303@incl>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [v2 0/4] KVM: irqchip: synchronize srcu only if needed
+To: Yi Wang <up2wing@gmail.com>, seanjc@google.com, pbonzini@redhat.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wanpengli@tencent.com, foxywang@tencent.com, oliver.upton@linux.dev,
+        maz@kernel.org, anup@brainfault.org, atishp@atishpatra.org,
+        frankja@linux.ibm.com, imbrenda@linux.ibm.com
+References: <20240121111730.262429-1-foxywang@tencent.com>
+Content-Language: en-US
+From: Christian Borntraeger <borntraeger@linux.ibm.com>
+In-Reply-To: <20240121111730.262429-1-foxywang@tencent.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: cbW_U5WPhzOWf19FHy2Hl1GFoRPKfTjm
+X-Proofpoint-ORIG-GUID: HmjjZcFKC3F87LftISToZPyjK4682bMp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-24_06,2024-01-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
+ adultscore=0 suspectscore=0 clxscore=1015 mlxscore=0 bulkscore=0
+ mlxlogscore=676 priorityscore=1501 lowpriorityscore=0 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401240088
 
-On Wed, Jan 24, 2024 at 10:49:54AM +0100, Jiri Wiesner wrote:
-> On Wed, Jan 24, 2024 at 03:17:43PM +1100, Stephen Rothwell wrote:
-> > After merging the rcu tree, today's linux-next build (i386 defconfig)
-> > failed like this:
-> > In file included from include/linux/dev_printk.h:14,
-> >                  from include/linux/device.h:15,
-> >                  from kernel/time/clocksource.c:10:
-> > kernel/time/clocksource.c: In function 'clocksource_watchdog':
-> > kernel/time/clocksource.c:103:34: error: integer overflow in expression of type 'long int' results in '-1619276800' [-Werror=overflow]
-> >   103 |                                  * NSEC_PER_SEC / HZ)
-> >       |                                  ^
-> > Caused by commit
-> >   1a4545025600 ("clocksource: Skip watchdog check for large watchdog intervals")
-> > I have used the rcu tree from next-20240123 for today.
+Am 21.01.24 um 12:17 schrieb Yi Wang:
+> From: Yi Wang <foxywang@tencent.com>
 > 
-> This particular patch is still beging discussed on the LKML. This is the 
-> latest submission with improved variable naming, increased threshold and 
-> changes to the log and the warning message (as proposed by tglx):
-> https://lore.kernel.org/lkml/20240122172350.GA740@incl/
-> Especially the change to the message is important. I think this message 
-> will be commonplace on 8 NUMA node (and larger) machines. If there is 
-> anything else I can do to assist please let me know.
+> We found that it may cost more than 20 milliseconds very accidentally
+> to enable cap of KVM_CAP_SPLIT_IRQCHIP on a host which has many vms
+> already.
+> 
+> The reason is that when vmm(qemu/CloudHypervisor) invokes
+> KVM_CAP_SPLIT_IRQCHIP kvm will call synchronize_srcu_expedited() and
+> might_sleep and kworker of srcu may cost some delay during this period.
+> One way makes sence is setup empty irq routing when creating vm and
+> so that x86/s390 don't need to setup empty/dummy irq routing.
+> 
+> Note: I have no s390 machine so the s390 patch has not been tested.
 
-Here is the offending #define:
-
-#define WATCHDOG_INTR_MAX_NS	((WATCHDOG_INTERVAL + (WATCHDOG_INTERVAL >> 1))\
-				 * NSEC_PER_SEC / HZ)
-
-The problem is that these things are int or long, and on i386, that
-is only 32 bits.  NSEC_PER_SEC is one billion, and WATCHDOG_INTERVAL
-is often 1000, which overflows.  The division by HZ gets this back in
-range at about 1.5x10^9.
-
-So this computation must be done in 64 bits even on 32-bit systems.
-My thought would be a cast to u64, then back to long for the result.
-
-Whatever approach, Jiri, would you like to send an updated patch?
-
-In the meantime, I will rebase to exclude this one from -next.
-
-							Thanx, Paul
+I just did a quick sniff and it still seems to work. No performance check etc.
 
