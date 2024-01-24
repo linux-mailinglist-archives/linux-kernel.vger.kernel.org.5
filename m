@@ -1,301 +1,118 @@
-Return-Path: <linux-kernel+bounces-37793-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37794-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE11883B568
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 00:06:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6955A83B56F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 00:08:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96F4E2852CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:06:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA5DF285F66
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:08:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 676D0136657;
-	Wed, 24 Jan 2024 23:05:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56702136656;
+	Wed, 24 Jan 2024 23:08:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AMF9B20v"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="hPqE9lLG"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BD9E7E5;
-	Wed, 24 Jan 2024 23:05:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.55.52.93
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706137551; cv=fail; b=nBjvQcwj0sp0KxW1m+Heqc1GgkL6SwglFDtCHsxaLkrEtP/2DcM26ZvBviIl+P8ROF4NfmuHbWka+pCkb/IDP7m5TwWNOlt84Y/Fl6omLSw3hCXvr4XKzzCEJTcRuqPuucG8fM70sqXZdd4uWlgY66xjP0cy3yhIoLl8ZC/BZIs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706137551; c=relaxed/simple;
-	bh=7jINl0NlSVpOhfgNa6RkaA2snFtv7PMT1hnkHhlusoA=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=iAG/FNvkr7hYfWeuZIK96BIl9Ja1a7dloT7zHJqCHkePxsrBmUgjj66CDbYe4u1WOIYjSAgzcbL0ME/Xu3U0IKsGRAWTo5Z3NX3lcgyDRNKGMa4/RNYKngbViQtkgCXh2VodtAiy2Skrz3fIL9ZVIAF6bopTlISiJ1GhXSIwDBA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AMF9B20v; arc=fail smtp.client-ip=192.55.52.93
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706137549; x=1737673549;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=7jINl0NlSVpOhfgNa6RkaA2snFtv7PMT1hnkHhlusoA=;
-  b=AMF9B20vgkSlPgkqzTH2bBJI2WJYbVVYmTYqvK34uMHwSgdNycPUr3MU
-   sNtSnzvXU+VJhBZTXofWWp1d8S9C/dYh8afH8WqXNHE+oxy331+GNvkq0
-   ec1slx8QQQYQwYS1hDEZUQsdfK8bEXBv3sEFFfk1SCyvhHypB+Ux9HGAc
-   rxHqg2P59b2iX3+XxW+FgkpWipL7qedSzG+aTmP9YK3Qjnz1sr89HZGeN
-   934KadWQOQoFwmlSm+GHgcMl06Z0pNoTkoN0OejyJ9ExxLr/wGCIwLV+q
-   PXvIJyRBMM5fdLJdNG0kGp3x0MeRe05YTkGeY9wlq0gCKm4OEEOy8q2yl
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="399151705"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="399151705"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 15:05:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="856872413"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="856872413"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 24 Jan 2024 15:05:48 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 24 Jan 2024 15:05:47 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 24 Jan 2024 15:05:47 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 24 Jan 2024 15:05:47 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 24 Jan 2024 15:05:46 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n9rXs22HYhLl63kekwyAxDQrhMPVpntgmlAsjwTpS0JCG1k74/CVDCHoup5wHS+aUNYfCbj+UDGm+EDV30UGBcL1xmTbTzNLGWHz/XaoKcZEtuhQLCIEEka8CyofNk9Ok8PbMIXvZ48ZGsddm/Zbyw8hiamxUaJ11aSxZSY+z1Srv9e9d6mvrfY+fOysjXxR0Vs2I5DrabiJuAcclO6T+qEVh1cuf7JljZGCvlIhO306anATNhsC/UY5fW9Up+8U5r7fAJExltmEI+/feGi7HciGtAG6Gg/47cwarjDkeaxui6ouY26Qc0SE6GBnHrewkA1s2uc91hrxt4fxB0Qm0w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SLQdpzlcn/dSXYDMJ8PlJ/nENW51mf9d6Id0Cb9GJ7o=;
- b=PJ94u+scDExhLpY4qKHkPtZxmps57sRIk49ma0WZiueT5QYWeWwhGRXlR9atr/hyIr2zLF1Ln1cr6yq/Oa+o+iINTDnHpMgPkXtkiVe2vSmYXaNBAKkyj+tJ9b6SDgRD5VbECi5BGV3mA0rljC24er7l78w+MFTYnkSo3RbUIVC/T9Pw3rgvcfnXkaodIEyzV7i/aH5VQ+Zf/iNGzvsZhDXBK2fFg5LeIm1JUNxXFtpZVQfP7TUEcZqTyYoyxFMFH962XRlPudpTDI/LksByG0M5AJmLal8q+RrgOBNQBOAdA0UxET5pCfemCSmhW2c7hZDqcg5SFwpIb24YIgYSag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from IA0PR11MB7185.namprd11.prod.outlook.com (2603:10b6:208:432::20)
- by PH7PR11MB7643.namprd11.prod.outlook.com (2603:10b6:510:27c::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22; Wed, 24 Jan
- 2024 23:05:43 +0000
-Received: from IA0PR11MB7185.namprd11.prod.outlook.com
- ([fe80::cbc8:6370:5df2:b2df]) by IA0PR11MB7185.namprd11.prod.outlook.com
- ([fe80::cbc8:6370:5df2:b2df%4]) with mapi id 15.20.7228.022; Wed, 24 Jan 2024
- 23:05:43 +0000
-From: "Kasireddy, Vivek" <vivek.kasireddy@intel.com>
-To: Andrew Davis <afd@ti.com>, Gerd Hoffmann <kraxel@redhat.com>, Sumit Semwal
-	<sumit.semwal@linaro.org>, =?iso-8859-1?Q?Christian_K=F6nig?=
-	<christian.koenig@amd.com>, Paul Cercueil <paul@crapouillou.net>
-CC: "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
-Subject: RE: [PATCH 2/3] udmabuf: Sync buffer mappings for attached devices
-Thread-Topic: [PATCH 2/3] udmabuf: Sync buffer mappings for attached devices
-Thread-Index: AQHaTklVj+JfGoUYak+H25iUh1Y+RrDpk0Jg
-Date: Wed, 24 Jan 2024 23:05:43 +0000
-Message-ID: <IA0PR11MB7185DDD7A972ED546B4CEA10F87B2@IA0PR11MB7185.namprd11.prod.outlook.com>
-References: <20240123221227.868341-1-afd@ti.com>
- <20240123221227.868341-2-afd@ti.com>
-In-Reply-To: <20240123221227.868341-2-afd@ti.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: IA0PR11MB7185:EE_|PH7PR11MB7643:EE_
-x-ms-office365-filtering-correlation-id: 1cf2527c-609e-47cc-7cad-08dc1d30fde9
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 33uEoGOvkkoQ7FGPoHKOCLFHXZbzX40Daxi1SckoFVW1xOTOSEn0scEERs/FkNKv0rnVX8UqcE+ZxLgkfXo5C/KH+5BupkwuaiXvE9Tme045+AkPTSbhHBaHEzY0wG6f1vzzKAaFvGkyaBIkAXyKgPUTRmVciCGmn0RElpcDGKeDFqNzHt8wkQbsYzi3cFJV2Jk5X8bd6PG30OzAizU2fWrBtXlhCcvoOOXjbwctaC1uljzWbWZ4vHvp3fZyJSNROH+pZZdjl/XYMoH7pXwcueJL2b3t8ZJvfp8/tbOdKJpCYTVDf4okm+rB79pjpJxNmqj7YS8yzdqQPeTMc6Cx6uL/scdTJPQkYAHgWFacRKiFUzbGSX+Xa5hUsfZeJR7HCvYrOZj8M1nswsdTkg3FmB2Fy98KLw/8A0HbU10B3z7bG+OZ3ACR604oXxBVnNIO6ZYffB5pCtiMuMLmerdbr6KzyNUrCQRfnnyE7yMxCtK0GejDSOGigv6vj1gvuwES50F1HeuXfTxvJTpBuaXbJ0RlXitgEaVebzqaREFawdl7zblFPS9FHIO8TgrZb9/HMTKG2JgjFdG0SysN/PMahCMMZvB+x5HMPF2+xmPikOj2FCCn1v68/3Wabu6+yyo4
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA0PR11MB7185.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(136003)(346002)(366004)(376002)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(7696005)(6506007)(2906002)(5660300002)(71200400001)(41300700001)(478600001)(55016003)(8676002)(83380400001)(4326008)(8936002)(52536014)(26005)(54906003)(316002)(66946007)(64756008)(66446008)(76116006)(66556008)(66476007)(110136005)(33656002)(82960400001)(122000001)(38100700002)(86362001)(9686003)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?yZIOI4YWUTZGIYYF94gWtPyk0dGF5c5IGnKWYUuS7kgbhYf02+B8nxdJQt?=
- =?iso-8859-1?Q?NsyMR78dOhEAcsbSWkLZg/8stoGMD5xjDhCjhum49CDek/H49E1haLn6oM?=
- =?iso-8859-1?Q?y3831YgW1MDUyXthtWRKEG+rOQJYjJV57vQghXYoZbo7KVou1Ek778LCHD?=
- =?iso-8859-1?Q?2NDYEXzLDcqy0lV170mHDrlxum2h+6NIRAiuScw9XkQPxJ6uNjjdT7rSbt?=
- =?iso-8859-1?Q?53XEt5f3sZ7AIHKYvFjjftJ/VlLRRlQd09jyY62D2AFWelXo/5VFN79RUZ?=
- =?iso-8859-1?Q?m8Bx0knUVkHoGvUcyVWsZHpncUTglNgw2if9+m3hZbXcicSeY2WYIQ2niv?=
- =?iso-8859-1?Q?b0JPJF3ZJkEnT/FVOPoUnBIBbE3jgGmRuNf5Fd8T41vFWNvXCsyz3s7/Pb?=
- =?iso-8859-1?Q?zAftk7/Scadt+G31s73xuuaxCN5oh61nehvAZKphc2WJYOJRRAxr1JmU58?=
- =?iso-8859-1?Q?Sbnxm07MBR8/SDojSHHsCOfXO0W8wfgux9Tsd0kssGSGsX/L1+8/7uExPu?=
- =?iso-8859-1?Q?0jS0rXk1f1NCg09A4zEv5JIxeNI4rPdaC3AH4tiswZhi3sLzIz+mFZjnn/?=
- =?iso-8859-1?Q?vBxfPBQgzaaFb6CuiM+sq9aneIvuZIs3XjFV3c3QXdijbk/OCIeS+VW/7I?=
- =?iso-8859-1?Q?xaI2XGeK7OzYhnKVXNRWcsCF3kYOYUrRawTqdTTcT5Sc8MUj7FzX79V41Z?=
- =?iso-8859-1?Q?5eH/DInReCmTczHjAu0XWqeQuvPDznub1F0MqG+W3r0utBoUtOD2ccB/vP?=
- =?iso-8859-1?Q?8aWmQDNNLQ7YvJ9qaG56jiiIflO0OFG6c8UCc8IIGLzbqyfVU3t6FCSDon?=
- =?iso-8859-1?Q?3IrAEHbe9j1kiZbtp+WZEUAAsxQtkFTSF16gW2L6gHe+jzNVosHTznRLHW?=
- =?iso-8859-1?Q?ErRgFHwDh68sskZ/uHxXXMnbIse8AhnDn4igVhOcScXSe/asKXTo7PlAqJ?=
- =?iso-8859-1?Q?ELeV2gUYyFKSgDiQHH30kpasetGwGQ3K7nwdDEqQE/6ETdghjdYU5ekj3F?=
- =?iso-8859-1?Q?HCbsTCeYCwakWIgcqLTW0Lq1cjH05aMoAkdl6gSgIKqwlstc3VxRU8AEut?=
- =?iso-8859-1?Q?yHyqlyv2kW8WAnOhwW1EYo2robUXqYzhao6H3p8T/IW0E+auAOYXp2wUin?=
- =?iso-8859-1?Q?OF5Ce/U9kGowW2gqAfepp09eWrMQr++cAjg/t1E1c8PnretI+QqnkJKazE?=
- =?iso-8859-1?Q?YnSpmgss7T616z1JViGw4ca2pa8UYLchvF8ILGkeGbAe0OmhIIK++fZbL3?=
- =?iso-8859-1?Q?9iw8GD4VEcB41oZMwUt8xqFVYiUdv25y0HWWqhfNQEdZJm4GHsvsIVk1LB?=
- =?iso-8859-1?Q?fYkjNPWFzgLFYg8PIzScZduKGYNQQdikNJH1dmPZLbQHWRz/uy0aACp0Pm?=
- =?iso-8859-1?Q?W3lvn+WYK8xfYHMtwbqUfpxPfnlCa/7TrKSC9Rbj2wrWgqd+9P+t0GS6I9?=
- =?iso-8859-1?Q?4XP0hcn6QKgILnG7MY2G/lS/smwVH5PVaqK9mXS/HcvsNJJMibSvvbmysG?=
- =?iso-8859-1?Q?c5VyknR2gSeDZtaFTjm4d2Xyt+lXgDcmCgPU41r68eWK1IO5Muw0R7Fox2?=
- =?iso-8859-1?Q?kPZvHsobW5XDD1xSmNTSzXYsI4nKJe0E2EQ7TLau0NP77sE9MppeRDz6nN?=
- =?iso-8859-1?Q?TulITecNaJYhksFjLkNmyYEvoqzFpuGeFq?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E76EA7E5;
+	Wed, 24 Jan 2024 23:08:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706137724; cv=none; b=BjpkVB0tLPR0HOrizFKqxniUsXYoPnylfCe1qugsTi8pu7Nk53N7xjaemBeWg3QNYBm3vK6CBaAZrsq+USeHEGyClnOV9ncHOpESGSPACgaDxzifT80UfauTeo6EFxqcpsNKBE7Bi4E6q70DZiOM1JVdrbLIw+z9pRKgf84mSd4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706137724; c=relaxed/simple;
+	bh=r+BNyXa+tutNidaJAQ5GCFSdQ6jcMos2xdU30CYj2LI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Snv2jbX7S7cGGq95Qfmd3y+qvjK487UWKef3+biZJG473hcV9745+bUdUx8qpuix0nVopQTcenb/AM/26zWkDsgx1eYeMKtebrFBS8XBE43IBv0VjPFZleFFE22ATO8vUuev8/KNl6cVuFd4Gk1gnsfK2k/RFzf05dqImenkBvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=hPqE9lLG; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1706137721;
+	bh=r+BNyXa+tutNidaJAQ5GCFSdQ6jcMos2xdU30CYj2LI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=hPqE9lLG10rs/jdZyuob5naR3pMI7RbD2QGXP+V7c2w+OP5fjdBNWNbPT4RLb7+ie
+	 UHYfz7ZtBoO8rccFOzK7OZAWanuOBoCIizRGW7xgIrNvpxr2MoyzvnxDH40oIPUxkH
+	 NJMWolIxBsIOu4yX3FTeu4gH5mcpjCWBV1wzuPbs61QoXfA0dD9gGQ1zC6XJ5gq30j
+	 xUm6OFC+gGdHSybjMm5otttZJI04WG/rCQk+i+HGoND08/VRfco9g4+eSuP+S7gVSV
+	 ZsSnxqGx9GWOmugGQrcfPPaf+dCRo4wMmG+8yEtScE0w8f2Ygwb5m1qzls+Yu7/Y+M
+	 KlWo0/Dz1x3gw==
+Received: from [100.115.223.179] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: cristicc)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A4A5537811F1;
+	Wed, 24 Jan 2024 23:08:39 +0000 (UTC)
+Message-ID: <7a3020f1-9819-4439-9f62-1a77c1eb9cdf@collabora.com>
+Date: Thu, 25 Jan 2024 01:08:38 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: IA0PR11MB7185.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1cf2527c-609e-47cc-7cad-08dc1d30fde9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jan 2024 23:05:43.4816
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: WPK9l0dy5cQHjtd79AmMFbE8KqlgU8s9KKywNy0gh2XrLMoTCuKUsFLtrOVsnLsw2BPB3MjMdqwns+fkAsMSlvkq/KAzZ053cE6FK+3DADc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7643
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] phy: rockchip: Add Samsung HDMI/DP Combo PHY driver
+Content-Language: en-US
+To: Jonas Karlman <jonas@kwiboo.se>, Andy Yan <andy.yan@rock-chips.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I
+ <kishon@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+ Philipp Zabel <p.zabel@pengutronix.de>, Johan Jonker <jbx6244@gmail.com>,
+ Sebastian Reichel <sebastian.reichel@collabora.com>,
+ Algea Cao <algea.cao@rock-chips.com>, linux-phy@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+ kernel@collabora.com, Sandor Yu <Sandor.yu@nxp.com>,
+ Maxime Ripard <mripard@kernel.org>
+References: <20240119193806.1030214-1-cristian.ciocaltea@collabora.com>
+ <20240119193806.1030214-4-cristian.ciocaltea@collabora.com>
+ <20240122121409.GW4700@pengutronix.de>
+ <00c749f7-3eb9-4bd1-a057-43a692b77d68@collabora.com>
+ <e1c56975-6a55-4b75-a447-dd2d0eec62e2@rock-chips.com>
+ <b0a3da6d-84e2-44c2-9adf-421e306a2acf@rock-chips.com>
+ <ba598f02-5f74-4cb8-97e3-c9369e6db0d8@kwiboo.se>
+From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+In-Reply-To: <ba598f02-5f74-4cb8-97e3-c9369e6db0d8@kwiboo.se>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Andrew,
+On 1/24/24 11:16, Jonas Karlman wrote:
+> On 2024-01-24 08:30, Andy Yan wrote:
+>> Hi Cristian:
+>>
+>> On 1/24/24 10:42, Andy Yan wrote:
+>>> Hi Cristian:
+>>>
+>>> On 1/24/24 08:58, Cristian Ciocaltea wrote:
+>>>> On 1/22/24 14:14, Sascha Hauer wrote:
+>>>>> On Fri, Jan 19, 2024 at 09:38:03PM +0200, Cristian Ciocaltea wrote:
+>>>>>> Add driver for the Rockchip HDMI/eDP TX Combo PHY found on RK3588 SoC.
 
-> Currently this driver creates a SGT table using the CPU as the
-> target device, then performs the dma_sync operations against
-> that SGT. This is backwards to how DMA-BUFs are supposed to behave.
-> This may have worked for the case where these buffers were given
-> only back to the same CPU that produced them as in the QEMU case.
-> And only then because the original author had the dma_sync
-> operations also backwards, syncing for the "device" on begin_cpu.
-> This was noticed and "fixed" in this patch[0].
->=20
-> That then meant we were sync'ing from the CPU to the CPU using
-> a pseudo-device "miscdevice". Which then caused another issue
-> due to the miscdevice not having a proper DMA mask (and why should
-> it, the CPU is not a DMA device). The fix for that was an even
-> more egregious hack[1] that declares the CPU is coherent with
-> itself and can access its own memory space..
->=20
-> Unwind all this and perform the correct action by doing the dma_sync
-> operations for each device currently attached to the backing buffer.
-Makes sense.
+[...]
 
->=20
-> [0] commit 1ffe09590121 ("udmabuf: fix dma-buf cpu access")
-> [1] commit 9e9fa6a9198b ("udmabuf: Set the DMA mask for the udmabuf
-> device (v2)")
->=20
-> Signed-off-by: Andrew Davis <afd@ti.com>
-> ---
->  drivers/dma-buf/udmabuf.c | 41 +++++++++++++++------------------------
->  1 file changed, 16 insertions(+), 25 deletions(-)
->=20
-> diff --git a/drivers/dma-buf/udmabuf.c b/drivers/dma-buf/udmabuf.c
-> index 3a23f0a7d112a..ab6764322523c 100644
-> --- a/drivers/dma-buf/udmabuf.c
-> +++ b/drivers/dma-buf/udmabuf.c
-> @@ -26,8 +26,6 @@ MODULE_PARM_DESC(size_limit_mb, "Max size of a
-> dmabuf, in megabytes. Default is
->  struct udmabuf {
->  	pgoff_t pagecount;
->  	struct page **pages;
-> -	struct sg_table *sg;
-> -	struct miscdevice *device;
->  	struct list_head attachments;
->  	struct mutex lock;
->  };
-> @@ -169,12 +167,8 @@ static void unmap_udmabuf(struct
-> dma_buf_attachment *at,
->  static void release_udmabuf(struct dma_buf *buf)
->  {
->  	struct udmabuf *ubuf =3D buf->priv;
-> -	struct device *dev =3D ubuf->device->this_device;
->  	pgoff_t pg;
->=20
-> -	if (ubuf->sg)
-> -		put_sg_table(dev, ubuf->sg, DMA_BIDIRECTIONAL);
-What happens if the last importer maps the dmabuf but erroneously
-closes it immediately? Would unmap somehow get called in this case?
+>>
+>> How about add a PHY_MODE_HDMI to enum phy_mode, and pass this custom data by extend phy_configure_opts
+>> or the submode of phy_set_mode_ext ?
+> 
+> Please see the patch "phy: Add HDMI configuration options" [1] from
+> Sandor Yu. Also the series "drm/connector: Create HDMI Connector
+> infrastructure" [2] from Maxime Ripard may be of interest.
 
-Thanks,
-Vivek
+Oh, nice, thanks for the heads up!
 
-> -
->  	for (pg =3D 0; pg < ubuf->pagecount; pg++)
->  		put_page(ubuf->pages[pg]);
->  	kfree(ubuf->pages);
-> @@ -185,33 +179,31 @@ static int begin_cpu_udmabuf(struct dma_buf
-> *buf,
->  			     enum dma_data_direction direction)
->  {
->  	struct udmabuf *ubuf =3D buf->priv;
-> -	struct device *dev =3D ubuf->device->this_device;
-> -	int ret =3D 0;
-> -
-> -	if (!ubuf->sg) {
-> -		ubuf->sg =3D get_sg_table(dev, buf, direction);
-> -		if (IS_ERR(ubuf->sg)) {
-> -			ret =3D PTR_ERR(ubuf->sg);
-> -			ubuf->sg =3D NULL;
-> -		}
-> -	} else {
-> -		dma_sync_sg_for_cpu(dev, ubuf->sg->sgl, ubuf->sg->nents,
-> -				    direction);
-> -	}
-> +	struct udmabuf_attachment *a;
->=20
-> -	return ret;
-> +	mutex_lock(&ubuf->lock);
-> +
-> +	list_for_each_entry(a, &ubuf->attachments, list)
-> +		dma_sync_sgtable_for_cpu(a->dev, a->table, direction);
-> +
-> +	mutex_unlock(&ubuf->lock);
-> +
-> +	return 0;
->  }
->=20
->  static int end_cpu_udmabuf(struct dma_buf *buf,
->  			   enum dma_data_direction direction)
->  {
->  	struct udmabuf *ubuf =3D buf->priv;
-> -	struct device *dev =3D ubuf->device->this_device;
-> +	struct udmabuf_attachment *a;
->=20
-> -	if (!ubuf->sg)
-> -		return -EINVAL;
-> +	mutex_lock(&ubuf->lock);
-> +
-> +	list_for_each_entry(a, &ubuf->attachments, list)
-> +		dma_sync_sgtable_for_device(a->dev, a->table, direction);
-> +
-> +	mutex_unlock(&ubuf->lock);
->=20
-> -	dma_sync_sg_for_device(dev, ubuf->sg->sgl, ubuf->sg->nents,
-> direction);
->  	return 0;
->  }
->=20
-> @@ -307,7 +299,6 @@ static long udmabuf_create(struct miscdevice
-> *device,
->  	exp_info.priv =3D ubuf;
->  	exp_info.flags =3D O_RDWR;
->=20
-> -	ubuf->device =3D device;
->  	buf =3D dma_buf_export(&exp_info);
->  	if (IS_ERR(buf)) {
->  		ret =3D PTR_ERR(buf);
-> --
-> 2.39.2
+Regards,
+Cristian
 
+> [1] https://lore.kernel.org/all/19070c125268cfe900021dea6e7e8379b89c630e.1704785836.git.Sandor.yu@nxp.com/
+> [2] https://lore.kernel.org/dri-devel/20231207-kms-hdmi-connector-state-v5-0-6538e19d634d@kernel.org/
+> 
+> Regards,
+> Jonas
 
