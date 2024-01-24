@@ -1,127 +1,144 @@
-Return-Path: <linux-kernel+bounces-36951-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36952-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49D2883A952
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:15:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 385C883A96D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:17:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 005971F213AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:15:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E00A42829F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:17:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0B9E63107;
-	Wed, 24 Jan 2024 12:15:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 712AD62A1E;
+	Wed, 24 Jan 2024 12:17:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="SZKl63VK"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="eY2C3aO6"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AD9462A18;
-	Wed, 24 Jan 2024 12:15:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 291A762A19
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 12:17:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706098535; cv=none; b=UWMRKElb+i+5yDwr62aKLRZyNfhuWc8PGaUvMWIAQUrgd7Kv0KiZwG13ZF98Be1rhIN4yHWh21olg2XxirX4nWqu33CHXZ4UdYRIYev5k4CgxpZSs7Vzjfp6JaoOMISB83E0xpDdsM8t/KEN3Vg8xL4Sw6MynEH5RtJaSeCjJrA=
+	t=1706098633; cv=none; b=j6cAVxzyZY8xNSUyqI8d+eAKhybXaVl6+OcOn1yXZUWtdw5PCbbAV6EMaH1cT4TdN28lDlUDWQ/1sE1kBk4pvCLkdz4Hlecu7JiOfUONP6JwouOZyyDTE7WO4u7tqn9ZHzOWOic30bx9GXJ3bK7VhgxiQzEGfro9H//+7nuEyKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706098535; c=relaxed/simple;
-	bh=9/TY5HmYPm8E0G1A05/PyJFft8ngdFb+/07JFazSGiM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=jFjCdQz/srZZO/H0oeOdaxyunmJMVgSeQD2hz2qMWU+rNrpSLGHWvx1d38kI4PxOKQKB+ywO6NrUUWVqEaVcRTWQnEhGJ4k60ZOivIvDHbTyOiaPPRi5cDQ3Gs2JDIAsuYBzdfwy9fRkPpjJw0aYKmLG2kWqHCD9y8wwSEyn9TI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=SZKl63VK; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40OBTUQw020659;
-	Wed, 24 Jan 2024 12:14:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=h5QTFvOXySrnlCSLejUWbzN7R0IzvqRuBOyzN1TZrJI=;
- b=SZKl63VKVv1zAp3tpsPHAbpGMaWfgnKtkYZCE5Mrvsfcf2ghZM6EKRlZDJ5My8WdhKcO
- F7IM29RlDlnlQluLl+m291CjXqnI0RTROcmf5kPlIe2SE2hLGO0EDGrLHseOQEAxORHP
- HXN8ej6fAf4YfOVn3X0FRYwX6p+8uJNVIBmixyr/M0k8Ffnbc+jeK/adZ0P05ugDoEUP
- baXK5wSz7BRJd/YJ8Q+PIkGj4xsbDiE2aAjovHx49IeUSFAc389dM/NQHiNxlEAW+lEm
- BNQIuYJpC6bRtBu/Wf2N+cns6jmmXuCiy+/1gDSNCRie4sxrvaBeIBA4GpL2YEZL0cV7 3g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vu05gbejq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Jan 2024 12:14:45 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40OBFAYe027101;
-	Wed, 24 Jan 2024 12:14:45 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vu05gbej7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Jan 2024 12:14:45 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40OAoCKh025653;
-	Wed, 24 Jan 2024 12:14:44 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vrsgp5mnt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Jan 2024 12:14:44 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40OCEfwO21824006
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 24 Jan 2024 12:14:41 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 16EB520040;
-	Wed, 24 Jan 2024 12:14:41 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B5B1220043;
-	Wed, 24 Jan 2024 12:14:40 +0000 (GMT)
-Received: from [9.152.224.222] (unknown [9.152.224.222])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 24 Jan 2024 12:14:40 +0000 (GMT)
-Message-ID: <f898e36f-ba02-4c52-a3be-06caac13323e@linux.ibm.com>
-Date: Wed, 24 Jan 2024 13:14:40 +0100
+	s=arc-20240116; t=1706098633; c=relaxed/simple;
+	bh=9rIW4BZC82xuUDbZFWKobPmRbLgwvfViOByLftgM8f0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BLL3B4kbreH+ea84J6hfG9ifna+5G3LK+YibjIqe7KQUEZ2WH8KmrCgRZcTty9OFXQ6HHu24m9Hdw4rQ2mKC3Z6namBJA/aJkhpeC5769tFigQ7Q9jgC6PPV83dnzfrQLT0V13/ah0PQRShabP3aGuyYFRQmwb0C4P02WWrj8Qg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=eY2C3aO6; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a310409589aso103002666b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 04:17:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google; t=1706098628; x=1706703428; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=R534gPYSNr7qXXwj05XS3LR+Dft8ZupD8G2mc4eLBbQ=;
+        b=eY2C3aO6WLIbI3GT251VVVbSFjASKKxtAzhUmudwDd6PxAXES28URJT61sXMPCvdN+
+         qBKu5kDHelOLa/vJEcyuWN3SMyhXFyxWO3qBQ/RzOQfcwJywNdgZ03mfXbNfU8Mkjb5i
+         I9Xjdyvb3AMBZo1DFN1+ycalxUOPQVcELysNg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706098628; x=1706703428;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=R534gPYSNr7qXXwj05XS3LR+Dft8ZupD8G2mc4eLBbQ=;
+        b=rAfJ4JP70LVZHu+b59wmCDiq/WOrL0a4748sDLlqIXuV8vxkPu9j1GDFN+Cps9YFtG
+         q8Lg1tIWDka7d1U/YI99Sf6gNDhNzJSdI7fAnF/5I50uBEpQtBeAmUvE2LxldTxaXr+i
+         4qByXcEN3pwJCt3H0j62DABWaMDlE8Fo1RrQwymN42SMqQSNyqX553ha4bwSCuRTWKaT
+         unnn8Eb7ARqHv3yboI85QodNX6l4AtLjVaDozNs9mimYuwDfrdVQiyvcRinG8qIw3EzJ
+         JdyVWsa40GaRxPh1OxcEJ2z1J17GP88zKagFmlpLqEP0j8ZOcx07Zk7h3knzooFlZaeO
+         6oNw==
+X-Gm-Message-State: AOJu0YyvQ9iS/5VxmXRpQNruI1B1rIjk7jJ+uP8VE4iPTPvqfMHsyr9k
+	9vtntnHn7jCxd59p5W5ZnslGEuc63d1aUVot1ddfyzI7OWCRaMz/O6j3aDwH86AmMYcMIH2oa0s
+	v68WPG5lggzfkD+9ADQCV8o4QnKwwdCLRFI0r7Q==
+X-Google-Smtp-Source: AGHT+IHRFw0weEHminhg3Rf758vsNvpsMk749Qr5zmuq35Cat1GtfJfvnBtbd7XR7W+WKZpKiC/GEmFSgxd7bOxchBw=
+X-Received: by 2002:a17:907:a805:b0:a31:4083:4d06 with SMTP id
+ vo5-20020a170907a80500b00a3140834d06mr121802ejc.85.1706098628041; Wed, 24 Jan
+ 2024 04:17:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [v2 0/4] KVM: irqchip: synchronize srcu only if needed
-To: Yi Wang <up2wing@gmail.com>, seanjc@google.com, pbonzini@redhat.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wanpengli@tencent.com, foxywang@tencent.com, oliver.upton@linux.dev,
-        maz@kernel.org, anup@brainfault.org, atishp@atishpatra.org,
-        frankja@linux.ibm.com, imbrenda@linux.ibm.com
-References: <20240121111730.262429-1-foxywang@tencent.com>
-Content-Language: en-US
-From: Christian Borntraeger <borntraeger@linux.ibm.com>
-In-Reply-To: <20240121111730.262429-1-foxywang@tencent.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: cbW_U5WPhzOWf19FHy2Hl1GFoRPKfTjm
-X-Proofpoint-ORIG-GUID: HmjjZcFKC3F87LftISToZPyjK4682bMp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-24_06,2024-01-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- adultscore=0 suspectscore=0 clxscore=1015 mlxscore=0 bulkscore=0
- mlxlogscore=676 priorityscore=1501 lowpriorityscore=0 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401240088
+References: <20240124113042.44300-1-jefflexu@linux.alibaba.com>
+In-Reply-To: <20240124113042.44300-1-jefflexu@linux.alibaba.com>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Wed, 24 Jan 2024 13:16:56 +0100
+Message-ID: <CAJfpegtkSgRO-24bdnA4xUMFW5vFwSDQ7WkcowNR69zmbRwKqQ@mail.gmail.com>
+Subject: Re: [PATCH] fuse: add support for explicit export disabling
+To: Jingbo Xu <jefflexu@linux.alibaba.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	amir73il@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-Am 21.01.24 um 12:17 schrieb Yi Wang:
-> From: Yi Wang <foxywang@tencent.com>
-> 
-> We found that it may cost more than 20 milliseconds very accidentally
-> to enable cap of KVM_CAP_SPLIT_IRQCHIP on a host which has many vms
-> already.
-> 
-> The reason is that when vmm(qemu/CloudHypervisor) invokes
-> KVM_CAP_SPLIT_IRQCHIP kvm will call synchronize_srcu_expedited() and
-> might_sleep and kworker of srcu may cost some delay during this period.
-> One way makes sence is setup empty irq routing when creating vm and
-> so that x86/s390 don't need to setup empty/dummy irq routing.
-> 
-> Note: I have no s390 machine so the s390 patch has not been tested.
+On Wed, 24 Jan 2024 at 12:30, Jingbo Xu <jefflexu@linux.alibaba.com> wrote:
+>
+> open_by_handle_at(2) can fail with -ESTALE with a valid handle returned
+> by a previous name_to_handle_at(2) for evicted fuse inodes, which is
+> especially common when entry_valid_timeout is 0, e.g. when the fuse
+> daemon is in "cache=none" mode.
+>
+> The time sequence is like:
+>
+>         name_to_handle_at(2)    # succeed
+>         evict fuse inode
+>         open_by_handle_at(2)    # fail
+>
+> The root cause is that, with 0 entry_valid_timeout, the dput() called in
+> name_to_handle_at(2) will trigger iput -> evict(), which will send
+> FUSE_FORGET to the daemon.  The following open_by_handle_at(2) will send
+> a new FUSE_LOOKUP request upon inode cache miss since the previous inode
+> eviction.  Then the fuse daemon may fail the FUSE_LOOKUP request with
+> -ENOENT as the cached metadata of the requested inode has already been
+> cleaned up during the previous FUSE_FORGET.  The returned -ENOENT is
+> treated as -ESTALE when open_by_handle_at(2) returns.
+>
+> This confuses the application somehow, as open_by_handle_at(2) fails
+> when the previous name_to_handle_at(2) succeeds.  The returned errno is
+> also confusing as the requested file is not deleted and already there.
+> It is reasonable to fail name_to_handle_at(2) early in this case, after
+> which the application can fallback to open(2) to access files.
+>
+> Since this issue typically appears when entry_valid_timeout is 0 which
+> is configured by the fuse daemon, the fuse daemon is the right person to
+> explicitly disable the export when required.
+>
+> Also considering FUSE_EXPORT_SUPPORT actually indicates the support for
+> lookups of "." and "..", and there are existing fuse daemons supporting
+> export without FUSE_EXPORT_SUPPORT set, for compatibility, we add a new
+> INIT flag for such purpose.
 
-I just did a quick sniff and it still seems to work. No performance check etc.
+This looks good overall.
+
+>
+> Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
+> ---
+> RFC: https://lore.kernel.org/all/20240123093701.94166-1-jefflexu@linux.alibaba.com/
+> ---
+>  fs/fuse/inode.c           | 11 ++++++++++-
+>  include/uapi/linux/fuse.h |  2 ++
+>  2 files changed, 12 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
+> index 2a6d44f91729..851940c0e930 100644
+> --- a/fs/fuse/inode.c
+> +++ b/fs/fuse/inode.c
+> @@ -1110,6 +1110,11 @@ static struct dentry *fuse_get_parent(struct dentry *child)
+>         return parent;
+>  }
+>
+> +/* only for fid encoding; no support for file handle */
+> +static const struct export_operations fuse_fid_operations = {
+
+Nit: I'd call this fuse_no_export_operations (or something else that
+emphasizes the fact that this is only for encoding and not for full
+export support).
+
+Thanks,
+Miklos
 
