@@ -1,308 +1,128 @@
-Return-Path: <linux-kernel+bounces-37250-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37251-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE68183AD4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:27:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 40C1D83AD4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:28:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2020D1C22550
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:27:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57DB61C21A5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:28:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 421ED7A732;
-	Wed, 24 Jan 2024 15:27:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B96FD7A734;
+	Wed, 24 Jan 2024 15:28:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="a/GI0v9C"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nfEifdag"
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 785BE2BAE5;
-	Wed, 24 Jan 2024 15:27:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4EDA5384
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 15:28:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706110029; cv=none; b=UWHl8DJIMqCXGWVWDD+3mtk0tLuDCIVDTdqTRZVutj2YIVs1gHg0rqJlsVm7VUzd1CbiDNmag1qAKiZVv7gSq187Asu+yPSbljRs6R50cHJCMZPIiutwOS2SmxPNBu1n29WyPwY02Jq+gE9jTIuwwtSDxBemz+TRqz448oPAzlg=
+	t=1706110082; cv=none; b=tcaDBmCJPnmHsgQFUF+mbq4WaIGddmIgIyLZEELTnUnUs1vQ4zdqACZQkCsNHzaCe7xmUScaQyAUpzft03vpK33zt4w04lK1lOknAXYoQI6uQxr6cO8Hkm/pSNrozzN2LOFArC3Swef9pQWzUYViAYAeLyo3d0SaeXVbFyFBqnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706110029; c=relaxed/simple;
-	bh=eWgI5cQzGgxjU8IqhiNLaIrbAIei/iVfjxJTyMVtWCw=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=nEMzSRpFhbuYi58QsJHmPIsx9gv1dtZb6ndqVoReQuN7AhhQHXp+eCauw9WGu6PhfCsIAvpL1yKLmTsDPCWk89nP29wX6wBAYQ1hLkyUL/Fvi4zTPLY4Ie13RksnL8ZjmDSn0nvKg62BDgKV1w8yJwcCtipHyNPBRpv86+x7zi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=a/GI0v9C; arc=none smtp.client-ip=192.55.52.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706110026; x=1737646026;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=eWgI5cQzGgxjU8IqhiNLaIrbAIei/iVfjxJTyMVtWCw=;
-  b=a/GI0v9CdeJzNMJE9SdbZs++m0rOwtAev/4Y1kW9iFOrclVpjKIz153E
-   dUO8KnZO49m5Vvx3h86P017S/uSbyBkLELZUwOv6lK4srKJoYLHMp4MOe
-   jObWMrf4Bi/t6jyiL0219zzL3oxUOZ1rNfczbut4K25WTquP2T8Q+c23m
-   8o/F0KGIxXewPuuKqgZnhNv8CVv7f09IQVMp3awrFtTE2zue+fCGwOSm1
-   ee12UGCHItnxEjlAA1pB9OZuINyf7YvX37NqAs8IwKAIAXRXN8OFdruX7
-   k6MAFRE3PHjT3eJRxqOnrpz2MiYCHBFAQKiY4WIqFL2Wuf6nMwyFUP18Q
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="400730354"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="400730354"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 07:27:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="2073769"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.48.46])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 07:27:00 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Wed, 24 Jan 2024 17:26:55 +0200 (EET)
-To: Frank Li <Frank.Li@nxp.com>
-cc: alexandre.belloni@bootlin.com, conor.culhane@silvaco.com, 
-    devicetree@vger.kernel.org, 
-    Greg Kroah-Hartman <gregkh@linuxfoundation.org>, imx@lists.linux.dev, 
-    Jiri Slaby <jirislaby@kernel.org>, joe@perches.com, 
-    krzysztof.kozlowski+dt@linaro.org, krzysztof.kozlowski@linaro.org, 
-    linux-i3c@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>, 
-    linux-serial <linux-serial@vger.kernel.org>, miquel.raynal@bootlin.com, 
-    robh@kernel.org, zbigniew.lukwinski@linux.intel.com
-Subject: Re: [PATCH v4 8/8] tty: i3c: add TTY over I3C master support
-In-Reply-To: <20240123231043.3891847-9-Frank.Li@nxp.com>
-Message-ID: <a2716dab-8681-3bce-d0fb-b83789c51362@linux.intel.com>
-References: <20240123231043.3891847-1-Frank.Li@nxp.com> <20240123231043.3891847-9-Frank.Li@nxp.com>
+	s=arc-20240116; t=1706110082; c=relaxed/simple;
+	bh=djKs0TQvAPDhrKH+B4kuwqUT/A1i1mMshNJWMMPN59E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LPd7xEgsNaKUeZGiH2QOCWfN/vKnIUO4tcP4/mOSl7eXQkz3Q2XJZyJRwle1+pxDzi+4w9EoE22K3kHm1CAg30wdCuPbKIXPxGLYZa3Sw34A2GfOeq3BXjGpvUvZ9z4OJdocOqG0N1reIrIR6s3GmN1IaOW0qsVz9i8UsCT+4oA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nfEifdag; arc=none smtp.client-ip=209.85.128.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-5ffcb478512so28249947b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 07:28:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706110080; x=1706714880; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=gxAN85gUI3DtBv5GX7Pwg8/v675qo3nL0TCB7s3sYeo=;
+        b=nfEifdagQtD1k4dXIOSTlMPHcW5vb0BK0R5dvVD/wCwqjWTp3rO2dTHa1cNJ8nv0Xv
+         hZPyaF8ok+KI3j6uL/S1C20w65ZuDs9SbQ4aOLDGT6eObg2Jqf/SXKmOxKAAEiD/GAcV
+         Bx6a7L/5gNcmBdbWawChKrw4TYrxKsfAMtEUE7HPrD9oBBu/tLnqTYZftwXnkl289Q8j
+         YTXA1Fz9dd+1U14EzTujZ1fSqqmfE/FCESWl5mnKNB/2/v81RCtpiXERMWDsSJLBEHPl
+         8OIni1afmASRemf2YYyp5oH8O1VQnOl92Xg+aNhg6O24PXiq/yHMoXyAAY9HoafjUMcy
+         aKYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706110080; x=1706714880;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gxAN85gUI3DtBv5GX7Pwg8/v675qo3nL0TCB7s3sYeo=;
+        b=KKd5nB6ajnGgqpQVHqyZTll+jPWzDtwxzLC/L1UO4JPgrPvkiz0v6YzzFhoePbjvuQ
+         vQT8ChlS+vFoFzckqHK1aTEPdmabA61R+ODyPue9S7hf2mSw9KLnUoyVQKOhdRKUXCxe
+         qnQBgpHd/O0PMitpC/vpiPQbyP89UaJPZ9dlmxS2ja5AMmPpfHvRtwpRkgo2GzJaGQMt
+         OdRPaW0VslatpUg5blqIG3msYgzZDkxxxFdbm5z00eBhkjT8DW0oU6Eiudtp9k2OynSh
+         ZB5njZvhhz3nEUdIcwQZRMRs+KHEX8iKjfuMM/qd0j/4AznP4hnlKvwAHWRamdhQzRez
+         icTw==
+X-Gm-Message-State: AOJu0Yzujb/IQOC3FOjUvJTiFfn/iGFeqeS57PO+2CAfOZuAbIJlcyDt
+	unxooXirSPOJYaBKpepxUAFHC11fotTIfLE2itSl+IW7MpCePbTOZ8ue7SpM0NQ=
+X-Google-Smtp-Source: AGHT+IF+Nrdu9tGDR3beDItGL0E/OCg5dlfhAXrIkzQiMnlkPIfHnj8IoCqnWGxeMxmoNRKEWLNNSQ==
+X-Received: by 2002:a81:a251:0:b0:5ed:b2a2:1279 with SMTP id z17-20020a81a251000000b005edb2a21279mr609856ywg.16.1706110079553;
+        Wed, 24 Jan 2024 07:27:59 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:abdb:7236:6977:9ab5])
+        by smtp.gmail.com with ESMTPSA id l124-20020a0de282000000b005ff9dac3ff0sm652ywe.56.2024.01.24.07.27.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 07:27:59 -0800 (PST)
+Date: Wed, 24 Jan 2024 07:27:58 -0800
+From: Yury Norov <yury.norov@gmail.com>
+To: Lucas De Marchi <lucas.demarchi@intel.com>
+Cc: Jani Nikula <jani.nikula@linux.intel.com>, linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	intel-xe@lists.freedesktop.org, intel-gfx@lists.freedesktop.org
+Subject: Re: Re: [PATCH 1/3] bits: introduce fixed-type genmasks
+Message-ID: <ZbEsfl0tGLY+xJl0@yury-ThinkPad>
+References: <20240124050205.3646390-1-lucas.demarchi@intel.com>
+ <20240124050205.3646390-2-lucas.demarchi@intel.com>
+ <87v87jkvrx.fsf@intel.com>
+ <gvkvihpcc45275idrfukjqbvgem767evrux5sx5lnh5hofqemk@ppbkcauitvwb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <gvkvihpcc45275idrfukjqbvgem767evrux5sx5lnh5hofqemk@ppbkcauitvwb>
 
-On Tue, 23 Jan 2024, Frank Li wrote:
-
-> In typical embedded Linux systems, UART consoles require at least two pins,
-> TX and RX. In scenarios where I2C/I3C devices like sensors or PMICs are
-> present, we can save these two pins by using this driver. Pins is crucial
-> resources, especially in small chip packages.
+On Wed, Jan 24, 2024 at 08:03:53AM -0600, Lucas De Marchi wrote:
+> On Wed, Jan 24, 2024 at 09:58:26AM +0200, Jani Nikula wrote:
+> > On Tue, 23 Jan 2024, Lucas De Marchi <lucas.demarchi@intel.com> wrote:
+> > > From: Yury Norov <yury.norov@gmail.com>
+> > > 
+> > > Generalize __GENMASK() to support different types, and implement
+> > > fixed-types versions of GENMASK() based on it. The fixed-type version
+> > > allows more strict checks to the min/max values accepted, which is
+> > > useful for defining registers like implemented by i915 and xe drivers
+> > > with their REG_GENMASK*() macros.
+> > 
+> > Mmh, the commit message says the fixed-type version allows more strict
+> > checks, but none are actually added. GENMASK_INPUT_CHECK() remains the
+> > same.
+> > 
+> > Compared to the i915 and xe versions, this is more lax now. You could
+> > specify GENMASK_U32(63,32) without complaints.
 > 
-> This introduces support for using the I3C bus to transfer console tty data,
-> effectively replacing the need for dedicated UART pins. This not only
-> conserves valuable pin resources but also facilitates testing of I3C's
-> advanced features, including early termination, in-band interrupt (IBI)
-> support, and the creation of more complex data patterns. Additionally,
-> it aids in identifying and addressing issues within the I3C controller
-> driver.
+> Doing this on top of the this series:
 > 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
+> -#define   XELPDP_PORT_M2P_COMMAND_TYPE_MASK            REG_GENMASK(30, 27)
+> +#define   XELPDP_PORT_M2P_COMMAND_TYPE_MASK            REG_GENMASK(62, 32)
 > 
-> Notes:
->     Notes:
->         Version number use i3c target patches.
->         Change from v3 to v4
->         - add static at i3c_remove()
->         Change v2
->         - using system_unbound_wq working queue
->         - fixed accoring to Jiri Slaby's comments
->     
->         Change before send with i3c target support
->     
->         Change from v4 to v5
->         - send in i3c improvememtn patches.
->     
->         Change from v2 to v4
->         - none
->     
->         Change from v1 to v2
->         - update commit message.
->         - using goto for err handle
->         - using one working queue for all tty-i3c device
->         - fixed typo found by js
->         - update kconfig help
->         - using kfifo
->     
->         Still below items not be fixed (according to Jiri Slaby's comments)
->         - rxwork thread: need trigger from two position.
->         - common thread queue: need some suggestion
+> and I do get a build failure:
 > 
->  drivers/tty/Kconfig   |  13 ++
->  drivers/tty/Makefile  |   1 +
->  drivers/tty/i3c_tty.c | 426 ++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 440 insertions(+)
->  create mode 100644 drivers/tty/i3c_tty.c
-> 
-> diff --git a/drivers/tty/Kconfig b/drivers/tty/Kconfig
-> index 5646dc6242cd9..9ab4cd480e9f8 100644
-> --- a/drivers/tty/Kconfig
-> +++ b/drivers/tty/Kconfig
-> @@ -412,6 +412,19 @@ config RPMSG_TTY
->  	  To compile this driver as a module, choose M here: the module will be
->  	  called rpmsg_tty.
->  
-> +config I3C_TTY
-> +	tristate "TTY over I3C"
-> +	depends on I3C
-> +	help
-> +	  Select this option to use TTY over I3C master controller.
-> +
-> +	  This makes it possible for user-space programs to send and receive
-> +	  data as a standard tty protocol. I3C provide relatively higher data
-> +	  transfer rate and less pin numbers, SDA/SCL are shared with other
-> +	  devices.
-> +
-> +	  If unsure, say N
-> +
->  endif # TTY
->  
->  source "drivers/tty/serdev/Kconfig"
-> diff --git a/drivers/tty/Makefile b/drivers/tty/Makefile
-> index 07aca5184a55d..f329f9c7d308a 100644
-> --- a/drivers/tty/Makefile
-> +++ b/drivers/tty/Makefile
-> @@ -27,5 +27,6 @@ obj-$(CONFIG_GOLDFISH_TTY)	+= goldfish.o
->  obj-$(CONFIG_MIPS_EJTAG_FDC_TTY) += mips_ejtag_fdc.o
->  obj-$(CONFIG_VCC)		+= vcc.o
->  obj-$(CONFIG_RPMSG_TTY)		+= rpmsg_tty.o
-> +obj-$(CONFIG_I3C_TTY)		+= i3c_tty.o
->  
->  obj-y += ipwireless/
-> diff --git a/drivers/tty/i3c_tty.c b/drivers/tty/i3c_tty.c
-> new file mode 100644
-> index 0000000000000..8f4e87dfa01cd
-> --- /dev/null
-> +++ b/drivers/tty/i3c_tty.c
-> @@ -0,0 +1,426 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright 2023 NXP.
-> + *
-> + * Author: Frank Li <Frank.Li@nxp.com>
-> + */
-> +
-> +#include <linux/delay.h>
-> +#include <linux/kernel.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/module.h>
-> +#include <linux/i3c/device.h>
-> +#include <linux/i3c/master.h>
-> +#include <linux/slab.h>
-> +#include <linux/console.h>
-> +#include <linux/serial_core.h>
-> +#include <linux/interrupt.h>
+> ../drivers/gpu/drm/i915/display/intel_cx0_phy.c: In function ‘__intel_cx0_read_once’:
+> ../include/linux/bits.h:41:31: error: left shift count >= width of type [-Werror=shift-count-overflow]
+>    41 |          (((t)~0ULL - ((t)(1) << (l)) + 1) & \
+>       |                               ^~
 
-Do you need this header.
-
-> +#include <linux/workqueue.h>
-> +#include <linux/tty_flip.h>
-> +
-> +static DEFINE_IDR(i3c_tty_minors);
-> +static DEFINE_MUTEX(i3c_tty_minors_lock);
-> +
-> +static struct tty_driver *i3c_tty_driver;
-> +
-> +#define I3C_TTY_MINORS		8
-> +#define I3C_TTY_TRANS_SIZE	16
-> +#define I3C_TTY_RX_STOP		0
-> +#define I3C_TTY_RETRY		20
-> +#define I3C_TTY_YIELD_US	100
-> +
-> +struct ttyi3c_port {
-> +	struct tty_port port;
-
-Missing #include
-
-> +	int minor;
-> +	spinlock_t xlock; /* protect xmit */
-
-Missing #include
-
-> +	u8 tx_buff[I3C_TTY_TRANS_SIZE];
-> +	u8 rx_buff[I3C_TTY_TRANS_SIZE];
-> +	struct i3c_device *i3cdev;
-> +	struct work_struct txwork;
-> +	struct work_struct rxwork;
-> +	struct completion txcomplete;
-
-Missing #include
-
-> +	unsigned long status;
-> +	u32 buf_overrun;
-> +};
-
-> +static void i3c_port_shutdown(struct tty_port *port)
-> +{
-> +	struct ttyi3c_port *sport =
-> +		container_of(port, struct ttyi3c_port, port);
-
-On one line.
-
-> +
-> +	i3c_device_disable_ibi(sport->i3cdev);
-> +	tty_port_free_xmit_buf(port);
-> +}
-> +
-> +static void i3c_port_destruct(struct tty_port *port)
-> +{
-> +	struct ttyi3c_port *sport =
-> +		container_of(port, struct ttyi3c_port, port);
-
-Ditto.
-
-> +static void tty_i3c_rxwork(struct work_struct *work)
-> +{
-> +	struct ttyi3c_port *sport = container_of(work, struct ttyi3c_port, rxwork);
-> +	struct i3c_priv_xfer xfers;
-> +	u32 retry = I3C_TTY_RETRY;
-> +	u16 status = BIT(0);
-
-Unnecessary initialization.
-
-> +	int ret;
-> +
-> +	memset(&xfers, 0, sizeof(xfers));
-> +	xfers.data.in = sport->rx_buff;
-> +	xfers.len = I3C_TTY_TRANS_SIZE;
-> +	xfers.rnw = 1;
-> +
-> +	do {
-> +		if (test_bit(I3C_TTY_RX_STOP, &sport->status))
-> +			break;
-> +
-> +		i3c_device_do_priv_xfers(sport->i3cdev, &xfers, 1);
-> +
-> +		if (xfers.actual_len) {
-> +			ret = tty_insert_flip_string(&sport->port, sport->rx_buff,
-> +						     xfers.actual_len);
-> +			if (ret < xfers.actual_len)
-> +				sport->buf_overrun++;
-> +
-> +			retry = I3C_TTY_RETRY;
-> +			continue;
-> +		}
-> +
-> +		status = BIT(0);
-
-Can this BIT(0) be named with a #define?
-
-> +		i3c_device_getstatus_format1(sport->i3cdev, &status);
-> +		/*
-> +		 * Target side needs some time to fill data into fifo. Target side may not
-> +		 * have hardware update status in real time. Software update status always
-> +		 * needs some delays.
-> +		 *
-> +		 * Generally, target side have circular buffer in memory, it will be moved
-> +		 * into FIFO by CPU or DMA. 'status' just show if circular buffer empty. But
-> +		 * there are gap, especially CPU have not response irq to fill FIFO in time.
-> +		 * So xfers.actual will be zero, wait for little time to avoid flood
-> +		 * transfer in i3c bus.
-> +		 */
-> +		usleep_range(I3C_TTY_YIELD_US, 10 * I3C_TTY_YIELD_US);
-> +		retry--;
-> +
-> +	} while (retry && (status & BIT(0)));
-
-Name with define?
-
-
--- 
- i.
-
+I would better include this in commit message to avoid people's
+confusion. If it comes to v2, can you please do it and mention that
+this trick relies on shift-count-overflow compiler check?
+ 
+Thanks,
+Yury
 
