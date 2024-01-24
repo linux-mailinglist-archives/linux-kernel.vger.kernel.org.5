@@ -1,101 +1,87 @@
-Return-Path: <linux-kernel+bounces-36758-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D57183A616
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:57:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13ED083A618
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:58:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32D5B1F22447
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:57:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A94F91F219FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:58:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A0BD182C5;
-	Wed, 24 Jan 2024 09:57:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F1AF182B9;
+	Wed, 24 Jan 2024 09:57:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="cu3eigpU"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ijr98ALA";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="JuE8dMyG"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7A1417C6E;
-	Wed, 24 Jan 2024 09:57:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A24418B02;
+	Wed, 24 Jan 2024 09:57:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706090252; cv=none; b=QdMMkpTVrjQoWu6R+FJYyqyuQXGjcZw/1IAkMsqK347GoaMXjv9vpButoWtSqNEVG8GtgpUpwaNMwUXx//xSp/64PQFsFJ8s+fdw1tj5VehuFMVd7kKnk+vtiukjuEl67RMxArXVzx3GYLNn7mTqa9B1DhHkulkR1Gt2rN52oeE=
+	t=1706090269; cv=none; b=UhH8mHu7HYw7VaC0gsGA+eRj/JACf86YmuwrNi2iwJ3PRdb1Vqg3zfv3Zkf3yxtaSFtNnvrV4/63ei61OVTDARY/8Ocs5EjFf7upYMg8LtxNqL4DH6UxYsVS9LdLnjYfldSeVIHxubnFkBYGmv3PuHQUWs20WI58ADK3y1BFR28=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706090252; c=relaxed/simple;
-	bh=9+hKMgNhK0f6pEf/gbfH0HV3V5FHbRS671inekWpQlk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ewTW9mS+JbPtStVh/86gFwfmyc1vifRSf6o+gnU3BIhkevB+QBNaAsmXJBqlicWdr+NexSgzQrQl2O01gLnepJHTXbLHpnaaQVjC8ClfWRD+blYleGMXa366RpF4SetKFCqTNIHn2aDdZLWicC1nqzoape1KQC6fSg7Y4ejSaaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=cu3eigpU; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 347E540E01A9;
-	Wed, 24 Jan 2024 09:57:26 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id Y0rsV01bne4u; Wed, 24 Jan 2024 09:57:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1706090244; bh=Wto19mwz6qJ8ocgEL/gMtNXJgnaeFsjJB6kj/OkwYo0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cu3eigpUjChBJTCD/hAw5mjfgJEHHw6B4s6u4ZmNj0d+5LEzcvUIdv09VBtPD9UqD
-	 SSzMty3hlSB7Tmki1utFQ0sK/eF1Bfwd3KpLdWmG6gWTA9M9K1+10XXdJYJy+8CSSJ
-	 DwrRnBtBCb1+6uy7Y5LZkr8DhoUoqIi/EBTBPpf5B/PY7mt9tjT6QDfHegQC8UgMwg
-	 2Pj7syZ1T2cmLebELuNFJ17U/OMK/UcfDL4uCMNsG3Ybh978r31+Uq0IzJgSF+xMtf
-	 unIU5bN54CgTcfSZGwOSlCKE9jx5kP+ZamDhZJzjuUZqA8Vx6nAIxYXWz4oe7OSe++
-	 V1VqHw1i1qoXykDWSZ2DJY/ADblFdD+vbfXQK68JQ2H2uAQZHQtYOljsECw4oSnXwe
-	 6vKCNDIpBKIkQ6L9njqxzG5K6StncKR9PVXVSu3O2fHtJp9C2lXZS5Im6oeNsvnjMv
-	 2RbsGexzBLDMyT1mmTY87yP4qkIlxuFFp3rEj6z5SnOIkoFcAp9cpauRBML3MvBKkN
-	 MFdgaiNySpC198OdSCjRrlh+l6jRllabsrsF33f/esFOYyYB0I/b1VpQq+K/ZAtNNF
-	 UPaqPD585GJaHC3hzj/5I1+D3rKhsD0DhuWcjRUGtUsjpCw4zpnctxbFGHd0s41NmP
-	 4Jjr1z/00jR+fwpBzdXlXBEg=
-Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DFBA140E0177;
-	Wed, 24 Jan 2024 09:57:14 +0000 (UTC)
-Date: Wed, 24 Jan 2024 10:57:08 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: "Naik, Avadhut" <avadnaik@amd.com>, Tony Luck <tony.luck@intel.com>,
-	Avadhut Naik <avadhut.naik@amd.com>,
-	linux-trace-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-	x86@kernel.org, linux-kernel@vger.kernel.org, yazen.ghannam@amd.com
-Subject: Re: [PATCH] tracing: Include PPIN in mce_record tracepoint
-Message-ID: <20240124095708.GAZbDe9Hks0tL2Aj94@fat_crate.local>
-References: <20240123235150.3744089-1-avadhut.naik@amd.com>
- <ZbBV4EGrZw6hJ5IE@agluck-desk3>
- <be870e14-eeb9-4dcf-ba43-a72ef66a3d87@amd.com>
- <20240123203853.66655e95@rorschach.local.home>
+	s=arc-20240116; t=1706090269; c=relaxed/simple;
+	bh=3wmf3wu6pEhYmgZge+vax11EPN8UmQlBJ3MKJwRgPqg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=CfjTCubJcNcHERzdQGxuuGEG6NGc5jsQ3JcS5SWVtQ/trL/TF2cK65HLuDFJsIA6fWtgvlir9/0tyXUn65oClnUUd+RFc9qQ3eP6NejsHFG1GTQHNc40mir2yixT+aH69SfOPz/IRPMZA9kajQofJFcFnUVrs11SnoSb0N2H1N4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ijr98ALA; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=JuE8dMyG; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1706090265;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3wmf3wu6pEhYmgZge+vax11EPN8UmQlBJ3MKJwRgPqg=;
+	b=ijr98ALAOMm+t8LvziczWeSUz9wq06w/YopVNxVBw66PvgsdRX0VIYvHIMptN1Ws1LdMF3
+	Hr8m/aaj0YBlzl8GTC9N5tuT74SijcaVho8xhgPVYK604MMuMTRZJlUPNKJK8O1DeQtbbk
+	ckCoUkG6UU9fNkjkqNx9DqgygCuTNDjIeNoEypTPKYNwF5p6d2W41StumFcHARc2eGOp6R
+	k+JYowCM3HWCBztcI56Ld67Jr1d6de0g9ViYDxg1GXipfI4SPeMvP6QlZDwK5p9NII0XVB
+	Z+bgzCD8+BzeQZxh3Jp6D7zCe3WtBJYGJ3dxdg70SJm5AflBFZhq19zj7TS2OA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1706090265;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3wmf3wu6pEhYmgZge+vax11EPN8UmQlBJ3MKJwRgPqg=;
+	b=JuE8dMyG1DzirAos71dCRDjOy5/p1omOuBndfeO5yDfRmn3PjR1Y4ky6aesAnUtAKEnMcw
+	fHO0dp4q6MSbhsCA==
+To: Junxiao Chang <junxiao.chang@intel.com>, bigeasy@linutronix.de,
+ tglx@linutronix.de, rostedt@goodmis.org, linux-kernel@vger.kernel.org
+Cc: hao3.li@intel.com, lili.li@intel.com, jianfeng.gao@intel.com,
+ linux-rt-users@vger.kernel.org
+Subject: Re: [PATCH 2/2] printk: nbcon: check uart port is nbcon or not in
+ nbcon_release
+In-Reply-To: <20240123054033.183114-3-junxiao.chang@intel.com>
+References: <BN9PR11MB5370AED9C562F9DA75093557EC742@BN9PR11MB5370.namprd11.prod.outlook.com>
+ <20240123054033.183114-1-junxiao.chang@intel.com>
+ <20240123054033.183114-3-junxiao.chang@intel.com>
+Date: Wed, 24 Jan 2024 11:03:39 +0106
+Message-ID: <87il3j9hpo.fsf@jogness.linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240123203853.66655e95@rorschach.local.home>
+Content-Type: text/plain
 
-On Tue, Jan 23, 2024 at 08:38:53PM -0500, Steven Rostedt wrote:
-> Yes, rasdaemon uses libtraceevent (or a copy of it internally) that
-> reads the format file to find fields. You can safely add fields to the
-> middle of the event structure and the parsing will be just fine.
+On 2024-01-23, Junxiao Chang <junxiao.chang@intel.com> wrote:
+> Try to release nbcon only if current uart port is nbcon, as it does
+> in nbcon_acquire.
 
-Should we worry about tools who consume the event "blindly", without the
-lib?
+The release needs to undo what acquire did. Why should it have its own
+checks that would cause it to _not_ undo what acquire did?
 
-I guess no until we break some use case and then we will have to revert.
-At least this is what we've done in the past...
+Keep in mind that an nbcon console could be unregistered while another
+CPU is holding the nbcon lock. The port lock (and nbcon lock) are
+protecting access to the hardware. They are not related to console
+registration/unregistration.
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+John
 
