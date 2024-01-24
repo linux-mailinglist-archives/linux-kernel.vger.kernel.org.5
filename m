@@ -1,153 +1,157 @@
-Return-Path: <linux-kernel+bounces-37012-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41FFB83AA2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:45:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 728AE83AA32
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:45:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE4C21F227C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:45:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5AFF1C22A90
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:45:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E5A27A702;
-	Wed, 24 Jan 2024 12:44:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="cgf8QpQv"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87B6477655;
+	Wed, 24 Jan 2024 12:45:09 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F2167A703;
-	Wed, 24 Jan 2024 12:44:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4A747763A
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 12:45:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706100262; cv=none; b=SJKYen8t7HkBhtJaMbPcJggD1NvpBokOebVa5qSRDE3DQUeCshRCLQrmbLaS3I00RyH8f5veBveXXs/jrEtWJQErmYFfP6zxBspUNN+ttb7v9mqOewBWp08sojLulpmusVYHNIZI74L5tbJf4PZEdTmS9QvvqRMNO2f3Bwcj5mQ=
+	t=1706100309; cv=none; b=BFikDFFkhC0vc2KbpAaQBrOQvYQgaeLzy27FdfKlhI5DE1wbTILBuVwFoD8vbOqAKG4i2zn/So2MR4FeYFPFsL2egFBjYtAfgOli03QF7b7NHZVB+b85czTIIltUFFUZQTUbQwdVUEzYI+z4LDQrfOpU1hztELvAEX74mqSU86M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706100262; c=relaxed/simple;
-	bh=tnRe5Ei/YJTczxwZvDToOZWUhjsn9sVDHvqVg2zKHrA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=C3vOWKmeewoOkbSqw8B5B/fzKCZXgEfdGTowFD6yp0CR8nHF4RxPnhX1QZjy/VOP0NlBgyTkdiYRJnwqXYPG4ykD2adxKg6oqXli/ugbM8TiE4zEtEWc+GabtmSSgocO4N/JIEypvC5HQ+HKafd6jRrngcNjBcN9UsgPcQ8r2dI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=cgf8QpQv; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40OCYqcZ012776;
-	Wed, 24 Jan 2024 12:44:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=maWhpjGGQMcpu7vtMvFkjeOy5RBxMSnQ1uDy31yUj6Y=; b=cg
-	f8QpQvV8gnpxy7VshpA26KTuELDphwZmmr6oiZr+FS6+jksdvPIbmH43laC4mCZx
-	oo2ivb8cX/jZwzH7ED6wuuY51+tEXiWhXW2JT0JVuCms0c/SfwiJWLlQZjMPwR4u
-	Mwsv428nwMgBDKgQDz0Q6azY+qnwwLL++F5Acz85uHgyqqnSEVgMjZ1wWmMnwBmW
-	gv7nxIJROSoL7iZLPzG4kPYuWzO7a/KSLHIxzNPb3vD9TgQ7nwykTaMJJpXK0UT6
-	798wNRpLEcyMc/VlL+UQIHs4tsrGOJUCdEVXlZj15lawNkZKvQGeEN7qKz4NhsZg
-	qk+hjp/kq0++ksfDxo/g==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vtmgxhrbq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Jan 2024 12:44:17 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40OCiGPx011456
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Jan 2024 12:44:16 GMT
-Received: from [10.216.58.233] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 24 Jan
- 2024 04:44:09 -0800
-Message-ID: <2f369f2e-1bad-caf8-a4f6-0e7de588de81@quicinc.com>
-Date: Wed, 24 Jan 2024 18:14:05 +0530
+	s=arc-20240116; t=1706100309; c=relaxed/simple;
+	bh=XKi0zVwjjfVwdJlARkO2RrHn8fFmHl2ls0r3ZRqrlhY=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=Ldj8tJHskEm0iF0+UkWMWMreb1uHfi8ruAtKFpdl5w0ZoZNWxouIdz5chkuW1vHXJWzAzbOiNsEHJeJW11Yu+tCiUizNjG7145uYgKJx6DDKl+Go6n/SY9BCu8t5Y6Adsi/BsoLj0pboZwY5ndfTX/ZxFatJzsXzLGNNsIxaGNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TKkDC5GGhz1xmT3;
+	Wed, 24 Jan 2024 20:44:11 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id 42DB91A016E;
+	Wed, 24 Jan 2024 20:44:49 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 24 Jan 2024 20:44:48 +0800
+Subject: Re: [Linux Kernel Bug] memory leak in ubi_attach
+To: Chenyuan Yang <chenyuan0y@gmail.com>
+CC: <linux-mtd@lists.infradead.org>, <richard@nod.at>,
+	<miquel.raynal@bootlin.com>, <vigneshr@ti.com>,
+	<linux-kernel@vger.kernel.org>, <syzkaller@googlegroups.com>, Zijie Zhao
+	<zzjas98@gmail.com>
+References: <CALGdzuo8_EXr4aUAw6X9S+yzMPi25Y82netPLWsd+3n-Ov9Pnw@mail.gmail.com>
+ <10779b09-3413-6374-b4a1-1efd8821c5f2@huawei.com>
+ <CALGdzuryBbCqGAhox9ZWaQHD5dSQNApfGmCP+rYZ7O4MCRH+rw@mail.gmail.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <7138a98c-1562-3059-07b6-4d918bec9d1a@huawei.com>
+Date: Wed, 24 Jan 2024 20:44:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH 1/2] dt-bindings: hwinfo: Introduce board-id
-Content-Language: en-US
-To: Trilok Soni <quic_tsoni@quicinc.com>,
-        Elliot Berman
-	<quic_eberman@quicinc.com>
-CC: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <agross@kernel.org>, <konrad.dybcio@linaro.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>,
-        Conor Dooley
-	<conor@kernel.org>, <andersson@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski@linaro.org>
-References: <1705749649-4708-1-git-send-email-quic_amrianan@quicinc.com>
- <1705749649-4708-2-git-send-email-quic_amrianan@quicinc.com>
- <6e40dd60-884f-be23-0052-d14f7194f844@quicinc.com>
- <f21bc259-45fa-d14b-a556-625b813287f4@quicinc.com>
- <499320f4-f6b1-4582-9512-89ab505305b6@linaro.org>
- <20240123-sterilize-flap-8971aa3bad4b@spud>
- <1941558d-d1e0-43b7-9208-65b9ba191bc2@quicinc.com>
- <fd2c8c1b-02f3-2750-3449-f93fc119fda2@quicinc.com>
-From: Amrit Anand <quic_amrianan@quicinc.com>
-In-Reply-To: <fd2c8c1b-02f3-2750-3449-f93fc119fda2@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: HsnQFIIeRa7qEX2ChADq64gB-W4kP5Dt
-X-Proofpoint-GUID: HsnQFIIeRa7qEX2ChADq64gB-W4kP5Dt
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-24_06,2024-01-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1011
- malwarescore=0 bulkscore=0 phishscore=0 mlxlogscore=999 suspectscore=0
- priorityscore=1501 lowpriorityscore=0 impostorscore=0 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2401240092
+In-Reply-To: <CALGdzuryBbCqGAhox9ZWaQHD5dSQNApfGmCP+rYZ7O4MCRH+rw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
 
+在 2024/1/23 12:57, Chenyuan Yang 写道:
+> Hi Zhihao,
+> 
+> Thanks for your prompt reply! Here are the files related to this memory leak.
+> 
+> Best,
+> Chenyuan
+> 
 
-On 1/24/2024 1:35 AM, Trilok Soni wrote:
-> On 1/23/2024 10:51 AM, Elliot Berman wrote:
+Can you provide a kernel config and the cmdline? I can't reproduce the 
+problem by both C program and syz program. But after analyzing the log:
+
+     [<ffffffff8157274e>] __kmalloc_node_track_caller+0x4e/0x120 
+mm/slab_common.c:1027
+     [<ffffffff81561e1f>] kstrdup+0x3f/0x70 mm/util.c:62
+     [<ffffffff81561ea7>] kstrdup_const+0x57/0x80 mm/util.c:85
+     [<ffffffff824d4596>] kvasprintf_const+0xc6/0x110 lib/kasprintf.c:48
+     [<ffffffff84aaeadf>] kobject_set_name_vargs+0x3f/0xe0 lib/kobject.c:272
+     [<ffffffff84aaef41>] kobject_add_varg lib/kobject.c:366 [inline]
+     [<ffffffff84aaef41>] kobject_init_and_add+0x71/0xe0 lib/kobject.c:455
+     [<ffffffff8162085a>] sysfs_slab_add+0x10a/0x210 mm/slub.c:6168
+     [<ffffffff81628474>] __kmem_cache_create+0x1b4/0x5a0 mm/slub.c:5120
+     [<ffffffff81571dca>] create_cache mm/slab_common.c:235 [inline]
+     [<ffffffff81571dca>] kmem_cache_create_usercopy+0x16a/0x2e0 
+mm/slab_common.c:340
+     [<ffffffff81571f51>] kmem_cache_create+0x11/0x20 mm/slab_common.c:395
+     [<ffffffff82e40fc5>] alloc_ai drivers/mtd/ubi/attach.c:1464 [inline]
+     [<ffffffff82e40fc5>] ubi_attach+0xb5/0x1e00 
+drivers/mtd/ubi/attach.c:1560
+     [<ffffffff82e302f8>] ubi_attach_mtd_dev+0x878/0x1130 
+drivers/mtd/ubi/build.c:1000
+     [<ffffffff82e3176d>] ctrl_cdev_ioctl+0x1dd/0x250 
+drivers/mtd/ubi/cdev.c:1043
+     [<ffffffff816b0e23>] vfs_ioctl fs/ioctl.c:51 [inline]
+     [<ffffffff816b0e23>] __do_sys_ioctl fs/ioctl.c:871 [inline]
+
+The leaked memory is located in 'kobj->name', the kobj comes from 
+kmem_cache and it is used to create entry under 
+sysfs('/sys/kernel/slab'). If kmem_cache_destroy() is missed to be 
+called in someone exiting path in UBI, there will be more memleak 
+messages reported (eg. ai->aeb_slab_cache). So I guess the potentional 
+problem has nothing to do with UBI.
+After looking through the implementation of create_cache, the life time 
+of 'kobj->name' is along with kobj, it can be always released even in 
+error handling paths. To figure out what happens I need to reproduce it 
+on my local machine.
+
+> On Mon, Jan 22, 2024 at 10:55 PM Zhihao Cheng <chengzhihao1@huawei.com> wrote:
 >>
->> On 1/23/2024 9:18 AM, Conor Dooley wrote:
->>> On Tue, Jan 23, 2024 at 12:50:07PM +0100, Krzysztof Kozlowski wrote:
->>>> On 22/01/2024 11:10, Amrit Anand wrote:
->>>>> On 1/21/2024 12:40 AM, Trilok Soni wrote:
->>>>>> On 1/20/2024 3:20 AM, Amrit Anand wrote:
->>>>>>> From: Elliot Berman <quic_eberman@quicinc.com>
->>>>>>>
->>>>>>> Device manufacturers frequently ship multiple boards or SKUs under a
->>>>>>> single software package. These software packages will ship multiple
->>>>>>> devicetree blobs and require some mechanism to pick the correct DTB for
->>>>>>> the board the software package was deployed. Introduce a common
->>>>>>> definition for adding board identifiers to device trees. board-id
->>>>>>> provides a mechanism for bootloaders to select the appropriate DTB which
->>>>>>> is vendor/OEM-agnostic.
->>>>>> Please extend CC list to more architectures? linux-arm-kernel, risc-v etc; since
->>>>>> the proposal below is not specific to ARM but any architecture is using the
->>>>>> devicetree.
->>>>> Wouldn't devicetree@vger.kernel.org will have concern folks from all the
->>>>> architectures?
->>>>> Please correct me.
->>>> No.
->>> The chromium guys should get a CC on future versions of this stuff,
->>> since they like doing wacky things with compatible strings in their
->>> bootloader and this problem is one they also face. Doug Anderson and the
->>> mediatek chromebook folks would be a good start.
+>> 在 2024/1/23 11:53, Chenyuan Yang 写道:
+>>> Dear Linux Kernel Developers for UBI,
 >>>
->> Please CC Peter Griffin from Linaro as he helped restart this
->> discussion at Plumbers.
+>>> We encountered "memory leak in ubi_attach" when testing UBI with
+>>> Syzkaller and our generated specifications.
+>>>
+>>> syz repro: https://drive.google.com/file/d/17FoGw6akfufz05U-oRBP2wXmOiFF1VUq/view?usp=drive_link
+>>> C reproducer: https://drive.google.com/file/d/1ayd3lmHPvqNoI01pQEdU832EktpTUnZ_/view?usp=drive_link
+>>> report: https://drive.google.com/file/d/1hC2arY3FbQt-6L5rbDfY-DQ2oH82IIGq/view?usp=drive_link
+>>> stats: https://drive.google.com/file/d/1REig9fV0H1fYPWaiicc-JVLlCpo7TTw4/view?usp=drive_link
 >>
->> Peter Griffin <peter.griffin@linaro.org>
+>> I can't open above links in company, may you post these files in attachment?
 >>
->> Also, for the oneplus boards:
->> Caleb Connolly <caleb.connolly@linaro.org>
-> Thank you everyone. Amrit - please take care of above comments
-> when you post next revision and as suggested please add other
-> architecture mailing lists using the devicetree. Thank you.
-Sure, will keep this in mind when sending next version. Thanks for 
-pointing out.
+>>>
+>>> This memory leak is triggered by `ioctl$UBI_IOCATT`, where
+>>> `ubi_attach_info` invokes `kmem_cache_create`
+>>> (https://elixir.bootlin.com/linux/v6.7/source/drivers/mtd/ubi/attach.c#L1464).
+>>> It seems that the memory leak occurs when the slab cache is
+>>> successfully created. I apologize for not being able to conduct a
+>>> deeper analysis of the root cause, as my expertise in UBI drivers is
+>>> limited.
+>>>
+>>> If you have any questions or require more information, please feel
+>>> free to contact us.
+>>>
+>>> Reported-by: Chenyuan Yang <chenyuan0y@gmail.com>
+>>>
+>>> Best,
+>>> Chenyuan
+>>>
+>>>
+>>> ______________________________________________________
+>>> Linux MTD discussion mailing list
+>>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>>
+>>
+>>
+>> ______________________________________________________
+>> Linux MTD discussion mailing list
+>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
-Thanks,
-Amrit.
 
