@@ -1,242 +1,168 @@
-Return-Path: <linux-kernel+bounces-37478-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37479-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B52983B0A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:02:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0C5483B0A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:02:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BD7A283175
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:02:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20E491C220B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:02:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4E1912A15F;
-	Wed, 24 Jan 2024 18:01:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BC0F12A143;
+	Wed, 24 Jan 2024 18:02:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b="gtUgpZij"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="wnytdPGk"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2062.outbound.protection.outlook.com [40.107.94.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D3247E568;
-	Wed, 24 Jan 2024 18:01:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.40
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDC357A73E;
+	Wed, 24 Jan 2024 18:02:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.62
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706119316; cv=fail; b=TBwA7CDt65pL2/k4TpeMaHL6JkzI/6ZTOv/eNXK9EgjjZAJyifPuuRuZO/LzJPqf5ueA5HqUQFMcQWaFraanRiZXTJgy5+SbVSZTp7erWDj+cTps1YGSMGqc5DxmB2nG+pwGxK12C3QFNOKz3cKd82b+nD02nQKMvjuq42bljlM=
+	t=1706119335; cv=fail; b=WOt7LcwPjmmB2fr8u46MXGG4FDrzff1IR2STNZNG0WuUVPE5QnjmUX1+oY5kKp9tfPzUSPGMuOYVfRlFL3vJg1frYXwCrKUOXG8bb0IhZoE8BWnorR6cCOESHWwqNLHpRWSv2OpQwsMIHrIIzw+RbfAv4hBzKq7E5z5OGChqZE0=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706119316; c=relaxed/simple;
-	bh=RgLHY1ZHWF1Eese526LFtmvLkQEA5RHBGJ85INHOv78=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=a6Ifk9OxYAqcBKB3FQko6aBN+yvZhdJLmuvvOg8tQdr2t6Bfas3U5K9sNmeaNmdYeKEsFmYyJsCi8SOLsnSVFolywAXKFhdycKjRvoM1jjTdU0fU7cs06mRNtKvgfKZN2m0NxbhgI88+V/nN3YoVwlINMRKL0BjMpGl57Msqp6M=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com; spf=pass smtp.mailfrom=memverge.com; dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b=gtUgpZij; arc=fail smtp.client-ip=40.107.236.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=memverge.com
+	s=arc-20240116; t=1706119335; c=relaxed/simple;
+	bh=Jb0m4Eovt0lCtDOnJUmbTVQ95GM1fhfaI4A/7B0DcnM=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DoptPy9Uk5U/7b9CS3fMOgDhw+q9h4HJNW//EXE7OrS2t9W9IrldyQdJ5tGELNLIBy3cuLWNr4dYsGdOFtBd705fy871JKuGm47DaVrXWHip02g1DkSXRqQc3Y4cv+mkJ3dJf8t8D/ZJrjSjndKyViChGHS1Nhiz1o+e9qfZIA8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=wnytdPGk; arc=fail smtp.client-ip=40.107.94.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gp5nqHmFdcyzNxvE2Xh2q+a1JbD8x8mORPpwYm9hTE6g0Usw5wAFFdKDlHcL+1HMbFM7w1HCKiUUW9RITTwJKZHmcuIc3P9CiD9R8f1GwvJ/2vvM7d/JpBYFz5cK+A7J+3tE6Zo+JvWpm0yiAh+HvTQX5bF11kydCm/6mNHViM7kB09WKmaFY5/Ax//KT4v38qGNC1UZc2Auc6WpwRM1eHRKUUY23Qt3huxtc6ylqQ3dguFM6UzNU4zerPLs1LRdMAvMRx1esi2WeGP/UhEKcG6VoVZrYe08l0+ZFKhSMYMDLeVc+HECp0UHBOU1mxVIUCRc/yYjwaw1HAA2XmQ0ag==
+ b=aWcGLzHpmMVDYtRCHd1N5ctX+dYaa2SrnC9PsSQd9btK7M0CPbmYOdxgGwoGeV0w9VXI0LuTz8kw6R17o//gCWnAQsqyfDe/DSy/CSb8pmYphl+Ne4zzVkas1VmEL6cd08/fI3yexfHRAcF5BNISm1QyKXpv0YT0Uj3sLIrvYaYYS9hq/6L9G/LKOf1ogclrQeiqOCisRHc+WbtAuu0sHzrTIPPAjQB49yqk5G1+7E1y3NVlHHkcLkslicHit45wjwHpli41uRRLq5t66cz+uVPFVd0atelIeNFa4CS4kuUX2BbgYUDD8kgc7SCgiTIomThoLoFuE6ls9SVRYuR9+w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VvLwW8c9dkhEDqP73nc9wJ9FJvDxWXHI73wkPHjbwbE=;
- b=YXbVshTTCmCk8Unj4Z8ArDKLv5sfPPAkOa+WJMkwzldWyBygRsezwC5yTcIlgMvxvLz/dZ0DrneMLiGmDFeSOgdypjnm/54JbiepF5QcOn/7RNhugzQfkByVNH22XhSYbTFy2vn1lrMzzzi6C2oA1eIgov5cJwnsZF4KjuOG62QkYIZPahV6/re8kr0Npk9N14ALfWQWl2HpgUynwQSiMDrgJxrv9BltWV3BbAplK+2lhv+YM/HPs76t7bLKkTEy5243b4QTbIwj6K6r+AnqyVQQQvAe4AsXMwifM5qF5cBeCQIhzZe7x8ZxL5yjyrvO8CmOi+f0GLz1Tq1oQXmlAg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
- dkim=pass header.d=memverge.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
- s=selector2;
+ bh=e5olHOcLBAPEOg21Cz46OrlKpmKwzO/UrMKkeTSSSQ8=;
+ b=SKEFvTWuSvLmJnqnrHEfWVudjhk+cmX0isL10wMJdVLXHPByZFPZBDrylZRpQQcC2jfLXWEjNu0zLhtH7KQD11fGY6haFMxPJNe7b5ND13qaYG+RvNSBTiCmMWqIrrbdW7AEzPUfsMiSZNv2GVH/FaYpsX/DLqHee298znmDWXyq2UvAJUMcq/Rrf+kJ7D8DQSMdzFPnNYqBPzb80/wDzyq1mewKlO/922EmzGRzumdEWIy+olMZuRlaqwtgTkeNzJK/4HUNIL7juFHFBjE9TIDAB88NsWPy9BmpHgiLyUBPng/HkjKPUfVcbihKvWhv1KNpz5ASbOFzmCZWLkvB/Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=google.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VvLwW8c9dkhEDqP73nc9wJ9FJvDxWXHI73wkPHjbwbE=;
- b=gtUgpZijkZf2zQsZm8PSnLQ5aIImD4VIqo4xHAh4TwR3RSGvyV22TluFqftdGkfYjViK2pE9VYFXGpwVRRp1LPqqsT73qM18wGyK35vXltPlEroGtosZj2qOW2SwG6LAhfHdsAXPX/COMxPunxNlFr/TE+9JPUv5Rx8W4An/u+8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=memverge.com;
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
- by CY5PR17MB6119.namprd17.prod.outlook.com (2603:10b6:930:34::22) with
+ bh=e5olHOcLBAPEOg21Cz46OrlKpmKwzO/UrMKkeTSSSQ8=;
+ b=wnytdPGkMC1UD3j3MrtQKmRGKv9t5eoI6gx9ndap6KQ4Q1TAASCUPf8fL892DF0+Kbzf9n4gNeXmezEQ2O0br2bLw1tW/xO1WY23RWchfS5R+mcoH9qFm5TqDZ9XyjEgLKaySVofmzrLneWs5/vx8LaeSRVjujyoBI6JakNs5TE=
+Received: from SA1PR04CA0007.namprd04.prod.outlook.com (2603:10b6:806:2ce::12)
+ by DS0PR12MB8270.namprd12.prod.outlook.com (2603:10b6:8:fe::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.37; Wed, 24 Jan
- 2024 18:01:46 +0000
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::7a04:dc86:2799:2f15]) by SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::7a04:dc86:2799:2f15%5]) with mapi id 15.20.7228.023; Wed, 24 Jan 2024
- 18:01:46 +0000
-Date: Wed, 24 Jan 2024 13:01:37 -0500
-From: Gregory Price <gregory.price@memverge.com>
-To: "Huang, Ying" <ying.huang@intel.com>
-Cc: Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-	corbet@lwn.net, akpm@linux-foundation.org, honggyu.kim@sk.com,
-	rakie.kim@sk.com, hyeongtak.ji@sk.com, mhocko@kernel.org,
-	vtavarespetr@micron.com, jgroves@micron.com,
-	ravis.opensrc@micron.com, sthanneeru@micron.com,
-	emirakhur@micron.com, Hasan.Maruf@amd.com, seungjun.ha@samsung.com,
-	hannes@cmpxchg.org, dan.j.williams@intel.com,
-	Srinivasulu Thanneeru <sthanneeru.opensrc@micron.com>
-Subject: Re: [PATCH v2 3/3] mm/mempolicy: introduce MPOL_WEIGHTED_INTERLEAVE
- for weighted interleaving
-Message-ID: <ZbFQgSFfqDF+UvSX@memverge.com>
-References: <20240119175730.15484-1-gregory.price@memverge.com>
- <20240119175730.15484-4-gregory.price@memverge.com>
- <87jzo0vjkk.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <Za9GiqsZtcfKXc5m@memverge.com>
- <Za9LnN59SBWwdFdW@memverge.com>
- <87a5owv454.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <ZbAvR+U+tyLvsh8R@memverge.com>
- <87jznzts6f.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87jznzts6f.fsf@yhuang6-desk2.ccr.corp.intel.com>
-X-ClientProxiedBy: SJ0PR13CA0193.namprd13.prod.outlook.com
- (2603:10b6:a03:2c3::18) To SJ0PR17MB5512.namprd17.prod.outlook.com
- (2603:10b6:a03:394::19)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.24; Wed, 24 Jan
+ 2024 18:02:11 +0000
+Received: from SN1PEPF00026369.namprd02.prod.outlook.com
+ (2603:10b6:806:2ce:cafe::d) by SA1PR04CA0007.outlook.office365.com
+ (2603:10b6:806:2ce::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22 via Frontend
+ Transport; Wed, 24 Jan 2024 18:02:11 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SN1PEPF00026369.mail.protection.outlook.com (10.167.241.134) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7202.16 via Frontend Transport; Wed, 24 Jan 2024 18:02:11 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 24 Jan
+ 2024 12:02:10 -0600
+Date: Wed, 24 Jan 2024 12:01:50 -0600
+From: Michael Roth <michael.roth@amd.com>
+To: Sean Christopherson <seanjc@google.com>
+CC: <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Jason Gunthorpe
+	<jgg@nvidia.com>, Yan Zhao <yan.y.zhao@intel.com>, David Matlack
+	<dmatlack@google.com>, <pbonzini@redhat.com>, <isaku.yamahata@intel.com>
+Subject: Re: [ANNOUNCE] PUCK Agenda - 2024.01.17 - TDP MMU for IOMMU
+Message-ID: <20240124180150.blms3z7fqseioult@amd.com>
+References: <20240117010644.1534332-1-seanjc@google.com>
+ <20240122193605.7riyd7q5rs2i4xez@amd.com>
+ <ZbFJOyGb21UX6qXn@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZbFJOyGb21UX6qXn@google.com>
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|CY5PR17MB6119:EE_
-X-MS-Office365-Filtering-Correlation-Id: ed3e36c8-6430-4203-b108-08dc1d068755
+X-MS-TrafficTypeDiagnostic: SN1PEPF00026369:EE_|DS0PR12MB8270:EE_
+X-MS-Office365-Filtering-Correlation-Id: d3ae71ae-a188-41c9-bf2f-08dc1d0696b7
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	sTFxdOJtyWUr256owJj57cdkliOU0rLdr3kPojwEFFTYirfd3sePlNrbZJeqhk6ddY6junMQ9OMi5rCYnV+PpGWi/d+ApdjLQ3jFnJySU40+idxQuOp62W0QZjtlpfWNJQqlsNAhUq/tc9GUClmHKI7tV17dmhzTbRAdm++2lFnYqX3Y3UxPvx6PmpoS/958rQLOsSiYsRikDbSiK2FnDDvYRwpTk0vwsGXbtq9NxMqXPtjAV43xEgzwz/CY2BioOrgtSNVMFX4qZWu4Rk5KhDsZ3wXPagyZSuq0x+MsBLp5/D3lHrZRUet80oXA2h6im5XEkTtm9wsrRfbsSqRddp/uzdljbzTwkZ/VVnk13eQRqL5jFKaC5eiAn+a0v3rezbDgFkaEqYoHoXnC3habo9Ug7HpWrq2qs3qqo6u1AwqAjRcDqUot7JMJd6Rl7z56XuiIRzZj8aelQkYUKIHwnL2uXgzSLCspE7SJWfZeZ+nUxhFSrU4Ub8EhCwvN1gcoTcuMSUbTTMPPbHXAeFF11bTfzMoLn5lKENZdyjqiTN0wMgVgZyf4gsBsPbpj46dJuhMkBsxEIviyyktw+L7pno9gvtqQn5uF3IszplVVJc+nfZ4901a2U13xOh5CcV1nxSRPQRjDGioww27vcXh4yQ==
+	d20HQg9LAUpVwUfrty8RU0DMXR+C1pLbN05QqJ+1flCAl9dy/0pWxy5B5mHNewwa4p9XA6cFMLmrsxNeVomCtz8MlOEqBVOkmGVy/7Vx4MPUohokv0KULdNYnI/wxB3CWIQkbKczwFRN5hroPWol5aDj+FTpIADh3+Z/dnxpB+h9lgLTl2w8adyjW3zdr0uSpoQ9ASx3RyQA3VOcvJNLxzh5mg61EElTrAZyvCiijiCfkPqcxn5iBj2JEXlcykfHlnBfg2IQIra1kOB6bh9jsqLS8dPE/dZaK0SMykoVpn5pl2wqB5YweLZLfthYNNjQJbvkM5R1jz0S3c7Sm2dspoYJlCrv1fRPNk+y4MZkJMZ347jYN8K+8aUJMlyHaxwmA5qbhOBP6p+mRHZKBbDP6ZXLJHrTG907DZ57f67vSo6ULb4SisINj2d4id2rRGh/w26yp65hM4pyJGKk8e04QvC7jgNlW1M6kY8YeOpS0q3FFpqEMslz7AaxwgGTVjHbuCKNF4wcsBhIu6h/6x12cEqJT8ijw668lKkvYdkKc20ZOUho2HXXFwRPy3jb2MKak97Fha56X+bR3yg58W1DSr8J29BwGyviBmSrtt2A4ladPMHZN/PrSCHsrAe3t3Tb4mXnkzEzRTXVBk40iNf/4Ll9rD1OOQAqBEn+9uylBDBNUJ28okul+T1IUzH5Bk6JM7cHOOmKSaQPxzI8RufnjGDAJPBM9mXrz9JxAHp6c9sBSvTvMWvelpQq+qVaqnFC0IwkOckMx1TBT7KD64dfYU0duvun+22C6/PG0qpbleSDJZ1xlCpVJ74aLT6d4YVuxxTHHoA+z7JEi8wadVYzTw==
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(396003)(376002)(39850400004)(346002)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(66946007)(6486002)(478600001)(38100700002)(26005)(83380400001)(6512007)(7416002)(6506007)(6666004)(6916009)(316002)(54906003)(5660300002)(44832011)(2906002)(8936002)(4326008)(8676002)(36756003)(86362001)(66556008)(66476007)(2616005)(41300700001)(16393002)(67856001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?xXe61j14uOW/NTzODJ7KockrPDERel3UGo5QQWJUSNdyRVyqKIGheofBCHXs?=
- =?us-ascii?Q?TeASf7JqGcuTo9lg4kljB/xPpknyQTwk+bhhp09ghZ/1++1Ke1HUNFGFdcsw?=
- =?us-ascii?Q?fZz5VtdTQ7vvlp3IX5/hzY2IDwMH0koIidQQNFcwlvKcY1YzECJ7dbHVkG83?=
- =?us-ascii?Q?WvG2umVbSqqE37v2pcB7oux6uYFIVq5aQt0Blcg9O+ss+9Y+qcVLiakl4vCQ?=
- =?us-ascii?Q?RFrgT5jVakHtC2cRxKz45jRJ0/ncWNRu51Lyn2pSh/SFBz5nit0Otq0hwQ+6?=
- =?us-ascii?Q?HzgKSAPbiI76ajMi4jisTfsM6qKPVUF1JkCWQg9Q5TUH1qN0vrxhQbxMgmTb?=
- =?us-ascii?Q?6LbB8jhNE+smx2sTt8VL651Qvlsz5jDWf/dQ5yFF+HnkN9QC1HCpYF5OPaFG?=
- =?us-ascii?Q?Np99SaaFt0+23ENQ94Og54a52tTz0SCUiwQ//dOsePf8BUbKmqNpk82GzGqM?=
- =?us-ascii?Q?YzSbdVvkOQGj1hVpAuAziIKGlCb7+RirJRoywCebzB1TFOk+2v+0RTh3DCJV?=
- =?us-ascii?Q?FfCQK3Gawd3Q5pdp6nxLaNMX6OXaS6STqlhE58baBUtij85F8lW1WWSn1hs5?=
- =?us-ascii?Q?h7o9Jx01HELG05YP5upAHHLayre0pyj0SdsD0PPBTsn+IS+7Q6xJzaz5RKoE?=
- =?us-ascii?Q?xoL2T6U6SJHZjBNHhnwEB3l3q/IzEQE/oIvyNrTvSXNwjXyQijbR/obVuJwZ?=
- =?us-ascii?Q?vYAXAOSYcVApPx9MfRRgpH8DUeYGNHL0XjToE2TdWDBJ31toHETjut/1jgc6?=
- =?us-ascii?Q?VWdanCsJe9aCFRwV7WkMyCrXM4E8BBDvNufY6Q/64mhPW10RRHUmZPIZneI4?=
- =?us-ascii?Q?cUTa15MHb0KwWojNn2R9QO2JX0wSTawBHpIViTHfUaTzy50ZmaMAUUkJno1j?=
- =?us-ascii?Q?+NGNTkH5KAXgklCA6Yr8Y1JoBs61/WqGF6BRTwBWVOnqL/4HrJPumQxLwbbH?=
- =?us-ascii?Q?a8J71IEAWuhrMCJ6cyaiTZ3u72FfdBNmQn3hSSey6Smb2BlYLwn0R1tT+Y9t?=
- =?us-ascii?Q?fCrEw0tfLG2+DPJRJRfyOg388oN97tYK7giCs8DMO6CP+GkjW60yZ16AAs/e?=
- =?us-ascii?Q?8c0eaC0YP0TcxlHKj4FhsaNQjcTVFnrUxLt000gBlAsmu2I6R6+AZ3iX+XQU?=
- =?us-ascii?Q?iT+c6HoxQPF7hKuqUeWpi4MPXKWYY+L8dRECp0fLUlyP+EvZUopQ09i0rb1N?=
- =?us-ascii?Q?20vgYuVHKYgHRBFScinj+uML+VjGVqOb3iDnKvY6bbxrUR4oihI6VAIY2Gxy?=
- =?us-ascii?Q?NDO3IW+hdNDPxf278pmP7zjHEFY0GJM4b4no5RgNkXJtJ4IhdEJ97n3MrRI0?=
- =?us-ascii?Q?nN4vbQxQ4UEvj0hV2V+cWOQN/pCno4VDPzcPO4sFvXCPPNmn1GZ1BVytXld0?=
- =?us-ascii?Q?Yj3yI6r8Jm5RrmJPuhGTHRmljTk7qH+oAm+xBAgg8sy1G8zjH3HDsj7mCl4G?=
- =?us-ascii?Q?z4Yo6rvvyKd0CqC41F3KM+1H3TF+XxKxPS7xbqzhUS6NE4j3nH6x8E2r55Ey?=
- =?us-ascii?Q?T3eNFI0u/5occ6tBCzeWfedIWcBlruib54yNCd31ReDOgRUN/Qlw27plfKVH?=
- =?us-ascii?Q?510smHmlmuHU9AXsAl3m+kJY3Y2nfax7bupTSsuJTZ0dE8nriUwUQREEizGo?=
- =?us-ascii?Q?Pg=3D=3D?=
-X-OriginatorOrg: memverge.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed3e36c8-6430-4203-b108-08dc1d068755
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jan 2024 18:01:45.9349
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(376002)(136003)(39860400002)(230922051799003)(82310400011)(186009)(64100799003)(1800799012)(451199024)(36840700001)(46966006)(40470700004)(86362001)(316002)(36860700001)(70586007)(54906003)(966005)(70206006)(6916009)(478600001)(82740400003)(81166007)(356005)(2616005)(6666004)(16526019)(1076003)(26005)(4326008)(8676002)(44832011)(83380400001)(426003)(336012)(8936002)(66574015)(40460700003)(40480700001)(36756003)(5660300002)(2906002)(47076005)(41300700001)(5930299018)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jan 2024 18:02:11.4620
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EjIGpS17U/R3JFY+Q/NV7f0Y2kx0Se0gcbdOObpPXwUs9v93BljS49t952oxohs6rQpp4UWtYBSFO/OR3RNEoE+5fon1IWpGDkpC02F1IlU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR17MB6119
+X-MS-Exchange-CrossTenant-Network-Message-Id: d3ae71ae-a188-41c9-bf2f-08dc1d0696b7
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SN1PEPF00026369.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8270
 
-On Wed, Jan 24, 2024 at 09:51:20AM +0800, Huang, Ying wrote:
-> Gregory Price <gregory.price@memverge.com> writes:
+On Wed, Jan 24, 2024 at 09:30:35AM -0800, Sean Christopherson wrote:
+> On Mon, Jan 22, 2024, Michael Roth wrote:
+> > On Tue, Jan 16, 2024 at 05:06:44PM -0800, Sean Christopherson wrote:
+> > > Tomorrow's PUCK topic is utilizing KVM's TDP MMU for IOMMU page tables.
+> > > 
+> > > FYI, I am currently without my normal internet (hooray tethering), and we're
+> > > supposed to get a healthy dose of freezing rain tonight, i.e. I might lose power
+> > > too.  I expect to be able to join even if that happens, but I apologize in
+> > > advance if I end up being a no-show.
+> > > 
+> > > https://lore.kernel.org/all/20231202091211.13376-1-yan.y.zhao@intel.com
+> > > 
+> > > Time:     6am PDT
+> > > Video:    https://meet.google.com/vdb-aeqo-knk
+> > > Phone:    https://tel.meet/vdb-aeqo-knk?pin=3003112178656
+> > > 
+> > > Calendar: https://calendar.google.com/calendar/u/0?cid=Y182MWE1YjFmNjQ0NzM5YmY1YmVkN2U1ZWE1ZmMzNjY5Y2UzMmEyNTQ0YzVkYjFjN2M4OTE3MDJjYTUwOTBjN2Q1QGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20
+> > > Drive:    https://drive.google.com/drive/folders/1aTqCrvTsQI9T4qLhhLs_l986SngGlhPH?resourcekey=0-FDy0ykM3RerZedI8R-zj4A&usp=drive_link
+> > > 
+> > > Future Schedule:
+> > > January 24th - Memtypes for non-coherent DMA
+> > > January 31st - Available!
+> > 
+> > Hi Sean,
+> > 
+> > I'd like to propose the following topic for the next available slot:
+> > 
+> >   "Finalizing internal guest_memfd APIs needed for SNP (TDX?) upstreaming"
+> > 
+> > There's 2 existing interfaces, gmem_prepare, gmem_invalidate, that are
+> > needed by the current SNP patches, and there's some additional background
+> > about the design decisions here:
+> > 
+> >   https://lore.kernel.org/kvm/20231016115028.996656-1-michael.roth@amd.com/
+> > 
+> > There's also another gmem interface that you recently proposed for handling
+> > setting up the initial launch image of SNP guests here that seems like it
+> > would have a lot of potential overlap with how gmem_prepare is implemented:
+> > 
+> >   https://lore.kernel.org/lkml/ZZ67oJwzAsSvui5U@google.com/
+> > 
+> > I'd like to try to get some clarity on what these should look like in order
+> > to be considered acceptable for upstreaming of SNP, and potentially any
+> > considerations that need to be taken into account for other users like
+> > TDX/pKVM/etc.
 > 
-> +	if (new && (new->mode == MPOL_INTERLEAVE ||
-> +		    new->mode == MPOL_WEIGHTED_INTERLEAVE))
->  		current->il_prev = MAX_NUMNODES-1;
->  	task_unlock(current);
->  	mpol_put(old);
-> 
-> I don't think we need to change this.
->
+> I penciled this in for the 31st, let me know if that works for you.
 
-Ah you're right it's set to MAX_NUMNODES-1 here, but NUMA_NO_NODE can be
-passed in as an argument to alloc_pages_bulk_array_mempolicy, like here:
+That would be perfect. Thanks!
 
-vm_area_alloc_pages()
-	if (IS_ENABLED(CONFIG_NUMA) && nid == NUMA_NO_NODE)
-		nr = alloc_pages_bulk_array_mempolicy(bulk_gfp,
-			nr_pages_request,
-			pages + nr_allocated);
-
-> > (cur_weight = 0) can happen in two scenarios:
-> >   - initial setting of mempolicy (NUMA_NO_NODE w/ cur_weight=0)
-> >   - weighted_interleave_nodes decrements it down to 0
-> >
-> > Now that i'm looking at it - the second condition should not exist, and
-> > we can eliminate it. The logic in weighted_interleave_nodes is actually
-> > annoyingly unclear at the moment, so I'm going to re-factor it a bit to
-> > be more explicit.
-> 
-> I am OK with either way.  Just a reminder, the first condition may be
-> true in alloc_pages_bulk_array_weighted_interleave() and perhaps some
-> other places.
-> 
-
-Yeah, the bulk allocator handles it correctly, it's just a matter of
-clarity for weighted_interleave_nodes.
-
-
-
-What isn't necessarily handled correctly is the rebind code. Rebind due
-to a cgroup/mems_allowed change can cause a stale weight to be carried.
-
-Basically cur_weight is not cleared, but the node it applied to may no
-longer be the next node when next_node_in() is called.
-
-The race condition is 1) exceedingly rare, and 2) not necessarily harmful,
-just inaccurate. The worst case scenario is that a node receives up to 255
-additional allocations once after a rebind (but more likely 10-20).
-
-I was considering forcing the interleave forward like this:
-
-@@ -356,6 +361,10 @@ static void mpol_rebind_nodemask(struct mempolicy *pol, const nodemask_t *nodes)
-                tmp = *nodes;
-
-        pol->nodes = tmp;
-+
-+       /* Weighted interleave policies are forced forward to the next node */
-+       if (pol->mode & MPOL_WEIGHTED_INTERLEAVE)
-+               pol->wil.cur_weight = 0;
- }
-
-
-But this creates 2 race conditions when we read cur_weight and nodemask
-in the allocator path.
-
-Example 1:
-1) bulk allocator READ_ONCE(mask), READ_ONCE(cur_weight)
-2) rebind changes nodemask and { cur_weight = 0; }
-3) bulk allocator sets pol->wil.cur_weight
-
-In this scenario, resume_weight is stale coming out of bulk allocations
-if the resume_node has been removed from the node mask.
-
-Example 2:
-1) rebind changes nodemask
-2) bulk allocator READ_ONCE(mask), READ_ONCE(cur_weight)
-3) rebind sets { cur_weight = 0; }
-
-In this scenario, cur_weight is stale going into bulk allocations.
-
-Neither of these can force a violation of mems_allowed, just a
-mis-application of a weight.
-
-
-I'll need to think on this a bit.  We can either leave this as-is,
-meaning the first allocation after a rebind may apply the wrong weight
-to a node, or we can try to track the current-interleave-node and
-validate next_node_in(mask) == current-interleave-node before leaving
-the allocator path (this may also be just as racey).
-
-
-turns out concurrent counting is still hard :]
-
-~Gregory
+-Mike
 
