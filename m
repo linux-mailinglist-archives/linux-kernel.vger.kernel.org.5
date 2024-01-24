@@ -1,204 +1,191 @@
-Return-Path: <linux-kernel+bounces-36860-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36863-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F9AC83A7C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:28:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D9D683A7D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:29:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E500F28F5FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:28:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2E4F1C22EF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:29:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 819AB482D5;
-	Wed, 24 Jan 2024 11:27:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16BE61B592;
+	Wed, 24 Jan 2024 11:29:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hFTewJR7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="eN88id3m";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="gWE91RCL"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A1613D54A;
-	Wed, 24 Jan 2024 11:27:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706095637; cv=none; b=DObVoqnkuifpc6FDYFM7D9t2daKbmlnnxYpRvZ7RMlxLIjvvwS33SyROAq7DryXWNK1nR9ykjVKWgN23UIyL9SGr+ZzUitkAdJq9Ei8KPPMevM2GUda988VG0GRtgMxcA5LnrPlOueMh9gzoHpajgtyzmsDb7kpCHpf/DJ+ROYA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706095637; c=relaxed/simple;
-	bh=dGDGJfQ1/YOqkdVRAJq8/8+jBm6SKZV3XfZreXxVhLQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=AgquhhAHxZptP3KxxIC51GPm2RB5nap06dX6D5kjY28ESqdkHLe6Q+piE/mPoEJ35vbNm7bOYT8Ug3J1nKBebE2aEA4+TpwaixdkzVQ2NPGmtP3CMLZdjcg7Mw4zl94EPR1yCthgMFdeTtM/HOdTlX2/fcZGujmM8m8YtVam0PA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hFTewJR7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A327C43601;
-	Wed, 24 Jan 2024 11:27:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706095637;
-	bh=dGDGJfQ1/YOqkdVRAJq8/8+jBm6SKZV3XfZreXxVhLQ=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=hFTewJR7PgKsNh6FbdQiZu8+lLazPC/r+NN85as5kYCwrNSOoVpQo3JeEcvEKwXde
-	 REGnRUfUoytxjVjQdQR69ZMWJ27/v++Aw+guX65up6rJOJGx721MC+JcGJEz5oSxcA
-	 yw18GJTb9m77US8JEW1+An4/WEyj6kRRKlky99mtBTeP5TBfFOfoIob9UqKHlf25Od
-	 B/6Rfl/6+zgj/5/CT8SJIGJpmAKP/O4N62hYKNGj1DqXRr7U30KpPMXbbtPyOOpmCM
-	 BjwbieNYNZA3ZVIWj8EbtvTPNWUtw+WsJSEwvnRiOK9Hn4L8TdIDpeCjpPBFe+jkf8
-	 40QMvqGX4sBqw==
-From: Benjamin Tissoires <bentiss@kernel.org>
-Date: Wed, 24 Jan 2024 12:26:59 +0100
-Subject: [PATCH v2 3/3] HID: bpf: use __bpf_kfunc instead of noinline
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E80181AAA5;
+	Wed, 24 Jan 2024 11:28:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706095739; cv=fail; b=ZqB85+G42OxQKZHIfVCqJ/J57Ddso7VaF8hvLnPeB7cgYxSj6HRqj34MMAsvMhcGuPMxKoutpV8GT7IODqICTapz9v9IBgjV9KeutCZr0BPFyRT/CpfyHkpoHKRekvkxdimU7RvchaN+Gig2ZMJYpAKjyViUz35TAH0as/WHydY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706095739; c=relaxed/simple;
+	bh=7p/LLIO3uDDR6gkPZf0s0oboHPVtb2MdMmvvavcx43o=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=F2H4u2poe5uiNei++dftj7YbN2fLYpD8EhuypkVoL6hmUjFmfT30I7ae2qm44h4uG9XMtsiH6XJQXIBq9y8DfhZxB6QrwO0uwfuhmvv9R6aWQWAeMI0K4xyimV9EK2GXL4ayUw670hv4r7CiWTj2Fy3oMfnonZ+NIexixA6AR4s=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=eN88id3m; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=gWE91RCL; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40OAwqw8026946;
+	Wed, 24 Jan 2024 11:28:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2023-11-20;
+ bh=DWgxgFL8puBkksddk6Rn/kN/9+BsZT0h06jfuQ7xWLA=;
+ b=eN88id3mBViM0MPqX/6IObFuvhIRkfxT5KD4GD+X6oOaQWvH4qxrnAVvEyKoK11EQ67D
+ eI8bcGWUU6V64el9WQW4ZGsjHJI5/L7a26RTe9X4eFPLY5aqDku0r+nVNgBjE4HmSNSn
+ d2C2/tTooIfuQaeHJArzZYyADLsTQ3Hi2zohZfR0gHRzv8Oi+iRUTcFv64yophuhpVlm
+ 2hRPi+KliCzoWtlfxhigWP/mgdPMCyj0OD44wYTbTDcDUo8fdd6Mz+atDNCuL86COKO5
+ Nm1QAR9CtvJ7rYTAmQGmpTdIAFkpOyUSUsPrXL3vuGPDpCL27JOX+zhvsPJS+ErYwR1p 9w== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vr7cwhv0v-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 24 Jan 2024 11:28:45 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40OAbrrf006305;
+	Wed, 24 Jan 2024 11:28:45 GMT
+Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam04lp2041.outbound.protection.outlook.com [104.47.74.41])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3vs32se9ar-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 24 Jan 2024 11:28:44 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eQeEBOXbyfrU+N6keTb2XoYM5h2bO2M0Sy46bKLP5h3CoT/hZxc+z6QJazGhV8QNNIBpZm3ZDTqo9MXNbLwlr7PX6FjzBSIpg/N2LX86D6ePIMbjtkrpSNgxvOyuFu0ruNJPF71KYvWfll5CZW7FUH2psp4jhLPY52OeQEkKCcVP992ix7da3cxQRbjTUexN3cqvZFGDQ7djjncVHK3y227TRA6yPXYA7rR3cm8fQfbudA9vpUA9gOp8l/i6jrSE+8cJpBF1Ca6IsuVUs2iCaZYwrEX90CW5T+O6rLlt1sLloBO7okQFImOLz1+fd/lYdPQKislpELD+W0p2at3cOw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DWgxgFL8puBkksddk6Rn/kN/9+BsZT0h06jfuQ7xWLA=;
+ b=M7fUURrfv4/dIVphBVtkysv3LxUd/UlrECp01fiZcwTYLhYJUAR4XvX5RoDR7Xtt+e6jiCctYi2XV8WSuOOT458xyuy3+z2lCUX/44hUQsrL4H9EuZJtvEs8ej4yjI+IzUOL2xUdXB3V6yYCVZNU0RJaZ5O9sEgMtnp35pDUX/y9IgRJaWEOZPNY5NOyXs67KfLNzhNz6v5xGQjN+NUAi4ubVKPvPL1Nn9kXJgTe5dpyJtktoigm4cgo9Mz/mTsvj6XBG4G0KYzaKVfmbdC8Jxwo2BYpXOOUjpZ/7v9jD1pZ0Zt2MrmG9h7IbZG9xmTnXJlY0I16MjG1BNIyCNcEMQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DWgxgFL8puBkksddk6Rn/kN/9+BsZT0h06jfuQ7xWLA=;
+ b=gWE91RCLeroln6vjJvrAAxfxVVLbKdWbwa8JD/7hKn6pe2KnecdRvKwr7BTFus7aEEg6mclAz0fQuYnDiz+FIGyzC1RwHbnkiRPm8myVW9gbyXQDyA5AN2WaEj+oeNOGilQ/yNN9Z1MNPriQTM8zbw9qxqBDm30PMP/ZEJt/zsI=
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+ by SJ0PR10MB5615.namprd10.prod.outlook.com (2603:10b6:a03:3d8::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22; Wed, 24 Jan
+ 2024 11:28:08 +0000
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::f11:7303:66e7:286c]) by DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::f11:7303:66e7:286c%5]) with mapi id 15.20.7228.022; Wed, 24 Jan 2024
+ 11:28:08 +0000
+From: John Garry <john.g.garry@oracle.com>
+To: linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
+Cc: martin.petersen@oracle.com, djwong@kernel.org, david@fromorbit.com,
+        himanshu.madhani@oracle.com, hch@lst.de, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, jack@suse.cz, John Garry <john.g.garry@oracle.com>
+Subject: [PATCH v2 0/3] man2: Document RWF_ATOMIC
+Date: Wed, 24 Jan 2024 11:27:28 +0000
+Message-Id: <20240124112731.28579-1-john.g.garry@oracle.com>
+X-Mailer: git-send-email 2.31.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: LO4P123CA0038.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:152::7) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240124-b4-hid-bpf-fixes-v2-3-052520b1e5e6@kernel.org>
-References: <20240124-b4-hid-bpf-fixes-v2-0-052520b1e5e6@kernel.org>
-In-Reply-To: <20240124-b4-hid-bpf-fixes-v2-0-052520b1e5e6@kernel.org>
-To: Jiri Kosina <jikos@kernel.org>, 
- Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
- Dan Carpenter <dan.carpenter@linaro.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
- bpf@vger.kernel.org, Benjamin Tissoires <bentiss@kernel.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1706095628; l=4484;
- i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
- bh=dGDGJfQ1/YOqkdVRAJq8/8+jBm6SKZV3XfZreXxVhLQ=;
- b=YeshQWAua7ciYLBibudWBI4ndN1lYooAtSocUnUWnzHG0O5owiDcz8YmHvoUiF0N0eeOCRNG9
- kpi3FyjLL1dBG0cEcjJ+cCwwPWu7CD5SZazwqAItOJoGKuPXKw4t1Am
-X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
- pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|SJ0PR10MB5615:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6c22e7b5-e271-406a-f417-08dc1ccf8a6c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	hycHOcqG3Dc9kxCL8Wo34YqmjjVUQCSHu7sTtXRfQ7gfwoLXTCrsLr9Zlco8Ad1WS0Byhtes/LISquoGNUMMHLlB13fluwKRTZ0YFvSyPIAhVuaMZmfXm4h0L/HJWPguD1erWNietSGABtezzl1V0yDN+dhPuHJODJs+mjJDYh5kddGsAmAc/GK8NtWtEQHOVkMQ6DwlGbogB1BwPF9wzk04jTY5iO+Vcf9MwwkB1UHoZC2qKidl03GRtP6EliMKXY2Ld+gW5d4T6A+0IG3C0auj7YE/9CL3+90JM2LtOSUsBPFZ7kRUtQ1VOOh9l0AOQoBQefzJql3onqQqbhlyw5/H8QtJrNtmxe3kD27x/d4fiEtdXdyA26kRT9jL0iAOJWwMZjqmsD5UggnRuGyD7VXPn85tPl8vauFrz9O8p4MNgM8vB95DXgRIULUqfQLdBLcR5VrgKWKAvZl6KOoqDy0+pvUY4hKAWZ4u07rpxTuZCg7vE1uLYhM7rzDi4guwBuyQ9weNUzaeArbrya6ijvfYDdxoYhM/H8yq8gtJ44riUkj6IwJQCvVhSswlo8UX
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(396003)(376002)(346002)(136003)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(6506007)(26005)(83380400001)(2616005)(107886003)(1076003)(6512007)(41300700001)(36756003)(8936002)(8676002)(66476007)(4326008)(316002)(103116003)(2906002)(4744005)(5660300002)(66556008)(66946007)(86362001)(6666004)(6486002)(478600001)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?dZoBOZx7BhnS2DiLLl/QKRKFRjH2QxN+evxqeZmvp8NOeG5BgjXTjibfV5Vz?=
+ =?us-ascii?Q?prasujPpTRAoS8o4aHlevu/NR8OVo6/GL8kR1THkA4yQjS7SVJw9wKK8Cpyc?=
+ =?us-ascii?Q?d5VxUo6m8xLlp+PuQLsKJtNxD/W/HVXfIJbQFvNqROfS7eY9ahCbAUJ29He1?=
+ =?us-ascii?Q?eO4bJuqFftNhMo7JqU6dUJzJ90+KbHJA7g8j5TAkyLNS9h82pLGAMhTtKnXa?=
+ =?us-ascii?Q?GNd1yplharaGwqpBXvLR8LTtyEEmDYur8ZXRkYkuP+BszJO+QZc+jnRJqfV7?=
+ =?us-ascii?Q?pbk/tHt3I7rx7k/GauVeFD40by8gJzSk4XmHepNh0D6Q5Cd6J8rESzivCm+R?=
+ =?us-ascii?Q?5JqQ19wQ2mRRwjXKpU+DlzsQ114TYXLLtBJn5Hi9iAmDTwRWpWvdNT7duPQ2?=
+ =?us-ascii?Q?K4hkU1rc7Ssjvl13pw51TBrGhZBSB5S7mr5Ae5leRQez/ZAvcqN9UG63mjw0?=
+ =?us-ascii?Q?dsK/51AMizPKv35JcUapNcX8CN7ogyBCc74g7T08gwfKuuUSwszsYwZigPoM?=
+ =?us-ascii?Q?S/gJ0VF/6aDQ0i6aqhv19z3DoStPMQbEsrhvEbOfpwFjqCCZpiAbC9IFzQ5N?=
+ =?us-ascii?Q?JluDcivhjNyzNYEBnttVrHUve1rsAADNM/5QHtx94MqriHAjaFpZuYxnDqCN?=
+ =?us-ascii?Q?OX3nLz0S4fgm4Fhs6ytG7ATz4LBaxFHq7N+WnnkBNOky1Mk19gfcj6mgGk7v?=
+ =?us-ascii?Q?tYKh9wl2qCmghMsqfki6sD4JywYHX1rw3L687kJ3Mztxg01SaR09ZSGa1t1/?=
+ =?us-ascii?Q?JldLKxXs4/n4LmOm0PRAlXWQ46A1Q5lixH2Dzxbk55fYk2dCqIUSK2s7bSBm?=
+ =?us-ascii?Q?cSP3xh/Q2QJkhdEg/zDeSSCFm9EIyXHKbr5dc/P7afvjdm7R7apYnKxhMWKy?=
+ =?us-ascii?Q?KvwQj/+jwKffWcxmaL22HcGw04jPs0M1Pr7A4K1ri0EqJVnjzUpwSVkFfjoK?=
+ =?us-ascii?Q?3GrO8EfCnWKAG2NlOYEYj+yM+4IGBHcMegoEhLKEhNFuYMMXmy0hnkkd3Fq+?=
+ =?us-ascii?Q?WdN0uJY6gyt5jdz971j4ZM6TEx4hy01au3AaV7Leoig2OHD+pSnSLtqrSfcG?=
+ =?us-ascii?Q?OlFSujjyBGr9CIr4spdco6oPWJHwcQD6dPZzoJaph9p1T3Y4H6VHOKzSAEnq?=
+ =?us-ascii?Q?MU1Rce5LWYC3bGSCBZhxoZRGTLXPO2xkeuUTEedPL4EGxPbquclwPI0Rhxp+?=
+ =?us-ascii?Q?B09ICm6tmTclDbI3shAC0VDA8jaFpxUiP7ycd7rNJBLuDzIBMmV+RGnyJwbB?=
+ =?us-ascii?Q?GP41jKb9OIqWvfIcz6/013ezGTmaDGWdRokGhgcNcxOTdBFD1VnNgyAdXKzq?=
+ =?us-ascii?Q?4WCrMZWn1RChwvuCAyz/bN8dJ1Bl+brWdSZrN1DshF1fWoxugXTWjAZzrQmT?=
+ =?us-ascii?Q?EFrz6+qCMWlM82yLm/EbRt0KRsIVjXXfs7q0x1u47DmI8GJPAbu3T3Bo+7sC?=
+ =?us-ascii?Q?jZO+47BSv1ZevEdXuoQnCUx5+I/89mUUGa+5yrPV7fJ+ugL48cxyIjvOa9CW?=
+ =?us-ascii?Q?YLiInaUHrm1v764bTF6aHcYh+poj99wntDaOhA3wVaJAurySxYmLg6sOsvEH?=
+ =?us-ascii?Q?UhgsO4ZZlmnkYjNMWzdcTFAE1ZM0eZZk84zMgGNEXUq9oqusUZBdcgh1MSh2?=
+ =?us-ascii?Q?iA=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	rCmjgIwHr3tE468/2d4XCmrglITDMu+mDIcrw+kzpW1GE8gfZgZHUKZYEN76tsNPPQSTOigK3sG2440PxFu44uNRhC2x/Ic2a2IEOoXNVKpHXAA3YeHVltcJRfvKCWNE4zFoxkFLyrf+iQPYMNTSc8gM8SMk0K1BJr8JEMkJmhqv6ZG5sQBqwe2TNTvhuud20C8PRqJrQyB+CCqsSILnsR2+BBnzauxmT8TV2TaLBN+1dBJYXf4kE012b0NdScVNHUhiNdGNE+X5ZxlC7ENjeyP0ghXbYWx2rb6JNcv5i2+qj/XzGCK5TIEGVy+WCSoqPSry/hElG0z3hBoY+9PdZJ+hPWt1E9tHVEpeG9zUeYSmR8Pe2iBZAq0KUk3VCvtcjyVR+ZH7yZ7wiIq1Gkz3BHj072JOj56BEIbUN8ceSug/D8rp2Bwgf7sVe0tE5DZsIDYCsNimFGP+5W4LuSJmPT54xwOdaNp5h4npaQjtubAZYpgbBPBlgaXB6sG7DpXphxgDEAZSNDElL4fRd+zryEPz4YceiYKQCj5Dl5dnXz37Gj6Ko/ENiyaHze+5YpcQT1H36yU7bC8heZPIJOFwEWKtLRxWZXe+7eO6YmRtiJk=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6c22e7b5-e271-406a-f417-08dc1ccf8a6c
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jan 2024 11:28:08.6988
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FAZ6qV8lMrRnqTusbR9EF5S1BhcRaOAwLqOQ/W21GPbL/qzP5JeBsvXSSwcUIC6uddhs5/P1AzsR5k1t9VHwyA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB5615
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-24_06,2024-01-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ spamscore=0 mlxscore=0 adultscore=0 bulkscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401240082
+X-Proofpoint-ORIG-GUID: 3Fw4j-3mjNjMRhOKBSj-K3c4Go2HVLxp
+X-Proofpoint-GUID: 3Fw4j-3mjNjMRhOKBSj-K3c4Go2HVLxp
 
-Follow the docs at Documentation/bpf/kfuncs.rst:
-- declare the function with `__bpf_kfunc`
-- disables missing prototype warnings, which allows to remove them from
-  include/linux/hid-bpf.h
+Document RWF_ATOMIC flag for pwritev2().
 
-Removing the prototypes is not an issue because we currently have to
-redeclare them when writing the BPF program. They will eventually be
-generated by bpftool directly AFAIU.
+RWF_ATOMIC atomic is used for enabling torn-write protection.
 
-Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+We use RWF_ATOMIC as this is legacy name for similar feature proposed in
+the past.
 
----
+Differences to v1:
+- Add statx max segments param
+- Expand readv.2 description
+- Document EINVAL
 
-changes in v2:
-* make use of __bpf_kfunc_start/end_defs() instead of manual push/pop
----
- drivers/hid/bpf/hid_bpf_dispatch.c | 18 +++++++++++++-----
- include/linux/hid_bpf.h            | 11 -----------
- 2 files changed, 13 insertions(+), 16 deletions(-)
+Himanshu Madhani (2):
+  statx.2: Document STATX_WRITE_ATOMIC
+  readv.2: Document RWF_ATOMIC flag
 
-diff --git a/drivers/hid/bpf/hid_bpf_dispatch.c b/drivers/hid/bpf/hid_bpf_dispatch.c
-index 7903c8638e81..470ae2c29c94 100644
---- a/drivers/hid/bpf/hid_bpf_dispatch.c
-+++ b/drivers/hid/bpf/hid_bpf_dispatch.c
-@@ -143,6 +143,9 @@ u8 *call_hid_bpf_rdesc_fixup(struct hid_device *hdev, u8 *rdesc, unsigned int *s
- }
- EXPORT_SYMBOL_GPL(call_hid_bpf_rdesc_fixup);
- 
-+/* Disables missing prototype warnings */
-+__bpf_kfunc_start_defs();
-+
- /**
-  * hid_bpf_get_data - Get the kernel memory pointer associated with the context @ctx
-  *
-@@ -152,7 +155,7 @@ EXPORT_SYMBOL_GPL(call_hid_bpf_rdesc_fixup);
-  *
-  * @returns %NULL on error, an %__u8 memory pointer on success
-  */
--noinline __u8 *
-+__bpf_kfunc __u8 *
- hid_bpf_get_data(struct hid_bpf_ctx *ctx, unsigned int offset, const size_t rdwr_buf_size)
- {
- 	struct hid_bpf_ctx_kern *ctx_kern;
-@@ -167,6 +170,7 @@ hid_bpf_get_data(struct hid_bpf_ctx *ctx, unsigned int offset, const size_t rdwr
- 
- 	return ctx_kern->data + offset;
- }
-+__bpf_kfunc_end_defs();
- 
- /*
-  * The following set contains all functions we agree BPF programs
-@@ -274,6 +278,9 @@ static int do_hid_bpf_attach_prog(struct hid_device *hdev, int prog_fd, struct b
- 	return fd;
- }
- 
-+/* Disables missing prototype warnings */
-+__bpf_kfunc_start_defs();
-+
- /**
-  * hid_bpf_attach_prog - Attach the given @prog_fd to the given HID device
-  *
-@@ -286,7 +293,7 @@ static int do_hid_bpf_attach_prog(struct hid_device *hdev, int prog_fd, struct b
-  * is pinned to the BPF file system).
-  */
- /* called from syscall */
--noinline int
-+__bpf_kfunc int
- hid_bpf_attach_prog(unsigned int hid_id, int prog_fd, __u32 flags)
- {
- 	struct hid_device *hdev;
-@@ -338,7 +345,7 @@ hid_bpf_attach_prog(unsigned int hid_id, int prog_fd, __u32 flags)
-  *
-  * @returns A pointer to &struct hid_bpf_ctx on success, %NULL on error.
-  */
--noinline struct hid_bpf_ctx *
-+__bpf_kfunc struct hid_bpf_ctx *
- hid_bpf_allocate_context(unsigned int hid_id)
- {
- 	struct hid_device *hdev;
-@@ -371,7 +378,7 @@ hid_bpf_allocate_context(unsigned int hid_id)
-  * @ctx: the HID-BPF context to release
-  *
-  */
--noinline void
-+__bpf_kfunc void
- hid_bpf_release_context(struct hid_bpf_ctx *ctx)
- {
- 	struct hid_bpf_ctx_kern *ctx_kern;
-@@ -397,7 +404,7 @@ hid_bpf_release_context(struct hid_bpf_ctx *ctx)
-  *
-  * @returns %0 on success, a negative error code otherwise.
-  */
--noinline int
-+__bpf_kfunc int
- hid_bpf_hw_request(struct hid_bpf_ctx *ctx, __u8 *buf, size_t buf__sz,
- 		   enum hid_report_type rtype, enum hid_class_request reqtype)
- {
-@@ -465,6 +472,7 @@ hid_bpf_hw_request(struct hid_bpf_ctx *ctx, __u8 *buf, size_t buf__sz,
- 	kfree(dma_data);
- 	return ret;
- }
-+__bpf_kfunc_end_defs();
- 
- /* our HID-BPF entrypoints */
- BTF_SET8_START(hid_bpf_fmodret_ids)
-diff --git a/include/linux/hid_bpf.h b/include/linux/hid_bpf.h
-index 840cd254172d..7118ac28d468 100644
---- a/include/linux/hid_bpf.h
-+++ b/include/linux/hid_bpf.h
-@@ -77,17 +77,6 @@ enum hid_bpf_attach_flags {
- int hid_bpf_device_event(struct hid_bpf_ctx *ctx);
- int hid_bpf_rdesc_fixup(struct hid_bpf_ctx *ctx);
- 
--/* Following functions are kfunc that we export to BPF programs */
--/* available everywhere in HID-BPF */
--__u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx, unsigned int offset, const size_t __sz);
--
--/* only available in syscall */
--int hid_bpf_attach_prog(unsigned int hid_id, int prog_fd, __u32 flags);
--int hid_bpf_hw_request(struct hid_bpf_ctx *ctx, __u8 *buf, size_t buf__sz,
--		       enum hid_report_type rtype, enum hid_class_request reqtype);
--struct hid_bpf_ctx *hid_bpf_allocate_context(unsigned int hid_id);
--void hid_bpf_release_context(struct hid_bpf_ctx *ctx);
--
- /*
-  * Below is HID internal
-  */
+John Garry (1):
+  io_submit.2: Document RWF_ATOMIC
+
+ man2/io_submit.2 | 17 +++++++++++
+ man2/readv.2     | 73 +++++++++++++++++++++++++++++++++++++++++++++++-
+ man2/statx.2     | 29 +++++++++++++++++++
+ 3 files changed, 118 insertions(+), 1 deletion(-)
 
 -- 
-2.43.0
+2.31.1
 
 
