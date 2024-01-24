@@ -1,79 +1,84 @@
-Return-Path: <linux-kernel+bounces-36252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36253-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D92A839DE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 02:03:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11FB8839DEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 02:03:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 176642871FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:03:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE0B41F2AC72
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:03:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 608E210F2;
-	Wed, 24 Jan 2024 01:03:30 +0000 (UTC)
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BC6D1FAA;
+	Wed, 24 Jan 2024 01:03:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NW1XArYK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 173F910E3
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 01:03:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5427017E1;
+	Wed, 24 Jan 2024 01:03:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706058210; cv=none; b=q2rRH0RIqp5oVXysqjOgfiD1AQZKf7KT+mi7sNv+dSsAiPRwSRyA1eaHKYArTZOEbNTK+wKu6tbzhQ3QfP0i1h5fk0uJZopo2Y5iAe15xtXZ4bDqJq8gd5OGJywf4933zOVvokPFVzANGzpchIeu+E6UkeMCLpKIaZUKjI2unUA=
+	t=1706058215; cv=none; b=Fx72vQYYCglw8WdFD24fWsjduxULpBnhYgWyM+Goz/fOCAGdRl5WuuLNHJR5IDV/OwQ//EUpXvqY4ZOsnDX2cqdwmB86sYFHSY9iLZ6bhRwjrFDLnYlqqNaT9HtHW45IsEXvlyFkAs+0Qs0zh4pCCKHBuPI5wBpKTxtu8ltbx6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706058210; c=relaxed/simple;
-	bh=hV6NqU0W1+Wf0pkFYtSJr6jS6L+KKlOLwkBT5Tj40U4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oRvbsABr+d0mB9sS9dj7myFXiM/LvZGEzB4b2QgzCt9lLCFSoeBZPNx93PzPMLasLrb/Pqjb1I8kxX8PBrAVM+qwY+NazGbQtDbuxfJo6+gBvBmIGTXiY+z+lBUHnrwdKD0s42A/Hn1A3I2ltskIJaxKmjIYA9xi0PgH0nVeXgw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; arc=none smtp.client-ip=115.124.30.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0W.E7vKj_1706058203;
-Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0W.E7vKj_1706058203)
-          by smtp.aliyun-inc.com;
-          Wed, 24 Jan 2024 09:03:24 +0800
-From: Yang Li <yang.lee@linux.alibaba.com>
-To: jaharkes@cs.cmu.edu,
-	coda@cs.cmu.edu
-Cc: codalist@coda.cs.cmu.edu,
-	linux-kernel@vger.kernel.org,
-	Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH -next] fs: coda: Remove unused variable 'outp' in venus_rmdir
-Date: Wed, 24 Jan 2024 09:03:22 +0800
-Message-Id: <20240124010322.94782-1-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+	s=arc-20240116; t=1706058215; c=relaxed/simple;
+	bh=1C0aclCSrTodyIiX9t1yGWxG9h2zK+4zsFmooVu0iQs=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Tlb8qK6jGH2FMLXOCtPVx+lQ413xRMiCB6i/pZNUKKVwBfQF9gj8tnekmyhg74ccn2ueeIg/hUzGD1tipjSBjEQaEC7ebsnT+lGN/1eJ8NNThCphXlykG/7f8631V3Gg3pEJu9Eyn+1X6YN9VPl0TLUOPjD+QDqpjFdSalV5hHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NW1XArYK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD3A8C433F1;
+	Wed, 24 Jan 2024 01:03:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706058214;
+	bh=1C0aclCSrTodyIiX9t1yGWxG9h2zK+4zsFmooVu0iQs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=NW1XArYKalNgr/Ur0uwp3MhGLCPH0L2LOi6rDbWKIb9MkR0WvyeENiNmpGyAMWQ/G
+	 hV21dFBePxK71+X7A7WQCo2d1SXZBU47YWrVR2Po1P5utDSQRUKivvkbLhROUxZOVG
+	 HWsHNdBtIT2c+XoQbNAnlZKFEtig4zDPOgFUHrpJWYbMGLVS3xh1jdHrm4PR+tJNet
+	 4KRcWRi7ouctoLF/3hQCcJ1jkMzXMbI+FcOMcn4MI05ugtxwPldukkx8q62HXLMoyR
+	 TkAFj4m8DRjb3aE0/N08R7SIpeT31juXqLzvTIfMs547SX5dhpupOdh9npyETtFtQr
+	 Yc4SaUOKuBJEA==
+Date: Tue, 23 Jan 2024 17:03:32 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+ decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+ pabeni@redhat.com, longli@microsoft.com, yury.norov@gmail.com,
+ leon@kernel.org, cai.huoqing@linux.dev, ssengar@linux.microsoft.com,
+ vkuznets@redhat.com, tglx@linutronix.de, linux-hyperv@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org, schakrabarti@microsoft.com,
+ paulros@microsoft.com
+Subject: Re: [PATCH 4/4 V2 net-next] net: mana: Assigning IRQ affinity on HT
+ cores
+Message-ID: <20240123170332.20dd8a6b@kernel.org>
+In-Reply-To: <1705939259-2859-5-git-send-email-schakrabarti@linux.microsoft.com>
+References: <1705939259-2859-1-git-send-email-schakrabarti@linux.microsoft.com>
+	<1705939259-2859-5-git-send-email-schakrabarti@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-The variable 'outp' is declared but not used in the venus_rmdir
-function within the Coda filesystem module. This causes a compiler
-warning about the variable being set but not used.
+On Mon, 22 Jan 2024 08:00:59 -0800 Souradeep Chakrabarti wrote:
+> IRQ   node-num    core-num   CPU        performance(%)
+> 1      0 | 0       0 | 0     0 | 0-1     0
+> 2      0 | 0       0 | 1     1 | 2-3     3
+> 3      0 | 0       1 | 2     2 | 4-5     10
+> 4      0 | 0       1 | 3     3 | 6-7     15
+> 5      0 | 0       2 | 4     4 | 8-9     15
+> ---
+> ---
 
-To clean up the code and address the compiler warning, this patch
-removes the declaration of the unused 'outp' variable.
-
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- fs/coda/upcall.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/fs/coda/upcall.c b/fs/coda/upcall.c
-index cd6a3721f6f6..d97e0e4374f9 100644
---- a/fs/coda/upcall.c
-+++ b/fs/coda/upcall.c
-@@ -303,7 +303,6 @@ int venus_rmdir(struct super_block *sb, struct CodaFid *dirfid,
- 		    const char *name, int length)
- {
-         union inputArgs *inp;
--        union outputArgs *outp;
-         int insize, outsize, error;
-         int offset;
- 
+Please don't use --- as a line, indent it or use ... because git am
+uses --- as a commit message separator. The commit message will get
+cut off at the first one of those if we try to apply this.
 -- 
-2.20.1.7.g153144c
-
+pw-bot: cr
 
