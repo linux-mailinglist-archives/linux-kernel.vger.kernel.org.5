@@ -1,153 +1,245 @@
-Return-Path: <linux-kernel+bounces-36813-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36812-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F18F83A72F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:50:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43E3D83A724
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:48:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 61755B29397
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:48:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C718B1F27615
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:48:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB9311AAB1;
-	Wed, 24 Jan 2024 10:48:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CF7E18EC0;
+	Wed, 24 Jan 2024 10:48:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IApJ7drQ"
-Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kcaD7UCg"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A593E1A286
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:48:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFFFE17C98
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:48:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706093295; cv=none; b=mTUc3aFsO55xa5DWlqHYSlkZIlUNPDmA5lg0srVxXKD3aAl2ngS+OFb+IEnvr3igWVXIjDRxUZ/pNQUCroe8QOnNjSqMuPkOKLapBlfdB6YWrqkeV9CDTBPN20pI9pGbz/3XrLYwtaPf9B6ICNaxhBr7zaHEc1XhH2bePfYfx9U=
+	t=1706093283; cv=none; b=c2dssYj69qL8jWSdX2zoQh8XYhphHceNvAAHXtk6/4WPl5uqanWN7WgROKWxiwsNXV/sdZ31JymsdL16j0RjOdPvoOsMKks4snp7GoZJnQOBIvYNNLZFc4DoskBYQmqDZSVP8dxjlgq1C/5B8j/pJjF5Wf22eyp1betm6eLqaJQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706093295; c=relaxed/simple;
-	bh=vUYNgyEiiBGTAOVgJfsG/RvhaXLEgRGTV9YrpqQM93E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SLUZ/ZL7pdGi8pNRwEqdzXh7EYhf0IaOW/J2zPnd1hvQdlDicDynH7IZR7Je6PcfBUSRN9xSr0HDn4pmJbSO0toMPJiV1ciix2wHp9INKSce1/QKsuJ8xv8Z2WVOMg6KQ+udH6bNWs6Rwv+IrJ+NSaQcQa3gzvJ3OGIdwH48LxY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IApJ7drQ; arc=none smtp.client-ip=209.85.219.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-6818d263cb3so39271856d6.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 02:48:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706093292; x=1706698092; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X39Ts6MX+MiqoaGcJ6Oz7csIP4OtBMZYPm9qrUenbDM=;
-        b=IApJ7drQuzmIlJSEapY1e4i/2m3gtppl/DO81wEv2rahsftDKg5ku/nDYLyQgC0fkc
-         ugWwmI/su2qadoktaClKNyDv4UrgJDr+aUhBMAhxTgm4NxVJGTqEGrudunGXk9eRHc5Q
-         kPs/kXnPKverAsvj5hZw3m6Rn/QpTWDYYKK403D6QFVjOPuPugfoZoD75XZhizr3GDwt
-         5c/v18u0Sp8c10dWgL6OSRVhYREt8Ln9Z4UqrWABMy1KccGoqZVG83DNLUe3jjw9UbZR
-         pUDPTiNJnNv+7jKZgWoyNsPtfBKpeyzKuGXu8/mp1cc044L+dAfseV789OMDG7t9mDbN
-         WX9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706093292; x=1706698092;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=X39Ts6MX+MiqoaGcJ6Oz7csIP4OtBMZYPm9qrUenbDM=;
-        b=MI01bmoidiWZdo4U+afOG9GYgBLBGj/VZigRV10v/KILBNXXcT+aO0PdiUQTf+JBFK
-         ddrJX+oH5+N9RT8Mjn+2Cky8n4N+PuV0A01Kjf8RRrtwge6W9BC6IDW1Vuesopm24Q3e
-         ApRNVGVC0ss+aMVkoMYHG5nx3nTN31A18xtf6J7dZyPZ4wmPpPsy/kVQnlCcf9IGA8uz
-         E3qfYK+3/upqYN5OKjDTcGFkQMFiTSIOCUJB9UgG+DUMozfnyPsgcl4V8kNZ+3Vp8iXZ
-         YD/pTwLcFyvTAXbgjTuuTuwQY805CbnpWWO6kn0Z2jdot//BCqZ7pg5LsOIjFBATJy0o
-         RTYg==
-X-Gm-Message-State: AOJu0YwxvWJRPriYM7d90A8TCRv/w34wAQl3k/GQY91GQCrX26Io0V9d
-	gMEBnfOSPQ64eKZqyzlD85C+jexPF9eFgyqP38JGzZR4p606Ww4CPY1foqVdjUsEhyQtx6mEWpF
-	nXCP21K2EY+IRzQ2tIZK7l1pGBdWHY6Nlnrjk
-X-Google-Smtp-Source: AGHT+IG/GIxnoyhhLGaRwHzJnw2CsYDhw/Wa9qcMoyzCYt60ApWQxGfmvif7M11I8JdtLap1q9TWl31q5SAh8dAPA98=
-X-Received: by 2002:a05:6214:1d04:b0:682:85f5:f009 with SMTP id
- e4-20020a0562141d0400b0068285f5f009mr3313074qvd.130.1706093292445; Wed, 24
- Jan 2024 02:48:12 -0800 (PST)
+	s=arc-20240116; t=1706093283; c=relaxed/simple;
+	bh=2nvQNmxvWFKGTlylSc7tifNmpxhzmvLUvt5XyICCGr4=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=k1K7DhrCuf4CNJhlrusPcARYly+5eL4MoZgJzaroraLNgZGZlM5TaxVp77opmdw9Jt1gznde+u3UVuHs/UcAq9/4npXcVFLeKeB1AHd3+IrWzOu/hT9QiDmFzRCIj6GGNIA+NbApolCjfwLVnaRfYGNNqwAuQuwX8yKzDbzlvCU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kcaD7UCg; arc=none smtp.client-ip=134.134.136.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706093281; x=1737629281;
+  h=date:from:to:cc:subject:message-id;
+  bh=2nvQNmxvWFKGTlylSc7tifNmpxhzmvLUvt5XyICCGr4=;
+  b=kcaD7UCgDONvA2q5wYWeKY8GRLb3UMaW7gp7sXL3CTWDZEsOg3HuQv9U
+   hRvYCOS0A0R8iEbsQ4+IDtgPbwGbCDWOfV+4y696Hh78x8saWtWYvxkUu
+   XjpZczk0syq9DATAghJ6DLvlqB9VzyOk2HfKYASfP2gP2SdoPRrQ+UMcB
+   3JzbNi4c2xSubX4rYvHy6ooujwO4ohLEdP3JD5CMYRwNU+JUcI+ADscS2
+   vU/rOAw3h026F3hZvqtXYnwR/fc6VlVBF1LHVPOVWUS9V5gUKHExdqRUJ
+   yKLOTCxQZXuflDnRWy1Jf84SPqAuI+Fj5wGQFi5J9KAszz3duRcKEEVFU
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="405558914"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="405558914"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 02:48:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="786379317"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="786379317"
+Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 24 Jan 2024 02:47:59 -0800
+Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rSanV-000849-1g;
+	Wed, 24 Jan 2024 10:47:57 +0000
+Date: Wed, 24 Jan 2024 18:47:53 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 451b2bc29430fa147e36a48348f8b6b615fd6820
+Message-ID: <202401241851.CgRvzSBz-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <000000000000fd588e060de27ef4@google.com> <20240102080315-mutt-send-email-mst@kernel.org>
- <20240104204531.GB954424@fedora>
-In-Reply-To: <20240104204531.GB954424@fedora>
-From: Alexander Potapenko <glider@google.com>
-Date: Wed, 24 Jan 2024 11:47:32 +0100
-Message-ID: <CAG_fn=XmxeUePHFth5asQvHvo3=QSL4tB4yS5_3UVHWYJ=VRnw@mail.gmail.com>
-Subject: Re: [syzbot] [virtualization?] KMSAN: uninit-value in virtqueue_add (4)
-To: Stefan Hajnoczi <stefanha@redhat.com>
-Cc: syzbot <syzbot+d7521c1e3841ed075a42@syzkaller.appspotmail.com>, 
-	jasowang@redhat.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, virtualization@lists.linux.dev, 
-	xuanzhuo@linux.alibaba.com, bonzini@redhat.com, 
-	"Michael S. Tsirkin" <mst@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 4, 2024 at 9:45=E2=80=AFPM Stefan Hajnoczi <stefanha@redhat.com=
-> wrote:
->
-> On Tue, Jan 02, 2024 at 08:03:46AM -0500, Michael S. Tsirkin wrote:
-> > On Mon, Jan 01, 2024 at 05:38:24AM -0800, syzbot wrote:
-> > > Hello,
-> > >
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    fbafc3e621c3 Merge tag 'for_linus' of git://git.kerne=
-l.org..
-> > > git tree:       upstream
-> > > console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D173df3e9e=
-80000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3De0c7078a6=
-b901aa3
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=3Dd7521c1e384=
-1ed075a42
-> > > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for=
- Debian) 2.40
-> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1300b4a=
-1e80000
-> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D130b0379e=
-80000
-> > >
-> > > Downloadable assets:
-> > > disk image: https://storage.googleapis.com/syzbot-assets/1520f7b6daa4=
-/disk-fbafc3e6.raw.xz
-> > > vmlinux: https://storage.googleapis.com/syzbot-assets/8b490af009d5/vm=
-linux-fbafc3e6.xz
-> > > kernel image: https://storage.googleapis.com/syzbot-assets/202ca200f4=
-a4/bzImage-fbafc3e6.xz
-> > >
-> > > IMPORTANT: if you fix the issue, please add the following tag to the =
-commit:
-> > > Reported-by: syzbot+d7521c1e3841ed075a42@syzkaller.appspotmail.com
-> > >
-> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
->
-> Hi Alexander,
-> Please take a look at this KMSAN failure. The uninitialized memory was
-> created for the purpose of writing a coredump. vring_map_one_sg() should
-> have direction=3DDMA_TO_DEVICE.
->
-Hi Stefan,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: 451b2bc29430fa147e36a48348f8b6b615fd6820  Merge branch into tip/master: 'x86/sev'
 
-I took a closer look, and am pretty confident this is a false positive.
-I tried adding memset(..., 0xab, PAGE_SIZE << order) to alloc_pages()
-and never saw
-the 0xab pattern in the buffers for which KMSAN reported an error.
+elapsed time: 1451m
 
-This probably isn't an error in 88938359e2df ("virtio: kmsan:
-check/unpoison scatterlist in
-vring_map_one_sg()"), which by itself should be doing a sane thing:
-report an error if an
-uninitialized buffer is passed to it. It is more likely that we're
-missing some initialization that
-happens in coredump.c
+configs tested: 156
+configs skipped: 3
 
-Does anyone have an idea where coredump.c is supposed to be
-initializing these pages?
-Maybe there are some inline assembly functions involved in copying the data=
-?
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240124   gcc  
+arc                   randconfig-002-20240124   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                   randconfig-001-20240124   clang
+arm                   randconfig-002-20240124   clang
+arm                   randconfig-003-20240124   clang
+arm                   randconfig-004-20240124   clang
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240124   clang
+arm64                 randconfig-002-20240124   clang
+arm64                 randconfig-003-20240124   clang
+arm64                 randconfig-004-20240124   clang
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240124   gcc  
+csky                  randconfig-002-20240124   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240124   clang
+hexagon               randconfig-002-20240124   clang
+i386                             allmodconfig   clang
+i386                              allnoconfig   clang
+i386                             allyesconfig   clang
+i386         buildonly-randconfig-001-20240123   gcc  
+i386         buildonly-randconfig-002-20240123   gcc  
+i386         buildonly-randconfig-003-20240123   gcc  
+i386         buildonly-randconfig-004-20240123   gcc  
+i386         buildonly-randconfig-005-20240123   gcc  
+i386         buildonly-randconfig-006-20240123   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20240123   gcc  
+i386                  randconfig-002-20240123   gcc  
+i386                  randconfig-003-20240123   gcc  
+i386                  randconfig-004-20240123   gcc  
+i386                  randconfig-005-20240123   gcc  
+i386                  randconfig-006-20240123   gcc  
+i386                  randconfig-011-20240123   clang
+i386                  randconfig-012-20240123   clang
+i386                  randconfig-013-20240123   clang
+i386                  randconfig-014-20240123   clang
+i386                  randconfig-015-20240123   clang
+i386                  randconfig-016-20240123   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240124   gcc  
+loongarch             randconfig-002-20240124   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   clang
+nios2                             allnoconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240124   gcc  
+nios2                 randconfig-002-20240124   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240124   gcc  
+parisc                randconfig-002-20240124   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   clang
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc               randconfig-001-20240124   clang
+powerpc               randconfig-002-20240124   clang
+powerpc               randconfig-003-20240124   clang
+powerpc64             randconfig-001-20240124   clang
+powerpc64             randconfig-002-20240124   clang
+powerpc64             randconfig-003-20240124   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   clang
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20240124   clang
+riscv                 randconfig-002-20240124   clang
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20240124   gcc  
+s390                  randconfig-002-20240124   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20240124   gcc  
+sh                    randconfig-002-20240124   gcc  
+sparc                            allmodconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240124   gcc  
+sparc64               randconfig-002-20240124   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240124   clang
+um                    randconfig-002-20240124   clang
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240124   clang
+x86_64       buildonly-randconfig-002-20240124   clang
+x86_64       buildonly-randconfig-003-20240124   clang
+x86_64       buildonly-randconfig-004-20240124   clang
+x86_64       buildonly-randconfig-005-20240124   clang
+x86_64       buildonly-randconfig-006-20240124   clang
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240124   gcc  
+x86_64                randconfig-002-20240124   gcc  
+x86_64                randconfig-003-20240124   gcc  
+x86_64                randconfig-004-20240124   gcc  
+x86_64                randconfig-005-20240124   gcc  
+x86_64                randconfig-006-20240124   gcc  
+x86_64                randconfig-011-20240124   clang
+x86_64                randconfig-012-20240124   clang
+x86_64                randconfig-013-20240124   clang
+x86_64                randconfig-014-20240124   clang
+x86_64                randconfig-015-20240124   clang
+x86_64                randconfig-016-20240124   clang
+x86_64                randconfig-071-20240124   clang
+x86_64                randconfig-072-20240124   clang
+x86_64                randconfig-073-20240124   clang
+x86_64                randconfig-074-20240124   clang
+x86_64                randconfig-075-20240124   clang
+x86_64                randconfig-076-20240124   clang
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240124   gcc  
+xtensa                randconfig-002-20240124   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
