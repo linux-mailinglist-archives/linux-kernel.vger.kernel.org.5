@@ -1,202 +1,128 @@
-Return-Path: <linux-kernel+bounces-36618-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36616-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A296583A3D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:13:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7CDF83A3CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:12:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C685B1C295BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:13:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70993B27621
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:12:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CF871758F;
-	Wed, 24 Jan 2024 08:12:43 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1E771755B;
+	Wed, 24 Jan 2024 08:12:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="YBbty9sG"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01AD21755E
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 08:12:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4606171DD
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 08:12:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706083962; cv=none; b=ICF+dllI21oYhlnE+4vjJVGCo79xu7440+9RjLqGAnU0rNJulu+4UggQu89BPrs/0Oh8ooyJ+O4zyHHDZ27JExrxzjamklP+KANBRSUvQGA9o70u4BGdUnYVn53kvSkzUUMNJ70gdadY/eqkot5emBzv1uOHQ0XbS4r+cPH3AdA=
+	t=1706083960; cv=none; b=HZryLTa9VF7D1vSxpn026P/xxUEQhzwqlRSYMcMuypiROW7mWq31X1xmd2uSPCwUSpa1iRSLTRBvLjMIOCCTGEXqtZJPfm8H8oeXzWWgDBKUULBiIIXr4q4dIuQPpjB9aE0gugRMEIXGwkGAGp1bXzqXfLSn6DKbrNXKGu7ULrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706083962; c=relaxed/simple;
-	bh=Ra+uYWwhblxNzXJQDojcVngsE0ksUba1CDXh77gitc4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=praAm7Xiu0hrVvD8QBu8IGov0/JZQpCJKdjeOiqHaznVhh5rrj5WHykE1Qnr8FB49MlEMTMNRqzcXik0vsePEro4JkuE2ke5hg2Cjr0jkPJcMh0i+lEccS674YKjymD3EeyUvTUgiMggL7IwJDRUf4aZy92/bDolTC1Zy+qnKeU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rSYN2-0005Ly-85; Wed, 24 Jan 2024 09:12:28 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rSYN1-0020vS-RX; Wed, 24 Jan 2024 09:12:27 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rSYN1-006z9z-2U;
-	Wed, 24 Jan 2024 09:12:27 +0100
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Arnd Bergmann <arnd@arndb.de>,
-	soc@kernel.org
-Cc: linux-pwm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kernel@pengutronix.de,
-	Sebastien Bourdelin <sebastien.bourdelin@gmail.com>
-Subject: [PATCH v3 2/2] bus: ts-nbus: Improve error reporting
-Date: Wed, 24 Jan 2024 09:12:05 +0100
-Message-ID:  <2dac8939942b4006a6ff12df7e75d3243df00723.1706083174.git.u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1706083174.git.u.kleine-koenig@pengutronix.de>
-References: <cover.1706083174.git.u.kleine-koenig@pengutronix.de>
+	s=arc-20240116; t=1706083960; c=relaxed/simple;
+	bh=C8kYfDx/P9hnWkyKHcdyWPTZdI2VSXngwIerXp0qFns=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IhxK+W4lw4BzjHDMPYgma871P5dBudlC40HnhWBgiUVO4vv41IMxvyjVeJWrQY7wRaggSY+fTcHTvc0CEhRR8GRBDYqVXLjfCa4qjFIdere5zIe9GR+dzdLZHFcPzyHHOWLou/O8WTLcYJbMLlWt3Ako+byhHqQ2KaaECwYKoUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=YBbty9sG; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc22ade26d8so4027682276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 00:12:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706083957; x=1706688757; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3nlrvezwsoefYOiDE66ptLKogdw8xj1n98YMDFjoN+M=;
+        b=YBbty9sG7JivTyRuJzpHonuXmx+JIN1C4fibeYvcSg++Z6PyIykvNZnjzH3m29c5FU
+         xBSjAX8Z4Y0cAg/XDe512kDKk6+UO4B1ck2I3hkyD91wRUmfGw0RKM0Pq1XamRPypEo+
+         9Lf7/Rvr3obTej/2lwzBzhojd/ijWYCWszSiE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706083957; x=1706688757;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3nlrvezwsoefYOiDE66ptLKogdw8xj1n98YMDFjoN+M=;
+        b=RlpykVMtzWOi/7PiB0ScC1/ivaYzAEBsF84pJKMKOlsoOyQz+IHxATwQLkrubNCE7L
+         lO3xGrSWV/55BJE0Ex9moy+vY2oK3GKLkQPMMs9UvbnjdohFk57OLN6hO6yzi3RgU5f2
+         ClSInWg9hctRhSN/9cQbMPNgzLdLs3LwC7r5+6GgoBHtMmLdb4pVhrVcjN0JfCmDTKhP
+         TFr37BaFTAmwzkCfQhpv9EGC+069RcjXZnocSKuDbfNbjGH08/4h8VTy7EaOSNon4gj0
+         V5O4p1vd2imZruTAtQx36H7YrRuMIgT93wEWMl0MaBnuLKSPnuBlU40teEAbvjOEixy8
+         fy6A==
+X-Gm-Message-State: AOJu0YynCzfAWf2bOL5AwL3ab8jsapAjcgN/ywmQgpZ5i+Q6PYCjSOpX
+	2L+2KS2f+1SLOQHds7QRofm6hhhw+ngxbWcmrwYHZ1TUV8YolBO7c83NZaaEHWwIx8SJlRCuSoz
+	mzPWMlajNznYIRCE/JpZpFlrgZAUVJqSpd3kx
+X-Google-Smtp-Source: AGHT+IEXXNpGL3FkHpH7UVTAE98t9kuK82tJy02EY3Po3kf0mUsz/lQ5QYroraVfAgTjUCCe1Q2enF+omVYI5Wnnfpw=
+X-Received: by 2002:a5b:345:0:b0:dbe:d3ef:d54b with SMTP id
+ q5-20020a5b0345000000b00dbed3efd54bmr291405ybp.93.1706083957672; Wed, 24 Jan
+ 2024 00:12:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4331; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=Ra+uYWwhblxNzXJQDojcVngsE0ksUba1CDXh77gitc4=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlsMZXxKHyoQuP5gmawFJezfKgaJtoslvfMHFo1 ZCvU7k0bPWJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZbDGVwAKCRCPgPtYfRL+ TkfPCACJ5I8+jkbwckvDQ0eOaLuilN9116CL/xELl5PeddXQCYNd9HUVVllyeCpz9w2Nzah54fE YTd6jJFtbc7wGyRboNcj9/w3YgHSBhlcGym9mhXzyvtWXrHbLNH2oXQEhzup/mSDfBZAvTf+8Uj GjW5F355h7a8h3rIE0hVnbsQ6kfsMpQnsgrbLhzGkZvPF0ITnPnT34Q62apSbgP80RoqOyJ3USa 6BPfDcuKuAQE+OSQnDdO7EzUvQsocdnVUwmIZRD2FSeK1ufapUHujZXh4SpNSvoCshEBJs0vihG 4qaoXq95B0w+3I5c89fA50bUWp8n/WHMvsc8RbAOYmIGJmLP
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20240123223039.1471557-1-abhishekpandit@google.com> <20240123143026.v1.1.Iacf5570a66b82b73ef03daa6557e2fc0db10266a@changeid>
+In-Reply-To: <20240123143026.v1.1.Iacf5570a66b82b73ef03daa6557e2fc0db10266a@changeid>
+From: Prashant Malani <pmalani@chromium.org>
+Date: Wed, 24 Jan 2024 00:12:26 -0800
+Message-ID: <CACeCKaftJSGba3ebs58=cB5aRLuOnbvhQX2V6+5=t9GPC08_Uw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/3] usb: typec: ucsi: Limit read size on v1.2
+To: Abhishek Pandit-Subedi <abhishekpandit@google.com>
+Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>, linux-usb@vger.kernel.org, 
+	jthies@google.com, Abhishek Pandit-Subedi <abhishekpandit@chromium.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	Fabrice Gasnier <fabrice.gasnier@foss.st.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Hans de Goede <hdegoede@redhat.com>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Saranya Gopal <saranya.gopal@intel.com>, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Using dev_err_probe() brings several improvements:
+Hi Abhishek,
 
- - emits the symbolic error code
- - properly handles EPROBE_DEFER
- - combines error message generation and return value handling
+On Tue, Jan 23, 2024 at 2:30=E2=80=AFPM Abhishek Pandit-Subedi
+<abhishekpandit@google.com> wrote:
+>
+> From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+>
+> Between UCSI 1.2 and UCSI 2.0, the size of the MESSAGE_IN region was
+> increased from 16 to 256. In order to avoid overflowing reads for older
+> systems, add a mechanism to use the read UCSI version to truncate read
+> sizes on UCSI v1.2.
+>
+> Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+I have one nit (mentioned in side-band but reproducing here for consistency=
+),
+but will defer to the maintainer on that.
 
-While at it add error messages to two error paths that were silent
-before.
+The above notwithstanding, FWIW:
+Reviewed-by: Prashant Malani<pmalani@chromium.org>
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/bus/ts-nbus.c | 66 ++++++++++++++++++-------------------------
- 1 file changed, 28 insertions(+), 38 deletions(-)
+> @@ -1556,6 +1569,15 @@ int ucsi_register(struct ucsi *ucsi)
+>         if (!ucsi->version)
+>                 return -ENODEV;
+>
+> +       /*
+> +        * Version format is JJ.M.N (JJ =3D Major version, M =3D Minor ve=
+rsion,
+> +        * N =3D sub-minor version).
+> +        */
+> +       dev_info(ucsi->dev, "Registered UCSI interface with version %x.%x=
+%x",
+> +                UCSI_BCD_GET_MAJOR(ucsi->version),
+> +                UCSI_BCD_GET_MINOR(ucsi->version),
+> +                UCSI_BCD_GET_SUBMINOR(ucsi->version));
 
-diff --git a/drivers/bus/ts-nbus.c b/drivers/bus/ts-nbus.c
-index 19c5d1f4e4d7..baf22a82c47a 100644
---- a/drivers/bus/ts-nbus.c
-+++ b/drivers/bus/ts-nbus.c
-@@ -39,45 +39,39 @@ struct ts_nbus {
- /*
-  * request all gpios required by the bus.
-  */
--static int ts_nbus_init_pdata(struct platform_device *pdev, struct ts_nbus
--		*ts_nbus)
-+static int ts_nbus_init_pdata(struct platform_device *pdev,
-+			      struct ts_nbus *ts_nbus)
- {
- 	ts_nbus->data = devm_gpiod_get_array(&pdev->dev, "ts,data",
- 			GPIOD_OUT_HIGH);
--	if (IS_ERR(ts_nbus->data)) {
--		dev_err(&pdev->dev, "failed to retrieve ts,data-gpio from dts\n");
--		return PTR_ERR(ts_nbus->data);
--	}
-+	if (IS_ERR(ts_nbus->data))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(ts_nbus->data),
-+				     "failed to retrieve ts,data-gpio from dts\n");
- 
- 	ts_nbus->csn = devm_gpiod_get(&pdev->dev, "ts,csn", GPIOD_OUT_HIGH);
--	if (IS_ERR(ts_nbus->csn)) {
--		dev_err(&pdev->dev, "failed to retrieve ts,csn-gpio from dts\n");
--		return PTR_ERR(ts_nbus->csn);
--	}
-+	if (IS_ERR(ts_nbus->csn))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(ts_nbus->csn),
-+			      "failed to retrieve ts,csn-gpio from dts\n");
- 
- 	ts_nbus->txrx = devm_gpiod_get(&pdev->dev, "ts,txrx", GPIOD_OUT_HIGH);
--	if (IS_ERR(ts_nbus->txrx)) {
--		dev_err(&pdev->dev, "failed to retrieve ts,txrx-gpio from dts\n");
--		return PTR_ERR(ts_nbus->txrx);
--	}
-+	if (IS_ERR(ts_nbus->txrx))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(ts_nbus->txrx),
-+				     "failed to retrieve ts,txrx-gpio from dts\n");
- 
- 	ts_nbus->strobe = devm_gpiod_get(&pdev->dev, "ts,strobe", GPIOD_OUT_HIGH);
--	if (IS_ERR(ts_nbus->strobe)) {
--		dev_err(&pdev->dev, "failed to retrieve ts,strobe-gpio from dts\n");
--		return PTR_ERR(ts_nbus->strobe);
--	}
-+	if (IS_ERR(ts_nbus->strobe))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(ts_nbus->strobe),
-+				     "failed to retrieve ts,strobe-gpio from dts\n");
- 
- 	ts_nbus->ale = devm_gpiod_get(&pdev->dev, "ts,ale", GPIOD_OUT_HIGH);
--	if (IS_ERR(ts_nbus->ale)) {
--		dev_err(&pdev->dev, "failed to retrieve ts,ale-gpio from dts\n");
--		return PTR_ERR(ts_nbus->ale);
--	}
-+	if (IS_ERR(ts_nbus->ale))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(ts_nbus->ale),
-+				     "failed to retrieve ts,ale-gpio from dts\n");
- 
- 	ts_nbus->rdy = devm_gpiod_get(&pdev->dev, "ts,rdy", GPIOD_IN);
--	if (IS_ERR(ts_nbus->rdy)) {
--		dev_err(&pdev->dev, "failed to retrieve ts,rdy-gpio from dts\n");
--		return PTR_ERR(ts_nbus->rdy);
--	}
-+	if (IS_ERR(ts_nbus->rdy))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(ts_nbus->rdy),
-+				     "failed to retrieve ts,rdy-gpio from dts\n");
- 
- 	return 0;
- }
-@@ -289,25 +283,20 @@ static int ts_nbus_probe(struct platform_device *pdev)
- 		return ret;
- 
- 	pwm = devm_pwm_get(dev, NULL);
--	if (IS_ERR(pwm)) {
--		ret = PTR_ERR(pwm);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "unable to request PWM\n");
--		return ret;
--	}
-+	if (IS_ERR(pwm))
-+		return dev_err_probe(dev, PTR_ERR(pwm),
-+				     "unable to request PWM\n");
- 
- 	pwm_init_state(pwm, &state);
--	if (!state.period) {
--		dev_err(&pdev->dev, "invalid PWM period\n");
--		return -EINVAL;
--	}
-+	if (!state.period)
-+		return dev_err_probe(dev, -EINVAL, "invalid PWM period\n");
- 
- 	state.duty_cycle = state.period;
- 	state.enabled = true;
- 
- 	ret = pwm_apply_state(pwm, &state);
- 	if (ret < 0)
--		return ret;
-+		return dev_err_probe(dev, ret, "failed to configure PWM\n");
- 
- 	/*
- 	 * we can now start the FPGA and populate the peripherals.
-@@ -321,7 +310,8 @@ static int ts_nbus_probe(struct platform_device *pdev)
- 
- 	ret = of_platform_populate(dev->of_node, NULL, NULL, dev);
- 	if (ret < 0)
--		return ret;
-+		return dev_err_probe(dev, ret,
-+				     "failed to populate platform devices on bus\n");
- 
- 	dev_info(dev, "initialized\n");
- 
--- 
-2.43.0
+nit: I think this doesn't need to be dev_info() and can be just
+dev_dbg(), but will
+defer to the maintainer.
 
+Thanks,
+
+-Prashant
 
