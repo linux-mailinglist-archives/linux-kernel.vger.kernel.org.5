@@ -1,141 +1,144 @@
-Return-Path: <linux-kernel+bounces-36292-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36293-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3C6D839E7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:01:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15D7C839E82
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:02:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DCB428B936
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 02:01:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B12EB23BA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 02:02:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E86901854;
-	Wed, 24 Jan 2024 02:01:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="DR4uHRrp"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 062A61FAE;
+	Wed, 24 Jan 2024 02:02:07 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FAC017CD;
-	Wed, 24 Jan 2024 02:01:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12F471841;
+	Wed, 24 Jan 2024 02:02:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706061685; cv=none; b=XOV0l8vFLc4H7mCma8fUR9DWncn78Nifx6scO6mJrMU5EhlXIoQlPrGehRupSFQ051tXBe7y7Gy6f1265QW58A0D+dCxs+2H8Cx9MMr3cCEjYfl3FTQK9j0oM6sZMm46tzmHZ59840X3UDl2a7fuYKw4kHCXjv3EMCHQupLvxwI=
+	t=1706061726; cv=none; b=ioTWzCeMk9ro5cfI69PpklN0iAWUBxmPZ3w7Z1deVeD5/4KOL/NBjdpmYyhiWx4KmK1G0ChNOcJn9uH8GtUiRvcE9tVpY0TNEZJP//+LA2s2CktZNcfhWvgYR+jdhtGFTy+hFvT64O7LPs13RSTqg+EBEDxH6y3rhn+2I05fEq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706061685; c=relaxed/simple;
-	bh=MRdtvG8pQ96PEh72/XRLyS2XdvhflNuwultr1W9eCo0=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=EAzfJWSoop59MBo4Lqr2f/nYgw26ZfCVcD6uBWNyqhhrUHQi9sY0zZ43c026HinMWZTJXv5AA3YyV8zV/1aKGh53POaLjYWLIsDuWShLUOn34irKFVOwL9pRACN1DylWUmJ9e+yyY5DlxeYAL0g0WgZhKs+8n42WK+hsA10GZ+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=DR4uHRrp; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1706061678;
-	bh=Pgm92d7EvsbO07suhqUnGCLrKYIQcZuz2VMy95wg+gs=;
-	h=Date:From:To:Cc:Subject:From;
-	b=DR4uHRrp+Bc0Td3Yys5hTTt+XfnudrhCG2BGKc6T+dDaYTcZrMRqhyy3R5CVFKRx9
-	 C9jXp8Sbwrp7F33Y01waWFrT9qLr0lDOxodqFt7PPdT+LtRaWwSlvV4Yz0XkA565aM
-	 xWTtzUEiaLvJppsbOlBHkD2gbAG/EXTyKnTx2inoyDcRRgg5tby6MRVcFZC8LDJLpz
-	 hIDztQSSihL9gWo57PoNoN5bXyT9xjHvHeHdffnIQ+f9hhFx+W6Ztx+ty+ErNVFM0o
-	 Gk9XPzhTupS0W28ANdDFcTmL7Pl54CKKZ6hxjdcndx3yavkG13bspoYC8xCkHRamen
-	 8ZZ2UWArw08Kg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TKRyJ5FJ3z4wcg;
-	Wed, 24 Jan 2024 13:01:12 +1100 (AEDT)
-Date: Wed, 24 Jan 2024 13:01:01 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, David Miller
- <davem@davemloft.net>, "Eric W. Biederman" <ebiederm@xmission.com>, Florian
- Fainelli <f.fainelli@gmail.com>, Hector Martin <marcan@marcan.st>, "Jason
- A. Donenfeld" <Jason@zx2c4.com>, Jean Delvare <jdelvare@suse.de>, Lee Jones
- <lee@kernel.org>, Micah Morton <mortonm@chromium.org>, Mike Marshall
- <hubcap@omnibond.com>, Pavel Machek <pavel@ucw.cz>, Theodore Ts'o
- <tytso@mit.edu>
-Subject: linux-next: trees being removed
-Message-ID: <20240124130101.428c09a3@canb.auug.org.au>
+	s=arc-20240116; t=1706061726; c=relaxed/simple;
+	bh=SEPWJ8KgQvsmRUWmz4Zz8rIbbyoKhc90M56sFjY+iRc=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=kqbcoW1M+b/LGcTQhtSUCYszefan1O0BkmLdONuQvkdZtaL2o1dHz11/QJM5gsCpaF9x0128VHAryv5GfM6T/UbcknlUlAovbZrdcAMHjAz8WEJf0rwif0bgHC2dl4oV9Wc281PtWEC1vOfshkzvrXTBEcdY9nGNDtXnB0GIhzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TKRz139rnz4f3js8;
+	Wed, 24 Jan 2024 10:01:49 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 5D19E1A0232;
+	Wed, 24 Jan 2024 10:01:53 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+	by APP1 (Coremail) with SMTP id cCh0CgBXdQ6Lb7Bl6CknBw--.43192S2;
+	Wed, 24 Jan 2024 10:01:49 +0800 (CST)
+Subject: Re: [PATCH 2/5] mm: correct calculation of cgroup wb's bg_thresh in
+ wb_over_bg_thresh
+To: Tejun Heo <tj@kernel.org>
+Cc: willy@infradead.org, akpm@linux-foundation.org,
+ hcochran@kernelspring.com, mszeredi@redhat.com, axboe@kernel.dk,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20240123183332.876854-1-shikemeng@huaweicloud.com>
+ <20240123183332.876854-3-shikemeng@huaweicloud.com>
+ <ZbAk8HfnzHoSSFWC@slm.duckdns.org>
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <a747dc7d-f24a-08bd-d969-d3fb35e151b7@huaweicloud.com>
+Date: Wed, 24 Jan 2024 10:01:47 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/bPEb4N_WcQx9cktdPsZTtVv";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <ZbAk8HfnzHoSSFWC@slm.duckdns.org>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:cCh0CgBXdQ6Lb7Bl6CknBw--.43192S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxGF1fJw18Gr4xGF4ktFykAFb_yoW5GrW5pF
+	Z7JrnFyw4DXFs7JFZrKa92qrW0q3y0yF13Xas0kr1UGrnxGF95Kr4ava1Dury5CrnxJr1F
+	yFsxGrykXrWqyFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+	c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
---Sig_/bPEb4N_WcQx9cktdPsZTtVv
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-The following trees are going to be removed from linux-next because they
-have not been updated in more than a year.  If you want a tree restored,
-just let me know (and update its branch).
 
-Tree			Last commit date
-  URL
-  commits (if any)
------------------------------------------
-asahi-soc-fixes		2022-08-14 15:50:18 -0700
-  https://github.com/AsahiLinux/linux.git#asahi-soc/fixes
-backlight-fixes		2023-01-01 13:53:16 -0800
-  git://git.kernel.org/pub/scm/linux/kernel/git/lee/backlight.git#for-backl=
-ight-fixes
-broadcom-fixes		2022-10-16 15:36:24 -0700
-  https://github.com/Broadcom/stblinux.git#fixes
-dmi			2022-09-23 14:53:14 +0200
-  git://git.kernel.org/pub/scm/linux/kernel/git/jdelvare/staging.git#dmi-fo=
-r-next
-leds			2022-12-25 13:41:39 -0800
-  git://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git#for-ne=
-xt
-mfd-fixes		2023-01-01 13:53:16 -0800
-  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git#for-mfd-fixes
-orangefs		2022-12-07 15:18:30 -0500
-  git://git.kernel.org/pub/scm/linux/kernel/git/hubcap/linux#for-next
-random			2023-01-04 12:11:29 -0800
-  git://git.kernel.org/pub/scm/linux/kernel/git/crng/random.git#master
-safesetid		2022-07-15 18:24:42 +0000
-  https://github.com/micah-morton/linux.git#safesetid-next
-sparc			2022-09-30 11:58:23 +0100
-  git://git.kernel.org/pub/scm/linux/kernel/git/davem/sparc.git#master
-  2d2b17d08bfc ("sparc: Unbreak the build")
-  (This commit has been included in Linus' tree as part of another commit)
-userns			2022-11-30 12:54:24 -0600
-  git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git=
-#for-next
-  54e1011bd95a ("sysctl: Allow change system v ipc sysctls inside ipc names=
-pace")
-  f9b90c2062b2 ("docs: Add information about ipc sysctls limitations")
-  7608b6a72ed0 ("sysctl: Allow to change limits for posix messages queues")
-  a799be9bafe3 ("ipc/ipc_sysctl: Add missing include of linux/cred.h")
-  b895e6689ebf ("sysctl: Fix mq permission check")
-  295227b10192 ("ucount: Fix atomic_long_inc_below argument type")
-  b4b11b58cd02 ("ucount: Use atomic_long_try_cmpxchg in atomic_long_inc_bel=
-ow")
-  (only these last 2 commits actually change anything in Linus' tree)
+on 1/24/2024 4:43 AM, Tejun Heo wrote:
+> On Wed, Jan 24, 2024 at 02:33:29AM +0800, Kemeng Shi wrote:
+>> The wb_calc_thresh will calculate wb's share in global wb domain. We need
+>> to wb's share in mem_cgroup_wb_domain for mdtc. Call __wb_calc_thresh
+>> instead of wb_calc_thresh to fix this.
+> 
+> That function is calculating the wb's portion of wb portion in the whole
+> system so that threshold can be distributed accordingly. So, it has to be
+> compared in the global domain. If you look at the comment on top of struct
+> wb_domain, it says:
+> 
+> /*
+>  * A wb_domain represents a domain that wb's (bdi_writeback's) belong to
+>  * and are measured against each other in.  There always is one global
+>  * domain, global_wb_domain, that every wb in the system is a member of.
+>  * This allows measuring the relative bandwidth of each wb to distribute
+>  * dirtyable memory accordingly.
+>  */
+> 
+Hi Tejun, thanks for reply. For cgroup wb, it will belongs to a global wb
+domain and a cgroup domain. I agree the way how we calculate wb's threshold
+in global domain as you described above. This patch tries to fix calculation
+of wb's threshold in cgroup domain which now is wb_calc_thresh(mdtc->wb,
+mdtc->bg_thresh)), means:
+(wb bandwidth) / (system bandwidth) * (*cgroup domain threshold*)
+The cgroup domain threshold is
+(memory of cgroup domain) / (memory of system) * (system threshold).
+Then the wb's threshold in cgroup will be smaller than expected.
 
---=20
-Cheers,
-Stephen Rothwell
+Consider following domain hierarchy:
+                global domain (100G)
+                /                 \
+        cgroup domain1(50G)     cgroup domain2(50G)
+                |                 |
+bdi            wb1               wb2
+Assume wb1 and wb2 has the same bandwidth.
+We have global domain bg_thresh 10G, cgroup domain bg_thresh 5G.
+Then we have:
+wb's thresh in global domain = 10G * (wb bandwidth) / (system bandwidth)
+= 10G * 1/2 = 5G
+wb's thresh in cgroup domain = 5G * (wb bandwidth) / (system bandwidth)
+= 5G * 1/2 = 2.5G
+At last, wb1 and wb2 will be limited at 2.5G, the system will be limited
+at 5G which is less than global domain bg_thresh 10G.
 
---Sig_/bPEb4N_WcQx9cktdPsZTtVv
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+After the fix, threshold in cgroup domain will be:
+(wb bandwidth) / (cgroup bandwidth) * (cgroup domain threshold)
+The wb1 and wb2 will be limited at 5G, the system will be limited at
+10G which equals to global domain bg_thresh 10G.
 
------BEGIN PGP SIGNATURE-----
+As I didn't take a deep look into memory cgroup, please correct me if
+anything is wrong. Thanks!
+> Also, how is this tested? Was there a case where the existing code
+> misbehaved that's improved by this patch? Or is this just from reading code?
+This is jut from reading code. Would the case showed above convince you
+a bit. Look forward to your reply, thanks!.
+> 
+> Thanks.
+> 
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWwb10ACgkQAVBC80lX
-0GzyrAf/Rbui1YdTbzAVFmoO7OLlNZJc5cCSWUsEy5u7N+BHIZYGt/X/dBNIqikj
-OHJzGU5V2MHOvboB/8kjEtbdVY1mIGft5R7mdg6djjUjOsxEG9L6hx3bHteelYIH
-lrG/260Muf/xSjBhFn0cKGBaFuJyoBgbaLItKgPIt0yICnKeWfteCz65I6QaQsmT
-4mJop9c7eRtHf89z3GzA0+wKGGOUI6SlCnrMG3ZsKBWgf2uxbj1E2MYM+poLIGwd
-1pyXKRrio/mRNqIXqrDtmKvQrniggZNsgl2+r/SGjowQhIlUqmw/a2zwF9S/8x2T
-TXhhzKYQRPYr4vVssezdkGZofnS66A==
-=uKqs
------END PGP SIGNATURE-----
-
---Sig_/bPEb4N_WcQx9cktdPsZTtVv--
 
