@@ -1,86 +1,127 @@
-Return-Path: <linux-kernel+bounces-36744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5A9983A5EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:51:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0071F83A5EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:51:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2ACB1290DE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:51:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 314C91C21246
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:51:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E74D618054;
-	Wed, 24 Jan 2024 09:51:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82EE01862B;
+	Wed, 24 Jan 2024 09:51:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="Df71+RvZ"
-Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hNcizLo4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F9EC18035;
-	Wed, 24 Jan 2024 09:51:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4D7218622;
+	Wed, 24 Jan 2024 09:51:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706089890; cv=none; b=NrrNcqVrfolGpElzQWHbBqv6wJbSrFH2ChJf3vUmXNnhfFrnliRt+Gl6016D2AN5ig7IjXI1MRmJKiH0UToVwSWiWWBCntPQQdt8dI3lsGHqZfeU+YOOnJDC7zgaK/ijm6MwhtVGpqFjJbgV/KP8/Jv9xDhhT+i21BiFxQRMkcs=
+	t=1706089896; cv=none; b=mDpdZ3ek5QdQMelxrSVgxFNQsctJhmoDftPx/CUMDVwgaeyhpsZlCb9QfmjD03aicKHv8yIrhFQqo0bB5q3FByJ6SnCiIYSCA8Be+It/Zsp1s6+yRc1Lx96inwcdmYqg6iWP7wM/g7KlIT4L7sJdXmxPBZBvvE+yog7xtcFfUkk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706089890; c=relaxed/simple;
-	bh=m5NWx1gVYZIUYmyzn/p7lEktd7eDSEgX54vgwJR8lWI=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IK9N6CCpcpnu47nlOyoEq83izer3g/ERAuv1o4uyZsHSNgW9KTlsWpbL1EgyLABa4yrz7M80V2Tb88zektT9/hY1HYi4EpTjPCmwvJHV1rRhXjfbsSx/AruUFh165kYdAAuREVk86zV7B+k7RduFoZra2gyVWtuznHEufaqH71g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=Df71+RvZ; arc=none smtp.client-ip=185.70.40.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=gfzwzs63c5bwpbfaoak7hqxbra.protonmail; t=1706089879; x=1706349079;
-	bh=YRa7ixpHW2IRUtx3lwsiscFSpJb9lfgyIi3waMTLXrU=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=Df71+RvZH7zmdy2/Swc3ITCEGjhIrt/qwW2f2MNWphXeuBkg5IEX46Y7+5/rKlt7w
-	 64AN2ZHNAFyeks3ZGw2Gaf1O57pKfekYF4kLzz1aA1kxbixP6trCgNsd7vpNrNHuiO
-	 ZKTQmWCJ6BT8za6WiycUJOdAAQTR8uWvVyMeP2dGLarLOAdrGTr0H+YhS0n6Y8m9eC
-	 Tnx0jrX3mHKwKlbAxMpZsuVh0SKX0WlHdXmh1lXIjelnsCQ/j/ZcQyEAy2OLXFj+RI
-	 NstMSLrMjrnY1Ey0mhOu5M2k1bvwtaAm5hbaaBfF0Q3CKxaTwaRmw7uNKiJO1W0I8O
-	 OtBOh+HGXPNbA==
-Date: Wed, 24 Jan 2024 09:51:11 +0000
-To: Alice Ryhl <aliceryhl@google.com>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Peter Zijlstra <peterz@infradead.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>, Dan Williams <dan.j.williams@intel.com>, Kees Cook <keescook@chromium.org>, Matthew Wilcox <willy@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 2/9] rust: cred: add Rust abstraction for `struct cred`
-Message-ID: <efde6f59-2467-4645-8846-ab42214164fa@proton.me>
-In-Reply-To: <CAH5fLgjKVQoTNZAJienaJpDrAPHoC+bAJdCzHsjjzme36h6wBw@mail.gmail.com>
-References: <20240118-alice-file-v3-0-9694b6f9580c@google.com> <20240118-alice-file-v3-2-9694b6f9580c@google.com> <67a9f08d-d551-4238-b02d-f1c7af3780ae@proton.me> <CAH5fLgjKVQoTNZAJienaJpDrAPHoC+bAJdCzHsjjzme36h6wBw@mail.gmail.com>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1706089896; c=relaxed/simple;
+	bh=7M8cHvNbWMGRFnzMcdPpfzTmbr50voDcLVGu7wSwkPQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AqSEo6CqjTLtHslFLWiAqFx1c6+ZSuD6ziavZZ4omXUToIFxX3PM5VQJthjoFnvGgMWZ6yzY1FzZFVMIYGwXDWKKlAmUVUndpaZv6qMBoyTMIGnJUHJbQ6YqqGFYmV0L9Xl6tMLl/uUq0xDsJP2plKJP/U1a0Re9UebTznUPeKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hNcizLo4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5611CC433A6;
+	Wed, 24 Jan 2024 09:51:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706089896;
+	bh=7M8cHvNbWMGRFnzMcdPpfzTmbr50voDcLVGu7wSwkPQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=hNcizLo4FfjSKMfh7TZCZZmCjNiHMawDalvAj6G0J8j98C7bpYilNxGrWZwQFlAVc
+	 GiPWZxNCkPKNcpCtmAscVfnO1UuJsmyb9nzhpql0j7IQzHxZn4cn+oCwYWdTPDtMmL
+	 g3+Oa1YQeEJUReF6VY8MPUYPEGJOjJ+VCvExrVIQmnixCHJxwgctmGpfOxVyKUwT3f
+	 gK/xVJfgZyZWhrBtIUYVghknYuWyZDy3Y/Zf+D0NRZ6RbePyGgdVzXqD2SIWpFgvbk
+	 3/GbpxhrswUuSoQPPRWfl0vF1cnjEn8Yg4iINnDlHDzrLtpjZhEm8H2VeMkJTrQDDI
+	 4NVbfr34g5/Zw==
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55c2cf644f3so3278269a12.1;
+        Wed, 24 Jan 2024 01:51:36 -0800 (PST)
+X-Gm-Message-State: AOJu0Yyzq9ofMRl1JIQnV8Jbj0wSQhf98Wjq4Sv9duDhYxj+BFK5aj92
+	RsIQXFCjKAGj6qDwBV0s0WgZyyMGkHtkgVx8rWn++xa+tPLKFifUkdCNdRtfqlrmvxtglqDN1La
+	Sj0EkoER9EhApR/y8KgWc8tnSVJc=
+X-Google-Smtp-Source: AGHT+IFGif40CQVv4h18+RjuN8f1p1H8jT6js87HIIXt2Ebh5WJRKD28KlaWbjfcVNgAh9UTwQ4hEc0OT/fiPHc+j9E=
+X-Received: by 2002:a05:6402:3507:b0:559:6c9e:96fe with SMTP id
+ b7-20020a056402350700b005596c9e96femr1835986edd.37.1706089894679; Wed, 24 Jan
+ 2024 01:51:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20240118121542.748351-1-maobibo@loongson.cn> <20240118121542.748351-2-maobibo@loongson.cn>
+In-Reply-To: <20240118121542.748351-2-maobibo@loongson.cn>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Wed, 24 Jan 2024 17:51:23 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H5-da4AvtgHu1Hv0sbXddab6Mqg6eCkwJzr32Xi4A97yQ@mail.gmail.com>
+Message-ID: <CAAhV-H5-da4AvtgHu1Hv0sbXddab6Mqg6eCkwJzr32Xi4A97yQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] irqchip/loongson-eiointc: Skip handling if there
+ is no pending irq
+To: Bibo Mao <maobibo@loongson.cn>
+Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Sergey Shtylyov <s.shtylyov@omp.ru>, lvjianmin@loongson.cn
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On 19.01.24 10:52, Alice Ryhl wrote:
-> On Fri, Jan 19, 2024 at 10:37=E2=80=AFAM Benno Lossin <benno.lossin@proto=
-n.me> wrote:
->> On 1/18/24 15:36, Alice Ryhl wrote:
->>> +    /// Returns the effective UID of the given credential.
->>> +    pub fn euid(&self) -> bindings::kuid_t {
->>> +        // SAFETY: By the type invariant, we know that `self.0` is val=
-id.
->>
->> Is `euid` an immutable property, or why does this memory access not race
->> with something?
->=20
-> Yes. These properties are changed by replacing the credential, so the
-> credentials themselves are immutable.
+Hi, Bibo,
 
-I see that's good to know, I think that should be mentioned
-on the docs of `Credential`.
+On Thu, Jan 18, 2024 at 8:15=E2=80=AFPM Bibo Mao <maobibo@loongson.cn> wrot=
+e:
+>
+> There is one simple optimization in the interrupt dispatch function
+> eiointc_irq_dispatch. There are 256 IRQs supported for eiointc, eiointc
+> irq handler reads the bitmap and find pending irqs when irq happens.
+> So there are four times of consecutive iocsr_read64 operations for the
+> total 256 bits to find all pending irqs. If the pending bitmap is zero,
+> it means that there is no pending irq for the this irq bitmap range,
+> we can skip handling to avoid some useless operations such as clearing
+> hw ISR.
+>
+> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+> ---
+>  drivers/irqchip/irq-loongson-eiointc.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+>
+> diff --git a/drivers/irqchip/irq-loongson-eiointc.c b/drivers/irqchip/irq=
+-loongson-eiointc.c
+> index 1623cd779175..6143adb1b73b 100644
+> --- a/drivers/irqchip/irq-loongson-eiointc.c
+> +++ b/drivers/irqchip/irq-loongson-eiointc.c
+> @@ -198,6 +198,17 @@ static void eiointc_irq_dispatch(struct irq_desc *de=
+sc)
+>
+>         for (i =3D 0; i < eiointc_priv[0]->vec_count / VEC_COUNT_PER_REG;=
+ i++) {
+>                 pending =3D iocsr_read64(EIOINTC_REG_ISR + (i << 3));
+> +
+> +               /*
+> +                * Get pending eiointc irq from bitmap status, there are =
+4 times
+> +                * consecutive iocsr_read64 operations for 256 IRQs.
+> +                *
+> +                * Skip handling if pending bitmap is zero
+This driver is shared by Loongson-2 and Loongson-3 series, for
+Loongson-2K0500 there is only 128 IRQs, so I suggest only keep the
+last line "Skip handling if current pending bitmap is zero" is enough.
 
---=20
-Cheers,
-Benno
+Huacai
 
-
+> +                */
+> +               if (!pending)
+> +                       continue;
+> +
+> +               /* Clear the IRQs */
+>                 iocsr_write64(pending, EIOINTC_REG_ISR + (i << 3));
+>                 while (pending) {
+>                         int bit =3D __ffs(pending);
+> --
+> 2.39.3
+>
 
