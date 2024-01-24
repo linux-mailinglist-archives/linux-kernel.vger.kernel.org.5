@@ -1,112 +1,165 @@
-Return-Path: <linux-kernel+bounces-36850-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF16B83A7A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:22:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B208E83A7AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:23:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E25F61C210DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:22:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D31C2817F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:23:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 917E64F216;
-	Wed, 24 Jan 2024 11:20:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ED671B26E;
+	Wed, 24 Jan 2024 11:23:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UEbzNase"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J+f1d/8X"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D334248CC4;
-	Wed, 24 Jan 2024 11:20:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B649C1AAD0;
+	Wed, 24 Jan 2024 11:23:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706095258; cv=none; b=R1/loFe7MHnes42+K4TY0W18+FoABaB6z0UbtK3vWPFRq02Hzi6jOM9IYr6I+IP5AJSR8loABJc00uROhD85YduGcbFjBPvur7baYLrdkL3lP9kBo4xF9RDvn31KNB1DqlfMVItT0DsSPBWSp9qtBrEAnz9k+HFVexnZAgKdKXg=
+	t=1706095382; cv=none; b=tYd8/4iIlMYMvHtQlWNTPZ1k6niwAfnZWmGlV90DF2JTYSvAJykYE+GFvwqYCPR3g0qwRdRo5ov3V/5SNw6mBGJjH3Q5WSWpmKqbD1WNwGGIcCYwKU7LCqPMEDfwTfRPc9FpFz76qFDtZB53uNXdZMyICUhwEszAwGXlw2M1va0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706095258; c=relaxed/simple;
-	bh=CsWy6omdP5V5hCJ7qYsvOq5EF/UQS9mAmOjM0tsvqfA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R2qsE3HFGvofZxHfWHlO73+UllJyT7p+slEaQ7x+zqOtIo2VDThF4Vu4f1LPiiFKmChic1afBcQ700y7Xwv2T5aQJPmngIN7nViQSG4YHxnZXdVlzEAbr/GjKZk7CVcQce0oVYOGFZaVDFJe2X4mDg8tgrjho4o96+m3H5Rvffk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UEbzNase; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E76A9C43390;
-	Wed, 24 Jan 2024 11:20:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706095258;
-	bh=CsWy6omdP5V5hCJ7qYsvOq5EF/UQS9mAmOjM0tsvqfA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UEbzNaseUVscJLggF4Re1nGtYDRig5kswyZ53m9QQcdt2c6qgRa3jIQ5UIea26SLH
-	 9SxY6VK72qf1DwH0swN9VELboe30lW/5pDaJZZr0zX6w+autF8IruvrpJzTiRRg84v
-	 UNxajxMvPce0I0wgIDxtx0qvo3p8grccWiaPGVhAVGEL5qJzLn6uJ7dZidvyuJfxW5
-	 7H6dGSvn+vSzhIH/DaW1M2bnvtDhw/c1mJi8KcY+cIXRrIVs8YeBRojIlhkMo6YmUP
-	 E5/FYkn1WIbM4532aZF/7n1XYh/Aj/ShqoCJUkUH2cccc1z3LQt8U+sUklHjU4lPJo
-	 T8JQG/AFR45DQ==
-Date: Wed, 24 Jan 2024 12:20:52 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Jan Kara <jack@suse.cz>
-Cc: Baokun Li <libaokun1@huawei.com>, torvalds@linux-foundation.org, 
-	viro@zeniv.linux.org.uk, willy@infradead.org, akpm@linux-foundation.org, 
-	linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com, 
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 0/2] fs: make the i_size_read/write helpers be
- smp_load_acquire/store_release()
-Message-ID: <20240124-abspaltung-fernab-8f058be5e9bf@brauner>
-References: <20240122094536.198454-1-libaokun1@huawei.com>
- <20240122-gepokert-mitmachen-6d6ba8d2f0a8@brauner>
- <20240123185622.ssscyrrw5mjqjdyh@quack3>
+	s=arc-20240116; t=1706095382; c=relaxed/simple;
+	bh=ZzIGwtAn2QzZ+2GpJ7X6yrHuHp8dp5kYFExvtnM8l2I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=t8N4/nM5Odnbi1rZbP8kmEFBS6ngtlsQeavdmUKramz/VJBmEegI4MOb0y549sl0RuvMvmPAGSojube9kL4m0PJkQRtS0WOoXgE3kgCznHyDE3kUh7qfZn7gELhLUif21jH1sejijBY+3JyIKTD9L44Ba1NiS1MXDM1ItDSobzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J+f1d/8X; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2cf108d8dbeso20220061fa.3;
+        Wed, 24 Jan 2024 03:23:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706095379; x=1706700179; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WlGnsP1Guq+73aimmzzt0YePXReMuB30joC9rhAKutI=;
+        b=J+f1d/8XGutKJmZWOymV5cAHxEGsfaQfPN+r0jgwFabAScsHDJamR+NPnzKpxIf2Dv
+         OahEM/yUYu6vt/QwbzZ1RjNGMFz76pnLKhQMtZVLqp7+f0B8tPvSDKLzenrPVw8JHkAR
+         uYPN0PZiRNxxOXO4vtMyMSvOlvKKaDYenaBZ8IHAw/TeCiVjTFA1BROudaxsi4rHaUHJ
+         D74w6uSS7GmzO9hsRoiAE/s9MPDTwcZiubTC96bPru8MDJ3FmzIyW96+1s5L3qLlCKxU
+         uliMP03HV5MCpWj1bOuIpHjv4KYDTdHPQcwai/2HZ1fJ0h2CQ50xX8HNZAoRjDNx6UGX
+         Vr4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706095379; x=1706700179;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WlGnsP1Guq+73aimmzzt0YePXReMuB30joC9rhAKutI=;
+        b=ZKSK/y/HEeUXW97Te8xkg+/zP9EpEk3ZjYYyORoXOsXHR7O+R4A9SL+c9B9FE6cFAi
+         Pg10OTvQlrxAvYI0j6CexwmSBXeW3pJZkK+NxNJFN4O58EcA1x+++pWXXkUh7PjGqB7Z
+         BWOq4nZS+A2X2cQAETt0Fcmnit4DOMIOVcEQCkxmRHB2poM/0ksdUK+AgZeS3peM3RRV
+         HnSZ/06rwS/va/ixHvMoMbtSZFxYtffuTr1tp07w8whO5ZX8rzpyvuzljp+wsLdVe6kc
+         9bkDKFuWxNU1SvKes4c1o0n+aUW9XKpA3wKLQXxpAxwFAl4sCRazZrTiFZIT7zfL6PFM
+         m6CA==
+X-Gm-Message-State: AOJu0Yx8Un1Qk7dGXHNezIqxOKlMToll6N5uKkFvm+wiNpvgDGs5XYfr
+	ScsaH/TjqG98lLCH0TnDf/Mwv9FDMVsdgh/RPU98bem/n4elXRNeL6GPh1IP3Vt5JeQQ5/RrSi0
+	jQmw2u8xpaN9X0IBZtUYaLreg2ns=
+X-Google-Smtp-Source: AGHT+IEkb3Xpt+58vOiWxG6JhAbfK2iGy3KLOjaay+O2w7JwGWLv/HZUJ/QgwApQxLQVRQ6d1ibzMMIw8aMxLzlr/rQ=
+X-Received: by 2002:a2e:bc25:0:b0:2cc:e51c:4d0c with SMTP id
+ b37-20020a2ebc25000000b002cce51c4d0cmr974155ljf.66.1706095378493; Wed, 24 Jan
+ 2024 03:22:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240123185622.ssscyrrw5mjqjdyh@quack3>
+References: <20240122110722.690223-1-yi.sun@unisoc.com> <20240122110722.690223-2-yi.sun@unisoc.com>
+ <ZbAQLRLNSx-IRRwM@kbusch-mbp.dhcp.thefacebook.com>
+In-Reply-To: <ZbAQLRLNSx-IRRwM@kbusch-mbp.dhcp.thefacebook.com>
+From: yi sun <sunyibuaa@gmail.com>
+Date: Wed, 24 Jan 2024 19:22:21 +0800
+Message-ID: <CALpufv1XRYX7bv-NAUMmRjWr0jhDC1xrd+d48XejJZPjZZLEYQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] blk-mq: introduce blk_mq_tagset_wait_request_completed()
+To: Keith Busch <kbusch@kernel.org>
+Cc: Yi Sun <yi.sun@unisoc.com>, axboe@kernel.dk, mst@redhat.com, jasowang@redhat.com, 
+	xuanzhuo@linux.alibaba.com, pbonzini@redhat.com, stefanha@redhat.com, 
+	virtualization@lists.linux.dev, linux-block@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, zhiguo.niu@unisoc.com, hongyu.jin@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 23, 2024 at 07:56:22PM +0100, Jan Kara wrote:
-> On Mon 22-01-24 12:14:52, Christian Brauner wrote:
-> > On Mon, 22 Jan 2024 17:45:34 +0800, Baokun Li wrote:
-> > > This patchset follows the linus suggestion to make the i_size_read/write
-> > > helpers be smp_load_acquire/store_release(), after which the extra smp_rmb
-> > > in filemap_read() is no longer needed, so it is removed.
-> > > 
-> > > Functional tests were performed and no new problems were found.
-> > > 
-> > > Here are the results of unixbench tests based on 6.7.0-next-20240118 on
-> > > arm64, with some degradation in single-threading and some optimization in
-> > > multi-threading, but overall the impact is not significant.
-> > > 
-> > > [...]
-> > 
-> > Hm, we can certainly try but I wouldn't rule it out that someone will
-> > complain aobut the "non-significant" degradation in single-threading.
-> > We'll see. Let that performance bot chew on it for a bit as well.
-> 
-> Yeah, over 5% regression in buffered read/write cost is a bit hard to
-> swallow. I somewhat wonder why this is so much - maybe people call
-> i_size_read() without thinking too much and now it becomes atomic op on
-> arm? Also LKP tests only on x86 (where these changes are going to be
-> for noop) and I'm not sure anybody else runs performance tests on
-> linux-next, even less so on ARM... So not sure anybody will complain until
-> this gets into some distro (such as Android).
+In my case, I want all hw queues owned by this device to be clean.
+Because in the virtio device, each hw queue corresponds to a virtqueue,
+and all virtqueues will be deleted when vdev suspends.
 
-The LKP thing does iirc. We get reports from them quite often but there's
-no way to request a test on a specific branch and get a result in some
-timeframe (1 week would already be great) back. That's what I'd really like.
+The blk_mq_tagset_wait_request_completed() function can ensure that
+the device has processed all in_flight requests , and these requests have
+become the complete state. I don=E2=80=99t understand the blk_mq_freeze_que=
+ue()
+function very well. Can the function ensure that all requests have become
+complete status? How should I use the function to achieve the same effect?
 
-And similar for the build tests from the intel build bot it would be
-nice if one could opt-in to get notifications that no performance
-regression did indeed happen.
+ps: requests become in_flight status in virtio_queue_rq() and become comple=
+te
+status in virtblk_done().
 
-> 
-> > But I agree that the smp_load_acquire()/smp_store_release() is clearer
-> > than the open-coded smp_rmb().
-> 
-> Agreed, conceptually this is nice and it will also silence some KCSAN
-> warnings about i_size updates vs reads.
-> 
-> 								Honza
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+Yi
+
+On Wed, Jan 24, 2024 at 3:14=E2=80=AFAM Keith Busch <kbusch@kernel.org> wro=
+te:
+>
+> On Mon, Jan 22, 2024 at 07:07:21PM +0800, Yi Sun wrote:
+> > In some cases, it is necessary to wait for all requests to become compl=
+ete
+> > status before performing other operations. Otherwise, these requests wi=
+ll never
+> > be processed successfully.
+> >
+> > For example, when the virtio device is in hibernation, the virtqueues
+> > will be deleted. It must be ensured that virtqueue is not in use before=
+ being deleted.
+> > Otherwise the requests in the virtqueue will be lost. This function can=
+ ensure
+> > that all requests have been taken out of the virtqueues.
+> >
+> > Prepare for fixing this kind of issue by introducing
+> > blk_mq_tagset_wait_request_completed().
+>
+> Does blk_mq_freeze_queue() not work for your use case? I think that
+> should work unless you have some driver specific requests entered that
+> don't ever get released.
+>
+> > +static bool blk_mq_tagset_count_inflight_rqs(struct request *rq, void =
+*data)
+> > +{
+> > +     unsigned int *count =3D data;
+> > +
+> > +     if (blk_mq_request_started(rq) && !blk_mq_request_completed(rq))
+> > +             (*count)++;
+> > +     return true;
+> > +}
+> > +
+> > +/**
+> > + * blk_mq_tagset_wait_request_completed - Wait for all inflight reques=
+ts
+> > + * to become completed.
+> > + *
+> > + * Note: This function has to be run after all IO queues are shutdown.
+> > + */
+> > +void blk_mq_tagset_wait_request_completed(struct blk_mq_tag_set *tagse=
+t)
+> > +{
+> > +     while (true) {
+> > +             unsigned int count =3D 0;
+> > +
+> > +             blk_mq_tagset_busy_iter(tagset,
+> > +                             blk_mq_tagset_count_inflight_rqs, &count)=
+;
+>
+> If the tagset is shared, then one active user can prevent this from ever
+> completing. It sounds like your use case cares about just one specific
+> request_queue, not all of them.
+>
+> > +             if (!count)
+> > +                     break;
+> > +             msleep(20);
+> > +     }
+> > +}
+> > +EXPORT_SYMBOL(blk_mq_tagset_wait_request_completed);
 
