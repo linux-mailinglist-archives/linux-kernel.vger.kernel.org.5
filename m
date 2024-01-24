@@ -1,91 +1,134 @@
-Return-Path: <linux-kernel+bounces-36978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3377583A9BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:29:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B3FA83A9C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:30:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2DDF2820EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:29:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8AE8282666
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:30:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5C65634E8;
-	Wed, 24 Jan 2024 12:29:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DD5C634F3;
+	Wed, 24 Jan 2024 12:30:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="n9pDCVXd"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="GrrzSW06"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1E6B63132;
-	Wed, 24 Jan 2024 12:29:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF00D633EA;
+	Wed, 24 Jan 2024 12:30:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706099373; cv=none; b=j5ZW+yX0Mk5ZOA92Xo04CD0nik0z2hv1fGvhjUecxcTQsU6uiVlbh3eVgeT2mNfwDXAlbBEOwBlnZEdQ8YhtmmCPrdXi0DNaOVB3jKQ/US2yEsSGgqnXaKaLEixW2Lyy5GKPdXkVb3C+l9uhYW/GwZTcajvgD43YMWwDTyTQzWg=
+	t=1706099409; cv=none; b=OrEUwKsy/OHviPn79WeIWEPbuPeuDdj2RuAZVjUj0AjoT8fbzfw9yMZZz2m1vEk2LbPCAzvdmcQL0VPq2jaU8DeUfjcdM/S9/PnCKXpeeyaMTt9AzemXaEgxHLZTaFus8gmjndW2VuRVFN4SKkGJD9Mo7K4DhXiX93MOR3+0FwU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706099373; c=relaxed/simple;
-	bh=IzOfGdfJXN3HNbPaRtSQvSMPHR7T4ik2CCl3pxrUFgw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T7E8T70kEtXoDtyUNXhbAFRUI7YTXu8DeZlwLrMt9X/M8on80kCo/a22uHix5zSzPVAlqwUWgCvLGRWFE0EV6tan+jyUa53j25qmgJxhPNCaa3hWRaqJ8BvuqkY+bhAYrN5C5koDVUlyEJWGx9Yfz7oHUJVoasa3E23BVctOJpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=n9pDCVXd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 041A9C433C7;
-	Wed, 24 Jan 2024 12:29:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1706099372;
-	bh=IzOfGdfJXN3HNbPaRtSQvSMPHR7T4ik2CCl3pxrUFgw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=n9pDCVXdgkLKPjjOruZNmL62cpZqpCYGHjAyVcFd9F1IsweGSkHZf+xMNRQ/WhUlp
-	 IhLULUDAXn1gmONmW/vrlboDuatOYfM3hU/zaw3vqs6rD8U0/B8tp/P6QRPYl/0D8l
-	 XHan51XoSkwy16nlQ3fvFtzmW9bcZ0JDpGrrq/hY=
-Date: Wed, 24 Jan 2024 04:29:30 -0800
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Elizabeth Figura <zfigura@codeweavers.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-	linux-api@vger.kernel.org, wine-devel@winehq.org,
-	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
-	Wolfram Sang <wsa@kernel.org>,
-	Arkadiusz Hiler <ahiler@codeweavers.com>,
-	Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [RFC PATCH 0/9] NT synchronization primitive driver
-Message-ID: <2024012401-garter-empower-14bf@gregkh>
-References: <20240124004028.16826-1-zfigura@codeweavers.com>
- <2024012319-aptly-calculate-0f88@gregkh>
- <12365105.O9o76ZdvQC@camazotz>
+	s=arc-20240116; t=1706099409; c=relaxed/simple;
+	bh=jTWOxO1XAaoksmE8rhYXp3rHaYDWjO/isGrkm2WxrRY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=fEFMH2te4jXctzfzMQE47R98ZvuDdnGKWBk8KTlyLAiY2st/ZfeoMk1DJDOHirw0BlLFA7CPZSpXLZI7EJel+SQ9VkLbsUFEo/+tbaMAldxAS1xiyeM/dA+FMAXt38JXrAd62Ajcj8pebNc9e6oPjBmu7glI0kFBr9c3bIUuKNk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=GrrzSW06; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40OCTfSf119955;
+	Wed, 24 Jan 2024 06:29:41 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706099381;
+	bh=jF9L84KMv0wHb4XbV69aBeG5tl9iTIPpMYjJbs4VL3k=;
+	h=From:To:CC:Subject:Date;
+	b=GrrzSW06ziO+anZC1hXgZd+snymbYsxBpDvt0Y94qVq5m7Hx+n0KMGkmblGCtB9UE
+	 j50eViQ5p5ulPLcvwcm2WGmvjoi6ajkXzHuACXDha4qDFo1bX1189u9YRDb6nrBkcR
+	 XtB9pQZFYm/YkVrUt/cbUvEzbn8qW3YNuAOOkS10=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40OCTft8051628
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 24 Jan 2024 06:29:41 -0600
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 24
+ Jan 2024 06:29:41 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 24 Jan 2024 06:29:41 -0600
+Received: from uda0492258.dhcp.ti.com (uda0492258.dhcp.ti.com [172.24.227.9])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40OCTaNb127501;
+	Wed, 24 Jan 2024 06:29:37 -0600
+From: Siddharth Vadapalli <s-vadapalli@ti.com>
+To: <bhelgaas@google.com>, <lpieralisi@kernel.org>, <kw@linux.com>,
+        <robh@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>
+CC: <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <vigneshr@ti.com>, <afd@ti.com>, <srk@ti.com>, <s-vadapalli@ti.com>
+Subject: [PATCH v3] dt-bindings: PCI: ti,j721e-pci-host: Add support for J722S SoC
+Date: Wed, 24 Jan 2024 17:59:36 +0530
+Message-ID: <20240124122936.816142-1-s-vadapalli@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <12365105.O9o76ZdvQC@camazotz>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Tue, Jan 23, 2024 at 07:37:01PM -0600, Elizabeth Figura wrote:
-> On Tuesday, 23 January 2024 18:59:35 CST Greg Kroah-Hartman wrote:
-> > On Tue, Jan 23, 2024 at 06:40:19PM -0600, Elizabeth Figura wrote:
-> > > == Patches ==
-> > > 
-> > > This is the first part of a 32-patch series. The series comprises 17 patches
-> > > which contain the actual implementation, 13 which provide self-tests, 1 to
-> > > update the MAINTAINERS file, and 1 to add API documentation.
-> > 
-> > 32 patches?  I only see 9 here, why not submit them all?
-> 
-> Because Documentation/process/submitting-patches.rst makes a point of asking people not to submit large patch series (and it matches the expectation of other projects I've worked with—that patches would be submitted and reviewed a few at a time). I suppose I've misunderstood that advice, though.
+TI's J722S SoC has one instance of a Gen3 Single-Lane PCIe controller.
+The controller on J722S SoC is similar to the one present on TI's AM64
+SoC, with the difference being that the controller on AM64 SoC supports
+up to Gen2 link speed while the one on J722S SoC supports Gen3 link speed.
 
-32 patches isn't all that "large", we can handle that easily :)
+Update the bindings with a new compatible for J722S SoC.
 
-100+ patches is large, I guess it all depends, so I can understand the
-confusion.  You need to send us enough for us to be able to understand
-and review the code, this was a bit short for that.
+Technical Reference Manual of J722S SoC: https://www.ti.com/lit/zip/sprujb3
 
-> I'll resend with the entire series. Sorry for the noise.
+Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+---
 
-Ptches are NOT noise, we want to see them!
+Hello,
 
-thanks,
+This patch is based on linux-next tagged next-20240124.
 
-greg k-h
+v2:
+https://lore.kernel.org/r/20240122064457.664542-1-s-vadapalli@ti.com/
+Changes since v2:
+- Added fallback compatible for "ti,j722s-pcie-host" as
+  "ti,j721e-pcie-host" based on Conor's suggestion at:
+  https://lore.kernel.org/r/20240122-getting-drippy-bb22a0634092@spud/#t
+
+v1:
+https://lore.kernel.org/r/20240117102526.557006-1-s-vadapalli@ti.com/
+Changes since v1:
+- Dropped patches 1/3 and 2/3 of the v1 series as discussed in the v1
+  thread.
+- Updated patch 3/3 which is the v1 for this patch by dropping the checks
+  for the "num-lanes" property and "max-link-speed" property since the PCI
+  driver already validates the "num-lanes" property.
+
+Regards,
+Siddharth.
+
+ Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
+index b7a534cef24d..ac69deeaf1ee 100644
+--- a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
++++ b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
+@@ -23,6 +23,10 @@ properties:
+         items:
+           - const: ti,j7200-pcie-host
+           - const: ti,j721e-pcie-host
++      - description: PCIe controller in J722S
++        items:
++          - const: ti,j722s-pcie-host
++          - const: ti,j721e-pcie-host
+ 
+   reg:
+     maxItems: 4
+-- 
+2.34.1
+
 
