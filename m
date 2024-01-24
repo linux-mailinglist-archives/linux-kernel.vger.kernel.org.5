@@ -1,78 +1,138 @@
-Return-Path: <linux-kernel+bounces-37241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07CD183AD27
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:22:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B33883AD2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:24:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3DC0287716
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:22:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04B592820B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:24:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C33AF7A70E;
-	Wed, 24 Jan 2024 15:22:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB5CC7A71A;
+	Wed, 24 Jan 2024 15:24:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ur9PpaIU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hBCFQQWu"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19C7A23C9
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 15:22:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93FAF2BAE5
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 15:24:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706109765; cv=none; b=W0mx9eJjwKUFcX4r870pFDDIVfht1FT4f/71LeXNLY12tNN8kTQZDwgYYa/B0NiE7xNs5xPmPq0iZsk/DCRYGafbiO/CAUFkG4kfdLzl95wPT2hVJVhTEJUBghZNqP5eoHLmx/TczgOMPhJ62ZENyIGCZw+kHv9wGmcHlHUUm4A=
+	t=1706109881; cv=none; b=L9qiUdfc/e2XZDFaMm3/6OhSOY2dezXlFMxNHGgonEBC0dhjtm5rYvB4gHsq6rY0LKsRb+sJFHX1FVRWARZtZSiZ2lxnaYJRoXexxYAM4W2HCsWGmRoZcZJwNLHvSOzqhu22V9IMkIgwqEVlN63jY+hDwqUItV/fn+NOOKJO40U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706109765; c=relaxed/simple;
-	bh=/I/RVLhwzWSg4OYBfyNQJivQLrlc9TmnSoyx0fkPJjs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uojFqD+jRWcvjG1iuJkbhUvWyYN0KerjQ6cTMf5RGwwJMk0BDVqdSugvtMnTfYpgNkbXElM1Hm202dhiXMww1svPdre2ajNo3yayLLz9EAPoapce7q9CKTTvAWTPWNMrRXBHnNQGyZf006ZZZgKU9h3g4PagybeF3pDw1zo6H1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ur9PpaIU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 395B2C433C7;
-	Wed, 24 Jan 2024 15:22:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706109764;
-	bh=/I/RVLhwzWSg4OYBfyNQJivQLrlc9TmnSoyx0fkPJjs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ur9PpaIUGlo1PFFVHccI7tRdpzJuXycTMnVze26mYM8xOYgQv9CTa2zylc0Mwvdhw
-	 Z1VWDGnCb2B2r9ZKhFHJVu4nsbyYNHuw95I94OjccjsuzbomoyN45Vaj5V3FqPMTC0
-	 twFxyDVQrcGaJKYCrr7QGR+yJvBKIOFQEcdzKnBHTZ1e+ZFcr0rvLtFEu/US5BaFz2
-	 rNiZg9LC6bjOnD6g73qDnLwYEynY/qXMcPMTysBu/mPNhMFhnvnXkUA0lSAr6GgRH1
-	 kDzbaEE0M3iFsSP/a9AlxGGD3QWvacGL8+FW8UKAJklT6zA8vz4zz1uluZaFekxfRP
-	 i/usizHVXVv5g==
-Date: Wed, 24 Jan 2024 08:22:41 -0700
-From: Keith Busch <kbusch@kernel.org>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH v2] iov_iter: streamline iovec/bvec alignment iteration
-Message-ID: <ZbErQX4Z1pD0aa_5@kbusch-mbp.dhcp.thefacebook.com>
-References: <544b31f7-6d4b-42f5-a544-1420501f081f@kernel.dk>
+	s=arc-20240116; t=1706109881; c=relaxed/simple;
+	bh=TIoLI0NOg9IhGkDnZ07u3QedeQaS0I76rjo0TfaQbW0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oRoYapbPgKw80Hzo6MBXFgNR3iNuZ0LB91QRfAx6FI0tLz+gXt595793Ac21c8cCSQkUJshF++RNVngrpQ06AsOQOF6u9gPGwHL01O+GFU3I2Y8QPIA+F/i2wZvjMlZBEaDFlVcIhJ1n21B0G5UXt8138kqy/aj63uDMH7zEJI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hBCFQQWu; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706109877;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=+IWdzfKReTN2PlVowzK8vMbbI1VNfdZNNhWBnWl7Hmk=;
+	b=hBCFQQWuMf48OjUr1SSOpkR/4xOwyGp15CJ6XlNsq60j5Id7FbQasL9Q63Cws59gAVKihp
+	u8gtbzKsoqbnoCGFW6ZKYqFjnmKkJCsFjrvFsYolhQ5NfCHC2WHIGiisdHhFAKYrhzetwC
+	GNaXC/nenrYGnYA3T4g3UULy3nuPQbg=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-150-KkuuzhNRMUeijUvHYh02Ug-1; Wed, 24 Jan 2024 10:24:36 -0500
+X-MC-Unique: KkuuzhNRMUeijUvHYh02Ug-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-7832a94b051so744388185a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 07:24:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706109875; x=1706714675;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+IWdzfKReTN2PlVowzK8vMbbI1VNfdZNNhWBnWl7Hmk=;
+        b=Gy8aLK12841Ug1sPhEJxj9rjsH2MeemR84eJ2ttxk4YfP18YgAk1gvMHtfuy4Q1jcs
+         myYMT0Zpy4Fog0qBTcXg2KgFKyj2gXJo3TvBRlFnHipysMUIH772cgNUuqEyz0A3YaHy
+         GDg2G6O7k3FFKy7R0R9SNPKRVqz25hXYydff4jtxHt0PY30e7VghDliQsSZGQ8Hoz0as
+         EfEHqbxcBy+heOmbtyRwxzx8IXefzlESa1EolsBjIc0MNqwuF58dIxbmVPpxucDZxMdG
+         JlFyMu6JzQGJp91RmLTuq9IfCbxMZi+JvQycq9KSAROdbGpXzVIr9EcD/tx3rTNP3sF9
+         c//A==
+X-Gm-Message-State: AOJu0YzWG3ezDrubrI/xPlaG+Bj/+8Kmf0YuV+fdYcoDMQ/16ROZcFq9
+	mrkiKOg+ZOfxXfG6wUGNs8xt5OH+a3XTSkxwthFgwjPSeBl0felOLqJDq7vCvZU+eZY4JZa/jLg
+	79k9F4bG4v8QSywrfpwH9UT3VpmqKvGhG0chZj5cJuZjfj149L84QHGmGS1Sg
+X-Received: by 2002:a05:620a:b09:b0:781:4d22:da3 with SMTP id t9-20020a05620a0b0900b007814d220da3mr8139814qkg.138.1706109875718;
+        Wed, 24 Jan 2024 07:24:35 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IE2BfiDB5CsRVcuehc5tORKDkuTL/4NqMavF8HAKOEJDcAoQ4Tj24hFb/oste1KOxPQfa0OQQ==
+X-Received: by 2002:a05:620a:b09:b0:781:4d22:da3 with SMTP id t9-20020a05620a0b0900b007814d220da3mr8139801qkg.138.1706109875523;
+        Wed, 24 Jan 2024 07:24:35 -0800 (PST)
+Received: from klayman.redhat.com (net-2-34-24-75.cust.vodafonedsl.it. [2.34.24.75])
+        by smtp.gmail.com with ESMTPSA id pa15-20020a05620a830f00b007815b84dbb3sm4126401qkn.49.2024.01.24.07.24.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 07:24:35 -0800 (PST)
+From: Marco Pagani <marpagan@redhat.com>
+To: Moritz Fischer <mdf@kernel.org>,
+	Wu Hao <hao.wu@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>,
+	Tom Rix <trix@redhat.com>
+Cc: Marco Pagani <marpagan@redhat.com>,
+	linux-fpga@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] fpga: remove redundant checks for bridge ops
+Date: Wed, 24 Jan 2024 16:24:07 +0100
+Message-ID: <20240124152408.88068-1-marpagan@redhat.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <544b31f7-6d4b-42f5-a544-1420501f081f@kernel.dk>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 23, 2024 at 03:24:46PM -0700, Jens Axboe wrote:
-> Rewrite the alignment checking iterators for iovec and bvec to be easier
-> to read, and also significantly more compact in terms of generated code.
-> This saves 270 bytes of text on x86-64 for me (with clang-18) and 224
-> bytes on arm64 (with gcc-13).
-> 
-> In profiles, also saves a bit of time as well for the same workload:
-> 
->      0.81%     -0.18%  [kernel.vmlinux]  [k] iov_iter_aligned_bvec
->      0.48%     -0.09%  [kernel.vmlinux]  [k] iov_iter_is_aligned
-> 
-> which is a nice side benefit as well.
+Commit 0d70af3c2530 ("fpga: bridge: Use standard dev_release for class
+driver") introduced a check in fpga_bridge_register() that prevents
+registering a bridge without ops, making checking on every call
+redundant.
 
-Looks good
+Signed-off-by: Marco Pagani <marpagan@redhat.com>
+---
+ drivers/fpga/fpga-bridge.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Reviewed-by: Keith Busch <kbusch@kernel.org>
+diff --git a/drivers/fpga/fpga-bridge.c b/drivers/fpga/fpga-bridge.c
+index a024be2b84e2..e0a5ef318f5e 100644
+--- a/drivers/fpga/fpga-bridge.c
++++ b/drivers/fpga/fpga-bridge.c
+@@ -30,7 +30,7 @@ int fpga_bridge_enable(struct fpga_bridge *bridge)
+ {
+ 	dev_dbg(&bridge->dev, "enable\n");
+ 
+-	if (bridge->br_ops && bridge->br_ops->enable_set)
++	if (bridge->br_ops->enable_set)
+ 		return bridge->br_ops->enable_set(bridge, 1);
+ 
+ 	return 0;
+@@ -48,7 +48,7 @@ int fpga_bridge_disable(struct fpga_bridge *bridge)
+ {
+ 	dev_dbg(&bridge->dev, "disable\n");
+ 
+-	if (bridge->br_ops && bridge->br_ops->enable_set)
++	if (bridge->br_ops->enable_set)
+ 		return bridge->br_ops->enable_set(bridge, 0);
+ 
+ 	return 0;
+@@ -401,7 +401,7 @@ void fpga_bridge_unregister(struct fpga_bridge *bridge)
+ 	 * If the low level driver provides a method for putting bridge into
+ 	 * a desired state upon unregister, do it.
+ 	 */
+-	if (bridge->br_ops && bridge->br_ops->fpga_bridge_remove)
++	if (bridge->br_ops->fpga_bridge_remove)
+ 		bridge->br_ops->fpga_bridge_remove(bridge);
+ 
+ 	device_unregister(&bridge->dev);
+
+base-commit: c849ecb2ae8413f86c84627cb0af06dffce4e215
+-- 
+2.43.0
+
 
