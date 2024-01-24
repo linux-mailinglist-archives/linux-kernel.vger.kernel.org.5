@@ -1,85 +1,83 @@
-Return-Path: <linux-kernel+bounces-36577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36579-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65EF983A351
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:44:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7CF483A355
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:44:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AAB31C27BD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 07:44:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7154C1F2BC8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 07:44:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A7F6171CD;
-	Wed, 24 Jan 2024 07:42:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C0F4175A7;
+	Wed, 24 Jan 2024 07:42:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PSWVwyLf"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DxEim5OK"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 519DB168CD
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 07:41:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E89EC171AA;
+	Wed, 24 Jan 2024 07:42:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706082123; cv=none; b=mTO2J828FSfNplr1xrmlkTzm2MaKmc35HW57rVZ569gnFYDvc3tYbmnZ7FM1zF/Pek74QUWansRWshhlxJyFexczM0S8fy841ZFWlMZ5OEwo3sxg1dQgNklbZPdRtTaThGUgnT/Bqs6heAgIzOxvFPLDmPeY7p1sUpZoYOKJNEk=
+	t=1706082141; cv=none; b=XBgQpSfZbOEunaI82rU2C0v8DfVTJ/EPRmCPG5nN0WVShpl1ePg/kCpVRyY8JJeW6oRSx2l5RxhgCqFPZ872Bubz0zzA64aBO8L5JeUWYKOXq7r3p+dwVREBbjV/xywDH4+gEPpyVluVscY9MMvBpc0ROO5i72gGMugXHiwZ8s8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706082123; c=relaxed/simple;
-	bh=OaUKTFa+qvvu5Rsp3TtvsN6u6MA3MqdDaKggac88QpY=;
+	s=arc-20240116; t=1706082141; c=relaxed/simple;
+	bh=rpFgire7Svqru/HfpQ1b16RkVx0842HOL7xbgXY2vaQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UB/FVw9AQRiqLcXiGKT5W9PFJ/HtO+GU6tWCGGX9lTNjbdPIinAWUtYXyPbPZFJJwHCEB+YqWGvwOoSn+wNm+6VR5zURSwZ/ZouLPhFs2WUMwesYQIlSE0VsenfzvYaU4BD9oWYSLOXB2Tenw9vLPLMoMUDQZdDb3CyfUcFDyas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=PSWVwyLf; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cf1c8cc870so8371931fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 23:41:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706082117; x=1706686917; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iIoS+Yzzl1A1EheZCV/EaLjSj7/UHXg8aEfXVE/L5eI=;
-        b=PSWVwyLfLqG1A4Xep2y1UCN5YpeSASGjOa0gB1F13ozFGuF2+qItMCAYMrv13q/xoV
-         Xw10Cb+u2mNMU4x2u0kSayR+7+uEg6Ay0tDBNgdBummo/zVZ6mmMSX8oz6CfcyRXj/iJ
-         uZjSDRom33uy1jHVBS49ufntW5+GkvVTTFsV7qlMTpSCTwD+hwe9QZgE3mHrwYBQSi1D
-         aQFo2os5aLVsWSmlW55Z5UaJnZDrM82Vw9ZrWxCt1ZBpAupyd/aG/UdBxIWIATM2fG4k
-         I7G0lLmVcxAX/1ufWifQzpivgiKRTyjSSAsnTE8AniwuEkKLdpmdUx0Xlt4R8Jzp+U0S
-         ge+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706082117; x=1706686917;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iIoS+Yzzl1A1EheZCV/EaLjSj7/UHXg8aEfXVE/L5eI=;
-        b=BUL4+TNiTwGlbn6vtqe66GEFsDE486/SDZE9Iyu0dhyJUiyFo9P9SDkt8qUKDVseKy
-         lRY1bkATV3BymlhTRVcAwi7aJwWH21awM4bdCUJu4AyYCq8ks2C3EzrRbvOUcpMLb1Zu
-         UicRYy042ePPGa4kSVyWol2Ie3j8LC/LnLt1tgGixipTWPQns/cR6kC56FHMrk3+lbva
-         0WrJpBv6vAVg9rLqLpVeab3VWtyQp4+WpzCNb/bWahwozxl2NiR7/WKKJAHAAqh5jg5j
-         4V1A4aoE54L9+bqSr1dy4O0SO/C/OcdoN6mvfMP4vRNpBIW0cz78XA1MA9ExM5q/h1Su
-         CYZA==
-X-Gm-Message-State: AOJu0YyTdWmNv7SEqRPy4b+F/C02HYhDxz9Ujka956x1z0k160bkJTxM
-	bLL/344sPOzOAu2WFkZerKHmHWtZOtRavprBtuyMB3qAynjFhtxJdxTlmL4ekpY=
-X-Google-Smtp-Source: AGHT+IFL6Gd+P2an+MzB5i1gCcD0NpuAS/4xvV73WbPCTiVtNvIA8qk4J6qMXgi1WiQ2hCXmZ1Cddw==
-X-Received: by 2002:a2e:88cc:0:b0:2cf:2783:fadd with SMTP id a12-20020a2e88cc000000b002cf2783faddmr134100ljk.78.1706082117202;
-        Tue, 23 Jan 2024 23:41:57 -0800 (PST)
-Received: from linaro.org ([79.115.23.25])
-        by smtp.gmail.com with ESMTPSA id ek22-20020a056402371600b0055ca93f3930sm513785edb.0.2024.01.23.23.41.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 23:41:56 -0800 (PST)
-Date: Wed, 24 Jan 2024 09:41:54 +0200
-From: Abel Vesa <abel.vesa@linaro.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, Andy Gross <agross@kernel.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Subject: Re: [PATCH v6 00/12] Unregister critical branch clocks + some RPM
-Message-ID: <ZbC/QqfTvJ09KcZN@linaro.org>
-References: <20230717-topic-branch_aon_cleanup-v6-0-46d136a4e8d0@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=f0UcyazsjAEUmn8g2uHDmiUNyZtwYLIAqf5BPJGhMr2C7kfbFttpJjfB4MTchyazvUb+a0AYa/KsyucQMMwZfTEna6nOdo/u+hPdjvQTt3Od1+PUl/3tgLaYnS9vyd8ROA4HQNdCU3fjMBR/chysWEX3c2arsCfQsF4/rWEYJQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DxEim5OK; arc=none smtp.client-ip=134.134.136.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706082139; x=1737618139;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=rpFgire7Svqru/HfpQ1b16RkVx0842HOL7xbgXY2vaQ=;
+  b=DxEim5OKkxWhq/fmmpcb6qriPpEEMdNxTU/AWUYZDgVotvNyZ2MeOM0A
+   tnTekbp8xiaqRMIrXmjE/GhfNom8ybwX+oBMmcFzPNPEsDnf1Bx3jk5N6
+   PWK0YOeKHHCkGiY1MkFlbuW0vgyTG94IqTTtiey4JRd9jQq3yvgA8tU1C
+   x+BgE1dl5WQzfkcqg6VerSEeQ1RvY6ay6cF7d8vtMBz5YLogLA8jqWmTL
+   Y8OulnN07dkGnSQWH8Z+2vcPd3potfsaaBj9qOs8yNiYYD2wYTNf6xNyx
+   /BP1SFyRD1rxKnY82lehskJC2l5qxN/LQq4ReJZGpgMVnyjFGBrfxsmgm
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="392184641"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="392184641"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 23:42:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="1819150"
+Received: from bbaidya-mobl.amr.corp.intel.com (HELO desk) ([10.209.53.134])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 23:42:12 -0800
+Date: Tue, 23 Jan 2024 23:42:11 -0800
+From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Andy Lutomirski <luto@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+	Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
+	ak@linux.intel.com, tim.c.chen@linux.intel.com,
+	Andrew Cooper <andrew.cooper3@citrix.com>,
+	Nikolay Borisov <nik.borisov@suse.com>
+Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	kvm@vger.kernel.org,
+	Alyssa Milburn <alyssa.milburn@linux.intel.com>,
+	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+	antonio.gomez.iglesias@linux.intel.com,
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Subject: [PATCH  v6 5/6] KVM: VMX: Use BT+JNC, i.e. EFLAGS.CF to select
+ VMRESUME vs. VMLAUNCH
+Message-ID: <20240123-delay-verw-v6-5-a8206baca7d3@linux.intel.com>
+X-Mailer: b4 0.12.3
+References: <20240123-delay-verw-v6-0-a8206baca7d3@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,135 +86,67 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230717-topic-branch_aon_cleanup-v6-0-46d136a4e8d0@linaro.org>
+In-Reply-To: <20240123-delay-verw-v6-0-a8206baca7d3@linux.intel.com>
 
-On 24-01-13 15:50:49, Konrad Dybcio wrote:
-> On Qualcomm SoCs, certain branch clocks either need to be always-on, or
-> should be if you're interested in touching some part of the hardware.
-> 
-> Using CLK_IS_CRITICAL for this purpose sounds like a genius idea,
-> however that messes with the runtime pm handling - if a clock is
-> marked as such, the clock controller device will never enter the
-> "suspended" state, leaving the associated resources online, which in
-> turn breaks SoC-wide suspend.
+From: Sean Christopherson <seanjc@google.com>
 
-Generally speaking, HW-wise, if the power domain of a clock controller
-is being disabled, all clocks that it provides are being disabled.
+Use EFLAGS.CF instead of EFLAGS.ZF to track whether to use VMRESUME versus
+VMLAUNCH.  Freeing up EFLAGS.ZF will allow doing VERW, which clobbers ZF,
+for MDS mitigations as late as possible without needing to duplicate VERW
+for both paths.
 
-Are you saying that is not the case ?
+Reviewed-by: Nikolay Borisov <nik.borisov@suse.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+---
+ arch/x86/kvm/vmx/run_flags.h | 7 +++++--
+ arch/x86/kvm/vmx/vmenter.S   | 6 +++---
+ 2 files changed, 8 insertions(+), 5 deletions(-)
 
-> 
-> This series aims to solve that on a couple SoCs that I could test the
-> changes on and it sprinkles some runtime pm enablement atop these drivers.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
-> Changes in v6:
-> - Rebase (next-20240112)
-> - Reorder qcom_branch_set_clk_en calls by register in "*: Unregister
->   critical clocks" (Johan)
-> - Pick up tags
-> - Link to v5: https://lore.kernel.org/r/20230717-topic-branch_aon_cleanup-v5-0-99942e6bf1ba@linaro.org
-> 
-> Changes in v5:
-> - Change the "Keep the critical clocks always-on" comment to "Keep
->   some clocks always-on"
-> - Add the same comment to commits unregistering clocks on 6115/6375/2290
-> - Link to v4: https://lore.kernel.org/r/20230717-topic-branch_aon_cleanup-v4-0-32c293ded915@linaro.org
-> 
-> Changes in v4:
-> - Add and unify the "/* Keep the critical clocks always-on */" comment
-> - Rebase (next-20231222), also include 8650, X1E and 8280camcc drivers
-> - Drop enabling runtime PM on GCC
-> - Improve the commit message of "clk: qcom: gpucc-sm6115: Add runtime PM"
-> - Link to v3: https://lore.kernel.org/r/20230717-topic-branch_aon_cleanup-v3-0-3e31bce9c626@linaro.org
-> 
-> Changes in v3:
-> - Rebase (next-20231219)
-> - Fix up a copypaste mistake in "gcc-sm6375: Unregister critical clocks" (bod)
-> - Pick up tags
-> - Link to v2: https://lore.kernel.org/r/20230717-topic-branch_aon_cleanup-v2-0-2a583460ef26@linaro.org
-> 
-> Changes in v2:
-> - Rebase
-> - Pick up tags
-> - Fix up missing pm_runtime_put in SM6375 GCC (Johan)
-> - Clarify the commit message of "Add runtime PM" commits (Johan)
-> - "GPU_CCC" -> "GPU_CC" (oops)
-> - Rebase atop next-20231129
->   - Also fix up camcc-sm8550 & gcc-sm4450
->   - Unify and clean up the comment style
->   - Fix missing comments in gcc-sc7180..
->   - Drop Johan's ack from "clk: qcom: Use qcom_branch_set_clk_en()"
-> - Improve 6115 dt patch commit message (Bjorn)
-> - Link to v1: https://lore.kernel.org/r/20230717-topic-branch_aon_cleanup-v1-0-27784d27a4f4@linaro.org
-> 
-> ---
-> Konrad Dybcio (12):
->       clk: qcom: branch: Add a helper for setting the enable bit
->       clk: qcom: Use qcom_branch_set_clk_en()
->       clk: qcom: gcc-sm6375: Unregister critical clocks
->       clk: qcom: gpucc-sm6375: Unregister critical clocks
->       clk: qcom: gpucc-sm6115: Unregister critical clocks
->       clk: qcom: gpucc-sm6115: Add runtime PM
->       clk: qcom: gcc-sm6115: Unregister critical clocks
->       clk: qcom: gcc-qcm2290: Unregister critical clocks
->       arm64: dts: qcom: sm6375: Add VDD_CX to GCC
->       arm64: dts: qcom: qcm2290: Add VDD_CX to GCC
->       arm64: dts: qcom: sm6115: Add VDD_CX to GCC
->       arm64: dts: qcom: sm6115: Add VDD_CX to GPU_CC
-> 
->  arch/arm64/boot/dts/qcom/qcm2290.dtsi |   1 +
->  arch/arm64/boot/dts/qcom/sm6115.dtsi  |   3 +
->  arch/arm64/boot/dts/qcom/sm6375.dtsi  |   1 +
->  drivers/clk/qcom/camcc-sc8280xp.c     |   6 +-
->  drivers/clk/qcom/camcc-sm8550.c       |  10 +--
->  drivers/clk/qcom/clk-branch.h         |   7 ++
->  drivers/clk/qcom/dispcc-qcm2290.c     |   4 +-
->  drivers/clk/qcom/dispcc-sc7280.c      |   7 +-
->  drivers/clk/qcom/dispcc-sc8280xp.c    |   4 +-
->  drivers/clk/qcom/dispcc-sm6115.c      |   4 +-
->  drivers/clk/qcom/dispcc-sm8250.c      |   4 +-
->  drivers/clk/qcom/dispcc-sm8450.c      |   7 +-
->  drivers/clk/qcom/dispcc-sm8550.c      |   7 +-
->  drivers/clk/qcom/dispcc-sm8650.c      |   4 +-
->  drivers/clk/qcom/gcc-qcm2290.c        | 106 +++--------------------------
->  drivers/clk/qcom/gcc-sa8775p.c        |  25 +++----
->  drivers/clk/qcom/gcc-sc7180.c         |  22 +++---
->  drivers/clk/qcom/gcc-sc7280.c         |  20 +++---
->  drivers/clk/qcom/gcc-sc8180x.c        |  28 +++-----
->  drivers/clk/qcom/gcc-sc8280xp.c       |  25 +++----
->  drivers/clk/qcom/gcc-sdx55.c          |  12 ++--
->  drivers/clk/qcom/gcc-sdx65.c          |  13 ++--
->  drivers/clk/qcom/gcc-sdx75.c          |  10 +--
->  drivers/clk/qcom/gcc-sm4450.c         |  28 +++-----
->  drivers/clk/qcom/gcc-sm6115.c         | 124 +++-------------------------------
->  drivers/clk/qcom/gcc-sm6375.c         | 105 +++-------------------------
->  drivers/clk/qcom/gcc-sm7150.c         |  23 +++----
->  drivers/clk/qcom/gcc-sm8250.c         |  19 ++----
->  drivers/clk/qcom/gcc-sm8350.c         |  20 +++---
->  drivers/clk/qcom/gcc-sm8450.c         |  21 +++---
->  drivers/clk/qcom/gcc-sm8550.c         |  21 +++---
->  drivers/clk/qcom/gcc-sm8650.c         |  16 ++---
->  drivers/clk/qcom/gcc-x1e80100.c       |  16 ++---
->  drivers/clk/qcom/gpucc-sc7280.c       |   9 +--
->  drivers/clk/qcom/gpucc-sc8280xp.c     |   9 +--
->  drivers/clk/qcom/gpucc-sm6115.c       |  53 ++++++---------
->  drivers/clk/qcom/gpucc-sm6375.c       |  34 ++--------
->  drivers/clk/qcom/gpucc-sm8550.c       |  10 +--
->  drivers/clk/qcom/lpasscorecc-sc7180.c |   7 +-
->  drivers/clk/qcom/videocc-sm8250.c     |   6 +-
->  drivers/clk/qcom/videocc-sm8350.c     |  10 +--
->  drivers/clk/qcom/videocc-sm8450.c     |  13 ++--
->  drivers/clk/qcom/videocc-sm8550.c     |  13 ++--
->  43 files changed, 234 insertions(+), 653 deletions(-)
-> ---
-> base-commit: 8d04a7e2ee3fd6aabb8096b00c64db0d735bc874
-> change-id: 20230717-topic-branch_aon_cleanup-6976c13fe71c
-> 
-> Best regards,
-> -- 
-> Konrad Dybcio <konrad.dybcio@linaro.org>
-> 
-> 
+diff --git a/arch/x86/kvm/vmx/run_flags.h b/arch/x86/kvm/vmx/run_flags.h
+index edc3f16cc189..6a9bfdfbb6e5 100644
+--- a/arch/x86/kvm/vmx/run_flags.h
++++ b/arch/x86/kvm/vmx/run_flags.h
+@@ -2,7 +2,10 @@
+ #ifndef __KVM_X86_VMX_RUN_FLAGS_H
+ #define __KVM_X86_VMX_RUN_FLAGS_H
+ 
+-#define VMX_RUN_VMRESUME	(1 << 0)
+-#define VMX_RUN_SAVE_SPEC_CTRL	(1 << 1)
++#define VMX_RUN_VMRESUME_SHIFT		0
++#define VMX_RUN_SAVE_SPEC_CTRL_SHIFT	1
++
++#define VMX_RUN_VMRESUME		BIT(VMX_RUN_VMRESUME_SHIFT)
++#define VMX_RUN_SAVE_SPEC_CTRL		BIT(VMX_RUN_SAVE_SPEC_CTRL_SHIFT)
+ 
+ #endif /* __KVM_X86_VMX_RUN_FLAGS_H */
+diff --git a/arch/x86/kvm/vmx/vmenter.S b/arch/x86/kvm/vmx/vmenter.S
+index be275a0410a8..b3b13ec04bac 100644
+--- a/arch/x86/kvm/vmx/vmenter.S
++++ b/arch/x86/kvm/vmx/vmenter.S
+@@ -139,7 +139,7 @@ SYM_FUNC_START(__vmx_vcpu_run)
+ 	mov (%_ASM_SP), %_ASM_AX
+ 
+ 	/* Check if vmlaunch or vmresume is needed */
+-	test $VMX_RUN_VMRESUME, %ebx
++	bt   $VMX_RUN_VMRESUME_SHIFT, %ebx
+ 
+ 	/* Load guest registers.  Don't clobber flags. */
+ 	mov VCPU_RCX(%_ASM_AX), %_ASM_CX
+@@ -161,8 +161,8 @@ SYM_FUNC_START(__vmx_vcpu_run)
+ 	/* Load guest RAX.  This kills the @regs pointer! */
+ 	mov VCPU_RAX(%_ASM_AX), %_ASM_AX
+ 
+-	/* Check EFLAGS.ZF from 'test VMX_RUN_VMRESUME' above */
+-	jz .Lvmlaunch
++	/* Check EFLAGS.CF from the VMX_RUN_VMRESUME bit test above. */
++	jnc .Lvmlaunch
+ 
+ 	/*
+ 	 * After a successful VMRESUME/VMLAUNCH, control flow "magically"
+
+-- 
+2.34.1
+
+
 
