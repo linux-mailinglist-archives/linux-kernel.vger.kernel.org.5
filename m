@@ -1,140 +1,250 @@
-Return-Path: <linux-kernel+bounces-37447-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40A4583B065
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:51:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1EF683B030
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:40:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A353B27B3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:38:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0404B1C22332
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:40:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FA33811F9;
-	Wed, 24 Jan 2024 17:38:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8AFF81AC1;
+	Wed, 24 Jan 2024 17:40:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lpF5jWzx"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ZkDgfCqn"
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DB1D7F7E5
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 17:38:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EB9577F0D;
+	Wed, 24 Jan 2024 17:40:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706117912; cv=none; b=IynD5kJ38SX/jP82RXzupSKy0436RUrWiB6y5bx7x/y45OKPRfDCkwzY8OfnMW8QzB1Ad2bqG4MwiJ4m2tCuubJRbwWV0E1x+Z7+j7hYJxw+LFA1Ms7oV9o1arM0VVQYRGU5ko71fooLEoExcLLDN/cNZtiDq5BEJkPxg+gQqvE=
+	t=1706118022; cv=none; b=axkTB19tHfVHxKhgXS+olZDEIyEN/1tBxJgdxJMM/GYUgomchA4zmf3jReGzeEl1fLk8hpqjCttmcUK4b9J4s218XXN3hBFrEFCHD1WgDx5xKqKV2y0xS4JPFMIibukI12U11QW/Cnpo46TvhWf/DaTr4tDt5GNgmgmL4WwnPxQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706117912; c=relaxed/simple;
-	bh=yJ/BKkfpXJzgeyNiHaKMu/CgCnQKf/dgognXWBGDJRs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=G6uCMsUaRr2xG5y5zs0VSTR0ONmv5Abt3H/R40J9aSf2r4UJJvgi8rXzXNrN8U0+E6UgnswOVMBUnkV64IisW33zk3I1iRSo342n5wT0nfsGffIUzzqywUveIvL6SYL12MjnJhrKG7QXQYB9D0BI8usw+44AqD0hvzItbHq7pJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lpF5jWzx; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d72d240c69so168965ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 09:38:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706117910; x=1706722710; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yJ/BKkfpXJzgeyNiHaKMu/CgCnQKf/dgognXWBGDJRs=;
-        b=lpF5jWzxTcpFc2COD2Q4RapamyszvZxdwd0bsZg/HrnlfOdVIDIffTbWB1o/BIWmvr
-         MN5A6AvmJbCDvWMWV8TOtNI2rCvv7Sw3NbyhBQ5AxTS8UrdTpn1SJvuLth28j8tHDSRI
-         G2fwQg2QoYI5Z7rICBx6JLCP/Oflqet6iVbSsuoNG/fram0WXqnyXOd50B4XBlHeFv/8
-         Al0APVU4jlXMtGMAM+9KbFA9ajOQi1Y9e10C/gfsyhFF0PwOZAnJ4NWRNQ4otvcdgHj6
-         ypI22zdRz7nDlGm2v6R+0ntIkCqwtYHwVql6M8MHQYOypPoBmJoowJw/gKycs/FjI7B4
-         HvrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706117910; x=1706722710;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yJ/BKkfpXJzgeyNiHaKMu/CgCnQKf/dgognXWBGDJRs=;
-        b=IAIMNsz48ea65mmWL4KZIIjurxYp51cTQcJtgygV6Z48RM/j2UKZt634AWhEv5u7UY
-         MwenV0aJCvgf/N8gcDWNLHeJsi1phUBJu5Z6338rZtBwMWNxt5QXY+mw9kPD9XFl16GL
-         rWiSFYmlW+usv3dw9UoaOrNZrMXjpaSbiC6QGSa19aK//MEvWjwS5WyFXcbtGHEELe9M
-         V4N/WS/ISxsGYL6xTQ+I5RIhzR+HfuviYDHZTdlccZ/K7j9JwCOVtNncOMF8qfocRFXA
-         Am2OSpGxL/C4Swco3YEDNoUTCOufBFN0tojO/tzXBYtYtqaACul/f9UYGXjm0JpOBvIH
-         GSSQ==
-X-Gm-Message-State: AOJu0Yy249N7eC0Qf+43ScYF7tcOgcfX3GpXwEqmknQtsVRgsmsN2LmP
-	IdFkOcQlXC3k2aqIUI6yCfV+pVZ0mo3mxUPMPtDl1yLd7wXJcsmKqDc/wH8nNIiuY0Mm9RJngXz
-	hcNBUXza6dBZ+HJAet/aFJuWgAbCen8bh4hA3
-X-Google-Smtp-Source: AGHT+IFB5hVm3nPtQ1RkStaM3t/gRxrS+28Wx2F0onfV8o6fOhomKTu7ndT8c1ooAvc+cAfwWvFudUBaqRv9FcYZ8EE=
-X-Received: by 2002:a17:902:db04:b0:1d7:246c:2fc1 with SMTP id
- m4-20020a170902db0400b001d7246c2fc1mr216102plx.26.1706117910167; Wed, 24 Jan
- 2024 09:38:30 -0800 (PST)
+	s=arc-20240116; t=1706118022; c=relaxed/simple;
+	bh=tnMxDBDZrolLa61sNFNNRToA24Ly+A39bcNO7Dae1ws=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:To:From:Subject:
+	 References:In-Reply-To; b=PbwOcndO68gEzMx0iknKMuUAe2pTu3FO3OfQzshEN+Pj2evBQ23pPfMZkKarQiiYlJn/auiXwi0dipzMd7LtO184IxTbMgm3dJYD2eT/FF4L/8gGFtqvfU0PGLuFAB4Nytz1MFyaq4mV7jGtLA/DQdhD87SlPaiqremNdOBhjsI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ZkDgfCqn; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 9092C20002;
+	Wed, 24 Jan 2024 17:40:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1706118018;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=O3Maf03SY5zgyI6f7z0wgBmsqcEvFSZSxYtZdnKCqrQ=;
+	b=ZkDgfCqngzaSe1DzUlJBp+qY2wjuDx6IIfwDqC4ukQHJKMGcvVAlWhnGBVPMaSh40HjVZY
+	y071i5ML7p2Nt+h/tThD1U4PGdeQ8lXdF7CGCoPgRqZHeq2FTJbUnxJzBAukoF2VDfTYhE
+	LnperkGBzo88kwYf/o+v2nDE2SSYtZvKtHYY37effFs4AmMygdJqlg0Pkm/Icq4PnuH7Iv
+	cPlYvZpoZlFoH1WC21FzjQXLuvvArXas7Sy1YXw0rh1M5ZNjMWXOwJSJXHDxyXvQGnDukD
+	xS72Cnu1xndbyl/fnwYLOg0tg6us8TUDndufL/oGii1y/M6SlHbXmGvsk1jhRA==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240124100023.660032-1-yosryahmed@google.com>
-In-Reply-To: <20240124100023.660032-1-yosryahmed@google.com>
-From: Shakeel Butt <shakeelb@google.com>
-Date: Wed, 24 Jan 2024 09:38:18 -0800
-Message-ID: <CALvZod5+S5RLt5t=+ZvrRgOkAhNvC9mJo1SE7r6Ms1LRodV3RQ@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcg: optimize parent iteration in memcg_rstat_updated()
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, kernel test robot <oliver.sang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 24 Jan 2024 18:40:17 +0100
+Message-Id: <CYN4D0Z6600X.20W9VWX4BGNXX@bootlin.com>
+Cc: "Gregory CLEMENT" <gregory.clement@bootlin.com>, "Michael Turquette"
+ <mturquette@baylibre.com>, "Stephen Boyd" <sboyd@kernel.org>, "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley"
+ <conor+dt@kernel.org>, "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+ "Linus Walleij" <linus.walleij@linaro.org>,
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>, "Philipp Zabel"
+ <p.zabel@pengutronix.de>, "Vladimir Kondratiev"
+ <vladimir.kondratiev@mobileye.com>, <linux-mips@vger.kernel.org>,
+ <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>, <linux-gpio@vger.kernel.org>
+To: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, "Rob Herring"
+ <robh@kernel.org>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH v3 04/17] dt-bindings: soc: mobileye: add EyeQ5 OLB
+ system controller
+X-Mailer: aerc 0.15.2
+References: <20240123-mbly-clk-v3-0-392b010b8281@bootlin.com>
+ <20240123-mbly-clk-v3-4-392b010b8281@bootlin.com>
+ <20240124151405.GA930997-robh@kernel.org>
+ <CYN43TSPPPZ5.1VUA1CH95D8KJ@bootlin.com>
+In-Reply-To: <CYN43TSPPPZ5.1VUA1CH95D8KJ@bootlin.com>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-On Wed, Jan 24, 2024 at 2:00=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
->
-> In memcg_rstat_updated(), we iterate the memcg being updated and its
-> parents to update memcg->vmstats_percpu->stats_updates in the fast path
-> (i.e. no atomic updates). According to my math, this is 3 memory loads
-> (and potentially 3 cache misses) per memcg:
-> - Load the address of memcg->vmstats_percpu.
-> - Load vmstats_percpu->stats_updates (based on some percpu calculation).
-> - Load the address of the parent memcg.
->
-> Avoid most of the cache misses by caching a pointer from each struct
-> memcg_vmstats_percpu to its parent on the corresponding CPU. In this
-> case, for the first memcg we have 2 memory loads (same as above):
-> - Load the address of memcg->vmstats_percpu.
-> - Load vmstats_percpu->stats_updates (based on some percpu calculation).
->
-> Then for each additional memcg, we need a single load to get the
-> parent's stats_updates directly. This reduces the number of loads from
-> O(3N) to O(2+N) -- where N is the number of memcgs we need to iterate.
->
-> Additionally, stash a pointer to memcg->vmstats in each struct
-> memcg_vmstats_percpu such that we can access the atomic counter that all
-> CPUs fold into, memcg->vmstats->stats_updates.
-> memcg_should_flush_stats() is changed to memcg_vmstats_needs_flush() to
-> accept a struct memcg_vmstats pointer accordingly.
->
-> In struct memcg_vmstats_percpu, make sure both pointers together with
-> stats_updates live on the same cacheline. Finally, update
-> mem_cgroup_alloc() to take in a parent pointer and initialize the new
-> cache pointers on each CPU. The percpu loop in mem_cgroup_alloc() may
-> look concerning, but there are multiple similar loops in the cgroup
-> creation path (e.g. cgroup_rstat_init()), most of which are hidden
-> within alloc_percpu().
->
-> According to Oliver's testing [1], this fixes multiple 30-38%
-> regressions in vm-scalability, will-it-scale-tlb_flush2, and
-> will-it-scale-fallocate1. This comes at a cost of 2 more pointers per
-> CPU (<2KB on a machine with 128 CPUs).
->
-> [1] https://lore.kernel.org/lkml/ZbDJsfsZt2ITyo61@xsang-OptiPlex-9020/
->
-> Fixes: 8d59d2214c23 ("mm: memcg: make stats flushing threshold per-memcg"=
-)
-> Tested-by: kernel test robot <oliver.sang@intel.com>
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/oe-lkp/202401221624.cb53a8ca-oliver.sang@=
-intel.com
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> ---
+Hello,
 
-Nice work.
+On Wed Jan 24, 2024 at 6:28 PM CET, Th=C3=A9o Lebrun wrote:
+> Hello,
+>
+> On Wed Jan 24, 2024 at 4:14 PM CET, Rob Herring wrote:
+> > On Tue, Jan 23, 2024 at 07:46:49PM +0100, Th=C3=A9o Lebrun wrote:
+> > > Add documentation to describe the "Other Logic Block" syscon.
+> > >=20
+> > > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+> > > ---
+> > >  .../bindings/soc/mobileye/mobileye,eyeq5-olb.yaml  | 77 ++++++++++++=
+++++++++++
+> > >  MAINTAINERS                                        |  1 +
+> > >  2 files changed, 78 insertions(+)
+> > >=20
+> > > diff --git a/Documentation/devicetree/bindings/soc/mobileye/mobileye,=
+eyeq5-olb.yaml b/Documentation/devicetree/bindings/soc/mobileye/mobileye,ey=
+eq5-olb.yaml
+> > > new file mode 100644
+> > > index 000000000000..031ef6a532c1
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-o=
+lb.yaml
+> > > @@ -0,0 +1,77 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/soc/mobileye/mobileye,eyeq5-olb.y=
+aml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Mobileye EyeQ5 SoC system controller
+> > > +
+> > > +maintainers:
+> > > +  - Gr=C3=A9gory Clement <gregory.clement@bootlin.com>
+> > > +  - Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+> > > +  - Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
+> > > +
+> > > +description:
+> > > +  OLB ("Other Logic Block") is a hardware block grouping smaller blo=
+cks. Clocks,
+> > > +  resets, pinctrl are being handled from here.
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    items:
+> > > +      - const: mobileye,eyeq5-olb
+> > > +      - const: syscon
+> > > +      - const: simple-mfd
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +  clock-controller:
+> > > +    $ref: /schemas/clock/mobileye,eyeq5-clk.yaml#
+> > > +    type: object
+> > > +
+> > > +  reset-controller:
+> > > +    $ref: /schemas/reset/mobileye,eyeq5-reset.yaml#
+> > > +    type: object
+> > > +
+> > > +  pinctrl-a:
+> > > +    $ref: /schemas/pinctrl/mobileye,eyeq5-pinctrl.yaml#
+> > > +    type: object
+> > > +
+> > > +  pinctrl-b:
+> > > +    $ref: /schemas/pinctrl/mobileye,eyeq5-pinctrl.yaml#
+> > > +    type: object
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - reg
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    system-controller@e00000 {
+> > > +      compatible =3D "mobileye,eyeq5-olb", "syscon", "simple-mfd";
+> > > +      reg =3D <0xe00000 0x400>;
+> > > +
+> > > +      clock-controller {
+> > > +        compatible =3D "mobileye,eyeq5-clk";
+> > > +        #clock-cells =3D <1>;
+> > > +        clocks =3D <&xtal>;
+> > > +        clock-names =3D "ref";
+> > > +      };
+> > > +
+> > > +      reset-controller {
+> > > +        compatible =3D "mobileye,eyeq5-reset";
+> > > +        #reset-cells =3D <2>;
+> > > +      };
+> > > +
+> > > +      pinctrl-a {
+> > > +        compatible =3D "mobileye,eyeq5-a-pinctrl";
+> > > +        #pinctrl-cells =3D <1>;
+> >
+> > Sure you need this? Generally only pinctrl-single uses this.
+>
+> You are completely right, it is useless. I naively expected it in the
+> same vein as other subsystems.
+>
+> >
+> > > +      };
+> > > +
+> > > +      pinctrl-b {
+> > > +        compatible =3D "mobileye,eyeq5-b-pinctrl";
+> > > +        #pinctrl-cells =3D <1>;
+> > > +      };
+> > > +    };
+> >
+> > This can all be simplified to:
+> >
+> > system-controller@e00000 {
+> >     compatible =3D "mobileye,eyeq5-olb", "syscon";
+> >     reg =3D <0xe00000 0x400>;
+> >     #reset-cells =3D <2>;
+> >     #clock-cells =3D <1>;
+> >     clocks =3D <&xtal>;
+> >     clock-names =3D "ref";
+> >
+> >     pins { ... };
+> > };
+> >
+> > There is no need for sub nodes unless you have reusable blocks or each=
+=20
+> > block has its own resources in DT.
+>
+> That is right, and it does simplify the devicetree as you have shown.
+> However, the split nodes gives the following advantages:
+>
+>  - Devicetree-wise, it allows for one alias per function.
+>    `clocks =3D <&clocks EQ5C_PLL_CPU>` is surely more intuitive
+>    than `clocks =3D <&olb EQ5C_PLL_CPU>;`. Same for reset.
+>
+>  - It means an MFD driver must be implemented, adding between 100 to 200
+>    lines of boilerplate code to the kernel.
+>
+>  - It means one pinctrl device for the two banks. That addresses your
+>    comment on [PATCH v3 10/17]. This is often done and would be doable
+>    on this platform. However it means added logic to each individual
+>    function of pinctrl-eyeq5.
+>
+>    Overall it makes for less readable code, for code that already looks
+>    more complex than it really is.
+>
+>    My initial non-public version of pinctrl-eyeq5 was using this method
+>    (a device handling both banks) and I've leaned away from it.
 
-Acked-by: Shakeel Butt <shakeelb@google.com>
+I had forgotten one other reason:
+
+ - Reusability does count for something. Other Mobileye platforms exist,
+   and the system controller stuff is more complex on those. Multiple
+   different OLB blocks, etc. But my understanding is that
+   per-peripheral logic is reused across versions.
+
+>
+> Those are all minor, but I don't have the feeling a few lines and nodes
+> less in devicetree compensate for those.
+
+Thanks,
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
 
