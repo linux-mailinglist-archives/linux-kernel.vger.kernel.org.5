@@ -1,242 +1,205 @@
-Return-Path: <linux-kernel+bounces-36816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36817-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A10983A748
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:54:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4477283A749
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:54:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7AFAB2A59D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:52:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1298284FF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:54:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29FDE199A1;
-	Wed, 24 Jan 2024 10:52:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Q0UrPpdx"
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11F891AAA5;
+	Wed, 24 Jan 2024 10:54:40 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B240175AB
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:52:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09C85199C7
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:54:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706093550; cv=none; b=NFP1XjBShiJ/bhxrRQ5FpWsA5ibVzWaDgLaneNM5Q8OFwFIPv6Q9mKqtVzF7wwcQUFhjNf7DHfR1YYBARvlMo63t89UVdA8KbDwxsyBjf6LM7oqsLMUdI0wX8dfN+oSSjzCJXLOAdPXvUiksR07+lwh7rEJ1+gNHv6MkKwPGxT4=
+	t=1706093679; cv=none; b=VYhsB44lh59v7/0PHxd4n+NMxVC5r/0/NkoSinXlTZVrUtGE+FPN4zUL+VWW/B7OvFYHJb4jeqebKm46GniP2TBxUuo24Tu+HFtSwyV+ATDrH9PH++DpQIfFXbI6ygMXAFuCJlrq9Hj45Ls0afsRvk3xKly6ajfp8NnlB/ZrlPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706093550; c=relaxed/simple;
-	bh=tPXlw++b6L5n5Ao3RTzdzn6KuLZzlYmo8XX2pgFYRxw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LddyGkJTXq+uwt/iT8nVr2XmzUDTFFHi2bxXSi2hykkTFBtaJt8Esn4AaHaj7p7iN+NRhPTUgs8GzRGBlBoV23EEawodkxpkukdOyGcKtRqa+JTzoWaOHAaPe4+VWJVxFDaxpL7/1XU6ggYXkx4fZ3KyJHDOWtT53UJnsdrJqgw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Q0UrPpdx; arc=none smtp.client-ip=91.218.175.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ef5b09e9-8cfb-4e74-89d4-5ebde12361cf@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706093545;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hSGlNhweEQPHhtTtW35MZtCA/Y0flZ+/CGgGW317yTg=;
-	b=Q0UrPpdxJ6FQa5MfWqrJnctEYjgv0R/38rUgx+1uUIwNMaa9gGQicl5F1PDnDNTlrqGeAr
-	6jALov1KSMUWA3jb+3+9ahqeLsn+lN6JuwjlQXfn6Plw5U0AexpYJ/Q2z/YVw3Hr1l5Iaa
-	PvwCc4jPNOVE48V8zGkgeZUF9nwQLgc=
-Date: Wed, 24 Jan 2024 18:52:19 +0800
+	s=arc-20240116; t=1706093679; c=relaxed/simple;
+	bh=lKdiVruIzPpYmtbsDhdv0Tfge2qMRNvAnOAyUZusIqI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Y2cyYeQGPuJdh/2HyY3LRwYeI07xk55BWaMt6MtS8Wy1uMVh8i6QSffrMj9VRgqLTd9sBgKi0+687/tG9jPSHUnRIGEaHa7F2HZdfEiABrlV0kDSQ6Apbp2xzOgXyH2K73EMpscmuPkYfV9ZcpoxIKUGvsc0qsyUWpdod4ZdGvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rSatc-00013p-UF; Wed, 24 Jan 2024 11:54:16 +0100
+Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rSatb-0022P4-5Z; Wed, 24 Jan 2024 11:54:15 +0100
+Received: from pza by lupine with local (Exim 4.96)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rSatb-00086H-0J;
+	Wed, 24 Jan 2024 11:54:15 +0100
+Message-ID: <82bde47d48ec2962d69d9e4edde6d6d96fcbbd65.camel@pengutronix.de>
+Subject: Re: [PATCH v3 09/17] reset: eyeq5: add platform driver
+From: Philipp Zabel <p.zabel@pengutronix.de>
+To: =?ISO-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>, Gregory
+ CLEMENT <gregory.clement@bootlin.com>, Michael Turquette
+ <mturquette@baylibre.com>,  Stephen Boyd <sboyd@kernel.org>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Linus Walleij
+ <linus.walleij@linaro.org>,  =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?=
+ <rafal@milecki.pl>
+Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ linux-mips@vger.kernel.org, linux-clk@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+  linux-gpio@vger.kernel.org
+Date: Wed, 24 Jan 2024 11:54:14 +0100
+In-Reply-To: <20240123-mbly-clk-v3-9-392b010b8281@bootlin.com>
+References: <20240123-mbly-clk-v3-0-392b010b8281@bootlin.com>
+	 <20240123-mbly-clk-v3-9-392b010b8281@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 7/7] hugetlb: parallelize 1G hugetlb initialization
-Content-Language: en-US
-To: Muchun Song <muchun.song@linux.dev>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- ligang.bdlg@bytedance.com, David Hildenbrand <david@redhat.com>,
- David Rientjes <rientjes@google.com>, Mike Kravetz
- <mike.kravetz@oracle.com>, Andrew Morton <akpm@linux-foundation.org>,
- Tim Chen <tim.c.chen@linux.intel.com>
-References: <20240118123911.88833-1-gang.li@linux.dev>
- <20240118123911.88833-8-gang.li@linux.dev>
- <da1258e3-f828-4bbc-a2c2-8fe1ef808c9a@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Gang Li <gang.li@linux.dev>
-In-Reply-To: <da1258e3-f828-4bbc-a2c2-8fe1ef808c9a@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On 2024/1/24 17:23, Muchun Song wrote:
-> On 2024/1/18 20:39, Gang Li wrote:
->> Optimizing the initialization speed of 1G huge pages through
->> parallelization.
->>
->> 1G hugetlbs are allocated from bootmem, a process that is already
->> very fast and does not currently require optimization. Therefore,
->> we focus on parallelizing only the initialization phase in
->> `gather_bootmem_prealloc`.
->>
->> Here are some test results:
->>          test          no patch(ms)   patched(ms)   saved
->>   ------------------- -------------- ------------- --------
->>    256c2t(4 node) 1G           4745          2024   57.34%
-> 
-> What does "256c2t" mean?
+On Di, 2024-01-23 at 19:46 +0100, Th=C3=A9o Lebrun wrote:
+[...]
+> diff --git a/drivers/reset/reset-eyeq5.c b/drivers/reset/reset-eyeq5.c
+> new file mode 100644
+> index 000000000000..2217e42e140b
+> --- /dev/null
+> +++ b/drivers/reset/reset-eyeq5.c
+> @@ -0,0 +1,383 @@
+[...]
 
-A machine with 256 core and 2T memory.
+> +static int eq5r_assert(struct reset_controller_dev *rcdev, unsigned long=
+ id)
+> +{
+> +	struct eq5r_private *priv =3D dev_get_drvdata(rcdev->dev);
 
-> 
->>    128c1t(2 node) 1G           3358          1712   49.02%
->>        12t        1G          77000         18300   76.23%
->>
->> Signed-off-by: Gang Li <gang.li@linux.dev>
->> Tested-by: David Rientjes <rientjes@google.com>
->> ---
->>   include/linux/hugetlb.h |  2 +-
->>   mm/hugetlb.c            | 42 +++++++++++++++++++++++++++++++++--------
->>   2 files changed, 35 insertions(+), 9 deletions(-)
->>
->> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
->> index c1ee640d87b1..77b30a8c6076 100644
->> --- a/include/linux/hugetlb.h
->> +++ b/include/linux/hugetlb.h
->> @@ -178,7 +178,7 @@ pte_t *huge_pmd_share(struct mm_struct *mm, struct 
->> vm_area_struct *vma,
->>   struct address_space *hugetlb_page_mapping_lock_write(struct page 
->> *hpage);
->>   extern int sysctl_hugetlb_shm_group;
->> -extern struct list_head huge_boot_pages;
->> +extern struct list_head huge_boot_pages[MAX_NUMNODES];
->>   /* arch callbacks */
->> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
->> index 9b348ba418f5..2f4b77630ada 100644
->> --- a/mm/hugetlb.c
->> +++ b/mm/hugetlb.c
->> @@ -69,7 +69,7 @@ static bool hugetlb_cma_folio(struct folio *folio, 
->> unsigned int order)
->>   #endif
->>   static unsigned long hugetlb_cma_size __initdata;
->> -__initdata LIST_HEAD(huge_boot_pages);
->> +__initdata struct list_head huge_boot_pages[MAX_NUMNODES];
->>   /* for command line parsing */
->>   static struct hstate * __initdata parsed_hstate;
->> @@ -3301,7 +3301,7 @@ int alloc_bootmem_huge_page(struct hstate *h, 
->> int nid)
->>   int __alloc_bootmem_huge_page(struct hstate *h, int nid)
->>   {
->>       struct huge_bootmem_page *m = NULL; /* initialize for clang */
->> -    int nr_nodes, node;
->> +    int nr_nodes, node = nid;
-> 
-> Why not use nid directly in the following list_add()?
+rcdev is contained in priv, you can just use container_of instead of
+chasing pointers around.
 
-`node` may be changed in `for_each_node_mask_to_alloc`.
+> +	u32 offset =3D id & GENMASK(7, 0);
+> +	u32 domain =3D id >> 8;
+> +	int ret;
+> +
+> +	if (WARN_ON(domain >=3D EQ5R_DOMAIN_COUNT))
+> +		return -EINVAL;
 
-> 
->>       /* do node specific alloc */
->>       if (nid != NUMA_NO_NODE) {
->> @@ -3339,7 +3339,7 @@ int __alloc_bootmem_huge_page(struct hstate *h, 
->> int nid)
->>           huge_page_size(h) - PAGE_SIZE);
->>       /* Put them into a private list first because mem_map is not up 
->> yet */
->>       INIT_LIST_HEAD(&m->list);
->> -    list_add(&m->list, &huge_boot_pages);
->> +    list_add(&m->list, &huge_boot_pages[node]);
->>       m->hstate = h;
->>       return 1;
->>   }
->> @@ -3390,8 +3390,6 @@ static void __init 
->> prep_and_add_bootmem_folios(struct hstate *h,
->>       /* Send list for bulk vmemmap optimization processing */
->>       hugetlb_vmemmap_optimize_folios(h, folio_list);
->> -    /* Add all new pool pages to free lists in one lock cycle */
->> -    spin_lock_irqsave(&hugetlb_lock, flags);
->>       list_for_each_entry_safe(folio, tmp_f, folio_list, lru) {
->>           if (!folio_test_hugetlb_vmemmap_optimized(folio)) {
->>               /*
->> @@ -3404,23 +3402,27 @@ static void __init 
->> prep_and_add_bootmem_folios(struct hstate *h,
->>                       HUGETLB_VMEMMAP_RESERVE_PAGES,
->>                       pages_per_huge_page(h));
->>           }
->> +        /* Subdivide locks to achieve better parallel performance *
->> +        spin_lock_irqsave(&hugetlb_lock, flags);
->>           __prep_account_new_huge_page(h, folio_nid(folio));
->>           enqueue_hugetlb_folio(h, folio);
->> +        spin_unlock_irqrestore(&hugetlb_lock, flags);
->>       }
->> -    spin_unlock_irqrestore(&hugetlb_lock, flags);
->>   }
->>   /*
->>    * Put bootmem huge pages into the standard lists after mem_map is up.
->>    * Note: This only applies to gigantic (order > MAX_PAGE_ORDER) pages.
->>    */
->> -static void __init gather_bootmem_prealloc(void)
->> +static void __init __gather_bootmem_prealloc(unsigned long start, 
->> unsigned long end, void *arg)
-> 
-> This function name could be gather_bootmem_prealloc_node.
-> 
+Reset controls with domain >=3D EQ5R_DOMAIN_COUNT are already weeded out
+during request by of_xlate, so this check is not necessary.
 
-LGTM.
+> +	dev_dbg(rcdev->dev, "%u-%u: assert request\n", domain, offset);
+> +
+> +	mutex_lock(&priv->mutexes[domain]);
+> +	_eq5r_assert(priv, domain, offset);
+> +	ret =3D _eq5r_busy_wait(priv, rcdev->dev, domain, offset, true);
+> +	mutex_unlock(&priv->mutexes[domain]);
+> +
+> +	return ret;
 
->> +
->>   {
->> +    int nid = start;
->>       LIST_HEAD(folio_list);
->>       struct huge_bootmem_page *m;
->>       struct hstate *h = NULL, *prev_h = NULL;
->> -    list_for_each_entry(m, &huge_boot_pages, list) {
->> +    list_for_each_entry(m, &huge_boot_pages[nid], list) {
->>           struct page *page = virt_to_page(m);
->>           struct folio *folio = (void *)page;
->> @@ -3453,6 +3455,22 @@ static void __init gather_bootmem_prealloc(void)
->>       prep_and_add_bootmem_folios(h, &folio_list);
->>   }
->> +static void __init gather_bootmem_prealloc(void)
->> +{
->> +    struct padata_mt_job job = {
->> +        .thread_fn    = __gather_bootmem_prealloc,
->> +        .fn_arg        = NULL,
->> +        .start        = 0,
->> +        .size        = num_node_state(N_MEMORY),
->> +        .align        = 1,
->> +        .min_chunk    = 1,
->> +        .max_threads    = num_node_state(N_MEMORY),
->> +        .numa_aware    = true,
->> +    };
->> +
->> +    padata_do_multithreaded(&job);
->> +}
->> +
->>   static void __init hugetlb_hstate_alloc_pages_onenode(struct hstate 
->> *h, int nid)
->>   {
->>       unsigned long i;
->> @@ -3602,6 +3620,14 @@ static void __init 
->> hugetlb_hstate_alloc_pages(struct hstate *h)
->>           return;
->>       }
->> +    /* hugetlb_hstate_alloc_pages will be called many times, init 
->> huge_boot_pages once*/
-> 
-> s/init/initialize/g
-> 
-> And you miss a black right before "*/".
+Consider using guard(mutex)(&priv->mutexes[domain]) from
+linux/cleanup.h to automatically unlock on return.
 
-OK
+[...]
+> +static int eq5r_reset(struct reset_controller_dev *rcdev, unsigned long =
+id)
 
-> 
->> +    if (huge_boot_pages[0].next == NULL) {
-> 
-> It it not intuitive. I'd like to use a 'initialied' variable
+Is this used by anything? If unused, I'd prefer this not to be
+implemented. If it is used, is no delay required between assert and
+deassert by any consumer?
 
-Would it make the code look a bit redundant?
+> +{
+> +	struct device *dev =3D rcdev->dev;
+> +	struct eq5r_private *priv =3D dev_get_drvdata(dev);
+> +	u32 offset =3D id & GENMASK(7, 0);
+> +	u32 domain =3D id >> 8;
+> +	int ret;
+> +
+> +	if (WARN_ON(domain >=3D EQ5R_DOMAIN_COUNT))
+> +		return -EINVAL;
+> +
+> +	dev_dbg(dev, "%u-%u: reset request\n", domain, offset);
+> +
+> +	mutex_lock(&priv->mutexes[domain]);
+> +
+> +	_eq5r_assert(priv, domain, offset);
+> +	ret =3D _eq5r_busy_wait(priv, dev, domain, offset, true);
+> +	if (ret) /* don't let an error disappear silently */
+> +		dev_warn(dev, "%u-%u: reset assert failed: %d\n",
+> +			 domain, offset, ret);
 
-> to indicate whether it has been initialized. BTW, it can be
-> marked as __initdata.
->
+Why not return the error though?
 
-OK
+> +	_eq5r_deassert(priv, domain, offset);
+> +	ret =3D _eq5r_busy_wait(priv, dev, domain, offset, false);
+> +
+> +	mutex_unlock(&priv->mutexes[domain]);
+> +
+> +	return ret;
+> +}
+[...]
+> +static int eq5r_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev =3D &pdev->dev;
+> +	struct device_node *np =3D dev->of_node;
+> +	struct device_node *parent_np =3D of_get_parent(np);
+> +	struct eq5r_private *priv;
+> +	int ret, i;
+> +
+> +	priv =3D kzalloc(sizeof(*priv), GFP_KERNEL);
+
+Using devm_kzalloc() avoids leaking this on error return or driver
+unbind.
+
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	dev_set_drvdata(dev, priv);
+> +
+> +	priv->olb =3D ERR_PTR(-ENODEV);
+> +	if (parent_np) {
+> +		priv->olb =3D syscon_node_to_regmap(parent_np);
+> +		of_node_put(parent_np);
+> +	}
+> +	if (IS_ERR(priv->olb))
+> +		return PTR_ERR(priv->olb);
+> +
+> +	for (i =3D 0; i < EQ5R_DOMAIN_COUNT; i++)
+> +		mutex_init(&priv->mutexes[i]);
+> +
+> +	priv->rcdev.ops =3D &eq5r_ops;
+> +	priv->rcdev.owner =3D THIS_MODULE;
+> +	priv->rcdev.dev =3D dev;
+> +	priv->rcdev.of_node =3D np;
+> +	priv->rcdev.of_reset_n_cells =3D 2;
+> +	priv->rcdev.of_xlate =3D eq5r_of_xlate;
+> +
+> +	priv->rcdev.nr_resets =3D 0;
+> +	for (i =3D 0; i < EQ5R_DOMAIN_COUNT; i++)
+> +		priv->rcdev.nr_resets +=3D __builtin_popcount(eq5r_valid_masks[i]);
+> +
+> +	ret =3D reset_controller_register(&priv->rcdev);
+
+Similarly, use devm_reset_controller_register() or disable driver
+unbind with suppress_bind_attrs.
+
+regards
+Philipp
+
 
