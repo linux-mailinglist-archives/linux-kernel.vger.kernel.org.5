@@ -1,134 +1,141 @@
-Return-Path: <linux-kernel+bounces-36980-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B3FA83A9C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:30:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01DE383A9C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:31:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8AE8282666
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:30:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFD8F2820EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:31:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DD5C634F3;
-	Wed, 24 Jan 2024 12:30:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE72967A0F;
+	Wed, 24 Jan 2024 12:31:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="GrrzSW06"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jF73M9Q4"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF00D633EA;
-	Wed, 24 Jan 2024 12:30:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A39C1679F1
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 12:31:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706099409; cv=none; b=OrEUwKsy/OHviPn79WeIWEPbuPeuDdj2RuAZVjUj0AjoT8fbzfw9yMZZz2m1vEk2LbPCAzvdmcQL0VPq2jaU8DeUfjcdM/S9/PnCKXpeeyaMTt9AzemXaEgxHLZTaFus8gmjndW2VuRVFN4SKkGJD9Mo7K4DhXiX93MOR3+0FwU=
+	t=1706099472; cv=none; b=Zc5WClqNngWl5UPXMzTzOoLDRruKLlvxsDzhAs/p26n8LAThUdZ0Ut45cJvs/dpBPd8pdpKgLgvoMDUk86Qb9MAox0faDB93qLqq80C7upjAqIasNxVp+0KSXvwD+z8gwmHf3E79y129ANpbCbxyELc4+OcFaXfzosWJHiQ49l0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706099409; c=relaxed/simple;
-	bh=jTWOxO1XAaoksmE8rhYXp3rHaYDWjO/isGrkm2WxrRY=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=fEFMH2te4jXctzfzMQE47R98ZvuDdnGKWBk8KTlyLAiY2st/ZfeoMk1DJDOHirw0BlLFA7CPZSpXLZI7EJel+SQ9VkLbsUFEo/+tbaMAldxAS1xiyeM/dA+FMAXt38JXrAd62Ajcj8pebNc9e6oPjBmu7glI0kFBr9c3bIUuKNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=GrrzSW06; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40OCTfSf119955;
-	Wed, 24 Jan 2024 06:29:41 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706099381;
-	bh=jF9L84KMv0wHb4XbV69aBeG5tl9iTIPpMYjJbs4VL3k=;
-	h=From:To:CC:Subject:Date;
-	b=GrrzSW06ziO+anZC1hXgZd+snymbYsxBpDvt0Y94qVq5m7Hx+n0KMGkmblGCtB9UE
-	 j50eViQ5p5ulPLcvwcm2WGmvjoi6ajkXzHuACXDha4qDFo1bX1189u9YRDb6nrBkcR
-	 XtB9pQZFYm/YkVrUt/cbUvEzbn8qW3YNuAOOkS10=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40OCTft8051628
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 24 Jan 2024 06:29:41 -0600
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 24
- Jan 2024 06:29:41 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 24 Jan 2024 06:29:41 -0600
-Received: from uda0492258.dhcp.ti.com (uda0492258.dhcp.ti.com [172.24.227.9])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40OCTaNb127501;
-	Wed, 24 Jan 2024 06:29:37 -0600
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-To: <bhelgaas@google.com>, <lpieralisi@kernel.org>, <kw@linux.com>,
-        <robh@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>
-CC: <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <vigneshr@ti.com>, <afd@ti.com>, <srk@ti.com>, <s-vadapalli@ti.com>
-Subject: [PATCH v3] dt-bindings: PCI: ti,j721e-pci-host: Add support for J722S SoC
-Date: Wed, 24 Jan 2024 17:59:36 +0530
-Message-ID: <20240124122936.816142-1-s-vadapalli@ti.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706099472; c=relaxed/simple;
+	bh=HGWsXmRRlDIhC0sQuchJhH6a5jQ2k4OIV/TQJWpKzHw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=C2Rt5NwmwOMeO5neIK+WLYOvqOtvm0EOYojIxmwglaFCoWEbtl3UpemI7M6qxLZFI0DvFx+bpLwIMqYMllSaNp8FoVbOd7Zt8NbQR/dreDMqX8fmLuLp9MHTYtoO1Tu7+aoegREr/oc6FpL+voc2V7cUPB0jbTMA9F9hQkDVa5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jF73M9Q4; arc=none smtp.client-ip=209.85.167.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50e4e3323a6so6721233e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 04:31:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706099469; x=1706704269; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LdjiQqbh/1oXBiNdWsGapL6yR6c36n54FpR74rtf9ls=;
+        b=jF73M9Q4UieafQzI6sEXdQM6u0JE9razTFMha0kRRz7HSj0Hq5hMgnmQP6Shuepl9m
+         TpA7Pqm+zgEg8mTVj/dptrt5EipuzYi+bPds8rvoy59CVLgRNhk4kH+PECXXJZ2xNpa/
+         ioH7qZ8nDnRreFn1O9Ap0EOpORYvEquiT2A60kxzvmtKW/SWErBJTxoK57NDjFlj2p+/
+         WKLRhyacfICqMVV8+vilhjTdXkkHSYGutnJFBQFmRZAyG0Az6Yf0t7WOsWFuIq9P+aVN
+         ShRKQymTLqHlwhGWo7TBU7OpP8SMfJNObp9/SRCO+nMxPi1HDOxaPRVNipcegr3z6Egi
+         uf8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706099469; x=1706704269;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LdjiQqbh/1oXBiNdWsGapL6yR6c36n54FpR74rtf9ls=;
+        b=gGUwvPcvmVY8V6GaJRDRh6b7h7E9TrvNVJNyKzc2XScen3wtv2nM9D51NEHZO+Vixe
+         ScAqUXHzemHQos6wr6qnVfdl5ByrXgB+QjD6OggVSdWpEW5W3MYtBJVc9vbtwj5ukI+n
+         ykWHntYwxhOf13alnq+DScpeGotHwVKORLVVqbQMT1IkhpV+fKmV2m4Yt/L6NYOCKw8N
+         GmA6gXL3jEXMl1Nw7qrNqzcXOENFjhVzGnEOStNz1x9XwIUvOr5mKahoRX8tFnDw5fFy
+         xkR3lzuwn2DbbH9cWRyCqKa/q9x8qTYZjyVU+sVwSimVdjI+2piZKm72VhX2myJVFygl
+         lbMQ==
+X-Gm-Message-State: AOJu0YwY6SfoCalFcFdnqFxLWQ0ncoeFYryelv8py/8c/DSXQpyQ5Y64
+	kmxMgoF/GxzsPORw7zu+Boaq6Fv1vqbZjDZ9v8wH3IOjGl7KmJvq+sgHt70IU4g=
+X-Google-Smtp-Source: AGHT+IHpDqWPdRpP0rEoGs2KsxsSpaAv+BzjZ0bLk/qo5dYijws3/yg/uqhwIzG/KaFPWbcMqgQdjQ==
+X-Received: by 2002:a19:4341:0:b0:510:cfb:5810 with SMTP id m1-20020a194341000000b005100cfb5810mr587925lfj.11.1706099468718;
+        Wed, 24 Jan 2024 04:31:08 -0800 (PST)
+Received: from [172.30.205.123] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id p26-20020a19f01a000000b005100ed58b76sm207756lfc.308.2024.01.24.04.31.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Jan 2024 04:31:08 -0800 (PST)
+Message-ID: <6aa58497-9727-4601-b6eb-264c478997c3@linaro.org>
+Date: Wed, 24 Jan 2024 13:31:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 00/12] Unregister critical branch clocks + some RPM
+Content-Language: en-US
+To: Abel Vesa <abel.vesa@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, Andy Gross <agross@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Marijn Suijten <marijn.suijten@somainline.org>,
+ linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ Johan Hovold <johan+linaro@kernel.org>,
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+References: <20230717-topic-branch_aon_cleanup-v6-0-46d136a4e8d0@linaro.org>
+ <ZbC/QqfTvJ09KcZN@linaro.org>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <ZbC/QqfTvJ09KcZN@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-TI's J722S SoC has one instance of a Gen3 Single-Lane PCIe controller.
-The controller on J722S SoC is similar to the one present on TI's AM64
-SoC, with the difference being that the controller on AM64 SoC supports
-up to Gen2 link speed while the one on J722S SoC supports Gen3 link speed.
 
-Update the bindings with a new compatible for J722S SoC.
 
-Technical Reference Manual of J722S SoC: https://www.ti.com/lit/zip/sprujb3
+On 1/24/24 08:41, Abel Vesa wrote:
+> On 24-01-13 15:50:49, Konrad Dybcio wrote:
+>> On Qualcomm SoCs, certain branch clocks either need to be always-on, or
+>> should be if you're interested in touching some part of the hardware.
+>>
+>> Using CLK_IS_CRITICAL for this purpose sounds like a genius idea,
+>> however that messes with the runtime pm handling - if a clock is
+>> marked as such, the clock controller device will never enter the
+>> "suspended" state, leaving the associated resources online, which in
+>> turn breaks SoC-wide suspend.
+> 
+> Generally speaking, HW-wise, if the power domain of a clock controller
+> is being disabled, all clocks that it provides are being disabled.
 
-Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
----
+Generally speaking, if that's the case, that's true.
 
-Hello,
+> 
+> Are you saying that is not the case ?
 
-This patch is based on linux-next tagged next-20240124.
+Dragons however, are peculiar creatures and it seems like the clock
+controllers are not *really* disabled when we think they are,
+e.g. due to RPM(h) owning a share of GCC clocks, or due to the
+MX rail being always-on. It would indeed be an issue with
+hibernation where the registers would need to be reprogrammed
+after battery power is removed.
 
-v2:
-https://lore.kernel.org/r/20240122064457.664542-1-s-vadapalli@ti.com/
-Changes since v2:
-- Added fallback compatible for "ti,j722s-pcie-host" as
-  "ti,j721e-pcie-host" based on Conor's suggestion at:
-  https://lore.kernel.org/r/20240122-getting-drippy-bb22a0634092@spud/#t
+As we spoke off-list, I'll split this series into two: adding
+common helpers and then taking care of 2290/6375/6115.
 
-v1:
-https://lore.kernel.org/r/20240117102526.557006-1-s-vadapalli@ti.com/
-Changes since v1:
-- Dropped patches 1/3 and 2/3 of the v1 series as discussed in the v1
-  thread.
-- Updated patch 3/3 which is the v1 for this patch by dropping the checks
-  for the "num-lanes" property and "max-link-speed" property since the PCI
-  driver already validates the "num-lanes" property.
+I'm not yet sure how far we can go with converting existing clock
+drivers to use pm_clk_add so that the _AHB, _XO, and _SLEEP clocks
+for a given subsystem are only enabled when necessary - if we
+require an entry in clock-names, backwards compatibility goes away,
+and if we don't - we potentially miss out on a devlink between X_CC
+and GCC, plus the name needs to be hardcoded for global parent lookup.
 
-Regards,
-Siddharth.
+For new drivers, we'll likely just require a clean solution (runtime
+PM enabled + subsys clocks gotten as pm_clk through a dt entry on
+the consumer).
 
- Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
-index b7a534cef24d..ac69deeaf1ee 100644
---- a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
-+++ b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
-@@ -23,6 +23,10 @@ properties:
-         items:
-           - const: ti,j7200-pcie-host
-           - const: ti,j721e-pcie-host
-+      - description: PCIe controller in J722S
-+        items:
-+          - const: ti,j722s-pcie-host
-+          - const: ti,j721e-pcie-host
- 
-   reg:
-     maxItems: 4
--- 
-2.34.1
-
+Konrad
 
