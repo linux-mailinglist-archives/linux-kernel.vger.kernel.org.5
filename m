@@ -1,145 +1,167 @@
-Return-Path: <linux-kernel+bounces-36673-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36674-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA06183A4D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:03:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3628783A4D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:04:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED30B1C21B16
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:02:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 386011C20AD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:04:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 519DD17BC5;
-	Wed, 24 Jan 2024 09:02:55 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31A1017BAA
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 09:02:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB93717BC4;
+	Wed, 24 Jan 2024 09:04:06 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA09917BA4;
+	Wed, 24 Jan 2024 09:04:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706086974; cv=none; b=XAAy0rNOJxjidFB3lgzqFlqOnDUvyngttbH0SD2k8ahQrrjFebx8pjjMrTB90V3nL49AgoGtOYayu8mGefcSQinx5MSsRFi7Ct8IieHzdOqsi2nyMB5OethQKnZ0F+O3ikZGYN8qqImpAa5qUCcU8bTMq3wczr0bpL2a/xHlzkc=
+	t=1706087046; cv=none; b=AzhkaTmONo6xe+/lxDPeVN3pgUFr6T17tOa72RU341Dybdo2HkdrP8oS5eubtm9opDRrsFLlEZ3pc96etrMfgnOpZCPQDASOPpstLaxwyYTQJ+I2cnJV+qjnrMIFdKwMd07BcN2PxtreweS22REnksU81v6+iiuWMP+AnvjFg+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706086974; c=relaxed/simple;
-	bh=IUzPpBw3waxXsmF2u/OJpdQqbjdb1ELOjeunXCIZSuY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FRuaOG+BcnEnfnQPV0DqFWZEM6/nus+YdcWjQxXnWGhQO/paF8vF8FjkZHLKav2DaAkh6GzolebX46dCKmG6Dz6/8VbKOzmshVh97mtTbiYk9YBcQOZO1/HtcH2mGPuQLVFH9V2C8omZ/agwakYxJI6JjgZ/TEGUeZhMMICAcR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rSZ9d-0001F3-HK; Wed, 24 Jan 2024 10:02:41 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rSZ9c-00217d-KQ; Wed, 24 Jan 2024 10:02:40 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rSZ9c-0070Sy-1j;
-	Wed, 24 Jan 2024 10:02:40 +0100
-Date: Wed, 24 Jan 2024 10:02:40 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Thierry Reding <thierry.reding@gmail.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Kevin Hilman <khilman@baylibre.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-amlogic@lists.infradead.org, linux-pwm@vger.kernel.org, JunYi Zhao <junyi.zhao@amlogic.com>
-Subject: Re: [PATCH v4 5/6] pwm: meson: don't carry internal clock elements
- around
-Message-ID: <gyhea42rtydw3g45lfkfbxfm6xcbwibz67vw7xke2sm7powz2a@i33g4pyanu4l>
-References: <20231222111658.832167-1-jbrunet@baylibre.com>
- <20231222111658.832167-6-jbrunet@baylibre.com>
+	s=arc-20240116; t=1706087046; c=relaxed/simple;
+	bh=4FLO9HlQQlJv6Hs845TgL+okgrt3W85KJoDNho2nIIw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RIa7ccIAujG2krhVsiBD49cQAUz6itVSWToTlZfu9Sedh/JjkMiUVdwGddHRX3kgVOzuMjFGhhyLamWLK6KLRcVnhdy9iLEv3mlM/BCGBFsdfuFSYxiWA+2ysZaiL1NDwaa3GcVFa156x1YbtTD9TmOI/H7aVaRCl454vjkzeyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BCA411FB;
+	Wed, 24 Jan 2024 01:04:45 -0800 (PST)
+Received: from [10.57.86.221] (unknown [10.57.86.221])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D389E3F762;
+	Wed, 24 Jan 2024 01:03:58 -0800 (PST)
+Message-ID: <ea054381-6ba2-d2f6-8de4-978a78a2ed8b@arm.com>
+Date: Wed, 24 Jan 2024 09:03:57 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="h373wi4nrohxmd3v"
-Content-Disposition: inline
-In-Reply-To: <20231222111658.832167-6-jbrunet@baylibre.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3] perf evlist: Fix evlist__new_default() for > 1 core
+ PMU
+Content-Language: en-US
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: linux-perf-users@vger.kernel.org, irogers@google.com,
+ kan.liang@linux.intel.com, mark.rutland@arm.com,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
+ Changbin Du <changbin.du@huawei.com>, Yang Jihong <yangjihong1@huawei.com>,
+ linux-kernel@vger.kernel.org
+References: <20240123102728.239147-1-james.clark@arm.com>
+ <20240123103918.241423-1-james.clark@arm.com>
+ <CAM9d7ciSY25Jf-MG24NWJu3aKJWXT2GN43qrV5WCuohLNZn1iw@mail.gmail.com>
+From: James Clark <james.clark@arm.com>
+In-Reply-To: <CAM9d7ciSY25Jf-MG24NWJu3aKJWXT2GN43qrV5WCuohLNZn1iw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 
---h373wi4nrohxmd3v
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 22, 2023 at 12:16:53PM +0100, Jerome Brunet wrote:
-> Pointers to the internal clock elements of the PWM are useless
-> after probe. There is no need to carry this around in the device
-> data. Just let devres deal with it.
->=20
-> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-> ---
->  drivers/pwm/pwm-meson.c | 67 ++++++++++++++++++++++++-----------------
->  1 file changed, 39 insertions(+), 28 deletions(-)
->=20
-> diff --git a/drivers/pwm/pwm-meson.c b/drivers/pwm/pwm-meson.c
-> index 15c44185d784..fb113bc8da29 100644
-> --- a/drivers/pwm/pwm-meson.c
-> +++ b/drivers/pwm/pwm-meson.c
-> @@ -90,9 +90,6 @@ struct meson_pwm_channel {
->  	unsigned int hi;
->  	unsigned int lo;
-> =20
-> -	struct clk_mux mux;
-> -	struct clk_divider div;
-> -	struct clk_gate gate;
->  	struct clk *clk;
->  };
-> =20
-> @@ -442,6 +439,13 @@ static int meson_pwm_init_channels(struct device *de=
-v)
->  		struct meson_pwm_channel *channel =3D &meson->channels[i];
->  		struct clk_parent_data div_parent =3D {}, gate_parent =3D {};
->  		struct clk_init_data init =3D {};
-> +		struct clk_divider *div;
-> +		struct clk_gate *gate;
-> +		struct clk_mux *mux;
-> +
-> +		mux =3D devm_kzalloc(dev, sizeof(*mux), GFP_KERNEL);
-> +		if (!mux)
-> +			return -ENOMEM;
+On 24/01/2024 00:46, Namhyung Kim wrote:
+> Hi James,
+> 
+> On Tue, Jan 23, 2024 at 2:39 AM James Clark <james.clark@arm.com> wrote:
+>>
+>> The 'Session topology' test currently fails with this message when
+>> evlist__new_default() opens more than one event:
+>>
+>>   32: Session topology                                                :
+>>   --- start ---
+>>   templ file: /tmp/perf-test-vv5YzZ
+>>   Using CPUID 0x00000000410fd070
+>>   Opening: unknown-hardware:HG
+>>   ------------------------------------------------------------
+>>   perf_event_attr:
+>>     type                             0 (PERF_TYPE_HARDWARE)
+>>     config                           0xb00000000
+>>     disabled                         1
+>>   ------------------------------------------------------------
+>>   sys_perf_event_open: pid 0  cpu -1  group_fd -1  flags 0x8 = 4
+>>   Opening: unknown-hardware:HG
+>>   ------------------------------------------------------------
+>>   perf_event_attr:
+>>     type                             0 (PERF_TYPE_HARDWARE)
+>>     config                           0xa00000000
+>>     disabled                         1
+>>   ------------------------------------------------------------
+>>   sys_perf_event_open: pid 0  cpu -1  group_fd -1  flags 0x8 = 5
+>>   non matching sample_type
+>>   FAILED tests/topology.c:73 can't get session
+>>   ---- end ----
+>>   Session topology: FAILED!
+>>
+>> This is because when re-opening the file and parsing the header, Perf
+>> expects that any file that has more than one event has the sample ID
+>> flag set. Perf record already sets the flag in a similar way when there
+>> is more than one event, so add the same logic to evlist__new_default().
+>>
+>> evlist__new_default() is only currently used in tests, so I don't
+>> expect this change to have any other side effects. The other tests that
+>> use it don't save and re-open the file so don't hit this issue.
+>>
+>> The session topology test has been failing on Arm big.LITTLE platforms
+>> since commit 251aa040244a ("perf parse-events: Wildcard most
+>> "numeric" events") when evlist__new_default() started opening multiple
+>> events for 'cycles'.
+>>
+>> Fixes: 251aa040244a ("perf parse-events: Wildcard most "numeric" events")
+>> Closes: https://lore.kernel.org/lkml/CAP-5=fWVQ-7ijjK3-w1q+k2WYVNHbAcejb-xY0ptbjRw476VKA@mail.gmail.com/
+>> Tested-by: Ian Rogers <irogers@google.com>
+>> Reviewed-by: Ian Rogers <irogers@google.com>
+>> Tested-by: Kan Liang <kan.liang@linux.intel.com>
+>> Signed-off-by: James Clark <james.clark@arm.com>
+>> ---
+>>  tools/perf/util/evlist.c | 7 +++++++
+>>  1 file changed, 7 insertions(+)
+>>
+>> Changes since v2:
+>>
+>>    * Undo the fact that v2 was accidentally based on v1 instead of
+>>      perf-tools
+>>
+>> Changes since v1:
+>>
+>>   * Reduce scope of evsel variable
+>>   * Add argument label
+>>   * Change summary to be less specific about the failing test
+>>   * Add the closes: tag
+>>
+>> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+>> index 95f25e9fb994..979a6053a84d 100644
+>> --- a/tools/perf/util/evlist.c
+>> +++ b/tools/perf/util/evlist.c
+>> @@ -106,6 +106,13 @@ struct evlist *evlist__new_default(void)
+>>                 evlist = NULL;
+>>         }
+>>
+>> +       if (evlist->core.nr_entries > 1) {
+> 
+> I think you need a NULL check for evlist here.
+> 
+> Thanks,
+> Namhyung
+> 
+> 
 
-I don't like this change. While it doesn't increase the memory used, it
-fragments the used memory and increases the overhead of memory
-management and the number of devm allocations.
+Oops yes. Or just return on the error above.
 
-Are these members of meson_pwm_channel in the way for anything later?
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---h373wi4nrohxmd3v
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWw0i8ACgkQj4D7WH0S
-/k683gf9GGBr93JUCS2xEl/m1YAKTTgHqxB2JExfwiC6KJfo/FURTvQbLwW4gtu9
-BqujrqKJuEIj5YPmfS2DfmnGEQteeSmoeb6vtHwsKyehVtqSqDOF/1ZPSIakbMdx
-hE3kSBmZVCVPwj9s1JoNAlR+AtWRnzVYUdF40iEjJ6VPhWZB9Swh9KJhNfWAuUIg
-KxSIivAcwtRrtX9ThjzjKj5sPWGqdaVGTFxir66leKCCmsboGdDOAV60d39u0bSY
-cDXdp36+vG5DQh1bpjAUE7S/+URvABaCmV8CKBRpMSfyxLo9M65b8VlZS1Q36pl0
-ljk2vMhvu45fpewQYEgUv6kO82pUfw==
-=J1Jy
------END PGP SIGNATURE-----
-
---h373wi4nrohxmd3v--
+>> +               struct evsel *evsel;
+>> +
+>> +               evlist__for_each_entry(evlist, evsel)
+>> +                       evsel__set_sample_id(evsel, /*can_sample_identifier=*/false);
+>> +       }
+>> +
+>>         return evlist;
+>>  }
+>>
+>> --
+>> 2.34.1
+>>
 
