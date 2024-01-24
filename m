@@ -1,222 +1,120 @@
-Return-Path: <linux-kernel+bounces-36407-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36408-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA97383A038
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 04:41:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EDFA83A03A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 04:43:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E076E1C24A4A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:41:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 285D1289BC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:43:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C868747A;
-	Wed, 24 Jan 2024 03:41:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EFB16FBB;
+	Wed, 24 Jan 2024 03:43:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="lGvWib3L"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b="JxWBDVLl"
+Received: from mail.codeweavers.com (mail.codeweavers.com [4.36.192.163])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0719A33F1;
-	Wed, 24 Jan 2024 03:41:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4049DC120;
+	Wed, 24 Jan 2024 03:43:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=4.36.192.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706067673; cv=none; b=Y4TdmqFNmCaIhTc8ijzHvz0dmiGMaVlY09Nl64jGPG4T8hIjUd1ypXGYIFmIqT48W75Ok4N2AQyB/P73kG5RM/7sthOtJ39EozSPu9A6uRu5o4XovXjXZNrfy7yoem5slsrBOUgwSwmFLIRWAaUlD4sKpTC4YffizX71KO2WxP4=
+	t=1706067793; cv=none; b=cH3kULNR/3T9stRbL9W8LgkNKn4Q8M0BwQAk4t5gGriDKtCBjJMVKVZB1y2aYPM9pfzb9/SsH74+ptl+KLsRrE7VidR8ZRBnM9P1HD/dsEef5DXmfImtJefmqq8Nur1y6puDSmzuCs/BikJmNggUn2ofbyIdAwdDyZdRKaIoX3o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706067673; c=relaxed/simple;
-	bh=YbdZbFhNRexnzQJ8KzOSQyOP7gMOqMh44cT2Q10sWjc=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=utroHsG66fyzOFXrkKoiyiip5pootgIgd/4QVxdkcb8BhCzxfNtnzRMBlvW2+VCwlvGvYANJWL+QXSfs2M8B60Jq5oU5QCed28GNeHcd/EFlO/UbdZijQ7RxQUXVq7BuIyg//ySBDw//E+rc+POHIr9F5g8zVUC8sxxemCUY3+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=lGvWib3L; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40O2gbbD023828;
-	Wed, 24 Jan 2024 03:41:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:date:subject:mime-version:content-type
-	:content-transfer-encoding:message-id:to:cc; s=qcppdkim1; bh=WwO
-	90U/7nROoyjnpAOtpVHQe8d4IDwOjDg1DW/rOxj8=; b=lGvWib3LAAz2yK971qE
-	BP3xg3Q6QFPsWSEh9CGYxXD3CJC+q32bJ/V/Wf6WVtsANCo/c3qDqwPd8FmNB5w6
-	GvWDn8MLyuBzQ0kK7cG0AJmebDrc8f8dZXMZN44M36DokfGEi74tH3gOfs2MAtse
-	iophD86SqE4FsstVeb74eLM5Ko7F5gJuFZBg5E9PTWU7CGUemT6nlISVSY6tvLkQ
-	PUEFeI5/jkd+9NRi0UWTqvvrXDgCx2FoeE5yETM7L4ur+z3CMV8746NZv/UXOWSc
-	8YTagV7QJgqDRUkdXaOUPFyKrp70E/hutCSaBu8dPx1AskV3oZf2EAiqKdnMf9gr
-	6wQ==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vtmgwgp8j-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Jan 2024 03:41:06 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40O3f5dp006867
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Jan 2024 03:41:05 GMT
-Received: from [169.254.0.1] (10.49.16.6) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 23 Jan
- 2024 19:41:05 -0800
-From: Bjorn Andersson <quic_bjorande@quicinc.com>
-Date: Tue, 23 Jan 2024 19:40:33 -0800
-Subject: [PATCH v2] soc: qcom: aoss: Add tracepoints in qmp_send()
+	s=arc-20240116; t=1706067793; c=relaxed/simple;
+	bh=iO5HnuFMu7pUUj8dP2XGCJW3PAt14gadTX9j046o31M=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=R9MqY+klLbRq5MoQCjPvmvE5ETXUigl6zA/nyWlzVs7I05vQpP+LEaoueJr+sQARm8WzNIlSnZpvrXuRlDZQu1bBz69eKdKjGeybkV/W6MLC28JJXSOSKHOVAgQHKzNs/gSGI2+R4Y+kKFDwvHZ7ejeYvYAPNjDf8ojOY5pasdY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com; spf=pass smtp.mailfrom=codeweavers.com; dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b=JxWBDVLl; arc=none smtp.client-ip=4.36.192.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeweavers.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=codeweavers.com; s=s1; h=Message-ID:Date:Subject:Cc:To:From:Sender;
+	bh=tGCM2n4LHRSDdt8wWKFkazewP4vabbqwENB8cy55Cos=; b=JxWBDVLlIHKlFBC3gE2azcL+TM
+	4qzRWlgXwwyHHp9LOq+F9JcG9wwPjpE/6vDURVcx8Mmx3n6zqZ46bH9ttgN7+Oy/UefMz9govI6km
+	TCz2RvD+xPrX4bfk0/5dT5mchyVCrXx7BVZ/8hfm3GlTo+6hz3dDkMQwebtPRswhFgBtLRoiC8NKN
+	bwozwiWR7fiGiRupSCymlnD4f0mcyTFgh69JT0eLA66YmZWD788q3wp/VLxoLMqJxewXb4hY2jAeN
+	rchzhO4+I+pW+VPa70d1twzLFi6qET2hBiXUTFvlsgwGPqXdaiPguODss2AgMfkUUlcQyr65QSZVo
+	/xoYj8Mg==;
+Received: from [10.69.139.2] (helo=terabithia.localnet)
+	by mail.codeweavers.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <zfigura@codeweavers.com>)
+	id 1rSUAQ-00Ddbv-0s;
+	Tue, 23 Jan 2024 21:43:10 -0600
+From: Elizabeth Figura <zfigura@codeweavers.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+ linux-api@vger.kernel.org, wine-devel@winehq.org,
+ =?ISO-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
+ Wolfram Sang <wsa@kernel.org>, Arkadiusz Hiler <ahiler@codeweavers.com>,
+ Peter Zijlstra <peterz@infradead.org>
+Subject:
+ Re: [RFC PATCH 2/9] ntsync: Reserve a minor device number and ioctl range.
+Date: Tue, 23 Jan 2024 21:43:09 -0600
+Message-ID: <1875326.tdWV9SEqCh@terabithia>
+In-Reply-To: <2024012356-dove-duke-f7f6@gregkh>
+References:
+ <20240124004028.16826-1-zfigura@codeweavers.com>
+ <20240124004028.16826-3-zfigura@codeweavers.com>
+ <2024012356-dove-duke-f7f6@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240123-qcom-aoss-tracepoints-v2-1-bd73baa31977@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIALCGsGUC/3WNQQ6CMBBFr0K6dkxbIFpX3sOwaMdBJsEWWiAaw
- t0t7F2+n//yVpEoMiVxK1YRaeHEwWfQp0JgZ/2LgJ+ZhZa6lEZfYMTwBhtSgilapCGwnxJgfS0
- 1Wk1OG5FdZxOBi9Zjl20/930eh0gtf47Yo8nccZpC/B7tRe3rnqmkUv8yiwIFVWvK2miJbeXu4
- 8zIHs/5Lppt236PproU0QAAAA==
-To: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_clew@quicinc.com>, Bjorn Andersson <quic_bjorande@quicinc.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1706067665; l=3418;
- i=quic_bjorande@quicinc.com; s=20230915; h=from:subject:message-id;
- bh=YbdZbFhNRexnzQJ8KzOSQyOP7gMOqMh44cT2Q10sWjc=;
- b=KGynfMBTdsUN1OLz9q6Kxsv3hI2XLzIULKgOk1lRKxJS02TfLhH83cM/NZbLvdPkX5NdzjE6X
- kERAoDvPtwlBRs/yfiYivnYmUmVIumfNe7hDC6ZZ22wpnR3aoDFusM0
-X-Developer-Key: i=quic_bjorande@quicinc.com; a=ed25519;
- pk=VkhObtljigy9k0ZUIE1Mvr0Y+E1dgBEH9WoLQnUtbIM=
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: wa9w-FKY8zl-ePD7pX-lI2pmtA1qvHbQ
-X-Proofpoint-ORIG-GUID: wa9w-FKY8zl-ePD7pX-lI2pmtA1qvHbQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-23_15,2024-01-23_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
- bulkscore=0 priorityscore=1501 clxscore=1015 impostorscore=0
- malwarescore=0 lowpriorityscore=0 adultscore=0 spamscore=0 suspectscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2401240025
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Add tracepoint for tracing the messages being sent and the success
-thereof. This is useful as the system has a variety of clients sending
-requests to the always-on subsystem.
+On Tuesday, 23 January 2024 18:54:02 CST Greg Kroah-Hartman wrote:
+> On Tue, Jan 23, 2024 at 06:40:21PM -0600, Elizabeth Figura wrote:
+> > Signed-off-by: Elizabeth Figura <zfigura@codeweavers.com>
+> > ---
+> 
+> Note, we can't take patches without any changelog text, and you don't
+> want us to :)
+> 
+> >  Documentation/admin-guide/devices.txt              | 3 ++-
+> >  Documentation/userspace-api/ioctl/ioctl-number.rst | 2 ++
+> >  drivers/misc/ntsync.c                              | 3 ++-
+> >  include/linux/miscdevice.h                         | 1 +
+> >  4 files changed, 7 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/Documentation/admin-guide/devices.txt
+> > b/Documentation/admin-guide/devices.txt index 94c98be1329a..041404397ee5
+> > 100644
+> > --- a/Documentation/admin-guide/devices.txt
+> > +++ b/Documentation/admin-guide/devices.txt
+> > @@ -376,8 +376,9 @@
+> > 
+> >  		240 = /dev/userio	Serio driver testing device
+> >  		241 = /dev/vhost-vsock	Host kernel driver for virtio 
+vsock
+> >  		242 = /dev/rfkill	Turning off radio transmissions 
+(rfkill)
+> > 
+> > +		243 = /dev/ntsync	NT synchronization primitive 
+device
+> > 
+> > -		243-254			Reserved for local use
+> > +		244-254			Reserved for local use
+> 
+> Why do you need a fixed minor number?  Can't your userspace handle
+> dynamic numbers?  What systems require a static value?
 
-Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
----
-Changes in v2:
-- Corrected copy-paste error in include guard (now _TRACE_QCOM_AOSS_H)
-- Link to v1: https://lore.kernel.org/r/20240117-qcom-aoss-tracepoints-v1-1-4f935920cf4b@quicinc.com
----
- drivers/soc/qcom/Makefile     |  1 +
- drivers/soc/qcom/qcom_aoss.c  |  7 +++++++
- drivers/soc/qcom/trace-aoss.h | 48 +++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 56 insertions(+)
+I believe I added this because it's necessary for MODULE_ALIAS (and, more 
+broadly, because I was following the example of vaguely comparable devices 
+like /dev/loop-control). I suppose I could instead just remove MODULE_ALIAS 
+(or even remove the ability to compile ntsync as a module entirely).
 
-diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
-index 05b3d54e8dc9..9268e15e1719 100644
---- a/drivers/soc/qcom/Makefile
-+++ b/drivers/soc/qcom/Makefile
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- CFLAGS_rpmh-rsc.o := -I$(src)
-+CFLAGS_qcom_aoss.o := -I$(src)
- obj-$(CONFIG_QCOM_AOSS_QMP) +=	qcom_aoss.o
- obj-$(CONFIG_QCOM_GENI_SE) +=	qcom-geni-se.o
- obj-$(CONFIG_QCOM_COMMAND_DB) += cmd-db.o
-diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
-index aff0cfb71482..db94b2d17e7d 100644
---- a/drivers/soc/qcom/qcom_aoss.c
-+++ b/drivers/soc/qcom/qcom_aoss.c
-@@ -13,6 +13,9 @@
- #include <linux/slab.h>
- #include <linux/soc/qcom/qcom_aoss.h>
- 
-+#define CREATE_TRACE_POINTS
-+#include "trace-aoss.h"
-+
- #define QMP_DESC_MAGIC			0x0
- #define QMP_DESC_VERSION		0x4
- #define QMP_DESC_FEATURES		0x8
-@@ -235,6 +238,8 @@ int qmp_send(struct qmp *qmp, const char *fmt, ...)
- 
- 	mutex_lock(&qmp->tx_lock);
- 
-+	trace_aoss_send(buf);
-+
- 	/* The message RAM only implements 32-bit accesses */
- 	__iowrite32_copy(qmp->msgram + qmp->offset + sizeof(u32),
- 			 buf, sizeof(buf) / sizeof(u32));
-@@ -256,6 +261,8 @@ int qmp_send(struct qmp *qmp, const char *fmt, ...)
- 		ret = 0;
- 	}
- 
-+	trace_aoss_send_done(buf, ret);
-+
- 	mutex_unlock(&qmp->tx_lock);
- 
- 	return ret;
-diff --git a/drivers/soc/qcom/trace-aoss.h b/drivers/soc/qcom/trace-aoss.h
-new file mode 100644
-index 000000000000..554029b33b44
---- /dev/null
-+++ b/drivers/soc/qcom/trace-aoss.h
-@@ -0,0 +1,48 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (c) 2024 Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM qcom_aoss
-+
-+#if !defined(_TRACE_QCOM_AOSS_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define _TRACE_QCOM_AOSS_H
-+
-+#include <linux/tracepoint.h>
-+
-+TRACE_EVENT(aoss_send,
-+	TP_PROTO(const char *msg),
-+	TP_ARGS(msg),
-+	TP_STRUCT__entry(
-+		__string(msg, msg)
-+	),
-+	TP_fast_assign(
-+		__assign_str(msg, msg);
-+	),
-+	TP_printk("%s", __get_str(msg))
-+);
-+
-+TRACE_EVENT(aoss_send_done,
-+	TP_PROTO(const char *msg, int ret),
-+	TP_ARGS(msg, ret),
-+	TP_STRUCT__entry(
-+		__string(msg, msg)
-+		__field(int, ret)
-+	),
-+	TP_fast_assign(
-+		__assign_str(msg, msg);
-+		__entry->ret = ret;
-+	),
-+	TP_printk("%s: %d", __get_str(msg), __entry->ret)
-+);
-+
-+#endif /* _TRACE_QCOM_AOSS_H */
-+
-+#undef TRACE_INCLUDE_PATH
-+#define TRACE_INCLUDE_PATH .
-+
-+#undef TRACE_INCLUDE_FILE
-+#define TRACE_INCLUDE_FILE trace-aoss
-+
-+#include <trace/define_trace.h>
+It's a bit difficult to figure out what's the preferred way to organize things 
+like this (there not being a lot of precedent for this kind of driver) so I'd 
+appreciate any direction.
 
----
-base-commit: 943b9f0ab2cfbaea148dd6ac279957eb08b96904
-change-id: 20230927-qcom-aoss-tracepoints-c5832ca2eb29
+--Zeb
 
-Best regards,
--- 
-Bjorn Andersson <quic_bjorande@quicinc.com>
 
 
