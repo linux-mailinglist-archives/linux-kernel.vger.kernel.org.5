@@ -1,303 +1,241 @@
-Return-Path: <linux-kernel+bounces-36753-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36761-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4F5C83A609
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:55:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D105F83A627
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:59:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D09031C28EBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:55:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 032561C20ADD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:59:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 045A8182AB;
-	Wed, 24 Jan 2024 09:55:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A855182CA;
+	Wed, 24 Jan 2024 09:59:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H+TWF68h"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="H6+u+w3a";
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="0NYM/q/K"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C0985690;
-	Wed, 24 Jan 2024 09:55:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706090106; cv=none; b=o7wab0DkiCHp8dsrG/Sy7a5cCDHm6LgLQGjC8hEXwIv50z9d+LbcpyZrcAlI/YTyYrJ+aXYyTTOjLQ8yzxJanz6SgVUdxA0J6V1X927mcY6T1JCqCrl8QFX3Ow47PuslttxNFTqqoGb2Esq86hjwTjy3dX4E9MnMiazYzhF/3Iw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706090106; c=relaxed/simple;
-	bh=UEeoNa1jLVO654MDyYUNLNxYCkLZibxBbxwFkKhS34A=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=GrfSWhmb8ezr3HFwPD2VKu3CeXiL2uw943Nw+qM3Hh5pLf8mtTb85lwiHx3n3xJjxeZoI8/0r5+d5GkbbGJUMOE/AOMOTZ+TlKR/gOKXwCJh6SdLcV+6TYPyyTZ19brIgsXTVSf53HJkfgzvWM0czNG8CjQnpy8OHVSXix6/6Bw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H+TWF68h; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-55ad2a47b7aso4492094a12.3;
-        Wed, 24 Jan 2024 01:55:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706090102; x=1706694902; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=uyeOUVhvBhhLcqw++duQRLw1e9cF/KyZjlhE1TvaoTQ=;
-        b=H+TWF68huofahnaMaXdUsCHVSMgtZiUP7TgKn5FS8VmW/Hq0l/u1qlsLm80H/N+7ot
-         jx2jZ974ZEBS9pUCVBbXiEXiLyF+3WD3NJ0VfHy9QoakNNiYEUzPc9lcPpYxDctsYjN8
-         PeVz2phUdu+XyYfn4CYAtBEn/AE+AEd5HKN2u8+La8Geg/zSLtiGMn7yLtdcO5WDJFn6
-         Y14cSBrE6rp6TAsy+e0cnTSc8+uJT1drZH0Ujf6iX1YlonJciZ2j2GcNngrPhgQtfXfG
-         or2DeX0tVRfzEed4eKq4So6RoZxHg649X0vPqJrzQ9Unjk29QmIotmmAzqZOmUjcNkAl
-         4jIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706090102; x=1706694902;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uyeOUVhvBhhLcqw++duQRLw1e9cF/KyZjlhE1TvaoTQ=;
-        b=N5wZifzACgPzM5kL5iaUqr6T2rbP9eV6smhwuiykMnGuNKGhogIwKXVpa2Eq4Ug+4J
-         t2LNg63pWqTxExRD4V/QIlRIEIendMOOZSK2rbv5R2ahHX5YcKrb7XLRel6cvoC3xHKe
-         GntA8Ni5Qv2X6Bjt8ydJo3rRWR/XpZRRV36lv1qn7By0XZEktLYiDA1PXIT+lEPawR52
-         WOx9i1VK10ZbNCnY6DbmH020asgMqH0DEkLGwxpbc4L00Mc3QgrbWRtGMjnaBYeJluCx
-         3TuhCvqTnK2eqiCk6mrirqMeMcuUQVmWcbMe+At0uNWt59Ps/qm5W2TFNP0dS+AI0OiT
-         /6GQ==
-X-Gm-Message-State: AOJu0YwLl3oRBJyUzdDtig85lD2Lk0xsLwwmulRkOg4zojSm4K69Vjjk
-	l+2Jq2k9+qtMWULNekoHqnN1fFZ9nykubjmDCm7QxOt43r2p4CEy
-X-Google-Smtp-Source: AGHT+IFmP1C6BpXN05d8/Xl8kscSSjPWF+3kW6WKa4ZrT5zW9jOFWNrvi+yaPYOJX/E9BEnVWb2yEQ==
-X-Received: by 2002:a17:907:7629:b0:a2f:bd2e:98aa with SMTP id jy9-20020a170907762900b00a2fbd2e98aamr386302ejc.164.1706090101842;
-        Wed, 24 Jan 2024 01:55:01 -0800 (PST)
-Received: from ?IPv6:2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47? (p200300f6ef1b2000944ccbc71e1c2c47.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47])
-        by smtp.gmail.com with ESMTPSA id bv2-20020a170906b1c200b00a2e81e4876dsm9293040ejb.44.2024.01.24.01.55.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 01:55:01 -0800 (PST)
-Message-ID: <39c9bff3b97408b2f2b80f3290e517b5af536fff.camel@gmail.com>
-Subject: Re: [PATCH 2/2 v2] pwm: Add driver for AXI PWM generator
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: Trevor Gamblin <tgamblin@baylibre.com>, linux-pwm@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, u.kleine-koenig@pengutronix.de, 
- michael.hennerich@analog.com, nuno.sa@analog.com,
- devicetree@vger.kernel.org,  robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,  Drew Fustini
- <dfustini@baylibre.com>, Sergiu Cuciurean <sergiu.cuciurean@analog.com>,
- David Lechner <dlechner@baylibre.com>
-Date: Wed, 24 Jan 2024 10:58:16 +0100
-In-Reply-To: <20240123220515.279439-3-tgamblin@baylibre.com>
-References: <20240123220515.279439-1-tgamblin@baylibre.com>
-	 <20240123220515.279439-3-tgamblin@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E74DD18641;
+	Wed, 24 Jan 2024 09:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.153.233
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706090368; cv=fail; b=lyTfU9Dye5uVo+KeCL1ZjvGFKTi4/ovdzNbY5bBCwCHG1X/jH7/m/y/EZx6zEq7bSSV0dj2eQulN253WzHJaqf51Wop/nyuRkYG8NviuvQVT2G0sBrCmHoVaaaTlhgY0Fs6enV8/7Ii/fXzP7XvnatnXInl4TIprjOHjZfSJQ9o=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706090368; c=relaxed/simple;
+	bh=eDHCqpnalzsn7Pgl/inq/kCeKF+dyyKcc0+BaFgJBmk=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=HpG8tpEnMYljLtJB6v2Gq0iPurfIzpmoIEgHfu17D3W2MrJQpbwahemEhRqa5AbsJTqc2DO7zi1OoxKweXyXCL0vBz8NDwdGyiJIwKn60z8I5dOZeUgS+NhZAQnG8w4gE/8hSFSuUCOjMbJui/jxcuVi86KTpPxSXMbIlhFKzL4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=H6+u+w3a; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=0NYM/q/K; arc=fail smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1706090367; x=1737626367;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=eDHCqpnalzsn7Pgl/inq/kCeKF+dyyKcc0+BaFgJBmk=;
+  b=H6+u+w3aTekVRbwpuj68cHzC1z4nQQzz8PVY07UNFzwzpH9L4N1tEIKd
+   vOZjR/XM6vcDyQoULyV+0XtAmeARAciaqFWGGrZPGzNT56ATujEHjfuKW
+   C1DMOFYS+w6Ukr6JhOwJEB0jnFFaRkUVbcDPmO1kyZPUQ7XxHsb96Ktgt
+   i4zrgjEku6J9flN2bB/JWjueMqsVbi/LqXTfHoP2FTB6DGzkS9ge4bBWa
+   snc3EFogx2uLrKkczL0FAozrvWijPkWXca5Hk63y0fuPaPwdue0R7ZkPW
+   sdgqzE/dmq34O+pxeds9tclWgDeefFd9VzxGDMy13t8d23XlcHfgkG3Cs
+   w==;
+X-CSE-ConnectionGUID: cojQwK14R4mmQ77dAkzMOg==
+X-CSE-MsgGUID: SG37yC98TNiPy8d3QFBE1g==
+X-IronPort-AV: E=Sophos;i="6.05,216,1701154800"; 
+   d="scan'208";a="245937421"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 24 Jan 2024 02:59:25 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 24 Jan 2024 02:58:49 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (10.10.215.250)
+ by email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 24 Jan 2024 02:58:49 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ar1TkVoI+nDe02LIP+wJeaTi2Qax7U1Yn8iZZ4MZMqgfm/oDGD04FXLMErMd0JCV3h6ww7aI02GdD+cEAz+fomQHTakDn3gtn7OFAlSG24Mo11cooBZP3QygPvOf5jdv+ndmwC4R/W+dzjzgBJ44RnAR6DU1PXeE7oDVEjWZGOaC7Ugtd9EMhwBR8F1wryoVzdUqnBdPyySG1ysBpnkZbOLM0hlZbipOT+ZcZsuBT13Wo4T4FftPVEq9EwhUb97EpJGWw/bzE3iWLje6NYuOrmCfX7MmUESG6EdnpN/7IYAN1Jq9heZJUi7QykPxzaXaytlfJInKLPmvR3ez8/EQbg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eDHCqpnalzsn7Pgl/inq/kCeKF+dyyKcc0+BaFgJBmk=;
+ b=SoEN/UoMRvRs5Jbx/Qw7QS62pmsi7+VK2LmETmwNCG9ztxHOHxurVfxeTwu6k/YTq0wG6dVcq6lxlyyMHxmcLcwyWHi3QRhnqNv8CZMk/kNKMcw19LXgbgw17slORnwQ6MsbIul6OKOZq6OVfou/XI3dcaN9m5jtrUdLjuJfQn4DLQELgGF0J7m+WV5mSc/h3piWh6QbhrpGehK88UFqklPZDYBAXVBKMRE54JnvITA/0btLETdp/nAOu3/o3CrCI1FxacuhrvR7plANmKr4FqeK0WhLUxZs7Cxy646WoTK/Rou/kZR6bhCrlKObpByYmVk9UPsaGa6U830igdGIgg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eDHCqpnalzsn7Pgl/inq/kCeKF+dyyKcc0+BaFgJBmk=;
+ b=0NYM/q/KHyzTTcv7bQ4c243Ro8gjyByERB5aR21EelXQPLJNUzIaNVFN3PtYGWl/QouM68WBtlMNBg5nmbXOqGpLTzpSpXRCO4RqtcCza78YzeXK6u+mKat6w7j19ERXbVir3OJjBuTVSAaIeP9Mw0PdaDTiCAfw/0ewoMTLbV1Fz6WcLdm1+ktJhHZez40KyDtI1qmorOp4wXYhjFCys3RdMtI6MhZ4U9MWJ+EsnILpaZth09xUqWzAGCmIt/stZ6bl58bmjyBIqTOEpZtI+QDIOdpidQlDEdpgKn5q5tUIcnrI7yVGtMqI7AT+16bqNxSapKUX63RvzDaPLk6kag==
+Received: from PH7PR11MB6451.namprd11.prod.outlook.com (2603:10b6:510:1f4::16)
+ by SA2PR11MB5001.namprd11.prod.outlook.com (2603:10b6:806:118::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22; Wed, 24 Jan
+ 2024 09:58:47 +0000
+Received: from PH7PR11MB6451.namprd11.prod.outlook.com
+ ([fe80::80b9:80a3:e88a:57ee]) by PH7PR11MB6451.namprd11.prod.outlook.com
+ ([fe80::80b9:80a3:e88a:57ee%3]) with mapi id 15.20.7228.022; Wed, 24 Jan 2024
+ 09:58:47 +0000
+From: <Dharma.B@microchip.com>
+To: <robh@kernel.org>
+CC: <Conor.Dooley@microchip.com>, <sam@ravnborg.org>, <bbrezillon@kernel.org>,
+	<maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+	<tzimmermann@suse.de>, <airlied@gmail.com>, <daniel@ffwll.ch>,
+	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+	<Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+	<claudiu.beznea@tuxon.dev>, <dri-devel@lists.freedesktop.org>,
+	<devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <lee@kernel.org>, <thierry.reding@gmail.com>,
+	<u.kleine-koenig@pengutronix.de>, <linux-pwm@vger.kernel.org>,
+	<Linux4Microchip@microchip.com>
+Subject: Re: [PATCH v3 2/3] dt-bindings: atmel,hlcdc: convert pwm bindings to
+ json-schema
+Thread-Topic: [PATCH v3 2/3] dt-bindings: atmel,hlcdc: convert pwm bindings to
+ json-schema
+Thread-Index: AQHaSfB3xKaoSF1iTEm2rEaqjzNrorDhjEEAgAc3tIA=
+Date: Wed, 24 Jan 2024 09:58:46 +0000
+Message-ID: <58641356-8039-47c4-9e5c-36c6c76877cd@microchip.com>
+References: <20240118092612.117491-1-dharma.b@microchip.com>
+ <20240118092612.117491-3-dharma.b@microchip.com>
+ <20240119194534.GA938671-robh@kernel.org>
+In-Reply-To: <20240119194534.GA938671-robh@kernel.org>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR11MB6451:EE_|SA2PR11MB5001:EE_
+x-ms-office365-filtering-correlation-id: c2b292ae-e8db-4f0a-5476-08dc1cc30ea9
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: MW3/DKW70AwRfp/uRP5irY7UrNf9gfEAYU64xAboDBKqhq6X2W4e1oLXUnge7VQ8A+vF4C23tGO4gwUKqI8iibX3EZs6ATwai8okn2wzn91GSQWy2GhKElm74fiS01SOtjzobDCssqtECF8ypruYBuajimsRdE/7vU5I6nMJXPTWH+3gDdfhnDFP9AmM0KwzIPOTCam3/TfmP9u1hLU1pJXVWuaSNO9AKrwmYSmm9yAkY8pejzDeVz4EcrkXyfRUdNApXoyBmdCtl46/ruOXETFjlO1Y7TwSng1NDsbOqPNdSoCbLmGvoA7TRTLLAySsH4VklANPjZN/y7NhOQlj3NUPKFtz0fqCrc6CwyPvnEnsBT9KBZ8Gdxygv0qc+zwxCDxorqORCpvqUw9EbUICgwe1oJZTV/Ogqoy6a3nh7DQdya8OMS+cU8nRx7WkjIPsevL4UH8BXTi3JNFElR19B291EhfApDL4DRXo9f3TeqUIUw62RIeyrskxpwp8mgvaQ1vvcQK3SxY24v6JApVBKiIEG5TO8mLxMUIn49il2ge5o0gyqmFl7ibjJy5w3qiW3QgZYkKhzNHT0BkJbYeKbG4N7xfb0yzg3N/gzSptCoAU42x25zKMicXVt2sUWgm8+HiFFgbb11rHa8JdJ4ROlm1Jeyhb6rdzdUei5GZoGkmA1lubDSfHQTBBNz419SP2hIszm5BNb6bWFacsVAaBs16yHwLqAdGmBmPUgB7zYhs=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB6451.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(396003)(376002)(39860400002)(136003)(230273577357003)(230173577357003)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(26005)(107886003)(71200400001)(2616005)(6512007)(53546011)(5660300002)(6506007)(66556008)(8936002)(7416002)(8676002)(2906002)(4326008)(76116006)(966005)(478600001)(41300700001)(6486002)(66476007)(316002)(38100700002)(66446008)(54906003)(38070700009)(6916009)(64756008)(91956017)(83380400001)(66946007)(31686004)(122000001)(36756003)(31696002)(86362001)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?SG1keU8ra3o2U1JodVUwc0Q3bDlpeGhKOFUvQk9YK05GVDFXSzNZbVQ0NmFS?=
+ =?utf-8?B?WkowZHFaQ29KVUlSSHNDMVFoLzNQd2I1aDdjQ1V2VVZ0b1dCQjN1Q0thMU1x?=
+ =?utf-8?B?em14Sk16RVFHdVNlNjdsQVpWaS84L25vK1Z4K3R2ZmkwejRydEp4bGtaT2xU?=
+ =?utf-8?B?OC8rQk1lR2xsTjJDZ0o5NFhVRE11N2VlMzNEL2Z4bllNRlNYN3FhSjJWanNW?=
+ =?utf-8?B?Z3paOTFXQnhpamxMVW9KNmZkOFRkUGFha1ZRMUNRYXF5ZjdKRmI3Y1Nxc3Rt?=
+ =?utf-8?B?SzI5TjJUWk50WW9EMU5peWp4MEkwUENPamFXTTRYaEt4RGlZU1BDRG9HNE1H?=
+ =?utf-8?B?aXZjRnZnQ2JVMjU1MlJaSzJtUHZWd2xqSW00UFNrVTlEL1ZqZ1grQ3pETDdD?=
+ =?utf-8?B?K0FPRDNGNEFucGZRdk5zY2tYNjZjaDJjenB1ODFwRnRBNEs5alhSM3dvRytm?=
+ =?utf-8?B?WldZVUxNNWs5NGllVUcyVmRjQzRyWGxsZllWN294R0RXWHQyRGZqSlgrUWFU?=
+ =?utf-8?B?Qk9uRG9Od0xuTkRsbzBCOWNMVWZZeEw2c1FUSkVMRWY3VTlybFdqcXo5UkFE?=
+ =?utf-8?B?a1didEkvWEtXdisxL3pPRVZEY3Yxb3Y0czNZWFoxcUNWTy9sL2hKR3R1dUI3?=
+ =?utf-8?B?a085d3VrM0oyM1NvR2g5U2tzZ25lUVJiWlFpRVo2TVRSY2FLSytVS0xqZlo1?=
+ =?utf-8?B?cmthcHdpK3BWdFhtelUyejEyMDU0Wll1OUtkQkMrMHdyUmRWcXJLTWVJeXpP?=
+ =?utf-8?B?Y2pHRytPUHQzcUNKSWI2SVFSdXh4UmozSkpnbU1EQzluOUpLMUxQU1NnODJC?=
+ =?utf-8?B?R0xYRGRqY1kvcThQb3ZVcW5wS3NzVVQxUmFvRXdWbzVPTC9kMHFtbU1CNlFG?=
+ =?utf-8?B?TnFKSTRMNjdrMVVQekNnNVp6Wk9weVRZNXFWV0dqUk5HTUhXMWhDNk1BRTBJ?=
+ =?utf-8?B?V3ZkUHBzV3FMenJmRG1qaXl1QVRvdUpqN2t4QUNVNTF3RE93TVJoTTRobWR4?=
+ =?utf-8?B?Q2NMemNORUh4WG04NkpvQ1IxZGk1N2VmNlI0U0NKN0JMYXZkZzVyUDBDNVpO?=
+ =?utf-8?B?STlWUmExU01paUZ2YVJ2ZW9IZEZYemhJUC9UY1NmTlVZWVF6L0tXVEVCYlk3?=
+ =?utf-8?B?NXlyYTVUdVQxSEtZdHBMUGUzSE12OWVnTFBLeExOd2hwK1ROdmw3dGpaQWpu?=
+ =?utf-8?B?ejNLVjVpaFlRK0tPNW5UM3FGQ2lsS1BXTXgvWmE4NUtyK1hIdVV6WDBlQW0y?=
+ =?utf-8?B?MENMYytOQ2p3blptbjM3a3FFcjFCYWwxZFh0K3NRSWJQVW4zSkhuSkdKNC9j?=
+ =?utf-8?B?MEdUSHRaYTYvUFBQYXhnREJiWWptTHB0QVcvRnhpMFRiM0cyaDVNSkNBWWxy?=
+ =?utf-8?B?RzlPaEJiSnErb1hIeDhXT25kSUZwcW1Zd1Bub3E1S0pncktVOCtHenVLMUhP?=
+ =?utf-8?B?ZDZZRnJ4SmNJSDY3bU9QL1h0Vi9qM2NDZkxSM3phVWxwRCtKRG5FL3hwem12?=
+ =?utf-8?B?N1JaMXluOFgvYmdxcU9uZXpUOThhWDRiZ09YdCtETTJZamZWUGJqK3Yzb3c4?=
+ =?utf-8?B?ckd5aU9ZSjFDQWtySzNFRnl1OVl5Zko3Ym1XSmYzQ0Z3UkkrYzZMY2FjTmZu?=
+ =?utf-8?B?L1RRbjNVRHgrSHRYandQbWZZb3RSNnJiNzFub3lMODRCZXNNTWNUazRicHF5?=
+ =?utf-8?B?V3RERTY2L3kvYWxURTZJNjByRUhBNVlqU2ZsYkZUb09RVjcrODRlbCtFTkRk?=
+ =?utf-8?B?TWRtclZKWUljUWx6WG9JNUgvUmN1dFdCS1FmZkpSYzZkY1NlelJUK3hmYThi?=
+ =?utf-8?B?S1dpa2lxc0tnNWQ4bS9LZUh1YWdXbElBaW9ibWM0SWJla1c3TTB0c1V2Qmpz?=
+ =?utf-8?B?RUh5cHFDcmpWdnNjOXA2K3BNeWZHOEhIZG9Pc1EwRkRqWVhXU1hqeGRxZlBX?=
+ =?utf-8?B?ZzZTY0hhN25UNnhYMFNNeDEvbGlYb1NyRkNQcUpOUU93dnp6TmlGaC90T3NZ?=
+ =?utf-8?B?Q1l1S0tnaGt6MTRVaTZVWkJWM3ZWN01IR3RIL2syS0srQWZMM0JLU2xaZHVo?=
+ =?utf-8?B?OU90eHBaazFZNW5qaVppUEE5NWRKNHlWbTNwTmpySDRXOTlmVGN3ZmFpTmJh?=
+ =?utf-8?Q?VzMS/zg4WcwvcTojPFlyYrz4M?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <077299D0E5B444438C56539192E1E749@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB6451.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c2b292ae-e8db-4f0a-5476-08dc1cc30ea9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jan 2024 09:58:46.9362
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: pUDLdH1e8GojR6n0ECRD1AO5k7R1+bhe87wF1bFwRWCYmptS4Nz18XSbFG9EzxVqixdXhc39LxFW+VV10BsznA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5001
 
-On Tue, 2024-01-23 at 17:05 -0500, Trevor Gamblin wrote:
-> From: Drew Fustini <dfustini@baylibre.com>
->=20
-> Add support for the Analog Devices AXI PWM Generator. This device is an
-> FPGA-implemented peripheral used as PWM signal generator and can be
-> interfaced with AXI4. The register map of this peripheral makes it
-> possible to configure the period and duty cycle of the output signal.
->=20
-> Link: https://wiki.analog.com/resources/fpga/docs/axi_pwm_gen
-> Co-developed-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
-> Signed-off-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
-> Co-developed-by: David Lechner <dlechner@baylibre.com>
-> Signed-off-by: David Lechner <dlechner@baylibre.com>
-> Signed-off-by: Drew Fustini <dfustini@baylibre.com>
-> Co-developed-by: Trevor Gamblin <tgamblin@baylibre.com>
-> Signed-off-by: Trevor Gamblin <tgamblin@baylibre.com>
->=20
-> ---
-
-One minor nitpick below (but no need to re-spin just for that).
-Anyways, from a code point of view, LGTM:
-
-Acked-by: Nuno Sa <nuno.sa@analog.com>
-
-> v2 changes:
-> * Address feedback for driver and device tree in v1:
-> =C2=A0 * Use more reasonable Kconfig approach
-> =C2=A0 * Use common prefixes for all functions
-> =C2=A0 * Rename axi_pwmgen struct to axi_pwmgen_ddata
-> =C2=A0 * Change use of "pwm" to "ddata"
-> =C2=A0 * Set and check state->polarity
-> =C2=A0 * Multiply safely with mul_u64_u64_div_u64()
-> =C2=A0 * Improve handling of max and zero periods
-> =C2=A0 * Error if clk_rate_hz > NSEC_PER_SEC
-> =C2=A0 * Add "Limitations" section at top of pwm-axi-pwmgen.c
-> =C2=A0 * Don't disable outputs by default
-> =C2=A0 * Remove unnecessary macros for period, duty, offset
-> =C2=A0 * Fix axi_pwmgen_ddata alignment
-> =C2=A0 * Don't artificially limit npwm to four
-> =C2=A0 * Use clk_rate_exclusive_get(), balance with clk_rate_exclusive_pu=
-t()
-> =C2=A0 * Cache clk rate in axi_pwmgen_ddata
-> =C2=A0 * Don't assign pwm->chip.base, do assign pwm->chip.atomic
-> * Remove redundant calls to clk_get_rate
-> * Test contents of AXI_PWMGEN_REG_CORE_MAGIC instead of
-> =C2=A0 arbitrary AXI_PWMGEN_TEST_DATA in AXI_PWMGEN_REG_SCRATCHPAD
-> * Remove redundant clk struct from axi_pwmgen_ddata
-> * Add self as module author
-> * Add major version check for IP core
->=20
-> ---
-> =C2=A0MAINTAINERS=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 1 +
-> =C2=A0drivers/pwm/Kconfig=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 |=C2=A0 13 ++
-> =C2=A0drivers/pwm/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 |=C2=A0=C2=A0 1 +
-> =C2=A0drivers/pwm/pwm-axi-pwmgen.c | 246 ++++++++++++++++++++++++++++++++=
-+++
-> =C2=A04 files changed, 261 insertions(+)
-> =C2=A0create mode 100644 drivers/pwm/pwm-axi-pwmgen.c
->=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 8a4ed5545680..2baa7a0a1c8c 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -3438,6 +3438,7 @@ L:	linux-pwm@vger.kernel.org
-> =C2=A0S:	Supported
-> =C2=A0W:	https://ez.analog.com/linux-software-drivers
-> =C2=A0F:	Documentation/devicetree/bindings/pwm/adi,axi-pwmgen.yaml
-> +F:	drivers/pwm/pwm-axi-pwmgen.c
-> =C2=A0
-> =C2=A0AXXIA I2C CONTROLLER
-> =C2=A0M:	Krzysztof Adamski <krzysztof.adamski@nokia.com>
-> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-> index 4b956d661755..d44b0e86adee 100644
-> --- a/drivers/pwm/Kconfig
-> +++ b/drivers/pwm/Kconfig
-> @@ -98,6 +98,19 @@ config PWM_ATMEL_TCB
-> =C2=A0	=C2=A0 To compile this driver as a module, choose M here: the modu=
-le
-> =C2=A0	=C2=A0 will be called pwm-atmel-tcb.
-> =C2=A0
-> +config PWM_AXI_PWMGEN
-> +	tristate "Analog Devices AXI PWM generator"
-> +	depends on MICROBLAZE || NIOS2 || ARCH_ZYNQ || ARCH_ZYNQMP ||
-> ARCH_INTEL_SOCFPGA || COMPILE_TEST
-> +	select REGMAP_MMIO
-> +	help
-> +	=C2=A0 This enables support for the Analog Devices AXI PWM generator.
-> +
-> +	=C2=A0 This is a configurable PWM generator with variable pulse width a=
-nd
-> +	=C2=A0 period.
-> +
-> +	=C2=A0 To compile this driver as a module, choose M here: the module wi=
-ll
-> be
-> +	=C2=A0 called pwm-axi-pwmgen.
-> +
-> =C2=A0config PWM_BCM_IPROC
-> =C2=A0	tristate "iProc PWM support"
-> =C2=A0	depends on ARCH_BCM_IPROC || COMPILE_TEST
-> diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
-> index c5ec9e168ee7..8322089954e9 100644
-> --- a/drivers/pwm/Makefile
-> +++ b/drivers/pwm/Makefile
-> @@ -6,6 +6,7 @@ obj-$(CONFIG_PWM_APPLE)		+=3D pwm-apple.o
-> =C2=A0obj-$(CONFIG_PWM_ATMEL)		+=3D pwm-atmel.o
-> =C2=A0obj-$(CONFIG_PWM_ATMEL_HLCDC_PWM)	+=3D pwm-atmel-hlcdc.o
-> =C2=A0obj-$(CONFIG_PWM_ATMEL_TCB)	+=3D pwm-atmel-tcb.o
-> +obj-$(CONFIG_PWM_AXI_PWMGEN)	+=3D pwm-axi-pwmgen.o
-> =C2=A0obj-$(CONFIG_PWM_BCM_IPROC)	+=3D pwm-bcm-iproc.o
-> =C2=A0obj-$(CONFIG_PWM_BCM_KONA)	+=3D pwm-bcm-kona.o
-> =C2=A0obj-$(CONFIG_PWM_BCM2835)	+=3D pwm-bcm2835.o
-> diff --git a/drivers/pwm/pwm-axi-pwmgen.c b/drivers/pwm/pwm-axi-pwmgen.c
-> new file mode 100644
-> index 000000000000..39d2c7be0cb4
-> --- /dev/null
-> +++ b/drivers/pwm/pwm-axi-pwmgen.c
-> @@ -0,0 +1,246 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Analog Devices AXI PWM generator
-> + *
-> + * Copyright 2024 Analog Devices Inc.
-> + * Copyright 2024 Baylibre SAS
-> + *
-> + * Limitations:
-> + * - The writes to registers for period and duty are shadowed until
-> + *=C2=A0=C2=A0 LOAD_CONFIG is written to AXI_PWMGEN_REG_CONFIG at the en=
-d of the
-> + *=C2=A0=C2=A0 current period.
-> + * - Writing LOAD_CONFIG also has the effect of re-synchronizing all
-> + *=C2=A0=C2=A0 enabled channels, which could cause glitching on other ch=
-annels. It
-> + *=C2=A0=C2=A0 is therefore expected that channels are assigned harmonic=
- periods
-> + *=C2=A0=C2=A0 and all have a single user coordinating this.
-> + * - Supports normal polarity. Does not support changing polarity.
-> + */
-> +#include <linux/bits.h>
-> +#include <linux/clk.h>
-> +#include <linux/err.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/pwm.h>
-> +#include <linux/regmap.h>
-> +#include <linux/slab.h>
-> +
-> +#define AXI_PWMGEN_VERSION_MAJOR(x)	(((x) >> 16) & 0xff)
-> +#define AXI_PWMGEN_VERSION_MINOR(x)	(((x) >> 8) & 0xff)
-> +#define AXI_PWMGEN_VERSION_PATCH(x)	((x) & 0xff)
-> +
-> +#define AXI_PWMGEN_REG_CORE_VERSION	0x00
-> +#define AXI_PWMGEN_REG_ID		0x04
-> +#define AXI_PWMGEN_REG_SCRATCHPAD	0x08
-> +#define AXI_PWMGEN_REG_CORE_MAGIC	0x0C
-> +#define AXI_PWMGEN_REG_CONFIG		0x10
-> +#define AXI_PWMGEN_REG_NPWM		0x14
-> +#define AXI_PWMGEN_CHX_PERIOD(ch)	(0x40 + (12 * (ch)))
-> +#define AXI_PWMGEN_CHX_DUTY(ch)		(0x44 + (12 * (ch)))
-> +#define AXI_PWMGEN_CHX_OFFSET(ch)	(0x48 + (12 * (ch)))
-> +#define AXI_PWMGEN_REG_CORE_MAGIC_VAL	0x601A3471 /* Identification numbe=
-r
-> to test during setup */
-> +#define AXI_PWMGEN_LOAD_CONFIG		BIT(1)
-> +#define AXI_PWMGEN_RESET		BIT(0)
-> +
-> +struct axi_pwmgen_ddata {
-> +	struct pwm_chip	chip;
-> +	struct regmap *regmap;
-> +	unsigned long clk_rate_hz;
-> +};
-> +
-> +static const struct regmap_config axi_pwmgen_regmap_config =3D {
-> +	.reg_bits =3D 32,
-> +	.reg_stride =3D 4,
-> +	.val_bits =3D 32,
-> +};
-> +
-> +static struct axi_pwmgen_ddata *axi_pwmgen_from_chip(struct pwm_chip *ch=
-ip)
-> +{
-> +	return container_of(chip, struct axi_pwmgen_ddata, chip);
-> +}
-> +
-> +static int axi_pwmgen_apply(struct pwm_chip *chip, struct pwm_device *pw=
-m,
-> +			=C2=A0=C2=A0=C2=A0 const struct pwm_state *state)
-> +{
-> +	struct axi_pwmgen_ddata *ddata =3D axi_pwmgen_from_chip(chip);
-> +	unsigned int ch =3D pwm->hwpwm;
-> +	struct regmap *regmap =3D ddata->regmap;
-> +	u64 period_cnt, duty_cnt;
-> +	int ret;
-> +
-> +	if (state->polarity !=3D PWM_POLARITY_NORMAL)
-> +		return -EINVAL;
-> +
-> +	if (state->enabled) {
-> +
-
-no need for extra line in here... at the very least, you should be coherent=
- in
-both your code paths...
-
-- Nuno S=C3=A1
-
-
+SGkgUm9iLA0KT24gMjAvMDEvMjQgMToxNSBhbSwgUm9iIEhlcnJpbmcgd3JvdGU6DQo+IEVYVEVS
+TkFMIEVNQUlMOiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxlc3Mg
+eW91IGtub3cgdGhlIGNvbnRlbnQgaXMgc2FmZQ0KPiANCj4gT24gVGh1LCBKYW4gMTgsIDIwMjQg
+YXQgMDI6NTY6MTFQTSArMDUzMCwgRGhhcm1hIEJhbGFzdWJpcmFtYW5pIHdyb3RlOg0KPj4gQ29u
+dmVydCBkZXZpY2UgdHJlZSBiaW5kaW5ncyBmb3IgQXRtZWwncyBITENEQyBQV00gY29udHJvbGxl
+ciB0byBZQU1MDQo+PiBmb3JtYXQuDQo+Pg0KPj4gU2lnbmVkLW9mZi1ieTogRGhhcm1hIEJhbGFz
+dWJpcmFtYW5pIDxkaGFybWEuYkBtaWNyb2NoaXAuY29tPg0KPj4gUmV2aWV3ZWQtYnk6IENvbm9y
+IERvb2xleSA8Y29ub3IuZG9vbGV5QG1pY3JvY2hpcC5jb20+DQo+PiAtLS0NCj4+IGNoYW5nZWxv
+Zw0KPj4gdjIgLT4gdjMNCj4+IC0gUmVtb3ZlICd8JyBpbiBkZXNjcmlwdGlvbiwgYXMgdGhlcmUg
+aXMgbm8gZm9ybWF0dGluZyB0byBwcmVzZXJ2ZS4NCj4+IC0gRGVsZXRlIHRoZSBkZXNjcmlwdGlv
+biBmb3IgcHdtLWNlbGxzLg0KPj4gLSBEcm9wIHRoZSBsYWJlbCBmb3IgcHdtIG5vZGUgYXMgaXQg
+bm90IHVzZWQuDQo+PiB2MSAtPiB2Mg0KPj4gLSBSZW1vdmUgdGhlIGV4cGxpY2l0IGNvcHlyaWdo
+dHMuDQo+PiAtIE1vZGlmeSB0aXRsZSAobm90IGluY2x1ZGUgd29yZHMgbGlrZSBiaW5kaW5nL2Ry
+aXZlcikuDQo+PiAtIE1vZGlmeSBkZXNjcmlwdGlvbiBhY3R1YWxseSBkZXNjcmliaW5nIHRoZSBo
+YXJkd2FyZSBhbmQgbm90IHRoZSBkcml2ZXIuDQo+PiAtIFJlbW92ZSBwaW5jdHJsIHByb3BlcnRp
+ZXMgd2hpY2ggYXJlbid0IHJlcXVpcmVkLg0KPj4gLSBEcm9wIHBhcmVudCBub2RlIGFuZCBpdCdz
+IG90aGVyIHN1Yi1kZXZpY2Ugbm9kZSB3aGljaCBhcmUgbm90IHJlbGF0ZWQgaGVyZS4NCj4+IC0t
+LQ0KPj4gICAuLi4vYmluZGluZ3MvcHdtL2F0bWVsLGhsY2RjLXB3bS55YW1sICAgICAgICAgfCA0
+NCArKysrKysrKysrKysrKysrKysrDQo+PiAgIC4uLi9iaW5kaW5ncy9wd20vYXRtZWwtaGxjZGMt
+cHdtLnR4dCAgICAgICAgICB8IDI5IC0tLS0tLS0tLS0tLQ0KPj4gICAyIGZpbGVzIGNoYW5nZWQs
+IDQ0IGluc2VydGlvbnMoKyksIDI5IGRlbGV0aW9ucygtKQ0KPj4gICBjcmVhdGUgbW9kZSAxMDA2
+NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3B3bS9hdG1lbCxobGNkYy1wd20u
+eWFtbA0KPj4gICBkZWxldGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
+bmRpbmdzL3B3bS9hdG1lbC1obGNkYy1wd20udHh0DQo+Pg0KPj4gZGlmZiAtLWdpdCBhL0RvY3Vt
+ZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9wd20vYXRtZWwsaGxjZGMtcHdtLnlhbWwgYi9E
+b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcHdtL2F0bWVsLGhsY2RjLXB3bS55YW1s
+DQo+PiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPj4gaW5kZXggMDAwMDAwMDAwMDAwLi40ZjRjYzIx
+ZmU0ZjcNCj4+IC0tLSAvZGV2L251bGwNCj4+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJl
+ZS9iaW5kaW5ncy9wd20vYXRtZWwsaGxjZGMtcHdtLnlhbWwNCj4+IEBAIC0wLDAgKzEsNDQgQEAN
+Cj4+ICsjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiAoR1BMLTIuMC1vbmx5IE9SIEJTRC0yLUNs
+YXVzZSkNCj4+ICslWUFNTCAxLjINCj4+ICstLS0NCj4+ICskaWQ6IGh0dHA6Ly9kZXZpY2V0cmVl
+Lm9yZy9zY2hlbWFzL3B3bS9hdG1lbCxobGNkYy1wd20ueWFtbCMNCj4+ICskc2NoZW1hOiBodHRw
+Oi8vZGV2aWNldHJlZS5vcmcvbWV0YS1zY2hlbWFzL2NvcmUueWFtbCMNCj4+ICsNCj4+ICt0aXRs
+ZTogQXRtZWwncyBITENEQydzIFBXTSBjb250cm9sbGVyDQo+PiArDQo+PiArbWFpbnRhaW5lcnM6
+DQo+PiArICAtIE5pY29sYXMgRmVycmUgPG5pY29sYXMuZmVycmVAbWljcm9jaGlwLmNvbT4NCj4+
+ICsgIC0gQWxleGFuZHJlIEJlbGxvbmkgPGFsZXhhbmRyZS5iZWxsb25pQGJvb3RsaW4uY29tPg0K
+Pj4gKyAgLSBDbGF1ZGl1IEJlem5lYSA8Y2xhdWRpdS5iZXpuZWFAdHV4b24uZGV2Pg0KPj4gKw0K
+Pj4gK2Rlc2NyaXB0aW9uOg0KPj4gKyAgVGhlIExDREMgaW50ZWdyYXRlcyBhIFB1bHNlIFdpZHRo
+IE1vZHVsYXRpb24gKFBXTSkgQ29udHJvbGxlci4gVGhpcyBibG9jaw0KPj4gKyAgZ2VuZXJhdGVz
+IHRoZSBMQ0QgY29udHJhc3QgY29udHJvbCBzaWduYWwgKExDRF9QV00pIHRoYXQgY29udHJvbHMg
+dGhlDQo+PiArICBkaXNwbGF5J3MgY29udHJhc3QgYnkgc29mdHdhcmUuIExDRENfUFdNIGlzIGFu
+IDgtYml0IFBXTSBzaWduYWwgdGhhdCBjYW4gYmUNCj4+ICsgIGNvbnZlcnRlZCB0byBhbiBhbmFs
+b2cgdm9sdGFnZSB3aXRoIGEgc2ltcGxlIHBhc3NpdmUgZmlsdGVyLiBMQ0QgZGlzcGxheQ0KPj4g
+KyAgcGFuZWxzIGhhdmUgZGlmZmVyZW50IGJhY2tsaWdodCBzcGVjaWZpY2F0aW9ucyBpbiB0ZXJt
+cyBvZiBtaW5pbXVtL21heGltdW0NCj4+ICsgIHZhbHVlcyBmb3IgUFdNIGZyZXF1ZW5jeS4gSWYg
+dGhlIExDREMgUFdNIGZyZXF1ZW5jeSByYW5nZSBkb2VzIG5vdCBtYXRjaCB0aGUNCj4+ICsgIExD
+RCBkaXNwbGF5IHBhbmVsLCBpdCBpcyBwb3NzaWJsZSB0byB1c2UgdGhlIHN0YW5kYWxvbmUgUFdN
+IENvbnRyb2xsZXIgdG8NCj4+ICsgIGRyaXZlIHRoZSBiYWNrbGlnaHQuDQo+PiArDQo+PiArcHJv
+cGVydGllczoNCj4+ICsgIGNvbXBhdGlibGU6DQo+PiArICAgIGNvbnN0OiBhdG1lbCxobGNkYy1w
+d20NCj4+ICsNCj4+ICsgICIjcHdtLWNlbGxzIjoNCj4+ICsgICAgY29uc3Q6IDMNCj4+ICsNCj4+
+ICtyZXF1aXJlZDoNCj4+ICsgIC0gY29tcGF0aWJsZQ0KPj4gKyAgLSAiI3B3bS1jZWxscyINCj4+
+ICsNCj4+ICthZGRpdGlvbmFsUHJvcGVydGllczogZmFsc2UNCj4+ICsNCj4+ICtleGFtcGxlczoN
+Cj4+ICsgIC0gfA0KPj4gKyAgICBwd20gew0KPj4gKyAgICAgIGNvbXBhdGlibGUgPSAiYXRtZWws
+aGxjZGMtcHdtIjsNCj4+ICsgICAgICBwaW5jdHJsLW5hbWVzID0gImRlZmF1bHQiOw0KPj4gKyAg
+ICAgIHBpbmN0cmwtMCA9IDwmcGluY3RybF9sY2RfcHdtPjsNCj4+ICsgICAgICAjcHdtLWNlbGxz
+ID0gPDM+Ow0KPj4gKyAgICB9Ow0KPiANCj4gTW92ZSB0aGUgZXhhbXBsZSB0byB0aGUgTUZEIHNj
+aGVtYS4gT3IganVzdCBkcm9wIGlmIGFscmVhZHkgdGhlcmUuDQoNCkFzIFNhbSBzdWdnZXN0ZWQg
+SSB3aWxsIHNlbmQgdjQgc2VyaWVzIHdpdGggdGhpcyBiaW5kaW5nIGFzIGl0IGlzIGFuZCANCndp
+bGwgc2VuZCB0aGUgY2xlYW4gdXAgcGF0Y2ggbGF0ZXIuDQoNCi0tIA0KVGhhbmtzLA0KRGhhcm1h
+IEIuDQo+IA0KPiBSb2INCg0KDQoNCg==
 
