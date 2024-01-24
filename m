@@ -1,164 +1,132 @@
-Return-Path: <linux-kernel+bounces-37418-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37419-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC10D83AFCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:27:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF12383B03F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:43:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DF23285CA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:27:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 215AFB2EDE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:27:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFACC12A17F;
-	Wed, 24 Jan 2024 17:22:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20BD186AC7;
+	Wed, 24 Jan 2024 17:23:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LzpFWfp6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="A9AwBggs"
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB0C37F7C4;
-	Wed, 24 Jan 2024 17:22:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24F3112AAFB
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 17:23:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706116942; cv=none; b=hBeIYGRlsjx5r9FV+aaqIxJhvT7L3FPMpEEC29PbrIbpEO56NeeSlh/GAUxBNxSS7m+MeW7ph/paj107VerDkY9VmPuIxEOZ8ZFPsCVwi17uoswACfHGB5z+LmEkzn4850FPD2Bx1klxIOWYFPTedHXW+omxEV/ge8MQo71jBhc=
+	t=1706116983; cv=none; b=g2AabDBpg6KhLuZE3kdQNRSGlMR+q77wxl7qOeEe0Hz7v3MTpCiihC4vq8gbpDWcNmhVp6pWQbtIE8Tn5qHiLDejWNkgXIHwJQSDCWhCu8rVzFq03fpSAjshQsAgAwdiLTK80RkV1Gz+EmR3KFesCU+y5NLRfsKxrRRcm2OGb/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706116942; c=relaxed/simple;
-	bh=J9cWHBzQAtoEqppKJznkEOwXANl/OtQJlMreI+w5+pM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JyplCo+6wUwP4Ld+g90II4utX7SzLDxkNtk9cI8u2vTFH0zidK/E2mvXh8Y3B9p7+u+ZxvBi8fSmAAt4CCreowdBP5KED2t+aK9wtIxEnqqGchftgLiM/zAQQvN6MvKJ7SiaYGv0bJBMQgQDOtiaCc8i4R1ZGD87VIgHc8YAoI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LzpFWfp6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAF93C433C7;
-	Wed, 24 Jan 2024 17:22:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706116940;
-	bh=J9cWHBzQAtoEqppKJznkEOwXANl/OtQJlMreI+w5+pM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LzpFWfp68rpr4dWHpdN+3IBhvKe1BMer+To6gMN52sFIqJGOHOg2ldSKjRXCcMb5m
-	 TFWNLUoV1HFSfX27ssqcTmUNGmLjfsu/z7ab3gxQuXnjvSNFUQXmjhZEIyIhUWWEIT
-	 CgAYNmzcDLnvRg+viWfwfm6By4Ffbj0ymjEy26C89CVOqr6JLR32V+zT7k2ef93fpP
-	 1Ka1oOBMomGGEuXbLQOuhLohRSeVfalTXlkn0w18Bo0vP0gpL8EpG8vIchAhQdEue3
-	 Cd0Kc25AAqNkrZ3Jhe5TUtRkxqZmjaKSQ074XXZPz2CPZUgeNzrq5mcjx4JO7BaCUH
-	 nqaKOF7sEH13g==
-Date: Wed, 24 Jan 2024 17:22:00 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	kernel@pengutronix.de, Moritz Fischer <mdf@kernel.org>,
-	Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>,
-	Tom Rix <trix@redhat.com>, linux-fpga@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Alexander Aring <alex.aring@gmail.com>,
-	Stefan Schmidt <stefan@datenfreihafen.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Michael Hennerich <Michael.Hennerich@analog.com>,
-	Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	linux-input@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-	Rayyan Ansari <rayyan@ansari.sh>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Martin Tuma <martin.tuma@digiteqautomotive.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org, Sergey Kozlov <serjk@netup.ru>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Yang Yingliang <yangyingliang@huawei.com>,
-	linux-mmc@vger.kernel.org, Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Rob Herring <robh@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
-	Michal Simek <michal.simek@amd.com>,
-	Amit Kumar Mahapatra via Alsa-devel <alsa-devel@alsa-project.org>,
-	linux-mtd@lists.infradead.org,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-	Simon Horman <horms@kernel.org>,
-	Ronald Wahl <ronald.wahl@raritan.com>,
-	Benson Leung <bleung@chromium.org>,
-	Tzung-Bi Shih <tzungbi@kernel.org>,
-	Guenter Roeck <groeck@chromium.org>,
-	chrome-platform@lists.linux.dev, Max Filippov <jcmvbkbc@gmail.com>,
-	linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	linux-arm-msm@vger.kernel.org,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	linux-mediatek@lists.infradead.org,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Javier Martinez Canillas <javierm@redhat.com>,
-	Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
-	dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-	linux-staging@lists.linux.dev, Viresh Kumar <vireshk@kernel.org>,
-	Rui Miguel Silva <rmfrfs@gmail.com>,
-	Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-	greybus-dev@lists.linaro.org, Peter Huewe <peterhuewe@gmx.de>,
-	Jarkko Sakkinen <jarkko@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-	linux-integrity@vger.kernel.org,
-	Herve Codina <herve.codina@bootlin.com>,
-	Alan Stern <stern@rowland.harvard.edu>,
-	Aaro Koskinen <aaro.koskinen@iki.fi>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	linux-usb@vger.kernel.org, Helge Deller <deller@gmx.de>,
-	Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-	Kalle Valo <kvalo@kernel.org>, Dmitry Antipov <dmantipov@yandex.ru>,
-	libertas-dev@lists.infradead.org, linux-wireless@vger.kernel.org,
-	Jonathan Corbet <corbet@lwn.net>, James Clark <james.clark@arm.com>,
-	Bjorn Helgaas <bhelgaas@google.com>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2 00/33] spi: get rid of some legacy macros
-Message-ID: <c1e38a30-5075-4d01-af24-ac684e77cf29@sirena.org.uk>
-References: <cover.1705944943.git.u.kleine-koenig@pengutronix.de>
- <2024012417-prissy-sworn-bc55@gregkh>
+	s=arc-20240116; t=1706116983; c=relaxed/simple;
+	bh=1qsiuKA8J/U5HtTK7VX7ozeNvAKnJpMbUXqVOveYMK8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rSKM2MQnK5w9xOTaC2/a1kVpPBSort/cbRwE9Bmk5MBv3Qn8xSsiDK+mblHHUa7sqsP4XXsR74yBEbvYLXAf9b6XoNO7kX//1vWAZ8N2IE5CMDAMEAEyLYcHW9jgilv4jM/Qk9ZQZ0U0QFNGaKew+TRwOImQqMHJB+D0HRy2PMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=A9AwBggs; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0F8F040003;
+	Wed, 24 Jan 2024 17:22:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1706116979;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NR9X+f8hzi6LukUwFvLmWHpES6M8Hue32FNHn1qEfC8=;
+	b=A9AwBggsTrv9qKpv6izgrNets4YClPaiv+ZV53LkzmNlflbQYEvLMKLE1SKOr5qUOF5uQn
+	PRlSFVqNDppd2AyZmp3b5p0MEpw5b/3zahbcChm0Xe9JXLZ/E6EhuVN+4Aiej1kWHY+iif
+	iP8YfZOGANGosY1RZJWV/6YyMYE4z6GeecvRyZOY8087BCntZNl+nzDyKcQ1Wzw3zOSe3c
+	vr8uSTczAaTzRZephI0zvW1/z44Q08mlLywAagwm3BgmN9v9kiNXLhz2orkgIeKMyjoHNY
+	ZXW+TSj0lWjoZ8WcPncTAd/lKaF7Fd5x+zVRyIhqYrUoBExodg1RlFQ2BxJALw==
+Date: Wed, 24 Jan 2024 18:22:56 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Arnd Bergmann
+ <arnd@arndb.de>, regressions@lists.linux.dev, =?UTF-8?B?UmFmYcWCIE1pxYJl?=
+ =?UTF-8?B?Y2tp?= <rafal@milecki.pl>, Chen-Yu Tsai <wenst@chromium.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, asahi@lists.linux.dev,
+ Sven Peter <sven@svenpeter.dev>, Michael Walle <michael@walle.cc>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] nvmem: include bit index in cell sysfs file name
+Message-ID: <20240124182256.776c164b@xps-13>
+In-Reply-To: <20240122153442.7250-1-arnd@kernel.org>
+References: <20240122153442.7250-1-arnd@kernel.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="FdGjmVpGJ74QDTu1"
-Content-Disposition: inline
-In-Reply-To: <2024012417-prissy-sworn-bc55@gregkh>
-X-Cookie: To err is human, to moo bovine.
-
-
---FdGjmVpGJ74QDTu1
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 
-On Wed, Jan 24, 2024 at 09:13:49AM -0800, Greg Kroah-Hartman wrote:
-> On Mon, Jan 22, 2024 at 07:06:55PM +0100, Uwe Kleine-K=F6nig wrote:
+Hi Arnd,
 
-> > Note that Jonathan Cameron has already applied patch 3 to his tree, it
-> > didn't appear in a public tree though yet. I still included it here to
-> > make the kernel build bots happy.
+arnd@kernel.org wrote on Mon, 22 Jan 2024 16:34:10 +0100:
 
-> Are we supposed to take the individual changes in our different
-> subsystem trees, or do you want them all to go through the spi tree?
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> Creating sysfs files for all Cells caused a boot failure for linux-6.8-rc=
+1 on
+> Apple M1, which (in downstream dts files) has multiple nvmem cells that u=
+se the
+> same byte address. This causes the device probe to fail with
 
-Given that the final patch removes the legacy interfaces I'm expecting
-to take them via SPI.
+o_O	I didn't even know this was allowed...
 
---FdGjmVpGJ74QDTu1
-Content-Type: application/pgp-signature; name="signature.asc"
+> [    0.605336] sysfs: cannot create duplicate filename '/devices/platform=
+/soc@200000000/2922bc000.efuse/apple_efuses_nvmem0/cells/efuse@a10'
+> [    0.605347] CPU: 7 PID: 1 Comm: swapper/0 Tainted: G S                =
+ 6.8.0-rc1-arnd-5+ #133
+> [    0.605355] Hardware name: Apple Mac Studio (M1 Ultra, 2022) (DT)
+> [    0.605362] Call trace:
+> [    0.605365]  show_stack+0x18/0x2c
+> [    0.605374]  dump_stack_lvl+0x60/0x80
+> [    0.605383]  dump_stack+0x18/0x24
+> [    0.605388]  sysfs_warn_dup+0x64/0x80
+> [    0.605395]  sysfs_add_bin_file_mode_ns+0xb0/0xd4
+> [    0.605402]  internal_create_group+0x268/0x404
+> [    0.605409]  sysfs_create_groups+0x38/0x94
+> [    0.605415]  devm_device_add_groups+0x50/0x94
+> [    0.605572]  nvmem_populate_sysfs_cells+0x180/0x1b0
+> [    0.605682]  nvmem_register+0x38c/0x470
+> [    0.605789]  devm_nvmem_register+0x1c/0x6c
+> [    0.605895]  apple_efuses_probe+0xe4/0x120
+> [    0.606000]  platform_probe+0xa8/0xd0
+>=20
+> As far as I can tell, this is a problem for any device with multiple cell=
+s on
+> different bits of the same address. Avoid the issue by changing the file =
+name
+> to include the first bit number.
 
------BEGIN PGP SIGNATURE-----
+There is only one bit number right? We are talking about byte offsets
+so this value can only range from 0 to 7? If we understand each other
+correctly then why not, I'm fine with the extra ",0" thing.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWxRzcACgkQJNaLcl1U
-h9CS5Af+OPZh7Z4aM5AF1TAMNJebJxrwbV+lfEa8zsdVnpHBXYpXokCrVwsSRBtM
-yR/bt2+OoZjrVep6c0lufmewH58kEtQF4UazYao7MD2alCnwzn49m697Ubpnc/k9
-iSCRd+E5ICMZuRdRrDAmd/To7o3jsg85SeN4qLdeer17NkjU6VS9vR6NlzImV/nS
-MXj52eAHL5+EZIpIlwZSBkCxyEEsz/UFaGcFsKMonZ+24Oz5SXXWFhUWfiFCD+fA
-DNZKxXJ9Vk2i5pCUsduff5giUUypwRqVP4C01wYMs7o3jkMZ2cQhtuH8iyDtKKMU
-FSwO3bpbAgZzLbY2G2cqYZyEpqJ8Ow==
-=E3cl
------END PGP SIGNATURE-----
+> Fixes: 0088cbc19276 ("nvmem: core: Expose cells through sysfs")
+> Link: https://github.com/AsahiLinux/linux/blob/bd0a1a7d4/arch/arm64/boot/=
+dts/apple/t600x-dieX.dtsi#L156
+> Cc: regressions@lists.linux.dev
+> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+> Cc: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+> Cc: Chen-Yu Tsai <wenst@chromium.org>
+> Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: asahi@lists.linux.dev
+> Cc: Sven Peter <sven@svenpeter.dev>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
 
---FdGjmVpGJ74QDTu1--
+Thanks,
+Miqu=C3=A8l
 
