@@ -1,126 +1,143 @@
-Return-Path: <linux-kernel+bounces-37376-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37377-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16B3983AF08
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AE74683AF0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:03:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2C261F222F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:02:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E3A71F2279A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:03:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4436A7E76F;
-	Wed, 24 Jan 2024 17:02:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16A307E792;
+	Wed, 24 Jan 2024 17:03:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=public-files.de header.i=frank-w@public-files.de header.b="IwakDZfm"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J+Qpv4s+"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5362F42A93;
-	Wed, 24 Jan 2024 17:02:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DD887E76D;
+	Wed, 24 Jan 2024 17:03:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706115744; cv=none; b=L19osUhN+8pdbvqLtQwgKDn5KCQmUC0c1yH72gEfH+UK83uTaUE2L0m42hM3rbDPQwFfScZLFwdJWEbjGoYlYggfFFFoWOOluzY8L0GieMZ3xzBzJRZT0FyGQIdrlRfp8n7Xyc5ZkYKjyDQH5Ja48yV84kxtalPnugLRjm+lkC4=
+	t=1706115782; cv=none; b=kG41VGOvogts2SEAF5qb0wEM08ncXba4q1JA/etyZgAXRB1faM2NPM5Lp1j2GCMmNGV2GmiK5DX3DOhGuucjgyYYwIlw8LP7c+3rb3EJiuOqSKEIF9Ndo5GBXRLB/wLUszy29Vpc4lZFFxwJhpHMSQbKcbpmMmVg30EioWBbPAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706115744; c=relaxed/simple;
-	bh=wXHLNCaoB8c2KX+O06HEmNoziRnttpcnlBxXvtkvLog=;
-	h=MIME-Version:Message-ID:From:To:Cc:Subject:Content-Type:Date:
-	 In-Reply-To:References; b=UAc7OVjn6VlUCohpEHkCFNRsz0MkCN61Kbvc2RhDtTPqyAEjzALOSlzzcFHzC7fCRdD8Z/IbVe4Kba78I3fkPHU+e6M/VV/wZJHAp+EnztccPU+67OhW502lhSM0QJOwUuOLgu2G2FVWQcdgr/uzl1JNrPtXgj9gjEWArPhW/eA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=public-files.de; spf=pass smtp.mailfrom=public-files.de; dkim=pass (2048-bit key) header.d=public-files.de header.i=frank-w@public-files.de header.b=IwakDZfm; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=public-files.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=public-files.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=public-files.de;
-	s=s31663417; t=1706115719; x=1706720519; i=frank-w@public-files.de;
-	bh=wXHLNCaoB8c2KX+O06HEmNoziRnttpcnlBxXvtkvLog=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
-	 References;
-	b=IwakDZfmY7L6gQILVBuuBiQUXfanBrOXZqA0areXs4eLjTRI0dCF/O8jfs3tHQpU
-	 onDsvepLbjl09x1JVyKvCr4reXMuieL9UbdewkohAaV1h4naxzHhWQ5AzxX7hfzne
-	 bAXF37wwVzOGhAY3goG8RtTZaTtazmHP8BqAOtu+e9pCbxeIiq8yxQpVxoIxAife6
-	 HEnpZNP8ZJdtDHFFuQhfp3wnfsfS2pW6vOVs1MhEUeBy/4J8qsLNNOzyDa6wV4KAc
-	 6tLzfW+AR8c688FQ5hx/11Yt308mJhL8rRNlZMAXn1LETqo4+3GuCSSiRIYpNKQ6c
-	 1FJV8IdHcC7ltQP+Vg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [80.245.72.177] ([80.245.72.177]) by web-mail.gmx.net
- (3c-app-gmx-bap04.server.lan [172.19.172.74]) (via HTTP); Wed, 24 Jan 2024
- 18:01:59 +0100
+	s=arc-20240116; t=1706115782; c=relaxed/simple;
+	bh=R38dR4MQyuR1txvccH1LWaFn1VVJMCDJwuazqCZJ7Vg=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=ql4gOgncX7CxpzYkzPojt68WgtTQnRfXmf/lVUm9P+huM14FVOuaUi7NywhzHkQPyyuyLmf+goFHS+BFZpS3S3zH8IHYHQwtjsyuvVrfLes+SCt0dbb6U8pTOthoMbLbLM6Dz2PKubSxvaoivB9q0OdAIZgJM6kCf3DrA4ANYbg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J+Qpv4s+; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6dd7b525cd6so1588641b3a.2;
+        Wed, 24 Jan 2024 09:03:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706115780; x=1706720580; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6JwMgDweZYejySMnkRfBGOCwhQQ8zuB1aX2MpP5io2I=;
+        b=J+Qpv4s+2g3LjFHGknhPNKBgP9r5k9+lIvANLo2G0wCycs2g0dYmdBh5lEgq8jtXVF
+         uLfLk5CCEr5rfPiq+0PKw21kunhmgTsWaeXi/qv4GyRTwCZOTQyWEHDSlxbYdpjTJCHr
+         QkNKDO73Rn4mEstN/jyjlLUTgvc639zw87FfTjIqlydEt/XnpgFnRbZ+TgK1o+nTmTWw
+         UfDbXz2iZp1nGnrOoZpM1rC2wMpaPnHRy20AaIxLbs3OcAoWXxVQboU9H28rwhwq/J6/
+         zWMeaehETnsdobrr23P7pRi0LZAqc25NvwhqpbJFCejNFjOo2NFEuH8Z5qWJUpIhxeug
+         VmWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706115780; x=1706720580;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6JwMgDweZYejySMnkRfBGOCwhQQ8zuB1aX2MpP5io2I=;
+        b=GwtUWlx43AXTSu0Fj5f4byLP8gyv54QkOMfkFQHcuRCxqAwGbs1LSQz0O0szoeVfjs
+         WUL/C3vbAshP6GeGBBBAK86f0Zzyc/ErxOyKNSJtNTeV6R9XrE9jita2FamwoHQPo860
+         MU5f5WJSgLmumzcCuvvJ1ypNlznx4ovuRTZ/Cq1kORXuvLlSEr6PTdHCp+FRlV7h7SnR
+         OFwfhB/HMwppdTkQBZl9AyxYrjzaR/WsYm7LaA+3xweuZxMh9ajp4idblJq2/Nq7Oadn
+         aNy4/3kRM2KRBRii4A2Nlgvv3vUWbUEaiutz42upXMCbF2pbk6VyvTgLt7JafJr0I+Go
+         jQpw==
+X-Gm-Message-State: AOJu0YxCRVE1YNlY4xT+do7BnUcZzF6dmP25VV9ks+lZ22s6MgX0A0z0
+	3rJS+6zGJA0XbxU9VTrJLekLcgpKZm6cwdo5zQ9XKwIKqbTHeAK6
+X-Google-Smtp-Source: AGHT+IGKROj+Zo82c0TZfWf/0QNfpFmDncoPMVAhwkvFyahTHEXxoFPkaf5QQqYYh38qW2tS+Jecfg==
+X-Received: by 2002:a62:6544:0:b0:6d9:8f4f:5526 with SMTP id z65-20020a626544000000b006d98f4f5526mr4306348pfb.36.1706115780307;
+        Wed, 24 Jan 2024 09:03:00 -0800 (PST)
+Received: from localhost.localdomain ([117.177.61.99])
+        by smtp.gmail.com with ESMTPSA id fd30-20020a056a002e9e00b006d9c0dd1b26sm14408014pfb.15.2024.01.24.09.02.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 09:02:59 -0800 (PST)
+From: moehanabi <moehanabichan@gmail.com>
+X-Google-Original-From: moehanabi <moehanabichan@outlook.com>
+To: seanjc@google.com
+Cc: bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	hpa@zytor.com,
+	kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	mingo@redhat.com,
+	moehanabichan@gmail.com,
+	pbonzini@redhat.com,
+	tglx@linutronix.de,
+	x86@kernel.org
+Subject: Re: Re: [PATCH] KVM: x86: Check irqchip mode before create PIT
+Date: Thu, 25 Jan 2024 01:02:43 +0800
+Message-Id: <20240124170243.93-1-moehanabichan@outlook.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <ZbE7kd9W8csPRjvU@google.com>
+References: <ZbE7kd9W8csPRjvU@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <trinity-08c06a61-9397-4097-9a54-9f078ac22af7-1706115719411@3c-app-gmx-bap04>
-From: Frank Wunderlich <frank-w@public-files.de>
-To: Matthias Brugger <matthias.bgg@gmail.com>
-Cc: Frank Wunderlich <linux@fw-web.de>, Michael Turquette
- <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Philipp Zabel <p.zabel@pengutronix.de>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Sam Shih <sam.shih@mediatek.com>, Daniel Golle
- <daniel@makrotopia.org>, linux-clk@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org
-Subject: Aw: Re: [PATCH v2 1/2] dt-bindings: reset: mediatek: add MT7988
- LVTS reset ID
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 24 Jan 2024 18:01:59 +0100
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <0d3c2713-6da5-4e7c-8568-180df6e424d7@gmail.com>
-References: <20240105162056.43266-1-linux@fw-web.de>
- <20240105162056.43266-2-linux@fw-web.de>
- <0d3c2713-6da5-4e7c-8568-180df6e424d7@gmail.com>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:ulx5dIeWJcW3Za2njFFqNJJv6ciEdTUHHrCwpcD+GKtnJOHRljDlEEQe6nsrRW8zL7mfz
- BKTmCNEvNAt61YH5vlDMBmy6sMsLWiB/Wn4JYcasmQ7aYjLhtgPyNjmm5b7tslQW2ipa0Pr6KZEN
- efLPRXlqDDmqskDxqBe1J8ZY3sAhRpDe/VNNlx3LZPfotPyxTpa+R2rDb5F1mOCLl6rwRBpoJNS6
- SgVY5AofTYqcYt/lCE1x0swMDP5E4yO+HCF4TdBs27kvAuyDnPstCHt22rx5FqitmhNQrgQapFXn
- Ro=
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:hKFerlztyOE=;6u6ywOCU1fTGycRtlCIUyUtsGmE
- sRTAUXyl8Ro0jbY88oE1+r7+w0JokzfAu26O55bueT1Qo+aDKpLzVNQKmZh5afFmy0SjUPa/3
- WLZNB2hhpV8IGSDoeJ4nnQMpfbt7V+tx389WM1soB0wgLTo3atB5QyghOGtvC48JJvFUkaEri
- 0GAFhAE/K+mSg6bGv5caLsZScVDZNOvKAtSmlW9HMHfqjVuM+ldqMr73JR0L3SGcU6+4Wedu2
- Y02ccqsDRNLQB+WfQTiN5UnbI/oc8nfmLx2EC8jmUPZ97ea0kcvlfgr9blPXrXa3BQvoaJbU2
- IMVjJSJpzJVFvgX6NYExMTw2X7KU7KTLEErfg+D5ZM21IeN4TndBq/FqSBgWngYMWRdQiyy05
- RHE2II+sHZp/XBhZSN/R7gK5pYrwqyl78s8CMSQlu1LGf+2QL+Ck7mr1TdRgV3wuvpB1dgFhG
- Lp0jg4H+NWTON9Y+F+XDI0STjp/4H85gvZA3HexzBnW9wxaZhYJjMgc3yd89TWzadD3fhuV6B
- mQ0iQkTvYYl/JANDLDr7nzv+0sLSMjIbdnTXfbGWHA+r4+nf4nq+5FBhgDokvj+IGLJZrIF3l
- G62GKoDECzTtmwfSti3jg/2e8puqkBdDR9VGzp+qInPDjozW7MB816u6cfgiA0JskEkZFBvMV
- 1CSX3D6/lpyJB+vveXFK848nR+LzSahkBUKq63C5cSpLnRAaZkKH7E6InHLyOYtedP0aAUadK
- 0h1P12oCpUWNWIiDHDz80zVY4xjleMrEaXuqq53aDAevXlUApv1sE+ApWQeIjJBtmBXoxG4ar
- CDv3F36VdP8r+roDldHt2/wQ==
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-> Gesendet: Montag, 22. Januar 2024 um 09:57 Uhr
-> Von: "Matthias Brugger" <matthias.bgg@gmail.com>
-> On 05/01/2024 17:20, Frank Wunderlich wrote:
-> > From: Frank Wunderlich <frank-w@public-files.de>
-> >
-> > Add reset constant for using as index in driver and dts.
-> >
-> > Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
->
-> Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+> On Thu, Jan 25, 2024, Brilliant Hanabi wrote:
+> > As the kvm api(https://docs.kernel.org/virt/kvm/api.html) reads,
+> > KVM_CREATE_PIT2 call is only valid after enabling in-kernel irqchip
+> > support via KVM_CREATE_IRQCHIP.
+> > 
+> > Without this check, I can create PIT first and enable irqchip-split
+> > then, which may cause the PIT invalid because of lacking of in-kernel
+> > PIC to inject the interrupt.
+> 
+> Does this cause actual problems beyond the PIT not working for the guest?  E.g.
+> does it put the host kernel at risk?  If the only problem is that the PIT doesn't
+> work as expected, I'm tempted to tweak the docs to say that KVM's PIT emulation
+> won't work without an in-kernel I/O APIC.  Rejecting the ioctl could theoertically
+> break misconfigured setups that happen to work, e.g. because the guest never uses
+> the PIT.
 
-Hi
+I don't think it will put the host kernel at risk. But that's exactly what
+kvmtool does: it creates in-kernel PIT first and set KVM_CREATE_IRQCHIP then.
+I found this problem because I was working on implementing a userspace PIC
+and PIT in kvmtool. As I planned, I'm going to commit a related patch to 
+kvmtool if this patch will be applied.
 
-good to hear again from you Matthias. unfortunately there is already a v3 =
-out,
-where i added multiple reset offsets/ids. Can you please review this one?
+> > Signed-off-by: Brilliant Hanabi <moehanabichan@gmail.com>
+> > ---
+> >  arch/x86/kvm/x86.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index 27e23714e960..3edc8478310f 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -7016,6 +7016,8 @@ int kvm_arch_vm_ioctl(struct file *filp, unsigned int ioctl, unsigned long arg)
+> >  		r = -EEXIST;
+> >  		if (kvm->arch.vpit)
+> >  			goto create_pit_unlock;
+> > +		if (!pic_in_kernel(kvm))
+> > +			goto create_pit_unlock;
+> 
+> -EEXIST is not an appropriate errno.
 
-https://patchwork.kernel.org/project/linux-mediatek/list/?series=3D817619
+Which errno do you think is better?
 
-and i also wait for 2 other patches to be reviewed before bpi-r4 dts patch=
-es can go in:
-
-https://patchwork.kernel.org/project/linux-mediatek/patch/20231025170832.7=
-8727-5-linux@fw-web.de/
-
-regards Frank
-
+> >  		r = -ENOMEM;
+> >  		kvm->arch.vpit = kvm_create_pit(kvm, u.pit_config.flags);
+> >  		if (kvm->arch.vpit)
+> > -- 
+> > 2.39.3
+> > 
 
