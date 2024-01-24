@@ -1,162 +1,230 @@
-Return-Path: <linux-kernel+bounces-36953-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36954-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EC2683A972
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:17:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39F0883A974
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:17:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7217C1C21674
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:17:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 671BC1C21D52
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:17:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A7C46310E;
-	Wed, 24 Jan 2024 12:17:31 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD5D262A1E;
-	Wed, 24 Jan 2024 12:17:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 019E46310F;
+	Wed, 24 Jan 2024 12:17:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="EeyuUl53"
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91FCB60DD1
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 12:17:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706098650; cv=none; b=MOHXhtdbQ5PK71wDRc19EQB2GQWIMlGq/iQNM0dM1OMdZxDALMeHc+p1kixsq8c9BmDKsGLeDBtJ9y+sZVe//y6TTAqMYgJejs9F5WKtsDQIelAtZAbKuROTa0UgxQfJSKhVOxI9qZ1J2NEuv1MbJfeyEXXL9Ta4Ro2g521phJI=
+	t=1706098661; cv=none; b=sLgvr26WmCBW6KnXevRY92V4WsYZojHy1k7ygBiCK4FsYZeNeWABvPlSojnepj4XvIBVUlui0kIDx5a+CTmdLhSrviayBwb2qmfAWWZjKP+c+Jv3Ai3XEnKTFAyO5v6K9xvHNzdYtwsebNDZvd9hasbXxWv9S87rm+uA9DdJi5I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706098650; c=relaxed/simple;
-	bh=qsXWo+HrmIFDIhLLli/+May0uzYFgdFB7nfDG1YuS9U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AjHVFs8/B6ZX8QdpkMvsPWW2TJlFLJx/mH6mJFFjIbZrL/bUT7iEP+3ZJAHOnMLymgknxcrsQuayjHfYtlAE18gokWehuLBNLSo1sdQkG4jisDPDuwOiZkOSBUoh1HDmgkhDGkPnBYu9adan6/QLlvw1QLKTfuRB/FQeAuWQ++U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E2E681FB;
-	Wed, 24 Jan 2024 04:18:12 -0800 (PST)
-Received: from [10.57.77.165] (unknown [10.57.77.165])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 715B63F5A1;
-	Wed, 24 Jan 2024 04:17:24 -0800 (PST)
-Message-ID: <edfade67-269e-4a49-8db6-40617131e283@arm.com>
-Date: Wed, 24 Jan 2024 12:17:23 +0000
+	s=arc-20240116; t=1706098661; c=relaxed/simple;
+	bh=4wAsqiXtqLWKVqj2fG/asHpB71yeF4SIWaebwZLRE/0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NKeTF5HwWKuiWL0b3tdhnp3dju/BcYGm6+6rKpk32cVnVGKklI/+OIIka6ypLGfyRex3nqwwkXAHN6tzoQF1m0GscwLzv7gvchP/rK8zwNXGorBtpu76QgkqcKpPztNCVVBC30fAwA1WQ2amgIH/HCrHhclZ1WQvLtxtPQAAle0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=EeyuUl53; arc=none smtp.client-ip=209.85.219.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dc236729a2bso4626153276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 04:17:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1706098658; x=1706703458; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=N40ZEELDdKAG+PltYHXUqIJnRZg2htUPF9zZfWdekds=;
+        b=EeyuUl531izO/zR9hh1JZTFuEh+b7ysIzkXISnSp9/9oRhAF+ZafJOz9793fqgbXMN
+         IiulBQ64otHMwQhkfmDvZd6oJgBt3K09MAFj69vt6AxOdqKobEDllPkjNfUKt9YRKOuW
+         68vBKK1XQnAH5foPJL+dP0c0DpMIZOWT7Gi5p6QDa6+0ooa94oXT3XhxFTRYbFfim5vT
+         esTsBYXYOzaMmhoa0aqcknJtYtIvc47ufL1C9uAt8GNFYyuIYuP2YqRaDOBsk5iMPltY
+         ciR0v9TLJzleIFQttlrJf8qn/lVII7i4Zg5WmYK0MZG2RV0jCLqRn5bq17sqcMnsmv0z
+         jbng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706098658; x=1706703458;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=N40ZEELDdKAG+PltYHXUqIJnRZg2htUPF9zZfWdekds=;
+        b=eDvmwLgY8+Rg4NEE11/h7tKILQDcVEOaCHBQKM+ElURrvp4w0+YYL8hEk1VAnGUfWI
+         0yl4NQ0KfD6KocDMHpyWQgXbMHoEY4EPE+asuDR4RpsP//csAIJTeg3pfA5JtbpVEQIJ
+         2ILIVICgNxmN4yg4KkymkHaRvCVPnB2iCrob5TMVJkFGhg5eJZRsE6vUJDQL8VH3q/ar
+         bYq4ddcOS/ajVi5axtiaNK2WeLvSGBsUbBMaPGGOMvAVqP1X0GbF105oxcyUHUggoxRS
+         wYWbEk/72SIDUfN/E1og8Bpcu2HuQkyWF4LTrWyYaQY9hK8JlxhVmVMstBzre8aD6KOq
+         AMlg==
+X-Gm-Message-State: AOJu0Yyzt0djqu1kmTLOKOuoA/mH839M+oKwmvqyCxr5ApsOdG749FcG
+	bn6Sh81XPfGCRzy8yO7r1Uoqk/nBMfGsJDTIaXltAybzCaBWOTD8HH/n2iQQ2ftKe7jQFz+IJwi
+	t7XjmNcemsInQW7avahA27HmVc9TUpp2uHXt5U+fdFHksJGc=
+X-Google-Smtp-Source: AGHT+IFwzXVb4RY9kn5qPmYvPGQUlYLETaeLn/PuqSP06R4dtdLY3ViYyP66gP8R/osYf0FPE0DXk7hFGVI9sCWzIaI=
+X-Received: by 2002:a25:81d0:0:b0:dc2:8282:a590 with SMTP id
+ n16-20020a2581d0000000b00dc28282a590mr448139ybm.125.1706098658502; Wed, 24
+ Jan 2024 04:17:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 02/10] mm: Non-pmd-mappable, large folios for
- folio_add_new_anon_rmap()
-Content-Language: en-GB
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Sven Schnelle <svens@linux.ibm.com>, David Hildenbrand
- <david@redhat.com>, Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Yin Fengwei <fengwei.yin@intel.com>,
- Yu Zhao <yuzhao@google.com>, Catalin Marinas <catalin.marinas@arm.com>,
- Anshuman Khandual <anshuman.khandual@arm.com>, Yang Shi
- <shy828301@gmail.com>, "Huang, Ying" <ying.huang@intel.com>,
- Zi Yan <ziy@nvidia.com>, Luis Chamberlain <mcgrof@kernel.org>,
- Itaru Kitayama <itaru.kitayama@gmail.com>,
- "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
- John Hubbard <jhubbard@nvidia.com>, David Rientjes <rientjes@google.com>,
- Vlastimil Babka <vbabka@suse.cz>, Hugh Dickins <hughd@google.com>,
- Kefeng Wang <wangkefeng.wang@huawei.com>, Barry Song <21cnbao@gmail.com>,
- Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Barry Song <v-songbaohua@oppo.com>, linux-s390@vger.kernel.org
-References: <20231207161211.2374093-1-ryan.roberts@arm.com>
- <20231207161211.2374093-3-ryan.roberts@arm.com> <ZaMR2EWN-HvlCfUl@krava>
- <41dc7dff-1ea8-4894-a487-88d46ec2b2d8@redhat.com> <ZaRKMwKJIBmh8-lD@krava>
- <1188e67e-5c04-4bb5-b242-78d92c3fc85c@arm.com>
- <yt9d1qa7x9qv.fsf@linux.ibm.com> <ZbDyLzoIm0GdQzZA@krava>
- <6caaced7-a9d7-4fe4-823a-11b96be83e46@arm.com> <ZbD9YdCmZ3_uTj_k@krava>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <ZbD9YdCmZ3_uTj_k@krava>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240123135242.11430-1-mkoutny@suse.com>
+In-Reply-To: <20240123135242.11430-1-mkoutny@suse.com>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Date: Wed, 24 Jan 2024 07:17:27 -0500
+Message-ID: <CAM0EoMkA1Hp61mp2n06P8aMdnteJZD5tvJPDOuAKi_PNrb+T9A@mail.gmail.com>
+Subject: Re: [PATCH v4 0/4] net/sched: Load modules via alias
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	cake@lists.bufferbloat.net, "David S . Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@toke.dk>, 
+	Vinicius Costa Gomes <vinicius.gomes@intel.com>, Stephen Hemminger <stephen@networkplumber.org>, 
+	Petr Pavlu <ppavlu@suse.cz>, Michal Kubecek <mkubecek@suse.cz>, Martin Wilck <mwilck@suse.com>, 
+	Pedro Tammela <pctammela@mojatatu.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 24/01/2024 12:06, Jiri Olsa wrote:
-> On Wed, Jan 24, 2024 at 12:02:53PM +0000, Ryan Roberts wrote:
->> On 24/01/2024 11:19, Jiri Olsa wrote:
->>> On Wed, Jan 24, 2024 at 12:15:52PM +0100, Sven Schnelle wrote:
->>>> Ryan Roberts <ryan.roberts@arm.com> writes:
->>>>
->>>>> On 14/01/2024 20:55, Jiri Olsa wrote:
->>>>>> On Sun, Jan 14, 2024 at 06:33:56PM +0100, David Hildenbrand wrote:
->>>>>>> On 13.01.24 23:42, Jiri Olsa wrote:
->>>>>>>> On Thu, Dec 07, 2023 at 04:12:03PM +0000, Ryan Roberts wrote:
->>>>>>>>> In preparation for supporting anonymous multi-size THP, improve
->>>>>>>>> folio_add_new_anon_rmap() to allow a non-pmd-mappable, large folio to be
->>>>>>>>> passed to it. In this case, all contained pages are accounted using the
->>>>>>>>> order-0 folio (or base page) scheme.
->>>>>>>>>
->>>>>>>>> Reviewed-by: Yu Zhao <yuzhao@google.com>
->>>>>>>>> Reviewed-by: Yin Fengwei <fengwei.yin@intel.com>
->>>>>>>>> Reviewed-by: David Hildenbrand <david@redhat.com>
->>>>>>>>> Reviewed-by: Barry Song <v-songbaohua@oppo.com>
->>>>>>>>> Tested-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->>>>>>>>> Tested-by: John Hubbard <jhubbard@nvidia.com>
->>>>>>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>>>>>>>> ---
->>>>>>>>>   mm/rmap.c | 28 ++++++++++++++++++++--------
->>>>>>>>>   1 file changed, 20 insertions(+), 8 deletions(-)
->>>>>>>>>
->>>>>>>>> diff --git a/mm/rmap.c b/mm/rmap.c
->>>>>>>>> index 2a1e45e6419f..846fc79f3ca9 100644
->>>>>>>>> --- a/mm/rmap.c
->>>>>>>>> +++ b/mm/rmap.c
->>>>>>>>> @@ -1335,32 +1335,44 @@ void page_add_anon_rmap(struct page *page, struct vm_area_struct *vma,
->>>>>>>>>    * This means the inc-and-test can be bypassed.
->>>>>>>>>    * The folio does not have to be locked.
->>>>>>>>>    *
->>>>>>>>> - * If the folio is large, it is accounted as a THP.  As the folio
->>>>>>>>> + * If the folio is pmd-mappable, it is accounted as a THP.  As the folio
->>>>>>>>>    * is new, it's assumed to be mapped exclusively by a single process.
->>>>>>>>>    */
->>>>>>>>>   void folio_add_new_anon_rmap(struct folio *folio, struct vm_area_struct *vma,
->>>>>>>>>   		unsigned long address)
->>>>>>>>>   {
->>>>>>>>> -	int nr;
->>>>>>>>> +	int nr = folio_nr_pages(folio);
->>>>>>>>> -	VM_BUG_ON_VMA(address < vma->vm_start || address >= vma->vm_end, vma);
->>>>>>>>> +	VM_BUG_ON_VMA(address < vma->vm_start ||
->>>>>>>>> +			address + (nr << PAGE_SHIFT) > vma->vm_end, vma);
->>>>>>>>
->>>>>>>> hi,
->>>>>>>> I'm hitting this bug (console output below) with adding uprobe
->>>>>>>> on simple program like:
->>>>>>>>
->>>>>>>>    $ cat up.c
->>>>>>>>    int main(void)
->>>>>>>>    {
->>>>>>>>       return 0;
->>>>>>>>    }
->>>>>>>>
->>>>>>>>    # bpftrace -e 'uprobe:/home/jolsa/up:_start {}'
->>>>>>>>
->>>>>>>>    $ ./up
->>>>>>>>
->>>>>>>> it's on top of current linus tree master:
->>>>>>>>    052d534373b7 Merge tag 'exfat-for-6.8-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/linkinjeon/exfat
->>>>>>>>
->>>>>>>> before this patch it seems to work, I can send my .config if needed
->>>>>
->>>>> Thanks for the bug report!
->>>>
->>>> I just hit the same bug in our CI, but can't find the fix in -next. Is
->>>> this in the queue somewhere?
->>>
->>> we hit it as well, but I can see the fix in linux-next/master
->>>
->>>   4c137bc28064 uprobes: use pagesize-aligned virtual address when replacing pages
->>
->> Yes that's the one. Just to confirm: you are still hitting the VM_BUG_ON despite
->> having this change in your kernel? Could you please send over the full bug log?
-> 
-> ah sorry.. I meant the change fixes the problem for us, it just did not
-> yet propagate through the merge cycle into bpf trees.. but I can see it
-> in linux-next tree, so it's probably just matter of time
+Hi Michal,
 
-OK great! How about you, Sven? Do you have this change in your kernel? Hopefully
-it should fix your problem.
+On Tue, Jan 23, 2024 at 8:52=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.co=
+m> wrote:
+>
+> These modules may be loaded lazily without user's awareness and
+> control. Add respective aliases to modules and request them under these
+> aliases so that modprobe's blacklisting mechanism (through aliases)
+> works for them. (The same pattern exists e.g. for filesystem
+> modules.)
+>
+> For example (before the change):
+>   $ tc filter add dev lo parent 1: protocol ip prio 1 handle 10 tcindex .=
+.
+>   # cls_tcindex module is loaded despite a `blacklist cls_tcindex` entry
+>   # in /etc/modprobe.d/*.conf
+>
+> After the change:
+>   $ tc filter add dev lo parent 1: protocol ip prio 1 handle 10 tcindex .=
+.
+>   Unknown filter "tcindex", hence option "..." is unparsable
+>   # explicit/acknowledged (privileged) action is needed
+>   $ modprobe cls_tcindex
+>   # blacklist entry won't apply to this direct modprobe, module is
+>   # loaded with awareness
+>
 
-> 
-> jirka
+A small nit seeing Simon's comment which will have you respin.
+cls_tcindex is no longer in the kernel. Can you use another example?
+Also Stephen had some comments last time, not sure if you addressed
+those (nothing on the logs says you did and i didnt see him say
+anything).
 
+cheers,
+jamal
+
+> A considered alternative was invoking `modprobe -b` always from
+> request_module(), however, dismissed as too intrusive and slightly
+> confusing in favor of the precedented aliases (the commit 7f78e0351394
+> ("fs: Limit sys_mount to only request filesystem modules.").
+>
+> User experience suffers in both alternatives. It's improvement is
+> orthogonal to blacklist honoring.
+>
+> Changes from v1 (https://lore.kernel.org/r/20231121175640.9981-1-mkoutny@=
+suse.com)
+> - Treat sch_ and act_ modules analogously to cls_
+>
+> Changes from v2 (https://lore.kernel.org/r/20231206192752.18989-1-mkoutny=
+@suse.com)
+> - reorganized commits (one generated commit + manual pre-/post- work)
+> - used alias names more fitting the existing net- aliases
+> - more info in commit messages and cover letter
+> - rebased on current master
+>
+> Changes from v3 (https://lore.kernel.org/r/20240112180646.13232-1-mkoutny=
+@suse.com)
+> - rebase on netdev/net-next/main
+> - correct aliases in cls_* modules (wrong sed)
+> - replace repeated prefix strings with a macro
+> - patch also request_module call in qdisc_set_default()
+>
+> Michal Koutn=C3=BD (4):
+>   net/sched: Add helper macros with module names
+>   net/sched: Add module aliases for cls_,sch_,act_ modules
+>   net/sched: Load modules via their alias
+>   net/sched: Remove alias of sch_clsact
+>
+>  include/net/act_api.h      | 2 ++
+>  include/net/pkt_cls.h      | 2 ++
+>  include/net/pkt_sched.h    | 2 ++
+>  net/sched/act_api.c        | 2 +-
+>  net/sched/act_bpf.c        | 1 +
+>  net/sched/act_connmark.c   | 1 +
+>  net/sched/act_csum.c       | 1 +
+>  net/sched/act_ct.c         | 1 +
+>  net/sched/act_ctinfo.c     | 1 +
+>  net/sched/act_gact.c       | 1 +
+>  net/sched/act_gate.c       | 1 +
+>  net/sched/act_ife.c        | 1 +
+>  net/sched/act_mirred.c     | 1 +
+>  net/sched/act_mpls.c       | 1 +
+>  net/sched/act_nat.c        | 1 +
+>  net/sched/act_pedit.c      | 1 +
+>  net/sched/act_police.c     | 1 +
+>  net/sched/act_sample.c     | 1 +
+>  net/sched/act_simple.c     | 1 +
+>  net/sched/act_skbedit.c    | 1 +
+>  net/sched/act_skbmod.c     | 1 +
+>  net/sched/act_tunnel_key.c | 1 +
+>  net/sched/act_vlan.c       | 1 +
+>  net/sched/cls_api.c        | 2 +-
+>  net/sched/cls_basic.c      | 1 +
+>  net/sched/cls_bpf.c        | 1 +
+>  net/sched/cls_cgroup.c     | 1 +
+>  net/sched/cls_flow.c       | 1 +
+>  net/sched/cls_flower.c     | 1 +
+>  net/sched/cls_fw.c         | 1 +
+>  net/sched/cls_matchall.c   | 1 +
+>  net/sched/cls_route.c      | 1 +
+>  net/sched/cls_u32.c        | 1 +
+>  net/sched/sch_api.c        | 4 ++--
+>  net/sched/sch_cake.c       | 1 +
+>  net/sched/sch_cbs.c        | 1 +
+>  net/sched/sch_choke.c      | 1 +
+>  net/sched/sch_codel.c      | 1 +
+>  net/sched/sch_drr.c        | 1 +
+>  net/sched/sch_etf.c        | 1 +
+>  net/sched/sch_ets.c        | 1 +
+>  net/sched/sch_fq.c         | 1 +
+>  net/sched/sch_fq_codel.c   | 1 +
+>  net/sched/sch_gred.c       | 1 +
+>  net/sched/sch_hfsc.c       | 1 +
+>  net/sched/sch_hhf.c        | 1 +
+>  net/sched/sch_htb.c        | 1 +
+>  net/sched/sch_ingress.c    | 3 ++-
+>  net/sched/sch_mqprio.c     | 1 +
+>  net/sched/sch_multiq.c     | 1 +
+>  net/sched/sch_netem.c      | 1 +
+>  net/sched/sch_pie.c        | 1 +
+>  net/sched/sch_plug.c       | 1 +
+>  net/sched/sch_prio.c       | 1 +
+>  net/sched/sch_qfq.c        | 1 +
+>  net/sched/sch_red.c        | 1 +
+>  net/sched/sch_sfb.c        | 1 +
+>  net/sched/sch_sfq.c        | 1 +
+>  net/sched/sch_skbprio.c    | 1 +
+>  net/sched/sch_taprio.c     | 1 +
+>  net/sched/sch_tbf.c        | 1 +
+>  61 files changed, 66 insertions(+), 5 deletions(-)
+>
+>
+> base-commit: 736b5545d39ca59d4332a60e56cc8a1a5e264a8e
+> --
+> 2.43.0
+>
 
