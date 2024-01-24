@@ -1,73 +1,76 @@
-Return-Path: <linux-kernel+bounces-37206-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B014183AC89
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:56:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 622FA83AC67
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:49:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48F7A1F256A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:56:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B8782994DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:49:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 391B27C085;
-	Wed, 24 Jan 2024 14:51:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0A9A85C64;
+	Wed, 24 Jan 2024 14:33:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="X6wbqruh"
+	dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="dWr1NJAh"
 Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB84323C9;
-	Wed, 24 Jan 2024 14:51:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 795ED60DD1;
+	Wed, 24 Jan 2024 14:33:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.30.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706107889; cv=none; b=e2LBfMknXpok0VWdvJCwahO5nr56ZhePnwBFVf/TD+0Q3FjgXoSf+WQORxg4tZd3quHklYd7up7dd4oF1oOGlIUu4wDUjqmTlh3ryrVpgg4thcUwenNWr3HtVnUkO2dnx6lqSMK/ncWfab/1Tc/7OyRBEqXSeboezcg/UXLhQQc=
+	t=1706106795; cv=none; b=s+aKjtqMtZ3Ok2lQEyUjQcasr9ghqySyEr0Qy3pkb2jzFRlmLkA9DdQKMW4K30fab2TcyOYWr9VOu4sVe3HDHPi8405ulKpShqRx9FUuOXWpqtO2JQko8270Orq+Wg5ghRddD7bG6P9BqZr507XULOGoEvjaZz59hOWdC1GAVpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706107889; c=relaxed/simple;
-	bh=24wJJWVUh2cZb1nXQXw4kmreJhJJdyXf+GeakqvGMdY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EEEPdYI1vRDAkO/KUnsfGs6J8mx02qniAdGXqrfpJH0K+CdzPjovQd520B/VS4tgdvQVC32zfbPSN/ZJzW4ShiJCbW8PdnWsc51CW1o4HwalDCHCWar3MMtis1X4a6mYspj111+RW3hXzntxTQHm2igQabwZMGv9wmNUgQLTIwE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com; spf=pass smtp.mailfrom=geanix.com; dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b=X6wbqruh; arc=none smtp.client-ip=188.40.30.78
+	s=arc-20240116; t=1706106795; c=relaxed/simple;
+	bh=vPpxGx3jdv7gATwmSPZOYv7TCt6Wkt2McFWe5Uq8e1A=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=lb/StMGq7WreeU26FcYRPYgNvau+2C43LA8fWjryCVILS8+3xLA/aUZ8WXoQ0Zc7/yTTKTrmiPRlnczM2DhoJdvS/KP2PimVV7FINo+jP4xWm//vwwfGhG8u8J9PzQOS5oazt903A6Kv7XVuuIKTjVe+X22EwmrlaegoEWvehSA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com; spf=pass smtp.mailfrom=geanix.com; dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b=dWr1NJAh; arc=none smtp.client-ip=188.40.30.78
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=geanix.com
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
-	s=default2211; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:
-	Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References;
-	bh=s48UK9/txojh0jP006gnClU0QGtWU0AZknMA7NCP1qs=; b=X6wbqruhAC9y80cXiNvdROZnFE
-	slorrNyyr70EfUee+kPi1OzkuDOHpdN1b+iXK95JJ7d04D7rqY5sGiZS/Hzq9Uk0yyk/ofm9SHaV7
-	Zybr9hEvECyWPnkrui/U2iGj4W4B+0xtuzYI/cfufrKSOLZ7MLjicm6lgTSeIRq9+BC4NIaSGjfe/
-	65m9cGr+KUz2Tk/eVAhtH8ZMal8vWAfmupnLtX+CHewTTCuz7GGLwOjTrRGLKK7Px3H5WEcn04cjX
-	MQMqSuarP3Fs9fOZc984VQbsTPH1Roq2kk44sRaM5Phl9iIePsVrEYWUXJHRx1fpb7KJ1H0Qlcx7c
-	0lrqTswQ==;
+	s=default2211; h=Content-Transfer-Encoding:MIME-Version:References:
+	In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=OtP8seYmSML3PMcVqkf6WfD0WEgT7yLINsGkyK/5yRY=; b=dWr1NJAh2O4A7EL6JyQkEBZIVJ
+	Mo2YCfPIx9Ge2pYrb4Lo+ndhfWGE7LOXst4905l2N6eudCvEiDQzdaOIgiejSl/mRHr+zm8chVoFu
+	mz6q4BoKMTBkMxa41EFJbFAODYnSdLcuIHKVMnGbFgaSWav9gY0/NXISgY9pVoGcR4VrT62kcS4Gj
+	Xp8BwMj+yQqZuHkUDHx+VSQ6UR/mmm5HAGXTO8Ibd8TtU4CFOzyWHEVN8qtDz5UvIaOqLJH9SHfkX
+	cZ0GwA8Jf7uiMy5BUyDU5tZ/sCLmFeqMMH69DIHjO7CVA9ZEFbgSdr/Jc99QRc7OVW0Hpkj+bQtjA
+	Azl0nMGQ==;
 Received: from sslproxy01.your-server.de ([78.46.139.224])
 	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <esben@geanix.com>)
-	id 1rSeJF-000NYX-2A; Wed, 24 Jan 2024 15:32:57 +0100
+	id 1rSeJQ-000NaO-OK; Wed, 24 Jan 2024 15:33:08 +0100
 Received: from [87.49.43.79] (helo=localhost)
 	by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <esben@geanix.com>)
-	id 1rSeJE-0006ur-80; Wed, 24 Jan 2024 15:32:56 +0100
+	id 1rSeJP-0008fi-RM; Wed, 24 Jan 2024 15:33:08 +0100
 From: Esben Haabendal <esben@geanix.com>
-To: netdev@vger.kernel.org,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
+To: devicetree@vger.kernel.org,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Christian Marangi <ansuelsmth@gmail.com>
-Cc: stable@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+	Jose Abreu <joabreu@synopsys.com>
+Cc: netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] net: stmmac: do not clear TBS enable bit on link up/down
-Date: Wed, 24 Jan 2024 15:32:55 +0100
-Message-ID: <b365dc6f756a3fad4dfaa2675c98f4078aba8a55.1706105494.git.esben@geanix.com>
+Subject: [PATCH 2/3] dt-bindings: net: snps,dwmac: Add time-based-scheduling property
+Date: Wed, 24 Jan 2024 15:33:06 +0100
+Message-ID: <30ce8f45b8752c603acc861ebb2f18d74d2f8a07.1706105494.git.esben@geanix.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <b365dc6f756a3fad4dfaa2675c98f4078aba8a55.1706105494.git.esben@geanix.com>
+References: <b365dc6f756a3fad4dfaa2675c98f4078aba8a55.1706105494.git.esben@geanix.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,33 +81,31 @@ Content-Transfer-Encoding: 8bit
 X-Authenticated-Sender: esben@geanix.com
 X-Virus-Scanned: Clear (ClamAV 0.103.10/27164/Wed Jan 24 10:45:32 2024)
 
-With the dma conf being reallocated on each call to stmmac_open(), any
-information in there is lost, unless we specifically handle it.
+Time Based Scheduling can be enabled per TX queue, if supported by the
+controller.
 
-The STMMAC_TBS_EN bit is set when adding an etf qdisc, and the etf qdisc
-therefore would stop working when link was set down and then back up.
-
-Fixes: ba39b344e924 ("net: ethernet: stmicro: stmmac: generate stmmac dma conf before open")
-Cc: stable@vger.kernel.org
 Signed-off-by: Esben Haabendal <esben@geanix.com>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 3 +++
- 1 file changed, 3 insertions(+)
+ Documentation/devicetree/bindings/net/snps,dwmac.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index a0e46369ae15..691bf3ef5e30 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -3932,6 +3932,9 @@ static int __stmmac_open(struct net_device *dev,
- 	priv->rx_copybreak = STMMAC_RX_COPYBREAK;
+diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+index 5c2769dc689a..301e9150ecc3 100644
+--- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
++++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+@@ -399,6 +399,12 @@ properties:
+             type: boolean
+             description: TX checksum offload is unsupported by the TX queue.
  
- 	buf_sz = dma_conf->dma_buf_sz;
-+	for (int i = 0; i < MTL_MAX_TX_QUEUES; i++)
-+		if (priv->dma_conf.tx_queue[i].tbs & STMMAC_TBS_EN)
-+			dma_conf->tx_queue[i].tbs = priv->dma_conf.tx_queue[i].tbs;
- 	memcpy(&priv->dma_conf, dma_conf, sizeof(*dma_conf));
- 
- 	stmmac_reset_queues_param(priv);
++          snps,time-based-scheduling:
++            type: boolean
++            description:
++              Time Based Scheduling will be enabled for TX queue.
++              This is typically not supported for TX queue 0.
++
+         allOf:
+           - if:
+               required:
 -- 
 2.43.0
 
