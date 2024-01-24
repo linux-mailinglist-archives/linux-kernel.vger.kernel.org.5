@@ -1,129 +1,144 @@
-Return-Path: <linux-kernel+bounces-37431-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7077083B033
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:41:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C21583B001
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:32:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34D4FB2BE02
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:31:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5ED491C2846B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:32:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0372385C72;
-	Wed, 24 Jan 2024 17:30:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 779571272BF;
+	Wed, 24 Jan 2024 17:30:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="oYt2OUOW"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="TE8sMbvf"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCE4F85C4B
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 17:30:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5815D85C4B;
+	Wed, 24 Jan 2024 17:30:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706117439; cv=none; b=nqTnexV+XGGPVoz/Ijy9AndvC9ZV+Kg/+Mq3P6vPBpagZA8ZA+pD1lVVnfEbozc+dYQS20y2qqkJVVFhXskI2Irf1AtMkbbxsxXbd8ej/XINshEtowBRnp9BzoOS4p1Rq0RX6bHT6aSimeBM2HJ4rkYPj2Xs6DNGyGi+vapr8ds=
+	t=1706117458; cv=none; b=g2/Ec2tTrSNkWygH4MD5gwSuXvxi8bYscPTf/MEyb28zsErLI9B1qo0PowMVkwT31ZqfKBmKc3VRKbHn+QacGy17ZPUGbRZnQ6895AGCKhFkt6ii5cf1/9l51ntLlSAa3tqmLHRNutqqEcDHekTAmYK0nwDhodWGx5zciI0cDo4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706117439; c=relaxed/simple;
-	bh=iH0MchTyiKSEd6BXJ2oEXudcHoxwgVYZCOiKge+w8Mk=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Fi80ulTAERYj++viS36+zcZDrI+UsXIyjXDOqzI3EjqcFblehLE5vWTUxxnZGQIQ8ded8y8UttvfSNSdDMX6OBQizjQe4hjzThCl9VP289T7Ya/pLu/L+eXqQn06geXUzu38KcTAzmE1q2RThvGiSrAwbZX88bvHviD5uSRYk9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=oYt2OUOW; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbf1c3816a3so6778468276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 09:30:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706117437; x=1706722237; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4XBmMUxfyNNPeoo/A2vYJ+fv7wX+k30y8Lmqm0OE8QM=;
-        b=oYt2OUOW6FA1ivx95OvEAr4D7Z4iZTw3ir34MJho2zhXUXT0CwMHwGJ5dS0n9PVHM6
-         tuyMapWiXFE/mbW/ni18+5sn4emQtEwSkcyXuwVr6P8YxP1YglO0bBAT4f3HKJnrxHmt
-         ggq4eBN/c8fPRze8r3w8VRiv5YyjaSwYgo4m4HU020V8HUQiS0/Osxrgf4IbqZ1rpFb2
-         fYAeBoNBmQF8HMPmtbFOY8jR6JG9xojEVG5Bl6KG8RWH6K7f2AH51anj3VWahmDzGkuz
-         XPNsed6VuPGl/Xktw9TySeCjprXLJ9uMTkILTMQc8pOT9uTWo/TjNR+YgzWlypggqFm+
-         zHMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706117437; x=1706722237;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4XBmMUxfyNNPeoo/A2vYJ+fv7wX+k30y8Lmqm0OE8QM=;
-        b=X1fDI4sT3n5N3VkgJTdVFpg/hd31huHElOcJ3Ol01W5A6psXKHP4QFoHI34ckfZqzQ
-         t5Wse0v7o53PKVa65NwnGxPBO1fF6f0D7kbRE0oIz9FC+Otu+nPkVk0hgdn+iSEtOXI2
-         JxmAK/W3JOjY5I98fHk637x/S8DIWgznUDJcc9YwN8MdK6gwu1+qxIF/WAn6LAZ0AuZs
-         a8qeoERk48H63/gBBVD8spBPdHcT06oKCdDfluXaZQZBvLxEDc5HG1t109FYIYpfOIrS
-         oAzMpLY6xL+zJdN+6Up2bPLWiGIn9G8IeMHWpjcSfXJeANqJQcAh6OI9VnBOyxAo2IGu
-         OIJg==
-X-Gm-Message-State: AOJu0YwiYtKiU4pi87Rb7T8xZLafZAefc14PtmngCMoSAfKGz10j2dWE
-	GqDzBl664VLeb9iyU4yh+Q1vtoLJalKLG/pk5O20DIXsHip1VMADFlRLPcyfClT0Du6eETd1NFv
-	Bfw==
-X-Google-Smtp-Source: AGHT+IGEWXyawuzyp81/wDfi3Iy9A571RkMiRToyJDanBsf/3shix6eGHoFXOR8E1W1QHA6QBXUB2ddk3kw=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1786:b0:dc2:3a02:4fc8 with SMTP id
- ca6-20020a056902178600b00dc23a024fc8mr66666ybb.6.1706117436822; Wed, 24 Jan
- 2024 09:30:36 -0800 (PST)
-Date: Wed, 24 Jan 2024 09:30:35 -0800
-In-Reply-To: <20240122193605.7riyd7q5rs2i4xez@amd.com>
+	s=arc-20240116; t=1706117458; c=relaxed/simple;
+	bh=NNDXRpvhIGTKBi9slZ/qWQEGn6Uj559Gpw2fxZO2A8A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hpfhlR1qRxJB6kQ6fi3d6bQPohqrtiyF+cthEde/2U6mwHfmF+UwlDPj5SDfp6wV1EBVPK68UdS82RPYJYgsQP+NVrCfH4ajbPUVcbWEbYY3n/+ggoD5MZ+a2OHAqe4PImU+ytiICGPyuQ9etNR823YUOYVvL0WqQRyyUHdYHr0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=TE8sMbvf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA2D0C433C7;
+	Wed, 24 Jan 2024 17:30:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1706117457;
+	bh=NNDXRpvhIGTKBi9slZ/qWQEGn6Uj559Gpw2fxZO2A8A=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TE8sMbvfIUEPS7l+FWWrLd9ucrffQrWpUeULzzDGbHOZntLPKHC9u7ekCFztLhU3U
+	 g9c/BN8CkGH0i32zPynRDSS6j46gbVDA6ioIe6yR345V3vEOlOOOrQK63M5gAF7wrU
+	 bDTC1oJaRecQ9F29HgZfYDFNvnxiLNzNXD19CPf8=
+Date: Wed, 24 Jan 2024 09:30:56 -0800
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	kernel@pengutronix.de, Moritz Fischer <mdf@kernel.org>,
+	Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>,
+	Tom Rix <trix@redhat.com>, linux-fpga@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Alexander Aring <alex.aring@gmail.com>,
+	Stefan Schmidt <stefan@datenfreihafen.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Michael Hennerich <Michael.Hennerich@analog.com>,
+	Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	linux-input@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+	Rayyan Ansari <rayyan@ansari.sh>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Martin Tuma <martin.tuma@digiteqautomotive.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	linux-media@vger.kernel.org, Sergey Kozlov <serjk@netup.ru>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Yang Yingliang <yangyingliang@huawei.com>,
+	linux-mmc@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Rob Herring <robh@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+	Michal Simek <michal.simek@amd.com>,
+	Amit Kumar Mahapatra via Alsa-devel <alsa-devel@alsa-project.org>,
+	linux-mtd@lists.infradead.org,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+	Simon Horman <horms@kernel.org>,
+	Ronald Wahl <ronald.wahl@raritan.com>,
+	Benson Leung <bleung@chromium.org>,
+	Tzung-Bi Shih <tzungbi@kernel.org>,
+	Guenter Roeck <groeck@chromium.org>,
+	chrome-platform@lists.linux.dev, Max Filippov <jcmvbkbc@gmail.com>,
+	linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	linux-arm-msm@vger.kernel.org,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	linux-mediatek@lists.infradead.org,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
+	dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+	linux-staging@lists.linux.dev, Viresh Kumar <vireshk@kernel.org>,
+	Rui Miguel Silva <rmfrfs@gmail.com>,
+	Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+	greybus-dev@lists.linaro.org, Peter Huewe <peterhuewe@gmx.de>,
+	Jarkko Sakkinen <jarkko@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+	linux-integrity@vger.kernel.org,
+	Herve Codina <herve.codina@bootlin.com>,
+	Alan Stern <stern@rowland.harvard.edu>,
+	Aaro Koskinen <aaro.koskinen@iki.fi>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	linux-usb@vger.kernel.org, Helge Deller <deller@gmx.de>,
+	Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+	Kalle Valo <kvalo@kernel.org>, Dmitry Antipov <dmantipov@yandex.ru>,
+	libertas-dev@lists.infradead.org, linux-wireless@vger.kernel.org,
+	Jonathan Corbet <corbet@lwn.net>, James Clark <james.clark@arm.com>,
+	Bjorn Helgaas <bhelgaas@google.com>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2 00/33] spi: get rid of some legacy macros
+Message-ID: <2024012439-machinist-amazingly-2d2c@gregkh>
+References: <cover.1705944943.git.u.kleine-koenig@pengutronix.de>
+ <2024012417-prissy-sworn-bc55@gregkh>
+ <c1e38a30-5075-4d01-af24-ac684e77cf29@sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240117010644.1534332-1-seanjc@google.com> <20240122193605.7riyd7q5rs2i4xez@amd.com>
-Message-ID: <ZbFJOyGb21UX6qXn@google.com>
-Subject: Re: [ANNOUNCE] PUCK Agenda - 2024.01.17 - TDP MMU for IOMMU
-From: Sean Christopherson <seanjc@google.com>
-To: Michael Roth <michael.roth@amd.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Jason Gunthorpe <jgg@nvidia.com>, Yan Zhao <yan.y.zhao@intel.com>, 
-	David Matlack <dmatlack@google.com>, pbonzini@redhat.com, isaku.yamahata@intel.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c1e38a30-5075-4d01-af24-ac684e77cf29@sirena.org.uk>
 
-On Mon, Jan 22, 2024, Michael Roth wrote:
-> On Tue, Jan 16, 2024 at 05:06:44PM -0800, Sean Christopherson wrote:
-> > Tomorrow's PUCK topic is utilizing KVM's TDP MMU for IOMMU page tables.
-> > 
-> > FYI, I am currently without my normal internet (hooray tethering), and we're
-> > supposed to get a healthy dose of freezing rain tonight, i.e. I might lose power
-> > too.  I expect to be able to join even if that happens, but I apologize in
-> > advance if I end up being a no-show.
-> > 
-> > https://lore.kernel.org/all/20231202091211.13376-1-yan.y.zhao@intel.com
-> > 
-> > Time:     6am PDT
-> > Video:    https://meet.google.com/vdb-aeqo-knk
-> > Phone:    https://tel.meet/vdb-aeqo-knk?pin=3003112178656
-> > 
-> > Calendar: https://calendar.google.com/calendar/u/0?cid=Y182MWE1YjFmNjQ0NzM5YmY1YmVkN2U1ZWE1ZmMzNjY5Y2UzMmEyNTQ0YzVkYjFjN2M4OTE3MDJjYTUwOTBjN2Q1QGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20
-> > Drive:    https://drive.google.com/drive/folders/1aTqCrvTsQI9T4qLhhLs_l986SngGlhPH?resourcekey=0-FDy0ykM3RerZedI8R-zj4A&usp=drive_link
-> > 
-> > Future Schedule:
-> > January 24th - Memtypes for non-coherent DMA
-> > January 31st - Available!
+On Wed, Jan 24, 2024 at 05:22:00PM +0000, Mark Brown wrote:
+> On Wed, Jan 24, 2024 at 09:13:49AM -0800, Greg Kroah-Hartman wrote:
+> > On Mon, Jan 22, 2024 at 07:06:55PM +0100, Uwe Kleine-König wrote:
 > 
-> Hi Sean,
+> > > Note that Jonathan Cameron has already applied patch 3 to his tree, it
+> > > didn't appear in a public tree though yet. I still included it here to
+> > > make the kernel build bots happy.
 > 
-> I'd like to propose the following topic for the next available slot:
+> > Are we supposed to take the individual changes in our different
+> > subsystem trees, or do you want them all to go through the spi tree?
 > 
->   "Finalizing internal guest_memfd APIs needed for SNP (TDX?) upstreaming"
-> 
-> There's 2 existing interfaces, gmem_prepare, gmem_invalidate, that are
-> needed by the current SNP patches, and there's some additional background
-> about the design decisions here:
-> 
->   https://lore.kernel.org/kvm/20231016115028.996656-1-michael.roth@amd.com/
-> 
-> There's also another gmem interface that you recently proposed for handling
-> setting up the initial launch image of SNP guests here that seems like it
-> would have a lot of potential overlap with how gmem_prepare is implemented:
-> 
->   https://lore.kernel.org/lkml/ZZ67oJwzAsSvui5U@google.com/
-> 
-> I'd like to try to get some clarity on what these should look like in order
-> to be considered acceptable for upstreaming of SNP, and potentially any
-> considerations that need to be taken into account for other users like
-> TDX/pKVM/etc.
+> Given that the final patch removes the legacy interfaces I'm expecting
+> to take them via SPI.
 
-I penciled this in for the 31st, let me know if that works for you.
+Great, thanks, I'll go ack the subsystem patches that are relevent for
+me.
+
+greg k-h
 
