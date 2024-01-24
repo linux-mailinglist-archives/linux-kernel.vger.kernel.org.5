@@ -1,250 +1,303 @@
-Return-Path: <linux-kernel+bounces-37448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37449-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1EF683B030
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:40:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 345A983B0C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:13:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0404B1C22332
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:40:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F07AB2ABA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:40:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8AFF81AC1;
-	Wed, 24 Jan 2024 17:40:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A8738120A;
+	Wed, 24 Jan 2024 17:40:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ZkDgfCqn"
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LX/B281V"
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EB9577F0D;
-	Wed, 24 Jan 2024 17:40:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A816386128;
+	Wed, 24 Jan 2024 17:40:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706118022; cv=none; b=axkTB19tHfVHxKhgXS+olZDEIyEN/1tBxJgdxJMM/GYUgomchA4zmf3jReGzeEl1fLk8hpqjCttmcUK4b9J4s218XXN3hBFrEFCHD1WgDx5xKqKV2y0xS4JPFMIibukI12U11QW/Cnpo46TvhWf/DaTr4tDt5GNgmgmL4WwnPxQ=
+	t=1706118033; cv=none; b=jTyxrg2yONgD+18Wviv54Qy7som/d7qXqHPg4uwSCWotv9ePmy84ZEvieli65BKn8dPV7M64xiNUvaMF8h7IIHr4T4KCXMl56MF+mi3kqtO0YvK18eZRvQrxfMWPCg8dNWbxl6Ac4y7qL7PIf+Ik1HuxcFNUy8BejSGtuv3aRyg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706118022; c=relaxed/simple;
-	bh=tnMxDBDZrolLa61sNFNNRToA24Ly+A39bcNO7Dae1ws=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:To:From:Subject:
-	 References:In-Reply-To; b=PbwOcndO68gEzMx0iknKMuUAe2pTu3FO3OfQzshEN+Pj2evBQ23pPfMZkKarQiiYlJn/auiXwi0dipzMd7LtO184IxTbMgm3dJYD2eT/FF4L/8gGFtqvfU0PGLuFAB4Nytz1MFyaq4mV7jGtLA/DQdhD87SlPaiqremNdOBhjsI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ZkDgfCqn; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 9092C20002;
-	Wed, 24 Jan 2024 17:40:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1706118018;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=O3Maf03SY5zgyI6f7z0wgBmsqcEvFSZSxYtZdnKCqrQ=;
-	b=ZkDgfCqngzaSe1DzUlJBp+qY2wjuDx6IIfwDqC4ukQHJKMGcvVAlWhnGBVPMaSh40HjVZY
-	y071i5ML7p2Nt+h/tThD1U4PGdeQ8lXdF7CGCoPgRqZHeq2FTJbUnxJzBAukoF2VDfTYhE
-	LnperkGBzo88kwYf/o+v2nDE2SSYtZvKtHYY37effFs4AmMygdJqlg0Pkm/Icq4PnuH7Iv
-	cPlYvZpoZlFoH1WC21FzjQXLuvvArXas7Sy1YXw0rh1M5ZNjMWXOwJSJXHDxyXvQGnDukD
-	xS72Cnu1xndbyl/fnwYLOg0tg6us8TUDndufL/oGii1y/M6SlHbXmGvsk1jhRA==
+	s=arc-20240116; t=1706118033; c=relaxed/simple;
+	bh=oiL59PKtIuKSxT+2AXCI2xNYKv9ytkBUPHO51PfZedI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qs+MmjSFwtkbo0nKww80ohOL3ZqOu5yyJSULERSMYGj75frMqZZMwDcWZ9cfuwN334ALG7G3GPyQHSVDsOue/2DpfiEyFUt0ZU4nPfQ5c22rP66PqeSBMtnhb96IHCqKse26rZArfCNOckLUyQCMVvJ71XRIuojVXNWVTd8nEd0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LX/B281V; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6ddc0c02593so390669b3a.3;
+        Wed, 24 Jan 2024 09:40:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706118031; x=1706722831; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bgfFSdtZ4BnmOTt2gcIZrv/r5XfBLYy1BOEk6GVFZKM=;
+        b=LX/B281V8+zMrIDd1tdBU7vWj7ZdXG5OdxvIRhx8IXk4brzM3NGxzrBGcGtQmS4Tn1
+         GWKxbpKx5Bm7oa2XnwxocSA4NCnvhh/xM//1WcoyMjc9a+6HCv0SWTLaSuFXl3Mj7Zih
+         skr6gy118rii36kumPGxmZ1Dmr6gtCwK1WLS37mtM+rElUzsZskrpV3kyr14i9ZFpol+
+         ltd0nhR7FAioMDvpSOE25apSjCIyo0RoWMyqwSh22M7ywGi5G7SdWF5ErnoGViPTxjHw
+         qv1hxUUgIlFAOtUgFBOX/PfH0UsOedwYgJAUwv3EtEQNxxnrSNlzlNkqEIHw9hmYQ5am
+         l4Mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706118031; x=1706722831;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bgfFSdtZ4BnmOTt2gcIZrv/r5XfBLYy1BOEk6GVFZKM=;
+        b=Hq5QUI16ACVI06qpWSBaoK/XKSGxpUIErOVvf1CyePzZQdsov/1ukfY73c3SK+pKmh
+         23pyiGE4ojxg13d9ONIqU8XPjLPLTmj4QnfboKWPsGnSod66Ef63WXwmXnBOJ1PILTe3
+         polmivI/x3VfWfbtUa+ju8LhTqc2Ge7SjiQ0oW0e8KRG2guPVZMSGgUtTNx30MQifKCC
+         y3QTvLtjZ7D7XZC1AagmtOXaMAdnfLBZ4i8syk1vYplKThSRElo/CFexEPvJLxaSTEn4
+         W5ho1HjeoK0REvVl2SSVrw/tco0ZkeJbTjqYUExfo72+3diTDj0qehPpMnt9cuJj92A9
+         OcEQ==
+X-Gm-Message-State: AOJu0Yw1gg/H/5lddywNIBbYPTY7bqK0iuAQYqAOQV9erzJ96wGFzRWo
+	GG9+rRNkCzeu8yymoDKgmnDPXNzsucEpGek7/FF602KDjNuR7arxMY1KQb9AkmbzndWp+m4xVeA
+	SU/tw65LHJsgC1G4P//PxqCloi7c=
+X-Google-Smtp-Source: AGHT+IFM9WaghcJZmV/e696A3Xe+cxEaKykyXA7UjVO4lJ/RqNnc2DRFWQ98fPy7B/ZxTr3UX6xtZa1+KPTsqxodZo8=
+X-Received: by 2002:a62:61c7:0:b0:6da:c208:7044 with SMTP id
+ v190-20020a6261c7000000b006dac2087044mr3970269pfb.40.1706118030946; Wed, 24
+ Jan 2024 09:40:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+References: <20240123204437.1322700-1-irogers@google.com> <CAEf4BzZY7qnnBJ+zFtdjRf0YuwSDWXQvYG7U-kY+7t0g_OTZZQ@mail.gmail.com>
+ <CAP-5=fWX8XJqrkbymZ0NbkktbH=iBUxvLuNfYYdmCpLqiVGHtg@mail.gmail.com>
+In-Reply-To: <CAP-5=fWX8XJqrkbymZ0NbkktbH=iBUxvLuNfYYdmCpLqiVGHtg@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 24 Jan 2024 09:40:19 -0800
+Message-ID: <CAEf4BzYwqwdPK17vpiUGLBVZpcWshCezbO_jy8kj2mEnxKW0YA@mail.gmail.com>
+Subject: Re: [PATCH v2] libbpf: Add some details for BTF parsing failures
+To: Ian Rogers <irogers@google.com>
+Cc: Alan Maguire <alan.maguire@oracle.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 24 Jan 2024 18:40:17 +0100
-Message-Id: <CYN4D0Z6600X.20W9VWX4BGNXX@bootlin.com>
-Cc: "Gregory CLEMENT" <gregory.clement@bootlin.com>, "Michael Turquette"
- <mturquette@baylibre.com>, "Stephen Boyd" <sboyd@kernel.org>, "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley"
- <conor+dt@kernel.org>, "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- "Linus Walleij" <linus.walleij@linaro.org>,
- =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>, "Philipp Zabel"
- <p.zabel@pengutronix.de>, "Vladimir Kondratiev"
- <vladimir.kondratiev@mobileye.com>, <linux-mips@vger.kernel.org>,
- <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>, <linux-gpio@vger.kernel.org>
-To: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, "Rob Herring"
- <robh@kernel.org>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: Re: [PATCH v3 04/17] dt-bindings: soc: mobileye: add EyeQ5 OLB
- system controller
-X-Mailer: aerc 0.15.2
-References: <20240123-mbly-clk-v3-0-392b010b8281@bootlin.com>
- <20240123-mbly-clk-v3-4-392b010b8281@bootlin.com>
- <20240124151405.GA930997-robh@kernel.org>
- <CYN43TSPPPZ5.1VUA1CH95D8KJ@bootlin.com>
-In-Reply-To: <CYN43TSPPPZ5.1VUA1CH95D8KJ@bootlin.com>
-X-GND-Sasl: theo.lebrun@bootlin.com
 
-Hello,
-
-On Wed Jan 24, 2024 at 6:28 PM CET, Th=C3=A9o Lebrun wrote:
-> Hello,
+On Tue, Jan 23, 2024 at 8:37=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
+te:
 >
-> On Wed Jan 24, 2024 at 4:14 PM CET, Rob Herring wrote:
-> > On Tue, Jan 23, 2024 at 07:46:49PM +0100, Th=C3=A9o Lebrun wrote:
-> > > Add documentation to describe the "Other Logic Block" syscon.
-> > >=20
-> > > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+> On Tue, Jan 23, 2024 at 8:25=E2=80=AFPM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Tue, Jan 23, 2024 at 12:44=E2=80=AFPM Ian Rogers <irogers@google.com=
+> wrote:
+> > >
+> > > As CONFIG_DEBUG_INFO_BTF is default off the existing "failed to find
+> > > valid kernel BTF" message makes diagnosing the kernel build issue som=
+e
+> > > what cryptic. Add a little more detail with the hope of helping users=
+.
+> > >
+> > > Before:
+> > > ```
+> > > libbpf: failed to find valid kernel BTF
+> > > libbpf: Error loading vmlinux BTF: -3
+> > > libbpf: failed to load object 'lock_contention_bpf'
+> > > libbpf: failed to load BPF skeleton 'lock_contention_bpf': -3
+> > > ```
+> > >
+> > > After no access /sys/kernel/btf/vmlinux:
+> > > ```
+> > > libbpf: Unable to access canonical vmlinux BTF from /sys/kernel/btf/v=
+mlinux
+> > > libbpf: Error loading vmlinux BTF: -3
+> > > libbpf: failed to load object 'lock_contention_bpf'
+> > > libbpf: failed to load BPF skeleton 'lock_contention_bpf': -3
+> > > ```
+> > >
+> > > After no BTF /sys/kernel/btf/vmlinux:
+> > > ```
+> > > libbpf: Failed to load vmlinux BTF from /sys/kernel/btf/vmlinux, was =
+CONFIG_DEBUG_INFO_BTF enabled?
+> > > libbpf: Error loading vmlinux BTF: -3
+> > > libbpf: failed to load object 'lock_contention_bpf'
+> > > libbpf: failed to load BPF skeleton 'lock_contention_bpf': -3
+> > > ```
+> > >
+> > > Closes: https://lore.kernel.org/bpf/CAP-5=3DfU+DN_+Y=3DY4gtELUsJxKNDD=
+COvJzPHvjUVaUoeFAzNnig@mail.gmail.com/
+> > > Signed-off-by: Ian Rogers <irogers@google.com>
+> > >
 > > > ---
-> > >  .../bindings/soc/mobileye/mobileye,eyeq5-olb.yaml  | 77 ++++++++++++=
-++++++++++
-> > >  MAINTAINERS                                        |  1 +
-> > >  2 files changed, 78 insertions(+)
-> > >=20
-> > > diff --git a/Documentation/devicetree/bindings/soc/mobileye/mobileye,=
-eyeq5-olb.yaml b/Documentation/devicetree/bindings/soc/mobileye/mobileye,ey=
-eq5-olb.yaml
-> > > new file mode 100644
-> > > index 000000000000..031ef6a532c1
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-o=
-lb.yaml
-> > > @@ -0,0 +1,77 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/soc/mobileye/mobileye,eyeq5-olb.y=
-aml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Mobileye EyeQ5 SoC system controller
-> > > +
-> > > +maintainers:
-> > > +  - Gr=C3=A9gory Clement <gregory.clement@bootlin.com>
-> > > +  - Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
-> > > +  - Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
-> > > +
-> > > +description:
-> > > +  OLB ("Other Logic Block") is a hardware block grouping smaller blo=
-cks. Clocks,
-> > > +  resets, pinctrl are being handled from here.
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    items:
-> > > +      - const: mobileye,eyeq5-olb
-> > > +      - const: syscon
-> > > +      - const: simple-mfd
-> > > +
-> > > +  reg:
-> > > +    maxItems: 1
-> > > +
-> > > +  clock-controller:
-> > > +    $ref: /schemas/clock/mobileye,eyeq5-clk.yaml#
-> > > +    type: object
-> > > +
-> > > +  reset-controller:
-> > > +    $ref: /schemas/reset/mobileye,eyeq5-reset.yaml#
-> > > +    type: object
-> > > +
-> > > +  pinctrl-a:
-> > > +    $ref: /schemas/pinctrl/mobileye,eyeq5-pinctrl.yaml#
-> > > +    type: object
-> > > +
-> > > +  pinctrl-b:
-> > > +    $ref: /schemas/pinctrl/mobileye,eyeq5-pinctrl.yaml#
-> > > +    type: object
-> > > +
-> > > +required:
-> > > +  - compatible
-> > > +  - reg
-> > > +
-> > > +additionalProperties: false
-> > > +
-> > > +examples:
-> > > +  - |
-> > > +    system-controller@e00000 {
-> > > +      compatible =3D "mobileye,eyeq5-olb", "syscon", "simple-mfd";
-> > > +      reg =3D <0xe00000 0x400>;
-> > > +
-> > > +      clock-controller {
-> > > +        compatible =3D "mobileye,eyeq5-clk";
-> > > +        #clock-cells =3D <1>;
-> > > +        clocks =3D <&xtal>;
-> > > +        clock-names =3D "ref";
-> > > +      };
-> > > +
-> > > +      reset-controller {
-> > > +        compatible =3D "mobileye,eyeq5-reset";
-> > > +        #reset-cells =3D <2>;
-> > > +      };
-> > > +
-> > > +      pinctrl-a {
-> > > +        compatible =3D "mobileye,eyeq5-a-pinctrl";
-> > > +        #pinctrl-cells =3D <1>;
-> >
-> > Sure you need this? Generally only pinctrl-single uses this.
->
-> You are completely right, it is useless. I naively expected it in the
-> same vein as other subsystems.
->
-> >
-> > > +      };
-> > > +
-> > > +      pinctrl-b {
-> > > +        compatible =3D "mobileye,eyeq5-b-pinctrl";
-> > > +        #pinctrl-cells =3D <1>;
-> > > +      };
-> > > +    };
-> >
-> > This can all be simplified to:
-> >
-> > system-controller@e00000 {
-> >     compatible =3D "mobileye,eyeq5-olb", "syscon";
-> >     reg =3D <0xe00000 0x400>;
-> >     #reset-cells =3D <2>;
-> >     #clock-cells =3D <1>;
-> >     clocks =3D <&xtal>;
-> >     clock-names =3D "ref";
-> >
-> >     pins { ... };
-> > };
-> >
-> > There is no need for sub nodes unless you have reusable blocks or each=
-=20
-> > block has its own resources in DT.
->
-> That is right, and it does simplify the devicetree as you have shown.
-> However, the split nodes gives the following advantages:
->
->  - Devicetree-wise, it allows for one alias per function.
->    `clocks =3D <&clocks EQ5C_PLL_CPU>` is surely more intuitive
->    than `clocks =3D <&olb EQ5C_PLL_CPU>;`. Same for reset.
->
->  - It means an MFD driver must be implemented, adding between 100 to 200
->    lines of boilerplate code to the kernel.
->
->  - It means one pinctrl device for the two banks. That addresses your
->    comment on [PATCH v3 10/17]. This is often done and would be doable
->    on this platform. However it means added logic to each individual
->    function of pinctrl-eyeq5.
->
->    Overall it makes for less readable code, for code that already looks
->    more complex than it really is.
->
->    My initial non-public version of pinctrl-eyeq5 was using this method
->    (a device handling both banks) and I've leaned away from it.
-
-I had forgotten one other reason:
-
- - Reusability does count for something. Other Mobileye platforms exist,
-   and the system controller stuff is more complex on those. Multiple
-   different OLB blocks, etc. But my understanding is that
-   per-peripheral logic is reused across versions.
-
->
-> Those are all minor, but I don't have the feeling a few lines and nodes
-> less in devicetree compensate for those.
-
-Thanks,
-
+> > > v2. Try to address review comments from Andrii Nakryiko.
+> > > ---
+> > >  tools/lib/bpf/btf.c | 49 ++++++++++++++++++++++++++++++++-----------=
 --
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> > >  1 file changed, 35 insertions(+), 14 deletions(-)
+> > >
+> > > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> > > index ee95fd379d4d..d8a05dda0836 100644
+> > > --- a/tools/lib/bpf/btf.c
+> > > +++ b/tools/lib/bpf/btf.c
+> > > @@ -4920,16 +4920,25 @@ static int btf_dedup_remap_types(struct btf_d=
+edup *d)
+> > >         return 0;
+> > >  }
+> > >
+> > > +static struct btf *btf__load_vmlinux_btf_path(const char *path)
+> >
+> > I don't think we need this helper, you literally call btf__parse() and
+> > pr_debug(), that's all
+> >
+> > > +{
+> > > +       struct btf *btf;
+> > > +       int err;
+> > > +
+> > > +       btf =3D btf__parse(path, NULL);
+> > > +       err =3D libbpf_get_error(btf);
+> >
+> > we should stop using libbpf_get_error, in libbpf v1.0+ it's best to do =
+just
+> >
+> > btf =3D btf__parse(path, NULL);
+> > if (!btf) {
+> >     err =3D -errno;
+> >     pr_debug(...);
+> >     return NULL;
+> > }
+> >
+> > > +       pr_debug("loading kernel BTF '%s': %d\n", path, err);
+> > > +       return err ? NULL : btf;
+> > > +}
+> > > +
+> > >  /*
+> > >   * Probe few well-known locations for vmlinux kernel image and try t=
+o load BTF
+> > >   * data out of it to use for target BTF.
+> > >   */
+> > >  struct btf *btf__load_vmlinux_btf(void)
+> > >  {
+> > > +       /* fall back locations, trying to find vmlinux on disk */
+> > >         const char *locations[] =3D {
+> > > -               /* try canonical vmlinux BTF through sysfs first */
+> > > -               "/sys/kernel/btf/vmlinux",
+> > > -               /* fall back to trying to find vmlinux on disk otherw=
+ise */
+> > >                 "/boot/vmlinux-%1$s",
+> > >                 "/lib/modules/%1$s/vmlinux-%1$s",
+> > >                 "/lib/modules/%1$s/build/vmlinux",
+> > > @@ -4938,29 +4947,41 @@ struct btf *btf__load_vmlinux_btf(void)
+> > >                 "/usr/lib/debug/boot/vmlinux-%1$s.debug",
+> > >                 "/usr/lib/debug/lib/modules/%1$s/vmlinux",
+> > >         };
+> > > -       char path[PATH_MAX + 1];
+> > > +       const char *location;
+> > >         struct utsname buf;
+> > >         struct btf *btf;
+> > > -       int i, err;
+> > > +       int i;
+> > >
+> > > -       uname(&buf);
+> > > +       /* try canonical vmlinux BTF through sysfs first */
+> > > +       location =3D "/sys/kernel/btf/vmlinux";
+> > > +       if (faccessat(AT_FDCWD, location, R_OK, AT_EACCESS) =3D=3D 0)=
+ {
+> > > +               btf =3D btf__load_vmlinux_btf_path(location);
+> > > +               if (btf)
+> > > +                       return btf;
+> > > +
+> > > +               pr_warn("Failed to load vmlinux BTF from %s, was CONF=
+IG_DEBUG_INFO_BTF enabled?\n",
+> > > +                       location);
+> >
+> > Mentioning CONFIG_DEBUG_INFO_BTF seems inappropriate here,
+> > /sys/kernel/btf/vmlinux exists, we just failed to parse its data,
+> > right? So it's not about CONFIG_DEBUG_INFO_BTF, we just don't support
+> > something in BTF data. Just pr_warn("Failed to load vmlinux BTF from
+> > %s: %d", location, err); should be good
+>
+> I think that assumes a lot about a user, they understand what BTF
+> means, they know it is controlled by a kernel config option, and that
+> the config option needs to be overridden (as it is defaulted off) for
+> BTF to work. Given this escaped Raspberry Pi OS the potential for this
+> mistake seems high - hence wanting to highlight the config option.
 
+But there is nothing wrong with CONFIG_DEBUG_INFO_BTF, it is enabled,
+and hence there is /sys/kernel/btf/vmlinux on the system. With
+CONFIG_DEBUG_INFO_BTF suggestion you'll just lead users astray. What
+am I missing?
+
+>
+> > > +       } else
+> > > +               pr_warn("Unable to access canonical vmlinux BTF from =
+%s\n", location);
+> >
+> > here the question of CONFIG_DEBUG_INFO_BTF is more appropriate, if
+> > /sys/kernel/btf/vmlinux (on modern enough kernels) is missing, then
+> > CONFIG_DEBUG_INFO_BTF is missing, probably. But I'd emit this only
+> > after trying all the fallback paths and not finding anything.
+> >
+> > also stylistical nit: if one side of if has {}, the other has to have
+> > {} as well, even if it's just one line
+> >
+> > >
+> > > +       uname(&buf);
+> > >         for (i =3D 0; i < ARRAY_SIZE(locations); i++) {
+> > > -               snprintf(path, PATH_MAX, locations[i], buf.release);
+> > > +               char path[PATH_MAX + 1];
+> > > +
+> > > +               snprintf(path, sizeof(path), locations[i], buf.releas=
+e);
+> > >
+> > > +               btf =3D btf__load_vmlinux_btf_path(path);
+> > >                 if (faccessat(AT_FDCWD, path, R_OK, AT_EACCESS))
+> > >                         continue;
+> > >
+> > > -               btf =3D btf__parse(path, NULL);
+> > > -               err =3D libbpf_get_error(btf);
+> > > -               pr_debug("loading kernel BTF '%s': %d\n", path, err);
+> > > -               if (err)
+> > > -                       continue;
+> > > +               btf =3D btf__load_vmlinux_btf_path(location);
+> > > +               if (btf)
+> > > +                       return btf;
+> > >
+> > > -               return btf;
+> > > +               pr_warn("Failed to load vmlinux BTF from %s, was CONF=
+IG_DEBUG_INFO_BTF enabled?\n",
+> >
+> > we should do better here as well. We should distinguish between "there
+> > is vmlinux image, but it has no BTF" vs "there is no vmlinux image" vs
+> > "vmlinux image is there, there is BTF, but we can't parse it". See
+> > btf__parse(). We return -ENODATA if ELF doesn't have BTF, that's the
+> > first situation. We can probably use faccessat() check for second
+> > situation. Everything else can be reported as pr_debug() with location
+> > (but still no CONFIG_DEBUG_INFO_BTF, it's meaningless for fallback BTF
+> > locations)
+> >
+> > > +                       path);
+> > >         }
+> > >
+> > > -       pr_warn("failed to find valid kernel BTF\n");
+> >
+> > and then here we can probably warn that we failed to find any kernel
+> > BTF, and suggest CONFIG_DEBUG_INFO_BTF
+>
+> Andrii, you've basically written this patch, can I pass this over to you?
+
+I think it would be great if you can finish thi, thanks.
+
+>
+> Thanks,
+> Ian
+>
+> > >         return libbpf_err_ptr(-ESRCH);
+> > >  }
+> > >
+> > > --
+> > > 2.43.0.429.g432eaa2c6b-goog
+> > >
 
