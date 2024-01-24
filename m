@@ -1,148 +1,235 @@
-Return-Path: <linux-kernel+bounces-37429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96AA983AFED
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:30:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E86083B003
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:32:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8DB11C27437
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:30:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9791CB30749
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:30:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2649C86156;
-	Wed, 24 Jan 2024 17:28:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B02DA85C72;
+	Wed, 24 Jan 2024 17:28:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="Q/lh0GNJ"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="kVwzzACi"
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 408BE81AC9;
-	Wed, 24 Jan 2024 17:28:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A2A582D7B;
+	Wed, 24 Jan 2024 17:28:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706117323; cv=none; b=eVDj+UMcNwQbdRomOgC0EOunsxTFflkz986uLCdyA42cmMxDkW2mnjbZWdZl8UR3m1UfyzlleBA6Ok/iKpfAXE7iAD+XRu+QBSKMBPl27xJT0mHr3XskMMj5isifyHK/HM4YdyVCZ6gydJnuaKrXQAuriwlKEVx+nWsaiKsnRrM=
+	t=1706117301; cv=none; b=F9C2JWDFtLeJtWRoyZVSNhbF4jocqaCuR4ZSJ2l5C2TW52CBTlZQoPGolaAS8UeuPuhKwCSTxglVIdc7xzjiLRcMXUN9ck69bqJbLnbzswL81YGQR6qKmdwPMn3PaTkGSE7tILeJGNQjRZtRWpNBDwMfvk97RWnYfKvs5zMeMlM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706117323; c=relaxed/simple;
-	bh=H+PqRdahESOhwBQHRpCPYTPjtB4Ee5lSleiuK+QP+sc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QucVTgfOa0Ivm3PHdgFwnUhJZZRNP3JS9vziBSYv+K543PdMxFfnPIuafipDDT9c2mrsK7/aXMe+pwmUknTg4bR7M1SETlOxN+0IgthNzk1XONEJT6MLspcRBuXJzhUtE+bD2WjlNtszKUFmzkUUvpcr5mvWwbRtp3mzOYBJ2iI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=Q/lh0GNJ; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-	s=s31663417; t=1706117291; x=1706722091; i=wahrenst@gmx.net;
-	bh=H+PqRdahESOhwBQHRpCPYTPjtB4Ee5lSleiuK+QP+sc=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=Q/lh0GNJqpz67/AyCGWWRuiAIuFIPfPdn+8PzCtcer4OZEyLB2fzclad4rrUq/bK
-	 I7qbZo62uYZ483RBU1ck6IOsleMdBvBkuOshiX73Ge0b8XZuAo0Z/ujvh/LfIbEKJ
-	 6OQCOhEM/DfvyQEOZfr16+rVsI/dUWi7M4TYH1bzpfkrtPtD1/Ot1ECF5ywt+/tHV
-	 +WRvJEhD4Zfa3+nI9obdNK97XJxdnHeXjcf1P2eBrHuqQmqfIZ+SbbZBz6rTU46RK
-	 KFzMmkIFwQ2LHuum/Dk/4aNX+YkZeK639n4GzE2E0BR3DQ2KMUG/KlgElWwFYdMI0
-	 MSQ4p8SYN6hdAUeXKw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.1.167] ([37.4.248.43]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MgesG-1qsXsl1Qse-00h4rE; Wed, 24
- Jan 2024 18:28:11 +0100
-Message-ID: <f2fcb4d4-b1d7-4d82-a3b0-d06c0ffd906b@gmx.net>
-Date: Wed, 24 Jan 2024 18:28:07 +0100
+	s=arc-20240116; t=1706117301; c=relaxed/simple;
+	bh=zlrlZGL1ccljq0wZTffstwt62GdsF9GBruDVt6c6i6I=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:To:From:Subject:
+	 References:In-Reply-To; b=CeFnks5eqve0og2ZSQCycctjwqsw4XBWsppjVpba9aGU7QWef8X57gSviI0sSMVimKwxHKxyK5brh/BTc6nGPUXx2z+6A2js5Vrb2uikHws6s3hPro14YmzZOAhDqciugYkuS63GUCgjYIVK7aWiau6b/QhEGWMfwlpRBDDvDnI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=kVwzzACi; arc=none smtp.client-ip=217.70.183.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A364AC0009;
+	Wed, 24 Jan 2024 17:28:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1706117297;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=10uyfb5Z5S8wcEdv0qJfDFN4rfE+zh8ufIUekB4Kl1Q=;
+	b=kVwzzACiYdI8SyjZoYNuT94j9maKxAyBDWuR3GtmW5vmJfgrkUXOLTJfprs6j6yOk6txCa
+	64nOuR1KkPX+4QU/jUZgagrqXHxJwnS2mwenTzAOYQo9xhQivhT+WtPOGzghSNmC9ABXpS
+	S/rraFO9ruaoul2Lw/JQtI8CoV2GhGmFPoLx3ndCa9jMJgzOlgs3GlAomoa+l6LuBwmceh
+	0PD7RFvYowqglTrKh80RTHXAU/RAJN8o/jWOSwpgxQ7xJtYwfqJyyd1G0SjsL3g9e73KUg
+	1MNze1ZPceir6+iFRQPZ/FIHo1f6V0uP57T2rTfKcE19erLiMVOXGdT1vZxNWQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/3] arm64: dts: imx93: Add phyBOARD-Segin-i.MX93
- support
-To: Mathieu Othacehe <othacehe@gnu.org>, Wadim Egorov <w.egorov@phytec.de>
-Cc: Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
- Li Yang <leoyang.li@nxp.com>, Primoz Fiser <primoz.fiser@norik.com>,
- Christoph Stoidner <c.stoidner@phytec.de>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- upstream@lists.phytec.de
-References: <20240122095306.14084-1-othacehe@gnu.org>
- <20240122095306.14084-4-othacehe@gnu.org>
- <537266fe-0bf7-4208-a9f3-ae27f462c6ed@phytec.de>
- <85fe8c8b-ea08-4f24-9a06-33a5678c1a0a@gmx.net>
- <7944bd80-32d7-4ac3-9c0a-806394262f1c@phytec.de>
- <08ef805a-b041-4db0-aaf7-51d5d06596ff@gmx.net>
- <008317aa-4dd1-4889-8c64-5e4396d83931@phytec.de>
- <47c79a0a-5be0-4ee8-87d4-fd03809a9664@gmx.net> <87o7da4zc1.fsf@gnu.org>
-Content-Language: en-US
-From: Stefan Wahren <wahrenst@gmx.net>
-In-Reply-To: <87o7da4zc1.fsf@gnu.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:eRZ7xQ3BPGslVgUOuVkixGadYqVW+b3sXGg9awfX0Jozyuk5lRh
- LW46X/BC6XQAdYVlzxlVbbhp3VLHxUs9tSTyhxPAWoEf3AItqOaDbDCnFa7MMo5JVQYIEFq
- HHkwTSfXElCDtNUOuLgYHk9Gddbfh6YTnkJ2JQG9V/+Qf5EVLMsX/7GymSasxQ2Cy10X6pu
- eBEn7BESEDrNPFrNDVOyA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Xx/BKrwc9cg=;AoM4FjyIddteEhdRtHq2gsEvkVU
- 7RnglQm+WKRb/xUL946Hv/kumRulIqSS1Z5Qm8MKBQsJqhGbBG/JHKyS+MbHbfdF+skHKdjEx
- 6Yf8Frj+j9uZ0fydJ61/0b9E0sEtsiex5GUYYH31FPVJ8nD5uMBtvhSJAWJ4q6OB914z4N7KH
- LOC3mcjoSQCd441KYH19CNi5cwnMeY3whh9AM62fvwP+Tdw7pGGmsYDICeZdwjcTH1R4PHaiz
- qedA9oBC3LWLGSlQ6ffcUsRvBR2HRZNG3aSCEB5Nzw7imc1fdJB7yftZPb5G0bFZfc3EFZH/o
- S6wBDCjwfZ2tp7pP2pHvEQrP+pIEIfLXyBNEldFPKRU68FhiiooiECaxxeK1KcZRZuKpa6mDw
- vz9jdQ1s+L/Xi0TK41rswdNKBq22xKgfZDLM21gX+kwR+JwQcHo2jJ3C3Hzd6P3n/5sbsaARi
- FY8+fzr3vXb6fH6yUSYLqczX8RhYx1gsifK7EMk+qRawscEstWGCjJj3QVWO4ehnX6qGiQTQs
- Cv3N1r20s9COUlw4l4u0TvBksp0Sdk5z/0j2Z0zmnKLjdVDiPY55VF6N8X3/vV3LqBzcaLgjJ
- lXi5BUogpDOtwN5PeTnimuD9x1jh2ognE23jxOfGpr8qENGJ+OL7o3swCSpiQCiJeUoyREqtc
- AYXqihAgZMOMxI64WGKKSWow1NpoIDB+I90wc6S///MIAiHpyA3ptZM/+0HeRMAu8brfAFjN+
- ltAuLoUZE7xCwzpKhFAQnrjE1si5k0yEqWjp/ymH3ddWdMGYU/ohH2MgXwec2SijpBX3Xv+HB
- ztG0i9aSLdfCHqpCq3/7JdyfI79VaJHrWBcgxQvbIEsIpRCzpYuU719m4SuK4T3cvxEROymzC
- wS+rmHbIPkvVfPZ07VNUfQ7M3P4cP+i4j2mCB5JOlYYDy+LvGUKRWrDyyX5DA6kA189OCXESE
- MN2a2YFhf1jakJvtCTiCUEGyVw8=
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 24 Jan 2024 18:28:16 +0100
+Message-Id: <CYN43TSPPPZ5.1VUA1CH95D8KJ@bootlin.com>
+Cc: "Gregory CLEMENT" <gregory.clement@bootlin.com>, "Michael Turquette"
+ <mturquette@baylibre.com>, "Stephen Boyd" <sboyd@kernel.org>, "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley"
+ <conor+dt@kernel.org>, "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+ "Linus Walleij" <linus.walleij@linaro.org>,
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>, "Philipp Zabel"
+ <p.zabel@pengutronix.de>, "Vladimir Kondratiev"
+ <vladimir.kondratiev@mobileye.com>, <linux-mips@vger.kernel.org>,
+ <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>, <linux-gpio@vger.kernel.org>
+To: "Rob Herring" <robh@kernel.org>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH v3 04/17] dt-bindings: soc: mobileye: add EyeQ5 OLB
+ system controller
+X-Mailer: aerc 0.15.2
+References: <20240123-mbly-clk-v3-0-392b010b8281@bootlin.com>
+ <20240123-mbly-clk-v3-4-392b010b8281@bootlin.com>
+ <20240124151405.GA930997-robh@kernel.org>
+In-Reply-To: <20240124151405.GA930997-robh@kernel.org>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-Hello Mathieu,
+Hello,
 
-Am 24.01.24 um 14:48 schrieb Mathieu Othacehe:
-> Hello Stefan,
+On Wed Jan 24, 2024 at 4:14 PM CET, Rob Herring wrote:
+> On Tue, Jan 23, 2024 at 07:46:49PM +0100, Th=C3=A9o Lebrun wrote:
+> > Add documentation to describe the "Other Logic Block" syscon.
+> >=20
+> > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+> > ---
+> >  .../bindings/soc/mobileye/mobileye,eyeq5-olb.yaml  | 77 ++++++++++++++=
+++++++++
+> >  MAINTAINERS                                        |  1 +
+> >  2 files changed, 78 insertions(+)
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/soc/mobileye/mobileye,ey=
+eq5-olb.yaml b/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq=
+5-olb.yaml
+> > new file mode 100644
+> > index 000000000000..031ef6a532c1
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb=
+yaml
+> > @@ -0,0 +1,77 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/soc/mobileye/mobileye,eyeq5-olb.yam=
+l#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Mobileye EyeQ5 SoC system controller
+> > +
+> > +maintainers:
+> > +  - Gr=C3=A9gory Clement <gregory.clement@bootlin.com>
+> > +  - Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+> > +  - Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
+> > +
+> > +description:
+> > +  OLB ("Other Logic Block") is a hardware block grouping smaller block=
+s. Clocks,
+> > +  resets, pinctrl are being handled from here.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    items:
+> > +      - const: mobileye,eyeq5-olb
+> > +      - const: syscon
+> > +      - const: simple-mfd
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  clock-controller:
+> > +    $ref: /schemas/clock/mobileye,eyeq5-clk.yaml#
+> > +    type: object
+> > +
+> > +  reset-controller:
+> > +    $ref: /schemas/reset/mobileye,eyeq5-reset.yaml#
+> > +    type: object
+> > +
+> > +  pinctrl-a:
+> > +    $ref: /schemas/pinctrl/mobileye,eyeq5-pinctrl.yaml#
+> > +    type: object
+> > +
+> > +  pinctrl-b:
+> > +    $ref: /schemas/pinctrl/mobileye,eyeq5-pinctrl.yaml#
+> > +    type: object
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    system-controller@e00000 {
+> > +      compatible =3D "mobileye,eyeq5-olb", "syscon", "simple-mfd";
+> > +      reg =3D <0xe00000 0x400>;
+> > +
+> > +      clock-controller {
+> > +        compatible =3D "mobileye,eyeq5-clk";
+> > +        #clock-cells =3D <1>;
+> > +        clocks =3D <&xtal>;
+> > +        clock-names =3D "ref";
+> > +      };
+> > +
+> > +      reset-controller {
+> > +        compatible =3D "mobileye,eyeq5-reset";
+> > +        #reset-cells =3D <2>;
+> > +      };
+> > +
+> > +      pinctrl-a {
+> > +        compatible =3D "mobileye,eyeq5-a-pinctrl";
+> > +        #pinctrl-cells =3D <1>;
 >
->>> Defining line names should be fine. But I would still prefer to have
->>> the muxing in an overlay bound to a specific use case.
->> I'm fine with this. Unfortunately Mathieu dropped the line names in V5
->> today :-(
->>
->> AFAIR reviewers should have 2 weeks time maximum. This was just 2 days.
-> I am sorry but it is not easy for me to deal with contradictory input. I
-> chose to remove the gpio-line-names even though it also seemed like a
-> nice addition to me. The idea was to not interfere with Phytec plans in
-> the future.
-tbh sending v5 before the discussion between Wadim and me was finished
-made it more complicated. Please keep in mind that some reviewers do
-this in their spare time, so a response could take some time.
+> Sure you need this? Generally only pinctrl-single uses this.
 
-In this particular case Wadim and me agreed on a solution, so no action
-from your side was necessary except a little bit patience.
+You are completely right, it is useless. I naively expected it in the
+same vein as other subsystems.
 
-The reason why i suggested the gpio-line-names in the first place is
-that users doesn't need to care about different versions of the DT files
-(except the downstream one). Changing the line names afterwards leads to
-confusion.
-
-So before we discuss on a v6, just a question: are on the X16 connector
-just 2 pins muxable as GPIO? This is hard to believe.
-
-Best regards
-> There is no hurry and I can always restore them in a v6.
 >
-> Let me know what you think,
+> > +      };
+> > +
+> > +      pinctrl-b {
+> > +        compatible =3D "mobileye,eyeq5-b-pinctrl";
+> > +        #pinctrl-cells =3D <1>;
+> > +      };
+> > +    };
 >
-> Thanks,
+> This can all be simplified to:
 >
-> Mathieu
+> system-controller@e00000 {
+>     compatible =3D "mobileye,eyeq5-olb", "syscon";
+>     reg =3D <0xe00000 0x400>;
+>     #reset-cells =3D <2>;
+>     #clock-cells =3D <1>;
+>     clocks =3D <&xtal>;
+>     clock-names =3D "ref";
 >
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>     pins { ... };
+> };
+>
+> There is no need for sub nodes unless you have reusable blocks or each=20
+> block has its own resources in DT.
 
+That is right, and it does simplify the devicetree as you have shown.
+However, the split nodes gives the following advantages:
+
+ - Devicetree-wise, it allows for one alias per function.
+   `clocks =3D <&clocks EQ5C_PLL_CPU>` is surely more intuitive
+   than `clocks =3D <&olb EQ5C_PLL_CPU>;`. Same for reset.
+
+ - It means an MFD driver must be implemented, adding between 100 to 200
+   lines of boilerplate code to the kernel.
+
+ - It means one pinctrl device for the two banks. That addresses your
+   comment on [PATCH v3 10/17]. This is often done and would be doable
+   on this platform. However it means added logic to each individual
+   function of pinctrl-eyeq5.
+
+   Overall it makes for less readable code, for code that already looks
+   more complex than it really is.
+
+   My initial non-public version of pinctrl-eyeq5 was using this method
+   (a device handling both banks) and I've leaned away from it.
+
+Those are all minor, but I don't have the feeling a few lines and nodes
+less in devicetree compensate for those.
+
+Thanks,
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
