@@ -1,126 +1,244 @@
-Return-Path: <linux-kernel+bounces-37217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 121C783ACAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:02:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1E2983ADB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:48:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD97E1F260CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:02:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33C59B2A24F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:47:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E6017A720;
-	Wed, 24 Jan 2024 15:01:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63E877CF33;
+	Wed, 24 Jan 2024 15:47:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dyhySwho"
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b="C/FGntXI"
+Received: from mail-m25475.xmail.ntesmail.com (mail-m25475.xmail.ntesmail.com [103.129.254.75])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3021363124
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 15:01:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 480CD7A73A;
+	Wed, 24 Jan 2024 15:46:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.129.254.75
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706108510; cv=none; b=epFKZMkAmaH7Nr5+4bdUceB6ntagfIHPw8cqgsov88qJujpLirbCs/7pLS3dQs3GpPEV2zngwmVjVCxzsC7ksW2K2aei2FYlOOCZ4RG71I7ApeYXgfyt0vSXGfF0kKaXhoxUfkMghoYpw5r34pL6gI8iAEYVNF5fEoGgK1bVrIw=
+	t=1706111221; cv=none; b=oVRrlh+X2QY2scTnMBupehS/Rj3l3AbN1dANZQsujcbJke4wxCx2pVxmftHa8zSd0OOX9F9itZ9bePcmmkdH8f86D/9V8rlId/UHgEjtUlTkjoxkEAXbif43bYsZO4XSmc2jZdPZFHHescDkRJSCXpOjsfX44ynhY5i3+Vv1/KQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706108510; c=relaxed/simple;
-	bh=vXo7kwrg/JEtFg5VNFewRcL3UlxCm3whtvjszAzZPYw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=CMITfJncLSdMjssUUWnTvdL/dQUBFoIz+xyjkodZ2V0wM8Hw8AMdW+9fkOmdmiiJWV6FMGSf5LcgwHSlmpRMnOHG+8igXsniohdGV4RK9E3BHfcvjwBUg/fySLtlKRoU0OOL62easx2QmWaeuNMXVj3k0VhS3wMm4Etc0bA5USQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dyhySwho; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3387ef9fc62so5153492f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 07:01:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706108507; x=1706713307; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wddH6dLZWFvD4sBtP23ayzipvN9tjMLSLEUIemLS/70=;
-        b=dyhySwhofWH+JkOgzDfSLBlzS9igtUKpI70OvObtint2kwDXlu+crjO9IJGnpK4TI2
-         zjwSGBmTDmNyZ7UsPFTWn0XgAcLA7cHnQWozb14ep80vxlgnCsvKc+XAsee6vFQ1xw74
-         mxZT2wKqj1JIJ4Gl2MdzeWGElr85Lnyj8ss65BMn02is8cLtiQ7IBXMPhsEiuH/h2dKa
-         By74+WvCjk4lIxVaq0FoAZ/8kq1IgZPlYsZhnFWSn7W5SOkn87eXMhJm3pnHB170beGM
-         G0IUm0/bhnKz38V3tnQKWNqS+GnfnxrSZ8W8tVTQRGJSmzbjdbyXOIygJTVc1MOh3CMC
-         7f3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706108507; x=1706713307;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wddH6dLZWFvD4sBtP23ayzipvN9tjMLSLEUIemLS/70=;
-        b=aEqGdfVCjJRLqqHYX6xIByuMQQOIVMVzQ1DqXP27TWUg2m2XUU9tXNpBZv0FS18rWo
-         kvNZ6tcATnNQIVB7rYtYKH2QJd/HcRqTj93RXJyoCJNrVIkjJPijwcGtqfTBVUt8F5A/
-         nmTwo7tUspTooCRzUXg6O+A0+MYmQM6OIdQSHrBEAp1ydvNqzuVybOSWBINy6nkeG0c3
-         FKegWzC+zupvlWbo4sPlLTmE1nc3HqpoxaC6jhfsb4W6fJ5LK4wgSyhnzmXmnqTTJToj
-         gjcPHDII4vbUDGR2aotcwkYf/1wbjU47ONPlsIumO9cv+AhX590mf8L3a9zQBIc2Ir83
-         R2zw==
-X-Gm-Message-State: AOJu0YzziEBAHYs1r1ryNEvqCoPnTbnhGiMLIaKPQWASykHGnYQ+oqiO
-	4h9SsqAGRjpBlfWUQ3ykIcHcsDTW0UA8IZWnBWpHeO6wAJGpg1JovqQ9kZ+mTv0=
-X-Google-Smtp-Source: AGHT+IHXHhrcwAHRLUnkX2s024mT8pEXvkb38AMMNc+9E2uH9gcDtJhJhoQ9GTqAP9FJosVbKHujPg==
-X-Received: by 2002:adf:ef12:0:b0:337:bf29:b6ca with SMTP id e18-20020adfef12000000b00337bf29b6camr701919wro.23.1706108507315;
-        Wed, 24 Jan 2024 07:01:47 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id o10-20020a5d62ca000000b00337d4ce6ab4sm15999360wrv.20.2024.01.24.07.01.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 07:01:46 -0800 (PST)
-Date: Wed, 24 Jan 2024 18:01:42 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Niklas Cassel <niklas.cassel@wdc.com>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: [PATCH v4 1/2] PCI: dwc: Fix a 64bit bug in
- dw_pcie_ep_raise_msix_irq()
-Message-ID: <888c23ff-1ee4-4795-8c24-7631c6c37da6@moroto.mountain>
+	s=arc-20240116; t=1706111221; c=relaxed/simple;
+	bh=uQa2lONtmzEleKOg5ZbKpNdTUps9FaMPEX+MM/Ezrnw=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=KZ7Fm3DZFMn2bG9OwNwHKF9echR+4U5J7MoFNGZHHMgCMCAS8U1oMhHKtmpELt8xm6aD0unrz5X2NZGIerXVYa7NAB4Ky7+k3NK9ojLMUVYMQVypfpN2/uvRtaNLKivKYnjIk3u4bz1/gKBFk53LVciudZ/Ijq8gThV0kik29bE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com; spf=pass smtp.mailfrom=rock-chips.com; dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b=C/FGntXI; arc=none smtp.client-ip=103.129.254.75
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rock-chips.com
+DKIM-Signature: a=rsa-sha256;
+	b=C/FGntXIjF2lIvIm0alsmy2RglzRyK18RkaiHLPRtuPUc4h78ZR0MS6GaRxRZEHq62TdiGviNrqbIUpnKdnOuzXEy4m0NdKbjwEiTuF8fBz8f9289s/9zeg0CGWxF98NXR5bNy7J53jAZfsY/41RQMpcKLQPOm/a5jhKphGR75Q=;
+	s=default; c=relaxed/relaxed; d=rock-chips.com; v=1;
+	bh=TTyPxOdPUgGMjE5qLolsAwgb6LYYW17mcDVr/zky4cw=;
+	h=date:mime-version:subject:message-id:from;
+Received: from [172.16.12.141] (unknown [58.22.7.114])
+	by mail-m12779.qiye.163.com (Hmail) with ESMTPA id 778477801FD;
+	Wed, 24 Jan 2024 15:30:34 +0800 (CST)
+Message-ID: <b0a3da6d-84e2-44c2-9adf-421e306a2acf@rock-chips.com>
+Date: Wed, 24 Jan 2024 15:30:34 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] phy: rockchip: Add Samsung HDMI/DP Combo PHY driver
+Content-Language: en-US
+From: Andy Yan <andy.yan@rock-chips.com>
+To: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I
+ <kishon@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+ Philipp Zabel <p.zabel@pengutronix.de>, Johan Jonker <jbx6244@gmail.com>,
+ Sebastian Reichel <sebastian.reichel@collabora.com>,
+ Algea Cao <algea.cao@rock-chips.com>, linux-phy@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+ kernel@collabora.com
+References: <20240119193806.1030214-1-cristian.ciocaltea@collabora.com>
+ <20240119193806.1030214-4-cristian.ciocaltea@collabora.com>
+ <20240122121409.GW4700@pengutronix.de>
+ <00c749f7-3eb9-4bd1-a057-43a692b77d68@collabora.com>
+ <e1c56975-6a55-4b75-a447-dd2d0eec62e2@rock-chips.com>
+In-Reply-To: <e1c56975-6a55-4b75-a447-dd2d0eec62e2@rock-chips.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZQksZTVYeTRlMSxgYSExMGE9VEwETFh
+	oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk1PSU5IVUpLS1VKQk
+	tLWQY+
+X-HM-Tid: 0a8d3a60bd24b24fkuuu778477801fd
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Pgg6Iio5DjwYUQEyHFFLSgg5
+	Vg4wCUtVSlVKTEtNS0NKT0hOTE9NVTMWGhIXVRoVHwJVAhoVOwkUGBBWGBMSCwhVGBQWRVlXWRIL
+	WUFZTkNVSUlVTFVKSk9ZV1kIAVlBQkxPSzcG
 
-The "msg_addr" variable is u64.  However, the "aligned_offset" is an
-unsigned int.  This means that when the code does:
+Hi Cristian:
 
-        msg_addr &= ~aligned_offset;
+On 1/24/24 10:42, Andy Yan wrote:
+> Hi Cristian:
+> 
+> On 1/24/24 08:58, Cristian Ciocaltea wrote:
+>> On 1/22/24 14:14, Sascha Hauer wrote:
+>>> On Fri, Jan 19, 2024 at 09:38:03PM +0200, Cristian Ciocaltea wrote:
+>>>> Add driver for the Rockchip HDMI/eDP TX Combo PHY found on RK3588 SoC.
+>>>>
+>>>> The PHY is based on a Samsung IP block and supports HDMI 2.1 TMDS, FRL
+>>>> and eDP links.  The maximum data rate is 12Gbps (HDMI 2.1 FRL), while
+>>>> the minimum is 250Mbps (HDMI 2.1 TMDS).
+>>>>
+>>>> Co-developed-by: Algea Cao <algea.cao@rock-chips.com>
+>>>> Signed-off-by: Algea Cao <algea.cao@rock-chips.com>
+>>>> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+>>>> ---
+>>>>   drivers/phy/rockchip/Kconfig                  |    8 +
+>>>>   drivers/phy/rockchip/Makefile                 |    1 +
+>>>>   .../phy/rockchip/phy-rockchip-samsung-hdptx.c | 2045 +++++++++++++++++
+>>>>   3 files changed, 2054 insertions(+)
+>>>>   create mode 100644 drivers/phy/rockchip/phy-rockchip-samsung-hdptx.c
+>>>>
+>>>> diff --git a/drivers/phy/rockchip/Kconfig b/drivers/phy/rockchip/Kconfig
+>>>> index 94360fc96a6f..95666ac6aa3b 100644
+>>>> --- a/drivers/phy/rockchip/Kconfig
+>>>> +++ b/drivers/phy/rockchip/Kconfig
+>>>> @@ -83,6 +83,14 @@ config PHY_ROCKCHIP_PCIE
+>>>>       help
+>>>>         Enable this to support the Rockchip PCIe PHY.
+>>>> +config PHY_ROCKCHIP_SAMSUNG_HDPTX
+>>>> +    tristate "Rockchip Samsung HDMI/DP Combo PHY driver"
+>>>> +    depends on (ARCH_ROCKCHIP || COMPILE_TEST) && OF
+>>>> +    select GENERIC_PHY
+>>>> +    help
+>>>> +      Enable this to support the Rockchip HDMI/DP Combo PHY
+>>>> +      with Samsung IP block.
+>>>> +
+>>>>   config PHY_ROCKCHIP_SNPS_PCIE3
+>>>>       tristate "Rockchip Snps PCIe3 PHY Driver"
+>>>>       depends on (ARCH_ROCKCHIP && OF) || COMPILE_TEST
+>>>> diff --git a/drivers/phy/rockchip/Makefile b/drivers/phy/rockchip/Makefile
+>>>> index 7eab129230d1..3d911304e654 100644
+>>>> --- a/drivers/phy/rockchip/Makefile
+>>>> +++ b/drivers/phy/rockchip/Makefile
+>>>> @@ -8,6 +8,7 @@ obj-$(CONFIG_PHY_ROCKCHIP_INNO_HDMI)    += phy-rockchip-inno-hdmi.o
+>>>>   obj-$(CONFIG_PHY_ROCKCHIP_INNO_USB2)    += phy-rockchip-inno-usb2.o
+>>>>   obj-$(CONFIG_PHY_ROCKCHIP_NANENG_COMBO_PHY)    += phy-rockchip-naneng-combphy.o
+>>>>   obj-$(CONFIG_PHY_ROCKCHIP_PCIE)        += phy-rockchip-pcie.o
+>>>> +obj-$(CONFIG_PHY_ROCKCHIP_SAMSUNG_HDPTX)    += phy-rockchip-samsung-hdptx.o
+>>>>   obj-$(CONFIG_PHY_ROCKCHIP_SNPS_PCIE3)    += phy-rockchip-snps-pcie3.o
+>>>>   obj-$(CONFIG_PHY_ROCKCHIP_TYPEC)    += phy-rockchip-typec.o
+>>>>   obj-$(CONFIG_PHY_ROCKCHIP_USB)        += phy-rockchip-usb.o
+>>>> diff --git a/drivers/phy/rockchip/phy-rockchip-samsung-hdptx.c b/drivers/phy/rockchip/phy-rockchip-samsung-hdptx.c
+>>>> new file mode 100644
+>>>> index 000000000000..d8171ea5ce2b
+>>>> --- /dev/null
+>>>> +++ b/drivers/phy/rockchip/phy-rockchip-samsung-hdptx.c
+>>>> @@ -0,0 +1,2045 @@
+>>>> +// SPDX-License-Identifier: GPL-2.0+
+>>>> +/*
+>>>> + * Copyright (c) 2021-2022 Rockchip Electronics Co., Ltd.
+>>>> + * Copyright (c) 2024 Collabora Ltd.
+>>>> + *
+>>>> + * Author: Algea Cao <algea.cao@rock-chips.com>
+>>>> + * Author: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+>>>> + */
+>>>> +#include <linux/bitfield.h>
+>>>> +#include <linux/clk.h>
+>>>> +#include <linux/delay.h>
+>>>> +#include <linux/mfd/syscon.h>
+>>>> +#include <linux/module.h>
+>>>> +#include <linux/of.h>
+>>>> +#include <linux/of_platform.h>
+>>>> +#include <linux/phy/phy.h>
+>>>> +#include <linux/platform_device.h>
+>>>> +#include <linux/rational.h>
+>>>> +#include <linux/regmap.h>
+>>>> +#include <linux/reset.h>
+>>>> +
+>>>> +#define GRF_HDPTX_CON0            0x00
+>>>> +#define HDPTX_I_PLL_EN            BIT(7)
+>>>> +#define HDPTX_I_BIAS_EN            BIT(6)
+>>>> +#define HDPTX_I_BGR_EN            BIT(5)
+>>>> +#define GRF_HDPTX_STATUS        0x80
+>>>> +#define HDPTX_O_PLL_LOCK_DONE        BIT(3)
+>>>> +#define HDPTX_O_PHY_CLK_RDY        BIT(2)
+>>>> +#define HDPTX_O_PHY_RDY            BIT(1)
+>>>> +#define HDPTX_O_SB_RDY            BIT(0)
+>>>> +
+>>>> +#define CMN_REG0000            0x0000
+>>>
+>>> These register names are not particularly helpful. Maybe use a
+>>>
+>>> #define CMN_REG(x)            ((x) * 4)
+>>>
+>>> Instead?
+>>
+>> Yes, sounds good.
+>>
+>>>> +
+>>>> +static int hdptx_lcpll_frl_mode_config(struct rockchip_hdptx_phy *hdptx,
+>>>> +                       u32 rate)
+>>>> +{
+>>>> +    u32 bit_rate = rate & DATA_RATE_MASK;
+>>>> +    u8 color_depth = (rate & COLOR_DEPTH_MASK) ? 1 : 0;
+>>>> +    const struct lcpll_config *cfg = lcpll_cfg;
+>>>> +
+>>>> +    for (; cfg->bit_rate != ~0; cfg++)
+>>>> +        if (bit_rate == cfg->bit_rate)
+>>>> +            break;
+>>>
+>>> You could use ARRAY_SIZE() to iterate over the array and save the extra
+>>> entry at the end. Likewise for the other arrays used in the driver.
+>>
+>> Sure, will do.
+>>
+>>>> +
+>>>> +    if (cfg->bit_rate == ~0)
+>>>> +        return -EINVAL;
+>>>> +
+>>>
+>>>> +static int rockchip_hdptx_phy_power_on(struct phy *phy)
+>>>> +{
+>>>> +    struct rockchip_hdptx_phy *hdptx = phy_get_drvdata(phy);
+>>>> +    int bus_width = phy_get_bus_width(hdptx->phy);
+>>>> +    int bit_rate = bus_width & DATA_RATE_MASK;
+>>>
+>>> What is going on here? bus_width is set to 8 in probe() using
+>>> phy_set_bus_width(), but the value you pull out of phy_get_bus_width()
+>>> is expected to contain the bit_rate and several other flags.
+>>>
+>>> It looks like you are tunneling flags from some other driver using this
+>>> field. Isn't there a better way to accomplish this? If not, I think this
+>>> needs some explanation.
+>>
+>> Indeed, sorry for missing a comment here.  The flags are set by the
+>> bridge driver to enable 10-bit color depth, FRL and EARC.  So far I
+>> couldn't find an alternative approach to pass custom data using the PHY API.
+>>
+>>> At least the variable should be renamed. it's called "bus_width" and it's
+>>> passed to functions like hdptx_lcpll_frl_mode_config() which has this
+>>> parameter named "rate" which is quite confusing.
+>>
+>> I think for the initial support it's not really necessary to implement
+>> all those features.  Andy, should we drop them until a better solution
+>> is found?
 
-it will unintentionally zero out the high 32 bits.  Use ALIGN_DOWN()
-to do the alignment instead.
-
-Cc: stable@vger.kernel.org
-Fixes: 2217fffcd63f ("PCI: dwc: endpoint: Fix dw_pcie_ep_raise_msix_irq() alignment support")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-Reviewed-by: Niklas Cassel <cassel@kernel.org>
----
-v4: Add stable and r-b from Niklas
-v3: Use ALIGN_DOWN()
-v2: fix typo in commit message
-
- drivers/pci/controller/dwc/pcie-designware-ep.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-index 5befed2dc02b..51679c6702cf 100644
---- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-@@ -551,7 +551,7 @@ int dw_pcie_ep_raise_msix_irq(struct dw_pcie_ep *ep, u8 func_no,
- 	}
- 
- 	aligned_offset = msg_addr & (epc->mem->window.page_size - 1);
--	msg_addr &= ~aligned_offset;
-+	msg_addr = ALIGN_DOWN(msg_addr, epc->mem->window.page_size);
- 	ret = dw_pcie_ep_map_addr(epc, func_no, 0, ep->msi_mem_phys, msg_addr,
- 				  epc->mem->window.page_size);
- 	if (ret)
--- 
-2.43.0
-
+How about add a PHY_MODE_HDMI to enum phy_mode, and pass this custom data by extend phy_configure_opts
+or the submode of phy_set_mode_ext ?
+> 
+> I'm fine with it.
+> It would be very appreciated if some linux-phy or drm bridge experts can give
+> some suggestions about how to pass different custom phy modes.
+> 
+>>
+>>> Sascha
+>>
+>> Thanks for the review,
+>> Cristian
 
