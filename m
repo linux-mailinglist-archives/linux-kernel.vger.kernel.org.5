@@ -1,113 +1,138 @@
-Return-Path: <linux-kernel+bounces-37319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37320-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A03883AE2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:18:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B64CA83AE33
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:18:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCF451C215D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:18:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 705C728E013
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:18:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 230B87CF1A;
-	Wed, 24 Jan 2024 16:17:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B372D7CF30;
+	Wed, 24 Jan 2024 16:18:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="AwEsD74k"
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AL3g9UVw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 624597E59B
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 16:17:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F34BC7C09A;
+	Wed, 24 Jan 2024 16:18:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706113052; cv=none; b=LjFagXJ/xZo8MJ8BDwvDul+V0AZ7q9ZUDfSyA9AK2MVjBS67S0ETg9WWixAQ3ZXyzOQu63AVLU9TYL5FwV+gUTvfhgFhBdxsilZAbFESHcBdALqriAVLD+Mua0PDoyRcXZ2QvGhAL2Rtg7RRbSij4u7mYbERsx0te0E9vuIkxME=
+	t=1706113111; cv=none; b=VATCj1/NsOopt6X4x8wGX4Njj9AO1VYlTRG3bUHBz23DlZ0HGizq78CDplyZQ3QHkxMlQve6ESwsP4GBQ9BBWtNl2ADn9zCMVcJs9fO3XensUPiPJE9FtZ6PrMitlwZE+bG6uIaoP5Mz8SonyxthNevp8LSHvFaqKwlS3LGf6IY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706113052; c=relaxed/simple;
-	bh=VAsb6eqfeLYmu0jkFcyOCz0ft3WU1lhaOoQGrRSaFgo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fajVGb6tTDNqsN1IhSMYt2F41rPbmRXOzfuFueWI2e561lN8sIcwx16xvNFiF0Dn8MRh3oCf6acgSA6qqQXg6CGOIIDiwlskJ6WSKQocGX2uE2VscwFN3FuHgAqBu3oIIg154h4jHm20es6mzv/xVvtRnY4b0z6X1yg77XINaUg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=AwEsD74k; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33934567777so3760076f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 08:17:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1706113048; x=1706717848; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jO5aQGUKaS/fQM2T1bnOFpERKUWDVkmi7oXuFEYw4zk=;
-        b=AwEsD74kl7eG/nzhJfyNqM3SEWFfdh2UxWGFoL/pk8bvOs6f8OCnMoNAzgRfm1dEh7
-         NHwlGzyiSGOCD8Sqe5XVHDAKoMT0ffB62Xprmd5NuAlf2DQt96gIvR+UhMkDffKgth7U
-         yLgBmU4ZsjVxc200Z2HowsMrd1XkLFSm1B7jRJbweRl9dlcSezeAl0o64MiYrPCBzYYj
-         uiCPR7NSXZDAxdXY0jUHbCqw1Yr0aOv3oguHmukZZaSGGmBcPiRLKpit7WdIp5Alzo3x
-         3EjITa53LVfB4Bb6hEDtCvwa3zvXZHQA2XlnoSt5xkxvEAuDUDydvvE4Cbklpqoqa+0r
-         9yxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706113048; x=1706717848;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jO5aQGUKaS/fQM2T1bnOFpERKUWDVkmi7oXuFEYw4zk=;
-        b=fSpufSMV2u75x/p6OmFdwZFgygdQvISY1O/CueMNXXDvK8jTBdUowOCbhCvlz90smh
-         z59JzpD8KBLFZsOOGYOdHzhDSnWvYsL30oInV0vg4R3SrVkeuM/v8z97KjvLUNM0wdyx
-         uGa3mzcRg+BiaVHHIfthn5h25NLRHYJoP1KPO9npmzzberEem8F55IWrkQ7zM7EAMKV4
-         RreNl8TFzFAp+CHZJ0/KIxChyf8x4fZjwHW1BbZ1RwomdgMV3ObN5fjGHL3DaHyWm6C/
-         dk7dXGUXh8FjXK+4GQ230m5t2ipc0b+jWx/hOr/hQ8PFZi+8glK32G6MLipY/+0aHHgS
-         fVpg==
-X-Gm-Message-State: AOJu0YxaDRbo9moprx80lPTq6eXVuPW9/anWzebazhZOu6cjdsBfqlrI
-	SkPpbfDJHOkStrb3UnanNOjRKBIlOME98VAG24QpSbMY+jVe/z9gG2xKLVdy/DE=
-X-Google-Smtp-Source: AGHT+IGGN2cmVGtzO+EblLJMs22ucaqzXyOuBysf4VltLySs2AOpjH5IouqQDI6L7STaLhSzNaUe1A==
-X-Received: by 2002:a05:6000:104c:b0:337:d649:da70 with SMTP id c12-20020a056000104c00b00337d649da70mr679971wrx.138.1706113048439;
-        Wed, 24 Jan 2024 08:17:28 -0800 (PST)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:e737:cf8b:25f7:e0ad])
-        by smtp.gmail.com with ESMTPSA id m17-20020a056000009100b0033928aadde1sm2764761wrx.48.2024.01.24.08.17.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 08:17:27 -0800 (PST)
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-To: Linus Walleij <linus.walleij@linaro.org>,
-	Kent Gibson <warthog618@gmail.com>
-Cc: linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH] gpio: cdev: remove leftover function pointer typedefs
-Date: Wed, 24 Jan 2024 17:17:25 +0100
-Message-Id: <20240124161725.79582-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1706113111; c=relaxed/simple;
+	bh=OnLSAx8iHqQmVY38WPaxSCi80CkhkomZKsuDZXu48po=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dF3Y3XlWuI0zuevWtjHJWfiOdYEjxLRA/R1nha8b6Ep9mdmrUIrMsgy3FQ5WXVR4aNwhybVfDvlqJ/k6kReJFMugTpNjRTicGSnUUP4naBlhVxauRL7MDWG8cQs5ueJpW7TqHnpDJiOueX3kx10/Si2hMZy3ZMbhDB84jQsxvSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AL3g9UVw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 874CCC433F1;
+	Wed, 24 Jan 2024 16:18:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706113110;
+	bh=OnLSAx8iHqQmVY38WPaxSCi80CkhkomZKsuDZXu48po=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AL3g9UVwKWkzvEy921hocGE4NdfXxpHlKC9KPV2EvNjP3wQ9qWOv593UM2GRC4KQh
+	 rX5srmz6IKl2ktp7Bn/ZVrt3iT7XEBzP1wSwLU/6o1pUP4QqpcBy350EkACovOkod3
+	 osvBi8TBzJi5MPHrHbt5aiLHL3Y06INKxt5dnP8yciT89zQY4rTq6tWsIOzeSERRzs
+	 IlX4Q8X9svGLtsjAUNbbMew1ro02xI7jty6bkUXiHQTzYQRL8e/JRUNuKLr6D4Huni
+	 OO7m8lrYUfAKnkM7cuJKZFrTUpCDgAHbq6/3VnO98DjHACKcZoiAbSGfKmi3FH4GXT
+	 kRyLQ3UWUUu7w==
+Date: Wed, 24 Jan 2024 16:18:25 +0000
+From: Conor Dooley <conor@kernel.org>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	chunfeng.yun@mediatek.com, gregkh@linuxfoundation.org,
+	conor+dt@kernel.org, matthias.bgg@gmail.com, linux@roeck-us.net,
+	heikki.krogerus@linux.intel.com, cy_huang@richtek.com,
+	linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: usb: mt6360-tcpc: Drop
+ interrupt-names
+Message-ID: <20240124-confining-monologue-22ed69313cef@spud>
+References: <20240119094105.98312-1-angelogioacchino.delregno@collabora.com>
+ <20240119-eldest-discharge-e2d3812be0a9@spud>
+ <12b7b339-498b-45c1-bc5e-05e07660aefa@collabora.com>
+ <20240123-procurer-jumbo-ebbec485505d@spud>
+ <4fdbc3d8-3d44-4c2c-aae6-daa0b431e1c9@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="4KxYMHS039FHiq27"
+Content-Disposition: inline
+In-Reply-To: <4fdbc3d8-3d44-4c2c-aae6-daa0b431e1c9@collabora.com>
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-The locking wrappers were replaces with lock guards. These typedefs are
-no longer needed.
+--4KxYMHS039FHiq27
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
----
- drivers/gpio/gpiolib-cdev.c | 5 -----
- 1 file changed, 5 deletions(-)
+On Wed, Jan 24, 2024 at 09:48:23AM +0100, AngeloGioacchino Del Regno wrote:
+> Il 23/01/24 18:14, Conor Dooley ha scritto:
+> > On Mon, Jan 22, 2024 at 11:32:30AM +0100, AngeloGioacchino Del Regno wr=
+ote:
+> > > Il 19/01/24 17:32, Conor Dooley ha scritto:
+> > > > On Fri, Jan 19, 2024 at 10:41:04AM +0100, AngeloGioacchino Del Regn=
+o wrote:
+> > > > > This IP has only one interrupt, hence interrupt-names is not nece=
+ssary
+> > > > > to have.
+> > > > > Since there is no user yet, simply remove interrupt-names.
+> > > >=20
+> > > > I'm a bit confused chief. Patch 2 in this series removes a user of =
+this
+> > > > property from a driver, so can you explain how this statement is tr=
+ue?
+> > > >=20
+> > > > Maybe I need to drink a few cans of Monster and revisit this patchs=
+et?
+> > > >=20
+> > >=20
+> > > What I mean with "there is no user" is that there's no device tree wi=
+th any
+> > > mt6360-tcpc node upstream yet, so there is no meaningful ABI breakage.
+> > > Different story would be if there was a device tree using this alread=
+y, in
+> > > which case, you can make a required property optional but not remove =
+it.
+> >=20
+> > Not every devicetree lives within the kernel.. If the driver is using
+> > it, I'm not inclined to agree that it should be removed.
+>=20
+> I get the point, but as far as I remember, it's not the first time that t=
+his
+> kind of change is upstreamed.
+>=20
+> I'm fine with keeping things as they are but, since my intention is to ac=
+tually
+> introduce an actual user of this binding upstream, and that actually depe=
+nds on
+> if this change is accepted or not (as I have to know whether I can omit a=
+dding
+> the interrupt-names property or not)....
+>=20
+> ....may I ask for more feedback/opinions from Rob and/or Krzk?
 
-diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
-index 2a88736629ef..34d6712fa07c 100644
---- a/drivers/gpio/gpiolib-cdev.c
-+++ b/drivers/gpio/gpiolib-cdev.c
-@@ -61,11 +61,6 @@ static_assert(IS_ALIGNED(sizeof(struct gpio_v2_line_values), 8));
-  * interface to gpiolib GPIOs via ioctl()s.
-  */
- 
--typedef __poll_t (*poll_fn)(struct file *, struct poll_table_struct *);
--typedef long (*ioctl_fn)(struct file *, unsigned int, unsigned long);
--typedef ssize_t (*read_fn)(struct file *, char __user *,
--			   size_t count, loff_t *);
--
- /*
-  * GPIO line handle management
-  */
--- 
-2.40.1
+Sure, I am happy to be overruled if they disagree.
 
+--4KxYMHS039FHiq27
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbE4UQAKCRB4tDGHoIJi
+0uPsAQCPgBalBEox9nudpYDysAzqxIikRApwxQAEtWdNrbyE+gEAqe4RKAkPBgg7
+mDOgnpd8nPFf5HFkx98XwG427LjEKgU=
+=cx/V
+-----END PGP SIGNATURE-----
+
+--4KxYMHS039FHiq27--
 
