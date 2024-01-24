@@ -1,115 +1,227 @@
-Return-Path: <linux-kernel+bounces-37220-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37221-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E01F83ACC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:07:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C88DC83ACD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:11:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 071281C23A97
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:07:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 572741F2743B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:11:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0A5237144;
-	Wed, 24 Jan 2024 15:07:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AC6F747A;
+	Wed, 24 Jan 2024 15:11:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qmhCmpyA"
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="XHbfH8oS"
+Received: from aposti.net (aposti.net [89.234.176.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADC2615BE
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 15:07:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5CD218624;
+	Wed, 24 Jan 2024 15:11:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.234.176.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706108863; cv=none; b=i7AhsQ7I6VsjmVVyAUhuRPIbRHzWpgoCt7ZUuDVB6vpsPd50jXQjDXQKc7y6AwqvJJ7ik3aSW9B2QWMTxoPp+sJJpY03ufURN864XgVJsh7tMymz/UBcQPZyjXQxMCWvxvnpM/yUN3feDphHIrTskRW/KCRtA91bClqct4d6rd8=
+	t=1706109097; cv=none; b=Dy7wSot6/wAYy7iqGjgE9LkS+I/vYUpoYe+IuFTCq6aw8DNgN3JSHzdKzg2nzJ7SO4geiHXfUPLGUSknSM8jtOLREaVqeIj+O8gaSDys6Ck1uFbhL7Jeau9TcbVDKmvwUtkiDGfgUpv5S9UtbEdniJygByeyVwHpR2qIXSYrYG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706108863; c=relaxed/simple;
-	bh=9IkzyGEiEKGVlY7GJByNMGnOjq/P6kexG1EtvIuQJEI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KcQg/gdXtmnpvc+yrEnM5A3U21UPKmKoBpoxQAAWIfim1kxvfB12YNqdmPecho9KMV/QjAChFFZ/uYu0FvqwEoAujoHCleUGcGHM2NACTog4FrdmOHB50mmFLzSWwjxzRKsURQfpp1f6KxHgdyUSfKVD7nyHCSIrABfu4JtenXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qmhCmpyA; arc=none smtp.client-ip=209.85.222.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-7d2c21d77afso3713197241.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 07:07:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706108860; x=1706713660; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TQUhXDctFpKrx2fN5W2QrrWVrRbLkQpDhsup1S4036w=;
-        b=qmhCmpyARXLoJ6MdMPHEVtCYATWCv7XwXXKY6aF4BbnQdNdqOZG69NvkTqPH9mGtJ7
-         xa2sS7sCNbJotAI50oi6IyqOJyeVyf4MqpFkITKycB+oOEsRP8uTGB/DlXpzVZuHj5Qs
-         UDGHcgd8gr1S7XZcvmjd8ui5NlVPk/KT31WDudQfZUC/3SELMDA0MEkv9s37Fr4nrYEW
-         tsM421VNdTbzvHs/5+ljRrPS+Q9p3ZZsy92Ao8FoEMoFZEtUttLcWXCFWmIS4o5Zrb6o
-         lKBU/paVSaVCODJ7hJGk++YkO2R1Q80psAdaQOJXubUz/6Hohk0+iHRZv/O0A79yLFiy
-         oTYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706108860; x=1706713660;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TQUhXDctFpKrx2fN5W2QrrWVrRbLkQpDhsup1S4036w=;
-        b=E3j90zt/rho4TDIVkW2KBTVMBIzLWXRdMZeDdFuZKj4bASosenPGu47cC/ykSI0Pnf
-         ckuziedSGql3AF93NprLdDZdWrpODv4besa/QagwD+36UDoDKn+1aCreHsSQzk+L2UJw
-         V1V4PG11kbFQ5kDReQR0Ots1m6rZqUNidD/c5Xqx9vFE4DizNK+Cwz2MkteEyqOzf6Sp
-         AOTeO+gVPvxiKZdfLccPtumEdbNw9dgPkB1KJDvr+G4W4J9lHX4j0x35oKShcg4a9A0Z
-         Ag3tK7dp3nOOcvIvBDX0rKVhDuhfn890/aCIfCIj71cZ/f14ANmAfMSiRTPVuvvsYJSV
-         Ic1A==
-X-Gm-Message-State: AOJu0YzQ3YW2TeBMY5QJ9YoewMN6sY0d0qYBQIlEh3WjjS6QhTvARSXJ
-	o2mTeLHOT1PhpezWLWUQ362q/GxXJwrGP0lB/0fys7FQwISj9GC5v+n3NadSZ7TQnmpmJH5AxSQ
-	ITZQXjzuv+pKp4sBB7foRYnCAdBTvGHtTFRWn
-X-Google-Smtp-Source: AGHT+IFb6yjLuBKZVuY2x8Cw5WSdGsFrEo/4i5lg0hKx+ZpQud0Y0yr6LHmrGsVoHS54595KDEkmaWJgFQ0HvO4qfoY=
-X-Received: by 2002:a05:6122:45aa:b0:4b9:e8bd:3b2 with SMTP id
- de42-20020a05612245aa00b004b9e8bd03b2mr812775vkb.2.1706108860461; Wed, 24 Jan
- 2024 07:07:40 -0800 (PST)
+	s=arc-20240116; t=1706109097; c=relaxed/simple;
+	bh=/7zykiUMwKCT+cqhXM9vhXh0wXFxTsw+vjXT9OyNpRU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=WSu40jAhrwBG3JGg1jePvWEJP77RWeLn9szKzb5oZht64dP/cJYQXVXWiBqzoOGjKUI/t8B9C9Egr/ADVnTRVBkR1PiRo+n/Wvv4YLOc1z98z4dEdPuCLH/l1Ec5NeUqNFccpsn0Y9iHrYBTlyMlGeizNYodtWy8OZFyVm4xkcA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net; spf=pass smtp.mailfrom=crapouillou.net; dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b=XHbfH8oS; arc=none smtp.client-ip=89.234.176.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+	s=mail; t=1706109093;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=/7zykiUMwKCT+cqhXM9vhXh0wXFxTsw+vjXT9OyNpRU=;
+	b=XHbfH8oSQ1eYQEjvSqRaFgu1O7+6DEE3Bqq+bpSxUvFfcodlayBJdfA9jegOqweYOSKK2r
+	/KyalUhsiufhcd0d/5HoqFQ6Xtw5tnXGoUbZGeq6T/8wMMcvfAAjfcfaPjvjmWQQ0nxmTI
+	Kc2103WusQg+C2WRzK7BrGMiLweZvBw=
+Message-ID: <26455575da695f26570392a333e7466a01a338e5.camel@crapouillou.net>
+Subject: Re: [PATCH 19/21] gpio: swnode: replace gpiochip_find() with
+ gpio_device_find_by_label()
+From: Paul Cercueil <paul@crapouillou.net>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Aaro Koskinen <aaro.koskinen@iki.fi>, Janusz Krzysztofik
+ <jmkrzyszt@gmail.com>, Tony Lindgren <tony@atomide.com>, Russell King
+ <linux@armlinux.org.uk>, Mika Westerberg <mika.westerberg@linux.intel.com>,
+  Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Linus Walleij
+ <linus.walleij@linaro.org>, Dipen Patel <dipenp@nvidia.com>, Thierry Reding
+ <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, Hans de
+ Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>,
+ linux-arm-kernel@lists.infradead.org,  linux-omap@vger.kernel.org,
+ linux-kernel@vger.kernel.org,  linux-gpio@vger.kernel.org,
+ linux-acpi@vger.kernel.org,  timestamp@lists.linux.dev,
+ linux-tegra@vger.kernel.org,  platform-driver-x86@vger.kernel.org, Bartosz
+ Golaszewski <bartosz.golaszewski@linaro.org>
+Date: Wed, 24 Jan 2024 16:11:31 +0100
+In-Reply-To: <CAMRc=MdwAaQ1Prtweu9znEL+mbyxSmmKhL65PG+=YKniCD1c9w@mail.gmail.com>
+References: <20230905185309.131295-1-brgl@bgdev.pl>
+	 <20230905185309.131295-20-brgl@bgdev.pl>
+	 <83ad61e2f9d62621f42d8738f6028103fe8bfb94.camel@crapouillou.net>
+	 <CAMRc=MdwAaQ1Prtweu9znEL+mbyxSmmKhL65PG+=YKniCD1c9w@mail.gmail.com>
+Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
+ keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZMLQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5UzFZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtNz8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe+rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIPdlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7Urf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KFlBwgAhlGy6nqP7O3u7q23hRW5AQ0EXQqFwQEIAMo+MgvYHsyjX3Ja4Oolg1Txzm8woj30ch2nACFCqaO0R/1kLj2VVeLrDyQUOlXx9PD6IQI4M8wy8m0sR4wV2p/g/paw7k65cjzYYLh+FdLNyO7IW
+	YXndJO+wDPi3aK/YKUYepqlP+QsmaHNYNdXEQDRKqNfJg8t0f5rfzp9ryxd1tCnbV+tG8VHQWiZXNqN7062DygSNXFUfQ0vZ3J2D4oAcIAEXTymRQ2+hr3Hf7I61KMHWeSkCvCG2decTYsHlw5Erix/jYWqVOtX0roOOLqWkqpQQJWtU+biWrAksmFmCp5fXIg1Nlg39v21xCXBGxJkxyTYuhdWyu1yDQ+LSIUAEQEAAYkBNgQYAQoAIBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsMAAoJEHPua9InSr1B4wsH/Az767YCT0FSsMNt1jkkdLCBi7nY0GTW+PLP1a4zvVqFMo/vD6uz1ZflVTUAEvcTi3VHYZrlgjcxmcGu239oruqUS8Qy/xgZBp9KF0NTWQSl1iBfVbIU5VV1vHS6r77W5x0qXgfvAUWOH4gmN3MnF01SH2zMcLiaUGF+mcwl15rHbjnT3Nu2399aSE6cep86igfCAyFUOXjYEGlJy+c6UyT+DUylpjQg0nl8MlZ/7Whg2fAU9+FALIbQYQzGlT4c71SibR9T741jnegHhlmV4WXXUD6roFt54t0MSAFSVxzG8mLcSjR2cLUJ3NIPXixYUSEn3tQhfZj07xIIjWxAYZo=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240108-rb-new-condvar-methods-v4-0-88e0c871cc05@google.com> <20240108-rb-new-condvar-methods-v4-3-88e0c871cc05@google.com>
-In-Reply-To: <20240108-rb-new-condvar-methods-v4-3-88e0c871cc05@google.com>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Wed, 24 Jan 2024 16:07:29 +0100
-Message-ID: <CAH5fLgjQTkipTEWv=ogiaa7Y6xcrQR4EVkzhSz4oW8J2Bvq84Q@mail.gmail.com>
-Subject: Re: [PATCH v4 3/4] rust: sync: add `CondVar::wait_timeout`
-To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>, 
-	Waiman Long <longman@redhat.com>, Tiago Lam <tiagolam@gmail.com>, 
-	Thomas Gleixner <tglx@linutronix.de>
-Cc: Martin Rodriguez Reboredo <yakoyoku@gmail.com>, rust-for-linux@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 8, 2024 at 3:50=E2=80=AFPM Alice Ryhl <aliceryhl@google.com> wr=
-ote:
-> +/// The return type of `wait_timeout`.
-> +pub enum CondVarTimeoutResult {
-> +    /// The timeout was reached.
-> +    Timeout,
-> +    /// Somebody woke us up.
-> +    Woken {
-> +        /// Remaining sleep duration.
-> +        jiffies: Jiffies,
-> +    },
-> +    /// A signal occurred.
-> +    Signal {
-> +        /// Remaining sleep duration.
-> +        jiffies: Jiffies,
-> +    },
-> +}
+Le mercredi 24 janvier 2024 =C3=A0 16:04 +0100, Bartosz Golaszewski a
+=C3=A9crit=C2=A0:
+> On Wed, Jan 24, 2024 at 3:59=E2=80=AFPM Paul Cercueil <paul@crapouillou.n=
+et>
+> wrote:
+> >=20
+> > Hi Bartosz,
+> >=20
+> > Le mardi 05 septembre 2023 =C3=A0 20:53 +0200, Bartosz Golaszewski a
+> > =C3=A9crit :
+> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > >=20
+> > > We're porting all users of gpiochip_find() to using
+> > > gpio_device_find().
+> > > Update the swnode GPIO code.
+> > >=20
+> > > Signed-off-by: Bartosz Golaszewski
+> > > <bartosz.golaszewski@linaro.org>
+> > > ---
+> > > =C2=A0drivers/gpio/gpiolib-swnode.c | 29 ++++++++++++----------------=
+-
+> > > =C2=A01 file changed, 12 insertions(+), 17 deletions(-)
+> > >=20
+> > > diff --git a/drivers/gpio/gpiolib-swnode.c
+> > > b/drivers/gpio/gpiolib-
+> > > swnode.c
+> > > index b5a6eaf3729b..56c8519be538 100644
+> > > --- a/drivers/gpio/gpiolib-swnode.c
+> > > +++ b/drivers/gpio/gpiolib-swnode.c
+> > > @@ -31,31 +31,26 @@ static void swnode_format_propname(const char
+> > > *con_id, char *propname,
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 strscpy(propname, "gpios", max_size);
+> > > =C2=A0}
+> > >=20
+> > > -static int swnode_gpiochip_match_name(struct gpio_chip *chip,
+> > > void
+> > > *data)
+> > > +static struct gpio_device *swnode_get_gpio_device(struct
+> > > fwnode_handle *fwnode)
+> > > =C2=A0{
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0 return !strcmp(chip->label, data);
+> > > -}
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 const struct software_node *gdev_node;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 struct gpio_device *gdev;
+> > >=20
+> > > -static struct gpio_chip *swnode_get_chip(struct fwnode_handle
+> > > *fwnode)
+> > > -{
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0 const struct software_node *chip_node;
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0 struct gpio_chip *chip;
+> > > -
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0 chip_node =3D to_software_node(fwnode);
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0 if (!chip_node || !chip_node->name)
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 gdev_node =3D to_software_node(fwnode);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (!gdev_node || !gdev_node->name)
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 return ERR_PTR(-EINVAL);
+> > >=20
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0 chip =3D gpiochip_find((void *)chip_node->n=
+ame,
+> > > swnode_gpiochip_match_name);
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0 return chip ?: ERR_PTR(-EPROBE_DEFER);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 gdev =3D gpio_device_find_by_label((void *)=
+gdev_node->name);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 return gdev ?: ERR_PTR(-EPROBE_DEFER);
+> > > =C2=A0}
+> > >=20
+> > > =C2=A0struct gpio_desc *swnode_find_gpio(struct fwnode_handle *fwnode=
+,
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const char *con_id, unsign=
+ed int
+> > > idx,
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long *flags)
+> > > =C2=A0{
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 struct gpio_device *gdev __free(gpio_device=
+_put) =3D NULL;
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const struct software_node *swnode;
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct fwnode_reference_args args;
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0 struct gpio_chip *chip;
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct gpio_desc *desc;
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 char propname[32]; /* 32 is max size o=
+f property name */
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int error;
+> > > @@ -77,12 +72,12 @@ struct gpio_desc *swnode_find_gpio(struct
+> > > fwnode_handle *fwnode,
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 return ERR_PTR(error);
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+> > >=20
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0 chip =3D swnode_get_chip(args.fwnode);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 gdev =3D swnode_get_gpio_device(args.fwnode=
+);
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fwnode_handle_put(args.fwnode);
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0 if (IS_ERR(chip))
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 return ERR_CAST(chip);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (IS_ERR(gdev))
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 return ERR_CAST(gdev);
+> >=20
+> > I'm a bit late to the party, sorry.
+> >=20
+> > I'm looking at how __free() should be used to use it in my own
+> > patchset, and I was wondering if this code actually works.
+> >=20
+> > What happens if swnode_get_gpio_device() returns an error pointer?
+> > Won't that cause a call to gpio_device_put() with the invalid
+> > pointer?
+> >=20
+> > Cheers,
+> > -Paul
+> >=20
+>=20
+> No. because the __free() callback is defined as:
+>=20
+> DEFINE_FREE(gpio_device_put, struct gpio_device *,
+> =C2=A0=C2=A0=C2=A0 if (!IS_ERR_OR_NULL(_T)) gpio_device_put(_T))
 
-I just realized that this needs to be re-exported from kernel::sync.
-Otherwise this struct is unreachable, since the kernel::sync::condvar
-module is private.
+Ok. I missed this.
 
-Maybe Miguel can just add that when he picks this?
+I would argue that it's still not right though - it should probably use
+IS_ERR() instead. gpio_device_put() only happens to accept NULL
+pointers because the "dev" field is at the very beginning of the
+"gpio_device" struct. I'm not sure this works with e.g.
+CONFIG_RANDSTRUCT_FULL.
 
-Alice
+> Bart
+
+Cheers,
+-Paul
+
+> > >=20
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0 desc =3D gpiochip_get_desc(chip, args.args[=
+0]);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 desc =3D gpiochip_get_desc(gdev->chip, args=
+args[0]);
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *flags =3D args.args[1]; /* We expect =
+native GPIO flags */
+> > >=20
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pr_debug("%s: parsed '%s' property of =
+node '%pfwP[%d]' -
+> > > status (%d)\n",
+> >=20
+
 
