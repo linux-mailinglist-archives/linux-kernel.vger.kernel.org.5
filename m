@@ -1,250 +1,221 @@
-Return-Path: <linux-kernel+bounces-37284-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37286-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A865883ADB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:49:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7752783ADBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:49:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5302B28AAC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:49:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 785351C2295B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:49:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 842767C0B2;
-	Wed, 24 Jan 2024 15:48:52 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AFD777F3E;
-	Wed, 24 Jan 2024 15:48:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706111331; cv=none; b=bQpds1k8Izu7V21CJlRCedpH0O53hf5vVkZ16W/M7LdnvqxLEKEU7qENn6Yhk+mEVb1cdTjJlCMc8mKDQ68Q1KvrKSBOUAyrkfCAKWNFrYoIzpbzVX6vdBbY2ZYmaeZ/dCpI6isPTgKLkRP/Lo894ce7bM7nxJkJiqWw294HZ9s=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706111331; c=relaxed/simple;
-	bh=aUNqEoEAYqI/8Lxk5111nq5eRH+q4dBA7OcQnIDAc7Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aMyaq/dvPcYTrKSIRz8k7dpLWpaizWCvOlalBq5cHj/oOAbyQwLjti5QBHpcYqOQAfEFOCkvdxHah6kW9KBZRI2OFnZpdMA1aLEqMUOfxL/FLGebssXXkFVIHPqAfBIdGMHLzymVklkTMXcEFJRHk96CoWSSu1uOk3/qicIAc/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 842341FB;
-	Wed, 24 Jan 2024 07:49:33 -0800 (PST)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.30.162])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A51303F762;
-	Wed, 24 Jan 2024 07:48:46 -0800 (PST)
-Date: Wed, 24 Jan 2024 15:48:38 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Ian Rogers <irogers@google.com>
-Cc: linux-kernel@vger.kernel.org, Hector Martin <marcan@marcan.st>,
-	Marc Zyngier <maz@kernel.org>, acme@redhat.com, james.clark@arm.com,
-	john.g.garry@oracle.com, leo.yan@linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-perf-users@vger.kernel.org, mike.leach@linaro.org,
-	namhyung@kernel.org, suzuki.poulose@arm.com, tmricht@linux.ibm.com,
-	will@kernel.org
-Subject: Re: [PATCH] perf print-events: make is_event_supported() more robust
-Message-ID: <ZbExVmM5902LuTnL@FVFF77S0Q05N.cambridge.arm.com>
-References: <20240116170348.463479-1-mark.rutland@arm.com>
- <CAP-5=fVABSBZnsmtRn1uF-k-G1GWM-L5SgiinhPTfHbQsKXb_g@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15FCC7C0AE;
+	Wed, 24 Jan 2024 15:49:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="i8nxWEpC"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BABD27CF12
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 15:49:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.55.52.93
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706111357; cv=fail; b=IpeBFdsXGcr9CJz8w5Q7pzASSq8ova2fmZONVVuLO3EkipjhSUi2iDf91k8wJ+lcv+qi/wp3kaRpOZBFdDqm7tUJ6sflU6uZ0vOSTok1d6cfDoob0sa4XoHAmwO4Wv9kfRlwbgHP8macM0MMyRA9rIAdvkwZdgGqDVS4GY1GdGU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706111357; c=relaxed/simple;
+	bh=8CgVZUCRvC8rw1sZ3ggW6w0mrGtUXlvrP0pq0JjkhVk=;
+	h=Content-Type:In-Reply-To:References:Subject:From:To:CC:Date:
+	 Message-ID:MIME-Version; b=Lv44wUczf2vJtuU5Hexfx8B1nJBYYXtAxtqKbAigdsAxyYxms4y8vSH0pw07OC4t9WqjKlnLyYvdu1D5q3IIxbUy1fS/rd5Z+SSTaKQ2b+Il7fTTjV2CXzZouJsfuBfP15Y3dVPv6m0t/kaBGX+fUEYTWEqnNQ29CKW9E7019+8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=i8nxWEpC; arc=fail smtp.client-ip=192.55.52.93
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706111354; x=1737647354;
+  h=content-transfer-encoding:in-reply-to:references:subject:
+   from:to:cc:date:message-id:mime-version;
+  bh=8CgVZUCRvC8rw1sZ3ggW6w0mrGtUXlvrP0pq0JjkhVk=;
+  b=i8nxWEpCb5UTHS662yYZuR2UCIHA8aigAtbXZBiNsJ3RxJVP3Gvf8r7A
+   CPxafC1PPria7PD/q+FIiNiAUSmhjTwYWHotM57HpIfXkY8bUSIU7yTt3
+   rBVBeW+mEfj2hF2dec+B06IG7EbKiT7adM8+Lo7y2MZYxpni1sRD1rDG0
+   5pvVlq2wRpn/JdhcN6NnUsDS8zwbAGf/Z/xoA1hADgPSAsvWEFOtXdjVO
+   8EZucukBW4G5tXR5qWD3H9cY+zrVPR8WIIj6gOfDdBEA3VWrLC1e1fdho
+   eO2ePm+8DmWOI1tUaTszj6WYi+2pMVsMl/1VUnuHpIz6y0HkrKNHJU1He
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="399035255"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="399035255"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 07:49:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="2070875"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmviesa004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 24 Jan 2024 07:49:14 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 24 Jan 2024 07:49:12 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 24 Jan 2024 07:49:12 -0800
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.168)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 24 Jan 2024 07:49:12 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Nsjze+bO0uuuD6rDF0p4UWHoO4Uko5v+V2uePURgTM2/JEUM6zzUvbWp7mGxNddSEkvsEXWWApHpow7lhP2nzUgp0p01Wxn55fO+Rjp+KBU37AVeZYUVdLHG0U9r+sNqAJC0RRrJHepQGF4IWSQG3vULI1LZi9Uztq2loqbNpXNYvd6b+k98PVKh5vDuHHVxU8BVJ6T5Qp8mACUmCvEBPaN26iiewnzkS0mjUSZtjgA+YeNlwrFAAN6CrvPqLJGUxwqH2UGxjrwJIbSZhsNQeOXAmMU13ouenULoAOdraN69ClrZ6QOpcI2yc7sAELWM1yLFgiQyXRoT7VA4EWQgpw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BbeyerYEnp0zxF2dKwMg73YWtdYFYa0n3jxoAuZnKUI=;
+ b=F1DkG5nSLrOeYIewIBXadmLda5FymXHX78IUh5c9mH79Pm7QTRPzJPax/ZLK5ymt3WCdoskoysNNkwVaj26DVWQJUveEvBdXEPzfOkOrYRbFWEFNizKh9Gy0BbNFrbpx4yaGwENOspKQlhvMleByl5uBVIFp+wni9pY3jxEBAZnrOZhRpCNTrK4TWRN3FtuoHe5fqw7OXZDmumhkA9oC9Ao8SizcM2n76OvtFo8Z7cDoR9JthYvjCnBpVlAkmzo/vjsQhR0KsRLs2MoJNy8mBOnV09bwzRcguofn5Z5gqEUMi2P2Me1mFsiN9J2Wkgc1QBLsW3dpI54+1VsQcuBu9w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8287.namprd11.prod.outlook.com (2603:10b6:510:1c7::14)
+ by IA1PR11MB6444.namprd11.prod.outlook.com (2603:10b6:208:3a7::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.34; Wed, 24 Jan
+ 2024 15:49:09 +0000
+Received: from PH8PR11MB8287.namprd11.prod.outlook.com
+ ([fe80::559e:7844:adc9:7793]) by PH8PR11MB8287.namprd11.prod.outlook.com
+ ([fe80::559e:7844:adc9:7793%7]) with mapi id 15.20.7202.034; Wed, 24 Jan 2024
+ 15:49:09 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <ZbEsfl0tGLY+xJl0@yury-ThinkPad>
+References: <20240124050205.3646390-1-lucas.demarchi@intel.com> <20240124050205.3646390-2-lucas.demarchi@intel.com> <87v87jkvrx.fsf@intel.com> <gvkvihpcc45275idrfukjqbvgem767evrux5sx5lnh5hofqemk@ppbkcauitvwb> <ZbEsfl0tGLY+xJl0@yury-ThinkPad>
+Subject: Re: Re: [PATCH 1/3] bits: introduce fixed-type genmasks
+From: Gustavo Sousa <gustavo.sousa@intel.com>
+To: Lucas De Marchi <lucas.demarchi@intel.com>, Yury Norov
+	<yury.norov@gmail.com>
+CC: <intel-gfx@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+	<dri-devel@lists.freedesktop.org>, Andy Shevchenko
+	<andriy.shevchenko@linux.intel.com>, <intel-xe@lists.freedesktop.org>, "Jani
+ Nikula" <jani.nikula@intel.com>
+Date: Wed, 24 Jan 2024 12:49:04 -0300
+Message-ID: <170611134445.31262.2799581830173501277@gjsousa-mobl2>
+User-Agent: alot/0.10
+X-ClientProxiedBy: SJ0PR03CA0237.namprd03.prod.outlook.com
+ (2603:10b6:a03:39f::32) To PH8PR11MB8287.namprd11.prod.outlook.com
+ (2603:10b6:510:1c7::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fVABSBZnsmtRn1uF-k-G1GWM-L5SgiinhPTfHbQsKXb_g@mail.gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8287:EE_|IA1PR11MB6444:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4427fd7e-e66b-45d6-c7c6-08dc1cf400ef
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rCEAugbiT7z9+/ukSeYojki4rdY1vi6b4H/XpEHFsOvW7a9xTAVMklSQcsRJFRumQ3UCL6XLMhFUQR5MxZ5ETeWGXLcIdr3rf0tek0A0VOH3uhw+HOcDGlGITHBNW1fz2v2u13iifLO6nK2+vSq9t+OCM6fZN3s62xBKYPXDW8wrT+6YhcxofqoR9ymUqMABhwxGeYp4AxeVGzHsSay2rgjaAgDbT2nsE/2a1vxO84joU+kV4cyoXmOndkxGUoT49RsNPjZui8xyKkSgz2csa2D6e2qRwNEFkc4Z/gSumIZTxeGd0QU+NCldzc9XrLd7FDzDKnK0arm9EQ62OqWt2w6AoTBZvobWx8p4leM+oRQZiTMzi/a/40hBWU8/AgbG593Bk4ff5JIyI+O9NOfOqoQH6plblQkjjFqsSpXdKrrUlqs4h6AyBgh7FhOxkZvuMSCgZ2q0sTrwinxADbT38rG9ypGHK2YWvmIK6rZgfXv+w5n7l6M42FtqPBg/l6tmbE75IuSaR6WnQIkfr6gFd3zTkuJ3tiHYmxKEMcVtr94MpALlWCffsjxCyR9+PTze
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8287.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(136003)(366004)(376002)(346002)(396003)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(4326008)(44832011)(83380400001)(8676002)(8936002)(9686003)(316002)(26005)(6512007)(6486002)(110136005)(54906003)(66946007)(5660300002)(6666004)(6506007)(66476007)(66556008)(478600001)(82960400001)(33716001)(41300700001)(2906002)(86362001)(38100700002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Y2U4TUJEZ3RCRjY1NlhRazQ1RlpQUndSNXNDTjBJV1BOUTJ4bm9JVUZuRTh0?=
+ =?utf-8?B?T0xGa3hadkZ3U1hNSlhhYUFheFNEekswaTRtZWFsSnV2ckdtbDduLy92UUcx?=
+ =?utf-8?B?R25hNGwrbE5INWwwOVptUWVlOVB4MDhUWXpXREpsUnFHZUt3dm1jbkNEOTE0?=
+ =?utf-8?B?KzdnZkVuZzUvOHdJUzRCd3FvbElkR2I5RFR3QVBxWks3YkFyTTljU0RBaWxH?=
+ =?utf-8?B?bTNzR1JvRzU1QXUxL3VuSXQ4UFVpTFZzU0g2L3F1alAwWWhlbzNFTmY1am1J?=
+ =?utf-8?B?KzVrL2lESWtZYVhtdWdWNlYzYWl3TWRsZU9yS0xRRUtNRzdRaTIzMU1ibVJ3?=
+ =?utf-8?B?cGdndTlaNlRSS3o0Z21hemxjOEEydHE5VXdEKytwZlpUekZCdE04cnAyekJP?=
+ =?utf-8?B?SW9XSm1ZY1ljZWNjTWZwbytqQS9JNWRPS08zK05MbHFkMTZ1RWpZL3M5QmUw?=
+ =?utf-8?B?T0ZGV1NHVXl2VmdnVnhpdWk5cnk4QU5sZGhPczRYQ1NqSTFXNVoxdk9zMmpY?=
+ =?utf-8?B?MXF1R3JkVkVLdDZZUjFDVDlISllaQkdTM1F1T3lNRTQ4SWZFamxocDNaZWpU?=
+ =?utf-8?B?ZzdwaVRyaHl1TWs4NE84TW5rd2YvZDN1L0Z1SFVJUG5YSTdacGpNdGJYN2pr?=
+ =?utf-8?B?cm4vcGt6bktSai96VDgzZVdHb1Q1S2hqNXp1Z2VKWktOSXpIZG1KSkFZWC9F?=
+ =?utf-8?B?KzVocS92QnE4UWFvZGdGN3dPT00xYW9sMndNVGZ5eUQwSVN5V2RHNkRKMmE2?=
+ =?utf-8?B?R0ZJK1dZS0grYnJLK3NsUTlMVHdwRVRHWEtTQzF6ZFUyemdTcHlMSzVjTU5M?=
+ =?utf-8?B?dzhuQlNkc05xZTlxK3d0UzRudTZzMFk0SHU3QXRCYXN0RitPakZGT1JtTDla?=
+ =?utf-8?B?Z09vZWF5UVZacWdiVmk3NHRCOVIzWVRkcFdmUTg1akRvZUwvRUQ4SXJRc1Vl?=
+ =?utf-8?B?NGQralNQM1M5UnI2elcxckhyRmI1bnhORVI5SVI1aXhHS0hxNFhKbjBTcEVx?=
+ =?utf-8?B?MmliamJTeXljSXpMTS9NaDBqdWhSS1lBUTVaYWFjcDdtSXArWUhIVmxLNmFw?=
+ =?utf-8?B?VzVWb1MzWi9MU1NlNlNuTFRxRFh2RDlsR3FpTHl2cERiU2tBWHVzeDlNU0VY?=
+ =?utf-8?B?eTFybGZ0M2FQRkhpeEk5NDNDQU9LVURpZmNQWjUzRVh5ZjFQM2pVZmw3MGtk?=
+ =?utf-8?B?REJMOElDQ1EyQjZYc3BzUVIwRnBrSEVzUlVxM2VmekZ1QmEyOUx1aXM3ZzNj?=
+ =?utf-8?B?Z0NHQWJBeFdBT1IyK3EvOVVlYVR3Rm53VEthSHFPNDdybHE3Z04vMmxOWlZB?=
+ =?utf-8?B?cS92d0pybEhDb3Q1eTZVMkZZM3VHSE9aYTg0WXFrS3pBVFlOcWRnakkvS0dD?=
+ =?utf-8?B?cjJZdUVLYzhQcENVbGJNY0N6b1lINUQwa1k4TlpXR0tiN0lLRnJUWkZGWUtY?=
+ =?utf-8?B?NzNkSmpvQmMvUlNoVlJzTVR4ZDdFRWcyOU1yL3duSzI3elRlS0J0cUY1M25C?=
+ =?utf-8?B?YzJZcjRUTlZEbmg2NUdUSG9HQWJQT1dKaGU1a3RiQTVPdUdkZGZlMHZSUTJV?=
+ =?utf-8?B?b3AvUytZRG53VFdEUEE2c2d2ek5JVXJSY21RRVNKR1grbnJuWTY2bnRjVWta?=
+ =?utf-8?B?UFZzRE83WGJRajBtcDhhN1NHOEtkNDh2cHlZNW9wMjF2QVJYSGRUT2w2THJz?=
+ =?utf-8?B?aS9JLzBubmdMMkowQThKRDBuSEVhOFBUV1ZyVmpQN2xUNmpwSUsvSzdQLzdU?=
+ =?utf-8?B?L1RseEtJWXBtRDdKc0pzTno1aHhXY2oyYkpwMDQ4V3lKeit5KzZWTlBhU2I4?=
+ =?utf-8?B?bEsxMElvb2lacWhjVFg2UFRIVlNUeVVOQ0d0TzhBWUJWZVNDbnF6dXNIWnpP?=
+ =?utf-8?B?ZGYya0VHVVNoSDBMUHVtaTJ6RHkxaUFFSVlzbjlPM0JzMnU0NExiMnJjeTJq?=
+ =?utf-8?B?YmFVdktJYVVZQUwwMlFqbzRXSDkvWSt4YTJ3dWoxTURUR3IzSFdkZjQzcVYz?=
+ =?utf-8?B?cHd1bUtCT2hqcGt3Rm13OXdweCtTMnduMmdycjFCOGhvZERMcnpVcUhwWWQz?=
+ =?utf-8?B?TWk5eFFyK1Rxc0VWTC9ub0dBaUdKSERsNVNKRU1ISGc1ZkJ3WlRZNzA3a1pa?=
+ =?utf-8?B?T1VzNUxMbnBvZTZRV1p6MXJ4UDMyV2ZYbzZZZ1VrN1VrMW1OS25DQ1JueWdQ?=
+ =?utf-8?B?Umc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4427fd7e-e66b-45d6-c7c6-08dc1cf400ef
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8287.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jan 2024 15:49:09.4172
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FQdO1Ti59ATkqvCLGvWvrV62waqjyUcG0w+8aGnYtMdo531b37+cvNItpjMwUzvPG3G2APPx9X17ZWLB9pzTwA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB6444
+X-OriginatorOrg: intel.com
 
-On Sat, Jan 20, 2024 at 10:27:33AM -0800, Ian Rogers wrote:
-> On Tue, Jan 16, 2024 at 9:04 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> >
-> > Currently the perf tool doesn't deteect support for extneded event types
-> 
-> nit: s/deteect/detect/
-> nit: s/extneded/extended/
+Quoting Yury Norov (2024-01-24 12:27:58-03:00)
+>On Wed, Jan 24, 2024 at 08:03:53AM -0600, Lucas De Marchi wrote:
+>> On Wed, Jan 24, 2024 at 09:58:26AM +0200, Jani Nikula wrote:
+>> > On Tue, 23 Jan 2024, Lucas De Marchi <lucas.demarchi@intel.com> wrote:
+>> > > From: Yury Norov <yury.norov@gmail.com>
+>> > >=20
+>> > > Generalize __GENMASK() to support different types, and implement
+>> > > fixed-types versions of GENMASK() based on it. The fixed-type versio=
+n
+>> > > allows more strict checks to the min/max values accepted, which is
+>> > > useful for defining registers like implemented by i915 and xe driver=
+s
+>> > > with their REG_GENMASK*() macros.
+>> >=20
+>> > Mmh, the commit message says the fixed-type version allows more strict
+>> > checks, but none are actually added. GENMASK_INPUT_CHECK() remains the
+>> > same.
+>> >=20
+>> > Compared to the i915 and xe versions, this is more lax now. You could
+>> > specify GENMASK_U32(63,32) without complaints.
+>>=20
+>> Doing this on top of the this series:
+>>=20
+>> -#define   XELPDP_PORT_M2P_COMMAND_TYPE_MASK            REG_GENMASK(30, =
+27)
+>> +#define   XELPDP_PORT_M2P_COMMAND_TYPE_MASK            REG_GENMASK(62, =
+32)
+>>=20
+>> and I do get a build failure:
+>>=20
+>> ../drivers/gpu/drm/i915/display/intel_cx0_phy.c: In function =E2=80=98__=
+intel_cx0_read_once=E2=80=99:
+>> ../include/linux/bits.h:41:31: error: left shift count >=3D width of typ=
+e [-Werror=3Dshift-count-overflow]
+>>    41 |          (((t)~0ULL - ((t)(1) << (l)) + 1) & \
+>>       |                               ^~
+>
+>I would better include this in commit message to avoid people's
+>confusion. If it comes to v2, can you please do it and mention that
+>this trick relies on shift-count-overflow compiler check?
 
-> > Thus is_event_supported() will fail to detect support for any events
-> > targetting an Apple M1/M2 PMU, even where events would be supported with
-> 
-> nit: s/targetting/targeting/
+Wouldn't it be better to have explicit check that l and h are not out of bo=
+unds
+based on BITS_PER_TYPE() than relying on a compiler flag that could be turn=
+ed
+off (maybe for some questionable reason, but even so)?
 
-> > This patch updates is_event_supported() to additionally try opening
-> > events with perf_event_attr::exclude_guest set, allowing support for
-> > events to be detected on Apple M1/M2 systems. I beleive that this is
-> 
-> nit: s/beleive/believe/
-
-Whoops; I've fixed those in my local tree now.
-
-[...]
-
-> > Hector, Marc, I'd appreciate if either of you could give this a spin on
-> > your M1/M2 machines. I've given it local testing with the arm_pmuv3
-> > driver modified to behave the same as the apple_m1_pmu driver (requiring
-> > exclude_guest, having a 'cycles' event in sysfs), but that might not
-> > perfectly replicate your setup.
-> >
-> > The patch is based on the 'perf-tools-for-v6.8-1-2024-01-09' tag in the
-> > perf-tools tree:
-> >
-> >   https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools.git/
-> >
-> > ... and I've pushed it out to the 'perf-tools/event-supported-filters'
-> > branch in my tree:
-> >
-> >   https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/
-> >
-> > This patch *should* make it possible to do:
-> >
-> >         perf stat -e cycles ./workload
-> >         perf stat -e instructions ./workload
-> >
-> > ... with those 'cycles' and 'instructions' events being automatically
-> > expanded and reported as separate events per-PMU, which is a nice
-> > quality-of-life improvement.
-> >
-> > Comparing before and after this patch:
-> >
-> > | # ./perf-before stat -e cycles true
-> > |
-> > |  Performance counter stats for 'true':
-> > |
-> > |      <not counted>      cycles                                                                  (0.00%)
-> > |
-> > |        0.000990250 seconds time elapsed
-> > |
-> > |        0.000934000 seconds user
-> > |        0.000000000 seconds sys
-> > |
-> > | # ./perf-after stat -e cycles true
-> > |
-> > |  Performance counter stats for 'true':
-> > |
-> > |             965175      armv8_pmuv3_0/cycles/
-> > |      <not counted>      armv8_pmuv3_1/cycles/                                                   (0.00%)
-> > |      <not counted>      armv8_pmuv3_2/cycles/                                                   (0.00%)
-> > |      <not counted>      armv8_pmuv3_3/cycles/                                                   (0.00%)
-> > |
-> > |        0.000836555 seconds time elapsed
-> > |
-> > |        0.000884000 seconds user
-> > |        0.000000000 seconds sys
-> 
-> Just to check, this is the expected expansion of cycles? I'm unclear
-> why 4 core PMUs.
-
-Yep; I had a fake big.LITTLE setup with four distinct microarchitectures (one
-per CPU), so the expansion above is expected. I had meant to explain that in
-the notes along with the other driver modifications, but I forgot, sorry!
-
-> > This *shouldn't* change the interpetation of named-pmu events, e.g.
-> >
-> >         perf stat -e apple_whichever_pmu/cycles/ ./workload
-> >
-> > ... should behave the same as without this patch
-> >
-> > Comparing before and after this patch:
-> >
-> > | # ./perf-before stat -e armv8_pmuv3_0/cycles/ -e armv8_pmuv3_1/cycles/ -e armv8_pmuv3_2/cycles/ -e armv8_pmuv3_3/cycles/ true
-> > |
-> > |  Performance counter stats for 'true':
-> > |
-> > |      <not counted>      armv8_pmuv3_0/cycles/                                                   (0.00%)
-> > |      <not counted>      armv8_pmuv3_1/cycles/                                                   (0.00%)
-> > |      <not counted>      armv8_pmuv3_2/cycles/                                                   (0.00%)
-> > |             901415      armv8_pmuv3_3/cycles/
-> > |
-> > |        0.000756590 seconds time elapsed
-> > |
-> > |        0.000811000 seconds user
-> > |        0.000000000 seconds sys
-> > |
-> > | # ./perf-after stat -e armv8_pmuv3_0/cycles/ -e armv8_pmuv3_1/cycles/ -e armv8_pmuv3_2/cycles/ -e armv8_pmuv3_3/cycles/ true
-> > |
-> > |  Performance counter stats for 'true':
-> > |
-> > |             923314      armv8_pmuv3_0/cycles/
-> > |      <not counted>      armv8_pmuv3_1/cycles/                                                   (0.00%)
-> > |      <not counted>      armv8_pmuv3_2/cycles/                                                   (0.00%)
-> > |      <not counted>      armv8_pmuv3_3/cycles/                                                   (0.00%)
-> > |
-> > |        0.000782420 seconds time elapsed
-> > |
-> > |        0.000836000 seconds user
-> > |        0.000000000 seconds sys
-> >
-> > One thing I'm still looing into is that this doesn't seem to do anything
-> > for a default perf stat session, e.g.
-> >
-> >         perf stat ./workload
-> >
-> > ... doesn't automatically expand the implicitly-created events into per-pmu
-> > events.
-> 
-> Ugh, weak symbols. x86 has overridden the default adding of attributes
-> to do it for hybrid:
-> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/arch/x86/util/evlist.c?h=perf-tools-next#n36
-> I think we should lose the adding events via attributes and just go to
-> using parse events for everything. I'll see if I can do some cleanup
-> and that should resolve this - I also want to cleanup the default
-> events/metrics and the detailed ones as we can drop the unsupported
-> events, etc.
-
-Ok; so IIUC we can treat that as a separate problem? I'm happy to test/review
-patches there.
-
-> > Comparing before and after this patch:
-> >
-> > | # ./perf-before stat true
-> > |
-> > |  Performance counter stats for 'true':
-> > |
-> > |               0.42 msec task-clock                       #    0.569 CPUs utilized
-> > |                  0      context-switches                 #    0.000 /sec
-> > |                  0      cpu-migrations                   #    0.000 /sec
-> > |                 38      page-faults                      #   89.796 K/sec
-> > |      <not counted>      cycles                                                                  (0.00%)
-> > |      <not counted>      instructions                                                            (0.00%)
-> > |      <not counted>      branches                                                                (0.00%)
-> > |      <not counted>      branch-misses                                                           (0.00%)
-> > |
-> > |        0.000744185 seconds time elapsed
-> > |
-> > |        0.000795000 seconds user
-> > |        0.000000000 seconds sys
-> > |
-> > | # ./perf-after stat true
-> > |
-> > |  Performance counter stats for 'true':
-> > |
-> > |               0.43 msec task-clock                       #    0.582 CPUs utilized
-> > |                  0      context-switches                 #    0.000 /sec
-> > |                  0      cpu-migrations                   #    0.000 /sec
-> > |                 38      page-faults                      #   88.960 K/sec
-> > |      <not counted>      cycles                                                                  (0.00%)
-> > |      <not counted>      instructions                                                            (0.00%)
-> > |      <not counted>      branches                                                                (0.00%)
-> > |      <not counted>      branch-misses                                                           (0.00%)
-> > |
-> > |        0.000734120 seconds time elapsed
-> > |
-> > |        0.000786000 seconds user
-> > |        0.000000000 seconds sys
-> >
-> > Ian, how does that behave on x86? Is that the same, or do the default
-> > events get expanded?
-> 
-> The default events are expanded, the not counted is a feature of a
-> fast binary (true here). I'm trying to remove custom code paths so
-> that things like this don't happen, sorry that you've come across
-> another instance but at least I can fix it.
-
-Huh; I'm surprised that works with the named-pmu events, since that's the same
-'true' binary.
-
-Is there anything I should go look at for that?
-
-Mark.
+--
+Gustavo Sousa
 
