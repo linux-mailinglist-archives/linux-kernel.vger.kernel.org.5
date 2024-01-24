@@ -1,171 +1,138 @@
-Return-Path: <linux-kernel+bounces-37741-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FBDE83B4AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:31:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 344F583B4B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:33:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A99F8286A83
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:31:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 940A1B244CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:33:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CFDD135A58;
-	Wed, 24 Jan 2024 22:31:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96B3A135A68;
+	Wed, 24 Jan 2024 22:32:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="WfdW4f/5"
-Received: from sonic306-28.consmr.mail.ne1.yahoo.com (sonic306-28.consmr.mail.ne1.yahoo.com [66.163.189.90])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="hrYHPw7H"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF416C2C2
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 22:31:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.189.90
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFECA2C9A;
+	Wed, 24 Jan 2024 22:32:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706135478; cv=none; b=sFok/hepIRu+Gj51NZ4QWd1ByRGDMw9li1fLkpicbqsBQL73siXc9+BsPgdjsXoRgxpSUDvNjPPOXIvOn12Y+1d2tb2uFg9/CzkJGm8TYkUAPUP0N0DaN7A/HD/CtGBt8Vp/gGM13RTvV8O0nctBuOm9Awqw+4+rVfbYwn4RS9M=
+	t=1706135573; cv=none; b=OMTZdcp38lKzv4SrLi9mdhiiix/H5l2tgg4mp6ghoj1L+lXqzny73KpmhTsFfxV1xZmFLN/xwK0ornLJbPPEsSCOgMaCEetF752hh7nwb/EDmVvo9KescBmSG5SKEEWVLV3et53I/KN/acXkQd93N30QkDz/LXyidL7CrVj4h+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706135478; c=relaxed/simple;
-	bh=ncNSKEB8i9H7xvUfioYYp/VoOJk3T8giU+CM5F/GyMc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PSux8AzUWpluW3YR/I8BSgHyLztixWoeEZ369iR/m/sUWDh+jYQlKONN05J1X1rh/FZtz7blLd3x4eU/AaPXoxbWy7XvUEAfmn7z5wjZHMygUKp+O2dHBFA7SakTsPf0QywscKicOLb+8sLQ5yB3VArWAPdv0CioOUXt8SFPG7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com; spf=none smtp.mailfrom=schaufler-ca.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=WfdW4f/5; arc=none smtp.client-ip=66.163.189.90
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=schaufler-ca.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1706135476; bh=K0ouN+nLZSPECn+2C3BZ1Yg4vdvedoKbDa2WyhtFY38=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=WfdW4f/5Ih/OSgNo+DyKRspxX32wxUbEljnupK8L/tmlybaoOAp0hA5BufPxvbdes56X+izqlCnHdW+P3y+bfGoR6u7tO21KUi/GBYsvNFgGHIXbF2PBOWaK1z1NxDQoUKiCu0QmC1iOeFnzfcyaJuqa/+RDXyIFXSk0i04hjrOzDTdLV7vbamwHt9OMzA2IJ802n7AYRotDMpDQyWz3GOsznBIjC2MvSAO8ZhpnxXql2hQzvuQ+RfEsqhqlm/CRUJSLnfin/GaElX3Nq2Y+vc4Bcqx5c2MLQgQKq47twjcLQnMzRuDw/LGXQGId1FvyDEhqizhsDFbc1N0LFyoZow==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1706135476; bh=DcO2p7KfHcK7ga62DQFXNKrpo3809blgw1ZKffA497L=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=s2dUkVw9XFE2zhyd5fnK79XZj3QxHpsFex4MxhxZdwR92qYGAH4KmHO3xQWZW7lJuIRb0QIdeWeQ79fsLs6U+fvC1FLG47xOqubEKWjFVTPJHS5NvRnfVRMT8YfTjveldnU/TkGS0C3rYMRw71hTC+dYDgzZR4uzECnS/giJSHP4mTC8wGsDw+uKvBg94PU/tKALGvhd1qXl9v2GukIN4vTg/SHFZnKz9iK1H/e/bUfsP+gsM6Ow9LLs1U+Eq1hVlzvaaUjh/spiY3OrrJF1W3isL4A3bCxpdId7Jp1J0YL+FFa5e9eHSP9jgLyhVGa628Gcg+n+ZPMM+mFIRu6PkA==
-X-YMail-OSG: _3ClCVQVM1nWjuWf0B1d1_7qd1yx.3LKY4eSTxK6sKU3EbThvP0op9nLFX7YuaN
- T.1lTdGHyckk.kOm5AhIIVYx4MOVZG4baoEa40ChtfXX1GyGRYesodCnDx_tAV3wsWMu3bmK1Q7T
- meelx_kuN2GYpQ0z7i1T5ZptDdDNYZR_O8nUDT9uXONtZCYwiamPUCwNqc762uPYXYfE6a_nfj_R
- folpvzxtBD7u_GLuPGaLVY4nVmgn4u666D2gxPd.U6f5j63pMagy4CnpO4inedzIOsTttuTuYNsn
- vJLx1wa6UMxA1Zxl0xD6Zj_6Rq7RUQTBJGduc3jcphVlln4YXsfeLp8RWC_k1ySMzzpa2TUMN9Fd
- .22MZ6VUrhfsnT4ixKU0_wrIbiSzTPUaMBZWn1026Lk2Rn7k5KltOJwtuTGuVQtJ_NNuKFtFFu4a
- FvQTrWthk4ylfectSnRIFLX2U62QO6za0TsNWdUPtM4UEagbGXxYhWFybMq2zTsxJEFUpbCG5yJv
- D.BjBYbRLyBwfwxS7ABNPf7W5MM1.wrc2hsgwrjGPV7WpV3S_fHbyRGUNLo8CO5nMSubI0fCriTj
- QZ6FNjnmZN4zz0OHVI_PJFO8fE4DHz7sSfqX2XHzew7WQZegSyGOFtVbAk.AgsDMHO3NzdgzdZ.4
- kklzmTD0ePmMQGCjPan8n5aCGBPkS.GAoGSFqXMizceOhByv1ryKwiQ179BBmcFfYG9tDUKomxJm
- MWmWqzvGaiSlDjDYOkDbUzVF9lapfRuZ.RdICj7hs0BKHfJeDcED8W4f54zUsc8BTD_eIm8vqBe5
- KTQAkqKXsV_EAAGCNlj4596jUOxTQRJmHvA7cN5hkwK7MAe8onOu5k6L3dMwxZ3ixJU3kwxaOoIj
- .htFiTdpPLAvjuxwzlfAUaZUVy5rMF3DVODJreUNzAI7cW49slkuSKGdad0LQBDscl6fDQRyVhb5
- 85IAUR158zrgOQcIlORln69bZIT5SX5ukwhRFyQPzTRNdNVoCsB.owHZxyMwQuRtkKnIaGCeNu.B
- rUHSrCvXmfQWWP72pyx4R1UvlxJj.H_s0jS2oLEzlypq6ks.FiNdLbAaRYY4K838f_eJOgWmX9Ir
- 6CFblf6oT0jSycR4OPz3ovAxUbMoAwjxJI06oPkVZ21A4Y56NRecNe77DF0ASHzt8KOksuTmPxH1
- 9MugJrorMO5LOozLfA6K.kf8BAcXIrlWavV0UeL5FxJoiN6BkrzAMWrUXIVjLQBP_f7N4Sm.b4P9
- tejJgAeuvL0JO7xgKgr7c.N9WPZWt5J3UAnmmV3KNh8iiQ.qt2.bsyL3iZNWtfOFA_3xJOz_P7Gf
- QU_NpTviRNGk_2mJ.MzZaCjpm9NvSVvCo1pO64bco6t59QS3UXOmLq_s.V0wvNYCwFopREdB1Jex
- V4ZwgYWXzteF4j7sIK1ENL0XThjeKljleuJX4LoWwWgAhfj_s4Jd4Kehj1lxSB0hZ_0zcRWk2cyZ
- _Il8EZe87Ne0d5ih4I9_c3AVwut24wjDMza6upIeCd5Dk4lIaHCr.4lOV7pDKJfmHnHmn.x1pKi1
- gs2y7PwJHX.tqV103afr.o8U4VDj0.1FGX9ChNAAm.eLRqIvEOColYnwNaHCsUtIPI9OiD3gUXrg
- rNZopcvJHQClxrnfVdxLEpnvx4Z7aY1ISUKe_yrJZRsOnoLkNh90AMEd48BTVMk3USFmwb3pnJbB
- fcHa6DzxUZoVvnlRF2vkYbwv61Vm9VWVr8dn6fYl.cxhhF37NaqXAkJk3E0gTDKBT9RpTPYoQ2ii
- zVcA61E7BQ8ZIfasw2LNxEmv.7Iu42zBgTAKy8KB5Tq2JpA9pQjS9c8VAFge9PnIPJzSvg.LMGst
- _DXFcszFGFSQ2D6I9sdorn1OnihUwJwdMepU7PNNPTtZaZekK3axqwdR_Ey6PisBzRCeDSH1mwou
- xD6fGJr7qmkaCQ_kMvWcOhRRPc6RAWiHjl1KBCFH9JwWMs4FqZSA9YXjkGOfd9MurPMvyl626rMf
- vpDCjQ7I2UXNqeLuBPSexLOvAkvwANRLj2E5FDHZFf50p9ZEYnrqHbeU1q.k6eW5z6oC.1osuLLU
- eZMEQivgAMgBDmovxK6n__iYK_gTrHFC9XFBZCvE7rLz_uEkh2PEBnGpODOuVjKL7h5tqFmg3Ims
- En.j7nuZzWuhp.ZfX6n7rKGGcRjjsFMN.Qcf0z6u60t6VmArRP95OI8xjh3AcPGRKiJsXJ18QFYI
- VPGPUh_Zoz7CN.mVfi.N2Ypl1r944dD4HTJTQjglGohEOxPx29mK2gndUyoo0XNVzCrzyu.j9hDg
- 8vd3DRzie_Qgq
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: b3c06742-66d1-4933-9b7c-458d5954b9e7
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.ne1.yahoo.com with HTTP; Wed, 24 Jan 2024 22:31:16 +0000
-Received: by hermes--production-gq1-78d49cd6df-mnx8f (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 5c48bb728c9087adeaa06b5a440f689f;
-          Wed, 24 Jan 2024 22:31:12 +0000 (UTC)
-Message-ID: <53897379-0c7a-4da7-870c-1eb7e822a129@schaufler-ca.com>
-Date: Wed, 24 Jan 2024 14:31:10 -0800
+	s=arc-20240116; t=1706135573; c=relaxed/simple;
+	bh=htt4WYNlHFFscLRqL8HdJgCZGwjTOJEUdN3kt/lnatA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NqqJbhZONje1F3e1xm2ThcirqhdegP4iv8YB8u0Z9/o91AsO9BoZJ3Ns33MVcLY8tkd8Q3CX/DdPdlZMu2hoLZrCp4vUwK3q9wgax4DjljGJ0uLBH7TBkCwWd2HsoIf7acA9cWO2YlaLWxFSM9iE5d4UMyVJ5nXZDVJoIp/hX2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=hrYHPw7H; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+	s=s31663417; t=1706135556; x=1706740356; i=wahrenst@gmx.net;
+	bh=htt4WYNlHFFscLRqL8HdJgCZGwjTOJEUdN3kt/lnatA=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=hrYHPw7HCacNom8FrAhDFbtCnCsDaJxuRxlFsIVFYcOPN5fHSwNsjPnJcR1lP2t9
+	 JrudfQc50OZ+agzM5i4GEBqlcYzIWvtAFlLrAff5c5g+KLrskA6JVRS9joAIENUlm
+	 YT8KFQ/bPB96ygo4nqNSF1dtUtftt7rbd2oSsiqzZROJ4CWJHHR9kPubiLnqA6yuN
+	 OWCFQRMflthO4CFw24+E068fZbu7Ug50vLJXrVRIKJNTiCzisroY/Ay4FkNpmplXu
+	 5u9SEH8KFv8Bg8WfwsFuZ1SHTY8ctLTTIzFq6okGBDSmqGteLolL/gt1cqaatMW0X
+	 oWW5DyV/P14UvSlVeQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from stefanw-SCHENKER ([37.4.248.43]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MiaYJ-1qqOuZ1nzL-00fisF; Wed, 24
+ Jan 2024 23:32:36 +0100
+From: Stefan Wahren <wahrenst@gmx.net>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Lino Sanfilippo <LinoSanfilippo@gmx.de>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Stefan Wahren <wahrenst@gmx.net>
+Subject: [PATCH V3 00/14 next] qca_spi: collection of improvements
+Date: Wed, 24 Jan 2024 23:31:57 +0100
+Message-Id: <20240124223211.4687-1-wahrenst@gmx.net>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/5] Smack transmute fixes
-Content-Language: en-US
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>, paul@paul-moore.com,
- jmorris@namei.org, serge@hallyn.com
-Cc: linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
- Roberto Sassu <roberto.sassu@huawei.com>,
- Casey Schaufler <casey@schaufler-ca.com>
-References: <20231116090125.187209-1-roberto.sassu@huaweicloud.com>
-From: Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <20231116090125.187209-1-roberto.sassu@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.22046 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:7+qEVx8iZHWGykoVWNu7NTrHM2jUqSJIRUjXMbPGKOhrNbL1LP+
+ 7SDYlN/8uwqAQjZcFOw5+PUtcAmBuahP4WjQZAqaefOi0KlHDQLUIjlGPKMeANayhZlVYci
+ js2kUetaObH1o8xgadHSBSOFNVw4imSwxNspd+X1FxvXH7ly+9E6udKipEnb/WR3J1BcvsD
+ +FgTeNIAVMAXMb7dwmzng==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:HmqKFcYRM/g=;VeqC84B1C5viCmEyAYrdl43Iec/
+ 3GXpW3fW3EEIor4PGij8t3VcrakXhof2+j0lPqI6UbfKIqRRUeYQgOI/tmFkefoujCwMnyr8p
+ fWVUOotnPEiwdU1RFpoLyP1Spc+I2XTmQD03TuUIa0E/iRw0D8058qkxJNrjZgJa0OI0UGCkM
+ OY1Q0+92XffLTca7Y0yFh1od2wyxJHRx1BeY1X8dXjqL6J6ebLTDUlIKw7l90UicdJD0W6tz4
+ PYWVQ02qD77Kz0lW5ePKxzEmvJQeTmk8L5uxuP+6aNMcqQ8sd4G8mC6tPCQNlwvd4qYd5HIo7
+ KA91yklOSl9TJBAT/HFaye1TLMsmOWf1agj5MCWe3k6uft0hfUKr7c80Jtez7Nl9MghFeiY+h
+ Erzm+iAmUPrF4epa8f3lUHPMtb+HB9jeQ4NOGIRBld+Nj4UPX35ocyj/Qvr6z6FKJM8/Ngo5B
+ /95LoUPqw0Zczrjk9f6prSiRFufenkzQmJrVO8QiOAYqIZSSszMZIOPFgkrnYTkjAK4kpRrib
+ FfeFGn/VU0Hv1mHWInBp3r76PyvG/IqX7Wz+aUGTMX9Sb/i7gnDKENKzGu2Khc1x5HwTmWRSN
+ Z2fpi3wPsGQPXndkjMQaaQbO41eRa8o1x3WTLKUcf8sa8f2H+Do9lO8Wyh0vTcl0u3rmQ9DL6
+ /UBKhMiXHLZVz+g7UDvt+YU749LJrtHtauPoSh2pEoVuh55bpcTCnuXiGDggU0se5e2QXeIBv
+ qwMIIY6VbuUTo/Dj1FXImjyiKDfgD6Cwa2JW1v6vsO61GhZ1On2T8akMOSg/J80v5fDK5D0cc
+ k+gyzDybSu48HMjbJA4E+FWnrhuFNUiT6clvE61wDObdeEsFm7TUBAotMbxOQ0wTX4sONqbuR
+ L4EaPC9o13HKLPfx5rSvTE3q6qmg19mMDCkEHb6HSSxKjnur5P8UjfTc/3jlLertg9MEN6CJc
+ xFmpK63l0BOoxCSeG2IYctrV1y0=
 
-On 11/16/2023 1:01 AM, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->
-> The first two patches are obvious fixes, the first restricts setting the
-> SMACK64TRANSMUTE xattr only for directories, and the second makes it
-> possible to set SMACK64TRANSMUTE if the filesystem does not support xattrs
-> (e.g. ramfs).
->
-> The remaining fixes are optional, and only required if we want filesystems
-> without xattr support behave like those with xattr support. Since we have
-> the inode_setsecurity and inode_getsecurity hooks to make the first group
-> work, it seems useful to fix inode creation too (SELinux should be fine).
->
-> The third patch is merely a code move out of the 'if (xattr)' condition.
-> The fourth updates the security field of the in-memory inode directly in
-> smack_inode_init_security() and marks the inode as instantiated,
+This series contains a wild collection of improvements for the
+qca_spi driver. This is a follow-up series to the recent bugfixes [1].
 
-I have taken patches 1-4 in smack-next. I'm still waiting on a convincing
-approval for patch 5.
+Patch 1 & 2 in this series is the initially intended rework of
+netdev_open/close. Patch 3 & 9 are minor functional improvements and
+the rest is clean-up.
 
+Changes in V3:
+- rebase on net-next-20240124
+- improve commit message in Patch 8
+- add Reviewed-by's from Jacob Keller
+- add Patch 13 for mailmap as suggested by Jacob
+- add Patch 14 for MAINTAINERS entry
 
->  and the
-> fifth adds a security_inode_init_security() call in ramfs to initialize the
-> security field of the in-memory inodes (needed to test transmuting
-> directories).
->
-> Both the Smack (on xfs) and IMA test suite succeed with all patches
-> applied. Tests were not executed on v3 (trivial changes).
->
-> By executing the tests in a ramfs, the results are:
->
-> Without the patches:
-> 86 Passed, 9 Failed, 90% Success rate
->
-> With the patches:
-> 93 Passed, 2 Failed, 97% Success rate
->
-> The remaining two failures are:
-> 2151  ioctl(4, BTRFS_IOC_CLONE or FICLONE, 3) = -1 EOPNOTSUPP (Operation not supported)
-> 2152  lsetxattr("./targets/proc-attr-Snap", "security.SMACK64EXEC", "Pop", 3, 0) = -1 EOPNOTSUPP (Operation not supported)
->
-> The first one is likely due ramfs lack of support for ioctl() while the
-> second could be fixed by handling SMACK64EXEC in smack_inode_setsecurity().
->
-> The patch set applies on top of lsm/dev, commit e246777e2a03 ("MAINTAINERS:
-> update the LSM entry").
->
-> The ramfs patch potentially could be useful to correctly initialize the
-> label of new inodes in the initramfs, assuming that it will be fully
-> labeled with support for xattrs in the cpio image:
->
-> https://lore.kernel.org/linux-integrity/20190523121803.21638-1-roberto.sassu@huawei.com/
->
-> Ramfs inode labels will be set from xattrs with the inode_setsecurity hook.
->
-> Changelog
->
-> v2:
-> - Replace return with goto in the ramfs patch, for better maintainability
->   (suggested by Andrew Morton)
->
-> v1:
-> - Rebase on top of latest lsm/next
-> - Remove -EOPNOTSUPP check in patch 5 (cannot happen)
->
-> Roberto Sassu (5):
->   smack: Set SMACK64TRANSMUTE only for dirs in smack_inode_setxattr()
->   smack: Handle SMACK64TRANSMUTE in smack_inode_setsecurity()
->   smack: Always determine inode labels in smack_inode_init_security()
->   smack: Initialize the in-memory inode in smack_inode_init_security()
->   ramfs: Initialize security of in-memory inodes
->
->  fs/ramfs/inode.c           | 32 ++++++++++++-
->  security/smack/smack_lsm.c | 95 ++++++++++++++++++++++----------------
->  2 files changed, 86 insertions(+), 41 deletions(-)
->
+Changes in V2:
+- rebase on net-next-20231218
+- improve cover letter
+
+Stefan Wahren (14):
+  qca_spi: Improve SPI thread creation
+  qca_spi: Improve SPI IRQ handling
+  qca_spi: Avoid skb_copy_expand in TX path
+  qca_7k_common: Drop unnecessary function description
+  qca_7k_common: Drop unused len from qcafrm_handle
+  qca_spi: Add QCASPI prefix to ring defines
+  qca_spi: Introduce QCASPI_RX_MAX_FRAMES
+  qca_spi: Improve calculation of RX buffer size
+  qca_spi: Log expected signature in error case
+  qca_spi: Adjust log of SPI_REG_RDBUF_BYTE_AVA
+  qca_7k: Replace BSD boilerplate with SPDX
+  qca_7k: Replace old mail address
+  mailmap: add entry for Stefan Wahren
+  MAINTAINERS: add entry for qca7k driver(s)
+
+ .mailmap                                      |  1 +
+ MAINTAINERS                                   |  7 ++
+ drivers/net/ethernet/qualcomm/qca_7k.c        | 17 +---
+ drivers/net/ethernet/qualcomm/qca_7k.h        | 16 +---
+ drivers/net/ethernet/qualcomm/qca_7k_common.c | 17 +---
+ drivers/net/ethernet/qualcomm/qca_7k_common.h | 29 +------
+ drivers/net/ethernet/qualcomm/qca_debug.c     | 21 +----
+ drivers/net/ethernet/qualcomm/qca_debug.h     | 15 +---
+ drivers/net/ethernet/qualcomm/qca_spi.c       | 86 +++++++++----------
+ drivers/net/ethernet/qualcomm/qca_spi.h       | 22 ++---
+ drivers/net/ethernet/qualcomm/qca_uart.c      | 17 +---
+ 11 files changed, 65 insertions(+), 183 deletions(-)
+
+=2D-
+2.34.1
+
 
