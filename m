@@ -1,146 +1,145 @@
-Return-Path: <linux-kernel+bounces-36394-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36396-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FBBA83A000
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 04:17:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14F3D83A005
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 04:19:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B1332B28838
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:17:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C0F181F2BF89
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:19:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D5675C85;
-	Wed, 24 Jan 2024 03:16:56 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60215566E;
+	Wed, 24 Jan 2024 03:19:52 +0000 (UTC)
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05BC4524C;
-	Wed, 24 Jan 2024 03:16:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3E585C98
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 03:19:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706066215; cv=none; b=Tgx1HNhrTJ1nn3lhZP/9snjmDdzYd58CP8V0o9QnzHsJMOVkBpBfWNNCEQGOb42rJEy3GcxisBj6cZd7k/ElBb/48uvZg6UVBS+wnaNUNqf1Ydujg58RoSplud5jg1tj6brYlCJH8tYwRmgy9n7uVvJ1JLLVceMILIIWTn9Pxi4=
+	t=1706066391; cv=none; b=MTG/xk6nJ9TE/udQevzpuA/ThQxHwcpdd0agjUfviQeMdY2GQDuQClowevlAq/XDlQLK23Rf9vdIQwglRyQ4AsNSzO0khDfdGn0OdeU3aaTFdfZBRNXt+Yl0N76rqTAgXbN1NXmhB6Zbn7PQZWXxTW+cB5jq58mZq5puTAX8294=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706066215; c=relaxed/simple;
-	bh=KoKJOAfFqJj/64JXWg/TEVuQifWy5nCHkEHI2/1w9NQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mrBODRH5ss0nOjYj7OEMRgxtOpEmndiEKc5ymR9Rh3cByArfm++F+iQbXXWpzjswiVLnIr87nBBUY1nvZwXO3+kJ8CfoN/FNcpW5o03LidYtBuNA3UoX9KE0Xhb3SJ18FhzPseAItdBw3tUUdf3YJ2yQy6hgIDsYPJ3tDRoQaOw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TKTdX4GCyz4f3k6W;
-	Wed, 24 Jan 2024 11:16:48 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id E7D151A0272;
-	Wed, 24 Jan 2024 11:16:50 +0800 (CST)
-Received: from [10.174.179.247] (unknown [10.174.179.247])
-	by APP2 (Coremail) with SMTP id Syh0CgBXfA8ggbBlYOZHBw--.11031S3;
-	Wed, 24 Jan 2024 11:16:50 +0800 (CST)
-Message-ID: <425044a0-95ce-b2a3-e98d-527c31f0313a@huaweicloud.com>
-Date: Wed, 24 Jan 2024 11:16:48 +0800
+	s=arc-20240116; t=1706066391; c=relaxed/simple;
+	bh=HWEHevNF4RRS3BZnDbsEM9K5QcaLshRXcS3REW1M6vc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=uQw7tgTD7bMiWV3gzxuT1JFS8RN6ZHZhfoRKyAQzDa9m/9roJJ8Yac6Gtxo70wdU9kWI4HmhAWzQsMJwPDwwp2grvOFZVp+gLyHIFaVVT4veevUpMhuQbZ96hBn9RmQRdXqn/UzZZF99QRq4DETUsP1Ff5ENgN4PUf911pJDl3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; arc=none smtp.client-ip=115.124.30.118
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R731e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0W.EiNDX_1706066385;
+Received: from localhost(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0W.EiNDX_1706066385)
+          by smtp.aliyun-inc.com;
+          Wed, 24 Jan 2024 11:19:45 +0800
+From: Jingbo Xu <jefflexu@linux.alibaba.com>
+To: xiang@kernel.org,
+	chao@kernel.org,
+	linux-erofs@lists.ozlabs.org
+Cc: huyue2@coolpad.com,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] erofs: get rid of unneeded GFP_NOFS
+Date: Wed, 24 Jan 2024 11:19:45 +0800
+Message-Id: <20240124031945.130782-1-jefflexu@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH v2 3/3] md: sync blockdev before stopping raid or setting
- readonly
-To: Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>,
- linan666@huaweicloud.com
-Cc: song@kernel.org, shli@fb.com, neilb@suse.com, zlliu@suse.com,
- linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
- yukuai3@huawei.com, yi.zhang@huawei.com, houtao1@huawei.com,
- yangerkun@huawei.com
-References: <20240117093707.2767209-1-linan666@huaweicloud.com>
- <20240117093707.2767209-4-linan666@huaweicloud.com>
- <20240118090205.00000212@linux.intel.com>
-From: Li Nan <linan666@huaweicloud.com>
-In-Reply-To: <20240118090205.00000212@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgBXfA8ggbBlYOZHBw--.11031S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7uFyDCF4kAryDCrW7JFy5Jwb_yoW8AF45p3
-	y0yFs0gr1UJry3A3ZrW3W8Wa4rKF92yFZxKr13A3WUZryDCrnxXr9agw4YvFykK3sayw40
-	vw4UXa93Ga42ga7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBI14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-	F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-	4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v
-	4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x
-	0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
-	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcV
-	C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
-	04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aV
-	CY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbHa0DUUUUU==
-X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
 
+Clean up some leftovers since there is no way for EROFS to be called
+again from a reclaim context.
 
+Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
+---
+ fs/erofs/fscache.c | 2 +-
+ fs/erofs/inode.c   | 2 +-
+ fs/erofs/utils.c   | 2 +-
+ fs/erofs/zdata.c   | 8 ++++----
+ 4 files changed, 7 insertions(+), 7 deletions(-)
 
-在 2024/1/18 16:02, Mariusz Tkaczyk 写道:
-> On Wed, 17 Jan 2024 17:37:07 +0800
-> linan666@huaweicloud.com wrote:
-> 
->> From: Li Nan <linan122@huawei.com>
->>
->> Commit a05b7ea03d72 ("md: avoid crash when stopping md array races
->> with closing other open fds.") added sync_block before stopping raid and
->> setting readonly. Later in commit 260fa034ef7a ("md: avoid deadlock when
->> dirty buffers during md_stop.") it is moved to ioctl. array_state_store()
->> was ignored. Add sync blockdev to array_state_store() now.
->>
->> Signed-off-by: Li Nan <linan122@huawei.com>
-
-[...]
-
->> +
->> +	/* we will call set readonly or stop raid, sync blockdev */
->> +	if (st == clear || (mddev->pers && (st == readonly ||
->> +	    st == inactive || (st == read_auto && md_is_rdwr(mddev))))) {
->> +		err = mddev_sync_blockdev(mddev);
->> +		if (err)
->> +			return err;
->> +		clear_md_closing = true;
->> +	}
->> +
-> 
-> Please reorganize it a little for readability:
-> I think if no mddev->pers we don't need to consider sync_blockdev at all. If
-> personality is there we can probably check for read-write. If it is not
-> read-write then nothing to sync. What about that:
-> 
-> if (mddev->pers && md_is_rdwr(mddev) &&
->      (st == clear || st == readonly || st == inactive || st == read_auto))
-> 
-> Please note that I didn't test it so please let me know if you see issue in
-> proposed logic.
-> I think that we may be able to include it in "/* No lock dependent actions */"
-> switch. Please consider it too:
-> 
-
-Thanks for your review.
-It is a really good idea. I will test and improve it.
-
-> case clear:
-> case readonly:
-> case inactive:
-> case read_auto:
->      if(!mddev->pers || !md_is_rdwr(mddev))
->            break;
->      err = mddev_sync_blockdev(mddev);
->      if (err)
->          return err;
->      clear_md_closing = true;
->      
-
+diff --git a/fs/erofs/fscache.c b/fs/erofs/fscache.c
+index bc12030393b2..5ff90026fd43 100644
+--- a/fs/erofs/fscache.c
++++ b/fs/erofs/fscache.c
+@@ -459,7 +459,7 @@ static struct erofs_fscache *erofs_fscache_acquire_cookie(struct super_block *sb
+ 
+ 	inode->i_size = OFFSET_MAX;
+ 	inode->i_mapping->a_ops = &erofs_fscache_meta_aops;
+-	mapping_set_gfp_mask(inode->i_mapping, GFP_NOFS);
++	mapping_set_gfp_mask(inode->i_mapping, GFP_KERNEL);
+ 	inode->i_blkbits = EROFS_SB(sb)->blkszbits;
+ 	inode->i_private = ctx;
+ 
+diff --git a/fs/erofs/inode.c b/fs/erofs/inode.c
+index 3d616dea55dc..36e638e8b53a 100644
+--- a/fs/erofs/inode.c
++++ b/fs/erofs/inode.c
+@@ -60,7 +60,7 @@ static void *erofs_read_inode(struct erofs_buf *buf,
+ 		} else {
+ 			const unsigned int gotten = sb->s_blocksize - *ofs;
+ 
+-			copied = kmalloc(vi->inode_isize, GFP_NOFS);
++			copied = kmalloc(vi->inode_isize, GFP_KERNEL);
+ 			if (!copied) {
+ 				err = -ENOMEM;
+ 				goto err_out;
+diff --git a/fs/erofs/utils.c b/fs/erofs/utils.c
+index 5dea308764b4..e146d09151af 100644
+--- a/fs/erofs/utils.c
++++ b/fs/erofs/utils.c
+@@ -81,7 +81,7 @@ struct erofs_workgroup *erofs_insert_workgroup(struct super_block *sb,
+ repeat:
+ 	xa_lock(&sbi->managed_pslots);
+ 	pre = __xa_cmpxchg(&sbi->managed_pslots, grp->index,
+-			   NULL, grp, GFP_NOFS);
++			   NULL, grp, GFP_KERNEL);
+ 	if (pre) {
+ 		if (xa_is_err(pre)) {
+ 			pre = ERR_PTR(xa_err(pre));
+diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+index 692c0c39be63..583c062cd0e4 100644
+--- a/fs/erofs/zdata.c
++++ b/fs/erofs/zdata.c
+@@ -230,7 +230,7 @@ static int z_erofs_bvec_enqueue(struct z_erofs_bvec_iter *iter,
+ 		struct page *nextpage = *candidate_bvpage;
+ 
+ 		if (!nextpage) {
+-			nextpage = erofs_allocpage(pagepool, GFP_NOFS);
++			nextpage = erofs_allocpage(pagepool, GFP_KERNEL);
+ 			if (!nextpage)
+ 				return -ENOMEM;
+ 			set_page_private(nextpage, Z_EROFS_SHORTLIVED_PAGE);
+@@ -302,7 +302,7 @@ static struct z_erofs_pcluster *z_erofs_alloc_pcluster(unsigned int size)
+ 		if (nrpages > pcs->maxpages)
+ 			continue;
+ 
+-		pcl = kmem_cache_zalloc(pcs->slab, GFP_NOFS);
++		pcl = kmem_cache_zalloc(pcs->slab, GFP_KERNEL);
+ 		if (!pcl)
+ 			return ERR_PTR(-ENOMEM);
+ 		pcl->pclustersize = size;
+@@ -694,7 +694,7 @@ static void z_erofs_cache_invalidate_folio(struct folio *folio,
+ 	DBG_BUGON(stop > folio_size(folio) || stop < length);
+ 
+ 	if (offset == 0 && stop == folio_size(folio))
+-		while (!z_erofs_cache_release_folio(folio, GFP_NOFS))
++		while (!z_erofs_cache_release_folio(folio, 0))
+ 			cond_resched();
+ }
+ 
+@@ -713,7 +713,7 @@ int erofs_init_managed_cache(struct super_block *sb)
+ 	set_nlink(inode, 1);
+ 	inode->i_size = OFFSET_MAX;
+ 	inode->i_mapping->a_ops = &z_erofs_cache_aops;
+-	mapping_set_gfp_mask(inode->i_mapping, GFP_NOFS);
++	mapping_set_gfp_mask(inode->i_mapping, GFP_KERNEL);
+ 	EROFS_SB(sb)->managed_cache = inode;
+ 	return 0;
+ }
 -- 
-Thanks,
-Nan
+2.19.1.6.gb485710b
 
 
