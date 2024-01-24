@@ -1,94 +1,112 @@
-Return-Path: <linux-kernel+bounces-37313-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37314-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6ACBF83AE21
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:15:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD65383AE23
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:15:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10AE81F25032
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:15:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B7C21C24365
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:15:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0917D7E770;
-	Wed, 24 Jan 2024 16:13:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="eXRZqweJ"
-Received: from xry111.site (xry111.site [89.208.246.23])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36C757E565;
-	Wed, 24 Jan 2024 16:13:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8957D7CF1A;
+	Wed, 24 Jan 2024 16:14:49 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 344BF7CF03;
+	Wed, 24 Jan 2024 16:14:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706112836; cv=none; b=trZeDoHrRiYQb8SgnyBKfpkaplN07P4LbgWKaguvJJzGJTZ//xpYpXkpQOwq5cLyUfk+fheXEoNbeh2tK+tHxXXelr+fMoLcjEwvp1G6xw6e3Pt5Y3S5rCyEngF257AsJTUnL8kI5ODqs9QvDRbDwKyM76UV6K//rvx/Nw7iZcg=
+	t=1706112889; cv=none; b=D1upao8EZxYybuYv8tuv4fn8b/w6+LTz9+G6MCjulu2P198O0eJOVfEwQOEajafi8PlwbZDa/pCMOXljI+im5vXUdKq7vlf5YUfPBpV2U0brTMU1XGqesIoC/VET5oMD3FJU31scr0pMWG03vJwf5eaUUX0yjoH6XnQ+ImhgXhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706112836; c=relaxed/simple;
-	bh=+rReAANx2iYEhcc46qGz07QWQ4XTbUlAYD3+TJ2mY7I=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=IVFXbRtleJhKomIeOWJTex9wV43pOZDIlLGFmuLRleAo+g1SZYudNI9BNVvbmkf2COBRiCjJi53CyoNJ3VVUTE9XkurlrABSqG6Rd+KLHGbLMf7tEnNlMjUt60J4tM9E8MbNebbc+J+Y9fBZ5RKw826DO8yn3fJsFJdSunFN//E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=eXRZqweJ; arc=none smtp.client-ip=89.208.246.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-	s=default; t=1706112832;
-	bh=+rReAANx2iYEhcc46qGz07QWQ4XTbUlAYD3+TJ2mY7I=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=eXRZqweJVlbCHlhCnvRrFOaqMIpPKjUVh2KH5bg9tYap0qGulTtYm8qIWwYyUMtqp
-	 ud8fBhW0GjfjEEOSZJqcBnp6phDkyjdOpSuoSuGfzqos7hRJfDKV5N6cjKh5RJb6lP
-	 kw2N+86ipI39NvZw5Gu6T6BQy9XxIhjvSdPchoa8=
-Received: from [IPv6:240e:358:113a:a00:dc73:854d:832e:5] (unknown [IPv6:240e:358:113a:a00:dc73:854d:832e:5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id ED182669C3;
-	Wed, 24 Jan 2024 11:13:48 -0500 (EST)
-Message-ID: <0be1203c9df55432548c92281c8392dfa2f7d6bf.camel@xry111.site>
-Subject: Re: Strange EFAULT on mips64el returned by syscall when another
- thread is forking
-From: Xi Ruoyao <xry111@xry111.site>
-To: Andreas Schwab <schwab@suse.de>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, Jiaxun Yang
- <jiaxun.yang@flygoat.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-  libc-alpha@sourceware.org
-Date: Thu, 25 Jan 2024 00:13:43 +0800
-In-Reply-To: <9481b6d9d015aea25d8f2563bf7bd6f6462f758f.camel@xry111.site>
-References: <75e9fd7b08562ad9b456a5bdaacb7cc220311cc9.camel@xry111.site>
-	 <mvmplxraqmd.fsf@suse.de>
-	 <9481b6d9d015aea25d8f2563bf7bd6f6462f758f.camel@xry111.site>
-Autocrypt: addr=xry111@xry111.site; prefer-encrypt=mutual;
- keydata=mDMEYnkdPhYJKwYBBAHaRw8BAQdAsY+HvJs3EVKpwIu2gN89cQT/pnrbQtlvd6Yfq7egugi0HlhpIFJ1b3lhbyA8eHJ5MTExQHhyeTExMS5zaXRlPoiTBBMWCgA7FiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQrKrSDhnnEOPHFgD8D9vUToTd1MF5bng9uPJq5y3DfpcxDp+LD3joA3U2TmwA/jZtN9xLH7CGDHeClKZK/ZYELotWfJsqRcthOIGjsdAPuDgEYnkdPhIKKwYBBAGXVQEFAQEHQG+HnNiPZseiBkzYBHwq/nN638o0NPwgYwH70wlKMZhRAwEIB4h4BBgWCgAgFiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwwACgkQrKrSDhnnEOPjXgD/euD64cxwqDIqckUaisT3VCst11RcnO5iRHm6meNIwj0BALLmWplyi7beKrOlqKfuZtCLbiAPywGfCNg8LOTt4iMD
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1706112889; c=relaxed/simple;
+	bh=q1Hn7Di1un3vGjw/pWuBZtI2ypUfglqG7TORIqEdXJc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=o0MLAzho3nc2mj9tUvhYWFx3mGPPv8JBOKPu2eE/SqV3Trt02/sA/Hmk8r5uifs1kRCRIrx7XOW5pDl5FXhFzc+5ZbADy4r9bd59/LGUXT9WEAZfb3MeipaL+f6TdcxAlV6o6Vo8uLSNOHFANmcuArcfVFHJZT8NCzg1tghu3GU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9D5001FB;
+	Wed, 24 Jan 2024 08:15:31 -0800 (PST)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DB4743F762;
+	Wed, 24 Jan 2024 08:14:45 -0800 (PST)
+Message-ID: <83a89509-42cb-4915-94dc-a2b9d5a63311@arm.com>
+Date: Wed, 24 Jan 2024 16:14:37 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: ASMedia ASM1062 (AHCI) hang after "ahci 0000:28:00.0: Using
+ 64-bit DMA addresses"
+Content-Language: en-GB
+To: Lennert Buytenhek <kernel@wantstofly.org>, Niklas Cassel <nks@flawful.org>
+Cc: Niklas Cassel <cassel@kernel.org>, Damien Le Moal <dlemoal@kernel.org>,
+ linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <ZaZ2PIpEId-rl6jv@wantstofly.org> <ZaaQpiW3OOZTSyXw@x1-carbon>
+ <ZahDNr97MSPNSHW_@wantstofly.org> <ZahaKaV1jlHQ0sUx@x1-carbon>
+ <ZbAo_LqpbiGMfTtW@wantstofly.org> <ZbDjL0TDnUfzknZS@x1-carbon>
+ <ZbEFU-rycTXxOtfW@wantstofly.org> <ZbEXcFJkw4zXKxqb@wantstofly.org>
+From: Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <ZbEXcFJkw4zXKxqb@wantstofly.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, 2024-01-24 at 20:49 +0800, Xi Ruoyao wrote:
-> On Wed, 2024-01-24 at 12:59 +0100, Andreas Schwab wrote:
-> > On Jan 24 2024, Xi Ruoyao wrote:
-> >=20
-> > > Now I'm suspecting this might be a kernel bug.=C2=A0 Any pointer to f=
-urther
-> > > triage?
-> >=20
-> > Is this a regression?
->=20
-> Initially I guessed it was perhaps a Glibc regression related to the
-> newly introduced clone3 usage on MIPS, but it fails with Glibc-2.35 too.
->=20
-> Not sure if this is a kernel regression, I'll try different kernels in
-> several hours (once I can physically access the system).
+On 24/01/2024 1:58 pm, Lennert Buytenhek wrote:
+> On Wed, Jan 24, 2024 at 02:40:51PM +0200, Lennert Buytenhek wrote:
+> 
+>>>> There are two ways to handle this -- either set the DMA mask for ASM106x
+>>>> parts to 43 bits, or take the lazy route and just use AHCI_HFLAG_32BIT_ONLY
+>>>> for these parts.  I feel that the former would be more appropriate, as
+>>>> there seem to be plenty of bits beyond bit 31 that do work, but I will
+>>>> defer to your judgement on this matter.  What do you think the right way
+>>>> to handle this apparent hardware quirk is?
+>>>
+>>> I've seen something similar for NVMe, where some NVMe controllers from
+>>> Amazon was violating the spec, and only supported 48-bit DMA addresses,
+>>> even though NVMe spec requires you to support 64-bit DMA addresses, see:
+>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=4bdf260362b3be529d170b04662638fd6dc52241
+>>>
+>>> It is possible that ASMedia ASM1061 has a similar problem (but for AHCI)
+>>> and only supports 43-bit DMA addresses, even though it sets AHCI CAP.S64A,
+>>> which says "Indicates whether the HBA can access 64-bit data structures.".
+>>>
+>>> I think the best thing is to do a similar quirk, where we set the dma_mask
+>>> accordingly.
+>>
+>> I'll give that a try.
+> 
+> I've sent out a patch that appears (from printk debugging) to do the
+> right thing, but I haven't validated that that patch fixes the original
+> issue, as the original issue is not trivial to trigger, and the hardware
+> that it triggered on is currently unavailable.
 
-Not happening with kernel 5.18.1.  I can do a bisection but it will take
-several days, I guess.
+The missing piece of the puzzle is that *something* has to use up all 
+the available 32-bit IOVA space to make you spill over into the 64-bit 
+space to begin with. It can happen just from having many large buffers 
+mapped simultaneously (particularly if there are several devices in the 
+same IOMMU group), or it could be that something is leaking DMA mappings 
+over time.
 
---=20
-Xi Ruoyao <xry111@xry111.site>
-School of Aerospace Science and Technology, Xidian University
+An easy way to confirm the device behaviour should be to boot with 
+"iommu.forcedac=1", then all devices will have their full DMA mask 
+exercised straight away.
+
+Cheers,
+Robin.
+
+> I've also made the quirk apply to all ASMedia ASM106x parts, because I
+> expect them to be affected by the same issue, but let's see what the
+> ASMedia folks have to say about that.
+> 
+> Thanks for your help!
+> 
+> 
+> Kind regards,
+> Lennert
+> 
 
