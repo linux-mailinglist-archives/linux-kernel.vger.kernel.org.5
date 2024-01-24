@@ -1,283 +1,267 @@
-Return-Path: <linux-kernel+bounces-36766-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36762-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3504383A63F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:02:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E44D483A62D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:00:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5AEB31C22ED4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:02:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 935D9284990
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:00:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4B63182BE;
-	Wed, 24 Jan 2024 10:01:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1570A182AB;
+	Wed, 24 Jan 2024 10:00:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="BWaI1bIH"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Z3IgeYbF"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A1C318C05;
-	Wed, 24 Jan 2024 10:01:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69A5F182BE
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:00:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706090485; cv=none; b=AKkWim2RZSisJ8UeDT2e9QnzbPx4mha3EH+qNYy5gnwnCz+Shelmd/mBt0/4t/DIGOKHJG9EGGcLnZli6Jo+RBhVDhF7eoCZKQuS8NTxRmI9yqE613GMQlHsAhEBQxNGQtKTM2lvB+ZVDfU6iKrZ8K35cwlBIszqsEx6/x0QRMA=
+	t=1706090429; cv=none; b=qxDCKjnLqd4O0u6GrLFyiXUv00DawVBQq3lSYfGeSBLCfPzcf04REJFRiuutT8JOlMVvhRYrQenZGug2R1kxWeg0Xm1Pd34jfUnJVrb4sW33PYCU3GHCYK5h9zda0JBJQK7KOjgvMfEjsjymEaMiZVB8rX4s22XFjoAV9icohvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706090485; c=relaxed/simple;
-	bh=0PDa4gBIohaxUIBgGmK/dEAi8w116bN/ZSNOiiGYcDk=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=f4eiWP+kEc7q0N1m/TxrH8/inDFdRWDEp/gg2h/m5oi6OCLStK0XXCyDHT7/K4wBtj07GRmOwuxA5Z9/gB/eROS7/bh6R78/8uRB+134wrA51VHerDf+jOKrTuaHGYDVrGTd4AUlpYz1wtsQUjag+yXCDoqFkEUMRWQ5slQVfMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=BWaI1bIH; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1706090484; x=1737626484;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=0PDa4gBIohaxUIBgGmK/dEAi8w116bN/ZSNOiiGYcDk=;
-  b=BWaI1bIHAAGltIBpnal/DXHbFjCPeefR95ZFoHP2kzNdIELuUV4ve0p6
-   vsjxy8OmZxxmzAI/nmTGM4u7HIyZBQOhhqtSppWXKG79DawrCeZ0cH2p7
-   MBEGa8D/WpOTAgwG0BELzqHSUBVC/VLxcWxK0N8BSNew2IBk54qkb121I
-   fwTzYS+SEKxcx+NDCr3+2IqW4C6+FzFN9L8jt26gkNAPmC2imB/eZV1NW
-   JsHRHbZUOAYBNnJmgHCs87TrvTc2+Avq4KsSinB+QvRQiMogcb0QMMKUH
-   zyl9xGGacrUVjBomwqjdY/UdWYKrAqJTCXxqgGRIGi54xk4g9Tpi/JAlk
-   w==;
-X-CSE-ConnectionGUID: FmI4LJdeRpqsQ+/EnHVlYQ==
-X-CSE-MsgGUID: 0Tbov+NoTz23oqkwGn6WkA==
-X-IronPort-AV: E=Sophos;i="6.05,216,1701154800"; 
-   d="scan'208";a="15213714"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 24 Jan 2024 03:01:23 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 24 Jan 2024 03:00:55 -0700
-Received: from che-lt-i70843lx.microchip.com (10.10.85.11) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Wed, 24 Jan 2024 03:00:48 -0700
-From: Dharma Balasubiramani <dharma.b@microchip.com>
-To: <sam@ravnborg.org>, <bbrezillon@kernel.org>,
-	<maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
-	<tzimmermann@suse.de>, <airlied@gmail.com>, <daniel@ffwll.ch>,
-	<robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-	<conor+dt@kernel.org>, <nicolas.ferre@microchip.com>,
-	<alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
-	<dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<lee@kernel.org>, <thierry.reding@gmail.com>,
-	<u.kleine-koenig@pengutronix.de>, <linux-pwm@vger.kernel.org>
-CC: Dharma Balasubiramani <dharma.b@microchip.com>
-Subject: [PATCH v4 3/3] dt-bindings: mfd: atmel,hlcdc: Convert to DT schema format
-Date: Wed, 24 Jan 2024 15:30:19 +0530
-Message-ID: <20240124100019.290120-4-dharma.b@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240124100019.290120-1-dharma.b@microchip.com>
-References: <20240124100019.290120-1-dharma.b@microchip.com>
+	s=arc-20240116; t=1706090429; c=relaxed/simple;
+	bh=891w0zQHfb16Qwem9jKX/4xM+JuEJjYspwRsDJ/qiT8=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=gu8zJQObYFxBXbypDZqWJ1A5lhQnBF0xd+whXge8MNd15V8H6BF2bXfDbrghfiipw1ohseIecm5J4pTxQ/gbxzluFK7hQidOxJQImuTZlmGEx/VU3Jm+YTMJqd9zZq6dJb+PC+wwU3uKbNUkxPth7vVCiUTY+egrajby/ri5C5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Z3IgeYbF; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc26605c273so8448370276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 02:00:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706090425; x=1706695225; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=FKHi8mwFd4NN6LHc1BfTFS1XT0Ge9Y10ExrRil/WNW0=;
+        b=Z3IgeYbFvC3Jyo0M4FY54tru5li1uTx4xRy9y4iy1Z75U+tPN0U8q0yxOSh6J2Nc30
+         CwuSAr3yjw4iepnu7UnbhBRNf8PpxOhZurb8m5AObt1CqgK5TKhOJ/gKWCOAnhKVlX2z
+         Mr8nCPm3/XqIEsdarRPqvfSD2ZNdOMNT91k/xbMRAbkct3jb3bF0J8z/W4afXZ7k5JQi
+         O5jJrh6q21lLFpHlMpSRJs8en09zr/J6yc4AusHRsJnHv9EmQFHzrWXgZLl3bK0cRkN+
+         Tfr8huaQWeJq3U/lwR9czJXbLRRg31CVc64hFwQs10FfkUNWLSKeXvedC/mkUdV7Ibjc
+         OmKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706090425; x=1706695225;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FKHi8mwFd4NN6LHc1BfTFS1XT0Ge9Y10ExrRil/WNW0=;
+        b=U3k/+1AhFytcoUXtIE1Gn80MJ4og3HrNLuHDD12keXc7Sw+V7LhPIEwmHSftM2Nfyd
+         Ky9Ib1g/JMvxkbfooFFx67bayPEPF3Hdms8M+lSSR/gt1qduuZnuaoKjwapMsup+PT2j
+         5iamxyGBMTDVGvgzi9Y7NlHdZ/eI3/QCjU70JHGHtvYl6THEwHAe51A/2O+OEx5S37vb
+         224FmGP19ueXSghicNP9ZYgToDmX9oPnOcytUfYeehCfWJPCos+8cVf4X9dCBt958sa7
+         2Rx4G/HmfEbsb/WYM9ZSnOCeVZQmNWVRDgQL3O5B2lK454OD96yiIJePHtkduZtc7IQ7
+         ZjmQ==
+X-Gm-Message-State: AOJu0YzpetZtH9F9/ho/wi/qPs8yySYhyhi5fEOTThXigTsj7eiw0nmM
+	Y5ASzN3mDbejT8XYFIVK8CV0Dew52CxMKAPq5Jyu4Wx/Q6jYW26I74cSJo2fY783fHixAs3Cqna
+	NpHshY93XD5SyZcMn+A==
+X-Google-Smtp-Source: AGHT+IH+naeLZo53W3VMEsSmdD2T5eoHGPmFtrvozwAy527oihSlzU23jzmkJorcxjJPT4nBLW9hb0QygfTJ6Sl9
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a05:6902:2412:b0:dc2:4cf5:9ed0 with
+ SMTP id dr18-20020a056902241200b00dc24cf59ed0mr272945ybb.5.1706090425470;
+ Wed, 24 Jan 2024 02:00:25 -0800 (PST)
+Date: Wed, 24 Jan 2024 10:00:22 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+Message-ID: <20240124100023.660032-1-yosryahmed@google.com>
+Subject: [PATCH] mm: memcg: optimize parent iteration in memcg_rstat_updated()
+From: Yosry Ahmed <yosryahmed@google.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, 
+	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>, 
+	kernel test robot <oliver.sang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Convert the atmel,hlcdc binding to DT schema format.
+In memcg_rstat_updated(), we iterate the memcg being updated and its
+parents to update memcg->vmstats_percpu->stats_updates in the fast path
+(i.e. no atomic updates). According to my math, this is 3 memory loads
+(and potentially 3 cache misses) per memcg:
+- Load the address of memcg->vmstats_percpu.
+- Load vmstats_percpu->stats_updates (based on some percpu calculation).
+- Load the address of the parent memcg.
 
-Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
+Avoid most of the cache misses by caching a pointer from each struct
+memcg_vmstats_percpu to its parent on the corresponding CPU. In this
+case, for the first memcg we have 2 memory loads (same as above):
+- Load the address of memcg->vmstats_percpu.
+- Load vmstats_percpu->stats_updates (based on some percpu calculation).
+
+Then for each additional memcg, we need a single load to get the
+parent's stats_updates directly. This reduces the number of loads from
+O(3N) to O(2+N) -- where N is the number of memcgs we need to iterate.
+
+Additionally, stash a pointer to memcg->vmstats in each struct
+memcg_vmstats_percpu such that we can access the atomic counter that all
+CPUs fold into, memcg->vmstats->stats_updates.
+memcg_should_flush_stats() is changed to memcg_vmstats_needs_flush() to
+accept a struct memcg_vmstats pointer accordingly.
+
+In struct memcg_vmstats_percpu, make sure both pointers together with
+stats_updates live on the same cacheline. Finally, update
+mem_cgroup_alloc() to take in a parent pointer and initialize the new
+cache pointers on each CPU. The percpu loop in mem_cgroup_alloc() may
+look concerning, but there are multiple similar loops in the cgroup
+creation path (e.g. cgroup_rstat_init()), most of which are hidden
+within alloc_percpu().
+
+According to Oliver's testing [1], this fixes multiple 30-38%
+regressions in vm-scalability, will-it-scale-tlb_flush2, and
+will-it-scale-fallocate1. This comes at a cost of 2 more pointers per
+CPU (<2KB on a machine with 128 CPUs).
+
+[1] https://lore.kernel.org/lkml/ZbDJsfsZt2ITyo61@xsang-OptiPlex-9020/
+
+Fixes: 8d59d2214c23 ("mm: memcg: make stats flushing threshold per-memcg")
+Tested-by: kernel test robot <oliver.sang@intel.com>
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Closes: https://lore.kernel.org/oe-lkp/202401221624.cb53a8ca-oliver.sang@intel.com
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 ---
-changelog
-v3 -> v4
-- Drop lvds_pll_clk, It can be enabled in lvds driver itself.
-- Update commit message.
-Note: Since there is no complexities now, I believe that specifying
-maxitems in the clocks property should be sufficient.
-v2 -> v3
-- Rename hlcdc-display-controller and hlcdc-pwm to generic names.
-- Modify the description by removing the unwanted comments and '|'.
-- Modify clock-names simpler.
-v1 -> v2
-- Remove the explicit copyrights.
-- Modify title (not include words like binding/driver).
-- Modify description actually describing the hardware and not the driver.
-- Add details of lvds_pll addition in commit message.
-- Ref endpoint and not endpoint-base.
-- Fix coding style.
-..
- .../devicetree/bindings/mfd/atmel,hlcdc.yaml  | 97 +++++++++++++++++++
- .../devicetree/bindings/mfd/atmel-hlcdc.txt   | 56 -----------
- 2 files changed, 97 insertions(+), 56 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mfd/atmel,hlcdc.yaml
- delete mode 100644 Documentation/devicetree/bindings/mfd/atmel-hlcdc.txt
 
-diff --git a/Documentation/devicetree/bindings/mfd/atmel,hlcdc.yaml b/Documentation/devicetree/bindings/mfd/atmel,hlcdc.yaml
-new file mode 100644
-index 000000000000..3062298bd756
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mfd/atmel,hlcdc.yaml
-@@ -0,0 +1,97 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mfd/atmel,hlcdc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+The only noticeable change I made after Oliver's testing is adding the
+cacheline padding in struct memcg_vmstats_percpu. In my config, the
+added pointers happen to be on the same cacheline as stats_updates, and
+I assume with Oliver's testing given the results. However, this can
+change on different configs and as new stats are added, so I added the
+cacheline padding to make sure they are always on the same cachline.
+
+---
+ mm/memcontrol.c | 49 ++++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 32 insertions(+), 17 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index e4c8735e7c85c..868da91cceb48 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -633,8 +633,15 @@ struct memcg_vmstats_percpu {
+ 	unsigned long		nr_page_events;
+ 	unsigned long		targets[MEM_CGROUP_NTARGETS];
+ 
++	/* Fit members below in a single cacheline for memcg_rstat_updated() */
++	CACHELINE_PADDING(_pad1_);
 +
-+title: Atmel's HLCD Controller
+ 	/* Stats updates since the last flush */
+ 	unsigned int		stats_updates;
 +
-+maintainers:
-+  - Nicolas Ferre <nicolas.ferre@microchip.com>
-+  - Alexandre Belloni <alexandre.belloni@bootlin.com>
-+  - Claudiu Beznea <claudiu.beznea@tuxon.dev>
-+
-+description:
-+  The Atmel HLCDC (HLCD Controller) IP available on Atmel SoCs exposes two
-+  subdevices, a PWM chip and a Display Controller.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - atmel,at91sam9n12-hlcdc
-+      - atmel,at91sam9x5-hlcdc
-+      - atmel,sama5d2-hlcdc
-+      - atmel,sama5d3-hlcdc
-+      - atmel,sama5d4-hlcdc
-+      - microchip,sam9x60-hlcdc
-+      - microchip,sam9x75-xlcdc
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 3
-+
-+  clock-names:
-+    items:
-+      - const: periph_clk
-+      - const: sys_clk
-+      - const: slow_clk
-+
-+  display-controller:
-+    $ref: /schemas/display/atmel/atmel,hlcdc-display-controller.yaml
-+
-+  pwm:
-+    $ref: /schemas/pwm/atmel,hlcdc-pwm.yaml
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - interrupts
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/at91.h>
-+    #include <dt-bindings/dma/at91.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    lcd_controller: lcd-controller@f0030000 {
-+      compatible = "atmel,sama5d3-hlcdc";
-+      reg = <0xf0030000 0x2000>;
-+      clocks = <&lcdc_clk>, <&lcdck>, <&clk32k>;
-+      clock-names = "periph_clk", "sys_clk", "slow_clk";
-+      interrupts = <36 IRQ_TYPE_LEVEL_HIGH 0>;
-+
-+      display-controller {
-+        compatible = "atmel,hlcdc-display-controller";
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&pinctrl_lcd_base &pinctrl_lcd_rgb888>;
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        port@0 {
-+          #address-cells = <1>;
-+          #size-cells = <0>;
-+          reg = <0>;
-+
-+          hlcdc_panel_output: endpoint@0 {
-+            reg = <0>;
-+            remote-endpoint = <&panel_input>;
-+          };
-+        };
-+      };
-+
-+      pwm {
-+        compatible = "atmel,hlcdc-pwm";
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&pinctrl_lcd_pwm>;
-+        #pwm-cells = <3>;
-+      };
-+    };
-diff --git a/Documentation/devicetree/bindings/mfd/atmel-hlcdc.txt b/Documentation/devicetree/bindings/mfd/atmel-hlcdc.txt
-deleted file mode 100644
-index 7de696eefaed..000000000000
---- a/Documentation/devicetree/bindings/mfd/atmel-hlcdc.txt
-+++ /dev/null
-@@ -1,56 +0,0 @@
--Device-Tree bindings for Atmel's HLCDC (High LCD Controller) MFD driver
++	/* Cached pointers for fast iteration in memcg_rstat_updated() */
++	struct memcg_vmstats_percpu	*parent;
++	struct memcg_vmstats		*vmstats;
+ };
+ 
+ struct memcg_vmstats {
+@@ -698,36 +705,35 @@ static void memcg_stats_unlock(void)
+ }
+ 
+ 
+-static bool memcg_should_flush_stats(struct mem_cgroup *memcg)
++static bool memcg_vmstats_needs_flush(struct memcg_vmstats *vmstats)
+ {
+-	return atomic64_read(&memcg->vmstats->stats_updates) >
++	return atomic64_read(&vmstats->stats_updates) >
+ 		MEMCG_CHARGE_BATCH * num_online_cpus();
+ }
+ 
+ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
+ {
++	struct memcg_vmstats_percpu *statc;
+ 	int cpu = smp_processor_id();
+-	unsigned int x;
+ 
+ 	if (!val)
+ 		return;
+ 
+ 	cgroup_rstat_updated(memcg->css.cgroup, cpu);
 -
--Required properties:
-- - compatible: value should be one of the following:
--   "atmel,at91sam9n12-hlcdc"
--   "atmel,at91sam9x5-hlcdc"
--   "atmel,sama5d2-hlcdc"
--   "atmel,sama5d3-hlcdc"
--   "atmel,sama5d4-hlcdc"
--   "microchip,sam9x60-hlcdc"
--   "microchip,sam9x75-xlcdc"
-- - reg: base address and size of the HLCDC device registers.
-- - clock-names: the name of the 3 clocks requested by the HLCDC device.
--   Should contain "periph_clk", "sys_clk" and "slow_clk".
-- - clocks: should contain the 3 clocks requested by the HLCDC device.
-- - interrupts: should contain the description of the HLCDC interrupt line
+-	for (; memcg; memcg = parent_mem_cgroup(memcg)) {
+-		x = __this_cpu_add_return(memcg->vmstats_percpu->stats_updates,
+-					  abs(val));
 -
--The HLCDC IP exposes two subdevices:
-- - a PWM chip: see ../pwm/atmel-hlcdc-pwm.txt
-- - a Display Controller: see ../display/atmel/hlcdc-dc.txt
--
--Example:
--
--	hlcdc: hlcdc@f0030000 {
--		compatible = "atmel,sama5d3-hlcdc";
--		reg = <0xf0030000 0x2000>;
--		clocks = <&lcdc_clk>, <&lcdck>, <&clk32k>;
--		clock-names = "periph_clk","sys_clk", "slow_clk";
--		interrupts = <36 IRQ_TYPE_LEVEL_HIGH 0>;
--
--		hlcdc-display-controller {
--			compatible = "atmel,hlcdc-display-controller";
--			pinctrl-names = "default";
--			pinctrl-0 = <&pinctrl_lcd_base &pinctrl_lcd_rgb888>;
--			#address-cells = <1>;
--			#size-cells = <0>;
--
--			port@0 {
--				#address-cells = <1>;
--				#size-cells = <0>;
--				reg = <0>;
--
--				hlcdc_panel_output: endpoint@0 {
--					reg = <0>;
--					remote-endpoint = <&panel_input>;
--				};
--			};
--		};
--
--		hlcdc_pwm: hlcdc-pwm {
--			compatible = "atmel,hlcdc-pwm";
--			pinctrl-names = "default";
--			pinctrl-0 = <&pinctrl_lcd_pwm>;
--			#pwm-cells = <3>;
--		};
--	};
+-		if (x < MEMCG_CHARGE_BATCH)
++	statc = this_cpu_ptr(memcg->vmstats_percpu);
++	for (; statc; statc = statc->parent) {
++		statc->stats_updates += abs(val);
++		if (statc->stats_updates < MEMCG_CHARGE_BATCH)
+ 			continue;
+ 
+ 		/*
+ 		 * If @memcg is already flush-able, increasing stats_updates is
+ 		 * redundant. Avoid the overhead of the atomic update.
+ 		 */
+-		if (!memcg_should_flush_stats(memcg))
+-			atomic64_add(x, &memcg->vmstats->stats_updates);
+-		__this_cpu_write(memcg->vmstats_percpu->stats_updates, 0);
++		if (!memcg_vmstats_needs_flush(statc->vmstats))
++			atomic64_add(statc->stats_updates,
++				     &statc->vmstats->stats_updates);
++		statc->stats_updates = 0;
+ 	}
+ }
+ 
+@@ -756,7 +762,7 @@ void mem_cgroup_flush_stats(struct mem_cgroup *memcg)
+ 	if (!memcg)
+ 		memcg = root_mem_cgroup;
+ 
+-	if (memcg_should_flush_stats(memcg))
++	if (memcg_vmstats_needs_flush(memcg->vmstats))
+ 		do_flush_stats(memcg);
+ }
+ 
+@@ -770,7 +776,7 @@ void mem_cgroup_flush_stats_ratelimited(struct mem_cgroup *memcg)
+ static void flush_memcg_stats_dwork(struct work_struct *w)
+ {
+ 	/*
+-	 * Deliberately ignore memcg_should_flush_stats() here so that flushing
++	 * Deliberately ignore memcg_vmstats_needs_flush() here so that flushing
+ 	 * in latency-sensitive paths is as cheap as possible.
+ 	 */
+ 	do_flush_stats(root_mem_cgroup);
+@@ -5456,10 +5462,11 @@ static void mem_cgroup_free(struct mem_cgroup *memcg)
+ 	__mem_cgroup_free(memcg);
+ }
+ 
+-static struct mem_cgroup *mem_cgroup_alloc(void)
++static struct mem_cgroup *mem_cgroup_alloc(struct mem_cgroup *parent)
+ {
++	struct memcg_vmstats_percpu *statc, *pstatc;
+ 	struct mem_cgroup *memcg;
+-	int node;
++	int node, cpu;
+ 	int __maybe_unused i;
+ 	long error = -ENOMEM;
+ 
+@@ -5483,6 +5490,14 @@ static struct mem_cgroup *mem_cgroup_alloc(void)
+ 	if (!memcg->vmstats_percpu)
+ 		goto fail;
+ 
++	for_each_possible_cpu(cpu) {
++		if (parent)
++			pstatc = per_cpu_ptr(parent->vmstats_percpu, cpu);
++		statc = per_cpu_ptr(memcg->vmstats_percpu, cpu);
++		statc->parent = parent ? pstatc : NULL;
++		statc->vmstats = memcg->vmstats;
++	}
++
+ 	for_each_node(node)
+ 		if (alloc_mem_cgroup_per_node_info(memcg, node))
+ 			goto fail;
+@@ -5528,7 +5543,7 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
+ 	struct mem_cgroup *memcg, *old_memcg;
+ 
+ 	old_memcg = set_active_memcg(parent);
+-	memcg = mem_cgroup_alloc();
++	memcg = mem_cgroup_alloc(parent);
+ 	set_active_memcg(old_memcg);
+ 	if (IS_ERR(memcg))
+ 		return ERR_CAST(memcg);
 -- 
-2.25.1
+2.43.0.429.g432eaa2c6b-goog
 
 
