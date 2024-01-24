@@ -1,145 +1,144 @@
-Return-Path: <linux-kernel+bounces-36396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14F3D83A005
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 04:19:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAC6983A007
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 04:21:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C0F181F2BF89
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:19:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A30E1C23D7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:21:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60215566E;
-	Wed, 24 Jan 2024 03:19:52 +0000 (UTC)
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F34F95392;
+	Wed, 24 Jan 2024 03:20:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Zc2Jy78C"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3E585C98
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 03:19:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A33325C85
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 03:20:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706066391; cv=none; b=MTG/xk6nJ9TE/udQevzpuA/ThQxHwcpdd0agjUfviQeMdY2GQDuQClowevlAq/XDlQLK23Rf9vdIQwglRyQ4AsNSzO0khDfdGn0OdeU3aaTFdfZBRNXt+Yl0N76rqTAgXbN1NXmhB6Zbn7PQZWXxTW+cB5jq58mZq5puTAX8294=
+	t=1706066458; cv=none; b=Cw8lA2+YfAsO8HpfnvCq+cWpSF4qd0qhUoEAuYvbfkse455DrXHj7KAJm368SRoa7gFAxwOWsj6ZVwerGK7l6yUxF5n19SkkKIKYYyjP+EQmnaau6F8JfAOwNbdK69kDFwOFr/Zdw5jjGxd64RIGY3ukL3HjpLUXAOkDZyxto6k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706066391; c=relaxed/simple;
-	bh=HWEHevNF4RRS3BZnDbsEM9K5QcaLshRXcS3REW1M6vc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=uQw7tgTD7bMiWV3gzxuT1JFS8RN6ZHZhfoRKyAQzDa9m/9roJJ8Yac6Gtxo70wdU9kWI4HmhAWzQsMJwPDwwp2grvOFZVp+gLyHIFaVVT4veevUpMhuQbZ96hBn9RmQRdXqn/UzZZF99QRq4DETUsP1Ff5ENgN4PUf911pJDl3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; arc=none smtp.client-ip=115.124.30.118
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R731e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0W.EiNDX_1706066385;
-Received: from localhost(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0W.EiNDX_1706066385)
-          by smtp.aliyun-inc.com;
-          Wed, 24 Jan 2024 11:19:45 +0800
-From: Jingbo Xu <jefflexu@linux.alibaba.com>
-To: xiang@kernel.org,
-	chao@kernel.org,
-	linux-erofs@lists.ozlabs.org
-Cc: huyue2@coolpad.com,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] erofs: get rid of unneeded GFP_NOFS
-Date: Wed, 24 Jan 2024 11:19:45 +0800
-Message-Id: <20240124031945.130782-1-jefflexu@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
+	s=arc-20240116; t=1706066458; c=relaxed/simple;
+	bh=agwPmDihLYdvwGlc0JnDhON85wkS8jgIYwKErH9Z/K8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hDHKRoKbcWVLgEm660yhvug44ZlljWBUYQiD+5HKUqOFJaABpvtjUznvH2x8Wh76mQLusf3N34iApLzDesfNmHalkuMNLefwr4j6LCh4J4JSNvBTufkkUsh4tZvgxru7wLiKoaEYzUOX6bmFlPMOkmb1O0em4ZWd2YtXt0/0ZRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Zc2Jy78C; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-337d05b8942so5726364f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 19:20:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706066455; x=1706671255; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=KAePt3EbboVv3TxbwUCofAP8uUAMMkWJoXv+3X6ccPI=;
+        b=Zc2Jy78CmFWDyplXwjE9OTxXZayfJSXj3ziERUK/5Ynrsr/crhWaNw+8DQ0g6OCzfy
+         TKPmV/12vdstSItx8sNGQ8yPW+/0wd+lVcD5e7OqdLVKXEC3jBP3Dp5Y22Qv2ecoXn/Q
+         8QqPvzpE2FXvHiRrj4jsMWa6j3aTI4wtmxS5GckmAwe2F2V/eoWTginhbzHKqhD+ypfj
+         tApBjORg6YhdlxCE0l7JTCe/Uhe1lF4xbHmGaPssmqF2uOkWXoO7Ujwg/mSezc1ykfk7
+         e+2DzQB0mq/ZC6aEmkMTPPTnV03juE2Ze5uHywkGhHRTmjjp8D+cADG7I3cmdP1sN9KJ
+         mQeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706066455; x=1706671255;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KAePt3EbboVv3TxbwUCofAP8uUAMMkWJoXv+3X6ccPI=;
+        b=fa3kxteRQ3u8jhkwHg1hVuUKecqLS/WMq2lXtk2sYsecMi2QwzfA+hFlhXt6xOx/XL
+         +kk8cHuWTosRccLkIMI9C6YmcJ3lTLESm4Wo1DFKqQex90FKGjX3UQC1H3ZlDyqWHdtG
+         AcGvn3CcCPNJ6pqL3rauejJqqLgMj7rXFFov1/QB2SQiiOFCJCl1AFtPk+6C81U8VAoU
+         kJISROLX75/T8V3Om7TDV5qn2hrK3E7mLj6N+AN5+oRJ/Q318IatPzKmWKniY0VewSAD
+         QZWCq6Ft1+PgmvByf/OIOVeKwgk7sl9KwWpd6ZYXM73+kdznZLPmMIvuj89YnphYsmr0
+         6Ppg==
+X-Gm-Message-State: AOJu0YxzrCAFwxc5FAwPJhPWIt/VQ7iM1ElzrQYbVXSUP8D8xmYZEjUb
+	MTnWOSWlVGA89ukgp30Dj32g1au2V7slJp4b315dAQaWWu9qMkotcFTGZCYsvx9hkraCLhfkxPu
+	WtiDnPpFgATGulMf8/ziYB2prAmEw8xLTFuc+
+X-Google-Smtp-Source: AGHT+IG52SOXahv8KuKJM5amdkEJrHh+itGyuLplJrEk2YxxxRBnMyB3thEL7drxZ7rWTHHm76P8VMONmx+BrYEP4UE=
+X-Received: by 2002:a5d:448a:0:b0:337:c6b6:7e30 with SMTP id
+ j10-20020a5d448a000000b00337c6b67e30mr124733wrq.36.1706066454776; Tue, 23 Jan
+ 2024 19:20:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240120024007.2850671-1-yosryahmed@google.com>
+ <20240120024007.2850671-2-yosryahmed@google.com> <87wms0toh4.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <CAJD7tkb=-0mP1CXEmAd4QjMXKgep7myHShiwUSNnY1cjfRqfJA@mail.gmail.com> <878r4ftodl.fsf@yhuang6-desk2.ccr.corp.intel.com>
+In-Reply-To: <878r4ftodl.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Tue, 23 Jan 2024 19:20:17 -0800
+Message-ID: <CAJD7tkbKxfuy-uWrOMVnOeDpx-TuJwosxk2jG_0Gx4bi1tUBog@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm: swap: update inuse_pages after all cleanups are done
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Nhat Pham <nphamcs@gmail.com>, Chris Li <chrisl@kernel.org>, 
+	Chengming Zhou <zhouchengming@bytedance.com>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Clean up some leftovers since there is no way for EROFS to be called
-again from a reclaim context.
+> > In swap_range_free, we want to make sure that the write to
+> > si->inuse_pages in swap_range_free() happens *after* the cleanups
+> > (specifically zswap_invalidate() in this case).
+> > In swap_off, we want to make sure that the cleanups following
+> > try_to_unuse() (e.g. zswap_swapoff) happen *after* reading
+> > si->inuse_pages == 0 in try_to_unuse().
+> >
+> > So I think we want smp_wmb() in swap_range_free() and smp_mb() in
+> > try_to_unuse(). Does the below look correct to you?
+> >
+> > diff --git a/mm/swapfile.c b/mm/swapfile.c
+> > index 2fedb148b9404..a2fa2f65a8ddd 100644
+> > --- a/mm/swapfile.c
+> > +++ b/mm/swapfile.c
+> > @@ -750,6 +750,12 @@ static void swap_range_free(struct
+> > swap_info_struct *si, unsigned long offset,
+> >                 offset++;
+> >         }
+> >         clear_shadow_from_swap_cache(si->type, begin, end);
+> > +
+> > +       /*
+> > +        * Make sure that try_to_unuse() observes si->inuse_pages reaching 0
+> > +        * only after the above cleanups are done.
+> > +        */
+> > +       smp_wmb();
+> >         atomic_long_add(nr_entries, &nr_swap_pages);
+> >         WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
+> >  }
+> > @@ -2130,6 +2136,11 @@ static int try_to_unuse(unsigned int type)
+> >                 return -EINTR;
+> >         }
+> >
+> > +       /*
+> > +        * Make sure that further cleanups after try_to_unuse() returns happen
+> > +        * after swap_range_free() reduces si->inuse_pages to 0.
+> > +        */
+> > +       smp_mb();
+> >         return 0;
+> >  }
+>
+> We need to take care of "si->inuse_pages" checking at the beginning of
+> try_to_unuse() too.  Otherwise, it looks good to me.
 
-Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
----
- fs/erofs/fscache.c | 2 +-
- fs/erofs/inode.c   | 2 +-
- fs/erofs/utils.c   | 2 +-
- fs/erofs/zdata.c   | 8 ++++----
- 4 files changed, 7 insertions(+), 7 deletions(-)
+Hmm, why isn't one barrier at the end of the function enough? I think
+all we need is that before we return from try_to_unuse(), all the
+cleanups in swap_range_free() are taken care of, which the barrier at
+the end should be doing. We just want instructions after
+try_to_unuse() to not get re-ordered before si->inuse_pages is read as
+0, right?
 
-diff --git a/fs/erofs/fscache.c b/fs/erofs/fscache.c
-index bc12030393b2..5ff90026fd43 100644
---- a/fs/erofs/fscache.c
-+++ b/fs/erofs/fscache.c
-@@ -459,7 +459,7 @@ static struct erofs_fscache *erofs_fscache_acquire_cookie(struct super_block *sb
- 
- 	inode->i_size = OFFSET_MAX;
- 	inode->i_mapping->a_ops = &erofs_fscache_meta_aops;
--	mapping_set_gfp_mask(inode->i_mapping, GFP_NOFS);
-+	mapping_set_gfp_mask(inode->i_mapping, GFP_KERNEL);
- 	inode->i_blkbits = EROFS_SB(sb)->blkszbits;
- 	inode->i_private = ctx;
- 
-diff --git a/fs/erofs/inode.c b/fs/erofs/inode.c
-index 3d616dea55dc..36e638e8b53a 100644
---- a/fs/erofs/inode.c
-+++ b/fs/erofs/inode.c
-@@ -60,7 +60,7 @@ static void *erofs_read_inode(struct erofs_buf *buf,
- 		} else {
- 			const unsigned int gotten = sb->s_blocksize - *ofs;
- 
--			copied = kmalloc(vi->inode_isize, GFP_NOFS);
-+			copied = kmalloc(vi->inode_isize, GFP_KERNEL);
- 			if (!copied) {
- 				err = -ENOMEM;
- 				goto err_out;
-diff --git a/fs/erofs/utils.c b/fs/erofs/utils.c
-index 5dea308764b4..e146d09151af 100644
---- a/fs/erofs/utils.c
-+++ b/fs/erofs/utils.c
-@@ -81,7 +81,7 @@ struct erofs_workgroup *erofs_insert_workgroup(struct super_block *sb,
- repeat:
- 	xa_lock(&sbi->managed_pslots);
- 	pre = __xa_cmpxchg(&sbi->managed_pslots, grp->index,
--			   NULL, grp, GFP_NOFS);
-+			   NULL, grp, GFP_KERNEL);
- 	if (pre) {
- 		if (xa_is_err(pre)) {
- 			pre = ERR_PTR(xa_err(pre));
-diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
-index 692c0c39be63..583c062cd0e4 100644
---- a/fs/erofs/zdata.c
-+++ b/fs/erofs/zdata.c
-@@ -230,7 +230,7 @@ static int z_erofs_bvec_enqueue(struct z_erofs_bvec_iter *iter,
- 		struct page *nextpage = *candidate_bvpage;
- 
- 		if (!nextpage) {
--			nextpage = erofs_allocpage(pagepool, GFP_NOFS);
-+			nextpage = erofs_allocpage(pagepool, GFP_KERNEL);
- 			if (!nextpage)
- 				return -ENOMEM;
- 			set_page_private(nextpage, Z_EROFS_SHORTLIVED_PAGE);
-@@ -302,7 +302,7 @@ static struct z_erofs_pcluster *z_erofs_alloc_pcluster(unsigned int size)
- 		if (nrpages > pcs->maxpages)
- 			continue;
- 
--		pcl = kmem_cache_zalloc(pcs->slab, GFP_NOFS);
-+		pcl = kmem_cache_zalloc(pcs->slab, GFP_KERNEL);
- 		if (!pcl)
- 			return ERR_PTR(-ENOMEM);
- 		pcl->pclustersize = size;
-@@ -694,7 +694,7 @@ static void z_erofs_cache_invalidate_folio(struct folio *folio,
- 	DBG_BUGON(stop > folio_size(folio) || stop < length);
- 
- 	if (offset == 0 && stop == folio_size(folio))
--		while (!z_erofs_cache_release_folio(folio, GFP_NOFS))
-+		while (!z_erofs_cache_release_folio(folio, 0))
- 			cond_resched();
- }
- 
-@@ -713,7 +713,7 @@ int erofs_init_managed_cache(struct super_block *sb)
- 	set_nlink(inode, 1);
- 	inode->i_size = OFFSET_MAX;
- 	inode->i_mapping->a_ops = &z_erofs_cache_aops;
--	mapping_set_gfp_mask(inode->i_mapping, GFP_NOFS);
-+	mapping_set_gfp_mask(inode->i_mapping, GFP_KERNEL);
- 	EROFS_SB(sb)->managed_cache = inode;
- 	return 0;
- }
--- 
-2.19.1.6.gb485710b
+>
+> > Alternatively, we may just hold the spinlock in try_to_unuse() when we
+> > check si->inuse_pages at the end. This will also ensure that any calls
+> > to swap_range_free() have completed. Let me know what you prefer.
+>
+> Personally, I prefer memory barriers here.
 
+Ack.
 
