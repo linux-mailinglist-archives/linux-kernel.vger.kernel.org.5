@@ -1,78 +1,156 @@
-Return-Path: <linux-kernel+bounces-37718-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37719-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C378683B457
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:57:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 706DF83B45A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:58:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 022A21C211AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 21:57:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95DDF1C20DB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 21:58:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EDB3135A4A;
-	Wed, 24 Jan 2024 21:56:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FA1513541C;
+	Wed, 24 Jan 2024 21:58:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C5HpRSO/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NOV6X70P"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1DCC135402;
-	Wed, 24 Jan 2024 21:56:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 278F11353E4
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 21:58:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706133403; cv=none; b=peuMlaBN0uhGgXQp9sYWgUlWQOe2vErfieoXDhb5Gq2RjANDPLA5rTIDsQ7xoClv96vlR56ejGlmh2X57vAS0Xhv5z1zYWvmqKyI9dKMaqWwhR/DhWPRNzltyWR2cyWXvC1LYu+Z/PiofbUslaizRXFfq0rZftdP4yeF6qcFc0Y=
+	t=1706133506; cv=none; b=mZd4aA3PMDTXBC6cOMs8r1fxTZD2mrLbG7S1cPzFH4xfnHuC7wWUTGWCubVgwtU89Vb10w+edkhTqkgrz38u0UVOO7nBfsphbFntZv5LDUi8ydNsevxg0V7IHLCGcQB3rpb8Rjo4ukQyQTtAWjGTGAhfemND6W/NUYqb6v3Rcew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706133403; c=relaxed/simple;
-	bh=wQG4xwraoCjhF0quRyV8oHmweFc0fwtHDHi731kPghY=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=tfs0xoCajSJttH3mcTnhmOiuDToUdXyO8lP3hsYvQLeQAGNqc/k8dhxMscXN3DeitMU7xd2RXG3owtNtQQ146YVafZVvgTpDddbv34CMSOidqkoRS/t07tQdtFTESVJhw5EvVQ3bUW0V6h7PblNPaR+W3fjfmWky6CiewxpSgsQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C5HpRSO/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1885FC433C7;
-	Wed, 24 Jan 2024 21:56:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706133403;
-	bh=wQG4xwraoCjhF0quRyV8oHmweFc0fwtHDHi731kPghY=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=C5HpRSO/f0s8sQ/cLgCjpggeCI/1Bxs8Hy8MnP0rG9RWevTOTHFr5aPsq2KK4Mf3x
-	 H2xQQ3Jrg+orDWJfDBElzS7yAVQkTXRTO/U7a4TlPjfACPXo4Qfj6iFKYCrLimGF1r
-	 mHaip9T0tMIInC4hkPIQnXZVamPn6Dh12Slw88he/zSVjfEl+nrkIux75o4jWjkvUZ
-	 cHw21nY34oQf/nARuZaLFwv+9MpUG6wbcfqiMEuS8TwVZF8jQiZOQMSTnNRT8VYSXo
-	 dT52GnatHP19P6ow5ebfmXWjknKCnSMX1U06diyHX/brz+9J3zJQw9cKTNZuMgj89m
-	 qQlgh6kpJQPEw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 05D31DFF767;
-	Wed, 24 Jan 2024 21:56:43 +0000 (UTC)
-Subject: Re: [GIT PULL] execve fixes for v6.8-rc2
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <202401241201.A53405B0D1@keescook>
-References: <202401241201.A53405B0D1@keescook>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <202401241201.A53405B0D1@keescook>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/execve-v6.8-rc2
-X-PR-Tracked-Commit-Id: 90383cc07895183c75a0db2460301c2ffd912359
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: cf10015a24f36a82370151a88cb8610c8779e927
-Message-Id: <170613340301.16211.15912658472235455983.pr-tracker-bot@kernel.org>
-Date: Wed, 24 Jan 2024 21:56:43 +0000
-To: Kees Cook <keescook@chromium.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>, Alexey Dobriyan <adobriyan@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Askar Safin <safinaskar@zohomail.com>, Bernd Edlinger <bernd.edlinger@hotmail.de>, Christian Brauner <brauner@kernel.org>, Eric Biederman <ebiederm@xmission.com>, Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>, Kentaro Takeda <takedakn@nttdata.co.jp>, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+	s=arc-20240116; t=1706133506; c=relaxed/simple;
+	bh=K28HTCvqTt6/ul2ODpUtsaMLvIFUxf2hMIz7NKzy+K0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pximGbc3a/s+QUiDyV5OJ2d3zE3Ausjt0IAa6AjnCw2m8tPszZIl8tfKy2UY7VL4CdzUkDzT0yWk8ixa+b5gd2AWQi6Qr4I1jPZ/wmeL1MXKL6fwOu+N2pbZfcqb90hxFbOgUkxpCM78GLVrfiQOWkjKNilRcyugydSHUKqsy38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NOV6X70P; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6d9f94b9186so5880533b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 13:58:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706133504; x=1706738304; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gUJUOs+bThK9dGxB+Sx01k3VOX9ACqMj4VBsHio7vIM=;
+        b=NOV6X70PgShIxoxS41Aj61a8x+ZZaJslxblDZql9Q4STMS96kWbJK2f/ivwvcENQss
+         Ey1ueJWoSmKBXqvbaWaB4pciLCJxJY81JxUXEzwnHDE2aTtpJOKde3D9/5RGBu+7j0FU
+         gSlz0dL5u+cHJ89SFRcXTmB1WdXbcoFEgMwRQ8Po68lUdgJFB8CGBrXhSEtc7lmSJSGX
+         lEsQG9kuQI63cE6IBO7vR7bZn0xcjxekmozgoBkivDpoMzrLbX3rZgCoLoqIZdQx57Ln
+         m+yE0QVqf7gwBdmkBsBCkaC3C1cz8FSQ+mS9Z6vEOi4kNWUUvmhnNdbeIULm61u0TkHV
+         lDoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706133504; x=1706738304;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gUJUOs+bThK9dGxB+Sx01k3VOX9ACqMj4VBsHio7vIM=;
+        b=C0bcEED6LZAweHo+WlJy35vqLwDeYTFCcxKNYqVikwqZ343ZnrbUnKpI2rRxuT8SiN
+         Kxl6y2oAEgQ1252Samr5yZT72DJNfxelNQfS1An1E1OCCAdgnbH4g2BTJWDrzBwewSKr
+         hlNBLvpXv1HlCC962NLjuwm8N7Vo1SzmzNuibF76El2PYDz5qz1EeECKHBsEXg2mr/yw
+         OwK8iXpACkH05c3Suz22kEpwBUFUVFaTTLx8KyTANXAp33Xm3RuZdTcQOcEMbJh4ALf2
+         FFnE+orQ5x4fDEwDuzIgVwqBDiIeSR0lH8mR7vh9ViYwoHI/ZiJ+SYUuGdYQx1lb3s4u
+         N5ug==
+X-Gm-Message-State: AOJu0YyzlFwUvH/ZUjH0t3WLMvtmhXDQ+Nr5FSLdf7odWFLwwQROWpHs
+	ggnTBT3379n7d48ZjOWTt+nPC/T9Eu+p/RF7pX5OBmDbR2/01PiX3Tqfu0VNIER35nxMFZDmD/J
+	OAUP/T0+HC6wgj/zGUycy6CjEkjQ=
+X-Google-Smtp-Source: AGHT+IFS8OnYe/kdTuuc/r51cDQZoMJ66CNFtnW1grppwVuSlq7ouq9zzRmTg7Lg6fCVCce6JM9z/uXvqOy1GcaYpVI=
+X-Received: by 2002:a05:6a20:a889:b0:19c:62d5:32d4 with SMTP id
+ ca9-20020a056a20a88900b0019c62d532d4mr75685pzb.99.1706133504389; Wed, 24 Jan
+ 2024 13:58:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <CADBGO79JycAycKXm9A46pLrGZHTsySV4NH+yvV7VFU-8reMF=Q@mail.gmail.com>
+ <CADBGO78cNfZZFA_iDbjatiyvSwF3G7DjbddqTpQyw4zMoyC5ZQ@mail.gmail.com>
+In-Reply-To: <CADBGO78cNfZZFA_iDbjatiyvSwF3G7DjbddqTpQyw4zMoyC5ZQ@mail.gmail.com>
+From: Paul Zimmerman <pauldzim@gmail.com>
+Date: Wed, 24 Jan 2024 14:57:57 -0700
+Message-ID: <CADBGO7-V40=pw+UjAptYu4fAQiDoGequbZLmpO=HoAyXs3hYaQ@mail.gmail.com>
+Subject: Re: [REGRESSION BISECTED] 6.8-rc1 - Wayland hangs when connecting via
+ VNC or RDP
+To: Luben Tuikov <ltuikov89@gmail.com>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The pull request you sent on Wed, 24 Jan 2024 12:05:10 -0800:
+Ah, I see that Mario already posted a patch for a "frozen desktop" problem =
+here:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/execve-v6.8-rc2
+https://lore.kernel.org/lkml/CAOVeLGSczkyhj61T8SZc2cK1Cjy2izV6URVa2422kcfy8=
+ONYFw@mail.gmail.com/T/#t
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/cf10015a24f36a82370151a88cb8610c8779e927
+and I can confirm that patch fixes my problem as well. Sorry for the noise.
 
-Thank you!
+Thanks,
+Paul
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+On Wed, Jan 24, 2024 at 1:21=E2=80=AFPM Paul Zimmerman <pauldzim@gmail.com>=
+ wrote:
+>
+> I forgot to say what graphics driver I'm using. It is amdgpu.
+>
+> p.s. Sorry for the bad formatting in my previous email, it has been a whi=
+le
+> since I posted to LKML.
+>
+> Thanks,
+> Paul
+>
+> On Wed, Jan 24, 2024 at 12:47=E2=80=AFPM Paul Zimmerman <pauldzim@gmail.c=
+om> wrote:
+> >
+> > When I attempt to connect via VNC or RDP to my Ubuntu desktop, the Wayl=
+and
+> > server seems to hang. The desktop GUI no longer works either locally or
+> > remotely. I can still log in via ssh, so the system is still alive,
+> > but the GUI is
+> > frozen. If I boot into Xorg instead, everything works fine. Kernel 6.7
+> > works fine
+> > also.
+> >
+> > I bisected this to commit f7fe64ad0f22 "drm/sched: Split free_job into
+> > own work item".
+> > That commit does not revert cleanly however.
+> >
+> > I don't see anything in dmesg when this happens. Here is a snippet from
+> > journalctl when it happens:
+> > Jan 23 16:14:30 paulz-Precision-5820-Tower systemd[2826]: Started
+> > Tracker metadata extractor.
+> > Jan 23 16:14:55 paulz-Precision-5820-Tower systemd[2826]: Started
+> > Application launched by gnome-session-binary.
+> > Jan 23 16:16:47 paulz-Precision-5820-Tower
+> > gnome-remote-desktop-daemon[4158]: [16:16:47:810] [4158:4896]
+> > [ERROR][com.freerdp.core.peer] - Incorrect RDP header.
+> > Jan 23 16:16:47 paulz-Precision-5820-Tower
+> > gnome-remote-desktop-daemon[4158]: [16:16:47:810] [4158:4896]
+> > [ERROR][com.freerdp.core.peer] - peer_recv_callback:
+> > CONNECTION_STATE_ACTIVE - peer_recv_pdu() fail
+> > Jan 23 16:16:47 paulz-Precision-5820-Tower
+> > gnome-remote-desktop-daemon[4158]: [16:16:47:810] [4158:4896]
+> > [ERROR][com.freerdp.core.transport] - transport_check_fds:
+> > transport->ReceiveCallback() - -1
+> > Jan 23 16:16:47 paulz-Precision-5820-Tower gnome-remote-de[4158]:
+> > Unable to check file descriptor, closing connection
+> > Jan 23 16:16:47 paulz-Precision-5820-Tower systemd[1]:
+> > run-user-1001-gnome\x2dremote\x2ddesktop-cliprdr\x2d9Tp4LD.mount:
+> > Deactivated successfully.
+> >
+> > This is on an x86_64 Xeon system running Ubuntu 22.04.3.  Any hints on =
+how to
+> > debug this further? Is there a way to turn on additional debug prints f=
+or this?
+> >
+> > Thanks,
+> > Paul
 
