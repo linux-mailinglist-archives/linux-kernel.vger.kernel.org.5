@@ -1,137 +1,107 @@
-Return-Path: <linux-kernel+bounces-37239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0846B83AD1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:21:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7163D83AD22
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:21:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB3211F22AB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:21:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 309CC28647D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:21:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EAB17CF0A;
-	Wed, 24 Jan 2024 15:20:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F1C47A734;
+	Wed, 24 Jan 2024 15:21:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iOGtnf61"
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="j83oTUWT"
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 698E17C0A8;
-	Wed, 24 Jan 2024 15:20:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3050723C9;
+	Wed, 24 Jan 2024 15:20:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706109632; cv=none; b=AxhQbWji12Ul2ZK2nfxu3uWKQioLthcW4Z7lFFXFgQxP2xgZ7jjUwegDv4nfX7Xd5IPyI8NQl9rdYZubHSftd7O5U/Qo8nSPyE3fvVw+HparNWUWMbUPmH/zqtLILbutapJXIGBrC8NJoN/hppdBxCyb5HClDbc7ZJ5ghHxAb/Y=
+	t=1706109666; cv=none; b=JngTORNHCjSl4J04G4rvB3gBxCAPTO8cO/pp17FfQc9VUCJUWL+MqLRkz6CqwfYeU2W4U7kAi6LUnjLLkV/Qf7Qz0KmqMIdFgOg8GiPcc8nd7ymYS6o3OEtJ1RKXuNxlVLU+S99A3x2qVvxCTDcrPovhVz8tmMkPyn4ASyWyB8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706109632; c=relaxed/simple;
-	bh=yl+lF/nSLhu4DOrgjpjqsY/EIrxDU6VhvxzHFjldzhs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WyXH+2uuNcvHemoXVjLl4wZCQvW2II8iptpeDwUglhXXtWDEuzUsqbDqa6F1YtkN64IX+K2rP22tWYcKZvV6eV65a40M94C6L4Lq3oJJonPekejRyDizgv+u9HasOTecXm+N7TVTjnNCC3RAUwyrpilBtQ3cMX7ZmslDOpPIvjg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iOGtnf61; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-da7ea62e76cso4627221276.3;
-        Wed, 24 Jan 2024 07:20:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706109630; x=1706714430; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2vBrnRIicx5pIHGkAjgFXGDh8NZNQs8Sa9JhNIEiHKg=;
-        b=iOGtnf61tZDsAiHZiiszBLVV1/POqhATNfnGLR8vv+J6vE50aecVsV1j2bwF8+f36U
-         7/N2dZtxYe0lacPFYArkqcBAuqSg8VzArt8qNfhHactpOLPMxgK6opNGFB+/MJJyWDgl
-         Kha9v462UgGnl0zhRHA8IOA5E06dfX5Uhac7rLy8LSx3jLP2lvSxoR6OzWqYSiMas5EM
-         hKqkAlU8u0IuNH7LftL9uLOe/ZGSmd0z8o1/ke+jweOxW84FZ2ixAoLNldOfxAGdOMEw
-         BhRuMnbJvrj5VCPuuY6B/1IVcZYfVsKk2Uv0ECk5tjvGi0vDRUw3feHoMVAWYOX0WtVh
-         Dlzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706109630; x=1706714430;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2vBrnRIicx5pIHGkAjgFXGDh8NZNQs8Sa9JhNIEiHKg=;
-        b=gWcbyesfldPUBSykpM8ql7+AGDavLdmehC3YVslmIIY0+cLoXs94XVEKMW6BcfI8va
-         hZm4dVeR9PQBxBrWlhngtjLEkMxv2EiF+nr1ht9+/EKULHPfotklG5u3d00HcRznTaXk
-         q+iFrYyVPC07SADUbHVeOsTZCmDGfd0I3zKPtkZfBozcvh0JmRi6yGcyMF013mYA4lBC
-         cQ01ov0mDbCQq6s2WIFGaWgJjyKgpXLAM6NIYZPhS/fY9ncv4Cms8/WwMyswVzWs0AiR
-         5pq2VMnBV/Ebzbvr+RaBmUZR943C1QpWzkT9jwWOqIwjTz1+e/rPNnNegTJpKfk8xsk6
-         dHqQ==
-X-Gm-Message-State: AOJu0YwalUifS519Tpet5HuSyc361gwdMEf9HYGz0f21Nwd59EO+T+EU
-	N9+sZ2wcg9Xsbzl75Byh0Y+apq7hKX4G94nUvxC39E+0fCgTUaRI
-X-Google-Smtp-Source: AGHT+IERVG+64Qw6cNxzILHtVXa3i4+0rPfmcDUrLp45sk1QkdaktdxCBMKuQ0ojt690g3KthLLZKA==
-X-Received: by 2002:a25:dcd2:0:b0:dc2:2888:e3d1 with SMTP id y201-20020a25dcd2000000b00dc22888e3d1mr745356ybe.80.1706109629562;
-        Wed, 24 Jan 2024 07:20:29 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:abdb:7236:6977:9ab5])
-        by smtp.gmail.com with ESMTPSA id i12-20020a25f20c000000b00db41482d349sm2812032ybe.57.2024.01.24.07.20.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 07:20:29 -0800 (PST)
-Date: Wed, 24 Jan 2024 07:20:27 -0800
-From: Yury Norov <yury.norov@gmail.com>
-To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
-	leon@kernel.org, cai.huoqing@linux.dev, ssengar@linux.microsoft.com,
-	vkuznets@redhat.com, tglx@linutronix.de,
-	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-	schakrabarti@microsoft.com, paulros@microsoft.com
-Subject: Re: [PATCH 4/4 V2 net-next] net: mana: Assigning IRQ affinity on HT
- cores
-Message-ID: <ZbEqu68J3f9W8nIM@yury-ThinkPad>
-References: <1705939259-2859-1-git-send-email-schakrabarti@linux.microsoft.com>
- <1705939259-2859-5-git-send-email-schakrabarti@linux.microsoft.com>
+	s=arc-20240116; t=1706109666; c=relaxed/simple;
+	bh=agPLFUEFM5/Xl+Qkb3//4GKSlO6yApWCN4GTb4cujnA=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oLoLvYv41h+4Ox6lb9DqSs4iXGjoVvb6M0Otp3BfagCO16AjmOu8xCTaEz23OeECwmn13iX8LnQDlYkBzCaXVmzEKqPNwinsSfWx8IA792ZUlIAtXHBLZoZl9wHs9eYnMtklGqgpDeem1lOeLU0Odtdj52hdESr+lRnTo4VaPPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=j83oTUWT; arc=none smtp.client-ip=67.231.152.168
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40O6UAwg025066;
+	Wed, 24 Jan 2024 09:20:50 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=PODMain02222019; bh=vOohKh4Jlq7Gj3T
+	yhebrNhjFZ8GR73TN9M0kxe4dS2c=; b=j83oTUWT5M9ESeQZKSOzQ5Y3U82cWCL
+	S5SxfcNyFK34eUwgtzVeP59hos64i9+qSsM/otqeD0Cf7UYT+Gf2kj8lGSsFJ5G4
+	u3QwIaTL5cnu+HvJwZPN9EHq5qGoJ7M7D6T/lllH0b22TjYRaKNIgA46EP43AiCG
+	MtMiE7Ki72BVDpR5GKuJPHhbKRQ2zWIKhTc7AiRt74sFhCjWqGOYrvhtAZ7+DMj4
+	4Ne5yC7ldNxdiciQq8xjcpsdMnlYlpSzHhwxSaKxgjWVkTZioBXRlN0WvkjFIcpj
+	vspvfpCWN90l3p6g1+3g4cFMNx74/xeoRS8BkGdCVxZgYHl8L0B0e3A==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3vtmf9ryct-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Jan 2024 09:20:50 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 24 Jan
+ 2024 15:20:48 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.40 via Frontend Transport; Wed, 24 Jan 2024 15:20:48 +0000
+Received: from ediswmail9.ad.cirrus.com (ediswmail9.ad.cirrus.com [198.61.86.93])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTPS id E28AA820246;
+	Wed, 24 Jan 2024 15:20:48 +0000 (UTC)
+Date: Wed, 24 Jan 2024 15:20:47 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Mark Brown <broonie@kernel.org>
+CC: <lee@kernel.org>, <alsa-devel@alsa-project.org>,
+        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>
+Subject: Re: [PATCH 6/6] spi: cs42l43: Tidy up header includes
+Message-ID: <ZbEqz31G+WfTtsZ/@ediswmail9.ad.cirrus.com>
+References: <20240124151222.1448570-1-ckeepax@opensource.cirrus.com>
+ <20240124151222.1448570-6-ckeepax@opensource.cirrus.com>
+ <8b8fcdbd-b1c8-4618-acf8-e31b6ab33be7@sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <1705939259-2859-5-git-send-email-schakrabarti@linux.microsoft.com>
+In-Reply-To: <8b8fcdbd-b1c8-4618-acf8-e31b6ab33be7@sirena.org.uk>
+X-Proofpoint-GUID: kGDzglf-HN_pl0pxtUvti2jlDz9C3-0p
+X-Proofpoint-ORIG-GUID: kGDzglf-HN_pl0pxtUvti2jlDz9C3-0p
+X-Proofpoint-Spam-Reason: safe
 
-On Mon, Jan 22, 2024 at 08:00:59AM -0800, Souradeep Chakrabarti wrote:
-> Existing MANA design assigns IRQ to every CPU, including sibling
-> hyper-threads. This may cause multiple IRQs to be active simultaneously
-> in the same core and may reduce the network performance.
+On Wed, Jan 24, 2024 at 03:16:25PM +0000, Mark Brown wrote:
+> On Wed, Jan 24, 2024 at 03:12:22PM +0000, Charles Keepax wrote:
+> > Including some missing headers.
+> > 
+> > Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> > Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> > ---
+> > 
+> > The changes to the MFD headers necessitate the inclusion of of.h here to
+> > keep things building, hence my including this SPI change in the this MFD
+> > series. The rest of the SPI fixups will be sent separately, as they are
+> > also not dependent on this change.
 > 
-> Improve the performance by assigning IRQ to non sibling CPUs in local
-> NUMA node. The performance improvement we are getting using ntttcp with
-> following patch is around 15 percent against existing design and
-> approximately 11 percent, when trying to assign one IRQ in each core
-> across NUMA nodes, if enough cores are present.
-> The change will improve the performance for the system
-> with high number of CPU, where number of CPUs in a node is more than
-> 64 CPUs. Nodes with 64 CPUs or less than 64 CPUs will not be affected
-> by this change.
+> If this is needed to keep things building then presumably it should be
+> before or part of whatever change introduces the requirement, otherwise
+> we have a bisection issue.  Anyway:
 > 
-> The performance study was done using ntttcp tool in Azure.
-> The node had 2 nodes with 32 cores each, total 128 vCPU and number of channels
-> were 32 for 32 RX rings.
-> 
-> The below table shows a comparison between existing design and new
-> design:
-> 
-> IRQ   node-num    core-num   CPU        performance(%)
-> 1      0 | 0       0 | 0     0 | 0-1     0
-> 2      0 | 0       0 | 1     1 | 2-3     3
-> 3      0 | 0       1 | 2     2 | 4-5     10
-> 4      0 | 0       1 | 3     3 | 6-7     15
-> 5      0 | 0       2 | 4     4 | 8-9     15
-> ---
-> ---
-> 25     0 | 0       12| 24    24| 48-49   12
-> ---
-> 32     0 | 0       15| 31    31| 62-63   12
-> 33     0 | 0       16| 0     32| 0-1     10
-> ---
-> 64     0 | 0       31| 31    63| 62-63   0
+> Acked-by: Mark Brown <broonie@kernel.org>
 
-Did that omitted lines mean 5-24 : 15%, 25-31 : 12% and 33-63 : 10%?
-Or that means that you didn't test those?
-
-Would be nice to have full coverage...
+Yup it should will, I forgot to CC Andy too, so this is a good
+excuse to resend :-)
 
 Thanks,
-Yury
+Charles
 
