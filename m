@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-37123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF1CE83ABCC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:30:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A14883ABD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:31:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 506EF1F2CF65
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:30:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 058531C24704
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:31:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 201C87C0A3;
-	Wed, 24 Jan 2024 14:28:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14CE47CF14;
+	Wed, 24 Jan 2024 14:28:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I1j1cS2/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p1JbQUOh"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08B117F7C3;
-	Wed, 24 Jan 2024 14:28:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40E237CF16;
+	Wed, 24 Jan 2024 14:28:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706106521; cv=none; b=bESV4CdVlhTway3/8B+FMpaGBU8UxpcCDfhK9urQ00/wYTg8TmSzACCYyYLAW32GlQxptCPqdeVZd6bjD8iyBbPcCIdPG3tNCrgXZL3Qaji95aidFXIMl6aUwJgTQcze+WIt2besw6nmmddZal234S+ZEEn8iRUlpkiQSVbHKRE=
+	t=1706106522; cv=none; b=V1a6wkys2uRFbavdUXLUZWBTbVHXmNVOogJCf6oM5URIODzjZBSxWDZE6d72TC98+Wb5mtp/2PLrd1OafuCDYuNxNU0mPw+VBGs5/rEKaj7ltK5DRBh1phCliO213sq/tFnNHk/KOlx3WSu3PPkPi2Sv1ijeoDvloer7hcoUj1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706106521; c=relaxed/simple;
-	bh=mJAUfq4s+AToPtG+POVOoq5xUTTjuareFjEcWcVXk8Y=;
+	s=arc-20240116; t=1706106522; c=relaxed/simple;
+	bh=l6lT8MOMSiG0DvSXCsTdt7NAl3vqkpxsoqyKOWBEn6c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Zwm001h7tzLESYZO+ETdu8ArWMwpppFlsOT23a4+LfkY7MPOF+NxYzI5TJXGdGT0h1iZrV3ROtN3A1YGTGWIN+Wtri6M5tBU+ab+ptqL7nIQu2mXFQ3dCVSnxIWMR9Jqwhk5bKdKQ9r7mPFWKbaZy4VZxrGnGzlPt8Yur58yD9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I1j1cS2/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACB5BC433F1;
-	Wed, 24 Jan 2024 14:28:39 +0000 (UTC)
+	 MIME-Version; b=VsF1pJqxU7oB1QKOzH3OG6CJK4roiv9FUFH5OqImTTPYTgcjXzAmAzRI8EctEAU8GEgGPEHBEg2YxNDY6XluQyYSg/VzwSndxm7ZyumVcI9GeOX3BZKt1CeNwHFlzICM7/9OyzD6RnVpYNNh3RSZn/3PW38jBhz9loLRy9vBnwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p1JbQUOh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10C6DC433A6;
+	Wed, 24 Jan 2024 14:28:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706106520;
-	bh=mJAUfq4s+AToPtG+POVOoq5xUTTjuareFjEcWcVXk8Y=;
+	s=k20201202; t=1706106521;
+	bh=l6lT8MOMSiG0DvSXCsTdt7NAl3vqkpxsoqyKOWBEn6c=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=I1j1cS2/vJtGOD/9OOpD3DIsN5KW/DEJBN/12psn3J7xax2EV0csrH+8jFaLJdHEO
-	 NKvHYo8fJjzwwdsYnyg2ChVufpy1TAo4XNc0EzGouMuOMF5Psfmdb0AmITWzzhScQ0
-	 vjflEUPv4HZQQshCVI7jOq/JhsXkGZ/7cY+7fTNAxuZB+sOcy36NZEg0zsM/LMvQVt
-	 GxA4Q549jlxCE6sMeoRHMdX9y58hmvdZGalMTP2lX1+FEC6uUYmy5bxaA7zqxwLXGA
-	 sNsoQPKweR0GGZaT3BDfDYqSBMsCOS1X3bJjfhamnHoFJhAO7nCzna6PWWcl+tYTjN
-	 IAY/50x8Y8U9Q==
+	b=p1JbQUOhPFWK2sA8h2O1SCFTV2xG7VTW6jIPuphcfIpWx+ARm46IBdyVqb27jesOc
+	 9R16oF4x1QoxETU9RZmYItisl5Qdi1ztYELVmJmjKMpzEbNHj0LWox2MN4mY76JQd4
+	 bGOtpByE9e8AyXMPknc1OoLzolwcBKD6vclOKCkL7YyRzXxjZ/AW5R6Rds/ruT6++Q
+	 I0CUnheuQWi/kTpqBdsjuChJ4id1BvUE8+BrYwotOXSafvHPxj1saaJyUvW2CYDrJ2
+	 YBeitkl6EfYFZ+gOwnigg4hyN1fxgetx1nHKk0OghEkPbRJHdMZWCVNmKr/zvJalxj
+	 oz7SAHAK/7ZVA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Harshit Shah <harshitshah.opendev@gmail.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+Cc: Ben Mayo <benny1091@gmail.com>,
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
-	pgaj@cadence.com,
-	linux-i3c@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.7 07/13] i3c: master: cdns: Update maximum prescaler value for i2c clock
-Date: Wed, 24 Jan 2024 09:28:00 -0500
-Message-ID: <20240124142820.1283206-7-sashal@kernel.org>
+	rafael@kernel.org,
+	linux-acpi@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 08/13] ACPI: resource: Add DMI quirks for ASUS Vivobook E1504GA and E1504GAB
+Date: Wed, 24 Jan 2024 09:28:01 -0500
+Message-ID: <20240124142820.1283206-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240124142820.1283206-1-sashal@kernel.org>
 References: <20240124142820.1283206-1-sashal@kernel.org>
@@ -65,57 +65,55 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.1
 Content-Transfer-Encoding: 8bit
 
-From: Harshit Shah <harshitshah.opendev@gmail.com>
+From: Ben Mayo <benny1091@gmail.com>
 
-[ Upstream commit 374c13f9080a1b9835a5ed3e7bea93cf8e2dc262 ]
+[ Upstream commit d2aaf19965045f70bb2ece514399cdc6fcce2e73 ]
 
-As per the Cadence IP document fixed the I2C clock divider value limit from
-16 bits instead of 10 bits. Without this change setting up the I2C clock to
-low frequencies will not work as the prescaler value might be greater than
-10 bit number.
+Asus Vivobook E1504GA and E1504GAB notebooks are affected by bug #216158
+(DSDT specifies the kbd IRQ as level active-low and using the override
+changes this to rising edge, stopping the keyboard from working).
 
-I3C clock divider value is 10 bits only. Updating the macro names for both.
+Users of these notebooks do not have a working keyboard unless they add
+their DMI information to the struct irq1_level_low_skip_override array
+and compile a custom kernel.
 
-Signed-off-by: Harshit Shah <harshitshah.opendev@gmail.com>
-Link: https://lore.kernel.org/r/1703927483-28682-1-git-send-email-harshitshah.opendev@gmail.com
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Add support for these computers to the Linux kernel without requiring
+the end-user to recompile the kernel.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=216158
+Signed-off-by: Ben Mayo <benny1091@gmail.com>
+[ rjw: Link tag, subject and changelog edits ]
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i3c/master/i3c-master-cdns.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/acpi/resource.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/drivers/i3c/master/i3c-master-cdns.c b/drivers/i3c/master/i3c-master-cdns.c
-index bcbe8f914149..c1627f3552ce 100644
---- a/drivers/i3c/master/i3c-master-cdns.c
-+++ b/drivers/i3c/master/i3c-master-cdns.c
-@@ -76,7 +76,8 @@
- #define PRESCL_CTRL0			0x14
- #define PRESCL_CTRL0_I2C(x)		((x) << 16)
- #define PRESCL_CTRL0_I3C(x)		(x)
--#define PRESCL_CTRL0_MAX		GENMASK(9, 0)
-+#define PRESCL_CTRL0_I3C_MAX		GENMASK(9, 0)
-+#define PRESCL_CTRL0_I2C_MAX		GENMASK(15, 0)
- 
- #define PRESCL_CTRL1			0x18
- #define PRESCL_CTRL1_PP_LOW_MASK	GENMASK(15, 8)
-@@ -1233,7 +1234,7 @@ static int cdns_i3c_master_bus_init(struct i3c_master_controller *m)
- 		return -EINVAL;
- 
- 	pres = DIV_ROUND_UP(sysclk_rate, (bus->scl_rate.i3c * 4)) - 1;
--	if (pres > PRESCL_CTRL0_MAX)
-+	if (pres > PRESCL_CTRL0_I3C_MAX)
- 		return -ERANGE;
- 
- 	bus->scl_rate.i3c = sysclk_rate / ((pres + 1) * 4);
-@@ -1246,7 +1247,7 @@ static int cdns_i3c_master_bus_init(struct i3c_master_controller *m)
- 	max_i2cfreq = bus->scl_rate.i2c;
- 
- 	pres = (sysclk_rate / (max_i2cfreq * 5)) - 1;
--	if (pres > PRESCL_CTRL0_MAX)
-+	if (pres > PRESCL_CTRL0_I2C_MAX)
- 		return -ERANGE;
- 
- 	bus->scl_rate.i2c = sysclk_rate / ((pres + 1) * 5);
+diff --git a/drivers/acpi/resource.c b/drivers/acpi/resource.c
+index 9bd9f79cd409..eb34d201b65f 100644
+--- a/drivers/acpi/resource.c
++++ b/drivers/acpi/resource.c
+@@ -482,6 +482,20 @@ static const struct dmi_system_id irq1_level_low_skip_override[] = {
+ 			DMI_MATCH(DMI_BOARD_NAME, "B2502CBA"),
+ 		},
+ 	},
++	{
++		/* Asus Vivobook E1504GA */
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++			DMI_MATCH(DMI_BOARD_NAME, "E1504GA"),
++		},
++	},
++	{
++		/* Asus Vivobook E1504GAB */
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++			DMI_MATCH(DMI_BOARD_NAME, "E1504GAB"),
++		},
++	},
+ 	{
+ 		/* LG Electronics 17U70P */
+ 		.matches = {
 -- 
 2.43.0
 
