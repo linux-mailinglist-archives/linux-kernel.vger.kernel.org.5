@@ -1,153 +1,153 @@
-Return-Path: <linux-kernel+bounces-36811-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36813-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 958FF83A71F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:45:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F18F83A72F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:50:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C923A1C221C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:45:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 61755B29397
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:48:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D541199A2;
-	Wed, 24 Jan 2024 10:45:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB9311AAB1;
+	Wed, 24 Jan 2024 10:48:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ca35CYqz";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ca35CYqz"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IApJ7drQ"
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A30F217C65;
-	Wed, 24 Jan 2024 10:45:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A593E1A286
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:48:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706093138; cv=none; b=V7hW7NPL9ICeJz5DvEZ03NbqbEReYf0YWAdeHv8fPC6bJjgTgLgtACsh5L7Bytk6/S57cqSk3ry9KhggPgmqgHgs3B7VSTvdlnGtlC7sIJFV9663kYA6o4UQW7KS1lfA8drbZB3fMOZ4HTjg9in7UxKXq0W6KJ+VFgtYsFeJgTI=
+	t=1706093295; cv=none; b=mTUc3aFsO55xa5DWlqHYSlkZIlUNPDmA5lg0srVxXKD3aAl2ngS+OFb+IEnvr3igWVXIjDRxUZ/pNQUCroe8QOnNjSqMuPkOKLapBlfdB6YWrqkeV9CDTBPN20pI9pGbz/3XrLYwtaPf9B6ICNaxhBr7zaHEc1XhH2bePfYfx9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706093138; c=relaxed/simple;
-	bh=vDYamFwd5bvpNdoZJxjLLuH6adTcx66pEKYFC55fGvQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qrWcPnyH0+Gg19+pzHvk93jJFeZIcTwwOlqp8NXpNjmD9u1OoH6XuRcS+nRsaoZMvgoTj7raTWFLqqTUkZajeCaMEPEmfSqUuKP5M8n9LFP49Cs/2XOSutim85Arm5thiF+FFtXNJPJc/yiU4B0Ue9PkMFgrJ+8Yi2hDkddFt8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ca35CYqz; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ca35CYqz; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A56F421FE0;
-	Wed, 24 Jan 2024 10:45:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706093134; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vDYamFwd5bvpNdoZJxjLLuH6adTcx66pEKYFC55fGvQ=;
-	b=ca35CYqzpEv1O6x7kDOtHFG7O6T3WcBTmabdm4u4ubV0Ls4nZg0s4glAWzIiT08w8wZgZh
-	vXt5WR4QWWZ0H8F1wG+GlawIAfygv94xJsvFqVdTNy6nJzf9CXDdsV6D+TIMKSyqnSTKxm
-	TLlxbMo3/dvYCyD8H10KcjSC2brNu7E=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706093134; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vDYamFwd5bvpNdoZJxjLLuH6adTcx66pEKYFC55fGvQ=;
-	b=ca35CYqzpEv1O6x7kDOtHFG7O6T3WcBTmabdm4u4ubV0Ls4nZg0s4glAWzIiT08w8wZgZh
-	vXt5WR4QWWZ0H8F1wG+GlawIAfygv94xJsvFqVdTNy6nJzf9CXDdsV6D+TIMKSyqnSTKxm
-	TLlxbMo3/dvYCyD8H10KcjSC2brNu7E=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7CCF413786;
-	Wed, 24 Jan 2024 10:45:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id UDguHk7qsGVAEQAAD6G6ig
-	(envelope-from <mkoutny@suse.com>); Wed, 24 Jan 2024 10:45:34 +0000
-Date: Wed, 24 Jan 2024 11:45:33 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Simon Horman <horms@kernel.org>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, cake@lists.bufferbloat.net, 
-	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, 
-	Jiri Pirko <jiri@resnulli.us>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>, 
-	Vinicius Costa Gomes <vinicius.gomes@intel.com>, Stephen Hemminger <stephen@networkplumber.org>, 
-	Petr Pavlu <ppavlu@suse.cz>, Michal Kubecek <mkubecek@suse.cz>, 
-	Martin Wilck <mwilck@suse.com>, Pedro Tammela <pctammela@mojatatu.com>
-Subject: Re: [PATCH v4 3/4] net/sched: Load modules via their alias
-Message-ID: <7u63ta73ldxnf5ucoywzu4irl6mer66ur4letgpavghkcnvlke@6ajcojmjk5nv>
-References: <20240123135242.11430-1-mkoutny@suse.com>
- <20240123135242.11430-4-mkoutny@suse.com>
- <20240123174002.GN254773@kernel.org>
+	s=arc-20240116; t=1706093295; c=relaxed/simple;
+	bh=vUYNgyEiiBGTAOVgJfsG/RvhaXLEgRGTV9YrpqQM93E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SLUZ/ZL7pdGi8pNRwEqdzXh7EYhf0IaOW/J2zPnd1hvQdlDicDynH7IZR7Je6PcfBUSRN9xSr0HDn4pmJbSO0toMPJiV1ciix2wHp9INKSce1/QKsuJ8xv8Z2WVOMg6KQ+udH6bNWs6Rwv+IrJ+NSaQcQa3gzvJ3OGIdwH48LxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IApJ7drQ; arc=none smtp.client-ip=209.85.219.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-6818d263cb3so39271856d6.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 02:48:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706093292; x=1706698092; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X39Ts6MX+MiqoaGcJ6Oz7csIP4OtBMZYPm9qrUenbDM=;
+        b=IApJ7drQuzmIlJSEapY1e4i/2m3gtppl/DO81wEv2rahsftDKg5ku/nDYLyQgC0fkc
+         ugWwmI/su2qadoktaClKNyDv4UrgJDr+aUhBMAhxTgm4NxVJGTqEGrudunGXk9eRHc5Q
+         kPs/kXnPKverAsvj5hZw3m6Rn/QpTWDYYKK403D6QFVjOPuPugfoZoD75XZhizr3GDwt
+         5c/v18u0Sp8c10dWgL6OSRVhYREt8Ln9Z4UqrWABMy1KccGoqZVG83DNLUe3jjw9UbZR
+         pUDPTiNJnNv+7jKZgWoyNsPtfBKpeyzKuGXu8/mp1cc044L+dAfseV789OMDG7t9mDbN
+         WX9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706093292; x=1706698092;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=X39Ts6MX+MiqoaGcJ6Oz7csIP4OtBMZYPm9qrUenbDM=;
+        b=MI01bmoidiWZdo4U+afOG9GYgBLBGj/VZigRV10v/KILBNXXcT+aO0PdiUQTf+JBFK
+         ddrJX+oH5+N9RT8Mjn+2Cky8n4N+PuV0A01Kjf8RRrtwge6W9BC6IDW1Vuesopm24Q3e
+         ApRNVGVC0ss+aMVkoMYHG5nx3nTN31A18xtf6J7dZyPZ4wmPpPsy/kVQnlCcf9IGA8uz
+         E3qfYK+3/upqYN5OKjDTcGFkQMFiTSIOCUJB9UgG+DUMozfnyPsgcl4V8kNZ+3Vp8iXZ
+         YD/pTwLcFyvTAXbgjTuuTuwQY805CbnpWWO6kn0Z2jdot//BCqZ7pg5LsOIjFBATJy0o
+         RTYg==
+X-Gm-Message-State: AOJu0YwxvWJRPriYM7d90A8TCRv/w34wAQl3k/GQY91GQCrX26Io0V9d
+	gMEBnfOSPQ64eKZqyzlD85C+jexPF9eFgyqP38JGzZR4p606Ww4CPY1foqVdjUsEhyQtx6mEWpF
+	nXCP21K2EY+IRzQ2tIZK7l1pGBdWHY6Nlnrjk
+X-Google-Smtp-Source: AGHT+IG/GIxnoyhhLGaRwHzJnw2CsYDhw/Wa9qcMoyzCYt60ApWQxGfmvif7M11I8JdtLap1q9TWl31q5SAh8dAPA98=
+X-Received: by 2002:a05:6214:1d04:b0:682:85f5:f009 with SMTP id
+ e4-20020a0562141d0400b0068285f5f009mr3313074qvd.130.1706093292445; Wed, 24
+ Jan 2024 02:48:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="m7zrpn5dfxhi46pl"
-Content-Disposition: inline
-In-Reply-To: <20240123174002.GN254773@kernel.org>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-1.77 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-1.57)[92.18%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	 R_RATELIMIT(0.00)[to_ip_from(RL63s8thh5w8zyxj4waeg9pq8e)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWELVE(0.00)[30];
-	 SIGNED_PGP(-2.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+,1:+,2:~];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,lists.bufferbloat.net,davemloft.net,google.com,kernel.org,redhat.com,mojatatu.com,gmail.com,resnulli.us,iogearbox.net,linux.dev,toke.dk,intel.com,networkplumber.org,suse.cz,suse.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -1.77
+References: <000000000000fd588e060de27ef4@google.com> <20240102080315-mutt-send-email-mst@kernel.org>
+ <20240104204531.GB954424@fedora>
+In-Reply-To: <20240104204531.GB954424@fedora>
+From: Alexander Potapenko <glider@google.com>
+Date: Wed, 24 Jan 2024 11:47:32 +0100
+Message-ID: <CAG_fn=XmxeUePHFth5asQvHvo3=QSL4tB4yS5_3UVHWYJ=VRnw@mail.gmail.com>
+Subject: Re: [syzbot] [virtualization?] KMSAN: uninit-value in virtqueue_add (4)
+To: Stefan Hajnoczi <stefanha@redhat.com>
+Cc: syzbot <syzbot+d7521c1e3841ed075a42@syzkaller.appspotmail.com>, 
+	jasowang@redhat.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, virtualization@lists.linux.dev, 
+	xuanzhuo@linux.alibaba.com, bonzini@redhat.com, 
+	"Michael S. Tsirkin" <mst@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Jan 4, 2024 at 9:45=E2=80=AFPM Stefan Hajnoczi <stefanha@redhat.com=
+> wrote:
+>
+> On Tue, Jan 02, 2024 at 08:03:46AM -0500, Michael S. Tsirkin wrote:
+> > On Mon, Jan 01, 2024 at 05:38:24AM -0800, syzbot wrote:
+> > > Hello,
+> > >
+> > > syzbot found the following issue on:
+> > >
+> > > HEAD commit:    fbafc3e621c3 Merge tag 'for_linus' of git://git.kerne=
+l.org..
+> > > git tree:       upstream
+> > > console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D173df3e9e=
+80000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3De0c7078a6=
+b901aa3
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=3Dd7521c1e384=
+1ed075a42
+> > > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for=
+ Debian) 2.40
+> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1300b4a=
+1e80000
+> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D130b0379e=
+80000
+> > >
+> > > Downloadable assets:
+> > > disk image: https://storage.googleapis.com/syzbot-assets/1520f7b6daa4=
+/disk-fbafc3e6.raw.xz
+> > > vmlinux: https://storage.googleapis.com/syzbot-assets/8b490af009d5/vm=
+linux-fbafc3e6.xz
+> > > kernel image: https://storage.googleapis.com/syzbot-assets/202ca200f4=
+a4/bzImage-fbafc3e6.xz
+> > >
+> > > IMPORTANT: if you fix the issue, please add the following tag to the =
+commit:
+> > > Reported-by: syzbot+d7521c1e3841ed075a42@syzkaller.appspotmail.com
+> > >
+> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+>
+> Hi Alexander,
+> Please take a look at this KMSAN failure. The uninitialized memory was
+> created for the purpose of writing a coredump. vring_map_one_sg() should
+> have direction=3DDMA_TO_DEVICE.
+>
+Hi Stefan,
 
---m7zrpn5dfxhi46pl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I took a closer look, and am pretty confident this is a false positive.
+I tried adding memset(..., 0xab, PAGE_SIZE << order) to alloc_pages()
+and never saw
+the 0xab pattern in the buffers for which KMSAN reported an error.
 
-On Tue, Jan 23, 2024 at 05:40:02PM +0000, Simon Horman <horms@kernel.org> wrote:
-> name doesn't exist in this context, perhaps the line above should be:
+This probably isn't an error in 88938359e2df ("virtio: kmsan:
+check/unpoison scatterlist in
+vring_map_one_sg()"), which by itself should be doing a sane thing:
+report an error if an
+uninitialized buffer is passed to it. It is more likely that we're
+missing some initialization that
+happens in coredump.c
 
-Well spotted (and shame on me for unchecked last-moment edits).
-
-I will resend after some more feedback or time.
-
-Thanks,
-Michal
-
---m7zrpn5dfxhi46pl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZbDqSwAKCRAGvrMr/1gc
-jmDPAP4kh0vASWmR2BIYzLZ9ltAfmTpMmdRiYjUTl0+b1KWtYwD+NflnVdzmVBHe
-rylTGmjlroohIQGBpbUFvMZZAXcJ6AQ=
-=ko42
------END PGP SIGNATURE-----
-
---m7zrpn5dfxhi46pl--
+Does anyone have an idea where coredump.c is supposed to be
+initializing these pages?
+Maybe there are some inline assembly functions involved in copying the data=
+?
 
