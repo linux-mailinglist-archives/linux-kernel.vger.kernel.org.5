@@ -1,424 +1,123 @@
-Return-Path: <linux-kernel+bounces-36401-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36402-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2370083A019
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 04:33:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9320483A01D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 04:33:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 482F81C22DE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:33:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CAC8291F89
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:33:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C13EA63A8;
-	Wed, 24 Jan 2024 03:33:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91C448465;
+	Wed, 24 Jan 2024 03:33:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fBzmJndX"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="n0VlnnG8"
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 721BD1381
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 03:33:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.115
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 684C1BE6C
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 03:33:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706067200; cv=none; b=HlDlNxHndkh6gi4KJOcgQe7G6dx6H0CNUgWiDarLzpnNjI+rXC+03Ub+rG0N6/fa/ZJ2pajzzXqyd2f/XxZB7tSSb1T7TDjBJbtZZbZOvqOWe3cKPzvU7HWs+Kvokoxz97hUXJikWBZy7djQA6rTjBa0h1cHK133IHMbGJ2UwbA=
+	t=1706067214; cv=none; b=rzkol2QdmyD7KxennjLS/nZ8PEQrOHoyRK2iBiSi07mEZZ7qvwH5VCdO9by3V+7gsxLqfkIdOzoCAp9L4JOkpCiGucSfd9dkxYBLraK19fprkLSfJDTmXH5kYLiEfJFHpHtssu0l2O2DZ3J+YkMWRsUX0mohuh5PJN7H0Za6mAI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706067200; c=relaxed/simple;
-	bh=Z2hOeFRMM+FsKPNrqSzFr6A+EoRmF0tPO+vSo613Wyc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=neeA+ptiKINbORU4V10LHo4ygZ+l+RvAEdiLhMjDmYx2CnWAU029ImcGmSQB514NrEwgRh1hIjjdgZJOELmmAi4UIexekyHgdK0qRthUh22Toj0Dw1wlhw2NXp0/EyQxT5qGT0bciMggjcz24IBq2Vp6Vw8OcRBFAYOorzH444g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fBzmJndX; arc=none smtp.client-ip=192.55.52.115
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706067198; x=1737603198;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=Z2hOeFRMM+FsKPNrqSzFr6A+EoRmF0tPO+vSo613Wyc=;
-  b=fBzmJndXfzJmIep/z+bkaLTBgbpIBzmrBLWeLpsB1cCfQwS7EeJ+E8qm
-   hcWPrl+5Jm6R43vltq/KAwHJDpkjo2cOONDJHYHJ1Zo+teJy42WWNXGAF
-   Kr0OhxeUKdkTspyl++3NFS7wr32uk32eFTTv15pbpP1CTGZ1/N4Q0lWBg
-   S2dapJi9PTDRgTP3A/m6VrhE4Dql9Zsekkb6sZ4DvfzWW2tsF8qStH+bj
-   zYc0y+Hix15ISbxi0d0CSsLrT+xi3G94SCt3VgZFMupXQh3sq7PTSKKLN
-   qWAq5qh/3YrAfUTYrPXqSGfm4WKuSK812aEb56Wb86KQCUkTtqc8I6V12
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="401386917"
-X-IronPort-AV: E=Sophos;i="6.05,215,1701158400"; 
-   d="scan'208";a="401386917"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 19:33:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,215,1701158400"; 
-   d="scan'208";a="27967128"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 19:33:13 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Kairui Song <ryncsn@gmail.com>
-Cc: linux-mm@kvack.org,  Andrew Morton <akpm@linux-foundation.org>,  Chris
- Li <chrisl@kernel.org>,  Hugh Dickins <hughd@google.com>,  Johannes Weiner
- <hannes@cmpxchg.org>,  Matthew Wilcox <willy@infradead.org>,  Michal Hocko
- <mhocko@suse.com>,  Yosry Ahmed <yosryahmed@google.com>,  David
- Hildenbrand <david@redhat.com>,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 8/9] mm/swap: introduce a helper for swapin without
- vmfault
-In-Reply-To: <CAMgjq7C8z-zEw9X-s-C4cy5NhfC4DuiK2-4Ca5SeOZ0NGZMm0w@mail.gmail.com>
-	(Kairui Song's message of "Mon, 22 Jan 2024 19:35:19 +0800")
-References: <20240102175338.62012-1-ryncsn@gmail.com>
-	<20240102175338.62012-9-ryncsn@gmail.com>
-	<875y039utw.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<CAMgjq7DkyZU0udhSUEfCMMT84Vad20UauXz9pzQp4c=cVFtiMw@mail.gmail.com>
-	<87sf2z1hxt.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<CAMgjq7C9p-Et2jqyztLp2DHyG8AZrHCnNjXfHkbQrCMDVx-p_g@mail.gmail.com>
-	<87a5oxx48b.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<CAMgjq7C8z-zEw9X-s-C4cy5NhfC4DuiK2-4Ca5SeOZ0NGZMm0w@mail.gmail.com>
-Date: Wed, 24 Jan 2024 11:31:14 +0800
-Message-ID: <87zfwvs8zh.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1706067214; c=relaxed/simple;
+	bh=g/m+1nEdRXifGhS61lWzGasqSDIMLxiCVv+HkeeLgRM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EdbD5GYqQwlKs/OzOvrfBp8j18NYqDq5FLxqj/mqA6s7yPKUrbh0yoPGWH+df5t4PEKUsmkJkI8o5SzhZFXBOZiGqnkVjCA0Mm/DDqyvQK+7NOwf9iUfxfZLNkHA3vilg+h59wMrzzIYLXD1ihG2dD6yWcu1xY+79iuhhtaGcuk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=n0VlnnG8; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dc21ad8266fso4069143276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 19:33:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706067211; x=1706672011; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wc0A1k/7YMLXea6xhKdK2KO1S9xlAAnHvAkEcbtMgWs=;
+        b=n0VlnnG8xyfBICSrONnDAyzUUajrGXC4jC22lOzyOTLNHdq5P0VXI6175S43sslCLg
+         8RN0Ihors804nU+ll0I+IT7W3s/EI3KpxBQignyp0ufPsDKvrRAJ1+ogi+ZzCKQYr6TA
+         NN01/WvoGjP/iRorH36PldRQgCgybURAst885YBQ+cZRilbBYH+iCE2IlHKHfpHhFslx
+         oljfdtcFcHS31njJr0PHRvgi/NyQHuk8FlBq2CnEJ6EzLCq9CCKeyW+JXDIuIXwsxZ0l
+         Nbf21c4dxjFih0mG6x7rOsz+DdQZffMbetIjYn53YUI+90q5FUij16UkFCkeliPP9bH+
+         tPJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706067211; x=1706672011;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Wc0A1k/7YMLXea6xhKdK2KO1S9xlAAnHvAkEcbtMgWs=;
+        b=WAgChZDX5WqzlWrBMkV6JM6smlo4gIIUSi11gG7kFSaTriR67RNOGiKX884KizJXTA
+         qhrX2XYYCuaIq5l+Rf1Mti0+AB92qbKJdw9gj0olM/pLvEltrNgkh6Uov0YDPRU8OKUo
+         nlPhdzub32pFuk3a4NLmUDXNPEkBpUzHAXDmKtD/WpBp+viIkSFo2dMIF8JLtI92sWl+
+         gCXfKGOzcgC9suDxzSikX7sd/Dsyxmk9WYLzPW8qPBoo4JVBcRZgs0obumsuJ/Edbqai
+         C8VSXLBxR2v4ri/uIX/PPUCqec+pAIvFz9AVc5tB15aclBG7BsWiP9myZ5ghBVcpJJti
+         hQSg==
+X-Gm-Message-State: AOJu0Yy6Pvz2U7fLxCKzB2yxcMHfzweLcMcbCcr1MgATSsnlv9n7F0MM
+	Au3ku11uBpc156QrI6bxTk8niAJBg6VzpkuQdwzkdyPg2jfkcYZ5OlQFsK+Z6kbMSuWjgPn6MYR
+	CgfnjjuhIcYzBlcz4dY76NKoUa3Jvlvxd9cwqMYIlfMXICk3dqOsCeg==
+X-Google-Smtp-Source: AGHT+IGdWzzO4xfUM06uANHv4YCY0KTFoCAf9r4oksDWnT70n9BD76/RrW4NMEBu4iEGHildUvFcJdMdvfNw9DZ7Slw=
+X-Received: by 2002:a25:6b06:0:b0:dc2:466a:23bd with SMTP id
+ g6-20020a256b06000000b00dc2466a23bdmr146538ybc.54.1706067211398; Tue, 23 Jan
+ 2024 19:33:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20240124023305.15755-1-quic_tengfan@quicinc.com> <20240124023305.15755-2-quic_tengfan@quicinc.com>
+In-Reply-To: <20240124023305.15755-2-quic_tengfan@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 24 Jan 2024 05:33:20 +0200
+Message-ID: <CAA8EJpqkDcqjn-8HrK7=rRe49ycDY6fbNDCKKQOeUpa_EDjFtw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: qcom: modify the wrong
+ compatible name
+To: Tengfei Fan <quic_tengfan@quicinc.com>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, linus.walleij@linaro.org, 
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
 
-Kairui Song <ryncsn@gmail.com> writes:
-
-> On Mon, Jan 22, 2024 at 2:40=E2=80=AFPM Huang, Ying <ying.huang@intel.com=
-> wrote:
->>
->> Kairui Song <ryncsn@gmail.com> writes:
->>
->> > On Mon, Jan 15, 2024 at 9:54=E2=80=AFAM Huang, Ying <ying.huang@intel.=
-com> wrote:
->> >>
->> >> Kairui Song <ryncsn@gmail.com> writes:
->> >>
->> >> > Huang, Ying <ying.huang@intel.com> =E4=BA=8E2024=E5=B9=B41=E6=9C=88=
-9=E6=97=A5=E5=91=A8=E4=BA=8C 09:11=E5=86=99=E9=81=93=EF=BC=9A
->> >> >>
->> >> >> Kairui Song <ryncsn@gmail.com> writes:
->> >> >>
->> >> >> > From: Kairui Song <kasong@tencent.com>
->> >> >> >
->> >> >> > There are two places where swapin is not caused by direct anon p=
-age fault:
->> >> >> > - shmem swapin, invoked indirectly through shmem mapping
->> >> >> > - swapoff
->> >> >> >
->> >> >> > They used to construct a pseudo vmfault struct for swapin functi=
-on.
->> >> >> > Shmem has dropped the pseudo vmfault recently in commit ddc1a5cb=
-c05d
->> >> >> > ("mempolicy: alloc_pages_mpol() for NUMA policy without vma"). S=
-wapoff
->> >> >> > path is still using one.
->> >> >> >
->> >> >> > Introduce a helper for them both, this help save stack usage for=
- swapoff
->> >> >> > path, and help apply a unified swapin cache and readahead policy=
- check.
->> >> >> >
->> >> >> > Due to missing vmfault info, the caller have to pass in mempolicy
->> >> >> > explicitly, make it different from swapin_entry and name it
->> >> >> > swapin_entry_mpol.
->> >> >> >
->> >> >> > This commit convert swapoff to use this helper, follow-up commit=
-s will
->> >> >> > convert shmem to use it too.
->> >> >> >
->> >> >> > Signed-off-by: Kairui Song <kasong@tencent.com>
->> >> >> > ---
->> >> >> >  mm/swap.h       |  9 +++++++++
->> >> >> >  mm/swap_state.c | 40 ++++++++++++++++++++++++++++++++--------
->> >> >> >  mm/swapfile.c   | 15 ++++++---------
->> >> >> >  3 files changed, 47 insertions(+), 17 deletions(-)
->> >> >> >
->> >> >> > diff --git a/mm/swap.h b/mm/swap.h
->> >> >> > index 9180411afcfe..8f790a67b948 100644
->> >> >> > --- a/mm/swap.h
->> >> >> > +++ b/mm/swap.h
->> >> >> > @@ -73,6 +73,9 @@ struct folio *swap_cluster_readahead(swp_entry=
-_t entry, gfp_t flag,
->> >> >> >               struct mempolicy *mpol, pgoff_t ilx);
->> >> >> >  struct folio *swapin_entry(swp_entry_t entry, gfp_t flag,
->> >> >> >                           struct vm_fault *vmf, enum swap_cache_=
-result *result);
->> >> >> > +struct folio *swapin_entry_mpol(swp_entry_t entry, gfp_t gfp_ma=
-sk,
->> >> >> > +                             struct mempolicy *mpol, pgoff_t il=
-x,
->> >> >> > +                             enum swap_cache_result *result);
->> >> >> >
->> >> >> >  static inline unsigned int folio_swap_flags(struct folio *folio)
->> >> >> >  {
->> >> >> > @@ -109,6 +112,12 @@ static inline struct folio *swapin_entry(sw=
-p_entry_t swp, gfp_t gfp_mask,
->> >> >> >       return NULL;
->> >> >> >  }
->> >> >> >
->> >> >> > +static inline struct page *swapin_entry_mpol(swp_entry_t entry,=
- gfp_t gfp_mask,
->> >> >> > +             struct mempolicy *mpol, pgoff_t ilx, enum swap_cac=
-he_result *result)
->> >> >> > +{
->> >> >> > +     return NULL;
->> >> >> > +}
->> >> >> > +
->> >> >> >  static inline int swap_writepage(struct page *p, struct writeba=
-ck_control *wbc)
->> >> >> >  {
->> >> >> >       return 0;
->> >> >> > diff --git a/mm/swap_state.c b/mm/swap_state.c
->> >> >> > index 21badd4f0fc7..3edf4b63158d 100644
->> >> >> > --- a/mm/swap_state.c
->> >> >> > +++ b/mm/swap_state.c
->> >> >> > @@ -880,14 +880,13 @@ static struct folio *swap_vma_readahead(sw=
-p_entry_t targ_entry, gfp_t gfp_mask,
->> >> >> >   * in.
->> >> >> >   */
->> >> >> >  static struct folio *swapin_direct(swp_entry_t entry, gfp_t gfp=
-_mask,
->> >> >> > -                               struct vm_fault *vmf, void *shad=
-ow)
->> >> >> > +                                struct mempolicy *mpol, pgoff_t=
- ilx,
->> >> >> > +                                void *shadow)
->> >> >> >  {
->> >> >> > -     struct vm_area_struct *vma =3D vmf->vma;
->> >> >> >       struct folio *folio;
->> >> >> >
->> >> >> > -     /* skip swapcache */
->> >> >> > -     folio =3D vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0,
->> >> >> > -                             vma, vmf->address, false);
->> >> >> > +     folio =3D (struct folio *)alloc_pages_mpol(gfp_mask, 0,
->> >> >> > +                     mpol, ilx, numa_node_id());
->> >> >> >       if (folio) {
->> >> >> >               if (mem_cgroup_swapin_charge_folio(folio, NULL,
->> >> >> >                                                  GFP_KERNEL, ent=
-ry)) {
->> >> >> > @@ -943,18 +942,18 @@ struct folio *swapin_entry(swp_entry_t ent=
-ry, gfp_t gfp_mask,
->> >> >> >               goto done;
->> >> >> >       }
->> >> >> >
->> >> >> > +     mpol =3D get_vma_policy(vmf->vma, vmf->address, 0, &ilx);
->> >> >> >       if (swap_use_no_readahead(swp_swap_info(entry), entry)) {
->> >> >> > -             folio =3D swapin_direct(entry, gfp_mask, vmf, shad=
-ow);
->> >> >> > +             folio =3D swapin_direct(entry, gfp_mask, mpol, ilx=
-, shadow);
->> >> >> >               cache_result =3D SWAP_CACHE_BYPASS;
->> >> >> >       } else {
->> >> >> > -             mpol =3D get_vma_policy(vmf->vma, vmf->address, 0,=
- &ilx);
->> >> >> >               if (swap_use_vma_readahead())
->> >> >> >                       folio =3D swap_vma_readahead(entry, gfp_ma=
-sk, mpol, ilx, vmf);
->> >> >> >               else
->> >> >> >                       folio =3D swap_cluster_readahead(entry, gf=
-p_mask, mpol, ilx);
->> >> >> > -             mpol_cond_put(mpol);
->> >> >> >               cache_result =3D SWAP_CACHE_MISS;
->> >> >> >       }
->> >> >> > +     mpol_cond_put(mpol);
->> >> >> >  done:
->> >> >> >       if (result)
->> >> >> >               *result =3D cache_result;
->> >> >> > @@ -962,6 +961,31 @@ struct folio *swapin_entry(swp_entry_t entr=
-y, gfp_t gfp_mask,
->> >> >> >       return folio;
->> >> >> >  }
->> >> >> >
->> >> >> > +struct folio *swapin_entry_mpol(swp_entry_t entry, gfp_t gfp_ma=
-sk,
->> >> >> > +                             struct mempolicy *mpol, pgoff_t il=
-x,
->> >> >> > +                             enum swap_cache_result *result)
->> >> >> > +{
->> >> >> > +     enum swap_cache_result cache_result;
->> >> >> > +     void *shadow =3D NULL;
->> >> >> > +     struct folio *folio;
->> >> >> > +
->> >> >> > +     folio =3D swap_cache_get_folio(entry, NULL, 0, &shadow);
->> >> >> > +     if (folio) {
->> >> >> > +             cache_result =3D SWAP_CACHE_HIT;
->> >> >> > +     } else if (swap_use_no_readahead(swp_swap_info(entry), ent=
-ry)) {
->> >> >> > +             folio =3D swapin_direct(entry, gfp_mask, mpol, ilx=
-, shadow);
->> >> >> > +             cache_result =3D SWAP_CACHE_BYPASS;
->> >> >> > +     } else {
->> >> >> > +             folio =3D swap_cluster_readahead(entry, gfp_mask, =
-mpol, ilx);
->> >> >> > +             cache_result =3D SWAP_CACHE_MISS;
->> >> >> > +     }
->> >> >> > +
->> >> >> > +     if (result)
->> >> >> > +             *result =3D cache_result;
->> >> >> > +
->> >> >> > +     return folio;
->> >> >> > +}
->> >> >> > +
->> >> >> >  #ifdef CONFIG_SYSFS
->> >> >> >  static ssize_t vma_ra_enabled_show(struct kobject *kobj,
->> >> >> >                                    struct kobj_attribute *attr, =
-char *buf)
->> >> >> > diff --git a/mm/swapfile.c b/mm/swapfile.c
->> >> >> > index 5aa44de11edc..2f77bf143af8 100644
->> >> >> > --- a/mm/swapfile.c
->> >> >> > +++ b/mm/swapfile.c
->> >> >> > @@ -1840,18 +1840,13 @@ static int unuse_pte_range(struct vm_are=
-a_struct *vma, pmd_t *pmd,
->> >> >> >       do {
->> >> >> >               struct folio *folio;
->> >> >> >               unsigned long offset;
->> >> >> > +             struct mempolicy *mpol;
->> >> >> >               unsigned char swp_count;
->> >> >> >               swp_entry_t entry;
->> >> >> > +             pgoff_t ilx;
->> >> >> >               int ret;
->> >> >> >               pte_t ptent;
->> >> >> >
->> >> >> > -             struct vm_fault vmf =3D {
->> >> >> > -                     .vma =3D vma,
->> >> >> > -                     .address =3D addr,
->> >> >> > -                     .real_address =3D addr,
->> >> >> > -                     .pmd =3D pmd,
->> >> >> > -             };
->> >> >> > -
->> >> >> >               if (!pte++) {
->> >> >> >                       pte =3D pte_offset_map(pmd, addr);
->> >> >> >                       if (!pte)
->> >> >> > @@ -1871,8 +1866,10 @@ static int unuse_pte_range(struct vm_area=
-_struct *vma, pmd_t *pmd,
->> >> >> >               pte_unmap(pte);
->> >> >> >               pte =3D NULL;
->> >> >> >
->> >> >> > -             folio =3D swapin_entry(entry, GFP_HIGHUSER_MOVABLE,
->> >> >> > -                                  &vmf, NULL);
->> >> >> > +             mpol =3D get_vma_policy(vma, addr, 0, &ilx);
->> >> >> > +             folio =3D swapin_entry_mpol(entry, GFP_HIGHUSER_MO=
-VABLE,
->> >> >> > +                                       mpol, ilx, NULL);
->> >> >> > +             mpol_cond_put(mpol);
->> >> >> >               if (!folio) {
->> >> >> >                       /*
->> >> >> >                        * The entry could have been freed, and wi=
-ll not
->> >> >>
->> >> >> IIUC, after the change, we will always use cluster readahead for
->> >> >> swapoff.  This may be OK.  But, at least we need some test results=
- which
->> >> >> show that this will not cause any issue for this behavior change. =
- And
->> >> >> the behavior change should be described explicitly in patch descri=
-ption.
->> >> >
->> >> > Hi Ying
->> >> >
->> >> > Actually there is a swap_use_no_readahead check in swapin_entry_mpo=
-l,
->> >> > so when readahaed is not needed (SYNC_IO), it's just skipped.
->> >> >
->> >> > And I think VMA readahead is not helpful swapoff, swapoff is already
->> >> > walking the VMA, mostly uninterrupted in kernel space. With VMA
->> >> > readahead or not, it will issue IO page by page.
->> >> > The benchmark result I posted before is actually VMA readhead vs
->> >> > no-readahead for ZRAM, sorry I didn't make it clear. It's obvious
->> >> > no-readahead is faster.
->> >> >
->> >> > For actual block device, cluster readahead might be a good choice f=
-or
->> >> > swapoff, since all pages will be read for swapoff, there has to be
->> >> > enough memory for all swapcached page to stay in memory or swapoff
->> >> > will fail anyway, and cluster read is faster for block devices.
->> >>
->> >> It's possible.  But please run the tests on some actual block devices
->> >> and show your results.  Random memory accessing pattern should be
->> >> tested, and the swap space usage should be > 50% to show some not so
->> >> friendly situation.
->> >>
->> >
->> > Hi Ying,
->> >
->> > I setup a test environment and did following test, and found that
->> > cluster readahaed for swapoff is actually much worse in default setup:
->> >
->> > 1. Setup MySQL server using 2G memcg, with 28G buffer pool, and 24G NV=
-ME swap
->> > 2. Stress test with sysbench for 15min.
->> > 3. Remove the 2G memcg limit and swapoff.
->> >
->> > Before this patch, swapoff will take about 9m.
->> > After this patch, swapoff will take about 30m.
->>
->> Thanks for data!
->>
->> > After some analysis I found the reason is that cluster readahead is
->> > almost disabled (window =3D=3D 1 or 2) during swapoff, because it will
->> > detect a very low hit rate on fragmented swap. But VMA readhead is
->> > much more aggressive here since swapoff is walking the VMA, with a
->> > very high hit rate.
->> >
->> > But If I force cluster readahead to use a large window for swapoff,
->> > the swapoff performance boost by a lot:
->> > By adding following change in swap_cluster_readahead:
->> >
->> > if (unlikely(!(si->flags & SWP_WRITEOK)))
->> >     mask =3D max_t(unsigned long, 1 << READ_ONCE(page_cluster), PMD_SI=
-ZE
->> > / PAGE_SIZE) - 1;
->> >
->> > The swapoff will take only 40s to finish, more than 10x faster than
->> > the VMA readahead path (9m), because VMA readhead is still doing 4K
->> > random IO just with a longer queue due to async readahead. But cluster
->> > readhead will be doing 2M IO now.
->> > I think PMD size window is good here since it still keep a balance
->> > between good IO performance and the swapoff progress can still be
->> > interrupted, and the system is responsible. And in most cases we
->> > expect swapoff to success, if it fail, the RA windows should still
->> > keep the side effect of extra swapcache being generated acceptable.
->>
->> swapoff performance isn't very important because swapoff is a very rare
->> operation.  It's OK to optimize it if the change is simple and doesn't
->> compromise other stuff.  But, as you said below, using large readahead
->> window makes mempolicy issue more serious.  Why isn't the original
->> swapoff performance good enough for you?
+On Wed, 24 Jan 2024 at 04:33, Tengfei Fan <quic_tengfan@quicinc.com> wrote:
 >
-> Thanks for the reply.
+> Use right compatible name "qcom,sm4450-tlmm" instead of
+> "qcom,sm4450-pinctrl".
 >
-> I think I'll just keep the original VMA readahead policy here then.
-> Just I noticed that VMA readhead will also violate ranged memory
-> policy too... That's some different issue, looks trivial though.
+> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+> ---
+>  Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.yaml
+> index bb08ca5a1509..bb675c8ec220 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.yaml
+> @@ -17,7 +17,7 @@ allOf:
+>
+>  properties:
+>    compatible:
+> -    const: qcom,sm4450-pinctrl
+> +    const: qcom,sm4450-tlmm
 
-During reviewing your patch, I found that too.  I think that they can be
-fixed because we have enough information.
+Fixes: 7bf8b78f86db ("dt-bindings: pinctrl: qcom: Add SM4450 pinctrl")
+
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
+
+>
+>    reg:
+>      maxItems: 1
+> --
+> 2.17.1
+>
+>
+
 
 --
-Best Regards,
-Huang, Ying
-
->>
->> > But this showed a bad effect of ignoring mem policy. Actually this is
->> > not a new issue, cluster readhead is already violating VMA's mem
->> > policy since it does readhead only based on entry value not VMA, the
->> > entry being swapped in is not aware of which VMA it belongs.
->> >
->> > And I was thinking, maybe we can just drop the mpol all the way, and
->> > use the nid from page shadow to alloc pages, that may save a lot of
->> > effort, and make cluster readhead more usable in general, also might
->> > simplify a lot of code. How do you think? If this is acceptable, I
->> > think I can send out a new series first and then rework this one
->> > later.
->>
->> The "shadow" node can be reclaimed, please take a look at
->> scan_shadow_nodes().  Although this hasn't been implemented, it may be
->> implemented someday.
->
-> Right, I noticed upstream commit 5649d113ffce ("swap_state: update
-> shadow_nodes for anonymous page") started reclaiming anon pages
-> shadows now, thanks for the info.
+With best wishes
+Dmitry
 
