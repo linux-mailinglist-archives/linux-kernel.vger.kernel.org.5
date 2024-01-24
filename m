@@ -1,171 +1,261 @@
-Return-Path: <linux-kernel+bounces-37598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37599-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07F3083B255
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 20:34:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0819183B25E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 20:38:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7EEE51F2462D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:34:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E25B1C2235B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:38:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51012132C3A;
-	Wed, 24 Jan 2024 19:34:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83D5B132C34;
+	Wed, 24 Jan 2024 19:38:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="cKXLWlWN"
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j3cEaQD9"
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33E8A132C0D
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 19:34:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BBE17CF3F
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 19:38:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706124879; cv=none; b=JllWRGp0wwmMCAOBHoxJGT6DTR3V6yHEW4OTHfRUEahXruMeINE+rRa8MOfwmNP7bC2XYvdaBUl3zaxDyrlHoYIvMNeBxS9XELlFF9/hvLpjQ6j5io+4fJIQH9dncJRYMfcC7wU9joIThFkCvTGJIYDHrx824MEaCQ68fy/K6QU=
+	t=1706125121; cv=none; b=JTPrvxY6d37vWDUAoAfBSUBCiZhwCe+bNF3Tk+y3GkkAKDSlDzzh154sq8aUYCoGb/UiJPoAPsVBD9He9dIvaSWKZQtOz6qXuMtWnOrL6hyQ3yBhylJVJBI/fKwU94RjUn8ZBYz/Krw5d1Gt4nGkPu8kHz0EUwuKFUsD9XNWgTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706124879; c=relaxed/simple;
-	bh=WgifWUz3Gr+kTQxM0rtP5N6Jm9nsIzie+HFNuWed/bE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aGq3qP6fi0v1QM0fPzd7PhhzExFQY73vowzsIgAnn5lEVnkQWCbeQIIlE20/OHqFp2UXSckdL6shTy/HQIcBa8IHiTdjzYHxrae4zH40qEMD9HRkaHci/TEQQT4AWjrWixjeXM7Kl5QJ8uLgDw5tj8bsZ5nbjhic9yEDQLBxukk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=cKXLWlWN; arc=none smtp.client-ip=209.85.219.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-68196a09e2eso34602136d6.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 11:34:28 -0800 (PST)
+	s=arc-20240116; t=1706125121; c=relaxed/simple;
+	bh=+k9OWczvUGMnN/2XaNeNiKTVBPX1lRZnbBn3wZPoj5M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=k6xusydhTCpjahVN07myx8O+SBisXdm8DSUmrxMAO48b8Sh21c2KbpNnaRZpd0i1mPTXdphKivnuBBRgcftgTGpJBVoCnLtf1U+XqqO4C8fntL1A0QKJ5Uw/q+eHs/1FUIa4fLFvxli+5BLhtkPu78qd09bqqrJWQe9s877xRhY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j3cEaQD9; arc=none smtp.client-ip=209.85.210.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6dec4b7b680so3622074a34.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 11:38:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706124868; x=1706729668; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZUvX5R1ypOP3ZoaGMkONSc/GtN51J4XYq4lgSnIUNL0=;
-        b=cKXLWlWNYJ6CaVfwjFa5sfCsmyvcxocg7dpyhaOv2kbAcp1UjHzUKsifZQblG4usN1
-         hSrQ1rWOY0IDK8RhTpeaYrGSvG9uy5W/B95Twu2PkqZQuQEhN82dHuhAYjwsX5hGVvDa
-         /kew3MzFfk2UzLFNIY2Gjl+JFn/WF451rM9hg=
+        d=gmail.com; s=20230601; t=1706125119; x=1706729919; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uD5n5CYMyoxmSF0veZJBcYhXMJ89+GcCRIw+PVWIrPM=;
+        b=j3cEaQD9BELKZvfpW5Hdv1PO3cR+TuFqQ7wc0gnvo8WVE9419N+D71ChB+r7tvDCJP
+         D3i1TwWdSz2sXDu21p0dFNFbxFettO8OZckfJfIopSPL50p5jJaGYXtDpb/FqR7kWTdU
+         18BddQivJOUx/N4xs+fIm+ptrlwJ9rGMAA7a5D88rrtKC+MUF9EYqNVlR+FD4hAZhz31
+         aOzyl/+esxUnsS3jsRIRAqsZ6texXXNe9c5TUYAN6ale+ePwMZe8SuaXLfub+Evx3I29
+         k0VREI8w6+Om+KkTPsj39e0O9CDzghx2pG/n2NY9E/bnUrqs1x4hpTlbeCChZT4nsw4u
+         W0ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706124868; x=1706729668;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZUvX5R1ypOP3ZoaGMkONSc/GtN51J4XYq4lgSnIUNL0=;
-        b=c4YHnX7ncVsjgEwpcMKPl4mlZtmHW6k1VG6FzHLrZoopt8IvWVZgCG53f6QOIlOtMg
-         hBFfGAEiNXzCqLSd/n/YdRTqSa8WyOHLfR1haxAR+swbY8BzrWxDI4j74bJbNm5z+VT0
-         F2/xKcab7ZELa+dZC0Ffd4UL8GPOCUWHORVGuCDKzm7iYX8J9uHnqW4ULYPwc1/OBqxN
-         68o2LJY94zF4BtJjbZ2ZZ609Zmmsafl7FMd9k46dhh8TQfZrgGvZWcvNXG5nb0Qk7vVK
-         K8jZsAg2zCoXdPGpMLPCCwXmGMze9y3/09PCceiC9+YYJZNRnmdL1KfPg4U2WAJnUCZs
-         mCqQ==
-X-Gm-Message-State: AOJu0YyMzWbAqNr9YfI4Bq6z0G/jCYS19Om//qRVfYK3pd8rfEAKD9Lf
-	FA1J9W8nxruXD4JsdzEn+wZ0gD3WD2dr/Pkf1LBdxMnmuiBxWq0/0KuQk25/VOJ3ILNkYOW0Saw
-	LVE5lJxjPraNHvJeg2/NrfNVa9OIoKctDUHhY
-X-Google-Smtp-Source: AGHT+IFdSmmiGj4lOSeztl0/DABo6LGJl5/xHBHcQKP5jidw8APbKW7N7SyQQKidCuNpKRPC/KcBdwWzm04vsoPPRu4=
-X-Received: by 2002:a05:6214:622:b0:680:8373:4932 with SMTP id
- a2-20020a056214062200b0068083734932mr3380504qvx.69.1706124868109; Wed, 24 Jan
- 2024 11:34:28 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706125119; x=1706729919;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uD5n5CYMyoxmSF0veZJBcYhXMJ89+GcCRIw+PVWIrPM=;
+        b=gQbL65Gddsd/RqDDopLoXO87M73qBHAxaxxOZpeqX1/Upm14Iy3xRFArExtXhNu3+i
+         9gPf1mztiYLD2X2ctloi1+gG0xzmMH4pzMqZBn3DY6VPb7eSbgdRsTPm+2YNv3emMU9i
+         990m47vwFYHZCZXvXyV2uUr7e/IkODUuaSYUL+ePc+4Yyjs4NqujQWe4+u//pBC3AUDC
+         yzrUo9E1qQDTSVpjd9fLHL6K4hl6bfUJlxM2GSHNlzdUG8K+uV6ya7KMITu8rZ1iq3c9
+         7bAt10mKVO3iAUYg0YErEvqNJx+FEX+eqBZfzYAew54/Wan/B7bCZhCB18kbRbInJ9oQ
+         vtKA==
+X-Gm-Message-State: AOJu0YzuG2Ab/WFraw7sInbCne5UkFHO8tcwk/w9xFURQ/JV2TfMQVmG
+	jZ5Q8NvM3Q6tJXf//oRX2TBnzX8O4n7btLnvtG2dTvRubj3nqtjyBNVIkyj6
+X-Google-Smtp-Source: AGHT+IEZKGQQ8NRnyHbwJDoSiUbCjNKBhT+6Y+poRPh8R25KQHYVof+7qR8X3Eln7HX7ElULtRgQWw==
+X-Received: by 2002:a9d:620b:0:b0:6db:bcb5:a070 with SMTP id g11-20020a9d620b000000b006dbbcb5a070mr1971227otj.62.1706125119005;
+        Wed, 24 Jan 2024 11:38:39 -0800 (PST)
+Received: from [192.168.1.224] (067-048-091-116.res.spectrum.com. [67.48.91.116])
+        by smtp.gmail.com with ESMTPSA id w10-20020a9d77ca000000b006ddda12a747sm2695692otl.70.2024.01.24.11.38.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Jan 2024 11:38:38 -0800 (PST)
+Message-ID: <7c2451ad-2d6d-4517-9373-0f5d58f2cfad@gmail.com>
+Date: Wed, 24 Jan 2024 13:38:36 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240123223039.1471557-1-abhishekpandit@google.com>
- <20240123143026.v1.3.Idf7d373c3cbb54058403cb951d644f1f09973d15@changeid>
- <CACeCKafTBwSgRXLFA3HC7cBe8hD=PSgSmR=TWy1oF3Rkn+hK4g@mail.gmail.com> <CANFp7mUFvRnb1BF=vzNE+BxMcjZi_o0wwJVw=Ty+zEG+JTzA1w@mail.gmail.com>
-In-Reply-To: <CANFp7mUFvRnb1BF=vzNE+BxMcjZi_o0wwJVw=Ty+zEG+JTzA1w@mail.gmail.com>
-From: Prashant Malani <pmalani@chromium.org>
-Date: Wed, 24 Jan 2024 11:34:17 -0800
-Message-ID: <CACeCKacH4zJGNqFKjLoaHzM59nSGdaWkNXec2GM=0kfafPBgqA@mail.gmail.com>
-Subject: Re: [PATCH v1 3/3] usb: typec: ucsi: Get PD revision for partner
-To: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Cc: Abhishek Pandit-Subedi <abhishekpandit@google.com>, 
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>, linux-usb@vger.kernel.org, 
-	jthies@google.com, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-	Bjorn Andersson <andersson@kernel.org>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
-	Fabrice Gasnier <fabrice.gasnier@foss.st.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Hans de Goede <hdegoede@redhat.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Saranya Gopal <saranya.gopal@intel.com>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] nvme_core: scan namespaces asynchronously
+Content-Language: en-US
+To: Sagi Grimberg <sagi@grimberg.me>, linux-kernel@vger.kernel.org,
+ Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+ Christoph Hellwig <hch@lst.de>, linux-nvme@lists.infradead.org
+References: <20240118210303.10484-1-stuart.w.hayes@gmail.com>
+ <189cde89-9750-476f-8fbb-1c95dc056efb@grimberg.me>
+From: stuart hayes <stuart.w.hayes@gmail.com>
+In-Reply-To: <189cde89-9750-476f-8fbb-1c95dc056efb@grimberg.me>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 24, 2024 at 11:18=E2=80=AFAM Abhishek Pandit-Subedi
-<abhishekpandit@chromium.org> wrote:
->
-> On Wed, Jan 24, 2024 at 10:49=E2=80=AFAM Prashant Malani <pmalani@chromiu=
-m.org> wrote:
-> >
-> > Hi Abhishek,
-> >
-> > On Tue, Jan 23, 2024 at 2:30=E2=80=AFPM Abhishek Pandit-Subedi
-> > <abhishekpandit@google.com> wrote:
-> > >
-> > > From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> > >
-> > > PD major revision for the port partner is described in
-> > > GET_CONNECTOR_CAPABILITY and is only valid on UCSI 2.0 and newer. Upd=
-ate
-> > > the pd_revision on the partner if the UCSI version is 2.0 or newer.
-> > >
-> > > Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> > > ---
-> > > $ cat /sys/class/typec/port2-partner/usb_power_delivery_revision
-> > > 3.0
-> > >
-> > >  drivers/usb/typec/ucsi/ucsi.c | 25 +++++++++++++++++++++++++
-> > >  drivers/usb/typec/ucsi/ucsi.h |  3 +++
-> > >  2 files changed, 28 insertions(+)
-> > >
-> > > diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/u=
-csi.c
-> > > index 4edf785d203b..8e0a512853ba 100644
-> > > --- a/drivers/usb/typec/ucsi/ucsi.c
-> > > +++ b/drivers/usb/typec/ucsi/ucsi.c
-> > > @@ -782,6 +782,8 @@ static int ucsi_register_partner(struct ucsi_conn=
-ector *con)
-> > >         }
-> > >
-> > >         desc.usb_pd =3D pwr_opmode =3D=3D UCSI_CONSTAT_PWR_OPMODE_PD;
-> > > +       desc.pd_revision =3D
-> > > +               UCSI_CONCAP_FLAG_PARTNER_PD_MAJOR_REV_AS_BCD(con->cap=
-flags);
-> > >
-> > >         partner =3D typec_register_partner(con->port, &desc);
-> > >         if (IS_ERR(partner)) {
-> > > @@ -856,6 +858,28 @@ static void ucsi_partner_change(struct ucsi_conn=
-ector *con)
-> > >                         con->num, u_role);
-> > >  }
-> > >
-> > > +static int ucsi_check_connector_capability(struct ucsi_connector *co=
-n)
-> > > +{
-> > > +       u64 command;
-> > > +       int ret;
-> > > +
-> > > +       if (!con->partner && !IS_MIN_VERSION_2_0(con->ucsi))
-> >
-> > (Mentioned side-band but reproducing here for consistency)
-> > This macro is unnecessary. It's just doing a comparison, which can be i=
-nlined
-> > without any perceptible change in readability (actually, I'd argue addi=
-ng the !
-> > to an english idiom makes things *less* readable):
->
-> I prefer the macro because it makes it easier to search where version
-> checks are being done.
 
-I don't see how searching for "IS_MIN_VERSION_2_0" is easier
-than just searching for "UCSI_VERSION_2_0".
 
-I didn't quite understand what you meant by
+On 1/22/2024 3:13 AM, Sagi Grimberg wrote:
+> 
+> 
+> On 1/18/24 23:03, Stuart Hayes wrote:
+>> Use async function calls to make namespace scanning happen in parallel.
+>>
+>> Without the patch, NVME namespaces are scanned serially, so it can take a
+>> long time for all of a controller's namespaces to become available,
+>> especially with a slower (TCP) interface with large number of namespaces.
+>>
+>> The time it took for all namespaces to show up after connecting (via TCP)
+>> to a controller with 1002 namespaces was measured:
+>>
+>> network latency   without patch   with patch
+>>       0                 6s            1s
+>>      50ms             210s           10s
+>>     100ms             417s           18s
+>>
+> 
+> Impressive speedup. Not a very common use-case though...
+> 
+>> Signed-off-by: Stuart Hayes <stuart.w.hayes@gmail.com>
+>>
+>> -- 
+>> V2: remove module param to enable/disable async scanning
+>>      add scan time measurements to commit message
+>>
+>> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+>> index 0af612387083..069350f85b83 100644
+>> --- a/drivers/nvme/host/core.c
+>> +++ b/drivers/nvme/host/core.c
+>> @@ -4,6 +4,7 @@
+>>    * Copyright (c) 2011-2014, Intel Corporation.
+>>    */
+>> +#include <linux/async.h>
+>>   #include <linux/blkdev.h>
+>>   #include <linux/blk-mq.h>
+>>   #include <linux/blk-integrity.h>
+>> @@ -3812,12 +3813,38 @@ static void nvme_validate_ns(struct nvme_ns *ns, struct nvme_ns_info *info)
+>>           nvme_ns_remove(ns);
+>>   }
+>> -static void nvme_scan_ns(struct nvme_ctrl *ctrl, unsigned nsid)
+>> +/*
+>> + * struct nvme_scan_state - keeps track of controller & NSIDs to scan
+>> + * @ctrl:    Controller on which namespaces are being scanned
+>> + * @count:    Next NSID to scan (for sequential scan), or
+>> + *        Index of next NSID to scan in ns_list (for list scan)
+>> + * @ns_list:    pointer to list of NSIDs to scan (NULL if sequential scan)
+>> + */
+>> +struct nvme_scan_state {
+>> +    struct nvme_ctrl *ctrl;
+>> +    atomic_t count;
+>> +    __le32 *ns_list;
+>> +};
+>> +
+>> +static void nvme_scan_ns(void *data, async_cookie_t cookie)
+> 
+> I think its better to call it nvme_scan_ns_async to indicate what
+> it is.
+> 
+>>   {
+>> -    struct nvme_ns_info info = { .nsid = nsid };
+>> +    struct nvme_ns_info info = {};
+>> +    struct nvme_scan_state *scan_state;
+>> +    struct nvme_ctrl *ctrl;
+>> +    u32 nsid;
+>>       struct nvme_ns *ns;
+>>       int ret;
+>> +    scan_state = data;
+>> +    ctrl = scan_state->ctrl;
+> 
+> I think these assignments can be done on the declaration.
+> 
+>> +    nsid = (u32)atomic_fetch_add(1, &scan_state->count);
+>> +    /*
+>> +     * get NSID from list (if scanning from a list, not sequentially)
+>> +     */
+>> +    if (scan_state->ns_list)
+>> +        nsid = le32_to_cpu(scan_state->ns_list[nsid]);
+>> +
+> 
+> This is awkward. ns_list passed in optionally.
+> How about we limit this change to only operate on nvme_scan_ns_list?
+> If the controller is old or quirked to support only a sequential scan
+> it does not benefit from a parallel scan. I doubt that these controllers
+> are likely to expose a large number of namespaces anyways.
+> 
+>> +    info.nsid = nsid;
+>>       if (nvme_identify_ns_descs(ctrl, &info))
+>>           return;
+>> @@ -3881,11 +3908,15 @@ static int nvme_scan_ns_list(struct nvme_ctrl *ctrl)
+>>       __le32 *ns_list;
+>>       u32 prev = 0;
+>>       int ret = 0, i;
+>> +    ASYNC_DOMAIN(domain);
+>> +    struct nvme_scan_state scan_state;
+>>       ns_list = kzalloc(NVME_IDENTIFY_DATA_SIZE, GFP_KERNEL);
+>>       if (!ns_list)
+>>           return -ENOMEM;
+>> +    scan_state.ctrl = ctrl;
+>> +    scan_state.ns_list = ns_list;
+> 
+> Is there a need to have a local ns_list variable here?
+> 
+>>       for (;;) {
+>>           struct nvme_command cmd = {
+>>               .identify.opcode    = nvme_admin_identify,
+>> @@ -3901,19 +3932,25 @@ static int nvme_scan_ns_list(struct nvme_ctrl *ctrl)
+>>               goto free;
+>>           }
+>> +        /*
+>> +         * scan list starting at list offset 0
+>> +         */
+>> +        atomic_set(&scan_state.count, 0);
+>>           for (i = 0; i < nr_entries; i++) {
+>>               u32 nsid = le32_to_cpu(ns_list[i]);
+>>               if (!nsid)    /* end of the list? */
+>>                   goto out;
+>> -            nvme_scan_ns(ctrl, nsid);
+>> +            async_schedule_domain(nvme_scan_ns, &scan_state, &domain);
+>>               while (++prev < nsid)
+>>                   nvme_ns_remove_by_nsid(ctrl, prev);
+>>           }
+>> +        async_synchronize_full_domain(&domain);
+>>       }
+>>    out:
+>>       nvme_remove_invalid_namespaces(ctrl, prev);
+> 
+> Is it a good idea to remove the invalid namespaces before synchronizing
+> the async scans?
+> 
+>>    free:
+>> +    async_synchronize_full_domain(&domain);
+>>       kfree(ns_list);
+>>       return ret;
+>>   }
+>> @@ -3922,14 +3959,23 @@ static void nvme_scan_ns_sequential(struct nvme_ctrl *ctrl)
+>>   {
+>>       struct nvme_id_ctrl *id;
+>>       u32 nn, i;
+>> +    ASYNC_DOMAIN(domain);
+>> +    struct nvme_scan_state scan_state;
+>>       if (nvme_identify_ctrl(ctrl, &id))
+>>           return;
+>>       nn = le32_to_cpu(id->nn);
+>>       kfree(id);
+>> +    scan_state.ctrl = ctrl;
+>> +    /*
+>> +     * scan sequentially starting at NSID 1
+>> +     */
+>> +    atomic_set(&scan_state.count, 1);
+>> +    scan_state.ns_list = NULL;
+>>       for (i = 1; i <= nn; i++)
+>> -        nvme_scan_ns(ctrl, i);
+>> +        async_schedule_domain(nvme_scan_ns, &scan_state, &domain);
+>> +    async_synchronize_full_domain(&domain);
+>>       nvme_remove_invalid_namespaces(ctrl, nn);
+>>   }
+> 
+> I think we need a blktest for this. ns scanning has been notorious when
+> running simultaneously with controller reset/reconnect/remove
+> sequences... Ideally a test with a larger number of namespaces to
+> exercise the code.
+> 
+> Also, make sure that blktest suite does not complain about anything
+> else.
 
->  it keeps the `<` vs `<=3D` consistent.
+Thank you for the feedback on the patch, I agree with it.
 
-Perhaps I'm missing something... (are these comparisons being
-used elsewhere/in some other fashion?).
-
-In any case, I don't want to bike-shed so I'll defer to the
-maintainer's call on this.
-
-BR,
-
--Prashant
+I'm not sure how to implement a blktest suite for this, though.  I can look into it.
 
