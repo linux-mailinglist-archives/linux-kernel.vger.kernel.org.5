@@ -1,59 +1,58 @@
-Return-Path: <linux-kernel+bounces-37146-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37147-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D1EA83AC0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:37:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F48F83AC0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:38:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8C58288BC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:37:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7463E1C2168E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:38:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB6EB12BE8C;
-	Wed, 24 Jan 2024 14:30:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59BCE7C0AD;
+	Wed, 24 Jan 2024 14:30:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jtQCUZ2W"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FFJNUYrS"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09A3E12BEA8;
-	Wed, 24 Jan 2024 14:30:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C17B7E58D;
+	Wed, 24 Jan 2024 14:30:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706106603; cv=none; b=EKDGFVnXq8/idwTWNn5wwjOo9pHt8PIR4oIr65ENK0B7b25IhalZvpo5nxwUBAmMeMaJUdJfl0leTr3CDHE32f4X3gYcmU2WzTVRxzpTOGwWSbPV48JHaKzLU7HNlevdx3zwKwiU5yzpRxSXawRVgiTFoMrL3tDqOYFNU+v3ynI=
+	t=1706106606; cv=none; b=ADSq112xPL8/jG+LJ6Wfq8RoPfgYsD0eHw7cOyklk4Cpf32yBm41M4sfPhJJFah0o5Al6qPThBvYeo3cJEOjzaQJZPIBvIEnfctOso+GOSTYgpP4/cY+UV0Ms1cEUd+AmN7+xnh4uF8gASE3NyC0kO5FrLmu/2fkZ0qjWwnuVNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706106603; c=relaxed/simple;
-	bh=wtfwbC0flSGPe7mDEkJ8Xw4cI7oiAV5gBbx/tJOQfFs=;
+	s=arc-20240116; t=1706106606; c=relaxed/simple;
+	bh=0HoOYdpY7mCqkF6yX9oqUlAHYhcdLh1Mqx9QVhuN/ns=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VBqWe8LR7oxZ61fzyt2yWuBp3BnUWhn445jMo9tOGDZt7IZZq3NpqeCkA1k7Xp8wt+zTGdrwR/mr7Cr7bP3YVAJMtxchLBk0uieizj29HSfjyckEXm1I6VfapdHVV/Y0C6nyFQEbbnz2qAUEPmmgMgGpEvWeXp9UwpIcKTnzRUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jtQCUZ2W; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98591C43394;
-	Wed, 24 Jan 2024 14:30:01 +0000 (UTC)
+	 MIME-Version; b=ArtGZR9Ui2gbGcWMeNgWYhqVptBkbcVXll64DFrXZXs2I/F0Pogicfg6wdfbjoGYbNxhDGbjUHnAhT/0WRCMxzdDL4Wpbx6/otkO1ehm8z07IDtNPIswDV/5YAHKGvxp+i5AdKJiM4mcVVfu5Ld9ttDJOzJ/ucKDHgY2z/9wAoA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FFJNUYrS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74F28C433C7;
+	Wed, 24 Jan 2024 14:30:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706106602;
-	bh=wtfwbC0flSGPe7mDEkJ8Xw4cI7oiAV5gBbx/tJOQfFs=;
+	s=k20201202; t=1706106606;
+	bh=0HoOYdpY7mCqkF6yX9oqUlAHYhcdLh1Mqx9QVhuN/ns=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jtQCUZ2WiTKNORqSethBN18uwn8Q0wjKJBsFDo7tWFygB5Tt3iBw7It2vQUJJfNAP
-	 qgTnIM59R607PMCwFnw0CpxHGWcbMq2IRoAkB+JEBfTqh9Dcg+RwpLyN6G7q/Q2lQN
-	 QvF0Ml8gPAMX1Rj6FIImFSvU/M4NmRDTrkKco46pdloQ/cKsHVfJq7apE3FR3qmZOz
-	 1S38uZgE8rqQY2RrAJti4VZmLkwzN4kQ/DBOCtIAhvfo7UiaJRPPONiRDwa4mE6cZu
-	 CuSK54QD7zhyd8yoBsUtISGLh5auorsojB2mdVTJL8SY7AOziGBr3XmEuZyEU5E+Mb
-	 10wmmjxUUmSng==
+	b=FFJNUYrSj1wegRlgAOWYDrN7uTmK2S+WxH608PleK+wCOcz6JEg9GW/rUykxwlsfM
+	 ayZ611A0lEuZhIm1wc0DPP6nnKKNvsw7uwheAofSyAcwotKDYckrUghdNkvxnuH57j
+	 ZinrDxo+x/R53dII6QWcNpnkKBMWIyJcCkxErAvrYtGGodrEzb7k8Niu8hcBi2DS11
+	 CEMzUCQ6TmJNke9YdQ7Cwl2Dlft5j3VfNHFvxYDNW6b0pvfu1NiGIf5nqwTHfIfOtS
+	 a7sWtHbI4AyTbfqnJF9Og1L6ioVx2qZr5XLgRvVig3qqKrAP8EJqCADzjGIfkoFwkL
+	 xHKGqO4mhLhXQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Nathan Chancellor <nathan@kernel.org>,
-	kernel test robot <lkp@intel.com>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+Cc: Johannes Berg <johannes.berg@intel.com>,
+	Vincent Whitchurch <Vincent.Whitchurch@axis.com>,
 	Richard Weinberger <richard@nod.at>,
 	Sasha Levin <sashal@kernel.org>,
+	anton.ivanov@cambridgegreys.com,
 	johannes@sipsolutions.net,
-	linux-um@lists.infradead.org,
-	llvm@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.1 4/9] um: net: Fix return type of uml_net_start_xmit()
-Date: Wed, 24 Jan 2024 09:29:34 -0500
-Message-ID: <20240124142949.1283818-4-sashal@kernel.org>
+	linux-um@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.1 5/9] um: time-travel: fix time corruption
+Date: Wed, 24 Jan 2024 09:29:35 -0500
+Message-ID: <20240124142949.1283818-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240124142949.1283818-1-sashal@kernel.org>
 References: <20240124142949.1283818-1-sashal@kernel.org>
@@ -68,51 +67,91 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.74
 Content-Transfer-Encoding: 8bit
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 7d748f60a4b82b50bf25fad1bd42d33f049f76aa ]
+[ Upstream commit abe4eaa8618bb36c2b33e9cdde0499296a23448c ]
 
-With clang's kernel control flow integrity (kCFI, CONFIG_CFI_CLANG),
-indirect call targets are validated against the expected function
-pointer prototype to make sure the call target is valid to help mitigate
-ROP attacks. If they are not identical, there is a failure at run time,
-which manifests as either a kernel panic or thread getting killed. A
-warning in clang aims to catch these at compile time, which reveals:
+In 'basic' time-travel mode (without =inf-cpu or =ext), we
+still get timer interrupts. These can happen at arbitrary
+points in time, i.e. while in timer_read(), which pushes
+time forward just a little bit. Then, if we happen to get
+the interrupt after calculating the new time to push to,
+but before actually finishing that, the interrupt will set
+the time to a value that's incompatible with the forward,
+and we'll crash because time goes backwards when we do the
+forwarding.
 
-  arch/um/drivers/net_kern.c:353:21: warning: incompatible function pointer types initializing 'netdev_tx_t (*)(struct sk_buff *, struct net_device *)' (aka 'enum netdev_tx (*)(struct sk_buff *, struct net_device *)') with an expression of type 'int (struct sk_buff *, struct net_device *)' [-Wincompatible-function-pointer-types-strict]
-    353 |         .ndo_start_xmit         = uml_net_start_xmit,
-        |                                   ^~~~~~~~~~~~~~~~~~
-  1 warning generated.
+Fix this by reading the time_travel_time, calculating the
+adjustment, and doing the adjustment all with interrupts
+disabled.
 
-->ndo_start_xmit() in 'struct net_device_ops' expects a return type of
-'netdev_tx_t', not 'int'. Adjust the return type of uml_net_start_xmit()
-to match the prototype's to resolve the warning. While UML does not
-currently implement support for kCFI, it could in the future, which
-means this warning becomes a fatal CFI failure at run time.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202310031340.v1vPh207-lkp@intel.com/
-Acked-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Reported-by: Vincent Whitchurch <Vincent.Whitchurch@axis.com>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/drivers/net_kern.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/um/kernel/time.c | 32 +++++++++++++++++++++++++++-----
+ 1 file changed, 27 insertions(+), 5 deletions(-)
 
-diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
-index 3d7836c46507..cabcc501b448 100644
---- a/arch/um/drivers/net_kern.c
-+++ b/arch/um/drivers/net_kern.c
-@@ -204,7 +204,7 @@ static int uml_net_close(struct net_device *dev)
- 	return 0;
+diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
+index fddd1dec27e6..3e270da6b6f6 100644
+--- a/arch/um/kernel/time.c
++++ b/arch/um/kernel/time.c
+@@ -432,9 +432,29 @@ static void time_travel_update_time(unsigned long long next, bool idle)
+ 	time_travel_del_event(&ne);
  }
  
--static int uml_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
-+static netdev_tx_t uml_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
++static void time_travel_update_time_rel(unsigned long long offs)
++{
++	unsigned long flags;
++
++	/*
++	 * Disable interrupts before calculating the new time so
++	 * that a real timer interrupt (signal) can't happen at
++	 * a bad time e.g. after we read time_travel_time but
++	 * before we've completed updating the time.
++	 */
++	local_irq_save(flags);
++	time_travel_update_time(time_travel_time + offs, false);
++	local_irq_restore(flags);
++}
++
+ void time_travel_ndelay(unsigned long nsec)
  {
- 	struct uml_net_private *lp = netdev_priv(dev);
- 	unsigned long flags;
+-	time_travel_update_time(time_travel_time + nsec, false);
++	/*
++	 * Not strictly needed to use _rel() version since this is
++	 * only used in INFCPU/EXT modes, but it doesn't hurt and
++	 * is more readable too.
++	 */
++	time_travel_update_time_rel(nsec);
+ }
+ EXPORT_SYMBOL(time_travel_ndelay);
+ 
+@@ -568,7 +588,11 @@ static void time_travel_set_start(void)
+ #define time_travel_time 0
+ #define time_travel_ext_waiting 0
+ 
+-static inline void time_travel_update_time(unsigned long long ns, bool retearly)
++static inline void time_travel_update_time(unsigned long long ns, bool idle)
++{
++}
++
++static inline void time_travel_update_time_rel(unsigned long long offs)
+ {
+ }
+ 
+@@ -720,9 +744,7 @@ static u64 timer_read(struct clocksource *cs)
+ 		 */
+ 		if (!irqs_disabled() && !in_interrupt() && !in_softirq() &&
+ 		    !time_travel_ext_waiting)
+-			time_travel_update_time(time_travel_time +
+-						TIMER_MULTIPLIER,
+-						false);
++			time_travel_update_time_rel(TIMER_MULTIPLIER);
+ 		return time_travel_time / TIMER_MULTIPLIER;
+ 	}
+ 
 -- 
 2.43.0
 
