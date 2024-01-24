@@ -1,234 +1,135 @@
-Return-Path: <linux-kernel+bounces-36713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DC5983A55B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:26:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFC4C83A55D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:26:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D458B1F27C53
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:26:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 759F61F21520
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:26:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D06A018625;
-	Wed, 24 Jan 2024 09:24:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dmmdIwz4"
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D02A1802E
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 09:24:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C672182D8;
+	Wed, 24 Jan 2024 09:24:21 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A629418E1A;
+	Wed, 24 Jan 2024 09:24:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706088247; cv=none; b=tat3wtC6yYuuJnvrcGRUe7aIYu+GIr/euwkY8n32xp+IWnVmCeHGsQtDYdqa68MtMCvpdz/nxV5hQ3p1LAzRu8EEJbcJqulfg899jWLfFMhj7R82KlNFqRLfjaEpvg6JWvulOveJ7kj8D/ovlLXTyOMGI1Zzi10kzrnBqWR+j3Y=
+	t=1706088260; cv=none; b=VOpEUqTQR6cr1XQhZMvwrPrrGZoRyqWgN7IxH17wmFuAEx+kNbGX6FVl4Sxka6d4rtlvK64ji71cKQft+TbASkV+qFC3CcM53JOKFYf71h12Ppzh014svhhMwO9rXr3wXUfrRazNOnf55XBIqFiNyrSkrrNVcQ2k2swOMG/YqSU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706088247; c=relaxed/simple;
-	bh=o5T2fkq8IzyhrnT47Fuo6g/GKUDC/vwmjiJtymo+mEc=;
+	s=arc-20240116; t=1706088260; c=relaxed/simple;
+	bh=Q6a5FvIQhKrjJBTVn7WeECsxsSrv+lamt5P5SCz3wUk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UDkR65EPn+sFGPwlVBUezOTtADFU4lgtQ2RSMstoZ+DsV6B97CUgVsXjbJTgKLDCYqvvZHBPWBMUaYg/QY2smAaPYQvVK/qgsI8PbaYmEbSinigdctwt1nXdxssxNFSrlVXROdx5fPwRLZsrqZf4nBqY1XiMy4PnHfOVH5YST5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dmmdIwz4; arc=none smtp.client-ip=95.215.58.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <da1258e3-f828-4bbc-a2c2-8fe1ef808c9a@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706088242;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aXczTWGvMzh/VCc+f846O9vk5+VdwIdB/+WD5XP2dcE=;
-	b=dmmdIwz4nFUxVAXyTv4cPoiMSwN9MpQPn6wOWLRNAGPTZP5An7ppCIdsY+/q4ScnzVRMga
-	Z07sxQioiYG9aFTFeau6a8qo/Hu6jRmVBCwRtjbDYwZFpSZIDJAton6/tr9e2s7vQXHYkh
-	2enZu9eeXKHcjTMFyxGGR8BroFtYj7w=
-Date: Wed, 24 Jan 2024 17:23:34 +0800
+	 In-Reply-To:Content-Type; b=YgEaHbxqKWxhCxDSHOc52XrRS/7nu2SIEc9xYuCYiCqP4ZryAxnnoGtGxgWjTOPkG2DMHA6UzY1R7HAxyXBWM8ZpUSQH4l3A2myceoUVVH/rx6pJ8BpdGPbNJjkTuPr1Dbnn3GJqXzjeNcBqonXn00qwRpaQo0NHPclKcv5HwSU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 310C0FEC;
+	Wed, 24 Jan 2024 01:25:03 -0800 (PST)
+Received: from [10.57.86.221] (unknown [10.57.86.221])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5C8963F762;
+	Wed, 24 Jan 2024 01:24:16 -0800 (PST)
+Message-ID: <faba2e97-7e88-9dcc-756d-f256a6304836@arm.com>
+Date: Wed, 24 Jan 2024 09:24:14 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 7/7] hugetlb: parallelize 1G hugetlb initialization
-To: Gang Li <gang.li@linux.dev>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- ligang.bdlg@bytedance.com, David Hildenbrand <david@redhat.com>,
- David Rientjes <rientjes@google.com>, Mike Kravetz
- <mike.kravetz@oracle.com>, Andrew Morton <akpm@linux-foundation.org>,
- Tim Chen <tim.c.chen@linux.intel.com>
-References: <20240118123911.88833-1-gang.li@linux.dev>
- <20240118123911.88833-8-gang.li@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20240118123911.88833-8-gang.li@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 2/2] perf test: Skip test_arm_callgraph_fp.sh if unwinding
+ isn't built in
+Content-Language: en-US
+To: Ian Rogers <irogers@google.com>
+Cc: linux-perf-users@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+ Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
+ Kajol Jain <kjain@linux.ibm.com>, Spoorthy S <spoorts2@in.ibm.com>,
+ linux-kernel@vger.kernel.org
+References: <20240123163903.350306-1-james.clark@arm.com>
+ <20240123163903.350306-3-james.clark@arm.com>
+ <CAP-5=fX4QQYNzEY7-6GyqWJTuH-RQxxc3jB5B1k8HZtDZCHmFw@mail.gmail.com>
+From: James Clark <james.clark@arm.com>
+In-Reply-To: <CAP-5=fX4QQYNzEY7-6GyqWJTuH-RQxxc3jB5B1k8HZtDZCHmFw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 
 
-On 2024/1/18 20:39, Gang Li wrote:
-> Optimizing the initialization speed of 1G huge pages through
-> parallelization.
->
-> 1G hugetlbs are allocated from bootmem, a process that is already
-> very fast and does not currently require optimization. Therefore,
-> we focus on parallelizing only the initialization phase in
-> `gather_bootmem_prealloc`.
->
-> Here are some test results:
->          test          no patch(ms)   patched(ms)   saved
->   ------------------- -------------- ------------- --------
->    256c2t(4 node) 1G           4745          2024   57.34%
+On 23/01/2024 17:41, Ian Rogers wrote:
+> On Tue, Jan 23, 2024 at 8:39 AM James Clark <james.clark@arm.com> wrote:
+>>
+>> Even though this is a frame pointer unwind test, it's testing that a
+>> frame pointer stack can be augmented correctly with a partial
+>> Dwarf unwind. So add a feature check so that this test skips instead of
+>> fails if Dwarf unwinding isn't present.
+> 
+> Hi James,
+> 
+> Is there value in testing without the partial Dwarf unwind? Presumably
 
-What does "256c2t" mean?
+Yeah I think we could add a test for just --call-graph=fp, I don't think
+there is one. But that would be separate to this test, and would be
+redundant if the tests are run with a dwarf unwinder present because
+this test already requires the frame pointer unwinder to be correct.
 
->    128c1t(2 node) 1G           3358          1712   49.02%
->        12t        1G          77000         18300   76.23%
->
-> Signed-off-by: Gang Li <gang.li@linux.dev>
-> Tested-by: David Rientjes <rientjes@google.com>
-> ---
->   include/linux/hugetlb.h |  2 +-
->   mm/hugetlb.c            | 42 +++++++++++++++++++++++++++++++++--------
->   2 files changed, 35 insertions(+), 9 deletions(-)
->
-> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> index c1ee640d87b1..77b30a8c6076 100644
-> --- a/include/linux/hugetlb.h
-> +++ b/include/linux/hugetlb.h
-> @@ -178,7 +178,7 @@ pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct *vma,
->   struct address_space *hugetlb_page_mapping_lock_write(struct page *hpage);
->   
->   extern int sysctl_hugetlb_shm_group;
-> -extern struct list_head huge_boot_pages;
-> +extern struct list_head huge_boot_pages[MAX_NUMNODES];
->   
->   /* arch callbacks */
->   
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 9b348ba418f5..2f4b77630ada 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -69,7 +69,7 @@ static bool hugetlb_cma_folio(struct folio *folio, unsigned int order)
->   #endif
->   static unsigned long hugetlb_cma_size __initdata;
->   
-> -__initdata LIST_HEAD(huge_boot_pages);
-> +__initdata struct list_head huge_boot_pages[MAX_NUMNODES];
->   
->   /* for command line parsing */
->   static struct hstate * __initdata parsed_hstate;
-> @@ -3301,7 +3301,7 @@ int alloc_bootmem_huge_page(struct hstate *h, int nid)
->   int __alloc_bootmem_huge_page(struct hstate *h, int nid)
->   {
->   	struct huge_bootmem_page *m = NULL; /* initialize for clang */
-> -	int nr_nodes, node;
-> +	int nr_nodes, node = nid;
+> that is covered by the existing dwarf unwind test?
 
-Why not use nid directly in the following list_add()?
+There is no overlap, this test test is for --call-graph=fp, and the
+dwarf test is for --call-graph=dwarf
 
->   
->   	/* do node specific alloc */
->   	if (nid != NUMA_NO_NODE) {
-> @@ -3339,7 +3339,7 @@ int __alloc_bootmem_huge_page(struct hstate *h, int nid)
->   		huge_page_size(h) - PAGE_SIZE);
->   	/* Put them into a private list first because mem_map is not up yet */
->   	INIT_LIST_HEAD(&m->list);
-> -	list_add(&m->list, &huge_boot_pages);
-> +	list_add(&m->list, &huge_boot_pages[node]);
->   	m->hstate = h;
->   	return 1;
->   }
-> @@ -3390,8 +3390,6 @@ static void __init prep_and_add_bootmem_folios(struct hstate *h,
->   	/* Send list for bulk vmemmap optimization processing */
->   	hugetlb_vmemmap_optimize_folios(h, folio_list);
->   
-> -	/* Add all new pool pages to free lists in one lock cycle */
-> -	spin_lock_irqsave(&hugetlb_lock, flags);
->   	list_for_each_entry_safe(folio, tmp_f, folio_list, lru) {
->   		if (!folio_test_hugetlb_vmemmap_optimized(folio)) {
->   			/*
-> @@ -3404,23 +3402,27 @@ static void __init prep_and_add_bootmem_folios(struct hstate *h,
->   					HUGETLB_VMEMMAP_RESERVE_PAGES,
->   					pages_per_huge_page(h));
->   		}
-> +		/* Subdivide locks to achieve better parallel performance *
-> +		spin_lock_irqsave(&hugetlb_lock, flags);
->   		__prep_account_new_huge_page(h, folio_nid(folio));
->   		enqueue_hugetlb_folio(h, folio);
-> +		spin_unlock_irqrestore(&hugetlb_lock, flags);
->   	}
-> -	spin_unlock_irqrestore(&hugetlb_lock, flags);
->   }
->   
->   /*
->    * Put bootmem huge pages into the standard lists after mem_map is up.
->    * Note: This only applies to gigantic (order > MAX_PAGE_ORDER) pages.
->    */
-> -static void __init gather_bootmem_prealloc(void)
-> +static void __init __gather_bootmem_prealloc(unsigned long start, unsigned long end, void *arg)
+> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/tests/dwarf-unwind.c?h=perf-tools-next
+> If the issue is inlined functions I'm surprised addr2line isn't doing
+> the job properly. Is there an addr2line perf script issue here?
+> 
 
-This function name could be gather_bootmem_prealloc_node.
+The issue isn't inlined functions, it's when the leaf frame doesn't
+insert a frame pointer. In that case we use the link register to see
+what the parent function of the leaf frame was and insert it into the
+frame pointer stack.
 
-> +
->   {
-> +	int nid = start;
->   	LIST_HEAD(folio_list);
->   	struct huge_bootmem_page *m;
->   	struct hstate *h = NULL, *prev_h = NULL;
->   
-> -	list_for_each_entry(m, &huge_boot_pages, list) {
-> +	list_for_each_entry(m, &huge_boot_pages[nid], list) {
->   		struct page *page = virt_to_page(m);
->   		struct folio *folio = (void *)page;
->   
-> @@ -3453,6 +3455,22 @@ static void __init gather_bootmem_prealloc(void)
->   	prep_and_add_bootmem_folios(h, &folio_list);
->   }
->   
-> +static void __init gather_bootmem_prealloc(void)
-> +{
-> +	struct padata_mt_job job = {
-> +		.thread_fn	= __gather_bootmem_prealloc,
-> +		.fn_arg		= NULL,
-> +		.start		= 0,
-> +		.size		= num_node_state(N_MEMORY),
-> +		.align		= 1,
-> +		.min_chunk	= 1,
-> +		.max_threads	= num_node_state(N_MEMORY),
-> +		.numa_aware	= true,
-> +	};
-> +
-> +	padata_do_multithreaded(&job);
-> +}
-> +
->   static void __init hugetlb_hstate_alloc_pages_onenode(struct hstate *h, int nid)
->   {
->   	unsigned long i;
-> @@ -3602,6 +3620,14 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
->   		return;
->   	}
->   
-> +	/* hugetlb_hstate_alloc_pages will be called many times, init huge_boot_pages once*/
+Dwarf is only used in this case to confirm if the link register was
+valid at that instruction.
 
-s/init/initialize/g
+See commit b9f6fbb for more info. Long story short this test was only
+added for that feature and it requires a dwarf unwinder to pass despite
+being called test_arm_callgraph_fp
 
-And you miss a black right before "*/".
+> Thanks,
+> Ian
+> 
 
-> +	if (huge_boot_pages[0].next == NULL) {
 
-It it not intuitive. I'd like to use a 'initialied' variable
-to indicate whether it has been initialized. BTW, it can be
-marked as __initdata.
-
-> +		int i = 0;
-> +
-> +		for (i = 0; i < MAX_NUMNODES; i++)
-> +			INIT_LIST_HEAD(&huge_boot_pages[i]);
-> +	}
-> +
->   	/* do node specific alloc */
->   	if (hugetlb_hstate_alloc_pages_specific_nodes(h))
->   		return;
-
+>> Signed-off-by: James Clark <james.clark@arm.com>
+>> ---
+>>  tools/perf/tests/shell/test_arm_callgraph_fp.sh | 6 ++++++
+>>  1 file changed, 6 insertions(+)
+>>
+>> diff --git a/tools/perf/tests/shell/test_arm_callgraph_fp.sh b/tools/perf/tests/shell/test_arm_callgraph_fp.sh
+>> index e342e6c8aa50..83b53591b1ea 100755
+>> --- a/tools/perf/tests/shell/test_arm_callgraph_fp.sh
+>> +++ b/tools/perf/tests/shell/test_arm_callgraph_fp.sh
+>> @@ -8,6 +8,12 @@ shelldir=$(dirname "$0")
+>>
+>>  lscpu | grep -q "aarch64" || exit 2
+>>
+>> +if perf version --build-options | grep HAVE_DWARF_UNWIND_SUPPORT | grep -q OFF
+>> +then
+>> +  echo "Skipping, no dwarf unwind support"
+>> +  exit 2
+>> +fi
+>> +
+>>  skip_test_missing_symbol leafloop
+>>
+>>  PERF_DATA=$(mktemp /tmp/__perf_test.perf.data.XXXXX)
+>> --
+>> 2.34.1
+>>
 
