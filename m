@@ -1,144 +1,259 @@
-Return-Path: <linux-kernel+bounces-37203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37205-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 295E383AC84
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:55:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22C4983AC86
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:55:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD5011F2337D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:55:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46F271C22840
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:55:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B592682D94;
-	Wed, 24 Jan 2024 14:49:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30EDA7A729;
+	Wed, 24 Jan 2024 14:50:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DrHs2dU9"
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="jlM8NqEj"
+Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33F587A728
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 14:48:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00E2C77656
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 14:49:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706107741; cv=none; b=URNhoOu6LsDe8AaTAqxO7hEOmvgX/9vUT4Nioo7H50ehsIho1qGulltcJLn7/1lHNa1w9TAHaU1XxASa++/hmugxyX4PaDrEtoXbnZrkwfd3bDVNqRAAgFZsaJIi3e1DACf7S7noquK4R2LJSkRZ2tHSQEUoPmv224xNEX4cWrs=
+	t=1706107801; cv=none; b=rAywnRrbB0YNlnxM4mJDKEyITa5ItTyzn234EtG39z15BwWjyzkN1iln+NxsNMuQKKwCKtI9dDZfLnAUmbEJ9QWhzDu7ypIGNuKsUsOxTGajuDyXdBOIGqf4Nx2XiAiPRcGwAr3ksmJ1jjQYYNTq8y+jJIC92glKhYlQNeFjid0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706107741; c=relaxed/simple;
-	bh=eDTJ2mw+CpW7gkWAtFI6KtiT1a32SBUN715ePecnFk4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=O01Ds1YuI5jtwfy3L8aoTxyrPJJMEtmj0m3JkwrWHz1s21CPQsJLxWgMzAh//3cShtKfDY5MK3Dv6jxkhjaLue5+4tdUr1NEc1VtPcwYy3iCmpCcNVJy8J/Dgnw42zEtVp9d5Y7Cv1YItUrQylcNBLTx77e5+vm4q0rnsyGtp/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DrHs2dU9; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-33926ccbc80so3452490f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 06:48:58 -0800 (PST)
+	s=arc-20240116; t=1706107801; c=relaxed/simple;
+	bh=cg2x3kiPaiLPeSSGJpnohOZYf+YIgP1iHarhGR64V6o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kmgj7dYZwRby5ZSNNm05CWZ6qajxeDNo6YZRZR0vYrcYYbFGT8mp2IaI2KS5TDtE/IPwvrKK9gaOVttN/mqVpqD10iIMnR6VURbyHSPFRUsIdJrpcaf+IWJp/aCJrfqwqLMfFRmq4sFIron3wK/YPPRfn8TG0n9wyUf9Tso2XXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=jlM8NqEj; arc=none smtp.client-ip=209.85.166.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7bb06f56fe9so64630039f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 06:49:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706107737; x=1706712537; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QODSxkvFxPjK1+hRtzc6D4olCOqkz85HGYaIxMx2/lg=;
-        b=DrHs2dU9N8rU86NeDOqnozLug87QeW55jOr17SIzXqSQWnVYMREUi74QlCNyIOfNf1
-         9yVxesRCpS5Y+qv4WflZqyFuuRZVvweiy8lQ4jKalIlJfBnRdtV+pEvPaBWuoXtqv8xo
-         fxj6PW1Li6Roo29Dq/5o61z4RRMQiqeTzWz8poT73OeUbfEGPLcbHid1dEsrMYeNQ4E4
-         p4+UpAuxEkk+yqiYsUYBwUMAzJyMb/QKQubdkwRUunrPEGIlx3e2H/qof0Gj69N42mEX
-         7GIcBEXZOT6Uk25rnUl90A/O80vxZzHGrNHBqJI+Ec9koN6PBbjHOLpx3kvqywfyjshj
-         GYXA==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1706107797; x=1706712597; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mOYIlDrM1fPoCbXofl74IMyTSxnlXM/nUzwB8nUiQJs=;
+        b=jlM8NqEjCa0YfpawTRszzutS1cZzsl0pDKOhAqbeMtfyKpQ8J/13Z4UTTmxFWpyznW
+         AG+ltlP/NRtDR44as1unIPpnl7xJyGqHTKOEPMfGwI45kBQ9xJ6WqGMhmAp0G23FkT3H
+         dKD/Z3Fy+xARYU+IZ5AUpMexbFnfCfO4cwUBPA87CszoSMI2m2Qm262fe01bShAHogtR
+         GLnPhlLbg+P5YI3TVTWTU7Y9bs2N6iYLWB+s4B3TgnELpbihYiSnPr9Yl2e/+rUSKdkc
+         x12Xh2OlIqpyUw7O9kOuQdfFtkoW0bR1X07OGG7SFuSlDtPqgJ4JahODbM8ShhZ0mM7k
+         x9Uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706107737; x=1706712537;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QODSxkvFxPjK1+hRtzc6D4olCOqkz85HGYaIxMx2/lg=;
-        b=OTiFUAarC1vtVVLp7HbMU1uaNnWfvK0ecNDrlibg+LXyOZz+FC16NxDB/Xo/47ZYkn
-         W5zjF+XMqj1qdHZYo2TA1JiEFLVesEpDqp8t7WZUG5E58RUPbrxfDMc66Po8/M6B4Gqd
-         h9GXWmKzktzYc8i6fMdgC8KavRBl0J+prrDutlcsAOmRGQ4sbChR9z251RdAVhPicsy/
-         a1smR5Eja65d54fI19Lp75Xf+gkej/DiYHR6ZoFLOkUodpB0JwwZxnjEuz9MEUpqqzXc
-         CggQ092cVAi48dsvTugvJWby/EvPwPi7UeU7Q965yRpuWT0JL4zyWFjnyc+ByIul6hxG
-         tlOA==
-X-Gm-Message-State: AOJu0YyO0kKwXQs+iituUBH5h36HTdnNBd4l1l4ycnXhNuh3J3N3FVC8
-	EFPZ/XDjZlmFL2mIUJuuWV+cGYfF2whfDRBmI5qNkKW6yAdhIWyVs0eQTg37M2I=
-X-Google-Smtp-Source: AGHT+IFlnXFany3DKmq0AiSNyBmdVgJ6QzzzZkSRSQk+Q3fvZ3Km2AgLj9J8hM5gTwv7eyESMIN6Yg==
-X-Received: by 2002:a5d:560d:0:b0:337:9b30:36f0 with SMTP id l13-20020a5d560d000000b003379b3036f0mr686579wrv.67.1706107737388;
-        Wed, 24 Jan 2024 06:48:57 -0800 (PST)
-Received: from localhost ([102.140.209.237])
-        by smtp.gmail.com with ESMTPSA id l6-20020a5d5606000000b0033922468707sm13522422wrv.83.2024.01.24.06.48.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 06:48:56 -0800 (PST)
-Date: Wed, 24 Jan 2024 17:48:52 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Erick Archer <erick.archer@gmx.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Franziska Naepelt <franziska.naepelt@googlemail.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Johannes Berg <johannes.berg@intel.com>,
-	Jeff Johnson <quic_jjohnson@quicinc.com>,
-	Aloka Dixit <quic_alokad@quicinc.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8723bs: Use kcalloc() instead of kzalloc()
-Message-ID: <b40e12f6-176a-4bf6-8ab0-d1cf783033a0@moroto.mountain>
-References: <20240119173900.11035-1-erick.archer@gmx.com>
- <a5d8a5f1-432d-46f0-84fe-7b5b22ff5f32@moroto.mountain>
- <20240122181654.GA2834@titan>
+        d=1e100.net; s=20230601; t=1706107797; x=1706712597;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mOYIlDrM1fPoCbXofl74IMyTSxnlXM/nUzwB8nUiQJs=;
+        b=KFln1KSHP6/tlNEea/X3Bk6As4RsbDGyLQaLt5bEpdHIVU88s9nqGmzyb9j0iKsm2c
+         YxMfOt2NuM4nltPbFz170u8g9oHy6R8+H7fHzTa7BJFdnOf2kmQzDZMlsea6sqqiQ95i
+         srPhQo7ie24brBm5J+8JnoE+s8oIttxN8n/8gco1tACKZi/0qKpFQ0In8M7Nlx8FpemG
+         D36KgOoIvTeYNa9C2xjKjuPstdzvKnkJFCXUVViC1BZTRt3CmnjBhMyfUaSQtSo4jxTf
+         9iDQvdZ5I2V+7Sm7mFunOgMCYQL2RIAEpO5Jf+nRMz2ieqjASgAh6z1j/BeMPBMImJh5
+         3yLw==
+X-Gm-Message-State: AOJu0YyItbW+BVCHV96oZoM3+F5fPaLn+6Mik0qWUBy1vZ9WG2aSXr1v
+	ZzCzz2NKxlanjvy80KNytut3lmw6iyUuirXey72qqL/AHNvvkxOwKFLkCuoHdunG1+pq+9ieXza
+	5J2I=
+X-Google-Smtp-Source: AGHT+IHFS0HF1xPNeZIJlxWyOL4exNyi+jE+ZN5lIbXvX5t4yXCqm9Tj6wshMgaexNmur12rhlOCvg==
+X-Received: by 2002:a5d:8c8f:0:b0:7be:edbc:629f with SMTP id g15-20020a5d8c8f000000b007beedbc629fmr2844632ion.0.1706107796882;
+        Wed, 24 Jan 2024 06:49:56 -0800 (PST)
+Received: from [192.168.1.116] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id et24-20020a0566382a1800b0046e509dd7a1sm4038191jab.118.2024.01.24.06.49.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Jan 2024 06:49:56 -0800 (PST)
+Message-ID: <229ccad8-c8e5-46d5-8587-2d64182b5d68@kernel.dk>
+Date: Wed, 24 Jan 2024 07:49:55 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240122181654.GA2834@titan>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] iov_iter: streamline iovec/bvec alignment iteration
+Content-Language: en-US
+To: David Laight <David.Laight@ACULAB.COM>,
+ LKML <linux-kernel@vger.kernel.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>
+References: <bd2f28ab-78cf-4ae0-a62a-d23a94fb3839@kernel.dk>
+ <9b43b9f3a32642e5a6388f3b1c8b114d@AcuMS.aculab.com>
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <9b43b9f3a32642e5a6388f3b1c8b114d@AcuMS.aculab.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 22, 2024 at 07:16:54PM +0100, Erick Archer wrote:
-> Hi Dan,
+On 1/24/24 5:07 AM, David Laight wrote:
+> From: Jens Axboe
+>> Sent: 23 January 2024 19:49
+>>
+>> Rewrite iov_iter_aligned_iovec() and iov_iter_aligned_bvec() to be both
+>> easier to read, and also significantly more compact in terms of
+>> generated code. This saves 178 bytes of text on x86-64 for me (with
+>> clang-18) and 136 bytes on arm64 (with gcc-13).
+>>
+> ...
+>> diff --git a/lib/iov_iter.c b/lib/iov_iter.c
+>> index e0aa6b440ca5..2fcc47d822e3 100644
+>> --- a/lib/iov_iter.c
+>> +++ b/lib/iov_iter.c
+>> @@ -714,12 +714,11 @@ EXPORT_SYMBOL(iov_iter_discard);
+> ...
+>> -	for (k = 0; k < i->nr_segs; k++, skip = 0) {
+>> -		const struct iovec *iov = iter_iov(i) + k;
+>> +	do {
+>>  		size_t len = iov->iov_len - skip;
 > 
-> On Mon, Jan 22, 2024 at 09:55:11AM +0300, Dan Carpenter wrote:
-> > On Fri, Jan 19, 2024 at 06:39:00PM +0100, Erick Archer wrote:
-> > > As noted in the "Deprecated Interfaces, Language Features, Attributes,
-> > > and Conventions" documentation [1], size calculations (especially
-> > > multiplication) should not be performed in memory allocator (or similar)
-> > > function arguments due to the risk of them overflowing. This could lead
-> > > to values wrapping around and a smaller allocation being made than the
-> > > caller was expecting. Using those allocations could lead to linear
-> > > overflows of heap memory and other misbehaviors.
-> > >
-> > > So, use the purpose specific kcalloc() function instead of the argument
-> > > count * size in the kzalloc() function.
-> > >
-> > > Also, it is preferred to use sizeof(*pointer) instead of sizeof(type)
-> > > due to the type of the variable can change and one needs not change the
-> > > former (unlike the latter).
-> > >
-> > > Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
-> > > Link: https://github.com/KSPP/linux/issues/162
-> > > Signed-off-by: Erick Archer <erick.archer@gmx.com>
-> >
-> > I quite often write responses to patches and then never send them.  I
-> > wrote this response and debated sending it but in the end I decided to
-> > send it because you have sent multiple patches.  If you had only sent
-> > one patch then I wouldn't have bothered.
-> 
-> My intention is not to bother anyone. I'm a linux kernel developer newbie
-> and I try to do my best.
-> 
+> Is i->nr_segs allowed to be zero?
 
-Yeah.  It's not a problem, we all started as newbies.  I guess what I
-was trying to say is that if you're going to be sending a lot of patches
-then it's worth explaining this but if you're only sending one then I
-wouldn't bother.
+Not if size is not zero.
 
-I don't really expect people to figure out all the code, it's just that
-if you can see the effect of a patch right away then, please, include
-that in the patch.  Even when it's like in this case, "This patch should
-have no effect on runtime."  That sort of information is still useful.
+> The old code (seemed to) check for zero.
+> The new version will go horribly wrong.
 
-Or if you can't figure out the implications that's also useful
-information to me as a reviewer.  Just put those I don't know comments
-under the --- cut off.
+In other spots we do check both segments and size, but not that
+nr_segments is non-zero to begin with. So I think this revised version
+may be better. Saves 176 bytes of text on arm64 for me, and 126 bytes on
+x86-64. I'll send out a v3.
 
-regards,
-dan carpenter
+
+diff --git a/lib/iov_iter.c b/lib/iov_iter.c
+index e0aa6b440ca5..5e34639c5d1e 100644
+--- a/lib/iov_iter.c
++++ b/lib/iov_iter.c
+@@ -714,12 +714,12 @@ EXPORT_SYMBOL(iov_iter_discard);
+ static bool iov_iter_aligned_iovec(const struct iov_iter *i, unsigned addr_mask,
+ 				   unsigned len_mask)
+ {
++	const struct iovec *iov = iter_iov(i);
+ 	size_t size = i->count;
+ 	size_t skip = i->iov_offset;
+-	unsigned k;
++	unsigned long nr_segs = i->nr_segs;
+ 
+-	for (k = 0; k < i->nr_segs; k++, skip = 0) {
+-		const struct iovec *iov = iter_iov(i) + k;
++	do {
+ 		size_t len = iov->iov_len - skip;
+ 
+ 		if (len > size)
+@@ -729,34 +729,37 @@ static bool iov_iter_aligned_iovec(const struct iov_iter *i, unsigned addr_mask,
+ 		if ((unsigned long)(iov->iov_base + skip) & addr_mask)
+ 			return false;
+ 
++		iov++;
+ 		size -= len;
+-		if (!size)
+-			break;
+-	}
++		skip = 0;
++	} while (size && --nr_segs);
++
+ 	return true;
+ }
+ 
+ static bool iov_iter_aligned_bvec(const struct iov_iter *i, unsigned addr_mask,
+ 				  unsigned len_mask)
+ {
+-	size_t size = i->count;
++	const struct bio_vec *bvec = i->bvec;
+ 	unsigned skip = i->iov_offset;
+-	unsigned k;
++	size_t size = i->count;
++	unsigned long nr_segs = i->nr_segs;
+ 
+-	for (k = 0; k < i->nr_segs; k++, skip = 0) {
+-		size_t len = i->bvec[k].bv_len - skip;
++	do {
++		size_t len = bvec->bv_len;
+ 
+ 		if (len > size)
+ 			len = size;
+ 		if (len & len_mask)
+ 			return false;
+-		if ((unsigned long)(i->bvec[k].bv_offset + skip) & addr_mask)
++		if ((unsigned long)(bvec->bv_offset + skip) & addr_mask)
+ 			return false;
+ 
++		bvec++;
+ 		size -= len;
+-		if (!size)
+-			break;
+-	}
++		skip = 0;
++	} while (size && --nr_segs);
++
+ 	return true;
+ }
+ 
+@@ -800,13 +803,13 @@ EXPORT_SYMBOL_GPL(iov_iter_is_aligned);
+ 
+ static unsigned long iov_iter_alignment_iovec(const struct iov_iter *i)
+ {
++	const struct iovec *iov = iter_iov(i);
+ 	unsigned long res = 0;
+ 	size_t size = i->count;
+ 	size_t skip = i->iov_offset;
+-	unsigned k;
++	unsigned long nr_segs = i->nr_segs;
+ 
+-	for (k = 0; k < i->nr_segs; k++, skip = 0) {
+-		const struct iovec *iov = iter_iov(i) + k;
++	do {
+ 		size_t len = iov->iov_len - skip;
+ 		if (len) {
+ 			res |= (unsigned long)iov->iov_base + skip;
+@@ -814,30 +817,33 @@ static unsigned long iov_iter_alignment_iovec(const struct iov_iter *i)
+ 				len = size;
+ 			res |= len;
+ 			size -= len;
+-			if (!size)
+-				break;
+ 		}
+-	}
++		iov++;
++		skip = 0;
++	} while (size && --nr_segs);
++
+ 	return res;
+ }
+ 
+ static unsigned long iov_iter_alignment_bvec(const struct iov_iter *i)
+ {
++	const struct bio_vec *bvec = i->bvec;
+ 	unsigned res = 0;
+ 	size_t size = i->count;
+ 	unsigned skip = i->iov_offset;
+-	unsigned k;
++	unsigned long nr_segs = i->nr_segs;
+ 
+-	for (k = 0; k < i->nr_segs; k++, skip = 0) {
+-		size_t len = i->bvec[k].bv_len - skip;
+-		res |= (unsigned long)i->bvec[k].bv_offset + skip;
++	do {
++		size_t len = bvec->bv_len - skip;
++		res |= (unsigned long)bvec->bv_offset + skip;
+ 		if (len > size)
+ 			len = size;
+ 		res |= len;
++		bvec++;
+ 		size -= len;
+-		if (!size)
+-			break;
+-	}
++		skip = 0;
++	} while (size && --nr_segs);
++
+ 	return res;
+ }
+ 
+
+-- 
+Jens Axboe
 
 
