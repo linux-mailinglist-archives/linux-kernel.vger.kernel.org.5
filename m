@@ -1,144 +1,73 @@
-Return-Path: <linux-kernel+bounces-37437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0038783B098
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:57:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BEE383B028
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:38:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42DF2B2BD25
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:33:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1190B2BD20
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:34:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63ECF1292D5;
-	Wed, 24 Jan 2024 17:31:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAA3886AEC;
+	Wed, 24 Jan 2024 17:31:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Uhh3Cyxd"
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="aO5A95zm"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A12AA128395;
-	Wed, 24 Jan 2024 17:31:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F09CF129A60;
+	Wed, 24 Jan 2024 17:31:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706117505; cv=none; b=amH58QwokYuoIOcvHZnbH6jVb3NRFGKsDr0jDdrKQ3IdNSLHuE0szdh947d02h43Zr6+cywK3+FjNHd47KYCah3jWMG+7Za5VhbU+026DT2s/VEq4nEoUhFioxgndflG8G3CdkLPJcDwctPovXc6/QGjq+gsNeuJ93PI131vUd8=
+	t=1706117509; cv=none; b=qX9cceQpafldpiJfJFp4uPnormcNBU8NLOFK0+oOomZ3MQB2VywIIr7cSVbvpw5y+kGhOFJk9beX9ZlD1N2FObFqvYceAPmuCLelRo43wflK6dWFwsJBESUfPlooo7v0Mnh92Zp39JGvCLfHyqHTgte9b8lwZD/VybYGuItijM4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706117505; c=relaxed/simple;
-	bh=LyF+uGG8rthtsLAGU6JwLDXQ2xY38jRfZIJ/nE/+i4U=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:To:From:Subject:
-	 References:In-Reply-To; b=TLuypNU1rl9PKEDR2UPCVFSvic62fUgJcfk0aDwH1+Hdfvvm6WEq/cLCiUV0DQsJbDQbHw/tjN0YE1xiMy/WQjca2bVpInQsjOYyp7aON+Ebgh1GYwXzzSfkoQgnqpj2FhUuh/XBsNpYmRXvvTpK6HQcRxoTBXZvXxkqvKqjbhw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Uhh3Cyxd; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id AC82B240005;
-	Wed, 24 Jan 2024 17:31:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1706117500;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FAy7AHDWICCoITFYxoF5yUyISVpdkZcGB4MmMxueyRw=;
-	b=Uhh3CyxddNadp3bKW19Bu/aCIlFIQepSAUY9rIKbk4eMy3+Hsd6tC2BF0Ckv+XHavn6JXm
-	fRDgh7zMogbFUGlEnTsJaCM1frdY/nxfTYmpI88kf8dAvxgG8qmJkn294h+KYxlHXcpYzG
-	9bYIDnIzycyT/FUtIJkoXPFXXJgk5KuPSXKJOybcNST3/sp5MOkX3S8LFqpkKIbfRTeuoP
-	P5NkAOHxlPlC+d2kMsmmx6Bm+HRdQzaojyr4FGCEXjre6A77llIpsjUO8DnbeXnsd5damr
-	VkrM0a0f+mzrn2F1tzM/bX95x99sl13FNSWD3aSaHsmy0PHd4yC5orLxj9ES6w==
+	s=arc-20240116; t=1706117509; c=relaxed/simple;
+	bh=lspDAIXZuY1DjZ1sRgzqDRNzeXiD5+2IL3TOwpkncnE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Um77TYTadRkt66eKTwzt1VtTjMMRohzF1Rs5C2Xyl8JlrLu3BbNycOodrGe4bHvWoSnYq2Dk00Kn+pqKedyNouk80EjkcmABOSYPZlu2IU5qeBAKK1xTBOrZ9DUqGvNU0R/RNtP98byYC8QXLl1whJDABc8ou/BkoTdKAMKea9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=aO5A95zm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 597CEC43390;
+	Wed, 24 Jan 2024 17:31:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1706117508;
+	bh=lspDAIXZuY1DjZ1sRgzqDRNzeXiD5+2IL3TOwpkncnE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aO5A95zm76NFWYdcSjOXnfMIwlK3rjpvBfhZT6QFAy7gq1v/oIUBJMFmg1Ily85PW
+	 3Nlo00EPdVOnOzSkv382qNb4e0lAQWFoBzL9EC/0Zq1POKIL3BCgJoW+CpOhlpYHlW
+	 njY+u3Vv7Ld2As/l8OH89Lhi0Vd6/5nPyYZzHR7Q=
+Date: Wed, 24 Jan 2024 09:31:47 -0800
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Mark Brown <broonie@kernel.org>, kernel@pengutronix.de,
+	Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+	linux-spi@vger.kernel.org
+Subject: Re: [PATCH v2 10/33] misc: gehc-achc: Follow renaming of SPI
+ "master" to "controller"
+Message-ID: <2024012441-tweak-catching-f565@gregkh>
+References: <cover.1705944943.git.u.kleine-koenig@pengutronix.de>
+ <9a5c94968010aaf0c1d013f357fcbef428bb11ce.1705944943.git.u.kleine-koenig@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 24 Jan 2024 18:31:39 +0100
-Message-Id: <CYN46F005M23.1Z11SN0VZF777@bootlin.com>
-Cc: "Gregory CLEMENT" <gregory.clement@bootlin.com>, "Michael Turquette"
- <mturquette@baylibre.com>, "Stephen Boyd" <sboyd@kernel.org>, "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley"
- <conor+dt@kernel.org>, "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- "Linus Walleij" <linus.walleij@linaro.org>,
- =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>, "Philipp Zabel"
- <p.zabel@pengutronix.de>, "Vladimir Kondratiev"
- <vladimir.kondratiev@mobileye.com>, <linux-mips@vger.kernel.org>,
- <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>, <linux-gpio@vger.kernel.org>
-To: "Rob Herring" <robh@kernel.org>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: Re: [PATCH v3 10/17] pinctrl: eyeq5: add platform driver
-X-Mailer: aerc 0.15.2
-References: <20240123-mbly-clk-v3-0-392b010b8281@bootlin.com>
- <20240123-mbly-clk-v3-10-392b010b8281@bootlin.com>
- <20240124151949.GB930997-robh@kernel.org>
-In-Reply-To: <20240124151949.GB930997-robh@kernel.org>
-X-GND-Sasl: theo.lebrun@bootlin.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9a5c94968010aaf0c1d013f357fcbef428bb11ce.1705944943.git.u.kleine-koenig@pengutronix.de>
 
-Hello,
+On Mon, Jan 22, 2024 at 07:07:05PM +0100, Uwe Kleine-König wrote:
+> In commit 8caab75fd2c2 ("spi: Generalize SPI "master" to "controller"")
+> some functions and struct members were renamed. To not break all drivers
+> compatibility macros were provided.
+> 
+> To be able to remove these compatibility macros push the renaming into
+> this driver.
+> 
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-On Wed Jan 24, 2024 at 4:19 PM CET, Rob Herring wrote:
-> On Tue, Jan 23, 2024 at 07:46:55PM +0100, Th=C3=A9o Lebrun wrote:
-> > Add the Mobileye EyeQ5 pin controller driver. It might grow to add late=
-r
-> > support of other platforms from Mobileye. It belongs to a syscon region
-> > called OLB.
-> >=20
-> > Existing pins and their function live statically in the driver code
-> > rather than in the devicetree, see compatible match data.
-> >
-> > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
-> > ---
-
-[...]
-
-> > diff --git a/drivers/pinctrl/pinctrl-eyeq5.c b/drivers/pinctrl/pinctrl-=
-eyeq5.c
-
-[...]
-
-> > +static const struct eq5p_match eq5p_match_a =3D {
-> > +	.regs =3D {
-> > +		[EQ5P_PD] =3D 0x0C0,
-> > +		[EQ5P_PU] =3D 0x0C4,
-> > +		[EQ5P_DS_LOW] =3D 0x0D0,
-> > +		[EQ5P_DS_HIGH] =3D 0x0D4,
-> > +		[EQ5P_IOCR] =3D 0x0B0,
-> > +	},
-> > +	.pins =3D eq5p_pins_a,
-> > +	.npins =3D ARRAY_SIZE(eq5p_pins_a),
-> > +	.funcs =3D eq5p_functions_a,
-> > +	.nfuncs =3D ARRAY_SIZE(eq5p_functions_a),
-> > +};
-> > +
-> > +static const struct eq5p_match eq5p_match_b =3D {
-> > +	.regs =3D {
-> > +		[EQ5P_PD] =3D 0x0C8,
-> > +		[EQ5P_PU] =3D 0x0CC,
-> > +		[EQ5P_DS_LOW] =3D 0x0D8,
-> > +		[EQ5P_DS_HIGH] =3D 0x0DC,
-> > +		[EQ5P_IOCR] =3D 0x0B4,
-> > +	},
->
-> These are all the same relative offsets, so you really only need to=20
-> store the base offset.
-
-Indeed, and I don't think I had even noticed. Thanks.
-
-> The use of 2 compatibles is a bit questionable as the programming model=
-=20
-> appears to be the same and only which pins differ. Surely there are=20
-> some other pinctrl drivers handling mutiple instances.
-
-I can confirm the programming model is the same across both banks. I've
-addressed your comment in my answer to yours on [PATCH v3 04/17].
-
-
-Thanks,
-
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
