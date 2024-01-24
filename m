@@ -1,221 +1,185 @@
-Return-Path: <linux-kernel+bounces-37322-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D6F383AE63
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:32:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E9E183AE36
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:20:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16DCCB31FEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:19:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 442AD1C237C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:19:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F14B27CF35;
-	Wed, 24 Jan 2024 16:19:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MZuIvdus"
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 576121A702
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 16:19:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F25F07CF29;
+	Wed, 24 Jan 2024 16:19:51 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 331737C094;
+	Wed, 24 Jan 2024 16:19:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706113155; cv=none; b=eDlcdEWA+JHyX3JtVhT0mKNEcp7I4eys+ftFA5X9Vk00p4ZX9tNP1GouJ2J41xmWbaJ4uwWfl+A4/DUZusdB+qIV1LvGyUXlERUEM7tVP+9wxVF20pj1JjG7iWAW3F6CTjkrq6i2nc+JTZ92tb1OsFpRgr3hwVJNHaMhA7LBkSs=
+	t=1706113191; cv=none; b=OWWR7aT79qMSoSOCujBCV+P/PIfGDrEuXQdauv8pWpLVv83FRxBt7koak8ZAGexfVinMLbrvXldDnTTRDm2CXJtnrv9JrklLcEEwKBQ/rtgDRK6TAQRVzPE0bsgE2HJUNCFAeq/ab6iomdYMNyAxltN9+1gNNmHJYk0JM5a2bOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706113155; c=relaxed/simple;
-	bh=40XQOYtPCjyB1xPaE3CSwJD38yBvVKSwSOB/CBE/KqE=;
+	s=arc-20240116; t=1706113191; c=relaxed/simple;
+	bh=Qp7JcOQ7SlWmlTzgIphkIdDTBIiOYjsn2fynh4y+9Vo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=S/HgY2tVGWPBHlUa/aMcwkvE1xUGzMplZsuP+/w5ZagBIcEIQG9hbuNWlkLxBRqEEDx91TyS1VQIDTe3TzHayvkPsTTUbaPLvirt19iR7H/pKIofUSiNHzZXpSHYLdG8bNg/pll4YemhqljAvUqLsRl+Mfx8ky0BOQMm58TWfKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MZuIvdus; arc=none smtp.client-ip=91.218.175.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <c8b3c672-864b-497a-9348-383412632a3d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706113150;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T7nuOJoOmUuNlLsb7W1RUqVrxhJT9IAhy3vPZcivD/I=;
-	b=MZuIvdus+xtMhzYerD1BMQmgJbGcBrj5pn4Z0ucLu1/71jxF5Cscc8r/KuSfTEpRSm1nSW
-	H1LF8UzaGhvZYjGnOGoRJKeRBNW4h3ZGETfUWj/DUvjdpcD2EOPetvR0xBWhn4+GKkzOG4
-	mYRsBNdeKut6M/thnO7yA83MG+7raEA=
-Date: Wed, 24 Jan 2024 16:19:03 +0000
+	 In-Reply-To:Content-Type; b=Zi1dGoeqTr4btPmPMeqrbgJDPzoxC86D9jEms4Ik836TVvWJsIPvq2v9Q5vBTH0a+KaJI7J7+WypFOnk2xmjRFccXADR9utfQsbAwk0ZoaKVXyj3oH8syfpfMBKmcFbC1Qb8FFlBuVpeeGiGOEpaqFVpIBEAGLbGIFOP/9x8y5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 63C261FB;
+	Wed, 24 Jan 2024 08:20:33 -0800 (PST)
+Received: from [10.57.87.44] (unknown [10.57.87.44])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 582B93F762;
+	Wed, 24 Jan 2024 08:19:45 -0800 (PST)
+Message-ID: <9ce80ab3-9e82-2068-3a01-ab68b9b05c1a@arm.com>
+Date: Wed, 24 Jan 2024 16:19:42 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 3/4] net: wan: fsl_qmc_hdlc: Add runtime timeslots changes
- support
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] perf print-events: make is_event_supported() more robust
 Content-Language: en-US
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- Andrew Lunn <andrew@lunn.ch>, Mark Brown <broonie@kernel.org>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-References: <20240123164912.249540-1-herve.codina@bootlin.com>
- <20240123164912.249540-4-herve.codina@bootlin.com>
- <fc421c38-66b7-4d4e-abfa-051eccbf793c@linux.dev>
- <20240124162646.24bf9235@bootlin.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-In-Reply-To: <20240124162646.24bf9235@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: Ian Rogers <irogers@google.com>, acme@redhat.com,
+ john.g.garry@oracle.com, leo.yan@linaro.org,
+ linux-arm-kernel@lists.infradead.org, linux-perf-users@vger.kernel.org,
+ mike.leach@linaro.org, namhyung@kernel.org, suzuki.poulose@arm.com,
+ tmricht@linux.ibm.com, will@kernel.org, linux-kernel@vger.kernel.org,
+ Hector Martin <marcan@marcan.st>, Marc Zyngier <maz@kernel.org>
+References: <20240116170348.463479-1-mark.rutland@arm.com>
+ <5236cd64-c0ca-6d0e-137f-06a44f03ebc7@arm.com>
+ <ZbEyhZScQ9spEE1I@FVFF77S0Q05N.cambridge.arm.com>
+From: James Clark <james.clark@arm.com>
+In-Reply-To: <ZbEyhZScQ9spEE1I@FVFF77S0Q05N.cambridge.arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 24/01/2024 15:26, Herve Codina wrote:
-> Hi Vadim,
-> 
-> On Wed, 24 Jan 2024 10:10:46 +0000
-> Vadim Fedorenko <vadim.fedorenko@linux.dev> wrote:
-> 
-> [...]
->>> +static int qmc_hdlc_xlate_slot_map(struct qmc_hdlc *qmc_hdlc,
->>> +				   u32 slot_map, struct qmc_chan_ts_info *ts_info)
->>> +{
->>> +	u64 ts_mask_avail;
->>> +	unsigned int bit;
->>> +	unsigned int i;
->>> +	u64 ts_mask;
->>> +	u64 map;
->>> +
->>> +	/* Tx and Rx masks must be identical */
->>> +	if (ts_info->rx_ts_mask_avail != ts_info->tx_ts_mask_avail) {
->>> +		dev_err(qmc_hdlc->dev, "tx and rx available timeslots mismatch (0x%llx, 0x%llx)\n",
->>> +			ts_info->rx_ts_mask_avail, ts_info->tx_ts_mask_avail);
->>> +		return -EINVAL;
->>> +	}
->>> +
->>> +	ts_mask_avail = ts_info->rx_ts_mask_avail;
->>> +	ts_mask = 0;
->>> +	map = slot_map;
->>> +	bit = 0;
->>> +	for (i = 0; i < 64; i++) {
->>> +		if (ts_mask_avail & BIT_ULL(i)) {
->>> +			if (map & BIT_ULL(bit))
->>> +				ts_mask |= BIT_ULL(i);
->>> +			bit++;
->>> +		}
->>> +	}
->>> +
->>> +	if (hweight64(ts_mask) != hweight64(map)) {
->>> +		dev_err(qmc_hdlc->dev, "Cannot translate timeslots 0x%llx -> (0x%llx,0x%llx)\n",
->>> +			map, ts_mask_avail, ts_mask);
->>> +		return -EINVAL;
->>> +	}
->>> +
->>> +	ts_info->tx_ts_mask = ts_mask;
->>> +	ts_info->rx_ts_mask = ts_mask;
->>> +	return 0;
->>> +}
->>> +
->>> +static int qmc_hdlc_xlate_ts_info(struct qmc_hdlc *qmc_hdlc,
->>> +				  const struct qmc_chan_ts_info *ts_info, u32 *slot_map)
->>> +{
->>> +	u64 ts_mask_avail;
->>> +	unsigned int bit;
->>> +	unsigned int i;
->>> +	u64 ts_mask;
->>> +	u64 map;
->>> +
->>
->> Starting from here ...
->>
->>> +	/* Tx and Rx masks must be identical */
->>> +	if (ts_info->rx_ts_mask_avail != ts_info->tx_ts_mask_avail) {
->>> +		dev_err(qmc_hdlc->dev, "tx and rx available timeslots mismatch (0x%llx, 0x%llx)\n",
->>> +			ts_info->rx_ts_mask_avail, ts_info->tx_ts_mask_avail);
->>> +		return -EINVAL;
->>> +	}
->>> +	if (ts_info->rx_ts_mask != ts_info->tx_ts_mask) {
->>> +		dev_err(qmc_hdlc->dev, "tx and rx timeslots mismatch (0x%llx, 0x%llx)\n",
->>> +			ts_info->rx_ts_mask, ts_info->tx_ts_mask);
->>> +		return -EINVAL;
->>> +	}
->>> +
->>> +	ts_mask_avail = ts_info->rx_ts_mask_avail;
->>> +	ts_mask = ts_info->rx_ts_mask;
->>> +	map = 0;
->>> +	bit = 0;
->>> +	for (i = 0; i < 64; i++) {
->>> +		if (ts_mask_avail & BIT_ULL(i)) {
->>> +			if (ts_mask & BIT_ULL(i))
->>> +				map |= BIT_ULL(bit);
->>> +			bit++;
->>> +		}
->>> +	}
->>> +
->>> +	if (hweight64(ts_mask) != hweight64(map)) {
->>> +		dev_err(qmc_hdlc->dev, "Cannot translate timeslots (0x%llx,0x%llx) -> 0x%llx\n",
->>> +			ts_mask_avail, ts_mask, map);
->>> +		return -EINVAL;
->>> +	}
->>> +
->>
->> till here the block looks like copy of the block from previous function.
->> It worth to make a separate function for it, I think.
->>
->>> +	if (map >= BIT_ULL(32)) {
->>> +		dev_err(qmc_hdlc->dev, "Slot map out of 32bit (0x%llx,0x%llx) -> 0x%llx\n",
->>> +			ts_mask_avail, ts_mask, map);
->>> +		return -EINVAL;
->>> +	}
->>> +
->>> +	*slot_map = map;
->>> +	return 0;
->>> +}
->>> +
-> [...]
-> 
-> I am not so sure. There are slighty differences between the two functions.
-> The error messages and, in particular, the loop in qmc_hdlc_xlate_slot_map() is:
-> 	--- 8< ---
-> 	ts_mask_avail = ts_info->rx_ts_mask_avail;
-> 	ts_mask = 0;
-> 	map = slot_map;
-> 	bit = 0;
-> 	for (i = 0; i < 64; i++) {
-> 		if (ts_mask_avail & BIT_ULL(i)) {
-> 			if (map & BIT_ULL(bit))
-> 				ts_mask |= BIT_ULL(i);
-> 			bit++;
-> 		}
-> 	}
-> 	--- 8< ---
-> 
-> whereas it is the following in qmc_hdlc_xlate_ts_info():
-> 	--- 8< ---
-> 	ts_mask_avail = ts_info->rx_ts_mask_avail;
-> 	ts_mask = ts_info->rx_ts_mask;
-> 	map = 0;
-> 	bit = 0;
-> 	for (i = 0; i < 64; i++) {
-> 		if (ts_mask_avail & BIT_ULL(i)) {
-> 			if (ts_mask & BIT_ULL(i))
-> 				map |= BIT_ULL(bit);
-> 			bit++;
-> 		}
-> 	}
-> 	--- 8< ---
-> 
-> ts_map and map initializations are not the same, i and bit are not used for
-> the same purpose and the computed value is not computed based on the same
-> information.
-> 
-> With that pointed, I am not sure that having some common code for both
-> function will be relevant. Your opinion ?
 
-I see. I'm just thinking if it's possible to use helpers from bitops.h
-and bitmap.h here to avoid open-coding common parts of the code.
 
-> Best regards,
-> Hervé
+On 24/01/2024 15:53, Mark Rutland wrote:
+> On Mon, Jan 22, 2024 at 10:43:27AM +0000, James Clark wrote:
+>>
+>>
+>> On 16/01/2024 17:03, Mark Rutland wrote:
+>>> Currently the perf tool doesn't deteect support for extneded event types
+>>> on Apple M1/M2 systems, and will not auto-expand plain PERF_EVENT_TYPE
+>>> hardware events into per-PMU events. This is due to the detection of
+>>> extended event types not handling mandatory filters required by the
+>>> M1/M2 PMU driver.
+>>>
+>>> PMU drivers and the core perf_events code can require that
+>>> perf_event_attr::exclude_* filters are configured in a specific way and
+>>> may reject certain configurations of filters, for example:
+>>>
+>>> (a) Many PMUs lack support for any event filtering, and require all
+>>>     perf_event_attr::exclude_* bits to be clear. This includes Alpha's
+>>>     CPU PMU, and ARM CPU PMUs prior to the introduction of PMUv2 in
+>>>     ARMv7,
+>>>
+>>> (b) When /proc/sys/kernel/perf_event_paranoid >= 2, the perf core
+>>>     requires that perf_event_attr::exclude_kernel is set.
+>>>
+>>> (c) The Apple M1/M2 PMU requires that perf_event_attr::exclude_guest is
+>>>     set as the hardware PMU does not count while a guest is running (but
+>>>     might be extended in future to do so).
+>>>
+>>> In is_event_supported(), we try to account for cases (a) and (b), first
+>>> attempting to open an event without any filters, and if this fails,
+>>> retrying with perf_event_attr::exclude_kernel set. We do not account for
+>>> case (c), or any other filters that drivers could theoretically require
+>>> to be set.
+>>>
+>>> Thus is_event_supported() will fail to detect support for any events
+>>> targetting an Apple M1/M2 PMU, even where events would be supported with
+>>> perf_event_attr:::exclude_guest set.
+>>>
+>>> Since commit:
+>>>
+>>>   82fe2e45cdb00de4 ("perf pmus: Check if we can encode the PMU number in perf_event_attr.type")
+>>>
+>>> ... we use is_event_supported() to detect support for extended types,
+>>> with the PMU ID encoded into the perf_event_attr::type. As above, on an
+>>> Apple M1/M2 system this will always fail to detect that the event is
+>>> supported, and consequently we fail to detect support for extended types
+>>> even when these are supported, as they have been since commit:
+>>>
+>>>   5c816728651ae425 ("arm_pmu: Add PERF_PMU_CAP_EXTENDED_HW_TYPE capability")
+>>>
+>>> Due to this, the perf tool will not automatically expand plain
+>>> PERF_TYPE_HARDWARE events into per-PMU events, even when all the
+>>> necessary kernel support is present.
+>>>
+>>> This patch updates is_event_supported() to additionally try opening
+>>> events with perf_event_attr::exclude_guest set, allowing support for
+>>> events to be detected on Apple M1/M2 systems. I beleive that this is
+>>> sufficient for all contemporary CPU PMU drivers, though in future it may
+>>> be necessary to check for other combinations of filter bits.
+>>>
+>>> I've deliberately changed the check to not expect a specific error code
+>>> for missing filters, as today ;the kernel may return a number of
+>>> different error codes for missing filters (e.g. -EACCESS, -EINVAL, or
+>>> -EOPNOTSUPP) depending on why and where the filter configuration is
+>>> rejected, and retrying for any error is more robust.
+>>>
+>>> Note that this does not remove the need for commit:
+>>>
+>>>   a24d9d9dc096fc0d ("perf parse-events: Make legacy events lower priority than sysfs/JSON")
+>>>
+>>> ... which is still necessary so that named-pmu/event/ events work on
+>>> kernels without extended type support, even if the event name happens to
+>>> be the same as a PERF_EVENT_TYPE_HARDWARE event (e.g. as is the case for
+>>> the M1/M2 PMU's 'cycles' and 'instructions' events).
+>>>
+>>> Fixes: 82fe2e45cdb00de4 ("perf pmus: Check if we can encode the PMU number in perf_event_attr.type")
+>>> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+>>> Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
+>>> Cc: Hector Martin <marcan@marcan.st>
+>>> Cc: Ian Rogers <irogers@google.com>
+>>> Cc: James Clark <james.clark@arm.com>
+>>> Cc: John Garry <john.g.garry@oracle.com>
+>>> Cc: Leo Yan <leo.yan@linaro.org>
+>>> Cc: Marc Zyngier <maz@kernel.org>
+>>> Cc: Mike Leach <mike.leach@linaro.org>
+>>> Cc: Namhyung Kim <namhyung@kernel.org>
+>>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>> Cc: Thomas Richter <tmricht@linux.ibm.com>
+>>> Cc: Will Deacon <will@kernel.org>
+>>> ---
+>>>  tools/perf/util/print-events.c | 27 +++++++++++++++++++--------
+>>>  1 file changed, 19 insertions(+), 8 deletions(-)
+>>>
+>>
+>> Tested-by: James Clark <james.clark@arm.com>
+>>
+>> Tested on Juno and N1SDP, although I wouldn't have expected it to make a
+>> difference on those platforms because they support exclude_guest=0.
+> 
+> It's good to be certain, anyhow!
+> 
+> I've folded that tag in for v2.
+> 
+>> Although I do see an interaction with the test "Session topology" if I
+>> hack the driver to behave like M1. The test has been failing (on
+>> big.LITTLE) since commit 251aa040244a ("perf parse-events: Wildcard most
+>> "numeric" events") but the result is that the test actually starts
+>> passing with this change. I don't think that should really block this
+>> though, it's likely going to require a separate fix which I will look into.
+> 
+> IIUC that fix is:
+> 
+>   https://lore.kernel.org/lkml/20240124094358.489372-1-james.clark@arm.com/
+> 
+> ... right?
+> 
+> Mark.
+> 
+
+Yes that's it. Turned out to be unrelated. Or only semi related and not
+blocking for your patch.
 
 
