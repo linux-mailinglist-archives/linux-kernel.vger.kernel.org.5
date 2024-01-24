@@ -1,65 +1,65 @@
-Return-Path: <linux-kernel+bounces-37555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95A1183B195
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:56:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAF3783B197
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:56:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 444B428577B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:56:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D07FC1C2350A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:56:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA4C6131E24;
-	Wed, 24 Jan 2024 18:55:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3699913175B;
+	Wed, 24 Jan 2024 18:56:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="C2aMWTug"
-Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="QPRpSzpX"
+Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E88112BE98
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 18:55:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3A0813175F
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 18:56:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706122554; cv=none; b=FKxW1lCJVPM4gIAkRyil0vmvI8rkIeJ2RcwtyOYszPBwLDY77SGrKVJW2RLmU6Mk0c2B2xxQNZlWdUda+pEQLw/zDfVm6D7xTOeaNMsJzet5rhndx0SbSHCcADwEmRwbg2kkxeiU3Sop3d42xATfCKBrFjnfFT7D4ZVfoa7LcME=
+	t=1706122582; cv=none; b=rqLT3hATv8kNpRoX+Whgg/r4/RuSlu4a34Hi9ZO3L02osHgzjf37mHagyf+S2vzRRrmlJOXSKkdGk47u83BuuSUlO6fUdDQSBtCixckejze204zqowx1am+oFV4ja1DHu23Qa6t1kF/B8Yu3o82uJePCChRGgWWzDBwKyzuada8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706122554; c=relaxed/simple;
-	bh=KLsAeDdaQS/kCf5bcjQjqAY1y7ykrEIrJ+OlMCGRNF4=;
+	s=arc-20240116; t=1706122582; c=relaxed/simple;
+	bh=kvTmUVyu+5YoGL+Mb3PsywwjW5Ffb/120oGIh9eGFfA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XPGgl3hETUSh2EgREi4kzXixfW6zhPKwdV3jm6FRfpnRbmIk1JgR6Y5LcRV1ZPmJd4hIsh86UM1o6KbEzYPD9rP6RDJHayd+EnqzBcKb6qsjwwcEsAfV7pWBL0P269L/ANr/veSt7BW+u3eZG2algwNYKLV8S6UczezxAnoD40A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=C2aMWTug; arc=none smtp.client-ip=209.85.160.44
+	 To:Content-Type; b=fUQtt8hGwf2P23UBbVHR1xNAIckuMfZZctzcFrSsJjPuM3rzV5gAMik6tCPnI5ixdHyluEKGn+GcJcO66lpp19DJb8lG92YExyvb8d9ybF1KeWkID3HWwexZJQ3jdaUqhS6ettw0V/f7uBm1GsXJXM1JkeBDwsIkwrvlwRQrU88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=QPRpSzpX; arc=none smtp.client-ip=209.85.160.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-206689895bfso3046982fac.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:55:52 -0800 (PST)
+Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-21428d99395so1835819fac.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:56:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706122551; x=1706727351; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+        d=chromium.org; s=google; t=1706122580; x=1706727380; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HzxBYWU0XLGvtFhW2j53HrOFywmcvwVn8sjJljXglm0=;
-        b=C2aMWTugdu1sxHRF/ulhXhi50AoXFz1/Sk0JpaUSSnARspN4VSnHSZ4tEkl1k8C59J
-         25I8EuHBtDVyiu9/iLwvSPpCMPIGk0OtBebXx3YyVP8Bku5LXvW0QEm14WXdhX7ghhhm
-         B2qQmouQgprN9RG5OW1xmgJWKJ+qUawGaejCc=
+        bh=flii4r2OO0TnE/OvuRDIQl+ib46GfR+jZZh0in4dSPQ=;
+        b=QPRpSzpX1b9hPwo98NWL7tu+w7wusN8S4eifQypM25L1xp1DfbTuH9ruwGyFh7T/b1
+         J+qep3MdPSA8AbFSACTL7dQzDllJ03r2a0Rp0C/5rRUQ2kHzD8KyuYNBEYqDQFulTKSi
+         DnspGYBxvlkxmGb/FNWT9U39SPIgHHfW3Kd7E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706122551; x=1706727351;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+        d=1e100.net; s=20230601; t=1706122580; x=1706727380;
+        h=content-transfer-encoding:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HzxBYWU0XLGvtFhW2j53HrOFywmcvwVn8sjJljXglm0=;
-        b=dXQSZbk/CykjWKXJcaQoBWJL2VMV6RUX5xyv1hygVS5TJ+DY8MqdOfXuPWgpvo7hGM
-         iX3RggKK3pTYq/DZUFYriF6ybuQsgIwSwipPV346sBJKR++dmSPGAbC6hIPq7YWgx4An
-         2x6bStRfUurp1Bu/BLHQYG+uFLo4j+9ZdD5Vi71OH5qCuSKg5NaasszPPXpcEJYCSp22
-         rKayQZPlkHVk/4dloXJMJRmZUXSsE+KLugJRV7lULc/5UAJxdnPB3IISLl7RGNPQJ6kf
-         pid+USli5FgpBvp00W4lCOrDKabRPM6ZOsUzGJbPhLO/IuGdBykzYxoQbs3iopFAAEhZ
-         2WSg==
-X-Gm-Message-State: AOJu0Yygxzk8zNqF2yW1fHHtIdX0tsJ0g+iTUEjFWJd9zlji/GcJy9mu
-	aAxea3unPSJgqjqtWKgJDS+05Ja7SncTzI6MGrLW8zxWszWjK0CroHlSSToUx0C+PdpkWwV5i2w
-	WKWREcMGgM0OUEv8OaAbuY8gem+9yhxAEyOcx
-X-Google-Smtp-Source: AGHT+IHWbZarCrd4sIhzNv9IZJE3B+OX3xjBmL88b3OOmmDhwGA+wxixbMYXHijO0HSTHdoNR/Ds7SybUvl+5K4zcno=
-X-Received: by 2002:a05:6870:5490:b0:214:448f:e3e with SMTP id
- f16-20020a056870549000b00214448f0e3emr3479864oan.66.1706122551393; Wed, 24
- Jan 2024 10:55:51 -0800 (PST)
+        bh=flii4r2OO0TnE/OvuRDIQl+ib46GfR+jZZh0in4dSPQ=;
+        b=teYNwTIPjbhqYZKFcDQzVO7q8oorVtfBUvWDug/d/apPViEIaDS5LG5Ald1gDBKVdA
+         ijTcZu6Wz3q+w1Qvz8uI0fliDVm157LslpZdfCCsYEXr8HuhiLai0g9r54GQSFM/pFhG
+         d0OaJCRHMKEK8yIco7Vemx1QzZYfqAUcYM6fQMfPrmMEJPGk1AknEJvM9qKnCp8QceVV
+         0pc48u/68c3fZhwUmhC4cjRdZERmHpVEK+3YBcsU/nLHCwifXuGpqir0M9wXpVCDD0GR
+         b/4YTrbEKaaKQTYeNq6wFWbsPlXXwfy2irTObDERaTyYv4q/57zyiiU5OIT8jqGfwFRp
+         h/vg==
+X-Gm-Message-State: AOJu0YwBmkqOBEeX0Z/zFWg0bvI1VHE9gf7UmFhh2VCiqQ/SmvLVcoaP
+	/ftxF7YJorH7R593T8bQErawcKiTyEQMuNdwUrbYmpHAmgvhBKb4aWCLZ8cRVJcZORousDXcOcX
+	nSK31xY7X7TDSVO0SqZIAnFYUn92vnU3VWdxq
+X-Google-Smtp-Source: AGHT+IEokCZUL1ojdQxZQFJ36V2Jcy4lGrhyLp03ij/BLj+yI4uyj0fd4X4i3tCBO73J+D9TXYai3KJPK1EDBvi2YW0=
+X-Received: by 2002:a05:6870:b69b:b0:214:8734:1345 with SMTP id
+ cy27-20020a056870b69b00b0021487341345mr35826oab.7.1706122579922; Wed, 24 Jan
+ 2024 10:56:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,14 +67,15 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20240122152905.2220849-1-jeffxu@chromium.org> <726.1705938579@cvs.openbsd.org>
- <CABi2SkXrnUZsWvpqS61mHw-SqDBOodqpcfjdoTTyeeYG9tRJGA@mail.gmail.com> <86181.1705962897@cvs.openbsd.org>
-In-Reply-To: <86181.1705962897@cvs.openbsd.org>
+ <CABi2SkXrnUZsWvpqS61mHw-SqDBOodqpcfjdoTTyeeYG9tRJGA@mail.gmail.com>
+ <86181.1705962897@cvs.openbsd.org> <20240123173320.2xl3wygzbxnrei2c@revolver> <85359.1706036321@cvs.openbsd.org>
+In-Reply-To: <85359.1706036321@cvs.openbsd.org>
 From: Jeff Xu <jeffxu@chromium.org>
-Date: Wed, 24 Jan 2024 10:55:39 -0800
-Message-ID: <CABi2SkXrMC_8Ew7uA=Tufyy1YJObkrFJWbJtZuONCw5XHv2LYQ@mail.gmail.com>
+Date: Wed, 24 Jan 2024 10:56:08 -0800
+Message-ID: <CABi2SkWfgqA89+_qdy6y7HQB1TjA+N2oCNOwO_ZtV+3cJOmV1Q@mail.gmail.com>
 Subject: Re: [PATCH v7 0/4] Introduce mseal()
-To: Theo de Raadt <deraadt@openbsd.org>
-Cc: akpm@linux-foundation.org, keescook@chromium.org, jannh@google.com, 
+To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Jeff Xu <jeffxu@chromium.org>, 
+	akpm@linux-foundation.org, keescook@chromium.org, jannh@google.com, 
 	sroettger@google.com, willy@infradead.org, gregkh@linuxfoundation.org, 
 	torvalds@linux-foundation.org, usama.anjum@collabora.com, 
 	rdunlap@infradead.org, jeffxu@google.com, jorgelo@chromium.org, 
@@ -84,183 +85,101 @@ Cc: akpm@linux-foundation.org, keescook@chromium.org, jannh@google.com,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 22, 2024 at 2:34=E2=80=AFPM Theo de Raadt <deraadt@openbsd.org>=
- wrote:
+On Tue, Jan 23, 2024 at 10:58=E2=80=AFAM Theo de Raadt <deraadt@openbsd.org=
+> wrote:
 >
-> Jeff Xu <jeffxu@chromium.org> wrote:
+> It's the same with MAP_MSEALABLE.  I don't get it. So now there are 3
+> memory types:
+>        - cannot be sealed, ever
+>        - not yet sealed
+>        - sealed
 >
-> > On Mon, Jan 22, 2024 at 7:49=E2=80=AFAM Theo de Raadt <deraadt@openbsd.=
-org> wrote:
-> > >
-> > > Regarding these pieces
-> > >
-> > > > The PROT_SEAL bit in prot field of mmap(). When present, it marks
-> > > > the map sealed since creation.
-> > >
-> > > OpenBSD won't be doing this.  I had PROT_IMMUTABLE as a draft.  In my
-> > > research I found basically zero circumstances when you userland does
-> > > that.  The most common circumstance is you create a RW mapping, fill =
-it,
-> > > and then change to a more restrictve mapping, and lock it.
-> > >
-> > > There are a few regions in the addressspace that can be locked while =
-RW.
-> > > For instance, the stack.  But the kernel does that, not userland.  I
-> > > found regions where the kernel wants to do this to the address space,
-> > > but there is no need to export useless functionality to userland.
-> > >
-> > I have a feeling that most apps that need to use mmap() in their code
-> > are likely using RW mappings. Adding sealing to mmap() could stop
-> > those mappings from being executable. Of course, those apps would
-> > need to change their code. We can't do it for them.
+> What purpose does the first type serve?  Please explain the use case.
 >
-> I don't have a feeling about it.
+> Today, processes have control over their entire address space.
 >
-> I spent a year engineering a complete system which exercises the maximum
-> amount of memory you can lock.
+> What is the purpose of "permissions cannot be locked".  Please supply
+> an example.  If I am wrong, I'd like to know where I went wrong.
 >
-> I saw nothing like what you are describing.  I had PROT_IMMUTABLE in my
-> drafts, and saw it turning into a dangerous anti-pattern.
->
-I'm sorry, I have never looked at one line of openBSD code, prototype
-or not, nor did I install openBSD before.
+The linux example is in the V3 and V4 cover letter [1] [2] of the open
+discussion section.
 
-Because of this situation on my side, I failed to understand why you
-have such a strong opinion on PROC_SEAL in mmap() in linux kernel,
-based on your own OpenBSD's experience ?
+[1] https://lore.kernel.org/linux-mm/20231212231706.2680890-1-jeffxu@chromi=
+um.org/T/
+[2] https://lore.kernel.org/linux-mm/20240104185138.169307-3-jeffxu@chromiu=
+m.org/T/
 
-For PROT_SEAL in mmap(), I see it as a good and reasonable suggestion
-raised during the RFC process, and incorporate it into the patch set,
-there is nothing more and nothing less.
+Copied below for ease of reading.
+---------------------------------------------------------------------------=
+--------------
+During the development of V3, I had new questions and thoughts and
+wished to discuss.
 
-If openBSD doesn't want it, that is fine to me, it is not that I'm
-trying to force this into openBSD's kernel, I understand it is a
-different code base.
+1> shm/aio
+From reading the code, it seems to me that aio/shm can mmap/munmap
+maps on behalf of userspace, e.g. ksys_shmdt() in shm.c. The lifetime
+of those mapping are not tied to the lifetime of the process. If those
+memories are sealed from userspace, then unmap will fail. This isn=E2=80=99=
+t a
+huge problem, since the memory will eventually be freed at exit or
+exec. However, it feels like the solution is not complete, because of
+the leaks in VMA address space during the lifetime of the process.
 
-> > Also, I believe adding this to mmap() has no downsides, only
-> > performance gain, as Pedro Falcato pointed out in [1].
-> >
-> > [1] https://lore.kernel.org/lkml/CAKbZUD2A+=3Dbp_sd+Q0Yif7NJqMu8p__eb4y=
-guq0agEcmLH8SDQ@mail.gmail.com/
->
-> Are you joking?  You don't have any code doing that today.  More feelings=
-?
->
-> OpenBSD userland has zero places it can use mmap() MAP_IMMUTABLE.
->
-> It has two places where it has mprotect() + mimmutable() adjacent to each
-> other, two codepaths for late mprotect() of RELRO, and then make the RELR=
-O
-> immutable.
->
-> I think this idea is a premature optimization, and intentionally incompat=
-ible.
->
-> Like I say, I had a similar MAP_ flag for mprotect() and mmap() in my
-> development trees, and I recognized it was pointless, distracting develop=
-ers
-> into the wrong patterns, and I threw it out.
->
-> > > OpenBSD now uses this for a high percent of the address space.  It mi=
-ght
-> > > be worth re-reading a description of the split of responsibility rega=
-rding
-> > > who locks different types of memory in a process;
-> > > - kernel (the majority, based upon what ELF layout tell us),
-> > > - shared library linker (the next majority, dealing with shared
-> > >   library mappings and left-overs not determinable at kernel time),
-> > > - libc (a small minority, mostly regarding forced mutable objects)
-> > > - and the applications themselves (only 1 application today)
-> > >
-> > >     https://lwn.net/Articles/915662/
-> > >
-> > > > The MAP_SEALABLE bit in the flags field of mmap(). When present, it=
- marks
-> > > > the map as sealable. A map created without MAP_SEALABLE will not su=
-pport
-> > > > sealing, i.e. mseal() will fail.
-> > >
-> > > We definately won't be doing this.  We allow a process to lock any an=
-d all
-> > > it's memory that isn't locked already, even if it means it is shootin=
-g
-> > > itself in the foot.
-> > >
-> > > I think you are going to severely hurt the power of this mechanism,
-> > > because you won't be able to lock memory that has been allocated by a
-> > > different callsite not under your source-code control which lacks the
-> > > MAP_SEALABLE flag.  (Which is extremely common with the system-parts =
-of
-> > > a process, meaning not just libc but kernel allocated objects).
-> > >
-> > MAP_SEALABLE was an open discussion item called out on V3 [2] and V4 [3=
-].
-> >
-> > I acknowledge that additional coordination would be required if
-> > mapping were to be allocated by one software component and sealed in
-> > another. However, this is feasible.
-> >
-> > Considering the side effect of not having this flag (as discussed in
-> > V3/V4) and the significant implications of altering the lifetime of
-> > the mapping (since unmapping would not be possible), I believe it is
-> > reasonable to expect developers to exercise additional care and
-> > caution when utilizing memory sealing.
-> >
-> > [2] https://lore.kernel.org/linux-mm/20231212231706.2680890-2-jeffxu@ch=
-romium.org/
-> > [3] https://lore.kernel.org/all/20240104185138.169307-1-jeffxu@chromium=
-org/
->
-> I disagree *strongly*.  Developers need to exercise additional care on
-> memory, period.  Memory sealing issues is the least of their worries.
->
-> (Except for handling RELRO, but only the ld.so developers will lose
-> their hair).
->
->
-> OK, so mseal and mimmutable are very different.
->
-> mimmutable can be used by any developer on the address space easily.
->
-> mseal requires control of the whole stack between allocation and consumpt=
-ion.
->
-> I'm sorry, but I don't think you understand how dangerous this MAP_SEALAB=
-LE
-> proposal is because of the difficulties it will create for use.
->
-> The immutable memory management we have today in OpenBSD would completely
-> impossible with such a flag.  Seperation between allocator (that doesn't =
-know
-> what is going to happen), and consumer (that does know), is completely co=
-mmon
-> in the systems environment (meaning the interaction between DSO, libc, ot=
-her
-> libraries, and the underside of applications).
->
-> This is not not like an application where you can simply sprinkle the fla=
-g
-> into the mmap() calls that cause you problems.  That mmap() call is now i=
-n
-> someone else's code, and you CANNOT gain security advantage unless you
-> convince them to gain an understanding of what that flag means -- and it =
-is
-> a flag that other Linux variants don't have, not even in their #include
-> files.
->
-I respect your reasoning with OpenBSD, but do you have a real example
-that this will be problematic for linux ?
+2> Brk (heap/stack)
+Currently, userspace applications can seal parts of the heap by
+calling malloc() and mseal(). This raises the question of what the
+expected behavior is when sealing the heap is attempted.
 
-In my opinion, the extra communication part with mmap()'s owner has
-its pros and cons.
+let's assume following calls from user space:
 
-The cons is what you mentioned: extra time for convincing and approval.
+ptr =3D malloc(size);
+mprotect(ptr, size, RO);
+mseal(ptr, size, SEAL_PROT_PKEY);
+free(ptr);
 
-The pro is that there won't be unexpected behavior from the code owner
-point of view, once this communication process is completed. It can
-reduce the possibility of introducing bugs.
+Technically, before mseal() is added, the user can change the
+protection of the heap by calling mprotect(RO). As long as the user
+changes the protection back to RW before free(), the memory can be
+reused.
 
-So far, I do not have enough information to say this is a bad idea.
-if you can provide a real example in the context of linux, e.g. DSO
-and libc you mentioned with details, that will be helpful.
+Adding mseal() into picture, however, the heap is then sealed
+partially, user can still free it, but the memory remains to be RO,
+and the result of brk-shrink is nondeterministic, depending on if
+munmap() will try to free the sealed memory.(brk uses munmap to shrink
+the heap).
+
+3> Above two cases led to the third topic:
+There one option to address the problem mentioned above.
+Option 1:  A =E2=80=9CMAP_SEALABLE=E2=80=9D flag in mmap().
+If a map is created without this flag, the mseal() operation will
+fail. Applications that are not concerned with sealing will expect
+their behavior to be unchanged. For those that are concerned, adding a
+flag at mmap time to opt in is not difficult. For the short term, this
+solves problems 1 and 2 above. The memory in shm/aio/brk will not have
+the MAP_SEALABLE flag at mmap(), and the same is true for the heap.
+
+If we choose not to go with path, all mapping will by default
+sealable. We could document above mentioned limitations so devs are
+more careful at the time to choose what memory to seal. I think
+deny of service through mseal() by attacker is probably not a concern,
+if attackers have access to mseal() and unsealed memory, then they can
+also do other harmful thing to the memory, such as munmap, etc.
+
+4>
+I think it might be possible to seal the stack or other special
+mappings created at runtime (vdso, vsyscall, vvar). This means we can
+enforce and seal W^X for certain types of application. For instance,
+the stack is typically used in read-write mode, but in some cases, it
+can become executable. To defend against unintented addition of
+executable bit to stack, we could let the application to seal it.
+
+Sealing the heap (for adding X) requires special handling, since the
+heap can shrink, and shrink is implemented through munmap().
+
+Indeed, it might be possible that all virtual memory accessible to user
+space, regardless of its usage pattern, could be sealed. However, this
+would require additional research and development work.
+
+---------------------------------------------------------------------------=
+--------------------------
 
