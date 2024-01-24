@@ -1,261 +1,269 @@
-Return-Path: <linux-kernel+bounces-37599-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0819183B25E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 20:38:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC2AC83B260
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 20:39:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E25B1C2235B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:38:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2B031C2234A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:39:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83D5B132C34;
-	Wed, 24 Jan 2024 19:38:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5CBD132C36;
+	Wed, 24 Jan 2024 19:39:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j3cEaQD9"
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="tMmKTfU0"
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2086.outbound.protection.outlook.com [40.107.223.86])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BBE17CF3F
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 19:38:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706125121; cv=none; b=JTPrvxY6d37vWDUAoAfBSUBCiZhwCe+bNF3Tk+y3GkkAKDSlDzzh154sq8aUYCoGb/UiJPoAPsVBD9He9dIvaSWKZQtOz6qXuMtWnOrL6hyQ3yBhylJVJBI/fKwU94RjUn8ZBYz/Krw5d1Gt4nGkPu8kHz0EUwuKFUsD9XNWgTs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706125121; c=relaxed/simple;
-	bh=+k9OWczvUGMnN/2XaNeNiKTVBPX1lRZnbBn3wZPoj5M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=k6xusydhTCpjahVN07myx8O+SBisXdm8DSUmrxMAO48b8Sh21c2KbpNnaRZpd0i1mPTXdphKivnuBBRgcftgTGpJBVoCnLtf1U+XqqO4C8fntL1A0QKJ5Uw/q+eHs/1FUIa4fLFvxli+5BLhtkPu78qd09bqqrJWQe9s877xRhY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j3cEaQD9; arc=none smtp.client-ip=209.85.210.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6dec4b7b680so3622074a34.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 11:38:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706125119; x=1706729919; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uD5n5CYMyoxmSF0veZJBcYhXMJ89+GcCRIw+PVWIrPM=;
-        b=j3cEaQD9BELKZvfpW5Hdv1PO3cR+TuFqQ7wc0gnvo8WVE9419N+D71ChB+r7tvDCJP
-         D3i1TwWdSz2sXDu21p0dFNFbxFettO8OZckfJfIopSPL50p5jJaGYXtDpb/FqR7kWTdU
-         18BddQivJOUx/N4xs+fIm+ptrlwJ9rGMAA7a5D88rrtKC+MUF9EYqNVlR+FD4hAZhz31
-         aOzyl/+esxUnsS3jsRIRAqsZ6texXXNe9c5TUYAN6ale+ePwMZe8SuaXLfub+Evx3I29
-         k0VREI8w6+Om+KkTPsj39e0O9CDzghx2pG/n2NY9E/bnUrqs1x4hpTlbeCChZT4nsw4u
-         W0ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706125119; x=1706729919;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uD5n5CYMyoxmSF0veZJBcYhXMJ89+GcCRIw+PVWIrPM=;
-        b=gQbL65Gddsd/RqDDopLoXO87M73qBHAxaxxOZpeqX1/Upm14Iy3xRFArExtXhNu3+i
-         9gPf1mztiYLD2X2ctloi1+gG0xzmMH4pzMqZBn3DY6VPb7eSbgdRsTPm+2YNv3emMU9i
-         990m47vwFYHZCZXvXyV2uUr7e/IkODUuaSYUL+ePc+4Yyjs4NqujQWe4+u//pBC3AUDC
-         yzrUo9E1qQDTSVpjd9fLHL6K4hl6bfUJlxM2GSHNlzdUG8K+uV6ya7KMITu8rZ1iq3c9
-         7bAt10mKVO3iAUYg0YErEvqNJx+FEX+eqBZfzYAew54/Wan/B7bCZhCB18kbRbInJ9oQ
-         vtKA==
-X-Gm-Message-State: AOJu0YzuG2Ab/WFraw7sInbCne5UkFHO8tcwk/w9xFURQ/JV2TfMQVmG
-	jZ5Q8NvM3Q6tJXf//oRX2TBnzX8O4n7btLnvtG2dTvRubj3nqtjyBNVIkyj6
-X-Google-Smtp-Source: AGHT+IEZKGQQ8NRnyHbwJDoSiUbCjNKBhT+6Y+poRPh8R25KQHYVof+7qR8X3Eln7HX7ElULtRgQWw==
-X-Received: by 2002:a9d:620b:0:b0:6db:bcb5:a070 with SMTP id g11-20020a9d620b000000b006dbbcb5a070mr1971227otj.62.1706125119005;
-        Wed, 24 Jan 2024 11:38:39 -0800 (PST)
-Received: from [192.168.1.224] (067-048-091-116.res.spectrum.com. [67.48.91.116])
-        by smtp.gmail.com with ESMTPSA id w10-20020a9d77ca000000b006ddda12a747sm2695692otl.70.2024.01.24.11.38.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jan 2024 11:38:38 -0800 (PST)
-Message-ID: <7c2451ad-2d6d-4517-9373-0f5d58f2cfad@gmail.com>
-Date: Wed, 24 Jan 2024 13:38:36 -0600
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A3FC132C28;
+	Wed, 24 Jan 2024 19:39:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.86
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706125150; cv=fail; b=P3Qe5ca9LJcbmuW4TJVaiY+SajtGGTywC//z5tmPo3oZzmUSOpoVPz4LaV/f8QqO5d3nKLYxZQKAdi3fQilGJ1267P8doYDt2cAi9tQG35xUtz8oLQkOAG6ekYFLDRdCuXe1FMMTBQSIbUA4g4/RpFX4mOrR+6Uf/dcTMyahSCc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706125150; c=relaxed/simple;
+	bh=m90fzYhGMJvgBO9cilCKFSC5SXAb6mjZWB6mRI+MO8s=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=SzngcB4plIOUpo3vTZxCPXmtotHIRNvachxT4WMaxmU5o6150BBOLK1nGD/S/F7Mvsrouwyj+NHJuaKlgRLO6A062b6tD4gTXg/GIQxckCaq6G9/U6VyzfrTWbY1ERep3JPQuFy3g/0OFSG0volCKOaqgqvdJCAqmh2tvTPaLHY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=tMmKTfU0; arc=fail smtp.client-ip=40.107.223.86
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=c14lR/H+FygyPMnGHo/Gyd+pIhV+mfyyJCF9orrS44nxBPVwmU4B4RZHJxsjIyIHtBMONWi3qyMz4gT2MButsTqzexMWyuzrhNL0n/AqAXp46Xo05SCAdv+a7L/dja8TMrJqenAMpbXQpJWw2dtuawY6k/KIwc4Ae9iTesCxce7gAyNZgiVOVkJdeZYwnC/E4si4dsTa59ZqDMb7DJFbI1BKjm5K7yQ5P4Vjt9HqzeM8Py2gFDhgfqR1RtI16zPzXeRmPJGIIR8TKhCsBYBMIo345Sqv864v8fODT19ACaSWUBUf82zoepTiPe0jwDwuVXLK8NP84xpdkQoghc83nw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OEoMSKKbjlxkWAEueEJDHtBF3mfu9+iiuOxx8vtr/4o=;
+ b=OKqCH8huYE7w3Stu3HTt76Y8NKGwx7nllkZRHCn00JY1EondX3OBrqkEE8VKEmpEos+SWeQgt/AKFbPAXabJ/adE/+YF5aujyk0W18qvbl+TvqWxj+Hzj4c/SRg4Vmk65AQI7hCguFZH38W1wzkf60QejCubjo1XfLTw4ZNlOUHqTnzaESpEoK95vvauH0M5f20yGDm/bIRIE0vZWuUzyFhZFDPVMMqklq95h3Bw/toKPa8bMFUmgb5cuX39UZTRLHHqv2vKA8KNkNpKjrJ9kYymuD/qtTJX3IrK9yTVD6iTdv0peiAQHOYi3apI5Twt1V5jAc2taifw+6vRTP2JCg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OEoMSKKbjlxkWAEueEJDHtBF3mfu9+iiuOxx8vtr/4o=;
+ b=tMmKTfU0D//CcuHOh7oO6mNN+xfkKuIstcdN1FWe4qYSiBv4pinuWar4lvrURQt1ORJmRDyh6TtvqGax31K+CYaVdQqyqg1C9WJxa0aa9ubwp7/+doV6qgJOOG70f8safJQefSD4Y/AsCM0w8OleTzMncW+JsoYc09CcKANfmoE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
+ by MN2PR12MB4272.namprd12.prod.outlook.com (2603:10b6:208:1de::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.24; Wed, 24 Jan
+ 2024 19:39:05 +0000
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::f1ae:6833:99e2:9dd4]) by MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::f1ae:6833:99e2:9dd4%7]) with mapi id 15.20.7228.022; Wed, 24 Jan 2024
+ 19:39:05 +0000
+Message-ID: <eadee6af-f8d3-4ede-915c-f3dc3d166068@amd.com>
+Date: Wed, 24 Jan 2024 13:39:01 -0600
+User-Agent: Mozilla Thunderbird
+Reply-To: babu.moger@amd.com
+Subject: Re: [PATCH] x86/resctrl: Fix unneeded variable warning reported by
+ kernel test robot
+Content-Language: en-US
+To: Borislav Petkov <bp@alien8.de>,
+ Reinette Chatre <reinette.chatre@intel.com>
+Cc: corbet@lwn.net, fenghua.yu@intel.com, tglx@linutronix.de,
+ mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org,
+ hpa@zytor.com, paulmck@kernel.org, rdunlap@infradead.org, tj@kernel.org,
+ peterz@infradead.org, yanjiewtw@gmail.com, kim.phillips@amd.com,
+ lukas.bulwahn@gmail.com, seanjc@google.com, jmattson@google.com,
+ leitao@debian.org, jpoimboe@kernel.org, rick.p.edgecombe@intel.com,
+ kirill.shutemov@linux.intel.com, jithu.joseph@intel.com,
+ kai.huang@intel.com, kan.liang@linux.intel.com,
+ daniel.sneddon@linux.intel.com, pbonzini@redhat.com, sandipan.das@amd.com,
+ ilpo.jarvinen@linux.intel.com, peternewman@google.com,
+ maciej.wieczor-retman@intel.com, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, eranian@google.com
+References: <202401241810.jbd8Ipa1-lkp@intel.com>
+ <84128a3c83654493f637b8349153af10d69e2752.1706118776.git.babu.moger@amd.com>
+ <39c4501e-4937-49de-b12b-742e6201df6f@intel.com>
+ <20240124183153.GFZbFXmTKTLEpwZshW@fat_crate.local>
+ <e96df7ac-f0b4-4300-8546-7c1df836dea2@intel.com>
+ <20240124191429.GGZbFhldYr3K85H9cg@fat_crate.local>
+From: "Moger, Babu" <babu.moger@amd.com>
+In-Reply-To: <20240124191429.GGZbFhldYr3K85H9cg@fat_crate.local>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA9PR10CA0017.namprd10.prod.outlook.com
+ (2603:10b6:806:a7::22) To MW3PR12MB4553.namprd12.prod.outlook.com
+ (2603:10b6:303:2c::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] nvme_core: scan namespaces asynchronously
-Content-Language: en-US
-To: Sagi Grimberg <sagi@grimberg.me>, linux-kernel@vger.kernel.org,
- Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
- Christoph Hellwig <hch@lst.de>, linux-nvme@lists.infradead.org
-References: <20240118210303.10484-1-stuart.w.hayes@gmail.com>
- <189cde89-9750-476f-8fbb-1c95dc056efb@grimberg.me>
-From: stuart hayes <stuart.w.hayes@gmail.com>
-In-Reply-To: <189cde89-9750-476f-8fbb-1c95dc056efb@grimberg.me>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|MN2PR12MB4272:EE_
+X-MS-Office365-Filtering-Correlation-Id: f223e09f-5425-474d-4042-08dc1d141ff7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	PoT2gR3EpvrIlOpgjqXVDh6RJjXhtfIj5Yt0ooI4BMeM4TAGtyyVkAdFLzMTFWkbmAzjk6ms+82EQNJXmVNiX/W1w/Of/ITH+Rr6w8Ed48iVTEhFaNh0AD2/BEeyGG/JzNQHdWZUOx1/hAEQM10aJFqxScJtm1++f1V2vmS60hdsUMZr3eU9Ed9N2+Aj2hd7ObPOXhemImqEoOyDm+3juBaOpZ/sf/rEF/XqtH/9n3BiE7sZzgfCRaLRN0XHOXQV3+cHTZo44ohOPvW02OucJ517x3/5sRGG0Bqe3YoVJpLDA3ThFZ7xST8m3vYwqyKy3Z3iFyFZKy6RPRUyZiQ2611BFUTAXclfZtim7k+P/2CVFvwfc/48qcKzq6WWFt1RPxdjXO2EMjgDYYlfqoBekTFYYFxJxsuVQpg85BshhJ6/ilJMUoaU310dMIEYsqxdF/RkpdKnNEzF6c5yRvPnJB7elda0sHXIvZVLtYzqpQ4XjkKbt/dpA6EqfE8KoOOBtid/ncEuKxZiC7nCE1K8GNGhAQjjjHvKtjLWqpmNgUZ6WAK3mgVsbK200bpru8GNibMYl0TRSEjNRrTiMMj0nWpQduf1erDCpllMOIDsN8aY4fhvJfahF9XRQbEwh4y8kYwuTwmMwaQeOzeHgXKSIwFzGaPrjmJDAOgjyGvHW1nLj62iNJ3lyftmwXWvlfveVuDIOdxTPK/x0DAwVIo5PSRgmyq7nbvO9OCrwQQC2g4=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(39860400002)(396003)(346002)(230273577357003)(230173577357003)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(31686004)(478600001)(6486002)(53546011)(966005)(36756003)(31696002)(86362001)(2616005)(26005)(83380400001)(7416002)(7406005)(2906002)(8676002)(5660300002)(316002)(6666004)(6512007)(6506007)(38100700002)(4326008)(3450700001)(110136005)(8936002)(41300700001)(66556008)(66476007)(66946007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?TEh3N2lZOW5yQ2dKWUs3bHg0TUxvQURjYVNHYjUzNzdhT0JMbnlxUUpKSExQ?=
+ =?utf-8?B?NS9JSUR3WkN4bkhaMTQvaFh1VksvYUpNMDFiSUtwV1AvK25JOEY3TGdKMS9Q?=
+ =?utf-8?B?elkrS0ZVMytiaXMwbHBDbEpuWldTY1JCMm5ObXg0Z3JIR3BTcFRqcVBBb0Nx?=
+ =?utf-8?B?eGFjZ25VZEd3ck95a2Qzai9uUHhnb2FIQlVjSEFnYnMrNldwdlppVGx0eTYw?=
+ =?utf-8?B?ZUhtdXdqZlFHQWFrbXZNb3ZienJTZVdTZld4czdmV2N5bHUzRnJVT0pHUU41?=
+ =?utf-8?B?eUhiK2lrWXAwbGNTL2krWDFUdzFTTUxBMHVDNW5TL28wb2p3Z29KR25KWnNY?=
+ =?utf-8?B?RGQzaVZ0RTUrekhIdWNyc0lNc3BYR0N1Z00wMVBDNmtHQzVaYkZmeCtlNFpL?=
+ =?utf-8?B?d1VKbHJqTkhaVTQrc2JxdGUwaUhQMlRsTGEwQnZXa05PWFZPdnJjNkpGRTZv?=
+ =?utf-8?B?aWNWaklCWGxRMG05emZrcThBZ1JJdE91MExMeWFYQVJpaDMyWGhUWEZDbmZX?=
+ =?utf-8?B?K3o1dHVjRTEwaGdab083THR4S2c1aGswRzR6YUM5YUFPSmFrSW5MU3d5TUlE?=
+ =?utf-8?B?a29EdmpvSkNGWHpwa0ZJYlBabk9vd2FQUnhmL3o2TUFIZzJVTC9DdFUwNThn?=
+ =?utf-8?B?cE4yK0o1bDlFd3ZaYmJablZQcU5CdHVYWDlSWWM1VVZnOHFHRDAyM3FRMXlN?=
+ =?utf-8?B?RXllb2JsaXVNZEkyWW82dmNneUlZZWxzY01KRmRJcW5IcUdwbFo4TkxrODVh?=
+ =?utf-8?B?RFB4Y1RxQzJ5ODRSbWxFeU83R3JGWlNRd2ppdkZiNVk2ejhpWVNHUTVrZDFp?=
+ =?utf-8?B?NkFkeGpmUk5EM3p3Ky94WnU2RURjc3gvUFd3VE0yS25qY2RxMUhiMHFsWnJR?=
+ =?utf-8?B?WHQrUXVRZFRrejFlM2l6QUV2WkhidW5vbEQrUHNad2pOaXg2aGduWjlPQVVH?=
+ =?utf-8?B?bjVacDlMTXl5VTMyKzgwaVpXVjFmZWhmQ05kOW55bTJCSnI1a2N1ZVQ1eUds?=
+ =?utf-8?B?M3hMVUt1VTVkaWdVQWV0b1l0MTlBOUdxQmtSa0FmZlI2alk0UTBGTllzRE9u?=
+ =?utf-8?B?TzNWUXRNSXhLWXEvYlBGaFdGK29jQ2lnaUpiVnQvVm9XSDljZ1c5bEpFMk94?=
+ =?utf-8?B?NEZ3Mmhhcm5ycGdMZVY4eVlKWUkzWm5LbitZQUFRMUVJbWNZWFFPRWtpMlMv?=
+ =?utf-8?B?Qld2NCtzN3dPaE9FTTlMUXVlQmJNTTJzRGJ6SFBPOTlYZjJoVzROQXMxQUly?=
+ =?utf-8?B?Qm9mYVdxMGg0T0k5dGNRcjluZEVhTGdyUlBuTG5QZDBXNnZwY2szdlkyNEVF?=
+ =?utf-8?B?SzRMaTJ2bG1wR2ZONXpSdEZmMmFON1laNlZ0YTYwTGpBeWdDdm1rWjgvWFVP?=
+ =?utf-8?B?NmhXaUlmejJia0l0SjdmQ0RNWGJqV1R4STZPM3hEMkV2akZHMWlKQlRJTWE0?=
+ =?utf-8?B?aEplNEhPWlFYZkE2QzRiNTRnQkNnMEsxWlBrQTBTeWJvNmM0V0pBUGRHV1Uz?=
+ =?utf-8?B?Y2pLd29Ha1ZFUUZIck0vS0pLYUE0M1E2ZUxCQUZrNTZHbitXcVY1T05GS0du?=
+ =?utf-8?B?K2t2SWw3emdZbmVWRG1FOElad0NBcjlwWGN3UTBwYlA5WVZWeGJlcEpJaHcw?=
+ =?utf-8?B?am9TY0NoaTZWcUtIUzlYWXllSzZRQ1M1c204SEZFNmkva0taczlDSkZmUnB0?=
+ =?utf-8?B?bjJZMDlCN2hvUDB1c050dXVOUFdtODNPdXhTOXZySjdQRDdSMUlMbDZnZWpT?=
+ =?utf-8?B?NUN2VXNLY1NoL3BhVkQwSVI1RU1CUEVoS2Ryc1F2Y0hHY1hCWU5KV3lXbDVG?=
+ =?utf-8?B?UnVjbFMvYTY3VEcrMTZiY01vUlQrM2VNTm9MNGdOeG54MERmTW9rTGJHRjJS?=
+ =?utf-8?B?eWV0eGJGcExTekdrUmhNb3lZUjJSNVlDdVNsVVhXSm5UdktmemhrZCs5bFd4?=
+ =?utf-8?B?Y0R0WThFZS9uK0Uwdk8rL3g3ajFVR2h6MnBOZ2NrOTl6bFFTTnlIdGxFRkJk?=
+ =?utf-8?B?OVB3VlhYMzQ0Sk9qa3pOY2UzZzZFV1JncXNRVW9zMzNnSXpkaVg0dzVSSWYv?=
+ =?utf-8?B?WnVLZ3lYM2hzVWgvK25mN2xOY2FNSmtid2JkRlZtWllDZ25kUWN2bmZOZ20r?=
+ =?utf-8?Q?0VJs=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f223e09f-5425-474d-4042-08dc1d141ff7
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jan 2024 19:39:05.5123
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: y8cTC5epeNNRIH31GuU8tIhdmf2OaICVMXHC6xdQdKaNKenECuNJX5C2YnmeSJXx
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4272
 
+Hi Boris,
 
+On 1/24/24 13:14, Borislav Petkov wrote:
+> On Wed, Jan 24, 2024 at 10:51:49AM -0800, Reinette Chatre wrote:
+>> Thank you very much. For what it is worth, I do agree with the actual fix
+>> and you can add:
+>> Acked-by: Reinette Chatre <reinette.chatre@intel.com>
+> 
+> Ok, have a look at the below, pls, and lemme know if that's ok too.
+> 
+> mbm_config_write_domain() only returns 0 so it can be void. So the
+> callsite doesn't need to check retval either.
 
-On 1/22/2024 3:13 AM, Sagi Grimberg wrote:
-> 
-> 
-> On 1/18/24 23:03, Stuart Hayes wrote:
->> Use async function calls to make namespace scanning happen in parallel.
->>
->> Without the patch, NVME namespaces are scanned serially, so it can take a
->> long time for all of a controller's namespaces to become available,
->> especially with a slower (TCP) interface with large number of namespaces.
->>
->> The time it took for all namespaces to show up after connecting (via TCP)
->> to a controller with 1002 namespaces was measured:
->>
->> network latency   without patch   with patch
->>       0                 6s            1s
->>      50ms             210s           10s
->>     100ms             417s           18s
->>
-> 
-> Impressive speedup. Not a very common use-case though...
-> 
->> Signed-off-by: Stuart Hayes <stuart.w.hayes@gmail.com>
->>
->> -- 
->> V2: remove module param to enable/disable async scanning
->>      add scan time measurements to commit message
->>
->> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
->> index 0af612387083..069350f85b83 100644
->> --- a/drivers/nvme/host/core.c
->> +++ b/drivers/nvme/host/core.c
->> @@ -4,6 +4,7 @@
->>    * Copyright (c) 2011-2014, Intel Corporation.
->>    */
->> +#include <linux/async.h>
->>   #include <linux/blkdev.h>
->>   #include <linux/blk-mq.h>
->>   #include <linux/blk-integrity.h>
->> @@ -3812,12 +3813,38 @@ static void nvme_validate_ns(struct nvme_ns *ns, struct nvme_ns_info *info)
->>           nvme_ns_remove(ns);
->>   }
->> -static void nvme_scan_ns(struct nvme_ctrl *ctrl, unsigned nsid)
->> +/*
->> + * struct nvme_scan_state - keeps track of controller & NSIDs to scan
->> + * @ctrl:    Controller on which namespaces are being scanned
->> + * @count:    Next NSID to scan (for sequential scan), or
->> + *        Index of next NSID to scan in ns_list (for list scan)
->> + * @ns_list:    pointer to list of NSIDs to scan (NULL if sequential scan)
->> + */
->> +struct nvme_scan_state {
->> +    struct nvme_ctrl *ctrl;
->> +    atomic_t count;
->> +    __le32 *ns_list;
->> +};
->> +
->> +static void nvme_scan_ns(void *data, async_cookie_t cookie)
-> 
-> I think its better to call it nvme_scan_ns_async to indicate what
-> it is.
-> 
->>   {
->> -    struct nvme_ns_info info = { .nsid = nsid };
->> +    struct nvme_ns_info info = {};
->> +    struct nvme_scan_state *scan_state;
->> +    struct nvme_ctrl *ctrl;
->> +    u32 nsid;
->>       struct nvme_ns *ns;
->>       int ret;
->> +    scan_state = data;
->> +    ctrl = scan_state->ctrl;
-> 
-> I think these assignments can be done on the declaration.
-> 
->> +    nsid = (u32)atomic_fetch_add(1, &scan_state->count);
->> +    /*
->> +     * get NSID from list (if scanning from a list, not sequentially)
->> +     */
->> +    if (scan_state->ns_list)
->> +        nsid = le32_to_cpu(scan_state->ns_list[nsid]);
->> +
-> 
-> This is awkward. ns_list passed in optionally.
-> How about we limit this change to only operate on nvme_scan_ns_list?
-> If the controller is old or quirked to support only a sequential scan
-> it does not benefit from a parallel scan. I doubt that these controllers
-> are likely to expose a large number of namespaces anyways.
-> 
->> +    info.nsid = nsid;
->>       if (nvme_identify_ns_descs(ctrl, &info))
->>           return;
->> @@ -3881,11 +3908,15 @@ static int nvme_scan_ns_list(struct nvme_ctrl *ctrl)
->>       __le32 *ns_list;
->>       u32 prev = 0;
->>       int ret = 0, i;
->> +    ASYNC_DOMAIN(domain);
->> +    struct nvme_scan_state scan_state;
->>       ns_list = kzalloc(NVME_IDENTIFY_DATA_SIZE, GFP_KERNEL);
->>       if (!ns_list)
->>           return -ENOMEM;
->> +    scan_state.ctrl = ctrl;
->> +    scan_state.ns_list = ns_list;
-> 
-> Is there a need to have a local ns_list variable here?
-> 
->>       for (;;) {
->>           struct nvme_command cmd = {
->>               .identify.opcode    = nvme_admin_identify,
->> @@ -3901,19 +3932,25 @@ static int nvme_scan_ns_list(struct nvme_ctrl *ctrl)
->>               goto free;
->>           }
->> +        /*
->> +         * scan list starting at list offset 0
->> +         */
->> +        atomic_set(&scan_state.count, 0);
->>           for (i = 0; i < nr_entries; i++) {
->>               u32 nsid = le32_to_cpu(ns_list[i]);
->>               if (!nsid)    /* end of the list? */
->>                   goto out;
->> -            nvme_scan_ns(ctrl, nsid);
->> +            async_schedule_domain(nvme_scan_ns, &scan_state, &domain);
->>               while (++prev < nsid)
->>                   nvme_ns_remove_by_nsid(ctrl, prev);
->>           }
->> +        async_synchronize_full_domain(&domain);
->>       }
->>    out:
->>       nvme_remove_invalid_namespaces(ctrl, prev);
-> 
-> Is it a good idea to remove the invalid namespaces before synchronizing
-> the async scans?
-> 
->>    free:
->> +    async_synchronize_full_domain(&domain);
->>       kfree(ns_list);
->>       return ret;
->>   }
->> @@ -3922,14 +3959,23 @@ static void nvme_scan_ns_sequential(struct nvme_ctrl *ctrl)
->>   {
->>       struct nvme_id_ctrl *id;
->>       u32 nn, i;
->> +    ASYNC_DOMAIN(domain);
->> +    struct nvme_scan_state scan_state;
->>       if (nvme_identify_ctrl(ctrl, &id))
->>           return;
->>       nn = le32_to_cpu(id->nn);
->>       kfree(id);
->> +    scan_state.ctrl = ctrl;
->> +    /*
->> +     * scan sequentially starting at NSID 1
->> +     */
->> +    atomic_set(&scan_state.count, 1);
->> +    scan_state.ns_list = NULL;
->>       for (i = 1; i <= nn; i++)
->> -        nvme_scan_ns(ctrl, i);
->> +        async_schedule_domain(nvme_scan_ns, &scan_state, &domain);
->> +    async_synchronize_full_domain(&domain);
->>       nvme_remove_invalid_namespaces(ctrl, nn);
->>   }
-> 
-> I think we need a blktest for this. ns scanning has been notorious when
-> running simultaneously with controller reset/reconnect/remove
-> sequences... Ideally a test with a larger number of namespaces to
-> exercise the code.
-> 
-> Also, make sure that blktest suite does not complain about anything
-> else.
+Yes. Looks good. Compile tested also. Thanks
 
-Thank you for the feedback on the patch, I agree with it.
+> 
+> Thx.
+> 
+> ---
+> From: Babu Moger <babu.moger@amd.com>
+> Date: Wed, 24 Jan 2024 11:52:56 -0600
+> Subject: [PATCH] x86/resctrl: Remove redundant variable in
+>  mbm_config_write_domain()
+> 
+> The kernel test robot reported the following warning after
+> 
+>   54e35eb8611c ("x86/resctrl: Read supported bandwidth sources from CPUID").
+> 
+> even though the issue is present even in the original patch which added
+> this function
+> 
+>   92bd5a139033 ("x86/resctrl: Add interface to write mbm_total_bytes_config")
+> 
+>   $ make C=1 CHECK=scripts/coccicheck arch/x86/kernel/cpu/resctrl/rdtgroup.o
+>   ...
+>   arch/x86/kernel/cpu/resctrl/rdtgroup.c:1621:5-8: Unneeded variable: "ret". Return "0" on line 1655
+> 
+> Remove the local variable 'ret'.
+> 
+>   [ bp: Massage commit message, make mbm_config_write_domain() void. ]
+> 
+> Fixes: 92bd5a139033 ("x86/resctrl: Add interface to write mbm_total_bytes_config")
+> Closes: https://lore.kernel.org/oe-kbuild-all/202401241810.jbd8Ipa1-lkp@intel.com/
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Babu Moger <babu.moger@amd.com>
+> Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+> Acked-by: Reinette Chatre <reinette.chatre@intel.com>
+> Link: https://lore.kernel.org/r/202401241810.jbd8Ipa1-lkp@intel.com
+> ---
+>  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 13 +++----------
+>  1 file changed, 3 insertions(+), 10 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> index 2b69e560b05f..c33eb77b6d70 100644
+> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> @@ -1614,11 +1614,10 @@ static void mon_event_config_write(void *info)
+>  	wrmsr(MSR_IA32_EVT_CFG_BASE + index, mon_info->mon_config, 0);
+>  }
+>  
+> -static int mbm_config_write_domain(struct rdt_resource *r,
+> +static void mbm_config_write_domain(struct rdt_resource *r,
+>  				   struct rdt_domain *d, u32 evtid, u32 val)
+>  {
+>  	struct mon_config_info mon_info = {0};
+> -	int ret = 0;
+>  
+>  	/*
+>  	 * Read the current config value first. If both are the same then
+> @@ -1627,7 +1626,7 @@ static int mbm_config_write_domain(struct rdt_resource *r,
+>  	mon_info.evtid = evtid;
+>  	mondata_config_read(d, &mon_info);
+>  	if (mon_info.mon_config == val)
+> -		goto out;
+> +		return;
+>  
+>  	mon_info.mon_config = val;
+>  
+> @@ -1650,9 +1649,6 @@ static int mbm_config_write_domain(struct rdt_resource *r,
+>  	 * mbm_local and mbm_total counts for all the RMIDs.
+>  	 */
+>  	resctrl_arch_reset_rmid_all(r, d);
+> -
+> -out:
+> -	return ret;
+>  }
+>  
+>  static int mon_config_write(struct rdt_resource *r, char *tok, u32 evtid)
+> @@ -1661,7 +1657,6 @@ static int mon_config_write(struct rdt_resource *r, char *tok, u32 evtid)
+>  	char *dom_str = NULL, *id_str;
+>  	unsigned long dom_id, val;
+>  	struct rdt_domain *d;
+> -	int ret = 0;
+>  
+>  next:
+>  	if (!tok || tok[0] == '\0')
+> @@ -1690,9 +1685,7 @@ static int mon_config_write(struct rdt_resource *r, char *tok, u32 evtid)
+>  
+>  	list_for_each_entry(d, &r->domains, list) {
+>  		if (d->id == dom_id) {
+> -			ret = mbm_config_write_domain(r, d, evtid, val);
+> -			if (ret)
+> -				return -EINVAL;
+> +			mbm_config_write_domain(r, d, evtid, val);
+>  			goto next;
+>  		}
+>  	}
 
-I'm not sure how to implement a blktest suite for this, though.  I can look into it.
+-- 
+Thanks
+Babu Moger
 
