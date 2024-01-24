@@ -1,158 +1,110 @@
-Return-Path: <linux-kernel+bounces-37698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37699-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 266E983B40A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:35:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8691C83B40D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:35:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B5071C2274B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 21:35:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FEF7287B6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 21:35:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD2CC13540E;
-	Wed, 24 Jan 2024 21:35:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B95D135A56;
+	Wed, 24 Jan 2024 21:35:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Lo+4DfvP"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="iJJytbfp"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96F4C1350F5
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 21:35:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC055135A4B;
+	Wed, 24 Jan 2024 21:35:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706132126; cv=none; b=egeGR9b0+Nh6k71k/YfzI3xcJ34c+HlikkMMZXCmZT+fcNuGyS3Rn+1LJDkoC+7FtnHiEAriYNDUOWeHi7O3PJb2Q642j7Z9XkMI7/hw76Gpeh5kQh1OHCS1Drkci2ZXo/YZDCHvbl8+uYukckKKOsa8/wo8kgE+pLQxwTiYWbY=
+	t=1706132130; cv=none; b=D9nZSE2rYUICQl1abzrMkhLRFjM/sTqsfwm4OXQ8YUniKFhEY+lS8p3XVueRkpnu+kpRSqG5xyhrbwoLUXX2Jgpx6NgDfpXXhCTSUTxUsKxI/GYTzYtuf1o+U5uNX01QypwzT71XQoL06BdXaM60LwmDg6yM48TO4rsHTud7mR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706132126; c=relaxed/simple;
-	bh=vy2eQcXuP8J+89WHubqOmUDL6fntpzonJvK8RD/C8Zo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z2hQ/0t6CcBMFR9TQ/Eu4qqwrbKDM8S/JF4o7N9pW+mcBwFKw8qOXNCoElj88WDSKwuXWQdSrCqbDhjIqiigBTCMoS7xbMcUcAw/WdDh5LEG7uW+j6jbv2Q7G4CKC3lZXamuna5IIreHElJbfEEwyD0VrHLXaDDXOj2i4eW8smQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Lo+4DfvP; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d74045c463so28784765ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 13:35:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706132124; x=1706736924; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=R02kkjm9zZZALeIAu8OyIiBbwYldvv1po8aujCvgxCc=;
-        b=Lo+4DfvPcbZAIp9UbKEWYLXIJIcEicEMgfszjEA+dHd4meIfvchp0cmxZPFJi4cdDC
-         VvT1GBoOV/cELPKOvtssF0J0xP7v/Pxl0SlcC+YOxsJ+TUkS7cFz8PwzoQgwJmCFUSPG
-         fXhWOnwqf7/ylOBk9aydYvu1MyYRXDIun8LRc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706132124; x=1706736924;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R02kkjm9zZZALeIAu8OyIiBbwYldvv1po8aujCvgxCc=;
-        b=B6I8eV0ZohsLcnppAs2yyv61Ev/NOMukZqREH/fq0BwzdEP89nAm9n9pHplmuGWc9T
-         97mfnZ7b8Ell3jor6bptm5aY/TF1bPrmAGLItQbC7AUkFuQSYtO4yc1P8NzSk5kBxpXE
-         I1awsqyfYtN2L7j6vzxjBug11lRp74WxXpHc3XbgMloYjTKjrQlEoTzSrc5Ew7ZNCPFl
-         E1Sxpz3GYYhYSF3l1uMo8xw1xgEkbVq7Ji77a+YghaGw8p8eC7sjvINLgBXHBcIFI4DU
-         J9hytm2BljYClcsxQS5SJQLdiCmG6uiyCGQptnxi5wv7hJ9Oxh6yrFX8LTxwOraOWcAZ
-         yK1A==
-X-Gm-Message-State: AOJu0YxUKW1fKLrikdhBWa+SlELI+a5KcYM8pN++z6bW2u7tER3KWkOg
-	MHeUqUJO89CFYNJaLosCgBPuUclJsp0HgY8F4+hQgIaLMrTs1PW5lXkJW0sv9Q==
-X-Google-Smtp-Source: AGHT+IHcICz0Mfn9SvjnkuBQXJnezLd9Usm4kNxOTm+k+tyC0AhF5zlKsrJeWSD40yUZv9HJJFvwgg==
-X-Received: by 2002:a17:902:ee0c:b0:1d5:b82a:939 with SMTP id z12-20020a170902ee0c00b001d5b82a0939mr16459plb.125.1706132124053;
-        Wed, 24 Jan 2024 13:35:24 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id mj11-20020a1709032b8b00b001d73a2acc2bsm6701572plb.142.2024.01.24.13.35.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 13:35:23 -0800 (PST)
-Date: Wed, 24 Jan 2024 13:35:23 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Jann Horn <jannh@google.com>, Josh Triplett <josh@joshtriplett.org>,
-	Kevin Locke <kevin@kevinlocke.name>,
-	John Johansen <john.johansen@canonical.com>,
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>,
-	Kentaro Takeda <takedakn@nttdata.co.jp>,
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	Eric Biederman <ebiederm@xmission.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] exec: Check __FMODE_EXEC instead of in_execve for LSMs
-Message-ID: <202401241334.670AFDD@keescook>
-References: <20240124192228.work.788-kees@kernel.org>
- <CAG48ez017tTwxXbxdZ4joVDv5i8FLWEjk=K_z1Vf=pf0v1=cTg@mail.gmail.com>
- <202401241206.031E2C75B@keescook>
- <CAHk-=wiUwRG7LuR=z5sbkFVGQh+7qVB6_1NM0Ny9SVNL1Un4Sw@mail.gmail.com>
- <202401241310.0A158998@keescook>
+	s=arc-20240116; t=1706132130; c=relaxed/simple;
+	bh=X3kuJFi54cfvxDK9NJRtjVC1uZ+1P7SotaVQzpYWUIQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=m695BmQo7R0ZDNDZsA2Bqvrl0PfnHuVOhfawpfEGH/p5xixoA7feb0SQMpDzPY8hUXqzw60mL6fx9aXNCKEtKMyt6cH4EWqYJJfaaJbXDyxvPAw7CASzB+jDmkeQgxv6vgjRYHOUo587YYsMGAZn3g3nm1QIz/EnFCOxduCcnjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=iJJytbfp; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=AX08+RLbDchsJTFyY1lnz5dLrmtS/OEhzEMoWtz6kyg=; b=iJJytbfpjgwsfOP6lKgV0cHI66
+	BGr6bA9cPVV5+u0+oRGd/xH57eMjl/B6M3khMQAL6yvfrlUUJJ7pWJ9ulNl+9NBbLhtwTgASfht2h
+	q6l+DLKMx4Ks8QxOcRQ6ObF/grcj0Lmdyy95Av1kIWgoLeDsFDFIEcUfuE8yd2oLb2P6uT0A1BoMt
+	Clgs/69OQNzvyLhSzDoXxrglpqa8tbFrHvhHYj3MC0+f9JTCP8Bp5dyZbCeQYqmBh5jMHyCqZjOIC
+	UTClGiWfoc9iSrDNmKjdIyNa1fqQDgxj1YdrelkthMkvksqNaald2yKe5gU/MVBlX6g2F7hWwHc0t
+	cSn+M5qg==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rSku7-005ALU-0r;
+	Wed, 24 Jan 2024 21:35:27 +0000
+Message-ID: <f16366bb-664e-4794-ad41-2c4c669190bd@infradead.org>
+Date: Wed, 24 Jan 2024 13:35:26 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202401241310.0A158998@keescook>
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: Tree for Jan 23 (drm/xe/)
+Content-Language: en-US
+To: Jani Nikula <jani.nikula@linux.intel.com>,
+ Stephen Rothwell <sfr@canb.auug.org.au>,
+ Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc: intel-gfx@lists.freedesktop.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ intel-xe@lists.freedesktop.org
+References: <20240123132929.7cb6ea4c@canb.auug.org.au>
+ <152521f9-119f-4c61-b467-3e91f4aecb1a@infradead.org>
+ <87le8fks3r.fsf@intel.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <87le8fks3r.fsf@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 24, 2024 at 01:32:02PM -0800, Kees Cook wrote:
-> On Wed, Jan 24, 2024 at 12:47:34PM -0800, Linus Torvalds wrote:
-> > On Wed, 24 Jan 2024 at 12:15, Kees Cook <keescook@chromium.org> wrote:
-> > >
-> > > Hmpf, and frustratingly Ubuntu (and Debian) still builds with
-> > > CONFIG_USELIB, even though it was reported[2] to them almost 4 years ago.
-> 
-> For completeness, Fedora hasn't had CONFIG_USELIB for a while now.
-> 
-> > Well, we could just remove the __FMODE_EXEC from uselib.
-> > 
-> > It's kind of wrong anyway.
-> 
-> Yeah.
-> 
-> > So I think just removing __FMODE_EXEC would just do the
-> > RightThing(tm), and changes nothing for any sane situation.
-> 
-> Agreed about these:
-> 
-> - fs/fcntl.c is just doing a bitfield sanity check.
-> 
-> - nfs_open_permission_mask(), as you say, is only checking for
->   unreadable case.
-> 
-> - fsnotify would also see uselib() as a read, but afaict,
->   that's what it would see for an mmap(), so this should
->   be functionally safe.
-> 
-> This one, though, I need some more time to examine:
-> 
-> - AppArmor, TOMOYO, and LandLock will see uselib() as an
->   open-for-read, so that might still be a problem? As you
->   say, it's more of a mmap() call, but that would mean
->   adding something a call like security_mmap_file() into
->   uselib()...
-> 
-> The issue isn't an insane "support uselib() under AppArmor" case, but
-> rather "Can uselib() be used to bypass exec/mmap checks?"
-> 
-> This totally untested patch might give appropriate coverage:
-> 
-> diff --git a/fs/exec.c b/fs/exec.c
-> index d179abb78a1c..0c9265312c8d 100644
-> --- a/fs/exec.c
-> +++ b/fs/exec.c
-> @@ -143,6 +143,10 @@ SYSCALL_DEFINE1(uselib, const char __user *, library)
->  	if (IS_ERR(file))
->  		goto out;
->  
-> +	error = security_mmap_file(file, PROT_READ | PROT_EXEC, MAP_FIXED | MAP_SHARED);
 
-Actually, this should probably match was load_shlib() uses:
 
-                        PROT_READ | PROT_WRITE | PROT_EXEC,
-                        MAP_FIXED_NOREPLACE | MAP_PRIVATE,
+On 1/24/24 01:17, Jani Nikula wrote:
+> On Tue, 23 Jan 2024, Randy Dunlap <rdunlap@infradead.org> wrote:
+>> On 1/22/24 18:29, Stephen Rothwell wrote:
+>>> Hi all,
+>>>
+>>> News: there will be no linux-next release on Friday
+>>>
+>>> Changes since 20240122:
+>>>
+>>
+>> on ARM64, when
+>> DRM_I915 is not set
+>> DRM_XE=m
+>> DEBUG_FS is not set
+>>
+>> ../drivers/gpu/drm/i915/display/intel_display_debugfs.c:1091:6: error: redefinition of 'intel_display_debugfs_register'
+>>  1091 | void intel_display_debugfs_register(struct drm_i915_private *i915)
+>>       |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> In file included from ../drivers/gpu/drm/i915/display/intel_display_debugfs.c:19:
+> 
+> Does [1] fix the issue?
+
+Yes, thanks.
+
+> 
+> BR,
+> Jani.
+> 
+> 
+> [1] https://lore.kernel.org/r/20240124090515.3363901-1-jani.nikula@intel.com
+> 
+> 
 
 -- 
-Kees Cook
+#Randy
 
