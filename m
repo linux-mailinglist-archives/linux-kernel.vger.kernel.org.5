@@ -1,102 +1,171 @@
-Return-Path: <linux-kernel+bounces-37597-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D3A183B253
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 20:34:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07F3083B255
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 20:34:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7F721F244CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:34:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7EEE51F2462D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:34:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BD56132C26;
-	Wed, 24 Jan 2024 19:34:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51012132C3A;
+	Wed, 24 Jan 2024 19:34:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0J7DdVlj";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="58F68lhJ"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="cKXLWlWN"
+Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EDBA132C20;
-	Wed, 24 Jan 2024 19:34:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33E8A132C0D
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 19:34:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706124855; cv=none; b=bNgNtQmlC8NH61F6KULXbTmJX5ySsmUnJxN9aB6Z2n5jCWktJN1oXM3drTwi+hyFzJ9yYtjofupGboONCDyv50H6zEOUzili9Ks8va0RIHl6CFAnBk48gKjkx821kSaarFnBTSIedM77eZVI6Eq1fesPM4yb8lm3Uio5gQcuIH4=
+	t=1706124879; cv=none; b=JllWRGp0wwmMCAOBHoxJGT6DTR3V6yHEW4OTHfRUEahXruMeINE+rRa8MOfwmNP7bC2XYvdaBUl3zaxDyrlHoYIvMNeBxS9XELlFF9/hvLpjQ6j5io+4fJIQH9dncJRYMfcC7wU9joIThFkCvTGJIYDHrx824MEaCQ68fy/K6QU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706124855; c=relaxed/simple;
-	bh=GYJFXfXsIOPeYbximf1oUJWFqHQl+GwEjV9Ni5wP+aI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Dreadp43JZc57WBVTqDUKPyRn6+h/Uoh/h78RJotFdxPJHiaAnx2LioujTTnThGtF/lX7/Hu6qBXdFCm9Vck8ILlTpHCa0SF6tSczXhrj5EA/7LuHe2npSwnMoj3sL8pdEx9rjPig0vu8wxDCOavqygfborik2Sx8G8upvUCizI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=0J7DdVlj; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=58F68lhJ; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1706124852;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FAg534iwdS91fkdcXs5EMfhsi34lrsD1PSWyXPhB5Ok=;
-	b=0J7DdVljP8JzWt5Vt3UVPXhNxvShFJTnmQ+om8AydJjMB1tBLUj5foOh9xkkOjWVUnnRk0
-	HAGF0VndthdlWYK3fYrehQhRpGC9gCF+g4PPbsx0cGMHrRK9mPfvlP763tf86ZYqM9wmaY
-	fFMivweskdhGOFmlrASRLLhc2XEv7DCGl9xBse+GyGPc4yXXPkttctqjAm7GcnH06Pzszf
-	cNCqGAPnXcS/nZI35xTK+zFiioFXZiDwamSOfoSyQOub6GPEZgjnkA13vllMdmKIwJ6D+e
-	9tDfRJ3610hqVmE78wRZRa1ZS6QbDvCsoIMQTd4He0JbNqw7LJxuugQ9yHBvEQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1706124852;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FAg534iwdS91fkdcXs5EMfhsi34lrsD1PSWyXPhB5Ok=;
-	b=58F68lhJ9TrKiArwgXOJMl6V5qF2nE+HAOpa9PicsDQDPZiMMfTSX2bUtRXbIIAADOMM8v
-	PFQnYw/vtKQnjWCA==
-To: Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org
-Cc: Kees Cook <keescook@chromium.org>, John Stultz <jstultz@google.com>,
- Stephen Boyd <sboyd@kernel.org>, "Gustavo A. R. Silva"
- <gustavoars@kernel.org>, Bill Wendling <morbo@google.com>, Justin Stitt
- <justinstitt@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 75/82] timekeeping: Refactor intentional wrap-around test
-In-Reply-To: <20240123002814.1396804-75-keescook@chromium.org>
-References: <20240122235208.work.748-kees@kernel.org>
- <20240123002814.1396804-75-keescook@chromium.org>
-Date: Wed, 24 Jan 2024 20:34:11 +0100
-Message-ID: <87sf2mjzkc.ffs@tglx>
+	s=arc-20240116; t=1706124879; c=relaxed/simple;
+	bh=WgifWUz3Gr+kTQxM0rtP5N6Jm9nsIzie+HFNuWed/bE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aGq3qP6fi0v1QM0fPzd7PhhzExFQY73vowzsIgAnn5lEVnkQWCbeQIIlE20/OHqFp2UXSckdL6shTy/HQIcBa8IHiTdjzYHxrae4zH40qEMD9HRkaHci/TEQQT4AWjrWixjeXM7Kl5QJ8uLgDw5tj8bsZ5nbjhic9yEDQLBxukk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=cKXLWlWN; arc=none smtp.client-ip=209.85.219.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-68196a09e2eso34602136d6.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 11:34:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706124868; x=1706729668; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZUvX5R1ypOP3ZoaGMkONSc/GtN51J4XYq4lgSnIUNL0=;
+        b=cKXLWlWNYJ6CaVfwjFa5sfCsmyvcxocg7dpyhaOv2kbAcp1UjHzUKsifZQblG4usN1
+         hSrQ1rWOY0IDK8RhTpeaYrGSvG9uy5W/B95Twu2PkqZQuQEhN82dHuhAYjwsX5hGVvDa
+         /kew3MzFfk2UzLFNIY2Gjl+JFn/WF451rM9hg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706124868; x=1706729668;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZUvX5R1ypOP3ZoaGMkONSc/GtN51J4XYq4lgSnIUNL0=;
+        b=c4YHnX7ncVsjgEwpcMKPl4mlZtmHW6k1VG6FzHLrZoopt8IvWVZgCG53f6QOIlOtMg
+         hBFfGAEiNXzCqLSd/n/YdRTqSa8WyOHLfR1haxAR+swbY8BzrWxDI4j74bJbNm5z+VT0
+         F2/xKcab7ZELa+dZC0Ffd4UL8GPOCUWHORVGuCDKzm7iYX8J9uHnqW4ULYPwc1/OBqxN
+         68o2LJY94zF4BtJjbZ2ZZ609Zmmsafl7FMd9k46dhh8TQfZrgGvZWcvNXG5nb0Qk7vVK
+         K8jZsAg2zCoXdPGpMLPCCwXmGMze9y3/09PCceiC9+YYJZNRnmdL1KfPg4U2WAJnUCZs
+         mCqQ==
+X-Gm-Message-State: AOJu0YyMzWbAqNr9YfI4Bq6z0G/jCYS19Om//qRVfYK3pd8rfEAKD9Lf
+	FA1J9W8nxruXD4JsdzEn+wZ0gD3WD2dr/Pkf1LBdxMnmuiBxWq0/0KuQk25/VOJ3ILNkYOW0Saw
+	LVE5lJxjPraNHvJeg2/NrfNVa9OIoKctDUHhY
+X-Google-Smtp-Source: AGHT+IFdSmmiGj4lOSeztl0/DABo6LGJl5/xHBHcQKP5jidw8APbKW7N7SyQQKidCuNpKRPC/KcBdwWzm04vsoPPRu4=
+X-Received: by 2002:a05:6214:622:b0:680:8373:4932 with SMTP id
+ a2-20020a056214062200b0068083734932mr3380504qvx.69.1706124868109; Wed, 24 Jan
+ 2024 11:34:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240123223039.1471557-1-abhishekpandit@google.com>
+ <20240123143026.v1.3.Idf7d373c3cbb54058403cb951d644f1f09973d15@changeid>
+ <CACeCKafTBwSgRXLFA3HC7cBe8hD=PSgSmR=TWy1oF3Rkn+hK4g@mail.gmail.com> <CANFp7mUFvRnb1BF=vzNE+BxMcjZi_o0wwJVw=Ty+zEG+JTzA1w@mail.gmail.com>
+In-Reply-To: <CANFp7mUFvRnb1BF=vzNE+BxMcjZi_o0wwJVw=Ty+zEG+JTzA1w@mail.gmail.com>
+From: Prashant Malani <pmalani@chromium.org>
+Date: Wed, 24 Jan 2024 11:34:17 -0800
+Message-ID: <CACeCKacH4zJGNqFKjLoaHzM59nSGdaWkNXec2GM=0kfafPBgqA@mail.gmail.com>
+Subject: Re: [PATCH v1 3/3] usb: typec: ucsi: Get PD revision for partner
+To: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Cc: Abhishek Pandit-Subedi <abhishekpandit@google.com>, 
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>, linux-usb@vger.kernel.org, 
+	jthies@google.com, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Bjorn Andersson <andersson@kernel.org>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	Fabrice Gasnier <fabrice.gasnier@foss.st.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Hans de Goede <hdegoede@redhat.com>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Saranya Gopal <saranya.gopal@intel.com>, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 22 2024 at 16:27, Kees Cook wrote:
+On Wed, Jan 24, 2024 at 11:18=E2=80=AFAM Abhishek Pandit-Subedi
+<abhishekpandit@chromium.org> wrote:
+>
+> On Wed, Jan 24, 2024 at 10:49=E2=80=AFAM Prashant Malani <pmalani@chromiu=
+m.org> wrote:
+> >
+> > Hi Abhishek,
+> >
+> > On Tue, Jan 23, 2024 at 2:30=E2=80=AFPM Abhishek Pandit-Subedi
+> > <abhishekpandit@google.com> wrote:
+> > >
+> > > From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> > >
+> > > PD major revision for the port partner is described in
+> > > GET_CONNECTOR_CAPABILITY and is only valid on UCSI 2.0 and newer. Upd=
+ate
+> > > the pd_revision on the partner if the UCSI version is 2.0 or newer.
+> > >
+> > > Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> > > ---
+> > > $ cat /sys/class/typec/port2-partner/usb_power_delivery_revision
+> > > 3.0
+> > >
+> > >  drivers/usb/typec/ucsi/ucsi.c | 25 +++++++++++++++++++++++++
+> > >  drivers/usb/typec/ucsi/ucsi.h |  3 +++
+> > >  2 files changed, 28 insertions(+)
+> > >
+> > > diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/u=
+csi.c
+> > > index 4edf785d203b..8e0a512853ba 100644
+> > > --- a/drivers/usb/typec/ucsi/ucsi.c
+> > > +++ b/drivers/usb/typec/ucsi/ucsi.c
+> > > @@ -782,6 +782,8 @@ static int ucsi_register_partner(struct ucsi_conn=
+ector *con)
+> > >         }
+> > >
+> > >         desc.usb_pd =3D pwr_opmode =3D=3D UCSI_CONSTAT_PWR_OPMODE_PD;
+> > > +       desc.pd_revision =3D
+> > > +               UCSI_CONCAP_FLAG_PARTNER_PD_MAJOR_REV_AS_BCD(con->cap=
+flags);
+> > >
+> > >         partner =3D typec_register_partner(con->port, &desc);
+> > >         if (IS_ERR(partner)) {
+> > > @@ -856,6 +858,28 @@ static void ucsi_partner_change(struct ucsi_conn=
+ector *con)
+> > >                         con->num, u_role);
+> > >  }
+> > >
+> > > +static int ucsi_check_connector_capability(struct ucsi_connector *co=
+n)
+> > > +{
+> > > +       u64 command;
+> > > +       int ret;
+> > > +
+> > > +       if (!con->partner && !IS_MIN_VERSION_2_0(con->ucsi))
+> >
+> > (Mentioned side-band but reproducing here for consistency)
+> > This macro is unnecessary. It's just doing a comparison, which can be i=
+nlined
+> > without any perceptible change in readability (actually, I'd argue addi=
+ng the !
+> > to an english idiom makes things *less* readable):
+>
+> I prefer the macro because it makes it easier to search where version
+> checks are being done.
 
-> In an effort to separate intentional arithmetic wrap-around from
-> unexpected wrap-around, we need to refactor places that depend on this
-> kind of math. One of the most common code patterns of this is:
->
-> 	VAR + value < VAR
->
-> Notably, this is considered "undefined behavior" for signed and pointer
-> types, which the kernel works around by using the -fno-strict-overflow
-> option in the build[1] (which used to just be -fwrapv). Regardless, we
-> want to get the kernel source to the position where we can meaningfully
-> instrument arithmetic wrap-around conditions and catch them when they
-> are unexpected, regardless of whether they are signed[2], unsigned[3],
-> or pointer[4] types.
->
-> Refactor open-coded wrap-around addition test to use add_would_overflow().
-> This paves the way to enabling the wrap-around sanitizers in the future.
->
-> Link: https://git.kernel.org/linus/68df3755e383e6fecf2354a67b08f92f18536594 [1]
-> Link: https://github.com/KSPP/linux/issues/26 [2]
-> Link: https://github.com/KSPP/linux/issues/27 [3]
-> Link: https://github.com/KSPP/linux/issues/344 [4]
-> Cc: John Stultz <jstultz@google.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+I don't see how searching for "IS_MIN_VERSION_2_0" is easier
+than just searching for "UCSI_VERSION_2_0".
 
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+I didn't quite understand what you meant by
+
+>  it keeps the `<` vs `<=3D` consistent.
+
+Perhaps I'm missing something... (are these comparisons being
+used elsewhere/in some other fashion?).
+
+In any case, I don't want to bike-shed so I'll defer to the
+maintainer's call on this.
+
+BR,
+
+-Prashant
 
