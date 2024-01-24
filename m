@@ -1,113 +1,109 @@
-Return-Path: <linux-kernel+bounces-37015-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37016-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7676083AA33
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:46:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB78083AA35
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:46:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A92351C2238B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:46:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 827411F231BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:46:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC9E07A711;
-	Wed, 24 Jan 2024 12:45:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lUmH60PG"
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE9957763D;
+	Wed, 24 Jan 2024 12:45:14 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8CDA76918;
-	Wed, 24 Jan 2024 12:45:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF1C57C081
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 12:45:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706100310; cv=none; b=l2UWQfpqRQDIHB8L1fVdn4ofW6nV3Fiw7/3IqQpPvVmKtqpqlonKGbAsOpdUVjIDdrX6R2sNoskUdA2c7/7VtREmfzsWKtnHWZ9rkOv2yimerTTb8QW39trLCAZa73o2zzlLYiFy4UfWqGkUXw7hBHGquqXCMgUq/qO5LNi+TkE=
+	t=1706100314; cv=none; b=Cpq47kBqBMaisN5qdP/cKorxlZDhD+m76v921Es2EQtXxxvKVNCNm+7gAMGEXEquYvT1THeLqcf0G2D1/yi0w2A54NzLDJ3jZRzXBElrtuw9HLfzl9Bue7t5nPg2K/M6/lUq1qOqiDci8+v2EZImND2DdhbHamg/oLjSF3/+OU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706100310; c=relaxed/simple;
-	bh=TZXm+kuPZ4nvGmxpZjlQE8EIcmBZdeT0tswbj5rQmKk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hPxG1NmbQuEW3gSXHp8IphEFNAUj9i1HjWBXBhVGb+r25oq9kM7Zoof/cKV/n7O4pK0miKQuHNpFe8VBLm1LDlv+qwav5XP7skxAA2Q+lpf4f3OxSsx3o0n9H8+bamBeUhTF0bbVhASNZHTBrdH5KSMTiixbCLVkgbmxsazJLeo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lUmH60PG; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5edfcba97e3so55809187b3.2;
-        Wed, 24 Jan 2024 04:45:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706100307; x=1706705107; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TZXm+kuPZ4nvGmxpZjlQE8EIcmBZdeT0tswbj5rQmKk=;
-        b=lUmH60PG+lTytt1bs+Dgq/gLt1mGApiq63Iv2zYphUTeUIztS2n3ECaOSodn0g11Oj
-         0g/e12sTCuSNhiz7VGIN+BAdxLq0US4BAONucqIyLNIxRKCpEnH+cTv93KTBPvT7UofC
-         k9Okm2ntbRXSjGru42SJwJdL6nyCXMNZfM5u+0fubfMTHqx/GhV1K3V/vsF0KcECq3oT
-         rkETCEy9SF0Un9ILy7XSEoIKMCa+WxXIpsfz+/qY1aFA+9D0ho8YcSPf7DGA5wroM0wx
-         hSujFhoEBDYVG+5FJ7chgRCxW1apYXExI2ppNMFo6cynYo6XKhnlyY1JVnn1F9iQ1gqw
-         XLxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706100307; x=1706705107;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TZXm+kuPZ4nvGmxpZjlQE8EIcmBZdeT0tswbj5rQmKk=;
-        b=i1dR2ypffQhuxHHjK4Fbxi/bQC0Urj9uirdKpjk0zBUooqGGmho5qtTX+ezYayOJET
-         qDDLSF4JjWaS+troiFwYf0vym4HONYnE2WAFotXzONGfgs5BY2i0KZK+CfYVXEE9hDaH
-         WjPZwU4i1qmoIsnqkXE3wD8op57sKpsr0nK10dNiuD8lxlkBVTZRaZ1ULbibAtRa+44n
-         p61v01J8ihBaxl4fIvhdByDEyHYX6/N3o/A5pRSLMobtIFCZkWnyCRzy/HwwcHDKRuR6
-         68VuK3VSFBz8N/HfWI0naADZij3XPE604AevnccbMYuLmHRHuXMBuZftftPxwatE4Rir
-         Jh9w==
-X-Gm-Message-State: AOJu0YzmNg+lUHY4hxzL22tyRzUo+8HF2jqGQcVWztxsyNj0JoQ9PMtg
-	drJ7PzrEdNiSwfuga/W9T754Bx1Mh2uZi99U/Htps2H9mkqwAmswDI8IA4OuXIMSOBu3GcDEXlO
-	QwUe2W61CBMV0pZtcjoHmDr5K+TpTVQ+2TOwh/sMLha4=
-X-Google-Smtp-Source: AGHT+IGhg2BSC76jnAi74QGv0SbZtJZCUiJjbfeZOPD5ypEKfiEUJ0ZOdlvGhrFpnODlmLZfQJtgvgOBQT8gRfiznek=
-X-Received: by 2002:a81:7c85:0:b0:5ff:67f5:f3 with SMTP id x127-20020a817c85000000b005ff67f500f3mr708565ywc.38.1706100307452;
- Wed, 24 Jan 2024 04:45:07 -0800 (PST)
+	s=arc-20240116; t=1706100314; c=relaxed/simple;
+	bh=qWmXvQURcZYGW+gqIxnMRcfmBaG8y36oBWYaQud2e74=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=lGV6U6n/SDahbYixdSIBOMXvHmgeMkDp4Wh8V+vGfUPvW3ypcOglHDtAyYXP2czL1BAHC6mJ+ka5n0Trw0nNvPQs8/O3kjQTvD5Lzlv38sUKA81s8sTXNifj2qwkFdyVJSYK9VzZKMBwqy1n7w3YdTUaOZfdzvDpsDmKTUzjaKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TKkDL1Rz5z1xmWl;
+	Wed, 24 Jan 2024 20:44:18 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id B386B140414;
+	Wed, 24 Jan 2024 20:45:10 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 24 Jan 2024 20:45:10 +0800
+Subject: Re: [PATCH] MAINTAINERS: Add Zhihao Cheng as UBI/UBIFS reviewer
+To: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>
+CC: <linux-kernel@vger.kernel.org>
+References: <20240124092246.9616-1-richard@nod.at>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <7e25b80c-99a9-cbde-7744-7fc264e6eb1c@huawei.com>
+Date: Wed, 24 Jan 2024 20:45:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240121111730.262429-1-foxywang@tencent.com> <f898e36f-ba02-4c52-a3be-06caac13323e@linux.ibm.com>
-In-Reply-To: <f898e36f-ba02-4c52-a3be-06caac13323e@linux.ibm.com>
-From: Yi Wang <up2wing@gmail.com>
-Date: Wed, 24 Jan 2024 20:44:56 +0800
-Message-ID: <CAN35MuQvQ7mbNCR=udA2xCu9wZ+qjSEM6eZ+6giJ8BBATsA-Ew@mail.gmail.com>
-Subject: Re: [v2 0/4] KVM: irqchip: synchronize srcu only if needed
-To: Christian Borntraeger <borntraeger@linux.ibm.com>
-Cc: seanjc@google.com, pbonzini@redhat.com, tglx@linutronix.de, 
-	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, 
-	hpa@zytor.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	wanpengli@tencent.com, foxywang@tencent.com, oliver.upton@linux.dev, 
-	maz@kernel.org, anup@brainfault.org, atishp@atishpatra.org, 
-	frankja@linux.ibm.com, imbrenda@linux.ibm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240124092246.9616-1-richard@nod.at>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
 
-On Wed, Jan 24, 2024 at 8:14=E2=80=AFPM Christian Borntraeger
-<borntraeger@linux.ibm.com> wrote:
->
-> Am 21.01.24 um 12:17 schrieb Yi Wang:
-> > From: Yi Wang <foxywang@tencent.com>
-> >
-> > We found that it may cost more than 20 milliseconds very accidentally
-> > to enable cap of KVM_CAP_SPLIT_IRQCHIP on a host which has many vms
-> > already.
-> >
-> > The reason is that when vmm(qemu/CloudHypervisor) invokes
-> > KVM_CAP_SPLIT_IRQCHIP kvm will call synchronize_srcu_expedited() and
-> > might_sleep and kworker of srcu may cost some delay during this period.
-> > One way makes sence is setup empty irq routing when creating vm and
-> > so that x86/s390 don't need to setup empty/dummy irq routing.
-> >
-> > Note: I have no s390 machine so the s390 patch has not been tested.
->
-> I just did a quick sniff and it still seems to work. No performance check=
- etc.
+ÔÚ 2024/1/24 17:22, Richard Weinberger Ð´µÀ:
+> Recognizing Zhihao Cheng's valuable contributions,
+> let's officially appoint him as a UBI/UBIFS reviewer.
+> His demonstrated expertise and assistance make him a valuable
+> addition to the MTD community.
+> 
+> Cc: Zhihao Cheng <chengzhihao1@huawei.com>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> ---
+> Zhihao Cheng,
+> 
+> Please ack this patch if you're fine with this change.
 
-Thanks very much, Christian!
+Thanks a lot for the approval from Richard, it's my honor to take on 
+this responsibility.
 
----
-Best wishes
-Yi Wang
+Acked-by: Zhihao Cheng <chengzhihao1@huawei.com>
+
+> 
+> Thanks,
+> //richard
+> ---
+>   MAINTAINERS | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 8d1052fa6a69..fc99cc381268 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -22453,6 +22453,7 @@ F:	include/uapi/misc/uacce/
+>   
+>   UBI FILE SYSTEM (UBIFS)
+>   M:	Richard Weinberger <richard@nod.at>
+> +R:	Zhihao Cheng <chengzhihao1@huawei.com>
+>   L:	linux-mtd@lists.infradead.org
+>   S:	Supported
+>   W:	http://www.linux-mtd.infradead.org/doc/ubifs.html
+> @@ -22581,6 +22582,7 @@ F:	drivers/ufs/host/ufs-renesas.c
+>   
+>   UNSORTED BLOCK IMAGES (UBI)
+>   M:	Richard Weinberger <richard@nod.at>
+> +R:	Zhihao Cheng <chengzhihao1@huawei.com>
+>   L:	linux-mtd@lists.infradead.org
+>   S:	Supported
+>   W:	http://www.linux-mtd.infradead.org/
+> 
+
 
