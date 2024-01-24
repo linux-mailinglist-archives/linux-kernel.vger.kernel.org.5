@@ -1,163 +1,86 @@
-Return-Path: <linux-kernel+bounces-36743-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C64C83A5E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:50:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5A9983A5EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:51:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C28828D556
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:50:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2ACB1290DE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:51:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FBCA18044;
-	Wed, 24 Jan 2024 09:49:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E74D618054;
+	Wed, 24 Jan 2024 09:51:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="plVXj33N";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="8NOeRL7J";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="EkjUfdhv";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="IYh+iPhq"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="Df71+RvZ"
+Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEA811802E;
-	Wed, 24 Jan 2024 09:49:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F9EC18035;
+	Wed, 24 Jan 2024 09:51:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706089798; cv=none; b=lKNEQ89IgsgqC8Lf50DYxo3w8BSpBMAGY8ZAC6xmclLGyoqk6wnKATHQ3uRHGh1vkxPuccqMTxIk4WRIeIvL5gW344QJCf9lBt5lGZCch/Sq9m39Rcgxq23QO0DaK9GFobwJq4hfrx4nMJpSwNYA1Xs8boYNo8c0qfc3ohS7OT0=
+	t=1706089890; cv=none; b=NrrNcqVrfolGpElzQWHbBqv6wJbSrFH2ChJf3vUmXNnhfFrnliRt+Gl6016D2AN5ig7IjXI1MRmJKiH0UToVwSWiWWBCntPQQdt8dI3lsGHqZfeU+YOOnJDC7zgaK/ijm6MwhtVGpqFjJbgV/KP8/Jv9xDhhT+i21BiFxQRMkcs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706089798; c=relaxed/simple;
-	bh=QtUmb7bF5lqtB54Oi4kwEmOv9BMGiSvIpAQTEP1oKgE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J0SlwQOd6eL8HHqxg9LfxDX4a1F1UcvlWpMAMaB4TmKD4uyz9hdIUz1BGdP8rnYwYONck9uZeyTuCFAPDHE19fy1/moIOgYc099v0xixfsy3LhuK11aw652844DuSuUIpuGaaVgpo4uVzQV5G/g7uuOq9G15l8ZIaibXEegGZv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=plVXj33N; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=8NOeRL7J; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=EkjUfdhv; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=IYh+iPhq; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D45891F7E0;
-	Wed, 24 Jan 2024 09:49:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1706089795; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=l8pUPEXhsLWkmAp/YcEXVzNst1axBoeCLZ68AwUjacU=;
-	b=plVXj33NOKMEc23VA0O27a0NmWgCspDE6QmsMl4xrFJvkqOF1nE6TaoVWBqjm4L/4xK6Hn
-	w0yZ+N0bDpegsG/7b4UgYFH2NbNrAFaBA0TjqxJ/tblMVpoloEhEGazoqj9JN60+scpyJN
-	TaY6nRqG6k0+S4Rk2NSWnwkQQ4WKvPI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1706089795;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=l8pUPEXhsLWkmAp/YcEXVzNst1axBoeCLZ68AwUjacU=;
-	b=8NOeRL7JDL069Aozqko0gC7l9akF1MoBAVNKsfmhHPuLKxxkXWcVHc2Jo2B5lJiMtcWmTR
-	9Xa2uE9n8Ygkh9Bw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1706089794; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=l8pUPEXhsLWkmAp/YcEXVzNst1axBoeCLZ68AwUjacU=;
-	b=EkjUfdhvsL8giyQ70j8+UjthxdbydodJK42dtYpYztORfSTg99s2L/ddjW8pMImkYnMv6T
-	XbNTTfi5w1gXqL21fWdBKg5o2XaaOb66cwd8MqAayoljmA8R/NUAZObw9KwpXJIlUC2/r3
-	lp0+Hy592NmqVIr4W7SZZVmIKUiT05w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1706089794;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=l8pUPEXhsLWkmAp/YcEXVzNst1axBoeCLZ68AwUjacU=;
-	b=IYh+iPhqXnc5KE+ScJkeAFvcsd5aLFQNGdwSAuosyOLOmv0bYTgFB92hYrNJXhpuhvSwIX
-	BMakY3mwbAN53WDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CB6561333E;
-	Wed, 24 Jan 2024 09:49:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 6DamMULdsGVyfQAAD6G6ig
-	(envelope-from <jwiesner@suse.de>); Wed, 24 Jan 2024 09:49:54 +0000
-Received: by incl.suse.cz (Postfix, from userid 1000)
-	id 771389C965; Wed, 24 Jan 2024 10:49:54 +0100 (CET)
-Date: Wed, 24 Jan 2024 10:49:54 +0100
-From: Jiri Wiesner <jwiesner@suse.de>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the rcu tree
-Message-ID: <20240124094954.GL3303@incl>
-References: <20240124151743.052082af@canb.auug.org.au>
+	s=arc-20240116; t=1706089890; c=relaxed/simple;
+	bh=m5NWx1gVYZIUYmyzn/p7lEktd7eDSEgX54vgwJR8lWI=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=IK9N6CCpcpnu47nlOyoEq83izer3g/ERAuv1o4uyZsHSNgW9KTlsWpbL1EgyLABa4yrz7M80V2Tb88zektT9/hY1HYi4EpTjPCmwvJHV1rRhXjfbsSx/AruUFh165kYdAAuREVk86zV7B+k7RduFoZra2gyVWtuznHEufaqH71g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=Df71+RvZ; arc=none smtp.client-ip=185.70.40.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=gfzwzs63c5bwpbfaoak7hqxbra.protonmail; t=1706089879; x=1706349079;
+	bh=YRa7ixpHW2IRUtx3lwsiscFSpJb9lfgyIi3waMTLXrU=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=Df71+RvZH7zmdy2/Swc3ITCEGjhIrt/qwW2f2MNWphXeuBkg5IEX46Y7+5/rKlt7w
+	 64AN2ZHNAFyeks3ZGw2Gaf1O57pKfekYF4kLzz1aA1kxbixP6trCgNsd7vpNrNHuiO
+	 ZKTQmWCJ6BT8za6WiycUJOdAAQTR8uWvVyMeP2dGLarLOAdrGTr0H+YhS0n6Y8m9eC
+	 Tnx0jrX3mHKwKlbAxMpZsuVh0SKX0WlHdXmh1lXIjelnsCQ/j/ZcQyEAy2OLXFj+RI
+	 NstMSLrMjrnY1Ey0mhOu5M2k1bvwtaAm5hbaaBfF0Q3CKxaTwaRmw7uNKiJO1W0I8O
+	 OtBOh+HGXPNbA==
+Date: Wed, 24 Jan 2024 09:51:11 +0000
+To: Alice Ryhl <aliceryhl@google.com>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Peter Zijlstra <peterz@infradead.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>, Dan Williams <dan.j.williams@intel.com>, Kees Cook <keescook@chromium.org>, Matthew Wilcox <willy@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v3 2/9] rust: cred: add Rust abstraction for `struct cred`
+Message-ID: <efde6f59-2467-4645-8846-ab42214164fa@proton.me>
+In-Reply-To: <CAH5fLgjKVQoTNZAJienaJpDrAPHoC+bAJdCzHsjjzme36h6wBw@mail.gmail.com>
+References: <20240118-alice-file-v3-0-9694b6f9580c@google.com> <20240118-alice-file-v3-2-9694b6f9580c@google.com> <67a9f08d-d551-4238-b02d-f1c7af3780ae@proton.me> <CAH5fLgjKVQoTNZAJienaJpDrAPHoC+bAJdCzHsjjzme36h6wBw@mail.gmail.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240124151743.052082af@canb.auug.org.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=EkjUfdhv;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=IYh+iPhq
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.06 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[4];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 NEURAL_HAM_SHORT(-0.20)[-0.978];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 TO_DN_ALL(0.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.05)[60.36%];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-X-Spam-Score: -1.06
-X-Rspamd-Queue-Id: D45891F7E0
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 24, 2024 at 03:17:43PM +1100, Stephen Rothwell wrote:
-> After merging the rcu tree, today's linux-next build (i386 defconfig)
-> failed like this:
-> In file included from include/linux/dev_printk.h:14,
->                  from include/linux/device.h:15,
->                  from kernel/time/clocksource.c:10:
-> kernel/time/clocksource.c: In function 'clocksource_watchdog':
-> kernel/time/clocksource.c:103:34: error: integer overflow in expression of type 'long int' results in '-1619276800' [-Werror=overflow]
->   103 |                                  * NSEC_PER_SEC / HZ)
->       |                                  ^
-> Caused by commit
->   1a4545025600 ("clocksource: Skip watchdog check for large watchdog intervals")
-> I have used the rcu tree from next-20240123 for today.
+On 19.01.24 10:52, Alice Ryhl wrote:
+> On Fri, Jan 19, 2024 at 10:37=E2=80=AFAM Benno Lossin <benno.lossin@proto=
+n.me> wrote:
+>> On 1/18/24 15:36, Alice Ryhl wrote:
+>>> +    /// Returns the effective UID of the given credential.
+>>> +    pub fn euid(&self) -> bindings::kuid_t {
+>>> +        // SAFETY: By the type invariant, we know that `self.0` is val=
+id.
+>>
+>> Is `euid` an immutable property, or why does this memory access not race
+>> with something?
+>=20
+> Yes. These properties are changed by replacing the credential, so the
+> credentials themselves are immutable.
 
-This particular patch is still beging discussed on the LKML. This is the 
-latest submission with improved variable naming, increased threshold and 
-changes to the log and the warning message (as proposed by tglx):
-https://lore.kernel.org/lkml/20240122172350.GA740@incl/
-Especially the change to the message is important. I think this message 
-will be commonplace on 8 NUMA node (and larger) machines. If there is 
-anything else I can do to assist please let me know.
--- 
-Jiri Wiesner
-SUSE Labs
+I see that's good to know, I think that should be mentioned
+on the docs of `Credential`.
+
+--=20
+Cheers,
+Benno
+
+
 
