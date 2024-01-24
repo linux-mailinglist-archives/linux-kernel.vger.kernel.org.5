@@ -1,69 +1,73 @@
-Return-Path: <linux-kernel+bounces-37048-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37049-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED8BA83AAA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:09:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFB2083AA9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:07:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA7ACB2D0EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:06:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F33511C2610C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:07:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4BA977F08;
-	Wed, 24 Jan 2024 13:06:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DE5077655;
+	Wed, 24 Jan 2024 13:06:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="uZPRmfDo"
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A05A0igJ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27CD960BAC;
-	Wed, 24 Jan 2024 13:06:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FD357765E
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 13:06:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706101605; cv=none; b=dl8SgbWYZOk2GUABJtTXRaJG8uEFQYD6JxFrX0Bfl7rzX3JbrA0+YfsNneoMF9s9Lcrg/2BhfHSv6RjolAObCeUMFjb/ED7YFFRN4yi3V10R11csT5LOlU4VZZ6Ho34jZVtynUUohuW/QQ0694hcL2bZkDN5LOt1Pvh56DAtC+8=
+	t=1706101617; cv=none; b=EITvvkoD2irmoVlsYcwGEM5dLUMRjR203UwdYXFUth7DtuwWPFzVuoOVz+V+u4VM+9sltJc+DSIYPgzmoOuS1oOHwxZdWXg3nwvYQyX3bXqzSlNG01bqRWesEG4C54mUDGuU5i9eROplsn7hsif27Eh8jPOZZn1DO+oYgP8PXnA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706101605; c=relaxed/simple;
-	bh=FNsi1MgnOiCafwg2BDbZxoXkj+iUycBe8HXoYwKqzMg=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jdPCmU2m5sozjVo88BKPbwb+FVN7vkPUw4HjEl8gCLjnqRsL00hiPcUmK0mI4dt7xwEhrThffe8WBI7ASJhecxBquGi14lWtBNQUvJD9oqsCo1aG//W2IqmHA4GzIFJB+UAKUHEUp3tQHTS8QqB81hhWdx436oSayyGBj1QPKu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=uZPRmfDo; arc=none smtp.client-ip=37.18.73.165
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 2D63610000A;
-	Wed, 24 Jan 2024 16:06:38 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 2D63610000A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1706101598;
-	bh=zsaAaLH6CJR21EnkfyKWpwpt24RWdug8/kf9Nmutwtk=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=uZPRmfDoQb5g2BQ5jsyq/TzsVOm1HBSDitGpyhC/BnFNLtuBpXV4UZ/1PnoR1v1+r
-	 6qzJaVFiIX8wIdWxXTV0zfM4igd4rrTJZqvGXWhj9gvZ68xjnhfzjoDG0135SgHKiY
-	 9WtLkvcuUT9hfbBecjS+jINhfi/nJnUphA95n+xnY4un1IJYrL7s0ZfZpeYHUHFLiC
-	 4q3EBQfKAsLqk86jqpnjinde/CcfPdlIvh0gfGQhoF0iX/pjRSyWQxxqIy+KRKOWXY
-	 9E+pGec/yTGkntT8Q3aBjf4RCqlcDW3aPl5Ug/eEI/gHGqCIQDNi0LEs2v8s9fbkTh
-	 SGowzrEJgXegg==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Wed, 24 Jan 2024 16:06:37 +0300 (MSK)
-Received: from user-A520M-DS3H.sberdevices.ru (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 24 Jan 2024 16:06:37 +0300
-From: Alexey Romanov <avromanov@salutedevices.com>
-To: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-	<conor+dt@kernel.org>, <neil.armstrong@linaro.org>, <khilman@baylibre.com>,
-	<jbrunet@baylibre.com>, <martin.blumenstingl@googlemail.com>
-CC: <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<kernel@salutedevices.com>, Alexey Romanov <avromanov@salutedevices.com>,
-	Dmitry Rokosov <ddrokosov@salutedevices.com>
-Subject: [PATCH v1] arch: arm64: dts: meson: a1: add assigned-clocks for usb node
-Date: Wed, 24 Jan 2024 16:06:23 +0300
-Message-ID: <20240124130623.3471236-1-avromanov@salutedevices.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706101617; c=relaxed/simple;
+	bh=dujYRm0zmFA26MfiC8o/r8uHHYPjm22iKpWqpqVW4s4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nTeM8QyRwDn/EDhf+UlwEtHFVIAo14R4RHu7i8UWXzBjZkpqxoTuvjFv33YGXt7lFFvaEVnL/UByQqU8xgc5oqpTcKOTfrGMLv9haXh+Qej+u5GEE5SpjPRib5pfpuCWTbrMCMcFPhyGw3Vaq2C0I44bg/DN+Dz1ytKBtaYqF9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.helo=mgamail.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A05A0igJ; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mgamail.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706101617; x=1737637617;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=dujYRm0zmFA26MfiC8o/r8uHHYPjm22iKpWqpqVW4s4=;
+  b=A05A0igJYy5Ev2rG+NRD2rZRcipT4HegVmHZLqHw5XywOMozcCr4zPY0
+   RZh8oEy210/5qOVE5z/ZD2mPCa06KrUoThCgrpDLgvI6pWQHj4EwDTkDb
+   4a0DN8AtFGEErBat+aDQ//rbDqVJA9M4iJ/h148mnc+0XPQU7ABSh7scx
+   yOgU8K/xv9eYM6ZJ+RdZT3ntYdgIMowc62nLoZF2dJ77PhyGlzcaYPbuN
+   Lr++s5YBII3/rxKhpP6FUyc82oA+lVypbQ31yqjL++ULc8oZTWSOrt5gG
+   I2oSFUeIJ/tKELaK9hrSSTvTB3/ZgIOLU3hG9x4HOUPBglKOchFJH6Q5R
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="1727545"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="1727545"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 05:06:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="905590853"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="905590853"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga002.fm.intel.com with ESMTP; 24 Jan 2024 05:06:53 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id 1675B5E8; Wed, 24 Jan 2024 15:06:51 +0200 (EET)
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>
+Cc: Isaku Yamahata <isaku.yamahata@intel.com>,
+	x86@kernel.org,
+	linux-kernel@vger.kernel.org,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Juergen Gross <jgross@suse.com>
+Subject: [PATCH, RESEND] x86/pat: Simplifying the PAT programming protocol
+Date: Wed, 24 Jan 2024 15:06:50 +0200
+Message-ID: <20240124130650.496056-1-kirill.shutemov@linux.intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,51 +75,87 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 182891 [Jan 24 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.3
-X-KSMG-AntiSpam-Envelope-From: avromanov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;smtp.sberdevices.ru:5.0.1,7.1.1;salutedevices.com:7.1.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/01/24 11:47:00 #23399457
-X-KSMG-AntiVirus-Status: Clean, skipped
 
-To ensure proper functionality of USB, it is necessary to use
-the rate of 64000000 for CLKID_USB_BUS. For instance, adb may
-not function correctly without this setting. This information
-has been derived from the vendor SDK.
+The programming protocol for the PAT MSR follows the MTRR programming
+protocol. However, this protocol is cumbersome and requires disabling
+caching (CR0.CD=1), which is not possible on some platforms.
 
-Signed-off-by: Alexey Romanov <avromanov@salutedevices.com>
-Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+Specifically, a TDX guest is not allowed to set CR0.CD. It triggers
+a #VE exception.
+
+Turned out the requirement to follow the MTRR programming protocol for
+PAT programming is unnecessarily strict. The new Intel Software
+Developer Manual[1] (December 2023) relaxes this requirement. Please
+refer to the section titled "Programming the PAT" for more information.
+
+The AMD documentation does not link PAT programming to MTRR.
+
+The kernel only needs to flush the TLB after updating the PAT MSR. The
+set_memory code already takes care of flushing the TLB and cache when
+changing the memory type of a page.
+
+[1] http://www.intel.com/sdm
+
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reviewed-by: Juergen Gross <jgross@suse.com>
 ---
- arch/arm64/boot/dts/amlogic/meson-a1.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/kernel/cpu/cacheinfo.c | 7 ++++---
+ arch/x86/mm/pat/memtype.c       | 9 +++------
+ 2 files changed, 7 insertions(+), 9 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-a1.dtsi b/arch/arm64/boot/dts/amlogic/meson-a1.dtsi
-index cf150f568335..b9fd69112535 100644
---- a/arch/arm64/boot/dts/amlogic/meson-a1.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-a1.dtsi
-@@ -668,6 +668,8 @@ usb: usb@fe004400 {
- 				 <&clkc_periphs CLKID_USB_BUS>,
- 				 <&clkc_periphs CLKID_USB_CTRL_IN>;
- 			clock-names = "usb_ctrl", "usb_bus", "xtal_usb_ctrl";
-+			assigned-clocks = <&clkc_periphs CLKID_USB_BUS>;
-+			assigned-clock-rates = <64000000>;
- 			resets = <&reset RESET_USBCTRL>;
- 			reset-name = "usb_ctrl";
+diff --git a/arch/x86/kernel/cpu/cacheinfo.c b/arch/x86/kernel/cpu/cacheinfo.c
+index c131c412db89..78afad50a7c0 100644
+--- a/arch/x86/kernel/cpu/cacheinfo.c
++++ b/arch/x86/kernel/cpu/cacheinfo.c
+@@ -1118,15 +1118,16 @@ static void cache_cpu_init(void)
+ 	unsigned long flags;
  
+ 	local_irq_save(flags);
+-	cache_disable();
+ 
+-	if (memory_caching_control & CACHE_MTRR)
++	if (memory_caching_control & CACHE_MTRR) {
++		cache_disable();
+ 		mtrr_generic_set_state();
++		cache_enable();
++	}
+ 
+ 	if (memory_caching_control & CACHE_PAT)
+ 		pat_cpu_init();
+ 
+-	cache_enable();
+ 	local_irq_restore(flags);
+ }
+ 
+diff --git a/arch/x86/mm/pat/memtype.c b/arch/x86/mm/pat/memtype.c
+index 0904d7e8e126..0d72183b5dd0 100644
+--- a/arch/x86/mm/pat/memtype.c
++++ b/arch/x86/mm/pat/memtype.c
+@@ -240,6 +240,8 @@ void pat_cpu_init(void)
+ 	}
+ 
+ 	wrmsrl(MSR_IA32_CR_PAT, pat_msr_val);
++
++	__flush_tlb_all();
+ }
+ 
+ /**
+@@ -296,13 +298,8 @@ void __init pat_bp_init(void)
+ 	/*
+ 	 * Xen PV doesn't allow to set PAT MSR, but all cache modes are
+ 	 * supported.
+-	 * When running as TDX guest setting the PAT MSR won't work either
+-	 * due to the requirement to set CR0.CD when doing so. Rely on
+-	 * firmware to have set the PAT MSR correctly.
+ 	 */
+-	if (pat_disabled ||
+-	    cpu_feature_enabled(X86_FEATURE_XENPV) ||
+-	    cpu_feature_enabled(X86_FEATURE_TDX_GUEST)) {
++	if (pat_disabled || cpu_feature_enabled(X86_FEATURE_XENPV)) {
+ 		init_cache_modes(pat_msr_val);
+ 		return;
+ 	}
 -- 
-2.34.1
+2.43.0
 
 
