@@ -1,143 +1,195 @@
-Return-Path: <linux-kernel+bounces-37789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9B7583B509
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:56:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A05483B50D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:57:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC706B23509
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:56:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC1072842AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:57:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24F04136644;
-	Wed, 24 Jan 2024 22:56:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B25B136651;
+	Wed, 24 Jan 2024 22:57:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b="Y1DBGw21"
-Received: from mail.codeweavers.com (mail.codeweavers.com [4.36.192.163])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bwqIVgNF"
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 108962C683;
-	Wed, 24 Jan 2024 22:56:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=4.36.192.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF92B135411
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 22:57:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706136989; cv=none; b=MIApamantHNEA9SXb/yO2V4WdjXAnY6977Uf8T6nzrn6UDUJ0kdchM2W7vqJ/4UIHvtIaMMrT3T/R3G8H28SNnInfSltzUz3vKyTNxje1Zb4d1Dd9WhISFiT1wN16x7ioVKgUmsoVNAMba1ubBVEMSXUE1N9GTk97g6AMkRIwN4=
+	t=1706137055; cv=none; b=ab35heuFuKNHnf/lCC6TH2mokxmXKZ/Paq2lcWDWmKnJqYZTmbu+6S0ZESdeCyblSR+lPTIrzTsK9jJT5kuzyUm4rXCVTH3itZiDc0LEWGSqIbEH6vyq49rhWui27+u+0mCZj/s3TBWQNT6qCfXEW0iZvvuLngG/7g/PlDVqBsE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706136989; c=relaxed/simple;
-	bh=SKdonuUpwHNKkTNWaGs4Ap2srIbuQXPsoaUP/5ykGqk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gZ9guv+lL1AL72Enuyvvf/oXaQEHt0vY2kB7p7raKfwt5ODKJvTBRG0l6arCKZfY75646tT5c3KC+6VLHq2lTWxKTx87ufRktbiLKXB3Ig7Dd9LbxBAbkDGMtjH03xyUf7XqH8IuadhovFHb3YWjdiaXKbczDgIKQro8C1wxTRQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com; spf=pass smtp.mailfrom=codeweavers.com; dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b=Y1DBGw21; arc=none smtp.client-ip=4.36.192.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeweavers.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=codeweavers.com; s=s1; h=Message-ID:Date:Subject:Cc:To:From:Sender;
-	bh=DkSieLEcEHpG6Q5/Pg0k+yQT4j2UmfvF4WEMWSAihHY=; b=Y1DBGw21m5Hc+UTCIOYjYI8FHz
-	luVQen0EpOKHHXL/WSwkVb+i8f58xSBeFY7Fv8G51gbrWisq7rT1A+Ydjr8ZTCWbdjwAS9jk5ZTdF
-	wWf9v3YYTNlqzIrH4L892xpiQ2SpZmH34ZJmOWCUNhGfBL3AgN5ceGsnO+sZB1NLgoeXmw/d6w5ai
-	D7s52QdJx5yasDJBvA/elgaondrWRb3sHHKvkoO9dYNcrquAPFgHAiQncVyFZexrWwml3+NbzBYp5
-	PlWExdFMzsg9Q0moMdeNh0XnGkLqGrLRC5LtycMVpPQPCX+K6IVTnuvRPAqMWvzNIplM1Mmk/qQqW
-	ybSEAO6g==;
-Received: from cw137ip160.mn.codeweavers.com ([10.69.137.160] helo=camazotz.localnet)
-	by mail.codeweavers.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <zfigura@codeweavers.com>)
-	id 1rSmAR-00Ea95-1y;
-	Wed, 24 Jan 2024 16:56:23 -0600
-From: Elizabeth Figura <zfigura@codeweavers.com>
-To: Andy Lutomirski <luto@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
- wine-devel@winehq.org,
- =?ISO-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
- Wolfram Sang <wsa@kernel.org>, Arkadiusz Hiler <ahiler@codeweavers.com>,
- Peter Zijlstra <peterz@infradead.org>,
- Alexandre Julliard <julliard@winehq.org>
-Subject:
- Re: [RFC PATCH 1/9] ntsync: Introduce the ntsync driver and character device.
-Date: Wed, 24 Jan 2024 16:56:23 -0600
-Message-ID: <5907233.BlLQTPImNI@camazotz>
-In-Reply-To:
- <CALCETrU+Eb5CdkqfYK8JvOiPA7K-6Bfs4uEWiu-U9oH95XfvKw@mail.gmail.com>
-References:
- <20240124004028.16826-1-zfigura@codeweavers.com>
- <20240124004028.16826-2-zfigura@codeweavers.com>
- <CALCETrU+Eb5CdkqfYK8JvOiPA7K-6Bfs4uEWiu-U9oH95XfvKw@mail.gmail.com>
+	s=arc-20240116; t=1706137055; c=relaxed/simple;
+	bh=ZIIZJ+Jcrl8bt49eFQOrQKNSd6j5uMTJKgZ/QcCvINA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MyJVSurrIHGaYzu7FbgQZoTGputkDZTsYP9covA5Hkk1ap/rc8TaSpUlgAQtTMrWzgRJDkhj71Es/QCHqELa9S1bBS5jW4pX+2YjlIYLhdyJ5rl45W6wZ7I3vvI/GjfpS3kY9z0s1HQHRspT+s/L+rxvqe5OcGI1EArVfBQ3Ks0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=bwqIVgNF; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dc608c3718dso1203285276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 14:57:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706137053; x=1706741853; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WBrbySQu5iKGr9sNkUAtBVzTaLxKFzMhJjClQoKf5+M=;
+        b=bwqIVgNFNGiMnlcm0xoHKmZV95ePMfSOWLHqJSoXyvNIKcQAVgYewoWP2lHdS3ACQJ
+         ETYVKOQnyPPqoSBYAPAusohRtqznkbyfPh8NzYiYbBCtMwK3wCp8nu+iPOn09ODHtunR
+         Hq54FBZdUo99tXE0DidJqwhxyrOikFjh8G3g0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706137053; x=1706741853;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WBrbySQu5iKGr9sNkUAtBVzTaLxKFzMhJjClQoKf5+M=;
+        b=tVUw5upz7b0dmFjFsmxNIcEsPphTQ8sHt98GPMV6Wp2Xni9wFpFPUraDaPYTnn+rS9
+         HJUnhirf9RrCq7e6PSstWvg5zPodhkIhfCg50gVT7930VOa9+h7Fnd9sj9u47i0pYHy6
+         1wecQEXlU04sNa/seBFibEB8CTHNk4wZgOB9rPCfyJkup9HqrM0C20rq8xM6adyq639v
+         zfCG5Q9tV/PmLmcFjs/wjuK7TX9kEq3YehmL+ff4C3bpHlE6kRBIJvRGZIJxLizsVBiS
+         sPtH4buVXguvx0e1z9aO+xS3Kb5roxHdGngR7qBGYcmHUmEM/G/khwBstqYkhBZLIVUg
+         nC/A==
+X-Gm-Message-State: AOJu0Yz4hdUHq88joZ6N2PfMqq5QDN+SfdKRfRCllCuZcSIgdKzqYkJ7
+	+D9z/+PsQSPpzsKUqMWPDO0O35hbds9sz4ojwvsqNfD2n3AzC0UCWcD/8jN3BI6JzLz7RFFLcqb
+	IpbQEqFrbFLyckRSPnvWGWo00jk+Xk7XmwX/K
+X-Google-Smtp-Source: AGHT+IEQ97tfB49p3fcFLXBhQDHGRAdqBwWwjOzKotG3aWQFBLjfSZX0iISlu5Utag72IuSP8N6D2OqUUVGz6p2rDk8=
+X-Received: by 2002:a5b:348:0:b0:dc2:66d6:b32 with SMTP id q8-20020a5b0348000000b00dc266d60b32mr96351ybp.54.1706137052904;
+ Wed, 24 Jan 2024 14:57:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+References: <20240123223039.1471557-1-abhishekpandit@google.com>
+ <20240123143026.v1.3.Idf7d373c3cbb54058403cb951d644f1f09973d15@changeid>
+ <CACeCKafTBwSgRXLFA3HC7cBe8hD=PSgSmR=TWy1oF3Rkn+hK4g@mail.gmail.com>
+ <CANFp7mUFvRnb1BF=vzNE+BxMcjZi_o0wwJVw=Ty+zEG+JTzA1w@mail.gmail.com> <CACeCKacH4zJGNqFKjLoaHzM59nSGdaWkNXec2GM=0kfafPBgqA@mail.gmail.com>
+In-Reply-To: <CACeCKacH4zJGNqFKjLoaHzM59nSGdaWkNXec2GM=0kfafPBgqA@mail.gmail.com>
+From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Date: Wed, 24 Jan 2024 14:57:21 -0800
+Message-ID: <CANFp7mXP=aN8bQi4akKKcoMZE8RaCBuFnwTa5hbp0MZvZe0hYQ@mail.gmail.com>
+Subject: Re: [PATCH v1 3/3] usb: typec: ucsi: Get PD revision for partner
+To: Prashant Malani <pmalani@chromium.org>
+Cc: Abhishek Pandit-Subedi <abhishekpandit@google.com>, 
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>, linux-usb@vger.kernel.org, 
+	jthies@google.com, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Bjorn Andersson <andersson@kernel.org>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	Fabrice Gasnier <fabrice.gasnier@foss.st.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Hans de Goede <hdegoede@redhat.com>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Saranya Gopal <saranya.gopal@intel.com>, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wednesday, 24 January 2024 15:26:15 CST Andy Lutomirski wrote:
-> On Tue, Jan 23, 2024 at 4:59=E2=80=AFPM Elizabeth Figura
-> <zfigura@codeweavers.com> wrote:
+On Wed, Jan 24, 2024 at 11:34=E2=80=AFAM Prashant Malani <pmalani@chromium.=
+org> wrote:
+>
+> On Wed, Jan 24, 2024 at 11:18=E2=80=AFAM Abhishek Pandit-Subedi
+> <abhishekpandit@chromium.org> wrote:
 > >
-> > ntsync uses a misc device as the simplest and least intrusive uAPI inte=
-rface.
+> > On Wed, Jan 24, 2024 at 10:49=E2=80=AFAM Prashant Malani <pmalani@chrom=
+ium.org> wrote:
+> > >
+> > > Hi Abhishek,
+> > >
+> > > On Tue, Jan 23, 2024 at 2:30=E2=80=AFPM Abhishek Pandit-Subedi
+> > > <abhishekpandit@google.com> wrote:
+> > > >
+> > > > From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> > > >
+> > > > PD major revision for the port partner is described in
+> > > > GET_CONNECTOR_CAPABILITY and is only valid on UCSI 2.0 and newer. U=
+pdate
+> > > > the pd_revision on the partner if the UCSI version is 2.0 or newer.
+> > > >
+> > > > Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> > > > ---
+> > > > $ cat /sys/class/typec/port2-partner/usb_power_delivery_revision
+> > > > 3.0
+> > > >
+> > > >  drivers/usb/typec/ucsi/ucsi.c | 25 +++++++++++++++++++++++++
+> > > >  drivers/usb/typec/ucsi/ucsi.h |  3 +++
+> > > >  2 files changed, 28 insertions(+)
+> > > >
+> > > > diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi=
+/ucsi.c
+> > > > index 4edf785d203b..8e0a512853ba 100644
+> > > > --- a/drivers/usb/typec/ucsi/ucsi.c
+> > > > +++ b/drivers/usb/typec/ucsi/ucsi.c
+> > > > @@ -782,6 +782,8 @@ static int ucsi_register_partner(struct ucsi_co=
+nnector *con)
+> > > >         }
+> > > >
+> > > >         desc.usb_pd =3D pwr_opmode =3D=3D UCSI_CONSTAT_PWR_OPMODE_P=
+D;
+> > > > +       desc.pd_revision =3D
+> > > > +               UCSI_CONCAP_FLAG_PARTNER_PD_MAJOR_REV_AS_BCD(con->c=
+ap.flags);
+> > > >
+> > > >         partner =3D typec_register_partner(con->port, &desc);
+> > > >         if (IS_ERR(partner)) {
+> > > > @@ -856,6 +858,28 @@ static void ucsi_partner_change(struct ucsi_co=
+nnector *con)
+> > > >                         con->num, u_role);
+> > > >  }
+> > > >
+> > > > +static int ucsi_check_connector_capability(struct ucsi_connector *=
+con)
+> > > > +{
+> > > > +       u64 command;
+> > > > +       int ret;
+> > > > +
+> > > > +       if (!con->partner && !IS_MIN_VERSION_2_0(con->ucsi))
+> > >
+> > > (Mentioned side-band but reproducing here for consistency)
+> > > This macro is unnecessary. It's just doing a comparison, which can be=
+ inlined
+> > > without any perceptible change in readability (actually, I'd argue ad=
+ding the !
+> > > to an english idiom makes things *less* readable):
 > >
-> > Each file description on the device represents an isolated NT instance,=
- intended
-> > to correspond to a single NT virtual machine.
->=20
-> If I understand this text right, and if I understood the code right,
-> you're saying that each open instance of the device represents an
-> entire universe of NT synchronization objects, and no security or
-> isolation is possible between those objects.  For single-process use,
-> this seems fine.  But fork() will be a bit odd (although NT doesn't
-> really believe in fork, so maybe this is fine).
->=20
-> Except that NT has *named* semaphores and such.  And I'm pretty sure
-> I've written GUI programs that use named synchronization objects (IIRC
-> they were events, and this was a *very* common pattern, regularly
-> discussed in MSDN, usenet, etc) to detect whether another instance of
-> the program is running.  And this all works on real Windows because
-> sessions have sufficiently separated namespaces, and the security all
-> works out about as any other security on Windows, etc.  But
-> implementing *that* on top of this
-> file-description-plus-integer-equals-object will be fundamentally
-> quite subject to one buggy program completely clobbering someone
-> else's state.
->=20
-> Would it make sense and scale appropriately for an NT synchronization
-> *object* to be a Linux open file description?  Then SCM_RIGHTS could
-> pass them around, an RPC server could manage *named* objects, and
-> they'd generally work just like other "Object Manager" objects like,
-> say, files.
+> > I prefer the macro because it makes it easier to search where version
+> > checks are being done.
+>
+> I don't see how searching for "IS_MIN_VERSION_2_0" is easier
+> than just searching for "UCSI_VERSION_2_0".
+>
+> I didn't quite understand what you meant by
+>
+> >  it keeps the `<` vs `<=3D` consistent.
+>
+> Perhaps I'm missing something... (are these comparisons being
+> used elsewhere/in some other fashion?).
 
-It's a sensible concern. I think when I discussed this with Alexandre
-Julliard (the Wine maintainer, CC'd) the conclusion was this wasn't
-something we were concerned about.
+Let's say someone wants to guard code for UCSI 2.0.
+Should they use:
 
-While the current model *does* allow for processes to arbitrarily mess
-with each other, accidentally or not, I think we're not concerned with
-the scope of that than we are about implementing a whole scheduler in
-user space.
+// Guard against older versions.
+if (ucsi->version < UCSI_VERSION_2_0) return;
 
-=46or one, you can't corrupt the wineserver state this way=E2=80=94wineserv=
-er
-being sort of like a dedicated process that handles many of the things
-that a kernel would, and so sometimes needs to set or reset events, or
-perform NTSYNC_IOC_KILL_MUTEX, but never relies on ntsync object state.
-Whereas trying to implement a scheduler in user space would involve the
-wineserver taking locks, and hence other processes could deadlock.
+// This also guards since the version jumps from 1.2 to 2.0.
+if (ucsi->version <=3D UCSI_VERSION_1_2) return;
 
-=46or two, it's probably a lot harder to mess with that internal state
-accidentally.
+// Only do something on newer versions.
+if (ucsi->version >=3D UCSI_VERSION_2_0) {
+  // Fill out something available in newer spec.
+}
 
-[There is also a potential problem where some broken applications
-create a million (literally) sync objects. Making these into files runs
-into NOFILE. We did specifically push distributions and systemd to
-increase those limits because an older solution *did* use eventfds and
-*did* run into those limits. Since that push was successful I don't
-know if this is *actually* a concern anymore, but avoiding files is
-probably not a bad thing either.]
+I'd rather everyone just use a macro that normalizes comparisons. It's
+always IS_MIN_VERSION and its inverse !IS_MIN_VERSION.
+It's personal preference so deferring to the maintainer is IMO the
+right call here.
 
-=2D-Zeb
-
-
+>
+> In any case, I don't want to bike-shed so I'll defer to the
+> maintainer's call on this.
+>
+> BR,
+>
+> -Prashant
 
