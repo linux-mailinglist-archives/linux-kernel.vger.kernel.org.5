@@ -1,156 +1,106 @@
-Return-Path: <linux-kernel+bounces-36468-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36470-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D1DE83A149
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 06:22:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61A8283A159
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 06:30:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42EBC1F2AAA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 05:22:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7033B24824
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 05:30:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D738F9C7;
-	Wed, 24 Jan 2024 05:22:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90BEBE573;
+	Wed, 24 Jan 2024 05:30:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kfb5632t"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="K24ejKLW"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C41BE541
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 05:22:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15B55E541;
+	Wed, 24 Jan 2024 05:30:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706073725; cv=none; b=K0LW6LR+vYs20mKWx6Np+zTQgu5PxZ0gBI8Zj6PAWolAAlZE/q+q5nBvZN4mEBWi2b7TdMcAZXdzCQtJK8sTmxr4LmXGZtH55v/1FW678a7ewxkAbTyKm/Z+7g6L3SzvcVIwGfybrbtU/B2tLs7g3oJsE5smCaqd0EqyXa93jko=
+	t=1706074222; cv=none; b=S4aYuLpEZu/AV5VpwMm+YE9EZPr9YWxXj7W7+7rROk+4sOOX//BfE1x56PIuF3WH21Zl4eRBpjJEWcd0DHvKGYc7FhME7hcFdJ/7cgqG4GkiHFleAG49nYPLfGu4U3vAuxxnqXLDxlkmMPq1T8olb8Yqyk8bBGhE3skbTy/Xdu4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706073725; c=relaxed/simple;
-	bh=hU252DMMuSZQLgzYBhf+Vx2BxaVBXcFr8qCm+J/aDJM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=cKhrbRRrPj3Ub3FkS4FeHL8u/KhHgx3xo3sp3hx94L2s3JUFAOkWOtZ4wBj21GB+BM9bJukvbWIknT6VRGsHZjOryDoPdYS6fmduaMrXEW1zSO03TfJbKaC1pnmlPpruvGPzXuussgTvy4si6CSTlFSUiZqYKGbOzEMeo8EZs58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kfb5632t; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706073723; x=1737609723;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=hU252DMMuSZQLgzYBhf+Vx2BxaVBXcFr8qCm+J/aDJM=;
-  b=kfb5632tXL4QiyZD4Cz9nV3cIOAdiyONF+kae1ZoknTvdzkXQLtFFfQU
-   RY+EkXTc5sAS+KrVPcdKB2Szw/wFC7m3F+wMTe/WmEqb1fo2m0C2MSlts
-   n5HgfoO8eaQV3gZGpQpE0RPCgsKwoeMWYzNB4CLjC8zBigmeTZ9XpPy2R
-   lkrIOgNyghvX3OmEOCV3Nm2dTCYmDIuI4M2/0mj1ZEeXbRtlGQQUHoPaH
-   PklwWczKOvo9AbI2Z+1/TL2ncuTNPNZFO4kDlYsoCpPAvlIf1bSEKCwmj
-   ha5DKmVqYk9+oRHXKUc8gyclcYpY0oBRMcj6xHY5KcOmtMh3Xn1YK/Asj
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="15261380"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="15261380"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 21:22:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="959392792"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="959392792"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 21:21:59 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,  Johannes Weiner
- <hannes@cmpxchg.org>,  Nhat Pham <nphamcs@gmail.com>,  Chris Li
- <chrisl@kernel.org>,  Chengming Zhou <zhouchengming@bytedance.com>,
-  linux-mm@kvack.org,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] mm: swap: enforce updating inuse_pages at the
- end of swap_range_free()
-In-Reply-To: <20240124045113.415378-2-yosryahmed@google.com> (Yosry Ahmed's
-	message of "Wed, 24 Jan 2024 04:51:11 +0000")
-References: <20240124045113.415378-1-yosryahmed@google.com>
-	<20240124045113.415378-2-yosryahmed@google.com>
-Date: Wed, 24 Jan 2024 13:20:02 +0800
-Message-ID: <87v87js3y5.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1706074222; c=relaxed/simple;
+	bh=FQavcIPjhmoM51UmzOB2B4P5+FJvpLKv8uux6tSCgXc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=f2Ejo+jmGEweoivwGHzdjRMx0fhCfSLW05j7imUt58RGE+GWXoe1hGuZUnDWQHlGIVDodr6srpjgfI7jVOwos2GonnvCUwdKF4WHgLYQnAQ1sf+S76ISHGf/56VTVqbvTjhgN1Rwt+Mh5rxsNLrY+0pGaEYcCldkOAlqkp0KjFY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=K24ejKLW; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 96D081C0006;
+	Wed, 24 Jan 2024 05:30:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1706074217;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YJwnEn/ClBtP3ilO+FcGRGFqim9G1t0Q9eGcA2ndZV0=;
+	b=K24ejKLWtJLlFjyyw0WHOi7giHVPRfjCB0ExU2rC+g7FxNU8TDZY4ATBHzDeTbTDoppakj
+	UAxBAlaE2+sgZkGna7eSp7xhbv2b7ak/PhvhPSziMG2a+R85HOQiJHmzlCgacNXqiDNbm+
+	fMWFa9gcdtfeJVae+RZhL0MAbefpXIag5WsSstVHUFtLhnIsAK7kF1JIANGY5xtb9pHyX4
+	cqrogJO+iiECfZcAHJecGOTD4Oq66z4ItswEPb+ZCOmvwy4qmG2LgOhAubWURbn90fRwr3
+	8425xyQ2s1tYUbl3cZv0g7zeG5guBwgTmc5ztrUn/6tlFlX0yWqYW9GBFAMdtA==
+Message-ID: <d32d17ed-87b5-4032-b310-f387cea72837@arinc9.com>
+Date: Wed, 24 Jan 2024 08:30:11 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next] net: dsa: remove OF-based MDIO bus registration
+ from DSA core
+To: Vladimir Oltean <olteanv@gmail.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Luiz Angelo Daros de Luca <luizluca@gmail.com>, mithat.guner@xeront.com,
+ erkin.bozoglu@xeront.com, =?UTF-8?Q?Alvin_=C5=A0ipraga?=
+ <ALSI@bang-olufsen.dk>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240122053348.6589-1-arinc.unal@arinc9.com>
+ <20240122053348.6589-1-arinc.unal@arinc9.com>
+ <20240123154431.gwhufnatxjppnm64@skbuf>
+Content-Language: en-US
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <20240123154431.gwhufnatxjppnm64@skbuf>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
 
-Yosry Ahmed <yosryahmed@google.com> writes:
+On 23.01.2024 18:44, Vladimir Oltean wrote:
+> On Mon, Jan 22, 2024 at 08:33:48AM +0300, Arınç ÜNAL wrote:
+>> These subdrivers which control switches [with MDIO bus] probed on OF, will
+>> lose the ability to register the MDIO bus OF-based:
+>>
+>> drivers/net/dsa/b53/b53_common.c
+>> drivers/net/dsa/lan9303-core.c
+>> drivers/net/dsa/realtek/realtek-mdio.c
+>> drivers/net/dsa/vitesse-vsc73xx-core.c
+>>
+>> These subdrivers let the DSA core driver register the bus:
+>> - ds->ops->phy_read() and ds->ops->phy_write() are present.
+>> - ds->user_mii_bus is not populated.
+>>
+>> The commit fe7324b93222 ("net: dsa: OF-ware slave_mii_bus") which brought
+>> OF-based MDIO bus registration on the DSA core driver is reasonably recent
+>> and, in this time frame, there have been no device trees in the Linux
+>> repository that started describing the MDIO bus, or dt-bindings defining
+>> the MDIO bus for the switches these subdrivers control. So I don't expect
+>> any devices to be affected.
+> 
+> IIUC, Luiz made the original patch for the realtek switches. Shouldn't
+> we wait until realtek registers ds->user_mii_bus on its own, before
+> reverting? Otherwise, you're basically saying that Luiz made the DSA
+> core patch without needing it.
 
-> In swap_range_free(), we update inuse_pages then do some cleanups (arch
-> invalidation, zswap invalidation, swap cache cleanups, etc). During
-> swapoff, try_to_unuse() checks that inuse_pages is 0 to make sure all
-> swap entries are freed. Make sure we only update inuse_pages after we
-> are done with the cleanups in swap_range_free(), and use the proper
-> memory barriers to enforce it. This makes sure that code following
-> try_to_unuse() can safely assume that swap_range_free() ran for all
-> entries in thr swapfile (e.g. swap cache cleanup, zswap_swapoff()).
->
-> In practice, this currently isn't a problem because swap_range_free() is
-> called with the swap info lock held, and the swapoff code happens to
-> spin for that after try_to_unuse(). However, this seems fragile and
-> unintentional, so make it more relable and future-proof. This also
-> facilitates a following simplification of zswap_swapoff().
->
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+My findings point to that. Luiz made the patch to optionally register the
+MDIO bus of the MDIO controlled Realtek switches OF-based. So it's not
+necessary to wait.
 
-LGTM, Thanks!
-
-Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
-
-> ---
->  mm/swapfile.c | 18 +++++++++++++++---
->  1 file changed, 15 insertions(+), 3 deletions(-)
->
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index b11b6057d8b5f..0580bb3e34d77 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -737,8 +737,6 @@ static void swap_range_free(struct swap_info_struct *si, unsigned long offset,
->  		if (was_full && (si->flags & SWP_WRITEOK))
->  			add_to_avail_list(si);
->  	}
-> -	atomic_long_add(nr_entries, &nr_swap_pages);
-> -	WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
->  	if (si->flags & SWP_BLKDEV)
->  		swap_slot_free_notify =
->  			si->bdev->bd_disk->fops->swap_slot_free_notify;
-> @@ -752,6 +750,14 @@ static void swap_range_free(struct swap_info_struct *si, unsigned long offset,
->  		offset++;
->  	}
->  	clear_shadow_from_swap_cache(si->type, begin, end);
-> +
-> +	/*
-> +	 * Make sure that try_to_unuse() observes si->inuse_pages reaching 0
-> +	 * only after the above cleanups are done.
-> +	 */
-> +	smp_wmb();
-> +	atomic_long_add(nr_entries, &nr_swap_pages);
-> +	WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
->  }
->  
->  static void set_cluster_next(struct swap_info_struct *si, unsigned long next)
-> @@ -2049,7 +2055,7 @@ static int try_to_unuse(unsigned int type)
->  	unsigned int i;
->  
->  	if (!READ_ONCE(si->inuse_pages))
-> -		return 0;
-> +		goto success;
->  
->  retry:
->  	retval = shmem_unuse(type);
-> @@ -2130,6 +2136,12 @@ static int try_to_unuse(unsigned int type)
->  		return -EINTR;
->  	}
->  
-> +success:
-> +	/*
-> +	 * Make sure that further cleanups after try_to_unuse() returns happen
-> +	 * after swap_range_free() reduces si->inuse_pages to 0.
-> +	 */
-> +	smp_mb();
->  	return 0;
->  }
+Arınç
 
