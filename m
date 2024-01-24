@@ -1,47 +1,49 @@
-Return-Path: <linux-kernel+bounces-37743-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37754-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 344F583B4B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:33:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3146683B4CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:36:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 940A1B244CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:33:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC5781F211EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:36:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96B3A135A68;
-	Wed, 24 Jan 2024 22:32:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE0D513BEAB;
+	Wed, 24 Jan 2024 22:33:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="hrYHPw7H"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="GeM0OEty"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFECA2C9A;
-	Wed, 24 Jan 2024 22:32:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E62B13666B;
+	Wed, 24 Jan 2024 22:33:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706135573; cv=none; b=OMTZdcp38lKzv4SrLi9mdhiiix/H5l2tgg4mp6ghoj1L+lXqzny73KpmhTsFfxV1xZmFLN/xwK0ornLJbPPEsSCOgMaCEetF752hh7nwb/EDmVvo9KescBmSG5SKEEWVLV3et53I/KN/acXkQd93N30QkDz/LXyidL7CrVj4h+A=
+	t=1706135600; cv=none; b=o2QNbmjVlLirQ9WVMyak0/W2HoTYDOMwM3Z+WkpJHbXZRzaGFvBmnfP8hg4u9X6Hr7tsZF+ZEXTBklhzJ9BweDcAtiubW4KHBU6HYrwkmrN09ghcGSpCkcYicM538ErEfcFPQEXzVYvRYupZOQI0VUWHLTr8vmungQS+Rd2NXyY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706135573; c=relaxed/simple;
-	bh=htt4WYNlHFFscLRqL8HdJgCZGwjTOJEUdN3kt/lnatA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NqqJbhZONje1F3e1xm2ThcirqhdegP4iv8YB8u0Z9/o91AsO9BoZJ3Ns33MVcLY8tkd8Q3CX/DdPdlZMu2hoLZrCp4vUwK3q9wgax4DjljGJ0uLBH7TBkCwWd2HsoIf7acA9cWO2YlaLWxFSM9iE5d4UMyVJ5nXZDVJoIp/hX2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=hrYHPw7H; arc=none smtp.client-ip=212.227.17.21
+	s=arc-20240116; t=1706135600; c=relaxed/simple;
+	bh=oTUeFEtg6tccmFigk3+uGgzU7tYf0ybllVSeTx5SFNo=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=gK5GNtt/WPj7pV/qhzDGg3yaOy5QSFzBFQCcr/8g8gzmWwJMZuiJgxeRSLVmquyjPgJaR+SoibQXgem8YAq5NSMfzTB711w0tIbmnYe/Kg9P8G2BZ4wUyEfRmT2oNCpSySKua9ZWiPBCg4pRimJ9aeT8xHGgrSSr4ezrNNVwpVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=GeM0OEty; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-	s=s31663417; t=1706135556; x=1706740356; i=wahrenst@gmx.net;
-	bh=htt4WYNlHFFscLRqL8HdJgCZGwjTOJEUdN3kt/lnatA=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-	b=hrYHPw7HCacNom8FrAhDFbtCnCsDaJxuRxlFsIVFYcOPN5fHSwNsjPnJcR1lP2t9
-	 JrudfQc50OZ+agzM5i4GEBqlcYzIWvtAFlLrAff5c5g+KLrskA6JVRS9joAIENUlm
-	 YT8KFQ/bPB96ygo4nqNSF1dtUtftt7rbd2oSsiqzZROJ4CWJHHR9kPubiLnqA6yuN
-	 OWCFQRMflthO4CFw24+E068fZbu7Ug50vLJXrVRIKJNTiCzisroY/Ay4FkNpmplXu
-	 5u9SEH8KFv8Bg8WfwsFuZ1SHTY8ctLTTIzFq6okGBDSmqGteLolL/gt1cqaatMW0X
-	 oWW5DyV/P14UvSlVeQ==
+	s=s31663417; t=1706135557; x=1706740357; i=wahrenst@gmx.net;
+	bh=oTUeFEtg6tccmFigk3+uGgzU7tYf0ybllVSeTx5SFNo=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
+	 References;
+	b=GeM0OEty1WprvABKm6oFt6ei1Pa0ywWhkGTXRAnmY1cdp1YHsvrj2RcnSW9ibFSF
+	 /FXA9akbsLYe3HVPuGGt3GZMrL4jmNyTuFMnvIe5mddIlDkbYzShXinm1Akb4LO6/
+	 GuCqL7aLAgpQVG/InJ33TnJ+G/KiHL0OcSI4Mj7kJbVBfiCeSBp8jdXJQXiA7UDJ4
+	 zRzuJBK+cnLi6Qmrj7w6K2PHFE33cZ0g84zj1Up2U5wWceZZcoxApUtvKjjOaknj5
+	 hytPfUS9o/9/MomX+wqD/O0621Ru6Mbr/1VnYHJqhC3eJ1NtqTu36mUQUblMT4jsb
+	 bBVoUmmk9qRjBvJaZA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from stefanw-SCHENKER ([37.4.248.43]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MiaYJ-1qqOuZ1nzL-00fisF; Wed, 24
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MKbkC-1rnkam3dNs-00L088; Wed, 24
  Jan 2024 23:32:36 +0100
 From: Stefan Wahren <wahrenst@gmx.net>
 To: "David S. Miller" <davem@davemloft.net>,
@@ -53,10 +55,12 @@ Cc: Lino Sanfilippo <LinoSanfilippo@gmx.de>,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Stefan Wahren <wahrenst@gmx.net>
-Subject: [PATCH V3 00/14 next] qca_spi: collection of improvements
-Date: Wed, 24 Jan 2024 23:31:57 +0100
-Message-Id: <20240124223211.4687-1-wahrenst@gmx.net>
+Subject: [PATCH V3 01/14 next] qca_spi: Improve SPI thread creation
+Date: Wed, 24 Jan 2024 23:31:58 +0100
+Message-Id: <20240124223211.4687-2-wahrenst@gmx.net>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240124223211.4687-1-wahrenst@gmx.net>
+References: <20240124223211.4687-1-wahrenst@gmx.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,74 +68,126 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7+qEVx8iZHWGykoVWNu7NTrHM2jUqSJIRUjXMbPGKOhrNbL1LP+
- 7SDYlN/8uwqAQjZcFOw5+PUtcAmBuahP4WjQZAqaefOi0KlHDQLUIjlGPKMeANayhZlVYci
- js2kUetaObH1o8xgadHSBSOFNVw4imSwxNspd+X1FxvXH7ly+9E6udKipEnb/WR3J1BcvsD
- +FgTeNIAVMAXMb7dwmzng==
+X-Provags-ID: V03:K1:qXB0zT9UcdmILQH3Ox0z6aqoMNMu6aDxj+AwPV4yoKpEJi8lN3K
+ w+AZ541wA92PBNpWcSbGSnfIJmI6kX1j9G3g6AniOlxi4c0cuHBIuplQNLlx4oBa2Tgj+cT
+ sb/ScNqvQ0el1HJHJcjxr6HCpWozpUR+5KO7NJBGRs30Jeb3HdZrHzuHo/8BXIXztSrSaMe
+ LLt5tLBpL//rfABNHY76w==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:HmqKFcYRM/g=;VeqC84B1C5viCmEyAYrdl43Iec/
- 3GXpW3fW3EEIor4PGij8t3VcrakXhof2+j0lPqI6UbfKIqRRUeYQgOI/tmFkefoujCwMnyr8p
- fWVUOotnPEiwdU1RFpoLyP1Spc+I2XTmQD03TuUIa0E/iRw0D8058qkxJNrjZgJa0OI0UGCkM
- OY1Q0+92XffLTca7Y0yFh1od2wyxJHRx1BeY1X8dXjqL6J6ebLTDUlIKw7l90UicdJD0W6tz4
- PYWVQ02qD77Kz0lW5ePKxzEmvJQeTmk8L5uxuP+6aNMcqQ8sd4G8mC6tPCQNlwvd4qYd5HIo7
- KA91yklOSl9TJBAT/HFaye1TLMsmOWf1agj5MCWe3k6uft0hfUKr7c80Jtez7Nl9MghFeiY+h
- Erzm+iAmUPrF4epa8f3lUHPMtb+HB9jeQ4NOGIRBld+Nj4UPX35ocyj/Qvr6z6FKJM8/Ngo5B
- /95LoUPqw0Zczrjk9f6prSiRFufenkzQmJrVO8QiOAYqIZSSszMZIOPFgkrnYTkjAK4kpRrib
- FfeFGn/VU0Hv1mHWInBp3r76PyvG/IqX7Wz+aUGTMX9Sb/i7gnDKENKzGu2Khc1x5HwTmWRSN
- Z2fpi3wPsGQPXndkjMQaaQbO41eRa8o1x3WTLKUcf8sa8f2H+Do9lO8Wyh0vTcl0u3rmQ9DL6
- /UBKhMiXHLZVz+g7UDvt+YU749LJrtHtauPoSh2pEoVuh55bpcTCnuXiGDggU0se5e2QXeIBv
- qwMIIY6VbuUTo/Dj1FXImjyiKDfgD6Cwa2JW1v6vsO61GhZ1On2T8akMOSg/J80v5fDK5D0cc
- k+gyzDybSu48HMjbJA4E+FWnrhuFNUiT6clvE61wDObdeEsFm7TUBAotMbxOQ0wTX4sONqbuR
- L4EaPC9o13HKLPfx5rSvTE3q6qmg19mMDCkEHb6HSSxKjnur5P8UjfTc/3jlLertg9MEN6CJc
- xFmpK63l0BOoxCSeG2IYctrV1y0=
+UI-OutboundReport: notjunk:1;M01:P0:qDhLsbAxpQM=;qo1pRUbvoR/eFgttBz6l/3EaWWn
+ 4JDI3wPNsR/ragy2ItG1UTC+Rtv6JYj0tuDr8b8gPD6ar8ittogMU4AQKNJg+7glG3jw0136L
+ T4qfd6SbSLwXIqrvHOwN/oDIw4D/oeRtzm7kwBijlkZvL5zwMbs72XORqhppkobflEEhO04Hr
+ vQGxi70lPdKaId9zaigP4qEs7OwZC/IKWnvO9m/xMtKbWYggchPgOT4eMIUd0RcotEX4SrD69
+ 850/itSQQWfUKxtSNfT5myRoKhXHfVOS6aKt8rEN4HVIzowgtkmKxGUWfzBz6wHOpg0Aj5jCP
+ vCY4Hacte72Ky+6hx8e+AThf9tcvDl1vMfOQ5UCvCWDP4gFS8O3LRF2JOAsBZdM+EEexZifRy
+ H15xrACsmJNy8hT+p2UcJlGZXNipiB/snezsee13Zm5iQk0i499KLslCERwwFU27JW6K01qgd
+ 7eu/OwyCV+9ROm+5i68/xCU0oGxBkecQ1ffCBaAjoUA6qCAGO6VMZoj0HIlCPTuDpp4nKVUak
+ li1xYruWJRQBCWW4bmAnyYiH+2flX1QFn7LOsZQQrfIWNu0SuQU8XMkhn2Yq2TjOCMqXcGHA0
+ NzVWJbyZWj+k+3j/DC1fbh1qfZuQmDAewnXEWqwWtbUclo9zu27GCK6cJorvDo2STan8+QmSZ
+ 2NmkxaRGZ58a3AkmP7zL121gqHbxX8T52PcRR12/3UHWq8+GNEIGDTk/uOrZwz0OPqQDiW1bC
+ Zw/dQ1DRa1LBCjz99vnvNobu8v6mlHlWrst2Sk7A8DB4+68FhqKiEqVlpxauGEg+WgUlm32EI
+ MLadV0YgC+x/dh1hZXyf/Eb2iBrFIn6KrtPzox53u8BzWUjj+wyfGBQ6b0jGZmDQee/tNtnbE
+ 9akalUJr2SG7d7EOlwoBmMRQF0NXJYGhJwNpva1yS8jXjEupMgPxIt2zypOZiQ501HUxYNKMC
+ +S9jr6ZNEQillpmcO6OlBSpJIvk=
 
-This series contains a wild collection of improvements for the
-qca_spi driver. This is a follow-up series to the recent bugfixes [1].
+The qca_spi driver create/stop the SPI kernel thread in case
+of netdev_open/close. This isn't optimal because there is no
+need for such an expensive operation.
 
-Patch 1 & 2 in this series is the initially intended rework of
-netdev_open/close. Patch 3 & 9 are minor functional improvements and
-the rest is clean-up.
+So improve this by moving create/stop of the SPI kernel into
+the init/uninit ops. The open/close ops could just
+'park/unpark' the SPI kernel thread.
 
-Changes in V3:
-- rebase on net-next-20240124
-- improve commit message in Patch 8
-- add Reviewed-by's from Jacob Keller
-- add Patch 13 for mailmap as suggested by Jacob
-- add Patch 14 for MAINTAINERS entry
+Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
+=2D--
+ drivers/net/ethernet/qualcomm/qca_spi.c | 33 ++++++++++++++-----------
+ 1 file changed, 18 insertions(+), 15 deletions(-)
 
-Changes in V2:
-- rebase on net-next-20231218
-- improve cover letter
+diff --git a/drivers/net/ethernet/qualcomm/qca_spi.c b/drivers/net/etherne=
+t/qualcomm/qca_spi.c
+index 5f3c11fb3fa2..fc272ca7bdca 100644
+=2D-- a/drivers/net/ethernet/qualcomm/qca_spi.c
++++ b/drivers/net/ethernet/qualcomm/qca_spi.c
+@@ -697,25 +697,17 @@ qcaspi_netdev_open(struct net_device *dev)
+ 	qca->sync =3D QCASPI_SYNC_UNKNOWN;
+ 	qcafrm_fsm_init_spi(&qca->frm_handle);
 
-Stefan Wahren (14):
-  qca_spi: Improve SPI thread creation
-  qca_spi: Improve SPI IRQ handling
-  qca_spi: Avoid skb_copy_expand in TX path
-  qca_7k_common: Drop unnecessary function description
-  qca_7k_common: Drop unused len from qcafrm_handle
-  qca_spi: Add QCASPI prefix to ring defines
-  qca_spi: Introduce QCASPI_RX_MAX_FRAMES
-  qca_spi: Improve calculation of RX buffer size
-  qca_spi: Log expected signature in error case
-  qca_spi: Adjust log of SPI_REG_RDBUF_BYTE_AVA
-  qca_7k: Replace BSD boilerplate with SPDX
-  qca_7k: Replace old mail address
-  mailmap: add entry for Stefan Wahren
-  MAINTAINERS: add entry for qca7k driver(s)
+-	qca->spi_thread =3D kthread_run((void *)qcaspi_spi_thread,
+-				      qca, "%s", dev->name);
+-
+-	if (IS_ERR(qca->spi_thread)) {
+-		netdev_err(dev, "%s: unable to start kernel thread.\n",
+-			   QCASPI_DRV_NAME);
+-		return PTR_ERR(qca->spi_thread);
+-	}
+-
+ 	ret =3D request_irq(qca->spi_dev->irq, qcaspi_intr_handler, 0,
+ 			  dev->name, qca);
+ 	if (ret) {
+ 		netdev_err(dev, "%s: unable to get IRQ %d (irqval=3D%d).\n",
+ 			   QCASPI_DRV_NAME, qca->spi_dev->irq, ret);
+-		kthread_stop(qca->spi_thread);
+ 		return ret;
+ 	}
 
- .mailmap                                      |  1 +
- MAINTAINERS                                   |  7 ++
- drivers/net/ethernet/qualcomm/qca_7k.c        | 17 +---
- drivers/net/ethernet/qualcomm/qca_7k.h        | 16 +---
- drivers/net/ethernet/qualcomm/qca_7k_common.c | 17 +---
- drivers/net/ethernet/qualcomm/qca_7k_common.h | 29 +------
- drivers/net/ethernet/qualcomm/qca_debug.c     | 21 +----
- drivers/net/ethernet/qualcomm/qca_debug.h     | 15 +---
- drivers/net/ethernet/qualcomm/qca_spi.c       | 86 +++++++++----------
- drivers/net/ethernet/qualcomm/qca_spi.h       | 22 ++---
- drivers/net/ethernet/qualcomm/qca_uart.c      | 17 +---
- 11 files changed, 65 insertions(+), 183 deletions(-)
+ 	/* SPI thread takes care of TX queue */
++	kthread_unpark(qca->spi_thread);
++	wake_up_process(qca->spi_thread);
 
+ 	return 0;
+ }
+@@ -725,15 +717,11 @@ qcaspi_netdev_close(struct net_device *dev)
+ {
+ 	struct qcaspi *qca =3D netdev_priv(dev);
+
+-	netif_stop_queue(dev);
++	kthread_park(qca->spi_thread);
+
+ 	qcaspi_write_register(qca, SPI_REG_INTR_ENABLE, 0, wr_verify);
+ 	free_irq(qca->spi_dev->irq, qca);
+
+-	kthread_stop(qca->spi_thread);
+-	qca->spi_thread =3D NULL;
+-	qcaspi_flush_tx_ring(qca);
+-
+ 	return 0;
+ }
+
+@@ -825,6 +813,7 @@ static int
+ qcaspi_netdev_init(struct net_device *dev)
+ {
+ 	struct qcaspi *qca =3D netdev_priv(dev);
++	struct task_struct *thread;
+
+ 	dev->mtu =3D QCAFRM_MAX_MTU;
+ 	dev->type =3D ARPHRD_ETHER;
+@@ -848,6 +837,15 @@ qcaspi_netdev_init(struct net_device *dev)
+ 		return -ENOBUFS;
+ 	}
+
++	thread =3D kthread_create(qcaspi_spi_thread, qca, "%s", dev->name);
++	if (IS_ERR(thread)) {
++		netdev_err(dev, "%s: unable to start kernel thread.\n",
++			   QCASPI_DRV_NAME);
++		return PTR_ERR(thread);
++	}
++
++	qca->spi_thread =3D thread;
++
+ 	return 0;
+ }
+
+@@ -856,6 +854,11 @@ qcaspi_netdev_uninit(struct net_device *dev)
+ {
+ 	struct qcaspi *qca =3D netdev_priv(dev);
+
++	if (qca->spi_thread) {
++		kthread_stop(qca->spi_thread);
++		qca->spi_thread =3D NULL;
++	}
++
+ 	kfree(qca->rx_buffer);
+ 	qca->buffer_size =3D 0;
+ 	dev_kfree_skb(qca->rx_skb);
 =2D-
 2.34.1
 
