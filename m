@@ -1,35 +1,35 @@
-Return-Path: <linux-kernel+bounces-37276-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C87E83ADA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:45:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CD9183ADAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:46:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F1DA1F28F21
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:45:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F20DF1F2966B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:46:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA2567C0AE;
-	Wed, 24 Jan 2024 15:44:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3B157C0B3;
+	Wed, 24 Jan 2024 15:46:19 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3997B43154;
-	Wed, 24 Jan 2024 15:44:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB2797A73A;
+	Wed, 24 Jan 2024 15:46:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706111089; cv=none; b=KiW5zOHO3vUOAIJlHw7oMhUlTrFJZNYZRoCgwTrExfGofCJwJyT38vkCOeWENVgBpcFFJ5NOfnX62PVkxt3st374xyaHbHWfjBLvifrFRr7IVps998JQtbL0tfh8eoN4YQ5vhwyBf9DrLZDwHeYlMwLeOmnheLF0Ikcnd8z+ut0=
+	t=1706111178; cv=none; b=DwR1+uJw1UIuhzNU34WIcje04mu5b7v0X8ukhzMMyzNQXJlstxwpEhRNEtAg8kGJKtSizTAdThcvLcmJ9vKNM7XxatD8r2VmpjpMAu7x8qsvZkXw/hOdIIqwn6w0Z4WwUkYbp69/mvkjgHN3oKFzDTzrjJKCtBnGCl33mS17So8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706111089; c=relaxed/simple;
-	bh=xXU+SmS5rXnzSe8RPZ7/n8+45OblHnQVcz7krecSA54=;
+	s=arc-20240116; t=1706111178; c=relaxed/simple;
+	bh=vJesdi7ca74BPdLuqPw2Sjr91+X8YILlJiDBJaMnBa4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QVz/J7VIf77G96JsiTdUzCTLaqF0BnVClDYUJKEVe2tVLxla4ElOC6m26GUCY7pahQAnK/YeGdwXBVuvK3D2k20b12rolwD98KtbMk4yduSg51tFphUZOd3QLfRMDP/8oou9803wtKQqOV2/X4QYf3Gp5KYfzinKroJB5Kmpblc=
+	 In-Reply-To:Content-Type; b=lCdWVtgjm5b04OHEFrbSpCkzl0zCZTqH6HufDl0fdvvdkwXlAHzy+EJfsBcMAHov+/UAkfd3+joEzWA+sKd+D+lqKKzyZVKjcIrxeKvExlLTr34p0skWP25+nFckFJE6BbhklU4XVmBPWObMZLNxIiSbkz5a3e5U8k2mzDugv2k=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94EFFC433C7;
-	Wed, 24 Jan 2024 15:44:47 +0000 (UTC)
-Message-ID: <7f40af24-79a8-466c-8906-7104988124fb@xs4all.nl>
-Date: Wed, 24 Jan 2024 16:44:45 +0100
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B5FEC433C7;
+	Wed, 24 Jan 2024 15:46:17 +0000 (UTC)
+Message-ID: <3f2d211c-2f7b-43be-89c3-a5afcb211a06@xs4all.nl>
+Date: Wed, 24 Jan 2024 16:46:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -37,16 +37,15 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v17 8/8] media: verisilicon: Support deleting buffers on
- capture queue
+Subject: Re: [PATCH v17 6/8] media: v4l2: Add DELETE_BUFS ioctl
 Content-Language: en-US, nl
 To: Benjamin Gaignard <benjamin.gaignard@collabora.com>, mchehab@kernel.org
 Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
  kernel@collabora.com
 References: <20240119094944.26763-1-benjamin.gaignard@collabora.com>
- <20240119094944.26763-9-benjamin.gaignard@collabora.com>
- <56c1410e-7a4c-4913-823d-83b8bc0ac002@xs4all.nl>
- <1cd7c504-c384-4c9c-bedd-79cd8aed8484@collabora.com>
+ <20240119094944.26763-7-benjamin.gaignard@collabora.com>
+ <8a19487d-e903-4961-b56b-42079c9362b3@xs4all.nl>
+ <81d8f73a-9a9c-445d-a6f5-e1358bf945a6@collabora.com>
 From: Hans Verkuil <hverkuil@xs4all.nl>
 Autocrypt: addr=hverkuil@xs4all.nl; keydata=
  xsFNBFQ84W0BEAC7EF1iL4s3tY8cRTVkJT/297h0Hz0ypA+ByVM4CdU9sN6ua/YoFlr9k0K4
@@ -91,84 +90,269 @@ Autocrypt: addr=hverkuil@xs4all.nl; keydata=
  gYmkrmv0duG1FStpY+IIQn1TOkuXrciTVfZY1cZD0aVxwlxXBnUNZZNslldvXFtndxR0SFat
  sflovhDxKyhFwXOP0Rv8H378/+14TaykknRBIKEc0+lcr+EMOSUR5eg4aURb8Gc3Uc7fgQ6q
  UssTXzHPyj1hAyDpfu8DzAwlh4kKFTodxSsKAjI45SLjadSc94/5Gy8645Y1KgBzBPTH7Q==
-In-Reply-To: <1cd7c504-c384-4c9c-bedd-79cd8aed8484@collabora.com>
+In-Reply-To: <81d8f73a-9a9c-445d-a6f5-e1358bf945a6@collabora.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 On 24/01/2024 16:35, Benjamin Gaignard wrote:
 > 
-> Le 24/01/2024 à 13:52, Hans Verkuil a écrit :
+> Le 24/01/2024 à 13:33, Hans Verkuil a écrit :
 >> On 19/01/2024 10:49, Benjamin Gaignard wrote:
->>> Allow to delete buffers on capture queue because it the one which
->>> own the decoded buffers. After a dynamic resolution change lot of
->>> them could remain allocated but won't be used anymore so deleting
->>> them save memory.
->>> Do not add this feature on output queue because the buffers are
->>> smaller, fewer and always recycled even after a dynamic resolution
->>> change.
+>>> VIDIOC_DELETE_BUFS ioctl allows to delete buffers from a queue.
+>>> The number of buffers to delete in given by count field of
+>>> struct v4l2_delete_buffers and the range start at the index
+>>> specified in the same structure.
 >>>
 >>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 >>> ---
->>>   drivers/media/platform/verisilicon/hantro_drv.c  | 1 +
->>>   drivers/media/platform/verisilicon/hantro_v4l2.c | 1 +
->>>   2 files changed, 2 insertions(+)
+>>> version 17:
+>>> - rework DELETE_BUFS documentation
 >>>
->>> diff --git a/drivers/media/platform/verisilicon/hantro_drv.c b/drivers/media/platform/verisilicon/hantro_drv.c
->>> index db3df6cc4513..f6b0a676a740 100644
->>> --- a/drivers/media/platform/verisilicon/hantro_drv.c
->>> +++ b/drivers/media/platform/verisilicon/hantro_drv.c
->>> @@ -248,6 +248,7 @@ queue_init(void *priv, struct vb2_queue *src_vq, struct vb2_queue *dst_vq)
->>>       dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
->>>       dst_vq->lock = &ctx->dev->vpu_mutex;
->>>       dst_vq->dev = ctx->dev->v4l2_dev.dev;
->>> +    src_vq->supports_delete_bufs = true;
->> As I mentioned, I remain unconvinced by this. It is just making the API inconsistent
->> since if you support delete_bufs, then why support it for one queue only and not both?
+>>>   .../userspace-api/media/v4l/user-func.rst     |  1 +
+>>>   .../media/v4l/vidioc-delete-bufs.rst          | 80 +++++++++++++++++++
+>>>   .../media/v4l/vidioc-reqbufs.rst              |  1 +
+>>>   .../media/common/videobuf2/videobuf2-core.c   | 42 ++++++++++
+>>>   .../media/common/videobuf2/videobuf2-v4l2.c   | 20 +++++
+>>>   drivers/media/v4l2-core/v4l2-dev.c            |  1 +
+>>>   drivers/media/v4l2-core/v4l2-ioctl.c          | 20 +++++
+>>>   include/media/v4l2-ioctl.h                    |  4 +
+>>>   include/media/videobuf2-core.h                | 12 +++
+>>>   include/media/videobuf2-v4l2.h                | 13 +++
+>>>   include/uapi/linux/videodev2.h                | 17 ++++
+>>>   11 files changed, 211 insertions(+)
+>>>   create mode 100644 Documentation/userspace-api/media/v4l/vidioc-delete-bufs.rst
+>>>
+>>> diff --git a/Documentation/userspace-api/media/v4l/user-func.rst b/Documentation/userspace-api/media/v4l/user-func.rst
+>>> index 15ff0bf7bbe6..3fd567695477 100644
+>>> --- a/Documentation/userspace-api/media/v4l/user-func.rst
+>>> +++ b/Documentation/userspace-api/media/v4l/user-func.rst
+>>> @@ -17,6 +17,7 @@ Function Reference
+>>>       vidioc-dbg-g-chip-info
+>>>       vidioc-dbg-g-register
+>>>       vidioc-decoder-cmd
+>>> +    vidioc-delete-bufs
+>>>       vidioc-dqevent
+>>>       vidioc-dv-timings-cap
+>>>       vidioc-encoder-cmd
+>>> diff --git a/Documentation/userspace-api/media/v4l/vidioc-delete-bufs.rst b/Documentation/userspace-api/media/v4l/vidioc-delete-bufs.rst
+>>> new file mode 100644
+>>> index 000000000000..d409063ceb3f
+>>> --- /dev/null
+>>> +++ b/Documentation/userspace-api/media/v4l/vidioc-delete-bufs.rst
+>>> @@ -0,0 +1,80 @@
+>>> +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
+>>> +.. c:namespace:: V4L
+>>> +
+>>> +.. _VIDIOC_DELETE_BUFS:
+>>> +
+>>> +************************
+>>> +ioctl VIDIOC_DELETE_BUFS
+>>> +************************
+>>> +
+>>> +Name
+>>> +====
+>>> +
+>>> +VIDIOC_DELETE_BUFS - Deletes buffers from a queue
+>>> +
+>>> +Synopsis
+>>> +========
+>>> +
+>>> +.. c:macro:: VIDIOC_DELETE_BUFs
+>>> +
+>>> +``int ioctl(int fd, VIDIOC_DELETE_BUFs, struct v4l2_delete_buffers *argp)``
+>>> +
+>>> +Arguments
+>>> +=========
+>>> +
+>>> +``fd``
+>>> +    File descriptor returned by :c:func:`open()`.
+>>> +
+>>> +``argp``
+>>> +    Pointer to struct :c:type:`v4l2_delete_buffers`.
+>>> +
+>>> +Description
+>>> +===========
+>>> +
+>>> +Applications can optionally call the :ref:`VIDIOC_DELETE_BUFS` ioctl to
+>>> +delete buffers from a queue.
+>>> +This ioctl is available if the ``V4L2_BUF_CAP_SUPPORTS_DELETE_BUFS`` capability
+>>> +is set on the queue when :c:func:`VIDIOC_REQBUFS` or :c:func:`VIDIOC_CREATE_BUFS`
+>>> +are invoked.
+>>> +
+>>> +.. c:type:: v4l2_delete_buffers
+>>> +
+>>> +.. tabularcolumns:: |p{4.4cm}|p{4.4cm}|p{8.5cm}|
+>>> +
+>>> +.. flat-table:: struct v4l2_delete_buffers
+>>> +    :header-rows:  0
+>>> +    :stub-columns: 0
+>>> +    :widths:       1 1 2
+>>> +
+>>> +    * - __u32
+>>> +      - ``index``
+>>> +      - The starting buffer index to delete.
+>>> +    * - __u32
+>>> +      - ``count``
+>>> +      - The number of buffers to be deleted with indices 'index' until 'index + count - 1'.
+>>> +        All buffers in this range must be valid and in DEQUEUED state.
+>>> +        If count is set to 0 :ref:`VIDIOC_DELETE_BUFS` will do nothing and return 0.
+>>> +    * - __u32
+>>> +      - ``type``
+>>> +      - Type of the stream or buffers, this is the same as the struct
+>>> +    :c:type:`v4l2_format` ``type`` field. See
+>>> +    :c:type:`v4l2_buf_type` for valid values.
+>>> +    * - __u32
+>>> +      - ``reserved``\ [13]
+>>> +      - A place holder for future extensions. Drivers and applications
+>>> +    must set the array to zero.
+>>> +
+>>> +Return Value
+>>> +============
+>>> +
+>>> +On success 0 is returned, on error -1 and the ``errno`` variable is set
+>>> +appropriately. The generic error codes are described at the
+>>> +:ref:`Generic Error Codes <gen-errors>` chapter.
+>>> +
+>>> +EBUSY
+>>> +    File I/O is in progress.
+>>> +    Any buffer in range ``index`` to ``index + count - 1`` is not in
+>>> +    DEQUEUED state.
+>>> +
+>>> +EINVAL
+>>> +    Any buffer in range ``index`` to ``index + count - 1`` doesn't exist in the queue.
+>>> diff --git a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
+>>> index 0b3a41a45d05..14d4a49c2945 100644
+>>> --- a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
+>>> +++ b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
+>>> @@ -121,6 +121,7 @@ aborting or finishing any DMA in progress, an implicit
+>>>   .. _V4L2-BUF-CAP-SUPPORTS-M2M-HOLD-CAPTURE-BUF:
+>>>   .. _V4L2-BUF-CAP-SUPPORTS-MMAP-CACHE-HINTS:
+>>>   .. _V4L2-BUF-CAP-SUPPORTS-MAX-NUM-BUFFERS:
+>>> +.. _V4L2-BUF-CAP-SUPPORTS-DELETE-BUFS:
+>>>     .. raw:: latex
+>>>   diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+>>> index 010505ed92e8..99e631233a54 100644
+>>> --- a/drivers/media/common/videobuf2/videobuf2-core.c
+>>> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+>>> @@ -1688,6 +1688,48 @@ int vb2_core_prepare_buf(struct vb2_queue *q, struct vb2_buffer *vb, void *pb)
+>>>   }
+>>>   EXPORT_SYMBOL_GPL(vb2_core_prepare_buf);
+>>>   +int vb2_core_delete_bufs(struct vb2_queue *q, unsigned int start, unsigned int count)
+>>> +{
+>>> +    unsigned int i, ret = 0;
+>>> +    unsigned int q_num_bufs = vb2_get_num_buffers(q);
+>>> +
+>>> +    if (count == 0)
+>>> +        return 0;
+>>> +
+>>> +    if (count > q_num_bufs)
+>>> +        return -EINVAL;
+>>> +
+>>> +    if (start + count > q->max_num_buffers)
+>> Change this to:
+>>
+>>     if (start > q->max_num_buffers - count)
+>>
+>> This avoids the corner case where 'start + count' overflows the unsigned int.
+>>
+>>> +        return -EINVAL;
+>>> +
+>>> +    /* If streaming keep at least min_queued_buffers + 1 buffers */
+>>> +    if (q->streaming && (q_num_bufs - count < q->min_queued_buffers + 1))
+>>> +        return -EINVAL;
+>> I would drop this. This will be caught automatically by the next check
+>> since if a driver needs q->min_queued_buffers to start the DMA, then
+>> once the DMA stated there will always be that amount of buffers in a
+>> non-DEQUEUED state.
+>>
+>>> +
+>>> +    mutex_lock(&q->mmap_lock);
+>>> +
+>>> +    /* Check that all buffers in the range exist */
+>>> +    for (i = start; i < start + count; i++) {
+>>> +        struct vb2_buffer *vb = vb2_get_buffer(q, i);
+>>> +
+>>> +        if (!vb) {
+>>> +            ret = -EINVAL;
+>>> +            goto unlock;
+>>> +        }
+>>> +        if (vb->state != VB2_BUF_STATE_DEQUEUED) {
+>>> +            ret = -EBUSY;
+>>> +            goto unlock;
+>>> +        }
+>>> +    }
+>>> +    __vb2_queue_free(q, start, count);
+>>> +    dprintk(q, 2, "%u buffers deleted\n", count);
+>>> +
+>>> +unlock:
+>>> +    mutex_unlock(&q->mmap_lock);
+>>> +    return ret;
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(vb2_core_delete_bufs);
+>> There is one specific corner case here that needs attention: if ALL buffers
+>> are deleted (something that is possible if STREAMON was called, but no
+>> buffers are queued), then vb2_is_busy will suddenly return false.
+>>
+>> This can have all sorts of subtle consequences since it is now possible
+>> to, for example, change the format.
+>>
+>> There are two options here:
+>>
+>> 1) vb2_is_busy() shouldn't check if there are buffers allocated, instead it
+>>     should check if buffers were allocated at least once. So calling REQBUFS
+>>     or CREATE_BUFS for the first time will set a flag to 1, until you call
+>>     REQBUFS with count 0, or close the filehandle. Deleting all buffers with
+>>     DELETE_BUFS will not change that.
 > 
-> Because the both queues don't handle the same type of data.
-> For example for a stateless decoder, for me, it makes sense to allow delete decoded frames
-> if they won't be used anymore but that won't makes sense for bitstream buffers.
+> I will go for this option and add a patch at the beginning of the series.
+> 
+>>
+>> 2) We treat deleting all buffers with DELETE_BUFS the same as calling REQBUFS(0),
+>>     in which case the code above needs to change.
+>>
+>> I lean towards option 1. My reasoning is that REQBUFS does an implicit STREAMOFF,
+>> and DELETE_BUFS does not and I do not think DELETE_BUFS should allow vb2_is_busy()
+>> to become false. It would still be nice if it can delete all buffers, but we
+>> would have to check if there are no other places where the number of allocated
+>> buffers is checked, when perhaps it really should use vb2_is_busy() instead.
+>>
+>>> +
+>>>   /*
+>>>    * vb2_start_streaming() - Attempt to start streaming.
+>>>    * @q:        videobuf2 queue
+>>> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+>>> index 03e8080a68a8..626b5283dfdb 100644
+>>> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
+>>> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+>>> @@ -698,6 +698,8 @@ static void vb2_set_flags_and_caps(struct vb2_queue *q, u32 memory,
+>>>           *caps |= V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS;
+>>>       if (q->supports_requests)
+>>>           *caps |= V4L2_BUF_CAP_SUPPORTS_REQUESTS;
+>>> +    if (q->supports_delete_bufs)
+>>> +        *caps |= V4L2_BUF_CAP_SUPPORTS_DELETE_BUFS;
+>>>       if (max_num_bufs) {
+>>>           *max_num_bufs = q->max_num_buffers;
+>>>           *caps |= V4L2_BUF_CAP_SUPPORTS_MAX_NUM_BUFFERS;
+>>> @@ -743,6 +745,12 @@ int vb2_prepare_buf(struct vb2_queue *q, struct media_device *mdev,
+>>>   }
+>>>   EXPORT_SYMBOL_GPL(vb2_prepare_buf);
+>>>   +int vb2_delete_bufs(struct vb2_queue *q, struct v4l2_delete_buffers *d)
+>>> +{
+>>> +    return vb2_core_delete_bufs(q, d->index, d->count);
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(vb2_delete_bufs);
+>>> +
+>> I would not add this. Drivers that want to support this should implement
+>> vb2_ioctl_delete_bufs(). Eventually I want to get away from these non-vb2_ioctl_
+>> functions.
+> 
+> I need it for v4l2_m2m_ioctl_delete_bufs() implementation because the targeted
+> queue depends of the context.
 
-But is there any reason why you wouldn't support this feature? We support VIDIOC_CREATE_BUFS
-as well, even though most drivers do not need it, but it is cheap to add.
-
-Deleting buffers is a generic feature, and I don't see why you wouldn't just offer it
-for both queues.
+I would prefer that v4l2_m2m_ioctl_delete_bufs() calls vb2_core_delete_bufs()
+directly. vb2_delete_bufs is really just a wrapper around that anyway.
 
 Regards,
 
 	Hans
-
-> 
->>
->>>         return vb2_queue_init(dst_vq);
->>>   }
->>> diff --git a/drivers/media/platform/verisilicon/hantro_v4l2.c b/drivers/media/platform/verisilicon/hantro_v4l2.c
->>> index 941fa23c211a..34eab90e8a42 100644
->>> --- a/drivers/media/platform/verisilicon/hantro_v4l2.c
->>> +++ b/drivers/media/platform/verisilicon/hantro_v4l2.c
->>> @@ -756,6 +756,7 @@ const struct v4l2_ioctl_ops hantro_ioctl_ops = {
->>>       .vidioc_dqbuf = v4l2_m2m_ioctl_dqbuf,
->>>       .vidioc_prepare_buf = v4l2_m2m_ioctl_prepare_buf,
->>>       .vidioc_create_bufs = v4l2_m2m_ioctl_create_bufs,
->>> +    .vidioc_delete_bufs = v4l2_m2m_ioctl_delete_bufs,
->>>       .vidioc_expbuf = v4l2_m2m_ioctl_expbuf,
->>>         .vidioc_subscribe_event = v4l2_ctrl_subscribe_event,
->> In my view setting vidioc_delete_bufs should enable this feature, and if
->> for some strange reason only one queue support it, then make a wrapper
->> callback that returns an error when used with the wrong queue.
->>
->> Also note that patch 6/8 never checks for q->supports_delete_bufs in
->> vb2_core_delete_bufs(), which is wrong!
-> 
-> I will fix that in next version.
-> Regards,
-> Benjamin
-> 
->>
->> Regards,
->>
->>     Hans
->>
-
 
