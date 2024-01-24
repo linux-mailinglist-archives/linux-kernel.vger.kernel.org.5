@@ -1,184 +1,257 @@
-Return-Path: <linux-kernel+bounces-36782-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36781-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F4AF83A67C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:15:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A1C883A679
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:15:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B42A41F21FAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:15:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB6741F210D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:15:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D97E18659;
-	Wed, 24 Jan 2024 10:15:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=flawful.org header.i=@flawful.org header.b="XLYvistR";
-	dkim=pass (1024-bit key) header.d=flawful.org header.i=@flawful.org header.b="F4MMYTza"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01BDE18643;
+	Wed, 24 Jan 2024 10:15:25 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1A8B1862E;
-	Wed, 24 Jan 2024 10:15:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99A7818637
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:15:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706091348; cv=none; b=KSqOR47UN/drNpGko9zdipSU0S9aWPzxjuIXhxU+N6YQmeE6lLhvAftjCIlw7XkY3cBnp0qIZrrlKBhfNMI9WurYJ3ZlrV3yg8Cd1ShwScRneAYT2AFnyndHQi7HPWHYdMgkN4DHZ+c2RIhnpKDIDMcp99ocExz3UN0JecFgQcE=
+	t=1706091324; cv=none; b=q/K/sEBWayyjt0buiXFGTrBJWTJZhavHP+iFlM8VToBfqw6evWNd/+CT40jkIVxDIYGzRKLfbwNe0n/4wPaubW6EDo6MsYa44sHQd/iRxmvCfvCuxnU0BQabfKbD8bwafkeZVR9WKydi2DbKY+kRTEEBFZx4PXZA/qMueHhUdmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706091348; c=relaxed/simple;
-	bh=3KQWhQUwONwsinXPwABZKJVj6BEl9WSweJhnvwfsGh8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mTlnb8H0w5edhmP2xf4rMdu232PZ/RmJSzoLKNao4lmI+WWsUgfQ4L2L4mYevreN/TUMwgDiz7pSepnHCmb7pJIiPKPnWzkeLQl4wYc4TM2njxEd/IjvTnnFhLVRYmMijlAAY+/V3tgcZpLri8gsAf5/cjswQ3Zwm8z4tavaIp0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=flawful.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (1024-bit key) header.d=flawful.org header.i=@flawful.org header.b=XLYvistR; dkim=pass (1024-bit key) header.d=flawful.org header.i=@flawful.org header.b=F4MMYTza; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=flawful.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50f11e3ba3aso7691351e87.1;
-        Wed, 24 Jan 2024 02:15:45 -0800 (PST)
+	s=arc-20240116; t=1706091324; c=relaxed/simple;
+	bh=57WA9fNqerSLzHYhUxsx4lQGGww5BteLIaHRRtEVzI4=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=n+AECeEDL1XudIQYsJVmCLLzqlCnTRmDxBL7cIZMy6xiP0yHt7Wj3/UDwSUiuGKcAkIeu6Xm0H6ZEWw07jFuZGinsVyP7vxYJIxg/eQV+IzKADCH2M/VHaCBSw9Nkox2FgHyQGfDQEGRF7GwNVrV4QaTs00ju1M5PNd6gwrw/yM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7ba97338185so575037739f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 02:15:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706091343; x=1706696143;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:dkim-signature:dkim-signature
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GbXSTzcz0OzwsQ3PjuvIo0Y6PD8ojggK6PR8Fzfjhyk=;
-        b=jBSKWEH0nlnk8VDa5sykj0C5mH6sXcv6KQGCsPnzSyhBM/3yPFBViZRMlvJ52bz236
-         Os499g7ysODi9Tgw6POKJnf22g5vkQw6WHVwO7QiGKZubaAUDfvm58VtLtIOIjql7P7p
-         37OqYEaTNW5QjtnzUPxE+v1xj9/NJNu8WdPQoGncaNAv7W8UXOiQLb2lnQ35mMTeWUP4
-         dMLu+bLdnHApXsYwQOJUByr0K0UpHgxPCda8WoSLKVIeqLCz2+d0MjQAPy4px2OWVKaS
-         zKBxjzJFwnec/5yEc7q9RU9/08Chyve0yMctjethafFn1arTLmfYpzhd805i8ojWEH6h
-         STBA==
-X-Gm-Message-State: AOJu0Yx1vQEIA5+n9JxtEAy0BKEDboTc8J5+fopKTiXLbmUdLjE6l6g5
-	tQ0y1sN3yxqLiHuzk0AOenDxjs/rCGrcvDJ39AFwjkxVz1IhDHHqMfdZQGvo
-X-Google-Smtp-Source: AGHT+IGsJaXYmPUorVt7J4tg5m+HTLbXtsk6tye6awVYomNPZ+EnkCA/UbobJmIHY/EGIvDrsC334g==
-X-Received: by 2002:a05:6512:717:b0:50e:262d:4834 with SMTP id b23-20020a056512071700b0050e262d4834mr2935512lfs.135.1706091343340;
-        Wed, 24 Jan 2024 02:15:43 -0800 (PST)
-Received: from flawful.org (c-06f0e255.011-101-6d6c6d3.bbcust.telenor.se. [85.226.240.6])
-        by smtp.gmail.com with ESMTPSA id l13-20020a056512110d00b0050e9e1cb265sm2523848lfg.112.2024.01.24.02.15.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 02:15:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=flawful.org; s=mail;
-	t=1706091341; bh=3KQWhQUwONwsinXPwABZKJVj6BEl9WSweJhnvwfsGh8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XLYvistRAGw+5aG4kznXKYAp0gDE4/Rr5v0wAk2vO7ZjzJ5/HXtz3cd6B5NpJVdLh
-	 rK972LNvVTUke5DfcmhOBuRmG5VSw/xhwNSBzD+tyJx6z12prxin/lrayYirUWyZkJ
-	 E0jMPh6vjCo+wAB3chWDKGI8VwxYQufk0X6FumEo=
-Received: by flawful.org (Postfix, from userid 112)
-	id 2CE80375; Wed, 24 Jan 2024 11:15:40 +0100 (CET)
-X-Spam-Level: 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=flawful.org; s=mail;
-	t=1706091328; bh=3KQWhQUwONwsinXPwABZKJVj6BEl9WSweJhnvwfsGh8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=F4MMYTza4x1N5d1+CZ/0LlC6pXCXigKisI7Obtr1LcoagHLrIq+jBiBMD8r4YlRv1
-	 pW0yvZcq2cE+DKHsXDYa6ZvL1jHWVJX6L9wsTyTNEiwPzwulJq5idiGqS8Boy3Qa92
-	 OD4Ju6rd1TYVMrCJ6mPw3NZ9K4ANiQvsI+Pknj1E=
-Received: from x1-carbon (OpenWrt.lan [192.168.1.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by flawful.org (Postfix) with ESMTPSA id DA5CF32F;
-	Wed, 24 Jan 2024 11:15:12 +0100 (CET)
-Date: Wed, 24 Jan 2024 11:15:11 +0100
-From: Niklas Cassel <nks@flawful.org>
-To: Lennert Buytenhek <kernel@wantstofly.org>
-Cc: Niklas Cassel <cassel@kernel.org>, Damien Le Moal <dlemoal@kernel.org>,
-	linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: ASMedia ASM1062 (AHCI) hang after "ahci 0000:28:00.0: Using
- 64-bit DMA addresses"
-Message-ID: <ZbDjL0TDnUfzknZS@x1-carbon>
-References: <ZaZ2PIpEId-rl6jv@wantstofly.org>
- <ZaaQpiW3OOZTSyXw@x1-carbon>
- <ZahDNr97MSPNSHW_@wantstofly.org>
- <ZahaKaV1jlHQ0sUx@x1-carbon>
- <ZbAo_LqpbiGMfTtW@wantstofly.org>
+        d=1e100.net; s=20230601; t=1706091321; x=1706696121;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=z4M4vmM9pvCcaRrLe69ucq2F6ji5XFhw/m2nTXW150E=;
+        b=bR8RMXXNmVu/aF3oW9oMGeYTyufVkHjjCwbz0JCziJDFPsLOEnZ//7+An1+gkSxbt5
+         lLG9O3/edR7yJfTl8sTkaF9tY6lf968bbGMuoSAUXBKQ7rW0LrHhdMTAdS6skkyBmwmK
+         3+orhViNEUTrxiez6ml01199kvY6LeDLxxur6W8LT5t0I9LDPoyOpMIDak1WZfUQlroq
+         Dp987ZEA2TPL0hQPzHFbKRfHWlUQzW4DIuIzGsUCAHwlxv2WtH6MV1YTSf8UdsyrCPty
+         YV/Mx5E1tOKHFWzDePVmBeVlqJmspXhqLZtJIIsaCD3jbgap8rL5wbEmx1WOll6GJ9l6
+         wMkA==
+X-Gm-Message-State: AOJu0YzE0xmYT9m9lkzoD8w0CQezSR+2zZIBVa0U6IVkevzhPUh6inFF
+	btXoWpvqKjguOh17vUbcy09nQrgqONYrcmHP7i28NYn/2ebBiJ/qGPg67nt4y3aWptbCrKt37jt
+	WFxR+6hnE1ik1pJeYJrtvJumToLaoieF6QqOzUvduki7h0pF2JhEvp0A=
+X-Google-Smtp-Source: AGHT+IHiReyDw5aTlGo9JXuE1enyDoSoBk77Oc1Y9t6KuKuKmbSJada/HC/2hGX8yebxT+nQobFJjKXzobWaWrRn/Se3a+qNGkXS
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZbAo_LqpbiGMfTtW@wantstofly.org>
+X-Received: by 2002:a05:6638:22c8:b0:46e:eec9:9b32 with SMTP id
+ j8-20020a05663822c800b0046eeec99b32mr132757jat.4.1706091321751; Wed, 24 Jan
+ 2024 02:15:21 -0800 (PST)
+Date: Wed, 24 Jan 2024 02:15:21 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002fff4a060fae5751@google.com>
+Subject: [syzbot] [dri?] [virtualization?] upstream boot error: INFO: task
+ hung in virtio_gpu_queue_fenced_ctrl_buffer
+From: syzbot <syzbot+22e2c28c99235275f109@syzkaller.appspotmail.com>
+To: airlied@redhat.com, daniel@ffwll.ch, dri-devel@lists.freedesktop.org, 
+	gurchetansingh@chromium.org, kraxel@redhat.com, linux-kernel@vger.kernel.org, 
+	maarten.lankhorst@linux.intel.com, mripard@kernel.org, olvaffe@gmail.com, 
+	syzkaller-bugs@googlegroups.com, tzimmermann@suse.de, 
+	virtualization@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Jan 23, 2024 at 11:00:44PM +0200, Lennert Buytenhek wrote:
-> On Wed, Jan 17, 2024 at 11:52:25PM +0100, Niklas Cassel wrote:
+Hello,
 
-(snip)
+syzbot found the following issue on:
 
-> This all suggests to me that the ASM1061 drops the upper 21 bits of all
-> DMA addresses.  Going back to the original report, on the Asus Pro WS
-> WRX80E-SAGE SE WIFI, we also see DMA addresses that seem to have been
-> capped to 43 bits:
-> 
-> > [Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: Using 64-bit DMA addresses
-> > [Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00000 flags=0x0000]
-> > [Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00300 flags=0x0000]
-> > [Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00380 flags=0x0000]
-> 
-> Since in this test the X570 AHCI controller is inside the chipset and
-> the ASM1061 in a PCIe slot, this doesn't 100% prove that the ASM1061 is
-> at fault (e.g. the upstream IOMMUs for the X570 AHCI controller and the
-> ASM1061 could be behaving differently), and to 100% prove this theory I
-> would have to find a non-ASM1061 AHCI controller and put it in the same
-> PCIe slot as the ASM1061 is currently in, and try to make it DMA to
-> address 0xffffffff00000000, and verify that the I/O page faults on the
-> host report 0xffffffff00000000 and not 0x7fffff00000 -- but I think that
-> the current evidence is perhaps good enough?
+HEAD commit:    615d30064886 Merge tag 'trace-v6.8-rc1' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=167456f7e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e6c3b3d5f71246cb
+dashboard link: https://syzkaller.appspot.com/bug?extid=22e2c28c99235275f109
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
 
-It does indeed look like the same issue on the internal ASMedia ASM1061 on
-your Asus Pro WS WRX80E-SAGE SE WIFI and the stand alone ASMedia ASM1061
-PCI card connected to your other X570 based motherboard.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-615d3006.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/4bf0b27acaa4/vmlinux-615d3006.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/3133809ff35d/bzImage-615d3006.xz
 
-However, ASMedia ASM1061 seems to be quite common, so I'm surprised that
-no one has ever reported this problem before, so what has changed?
-Perhaps there is some recent kernel patch that introduced this?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+22e2c28c99235275f109@syzkaller.appspotmail.com
 
-The commit was introduced:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=4bf7fda4dce22214c70c49960b1b6438e6260b67
-was reverted:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=af3e9579ecfbe1796334bb25a2f0a6437983673a
-and was then introduced in a new form:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=791c2b17fb4023f21c3cbf5f268af01d9b8cb7cc
+INFO: task swapper/0:1 blocked for more than 143 seconds.
+      Not tainted 6.8.0-rc1-syzkaller-00029-g615d30064886 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:swapper/0       state:D stack:22288 pid:1     tgid:1     ppid:0      flags:0x00004000
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5400 [inline]
+ __schedule+0xf12/0x5c00 kernel/sched/core.c:6727
+ __schedule_loop kernel/sched/core.c:6802 [inline]
+ schedule+0xe9/0x270 kernel/sched/core.c:6817
+ virtio_gpu_queue_ctrl_sgs drivers/gpu/drm/virtio/virtgpu_vq.c:341 [inline]
+ virtio_gpu_queue_fenced_ctrl_buffer+0x497/0xff0 drivers/gpu/drm/virtio/virtgpu_vq.c:415
+ virtio_gpu_resource_flush drivers/gpu/drm/virtio/virtgpu_plane.c:162 [inline]
+ virtio_gpu_primary_plane_update+0x1059/0x1590 drivers/gpu/drm/virtio/virtgpu_plane.c:237
+ drm_atomic_helper_commit_planes+0x92f/0xfe0 drivers/gpu/drm/drm_atomic_helper.c:2800
+ drm_atomic_helper_commit_tail+0x69/0xf0 drivers/gpu/drm/drm_atomic_helper.c:1749
+ commit_tail+0x353/0x410 drivers/gpu/drm/drm_atomic_helper.c:1834
+ drm_atomic_helper_commit+0x2f9/0x380 drivers/gpu/drm/drm_atomic_helper.c:2072
+ drm_atomic_commit+0x20b/0x2d0 drivers/gpu/drm/drm_atomic.c:1514
+ drm_client_modeset_commit_atomic+0x6c2/0x810 drivers/gpu/drm/drm_client_modeset.c:1051
+ drm_client_modeset_commit_locked+0x14d/0x580 drivers/gpu/drm/drm_client_modeset.c:1154
+ pan_display_atomic drivers/gpu/drm/drm_fb_helper.c:1370 [inline]
+ drm_fb_helper_pan_display+0x2a5/0x990 drivers/gpu/drm/drm_fb_helper.c:1430
+ fb_pan_display+0x477/0x7c0 drivers/video/fbdev/core/fbmem.c:191
+ bit_update_start+0x49/0x1f0 drivers/video/fbdev/core/bitblit.c:390
+ fbcon_switch+0xbb3/0x12e0 drivers/video/fbdev/core/fbcon.c:2170
+ redraw_screen+0x2bd/0x750 drivers/tty/vt/vt.c:969
+ fbcon_prepare_logo+0x9f8/0xc80 drivers/video/fbdev/core/fbcon.c:616
+ con2fb_init_display drivers/video/fbdev/core/fbcon.c:803 [inline]
+ set_con2fb_map+0xcea/0x1050 drivers/video/fbdev/core/fbcon.c:867
+ do_fb_registered drivers/video/fbdev/core/fbcon.c:3007 [inline]
+ fbcon_fb_registered+0x21d/0x660 drivers/video/fbdev/core/fbcon.c:3023
+ do_register_framebuffer drivers/video/fbdev/core/fbmem.c:449 [inline]
+ register_framebuffer+0x4b2/0x860 drivers/video/fbdev/core/fbmem.c:515
+ __drm_fb_helper_initial_config_and_unlock+0xd7c/0x1650 drivers/gpu/drm/drm_fb_helper.c:1871
+ drm_fb_helper_initial_config drivers/gpu/drm/drm_fb_helper.c:1936 [inline]
+ drm_fb_helper_initial_config+0x44/0x60 drivers/gpu/drm/drm_fb_helper.c:1928
+ drm_fbdev_generic_client_hotplug+0x19e/0x270 drivers/gpu/drm/drm_fbdev_generic.c:279
+ drm_client_register+0x195/0x280 drivers/gpu/drm/drm_client.c:141
+ drm_fbdev_generic_setup+0x184/0x340 drivers/gpu/drm/drm_fbdev_generic.c:341
+ virtio_gpu_probe+0x1be/0x3c0 drivers/gpu/drm/virtio/virtgpu_drv.c:105
+ virtio_dev_probe+0x5e4/0x980 drivers/virtio/virtio.c:311
+ call_driver_probe drivers/base/dd.c:579 [inline]
+ really_probe+0x234/0xc90 drivers/base/dd.c:658
+ __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:800
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:830
+ __driver_attach+0x274/0x570 drivers/base/dd.c:1216
+ bus_for_each_dev+0x13c/0x1d0 drivers/base/bus.c:368
+ bus_add_driver+0x2e9/0x630 drivers/base/bus.c:673
+ driver_register+0x15c/0x4a0 drivers/base/driver.c:246
+ do_one_initcall+0x11c/0x650 init/main.c:1236
+ do_initcall_level init/main.c:1298 [inline]
+ do_initcalls init/main.c:1314 [inline]
+ do_basic_setup init/main.c:1333 [inline]
+ kernel_init_freeable+0x687/0xc10 init/main.c:1551
+ kernel_init+0x1c/0x2a0 init/main.c:1441
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+ </TASK>
+INFO: task kworker/0:0:8 blocked for more than 143 seconds.
+      Not tainted 6.8.0-rc1-syzkaller-00029-g615d30064886 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/0:0     state:D stack:28208 pid:8     tgid:8     ppid:2      flags:0x00004000
+Workqueue: events virtio_gpu_dequeue_ctrl_func
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5400 [inline]
+ __schedule+0xf12/0x5c00 kernel/sched/core.c:6727
+ __schedule_loop kernel/sched/core.c:6802 [inline]
+ schedule+0xe9/0x270 kernel/sched/core.c:6817
+ schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6874
+ __mutex_lock_common kernel/locking/mutex.c:684 [inline]
+ __mutex_lock+0x5b9/0x9d0 kernel/locking/mutex.c:752
+ drm_client_dev_hotplug drivers/gpu/drm/drm_client.c:217 [inline]
+ drm_client_dev_hotplug+0x169/0x3c0 drivers/gpu/drm/drm_client.c:204
+ virtio_gpu_cmd_get_display_info_cb+0x3e1/0x550 drivers/gpu/drm/virtio/virtgpu_vq.c:674
+ virtio_gpu_dequeue_ctrl_func+0x21b/0x9a0 drivers/gpu/drm/virtio/virtgpu_vq.c:235
+ process_one_work+0x886/0x15d0 kernel/workqueue.c:2633
+ process_scheduled_works kernel/workqueue.c:2706 [inline]
+ worker_thread+0x8b9/0x1290 kernel/workqueue.c:2787
+ kthread+0x2c6/0x3a0 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+ </TASK>
+INFO: task kworker/1:1:55 blocked for more than 143 seconds.
+      Not tainted 6.8.0-rc1-syzkaller-00029-g615d30064886 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/1:1     state:D stack:27648 pid:55    tgid:55    ppid:2      flags:0x00004000
+Workqueue: events drm_fb_helper_damage_work
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5400 [inline]
+ __schedule+0xf12/0x5c00 kernel/sched/core.c:6727
+ __schedule_loop kernel/sched/core.c:6802 [inline]
+ schedule+0xe9/0x270 kernel/sched/core.c:6817
+ schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6874
+ __mutex_lock_common kernel/locking/mutex.c:684 [inline]
+ __mutex_lock+0x5b9/0x9d0 kernel/locking/mutex.c:752
+ drm_fbdev_generic_damage_blit drivers/gpu/drm/drm_fbdev_generic.c:198 [inline]
+ drm_fbdev_generic_helper_fb_dirty+0x255/0xbb0 drivers/gpu/drm/drm_fbdev_generic.c:225
+ drm_fb_helper_fb_dirty drivers/gpu/drm/drm_fb_helper.c:390 [inline]
+ drm_fb_helper_damage_work+0x283/0x5e0 drivers/gpu/drm/drm_fb_helper.c:413
+ process_one_work+0x886/0x15d0 kernel/workqueue.c:2633
+ process_scheduled_works kernel/workqueue.c:2706 [inline]
+ worker_thread+0x8b9/0x1290 kernel/workqueue.c:2787
+ kthread+0x2c6/0x3a0 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+ </TASK>
 
-I suppose that these commits might be recent enough that we have not received
-any bug reports for ASMedia ASM1061 since then.
+Showing all locks held in the system:
+10 locks held by swapper/0/1:
+ #0: ffff88801bcf8170 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:990 [inline]
+ #0: ffff88801bcf8170 (&dev->mutex){....}-{3:3}, at: __device_driver_lock drivers/base/dd.c:1095 [inline]
+ #0: ffff88801bcf8170 (&dev->mutex){....}-{3:3}, at: __driver_attach+0x269/0x570 drivers/base/dd.c:1215
+ #1: ffff88801d7b42f8 (&dev->clientlist_mutex){+.+.}-{3:3}, at: drm_client_register+0x54/0x280 drivers/gpu/drm/drm_client.c:127
+ #2: ffffffff8dcbfe88 (registration_lock){+.+.}-{3:3}, at: register_framebuffer+0x7a/0x860 drivers/video/fbdev/core/fbmem.c:514
+ #3: ffffffff8d196720 (console_lock){+.+.}-{0:0}, at: fbcon_fb_registered+0x3c/0x660 drivers/video/fbdev/core/fbcon.c:3019
+ #4: ffff8880198f4280 (&helper->lock){+.+.}-{3:3}, at: drm_fb_helper_pan_display+0xd5/0x990 drivers/gpu/drm/drm_fb_helper.c:1423
+ #5: ffff88801d7b41b0 (&dev->master_mutex){+.+.}-{3:3}, at: drm_master_internal_acquire+0x21/0x70 drivers/gpu/drm/drm_auth.c:452
+ #6: ffff8880198f4098 (&client->modeset_mutex){+.+.}-{3:3}, at: drm_client_modeset_commit_locked+0x4c/0x580 drivers/gpu/drm/drm_client_modeset.c:1152
+ #7: ffffc90000047278 (crtc_ww_class_acquire){+.+.}-{0:0}, at: drm_client_modeset_commit_atomic+0xd0/0x810 drivers/gpu/drm/drm_client_modeset.c:990
+ #8: ffff88801d9cb0b0 (crtc_ww_class_mutex){+.+.}-{3:3}, at: modeset_lock+0x484/0x6c0 drivers/gpu/drm/drm_modeset_lock.c:314
+ #9: ffffffff8ddf96d0 (drm_unplug_srcu){.+.+}-{0:0}, at: srcu_lock_acquire include/linux/srcu.h:116 [inline]
+ #9: ffffffff8ddf96d0 (drm_unplug_srcu){.+.+}-{0:0}, at: srcu_read_lock include/linux/srcu.h:215 [inline]
+ #9: ffffffff8ddf96d0 (drm_unplug_srcu){.+.+}-{0:0}, at: drm_dev_enter+0x49/0x160 drivers/gpu/drm/drm_drv.c:449
+3 locks held by kworker/0:0/8:
+ #0: ffff888013088d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x789/0x15d0 kernel/workqueue.c:2608
+ #1: ffffc900000b7d80 ((work_completion)(&vgvq->dequeue_work)){+.+.}-{0:0}, at: process_one_work+0x7eb/0x15d0 kernel/workqueue.c:2609
+ #2: ffff88801d7b42f8 (&dev->clientlist_mutex){+.+.}-{3:3}, at: drm_client_dev_hotplug drivers/gpu/drm/drm_client.c:217 [inline]
+ #2: ffff88801d7b42f8 (&dev->clientlist_mutex){+.+.}-{3:3}, at: drm_client_dev_hotplug+0x169/0x3c0 drivers/gpu/drm/drm_client.c:204
+2 locks held by kworker/u16:0/11:
+ #0: ffff888013089938 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x789/0x15d0 kernel/workqueue.c:2608
+ #1: ffffc900000e7d80 ((work_completion)(&(&kfence_timer)->work)){+.+.}-{0:0}, at: process_one_work+0x7eb/0x15d0 kernel/workqueue.c:2609
+1 lock held by khungtaskd/39:
+ #0: ffffffff8d1a9120 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
+ #0: ffffffff8d1a9120 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
+ #0: ffffffff8d1a9120 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x75/0x340 kernel/locking/lockdep.c:6614
+3 locks held by kworker/1:1/55:
+ #0: ffff888013088d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x789/0x15d0 kernel/workqueue.c:2608
+ #1: ffffc90000a77d80 ((work_completion)(&helper->damage_work)){+.+.}-{0:0}, at: process_one_work+0x7eb/0x15d0 kernel/workqueue.c:2609
+ #2: ffff8880198f4280 (&helper->lock){+.+.}-{3:3}, at: drm_fbdev_generic_damage_blit drivers/gpu/drm/drm_fbdev_generic.c:198 [inline]
+ #2: ffff8880198f4280 (&helper->lock){+.+.}-{3:3}, at: drm_fbdev_generic_helper_fb_dirty+0x255/0xbb0 drivers/gpu/drm/drm_fbdev_generic.c:225
+
+=============================================
 
 
-If you can find another PCIe card (e.g. a AHCI controller or NVMe controller)
-that you can plug in to the same slot on the X570 motherboard,
-I agree that it would confirm your theory.
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-If you don't have any other PCIe card, do you possibly have another system,
-with an IOMMU and a free PCIe slot that you can plug your ASMedia ASM1061
-PCI card and perform the same test?
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-(Preferably something that is not AMD, to rule out a amd_iommu issue,
-since both Asus Pro WS WRX80E-SAGE SE WIFI and X570 use amd_iommu.)
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-If we see the same behavior that the device drops the upper 21-bits there
-when using the trick in your test patch, that would also confirm your theory.
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-> 
-> There are two ways to handle this -- either set the DMA mask for ASM106x
-> parts to 43 bits, or take the lazy route and just use AHCI_HFLAG_32BIT_ONLY
-> for these parts.  I feel that the former would be more appropriate, as
-> there seem to be plenty of bits beyond bit 31 that do work, but I will
-> defer to your judgement on this matter.  What do you think the right way
-> to handle this apparent hardware quirk is?
-
-I've seen something similar for NVMe, where some NVMe controllers from
-Amazon was violating the spec, and only supported 48-bit DMA addresses,
-even though NVMe spec requires you to support 64-bit DMA addresses, see:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=4bdf260362b3be529d170b04662638fd6dc52241
-
-It is possible that ASMedia ASM1061 has a similar problem (but for AHCI)
-and only supports 43-bit DMA addresses, even though it sets AHCI CAP.S64A,
-which says "Indicates whether the HBA can access 64-bit data structures.".
-
-I think the best thing is to do a similar quirk, where we set the dma_mask
-accordingly.
-
-
-Kind regards,
-Niklas
+If you want to undo deduplication, reply with:
+#syz undup
 
