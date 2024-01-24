@@ -1,228 +1,243 @@
-Return-Path: <linux-kernel+bounces-36638-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36639-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FC5B83A438
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:34:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E47983A43A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:35:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 019F71F2749D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:34:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A39171C21A50
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:35:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDF4F17740;
-	Wed, 24 Jan 2024 08:33:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D32B717580;
+	Wed, 24 Jan 2024 08:35:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MkQRGVg5"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="MYLNmChm"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2047.outbound.protection.outlook.com [40.107.93.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC5B01759F
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 08:33:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706085228; cv=none; b=CmRXwHAOcZKMJDa0nN26qI/mQ2yTEzRYj3hiTkHtHlcGPb39SWconXGex+VGa/J9qND+NY6gjLs8+i3aig0xb+VDEt8QBgPnCaztZa2ZBmRkW7kHAEeXakLOuXefFV4oMiUdXuTjtcoXxroc1Rg1ePUbU5agJKTsGNU3eKt9S1Y=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706085228; c=relaxed/simple;
-	bh=PX2GmyFRFn2nD4mNi7u/AP+PYTUtYKCoSLnLW+0R0YM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C0YU2QWkqjqXGp+y1L113y/f3TYNzA8kT/50E73RmDgP6l0SfejsPRzrp7/NyggSMU397T8UCi1Ug2nTMUVR9lgClTImB+x9RcXc+1u+cKmlDoGRpNF9yspoAMdqaWGKz2pB9+upSIqZwTpk2YmVWL1W9PjJVT7roWwP/HiMEzY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MkQRGVg5; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d74045c463so21495945ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 00:33:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706085225; x=1706690025; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=vPFRER/gkE3zm2pQ/KTOV3I0e5WTpUXpU3iwr5G1xwY=;
-        b=MkQRGVg5KQaz8kO59PpfA1JkXBGB+nRarrD0otaJNQwrXkUYP4UsublGyFlbOLJ0SV
-         8rvhey5drE9RT3lwh11Bssl7yNz2ebtbOYupPBxCxLn2xzoBa0UaynOIhp2T7VoV3NWw
-         4iMTbUJa9w/2CLlsFasCy45KYFExpTx8hjIlPlRafIYvcE2JpJmE5lnuHrlBMlGr8Esh
-         9pcsx+Z2BB807HPSR3hdCc0tH99AW8wqZ53mWe82ZnvQNte5vLYD5jih710m3PkAFbre
-         BDQsn89NfttpdwaL/wXG00azs+bepMZxEIYQvxR1iZQXuObOZ7Rcjqggtej3zzYMiBmT
-         dIyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706085225; x=1706690025;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vPFRER/gkE3zm2pQ/KTOV3I0e5WTpUXpU3iwr5G1xwY=;
-        b=Pzfvh2p0j4XZTRML7Pfba4mOVMJS21wvBSnN/IrZ9B2/GPE9CpRhqvX+krvP2MW7mh
-         RxcbOYPFPM4iqv5fPtPRrPKhEOlREvgnSC9RgEVFDic5KiJZthl0qt+IovC+qUxyldDQ
-         sFW1WB5/yDiVhkN8JbWVuQC/TWcwmGGjn0F+kJ+GXpRUZVreHvlKN0kXAhwPAwbSroF6
-         bbwuCphclLD5n1l+ne0yiR1lfdobRrxvdEu6YHWNRWWQYjlZQ31/wKDU3+j1YxrvzRoe
-         PAUz1afWRyQzEDv+p+pK15GI8KAWHs606ELaqaauAXRUFWi+MKHaoSaDFeZwgyaYU6o8
-         3bWA==
-X-Gm-Message-State: AOJu0Yx5rs9HHJKG1j9XqrrVIgwvmhTk+v/eh/b6VNYbBpE8XyXyhRYt
-	CdLiugZVYNcrQfIFalyM2hP0C7ZOnCWPLYN5435S2ePadXCd0dx65TZOBi5diw==
-X-Google-Smtp-Source: AGHT+IHAMGkA6E3jdrT6it59P0NjlIeY0P9GAB/kSyKZfIcGyYzIgZ45Z1bjWpdQtj9CnzDYvvwFFg==
-X-Received: by 2002:a17:902:da84:b0:1d6:f2c0:3c00 with SMTP id j4-20020a170902da8400b001d6f2c03c00mr436044plx.16.1706085225158;
-        Wed, 24 Jan 2024 00:33:45 -0800 (PST)
-Received: from thinkpad ([117.217.189.109])
-        by smtp.gmail.com with ESMTPSA id r19-20020a170903015300b001d741effb7dsm5373688plc.270.2024.01.24.00.33.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 00:33:44 -0800 (PST)
-Date: Wed, 24 Jan 2024 14:03:36 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Nitin Rawat <quic_nitirawa@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Vinod Koul <vkoul@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-	Can Guo <quic_cang@quicinc.com>,
-	Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
-Subject: Re: [PATCH V1 2/2] phy: qcom: Refactor phy_power_on and
- phy_calibrate callbacks
-Message-ID: <20240124083336.GB4906@thinkpad>
-References: <20240112153348.2778-1-quic_nitirawa@quicinc.com>
- <20240112153348.2778-3-quic_nitirawa@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F6FA1756B
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 08:35:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.47
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706085338; cv=fail; b=YpZRPwjMnr49K8uX99CBzgQeJFwrDT4pbctIIBXlfF4GXzdC0NEmQFWwhXOIVLqt+V+OQKf5FvLVp045YJZfLhBwhp44AEjFIIVJTPwmUWee3CuX6F+/ppSVQU6cYUOr6GoYzZ5dUjAOZMs8r8lilbj707TFFni9zth/1Cmcr1U=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706085338; c=relaxed/simple;
+	bh=iJdBIg8EF69rP25GbiYs89uLmQ5ernLjLK1jMIMITIg=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=VmzLUM8+yc52ym3MZGfR3bGKxRZK9E8QNyxpm0iWfO+Koc5gSz4EAU1owU3djjRd3ptJkE+yfDxboVEM7Lz8hcNnG39GzY7w5/HPg5DwJPzL3tJh/EFvCnnfZsYuYnnVCNeMNJAClB206udfQGtVvIOI4wpLFDGzk+8tY5pvGCo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=MYLNmChm; arc=fail smtp.client-ip=40.107.93.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iM9m1Bp8M+vEJpoOxyNLMM/U9E+6UXiYkJCBLypX2JJIJ/dsKK2oBurinm4twEoYx9+ESwvMidUO+RoyzUiIimGVKmPhTXw49ekEAzvBaW+ROHT/4X37yiRSJ9o+J68G7VO7TYQDYk7vIB5LmnjwqO4CDRYobQ1Tq4WsaK3yd83ICLf6Dip6BdSxGpTKb7S6N2Hd8IZjCx4XAG5CH53MFjlL0JY85F1dgBiFo2fCtkrzsdkEOqQsjhzsXb5/6XIOv3HZmVuOgdiJhauWKozD2wf99OJWBOA9nEp9Ed/lFCSD104zUgZ/HFjxeCWoIs0gOjEzrmgOMBOTFNNhCNgT3Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=D6a9tSIrfaacXC5gOThA6Ewix1anS5CVMfreRyf1Yt4=;
+ b=C7I0Nf0pndSMiQj5dE6+wOUNow2+XFZovPVY2i97UO2AhCA+R1GIKNySaOtv+2PbrwVheNCValohxaVjdk+51DtkiXBBfUe0zM+uqI4PGhcKjOnFgDAWeSqBISM3y2papTCOqHmA6TPR5CGsXnTPNPYxq9GX2gQK6xNzCtnUV5Jt2xmT+nOw2ekquWnkKgMUqGb+EuIGjztFfO/MBQ1rNjbqpQjlcn0AvKC/JNRQk5548sr64L+i6JT6sdqJCZdreWgAK7WC2HGVzbfUNA7SVTXDqAXH3GXMsxMkB3aqlfUvPuasjyoEduXg20yOOeHsJm3Qk/vDN8uyydkG6xlV1w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=D6a9tSIrfaacXC5gOThA6Ewix1anS5CVMfreRyf1Yt4=;
+ b=MYLNmChmFnN1uFhKy2GFm5Q4hYUo5x3rPPKi5eVtM/WidrwNZ3gdRIeZQtenBs+2MXjOBonFROyCKrJ1gDSvNq7x9SmxRb+TQEBbRGfDLFCLTTwz12NlzSt5gJUjlXCLYuWrPy3Au5HP1qBJe6z56yUNOGRHWk/Xc/YtlF4rog0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW2PR12MB2379.namprd12.prod.outlook.com (2603:10b6:907:9::24)
+ by LV8PR12MB9263.namprd12.prod.outlook.com (2603:10b6:408:1e6::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.37; Wed, 24 Jan
+ 2024 08:35:34 +0000
+Received: from MW2PR12MB2379.namprd12.prod.outlook.com
+ ([fe80::4803:9b3b:a146:5b97]) by MW2PR12MB2379.namprd12.prod.outlook.com
+ ([fe80::4803:9b3b:a146:5b97%7]) with mapi id 15.20.7202.035; Wed, 24 Jan 2024
+ 08:35:33 +0000
+Message-ID: <f7db8b6f-d97d-630d-28b3-97062fa2c7cc@amd.com>
+Date: Wed, 24 Jan 2024 14:05:23 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH] sched/fair: Skip newidle_balance() when an idle CPU is
+ woken up to process an IPI
+Content-Language: en-US
+To: David Vernet <void@manifault.com>
+Cc: Tim Chen <tim.c.chen@linux.intel.com>, linux-kernel@vger.kernel.org,
+ mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+ vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
+ bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+ vschneid@redhat.com, gautham.shenoy@amd.com
+References: <20240119084548.2788-1-kprateek.nayak@amd.com>
+ <b4f5ac150685456cf45a342e3bb1f28cdd557a53.camel@linux.intel.com>
+ <21c8694c-26e4-3bc1-edd8-2267b0164a09@amd.com>
+ <20240123211756.GA221793@maniforge>
+From: K Prateek Nayak <kprateek.nayak@amd.com>
+In-Reply-To: <20240123211756.GA221793@maniforge>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BM1P287CA0002.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:b00:40::13) To MW2PR12MB2379.namprd12.prod.outlook.com
+ (2603:10b6:907:9::24)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240112153348.2778-3-quic_nitirawa@quicinc.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW2PR12MB2379:EE_|LV8PR12MB9263:EE_
+X-MS-Office365-Filtering-Correlation-Id: 80c3dcc8-5aae-488a-4cf1-08dc1cb76e28
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	4Hu6tQHAmnYHUh4n0Qoyo3pIaV7em+z5EcQ42Q27L6pPcEi8RfBOJoJr0HPaE+o6csG+Nu5GgSHxi4pORKK2OuEsZ/bloW/23ETgwaApLhx/DWvDrTkpC+1RI199AdMfM58DyepyhZRlSlwBEa0cuZDLIxY2I8hoJYwt9vqGF5geEVUvvzd8WUx/+l2Faxc10Qn61hpMpI6FeftYCY5X4dXqrxvsD7lTa+U7DacwZa4ikckWf09oy3W54doBWiXlLH23pdCcmMdNt98oK2jabnaonCUXbRP/ZAlynEWaAD/qf8adnCra1GEvN/Qi0MbyqAW5vuBz/qsqm9zepi2WhceYgkQt2bAMXxlJwYlh3O9zUOlJlz1rRpzI5WSrLTbcGIGSfBrqjnjmfM93FE/3Wy5vFW3qcBDNfqaN/u1417Qre04krc9FKc2FCTe2LFm4M9behC59f89V2l7RSJlg3PFi0Jt9djgTDpWE7jItKT/mTE/M5gZ31T41iTHrLlNmFTbj2t53PdDVzuEA1WbZpaz0ECrSdHlNg2kVhccsadw2Xg3FJKvx7JeQ3QE3y8q5Z/RZwGmll9L8iM3Iqca1Mj/3USYltXNt+7A6Eg0lxRq/d5zDsCQ+zEhbW/psgXyYLEYHQprAb8GsAehxLEaObHmI2hQacV1cQAEa/xkRiWwOj+dx1R9C4U81oz3o8jMi
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR12MB2379.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(136003)(346002)(39860400002)(396003)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(83380400001)(6512007)(2616005)(41300700001)(26005)(38100700002)(5660300002)(478600001)(4326008)(6666004)(8936002)(8676002)(7416002)(66946007)(6486002)(6506007)(66556008)(66476007)(53546011)(2906002)(316002)(6916009)(966005)(31696002)(86362001)(36756003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?YWVaZDBsanVXRklJK2h3UjE2R0pmRGxqRncrazFRdlVNN2hDUmlPQWltTUZv?=
+ =?utf-8?B?SDJCSW5WUEpmMUZGNkpUdXRoZEhXRlN1NWVLTHdrR2lwR2JsUlpsaHpvNzdB?=
+ =?utf-8?B?amU2Y0F6aU0xNGs5U2dRSHRiRlJ4cmIwSDJzaDJLR3FWNFpId21iSVRPS2Rj?=
+ =?utf-8?B?eXcyL3l5aEo2dVBqYXZremxrckdVbm9hMG51SVJYZ1N0SGM0aWVhZUpUdndx?=
+ =?utf-8?B?T1N3TDQ1WkZXQmtyZkl0RUtSekFwLzdaMjc1OVZRN1ZLTFNhb3JvV1A2ZkZE?=
+ =?utf-8?B?bGROSlh3WVBjUnp5UlRZeUtqOGxFUm1qNW56MC92UHorbEhVSzN4bCtncmgr?=
+ =?utf-8?B?UlptY1hWNlowSytMbFhxSWN3ZVBFMS85eVNaMUlIVWt5RXQvTGJDWlpuMThG?=
+ =?utf-8?B?b09IaS8wM0RKcnhPa3doQUNwTURZNHlOdFdwdGFDTlN3VmIwdDdkdEFvcWkw?=
+ =?utf-8?B?OXlaNGl5VSsrUnNMZ2c0RXAvRTlUNnlwWjM4dXYrRFlicVNYc0NzQ1o0UUNv?=
+ =?utf-8?B?ek4wWFovbnlXMFFpSXUxUTZ1MTZwZFBna3FxaTUzRnhHditObzNtQzZPcW0x?=
+ =?utf-8?B?UllnWFgvNThEcFlrd1lYUDJZOTg2bzcxa0QwMnNYN2JzRG16OWNGTStDWDcx?=
+ =?utf-8?B?SHIrZXltU1RXZG44clJDTm44Yk1JSTV2SUMwYXZZSG9nbjMwMERNa1VtMnUv?=
+ =?utf-8?B?S0NueS9rNFMvdUdrNVpCRXNjU0k5dE5yenU4YnJQMU5xQVdYcmxOb3hHTjZ4?=
+ =?utf-8?B?NnVIdUtkZ0VSbzIrNmJKTVI3VmdLODZJa1hvNmhhSEZnemRFQ1BUMnVpUG9h?=
+ =?utf-8?B?MXRpSE1uV1RJWXM5MmRjZDBHb1p1N1RFNnQ5WUZUeld1UDk1U0NVMmJBcWlW?=
+ =?utf-8?B?bWlBVkZTM2lHd2NMT3VIOC9qQ0tPNkozOUxZRUZmL3dFclROY3AvbHRNWVBp?=
+ =?utf-8?B?UTNweGdDSGljVlJsanUrZzIrZmc3bWNYNTl5RktOSnd1amk4bTVMS29zUHho?=
+ =?utf-8?B?QjNSOWo3dVVZK29VeXoxMllXOFQ1UFlYVHg0RjNjd2JPQmZOQUFaay9MZkxr?=
+ =?utf-8?B?aFpiN3kzNGpsUHB4ZEl1Und6dktrTU5lU1VQNG90aVFqeGZkWFVGQ2JNS2tW?=
+ =?utf-8?B?bkN3V0xxQVNTeEgxYUEyalRrTlJWS1RTSy9rS2ttRWZkdmlOSzBGaCtKd0xQ?=
+ =?utf-8?B?VWQrZDlyZjZESHlOaVhxWjF1V3JKYVV5cUJPYmZFV09MWUhObzZ0bUp1ZjdN?=
+ =?utf-8?B?M3VGYUhYNVpndzVOK29EYXpkVXJOdDZwQW9KbWYzUEkxV1BsUVFsSkFFVTJq?=
+ =?utf-8?B?eFVxdTQyM2RHc08yVFNab3BjTkxOeDNXMzRzQ1lhcCtsZ1ZRb3F5SWRjSzRy?=
+ =?utf-8?B?WTkvWmpPN0FGQkpNOTZNSlNvTnJxRnFRQkVJMXV5UFhRbDlLaUMwSHUySVBh?=
+ =?utf-8?B?RWUzdVNEbWRCejNGb1p0K1F1ZkM3cXUwNmtSaGRlR2RjeitVbkFsdVJvQmlP?=
+ =?utf-8?B?WVVUN3BSVkhsTmRCWlB0QzEzamtSSzBoQVpiMEhTeWxNbjB2UVRCTEZTVy9v?=
+ =?utf-8?B?K1l2d1UzKzdJZDVBOGorQUNFR1lTZFdreVZMeEZNUTFzbmxFdGUwMFF5QUwz?=
+ =?utf-8?B?bzJVczlwb3VhdEpKeDJIRkZUUXN6YzR1OTA5Tk1rMlVYL1ZRYzZlV1Exb3U5?=
+ =?utf-8?B?TTRxNGVQL2tLaktvczFGb1RzUzVHeUNTZS9HSlJWay9rVjZiemxRMEFQVnFU?=
+ =?utf-8?B?b2t2Wit4YnFHcGRYVDVwYlZQekc4VjdmVFRXK2NZbTB6WFVmY2pjeUUwQ0Fj?=
+ =?utf-8?B?aE5pNDZkbHBSUTY4dmovZ01rOFpNVVNpVzEycFBxSFJnL1BGc0tqdFZ2S3VR?=
+ =?utf-8?B?TXZIc3hvanFpWjhxMjFPWmNiVDl5MGRwTUR0THJqZEwrbUlxemsrUHRJdlJH?=
+ =?utf-8?B?cGJ5RDNLYS9ZRU9rNnIzWk5UNmZtUmM2bjM5QzY1TldDNS9mUG5naHJlcExX?=
+ =?utf-8?B?VTlHdmxla29YTGFuZkRmUndvbWtPelMyUUtjK3lwNzRJZS93R1U5R0NGME9C?=
+ =?utf-8?B?NzlhbEJGcWhWUUp3cGlmUXF2bWE0anNLZ3dIZ21MbUVTOGJxb0lnT1k5czhJ?=
+ =?utf-8?Q?dWhuG2v+Xih3vJnCKgR++cNvM?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 80c3dcc8-5aae-488a-4cf1-08dc1cb76e28
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR12MB2379.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jan 2024 08:35:33.5623
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WowTbyBXj07wNFHm2l3iEob+69NujFewkJHSMqtSi9B3mnYM1/fZCekzOxSV6H0uihHpa2EhOQLcw4jUpVC++w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9263
 
-On Fri, Jan 12, 2024 at 09:03:48PM +0530, Nitin Rawat wrote:
-> Commit 052553af6a31 ("ufs/phy: qcom: Refactor to use phy_init call")
-> puts enabling regulators & clks, calibrating UFS PHY, starting serdes
-> and polling PCS ready status into phy_power_on.
+Hello David,
+
+Thank you for taking a look at the patch.
+
+On 1/24/2024 2:47 AM, David Vernet wrote:
+> On Tue, Jan 23, 2024 at 10:28:31AM +0530, K Prateek Nayak wrote:
+>> Hello Tim,
+>>
+>> On 1/23/2024 3:29 AM, Tim Chen wrote:
+>>> On Fri, 2024-01-19 at 14:15 +0530, K Prateek Nayak wrote:
+>>>>
+>>>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>>>> index b803030c3a03..1fedc7e29c98 100644
+>>>> --- a/kernel/sched/fair.c
+>>>> +++ b/kernel/sched/fair.c
+>>>> @@ -8499,6 +8499,16 @@ done: __maybe_unused;
+>>>>  	if (!rf)
+>>>>  		return NULL;
+>>>>  
+>>>> +	/*
+>>>> +	 * An idle CPU in TIF_POLLING mode might end up here after processing
+>>>> +	 * an IPI when the sender sets the TIF_NEED_RESCHED bit and avoids
+>>>> +	 * sending an actual IPI. In such cases, where an idle CPU was woken
+>>>> +	 * up only to process an interrupt, without necessarily queuing a task
+>>>> +	 * on it, skip newidle_balance() to facilitate faster idle re-entry.
+>>>> +	 */
+>>>> +	if (prev == rq->idle)
+>>>> +		return NULL;
+>>>> +
+>>>
+>>> Should we check the call function queue directly to detect that there is
+>>> an IPI waiting to be processed? something like
+>>>
+>>> 	if (!llist_empty(&per_cpu(call_single_queue, rq->cpu)))
+>>> 		return NULL;
+>>
+>> That could be a valid check too. However, if an IPI is queued right
+>> after this check, the processing is still delayed since
+>> newidle_balance() only bails out for scenarios when a wakeup is trying
+>> to queue a new task on the CPU running the newidle_balance().
+>>
+>>>
+>>> Could there be cases where we want to do idle balance in this code path?
+>>> Say a cpu is idle and a scheduling tick came in, we may try
+>>> to look for something to run on the idle cpu.  Seems like after
+>>> your change above, that would be skipped.
+>>
+>> Wouldn't scheduler_tick() do load balancing when the time comes? In my
+>> testing, I did not see a case where the workloads I tested were
+>> sensitive to the aspect of newidle_balance() being invoked at scheduler
+>> tick. Have you come across a workload which might be sensitive to this
+>> aspect that I can quickly test and verify? Meanwhile, I'll run the
+>> workloads mentioned in the commit log on an Intel system to see if I
+>> can spot any sensitivity to this change.
+>>
+>> Adding David to the thread too since HHVM seems to be one of those
+>> workloads that is very sensitive to a successful newidle_balance().
 > 
-> In Current code regulators enable, clks enable, calibrating UFS PHY,
-> start_serdes and polling PCS_ready_status are part of phy_power_on.
+> Thanks for the cc. FWIW, I think a lot of things are very sensitive to
+> timing in newidle_balance(), but it goes both ways. For example, we had
+> to revert commit e60b56e46b38 ("sched/fair: Wait before decaying
+> max_newidle_lb_cost") [0] on our internal kernel because it regressed
+> some workloads by causing us to load_balance() too frequently. I think
+> the fix is correct in that there's no reason we shouldn't apply the ~1%
+> decay / second to newidle lb cost in newidle_balance(), but by causing
+> us to (correctly) decay newidle lb cost in newidle_balance(), it also
+> increased CPU util rather significantly and had us spending too much
+> time in load_balance().
 > 
-> UFS PHY registers are retained after power collapse, meaning calibrating
-> UFS PHY, start_serdes and polling PCS_ready_status can be done only when
-> hba is powered_on, and not needed every time when phy_power_on is called
-> during resume. Hence keep the code which enables PHY's regulators & clks
-> in phy_power_on and move the rest steps into phy_calibrate function.
+> [0]: https://lore.kernel.org/all/20211019123537.17146-4-vincent.guittot@linaro.org/
 > 
-> Refactor the code to enable PHY regulators & clks in phy_power_on and
-> move rest of the code to phy_calibrate function.
+> On the other hand, on other hosts, we use SHARED_RUNQ to load balance as
+> aggressively as possible, and those hosts would have benefited from that
+> change if SHARED_RUNQ wasn't an option.
 > 
+> My 2 cents is that I think it's impossible to make everyone happy, and I
+> think the change here makes sense. If there's imbalance, it's something
+> we would uncover when load_balance() is kicked off on the tick path
+> anyways. I also agree with Vincent [1] that your idea / prototype of
+> adding a TIF_NEED_IPI flag is an overall better solution, but this does
+> seem fine to me as well in the interim.
 
-This patch should come before UFS patch since you are introducing the
-calibrate() callback here only.
-
-> Co-developed-by: Can Guo <quic_cang@quicinc.com>
-> Signed-off-by: Can Guo <quic_cang@quicinc.com>
-> Co-developed-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
-> Signed-off-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
-> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
-> ---
->  drivers/phy/qualcomm/phy-qcom-qmp-ufs.c | 183 +++++++++---------------
->  1 file changed, 67 insertions(+), 116 deletions(-)
-> 
-> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c b/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
-> index 3c2e6255e26f..ae0218738b0b 100644
-> --- a/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
-> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
-> @@ -32,14 +32,15 @@
->  /* QPHY_SW_RESET bit */
->  #define SW_RESET				BIT(0)
->  /* QPHY_POWER_DOWN_CONTROL */
-> -#define SW_PWRDN				BIT(0)
-> +#define SW_PWRUP				BIT(0)
-> +#define SW_PWRDN				0
-
-Why 0?
-
->  /* QPHY_START_CONTROL bits */
->  #define SERDES_START				BIT(0)
->  #define PCS_START				BIT(1)
->  /* QPHY_PCS_READY_STATUS bit */
->  #define PCS_READY				BIT(0)
-> 
-> -#define PHY_INIT_COMPLETE_TIMEOUT		10000
-> +#define PHY_INIT_COMPLETE_TIMEOUT		1000000
-
-Why? This is not mentioned in the commit message. If it is not related to this
-refactoring, then it should be a separate patch with justification.
+Thank you for the detailing your explorations and giving more insights
+around newidle_balance(). I'll clean up and test the TIF_NEED_IPI
+prototype some more before sending out an RFC.
 
 > 
->  struct qmp_phy_init_tbl {
->  	unsigned int offset;
-> @@ -1464,8 +1465,25 @@ static void qmp_ufs_init_registers(struct qmp_ufs *qmp, const struct qmp_phy_cfg
->  		qmp_ufs_pcs_init(qmp, &cfg->tbls_hs_g4);
->  }
+> [1]: https://lore.kernel.org/all/CAKfTPtC446Lo9CATPp7PExdkLhHQFoBuY-JMGC7agOHY4hs-Pw@mail.gmail.com/
 > 
-> -static int qmp_ufs_com_init(struct qmp_ufs *qmp)
-> +static int qmp_ufs_power_off(struct phy *phy)
-> +{
-> +	struct qmp_ufs *qmp = phy_get_drvdata(phy);
-> +	const struct qmp_phy_cfg *cfg = qmp->cfg;
-> +
-> +	/* Put PHY into POWER DOWN state: active low */
-> +	qphy_clrbits(qmp->pcs, cfg->regs[QPHY_PCS_POWER_DOWN_CONTROL],
-> +			SW_PWRDN);
-> +
-> +	clk_bulk_disable_unprepare(cfg->num_clks, qmp->clks);
-> +
-> +	regulator_bulk_disable(cfg->num_vregs, qmp->vregs);
-> +
-> +	return 0;
-> +}
-> +
-> +static int qmp_ufs_power_on(struct phy *phy)
->  {
-> +	struct qmp_ufs *qmp = phy_get_drvdata(phy);
->  	const struct qmp_phy_cfg *cfg = qmp->cfg;
->  	void __iomem *pcs = qmp->pcs;
->  	int ret;
-> @@ -1480,8 +1498,7 @@ static int qmp_ufs_com_init(struct qmp_ufs *qmp)
->  	if (ret)
->  		goto err_disable_regulators;
-> 
-> -	qphy_setbits(pcs, cfg->regs[QPHY_PCS_POWER_DOWN_CONTROL], SW_PWRDN);
-> -
-> +	qphy_setbits(pcs, cfg->regs[QPHY_PCS_POWER_DOWN_CONTROL], SW_PWRUP);
+> Thanks,
+> David
 
-Newline please. As mentioned above, why can't you use existing SW_PWRDN macro.
-
->  	return 0;
-> 
->  err_disable_regulators:
-> @@ -1490,61 +1507,7 @@ static int qmp_ufs_com_init(struct qmp_ufs *qmp)
->  	return ret;
->  }
-> 
-
-[...]
-
-> +static int qmp_ufs_get_phy_reset(struct qmp_ufs *qmp)
-> +{
-> +	const struct qmp_phy_cfg *cfg = qmp->cfg;
-> +	int ret;
-> +
-> +	if (!cfg->no_pcs_sw_reset)
-> +		return 0;
-> +
-> +	/*
-> +	 * Get UFS reset, which is delayed until now to avoid a
-> +	 * circular dependency where UFS needs its PHY, but the PHY
-> +	 * needs this UFS reset.
-> +	 */
-> +
-> +	qmp->ufs_reset = devm_reset_control_get_exclusive(qmp->dev,
-> +							  "ufsphy");
-
-You have moved this to probe from power_on() without any justification. What
-about the circular dependency mentioned in the comment.
-
-- Mani
-
--- 
-மணிவண்ணன் சதாசிவம்
+--
+Thanks and Regards,
+Prateek
 
