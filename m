@@ -1,89 +1,130 @@
-Return-Path: <linux-kernel+bounces-37019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3A3F83AA48
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:49:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFEDE83AA4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:50:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5C55DB20EB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:49:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88EE12923FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:50:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F9D077641;
-	Wed, 24 Jan 2024 12:49:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="N7OsNMUa"
-Received: from xry111.site (xry111.site [89.208.246.23])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C750D77654;
+	Wed, 24 Jan 2024 12:50:30 +0000 (UTC)
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CF9577639;
-	Wed, 24 Jan 2024 12:49:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6884A77652;
+	Wed, 24 Jan 2024 12:50:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706100555; cv=none; b=GWFckQ9Vv7F9zfWTx5XlzvULfzDY5ZcQa3irFUfuTgoCU2v2aQeeTAv/kisCSzg4//5n13iAnEu4XHsYlOAwGwaKP/9KqUOFsWESZQjzO9zFVerO30FgJpv/ZGkoCejPHxiyM7kg+mKUo4ou6vaVPwNVCz3yhUxLI3jPCopS0/0=
+	t=1706100630; cv=none; b=aa3z79hW6Z5g+WOIoHCbS1mbEgDTpnCGmBoQcUgRJf1LJtyL1ndVSxKCh1ACM5GmEQpp7xP9JOjzELruRMoq/lRB6aOc0iCgoqkXFsZaIFhmTqCG+3HkE3tZlTb40nd5iP2D7H1lBVHfWZk5Up8gLNOqTwfUR6xbc1KlgIA/oNQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706100555; c=relaxed/simple;
-	bh=s6U31JdDDdI9PWpaMCc4XRAEGMxkDJjCGZP0a8Ic/GM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=H+3hXTQrXwoVZrii7ij4Bm9SYjDdLBnFHux2qabE5BRBbXQKpd9N0B3GstVwagRJy6NiUrUPRiBeiv2hxxI/ZddgfDqBvx2FLJyOcNw+QkK5KMv4Cbfb1bUa4Rj2Kdu0kWhB+IVNuCctoNYxH0NondTZ2hgXwHQfYJDY6qbD8us=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=N7OsNMUa; arc=none smtp.client-ip=89.208.246.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-	s=default; t=1706100550;
-	bh=s6U31JdDDdI9PWpaMCc4XRAEGMxkDJjCGZP0a8Ic/GM=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=N7OsNMUarIxezT0AZ8LR73o0hZeU0gjeNTC7lHLePEsFDIZpPbZsPxj+wTeG1oGp/
-	 URkMpC7Z8AXkToWwpNQVLagc0cLqo2+K4zZ/AprHRmWW/ldF0FFFm/8DfqPm1k6ate
-	 qdPqYWaHAGWTdlCiPmKZmvBrMODC4l33VGSTYrWs=
-Received: from [127.0.0.1] (unknown [IPv6:2001:470:683e::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id 9E47966DFC;
-	Wed, 24 Jan 2024 07:49:08 -0500 (EST)
-Message-ID: <9481b6d9d015aea25d8f2563bf7bd6f6462f758f.camel@xry111.site>
-Subject: Re: Strange EFAULT on mips64el returned by syscall when another
- thread is forking
-From: Xi Ruoyao <xry111@xry111.site>
-To: Andreas Schwab <schwab@suse.de>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, Jiaxun Yang
- <jiaxun.yang@flygoat.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-  libc-alpha@sourceware.org
-Date: Wed, 24 Jan 2024 20:49:06 +0800
-In-Reply-To: <mvmplxraqmd.fsf@suse.de>
-References: <75e9fd7b08562ad9b456a5bdaacb7cc220311cc9.camel@xry111.site>
-	 <mvmplxraqmd.fsf@suse.de>
-Autocrypt: addr=xry111@xry111.site; prefer-encrypt=mutual;
- keydata=mDMEYnkdPhYJKwYBBAHaRw8BAQdAsY+HvJs3EVKpwIu2gN89cQT/pnrbQtlvd6Yfq7egugi0HlhpIFJ1b3lhbyA8eHJ5MTExQHhyeTExMS5zaXRlPoiTBBMWCgA7FiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQrKrSDhnnEOPHFgD8D9vUToTd1MF5bng9uPJq5y3DfpcxDp+LD3joA3U2TmwA/jZtN9xLH7CGDHeClKZK/ZYELotWfJsqRcthOIGjsdAPuDgEYnkdPhIKKwYBBAGXVQEFAQEHQG+HnNiPZseiBkzYBHwq/nN638o0NPwgYwH70wlKMZhRAwEIB4h4BBgWCgAgFiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwwACgkQrKrSDhnnEOPjXgD/euD64cxwqDIqckUaisT3VCst11RcnO5iRHm6meNIwj0BALLmWplyi7beKrOlqKfuZtCLbiAPywGfCNg8LOTt4iMD
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1706100630; c=relaxed/simple;
+	bh=lRs6RL/zQlcIaeBWW71/aAJ66BXOtnlf6gJLAxRKZck=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jTGUnOoKVoSRJut6l731PC6+15FRAIcJ9dlWxdE7YqJFFZubG9E9cg+myRZkq3YwHaDKWAUzwSnX3C12BpnSS89ySp4c9v6oGnk6HJMVQo45FY3uz1G9IOY1Bn4xNgQvTICWtcUccT5QMc1afSsO4ktk/UGG7UbBGauG+OLQyIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; arc=none smtp.client-ip=115.124.30.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R531e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0W.Gp3dN_1706100621;
+Received: from 192.168.31.58(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0W.Gp3dN_1706100621)
+          by smtp.aliyun-inc.com;
+          Wed, 24 Jan 2024 20:50:22 +0800
+Message-ID: <96abca7f-8bd1-44e8-98be-c60d6d676ec6@linux.alibaba.com>
+Date: Wed, 24 Jan 2024 20:50:21 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fuse: add support for explicit export disabling
+Content-Language: en-US
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ amir73il@gmail.com
+References: <20240124113042.44300-1-jefflexu@linux.alibaba.com>
+ <CAJfpegtkSgRO-24bdnA4xUMFW5vFwSDQ7WkcowNR69zmbRwKqQ@mail.gmail.com>
+From: Jingbo Xu <jefflexu@linux.alibaba.com>
+In-Reply-To: <CAJfpegtkSgRO-24bdnA4xUMFW5vFwSDQ7WkcowNR69zmbRwKqQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, 2024-01-24 at 12:59 +0100, Andreas Schwab wrote:
-> On Jan 24 2024, Xi Ruoyao wrote:
->=20
-> > Now I'm suspecting this might be a kernel bug.=C2=A0 Any pointer to fur=
-ther
-> > triage?
->=20
-> Is this a regression?
 
-Initially I guessed it was perhaps a Glibc regression related to the
-newly introduced clone3 usage on MIPS, but it fails with Glibc-2.35 too.
 
-Not sure if this is a kernel regression, I'll try different kernels in
-several hours (once I can physically access the system).
+On 1/24/24 8:16 PM, Miklos Szeredi wrote:
+> On Wed, 24 Jan 2024 at 12:30, Jingbo Xu <jefflexu@linux.alibaba.com> wrote:
+>>
+>> open_by_handle_at(2) can fail with -ESTALE with a valid handle returned
+>> by a previous name_to_handle_at(2) for evicted fuse inodes, which is
+>> especially common when entry_valid_timeout is 0, e.g. when the fuse
+>> daemon is in "cache=none" mode.
+>>
+>> The time sequence is like:
+>>
+>>         name_to_handle_at(2)    # succeed
+>>         evict fuse inode
+>>         open_by_handle_at(2)    # fail
+>>
+>> The root cause is that, with 0 entry_valid_timeout, the dput() called in
+>> name_to_handle_at(2) will trigger iput -> evict(), which will send
+>> FUSE_FORGET to the daemon.  The following open_by_handle_at(2) will send
+>> a new FUSE_LOOKUP request upon inode cache miss since the previous inode
+>> eviction.  Then the fuse daemon may fail the FUSE_LOOKUP request with
+>> -ENOENT as the cached metadata of the requested inode has already been
+>> cleaned up during the previous FUSE_FORGET.  The returned -ENOENT is
+>> treated as -ESTALE when open_by_handle_at(2) returns.
+>>
+>> This confuses the application somehow, as open_by_handle_at(2) fails
+>> when the previous name_to_handle_at(2) succeeds.  The returned errno is
+>> also confusing as the requested file is not deleted and already there.
+>> It is reasonable to fail name_to_handle_at(2) early in this case, after
+>> which the application can fallback to open(2) to access files.
+>>
+>> Since this issue typically appears when entry_valid_timeout is 0 which
+>> is configured by the fuse daemon, the fuse daemon is the right person to
+>> explicitly disable the export when required.
+>>
+>> Also considering FUSE_EXPORT_SUPPORT actually indicates the support for
+>> lookups of "." and "..", and there are existing fuse daemons supporting
+>> export without FUSE_EXPORT_SUPPORT set, for compatibility, we add a new
+>> INIT flag for such purpose.
+> 
+> This looks good overall.
+> 
+>>
+>> Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
+>> ---
+>> RFC: https://lore.kernel.org/all/20240123093701.94166-1-jefflexu@linux.alibaba.com/
+>> ---
+>>  fs/fuse/inode.c           | 11 ++++++++++-
+>>  include/uapi/linux/fuse.h |  2 ++
+>>  2 files changed, 12 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
+>> index 2a6d44f91729..851940c0e930 100644
+>> --- a/fs/fuse/inode.c
+>> +++ b/fs/fuse/inode.c
+>> @@ -1110,6 +1110,11 @@ static struct dentry *fuse_get_parent(struct dentry *child)
+>>         return parent;
+>>  }
+>>
+>> +/* only for fid encoding; no support for file handle */
+>> +static const struct export_operations fuse_fid_operations = {
+> 
+> Nit: I'd call this fuse_no_export_operations (or something else that
+> emphasizes the fact that this is only for encoding and not for full
+> export support).
 
---=20
-Xi Ruoyao <xry111@xry111.site>
-School of Aerospace Science and Technology, Xidian University
+OK I will rename it to fuse_no_export_operations.
+
+By the way do I need to bump and update the minor version of FUSE protocol?
+
+
+-- 
+Thanks,
+Jingbo
 
