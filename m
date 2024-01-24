@@ -1,90 +1,104 @@
-Return-Path: <linux-kernel+bounces-36257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36258-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8EB5839DFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 02:14:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8728D839DFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 02:14:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBE411C25A3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:14:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 417D328D317
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:14:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C33D137B;
-	Wed, 24 Jan 2024 01:14:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 968581860;
+	Wed, 24 Jan 2024 01:14:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="e+HrVT+5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="GP56geRv"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E4AA1FAA;
-	Wed, 24 Jan 2024 01:14:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23EDD1866;
+	Wed, 24 Jan 2024 01:14:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706058858; cv=none; b=i5NabR/bHDIMHhtIULXe6bBMuPFVHZghu3/QRkhDbsM0CTQgkoMUyT4a5Q8by9MhYc9dXyAlh5M4YrWWbGG0Ycz6IWI1lP6kVu0vHOHRF5Oz/U63qurpT5p3X2BLh220MgVvUDuXgFQNhAeN7o9PLhP/kWbfQVnLcmBv5a0hIDc=
+	t=1706058867; cv=none; b=GComsHvfIIVW3nlJNqYTsWS4+UI/aU/4Jairj6c9U3vhrnu+AGkk42yA3Ax3nragcnzeN2oiDS9hsiha1LB5egTS+DJEYLWizKr6AgPA1KyQu0c8C41IyvjxWuZdoY4pg0tZDpLLa79r3B+d5SIcJdDcfJCRAaTjMJX9z7pk+R8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706058858; c=relaxed/simple;
-	bh=qWcnJt0pf9bdDGsYcKVLk1NGTUvvib50FPZ8UjiLKug=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IgAf7xmMxZEVTAmUUTh4XbUzlZ9bQ0rgVsChKofO0azItK1BsWjAehRvtzYXr53RxBbHDueXsZu2SGCqcUabpM9GAe2RSxx8+eTT8c8v0EbrEow72geq4bbOHQXWe3e7fAg/n4sGA2msU5yDKDlpwqq3h64Sz04Js0PSjI3Zrr8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=e+HrVT+5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA5D3C433F1;
-	Wed, 24 Jan 2024 01:14:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1706058858;
-	bh=qWcnJt0pf9bdDGsYcKVLk1NGTUvvib50FPZ8UjiLKug=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=e+HrVT+5RZvgPrFmWTd5dXq9JwoZ2LyffRT5//NQHo8gKxQtSATCZqdkRqVpPGe1Y
-	 jsZA/B+5B38PgXqB0sJaJBEaPKPKUG9n7Y23iJ2DJKq6Dvz7GPHEKQY/jkQgJH3dU9
-	 zIsyfoJleOh/3IA6c/JSimg4qBvDW5BUZ0S25COg=
-Date: Tue, 23 Jan 2024 17:14:17 -0800
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Elizabeth Figura <zfigura@codeweavers.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-	linux-api@vger.kernel.org, wine-devel@winehq.org,
-	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
-	Wolfram Sang <wsa@kernel.org>,
-	Arkadiusz Hiler <ahiler@codeweavers.com>,
-	Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [RFC PATCH 3/9] ntsync: Introduce NTSYNC_IOC_CREATE_SEM and
- NTSYNC_IOC_DELETE.
-Message-ID: <2024012301-dork-awry-c9ad@gregkh>
-References: <20240124004028.16826-1-zfigura@codeweavers.com>
- <20240124004028.16826-4-zfigura@codeweavers.com>
+	s=arc-20240116; t=1706058867; c=relaxed/simple;
+	bh=yKJVCYJO6LmBcJdeoH6hLuQIoDPeuwMJxL6h7ZsUMQY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MHSwN94AWGO4oHThiOQsUHRZ34zW+6pS9WwNo7V6eqI6GMcTNNsUQMxRlsBvOWDQOesvJQlXEcY1SAcXsQF5vHxRdFL5ZI1sD28uV8iC3b5Zt20SPEzwfyu/E/mDxUBe3fmt4pKcnvLkm4RUSoYTW6ejehY30SONlqZxuJJg4Nk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=GP56geRv; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=+XPiFTLPLUOZgR0hfpGzNmizWWKsQoXSd2FCd32Eaow=; b=GP56geRv6qlS+ZE4PnNIkyW54i
+	fHOFqZs9BaUU0VN1iqchLKOBL7rNslDZYnf65Rdz2BUIDNMPVp0gKzZ0suorNgM+iLDDrzteB16av
+	0jbzgT0BrKSCVnMQoHKCnVDtGk2ZP73+OrxspHTUM/SMNMWMinxnwR6R03TJsi9sd0Fe/2vM32k6x
+	VrvEkTglgd4bsb69EX8w09EOPfClDv6nSmtiseW95G+6SjkUJA++BQZAmsG1MzsN912GtHtTm0zRv
+	e4f1evO9schqkj2DJrHsVgzJtYAn278eDrbvm8g2EfasZF9gu2AsKVOTbdWcVP+WCvlAXhcyEM89w
+	jV8WHnrg==;
+Received: from [50.53.50.0] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rSRqS-000zBs-34;
+	Wed, 24 Jan 2024 01:14:25 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Jan Kara <jack@suse.cz>,
+	linux-fsdevel@vger.kernel.org,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	Dave Chinner <david@fromorbit.com>,
+	Anton Altaparmakov <anton@tuxera.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	linux-doc@vger.kernel.org
+Subject: [PATCH -next] fs: remove NTFS classic from docum. index
+Date: Tue, 23 Jan 2024 17:14:24 -0800
+Message-ID: <20240124011424.731-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240124004028.16826-4-zfigura@codeweavers.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 23, 2024 at 06:40:22PM -0600, Elizabeth Figura wrote:
-> +static int ntsync_create_sem(struct ntsync_device *dev, void __user *argp)
-> +{
-> +	struct ntsync_sem_args __user *user_args = argp;
-> +	struct ntsync_sem_args args;
-> +	struct ntsync_obj *sem;
-> +	__u32 id;
-> +	int ret;
-> +
-> +	if (copy_from_user(&args, argp, sizeof(args)))
-> +		return -EFAULT;
-> +
-> +	if (args.count > args.max)
-> +		return -EINVAL;
+With the remove of the NTFS classic filesystem, also remove its
+documentation entry from the filesystems index to prevent a
+kernel-doc warning:
 
-No bounds checking on count or max?
+Documentation/filesystems/index.rst:63: WARNING: toctree contains reference to nonexisting document 'filesystems/ntfs'
 
-What's the relationship between count and max?  Some sort of real
-documentation is needed here, the changelog needs to explain this.  Or
-somewhere, but as-is, this patch series is pretty unreviewable as I
-can't figure out how to review it because I don't know what it wants to
-do.
+Fixes: 9c67092ed339 ("fs: Remove NTFS classic")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Jan Kara <jack@suse.cz>
+Cc: linux-fsdevel@vger.kernel.org
+Cc: Namjae Jeon <linkinjeon@kernel.org>
+Cc: Dave Chinner <david@fromorbit.com>
+Cc: Anton Altaparmakov <anton@tuxera.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
+---
+ Documentation/filesystems/index.rst |    1 -
+ 1 file changed, 1 deletion(-)
 
-thanks,
-
-greg k-h
+diff -- a/Documentation/filesystems/index.rst b/Documentation/filesystems/index.rst
+--- a/Documentation/filesystems/index.rst
++++ b/Documentation/filesystems/index.rst
+@@ -98,7 +98,6 @@ Documentation for filesystem implementat
+    isofs
+    nilfs2
+    nfs/index
+-   ntfs
+    ntfs3
+    ocfs2
+    ocfs2-online-filecheck
 
