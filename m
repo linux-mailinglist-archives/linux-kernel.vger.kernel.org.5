@@ -1,119 +1,119 @@
-Return-Path: <linux-kernel+bounces-37664-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37663-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D3AE83B352
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 21:52:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58CCB83B34E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 21:51:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B98BC1F23610
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 20:52:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11608285A7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 20:51:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 085DD1350F9;
-	Wed, 24 Jan 2024 20:51:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A479F1350D1;
+	Wed, 24 Jan 2024 20:51:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QQSaSBKc"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b="43WCwO/h"
+Received: from cvs.openbsd.org (cvs.openbsd.org [199.185.137.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAF7C1350C5
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 20:51:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BB101292FB;
+	Wed, 24 Jan 2024 20:51:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.185.137.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706129514; cv=none; b=B4ieIwW91ayoHCt5XSoYQP9OJ7op1cA+HzbFb9sa6AxuxbaGJft6q+0vXmXxFP+OC+OufIdA0IB9iKPyXyLlJg1hGrIsv+uhkx/q99tj3cq0EF44Vkf8VgbpHDDKUbIpg6u1QKjF+ElTpltswqjxKdDu/yjGf5Xz1i0VML/lCho=
+	t=1706129500; cv=none; b=eQveOtboNHq2NuaL6TiyOT+yltgJhFDBmngOR+JPxNLRGNszWSaH2nacBFuju6AYdTgCzueyUf6oLorj5ef/zDHaDlbUlTTXnj4hA4GnGaMieSpxPq4x5rd/P0xJ957HXWjii2WW02viIVAwNwvxVnMTuhap9XyYKYxpUZKiesU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706129514; c=relaxed/simple;
-	bh=8AHF91uvt8/XRr8nVpdx7OTkc9kUJK+Zdwkb7E1C+tM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=H9IpMe3s2kl0uj09gl+MWxBzO1uD6/XCs+HQYbjSFvYTZu4Q8qwQJBX5BdP55tSi+VhuBf9VrDvjvcexGujqB2+KLtaBFaUEGFuUGou8hyyxR+9u8YjSJwJNeGaXxnvrnWDyDfjRB5FHFVC5NtaSx3LXvYV1mZqcfN3sr8H74Xk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QQSaSBKc; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-55818b7053eso4399a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 12:51:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706129511; x=1706734311; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8AHF91uvt8/XRr8nVpdx7OTkc9kUJK+Zdwkb7E1C+tM=;
-        b=QQSaSBKc5YXRrwseT28VLCXtVbUV7E9Jtd5kb0ypblZapUB9tDqWdtW/mMUMI/O2Ti
-         KfZs9FX4LFcnev1OX1te+yEtwvtIZttYte6zHJGP2FXcLJLiEyNiqY825ehFNXC/k+EC
-         /hackWXgSmqIVPqjIMqXfvuZ8n4R6zJDGptfgjjnCj0qUgEpETladENJuZqUMhLQsIMK
-         NMHCKThaIMl5Cm7T3cwHqPfUL7LjR2Wnhe9jEiZ5qDX9Q5jB6YksnZAkwzAFcjcz6YeK
-         XFNvQrPkMckc5mxcR57G7tAcrdehDi+1YysgeQ4jlw7tl9pegfzFgy8/g64iSMF40EN7
-         Utrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706129511; x=1706734311;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8AHF91uvt8/XRr8nVpdx7OTkc9kUJK+Zdwkb7E1C+tM=;
-        b=vn3CP4XpNPxB50flJkDiMI8ZzxDjP83GACk7tz4hwsik0jpdYpWNyBTpsBh/sgWfYw
-         2vW950WLxf7ScfXImGpDoEIqrvoDj7NyK4PFtmvdrqDB8fXdo1mZdeBE3dJs1c8/l+6Z
-         bfrnRd3cseE45DNQ8Q+hFP+dkwcxPMeJZxqeCtYaigbSYlFy2R5X1YFtfkWSvFAfFiZ8
-         m7a9I2iuFgxpi3Fmi4jNbtOo4yx/J+WvJ3Roc028J77Yhno/nN2b+uG4ZiB9yPmp4J+z
-         eR8PVzM0O1gArL5vERVT2dzCCWSxk637TcLQ9v0Ixp6p5xgDQ3mmeEXNlUZal+8Rowmx
-         hezw==
-X-Gm-Message-State: AOJu0YxKzx0Lqx01yqMcmDsWpus0SZJ8Q4fuOnggkGuTyoOYDl6SGJRJ
-	N2TwfhXTuP9NZIO8ql58SFpzKkqE5CVOXwDdOlFBQ+sqwDMKimVh1MkbnY/9RyS+gCj88JOmW/0
-	LDPBW0XTQqzUsU3m8g1f3J3EJvxpx9NpGQUKc
-X-Google-Smtp-Source: AGHT+IFSJu3YtHxJ1C9xsiD6VboT0OpL149sYEOn3JiasNKwbqmVCWDsj+0AThh+onMYWiLSwFji1svlzJHw50Lzx7w=
-X-Received: by 2002:a05:6402:b77:b0:55a:7f4e:1d62 with SMTP id
- cb23-20020a0564020b7700b0055a7f4e1d62mr47583edb.4.1706129510820; Wed, 24 Jan
- 2024 12:51:50 -0800 (PST)
+	s=arc-20240116; t=1706129500; c=relaxed/simple;
+	bh=Z6R0DSevUsWp/ES4X1fSbzidtHovZqFHyGVCe23vpOQ=;
+	h=From:To:Subject:In-reply-to:References:MIME-Version:Content-Type:
+	 Date:Message-ID; b=UWOGTIGDuwxKQhU7FmA8qIGThVbVZZQB+b1Dioa5wxtFuqFXoiV2QURFpdP2/DRTp6z954bOnc6uvJFDldwQam3k1n+unHNCC1ibULcIp4ZN4qRPIJakRQDYYtgUP5uNBxreg61HBJ+KXJChqWqDgf8VoZ/zLJYwV0nHlySytVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org; spf=pass smtp.mailfrom=openbsd.org; dkim=pass (2048-bit key) header.d=openbsd.org header.i=@openbsd.org header.b=43WCwO/h; arc=none smtp.client-ip=199.185.137.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=openbsd.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openbsd.org
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; s=selector1; bh=Z6R0DSevUs
+	Wp/ES4X1fSbzidtHovZqFHyGVCe23vpOQ=; h=date:references:in-reply-to:
+	subject:to:from; d=openbsd.org; b=43WCwO/hWJyeW7jniZUXpoRulSjG7aM+cwLo
+	LzWTShoquiNAk1T+jrBK6SMcVIbDB+V51FxS9Zuoa7yiu+uJnEuLsJ/yl3R4QijJGWRmA+
+	MuBAO63A7qp4qRUizMMMzUN6XAGwCoXnwb0F5rMrZ4VU9kSXuZdV+Jj/ccK03N0lH3Umrl
+	MN7q+ffha9DN63HMmBAKUyeVOvCqaJdaDlJ+terJSrnNEtPcy/81YKlwfVbfv9eMhcxKAo
+	9EwcDoScJoOvaPYrzj+sXkmj/yw3YsTkr8zdGWgUHmkb4NzKMV5P7efFXj4UsndWP7FpdP
+	viVTF2l2zifSmurxqYEMPZ+8LQ==
+Received: from cvs.openbsd.org (localhost [127.0.0.1])
+	by cvs.openbsd.org (OpenSMTPD) with ESMTP id 302f01a8;
+	Wed, 24 Jan 2024 13:51:37 -0700 (MST)
+From: "Theo de Raadt" <deraadt@openbsd.org>
+To: "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
+    Jeff Xu <jeffxu@chromium.org>, akpm@linux-foundation.org,
+    keescook@chromium.org, jannh@google.com, sroettger@google.com,
+    willy@infradead.org, gregkh@linuxfoundation.org,
+    torvalds@linux-foundation.org, usama.anjum@collabora.com,
+    rdunlap@infradead.org, jeffxu@google.com, jorgelo@chromium.org,
+    groeck@chromium.org, linux-kernel@vger.kernel.org,
+    linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+    pedro.falcato@gmail.com, dave.hansen@intel.com,
+    linux-hardening@vger.kernel.org
+Mail-Followup-To: "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
+                  Jeff Xu <jeffxu@chromium.org>,
+                  akpm@linux-foundation.org, keescook@chromium.org,
+                  jannh@google.com, sroettger@google.com,
+                  willy@infradead.org, gregkh@linuxfoundation.org,
+                  torvalds@linux-foundation.org,
+                  usama.anjum@collabora.com, rdunlap@infradead.org,
+                  jeffxu@google.com, jorgelo@chromium.org,
+                  groeck@chromium.org, linux-kernel@vger.kernel.org,
+                  linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+                  pedro.falcato@gmail.com, dave.hansen@intel.com,
+                  linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v7 2/4] mseal: add mseal syscall
+In-reply-to: <98656.1706128621@cvs.openbsd.org>
+References: <20240122152905.2220849-1-jeffxu@chromium.org> <20240122152905.2220849-3-jeffxu@chromium.org> <20240123181457.idckaydk7dt7q2qy@revolver> <CABi2SkX=wKnHmooxXzBnJxxmtfSjvfgYabN1Wh1LxFYjtFoFaQ@mail.gmail.com> <20240124200628.ti327diy7arb7byb@revolver> <98656.1706128621@cvs.openbsd.org>
+Comments: In-reply-to "Theo de Raadt" <deraadt@openbsd.org>
+   message dated "Wed, 24 Jan 2024 13:37:01 -0700."
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124192228.work.788-kees@kernel.org> <CAG48ez017tTwxXbxdZ4joVDv5i8FLWEjk=K_z1Vf=pf0v1=cTg@mail.gmail.com>
- <202401241206.031E2C75B@keescook> <CAHk-=wiUwRG7LuR=z5sbkFVGQh+7qVB6_1NM0Ny9SVNL1Un4Sw@mail.gmail.com>
-In-Reply-To: <CAHk-=wiUwRG7LuR=z5sbkFVGQh+7qVB6_1NM0Ny9SVNL1Un4Sw@mail.gmail.com>
-From: Jann Horn <jannh@google.com>
-Date: Wed, 24 Jan 2024 21:51:13 +0100
-Message-ID: <CAG48ez3v=dWVNaLwQi_f0j5X2+g5e9ubuaZoEkivsCTVK5u24Q@mail.gmail.com>
-Subject: Re: [PATCH] exec: Check __FMODE_EXEC instead of in_execve for LSMs
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Kees Cook <keescook@chromium.org>, Josh Triplett <josh@joshtriplett.org>, 
-	Kevin Locke <kevin@kevinlocke.name>, John Johansen <john.johansen@canonical.com>, 
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, Kentaro Takeda <takedakn@nttdata.co.jp>, 
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	Eric Biederman <ebiederm@xmission.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <38861.1706129497.1@cvs.openbsd.org>
+Date: Wed, 24 Jan 2024 13:51:37 -0700
+Message-ID: <82138.1706129497@cvs.openbsd.org>
 
-On Wed, Jan 24, 2024 at 9:47=E2=80=AFPM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Wed, 24 Jan 2024 at 12:15, Kees Cook <keescook@chromium.org> wrote:
-> >
-> > Hmpf, and frustratingly Ubuntu (and Debian) still builds with
-> > CONFIG_USELIB, even though it was reported[2] to them almost 4 years ag=
-o.
->
-> Well, we could just remove the __FMODE_EXEC from uselib.
->
-> It's kind of wrong anyway.
->
-> Unlike a real execve(), where the target executable actually takes
-> control and you can't actually control it (except with ptrace, of
-> course), 'uselib()' really is just a wrapper around a special mmap.
->
-> And you can see it in the "acc_mode" flags: uselib already requires
-> MAY_READ for that reason. So you cannot uselib() a non-readable file,
-> unlike execve().
->
-> So I think just removing __FMODE_EXEC would just do the
-> RightThing(tm), and changes nothing for any sane situation.
+Theo de Raadt <deraadt@openbsd.org> wrote:
 
-Sounds like a good idea. That makes this codepath behave more as if
-userspace had done the same steps manually...
+> This discussion about the malloc heap is ridiculous.  Obviously it is
+> programmer error to lock the permissions on memory you will free for
+> reuse.  But you can't fix this problem with malloc(), without breaking
+> other extremely common circumstances where the allocation of memory
+> and PERMANENT-USE-WITHOUT-RELEASE of such memory are seperated over a
+> memory boundary, unless you start telling all open source library authors
+
+  ^^^^^^^^^^^^^^^ library boundary, sorry
+
+> to always use MAP_SEALABLE in their mmap() calls.
+
+Example:
+
+1. libcrypto (or some other library) has some ways to allocate memory and
+   provide it to an application.
+2. Even if this is using malloc(), heap allocations over a pagesize are
+   page-aligned, so even then following assumptions are sound.
+3. I have an application which uses that memory, but will never release the memory
+   until program termination
+4. The library interface is public and used by many programs, so the library
+   author has a choice of using MAP_SEALABLE or not using MAP_SEALABLE
+
+Due to your choice, my application cannot make lock the memory permissions
+unless that library author chooses MAP_SEALABLE
+
+If they choose to use MAP_SEALABLE, all programs get this memory you consider
+less safe.
+
+Exactly what is being gained here?
+
+
+
+
+
 
