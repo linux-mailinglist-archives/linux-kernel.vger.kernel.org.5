@@ -1,104 +1,123 @@
-Return-Path: <linux-kernel+bounces-37295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EEEC83ADE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:02:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6534383ADE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:01:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F83FB24192
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:01:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E4C6282A71
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:01:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C633F7CF0E;
-	Wed, 24 Jan 2024 16:01:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 287BF7CF0E;
+	Wed, 24 Jan 2024 16:00:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="e4bZFius"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fGS/vNP9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B22B7A725
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 16:01:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69EEE40C1B;
+	Wed, 24 Jan 2024 16:00:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706112070; cv=none; b=lhNj/aRdW0IbF8AEOQEOnoQ42FEnwPTMD284EuJTXmHxtsnee3+kTF73Kgio6oHSRDnoBRQkJhJMGrraVQMxh1P4E5cIcGhplMY+08Cy9i2AiA2TC+tVA5uPNUht4nj6A0SC/yyCp/ijGuie2v7isJgDQCVcHz5pVWFqlyl3whM=
+	t=1706112054; cv=none; b=YwBy37RBjxil8BBSwVaVdK80eyUb6ptrV5tnyJk5RYQZLo/NIVchiJofnegozd3JqsGmWkQjHY73rw+cvZcwzH/zeVaoccRGJ6x5xihN88EkfiitOKfgiJz+ZbTbGeVEKDXZSMWNRSdJ2V8e4bdM8ZhGEc0DQDDb6W5SpL2jTK0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706112070; c=relaxed/simple;
-	bh=39iyj2JdQ9w0MtrsAND0HiyJapfr9hcRNh+jzlPp8SI=;
+	s=arc-20240116; t=1706112054; c=relaxed/simple;
+	bh=TbMpid+LHATwVZnTYINaH5gIN0irhOL9HfsfcOnpyAM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Nf6gaQ2Eo+17uZFnWLeFpXWcXuA00RjzyyWO6I+e45W/F7BaSUIrFSScUj5UkHj5jnl5nJ0+QhHb/6yys7MaTI29jyMVa0cvQ5kN3wCdO1nHDstoKbheQi4zl4NSQOwmDr12dMHXBwtxQNC30tfJ/G8hpc2EL+wLeePc1izbZvg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=e4bZFius; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 4E6F740E01AE;
-	Wed, 24 Jan 2024 16:00:59 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id EGu_OVX8qWon; Wed, 24 Jan 2024 16:00:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1706112056; bh=3bBYh+GwfglWvi3037W1jLdF84shQepN/efeZnJUuRg=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=eqIh5QGN3ZYr2/9D9O9cC9geRToVmWEt7otkRrC5tVpa2UjF8Yi6qvyoY+ntKvYCrFpMQ8qrY3DqlmdYaWSc9E+mab30lNblqgowxw9U0Wmxz0Y4Djdeu4GUpuiGDKsfZKfYQRzu82xY8Hybr1t790qfytaCG4EUr7htuhrODjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fGS/vNP9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6CF5C433C7;
+	Wed, 24 Jan 2024 16:00:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706112053;
+	bh=TbMpid+LHATwVZnTYINaH5gIN0irhOL9HfsfcOnpyAM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=e4bZFiusLlNyiFM5hEN8lE8JSy8ihxa62ofjuBrOtnhyq8sM7szd0qORSF3H7k7Vj
-	 tehdYXObVAZ6am4LVDH2AeyvZy5G8uGf4zHwIUYAJEWphpbdMDVN59jxmk/aT+DBup
-	 TJpoQGSPTAR/qIecdiLaiQIzQhUZ757l2JCWee3/1eFa9MSSkpjmCw3yYaSBtkSeBr
-	 OyEdkJ9ZRcxijwEPVnky/+64vHm3QtKk1pWmi9ZChIfm8IXdiBiDk3I4EiSDCNWLK/
-	 EKAj7w+34GtAssGnsuzDXZHUCyvWseaQwGJMwXmwtODDdnS2PVeo6Ed5c1MTbS9wl7
-	 shcPqIFjCjRh+5dxh1Xzau76qXN6YwD1XirogZsniy+MQHl9aOSkZ8MZnfMWoXlo9w
-	 S77/uzLUTTLqXB2VTpmpnH7G/SEBmOz1LFhOh9f/XbcE1AVL61yS3h3hDiK4MQzkFU
-	 AdjmRx5ijjUTPEa0IOPSiq5Tpogjged3d/Kr1IMcN5bk6YJnOcSfe7kv2i67VTCGrh
-	 cNP0kvoQu/RVBYQFj8gPW6WCXZrRCjrJZNYHZERpnK62jHPk/kvplxvz15Xand95mb
-	 2nNWwGRcS7K63/XjRNGISLCLJn2xb3cnp5gtm/U/cV6Q723ycxepE2EmOQv2cm/H0N
-	 iEK6TU6BcdhTFqKyDE9mCvjo=
-Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B2DE040E01A9;
-	Wed, 24 Jan 2024 16:00:47 +0000 (UTC)
-Date: Wed, 24 Jan 2024 17:00:40 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: "Moger, Babu" <babu.moger@amd.com>
-Cc: kernel test robot <lkp@intel.com>, oe-kbuild-all@lists.linux.dev,
-	linux-kernel@vger.kernel.org, x86@kernel.org,
-	Reinette Chatre <reinette.chatre@intel.com>,
-	Julia Lawall <Julia.Lawall@inria.fr>,
-	Nicolas Palix <nicolas.palix@imag.fr>, cocci@inria.fr
-Subject: Re: [tip:x86/cache 3/3]
- arch/x86/kernel/cpu/resctrl/rdtgroup.c:1621:5-8: Unneeded variable: "ret".
- Return " 0" on line 1655
-Message-ID: <20240124160040.GEZbE0KEUwGMdhVi_x@fat_crate.local>
-References: <202401241810.jbd8Ipa1-lkp@intel.com>
- <20240124105555.GBZbDsu-zsQ8YTgXjS@fat_crate.local>
- <0578da80-db4c-4c0b-8677-2875a65afd68@amd.com>
+	b=fGS/vNP9fAYBFK3NbuaGg90JtmMUInHteQ40zlrLJgbzYh/KKbb46rFXg+eDJTICA
+	 yhtkrxMk1+N9Dqn6jyex3RxibkI4qV7RrI2ppKchYPE7rvvjvZQjXS2OSHPAezBM2H
+	 jPaOnzQStHbUEHsVcP7MU/L3P86oOTq71xASZLEFLx1Uuhpk4/IuNHVzzRO6yoqmQp
+	 citDPYz7HnIQm51/I6srzm1ih8jq5vb6w6j9Wii9XyCmLR1kHW2y5jzK/rVqAYuL8n
+	 ca5wsX0g/TPWAN764C6wC4zLXHiDoKsxW4/J/X3hNKdaSL3f4rrjDMRIWqsyaVudZA
+	 cT4maV27hDBzQ==
+Date: Wed, 24 Jan 2024 16:00:48 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Hugo Villeneuve <hugo@hugovil.com>
+Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+	kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+	leoyang.li@nxp.com, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	andy.shevchenko@gmail.com,
+	Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Subject: Re: [PATCH 1/2] dt-bindings: arm: fsl: remove redundant company name
+Message-ID: <20240124-evoke-lunar-599e43a99494@spud>
+References: <20240124154422.3600920-1-hugo@hugovil.com>
+ <20240124154422.3600920-2-hugo@hugovil.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="fR4KvCHXIGNltKve"
 Content-Disposition: inline
-In-Reply-To: <0578da80-db4c-4c0b-8677-2875a65afd68@amd.com>
+In-Reply-To: <20240124154422.3600920-2-hugo@hugovil.com>
 
-On Wed, Jan 24, 2024 at 08:58:27AM -0600, Moger, Babu wrote:
-> The following patch should fix the problem.
 
-Obviously.
+--fR4KvCHXIGNltKve
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Let me know if you want me to send the patch officially.
+On Wed, Jan 24, 2024 at 10:44:20AM -0500, Hugo Villeneuve wrote:
+> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+>=20
+> Company name in compatible description appears twice, which is not really
+> helpful, so remove it from product name.
+>=20
+> Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-Yes, please send a proper patch and add the Reported-by: and the Closes:
-tags from the robot.
+This only landed in 6.8-rc1, right?
+With a Fixes: tag this would probably be okay, but this does seem on the
+"not worth fixing" side of things to be honest.
 
-Thx.
+Cheers,
+Conor.
 
--- 
-Regards/Gruss,
-    Boris.
+> ---
+>  Documentation/devicetree/bindings/arm/fsl.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentati=
+on/devicetree/bindings/arm/fsl.yaml
+> index 228dcc5c7d6f..f455c0172c84 100644
+> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+> @@ -1026,7 +1026,7 @@ properties:
+>          items:
+>            - enum:
+>                - dimonoff,gateway-evk # i.MX8MN Dimonoff Gateway EVK Board
+> -              - rve,rve-gateway # i.MX8MN RVE Gateway Board
+> +              - rve,gateway # i.MX8MN RVE Gateway Board
+>                - variscite,var-som-mx8mn-symphony
+>            - const: variscite,var-som-mx8mn
+>            - const: fsl,imx8mn
+> --=20
+> 2.39.2
+>=20
 
-https://people.kernel.org/tglx/notes-about-netiquette
+--fR4KvCHXIGNltKve
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbE0MAAKCRB4tDGHoIJi
+0kDoAQDB8OEo9sqJYqCSDRi+77Dg5aK/ySummjV3lhwEsdXoPgEA4PRGcK44NDKV
+lpQ8tDB6zvgyylOtXYPT6/z+wPh5pgI=
+=y8LY
+-----END PGP SIGNATURE-----
+
+--fR4KvCHXIGNltKve--
 
