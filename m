@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-37094-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37095-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A826A83AB77
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:15:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 871A583AB78
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:15:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5547B28CC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:15:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B61B91C24DD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:15:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 448D87A708;
-	Wed, 24 Jan 2024 14:15:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 108137C082;
+	Wed, 24 Jan 2024 14:15:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uoHhygbg"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DSINa5t3"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D12E563115
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 14:15:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD07263115
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 14:15:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706105717; cv=none; b=N/MG+5gvAjjCFwU9gmozgkiu5hpdaQKADpZOwy8T433vkJKbvB4m6FTVs7MOOWGKT3h67RAADxjEdoi+On0dJ4n8EhOxnFznC46Ws5CcGPc7+IzIk6UHGSXfCeI453nknY3KW4HPnUZbyc7ZYdlILf2dxewxqdHpKAkIxXj0d+I=
+	t=1706105724; cv=none; b=W4DnE0/UtGir8SBtWNd8EXpfBIFLrxbHMASOUhDhCyqoGFTEeIBuQ6IiW9HEL2MouhmZgV8gWqqJ76sXjwa8l/J6eCwTuRXw87H7/N6yQTJT7TXFWgXUzbdOIrcBlbppFib8JMVarQpQ3pLdz2dJA4LA+nyLhw2dk1QunTABAz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706105717; c=relaxed/simple;
-	bh=cE2W5KfsS/6abmLqZjvi1Wi0V0vV3k55AMuKwFWLxQQ=;
+	s=arc-20240116; t=1706105724; c=relaxed/simple;
+	bh=0UEj8Oof/abgmDFcrUPI79i5BHVw6bCbAYsJDPU2SAM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Hsh9NIcJ+9lrFDqFkygUONnmiuXU/iyLiMsDElYPgo/tZzqyRiUMavSl17mKM1mZ6UHn4VIQ+bHCTYkIfPERKTQ0qMu0dnzm/3M8xFAv1av/WuGS38+dSXadK8kxbL1Fhr39N5foapmZIynRaQxfnDha3s1sl3SjgNbVoLSWJJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uoHhygbg; arc=none smtp.client-ip=209.85.167.43
+	 MIME-Version; b=S4eVTyjor5zvfFgT7bw6fuJTt9cj2Dy9ZAPsCAadXiuEN+pGlJL75UnirNb4pg1zzWM32eYH6J9djeA4zHSPRcHcA/wOe1ALxgshuYm+1FuJZUic0+0gRioCznGO4w8dypKl2t/6wRirIpzuEsUOdohF3whBI8DjYVW7JBr3/YY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DSINa5t3; arc=none smtp.client-ip=209.85.208.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51008c86ecbso2178240e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 06:15:15 -0800 (PST)
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55ad2a47b7aso4878890a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 06:15:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706105714; x=1706710514; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1706105720; x=1706710520; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kXWpKvuuFDRe0zzHcqHQWgdjThR4TPIPgqd6iq0g85c=;
-        b=uoHhygbgkRGKW0AOymPGmBPfX+S8edJ2CS3+AQkFdE4A4dzLgoDwtON3QVLisH6zIc
-         oQALN+yZSjNjlYOfSpYmNwsDbEpj4YkD2RnveO3UZEqS/lQUlso29Rgmd7ez0L4SZh3Z
-         M1OUB4POLJ2Z/FKVgM84h4oQwqDjylVlJvNTCGAcAHrPMlGO4bN8HDj7zvrE127IIL6L
-         IWtIQWvZbTlRaJcWzX9AZlDyAPdCdRXJKrC8lhuvR2DwfAQhT6MqZqWnO9ZhpGrPTBZh
-         /DrhFyyDRyLBu+V/Sl5+/heE3LHNNjswkaT6B/NGM7N4pUH2GNqdZZ7p2OMDBAgz9Z5o
-         fEsw==
+        bh=kinIyrY0DiVL9FjvsbU90IrpJuAQN+qhOmTSZHZdLpE=;
+        b=DSINa5t3MmDC8b2fbZ/xUX2D2ctlZnXEZf1qMjsrZPQmF1Chq0+fBQPztuxKmSTYzl
+         jlPVPKICQBJThTEyqE2APseDp/9idHUSrfvC07LuCyJBJjNKn0IGMxMI28Yj8SeY2nv4
+         AARfcbe6g+zH5MSAffVrD+5g1KUsNjIJapezxudwGujChqw2I/2Bqh8eAjQ5AYpUwN7H
+         omJgIPvIBfEnsicWt5Fi5lxfRnFxcoob5lHp/7dy9sm8LGlKyjA9WZNahRGK3oZ44CX2
+         QFI59jvPophJ2WO7t3tF5okxVF1PMcgk3D8bUIrkJ+I+4mctPB3p8Ig1iRCVwRtx3Cv8
+         9u3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706105714; x=1706710514;
+        d=1e100.net; s=20230601; t=1706105720; x=1706710520;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kXWpKvuuFDRe0zzHcqHQWgdjThR4TPIPgqd6iq0g85c=;
-        b=u6dXnLftXVDYMkBOsBxNMCOZXg+8yoUUlNJoED4evVpLcgDbACSEKCDZdi81vMsb3v
-         81w7ZNwegqhT8Z+rfinZPNHMiXmnQmym0cwwD969FKBh+Zqmd6DZ2dAFzIUqIQHCc/fS
-         OjXcoEgnpM9WWjNKdnyW6ahLTe+3IgIAow9o+awZtCqT7FsFiIXHUmJaVmP5tcB8kUY0
-         AD/phsEDdPLUE8TlPBSGRZSlrh+vFHvpWMGdWWGp5gHn8f5BN/0c4YoRx519BCc2IfpC
-         REIF/TDhqdXeyxzOBbte7IFBknqiiDsooIrv/qZ94lSyHq82a7DoIt/XhtobGHVKBXQI
-         xfWg==
-X-Gm-Message-State: AOJu0Yz8xssWj9IcCO1Z79brDMB/ZdHyfpvRsQknqZYar1AM7giRN8sN
-	k/ceLBqrWukrJcM0bL5Cev7d8kiiqJ0rQ/8K9NaUMrIFfwRFwFddZuGHUJjgRL0=
-X-Google-Smtp-Source: AGHT+IH1z0g9TaKz1LWxOeu/E1gh1nmHd+p/Mcap/m+sFaxrPQm/m1RYdgfMqihKVInodCKSpHNIkw==
-X-Received: by 2002:a05:6512:2210:b0:50e:74ea:525c with SMTP id h16-20020a056512221000b0050e74ea525cmr3950398lfu.3.1706105713953;
-        Wed, 24 Jan 2024 06:15:13 -0800 (PST)
+        bh=kinIyrY0DiVL9FjvsbU90IrpJuAQN+qhOmTSZHZdLpE=;
+        b=ZZBTdeTUvsqpC5Um9jvX6Y3vrqKn10LUIEBOdVhzyOn1yIwGABnYkGWvERmeF3lICE
+         jgOkJKmPjYnozMGkNvbdrqZvrgyjPj7mCkutmUyXuNffvTf0W5N1kWoc4TvDQUnqkR/x
+         epdu/aOrbErzQr/ZUmJXdzPN8nDR5RvM8cMLmeop6y59pQfMshQcjT0ez94R9DYeq7md
+         dupgAo6Zib5l1e+c0MQzDI+4McMzD0vW+rHkxxe0359etTYCCBL9LgNgPYNaOrJD2D5i
+         jeyLBznGbVikoWW2OUZs5VTtixpk8B+IKQR9hBwqbf09nPon9MRDjsSS+fUb1O5JrtVy
+         3F1Q==
+X-Gm-Message-State: AOJu0YxMvDF9Z4BGqM3dU6tsWJ1ZwdNNJoEDznBLttYys+fjUMGYqvgl
+	YiixdzCBHCbs3YvVT3hLfU8moUsmWiPPG/orxLqwD4QmXYdjkMh6ImphPcnp+Y0=
+X-Google-Smtp-Source: AGHT+IF4+LUhP0g/9YJ7YhuuFE5ZYZEhnJFlqdsUbpxgT5uNDQ/9YEAlGlL6+jOgnpmMApQnrgCtdA==
+X-Received: by 2002:a17:907:30cd:b0:a30:de41:2c with SMTP id vl13-20020a17090730cd00b00a30de41002cmr447163ejb.161.1706105720026;
+        Wed, 24 Jan 2024 06:15:20 -0800 (PST)
 Received: from ttritton.c.googlers.com.com (64.227.90.34.bc.googleusercontent.com. [34.90.227.64])
-        by smtp.gmail.com with ESMTPSA id vu3-20020a170907a64300b00a2d7f63dd71sm12399097ejc.29.2024.01.24.06.15.13
+        by smtp.gmail.com with ESMTPSA id vu3-20020a170907a64300b00a2d7f63dd71sm12399097ejc.29.2024.01.24.06.15.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 06:15:13 -0800 (PST)
+        Wed, 24 Jan 2024 06:15:19 -0800 (PST)
 From: Terry Tritton <terry.tritton@linaro.org>
 To: keescook@chromium.org,
 	luto@amacapital.net,
@@ -76,9 +76,9 @@ Cc: linux-kselftest@vger.kernel.org,
 	kernel-team@android.com,
 	bettyzhou@google.com,
 	Terry Tritton <terry.tritton@linaro.org>
-Subject: [PATCH 1/3] selftests/seccomp: Handle EINVAL on unshare(CLONE_NEWPID)
-Date: Wed, 24 Jan 2024 14:13:55 +0000
-Message-ID: <20240124141357.1243457-2-terry.tritton@linaro.org>
+Subject: [PATCH 2/3] selftests/seccomp: Change the syscall used in KILL_THREAD test
+Date: Wed, 24 Jan 2024 14:13:56 +0000
+Message-ID: <20240124141357.1243457-3-terry.tritton@linaro.org>
 X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
 In-Reply-To: <20240124141357.1243457-1-terry.tritton@linaro.org>
 References: <20240124141357.1243457-1-terry.tritton@linaro.org>
@@ -90,43 +90,54 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-unshare(CLONE_NEWPID) can return EINVAL if the kernel does not have the
-CONFIG_PID_NS option enabled.
+The Bionic version of pthread_create used on Android calls the prctl
+function to give the stack and thread local storage a useful name. This
+will cause the KILL_THREAD test to fail as it will kill the thread as
+soon as it is created.
 
-Add a check on these calls to skip the test if we receive EINVAL.
+change the test to use getpid instead of prctl.
 
 Signed-off-by: Terry Tritton <terry.tritton@linaro.org>
 ---
- tools/testing/selftests/seccomp/seccomp_bpf.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ tools/testing/selftests/seccomp/seccomp_bpf.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index 38f651469968..5e705674b706 100644
+index 5e705674b706..da11b95b8872 100644
 --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
 +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -3709,7 +3709,12 @@ TEST(user_notification_sibling_pid_ns)
- 	ASSERT_GE(pid, 0);
+@@ -784,7 +784,7 @@ void *kill_thread(void *data)
+ 	bool die = (bool)data;
  
- 	if (pid == 0) {
--		ASSERT_EQ(unshare(CLONE_NEWPID), 0);
-+		ASSERT_EQ(unshare(CLONE_NEWPID), 0) {
-+			if (errno == EPERM)
-+				SKIP(return, "CLONE_NEWPID requires CAP_SYS_ADMIN");
-+			else if (errno == EINVAL)
-+				SKIP(return, "CLONE_NEWPID is invalid (missing CONFIG_PID_NS?)");
-+		}
- 
- 		pid2 = fork();
- 		ASSERT_GE(pid2, 0);
-@@ -3727,6 +3732,8 @@ TEST(user_notification_sibling_pid_ns)
- 	ASSERT_EQ(unshare(CLONE_NEWPID), 0) {
- 		if (errno == EPERM)
- 			SKIP(return, "CLONE_NEWPID requires CAP_SYS_ADMIN");
-+		else if (errno == EINVAL)
-+			SKIP(return, "CLONE_NEWPID is invalid (missing CONFIG_PID_NS?)");
+ 	if (die) {
+-		prctl(PR_GET_SECCOMP, 0, 0, 0, 0);
++		syscall(__NR_getpid);
+ 		return (void *)SIBLING_EXIT_FAILURE;
  	}
- 	ASSERT_EQ(errno, 0);
  
+@@ -803,11 +803,11 @@ void kill_thread_or_group(struct __test_metadata *_metadata,
+ {
+ 	pthread_t thread;
+ 	void *status;
+-	/* Kill only when calling __NR_prctl. */
++	/* Kill only when calling __NR_getpid. */
+ 	struct sock_filter filter_thread[] = {
+ 		BPF_STMT(BPF_LD|BPF_W|BPF_ABS,
+ 			offsetof(struct seccomp_data, nr)),
+-		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_prctl, 0, 1),
++		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_getpid, 0, 1),
+ 		BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_KILL_THREAD),
+ 		BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_ALLOW),
+ 	};
+@@ -819,7 +819,7 @@ void kill_thread_or_group(struct __test_metadata *_metadata,
+ 	struct sock_filter filter_process[] = {
+ 		BPF_STMT(BPF_LD|BPF_W|BPF_ABS,
+ 			offsetof(struct seccomp_data, nr)),
+-		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_prctl, 0, 1),
++		BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, __NR_getpid, 0, 1),
+ 		BPF_STMT(BPF_RET|BPF_K, kill),
+ 		BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_ALLOW),
+ 	};
 -- 
 2.43.0.429.g432eaa2c6b-goog
 
