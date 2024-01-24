@@ -1,181 +1,157 @@
-Return-Path: <linux-kernel+bounces-36590-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36595-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3364183A383
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:50:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21BEC83A38D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:52:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57DC71C27DD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 07:50:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 462801C28B5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 07:52:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03CB9171AB;
-	Wed, 24 Jan 2024 07:50:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 149FF171B8;
+	Wed, 24 Jan 2024 07:52:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="d9yJYnB8";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="d9yJYnB8"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="oG4VYGwG"
+Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66440168D7;
-	Wed, 24 Jan 2024 07:50:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D05EB1772D
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 07:52:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706082649; cv=none; b=bVNvzbjUJ+P4oX2QlB9bxfooCA9+FMBxpkmt1dSBOB49xlNmrw3QDKUE4KDYjA785xlUQStxcHvQDE/fJRD/zbXMMcpujj0MaXxQ+p1QQfQHlDOs3dnmDXXvTxAiN83X5Eju2raAPF4ORMwiP4+o/rSMuJ+BphxGEYPeNySu7tM=
+	t=1706082724; cv=none; b=uawPbq4HGIJIw2hQv1rCC9Mww8oopWCVcqjbdrrtW4vrzd7eceCY+xrVyLthXKcvBCUXMy1Znoh9epvwMzVUuGh5N6qjJLSficVgN7yWelHRH+2J7pyCnT7gMHtasCng1uWpvYBGekHbYPoaKvPiYXKtM+YbOCYhORGffhKUOfM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706082649; c=relaxed/simple;
-	bh=cC2LHOBYxvF1gJoW39qXQupPj84QBL5OBB3dmmbB0Y4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XQYwz3/s64p1+KZUafpobl1iZajrXwRGY2dQOiSAWkOmJH8usnoz1UKk+SBnKJmbPSFkLi06T/tZPKTsV/T3OJXImAD5NfpzHKxxcUUZGCzosxaKX24uD6VMCeAr4CcAZalLPxCzywWHRroNePs3cGipyVJtdJJjjd+DrWerH9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=d9yJYnB8; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=d9yJYnB8; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 2C8D021EB6;
-	Wed, 24 Jan 2024 07:50:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706082644; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sUY8xqCzF/ho9H6VnM7nIW3YTPMmxBLu+pNBzIkIdWc=;
-	b=d9yJYnB8gVI3nNOhaiezeRXyIDCwE3OFGeee6sYMbH9eTyPTWPGRq6gf/75o5M7uWPSftQ
-	1ItK3LWFd4chp+82V2UIy8EDmTrYn42Lv1IelQop4bBQJMiUBj8ICT99u3/PMD1maW8bMe
-	wPcoLOpfnPIdANtQ1Q6tjip8lUE7k4Q=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706082644; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sUY8xqCzF/ho9H6VnM7nIW3YTPMmxBLu+pNBzIkIdWc=;
-	b=d9yJYnB8gVI3nNOhaiezeRXyIDCwE3OFGeee6sYMbH9eTyPTWPGRq6gf/75o5M7uWPSftQ
-	1ItK3LWFd4chp+82V2UIy8EDmTrYn42Lv1IelQop4bBQJMiUBj8ICT99u3/PMD1maW8bMe
-	wPcoLOpfnPIdANtQ1Q6tjip8lUE7k4Q=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 098771333E;
-	Wed, 24 Jan 2024 07:50:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id vhqROlPBsGWhXAAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Wed, 24 Jan 2024 07:50:43 +0000
-Date: Wed, 24 Jan 2024 08:50:43 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: "T.J. Mercier" <tjmercier@google.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>, android-mm@google.com,
-	yuzhao@google.com, yangyifei03@kuaishou.com,
-	cgroups@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "mm:vmscan: fix inaccurate reclaim during
- proactive reclaim"
-Message-ID: <ZbDBU_1BcLkKmLbA@tiehlicka>
-References: <20240121214413.833776-1-tjmercier@google.com>
- <Za-H8NNW9bL-I4gj@tiehlicka>
- <CABdmKX2K4MMe9rsKfWi9RxUS5G1RkLVzuUkPnovt5O2hqVmbWA@mail.gmail.com>
- <20240123164819.GB1745986@cmpxchg.org>
+	s=arc-20240116; t=1706082724; c=relaxed/simple;
+	bh=x5Asvmkq7qcjnNf7UFAguGURx9f6MZ/P9bw7U/kJkgs=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=E8q6wn8RdrNVcyMVYUBUrYqLn0V8pHU2ThMu31+56CnHIFAKQMlWf6UHaknCSfjL6fC/tJRi4WveUYsvTgoYNMdZqAWNfP73Gv5Q+ZHZLBzlSJZCmzkIiNhne1gj0PVWq7WPnIU62U6okXtdescjq6rCMdjoOQALx8cGQFsJSkw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=oG4VYGwG; arc=none smtp.client-ip=209.85.160.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-21433afcc53so2001283fac.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 23:52:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706082722; x=1706687522; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1PwaNNHoovr1XsO2ShyI+BpkXh2zlE7frt/xlHXVHJM=;
+        b=oG4VYGwGI39QDpVW4tJcp/Cf8fwFqPkTECJGGTu/Fpnw/eE1OE1clGuNHqdWSx2uVK
+         QLxD4kor0CJJSe+/51ghs1DQryMsaUgpTzYT51tY7+aV6B3tjkRij8I4Wxlvdy3H8Ijw
+         KYFpDxbaiAzJ3hzaO37L1jWn9rHd4iyoE5yJc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706082722; x=1706687522;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1PwaNNHoovr1XsO2ShyI+BpkXh2zlE7frt/xlHXVHJM=;
+        b=tnmL0LmW8GdDPIOaBWhOoBESO647MTjy+Eixge1zXw37BeTrQbx0qOopwsM247isd0
+         CYOE++4w+T9Nz5RCBy+6kcIeNfBLH0jaf7O7iL7WSdIN+f2aPuTkOK5hj8lKJ1d9YMgq
+         wsz6+QrV/F1V4NqfMvzvAnGiHLt1yYCYjTYfi7xV8ltPsDo2UAUA0P6R4836mbhwlEun
+         QlIwIpZOPUSzSuMfp/IvJ4J2GRgqODjxOhiJuSfDI8aZvFyMCX43S0oqJUJPUMjYSGT9
+         z5vFiK9sLAGJzYBW8Z9O8WSuKgupQpCphyXCPiPLUdDkOfDsjS+DWAHLFz5i6xF7eJl2
+         lP3A==
+X-Gm-Message-State: AOJu0YzceU0573X8msbV9wgfUL/RchySGXpN178lhGUBTLdc1jmPITW+
+	06FLUsha9KipmKXID0F/eVFna/bjkP/P+7W/Qkof4SLr89e3PHzi4RMzYz39Lg==
+X-Google-Smtp-Source: AGHT+IG51W3Vw6LcYiGmpG5C4lnBiPbggs+k9JuCPpd6ZqebtU/7ymkKXYOcNSQBcqXN1xFPTlfzEA==
+X-Received: by 2002:a05:6870:e40d:b0:214:807e:8a05 with SMTP id n13-20020a056870e40d00b00214807e8a05mr2978568oag.2.1706082721789;
+        Tue, 23 Jan 2024 23:52:01 -0800 (PST)
+Received: from yuanhsinte1.c.googlers.com (2.210.143.34.bc.googleusercontent.com. [34.143.210.2])
+        by smtp.gmail.com with ESMTPSA id r21-20020a635155000000b005c1ce3c960bsm10941238pgl.50.2024.01.23.23.51.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jan 2024 23:52:01 -0800 (PST)
+From: Hsin-Te Yuan <yuanhsinte@chromium.org>
+Date: Wed, 24 Jan 2024 07:51:57 +0000
+Subject: [PATCH v3] arm64: dts: mt8195-cherry-tomato: change watchdog reset
+ boot flow
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240123164819.GB1745986@cmpxchg.org>
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=d9yJYnB8
-X-Spamd-Result: default: False [-2.81 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 2C8D021EB6
-X-Spam-Level: 
-X-Spam-Score: -2.81
-X-Spam-Flag: NO
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240124-send-upstream-v3-1-5097c9862a73@chromium.org>
+X-B4-Tracking: v=1; b=H4sIAJzBsGUC/x2NQQrCQAwAv1JyNtDtomz9inhIt9EGaixJK0Lp3
+ w0eZ2CYHZxN2OHa7GD8EZe3BuRTA3UifTLKGAxd2+W2pILOOuK2+GpML+Q+8SWdqfS5QjQDOeN
+ gpHWKSrd5DrkYP+T7n9zux/EDW1ZYVnQAAAA=
+To: Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Matthias Brugger <matthias.bgg@gmail.com>, 
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
+ Hsin-Te Yuan <yuanhsinte@google.com>, 
+ Hsin-Te Yuan <yuanhsinte@chromium.org>
+X-Mailer: b4 0.12.3
 
-On Tue 23-01-24 11:48:19, Johannes Weiner wrote:
-> The revert isn't a straight-forward solution.
-> 
-> The patch you're reverting fixed conventional reclaim and broke
-> MGLRU. Your revert fixes MGLRU and breaks conventional reclaim.
-> 
-> On Tue, Jan 23, 2024 at 05:58:05AM -0800, T.J. Mercier wrote:
-> > They both are able to make progress. The main difference is that a
-> > single iteration of try_to_free_mem_cgroup_pages with MGLRU ends soon
-> > after it reclaims nr_to_reclaim, and before it touches all memcgs. So
-> > a single iteration really will reclaim only about SWAP_CLUSTER_MAX-ish
-> > pages with MGLRU. WIthout MGLRU the memcg walk is not aborted
-> > immediately after nr_to_reclaim is reached, so a single call to
-> > try_to_free_mem_cgroup_pages can actually reclaim thousands of pages
-> > even when sc->nr_to_reclaim is 32. (I.E. MGLRU overreclaims less.)
-> > https://lore.kernel.org/lkml/20221201223923.873696-1-yuzhao@google.com/
-> 
-> Is that a feature or a bug?
-> 
->  * 1. Memcg LRU only applies to global reclaim, and the round-robin incrementing
->  *    of their max_seq counters ensures the eventual fairness to all eligible
->  *    memcgs. For memcg reclaim, it still relies on mem_cgroup_iter().
-> 
-> If it bails out exactly after nr_to_reclaim, it'll overreclaim
-> less. But with steady reclaim in a complex subtree, it will always hit
-> the first cgroup returned by mem_cgroup_iter() and then bail. This
-> seems like a fairness issue.
+From: Hsin-Te Yuan <yuanhsinte@google.com>
 
-Agreed. We would need to re-introduce something like we used to have
-before 1ba6fc9af35bf.
+The external output reset signal was originally disabled and sent from
+firmware. However, an unfixed bug in the firmware on tomato prevents
+the signal from being sent, causing the device to fail to boot. To fix
+this, enable external output reset signal to allow the device to reboot
+normally.
 
-> We should figure out what the right method for balancing fairness with
-> overreclaim is, regardless of reclaim implementation. Because having
-> two different approaches and reverting dependent things back and forth
-> doesn't make sense.
+Fixes: 5eb2e303ec6b ("arm64: dts: mediatek: Introduce MT8195 Cherry platform's Tomato")
+Signed-off-by: Hsin-Te Yuan <yuanhsinte@chromium.org>
+---
+Changes in v3:
+- Add Fixes tag
 
-Absolutely agreed!
+Changes in v2:
+- Limit the effect only on tomato.
+---
+ arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts | 4 ++++
+ arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts | 4 ++++
+ arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts | 4 ++++
+ 3 files changed, 12 insertions(+)
 
-> Using an LRU to rotate through memcgs over multiple reclaim cycles
-> seems like a good idea. Why is this specific to MGLRU? Shouldn't this
-> be a generic piece of memcg infrastructure?
-> 
-> Then there is the question of why there is an LRU for global reclaim,
-> but not for subtree reclaim. Reclaiming a container with multiple
-> subtrees would benefit from the fairness provided by a container-level
-> LRU order just as much; having fairness for root but not for subtrees
-> would produce different reclaim and pressure behavior, and can cause
-> regressions when moving a service from bare-metal into a container.
-> 
-> Figuring out these differences and converging on a method for cgroup
-> fairness would be the better way of fixing this. Because of the
-> regression risk to the default reclaim implementation, I'm inclined to
-> NAK this revert.
+diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts
+index 2d5e8f371b6de..a82d716f10d44 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts
++++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts
+@@ -23,3 +23,7 @@ &sound {
+ &ts_10 {
+ 	status = "okay";
+ };
++
++&watchdog {
++	/delete-property/ mediatek,disable-extrst;
++};
+diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts
+index 2586c32ce6e6f..2fe20e0dad836 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts
++++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts
+@@ -43,3 +43,7 @@ &sound {
+ &ts_10 {
+ 	status = "okay";
+ };
++
++&watchdog {
++	/delete-property/ mediatek,disable-extrst;
++};
+diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts
+index f54f9477b99da..dd294ca98194c 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts
++++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts
+@@ -44,3 +44,7 @@ &sound {
+ &ts_10 {
+ 	status = "okay";
+ };
++
++&watchdog {
++	/delete-property/ mediatek,disable-extrst;
++};
 
-I do agree that a simple revert doesn't seem to be the way to go.
+---
+base-commit: 64b50fcb03649ca7f0d762a50e7a3484cfc1d586
+change-id: 20230818-send-upstream-e91e615a893c
 
+Best regards,
 -- 
-Michal Hocko
-SUSE Labs
+Hsin-Te Yuan <yuanhsinte@chromium.org>
+
 
