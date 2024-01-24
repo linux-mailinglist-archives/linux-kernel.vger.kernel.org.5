@@ -1,169 +1,159 @@
-Return-Path: <linux-kernel+bounces-37198-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2646083AC7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:53:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49C8183ACB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:03:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D260529BCC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:53:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF581B35450
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:54:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A7E67E79E;
-	Wed, 24 Jan 2024 14:43:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1403D811E4;
+	Wed, 24 Jan 2024 14:45:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z+nvrq5B"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="gTmPgO9w"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8647E7CF15
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 14:43:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DCA060BA8;
+	Wed, 24 Jan 2024 14:45:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706107433; cv=none; b=YmSQQjfibdMJWJl6d4D3rWIYTAvXraQXI8qgPxBVY/Cscc0lc+o53Nd0dPYm0NbcrW5DW4EMFrjDP/Bd0rVgdS0trrUPE+T3j4xT728V1kKxASUZMj6lPaP9Yz1Bkd+B0+OSEfHtUtDF0vQTOek4DV5cBvbF+SXtiOVxIYCwSQ4=
+	t=1706107510; cv=none; b=kOe41ndTiOBpGkHovPTJed39kUTlQ+THm+F11kL2V9a71barY6xS1bbb6cGLbbjYDvKlPzkzCuCnyvji8/tzpXHjLIfAOMbX6dB98T6oXVeRckoG/EvDXcDCWz/Eaxi3uaph6h52z350MlJBDIQ/fMT1YythC6J72yWTz7A7K8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706107433; c=relaxed/simple;
-	bh=W4jjIT3rFGY05/gjE0cqYf1XPxshz9/frF5SQn/Cvy8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fzkck6XY7FDdI2cbI8X5+M/lFLoVrTwPUZC0Y8EAWY/AhCVKU/RjLJO11oQJRv9VLHqmVVb4E0IQiKDGZBNN0orj/LZKDuJ3ZgR+oJFcR50COPIYQgM489nfALDZKO26BZjBLgZ9EzYs/hwI8rP8WJpzYqhcj6Dn+SAI4XT28Qk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z+nvrq5B; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFE2CC433C7;
-	Wed, 24 Jan 2024 14:43:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706107433;
-	bh=W4jjIT3rFGY05/gjE0cqYf1XPxshz9/frF5SQn/Cvy8=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Z+nvrq5Bor6DTnQQZYi7BMd6G/paRdTOD1kasJ2W+8VMC8yyAJiMFZp3guRoVCi3P
-	 rcRaS95gCbn61GN0ybv9qcFc45ovLTdpKJKrw88jXYrFTJdhWB2A/Cu2HPW6lCirQN
-	 kB5OiThib+tOqgK9yxb7/un1DtGo+3UfdIcVWUBmYCwtt9ejvGViq0JoWc5BiISFVY
-	 jRL/QQpK1BNE9/O3q2TM5zcSMuMmMQVcZ9n2Vd+lYUNz+CeSxaCHZFmzYoX3b8/yzY
-	 N0KvgzXS6/3E8BsHmYSjZ6P/E2PiaQUntPk8nrn8fECNpoKheeYUrbAyTpvqbXGso7
-	 /Njj8KEqaoVAg==
-From: Chao Yu <chao@kernel.org>
-To: jaegeuk@kernel.org
-Cc: linux-f2fs-devel@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org,
-	Chao Yu <chao@kernel.org>
-Subject: [PATCH] f2fs: introduce get_available_block_count() for cleanup
-Date: Wed, 24 Jan 2024 22:43:42 +0800
-Message-Id: <20240124144342.14612-1-chao@kernel.org>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1706107510; c=relaxed/simple;
+	bh=6hqy0a4sGpuNFGT9XQmGQQHyoSvs8w4hXCSZapMZQHY=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=Y/XGm60eYlv4VOkG2hboxaa2Q2vEOUGQC5I7vIZ0VEJkudX8vzSMC+JQ3DMZgw22V2MccPmFRM6jaWjfpye7Hcev3uWKVhR0OEToLbG3D4JquoO7TTZPKJWdGAb7HeF8xAvD+iF8TzMXDZ/VVu/NRIHITqQ7ch3/7UhmIfLcuXQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=gTmPgO9w; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40ODbtMF008712;
+	Wed, 24 Jan 2024 14:45:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : from : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Z75rsvyQVvkzyLp3paQEXb4qLlOHXspm/NAl7MHlZug=;
+ b=gTmPgO9wG0RDw1ra346Vzi4kr+KCjkY1po2ycIuyMaro2seOywZgfCsEhzF929s2Aryi
+ yApg3jg8UyAYwIjmdptJFrJfUPn3/aGaNxAR6ADvFE2z8T+woYBoOeA0JR5fbBKHy2ZL
+ mI8eZcJl/vUkxDbO9zxt9DiqZI48bPlT4LaEECQ739HmFVAjz49PCNgXVJlJ6t8XdUDJ
+ cRg8goADKa/Ov7UmdLvn8Zf4GX7ajOXmEqe+uoO6WIvb5NF9/VefQP74pGL7BBsspfaJ
+ H2ISYA0Cxfxwi+QeIhb0yhRakroXWwuPFMdDUjz74N2uNh8WMx3gbGAunPMCQvGZCoeI yQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vu3kpsnby-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Jan 2024 14:45:02 +0000
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40OEYuZc002004;
+	Wed, 24 Jan 2024 14:45:02 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vu3kpsnb8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Jan 2024 14:45:02 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40OEEj7I022413;
+	Wed, 24 Jan 2024 14:45:01 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3vrt0m66kx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Jan 2024 14:45:01 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40OEiwBT46400212
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 24 Jan 2024 14:44:58 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 09D682004B;
+	Wed, 24 Jan 2024 14:44:58 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 75CC720043;
+	Wed, 24 Jan 2024 14:44:57 +0000 (GMT)
+Received: from [9.152.224.38] (unknown [9.152.224.38])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 24 Jan 2024 14:44:57 +0000 (GMT)
+Message-ID: <951176ce-5fcc-4e5a-a25f-df0f7724e797@linux.ibm.com>
+Date: Wed, 24 Jan 2024 15:44:57 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [REGRESSION] v6.8 SMC-D issues
+Content-Language: en-US
+From: Alexandra Winter <wintera@linux.ibm.com>
+To: Wen Gu <guwen@linux.alibaba.com>, wenjia@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        jaka@linux.ibm.com, Matthew Rosato <mjrosato@linux.ibm.com>
+Cc: Linux regressions mailing list <regressions@lists.linux.dev>,
+        borntraeger@linux.ibm.com, svens@linux.ibm.com,
+        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+        raspl@linux.ibm.com, schnelle@linux.ibm.com,
+        guangguan.wang@linux.alibaba.com, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Halil Pasic <pasic@linux.ibm.com>
+References: <20231219142616.80697-1-guwen@linux.alibaba.com>
+ <20231219142616.80697-8-guwen@linux.alibaba.com>
+ <13579588-eb9d-4626-a063-c0b77ed80f11@linux.ibm.com>
+In-Reply-To: <13579588-eb9d-4626-a063-c0b77ed80f11@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: IzTTuGw3QYrqtDuD0CKB1gd2fQHJ1EP-
+X-Proofpoint-ORIG-GUID: 03xzMTm12SCYFdK7jTpXF3hUiLXxyf8e
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-24_06,2024-01-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ suspectscore=0 spamscore=0 lowpriorityscore=0 mlxlogscore=846
+ impostorscore=0 malwarescore=0 clxscore=1015 adultscore=0 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401240107
 
-There are very similar codes in inc_valid_block_count() and
-inc_valid_node_count() which is used for available user block
-count calculation.
 
-This patch introduces a new helper get_available_block_count()
-to include those common codes, and used it to clean up codes.
 
-Signed-off-by: Chao Yu <chao@kernel.org>
----
- fs/f2fs/f2fs.h | 61 +++++++++++++++++++++++++-------------------------
- 1 file changed, 31 insertions(+), 30 deletions(-)
+On 24.01.24 15:29, Alexandra Winter wrote:
+> Hello Wen Gu,
+> 
+> our colleague Matthew reported that SMC-D is failing in certain scenarios on
+> kernel v6.8 (thx Matt!). He bisected it to 
+> b40584d ("net/smc: compatible with 128-bits extended GID of virtual ISM device")
+> I think the root cause could also be somewhere else in the SMC-Dv2.1 patchset.
+> 
+> I was able to reproduce the issue on a 6.8.0-rc1 kernel.
+> I tested iperf over smc-d with:
+> smc_run iperf3 -s
+> smc_run iperf3 -c <IP@>
+> 
+> 1) Doing an iperf in a single system using 127.0.0.1 as IP@
+> (System A=iperf client=iperf server)
+> 2) Doing iperf to a remote system (System A=client; System B=iperf server)
+> 
+> The second iperf fails with an error message like:
+> "iperf3: error - unable to receive cookie at server: Bad file descriptor" on the server"
+> 
+> If I do first 2) (iperf to remote) and then 1) (iperf to local), then the
+> iperf to local fails.
+> 
+> I can do multiple iperf to the first server without problems.
+> 
+> I ran it on a debug server with KASAN, but got no reports in the Logfile.
+> 
+> I will try to debug further, but wanted to let you all know.
+> 
+> Kind regards
+> Alexandra
+> 
+> Reported-by: Matthew Rosato <mjrosato@linux.ibm.com>
+> 
+> 
+> 
 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 5d19643a92af..0094a8c85f4a 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -2253,6 +2253,31 @@ static inline bool __allow_reserved_blocks(struct f2fs_sb_info *sbi,
- 	return false;
- }
- 
-+static inline unsigned int get_available_block_count(struct f2fs_sb_info *sbi,
-+						struct inode *inode, bool cap)
-+{
-+	block_t avail_user_block_count;
-+
-+	avail_user_block_count = sbi->user_block_count -
-+					sbi->current_reserved_blocks;
-+
-+	if (!__allow_reserved_blocks(sbi, inode, cap))
-+		avail_user_block_count -= F2FS_OPTION(sbi).root_reserved_blocks;
-+
-+	if (F2FS_IO_ALIGNED(sbi))
-+		avail_user_block_count -= sbi->blocks_per_seg *
-+				SM_I(sbi)->additional_reserved_segments;
-+
-+	if (unlikely(is_sbi_flag_set(sbi, SBI_CP_DISABLED))) {
-+		if (avail_user_block_count > sbi->unusable_block_count)
-+			avail_user_block_count -= sbi->unusable_block_count;
-+		else
-+			avail_user_block_count = 0;
-+	}
-+
-+	return avail_user_block_count;
-+}
-+
- static inline void f2fs_i_blocks_write(struct inode *, block_t, bool, bool);
- static inline int inc_valid_block_count(struct f2fs_sb_info *sbi,
- 				 struct inode *inode, blkcnt_t *count, bool partial)
-@@ -2278,22 +2303,8 @@ static inline int inc_valid_block_count(struct f2fs_sb_info *sbi,
- 
- 	spin_lock(&sbi->stat_lock);
- 	sbi->total_valid_block_count += (block_t)(*count);
--	avail_user_block_count = sbi->user_block_count -
--					sbi->current_reserved_blocks;
--
--	if (!__allow_reserved_blocks(sbi, inode, true))
--		avail_user_block_count -= F2FS_OPTION(sbi).root_reserved_blocks;
-+	avail_user_block_count = get_available_block_count(sbi, inode, true);
- 
--	if (F2FS_IO_ALIGNED(sbi))
--		avail_user_block_count -= sbi->blocks_per_seg *
--				SM_I(sbi)->additional_reserved_segments;
--
--	if (unlikely(is_sbi_flag_set(sbi, SBI_CP_DISABLED))) {
--		if (avail_user_block_count > sbi->unusable_block_count)
--			avail_user_block_count -= sbi->unusable_block_count;
--		else
--			avail_user_block_count = 0;
--	}
- 	if (unlikely(sbi->total_valid_block_count > avail_user_block_count)) {
- 		if (!partial) {
- 			spin_unlock(&sbi->stat_lock);
-@@ -2609,7 +2620,8 @@ static inline int inc_valid_node_count(struct f2fs_sb_info *sbi,
- 					struct inode *inode, bool is_inode)
- {
- 	block_t	valid_block_count;
--	unsigned int valid_node_count, user_block_count;
-+	unsigned int valid_node_count;
-+	unsigned int avail_user_block_count;
- 	int err;
- 
- 	if (is_inode) {
-@@ -2629,21 +2641,10 @@ static inline int inc_valid_node_count(struct f2fs_sb_info *sbi,
- 
- 	spin_lock(&sbi->stat_lock);
- 
--	valid_block_count = sbi->total_valid_block_count +
--					sbi->current_reserved_blocks + 1;
--
--	if (!__allow_reserved_blocks(sbi, inode, false))
--		valid_block_count += F2FS_OPTION(sbi).root_reserved_blocks;
--
--	if (F2FS_IO_ALIGNED(sbi))
--		valid_block_count += sbi->blocks_per_seg *
--				SM_I(sbi)->additional_reserved_segments;
--
--	user_block_count = sbi->user_block_count;
--	if (unlikely(is_sbi_flag_set(sbi, SBI_CP_DISABLED)))
--		user_block_count -= sbi->unusable_block_count;
-+	valid_block_count = sbi->total_valid_block_count + 1;
-+	avail_user_block_count = get_available_block_count(sbi, inode, false);
- 
--	if (unlikely(valid_block_count > user_block_count)) {
-+	if (unlikely(valid_block_count > avail_user_block_count)) {
- 		spin_unlock(&sbi->stat_lock);
- 		goto enospc;
- 	}
--- 
-2.40.1
-
+It seems the issue only occurs, when both client and server are on 6.8+
+When either side is on an older kernel (6.5.6-300.fc39.s390x in my case),
+I don't see the issue.
 
