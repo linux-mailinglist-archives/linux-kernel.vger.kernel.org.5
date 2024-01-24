@@ -1,68 +1,49 @@
-Return-Path: <linux-kernel+bounces-37795-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37796-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD67983B577
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 00:13:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25B5183B588
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 00:20:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 638781F232BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:13:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3861285043
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:20:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74BDA13665B;
-	Wed, 24 Jan 2024 23:13:41 +0000 (UTC)
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.187])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6E5713667A;
+	Wed, 24 Jan 2024 23:20:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rJtdk+MB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D0CA135A40;
-	Wed, 24 Jan 2024 23:13:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.126.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0363D136656;
+	Wed, 24 Jan 2024 23:20:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706138021; cv=none; b=oKvs2Tdhs1IEFVUKPyLJurhO7pqfz6ZI22PTN7u+hJu/Qok+tDFVdbWfwC6ln8fNP6OytFWRlK95AeiLTWPXAxHWaNLhdqAEB1fo20musEm1KE2t+GQw8gL5DnzntAYljJJq04qN4KzC1aVsm3NFyzJgt/YAo9z34psfeFNLBBA=
+	t=1706138428; cv=none; b=WkXev9tR7QYJb+PpUVpqPVgAgQOuAyr0Jk8qqhDcYkoVG+GGslyCppkFsKiVY0gLzfvMVcz2XsOec9gY4wCmf/CojU7sCF4e185KUWrW2RcrsG02YKN24XfSwa6B/eGIf/Ugas9ChzpF7Q8YmndYWGaR5bjUdcny7uQ4WSCkGnA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706138021; c=relaxed/simple;
-	bh=EnAoG8PAQVNwEJgEMwMzFzSmFR/EUEE2tzGftMfXfrY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZXQQY1MJabe7UlFxW2vR0CJXeeI/k58Bw5Uo/t7Rn6lr1Q7/Dyd8Et4ujuu3HjiHNcusJEI1ShmrfOCB2kqCrksK8BKkg+iyhi5BPUcXMf6WpPiNAUoDP7IeZ2xR7UCBOv0DiMU8DIXqrts5qTjIt9DoM1dV/X5S21ET1EZfnRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de; spf=pass smtp.mailfrom=valentinobst.de; arc=none smtp.client-ip=212.227.126.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=valentinobst.de
-Received: from localhost.localdomain ([217.249.70.154]) by
- mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MLi4W-1rkRnr1ROC-00Hfn9; Thu, 25 Jan 2024 00:13:03 +0100
-From: Valentin Obst <kernel@valentinobst.de>
-To: aliceryhl@google.com
-Cc: a.hindborg@samsung.com,
-	akpm@linux-foundation.org,
-	alex.gaynor@gmail.com,
-	arnd@arndb.de,
-	arve@android.com,
-	benno.lossin@proton.me,
-	bjorn3_gh@protonmail.com,
-	boqun.feng@gmail.com,
-	brauner@kernel.org,
-	cmllamas@google.com,
-	gary@garyguo.net,
-	gregkh@linuxfoundation.org,
-	joel@joelfernandes.org,
-	keescook@chromium.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	maco@android.com,
-	ojeda@kernel.org,
-	rust-for-linux@vger.kernel.org,
-	surenb@google.com,
-	tkjos@android.com,
-	viro@zeniv.linux.org.uk,
-	wedsonaf@gmail.com,
-	Valentin Obst <kernel@valentinobst.de>
-Subject: Re: [PATCH 1/3] rust: add userspace pointers
-Date: Thu, 25 Jan 2024 00:12:35 +0100
-Message-ID: <20240124231235.6183-1-kernel@valentinobst.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240124-alice-mm-v1-1-d1abcec83c44@google.com>
-References: <20240124-alice-mm-v1-1-d1abcec83c44@google.com>
+	s=arc-20240116; t=1706138428; c=relaxed/simple;
+	bh=7GTQG8sFoJ4iYeZM7dgnESy6/9cSufsoQj9M/N6s+Wc=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=LgXflqpJ4/gCbSjEOVpui9XeX4AibchfSMDTEoc1H+F9xLb86d6kTxhjc7pJfnu4PSBXwCqyjVwCtymJKb0gH14InrH0cJ0ZvRIq0B5DXKfmfxNtK7VIJmyTTwIMRrQCh/yqHQ8dzWbE5B5M6XRkad7z3PJi3OWBzOlsE7iEcyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rJtdk+MB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8F4C2C433F1;
+	Wed, 24 Jan 2024 23:20:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706138427;
+	bh=7GTQG8sFoJ4iYeZM7dgnESy6/9cSufsoQj9M/N6s+Wc=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=rJtdk+MBGaaN+9nrJ1RHyMSKdGvhusnXbLDYy5cRETFREbKQ8GOPaBI+0/gtcPkqK
+	 VIFoFo79l6uMpgGK2OmdXczTLqmuM4N+AlROxft5/Mo756IX7/XcViiINy+G/1mXhj
+	 bUiMpiRF4Gs+OZ03+tn+WOuwq8+RdRV+DRdM/8hzEQMt5Voy2Q0qvwqKZ2Rt5brPzh
+	 Gt9EYpUBR8weTsckxKlySa5H5uSf16/yPE5X33zfe8bFiN4ohCpolMzJjKI/8uaLrD
+	 kD37m3XWzlKCBTeJfggWyTCbmxQJkf0o4o5FTh7OzyHxy3Ht4EWjeSq4vBjCDLRd1O
+	 dvwRtYV92IXZg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 771F2D8C966;
+	Wed, 24 Jan 2024 23:20:27 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,76 +51,59 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:/D0DIugkvM4W5K4pXdij6pnL4nCM/dMBAW6u0lFvqJIlZFWq8/Z
- +VAka/LYfL7oQ0ah5ro1H7CWmHT2JIrPBlg27r70PI2Cslt5bLl+1fF86b0Emh9r8ixIpsR
- 9uxZ+xZZjzMkvNdFX9lQ8/nj+MG+rKTZXQsTTQgBcPLqKTNUgVjVdq9tm3ETJ7H/VTWp0k/
- wxck4tDToQnTmsH2xKm0Q==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:f29DWwXpfyE=;I1MCVoVH7iehyuAN6gh7kinA6E6
- zjgAy4XiAQLA6OLLraBfnkxJnnybDI9hU5PYprLRiQEt5kCLLKKfmafd6vmx9o4cuSPrERkjI
- IuB1J7gngdEebE+a9fQnbxCC/k3EeIs84qM9lfUCG52x4Vw1fRRrFH+Ys8QdopqxVz8wx0Kmx
- IzfO4vWPyL2cVWdabWJ+CuGDQZWQewpBmXuzPhFQFODC9nZNRt06i538Yz7TperCIXt1BrVPb
- QpCgpOMSBlZDwSAeDfIwRKuvDEt1P6cpu3EkGFvoIZaP71pYg0iB4mpJMDZ3f4qIrE84FdwLN
- BQ+tx6XAomHSQ+zy91x0lxW40h7BpPnZ6E9VwcrYg3/igunWFeVT7LXvpfOgLG7LwZAksCcgQ
- s7Mlx+TUdsUjuKqnIIh8CJ7ZM/p5zqDTF0YVG+dAPIYLwt+ovbLoleWUG55p8lSytJ4FYO1gp
- /BfIIMfpWgSLhHyKXo0WxtM8dEYE8bFTROgfTT0dYjcYoFNkxQyoiMw7ADGyQm0h0qZZ6gPN9
- sKBpHWTJjmSpibHSCUJVe5DpBFwBZEr92BnPjBEjjrse+ih+pXe4QGVYOB4yJ6h7MZNMj9I+p
- TrIjVTUnowSIniRPpr1E1I8avxUFbz+Pvk9/ItrFLivsBhvKvOUf/6g0qd/wGw3xHkZa23OVN
- fS97fzgJV9h9vYN9u+DP/jSm6uuhwkFZITe3lb6w0PVJFIZKKExDVDfBJSvjLbCUZbyh0o2CZ
- itM44KLUls6x5F1x6g5mkRS1x8L+5rP5hNvupATjJQBIEotaHDbCuSUclxXkwSvbE+OMUEPqs
- oNc+kYtCCqt8DwrStyDfKaoG/GjkC1gOXJbSD3P21LtRvDz1fys6Kk+KmShoGYjlE+RR4w6XF
- KxOFDSgJ2E8C8NWOQRKmoctRsER+QV/HNZNg=
+Subject: Re: [PATCH net v2 00/10] Fix MODULE_DESCRIPTION() for net (p2)
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170613842748.28029.10890542758483405613.git-patchwork-notify@kernel.org>
+Date: Wed, 24 Jan 2024 23:20:27 +0000
+References: <20240123190332.677489-1-leitao@debian.org>
+In-Reply-To: <20240123190332.677489-1-leitao@debian.org>
+To: Breno Leitao <leitao@debian.org>
+Cc: kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
+ edumazet@google.com, dsahern@kernel.org, weiwan@google.com,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-> +//! User pointers.
-> +//!
-> +//! C header: [`include/linux/uaccess.h`](../../../../include/linux/uaccess.h)
-> +
+Hello:
 
-nit: could this be using srctree-relative links?
+This series was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-> +/// The maximum length of a operation using `copy_[from|to]_user`.
+On Tue, 23 Jan 2024 11:03:21 -0800 you wrote:
+> There are hundreds of network modules that misses MODULE_DESCRIPTION(),
+> causing a warnning when compiling with W=1. Example:
+> 
+>         WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/arcnet/com90io.o
+>         WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/arcnet/arc-rimi.o
+>         WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/arcnet/com20020.o
+> 
+> [...]
 
-nit: 'a' -> 'an'
+Here is the summary with links:
+  - [net,v2,01/10] net: fill in MODULE_DESCRIPTION()s for 8390
+    https://git.kernel.org/netdev/net/c/f5e414167be7
+  - [net,v2,02/10] net: fill in MODULE_DESCRIPTION()s for Broadcom bgmac
+    https://git.kernel.org/netdev/net/c/39535d7ff6c1
+  - [net,v2,03/10] net: fill in MODULE_DESCRIPTION()s for liquidio
+    https://git.kernel.org/netdev/net/c/bb567fbbbbb4
+  - [net,v2,04/10] net: fill in MODULE_DESCRIPTION()s for ep93xxx_eth
+    https://git.kernel.org/netdev/net/c/53c83e2d3648
+  - [net,v2,05/10] net: fill in MODULE_DESCRIPTION()s for nps_enet
+    https://git.kernel.org/netdev/net/c/27881ca8c8e1
+  - [net,v2,06/10] net: fill in MODULE_DESCRIPTION()s for enetc
+    https://git.kernel.org/netdev/net/c/07c42d237567
+  - [net,v2,07/10] net: fill in MODULE_DESCRIPTION()s for fec
+    https://git.kernel.org/netdev/net/c/2e8757648855
+  - [net,v2,08/10] net: fill in MODULE_DESCRIPTION()s for fsl_pq_mdio
+    https://git.kernel.org/netdev/net/c/8183c470c176
+  - [net,v2,09/10] net: fill in MODULE_DESCRIPTION()s for litex
+    https://git.kernel.org/netdev/net/c/07d1e0ce8743
+  - [net,v2,10/10] net: fill in MODULE_DESCRIPTION()s for rvu_mbox
+    https://git.kernel.org/netdev/net/c/bdc6734115d7
 
-> +///
-> +/// If a usize is not greater than this constant, then casting it to `c_ulong`
-> +/// is guaranteed to be lossless.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-nit: could this be `usize` or [`usize`]. Maybe would also be clearer to
-say "... a value of type [`usize`] is smaller than ..."
 
-> +///
-> +/// These APIs are designed to make it difficult to accidentally write TOCTOU
-> +/// bugs. Every time you read from a memory location, the pointer is advanced by
-
-Maybe makes sense to also introduce the abbreviation TOCTOU in the type
-documentation when it is first used.
-
-> +    /// Reads the entirety of the user slice.
-> +    ///
-> +    /// Returns `EFAULT` if the address does not currently point to
-> +    /// mapped, readable memory.
-> +    pub fn read_all(self) -> Result<Vec<u8>> {
-> +        self.reader().read_all()
-> +    }
-
-If I understand it correctly, the function will return `EFAULT` if _any_
-address in the interval `[self.0, self.0 + self.1)` does not point to
-mapped, readable memory. Maybe the docs could be more explicit.
-
-> +        // Since this is not a pointer to a valid object in our program,
-> +        // we cannot use `add`, which has C-style rules for defined
-> +        // behavior.
-> +        self.0 = self.0.wrapping_add(len);
-
-If I understand it correctly, you are using 'valid object' to refer to
-an 'allocated object' [1] as this is what the `add` method's docs
-refer to [2]. In that case it might be better to use the latter term as
-it has a defined meaning. Also see [3] and [4] which are about making it
-more precise.
-
-[1]: https://doc.rust-lang.org/core/ptr/index.html#allocated-object
-[2]: https://doc.rust-lang.org/core/primitive.pointer.html#method.add
-[3]: https://github.com/rust-lang/rust/pull/116675
-[4]: https://github.com/rust-lang/unsafe-code-guidelines/issues/465
 
