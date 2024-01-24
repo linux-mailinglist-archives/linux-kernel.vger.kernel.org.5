@@ -1,176 +1,123 @@
-Return-Path: <linux-kernel+bounces-36955-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36956-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCF3083A977
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:18:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EBA883A97D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:19:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D6341C21A6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:18:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B44A31C21C99
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:19:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0CCB63407;
-	Wed, 24 Jan 2024 12:17:48 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 627F360DD1
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 12:17:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83C2A6310F;
+	Wed, 24 Jan 2024 12:19:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bfJv5NNq"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33C5360BAC
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 12:19:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706098668; cv=none; b=NWsqKVoA8Y7H9gy7Z7ebXiiCkcOlcRoplZ0fAA8X3o4wOzaaBAuvvKwzPA19RCmSAiwHb3e3qX3lTzp7iAFRylGOMNqQbSi+lweHqk2mzAozzPeYax553ioBLpUNNDIcUJCLpRFagqDmbu36ennB4/wq1/CwnZ6oqzMlrVih4RM=
+	t=1706098743; cv=none; b=WtcUrz6pNcepKw/uThhj/xmNzRq+3dvb+WsJE5UYrQEHkZCKRzZlPx9QkPZ2dAoQoxYqe3ryahOEdWIjMTEYnKiwTzgCd7iCRVfCvYTV6jNZFdBOYbj6Tf/u+oD9w/U92xKpOIzmzCjFu4+rzFGXpjND7otZ7u5emWD4RtkFr2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706098668; c=relaxed/simple;
-	bh=7ik0T6h7iohciMw8WCAm0dXcdceLY6GB4Rx+mKnSQUg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=g400jpP/SNg78/nOC+bnvomspnC775DSzBuTNDkH1+zIZ8A0NN5kaa4TD4triBG0m4uEJfhmwrNvqEkb6v3yEH2IifwIIDfivwWaNCtUOjEbUivpjuvwVEtGlYEd6BkmHxygl6etAziLg1Ko2jeiiIPFWFHy+q/FuYIhdN6eV4s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E644A1FB;
-	Wed, 24 Jan 2024 04:18:30 -0800 (PST)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E96873F5A1;
-	Wed, 24 Jan 2024 04:17:44 -0800 (PST)
-Message-ID: <10c1980a-df07-4f69-93e5-c1c50b106a13@arm.com>
-Date: Wed, 24 Jan 2024 12:17:43 +0000
+	s=arc-20240116; t=1706098743; c=relaxed/simple;
+	bh=Y3qoJUP7/9l5Q7/HB4lgNbSYXukSY3os/nqfvZZ+iPU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bTbXCgGHM9RY84QWJfCj534ZG4MI5XYLMhc7hpGLDuvg9ctO5a6/wVUuM0bv2w7uMkebB9ZMZ9Iw9j7Mib4vOPlL9vj769rUqeRYomeokAA4PA5mNN74A/EgUiEv0gExwDLs2hk6S0Y1C5JtEfLeUlZvUbIoofOsHDOtMcs6kd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bfJv5NNq; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a3122b70439so58191966b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 04:19:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706098740; x=1706703540; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=jNUo9fmppzhxqCOCweksWJMOKUUrwtvtpbWK33yZ9uo=;
+        b=bfJv5NNqB1Fhwo9pCl8ei+TGKTGEbiSLHRTc/sj42H/Qkb1Ie+YHTLLUR/vUr7HMXO
+         TNfCXnQ3i9qemPsak9L6/Ketc89NQGac+jxhBTyvzNSiA+OSBsLtg15chi6phm5GZq5C
+         ARbLF8KDiF7MgS87fs5zM1T7o5um+tFy+HajvsHKdUbDdkfb4VZAHnljybXx1x9GI/We
+         QaYFh8B0RZnxBKjuPO6BtgaLPgADQ6kfX2hJdO3lFcJKeI4X1mtFb3uJNYChmiQ4vjLf
+         gFQZHq66dHKUuXdG8FpAhMB+7yhY+hfovCJauERy1GlGsoifBmJY2nF07ymt5Mlt8Yi6
+         GZcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706098740; x=1706703540;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jNUo9fmppzhxqCOCweksWJMOKUUrwtvtpbWK33yZ9uo=;
+        b=PPlk6ppzhldQ3mVNQafN/VwKffzg/uzpwYbM8mkvZ/cE8DIY8pXVf28OHCELfnsLc/
+         mOdjW69oGL8C0Lf7Dgo2AtvKo9TnDrJBLzYGZC/bYOWwcFOapi5i7BnUX1gR2ZBPDrgX
+         aIRsJqkS/Bdj4QyF7AYK0cz+RLGzsRH4PmNMP74AcKODnMAOV1VxOJQK5oVtOd1G0DKJ
+         lfZzs7zDoAccFqg91nV2OX/m59gcF9IGM04VxrXUSX+vmZf+qYby4g+0Qe1s0QoN0AGq
+         W8PuFA+YAXpcJnmZ2gEw8u+SPITt0/ZA1J8iOKzR0W5DKzt407WcAUr67/Zyl0M3CtQA
+         OJQw==
+X-Gm-Message-State: AOJu0YxE4LVQ58IQptWfMwKgTOi2ZtEx1CU/Du28GdJrlBuragkBbgyo
+	7BbcjYtE7q9GvjEHnDfR0swxIS6wJI06u2Q1edXTTwXOsL6CctIdaxfo5hSNWow=
+X-Google-Smtp-Source: AGHT+IGutv6smOAh1NvhP1U3c/lfJJ63Zxfnv2IpC+XBS2mcIy2gWO/d5LHR/Cnf8MIDha7DdfijTw==
+X-Received: by 2002:a17:906:5919:b0:a30:cdf2:376c with SMTP id h25-20020a170906591900b00a30cdf2376cmr734189ejq.55.1706098740259;
+        Wed, 24 Jan 2024 04:19:00 -0800 (PST)
+Received: from krzk-bin.. ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id k16-20020a170906129000b00a274f3396a0sm15582415ejb.145.2024.01.24.04.18.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 04:18:59 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Andy Gross <agross@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	stable@vger.kernel.org
+Subject: [PATCH] arm64: dts: qcom: sm8450-hdk: correct AMIC4 and AMIC5 microphones
+Date: Wed, 24 Jan 2024 13:18:55 +0100
+Message-Id: <20240124121855.162730-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] iommu/arm-smmu-v3: Add a threshold to avoid potential
- soft lockup
-Content-Language: en-GB
-To: Jason Gunthorpe <jgg@ziepe.ca>, "zhangzekun (A)" <zhangzekun11@huawei.com>
-Cc: will@kernel.org, joro@8bytes.org, nicolinc@nvidia.com,
- mshavit@google.com, iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20240115114040.6279-1-zhangzekun11@huawei.com>
- <20240115153152.GA50608@ziepe.ca>
- <e74ea905-d107-4202-97ca-c2c509e7aa1e@huawei.com>
- <20240118142243.GI50608@ziepe.ca>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20240118142243.GI50608@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 18/01/2024 2:22 pm, Jason Gunthorpe wrote:
-> On Thu, Jan 18, 2024 at 07:21:10PM +0800, zhangzekun (A) wrote:
->>> What is the rest of the call chain? How did you get into such a large
->>> invalidation?
->> we are doing some test with qemu virtual machines. The testing platform has
->> 96 cores and 960GB memories. It will enable 64 virtual machines and every
->> virtual machine will cost 8G memories. When batching closing these 64
->> virtaul machine concurrently, we will get soft lockup.
->>
->>   WARN: soft lockup - CPU#18 stuck for 11s! [worker:3219]
->> ....
->> Call trace:
->>   dump_backtrace+0x0/0x200
->>   show_stack+0x20/0x30
->>   dump_stack+0xf0/0x138
->>   watchdog_print_info+0x48/0x54
->>   watchdog_process_before_softlockup+0x9c/0xa0
->>   watchdog_timer_fn+0x1ac/0x2f0
->>   __run_hrtimer+0x98/0x2b4
->>   __hrtimer_run_queues+0xc0/0x13c
->>   hrtimer_interrupt+0x150/0x3e4
->>   arch_timer_handler_phys+0x3c/0x50
->>   handle_percpu_devid_irq+0x90/0x1f4
->>   __handle_domain_irq+0x84/0xfc
->>   gic_handle_irq+0x88/0x2b0
->>   el1_irq+0xb8/0x140
->>   ktime_get+0x3c/0xac
->>   arm_smmu_cmdq_poll_until_not_full+0xb0/0x1a0
->>   arm_smmu_cmdq_issue_cmdlist+0x194/0x5f4
->>   __arm_smmu_tlb_inv_range+0x114/0x22c
->>   arm_smmu_tlb_inv_walk+0x88/0x120
->>   __arm_lpae_unmap+0x188/0x2c0
->>   __arm_lpae_unmap+0x104/0x2c0
->>   arm_lpae_unmap+0x68/0x80
->>   arm_smmu_unmap+0x24/0x40
->>   __iommu_unmap+0xd8/0x210
->>   iommu_unmap_fast+0x18/0x24
->>   unmap_unpin_fast+0x7c/0x140 [vfio_iommu_type1]
->>   vfio_unmap_unpin+0x14c/0x3ac [vfio_iommu_type1]
->>   vfio_remove_dma+0x38/0x124 [vfio_iommu_type1]
->>   vfio_iommu_type1_detach_group+0x4b8/0x4e0 [vfio_iommu_type1]
->>   __vfio_group_unset_container+0x58/0x18c [vfio]
->>   vfio_group_try_dissolve_container+0x80/0x94 [vfio]
->>   vfio_group_put_external_user+0x20/0x54 [vfio]
->>   kvm_vfio_destroy+0xa8/0x12c
->>   kvm_destroy_vm+0x20c/0x300
->>   kvm_put_kvm+0x74/0xa0
->>   kvm_vcpu_release+0x20/0x30
->>   __fput+0xc4/0x270
->>   ____fput+0x18/0x24
->>   task_work_run+0xd0/0x1a0
->>   do_exit+0x1d8/0x480
->>   do_group_exit+0x40/0x130
->>   get_signal+0x1f8/0x744
->>   do_signal+0x98/0x204
->>   do_notify_resume+0x15c/0x1e0
->>   work_pending+0xc/0xa4
-> 
-> I see, that is interesting.
-> 
-> I think iommufd is close to substantialy improving this. It already
-> has the domain destruction ordering:
->   - Remove all domain attachments
->   - Read back phys addrs, unmap and unpin
->   - iommu_domain_free()
+Due to lack of documentation the AMIC4 and AMIC5 analogue microphones
+were never actually working, so the audio routing for them was added
+hoping it is correct.  It turned out not correct - their routing should
+point to SWR_INPUT0 (so audio mixer TX SMIC MUX0 = SWR_MIC0) and
+SWR_INPUT1 (so audio mixer TX SMIC MUX0 = SWR_MIC1), respectively.  With
+proper mixer settings and fixed LPASS TX macr codec TX SMIC MUXn
+widgets, this makes all microphones working on HDK8450.
 
-I don't think the story here has changed from when I first remember this 
-being discussed probably 7 or 8 years ago - what VFIO has always really 
-wanted for this situation is to know when it's doing a complete teardown 
-and just detach and free the domain, then unpin the pages afterwards, 
-without wasting any time at all on frivolous unmapping. However so far 
-it's worked out that minor low-level tweaks like the unmap_fast API have 
-kept kept the overhead tolerable enough that nobody's been inspired to 
-attempt the bigger task.
+Cc: <stable@vger.kernel.org>
+Fixes: f20cf2bc3f77 ("arm64: dts: qcom: sm8450-hdk: add other analogue microphones")
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ arch/arm64/boot/dts/qcom/sm8450-hdk.dts | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-However for SMMU in particular it's almost certainly confounded by 
-io_pgtable_tlb_flush_walk() being a bit rubbish for the situation that I 
-bet is happening here - if we don't have range invalidate, then 
-pessimistically invalidating a 1GB table at 4KB granularity without even 
-looking isn't likely to save much time over doing a more accurate 
-recursive invalidation even in the worst case that the whole thing 
-*does* turn out to be mapped as pages. But in the likely case that there 
-are at least some intermediate-level block mappings in there, it's an 
-instant win. I recall I had along-standing to-do item to get rid of 
-tlb_flush_walk from io-pgtable altogether, although that may have been 
-tied in to the freelist stuff; I'd need to find time to page it all back 
-in to remember exactly why...
+diff --git a/arch/arm64/boot/dts/qcom/sm8450-hdk.dts b/arch/arm64/boot/dts/qcom/sm8450-hdk.dts
+index 03fad2e698af..ce398927beb9 100644
+--- a/arch/arm64/boot/dts/qcom/sm8450-hdk.dts
++++ b/arch/arm64/boot/dts/qcom/sm8450-hdk.dts
+@@ -931,8 +931,8 @@ &sound {
+ 			"TX DMIC3", "MIC BIAS1",
+ 			"TX SWR_INPUT0", "ADC1_OUTPUT",
+ 			"TX SWR_INPUT1", "ADC2_OUTPUT",
+-			"TX SWR_INPUT2", "ADC3_OUTPUT",
+-			"TX SWR_INPUT3", "ADC4_OUTPUT";
++			"TX SWR_INPUT0", "ADC3_OUTPUT",
++			"TX SWR_INPUT1", "ADC4_OUTPUT";
+ 
+ 	wcd-playback-dai-link {
+ 		link-name = "WCD Playback";
+-- 
+2.34.1
 
-Thanks,
-Robin.
-
-> Currently smmu continues to issue ASID invalidations for the domain
-> even though there no references to it. However this is pretty
-> pointless here as we are going to free the ASID right away.
-> 
-> I'm going to make a series to allow smmu to support multi-instances on
-> a single domain. In this case when the domain looses all its
-> attachments it looses all its instances too and it won't have to do
-> *anything* for invalidation in this workflow.
-> 
-> Ie your flow will boil down to a single ASID invalidation once the
-> domain attachments are all removed, then on invalidations during unmap
-> and no invaludation at free. This would be a significantly faster
-> teardown I suspect.
-> 
->> Thanks for your patch, the patch described below make sense to me. After
->> spliting TLB invalidate operations according to domain stage,
->> arm_smmu_tlb_inv_*_s1() can be used both in SVA codes and original smmu
->> codes, and can implement arm_smmu_tlb_inv_all_s1() just using
->> arm_smmu_tlb_inv_range_s1() by passing a special size. But the current
->> smmu-v3 driver has not move "asid" into "struct smmu_domain", we still need
->> to pass the exact asid from SVA.
-> 
-> Yes, it is not intended to be applied on the current kernel, there are
-> a lot of structural problems with how SVA works there..
-> 
-> Jason
 
