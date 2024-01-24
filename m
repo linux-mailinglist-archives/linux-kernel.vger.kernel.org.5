@@ -1,180 +1,221 @@
-Return-Path: <linux-kernel+bounces-36354-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36355-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3439D839F9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:54:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23944839F9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:54:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70D931C2267F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 02:54:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7417BB23A40
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 02:54:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F07F6168A9;
-	Wed, 24 Jan 2024 02:48:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="oW8uOWID";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="zeczbsfp"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D205B1640B;
+	Wed, 24 Jan 2024 02:48:48 +0000 (UTC)
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 634CE1640B;
-	Wed, 24 Jan 2024 02:48:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706064487; cv=fail; b=oGYxpyk02FjDdnhzRaVYGio55RDSu4awaU0g+v46Eiun0cJDA8YD5eYQLB2ty2IOwhJwUTdr6aWJmFRRDuMDQBJryMJUbxX8rLyx7K9D/yemZcG0+xdf2dqhajUhBqMPDN/+C25tTc5khVafB3Nx/MH6pGrYw6NtR434FP1oQus=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706064487; c=relaxed/simple;
-	bh=M5UiBgH8dDhgpMcpfVTHPnboCrGgpZgw4HEG1l3YxUU=;
-	h=To:Cc:Subject:From:Message-ID:References:Date:In-Reply-To:
-	 Content-Type:MIME-Version; b=O6sr7y2JYzMmgsCMZeUSm0PfsveWymU5fKd6qlSQdlYdk9YXJjKMJ2+DOvjysmwx7NVb6CkQZXZ2QxqcekcDRqSMQEgh8qbejqxdmL9Prs2+GHOGx5jgXcPbrfmamMUAfRNo0ZysqZ0/xY+IfYRI2pdNOf9t8feIiggFrE9TFpc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=oW8uOWID; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=zeczbsfp; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40NN3Gng010897;
-	Wed, 24 Jan 2024 02:47:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2023-11-20;
- bh=ZdsKS9SY9OuWL4RKfFHS1TZ5f3UOcunjRnuCzc4OIYE=;
- b=oW8uOWIDE/WLTY6/U3F4MOKki7Ay9x8Q65JDjYdyoT4cFy98gbest66kI9KIb4SqsPpj
- 82y/21lPFU3hbtuYAyZS2zgYdgwjnA2+qoL0nMgBs/bdRvO3NY2vqc6n+J0YOIRN8Hdv
- XRAHag7Quy98yJ4GyUR9ucMXBFPfjuH070Fc9t7q+IA6Di83XTyKZ3G+MUK9BdQI/1Ai
- 4IUYMUvPHaLCZhZA8oNssyLuPFE5t+KHf9eXeYsuASF6tFCMVkqmURTICZV1Czosi01x
- FaVOra2TQRiYTEY5vOgj4x3anKppDY5x0GdgLTjhogomCH+625/yDeInDiR2I5ctt57n Dw== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vr7cwfyc0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 24 Jan 2024 02:47:59 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40O1UMLX005437;
-	Wed, 24 Jan 2024 02:47:59 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3vs371rrew-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 24 Jan 2024 02:47:59 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bTJArFISqxbPgwMq3aE5ojDUl58ygduDWnkiR8ODycL7EnY4ojJxC4jHmolpsUXQtCrOtlESEzjP3QPjU0T3QuMTDHa+JOBzSCH6gkU8elyK1LnLHiMeRnzsiiEeWv3lT5OxmkRuReeETL7c4a3SBOK7r2iH6IA8nQ1ekaSPx5oqlf21GRJlYfO+46wvbYs+1emebON9YB77eFRlkwA3MjMmOgialbpxBO7paIYXw9AtUFn4AF7Ktflq8Xy5GGdAx8YD+9/J3HttNjELEsWBpzH7/bzi+8go06NJZUbmJoNsE96zJ56kFLqqOf0+Yf/Wbw8KJYw9E/lTNE/gjEtFMg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZdsKS9SY9OuWL4RKfFHS1TZ5f3UOcunjRnuCzc4OIYE=;
- b=LVVj3meJzeW5chtVxmZt4nlRll63iuwzv2NCrGiQ3K6X2RwWKG+zFcTW1uN58P1LUBx0er+IJa9l6KpmbepqL8/QzCUKXjwlAszl/+yJCVbuDXt1/ySmieWt4UXjTHoiXoAbOlUWB21BQB5NvE+zBmTpVyPasze+LYS/Lr5l9MtAvNTFszuXkOzNsk2djK6ZK5jIJ+5c70MmukQmXSpfquNwCMN4Z7pApWQ3rHvjms43Q3XSOdfJDJlfVSaEtRx//cGB5vNeZnjieiZb6wgPPcdV80E3xBI54BHCNDoiz+pp/oW4wLGxl84/6qytbccHy6FUcFUSEGWFL9NyQqEcXg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZdsKS9SY9OuWL4RKfFHS1TZ5f3UOcunjRnuCzc4OIYE=;
- b=zeczbsfpUI7YwI/O6eKGyPKxs9+HYWnh59nALuDG4t9BLcXXOKxXTssP8x4NMPDBDCpb8J5YhhmHd+xNCXefFMd40mUcMOo+8EV4g9q7yJub/ndVdwx+9YmavloAh9uHbPH5cXN7WEZzfmDI/Nje5fBltMGG3rH9CxqFBlpPlZo=
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by SJ2PR10MB7057.namprd10.prod.outlook.com (2603:10b6:a03:4c8::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22; Wed, 24 Jan
- 2024 02:47:55 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::3676:ea76:7966:1654]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::3676:ea76:7966:1654%4]) with mapi id 15.20.7202.035; Wed, 24 Jan 2024
- 02:47:55 +0000
-To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc: satishkh@cisco.com, sebaddel@cisco.com, kartilak@cisco.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Abaci Robot
- <abaci@linux.alibaba.com>
-Subject: Re: [PATCH] scsi: fnic: clean up some inconsistent indenting
-From: "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1ttn3wip8.fsf@ca-mkp.ca.oracle.com>
-References: <20240118020128.24432-1-jiapeng.chong@linux.alibaba.com>
-Date: Tue, 23 Jan 2024 21:47:53 -0500
-In-Reply-To: <20240118020128.24432-1-jiapeng.chong@linux.alibaba.com> (Jiapeng
-	Chong's message of "Thu, 18 Jan 2024 10:01:28 +0800")
-Content-Type: text/plain
-X-ClientProxiedBy: BL1PR13CA0445.namprd13.prod.outlook.com
- (2603:10b6:208:2c3::30) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F72D168DD
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 02:48:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706064528; cv=none; b=uTmSB9+CIC6wfo+3fuhmqGUbgGWzo906bMcGThm0nirH7aIbomcC8tMbmESXaStKnXOAXXoqTkf2VDMu7pccc1yGhPYBcMB6AqL4nxWjJ7J/pQbP8HhVlIWtrTXINB72+oIwCjSc/oVqBJkyjjPKaVXYnL5ivwTiFSYAongoSDk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706064528; c=relaxed/simple;
+	bh=tjTwRP8dGA9ZO0/nwlFqunRyh+QXX0rxK43Wn5MqMig=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fLez9gU2s4Q0ZiBHUBoe4raF8v9d4an1QJlMSzYGTz8Uz+onYOTwgkvLBdeMerwf3gEVUb39HDQwcr/qfMk/j6iI5zQIXDY1vHhiRUnnqq65kfcyZqOqBzp/yn1yZ9DacBEA4zsKy8iTAJYsK6lmWQicD0UldxyJFUt2qoq6RvY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; arc=none smtp.client-ip=115.124.30.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R611e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W.EWwG5_1706064520;
+Received: from 30.178.66.172(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W.EWwG5_1706064520)
+          by smtp.aliyun-inc.com;
+          Wed, 24 Jan 2024 10:48:42 +0800
+Message-ID: <013dc123-a131-4739-921e-e5979f15199a@linux.alibaba.com>
+Date: Wed, 24 Jan 2024 10:48:40 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|SJ2PR10MB7057:EE_
-X-MS-Office365-Filtering-Correlation-Id: bddb5911-b525-4a23-0a40-08dc1c86ddfe
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	kSj9Hk6IR+Id5GCLfqnRys/4cw05cdE9VUr09bGe8V6NCNNwugIUsjfRaKYs1PZn4mSyzGNNFzL1JiwsBvC9xJc1PnRh5vVskh/pOnPizcLUqiERlKxVspl2mcgMD7XMxuLmGovrmoB4fIJ5W6ncbxtikNYCIuFPvlOuJtBwK8O4FHVDAF4XSLnzcT0/RQ5bawr7SZcTX1xH5sUDKY0JLKTRiLzxJx+sF2wYfC6mgUGHOa9s+SwkfG7wuwSJVI6/wGscHHNwrEkv+hZOx4g3lWmOpZ1Li45zmOr9asGUFuf+z8kzCAJfdIg/QE12cXKDX5sutGMTKA2G8nT463fgVtV8Lo7AgoTafu54PGPR7LvyMNGAhWRrYNPKuuHPKFwjsiYBsS8dVLywIbUfvlz+hAYn+jRnzab6Gp6wgAQF9g7tH536XCLBzeTB9N7Xgn74EUmiCluaJZajKMokJpU8Qso71xbHHhbkTX1o8/i4RUSHQ+Cxymt8Yd1Z1oDFbYyII2ZESgr48Pvu99A8GdRFhzRK2Z1yAbUmOlRjEew3fqdjHV7aPZaRo23kixDBfg7S
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(136003)(366004)(346002)(376002)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(2906002)(5660300002)(41300700001)(86362001)(558084003)(38100700002)(316002)(6916009)(66946007)(66476007)(66556008)(6512007)(8676002)(26005)(478600001)(36916002)(6506007)(6486002)(8936002)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?RxCdCBgjfC0sEiVdEamyGgWNnKUCN0bchBoNpF5NCeXJozGfBYnvSDve4vP6?=
- =?us-ascii?Q?L8n6WU8Lp1Hw9AW5c5/UMKoikeWmK5eOn2nFonBbghbhC3H6EJ0qOSmrocoq?=
- =?us-ascii?Q?tMqnsG2MGA9fOcwmkXO2dzcM/1XU8DE1ZtJqgVdwHLxqSMbXob66kWbIApxY?=
- =?us-ascii?Q?5NJeKOJdRq5KTLU71A+93a9v0aZod6Nds8BAZ+8sNr6s90f2VAXjTs2BhUs2?=
- =?us-ascii?Q?h3XDNdqFFdKAg4xDIvZsNp6KRrchgCk2LIbbahD1UKJCDxtu+pX5MbLLw9Mw?=
- =?us-ascii?Q?u2/2cFe0cx7uCQ7F28BxsAKoeMePsY5GGTD1nBRLX2ekA5Li1N1vI6C7cZxu?=
- =?us-ascii?Q?3x+SJhFLWR/mtSfYNv1TOFJbtdWu/1f3hVqbQIqXXf/+Sl+SFi418gNr9RAS?=
- =?us-ascii?Q?i6fDoNN+Xnsx+KGMM54uCRsUU/e7VrObyu521KLQlobUWEY8KFhgqoPYEZJR?=
- =?us-ascii?Q?9sqpXv+mqGF3+++0N1wrfpOJew5XHbz2WBNKdLdFTW17l1jZ0L+38pSk88e8?=
- =?us-ascii?Q?TvBcDu4ChIm41VxPSYq768tn2VpDWpz0idSq9EgE1BP9DIJLOVkcFiSNuFGX?=
- =?us-ascii?Q?6Nauud05Esogex4J/4r268bhowL9EDWucd9ZVTwwIrVpoKnvX047ajB7VC37?=
- =?us-ascii?Q?6WfcXdtrrCoVKHL/oyZWNTW4Hyoh0BI0IxSN+YplxUoZq1g0Aw9Ob4sqZlpb?=
- =?us-ascii?Q?LE0B1Sfjk8umk3jVRdlKUI8oRXd8pa1STROEzCwB/F/OapVOGT5Wga+PKAZE?=
- =?us-ascii?Q?kWyEJwdvKS6+QD0IpydOLVf1sdMlRLaOKdbjI3CGBgvEHylbV8HEnJqOn55B?=
- =?us-ascii?Q?EvI2N6zVNUJxiDxCRqEqZa/pkwdDRympjQyPblPSwqcA+vPRnw4+KYoiLNp3?=
- =?us-ascii?Q?Hg9XkeB+jYcvaCWBRSI98xSlWHf3hlkccPwMJvR1nSf/fhzIX0pbjsppiTEO?=
- =?us-ascii?Q?IFAUvXnBPyyAdxPDR0+mVMg8AV4YlJhVcC37qGplxU/vh5hLcUgubki5nSE1?=
- =?us-ascii?Q?xaeZHpnKrlwxhvMy4/bMmnLzLgqkh/cmd0GWLvzpFJ/HeSDte3GQt0K+g7m4?=
- =?us-ascii?Q?fnFh0jNu7ZDecSHsgKNmD997q6RpR/jX2s9uhHPlka+1UgQOcaBUKSPNKpcn?=
- =?us-ascii?Q?7qCs03oHd1Q3bdLVbWQvZFsNDNIjcdlXOJIybA1UqeckpqqjMIyH9Y6ZdURK?=
- =?us-ascii?Q?ldDADgeJWpmK3bxVnuzTBCoVABxjK+mj00AZ+KGpzQILhjVeSHxQtJKGQJFt?=
- =?us-ascii?Q?ozjrruaVhUkF7YqqBZhfPwZE5wdXf6KbUPbwi7ymvN3bVJna9ZRwSeKE3kTr?=
- =?us-ascii?Q?A9gyYrERz2EXvPIi8ixzOfvEyLrn4uq6Y0HYjeS5rogBNrEIcW/Ud5TVU4iR?=
- =?us-ascii?Q?kOF+2iMg1V9ptxrKnsLCluZQwM+oRQmVso/iTv1bS+Dkra/L91LsL83iThzc?=
- =?us-ascii?Q?vzKijZqb1NG7pbfYviCU9SnFDcTUpUWJAjdlO98ZmjPszXqd6jqf2Ym44KpH?=
- =?us-ascii?Q?ezEo8efNgnCtEvcTdA3HPnKXx56dyeTrZTWL+Jk5jTT/vZM1OUhL0mK/wWUC?=
- =?us-ascii?Q?vl2cYXoPeslrXvEJxnVufiFAYqFZ8pDn2lGkOWoQa4z0dctrk571mBU3/Efp?=
- =?us-ascii?Q?tw=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	1o1NiQbKUed9FbE705ejzsA9/0euzV3YE2pMLUOLDRyliVRK3W4dFfTqPtFIn9HhnAvO0nLOXrqvC6t6gzbO3wwtpKk4PH4spcKsAI7rvAV/DGsIvCNarvp9H0Rwt1tBgOdbtTaCD+FClRKIUO5CwMQBHKOzuLxuqxldHe7ZChudc+CDU7jFHuZIUq3cYJm+g9RD3SwpuD8ba+LkmjBjmhoov5bn3lq3dp1g2pjGczpx34RZbQY+indFaO7tjt81kBsQ3mFQwoOUUs6UQqw7q0MTceW+kT3aaSN6JzU8rXSXoiUWi010aVyEE4Cu9yl0RvmuEsmgkyM0GaCyfgKmypYMmbVNO32VSV8UuoOxjQDxS6ZDH3HpEQ4ijY7MYmWigcqvzyjGS9XJRiyEmmqFkSPOiQ2b+k0D7b8tAmkBMU9/JVapFdGqaCu5wxYWlJs88c8cxPui7Kt7bkkh4Ra4x+KUWHkb1RoZswvskv+zadOoiDWmBzF+9zOLTfac3ffVGzhrTRMGz3tsVqmjpL9gvIo40lc30zDBF5AHmq5f0VCrg/AbSzRETynjGFq8MlRIvb4b/jAHv+p9Dvbbx4p4hsKemerEtYT+QLqP2+3mYaA=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bddb5911-b525-4a23-0a40-08dc1c86ddfe
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jan 2024 02:47:55.6288
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BmY7sLZVvO8C36wgFolc4UUHJbh21hjXrwQiqe7kTPc5fdXjiP8XCGPzy8eggDKL7WUsPSEyHMGYwkD4/u9dpLaFqWTKLp1VfWHf9mIR/VQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR10MB7057
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-23_15,2024-01-23_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
- mlxlogscore=600 mlxscore=0 phishscore=0 adultscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2401240019
-X-Proofpoint-ORIG-GUID: 4Joyu9zRp9nrICYSe_Ly7rwcWZFrReGO
-X-Proofpoint-GUID: 4Joyu9zRp9nrICYSe_Ly7rwcWZFrReGO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] watchdog/softlockup: low-overhead detection of
+ interrupt storm
+Content-Language: en-US
+To: Liu Song <liusong@linux.alibaba.com>, dianders@chromium.org,
+ akpm@linux-foundation.org, pmladek@suse.com, tglx@linutronix.de,
+ maz@kernel.org
+Cc: linux-kernel@vger.kernel.org
+References: <20240123121223.22318-1-yaoma@linux.alibaba.com>
+ <20240123121223.22318-2-yaoma@linux.alibaba.com>
+ <8d6afe80-58ca-455d-a6ae-797d7c5ce388@linux.alibaba.com>
+From: yaoma <yaoma@linux.alibaba.com>
+In-Reply-To: <8d6afe80-58ca-455d-a6ae-797d7c5ce388@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
-Jiapeng,
 
-> No functional modification involved.
->
-> drivers/scsi/fnic/fnic_scsi.c:1964 fnic_abort_cmd() warn: inconsistent indenting.
+On 2024/1/24 09:43, Liu Song wrote:
+> 
+> 在 2024/1/23 20:12, Bitao Hu 写道:
+>> The following softlockup is caused by interrupt storm, but it cannot be
+>> identified from the call tree. Because the call tree is just a snapshot
+>> and doesn't fully capture the behavior of the CPU during the soft lockup.
+>>    watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
+>>    ...
+>>    Call trace:
+>>      __do_softirq+0xa0/0x37c
+>>      __irq_exit_rcu+0x108/0x140
+>>      irq_exit+0x14/0x20
+>>      __handle_domain_irq+0x84/0xe0
+>>      gic_handle_irq+0x80/0x108
+>>      el0_irq_naked+0x50/0x58
+>>
+>> Therefore，I think it is necessary to report CPU utilization during the
+>> softlockup_thresh period (report once every sample_period, for a total
+>> of 5 reportings), like this:
+>>    watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
+>>    CPU#28 Utilization every 4s during lockup:
+>>      #1: 0.0% system, 0.0% softirq, 100.0% hardirq, 0.0% idle
+>>      #2: 0.0% system, 0.0% softirq, 100.0% hardirq, 0.0% idle
+>>      #3: 0.0% system, 0.0% softirq, 100.0% hardirq, 0.0% idle
+>>      #4: 0.0% system, 0.0% softirq, 100.0% hardirq, 0.0% idle
+>>      #5: 0.0% system, 0.0% softirq, 100.0% hardirq, 0.0% idle
+>>    ...
+>>
+>> This would be helpful in determining whether an interrupt storm has
+>> occurred or in identifying the cause of the softlockup. The criteria for
+>> determination are as follows:
+>>    a. If the hardirq utilization is high, then interrupt storm should be
+>>    considered and the root cause cannot be determined from the call tree.
+>>    b. If the softirq utilization is high, then we could analyze the call
+>>    tree but it may cannot reflect the root cause.
+>>    c. If the system utilization is high, then we could analyze the root
+>>    cause from the call tree.
+>>
+>> Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
+>> ---
+>>   kernel/watchdog.c | 58 +++++++++++++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 58 insertions(+)
+>>
+>> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+>> index 81a8862295d6..9fad10e0a147 100644
+>> --- a/kernel/watchdog.c
+>> +++ b/kernel/watchdog.c
+>> @@ -23,6 +23,8 @@
+>>   #include <linux/sched/debug.h>
+>>   #include <linux/sched/isolation.h>
+>>   #include <linux/stop_machine.h>
+>> +#include <linux/kernel_stat.h>
+>> +#include <linux/math64.h>
+>>   #include <asm/irq_regs.h>
+>>   #include <linux/kvm_para.h>
+>> @@ -441,6 +443,58 @@ static int is_softlockup(unsigned long touch_ts,
+>>       return 0;
+>>   }
+>> +#ifdef CONFIG_IRQ_TIME_ACCOUNTING
+>> +static DEFINE_PER_CPU(u64, cpustat_old[NR_STATS]);
+>> +static DEFINE_PER_CPU(u64, cpustat_diff[5][NR_STATS]);
+>> +static DEFINE_PER_CPU(int, cpustat_tail);
+>> +
+>> +static void update_cpustat(void)
+>> +{
+>> +    u64 *old = this_cpu_ptr(cpustat_old);
+>> +    u64 (*diff)[NR_STATS] = this_cpu_ptr(cpustat_diff);
+>> +    int tail = this_cpu_read(cpustat_tail), i;
+>> +    struct kernel_cpustat kcpustat;
+>> +    u64 *cpustat = kcpustat.cpustat;
+>> +
+>> +    kcpustat_cpu_fetch(&kcpustat, smp_processor_id());
+>> +    for (i = 0; i < NR_STATS; i++) {
+>> +        diff[tail][i] = cpustat[i] - old[i];
+>> +        old[i] = cpustat[i];
+>> +    }
+>> +    this_cpu_write(cpustat_tail, (tail + 1) % 5);
+> The number 5 here is related to the 5 in cpustat_diff[5], and it is 
+> recommended to use a macro definition instead of using the number 5 
+> directly.
+In the "set_sample_period" function, the "sample_period" is hardcoded to 
+be 1/5 of the "softlockup_thresh", therefore I define the length of the 
+array here as 5.
+>> +}
+>> +
+>> +static void print_cpustat(void)
+>> +{
+>> +    int i, j, k;
+>> +    u64 a[5][NR_STATS], b[5][NR_STATS];
+> Use define instead of the literal number 5.
+Same as above
+>> +    u64 (*diff)[NR_STATS] = this_cpu_ptr(cpustat_diff);
+>> +    int tail = this_cpu_read(cpustat_tail);
+>> +    u32 period_us = sample_period / 1000;
+> Use NSEC_PER_USEC
+Sure.
+>> +
+>> +    for (i = 0; i < 5; i++) {
+>> +        for (j = 0; j < NR_STATS; j++) {
+>> +            a[i][j] = 100 * (diff[i][j] / 1000);
+>> +            b[i][j] = 10 * do_div(a[i][j], period_us);
+>> +            do_div(b[i][j], period_us);
+>> +        }
+>> +    }
+>> +    printk(KERN_CRIT "CPU#%d Utilization every %us during lockup:\n",
+> better use "pr_crit", and was the original intent here microseconds (us) 
+> or milliseconds (ms)?
+Using "pr_crit", each line will have a "watchdog:" prefix, which I think 
+might not look very neat.
+The intended unit here is seconds(s).
 
-Applied to 6.9/scsi-staging, thanks!
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+>> +        smp_processor_id(), period_us/1000000);
+> better use "period_us /NSEC_PER_MSEC"?
+Sure, I will use USEC_PER_SEC here.
+>> +    for (k = 0, i = tail; k < 5; k++, i = (i + 1) % 5) {
+> 
+> It seems that only i and j are necessary, k is not essential.
+Sure, I will remove the variable 'k'.
+> 
+>> +        printk(KERN_CRIT "\t#%d: %llu.%llu%% system,\t%llu.%llu%% 
+>> softirq,\t"
+>> +            "%llu.%llu%% hardirq,\t%llu.%llu%% idle\n", k+1,
+>> +            a[i][CPUTIME_SYSTEM], b[i][CPUTIME_SYSTEM],
+>> +            a[i][CPUTIME_SOFTIRQ], b[i][CPUTIME_SOFTIRQ],
+>> +            a[i][CPUTIME_IRQ], b[i][CPUTIME_IRQ],
+>> +            a[i][CPUTIME_IDLE], b[i][CPUTIME_IDLE]);
+>> +    }
+>> +}
+>> +#else
+>> +static inline void update_cpustat(void) { }
+>> +static inline void print_cpustat(void) { }
+>> +#endif
+>> +
+>>   /* watchdog detector functions */
+>>   static DEFINE_PER_CPU(struct completion, softlockup_completion);
+>>   static DEFINE_PER_CPU(struct cpu_stop_work, softlockup_stop_work);
+>> @@ -504,6 +558,9 @@ static enum hrtimer_restart 
+>> watchdog_timer_fn(struct hrtimer *hrtimer)
+>>        */
+>>       period_ts = READ_ONCE(*this_cpu_ptr(&watchdog_report_ts));
+>> +    /* update cpu usage stat */
+> The function name already indicates that it involves graphs, so the 
+> comment here appears superfluous.
+> If a comment is absolutely necessary, please provide more detailed 
+> information.
+Sure.
+>> +    update_cpustat();
+>> +
+>>       /* Reset the interval when touched by known problematic code. */
+>>       if (period_ts == SOFTLOCKUP_DELAY_REPORT) {
+>>           if (unlikely(__this_cpu_read(softlockup_touch_sync))) {
+>> @@ -539,6 +596,7 @@ static enum hrtimer_restart 
+>> watchdog_timer_fn(struct hrtimer *hrtimer)
+>>           pr_emerg("BUG: soft lockup - CPU#%d stuck for %us! [%s:%d]\n",
+>>               smp_processor_id(), duration,
+>>               current->comm, task_pid_nr(current));
+>> +        print_cpustat();
+>>           print_modules();
+>>           print_irqtrace_events(current);
+>>           if (regs)
 
