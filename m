@@ -1,171 +1,348 @@
-Return-Path: <linux-kernel+bounces-37605-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37606-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECECB83B271
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 20:42:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91BCB83B276
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 20:44:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E2291F2520B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:42:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B77471C22D3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:44:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 387311339A3;
-	Wed, 24 Jan 2024 19:42:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D4D9132C13;
+	Wed, 24 Jan 2024 19:44:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="tBk+ko3J"
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2069.outbound.protection.outlook.com [40.107.92.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hP8xbFd3"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EAE8133987;
-	Wed, 24 Jan 2024 19:42:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.69
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706125354; cv=fail; b=KEV1I4gEm4lo2c0Bn3p8a+9z8ICOGCvXCJ8OJyaErRPSSVgXrwWHrIXk/G1Gka0X6SiaprerdRUDu462U4Zl3Q5Wo4mgFFOnPfQDZN+La9sQyQ/mJ81LAWuMgShMJPq6kY+sOOUeEGxf1Q3kLqjVBavex0x1I1U9VITus6TB1rI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706125354; c=relaxed/simple;
-	bh=g3vf8S7oOBi7U3MWKlTY98ksUPO/RfCCoGlI1SVjD2A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=MrJhPjNyZua51Sh7555bUYuhcBHsTSpZE7ItV8uOsDjbSue86h15VIiXJrJhScyY6/+WzzXNWcNeEk52TofoKWyx2fBKn0pOjWeeLMxsGgUpBtndc6t8MDfAfnXMC7pMEaBttghfyk9TgM1YK4nz/+8OOh4tSucFYd373Z+mWtA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=tBk+ko3J; arc=fail smtp.client-ip=40.107.92.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cvQNPSV64NcBFR2rgsKOq4saMI36u7vhMCNBZhfl0S4fMOOA27hlm4jnnlyqmXyTISeIM6Hw//uqcRCT6SPf/5LQ5KWKC2nURYHPxoPwCZtqIzyx1MXFhsMMtLyF/fLa5NggcZl9/LUmovUXvcItX9/WaMpXKmMCTFCXiluA72nKHGFqq3D/zZ4PS8w2fZA4LfQ5DUiC1U7iIEJ57O2rXdr4aCrijDLRcw5DRWdm/Q6AwQKFl7C+OzsdqlN4goUQffHZL6NSNhT1iO3FrV0FFdg5s4dnSU1NGWevXw/OguPKxVjmQFyeEa5abgrCX9GDy8aV8oDgUoQQu+/t9wbyvw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bjo6KhKjNTPm9BnXkCKLj5yznWa/F87athREYKbfE+I=;
- b=IBpk8lNI3gcJOhK0wW6gewIXkLsQAjh35PR6gYopay/IW5QOBWv1FcgIp2bgSz6fURPjmHJ2NIBBtRpXEkINHH8Yz6CsCZyPrTZrOfQu1HUaL6Ds3SGvQW9bU6QfgxzP1hyGzdY1iE0Yxqb4T2x2I0rtbfSPkyruufVJ3KrH0PIxy9N8k028VrO3MQnZwIJ4IuRbfw/+pgoEO0ocMlDBO1DXH0oSoGASJPPi+HZzkzb+W0A2VnBX4tbUuZGIrMnLYIRa69vZOYBf2ri1rz6+y9cqwfOIuGfuTTTUJiG8N95Vw9K2eOcCNkUlQN01pETd6CTdeOWf0ohrb3tBqK5MFw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bjo6KhKjNTPm9BnXkCKLj5yznWa/F87athREYKbfE+I=;
- b=tBk+ko3J1cowEEOjQzXYmmCPJ/f/tilQ1ZDxsr/zTidB1tOuA0r2Q+pfYfRJ+icbWrKE6lF1tE6qeXlSHASk0/E+Qg4FUuDfusu2BeVtBUFI/tkU14BDIht0mG5tcMKRV8X3Cmm8wWqouYgc951A90EIvA/iT+XFS9U6ky1PmMZwlCmWEIhv/liQj0CbGRJAab9UxbnVhr2f4BGqWzX6fF38hACVOBO2SmGaIaSZbeOW9Qh2OYZrS+/dhT4zVNq4fkBrNZEqBdJ9w+An2O55Z1Xou8eua5PnXHuIqHnUvE/Ukm4TiK4LblaW/KYmcvrFG08ZzFjewBWZDWvmB1h9Iw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by CH0PR12MB5388.namprd12.prod.outlook.com (2603:10b6:610:d7::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22; Wed, 24 Jan
- 2024 19:42:29 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::96dd:1160:6472:9873]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::96dd:1160:6472:9873%6]) with mapi id 15.20.7228.022; Wed, 24 Jan 2024
- 19:42:29 +0000
-Date: Wed, 24 Jan 2024 15:42:27 -0400
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Yan Zhao <yan.y.zhao@intel.com>, Kevin Tian <kevin.tian@intel.com>
-Subject: Re: [ANNOUNCE] PUCK Notes - 2024.01.24 - Memtypes for non-coherent
- DMA
-Message-ID: <20240124194227.GK1455070@nvidia.com>
-References: <20240124182444.2598714-1-seanjc@google.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240124182444.2598714-1-seanjc@google.com>
-X-ClientProxiedBy: SN7PR04CA0013.namprd04.prod.outlook.com
- (2603:10b6:806:f2::18) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 715F3133402
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 19:44:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706125457; cv=none; b=X7ZdeQo2XrU37HsVACjUAjiCGbvfGQdZQgLuGGFj4W59zrbaQeRq4fxLV89Sh3GAXAAgWbi9nTzmSxBH6fbVpXp6EUr/I2GkFL9uxpf9dpCmQkTkU75Mh2a8ysNipKhfBbBxpRfXv3RBMXcAxKORxaSEtJipcreuoWkaUUJRveM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706125457; c=relaxed/simple;
+	bh=Y0BInIUdk4yuoZppNHHuU1yH/Sj5lmRVubqlY2C/Ka8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BIRXdV4iv5/rNaDZawdbPZeUh9tUPRclmgH7cUDpRkfGCsBMa41CMinPMIZYV0xVZ/s28yDW+tkuDCxgvpW74nEZp1u1j845OXpJ/l4s9GoEmg3s604rze5zVsvr/h3GCiz3cmYiIA1/3sTsW3WrJxjWDy1ZceJM91g2ONgNM5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hP8xbFd3; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6ddc1b30458so647629b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 11:44:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706125447; x=1706730247; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BbdqVnsqT1MfuMPV9yVF8MwJ35PguBwNIQWD7kRhJBg=;
+        b=hP8xbFd3zHMkhMHNbiTh3xfgBl4rLOZTIC3DdOBIkEqr4TVO4DuV4wfjuq2dy0cSTc
+         UJd0FK8wRU1zDR9SSdr5xGJrGpJxcsp50jc8cEgKKmWeraAJpnQZc41/h9V9P7NvMN7o
+         5ELxnGrQc4tCVYVP8v34KEITMqEPVbyMtlBuN0ZbdYP+01JGxL/Xvrj63Vd1QrVXwudg
+         dqALYvkIgSTlFfKWgEX9KjYYn5N1t8qkNtP7Lue78TP0NeHGKli85jk+GE+09uS4lU/D
+         g/lJzwVw018N0MKlA4zOPnOJiW4pYFHk5l3KVweib6aeMhlrRQwqDE5/mBZhFIKI3NS0
+         Kgpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706125447; x=1706730247;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BbdqVnsqT1MfuMPV9yVF8MwJ35PguBwNIQWD7kRhJBg=;
+        b=a3/Wh3jBl6vHOFAW+Onxq4rqGmFRTqnV7xM0U2xi5KCT5yiBCafe2XzVX8JPLuGzDG
+         11NWmrITTt+eNClfQPaHK6XyHfWeTbJK6oVyxFb8bEq2f7EmknPz/S6/0VBiKOTkYV4y
+         NuDJr92EP+sZckQMP3iUFHJVKZ3smiaj7PyVJ4Sm/i9mlV6izzZ2QCnN/xMDt2IeHaxc
+         K2+TtHYW7jtn3V0es9cNhACAqfbRdsdHW7aU5XrXNTvJEHUGN4Qvim/TlPpVU9r5/MoY
+         FeGCm4MqldCmDDTFc1ccWYxzbLQfXZODTYXJZENtgc4tOEiSvvA44Zwyhr8k7Izh3KQC
+         0gIA==
+X-Gm-Message-State: AOJu0YxDA/ahqQqTHz+g79lmFWOrghWA/RmfXLS6+/pVvE0UnRUTG2fs
+	rWsk3V0aVp2/Qk5YIr0piYyNuMYVr+dpkOWBdieQzHXg2VxBvR59w601mT6oqX3s0m107Vj8IWs
+	Uv1nm3AsuDLXic48vnGgxAC3tzXuzxV8su1J2wA==
+X-Google-Smtp-Source: AGHT+IEeKzGMh3dWiDOUkgwjs2ILhPK9w1YiiPZeGdGStN9pC4F6sjJskNUaLWaC3ky6tgs08Zs76K5q2qe/6TErc08=
+X-Received: by 2002:a62:5f85:0:b0:6db:ec12:5ba4 with SMTP id
+ t127-20020a625f85000000b006dbec125ba4mr51632pfb.34.1706125446716; Wed, 24 Jan
+ 2024 11:44:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CH0PR12MB5388:EE_
-X-MS-Office365-Filtering-Correlation-Id: c248c0ef-09d5-417a-7a8c-08dc1d1499ac
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	hBwLWvBD8ae3CUJaDHtYcHizvVIpef/bx3UbIQhHNjzoYx4BoXoQ9fCZYOa5a+EtV1xrCoRXhbpGFKDkq67PQiBIKfRbRyq3oY2zNJDKVcoj71j91nxOBqOharfwXYQyHkWlNsgAxupi1t6BWI1bGBcjNQb2RqbswzvQDvfdjfzRI1ud4nQnT8rsK7fEBfIt4xvfnMVcDhhM1UrT1lcpwOsGYtpNSieiffbPxryHtUoz0W+gjX03nCDZR627iee6iX0GzQj+rZb+2m5vhZtWNiM50kMhuzTtOHwATJ/Vf4JQ20pQsvVNi3k6vXA4h+isqabhemcSDArj0vpxVGnwJMkfSj574B8KTHgcr6rVwPQgLoahyewzF5BZDjTsWL0UhsTKeT2JfH6gPukTzJaoZ85srPkN83sho/9ghrLJL+oCMxhfk2q2dc1uELU9kvIRrAHuUd5UQZq8HzvqXrelco+ON2Sd4uCgn3zz+Do3N3BANU8liteywMUo0329X37yU6jMykQYTFTpx8Lh+AD1yuNfP6P8YT/mplZ5hIBjMQlx/Old/ucUkQJUscbw7m8V
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(39860400002)(136003)(396003)(376002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(41300700001)(83380400001)(86362001)(36756003)(33656002)(38100700002)(1076003)(478600001)(26005)(2616005)(6512007)(66556008)(66476007)(6506007)(2906002)(54906003)(66946007)(316002)(6916009)(4326008)(8936002)(8676002)(5660300002)(6486002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?rSvRDxqwTo8NgMLe4BOOcmNKoIyMsqY6hOHzm+wXAvzQ82APPy5Kd/pccmIW?=
- =?us-ascii?Q?o5ws9mtG70p0RyDUHQDkXXrAmZEHAF0xCSNOaBB7wqVGE/DgeCUtpcepaPYq?=
- =?us-ascii?Q?DsmfRZJW6WWq1ULpVp7E4Xu6jvYhwzYyW+Eayy4SURvp+nJz4ZoGnUo7X2e1?=
- =?us-ascii?Q?ueSIc9K6ReYhNHaBGwo1xCJdGvjGtfZCmZkY/tEwBktpqBY80IuSbsuNS78E?=
- =?us-ascii?Q?VUdAoFuU/zE3PSrfRM5FKblBDFBkNwBGd6sDzX0XUtpk5skYoAY8BzoScMem?=
- =?us-ascii?Q?NLR3oULYa44vlOOYF4n8RESggTvEIwX8N7fBnfbIyo0qEUaOnJbPdWGToB7x?=
- =?us-ascii?Q?vnNnAiY5P68rKkbJbeLCjXEbPzADDp9QD/dcYv0MyPrMEJd4XXlFolHt0BI8?=
- =?us-ascii?Q?fGocEaVjrFAY8pezoGnzJtOXdgM1g2638pa131WXkfqoqL0WzbeiSrr4ERuc?=
- =?us-ascii?Q?CysBebDC6X7v8TDO2D47g0B1ZMBmfPaEnHCHKq0TCwNoDHz3SpAhGj2tagVX?=
- =?us-ascii?Q?a2tAUV3HRjBJmvm+y7ZZxEUNUuS8z/CnmWMU0TeanQxK8DXhFmvyzST0xh9L?=
- =?us-ascii?Q?5Dl1d5mcpR9AgGHwTJyKoCHShQ+clcgXWYNb2ljOMZHn7/Oz9ojOFXA7XxGb?=
- =?us-ascii?Q?BwUb7iXOI2R8u7UVLoRJuoTghhk3MHVmxYpCJoqDHSHNx0QMQVzshPu3K5IT?=
- =?us-ascii?Q?g/dp+lHvCU6xhOckM7lMFdS95zxB9TAmZE1T+o3gvDhfmIN4sdQ4acHGPS6T?=
- =?us-ascii?Q?QEOngGvoKeeCbstaJdtXro+6gvUrRXX2R4zETr5HgvvA+GStcKCJfuPqrBFi?=
- =?us-ascii?Q?kQK4BBxfoyIdOfsYGhFb9bCejhxsS0NC/y1GbCHEwUDC/Yf+5kkM3mxwPBda?=
- =?us-ascii?Q?8bEEcL+bzWUFYlmkytMQ2KVNM5P2+EmC6WLRYtlPyl85C78flczRB3Bseugb?=
- =?us-ascii?Q?ttc3s2xSW0+Tafw+lWGc0c60NfoUbIZSPNNNJ6qu1VPRNtSpkmX6HovPiDmg?=
- =?us-ascii?Q?+Kb41PYV5rBdbJ4RMqN57wyNOhd6iB5wr0RZsdunfuWbOBDtobR1Bqlvy+RU?=
- =?us-ascii?Q?AKXSQ2qWOKYBRl4cSV3B+mZFCBIPfknMB+CgvFVuINgFwut7u7rdcP2Y62dR?=
- =?us-ascii?Q?pd+j6R6sW7z5f8uy+7GDRalJSSTeAHd6yvVZYyBPBfdryGVdNU3sUYg93E9i?=
- =?us-ascii?Q?n0alyWg+pdf7LuWe0V+3MRS9g/dk4wfzwy6kFXJncC1opyHC+YuFmPrcpQfS?=
- =?us-ascii?Q?IBZgcw4eE0lsWt6axS1cWWpxPw3F+y6Js3K2FQflxtNs6gVzLKqdBhwZf648?=
- =?us-ascii?Q?lXeyw+FA9kQpyU69VXfOKfxGo2x14mGxzGLRTpU0PIOyxsLDeSOLjRBS0mbW?=
- =?us-ascii?Q?t/BU+xQX5UqV65V2cFXOjKqrUGcoHpyBdY5Deauf0OlTlu09Mgz849TLkoQo?=
- =?us-ascii?Q?TIjcq16S65qs9IIrUaVQo8ObOxSZYvEMPkMkzI6FYZi8DdTWfmf84OJuOxP2?=
- =?us-ascii?Q?lqHFiVPzi2RKO9ILRU3bP3U0JQBsDjnMVwyfroMNNRSr7ybGjODbry77Rf1M?=
- =?us-ascii?Q?3eJ/cgozfnFHDBMS3FCqRzSQvOZkswDl6GxC+bIJ?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c248c0ef-09d5-417a-7a8c-08dc1d1499ac
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jan 2024 19:42:29.5615
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qnqtflLlQqVHpVW3qgLYGhgJCJL+bIQiyrctoUXIVsWs6ab2wIOl+pd7WCCYtlJw
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5388
+References: <20240123153421.715951-1-tudor.ambarus@linaro.org>
+ <20240123153421.715951-20-tudor.ambarus@linaro.org> <CAPLW+4=5ra6rBRwYYckzutawJoGw_kJahLaYmDzct2Dyuw0qQg@mail.gmail.com>
+ <ab53dbc6-dad5-4278-a1d2-9f963d08eedc@linaro.org>
+In-Reply-To: <ab53dbc6-dad5-4278-a1d2-9f963d08eedc@linaro.org>
+From: Sam Protsenko <semen.protsenko@linaro.org>
+Date: Wed, 24 Jan 2024 13:43:55 -0600
+Message-ID: <CAPLW+4njDgYO6bxVAL6hc-b_bVxjKcJnYpNGcNGpFsFg1LMc-Q@mail.gmail.com>
+Subject: Re: [PATCH 19/21] spi: s3c64xx: add support for google,gs101-spi
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: broonie@kernel.org, andi.shyti@kernel.org, arnd@arndb.de, 
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	alim.akhtar@samsung.com, linux-spi@vger.kernel.org, 
+	linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-arch@vger.kernel.org, andre.draszik@linaro.org, 
+	peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 24, 2024 at 10:24:44AM -0800, Sean Christopherson wrote:
+On Wed, Jan 24, 2024 at 4:40=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linaro=
+org> wrote:
+>
+> Hi, Sam! Thanks for the review!
+>
+> On 1/23/24 19:25, Sam Protsenko wrote:
+> > On Tue, Jan 23, 2024 at 9:34=E2=80=AFAM Tudor Ambarus <tudor.ambarus@li=
+naro.org> wrote:
+> >>
+> >> Add support for GS101 SPI. All the SPI nodes on GS101 have 64 bytes
+> >> FIFOs, infer the FIFO size from the compatible. GS101 allows just 32bi=
+t
+> >> register accesses, otherwise a Serror Interrupt is raised. Do the writ=
+e
+> >> reg accesses in 32 bits.
+> >>
+> >> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> >> ---
+> >
+> > I counted 3 different features in this patch. Would be better to split
+> > it correspondingly into 3 patches, to make patches atomic:
+> >
+> >   1. I/O width
+> >   2. FIFO size
+>
+> I kept these 2 in the same patch as gs101 to exemplify their use by
+> gs101. But I'm also fine splitting the patch in 3, will do in v2.
+>
+> >   3. Adding support for gs101
+> >
+> > And I'm not really convinced about FIFO size change.
+>
+> I'll explain why it's needed below.
+>
+> >
+> >>  drivers/spi/spi-s3c64xx.c | 50 +++++++++++++++++++++++++++++++++-----=
+-
+> >>  1 file changed, 43 insertions(+), 7 deletions(-)
+> >>
+> >> diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
+> >> index 62671b2d594a..c4ddd2859ba4 100644
+> >> --- a/drivers/spi/spi-s3c64xx.c
+> >> +++ b/drivers/spi/spi-s3c64xx.c
+> >> @@ -20,6 +20,7 @@
+> >>
+> >>  #define MAX_SPI_PORTS                          12
+> >>  #define S3C64XX_SPI_QUIRK_CS_AUTO              BIT(1)
+> >> +#define S3C64XX_SPI_GS1O1_32BIT_REG_IO_WIDTH   BIT(2)
+> >>  #define AUTOSUSPEND_TIMEOUT                    2000
+> >>
+> >>  /* Registers and bit-fields */
+> >> @@ -131,6 +132,7 @@ struct s3c64xx_spi_dma_data {
+> >>   * @rx_lvl_offset: Bit offset of RX_FIFO_LVL bits in SPI_STATUS regit=
+er.
+> >>   * @tx_st_done: Bit offset of TX_DONE bit in SPI_STATUS regiter.
+> >>   * @clk_div: Internal clock divider
+> >> + * @fifosize: size of the FIFO
+> >>   * @quirks: Bitmask of known quirks
+> >>   * @high_speed: True, if the controller supports HIGH_SPEED_EN bit.
+> >>   * @clk_from_cmu: True, if the controller does not include a clock mu=
+x and
+> >> @@ -149,6 +151,7 @@ struct s3c64xx_spi_port_config {
+> >>         int     tx_st_done;
+> >>         int     quirks;
+> >>         int     clk_div;
+> >> +       unsigned int fifosize;
+> >>         bool    high_speed;
+> >>         bool    clk_from_cmu;
+> >>         bool    clk_ioclk;
+> >> @@ -175,6 +178,7 @@ struct s3c64xx_spi_port_config {
+> >>   * @tx_dma: Local transmit DMA data (e.g. chan and direction)
+> >>   * @port_conf: Local SPI port configuartion data
+> >>   * @port_id: Port identification number
+> >> + * @fifosize: size of the FIFO for this port
+> >>   */
+> >>  struct s3c64xx_spi_driver_data {
+> >>         void __iomem                    *regs;
+> >> @@ -194,6 +198,7 @@ struct s3c64xx_spi_driver_data {
+> >>         struct s3c64xx_spi_dma_data     tx_dma;
+> >>         const struct s3c64xx_spi_port_config    *port_conf;
+> >>         unsigned int                    port_id;
+> >> +       unsigned int                    fifosize;
+> >>  };
+> >>
+> >>  static void s3c64xx_flush_fifo(struct s3c64xx_spi_driver_data *sdd)
+> >> @@ -403,7 +408,7 @@ static bool s3c64xx_spi_can_dma(struct spi_control=
+ler *host,
+> >>         struct s3c64xx_spi_driver_data *sdd =3D spi_controller_get_dev=
+data(host);
+> >>
+> >>         if (sdd->rx_dma.ch && sdd->tx_dma.ch)
+> >> -               return xfer->len > FIFO_DEPTH(sdd);
+> >> +               return xfer->len > sdd->fifosize;
+> >>
+> >>         return false;
+> >>  }
+> >> @@ -447,12 +452,22 @@ static int s3c64xx_enable_datapath(struct s3c64x=
+x_spi_driver_data *sdd,
+> >>                                         xfer->tx_buf, xfer->len / 4);
+> >>                                 break;
+> >>                         case 16:
+> >> -                               iowrite16_rep(regs + S3C64XX_SPI_TX_DA=
+TA,
+> >> -                                       xfer->tx_buf, xfer->len / 2);
+> >> +                               if (sdd->port_conf->quirks &
+> >> +                                   S3C64XX_SPI_GS1O1_32BIT_REG_IO_WID=
+TH)
+> >> +                                       iowrite16_32_rep(regs + S3C64X=
+X_SPI_TX_DATA,
+> >> +                                                        xfer->tx_buf,=
+ xfer->len / 2);
+> >> +                               else
+> >> +                                       iowrite16_rep(regs + S3C64XX_S=
+PI_TX_DATA,
+> >> +                                                     xfer->tx_buf, xf=
+er->len / 2);
+> >>                                 break;
+> >>                         default:
+> >> -                               iowrite8_rep(regs + S3C64XX_SPI_TX_DAT=
+A,
+> >> -                                       xfer->tx_buf, xfer->len);
+> >> +                               if (sdd->port_conf->quirks &
+> >> +                                   S3C64XX_SPI_GS1O1_32BIT_REG_IO_WID=
+TH)
+> >> +                                       iowrite8_32_rep(regs + S3C64XX=
+_SPI_TX_DATA,
+> >> +                                                       xfer->tx_buf, =
+xfer->len);
+> >> +                               else
+> >> +                                       iowrite8_rep(regs + S3C64XX_SP=
+I_TX_DATA,
+> >> +                                                    xfer->tx_buf, xfe=
+r->len);
+> >>                                 break;
+> >>                         }
+> >>                 }
+> >> @@ -696,7 +711,7 @@ static int s3c64xx_spi_transfer_one(struct spi_con=
+troller *host,
+> >>                                     struct spi_transfer *xfer)
+> >>  {
+> >>         struct s3c64xx_spi_driver_data *sdd =3D spi_controller_get_dev=
+data(host);
+> >> -       const unsigned int fifo_len =3D FIFO_DEPTH(sdd);
+> >> +       const unsigned int fifo_len =3D sdd->fifosize;
+> >>         const void *tx_buf =3D NULL;
+> >>         void *rx_buf =3D NULL;
+> >>         int target_len =3D 0, origin_len =3D 0;
+> >> @@ -1145,6 +1160,11 @@ static int s3c64xx_spi_probe(struct platform_de=
+vice *pdev)
+> >>                 sdd->port_id =3D pdev->id;
+> >>         }
+> >>
+> >> +       if (sdd->port_conf->fifosize)
+> >> +               sdd->fifosize =3D sdd->port_conf->fifosize;
+> >> +       else
+> >> +               sdd->fifosize =3D FIFO_DEPTH(sdd);
+> >> +
+> >>         sdd->cur_bpw =3D 8;
+> >>
+> >>         sdd->tx_dma.direction =3D DMA_MEM_TO_DEV;
+> >> @@ -1234,7 +1254,7 @@ static int s3c64xx_spi_probe(struct platform_dev=
+ice *pdev)
+> >>         dev_dbg(&pdev->dev, "Samsung SoC SPI Driver loaded for Bus SPI=
+-%d with %d Targets attached\n",
+> >>                                         sdd->port_id, host->num_chipse=
+lect);
+> >>         dev_dbg(&pdev->dev, "\tIOmem=3D[%pR]\tFIFO %dbytes\n",
+> >> -                                       mem_res, FIFO_DEPTH(sdd));
+> >> +                                       mem_res, sdd->fifosize);
+> >>
+> >>         pm_runtime_mark_last_busy(&pdev->dev);
+> >>         pm_runtime_put_autosuspend(&pdev->dev);
+> >> @@ -1362,6 +1382,18 @@ static const struct dev_pm_ops s3c64xx_spi_pm =
+=3D {
+> >>                            s3c64xx_spi_runtime_resume, NULL)
+> >>  };
+> >>
+> >> +static const struct s3c64xx_spi_port_config gs101_spi_port_config =3D=
+ {
+> >> +       .fifosize       =3D 64,
+> >
+> > I think if you rework the the .fifo_lvl_mask, replacing it with
+> > .fifosize, you should also do next things in this series:
+> >   1. Rework it for all supported (existing) chips in this driver
+> >   2. Provide fifosize property for each SPI node for all existing dts
+> > that use this driver
+> >   3. Get rid of .fifo_lvl_mask for good. But the compatibility with
+> > older kernels has to be taken into the account here as well.
+>
+> We can't get rid of the .fifo_lvl_mask entirely because we need to be
+> backward compatible with the device tree files that we have now.
+>
+> >
+> > Otherwise it looks like a half attempt and not finished, only creating
+> > a duplicated property/struct field for the same (already existing)
+> > thing. Because it's completely possible to do the same using just
+> > .fifo_lvl_mask without introducing new fields or properties. If it
+>
+> Using fifo_lvl_mask works but is wrong on multiple levels.
+> As the code is now, the device tree spi alias is used as an index in the
+> fifo_lvl_mask to determine the FIFO depth. I find it unacceptable to
+> have a dependency on an alias in a driver. Not specifying an alias will
+> make the probe fail, which is even worse. Also, the fifo_lvl_mask value
 
->  - ARM's architecture doesn't guarantee coherency for mismatched memtypes, so
->    KVM still needs to figure out a solution for ARM, and possibly RISC-V as
->    well.  But for CPU<->CPU access, KVM guarantees host safety, just not
->    functional correctness for the guest, i.e. finding a solution can likely be
->    deferred until a use case comes along.
+Ok, I think that's a valid point. I probably missed the alias part
+when reading the patch description. I also understand we can't just
+remove .fifo_lvl_mask right now, as we have to keep the compatibility
+with older/existing out-of-tree device trees, so that the user can
+update the kernel image separately.
 
-Regarding the side discussion on ARM DMA coherency enforcement..
+> does not reflect the FIFO level reg field. This is incorrect as we use
+> partial register fields and is misleading. Other problem is that the
+> fifo_lvl_mask value is used to determine the FIFO depth which is also
+> incorrect. The FIFO depth is dictated by the SoC implementing the IP,
+> not by the FIFO_LVL register field. Having in mind these reasons I
+> marked the fifo_lvl_mask and the port_id as deprecated in the next
+> patch, we shouldn't use fifo_lvl_mask or the alias anymore.
+>
+> In what concerns your first 2 points, to rework all the compatibles and
+> to introduce a fifosize property, I agree it would be nice to do it, but
+> it's not mandatory, we can work in an incremental fashion. Emphasizing
+> what is wrong, marking things as deprecated and guiding contributors on
+> how things should be handled is good too, which I tried in the next
+> patch. Anyway, I'll check what the reworking would involve, and if I
+> think it wouldn't take me a terrible amount of time, I'll do it.
+>
 
-Reading the docs more fully, SMMU has no analog to the Intel/AMD
-per-page "ignore no snoop" functionality. The driver does the correct
-things at the IOMMU API level to indicate this.
+From what I understand, that shouldn't be very hard to do, just a
+matter of adding fifosize property to all dts's existing upstream.
+That would also provide a good example to follow for anyone who wants
+to add the support for new compatibles. But of course I can't ask you
+to do the extra work. My point is, with that item done, the first
+transition step would be finished right away. And the remaining step
+would be to have a strategy for .fifo_lvl_mask removal. I wonder what
+maintainers can suggest on that matter, and if it's doable at all.
 
-Various things say SMMU should map PCIe No Snoop to Normal-iNC-oNC-OSH
-on the output transaction.
+Btw, just a thought: maybe also add "deprecated" comment to each line
+of code where .fifo_lvl_mask is being assigned, just to make sure
+noone follows that style in the future (as people often tend to
+copy-paste existing implementation)? Because obviously we can't remove
+those lines for now.
 
-ARM docs recommend that the VMM clear the "No Snoop Enable" in the PCI
-endpoint config space if they want to block No Snoop. I guess this
-works for everything and is something we should think about
-generically in VFIO to better support iommu drivers that lack
-IOMMU_CAP_ENFORCE_CACHE_COHERENCY.
+> > seems to much -- maybe just use .fifo_lvl_mask for now, and do all
+> > that reworking properly later, in a separate patch series?
+> >
+>
+> But that means to add gs101 and then to come with patches updating what
+> I just proposed, and I'm not thrilled about it.
+>
 
-ARM KVM probably needs to do something with
-kvm_arch_register_noncoherent_dma() to understand that the VM can
-still make the cache incoherent even if FWB is set.
+Got it. That's fine with me. I think we don't have to have everything
+super-granular w.r.t. patch series split. But I'd still argue that
+splitting this particular patch by 3 patches would make things more
+atomic and thus better.
 
-Relatedly the SMMU nested translation design is similar to KVM where
-the S1 can contribute memory attributes. The STE.S2FWB behaves
-similarly to the KVM where it prevents the S1 from overriding
-cachable in the S2.
-
-The nested patches are still to be posted but the current draft does
-not set S2FWB, I will get that fixed.
-
-We may have another vfio/iommufd/smmu issue where non-RAM pages are
-mapped into the SMMU with IOMMU_CACHABLE, unclear when this would be
-practically important but it seems wrong.
-
-Jason
+> Cheers,
+> ta
 
