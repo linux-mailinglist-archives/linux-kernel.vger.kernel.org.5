@@ -1,130 +1,83 @@
-Return-Path: <linux-kernel+bounces-36601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36602-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBEFD83A3A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:00:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EAB983A3AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:01:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29D6E1C25796
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:00:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBBE3293C7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:01:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D400171DC;
-	Wed, 24 Jan 2024 08:00:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44163171DD;
+	Wed, 24 Jan 2024 08:01:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="S2JyumYA"
-Received: from omta36.uswest2.a.cloudfilter.net (omta36.uswest2.a.cloudfilter.net [35.89.44.35])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OShcSokr"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29593DDD6
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 08:00:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 851DA171AA;
+	Wed, 24 Jan 2024 08:01:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706083245; cv=none; b=QpJ3zYz7akoXzB9/HeKJapcyaUImIbnkZHQncvyp2+jsWS5RYh0GF89T4yu3dXwoBlCEDHcVeHLobYgki4Za75fH2BJTeo1mIINm/0Hb+XlxgaON2H29Duf9j+DEFZwEx00qIZ3zodCp46CFstmMw1k7AGrl9E63t0W4cImbGJo=
+	t=1706083305; cv=none; b=Cbt7TyzTchEREYS49aEby4+wBwwPyWjIhtECvG7tvjgPKj6jRxAyQpSK1B5gG/U0bA/pvQA7fqbl/s/lTe2xtZJ6fqxOkNLX+bvIepTdSiQuu6iGzfj51tQRYMOyH0D6anWy5Zpprd2S4G0Y++HoPMzZO+E33T8CpQ4O4838zCw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706083245; c=relaxed/simple;
-	bh=1C3iXccwBlELRySptMNNC65TB3+3vd9/2gXCQ8/Ua1A=;
-	h=Subject:To:Cc:References:In-Reply-To:From:Message-ID:Date:
-	 MIME-Version:Content-Type; b=j0SkDqE59r4uIIOUde2qZ6fnxY2u6YvvqwdIZkF9srXHGrLqaFeBmMrfTOLWFqP+XWj15WUSpigkIygXmb85pMn0rsG1zS9HzslYzow1NFDNkLm6cQwalZKrb8JfH8zz4GQd3SjznrOF8QDgRPduc6FETJ/aPvD/v2imtHWQJIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net; spf=pass smtp.mailfrom=w6rz.net; dkim=pass (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b=S2JyumYA; arc=none smtp.client-ip=35.89.44.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
-Received: from eig-obgw-6010a.ext.cloudfilter.net ([10.0.30.248])
-	by cmsmtp with ESMTPS
-	id SNc1rdUqMCF6GSYBercaDu; Wed, 24 Jan 2024 08:00:42 +0000
-Received: from box5620.bluehost.com ([162.241.219.59])
-	by cmsmtp with ESMTPS
-	id SYBdrS0oOfPBySYBdrFFen; Wed, 24 Jan 2024 08:00:41 +0000
-X-Authority-Analysis: v=2.4 cv=T+af8tGQ c=1 sm=1 tr=0 ts=65b0c3a9
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=IkcTkHD0fZMA:10 a=dEuoMetlWLkA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
- a=HaFmDPmJAAAA:8 a=rqrlWO25EZKfsK9HbZwA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=XwmudWvNzKZLFr3qZl5dYIxJ2vyxFylXBSTwDy/gKz8=; b=S2JyumYAlr9ZIIss2dZACAqJnd
-	lU3PYxzkSShZ3vqdRmCIS4MhatoOQf+z/JjIPOt4mZIRgg7rARajEhuVmGFpHruvmhzRkPcdcjdKN
-	b47iXKzaBr2a+Tv/+JKv9pc8KjwM7JGv5C1qe0FSeFkU1SZzj4ltCa2Biz/QrCDvUGsOpZWjKkWYM
-	SYM4lR389qa+nXVGJ/iOgzDCfanmy7Ab/N86t0OpDGO1NefayiwvMWJTYdBoYiCGKsWwDM03lWVfC
-	QiVEXJJzGEz8BtioQ04mzF1/Qj4X1nDoHly+1/ar7ooHasFMnAM0PvoaLn3KZtPlo8LOKa6IuyKBZ
-	FBJIE37w==;
-Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:36736 helo=[10.0.1.47])
-	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <re@w6rz.net>)
-	id 1rSYBb-002QZq-0K;
-	Wed, 24 Jan 2024 01:00:39 -0700
-Subject: Re: [PATCH 6.6 000/580] 6.6.14-rc2 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-References: <20240123174533.427864181@linuxfoundation.org>
-In-Reply-To: <20240123174533.427864181@linuxfoundation.org>
-From: Ron Economos <re@w6rz.net>
-Message-ID: <408b6d51-4bd2-920e-3b8e-abeb8e2beda8@w6rz.net>
-Date: Wed, 24 Jan 2024 00:00:36 -0800
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+	s=arc-20240116; t=1706083305; c=relaxed/simple;
+	bh=SUZ9Qd+Fkx0RnIhKJ2sG4i2sQF6fqBSEix6TvqfFoVE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nrDInyI0Pv/h8/aP1hv2bh0XsxihhXXxjGypdSFH0iVc7WmLJPW/sDfvZgEIfujbNU5fCD1ZTFw8sDImUBpyYCU+J5XtwaG1uVuYid2HiGGtQ5sHNjvpGoRkNJyxBxIEJGk57ARp+FapeVW6z6jK5cJlFLaNZc81JT5WHdlZjAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OShcSokr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2E21C433F1;
+	Wed, 24 Jan 2024 08:01:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706083305;
+	bh=SUZ9Qd+Fkx0RnIhKJ2sG4i2sQF6fqBSEix6TvqfFoVE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OShcSokrmB8f6G+ACujuztrNKnp3zhf6lXeaOKG+aR9gdUWW4HmnW6EG+SZYEwhbb
+	 I8QdqFRvDY/2A88Xc5AW+8kSfUlLF5ZEsrLVTnSS1szrdk2rvBOTaZ13+Vuxxlnqaj
+	 zZtvZceSmJrQLJ3goN16CDudpULCWA9BocEqR4XMd8BQYQHzb7i8qZ6XbkVt2kX/NP
+	 ofTxLUcPjkog8SVEKb+MdvdeAQALtp0OX4dSRx5aZRS4M8/ZfEdG8Rqz1EkCSiYQHM
+	 1R8C3s1glppe8cQDYVTZIQXBLfD/OIs0e+VV7mwef7cLPCV3OswdWDxY3n62kVbMXi
+	 ZWnr7C2l9RWlQ==
+Date: Wed, 24 Jan 2024 09:01:38 +0100
+From: Niklas Cassel <cassel@kernel.org>
+To: Conrad Kostecki <conikost@gentoo.org>
+Cc: linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
+	dlemoal@kernel.org, hdegoede@redhat.com
+Subject: Re: [PATCH] ahci: asm1166: correct count of reported ports
+Message-ID: <ZbDD4nBeCHAK3Wqp@x1-carbon>
+References: <20240123183002.15499-1-conikost@gentoo.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 98.207.139.8
-X-Source-L: No
-X-Exim-ID: 1rSYBb-002QZq-0K
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:36736
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 4
-X-Org: HG=bhshared;ORG=bluehost;
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfJ8uh9U9HIu8Aph6S9WQOQtvB2yeWnS08G5MKFjaASwOtZ21LmTImjLftn1nOXGKd+IWxpMxXVyDgmzTXFmfo1azCe7qGlDS1aqF/7XZVuFV8HMOuPY2
- fMZMqgp93223q4TrXN1LK6aWKSUn3RHkemZ8Mj2MwO16trtQsAr72b4q20st5nzkgwahvfrYNT0+skcxdqyGqxMEqUJmMj38jOY=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240123183002.15499-1-conikost@gentoo.org>
 
-On 1/23/24 9:47 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.6.14 release.
-> There are 580 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 25 Jan 2024 17:44:18 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.14-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Tue, Jan 23, 2024 at 07:30:02PM +0100, Conrad Kostecki wrote:
+> The ASM1166 SATA host controller always reports wrongly,
+> that it has 32 ports. But in reality, it only has six ports.
+> 
+> This seems to be a hardware issue, as all tested ASM1166
+> SATA host controllers reports such high count of ports.
+> 
+> Example output: ahci 0000:09:00.0: AHCI 0001.0301
+> 32 slots 32 ports 6 Gbps 0xffffff3f impl SATA mode.
+> 
+> By adjusting the port_map, the count is limited to six ports.
+> 
+> New output: ahci 0000:09:00.0: AHCI 0001.0301
+> 32 slots 32 ports 6 Gbps 0x3f impl SATA mode.
+> 
+> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=211873
+> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218346
+> Signed-off-by: Conrad Kostecki <conikost@gentoo.org>
+> ---
 
-Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
-
-Tested-by: Ron Economos <re@w6rz.net>
-
+Applied:
+https://git.kernel.org/pub/scm/linux/kernel/git/libata/linux.git/log/?h=for-6.8-fixes
 
