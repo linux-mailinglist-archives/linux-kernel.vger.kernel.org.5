@@ -1,120 +1,93 @@
-Return-Path: <linux-kernel+bounces-37845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37888-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4291183B65F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 02:06:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07E9B83B724
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 03:30:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8D8E2870FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 01:06:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B6521C21301
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 02:30:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8BB7136F;
-	Thu, 25 Jan 2024 01:06:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PcnyGSn3"
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10E656127;
+	Thu, 25 Jan 2024 02:29:56 +0000 (UTC)
+Received: from 10.mo575.mail-out.ovh.net (10.mo575.mail-out.ovh.net [46.105.79.203])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1BCF17C2;
-	Thu, 25 Jan 2024 01:06:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BE2E63AC
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 02:29:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.105.79.203
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706144782; cv=none; b=kMCdUM3IHjpt4aPBrZxSN5l6F97LqkaJsg+CsCiAsuQJR1Soz2uIkyGIPvvfzsAxTobxDm1POnupL00+2MyM4EzmDjl+GYsW8cEP0a62HPVd1sXJf0ycKVpKFRdPdWnnMq5xQZz8516L+exWWDWLOSaRrSb6YzDrcHUuCpvhqf4=
+	t=1706149795; cv=none; b=slHHDM4QjsrsyWYS8zffxorSyCh2jxapDnBMSlThgyQGsNaX2M1zaTgrZWNLujgfherU0LYFNv7PtpuyiTilBo5N1iS5kBaYfKS44DZGRuzXApToV+oRIMszvhOUmOVcUs17gneyoxYHDjW+r3IUfdvA4gzkQGuys3teks9y7mk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706144782; c=relaxed/simple;
-	bh=QGkpXTK0YyeELiD+mxIURwgFUQzDyoQBb1doo1frbsk=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=iOVZe8iqpJozV7TdLmzqIjM0eg3wE1LVXwPWhnTg07Z7IVRjqawkg7R9y4qRwuhZ5U35tHvH1ifdg3z2g6YQT8eeFwbfBSBVojLQuv+jrAWdW1usUD4NQCqY17sHkNDshPDxKgyNOJt/Ztfdic3T3SPucnX5l1BAuxagaDCkjzY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PcnyGSn3; arc=none smtp.client-ip=209.85.167.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3bba50cd318so5736537b6e.0;
-        Wed, 24 Jan 2024 17:06:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706144780; x=1706749580; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pU3f4QgLLBF3NnF4D7mve2JIYRwJ7D0KVAeRwEFC/iQ=;
-        b=PcnyGSn3ABTlYaxLFkAMDNPThQdu/iEUI0kYfNu3DhBZX45bBABYxXi359O5PW1YOY
-         DzfWgdHrQ7VetORwNCeMYdkqjfvr6jBcW6oriYl0QN+BPgr4Dohs51NdOxA4a5No9hsq
-         O5xtgngPIr7L6Xhbd6EetdSVqwQNzdXuDeZa15fMZJchWQ/psw0DKmLl4VDLblhAMXox
-         iN2utAla5j+nXhwFL4oMhbaNvOtC/dZLO7y1HHNkjOYRF7vty/cWx20dD0LDDb5U+IrM
-         TbumONxkrmQ2HhbOxxZIafxQFRcOL5Um1wlWcPBbL+5rG+f3A0ubI5Nc5xHTuJtCuW/G
-         /2ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706144780; x=1706749580;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pU3f4QgLLBF3NnF4D7mve2JIYRwJ7D0KVAeRwEFC/iQ=;
-        b=BkHZFEYOp3x8S7Wvx/xgDbY/YqUM/irfW6F+5t6rkV7bDe+HUiE6n2RuBmBMExhaRc
-         pTOjQyevtUPLxqg+rQVuGmvVT/dQ18OMTP5uG61UeforuFVS9X5yubPQBY+FmpSu6VhM
-         u6HfYI2jOOmlP5KoLDDi/l/lWA3UMw1ZPfPzApUv6wK+q0Y2xvnqQXF/4Cg6m55i5uAG
-         67huzN9zeKMuc2BUeMlSgPOonxOKbYNUpq3z9iD0lvMFTwbyTrdMoVPBdpBKcervQZDf
-         /j9zfHXI4fbT/CAutljDm7w+qeDv2JnLZXDCpLe7caXZc6/+OD+TzcnsjhnUENbu8fnC
-         eYzQ==
-X-Gm-Message-State: AOJu0YxZjTKTV0RHrNoP/JHRzVZ5pWKzZINocd8ROU6tBs4JxoKeGQy/
-	sd7LdT+ttJkapzfIN1nNhzxdmiJQf8YCFLSwk74OS4XqXz/bD+H6
-X-Google-Smtp-Source: AGHT+IG2VSKyIRKwfDfha6pNK+8ZT5g+txMJWsLrFSAGKCQeQ7dpReQmvty2ibIYXCOeyhECLnzLTw==
-X-Received: by 2002:a05:6808:3c8f:b0:3bd:2de0:e96e with SMTP id gs15-20020a0568083c8f00b003bd2de0e96emr173993oib.84.1706144779748;
-        Wed, 24 Jan 2024 17:06:19 -0800 (PST)
-Received: from neeraj.linux ([101.0.62.229])
-        by smtp.gmail.com with ESMTPSA id m18-20020a635812000000b005c21943d571sm12343867pgb.55.2024.01.24.17.06.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 17:06:19 -0800 (PST)
-Date: Thu, 25 Jan 2024 04:13:19 +0530
-From: "Neeraj Upadhyay (AMD)" <neeraj.iitr10@gmail.com>
-To: torvalds@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, paulmck@kernel.org,
-	mingo@kernel.org, tglx@linutronix.de, rcu@vger.kernel.org,
-	frederic@kernel.org, boqun.feng@gmail.com, joel@joelfernandes.org,
-	neeraj.upadhyay@amd.com, urezki@gmail.com,
-	qiang.zhang1211@gmail.com
-Subject: [GIT PULL] RCU regression fix for v6.8
-Message-ID: <20240124224319.GA36728@neeraj.linux>
+	s=arc-20240116; t=1706149795; c=relaxed/simple;
+	bh=HGyNHMMKLOTJaC3+awYAmNT9tInVpb7Uuo75K5WBxn8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=s+83EpefWhZ3CFAvYGTeWUA90iiRqJeEYykRVGm9Hd62MZTFDuxHaiWjS90NfJ8N63CioaLpaIRdc8Tcq4g2BDEL5bI3Rz9mXM8PItbtkEEdKEzeFSfWOBjQFbXaEgFDjvupUG5PHUz+KYfCP3QK+l83e1fITyo8Y0qpJoWiSu0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=etezian.org; arc=none smtp.client-ip=46.105.79.203
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etezian.org
+Received: from director1.ghost.mail-out.ovh.net (unknown [10.108.9.77])
+	by mo575.mail-out.ovh.net (Postfix) with ESMTP id E16C22709D
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 22:50:48 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-hj5nj (unknown [10.110.113.182])
+	by director1.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 0FEBE1FE70;
+	Wed, 24 Jan 2024 22:50:47 +0000 (UTC)
+Received: from etezian.org ([37.59.142.102])
+	by ghost-submission-6684bf9d7b-hj5nj with ESMTPSA
+	id I82xOkeUsWVyhRkA3HD0yg
+	(envelope-from <andi@etezian.org>); Wed, 24 Jan 2024 22:50:47 +0000
+Authentication-Results:garm.ovh; auth=pass (GARM-102R0047556fd25-d410-442e-97f9-46ad02d884c8,
+                    45966BE1DD11163008BB7B2F56A64F52B223FDBD) smtp.auth=andi@etezian.org
+X-OVh-ClientIp:194.230.145.39
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Wolfram Sang <wsa@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Peter Rosin <peda@axentia.se>,
+	linux-i2c <linux-i2c@vger.kernel.org>,
+	lkml <linux-kernel@vger.kernel.org>,
+	Andi Shyti <andi.shyti@kernel.org>
+Subject: [PATCH] MAINTAINERS: Update i2c host drivers repository
+Date: Wed, 24 Jan 2024 23:50:31 +0100
+Message-ID: <20240124225031.3152667-1-andi.shyti@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 10684790117257185863
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvdelvddgtddvucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkofgggfestdekredtredttdenucfhrhhomheptehnughiucfuhhihthhiuceorghnughirdhshhihthhisehkvghrnhgvlhdrohhrgheqnecuggftrfgrthhtvghrnhepudegkeetueefvdegkeevleekheevfeejfedtvefhveelgfeutddvhedvheefiefhnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpohiilhgrsghsrdhorhhgnecukfhppeduvdejrddtrddtrddupdduleegrddvfedtrddugeehrdefledpfeejrdehledrudegvddruddtvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoegrnhguihesvghtvgiiihgrnhdrohhrgheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehjeehpdhmohguvgepshhmthhpohhuth
 
-Hi Linus,
+The i2c host patches are now set to be merged into the following
+repository:
 
-The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
+git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git
 
-  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
+Signed-off-by: Andi Shyti <andi.shyti@kernel.org>
+Cc: Wolfram Sang <wsa@kernel.org>
+---
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-are available in the Git repository at:
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 39219b144c239..ec0ffff6ded40 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10091,7 +10091,7 @@ L:	linux-i2c@vger.kernel.org
+ S:	Maintained
+ W:	https://i2c.wiki.kernel.org/
+ Q:	https://patchwork.ozlabs.org/project/linux-i2c/list/
+-T:	git git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git
++T:	git git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git
+ F:	Documentation/devicetree/bindings/i2c/
+ F:	drivers/i2c/algos/
+ F:	drivers/i2c/busses/
+-- 
+2.43.0
 
-  https://github.com/neeraju/linux.git tags/urgent-rcu.2024.01.24a
-
-for you to fetch changes up to e787644caf7628ad3269c1fbd321c3255cf51710:
-
-  rcu: Defer RCU kthreads wakeup when CPU is dying (2024-01-24 22:46:17 +0530)
-
-----------------------------------------------------------------
-Urgent RCU pull request for v6.8
-
-This commit fixes RCU grace period stalls, which are observed when
-an outgoing CPU's quiescent state reporting results in wakeup of
-one of the grace period kthreads, to complete the grace period. If
-those kthreads have SCHED_FIFO policy, the wake up can indirectly
-arm the RT bandwith timer to the local offline CPU. Earlier migration
-of the hrtimers from the CPU introduced in commit 5c0930ccaad5
-("hrtimers: Push pending hrtimers away from outgoing CPU earlier")
-results in this timer getting ignored. If the RCU grace period
-kthreads are waiting for RT bandwidth to be available, they may
-never be actually scheduled, resulting in RCU stall warnings.
-
-----------------------------------------------------------------
-Frederic Weisbecker (1):
-      rcu: Defer RCU kthreads wakeup when CPU is dying
-
- kernel/rcu/tree.c     | 34 +++++++++++++++++++++++++++++++++-
- kernel/rcu/tree_exp.h |  3 +--
- 2 files changed, 34 insertions(+), 3 deletions(-)
 
