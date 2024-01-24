@@ -1,167 +1,185 @@
-Return-Path: <linux-kernel+bounces-36674-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36675-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3628783A4D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:04:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31CA383A4DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:05:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 386011C20AD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:04:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5EE128923A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:05:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB93717BC4;
-	Wed, 24 Jan 2024 09:04:06 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA09917BA4;
-	Wed, 24 Jan 2024 09:04:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE6EF17BC5;
+	Wed, 24 Jan 2024 09:05:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="WcIIr6q1"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDD5B17BB2
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 09:05:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706087046; cv=none; b=AzhkaTmONo6xe+/lxDPeVN3pgUFr6T17tOa72RU341Dybdo2HkdrP8oS5eubtm9opDRrsFLlEZ3pc96etrMfgnOpZCPQDASOPpstLaxwyYTQJ+I2cnJV+qjnrMIFdKwMd07BcN2PxtreweS22REnksU81v6+iiuWMP+AnvjFg+A=
+	t=1706087117; cv=none; b=HzqQ6JdO2b7DbYSvrlG5doYwvwmZ8GpohF254tkBMb0FyqSDH80SABwzciPAEl5Qjz3pWGA51MQGhV76zQw2tznPVDqwfM4+572oNsDMeSQhkGG2ut2JCaOhtFDS+IMAR1i4cRPvjKOMSd4kf5PutFMERlwvirrxk5EYzOb3FWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706087046; c=relaxed/simple;
-	bh=4FLO9HlQQlJv6Hs845TgL+okgrt3W85KJoDNho2nIIw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RIa7ccIAujG2krhVsiBD49cQAUz6itVSWToTlZfu9Sedh/JjkMiUVdwGddHRX3kgVOzuMjFGhhyLamWLK6KLRcVnhdy9iLEv3mlM/BCGBFsdfuFSYxiWA+2ysZaiL1NDwaa3GcVFa156x1YbtTD9TmOI/H7aVaRCl454vjkzeyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BCA411FB;
-	Wed, 24 Jan 2024 01:04:45 -0800 (PST)
-Received: from [10.57.86.221] (unknown [10.57.86.221])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D389E3F762;
-	Wed, 24 Jan 2024 01:03:58 -0800 (PST)
-Message-ID: <ea054381-6ba2-d2f6-8de4-978a78a2ed8b@arm.com>
-Date: Wed, 24 Jan 2024 09:03:57 +0000
+	s=arc-20240116; t=1706087117; c=relaxed/simple;
+	bh=bYGjWyfNDuuEy/uhJ2BsahwEeQkQmwNi/I2B366Ra5w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ckuqldGufjeFFoejXmixmbkFu7Ts3bjgt/FsnmmeLlJAvg/NVdM+9av6XqQyiNXIPM44NQ18jnxkWQs8erxj2n2Qsju6QIEtPk2VqYhDDSo+DqVL/QgMLv9IFhz2uPJIKQ0sPde1O3rPQtrYSDuq0fEdaQDGq2n+MuRQIxCcVzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=WcIIr6q1; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5100b424f8fso1308117e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 01:05:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706087113; x=1706691913; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9TdYwfAa3Kb++bbinJAM8F6n7j06tuxaI+2yyckzaPc=;
+        b=WcIIr6q1JjNbUJ44GICbccxKaSJ2iIJ7tzpKtG9ffIPrtoR5l0+qXYJ6/qWg4ucD6A
+         PrgDTdSXKxI5o3hLlWT+OGXXqCiJNaSaeRUjObAT6VSMyuVpvUXuqLgyCPnAjPYkx7oi
+         LJBozvVgB8INR5E6l303x/Ypyv66yvXwfAswQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706087113; x=1706691913;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9TdYwfAa3Kb++bbinJAM8F6n7j06tuxaI+2yyckzaPc=;
+        b=KjAyzMKYz7ow82DyDla62dzM7edR2U/gsMl1B1o77nTE+WmdhXdBFWkFBKUg3+A6pL
+         qDnnCoApvRKPRrNYMNDFvuf6QhjLX2knaoD/7DnTbNaZfy6NiJH7yiKx7CmvMXba+r5T
+         NTtfSt8XAM36IJ/gRkne8vAznojcLIQ4FLtUfHrYFVIKnUr5BuJpyLlqPCpGFHGGtptH
+         JhbVhvoJt5MtPDQbtZK65TbXG+AzllNbM0NTef/tpktnI4k23s7l6gYhqcR/h6tMlISe
+         zhD0R0iukEYpfFTAYaSH8wy0EU50U8CIvFGdfYCiGrorcB/TCnse3eSEUilr3tDaewuG
+         KEvA==
+X-Gm-Message-State: AOJu0YzEtUEZ9gtlfpxw/UNHZC0Nfs9zdbeG3b7ziWx57CYjYYM0R+Rd
+	q3+K0DsC6szku3Ximdlikknqw9rOnAE3jCI/w1dff5Ei71aX9LDCjrj5Ei7OYUiMIjW9t50rvRp
+	89yGbH4s=
+X-Google-Smtp-Source: AGHT+IE9fD6P5YWF0X5LhrLGvHRVXYARSd3FElyorN15GvNyG66wjXP2y5GOm+eqT9AyZrYixx8ZSQ==
+X-Received: by 2002:a05:6512:23a4:b0:510:e95:3b32 with SMTP id c36-20020a05651223a400b005100e953b32mr723311lfv.109.1706087112793;
+        Wed, 24 Jan 2024 01:05:12 -0800 (PST)
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com. [209.85.218.48])
+        by smtp.gmail.com with ESMTPSA id j9-20020a508a89000000b00554930be765sm16741570edj.97.2024.01.24.01.05.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Jan 2024 01:05:12 -0800 (PST)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a2f79e79f0cso515744466b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 01:05:12 -0800 (PST)
+X-Received: by 2002:a17:906:1756:b0:a30:cc71:7340 with SMTP id
+ d22-20020a170906175600b00a30cc717340mr560441eje.120.1706087112019; Wed, 24
+ Jan 2024 01:05:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3] perf evlist: Fix evlist__new_default() for > 1 core
- PMU
-Content-Language: en-US
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: linux-perf-users@vger.kernel.org, irogers@google.com,
- kan.liang@linux.intel.com, mark.rutland@arm.com,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
- Changbin Du <changbin.du@huawei.com>, Yang Jihong <yangjihong1@huawei.com>,
- linux-kernel@vger.kernel.org
-References: <20240123102728.239147-1-james.clark@arm.com>
- <20240123103918.241423-1-james.clark@arm.com>
- <CAM9d7ciSY25Jf-MG24NWJu3aKJWXT2GN43qrV5WCuohLNZn1iw@mail.gmail.com>
-From: James Clark <james.clark@arm.com>
-In-Reply-To: <CAM9d7ciSY25Jf-MG24NWJu3aKJWXT2GN43qrV5WCuohLNZn1iw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240124-send-upstream-v3-1-5097c9862a73@chromium.org> <786c85c7-7b38-4a2a-85ec-282196de7b5e@collabora.com>
+In-Reply-To: <786c85c7-7b38-4a2a-85ec-282196de7b5e@collabora.com>
+From: Hsin-Te Yuan <yuanhsinte@chromium.org>
+Date: Wed, 24 Jan 2024 17:04:35 +0800
+X-Gmail-Original-Message-ID: <CAHc4DNKXOb54v7qJZJ2EsVP1KkMq7WnSJJLWhb2SzuhW_=qnxQ@mail.gmail.com>
+Message-ID: <CAHc4DNKXOb54v7qJZJ2EsVP1KkMq7WnSJJLWhb2SzuhW_=qnxQ@mail.gmail.com>
+Subject: Re: [PATCH v3] arm64: dts: mt8195-cherry-tomato: change watchdog
+ reset boot flow
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: Hsin-Te Yuan <yuanhsinte@chromium.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hi AngeloGioacchino,
+
+This bug can be triggered by stopping watchdog daemon and running
+`sleep 60 > /dev/watchdog`.
+
+Regards,
+Hsin-Te
 
 
 
-On 24/01/2024 00:46, Namhyung Kim wrote:
-> Hi James,
-> 
-> On Tue, Jan 23, 2024 at 2:39 AM James Clark <james.clark@arm.com> wrote:
->>
->> The 'Session topology' test currently fails with this message when
->> evlist__new_default() opens more than one event:
->>
->>   32: Session topology                                                :
->>   --- start ---
->>   templ file: /tmp/perf-test-vv5YzZ
->>   Using CPUID 0x00000000410fd070
->>   Opening: unknown-hardware:HG
->>   ------------------------------------------------------------
->>   perf_event_attr:
->>     type                             0 (PERF_TYPE_HARDWARE)
->>     config                           0xb00000000
->>     disabled                         1
->>   ------------------------------------------------------------
->>   sys_perf_event_open: pid 0  cpu -1  group_fd -1  flags 0x8 = 4
->>   Opening: unknown-hardware:HG
->>   ------------------------------------------------------------
->>   perf_event_attr:
->>     type                             0 (PERF_TYPE_HARDWARE)
->>     config                           0xa00000000
->>     disabled                         1
->>   ------------------------------------------------------------
->>   sys_perf_event_open: pid 0  cpu -1  group_fd -1  flags 0x8 = 5
->>   non matching sample_type
->>   FAILED tests/topology.c:73 can't get session
->>   ---- end ----
->>   Session topology: FAILED!
->>
->> This is because when re-opening the file and parsing the header, Perf
->> expects that any file that has more than one event has the sample ID
->> flag set. Perf record already sets the flag in a similar way when there
->> is more than one event, so add the same logic to evlist__new_default().
->>
->> evlist__new_default() is only currently used in tests, so I don't
->> expect this change to have any other side effects. The other tests that
->> use it don't save and re-open the file so don't hit this issue.
->>
->> The session topology test has been failing on Arm big.LITTLE platforms
->> since commit 251aa040244a ("perf parse-events: Wildcard most
->> "numeric" events") when evlist__new_default() started opening multiple
->> events for 'cycles'.
->>
->> Fixes: 251aa040244a ("perf parse-events: Wildcard most "numeric" events")
->> Closes: https://lore.kernel.org/lkml/CAP-5=fWVQ-7ijjK3-w1q+k2WYVNHbAcejb-xY0ptbjRw476VKA@mail.gmail.com/
->> Tested-by: Ian Rogers <irogers@google.com>
->> Reviewed-by: Ian Rogers <irogers@google.com>
->> Tested-by: Kan Liang <kan.liang@linux.intel.com>
->> Signed-off-by: James Clark <james.clark@arm.com>
->> ---
->>  tools/perf/util/evlist.c | 7 +++++++
->>  1 file changed, 7 insertions(+)
->>
->> Changes since v2:
->>
->>    * Undo the fact that v2 was accidentally based on v1 instead of
->>      perf-tools
->>
->> Changes since v1:
->>
->>   * Reduce scope of evsel variable
->>   * Add argument label
->>   * Change summary to be less specific about the failing test
->>   * Add the closes: tag
->>
->> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
->> index 95f25e9fb994..979a6053a84d 100644
->> --- a/tools/perf/util/evlist.c
->> +++ b/tools/perf/util/evlist.c
->> @@ -106,6 +106,13 @@ struct evlist *evlist__new_default(void)
->>                 evlist = NULL;
->>         }
->>
->> +       if (evlist->core.nr_entries > 1) {
-> 
-> I think you need a NULL check for evlist here.
-> 
-> Thanks,
-> Namhyung
-> 
-> 
-
-Oops yes. Or just return on the error above.
-
->> +               struct evsel *evsel;
->> +
->> +               evlist__for_each_entry(evlist, evsel)
->> +                       evsel__set_sample_id(evsel, /*can_sample_identifier=*/false);
->> +       }
->> +
->>         return evlist;
->>  }
->>
->> --
->> 2.34.1
->>
+On Wed, Jan 24, 2024 at 4:27=E2=80=AFPM AngeloGioacchino Del Regno
+<angelogioacchino.delregno@collabora.com> wrote:
+>
+> Il 24/01/24 08:51, Hsin-Te Yuan ha scritto:
+> > From: Hsin-Te Yuan <yuanhsinte@google.com>
+> >
+> > The external output reset signal was originally disabled and sent from
+> > firmware. However, an unfixed bug in the firmware on tomato prevents
+> > the signal from being sent, causing the device to fail to boot. To fix
+> > this, enable external output reset signal to allow the device to reboot
+> > normally.
+> >
+> > Fixes: 5eb2e303ec6b ("arm64: dts: mediatek: Introduce MT8195 Cherry pla=
+tform's Tomato")
+> > Signed-off-by: Hsin-Te Yuan <yuanhsinte@chromium.org>
+>
+> Can't trigger the bug, but also this commit gives no side effects, so:
+>
+> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collab=
+ora.com>
+>
+>
+> > ---
+> > Changes in v3:
+> > - Add Fixes tag
+> >
+> > Changes in v2:
+> > - Limit the effect only on tomato.
+> > ---
+> >   arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts | 4 ++++
+> >   arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts | 4 ++++
+> >   arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts | 4 ++++
+> >   3 files changed, 12 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts b=
+/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts
+> > index 2d5e8f371b6de..a82d716f10d44 100644
+> > --- a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts
+> > +++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r1.dts
+> > @@ -23,3 +23,7 @@ &sound {
+> >   &ts_10 {
+> >       status =3D "okay";
+> >   };
+> > +
+> > +&watchdog {
+> > +     /delete-property/ mediatek,disable-extrst;
+> > +};
+> > diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts b=
+/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts
+> > index 2586c32ce6e6f..2fe20e0dad836 100644
+> > --- a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts
+> > +++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r2.dts
+> > @@ -43,3 +43,7 @@ &sound {
+> >   &ts_10 {
+> >       status =3D "okay";
+> >   };
+> > +
+> > +&watchdog {
+> > +     /delete-property/ mediatek,disable-extrst;
+> > +};
+> > diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts b=
+/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts
+> > index f54f9477b99da..dd294ca98194c 100644
+> > --- a/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts
+> > +++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry-tomato-r3.dts
+> > @@ -44,3 +44,7 @@ &sound {
+> >   &ts_10 {
+> >       status =3D "okay";
+> >   };
+> > +
+> > +&watchdog {
+> > +     /delete-property/ mediatek,disable-extrst;
+> > +};
+> >
+> > ---
+> > base-commit: 64b50fcb03649ca7f0d762a50e7a3484cfc1d586
+> > change-id: 20230818-send-upstream-e91e615a893c
+> >
+> > Best regards,
+>
 
