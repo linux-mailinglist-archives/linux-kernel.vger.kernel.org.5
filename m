@@ -1,122 +1,267 @@
-Return-Path: <linux-kernel+bounces-37757-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37758-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94AE883B4CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:36:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B05983B4D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:38:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B4F6288B6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:36:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C05CF28976A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:38:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13FC513D4E5;
-	Wed, 24 Jan 2024 22:33:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30545136641;
+	Wed, 24 Jan 2024 22:36:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="QrEmGNw4"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lhy+v1Pj"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93792137C40;
-	Wed, 24 Jan 2024 22:33:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706135602; cv=none; b=um8BVYkxipYqP7i4x73y7zL66VnNOWp0gFAZt0amh/VtvAfGxzv+5HcFp8WYOX9Meb3VARqS9pQanAq2wZopYLJoDmnGtrHwR7hR7SywQBI123pU78fW/KY9GM6JSHrCSv2T/YoUs24OjNcsvX6jqXcsH50aCqyFh+3/bfZWSs4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706135602; c=relaxed/simple;
-	bh=86IbXZg2D8dZ14CMAOHu2fJ9DPKToZGpqc5c/wgcbic=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=C6rheg8hGFXG7I5rNc9WKN8b2tP5cBR0EHTyFikj1ZV1NKTF9mmXrdb1caAH9t9X3TTMfKCHptTDPf4U7jrYYoTx5XQLfrrT2X2rugzBZ2CeXi6OV3ejZthFes6TPl/cq+TUtcWyLTtfEFBQfvnWdZikE3W9ya2SsfvcGhZAGEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=QrEmGNw4; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-	s=s31663417; t=1706135563; x=1706740363; i=wahrenst@gmx.net;
-	bh=86IbXZg2D8dZ14CMAOHu2fJ9DPKToZGpqc5c/wgcbic=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
-	 References;
-	b=QrEmGNw49fdFCnb9BqA7tcRfqzGBhuN9iZPjkVmzmBkuFNQLWTUSzBksGe0oQu6I
-	 pBmvYP6ZowcfwDE1MCSkxvSu7o7jlrYKaqK1V4MuvLhwUqpr82frU0fDw4b0sJOMd
-	 AKHw/t7XAl+rDz+5ml6Bzkj5l89YQfraWj5dFu2tNflIPbD5B2neCsJRqS4HgP220
-	 +NUgvRMSgo7KD8RfGdZi01xBnrHKJi0quQ21XUrBMxUWu1mLCgLN6TDdwLIxrIlMV
-	 5kEBVvqFeabFNJOGuiEuqOhN6SuOixN2G9pRSoRuO7MyXNuQ8HjOxuVeUHmO9Dilk
-	 gp+ZdIN7DqqViyOG8w==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from stefanw-SCHENKER ([37.4.248.43]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N2E1G-1r6Ce5293W-013ecc; Wed, 24
- Jan 2024 23:32:43 +0100
-From: Stefan Wahren <wahrenst@gmx.net>
-To: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Lino Sanfilippo <LinoSanfilippo@gmx.de>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Stefan Wahren <wahrenst@gmx.net>
-Subject: [PATCH V3 14/14 next] MAINTAINERS: add entry for qca7k driver(s)
-Date: Wed, 24 Jan 2024 23:32:11 +0100
-Message-Id: <20240124223211.4687-15-wahrenst@gmx.net>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240124223211.4687-1-wahrenst@gmx.net>
-References: <20240124223211.4687-1-wahrenst@gmx.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CD4B522C;
+	Wed, 24 Jan 2024 22:36:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.10
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706135812; cv=fail; b=E65XVnUFl3TGy9HIAe9go9BhKxYc9zwwAaKDTKQuvnYOwCEb4OqkqGEkjY6s1puuLm78Aa3wtgOpGi1lrswdOI2DIrwv2XpkZx9IOeyYV70SAZJdKKv5AenXAefCT97gLzowKADakR3A2Gj8UnQzblKDLeyNbUGQaC7ysk9IgTg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706135812; c=relaxed/simple;
+	bh=GOSeZhRTJo+kJG/ox2Ei3ZfE0TkSMXRekq0wbgMFWcY=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=m49g1uXygwi3hdB0suaI5eyrScCRwK2m74kAM6JCeekpHuDRsUg9/kd6THhcmYRc/xHFzpay/8RpHB+ymqEeH+geI0/VzZgBoJxT18ZM4MojcFD2L6qGdcQSXN+rrEw9n1P+cY0X4EMG/vWMpDS4tDKaNIGloUl5c0MEs38w2+0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lhy+v1Pj; arc=fail smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706135810; x=1737671810;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=GOSeZhRTJo+kJG/ox2Ei3ZfE0TkSMXRekq0wbgMFWcY=;
+  b=lhy+v1Pjr2RavLsXsJ/Po879a2PND6enwqR0O4/0PpH4lXdG+yIxI/Ye
+   ayzsSlR47c0CZCx+Cr6XEqtoWHcJJDeO2fe+2J/T+2Pxqqr78l346+Iot
+   A9q1GvINiFXE5Mk6dml9OMJEHiBUPsCLwm/nekvpSsjQcQorxLyUaj0dH
+   1YqaieLmpMSP9TNNPZKMStBo5apjlW9RAE31hknXElKSC3Y87qaTG9FQW
+   OfV22cBqeVah/ivCDuQLZBC+rkOlMrs/zzCubE9fUqrUXCS87F7m5daQa
+   ful+8N1ixE5RD+zTFE21JTxABYkixshO0wzEqvgOZLcEDAeT+Sgvh0ZyJ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="9375642"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="9375642"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 14:36:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="2200079"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmviesa004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 24 Jan 2024 14:36:49 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 24 Jan 2024 14:36:47 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 24 Jan 2024 14:36:47 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 24 Jan 2024 14:36:47 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 24 Jan 2024 14:36:46 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IfPRts43H329O8FvfNAYEf+vWDdry4eAeNg7RTvc4jV3KHvwZfi2eJBdOvzjyBx5C9p8edISv9rjAy+gEYjadGgXOmY87laIhL2cat0xnAiY7H6F8W3huXq0whbdSc+WYGH2Q+kUFOP40z3X/x7AscrHT5ESg1rtpDNdDgYBP/vIyH3aEwX28vXwr0xfMIZ746b9Rb+EtBGU4wGYq3dere395RMpm0y5T7SewjYSucWOdAwOICLVvlnj1WUSb19l3MuzjK40NPzJu43MjaWm0Wbjp9Clflq4fKc7VHcfI9Nr7jua6ZfmwhsFo9ZVxDQutsPXmgEXSmg5N2o1XMD63g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5333MOUYoASUk1V30idXWjOzmj/FbK6+L+B0X6Yi9h8=;
+ b=C94TwuCVpIWWMZ+iocdBey1we68NgCZkSwmmbOwaUKIwAf/+wq/vUQBUM2yYsZlPWmN9k5LG67IlCmqWtRDwmoiQhnfOB8q/pNtyeegwqc505VExNN85ffS+TdkaPwjnO3vOTtD9qSs0m8nz0ha0Q1TqDnHVrjTQrNftxQONs0lz+KGTs2X84/ECKb6K2ORqRw4qNdPDDOQcMOx7e4NU7MJHrMpsX9Dqxab1snSSKmeva/s30fGLMB7o5B8bncO3U6GJbPtmt/u2eVUq6j2/GSjsEgVWrvMayu1ATfQUegB0SE5v640SKCgfOd5xRxmtUGv5aypWHCwRKjqRuH+pEQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from IA0PR11MB7185.namprd11.prod.outlook.com (2603:10b6:208:432::20)
+ by SA0PR11MB4592.namprd11.prod.outlook.com (2603:10b6:806:98::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.39; Wed, 24 Jan
+ 2024 22:36:40 +0000
+Received: from IA0PR11MB7185.namprd11.prod.outlook.com
+ ([fe80::cbc8:6370:5df2:b2df]) by IA0PR11MB7185.namprd11.prod.outlook.com
+ ([fe80::cbc8:6370:5df2:b2df%4]) with mapi id 15.20.7228.022; Wed, 24 Jan 2024
+ 22:36:40 +0000
+From: "Kasireddy, Vivek" <vivek.kasireddy@intel.com>
+To: Andrew Davis <afd@ti.com>, Gerd Hoffmann <kraxel@redhat.com>, Sumit Semwal
+	<sumit.semwal@linaro.org>, =?iso-8859-1?Q?Christian_K=F6nig?=
+	<christian.koenig@amd.com>, Paul Cercueil <paul@crapouillou.net>
+CC: "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
+Subject: RE: [PATCH 1/3] udmabuf: Keep track current device mappings
+Thread-Topic: [PATCH 1/3] udmabuf: Keep track current device mappings
+Thread-Index: AQHaTklQejyxD8ekVUytWta26SfJq7DpjYjQ
+Date: Wed, 24 Jan 2024 22:36:40 +0000
+Message-ID: <IA0PR11MB7185C76FC248EDDC5FBC49EFF87B2@IA0PR11MB7185.namprd11.prod.outlook.com>
+References: <20240123221227.868341-1-afd@ti.com>
+In-Reply-To: <20240123221227.868341-1-afd@ti.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: IA0PR11MB7185:EE_|SA0PR11MB4592:EE_
+x-ms-office365-filtering-correlation-id: 9622ae00-7b3b-454c-7a54-08dc1d2ceecf
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ZenmA9ojFlgqwtxzQi8Kklw0a5qSf0qzweNca1evOb62VsTKwgj2lJhr7hdr7EBOnZgw8Pu055lwY6Unq8sVPVBSUWX4scBN6/xpIXpRBuxe5qcDmcl5CSRfUspw0EfGO7mBwYKOvVrofXaj0s/E7SJE2dpxpfl97m3Yw8XQYcFTLdOOp8hkNjcbFwdwdOk9BXxJzOZjcOWwZXznrXwDSLwwyr2NOxhGt43NdX4LlQvjj2L2q73esCqUgqtBpnLuuyDi5Y9YHvBffEObShbNGuYoQ8Upldb4F2y4+fr+oJsZvvkE+iYVBrt5S7v6UN/0ylJojh16vUc3w1pPVA/0w+wg+7HEi00SGD4sSIqfGy5/jjZy9+Cl7O4wU/EkPHfBxAnEZ2kFs7F9y7ep0xCDVAImwEjdzqn94iy2/8ycHY9w7oB0c7zQnI6oAFYio0SFQSxJrUG5hTZwcwF9dTVjKf1jLeFGaQawTVzeTdMadwqZRRhFyjgZam9Q+9efnCyzBd6WwzzZMb+4pqVn7LYrfrBVgADIyWJUsW05GzoMmO+9Z5t6lMwOT9H2sjeBQfNlFbTK2/cSRepLC7s6i0CJBhU3IqygDV+PFz7MTl+BzIk=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA0PR11MB7185.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(136003)(346002)(366004)(396003)(230922051799003)(64100799003)(1800799012)(186009)(451199024)(55016003)(83380400001)(41300700001)(86362001)(33656002)(82960400001)(38070700009)(122000001)(38100700002)(9686003)(2906002)(26005)(71200400001)(66946007)(66446008)(316002)(64756008)(110136005)(6506007)(66556008)(4326008)(7696005)(52536014)(76116006)(54906003)(66476007)(478600001)(8676002)(8936002)(5660300002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?jPLRuqTEA1Kw2GxJksSXiKvkMiYvSHWrg2dBsJlTB8VUQ4xdMGr3Ojo0G2?=
+ =?iso-8859-1?Q?trVc1Ijah0fG1jFyPuX2Dm8sao56vR7U4AUb8LTiEBCuWPPpc62kLestn8?=
+ =?iso-8859-1?Q?/aeOV493/JuAXsZyxXFNj5OcqFQXQdEc2A8OGYpa3a3APIckXVS6zJt+rw?=
+ =?iso-8859-1?Q?Q4bGla8XC2saMqI+5Mk9wix/ZDSPz1lxE9ZXekXVD+k7inLvH6JL/+fJEZ?=
+ =?iso-8859-1?Q?oA3FfBDbzFfXyb5tuKihNbmqtTJTR9nqirifY43VmTqmcdLF2XYzS5k+81?=
+ =?iso-8859-1?Q?ykAMhx7i5V4KKJqByhvCyhnQxLQkenpCtPsxtdbE221Iy9GMaJsCjlgr4z?=
+ =?iso-8859-1?Q?7E7Jr+iWFnuIGdU1XJo8Sy/c6ka/c1t0iXYsXRRbVO5a28Me7DsCXVMBSU?=
+ =?iso-8859-1?Q?bmo/NDjnape2TPhbifm6LmAFm30DSBpK58rkhFEVa0B1YZB0QOXa52QKjO?=
+ =?iso-8859-1?Q?etMhgAeYAAcPWVu+8t9ZRnbkub7VCPxO9zA33goCVJdE4v+42ji5b3HwN2?=
+ =?iso-8859-1?Q?z4P0jDd6ObR1UAeHbmiFU0YpkpzQxI7V6nCPwngotPw9UWUkygiooYdLFz?=
+ =?iso-8859-1?Q?fBOJIjEM285DOrVid7nyzDo+WLMWRMCOJFGorSESsg1YCaGNdMyfJ4O1wD?=
+ =?iso-8859-1?Q?EC0PSOuN5aoXoCwkeoD8KuacenUlUhYdimJxuU6zP+I5csdP6U+6lFG0vE?=
+ =?iso-8859-1?Q?94YJPO1Z0uDfcnSP1u6wHNFC+IPLFN+OTbbBFUeTOdhbos55mj9TQOzul3?=
+ =?iso-8859-1?Q?92py+mBYNvOs3tnftNEwWKZgkKiC56qzOKkZzO4K1f+/V3XVIt798Di9XP?=
+ =?iso-8859-1?Q?PEOA+WLv92cDH46T44j/zE54jOl1NfRxJHNcFXhn5ACtq1iG4ip08r723R?=
+ =?iso-8859-1?Q?HK06CqvihiFRveaUCYe0yBfZg3djVMnjhTackeVlBgmlvZuVs1IGK8OXOJ?=
+ =?iso-8859-1?Q?qE8F7crviG0vaVvDKMQcLuW01Fh+LnpJxlZTptUu2xN/x0uDkZpWC31Wff?=
+ =?iso-8859-1?Q?/aiq1SZmh0YbLQyWx44QpIU6SPGNqaofOpvlhO0ka/IOUcPn336bkTLWPG?=
+ =?iso-8859-1?Q?MZZGLjtmC7bpXvi7X4NaAPdo+Glsmex/hvwoq54gOddkQo/kmOIDjLkZWn?=
+ =?iso-8859-1?Q?Pv6MDOOIQ55xBEVz0S3Wd+qHng92UU0WRW2XEhF+xnOyR7dLE1UMyJo0zU?=
+ =?iso-8859-1?Q?AujIOP9r8ZN8yyob0VbY1Nk/dbFQb76ViKRYoNC7c9sWCTGK+dolGktCSx?=
+ =?iso-8859-1?Q?O+uPVWqlvHxKuywzT7ifSt26kDut9MwBJ4zJVBj6gam/vwcZzzWQNj2btJ?=
+ =?iso-8859-1?Q?5eXqXJ8iF5w1oe9+Rd2OIDsZHz4NX5628lCFcikBs1xjhKnJosFPkZlUA4?=
+ =?iso-8859-1?Q?J1jA5F7t0vfn59+KsIen9/wHj9Nxsw8ZQOcE7l7wM90G5U7am/yH43vFXM?=
+ =?iso-8859-1?Q?DyzYb/bHj85PJc4ehwP5VRr9tesmVba2OzuV+Mw3+fjE3jhGnE7OtPAfO+?=
+ =?iso-8859-1?Q?WAH4S3THDkx5EcIoV+0pwzVvxVICbR+Fie3GYPZBd5qDa1wHMifNeBuMfF?=
+ =?iso-8859-1?Q?e1lAgSPfc1WLJ5AwcEvDqiMUpVq99Mh0g5Rh1nHuGpB+hlw1Dbpdzoz7m7?=
+ =?iso-8859-1?Q?t5KfrrfdcSoNJPgCwnsh8jG5RtLafJKgWJ?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:An8E5MmPXOy0Qfm6lQu1YYOOU2P8WzbmtkdufPdgrrGHAjI0V7G
- u5Wd1TrEMwb5QVMDWkLoL9WRYGmgy5VkmxYVKLwnK+f6DDAWijKkFED/8T2O7HUTjq+UTKC
- FG9eznhdJdjAxaGaFq6wnd473nFEmymuS+5Log5UJ7nbhRmqx3vLpohFXP157AyR4isI8T8
- y+O4pZERFrEwYsRJmmJCg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:jhNNaGn7XvM=;fMxvYjVDhqTxkoA8NMapSUXoR+x
- UFJsFxwwh18uQ/8whJreOnD+MkwmqfaI4m2mFm24K2k/mdq941hY7V4ezWkMdry4Zts4q1l+U
- jZafyJYMdFuR9kTfzkk6dofGRLGzam9DQffYVb1T9LBoJ5428ac/NFF+GAGNMLF1aZM33gNwm
- QX9J1crfBsYId0KIOLa1DQlXYekTzD4obok5mtmv8TezRwgAgEbqjr18Vs0xx7rJs1x7pVpi7
- QDYcq6YIZHh5dDWZFU9PEagnw002SKA1agoEA2RSjMeqJMzu0flW7NpRawC42tFmqeSqs3C5Z
- d2BQw/Hmti5AyJXGkN8QEV0u1eH+EYTrVAzaLj93mUn2u3kiH2ql1s4ZbM+icZU76d30DhJxK
- acsttIZhPOSiG7V1VPzdHCQZIq22nKMAPxvcvrLv5rhoW5cxOlos54WtiUzipLr/XrX6ufmVZ
- EeVJUMwXcx8KQqoDabDd9Q6dLKrNZ+tAjZT653PE8S3JASKOiPEWBVHm0O1tMDKFoE8XrvLnk
- i2a7B1S+oQhBY8RyEPBtfwQNACLhfhTtjSxa7UtUSgx955+zx3szdk9lSzVsOtRAJL3cWzo8O
- AW4gkND/F3KsJ0u16qGOvqD9bbgKNyyPD5FBsmBNaeIifVuvSzt4WOo0v9uq9NNrkhWaI2/LK
- OiVy+xHScJJY+vOs3+Os4BCPoPLcrIv4dyFaILKOG7eLFWr3173uYWmI8XZtC1mXqNGCQ5rKD
- FrHRUMzuD/LAXlcrcC9LKz6AFVRoruVyRmRJhPs60qdGvr4fh14JazA/uTG2k9sSZAnNQYkx8
- /lRcu+MpM6D6UYQO1ZksQBBPkA4/4v+fvICyChBgbeB0mhZwouTwD4qEPIeyMo0UCumbAjF0j
- n8iPqM1zuJGYTg3bOI7rQQiAuaYJEL7yBk70z8a5Pqk2OT2DqQnu/PtlJD29AecjkBpwVeCpW
- tE+3Wg==
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: IA0PR11MB7185.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9622ae00-7b3b-454c-7a54-08dc1d2ceecf
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jan 2024 22:36:40.2025
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jm7OM9ozEW8uOWYgEOtAltCCfIenk0hjKXLr/KQ457jKDYifKf7m2azRzvgIEqHk0OsLGA194B8/pUjyHGNQ1rkUdWD2fW/t2uEBR2QWW+4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4592
+X-OriginatorOrg: intel.com
 
-Since upstreaming i contributed a lot to this driver(s),
-so add myself as a maintainer.
+Hi Andrew,
 
-Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
-=2D--
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+> When a device attaches to and maps our buffer we need to keep track
+> of this mapping/device. This is needed for synchronization with these
+> devices when beginning and ending CPU access for instance. Add a list
+> that tracks device mappings as part of {map,unmap}_udmabuf().
+>=20
+> Signed-off-by: Andrew Davis <afd@ti.com>
+> ---
+>  drivers/dma-buf/udmabuf.c | 43
+> +++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 41 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/dma-buf/udmabuf.c b/drivers/dma-buf/udmabuf.c
+> index c406459996489..3a23f0a7d112a 100644
+> --- a/drivers/dma-buf/udmabuf.c
+> +++ b/drivers/dma-buf/udmabuf.c
+> @@ -28,6 +28,14 @@ struct udmabuf {
+>  	struct page **pages;
+>  	struct sg_table *sg;
+>  	struct miscdevice *device;
+> +	struct list_head attachments;
+> +	struct mutex lock;
+> +};
+> +
+> +struct udmabuf_attachment {
+> +	struct device *dev;
+> +	struct sg_table *table;
+> +	struct list_head list;
+>  };
+>=20
+>  static vm_fault_t udmabuf_vm_fault(struct vm_fault *vmf)
+> @@ -120,14 +128,42 @@ static void put_sg_table(struct device *dev, struct
+> sg_table *sg,
+>  static struct sg_table *map_udmabuf(struct dma_buf_attachment *at,
+>  				    enum dma_data_direction direction)
+>  {
+> -	return get_sg_table(at->dev, at->dmabuf, direction);
+> +	struct udmabuf *ubuf =3D at->dmabuf->priv;
+> +	struct udmabuf_attachment *a;
+> +
+> +	a =3D kzalloc(sizeof(*a), GFP_KERNEL);
+> +	if (!a)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	a->table =3D get_sg_table(at->dev, at->dmabuf, direction);
+> +	if (IS_ERR(a->table)) {
+> +		kfree(a);
+> +		return a->table;
+Isn't that a use-after-free bug?
+Rest of the patch lgtm.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 8d1052fa6a69..5808f06b4ccf 100644
-=2D-- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18009,6 +18009,13 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/=
-git/kvalo/ath.git
- F:	Documentation/devicetree/bindings/net/wireless/qca,ath9k.yaml
- F:	drivers/net/wireless/ath/ath9k/
+Thanks,
+Vivek
 
-+QUALCOMM ATHEROS QCA7K ETHERNET DRIVER
-+M:	Stefan Wahren <wahrenst@gmx.net>
-+L:	netdev@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/net/qca,qca7000.txt
-+F:	drivers/net/ethernet/qualcomm/qca*
-+
- QUALCOMM BAM-DMUX WWAN NETWORK DRIVER
- M:	Stephan Gerhold <stephan@gerhold.net>
- L:	netdev@vger.kernel.org
-=2D-
-2.34.1
+> +	}
+> +
+> +	a->dev =3D at->dev;
+> +
+> +	mutex_lock(&ubuf->lock);
+> +	list_add(&a->list, &ubuf->attachments);
+> +	mutex_unlock(&ubuf->lock);
+> +
+> +	return a->table;
+>  }
+>=20
+>  static void unmap_udmabuf(struct dma_buf_attachment *at,
+>  			  struct sg_table *sg,
+>  			  enum dma_data_direction direction)
+>  {
+> -	return put_sg_table(at->dev, sg, direction);
+> +	struct udmabuf_attachment *a =3D at->priv;
+> +	struct udmabuf *ubuf =3D at->dmabuf->priv;
+> +
+> +	mutex_lock(&ubuf->lock);
+> +	list_del(&a->list);
+> +	mutex_unlock(&ubuf->lock);
+> +
+> +	put_sg_table(at->dev, sg, direction);
+> +
+> +	kfree(a);
+>  }
+>=20
+>  static void release_udmabuf(struct dma_buf *buf)
+> @@ -263,6 +299,9 @@ static long udmabuf_create(struct miscdevice
+> *device,
+>  		memfd =3D NULL;
+>  	}
+>=20
+> +	INIT_LIST_HEAD(&ubuf->attachments);
+> +	mutex_init(&ubuf->lock);
+> +
+>  	exp_info.ops  =3D &udmabuf_ops;
+>  	exp_info.size =3D ubuf->pagecount << PAGE_SHIFT;
+>  	exp_info.priv =3D ubuf;
+> --
+> 2.39.2
 
 
