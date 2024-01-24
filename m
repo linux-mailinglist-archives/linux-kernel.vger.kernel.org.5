@@ -1,102 +1,129 @@
-Return-Path: <linux-kernel+bounces-37076-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37077-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19C1783AB1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:48:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50B8983AB2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:51:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C42091F2A923
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:48:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AFD72B23D92
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:50:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEACF77F33;
-	Wed, 24 Jan 2024 13:48:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61F2A77F3E;
+	Wed, 24 Jan 2024 13:50:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gnu.org header.i=@gnu.org header.b="RKbh3WSS"
-Received: from eggs.gnu.org (eggs.gnu.org [209.51.188.92])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="BEXRqT/F"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBD788F72;
-	Wed, 24 Jan 2024 13:48:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.51.188.92
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F304A77F25;
+	Wed, 24 Jan 2024 13:50:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706104108; cv=none; b=pIWFqtIGVbagqLLBDsWitVvKew1nE3Z7KnUEOeJxLhQ5koS+1M4m0T4urDTMYly+qkKZvcA0OYwtKHx1gq+9JRbR8Fl7tLpETuAJfLlXzTJzy68b99QtcZT/Qspmq+arZjc53qYjlCgOn4wxDP0xFTiG1x1c8usEjZ65508RHpo=
+	t=1706104246; cv=none; b=nhplZCg98m236u1rrwf5jmpolw1FVXR1nlprf1XSKIhdl6fii2iAErXFpqUXareAv/y59VnEYGe7oyXJxiGutKI19j/50j4b6BrzAPrZtoy4EGqRYUe2rGNg4c8M5V27AVQDT9/t47KSt3V5EXBxKmKds4bSwU0idd1Zi33+KQo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706104108; c=relaxed/simple;
-	bh=S9+36Hp1IxD1aQEtBPW086OEvAbuOTs2f1zL0QQ3N9A=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=XGXSj11lF1sft87k1e7GS8zWMf9BRJVcZnBkbp54XohFKkHohf4C6nu7TZOSIlcc7re5gfxZwzhimsTo45HAR43jwModSb/2FWDl9gi+7BQ07qpuX+Ucdm21JdfdSZaNQ11mrgRpCeSseVSz4vnqlMhHvHrv7x9jvjL87w6zxrM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gnu.org; spf=pass smtp.mailfrom=gnu.org; dkim=pass (2048-bit key) header.d=gnu.org header.i=@gnu.org header.b=RKbh3WSS; arc=none smtp.client-ip=209.51.188.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gnu.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnu.org
-Received: from fencepost.gnu.org ([2001:470:142:3::e])
-	by eggs.gnu.org with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.90_1)
-	(envelope-from <othacehe@gnu.org>)
-	id 1rSdc1-0004B9-G8; Wed, 24 Jan 2024 08:48:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=gnu.org;
-	s=fencepost-gnu-org; h=MIME-Version:Date:References:In-Reply-To:Subject:To:
-	From; bh=S9+36Hp1IxD1aQEtBPW086OEvAbuOTs2f1zL0QQ3N9A=; b=RKbh3WSS0uIakaAG2939
-	CgNcweAuV9EVLFIf/3+Xp6ag5Iy3O9MOui0jMOitNje0irDmRwiGBYpgGs//eLtbEQTv0nDH1pqFY
-	BMSITC0+RQQeWWhQGR2Mnb++MpPyZbZWGw25CjZFOe8N2q7aXJH3Xzs8cto5u/6Iwv5M7IDXQwWqV
-	QhQcq8PQ/38QX9GYEI80LQE3hX7xlNVoIlVtp41RUCEu5Nlk2EpFpWuQQ8CKCMz/Nx8hpEIr4Ax52
-	w/J4SuoxuliWWIiySuJaRgsoJjZzJ43XWGiCAt1eJp74nIpSDb/DSE0+bbpDB4KhEMEjRqtnJlmwp
-	+KT+A9s1Ob/Zjg==;
-From: Mathieu Othacehe <othacehe@gnu.org>
-To: Stefan Wahren <wahrenst@gmx.net>
-Cc: Wadim Egorov <w.egorov@phytec.de>,  Rob Herring <robh+dt@kernel.org>,
-  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley
- <conor+dt@kernel.org>,  Shawn Guo <shawnguo@kernel.org>,  Sascha Hauer
- <s.hauer@pengutronix.de>,  Pengutronix Kernel Team
- <kernel@pengutronix.de>,  Fabio Estevam <festevam@gmail.com>,  NXP Linux
- Team <linux-imx@nxp.com>,  Li Yang <leoyang.li@nxp.com>,  Primoz Fiser
- <primoz.fiser@norik.com>,  Christoph Stoidner <c.stoidner@phytec.de>,
-  devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org,
-  linux-arm-kernel@lists.infradead.org,  upstream@lists.phytec.de
-Subject: Re: [PATCH v4 3/3] arm64: dts: imx93: Add phyBOARD-Segin-i.MX93
- support
-In-Reply-To: <47c79a0a-5be0-4ee8-87d4-fd03809a9664@gmx.net> (Stefan Wahren's
-	message of "Wed, 24 Jan 2024 12:39:26 +0100")
-References: <20240122095306.14084-1-othacehe@gnu.org>
-	<20240122095306.14084-4-othacehe@gnu.org>
-	<537266fe-0bf7-4208-a9f3-ae27f462c6ed@phytec.de>
-	<85fe8c8b-ea08-4f24-9a06-33a5678c1a0a@gmx.net>
-	<7944bd80-32d7-4ac3-9c0a-806394262f1c@phytec.de>
-	<08ef805a-b041-4db0-aaf7-51d5d06596ff@gmx.net>
-	<008317aa-4dd1-4889-8c64-5e4396d83931@phytec.de>
-	<47c79a0a-5be0-4ee8-87d4-fd03809a9664@gmx.net>
-Date: Wed, 24 Jan 2024 14:48:14 +0100
-Message-ID: <87o7da4zc1.fsf@gnu.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1706104246; c=relaxed/simple;
+	bh=qv1XCCmrpEelMNYD86CEC9P5gBGzAUCiISJyBzk4RZ0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Gs/yf+mIX264q6gN7uFM8OJaX5SGvn+xXXzbCwOs6ExmQOXlFZKfFBVfN/Wzykt97nfJlnOgkD5lk0qTPIRiJNuY5a161wqF67U6D1tTNYXyTqVAI30uYzGTwje5JEllUUPKvmlpNVuS5On0hRezeTNfFroJqXh6Etca9UkBId0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=BEXRqT/F; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4F0F91C0003;
+	Wed, 24 Jan 2024 13:50:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1706104236;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Aj6ZQfg/DQIXs3PgkhqXH6sZRgoGEcYx3M5juw4r4UA=;
+	b=BEXRqT/FMI6b2tciHLBA1R9XyZWtEnOWl2cS45kZukK1HrYvVzy2FJ/dx8HjzXtGXyviVm
+	mdMuItxi5TjLPLloMGqUV4Kif3QcnfsTbt/mXf+uvMoJ8lWW2y6s0HYUKAX9ixB7oRgxiS
+	KAJ9cCI+cHZi+myA2AdFsgB8ldZZVQR+gPKhrLqFBn8iXV2gt9gNdLQ97u+Kc180/FexiN
+	FSq95iZ9m+CGZ8PFOhpIVe5SRtIQ0IhlhserDqm+TnAGcLvvBiPJonqOro4TuROqyVWT5U
+	XVBtHDxzbWKQkX4PdGRtMu6EqTXAQ62sNc7r5EKqZPRz25NyPaXzE1TVf5utHQ==
+Date: Wed, 24 Jan 2024 14:50:33 +0100
+From: Maxime Chevallier <maxime.chevallier@bootlin.com>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ thomas.petazzoni@bootlin.com, Eric Dumazet <edumazet@google.com>, Paolo
+ Abeni <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>,
+ linux-arm-kernel@lists.infradead.org, Christophe Leroy
+ <christophe.leroy@csgroup.eu>, Herve Codina <herve.codina@bootlin.com>,
+ Florian Fainelli <f.fainelli@gmail.com>, Heiner Kallweit
+ <hkallweit1@gmail.com>, Vladimir Oltean <vladimir.oltean@nxp.com>,
+ =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>, Jesse Brandeburg
+ <jesse.brandeburg@intel.com>, Jonathan Corbet <corbet@lwn.net>, Marek
+ =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>, Piergiorgio Beruto
+ <piergiorgio.beruto@gmail.com>, Oleksij Rempel <o.rempel@pengutronix.de>,
+ =?UTF-8?B?Tmljb2zDsg==?= Veronese <nicveronese@gmail.com>, Simon Horman
+ <horms@kernel.org>
+Subject: Re: [PATCH net-next v5 07/13] net: ethtool: Introduce a command to
+ list PHYs on an interface
+Message-ID: <20240124145033.1c711fd1@device-28.home>
+In-Reply-To: <2c955f94-7c95-4f66-b739-f0967ec9c171@lunn.ch>
+References: <20231221180047.1924733-1-maxime.chevallier@bootlin.com>
+	<20231221180047.1924733-8-maxime.chevallier@bootlin.com>
+	<20240104153401.08ff9809@kernel.org>
+	<20240105104311.03a35622@device-28.home>
+	<2c955f94-7c95-4f66-b739-f0967ec9c171@lunn.ch>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: maxime.chevallier@bootlin.com
 
+Hello Andrew,
 
-Hello Stefan,
+On Fri, 5 Jan 2024 14:17:10 +0100
+Andrew Lunn <andrew@lunn.ch> wrote:
 
->> Defining line names should be fine. But I would still prefer to have
->> the muxing in an overlay bound to a specific use case.
-> I'm fine with this. Unfortunately Mathieu dropped the line names in V5
-> today :-(
->
-> AFAIR reviewers should have 2 weeks time maximum. This was just 2 days.
+> > > > +int ethnl_phy_dumpit(struct sk_buff *skb, struct netlink_callback *cb)
+> > > > +{
+> > > > +	struct ethnl_phy_dump_ctx *ctx = (void *)cb->ctx;
+> > > > +	struct net *net = sock_net(skb->sk);
+> > > > +	unsigned long ifindex = 1;    
+> > > 
+> > > This doesn't look right, if dump gets full you gotta pick up
+> > > when previous call left off.  
+> > 
+> > I wasn't aware that this was the expected DUMP behaviour. So I should
+> > keep track of the last dev and last phy_index dumped in the dump_ctx I
+> > guess ? I'm not sure how I'm going to test this though, I only have
+> > devices with at most 2 PHYs :(  
+> 
+> At a guess....
+> 
+> You are supposed to dump until you are out of space in the buffer. You
+> then return what you have, and expect another call so you can continue
+> with the rest.
+> 
+> Rather than fill the buffer, just hack the code to only put in a
+> single PHY, and then return with the same condition of a full
+> buffer. Hopefully you should get a second call, and you can then test
+> your logic for picking up from where you left off.
+> 
+> Another option might be to add PHY support to netdevsim. Add a debugfs
+> interface to allow you to create arbitrary PHY topologies? You can
+> then even add a test script.
 
-I am sorry but it is not easy for me to deal with contradictory input. I
-chose to remove the gpio-line-names even though it also seemed like a
-nice addition to me. The idea was to not interfere with Phytec plans in
-the future.
+Sorry for the delayed answer, I just took a few hours to give it a try,
+and I was able to spin some very basic PHY support for the netdevsim,
+allowing to attach arbitrary instances of fixed_phy devices. I can
+therefore use that as a mean of testing the dump operation, I'll try to
+include that in the next iteration, that should pave the way for some
+testability of more PHY stuff hopefully.
 
-There is no hurry and I can always restore them in a v6.
+Thanks for the suggestion,
 
-Let me know what you think,
-
-Thanks,
-
-Mathieu
+Maxime
 
