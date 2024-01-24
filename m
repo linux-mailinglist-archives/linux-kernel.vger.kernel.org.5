@@ -1,163 +1,168 @@
-Return-Path: <linux-kernel+bounces-37068-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D510E83AAF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:34:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CE1F83AB01
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:37:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1F62FB29448
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:31:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39D09B2ACD7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:35:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 696AD77F1E;
-	Wed, 24 Jan 2024 13:31:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC3C177F17;
+	Wed, 24 Jan 2024 13:35:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q+R78qre"
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b="BD8+Pxkt";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b="bVWFWhNw"
+Received: from smtpout148.security-mail.net (smtpout148.security-mail.net [85.31.212.148])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE1C977F0D;
-	Wed, 24 Jan 2024 13:31:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706103098; cv=none; b=hgAbmOhUHGJJKC5m+DNnR/tjCjKTSw8KPYDaSxzRawWaunsEmSFcMPUtM7PnVy7M4Ksht4nmxeFZzdkVTaePn+FKw/f14mhLgQf3nLsFBMnS4jb3+WdegmDBfSGKmLNj+iIxkQRNanf1oDwyPBVnXrP3zqtVvnUMlUFTRHh+pko=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706103098; c=relaxed/simple;
-	bh=vTeFrkOg9VeXj0cMMVSOTlbnmK4O1Tdyk176shwolH0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PcBlkO40l9faC4axd3ER3HpeaV1AKCqjEbrF876OIhMd5sr+FvEy/xbw/eeCLYF3HbLu+CeyekMzZmPIH6e6bZtfenXpQjoT1s1TMjVOtoMmMHgrHaegi4MSxxsgxyFi3ndO4O7fqrPrkoFECDmjqGK2jiJgf2pJz5bfwaASAP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q+R78qre; arc=none smtp.client-ip=209.85.208.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2cf108f6a2dso21443861fa.3;
-        Wed, 24 Jan 2024 05:31:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706103095; x=1706707895; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yh0FSpthPEg0z6Y9MyFNxP4OPN7yLXd22973nZlpFgs=;
-        b=Q+R78qrezgwnW1kOUcm2wn7EiSCIWzueEdRGt945JDCNif07NgXY0nHXDYtN1y6LDi
-         FjE5/tzIL0ssxcZAGfgqLsUfXGrmiaO/hEJ952oB8tLFDhz8BYDiHL0W8N6ZOYBjKBdO
-         pJUN3u5qZyqtQ2mA5s8xknvzsh22Bx1UzJ89oQO9rq8sMk9PVNDy3f3KUssDlDoWyyJq
-         CqTTwpqrkrnm6aEDOjCLiw3/7UNnUNg8s6eKbguuqp7GDCmxfhKaVsdKt4AoNGth6XmM
-         1+1HtpdCoPbtVQ6fFlIzrooCPnDCIIokoZ9URrKonYsEEisieb9lFQDxfvwEyBlfd+RH
-         19Ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706103095; x=1706707895;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yh0FSpthPEg0z6Y9MyFNxP4OPN7yLXd22973nZlpFgs=;
-        b=DfwGQqqeJJ4IdnBXXWGalx5zd9vLXLde5UNVkVVNYNdf410J7EP/E1cy3ianFi8gdf
-         SQ6qfB5BW26f3PYQMBJgLmqH5kbJqe19EKH3bNrTcVzIn/O8FpYU00nSr9x9gTJ1NUGd
-         Yc7ndnNqOZa4civSXAxPJ0JBOlHFNMG7xYpp6pWcbwQwnvZvEajEgnIwgYUg419KFlg6
-         r/Hqq0mnO3Y1uU74sCv2KMSTImrrvSVYvDRoN0dMu+98jUFY/gcueSsK9vm3T7oySERq
-         7cTdUoWSjPnB5W5FvhhQJhkMM4thV1bs9bEp8n+zeUzFED+OSWt2KKRBLUZ3RtxBLAWc
-         X09w==
-X-Gm-Message-State: AOJu0Yy4iRut40HflRnp7rrZBxcFfhv6iWLV+zKwQ3+T18R5M4llNj/c
-	qiEPfcX9jI/7ZF+Ca/IfmTVLR4IflAsbaGN80v0PjNDgWMZLuDks
-X-Google-Smtp-Source: AGHT+IEQ/+uLqbt+Yrb1ZZ6gaA4VtLtXFNiOrQMfZBodzHf8/XDgyTVyYYUU7vCAj5wx35icDs5adg==
-X-Received: by 2002:a2e:8691:0:b0:2cc:7157:4e7f with SMTP id l17-20020a2e8691000000b002cc71574e7fmr726122lji.57.1706103094620;
-        Wed, 24 Jan 2024 05:31:34 -0800 (PST)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id k4-20020a2ea284000000b002cca7ee7375sm2555389lja.136.2024.01.24.05.31.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 05:31:33 -0800 (PST)
-Date: Wed, 24 Jan 2024 16:31:31 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Bernd Edlinger <bernd.edlinger@hotmail.de>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	Jiri Pirko <jiri@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH net v3] net: stmmac: Wait a bit for the reset to take
- effect
-Message-ID: <ddwtgxbtzy6vtc2bn5gvuskpco7mhmsmakt4gqk6ksppkmmtp2@w7eti3prlpke>
-References: <AS8P193MB1285DECD77863E02EF45828BE4A1A@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
- <AS8P193MB1285EEAFE30C0DE7B201D33CE46C2@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
- <AS8P193MB1285A810BD78C111E7F6AA34E4752@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3797977F11
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 13:35:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=85.31.212.148
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706103305; cv=fail; b=iHSElC1RwMe50+kVIWV47qXFCOxV7tI2WMo7QQiU5+13cCT+/aV9FcOG1/rhgi/orJb/XuaTsnbnFo6G+Kz0Wi3JXPwXHw8KeCpm5uTNpY/iaYwag7FLLYe5ezMobuRHiJPhAmwjX5S/JsAkoIaYrz9gHsbPorwLOkOmfQWUQTs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706103305; c=relaxed/simple;
+	bh=ZCqp2AwOUnunr9E1XFUGvlIjtGAUpyXvdLwz00qmVOg=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=GHl0TyhOPUlell17r3F6/iKuYF25cPqjQmOsWKpYkHnCMSXuelKvw96PwNh4z6YKf3HLnYsH3CruHstireEfcEtRoDWb0DAv1Vy29FEVs7KSuueZ81vIOsJWw9g0c41l/P2y/RV0jRbwzc78hKM6GsmT/ZCjNCFmC8x8n5wQkVM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kalrayinc.com; spf=pass smtp.mailfrom=kalrayinc.com; dkim=pass (1024-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b=BD8+Pxkt; dkim=fail (2048-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b=bVWFWhNw reason="signature verification failed"; arc=fail smtp.client-ip=85.31.212.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kalrayinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kalrayinc.com
+Received: from localhost (fx408.security-mail.net [127.0.0.1])
+	by fx408.security-mail.net (Postfix) with ESMTP id 246DF3227DE
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 14:32:20 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kalrayinc.com;
+	s=sec-sig-email; t=1706103140;
+	bh=ZCqp2AwOUnunr9E1XFUGvlIjtGAUpyXvdLwz00qmVOg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=BD8+PxktyJmh1cpXc4F0ypdQcBudUKeS45OXIsBltRDJ4GuGHcBUho/jzTqTF4oa3
+	 EodHGfF5AqbcqnQYNUEhx/b73H99Dr3RBVZhNq5wfCcm9YkMvWoqm5ufpQWLuVoFBT
+	 SKfxyKAuxG99aADW3J9F6THNm5D7KElneXd04fNQ=
+Received: from fx408 (fx408.security-mail.net [127.0.0.1]) by
+ fx408.security-mail.net (Postfix) with ESMTP id 6BB4B32247C; Wed, 24 Jan
+ 2024 14:32:19 +0100 (CET)
+Received: from FRA01-PR2-obe.outbound.protection.outlook.com
+ (mail-pr2fra01lp0100.outbound.protection.outlook.com [104.47.24.100]) by
+ fx408.security-mail.net (Postfix) with ESMTPS id DA1B0322396; Wed, 24 Jan
+ 2024 14:32:18 +0100 (CET)
+Received: from MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:13::5)
+ by MRZP264MB2652.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:19::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22; Wed, 24 Jan
+ 2024 13:32:17 +0000
+Received: from MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::1300:32a9:2172:a2a]) by MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::1300:32a9:2172:a2a%7]) with mapi id 15.20.7228.022; Wed, 24 Jan 2024
+ 13:32:17 +0000
+X-Virus-Scanned: E-securemail
+Secumail-id: <40f2.65b11162.d92f9.0>
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FB3chNVEOHroLgLqFnAMcAL8ZgcdPq0Vni+0Qzm0v2Vwwe+oFPT1gPlR6Y88NRLLzqA3MjHpkSjb2XdEkwW2MDNfU01A7LDSjxHIyfPQFP1IEnZVXAYIXt/cB+ZtRf4xXdXT+L18VQQHIVzDiUyCAUalhZ8n/pXTfIj4ygce5xv/FJsP5la9uuLnv3GS97so6998bDcms2wdBTYXamOEkncI/vLOeMezuoppxv2V8+nKFsnvJYSljV20VMXjQDw42IJJZXYz9CytNzWjj9WymKpn5SVPgC2E4eJKn1Opj9DKaEK67fidsF+wyKfC6LjQ3AtK9luxIr/00mAaIKfKzA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microsoft.com; s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JChuz+W0P+7tIEgQ7NyG6geqeN34jb3GV0pyrqIwzu8=;
+ b=b5PeAOkbPXYLy9dr63PG5tWrZUK+dlFVF2+gN1A+8IIvVCGsvmSl6iOKuLM9nD0QBdjxN3V3G4TZuIT5/0gy0xHZ6nasxhDfSlYokW9Ft0y+gCjuVHWgmU9y68cwy+PIW5o4eJnGdZnDq+jynaqotJ4aKWbF9BwJzhtZjq0yKmfaLOtspjA3x3KR6QU7r8a3zLlGVVhG+BlvRvM4my4ZWk7ToLlpX3U8S+zJvNYM0j829WTJK0RqS8XLu/p1EzhIA/dacJg5EDBrjqfMlt1Vq38eTTmktWd6ZMo+P3mopHmTtEx11EFZ6n2f7ONIbkWsOHMZItK9qz3eAo+q4iWObw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kalrayinc.com; dmarc=pass action=none
+ header.from=kalrayinc.com; dkim=pass header.d=kalrayinc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kalrayinc.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JChuz+W0P+7tIEgQ7NyG6geqeN34jb3GV0pyrqIwzu8=;
+ b=bVWFWhNw5zwZ16OYzE6FBapCsKuEIq02mHjoXyaFFy8tRpAWddHQbVALPi3WyzrAUvtMDlv6WX6p6ZFnt8K2ZBtReK6UXwYkbD35/+eWrCL5mQn/LCUQuX3sUNgJw5T0Rc3nXtZMChVQ1F+yV47qBk6isAAyXgKfAQ6XgFGsW/JAUgtBxKBDTGt+nyx3xoPeP9jFYRT/pkZrkLjClIjSD4C7E7pTKnu2BEFsqFdnQDVKt6B94xtz+jJQiAsdQzB5D0vam37TOmaxzZUgiGXR81TYvMZ7784MUX50PU8X9eYvyxCMUod57Q5guyXHpIPWZu0vV85Oiv65sJS3u71Q8Q==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=kalrayinc.com;
+Message-ID: <c2632d31-f805-487b-b7e4-d4416e55f19e@kalrayinc.com>
+Date: Wed, 24 Jan 2024 14:32:14 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.1 000/414] 6.1.75-rc2 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
+ rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+References: <20240123174510.372863442@linuxfoundation.org>
+Content-Language: en-us, fr
+From: Yann Sionneau <ysionneau@kalrayinc.com>
+In-Reply-To: <20240123174510.372863442@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: PAZP264CA0202.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:102:237::24) To MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:501:13::5)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AS8P193MB1285A810BD78C111E7F6AA34E4752@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MR1P264MB1890:EE_|MRZP264MB2652:EE_
+X-MS-Office365-Filtering-Correlation-Id: faf1c58c-41e2-4abf-9d94-08dc1ce0e1dd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EqYDXe3g1t1nzbGzoriNzgG/LChfuCb1kQvB0mr++AuajV/ThPFgsvubYXkrMVOwhxIbEDqS2pTdDlDnIgpm8aoQy4k9LwgUzfNJxp0wFZs4DlQPd6Lmt2u0yRUfwasjBaGs0XHfmgN+T3TzpASFjXrE5nNhqdYEsXBBDYh7On0xZnO7Yka9iN7DN2zgjs2T1YcqYsX4MeXYjX68HRnKNv+zWjJg/74ndtmdA9ONzYnsYpjFOg/L4qjbkoG6Mqnde038GnEcPNXlmDdk5oWihv6BQj1mavxpZD0+uLO2Wlq/kSMiKyWCd2AdERhAd6ER4VrXHXFYHA6tyeugoxrfhKniMmQ4xXZlFIq87iowXrt3afRSFiBaRQwkL+QsfoHUKHXytsHix6Q755dZ6+9+XnVHItoJlpXPfFWWf9m5AsRyJcK896EuS+AxOrbXLUEtiy2xs6s48WmPz8fENM7mir84+EIwB/wPRrTVPbUBCzR3uTWdgDTGf2Sslg4grUuPPWVW5x52QTuihhuzzvJ3jocuz0ns/7YBxu0YUZvGAb+ZhvGCXVkG0UUAMlL+yivWMPEfPKNt2LF5LaDJqsGp+b2j9ffsqlOV4OOJTNqa0VtLpjn83PgKlr0bAd5tFtNo20EktINz5OASLQyISoo8RQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(396003)(376002)(346002)(39850400004)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(2616005)(6512007)(478600001)(31696002)(6486002)(966005)(41300700001)(6506007)(53546011)(8676002)(6666004)(5660300002)(7416002)(36756003)(4326008)(8936002)(2906002)(31686004)(38100700002)(66946007)(66476007)(66556008)(316002)(86362001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: tdBglUqtDlZgOWp8J/S/RaF3HFq4PTFpFSUFciberSdp7I4/1d410oUFVnnx4hNM5wtSpYXgwJgMPRbq1BIFzKLA1PmPt41c76z1D8qI4RUfjIUgwEJ7y2SNzeOHh064PrfzFiTGVnOUSxRAKTWn+jvSj3vtJfzqa+daHUY4tv6yTuEYWTrvJDoBXJvquc6egApZfFmLpKRpmyMs+wn+lokp+vtJJVGVNqkyGaYj9kzYLk2JOfhwJkt2uD8yDYAGgGG8gxKhHNjHp7Mst0ww/1g+ffDVnTSzIwZzCyoR4VFcGDxZvCsriMof3XFfpamR6EQtkfBuC4W2Cp8mNm+/jnrOvVw1QeJh0/VcmA3Ke34VHYLt8uuLJc8sOtW+OJmORg/ZuYPeMaetRfVizvcK30CoblONEV96454KNUAo7O47ojdV+sRkF7Gh9vm0ujNfC6gRYcjnfGZ07KYDWutRVj2Sko0jUorBT36OJt+XtOAB8973VsptHMXUm2qrIfIIAHQcKk4JDRgnA/B7lARoYUw8x7g94OMHtlNEItjXgxsEY/uMrU14yiBOdGiqGZ10EZ4hoOhD0EAaq1fbp5OIIOsWL9n+2iv3TAvBBWFuoX6fV0fd/cTPUcqyKmXwQ39PIuWPbK3KjoDj3oyBXvIbgmUj5R/Pgik95kUTuvVjz/uAnVZme0rjxAEWVJfwk1uQ9rw8EXVT4NTPFuRHfOjUWtlwnlVcJ0YItU+CUibutLRrb1br4en6K57a1phA4V953PwjeW5GnvQUerGmcIx6D46OsKZ88nCRh0q7xhMwHITdFdoZVl77FN+nqXwhUA2GIEF4g4V1GVz0c3U1a2xxGlXd11LulJ/mcYI+VvfPjeopAMVIUYlxa/4rpifZOmi/8J+6sP8/xgoNXjz3fI/WczHkA4gu8dpFCsq82NJKsupK2H6fHoPcJgVHmX8/8H4B
+ +zUcCKTtQQc7PeY9hnUfo9f8M4GGauUv+W7vEtTz3wJt1sBWXviKi9mS+HVjuWPd/K2kFyOpzfd3nEs/X22c4IalMW+62BdvJg+Hq2l/MWiOteDGmlKmxz2c0/0T1YdzdRTJ3UjczWYE/Uw/PG//VIaeldnrFryYmL5qF0lXXZHP9cgUQX93hKv6f4GDew2ZwF07DhvDYVwoz3XiqRDs5pYvV9DEK+ABHOvO0+edH1XoZO6lcJoxDOSh9HTuT809H3UlFR4JaoI3wHGdQc8CwG58dLQMYvhm7JVfCcfg0bN97InO3kF4IDORp1lw99KdyCrNmU4Mv2s+wFS9u5P0IpGITbf6oi0aqh+S9DEgxnNf8RRr3fF5K5k12DmIaZrv8dHYEjV0N9PBCUQ80MirB+fMRA7bCojN7v6HrkSMFzJsus+xNBwjrrcsIBRxxoJxSkuzmuopQZg8fy/o7xgkE8MVqK3+CfKm1dy8+lC8T6pXNJhrcxOKwkMSjj4TinpJ7Ju2kogIoa6LPX+COxo7yjVe97b0FvNxxXjtzBtoVd/YVi8dT8uEBedCzMrABA/J7wxuogShRGrbNFUYx9ickSOjQhU/v6CrE/QP1X189PMQhJ/pGO1LvXH0RGP500EdQwATs5G0r25g57Uqnp0+/g0tx0L7GLIF5VGNmBCQaPO7cvCN2Wur1tf+2XVkWfeM
+X-OriginatorOrg: kalrayinc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: faf1c58c-41e2-4abf-9d94-08dc1ce0e1dd
+X-MS-Exchange-CrossTenant-AuthSource: MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jan 2024 13:32:17.3965
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8931925d-7620-4a64-b7fe-20afd86363d3
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZrjayeKRBXnmoGxwGFBUaLcrYls+RhpdlYaQVsYPTclU3a3sY1XRMbgx++6KW/LM8GA3Tv6x5OOrsL+sClCmRw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MRZP264MB2652
+X-ALTERMIMEV2_out: done
 
-On Mon, Jan 22, 2024 at 07:19:09PM +0100, Bernd Edlinger wrote:
-> otherwise the synopsys_id value may be read out wrong,
-> because the GMAC_VERSION register might still be in reset
-> state, for at least 1 us after the reset is de-asserted.
-> 
-> Add a wait for 10 us before continuing to be on the safe side.
-> 
-> > From what have you got that delay value?
-> 
-> Just try and error, with very old linux versions and old gcc versions
-> the synopsys_id was read out correctly most of the time (but not always),
-> with recent linux versions and recnet gcc versions it was read out
-> wrongly most of the time, but again not always.
-> I don't have access to the VHDL code in question, so I cannot
-> tell why it takes so long to get the correct values, I also do not
-> have more than a few hardware samples, so I cannot tell how long
-> this timeout must be in worst case.
-> Experimentally I can tell that the register is read several times
-> as zero immediately after the reset is de-asserted, also adding several
-> no-ops is not enough, adding a printk is enough, also udelay(1) seems to
-> be enough but I tried that not very often, and I have not access to many
-> hardware samples to be 100% sure about the necessary delay.
-> And since the udelay here is only executed once per device instance,
-> it seems acceptable to delay the boot for 10 us.
-> 
-> BTW: my hardware's synopsys id is 0x37.
-> 
-> Fixes: c5e4ddbdfa11 ("net: stmmac: Add support for optional reset control")
-> Signed-off-by: Bernd Edlinger <bernd.edlinger@hotmail.de>
-> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Hi Greg,
 
-Thanks for taking all the notes into account. No objections from my
-side:
+On 23/01/2024 18:47, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.75 release.
+> There are 414 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 25 Jan 2024 17:44:16 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.75-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+>
+> thanks,
 
-Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+I tested 6.1.75-rc2 (a7fd791e5c51) on Kalray kvx arch (not upstream yet), just to let you know everything works in our CI.
 
--Serge(y)
+It ran on real hw (k200 and k200lp boards), on qemu as well as on our internal instruction set simulator (ISS).
 
-> ---
->  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> v2: rebased to v6.7, retested and updated the commit message
-> as suggested Serge Semins review comment:
-> https://lore.kernel.org/lkml/b4mpa62b2juln47374x6xxnbozb7fcfgztrc5ounk4tvscs3wg@mixnvsoqno7j/
-> and retained Jiri Pirkos Reviwed-by from:
-> https://lore.kernel.org/lkml/ZT+Zq4j9iQj1+Xai@nanopsycho/
-> 
-> v3: addressed review comments.
-> 
-> 
-> Thanks
-> Bernd.
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> index a0e46369ae15..b334eb16da23 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> @@ -7542,6 +7542,9 @@ int stmmac_dvr_probe(struct device *device,
->  		dev_err(priv->device, "unable to bring out of ahb reset: %pe\n",
->  			ERR_PTR(ret));
->  
-> +	/* Wait a bit for the reset to take effect */
-> +	udelay(10);
-> +
->  	/* Init MAC and get the capabilities */
->  	ret = stmmac_hw_init(priv);
->  	if (ret)
-> -- 
-> 2.39.2
+Tests were run on several interfaces/drivers (usb, qsfp ethernet, eMMC, PCIe endpoint+RC, SPI, remoteproc, uart, iommu). LTP and uClibc-ng testsuites are also run without any regression.
+
+Everything looks fine to us.
+
+Tested-by: Yann Sionneau <ysionneau@kalrayinc.com>
+
+Thanks a lot!
+
+-- 
+
+Yann
+
+
+
+
+
 
