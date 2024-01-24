@@ -1,132 +1,260 @@
-Return-Path: <linux-kernel+bounces-37063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1E1D83AADA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:23:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D58183AADB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:24:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 996971C29582
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:23:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 948FF1F2BD32
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:24:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2659D77F14;
-	Wed, 24 Jan 2024 13:23:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 744B077F0D;
+	Wed, 24 Jan 2024 13:24:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uD0zyZ3W"
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mKI2mq6y"
+Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com [209.85.221.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 744C577F00
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 13:23:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B3771A28C
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 13:23:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706102584; cv=none; b=BgibrN7ae50RT8OyBrwpcEaAE+S3T5xFrMyPpPsaoJqTChPwqg1t8o5aj0D88YKAR0yG8hmjcj1fPfbHWBoLo8utHbW5P9az426RNAtPpJMdfEtG5FC2RvqKBOBtpi6ks4kJgZBKkHgNvA1Rlj8kPGdGeZb51Vs21iGYDXUVLS8=
+	t=1706102640; cv=none; b=Kgc0Bo3CUxzMBUrKbKU6Qmls9J+kMP1gawqjDEJQ05+/6JmscNRISnXEF/q2IrAhFKM/kU6SefFGxsK/hijbB067mFzWQQFCTdkX5y3NpQhzbk4DmI/hOFeDHsFohwQyzg+yGKvTKRnI+j9kLC6J4qOx5Mja3K96bL5X0gifNcY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706102584; c=relaxed/simple;
-	bh=T4RmIf7VkFcj8d4ZpyZYR6aCfDUYT5c7VXzocciPTWw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TmIdcJUs99iTr5Zm9XvXeUlF8gIm5L/Q+qWlkqjEWKxFhynO1xDtNuGr8od92DhXnJ3yIBqhkc/80J0l3X56rOXGatEa+hBsMWTxHSbfgR+gBUqJutyE5XFk+nDBGxj9qzhWDUMOM1AouLDGLzfjbSwpHaBUODPasS/MglNHrEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uD0zyZ3W; arc=none smtp.client-ip=209.85.208.181
+	s=arc-20240116; t=1706102640; c=relaxed/simple;
+	bh=iWZac+ZaEacF+KvqnPyM6HfqTzttijNbXBaymdeQFPQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JURIAExn6MqUZi9UhYc+Cu9GgDxmlVStWlkCmyFVRGRtM1m6N4VVtrV6gRF9xkrHEGvJt4k5KLwMPBanHQRz3N79LiwVvsKQJv1KmkdQ0CQlnKovkpSnecL4Mp6xNz9fiptrQECCac3bshBpdPB1AoSk7awjLuIdXIGYt9zo09g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mKI2mq6y; arc=none smtp.client-ip=209.85.221.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2cf0390eddbso34224701fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 05:23:01 -0800 (PST)
+Received: by mail-vk1-f177.google.com with SMTP id 71dfb90a1353d-4b7e0f53437so1154363e0c.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 05:23:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706102579; x=1706707379; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=11kgJruv5+K6DtBwAzB0hg6cqT5dVQUnLRiLI1MHmYk=;
-        b=uD0zyZ3W418Hxi0Js3RwCmxwiRCtoGnjxb0h0/tQysBALQdB2/OWkRmEsDP2gBSNw4
-         kaN/W34x9citNgxI9wqsLmvQnVKUdluigoZhVN5uRf/mGO8kIZirN2s/O7F1FwA5TJq4
-         VnVUhdyFE8T8bDyd2Gi9kYOIAgkTSXyUvEZOb9LyDwLd2vPZhgaapsEW5rnzneRnX8bK
-         CR2zMjEhL5ypjwWUc6q5b3G3G3reCCEDS+uqQSUq7CSdV9G5i9XFvL2DCRA7uXwET6tF
-         mAMvnDM9BcVqjVjU8lIjya4EZQKKgAerx3BnqsjHpzJOcqLIIRKQpJlZtSAkClixNDm8
-         3gbw==
+        d=linaro.org; s=google; t=1706102638; x=1706707438; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=02kXXgSqM3f0wcrI/acHfP6E2HHPpWGNtsvRtk7S0yo=;
+        b=mKI2mq6ykMRuz96Tq9ilzvXDBu34Ea7YG8doPKu5+U2eiVA2CD6XhBdFtHolVXBg4y
+         wg4ZoUWg0pHFMpaq9rLHlphEiIGc4HGbq1CShHc4Tu+UTEX/DdRFt4GT4B1JUEJKIyIC
+         XdVkjHLrZgArUzuyZymv10/yj9Q8RM4N3SCWJ09H7/6iQkm5nRHB8un/j6azeB2cd/FC
+         JYq+jvTRgo5WTrqbxjsq8yJ7bUrrs5D4gUxstmknKkb6YRLzy7wqStVdM9n159Xm+Ees
+         ZkSRi7u9bXwG2Rx7zb79ewK/DbK03QP4n3OubrgXVWWcXr6jKsuuJ24o735Dq7FrAMn3
+         7rww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706102579; x=1706707379;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=11kgJruv5+K6DtBwAzB0hg6cqT5dVQUnLRiLI1MHmYk=;
-        b=pvQ/dlGuLzDf/fR3dT1R4WRtQaj489Ek/TKfkhfZheLz57cT9+7+8HNY4uRBMVMQ/4
-         qy+z2eUMbp0Y1gMNx3qnXldCIQuZurHyssYNpp6MI3gK86pJe4IBHj5SvWiw1yDL0M7G
-         oBJUemi/9H/7iuLjzwY4MvE4C9PyijloAJ8S7DCtaP81Wckx7pRf/5gB1a/Tq2zYSisI
-         vNR7AaK3VHKf984+ozO2kk5n61rJebSJj4cZA2EZk8uiaO1NcmKW+4bKvIyA9C8nc26n
-         GdKXrWjkx/leJJkbpzaW62gCt7LP9N8iSKiyNVBfGc1n3ujVWSLV1XfilGpZnAytEtFF
-         3JiA==
-X-Gm-Message-State: AOJu0Yxm1FRTUdVO4gBn5ty+w0LVaWalwZQN2Is0htLLPbV1L/ay4zFK
-	Uz+9k7GpG5nH1NkKNltTrzuu6Dejj6BadBnwapgCoFfvr0w2d4ktBkKflgKRZ98=
-X-Google-Smtp-Source: AGHT+IGCJx8XZDV9wXehwa6+blBx6gU7Yw+6Pl2WRXQb/rId7vUfO2+yja1A4V5G91EOYOUuQjTl2g==
-X-Received: by 2002:a19:4305:0:b0:50e:6909:7f68 with SMTP id q5-20020a194305000000b0050e69097f68mr3327351lfa.117.1706102579410;
-        Wed, 24 Jan 2024 05:22:59 -0800 (PST)
-Received: from [172.30.205.123] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id u6-20020ac25186000000b0050e70a5b804sm2589732lfi.302.2024.01.24.05.22.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jan 2024 05:22:59 -0800 (PST)
-Message-ID: <9feae876-5170-4b57-8cd4-dbf35dddbefc@linaro.org>
-Date: Wed, 24 Jan 2024 14:22:55 +0100
+        d=1e100.net; s=20230601; t=1706102638; x=1706707438;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=02kXXgSqM3f0wcrI/acHfP6E2HHPpWGNtsvRtk7S0yo=;
+        b=vfLZC4+fGSDntWzoqIrV9A8TxGZseNeku44whwOdhJtUwcIGp/pueOboUH9i+VcG04
+         ZPADoNNpHIETNplo4CelfdTlKQ0C3unD32zupsrQuB6+A90JzTLo5dgie/+sEUDfNbX1
+         g1kkKl1+e5Oa8xmpkpL5FzbCZYWDssWDKgYGd7CSadHxrtCsIVAx1BzMZOz7kUw8BTjv
+         FI6bdVWXTZP0fc6iyolcHBfmNdBNrxzjwBzubHrvQ7PGit60NHxDtTIp1wd2KWAQqtxt
+         KZkBAq90oaFnP7aVAEsrgXELIyhwqJVc09N6aVMW6rbB2yldKfQ1fumRIAVNUH+br3Hq
+         juXw==
+X-Gm-Message-State: AOJu0YwNl0syr82AkZIPNP7DywmHJERojpUtH+QCD2U9Ol/+ywhud5y9
+	kuV0m3Z8Iu21ffcpLWJVgwouEbyFdYB8bYDAOwFhZklZp1W9G0dIK6xqMvb2Ho8yLIpGkqQCzQU
+	4ICfWk1t8K0vqie8TxO0Yms6AMOHi/P84na+RhA==
+X-Google-Smtp-Source: AGHT+IFH+XBA9wdCSOw1u5qUmb6O+RjCCUttprLGBuYUvW/Qx2Oj2rYBLNR6xNbkGma97W1xgWndI38Q6iyL8lz/wh0=
+X-Received: by 2002:a05:6122:a0f:b0:4b7:8e5a:ed86 with SMTP id
+ 15-20020a0561220a0f00b004b78e5aed86mr2395856vkn.29.1706102637932; Wed, 24 Jan
+ 2024 05:23:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 09/14] arm64: dts: qcom: sc8280xp: Drop PCIE_AUX_CLK from
- pcie_phy nodes
-Content-Language: en-US
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>, Vinod Koul <vkoul@kernel.org>,
- Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- cros-qcom-dts-watchers@chromium.org
-Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240124-pcie-aux-clk-fix-v1-0-d8a4852b6ba6@linaro.org>
- <20240124-pcie-aux-clk-fix-v1-9-d8a4852b6ba6@linaro.org>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240124-pcie-aux-clk-fix-v1-9-d8a4852b6ba6@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240123174533.427864181@linuxfoundation.org>
+In-Reply-To: <20240123174533.427864181@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Wed, 24 Jan 2024 18:53:46 +0530
+Message-ID: <CA+G9fYsg4b+QF_X-GaJt1wENoEMxokx4RFoOGbjJ3-PHE6c_cQ@mail.gmail.com>
+Subject: Re: [PATCH 6.6 000/580] 6.6.14-rc2 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, 23 Jan 2024 at 23:17, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.6.14 release.
+> There are 580 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 25 Jan 2024 17:44:18 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.6.14-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.6.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
 
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-On 1/24/24 08:36, Manivannan Sadhasivam wrote:
-> PCIe PHY hw doesn't require PCIE_AUX_CLK for functioning. This clock is
-> only required by the PCIe controller. Hence drop it from pcie_phy nodes.
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-So, I have a small phytest module that basically does this:
+## Build
+* kernel: 6.6.14-rc2
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-6.6.y
+* git commit: 86b2b02ae53b684a71d629c5ae2511c2e0d0f675
+* git describe: v6.6.13-581-g86b2b02ae53b
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6.1=
+3-581-g86b2b02ae53b
 
-phy_get
-phy_init
-phy_set_mode_ext(PCIE_RC)
-phy_power_on
+## Test Regressions (compared to v6.6.13)
 
-To load it, I skip PCIe init (comment out the node), then wait for clk
-and pmdomain unused cleanup, then load the phytest module to ensure that
-I'm not piggybacking off of the RC's resources.
+## Metric Regressions (compared to v6.6.13)
 
-I tried it out on the CRD, on PCIE2A (NVMe)
+## Test Fixes (compared to v6.6.13)
 
-Without this patch, the PHY seems to init fine
+## Metric Fixes (compared to v6.6.13)
 
-With this patch, I get:
+## Test result summary
+total: 153830, pass: 132159, fail: 2244, skip: 19241, xfail: 186
 
-(1) qcom-qmp-pcie-phy 1c24000.phy: phy initialization timed-out
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 145 total, 144 passed, 1 failed
+* arm64: 52 total, 49 passed, 3 failed
+* i386: 41 total, 40 passed, 1 failed
+* mips: 26 total, 26 passed, 0 failed
+* parisc: 4 total, 4 passed, 0 failed
+* powerpc: 36 total, 36 passed, 0 failed
+* riscv: 25 total, 24 passed, 1 failed
+* s390: 13 total, 13 passed, 0 failed
+* sh: 10 total, 10 passed, 0 failed
+* sparc: 8 total, 8 passed, 0 failed
+* x86_64: 46 total, 44 passed, 2 failed
 
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-vm
+* kselftest-watchdog
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* network-basic-tests
+* perf
+* rcutorture
+* v4l2-compliance
 
-Kicking the PCIe GDSC from the PHY, I additionally get:
-
-(2) gcc_pcie_2a_cfg_ahb_clk status stuck at 'off'
-
-
-I think we expected (2), but is (1) okay?
-
-Konrad
+--
+Linaro LKFT
+https://lkft.linaro.org
 
