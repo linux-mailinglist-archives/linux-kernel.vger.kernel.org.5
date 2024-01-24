@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-36587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0942083A377
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:47:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46A3383A37B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:48:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 690B5B2942C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 07:47:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B5821C28AE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 07:48:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0038617BA8;
-	Wed, 24 Jan 2024 07:45:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8994117C6E;
+	Wed, 24 Jan 2024 07:45:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RG9smOQd"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="h0OiU3Tp"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E8CA1799E
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 07:45:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0186517BA9
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 07:45:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706082346; cv=none; b=DtG+vjw31e/hFNSiIfGrCux6/liZdSugnWg0jM+TSiMN83a+uICtHFAFm9xghlBaA/3ih2PhD+Z6OfL+msuh52jKDUbUqscZIfPjedV0RJLpLh1wpeXddhrIXWDR5KHPVt/gS3F1vXIOm/hxE+gr+mfGfR6OHkj20BqG2XATTiQ=
+	t=1706082348; cv=none; b=FxqyjDicEUeCvDpkEYPfoFo2maJfsSk+ZuP5ef2geXTrLTSwPdbAcrSzdYva1Aou4Dl1c8Y18nm2W6cxfCbSBSctVpZrbtsmP8EXfx/WNTDe5quCXPh2h3Csedht/bjuAY15lFbK0QSNQJdVUg73iyxsOiZxVhLaSlFSBqr52+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706082346; c=relaxed/simple;
-	bh=oMxlIYU8lOKLFt0TEL5h53mUDoaj/hO9QDpO+Y17nsg=;
+	s=arc-20240116; t=1706082348; c=relaxed/simple;
+	bh=oh0sTMif6CnOQLiL5a5MmyT0hcKnwI/jjGqAII0YSDc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=P2upqmq2YFtA1lFaa+zsN4LGe+kKqQiEOYWCvEvq3k6PONlYBgLHM8yYbc9fyJrOTvbL0xfE9XUBbh7J2LA/qlj8I4RV4amyXXIuhUBa9ZdaX5g57yRIyOMHfj36JpdZUGF5xwgeYQ9f/CphR/IS8E179Vlame6763vJ/kOdWlw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=RG9smOQd; arc=none smtp.client-ip=209.85.208.41
+	 MIME-Version; b=P4i3nFDFsAv/aTUyVUDLLcfum+WWCFh/EXHcXGVANyPGYzDSG65kqPPhMUUGd7TR69uxZANJm2c0Df9UGy5l4YZeimrKnF7b7YpkQ0rqqZhb5rI6lFmI+Mw7O5mYvqulZT2rFeXJ7IbPkR8bGJOIM/51WyYcZPqbzqv+LDLoKNY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=h0OiU3Tp; arc=none smtp.client-ip=209.85.208.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55a354a65afso4468002a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 23:45:44 -0800 (PST)
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55a354a65afso4468034a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 23:45:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706082343; x=1706687143; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1706082345; x=1706687145; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qG0lQDgeayG/ZAaWGjl028iUARha7B2YZJgs2y6qJ/U=;
-        b=RG9smOQdM7OPnO+Gi/ba99FEng0dex79k6Z5uQqqOec/z1eMvh/QKdLkc2hG0gFXli
-         JIoA+lNHrs6G8isF8m4YYvMc6IjNaUrUzwagOOQlMHIV16NjjAgz5gtkxgAGEiBcJSdW
-         g+ahdJdZJzHX87AlLWt+SsPpgaFdoz3LUcQLrBbCs7RyKrywPRhuYxB+OSy9v84PiglK
-         NDTNLtdyzsNyYEdT1+F1ze+0uB7arFSX5GXyKlGFz7TqksQd+G4i2monnIUzfFv0XhPL
-         cs2E6t5qZN7h8ZP+A1bXaQS1r7882EKnqwkcGd43JnV68hBftK/g/6708Kf4zK1oDX2X
-         AE3g==
+        bh=lRX88GpgU1fgsZxup3Gn93xc8N0Fj24AFUmctHwLfn4=;
+        b=h0OiU3TpQicg0o3kpaS0v/nI2qe7EBYWo9w/H00iiGH0qw6TggAGYMAAFll2MGZyKT
+         XpKErrU/WfdLcbD7gvAIe5op7mQDI8THOBiSXlGNUnhx0EoZF3Slvj+zyHmm397xw9+t
+         G5ESlNL0edDsu37+6ECeOG0v1iYWYicC7QXk41n8f/5Lu7sijWTZUfJRgTRFqzywskXF
+         LPLewqX2CKUBgbFbyQs3X6lXJV3WiDOiKimD8NvFO2wS0N5U5I2LMUxIB68QH512G84P
+         TLkNmMM/bFlv0IXKLdjp0R6qWYcKN+pHBq4tOlTSYepHA2AHzBVzfYkSkOPWTK2Nu9hh
+         LkUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706082343; x=1706687143;
+        d=1e100.net; s=20230601; t=1706082345; x=1706687145;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qG0lQDgeayG/ZAaWGjl028iUARha7B2YZJgs2y6qJ/U=;
-        b=etIFHjINsBU+wq9DWoJw8OWM6Jz7XbK1Nl4FcHprLLiyLmT4idVEviS0cvVbz5L1SI
-         4UmQ1FGbtfjtcoRdG81QIvBZvZ8+sb6PPreccVCPjYLTLqi7y0eBL3eRC6THpKAStVtn
-         dKZ1aI7qO4dvYazneJKfiqJLlQqGF64phsYAWlTxtUjl6ysHh4YWPdORTICHtKAPqhqf
-         4tC5gsKdL0OvLOiG6/XQUCXR4tJEY8gkg45vQnh/Z+Rk+lBpCOTYSuPMWCnNr31gy0tQ
-         zsID/BNAjLRgyU4wQqgYYV99XGSIHzLJcVcjO4pSqAAaj4L5Q8X/I0DKIIOk3JXRxRa/
-         MKlw==
-X-Gm-Message-State: AOJu0YyviEkyfchbGpbxG4ZgPF0i9fTdH2mFjBDPM7cyXRKFqS3ToqoP
-	WJYqeJI5M88PAeL6RZXMscdBQjNQzOYK6PPdHRjPmog+bvlZg4JKnmFD75ZUP6M=
-X-Google-Smtp-Source: AGHT+IHjvR2GP5elLnS6zJWZVP9iOwh9lBECo8gB0qAFYYejK9jRMliygooQE5Cn4oU3IbvZ9gNFzw==
-X-Received: by 2002:a50:8e44:0:b0:55a:7cbf:a801 with SMTP id 4-20020a508e44000000b0055a7cbfa801mr1929863edx.79.1706082342872;
-        Tue, 23 Jan 2024 23:45:42 -0800 (PST)
+        bh=lRX88GpgU1fgsZxup3Gn93xc8N0Fj24AFUmctHwLfn4=;
+        b=a8254Q6k9w6ngJNz7iTK7Le7Pn05UYqfFXpJLnRyFaE+AOOgpPNZFLVimnVJX/29zz
+         Y8pv6cz3wgZZ1kQ/MEFbp0WdcGrFiTjTGnKCF3Hk85eFbd99r/2Cndrl7kPeg+J6hnB4
+         nEQKZWAPQbzDIgsITyx20IAC8cphS1+OpsaoxhCSCbBQ/YyZae19PfA9RiIU3N4tCVWv
+         JPMCFZyXt6yEM28+cQZVPagPjh/2a1Vrr5rPvi0zRubXDBN+VSHiA/bQIbPCQ3JVFgGC
+         P8g725zrhgZkmQpUIHdnCNB5Eb/YARh6Vzn0y9sufDi18vTawCwRX0NCzsCb+efJSp0W
+         bJEQ==
+X-Gm-Message-State: AOJu0YzVeS3c+rA+//tBKFpv2SPpqnJLY6hgB0sEAtQWsVyIxv26cOcJ
+	gSA0k/n4PHrpM6J2LyOKwcZRdoFoOyPPcC/cCC8VwuGZ5UUO5NMGaSmm1YLQQpk=
+X-Google-Smtp-Source: AGHT+IHIiivpDee0vXa9Za1ZlMPh5ql9o2I3lx2sDE7uKWnN6FQlUAjNNnKSKOW8KA9hLJkFcO5VfQ==
+X-Received: by 2002:a05:6402:26d4:b0:55a:e42c:fafd with SMTP id x20-20020a05640226d400b0055ae42cfafdmr2239875edd.25.1706082345305;
+        Tue, 23 Jan 2024 23:45:45 -0800 (PST)
 Received: from krzk-bin.. ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id c4-20020a056402100400b0055c8a30152bsm1306951edu.83.2024.01.23.23.45.40
+        by smtp.gmail.com with ESMTPSA id c4-20020a056402100400b0055c8a30152bsm1306951edu.83.2024.01.23.23.45.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 23:45:42 -0800 (PST)
+        Tue, 23 Jan 2024 23:45:44 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
 	Banajit Goswami <bgoswami@quicinc.com>,
@@ -89,11 +89,10 @@ To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
 	linux-pm@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
 	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Sean Anderson <sean.anderson@seco.com>,
-	Rob Herring <robh@kernel.org>
-Subject: [PATCH v5 5/6] ASoC: dt-bindings: qcom,wsa8840: Add reset-gpios for shared line
-Date: Wed, 24 Jan 2024 08:45:26 +0100
-Message-Id: <20240124074527.48869-6-krzysztof.kozlowski@linaro.org>
+	Sean Anderson <sean.anderson@seco.com>
+Subject: [PATCH v5 6/6] ASoC: codecs: wsa884x: Allow sharing reset GPIO
+Date: Wed, 24 Jan 2024 08:45:27 +0100
+Message-Id: <20240124074527.48869-7-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240124074527.48869-1-krzysztof.kozlowski@linaro.org>
 References: <20240124074527.48869-1-krzysztof.kozlowski@linaro.org>
@@ -105,57 +104,124 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-On newer Qualcomm platforms, like X1E80100-CRD, the WSA884x speakers
-share SD_N GPIOs between two speakers, thus a coordinated assertion is
-needed.  Linux supports handling shared GPIO lines through "reset-gpios"
-property, thus allow specifying either powerdown or reset GPIOs (these
-are the same).
+On some boards with multiple WSA8840/WSA8845 speakers, the reset
+(shutdown) GPIO is shared between two speakers.  Use the reset
+controller framework and its "reset-gpio" driver to handle this case.
+This allows bring-up and proper handling of all WSA884x speakers on
+X1E80100-CRD board.
 
 Cc: Bartosz Golaszewski <brgl@bgdev.pl>
 Cc: Sean Anderson <sean.anderson@seco.com>
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
 
 If previous patches are fine, then this commit is independent and could
 be taken via ASoC.
 ---
- .../devicetree/bindings/sound/qcom,wsa8840.yaml       | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ sound/soc/codecs/wsa884x.c | 53 +++++++++++++++++++++++++++++++-------
+ 1 file changed, 43 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml b/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml
-index d717017b0fdb..22798d22d981 100644
---- a/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml
-@@ -28,6 +28,10 @@ properties:
-     description: Powerdown/Shutdown line to use (pin SD_N)
-     maxItems: 1
+diff --git a/sound/soc/codecs/wsa884x.c b/sound/soc/codecs/wsa884x.c
+index f2653df84e4a..a9767ef0e39d 100644
+--- a/sound/soc/codecs/wsa884x.c
++++ b/sound/soc/codecs/wsa884x.c
+@@ -13,6 +13,7 @@
+ #include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
+ #include <linux/regulator/consumer.h>
++#include <linux/reset.h>
+ #include <linux/slab.h>
+ #include <linux/soundwire/sdw.h>
+ #include <linux/soundwire/sdw_registers.h>
+@@ -699,6 +700,7 @@ struct wsa884x_priv {
+ 	struct sdw_stream_runtime *sruntime;
+ 	struct sdw_port_config port_config[WSA884X_MAX_SWR_PORTS];
+ 	struct gpio_desc *sd_n;
++	struct reset_control *sd_reset;
+ 	bool port_prepared[WSA884X_MAX_SWR_PORTS];
+ 	bool port_enable[WSA884X_MAX_SWR_PORTS];
+ 	unsigned int variant;
+@@ -1799,9 +1801,22 @@ static struct snd_soc_dai_driver wsa884x_dais[] = {
+ 	},
+ };
  
-+  reset-gpios:
-+    description: Powerdown/Shutdown line to use (pin SD_N)
-+    maxItems: 1
+-static void wsa884x_gpio_powerdown(void *data)
++static void wsa884x_reset_powerdown(void *data)
+ {
+-	gpiod_direction_output(data, 1);
++	struct wsa884x_priv *wsa884x = data;
 +
-   '#sound-dai-cells':
-     const: 0
- 
-@@ -37,11 +41,16 @@ properties:
- required:
-   - compatible
-   - reg
--  - powerdown-gpios
-   - '#sound-dai-cells'
-   - vdd-1p8-supply
-   - vdd-io-supply
- 
-+oneOf:
-+  - required:
-+      - powerdown-gpios
-+  - required:
-+      - reset-gpios
++	if (wsa884x->sd_reset)
++		reset_control_assert(wsa884x->sd_reset);
++	else
++		gpiod_direction_output(wsa884x->sd_n, 1);
++}
 +
- unevaluatedProperties: false
++static void wsa884x_reset_deassert(struct wsa884x_priv *wsa884x)
++{
++	if (wsa884x->sd_reset)
++		reset_control_deassert(wsa884x->sd_reset);
++	else
++		gpiod_direction_output(wsa884x->sd_n, 0);
+ }
  
- examples:
+ static void wsa884x_regulator_disable(void *data)
+@@ -1809,6 +1824,27 @@ static void wsa884x_regulator_disable(void *data)
+ 	regulator_bulk_disable(WSA884X_SUPPLIES_NUM, data);
+ }
+ 
++static int wsa884x_get_reset(struct device *dev, struct wsa884x_priv *wsa884x)
++{
++	wsa884x->sd_reset = devm_reset_control_get_optional_shared(dev, NULL);
++	if (IS_ERR(wsa884x->sd_reset))
++		return dev_err_probe(dev, PTR_ERR(wsa884x->sd_reset),
++				     "Failed to get reset\n");
++	else if (wsa884x->sd_reset)
++		return 0;
++	/*
++	 * else: NULL, so use the backwards compatible way for powerdown-gpios,
++	 * which does not handle sharing GPIO properly.
++	 */
++	wsa884x->sd_n = devm_gpiod_get_optional(dev, "powerdown",
++						GPIOD_OUT_HIGH);
++	if (IS_ERR(wsa884x->sd_n))
++		return dev_err_probe(dev, PTR_ERR(wsa884x->sd_n),
++				     "Shutdown Control GPIO not found\n");
++
++	return 0;
++}
++
+ static int wsa884x_probe(struct sdw_slave *pdev,
+ 			 const struct sdw_device_id *id)
+ {
+@@ -1838,11 +1874,9 @@ static int wsa884x_probe(struct sdw_slave *pdev,
+ 	if (ret)
+ 		return ret;
+ 
+-	wsa884x->sd_n = devm_gpiod_get_optional(dev, "powerdown",
+-						GPIOD_OUT_HIGH);
+-	if (IS_ERR(wsa884x->sd_n))
+-		return dev_err_probe(dev, PTR_ERR(wsa884x->sd_n),
+-				     "Shutdown Control GPIO not found\n");
++	ret = wsa884x_get_reset(dev, wsa884x);
++	if (ret)
++		return ret;
+ 
+ 	dev_set_drvdata(dev, wsa884x);
+ 	wsa884x->slave = pdev;
+@@ -1858,9 +1892,8 @@ static int wsa884x_probe(struct sdw_slave *pdev,
+ 	pdev->prop.sink_dpn_prop = wsa884x_sink_dpn_prop;
+ 	pdev->prop.scp_int1_mask = SDW_SCP_INT1_BUS_CLASH | SDW_SCP_INT1_PARITY;
+ 
+-	/* Bring out of reset */
+-	gpiod_direction_output(wsa884x->sd_n, 0);
+-	ret = devm_add_action_or_reset(dev, wsa884x_gpio_powerdown, wsa884x->sd_n);
++	wsa884x_reset_deassert(wsa884x);
++	ret = devm_add_action_or_reset(dev, wsa884x_reset_powerdown, wsa884x);
+ 	if (ret)
+ 		return ret;
+ 
 -- 
 2.34.1
 
