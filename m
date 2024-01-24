@@ -1,128 +1,153 @@
-Return-Path: <linux-kernel+bounces-36734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6573B83A5BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:43:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D12D783A5C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:44:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26892292E7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:43:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 106161C238D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:44:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C8A1802B;
-	Wed, 24 Jan 2024 09:42:56 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D1A518026
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 09:42:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C37181802B;
+	Wed, 24 Jan 2024 09:44:34 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A0B317C6D;
+	Wed, 24 Jan 2024 09:44:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706089376; cv=none; b=jkaOLqcW4A8U7a0PH+Li8INW7qNOxzhQ7TrgQ+OE0CT7XusFdJouCuqPX/kL8/+DEL2nCMg5rzJRz5qGC0QZOQfSPJWU9aMR9LXe6lavzk7jMJjHqFW0d9ZlncluSTkSAL7WzrfWadxXbYXvf1rnllvl48/QLvyUKLfTJi02gTE=
+	t=1706089474; cv=none; b=Ln37KZr8pBuvQ04zyZoiXH0c1quQ5mUG7ipnZc5VsPyvbvMg8pxIaJg9WAJVuErM/emZAxfP2cHmwmkQja0APFeLRQUnI8URbSgzYZYbqD/p8diVc+k40nNDtQvKHgNetV0BsKA7njJLH1QUZ3ROkqvUVdolHZbkdMEjzg0EP5s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706089376; c=relaxed/simple;
-	bh=c7AtDwtfUT29Girxwftwf36NoI+3PFJkKiX9LOmNFk4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H1FO4a5WyGhu1WJ26d+UsNB143mpjAfNZ5j8qhzf5S3wsGicAH3joV0GtBOMxDyEKsmv2uTU61wiY8LUXc6XE8bGlolXbC/m8CIBtsddXL4Mo8Oxd3Ipfjo5EkzD0eVjPnOGKyG8kawlJF8qiWlwt5ezmapU4af5hyuYpbnSjzY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rSZmM-0003ht-Lz; Wed, 24 Jan 2024 10:42:42 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rSZmL-0021gA-J6; Wed, 24 Jan 2024 10:42:41 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rSZmL-0071nX-1a;
-	Wed, 24 Jan 2024 10:42:41 +0100
-Date: Wed, 24 Jan 2024 10:42:41 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Thierry Reding <thierry.reding@gmail.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Kevin Hilman <khilman@baylibre.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-amlogic@lists.infradead.org, linux-pwm@vger.kernel.org, JunYi Zhao <junyi.zhao@amlogic.com>
-Subject: Re: [PATCH v4 3/6] pwm: meson: generalize 4 inputs clock on meson8
- pwm type
-Message-ID: <oyayapgrwaetyhuu6ua2nejcpgydmkijqdgtdlfqvq5jvc6nzp@xgvnwvjja3im>
-References: <20231222111658.832167-1-jbrunet@baylibre.com>
- <20231222111658.832167-4-jbrunet@baylibre.com>
- <4kcbh4dezgpic2dpgdi2swtx2puqiq74w2tungmxipf4nznpn7@u4g4f3cimps4>
- <1jy1cfw0qa.fsf@starbuckisacylon.baylibre.com>
+	s=arc-20240116; t=1706089474; c=relaxed/simple;
+	bh=lX0vTjJ1fC6yUMtsgabQ+KnmlSLeYfNY+C91khWlpzA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=F286JCnlAiOenmZ4S2F3+IhQ/YUguM+bkm8I/gRvNHgv1tu2MWf7NA1m25mS0sg2YPs+gphcOSgKBM51dCDXY041UcDc1hD9aRfgze2NjJUXYhlQU5RpmV0uTLKZRYyvrKNELwZb0PM/2Ab/teSu3wbXNpc05ntRiDi5EAuxuy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5FB641FB;
+	Wed, 24 Jan 2024 01:45:16 -0800 (PST)
+Received: from e127643.broadband (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 47DCE3F762;
+	Wed, 24 Jan 2024 01:44:29 -0800 (PST)
+From: James Clark <james.clark@arm.com>
+To: linux-perf-users@vger.kernel.org,
+	irogers@google.com,
+	namhyung@kernel.org
+Cc: James Clark <james.clark@arm.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Yang Jihong <yangjihong1@huawei.com>,
+	Changbin Du <changbin.du@huawei.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v4] perf evlist: Fix evlist__new_default() for > 1 core PMU
+Date: Wed, 24 Jan 2024 09:43:57 +0000
+Message-Id: <20240124094358.489372-1-james.clark@arm.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="a3xdp7xgdzkgzofk"
-Content-Disposition: inline
-In-Reply-To: <1jy1cfw0qa.fsf@starbuckisacylon.baylibre.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 
+The 'Session topology' test currently fails with this message when
+evlist__new_default() opens more than one event:
 
---a3xdp7xgdzkgzofk
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+  32: Session topology                                                :
+  --- start ---
+  templ file: /tmp/perf-test-vv5YzZ
+  Using CPUID 0x00000000410fd070
+  Opening: unknown-hardware:HG
+  ------------------------------------------------------------
+  perf_event_attr:
+    type                             0 (PERF_TYPE_HARDWARE)
+    config                           0xb00000000
+    disabled                         1
+  ------------------------------------------------------------
+  sys_perf_event_open: pid 0  cpu -1  group_fd -1  flags 0x8 = 4
+  Opening: unknown-hardware:HG
+  ------------------------------------------------------------
+  perf_event_attr:
+    type                             0 (PERF_TYPE_HARDWARE)
+    config                           0xa00000000
+    disabled                         1
+  ------------------------------------------------------------
+  sys_perf_event_open: pid 0  cpu -1  group_fd -1  flags 0x8 = 5
+  non matching sample_type
+  FAILED tests/topology.c:73 can't get session
+  ---- end ----
+  Session topology: FAILED!
 
-On Wed, Jan 24, 2024 at 10:11:59AM +0100, Jerome Brunet wrote:
-> On Wed 24 Jan 2024 at 10:08, Uwe Kleine-K=F6nig <u.kleine-koenig@pengutro=
-nix.de> wrote:
-> > I suggest to make this
-> >
-> > 	const char *parent_names[MESON_NUM_MUX_PARENTS];
->=20
-> Ok.
->=20
-> >
-> > to make it more explicit that really four entries are needed here. This
-> > also makes is unnecessary to add the additional NULL entries to
-> > pwm_gxbb_ao_parent_names and the other arrays.
->=20
-> I would normally agree but I'd prefer to be explicit.
->=20
-> There are some instance where the NULL is in the middle, this can't go
-> away. I think it looks if some inputs are explicitly NULL while the
-> other are implicit.
+This is because when re-opening the file and parsing the header, Perf
+expects that any file that has more than one event has the sample ID
+flag set. Perf record already sets the flag in a similar way when there
+is more than one event, so add the same logic to evlist__new_default().
 
-Adding soem NULLs explicitly is fine for me. Using an array of fixed length
-still (somewhat) ensures that later no shorter arrays are added which
-result in surprises.
+evlist__new_default() is only currently used in tests, so I don't
+expect this change to have any other side effects. The other tests that
+use it don't save and re-open the file so don't hit this issue.
 
-Best reagrds
-Uwe
+The session topology test has been failing on Arm big.LITTLE platforms
+since commit 251aa040244a ("perf parse-events: Wildcard most
+"numeric" events") when evlist__new_default() started opening multiple
+events for 'cycles'.
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Fixes: 251aa040244a ("perf parse-events: Wildcard most "numeric" events")
+Closes: https://lore.kernel.org/lkml/CAP-5=fWVQ-7ijjK3-w1q+k2WYVNHbAcejb-xY0ptbjRw476VKA@mail.gmail.com/
+Tested-by: Ian Rogers <irogers@google.com>
+Reviewed-by: Ian Rogers <irogers@google.com>
+Tested-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: James Clark <james.clark@arm.com>
+---
+ tools/perf/util/evlist.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---a3xdp7xgdzkgzofk
-Content-Type: application/pgp-signature; name="signature.asc"
+Changes since v3:
 
------BEGIN PGP SIGNATURE-----
+  * Return early if parsing fails, don't try to set the sample id.
 
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWw25AACgkQj4D7WH0S
-/k5e0wf7BlbmFsY4+YWO4iLdNo0BVoOnMnfSSNw2yPZA+YdUvXeulZDQTshMRkgQ
-xNmIvXbYDeBBIUFQ64FzQQ89VyKcwTX459zycaNAg06N51FSdCM1EQO1F/Y6fqy1
-g4+9fH3mHi+UJkcekm0st27G0uTvfiJ7RtkyQYK2KMD1OBmYr2ADURGmMppLzvLX
-6XMsShbScQdqNKMGa2MGjB4plt3IzjyX5ZMRYaMdZABnZJsKJGXWfcr9p3fLZ3I+
-Dvkti+CdMw7zHXAelVFD2EMKCMbV33PjedcIzBe9TTOQM5SPtoZHy3QIbQ+WdqNK
-sbr4C8C10SJBSSUbB1NJfIJfQUTNhw==
-=ENZk
------END PGP SIGNATURE-----
+Changes since v2:
 
---a3xdp7xgdzkgzofk--
+  * Undo the fact that v2 was accidentally based on v1 instead of
+    perf-tools
+
+Changes since v1:
+
+  * Reduce scope of evsel variable
+  * Add argument label
+  * Change summary to be less specific about the failing test
+  * Add the closes: tag
+
+diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+index 95f25e9fb994..55a300a0977b 100644
+--- a/tools/perf/util/evlist.c
++++ b/tools/perf/util/evlist.c
+@@ -103,7 +103,14 @@ struct evlist *evlist__new_default(void)
+ 	err = parse_event(evlist, can_profile_kernel ? "cycles:P" : "cycles:Pu");
+ 	if (err) {
+ 		evlist__delete(evlist);
+-		evlist = NULL;
++		return NULL;
++	}
++
++	if (evlist->core.nr_entries > 1) {
++		struct evsel *evsel;
++
++		evlist__for_each_entry(evlist, evsel)
++			evsel__set_sample_id(evsel, /*can_sample_identifier=*/false);
+ 	}
+ 
+ 	return evlist;
+-- 
+2.34.1
+
 
