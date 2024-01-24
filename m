@@ -1,187 +1,223 @@
-Return-Path: <linux-kernel+bounces-37084-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37085-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A27C83AB4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:02:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A62B783AB52
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:04:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C9BD1F263AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:02:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9A4C2B272F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:04:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBDEA7A702;
-	Wed, 24 Jan 2024 14:02:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1245C7A704;
+	Wed, 24 Jan 2024 14:04:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Tr6kEbpZ"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fQA0pjOt"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D4AC22084
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 14:02:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.55.52.120
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706104948; cv=none; b=DfWZVuiDix65tP9XLHrJeScVdboB/qBERHa8U3gxIKFM8EuNLrOCMhInMzX5qUFqVzcB3r3MWpz+Y2rJWhkmi65TLlsj9jeipT+YdNdFSPi8psoDIROYQp8kRXjPKwLwA1ys120EmIFhBUgUOpXaaeXw4OUZuUkDr24AgoWQHWE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706104948; c=relaxed/simple;
-	bh=kMLlSWZyVMHXVTtl/OfZFuYeY/EXz2BpA61dEoPloQE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cehh4w7KTtXTZWHh2jKiqD+6lxOf9fVYkc2DWYIMkn2neBvejK7T1tU9wmseDEANKPygrYWGenuZprgbMTKqWNoSN0CREAkcDHcREnvowrR4b+jftf1mZCoyGaoi5X/ryO32vDqRS74TOaY03494wUNFtsfiK40FrQFk02zVDBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.helo=mgamail.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Tr6kEbpZ; arc=none smtp.client-ip=192.55.52.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mgamail.intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A96CC77F14
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 14:04:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.10
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706105056; cv=fail; b=UeVh/cYuH/5634s/ZjV04irsSZr/2swRlOwnCoXL8SlkJtqObB985pQoHSTfV5mEvkDfoT7/+8G0lhcRUTbLR+LbqT4xEfUoohrinx3knSHRUR9B6wZZANBQ4RrsKe51jTWdNZ6eZQ1Utse53TAqu8KuAOf1I2Lu/iMyoNSAsDY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706105056; c=relaxed/simple;
+	bh=P+VTViZmWqpXIv8k7joAiuz0Yr6GixhrenZce8Yyo48=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=JCNZXo1Xd19ESv8ck9/XojRaWA1F1lsLoWOvsxMnXiWtC5oaUmt0TgKgEhlo17TAssLPXq10c70rh9vKely92/9b2yJo7ZtMi00ENfRqPweyI5eIV8bVzUtT9luFK9B54V4ew9iwbxn8yphEJxLmcUsMRKoK9+mdwkccXSl7b4Q=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fQA0pjOt; arc=fail smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706104946; x=1737640946;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=kMLlSWZyVMHXVTtl/OfZFuYeY/EXz2BpA61dEoPloQE=;
-  b=Tr6kEbpZzLlmIsMdpPOSNUoM+b23+pWULVRJsX7ScKqCzxSx24wRbL3a
-   8VV10f8ZQirSD0oWpolNRxEMSPwO/ZDiFLVGv9IvIHp5wAobrORi5OqBW
-   xRfuMfxxkYouxD6T7YxcdN0/MivPMJPK9bUeiHnbSGXmJUcxPXd18yS03
-   NM9wpLZ35gPY5ZzRK1ChLm+kJp9wSQYMxehvtgHY+XrGz75n6w8Fy1JpU
-   SNnL4khow/POMqY9o8WmhV/+QD2xb0ok3rjlsHAw8hQK6ZABDwS7Wg1CS
-   20SegcwfctVhiNNUeYQyL67mM0lDtNQCj8onpekplJbqu5XA+/AZtONHi
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="400704262"
+  t=1706105055; x=1737641055;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=P+VTViZmWqpXIv8k7joAiuz0Yr6GixhrenZce8Yyo48=;
+  b=fQA0pjOtuDfbTgeUSDTqBoDRYSenEzZidXH/M/M1itMh5RC8s/VUYLVF
+   wnhoEPPSXGAwprhirGuAleHIaCXe+KabpAGge8BsfJ0fCm4Ywl4j7k64H
+   k8UUArX63+EwSrC77GBtau3j7outgDbWPKptWdFR2FMpBMuBXYkch6p/R
+   mVY4Z+MGkC25bdDClZQ0w2Pfu9DuRW57XMCIzrc7DI78p6ayh79L7d+sX
+   AqYJ4UcwJW2vpvdbbcG6j04xyECfgumzKVZUWBaKEb1MMmcUb2ELsYmhW
+   SDQyhE4UymEAiQYr10XMGlXLWumyjI40E6MoWQFL9TiEM7CHr7l9s/vvM
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="15198156"
 X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="400704262"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 06:02:25 -0800
+   d="scan'208";a="15198156"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 06:04:14 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="909667796"
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="929690627"
 X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="909667796"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga004.jf.intel.com with ESMTP; 24 Jan 2024 06:02:21 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id 2B41587; Wed, 24 Jan 2024 16:02:20 +0200 (EET)
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>
-Cc: x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	linux-kernel@vger.kernel.org,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	Kai Huang <kai.huang@intel.com>,
-	Dexuan Cui <decui@microsoft.com>
-Subject: [PATCHv2, RESEND] x86/mm: Fix memory encryption features advertisement
-Date: Wed, 24 Jan 2024 16:02:16 +0200
-Message-ID: <20240124140217.533748-1-kirill.shutemov@linux.intel.com>
-X-Mailer: git-send-email 2.43.0
+   d="scan'208";a="929690627"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 24 Jan 2024 06:04:08 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 24 Jan 2024 06:04:00 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 24 Jan 2024 06:03:59 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 24 Jan 2024 06:03:59 -0800
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.41) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 24 Jan 2024 06:03:59 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BEND3Z4yIWIGw3aXkQiwm2uy5P2z9KdkebdUW+f9YVbElvz4lJD+voCmaFjLoyovnRZyfRgJoLOAVJJtQNknp/loa4rwkxr1fB+9is048l8fQVsC3dkb17lsa3bSsGIpanIFNhMzyLKGsEiRKYt4rrsBhHTREtHCqHXTntfJvG89p1ohfOl3EQibXwpwtlUEjrvi4pTlOuyyO+d03lu7Rvj8PLtwmbQKt0IdJq8vrcV/js7Op4UbkaFS/mT+ZAibrBiW2yoLRtf5dI0s8peI3Ko4jWdo1694sCzT9kED2CTIjGy5onzDWLhLh+4f/85CwajUnEbiwlLgEH3AiOEFwg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ek8n6iE/MsRfjvYtPNSxhXaAoEP5GuCl3KmO5NPiX0o=;
+ b=jYJkMOxTIkHbXVZ69cDh6cQpvjxcz9FWxurVdjvZAZHFIc6zhaPoDwf86T7ChZETa8iG35tJ7BmtZ+4/8SeVWcfgbBWcz345EXxVqOPpxj2fLTC05lPR7LboE93sXFbhdpT39qGSxoUjiSxo6SgzUsPDAif5PxeO0PmJj7CEBVRIjhAnwA4squ7i2NEzZ2MnXIwBWuIhipC4CNEt41vs/k6vtyrtT4JyLAMH7ZQkKAX7dJkS6dVkBnsCKJec7iwRsmIJ3MNte+s5VFWOYcgWlc4hqIuy6rp3PPp5YjuwMV/7HqjoQY5pTqfgb+P5tLnPXa4U3vDeisPGqU+ntQDdCQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CY5PR11MB6139.namprd11.prod.outlook.com (2603:10b6:930:29::17)
+ by MW4PR11MB6959.namprd11.prod.outlook.com (2603:10b6:303:228::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.37; Wed, 24 Jan
+ 2024 14:03:57 +0000
+Received: from CY5PR11MB6139.namprd11.prod.outlook.com
+ ([fe80::9f32:ce50:1914:e954]) by CY5PR11MB6139.namprd11.prod.outlook.com
+ ([fe80::9f32:ce50:1914:e954%7]) with mapi id 15.20.7202.035; Wed, 24 Jan 2024
+ 14:03:56 +0000
+Date: Wed, 24 Jan 2024 08:03:53 -0600
+From: Lucas De Marchi <lucas.demarchi@intel.com>
+To: Jani Nikula <jani.nikula@linux.intel.com>
+CC: Yury Norov <yury.norov@gmail.com>, <linux-kernel@vger.kernel.org>,
+	<dri-devel@lists.freedesktop.org>, Andy Shevchenko
+	<andriy.shevchenko@linux.intel.com>, <intel-xe@lists.freedesktop.org>,
+	<intel-gfx@lists.freedesktop.org>
+Subject: Re: Re: [PATCH 1/3] bits: introduce fixed-type genmasks
+Message-ID: <gvkvihpcc45275idrfukjqbvgem767evrux5sx5lnh5hofqemk@ppbkcauitvwb>
+References: <20240124050205.3646390-1-lucas.demarchi@intel.com>
+ <20240124050205.3646390-2-lucas.demarchi@intel.com>
+ <87v87jkvrx.fsf@intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87v87jkvrx.fsf@intel.com>
+X-ClientProxiedBy: BY5PR16CA0007.namprd16.prod.outlook.com
+ (2603:10b6:a03:1a0::20) To CY5PR11MB6139.namprd11.prod.outlook.com
+ (2603:10b6:930:29::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR11MB6139:EE_|MW4PR11MB6959:EE_
+X-MS-Office365-Filtering-Correlation-Id: e33b601b-7c58-4c57-c7ee-08dc1ce54e2e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: E9TC1y9Gj4oY+Z1QMFwmGsR7lHcnuvDkxAsLAqjmx5usnOGUv9oudYv80o3J9D+RbD6qLtvO62qJF/kmADL5ZtN9tZJps29Js8PAloQq33+fVzL5Kv9tq6KT0AqrPbtYJrwRZ6bdU5M7FO0NNlAyiiah5rQKKI23BdTROhNoLXBWN4UoRzpufi2jEmH9u2vxzjcLeYQQyuw3Jl99ZdnRT7KdNXrABlCfrNnOZNMIVqueBjkCdQJ2rfE+MiNtxl4aRVo51dB9iWlW0rTeXeKhHTkJww8K53tPkr5+ud0cNNJr30ClWVDiFUVyBB3E23uhHiBwDRGOPQbmi0ePHH+0khAEoQxgRSTsHyu4FFGhtaLK+aVlNEE3+8ZnxHTWAkZ5u+YvNf/kwd/+UAMSAZZsOsthWzArfEFknZ/c2tumoEYlwihm7/xJqezMFa1/y1KlN1kRf3G5kEVwQPfPF9HtTWz8xfcNydygKCY0Zk/g4XQZjjkf7s091vCZI+qdmORir8MQAUBz3mykejL4ohjmrIY6lOaqROJULs3ka+/Bcg1Utvt79O2O1FrkVtyrktbZb4nqJySS/ADk64lpm6DhXrSxVt+QtAaFQ5ERmbKc4cGBvU+MqRb6Wd3K8g33LkmM
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6139.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(136003)(366004)(39860400002)(376002)(346002)(230922051799003)(186009)(1800799012)(451199024)(64100799003)(38100700002)(6506007)(316002)(54906003)(82960400001)(66946007)(66556008)(8936002)(8676002)(6916009)(66476007)(26005)(6486002)(6512007)(478600001)(83380400001)(4326008)(86362001)(6666004)(9686003)(2906002)(5660300002)(41300700001)(33716001)(27256008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dGdPWWxNekpWZUhtTTN3U29lNWI4ZFBJS3cxRjI2WnZtVFRjcllYV2ovQ0Vz?=
+ =?utf-8?B?UXpNWXZpaTh3NUo0QzRoaG1qN01NdTBFWHNuTkR0ZThkRWpveTh5bFNFVFht?=
+ =?utf-8?B?NVc2K0QxQlVPNE9ZQ0pMdXJybktUQnBTZC8vNFRZSm54ZnhFU2V0RnpRMk9T?=
+ =?utf-8?B?N3JTa2pOdWM0enFSWjBuOFBBa0JqYlRMdWJKUS9kQWMvSUxjRkdLbHYzVytl?=
+ =?utf-8?B?d3dWQ3RhTlBQNWZmUjlYd3dvWWxDemZEWUFjZXRUbUFTNWExbElVTStzeXIx?=
+ =?utf-8?B?Y0picFlyaWU4cGdzZWlkNTY5TmNrK0dPRFo1bVI2U2YrUHh3N1gwUEszN1ZE?=
+ =?utf-8?B?SGVFSEsvS2ZycTUvREx3eGRPSEQ1SEgyODQ3bGQ0bURaR0VhNHRTWXBycDc4?=
+ =?utf-8?B?RmRkcEQxeFVhaU5BSC93bGZYaDQwRW8vZVhQN3RwL290cnhEMTBteVVac1VY?=
+ =?utf-8?B?WlUwREMzayticGt2YVRUK3kyWklUemYyYkszZ3puZ08wVmFPaTBDRHFOald5?=
+ =?utf-8?B?NW85MC9iQ0JRL0tvZW5lL2NSOEltSDB1TERLRjlCd2tuRFhPYVc1Mng2Qms2?=
+ =?utf-8?B?TjFNMGlpT1FHNFFFS1lYRmoyTURTWVJWUjJQcHRmZWlPWEh2TUd3TURwd0RE?=
+ =?utf-8?B?WVhReXpkVjQ2TWVnd0lCK2d0QUN5TnpOWE9KQk51TC8zZ2U5KzJ6UWRYdTZM?=
+ =?utf-8?B?Uk1EYmdjeTZVZ01mNTBUcGt0U0FnczZJNDFHeW1jSjhTMy95OVBsdEx6Y25E?=
+ =?utf-8?B?Zmp4eHU4dkgwZHhqMHNheTcvbXptL0ZtajNXdDNjVmN0QnpEV1Y3NGt5TjMz?=
+ =?utf-8?B?aFdFdkJqb0swMThyODdZcDJoVzBXWmFSMlFpZENzdHJoelVkZjkwbDYyOG0r?=
+ =?utf-8?B?K0ZRZFJxaTNwbUlxNUlUdkErUVpmbDAwTkpwaE5ZRHZJZkU0OHN2YkpsM3Er?=
+ =?utf-8?B?Q3ZURzBCcTM3aEprSnhyYWxZMy9YWnBQZklRMG1ra0lPSS9qU2pCdnVlWEEv?=
+ =?utf-8?B?WFNjMHp1VEpCSDE5ZGpqMDNBandFR2FTY1IzM2VUaDREK1BDNjZuUDhONEl6?=
+ =?utf-8?B?ODhnODVjRFMwK2F0cEZxbS9YS1F0b0xEYWlCZUhkSXZoektJNFZZKzNJRCtW?=
+ =?utf-8?B?K0IrN0ZOZ1lIY1I3aTZNSVRWclUyeGhwMlB6MnZ1eTFMYTY2Um1Ca0FjNEp4?=
+ =?utf-8?B?cStKVmJPWXFPWm8ybHd6SGxRZmVYVGU0OS9QSHI0T2k0Vk0rSUpWOVRrRXlB?=
+ =?utf-8?B?SlpnaDN1MzIzbW5wV3UrZnRta1VQeitXdWRPeHlIOVBkNTdsb3I3azFWSlFJ?=
+ =?utf-8?B?S2UzT0JvYStQYUVlRllHbEs5UmhkRnFVZy8rVE1oU2JZQllTMHRzZXVZRzhU?=
+ =?utf-8?B?a2d2ZUtYc0NYcEozWXBLQ0FaeUMzOVFBeUsxbUdWTU5heS8zenh3SXIzVkN3?=
+ =?utf-8?B?ZTEyYTEybUxYVjRSS2dzaW4rL0c4WDFScEtrTjRvcGptRXE4M0JBZ2JXVU1G?=
+ =?utf-8?B?OGQvbjJQUFl4VnhHcUkrMHlDYllEdGdBUnAxb0FhbUhueFloVkRRT0J4ZUZS?=
+ =?utf-8?B?aW9JdTJuWVQvdlpObWFJUHoyeEIzSm04QlJBK1VSakxmMkFoRGdCQnJaTFJL?=
+ =?utf-8?B?aWU0S2NIVXRVdk1xZG5LU29INzJpSkQ5Mi8zMzdYT3lseHltMjVtVVlJZmUv?=
+ =?utf-8?B?WkpEWTF0ZFFBaEJWRi9Bdm1TYm5tMjJWZ2o1MDBPb2w2dEJyN0d4bWI3TENK?=
+ =?utf-8?B?bUhrRGZFdXk3b3hEMm9yU3JFdnZkY3lvYmVhbGtTWDBVMDNkamRLSURhc1pW?=
+ =?utf-8?B?VDdQM01JOWJSb01zRnI1cThZUW1hb2R5YW9qVWV1TWIyeVJDWk9GNmY4NjVH?=
+ =?utf-8?B?RWJnbFlwYmRIYWcwbFRiSDdWZGpTUkxib0R6U1NwaGtid3ErNnB6R09PdVRh?=
+ =?utf-8?B?eVdjWFVhc2RUZUl3UUxUNlAwNHk3NFBtbGVNSHNxSWs4Yks3MzdqcTh5UWVC?=
+ =?utf-8?B?SHVjaXJGT29RM1NKVXVZMnUwbzYwYjFPYUJSdWM4ZmFsU09VNGM3ZVhpcEhY?=
+ =?utf-8?B?UTBnZEpYY2dWMDYySndlREZPcFhuS2lmbG9uc2VoZWJpMHNVbzJNaE1neHYr?=
+ =?utf-8?B?S055bkZ5N0ZYNkx1bUpoNGs5VFNRdGJGbHdhWHNxUEhvcnF6WGEwcHdjNVFr?=
+ =?utf-8?B?d0E9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e33b601b-7c58-4c57-c7ee-08dc1ce54e2e
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6139.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jan 2024 14:03:56.7796
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XKBVc32HUjBY30EEWv59PV3P6JJBICK/ggbOKTl2kM9XhopRPPkRR+tQfy7tR1tGFT18SP2P2sJ7v4uQZ/Zgkf+ycBzrjOvvajTm4T9SKzM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB6959
+X-OriginatorOrg: intel.com
 
-When memory encryption is enabled, the kernel prints the encryption
-flavor that the system supports.
+On Wed, Jan 24, 2024 at 09:58:26AM +0200, Jani Nikula wrote:
+>On Tue, 23 Jan 2024, Lucas De Marchi <lucas.demarchi@intel.com> wrote:
+>> From: Yury Norov <yury.norov@gmail.com>
+>>
+>> Generalize __GENMASK() to support different types, and implement
+>> fixed-types versions of GENMASK() based on it. The fixed-type version
+>> allows more strict checks to the min/max values accepted, which is
+>> useful for defining registers like implemented by i915 and xe drivers
+>> with their REG_GENMASK*() macros.
+>
+>Mmh, the commit message says the fixed-type version allows more strict
+>checks, but none are actually added. GENMASK_INPUT_CHECK() remains the
+>same.
+>
+>Compared to the i915 and xe versions, this is more lax now. You could
+>specify GENMASK_U32(63,32) without complaints.
 
-The check assumes that everything is AMD SME/SEV if it doesn't have
-the TDX CPU feature set.
+Doing this on top of the this series:
 
-Hyper-V vTOM sets cc_vendor to CC_VENDOR_INTEL when it runs as L2 guest
-on top of TDX, but not X86_FEATURE_TDX_GUEST. Hyper-V only needs memory
-encryption enabled for I/O without the rest of CoCo enabling.
+-#define   XELPDP_PORT_M2P_COMMAND_TYPE_MASK            REG_GENMASK(30, 27)
++#define   XELPDP_PORT_M2P_COMMAND_TYPE_MASK            REG_GENMASK(62, 32)
 
-To avoid confusion, check the cc_vendor directly.
+and I do get a build failure:
 
-Possible alternative is to completely removing the print statement.
-For a regular TDX guest, the kernel already prints a message indicating
-that it is booting on TDX. Similarly, AMD and Hyper-V can also display
-a message during their enumeration process.
+./drivers/gpu/drm/i915/display/intel_cx0_phy.c: In function ‘__intel_cx0_read_once’:
+./include/linux/bits.h:41:31: error: left shift count >= width of type [-Werror=shift-count-overflow]
+    41 |          (((t)~0ULL - ((t)(1) << (l)) + 1) & \
+       |                               ^~
 
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reviewed-by: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
-Acked-by: Kai Huang <kai.huang@intel.com>
-Cc: Dexuan Cui <decui@microsoft.com>
----
- arch/x86/mm/mem_encrypt.c | 56 +++++++++++++++++++++------------------
- 1 file changed, 30 insertions(+), 26 deletions(-)
 
-diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-index c290c55b632b..d035bce3a2b0 100644
---- a/arch/x86/mm/mem_encrypt.c
-+++ b/arch/x86/mm/mem_encrypt.c
-@@ -42,38 +42,42 @@ bool force_dma_unencrypted(struct device *dev)
- 
- static void print_mem_encrypt_feature_info(void)
- {
--	pr_info("Memory Encryption Features active:");
-+	pr_info("Memory Encryption Features active: ");
- 
--	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST)) {
--		pr_cont(" Intel TDX\n");
--		return;
--	}
-+	switch (cc_vendor) {
-+	case CC_VENDOR_INTEL:
-+		pr_cont("Intel TDX\n");
-+		break;
-+	case CC_VENDOR_AMD:
-+		pr_cont("AMD");
- 
--	pr_cont(" AMD");
--
--	/* Secure Memory Encryption */
--	if (cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT)) {
-+		/* Secure Memory Encryption */
-+		if (cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT)) {
- 		/*
- 		 * SME is mutually exclusive with any of the SEV
- 		 * features below.
--		 */
--		pr_cont(" SME\n");
--		return;
-+		*/
-+			pr_cont(" SME\n");
-+			return;
-+		}
-+
-+		/* Secure Encrypted Virtualization */
-+		if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
-+			pr_cont(" SEV");
-+
-+		/* Encrypted Register State */
-+		if (cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT))
-+			pr_cont(" SEV-ES");
-+
-+		/* Secure Nested Paging */
-+		if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP))
-+			pr_cont(" SEV-SNP");
-+
-+		pr_cont("\n");
-+		break;
-+	default:
-+		pr_cont("Unknown\n");
- 	}
--
--	/* Secure Encrypted Virtualization */
--	if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
--		pr_cont(" SEV");
--
--	/* Encrypted Register State */
--	if (cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT))
--		pr_cont(" SEV-ES");
--
--	/* Secure Nested Paging */
--	if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP))
--		pr_cont(" SEV-SNP");
--
--	pr_cont("\n");
- }
- 
- /* Architecture __weak replacement functions */
--- 
-2.43.0
+I also tested them individually. All of these fail to build for me:
 
+1)
+-#define   XELPDP_PORT_M2P_COMMAND_TYPE_MASK            REG_GENMASK(30, 27)
++#define   XELPDP_PORT_M2P_COMMAND_TYPE_MASK            REG_GENMASK(32, 27)
+
+2)
+-#define   XELPDP_PORT_M2P_COMMAND_TYPE_MASK            REG_GENMASK(30, 27)
++#define   XELPDP_PORT_M2P_COMMAND_TYPE_MASK            REG_GENMASK(30, 31)
+
+3)
+-#define   XELPDP_PORT_M2P_COMMAND_TYPE_MASK            REG_GENMASK(30, 27)
++#define   XELPDP_PORT_M2P_COMMAND_TYPE_MASK            REG_GENMASK(30, -1)
+
+
+Lucas De Marchi
 
