@@ -1,106 +1,127 @@
-Return-Path: <linux-kernel+bounces-36755-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A86583A60E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:57:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8396F83A619
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:58:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84496B2C772
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:55:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1BECAB2B361
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:56:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E24D818E0C;
-	Wed, 24 Jan 2024 09:55:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0D3E182AB;
+	Wed, 24 Jan 2024 09:56:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="RuYwM4uE"
-Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qT+xUCo8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51A2C18AEA;
-	Wed, 24 Jan 2024 09:55:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3371718045;
+	Wed, 24 Jan 2024 09:56:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706090134; cv=none; b=H/TvaJxY6Kjrz/sYhFdxFb6Ki4PHXjjr5WTnWPUbsqx96+QAZsoGDR4cn24l/BGY66ed2TG0AV6KngZ1b8iP9puFEj4vQRxHqBfyaimZZWoQ/t8GoELs2Irru1HaOHLwfUZaU2/gfl/hj5n2pdBkljFAxPXNWcD9w3vEST/hKZk=
+	t=1706090192; cv=none; b=Ha6ji6hL2K3zt71GsD6WHdnYRMON7uma8Sr3L8LwJ0r/BAh/wyNxoX2IYF7krxnx8wqYHEOJxcH2Nhx/biOquEsUihFBYJgsTqXP0Hf3b5dMCpLkQe/Bv3Vkgv243J5bkyJtmBceR8VODp0Wk24y9bToTXfGKj/kqmGevomZ9gs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706090134; c=relaxed/simple;
-	bh=KYp0r/IeTknl471W5NYtHm0z9oJasItGz6So8cefBHE=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=o0zO3rIxSCxcMPtoqEl/oAnEJp+JPC8g9iVzSykTp8s5M1Xy2HaOTBD+wLThLz5yJqGFQgPgaa4+XhigBotAYGEda/Cu/k0GMyS9wGcKpe7o90ZjkwzX6Y3mlfxO8YKhC97Usl2fPKr5aAPZXOj2funWv1Dxoy0U+x2NVAi3wbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=RuYwM4uE; arc=none smtp.client-ip=185.70.40.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1706090129; x=1706349329;
-	bh=sM5FO5ZYOTkgArwratQF0EUhkGp44P1qkTq6Csk6zNQ=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=RuYwM4uE1gT9XsXdO5bgnbCffYCCJ7/a4SPlzP4uX/70IuPhKSFGUzcrgawnQmhQA
-	 6tc9FhJNuijrz5i9OZoD96K0WEeWuWJyMij63c8kqGjKCILXvg0L0CuBLF2UKqA7F8
-	 q5U38FH13rgdVwpHh7H+e3U2QmpubVFj7QZkFxTLe7hA/l79r2twIlTXvDNflc1aA1
-	 xh4qptNVl/RAwZ6/CoQiVpSs0u4kT5vWfxPjdhaHPvTOaqykohy7FyUt2hYK8u7hHI
-	 mShCFG9gOPgtQ6w72dOTSUv8IaqHmj2EdAYuocZ6bcpmh3KvoNXhRFQRRR1+oc/zWd
-	 a8GhDvarK283w==
-Date: Wed, 24 Jan 2024 09:55:21 +0000
-To: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Peter Zijlstra <peterz@infradead.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Dan Williams <dan.j.williams@intel.com>, Kees Cook <keescook@chromium.org>, Matthew Wilcox <willy@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 7/9] rust: file: add `Kuid` wrapper
-Message-ID: <3405588c-46c2-4e7d-8c5a-15079e774d62@proton.me>
-In-Reply-To: <20240118-alice-file-v3-7-9694b6f9580c@google.com>
-References: <20240118-alice-file-v3-0-9694b6f9580c@google.com> <20240118-alice-file-v3-7-9694b6f9580c@google.com>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1706090192; c=relaxed/simple;
+	bh=vQ+I9Ge+8bH1NA9WH7CqoqMtBiQEOSibipcnd/i3Qso=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=e57gkUQuflVtHQWgUcEsgXtezwQ6O2pxGFRnXtGtB/KLZ7soRBzwK95gh8musC8Z5NqtITVUi3wX7UTk3J/g/oZtEK9cobjdIPl2K0ZR2fRyJ+sPTdejyWuXgU7mA251YDbkpbRRARxU4JWo3APjDoEo+PC9isuYtdH4k1fWuuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qT+xUCo8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8244C433B1;
+	Wed, 24 Jan 2024 09:56:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706090191;
+	bh=vQ+I9Ge+8bH1NA9WH7CqoqMtBiQEOSibipcnd/i3Qso=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=qT+xUCo8olWgqunC2fwyMUCPxe71wcF6swjsgLnths5AtynaNSt3Q7VPVIfo9Ra6d
+	 gq7TwCNm5UF54c4Tw7Ub8jZG5zfrunm9o5YMOwqtp3VP2MJQfNWGXnAL9u0/ooelN/
+	 d18topr4lldBvI9B2wji0KkF8wg1y1SLQOVq9gnr0it4Ef8bbDoW3JnUMNpmmyYUfY
+	 M5SvglWKSpjO/tvPLOUrrCRGH/komGq7p93CDurqd/r2osBLaMpNPPojQPg0ZoNEce
+	 e7btvPfKlmErrm6soS8BYAL8vRw8g4esrskw+sYb1mp159siTv74pLObiR24OsJ9aY
+	 83BZa90fM48cg==
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-5100893015fso1880330e87.1;
+        Wed, 24 Jan 2024 01:56:31 -0800 (PST)
+X-Gm-Message-State: AOJu0YwGNGM53ihFyQhDCHdc/GjC8vxhpe95j4Y7uWGje9w20uxZY3uP
+	1RsR3qu5dcxmUK1v37HWK3OJcL9YR4hQhgvOilMxkfwGt8mYh/Zv3Q+OlA1JA5HQav0dZ1cxDUD
+	7Oh5OJi1P/S5uC8pjNiQ7YAfluzc=
+X-Google-Smtp-Source: AGHT+IE3rPZK17ixDxsL+YcPJ/Q2xlEvwkcSUy8VmnbYNcPTU5xivtsjD2pYBrLIsytxrVaBRIobhJSEJqchFBAWaX0=
+X-Received: by 2002:ac2:5a06:0:b0:510:ca2:6b69 with SMTP id
+ q6-20020ac25a06000000b005100ca26b69mr491573lfn.99.1706090189885; Wed, 24 Jan
+ 2024 01:56:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20240118121542.748351-1-maobibo@loongson.cn> <20240118121542.748351-3-maobibo@loongson.cn>
+In-Reply-To: <20240118121542.748351-3-maobibo@loongson.cn>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Wed, 24 Jan 2024 17:56:18 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H45A4m-imDh8UZqXJ3WXduMyubbd1ze-EgZtqqbfjHt1g@mail.gmail.com>
+Message-ID: <CAAhV-H45A4m-imDh8UZqXJ3WXduMyubbd1ze-EgZtqqbfjHt1g@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] irqchip/loongson-eiointc: Refine irq affinity
+ setting during resume
+To: Bibo Mao <maobibo@loongson.cn>
+Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Sergey Shtylyov <s.shtylyov@omp.ru>, lvjianmin@loongson.cn
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On 18.01.24 15:36, Alice Ryhl wrote:
-> Adds a wrapper around `kuid_t` called `Kuid`. This allows us to define
-> various operations on kuids such as equality and current_euid. It also
-> lets us provide conversions from kuid into userspace values.
->=20
-> Rust Binder needs these operations because it needs to compare kuids for
-> equality, and it needs to tell userspace about the pid and uid of
-> incoming transactions.
->=20
-> To read kuids from a `struct task_struct`, you must currently use
-> various #defines that perform the appropriate field access under an RCU
-> read lock. Currently, we do not have a Rust wrapper for rcu_read_lock,
-> which means that for this patch, there are two ways forward:
->=20
->   1. Inline the methods into Rust code, and use __rcu_read_lock directly
->      rather than the rcu_read_lock wrapper. This gives up lockdep for
->      these usages of RCU.
->=20
->   2. Wrap the various #defines in helpers and call the helpers from Rust.
->=20
-> This patch uses the second option. One possible disadvantage of the
-> second option is the possible introduction of speculation gadgets, but
-> as discussed in [1], the risk appears to be acceptable.
->=20
-> Of course, once a wrapper for rcu_read_lock is available, it is
-> preferable to use that over either of the two above approaches.
->=20
-> Link: https://lore.kernel.org/all/202312080947.674CD2DC7@keescook/ [1]
-> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+I can give an Acked-by if these lines are also removed in our internal repo=
+.
+
+Huacai
+
+On Thu, Jan 18, 2024 at 8:15=E2=80=AFPM Bibo Mao <maobibo@loongson.cn> wrot=
+e:
+>
+> During suspend and resume, CPUs except CPU0 are hot-unpluged and IRQs
+> are migrated to CPU0. So it is not necessary to restore irq affinity for
+> eiointc irq controller when system resumes. This patch removes the piece
+> of code about irq affinity restoring in function eiointc_resume.
+>
+> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
 > ---
->   rust/bindings/bindings_helper.h |  1 +
->   rust/helpers.c                  | 45 ++++++++++++++++++++
->   rust/kernel/cred.rs             |  5 ++-
->   rust/kernel/task.rs             | 74 ++++++++++++++++++++++++++++++++-
->   4 files changed, 122 insertions(+), 3 deletions(-)
-
-Reviewed-by: Benno Lossin <benno.lossin@proton.me>
-
---=20
-Cheers,
-Benno
-
-
+>  drivers/irqchip/irq-loongson-eiointc.c | 16 ----------------
+>  1 file changed, 16 deletions(-)
+>
+> diff --git a/drivers/irqchip/irq-loongson-eiointc.c b/drivers/irqchip/irq=
+-loongson-eiointc.c
+> index 6143adb1b73b..86f4faad0695 100644
+> --- a/drivers/irqchip/irq-loongson-eiointc.c
+> +++ b/drivers/irqchip/irq-loongson-eiointc.c
+> @@ -315,23 +315,7 @@ static int eiointc_suspend(void)
+>
+>  static void eiointc_resume(void)
+>  {
+> -       int i, j;
+> -       struct irq_desc *desc;
+> -       struct irq_data *irq_data;
+> -
+>         eiointc_router_init(0);
+> -
+> -       for (i =3D 0; i < nr_pics; i++) {
+> -               for (j =3D 0; j < eiointc_priv[0]->vec_count; j++) {
+> -                       desc =3D irq_resolve_mapping(eiointc_priv[i]->eio=
+intc_domain, j);
+> -                       if (desc && desc->handle_irq && desc->handle_irq =
+!=3D handle_bad_irq) {
+> -                               raw_spin_lock(&desc->lock);
+> -                               irq_data =3D irq_domain_get_irq_data(eioi=
+ntc_priv[i]->eiointc_domain, irq_desc_get_irq(desc));
+> -                               eiointc_set_irq_affinity(irq_data, irq_da=
+ta->common->affinity, 0);
+> -                               raw_spin_unlock(&desc->lock);
+> -                       }
+> -               }
+> -       }
+>  }
+>
+>  static struct syscore_ops eiointc_syscore_ops =3D {
+> --
+> 2.39.3
+>
 
