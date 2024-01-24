@@ -1,117 +1,111 @@
-Return-Path: <linux-kernel+bounces-37372-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37373-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 574F283AEF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:59:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CB8883AEF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:00:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 892E31C23843
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:59:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FCC61C239E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:00:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BA3B7E77E;
-	Wed, 24 Jan 2024 16:59:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EE257E768;
+	Wed, 24 Jan 2024 16:59:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="N/7pUQuK"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ek9qd0CP"
+Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com [209.85.222.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 232CE7E76F
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 16:59:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01FCC7E589;
+	Wed, 24 Jan 2024 16:59:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706115575; cv=none; b=YEhJ66DUg6/wUjxqfNKBXExaWf28K1LIJiPB0g0adANnM5KlISOAuFyx46vhfMdAMkBH6Dm+plL4D3kxSsGJBgt7beNtF6mOJoUgVIFhZmsb3jeVAzAD4a1VTcLvrvf24fF622bbzdxpr+k75Wfqq7J1cqP5hj/c/AAx6pZP/h0=
+	t=1706115598; cv=none; b=cbN73FLPFCtfoWs6QeWc+BHyhIyqE6QDbD76NNq+IPYo0efODsiLh5vnnB3fp0UWUrPLcIUlJRBVwP9rR/AqUDF3jPFhHmQWBt5SCqpFePe8bhCrWe00+vF8hm9/r08B1rdtD6bh3zKwsCLlaDRPXhKjhc5lM7pkuQSIzEejhGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706115575; c=relaxed/simple;
-	bh=CSwRne/H5azSZN/9g7rwdujKi3YP++rh3IuboXHZ1S0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=GFro0ao6SjXKWXQRhyupIuTueNaju0CgI4qVuEjDLzsMI0w1UeJY2HZdpTk/zVK48mdDvvgyDSsvmZujBvL1p4yBfEOuET3iPT0ECs/WwM+AEajJlhpLjHU5N4si3nGS12hNl0d/hXoBWTVvw3hZpSbDmvhefa1Lke2CsS41zxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=N/7pUQuK; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40OGxLtt062756;
-	Wed, 24 Jan 2024 10:59:21 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706115561;
-	bh=T8/YhXvz+6ok2cqMvBRisj3ChhhqYjkF3Bew7xjZa8Y=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=N/7pUQuKhKkaLZeMnEz57YNsAihKTiUvePPZSQMDu6Ueh1WqCiSDz7vFQfgdy0M2j
-	 7vG/JdE6Cp6pYjeKCA+6XyfTr1Rt9VvgwDsiEbJcQGPcMkdD2z7HiiMtO4/uWo6cBK
-	 36ubC1MjAFxC9QPoRerIiwSb8gDesYlm6W/EZxqA=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40OGxKA5033955
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 24 Jan 2024 10:59:20 -0600
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 24
- Jan 2024 10:59:20 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 24 Jan 2024 10:59:20 -0600
-Received: from [10.249.42.149] ([10.249.42.149])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40OGxK4k108621;
-	Wed, 24 Jan 2024 10:59:20 -0600
-Message-ID: <1e6a94e7-1b88-450e-825f-bf4b56afb748@ti.com>
-Date: Wed, 24 Jan 2024 10:59:20 -0600
+	s=arc-20240116; t=1706115598; c=relaxed/simple;
+	bh=6X91lMekL01ZmVivh+brw0rHJYy4siRC8QtoCXyWn8M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qD2up0Z5NHw+tmn2UEhRpUiq9MNMBpjxJxU2xgh0IwMvTKFTt8pTCgN/OqdeEcSO3Tz13Uv9UOPRohnhMiLtaEiVQb+NrVfkRsIlZPO+Av3YkvdgdBlvQIso2943LB82covmmVLzb86d/aEU3rVVtUHskuh/aD/UqWVfLm6ClmE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ek9qd0CP; arc=none smtp.client-ip=209.85.222.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f42.google.com with SMTP id a1e0cc1a2514c-7d2e022ae0cso1315943241.0;
+        Wed, 24 Jan 2024 08:59:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706115596; x=1706720396; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=baC3tSGKJf5L9BsT2VeHElLsHskdvqnXXlzRQDL99Ik=;
+        b=Ek9qd0CPl1YLPTnprdJ3j4DODogajFGYsOCggo/QEqeIJVYC5+NBY23Xl4C6x+IPrS
+         QrNm0XgQAB07vkhdJB61qCLeheyLLLCpdXmuK0Yt0DJqwklJfFccGVsgwytzt3Xm+yoc
+         eDfMKwp9pmr6MoCPHWrauvAbMEcMbAOFXNR7Ahc8B4CI20u9Jggbb2PYuaBqXFEWp+3R
+         KLJobqzZTJwYXp5iF3df8uNCrriKeRWArnadYnODIjuq/ktPSqucIu6eW17Kfp7samTP
+         OvshEJMfkxKynULlR5FxDd1zOdoMKoG0V1PwwiSxFYceuaUcj8tEJXs80pciXo3HnNpN
+         VV5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706115596; x=1706720396;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=baC3tSGKJf5L9BsT2VeHElLsHskdvqnXXlzRQDL99Ik=;
+        b=a4Z+ILWld+kjrejDIwmMHKChs/GXugbqBZuguPU0TsfiALKYt2ThMrTCC53C9nfrz/
+         irkBjRGRsXXycbwZyDjf0/ScC/013Xd/dZN9USIaAoeZ/JsLK74rc/l8JxzAVmpHzlb6
+         ccRawHXBhG7ebK/tSc96Y/ixX0QFrYvakiJK+CowaV4QWumoWjFsFKY5Z6B3R4BWRzmt
+         sEXejOOZ6DD8Qad1R7IYKkqipFY7Zhnb1afZnJAJyTt6UnlzpDBSNeIqGe11c8enVjHe
+         XjzE0cO3xCLx9/OSqe3H7HbDs0ZdOKa+94R+ODvv049NJYqW/+Lrd53FAfR43kAaaUnw
+         zJNg==
+X-Gm-Message-State: AOJu0YxDx+HycIFPsZ4Ngt9XtRNR1UO1CO4tKARB4SNSw3PHDgpj+f3e
+	pEMaktxKPCN7oEFjifCdSShku4jmgTNMXGg8VJZatekdmy3e9/sa40spJa1tgYXCx0f4gR/yE1v
+	1ppR/l+w0bIl3cwxHYVtal+Yknis=
+X-Google-Smtp-Source: AGHT+IHHHg6o4mu6bj9LdU87AIAY7nHHo5ilf8npZvOACFjk+qIgHBs3ZbULRshNxsy6GcbyDklWarcJOMR57UiP0Is=
+X-Received: by 2002:a05:6102:2263:b0:468:1cc5:ed88 with SMTP id
+ v3-20020a056102226300b004681cc5ed88mr2777853vsd.23.1706115595872; Wed, 24 Jan
+ 2024 08:59:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] ARM: multi_v7_defconfig: Add more TI Keystone support
-Content-Language: en-US
-To: Nishanth Menon <nm@ti.com>
-CC: Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Santosh Shilimkar
-	<ssantosh@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20240124162857.111915-1-afd@ti.com>
- <20240124164141.e6sdftiqxoxr6k7t@ravage>
-From: Andrew Davis <afd@ti.com>
-In-Reply-To: <20240124164141.e6sdftiqxoxr6k7t@ravage>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20240123174510.372863442@linuxfoundation.org>
+In-Reply-To: <20240123174510.372863442@linuxfoundation.org>
+From: Allen <allen.lkml@gmail.com>
+Date: Wed, 24 Jan 2024 08:59:44 -0800
+Message-ID: <CAOMdWSLOLKUA3dnmS5HJ5Z28DcmrFJYqpDKVsNW0MAbis4_j8Q@mail.gmail.com>
+Subject: Re: [PATCH 6.1 000/414] 6.1.75-rc2 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 1/24/24 10:41 AM, Nishanth Menon wrote:
-> On 10:28-20240124, Andrew Davis wrote:
->> The Keystone platforms used their own keystone_defconfig mostly to
->> enable CONFIG_ARM_LPAE which could not be added to the multi_v7 config.
->> Now that we have multi_v7_lpae_defconfig/lpae.config target we can and
->> should use that defconfig for Keystone. Add the remaining must have
->> options for Keystone support to multi_v7_defconfig.
->>
-> 
-> Please state bloat-o-meter impact on vmlinux.
-> 
+> This is the start of the stable review cycle for the 6.1.75 release.
+> There are 414 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 25 Jan 2024 17:44:16 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.75-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-$ ./scripts/bloat-o-meter build/vmlinux.baseline build/vmlinux
-add/remove: 387/0 grow/shrink: 6/0 up/down: 130945/0 (130945)
-..
-Total: Before=22791863, After=22922808, chg +0.57%
+Compiled and booted on my x86_64 and ARM64 test systems. No errors or
+regressions.
 
+Tested-by: Allen Pais <apais@linux.microsoft.com>
 
-Seems half of that is TI_KEYSTONE_NETCP, if we don't think
-anyone will need nfs rootfs boot then we could make it a module:
-
-
-$ ./scripts/bloat-o-meter build/vmlinux.baseline build/vmlinux
-add/remove: 286/0 grow/shrink: 4/0 up/down: 64393/0 (64393)
-..
-Total: Before=22791863, After=22856256, chg +0.28%
-
-
-Andrew
-
->> Signed-off-by: Andrew Davis <afd@ti.com>
->> ---
->>   arch/arm/configs/multi_v7_defconfig | 16 ++++++++++++++++
->>   1 file changed, 16 insertions(+)
+Thanks.
 
