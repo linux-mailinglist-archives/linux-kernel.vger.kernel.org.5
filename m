@@ -1,37 +1,72 @@
-Return-Path: <linux-kernel+bounces-36535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36539-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CFE283A2C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:21:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC8C783A2CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:22:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2DC11F27E9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 07:21:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68099286091
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 07:22:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 486AD17C91;
-	Wed, 24 Jan 2024 07:19:52 +0000 (UTC)
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCB2316423;
+	Wed, 24 Jan 2024 07:21:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="EZwxF7M+"
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69BC817C65;
-	Wed, 24 Jan 2024 07:19:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 279A317559
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 07:21:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706080791; cv=none; b=WUgAHZVrKGHxjj5ODqLZtrMLRxoeE8cl+dIvty6TVHo40PN+VhFrWzyu53P5V2NHL9kXlRqyWcx6o08Gs+dZu68UyXF7LLdnokBEEkI2ODuEAoNrbxizIRFY/f16vrqc+B2NT4t3IlgNT8VCEqiaggwhpdBulNOaZOTGb8O1TmQ=
+	t=1706080897; cv=none; b=cRRnA/w4H31J33EAPRawIO1kQYL2hnWgr0lWr/OPwwFTCyyCbvLU9pTTvN3ffdoQBuB2k1yFHSq3ReC+HMZq27fF0feu9QOBQKIwlqpfJNa2mL12+iHd77PuzYgePLOU7sIHvv6go/ex1yWyfooCWL33czIEhz2GXMyYDnkbNfU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706080791; c=relaxed/simple;
-	bh=P1H368CplIrSMK/Tn+EOuciQSfSHbP8vxDXizZuog+M=;
+	s=arc-20240116; t=1706080897; c=relaxed/simple;
+	bh=H4FPoZmhlXh+UBl1asCFne9JixAG+p+9IHwyhrhCo5o=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LigL5Nt7NrXkvu1YP5V53YtcDcaoNrNTqadSfWafE996XqiP53yX2q9iG8/GhNtYM5hQjA6EKgOztG+EaxSK9KP6uiNICyI2JOJONRBIl3YL5+DrYqSjPrftb38jtVtr9Ah0zYfL+4ZVT5EvDJGB/6DTw/G2O6RtYALrwIvyneo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 185EDE000C;
-	Wed, 24 Jan 2024 07:19:42 +0000 (UTC)
-Message-ID: <26808f34-d9c4-404a-bf09-45c4aff139ad@ghiti.fr>
-Date: Wed, 24 Jan 2024 08:19:42 +0100
+	 In-Reply-To:Content-Type; b=X7mHuNvn/ppYYHY0CMaPuml8C+nqKRNllyCDPp0wVL/IUu/8d0fM6mJSdKKsbqlCI/tnxrkgaZLMloUFg816OH0X81BgCTjiDOi/aWTbiGxcvhONyP6dlse3oqWZ1ivnt/Dej2yZt/G5RStnP6iI6/hv4a56xjxpFXHRl82Nhg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=EZwxF7M+; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6dd6c3c8a0eso1276741b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 23:21:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1706080894; x=1706685694; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=p6qgzXs3nbDCD4wLGTSejG/03+G+KZIJh31uHA04T3Q=;
+        b=EZwxF7M+UzQZXoMSn1pEU1nYjXjTsoakHMRhoXxAGlEMwg1Q1PcMf6OeRALh2Pgo/c
+         NqD3oJZs+kyWWnRkleoEO64gXRkkTvoQDtVT1Ziq0GvK7M//KMij5bbYQR5GWsPsHgAy
+         TdRmwzBqC728PI+X/mYnuNNJgKAfXOVyjFqMBzEuunnWz47sjn3rAtOreZR9exn1AGkL
+         zGeqEwtBqkplVHTXG6pFj8tJ/49/eCVR8at5p89m2mRj69IcaY7mYLc/rGY9WoGffMTX
+         DQDa0ULXm6L5eBLPwNH6mWdmMEZZ1OfcxXLW04yAPVKPra/7NsfEuEhe4l+na/LbeHD2
+         8Xyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706080894; x=1706685694;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=p6qgzXs3nbDCD4wLGTSejG/03+G+KZIJh31uHA04T3Q=;
+        b=AJ0CY1S1n7B8Z0Ehq0HMOX3c6qpi0FPUyH5s2WK0RZwvYgaxgvP2hoqkVJjxQFUyIr
+         pvxBeY/tg/o2pIjHcSZBJipO6XcgjELpfjd/nJFitdWt0bGsAGv0X/+z2x9rGIjKNPP9
+         Z4bgZwJqA12OnFuaYLOnO4cdci6C5DbyjII2e40Eq+YC4E4AVkFPiZgjIOwLmT6bla2U
+         dRNUmqeDqhEVWJSWxFA2/G0gjlaqo8pw8nTuZfsQaQfigKkoVIyjFlIeUcxhXX+q0+A+
+         YcipuPlwlVdbzO3xuOPgY7MPL7YJ/FmLC1uIl0PgSQ4H+goTecS4kVbqJubwo7fbi7OV
+         rcqg==
+X-Gm-Message-State: AOJu0YxXyNCXPYYFoU/VMjHOsT6YWBOUHtIRoSDtEJMTaWmfs0911byy
+	SzH+p9cCsOyGagrSANFPuyIUw/ueiJDn4QpgZ4XKunWd2XPWPxvkSQq9N0vAk48=
+X-Google-Smtp-Source: AGHT+IGhTSDybLlJ8KNCkFczYV9Bwwg1uq8s3cZJ+hBG5T57FY1HS7XjRrxe2joN1a2M/D1GbPmpSQ==
+X-Received: by 2002:a62:ce87:0:b0:6dd:a2ea:6626 with SMTP id y129-20020a62ce87000000b006dda2ea6626mr24143pfg.16.1706080894338;
+        Tue, 23 Jan 2024 23:21:34 -0800 (PST)
+Received: from [10.255.203.131] ([139.177.225.236])
+        by smtp.gmail.com with ESMTPSA id t40-20020aa78fa8000000b006daca8ecb85sm12932159pfs.139.2024.01.23.23.21.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jan 2024 23:21:33 -0800 (PST)
+Message-ID: <f3fa799f-1815-4cfe-abc8-3ba929fcd1ba@bytedance.com>
+Date: Wed, 24 Jan 2024 15:20:13 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -39,162 +74,220 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 2/2] documentation: Document
- PR_RISCV_SET_ICACHE_FLUSH_CTX prctl
+Subject: Re: [PATCH 2/2] mm: zswap: remove unnecessary tree cleanups in
+ zswap_swapoff()
 Content-Language: en-US
-To: Charlie Jenkins <charlie@rivosinc.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Jonathan Corbet <corbet@lwn.net>, Conor Dooley <conor.dooley@microchip.com>,
- =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
- Atish Patra <atishp@atishpatra.org>, Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, Atish Patra <atishp@rivosinc.com>
-References: <20240123-fencei-v9-0-71411bfe8d71@rivosinc.com>
- <20240123-fencei-v9-2-71411bfe8d71@rivosinc.com>
-From: Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <20240123-fencei-v9-2-71411bfe8d71@rivosinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: alex@ghiti.fr
+To: Yosry Ahmed <yosryahmed@google.com>, Johannes Weiner <hannes@cmpxchg.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>,
+ Chris Li <chrisl@kernel.org>, Huang Ying <ying.huang@intel.com>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240120024007.2850671-1-yosryahmed@google.com>
+ <20240120024007.2850671-3-yosryahmed@google.com>
+ <20240122201906.GA1567330@cmpxchg.org>
+ <CAJD7tkaATS48HVuBfbOmPM3EvRUoPFr66WhF64UC4FkyVH5exg@mail.gmail.com>
+ <20240123153851.GA1745986@cmpxchg.org>
+ <CAJD7tkasHsRnT_75-TXsEe58V9_OW6m3g6CF7Kmsvz8CKRG_EA@mail.gmail.com>
+ <20240123201234.GC1745986@cmpxchg.org>
+ <CAJD7tkZC6w2EaE=j2NEVWn1s7Lo2A7YZh8LiZ+w72jQzFFWLUQ@mail.gmail.com>
+From: Chengming Zhou <zhouchengming@bytedance.com>
+In-Reply-To: <CAJD7tkZC6w2EaE=j2NEVWn1s7Lo2A7YZh8LiZ+w72jQzFFWLUQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 24/01/2024 00:29, Charlie Jenkins wrote:
-> Provide documentation that explains how to properly do CMODX in riscv.
->
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> Reviewed-by: Atish Patra <atishp@rivosinc.com>
-> ---
->   Documentation/arch/riscv/cmodx.rst | 96 ++++++++++++++++++++++++++++++++++++++
->   Documentation/arch/riscv/index.rst |  1 +
->   2 files changed, 97 insertions(+)
->
-> diff --git a/Documentation/arch/riscv/cmodx.rst b/Documentation/arch/riscv/cmodx.rst
-> new file mode 100644
-> index 000000000000..2ad46129d812
-> --- /dev/null
-> +++ b/Documentation/arch/riscv/cmodx.rst
-> @@ -0,0 +1,96 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +==============================================================================
-> +Concurrent Modification and Execution of Instructions (CMODX) for RISC-V Linux
-> +==============================================================================
-> +
-> +CMODX is a programming technique where a program executes instructions that were
-> +modified by the program itself. Instruction storage and the instruction cache
-> +(icache) are not guaranteed to be synchronized on RISC-V hardware. Therefore, the
-> +program must enforce its own synchronization with the unprivileged fence.i
-> +instruction.
-> +
-> +However, the default Linux ABI prohibits the use of fence.i in userspace
-> +applications. At any point the scheduler may migrate a task onto a new hart. If
-> +migration occurs after the userspace synchronized the icache and instruction
-> +storage with fence.i, the icache will no longer be clean. This is due to the
+On 2024/1/24 05:02, Yosry Ahmed wrote:
+> On Tue, Jan 23, 2024 at 12:12 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>>
+>> On Tue, Jan 23, 2024 at 07:54:49AM -0800, Yosry Ahmed wrote:
+>>> On Tue, Jan 23, 2024 at 7:38 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>>>>
+>>>> On Mon, Jan 22, 2024 at 12:39:16PM -0800, Yosry Ahmed wrote:
+>>>>> On Mon, Jan 22, 2024 at 12:19 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>>>>>>
+>>>>>> On Sat, Jan 20, 2024 at 02:40:07AM +0000, Yosry Ahmed wrote:
+>>>>>>> During swapoff, try_to_unuse() makes sure that zswap_invalidate() is
+>>>>>>> called for all swap entries before zswap_swapoff() is called. This means
+>>>>>>> that all zswap entries should already be removed from the tree. Simplify
+>>>>>>> zswap_swapoff() by removing the tree cleanup loop, and leaving an
+>>>>>>> assertion in its place.
+>>>>>>>
+>>>>>>> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+>>>>>>
+>>>>>> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+>>>>>>
+>>>>>> That's a great simplification.
+>>>>>>
+>>>>>> Removing the tree->lock made me double take, but at this point the
+>>>>>> swapfile and its cache should be fully dead and I don't see how any of
+>>>>>> the zswap operations that take tree->lock could race at this point.
+>>>>>
+>>>>> It took me a while staring at the code to realize this loop is pointless.
+>>>>>
+>>>>> However, while I have your attention on the swapoff path, there's a
+>>>>> slightly irrelevant problem that I think might be there, but I am not
+>>>>> sure.
+>>>>>
+>>>>> It looks to me like swapoff can race with writeback, and there may be
+>>>>> a chance of UAF for the zswap tree. For example, if zswap_swapoff()
+>>>>> races with shrink_memcg_cb(), I feel like we may free the tree as it
+>>>>> is being used. For example if zswap_swapoff()->kfree(tree) happen
+>>>>> right before shrink_memcg_cb()->list_lru_isolate(l, item).
+>>>>>
+>>>>> Please tell me that I am being paranoid and that there is some
+>>>>> protection against zswap writeback racing with swapoff. It feels like
+>>>>> we are very careful with zswap entries refcounting, but not with the
+>>>>> zswap tree itself.
+>>>>
+>>>> Hm, I don't see how.
+>>>>
+>>>> Writeback operates on entries from the LRU. By the time
+>>>> zswap_swapoff() is called, try_to_unuse() -> zswap_invalidate() should
+>>>> will have emptied out the LRU and tree.
+>>>>
+>>>> Writeback could have gotten a refcount to the entry and dropped the
+>>>> tree->lock. But then it does __read_swap_cache_async(), and while
+>>>> holding the page lock checks the tree under lock once more; if that
+>>>> finds the entry valid, it means try_to_unuse() hasn't started on this
+>>>> page yet, and would be held up by the page lock/writeback state.
+>>>
+>>> Consider the following race:
+>>>
+>>> CPU 1                                 CPU 2
+>>> # In shrink_memcg_cb()     # In swap_off
+>>> list_lru_isolate()
+>>>                                             zswap_invalidate()
+>>>                                             ..
+>>>                                             zswap_swapoff() -> kfree(tree)
+>>> spin_lock(&tree->lock);
+>>>
+>>> Isn't this a UAF or am I missing something here?
+>>
+>> Oof. You're right, it looks like there is a bug. Digging through the
+>> history, I think this is actually quite old: the original backend
+>> shrinkers would pluck something off their LRU, drop all locks, then
+>> try to acquire tree->lock. There is no protection against swapoff.
+>>
+>> The lock that is supposed to protect this is the LRU lock. That's
+>> where reclaim and invalidation should synchronize. But it's not right:
+>>
+>> 1. We drop the LRU lock before acquiring the tree lock. We should
+>>    instead trylock the tree while still holding the LRU lock to make
+>>    sure the tree is safe against swapoff.
+>>
+>> 2. zswap_invalidate() acquires the LRU lock when refcount hits 0. But
+>>    it must always cycle the LRU lock before freeing the tree for that
+>>    synchronization to work.
+>>
+>> Once we're holding a refcount to the entry, it's safe to drop all
+>> locks for the next step because we'll then work against the swapcache
+>> and entry: __read_swap_cache_async() will try to pin and lock whatever
+>> swap entry is at that type+offset. This also pins the type's current
+>> tree. HOWEVER, if swapoff + swapon raced, this could be a different
+>> tree than what we had in @tree, so
+>>
+>> 3. we shouldn't pass @tree to zswap_writeback_entry(). It needs to
+>>    look up zswap_trees[] again after __read_swap_cache_async()
+>>    succeeded to validate the entry.
+>>
+>> Once it succeeded, we can validate the entry. The entry is valid due
+>> to our refcount. The zswap_trees[type] is valid due to the cache pin.
+>>
+>> However, if validation failed and we have a non-zero writeback_result,
+>> there is one last bug:
+>>
+>> 4. the original entry's tree is no longer valid for the entry put.
+>>
+>> The current scheme handles invalidation fine (which is good because
+>> that's quite common). But it's fundamentally unsynchronized against
+>> swapoff (which has probably gone undetected because that's rare).
+>>
+>> I can't think of an immediate solution to this, but I wanted to put my
+>> analysis out for comments.
+> 
+> 
+> Thanks for the great analysis, I missed the swapoff/swapon race myself :)
+> 
+> The first solution that came to mind for me was refcounting the zswap
+> tree with RCU with percpu-refcount, similar to how cgroup refs are
+> handled (init in zswap_swapon() and kill in zswap_swapoff()). I think
+> the percpu-refcount may be an overkill in terms of memory usage
+> though. I think we can still do our own refcounting with RCU, but it
+> may be more complicated.
+Hello,
 
+I also thought about this problem for some time, maybe something like below
+can be changed to fix it? It's likely I missed something, just some thoughts.
 
-Nit: I think you mean "the icache on the new hart will no longer be clean".
+IMHO, the problem is caused by the different way in which we use zswap entry
+in the writeback, that should be much like zswap_load().
 
+The zswap_load() comes in with the folio locked in swap cache, so it has
+stable zswap tree to search and lock... But in writeback case, we don't,
+shrink_memcg_cb() comes in with only a zswap entry with lru list lock held,
+then release lru lock to get tree lock, which maybe freed already.
 
-> +behavior of fence.i only affecting the hart that it is called on. Thus, the hart
-> +that the task has been migrated to may not have synchronized instruction storage
-> +and icache.
-> +
-> +There are two ways to solve this problem: use the riscv_flush_icache() syscall,
-> +or use the ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` prctl() and emit fence.i in
-> +userspace. The syscall performs a one-off icache flushing operation. The prctl
-> +changes the Linux ABI to allow userspace to emit icache flushing operations.
-> +
-> +As an aside, "deferred" icache flushes can sometimes be triggered in the kernel.
-> +At the time of writing, this only occurs during the riscv_flush_icache() syscall
-> +and when the kernel uses copy_to_user_page(). These deferred flushes happen only
-> +when the memory map being used by a hart changes. If the prctl() context caused
-> +an icache flush, this deferred icache flush will be skipped as it is redundant.
-> +Therefore, there will be no additional flush when using the riscv_flush_icache()
-> +syscall inside of the prctl() context.
-> +
-> +prctl() Interface
-> +---------------------
-> +
-> +Call prctl() with ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` as the first argument. The
-> +remaining arguments will be delegated to the riscv_set_icache_flush_ctx
-> +function detailed below.
-> +
-> +.. kernel-doc:: arch/riscv/mm/cacheflush.c
-> +	:identifiers: riscv_set_icache_flush_ctx
-> +
-> +Example usage:
-> +
-> +The following files are meant to be compiled and linked with each other. The
-> +modify_instruction() function replaces an add with 0 with an add with one,
-> +causing the instruction sequence in get_value() to change from returning a zero
-> +to returning a one.
-> +
-> +cmodx.c::
-> +
-> +	#include <stdio.h>
-> +	#include <sys/prctl.h>
-> +
-> +	extern int get_value();
-> +	extern void modify_instruction();
-> +
-> +	int main()
-> +	{
-> +		int value = get_value();
-> +		printf("Value before cmodx: %d\n", value);
-> +
-> +		// Call prctl before first fence.i is called inside modify_instruction
-> +		prctl(PR_RISCV_SET_ICACHE_FLUSH_CTX_ON, PR_RISCV_CTX_SW_FENCEI, PR_RISCV_SCOPE_PER_PROCESS);
-> +		modify_instruction();
-> +
-> +		value = get_value();
-> +		printf("Value after cmodx: %d\n", value);
-> +		return 0;
-> +	}
-> +
-> +cmodx.S::
-> +
-> +	.option norvc
-> +
-> +	.text
-> +	.global modify_instruction
-> +	modify_instruction:
-> +	lw a0, new_insn
-> +	lui a5,%hi(old_insn)
-> +	sw  a0,%lo(old_insn)(a5)
-> +	fence.i
-> +	ret
-> +
-> +	.section modifiable, "awx"
-> +	.global get_value
-> +	get_value:
-> +	li a0, 0
-> +	old_insn:
-> +	addi a0, a0, 0
-> +	ret
-> +
-> +	.data
-> +	new_insn:
-> +	addi a0, a0, 1
-> diff --git a/Documentation/arch/riscv/index.rst b/Documentation/arch/riscv/index.rst
-> index 4dab0cb4b900..eecf347ce849 100644
-> --- a/Documentation/arch/riscv/index.rst
-> +++ b/Documentation/arch/riscv/index.rst
-> @@ -13,6 +13,7 @@ RISC-V architecture
->       patch-acceptance
->       uabi
->       vector
-> +    cmodx
->   
->       features
->   
->
+So we should change here, we read swpentry from entry with lru list lock held,
+then release lru lock, to try to lock corresponding folio in swap cache,
+if we success, the following things is much the same like zswap_load().
+We can get tree lock, to recheck the invalidate race, if no race happened,
+we can make sure the entry is still right and get refcount of it, then
+release the tree lock.
 
-I don't know how man pages are synchronized with new additions in the 
-kernel, do you? It would be nice to have this new prctl documented for 
-userspace.
+The main differences between this writeback with zswap_load() is the handling
+of lru entry and the tree lifetime. The whole zswap_load() function has the
+stable reference of zswap tree, but it's not for shrink_memcg_cb() bottom half
+after __swap_writepage() since we unlock the folio after that. So we can't
+reference the tree after that.
 
-Thanks,
+This problem is easy to fix, we can zswap_invalidate_entry(tree, entry) early
+in tree lock, since thereafter writeback can't fail. BTW, I think we should
+also zswap_invalidate_entry() early in zswap_load() and only support the
+zswap_exclusive_loads_enabled mode, but that's another topic.
 
-Alex
+The second difference is the handling of lru entry, which is easy that we
+just zswap_lru_del() in tree lock.
+
+So no any path can reference the entry from tree or lru after we release
+the tree lock, so we can just zswap_free_entry() after writeback.
+
+Thanks!
+
+// lru list lock held
+shrink_memcg_cb()
+  swpentry = entry->swpentry
+  // Don't isolate entry from lru list here, just use list_lru_putback()
+  spin_unlock(lru list lock)
+
+  folio = __read_swap_cache_async(swpentry)
+  if (!folio)
+    return
+
+  if (!folio_was_allocated)
+    folio_put(folio)
+    return
+
+  // folio is locked, swapcache is secured against swapoff
+  tree = get tree from swpentry
+  spin_lock(&tree->lock)
+
+  // check invalidate race? No
+  if (entry == zswap_rb_search())
+
+  // so we can make sure this entry is still right
+  // zswap_invalidate_entry() since the below writeback can't fail
+  zswap_entry_get(entry)
+  zswap_invalidate_entry(tree, entry)
+
+  // remove from lru list
+  zswap_lru_del()
+
+  spin_unlock(&tree->lock)
+
+  __zswap_load()
+
+  __swap_writepage() // folio unlock
+  folio_put(folio)
+
+  // entry is safe to free, since it's removed from tree and lru above
+  zswap_free_entry(entry)
 
 
