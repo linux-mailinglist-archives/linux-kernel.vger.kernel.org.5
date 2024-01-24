@@ -1,533 +1,184 @@
-Return-Path: <linux-kernel+bounces-36842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 832C483A79A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:20:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4768083A794
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:19:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1051B1F261D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:20:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F202A282971
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:19:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4BB61C6B1;
-	Wed, 24 Jan 2024 11:19:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10C2F1AAD2;
+	Wed, 24 Jan 2024 11:19:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IWvXhrK2"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sg0foj8h"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94D7F1B593
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 11:19:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8091D1AAB1;
+	Wed, 24 Jan 2024 11:19:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706095186; cv=none; b=c/TNYBCwnd7Opy032CO5xb+ASCSAhLul6qkUT8qk4iAf+LnXJT0YNl4ClY+oowh6ymQqW6hLUNucJI1bps9fOf5azyXNJDUdZ+YQgHxZJA6foPrEQmyzpMqVt/8IlnA87CRMBMLnBskD4snQDB0tlpwB84yFtXLIHoVLnz4MESU=
+	t=1706095157; cv=none; b=R91zDBohULUC9m1hJ6eJ8ZB5TDsRuvutIxo9MKwvodVxh+liO7jBH1G9rGRsezvYaImkYX9orJ17lCXTvsu08pydtPF8tyKicIUahZoHEtXdsKsRwi7RSMJmZbDuyKGSxmIKGeknc7Rq0ncWfBNiUnDWDIvMBVZn4/zt1byCzCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706095186; c=relaxed/simple;
-	bh=L9hWgGCc6VPcji1yyPt8XhKbydmNnQ2y3M3L7qsK/Cc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lr8mP8etrl+lE5FcqIUCmwLdfksMDvAthsJq7LgVJhmN4hB3QWTWCWmDMiiVeGgPT5OxQfV5pZFMof0M5n7XNjiWxiW916aSRl5j7UxFkFhR2pz6J+tL4aT90iiQUk2jDEjHwy+/SfFqbfBmRlgEmbRmFr/F1Lf5unUgeFWxzgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IWvXhrK2; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706095183;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FRMUAwS7uCNG2R6eybvOasr3tARphPDGiDb/2I9JxKk=;
-	b=IWvXhrK2jqlRK5MHnllAN/uE9X2v3fZCGkj9k5mzuhat26sElWHMDcXuNPBeI4SzgEVrFi
-	A+pmOMHa0Nc/ywR1rYle87dO0kmtUO2cH/0aG/8cW7P8V8rNWhrQ7UpcXy1vzV5toWGKON
-	96ZnhHY9a7Kd+HPa8agtTO4c/dYbc/k=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-540-GUViYMaiOw6Kkhi0u4kK2w-1; Wed, 24 Jan 2024 06:19:42 -0500
-X-MC-Unique: GUViYMaiOw6Kkhi0u4kK2w-1
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-42a335c8fcfso11447201cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 03:19:42 -0800 (PST)
+	s=arc-20240116; t=1706095157; c=relaxed/simple;
+	bh=5jTFMkVQhPK7g3HGR/4LstOjZdNhgG5VgwuT7R8QRIQ=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VDyniR3/YpU5Nq1UB3w2uqn5DdUOQZArenvwgauXMwJhJF/cqXUinWgeMSYA0KAtN/fJ4G0m8nsRtT1+8geqEoQBfumNL+MgV/wCk4nTarcgNg7zAAW+In1j5ZsLWQFEUWpdCrgdfcwszdF0/65TOj28J6H0zkXvy2liOkszBQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Sg0foj8h; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-40e76626170so58912535e9.2;
+        Wed, 24 Jan 2024 03:19:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706095153; x=1706699953; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ax2WAgA+IWHYbycpjwhzRdnKEjPRyvd6ox/DAOqjIDc=;
+        b=Sg0foj8hS7CGXyES5AIaXCIrvoh8ap8etdk9T3Y7b6q1oRYezhV8DW8B6uUtQjwpQL
+         wxjZTCz2Dm96M66JOvxBuELZD5GwjKgjyltFkn5x8Em1z+RneOrBKUTOGbRBJxiYz+Wr
+         gSn609ochAsdNm+XqkyvtSexnQoDYNgAfV6AIq2JnmJxtSYRAtrF9OyOTP1zrfUNP9Tm
+         khuMtmdwTeBpBNLL0hQhlcPlzNM01cZNpBFo9Xev9abwfOVz59tPmY+WDSirdVDInPJ2
+         BR79Il5jjug7BAA5duGeUu2H2eRlB+sg11R5M497TLnW+Pf+JIdMBiPt4TuM0KyhcKLe
+         ReNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706095182; x=1706699982;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FRMUAwS7uCNG2R6eybvOasr3tARphPDGiDb/2I9JxKk=;
-        b=ObTILRoUiySt/jMYvukTLPJhWUtWb8El3RM9tbA4ypqpfPZhHEFJvQ5FJNkBygy14v
-         E8uVPU9YwuatbfiKuJzIAm5IkuEJG2qmVYmqcRnUouJMj1iS1WtgcGCKxwnW3pw2052k
-         sxb1APBCu6nf75lrVb9m7k7W1O5NFoa71gqiIwU4ZKKNE0Q3vYA9sxUccdJSM0A+EFhD
-         qcsqtsLJQoY4A5Lnwi6p+dKLJAlDxkZsG1gxhVrCSFtLOzOezU4IIi9EeoRUkyHojdaN
-         vbERUrp0wtAKgTz4IOEEgfxdNEP2W7InuKvo+IlLw1BJMHcTQMu8GcxUhklXHONtLZIS
-         O4Uw==
-X-Gm-Message-State: AOJu0Ywg2eJEaiT6RKvhGT5KAyRQB/1T1xqDEEaf5XQQIk5Eu5meCPJF
-	b9AYx4TLAathxS55/q9iWT9zUcGDHtgEJ5mxggGlkTZm6dzYZpZSBKPDo02MjbhmEYWdgYDl3hu
-	gjRCkt8LOiw1ij124wxutrWI5Ljabbhe2xdvSM+lfzisSbWrODCVnG3ip1l/8Hg==
-X-Received: by 2002:a05:6214:21c5:b0:686:9443:87b1 with SMTP id d5-20020a05621421c500b00686944387b1mr7828991qvh.2.1706095181583;
-        Wed, 24 Jan 2024 03:19:41 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHnd5U+TF8H0NE8Ppmm5on3lxblIcYy55xpED+Oqb0mzvdXNVLwq+42vdee0SOahqfz9xnHSg==
-X-Received: by 2002:a05:6214:21c5:b0:686:9443:87b1 with SMTP id d5-20020a05621421c500b00686944387b1mr7828971qvh.2.1706095181277;
-        Wed, 24 Jan 2024 03:19:41 -0800 (PST)
-Received: from pstanner-thinkpadt14sgen1.muc.redhat.com (nat-pool-muc-t.redhat.com. [149.14.88.26])
-        by smtp.gmail.com with ESMTPSA id ql3-20020a056214540300b00686aa6dbcbfsm1027016qvb.81.2024.01.24.03.19.39
+        d=1e100.net; s=20230601; t=1706095153; x=1706699953;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ax2WAgA+IWHYbycpjwhzRdnKEjPRyvd6ox/DAOqjIDc=;
+        b=NswKLeJJWqIEM7TWusRWK8fvll5Q3rj7XS1YkyU5y7/lJz/1EoZCAS01EXgDfRNOcc
+         9oJiwBdNMiBCsxTH5mIAlxqJqwIahYnCplxrV1ZOgvde7FTkMOYmIJK76plHlJ/ZBuu2
+         +LiZ74rtAu/R/u/6n78951QYDIs4oK05ZXJLPw30ILvblHVxK3rDK5Za1i403yOLYxwQ
+         SZC+smzT+yaNuH2iWSp36fbseiQFjsyL2ZH/LqwU5f5LCc5QhGMsSbzMHKTMFivtiqAd
+         ta0kMMRGvE7aLcVIL8eEJ0Olb31yQBrt16eMz2GSPS2KO0Ak9qkx4JDjUWguR+GoqpnH
+         TCrw==
+X-Gm-Message-State: AOJu0YzEUuaqAs8Mbl5mXWviGaPBV7dVG1DNWdN2KILRPFZbxUsJep+/
+	yTKG4yv4n6DhXO3QuVvpkNh3iwKGZhkDoGTFRZKiXzrRGuA8uw1J
+X-Google-Smtp-Source: AGHT+IEHrYSNYEV1+Dcij+tz/QoBsH6YJTLbxoqlNBdasWoDuViAcRoyJDbwKwUowv7rYDqrt1memg==
+X-Received: by 2002:a05:600c:3145:b0:40e:b93c:940f with SMTP id h5-20020a05600c314500b0040eb93c940fmr966856wmo.28.1706095153415;
+        Wed, 24 Jan 2024 03:19:13 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id p16-20020a05600c469000b0040e39cbf2a4sm49817817wmo.42.2024.01.24.03.19.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 03:19:41 -0800 (PST)
-From: Philipp Stanner <pstanner@redhat.com>
-To: Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>
-Cc: NXP Linux Team <linux-imx@nxp.com>,
-	dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Philipp Stanner <pstanner@redhat.com>
-Subject: [PATCH v4 2/2] drm/imx/dcss: have all init functions use devres
-Date: Wed, 24 Jan 2024 12:19:05 +0100
-Message-ID: <20240124111904.18261-4-pstanner@redhat.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240124111904.18261-2-pstanner@redhat.com>
-References: <20240124111904.18261-2-pstanner@redhat.com>
+        Wed, 24 Jan 2024 03:19:13 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 24 Jan 2024 12:19:11 +0100
+To: Sven Schnelle <svens@linux.ibm.com>
+Cc: Ryan Roberts <ryan.roberts@arm.com>, Jiri Olsa <olsajiri@gmail.com>,
+	David Hildenbrand <david@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Yin Fengwei <fengwei.yin@intel.com>, Yu Zhao <yuzhao@google.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Anshuman Khandual <anshuman.khandual@arm.com>,
+	Yang Shi <shy828301@gmail.com>,
+	"Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Itaru Kitayama <itaru.kitayama@gmail.com>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	John Hubbard <jhubbard@nvidia.com>,
+	David Rientjes <rientjes@google.com>,
+	Vlastimil Babka <vbabka@suse.cz>, Hugh Dickins <hughd@google.com>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	Barry Song <21cnbao@gmail.com>,
+	Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Barry Song <v-songbaohua@oppo.com>, linux-s390@vger.kernel.org
+Subject: Re: [PATCH v9 02/10] mm: Non-pmd-mappable, large folios for
+ folio_add_new_anon_rmap()
+Message-ID: <ZbDyLzoIm0GdQzZA@krava>
+References: <20231207161211.2374093-1-ryan.roberts@arm.com>
+ <20231207161211.2374093-3-ryan.roberts@arm.com>
+ <ZaMR2EWN-HvlCfUl@krava>
+ <41dc7dff-1ea8-4894-a487-88d46ec2b2d8@redhat.com>
+ <ZaRKMwKJIBmh8-lD@krava>
+ <1188e67e-5c04-4bb5-b242-78d92c3fc85c@arm.com>
+ <yt9d1qa7x9qv.fsf@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <yt9d1qa7x9qv.fsf@linux.ibm.com>
 
-dcss currently allocates and ioremaps quite a few resources in its probe
-function's call graph. Devres now provides convenient functions which
-perform the same task but do the cleanup automatically.
+On Wed, Jan 24, 2024 at 12:15:52PM +0100, Sven Schnelle wrote:
+> Ryan Roberts <ryan.roberts@arm.com> writes:
+> 
+> > On 14/01/2024 20:55, Jiri Olsa wrote:
+> >> On Sun, Jan 14, 2024 at 06:33:56PM +0100, David Hildenbrand wrote:
+> >>> On 13.01.24 23:42, Jiri Olsa wrote:
+> >>>> On Thu, Dec 07, 2023 at 04:12:03PM +0000, Ryan Roberts wrote:
+> >>>>> In preparation for supporting anonymous multi-size THP, improve
+> >>>>> folio_add_new_anon_rmap() to allow a non-pmd-mappable, large folio to be
+> >>>>> passed to it. In this case, all contained pages are accounted using the
+> >>>>> order-0 folio (or base page) scheme.
+> >>>>>
+> >>>>> Reviewed-by: Yu Zhao <yuzhao@google.com>
+> >>>>> Reviewed-by: Yin Fengwei <fengwei.yin@intel.com>
+> >>>>> Reviewed-by: David Hildenbrand <david@redhat.com>
+> >>>>> Reviewed-by: Barry Song <v-songbaohua@oppo.com>
+> >>>>> Tested-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> >>>>> Tested-by: John Hubbard <jhubbard@nvidia.com>
+> >>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> >>>>> ---
+> >>>>>   mm/rmap.c | 28 ++++++++++++++++++++--------
+> >>>>>   1 file changed, 20 insertions(+), 8 deletions(-)
+> >>>>>
+> >>>>> diff --git a/mm/rmap.c b/mm/rmap.c
+> >>>>> index 2a1e45e6419f..846fc79f3ca9 100644
+> >>>>> --- a/mm/rmap.c
+> >>>>> +++ b/mm/rmap.c
+> >>>>> @@ -1335,32 +1335,44 @@ void page_add_anon_rmap(struct page *page, struct vm_area_struct *vma,
+> >>>>>    * This means the inc-and-test can be bypassed.
+> >>>>>    * The folio does not have to be locked.
+> >>>>>    *
+> >>>>> - * If the folio is large, it is accounted as a THP.  As the folio
+> >>>>> + * If the folio is pmd-mappable, it is accounted as a THP.  As the folio
+> >>>>>    * is new, it's assumed to be mapped exclusively by a single process.
+> >>>>>    */
+> >>>>>   void folio_add_new_anon_rmap(struct folio *folio, struct vm_area_struct *vma,
+> >>>>>   		unsigned long address)
+> >>>>>   {
+> >>>>> -	int nr;
+> >>>>> +	int nr = folio_nr_pages(folio);
+> >>>>> -	VM_BUG_ON_VMA(address < vma->vm_start || address >= vma->vm_end, vma);
+> >>>>> +	VM_BUG_ON_VMA(address < vma->vm_start ||
+> >>>>> +			address + (nr << PAGE_SHIFT) > vma->vm_end, vma);
+> >>>>
+> >>>> hi,
+> >>>> I'm hitting this bug (console output below) with adding uprobe
+> >>>> on simple program like:
+> >>>>
+> >>>>    $ cat up.c
+> >>>>    int main(void)
+> >>>>    {
+> >>>>       return 0;
+> >>>>    }
+> >>>>
+> >>>>    # bpftrace -e 'uprobe:/home/jolsa/up:_start {}'
+> >>>>
+> >>>>    $ ./up
+> >>>>
+> >>>> it's on top of current linus tree master:
+> >>>>    052d534373b7 Merge tag 'exfat-for-6.8-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/linkinjeon/exfat
+> >>>>
+> >>>> before this patch it seems to work, I can send my .config if needed
+> >
+> > Thanks for the bug report!
+> 
+> I just hit the same bug in our CI, but can't find the fix in -next. Is
+> this in the queue somewhere?
 
-Port all memory allocations and ioremap() calls to the devres
-counterparts.
+we hit it as well, but I can see the fix in linux-next/master
 
-Signed-off-by: Philipp Stanner <pstanner@redhat.com>
----
- drivers/gpu/drm/imx/dcss/dcss-blkctl.c | 13 ++-----------
- drivers/gpu/drm/imx/dcss/dcss-ctxld.c  | 14 +++-----------
- drivers/gpu/drm/imx/dcss/dcss-dev.c    | 12 ++----------
- drivers/gpu/drm/imx/dcss/dcss-dev.h    |  1 -
- drivers/gpu/drm/imx/dcss/dcss-dpr.c    | 21 +++------------------
- drivers/gpu/drm/imx/dcss/dcss-drv.c    | 12 +++---------
- drivers/gpu/drm/imx/dcss/dcss-dtg.c    | 26 +++++---------------------
- drivers/gpu/drm/imx/dcss/dcss-scaler.c | 21 +++------------------
- drivers/gpu/drm/imx/dcss/dcss-ss.c     | 12 +++---------
- 9 files changed, 24 insertions(+), 108 deletions(-)
+  4c137bc28064 uprobes: use pagesize-aligned virtual address when replacing pages
 
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-blkctl.c b/drivers/gpu/drm/imx/dcss/dcss-blkctl.c
-index c9b54bb2692d..803e3fcdb50f 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-blkctl.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-blkctl.c
-@@ -42,14 +42,13 @@ int dcss_blkctl_init(struct dcss_dev *dcss, unsigned long blkctl_base)
- {
- 	struct dcss_blkctl *blkctl;
- 
--	blkctl = kzalloc(sizeof(*blkctl), GFP_KERNEL);
-+	blkctl = devm_kzalloc(dcss->dev, sizeof(*blkctl), GFP_KERNEL);
- 	if (!blkctl)
- 		return -ENOMEM;
- 
--	blkctl->base_reg = ioremap(blkctl_base, SZ_4K);
-+	blkctl->base_reg = devm_ioremap(dcss->dev, blkctl_base, SZ_4K);
- 	if (!blkctl->base_reg) {
- 		dev_err(dcss->dev, "unable to remap BLK CTRL base\n");
--		kfree(blkctl);
- 		return -ENOMEM;
- 	}
- 
-@@ -60,11 +59,3 @@ int dcss_blkctl_init(struct dcss_dev *dcss, unsigned long blkctl_base)
- 
- 	return 0;
- }
--
--void dcss_blkctl_exit(struct dcss_blkctl *blkctl)
--{
--	if (blkctl->base_reg)
--		iounmap(blkctl->base_reg);
--
--	kfree(blkctl);
--}
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-ctxld.c b/drivers/gpu/drm/imx/dcss/dcss-ctxld.c
-index 3a84cb3209c4..e41d5c2a3ea4 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-ctxld.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-ctxld.c
-@@ -202,7 +202,7 @@ int dcss_ctxld_init(struct dcss_dev *dcss, unsigned long ctxld_base)
- 	struct dcss_ctxld *ctxld;
- 	int ret;
- 
--	ctxld = kzalloc(sizeof(*ctxld), GFP_KERNEL);
-+	ctxld = devm_kzalloc(dcss->dev, sizeof(*ctxld), GFP_KERNEL);
- 	if (!ctxld)
- 		return -ENOMEM;
- 
-@@ -217,7 +217,7 @@ int dcss_ctxld_init(struct dcss_dev *dcss, unsigned long ctxld_base)
- 		goto err;
- 	}
- 
--	ctxld->ctxld_reg = ioremap(ctxld_base, SZ_4K);
-+	ctxld->ctxld_reg = devm_ioremap(dcss->dev, ctxld_base, SZ_4K);
- 	if (!ctxld->ctxld_reg) {
- 		dev_err(dcss->dev, "ctxld: unable to remap ctxld base\n");
- 		ret = -ENOMEM;
-@@ -226,18 +226,14 @@ int dcss_ctxld_init(struct dcss_dev *dcss, unsigned long ctxld_base)
- 
- 	ret = dcss_ctxld_irq_config(ctxld, to_platform_device(dcss->dev));
- 	if (ret)
--		goto err_irq;
-+		goto err;
- 
- 	dcss_ctxld_hw_cfg(ctxld);
- 
- 	return 0;
- 
--err_irq:
--	iounmap(ctxld->ctxld_reg);
--
- err:
- 	dcss_ctxld_free_ctx(ctxld);
--	kfree(ctxld);
- 
- 	return ret;
- }
-@@ -246,11 +242,7 @@ void dcss_ctxld_exit(struct dcss_ctxld *ctxld)
- {
- 	free_irq(ctxld->irq, ctxld);
- 
--	if (ctxld->ctxld_reg)
--		iounmap(ctxld->ctxld_reg);
--
- 	dcss_ctxld_free_ctx(ctxld);
--	kfree(ctxld);
- }
- 
- static int dcss_ctxld_enable_locked(struct dcss_ctxld *ctxld)
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-dev.c b/drivers/gpu/drm/imx/dcss/dcss-dev.c
-index d448bf1c205e..597e9b7bd4bf 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-dev.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-dev.c
-@@ -109,8 +109,6 @@ static int dcss_submodules_init(struct dcss_dev *dcss)
- 	dcss_ctxld_exit(dcss->ctxld);
- 
- ctxld_err:
--	dcss_blkctl_exit(dcss->blkctl);
--
- 	dcss_clocks_disable(dcss);
- 
- 	return ret;
-@@ -124,7 +122,6 @@ static void dcss_submodules_stop(struct dcss_dev *dcss)
- 	dcss_ss_exit(dcss->ss);
- 	dcss_dtg_exit(dcss->dtg);
- 	dcss_ctxld_exit(dcss->ctxld);
--	dcss_blkctl_exit(dcss->blkctl);
- 	dcss_clocks_disable(dcss);
- }
- 
-@@ -190,7 +187,7 @@ struct dcss_dev *dcss_dev_create(struct device *dev, bool hdmi_output)
- 		return ERR_PTR(-EBUSY);
- 	}
- 
--	dcss = kzalloc(sizeof(*dcss), GFP_KERNEL);
-+	dcss = devm_kzalloc(dev, sizeof(*dcss), GFP_KERNEL);
- 	if (!dcss)
- 		return ERR_PTR(-ENOMEM);
- 
-@@ -201,7 +198,7 @@ struct dcss_dev *dcss_dev_create(struct device *dev, bool hdmi_output)
- 	ret = dcss_clks_init(dcss);
- 	if (ret) {
- 		dev_err(dev, "clocks initialization failed\n");
--		goto err;
-+		return ERR_PTR(ret);
- 	}
- 
- 	dcss->of_port = of_graph_get_port_by_id(dev->of_node, 0);
-@@ -233,9 +230,6 @@ struct dcss_dev *dcss_dev_create(struct device *dev, bool hdmi_output)
- clks_err:
- 	dcss_clks_release(dcss);
- 
--err:
--	kfree(dcss);
--
- 	return ERR_PTR(ret);
- }
- 
-@@ -253,8 +247,6 @@ void dcss_dev_destroy(struct dcss_dev *dcss)
- 	dcss_submodules_stop(dcss);
- 
- 	dcss_clks_release(dcss);
--
--	kfree(dcss);
- }
- 
- static int dcss_dev_suspend(struct device *dev)
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-dev.h b/drivers/gpu/drm/imx/dcss/dcss-dev.h
-index f27b87c09599..b032e873d227 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-dev.h
-+++ b/drivers/gpu/drm/imx/dcss/dcss-dev.h
-@@ -104,7 +104,6 @@ extern const struct dev_pm_ops dcss_dev_pm_ops;
- /* BLKCTL */
- int dcss_blkctl_init(struct dcss_dev *dcss, unsigned long blkctl_base);
- void dcss_blkctl_cfg(struct dcss_blkctl *blkctl);
--void dcss_blkctl_exit(struct dcss_blkctl *blkctl);
- 
- /* CTXLD */
- int dcss_ctxld_init(struct dcss_dev *dcss, unsigned long ctxld_base);
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-dpr.c b/drivers/gpu/drm/imx/dcss/dcss-dpr.c
-index df9dab949bf2..072eb209249f 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-dpr.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-dpr.c
-@@ -135,7 +135,7 @@ static int dcss_dpr_ch_init_all(struct dcss_dpr *dpr, unsigned long dpr_base)
- 
- 		ch->base_ofs = dpr_base + i * 0x1000;
- 
--		ch->base_reg = ioremap(ch->base_ofs, SZ_4K);
-+		ch->base_reg = devm_ioremap(dpr->dev, ch->base_ofs, SZ_4K);
- 		if (!ch->base_reg) {
- 			dev_err(dpr->dev, "dpr: unable to remap ch %d base\n",
- 				i);
-@@ -155,7 +155,7 @@ int dcss_dpr_init(struct dcss_dev *dcss, unsigned long dpr_base)
- {
- 	struct dcss_dpr *dpr;
- 
--	dpr = kzalloc(sizeof(*dpr), GFP_KERNEL);
-+	dpr = devm_kzalloc(dcss->dev, sizeof(*dpr), GFP_KERNEL);
- 	if (!dpr)
- 		return -ENOMEM;
- 
-@@ -164,18 +164,8 @@ int dcss_dpr_init(struct dcss_dev *dcss, unsigned long dpr_base)
- 	dpr->ctxld = dcss->ctxld;
- 	dpr->ctx_id = CTX_SB_HP;
- 
--	if (dcss_dpr_ch_init_all(dpr, dpr_base)) {
--		int i;
--
--		for (i = 0; i < 3; i++) {
--			if (dpr->ch[i].base_reg)
--				iounmap(dpr->ch[i].base_reg);
--		}
--
--		kfree(dpr);
--
-+	if (dcss_dpr_ch_init_all(dpr, dpr_base))
- 		return -ENOMEM;
--	}
- 
- 	return 0;
- }
-@@ -189,12 +179,7 @@ void dcss_dpr_exit(struct dcss_dpr *dpr)
- 		struct dcss_dpr_ch *ch = &dpr->ch[ch_no];
- 
- 		dcss_writel(0, ch->base_reg + DCSS_DPR_SYSTEM_CTRL0);
--
--		if (ch->base_reg)
--			iounmap(ch->base_reg);
- 	}
--
--	kfree(dpr);
- }
- 
- static u32 dcss_dpr_x_pix_wide_adjust(struct dcss_dpr_ch *ch, u32 pix_wide,
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-drv.c b/drivers/gpu/drm/imx/dcss/dcss-drv.c
-index ad5f29ea8f6a..d881f5a34760 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-drv.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-drv.c
-@@ -51,15 +51,13 @@ static int dcss_drv_platform_probe(struct platform_device *pdev)
- 
- 	of_node_put(remote);
- 
--	mdrv = kzalloc(sizeof(*mdrv), GFP_KERNEL);
-+	mdrv = devm_kzalloc(dev, sizeof(*mdrv), GFP_KERNEL);
- 	if (!mdrv)
- 		return -ENOMEM;
- 
- 	mdrv->dcss = dcss_dev_create(dev, hdmi_output);
--	if (IS_ERR(mdrv->dcss)) {
--		err = PTR_ERR(mdrv->dcss);
--		goto err;
--	}
-+	if (IS_ERR(mdrv->dcss))
-+		return PTR_ERR(mdrv->dcss);
- 
- 	dev_set_drvdata(dev, mdrv);
- 
-@@ -75,8 +73,6 @@ static int dcss_drv_platform_probe(struct platform_device *pdev)
- dcss_shutoff:
- 	dcss_dev_destroy(mdrv->dcss);
- 
--err:
--	kfree(mdrv);
- 	return err;
- }
- 
-@@ -86,8 +82,6 @@ static void dcss_drv_platform_remove(struct platform_device *pdev)
- 
- 	dcss_kms_detach(mdrv->kms);
- 	dcss_dev_destroy(mdrv->dcss);
--
--	kfree(mdrv);
- }
- 
- static void dcss_drv_platform_shutdown(struct platform_device *pdev)
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-dtg.c b/drivers/gpu/drm/imx/dcss/dcss-dtg.c
-index 30de00540f63..2968f5d5bd41 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-dtg.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-dtg.c
-@@ -152,7 +152,7 @@ int dcss_dtg_init(struct dcss_dev *dcss, unsigned long dtg_base)
- 	int ret = 0;
- 	struct dcss_dtg *dtg;
- 
--	dtg = kzalloc(sizeof(*dtg), GFP_KERNEL);
-+	dtg = devm_kzalloc(dcss->dev, sizeof(*dtg), GFP_KERNEL);
- 	if (!dtg)
- 		return -ENOMEM;
- 
-@@ -160,11 +160,10 @@ int dcss_dtg_init(struct dcss_dev *dcss, unsigned long dtg_base)
- 	dtg->dev = dcss->dev;
- 	dtg->ctxld = dcss->ctxld;
- 
--	dtg->base_reg = ioremap(dtg_base, SZ_4K);
-+	dtg->base_reg = devm_ioremap(dtg->dev, dtg_base, SZ_4K);
- 	if (!dtg->base_reg) {
--		dev_err(dcss->dev, "dtg: unable to remap dtg base\n");
--		ret = -ENOMEM;
--		goto err_ioremap;
-+		dev_err(dtg->dev, "dtg: unable to remap dtg base\n");
-+		return -ENOMEM;
- 	}
- 
- 	dtg->base_ofs = dtg_base;
-@@ -175,17 +174,7 @@ int dcss_dtg_init(struct dcss_dev *dcss, unsigned long dtg_base)
- 	dtg->control_status |= OVL_DATA_MODE | BLENDER_VIDEO_ALPHA_SEL |
- 		((dtg->alpha << DEFAULT_FG_ALPHA_POS) & DEFAULT_FG_ALPHA_MASK);
- 
--	ret = dcss_dtg_irq_config(dtg, to_platform_device(dcss->dev));
--	if (ret)
--		goto err_irq;
--
--	return 0;
--
--err_irq:
--	iounmap(dtg->base_reg);
--
--err_ioremap:
--	kfree(dtg);
-+	ret = dcss_dtg_irq_config(dtg, to_platform_device(dtg->dev));
- 
- 	return ret;
- }
-@@ -193,11 +182,6 @@ int dcss_dtg_init(struct dcss_dev *dcss, unsigned long dtg_base)
- void dcss_dtg_exit(struct dcss_dtg *dtg)
- {
- 	free_irq(dtg->ctxld_kick_irq, dtg);
--
--	if (dtg->base_reg)
--		iounmap(dtg->base_reg);
--
--	kfree(dtg);
- }
- 
- void dcss_dtg_sync_set(struct dcss_dtg *dtg, struct videomode *vm)
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-scaler.c b/drivers/gpu/drm/imx/dcss/dcss-scaler.c
-index 47852b9dd5ea..825728c356ff 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-scaler.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-scaler.c
-@@ -302,7 +302,7 @@ static int dcss_scaler_ch_init_all(struct dcss_scaler *scl,
- 
- 		ch->base_ofs = scaler_base + i * 0x400;
- 
--		ch->base_reg = ioremap(ch->base_ofs, SZ_4K);
-+		ch->base_reg = devm_ioremap(scl->dev, ch->base_ofs, SZ_4K);
- 		if (!ch->base_reg) {
- 			dev_err(scl->dev, "scaler: unable to remap ch base\n");
- 			return -ENOMEM;
-@@ -318,7 +318,7 @@ int dcss_scaler_init(struct dcss_dev *dcss, unsigned long scaler_base)
- {
- 	struct dcss_scaler *scaler;
- 
--	scaler = kzalloc(sizeof(*scaler), GFP_KERNEL);
-+	scaler = devm_kzalloc(dcss->dev, sizeof(*scaler), GFP_KERNEL);
- 	if (!scaler)
- 		return -ENOMEM;
- 
-@@ -327,18 +327,8 @@ int dcss_scaler_init(struct dcss_dev *dcss, unsigned long scaler_base)
- 	scaler->ctxld = dcss->ctxld;
- 	scaler->ctx_id = CTX_SB_HP;
- 
--	if (dcss_scaler_ch_init_all(scaler, scaler_base)) {
--		int i;
--
--		for (i = 0; i < 3; i++) {
--			if (scaler->ch[i].base_reg)
--				iounmap(scaler->ch[i].base_reg);
--		}
--
--		kfree(scaler);
--
-+	if (dcss_scaler_ch_init_all(scaler, scaler_base))
- 		return -ENOMEM;
--	}
- 
- 	return 0;
- }
-@@ -351,12 +341,7 @@ void dcss_scaler_exit(struct dcss_scaler *scl)
- 		struct dcss_scaler_ch *ch = &scl->ch[ch_no];
- 
- 		dcss_writel(0, ch->base_reg + DCSS_SCALER_CTRL);
--
--		if (ch->base_reg)
--			iounmap(ch->base_reg);
- 	}
--
--	kfree(scl);
- }
- 
- void dcss_scaler_ch_enable(struct dcss_scaler *scl, int ch_num, bool en)
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-ss.c b/drivers/gpu/drm/imx/dcss/dcss-ss.c
-index 8ddf08da911b..0df81866fb7b 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-ss.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-ss.c
-@@ -83,7 +83,7 @@ int dcss_ss_init(struct dcss_dev *dcss, unsigned long ss_base)
- {
- 	struct dcss_ss *ss;
- 
--	ss = kzalloc(sizeof(*ss), GFP_KERNEL);
-+	ss = devm_kzalloc(dcss->dev, sizeof(*ss), GFP_KERNEL);
- 	if (!ss)
- 		return -ENOMEM;
- 
-@@ -91,10 +91,9 @@ int dcss_ss_init(struct dcss_dev *dcss, unsigned long ss_base)
- 	ss->dev = dcss->dev;
- 	ss->ctxld = dcss->ctxld;
- 
--	ss->base_reg = ioremap(ss_base, SZ_4K);
-+	ss->base_reg = devm_ioremap(ss->dev, ss_base, SZ_4K);
- 	if (!ss->base_reg) {
--		dev_err(dcss->dev, "ss: unable to remap ss base\n");
--		kfree(ss);
-+		dev_err(ss->dev, "ss: unable to remap ss base\n");
- 		return -ENOMEM;
- 	}
- 
-@@ -108,11 +107,6 @@ void dcss_ss_exit(struct dcss_ss *ss)
- {
- 	/* stop SS */
- 	dcss_writel(0, ss->base_reg + DCSS_SS_SYS_CTRL);
--
--	if (ss->base_reg)
--		iounmap(ss->base_reg);
--
--	kfree(ss);
- }
- 
- void dcss_ss_subsam_set(struct dcss_ss *ss)
--- 
-2.43.0
-
+jirka
 
