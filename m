@@ -1,172 +1,137 @@
-Return-Path: <linux-kernel+bounces-36767-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36768-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 050C383A644
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:02:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7924083A648
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:02:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF088B2A3D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:02:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB4B01C22B7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:02:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA08C18EA5;
-	Wed, 24 Jan 2024 10:01:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="aiLQxVbu";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="O8A5wySg";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="YSCKWoDg";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="k0PF6S6B"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40F6B18E0C;
-	Wed, 24 Jan 2024 10:01:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71F0D18625;
+	Wed, 24 Jan 2024 10:02:18 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0A15182A1;
+	Wed, 24 Jan 2024 10:02:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706090487; cv=none; b=EhhgTqqw5dE8EaXaWftf8KqVm3UVVYdhah2yk2FXCT1DnmYFbOREDBvCqZWcrh65S+iX7S++AXzEaOofLEyBE+qsSV7zsoiaOKOSJznoYZdRZnkywRLlaUt/Ak60WbSuTdAY8qtUGaBemlMYpP8qKGO6B0sUyK+nhJnwIiQTeB4=
+	t=1706090538; cv=none; b=gqoAF7sZngN+Z+CusWvK/9mtZHLgCwBGQMTzyJtCXa8jvIWHDPIaJoV5ionWTtW24PKLLzz7R8k0hSrq1kZscoDm5bmLKJ+q+TA3bbwo7LtRSnJ7v7O5d/54199oW/PipBjxVxd3RZTcSuRL74iF82UINNxK+8kER1yBkcmUaZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706090487; c=relaxed/simple;
-	bh=6RdrlxDSG8hsAc72E55qkn9THWxTOLO7Jy0CRSHrLnE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nz6RASxmTjHR8TWbRol9C+jZO6/1bgusaF1UaGwtVUkQq7m8o+GhAzE3rxqew+ODcH0qNoXC1NMXd04+LDA82Z7NGm2nwGmf63lcDEptI5cqdlN/4Hbvua7DXb4+zRChs14oOC9u51aWE4Mlh/DjQY8ZW4JxR0IrovF5fMOnRNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=aiLQxVbu; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=O8A5wySg; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=YSCKWoDg; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=k0PF6S6B; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4AAA321FE0;
-	Wed, 24 Jan 2024 10:01:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706090482; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5GbOmVt6oFKgK+k7wbfOq9ydRZzfYO9V5/Y2eqOkhTw=;
-	b=aiLQxVbuM4h8WeFZzWlEy6ymisyOydc25AD9QvcYPr6+al3UNEEJTAcFCh0tfrhVKuYFu6
-	9d0nmBE0mSvPqS3ER2KSYyptEH0qCQNulIbP8GBTDufT+sLCMxN+jyKkBeXEQuphJc+CJg
-	VDy/QVsl+CgKbiVjX9jlVpmUuv1x7rM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706090482;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5GbOmVt6oFKgK+k7wbfOq9ydRZzfYO9V5/Y2eqOkhTw=;
-	b=O8A5wySg8/1PFTSGWC0kFH8FK1sOeMd6t15ot7TyqRmlKbKqL7/CnGX5ImKTwCyDw+oS6M
-	xNTPwuU5nOLZ9aDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706090481; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5GbOmVt6oFKgK+k7wbfOq9ydRZzfYO9V5/Y2eqOkhTw=;
-	b=YSCKWoDgns404OGWP7Dr8/4KblkejC/L5rV6mNaptJ3f6nzuL8Erm0fZ9XTtxluG6UnrJZ
-	Bgr5bZyz5n8yDHJinxhKqSSLU6iNfYgQ1wDSbU+mu9bsmk7unSCdL9+ORaZF3cfA5H9QzW
-	yzWGKHHM8WbKABcF17q3qq8FuTgoHL8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706090481;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5GbOmVt6oFKgK+k7wbfOq9ydRZzfYO9V5/Y2eqOkhTw=;
-	b=k0PF6S6B91e8zCjslnl5MkSwU/Fb5Ax1xfl+/aMmL2DE6yOKFT3a49dpCWyDICamg9m6Py
-	/PopjBYF6gklrbCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3D5781333E;
-	Wed, 24 Jan 2024 10:01:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id zvn2DvHfsGVlAgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 24 Jan 2024 10:01:21 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id C3042A0808; Wed, 24 Jan 2024 11:01:20 +0100 (CET)
-Date: Wed, 24 Jan 2024 11:01:20 +0100
-From: Jan Kara <jack@suse.cz>
-To: syzbot <syzbot+87466712bb342796810a@syzkaller.appspotmail.com>
-Cc: axboe@kernel.dk, brauner@kernel.org, chandan.babu@oracle.com,
-	dchinner@redhat.com, djwong@kernel.org, jack@suse.cz,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-xfs@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [xfs?] KASAN: null-ptr-deref Write in
- xfs_filestream_select_ag
-Message-ID: <20240124100120.x3mwjbj7epfw3ffo@quack3>
-References: <000000000000d207ef05f7790759@google.com>
- <00000000000084a9da060fad26bf@google.com>
+	s=arc-20240116; t=1706090538; c=relaxed/simple;
+	bh=fPZu8fVVW4LkeJMKBPP8DK2GyWfVf/kOWZvHoRKVv94=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=muH0KX5yvFvb5hn6PAgVD/lfH0Nffiez5OypYaDO7mNGrJuOdePc5feeusy0DuvfEr6MP5+lfHON/tSFm7zEq1/dsGiPVSQA7V2FLV67ZSIVnBxni7b+eOE7z2vHocjJ2j+WyJtIpSiH6DqiI6epodPUaX10gLHuPz+9S6HO75g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.20.42.173])
+	by gateway (Coremail) with SMTP id _____8Cxrusl4LBlrrAEAA--.18410S3;
+	Wed, 24 Jan 2024 18:02:13 +0800 (CST)
+Received: from [10.20.42.173] (unknown [10.20.42.173])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8AxRMwi4LBllqQWAA--.25642S3;
+	Wed, 24 Jan 2024 18:02:12 +0800 (CST)
+Subject: Re: [PATCH v3 1/3] irqchip/loongson-eiointc: Skip handling if there
+ is no pending irq
+To: Huacai Chen <chenhuacai@kernel.org>
+Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>,
+ Thomas Gleixner <tglx@linutronix.de>, linux-mips@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omp.ru>,
+ lvjianmin@loongson.cn
+References: <20240118121542.748351-1-maobibo@loongson.cn>
+ <20240118121542.748351-2-maobibo@loongson.cn>
+ <CAAhV-H5-da4AvtgHu1Hv0sbXddab6Mqg6eCkwJzr32Xi4A97yQ@mail.gmail.com>
+From: maobibo <maobibo@loongson.cn>
+Message-ID: <8c133026-3c70-2e2a-7f79-2f3c4327b7b4@loongson.cn>
+Date: Wed, 24 Jan 2024 18:02:10 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00000000000084a9da060fad26bf@google.com>
-X-Spam-Level: *
-X-Spamd-Bar: +
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=YSCKWoDg;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=k0PF6S6B
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [1.49 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 MX_GOOD(-0.01)[];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.00)[20.22%];
-	 SUBJECT_HAS_QUESTION(0.00)[];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=d40f6d44826f6cf7];
-	 TAGGED_RCPT(0.00)[87466712bb342796810a];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[syzkaller.appspot.com:url,suse.cz:dkim,suse.cz:email,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: 1.49
-X-Rspamd-Queue-Id: 4AAA321FE0
-X-Spam-Flag: NO
+In-Reply-To: <CAAhV-H5-da4AvtgHu1Hv0sbXddab6Mqg6eCkwJzr32Xi4A97yQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8AxRMwi4LBllqQWAA--.25642S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7tFyrXw4UJrWDZrykKr17Arc_yoW8Zry3p3
+	y5CFn0kFW5JryUAw1agF4UJF1Yvwn5KFZrA393Gay3Jr98J3s8KF4rCF1q9rs7Cry3Ga12
+	vF4Ygr4UCa15CFgCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv
+	67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07
+	AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02
+	F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw
+	1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7Cj
+	xVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r
+	1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8r9
+	N3UUUUU==
 
-On Wed 24-01-24 00:50:10, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
-> 
-> commit 6f861765464f43a71462d52026fbddfc858239a5
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Wed Nov 1 17:43:10 2023 +0000
-> 
->     fs: Block writes to mounted block devices
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=119af36be80000
-> start commit:   17214b70a159 Merge tag 'fsverity-for-linus' of git://git.k..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=d40f6d44826f6cf7
-> dashboard link: https://syzkaller.appspot.com/bug?extid=87466712bb342796810a
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1492946ac80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12e45ad6c80000
 
-So this surprises me a bit because XFS isn't using block device buffer
-cache and thus syzbot has no way of corrupting cached metadata even before
-these changes. The reproducer tries to mount the loop device again after
-mounting the XFS image so I can imagine something bad happens but it isn't
-all that clear what. So I'll defer to XFS maintainers whether they want to
-mark this bug as fixed or investigate further.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+On 2024/1/24 下午5:51, Huacai Chen wrote:
+> Hi, Bibo,
+> 
+> On Thu, Jan 18, 2024 at 8:15 PM Bibo Mao <maobibo@loongson.cn> wrote:
+>>
+>> There is one simple optimization in the interrupt dispatch function
+>> eiointc_irq_dispatch. There are 256 IRQs supported for eiointc, eiointc
+>> irq handler reads the bitmap and find pending irqs when irq happens.
+>> So there are four times of consecutive iocsr_read64 operations for the
+>> total 256 bits to find all pending irqs. If the pending bitmap is zero,
+>> it means that there is no pending irq for the this irq bitmap range,
+>> we can skip handling to avoid some useless operations such as clearing
+>> hw ISR.
+>>
+>> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+>> ---
+>>   drivers/irqchip/irq-loongson-eiointc.c | 11 +++++++++++
+>>   1 file changed, 11 insertions(+)
+>>
+>> diff --git a/drivers/irqchip/irq-loongson-eiointc.c b/drivers/irqchip/irq-loongson-eiointc.c
+>> index 1623cd779175..6143adb1b73b 100644
+>> --- a/drivers/irqchip/irq-loongson-eiointc.c
+>> +++ b/drivers/irqchip/irq-loongson-eiointc.c
+>> @@ -198,6 +198,17 @@ static void eiointc_irq_dispatch(struct irq_desc *desc)
+>>
+>>          for (i = 0; i < eiointc_priv[0]->vec_count / VEC_COUNT_PER_REG; i++) {
+>>                  pending = iocsr_read64(EIOINTC_REG_ISR + (i << 3));
+>> +
+>> +               /*
+>> +                * Get pending eiointc irq from bitmap status, there are 4 times
+>> +                * consecutive iocsr_read64 operations for 256 IRQs.
+>> +                *
+>> +                * Skip handling if pending bitmap is zero
+> This driver is shared by Loongson-2 and Loongson-3 series, for
+> Loongson-2K0500 there is only 128 IRQs, so I suggest only keep the
+> last line "Skip handling if current pending bitmap is zero" is enough.
+Sure, will refine the patch in this way.
+
+Regards
+Bibo Mao
+> 
+> Huacai
+> 
+>> +                */
+>> +               if (!pending)
+>> +                       continue;
+>> +
+>> +               /* Clear the IRQs */
+>>                  iocsr_write64(pending, EIOINTC_REG_ISR + (i << 3));
+>>                  while (pending) {
+>>                          int bit = __ffs(pending);
+>> --
+>> 2.39.3
+>>
+
 
