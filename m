@@ -1,145 +1,147 @@
-Return-Path: <linux-kernel+bounces-37169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37167-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A721A83AC3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:44:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBC3C83AC3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:43:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D67351C230C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:44:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B4FC1F221B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:43:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CE03132C3F;
-	Wed, 24 Jan 2024 14:31:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51C74131E4B;
+	Wed, 24 Jan 2024 14:31:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="dm7veX6v"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="liIUApqT"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38C47132C00;
-	Wed, 24 Jan 2024 14:31:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85A76131E32;
+	Wed, 24 Jan 2024 14:31:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706106668; cv=none; b=NDCDYM1rFagAXas8PxTlrvMPCOZ/eFJcOSIBfBPUqAx7jMyjlL1healx7fdevZunS8tTLHBlQjnA05GJ84E9xE57qGdq7MrHF/56vHxakN+53qiheyEh0FjmDuQ6+rHZLGQ2USTB2+olWSW19urd8YG9d3glLedMCZS5XnIGlwU=
+	t=1706106665; cv=none; b=Uq9xbarujOx0eexbjZS1vU0kLWr5Zsv5mnohmxlpcGx1ZDwZR/KvIbZKtNWgovd1UtPT6to9IGIhSKvqDGY8WVfQ7T7gnf4ym3qauWhpDBMqBXBtdx3NLjXSQMhiw20oFAU2LxRY7Uzh7J9gk5PHMwPEOmWAyUrMWd5VegU48a8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706106668; c=relaxed/simple;
-	bh=ruhqYG75t7/UEmAoJwOenf32CdfU8FzhLCozj+uXgds=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ah/wh1+fx60IBOKICo2/AU2HkmYgI+BipZHP1hxt5Qeq5yHdyRd8fEWJdicbTM6HYwaaINC/UjSCK+88ZfQ0CVIpIX6LcdHC4yaenYxf8rJ3Dq/jZEvSxkj+nOsSRL403ENycd2konRDxlxJa/E1Lcp7WUYhrHN0AaNdNi4KD4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=dm7veX6v; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40OCel7D026053;
-	Wed, 24 Jan 2024 14:31:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=l4V0st4SQHaLxMTIgnHL
-	zaU45ue1oKK4zA0OU8lqL7k=; b=dm7veX6vLlNsUre82RVF44hehjLgueYY8g4K
-	IpbDNXYJpF8v230Vy2ZC+K6lHRa7V2UPSRWxDjgAt6EJWySkfwotVkdYgcUQJNS+
-	c4I75YZZQTwtW0nOIGqrqx9nIL5OV0GamHffFQHurRqh7MIN6tBzpNQ0v6pRjZNG
-	1E711JNbrAGCQcv+Dz3h5XSDVmESO1S5sNq5oQBit/lG9K/PK5zASAa8Nrx7Jamq
-	aDiUeAdudi3Zdp/PyKU4iW4vH9uCkpAeGEtn2Cqst4gU9xKWm1/o1rOmGv5ZvvyJ
-	0WV7SnIJg99KxGVTp7LpBQavSINPesPE0iXkWs5VODgutqXarw==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vtyf78na1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Jan 2024 14:31:02 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40OEV1bQ028189
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Jan 2024 14:31:01 GMT
-Received: from hu-janathot-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 24 Jan 2024 06:30:59 -0800
-From: Janaki Ramaiah Thota <quic_janathot@quicinc.com>
-To: Marcel Holtmann <marcel@holtmann.org>,
-        Luiz Augusto von Dentz
-	<luiz.dentz@gmail.com>,
-        Balakrishna Godavarthi <quic_bgodavar@quicinc.com>
-CC: <quic_mohamull@quicinc.com>, <quic_hbandi@quicinc.com>,
-        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 1/1] Bluetooth: hci_qca: Set BDA quirk bit if fwnode exists in DT
-Date: Wed, 24 Jan 2024 20:00:42 +0530
-Message-ID: <20240124143042.27790-2-quic_janathot@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240124143042.27790-1-quic_janathot@quicinc.com>
-References: <20240124143042.27790-1-quic_janathot@quicinc.com>
+	s=arc-20240116; t=1706106665; c=relaxed/simple;
+	bh=ORsKfb77Q/aqEabcmDI07cPZuQckZtlN1IaOT+oLwKc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=upEViy+Mn6e0nZ6UgWdFUrGqhHPR2IbnJHyHG5xZ7x+K0l/5odnQ0h0ZBRrj2vihDH1qRG0XHs9r5aW7bt1bBryKvgr5UJcm5k4xHzJiVynsJlqtPr8oy0mXQBetoFXMuYcbXL98VMti59l/9CMHZnluoUN6cJwuKVb0e2Vhw90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=liIUApqT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3803C433F1;
+	Wed, 24 Jan 2024 14:31:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706106665;
+	bh=ORsKfb77Q/aqEabcmDI07cPZuQckZtlN1IaOT+oLwKc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=liIUApqTzc3Zz4e/OixGgBnkjvogWdFtPl8Wmd9W5mdVnw/cuSniYTukE0TTpRvmH
+	 n5M34RZC4BE0SfddY21/nPjf2TquQYLnWIe9y/HFnIoCvwajafZs86dQDhBTZXk5u2
+	 jcx6E4Fx5Aq5jNxILVcq+AwV+tSn6vAsoKSdWo+91SVpfRjveDQhj5/ve2HCzioLiI
+	 c4vd799XjNi196ulIOQmOIRg/J85IkpocgkJyGmdV8gvQr8JbKGoYUI6bUw9uYBZn/
+	 5NVkqNEXQCIY7z41gHQiIKPqlPz95k3evGfpptgDHm7IzkC2y2XaQAR+7Kywt05L7O
+	 Y6WEeGzTWGoHw==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Peter Lafreniere <peter@n8pjl.ca>,
+	Richard Weinberger <richard@nod.at>,
+	Sasha Levin <sashal@kernel.org>,
+	johannes@sipsolutions.net,
+	benjamin@sipsolutions.net,
+	linux-um@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.10 2/7] um: Fix naming clash between UML and scheduler
+Date: Wed, 24 Jan 2024 09:30:43 -0500
+Message-ID: <20240124143057.1284274-2-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240124143057.1284274-1-sashal@kernel.org>
+References: <20240124143057.1284274-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: shguZOhcnPf6qcrZ7jjKGi2SKOHtUjP2
-X-Proofpoint-ORIG-GUID: shguZOhcnPf6qcrZ7jjKGi2SKOHtUjP2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-24_06,2024-01-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 adultscore=0 priorityscore=1501 malwarescore=0 suspectscore=0
- impostorscore=0 phishscore=0 clxscore=1015 mlxscore=0 mlxlogscore=972
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2401240105
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 5.10.208
+Content-Transfer-Encoding: 8bit
 
-BT adapter going into UNCONFIGURED state during BT turn ON when
-devicetree has no local-bd-address node.
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Bluetooth will not work out of the box on such devices, to avoid this
-problem, added check to set HCI_QUIRK_USE_BDADDR_PROPERTY based on
-local-bd-address node entry.
+[ Upstream commit 541d4e4d435c8b9bfd29f70a1da4a2db97794e0a ]
 
-When this quirk is not set, the public Bluetooth address read by host
-from controller though HCI Read BD Address command is
-considered as valid.
+__cant_sleep was already used and exported by the scheduler.
+The name had to be changed to a UML specific one.
 
-Fixes: e668eb1e1578 ("Bluetooth: hci_core: Don't stop BT if the BD address missing in dts")
-
-Signed-off-by: Janaki Ramaiah Thota <quic_janathot@quicinc.com>
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Reviewed-by: Peter Lafreniere <peter@n8pjl.ca>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bluetooth/hci_qca.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ arch/um/include/shared/kern_util.h | 2 +-
+ arch/um/kernel/process.c           | 2 +-
+ arch/um/os-Linux/helper.c          | 6 +++---
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-index 94b8c406f0c0..06193546ebb6 100644
---- a/drivers/bluetooth/hci_qca.c
-+++ b/drivers/bluetooth/hci_qca.c
-@@ -7,6 +7,7 @@
-  *
-  *  Copyright (C) 2007 Texas Instruments, Inc.
-  *  Copyright (c) 2010, 2012, 2018 The Linux Foundation. All rights reserved.
-+ *  Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
-  *
-  *  Acknowledgements:
-  *  This file is based on hci_ll.c, which was...
-@@ -1904,7 +1905,17 @@ static int qca_setup(struct hci_uart *hu)
- 	case QCA_WCN6750:
- 	case QCA_WCN6855:
- 	case QCA_WCN7850:
--		set_bit(HCI_QUIRK_USE_BDADDR_PROPERTY, &hdev->quirks);
-+
-+		/* Set BDA quirk bit for reading BDA value from fwnode property
-+		 * only if that property exist in DT.
-+		 */
-+		if (fwnode_property_present(dev_fwnode(hdev->dev.parent), "local-bd-address")) {
-+			set_bit(HCI_QUIRK_USE_BDADDR_PROPERTY, &hdev->quirks);
-+			bt_dev_info(hdev, "setting quirk bit to read BDA from fwnode later");
-+		} else {
-+			bt_dev_dbg(hdev, "local-bd-address` is not present in the devicetree so not setting quirk bit for BDA");
-+		}
-+
- 		hci_set_aosp_capable(hdev);
+diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
+index 9c08e728a675..83171f9e0912 100644
+--- a/arch/um/include/shared/kern_util.h
++++ b/arch/um/include/shared/kern_util.h
+@@ -51,7 +51,7 @@ extern void do_uml_exitcalls(void);
+  * Are we disallowed to sleep? Used to choose between GFP_KERNEL and
+  * GFP_ATOMIC.
+  */
+-extern int __cant_sleep(void);
++extern int __uml_cant_sleep(void);
+ extern int get_current_pid(void);
+ extern int copy_from_user_proc(void *to, void *from, int size);
+ extern int cpu(void);
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index e6c9b11b2033..76faaf1082ce 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -221,7 +221,7 @@ void arch_cpu_idle(void)
+ 	raw_local_irq_enable();
+ }
  
- 		ret = qca_read_soc_version(hdev, &ver, soc_type);
+-int __cant_sleep(void) {
++int __uml_cant_sleep(void) {
+ 	return in_atomic() || irqs_disabled() || in_interrupt();
+ 	/* Is in_interrupt() really needed? */
+ }
+diff --git a/arch/um/os-Linux/helper.c b/arch/um/os-Linux/helper.c
+index 9fa6e4187d4f..57a27555092f 100644
+--- a/arch/um/os-Linux/helper.c
++++ b/arch/um/os-Linux/helper.c
+@@ -45,7 +45,7 @@ int run_helper(void (*pre_exec)(void *), void *pre_data, char **argv)
+ 	unsigned long stack, sp;
+ 	int pid, fds[2], ret, n;
+ 
+-	stack = alloc_stack(0, __cant_sleep());
++	stack = alloc_stack(0, __uml_cant_sleep());
+ 	if (stack == 0)
+ 		return -ENOMEM;
+ 
+@@ -69,7 +69,7 @@ int run_helper(void (*pre_exec)(void *), void *pre_data, char **argv)
+ 	data.pre_data = pre_data;
+ 	data.argv = argv;
+ 	data.fd = fds[1];
+-	data.buf = __cant_sleep() ? uml_kmalloc(PATH_MAX, UM_GFP_ATOMIC) :
++	data.buf = __uml_cant_sleep() ? uml_kmalloc(PATH_MAX, UM_GFP_ATOMIC) :
+ 					uml_kmalloc(PATH_MAX, UM_GFP_KERNEL);
+ 	pid = clone(helper_child, (void *) sp, CLONE_VM, &data);
+ 	if (pid < 0) {
+@@ -116,7 +116,7 @@ int run_helper_thread(int (*proc)(void *), void *arg, unsigned int flags,
+ 	unsigned long stack, sp;
+ 	int pid, status, err;
+ 
+-	stack = alloc_stack(0, __cant_sleep());
++	stack = alloc_stack(0, __uml_cant_sleep());
+ 	if (stack == 0)
+ 		return -ENOMEM;
+ 
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.43.0
 
 
