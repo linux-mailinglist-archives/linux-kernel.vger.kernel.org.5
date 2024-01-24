@@ -1,218 +1,156 @@
-Return-Path: <linux-kernel+bounces-37561-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37562-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63E5783B1A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:59:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E8C683B1B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 20:02:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C353287D5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:59:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 041D2B2A4C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:59:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F744131E3A;
-	Wed, 24 Jan 2024 18:59:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F224131E3F;
+	Wed, 24 Jan 2024 18:59:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kvLPi7yF"
-Received: from mail-il1-f175.google.com (mail-il1-f175.google.com [209.85.166.175])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="aoVUMSOA"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D371131E24
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 18:59:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 124947CF1B
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 18:59:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706122744; cv=none; b=s+Kf/gO1rUPNlCdozA7dy2CnFE2K2sKQPJ4oxF1ExbmTk8jqblmeg89nrg5CB0U52+ps9I78YTDXuwGbWxHbpmgE7YrodhRuGK1U4g1ERjrnwY8aFmdZ7q4HbuV0lTJVZnf2q2pJRB3qYxztn2D/7Y5FYukkZgVaRD1ULWP6PMw=
+	t=1706122782; cv=none; b=j08C7tbP3IbGLWPNi6CxqVc5hWZPwekUQrTuD+U69DmO/eO39mjCqI3r0zdkG/SU8fZ6Hqf5C+mPmdHitV4NO2yIXaylFsrFShVYNekX35h7FtoNO95jlWGiG/MWJVPTt4Yq5QRGCE3ISahhofHJmkoYXUsue05X6u6a5cSDOc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706122744; c=relaxed/simple;
-	bh=pf6HAXY38MjiKrdrgIHZI2hzdVKiya6tRAX3fKMTagE=;
+	s=arc-20240116; t=1706122782; c=relaxed/simple;
+	bh=Yl6yynRwqlzywAWtFeFQqDvgiT8QYAC0mcPkalJ8b2c=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jYVPJPZCrIcYnxDp79DWX857Aq8C9C7KDYqabaE8WIfCOzky2k8f3UNphUcOqReOcM07dI78KHS88GNbrt9y89647A09SKcIogVo0ho446J8bDYN0R3IF0fSOF+rs1RGL3MkiPxH7fvqQAbZeFSjfNSEErSVRX9fRd8BOTbkfWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=kvLPi7yF; arc=none smtp.client-ip=209.85.166.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f175.google.com with SMTP id e9e14a558f8ab-3600b2c43a8so13155ab.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:59:02 -0800 (PST)
+	 To:Cc:Content-Type; b=KYCVO+fglcfuIHYf0sprj/I3bjkxJ2hF9sJpUmm/t/Qmv8t01Bjnatqz8rQhgUqnvRDJVnRTItTkkY7bxK8yL+TSV1un11AkeHoGxzTSAwZGkJnmGt8yGTRJjdt7X6Qe4r6iYQE3XqnRYOtZ+rQUoq6+Mt2sgCW+8EharqFkesk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=aoVUMSOA; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc2308fe275so4990206276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:59:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706122742; x=1706727542; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1706122780; x=1706727580; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=B9asDGqDhkNFDxcWQSWQOBO5y+hvi+No9XWYkklaHfY=;
-        b=kvLPi7yFgB6g+F2eFTRZRU5cTbyhfWjiDz5+Dqxe6CYElZiMVUTUN0sT1C6uk0cXAg
-         AYvgulV60uMF9QA7L7ti8dXNzpmMMihCEbk9K5D5zk+PlkY5KDSl3Og6dbtnj2ln4WwM
-         DvFLQMTpRy8sSHc0L06Hq968QBBOVEKqVX0KcD+qmvftJ1u3KQmi52ie2vMTO7XosWBD
-         eW4SiJ5fmBvI8MQet3mbqFprDl8Ihk1eJRex1UJZuNF8T7W3bbOGonAJTgdxhCupKzQ/
-         EJub8WB1PANaL/9HODhQ7F3zSSJePwFMttjv6uBmqiFh3Odvzdvf/gOQsiSgoCS8MDYk
-         4DKw==
+        bh=y6PL8UnNoNRmqQyb82Ctczzo51piu7gV+xPgMEYy95g=;
+        b=aoVUMSOA4QF5kBpCwGdc97wd9Od7X/0D8z9MgFxFqazFrF4I1T5tNk4sKesXpMwxU5
+         SATFctCLXjMPOR8riEDyKeaa2TeT9eR0dTSetg03rJK9mGWrtSbj382fYomz9b73sDoG
+         9Yay194Tt26nWzxjwAsqYP+O/jpWEpRoOv8cQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706122742; x=1706727542;
+        d=1e100.net; s=20230601; t=1706122780; x=1706727580;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=B9asDGqDhkNFDxcWQSWQOBO5y+hvi+No9XWYkklaHfY=;
-        b=rcajJKewHqE6DMABQATrv4nA+AEaL9VCYV+0SS/NDqWfby8LqZLfZe5A/jloFrr7sU
-         ChFM94wrZLTCtyNTtbH4ePLFLvIBVuto+MFEu7YPEqBHQ4grIUjr7PMPnJvUT3HP1tVS
-         7i7O0N7wpuPDu1I2wHTxZktUXvap3uhc/5yFm/yHoijwcYkxaWmxOBPKGTRh42R1mGpN
-         ZCW8YCsFvRacdnH7FaWwzsobpu/gwfmkLCwJWOvtjR4vfJblhQ40Bp4JqSgXfRb8RSp/
-         UQIUhQeR1CYDQQA4xT9fCoU1bkKGVUFReNmeGxZthBwDfe+3jSxFooc5pYH7w4F9DU71
-         BPZA==
-X-Gm-Message-State: AOJu0YzUJ/G04LBrdeE6ywckszxIDr3ZgV4nS3TibsJGpoXHbox1mr47
-	l51JXnQqUQGCTWlKIXIGlqXNKxUHAmnQgwCjNeRnGuDLw+dCqU5byo9OtEQepHFQ+0u03wLcExj
-	oGGXxFBOq/MhYKYRvOjoMplYjHdzjLOqzcJwI
-X-Google-Smtp-Source: AGHT+IEud34L//OA5jtGYMwK66C58nc43tzaCQZPGKNesGQqdsxO4FbQLZMsWuQ0yrFhdU9w3B4yN9gxnxauvhVEER8=
-X-Received: by 2002:a05:6e02:1c06:b0:360:1740:182b with SMTP id
- l6-20020a056e021c0600b003601740182bmr23482ilh.1.1706122741656; Wed, 24 Jan
- 2024 10:59:01 -0800 (PST)
+        bh=y6PL8UnNoNRmqQyb82Ctczzo51piu7gV+xPgMEYy95g=;
+        b=HvMCrPvB+L84G38vKHVr7WEagyu4PD4eIWrLj4HFjGlSxhkiRSG39Pq7g0ZcQzs64f
+         jCzIS4/9umTPj1xsynBcQOukgM+02UCzo8tO0khs346kELmUF8Or0AV7fm72iVP2GhWp
+         BL6RYAqB/VMHeNMlrySzxMUdg5fMr3vqdnMR9gFq1r7qIbG1jaTvHthd2f08ccuacKZ7
+         citZhmrPhwslREclvKPz54n6StB068dsoVPHwOv+LMIDfaqLhy9Onbqb+3ugUtL2+oG9
+         jgfxGXJuazTIufadCppdwJjPIed+mh+xmdugFvdLSpBpjM1pNQGeFwb0VlskCe7Dem9e
+         AKIg==
+X-Gm-Message-State: AOJu0YwsjgDlCCpJCTRiKTL+F6GLEJPsdOwg9ulk87V2t7156bhbx7Lk
+	A9HbD++cmnzFrBLelUFfdHZTMyR4Fd2lvI4hDrhKnqAg0YCc/O5p9dlJyzJY5dbu9fBLueHAVkz
+	Pb2jl7CBrH1V9Fh1EE4w1U4ghoct0tznW+rPs
+X-Google-Smtp-Source: AGHT+IEK2MoUyyeVyti680IBepHWRvLzn+5AeBV/afLBuANUkn6E3lt+kVYlsVSRbSC5Q2J15QVgz5mEwT37aAUypww=
+X-Received: by 2002:a25:9c03:0:b0:dbe:a209:3305 with SMTP id
+ c3-20020a259c03000000b00dbea2093305mr927061ybo.98.1706122779981; Wed, 24 Jan
+ 2024 10:59:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231212230224.1473300-1-weilin.wang@intel.com> <20231212230224.1473300-13-weilin.wang@intel.com>
-In-Reply-To: <20231212230224.1473300-13-weilin.wang@intel.com>
-From: Ian Rogers <irogers@google.com>
-Date: Wed, 24 Jan 2024 10:58:50 -0800
-Message-ID: <CAP-5=fXRZuvTk4Ronkam72CgKVzEA_qU-5FCnzEsxDL7wTaShA@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 11/18] perf stat: Add function to handle special
- events in hardware-grouping
-To: weilin.wang@intel.com
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>, 
-	Caleb Biggers <caleb.biggers@intel.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Yang Jihong <yangjihong1@huawei.com>
+References: <20240123223039.1471557-1-abhishekpandit@google.com>
+ <20240123143026.v1.1.Iacf5570a66b82b73ef03daa6557e2fc0db10266a@changeid>
+ <CACeCKaftJSGba3ebs58=cB5aRLuOnbvhQX2V6+5=t9GPC08_Uw@mail.gmail.com>
+ <ZbEV/qp/EhUkHVhA@kuha.fi.intel.com> <2024012405-stung-freckles-e196@gregkh>
+In-Reply-To: <2024012405-stung-freckles-e196@gregkh>
+From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Date: Wed, 24 Jan 2024 10:59:28 -0800
+Message-ID: <CANFp7mVEF36TCb_4vGbF-0wM-Vn4agT6NXVOrnnDSC0JVpnLmg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/3] usb: typec: ucsi: Limit read size on v1.2
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>, Prashant Malani <pmalani@chromium.org>, 
+	Abhishek Pandit-Subedi <abhishekpandit@google.com>, linux-usb@vger.kernel.org, jthies@google.com, 
+	Bjorn Andersson <andersson@kernel.org>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	Fabrice Gasnier <fabrice.gasnier@foss.st.com>, Hans de Goede <hdegoede@redhat.com>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Saranya Gopal <saranya.gopal@intel.com>, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 12, 2023 at 3:03=E2=80=AFPM <weilin.wang@intel.com> wrote:
->
-> From: Weilin Wang <weilin.wang@intel.com>
->
-> There are some special events like topdown events and TSC that are not
-> decribed in pmu-event JSON files. Add support to handle this type of
+Ack. Will make dev_dbg on the next iteration.
 
-nit: described.
+This seems like a good addition to the style guide too:
+https://www.kernel.org/doc/html/v6.7/process/coding-style.html#printing-ker=
+nel-messages.
+"When drivers are working properly, they are quiet. Prefer to use
+DEBUG messages unless something is wrong."
 
-> events. This should be considered as a temporary solution because includi=
-ng
-> these events in JSON files would be a better solution.
+What do you think Greg?
 
-Agreed on this being temporary. We have a similar hack with
-arch_evsel__must_be_in_group, could that be reused here?
-https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
-ee/tools/perf/arch/x86/util/evsel.c?h=3Dperf-tools-next#n41
-It doesn't cover TSC but parse-events makes TSC a separate group
-during parsing as the PMU (msr) differs from the PMU of the events
-(typically cpu). Fixing the metrics and events to be json is very
-do-able. I see on Icelake, for example, TOPDOWN.BACKEND_BOUND_SLOTS is
-available while frontend isn't.
-
-As an aside, we may want to treat msr as a software pmu:
-https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
-ee/tools/perf/util/pmu.c?h=3Dperf-tools-next#n1761
-which may be a metric regression.
-
-Thanks,
-Ian
-
-> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
-> ---
->  tools/perf/util/metricgroup.c | 25 +++++++++++++++++++++++--
->  tools/perf/util/metricgroup.h | 15 +++++++++++++++
->  2 files changed, 38 insertions(+), 2 deletions(-)
+On Wed, Jan 24, 2024 at 6:17=E2=80=AFAM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.=
-c
-> index 5d9ed22963be..03383f820e06 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -2023,6 +2023,15 @@ static int create_grouping(struct list_head *pmu_i=
-nfo_list,
->         return ret;
->  };
+> On Wed, Jan 24, 2024 at 03:51:58PM +0200, Heikki Krogerus wrote:
+> > On Wed, Jan 24, 2024 at 12:12:26AM -0800, Prashant Malani wrote:
+> > > Hi Abhishek,
+> > >
+> > > On Tue, Jan 23, 2024 at 2:30=E2=80=AFPM Abhishek Pandit-Subedi
+> > > <abhishekpandit@google.com> wrote:
+> > > >
+> > > > From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> > > >
+> > > > Between UCSI 1.2 and UCSI 2.0, the size of the MESSAGE_IN region wa=
+s
+> > > > increased from 16 to 256. In order to avoid overflowing reads for o=
+lder
+> > > > systems, add a mechanism to use the read UCSI version to truncate r=
+ead
+> > > > sizes on UCSI v1.2.
+> > > >
+> > > > Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> > > I have one nit (mentioned in side-band but reproducing here for consi=
+stency),
+> > > but will defer to the maintainer on that.
+> > >
+> > > The above notwithstanding, FWIW:
+> > > Reviewed-by: Prashant Malani<pmalani@chromium.org>
+> > >
+> > > > @@ -1556,6 +1569,15 @@ int ucsi_register(struct ucsi *ucsi)
+> > > >         if (!ucsi->version)
+> > > >                 return -ENODEV;
+> > > >
+> > > > +       /*
+> > > > +        * Version format is JJ.M.N (JJ =3D Major version, M =3D Mi=
+nor version,
+> > > > +        * N =3D sub-minor version).
+> > > > +        */
+> > > > +       dev_info(ucsi->dev, "Registered UCSI interface with version=
+ %x.%x.%x",
+> > > > +                UCSI_BCD_GET_MAJOR(ucsi->version),
+> > > > +                UCSI_BCD_GET_MINOR(ucsi->version),
+> > > > +                UCSI_BCD_GET_SUBMINOR(ucsi->version));
+> > >
+> > > nit: I think this doesn't need to be dev_info() and can be just
+> > > dev_dbg(), but will
+> > > defer to the maintainer.
+> >
+> > I think that's okay.
+> >
+> > Reviewewd-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 >
-> +static bool is_special_event(const char *id)
-> +{
-> +       for (int i =3D 0; i < SPECIAL_EVENT_MAX; i++) {
-> +               if (!strncmp(id, special_event_names[i], strlen(special_e=
-vent_names[i])))
-> +                       return true;
-> +       }
-> +       return false;
-> +}
-> +
->  /**
->   * hw_aware_build_grouping - Build event groupings by reading counter
->   * requirement of the events and counter available on the system from
-> @@ -2047,7 +2056,17 @@ static int hw_aware_build_grouping(struct expr_par=
-se_ctx *ctx __maybe_unused,
->         hashmap__for_each_entry(ctx->ids, cur, bkt) {
->                 const char *id =3D cur->pkey;
+> No, when drivers are working properly they are quiet, this needs to be
+> dev_dbg().
 >
-> -               pr_debug("found event %s\n", id);
-> +               if (is_special_event(id)) {
-> +                       struct metricgroup__event_info *event;
-> +
-> +                       event =3D event_info__new(id, "default_core", "0"=
-,
-> +                                               /*free_counter=3D*/true);
-> +                       if (!event)
-> +                               goto err_out;
-> +
-> +                       list_add(&event->nd, &event_info_list);
-> +                       continue;
-> +               }
->                 ret =3D get_metricgroup_events(id, etable, &event_info_li=
-st);
->                 if (ret)
->                         goto err_out;
-> @@ -2519,8 +2538,10 @@ int metricgroup__parse_groups(struct evlist *perf_=
-evlist,
->                 ret =3D hw_aware_parse_groups(perf_evlist, pmu, str,
->                             metric_no_threshold, user_requested_cpu_list,=
- system_wide,
->                             /*fake_pmu=3D*/NULL, metric_events, table);
-> -               if (!ret)
-> +               if (!ret) {
-> +                       pr_info("Hardware aware grouping completed\n");
->                         return 0;
-> +               }
->         }
+> thanks,
 >
->         return parse_groups(perf_evlist, pmu, str, metric_no_group, metri=
-c_no_merge,
-> diff --git a/tools/perf/util/metricgroup.h b/tools/perf/util/metricgroup.=
-h
-> index 51596e4b4341..37fdf8c5ba77 100644
-> --- a/tools/perf/util/metricgroup.h
-> +++ b/tools/perf/util/metricgroup.h
-> @@ -79,6 +79,21 @@ struct metric_expr {
->  #define TRANSFER_FIRST_BYTE(pos) (7 - pos)
->  #define TRANSFER_SEC_BYTE(pos) (23 - pos)
->
-> +/* Special events that are not described in pmu-event JSON files.
-> + * topdown-* and TSC use dedicated registers, set as free
-> + * counter for grouping purpose
-> + */
-> +enum special_events {
-> +       TOPDOWN =3D 0,
-> +       TSC     =3D 1,
-> +       SPECIAL_EVENT_MAX,
-> +};
-> +
-> +static const char *const special_event_names[SPECIAL_EVENT_MAX] =3D {
-> +       "topdown-",
-> +       "TSC",
-> +};
-> +
->  /**
->   * An event used in a metric. This info is for metric grouping.
->   */
-> --
-> 2.39.3
+> greg k-h
 >
 
