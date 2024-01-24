@@ -1,172 +1,129 @@
-Return-Path: <linux-kernel+bounces-37208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08EF283AC8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:56:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D2F283AC90
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:57:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B31CE29D8D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:56:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D81741F25830
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:57:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 486E141745;
-	Wed, 24 Jan 2024 14:54:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF49C33982;
+	Wed, 24 Jan 2024 14:56:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pj2mKTRr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JFLygRVd"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85F2532C88
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 14:54:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3543F2F26;
+	Wed, 24 Jan 2024 14:56:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706108078; cv=none; b=W6LD1rUvRn2pHuH5WYZiSH52c9xiQrDI8c7zYkc24gdyybkx/VjG3ykgo3Apmu43RTw696YTq2L+PbTx9RGZ+usHf6aVNtZG0WWlGKSGkmo3IrOF56U5ZyYpM1geme4TGpfwSpcYGumG8U+pW43QXOKKAxhEixD2mrhnGfgntxk=
+	t=1706108194; cv=none; b=cLhnIV2lgcsCRjZB4tPBKcu60BWRD+dcmlqOZFWegBn1g8VZMBP+2FZrS0bZE4HYVhcMk78v4XmDkfjyennALWNJd4wVQMgtU43QfWxPEVrT3p0Z29/xb+7EM5+pBTLL6mReAfs+DtBVE6/1OJkZlkRTqUq7HWYwwV4HKcHWe64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706108078; c=relaxed/simple;
-	bh=EN20Jf/orEGnGWTKkhnrX0y5TE3fu6bVQexb33h8Zgw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LLP0HEykKo3EAMG5cQupvw6wyc5WtQm0YH95aVMXj8o2eUTvIJU62ZtqVTOncrmXiR+wz58punnmxCCowo6XU5cSZ4AyxVVoz+pK+OUUD7e2Uwdt15+lTOVbJUSk3BtWbpIXnyQTwr8GNufPJSgURuSPP01bvVUu0rBGyWtHndU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pj2mKTRr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52974C433C7;
-	Wed, 24 Jan 2024 14:54:36 +0000 (UTC)
+	s=arc-20240116; t=1706108194; c=relaxed/simple;
+	bh=7/wklZ6oD0ECwz1vKnU18BgeWzOozsvAiODYnadkp4s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JaBuKgd4XADzmMlrs/R5kNKrlFjufMB5ysKjwI6L+fbSxEM8OChEcylT6+3enN1NPU3l9AWNQC8oZQBkPVLYCqLIbVmO4ZMYtG2/XJrCpdonjxQBg2KzrKKeATA70RvU7MPmDR1lfdmATn8RGhv2OX/m81rIZv2cGokXkqsiDnA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JFLygRVd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73B0EC433F1;
+	Wed, 24 Jan 2024 14:56:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706108078;
-	bh=EN20Jf/orEGnGWTKkhnrX0y5TE3fu6bVQexb33h8Zgw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=pj2mKTRrqqjBqq6BhTCRwxiKp3s55N2msA2nDLK63aWZfe2O8x6viPZ/yif0dl/Dr
-	 JMc6d/ZkZsn3hTGXrUzMeP8J2hsGCg98Gp/1wJKphm4jVpS4nT/q/nmH+h18dxx6W+
-	 OQ9sPxQvy680F1F2F/eQNG/sYDTltLIaT6lGYIj2xZ7CI76GgK1FoIHMHWZFMerHEa
-	 gZ/1AXmwmGmdnXlMPMib4a+5S0dZ+UlgUH4jm0J7W5LlOf3IyU3enU+F3Yz1hTpKHf
-	 onsLVNDxC52CNR38XMGgRQS/XdVDIAFnkC1abKhIrCvAre0cVzD/Is+daLc9kySpj4
-	 dKIQfZjFKBQNQ==
-Message-ID: <b2a3268a-7087-4ff5-9148-dcbc7c95e2bb@kernel.org>
-Date: Wed, 24 Jan 2024 22:54:33 +0800
+	s=k20201202; t=1706108193;
+	bh=7/wklZ6oD0ECwz1vKnU18BgeWzOozsvAiODYnadkp4s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JFLygRVdAi67WUWHRp4/WulZPT9untGPgaFZV/lYT18DrtkTQBhFtoUp91sZuVJyx
+	 0iUV4qnU6xBkADvpEtDb9X1XfomDS78VK7xZILwkZSCzvk2fFRL+DZpbh5Avu741mv
+	 mzgWrQax+cp0brWgly+g993OvOEcVjJ4pMzCs+9CVdDn9wyOJ1Z/0XIHejv9s7lFj2
+	 xTGlXAz1XrejcNZTnegODD9oXkWQRx/2qpmUxcXj60ZRuM0zKspabgcYsgxvzdLeeP
+	 9eZXD4hAbHFj6hjepm9qSpV3XXJEUtwPVYXetz7SfJvcBbk1xNDQusnlFJ0lvuUL55
+	 QxobEzuPn3zQQ==
+Date: Wed, 24 Jan 2024 08:56:31 -0600
+From: Rob Herring <robh@kernel.org>
+To: Amrit Anand <quic_amrianan@quicinc.com>
+Cc: krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, kernel@quicinc.com
+Subject: Re: [PATCH 0/2] Add board-id support for multiple DT selection
+Message-ID: <20240124145631.GA873781-robh@kernel.org>
+References: <1705749649-4708-1-git-send-email-quic_amrianan@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V1] f2fs: fix potentail deadloop issue in do_recover_data
-To: Zhiguo Niu <niuzhiguo84@gmail.com>
-Cc: Zhiguo Niu <zhiguo.niu@unisoc.com>, jaegeuk@kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
- ke.wang@unisoc.com
-References: <1703502715-11936-1-git-send-email-zhiguo.niu@unisoc.com>
- <74243f43-c129-4530-970c-4de2afcd307e@kernel.org>
- <CAHJ8P3KmnN3rc5yXh2ecg21Eu61srUJsJP8=TbPxfSu4dY91EQ@mail.gmail.com>
-Content-Language: en-US
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <CAHJ8P3KmnN3rc5yXh2ecg21Eu61srUJsJP8=TbPxfSu4dY91EQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1705749649-4708-1-git-send-email-quic_amrianan@quicinc.com>
 
-Zhiguo,
+On Sat, Jan 20, 2024 at 04:50:47PM +0530, Amrit Anand wrote:
+> Device manufacturers frequently ship multiple boards or SKUs under a
+> single software package. These software packages will ship multiple
+> devicetree blobs and require some mechanism to pick the correct DTB for
+> the board the software package was deployed. Introduce a common
+> definition for adding board identifiers to device trees. board-id
+> provides a mechanism for bootloaders to select the appropriate DTB which
+> is vendor/OEM-agnostic.
 
-Can you please check below version? Is it fine to you?
+Show me a 2nd user. Or does vendor/OEM-agnostic just mean vendors of 
+QCom devices? Multiple SoC families using this would help your case. I'm 
+not inclined to take it into the DTSpec without that.
 
-https://lore.kernel.org/linux-f2fs-devel/20240124144915.19445-1-chao@kernel.org
-
-On 2024/1/22 13:46, Zhiguo Niu wrote:
-> Hi Chao
 > 
-> On Mon, Jan 22, 2024 at 11:46 AM Chao Yu <chao@kernel.org> wrote:
->>
->> On 2023/12/25 19:11, Zhiguo Niu wrote:
->>> There is a potentail deadloop issue in the corner case of
->>> CONFIG_F2FS_FAULT_INJECTION is enabled and the return value
->>> of f2fs_reserve_new_block is error but not -ENOSPC, such as
->>> this error case:
->>> if (unlikely(is_inode_flag_set(dn->inode, FI_NO_ALLOC)))
->>>                return -EPERM;
->>
->> I don't see any path to trigger this error? am I missing something?
->>
->>> besides, the mainly error -ENOSPC has been handled as bug on,
->>> so other error cases can be proecssed normally without looping.
->>
->> commit 975756c41332bc5e523e9f843271ed5ab6aaaaaa
->> Author: Jaegeuk Kim <jaegeuk@kernel.org>
->> Date:   Thu May 19 11:57:21 2016 -0700
->>
->>       f2fs: avoid ENOSPC fault in the recovery process
->>
->>       This patch avoids impossible error injection, ENOSPC, during recovery process.
->>
->> Please check above patch, I guess intention of adding such loop is
->> to avoid mount failure due to fault injection was triggered in
->> f2fs_reserve_new_block().
->>
->> What about change as blew?
->> - keep the loop to avoid mount failure.
->> - remove bug_on() to avoid panic due to fault injection error.
->>
->> #define DEFAULT_RETRY_COUNT             8
->>
->>                  for (loops = DEFAULT_RETRY_COUNT; loops > 0; loops--) {
->>                          err = f2fs_reserve_new_block(&dn);
->>                          if (!err ||
->>                                  !IS_ENABLED(CONFIG_F2FS_FAULT_INJECTION))
->>                                  break;
->>                  }
+> Isn't that what the compatible property is for?
+> -----------------------------------------------
+> The compatible property can be used for board matching, but requires
+> bootloaders and/or firmware to maintain a database of possible strings
+> to match against or have complex compatible string matching. Compatible
+> string matching becomes complicated when there are multiple versions of
+> board: the device tree selector should recognize a DTB that cares to
+> distinguish between v1/v2 and a DTB that doesn't make the distinction.
+> An eeprom either needs to store the compatible strings that could match
+> against the board or the bootloader needs to have vendor-specific
+> decoding logic for the compatible string. Neither increasing eeprom
+> storage nor adding vendor-specific decoding logic is desirable.
+
+You could hash the compatible strings if it was just a size issue.
+
+> The solution proposed here is simpler to implement and doesn't require
+> updating firmware or bootloader for every new board.
 > 
-> Thanks for your detailed explanation and I understand.
-> It seems that the original process is also reasonable,
-> so it’s okay to keep it as it is.
->>
->> Thanks,
->>
->>>
->>> Fixes: 956fa1ddc132 ("f2fs: fix to check return value of f2fs_reserve_new_block()")
->>> Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
->>> ---
->>>    fs/f2fs/recovery.c | 26 ++++++++------------------
->>>    1 file changed, 8 insertions(+), 18 deletions(-)
->>>
->>> diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
->>> index 21381b7..5d658f6 100644
->>> --- a/fs/f2fs/recovery.c
->>> +++ b/fs/f2fs/recovery.c
->>> @@ -710,15 +710,10 @@ static int do_recover_data(struct f2fs_sb_info *sbi, struct inode *inode,
->>>                 */
->>>                if (dest == NEW_ADDR) {
->>>                        f2fs_truncate_data_blocks_range(&dn, 1);
->>> -                     do {
->>> -                             err = f2fs_reserve_new_block(&dn);
->>> -                             if (err == -ENOSPC) {
->>> -                                     f2fs_bug_on(sbi, 1);
->>> -                                     break;
->>> -                             }
->>> -                     } while (err &&
->>> -                             IS_ENABLED(CONFIG_F2FS_FAULT_INJECTION));
->>> -                     if (err)
->>> +                     err = f2fs_reserve_new_block(&dn);
->>> +                     if (err == -ENOSPC)
->>> +                             f2fs_bug_on(sbi, 1);
->>> +                     else if (err)
->>>                                goto err;
->>>                        continue;
->>>                }
->>> @@ -727,15 +722,10 @@ static int do_recover_data(struct f2fs_sb_info *sbi, struct inode *inode,
->>>                if (f2fs_is_valid_blkaddr(sbi, dest, META_POR)) {
->>>
->>>                        if (src == NULL_ADDR) {
->>> -                             do {
->>> -                                     err = f2fs_reserve_new_block(&dn);
->>> -                                     if (err == -ENOSPC) {
->>> -                                             f2fs_bug_on(sbi, 1);
->>> -                                             break;
->>> -                                     }
->>> -                             } while (err &&
->>> -                                     IS_ENABLED(CONFIG_F2FS_FAULT_INJECTION));
->>> -                             if (err)
->>> +                             err = f2fs_reserve_new_block(&dn);
->>> +                             if (err == -ENOSPC)
->>> +                                     f2fs_bug_on(sbi, 1);
->>> +                             else if (err)
->>>                                        goto err;
->>>                        }
->>>    retry_prev:
+> How is this better than Qualcomm's qcom,msm-id/qcom,board-id?
+> -------------------------------------------------------------
+> The selection process for devicetrees was Qualcomm-specific and not
+> useful for other devices and bootloaders that were not developed by
+> Qualcomm because a complex algorithm was used to implement. Board-ids
+> provide a matching solution that can be implemented by bootloaders
+> without introducing vendor-specific code. Qualcomm uses three
+> devicetree properties: msm-id (interchangeably: soc-id), board-id, and
+> pmic-id.  This does not scale well for use casese which use identifiers,
+> for example, to distinguish between a display panel. For a display
+> panel, an approach could be to add a new property: display-id, but now
+> bootloaders need to be updated to also read this property. We want to
+> avoid requiring to update bootloaders with new hardware identifiers: a
+> bootloader need only recognize the identifiers it can handle.
+
+So the id list will be always expanding list for every last component 
+that is 2nd sourced? The ChromeOS folks are also trying to solve that 
+problem.
+
+There's a similar issue for EFI boot with how to select an OS installed 
+DTB[1]. You might not care now, but users may later on (like we have 
+already with QCom devices with fixed bootloaders). If you do this 
+board-id route, then no doubt that compatible values won't be specific 
+enough or have suitable fallbacks to be used. Then EFI boot can't use 
+compatible either and needs to use this QCom specific logic. It may be a 
+common property name, but all the types you defined are QCom specific 
+and the matching logic is pretty much undocumented. I'm not saying we 
+have to use compatible. There wasn't even agreement to use it for EFI 
+boot case. This does need to work for multiple vendors and multiple boot 
+scenarios.
+
+Rob
+
+[1] https://lore.kernel.org/u-boot/20231114232012.GD6601@bill-the-cat/#r
 
