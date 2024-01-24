@@ -1,223 +1,136 @@
-Return-Path: <linux-kernel+bounces-36971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A6CF83A9A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:25:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CAFC83A9AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:25:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA6351F2B1DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:25:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9AFD28397D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:25:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE7E8634FB;
-	Wed, 24 Jan 2024 12:24:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A768C6310F;
+	Wed, 24 Jan 2024 12:25:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="G4Z//HQg"
-Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com [209.85.221.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="W3cK2siY"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64518634E9
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 12:24:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0D5ECA69
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 12:25:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706099048; cv=none; b=QuTKv69IXTs+S4Oq70qbsOrDxPuwznQOrfFL6zvF9KX9uoJ/l04ENYs/3BS7TnCGC7Wx+yyGPA1x5e7JMceYtkgBpDUqBa86OPdDvSY3PuiQezZ1yj6LyLRCmjHwl0DGPVrL/oB/eKGIS35PZvdBCqG+SGUguzC+L8rEROkmFe4=
+	t=1706099142; cv=none; b=UWAqboVUF0ZEgn2TpqJAlH0rWd6Hvz1rD9k7vvrsFuGH+M6RBVRWdHLNA/QAjtO0fiPJgPCQcclJRsH6bxIJUpi0DVsMeyuPiBP6pnvAkIJkcXExWmNupU5QgO+hjp7+lieedVhoax9IhlFkX46+TA0VnKeIp0yIZwigmoxljQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706099048; c=relaxed/simple;
-	bh=rGdFk8uHaZxrli54fy00MBEoautph1gscqn+/tFyVKo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Op4F9a0M/zdEqMz8aPBjWsNLmmhtumW1w9bGxTLe3y40qPQ72CfP8he27xaFMZeCctgMduEYUdtzuKJKd0H75DsBoHM6XZ849Sl/XN1+Ae+n+sYxVErD5vgY6DLX0wa/iZQWzXv/QYCtuktJxd4VJbyLDi/15FvQa66sxeC6mhk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=G4Z//HQg; arc=none smtp.client-ip=209.85.221.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vk1-f177.google.com with SMTP id 71dfb90a1353d-4bd3dcee54eso764431e0c.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 04:24:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706099045; x=1706703845; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1B/KKXJqlXiP4vwNoP9M2ztX30MmH6mObOLpZu8w8tU=;
-        b=G4Z//HQgvOgOkQHVGkOJ1IY1GtNE4UxO39ePWuJeqYS5nfNENRSPOOoiP6TSezNcNh
-         6CWlXren5o4V4+6nOC/koNUSqomrl6fizb+whHF4Ns/g7sPbmNq2nIRU0focE4o8Q1Em
-         YEi0+yU02JIIhdBpQAxReDtTonH+Ez9fq7ldVHJ9J8RitL5ssUguWWrSLbVJGC0clwfi
-         pHjyHzDgcqmDMMjxxwWKx22Wpzu1tLTL0FPbe1IKE+ZOQNJwYAB7ypMFF0xSIwxZPnRC
-         crb5Kt661ibdfFtrSljjUEfkCK7KbHBRI81Be1xDGC+PAoDIupkVvBQUjeX3jxnwqrAG
-         weLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706099045; x=1706703845;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1B/KKXJqlXiP4vwNoP9M2ztX30MmH6mObOLpZu8w8tU=;
-        b=PBs8VsrfVDymBqka/xR2z/41f2y3SgajhBCZyCAng5wN8rKHNECGiktw/e01IX0yoo
-         9eSHaFnV4TfJdmzokEQ5kjZSWepPd/TjAlh6H21ntUzMqtnvHcegwAHJbiT3tbmK7UkG
-         tKQQBVOqQlBd14kIvz1+fGF0EyQNbPnSEXgk6mnFyg4gcyue8U5iZvS22On0Dxo06/BL
-         SNm3JhkFR22P2snn5wzYK7lVIWbTaYq9Go5q59PXmkrDEUjJkkSLoGloELy1OMTZXJW1
-         omjt+WHGGs0RCvp+XeU2lv+GxYnj4BEYVMIKeLuJJiTJhyXnBOi9s/W47IzrL/3ALOsm
-         GXew==
-X-Gm-Message-State: AOJu0YzBCDcyGJrw5dnp6gZHab5lsfKgUWjuh2r6aQUy2E9sFnqkaCBF
-	fBDF6MFJqDkTuBzvMDkbh5LPuo0UaXrU7pwd13lV7XOmlglrCW9wRiPlI60HFOZ3LlfmFlOBNVG
-	ZHEy8TTVcTt/BxSVaMWu0lbWs/OGocLmrnBnruw==
-X-Google-Smtp-Source: AGHT+IGku4y0SXA0K+K1f2yfKzalu4Ew+iZYDkbMtOJf/XET/MR7IHirdCrkQGkQf3c4pXRvooJ32OSvS3GM8KahpKI=
-X-Received: by 2002:a05:6122:44b:b0:4b6:dbc2:1079 with SMTP id
- f11-20020a056122044b00b004b6dbc21079mr535782vkk.0.1706099045094; Wed, 24 Jan
- 2024 04:24:05 -0800 (PST)
+	s=arc-20240116; t=1706099142; c=relaxed/simple;
+	bh=hdLrqlT1YuQO57T7qv3Fix50b4rRfIshrK2u98Hr52A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LgN4tG19blVuP1BHPORdSxlzh194uLA9xo9CtDev13wXs0oNIKZ0xbV38ueiUPIDtrm24pIa97R9xu6lbdP4wQM1iOAQmgtJIs6pP0QInHT21BRjN1Qseea15kCPebUNuTNjVUnrE7cVYN5aSo+MJbgv5ygA5BN2v9exp07vNWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=W3cK2siY; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 063E040E00C5;
+	Wed, 24 Jan 2024 12:25:38 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id ZTaN3fkMc74B; Wed, 24 Jan 2024 12:25:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1706099135; bh=2e7i4QkwJtub1qe+RyKIh7wmtZv9acr9lQcqv94JXdE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=W3cK2siYsCcLtLESpixiTuZ4JgburWRzY2QBt6ThB9xjl9jG2y/ZcaUBUBKwyyOnT
+	 WYcP9Wpy7nBglwuFdp62ZEgDmPEpDqre/58pNI88D1CMAYcYDHQFoWHr2u+rHyA5UR
+	 /K15NZTAEhzZ+fgLTmkJJAuK5YI/QpUX/U6gPMVzb9CLnRX/sYb0Oem/kdhUxy8pXU
+	 mBF9V2bq+cIecIdbIcgL+ZlH0g9jcomv0uudRgbxxNiIC4SGt/lCIda86WmvYN8wvB
+	 uhKJJP34l/+YHCbleXK6hFhmvYNMce3BMhKoIwD5AftOyfmda4pFWtQ1fXS8oXZyji
+	 xKIm1Purt0OV4IgAXqaJyVeXSpWn99ugAC6cVlmG0ZiWTgfIi7N3aCgddSePegw1n5
+	 03VgcDesVWfqyF+bUs2YueaS3z5Xoe7ie/qMwjMm7l10F4QOsxtubmeEOk5CpqiNRg
+	 +RMCY/i51Yf1gcFeSN2bK7hYNBrA0iK5em2MVfheDdrZyuxNYuuKMde4Gl+C46s6pD
+	 3JanQVxQXsiQnUnX+eB5wEw6Op/xCc4Nl/NrKsS32P/7ZMlU8kIq6ULgNfXRCVgCy+
+	 6P9AXxuQ8hxCIXFVqIR92Kog8BzuXyoHiTBdy2V1pDw+3inFgIbUok8OtGP98J3QxQ
+	 9kRZcEEMIHtSwKitnkF42Dao=
+Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A99C740E01AE;
+	Wed, 24 Jan 2024 12:25:17 +0000 (UTC)
+Date: Wed, 24 Jan 2024 13:25:12 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Andrew Cooper <andrew.cooper3@citrix.com>,
+	Arjan van de Ven <arjan@linux.intel.com>,
+	Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
+	Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+	Sohil Mehta <sohil.mehta@intel.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Zhang Rui <rui.zhang@intel.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Feng Tang <feng.tang@intel.com>,
+	Andy Shevchenko <andy@infradead.org>,
+	Michael Kelley <mhklinux@outlook.com>,
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: Re: [patch v5 01/19] x86/cpu: Provide cpuid_read() et al.
+Message-ID: <20240124122512.GUZbEBqH0_5pb19sKr@fat_crate.local>
+References: <20240117115752.863482697@linutronix.de>
+ <20240117115908.344295552@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240123174544.648088948@linuxfoundation.org>
-In-Reply-To: <20240123174544.648088948@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Wed, 24 Jan 2024 17:53:52 +0530
-Message-ID: <CA+G9fYu1pXV_9LSn2T0PNaSUpH-WWtuhaDqj1h4u211DYXMT2A@mail.gmail.com>
-Subject: Re: [PATCH 6.7 000/638] 6.7.2-rc2 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240117115908.344295552@linutronix.de>
 
-On Tue, 23 Jan 2024 at 23:17, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.7.2 release.
-> There are 638 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 25 Jan 2024 17:44:25 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.7.2-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.7.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Tue, Jan 23, 2024 at 01:53:30PM +0100, Thomas Gleixner wrote:
+> +static inline void __cpuid_read(unsigned int leaf, unsigned int subleaf, u32 *regs)
+> +{
+> +	regs[CPUID_EAX] = leaf;
+> +	regs[CPUID_ECX] = subleaf;
+> +	__cpuid(regs, regs + 1, regs + 2, regs + 3);
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+You have defines for the regs - might as well use them:
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+	__cpuid(regs, regs + CPUID_EBX, regs + CPUID_ECX, regs + CPUID_EDX);
 
-## Build
-* kernel: 6.7.2-rc2
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-6.7.y
-* git commit: 2320541f64baa0c9f5313c2100809a2e26d333de
-* git describe: v6.7.1-639-g2320541f64ba
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.7.y/build/v6.7.1=
--639-g2320541f64ba
+> +}
+> +
+> +#define cpuid_subleaf(leaf, subleaf, regs) {		\
+> +	BUILD_BUG_ON(sizeof(*(regs)) != 16);		\
+> +	__cpuid_read(leaf, subleaf, (u32 *)(regs));	\
+> +}
+> +
+> +#define cpuid_leaf(leaf, regs) {			\
+> +	BUILD_BUG_ON(sizeof(*(regs)) != 16);		\
+> +	__cpuid_read(leaf, 0, (u32 *)(regs));		\
+> +}
+> +
+> +static inline void __cpuid_read_reg(unsigned int leaf, unsigned int subleaf,
+> +				    enum cpuid_regs_idx regidx, u32 *reg)
+> +{
+> +	u32 regs[4];
+> +
+> +	__cpuid_read(leaf, subleaf, regs);
+> +	*reg = regs[regidx];
 
-## Test Regressions (compared to v6.7.1)
+Why not do
 
-## Metric Regressions (compared to v6.7.1)
+	return regs[regidx];
 
-## Test Fixes (compared to v6.7.1)
+instead?
 
-## Metric Fixes (compared to v6.7.1)
+-- 
+Regards/Gruss,
+    Boris.
 
-## Test result summary
-total: 142436, pass: 124243, fail: 1105, skip: 16870, xfail: 218
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 145 total, 143 passed, 2 failed
-* arm64: 52 total, 50 passed, 2 failed
-* i386: 41 total, 38 passed, 3 failed
-* mips: 26 total, 26 passed, 0 failed
-* parisc: 4 total, 4 passed, 0 failed
-* powerpc: 36 total, 36 passed, 0 failed
-* riscv: 25 total, 24 passed, 1 failed
-* s390: 13 total, 13 passed, 0 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 46 total, 45 passed, 1 failed
-
-## Test suites summary
-* boot
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-exec
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-kcmp
-* kselftest-membarrier
-* kselftest-mincore
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-mptcp
-* kselftest-openat2
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-x86
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* network-basic-tests
-* perf
-* rcutorture
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+https://people.kernel.org/tglx/notes-about-netiquette
 
