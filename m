@@ -1,73 +1,118 @@
-Return-Path: <linux-kernel+bounces-37438-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BEE383B028
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:38:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FA5683B027
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:37:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1190B2BD20
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:34:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 05408B215EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:34:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAA3886AEC;
-	Wed, 24 Jan 2024 17:31:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C30EA1272BE;
+	Wed, 24 Jan 2024 17:32:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="aO5A95zm"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="bwBDisSK"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F09CF129A60;
-	Wed, 24 Jan 2024 17:31:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58F7B1272B0
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 17:32:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706117509; cv=none; b=qX9cceQpafldpiJfJFp4uPnormcNBU8NLOFK0+oOomZ3MQB2VywIIr7cSVbvpw5y+kGhOFJk9beX9ZlD1N2FObFqvYceAPmuCLelRo43wflK6dWFwsJBESUfPlooo7v0Mnh92Zp39JGvCLfHyqHTgte9b8lwZD/VybYGuItijM4=
+	t=1706117541; cv=none; b=tUkJS2W/ClbomZw8syaOkurF6A3jxi6sDg0/kUCgOTfPlbCGMIaK0mmeBhq6TCC3EndKjJfn2dkU+mBV1hYIf1XN+DMJNxx9t7urdq+DdtzhR9ltN+Di5Q27EjcNHAZgoNH6DaqhxuoD9CH7zB0AB385WwEJyvIK5nGC/vdS4CI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706117509; c=relaxed/simple;
-	bh=lspDAIXZuY1DjZ1sRgzqDRNzeXiD5+2IL3TOwpkncnE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Um77TYTadRkt66eKTwzt1VtTjMMRohzF1Rs5C2Xyl8JlrLu3BbNycOodrGe4bHvWoSnYq2Dk00Kn+pqKedyNouk80EjkcmABOSYPZlu2IU5qeBAKK1xTBOrZ9DUqGvNU0R/RNtP98byYC8QXLl1whJDABc8ou/BkoTdKAMKea9I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=aO5A95zm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 597CEC43390;
-	Wed, 24 Jan 2024 17:31:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1706117508;
-	bh=lspDAIXZuY1DjZ1sRgzqDRNzeXiD5+2IL3TOwpkncnE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aO5A95zm76NFWYdcSjOXnfMIwlK3rjpvBfhZT6QFAy7gq1v/oIUBJMFmg1Ily85PW
-	 3Nlo00EPdVOnOzSkv382qNb4e0lAQWFoBzL9EC/0Zq1POKIL3BCgJoW+CpOhlpYHlW
-	 njY+u3Vv7Ld2As/l8OH89Lhi0Vd6/5nPyYZzHR7Q=
-Date: Wed, 24 Jan 2024 09:31:47 -0800
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Mark Brown <broonie@kernel.org>, kernel@pengutronix.de,
-	Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-	linux-spi@vger.kernel.org
-Subject: Re: [PATCH v2 10/33] misc: gehc-achc: Follow renaming of SPI
- "master" to "controller"
-Message-ID: <2024012441-tweak-catching-f565@gregkh>
-References: <cover.1705944943.git.u.kleine-koenig@pengutronix.de>
- <9a5c94968010aaf0c1d013f357fcbef428bb11ce.1705944943.git.u.kleine-koenig@pengutronix.de>
+	s=arc-20240116; t=1706117541; c=relaxed/simple;
+	bh=L9WwAHFBlNfwynoK+bz4ENy/mk9uymDQGuGkhJ92QG8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=TKxEy4HX0nj+Op8+p9B0V5rITSxYkrzxopm9b40VxDpilr4UybhHb+WVxzr70XfUQoXkmEWrVEQlCBfLcFD8E2NM9z8CVeVa5aCpY0nu9AP7n0HocFIOGbkHOmXF3mzAJ8R487HShH0Cu8C7eTb1c8catKFDAExw8nC9jLf+JyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=bwBDisSK; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40OHW0kD059675;
+	Wed, 24 Jan 2024 11:32:00 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706117520;
+	bh=WifEWBVAqtT7VDYyujVHllrGH/B8fDTWzGvePRInBgI=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=bwBDisSKIG0jOFW4SPsd9u96vh1/QO0vVFqSecaUsDCk6uBb0FU9hsstPvmKw1L9U
+	 8uKN5mCuvNWw5mdnBMp91Y3A8E74Hq3t1nobulDEMX2lLbZjPerqQKrth8+uMrnMUZ
+	 Q+h57sxitWy+uKSdTMJeZ4XTllCkYyMp0EmtuEuA=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40OHW0Mu049176
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 24 Jan 2024 11:32:00 -0600
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 24
+ Jan 2024 11:31:59 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 24 Jan 2024 11:31:59 -0600
+Received: from [10.249.42.149] ([10.249.42.149])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40OHVxQS061836;
+	Wed, 24 Jan 2024 11:31:59 -0600
+Message-ID: <0ab47165-3ba3-4d34-aea0-9bc12fd5ff31@ti.com>
+Date: Wed, 24 Jan 2024 11:31:59 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9a5c94968010aaf0c1d013f357fcbef428bb11ce.1705944943.git.u.kleine-koenig@pengutronix.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] ARM: configs: keystone: Remove this defconfig
+Content-Language: en-US
+To: Nishanth Menon <nm@ti.com>
+CC: Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Santosh Shilimkar
+	<ssantosh@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20240124162857.111915-1-afd@ti.com>
+ <20240124162857.111915-2-afd@ti.com>
+ <20240124164116.k5ah56xvuclfkxdr@despise>
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <20240124164116.k5ah56xvuclfkxdr@despise>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Mon, Jan 22, 2024 at 07:07:05PM +0100, Uwe Kleine-König wrote:
-> In commit 8caab75fd2c2 ("spi: Generalize SPI "master" to "controller"")
-> some functions and struct members were renamed. To not break all drivers
-> compatibility macros were provided.
+On 1/24/24 10:41 AM, Nishanth Menon wrote:
+> On 10:28-20240124, Andrew Davis wrote:
+>> TI Keystone devices can and should use the common multi-v7 defconfig.
+>> Currently it is not clear which defconfig should be used and so config
+>> options for Keystone boards are added to either both defconfigs, or only
+>> one or the other. As nice as it is to have a config just for this platform
+>> it is a maintenance burden. As it is not used by generic distros it is not
+>> very useful to continue to maintain. Remove this defconfig.
+>>
+>> Signed-off-by: Andrew Davis <afd@ti.com>
+>> ---
+>>   arch/arm/configs/keystone_defconfig | 238 ----------------------------
+>>   1 file changed, 238 deletions(-)
+>>   delete mode 100644 arch/arm/configs/keystone_defconfig
+>>
 > 
-> To be able to remove these compatibility macros push the renaming into
-> this driver.
+> There are a bunch of downstream folks who will have recipe fails etc if
+> we do that. I am not sure we need to go down that route.
 > 
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+That is the point of this patch, we want to stop any remaining downstream
+folks from using this defconfig. It is not maintained nor updated like
+the multi_v7_defconfig, any new or needed options will only be added to
+multi-v7 defconfig.
+
+> I know we had intent on multi_v7_defconfig -> but as far as I recollect,
+> at least during armv7 it did'nt exactly pan out as it did on armv8.
+> 
+
+It worked for ARMv8 as it wasn't allowed go spin up custom defconfigs for
+every random platform. It will work here for many/most platforms just the
+same if they do what I'm doing here and remove their old unneeded defconfigs.
+
+Andrew
 
