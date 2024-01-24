@@ -1,189 +1,135 @@
-Return-Path: <linux-kernel+bounces-36488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 891FC83A196
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 06:55:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D28A683A199
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 06:56:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1870B1F2201B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 05:55:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6551DB22C7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 05:56:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97E4BF51A;
-	Wed, 24 Jan 2024 05:55:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D454CF501;
+	Wed, 24 Jan 2024 05:56:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ar5EsZ5/"
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="B5gNBuZd"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B436D308;
-	Wed, 24 Jan 2024 05:55:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 699FBE541;
+	Wed, 24 Jan 2024 05:56:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706075704; cv=none; b=FqwDr7H5pSduruUV1AJQ4M++wC/f1u/yC1jGFJkZ/PW/geMTPLZsLoOLv/Z9yqrVbVJMRnlLkvkiy9Zw3sVz9R/HMMi8cdzxa6VjIxtDEBlNX/8mbl8FoOKfYMw0OoR6pjQYpXpieBLR8RXi2DjKZrfq7hL4KrMhqdqdO4VHZeA=
+	t=1706075778; cv=none; b=rdh3NJUmXH5/D4XGRf5hbd9jylsiVpNpeSSJyAArVrQYeNhU1f7FJbs7JdPeVT/L/dVW9uraBVmPfnh18+S3IGtyPkQ6fdeOGBrzE2p3iUgN8wWsydHx5oQ0NNvtc4oZOZxkbtBos7OaRky9BaWU4AIViY0xUoHM4eAqziznq0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706075704; c=relaxed/simple;
-	bh=npa1m/eGWO2TJ3lJA4sggzZkOD1geiwAWdqHkEt5kO0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KfO83Iwk6Orb9NZ3GyydLi/vK+FP/Hv3W1b90UaWi5yLOHwddL+2GeC6qWCIXoz1XkNP8q1G7Veu9mxUyoSdlfOWJFT8RYbTbMav0xVyvmCvuGvP7PCWUMWUQT5Ko/svUDHOxYPRbz0XT2BRYakHvQOcnA0HHpT7BaatmcKCPZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ar5EsZ5/; arc=none smtp.client-ip=134.134.136.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706075703; x=1737611703;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=npa1m/eGWO2TJ3lJA4sggzZkOD1geiwAWdqHkEt5kO0=;
-  b=ar5EsZ5/r/NL2ZuPmSHSG6oRXv0aox57hij3QWdq9LhUWO1kLYgdW0QL
-   mQujy/8zEjeqkz/TNkoxVIK985zFMfe23jvaf519SNO1hGSLCuJUOEP8c
-   0MmM++dhT7oB6kit+aAcERPj/qAQ1N4qKoSgWVGEebpFyoNL5o2A8a5Qm
-   HhuGq9GmwUcAT+GDsPVDQRtUlhErh7oCjh+uIA/2wEYpeXwSZE3m8oWfW
-   h2TETiHNfJCULHEzknogWJDmK3Un58AA3lPBmag64M0gPFIEi3+w9ZG51
-   SgVssf48tQ/FiGEhEbzyu20ipbYttw5+PMtV5WPGXHaUneGWs9dyUH8M2
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="466023627"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="466023627"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 21:55:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="20610990"
-Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
-  by fmviesa002.fm.intel.com with ESMTP; 23 Jan 2024 21:54:54 -0800
-Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rSWDr-0007ub-37;
-	Wed, 24 Jan 2024 05:54:51 +0000
-Date: Wed, 24 Jan 2024 13:54:41 +0800
-From: kernel test robot <lkp@intel.com>
-To: Ziyang Huang <hzyitc@outlook.com>, mcoquelin.stm32@gmail.com
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	alexandre.torgue@foss.st.com, richardcochran@gmail.com,
-	p.zabel@pengutronix.de, matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com,
-	linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-	linux-mediatek@lists.infradead.org,
-	Ziyang Huang <hzyitc@outlook.com>
-Subject: Re: [PATCH 3/8] net: stmmac: Introduce Qualcomm IPQ50xx DWMAC driver
-Message-ID: <202401241342.SL4CiC8m-lkp@intel.com>
-References: <TYZPR01MB5556B8833322A83632709631C9762@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
+	s=arc-20240116; t=1706075778; c=relaxed/simple;
+	bh=Mtv9huBRB3XLSzYzkY5yNwfFSuBXgm9+U9XhIB4rkkw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=g6ei1Qb+b1Au4ZaGE+U07m+Z56gJMNiTWuNO7WfpIWdKKd0iXLqKVdy8NYHgAEym7BkaQmWCLjKABsHb7kXMz2ttwM9gCdWS3/Xx+8XWOWOkw+ps+/Ptbs4S6xMdRQxK4oQQ+3Ca1/5iGR995ouM/QvxRDHLWNz6w021tIpTPjA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=B5gNBuZd; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40O5u4M1010724;
+	Tue, 23 Jan 2024 23:56:04 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706075764;
+	bh=gUkEY0JOHv9rnjrrLI9cNW4bj/5kjOFDACovw2GyPXE=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=B5gNBuZdRqNUBbhY5NO6JIke2EgW3FSs+B8zmvPXjDDyR8nu0k+HHaBz+8a3nbnSR
+	 z4AkkIfyLDYeRjQ0hd8/WgROgkuhiCNBqvDt3KmOqdX1hSm9/HnM1G+iKs3ytggTND
+	 rwndFTjPiBH1WeL8sgjyVgansZ0+Ie4j3mS/XfG4=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40O5u4sx009517
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 23 Jan 2024 23:56:04 -0600
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 23
+ Jan 2024 23:56:04 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 23 Jan 2024 23:56:04 -0600
+Received: from [172.24.227.112] (jayesh-hp-probook-440-g8-notebook-pc.dhcp.ti.com [172.24.227.112])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40O5u02l019754;
+	Tue, 23 Jan 2024 23:56:01 -0600
+Message-ID: <0fcec921-0220-4251-afa4-44db5e80d2ef@ti.com>
+Date: Wed, 24 Jan 2024 11:26:00 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <TYZPR01MB5556B8833322A83632709631C9762@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: ti: k3-am62p-mcu/wakeup: Disable MCU and
+ wakeup R5FSS nodes
+Content-Language: en-US
+To: Vaishnav Achath <vaishnav.a@ti.com>, <nm@ti.com>, <vigneshr@ti.com>,
+        <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC: <bb@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <u-kumar1@ti.com>
+References: <20240121134017.374992-1-vaishnav.a@ti.com>
+From: Jayesh Choudhary <j-choudhary@ti.com>
+In-Reply-To: <20240121134017.374992-1-vaishnav.a@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi Ziyang,
+Hello Vaishnav,
 
-kernel test robot noticed the following build errors:
+On 21/01/24 19:10, Vaishnav Achath wrote:
+> K3 Remoteproc R5 driver requires reserved memory carveouts and
+> mailbox configuration to instantiate the cores successfully.
+> Since this is a board level dependency, keep the R5 subsytem
+> disabled at SoC dtsi, otherwise it results in probe errors like
+> below during AM62P SK boot:
+> 
+> r5fss@79000000: reserved memory init failed, ret = -22
+> r5fss@79000000: k3_r5_cluster_rproc_init failed, ret = -22
+> r5fss@78000000: reserved memory init failed, ret = -22
+> r5fss@78000000: k3_r5_cluster_rproc_init failed, ret = -22
+> 
+> Fixes: b5080c7c1f7e ("arm64: dts: ti: k3-am62p: Add nodes for more IPs")
+> 
+> Signed-off-by: Vaishnav Achath <vaishnav.a@ti.com>
 
-[auto build test ERROR on robh/for-next]
-[also build test ERROR on clk/clk-next pza/reset/next linus/master v6.8-rc1 next-20240123]
-[cannot apply to pza/imx-drm/next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Reviewed-by: Jayesh Choudhary <j-choudhary@ti.com>
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ziyang-Huang/net-phy-Introduce-Qualcomm-IPQ5018-internal-PHY-driver/20240121-204840
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
-patch link:    https://lore.kernel.org/r/TYZPR01MB5556B8833322A83632709631C9762%40TYZPR01MB5556.apcprd01.prod.exchangelabs.com
-patch subject: [PATCH 3/8] net: stmmac: Introduce Qualcomm IPQ50xx DWMAC driver
-config: powerpc-allmodconfig (https://download.01.org/0day-ci/archive/20240124/202401241342.SL4CiC8m-lkp@intel.com/config)
-compiler: clang version 18.0.0git (https://github.com/llvm/llvm-project a31a60074717fc40887cfe132b77eec93bedd307)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240124/202401241342.SL4CiC8m-lkp@intel.com/reproduce)
+> ---
+>   arch/arm64/boot/dts/ti/k3-am62p-mcu.dtsi    | 2 ++
+>   arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi | 1 +
+>   2 files changed, 3 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am62p-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-mcu.dtsi
+> index c4b0b91d70cf..14eb9ba836d3 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am62p-mcu.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am62p-mcu.dtsi
+> @@ -187,6 +187,8 @@ mcu_r5fss0: r5fss@79000000 {
+>   		ranges = <0x79000000 0x00 0x79000000 0x8000>,
+>   			 <0x79020000 0x00 0x79020000 0x8000>;
+>   		power-domains = <&k3_pds 7 TI_SCI_PD_EXCLUSIVE>;
+> +		status = "disabled";
+> +
+>   		mcu_r5fss0_core0: r5f@79000000 {
+>   			compatible = "ti,am62-r5f";
+>   			reg = <0x79000000 0x00008000>,
+> diff --git a/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
+> index 19f42b39394e..10a7059b2d9b 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
+> @@ -78,6 +78,7 @@ wkup_r5fss0: r5fss@78000000 {
+>   		ranges = <0x78000000 0x00 0x78000000 0x8000>,
+>   			 <0x78100000 0x00 0x78100000 0x8000>;
+>   		power-domains = <&k3_pds 119 TI_SCI_PD_EXCLUSIVE>;
+> +		status = "disabled";
+>   
+>   		wkup_r5fss0_core0: r5f@78000000 {
+>   			compatible = "ti,am62-r5f";
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401241342.SL4CiC8m-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> drivers/net/ethernet/stmicro/stmmac/dwmac-ipq50xx.c:94:13: error: call to undeclared function 'stmmac_probe_config_dt'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-      94 |         plat_dat = stmmac_probe_config_dt(pdev, stmmac_res.mac);
-         |                    ^
-   drivers/net/ethernet/stmicro/stmmac/dwmac-ipq50xx.c:94:13: note: did you mean 'devm_stmmac_probe_config_dt'?
-   drivers/net/ethernet/stmicro/stmmac/stmmac_platform.h:15:1: note: 'devm_stmmac_probe_config_dt' declared here
-      15 | devm_stmmac_probe_config_dt(struct platform_device *pdev, u8 *mac);
-         | ^
->> drivers/net/ethernet/stmicro/stmmac/dwmac-ipq50xx.c:94:11: error: incompatible integer to pointer conversion assigning to 'struct plat_stmmacenet_data *' from 'int' [-Wint-conversion]
-      94 |         plat_dat = stmmac_probe_config_dt(pdev, stmmac_res.mac);
-         |                  ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   2 errors generated.
-
-
-vim +/stmmac_probe_config_dt +94 drivers/net/ethernet/stmicro/stmmac/dwmac-ipq50xx.c
-
-    80	
-    81	static int ipq50xx_gmac_probe(struct platform_device *pdev)
-    82	{
-    83		struct device *dev = &pdev->dev;
-    84		struct stmmac_resources stmmac_res;
-    85		struct plat_stmmacenet_data *plat_dat;
-    86		struct ipq50xx_gmac *gmac;
-    87		int ret;
-    88	
-    89		ret = stmmac_get_platform_resources(pdev, &stmmac_res);
-    90		if (ret)
-    91			return dev_err_probe(dev, ret,
-    92					     "failed to get stmmac platform resources\n");
-    93	
-  > 94		plat_dat = stmmac_probe_config_dt(pdev, stmmac_res.mac);
-    95		if (IS_ERR_OR_NULL(plat_dat))
-    96			return dev_err_probe(dev, PTR_ERR(plat_dat),
-    97					     "failed to parse stmmac dt parameters\n");
-    98	
-    99		gmac = devm_kzalloc(dev, sizeof(*gmac), GFP_KERNEL);
-   100		if (!gmac)
-   101			return dev_err_probe(dev, -ENOMEM,
-   102					     "failed to allocate priv\n");
-   103	
-   104		gmac->dev = dev;
-   105	
-   106		memcpy(gmac->clks, ipq50xx_gmac_clks, sizeof(gmac->clks));
-   107		ret = devm_clk_bulk_get_optional(dev, ARRAY_SIZE(gmac->clks), gmac->clks);
-   108		if (ret)
-   109			return dev_err_probe(dev, ret,
-   110					     "failed to acquire clocks\n");
-   111	
-   112		ret = clk_bulk_prepare_enable(ARRAY_SIZE(gmac->clks), gmac->clks);
-   113		if (ret)
-   114			return dev_err_probe(dev, ret,
-   115					     "failed to enable clocks\n");
-   116	
-   117		gmac->rst = devm_reset_control_array_get_exclusive(dev);
-   118		if (IS_ERR_OR_NULL(gmac->rst))
-   119			return dev_err_probe(dev, PTR_ERR(gmac->rst),
-   120					     "failed to acquire reset\n");
-   121	
-   122		ret = reset_control_reset(gmac->rst);
-   123		if (ret)
-   124			return dev_err_probe(dev, ret,
-   125					     "failed to reset\n");
-   126	
-   127		gmac->uniphy = devm_phy_optional_get(dev, "uniphy");
-   128		if (IS_ERR(gmac->uniphy))
-   129			return dev_err_probe(dev, PTR_ERR(gmac->uniphy),
-   130					     "failed to acquire uniphy\n");
-   131	
-   132		plat_dat->bsp_priv = gmac;
-   133		plat_dat->serdes_powerup = ipq50xx_gmac_powerup;
-   134		plat_dat->fix_mac_speed = ipq50xx_gmac_fix_speed;
-   135	
-   136		return stmmac_dvr_probe(dev, plat_dat, &stmmac_res);
-   137	}
-   138	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks.
 
