@@ -1,189 +1,239 @@
-Return-Path: <linux-kernel+bounces-37410-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37409-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11D2D83AF6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:16:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10E2383AF70
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:16:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3733A1C21717
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:16:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD6C2B27252
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:15:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C1407FBD4;
-	Wed, 24 Jan 2024 17:15:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD41D7F7D8;
+	Wed, 24 Jan 2024 17:15:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rN9o9h/K"
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com [209.85.222.46])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="VnfCx64F"
+Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16DBF7E798
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 17:15:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D8F67E795
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 17:15:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706116545; cv=none; b=DqtNjVGpIFOmJnUYiQDG8CulTm3+ktIMk4Dt0a3GlXDltO93K59LmKbVfQNc79g6M9fgOM1OqOaxVJdOEHUt7F3wnjkzbAMWfCnnfVHRQwd02C88/bS5Iw+ataqeNuYMUxCsjPeuQ8QEpUMAgjx7YjNz8o+n5vBENV5ThWaAHBQ=
+	t=1706116543; cv=none; b=Gchw0rZ4qhbxQFVKMHK1pwlUWkL+5eZKAFdxp09vq6b5zLdkXUHrKBtmVG/7pKt1TqyheWA6RmJHM+bn0Ap1pjyllN99AR6/M6pMBgcV0I+im6JBEydGrSyF4djEVJB2kB5F4VYxu6aj1THDS5GrX22zHL6kVjrKw3QlVjqVVNk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706116545; c=relaxed/simple;
-	bh=t5IGydsPTxpNyHN66k8U6CTE14hh9iXkhF9jbwqknaE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VffuAvk/lTkfS70HVx3m4QfgeHEarq5Xm6dp3VSfArByiKWMKT0SNVZ3lBav1kgChJi+NA3aKX5T+SW4nzv+r/3b++TIhaCl7XrTJ8Rh8b2Dg1bCsD5iEVifCpKM2X5bjNnaGMqkP0MIULi1kKjGKNmH1UJTtvBtIoudexnZij0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rN9o9h/K; arc=none smtp.client-ip=209.85.222.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f46.google.com with SMTP id a1e0cc1a2514c-7d2e1a0337bso1799125241.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 09:15:43 -0800 (PST)
+	s=arc-20240116; t=1706116543; c=relaxed/simple;
+	bh=81mkfaPIV3l+5W5/Io29q5qBbGLhqIevhvpzE2K69N4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RVfUIg0hTvWSq6lEevVsMR2kXpadLMAUmxyjz6OdVV8tAbqEsQ5+VgBB5yN6ZMtBu+rMK5fO1MULybUUd4FrZdBXD9qFIjWpwZdF+oZ4UfzA563iwCpgcR1WHNIOImcTLBtLJiZrPklMtp6/z3wR4kl9p8DLKVnqA0O27YrGfoo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=VnfCx64F; arc=none smtp.client-ip=209.85.166.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-36197b6e875so29246935ab.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 09:15:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706116543; x=1706721343; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CBltU6iTnXDDudf22oqs+fdl0wSad9suT+55PGOStXc=;
-        b=rN9o9h/KWg1/LpDIV1oRyPEThG4Vbm/Bhd0Ah+DMNma8z7dj6uaNkvM7m9b/beoYD4
-         zVn8DUmsITeB285mxYIemklkepUQF5lDsk9oTJsUjtnA3L5+hb7enAm4owR83bLdX3hZ
-         nkO7hJXWonqe2Y8N5y50O1KstNRShMe9dJmOymN1awGpbVKXraY0k4T7flWLgVc17Jn5
-         84X4eNwq7Df3D6OhFe1KxkSkOOrsKSNGsk7+h0MQcbGxW62JiJXQJV55G0ETo+lZ5jDM
-         /syuMInNCnL0IReoLNS4m3ZSbFUZnadG2yJx95bVArOVl4d+mak7IsXHARuSI4wYy2Mp
-         9lqg==
+        d=chromium.org; s=google; t=1706116540; x=1706721340; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AtjqtWQJSzRmjQ40qBkgrmDmBtAr9tkAVMLkDK2JZy0=;
+        b=VnfCx64F72OBNkIfdUDDoV6Myo2Tdnhkw6ubhRLjupN8T8W/X8gQuAJNzqmUKeRJxj
+         iNv8zR3hOgnwtmWu6Ln+UpXmSS3qzllCzZlr+nihoCel2GOEhd+l+8kawKYrvFljxgh0
+         nx78CSWFegodh+BpvFR1sFHSAi0iD8rw66Ncg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706116543; x=1706721343;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CBltU6iTnXDDudf22oqs+fdl0wSad9suT+55PGOStXc=;
-        b=KazASc6XPi+LlZuJp4vnvZJ2Ncn9tRtcU8AhPmHiJgYktULoA2bguXV5hrjc/HvSkO
-         qq8eUC2OW1WO2UeoHXPFRjYMdZgw0sd8ISDam1jXKB4d+WEgnUcJiFGOszedWfHdqxru
-         8IUsZd7vRv1/EiI7hqw5LzpQMz/1s3lk6CwLn91nL2C4CV4OGDCBwaEpXlKR4cvSNIzU
-         h+UvUo0jIyj8XKMd9n7YdQyeyTq+6n6Bt16CN7X3y+B29ScVkxwpeUCyQmy+hTTORX0i
-         OiBYOMEe3C2zEo8Tn0aMZr0kGwYiL7tnh1SUPUzed11SZ9kEUy6E4Uzs7+nybqNDmjY+
-         s5nQ==
-X-Gm-Message-State: AOJu0Yz494av/rcvVXtdxxGaFrNWl7cnz48JZYOCgcQR9JOOvzPVvsrD
-	CEEn2zUBE1JJSnTG5VSF+WYklqzJb0ZQ7OEwxI8WmJy4DT2TO5n7RDNokSabTf3rTssaefosd1P
-	nkEtEB4TNf2KbHRCKKoLwR9NqRhg2iA3mYS4k
-X-Google-Smtp-Source: AGHT+IHXa1B91nQv5quzIFRRmEI+jn6X4HE0E9upQHh7HSHIAVIGfrH1VLoqq6fnvybWVIGkXPToihp/9GWlCaOxZSc=
-X-Received: by 2002:a05:6122:181c:b0:4bd:5537:c9bd with SMTP id
- ay28-20020a056122181c00b004bd5537c9bdmr1784548vkb.12.1706116542805; Wed, 24
- Jan 2024 09:15:42 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706116540; x=1706721340;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AtjqtWQJSzRmjQ40qBkgrmDmBtAr9tkAVMLkDK2JZy0=;
+        b=nivVqMbWlWvMGne65mpNlahh4kDe07CYTp8LDyU+SscaV/f3/N5bPzAnnpk1HNlFwf
+         wLs1/5Cg/rROeo9S2LgrcCo7PtkqtUB/JgNlZy83IXTXgyzgwzCDhR5Ok9Q2rpvMuRnK
+         EWIXkBrdc3HI7alNFuz3dMb6tQM3TrLyD/wgyCX0fCutCJdQuEpZTWIz00aAv2mMnRGp
+         TGSE4SnQ7V3a2if+ljFYnmKmYlG+Btq30t+0hEkORdyM42baGB4xv+SwqRDJABXr2o/Z
+         UqtcGHT/Lw25kheRwSlNY/uH8TTDGiovijHxNKhkEq4x1LWgVZMNTbYqSrb9aLNThc9l
+         H8oQ==
+X-Gm-Message-State: AOJu0Yyyp6zc0Y6a0altOFg92oazHuGxUPiGh/KaNkIm6cJcgDf04InQ
+	wklswpbGtJhyZV4U8o+b/S/Bd4vtE1hKjX/jq7zPGo1iQsNnO+dFmlVrmc/f64kEqECn5dyz1rM
+	=
+X-Google-Smtp-Source: AGHT+IEumDQJqaq75I9i1VHN14DXtK52FPlkPRPNODL5r/5aNFoRHKNDUtbUXZxMuQxI43sueBUEvA==
+X-Received: by 2002:a92:c9c6:0:b0:361:a5a6:aa7b with SMTP id k6-20020a92c9c6000000b00361a5a6aa7bmr1577157ilq.38.1706116540247;
+        Wed, 24 Jan 2024 09:15:40 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id i15-20020a63cd0f000000b005ce6b79ab6asm12175650pgg.82.2024.01.24.09.15.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 09:15:39 -0800 (PST)
+Date: Wed, 24 Jan 2024 09:15:38 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Kevin Locke <kevin@kevinlocke.name>,
+	John Johansen <john.johansen@canonical.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Mateusz Guzik <mjguzik@gmail.com>,
+	Al Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-security-module@vger.kernel.org
+Subject: Re: [6.8-rc1 Regression] Unable to exec apparmor_parser from
+ virt-aa-helper
+Message-ID: <202401240910.E0449F0F@keescook>
+References: <ZbE4qn9_h14OqADK@kevinlocke.name>
+ <202401240832.02940B1A@keescook>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124164211.1141742-1-glider@google.com>
-In-Reply-To: <20240124164211.1141742-1-glider@google.com>
-From: Marco Elver <elver@google.com>
-Date: Wed, 24 Jan 2024 18:15:04 +0100
-Message-ID: <CANpmjNP-9hV_d3zEHhUSpdUYpM1BAFKmTTzWwe5o5ubtwTvQAQ@mail.gmail.com>
-Subject: Re: [PATCH] mm: kmsan: remove runtime checks from kmsan_unpoison_memory()
-To: Alexander Potapenko <glider@google.com>
-Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, kasan-dev@googlegroups.com, 
-	Dmitry Vyukov <dvyukov@google.com>, Ilya Leoshkevich <iii@linux.ibm.com>, 
-	Nicholas Miehlbradt <nicholas@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202401240832.02940B1A@keescook>
 
-On Wed, 24 Jan 2024 at 17:42, 'Alexander Potapenko' via kasan-dev
-<kasan-dev@googlegroups.com> wrote:
->
-> Similarly to what's been done in commit ff444efbbb9be ("kmsan: allow
-> using __msan_instrument_asm_store() inside runtime"), it should be safe
-> to call kmsan_unpoison_memory() from within the runtime, as it does not
-> allocate memory or take locks. Remove the redundant runtime checks.
->
-> This should fix false positives seen with CONFIG_DEBUG_LIST=y when
-> the non-instrumented lib/stackdepot.c failed to unpoison the memory
-> chunks later checked by the instrumented lib/list_debug.c
->
-> Also replace the implementation of kmsan_unpoison_entry_regs() with
-> a call to kmsan_unpoison_memory().
->
-> Signed-off-by: Alexander Potapenko <glider@google.com>
-> Cc: Marco Elver <elver@google.com>
-> Cc: Dmitry Vyukov <dvyukov@google.com>
-> Cc: Ilya Leoshkevich <iii@linux.ibm.com>
-> Cc: Nicholas Miehlbradt <nicholas@linux.ibm.com>
+On Wed, Jan 24, 2024 at 08:35:29AM -0800, Kees Cook wrote:
+> On Wed, Jan 24, 2024 at 09:19:54AM -0700, Kevin Locke wrote:
+> > Hello Linux developers,
+> > 
+> > Using AppArmor 3.0.12 and libvirt 10.0.0 (from Debian packages) with
+> > Linux 6.8-rc1 (unpatched), I'm unable to start KVM domains due to
+> > AppArmor errors. Everything works fine on Linux 6.7.  After attempting
+> > to start a domain, syslog contains:
+> > 
+> > libvirtd[38705]: internal error: Child process (LIBVIRT_LOG_OUTPUTS=3:stderr /usr/lib/libvirt/virt-aa-helper -c -u libvirt-4fad83ef-4285-4cf5-953c-5c13d943c1fb) unexpected exit status 1: virt-aa-helper: error: apparmor_parser exited with error
+> > libvirtd[38705]: internal error: cannot load AppArmor profile 'libvirt-4fad83ef-4285-4cf5-953c-5c13d943c1fb'
+> > 
+> > dmesg contains the additional message:
+> > 
+> > audit: type=1400 audit(1706112657.438:74): apparmor="DENIED" operation="open" class="file" profile="virt-aa-helper" name="/usr/sbin/apparmor_parser" pid=6333 comm="virt-aa-helper" requested_mask="r" denied_mask="r" fsuid=0 ouid=0
+> 
+> Oh, yikes. This means the LSM lost the knowledge that this open is an
+> _exec_, not a _read_.
+> 
+> I will starting looking at this. John might be able to point me in the
+> right direction more quickly, though.
 
-Tested-by: Marco Elver <elver@google.com>
+Here's a possible patch for in_execve. Can you test this? I'm going to
+also examine switching to FMODE_EXEC ... I think I know why this wasn't
+done in the past, but I have to check the history...
 
-Nice - this fixes the false positives I've seen in testing the new
-stack depot changes.
 
-But I think this version of the patch wasn't compile-tested, see below.
+diff --git a/fs/exec.c b/fs/exec.c
+index 39d773021fff..ddd0fa2e84a7 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -1505,7 +1505,7 @@ static int prepare_bprm_creds(struct linux_binprm *bprm)
+ /* Matches do_open_execat() */
+ static void do_close_execat(struct file *file)
+ {
+-	if (!file)
++	if (IS_ERR_OR_NULL(file))
+ 		return;
+ 	allow_write_access(file);
+ 	fput(file);
+@@ -1530,23 +1530,30 @@ static void free_bprm(struct linux_binprm *bprm)
+ 		kfree(bprm->interp);
+ 	kfree(bprm->fdpath);
+ 	kfree(bprm);
++	current->in_execve = 0;
+ }
+ 
+ static struct linux_binprm *alloc_bprm(int fd, struct filename *filename, int flags)
+ {
+-	struct linux_binprm *bprm;
+-	struct file *file;
++	struct linux_binprm *bprm = NULL;
++	struct file *file = NULL;
+ 	int retval = -ENOMEM;
+ 
++	/*
++	 * Mark this "open" as an exec attempt for the LSMs. We reset
++	 * it in bprm_free() (and our common error path below).
++	 */
++	current->in_execve = 1;
++
+ 	file = do_open_execat(fd, filename, flags);
+-	if (IS_ERR(file))
+-		return ERR_CAST(file);
++	if (IS_ERR(file)) {
++		retval = PTR_ERR(file);
++		goto out_cleanup;
++	}
+ 
+ 	bprm = kzalloc(sizeof(*bprm), GFP_KERNEL);
+-	if (!bprm) {
+-		do_close_execat(file);
+-		return ERR_PTR(-ENOMEM);
+-	}
++	if (!bprm)
++		goto out_cleanup;
+ 
+ 	bprm->file = file;
+ 
+@@ -1559,7 +1566,7 @@ static struct linux_binprm *alloc_bprm(int fd, struct filename *filename, int fl
+ 			bprm->fdpath = kasprintf(GFP_KERNEL, "/dev/fd/%d/%s",
+ 						  fd, filename->name);
+ 		if (!bprm->fdpath)
+-			goto out_free;
++			goto out_cleanup;
+ 
+ 		/*
+ 		 * Record that a name derived from an O_CLOEXEC fd will be
+@@ -1581,8 +1588,11 @@ static struct linux_binprm *alloc_bprm(int fd, struct filename *filename, int fl
+ 	if (!retval)
+ 		return bprm;
+ 
+-out_free:
+-	free_bprm(bprm);
++out_cleanup:
++	if (bprm)
++		free_bprm(bprm);
++	do_close_execat(file);
++	current->in_execve = 0;
+ 	return ERR_PTR(retval);
+ }
+ 
+@@ -1633,6 +1643,7 @@ static void check_unsafe_exec(struct linux_binprm *bprm)
+ 	}
+ 	rcu_read_unlock();
+ 
++	/* "users" and "in_exec" locked for copy_fs() */
+ 	if (p->fs->users > n_fs)
+ 		bprm->unsafe |= LSM_UNSAFE_SHARE;
+ 	else
+@@ -1863,7 +1874,6 @@ static int bprm_execve(struct linux_binprm *bprm)
+ 	 * where setuid-ness is evaluated.
+ 	 */
+ 	check_unsafe_exec(bprm);
+-	current->in_execve = 1;
+ 	sched_mm_cid_before_execve(current);
+ 
+ 	sched_exec();
+@@ -1880,7 +1890,6 @@ static int bprm_execve(struct linux_binprm *bprm)
+ 	sched_mm_cid_after_execve(current);
+ 	/* execve succeeded */
+ 	current->fs->in_exec = 0;
+-	current->in_execve = 0;
+ 	rseq_execve(current);
+ 	user_events_execve(current);
+ 	acct_update_integrals(current);
+@@ -1899,7 +1908,6 @@ static int bprm_execve(struct linux_binprm *bprm)
+ 
+ 	sched_mm_cid_after_execve(current);
+ 	current->fs->in_exec = 0;
+-	current->in_execve = 0;
+ 
+ 	return retval;
+ }
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 47ff3b35352e..0d944e92a43f 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -1748,6 +1748,7 @@ static int copy_fs(unsigned long clone_flags, struct task_struct *tsk)
+ 	if (clone_flags & CLONE_FS) {
+ 		/* tsk->fs is already what we want */
+ 		spin_lock(&fs->lock);
++		/* "users" and "in_exec" locked for check_unsafe_exec() */
+ 		if (fs->in_exec) {
+ 			spin_unlock(&fs->lock);
+ 			return -EAGAIN;
 
-> ---
->  mm/kmsan/hooks.c | 36 +++++++++++++-----------------------
->  1 file changed, 13 insertions(+), 23 deletions(-)
->
-> diff --git a/mm/kmsan/hooks.c b/mm/kmsan/hooks.c
-> index 5d6e2dee5692a..8a990cbf6d670 100644
-> --- a/mm/kmsan/hooks.c
-> +++ b/mm/kmsan/hooks.c
-> @@ -359,6 +359,12 @@ void kmsan_handle_dma_sg(struct scatterlist *sg, int nents,
->  }
->
->  /* Functions from kmsan-checks.h follow. */
-> +
-> +/*
-> + * To create an origin, kmsan_poison_memory() unwinds the stacks and stores it
-> + * into the stack depot. This may cause deadlocks if done from within KMSAN
-> + * runtime, therefore we bail out if kmsan_in_runtime().
-> + */
->  void kmsan_poison_memory(const void *address, size_t size, gfp_t flags)
->  {
->         if (!kmsan_enabled || kmsan_in_runtime())
-> @@ -371,47 +377,31 @@ void kmsan_poison_memory(const void *address, size_t size, gfp_t flags)
->  }
->  EXPORT_SYMBOL(kmsan_poison_memory);
->
-> +/*
-> + * Unlike kmsan_poison_memory(), this function can be used from within KMSAN
-> + * runtime, because it does not trigger allocations or call instrumented code.
-> + */
->  void kmsan_unpoison_memory(const void *address, size_t size)
->  {
->         unsigned long ua_flags;
->
-> -       if (!kmsan_enabled || kmsan_in_runtime())
-> +       if (!kmsan_enabled)
->                 return;
->
->         ua_flags = user_access_save();
-> -       kmsan_enter_runtime();
->         /* The users may want to poison/unpoison random memory. */
->         kmsan_internal_unpoison_memory((void *)address, size,
->                                        KMSAN_POISON_NOCHECK);
-> -       kmsan_leave_runtime();
->         user_access_restore(ua_flags);
->  }
->  EXPORT_SYMBOL(kmsan_unpoison_memory);
->
->  /*
-> - * Version of kmsan_unpoison_memory() that can be called from within the KMSAN
-> - * runtime.
-> - *
-> - * Non-instrumented IRQ entry functions receive struct pt_regs from assembly
-> - * code. Those regs need to be unpoisoned, otherwise using them will result in
-> - * false positives.
-> - * Using kmsan_unpoison_memory() is not an option in entry code, because the
-> - * return value of in_task() is inconsistent - as a result, certain calls to
-> - * kmsan_unpoison_memory() are ignored. kmsan_unpoison_entry_regs() ensures that
-> - * the registers are unpoisoned even if kmsan_in_runtime() is true in the early
-> - * entry code.
-> + * Version of kmsan_unpoison_memory() called from IRQ entry functions.
->   */
->  void kmsan_unpoison_entry_regs(const struct pt_regs *regs)
->  {
-> -       unsigned long ua_flags;
-> -
-> -       if (!kmsan_enabled)
-> -               return;
-> -
-> -       ua_flags = user_access_save();
-> -       kmsan_internal_unpoison_memory((void *)regs, sizeof(*regs),
-> -                                      KMSAN_POISON_NOCHECK);
-> -       user_access_restore(ua_flags);
-> +       kmsan_unpoison_memory((void *)regs, sizeof(*regs);
-
-missing ')', probably:
-
-+       kmsan_unpoison_memory((void *)regs, sizeof(*regs));
+-- 
+Kees Cook
 
