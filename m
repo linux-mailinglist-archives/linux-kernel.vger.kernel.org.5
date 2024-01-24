@@ -1,166 +1,143 @@
-Return-Path: <linux-kernel+bounces-37707-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37708-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFAA783B42C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:41:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDC4283B436
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:43:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CC0B1F23F9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 21:41:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 10C531C235DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 21:43:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6801135418;
-	Wed, 24 Jan 2024 21:41:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 406AB135400;
+	Wed, 24 Jan 2024 21:43:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jzlf/m6t"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HULPRXyk"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34D75135402
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 21:41:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B27C131E26;
+	Wed, 24 Jan 2024 21:43:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706132489; cv=none; b=Zb11OAKgATR6eM65baVndSytoBF/GIFNmDWv/GmJB06nt5TYWUyVSjRDYz5fWSBEtUwO16vhcbBOzYpuad5QaW5Mnghv/x2pX6Yg8ST939C7Ej1SSufm4K8E2mTnNcYExLjG6RrW0X6xfW64r9vG9IfenK0J2MXMfD1m66OImbY=
+	t=1706132625; cv=none; b=IhTwj05em74pwCj3NPmWwOyQcv2RvpQRONHAkjofrqX5S4cqFiejUsTNCOqHWTUJwU6jzm096/iSN0BXTy4l9uNeqTy2J9PHwH//JmVvDR2h02tKCmAwb2MHC+2Oj1CwTnVSMLVrpZD372GMpRr32ce2ez17/wuP1jSG0qqWyGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706132489; c=relaxed/simple;
-	bh=qfJAC4HXvVMWIYaEASPBnMaLjXS1T8A8l0vIjG+Z74U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BHFNx8HymXDMhbo6MSRFxbUK2SThxGLFU75MffI1vsaw7nyBOeiV/fWUr/cBjYvRVeTXD8aCWH9Y01vOeL1Jj1oxo37irPfKSDJzkzYygixjFhBk2NLEvXLmRM2gn+pfWyUF4v7PkCyVe4OBltAKSo2peiz5urQCkO6VBBtnPqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jzlf/m6t; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55818b7053eso5319a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 13:41:27 -0800 (PST)
+	s=arc-20240116; t=1706132625; c=relaxed/simple;
+	bh=ZF8/t0mRHALw+nHwdJFr6ZZiZtwLtij4wgJWPTKNluM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GHuHHVWYwmxjOoYCceER8VumKkl18CtpJL+WoqcGn1OG5WfpDAuNMEt6z8NCOlx3xOgvKtqsCGuKTxi4ANaDWgi214BoxNN0nceNs4728S97BJg//Bf5WUGwrGWFX+MH4pvrNgeSJtBZo3/uljU1HeJF43zEqlc/hazVL8vzJ/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HULPRXyk; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-337cf4ac600so5515297f8f.3;
+        Wed, 24 Jan 2024 13:43:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706132486; x=1706737286; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NToZqtE5w7bxKN+3pRr0bsg8tIkz9lpNWRvoqa9C32U=;
-        b=jzlf/m6tFfcKIWBxQ44N60HF/GbGGhvCmrah/cagGrVrfThExacQOUHuAMvJQ+57t5
-         +FTOk5nK4+2WVT8MV4FJh5PgPXt4jJyEKCP5EWfqnqtVyBLrvriqASsEGe4sWzZkIgdP
-         fKkgi21+XGaHfHKICLoxda0VEwxKCKkYxrbwsFabJM6n4dpUlv8i+bWJ8WIqcYfsM/Cb
-         4yQFmOSt7zFyWnVT8j1leWfjzXi3cdnm72fbR7saOr/G01pYrYYXzOltjNG+d6N2VKI2
-         D6cQDbt2W8WKBXPFymf6aEwfK64nWdSkQX2HdNMtI96NV7bfYquFRkiJY8BBzQFtSuBH
-         KSew==
+        d=gmail.com; s=20230601; t=1706132622; x=1706737422; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=tg6vlOJdIGK8tq0vrQAo3bCHPF7VlBCqruzxipzmg3E=;
+        b=HULPRXykY5fOcPszzcYbmVnsptUiG8VeiF5a+ltQXOcg1fItkGNxxsu5NOm8jo4SbI
+         DXON1+Q7tRlVXNbQe+49RB5osX+vfAC1cCSyluKgBPRWE0v9BFt/rGQznwbvN6+1VJ8L
+         0lBKFql9gwbM0tF3k7wuPHRJznIEE8q8tFA/AMBA4HVrtfEyZKNhOifEq4fwZSWuHgc8
+         rkCeOqCF4PtnsK8WPM31+j5OLmOspWNS2JTZ4rSEqDPXcfaMEEFCG0ZjU6oRXbELz74j
+         hjiGwcJWu3mBS6bNmUXG90W7eLsPRLOUh9tW0F9T7j1TF7M5PRmLwBKoTl1m0RB5/rJz
+         +oSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706132486; x=1706737286;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NToZqtE5w7bxKN+3pRr0bsg8tIkz9lpNWRvoqa9C32U=;
-        b=MyeqY1sOVJAdpQ9PdLloPMhPP0IknpwvrGo3cfh5P+MXkcdRxADSurHXOJ0tznhSxq
-         O+xmrc07CQksWkDfkibaDUMHmEtrNIEcK+g3nNeXOGlzlfmQY1lHvitvK6U40LLTc2/R
-         CoW0IA2EsOZpcMXN3nFgLlyg3QF5O34z0tqC2uURRyqPRlcpuLknCe5pA4Cn8Radi1Y5
-         /+K0IqiPQumjzwUyTSa2n/mpO6K0X2DtjnheQeoFa37IKpQM7vX+3KoSC6spYTm7SV4u
-         HPEDWF1ORvcebyQZdu40SqK5l0kqAf7rCVDOUORQQgGUgDGDcuA/tJSrMTXdG6X7Hbsh
-         NNrw==
-X-Gm-Message-State: AOJu0YwKroxcjvzmJUf2Tb0RJhSB074M7y1gsIIWdZo0iICWsnKMf3CE
-	1I5DUsCwG9Y4ZMrQHpvGndJy7KvHcujlOuztkB6yPJSbtVkQ7y1lARv5SEz5qbKep6iqDWhI4Ab
-	bRxoePavxpT1TkfyPyq/K+9YE57ON/nkE7JNU
-X-Google-Smtp-Source: AGHT+IHauIX2Vpg/PHzzW0JTV4fDFuqXAIYuBOadb1Lhdqvm+7hcjrHyfDr8nUiI/Qt4r1fFyqSNf90c4QBY22tL2Fo=
-X-Received: by 2002:a05:6402:290b:b0:55c:2493:2b31 with SMTP id
- ee11-20020a056402290b00b0055c24932b31mr11642edb.3.1706132486242; Wed, 24 Jan
- 2024 13:41:26 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706132622; x=1706737422;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tg6vlOJdIGK8tq0vrQAo3bCHPF7VlBCqruzxipzmg3E=;
+        b=wDIAdSFgmD24IHGPhm2l82jsv5oDtQ1uYFT7FHSuVgZGn1JZWUaLZXXU9QdSDjUHgp
+         ljRi21J3NBQFi1EYn5V/sQIlopNsS0J3OfI5+dh4PmQ9xir38sk8lbKX36uRU+cJCvQb
+         WwUeKWux71pZhYCgrLBKtuLpxUQqUPIRYWTqyI2F+7uuavtdTW1N3vkJ2as5Es8Co/Gk
+         +vQRrLUyUkqzJf/EGxDA0JZStYe5dEmYN+0J/blU2FQS1AlBeLrnPRQWRoEh74QkdiW4
+         3Tc+v8ghuuFLq09LxdnG4s7GQY1f57pnt3QRW2YnJnExR/fuTc1jTEwXlVfXwJ/+pewf
+         4Izw==
+X-Gm-Message-State: AOJu0YxsD8QxzJkMSYG1GufEVm21krwKrC3pMmZSxv4i5hr1v6sOeVKt
+	/zffkbMzMs7/DGWGLlWmq2A0oWFwJOTtoj3rJGEBgVAC24x6+eDm
+X-Google-Smtp-Source: AGHT+IHr4rlR/jsqg4UhvhM22LlkdwhEz3vyqEedXc7T2SDNhM04UimPxufVBGGISy/LOD8NkSJcyQ==
+X-Received: by 2002:adf:a188:0:b0:336:5f15:5533 with SMTP id u8-20020adfa188000000b003365f155533mr941828wru.54.1706132621880;
+        Wed, 24 Jan 2024 13:43:41 -0800 (PST)
+Received: from andrea ([31.189.8.91])
+        by smtp.gmail.com with ESMTPSA id cl22-20020a170906c4d600b00a26a061eef8sm292575ejb.69.2024.01.24.13.43.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 13:43:41 -0800 (PST)
+Date: Wed, 24 Jan 2024 22:43:36 +0100
+From: Andrea Parri <parri.andrea@gmail.com>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
+	paulmck@kernel.org, corbet@lwn.net, mmaas@google.com,
+	hboehm@google.com, striker@us.ibm.com, charlie@rivosinc.com,
+	rehn@rivosinc.com, linux-riscv@lists.infradead.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/4] membarrier: riscv: Provide core serializing
+ command
+Message-ID: <ZbGEiEgeGwzUcTe0@andrea>
+References: <20240110145533.60234-1-parri.andrea@gmail.com>
+ <20240110145533.60234-5-parri.andrea@gmail.com>
+ <aabea058-0088-41bb-822a-402669f348bb@efficios.com>
+ <ZbFahHxi5laA6CbI@andrea>
+ <e4e1ee4d-b96c-47c7-bf81-5f4d3b0ce5dc@efficios.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124192228.work.788-kees@kernel.org> <CAG48ez017tTwxXbxdZ4joVDv5i8FLWEjk=K_z1Vf=pf0v1=cTg@mail.gmail.com>
- <202401241206.031E2C75B@keescook> <CAHk-=wiUwRG7LuR=z5sbkFVGQh+7qVB6_1NM0Ny9SVNL1Un4Sw@mail.gmail.com>
- <202401241310.0A158998@keescook>
-In-Reply-To: <202401241310.0A158998@keescook>
-From: Jann Horn <jannh@google.com>
-Date: Wed, 24 Jan 2024 22:40:49 +0100
-Message-ID: <CAG48ez1tcxtEwWgxSUqLDcYbrkY=UM3hz22A0BTvTYq4BGpM8A@mail.gmail.com>
-Subject: Re: [PATCH] exec: Check __FMODE_EXEC instead of in_execve for LSMs
-To: Kees Cook <keescook@chromium.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Josh Triplett <josh@joshtriplett.org>, 
-	Kevin Locke <kevin@kevinlocke.name>, John Johansen <john.johansen@canonical.com>, 
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, Kentaro Takeda <takedakn@nttdata.co.jp>, 
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	Eric Biederman <ebiederm@xmission.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e4e1ee4d-b96c-47c7-bf81-5f4d3b0ce5dc@efficios.com>
 
-On Wed, Jan 24, 2024 at 10:32=E2=80=AFPM Kees Cook <keescook@chromium.org> =
-wrote:
->
-> On Wed, Jan 24, 2024 at 12:47:34PM -0800, Linus Torvalds wrote:
-> > On Wed, 24 Jan 2024 at 12:15, Kees Cook <keescook@chromium.org> wrote:
-> > >
-> > > Hmpf, and frustratingly Ubuntu (and Debian) still builds with
-> > > CONFIG_USELIB, even though it was reported[2] to them almost 4 years =
-ago.
->
-> For completeness, Fedora hasn't had CONFIG_USELIB for a while now.
->
-> > Well, we could just remove the __FMODE_EXEC from uselib.
-> >
-> > It's kind of wrong anyway.
->
-> Yeah.
->
-> > So I think just removing __FMODE_EXEC would just do the
-> > RightThing(tm), and changes nothing for any sane situation.
->
-> Agreed about these:
->
-> - fs/fcntl.c is just doing a bitfield sanity check.
->
-> - nfs_open_permission_mask(), as you say, is only checking for
->   unreadable case.
->
-> - fsnotify would also see uselib() as a read, but afaict,
->   that's what it would see for an mmap(), so this should
->   be functionally safe.
->
-> This one, though, I need some more time to examine:
->
-> - AppArmor, TOMOYO, and LandLock will see uselib() as an
->   open-for-read, so that might still be a problem? As you
->   say, it's more of a mmap() call, but that would mean
->   adding something a call like security_mmap_file() into
->   uselib()...
->
-> The issue isn't an insane "support uselib() under AppArmor" case, but
-> rather "Can uselib() be used to bypass exec/mmap checks?"
->
-> This totally untested patch might give appropriate coverage:
->
-> diff --git a/fs/exec.c b/fs/exec.c
-> index d179abb78a1c..0c9265312c8d 100644
-> --- a/fs/exec.c
-> +++ b/fs/exec.c
-> @@ -143,6 +143,10 @@ SYSCALL_DEFINE1(uselib, const char __user *, library=
-)
->         if (IS_ERR(file))
->                 goto out;
->
-> +       error =3D security_mmap_file(file, PROT_READ | PROT_EXEC, MAP_FIX=
-ED | MAP_SHARED);
-> +       if (error)
-> +               goto exit;
+On Wed, Jan 24, 2024 at 01:56:39PM -0500, Mathieu Desnoyers wrote:
+> On 2024-01-24 13:44, Andrea Parri wrote:
+> > > > +# riscv uses xRET as return from interrupt and to return to user-space.
+> > > > +#
+> > > > +# Given that xRET is not core serializing, we rely on FENCE.I for providing
+> > > > +# core serialization:
+> > > > +#
+> > > > +#  - by calling sync_core_before_usermode() on return from interrupt (cf.
+> > > > +#    ipi_sync_core()),
+> > > > +#
+> > > > +#  - via switch_mm() and sync_core_before_usermode() (respectively, for
+> > > > +#    uthread->uthread and kthread->uthread transitions) to go back to
+> > > > +#    user-space.
+> > > 
+> > > I don't quite get the meaning of the sentence above. There seems to be a
+> > > missing marker before "to go back".
+> > 
+> > Let's see.  Without the round brackets, the last part becomes:
+> > 
+> >    - via switch_mm() and sync_core_before_usermode() to go back to
+> >      user-space.
+> > 
+> > This is indeed what I meant to say.  What am I missing?
+> 
+> Would it still fit your intent if we say "before returning to
+> user-space" rather than "to go back to user-space" ?
 
-Call path from here is:
+Yes, works for me.  Will change in v4.
 
-sys_uselib -> load_elf_library -> elf_load -> elf_map -> vm_mmap ->
-vm_mmap_pgoff
 
-Call path for normal mmap is:
+> Because the switch_mm(), for instance, does not happen exactly on
+> return to user-space, but rather when the scheduler switches tasks.
+> Therefore, I think that stating that core serialization needs to
+> happen before returning to user-space is clearer than stating that
+> it happens "when" we go back to user-space.
+> 
+> Also, on another topic, did you find a way forward with respect of
+> the different choice of words between the membarrier man page and
+> documentation vs the RISC-V official semantic with respect to "core
+> serializing" vs FENCE.I ?
 
-sys_mmap_pgoff -> ksys_mmap_pgoff -> vm_mmap_pgoff
+The way forward I envision involves the continuous (iterative) discussion
+/review of the respective documentation and use-cases/litmus tests/models
+/etc.
 
-So I think the call paths converge before any real security checks
-happen, and the check you're suggesting should be superfluous. (There
-is some weird audit call in ksys_mmap_pgoff() but that's just to
-record the FD number, so I guess that doesn't matter.)
+AFAICS, that is not that different from discussions about smp_mb() (as in
+memory-barriers.txt) vs. FENCE RW,RW (RISC-V ISA manual) - only time will
+tell.
+
+  Andrea
 
