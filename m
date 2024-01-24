@@ -1,116 +1,194 @@
-Return-Path: <linux-kernel+bounces-36305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36306-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8B96839F22
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:29:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E535B839F23
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:29:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB6B61C21953
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 02:29:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9630E288726
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 02:29:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E572BAD46;
-	Wed, 24 Jan 2024 02:26:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BA4A539E;
+	Wed, 24 Jan 2024 02:27:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="eK0Y7NeQ"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L7+Z/YUQ"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6D604695;
-	Wed, 24 Jan 2024 02:26:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DB7D1874
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 02:27:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706063174; cv=none; b=TgsA4HNWRHGizf3DiKLJ+wjIDg4sOYnF/TLoJXH3wPJrxM52TWw8gmgqtUlP8NHAkKQb51izp2Hw6ZOvXXtJrs/krz1o7lTNp/p4iHDPJ/8moRcSD/ZmjwPQnNgot/si6iigXgLae55iNp1mt3fZ9j/BelW/Hrr5NrSXUYUL+YU=
+	t=1706063245; cv=none; b=dqUo49RQkB1gum1HUIWj7q4PANlk37t5edreS37qrTmzBd2F+vE1zHON0eeoz68E5JMUSPpLiyJIVOlP8lLm+N63JWaSsAFl32++ErTSLyL7BkkpijxNr2M1t5k8oe3M5O9MelIXIgO6iOMKC+ALViPza7g2epbfEplQ0yNwafY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706063174; c=relaxed/simple;
-	bh=1d0rirm7fPWnsXFqR8FPcskImHT9SAAk/2/7YqAmF34=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=SGT9OgJp9ao4FF/XRgOtfNRQVfSxEwfp5afvMURXym5wwfxkilAoi/yEXQIyhKzC07XdHdRWWgdi12LQo4q1HpyQV+6/Bmg1ibj6OHl2FwLDl0VWABY16y+sdGHNToSj/uR7xUuMD5A3Qf2qaN+GWsxql44M6oYXy96UDpy6EXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=eK0Y7NeQ; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1706063167;
-	bh=6F80REPxr/jziMzJ/GrhOuQyX3Uh+joEHN8SkpL5vWI=;
-	h=Date:From:To:Cc:Subject:From;
-	b=eK0Y7NeQZlKRUDdlcH2E2wbHm+DjYcx5dLa0kykJ2FUehH7z3dgg5HLBHixxENjvs
-	 x49hWqtIAEOnv4ULRWnntBpAp3oK0uCGpN4Q9QlsPHE18gG5oX9h/GKnvtQ994JuHu
-	 bkM54j7RYExMWm+eMmnvIU8dbY6RSz1mFyjxUC0tAVQ3OcgpVhSdth4uYrwHanNDl7
-	 khztVWK0Proh3tANQRKazodGY+7qQU0YxygRTs3Yu2gRkpty4FvLF9Esf1QDgeygJ8
-	 ZsUm0Vwo97h/vRdGiijkgbarybWNuWxsiJXnUhkGFrHZG7v8yc03ngx4q4mPtxkL8B
-	 vaMEufTRpnsSw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TKSW23k7Nz4wbp;
-	Wed, 24 Jan 2024 13:26:06 +1100 (AEDT)
-Date: Wed, 24 Jan 2024 13:26:05 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Oded Gabbay <ogabbay@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>, Dafna Hirschfeld
- <dhirschfeld@habana.ai>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the accel tree with Linus' tree
-Message-ID: <20240124132605.4f6681de@canb.auug.org.au>
+	s=arc-20240116; t=1706063245; c=relaxed/simple;
+	bh=wvo7LjfFKzlE79cgaD689QaQxVmVMsxOvMEBBTVkI7Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=G/pQoDZMcUfiSTt6u5OeVpjhuot7gen9DiD0yyTrLFQnhfqCrdyvfHiu1oI+ANDGFz68Y+TjJLelkNUO9sKNNZsmZjuX3jO5i7RfYDgC7hZgfDwG8uXrwJ+Nb0Ph26TCv3akESfd/FZFIG4rby2+IxmdkIUZpNSFBcIg5JSdQWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L7+Z/YUQ; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-554fe147ddeso6596367a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 18:27:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706063242; x=1706668042; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=T0OO2kNsfTulrolzVWOPc5d52vzKo7FmwBEwV4HF2i0=;
+        b=L7+Z/YUQZ0nyPXinp5cd+lBFfdYPybCCVdBM2B3LFwYCHvF+gGbC6q7dqcOw0mZ9rz
+         g8DknD9s7VgNsI+Fqg47ABmTKrkMTOMVRpxsAQ2bNJGE8c1CLf66zkoqJxbjdtdTBaeh
+         6uWA+34xXXksyELkxGvqmDRrCE9pBXXrW2yoMCDccVlLNVTduzcq2Ho4LaK3cFquPGhF
+         hS293xxsze/Lku6mxHdULh8xjjCRuTRrIaAbwPce+T1tvSXjswLIAwGnevB8DEPGELEW
+         cx1sj8R3XtSrCwF+U7jEwv30YdB8K6fMRExMT2ubZQFYZGTNuPzlscinzh9ozGLxwfxb
+         pNLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706063242; x=1706668042;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=T0OO2kNsfTulrolzVWOPc5d52vzKo7FmwBEwV4HF2i0=;
+        b=puFiX4/rFt/sVejnvaEJgreAb3/10flWKa4hbSfk48mhsFb4kmOnsYPENxUfNEoowP
+         AP33q5mszBOGq2hhDYqX+ghQ9imA0S4k5PCU2aPaGbdTGs/SMLymF7uoZyE6nlnfeSe3
+         m92neQ2/6ThEYQZrlpLfn2APkbNckAJm7TMywrQf+o9DWqXvG7mhB5cTaZpZAEQTzTBn
+         VH4SGSWxoE9TLNeYQ8qw7sttLrJ7mRJK84M3ztyzxaWoQ5vH3wVtzL5nuURTgZdcagVr
+         dbUpI6di+GxQztITcmUaprYPpNaBTO+CjG8bslILzh0IWAywZ5Breg88Q+Tqhe4p3BC1
+         34EA==
+X-Gm-Message-State: AOJu0YxfqNcCVcqjCdz0NlywHwcRorbOD69fn3JefS1WZ8qTpCdTnASJ
+	ICJf80WNcIRNWwDwrFU5TSHz23CpzW7/XT3VXfsB/oufOUXPHAdxk+nlBn5e5XWp3QbggF5oViI
+	3f/MsPe8NkpnupNtMH/9l5xQTBJLr0v73UpU=
+X-Google-Smtp-Source: AGHT+IFiCRdOaCAOvtAXc7e6Uar32bBy/m3xFl3wVt9f8tkxcTCM7lDMIjNyLBam6Y4E+nEXxZWmMIH92heyLO8oNgQ=
+X-Received: by 2002:a17:906:5988:b0:a30:df55:ef5e with SMTP id
+ m8-20020a170906598800b00a30df55ef5emr198932ejs.172.1706063241665; Tue, 23 Jan
+ 2024 18:27:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/z/8dOFjR0p0mC.Xa5RdR8V7";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/z/8dOFjR0p0mC.Xa5RdR8V7
-Content-Type: text/plain; charset=US-ASCII
+References: <20240122102256.261374-1-liangchen.linux@gmail.com> <20240123020132-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20240123020132-mutt-send-email-mst@kernel.org>
+From: Liang Chen <liangchen.linux@gmail.com>
+Date: Wed, 24 Jan 2024 10:27:09 +0800
+Message-ID: <CAKhg4tK6ea27iKNAPe=-G9wfzNe4hh9=9fk0cpt0qyAVW1Fa1g@mail.gmail.com>
+Subject: Re: [PATCH] virtio_net: Support RX hash XDP hint
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: jasowang@redhat.com, virtualization@lists.linux-foundation.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Tue, Jan 23, 2024 at 3:02=E2=80=AFPM Michael S. Tsirkin <mst@redhat.com>=
+ wrote:
+>
+> On Mon, Jan 22, 2024 at 06:22:56PM +0800, Liang Chen wrote:
+> > The RSS hash report is a feature that's part of the virtio specificatio=
+n.
+> > Currently, virtio backends like qemu, vdpa (mlx5), and potentially vhos=
+t
+> > (still a work in progress as per [1]) support this feature. While the
+> > capability to obtain the RSS hash has been enabled in the normal path,
+> > it's currently missing in the XDP path. Therefore, we are introducing X=
+DP
+> > hints through kfuncs to allow XDP programs to access the RSS hash.
+> >
+> > Signed-off-by: Liang Chen <liangchen.linux@gmail.com>
+> > ---
+> >  drivers/net/virtio_net.c | 56 ++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 56 insertions(+)
+> >
+> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > index d7ce4a1011ea..1463a4709e3c 100644
+> > --- a/drivers/net/virtio_net.c
+> > +++ b/drivers/net/virtio_net.c
+> > @@ -4579,6 +4579,60 @@ static void virtnet_set_big_packets(struct virtn=
+et_info *vi, const int mtu)
+> >       }
+> >  }
+> >
+> > +static int virtnet_xdp_rx_hash(const struct xdp_md *_ctx, u32 *hash,
+> > +                        enum xdp_rss_hash_type *rss_type)
+> > +{
+> > +     const struct xdp_buff *xdp =3D (void *)_ctx;
+> > +     struct virtio_net_hdr_v1_hash *hdr_hash;
+> > +     struct virtnet_info *vi;
+> > +
+> > +     if (!(xdp->rxq->dev->features & NETIF_F_RXHASH))
+> > +             return -ENODATA;
+> > +
+> > +     vi =3D netdev_priv(xdp->rxq->dev);
+> > +     hdr_hash =3D (struct virtio_net_hdr_v1_hash *)(xdp->data - vi->hd=
+r_len);
+> > +
+> > +     switch (__le16_to_cpu(hdr_hash->hash_report)) {
+> > +             case VIRTIO_NET_HASH_REPORT_TCPv4:
+> > +                     *rss_type =3D XDP_RSS_TYPE_L4_IPV4_TCP;
+> > +                     break;
+> > +             case VIRTIO_NET_HASH_REPORT_UDPv4:
+> > +                     *rss_type =3D XDP_RSS_TYPE_L4_IPV4_UDP;
+> > +                     break;
+> > +             case VIRTIO_NET_HASH_REPORT_TCPv6:
+> > +                     *rss_type =3D XDP_RSS_TYPE_L4_IPV6_TCP;
+> > +                     break;
+> > +             case VIRTIO_NET_HASH_REPORT_UDPv6:
+> > +                     *rss_type =3D XDP_RSS_TYPE_L4_IPV6_UDP;
+> > +                     break;
+> > +             case VIRTIO_NET_HASH_REPORT_TCPv6_EX:
+> > +                     *rss_type =3D XDP_RSS_TYPE_L4_IPV6_TCP_EX;
+> > +                     break;
+> > +             case VIRTIO_NET_HASH_REPORT_UDPv6_EX:
+> > +                     *rss_type =3D XDP_RSS_TYPE_L4_IPV6_UDP_EX;
+> > +                     break;
+> > +             case VIRTIO_NET_HASH_REPORT_IPv4:
+> > +                     *rss_type =3D XDP_RSS_TYPE_L3_IPV4;
+> > +                     break;
+> > +             case VIRTIO_NET_HASH_REPORT_IPv6:
+> > +                     *rss_type =3D XDP_RSS_TYPE_L3_IPV6;
+> > +                     break;
+> > +             case VIRTIO_NET_HASH_REPORT_IPv6_EX:
+> > +                     *rss_type =3D XDP_RSS_TYPE_L3_IPV6_EX;
+> > +                     break;
+> > +             case VIRTIO_NET_HASH_REPORT_NONE:
+> > +             default:
+> > +                     *rss_type =3D XDP_RSS_TYPE_NONE;
+> > +     }
+> > +
+> > +     *hash =3D __le32_to_cpu(hdr_hash->hash_value);
+> > +     return 0;
+> > +}
+> > +
+> > +static const struct xdp_metadata_ops virtnet_xdp_metadata_ops =3D {
+> > +     .xmo_rx_hash                    =3D virtnet_xdp_rx_hash,
+> > +};
+> > +
+> >  static int virtnet_probe(struct virtio_device *vdev)
+> >  {
+> >       int i, err =3D -ENOMEM;
+> > @@ -4613,6 +4667,8 @@ static int virtnet_probe(struct virtio_device *vd=
+ev)
+> >       dev->ethtool_ops =3D &virtnet_ethtool_ops;
+> >       SET_NETDEV_DEV(dev, &vdev->dev);
+> >
+> > +     dev->xdp_metadata_ops =3D &virtnet_xdp_metadata_ops;
+> > +
+>
+> How about making this assignment depend on
+>
+> xdp->rxq->dev->features & NETIF_F_RXHASH
+>
 
-Today's linux-next merge of the accel tree got a conflict in:
+Thanks! How about dev->hw_features & NETIF_F_RXHASH? dev->features &
+NETIF_F_RXHASH has not been enabled at this point.
 
-  drivers/accel/habanalabs/common/device.c
-
-between commits:
-
-  3652117f8548 ("eventfd: simplify eventfd_signal()")
-  b7638ad0c780 ("eventfd: make eventfd_signal{_mask}() void")
-
-from Linus' tree and commit:
-
-  1436a2242aa5 ("accel/habanalabs: check failure of eventfd_signal")
-
-from the accel tree.
-
-I fixed it up (I just used the former version) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer when
-your tree is submitted for merging.  You may also want to consider cooperat=
-ing
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/z/8dOFjR0p0mC.Xa5RdR8V7
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWwdT0ACgkQAVBC80lX
-0GxtBQf+Ot0VNm+vJ0mL8LWFWmvJRIu/hkTHFxWcCXzteLPgmHmgQqleW/aINGun
-fX66MMkP6EzCca75OJvV+MDZfQAfn/6pNHThSbxSVSqpTuViz8CkMlE1X4IJT07a
-b+GkbVU8mV/X4hWrXO6+ClWCsNFtlKW5++MEnh109xEUMddwRCrL1DhLVWlaE1/P
-Hr+0NFh+hNu8EXD9Kr3rnB6xiEktJsDfxUXaDgrjVRgsF+70UkUddhbU2fS5YOzS
-EDCjZcb+j081ojZaCFHXSeKD+2AS6VHuSHo5MuugspbeRekCGZNC7vZnw9dq9E4t
-g3n2wmO4fyHdmJVqFghWJTgTERal8g==
-=rMWl
------END PGP SIGNATURE-----
-
---Sig_/z/8dOFjR0p0mC.Xa5RdR8V7--
+> ?
+>
+> >       /* Do we support "hardware" checksums? */
+> >       if (virtio_has_feature(vdev, VIRTIO_NET_F_CSUM)) {
+> >               /* This opens up the world of extra features. */
+> > --
+> > 2.40.1
+>
 
