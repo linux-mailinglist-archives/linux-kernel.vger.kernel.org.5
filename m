@@ -1,136 +1,240 @@
-Return-Path: <linux-kernel+bounces-36551-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0B1A83A2F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:35:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DE7F83A2FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:36:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AF4F1F218BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 07:35:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2C92282C6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 07:36:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36C05168C7;
-	Wed, 24 Jan 2024 07:35:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A90EE171A9;
+	Wed, 24 Jan 2024 07:36:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="dLBPMyj7"
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kyvmtfj/"
+Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7C5D1642B
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 07:35:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53EB9171A3
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 07:36:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706081728; cv=none; b=pTSFQJDNh+kwsU64a5o2rKleRZeMs5ZnVM/D+lISmi8Vev2mOvaCxPXSibAr8EqmnueMTC47zptelSyQlYwVc1NvB3xqDzElOEP89xAJns2i5TX9kiyX+EdwSZiEWc+Ho27hzrGkPBp5G4oCjwz7kfymQVmtdRMiQrnrYB5FHY4=
+	t=1706081785; cv=none; b=Y7eKPVXm1do/mxLblAZeiuXqIt4C5Qce4xdtmBB6ceWwk1qmuYXIJiV/sYc2abxDj2CZcmQ4w+4S+/e58e472fAQu557OMiP/293V9+an4CYft3q3bAzQ5VnNUg3bMqrtj1gmrHsuXSeHP+2bDysh0r5rb3HWcONP44r3OesEtw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706081728; c=relaxed/simple;
-	bh=pe373ULx0QIbZ2wz/kyrD6hJNYP9myR3nkR8aE1ahgg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QJgC5qS/3rZ1IpyKYHZrCgPeG5pUAVtV035hc0EfdlSQziQeL6pSTjb89gG7/CtDHSu2TIn2mj8agyGW4D8xXnOGBRZvo+G69ygGtDc8OVgL0L9WVQ4giUuMZ1iLr+CnUN4A2UdcaUQfjuYuy8+3YL5KHCy51Or6znov6cRBiJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=dLBPMyj7; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6dd9f4c0809so286359b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 23:35:26 -0800 (PST)
+	s=arc-20240116; t=1706081785; c=relaxed/simple;
+	bh=e0BbWjmXTF4mDW+eBPrjFjLN6oi3tqAJ0DmGgPhLp9c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VVV8bsZbgYEBOw3BjMhzALmxncH8WViSAj3hh0fGoCvT5AJ8PdmzMQHwtGGnRIbRkwHwMhbKxwgeqP+AKqoBb4MckxXU2x3QyjcS2GAHHhbG9KKJw688bg3eVAgsJys/NSu4YSDcLJP9sbKGTShoXnPvGijXfGqpQURn0oLaQOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kyvmtfj/; arc=none smtp.client-ip=209.85.222.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ua1-f49.google.com with SMTP id a1e0cc1a2514c-7cbeaacbcb8so1278302241.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 23:36:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1706081726; x=1706686526; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jrYIexCVj3lzhdPHs2GVu+eB/KVIh/KA/cEwlOXWa5Y=;
-        b=dLBPMyj7bqq3RWq5VuFFLDCbMsCYlGL7++fyANwxnvrocsOXhasZ4u7m6gFEQasfoC
-         fGx1ULG7JAqBD6bKz5VeIzX+Xo2i4anl7ibmKco4QZd/k8fmyAh0H0OABGitru0ht6v7
-         Xdg6nyS2bHY75OTwDG5d4GhjxybD0+uitzJtb0yBy+E+NkpzuoqpSteKTUbWGEWX1fO0
-         WxCyCz5sa4c4mQSOE2y/dgDefGNFyxJmXzt6sJAyYJji8H2iNJYClAVX8Ry1/VcXRrzG
-         O/6CGF4tZc7stpPDSvEbqp4dXENTWK7x+EXCmyMEz/EHiVpAbvaHVPN4WCmHFEo8Bqaw
-         l0zA==
+        d=linaro.org; s=google; t=1706081783; x=1706686583; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+tnlKPFQfe226jCabO0DUQvdKB30ImwOaBg4mp/H49k=;
+        b=kyvmtfj/J8qkhpXo5Ou+slRP9v1bpOykweNins6pbdeB0+93IBfyozXGBNrXQWuxMY
+         4oWl+DeRhSwe8gCTUzM1D1PrnKFCqOMwZuuUhLuhuKJyHBBrIfLi0GxJ7qhUqldAlWT/
+         Za7/bYrrhRPfASJSJCR9QXWcRSAh4bfxy3AphlLfkLBpAuXHoMK2C3hwJbNrtEAf2dwY
+         Sb7P2hL6czodr0aPDpfSIGpzMtr1MnJl4IwIvzVTWQJAxiyx/7ln2G5CNmyrMSsxQPf4
+         tZRR43BqCjw1aFxj2MP6+qHPOs6VFBQjL972OgaBvU/16WZwoN/zkmwpNpgWnAsCMZYj
+         GXdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706081726; x=1706686526;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jrYIexCVj3lzhdPHs2GVu+eB/KVIh/KA/cEwlOXWa5Y=;
-        b=f9g1hLfUKSf8wRLPtkBD9iqhlsmaSqJkJtftVryY85g3E5c2y3Q+TlQ1UumCrvT7ok
-         786uFoYK8dGTWTXnp/NDlreFuF+BVVzHAeeXZJWJSKtBczrOAFSUEj08ZnsukKuenqEs
-         q5Tb8Nt2j7Dkh3O5VJW9s00D8iQu/8eCZrQlkjJKFWza8jGYjaxdGzX2kY7XMqjEGr2Y
-         CkWJ5SWfODSqol+aWuHsH77Mu7cf5dyVhG30CK7UOIVFdB+0hoyyYu7oPhQaSi4FBnt1
-         m7s5vay+I05wI7VQUuzzrv+B3KWg+Jhg4RvQMB13WDSzf6Db/sEoXgPT3r3lpveaAXRQ
-         dHpQ==
-X-Gm-Message-State: AOJu0Yy9J8OFN2h3JCvC2tlHW0aLRcjcBkoTzdhVrvZCX5tSSiPGGKKG
-	Tvwdm2YaYOq03ojVjRDXfjGF/yiMRW6dJ9sEFeM+RLsSWStskJFC8G0AfOgBJWs=
-X-Google-Smtp-Source: AGHT+IGANFpffkj8tc/P+jpEtAje5dviG98IqRAe0TQSVQXLPD2xpinmlx/2k3Q0UO2Wql2Lixq82A==
-X-Received: by 2002:a05:6a00:ad1:b0:6da:d27b:7c52 with SMTP id c17-20020a056a000ad100b006dad27b7c52mr9084585pfl.53.1706081725994;
-        Tue, 23 Jan 2024 23:35:25 -0800 (PST)
-Received: from [10.255.203.131] ([139.177.225.236])
-        by smtp.gmail.com with ESMTPSA id ei29-20020a056a0080dd00b006d9ae6fe867sm13051948pfb.110.2024.01.23.23.35.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jan 2024 23:35:25 -0800 (PST)
-Message-ID: <305078e5-b31e-43ed-825d-7b634c9c9f58@bytedance.com>
-Date: Wed, 24 Jan 2024 15:34:05 +0800
+        d=1e100.net; s=20230601; t=1706081783; x=1706686583;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+tnlKPFQfe226jCabO0DUQvdKB30ImwOaBg4mp/H49k=;
+        b=Un2VrOx1M2/ttEtH3YOQ3Y2OVOSXI3ntk7WOX3Z4dAbV4F+RgM8r/vKXNpqldFOF8y
+         809X6HRiTPsC+0LWL7aHR4Ywl49UtfnSB1n/wWXOvZQgyvCW1v8t4jqMp1/AvMRN+AvA
+         SZ1ArRGoJbou+8mlCJO7YU9JBeCHAtPqkqQ3FVx5b+63ELuj/tzuAQZSUuRdE7NRQm1n
+         w9ZPqV7FRbEQUv/xL/UVtwM/zZ4TyhxANMzJzTI+tWj+I58bKFSQUxE+jY70dfhrz3ft
+         QQUiXK8aOElxi68PTvM7FXi29Jp8G6Vz86sJzI7gt5ObHRG8w9qZGGWlyxWsur4IFcWD
+         USRA==
+X-Gm-Message-State: AOJu0YxYIVoRLIWk2AFsnVtPk47dioNqMziWbq93et4e6fb5ZSizm1ya
+	MQA0Yh9ZBTbTmW8u2RM6SpYOs7kLGspnQuP7CWepQ3xCUuHWkSQtQWElwKd8GnyFHYXnixQQ5RO
+	AWRACnI7wAer8JCSauLy5jA1mjyOsOMuNlG+xog==
+X-Google-Smtp-Source: AGHT+IGFlsBJwlAN5HEFORTByTKreth26xjwcga15o9ftsYVovMY0UJ34jdMY7lM6EopfZGcrjAIX0tjKN+xMDljZEU=
+X-Received: by 2002:a05:6102:3753:b0:469:bcbe:b10a with SMTP id
+ u19-20020a056102375300b00469bcbeb10amr3503077vst.2.1706081783017; Tue, 23 Jan
+ 2024 23:36:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] mm: zswap: remove unnecessary trees cleanups in
- zswap_swapoff()
-Content-Language: en-US
-To: Yosry Ahmed <yosryahmed@google.com>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>,
- Chris Li <chrisl@kernel.org>, Huang Ying <ying.huang@intel.com>,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240124045113.415378-1-yosryahmed@google.com>
- <20240124045113.415378-3-yosryahmed@google.com>
-From: Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <20240124045113.415378-3-yosryahmed@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240122235712.442097787@linuxfoundation.org>
+In-Reply-To: <20240122235712.442097787@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Wed, 24 Jan 2024 13:06:11 +0530
+Message-ID: <CA+G9fYvhkpjBgZ8XaSVJ+c_cdOU3=PYxDK0u-1Q1BaKDsVQfFg@mail.gmail.com>
+Subject: Re: [PATCH 4.19 000/148] 4.19.306-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024/1/24 12:51, Yosry Ahmed wrote:
-> During swapoff, try_to_unuse() makes sure that zswap_invalidate() is
-> called for all swap entries before zswap_swapoff() is called. This means
-> that all zswap entries should already be removed from the tree. Simplify
-> zswap_swapoff() by removing the trees cleanup code, and leave an
-> assertion in its place.
-> 
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+On Tue, 23 Jan 2024 at 05:32, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.306 release.
+> There are 148 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 24 Jan 2024 23:56:49 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.306-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Looks good to me, thanks!
 
-Reviewed-by: Chengming Zhou <zhouchengming@bytedance.com>
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-> ---
->  mm/zswap.c | 16 +++-------------
->  1 file changed, 3 insertions(+), 13 deletions(-)
-> 
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index dcdd5ecfedb09..78df16d307aa8 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -1808,19 +1808,9 @@ void zswap_swapoff(int type)
->  	if (!trees)
->  		return;
->  
-> -	for (i = 0; i < nr_zswap_trees[type]; i++) {
-> -		struct zswap_tree *tree = trees + i;
-> -		struct zswap_entry *entry, *n;
-> -
-> -		/* walk the tree and free everything */
-> -		spin_lock(&tree->lock);
-> -		rbtree_postorder_for_each_entry_safe(entry, n,
-> -						     &tree->rbroot,
-> -						     rbnode)
-> -			zswap_free_entry(entry);
-> -		tree->rbroot = RB_ROOT;
-> -		spin_unlock(&tree->lock);
-> -	}
-> +	/* try_to_unuse() invalidated all the entries already */
-> +	for (i = 0; i < nr_zswap_trees[type]; i++)
-> +		WARN_ON_ONCE(!RB_EMPTY_ROOT(&trees[i].rbroot));
->  
->  	kvfree(trees);
->  	nr_zswap_trees[type] = 0;
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 4.19.306-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-4.19.y
+* git commit: 7d9c60a8fe13297cfc26524269c271688d817a98
+* git describe: v4.19.305-149-g7d9c60a8fe13
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
+305-149-g7d9c60a8fe13
+
+## Test Regressions (compared to v4.19.305)
+
+## Metric Regressions (compared to v4.19.305)
+
+## Test Fixes (compared to v4.19.305)
+
+## Metric Fixes (compared to v4.19.305)
+
+## Test result summary
+total: 55285, pass: 46655, fail: 1600, skip: 6997, xfail: 33
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 114 total, 107 passed, 7 failed
+* arm64: 40 total, 34 passed, 6 failed
+* i386: 23 total, 20 passed, 3 failed
+* mips: 23 total, 22 passed, 1 failed
+* parisc: 4 total, 0 passed, 4 failed
+* powerpc: 27 total, 26 passed, 1 failed
+* s390: 8 total, 8 passed, 0 failed
+* sh: 12 total, 12 passed, 0 failed
+* sparc: 8 total, 8 passed, 0 failed
+* x86_64: 34 total, 28 passed, 6 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-user
+* kselftest-vm
+* kselftest-zram
+* kunit
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-crypto
+* ltp-cve
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* rcutorture
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
