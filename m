@@ -1,112 +1,194 @@
-Return-Path: <linux-kernel+bounces-36268-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36270-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5459B839E35
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 02:26:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6B2D839E39
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 02:27:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8620E1C25660
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:26:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8378D1F2B078
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:27:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 365641381;
-	Wed, 24 Jan 2024 01:26:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE37F3D8F;
+	Wed, 24 Jan 2024 01:27:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="LZns3JX3"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="P3YtdJXD"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0095EC5;
-	Wed, 24 Jan 2024 01:26:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7734323C9;
+	Wed, 24 Jan 2024 01:27:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706059603; cv=none; b=PI3wKPzZaCqwvpJp/2/yP2PdMY92OkvE9g3mmI4EzrZi6BEj4bj+yGLgpDD6yd89ZVE85PIPXn7d2jreDSWk/8KrA+Pp1ez3LCJLvF7cWFBR8dLuzhtkcD/sn7iXPMLw6Pl9dqXcIO+NemjPXiXpDNaGJDd24IJTMrDFRkdMM3U=
+	t=1706059625; cv=none; b=KH//5+pj/uOsdl5EpTcPNRDfJU1cpAwe6dGiEYFYcSyJ3wsJZy1aMmYgDxOPQcqijlErUCILyq89FfStkt4ZwY4Uh0kRxG4wkoDqiqzRqxscAMgUZNZLs6BkDZHzvPG0r/6dq5zrXqIMa4DVdfl8ZrWiEyz1tch5s63+tci0dn0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706059603; c=relaxed/simple;
-	bh=j34jFf8Lg18z7ESEocx5XiCdaa6sLj8slT2vXXI7dxs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oQu6YIDE570nGQAnhD2YV/2hSsMQTSaEA+evxV7oZK+OSGG+6ILTBHBuNvYzQ5EKPAgGkGEcz0N342TB9qDGZkO99jkd5xgzdJcB/s0VMICEXEAHhVj6MS8Vgdt/vxDhUA5hhcKQRLodoJOTHoFKFUn01+e+j+bbutyBoV82aVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=LZns3JX3; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=ZACLddTL1hSFNg3sqrkIaMx4QGJCs1G4xd7qc8mSFn4=; b=LZns3JX3XgwT8Y7AJ55eZAeysU
-	Ar/vuIoH7PuwnzsCSL6JaKURMxziF86onll5n6P2I1SXOODVTYa2JMiJ/NikIzKOzg0PSVTH7VqTv
-	uVdiNr+aMiCYKp2l1B2GDC3F0aGh+Lo7RfMcYjTMPqr/9aoFjZedJcc7Kp/P5Mc4fARrZWJ8RaqNd
-	rfRWFc1dYHZHfbegPYWnBRojURt5XWMbQG7XIJNpizkDnHSAbvoFr278udfKZ983dLqtNhWOHjqp4
-	BByZS5ie+MSZyNp6iWhrClKwrurOOJ7weRBslC8mzS7+GVh/wa0fUHpsAvW65tDqoYi0IK+RfGDTV
-	ER3w6AzA==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSS2J-0010iQ-24;
-	Wed, 24 Jan 2024 01:26:41 +0000
-Message-ID: <8eac7bf0-86c5-43ef-99e0-0896c994184a@infradead.org>
-Date: Tue, 23 Jan 2024 17:26:39 -0800
+	s=arc-20240116; t=1706059625; c=relaxed/simple;
+	bh=CwnF1RLedr0VAG5gpWbO8BA47Nu19+G9Eezjy1BRssI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=WGqIk/9Nc0UxzKLcmkKJeaQPNmE5ed/tyClp2OuLMTMnWqdVyBTZNqOeDnyvFxnJ+4k+OBOcbyJ7XJFmscWMplVrPi+gH8GB6Ewmq6YPsXqeDXoccBtzBRXwoLqpmlQubmfspoEVG36QKVd2spySAJtKHOiG3/o0MKzXuqzl0Lk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=P3YtdJXD; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1706059620;
+	bh=YnVXiiq94aCxCahXVksW2BxErM3PzztZ/SdNRmm/714=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=P3YtdJXDRvbh3VvzkhBRYfv63vXkwTqLrlN93BFx/Bma4xYNh9dRfJTaFd8Bn1nL7
+	 RfGhwG3F638RE8BK8ILMFOQ56S6NUmcJPHdNCr0sXoQyk5Jix6KScGYTymJGZztLj6
+	 hJ832DlR4QewqjJo4AGDd6mEpJTgL+f2ISyfmjEIhFmGMASTX+seghpuz/KcCnA+PJ
+	 8tF2YhPlPUfnud2O5oJYbZD8yfP1GrhhGmZG6BUZChu6Ks5pXRBoQyk93uEoW9T4y6
+	 HiZaGt9H8eGboYCSmp4rwPciwZCC8ZVyWR4I/Ie3QgkwV0YLTP6dE+15Uk55ab9BSo
+	 3r8DK5C73IUvw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TKRBr3W9Tz4x2T;
+	Wed, 24 Jan 2024 12:27:00 +1100 (AEDT)
+Date: Wed, 24 Jan 2024 12:26:59 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Linux Kernel Mailing
+ List <linux-kernel@vger.kernel.org>
+Subject: linux-next: stats (Was: Linux 6.8-rc1)
+Message-ID: <20240124122659.0405e382@canb.auug.org.au>
+In-Reply-To: <CAHk-=wiB4iHTtfZKiy5pC24uOjun4fbj4kSX0=ZnGsOXadMf6g@mail.gmail.com>
+References: <CAHk-=wiB4iHTtfZKiy5pC24uOjun4fbj4kSX0=ZnGsOXadMf6g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6/8] Documentation: Create a new folder for all timer
- internals
-Content-Language: en-US
-To: Anna-Maria Behnsen <anna-maria@linutronix.de>,
- linux-kernel@vger.kernel.org
-Cc: Thomas Gleixner <tglx@linutronix.de>,
- Frederic Weisbecker <frederic@kernel.org>, Ingo Molnar <mingo@kernel.org>,
- John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>,
- Jonathan Corbet <corbet@lwn.net>, Clemens Ladisch <clemens@ladisch.de>,
- linux-doc@vger.kernel.org
-References: <20240123164702.55612-1-anna-maria@linutronix.de>
- <20240123164702.55612-7-anna-maria@linutronix.de>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240123164702.55612-7-anna-maria@linutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/3VfPglI5Xlmd_t6os2PkxDm";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Hi,
+--Sig_/3VfPglI5Xlmd_t6os2PkxDm
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 1/23/24 08:47, Anna-Maria Behnsen wrote:
-> The structure of documentation changed. There is 'core-api' where also
-> timer related documentation belongs to. But the timer related documentation
-> (doesn't matter whether it is up to date or outdated) is still located in a
-> separate folder with no relation to core-api.
-> 
-> Create a new folder which is located below core-api and make it the new
-> place for all timer related documentation. Instead of revisiting all files
-> below the already existing timer folder right now, add a warning banner to
-> the top of all those files. When it is ensured the content is up to date,
-> they can be moved to the final destination.
-> 
-> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-> ---
->  Documentation/core-api/index.rst        |  1 +
->  Documentation/core-api/timers/index.rst | 22 ++++++++++++++++++++++
->  Documentation/timers/highres.rst        |  5 +++++
->  Documentation/timers/hpet.rst           |  5 +++++
->  Documentation/timers/hrtimers.rst       |  5 +++++
->  Documentation/timers/index.rst          |  5 +++++
->  Documentation/timers/no_hz.rst          |  4 ++++
->  Documentation/timers/timekeeping.rst    |  5 +++++
->  Documentation/timers/timers-howto.rst   |  5 +++++
+Hi all,
 
-When can we remove the old, "might be outdated" files?
-Do you think that some of their contents might be valuable to someone?
+As usual, the executive friendly graph is at
+http://neuling.org/linux-next-size.html :-)
 
-I prefer not to have the old documentation and the new.
+(No merge commits counted, next-20240108 was the first linux-next after
+the merge window opened.)
 
->  9 files changed, 57 insertions(+)
->  create mode 100644 Documentation/core-api/timers/index.rst
-> 
+Commits in v6.8-rc1 (relative to v6.7):            12239
+Commits in next-20240108:                          11796
+Commits with the same SHA1:                        11318
+Commits with the same patch_id:                      201 (1)
+Commits with the same subject line:                   14 (1)
 
-Thanks.
+(1) not counting those in the lines above.
 
--- 
-#Randy
+So commits in -rc1 that were in next-20240108:     11533 94%
+
+Some breakdown of the list of extra commits (relative to next-20240108)
+in -rc1:
+
+Top ten first word of commit summary:
+
+     88 drm
+     47 riscv
+     47 bcachefs
+     25 net
+     25 dt-bindings
+     18 s390
+     17 mailbox
+     16 selftests
+     15 pci
+     15 maintainers
+
+Top ten authors:
+
+     42 kent.overstreet@linux.dev
+     16 kuba@kernel.org
+     15 u.kleine-koenig@pengutronix.de
+     14 rdunlap@infradead.org
+     12 arnd@arndb.de
+     10 hch@lst.de
+      9 zhoubinbin@loongson.cn
+      9 zhao1.liu@intel.com
+      9 nathan@kernel.org
+      9 ira.weiny@intel.com
+
+Top ten commiters:
+
+     69 palmer@rivosinc.com
+     53 alexander.deucher@amd.com
+     49 kuba@kernel.org
+     47 kent.overstreet@linux.dev
+     30 stfrench@microsoft.com
+     28 axboe@kernel.dk
+     25 kbusch@kernel.org
+     22 chenhuacai@kernel.org
+     21 rafael.j.wysocki@intel.com
+     20 jaswinder.singh@linaro.org
+
+There are also 263 commits in next-20240108 that didn't make it into
+v6.8-rc1.
+
+Top ten first word of commit summary:
+
+     40 drm
+     28 x86
+     25 i2c
+     20 fs
+     20 arm
+     14 soc
+      7 dt-bindings
+      6 bluetooth
+      5 lib
+      5 firmware
+
+Top ten authors:
+
+     36 yury.norov@gmail.com
+     25 ubizjak@gmail.com
+     25 andriy.shevchenko@linux.intel.com
+     17 almaz.alexandrovich@paragon-software.com
+     11 yangchen.openbmc@gmail.com
+      9 kkartik@nvidia.com
+      8 jani.nikula@intel.com
+      7 jouni.hogander@intel.com
+      7 arnd@arndb.de
+      6 suijingfeng@loongson.cn
+
+Top ten commiters:
+
+     38 yury.norov@gmail.com
+     27 mingo@kernel.org
+     26 wsa@kernel.org
+     22 joel@jms.id.au
+     17 almaz.alexandrovich@paragon-software.com
+     11 treding@nvidia.com
+     11 jani.nikula@intel.com
+     10 l.stach@pengutronix.de
+      7 jouni.hogander@intel.com
+      7 ebiederm@xmission.com
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/3VfPglI5Xlmd_t6os2PkxDm
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWwZ2MACgkQAVBC80lX
+0Gytegf/QSal6eIoJx6guRerZDEftNZude6uKuCMDi+pXjXaMQwT+5yrma5gS4gS
+8RJ8r/s9m69C4laA49c4fPuJ2KArt+dLcheR2mJjOC+4AUVMxBIPeCjTS/FakAe5
+r2sjsubIk49ktRazntpiSPd2LRATxPhDW+iboVrvdK5GfDVmIiLer2vZLeJWW59K
+ZEWdsuEVcL95VP49SyZ2kn8vLaNpF8xxGRqIeq1Zha7cUIJtnbzEi+sL8cpsbiAO
+ajzgO8yTNB9BqAIJ6gNHmUSHgTApvNKmhHVngRjHWJ76Tv5cRtStFhC7SU+Wd2gF
+VJ3bC/q32IXKD1aBDq/jv5d7olOR4g==
+=e+b3
+-----END PGP SIGNATURE-----
+
+--Sig_/3VfPglI5Xlmd_t6os2PkxDm--
 
