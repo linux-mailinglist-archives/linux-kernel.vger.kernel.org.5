@@ -1,94 +1,121 @@
-Return-Path: <linux-kernel+bounces-37047-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F262F83AA99
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:04:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED8BA83AAA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:09:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 311AF1C27A2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:04:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA7ACB2D0EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:06:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3A8E77657;
-	Wed, 24 Jan 2024 13:04:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4BA977F08;
+	Wed, 24 Jan 2024 13:06:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="FWtYSOot"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="uZPRmfDo"
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8187977642
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 13:04:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27CD960BAC;
+	Wed, 24 Jan 2024 13:06:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706101481; cv=none; b=HjgFOLa+dOYGiI5O+a5oQOVkM7+qJoaaZ3Detp6wgeUC5AZofpVF3Z4dIbHCZl9P3TIag6a/LsBVYPf9zGiuznYafZeWbp/viCfmiegYQgUGxymqMZHLZEdGmkCg5VuxtARLBrlubPEy4aZu0dfc/QDvJCwTSpWW6hEMMtKitWY=
+	t=1706101605; cv=none; b=dl8SgbWYZOk2GUABJtTXRaJG8uEFQYD6JxFrX0Bfl7rzX3JbrA0+YfsNneoMF9s9Lcrg/2BhfHSv6RjolAObCeUMFjb/ED7YFFRN4yi3V10R11csT5LOlU4VZZ6Ho34jZVtynUUohuW/QQ0694hcL2bZkDN5LOt1Pvh56DAtC+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706101481; c=relaxed/simple;
-	bh=B8cA1ZmYL6Ndv77osRknh0AO8zS0RBiPjzqoqdqEtmI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZPKOzFu7zm99vWC0ojJq9mV6V/MF3qspiDS3X7h8MlXN/qY0zKc5F6w4WNUfQv+cIMxE09vObUzJRy75AgcYkGTLE7PffqO+Yk+uy4lxB7GqiFoZlmKj19Hjb6ZIhM+M6tNErt7m24ZjrnA6hDH/kGZn3tQI9lSUCxwWoCal+Gg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=FWtYSOot; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55817a12ad8so6168242a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 05:04:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1706101478; x=1706706278; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=B8cA1ZmYL6Ndv77osRknh0AO8zS0RBiPjzqoqdqEtmI=;
-        b=FWtYSOotdyfGaMOcvwjlQ6E7Nsuz5KtKZQTmTV1laYkjraIR+ta8PuGwD4TnarRBdU
-         eT8vzw/PY2+DlNudy4xl9OrE9fsNNwKNetywUse0h0thMW2UhvUlOjr7TgGiqa27QRWj
-         NeqHKQ1m2As1tAeHLhKTAazJgRD42xI5lFIdo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706101478; x=1706706278;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=B8cA1ZmYL6Ndv77osRknh0AO8zS0RBiPjzqoqdqEtmI=;
-        b=fAfxPCe4HA7uzcQMIF40SlS4NGhSsuCDU4Jj0Vnj5EWZDEinrM9E68D26Gak7JZhJ7
-         t7QhzLKzqx/ittCk4jidphETia9TvMxFcnW8MSOnaNcFQf0NIn9okqUlX5rcYTWGKR2z
-         aXDpKmDKpMMd/8fkEX1ImNigp7Pry9h2ERBfDVS9b+AGOqYmeTWalPthiA3wHdR0cGpV
-         qbsaH7UccvuCdxMYTfJ5hnbFpVIe56CurRCVDm8OhxXN3OBSw8lGA+Jq4KjD8on51A3S
-         ZhB7He8fjEjltgU+t89bKK9uUd6tjj59Jt+geLteK1gTkXPkk3Zp9a+OdjoazRU6C79K
-         7u+A==
-X-Gm-Message-State: AOJu0YwMl0doIwiipXM18xngLCGgQRJGklc2zO/eXDBLGijc0NjyhYy8
-	3AKRsuD/++jRrkE1EGBbpz0CKuNAV+AgqQH/vWDRJT1EHNMW0+6aJYWg7Dc+WVLjHVgpD1khA6L
-	zzAJHYyxX2QGsRKgYEvdGey19FlCQ7/M7VValVQ==
-X-Google-Smtp-Source: AGHT+IEy9B2Lm4AXkR4V27MbGmnG2tBa71pYnFnuANaeGsI16VlKXncM9PMqvReHP7q0zCWmA/NahulZkCVWrcCihCo=
-X-Received: by 2002:a17:906:ae4a:b0:a31:1178:8e6d with SMTP id
- lf10-20020a170906ae4a00b00a3111788e6dmr608924ejb.70.1706101477686; Wed, 24
- Jan 2024 05:04:37 -0800 (PST)
+	s=arc-20240116; t=1706101605; c=relaxed/simple;
+	bh=FNsi1MgnOiCafwg2BDbZxoXkj+iUycBe8HXoYwKqzMg=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jdPCmU2m5sozjVo88BKPbwb+FVN7vkPUw4HjEl8gCLjnqRsL00hiPcUmK0mI4dt7xwEhrThffe8WBI7ASJhecxBquGi14lWtBNQUvJD9oqsCo1aG//W2IqmHA4GzIFJB+UAKUHEUp3tQHTS8QqB81hhWdx436oSayyGBj1QPKu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=uZPRmfDo; arc=none smtp.client-ip=37.18.73.165
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 2D63610000A;
+	Wed, 24 Jan 2024 16:06:38 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 2D63610000A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1706101598;
+	bh=zsaAaLH6CJR21EnkfyKWpwpt24RWdug8/kf9Nmutwtk=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+	b=uZPRmfDoQb5g2BQ5jsyq/TzsVOm1HBSDitGpyhC/BnFNLtuBpXV4UZ/1PnoR1v1+r
+	 6qzJaVFiIX8wIdWxXTV0zfM4igd4rrTJZqvGXWhj9gvZ68xjnhfzjoDG0135SgHKiY
+	 9WtLkvcuUT9hfbBecjS+jINhfi/nJnUphA95n+xnY4un1IJYrL7s0ZfZpeYHUHFLiC
+	 4q3EBQfKAsLqk86jqpnjinde/CcfPdlIvh0gfGQhoF0iX/pjRSyWQxxqIy+KRKOWXY
+	 9E+pGec/yTGkntT8Q3aBjf4RCqlcDW3aPl5Ug/eEI/gHGqCIQDNi0LEs2v8s9fbkTh
+	 SGowzrEJgXegg==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Wed, 24 Jan 2024 16:06:37 +0300 (MSK)
+Received: from user-A520M-DS3H.sberdevices.ru (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 24 Jan 2024 16:06:37 +0300
+From: Alexey Romanov <avromanov@salutedevices.com>
+To: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+	<conor+dt@kernel.org>, <neil.armstrong@linaro.org>, <khilman@baylibre.com>,
+	<jbrunet@baylibre.com>, <martin.blumenstingl@googlemail.com>
+CC: <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<kernel@salutedevices.com>, Alexey Romanov <avromanov@salutedevices.com>,
+	Dmitry Rokosov <ddrokosov@salutedevices.com>
+Subject: [PATCH v1] arch: arm64: dts: meson: a1: add assigned-clocks for usb node
+Date: Wed, 24 Jan 2024 16:06:23 +0300
+Message-ID: <20240124130623.3471236-1-avromanov@salutedevices.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124113042.44300-1-jefflexu@linux.alibaba.com>
- <CAJfpegtkSgRO-24bdnA4xUMFW5vFwSDQ7WkcowNR69zmbRwKqQ@mail.gmail.com> <96abca7f-8bd1-44e8-98be-c60d6d676ec6@linux.alibaba.com>
-In-Reply-To: <96abca7f-8bd1-44e8-98be-c60d6d676ec6@linux.alibaba.com>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Wed, 24 Jan 2024 14:04:26 +0100
-Message-ID: <CAJfpegsk-zjpOKhE7y7zmUd1sZr-Sn3jbKPjDLCSU7KmLbjr5Q@mail.gmail.com>
-Subject: Re: [PATCH] fuse: add support for explicit export disabling
-To: Jingbo Xu <jefflexu@linux.alibaba.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	amir73il@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 182891 [Jan 24 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.3
+X-KSMG-AntiSpam-Envelope-From: avromanov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;smtp.sberdevices.ru:5.0.1,7.1.1;salutedevices.com:7.1.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/01/24 11:47:00 #23399457
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-On Wed, 24 Jan 2024 at 13:50, Jingbo Xu <jefflexu@linux.alibaba.com> wrote:
+To ensure proper functionality of USB, it is necessary to use
+the rate of 64000000 for CLKID_USB_BUS. For instance, adb may
+not function correctly without this setting. This information
+has been derived from the vendor SDK.
 
-> OK I will rename it to fuse_no_export_operations.
->
-> By the way do I need to bump and update the minor version of FUSE protocol?
+Signed-off-by: Alexey Romanov <avromanov@salutedevices.com>
+Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-a1.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
 
-It's not strictly necessary since the feature is negotiated with the
-FUSE_NO_EXPORT_SUPPORT flag.
+diff --git a/arch/arm64/boot/dts/amlogic/meson-a1.dtsi b/arch/arm64/boot/dts/amlogic/meson-a1.dtsi
+index cf150f568335..b9fd69112535 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-a1.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-a1.dtsi
+@@ -668,6 +668,8 @@ usb: usb@fe004400 {
+ 				 <&clkc_periphs CLKID_USB_BUS>,
+ 				 <&clkc_periphs CLKID_USB_CTRL_IN>;
+ 			clock-names = "usb_ctrl", "usb_bus", "xtal_usb_ctrl";
++			assigned-clocks = <&clkc_periphs CLKID_USB_BUS>;
++			assigned-clock-rates = <64000000>;
+ 			resets = <&reset RESET_USBCTRL>;
+ 			reset-name = "usb_ctrl";
+ 
+-- 
+2.34.1
 
-Despite that we do usually bump the minor version once per kernel
-release if there were any changes to the API.
-
-Thanks,
-Miklos
 
