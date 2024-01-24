@@ -1,75 +1,78 @@
-Return-Path: <linux-kernel+bounces-37548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3C0683B179
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:50:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 207B383B181
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:52:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8497C2886B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:50:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D991DB22299
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:51:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C549F131E55;
-	Wed, 24 Jan 2024 18:50:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A3A1132C13;
+	Wed, 24 Jan 2024 18:50:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="EXHUkeZG"
+	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="Q4CgPDMH"
 Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11olkn2010.outbound.protection.outlook.com [40.92.20.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5690131E50;
-	Wed, 24 Jan 2024 18:50:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42C40132C05;
+	Wed, 24 Jan 2024 18:50:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.20.10
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706122205; cv=fail; b=NdS6aiQxFusKYfsorF55ZvLlxsDPCs+TuqG6jxxGNNBluWXw0PyxIExbsCb3ES9Ytgwi7nRiQJ2mrjD89wAfu7CFops6lUqGUL6HCcexPMPeO/B3GokUw6UxxUGlCJyLkCfnMLZYJXVVupOB0JvvIqOKlxlg6UuCL94hr4N0X3k=
+	t=1706122211; cv=fail; b=DAzvhhPjeriEpHWvEUhmM59Bp9AtyasGof2jN3s9u4Cl4RXSK7zQIpj67gUWorEzJb1g2gZ5kj3sJx+p/3eNEiV2lmmjN6IdqJieG/wgxuDwzKgyQxR+X/gSdnyCak0AWR3hWusnnopYnJPqZZWoTFQAmijuntGtcTB/QaSZofM=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706122205; c=relaxed/simple;
-	bh=ji96LCfwkdj2IkmKhxfI4OLy6tZvZpmE5/ooicKy3Ng=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=QVz+Y4rJMElbi55TQmuCIySrU0V7RJ/dNSDs8RGYp7URjiQZe5FlcLd+IiEwfhOXbr3aNa5ujJHBcDRIf/P+nkKIKOLFRPpi1wLkn4H8b0om0o/5NKxBk0qfCC/jz0lL9nk+GS+rh/KIUFJiloQKYCTr5TjrFUwymdNjmrqhpbY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com; spf=pass smtp.mailfrom=hotmail.com; dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b=EXHUkeZG; arc=fail smtp.client-ip=40.92.20.10
+	s=arc-20240116; t=1706122211; c=relaxed/simple;
+	bh=jq+t2ePmZ56ll+jlMXwKkdRP0iLiyd4v7YeWddU9ftc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=esbKLIf1Y8f9tNG1WwRAU1/Op71bLp6EbkbkWm1QetFOWFEwRuvQdR+zCOa9SkvJwtZShvpO9p17wCaz1T//qjabkwgEYBL2Kx0wU+D+o+Nw02Ln7wkvW+dmzOwNtRj1xUtxbF24pAd9oN1QMpM27s5UqFlWkOGXNbgMrPvE0jI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com; spf=pass smtp.mailfrom=hotmail.com; dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b=Q4CgPDMH; arc=fail smtp.client-ip=40.92.20.10
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hotmail.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CzLhGpRyU8/YGnLxayr65zadkc8nuyuMvBOOxHg4kg3jhgR6EmD4sdfA0FNdxWLUlIiLcCEl5b50rHdXacpwsRQqz1pAGi4IS3/dG5N/L5v9r9sbka4Em3Q1xu2cbsD5w9/dX1ij2pWnupDUnyTQy15e4Uw8KC2sXDcRnrlebcaGyYHiiOtmofMmUw4PhAECBeAS2l1WouUdmCn2p/l884LsBMo5uMoP6tzyq9fnfA8qNrCoE939Sbgeq/G9dGVOMz5z31dsMcCHO0ZRzZmfJ2GOSsO4NIW5qccUpREPAMiSU5C10dfvbIDBF2tV0SoDnrJ9nqGPirm1Ij/yfWN0BA==
+ b=jm6yS6YKobPljS2aVr7+fCbxtn8jkr4JThlroBr/ww6RM0JPeu4LXaynphKo/BY/Q9u3Ms5bJrVavgd0SrGgHpGbkTDnNnhdr5sirTBv2+UZzS9fRPlrBxYsZDBmqbzCVis5MhqqzRKZMDHQOHVlf2PQk/ZoXhf5V9XVQ0viXYirQP/xz2JtsonocR5bHcI1JRNcxXYQ0AavqvO312WCFtcH/v6q+sDQ0pDrLCdce8kFB79YiSllkcHZmX5G7gzyjRnSHqklfzqCDX05iBb+lzbDhOgVrshge1hLACI4h5FymR0RAsBQ0qgQunYEA6gMsgfsnwYrZGGuM8s8RF6NJg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=C6mgO5luPo/BfDUTypkDWRZWnHU0pXEuKFb3flUcDgw=;
- b=KCi4PAyRDyo9fg3fBr9FK0qivL4jVDbLBN7npYNdJybfUKUiWR9AZwAh8m38E5mULmTqjetlsqw3eioE1Q8Y+l6AYd7NZoMS7BBjwbvOLMcgc2JTeKDzmkkjVdcBl8LtiR9vjQHzvTBNhKoNg+kGr3bLy22hmZeLlF+tphoYBl5uObNk5jtIH5kAJR22y/O17mj9Zwqitb1SD51ZYvNnh+dZ0Dv7h1yWD7Gefh7xi7OGevzoOaZH2peUU6q0WFK//G/OoV8k4b/S5KmndGMC0NZj+En6fdIfYcvkKFzdI0JO3qBrq7utqiUN2mbRCW4BvfJLsDzYiJretvHoCt0R0A==
+ bh=PzMA5/h7sSgtdm62YB0a++DOBUGrUM320VR0RmGKxSc=;
+ b=hHOMFVztWQohzDUxnb1t5L8mzsFIddnuJNj/6uQ9b17o4REDCsbuZ4K/DyxKjGEtkWyn5gxnMrOR+AXhssx5FySp71g35TRmb4k6aLNDaV6v/TxwlBEwzVf7YI865HJolrVhVNYqn3d6Q1Prw7pxstu2Cn6jqvpcucOgx3OIxG87234bLUqMYYgFkzRG0MoT9kKXNYUrvYcMriYU0kjahGXz9st/X0ppu1saJOx8pRbqR7/goLKrwn9P3fFHmqsEnLTOy2ocBOEmgPT/oydEPfYa4yT/Jglc9rfyE3A6lfni5HQQaX0eM9LZVU2ZZmqZWXB/XqyASeMhxKZkADvZZQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C6mgO5luPo/BfDUTypkDWRZWnHU0pXEuKFb3flUcDgw=;
- b=EXHUkeZGS0SnDwmRR+VYo7LAeP+IaJprJzLz/mdx4vLFgAVYvqZPBIVhOWxGn8JPAZJc5N3PFZJ2/SZUhl0jADGOzb55bv8m4xoLhrkaez7slS0VuRKPoVB/AaV+kxB4jt9Q1/gsdmFmmm8AQJJr+MzJfwkzvMF5bzuhYjePLt2++plmmjugkOBvUHbwRhx00BmgT7zDf5MtqHyn/LamyGg4XfHrvz1N0lpzs4l13JReynjNQWkrdW2J0rLVTzAY5zPEV5UfJtvi7rL3E0aR+2OJsi34XwtBGmJXScvpTMQFrlrCwhtoBZcwC//bM99W258XlAaxUea0foyBR20KJA==
+ bh=PzMA5/h7sSgtdm62YB0a++DOBUGrUM320VR0RmGKxSc=;
+ b=Q4CgPDMHMJatfTUKq4yzjXlUgBoQfyi8IrrIdEmdLODDeOxzFt9pAsRPNtxw/h8tspZo+4R+MGGh0kpVLgi0FrwUS8di9hE4qUr3em2d5Smp/+JeHGtOuVfEZMlg1zWkbBqd1zzlyynBQGVeqUMYPD29pwjGkZ+vKkuTQo8srGxS6QepFujObcwIo6V5a9J3L1pG4Syk+pMT9hlLv7QUnnsQWdh8JxNkbnc8ByMkB1+J7I1Vi9EBjnUCMAuo6c/D+4MIlc5dddCFKiKBYneTSDyCO5kc2Z/4xBNlKqzRfNFv1ZCc/AdUN577KpHhhPeJeDCoDrttE5RK/PgXiDoegQ==
 Received: from PH7PR03MB7064.namprd03.prod.outlook.com (2603:10b6:510:2a5::8)
  by BY5PR03MB5048.namprd03.prod.outlook.com (2603:10b6:a03:1e8::11) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22; Wed, 24 Jan
- 2024 18:50:01 +0000
+ 2024 18:50:03 +0000
 Received: from PH7PR03MB7064.namprd03.prod.outlook.com
  ([fe80::cc0:a35d:c90d:e350]) by PH7PR03MB7064.namprd03.prod.outlook.com
  ([fe80::cc0:a35d:c90d:e350%2]) with mapi id 15.20.7202.035; Wed, 24 Jan 2024
- 18:50:01 +0000
+ 18:50:03 +0000
 From: Min Li <lnimi@hotmail.com>
 To: richardcochran@gmail.com,
 	lee@kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	netdev@vger.kernel.org,
 	Min Li <min.li.xe@renesas.com>
-Subject: [PATCH net-next v7 1/2] ptp: introduce PTP_CLOCK_EXTOFF event for the measured external offset
-Date: Wed, 24 Jan 2024 13:49:46 -0500
+Subject: [PATCH net-next v7 2/2] ptp: add FemtoClock3 Wireless as ptp hardware clock
+Date: Wed, 24 Jan 2024 13:49:47 -0500
 Message-ID:
- <PH7PR03MB706498B5804E735C6B681407A07B2@PH7PR03MB7064.namprd03.prod.outlook.com>
+ <PH7PR03MB70649EAD849C96778D828DB2A07B2@PH7PR03MB7064.namprd03.prod.outlook.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240124184947.5263-1-lnimi@hotmail.com>
+References: <20240124184947.5263-1-lnimi@hotmail.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-TMN: [Et/HryODooaVs+ZOXp5ff0Ja1kibWKmUOeCnI9ID0SU=]
+X-TMN: [/wbJe/JqcVjogZ+5VJPxO9iqYMqjvAqUv9ulmlW6m4M=]
 X-ClientProxiedBy: YQZPR01CA0123.CANPRD01.PROD.OUTLOOK.COM
  (2603:10b6:c01:87::28) To PH7PR03MB7064.namprd03.prod.outlook.com
  (2603:10b6:510:2a5::8)
-X-Microsoft-Original-Message-ID: <20240124184947.5263-1-lnimi@hotmail.com>
+X-Microsoft-Original-Message-ID: <20240124184947.5263-2-lnimi@hotmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,38 +82,38 @@ MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: PH7PR03MB7064:EE_|BY5PR03MB5048:EE_
-X-MS-Office365-Filtering-Correlation-Id: aba481e2-c6fe-41ff-354b-08dc1d0d44a7
+X-MS-Office365-Filtering-Correlation-Id: 56d07d4e-4b4c-4ba7-37ca-08dc1d0d4644
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	gnFO1rg9/iMW1oXP7zxnX/Pd7aXciQn2F5UAyF/051mB/KGG4cf2Z0xv0e6P7WCr8R9QtoHu8W40gqqCSGSUWFSF3c3o4/0NP6EbIEMsJPLSXml/sX9wd0mYuuP3Dau70fbbHUgV+1Qghiq6a9MeCyub0Vu86LTysHKje62rLhPOFPfrVTb208kexOV9JVJADhGBLZLLnfgTmNJfomeSlQuPZtxEK+UC8+0R1eDerCnyUyYRlmsbmwgLndvzwzAdxkI7/WSfMFUxFdBcqd+p2p2GN4XFZl8mmyIMd1W/uCa4YWER/7Lytx/OPsAIxCqwHUEwFUsuMEYZKKFPsvOAqptnI/VPxpC8aHoojKo1Kkvrzpnn2ZcTF/1Yv03zDFzx43MK1g37MDgyS/k/gsBDZ7j7s0NRkznJ/dKshFcqbdauTV6SMmJHKJLe5qONgabrhGE5M1bc0M1G3CjBtWfzBGUDDAeQEGH2kNwHYBZANm6ldnx303Jh6uozXnijQrMITNtmOki2yYDPQSc2YthXa2coDj6bFx32XYMIbpn3Hjdt2yp1JYFSNHAEYfV51iP8
+	sHVd1yPIqo1YtMnKmVtD9pyXDqkADwHbVlXgRkOq91OrFvSds9daW7Os5psxVL7O+MZQTAG+BW8a1b7dvHqdBtzqU1XNU/ZIkEI9UqbNU71f4SpMhKTqTaiYNgwm4NQPKAKv6mC+nN46m3gwe4j3s9zOtGSMsFPYddBv4ro4gQ85tepOZj8zg8ShlAOlr3XzkzZ4bkyoiZpkkkjAytviMjxr4MVUelS3ZDLYl4KXCIUVFMJm3rjgGWr+chpC5zrrZFaXJMPEC/iKP63IfgBC5wYvbcFBQ1XhVVQ//Xg9+I7mJrOayoAeRkYM8hjFJ3mPG/1D4pittbdfQqIltVN0Fbf+jrQFYpztcjm3TQYxOBywG3EhA8+1Jl1P7Pm4jMddZ8emMYrVmF/S/FKOwl1jivYIxmOTbk7jrlEvrFthfxBjbUxQ77oBeRU2vriB2FuuXNETHE90ynYyMgnVrHUpCd2GYqq/xVwB4ludZp6lHuz5aw164NsALyEq0oxfaZI4zABhpWrZaRWyCnmjbF8D9btmG+29bdKxxCGu3ZBbBWu/ydClG2ax+/YlEbJaVyYf
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?o7EloORp2NQNRXhBG8EF4OiIpdKbyP0wi502jzn0qGOCe+BrorgnPWm20yzF?=
- =?us-ascii?Q?XDmWd3fauevT9HgmxOVfQcSC7eg/fUa0dXIFZouOOLAtTrHAmEw4xA2bKdmW?=
- =?us-ascii?Q?1f2UCn/hLrrBD4ueYUhMLw/Y0idyLbpP+MB7L7wFoPz0AfYQJI7XSUGXI23z?=
- =?us-ascii?Q?ITW7k+U2FLmGcFEQ4Z9rq+aXUeq0aE8OATiSDil7X4Or3xRZdL8wGS9zP+Y8?=
- =?us-ascii?Q?5lRxJw907k4K0ctU4QzleFZEbEqNej6vupbeMP+1cjFLLUWK61fBFhgz4cu2?=
- =?us-ascii?Q?P6FW6YExjVEisEoo3Blvw0wbzV17Ic4+3JCyuUulJfQVqiqKIQxTOiNn4SAW?=
- =?us-ascii?Q?PilIfa6isl8D2CpTK0bHozjge3f3B9wawYpLoGp4T2kbc7gZxilLPF0sUFvs?=
- =?us-ascii?Q?th/OVSTzaJLs4fjc7guiVGgNmvkmZ5TmkOkOuY6o3G+2+dRsQFdyGSIZC8Wa?=
- =?us-ascii?Q?55BnnUW+pqJojEjkPIhjKMg0mQroZAOianQhd1yT1pMfSeJtBUdNd98UmWus?=
- =?us-ascii?Q?6/x6MOgeYj0xCV2/5HvQ7CO4BE8iGG8+BfD8USec6IIGsmxtk++K6xzxSB1k?=
- =?us-ascii?Q?OjuC/6d1KqjNygYK0Xim5bzAjIqh6d8HM2Q3tW+FzNTi6TPAynkHEkpsdTJA?=
- =?us-ascii?Q?Br71HuaNtVMoeqzcRFYltuSA/pRgX0NgyQdbh5j4qNSwjPNdIUTF60xFElP+?=
- =?us-ascii?Q?QWU6CY+1N/heWfw93Rq0wp0/2RbcX2yMhB6Av/mxkQ/nkCHwWzT3HvHYiRxY?=
- =?us-ascii?Q?XjHEv4aX+ZlCNLrLVFs+EPQ88FIGtNgVaPfAeN/Tijjt20nlWnn8FsWIEw75?=
- =?us-ascii?Q?6Z3MV1l2q53Vqc8cuT55FiASsoj5TGS5zREPXhMIWmiy3qy9p8lVTYrMC3e2?=
- =?us-ascii?Q?aMnmrIKoh0DqZcZKAKFzuO8tbBaLtIAvAHYHwwiIhyf4oLqyhxEapPAsyU3f?=
- =?us-ascii?Q?yD3fASGlzKiz3qrenScvbEvDXBRW7QLomi18Dl1v35n3Or/StsUEhDh53/yE?=
- =?us-ascii?Q?Pb/96OA9cshZJkfNOcFvIW7reqj+OGaxV/MBuxThKpEZgQL30w1DjZ9H3r87?=
- =?us-ascii?Q?tdK/ax1SFnCHHDRrxpARkkwNRVZmt4iiqH1u/8Zawx5ikbkxUCZn71ej+udU?=
- =?us-ascii?Q?fnAIO51KDuawP/11TZ7GIo+2Hgc4X9wdcJozS9Bs7Tqygi40lkgI1wq+3H4T?=
- =?us-ascii?Q?2+DgCR2MPQHUtRdc6uZm3PaEa1p61bLOf7cvsA=3D=3D?=
+	=?us-ascii?Q?F5tUxC/UNFE74XSG++/YF+Agj0OEvleJM4LGqe4Fhi0sTuu2vwRljiBhG6kA?=
+ =?us-ascii?Q?bmFlZIA2M8FAAwqcCosNTtS4xFZ2AJ1u2ykLF3MwESa5UDM6RIds8+P4skte?=
+ =?us-ascii?Q?D7sj7woz4pSvuw2Z6VVKqTMAya8YPzNwHUWkEdJGPdj8M5QgvNXDO+91TWkG?=
+ =?us-ascii?Q?LvVZbiHHl/lxcIMuCpNqgyLPZHHPt03vSj7t49PZc1GmgZjBTrhLR5zSSXlr?=
+ =?us-ascii?Q?j3+xbHI3MuBWFPAyRQi3BmO+3enPovekL1W/nUIDBqVJxSw3Q05m77/B0ER6?=
+ =?us-ascii?Q?Ux2HH9veWjexOGAJWVaD7cJezsgRiWgt4H/TpL9LddtsU1xuqHjm6cg/aR8m?=
+ =?us-ascii?Q?9M9FSU/23frFwIfVD/B5jA6ljjJIG9IebKt0Gr1bv1n0547fc3d4yWO2sBKr?=
+ =?us-ascii?Q?nm37tIHVkL0tfG4esaezU4fapLuNadXd5KWXF/d729SxPwziR3Rh33KsZF6d?=
+ =?us-ascii?Q?ReHDuXauHBl5lg3eT8swsJsIwr9MLOrqBHqr8A+e9DSGrjDixl3fb8TDBZqY?=
+ =?us-ascii?Q?un2J8dQRqTLlMliOgOEmDBQwvL95B+dKgkGRGatKAd9rcSfel/cV0hhLzXe4?=
+ =?us-ascii?Q?2+gNMqGt4eKRp4YKtLhhyFyppkAvrxqKPAaIss9jooeWA1/zJ42yf0DQZ+E3?=
+ =?us-ascii?Q?PpmrEGHvO3HDD7eifUhXjydtbPnu4hfCNqDARm3xSCXCC/Ro0khOwtzcb1El?=
+ =?us-ascii?Q?/4xzGDKNDbB/Rgs6ujKIWmCbYQNBcCH9wbkORSPKJrJ0zz6OdfyhoJ1qArnx?=
+ =?us-ascii?Q?OA4H/V4eIzG9xzP+2U6vGcu9ikRXdJW6D1l/DmYIpacj30OUD8SAZGhVYKfw?=
+ =?us-ascii?Q?sf8/iOGCXIVDD2b2KqirED8LvkmGM/MuPX1byKRYk1c4nl/y5pRi37yxuWy8?=
+ =?us-ascii?Q?/3fcZyEvQSngF8Hoa0JCcUIAZ2+HtpXc5lZM1EPcSAHrMv3p0JyQJpeRtF7A?=
+ =?us-ascii?Q?6H1trMkiDTNl3+t9rwhnVVJFT/2dIkluQ+kBXQRoBKM1F2bfY8tQ+/2PNZ3R?=
+ =?us-ascii?Q?8S97oiPuOscwFJUcUXFBJvH7X1JnOedfhfapT23p6Im7SKRoLkwtQiUADCGt?=
+ =?us-ascii?Q?Y15NNq2jJjKoCbe87pgJPGXR/di9Vl3iT78F7NCi3GPFcJDnZ+gJKTtoajxq?=
+ =?us-ascii?Q?v36LFKaZ3K+1dKRWkgNiKCNOQnxl80J0cIeRQM05mYMza9ev0MgdyeAaOUgw?=
+ =?us-ascii?Q?u5YSoNDBxz4xQSWKRK7bqaoDkLL9MutZrKoZtQ=3D=3D?=
 X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-839f4.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: aba481e2-c6fe-41ff-354b-08dc1d0d44a7
+X-MS-Exchange-CrossTenant-Network-Message-Id: 56d07d4e-4b4c-4ba7-37ca-08dc1d0d4644
 X-MS-Exchange-CrossTenant-AuthSource: PH7PR03MB7064.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jan 2024 18:50:00.7357
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jan 2024 18:50:03.5740
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
@@ -120,152 +123,1417 @@ X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR03MB5048
 
 From: Min Li <min.li.xe@renesas.com>
 
-This change is for the PHC devices that can measure the phase offset
-between PHC signal and the external signal, such as the 1PPS signal of
-GNSS. Reporting PTP_CLOCK_EXTOFF to user space will be piggy-backed to
-the existing ptp_extts_event so that application such as ts2phc can
-poll the external offset the same way as extts. Hence, ts2phc can use
-the offset to achieve the alignment between PHC and the external signal
-by the help of either SW or HW filters.
+The RENESAS FemtoClock3 Wireless is a high-performance jitter attenuator,
+frequency translator, and clock synthesizer. The device is comprised of 3
+digital PLLs (DPLL) to track CLKIN inputs and three independent low phase
+noise fractional output dividers (FOD) that output low phase noise clocks.
+
+FemtoClock3 supports one Time Synchronization (Time Sync) channel to enable
+an external processor to control the phase and frequency of the Time Sync
+channel and to take phase measurements using the TDC. Intended applications
+are synchronization using the precision time protocol (PTP) and
+synchronization with 0.5 Hz and 1 Hz signals from GNSS.
 
 Signed-off-by: Min Li <min.li.xe@renesas.com>
-Acked-by: Richard Cochran <richardcochran@gmail.com>
+Acked-by: Lee Jones <lee@kernel.org>
 ---
--Rebase to net-next tree
--Fix the typo and ns2counters suggested by Simon
--Remove inline from ptp_fc3.c suggested by Simon
--Use flags field to identify extts and extoff event suggested by Richard
--Fix indentation suggested by Simon
--Rename PTP_EXTTS_EVENT_VALID flag suggested by Richard
--Update flags comment as event type suggested by Richard
--Change HAVE_IDTRC38XXX_REG to MFD suggested by Lee
--Change some masks to GENMASK_ULL suggested by Jakub
--Remove unnecessary logs and unused local variables suggested by Simon
+ drivers/ptp/Kconfig                |   12 +
+ drivers/ptp/Makefile               |    1 +
+ drivers/ptp/ptp_fc3.c              | 1016 ++++++++++++++++++++++++++++
+ drivers/ptp/ptp_fc3.h              |   45 ++
+ include/linux/mfd/idtRC38xxx_reg.h |  273 ++++++++
+ 5 files changed, 1347 insertions(+)
+ create mode 100644 drivers/ptp/ptp_fc3.c
+ create mode 100644 drivers/ptp/ptp_fc3.h
+ create mode 100644 include/linux/mfd/idtRC38xxx_reg.h
 
- drivers/ptp/ptp_clock.c          | 16 +++++++++++++++-
- include/linux/ptp_clock_kernel.h |  3 +++
- include/uapi/linux/ptp_clock.h   | 13 ++++++++++---
- 3 files changed, 28 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
-index 15b804ba4..3aaf1a343 100644
---- a/drivers/ptp/ptp_clock.c
-+++ b/drivers/ptp/ptp_clock.c
-@@ -44,18 +44,31 @@ static void enqueue_external_timestamp(struct timestamp_event_queue *queue,
- 				       struct ptp_clock_event *src)
- {
- 	struct ptp_extts_event *dst;
-+	struct timespec64 offset_ts;
- 	unsigned long flags;
- 	s64 seconds;
- 	u32 remainder;
+diff --git a/drivers/ptp/Kconfig b/drivers/ptp/Kconfig
+index 5dd5f188e..604541dcb 100644
+--- a/drivers/ptp/Kconfig
++++ b/drivers/ptp/Kconfig
+@@ -155,6 +155,18 @@ config PTP_1588_CLOCK_IDTCM
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called ptp_clockmatrix.
  
--	seconds = div_u64_rem(src->timestamp, 1000000000, &remainder);
-+	if (src->type == PTP_CLOCK_EXTTS) {
-+		seconds = div_u64_rem(src->timestamp, 1000000000, &remainder);
-+	} else if (src->type == PTP_CLOCK_EXTOFF) {
-+		offset_ts = ns_to_timespec64(src->offset);
-+		seconds = offset_ts.tv_sec;
-+		remainder = offset_ts.tv_nsec;
-+	} else {
-+		WARN(1, "%s: unknown type %d\n", __func__, src->type);
-+		return;
-+	}
- 
- 	spin_lock_irqsave(&queue->lock, flags);
- 
- 	dst = &queue->buf[queue->tail];
- 	dst->index = src->index;
-+	dst->flags = PTP_EXTTS_EVENT_VALID;
- 	dst->t.sec = seconds;
- 	dst->t.nsec = remainder;
-+	if (src->type == PTP_CLOCK_EXTOFF)
-+		dst->flags |= PTP_EXT_OFFSET;
- 
- 	/* Both WRITE_ONCE() are paired with READ_ONCE() in queue_cnt() */
- 	if (!queue_free(queue))
-@@ -417,6 +430,7 @@ void ptp_clock_event(struct ptp_clock *ptp, struct ptp_clock_event *event)
- 		break;
- 
- 	case PTP_CLOCK_EXTTS:
-+	case PTP_CLOCK_EXTOFF:
- 		/* Enqueue timestamp on selected queues */
- 		spin_lock_irqsave(&ptp->tsevqs_lock, flags);
- 		list_for_each_entry(tsevq, &ptp->tsevqs, qlist) {
-diff --git a/include/linux/ptp_clock_kernel.h b/include/linux/ptp_clock_kernel.h
-index 1ef4e0f9b..6e4b8206c 100644
---- a/include/linux/ptp_clock_kernel.h
-+++ b/include/linux/ptp_clock_kernel.h
-@@ -200,6 +200,7 @@ struct ptp_clock;
- enum ptp_clock_events {
- 	PTP_CLOCK_ALARM,
- 	PTP_CLOCK_EXTTS,
-+	PTP_CLOCK_EXTOFF,
- 	PTP_CLOCK_PPS,
- 	PTP_CLOCK_PPSUSR,
- };
-@@ -210,6 +211,7 @@ enum ptp_clock_events {
-  * @type:  One of the ptp_clock_events enumeration values.
-  * @index: Identifies the source of the event.
-  * @timestamp: When the event occurred (%PTP_CLOCK_EXTTS only).
-+ * @offset:    When the event occurred (%PTP_CLOCK_EXTOFF only).
-  * @pps_times: When the event occurred (%PTP_CLOCK_PPSUSR only).
-  */
- 
-@@ -218,6 +220,7 @@ struct ptp_clock_event {
- 	int index;
- 	union {
- 		u64 timestamp;
-+		s64 offset;
- 		struct pps_event_time pps_times;
- 	};
- };
-diff --git a/include/uapi/linux/ptp_clock.h b/include/uapi/linux/ptp_clock.h
-index da700999c..053b40d64 100644
---- a/include/uapi/linux/ptp_clock.h
-+++ b/include/uapi/linux/ptp_clock.h
-@@ -32,6 +32,7 @@
- #define PTP_RISING_EDGE    (1<<1)
- #define PTP_FALLING_EDGE   (1<<2)
- #define PTP_STRICT_FLAGS   (1<<3)
-+#define PTP_EXT_OFFSET     (1<<4)
- #define PTP_EXTTS_EDGES    (PTP_RISING_EDGE | PTP_FALLING_EDGE)
- 
- /*
-@@ -40,7 +41,8 @@
- #define PTP_EXTTS_VALID_FLAGS	(PTP_ENABLE_FEATURE |	\
- 				 PTP_RISING_EDGE |	\
- 				 PTP_FALLING_EDGE |	\
--				 PTP_STRICT_FLAGS)
-+				 PTP_STRICT_FLAGS |	\
-+				 PTP_EXT_OFFSET)
- 
- /*
-  * flag fields valid for the original PTP_EXTTS_REQUEST ioctl.
-@@ -50,6 +52,11 @@
- 					 PTP_RISING_EDGE |	\
- 					 PTP_FALLING_EDGE)
- 
-+/*
-+ * flag fields valid for the ptp_extts_event report.
-+ */
-+#define PTP_EXTTS_EVENT_VALID	(PTP_ENABLE_FEATURE)
++config PTP_1588_CLOCK_FC3W
++	tristate "RENESAS FemtoClock3 Wireless as PTP clock"
++	depends on PTP_1588_CLOCK && I2C
++	default n
++	help
++	  This driver adds support for using Renesas FemtoClock3 Wireless
++	  as a PTP clock. This clock is only useful if your time stamping
++	  MAC is connected to the RENESAS chip.
 +
- /*
-  * Bits of the ptp_perout_request.flags field:
-  */
-@@ -228,9 +235,9 @@ struct ptp_pin_desc {
- #define PTP_MASK_EN_SINGLE  _IOW(PTP_CLK_MAGIC, 20, unsigned int)
- 
- struct ptp_extts_event {
--	struct ptp_clock_time t; /* Time event occured. */
-+	struct ptp_clock_time t; /* Time event occurred. */
- 	unsigned int index;      /* Which channel produced the event. */
--	unsigned int flags;      /* Reserved for future use. */
-+	unsigned int flags;      /* Event type. */
- 	unsigned int rsv[2];     /* Reserved for future use. */
- };
- 
++	  To compile this driver as a module, choose M here: the module
++	  will be called ptp_fc3.
++
+ config PTP_1588_CLOCK_MOCK
+ 	tristate "Mock-up PTP clock"
+ 	depends on PTP_1588_CLOCK
+diff --git a/drivers/ptp/Makefile b/drivers/ptp/Makefile
+index dea0cebd2..68bf02078 100644
+--- a/drivers/ptp/Makefile
++++ b/drivers/ptp/Makefile
+@@ -15,6 +15,7 @@ obj-$(CONFIG_PTP_1588_CLOCK_QORIQ)	+= ptp-qoriq.o
+ ptp-qoriq-y				+= ptp_qoriq.o
+ ptp-qoriq-$(CONFIG_DEBUG_FS)		+= ptp_qoriq_debugfs.o
+ obj-$(CONFIG_PTP_1588_CLOCK_IDTCM)	+= ptp_clockmatrix.o
++obj-$(CONFIG_PTP_1588_CLOCK_FC3W)	+= ptp_fc3.o
+ obj-$(CONFIG_PTP_1588_CLOCK_IDT82P33)	+= ptp_idt82p33.o
+ obj-$(CONFIG_PTP_1588_CLOCK_MOCK)	+= ptp_mock.o
+ obj-$(CONFIG_PTP_1588_CLOCK_VMW)	+= ptp_vmw.o
+diff --git a/drivers/ptp/ptp_fc3.c b/drivers/ptp/ptp_fc3.c
+new file mode 100644
+index 000000000..0e2286ba0
+--- /dev/null
++++ b/drivers/ptp/ptp_fc3.c
+@@ -0,0 +1,1016 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * PTP hardware clock driver for the FemtoClock3 family of timing and
++ * synchronization devices.
++ *
++ * Copyright (C) 2023 Integrated Device Technology, Inc., a Renesas Company.
++ */
++#include <linux/firmware.h>
++#include <linux/platform_device.h>
++#include <linux/module.h>
++#include <linux/ptp_clock_kernel.h>
++#include <linux/delay.h>
++#include <linux/jiffies.h>
++#include <linux/kernel.h>
++#include <linux/timekeeping.h>
++#include <linux/string.h>
++#include <linux/of.h>
++#include <linux/bitfield.h>
++#include <linux/mfd/rsmu.h>
++#include <linux/mfd/idtRC38xxx_reg.h>
++#include <asm/unaligned.h>
++
++#include "ptp_private.h"
++#include "ptp_fc3.h"
++
++MODULE_DESCRIPTION("Driver for IDT FemtoClock3(TM) family");
++MODULE_AUTHOR("IDT support-1588 <IDT-support-1588@lm.renesas.com>");
++MODULE_VERSION("1.0");
++MODULE_LICENSE("GPL");
++
++/*
++ * The name of the firmware file to be loaded
++ * over-rides any automatic selection
++ */
++static char *firmware;
++module_param(firmware, charp, 0);
++
++static s64 ns2counters(struct idtfc3 *idtfc3, s64 nsec, u32 *sub_ns)
++{
++	s64 sync;
++	s32 rem;
++
++	if (likely(nsec >= 0)) {
++		sync = div_u64_rem(nsec, idtfc3->ns_per_sync, &rem);
++		*sub_ns = rem;
++	} else {
++		sync = -div_u64_rem(-nsec - 1, idtfc3->ns_per_sync, &rem) - 1;
++		*sub_ns = idtfc3->ns_per_sync - rem - 1;
++	}
++
++	return sync * idtfc3->ns_per_sync;
++}
++
++static s64 tdc_meas2offset(struct idtfc3 *idtfc3, u64 meas_read)
++{
++	s64 coarse, fine;
++
++	fine = sign_extend64(FIELD_GET(FINE_MEAS_MASK, meas_read), 12);
++	coarse = sign_extend64(FIELD_GET(COARSE_MEAS_MASK, meas_read), (39 - 13));
++
++	fine = div64_s64(fine * NSEC_PER_SEC, idtfc3->tdc_apll_freq * 62LL);
++	coarse = div64_s64(coarse * NSEC_PER_SEC, idtfc3->time_ref_freq);
++
++	return coarse + fine;
++}
++
++static s64 tdc_offset2phase(struct idtfc3 *idtfc3, s64 offset_ns)
++{
++	if (offset_ns > idtfc3->ns_per_sync / 2)
++		offset_ns -= idtfc3->ns_per_sync;
++
++	return offset_ns * idtfc3->tdc_offset_sign;
++}
++
++static int idtfc3_set_lpf_mode(struct idtfc3 *idtfc3, u8 mode)
++{
++	int err;
++
++	if (mode >= LPF_INVALID)
++		return -EINVAL;
++
++	if (idtfc3->lpf_mode == mode)
++		return 0;
++
++	err = regmap_bulk_write(idtfc3->regmap, LPF_MODE_CNFG, &mode, sizeof(mode));
++	if (err)
++		return err;
++
++	idtfc3->lpf_mode = mode;
++
++	return 0;
++}
++
++static int idtfc3_enable_lpf(struct idtfc3 *idtfc3, bool enable)
++{
++	u8 val;
++	int err;
++
++	err = regmap_bulk_read(idtfc3->regmap, LPF_CTRL, &val, sizeof(val));
++	if (err)
++		return err;
++
++	if (enable == true)
++		val |= LPF_EN;
++	else
++		val &= ~LPF_EN;
++
++	return regmap_bulk_write(idtfc3->regmap, LPF_CTRL, &val, sizeof(val));
++}
++
++static int idtfc3_get_time_ref_freq(struct idtfc3 *idtfc3)
++{
++	int err;
++	u8 buf[4];
++	u8 time_ref_div;
++	u8 time_clk_div;
++
++	err = regmap_bulk_read(idtfc3->regmap, TIME_CLOCK_MEAS_DIV_CNFG, buf, sizeof(buf));
++	if (err)
++		return err;
++	time_ref_div = FIELD_GET(TIME_REF_DIV_MASK, get_unaligned_le32(buf)) + 1;
++
++	err = regmap_bulk_read(idtfc3->regmap, TIME_CLOCK_COUNT, buf, 1);
++	if (err)
++		return err;
++	time_clk_div = (buf[0] & TIME_CLOCK_COUNT_MASK) + 1;
++	idtfc3->time_ref_freq = idtfc3->hw_param.time_clk_freq *
++				time_clk_div / time_ref_div;
++
++	return 0;
++}
++
++static int idtfc3_get_tdc_offset_sign(struct idtfc3 *idtfc3)
++{
++	int err;
++	u8 buf[4];
++	u32 val;
++	u8 sig1, sig2;
++
++	err = regmap_bulk_read(idtfc3->regmap, TIME_CLOCK_TDC_FANOUT_CNFG, buf, sizeof(buf));
++	if (err)
++		return err;
++
++	val = get_unaligned_le32(buf);
++	if ((val & TIME_SYNC_TO_TDC_EN) != TIME_SYNC_TO_TDC_EN) {
++		dev_err(idtfc3->dev, "TIME_SYNC_TO_TDC_EN is off !!!");
++		return -EINVAL;
++	}
++
++	sig1 = FIELD_GET(SIG1_MUX_SEL_MASK, val);
++	sig2 = FIELD_GET(SIG2_MUX_SEL_MASK, val);
++
++	if ((sig1 == sig2) || ((sig1 != TIME_SYNC) && (sig2 != TIME_SYNC))) {
++		dev_err(idtfc3->dev, "Invalid tdc_mux_sel sig1=%d sig2=%d", sig1, sig2);
++		return -EINVAL;
++	} else if (sig1 == TIME_SYNC) {
++		idtfc3->tdc_offset_sign = 1;
++	} else if (sig2 == TIME_SYNC) {
++		idtfc3->tdc_offset_sign = -1;
++	}
++
++	return 0;
++}
++
++static int idtfc3_lpf_bw(struct idtfc3 *idtfc3, u8 shift, u8 mult)
++{
++	u8 val = FIELD_PREP(LPF_BW_SHIFT, shift) | FIELD_PREP(LPF_BW_MULT, mult);
++
++	return regmap_bulk_write(idtfc3->regmap, LPF_BW_CNFG, &val, sizeof(val));
++}
++
++static int idtfc3_enable_tdc(struct idtfc3 *idtfc3, bool enable, u8 meas_mode)
++{
++	int err;
++	u8 val = 0;
++
++	/* Disable TDC first */
++	err = regmap_bulk_write(idtfc3->regmap, TIME_CLOCK_MEAS_CTRL, &val, sizeof(val));
++	if (err)
++		return err;
++
++	if (enable == false)
++		return idtfc3_lpf_bw(idtfc3, LPF_BW_SHIFT_DEFAULT, LPF_BW_MULT_DEFAULT);
++
++	if (meas_mode >= MEAS_MODE_INVALID)
++		return -EINVAL;
++
++	/* Change TDC meas mode */
++	err = regmap_bulk_write(idtfc3->regmap, TIME_CLOCK_MEAS_CNFG,
++				&meas_mode, sizeof(meas_mode));
++	if (err)
++		return err;
++
++	/* Enable TDC */
++	val = TDC_MEAS_EN;
++	if (meas_mode == CONTINUOUS)
++		val |= TDC_MEAS_START;
++	err = regmap_bulk_write(idtfc3->regmap, TIME_CLOCK_MEAS_CTRL, &val, sizeof(val));
++	if (err)
++		return err;
++
++	return idtfc3_lpf_bw(idtfc3, LPF_BW_SHIFT_1PPS, LPF_BW_MULT_DEFAULT);
++}
++
++static bool get_tdc_meas(struct idtfc3 *idtfc3, s64 *offset_ns)
++{
++	bool valid = false;
++	u8 buf[9];
++	u8 val;
++	int err;
++
++	while (true) {
++		err = regmap_bulk_read(idtfc3->regmap, TDC_FIFO_STS,
++				       &val, sizeof(val));
++		if (err)
++			return false;
++
++		if (val & FIFO_EMPTY)
++			break;
++
++		err = regmap_bulk_read(idtfc3->regmap, TDC_FIFO_READ_REQ,
++				       &buf, sizeof(buf));
++		if (err)
++			return false;
++
++		valid = true;
++	}
++
++	if (valid)
++		*offset_ns = tdc_meas2offset(idtfc3, get_unaligned_le64(&buf[1]));
++
++	return valid;
++}
++
++static int check_tdc_fifo_overrun(struct idtfc3 *idtfc3)
++{
++	u8 val;
++	int err;
++
++	/* Check if FIFO is overrun */
++	err = regmap_bulk_read(idtfc3->regmap, TDC_FIFO_STS, &val, sizeof(val));
++	if (err)
++		return err;
++
++	if (!(val & FIFO_FULL))
++		return 0;
++
++	dev_warn(idtfc3->dev, "TDC FIFO overrun !!!");
++
++	err = idtfc3_enable_tdc(idtfc3, true, CONTINUOUS);
++	if (err)
++		return err;
++
++	return 0;
++}
++
++static int get_tdc_meas_continuous(struct idtfc3 *idtfc3)
++{
++	int err;
++	s64 offset_ns;
++	struct ptp_clock_event event;
++
++	err = check_tdc_fifo_overrun(idtfc3);
++	if (err)
++		return err;
++
++	if (get_tdc_meas(idtfc3, &offset_ns) && offset_ns >= 0) {
++		event.index = 0;
++		event.offset = tdc_offset2phase(idtfc3, offset_ns);
++		event.type = PTP_CLOCK_EXTOFF;
++		ptp_clock_event(idtfc3->ptp_clock, &event);
++	}
++
++	return 0;
++}
++
++static int idtfc3_read_subcounter(struct idtfc3 *idtfc3)
++{
++	u8 buf[5] = {0};
++	int err;
++
++	err = regmap_bulk_read(idtfc3->regmap, TOD_COUNTER_READ_REQ,
++			       &buf, sizeof(buf));
++	if (err)
++		return err;
++
++	/* sync_counter_value is [31:82] and sub_sync_counter_value is [0:30] */
++	return get_unaligned_le32(&buf[1]) & SUB_SYNC_COUNTER_MASK;
++}
++
++static int idtfc3_tod_update_is_done(struct idtfc3 *idtfc3)
++{
++	int err;
++	u8 req;
++
++	err = read_poll_timeout_atomic(regmap_bulk_read, err, !req, USEC_PER_MSEC,
++				       idtfc3->tc_write_timeout, true, idtfc3->regmap,
++				       TOD_SYNC_LOAD_REQ_CTRL, &req, 1);
++	if (err)
++		dev_err(idtfc3->dev, "TOD counter write timeout !!!");
++
++	return err;
++}
++
++static int idtfc3_write_subcounter(struct idtfc3 *idtfc3, u32 counter)
++{
++	u8 buf[18] = {0};
++	int err;
++
++	/* sync_counter_value is [31:82] and sub_sync_counter_value is [0:30] */
++	put_unaligned_le32(counter & SUB_SYNC_COUNTER_MASK, &buf[0]);
++
++	buf[16] = SUB_SYNC_LOAD_ENABLE | SYNC_LOAD_ENABLE;
++	buf[17] = SYNC_LOAD_REQ;
++
++	err = regmap_bulk_write(idtfc3->regmap, TOD_SYNC_LOAD_VAL_CTRL,
++				&buf, sizeof(buf));
++	if (err)
++		return err;
++
++	return idtfc3_tod_update_is_done(idtfc3);
++}
++
++static int idtfc3_timecounter_update(struct idtfc3 *idtfc3, u32 counter, s64 ns)
++{
++	int err;
++
++	err = idtfc3_write_subcounter(idtfc3, counter);
++	if (err)
++		return err;
++
++	/* Update time counter */
++	idtfc3->ns = ns;
++	idtfc3->last_counter = counter;
++
++	return 0;
++}
++
++static int idtfc3_timecounter_read(struct idtfc3 *idtfc3)
++{
++	int now, delta;
++
++	now = idtfc3_read_subcounter(idtfc3);
++	if (now < 0)
++		return now;
++
++	/* calculate the delta since the last idtfc3_timecounter_read(): */
++	if (now >= idtfc3->last_counter)
++		delta = now - idtfc3->last_counter;
++	else
++		delta = idtfc3->sub_sync_count - idtfc3->last_counter + now;
++
++	/* Update time counter */
++	idtfc3->ns += delta * idtfc3->ns_per_counter;
++	idtfc3->last_counter = now;
++
++	return 0;
++}
++
++static int _idtfc3_gettime(struct idtfc3 *idtfc3, struct timespec64 *ts)
++{
++	int err;
++
++	err = idtfc3_timecounter_read(idtfc3);
++	if (err)
++		return err;
++
++	*ts = ns_to_timespec64(idtfc3->ns);
++
++	return 0;
++}
++
++static int idtfc3_gettime(struct ptp_clock_info *ptp, struct timespec64 *ts)
++{
++	struct idtfc3 *idtfc3 = container_of(ptp, struct idtfc3, caps);
++	int err;
++
++	mutex_lock(idtfc3->lock);
++	err = _idtfc3_gettime(idtfc3, ts);
++	mutex_unlock(idtfc3->lock);
++
++	return err;
++}
++
++static int _idtfc3_settime(struct idtfc3 *idtfc3, const struct timespec64 *ts)
++{
++	s64 offset_ns, now_ns;
++	u32 counter, sub_ns;
++	int now;
++
++	if (timespec64_valid(ts) == false) {
++		dev_err(idtfc3->dev, "%s: invalid timespec", __func__);
++		return -EINVAL;
++	}
++
++	now = idtfc3_read_subcounter(idtfc3);
++	if (now < 0)
++		return now;
++
++	offset_ns = (idtfc3->sub_sync_count - now) * idtfc3->ns_per_counter;
++	now_ns = timespec64_to_ns(ts);
++	(void)ns2counters(idtfc3, offset_ns + now_ns, &sub_ns);
++
++	counter = sub_ns / idtfc3->ns_per_counter;
++	return idtfc3_timecounter_update(idtfc3, counter, now_ns);
++}
++
++static int idtfc3_settime(struct ptp_clock_info *ptp, const struct timespec64 *ts)
++{
++	struct idtfc3 *idtfc3 = container_of(ptp, struct idtfc3, caps);
++	int err;
++
++	mutex_lock(idtfc3->lock);
++	err = _idtfc3_settime(idtfc3, ts);
++	mutex_unlock(idtfc3->lock);
++
++	return err;
++}
++
++static int _idtfc3_adjtime(struct idtfc3 *idtfc3, s64 delta)
++{
++	/*
++	 * The TOD counter can be synchronously loaded with any value,
++	 * to be loaded on the next Time Sync pulse
++	 */
++	s64 sync_ns;
++	u32 sub_ns;
++	u32 counter;
++
++	if (idtfc3->ns + delta < 0) {
++		dev_err(idtfc3->dev, "%lld ns adj is too large", delta);
++		return -EINVAL;
++	}
++
++	sync_ns = ns2counters(idtfc3, delta + idtfc3->ns_per_sync, &sub_ns);
++
++	counter = sub_ns / idtfc3->ns_per_counter;
++	return idtfc3_timecounter_update(idtfc3, counter, idtfc3->ns + sync_ns +
++									counter * idtfc3->ns_per_counter);
++}
++
++static int idtfc3_adjtime(struct ptp_clock_info *ptp, s64 delta)
++{
++	struct idtfc3 *idtfc3 = container_of(ptp, struct idtfc3, caps);
++	int err;
++
++	mutex_lock(idtfc3->lock);
++	err = _idtfc3_adjtime(idtfc3, delta);
++	mutex_unlock(idtfc3->lock);
++
++	return err;
++}
++
++static int _idtfc3_adjphase(struct idtfc3 *idtfc3, s32 delta)
++{
++	u8 buf[8] = {0};
++	int err;
++	s64 pcw;
++
++	err = idtfc3_set_lpf_mode(idtfc3, LPF_WP);
++	if (err)
++		return err;
++
++	/*
++	 * Phase Control Word unit is: 10^9 / (TDC_APLL_FREQ * 124)
++	 *
++	 *       delta * TDC_APLL_FREQ * 124
++	 * PCW = ---------------------------
++	 *                  10^9
++	 *
++	 */
++	pcw = div_s64((s64)delta * idtfc3->tdc_apll_freq * 124, NSEC_PER_SEC);
++
++	put_unaligned_le64(pcw, buf);
++
++	return regmap_bulk_write(idtfc3->regmap, LPF_WR_PHASE_CTRL, buf, sizeof(buf));
++}
++
++static int idtfc3_adjphase(struct ptp_clock_info *ptp, s32 delta)
++{
++	struct idtfc3 *idtfc3 = container_of(ptp, struct idtfc3, caps);
++	int err;
++
++	mutex_lock(idtfc3->lock);
++	err = _idtfc3_adjphase(idtfc3, delta);
++	mutex_unlock(idtfc3->lock);
++
++	return err;
++}
++
++static int _idtfc3_adjfine(struct idtfc3 *idtfc3, long scaled_ppm)
++{
++	u8 buf[8] = {0};
++	int err;
++	s64 fcw;
++
++	err = idtfc3_set_lpf_mode(idtfc3, LPF_WF);
++	if (err)
++		return err;
++
++	/*
++	 * Frequency Control Word unit is: 2^-44 * 10^6 ppm
++	 *
++	 * adjfreq:
++	 *       ppb * 2^44
++	 * FCW = ----------
++	 *          10^9
++	 *
++	 * adjfine:
++	 *       ppm_16 * 2^28
++	 * FCW = -------------
++	 *           10^6
++	 */
++	fcw = scaled_ppm * BIT(28);
++	fcw = div_s64(fcw, 1000000);
++
++	put_unaligned_le64(fcw, buf);
++
++	return regmap_bulk_write(idtfc3->regmap, LPF_WR_FREQ_CTRL, buf, sizeof(buf));
++}
++
++static int idtfc3_adjfine(struct ptp_clock_info *ptp, long scaled_ppm)
++{
++	struct idtfc3 *idtfc3 = container_of(ptp, struct idtfc3, caps);
++	int err;
++
++	mutex_lock(idtfc3->lock);
++	err = _idtfc3_adjfine(idtfc3, scaled_ppm);
++	mutex_unlock(idtfc3->lock);
++
++	return err;
++}
++
++static int idtfc3_enable(struct ptp_clock_info *ptp,
++			 struct ptp_clock_request *rq, int on)
++{
++	struct idtfc3 *idtfc3 = container_of(ptp, struct idtfc3, caps);
++	int err = -EOPNOTSUPP;
++
++	mutex_lock(idtfc3->lock);
++	switch (rq->type) {
++	case PTP_CLK_REQ_PEROUT:
++		if (!on)
++			err = 0;
++		/* Only accept a 1-PPS aligned to the second. */
++		else if (rq->perout.start.nsec || rq->perout.period.sec != 1 ||
++			 rq->perout.period.nsec)
++			err = -ERANGE;
++		else
++			err = 0;
++		break;
++	case PTP_CLK_REQ_EXTTS:
++		if (on) {
++			/* Only accept requests for external phase offset */
++			if ((rq->extts.flags & PTP_EXT_OFFSET) != (PTP_EXT_OFFSET))
++				err = -EOPNOTSUPP;
++			else
++				err = idtfc3_enable_tdc(idtfc3, true, CONTINUOUS);
++		} else {
++			err = idtfc3_enable_tdc(idtfc3, false, MEAS_MODE_INVALID);
++		}
++		break;
++	default:
++		break;
++	}
++	mutex_unlock(idtfc3->lock);
++
++	if (err)
++		dev_err(idtfc3->dev, "Failed in %s with err %d!", __func__, err);
++
++	return err;
++}
++
++static long idtfc3_aux_work(struct ptp_clock_info *ptp)
++{
++	struct idtfc3 *idtfc3 = container_of(ptp, struct idtfc3, caps);
++	static int tdc_get;
++
++	mutex_lock(idtfc3->lock);
++	tdc_get %= TDC_GET_PERIOD;
++	if ((tdc_get == 0) || (tdc_get == TDC_GET_PERIOD / 2))
++		idtfc3_timecounter_read(idtfc3);
++	get_tdc_meas_continuous(idtfc3);
++	tdc_get++;
++	mutex_unlock(idtfc3->lock);
++
++	return idtfc3->tc_update_period;
++}
++
++static const struct ptp_clock_info idtfc3_caps = {
++	.owner		= THIS_MODULE,
++	.max_adj	= MAX_FFO_PPB,
++	.n_per_out	= 1,
++	.n_ext_ts	= 1,
++	.adjphase	= &idtfc3_adjphase,
++	.adjfine	= &idtfc3_adjfine,
++	.adjtime	= &idtfc3_adjtime,
++	.gettime64	= &idtfc3_gettime,
++	.settime64	= &idtfc3_settime,
++	.enable		= &idtfc3_enable,
++	.do_aux_work	= &idtfc3_aux_work,
++};
++
++static int idtfc3_hw_calibrate(struct idtfc3 *idtfc3)
++{
++	int err = 0;
++	u8 val;
++
++	mdelay(10);
++	/*
++	 * Toggle TDC_DAC_RECAL_REQ:
++	 * (1) set tdc_en to 1
++	 * (2) set tdc_dac_recal_req to 0
++	 * (3) set tdc_dac_recal_req to 1
++	 */
++	val = TDC_EN;
++	err = regmap_bulk_write(idtfc3->regmap, TDC_CTRL,
++				&val, sizeof(val));
++	if (err)
++		return err;
++	val = TDC_EN | TDC_DAC_RECAL_REQ;
++	err = regmap_bulk_write(idtfc3->regmap, TDC_CTRL,
++				&val, sizeof(val));
++	if (err)
++		return err;
++	mdelay(10);
++
++	/*
++	 * Toggle APLL_REINIT:
++	 * (1) set apll_reinit to 0
++	 * (2) set apll_reinit to 1
++	 */
++	val = 0;
++	err = regmap_bulk_write(idtfc3->regmap, SOFT_RESET_CTRL,
++				&val, sizeof(val));
++	if (err)
++		return err;
++	val = APLL_REINIT;
++	err = regmap_bulk_write(idtfc3->regmap, SOFT_RESET_CTRL,
++				&val, sizeof(val));
++	if (err)
++		return err;
++	mdelay(10);
++
++	return err;
++}
++
++static int idtfc3_init_timecounter(struct idtfc3 *idtfc3)
++{
++	int err;
++	u32 period_ms;
++
++	period_ms = idtfc3->sub_sync_count * MSEC_PER_SEC /
++			idtfc3->hw_param.time_clk_freq;
++
++	idtfc3->tc_update_period = msecs_to_jiffies(period_ms / TDC_GET_PERIOD);
++	idtfc3->tc_write_timeout = period_ms * USEC_PER_MSEC;
++
++	err = idtfc3_timecounter_update(idtfc3, 0, 0);
++	if (err)
++		return err;
++
++	err = idtfc3_timecounter_read(idtfc3);
++	if (err)
++		return err;
++
++	ptp_schedule_worker(idtfc3->ptp_clock, idtfc3->tc_update_period);
++
++	return 0;
++}
++
++static int idtfc3_get_tdc_apll_freq(struct idtfc3 *idtfc3)
++{
++	int err;
++	u8 tdc_fb_div_int;
++	u8 tdc_ref_div;
++	struct idtfc3_hw_param *param = &idtfc3->hw_param;
++
++	err = regmap_bulk_read(idtfc3->regmap, TDC_REF_DIV_CNFG,
++				&tdc_ref_div, sizeof(tdc_ref_div));
++	if (err)
++		return err;
++
++	err = regmap_bulk_read(idtfc3->regmap, TDC_FB_DIV_INT_CNFG,
++				&tdc_fb_div_int, sizeof(tdc_fb_div_int));
++	if (err)
++		return err;
++
++	tdc_fb_div_int &= TDC_FB_DIV_INT_MASK;
++	tdc_ref_div &= TDC_REF_DIV_CONFIG_MASK;
++
++	idtfc3->tdc_apll_freq = div_u64(param->xtal_freq * (u64)tdc_fb_div_int,
++					1 << tdc_ref_div);
++
++	return 0;
++}
++
++static int idtfc3_get_fod(struct idtfc3 *idtfc3)
++{
++	int err;
++	u8 fod;
++
++	err = regmap_bulk_read(idtfc3->regmap, TIME_CLOCK_SRC, &fod, sizeof(fod));
++	if (err)
++		return err;
++
++	switch (fod) {
++	case 0:
++		idtfc3->fod_n = FOD_0;
++		break;
++	case 1:
++		idtfc3->fod_n = FOD_1;
++		break;
++	case 2:
++		idtfc3->fod_n = FOD_2;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int idtfc3_get_sync_count(struct idtfc3 *idtfc3)
++{
++	int err;
++	u8 buf[4];
++
++	err = regmap_bulk_read(idtfc3->regmap, SUB_SYNC_GEN_CNFG, buf, sizeof(buf));
++	if (err)
++		return err;
++
++	idtfc3->sub_sync_count = (get_unaligned_le32(buf) & SUB_SYNC_COUNTER_MASK) + 1;
++	idtfc3->ns_per_counter = NSEC_PER_SEC / idtfc3->hw_param.time_clk_freq;
++	idtfc3->ns_per_sync = idtfc3->sub_sync_count * idtfc3->ns_per_counter;
++
++	return 0;
++}
++
++static int idtfc3_setup_hw_param(struct idtfc3 *idtfc3)
++{
++	int err;
++
++	err = idtfc3_get_fod(idtfc3);
++	if (err)
++		return err;
++
++	err = idtfc3_get_sync_count(idtfc3);
++	if (err)
++		return err;
++
++	err = idtfc3_get_time_ref_freq(idtfc3);
++	if (err)
++		return err;
++
++	return idtfc3_get_tdc_apll_freq(idtfc3);
++}
++
++static int idtfc3_configure_hw(struct idtfc3 *idtfc3)
++{
++	int err = 0;
++
++	err = idtfc3_hw_calibrate(idtfc3);
++	if (err)
++		return err;
++
++	err = idtfc3_enable_lpf(idtfc3, true);
++	if (err)
++		return err;
++
++	err = idtfc3_enable_tdc(idtfc3, false, MEAS_MODE_INVALID);
++	if (err)
++		return err;
++
++	err = idtfc3_get_tdc_offset_sign(idtfc3);
++	if (err)
++		return err;
++
++	return idtfc3_setup_hw_param(idtfc3);
++}
++
++static int idtfc3_set_overhead(struct idtfc3 *idtfc3)
++{
++	s64 current_ns = 0;
++	s64 lowest_ns = 0;
++	int err;
++	u8 i;
++	ktime_t start;
++	ktime_t stop;
++	ktime_t diff;
++
++	char buf[18] = {0};
++
++	for (i = 0; i < 5; i++) {
++		start = ktime_get_raw();
++
++		err = regmap_bulk_write(idtfc3->regmap, TOD_SYNC_LOAD_VAL_CTRL,
++					&buf, sizeof(buf));
++		if (err)
++			return err;
++
++		stop = ktime_get_raw();
++
++		diff = ktime_sub(stop, start);
++
++		current_ns = ktime_to_ns(diff);
++
++		if (i == 0) {
++			lowest_ns = current_ns;
++		} else {
++			if (current_ns < lowest_ns)
++				lowest_ns = current_ns;
++		}
++	}
++
++	idtfc3->tod_write_overhead = lowest_ns;
++
++	return err;
++}
++
++static int idtfc3_enable_ptp(struct idtfc3 *idtfc3)
++{
++	int err;
++
++	idtfc3->caps = idtfc3_caps;
++	snprintf(idtfc3->caps.name, sizeof(idtfc3->caps.name), "IDT FC3W");
++	idtfc3->ptp_clock = ptp_clock_register(&idtfc3->caps, NULL);
++
++	if (IS_ERR(idtfc3->ptp_clock)) {
++		err = PTR_ERR(idtfc3->ptp_clock);
++		idtfc3->ptp_clock = NULL;
++		return err;
++	}
++
++	err = idtfc3_set_overhead(idtfc3);
++	if (err)
++		return err;
++
++	err = idtfc3_init_timecounter(idtfc3);
++	if (err)
++		return err;
++
++	dev_info(idtfc3->dev, "TIME_SYNC_CHANNEL registered as ptp%d",
++		 idtfc3->ptp_clock->index);
++
++	return 0;
++}
++
++static int idtfc3_load_firmware(struct idtfc3 *idtfc3)
++{
++	char fname[128] = FW_FILENAME;
++	const struct firmware *fw;
++	struct idtfc3_fwrc *rec;
++	u16 addr;
++	u8 val;
++	int err;
++	s32 len;
++
++	idtfc3_default_hw_param(&idtfc3->hw_param);
++
++	if (firmware) /* module parameter */
++		snprintf(fname, sizeof(fname), "%s", firmware);
++
++	dev_info(idtfc3->dev, "requesting firmware '%s'\n", fname);
++
++	err = request_firmware(&fw, fname, idtfc3->dev);
++
++	if (err) {
++		dev_err(idtfc3->dev,
++			"requesting firmware failed with err %d!\n", err);
++		return err;
++	}
++
++	dev_dbg(idtfc3->dev, "firmware size %zu bytes\n", fw->size);
++
++	rec = (struct idtfc3_fwrc *)fw->data;
++
++	for (len = fw->size; len > 0; len -= sizeof(*rec)) {
++		if (rec->reserved) {
++			dev_err(idtfc3->dev,
++				"bad firmware, reserved field non-zero\n");
++			err = -EINVAL;
++		} else {
++			val = rec->value;
++			addr = rec->hiaddr << 8 | rec->loaddr;
++
++			rec++;
++
++			err = idtfc3_set_hw_param(&idtfc3->hw_param, addr, val);
++		}
++
++		if (err != -EINVAL) {
++			err = 0;
++
++			/* Max register */
++			if (addr >= 0xE88)
++				continue;
++
++			err = regmap_bulk_write(idtfc3->regmap, addr,
++						&val, sizeof(val));
++		}
++
++		if (err)
++			goto out;
++	}
++
++	err = idtfc3_configure_hw(idtfc3);
++out:
++	release_firmware(fw);
++	return err;
++}
++
++static int idtfc3_read_device_id(struct idtfc3 *idtfc3, u16 *device_id)
++{
++	int err;
++	u8 buf[2] = {0};
++
++	err = regmap_bulk_read(idtfc3->regmap, DEVICE_ID,
++			       &buf, sizeof(buf));
++	if (err) {
++		dev_err(idtfc3->dev, "%s failed with %d", __func__, err);
++		return err;
++	}
++
++	*device_id = get_unaligned_le16(buf);
++
++	return 0;
++}
++
++static int idtfc3_check_device_compatibility(struct idtfc3 *idtfc3)
++{
++	int err;
++	u16 device_id;
++
++	err = idtfc3_read_device_id(idtfc3, &device_id);
++	if (err)
++		return err;
++
++	if ((device_id & DEVICE_ID_MASK) == 0) {
++		dev_err(idtfc3->dev, "invalid device");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int idtfc3_probe(struct platform_device *pdev)
++{
++	struct rsmu_ddata *ddata = dev_get_drvdata(pdev->dev.parent);
++	struct idtfc3 *idtfc3;
++	int err;
++
++	idtfc3 = devm_kzalloc(&pdev->dev, sizeof(struct idtfc3), GFP_KERNEL);
++
++	if (!idtfc3)
++		return -ENOMEM;
++
++	idtfc3->dev = &pdev->dev;
++	idtfc3->mfd = pdev->dev.parent;
++	idtfc3->lock = &ddata->lock;
++	idtfc3->regmap = ddata->regmap;
++
++	mutex_lock(idtfc3->lock);
++
++	err = idtfc3_check_device_compatibility(idtfc3);
++	if (err) {
++		mutex_unlock(idtfc3->lock);
++		return err;
++	}
++
++	err = idtfc3_load_firmware(idtfc3);
++	if (err) {
++		if (err == -ENOENT) {
++			mutex_unlock(idtfc3->lock);
++			return -EPROBE_DEFER;
++		}
++		dev_warn(idtfc3->dev, "loading firmware failed with %d", err);
++	}
++
++	err = idtfc3_enable_ptp(idtfc3);
++	if (err) {
++		dev_err(idtfc3->dev, "idtfc3_enable_ptp failed with %d", err);
++		mutex_unlock(idtfc3->lock);
++		return err;
++	}
++
++	mutex_unlock(idtfc3->lock);
++
++	if (err) {
++		ptp_clock_unregister(idtfc3->ptp_clock);
++		return err;
++	}
++
++	platform_set_drvdata(pdev, idtfc3);
++
++	return 0;
++}
++
++static int idtfc3_remove(struct platform_device *pdev)
++{
++	struct idtfc3 *idtfc3 = platform_get_drvdata(pdev);
++
++	ptp_clock_unregister(idtfc3->ptp_clock);
++
++	return 0;
++}
++
++static struct platform_driver idtfc3_driver = {
++	.driver = {
++		.name = "rc38xxx-phc",
++	},
++	.probe = idtfc3_probe,
++	.remove	= idtfc3_remove,
++};
++
++module_platform_driver(idtfc3_driver);
+diff --git a/drivers/ptp/ptp_fc3.h b/drivers/ptp/ptp_fc3.h
+new file mode 100644
+index 000000000..897101579
+--- /dev/null
++++ b/drivers/ptp/ptp_fc3.h
+@@ -0,0 +1,45 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
++/*
++ * PTP hardware clock driver for the FemtoClock3 family of timing and
++ * synchronization devices.
++ *
++ * Copyright (C) 2023 Integrated Device Technology, Inc., a Renesas Company.
++ */
++#ifndef PTP_IDTFC3_H
++#define PTP_IDTFC3_H
++
++#include <linux/ktime.h>
++#include <linux/ptp_clock.h>
++#include <linux/regmap.h>
++
++#define FW_FILENAME	"idtfc3.bin"
++
++#define MAX_FFO_PPB	(244000)
++#define TDC_GET_PERIOD	(10)
++
++struct idtfc3 {
++	struct ptp_clock_info	caps;
++	struct ptp_clock	*ptp_clock;
++	struct device		*dev;
++	/* Mutex to protect operations from being interrupted */
++	struct mutex		*lock;
++	struct device		*mfd;
++	struct regmap		*regmap;
++	struct idtfc3_hw_param	hw_param;
++	u32			sub_sync_count;
++	u32			ns_per_sync;
++	int			tdc_offset_sign;
++	u64			tdc_apll_freq;
++	u32			time_ref_freq;
++	u16			fod_n;
++	u8			lpf_mode;
++	/* Time counter */
++	u32			last_counter;
++	s64			ns;
++	u32			ns_per_counter;
++	u32			tc_update_period;
++	u32			tc_write_timeout;
++	s64			tod_write_overhead;
++};
++
++#endif /* PTP_IDTFC3_H */
+diff --git a/include/linux/mfd/idtRC38xxx_reg.h b/include/linux/mfd/idtRC38xxx_reg.h
+new file mode 100644
+index 000000000..ec11872f5
+--- /dev/null
++++ b/include/linux/mfd/idtRC38xxx_reg.h
+@@ -0,0 +1,273 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
++/*
++ * Register Map - Based on PolarBear_CSRs.RevA.xlsx (2023-04-21)
++ *
++ * Copyright (C) 2023 Integrated Device Technology, Inc., a Renesas Company.
++ */
++#ifndef MFD_IDTRC38XXX_REG
++#define MFD_IDTRC38XXX_REG
++
++/* GLOBAL */
++#define SOFT_RESET_CTRL		(0x15) /* Specific to FC3W */
++#define MISC_CTRL		(0x14) /* Specific to FC3A */
++#define APLL_REINIT		BIT(1)
++#define APLL_REINIT_VFC3A	BIT(2)
++
++#define DEVICE_ID		(0x2)
++#define DEVICE_ID_MASK		(0x1000) /* Bit 12 is 1 if FC3W and 0 if FC3A */
++#define DEVICE_ID_SHIFT		(12)
++
++/* FOD */
++#define FOD_0		(0x300)
++#define FOD_0_VFC3A	(0x400)
++#define FOD_1		(0x340)
++#define FOD_1_VFC3A	(0x440)
++#define FOD_2		(0x380)
++#define FOD_2_VFC3A	(0x480)
++
++/* TDCAPLL */
++#define TDC_CTRL		(0x44a) /* Specific to FC3W */
++#define TDC_ENABLE_CTRL		(0x169) /* Specific to FC3A */
++#define TDC_DAC_CAL_CTRL	(0x16a) /* Specific to FC3A */
++#define TDC_EN			BIT(0)
++#define TDC_DAC_RECAL_REQ	BIT(1)
++#define TDC_DAC_RECAL_REQ_VFC3A	BIT(0)
++
++#define TDC_FB_DIV_INT_CNFG		(0x442)
++#define TDC_FB_DIV_INT_CNFG_VFC3A	(0x162)
++#define TDC_FB_DIV_INT_MASK		GENMASK(7, 0)
++#define TDC_REF_DIV_CNFG		(0x443)
++#define TDC_REF_DIV_CNFG_VFC3A		(0x163)
++#define TDC_REF_DIV_CONFIG_MASK		GENMASK(2, 0)
++
++/* TIME SYNC CHANNEL */
++#define TIME_CLOCK_SRC		(0xa01) /* Specific to FC3W */
++#define TIME_CLOCK_COUNT	(0xa00) /* Specific to FC3W */
++#define TIME_CLOCK_COUNT_MASK	GENMASK(5, 0)
++
++#define SUB_SYNC_GEN_CNFG	(0xa04)
++
++#define TOD_COUNTER_READ_REQ		(0xa5f)
++#define TOD_COUNTER_READ_REQ_VFC3A	(0x6df)
++#define TOD_SYNC_LOAD_VAL_CTRL		(0xa10)
++#define TOD_SYNC_LOAD_VAL_CTRL_VFC3A	(0x690)
++#define SYNC_COUNTER_MASK		GENMASK_ULL(51, 0)
++#define SUB_SYNC_COUNTER_MASK		GENMASK(30, 0)
++#define TOD_SYNC_LOAD_REQ_CTRL		(0xa21)
++#define TOD_SYNC_LOAD_REQ_CTRL_VFC3A	(0x6a1)
++#define SYNC_LOAD_ENABLE		BIT(1)
++#define SUB_SYNC_LOAD_ENABLE		BIT(0)
++#define SYNC_LOAD_REQ			BIT(0)
++
++#define LPF_MODE_CNFG		(0xa80)
++#define LPF_MODE_CNFG_VFC3A	(0x700)
++enum lpf_mode {
++	LPF_DISABLED = 0,
++	LPF_WP       = 1,
++	LPF_HOLDOVER = 2,
++	LPF_WF       = 3,
++	LPF_INVALID  = 4
++};
++#define LPF_CTRL	(0xa98)
++#define LPF_CTRL_VFC3A	(0x718)
++#define LPF_EN		BIT(0)
++
++#define LPF_BW_CNFG	(0xa81)
++#define LPF_BW_SHIFT	GENMASK(7, 3)
++#define LPF_BW_MULT		GENMASK(2, 0)
++#define LPF_BW_SHIFT_DEFAULT	(0xb)
++#define LPF_BW_MULT_DEFAULT		(0x0)
++#define LPF_BW_SHIFT_1PPS		(0x5)
++
++#define LPF_WR_PHASE_CTRL	(0xaa8)
++#define LPF_WR_PHASE_CTRL_VFC3A	(0x728)
++#define LPF_WR_FREQ_CTRL	(0xab0)
++#define LPF_WR_FREQ_CTRL_VFC3A	(0x730)
++
++#define TIME_CLOCK_TDC_FANOUT_CNFG	(0xB00)
++#define TIME_SYNC_TO_TDC_EN	BIT(0)
++#define SIG1_MUX_SEL_MASK	GENMASK(7, 4)
++#define SIG2_MUX_SEL_MASK	GENMASK(11, 8)
++enum tdc_mux_sel {
++	REF0 = 0,
++	REF1 = 1,
++	REF2 = 2,
++	REF3 = 3,
++	REF_CLK5 = 4,
++	REF_CLK6 = 5,
++	DPLL_FB_TO_TDC = 6,
++	DPLL_FB_DIVIDED_TO_TDC = 7,
++	TIME_CLK_DIVIDED = 8,
++	TIME_SYNC = 9,
++};
++
++#define TIME_CLOCK_MEAS_CNFG	(0xB04)
++#define TDC_MEAS_MODE	BIT(0)
++enum tdc_meas_mode {
++	CONTINUOUS = 0,
++	ONE_SHOT = 1,
++	MEAS_MODE_INVALID = 2,
++};
++
++#define TIME_CLOCK_MEAS_DIV_CNFG	(0xB08)
++#define TIME_REF_DIV_MASK	GENMASK(29, 24)
++
++#define TIME_CLOCK_MEAS_CTRL	(0xB10)
++#define TDC_MEAS_EN	BIT(0)
++#define TDC_MEAS_START	BIT(1)
++
++#define TDC_FIFO_READ_REQ	(0xB2F)
++#define TDC_FIFO_READ		(0xB30)
++#define COARSE_MEAS_MASK	GENMASK_ULL(39, 13)
++#define FINE_MEAS_MASK		GENMASK(12, 0)
++
++#define TDC_FIFO_CTRL		(0xB12)
++#define FIFO_CLEAR		BIT(0)
++#define TDC_FIFO_STS		(0xB38)
++#define FIFO_FULL		BIT(1)
++#define FIFO_EMPTY		BIT(0)
++#define TDC_FIFO_EVENT		(0xB39)
++#define FIFO_OVERRUN		BIT(1)
++
++/* DPLL */
++#define MAX_REFERENCE_INDEX	(3)
++#define MAX_NUM_REF_PRIORITY	(4)
++
++#define MAX_DPLL_INDEX	(2)
++
++#define DPLL_STS		(0x580)
++#define DPLL_STS_VFC3A		(0x571)
++#define DPLL_STATE_STS_MASK	(0x70)
++#define DPLL_STATE_STS_SHIFT	(4)
++#define DPLL_REF_SEL_STS_MASK	(0x6)
++#define DPLL_REF_SEL_STS_SHIFT	(1)
++
++#define DPLL_REF_PRIORITY_CNFG			(0x502)
++#define DPLL_REFX_PRIORITY_DISABLE_MASK		(0xf)
++#define DPLL_REF0_PRIORITY_ENABLE_AND_SET_MASK	(0x31)
++#define DPLL_REF1_PRIORITY_ENABLE_AND_SET_MASK	(0xc2)
++#define DPLL_REF2_PRIORITY_ENABLE_AND_SET_MASK	(0x304)
++#define DPLL_REF3_PRIORITY_ENABLE_AND_SET_MASK	(0xc08)
++#define DPLL_REF0_PRIORITY_SHIFT		(4)
++#define DPLL_REF1_PRIORITY_SHIFT		(6)
++#define DPLL_REF2_PRIORITY_SHIFT		(8)
++#define DPLL_REF3_PRIORITY_SHIFT		(10)
++
++enum dpll_state {
++	DPLL_STATE_MIN             = 0,
++	DPLL_STATE_FREERUN         = DPLL_STATE_MIN,
++	DPLL_STATE_LOCKED          = 1,
++	DPLL_STATE_HOLDOVER        = 2,
++	DPLL_STATE_WRITE_FREQUENCY = 3,
++	DPLL_STATE_ACQUIRE         = 4,
++	DPLL_STATE_HITLESS_SWITCH  = 5,
++	DPLL_STATE_MAX             = DPLL_STATE_HITLESS_SWITCH
++};
++
++/* REFMON */
++#define LOSMON_STS_0		(0x81e)
++#define LOSMON_STS_0_VFC3A	(0x18e)
++#define LOSMON_STS_1		(0x82e)
++#define LOSMON_STS_1_VFC3A	(0x19e)
++#define LOSMON_STS_2		(0x83e)
++#define LOSMON_STS_2_VFC3A	(0x1ae)
++#define LOSMON_STS_3		(0x84e)
++#define LOSMON_STS_3_VFC3A	(0x1be)
++#define LOS_STS_MASK		(0x1)
++
++#define FREQMON_STS_0		(0x874)
++#define FREQMON_STS_0_VFC3A	(0x1d4)
++#define FREQMON_STS_1		(0x894)
++#define FREQMON_STS_1_VFC3A	(0x1f4)
++#define FREQMON_STS_2		(0x8b4)
++#define FREQMON_STS_2_VFC3A	(0x214)
++#define FREQMON_STS_3		(0x8d4)
++#define FREQMON_STS_3_VFC3A	(0x234)
++#define FREQ_FAIL_STS_SHIFT	(31)
++
++/* Firmware interface */
++#define TIME_CLK_FREQ_ADDR	(0xffa0)
++#define XTAL_FREQ_ADDR		(0xffa1)
++
++/*
++ * Return register address and field mask based on passed in firmware version
++ */
++#define IDTFC3_FW_REG(FW, VER, REG)	(((FW) < (VER)) ? (REG) : (REG##_##VER))
++#define IDTFC3_FW_FIELD(FW, VER, FIELD)	(((FW) < (VER)) ? (FIELD) : (FIELD##_##VER))
++enum fw_version {
++	V_DEFAULT = 0,
++	VFC3W     = 1,
++	VFC3A     = 2
++};
++
++/* XTAL_FREQ_ADDR/TIME_CLK_FREQ_ADDR */
++enum {
++	FREQ_MIN     = 0,
++	FREQ_25M     = 1,
++	FREQ_49_152M = 2,
++	FREQ_50M     = 3,
++	FREQ_100M    = 4,
++	FREQ_125M    = 5,
++	FREQ_250M    = 6,
++	FREQ_MAX
++};
++
++struct idtfc3_hw_param {
++	u32 xtal_freq;
++	u32 time_clk_freq;
++};
++
++struct idtfc3_fwrc {
++	u8 hiaddr;
++	u8 loaddr;
++	u8 value;
++	u8 reserved;
++} __packed;
++
++static inline void idtfc3_default_hw_param(struct idtfc3_hw_param *hw_param)
++{
++	hw_param->xtal_freq = 49152000;
++	hw_param->time_clk_freq = 25000000;
++}
++
++static inline int idtfc3_set_hw_param(struct idtfc3_hw_param *hw_param,
++				      u16 addr, u8 val)
++{
++	if (addr == XTAL_FREQ_ADDR)
++		switch (val) {
++		case FREQ_49_152M:
++			hw_param->xtal_freq = 49152000;
++			break;
++		case FREQ_50M:
++			hw_param->xtal_freq = 50000000;
++			break;
++		default:
++			return -EINVAL;
++		}
++	else if (addr == TIME_CLK_FREQ_ADDR)
++		switch (val) {
++		case FREQ_25M:
++			hw_param->time_clk_freq = 25000000;
++			break;
++		case FREQ_50M:
++			hw_param->time_clk_freq = 50000000;
++			break;
++		case FREQ_100M:
++			hw_param->time_clk_freq = 100000000;
++			break;
++		case FREQ_125M:
++			hw_param->time_clk_freq = 125000000;
++			break;
++		case FREQ_250M:
++			hw_param->time_clk_freq = 250000000;
++			break;
++		default:
++			return -EINVAL;
++		}
++	else
++		return -EFAULT;
++
++	return 0;
++}
++
++#endif
 -- 
 2.39.2
 
