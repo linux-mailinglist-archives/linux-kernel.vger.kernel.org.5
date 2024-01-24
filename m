@@ -1,96 +1,126 @@
-Return-Path: <linux-kernel+bounces-36235-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36236-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86889839DC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:54:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8980B839DC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:57:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F2C6285753
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 00:54:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3DBB41F24D92
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 00:57:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09BDE1FB9;
-	Wed, 24 Jan 2024 00:54:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6152110F2;
+	Wed, 24 Jan 2024 00:57:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="lhCUI2Vh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="MK9hIw4I"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FC671872;
-	Wed, 24 Jan 2024 00:54:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED0D17E9;
+	Wed, 24 Jan 2024 00:57:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706057644; cv=none; b=ZdC3iwnrYWFr0xkqNNldSFuO8ZDJJpqrg3YFz8smFruv6S7CM/P53Ttwwe7NDrDPWMlvXOMy6kAgxgJ2MZ6kWqn8NpR2E4KWRAzNqcCsYF2F3QQvT7PXpFUfisHVR1KSnn/sLLTWV1xDCTIwsWc2TxonoOPGmzDdAOB2zF6zfuc=
+	t=1706057827; cv=none; b=cHGodxZRPkz4PVfDoot0UKL6R+0oVUrkuOD0BWp3rav5fhtC43MHmKgl+qD1lFb13XegKyvfcXM6wrAZ2jTRtGL8D1oJzcDPddCCrkj5v25ckHkydanpVv7hS+sqIPKzD9Vt3+91LILtFe8HlF5WLlp3vfD+oMlbhLxeeEfJkmA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706057644; c=relaxed/simple;
-	bh=D8/fnoZnYDq6gX23XdA37KFCnw+tAaoRYYE4izrTFqw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WbFSohUiU1dbGvtnD0LhPy82RQEHNi0FhqHDI0Zxb61/FzH4RGVjuwwXyWJYNNp6Sk7NFAjomDhwNoBnnWrvk1w+xgMPionE697IxnDVIhJfzwAfEUzVHLdAut8mXmr4CLz6KYiJojsgc7e01vuy6wgL7/cXeDVTkciGriECFRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=lhCUI2Vh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88BE1C433F1;
-	Wed, 24 Jan 2024 00:54:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1706057643;
-	bh=D8/fnoZnYDq6gX23XdA37KFCnw+tAaoRYYE4izrTFqw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lhCUI2VhTmxzSzbN1xXEt74XXF2PxfMYqSZuoTdftCHMDHoKpWuiZH2qOT9tEmz2J
-	 ELwnWtdCJR7lzwd+fzAAoBuf5iaAL/mO1akL5Mc9ex+3s6nxoaDjOezDhRgGFknPf6
-	 V82UhHWbGLNwNeKeNLNLgwwaKnAfqUHYfY9ABBDQ=
-Date: Tue, 23 Jan 2024 16:54:02 -0800
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Elizabeth Figura <zfigura@codeweavers.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-	linux-api@vger.kernel.org, wine-devel@winehq.org,
-	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
-	Wolfram Sang <wsa@kernel.org>,
-	Arkadiusz Hiler <ahiler@codeweavers.com>,
-	Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [RFC PATCH 2/9] ntsync: Reserve a minor device number and ioctl
- range.
-Message-ID: <2024012356-dove-duke-f7f6@gregkh>
-References: <20240124004028.16826-1-zfigura@codeweavers.com>
- <20240124004028.16826-3-zfigura@codeweavers.com>
+	s=arc-20240116; t=1706057827; c=relaxed/simple;
+	bh=WvbsvHt8oo25g8SY64KxzPgxK6HnJrkQ+C1iWvriFII=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hHD3c5aqOY9Fmpz66CN2mai8hT7d6LI1CtTpoj/SntIG2o8yGsTd+FGqDmow2AkrEnv6AR04vTf6LY4zFBGB8aLthWZ7e22Yx5WrED+eL5yuIF4visl65+ynXU/pSBdYnXpW9oCW/pKsNjh36jy4C79ZkDWGEnortfWq8E4/fH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=MK9hIw4I; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=Kgcvyz9APT4R78mS/vdiMBTmZBZEqUxJQE72qD/r2i0=; b=MK9hIw4IOZHQ3YiGrMkwb4gjrK
+	301nmcIbjtGRLoqr3+sU/wTzaGyXzwWuuNxymWyWo9YyVugL4VVpJlM+66VRjRW3Gp89YqmBCkzAj
+	sTOAUBjU4xJ6tTaXNlLgI1XZ9zAl72t74s+2pPg16elIjmBbgwdT1KMxE3tHQk1fguRvUkRsVauo6
+	vps3AC5l6atvCsr8leQ8y3AR4ie8YUrZjFs6Ua99N7gOyiDQ1hongw4fNTRZho3BdVKN9iVmd+zEp
+	PREyOc8p17gHyUhAdZkXCed5cD0YDscINfCBO960H28pFMSkVRdaqegafRbv/MdpNK05guat18+vR
+	gAanNrOQ==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rSRZf-000x7Y-0P;
+	Wed, 24 Jan 2024 00:57:03 +0000
+Message-ID: <71285bc1-bf38-49ea-ab77-3258727339e3@infradead.org>
+Date: Tue, 23 Jan 2024 16:57:02 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240124004028.16826-3-zfigura@codeweavers.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 7/8] Documentation: Move "core core" api into a separate
+ file
+Content-Language: en-US
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>,
+ linux-kernel@vger.kernel.org
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+ Frederic Weisbecker <frederic@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+ John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>,
+ Jonathan Corbet <corbet@lwn.net>, Clemens Ladisch <clemens@ladisch.de>,
+ linux-doc@vger.kernel.org
+References: <20240123164702.55612-1-anna-maria@linutronix.de>
+ <20240123164702.55612-8-anna-maria@linutronix.de>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240123164702.55612-8-anna-maria@linutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jan 23, 2024 at 06:40:21PM -0600, Elizabeth Figura wrote:
-> Signed-off-by: Elizabeth Figura <zfigura@codeweavers.com>
-> ---
 
-Note, we can't take patches without any changelog text, and you don't
-want us to :)
 
->  Documentation/admin-guide/devices.txt              | 3 ++-
->  Documentation/userspace-api/ioctl/ioctl-number.rst | 2 ++
->  drivers/misc/ntsync.c                              | 3 ++-
->  include/linux/miscdevice.h                         | 1 +
->  4 files changed, 7 insertions(+), 2 deletions(-)
+On 1/23/24 08:47, Anna-Maria Behnsen wrote:
+> Some "core core" API as timer API is documented in driver-api. This is
+> definitely the wrong place. As the subject description in
+> core-api/index.rst mentions, is also core-api/kernel-api.rst a collection
+> of leftovers. Therefore create a new core-api file and start to integrate
+> timer api. As this contains a lot of functions, it is separated into a
+> timer specific API file.
 > 
-> diff --git a/Documentation/admin-guide/devices.txt b/Documentation/admin-guide/devices.txt
-> index 94c98be1329a..041404397ee5 100644
-> --- a/Documentation/admin-guide/devices.txt
-> +++ b/Documentation/admin-guide/devices.txt
-> @@ -376,8 +376,9 @@
->  		240 = /dev/userio	Serio driver testing device
->  		241 = /dev/vhost-vsock	Host kernel driver for virtio vsock
->  		242 = /dev/rfkill	Turning off radio transmissions (rfkill)
-> +		243 = /dev/ntsync	NT synchronization primitive device
->  
-> -		243-254			Reserved for local use
-> +		244-254			Reserved for local use
+> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+> ---
+>  Documentation/core-api/core-api.rst     | 14 ++++++
+>  Documentation/core-api/index.rst        |  4 +-
+>  Documentation/core-api/kernel-api.rst   | 12 +++--
+>  Documentation/core-api/timers/api.rst   | 63 +++++++++++++++++++++++++
+>  Documentation/core-api/timers/index.rst |  4 ++
+>  Documentation/driver-api/basics.rst     | 24 ----------
+>  6 files changed, 93 insertions(+), 28 deletions(-)
+>  create mode 100644 Documentation/core-api/core-api.rst
+>  create mode 100644 Documentation/core-api/timers/api.rst
+> 
+> diff --git a/Documentation/core-api/core-api.rst b/Documentation/core-api/core-api.rst
+> new file mode 100644
+> index 000000000000..4fe00d084dc7
+> --- /dev/null
+> +++ b/Documentation/core-api/core-api.rst
+> @@ -0,0 +1,14 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +=========================
+> +The Linux Kernel Core API
+> +=========================
+> +
+> +.. note:: Some Core API is still documented in :doc:`../driver-api/basic` and
 
-Why do you need a fixed minor number?  Can't your userspace handle
-dynamic numbers?  What systems require a static value?
+I'm getting this warning from the line above:
 
-thanks,
+linux-next-20240123/Documentation/core-api/core-api.rst:7: WARNING: unknown document: '../driver-api/basic'
 
-greg k-h
+Ah, it should be "basics".
+
+> +          needs to be moved here. As this document will be huge when it contains
+> +          the whole API, split the API for a special part into a separate file.
+> +
+> +Timers
+> +======
+> +
+> +For timer related API, please refere to :doc:`timers/api`.
+
+
+-- 
+#Randy
 
