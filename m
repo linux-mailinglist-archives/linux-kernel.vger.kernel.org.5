@@ -1,178 +1,115 @@
-Return-Path: <linux-kernel+bounces-37096-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B829A83AB7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:15:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41E2383AB6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:14:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6928B2957A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:15:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C017E1F2197E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:14:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D537B7C08F;
-	Wed, 24 Jan 2024 14:15:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 461E87A70E;
+	Wed, 24 Jan 2024 14:14:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dCtjoMkB"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nghjgqqm"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30AEF7C090
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 14:15:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E79760DFF;
+	Wed, 24 Jan 2024 14:14:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706105730; cv=none; b=KZqPHzcZ81ayUOjp9oq0qXbABZQ2/Njrcqj+i1mP1nC73o7WUF4IkOq1ev5R6VxpQWaVU5U9qWM4wPN1FfsBQYseog8cHB5EPDmK8NbdR0xVskr3sOSJT814bXZOaKxPmkdD9Qf9xK3Jd7GPYKXO5HH6EGaJqjQBmEH/Jm7XNqs=
+	t=1706105653; cv=none; b=Z3MlwmiRNNU+xV1FKMwIKtGv3ulK1THd7pz88X7hvV8Xvql28hUYLLDS+Dt55nOeIHgHwjsPxuGvrF+Z0n3eISK2wW1ib8Lp6M6TlZf+otqu9M8x3we2aEw66GfA2RR4AsElRHw2CGDeVBggsvTYSjQGxxX2vMw9OZ3izeoL+z4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706105730; c=relaxed/simple;
-	bh=SXgjaHAj6mc5bUoF/0ublXUVySE2uQcKr8Ju/E+GUFI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kJBz6bISges2Ve605eq3VHzsED2gO7fURRwxWPs8I6XbYIwcVPdkxKSfzNhY4eJ9Y6/wzP8Iyhe3WwUY8BTf+wtGyClbya72FSClrCaHHHI9kP93yU5caPpgcNZ+16EEeUzqfI5O7I/U+kDNp4o0dnAwRvzJLxIGJ5sjyQdBIY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dCtjoMkB; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5100b424f8fso1717620e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 06:15:26 -0800 (PST)
+	s=arc-20240116; t=1706105653; c=relaxed/simple;
+	bh=ayLeps8v3W7HX8vlungxHlMOuxcEHcvYI51ejw6W6y4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tptyAykvizZsItVkiZLDqGgyf/8IqWygOnyGZ0TjK9hnCPf3G4ioDekHMdT5fHq+lBzGVF+hAJC5+Pj8regL9n3WvyRzUWsWHbMBcTax7Etvuh5t0zcESk83rnckT9wGsLvAzmOvaf77pE/RxWnyBJ482OhDziU/CLeKDAuSgh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Nghjgqqm; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a28fb463a28so541043266b.3;
+        Wed, 24 Jan 2024 06:14:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706105725; x=1706710525; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Emu9TGmELjy3ceHR0soeUQYq/a/KfpUveoio5V7U5Xk=;
-        b=dCtjoMkBZiBnh1uqZqVSrH5uPUKKQEMZfoCYRJxAVUm9K6DVIuFeFoR/2eyzy6QEpq
-         VW40pmawSkIQZbq4pyM20SSLWo2sEYrUrPUcv51OTcZzbGrQ6mixVLZv/wiZlfxs57A5
-         7wla1NLiBOoMg8nqJRkhWJ0kdaxzuqmFCUmAdTkJveYj0rFCWyiiRCkXIi7iTelCeWpm
-         5XMX2NEBCljrCdN7/uySTJg9dkcvOKiHfvUF8RcIEiyEBW6Q+6VapzYjnsEBcY75Yp9u
-         z4jK7dt+st47mf3Zb0nXmifzAuctHiovfXDc+wFn+7Nipi6AcJLdavecTPPkYAvwD9wZ
-         Bshg==
+        d=gmail.com; s=20230601; t=1706105650; x=1706710450; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RVt0ZnKeByvzhrfkzssJmlz6f1Lvfiy149b2/exZGTI=;
+        b=NghjgqqmN9zD+1HEfq0faYl/BWOF/o3EcsFMGLgR1xdXx9NCWVovmWxZMJXQCkSGJo
+         67Bv+T/QcBmKIKhrEX23qwS8U6dkMwDXJO8O0nYiujcnjW5fCB6SXkXdq0lL4prgdH+S
+         Kss+w5Gp/j7XGF8BCYNJgDCiD1JD93NYN/l6GQYmkK4TOTgSF1mjpl2rBX18aW6qM7zA
+         Gn9x/eJzRaIoJ4nDBjVCPqCsH8XTgcra04Mtc1j6Axdb52bJErk7ZbBVYqYP283ogEFm
+         EzLA5ntm4q0fElz/p1toQvdL2K0e7pCRbIaOvkDA9xc1ktagFkPdVa/IOzt+mREPtw1M
+         2AZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706105725; x=1706710525;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Emu9TGmELjy3ceHR0soeUQYq/a/KfpUveoio5V7U5Xk=;
-        b=dO0K5I1EJvjsU29Y1re6UYmkPI/mXbZhwOt611fyHtRC8usXTRV9I3k7mTd4ANSX/S
-         vmLrQzgPVgoxA5cq9GGz+jV3BlBpxTZNRrbgiz18yuXWoW9yLwW+S2lDrVOgt9qTTZec
-         XXcGtR7brcsCQj9Ium06A8gevd+O5WTTuM1WRvIhHTY9cA4fKjqqU+ZlvLd2DxGdgnq8
-         KVy2WeizjeawOqbZKQmVt7Qt9GeVGgzhwEMlJv2dohVmCmZeLtU6jYRFOFRGJFFJLqmj
-         Iw1rK6MrPcYx5fRjFojCRTJIpdoKW0g5a1Y90v9CbgGz+MU4lC89vR6Nf1jb/jezsqUG
-         nrKQ==
-X-Gm-Message-State: AOJu0Yw5e42Ny1/cQ7fGNh/StFy+C2TBR7PfXmDwxTYgviKyywy5PphX
-	+8hzkkOpwyTWHLzJoPW6FY7iK300y130unOHNckRlGxKYs4yf+z7hVS98AFFei0=
-X-Google-Smtp-Source: AGHT+IHc46rAxq1R2suh/qkOcv105YlkAEWHIOmow9ewHTYWO5FRW47hScfpHJ8HFVuGgx0owI33Fw==
-X-Received: by 2002:a05:6512:2808:b0:50e:ccfa:56c3 with SMTP id cf8-20020a056512280800b0050eccfa56c3mr4497154lfb.34.1706105725323;
-        Wed, 24 Jan 2024 06:15:25 -0800 (PST)
-Received: from ttritton.c.googlers.com.com (64.227.90.34.bc.googleusercontent.com. [34.90.227.64])
-        by smtp.gmail.com with ESMTPSA id vu3-20020a170907a64300b00a2d7f63dd71sm12399097ejc.29.2024.01.24.06.15.24
+        d=1e100.net; s=20230601; t=1706105650; x=1706710450;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RVt0ZnKeByvzhrfkzssJmlz6f1Lvfiy149b2/exZGTI=;
+        b=M7jRcQ543oXrQQBFexf0xQ3/Ydn1v+uDuGq/0ByGlYytLeRCbVDnF1iZ1pzkqPDhOv
+         CBRpV5NxtmCaIoSMoBvVxkEFYc+3PX8avxvNdnSszBcMACt9Hp5g+sARFBWmRuNsAkYt
+         N2S+zt6PnwF2XcgstlmF0UoNd7IfaZS55iwtkgb8wq2Vbhq9NBRz/EMoikCVof+/51xA
+         cMHbiQdlUZ6fdxwD5GTrIM9uz7tBkUQy0wVGSw7w2oi3qNBXT0oxvsxZwI0badkB/cS7
+         AKhqbMtoG6NEzkaB5Ue8pnjImnKUeBABaFghVL3sG2NfcXPpgbGBRJIqNzv3KtVOuEq9
+         d49Q==
+X-Gm-Message-State: AOJu0YxGhfoYrtpA3M3TREuCC/y3kxtVV0QnUwr/oInBA1kF/6DSUa2U
+	dN7YnwuHDk4xueCdICHroomfVM5He1fu2hw/VXNza1cjd9jLWurU
+X-Google-Smtp-Source: AGHT+IF9Si4NHAOAqa3uYGeUJLR9rrnIrYwH+j1jIF67RS+3PdY09F2BJ2FydAo0qGhNxG2VPd32pA==
+X-Received: by 2002:a17:906:f197:b0:a2f:71f1:b9e4 with SMTP id gs23-20020a170906f19700b00a2f71f1b9e4mr780499ejb.53.1706105649844;
+        Wed, 24 Jan 2024 06:14:09 -0800 (PST)
+Received: from andrea ([31.189.8.91])
+        by smtp.gmail.com with ESMTPSA id vb5-20020a170907d04500b00a30f04cb266sm1142517ejc.5.2024.01.24.06.14.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 06:15:25 -0800 (PST)
-From: Terry Tritton <terry.tritton@linaro.org>
-To: keescook@chromium.org,
-	luto@amacapital.net,
-	wad@chromium.org,
-	shuah@kernel.org
-Cc: linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	peter.griffin@linaro.org,
-	kernel-team@android.com,
-	bettyzhou@google.com,
-	Terry Tritton <terry.tritton@linaro.org>
-Subject: [PATCH 3/3] selftests/seccomp: user_notification_addfd check nextfd is available
-Date: Wed, 24 Jan 2024 14:13:57 +0000
-Message-ID: <20240124141357.1243457-4-terry.tritton@linaro.org>
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-In-Reply-To: <20240124141357.1243457-1-terry.tritton@linaro.org>
-References: <20240124141357.1243457-1-terry.tritton@linaro.org>
+        Wed, 24 Jan 2024 06:14:09 -0800 (PST)
+Date: Wed, 24 Jan 2024 15:13:58 +0100
+From: Andrea Parri <parri.andrea@gmail.com>
+To: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
+	mathieu.desnoyers@efficios.com, paulmck@kernel.org, corbet@lwn.net
+Cc: mmaas@google.com, hboehm@google.com, striker@us.ibm.com,
+	charlie@rivosinc.com, rehn@rivosinc.com,
+	linux-riscv@lists.infradead.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/4] membarrier: riscv: Core serializing command
+Message-ID: <ZbEbJpnUoFPW0fhd@andrea>
+References: <20240110145533.60234-1-parri.andrea@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240110145533.60234-1-parri.andrea@gmail.com>
 
-Currently the user_notification_addfd test checks what the next expected
-file descriptor will be by incrementing a variable nextfd. This does not
-account for file descriptors that may already be open before the test is
-started and will cause the test to fail if any exist.
+On Wed, Jan 10, 2024 at 03:55:29PM +0100, Andrea Parri wrote:
+> Changes since v2 ([1]):
+>   - amaned inline comments
+>   - drop ARCH_HAS_MEMBARRIER, create membarrrier.rst
+> 
+> Changes since v1 ([2]):
+>   - add smp_mb() in switch_mm()
+>   - introduce ARCH_HAS_MEMBARRIER, amend documentation
+> 
+> Changes since RFC ([3]):
+>   - introduce prepare_sync_core_cmd()
+>   - fix nosmp builds
+> 
+> [1] https://lore.kernel.org/lkml/20231211094414.8078-1-parri.andrea@gmail.com/
+> [2] https://lore.kernel.org/lkml/20231127103235.28442-1-parri.andrea@gmail.com/
+> [3] https://lore.kernel.org/lkml/20230803040111.5101-1-parri.andrea@gmail.com/
+> 
+> Andrea Parri (4):
+>   membarrier: riscv: Add full memory barrier in switch_mm()
+>   membarrier: Create Documentation/scheduler/membarrier.rst
+>   locking: Introduce prepare_sync_core_cmd()
+>   membarrier: riscv: Provide core serializing command
 
-Replace nextfd++ with a function get_next_fd which will check and return
-the next available file descriptor.
+Gentle ping to the riscv&membarrier people who have survived the merge
+window: any other thoughts on this series? suggestions for a v4?
 
-Signed-off-by: Terry Tritton <terry.tritton@linaro.org>
----
- tools/testing/selftests/seccomp/seccomp_bpf.c | 24 +++++++++++++++----
- 1 file changed, 19 insertions(+), 5 deletions(-)
-
-diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index da11b95b8872..cacf6507f690 100644
---- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-+++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -4044,6 +4044,16 @@ TEST(user_notification_filter_empty_threaded)
- 	EXPECT_GT((pollfd.revents & POLLHUP) ?: 0, 0);
- }
- 
-+
-+int get_next_fd(int prev_fd)
-+{
-+	for (int i = prev_fd + 1; i < FD_SETSIZE; ++i) {
-+		if (fcntl(i, F_GETFD) == -1)
-+			return i;
-+	}
-+	_exit(EXIT_FAILURE);
-+}
-+
- TEST(user_notification_addfd)
- {
- 	pid_t pid;
-@@ -4060,7 +4070,7 @@ TEST(user_notification_addfd)
- 	/* There may be arbitrary already-open fds at test start. */
- 	memfd = memfd_create("test", 0);
- 	ASSERT_GE(memfd, 0);
--	nextfd = memfd + 1;
-+	nextfd = get_next_fd(memfd);
- 
- 	ret = prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
- 	ASSERT_EQ(0, ret) {
-@@ -4071,7 +4081,8 @@ TEST(user_notification_addfd)
- 	/* Check that the basic notification machinery works */
- 	listener = user_notif_syscall(__NR_getppid,
- 				      SECCOMP_FILTER_FLAG_NEW_LISTENER);
--	ASSERT_EQ(listener, nextfd++);
-+	ASSERT_EQ(listener, nextfd);
-+	nextfd = get_next_fd(nextfd);
- 
- 	pid = fork();
- 	ASSERT_GE(pid, 0);
-@@ -4126,14 +4137,16 @@ TEST(user_notification_addfd)
- 
- 	/* Verify we can set an arbitrary remote fd */
- 	fd = ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD, &addfd);
--	EXPECT_EQ(fd, nextfd++);
-+	EXPECT_EQ(fd, nextfd);
-+	nextfd = get_next_fd(nextfd);
- 	EXPECT_EQ(filecmp(getpid(), pid, memfd, fd), 0);
- 
- 	/* Verify we can set an arbitrary remote fd with large size */
- 	memset(&big, 0x0, sizeof(big));
- 	big.addfd = addfd;
- 	fd = ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD_BIG, &big);
--	EXPECT_EQ(fd, nextfd++);
-+	EXPECT_EQ(fd, nextfd);
-+	nextfd = get_next_fd(nextfd);
- 
- 	/* Verify we can set a specific remote fd */
- 	addfd.newfd = 42;
-@@ -4171,7 +4184,8 @@ TEST(user_notification_addfd)
- 	 * Child has earlier "low" fds and now 42, so we expect the next
- 	 * lowest available fd to be assigned here.
- 	 */
--	EXPECT_EQ(fd, nextfd++);
-+	EXPECT_EQ(fd, nextfd);
-+	nextfd = get_next_fd(nextfd);
- 	ASSERT_EQ(filecmp(getpid(), pid, memfd, fd), 0);
- 
- 	/*
--- 
-2.43.0.429.g432eaa2c6b-goog
-
+  Andrea
 
