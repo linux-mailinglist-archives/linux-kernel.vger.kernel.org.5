@@ -1,223 +1,342 @@
-Return-Path: <linux-kernel+bounces-37235-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37236-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D17583AD08
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:18:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B73183AD2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:23:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 824071C223A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:18:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C597AB2C3BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:20:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74F2F7A729;
-	Wed, 24 Jan 2024 15:18:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A730A7C09F;
+	Wed, 24 Jan 2024 15:19:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="ljaCEeJO"
-Received: from aposti.net (aposti.net [89.234.176.197])
+	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="Jv4x0F0g"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 200AA43154;
-	Wed, 24 Jan 2024 15:18:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.234.176.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB9BB77F33
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 15:19:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706109510; cv=none; b=W/nqwCzabHaVRCMEdXNigLHt8vQb8dS+Kk6Rqmnntf+UeH+/j4oDD/5VKoHDW5Dd9vcDyFgaWRCbmqKHlzmXEhWWiAdMfFMNaKkKGKh7ouDZbFg/lVQgNUX/vyFbYMALMrPqd5mFHrL+XnqPlRFVQAipJtq8s3CHA176pQyPwr8=
+	t=1706109588; cv=none; b=f/6DsCJXJSZRRuHjR4kSyEyvcWjEGspG4DY+1IBot69fkaWzq0DkHqX3dfin7HETSDgXMmTvgI6qsXqjVqRTUEQZCJqeMxP7a0z/XEm510sZjNP5GVMRWnC+radVkb9kFxp5qDGBh7eEzNThioAV1N9Tr/9qCOB1woYnJJHm3pw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706109510; c=relaxed/simple;
-	bh=w8A9JHdanRpfyHvSrn/mEIENOTNdAlcHthcwWFUPqfM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Nb/8hHd+F26L2DCtduUoKiuatWXBkzxR4HGE+p1hzao2HXktL1nSMuoOh1y96lnjTMHOWdXIutsKRZJknLRcHn6RVswURnC/l4cVim77G+dOXleXGxkv/jfxxdtKbSLyzy4/gl+KBElrL4ZQ5DuZWZbnfeOBfFZ2ZMLl1W1oQ0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net; spf=pass smtp.mailfrom=crapouillou.net; dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b=ljaCEeJO; arc=none smtp.client-ip=89.234.176.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-	s=mail; t=1706109507;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=w8A9JHdanRpfyHvSrn/mEIENOTNdAlcHthcwWFUPqfM=;
-	b=ljaCEeJOT9n4ixyZCsmlbmZ/mLC1U0SpQajYOvnaqklofY3LVw/urX5058dAD4U9Mgs3M1
-	jf0yYxzuKAKQrZJAi4DPRYTQaiyGz3QjhBYWn53s7fP++GQ1B5VBmg+zPGHZ7mZYOOentd
-	wCNIHiCQsBErUiJMJPaXvxdxzK3E2e4=
-Message-ID: <fa113407241a6e9c0b7815d87a6294035ac98459.camel@crapouillou.net>
-Subject: Re: [PATCH 19/21] gpio: swnode: replace gpiochip_find() with
- gpio_device_find_by_label()
-From: Paul Cercueil <paul@crapouillou.net>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Aaro Koskinen <aaro.koskinen@iki.fi>, Janusz Krzysztofik
- <jmkrzyszt@gmail.com>, Tony Lindgren <tony@atomide.com>, Russell King
- <linux@armlinux.org.uk>, Mika Westerberg <mika.westerberg@linux.intel.com>,
-  Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Linus Walleij
- <linus.walleij@linaro.org>, Dipen Patel <dipenp@nvidia.com>, Thierry Reding
- <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, Hans de
- Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>,
- linux-arm-kernel@lists.infradead.org,  linux-omap@vger.kernel.org,
- linux-kernel@vger.kernel.org,  linux-gpio@vger.kernel.org,
- linux-acpi@vger.kernel.org,  timestamp@lists.linux.dev,
- linux-tegra@vger.kernel.org,  platform-driver-x86@vger.kernel.org, Bartosz
- Golaszewski <bartosz.golaszewski@linaro.org>
-Date: Wed, 24 Jan 2024 16:18:24 +0100
-In-Reply-To: <CAMRc=MdwAaQ1Prtweu9znEL+mbyxSmmKhL65PG+=YKniCD1c9w@mail.gmail.com>
-References: <20230905185309.131295-1-brgl@bgdev.pl>
-	 <20230905185309.131295-20-brgl@bgdev.pl>
-	 <83ad61e2f9d62621f42d8738f6028103fe8bfb94.camel@crapouillou.net>
-	 <CAMRc=MdwAaQ1Prtweu9znEL+mbyxSmmKhL65PG+=YKniCD1c9w@mail.gmail.com>
-Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
- keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZMLQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5UzFZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtNz8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe+rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIPdlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7Urf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KFlBwgAhlGy6nqP7O3u7q23hRW5AQ0EXQqFwQEIAMo+MgvYHsyjX3Ja4Oolg1Txzm8woj30ch2nACFCqaO0R/1kLj2VVeLrDyQUOlXx9PD6IQI4M8wy8m0sR4wV2p/g/paw7k65cjzYYLh+FdLNyO7IW
-	YXndJO+wDPi3aK/YKUYepqlP+QsmaHNYNdXEQDRKqNfJg8t0f5rfzp9ryxd1tCnbV+tG8VHQWiZXNqN7062DygSNXFUfQ0vZ3J2D4oAcIAEXTymRQ2+hr3Hf7I61KMHWeSkCvCG2decTYsHlw5Erix/jYWqVOtX0roOOLqWkqpQQJWtU+biWrAksmFmCp5fXIg1Nlg39v21xCXBGxJkxyTYuhdWyu1yDQ+LSIUAEQEAAYkBNgQYAQoAIBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsMAAoJEHPua9InSr1B4wsH/Az767YCT0FSsMNt1jkkdLCBi7nY0GTW+PLP1a4zvVqFMo/vD6uz1ZflVTUAEvcTi3VHYZrlgjcxmcGu239oruqUS8Qy/xgZBp9KF0NTWQSl1iBfVbIU5VV1vHS6r77W5x0qXgfvAUWOH4gmN3MnF01SH2zMcLiaUGF+mcwl15rHbjnT3Nu2399aSE6cep86igfCAyFUOXjYEGlJy+c6UyT+DUylpjQg0nl8MlZ/7Whg2fAU9+FALIbQYQzGlT4c71SibR9T741jnegHhlmV4WXXUD6roFt54t0MSAFSVxzG8mLcSjR2cLUJ3NIPXixYUSEn3tQhfZj07xIIjWxAYZo=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1706109588; c=relaxed/simple;
+	bh=OIusJLxhbXxmyhNGE3F6m6Lh/80U12JwHeDjWP3XY3k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=E8CAXb167PGWWKJTLSp9VACXDoeoG4OUL3foMI1xUpt0qD0Eur5SlLBDY0v6PdaUQBQd95Rq2Vk4czYEeDHuBGDglEcONSLR2Y96xa1PdMKez96cpFy5mM8GBb05RSe9Dm7brEoVWgHv/SzA+jSVt/eF3Nz/n2W4YD2jNUh8tlA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=Jv4x0F0g; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d731314e67so19040255ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 07:19:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fastly.com; s=google; t=1706109586; x=1706714386; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-transfer-encoding
+         :content-disposition:mime-version:references:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GCPTIfro7gjKwSczT715QvfI3dAQ+k5lX6+XNUimdv4=;
+        b=Jv4x0F0gAn2ZAubQjaDcY95+9yt9UUUTKgBXbDVpxv3rcQKBcwYG7JVNXbCNiHI17B
+         SH1bx4+pNBMsYK8QznFiBPFUIG13UQ+DDv0swfu8X3G2uFk4K09xvdT7CwGgD6+hKaCv
+         Aaq8RP/iBEJVBMOlQX6ZQfoEWaMSYOWeKGCsA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706109586; x=1706714386;
+        h=user-agent:in-reply-to:content-transfer-encoding
+         :content-disposition:mime-version:references:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GCPTIfro7gjKwSczT715QvfI3dAQ+k5lX6+XNUimdv4=;
+        b=BPMSHMhcgStLjbBgnjXE9WfPEjGWdDJAu7SdildZxlcEqWM0CWWpgpnpWEo1gnUd25
+         jOLsttmilcGARiL3m0NDZYdxuiKB7r81wqcLgd9NoNknEb+644omvS7xfz9zBR9hLliN
+         rpZO+jMQd9l0k7bjAG7l3sMG5CSaQGW8Q+i8wMZX/f5Qy6I85zeA0qqR6VnfeoOu/glv
+         Zx7ePC+RzN3K6Cy4d2MZZyX42uxLhZiZxIqP/9Hfq+Y5aHhICFLffn4vbzSXlXBPiBE1
+         g5qgNrEo1rQsXKc1rok/2pkDVU24VF2bqm7FuO9/n0RPWFNj7OUthvBJWpniwgXzwKr7
+         pJVQ==
+X-Gm-Message-State: AOJu0YxWVHuDvB8bDj5WG3rGlB4lFr51LJYPPSFF8b6WFFioPzdWUGeJ
+	uZonVdcBX5NxH77lUtBc3creTU5cqYsnokoYycE0WGK8LKXB7sv2g983lgbRTR8=
+X-Google-Smtp-Source: AGHT+IFA6eRfCnUa7nllifPe0kGwNy09ZT1EBgLxXjqWc/wnwS38sfPlHpqeDvHgeYXekHXe/mN89Q==
+X-Received: by 2002:a17:903:41d2:b0:1d7:2279:15e9 with SMTP id u18-20020a17090341d200b001d7227915e9mr913512ple.122.1706109586064;
+        Wed, 24 Jan 2024 07:19:46 -0800 (PST)
+Received: from fastly.com (c-24-6-151-244.hsd1.ca.comcast.net. [24.6.151.244])
+        by smtp.gmail.com with ESMTPSA id jf7-20020a170903268700b001d76b1029c6sm3132620plb.2.2024.01.24.07.19.44
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 24 Jan 2024 07:19:45 -0800 (PST)
+Date: Wed, 24 Jan 2024 07:19:43 -0800
+From: Joe Damato <jdamato@fastly.com>
+To: Eric Dumazet <edumazet@google.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	chuck.lever@oracle.com, jlayton@kernel.org,
+	linux-api@vger.kernel.org, brauner@kernel.org, davem@davemloft.net,
+	alexander.duyck@gmail.com, sridhar.samudrala@intel.com,
+	kuba@kernel.org, Wei Wang <weiwan@google.com>
+Subject: Re: [net-next 0/3] Per epoll context busy poll support
+Message-ID: <20240124151942.GA6565@fastly.com>
+References: <20240124025359.11419-1-jdamato@fastly.com>
+ <CANn89i+YKwrgpt8VnHrw4eeVpqRamLkTSr4u+g1mRDMZa6b+7Q@mail.gmail.com>
+ <20240124142008.GA1448@fastly.com>
+ <CANn89i+UiCRpu6M-hDga=dSTk1F5MjkgV=kKS6zC31pvOh78DQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANn89i+UiCRpu6M-hDga=dSTk1F5MjkgV=kKS6zC31pvOh78DQ@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 
-Le mercredi 24 janvier 2024 =C3=A0 16:04 +0100, Bartosz Golaszewski a
-=C3=A9crit=C2=A0:
-> On Wed, Jan 24, 2024 at 3:59=E2=80=AFPM Paul Cercueil <paul@crapouillou.n=
-et>
-> wrote:
-> >=20
-> > Hi Bartosz,
-> >=20
-> > Le mardi 05 septembre 2023 =C3=A0 20:53 +0200, Bartosz Golaszewski a
-> > =C3=A9crit :
-> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > >=20
-> > > We're porting all users of gpiochip_find() to using
-> > > gpio_device_find().
-> > > Update the swnode GPIO code.
-> > >=20
-> > > Signed-off-by: Bartosz Golaszewski
-> > > <bartosz.golaszewski@linaro.org>
-> > > ---
-> > > =C2=A0drivers/gpio/gpiolib-swnode.c | 29 ++++++++++++----------------=
--
-> > > =C2=A01 file changed, 12 insertions(+), 17 deletions(-)
-> > >=20
-> > > diff --git a/drivers/gpio/gpiolib-swnode.c
-> > > b/drivers/gpio/gpiolib-
-> > > swnode.c
-> > > index b5a6eaf3729b..56c8519be538 100644
-> > > --- a/drivers/gpio/gpiolib-swnode.c
-> > > +++ b/drivers/gpio/gpiolib-swnode.c
-> > > @@ -31,31 +31,26 @@ static void swnode_format_propname(const char
-> > > *con_id, char *propname,
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 strscpy(propname, "gpios", max_size);
-> > > =C2=A0}
-> > >=20
-> > > -static int swnode_gpiochip_match_name(struct gpio_chip *chip,
-> > > void
-> > > *data)
-> > > +static struct gpio_device *swnode_get_gpio_device(struct
-> > > fwnode_handle *fwnode)
-> > > =C2=A0{
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0 return !strcmp(chip->label, data);
-> > > -}
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 const struct software_node *gdev_node;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 struct gpio_device *gdev;
-> > >=20
-> > > -static struct gpio_chip *swnode_get_chip(struct fwnode_handle
-> > > *fwnode)
-> > > -{
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0 const struct software_node *chip_node;
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0 struct gpio_chip *chip;
-> > > -
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0 chip_node =3D to_software_node(fwnode);
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0 if (!chip_node || !chip_node->name)
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 gdev_node =3D to_software_node(fwnode);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (!gdev_node || !gdev_node->name)
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 return ERR_PTR(-EINVAL);
-> > >=20
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0 chip =3D gpiochip_find((void *)chip_node->n=
-ame,
-> > > swnode_gpiochip_match_name);
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0 return chip ?: ERR_PTR(-EPROBE_DEFER);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 gdev =3D gpio_device_find_by_label((void *)=
-gdev_node->name);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 return gdev ?: ERR_PTR(-EPROBE_DEFER);
-> > > =C2=A0}
-> > >=20
-> > > =C2=A0struct gpio_desc *swnode_find_gpio(struct fwnode_handle *fwnode=
-,
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const char *con_id, unsign=
-ed int
-> > > idx,
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long *flags)
-> > > =C2=A0{
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 struct gpio_device *gdev __free(gpio_device=
-_put) =3D NULL;
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const struct software_node *swnode;
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct fwnode_reference_args args;
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0 struct gpio_chip *chip;
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct gpio_desc *desc;
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 char propname[32]; /* 32 is max size o=
-f property name */
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int error;
-> > > @@ -77,12 +72,12 @@ struct gpio_desc *swnode_find_gpio(struct
-> > > fwnode_handle *fwnode,
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 return ERR_PTR(error);
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> > >=20
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0 chip =3D swnode_get_chip(args.fwnode);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 gdev =3D swnode_get_gpio_device(args.fwnode=
-);
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fwnode_handle_put(args.fwnode);
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0 if (IS_ERR(chip))
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 return ERR_CAST(chip);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (IS_ERR(gdev))
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 return ERR_CAST(gdev);
-> >=20
-> > I'm a bit late to the party, sorry.
-> >=20
-> > I'm looking at how __free() should be used to use it in my own
-> > patchset, and I was wondering if this code actually works.
-> >=20
-> > What happens if swnode_get_gpio_device() returns an error pointer?
-> > Won't that cause a call to gpio_device_put() with the invalid
-> > pointer?
-> >=20
-> > Cheers,
-> > -Paul
-> >=20
->=20
-> No. because the __free() callback is defined as:
->=20
-> DEFINE_FREE(gpio_device_put, struct gpio_device *,
-> =C2=A0=C2=A0=C2=A0 if (!IS_ERR_OR_NULL(_T)) gpio_device_put(_T))
+On Wed, Jan 24, 2024 at 03:38:19PM +0100, Eric Dumazet wrote:
+> On Wed, Jan 24, 2024 at 3:20 PM Joe Damato <jdamato@fastly.com> wrote:
+> >
+> > On Wed, Jan 24, 2024 at 09:20:09AM +0100, Eric Dumazet wrote:
+> > > On Wed, Jan 24, 2024 at 3:54 AM Joe Damato <jdamato@fastly.com> wrote:
+> > > >
+> > > > Greetings:
+> > > >
+> > > > TL;DR This builds on commit bf3b9f6372c4 ("epoll: Add busy poll support to
+> > > > epoll with socket fds.") by allowing user applications to enable
+> > > > epoll-based busy polling and set a busy poll packet budget on a per epoll
+> > > > context basis.
+> > > >
+> > > > To allow for this, two ioctls have been added for epoll contexts for
+> > > > getting and setting a new struct, struct epoll_params.
+> > > >
+> > > > This makes epoll-based busy polling much more usable for user
+> > > > applications than the current system-wide sysctl and hardcoded budget.
+> > > >
+> > > > Longer explanation:
+> > > >
+> > > > Presently epoll has support for a very useful form of busy poll based on
+> > > > the incoming NAPI ID (see also: SO_INCOMING_NAPI_ID [1]).
+> > > >
+> > > > This form of busy poll allows epoll_wait to drive NAPI packet processing
+> > > > which allows for a few interesting user application designs which can
+> > > > reduce latency and also potentially improve L2/L3 cache hit rates by
+> > > > deferring NAPI until userland has finished its work.
+> > > >
+> > > > The documentation available on this is, IMHO, a bit confusing so please
+> > > > allow me to explain how one might use this:
+> > > >
+> > > > 1. Ensure each application thread has its own epoll instance mapping
+> > > > 1-to-1 with NIC RX queues. An n-tuple filter would likely be used to
+> > > > direct connections with specific dest ports to these queues.
+> > > >
+> > > > 2. Optionally: Setup IRQ coalescing for the NIC RX queues where busy
+> > > > polling will occur. This can help avoid the userland app from being
+> > > > pre-empted by a hard IRQ while userland is running. Note this means that
+> > > > userland must take care to call epoll_wait and not take too long in
+> > > > userland since it now drives NAPI via epoll_wait.
+> > > >
+> > > > 3. Ensure that all incoming connections added to an epoll instance
+> > > > have the same NAPI ID. This can be done with a BPF filter when
+> > > > SO_REUSEPORT is used or getsockopt + SO_INCOMING_NAPI_ID when a single
+> > > > accept thread is used which dispatches incoming connections to threads.
+> > > >
+> > > > 4. Lastly, busy poll must be enabled via a sysctl
+> > > > (/proc/sys/net/core/busy_poll).
+> > > >
+> > > > The unfortunate part about step 4 above is that this enables busy poll
+> > > > system-wide which affects all user applications on the system,
+> > > > including epoll-based network applications which were not intended to
+> > > > be used this way or applications where increased CPU usage for lower
+> > > > latency network processing is unnecessary or not desirable.
+> > > >
+> > > > If the user wants to run one low latency epoll-based server application
+> > > > with epoll-based busy poll, but would like to run the rest of the
+> > > > applications on the system (which may also use epoll) without busy poll,
+> > > > this system-wide sysctl presents a significant problem.
+> > > >
+> > > > This change preserves the system-wide sysctl, but adds a mechanism (via
+> > > > ioctl) to enable or disable busy poll for epoll contexts as needed by
+> > > > individual applications, making epoll-based busy poll more usable.
+> > > >
+> > >
+> > > I think this description missed the napi_defer_hard_irqs and
+> > > gro_flush_timeout settings ?
+> >
+> > I'm not sure if those settings are strictly related to the change I am
+> > proposing which makes epoll-based busy poll something that can be
+> > enabled/disabled on a per-epoll context basis and allows the budget to be
+> > set as well, but maybe I am missing something? Sorry for my
+> > misunderstanding if so.
+> >
+> > IMHO: a single system-wide busy poll setting is difficult to use
+> > properly and it is unforunate that the packet budget is hardcoded. It would
+> > be extremely useful to be able to set both of these on a per-epoll basis
+> > and I think my suggested change helps to solve this.
+> >
+> > Please let me know.
+> >
+> > Re the two settings you noted:
+> >
+> > I didn't mention those in the interest of brevity, but yes they can be used
+> > instead of or in addition to what I've described above.
+> >
+> > While those settings are very useful, IMHO, they have their own issues
+> > because they are system-wide as well. If they were settable per-NAPI, that
+> > would make it much easier to use them because they could be enabled for the
+> > NAPIs which are being busy-polled by applications that support busy-poll.
+> >
+> > Imagine you have 3 types of apps running side-by-side:
+> >   - A low latency epoll-based busy poll app,
+> >   - An app where latency doesn't matter as much, and
+> >   - A latency sensitive legacy app which does not yet support epoll-based
+> >     busy poll.
+> >
+> > In the first two cases, the settings you mention would be helpful or not
+> > make any difference, but in the third case the system-wide impact might be
+> > undesirable because having IRQs fire might be important to keep latency
+> > down.
+> >
+> > If your comment was more that my cover letter should have mentioned these,
+> > I can include that in a future cover letter or suggest some kernel
+> > documentation which will discuss all of these features and how they relate
+> > to each other.
+> >
+> > >
+> > > I would think that if an application really wants to make sure its
+> > > thread is the only one
+> > > eventually calling napi->poll(), we must make sure NIC interrupts stay masked.
+> > >
+> > > Current implementations of busy poll always release NAPI_STATE_SCHED bit when
+> > > returning to user space.
+> > >
+> > > It seems you want to make sure the application and only the
+> > > application calls the napi->poll()
+> > > at chosen times.
+> > >
+> > > Some kind of contract is needed, and the presence of the hrtimer
+> > > (currently only driven from dev->@gro_flush_timeout)
+> > > would allow to do that correctly.
+> > >
+> > > Whenever we 'trust' user space to perform the napi->poll shortly, we
+> > > also want to arm the hrtimer to eventually detect
+> > > the application took too long, to restart the other mechanisms (NIC irq based)
+> >
+> > There is another change [1] I've been looking at from a research paper [2]
+> > which does something similar to what you've described above -- it keeps
+> > IRQs suppressed during busy polling. The paper suggests a performance
+> > improvement is measured when using a mechanism like this to keep IRQs off.
+> > Please see the paper for more details.
+> >
+> > I haven't had a chance to reach out to the authors or to tweak this patch
+> > to attempt an RFC / submission for it, but it seems fairly promising in my
+> > initial synthetic tests.
+> >
+> > When I tested their patch, as you might expect, no IRQs were generated at
+> > all for the NAPIs that were being busy polled, but the rest of the
+> > NAPIs and queues were generating IRQs as expected.
+> >
+> > Regardless of the above patch: I think my proposed change is helpful and
+> > the IRQ suppression bit can be handled in a separate change in the future.
+> > What do you think?
+> >
+> > > Note that we added the kthread based napi polling, and we are working
+> > > to add a busy polling feature to these kthreads.
+> > > allowing to completely mask NIC interrupts and further reduce latencies.
+> >
+> > I am aware of kthread based NAPI polling, yes, but I was not aware that
+> > busy polling was being considered as a feature for them, thanks for the
+> > head's up.
+> >
+> > > Thank you
+> >
+> > Thanks for your comments - I appreciate your time and attention.
+> >
+> > Could you let me know if your comments are meant as a n-ack or similar?
+> 
+> Patch #2 needs the 'why' part, and why would we allow user space to
+> ask to poll up to 65535 packets...
+> There is a reason we have a warning in place when a driver attempts to
+> set a budget bigger than 64.
 
-Disregard my previous email, I'm stupid. This actually checks that the
-pointer is non-null.
+Sure, thanks for pointing this out.
 
-Cheers,
--Paul
+I am happy to cap the budget to 64 if a user app requests a larger amount
+and I can add a netdev_warn when this happens, if you'd like.
 
->=20
-> Bart
->=20
-> > >=20
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0 desc =3D gpiochip_get_desc(chip, args.args[=
-0]);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0 desc =3D gpiochip_get_desc(gdev->chip, args=
-args[0]);
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *flags =3D args.args[1]; /* We expect =
-native GPIO flags */
-> > >=20
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pr_debug("%s: parsed '%s' property of =
-node '%pfwP[%d]' -
-> > > status (%d)\n",
-> >=20
+The 'why' has two reasons:
+  - Increasing the budget for fast NICs can help improve throughput
+    under load (i.e. the hardcoded amount might be too low for some users)
+  - other poll methods have user-configurable budget amounts
+    (SO_BUSY_POLL_BUDGET), so epoll stands out as an edge case where the
+    budget is hardcoded.
 
+I hope that reasoning is sufficient and I can include that more explicitly
+in the commit message.
+
+FWIW: My reading of SO_BUSY_POLL_BUDGET suggests that any budget amount
+up to U16_MAX will be accepted. I probably missed it somewhere, but I
+didn't see a warning in this case.
+
+I think in a v2 SO_BUSY_POLL_BUDGET and the epoll ioctl budget should
+be capped at the same amount for consistency and I am happy to agree to 64
+or 128 or similar as a cap.
+
+Let me know what you think and thanks again for your thoughts and detailed
+response.
+
+> You cited recent papers,  I wrote this one specific to linux busy
+> polling ( https://netdevconf.info/2.1/papers/BusyPollingNextGen.pdf )
+
+Thanks for sending this link, I'll need to take a closer look, but a quick
+read surfaced two things:
+
+  Their use is very limited, since they enforce busy polling
+  for all sockets, which is not desirable
+
+We agree on the limited usefulness of system-wide settings ;)
+
+  Another big problem is that Busy Polling was not really
+  deployed in production, because it works well when having
+  no more than one thread per NIC RX queue.
+
+I've been testing epoll-based busy poll in production with a few different
+NICs and application setups and it has been pretty helpful, but I agree
+that this is application architecture specific as you allude to in
+your next paragraph about the scheduler.
+
+Thanks for linking to the paper.
+
+It would be great if all of this context and information could be put in
+one place in the kernel docs. If I have time in the future, I'll propose a
+doc change to try to outline all of this.
+
+> Busy polling had been in the pipe, when Wei sent her patches and follow ups.
+> 
+> cb038357937ee4f589aab2469ec3896dce90f317 net: fix race between napi
+> kthread mode and busy poll
+> 5fdd2f0e5c64846bf3066689b73fc3b8dddd1c74 net: add sysfs attribute to
+> control napi threaded mode
+> 29863d41bb6e1d969c62fdb15b0961806942960e net: implement threaded-able
+> napi poll loop support
+
+Thanks for letting me know. I think I'd seen these in passing, but hadn't
+remembered until you mentioned it now.
+
+> I am saying that I am currently working to implement the kthread busy
+> polling implementation,
+> after fixing two bugs in SCTP and UDP (making me wondering if busy
+> polling is really used these days)
+
+Ah, I see. FWIW, I have so far only been trying to use it for TCP and so
+far I haven't hit any bugs.
+
+I was planning to use it with UDP in the future, though, once the TCP
+epoll-based busy polling stuff I am working on is done... so thanks in
+advance for the bug fixes in UDP.
+
+> I am also considering unifying napi_threaded_poll() and the
+> napi_busy_loop(), and seeing your patches
+> coming make this work more challenging.
+
+Sorry about that. I am happy to make modifications to my patches if there's
+anything I could do which would make your work easier in the future.
+
+Thanks,
+Joe
 
