@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-36663-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5059B83A4B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:57:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60FBD83A4B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:58:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83C6A1C2241F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:57:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 165E81F22055
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:58:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C7DF17BB7;
-	Wed, 24 Jan 2024 08:57:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35AB517BB5;
+	Wed, 24 Jan 2024 08:58:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="l29n1LNa"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="GJ/V/n9+"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D37A517BA1;
-	Wed, 24 Jan 2024 08:57:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A67D17C61;
+	Wed, 24 Jan 2024 08:58:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706086648; cv=none; b=YavYB9vrAqOU+BD0rkjzxqd4BatbcRgm32eSyqw+/V0WF0SJtrB88pPaIWCjDiWnLbgg+apRB6TpgMYO8xgm2CiMF777IozSQ4LlnmHGDGd4p/SNG1s3txWgfL85y/7olbb2Uw/TR70L3hMybIB2vqQA49fElKUqobBaeymCl30=
+	t=1706086682; cv=none; b=E187ZFl56TbykUfi793NZEtYlP91HvXlN9hniEVdEK9cvJqmlbTMf70ET2lRa5lxH2inqOaHh5iaOfdugnbo5p6B8wyMqc5essnmr/aA5T/Sc0laY94m9x9B4sp1bOhWsmeKUltZ/QPm2sqL/mqKM85CBFvgqVFcVseEiteB3SA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706086648; c=relaxed/simple;
-	bh=mv/7ewEA4l7pAVBAP8biUVLUr2QSV9pQKC7zQv+hEQQ=;
+	s=arc-20240116; t=1706086682; c=relaxed/simple;
+	bh=DxcDpKLmIS5x9C8j3sVwB34LceUIhcJpP8hPAp0icRc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WVdFl4q9k52ymHBvgsXNdK2ip/Mykh/ihT2tNREeHXnT7elAM8iGLgzNCVt+a1CieWY4GGbDVDR8blZBHr+JOLKhFNZKtn5K4IO2Nv1tTQ2EtaMncJQWxZCKTB/8el2+dKSOgUkX/NrStM8LF3OVop/sg1M7sKyN3GO7m5uMXY8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=l29n1LNa; arc=none smtp.client-ip=46.235.227.194
+	 In-Reply-To:Content-Type; b=G5EE+iw0J37HiXd27WImBX4PDaIhFidlzODsNRyeN6Hyvbu7whXMVAONF9ABZvNKhBpqprH4+JOKUCXdN+vWbO0ZAQYF85FtD6DqRmfk59evCObK7H1V0dI+yWd7S4Ut2eyZZ0g9s2eJTsCbLALefSumKIpRal/y3GhCyrqq/14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=GJ/V/n9+; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706086645;
-	bh=mv/7ewEA4l7pAVBAP8biUVLUr2QSV9pQKC7zQv+hEQQ=;
+	s=mail; t=1706086678;
+	bh=DxcDpKLmIS5x9C8j3sVwB34LceUIhcJpP8hPAp0icRc=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=l29n1LNa4UC1tyoaI2ZVW6ekOax3ozxHbprpCoveeOUHpLNpPcK1uDNawsVKXqpOG
-	 FKzntSiTGRWcBsWdfGNjbo4doYTt4uFd9GNFeGDcp5IDGryVZBycZYzGFYr3brvMRx
-	 tW1j0yuv2fP0wgXojS/WkxRNhAL7u9D2OcY1NZUfGkDgkTh5g8MUxXRD+zhavi471c
-	 GTpoWaCp90tz5/5nD/6wsX9jiwwuxRXUD8jUfteBWaJOTwC8pq5h7AO4xWEfOK3bsh
-	 PJIuxAKVQX3bRFPA89SwaCTjKj7/XnFA3eSG3ty2zFn62Gv19nQaS3ncPxk7cam7XK
-	 inOcYNx/epBlQ==
+	b=GJ/V/n9+L10m3msD+8IihP3z8WSWlWYz50CFsOgYZJIvVKAKvIlXIECU39pE7gwg3
+	 F83hzM2GAUwGahvJMjty2HVLdiDpmYK7QVgcuBL4NSleoO4cZ1B7jYT2MO8OyBNPiV
+	 C+MZbFRx6FuM/j+4Q9nIBf5RIJRr4a+U2FpXB1DzHL6LYQsNL1f9dO4WnwXh0Aa57D
+	 CfnBmeDTM9ctBehYivow1KyaPGUThoMuSpujq+3srvAV8umH4reTztiPKW05i+A+40
+	 EiUrthbSSiMjXajTDOIvl+LDnu7eiH1/LWWlTxt5Y3yJCuei1Y+MLuJJuxPpIQTLdJ
+	 AzQy/hy6xyf2A==
 Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id C692C37802F2;
-	Wed, 24 Jan 2024 08:57:23 +0000 (UTC)
-Message-ID: <f91d3ac1-0a7d-4ca2-bf0f-c5e471c2f6bb@collabora.com>
-Date: Wed, 24 Jan 2024 09:57:23 +0100
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8840537802F2;
+	Wed, 24 Jan 2024 08:57:57 +0000 (UTC)
+Message-ID: <0d11d506-24f6-4f1e-b0de-1d229988545e@collabora.com>
+Date: Wed, 24 Jan 2024 09:57:57 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,7 +56,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/3] dt-bindings: mailbox: Add mediatek,gce-props.yaml
+Subject: Re: [PATCH v4 3/3] dt-bindings: soc: mediatek: Change
+ mediatek,gce-events to refernece
 Content-Language: en-US
 To: "Jason-JH.Lin" <jason-jh.lin@mediatek.com>,
  Rob Herring <robh+dt@kernel.org>,
@@ -73,21 +74,15 @@ Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  Project_Global_Chrome_Upstream_Group@mediatek.com,
  Fei Shao <fshao@chromium.org>
 References: <20240124011459.12204-1-jason-jh.lin@mediatek.com>
- <20240124011459.12204-2-jason-jh.lin@mediatek.com>
+ <20240124011459.12204-4-jason-jh.lin@mediatek.com>
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20240124011459.12204-2-jason-jh.lin@mediatek.com>
+In-Reply-To: <20240124011459.12204-4-jason-jh.lin@mediatek.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 Il 24/01/24 02:14, Jason-JH.Lin ha scritto:
-> Add mediatek,gce-props.yaml for common GCE properties that is used for
-> both mailbox providers and consumers. We place the common property
-> "mediatek,gce-events" in this binding currently.
-> 
-> The property "mediatek,gce-events" is used for GCE event ID corresponding
-> to a hardware event signal sent by the hardware or a software driver.
-> If the mailbox providers or consumers want to manipulate the value of
-> the event ID, they need to know the specific event ID.
+> Change mediatek,gce-events property to reference mediatek,gce-props.yaml
+> instead of defining itself.
 > 
 > Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
 > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
