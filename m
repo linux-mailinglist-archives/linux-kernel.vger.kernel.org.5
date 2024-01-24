@@ -1,212 +1,169 @@
-Return-Path: <linux-kernel+bounces-36393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3040839FFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 04:15:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F97A839FF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 04:14:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E8031F2B2FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:15:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD9CB1C23AA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:14:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2F155392;
-	Wed, 24 Jan 2024 03:15:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WYL2llkR"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 404085C85;
+	Wed, 24 Jan 2024 03:14:30 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21A22524C
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 03:15:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2201D46BF;
+	Wed, 24 Jan 2024 03:14:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706066128; cv=none; b=sJljNwo/ups10Qzj3ybVf6l4NubGBY0T8f33YfY/7gFyvkKVrgIQcDBBExAORnWfLUTDTZPtnXOPXoKA3a5s3Pl9/1N7qoxQ4kmY5qDZlTmrRsPSedki9nfd9Rh94jJAPiu5dUGOMZTF+aGxFlgkzCLMxmbrYJrCTSssNscgOBY=
+	t=1706066069; cv=none; b=bRBePVbFlsS55/lFPCd8Bd9EPLcj7c7QCqxtMyjG5cv5ymKYafRK56ewjqlYGWwerUyPHKO2BvWMzkiRJxj1DE84SAUqoxtSKKa1JXld0r8iAr4WUZuuGdoi1mRnNhX7PeHD7OPsoN8HWa0nWkydQxicrmXs+Z2WMHn94+boqAU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706066128; c=relaxed/simple;
-	bh=5JIQfkuXIc6IPaZJLDvYI4lW9FHnJAl+rx8UUzTpfbE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Hfn3tSW+j6x8U4xve2AzhUoLNJEFLNtO5SO2XscBzbpUUj60SWxUpP41n+vtiYjdJMD3etVNIksnGXWCiSjyVzLJDEHQNsLTNoh78ff9sBRPaOO6udm2iYrb2DDQmSM8nux5qAxu47Cu0IRJTwqmq6MpLbk3cHXqY3AavqWwX6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WYL2llkR; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706066127; x=1737602127;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=5JIQfkuXIc6IPaZJLDvYI4lW9FHnJAl+rx8UUzTpfbE=;
-  b=WYL2llkRMqu3Ow6XDYI5Qjw8ChrBlXB89krvcOZZpx7sJbQKXMluvdNm
-   yHcr6JxehCLfdrfSgf0K7WAin+gB4qGy87KWPuMVcx0EpuXZb7BcyaT5F
-   LLC/J2+3QhnYoqTln5J44BEVP9iBQAZz95XM9FdUfUccHggkQJrNV193F
-   K0oCipE+KLPnxgIzsubUNvAUM8MeiChIGpLFYQzrw/YSL0VpQexTTkgL4
-   QFUgjZluWTHhfU9obS42IxffinsR1DKZCcUG/6MMpBj4IycPGziZERLa+
-   3l3H8sItF9Ec+XVugZ9bmvLr+D5CZA3q6fnkGMZpRP5YyegFRXpqVKHRy
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="8840922"
-X-IronPort-AV: E=Sophos;i="6.05,215,1701158400"; 
-   d="scan'208";a="8840922"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 19:15:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,215,1701158400"; 
-   d="scan'208";a="1789059"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 19:15:22 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,  Johannes Weiner
- <hannes@cmpxchg.org>,  Nhat Pham <nphamcs@gmail.com>,  Chris Li
- <chrisl@kernel.org>,  Chengming Zhou <zhouchengming@bytedance.com>,
-  linux-mm@kvack.org,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mm: swap: update inuse_pages after all cleanups are
- done
-In-Reply-To: <CAJD7tkb=-0mP1CXEmAd4QjMXKgep7myHShiwUSNnY1cjfRqfJA@mail.gmail.com>
-	(Yosry Ahmed's message of "Tue, 23 Jan 2024 01:40:31 -0800")
-References: <20240120024007.2850671-1-yosryahmed@google.com>
-	<20240120024007.2850671-2-yosryahmed@google.com>
-	<87wms0toh4.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<CAJD7tkb=-0mP1CXEmAd4QjMXKgep7myHShiwUSNnY1cjfRqfJA@mail.gmail.com>
-Date: Wed, 24 Jan 2024 11:13:26 +0800
-Message-ID: <878r4ftodl.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1706066069; c=relaxed/simple;
+	bh=g3vDQVNYQHCfXhK9AZEZvl7enAqSQCJdQIj+M8vN8m8=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=mUq5zyRHNpFRzsFXghDVRAHwbI55cRBl6rrlNrVeEWKN+zl/lqUy7jSKPNTAOfnLGtguYduhZemSIMdqTC+FtW8LCSFpvWNrt+UcwrkiE/tDFrrA+NlB3ZOg6Gb0rjuAbCybFDCxfZQu2kkiQIEh5aQThriezsuokESBKRWrVRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TKTZd0SHRz4f3lgR;
+	Wed, 24 Jan 2024 11:14:17 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 58BB11A017A;
+	Wed, 24 Jan 2024 11:14:23 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgBXKBGNgLBloWgsBw--.40402S3;
+	Wed, 24 Jan 2024 11:14:23 +0800 (CST)
+Subject: Re: [PATCH 3/5] md: make sure md_do_sync() will set MD_RECOVERY_DONE
+To: Xiao Ni <xni@redhat.com>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc: mpatocka@redhat.com, dm-devel@lists.linux.dev, msnitzer@redhat.com,
+ heinzm@redhat.com, song@kernel.org, linux-raid@vger.kernel.org,
+ linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
+ "yukuai (C)" <yukuai3@huawei.com>
+References: <20240120103734.4155446-1-yukuai1@huaweicloud.com>
+ <20240120103734.4155446-4-yukuai1@huaweicloud.com>
+ <CALTww28NL+yBT8bcL2=ATJr79eL45=TF-EXHUD8NsfCXXTG3Qw@mail.gmail.com>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <c024a07e-0a93-aaad-a946-ac74ae3bdaeb@huaweicloud.com>
+Date: Wed, 24 Jan 2024 11:14:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CALTww28NL+yBT8bcL2=ATJr79eL45=TF-EXHUD8NsfCXXTG3Qw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgBXKBGNgLBloWgsBw--.40402S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxWF15Gw13GFWfWr18tFW5ZFb_yoW5Ww15p3
+	y8GFn0krW8Ary29F9Fqa4YqFyY9r4FyrZ8CFyfWwn8Ar93Kr13GFy0ka1UZFWDAF1fJa10
+	va15JF9xZFyFkFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+	JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+	AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+	17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+	IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
+	3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-Yosry Ahmed <yosryahmed@google.com> writes:
+Hi,
 
-> On Tue, Jan 23, 2024 at 1:01=E2=80=AFAM Huang, Ying <ying.huang@intel.com=
-> wrote:
+在 2024/01/24 10:58, Xiao Ni 写道:
+> Hi all
+> 
+> MD_RECOVERY_WAIT was introduced in d5d885fd5. From this patch,
+> MD_RECOVERY_WAIT only has one usage during creating raid device.
+> resync job needs to wait until pers->start finishes(The only place
+> which is checked). If we remove it from md_do_sync, will it break the
+> logic? Or we don't need this flag anymore? If so can we remove this
+> flag?
+> 
+> dm-raid uses this bit in patch 644e2537f (dm raid: fix stripe adding
+> reshape deadlock). It's the reason why md_do_sync can't set
+> MD_RECOVERY_DONE. Now we stop sync thread asynchronously, can we
+> revert this patch?
+
+I made some changes that will be sent for v2 that sync_thread is frozen
+from dm suspend to resume, so I think the flag can be removed, and I
+actually tried that, howver, dm-raid tests failed because ext4 is
+corrupted. Anyway, let's focus on dm-raid regression for now and we can
+try to remove this flag later.
+
+Thanks,
+Kuai
+
+> 
+> Best Regards
+> Xiao
+> 
+> On Sat, Jan 20, 2024 at 6:41 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
 >>
->> Yosry Ahmed <yosryahmed@google.com> writes:
+>> From: Yu Kuai <yukuai3@huawei.com>
 >>
->> > In swap_range_free(), we update inuse_pages then do some cleanups (arch
->> > invalidation, zswap invalidation, swap cache cleanups, etc). During
->> > swapoff, try_to_unuse() uses inuse_pages to make sure all swap entries
->> > are freed. Make sure we only update inuse_pages after we are done with
->> > the cleanups.
->> >
->> > In practice, this shouldn't matter, because swap_range_free() is called
->> > with the swap info lock held, and the swapoff code will spin for that
->> > lock after try_to_unuse() anyway.
->> >
->> > The goal is to make it obvious and more future proof that once
->> > try_to_unuse() returns, all cleanups are done.
+>> stop_sync_thread() will interrupt md_do_sync(), and md_do_sync() must
+>> set MD_RECOVERY_DONE, so that follow up md_check_recovery() will
+>> unregister sync_thread, clear MD_RECOVERY_RUNNING and wake up
+>> stop_sync_thread().
 >>
->> Defines "all cleanups".  Apparently, some other operations are still
->> to be done after try_to_unuse() in swap_off().
->
-> I am referring to the cleanups in swap_range_free() that I mentioned abov=
-e.
->
-> How about s/all the cleanups/all the cleanups in swap_range_free()?
-
-Sounds good for me.
-
+>> Before this patch, if MD_RECOVERY_WAIT is set or the array is read-only,
+>> md_do_sync() will return without setting MD_RECOVERY_DONE, hence use
+>> stop_sync_thread() directly will hang because md_check_recovery() can't
+>> clear MD_RECOVERY_RUNNING, which is possible for dm-raid.
 >>
->> > This also facilitates a
->> > following zswap cleanup patch which uses this fact to simplify
->> > zswap_swapoff().
->> >
->> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
->> > ---
->> >  mm/swapfile.c | 4 ++--
->> >  1 file changed, 2 insertions(+), 2 deletions(-)
->> >
->> > diff --git a/mm/swapfile.c b/mm/swapfile.c
->> > index 556ff7347d5f0..2fedb148b9404 100644
->> > --- a/mm/swapfile.c
->> > +++ b/mm/swapfile.c
->> > @@ -737,8 +737,6 @@ static void swap_range_free(struct swap_info_struc=
-t *si, unsigned long offset,
->> >               if (was_full && (si->flags & SWP_WRITEOK))
->> >                       add_to_avail_list(si);
->> >       }
->> > -     atomic_long_add(nr_entries, &nr_swap_pages);
->> > -     WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
->> >       if (si->flags & SWP_BLKDEV)
->> >               swap_slot_free_notify =3D
->> >                       si->bdev->bd_disk->fops->swap_slot_free_notify;
->> > @@ -752,6 +750,8 @@ static void swap_range_free(struct swap_info_struc=
-t *si, unsigned long offset,
->> >               offset++;
->> >       }
->> >       clear_shadow_from_swap_cache(si->type, begin, end);
->> > +     atomic_long_add(nr_entries, &nr_swap_pages);
->> > +     WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>> ---
+>>   drivers/md/md.c | 10 ++++++----
+>>   1 file changed, 6 insertions(+), 4 deletions(-)
 >>
->> This isn't enough.  You need to use smp_wmb() here and smp_rmb() in
->> somewhere reading si->inuse_pages.
->
-> Hmm, good point. Although as I mentioned in the commit message, this
-> shouldn't matter today as swap_range_free() executes with the lock
-> held, and we spin on the lock after try_to_unuse() returns.
+>> diff --git a/drivers/md/md.c b/drivers/md/md.c
+>> index 6906d023f1d6..ba45c7be3dbe 100644
+>> --- a/drivers/md/md.c
+>> +++ b/drivers/md/md.c
+>> @@ -8788,12 +8788,13 @@ void md_do_sync(struct md_thread *thread)
+>>          int ret;
+>>
+>>          /* just incase thread restarts... */
+>> -       if (test_bit(MD_RECOVERY_DONE, &mddev->recovery) ||
+>> -           test_bit(MD_RECOVERY_WAIT, &mddev->recovery))
+>> +       if (test_bit(MD_RECOVERY_DONE, &mddev->recovery))
+>>                  return;
+>> -       if (!md_is_rdwr(mddev)) {/* never try to sync a read-only array */
+>> +
+>> +       if (test_bit(MD_RECOVERY_WAIT, &mddev->recovery) ||
+>> +           !md_is_rdwr(mddev)) {/* never try to sync a read-only array */
+>>                  set_bit(MD_RECOVERY_INTR, &mddev->recovery);
+>> -               return;
+>> +               goto out;
+>>          }
+>>
+>>          if (mddev_is_clustered(mddev)) {
+>> @@ -9171,6 +9172,7 @@ void md_do_sync(struct md_thread *thread)
+>>                                                  mddev->array_sectors);
+>>          }
+>>
+>> +out:
+>>          spin_lock(&mddev->lock);
+>>          if (!test_bit(MD_RECOVERY_INTR, &mddev->recovery)) {
+>>                  /* We completed so min/max setting can be forgotten if used. */
+>> --
+>> 2.39.2
+>>
+>>
+> 
+> .
+> 
 
-Yes.  IIUC, this patch isn't needed too because we have spinlock already.
-
-> It may still be more future-proof to add the memory barriers.
-
-Yes.  Without memory barriers, moving code doesn't guarantee memory
-order.
-
-> In swap_range_free, we want to make sure that the write to
-> si->inuse_pages in swap_range_free() happens *after* the cleanups
-> (specifically zswap_invalidate() in this case).
-> In swap_off, we want to make sure that the cleanups following
-> try_to_unuse() (e.g. zswap_swapoff) happen *after* reading
-> si->inuse_pages =3D=3D 0 in try_to_unuse().
->
-> So I think we want smp_wmb() in swap_range_free() and smp_mb() in
-> try_to_unuse(). Does the below look correct to you?
->
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index 2fedb148b9404..a2fa2f65a8ddd 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -750,6 +750,12 @@ static void swap_range_free(struct
-> swap_info_struct *si, unsigned long offset,
->                 offset++;
->         }
->         clear_shadow_from_swap_cache(si->type, begin, end);
-> +
-> +       /*
-> +        * Make sure that try_to_unuse() observes si->inuse_pages reachin=
-g 0
-> +        * only after the above cleanups are done.
-> +        */
-> +       smp_wmb();
->         atomic_long_add(nr_entries, &nr_swap_pages);
->         WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
->  }
-> @@ -2130,6 +2136,11 @@ static int try_to_unuse(unsigned int type)
->                 return -EINTR;
->         }
->
-> +       /*
-> +        * Make sure that further cleanups after try_to_unuse() returns h=
-appen
-> +        * after swap_range_free() reduces si->inuse_pages to 0.
-> +        */
-> +       smp_mb();
->         return 0;
->  }
-
-We need to take care of "si->inuse_pages" checking at the beginning of
-try_to_unuse() too.  Otherwise, it looks good to me.
-
-> Alternatively, we may just hold the spinlock in try_to_unuse() when we
-> check si->inuse_pages at the end. This will also ensure that any calls
-> to swap_range_free() have completed. Let me know what you prefer.
-
-Personally, I prefer memory barriers here.
-
---
-Best Regards,
-Huang, Ying
 
