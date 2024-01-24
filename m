@@ -1,141 +1,208 @@
-Return-Path: <linux-kernel+bounces-36206-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36207-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40B26839D80
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:09:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80261839D84
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:12:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBF7B2831A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 00:09:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A476F1C23364
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 00:12:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ABD27E5;
-	Wed, 24 Jan 2024 00:09:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC56965F;
+	Wed, 24 Jan 2024 00:11:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="eJmZ88BT"
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="IFFUdxoO"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2058.outbound.protection.outlook.com [40.107.93.58])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0B6AEC5
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 00:09:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706054955; cv=none; b=jrzEwBQ29vqjH3tVx7xCp7j6BAuzeiskkIlsjyOdtrwG4lfpQpPrEDJ/YeFI0WaT5+mG2TrGQ/5RqZpQVNjyTXDzeK7Ic5odBgur6hNBWK6wIZfSDXWpjGKqGCQQq00EljF0sUBbVcnRQmwqR7kbCBKODnrDITHKyFeQFvX9Xj4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706054955; c=relaxed/simple;
-	bh=JUZ8e8sDxBYjrwvOx1r1mk2i3gdTETSMbfB/THjmzhk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Bxs/+0Ls0qM2gj8vOacmJM8DgQRC6xTSWCC20nWBHSszMmBjcSRhpw7hETz2WOqqxdwqoG58BBBQ7FoZRJfgKg/dFT9h0CMSoWHcki2fqAQs+4sWjiVwBbZhvcsNBjO9hNwOo1tFDtQbzn0eYFS0/rVZkUTaMzjxC+7SHC+sHd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=eJmZ88BT; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6d9b13fe9e9so3983516b3a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 16:09:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1706054953; x=1706659753; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fi/zj5voHDPYKB6Z7ghbg+VPHgNO2bSCRicH9ZX7KmE=;
-        b=eJmZ88BTtH/btdvJOfUcfeKA+WPdJIGPN4SvCnSXe941tLk7Hq58c76rGyjn5IgIQE
-         C5EnI96TD6twb3v6PFGBvhBBaLC7lPA3bFd/9En9lv+3SmHi8GOg9B7iLbaroXfYKx+w
-         QHrYC4slkfd4k3Hrzc0FaErgt2rc9wuZREfXQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706054953; x=1706659753;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fi/zj5voHDPYKB6Z7ghbg+VPHgNO2bSCRicH9ZX7KmE=;
-        b=RpfQi9S1LGhmmE2y1AUx9oOS7eSoGh5DYcW8JCqHSECwQdt/zctcKiuxZ+AwygpUSV
-         00pPAnHY+qPYNJZXutXv9QJ/2mHF/q9ty8ZyJ7lSE522ybGCF9Lf4D8v8+PKB0ETEPAK
-         22cl4Mxq4Ktc6lb/R1SfRnWx8SMP1z5Vp0S6g+ZqL9ah/YtDm4y05LLMXIYsXTu76/xk
-         YwTlAz8DtGFvPtA2n5lNi4KhdURl4E5i5CmIlItoH7487qZHrbBTwgSMeF7tmvUITKfy
-         usIXhZV/MY5i0Tvq1kv5SUQDOPXBB0oLZlRVGkaHUJMAy+B3Tg0RQXhto71EIcidqdN8
-         9jGw==
-X-Gm-Message-State: AOJu0Yw6DnhzEepD6/aC5j3G6FXsTsZM7gyOZUjLL4LpfwO2ojyWoqCq
-	a8mD6Y6Jz+3o8Rsj4KebOlq5FgVERNATDWKN94RDogx4Nyu9cgd76JAIibUylA==
-X-Google-Smtp-Source: AGHT+IF/Rcc9ZWVa1OawRmGE1bBUza9XGJben23P16mFFKh9P3lRowBvA2V6yqh/hwNbfps8sMV1fg==
-X-Received: by 2002:a05:6a00:138b:b0:6dd:8891:81ef with SMTP id t11-20020a056a00138b00b006dd889181efmr407925pfg.43.1706054953404;
-        Tue, 23 Jan 2024 16:09:13 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id r22-20020aa78456000000b006dd7f7b880bsm1841242pfn.133.2024.01.23.16.09.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 16:09:12 -0800 (PST)
-Date: Tue, 23 Jan 2024 16:09:12 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Bernd Edlinger <bernd.edlinger@hotmail.de>
-Cc: Oleg Nesterov <oleg@redhat.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Alexey Dobriyan <adobriyan@gmail.com>,
-	Andy Lutomirski <luto@amacapital.net>,
-	Will Drewry <wad@chromium.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Michal Hocko <mhocko@suse.com>, Serge Hallyn <serge@hallyn.com>,
-	James Morris <jamorris@linux.microsoft.com>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Yafang Shao <laoar.shao@gmail.com>, Helge Deller <deller@gmx.de>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	Adrian Reber <areber@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>, Jens Axboe <axboe@kernel.dk>,
-	Alexei Starovoitov <ast@kernel.org>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 169BC160
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 00:11:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.58
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706055114; cv=fail; b=S8+IdWIEGXIVRIvjMn/ucCUMSjdCAhFM2YFIZ+6H5zUsljv07kLioC46O+KJHr2y3K3dNXinXvNLi4aVK1BVX0OwOxCgQp+MHopxOwCvH2AAY1FwIz8o8+43z9o3a+GPFz6mshmQRfqWfnjJlywAMCUuUp/66dKm9gqBMtE+EwI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706055114; c=relaxed/simple;
+	bh=mj3FGOrUZzJ3LVixmoHy8ezSlisTJH0fkKQiQITSHKI=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=utQgtfhtsf7Yn/JYILvk+4clVm91QVJdUz5wTnszshNhV4Lq/MtRoZUPgKrmyZA9rRLookLZOdgBi57V9/XziMwoXQou/KiF3oIhZdk1Ehre2g0HIlYBbyWce2TG2qa96yLv34vcDt0CICKUmqevKuTocbwroDTgZOaZ2+MSfLE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=IFFUdxoO; arc=fail smtp.client-ip=40.107.93.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dCCladrrQ4LQW2vNlHUbw5TL/aQxf5htNSnxAXgX5LEsRVubAaD1VrDdFrzvwS0LYDnc795rHMzuM0cOtvAK5epJzl4V+CZS9l9SKuIhwn417BtzG/c04AuSP6d3H5Rezrms46pyxYsC33ehuD4WG4kaxDmplcUaaEkwwicE86zrvllBVNM+6k+VsD/T9gSxE1qX95cE7+zag70L6wSsvhzy9rgbOS0yBM/i37wqrQlSjvdEkxseLFqdVOJCgFr1vUowP0ChKZlfcIczmT0oct/xWELuPzXgoHZIQyKtLnrAwVH/Y5CLmc/JPPzJOxcuB6nhjoJBwUySL3EpF/KENA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hUxe03YPtZMzmJvYwUJoCD7iGjPLgu00s4bSszCB7zQ=;
+ b=VMTIRnwkz5hmWeO4RhY9peDIrJKe9W2Q25P/N2n/6wsT0trazhuoxiDc2pkVQBWOnc60J6mJYlUITSSYLUk77L5to4w8Bh9y6QpT0CkK3NT2V/OmLwm5nhskpcuZw9ve3QrS/PFq/bbTQVRlHDJPIWBQEATW7WkVIq16d/OsmvPN+9HTHPzSzIGjkUDyMKPfcPS9Gxv1SssLeBVPKbd70ONQO8ljkRfq+zxdNv3mZTpB0/12OkjtOwwWOL2weQuVLBrVTSAMci9FCWVHXhmgTL3JYkmO5fB8xz7bVICIvSIJpIWxrUXkqaP9dhdRUvF7OZSrWFerbGid93T2Vwvfbg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hUxe03YPtZMzmJvYwUJoCD7iGjPLgu00s4bSszCB7zQ=;
+ b=IFFUdxoOO8A1HiuCXu1aVYZ7GcawB3Y6dP4O7uy6ETx4wPn79VYoFwgedYz45DfVRMCYwxUemg8S5WwqWGMQPJ2+QjI2DWPNV0kIQ+OJbLSPpJnLnDVpBxrTD91UrNZSSPPkmL3U+KP2J0+1GfuiW+RicTJOGacAAxbO2+bZjIk21KdgPvlAg7Mz40fLkt4leSdAh7GpQqsuU/buLbmUJaCt2um3CxRFjWhSdfvICj+7rqTrYv8xJUqFbO3KbTTOPxkD6/7+eDo89S0ycS0vyxwGq5VMWYUBYnkf5sCkMF329KqFC5KWgBpMbLXfFGKUI8whHLuHpXjA1pUr7EcdoA==
+Received: from MW4PR03CA0021.namprd03.prod.outlook.com (2603:10b6:303:8f::26)
+ by SJ0PR12MB5453.namprd12.prod.outlook.com (2603:10b6:a03:37f::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.37; Wed, 24 Jan
+ 2024 00:11:47 +0000
+Received: from MWH0EPF000989EC.namprd02.prod.outlook.com
+ (2603:10b6:303:8f:cafe::47) by MW4PR03CA0021.outlook.office365.com
+ (2603:10b6:303:8f::26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22 via Frontend
+ Transport; Wed, 24 Jan 2024 00:11:47 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ MWH0EPF000989EC.mail.protection.outlook.com (10.167.241.139) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7202.16 via Frontend Transport; Wed, 24 Jan 2024 00:11:47 +0000
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 23 Jan
+ 2024 16:11:29 -0800
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail203.nvidia.com
+ (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 23 Jan
+ 2024 16:11:29 -0800
+Received: from Asurada-Nvidia (10.127.8.9) by mail.nvidia.com (10.129.68.9)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
+ Transport; Tue, 23 Jan 2024 16:11:28 -0800
+Date: Tue, 23 Jan 2024 16:11:09 -0800
+From: Nicolin Chen <nicolinc@nvidia.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+CC: "will@kernel.org" <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	"joro@8bytes.org" <joro@8bytes.org>, "jean-philippe@linaro.org"
+	<jean-philippe@linaro.org>, Alistair Popple <apopple@nvidia.com>,
 	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-	tiozhang <tiozhang@didiglobal.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	"Paulo Alcantara (SUSE)" <pc@manguebit.com>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	YueHaibing <yuehaibing@huawei.com>,
-	Paul Moore <paul@paul-moore.com>, Aleksa Sarai <cyphar@cyphar.com>,
-	Stefan Roesch <shr@devkernel.io>, Chao Yu <chao@kernel.org>,
-	xu xin <xu.xin16@zte.com.cn>, Jeff Layton <jlayton@kernel.org>,
-	Jan Kara <jack@suse.cz>, David Hildenbrand <david@redhat.com>,
-	Dave Chinner <dchinner@redhat.com>, Shuah Khan <shuah@kernel.org>,
-	Zheng Yejian <zhengyejian1@huawei.com>,
-	Elena Reshetova <elena.reshetova@intel.com>,
-	David Windsor <dwindsor@gmail.com>,
-	Mateusz Guzik <mjguzik@gmail.com>, Ard Biesheuvel <ardb@kernel.org>,
-	"Joel Fernandes (Google)" <joel@joelfernandes.org>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Hans Liljestrand <ishkamiel@gmail.com>
-Subject: Re: [PATCH v14] exec: Fix dead-lock in de_thread with ptrace_attach
-Message-ID: <202401231555.59B7EDBB2@keescook>
-References: <AM8PR10MB470875B22B4C08BEAEC3F77FE4169@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
- <AS8P193MB1285DF698D7524EDE22ABFA1E4A1A@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
- <AS8P193MB12851AC1F862B97FCE9B3F4FE4AAA@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
- <AS8P193MB1285FF445694F149B70B21D0E46C2@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
- <20240116152210.GA12342@redhat.com>
- <AS8P193MB128538BC3833E654F56DA801E4722@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
- <20240117163739.GA32526@redhat.com>
- <AS8P193MB1285FDD902CC57C781AF2770E4752@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
- <202401221328.5E7A82C32@keescook>
- <AS8P193MB1285110CC784C4BB30DAC0CAE4742@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "iommu@lists.linux.dev"
+	<iommu@lists.linux.dev>
+Subject: Re: [PATCH 1/3] iommu/io-pgtable-arm: Add nents_per_pgtable in
+ struct io_pgtable_cfg
+Message-ID: <Za63HOMZE2fuJKQ4@Asurada-Nvidia>
+References: <0fe68babdb3a07adf024ed471fead4e3eb7e703f.1692693557.git.nicolinc@nvidia.com>
+ <f468b461-b203-5179-eb6d-9432b9911329@arm.com>
+ <ZOTlcFs2NG6nJEPN@Asurada-Nvidia>
+ <61f9b371-7c45-26b1-ec0f-600765280c89@arm.com>
+ <ZO5R5i4n2WI2GnKQ@Asurada-Nvidia>
+ <d234fa8d-d945-3f7f-1110-fe55bea88587@arm.com>
+ <ZawmMd6BVqQpfbB5@Asurada-Nvidia>
+ <20240122130152.GP734935@nvidia.com>
+ <Za6kuE4KUPuwk7+j@Asurada-Nvidia>
+ <20240122175700.GB1455070@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <AS8P193MB1285110CC784C4BB30DAC0CAE4742@AS8P193MB1285.EURP193.PROD.OUTLOOK.COM>
+In-Reply-To: <20240122175700.GB1455070@nvidia.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWH0EPF000989EC:EE_|SJ0PR12MB5453:EE_
+X-MS-Office365-Filtering-Correlation-Id: 66015d2d-bdb5-4737-2261-08dc1c710e12
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	4MqS6rcwxX/umhRYBKsJUyMYZGEu5v0qksaNjnUYe8YPGKfMIeqMhhlG1Iy3WVkosPDh//mE5O2nG7bUNvYmyMG0w6puz5gkRSJrfVdGgO093/yD5kRQOajermteFEsdjch2eyqdIy0kaURjuN84nzAJZQPC6WDkFsaZ/7OvqOHpOnB3Zev0T3D820fk3F9L7/SNLHeUx9FOuegaQOeSyro+6F2+M5sMaiooB5KC8lKnsF3+gnd2ebi21q9tFqrvq6LH7ztiaS2wIC3T/2uU0iLrbKir9d2NaVF3/9T+P1EZxEqXnQsJSjvNsChvX4at+2G7jKilq7qOITlfuueyIEn7T/dbL4hKF0xLF1/TALB181TJbrvqBLNVZALhfSdbkY9qwT58EBPrlxHDf5psn4cAWd91qbxhrSzAioxCcjNNmT9Ta84FnivjlhPFtt6gsi9Yy00HUnfZw7YcYVRJmCbtUREfLkTK0wafBIq6YwVayRncFBo4UHCDMZoM0usb2ZNu1FVz81DErypQOzZ3tWVqxVoXtcQk8wt94V2dHCPvxGeA7rZi2HQTYjQZzCED4BD11gZ++/EeLi0ZRZoMNAfpC5o3iJafyISvIcW8HNmhju9xT8BOBjphiJVqmxM4z26IXUPX1PKn7+xBoDRxgH98QbkOi2zKivI/0G+xW5J1AKglY/umRACZtQKxNLU0LlzwanF4VoGbuWfvhBySSlwWORKgGucITSahAOM8VpkjcQK+T014InCdJ0tPbLomQaZs9axlJd2wXOCO8jeqwzCcrfR2bSJI0cNVa6ox7+odHGgobu9K9ml+hL6wbF6T
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(396003)(346002)(136003)(39860400002)(230922051799003)(64100799003)(186009)(1800799012)(82310400011)(451199024)(36840700001)(40470700004)(46966006)(8676002)(6666004)(33716001)(66899024)(86362001)(70206006)(54906003)(70586007)(6636002)(356005)(316002)(41300700001)(9686003)(7636003)(26005)(8936002)(47076005)(6862004)(4326008)(336012)(426003)(83380400001)(82740400003)(36860700001)(2906002)(5660300002)(478600001)(40460700003)(55016003)(40480700001)(966005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jan 2024 00:11:47.1156
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 66015d2d-bdb5-4737-2261-08dc1c710e12
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	MWH0EPF000989EC.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5453
 
-On Tue, Jan 23, 2024 at 07:30:52PM +0100, Bernd Edlinger wrote:
-> - Currently a non-privileged program can potentially send such a privileged
-> tracer into a deadlock.
-> - With the alternative patch below that non-privileged can no longer send the
-> tracer into a deadlock, but it can still quickly escape out of the tracer's
-> control.
-> - But with my latest patch a sufficiently privileged tracer can neither be
-> sent into a deadlock nor can the attached process escape.  Mission completed.
+On Mon, Jan 22, 2024 at 01:57:00PM -0400, Jason Gunthorpe wrote:
+> On Mon, Jan 22, 2024 at 09:24:08AM -0800, Nicolin Chen wrote:
+> > > Or do we need to measure at boot time invalidation performance and set
+> > > a threshold that way?
+> > 
+> > I see. We can run an invalidation at default max_tlbi_ops to
+> > get its delay in msec or usec, and then set as the threshold
+> > "xx ms" in the idea one.
+> > 
+> > > Also, it seems to me that SVA use cases and, say, DMA API cases are
+> > > somewhat different where we may be willing to wait longer for DMA API.
+> > 
+> > Hmm, the lockup that my patch fixed was for an SVA case that
+> > doesn't seem to involve DMA API:
+> > https://lore.kernel.org/linux-iommu/20230901203904.4073-1-nicolinc@nvidia.com/
+> > 
+> > And the other lockup fix for a non-SVA case from Zhang doesn't
+> > seem to involve DMA API either:
+> > https://lore.kernel.org/linux-iommu/e74ea905-d107-4202-97ca-c2c509e7aa1e@huawei.com/
+> > 
+> > Maybe we can treat DMA API a bit different. But I am not sure
+> > about the justification of leaving it to wait longer. Mind
+> > elaborating?
+> 
+> Well, there are two issues.. The first is the soft lockup, that should
+> just be reliably prevented. The timer, for instance, is a reasonable
+> stab at making that universally safe.
+> 
+> Then there is the issue of just raw invalidation performance, where
+> SVA particularly is linked to the mm and the longer invalidation takes
+> the slower the apps will be. We don't have any idea where future DMA
+> might hit the cache, so it is hard to know if all invalidation is not
+> the right thing..
+> 
+> DMA api is often lazy and the active DMA is a bit more predictable, so
+> perhaps there is more merit in spending more time to narrow the
+> invalidation.
+> 
+> The other case was vfio unmap for VM tear down, which ideally would
+> use whole ASID invalidation.
 
-Thanks for the details. And it would be pretty unfriendly to fail the execve()
-too (or, rather, it makes the execve failure unpredictable). I'll keep
-reading your patch...
+I see! Then we need a flag to pass in __iommu_dma_unmap or so.
+If a caller is in dma-iommu.c, do a longer per-page invalidation.
 
--- 
-Kees Cook
+> If your issue is softlockup, not performance, then that should be
+
+We have both issues.
+
+> prevented strongly. Broadly speaking if SVA is pushing too high an
+> invalidation workload then we need to agressively trim it, and do so
+> dynamically. Certainly we should not have a tunable that has to be set
+> right to avoid soft lockup.
+> 
+> A tunable to improve performance, perhaps, but not to achieve basic
+> correctness.
+
+So, should we make an optional tunable only for those who care
+about performance? Though I think having a tunable would just
+fix both issues.
+
+> Maybe it is really just a simple thing - compute how many invalidation
+> commands are needed, if they don't all fit in the current queue space,
+> then do an invalidate all instead?
+
+The queue could actually have a large space. But one large-size
+invalidation would be divided into batches that have to execute
+back-to-back. And the batch size is 64 commands in 64-bit case,
+which might be too small as a cap.
+
+Thanks
+Nicolin
 
