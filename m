@@ -1,86 +1,90 @@
-Return-Path: <linux-kernel+bounces-37636-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37637-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4CC983B2E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 21:13:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D71283B2EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 21:15:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB8301C22DD8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 20:13:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E47B81F2251A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 20:15:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9F8F133428;
-	Wed, 24 Jan 2024 20:13:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D374133982;
+	Wed, 24 Jan 2024 20:15:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="hy91558p"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="FjdZxPgE"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE661133402
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 20:13:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71741133423
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 20:15:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706127210; cv=none; b=W6A2Ch8BMeu2uF/pxAvY1U9KqNk5fcr/8AJU2S+oCOaLUSAdUawpq0RynW0lEfzdxg0WjCGYdUEaprbgYzQihJv30hxWCluYQX6VQMYzdQEn0yeJWvQbQGYvjougPlZ5BSxizYrSQjUPYQb3FXq8hxBWBgtbpdKVhd4hppm5tfQ=
+	t=1706127308; cv=none; b=c9dSUGzjn1kMxqzDlexUbHp7TLf3oQsXUhDVdstbv3kdBAY+vglqH4Co9wQZnZ1EdqmysO1sxmQQLX+FUAA3eHR6kVnVh++PfCNc0yUTaa61gwHT6d1VayTg1NBjL7CIH+RcvLhdll0PW5TBBjDbYD6HS9229iZBwMMtnFvWFhE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706127210; c=relaxed/simple;
-	bh=DktWX2ibRGhSuLiG70Ld6p71SNp0IXhmt8Qx63I526Q=;
+	s=arc-20240116; t=1706127308; c=relaxed/simple;
+	bh=qgrbcEGeImcGchUMQ4e+5muNpBrHulW7Z5vgrHJx0zg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iK/DAMYJizR9D/0FyeiUPuJ7ord3wIaq0WmNwXlIUGDDJoYEJQUny/z3TzRsg6GZ8pGrrTJlHFPeSUqeLUsnnTg7XuZtRRtuUvLMAF6wgxSuzDIqcytTWd1P7uJU5pVE9hlkJHbeRIu3t34CM3WJlJoLkGXdjZ2Zkn3NE+GNalQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=hy91558p; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 5180140E00C5;
-	Wed, 24 Jan 2024 20:13:25 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id pBr2w8FRwX2w; Wed, 24 Jan 2024 20:13:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1706127202; bh=LCJor6I4lXgCgRVguLWw9EWsXhsyLw02SxAWAK79dIY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hy91558pnIeiDtL8BY9wA60GTaPww9+ViU3tP16XM2T/cQx5zHf3XiHxj76pUqeyV
-	 09sWmYFlC+5HOjPv4X35Vtm2t9vuarDlMzdDJikWOdey0qKDeufVSNVKT5HJnsXVPf
-	 ntpOam6vGzxkRylGSuPtetOHDVFjOsAjd+iB0SUz1VH+1F+FOD8I7hNXOBARK9WIhR
-	 aow/6BcZVrG3dSMTJ3xFRNG8bHXKOppzYzXPRbMVhGrPMUyJPZ4ezE+E1Vhh+ltQUf
-	 /bG+esA/1vHEURKGwZZdwfFRINuorgPGf71HkwIngsD6nI6D7BQmwyQwQt5wj6AI+L
-	 44LM8ybrqxLXOy6J+6x4x4sjg+do66ucR1xed45ZksMsOehVvUxdKO/OumKwunL+BA
-	 7EIkfaadC6gjQswCN6VrTa+wICuRpNjTDnrMFhzK2lJil0BXHc2wBPljSz1t/1kgZy
-	 dDUmVXMZ5h6q6waoA1DMqWygwUWNxRwOTXDj4T3Pjy7ZQD/J5SSKnQhcMkF7CR/Y0j
-	 CfFIUeZW9BUS67AiznnG3TTYWNJy5lxi6rkzWMXJAt362YbX3u9zZBXDVk5btpNcgE
-	 ZkPEM2Lj+fmOdgndqOVZIFLOx+DBomVXJirgU8V6JYH/lO2lhs2jo+kbxq81vHXlY9
-	 VVN5i1tdIpaeBEoRH2cvfVWo=
-Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3FB7440E01AE;
-	Wed, 24 Jan 2024 20:13:04 +0000 (UTC)
-Date: Wed, 24 Jan 2024 21:12:58 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Andrew Cooper <andrew.cooper3@citrix.com>,
-	Arjan van de Ven <arjan@linux.intel.com>,
-	Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
-	Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-	Sohil Mehta <sohil.mehta@intel.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Zhang Rui <rui.zhang@intel.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Feng Tang <feng.tang@intel.com>,
-	Andy Shevchenko <andy@infradead.org>,
-	Michael Kelley <mhklinux@outlook.com>,
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: Re: [patch v5 03/19] x86/cpu: Add legacy topology parser
-Message-ID: <20240124201258.GVZbFvSiaMkKbU3goX@fat_crate.local>
-References: <20240117115752.863482697@linutronix.de>
- <20240117115908.477060795@linutronix.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FB1ykevGlMyuo/yoEkbCTHGyf3p1KKLxFf5tzr+Spp6mSQsPKw3lGHsFprHYabYXsf54qQe3H0zRsTGx9dBVj2uR+GlPweXhog5igN7Lgq4v9UPyXAhVLW8YK8VtYqpPLIZBbU7gFMDsmc3ncTr1ylYRgYlAcxxi6e0GcacNRD8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=FjdZxPgE; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6dbb003be79so40081b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 12:15:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706127307; x=1706732107; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Id1qRAoiWWWvqW/dbMxgihjX2oP7pYm4HN95FDf9D2k=;
+        b=FjdZxPgEPFJ7RZPevFfZMqlA39csXfimhSPZQ4YAeqPrvpm2BqaZwenAm9q2f4mUdg
+         npyuAQXuqOVIG7NcZsvhQiNKew4Es2e5VY/PLFmf0upAjXxp3tZ0XSnDfjSjitmiv8YY
+         duHl/LQqbBkKZWaSpBI+f5TEG86YrB7hPmwRg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706127307; x=1706732107;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Id1qRAoiWWWvqW/dbMxgihjX2oP7pYm4HN95FDf9D2k=;
+        b=qx9TjwpGu2hJGwamQyb5TDI+uH/aknVliITuFbDCrA8VBu1R/aYqyqLetlzCW/w9Lm
+         lLZDWCe5OkGgg3A+c7UFYygsUGgV32FY3R6y81s1g1Vddy5z27pOXXhaaZGojpBMoeW7
+         EU9KpHAYDaPIvDRObT6Upy6gKpueLe4FTpBIfw9hDN9Yos3EK9vFfQibgfjh2mk0DOT/
+         ykyOWVgRm7sB4ObmGHZkVLrdpaUfEY+562e5v7P4w3ttYrCQyIBItK2Qw3ME4Hi9mTip
+         BPff4CISJnpawUQZ7r2T4nBYuoMIsCoWDGpMJtPq6TyLy3IKHRBG63Ehf1fpCFv5hV7n
+         U5+w==
+X-Gm-Message-State: AOJu0Yzlman1LxWQSdRu4m2m06Kr5WzhqgSot85jtLNqjYXfVUyOpZX1
+	sOidcOKsft27yLCgcRoVGiVZ4yY84gkjRJjnay/UF0uNKc1jBpmRM0pcE45uew==
+X-Google-Smtp-Source: AGHT+IHQpUi+5B9WnuXhSmDXus8mitL4WXU/2ZY6llD9ZE0jvrWSufppkdsO/vLRfpghtMHGOwhO/A==
+X-Received: by 2002:a05:6a00:9297:b0:6db:9c1:7164 with SMTP id jw23-20020a056a00929700b006db09c17164mr66699pfb.15.1706127306883;
+        Wed, 24 Jan 2024 12:15:06 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id fb18-20020a056a002d9200b006ddc2ac59cesm546649pfb.12.2024.01.24.12.15.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 12:15:06 -0800 (PST)
+Date: Wed, 24 Jan 2024 12:15:05 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Jann Horn <jannh@google.com>
+Cc: Josh Triplett <josh@joshtriplett.org>,
+	Kevin Locke <kevin@kevinlocke.name>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	John Johansen <john.johansen@canonical.com>,
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>,
+	Kentaro Takeda <takedakn@nttdata.co.jp>,
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Eric Biederman <ebiederm@xmission.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] exec: Check __FMODE_EXEC instead of in_execve for LSMs
+Message-ID: <202401241206.031E2C75B@keescook>
+References: <20240124192228.work.788-kees@kernel.org>
+ <CAG48ez017tTwxXbxdZ4joVDv5i8FLWEjk=K_z1Vf=pf0v1=cTg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,74 +93,39 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240117115908.477060795@linutronix.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAG48ez017tTwxXbxdZ4joVDv5i8FLWEjk=K_z1Vf=pf0v1=cTg@mail.gmail.com>
 
-On Tue, Jan 23, 2024 at 01:53:34PM +0100, Thomas Gleixner wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
+On Wed, Jan 24, 2024 at 08:58:55PM +0100, Jann Horn wrote:
+> On Wed, Jan 24, 2024 at 8:22 PM Kees Cook <keescook@chromium.org> wrote:
+> > After commit 978ffcbf00d8 ("execve: open the executable file before
+> > doing anything else"), current->in_execve was no longer in sync with the
+> > open(). This broke AppArmor and TOMOYO which depend on this flag to
+> > distinguish "open" operations from being "exec" operations.
+> >
+> > Instead of moving around in_execve, switch to using __FMODE_EXEC, which
+> > is where the "is this an exec?" intent is stored. Note that TOMOYO still
+> > uses in_execve around cred handling.
 > 
-> The legacy topology detection via CPUID leaf 4, which provides the number
-> of cores in the package and CPUID leaf 1 which provides the number of
-> logical CPUs in case that FEATURE_HT is enabled and the CMP_LEGACY feature
-> is not set, is shared for Intel, Centaur amd Zhaoxin CPUs.
-					   ^^^
+> I think this is wrong. When CONFIG_USELIB is enabled, the uselib()
+> syscall will open a file with __FMODE_EXEC but without going through
+> execve(). From what I can tell, there are no bprm hooks on this path.
 
-x86 maintainer Freudian slip. :-P
+Hrm, that's true.
 
-Happens to me too.
+We've been trying to remove uselib for at least 10 years[1]. :(
 
-> Lift the code from common.c without the early detection hack and provide it
-> as common fallback mechanism.
-> 
-> Will be utilized in later changes.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Tested-by: Juergen Gross <jgross@suse.com>
-> Tested-by: Sohil Mehta <sohil.mehta@intel.com>
-> Tested-by: Michael Kelley <mhklinux@outlook.com>
-> 
-> 
-> ---
->  arch/x86/kernel/cpu/common.c          |    3 ++
->  arch/x86/kernel/cpu/topology.h        |    3 ++
->  arch/x86/kernel/cpu/topology_common.c |   46 +++++++++++++++++++++++++++++++++-
->  3 files changed, 51 insertions(+), 1 deletion(-)
-> ---
-> --- a/arch/x86/kernel/cpu/common.c
-> +++ b/arch/x86/kernel/cpu/common.c
-> @@ -891,6 +891,9 @@ void detect_ht(struct cpuinfo_x86 *c)
->  #ifdef CONFIG_SMP
->  	int index_msb, core_bits;
->  
-> +	if (topo_is_converted(c))
-> +		return;
-> +
->  	if (detect_ht_early(c) < 0)
->  		return;
->  
-> --- a/arch/x86/kernel/cpu/topology.h
-> +++ b/arch/x86/kernel/cpu/topology.h
-> @@ -6,6 +6,9 @@ struct topo_scan {
->  	struct cpuinfo_x86	*c;
->  	unsigned int		dom_shifts[TOPO_MAX_DOMAIN];
->  	unsigned int		dom_ncpus[TOPO_MAX_DOMAIN];
-> +
-> +	// Legacy CPUID[1]:EBX[23:16] number of logical processors
+> I don't know if it _matters_ much, given that it'll only let you
+> read/execute stuff from files with valid ELF headers, but still.
 
-Can we pretty please use the good 'ol multi-line comment style and not
-turn tip into a mess with a mixture between single-line and multi-line
-comments?
+Hmpf, and frustratingly Ubuntu (and Debian) still builds with
+CONFIG_USELIB, even though it was reported[2] to them almost 4 years ago.
 
-Thanks.
+-Kees
 
-> +	unsigned int		ebx1_nproc_shift;
->  };
->  
->  bool topo_is_converted(struct cpuinfo_x86 *c);
-
+[1] https://lore.kernel.org/lkml/20140221181103.GA5773@jtriplet-mobl1/
+[2] https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1879454
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Kees Cook
 
