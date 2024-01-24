@@ -1,134 +1,232 @@
-Return-Path: <linux-kernel+bounces-36814-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62CA783A72D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:50:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAA8683A740
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:53:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AFCD287F4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:50:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 961F4B2A6F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:51:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 566E019475;
-	Wed, 24 Jan 2024 10:50:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D08A4199DC;
+	Wed, 24 Jan 2024 10:50:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SZQhmHf4"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="n0U1IJKK"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 107ED18EAB
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:49:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 769BD18EBB;
+	Wed, 24 Jan 2024 10:50:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706093400; cv=none; b=SsB3ubzrWmkLKryhJStUlUV/S4S2gMKXXT3Y2NzxZkqSw4K8ziFk8lRT5pZsfqDhKyUg0+gkXjI9XmBolCZrsEJpSxZtXIGaMSGk3n0O4YhHVTrs1qgVeQ9WVNAV1M+fQRTAIj4+pcGsBuS4Nrmd6ONu6wJSlVFYxzwqYd6uIW4=
+	t=1706093454; cv=none; b=kffOEbliCaA+0dxSsCxJqRF0fKiSVoZVcf5dtF6/Beh9BJgV2atKvpNPo1ZZwoieg1+7GdA8B6kI7CKZBNGztMJH1CdpxHUFTCcPWqlJDNGKu3mKyAnSvYVdUi/T1CZK6HfIGJdgENAjbeg1OHFOlQZoSxKIkIMwREkwkptGugw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706093400; c=relaxed/simple;
-	bh=UcaFc8EIqTz9qY6jAeo27IC0jBAoygDu3PVfbmwR4yw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fzQ8KjY+FGidHU9nw2gyUKbsUyRhbWjxLJplPX84ze/YIAMda9CEwe8ErvZgL/g4G5Ct8sv47hEUG0vygeWrA/bsGAX9vz4gLANig86b7GYzZTnA+1BNjuKZrANh6AWJQfNg60lSaIoAVhShTh8Tkv1K9IoonwuYpP3OP2WAarw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SZQhmHf4; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a31092083acso81558366b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 02:49:58 -0800 (PST)
+	s=arc-20240116; t=1706093454; c=relaxed/simple;
+	bh=84MVVmbTH/C8W3safTbo5bn7FIroCOF8HfRHVUg0sUQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ADIwRLnp1sI0WReEws6DAsQN542ESAaITBG9GcHO/p2Dd+eLOFeb4Vv7rWcNRdO0iEAuMb8EXnuriBIhQG3ZDN6KDX3o9bTWdbQOzQ2LY09L4s4c0PsAhT6snPbhLm0OJU+xBTxVRyCmDCliGRnb0FnpkcbmcvFlbzKcoHyYhCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=n0U1IJKK; arc=none smtp.client-ip=93.104.207.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706093396; x=1706698196; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/0pd1IELLeD69KnxOq9DWeNqcBUjNxwkuEsIblWWntw=;
-        b=SZQhmHf4uA+J3Y5F9NDQj4b7yNw1rbvSoRlIrW80t+ul44+VGJfIr4xgiZKW2Pzi1r
-         dzxJiE6yl54WiyTrJCU3Rr7S5ms+AZ7sAqD9dUdv2CQCnmyzr8iLQo1zgTjgq3CPZg3h
-         0nlOQ+s+kGAxBjO5QtrBA7WJzl57Jb8fs+m2Nks+txVINx07SssY7rRvjC46JPijfDlM
-         dVr9mSHhrFbA7sx0nmWl8lIK7kHN3yQZlIm0QbG7tKciZVgOIE46gLFeFttAM8PPf48l
-         wGxvH63F7wibRqow5S+aDSmD+Ui2NkWNULQFvEeSkEzWsCwwV5PnNGtQL4+YfEGpgKqt
-         2Xww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706093396; x=1706698196;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/0pd1IELLeD69KnxOq9DWeNqcBUjNxwkuEsIblWWntw=;
-        b=XgU6NA+jIerCGkyd2r/qlbL0A4u/UTI1jfISjU08GPwn+bJaJPyYk50JsQYH3HMbVr
-         15D4Tox4gRjuBphvpVGsxtyZvE9QGeWcJmLm9AGVVXMRIDxiTxvLlRbQbS6u7VdjlKjt
-         qyWeKocaqKROqlQjfXXKBZxqE2/75YwE3L3arJvtLctKz2IKxoisDkc4gkMk0cJwpdHN
-         w91OqO+IH8rFpIwvBIVVg5dbh7q08C1SocNeKuOFCMpy3/BtIfG4bJrdj3x6Mlb7D0GR
-         ibRgoqPlM6OOX7CZMUUabU0234UWx10sL/3o2H2qthBNK2ImAemX5YUUG7QDDIM0euLL
-         I3nQ==
-X-Gm-Message-State: AOJu0YzRgGTnHa8OfOI8/XSWZ1CANunaLFVc2je2A0NN86byjGbZXnek
-	kITfCOB55zFy4UnbQsHRTQHdfyihHCz3whtKTaGuM1nUZDs9tUFfiq/Q9x/qpaM=
-X-Google-Smtp-Source: AGHT+IFQiFOPq64XWph67XXSVAD6x1gilNsaeT1pVza8zRGwXJnC3KXKQmac19H7BdKFR/vJu/HL3w==
-X-Received: by 2002:a17:907:1112:b0:a30:e14e:5666 with SMTP id qu18-20020a170907111200b00a30e14e5666mr613354ejb.67.1706093396328;
-        Wed, 24 Jan 2024 02:49:56 -0800 (PST)
-Received: from localhost.si (84-255-245-182.static.t-2.net. [84.255.245.182])
-        by smtp.gmail.com with ESMTPSA id s19-20020a17090699d300b00a31318c49c7sm294950ejn.115.2024.01.24.02.49.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 02:49:56 -0800 (PST)
-From: Uros Bizjak <ubizjak@gmail.com>
-To: linux-kernel@vger.kernel.org
-Cc: Uros Bizjak <ubizjak@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Will Deacon <will@kernel.org>,
-	Waiman Long <longman@redhat.com>,
-	Boqun Feng <boqun.feng@gmail.com>
-Subject: [PATCH] locking/rtmutex: Use try_cmpxchg_relaxed in mark_rt_mutex_waiters()
-Date: Wed, 24 Jan 2024 11:49:53 +0100
-Message-Id: <20240124104953.612063-1-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.31.1
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1706093450; x=1737629450;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=aTuEXSlYOiNHEuFuSlJtP0lQIoUAMibD41RptAODArc=;
+  b=n0U1IJKKumuZGyRsgy0/s8GzTc9ZlShsTdueJIct2gQC4XhX7J9WwCOE
+   tRtcZQSyp10JVYASr8gLq5/0AoF1Xh7Y1l+4y2TdFJgGfByOzutUJsgD6
+   3kQXvyfedcjHo4v3ZvImUMqjEtAQO5PRRIL1IbycNaSEmoHfG7dBltZuX
+   ZAebqeviwdFe2Wjs1wraJRYa2GZzZMhnjU5WzrrZrioSe5jtpTgBaMZ6h
+   KtS5jXyQIA90n/PHbXyjVyrKQBC56pTk+lqZJQIl+EpZeLXEM+F2LwFn9
+   PmyVJqI7wM5CMcr6bkjAXuO8iWFJrAbeg2WjYhfWdfbDpRiNJXsPDCEcX
+   A==;
+X-IronPort-AV: E=Sophos;i="6.05,216,1701126000"; 
+   d="scan'208";a="35052777"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 24 Jan 2024 11:50:47 +0100
+Received: from schifferm-ubuntu.tq-net.de (SCHIFFERM-M3.tq-net.de [10.121.49.135])
+	by vtuxmail01.tq-net.de (Postfix) with ESMTPA id EB5A2280075;
+	Wed, 24 Jan 2024 11:50:46 +0100 (CET)
+From: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To: Michael Ellerman <mpe@ellerman.id.au>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Nicholas Piggin <npiggin@gmail.com>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	linux@ew.tq-group.com,
+	Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Subject: [PATCH] powerpc: rename SPRN_HID2 define to SPRN_HID2_750FX
+Date: Wed, 24 Jan 2024 11:50:31 +0100
+Message-ID: <20240124105031.45734-1-matthias.schiffer@ew.tq-group.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Use try_cmpxchg() instead of cmpxchg(*ptr, old, new) == old.
+This register number is hardware-specific, rename it for clarity.
 
-X86 CMPXCHG instruction returns success in ZF flag, so this change saves a
-compare after CMPXCHG (and related move instruction in front of CMPXCHG).
+FIXME comments are added in a few places where it seems like the wrong
+register is used. As I can't test this, only the rename is done with no
+functional change.
 
-Also, try_cmpxchg() implicitly assigns old *ptr value to "old" when CMPXCHG
-fails. There is no need to re-read the value in the loop.
-
-Note that the value from *ptr should be read using READ_ONCE to prevent
-the compiler from merging, refetching or reordering the read.
-
-No functional change intended.
-
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Waiman Long <longman@redhat.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 ---
- kernel/locking/rtmutex.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ arch/powerpc/include/asm/reg.h               | 2 +-
+ arch/powerpc/kernel/cpu_setup_6xx.S          | 4 ++--
+ arch/powerpc/kvm/book3s_emulate.c            | 4 ++--
+ arch/powerpc/platforms/52xx/lite5200_sleep.S | 6 ++++--
+ arch/powerpc/platforms/83xx/suspend-asm.S    | 6 ++++--
+ drivers/cpufreq/pmac32-cpufreq.c             | 8 ++++----
+ 6 files changed, 17 insertions(+), 13 deletions(-)
 
-diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-index 4a10e8c16fd2..88d08eeb8bc0 100644
---- a/kernel/locking/rtmutex.c
-+++ b/kernel/locking/rtmutex.c
-@@ -237,12 +237,13 @@ static __always_inline bool rt_mutex_cmpxchg_release(struct rt_mutex_base *lock,
-  */
- static __always_inline void mark_rt_mutex_waiters(struct rt_mutex_base *lock)
- {
--	unsigned long owner, *p = (unsigned long *) &lock->owner;
-+	unsigned long *p = (unsigned long *) &lock->owner;
-+	unsigned long owner, new;
+diff --git a/arch/powerpc/include/asm/reg.h b/arch/powerpc/include/asm/reg.h
+index 4ae4ab9090a2..994dfefba98b 100644
+--- a/arch/powerpc/include/asm/reg.h
++++ b/arch/powerpc/include/asm/reg.h
+@@ -615,7 +615,7 @@
+ #define HID1_ABE	(1<<10)		/* 7450 Address Broadcast Enable */
+ #define HID1_PS		(1<<16)		/* 750FX PLL selection */
+ #endif
+-#define SPRN_HID2	0x3F8		/* Hardware Implementation Register 2 */
++#define SPRN_HID2_750FX	0x3F8		/* IBM 750FX HID2 Register */
+ #define SPRN_HID2_GEKKO	0x398		/* Gekko HID2 Register */
+ #define SPRN_IABR	0x3F2	/* Instruction Address Breakpoint Register */
+ #define SPRN_IABR2	0x3FA		/* 83xx */
+diff --git a/arch/powerpc/kernel/cpu_setup_6xx.S b/arch/powerpc/kernel/cpu_setup_6xx.S
+index f29ce3dd6140..4f4a4ce34861 100644
+--- a/arch/powerpc/kernel/cpu_setup_6xx.S
++++ b/arch/powerpc/kernel/cpu_setup_6xx.S
+@@ -382,7 +382,7 @@ _GLOBAL(__save_cpu_setup)
+ 	andi.	r3,r3,0xff00
+ 	cmpwi	cr0,r3,0x0200
+ 	bne	1f
+-	mfspr	r4,SPRN_HID2
++	mfspr	r4,SPRN_HID2_750FX
+ 	stw	r4,CS_HID2(r5)
+ 1:
+ 	mtcr	r7
+@@ -477,7 +477,7 @@ _GLOBAL(__restore_cpu_setup)
+ 	bne	4f
+ 	lwz	r4,CS_HID2(r5)
+ 	rlwinm	r4,r4,0,19,17
+-	mtspr	SPRN_HID2,r4
++	mtspr	SPRN_HID2_750FX,r4
+ 	sync
+ 4:
+ 	lwz	r4,CS_HID1(r5)
+diff --git a/arch/powerpc/kvm/book3s_emulate.c b/arch/powerpc/kvm/book3s_emulate.c
+index 5bbfb2eed127..de126d153328 100644
+--- a/arch/powerpc/kvm/book3s_emulate.c
++++ b/arch/powerpc/kvm/book3s_emulate.c
+@@ -714,7 +714,7 @@ int kvmppc_core_emulate_mtspr_pr(struct kvm_vcpu *vcpu, int sprn, ulong spr_val)
+ 	case SPRN_HID1:
+ 		to_book3s(vcpu)->hid[1] = spr_val;
+ 		break;
+-	case SPRN_HID2:
++	case SPRN_HID2_750FX:
+ 		to_book3s(vcpu)->hid[2] = spr_val;
+ 		break;
+ 	case SPRN_HID2_GEKKO:
+@@ -900,7 +900,7 @@ int kvmppc_core_emulate_mfspr_pr(struct kvm_vcpu *vcpu, int sprn, ulong *spr_val
+ 	case SPRN_HID1:
+ 		*spr_val = to_book3s(vcpu)->hid[1];
+ 		break;
+-	case SPRN_HID2:
++	case SPRN_HID2_750FX:
+ 	case SPRN_HID2_GEKKO:
+ 		*spr_val = to_book3s(vcpu)->hid[2];
+ 		break;
+diff --git a/arch/powerpc/platforms/52xx/lite5200_sleep.S b/arch/powerpc/platforms/52xx/lite5200_sleep.S
+index 0b12647e7b42..0ec2522ee4ad 100644
+--- a/arch/powerpc/platforms/52xx/lite5200_sleep.S
++++ b/arch/powerpc/platforms/52xx/lite5200_sleep.S
+@@ -203,7 +203,8 @@ lite5200_wakeup:
  
-+	owner = READ_ONCE(*p);
- 	do {
--		owner = *p;
--	} while (cmpxchg_relaxed(p, owner,
--				 owner | RT_MUTEX_HAS_WAITERS) != owner);
-+		new = owner | RT_MUTEX_HAS_WAITERS;
-+	} while (!try_cmpxchg_relaxed(p, &owner, new));
+ 	/* HIDs, MSR */
+ 	LOAD_SPRN(HID1, 0x19)
+-	LOAD_SPRN(HID2, 0x1a)
++	/* FIXME: Should this use HID2_G2_LE? */
++	LOAD_SPRN(HID2_750FX, 0x1a)
  
- 	/*
- 	 * The cmpxchg loop above is relaxed to avoid back-to-back ACQUIRE
+ 
+ 	/* address translation is tricky (see turn_on_mmu) */
+@@ -283,7 +284,8 @@ SYM_FUNC_START_LOCAL(save_regs)
+ 
+ 	SAVE_SPRN(HID0, 0x18)
+ 	SAVE_SPRN(HID1, 0x19)
+-	SAVE_SPRN(HID2, 0x1a)
++	/* FIXME: Should this use HID2_G2_LE? */
++	SAVE_SPRN(HID2_750FX, 0x1a)
+ 	mfmsr	r10
+ 	stw	r10, (4*0x1b)(r4)
+ 	/*SAVE_SPRN(LR, 0x1c) have to save it before the call */
+diff --git a/arch/powerpc/platforms/83xx/suspend-asm.S b/arch/powerpc/platforms/83xx/suspend-asm.S
+index bc6bd4d0ae96..6a62ed6082c9 100644
+--- a/arch/powerpc/platforms/83xx/suspend-asm.S
++++ b/arch/powerpc/platforms/83xx/suspend-asm.S
+@@ -68,7 +68,8 @@ _GLOBAL(mpc83xx_enter_deep_sleep)
+ 
+ 	mfspr	r5, SPRN_HID0
+ 	mfspr	r6, SPRN_HID1
+-	mfspr	r7, SPRN_HID2
++	/* FIXME: Should this use SPRN_HID2_G2_LE? */
++	mfspr	r7, SPRN_HID2_750FX
+ 
+ 	stw	r5, SS_HID+0(r3)
+ 	stw	r6, SS_HID+4(r3)
+@@ -396,7 +397,8 @@ mpc83xx_deep_resume:
+ 
+ 	mtspr	SPRN_HID0, r5
+ 	mtspr	SPRN_HID1, r6
+-	mtspr	SPRN_HID2, r7
++	/* FIXME: Should this use SPRN_HID2_G2_LE? */
++	mtspr	SPRN_HID2_750FX, r7
+ 
+ 	lwz	r4, SS_IABR+0(r3)
+ 	lwz	r5, SS_IABR+4(r3)
+diff --git a/drivers/cpufreq/pmac32-cpufreq.c b/drivers/cpufreq/pmac32-cpufreq.c
+index df3567c1e93b..6c9f0888a2a7 100644
+--- a/drivers/cpufreq/pmac32-cpufreq.c
++++ b/drivers/cpufreq/pmac32-cpufreq.c
+@@ -120,9 +120,9 @@ static int cpu_750fx_cpu_speed(int low_speed)
+ 
+ 		/* tweak L2 for high voltage */
+ 		if (has_cpu_l2lve) {
+-			hid2 = mfspr(SPRN_HID2);
++			hid2 = mfspr(SPRN_HID2_750FX);
+ 			hid2 &= ~0x2000;
+-			mtspr(SPRN_HID2, hid2);
++			mtspr(SPRN_HID2_750FX, hid2);
+ 		}
+ 	}
+ #ifdef CONFIG_PPC_BOOK3S_32
+@@ -131,9 +131,9 @@ static int cpu_750fx_cpu_speed(int low_speed)
+ 	if (low_speed == 1) {
+ 		/* tweak L2 for low voltage */
+ 		if (has_cpu_l2lve) {
+-			hid2 = mfspr(SPRN_HID2);
++			hid2 = mfspr(SPRN_HID2_750FX);
+ 			hid2 |= 0x2000;
+-			mtspr(SPRN_HID2, hid2);
++			mtspr(SPRN_HID2_750FX, hid2);
+ 		}
+ 
+ 		/* ramping down, set voltage last */
 -- 
-2.31.1
+TQ-Systems GmbH | Mühlstraße 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht München, HRB 105018
+Geschäftsführer: Detlef Schneider, Rüdiger Stahl, Stefan Schneider
+https://www.tq-group.com/
 
 
