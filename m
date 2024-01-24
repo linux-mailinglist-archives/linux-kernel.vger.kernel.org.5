@@ -1,144 +1,103 @@
-Return-Path: <linux-kernel+bounces-37115-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37117-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42D2083ABB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:28:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD7EE83ABBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:29:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D85BB1F2CF3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:28:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF65E1C22A66
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:29:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73E0C7CF2B;
-	Wed, 24 Jan 2024 14:27:49 +0000 (UTC)
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [195.130.132.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27C8C7C09D;
+	Wed, 24 Jan 2024 14:28:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uVvUEiSI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45EF67CF27
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 14:27:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63C1A7C08D;
+	Wed, 24 Jan 2024 14:28:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706106469; cv=none; b=V7zz8OYJhnd4CbHKha/t5qMUO9VGDU63weunLltrDlWbPCMqP/RX/2nZSslOw96oS4ld5h5vrRfG4WAwCvBIL+kTbeOJ/SqfuC0ZWrvztC2nRZFq+Om0nhwUiudsojg0X195lEEUgr+eHVp6bBVjznWD+Ib3JDKFL2gFfs8lB4w=
+	t=1706106504; cv=none; b=VGooVF911qeYrgKA3YGR8zZfsfrDp2ukdNRXcbinEGyZKOKDE0oiDNVjnl1sNfZsCSOxRQzRzOBnMvvLAZCeS/muNEK5H16tbjvs8lZSrJYm0ka5BBomoYcqJfK8GHa7HAq5LZ9D7Fm5G3PGte+mdHPQcFZ1crz9k1bWUqD321k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706106469; c=relaxed/simple;
-	bh=CfszxU16lZncejKjedsKD1lxYOGoDUS8ZJocL2mNhvk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PkiJAYq2Ft3Cd5BgwMpnb/XS22eS0ZUEJNK05taZM0eFGM7PHNmK0rxTF1hPK/yhrVAynzRfBELhjjFJ0hsZEJn1Kpyv5UNC2chbCjr6+5m1ogopwUNqZEWoAzvNsTZneK9Fd8pmmQSZwgDDp8QGlTdA0RAVEzvqKkPsAGkU+tg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:bc9e:fcb8:8aa3:5dc0])
-	by xavier.telenet-ops.be with bizsmtp
-	id eeTd2B00o58agq201eTdz7; Wed, 24 Jan 2024 15:27:38 +0100
-Received: from rox.of.borg ([192.168.97.57])
-	by ramsan.of.borg with esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rSeDH-00GQnc-Hq;
-	Wed, 24 Jan 2024 15:27:37 +0100
-Received: from geert by rox.of.borg with local (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rSeE5-00FCwG-E2;
-	Wed, 24 Jan 2024 15:27:37 +0100
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Arnd Bergmann <arnd@arndb.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Ilya Leoshkevich <iii@linux.ibm.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>
-Cc: linux-s390@vger.kernel.org,
-	linux-arch@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] init: Remove obsolete arch_call_rest_init() wrapper
-Date: Wed, 24 Jan 2024 15:27:35 +0100
-Message-Id: <aa10868bfb176eef4abb8bb4a710b85330792694.1706106183.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706106504; c=relaxed/simple;
+	bh=yn0wNLPBUdOJdf2VETHLWfkGVU+MRAK5BYDWXbwCY50=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qGMCQr5LR2M7kPnbyg1zc0ycQEVJZnd5KB9BxjbQNbLxC4voUUKcaJfcuh7r9Txn2sHfQPIuPsmjG2gl1pEFNdBRq2pkcGdDSRxBC4JqtrWAivZeKrEg4cZrOwm4jVFlJllCvgH2bQ4QLDoTJ+D+KnJT8JuhyYQMN6xwkcCOpp4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uVvUEiSI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D995C433A6;
+	Wed, 24 Jan 2024 14:28:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706106503;
+	bh=yn0wNLPBUdOJdf2VETHLWfkGVU+MRAK5BYDWXbwCY50=;
+	h=From:To:Cc:Subject:Date:From;
+	b=uVvUEiSI5AJzJSJxwuXj3kkbPOE3kiDx9aqOxa+30lrYQSlTLF6KX+RRSqZKRWPiY
+	 o3Dub9pZOCXoegbvYrtPfxUfZ+JqIrnqvzxZOg/UGmeh5mIeukv0AHewfQ/Ujv4VSL
+	 fbEvEbHgU72R1/6Mp/081a/jkjRIQP/9vZ62d2Sqmst5y2lD/ohtCPr0UfAiXJr3Qq
+	 gYiAbr1NQgAYRD118UlMS0UYhfcmUr3Kt7uu5EFhxQI3ZvLIh92mg2tZYTZ1rxINrA
+	 6Hnum0HAttvJ8EJmn5r78iaUj9joFle7cmiomvmlBcjkfNbdwWJUy2emkcNmB6Xh4d
+	 dGCJ0uhC9CFEw==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Sasha Levin <sashal@kernel.org>,
+	andy@kernel.org,
+	linus.walleij@linaro.org,
+	linux-gpio@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 01/13] pinctrl: baytrail: Fix types of config value in byt_pin_config_set()
+Date: Wed, 24 Jan 2024 09:27:54 -0500
+Message-ID: <20240124142820.1283206-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.7.1
 Content-Transfer-Encoding: 8bit
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Since commit 3570ee046c46b5dc ("s390/smp: keep the original lowcore for
-CPU 0"), there is no longer any architecture that needs to override
-arch_call_rest_init().
+[ Upstream commit 1a856a22e6036c5f0d6da7568b4550270f989038 ]
 
-Remove the weak wrapper around rest_init(), call rest_init() directly,
-and make rest_init() static.
+When unpacked, the config value is split to two of different types.
+Fix the types accordingly.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
-Perhaps rest_init() should lose its noinline tag, or should even be
-inlined manually?
----
- include/linux/start_kernel.h | 2 --
- init/main.c                  | 9 ++-------
- tools/objtool/noreturns.h    | 1 -
- 3 files changed, 2 insertions(+), 10 deletions(-)
+ drivers/pinctrl/intel/pinctrl-baytrail.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/start_kernel.h b/include/linux/start_kernel.h
-index a9806a44a605c7d7..09f994ac87df44f1 100644
---- a/include/linux/start_kernel.h
-+++ b/include/linux/start_kernel.h
-@@ -9,7 +9,5 @@
-    up something else. */
- 
- extern asmlinkage void __init __noreturn start_kernel(void);
--extern void __init __noreturn arch_call_rest_init(void);
--extern void __ref __noreturn rest_init(void);
- 
- #endif /* _LINUX_START_KERNEL_H */
-diff --git a/init/main.c b/init/main.c
-index e24b0780fdff7a80..521f40770e67dd27 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -681,7 +681,7 @@ static void __init setup_command_line(char *command_line)
- 
- static __initdata DECLARE_COMPLETION(kthreadd_done);
- 
--noinline void __ref __noreturn rest_init(void)
-+static noinline void __ref __noreturn rest_init(void)
+diff --git a/drivers/pinctrl/intel/pinctrl-baytrail.c b/drivers/pinctrl/intel/pinctrl-baytrail.c
+index 3cd0798ee631..f1af21dbd5fb 100644
+--- a/drivers/pinctrl/intel/pinctrl-baytrail.c
++++ b/drivers/pinctrl/intel/pinctrl-baytrail.c
+@@ -918,13 +918,14 @@ static int byt_pin_config_set(struct pinctrl_dev *pctl_dev,
+ 			      unsigned int num_configs)
  {
- 	struct task_struct *tsk;
- 	int pid;
-@@ -822,11 +822,6 @@ static int __init early_randomize_kstack_offset(char *buf)
- early_param("randomize_kstack_offset", early_randomize_kstack_offset);
- #endif
+ 	struct intel_pinctrl *vg = pinctrl_dev_get_drvdata(pctl_dev);
+-	unsigned int param, arg;
+ 	void __iomem *conf_reg = byt_gpio_reg(vg, offset, BYT_CONF0_REG);
+ 	void __iomem *val_reg = byt_gpio_reg(vg, offset, BYT_VAL_REG);
+ 	void __iomem *db_reg = byt_gpio_reg(vg, offset, BYT_DEBOUNCE_REG);
+ 	u32 conf, val, db_pulse, debounce;
++	enum pin_config_param param;
+ 	unsigned long flags;
+ 	int i, ret = 0;
++	u32 arg;
  
--void __init __weak __noreturn arch_call_rest_init(void)
--{
--	rest_init();
--}
--
- static void __init print_unknown_bootoptions(void)
- {
- 	char *unknown_options;
-@@ -1069,7 +1064,7 @@ void start_kernel(void)
- 	kcsan_init();
+ 	raw_spin_lock_irqsave(&byt_lock, flags);
  
- 	/* Do the rest non-__init'ed, we're now alive */
--	arch_call_rest_init();
-+	rest_init();
- 
- 	/*
- 	 * Avoid stack canaries in callers of boot_init_stack_canary for gcc-10
-diff --git a/tools/objtool/noreturns.h b/tools/objtool/noreturns.h
-index 1685d7ea6a9f7002..7cda577da897cac5 100644
---- a/tools/objtool/noreturns.h
-+++ b/tools/objtool/noreturns.h
-@@ -12,7 +12,6 @@ NORETURN(__reiserfs_panic)
- NORETURN(__stack_chk_fail)
- NORETURN(__tdx_hypercall_failed)
- NORETURN(__ubsan_handle_builtin_unreachable)
--NORETURN(arch_call_rest_init)
- NORETURN(arch_cpu_idle_dead)
- NORETURN(bch2_trans_in_restart_error)
- NORETURN(bch2_trans_restart_error)
 -- 
-2.34.1
+2.43.0
 
 
