@@ -1,124 +1,97 @@
-Return-Path: <linux-kernel+bounces-37420-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37421-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C207A83AFCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:27:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F30E883AFD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:28:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A3D31C2662C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:27:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D9201F21119
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:28:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 750CE1272A4;
-	Wed, 24 Jan 2024 17:24:08 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 089837CF18;
-	Wed, 24 Jan 2024 17:24:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F8CA1272CF;
+	Wed, 24 Jan 2024 17:24:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UsqQX4ks"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D02851272B1
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 17:24:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706117048; cv=none; b=uMi+S0USr3KrBYEB8zgkoZt2ErsKnzTgWwSEVje7ZPfRzl2kyQHzb/GGI2yFGA3WY8J4un9SnDwpgLOMArm9lhzVAGi1caawGluVCogopqyN/kHWG32a1bgCkLHQ542MXv5sGn7e1GT464M8iSuAmA63Fpq+63cY6rqQrYxsBvk=
+	t=1706117051; cv=none; b=e4g6RHI/row6YsIzuTJ7784y5+pEcqQLz+smbSYUp4V1jJdwXr9tt6i7lACOsV648GPQnY/18iQRxfOTERcts6fM9PI6OakW0fLcGhsG8Enhr79xlZ2yDyiBg9gj23hezrfq2JqIGkTq7bV5Bmbp/SzYUQX7lQmjHYMQPvrktHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706117048; c=relaxed/simple;
-	bh=Nel1C4fahRSLksyTQGpvXQXEvhkmWvAfgHn6lsWzUdE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BvJpRX7DIa9SC39n3p3LYXup8jFoJZklmflEPV7xDjpniGjoL7crGGpKPz+cd7pWrZ5XJ7/IUm1RVlNxJsUUubEfYE3nVhWaYaN/KNOe44YkQyDT3MePBsXtoYrOLWi/Ah16EEH7ds0U0axLI/nxnm5iF1Pm0vWXIKyvOs6jKfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E06A71FB;
-	Wed, 24 Jan 2024 09:24:49 -0800 (PST)
-Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0AF5A3F762;
-	Wed, 24 Jan 2024 09:24:03 -0800 (PST)
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-To: linux-kernel@vger.kernel.org
-Cc: kvm@vger.kernel.org,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Feng Liu <feliu@nvidia.com>,
-	"Michael S . Tsirkin" <mst@redhat.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>
-Subject: [PATCH] virtio: uapi: Drop __packed attribute in linux/virtio_pci.h:
-Date: Wed, 24 Jan 2024 17:23:45 +0000
-Message-Id: <20240124172345.853129-1-suzuki.poulose@arm.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1706117051; c=relaxed/simple;
+	bh=84hQubybZvoHS0mUrUXrKWieYpnepVChvkMJ3NXWaC8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P2aW18ju50n6eDGS/iEZYwXZtfgQWWdRrDYWCOUsYvBwpcddMotP8gjWF9Vxf72DqaR7h+qZM9O5cmi4v2xZQdsjWwRaRO9poNNRhn94lq4Sb51PAxZDnr+cg3bRGMMZLrwxlGsvlZEJbxDANgrLS9W0MqJuPbV4Oz8drn2FOAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UsqQX4ks; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3394b892691so760532f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 09:24:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706117047; x=1706721847; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=84hQubybZvoHS0mUrUXrKWieYpnepVChvkMJ3NXWaC8=;
+        b=UsqQX4ksPZxr49qaJQov2WigdgSmZqUjvUVjaTXTjHSt/GOx9OHW48gRmpVJAXztWb
+         IPYK5LqpyPJZtdd3TO0sM0h6C0D4sIpKr9MsRBxNW8Gle+r5HLfM2hVj/xErg2sMWxzw
+         PZD1i7p7wESWuW8EEKzOzUeDX/ppuDOLk6L6dBreirKTbC5OALKKjn9SN8hekHnCOHpA
+         luEOA/EYVRnNJ2S3zRRJRUj6kUq6FowhzkEeHZr0b5DutUmjVddYHwvopP4Wx8MojXyO
+         deK0D0E5zzRCvfUy5q582mqwuWPdUww6lijmKMNJOCDyEauuBtuhmFbJhutJBTo0/V+h
+         BiOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706117047; x=1706721847;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=84hQubybZvoHS0mUrUXrKWieYpnepVChvkMJ3NXWaC8=;
+        b=wR/H/ksWaxfmknSIKA7Kd/91TQD0VQpcuE7mNMDAvhMfWvjs4XPwhGRXvDGyHD00nu
+         P7KfKV95CDwtaUGYETOCGuGv1xaeczufszJ729WEStkHC6ighLWfKchqmulupigG9GuY
+         Ix8AvsjUbETMGm+Hz7V1vWuoZRZ3t+HpzMes6KqWKRpzfx2rDXnRD6EQSg1oaUY68dtC
+         AvSSITSDekdYen9PzJBq2dVT2noykhZcmnIB2Ns3bCu+owPyfH7kbkNd+ZS5h0UglcO3
+         sa6hOpkTRneZsVW/JAjDFGQ7ohgSnefdHSH8hLvLAVmusxm4EjdQT73mFHEpEIkCSibj
+         1jtA==
+X-Gm-Message-State: AOJu0Ywp32jJ/mObehG39GL0cPd2eV0o34avPBYRa10unr8mEg4LHgl0
+	b1pbbunHdoU1rd/5r3zPk2cXWujBMYHzB1OTlXUZdeEwRFZEbKCUR0mdzNQjUw0=
+X-Google-Smtp-Source: AGHT+IGy6q1uZqnQR6FI8b7VYbGDPfXt1pitVJGLsnDj4e3SXBqZHBNvvYPKioX8VWyL3ysKZeRqoQ==
+X-Received: by 2002:adf:f4cf:0:b0:337:d6c8:1af5 with SMTP id h15-20020adff4cf000000b00337d6c81af5mr735025wrp.53.1706117047102;
+        Wed, 24 Jan 2024 09:24:07 -0800 (PST)
+Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
+        by smtp.gmail.com with ESMTPSA id b13-20020a05600010cd00b003392c1f40acsm10493581wrx.28.2024.01.24.09.24.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 09:24:06 -0800 (PST)
+Date: Wed, 24 Jan 2024 17:24:05 +0000
+From: Daniel Thompson <daniel.thompson@linaro.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Lee Jones <lee@kernel.org>,
+	Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>
+Subject: Re: [PATCH v1 3/4] backlight: hx8357: Make use of dev_err_probe()
+Message-ID: <20240124172405.GA15881@aspen.lan>
+References: <20240114152759.1040563-1-andriy.shevchenko@linux.intel.com>
+ <20240114152759.1040563-4-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240114152759.1040563-4-andriy.shevchenko@linux.intel.com>
 
-Commit 92792ac752aa ("virtio-pci: Introduce admin command sending function")
-added "__packed" structures to UAPI header linux/virtio_pci.h. This triggers
-build failures in the consumer userspace applications without proper "definition"
-of __packed (e.g., kvmtool build fails).
+On Sun, Jan 14, 2024 at 05:25:10PM +0200, Andy Shevchenko wrote:
+> Simplify the error handling in probe function by switching from
+> dev_err() to dev_err_probe().
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Moreover, the structures are already packed well, and doesn't need explicit
-packing, similar to the rest of the structures in all virtio_* headers. Remove
-the __packed attribute.
+Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
 
-Fixes: commit 92792ac752aa ("virtio-pci: Introduce admin command sending function")
-Cc: Feng Liu <feliu@nvidia.com>
-Cc: Michael S. Tsirkin <mst@redhat.com>
-Cc: Yishai Hadas <yishaih@nvidia.com>
-Cc: Alex Williamson <alex.williamson@redhat.com>
-Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
-Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
----
- include/uapi/linux/virtio_pci.h | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/include/uapi/linux/virtio_pci.h b/include/uapi/linux/virtio_pci.h
-index ef3810dee7ef..a8208492e822 100644
---- a/include/uapi/linux/virtio_pci.h
-+++ b/include/uapi/linux/virtio_pci.h
-@@ -240,7 +240,7 @@ struct virtio_pci_cfg_cap {
- #define VIRTIO_ADMIN_CMD_LEGACY_DEV_CFG_READ		0x5
- #define VIRTIO_ADMIN_CMD_LEGACY_NOTIFY_INFO		0x6
- 
--struct __packed virtio_admin_cmd_hdr {
-+struct virtio_admin_cmd_hdr {
- 	__le16 opcode;
- 	/*
- 	 * 1 - SR-IOV
-@@ -252,20 +252,20 @@ struct __packed virtio_admin_cmd_hdr {
- 	__le64 group_member_id;
- };
- 
--struct __packed virtio_admin_cmd_status {
-+struct virtio_admin_cmd_status {
- 	__le16 status;
- 	__le16 status_qualifier;
- 	/* Unused, reserved for future extensions. */
- 	__u8 reserved2[4];
- };
- 
--struct __packed virtio_admin_cmd_legacy_wr_data {
-+struct virtio_admin_cmd_legacy_wr_data {
- 	__u8 offset; /* Starting offset of the register(s) to write. */
- 	__u8 reserved[7];
- 	__u8 registers[];
- };
- 
--struct __packed virtio_admin_cmd_legacy_rd_data {
-+struct virtio_admin_cmd_legacy_rd_data {
- 	__u8 offset; /* Starting offset of the register(s) to read. */
- };
- 
-@@ -275,7 +275,7 @@ struct __packed virtio_admin_cmd_legacy_rd_data {
- 
- #define VIRTIO_ADMIN_CMD_MAX_NOTIFY_INFO 4
- 
--struct __packed virtio_admin_cmd_notify_info_data {
-+struct virtio_admin_cmd_notify_info_data {
- 	__u8 flags; /* 0 = end of list, 1 = owner device, 2 = member device */
- 	__u8 bar; /* BAR of the member or the owner device */
- 	__u8 padding[6];
--- 
-2.34.1
-
+Daniel.
 
