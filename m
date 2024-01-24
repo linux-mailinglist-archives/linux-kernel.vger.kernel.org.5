@@ -1,201 +1,327 @@
-Return-Path: <linux-kernel+bounces-36629-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36630-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC31B83A408
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:22:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC12083A40C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:23:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32B1E1F2D2D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:22:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C366B2867A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:23:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C11B817582;
-	Wed, 24 Jan 2024 08:22:30 +0000 (UTC)
-Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2056.outbound.protection.partner.outlook.cn [139.219.146.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B831175B1;
+	Wed, 24 Jan 2024 08:22:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="IL0TuiFa"
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2FCE1754C;
-	Wed, 24 Jan 2024 08:22:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.146.56
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706084550; cv=fail; b=S95Ihwk4N1nJpGv5Kw6gzN22Uup5oXStEMYgE5D6WB1DUqlTMoyCY+mtxaBjk1UDiK5MQ1yexOt3ZLezUeaAd7PNmbXbDkgTK86IAFrthaPIpaN0JYsqLBAuSBV0gvY7bzDN6vDoXZsSuNIOg495CknIuKiUAUNX4npYiz424zw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706084550; c=relaxed/simple;
-	bh=z339XeB7d4wHjNbjPFoCfYl75Y2xgvOwEruoW2KmNMg=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=jVaop3MDd74AN2y6kSfXmiDAPD5gxuGNqTtVUs1lsntlT0plfswWx4wubsM37MedTealx/GQqic8Y2pDf4nv7VPNiBeuH9YRer2z7+xf/JvsD1Gxr3GJ1ob3CLiU1u9KzxEUEFHPg9CO6ZnOSNLdzZmUTauz/S0R3znWs+NUt6U=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N2RWXLSODPEWB/AFqKPwuDRz5TjdVHZA7GcLtHAV4FbpHyHdwqlx2FyKd6XLO0oYs5unyj4Aw+opkdb6+aYqq8o9QVixbZg4kQ0pM+qIZgxgWRlB8aGRa4m4XQvjUJ69r2l5RKK9fGCQM7gTnrDcyUZcAW7SG0yQxUwXcHf/Blh7aTWDq25PrUTyiMBELZZfiCvvIhAhhGTr4rgKduGRFV+s9GzexhNhMyXVbL/kzoGcxw5+vYflXkLlASCqorquvvxtMk8CUCJ9lgYCueMSsHgASDeQJVkCSo617xKH3fdNhLLYB0Poa49o7pEC80+oobd0+4OwLmz2D4xtrj0CSg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fr1uqutgTLTCfSjl1082550ka1bGYOA9dViNN2c43pk=;
- b=h5dzi/7R+71IAsmB05nKia5djqlJmpRhbW5lu87XxE37ml7xtuGesQ0HHjSo2OQhITyqakBTU+U7Vird9PpLhLdpfBRIe+5OZcdu7KXFHtP/JhQ3mLKsF8Z3l8TptctfWsDxtJ9kRccj5yRheYTIlNco2rq0m3KG8yw8nEIvqlQwfdVEgbrivYxsLv4QHRHaPU2mFglMue4Z32/YlVNbUi0GpsQ/Mtu8MtUnc8TyokrkfZgotYzuAxHGleZrWdFb13qY7E6C/l78bbFZDOCGm07gXW/sH+G7b3rqiEOtxZGSTsLV7KaEM/Q6Tz+4V4VpbmKE4yknXD9r0QWM4AH68A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starfivetech.com; dmarc=pass action=none
- header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
-Received: from ZQ0PR01MB1160.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c550:19::6) by ZQ0PR01MB1142.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c550:1b::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22; Wed, 24 Jan
- 2024 04:46:43 +0000
-Received: from ZQ0PR01MB1160.CHNPR01.prod.partner.outlook.cn
- ([fe80::1dbb:b090:7d89:4e22]) by
- ZQ0PR01MB1160.CHNPR01.prod.partner.outlook.cn ([fe80::1dbb:b090:7d89:4e22%4])
- with mapi id 15.20.7228.022; Wed, 24 Jan 2024 04:46:43 +0000
-From: JiSheng Teoh <jisheng.teoh@starfivetech.com>
-To: Andi Shyti <andi.shyti@kernel.org>
-CC: Michal Simek <michal.simek@amd.com>, Leyfoon Tan
-	<leyfoon.tan@starfivetech.com>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-i2c@vger.kernel.org"
-	<linux-i2c@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 RESEND] i2c: cadence: Add system suspend and resume PM
- support
-Thread-Topic: [PATCH v2 RESEND] i2c: cadence: Add system suspend and resume PM
- support
-Thread-Index: AQHaSneNdhHjB60n1E+M74xAv32s77Dkvb6AgAE6hjCAAelHAIAAgvhA
-Date: Wed, 24 Jan 2024 04:46:43 +0000
-Message-ID:
- <ZQ0PR01MB1160DC63A1CC70F79036057EEB7BA@ZQ0PR01MB1160.CHNPR01.prod.partner.outlook.cn>
-References: <20240119013326.3405484-1-jisheng.teoh@starfivetech.com>
- <ko44i4n5synf3uugp4wmjoe6eikyw3bzjtmarduwvskmk4d3dr@uewx27aa6ake>
- <ZQ0PR01MB1160390D00404D24A31A1522EB75A@ZQ0PR01MB1160.CHNPR01.prod.partner.outlook.cn>
- <3w4vaxoderuhwkqec6rwem2wrjlvql2ohyh77zqpwege7ercpl@5ac4p5mw7nhp>
-In-Reply-To: <3w4vaxoderuhwkqec6rwem2wrjlvql2ohyh77zqpwege7ercpl@5ac4p5mw7nhp>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=starfivetech.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: ZQ0PR01MB1160:EE_|ZQ0PR01MB1142:EE_
-x-ms-office365-filtering-correlation-id: e8afa126-99d6-400d-f493-08dc1c9776a7
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- tn76HVlfiqpK0a3vdRt9M0ISFRW+UxjRKI98oiYIL2wSaOvYHhNlLfD9iw2DvdM9jb5j2jxw1+TDka8Pxrz6p3lEMMzq81SC40AhzFjsHpE0EMk0c2nCXc3T+h9pKoBupenguJXvEVlg+x5qFi87XRVTmB2xIXw4nID6bS9tn0MQw3Ry9IWCz99IYyzfnq8zfzXJ9vpfmbzWm6zhyNguFUyYadx1u2viMzhai1w1KeJUk1QAoD9iCtFXsn/qeV1mZH264Xq3nSHUNzurLOFHnllo30wEhhZNZfUuqCdHkSbQYZOong9vOTvM9WC6JpVq9NSCI1yc9YVghKDpEQ5/uRtT4mHnZMQ3eEeEMmoSU/O7DA5dZqBx9z7YIHgFjlNO6Nux9Hkj60knFKn5fYDPa1sGQpr4V/8PEK/Kkf8hwGER+O5kS+A/JoLYRxDHVtWmuU/Jo8TmtSNPDEk35HpsinenN/PxBMk6NONKYIiKzyBYssdLnSqQK7wNerDICRvGmgPb79OmPU6LZQF8KYvAgEy8so7YlA0VC6DYSNrPaheeqzf3C13x4VGn9WKJb989
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:ZQ0PR01MB1160.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(39830400003)(346002)(366004)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(71200400001)(508600001)(122000001)(55016003)(38100700002)(40160700002)(26005)(41320700001)(83380400001)(9686003)(7696005)(6916009)(33656002)(54906003)(5660300002)(64756008)(15650500001)(2906002)(40180700001)(8936002)(4326008)(8676002)(66476007)(38070700009)(66446008)(86362001)(66556008)(76116006)(66946007)(41300700001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?jsMWq/0e7XrxcvrzAJeCso8SEd0sMUTtARNDcxua+9dDbBSZZibXWHiXdzso?=
- =?us-ascii?Q?I2PgE4Dib70NHCUGgv9/fXvNhyGI1f40P8JJBed/ozxSmW4f2WxP3hNQmmNO?=
- =?us-ascii?Q?9GIcOxm+vE30/d08zXQTn0EEBYwoSVh13w7aQzJvENXVvUuyujIlOe+PHnfs?=
- =?us-ascii?Q?p/8f4nri58XRV+3OK46lUHF80WkYRD+a3G4pi7bjSOK11/hXdIgHwRZ/VBlP?=
- =?us-ascii?Q?IVDP95o+jryoAG8ePNpIrIMl5eHPpWHdLQYtDFi5PGPNjKClZ3QJniqVRmY8?=
- =?us-ascii?Q?IhojlIfAIaOzf8ZUqa7B/Yrb/osmhZkw0OT7nMSoFD+J1mNjIgSLOdDtkVst?=
- =?us-ascii?Q?7mY0BtW3u7dykvolOeFzUyWvVGC0/DLDB2cAjnIhW2r+a6Lk67xdoqFWSnz/?=
- =?us-ascii?Q?5lQoETHg5Q2c+/Es53SvIPmg/yCwEqaEicS7fQuMP9pUJr/LFxzGkQ8m7/9i?=
- =?us-ascii?Q?VCTmQLewcHcd7dPOsGlzZy6CDx0EN6q+CvphTMgEk+mgbMrdiqQQC+WNNPVO?=
- =?us-ascii?Q?uCTZNi/i1bMKhraUJa2E0BZUqP/Z8KBxbugShEyaehca66O1rvdWG1BVC3Wq?=
- =?us-ascii?Q?JlNzX1WWZzr3uGSkFMgy4u3kI9sVougVDs47GW2IwI3fj5AUIJPcgs+qoa6b?=
- =?us-ascii?Q?Kucho/lwIfUw1W64mZpoLCxpVGRR/KgYoFRus4/Xk3S0Rr2dHISRqicEq5RZ?=
- =?us-ascii?Q?ua54Rc0BGTZWljUrEMY0/h1OjclNd/OFtsj4/0mbwLelKDrkBSl9APdhaYaY?=
- =?us-ascii?Q?F5BL5jFShTZntNU+rhWf/r3bi1BdQwHHiBm5Q6bzQd+cWXvuPPRWWgs29K1y?=
- =?us-ascii?Q?3RV2TnSTvYTIq+ZP+H3I6pirNMPB5LyMMsN+49ut2tN3kGZbL+2wf17nc9hs?=
- =?us-ascii?Q?OAXzvoVPo/BDWXggWrJfMKhR6x+Aj7gkRATJjYFcDWPynIK0qWyiMFzmSXJl?=
- =?us-ascii?Q?MQdqx6DkUuVVRF931ufHqzpxM2YPGduJUb17HINB8ZgbXOTBAhk4dZo4hdg6?=
- =?us-ascii?Q?li4tb/gmCM3oh6YuHjbgTv4Qz1RW4CPYNs1H8G3ku7EHOUJ/b2kmlneAfE3f?=
- =?us-ascii?Q?Je0vPJvPnqK4XrMwX00JLrf6FXorL1t1OsiCMNYkHXEqLER9f41NXaI4PAFJ?=
- =?us-ascii?Q?iU4fsBB4Yv2CpL7Y6lPiDfRjpyU9XCuUjalEz36YaQ876WGyaDwKkEINjkWn?=
- =?us-ascii?Q?hXRCTfDuLL46m08o/crBZp+55jiEAP+MB8ejkP+vNRu7L8GlcvOv7DmHxohW?=
- =?us-ascii?Q?RyWNSiXKVULXgroEVYqgnhUqixvuu6xXfZSo5fcPozAJTC+6je+/Q/XJlwyH?=
- =?us-ascii?Q?m8F6Mc6tr/bxiWCT9jSKrTfQIO4HBiD9s/UQJxIfjkdNG0sSus3hr4S3JHJY?=
- =?us-ascii?Q?+eRviQ/clyLLBPGVqNUJyrqlB44cwnOyR7QmOfGlNIhABWPmezNorspZ5W/v?=
- =?us-ascii?Q?zh4f8FdZ9IHq49E0kJG7MgrXc/eDE3Z+wvcL90/cufsSGNvuhqV2lVZEWmdS?=
- =?us-ascii?Q?9UeYcyzB4G1DBguOO6P5Ybp3on/Eu011ciCGEAngD+8UAdcNXKqkvh1NtKsw?=
- =?us-ascii?Q?UQ4hWPjS2wHyRcr0XO3jn7Sgl29eL59WrziCGV3BdlUIKqrlh0aa/3dSwaFS?=
- =?us-ascii?Q?YQ=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52C651757D
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 08:22:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.33
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706084554; cv=none; b=ZzDdAnWmfAk4XyJlMQ4gLifaKQCXih+XVxwWJTHNcR9G4HGdrF8Ou2ttH43KzAyh31mb8an9604pavemdxEe0W2KVeNPcNTxzpHRIPmeFJLTzRUQJW0qT5S1pdKyMpLfcuCrAvvjZtMXV6472haXh8qSqwqm+v5FL91gB0eLbeo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706084554; c=relaxed/simple;
+	bh=VOrPe0Px8OH+E8oC5sQu7xuToA+TdC/y8OTGx/mvutc=;
+	h=From:To:Cc:In-Reply-To:Subject:Date:Message-ID:MIME-Version:
+	 Content-Type:References; b=pwn9PRZAkmTmsLv3gD/7jyLGg4TE9S61H9Ax7gQnRfiq9uv3X0B4Nj33K0rtnBP+Aiy8B3LGluVUuf74Nh5Hg2Lo5S/g19FN8LLN4EpSCYdsPk0ZwZn/7VcIbp4ul9dsNPhxWMDGUfPHUjtmEWrIYdulnFnj4TPauh94LBsNtZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=IL0TuiFa; arc=none smtp.client-ip=203.254.224.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+	by mailout3.samsung.com (KnoxPortal) with ESMTP id 20240124082228epoutp03d4fa3e888f77d85505c15c6cdd741455~tOttwn7FI1329713297epoutp03M
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 08:22:28 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20240124082228epoutp03d4fa3e888f77d85505c15c6cdd741455~tOttwn7FI1329713297epoutp03M
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1706084548;
+	bh=/uytoDMxLCBDZBYsTuKhf3zBY1XyUga051NVgA740ac=;
+	h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+	b=IL0TuiFajNSqPeBkrKtQnRppY05z+M58TtZDgG7u34xo20+yaAP7kJkwPWatYNHax
+	 nKYaW+Ehf0rjom8XuYSPGCdls3/RpPckGyjwao7FZvFz4gmPygTC5+EiYBit4Xu0AE
+	 0Q2VvG9mEeM/KA3DcWD1EZydF2gaHbxDY9BGC6LA=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+	epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+	20240124082227epcas5p3b8fa4c06838be625565b9855849e04e4~tOttOVoVP2021520215epcas5p3L;
+	Wed, 24 Jan 2024 08:22:27 +0000 (GMT)
+Received: from epsmgec5p1-new.samsung.com (unknown [182.195.38.179]) by
+	epsnrtp1.localdomain (Postfix) with ESMTP id 4TKcQ91LJZz4x9Pr; Wed, 24 Jan
+	2024 08:22:25 +0000 (GMT)
+Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+	epsmgec5p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	45.A5.19369.0C8C0B56; Wed, 24 Jan 2024 17:22:25 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+	epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+	20240124063912epcas5p2682fbdd5bcebc79ab2bfb197b75f8e64~tNTj9L_-O2475224752epcas5p2W;
+	Wed, 24 Jan 2024 06:39:12 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+	20240124063912epsmtrp21de30c7627d4caa52fd2e4b01346b156~tNTj8SHUg1695016950epsmtrp2e;
+	Wed, 24 Jan 2024 06:39:12 +0000 (GMT)
+X-AuditID: b6c32a50-9e1ff70000004ba9-21-65b0c8c0ff7f
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+	epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	D3.24.08755.090B0B56; Wed, 24 Jan 2024 15:39:12 +0900 (KST)
+Received: from FDSFTE462 (unknown [107.122.81.248]) by epsmtip2.samsung.com
+	(KnoxPortal) with ESMTPA id
+	20240124063910epsmtip2015245bed1cd1cc245f8e8683500ccd0~tNThgFfnR1071810718epsmtip2b;
+	Wed, 24 Jan 2024 06:39:09 +0000 (GMT)
+From: "Shradha Todi" <shradha.t@samsung.com>
+To: "'Alim Akhtar'" <alim.akhtar@samsung.com>, <linux-clk@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-samsung-soc@vger.kernel.org>
+Cc: <mturquette@baylibre.com>, <sboyd@kernel.org>, <jingoohan1@gmail.com>,
+	<lpieralisi@kernel.org>, <kw@linux.com>, <robh@kernel.org>,
+	<bhelgaas@google.com>, <krzysztof.kozlowski@linaro.org>,
+	<linux@armlinux.org.uk>, <m.szyprowski@samsung.com>,
+	<manivannan.sadhasivam@linaro.org>
+In-Reply-To: <001001da43c0$e8e9a8e0$babcfaa0$@samsung.com>
+Subject: RE: [PATCH v3 1/2] clk: Provide managed helper to get and enable
+ bulk clocks
+Date: Wed, 24 Jan 2024 12:09:08 +0530
+Message-ID: <05e001da4e90$0ace4b80$206ae280$@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: ZQ0PR01MB1160.CHNPR01.prod.partner.outlook.cn
-X-MS-Exchange-CrossTenant-Network-Message-Id: e8afa126-99d6-400d-f493-08dc1c9776a7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jan 2024 04:46:43.5752
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: z2sLuvy1qrLXEapVgfYnmHF9j0iXdsQ8miBskQzKh7267pWE8mnf1Rt5XcUqdqcDlEB8+ueD5I3Lt+N8ImC/dgL+LxFMwDM9604xsfUE+UM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: ZQ0PR01MB1142
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQK3Yhu837gawrdP2S3E1hwP53Jf7wFhoUR7AWI/r/kCd/fnoa8EfBEQ
+Content-Language: en-in
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKJsWRmVeSWpSXmKPExsWy7bCmuu7BExtSDeZOZLJ4MG8bm8WSpgyL
+	FV9mslvsfb2V3aKh5zerxabH11gtPvbcY7W4vGsOm8XZecfZLGac38dkcWjqXkaLlj8tLBZr
+	j9xlt7jb0slqcfGUq8X/PTvYLf5d28jiIOhx+dpFZo/3N1rZPXbOusvusWBTqcemVZ1sHneu
+	7WHzeHJlOpPH5iX1Hn1bVjF6fN4kF8AVlW2TkZqYklqkkJqXnJ+SmZduq+QdHO8cb2pmYKhr
+	aGlhrqSQl5ibaqvk4hOg65aZA/SNkkJZYk4pUCggsbhYSd/Opii/tCRVISO/uMRWKbUgJafA
+	pECvODG3uDQvXS8vtcTK0MDAyBSoMCE74/rNqawFR40qlnW9YW1gnK7ZxcjJISFgIrH4YAtz
+	FyMXh5DAHkaJ3kfT2CCcT4wSk+91QDnfGCXmHrjMBtNy8OlvqJa9jBJ35+xgAkkICbxglNh5
+	zgzEZhPQkXhy5Q9YkYjADUaJ64+OgjnMAvOZJB7ufw82ilPASuJm/05mEFtYIFzi55WfrCA2
+	i4CqxNP+ZSwgNq+ApcSFbZeZIGxBiZMzn4DFmQW0JZYtfM0McZKCxM+ny8B6RQTcJJ4/nMgK
+	USMucfRnD9hiCYEfHBJz7xxlgWhwkXj1r4kJwhaWeHV8CzuELSXx+d1eqD/TJVZungG1IEfi
+	2+YlUPX2EgeuzAGawwG0QFNi/S59iLCsxNRT65gg9vJJ9P5+AlXOK7FjHoytLPHl7x6oEyQl
+	5h27zDqBUWkWktdmIXltFpIXZiFsW8DIsopRKrWgODc9Ndm0wFA3L7UcHufJ+bmbGMHpXStg
+	B+PqDX/1DjEycTAeYpTgYFYS4b0huS5ViDclsbIqtSg/vqg0J7X4EKMpMMAnMkuJJucDM0xe
+	SbyhiaWBiZmZmYmlsZmhkjjv69a5KUIC6YklqdmpqQWpRTB9TBycUg1MrLx+DGsLqpcH7Bbs
+	EKnZpyHkV+RZq8q01bd6gYBw6x4rmVv/A4WvnZ6t9cmaW1++IOePhXK1rvyT+2sXxGuaWyne
+	l93kJL921X3vjQK2R15Wcf644n/h34nKInvms7ypF0O7v5z+eHSeqJbtBGm+br3p668U60is
+	uBvao52ftGzCsj7fRS+vKTtJHd6THl9+cOE/pqebvNJz32y/1t56+5/DjZIzTgq9DFPZ4zKL
+	i9T/MdkZ81d9r3tzpUXkzSXnK1VXbZpXLti38OYWU/OHL4V0jA7mM8ic8Pm9WH5XSF/CqiXN
+	bRf9XebptF8Tkbmm55KoOfX2DreXt1Uv+hzM7bndelBt8XJ2JV0bhitKLMUZiYZazEXFiQAG
+	ivfueAQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrNIsWRmVeSWpSXmKPExsWy7bCSvO6EDRtSDRatVbV4MG8bm8WSpgyL
+	FV9mslvsfb2V3aKh5zerxabH11gtPvbcY7W4vGsOm8XZecfZLGac38dkcWjqXkaLlj8tLBZr
+	j9xlt7jb0slqcfGUq8X/PTvYLf5d28jiIOhx+dpFZo/3N1rZPXbOusvusWBTqcemVZ1sHneu
+	7WHzeHJlOpPH5iX1Hn1bVjF6fN4kF8AVxWWTkpqTWZZapG+XwJXx4axSwRzDii8v5zE1ML5Q
+	72Lk5JAQMJE4+PQ3cxcjF4eQwG5GiV1tnawQCUmJzxfXMUHYwhIr/z1nhyh6xihxan8DO0iC
+	TUBH4smVP8wgtojAPUaJyefqQYqYBVYzSfxZ/pcNouMlo8SLU91gVZwCVhI3+3eC2cICoRIX
+	G9exgdgsAqoST/uXsYDYvAKWEhe2XWaCsAUlTs58AhZnFtCWeHrzKZy9bOFrZojzFCR+Pl3G
+	CnGFm8TzhxNZIWrEJY7+7GGewCg8C8moWUhGzUIyahaSlgWMLKsYJVMLinPTc4sNCwzzUsv1
+	ihNzi0vz0vWS83M3MYLjW0tzB+P2VR/0DjEycTAeYpTgYFYS4b0huS5ViDclsbIqtSg/vqg0
+	J7X4EKM0B4uSOK/4i94UIYH0xJLU7NTUgtQimCwTB6dUA9O+/3ITzE6t1TgyzSHnpsu9d5tt
+	w6r37lpalJW98L7pV0dDT9G37IIRGlXTar1MIh/eK769ecW2BHX7wxJZl4sFDobkGH/o0Jzn
+	XXXs/WfHzyxCARG7j6w5Y1K/+dHPs229+XNM1sxkLNJtmrXUNKVGT8mA+Urt1a29N4XObEsq
+	W6ezU/qaz4RVZjn3hUWWXiu+7btRxMNYSlb8yczQySWn3E435cr9z7vTckB9opO/bm+eFIP2
+	PF6x6L99ftebGArUVqolhaRz3apd9V9c7bDbujNH957p23u6VVihaML8v60Pz6WGWKS4vuUy
+	4agQTX/i7/Xxu1hv7eJ+llUxDxKznE0EUp4/TxZwtNn/TomlOCPRUIu5qDgRALnOZxNeAwAA
+X-CMS-MailID: 20240124063912epcas5p2682fbdd5bcebc79ab2bfb197b75f8e64
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20240110110156epcas5p36bac4093be0fa6eaa501d7eaed4d43d3
+References: <20240110110115.56270-1-shradha.t@samsung.com>
+	<CGME20240110110156epcas5p36bac4093be0fa6eaa501d7eaed4d43d3@epcas5p3.samsung.com>
+	<20240110110115.56270-2-shradha.t@samsung.com>
+	<001001da43c0$e8e9a8e0$babcfaa0$@samsung.com>
 
-Hi Andi,
+
+
+> -----Original Message-----
+> From: Alim Akhtar <alim.akhtar=40samsung.com>
+> Sent: 10 January 2024 18:01
+> To: 'Shradha Todi' <shradha.t=40samsung.com>; linux-clk=40vger.kernel.org=
+; linux-
+> kernel=40vger.kernel.org; linux-pci=40vger.kernel.org; linux-arm-
+> kernel=40lists.infradead.org; linux-samsung-soc=40vger.kernel.org
+> Cc: mturquette=40baylibre.com; sboyd=40kernel.org; jingoohan1=40gmail.com=
+;
+> lpieralisi=40kernel.org; kw=40linux.com; robh=40kernel.org; bhelgaas=40go=
+ogle.com;
+> krzysztof.kozlowski=40linaro.org; linux=40armlinux.org.uk;
+> m.szyprowski=40samsung.com; manivannan.sadhasivam=40linaro.org;
+> alim.akhtar=40samsung.com
+> Subject: RE: =5BPATCH v3 1/2=5D clk: Provide managed helper to get and en=
+able bulk
+> clocks
 >=20
-> ...
+> Hi Shradha,
 >=20
-> > > > +static int __maybe_unused cdns_i2c_resume(struct device *dev) {
-> > > > +	struct cdns_i2c *xi2c =3D dev_get_drvdata(dev);
-> > > > +	int err;
-> > > > +
-> > > > +	err =3D cdns_i2c_runtime_resume(dev);
-> > > > +	if (err)
-> > > > +		return err;
-> > > > +
-> > > > +	if (pm_runtime_status_suspended(dev)) {
-> > > > +		err =3D cdns_i2c_runtime_suspend(dev);
-> > > > +		if (err)
-> > > > +			return err;
-> > >
-> > > We call the cdns_i2c_resume() functions to come up from a suspended
-> > > state. But, if we fail to resume, we call the suspend and return '0' =
-(because this always returns '0').
-> > >
-> > > In other words, if we take this path, we call resume, but we still en=
-d up suspended and return success.
-> > >
-> > > Andi
-> > >
+> > -----Original Message-----
+> > From: Shradha Todi <shradha.t=40samsung.com>
+> > Sent: Wednesday, January 10, 2024 4:31 PM
+> > To: linux-clk=40vger.kernel.org; linux-kernel=40vger.kernel.org; linux-
+> > pci=40vger.kernel.org; linux-arm-kernel=40lists.infradead.org;
+> > linux-samsung- soc=40vger.kernel.org
+> > Cc: mturquette=40baylibre.com; sboyd=40kernel.org; jingoohan1=40gmail.c=
+om;
+> > lpieralisi=40kernel.org; kw=40linux.com; robh=40kernel.org;
+> > bhelgaas=40google.com; krzysztof.kozlowski=40linaro.org;
+> > alim.akhtar=40samsung.com; linux=40armlinux.org.uk;
+> > m.szyprowski=40samsung.com; manivannan.sadhasivam=40linaro.org; Shradha
+> > Todi <shradha.t=40samsung.com>
+> > Subject: =5BPATCH v3 1/2=5D clk: Provide managed helper to get and enab=
+le
+> > bulk clocks
 > >
-> > My understanding is that during system level resume 'cdns_i2c_resume()'=
-, the i2c device itself can still be held in runtime suspend
-> regardless of the change in system level PM.
-> > Looking back at this, we invoke cdns_i2c_runtime_resume() to enable clo=
-ck and init the i2c device, the runtime PM state is still
-> unchanged and kept suspended.
-> > pm_runtime_status_suspended() will be evaluated as true, and runtime su=
-spend 'cdns_i2c_runtime_suspend()' is invoked to
-> disable the clock. This balances the clock count enabled earlier.
+> > Provide a managed devm_clk_bulk* wrapper to get and enable all bulk
+> > clocks in order to simplify drivers that keeps all clocks enabled for
+> > the time of driver operation.
+> >
+> > Suggested-by: Marek Szyprowski <m.szyprowski=40samsung.com>
+> > Signed-off-by: Shradha Todi <shradha.t=40samsung.com>
+> > ---
+> >  drivers/clk/clk-devres.c =7C 41
+> > ++++++++++++++++++++++++++++++++++++++++
+> >  include/linux/clk.h      =7C 25 ++++++++++++++++++++++++
+> >  2 files changed, 66 insertions(+)
+> >
+> > diff --git a/drivers/clk/clk-devres.c b/drivers/clk/clk-devres.c index
+> > 4fb4fd4b06bd..05b0ff4bc1d4 100644
+> > --- a/drivers/clk/clk-devres.c
+> > +++ b/drivers/clk/clk-devres.c
+> > =40=40 -102,6 +102,7 =40=40
+> > EXPORT_SYMBOL_GPL(devm_clk_get_optional_enabled);
+> >  struct clk_bulk_devres =7B
+> >  	struct clk_bulk_data *clks;
+> >  	int num_clks;
+> > +	void (*exit)(int num_clks, const struct clk_bulk_data *clks);
+> >  =7D;
+> >
+> >  static void devm_clk_bulk_release(struct device *dev, void *res) =40=
+=40
+> > -182,6
+> > +183,46 =40=40 int __must_check devm_clk_bulk_get_all(struct device *de=
+v,
+> > +=7D
+> > EXPORT_SYMBOL_GPL(devm_clk_bulk_get_all);
+> >
+> > +static void devm_clk_bulk_release_all_enabled(struct device *dev,
+> > +void
+> May be devm_clk_bulk_release_all_disable()
 >=20
-> If this is your issue, what if we do not enable the clock during resume? =
-and we just mark the device as resumed?
->=20
-That will work as well. The i2c device will be runtime resumed again during=
- cdns_i2c_master_xfer() anyway, but thought that it
-would be a good idea to check if the i2c device is able runtime resume duri=
-ng a system level resume.
 
-> > The runtime PM state is only resumed during cdns_i2c_master_xfer() thro=
-ugh pm_runtime_resume_and_get(), and subsequently
-> kept suspended through pm_runtime_put_autosuspend().
-> > Since the cdns_i2c_runtime_suspend() always return '0', I will simplify=
- them as follow:
-> > +if (pm_runtime_status_suspended(dev))
-> > +	cdns_i2c_runtime_suspend(dev);
->=20
-> I'd prefer checking the error value, even though we are sure on the expec=
-ted return. It's more future proof.
->=20
-> Andi
->=20
-Ok, I will keep the original changes.
+Will change this in the next patchset
 
-> > > > +	}
-> > > > +
-> > > > +	i2c_mark_adapter_resumed(&xi2c->adap);
-> > > > +
-> > > > +	return 0;
-> > > > +}
+> Also this is similar to already existing devm_clk_bulk_release_all(), may=
+ be you
+> can reuse this function And add the exit() callback in devm_clk_bulk_rele=
+ase_all()
+>=20
+
+Since I'm planning to remove the exit callback in the next version as sugge=
+sted by Manivannan, I will have to
+go with a new release function
+
+> > +*res) =7B
+> > +	struct clk_bulk_devres *devres =3D res;
+> > +
+> > +	if (devres->exit)
+> > +		devres->exit(devres->num_clks, devres->clks);
+> > +
+> > +	clk_bulk_put_all(devres->num_clks, devres->clks); =7D
+> > +
+> > +int __must_check devm_clk_bulk_get_all_enabled(struct device *dev,
+>=20
+> May be devm_clk_bulk_get_all_enable() is more suitable
+>=20
+
+Will take this in the next patchset=21 Thanks for the review
+
+> > +				  struct clk_bulk_data **clks, int *num_clks) =7B
+> > +	struct clk_bulk_devres *devres;
+> > +	int ret;
+> > +
+> > +	devres =3D devres_alloc(devm_clk_bulk_release_all_enabled,
+> > +			      sizeof(*devres), GFP_KERNEL);
+> > +	if (=21devres)
+> > +		return -ENOMEM;
+> > +
+> > +	ret =3D clk_bulk_get_all(dev, &devres->clks);
+> > +	if (ret > 0) =7B
+> > +		*clks =3D devres->clks;
+> > +		devres->num_clks =3D ret;
+> > +		*num_clks =3D ret;
+> > +		devres_add(dev, devres);
+> > +	=7D else =7B
+> > +		devres_free(devres);
+> > +		return ret;
+> > +	=7D
+> > +
+> > +	ret =3D clk_bulk_prepare_enable(devres->num_clks, *clks);
+> > +	if (=21ret)
+> > +		devres->exit =3D clk_bulk_disable_unprepare;
+> > +
+> > +	return ret;
+> > +=7D
+> > +EXPORT_SYMBOL_GPL(devm_clk_bulk_get_all_enabled);
+> > +
+> >  static int devm_clk_match(struct device *dev, void *res, void *data)  =
+=7B
+> >  	struct clk **c =3D res;
+> > diff --git a/include/linux/clk.h b/include/linux/clk.h index
+> > 1ef013324237..bf3e9bee5754 100644
+> > --- a/include/linux/clk.h
+> > +++ b/include/linux/clk.h
+> > =40=40 -438,6 +438,24 =40=40 int __must_check
+> > devm_clk_bulk_get_optional(struct device *dev, int num_clks,  int
+> > __must_check devm_clk_bulk_get_all(struct device *dev,
+> >  				       struct clk_bulk_data **clks);
+> >
+> > +/**
+> > + * devm_clk_bulk_get_all_enabled - managed get multiple clk consumers
+> > and
+> > + *					enable all clk
+> > + * =40dev: device for clock =22consumer=22
+> > + * =40clks: pointer to the clk_bulk_data table of consumer
+> > + * =40num_clks: out parameter to store the number of clk_bulk_data
+> > + *
+> > + * Returns success (0) or negative errno.
+> > + *
+> > + * This helper function allows drivers to get several clk
+> > + * consumers and enable all of them in one operation with management.
+> > + * The clks will automatically be disabled and freed when the device
+> > + * is unbound.
+> > + */
+> > +
+> > +int __must_check devm_clk_bulk_get_all_enabled(struct device *dev,
+> > +				struct clk_bulk_data **clks, int *num_clks);
+> > +
+> >  /**
+> >   * devm_clk_get - lookup and obtain a managed reference to a clock
+> > producer.
+> >   * =40dev: device for clock =22consumer=22
+> > =40=40 -960,6 +978,13 =40=40 static inline int __must_check
+> > devm_clk_bulk_get_all(struct device *dev,
+> >  	return 0;
+> >  =7D
+> >
+> > +static inline int __must_check devm_clk_bulk_get_all_enabled(struct
+> > device *dev,
+> > +				struct clk_bulk_data **clks, int *num_clks) =7B
+> > +
+> > +	return 0;
+> > +=7D
+> > +
+> >  static inline struct clk *devm_get_clk_from_child(struct device *dev,
+> >  				struct device_node *np, const char *con_id) =7B
+> > --
+> > 2.17.1
+>=20
+
+
 
