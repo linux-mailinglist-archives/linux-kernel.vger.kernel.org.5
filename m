@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-37744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C44A83B4B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:33:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BD92A83B4D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:36:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 152012851C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:33:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DF1F281488
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:36:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06EB6136656;
-	Wed, 24 Jan 2024 22:33:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A20A13D4F5;
+	Wed, 24 Jan 2024 22:33:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="QLwRG93g"
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="ZOzwnXMl"
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C35D130E3D;
-	Wed, 24 Jan 2024 22:33:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35170137C24;
+	Wed, 24 Jan 2024 22:33:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706135597; cv=none; b=ciWrwkX0btv4BEmgyh+ZE2qTfjw7F2oViXY1s2DRLvj3VuZs409/CoWAktlZ+a+T+TYnc56+7/gNVenshADACmuS6VG3S0zFFNrgZIXro4Mk8BC7T1Tmwyl+KZdcQ47vxbWSKYShFN8IbQEVBxjbG33SSDnB5qdND0x6gfcNYjk=
+	t=1706135601; cv=none; b=RSV2L2ziVFM1FpIlkve/HXpyUOUqwM9LALTotp0HL5EKnUtZpbYLTASdeVLoTtvHtia1+G43p9xHFFIR8thyGWSw0C8LtDzLUO22TfRIeCNKLyNAzIKtAtXgkEtq9yYLOOq9erimeJdWm+lbB6aR6XLZZcafNohA2VMGPIB/d2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706135597; c=relaxed/simple;
-	bh=aPLUUURCdX8yefR9B+X+EaFFqrqIchv4U4ygOF8Vdzc=;
+	s=arc-20240116; t=1706135601; c=relaxed/simple;
+	bh=RDndYU/UJoApIcvHSwbCFnZCrA4471ZL4jmcwAK2gCw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ZmDXALMz2gAt1iAD9Da5zrxzt1kN91Oy+w/HgdymDH7z9NBIUOYSMfnurHqbH6JA9iNOEQIWolIjDRfFpBiLDY8DiJHffi2g+wjJJkD6CFt2zDatzf5rqWWBLBI26DqEgg42a5q+qYEO1qAZxDqRF4ztU9AasLJCm2/4rpzxJGI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=QLwRG93g; arc=none smtp.client-ip=212.227.17.22
+	 MIME-Version; b=V3GTSNUzCEOEtihRtvK+w0coH0NoUMp8YmiQztRcWuOQkXwFAkVOxwSCghrf/Mie6vG0jcdCLHme6DNnGXGc54UqZlTqAkQuKpGSmq1sPjtgZdZktz2IdxtTYuL0mULA8yODOfjyiO/TPHmKvzgEHxZb/yLrWDt3SnyP+6flI1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=ZOzwnXMl; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-	s=s31663417; t=1706135561; x=1706740361; i=wahrenst@gmx.net;
-	bh=aPLUUURCdX8yefR9B+X+EaFFqrqIchv4U4ygOF8Vdzc=;
+	s=s31663417; t=1706135562; x=1706740362; i=wahrenst@gmx.net;
+	bh=RDndYU/UJoApIcvHSwbCFnZCrA4471ZL4jmcwAK2gCw=;
 	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
 	 References;
-	b=QLwRG93gvugH69luDdbo1sna8wmWggF6jXwuflJC9Zaig0l1InFcAmQ4XagZ73UE
-	 HrqvtGHUdjWh9C6hI2evhPS6dRVwdvRn/gnkMzC1RozhoHoSTg6nbZ5AEfkq3yaxZ
-	 z06+9W9ICdN8Ws1dcgi5rNvTPoD4aZMsZwRYAXui8eb4mszpdAUekd5RimcN0Y9l/
-	 te/Q5sPlc0vqtwHdyUjFkmZFN2NG4Fd94UgwBunGS5oMN5vRAbkZbMYUX1jOR4xhI
-	 ke7dMkASvAdTgLjVAMVRzSLxPAiPbVZ3KDJbIiDITGWqkMY96FvF/m+jPeXawAaA1
-	 79d7a+8HZw5zJ5mqew==
+	b=ZOzwnXMlq1fqAu2xfqP8JbsO3NvTEF2lf5GjznbjySjJF6h01bo7gVAt4tmqAksc
+	 Petd5KqgqNMTNLZ7mYbYjoZhKf7QgE4+NR7GQpBbYGZVVgD7J2p8HUJ8rQ+l+9gbM
+	 rqx7walvFUIRjQy/CNnNR/pLtcU3rq/XI8klOZmjV0voG1hEz8KQh0zQKnhgFL1rh
+	 U2eM8hKp5Iu6e6CRub9Fehr7oB6Y9PFG5GuDFsC9YCf8AhgWO7HQoNgy2yGWuuLCM
+	 zsUKaLcWD6rg6LbN0RTzcrMzoXa/YsZb8i6+d3BSnaNe8N7JaMQS+JD1nEac961PE
+	 RWHFFm31xuWSsKMUOw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from stefanw-SCHENKER ([37.4.248.43]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MI5QF-1rGyEw2jN1-00F9Ux; Wed, 24
- Jan 2024 23:32:41 +0100
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MlNp7-1qni1X0e0D-00li65; Wed, 24
+ Jan 2024 23:32:42 +0100
 From: Stefan Wahren <wahrenst@gmx.net>
 To: "David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
@@ -54,11 +54,12 @@ Cc: Lino Sanfilippo <LinoSanfilippo@gmx.de>,
 	Florian Fainelli <f.fainelli@gmail.com>,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
+	Stefan Wahren <stefan.wahren@i2se.com>,
 	Stefan Wahren <wahrenst@gmx.net>,
 	Jacob Keller <jacob.e.keller@intel.com>
-Subject: [PATCH V3 10/14 next] qca_spi: Adjust log of SPI_REG_RDBUF_BYTE_AVA
-Date: Wed, 24 Jan 2024 23:32:07 +0100
-Message-Id: <20240124223211.4687-11-wahrenst@gmx.net>
+Subject: [PATCH V3 11/14 next] qca_7k: Replace BSD boilerplate with SPDX
+Date: Wed, 24 Jan 2024 23:32:08 +0100
+Message-Id: <20240124223211.4687-12-wahrenst@gmx.net>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240124223211.4687-1-wahrenst@gmx.net>
 References: <20240124223211.4687-1-wahrenst@gmx.net>
@@ -69,52 +70,294 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:RKnQJ8mFyiEBeynNQ4tWzggzqo0rymb9752Iu0YtU45KsP6H+TG
- oDZpwW3VdD5CuZOXwKB4LGdYx4qXDa5a/tmMqUBHk5uULAwzMzkHhHPXh2byWyJTUUSgyd4
- o2NgSxCCOW6xmlUtjp1ZXXGBu4CYVd6jPFvC22DmV6tTTX5cixPnNqA/VaPPvoAZgbFPtX2
- aK5fKIWCvBfArcFwiQP5g==
+X-Provags-ID: V03:K1:1KGzPM3vAPeQ78Lo4tnVvpL5N+I4Iimqb4T9or5sZULdIZDt2ra
+ N6pEqS4NtG/z2e1Du/B+6VK3432vSa9+Q0j5vqsJbgb5Y38k3otP1dS/taHmnrmfMAHJDBa
+ O/pii8v6qu6sYHMjtGhOyhqwyz6xD6OkFRfUz3HqVmbEAjGAYh706rAcRNlhVMD8Cf2YRlQ
+ dUroEa8JcTtKCw9vxubdg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:ugjREs5rMqw=;0rqJ9cyuQ05gzrybB2cW0gMwyRI
- VqY+YM0/rwxeISipI4WR+P6DR20f6BEKSp39Kt3Fu412Un9ffHFr7Pzx97B6dHjGHC2wYFKXN
- d/HDEf8yza0+Z8pXSzeVA7hHMb5QDJBaFzXw3HBvSqk7mNfwdOzsB9VHEsv6EQamQ/KHPWV+I
- ZgaudVXhBOsN/YPHxd4WHwtnZSs8ZwW+OUhnvemOtwh2qL9NRr7PRLGO73u0tyQcILMZO8q76
- o/pyu32qjp8JfP3th+QV+p9p1NkwAp2pwkhi48PuDesvw7vkgpbgGmMskQ7fdLz3Ls3vMjM9s
- oPryfuIbsO9JtTiTRUz6cktknpirmmGCJz9jwtpVZ02fz38DPKrbNuB/Bp3JdnMWFS0XdlYES
- +ZbrzIcp+KY8wdkiYe92OGYtXQ8M/cX3ecStR8i4ACYuETbdXfCrfkBmD3H0ig42ObXJZ91M8
- Cfay/Yr7Vep4nM9af7LrNEsek/WH++8Vkgx2yjAG7Iz/vW/Ir8ClWojVSKpwj9uZLd90x78s3
- mSjaRypq5yjswP2QwjzTqH0gxCPIEMoNPjeiTS0eqjAzEDYFQInmUhFZZ/xSbXQe5/st68MJ0
- q6VM5DR2nGpEbLg0WEWrMmFjq7wrKRID0Nsz3jtIyjrBCW/4KtoC9NfoD/3etQIqz87taa+rJ
- 1Tk69fiamUJVk8dEqxbI7tvvWcJDnDWStIZX234Vy3ozWafxc6ejmBBcQXfWzTet7NWmG6bTl
- BwPUKrbQOvWy9trA/j0Y+uSFKf8MVoKDsFBLu1ZqQnK6X6Cgjyie8ai2V0WqQnh7IsADr7nX2
- t6kPO3sNAGx33FDoMJbiAFjjKmiM/T97vgqQrRfaXoIVUifbXXNFmAa4YJ+sP29vVNOXz1ucU
- z+tSW6QLvlpTuHg1FlW0xFa/23ikmt8/6sp1+B/IXPHDrYSwa6xKa36bnoU9g/qv1gJD8bF7Z
- hUW0FOoJERHoqMzxMkC90uDddqk=
+UI-OutboundReport: notjunk:1;M01:P0:QsGj+4zh6gs=;tIuKtwgL1D3h+0mIIA9N2egloP4
+ vdDSRzZ7Dv3U5zeyQH04n8HCR8BD9zeuHLO4F8oI+8nlmRxqYjJ/e3N6vhskMaCalb0aXgBBn
+ z/NJbP5ddgJCVBs4TBEjKO8VxcxXV21sehBLjpkM1vzS0dwfypokMkWvpp8dq+4Ke+ui3vZZ4
+ O71WBNK7uxK7jPGezdDoOptOFqtLzdDWYmrFsg/sqwJoexINAcNOrHO1ZKH8Ei+nkF4w9OCyD
+ E5YnY5HTGVtDF8CMPsMgUwtyldEVjkgZN2OwP3y8NFfA7mKNsZaD+Zp6/IF9Fmhr8DkfmLL/E
+ J6G7qmyK1Wzde/9ar5jB5ZrnoNvcMiMyc23Iwbg5IhnVIYR6Mrjmkv5ixCd8OS9my56RstyiC
+ VFdI0vRTEGcZK6r/yQO5McNlY64d8+rq4YWTzkTcvYFpfUkhg4uoE6idYvIM55+FWg8nRGLc4
+ LtSb5ModmBXxn+M5ZLbhQ6/EzKNSpJIEI0/MmrXgVXWMqHlHxE8LIfN4hnPDt+U5Tb6bvWcke
+ YaIaMkDQ/Bh6N9XjJlmDWK+7ZKzVdtQVWn+CcNvkzGnwm3kE9cFtFp4ke2PRkB2b2ys+PCWMA
+ jKVcREbS6tXoxTpeBbWBTxsWVEfY218woVidIT9mHNTNLqby5aU4r3/0LTB8gHdWVxCmeOSIk
+ oJ8jtWjRxtcdzbbnoHxj1SW55em0PEgy6mxzRVkYKEx91D6o6le5peVd4R8lACSBbMtKp2vwA
+ Vm0uNSE7kPvSje6Arwt/xdMwpwEgVAeaoioiOtIIR5dZRr9Te2KkF/bUmseiFl1p0+tIk5ewK
+ JaXa6QKsIO1i6V4EyETgLp7sxz+FPXT95I0mqJbVpyqTeUFbidiUb16arw4+kvUDrKPLwaDXj
+ z0EXrEiw+lUY/WePwawJsYxTjwHHT7gqEIPDoezHEGcuNkAue66Grtai8LXJAUwdiyXkPU1i/
+ rzYcVxxmboOGKKreZGGQ6tECVew=
 
-All known SPI registers of the QCA700x are 16 bit long. So adjust
-the formater width accordingly.
+From: Stefan Wahren <stefan.wahren@i2se.com>
 
+According to MODULE_LICENSE the driver is under a dual license.
+So replace the BSD license text with the proper SPDX tag.
+
+Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
 Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
 Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
 =2D--
- drivers/net/ethernet/qualcomm/qca_spi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/qualcomm/qca_7k.c        | 17 +----------------
+ drivers/net/ethernet/qualcomm/qca_7k.h        | 16 +---------------
+ drivers/net/ethernet/qualcomm/qca_7k_common.c | 15 +--------------
+ drivers/net/ethernet/qualcomm/qca_7k_common.h | 15 +--------------
+ drivers/net/ethernet/qualcomm/qca_debug.c     | 15 +--------------
+ drivers/net/ethernet/qualcomm/qca_debug.h     | 15 +--------------
+ drivers/net/ethernet/qualcomm/qca_spi.c       | 15 +--------------
+ drivers/net/ethernet/qualcomm/qca_spi.h       | 15 +--------------
+ drivers/net/ethernet/qualcomm/qca_uart.c      | 15 +--------------
+ 9 files changed, 9 insertions(+), 129 deletions(-)
 
+diff --git a/drivers/net/ethernet/qualcomm/qca_7k.c b/drivers/net/ethernet=
+/qualcomm/qca_7k.c
+index 4292c89bd35c..6263e4cf47fa 100644
+=2D-- a/drivers/net/ethernet/qualcomm/qca_7k.c
++++ b/drivers/net/ethernet/qualcomm/qca_7k.c
+@@ -1,22 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
+ /*
+- *
+  *   Copyright (c) 2011, 2012, Qualcomm Atheros Communications Inc.
+  *   Copyright (c) 2014, I2SE GmbH
+- *
+- *   Permission to use, copy, modify, and/or distribute this software
+- *   for any purpose with or without fee is hereby granted, provided
+- *   that the above copyright notice and this permission notice appear
+- *   in all copies.
+- *
+- *   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+- *   WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+- *   WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL
+- *   THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR
+- *   CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+- *   LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+- *   NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+- *   CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+- *
+  */
+
+ /*   This module implements the Qualcomm Atheros SPI protocol for
+diff --git a/drivers/net/ethernet/qualcomm/qca_7k.h b/drivers/net/ethernet=
+/qualcomm/qca_7k.h
+index 356de8ec5d48..828ee9c27578 100644
+=2D-- a/drivers/net/ethernet/qualcomm/qca_7k.h
++++ b/drivers/net/ethernet/qualcomm/qca_7k.h
+@@ -1,21 +1,7 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
+ /*
+  *   Copyright (c) 2011, 2012, Qualcomm Atheros Communications Inc.
+  *   Copyright (c) 2014, I2SE GmbH
+- *
+- *   Permission to use, copy, modify, and/or distribute this software
+- *   for any purpose with or without fee is hereby granted, provided
+- *   that the above copyright notice and this permission notice appear
+- *   in all copies.
+- *
+- *   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+- *   WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+- *   WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL
+- *   THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR
+- *   CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+- *   LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+- *   NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+- *   CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+- *
+  */
+
+ /*   Qualcomm Atheros SPI register definition.
+diff --git a/drivers/net/ethernet/qualcomm/qca_7k_common.c b/drivers/net/e=
+thernet/qualcomm/qca_7k_common.c
+index 6b511f05df61..be2f754efd21 100644
+=2D-- a/drivers/net/ethernet/qualcomm/qca_7k_common.c
++++ b/drivers/net/ethernet/qualcomm/qca_7k_common.c
+@@ -1,20 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
+ /*
+  *   Copyright (c) 2011, 2012, Atheros Communications Inc.
+  *   Copyright (c) 2014, I2SE GmbH
+- *
+- *   Permission to use, copy, modify, and/or distribute this software
+- *   for any purpose with or without fee is hereby granted, provided
+- *   that the above copyright notice and this permission notice appear
+- *   in all copies.
+- *
+- *   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+- *   WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+- *   WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL
+- *   THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR
+- *   CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+- *   LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+- *   NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+- *   CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
+
+ /*   Atheros ethernet framing. Every Ethernet frame is surrounded
+diff --git a/drivers/net/ethernet/qualcomm/qca_7k_common.h b/drivers/net/e=
+thernet/qualcomm/qca_7k_common.h
+index 088cca7f61db..44ed66fdb407 100644
+=2D-- a/drivers/net/ethernet/qualcomm/qca_7k_common.h
++++ b/drivers/net/ethernet/qualcomm/qca_7k_common.h
+@@ -1,20 +1,7 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
+ /*
+  *   Copyright (c) 2011, 2012, Atheros Communications Inc.
+  *   Copyright (c) 2014, I2SE GmbH
+- *
+- *   Permission to use, copy, modify, and/or distribute this software
+- *   for any purpose with or without fee is hereby granted, provided
+- *   that the above copyright notice and this permission notice appear
+- *   in all copies.
+- *
+- *   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+- *   WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+- *   WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL
+- *   THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR
+- *   CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+- *   LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+- *   NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+- *   CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
+
+ /*   Atheros Ethernet framing. Every Ethernet frame is surrounded by an a=
+theros
+diff --git a/drivers/net/ethernet/qualcomm/qca_debug.c b/drivers/net/ether=
+net/qualcomm/qca_debug.c
+index 857883d0b5ed..ff3b89e9028e 100644
+=2D-- a/drivers/net/ethernet/qualcomm/qca_debug.c
++++ b/drivers/net/ethernet/qualcomm/qca_debug.c
+@@ -1,20 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
+ /*
+  *   Copyright (c) 2011, 2012, Qualcomm Atheros Communications Inc.
+  *   Copyright (c) 2014, I2SE GmbH
+- *
+- *   Permission to use, copy, modify, and/or distribute this software
+- *   for any purpose with or without fee is hereby granted, provided
+- *   that the above copyright notice and this permission notice appear
+- *   in all copies.
+- *
+- *   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+- *   WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+- *   WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL
+- *   THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR
+- *   CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+- *   LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+- *   NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+- *   CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
+
+ /*   This file contains debugging routines for use in the QCA7K driver.
+diff --git a/drivers/net/ethernet/qualcomm/qca_debug.h b/drivers/net/ether=
+net/qualcomm/qca_debug.h
+index 46a785844421..0d98cef3abc4 100644
+=2D-- a/drivers/net/ethernet/qualcomm/qca_debug.h
++++ b/drivers/net/ethernet/qualcomm/qca_debug.h
+@@ -1,20 +1,7 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
+ /*
+  *   Copyright (c) 2011, 2012, Qualcomm Atheros Communications Inc.
+  *   Copyright (c) 2014, I2SE GmbH
+- *
+- *   Permission to use, copy, modify, and/or distribute this software
+- *   for any purpose with or without fee is hereby granted, provided
+- *   that the above copyright notice and this permission notice appear
+- *   in all copies.
+- *
+- *   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+- *   WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+- *   WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL
+- *   THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR
+- *   CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+- *   LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+- *   NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+- *   CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
+
+ /*   This file contains debugging routines for use in the QCA7K driver.
 diff --git a/drivers/net/ethernet/qualcomm/qca_spi.c b/drivers/net/etherne=
 t/qualcomm/qca_spi.c
-index c5d240fe4146..d3109eb24b4d 100644
+index d3109eb24b4d..7c63baeb3844 100644
 =2D-- a/drivers/net/ethernet/qualcomm/qca_spi.c
 +++ b/drivers/net/ethernet/qualcomm/qca_spi.c
-@@ -359,7 +359,7 @@ qcaspi_receive(struct qcaspi *qca)
- 	/* Read the packet size. */
- 	qcaspi_read_register(qca, SPI_REG_RDBUF_BYTE_AVA, &available);
+@@ -1,20 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
+ /*
+  *   Copyright (c) 2011, 2012, Qualcomm Atheros Communications Inc.
+  *   Copyright (c) 2014, I2SE GmbH
+- *
+- *   Permission to use, copy, modify, and/or distribute this software
+- *   for any purpose with or without fee is hereby granted, provided
+- *   that the above copyright notice and this permission notice appear
+- *   in all copies.
+- *
+- *   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+- *   WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+- *   WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL
+- *   THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR
+- *   CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+- *   LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+- *   NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+- *   CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
 
--	netdev_dbg(net_dev, "qcaspi_receive: SPI_REG_RDBUF_BYTE_AVA: Value: %08x=
-\n",
-+	netdev_dbg(net_dev, "qcaspi_receive: SPI_REG_RDBUF_BYTE_AVA: Value: %04x=
-\n",
- 		   available);
+ /*   This module implements the Qualcomm Atheros SPI protocol for
+diff --git a/drivers/net/ethernet/qualcomm/qca_spi.h b/drivers/net/etherne=
+t/qualcomm/qca_spi.h
+index f735ad77402f..d59cb2352cee 100644
+=2D-- a/drivers/net/ethernet/qualcomm/qca_spi.h
++++ b/drivers/net/ethernet/qualcomm/qca_spi.h
+@@ -1,20 +1,7 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
+ /*
+  *   Copyright (c) 2011, 2012, Qualcomm Atheros Communications Inc.
+  *   Copyright (c) 2014, I2SE GmbH
+- *
+- *   Permission to use, copy, modify, and/or distribute this software
+- *   for any purpose with or without fee is hereby granted, provided
+- *   that the above copyright notice and this permission notice appear
+- *   in all copies.
+- *
+- *   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+- *   WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+- *   WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL
+- *   THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR
+- *   CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+- *   LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+- *   NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+- *   CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
 
- 	if (available > QCASPI_HW_BUF_LEN + QCASPI_HW_PKT_LEN) {
+ /*   Qualcomm Atheros SPI register definition.
+diff --git a/drivers/net/ethernet/qualcomm/qca_uart.c b/drivers/net/ethern=
+et/qualcomm/qca_uart.c
+index 223321897b96..d0db9d0adad7 100644
+=2D-- a/drivers/net/ethernet/qualcomm/qca_uart.c
++++ b/drivers/net/ethernet/qualcomm/qca_uart.c
+@@ -1,20 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
+ /*
+  *   Copyright (c) 2011, 2012, Qualcomm Atheros Communications Inc.
+  *   Copyright (c) 2017, I2SE GmbH
+- *
+- *   Permission to use, copy, modify, and/or distribute this software
+- *   for any purpose with or without fee is hereby granted, provided
+- *   that the above copyright notice and this permission notice appear
+- *   in all copies.
+- *
+- *   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+- *   WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+- *   WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL
+- *   THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR
+- *   CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+- *   LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+- *   NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+- *   CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
+
+ /*   This module implements the Qualcomm Atheros UART protocol for
 =2D-
 2.34.1
 
