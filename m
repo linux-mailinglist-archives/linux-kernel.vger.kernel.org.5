@@ -1,85 +1,212 @@
-Return-Path: <linux-kernel+bounces-36391-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36393-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AA1D839FF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 04:13:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3040839FFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 04:15:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE64228ACE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:13:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E8031F2B2FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:15:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 911AC5392;
-	Wed, 24 Jan 2024 03:13:08 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2F155392;
+	Wed, 24 Jan 2024 03:15:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WYL2llkR"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C756A1FDC
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 03:13:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21A22524C
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 03:15:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706065988; cv=none; b=fVUFwTQ8CYJ/7zvW9AHKJCQNeYlfP24neAyOFCTTX4Nc1oEFjEz6KvLKzLa4H29VSyFupIFUqZUNCyiKh4QgGhA8cJn0ElB7A6sbIAKjFrGzZYvpul298rtLBfA3D9KBWp6a9BOPUy4L8RgXtjmcPs8T/Wik91pppmA6gMYMAqQ=
+	t=1706066128; cv=none; b=sJljNwo/ups10Qzj3ybVf6l4NubGBY0T8f33YfY/7gFyvkKVrgIQcDBBExAORnWfLUTDTZPtnXOPXoKA3a5s3Pl9/1N7qoxQ4kmY5qDZlTmrRsPSedki9nfd9Rh94jJAPiu5dUGOMZTF+aGxFlgkzCLMxmbrYJrCTSssNscgOBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706065988; c=relaxed/simple;
-	bh=w01aMp201H6VWZNQ37i2iLMbZxPXmWRmhch+jUDgNkk=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=WaFpX8pJSYfVEXnQWbR1I/rfaxhljF6zEcWEU48lCCjKrxvndWwedvxK4cBWOenDPLntj/ZYDwE+3tIx5bTyUtveBnzz7o6QB3Iz0dt9Vqg0yTcVw2CgBBPgDIWTf9rHxMBhXVR6BCA6wq2nFMFuSw6Cci3dB9eKTf2b0W00PRE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7bedddd00d5so410846439f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 19:13:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706065986; x=1706670786;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ChLC0C/DZwwNzt8D451FXLemj6J/mBxJU4hzpYjiQSY=;
-        b=jdDfpKIVsSFFuK/MnjHBKqVBmIEaJIw7tZLlsej0/+EpY9ZZ4XI3OrcYHeBVEdS0cx
-         TcfEK7J49HxcNBEgvgo6ujJqnRF9PC5q0rxzOI67k0OOTkpQTYwBmQLQN8uukKcPteCi
-         DfkjFPgyNPhpiBZ5rNH0Nswy2nSdCN1N8UvZG/qCJvAmIvBiSTl+SWsDmMzuwwoJuAxB
-         Pjx9QolHRe0XKUGgGIC+YmXjJOJ5pSRI+BzyfEsjhMAkF+lvBb1I+3Z8tILb9AGQ9/CQ
-         WMLGIQMj+xvBNugfYGp7ck1VX32+EnsojxJv4R3Ze2ePBp8wcST9yD03bEH8HrdUDps+
-         szqQ==
-X-Gm-Message-State: AOJu0YyqfSy28eJIATkRtifQRydkmMF05F020Pi7Sap2cqa4eufIPoMb
-	ZLFs77k6DdukbBCVii7YIqYH3swxAD37DC+pfAY3g0ryQ0GglpzHTIyPi15YESoy1a518W0aSAT
-	WULKsH6J/Rnywm2XLx4n/ZET0ZSkGdlQWUCUFMR8OuXJ82hyiuoaTj08=
-X-Google-Smtp-Source: AGHT+IGnhA04iRpv01odYyOpQkc+whytR4BuVv8gSP+mg9ucelQToolvhCL3CRWmvHV4wtE0T4vA2cmWn0eXdh3b3hQU1qfttzsA
+	s=arc-20240116; t=1706066128; c=relaxed/simple;
+	bh=5JIQfkuXIc6IPaZJLDvYI4lW9FHnJAl+rx8UUzTpfbE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Hfn3tSW+j6x8U4xve2AzhUoLNJEFLNtO5SO2XscBzbpUUj60SWxUpP41n+vtiYjdJMD3etVNIksnGXWCiSjyVzLJDEHQNsLTNoh78ff9sBRPaOO6udm2iYrb2DDQmSM8nux5qAxu47Cu0IRJTwqmq6MpLbk3cHXqY3AavqWwX6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WYL2llkR; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706066127; x=1737602127;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=5JIQfkuXIc6IPaZJLDvYI4lW9FHnJAl+rx8UUzTpfbE=;
+  b=WYL2llkRMqu3Ow6XDYI5Qjw8ChrBlXB89krvcOZZpx7sJbQKXMluvdNm
+   yHcr6JxehCLfdrfSgf0K7WAin+gB4qGy87KWPuMVcx0EpuXZb7BcyaT5F
+   LLC/J2+3QhnYoqTln5J44BEVP9iBQAZz95XM9FdUfUccHggkQJrNV193F
+   K0oCipE+KLPnxgIzsubUNvAUM8MeiChIGpLFYQzrw/YSL0VpQexTTkgL4
+   QFUgjZluWTHhfU9obS42IxffinsR1DKZCcUG/6MMpBj4IycPGziZERLa+
+   3l3H8sItF9Ec+XVugZ9bmvLr+D5CZA3q6fnkGMZpRP5YyegFRXpqVKHRy
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="8840922"
+X-IronPort-AV: E=Sophos;i="6.05,215,1701158400"; 
+   d="scan'208";a="8840922"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 19:15:26 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,215,1701158400"; 
+   d="scan'208";a="1789059"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 19:15:22 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,  Johannes Weiner
+ <hannes@cmpxchg.org>,  Nhat Pham <nphamcs@gmail.com>,  Chris Li
+ <chrisl@kernel.org>,  Chengming Zhou <zhouchengming@bytedance.com>,
+  linux-mm@kvack.org,  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mm: swap: update inuse_pages after all cleanups are
+ done
+In-Reply-To: <CAJD7tkb=-0mP1CXEmAd4QjMXKgep7myHShiwUSNnY1cjfRqfJA@mail.gmail.com>
+	(Yosry Ahmed's message of "Tue, 23 Jan 2024 01:40:31 -0800")
+References: <20240120024007.2850671-1-yosryahmed@google.com>
+	<20240120024007.2850671-2-yosryahmed@google.com>
+	<87wms0toh4.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<CAJD7tkb=-0mP1CXEmAd4QjMXKgep7myHShiwUSNnY1cjfRqfJA@mail.gmail.com>
+Date: Wed, 24 Jan 2024 11:13:26 +0800
+Message-ID: <878r4ftodl.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a84:b0:360:17a7:d897 with SMTP id
- k4-20020a056e021a8400b0036017a7d897mr77474ilv.4.1706065985976; Tue, 23 Jan
- 2024 19:13:05 -0800 (PST)
-Date: Tue, 23 Jan 2024 19:13:05 -0800
-In-Reply-To: <tencent_85364A4A447431779D67703D19366A97C009@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000ec514060fa87179@google.com>
-Subject: Re: [syzbot] [jfs?] WARNING in dbAdjTree
-From: syzbot <syzbot+ab18fa9c959320611727@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+Yosry Ahmed <yosryahmed@google.com> writes:
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+> On Tue, Jan 23, 2024 at 1:01=E2=80=AFAM Huang, Ying <ying.huang@intel.com=
+> wrote:
+>>
+>> Yosry Ahmed <yosryahmed@google.com> writes:
+>>
+>> > In swap_range_free(), we update inuse_pages then do some cleanups (arch
+>> > invalidation, zswap invalidation, swap cache cleanups, etc). During
+>> > swapoff, try_to_unuse() uses inuse_pages to make sure all swap entries
+>> > are freed. Make sure we only update inuse_pages after we are done with
+>> > the cleanups.
+>> >
+>> > In practice, this shouldn't matter, because swap_range_free() is called
+>> > with the swap info lock held, and the swapoff code will spin for that
+>> > lock after try_to_unuse() anyway.
+>> >
+>> > The goal is to make it obvious and more future proof that once
+>> > try_to_unuse() returns, all cleanups are done.
+>>
+>> Defines "all cleanups".  Apparently, some other operations are still
+>> to be done after try_to_unuse() in swap_off().
+>
+> I am referring to the cleanups in swap_range_free() that I mentioned abov=
+e.
+>
+> How about s/all the cleanups/all the cleanups in swap_range_free()?
 
-Reported-and-tested-by: syzbot+ab18fa9c959320611727@syzkaller.appspotmail.com
+Sounds good for me.
 
-Tested on:
+>>
+>> > This also facilitates a
+>> > following zswap cleanup patch which uses this fact to simplify
+>> > zswap_swapoff().
+>> >
+>> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+>> > ---
+>> >  mm/swapfile.c | 4 ++--
+>> >  1 file changed, 2 insertions(+), 2 deletions(-)
+>> >
+>> > diff --git a/mm/swapfile.c b/mm/swapfile.c
+>> > index 556ff7347d5f0..2fedb148b9404 100644
+>> > --- a/mm/swapfile.c
+>> > +++ b/mm/swapfile.c
+>> > @@ -737,8 +737,6 @@ static void swap_range_free(struct swap_info_struc=
+t *si, unsigned long offset,
+>> >               if (was_full && (si->flags & SWP_WRITEOK))
+>> >                       add_to_avail_list(si);
+>> >       }
+>> > -     atomic_long_add(nr_entries, &nr_swap_pages);
+>> > -     WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
+>> >       if (si->flags & SWP_BLKDEV)
+>> >               swap_slot_free_notify =3D
+>> >                       si->bdev->bd_disk->fops->swap_slot_free_notify;
+>> > @@ -752,6 +750,8 @@ static void swap_range_free(struct swap_info_struc=
+t *si, unsigned long offset,
+>> >               offset++;
+>> >       }
+>> >       clear_shadow_from_swap_cache(si->type, begin, end);
+>> > +     atomic_long_add(nr_entries, &nr_swap_pages);
+>> > +     WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
+>>
+>> This isn't enough.  You need to use smp_wmb() here and smp_rmb() in
+>> somewhere reading si->inuse_pages.
+>
+> Hmm, good point. Although as I mentioned in the commit message, this
+> shouldn't matter today as swap_range_free() executes with the lock
+> held, and we spin on the lock after try_to_unuse() returns.
 
-commit:         615d3006 Merge tag 'trace-v6.8-rc1' of git://git.kerne..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=1455ed8be80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d4460091fe9fceda
-dashboard link: https://syzkaller.appspot.com/bug?extid=ab18fa9c959320611727
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=171ad715e80000
+Yes.  IIUC, this patch isn't needed too because we have spinlock already.
 
-Note: testing is done by a robot and is best-effort only.
+> It may still be more future-proof to add the memory barriers.
+
+Yes.  Without memory barriers, moving code doesn't guarantee memory
+order.
+
+> In swap_range_free, we want to make sure that the write to
+> si->inuse_pages in swap_range_free() happens *after* the cleanups
+> (specifically zswap_invalidate() in this case).
+> In swap_off, we want to make sure that the cleanups following
+> try_to_unuse() (e.g. zswap_swapoff) happen *after* reading
+> si->inuse_pages =3D=3D 0 in try_to_unuse().
+>
+> So I think we want smp_wmb() in swap_range_free() and smp_mb() in
+> try_to_unuse(). Does the below look correct to you?
+>
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index 2fedb148b9404..a2fa2f65a8ddd 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -750,6 +750,12 @@ static void swap_range_free(struct
+> swap_info_struct *si, unsigned long offset,
+>                 offset++;
+>         }
+>         clear_shadow_from_swap_cache(si->type, begin, end);
+> +
+> +       /*
+> +        * Make sure that try_to_unuse() observes si->inuse_pages reachin=
+g 0
+> +        * only after the above cleanups are done.
+> +        */
+> +       smp_wmb();
+>         atomic_long_add(nr_entries, &nr_swap_pages);
+>         WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
+>  }
+> @@ -2130,6 +2136,11 @@ static int try_to_unuse(unsigned int type)
+>                 return -EINTR;
+>         }
+>
+> +       /*
+> +        * Make sure that further cleanups after try_to_unuse() returns h=
+appen
+> +        * after swap_range_free() reduces si->inuse_pages to 0.
+> +        */
+> +       smp_mb();
+>         return 0;
+>  }
+
+We need to take care of "si->inuse_pages" checking at the beginning of
+try_to_unuse() too.  Otherwise, it looks good to me.
+
+> Alternatively, we may just hold the spinlock in try_to_unuse() when we
+> check si->inuse_pages at the end. This will also ensure that any calls
+> to swap_range_free() have completed. Let me know what you prefer.
+
+Personally, I prefer memory barriers here.
+
+--
+Best Regards,
+Huang, Ying
 
