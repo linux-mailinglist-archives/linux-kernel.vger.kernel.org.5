@@ -1,128 +1,113 @@
-Return-Path: <linux-kernel+bounces-37013-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37015-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F7D083AA30
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:45:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7676083AA33
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:46:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E7B91C22E60
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:45:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A92351C2238B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:46:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A279277646;
-	Wed, 24 Jan 2024 12:45:04 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC9E07A711;
+	Wed, 24 Jan 2024 12:45:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lUmH60PG"
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4D0B76918
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 12:45:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8CDA76918;
+	Wed, 24 Jan 2024 12:45:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706100304; cv=none; b=huYAsFcdgBnWiTBtvHDPkHnZvtjZq0KOQQXRNxWm3CgoUL/f1LWehLIpWr1sUyvblHAs60XITkcFuQlEycdMpIy4P8NCjraFZyVjqbTjbFgf5u8H1baz+PupApN53Jg+mq3UZRc7syYWTbROx8iRuQRjI/bYuQrvUysdiWqetbM=
+	t=1706100310; cv=none; b=l2UWQfpqRQDIHB8L1fVdn4ofW6nV3Fiw7/3IqQpPvVmKtqpqlonKGbAsOpdUVjIDdrX6R2sNoskUdA2c7/7VtREmfzsWKtnHWZ9rkOv2yimerTTb8QW39trLCAZa73o2zzlLYiFy4UfWqGkUXw7hBHGquqXCMgUq/qO5LNi+TkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706100304; c=relaxed/simple;
-	bh=0lNY9JM6i1cyRanexkIXDsWXhY843ieXctUNb+I5i5Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=DshGBQfNvwvZ8pbKb5sVuiYvDPmhna9lBofPu00EAtVoIj1xuQzP1vBrE8BN1EW7UfEJ80UN/O/viZ6GtNQMC45147No2Xcv4DDYI+XNanJxxia85LcZPMgGwm0wFPZ3pSCeJS4goLvCJp1GtRtO85wcVx/F0ZpG01DuxbT7Fo4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rSccj-0001gO-94; Wed, 24 Jan 2024 13:44:57 +0100
-Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rScci-002424-GQ; Wed, 24 Jan 2024 13:44:56 +0100
-Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rScci-00362d-1Q;
-	Wed, 24 Jan 2024 13:44:56 +0100
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
-	kernel@pengutronix.de,
-	linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Fabio Estevam <festevam@gmail.com>,
-	=?UTF-8?q?S=C3=B8ren=20Andersen?= <san@skov.dk>
-Subject: [PATCH v1 1/1] ARM: dts: imx6: skov: add aliases for all ethernet nodes
-Date: Wed, 24 Jan 2024 13:44:55 +0100
-Message-Id: <20240124124455.738187-1-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1706100310; c=relaxed/simple;
+	bh=TZXm+kuPZ4nvGmxpZjlQE8EIcmBZdeT0tswbj5rQmKk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hPxG1NmbQuEW3gSXHp8IphEFNAUj9i1HjWBXBhVGb+r25oq9kM7Zoof/cKV/n7O4pK0miKQuHNpFe8VBLm1LDlv+qwav5XP7skxAA2Q+lpf4f3OxSsx3o0n9H8+bamBeUhTF0bbVhASNZHTBrdH5KSMTiixbCLVkgbmxsazJLeo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lUmH60PG; arc=none smtp.client-ip=209.85.128.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5edfcba97e3so55809187b3.2;
+        Wed, 24 Jan 2024 04:45:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706100307; x=1706705107; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TZXm+kuPZ4nvGmxpZjlQE8EIcmBZdeT0tswbj5rQmKk=;
+        b=lUmH60PG+lTytt1bs+Dgq/gLt1mGApiq63Iv2zYphUTeUIztS2n3ECaOSodn0g11Oj
+         0g/e12sTCuSNhiz7VGIN+BAdxLq0US4BAONucqIyLNIxRKCpEnH+cTv93KTBPvT7UofC
+         k9Okm2ntbRXSjGru42SJwJdL6nyCXMNZfM5u+0fubfMTHqx/GhV1K3V/vsF0KcECq3oT
+         rkETCEy9SF0Un9ILy7XSEoIKMCa+WxXIpsfz+/qY1aFA+9D0ho8YcSPf7DGA5wroM0wx
+         hSujFhoEBDYVG+5FJ7chgRCxW1apYXExI2ppNMFo6cynYo6XKhnlyY1JVnn1F9iQ1gqw
+         XLxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706100307; x=1706705107;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TZXm+kuPZ4nvGmxpZjlQE8EIcmBZdeT0tswbj5rQmKk=;
+        b=i1dR2ypffQhuxHHjK4Fbxi/bQC0Urj9uirdKpjk0zBUooqGGmho5qtTX+ezYayOJET
+         qDDLSF4JjWaS+troiFwYf0vym4HONYnE2WAFotXzONGfgs5BY2i0KZK+CfYVXEE9hDaH
+         WjPZwU4i1qmoIsnqkXE3wD8op57sKpsr0nK10dNiuD8lxlkBVTZRaZ1ULbibAtRa+44n
+         p61v01J8ihBaxl4fIvhdByDEyHYX6/N3o/A5pRSLMobtIFCZkWnyCRzy/HwwcHDKRuR6
+         68VuK3VSFBz8N/HfWI0naADZij3XPE604AevnccbMYuLmHRHuXMBuZftftPxwatE4Rir
+         Jh9w==
+X-Gm-Message-State: AOJu0YzmNg+lUHY4hxzL22tyRzUo+8HF2jqGQcVWztxsyNj0JoQ9PMtg
+	drJ7PzrEdNiSwfuga/W9T754Bx1Mh2uZi99U/Htps2H9mkqwAmswDI8IA4OuXIMSOBu3GcDEXlO
+	QwUe2W61CBMV0pZtcjoHmDr5K+TpTVQ+2TOwh/sMLha4=
+X-Google-Smtp-Source: AGHT+IGhg2BSC76jnAi74QGv0SbZtJZCUiJjbfeZOPD5ypEKfiEUJ0ZOdlvGhrFpnODlmLZfQJtgvgOBQT8gRfiznek=
+X-Received: by 2002:a81:7c85:0:b0:5ff:67f5:f3 with SMTP id x127-20020a817c85000000b005ff67f500f3mr708565ywc.38.1706100307452;
+ Wed, 24 Jan 2024 04:45:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20240121111730.262429-1-foxywang@tencent.com> <f898e36f-ba02-4c52-a3be-06caac13323e@linux.ibm.com>
+In-Reply-To: <f898e36f-ba02-4c52-a3be-06caac13323e@linux.ibm.com>
+From: Yi Wang <up2wing@gmail.com>
+Date: Wed, 24 Jan 2024 20:44:56 +0800
+Message-ID: <CAN35MuQvQ7mbNCR=udA2xCu9wZ+qjSEM6eZ+6giJ8BBATsA-Ew@mail.gmail.com>
+Subject: Re: [v2 0/4] KVM: irqchip: synchronize srcu only if needed
+To: Christian Borntraeger <borntraeger@linux.ibm.com>
+Cc: seanjc@google.com, pbonzini@redhat.com, tglx@linutronix.de, 
+	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, 
+	hpa@zytor.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	wanpengli@tencent.com, foxywang@tencent.com, oliver.upton@linux.dev, 
+	maz@kernel.org, anup@brainfault.org, atishp@atishpatra.org, 
+	frankja@linux.ibm.com, imbrenda@linux.ibm.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add aliases for all ethernet nodes including the switch. It makes it
-easier to find this nodes by the boot loader.
+On Wed, Jan 24, 2024 at 8:14=E2=80=AFPM Christian Borntraeger
+<borntraeger@linux.ibm.com> wrote:
+>
+> Am 21.01.24 um 12:17 schrieb Yi Wang:
+> > From: Yi Wang <foxywang@tencent.com>
+> >
+> > We found that it may cost more than 20 milliseconds very accidentally
+> > to enable cap of KVM_CAP_SPLIT_IRQCHIP on a host which has many vms
+> > already.
+> >
+> > The reason is that when vmm(qemu/CloudHypervisor) invokes
+> > KVM_CAP_SPLIT_IRQCHIP kvm will call synchronize_srcu_expedited() and
+> > might_sleep and kworker of srcu may cost some delay during this period.
+> > One way makes sence is setup empty irq routing when creating vm and
+> > so that x86/s390 don't need to setup empty/dummy irq routing.
+> >
+> > Note: I have no s390 machine so the s390 patch has not been tested.
+>
+> I just did a quick sniff and it still seems to work. No performance check=
+ etc.
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Thanks very much, Christian!
+
 ---
- arch/arm/boot/dts/nxp/imx/imx6qdl-skov-cpu.dtsi | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/arch/arm/boot/dts/nxp/imx/imx6qdl-skov-cpu.dtsi b/arch/arm/boot/dts/nxp/imx/imx6qdl-skov-cpu.dtsi
-index 2731faede1cb..d59d5d0e1d19 100644
---- a/arch/arm/boot/dts/nxp/imx/imx6qdl-skov-cpu.dtsi
-+++ b/arch/arm/boot/dts/nxp/imx/imx6qdl-skov-cpu.dtsi
-@@ -13,10 +13,14 @@ chosen {
- 	aliases {
- 		can0 = &can1;
- 		can1 = &can2;
-+		ethernet0 = &fec;
-+		ethernet1 = &lan1;
-+		ethernet2 = &lan2;
- 		mdio-gpio0 = &mdio;
- 		nand = &gpmi;
- 		rtc0 = &i2c_rtc;
- 		rtc1 = &snvs;
-+		switch0 = &switch;
- 		usb0 = &usbh1;
- 		usb1 = &usbotg;
- 	};
-@@ -60,7 +64,7 @@ mdio: mdio {
- 		gpios = <&gpio1 31 GPIO_ACTIVE_HIGH>,
- 			<&gpio1 22 GPIO_ACTIVE_HIGH>;
- 
--		switch@0 {
-+		switch: switch@0 {
- 			compatible = "microchip,ksz8873";
- 			pinctrl-names = "default";
- 			pinctrl-0 = <&pinctrl_switch>;
-@@ -73,13 +77,13 @@ ports {
- 				#address-cells = <1>;
- 				#size-cells = <0>;
- 
--				ports@0 {
-+				lan1: ports@0 {
- 					reg = <0>;
- 					phy-mode = "internal";
- 					label = "lan1";
- 				};
- 
--				ports@1 {
-+				lan2: ports@1 {
- 					reg = <1>;
- 					phy-mode = "internal";
- 					label = "lan2";
--- 
-2.39.2
-
+Best wishes
+Yi Wang
 
