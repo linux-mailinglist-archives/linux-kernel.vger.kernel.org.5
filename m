@@ -1,133 +1,174 @@
-Return-Path: <linux-kernel+bounces-37452-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37453-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1CF383B045
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:44:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C5C183B050
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:46:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E27951C21CE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:44:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D7BF286CC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:46:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B825E85C44;
-	Wed, 24 Jan 2024 17:44:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0D6585C7E;
+	Wed, 24 Jan 2024 17:46:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ucR4+2gD"
-Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=arista.com header.i=@arista.com header.b="kWaJ5OPD"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B423F7E789
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 17:44:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4963885C54
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 17:46:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706118242; cv=none; b=DFt74ugcSoKEkyGIarQ5z0pcZ87V956NrgEjLrkPREZKayrJNtb8BUD4xtXQO+SYI9oBewCYF+CnyxjoUoMOAqgJBYgCfbymraIWrY6szqeENjTJk211yqqHQetW8H9WH0rogHvzH8NkI7HurOdLd0WuLR1dwiEHFgHK2Pd3dBQ=
+	t=1706118381; cv=none; b=eQhIXCu1iCcTeK+rGamSkc+4V91uj70OfxY/bztEw5quriXPOoYkYWfotHfDlmGk5xCwDpLQChpzu7+iuCDj2mUXWjwCIdVbN+DCopdYJDO+QNEfywTQ2wbSWuODOZGXvfSckGKdIdtrbZAyF0QFpcXR9i+JnVK8MlhxfiWmYwU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706118242; c=relaxed/simple;
-	bh=MZHuAtNiL03oEoJHa6bf7Od5Fg8D8o9NBf7iVEHZ9ag=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=UMJfBKOLYAJO/F5ipTAcxhzWacmHf5qBY30iIH6r1msWvb8juFQ6CMOEnBgaR1pVxBG/vCEBsZ1cb98ZSHRpSlmfx0pPr+DNaXXKCpENJDTfrSCyGX1Am5Rev7jhmaarhMvpBIjKiCw2uKHGeMFoo2Yczup6hM17WAV+NYQVimA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ucR4+2gD; arc=none smtp.client-ip=209.85.215.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5ca4ee5b97aso2708479a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 09:44:00 -0800 (PST)
+	s=arc-20240116; t=1706118381; c=relaxed/simple;
+	bh=rx8lKKZcE3A1/FLTzYEVMlsLvAtjy/Y784aKerx64Ng=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Z2Af3gMYe8+kOzL6BlkUx9AIIW36mmkhEngIiqVp3vxuIoheWYPoVQq5yVRd9QZhy/1ETAYZmFtm1uKlOkp+xmwhCuF3+qffsF6H4vUNxLTF3D8Oof5EtMOUjSs8ObPZy+jHSzkZc64NcLjZGHHqPdQ4LBaQK4dCHurafN94Ra8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com; spf=pass smtp.mailfrom=arista.com; dkim=pass (2048-bit key) header.d=arista.com header.i=@arista.com header.b=kWaJ5OPD; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=arista.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arista.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40ebf373130so20699155e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 09:46:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706118240; x=1706723040; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=phLGUzO1dl3tbnC30bhE9/nw1oePNjTydqU1ZrBpVgU=;
-        b=ucR4+2gDmiF/NDBhyFKzVAnIRpM6+RRFEjKVocLTvKqe+S3ZNF3WKjQHdcr8Tsln5w
-         bwJ6d2E9h1LPkW4JGqW7aOcfI3yBXFoIjH7sZY+ui+S6roMemn00rIaIyBYogcW+z67X
-         r5Ya3XFPCIx6/ynmJhG/PuXNcx8ev3vU96oIHU/7f0Gg65fi1dQdRRkmRvWBM1pWh4m5
-         4ZnT/YUZg0SWL1OgkHfXt53o4D3ybfuhnC5pkdokeRTqNYN0PaHE8i3TulN3WUl0D11T
-         1SyPH9wLB+sz6AVWUi1XcXqgaR8jOmwSbKEE8QYcI45i4XAQ+5S0AqF0txU3SSv5QOsD
-         lhQQ==
+        d=arista.com; s=google; t=1706118377; x=1706723177; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eVCU/WWHCSDI7BYE4p1QCv3tn8rHzFU9AC6i2z5h3qE=;
+        b=kWaJ5OPD8SWrPQNFWepde48nJ3rr7QNB5TTRhyPau0Hzz3/iFmfcn/mMWPVy3JYDuh
+         iD4mCt7zW3M0UUHhr7sbRct9Aekarntzc/UlEMInZtHgjzDFgf0diskPME6cctQasXx/
+         6uBZ2JQVnXqqTurTCZuJzDM7HIbkzfnZ5YlyF+McBEWroB7biM2kGvHsDRleO1wqVksJ
+         kS0B/jzLusmgcckI258iJU4zv2OA9AVrTVFap/AkaSORK6ORhWWXS0QwwvNbJcnlS0jd
+         9oGnpqK2Ab9/vgveCStQia7rNnorHnGfFZej9cAPccihoG62wgkbA3bQLIFGKmw+lY0a
+         j5Pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706118240; x=1706723040;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=phLGUzO1dl3tbnC30bhE9/nw1oePNjTydqU1ZrBpVgU=;
-        b=eydUR0ald7bFTUA7lIepI+AIyLhm4GEXeoxu5qbGLQfnMOyRSCcjyGoK/ohOqRILPT
-         R/vUleyWSooetPLsOxVJdg+gAstSZSB36fI+ELHuMtpgvL2/tyDASZQXdTmN/pUXEwnj
-         asYMPKHPkTTRAUqHBMmekYzZi2o2OpnykUaS2BP4TMspszB/yvzsyRj2C7Oabhz1XfhD
-         C3w0nXbTGyDQygLwK78Fi8N8pd8163iWH5LUrksRm/hP7bd7+BcJnnHDE0tAUbG/0YIW
-         2oTriuddGwh0ikuvCVXDIKFle/a7HySjHDU8ybhH/O+L6REwCbhZwHEk9IKla/KnJNoI
-         2MXQ==
-X-Gm-Message-State: AOJu0Yxz4H+rrjvca4kv1qjarSPfgRn4KQ3eDlloK9l9KNrEIvPTijd/
-	riX5ShG9E6MIE1XP2zEUPd5bGh3UqSyaNu0FPG58w0T5/i7MLjSgRJ4GF5tS2Ivv+aSoG8BvTMW
-	MGg==
-X-Google-Smtp-Source: AGHT+IH50wrWLE+dOd9vXG84ZvByuwmloXUXoNDIkK2WvQj7QWsB8hpAZLXMXP/PyBpBzNHdQEpsB43YjN8=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:5652:0:b0:5ca:31a3:c70c with SMTP id
- g18-20020a635652000000b005ca31a3c70cmr42150pgm.3.1706118239933; Wed, 24 Jan
- 2024 09:43:59 -0800 (PST)
-Date: Wed, 24 Jan 2024 09:43:58 -0800
-In-Reply-To: <20240124170243.93-1-moehanabichan@outlook.com>
+        d=1e100.net; s=20230601; t=1706118377; x=1706723177;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eVCU/WWHCSDI7BYE4p1QCv3tn8rHzFU9AC6i2z5h3qE=;
+        b=JGGSil2eNbyyBeSVZ8zv1Rgk4l/Xdul+WCFlTYf5GbJP726dHN3QadwsQRSZPqxmvh
+         /ydA73bZU2duh7WethpFvwXoQXipQKzBbkojho67kLAGH1Sf4Eiah9joSM+DtjaNCk3P
+         DIysrB5DZCa2NXlP6TnlI/X8w0fn0bkziaVIMOSxB6xLI9iMO4buu2uRdX5zmm4bFD4Q
+         K1HayfYRTeAm7VbO9vWJiWVzmwsfw66iMLSoOG+DWN62gnLS4A6CMEjHMuvnqHpYeOhx
+         gdD28W96H0lUy4UBw38IvL2i1FwhieD9exylZVOvWx5f8pKEG1Zs/tsrvNyVl5BCn7AJ
+         Jong==
+X-Gm-Message-State: AOJu0YwusW7CPLKojQih0TX1n7dEP72C+/pOkzdN6qC7AasyZwvzxqO4
+	4h5sK9YDQ2hDMjFj9JpRIYXfp8NR0S27h10BrstZjkWljYkCOUQrUR4IGF/9fQ==
+X-Google-Smtp-Source: AGHT+IEkmMRSyW5Nf156YVrdFBl3DnSZXbv256Xf9R4g4JKrV5a1JNhJ61YPNG9vJ0fA/sMCWjitww==
+X-Received: by 2002:a05:600c:4e49:b0:40e:c59d:95ef with SMTP id e9-20020a05600c4e4900b0040ec59d95efmr833207wmq.149.1706118377430;
+        Wed, 24 Jan 2024 09:46:17 -0800 (PST)
+Received: from [10.83.37.178] ([217.173.96.166])
+        by smtp.gmail.com with ESMTPSA id bi11-20020a05600c3d8b00b0040e6b0a1bc1sm356339wmb.12.2024.01.24.09.46.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Jan 2024 09:46:16 -0800 (PST)
+Message-ID: <1ad64e3d-5252-4aaf-82be-5162edd1e781@arista.com>
+Date: Wed, 24 Jan 2024 17:46:10 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <ZbE7kd9W8csPRjvU@google.com> <20240124170243.93-1-moehanabichan@outlook.com>
-Message-ID: <ZbFMXtGmtIMavZKW@google.com>
-Subject: Re: Re: [PATCH] KVM: x86: Check irqchip mode before create PIT
-From: Sean Christopherson <seanjc@google.com>
-To: moehanabi <moehanabichan@gmail.com>
-Cc: bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com, 
-	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, mingo@redhat.com, 
-	pbonzini@redhat.com, tglx@linutronix.de, x86@kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] selftests/net: A couple of typos fixes in
+ key-management test
+Content-Language: en-US
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ Shuah Khan <shuah@kernel.org>, Dmitry Safonov <0x7f454c46@gmail.com>,
+ Mohammad Nassiri <mnassiri@ciena.com>, netdev@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240118-tcp-ao-test-key-mgmt-v1-0-3583ca147113@arista.com>
+ <20240118085129.6313054b@kernel.org>
+ <358faa27-3ea3-4e63-a76f-7b5deeed756d@arista.com>
+ <20240118091327.173f3cb0@kernel.org>
+ <a9a5378d-c908-4a83-a63d-3e9928733a3d@arista.com>
+ <20240124071229.6a7262cc@kernel.org>
+From: Dmitry Safonov <dima@arista.com>
+In-Reply-To: <20240124071229.6a7262cc@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jan 25, 2024, moehanabi wrote:
-> > On Thu, Jan 25, 2024, Brilliant Hanabi wrote:
-> > > As the kvm api(https://docs.kernel.org/virt/kvm/api.html) reads,
-> > > KVM_CREATE_PIT2 call is only valid after enabling in-kernel irqchip
-> > > support via KVM_CREATE_IRQCHIP.
-> > > 
-> > > Without this check, I can create PIT first and enable irqchip-split
-> > > then, which may cause the PIT invalid because of lacking of in-kernel
-> > > PIC to inject the interrupt.
-> > 
-> > Does this cause actual problems beyond the PIT not working for the guest?  E.g.
-> > does it put the host kernel at risk?  If the only problem is that the PIT doesn't
-> > work as expected, I'm tempted to tweak the docs to say that KVM's PIT emulation
-> > won't work without an in-kernel I/O APIC.  Rejecting the ioctl could theoertically
-> > break misconfigured setups that happen to work, e.g. because the guest never uses
-> > the PIT.
+Hi Jakub,
+
+On 1/24/24 15:12, Jakub Kicinski wrote:
+> On Fri, 19 Jan 2024 18:39:14 +0000 Dmitry Safonov wrote:
+>>> You probably want something smaller to be honest.
+>>> tools/testing/selftests/net/config has a lot of stuff in it 
+>>> and it's actually missing a lot more. I'm working thru adding
+>>> the missing options to tools/testing/selftests/net/config 
+>>> right now so far I got:  
+>>
+>> Thanks!
+>>
+>> I'll send a patch for it in version 2 (as I anyway need to address
+>> Simon's feedback).
 > 
-> I don't think it will put the host kernel at risk. But that's exactly what
-> kvmtool does: it creates in-kernel PIT first and set KVM_CREATE_IRQCHIP then.
-
-Right.  My concern, which could be unfounded paranoia, is that rejecting an ioctl()
-that used to succeed could break existing setups.  E.g. if a userspace VMM creates
-a PIT and checks the ioctl() result, but its guest(s) never actually use the PIT
-and so don't care that the PIT is busted.
-
-> I found this problem because I was working on implementing a userspace PIC
-> and PIT in kvmtool. As I planned, I'm going to commit a related patch to 
-> kvmtool if this patch will be applied.
+> Hi Dmitry!
 > 
-> > > Signed-off-by: Brilliant Hanabi <moehanabichan@gmail.com>
-> > > ---
-> > >  arch/x86/kvm/x86.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > > 
-> > > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > > index 27e23714e960..3edc8478310f 100644
-> > > --- a/arch/x86/kvm/x86.c
-> > > +++ b/arch/x86/kvm/x86.c
-> > > @@ -7016,6 +7016,8 @@ int kvm_arch_vm_ioctl(struct file *filp, unsigned int ioctl, unsigned long arg)
-> > >  		r = -EEXIST;
-> > >  		if (kvm->arch.vpit)
-> > >  			goto create_pit_unlock;
-> > > +		if (!pic_in_kernel(kvm))
-> > > +			goto create_pit_unlock;
-> > 
-> > -EEXIST is not an appropriate errno.
-> 
-> Which errno do you think is better?
+> I put TCP_AO and VETH in the config and the tests seem to fail with
 
-Maybe ENOENT?
+Thanks for wiring it up and for https://netdev.bots.linux.dev/status.html!
+
+> selftests: net/tcp_ao: rst_ipv4
+> not ok 1 # error 834[lib/kconfig.c:143] Failed to initialize kconfig 2: No such file or directory
+> # Planned tests != run tests (0 != 1)
+> # Totals: pass:0 fail:0 xfail:0 xpass:0 skip:0 error:1
+
+Hehe, yeah I wanted to detect kernels with !CONFIG_TCP_AO, to SKIP the
+test, rather than FAIL it, which this lib/kconfig.c does.
+But from a glance, I think it's failing in your run because there are
+checks with and without TCP_AO, but I didn't think of checking for
+the hashing algorithms support.
+
+I think what happens is has_tcp_ao():
+: strcpy(tmp.alg_name, "hmac(sha1)");
+..
+: if (setsockopt(sk, IPPROTO_TCP, TCP_AO_ADD_KEY, &tmp, sizeof(tmp)) < 0)
+
+Could you check that what I suppose is failing, is actually failing?
+[dima@Mindolluin linux-master]$ grep -e '\<CONFIG_CRYPTO_SHA1\>' -e
+'\<CONFIG_CRYPTO_HMAC\>' .config
+CONFIG_CRYPTO_HMAC=y
+CONFIG_CRYPTO_SHA1=y
+
+If that's the case, I'll  add the detection for hashing algorithms to
+lib/kconfig.c (together with a patch for
+tools/testing/selftests/net/config).
+And also heads up for key-management.c - that tries a bunch of hashing
+algorithms to check that the work and that the key rotation between
+different algorithms works:
+
+: const char *test_algos[] = {
+: 	"cmac(aes128)",
+: 	"hmac(sha1)", "hmac(sha512)", "hmac(sha384)", "hmac(sha256)",
+: 	"hmac(sha224)", "hmac(sha3-512)",
+: 	/* only if !CONFIG_FIPS */
+: #define TEST_NON_FIPS_ALGOS	2
+: 	"hmac(rmd160)", "hmac(md5)"
+: };
+
+
+> The script does:
+> 
+> target=net/tcp_ao
+> make mrproper
+> 
+> vng -v -b -f tools/testing/selftests/$target
+> # build the scripts
+> make headers
+> make -C tools/testing/selftests/$target
+> 
+> vng -v -r arch/x86/boot/bzImage --user root
+> # inside the VM
+> make -C tools/testing/selftests TARGETS=$target run_tests
+
+Thanks,
+            Dmitry
+
 
