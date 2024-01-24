@@ -1,189 +1,225 @@
-Return-Path: <linux-kernel+bounces-37107-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37153-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4199683AB9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:25:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8D9A83AC1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:40:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A066AB2A858
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:25:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78EA32857DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:40:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E8EC7A729;
-	Wed, 24 Jan 2024 14:25:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A741312DD86;
+	Wed, 24 Jan 2024 14:30:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MVMcHh4w"
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="h4HOEWWE";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="SXLlG3XA"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0D6C60DD1;
-	Wed, 24 Jan 2024 14:25:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706106338; cv=none; b=c8Faaphc4MxauTjsnrcDyYn96/x4u/IltEXxtpWKhHTtPbpaTIRcCEp12V/vpEYG7NllrMxPeEBPvlCI9OsgEkQmlJ0kiuwGC+cjBTWaItN03au/14fgAfjPhalrVXWu7W79LiimeY6R77Ar+WCWD4DTzQmvb8wb1JC+x8e3jJM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706106338; c=relaxed/simple;
-	bh=lMQVKwQEtUk214d4vm+VBxmy/h2Gaq10ehD9cWY7mLg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KhzkokXH/QW6eAEDNDjTQ7vFvxXTSyvrFgdv/OHkljfEoIKw2v0+/b5INTDw30n2yqar62IT9lvAd4n9rFBkQD9D77tLoSIfTCA4Ffai87n9iVJQFQFNv6C88e7Li9bvVSaJ+x8k66/xkuSaC8IpWWltU+4YEY8cG8RpwHoDBPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MVMcHh4w; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-5100c3f7df1so1943785e87.0;
-        Wed, 24 Jan 2024 06:25:36 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC83C7E764;
+	Wed, 24 Jan 2024 14:30:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706106625; cv=fail; b=QcxAvnibUhokQxI2F6qu9iIvHiL666amc/M0qn/ZfjgFN+YR449IW4eum+ShOPQ2zkP02Cb35ubDbX1/T3cK41MqGuq6iolMQlDiejkrofOTawQaUSw8r0z+uROT7AmjVm/00pCpYaV3HCBLk+QNNAgZViqIXWBhMYNrmPYHnQM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706106625; c=relaxed/simple;
+	bh=GhFifFt9FWk6ZwIrbs9DhO1V370WT6JFptX5Wb4lMuQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=lZ64B56vDtAp+aY7o1BFtCxyub1BgO41FNRMtMQBY9YQ+XVc9XshtPspXVkLGL/dxAQCWqw2Vp1hzPgoVY2bAj4EZI/Tc9xDE7SsHLNUPes45pXul6L4vrZmW8B7QJOuPQ+LUBUqDKbWaVo8UcwcoXnTfyHPaXYeCMnuhwwV3to=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=h4HOEWWE; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=SXLlG3XA; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40OEDsVo031403;
+	Wed, 24 Jan 2024 14:26:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2023-11-20;
+ bh=gRit1FkUpM7m21bu50u4YAlWDNP8DZtcb4CByWbP72g=;
+ b=h4HOEWWEVIXxCoLvrnhgr1n68yEFiLkgC7jali/a1aF+Qf7qG4uPmFuLgTDEGVzSCKcM
+ o+NUOmgyoUrYzPSkH9dhmoY7OLmM2ziibf6CZR0YFzvvdyvrxqF+rQl6bRr/Ljt3D8H4
+ ZJ/xz6ldXAu60BxGISK3SDyUviqaDiJ95EDdjmvPqDfLxHhHbGcJujLGWE4re0GQHqQz
+ VtfnlXiwAsEJF670TuJjXH5fRtM1ZvZv74DTUhlyhZDrObP/NIxiz8B57pYHuM8/t/8F
+ b9GTKSDRAL9wnEPeaUVUpuulhjaIQLYgqLC1QccDcPKPrYL2IjLMf0dpuJsFt0Z1HiCc Vw== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vr79w3txq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 24 Jan 2024 14:26:57 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40OE4ql3029643;
+	Wed, 24 Jan 2024 14:26:57 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2100.outbound.protection.outlook.com [104.47.70.100])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3vs372rqmb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 24 Jan 2024 14:26:57 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hGft+wvvh1G9cAiK9GcsVS0QvUKdcdAHEbVDxJy+/nYJXgjOn4LgtcnjbSAOSNetJgjMv/CGZQJTazpFkc7n+5/7lT3Izt1fDQXjfhtOZZY4W4eJYG01B/z/2l6PtEGIP0SfV1764XU/mxuHomt/kA86m19J+tLjz4DlFGlYqYzK9zV2yDiKtcWeo031iVK49JIC/ENrsGUb8uXp6o7jEd99L+YpuDyvtjpP8yOQhkwoxQd2M6EGWVS/4Jdg7xGK3o5RdZlBXa7191fkeU3m2OqVbQLJbMeTId439s4Yp3TdbCyZ472jvIZvNppAXaDPSgJSyaZIseH7T4epU2eHew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gRit1FkUpM7m21bu50u4YAlWDNP8DZtcb4CByWbP72g=;
+ b=bGeT7sWWwg8HDaAoRUKGYMhS4Du4JWAbrFTP9kBoWfcP2jMY5D2C2MZtmEve5un70lwSz31yKI5eaplakFuL3CdTXIk0GQe9NH6LAEA3QGqI7jHKc3NvFEa0ohnCPrl5Vs46QDQfDbZWSs/spLdzi2s6Tv5jY8G/QZGdjRnHVcW9nwWaf7Fld3vCr7fjU02t9pPBi/cfqednxn7ccHSljtirCB/RqoQs4NyWEZzsb24NiPMm6Uj7Utn+S4HrbGhUf0Yd1R32XR2qyB4dGwzpMS54igOXhv+z3yc9iOSxi8Xwl/sGrMl9wuXK3y/DAW1WDbmRAjWKARI3BhIrZDdHJA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706106335; x=1706711135; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ojxeaViB6pLAJ/Tfy0YrKqXrdt1fiDqjnZZPco7s5Fg=;
-        b=MVMcHh4wyBcFu2mn7iiVUucILoee6h3vjNdXUDwOb3rRlVHXZzWls3Ol7dx6YaixxG
-         OndCJEOKDBPg5OzRv6ZUEdieCYyq1FEtzt/ucYXnPdnOTqLJRkG3wCYyPCFu9uUpzrZr
-         n4nNVNMZptUQIO2q+apKAySncTIylNtQN/0gVVUa5MLQmuhvTjp7K9o5kLns9wm6cEVd
-         qyS2lA4wo2zXWpikANZr7JR6ZmY7jT13vKRRbU7FSiZ3DUefiEXcu6j/SKzNnoTo8qXu
-         2qY6TCm8ydYmyGNtQ9lqPhnHiR0cnipXKZaqr+HbdTRMGw23zTlzj2lpm3TAIlBpBiOR
-         LRHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706106335; x=1706711135;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ojxeaViB6pLAJ/Tfy0YrKqXrdt1fiDqjnZZPco7s5Fg=;
-        b=jzZkohqx5II3UfrKx1LVCHv8Jp0P+4As/HpB+QHmrrxHqK+LDGoatihY8Wmb/Inwtm
-         uGH7UYBCqpVN0VQcGQOd+9QKrfM9/t+3pADbjAXa/2SaY0yFWAicZy8OCwU0AQ4D2mtT
-         L+PQWapMJSqH8Q6i0J/xXSBwmqu/hge5YapGCe2Cc97gx8+brwykUpGW+HYJcs+kh4wh
-         xR1G+spIB2P5CRWeqwkJlOcdwwxJXwKIYM4ILc8oBRMe4W/p4DTS8gyZk6K8kdHRoUsa
-         XBJHH9C5DfVBPv1wtP350Ycc8InnldIDykzv+6G1fB5zBicnjY1K+xo4ouf0/Jl2BoCq
-         2hnw==
-X-Gm-Message-State: AOJu0Yx/Qycz2PbG5zl6AtD7hrG7+qEopNnL6m/YiYXeF3hRz3fD36uF
-	1eTiDoGH1jIvMvij6QM3/J++xkJZYc5upcSBnuXAv8quS/SXXDdC
-X-Google-Smtp-Source: AGHT+IHZppZBPpxX7hjhZ7O8ug4KnGQsVC8AN7TdTefrgFlvP30wVj6eWIswTHqQKGcYw9kXPrw9eA==
-X-Received: by 2002:a05:6512:32c2:b0:50e:7d27:f930 with SMTP id f2-20020a05651232c200b0050e7d27f930mr4450478lfg.29.1706106334687;
-        Wed, 24 Jan 2024 06:25:34 -0800 (PST)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id a8-20020a19ca08000000b005100cb8395esm308291lfg.15.2024.01.24.06.25.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 06:25:32 -0800 (PST)
-Date: Wed, 24 Jan 2024 17:25:27 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Furong Xu <0x1207@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	Joao Pinto <jpinto@synopsys.com>, Simon Horman <horms@kernel.org>, netdev@vger.kernel.org, 
-	linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, xfr@outlook.com, rock.xu@nio.com
-Subject: Re: [PATCH net] net: stmmac: xgmac: fix safety error descriptions
-Message-ID: <ii3muj3nmhuo6s5hm3g7wuiubtyzr632klrcesubtuaoyifogb@ohmunpxvdtsv>
-References: <20240123085037.939471-1-0x1207@gmail.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gRit1FkUpM7m21bu50u4YAlWDNP8DZtcb4CByWbP72g=;
+ b=SXLlG3XAH35Z42LFGaaO9/qTX5eT7Hgf+BdkMdxHrZ4nWt/IbrZpmlb1Mq7SQSeG5tfkElEYaGPh18GzIEPa5DvPHp9nFzysRzcoVhIPvssvT+jc2n44tzAft27Y39RBXwmTKA65DjvifPZe8B2JUWJ+cxjFJ2V8dnp03Nbq+80=
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+ by CH0PR10MB5212.namprd10.prod.outlook.com (2603:10b6:610:c8::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.24; Wed, 24 Jan
+ 2024 14:26:55 +0000
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::f11:7303:66e7:286c]) by DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::f11:7303:66e7:286c%5]) with mapi id 15.20.7228.022; Wed, 24 Jan 2024
+ 14:26:54 +0000
+From: John Garry <john.g.garry@oracle.com>
+To: hch@lst.de, djwong@kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
+        dchinner@redhat.com, jack@suse.cz, chandan.babu@oracle.com
+Cc: martin.petersen@oracle.com, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        tytso@mit.edu, jbongio@google.com, ojaswin@linux.ibm.com,
+        John Garry <john.g.garry@oracle.com>
+Subject: [PATCH 0/6] block atomic writes for XFS
+Date: Wed, 24 Jan 2024 14:26:39 +0000
+Message-Id: <20240124142645.9334-1-john.g.garry@oracle.com>
+X-Mailer: git-send-email 2.31.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: LO4P123CA0652.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:296::13) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240123085037.939471-1-0x1207@gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|CH0PR10MB5212:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6d5312cc-d1ed-4354-2472-08dc1ce883ae
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	DUCjfBCnTwt4w0ffMxZ8VkUFCxxrgIoacM6IdjsRcotsJK81OopnK6liNFfl9e+TSgwB3bpqNGYD9jl2tZJSUG3bFP9zC1jxZcpOxfeD1sQgJUXxSGgBLXuAcNBBL0MN23tJmoSbPEwzvhFybeGKEYMmSC8v4UT2hJJvxyVXslqeAQfwyTMFkIiGajHwjiegNs3EaN2mt6lFdbzTAYNvMSnBKFK6qRcTgjlSag3k2Dum7loj+AY8/ZNedgGOFdk0bqbqSgjFYfsHUgLzyD0R0PNgyqTSctzOrPe/tM1TcplVY1um36C+csDIBZ5WA3HRz199hRcGJ3BBDCoyDctobiEbtKkTpKdrpJ0qyAha5iMTFCZ8NIROMCZmX73XsoxP1kgHjbLHGLd6PqBc+mAhhQw6mdwtxwvSUNBW+9JGtcurGBla+6LBaLrKIAJIB1zggqn0hw/DOhVx0BWpvEp1msyCgDk2DgeF1I40E6vD4WcME/Nx2zxOlWaeblo+JII8sqa80/vc+9HkXZR+nNo1CDD76BwQWENyN8nd3TexicVsIHXYpC4dQNRC2pLTpIUu9+32DXFFA1lRyPSbvEKEoA==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(366004)(376002)(396003)(136003)(230922051799003)(64100799003)(1800799012)(186009)(451199024)(83380400001)(41300700001)(36756003)(86362001)(103116003)(38100700002)(107886003)(2616005)(26005)(6512007)(6486002)(1076003)(966005)(6506007)(2906002)(478600001)(6636002)(316002)(66946007)(66556008)(66476007)(6666004)(4326008)(8676002)(7416002)(8936002)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?AvfSb+L89kRi0ErTNYfCtsLshpb3tbMFLdm90/tQ8y6vANQrn6F/iytJxLND?=
+ =?us-ascii?Q?GWzA/hlXfsZF0sluHIQkliJn/E2kgnZ0m7KzZ8qPaFz7pyNMxqeKKtzJERSu?=
+ =?us-ascii?Q?p9hi53QGl9jhCTbWYM8GFu5IsD8TtfKqJq31IlQoEvKmd3g5Hyayigc/Ob7Q?=
+ =?us-ascii?Q?2IKciP6UC4lqEJuMBn9cVnfuixr4qP5l++JCbIofbKJUG5fWd6d47sspMvos?=
+ =?us-ascii?Q?ZMCAEz/JbULSvQS8/+bG6DgKYV1GH+k/FIvmOW4ZmQ308Z5B61K2F2NkOwSB?=
+ =?us-ascii?Q?Pbn9kvFG+jDO1rVgWGlaf0iuXXgt/qv6ZWe/n2pAO93nnH3WUdYffjVyCher?=
+ =?us-ascii?Q?dz+jwMUQ6kdGT8/XOStsXt3tS6lJyOixphAVk5+tTXLeGgRpID8dX+zFg/mi?=
+ =?us-ascii?Q?t9SI1P9RmXI/pbmUGGdFBzhxqvozmkgIvUwBAcNi3jgIOimKLuq+d+PBXb6B?=
+ =?us-ascii?Q?rO6/y9W0MKCiFQRBubH89bNeJmy7aIpohmIkG8rI+/hUbyacYj/WOK63GB/I?=
+ =?us-ascii?Q?71mz1e5bfcmepywgPI4v7Xmb4wA8fkenBLydrBkQGr1ShDvi/83+BtjTpjuc?=
+ =?us-ascii?Q?6iBN4l78HuHnCry862UPB+nDxCPn1xJ/j7RnoF6ePr1dtc4jFCNFi5WuJYsh?=
+ =?us-ascii?Q?osyriHTPeBpcPZFoXMEA0HMQFDQf+YChqkcyn/u+HtxTFNyABKB04JP27NMO?=
+ =?us-ascii?Q?e3qy+0y0+yXgdbYXMOmvuRX/whMejajB8IN4PdeuyO4d4KvNfyKTIwhJm256?=
+ =?us-ascii?Q?YaO7QUkt/o74lZ1iAynFAI4dFyLEqg1sf96Kle73ya0xdewUcf3YZHoi3eoY?=
+ =?us-ascii?Q?dKNzt+cLD03ct7MKRdp5drI6RpamUB0kXKD+GaPKl8gHBm2eSkWcIQOnSTPF?=
+ =?us-ascii?Q?F30JC3v6uxAZ+Bi/CvovSk9fn6g6j5qXI91pkqkH/tWA7tpeeT2Uxle0jnwN?=
+ =?us-ascii?Q?QZRM8dZuH5EcXh5HxJI+kOJJDPrszoCuzPosGPOnCmviP0L5y9rZ8WjU+BDZ?=
+ =?us-ascii?Q?m59ZNX+PeGeyKpoedM5rTSb6Zh1InYNhAvn0ILldIpKlEcWJBnbs1FcemuJ7?=
+ =?us-ascii?Q?M/g03oAw9jc8ABc0Dya7r2N8q5f6diG0XISDzROhvU/PT9G1SKFE81n5lMhj?=
+ =?us-ascii?Q?t2mG7ZBqagXslGTojodzCd/MwnGXhNdScyuXCZ7j6j4tYsBhdR80CBWkttwl?=
+ =?us-ascii?Q?UiH39IBb4+Vgsd1x3QyKrTxdX3kSuz6efijVxs9GMl7tmkp0YDBzfjPJ0k9L?=
+ =?us-ascii?Q?dtyts641ctd/Y1Ex8upM2/6PaUoF19LEGVutTaOov2Zdiv1HlFxGVd4ZgmH3?=
+ =?us-ascii?Q?XJwCIIeo1TgfS4pGmN+dL6C41x3EN44JMT9wigKrgabg/tBDOYIe/OeS8J6c?=
+ =?us-ascii?Q?MwHjCohlLgkfmJz3O4CcGnVAexidoHalqVCIDAM8epYm+x/dSVO63naEDHJA?=
+ =?us-ascii?Q?XaM2+ftkXEcnkaAA6fkK/1Vqr4SYNie4M7JQt4HIW8tAv9sgFKTTC2eoSygw?=
+ =?us-ascii?Q?yMx+Q9pKM2yxQC2zV0KdbstRuj1E4AMfgbce243CEEnCPm+JJzmVoXDuNztM?=
+ =?us-ascii?Q?79wATr2gzgErYYHnqKiPNY6J5UqVyAmq1LC6B0izLEy3UGMEqCls6ZGvuPfx?=
+ =?us-ascii?Q?WA=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	3fJaMtZl0qWhtpWDbRYHNQLhtGL8TZNvclr7Kk37cTwBsEJ8B5GONHvNXaRGykPfL53k44lyR+FuKMOVaihVsqHD+/SK4f5G9iGIHgXioILQc3BBQCX0zFbNxCwIztCh1ixNZ2QRJ62VZLuMr4/1j0D8T2xJrcHG4nVNQ6SqHmSNGLxj94MxC42avTlL2j6401ssvYsOObYH6cYoSmHeE5TPBSKBa3JIR3gh/yi1B77eAwlp7ArT6bVURK1kBCCGFXJCPzitH/w9oyuuVtmSqPfiYk8404g0H5tN671ZTXH3fU1bPJ1rLkxSaONoW4urXGtvVnbuSfGzB+NZJCIizzRuSlNxEFYNOKzRQj8zX1kZKozh6zd/UppisfBwocXP5NE5bTwm+5E0JDrweJ+7Lb4O5ixqqLLit76TmYnSSAuFdE/XZ1nGItz8JcxHHRHBPur8x1+wjcDx83UOoth9Dar7GYL2cGZCipL/7AtQRq8tc8gkbP8MtCBtjx8U1XTUQRucbX2+rjPWColnf+NjJfR6hSWJJBSqpyVMHIQSkkVniA1xClSqCn7AE1Mq94dclY/k7AFTpUT+huolaVP5/RhM9YccuUX3WPkG+I3vxlw=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6d5312cc-d1ed-4354-2472-08dc1ce883ae
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jan 2024 14:26:54.8810
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WotJWPaHyVa6oDJJAwr+v8bxN5FKT5EhDop3+ht9y7ZTnh3NuGk3hrLJ58ytVEEu0LN64a+L9AbbMlSUKFVDDg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB5212
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-24_06,2024-01-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
+ mlxlogscore=999 mlxscore=0 phishscore=0 adultscore=0 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401240104
+X-Proofpoint-GUID: M0NIBwgqVvBzRrWqtxVNYwtEXVCcUB-a
+X-Proofpoint-ORIG-GUID: M0NIBwgqVvBzRrWqtxVNYwtEXVCcUB-a
 
-On Tue, Jan 23, 2024 at 04:50:37PM +0800, Furong Xu wrote:
-> Commit 56e58d6c8a56 ("net: stmmac: Implement Safety Features in
-> XGMAC core") prints safety error descriptions when safety error assert,
-> but missed some special errors, and mixed correctable errors and
-> uncorrectable errors together.
-> This patch complete the error code list and print the type of errors.
+This series expands atomic write support to filesystems, specifically
+XFS. Since XFS rtvol supports extent alignment already, support will
+initially be added there. When XFS forcealign feature is merged, then we
+can similarly support atomic writes for a non-rtvol filesystem.
 
-The XGMAC ECC Safety code has likely been just copied from the DW GMAC
-v5 (DW QoS Eth) part. So this change is partly relevant to that code too. I
-can't confirm that the special errors support is relevant to the DW
-QoS Eth too (it likely is though), so what about splitting this patch
-up into two:
-1. Elaborate the errors description for DW GMAC v5 and DW XGMAC.
-2. Add new ECC safety errors support.
-?
+Flag FS_XFLAG_ATOMICWRITES is added as an enabling flag for atomic writes.
 
-On the other hand if we were sure that both DW QoS Eth and XGMAC
-safety features implementation match the ideal solution would be to
-refactor out the common code into a dedicated module.
+For XFS rtvol, support can be enabled through xfs_io command:
+$xfs_io -c "chattr +W" filename
+$xfs_io -c "lsattr -v" filename
+[realtime, atomic-writes] filename
 
--Serge(y)
+The FS needs to be formatted with a specific extent alignment size, like:
+mkf.xfs -r rtdev=/dev/sdb,extsize=16K -d rtinherit=1 /dev/sda
 
-> 
-> Fixes: 56e58d6c8a56 ("net: stmmac: Implement Safety Features in XGMAC core")
-> Signed-off-by: Furong Xu <0x1207@gmail.com>
-> ---
->  .../ethernet/stmicro/stmmac/dwxgmac2_core.c   | 36 +++++++++----------
->  1 file changed, 18 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-> index eb48211d9b0e..ad812484059e 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-> @@ -748,29 +748,29 @@ static void dwxgmac3_handle_mac_err(struct net_device *ndev,
->  }
->  
->  static const struct dwxgmac3_error_desc dwxgmac3_mtl_errors[32]= {
-> -	{ true, "TXCES", "MTL TX Memory Error" },
-> +	{ true, "TXCES", "MTL TX Memory Correctable Error" },
->  	{ true, "TXAMS", "MTL TX Memory Address Mismatch Error" },
-> -	{ true, "TXUES", "MTL TX Memory Error" },
-> +	{ true, "TXUES", "MTL TX Memory Uncorrectable Error" },
->  	{ false, "UNKNOWN", "Unknown Error" }, /* 3 */
-> -	{ true, "RXCES", "MTL RX Memory Error" },
-> +	{ true, "RXCES", "MTL RX Memory Correctable Error" },
->  	{ true, "RXAMS", "MTL RX Memory Address Mismatch Error" },
-> -	{ true, "RXUES", "MTL RX Memory Error" },
-> +	{ true, "RXUES", "MTL RX Memory Uncorrectable Error" },
->  	{ false, "UNKNOWN", "Unknown Error" }, /* 7 */
-> -	{ true, "ECES", "MTL EST Memory Error" },
-> +	{ true, "ECES", "MTL EST Memory Correctable Error" },
->  	{ true, "EAMS", "MTL EST Memory Address Mismatch Error" },
-> -	{ true, "EUES", "MTL EST Memory Error" },
-> +	{ true, "EUES", "MTL EST Memory Uncorrectable Error" },
->  	{ false, "UNKNOWN", "Unknown Error" }, /* 11 */
-> -	{ true, "RPCES", "MTL RX Parser Memory Error" },
-> +	{ true, "RPCES", "MTL RX Parser Memory Correctable Error" },
->  	{ true, "RPAMS", "MTL RX Parser Memory Address Mismatch Error" },
-> -	{ true, "RPUES", "MTL RX Parser Memory Error" },
-> +	{ true, "RPUES", "MTL RX Parser Memory Uncorrectable Error" },
->  	{ false, "UNKNOWN", "Unknown Error" }, /* 15 */
-> -	{ false, "UNKNOWN", "Unknown Error" }, /* 16 */
-> -	{ false, "UNKNOWN", "Unknown Error" }, /* 17 */
-> -	{ false, "UNKNOWN", "Unknown Error" }, /* 18 */
-> +	{ true, "SCES", "MTL SGF GCL Memory Correctable Error" },
-> +	{ true, "SAMS", "MTL SGF GCL Memory Address Mismatch Error" },
-> +	{ true, "SUES", "MTL SGF GCL Memory Uncorrectable Error" },
->  	{ false, "UNKNOWN", "Unknown Error" }, /* 19 */
-> -	{ false, "UNKNOWN", "Unknown Error" }, /* 20 */
-> -	{ false, "UNKNOWN", "Unknown Error" }, /* 21 */
-> -	{ false, "UNKNOWN", "Unknown Error" }, /* 22 */
-> +	{ true, "RXFCES", "MTL RXF Memory Correctable Error" },
-> +	{ true, "RXFAMS", "MTL RXF Memory Address Mismatch Error" },
-> +	{ true, "RXFUES", "MTL RXF Memory Uncorrectable Error" },
->  	{ false, "UNKNOWN", "Unknown Error" }, /* 23 */
->  	{ false, "UNKNOWN", "Unknown Error" }, /* 24 */
->  	{ false, "UNKNOWN", "Unknown Error" }, /* 25 */
-> @@ -796,13 +796,13 @@ static void dwxgmac3_handle_mtl_err(struct net_device *ndev,
->  }
->  
->  static const struct dwxgmac3_error_desc dwxgmac3_dma_errors[32]= {
-> -	{ true, "TCES", "DMA TSO Memory Error" },
-> +	{ true, "TCES", "DMA TSO Memory Correctable Error" },
->  	{ true, "TAMS", "DMA TSO Memory Address Mismatch Error" },
-> -	{ true, "TUES", "DMA TSO Memory Error" },
-> +	{ true, "TUES", "DMA TSO Memory Uncorrectable Error" },
->  	{ false, "UNKNOWN", "Unknown Error" }, /* 3 */
-> -	{ true, "DCES", "DMA DCACHE Memory Error" },
-> +	{ true, "DCES", "DMA DCACHE Memory Correctable Error" },
->  	{ true, "DAMS", "DMA DCACHE Address Mismatch Error" },
-> -	{ true, "DUES", "DMA DCACHE Memory Error" },
-> +	{ true, "DUES", "DMA DCACHE Memory Uncorrectable Error" },
->  	{ false, "UNKNOWN", "Unknown Error" }, /* 7 */
->  	{ false, "UNKNOWN", "Unknown Error" }, /* 8 */
->  	{ false, "UNKNOWN", "Unknown Error" }, /* 9 */
-> -- 
-> 2.34.1
-> 
-> 
+This enables 16K atomic write support. There are no checks whether the
+underlying HW actually supports that for enabling atomic writes with
+xfs_io, though, so statx needs to be issued for a file to know atomic
+write limits.
+
+For supporting non-rtvol, we will require forcealign enabled. As such, a
+dedicated xfs_io command to enable atomic writes for a regular FS may
+be useful, which would enable FS_XFLAG_ATOMICWRITES, enable forcealign,
+and set an extent alignment hint.
+
+Baseline is following series (which is based on v6.8-rc1):
+https://urldefense.com/v3/__https://lore.kernel.org/linux-nvme/20240124113841.31824-1-john.g.garry@oracle.com/T/*m4ad28b480a8e12eb51467e17208d98ca50041ff2__;Iw!!ACWV5N9M2RV99hQ!PKOcFzPtVYZ9uATl1BrTJmYanWxEtCKJPV-tTPDYqeTjuWmChXn08ZcmP_H07A9mxPyQ8wwjdSzgH0eYU_45MaIOJyEW$ 
+
+Basic xfsprogs support at:
+https://urldefense.com/v3/__https://github.com/johnpgarry/xfsprogs-dev/tree/atomicwrites__;!!ACWV5N9M2RV99hQ!PKOcFzPtVYZ9uATl1BrTJmYanWxEtCKJPV-tTPDYqeTjuWmChXn08ZcmP_H07A9mxPyQ8wwjdSzgH0eYU_45MTapy6qp$ 
+
+John Garry (6):
+  fs: iomap: Atomic write support
+  fs: Add FS_XFLAG_ATOMICWRITES flag
+  fs: xfs: Support FS_XFLAG_ATOMICWRITES for rtvol
+  fs: xfs: Support atomic write for statx
+  fs: xfs: iomap atomic write support
+  fs: xfs: Set FMODE_CAN_ATOMIC_WRITE for FS_XFLAG_ATOMICWRITES set
+
+ fs/iomap/direct-io.c       | 21 +++++++++++++++++-
+ fs/iomap/trace.h           |  3 ++-
+ fs/xfs/libxfs/xfs_format.h |  8 +++++--
+ fs/xfs/libxfs/xfs_sb.c     |  2 ++
+ fs/xfs/xfs_file.c          |  2 ++
+ fs/xfs/xfs_inode.c         | 22 +++++++++++++++++++
+ fs/xfs/xfs_inode.h         |  7 ++++++
+ fs/xfs/xfs_ioctl.c         | 19 ++++++++++++++--
+ fs/xfs/xfs_iomap.c         | 41 ++++++++++++++++++++++++++++++++++
+ fs/xfs/xfs_iops.c          | 45 ++++++++++++++++++++++++++++++++++++++
+ fs/xfs/xfs_iops.h          |  4 ++++
+ fs/xfs/xfs_mount.h         |  2 ++
+ fs/xfs/xfs_super.c         |  4 ++++
+ include/linux/iomap.h      |  1 +
+ include/uapi/linux/fs.h    |  1 +
+ 15 files changed, 176 insertions(+), 6 deletions(-)
+
+-- 
+2.31.1
+
 
