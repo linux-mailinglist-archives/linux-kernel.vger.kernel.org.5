@@ -1,109 +1,71 @@
-Return-Path: <linux-kernel+bounces-36689-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36690-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2382C83A50D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:18:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 92DEF83A511
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:18:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7CD01F25654
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:18:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B4841F27612
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:18:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D24517C60;
-	Wed, 24 Jan 2024 09:18:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 308051802A;
+	Wed, 24 Jan 2024 09:18:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="i4mJ4EEP"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="pL9CZFrO"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2916417BBA;
-	Wed, 24 Jan 2024 09:18:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B37AF18027;
+	Wed, 24 Jan 2024 09:18:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706087886; cv=none; b=k67BubJ7pSTiU8yzP8FtzxT6reNqVP6uD0CBTEy5dRxkwQm5ZrA5CcFKv6x94Pp+dnmy0zP7T7vvHODIPru4itVMmVVqjzd3pAJW3+gvLZ1jPRmhrtNjtRd3+rHK5PJdSGTbV5fkkuBBkYgG8I4oV1Jz9c64E9wNj9QKIAN4js4=
+	t=1706087897; cv=none; b=dZqpVc9yFBNn0gByl/sEhFnsFrMJJmiZmpNm8PJwLXhoFcxsALS3TaUdUUcWpgqkpSFl+IiSH9254u7jfivjWV/ShuXcaOJ2lQnff7du5KSy4m0wQqul8uwszwASUhTWxNxBQJnqXfSDCsoc32b4YVdmMtV3VsHpjn/UVi1Q4u4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706087886; c=relaxed/simple;
-	bh=0uEt3QHC9f3bYP1Js3HWf0U2lMrJMdiCAo8M3PruTPo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=qQd9HTm/qVhTMc70MmdS7avlHC1zBsflICweVMhmbPxCEcgLXBfzkuITwEQBJ6lg+jX69KHylGPm+CFXJuilqq0qDHf3J1/n/U907S9/oylh3kueaMyLqeoe/44khnSagX61aGS58MCll2PTZlcxJlmr5fULCQtY7yBPLCvtnt4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=i4mJ4EEP; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706087885; x=1737623885;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=0uEt3QHC9f3bYP1Js3HWf0U2lMrJMdiCAo8M3PruTPo=;
-  b=i4mJ4EEPVUMUQqfFXZwjNxbzE8L04WF3hm+yBB/130W3W/aSSZ8vSrV7
-   +HlFR5NFwROt04JSgI8uiwj28OAxUw/4E1E5Prz2jzrDR6hWUN08pVYdc
-   zVXeWwCMIqSP1zBldazxYu7CGE2kRuUVM7DnfumOEFOHanXZaNqjIn9vs
-   QB6Pk1BjybeLYmNsigeFi72eTMyw/dqSHL8JzJCf5en2zypeX6QunTzpF
-   AY8Xmyx9VfhyIgb6emesB0Z0hcfQ37gFG5CZaORSTYUc38CkwGU2w5L29
-   T7UQ9KYNy1k/sy11+XY42E6XOGaZZedY5ftkK9INBPJkmv/W0OXS13l4t
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="15313325"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="15313325"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 01:17:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="820392409"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="820392409"
-Received: from komalav-mobl2.gar.corp.intel.com (HELO localhost) ([10.252.41.195])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 01:17:47 -0800
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Randy Dunlap <rdunlap@infradead.org>, Stephen Rothwell
- <sfr@canb.auug.org.au>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Cc: intel-gfx@lists.freedesktop.org, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, "dri-devel@lists.freedesktop.org"
- <dri-devel@lists.freedesktop.org>, intel-xe@lists.freedesktop.org
-Subject: Re: linux-next: Tree for Jan 23 (drm/xe/)
-In-Reply-To: <152521f9-119f-4c61-b467-3e91f4aecb1a@infradead.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240123132929.7cb6ea4c@canb.auug.org.au>
- <152521f9-119f-4c61-b467-3e91f4aecb1a@infradead.org>
-Date: Wed, 24 Jan 2024 11:17:44 +0200
-Message-ID: <87le8fks3r.fsf@intel.com>
+	s=arc-20240116; t=1706087897; c=relaxed/simple;
+	bh=Lp5MIAa5xlvcbfT4woCjNP+7nWdzAg+m0NqHgeOkoqk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I72EV9sZeY8MhBICfR+Txleql+XQbRHb0wSagJLbkkL7lEqzoOq/GdtlrybA79CPmz/v88SgDw3QfwsESv3+DTppCWqDUXin6mmX3MUlUiYRFRrSSpO/JHCsvRCcMZfb//9GQglOwT9tA90SuAoxOleCMMTyfBLNBcw7jKEL5Mk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=pL9CZFrO; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Lp5MIAa5xlvcbfT4woCjNP+7nWdzAg+m0NqHgeOkoqk=; b=pL9CZFrOEBUs44L8PG2Z9dHQJU
+	Xx7NZVS1SSYf/sTjnG1wlo+m/KAds0pQdXsY+Bhiw8jSx0cb0acGxRJcl0VVsxjrJyKxsdILIhhfm
+	NTx8+e2dbV0ls4cyzSnzjza6EDBAyg2T9fp5HD1rRW9VpdBqkykC8D+ylAifMBzGQ49A7Ux01L6nq
+	pjGD9epQGvU3p1yIY+0KaI75NkAE56bmXJ5igVXhbXPQZ0f5u3wl5zXxjJAp5rzU9c+nxSj98FYoc
+	sjIAqLS0b1cik+AFM9p9Mcb+9CM8C6FLSnJFvPgKYB1uFtcO92o8QYWGU2Wwy+o+R3e8rYvXbhbc7
+	tUXMgvPw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rSZOf-002AqO-1k;
+	Wed, 24 Jan 2024 09:18:13 +0000
+Date: Wed, 24 Jan 2024 01:18:13 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Maksim Kiselev <bigunclemax@gmail.com>
+Cc: Justin Sanders <justin@coraid.com>, Jens Axboe <axboe@kernel.dk>,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] aoe: avoid potential deadlock at set_capacity
+Message-ID: <ZbDV1RcDGnRjVqI7@infradead.org>
+References: <20240124072436.3745720-1-bigunclemax@gmail.com>
+ <20240124072436.3745720-2-bigunclemax@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240124072436.3745720-2-bigunclemax@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Tue, 23 Jan 2024, Randy Dunlap <rdunlap@infradead.org> wrote:
-> On 1/22/24 18:29, Stephen Rothwell wrote:
->> Hi all,
->> 
->> News: there will be no linux-next release on Friday
->> 
->> Changes since 20240122:
->> 
->
-> on ARM64, when
-> DRM_I915 is not set
-> DRM_XE=m
-> DEBUG_FS is not set
->
-> ../drivers/gpu/drm/i915/display/intel_display_debugfs.c:1091:6: error: redefinition of 'intel_display_debugfs_register'
->  1091 | void intel_display_debugfs_register(struct drm_i915_private *i915)
->       |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from ../drivers/gpu/drm/i915/display/intel_display_debugfs.c:19:
+Looks good:
 
-Does [1] fix the issue?
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-BR,
-Jani.
-
-
-[1] https://lore.kernel.org/r/20240124090515.3363901-1-jani.nikula@intel.com
-
-
--- 
-Jani Nikula, Intel
+Just curious: what is your rason for using aeo over nbd?
 
