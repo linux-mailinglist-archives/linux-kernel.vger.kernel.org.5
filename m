@@ -1,110 +1,226 @@
-Return-Path: <linux-kernel+bounces-36230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36247-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32C3B839DB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:41:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A47A6839DDE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 02:01:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E09C728B989
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 00:41:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31C951F2AB74
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:01:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6671D10EF;
-	Wed, 24 Jan 2024 00:40:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62352187F;
+	Wed, 24 Jan 2024 00:58:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hoh3yJdM"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b="f3R2Qc0I"
+Received: from mail.codeweavers.com (mail.codeweavers.com [4.36.192.163])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13B45620
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 00:40:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01957D2F5;
+	Wed, 24 Jan 2024 00:58:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=4.36.192.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706056854; cv=none; b=OO+xS5dRzDAtB3jwSyROzl9UTb6sQAZ4S31CJUDCz42vm1mSVYqEKsDTN1spJD+/X+Z2ibQ3TvCeqs+FfPrvcG1QdtMiXhUGDANUUVCYf5SE0F+8BquPltM36bX/Xe96ia8HqAa5n+lPWh8j3UpGmrGQWApSaHWV78Y6bgm97Ug=
+	t=1706057936; cv=none; b=kGYJ+CmGIyYMIuyzi/ztZqEGZpmBuT6gbZw/6/4ZFcHEufB9q4S0KaeunjvmveZPYSYvh9BFEUFMZV2/FSnYlhIu1RVvV8Pljdma3+a3Elq3QM/+143EepOKVxajkbxOg4g/9wyA1fE4/D48Ufo6u7j0SgAfzL/LBEqKTLvLSWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706056854; c=relaxed/simple;
-	bh=ER5Bp0V1Zhc+FoYdut0RUMjI9BKEJAxh4pg9D81lGAw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ulIr/oDc4QBCC+WSw6Dqah6Z1MBFq3pKaC4Z6uXBeuU0epppcxiHu9w9eR8rR+lRbsqLPxF1UsrA8IP9Y8Ub5k61UPpoLI1JuHkCFcLahsAkpH5wbuk4Jtc6fkX3KwE/SYYHAWA5iQwKsfMuzjeZmHDmcLNI+biWDeflevETzUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hoh3yJdM; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706056851;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xiOvb37QfLscKQcu8Koz59w2wt96DY2PQzu4935ySGU=;
-	b=hoh3yJdM8gu1Rsx476XTScARP8ha1dzRYfyoztyZ6zf6hT8dCvuLKyxk5PKjCRd+cziNyv
-	L3NVA807d38cuoSZHtSEf+Irw557tQ5w6BkxWpQFTC9t4AI5xTa5BzqKV3getoEgrn1qtd
-	LKmhMKE20hRuJPhu9t3hAUZvqBGsLkE=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-388-g_pKhG1NPECvcelyEyiKkQ-1; Tue, 23 Jan 2024 19:40:46 -0500
-X-MC-Unique: g_pKhG1NPECvcelyEyiKkQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EB5A6835380;
-	Wed, 24 Jan 2024 00:40:45 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.7])
-	by smtp.corp.redhat.com (Postfix) with SMTP id B2A0151D5;
-	Wed, 24 Jan 2024 00:40:44 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Wed, 24 Jan 2024 01:39:32 +0100 (CET)
-Date: Wed, 24 Jan 2024 01:39:30 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Dylan Hatch <dylanbhatch@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] getrusage: use sig->stats_lock
-Message-ID: <20240124003930.GA26412@redhat.com>
-References: <20240122155023.GA26169@redhat.com>
- <CADBMgpxNUoaermXsEj0Hs0KT=Q0xRpz5y+Px=oAGDP2Efg8yyw@mail.gmail.com>
+	s=arc-20240116; t=1706057936; c=relaxed/simple;
+	bh=sW+Y20MU/VFGCQimHbrm3O/+hpPKzSdsKRsTMf/sjRE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YQ/wAt6lWByRMW32tuayoBV9ITwKgoGp2vc1yYJi/tt8nocwfH0I1csU05T1cvGnR17JO2hLlFErOLz9/zGhhiy5qtQ1z5Ep9KUibqldSJonWZp6m6s4h+ZjgQHcgqc8lg/qG86mcR8Jyxj2+OW9ZC38dWe6venbYH5IQuIfqv0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com; spf=pass smtp.mailfrom=codeweavers.com; dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b=f3R2Qc0I; arc=none smtp.client-ip=4.36.192.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeweavers.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=codeweavers.com; s=s1; h=Message-ID:Date:Subject:Cc:To:From:Sender;
+	bh=2U6pZsqi4Oh7oXdwVx3LuWdFgEkqnlIZZ9lJn+kGE2Y=; b=f3R2Qc0IL5/w8V5fs02yhEAH11
+	7NKCu9HrRy/JjvXftKCdhmbgNzlyzpNZPRxcoN5UQGHle5Tn6gWIA3ShcRb6dgyTV9IZPZa5fMtH8
+	xr2SsXf0mgXy4LpU3fPTTo6+XSCZTbPKAFckYmuparF28ZWbBw5fOANJD2nqn9oYnXutrtsGyeM/e
+	dC+ejB+p0/NbC0IeD7rzUd54/VL/PPRRCKumZgTMDaCgJr0cbj+SOyq1S1CPfrg+aA+Dm1fHnmPBZ
+	wiXg31gOPj7y9gibtHB+WVGYqoY8UOWcLgjlSwmFozkWrX0QdQUdZvuBvyJ50b5NZq+pFPiEHotXl
+	aDXf6kmw==;
+Received: from cw137ip160.mn.codeweavers.com ([10.69.137.160] helo=camazotz.mn.codeweavers.com)
+	by mail.codeweavers.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <zfigura@codeweavers.com>)
+	id 1rSRLA-00DVeW-2Q;
+	Tue, 23 Jan 2024 18:42:05 -0600
+From: Elizabeth Figura <zfigura@codeweavers.com>
+To: Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-kernel@vger.kernel.org,
+	linux-api@vger.kernel.org
+Cc: wine-devel@winehq.org,
+	=?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>,
+	Wolfram Sang <wsa@kernel.org>,
+	Arkadiusz Hiler <ahiler@codeweavers.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Elizabeth Figura <zfigura@codeweavers.com>
+Subject: [RFC PATCH 0/9] NT synchronization primitive driver
+Date: Tue, 23 Jan 2024 18:40:19 -0600
+Message-ID: <20240124004028.16826-1-zfigura@codeweavers.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADBMgpxNUoaermXsEj0Hs0KT=Q0xRpz5y+Px=oAGDP2Efg8yyw@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+Content-Transfer-Encoding: 8bit
 
-On 01/23, Dylan Hatch wrote:
->
-> I have one last question -- is there possibly an edge case in which
-> the hard lockup
-> can still happen? How likely is it for many writers to force enough
-> readers to do a
-> retry on the seqlock, disabling irq and causing the lockup?
+This patch series introduces a new char misc driver, /dev/ntsync, which is used
+to implement Windows NT synchronization primitives.
 
-I don't know how likely is it, and I guess the repro should be more creative ;)
+== Background ==
 
-But yes. Please see the TODO: section in the changelog,
+The Wine project emulates the Windows API in user space. One particular part of
+that API, namely the NT synchronization primitives, have historically been
+implemented via RPC to a dedicated "kernel" process. However, more recent
+applications use these APIs more strenuously, and the overhead of RPC has become
+a bottleneck.
 
-	- Turn sig->stats_lock into seqcount_rwlock_t, this way the
-	  readers in the slow mode won't exclude each other.
+The NT synchronization APIs are too complex to implement on top of existing
+primitives without sacrificing correctness. Certain operations, such as
+NtPulseEvent() or the "wait-for-all" mode of NtWaitForMultipleObjects(), require
+direct control over the underlying wait queue, and implementing a wait queue
+sufficiently robust for Wine in user space is not possible. This proposed
+driver, therefore, implements the problematic interfaces directly in the Linux
+kernel.
 
-and more importantly,
+This driver was presented at Linux Plumbers Conference 2023. For those further
+interested in the history of synchronization in Wine and past attempts to solve
+this problem in user space, a recording of the presentation can be viewed here:
 
-	- stats_lock has to disable irqs because ->siglock can be taken
-	  in irq context, it would be very nice to change __exit_signal()
-	  to avoid the siglock->stats_lock dependency.
+    https://www.youtube.com/watch?v=NjU4nyWyhU8
 
-There are other users which take stats_lock under siglock (and the
-"fs/proc: do_task_stat" series changes 2 of them to not do this), but
-__exit_signal() is most problematic.
 
-If we remove this dependency, we can turn read_seqbegin_or_lock_irqsave()
-into read_seqbegin_or_lock() which doesn't disable irqs.
+== Performance ==
 
-Oleg.
+The gain in performance varies wildly depending on the application in question
+and the user's hardware. For some games NT synchronization is not a bottleneck
+and no change can be observed, but for others frame rate improvements of 50 to
+150 percent are not atypical. The following table lists frame rate measurements
+from a variety of games on a variety of hardware, taken by users Dmitry
+Skvortsov, FuzzyQuills, OnMars, and myself:
+
+Game				Upstream	ntsync		improvement
+===========================================================================
+Anger Foot			 69		 99		 43%
+Call of Juarez			 99.8		224.1		125%
+Dirt 3				110.6		860.7		678%
+Forza Horizon 5			108		160		 48%
+Lara Croft: Temple of Osiris	141		326		131%
+Metro 2033			164.4		199.2		 21%
+Resident Evil 2			 26		 77		196%
+The Crew			 26		 51		 96%
+Tiny Tina's Wonderlands		130		360		177%
+Total War Saga: Troy		109		146		 34%
+===========================================================================
+
+
+== Patches ==
+
+This is the first part of a 32-patch series. The series comprises 17 patches
+which contain the actual implementation, 13 which provide self-tests, 1 to
+update the MAINTAINERS file, and 1 to add API documentation.
+
+The intended semantics of the patches are broadly intended to match those of the
+corresponding Windows functions. Since I do not expect familiarity with Windows
+syscalls, however, and especially not with some of the more subtle or
+unspecified behaviour that they provide, the documentation patch included in the
+series also describes the intended behaviour in detail, and can be used as a
+specification for the rest of the series.
+
+The entire series can be retrieved or browsed here:
+
+    https://repo.or.cz/linux/zf.git/shortlog/refs/heads/ntsync4
+
+The patches making use of this driver in Wine can be retrieved or browsed here:
+
+    https://repo.or.cz/wine/zf.git/shortlog/refs/heads/ntsync4
+
+
+== Implementation ==
+
+Some aspects of the implementation may deserve particular comment:
+
+* In the interest of performance, each object is governed only by a single
+  spinlock. However, NTSYNC_IOC_WAIT_ALL requires that the state of multiple
+  objects be changed as a single atomic operation. In order to achieve this, we
+  first take a device-wide lock ("wait_all_lock") any time we are going to lock
+  more than one object at a time.
+
+  The maximum number of objects that can be used in a vectored wait, and
+  therefore the maximum that can be locked simultaneously, is 64. This number is
+  NT's own limit.
+
+  The acquisition of multiple spinlocks will degrade performance. This is a
+  conscious choice, however. Wait-for-all is known to be a very rare operation
+  in practice, especially with counts that approach the maximum, and it is the
+  intent of the ntsync driver to optimize the wait-for-any pattern at the
+  expense of the wait-for-all pattern as much as possible.
+
+* NT mutexes are tied to their threads on an OS level, and the kernel includes
+  builtin support for "robust" mutexes. In order to keep the ntsync driver
+  self-contained and avoid touching more code than necessary, it does not hook
+  into task exit nor use pids.
+
+  Instead, the user space emulator is expected to manage thread IDs and pass
+  them as an argument to any relevant functions; this is the "owner" field of
+  ntsync_wait_args and ntsync_mutex_args.
+
+  When the emulator detects that a thread dies, it should therefore call
+  NTSYNC_IOC_KILL_OWNER, which will mark mutexes owned by that thread (if any)
+  as abandoned.
+
+* This implementation uses a misc device mostly because it seemed like the
+  simplest and least obtrusive option.
+
+  Besides simplicitly of implementation, the only particularly interesting
+  advantage is the ability to create an arbitrary number of "contexts"
+  (corresponding to Windows virtual machines) which are self-contained and
+  shareable across multiple processes; this maps nicely to file descriptions
+  (i.e. struct file). This is not impossible with syscalls of course but would
+  require an extra argument.
+
+  On the other hand, there is no reason to forbid using ntsync by default from
+  user-mode processes, and (as far as I understand) to do so with a char device
+  requires explicit configuration by e.g. udev or init. Since this is done with
+  e.g. fuse, I assume this is the model to follow, but I may have chosen
+  something deprecated.
+
+* ntsync is module-capable mostly because there was nothing preventing it, and
+  because it aided development. I am not aware of any reason why being a module
+  is required, though.
+
+* The misc minor number has not been reserved with LANANA. I am not sure at what
+  point in the process this makes the most sense, but since this is still only
+  an RFC I've abstained from doing so yet.
+
+
+Elizabeth Figura (9):
+  ntsync: Introduce the ntsync driver and character device.
+  ntsync: Reserve a minor device number and ioctl range.
+  ntsync: Introduce NTSYNC_IOC_CREATE_SEM and NTSYNC_IOC_DELETE.
+  ntsync: Introduce NTSYNC_IOC_PUT_SEM.
+  ntsync: Introduce NTSYNC_IOC_WAIT_ANY.
+  ntsync: Introduce NTSYNC_IOC_WAIT_ALL.
+  ntsync: Introduce NTSYNC_IOC_CREATE_MUTEX.
+  ntsync: Introduce NTSYNC_IOC_PUT_MUTEX.
+  ntsync: Introduce NTSYNC_IOC_KILL_OWNER.
+
+ Documentation/admin-guide/devices.txt         |   3 +-
+ .../userspace-api/ioctl/ioctl-number.rst      |   2 +
+ drivers/misc/Kconfig                          |   9 +
+ drivers/misc/Makefile                         |   1 +
+ drivers/misc/ntsync.c                         | 916 ++++++++++++++++++
+ include/linux/miscdevice.h                    |   1 +
+ include/uapi/linux/ntsync.h                   |  53 +
+ 7 files changed, 984 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/misc/ntsync.c
+ create mode 100644 include/uapi/linux/ntsync.h
+
+
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+-- 
+2.43.0
 
 
