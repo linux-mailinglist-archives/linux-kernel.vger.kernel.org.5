@@ -1,169 +1,184 @@
-Return-Path: <linux-kernel+bounces-36785-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B69A83A69D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:21:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F4AF83A67C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:15:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B52611F22721
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:21:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B42A41F21FAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:15:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 599B618E27;
-	Wed, 24 Jan 2024 10:21:32 +0000 (UTC)
-Received: from air.basealt.ru (air.basealt.ru [194.107.17.39])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D97E18659;
+	Wed, 24 Jan 2024 10:15:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=flawful.org header.i=@flawful.org header.b="XLYvistR";
+	dkim=pass (1024-bit key) header.d=flawful.org header.i=@flawful.org header.b="F4MMYTza"
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08F061946F;
-	Wed, 24 Jan 2024 10:21:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.107.17.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1A8B1862E;
+	Wed, 24 Jan 2024 10:15:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706091691; cv=none; b=SPmi2vJNR9c+BjHAcQsQE1X5gBNFqrTgy/3irAekaJERZR4dPLgDdsqRR7pL6bpKIa8ABKTYE0UBG4dJZQCHFEwHq57llMItxWCyMW2Lq6XydqiSj9Vd/yKqpOS0V0RMHmfbiIJLKZqj5hllh3nU/oGwjc3Sp3zda7PtNJRWRag=
+	t=1706091348; cv=none; b=KSqOR47UN/drNpGko9zdipSU0S9aWPzxjuIXhxU+N6YQmeE6lLhvAftjCIlw7XkY3cBnp0qIZrrlKBhfNMI9WurYJ3ZlrV3yg8Cd1ShwScRneAYT2AFnyndHQi7HPWHYdMgkN4DHZ+c2RIhnpKDIDMcp99ocExz3UN0JecFgQcE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706091691; c=relaxed/simple;
-	bh=uaN3LU8WCx1N5fdq/9B44/4QcDRIu1L6RQvDR3R3yjM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=MvTgDwGuljECtYH1Y2xSqI/f/+FGNFah5HKDkDq6dVYxB/iBqw7m3Qa9k1PKMWlNd1bt1SGAvSx/RHdPdOrt27FMuby1zcXvFdWwpWAuHGOVXNIKvLkwgAbXLFHn5ll1uhXLC2sB4uz7Winbul2Ehyvb3M2LF2RtUdsIIAa/Ubo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org; spf=pass smtp.mailfrom=altlinux.org; arc=none smtp.client-ip=194.107.17.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
-Received: by air.basealt.ru (Postfix, from userid 490)
-	id 5F3FB2F20242; Wed, 24 Jan 2024 10:14:33 +0000 (UTC)
+	s=arc-20240116; t=1706091348; c=relaxed/simple;
+	bh=3KQWhQUwONwsinXPwABZKJVj6BEl9WSweJhnvwfsGh8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mTlnb8H0w5edhmP2xf4rMdu232PZ/RmJSzoLKNao4lmI+WWsUgfQ4L2L4mYevreN/TUMwgDiz7pSepnHCmb7pJIiPKPnWzkeLQl4wYc4TM2njxEd/IjvTnnFhLVRYmMijlAAY+/V3tgcZpLri8gsAf5/cjswQ3Zwm8z4tavaIp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=flawful.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (1024-bit key) header.d=flawful.org header.i=@flawful.org header.b=XLYvistR; dkim=pass (1024-bit key) header.d=flawful.org header.i=@flawful.org header.b=F4MMYTza; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=flawful.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50f11e3ba3aso7691351e87.1;
+        Wed, 24 Jan 2024 02:15:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706091343; x=1706696143;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:dkim-signature:dkim-signature
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GbXSTzcz0OzwsQ3PjuvIo0Y6PD8ojggK6PR8Fzfjhyk=;
+        b=jBSKWEH0nlnk8VDa5sykj0C5mH6sXcv6KQGCsPnzSyhBM/3yPFBViZRMlvJ52bz236
+         Os499g7ysODi9Tgw6POKJnf22g5vkQw6WHVwO7QiGKZubaAUDfvm58VtLtIOIjql7P7p
+         37OqYEaTNW5QjtnzUPxE+v1xj9/NJNu8WdPQoGncaNAv7W8UXOiQLb2lnQ35mMTeWUP4
+         dMLu+bLdnHApXsYwQOJUByr0K0UpHgxPCda8WoSLKVIeqLCz2+d0MjQAPy4px2OWVKaS
+         zKBxjzJFwnec/5yEc7q9RU9/08Chyve0yMctjethafFn1arTLmfYpzhd805i8ojWEH6h
+         STBA==
+X-Gm-Message-State: AOJu0Yx1vQEIA5+n9JxtEAy0BKEDboTc8J5+fopKTiXLbmUdLjE6l6g5
+	tQ0y1sN3yxqLiHuzk0AOenDxjs/rCGrcvDJ39AFwjkxVz1IhDHHqMfdZQGvo
+X-Google-Smtp-Source: AGHT+IGsJaXYmPUorVt7J4tg5m+HTLbXtsk6tye6awVYomNPZ+EnkCA/UbobJmIHY/EGIvDrsC334g==
+X-Received: by 2002:a05:6512:717:b0:50e:262d:4834 with SMTP id b23-20020a056512071700b0050e262d4834mr2935512lfs.135.1706091343340;
+        Wed, 24 Jan 2024 02:15:43 -0800 (PST)
+Received: from flawful.org (c-06f0e255.011-101-6d6c6d3.bbcust.telenor.se. [85.226.240.6])
+        by smtp.gmail.com with ESMTPSA id l13-20020a056512110d00b0050e9e1cb265sm2523848lfg.112.2024.01.24.02.15.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 02:15:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=flawful.org; s=mail;
+	t=1706091341; bh=3KQWhQUwONwsinXPwABZKJVj6BEl9WSweJhnvwfsGh8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XLYvistRAGw+5aG4kznXKYAp0gDE4/Rr5v0wAk2vO7ZjzJ5/HXtz3cd6B5NpJVdLh
+	 rK972LNvVTUke5DfcmhOBuRmG5VSw/xhwNSBzD+tyJx6z12prxin/lrayYirUWyZkJ
+	 E0jMPh6vjCo+wAB3chWDKGI8VwxYQufk0X6FumEo=
+Received: by flawful.org (Postfix, from userid 112)
+	id 2CE80375; Wed, 24 Jan 2024 11:15:40 +0100 (CET)
 X-Spam-Level: 
-Received: from altlinux.malta.altlinux.ru (obninsk.basealt.ru [217.15.195.17])
-	by air.basealt.ru (Postfix) with ESMTPSA id 2951F2F2022A;
-	Wed, 24 Jan 2024 10:14:31 +0000 (UTC)
-From: kovalev@altlinux.org
-To: pablo@netfilter.org,
-	laforge@gnumonks.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	osmocom-net-gprs@lists.osmocom.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: kovalev@altlinux.org,
-	nickel@altlinux.org,
-	oficerovas@altlinux.org,
-	dutyrok@altlinux.org
-Subject: [PATCH 1/1] gtp: fix use-after-free and null-ptr-deref in gtp_genl_dump_pdp()
-Date: Wed, 24 Jan 2024 13:14:04 +0300
-Message-Id: <20240124101404.161655-2-kovalev@altlinux.org>
-X-Mailer: git-send-email 2.33.8
-In-Reply-To: <20240124101404.161655-1-kovalev@altlinux.org>
-References: <20240124101404.161655-1-kovalev@altlinux.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=flawful.org; s=mail;
+	t=1706091328; bh=3KQWhQUwONwsinXPwABZKJVj6BEl9WSweJhnvwfsGh8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=F4MMYTza4x1N5d1+CZ/0LlC6pXCXigKisI7Obtr1LcoagHLrIq+jBiBMD8r4YlRv1
+	 pW0yvZcq2cE+DKHsXDYa6ZvL1jHWVJX6L9wsTyTNEiwPzwulJq5idiGqS8Boy3Qa92
+	 OD4Ju6rd1TYVMrCJ6mPw3NZ9K4ANiQvsI+Pknj1E=
+Received: from x1-carbon (OpenWrt.lan [192.168.1.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by flawful.org (Postfix) with ESMTPSA id DA5CF32F;
+	Wed, 24 Jan 2024 11:15:12 +0100 (CET)
+Date: Wed, 24 Jan 2024 11:15:11 +0100
+From: Niklas Cassel <nks@flawful.org>
+To: Lennert Buytenhek <kernel@wantstofly.org>
+Cc: Niklas Cassel <cassel@kernel.org>, Damien Le Moal <dlemoal@kernel.org>,
+	linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: ASMedia ASM1062 (AHCI) hang after "ahci 0000:28:00.0: Using
+ 64-bit DMA addresses"
+Message-ID: <ZbDjL0TDnUfzknZS@x1-carbon>
+References: <ZaZ2PIpEId-rl6jv@wantstofly.org>
+ <ZaaQpiW3OOZTSyXw@x1-carbon>
+ <ZahDNr97MSPNSHW_@wantstofly.org>
+ <ZahaKaV1jlHQ0sUx@x1-carbon>
+ <ZbAo_LqpbiGMfTtW@wantstofly.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZbAo_LqpbiGMfTtW@wantstofly.org>
 
-From: Vasiliy Kovalev <kovalev@altlinux.org>
+On Tue, Jan 23, 2024 at 11:00:44PM +0200, Lennert Buytenhek wrote:
+> On Wed, Jan 17, 2024 at 11:52:25PM +0100, Niklas Cassel wrote:
 
-After unloading the module, an instance continues to exist that accesses
-outdated memory addresses.
+(snip)
 
-To prevent this, the dump_pdp_en flag has been added, which blocks the
-dump of pdp contexts by a false value. And only after these checks can
-the net_generic() function be called.
+> This all suggests to me that the ASM1061 drops the upper 21 bits of all
+> DMA addresses.  Going back to the original report, on the Asus Pro WS
+> WRX80E-SAGE SE WIFI, we also see DMA addresses that seem to have been
+> capped to 43 bits:
+> 
+> > [Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: Using 64-bit DMA addresses
+> > [Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00000 flags=0x0000]
+> > [Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00300 flags=0x0000]
+> > [Thu Jan  4 23:12:54 2024] ahci 0000:28:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x0035 address=0x7fffff00380 flags=0x0000]
+> 
+> Since in this test the X570 AHCI controller is inside the chipset and
+> the ASM1061 in a PCIe slot, this doesn't 100% prove that the ASM1061 is
+> at fault (e.g. the upstream IOMMUs for the X570 AHCI controller and the
+> ASM1061 could be behaving differently), and to 100% prove this theory I
+> would have to find a non-ASM1061 AHCI controller and put it in the same
+> PCIe slot as the ASM1061 is currently in, and try to make it DMA to
+> address 0xffffffff00000000, and verify that the I/O page faults on the
+> host report 0xffffffff00000000 and not 0x7fffff00000 -- but I think that
+> the current evidence is perhaps good enough?
 
-These errors were found using the syzkaller program:
+It does indeed look like the same issue on the internal ASMedia ASM1061 on
+your Asus Pro WS WRX80E-SAGE SE WIFI and the stand alone ASMedia ASM1061
+PCI card connected to your other X570 based motherboard.
 
-Syzkaller hit 'general protection fault in gtp_genl_dump_pdp' bug.
-gtp: GTP module loaded (pdp ctx size 104 bytes)
-gtp: GTP module unloaded
-general protection fault, probably for non-canonical address
-0xdffffc0000000001:0000 [#1] SMP KASAN NOPTI
-KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
-CPU: 0 PID: 2782 Comm: syz-executor139 Not tainted 5.10.200-std-def-alt1 #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.0-alt1
-RIP: 0010:gtp_genl_dump_pdp+0x1b1/0x790 [gtp]
-..
-Call Trace:
- genl_lock_dumpit+0x6b/0xa0 net/netlink/genetlink.c:623
- netlink_dump+0x575/0xc70 net/netlink/af_netlink.c:2271
- __netlink_dump_start+0x64e/0x910 net/netlink/af_netlink.c:2376
- genl_family_rcv_msg_dumpit+0x2b8/0x310 net/netlink/genetlink.c:686
- genl_family_rcv_msg net/netlink/genetlink.c:780 [inline]
- genl_rcv_msg+0x450/0x5a0 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x150/0x440 net/netlink/af_netlink.c:2497
- genl_rcv+0x29/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1322 [inline]
- netlink_unicast+0x54e/0x800 net/netlink/af_netlink.c:1348
- netlink_sendmsg+0x914/0xe00 net/netlink/af_netlink.c:1916
- sock_sendmsg_nosec net/socket.c:651 [inline]
- __sock_sendmsg+0x159/0x190 net/socket.c:663
- ____sys_sendmsg+0x712/0x870 net/socket.c:2376
- ___sys_sendmsg+0xf8/0x170 net/socket.c:2430
- __sys_sendmsg+0xea/0x1b0 net/socket.c:2459
- do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x62/0xc7
-RIP: 0033:0x7f2ea16c2d49
+However, ASMedia ASM1061 seems to be quite common, so I'm surprised that
+no one has ever reported this problem before, so what has changed?
+Perhaps there is some recent kernel patch that introduced this?
 
-Fixes: 94a6d9fb88df ("gtp: fix wrong condition in gtp_genl_dump_pdp()")
-Signed-off-by: Vasiliy Kovalev <kovalev@altlinux.org>
----
- drivers/net/gtp.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+The commit was introduced:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=4bf7fda4dce22214c70c49960b1b6438e6260b67
+was reverted:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=af3e9579ecfbe1796334bb25a2f0a6437983673a
+and was then introduced in a new form:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=791c2b17fb4023f21c3cbf5f268af01d9b8cb7cc
 
-diff --git a/drivers/net/gtp.c b/drivers/net/gtp.c
-index 477b4d4f860bd3..3fc4639711cd83 100644
---- a/drivers/net/gtp.c
-+++ b/drivers/net/gtp.c
-@@ -1675,6 +1675,8 @@ static int gtp_genl_get_pdp(struct sk_buff *skb, struct genl_info *info)
- 	return err;
- }
- 
-+static bool dump_pdp_en;
-+
- static int gtp_genl_dump_pdp(struct sk_buff *skb,
- 				struct netlink_callback *cb)
- {
-@@ -1684,12 +1686,19 @@ static int gtp_genl_dump_pdp(struct sk_buff *skb,
- 	struct pdp_ctx *pctx;
- 	struct gtp_net *gn;
- 
--	gn = net_generic(net, gtp_net_id);
--
--	if (cb->args[4])
-+	/* Do not allow further operations if the module is
-+	 * unloaded before or after the process is blocked.
-+	 */
-+	if (!dump_pdp_en)
- 		return 0;
- 
- 	rcu_read_lock();
-+	if (!dump_pdp_en || cb->args[4]) {
-+		rcu_read_unlock();
-+		return 0;
-+	}
-+	gn = net_generic(net, gtp_net_id);
-+
- 	list_for_each_entry_rcu(gtp, &gn->gtp_dev_list, list) {
- 		if (last_gtp && last_gtp != gtp)
- 			continue;
-@@ -1914,6 +1923,8 @@ static int __init gtp_init(void)
- 	if (err < 0)
- 		goto unreg_genl_family;
- 
-+	dump_pdp_en = true;
-+
- 	pr_info("GTP module loaded (pdp ctx size %zd bytes)\n",
- 		sizeof(struct pdp_ctx));
- 	return 0;
-@@ -1930,6 +1941,7 @@ late_initcall(gtp_init);
- 
- static void __exit gtp_fini(void)
- {
-+	dump_pdp_en = false;
- 	genl_unregister_family(&gtp_genl_family);
- 	rtnl_link_unregister(&gtp_link_ops);
- 	unregister_pernet_subsys(&gtp_net_ops);
--- 
-2.33.8
+I suppose that these commits might be recent enough that we have not received
+any bug reports for ASMedia ASM1061 since then.
 
+
+If you can find another PCIe card (e.g. a AHCI controller or NVMe controller)
+that you can plug in to the same slot on the X570 motherboard,
+I agree that it would confirm your theory.
+
+
+If you don't have any other PCIe card, do you possibly have another system,
+with an IOMMU and a free PCIe slot that you can plug your ASMedia ASM1061
+PCI card and perform the same test?
+
+(Preferably something that is not AMD, to rule out a amd_iommu issue,
+since both Asus Pro WS WRX80E-SAGE SE WIFI and X570 use amd_iommu.)
+
+If we see the same behavior that the device drops the upper 21-bits there
+when using the trick in your test patch, that would also confirm your theory.
+
+
+> 
+> There are two ways to handle this -- either set the DMA mask for ASM106x
+> parts to 43 bits, or take the lazy route and just use AHCI_HFLAG_32BIT_ONLY
+> for these parts.  I feel that the former would be more appropriate, as
+> there seem to be plenty of bits beyond bit 31 that do work, but I will
+> defer to your judgement on this matter.  What do you think the right way
+> to handle this apparent hardware quirk is?
+
+I've seen something similar for NVMe, where some NVMe controllers from
+Amazon was violating the spec, and only supported 48-bit DMA addresses,
+even though NVMe spec requires you to support 64-bit DMA addresses, see:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=4bdf260362b3be529d170b04662638fd6dc52241
+
+It is possible that ASMedia ASM1061 has a similar problem (but for AHCI)
+and only supports 43-bit DMA addresses, even though it sets AHCI CAP.S64A,
+which says "Indicates whether the HBA can access 64-bit data structures.".
+
+I think the best thing is to do a similar quirk, where we set the dma_mask
+accordingly.
+
+
+Kind regards,
+Niklas
 
