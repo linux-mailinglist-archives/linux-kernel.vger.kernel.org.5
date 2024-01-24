@@ -1,166 +1,125 @@
-Return-Path: <linux-kernel+bounces-36625-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36626-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EB8D83A3E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:18:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 254A683A3FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:20:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D35C328A282
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:18:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58A191C2993F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:20:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 971981755A;
-	Wed, 24 Jan 2024 08:18:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="V41sOhsf"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9BE717BA4;
+	Wed, 24 Jan 2024 08:19:26 +0000 (UTC)
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FC1B1754B;
-	Wed, 24 Jan 2024 08:18:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AD83179AB
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 08:19:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706084320; cv=none; b=lGWSakeO6LS+PNfF5d1flskZsVAAp+Ux+xsFOjwKc1mbx64vXssnR4CsCpN57P4us0Yx5joHOVIOTU+yHTcS+xncIpE9EwWNKHzt0DFRHOq/bZKo9npXXJRUDi4QpQURE+AsAVQAMgOdTQwSWTvK8QrSTVMpiUaMZwpyUlTRgGw=
+	t=1706084366; cv=none; b=pu+54HoKPNoaK8ioEad7qnG3+pDStZpUjnRuSj/aLz7CffWJ1gVr7eoFXE3c5AceclXXYbkOHGJj/OsDu1PqrOnw89lmtwPvAYC/2a6gVyovBwecfx7TZbrlDP5g/MTATL3H1J+VS31j1r4wNx2JS/jUfcaMAQYvkj2Z8hou3AQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706084320; c=relaxed/simple;
-	bh=qPZmXtvQTm0aCsonLOTgRn0Vg+Gt0aHy3AKi57QVx2s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CNXTRNDWsao8HYsgzAV1aM7Mb5rL3XsPCEiuyHUUlZzGFgwf2+HumR0v9awNIGxEHKr15aQAyB0uWUdVZzEb8kVuCGHxBokfgrZN8po1JxJuLzwrm43pCbsJN6epCBDvxj1CVjTdyQI3x4WoLUtuneZnhIKb8UKteOeeMYBeby0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=V41sOhsf; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706084320; x=1737620320;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=qPZmXtvQTm0aCsonLOTgRn0Vg+Gt0aHy3AKi57QVx2s=;
-  b=V41sOhsfA6vX37EXp6wfdeqZOcz1221yd/C8Qz4z27mmmedRoFQd0mj/
-   B3UKQWb43/NUrE8C2PxADr76N64698rsqt6VX8h8G91VOwIPEW6Nm2g71
-   EgH/O9PDkUZ/LCys0UCs4EBzrgq1lXjh8kVOn2apaetDMwxPfDVUq1THh
-   peuu/XSZCSwSKclgqDbQ8d8U8HbkoZaz9CwVl6PsxypxwkAtRPSBNJbxp
-   CCyhkQ4jvLJeW/clT1fA3bAPKKszmX5oiAodqu7F4Go0BN2jieAgz6WGv
-   IldY3u/UGkS3GZsi01Jqwqp7loaiBQKIbBge4z918a1jeZD5P1oKmLAcg
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="8428613"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="8428613"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 00:18:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="20649455"
-Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.93.25.46]) ([10.93.25.46])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 00:18:35 -0800
-Message-ID: <30d574f8-77d3-4e69-b1c5-6a4d6a083c6f@linux.intel.com>
-Date: Wed, 24 Jan 2024 16:18:32 +0800
+	s=arc-20240116; t=1706084366; c=relaxed/simple;
+	bh=X3LD9CJ0SLrKuOVPnWjQdhvQZYQI+xVAgK5XAco9Vm0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=C1R4dLjRbs6bKMuzBC2j82ngQqWmOkQIE2pAPL94DyRmTDyD0YyCP5p4WI0/RVMd5tLVPgK6ciMNRbu4SpB7Aqiz4S6y5Ai1XbtMx/Y7MI0zDFytWr77NudG5BHxRsYKonMeYo+8Q0ODdMN1DUOb7H0KDAi/zk7q6dJKbV3oaA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d71207524dso21018585ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 00:19:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706084364; x=1706689164;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yBK6o6GnY6AtPw3FK1bbWWcrmikSYA/tE1QF6tcz4rQ=;
+        b=ecue5RUeObfOds11m9FsZnK2awA5h6d8KpYwjpFKYj7IGT11HfmQ/0fagy5FVGU1No
+         /YgZarOWlHlU+lvaRsfYmF/TfrqIZVWUmz8AHxTMzajSVr3JPZa6Xnp/nVHAxpai/eN1
+         pXUE5QyIBep4NsZ8qYYXCYzsqS++h2kJo1RfdyZKHkDoPLBbGBwGlV1sv0VOU+1QqTsK
+         k/KorcLXlR8PFRaMAwmj/xoCixqMWQwt4iihFKOrca9puRD3BcPXdjXqiCwVgMZ8b8G1
+         RYP1SEXl5QbAu+NXpACC09mw/APwK6F1quhH0IqI8kpeZ5cffKzKjZmNPREWyjE1BgjB
+         qL4w==
+X-Gm-Message-State: AOJu0Yxkt0imRel2/wlxPuWUUIWCGTNKOavJgIiuRv/oGhU9gOgDwnyR
+	O1TGsjH3pjPkSwakoZusAX8QL4/yFXMFlUApwGhcLqiUYMncxUeN
+X-Google-Smtp-Source: AGHT+IHGYSTBITu5TdF72Mqb7p/EFgLgmwcQH5OP/zO5BiOYdJdq9HCi0fQxs2Uu9CxsF44i0Po/pQ==
+X-Received: by 2002:a17:902:f68e:b0:1d7:88f7:678a with SMTP id l14-20020a170902f68e00b001d788f7678amr187989plg.10.1706084364211;
+        Wed, 24 Jan 2024 00:19:24 -0800 (PST)
+Received: from snowbird ([136.25.84.107])
+        by smtp.gmail.com with ESMTPSA id y4-20020a170902d64400b001d7465c213bsm5106477plh.197.2024.01.24.00.19.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 00:19:23 -0800 (PST)
+Date: Wed, 24 Jan 2024 00:19:21 -0800
+From: Dennis Zhou <dennis@kernel.org>
+To: yunhui cui <cuiyunhui@bytedance.com>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [External] [PATCH] riscv: Fix wrong size passed to
+ local_flush_tlb_range_asid()
+Message-ID: <ZbDICZkatO3/lGf/@snowbird>
+References: <20240123132730.2297719-1-alexghiti@rivosinc.com>
+ <CAEEQ3wk5edUFTuE3H3KDGkCXj0+=i7Z1BM2M+6X-Tk9_m8X_iQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [kvm-unit-tests Patch v3 00/11] pmu test bugs fix and
- improvements
-Content-Language: en-US
-To: Sean Christopherson <seanjc@google.com>,
- Paolo Bonzini <pbonzini@redhat.com>, Jim Mattson <jmattson@google.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- Zhenyu Wang <zhenyuw@linux.intel.com>, Zhang Xiong
- <xiong.y.zhang@intel.com>, Mingwei Zhang <mizhang@google.com>,
- Like Xu <like.xu.linux@gmail.com>, Jinrong Liang <cloudliang@tencent.com>,
- Dapeng Mi <dapeng1.mi@intel.com>
-References: <20240103031409.2504051-1-dapeng1.mi@linux.intel.com>
-From: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-In-Reply-To: <20240103031409.2504051-1-dapeng1.mi@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEEQ3wk5edUFTuE3H3KDGkCXj0+=i7Z1BM2M+6X-Tk9_m8X_iQ@mail.gmail.com>
 
-Kindly ping ...
+Hello,
 
-On 1/3/2024 11:13 AM, Dapeng Mi wrote:
-> When running pmu test on Sapphire Rapids, we found sometimes pmu test
-> reports the following failures.
->
-> 1. FAIL: Intel: all counters
-> 2. FAIL: Intel: core cycles-0
-> 3. FAIL: Intel: llc misses-4
->
-> Further investigation shows these failures are all false alarms rather
-> than real vPMU issues.
->
-> The failure 1 is caused by a bug in check_counters_many() which defines
-> a cnt[] array with length 10. On Sapphire Rapids KVM supports 8 GP
-> counters and 3 fixed counters, obviously the total counter number (11)
-> of Sapphire Rapids exceed current cnt[] length 10, it would cause a out
-> of memory access and lead to the "all counters" false alarm. Patch
-> 02~03 would fix this issue.
->
-> The failure 2 is caused by pipeline and cache warm-up latency.
-> Currently "core cycles" is the first executed event. When the measured
-> loop() program is executed at the first time, cache hierarchy and pipeline
-> are needed to warm up. All these warm-up work consumes so much cycles
-> that it exceeds the predefined upper boundary and cause the failure.
-> Patch 04 fixes this issue.
->
-> The failure 3 is caused by 0 llc misses count. It's possible and
-> reasonable that there is no llc misses happened for such simple loop()
-> asm blob especially along with larger and larger LLC size on new
-> processors. Patch 09 would fix this issue by introducing clflush
-> instruction to force LLC miss.
->
-> Besides above bug fixes, this patch series also includes several
-> optimizations.
->
-> One important optimization (patch 07~08) is to move
-> GLOBAL_CTRL enabling/disabling into the loop asm blob, so the precise
-> count for instructions and branches events can be measured and the
-> verification can be done against the precise count instead of the rough
-> count range. This improves the verification accuracy.
->
-> Another important optimization (patch 10~11) is to leverage IBPB command
-> to force to trigger a branch miss, so the lower boundary of branch miss
-> event can be set to 1 instead of the ambiguous 0. This eliminates the
-> ambiguity brought from 0.
->
-> All these changes are tested on Intel Sapphire Rapids server platform
-> and the pmu test passes. Since I have no AMD platforms on my hand, these
-> changes are not verified on AMD platforms yet. If someone can help to
-> verify these changes on AMD platforms, it's welcome and appreciated.
->
-> Changes:
->    v2 -> v3:
->          fix "core cycles" failure,
->          introduce precise verification for instructions/branches,
->          leverage IBPB command to optimize branch misses verification,
->          drop v2 introduced slots event verification
->    v1 -> v2:
->          introduce clflush to optimize llc misses verification
->          introduce rdrand to optimize branch misses verification
->
-> History:
->    v2: https://lore.kernel.org/lkml/20231031092921.2885109-1-dapeng1.mi@linux.intel.com/
->    v1: https://lore.kernel.org/lkml/20231024075748.1675382-1-dapeng1.mi@linux.intel.com/
->
-> Dapeng Mi (10):
->    x86: pmu: Enlarge cnt[] length to 64 in check_counters_many()
->    x86: pmu: Add asserts to warn inconsistent fixed events and counters
->    x86: pmu: Switch instructions and core cycles events sequence
->    x86: pmu: Refine fixed_events[] names
->    x86: pmu: Remove blank line and redundant space
->    x86: pmu: Enable and disable PMCs in loop() asm blob
->    x86: pmu: Improve instruction and branches events verification
->    x86: pmu: Improve LLC misses event verification
->    x86: pmu: Add IBPB indirect jump asm blob
->    x86: pmu: Improve branch misses event verification
->
-> Xiong Zhang (1):
->    x86: pmu: Remove duplicate code in pmu_init()
->
->   lib/x86/pmu.c |   5 --
->   x86/pmu.c     | 201 ++++++++++++++++++++++++++++++++++++++++++--------
->   2 files changed, 171 insertions(+), 35 deletions(-)
->
+On Wed, Jan 24, 2024 at 10:44:12AM +0800, yunhui cui wrote:
+> Hi Alexandre,
+> 
+> On Tue, Jan 23, 2024 at 9:31 PM Alexandre Ghiti <alexghiti@rivosinc.com> wrote:
+> >
+> > local_flush_tlb_range_asid() takes the size as argument, not the end of
+> > the range to flush, so fix this by computing the size from the end and
+> > the start of the range.
+> >
+> > Fixes: 7a92fc8b4d20 ("mm: Introduce flush_cache_vmap_early()")
+> > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> > ---
+> >  arch/riscv/mm/tlbflush.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+> > index 8d12b26f5ac3..9619965f6501 100644
+> > --- a/arch/riscv/mm/tlbflush.c
+> > +++ b/arch/riscv/mm/tlbflush.c
+> > @@ -68,7 +68,7 @@ static inline void local_flush_tlb_range_asid(unsigned long start,
+> >
+> >  void local_flush_tlb_kernel_range(unsigned long start, unsigned long end)
+> >  {
+> > -       local_flush_tlb_range_asid(start, end, PAGE_SIZE, FLUSH_TLB_NO_ASID);
+> > +       local_flush_tlb_range_asid(start, end - start, PAGE_SIZE, FLUSH_TLB_NO_ASID);
+> >  }
+> 
+
+Well this was a miss during code review.. I'm going to take another look
+tomorrow and then likely pull this into a fixes branch.
+
+> What makes me curious is that this patch has not been tested?
+> BTW, It is best to keep the parameter order of all functions in
+> tlbflush.c consistent: cpumask, start, size, stride, asid.
+> 
+
+I can't speak to the riscv communities testing/regression suites, but
+this would only be caught in a performance regression test.
+
+That being said, Alexandre, can you please lmk what level of testing
+this has gone through?
+
+Thanks,
+Dennis
 
