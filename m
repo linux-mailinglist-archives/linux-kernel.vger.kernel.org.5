@@ -1,258 +1,182 @@
-Return-Path: <linux-kernel+bounces-37591-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37592-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB39683B23B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 20:23:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CE8FA83B23C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 20:23:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A651CB210AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:22:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29A91B21FB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:22:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10B1B132C17;
-	Wed, 24 Jan 2024 19:22:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D783132C27;
+	Wed, 24 Jan 2024 19:22:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fy35ADhL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="OhyMlP9w"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BAD612DDA3;
-	Wed, 24 Jan 2024 19:22:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0728131E5E
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 19:22:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706124136; cv=none; b=N+ypgQhNUku38D4ETIk7aidlJMVuqktNWDsSNGZiCd3nzLqEk/OHz1iVFV2Wgwp5ba7kXHXztgBRI8SyxNh3nC24UvQptQ3oz07c9dnR9NcizTdGyl8MZdtIapy5a6hxYcTNChz9ZsrsEOBGqvanFaOXSJb9UMlQ09u3W2RCImU=
+	t=1706124160; cv=none; b=L+ACdYVmR4iskn5wx3SrHaA29XQYQwP/rNpHEyHIrZDoz8kvdf9ot58LbXSAEKEtXoTd7v6vC0Z249kftFqYEInV4z15I03MCmsL6CimxriOfg1g/k43SrGWD+N0q5tCrc7WUJVqc1qqM1ryZn6J6MoI5GGdExYw4YcOEmUKDbQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706124136; c=relaxed/simple;
-	bh=uH+CUA/u3AiE/fk+eEUo0I3JlkRu1EljnKxjL+zf/0g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lVJgt0BsarN+jf0pjy/VMPVNJrheqtl7WiCgCkizjvF7gnB7/NhPXH4B8ZVs/nIX7Dy1vpbro0A/PIfMxfRhdLPBYUor4LyRZHxMlgOzG++rkJuSyR9ZFbJfTDPertBK9szXpNNlaWxgo5NLVxiGPtGrU3zv5mqUpnyzxaBwR5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fy35ADhL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82172C433F1;
-	Wed, 24 Jan 2024 19:22:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706124135;
-	bh=uH+CUA/u3AiE/fk+eEUo0I3JlkRu1EljnKxjL+zf/0g=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=fy35ADhLnBzLwKoxfCU12gYtO9Tys2fMGphCl7k31W3VozdzgRWh0sy9n1+JkvlGP
-	 MSs5GssIsPUJvM6AQy+SKld24GkD+eOfg1/E6z9Z1jgDjsEKxmH29QljL2Eq/L0t97
-	 ByAL9SsrilIqg/tSc/6FRoEpmP7+LiGjcF5L6SbiEW5Xf63d/7CMMjJkKG6xId4+NB
-	 X26wE5hthok9JYLr/tb4dfI+GnU2Fm/kz1rfGMW+8gAH8J5CX+OpMHNrcMX00mtaDE
-	 iR+z2KzHpYPDZCNL4lizVOllEqtZOuKTgAZkduWpr2xc/w3wphigPJa/3K6Ek2CvSh
-	 us1Qm2vzBMg7Q==
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5101055a16fso1397381e87.2;
-        Wed, 24 Jan 2024 11:22:15 -0800 (PST)
-X-Gm-Message-State: AOJu0YyMwUwnxuvY2lUt8/zDrZDhjKMCHhQP+QpxsEx5nr7Q+tlZNOMY
-	xpB1Mw/X+rsIfMbCB7AGaE4tTSNqJcW3I06LQw0F+h0gKm6hphok9phuPvIPhKQtouBZNaAfJF7
-	tfyhG3cWTHvPq2wb2w7NAeyx8ww==
-X-Google-Smtp-Source: AGHT+IGISGd0GQ2utGwepbZzCZhxVRdvSqdyfgwaWIf1k4UFEOeSMyMK+4bettb6sRfMDYkloV5B4K94Fc0vs4zl3D0=
-X-Received: by 2002:a05:6512:3a8a:b0:50e:6beb:7b15 with SMTP id
- q10-20020a0565123a8a00b0050e6beb7b15mr4359787lfu.1.1706124133659; Wed, 24 Jan
- 2024 11:22:13 -0800 (PST)
+	s=arc-20240116; t=1706124160; c=relaxed/simple;
+	bh=1gaILVY/H6stGS/EvSXd6ZL/n9yg9wEbY6RbWPaWb/g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iJ1wsFaourZUnnFXePule+hEPy3i1L6lz7rfug96ZE4o0bhpEUG9vk/sZMbKBxecIInrRfBfH3TfwEnabPgvaWHVBGf7yPqa3FK/s5AfSfAc3SVVCel/oy2bh5NfmcXSxlzpSPbg/qmps/t3RvHx29pJ4yCnaC4ebNiI9SNag6k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=OhyMlP9w; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d751bc0c15so33230155ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 11:22:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706124158; x=1706728958; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zmd6L4iLZNNyzU97sSrER5LIO6nwo17DPDhcgnpVxag=;
+        b=OhyMlP9wfqzkEkBZYSaSnI/a/DVDGNLpoHCyyRrsjXhwi4U37k1/oTrW3+GX2KLXCi
+         5W32pHPP2ce6ilKavafL9TLoF//1tL2bxGial5zq9d6+65tbHWCNkpRzpc4pfbGzYyvg
+         oScuvJnw7B2RGvYcZcoLde4foNod+djOxgZqU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706124158; x=1706728958;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zmd6L4iLZNNyzU97sSrER5LIO6nwo17DPDhcgnpVxag=;
+        b=fsDBBEdhKL3UH9vlQSeuvBM51Emxl4vd2oR6AXM48IsvSTtQZ7OS9IqogstWThF/WI
+         0hjJ1N1lhsEW+xK94fjg61cVflWmhfPln7C4NcrVPcrUeq7ZLIR96kCeP/UpBFvpzwfm
+         Emrwny4cEoHI+C26fCaCNlvxz/5qu8Z2GMJGtTELKTJry+lQa7ntQ+Cny46tXHJ9WXSy
+         JpQVPEA4zdtQY3Q5aRHX1YgrHYxp4mVcB0bj+jSrOqIGKXr5NORW211riJZYRZESlQQn
+         y0YGtF6A/Z+MBGE2CQ9SIz67wf75wuMbCHlDKs88lz5KUqCkLAdqSYaUHBtaGdf0cZP2
+         1XSg==
+X-Gm-Message-State: AOJu0YyVJvldjqwOCzolKquNaDyb0M8/8KHj7MDmEpzh9XCFa30Sgh3q
+	nkmmNDaT+F5C5t4X72caolK7ybVTqDt9Jxc1Z3rzYehyKq2FQg5lk2O8/eQTAg==
+X-Google-Smtp-Source: AGHT+IF0/ne04PCSUjBX3tqlCMh/doof5H2bjt5d6Ac8doIh9yQFPCSnvtLvQuFNGnyGzSnBUJ/aAA==
+X-Received: by 2002:a17:902:6949:b0:1d4:b50d:dba9 with SMTP id k9-20020a170902694900b001d4b50ddba9mr1254455plt.71.1706124158168;
+        Wed, 24 Jan 2024 11:22:38 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id s21-20020a17090330d500b001d6fbaaeb56sm8636308plc.145.2024.01.24.11.22.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 11:22:37 -0800 (PST)
+From: Kees Cook <keescook@chromium.org>
+To: Josh Triplett <josh@joshtriplett.org>,
+	Kevin Locke <kevin@kevinlocke.name>
+Cc: Kees Cook <keescook@chromium.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	John Johansen <john.johansen@canonical.com>,
+	Paul Moore <paul@paul-moore.com>,
+	James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>,
+	Kentaro Takeda <takedakn@nttdata.co.jp>,
+	Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Jan Kara <jack@suse.cz>,
+	Eric Biederman <ebiederm@xmission.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org,
+	apparmor@lists.ubuntu.com,
+	linux-security-module@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH] exec: Check __FMODE_EXEC instead of in_execve for LSMs
+Date: Wed, 24 Jan 2024 11:22:32 -0800
+Message-Id: <20240124192228.work.788-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240123-mbly-clk-v3-0-392b010b8281@bootlin.com>
- <20240123-mbly-clk-v3-4-392b010b8281@bootlin.com> <20240124151405.GA930997-robh@kernel.org>
- <CYN43TSPPPZ5.1VUA1CH95D8KJ@bootlin.com> <CYN4D0Z6600X.20W9VWX4BGNXX@bootlin.com>
-In-Reply-To: <CYN4D0Z6600X.20W9VWX4BGNXX@bootlin.com>
-From: Rob Herring <robh@kernel.org>
-Date: Wed, 24 Jan 2024 13:22:01 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKHPdmafDvKCHZTNNzRAzq2Y34b2dqUXQD6WpE7z2k-jA@mail.gmail.com>
-Message-ID: <CAL_JsqKHPdmafDvKCHZTNNzRAzq2Y34b2dqUXQD6WpE7z2k-jA@mail.gmail.com>
-Subject: Re: [PATCH v3 04/17] dt-bindings: soc: mobileye: add EyeQ5 OLB system controller
-To: =?UTF-8?B?VGjDqW8gTGVicnVu?= <theo.lebrun@bootlin.com>
-Cc: Gregory CLEMENT <gregory.clement@bootlin.com>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Linus Walleij <linus.walleij@linaro.org>, 
-	=?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, 
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, linux-mips@vger.kernel.org, 
-	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>, linux-gpio@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2841; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=1gaILVY/H6stGS/EvSXd6ZL/n9yg9wEbY6RbWPaWb/g=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlsWN4cgMm3ifa4AxYv0rR1P9nb2T7XG8BeE5dh
+ dQdKGdd8U+JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZbFjeAAKCRCJcvTf3G3A
+ Jj8eEACdqWJsXSjCuU2ZGkwBhmHssL73vpbJm9vow7VcgTvUcgVoF7WjPAqU3SkkUee2vuDuEEC
+ uG3G42UgwdGwzUcascCCo7wkaex/Ac7gDV7BRBywIyjF/vLDCeQ5HhIqatIu/mH44Ebni5aTAQU
+ hUYp/I3213FNl/oN3a+PJoqHHB5ORr/0z+NOMW3XT/pJ5DU0fMqAxTHtrF2s/IE9WWreJ4PP9dD
+ X5FSgLuUtR0LuJ8/8gRd5EFCycwwUXuvOBcR9Nt4fBBQcU02uF3kcXzm4eF9JJyib+jYDu2tNP3
+ eouwdnVwePLu9Xbr2l2lFju9lrgM9QjR7aLXB4J6Bw1nlyZHuj6Hjrc+EYzI1fpVDfrBSTQtFfj
+ Skv/zZriwMgLINYrOds5qiWwNPLT7pTEychRittwryFFuoqSyJwLS/5PkycmxUNlwqaQl4NU5S5
+ aP++f2Hfr2S7lrzFV1waa0HOn4J2drH3GfOqw+oPKvq/DxMlScVwY76Uvpncoov/alR5EnKKzn4
+ Pr66BX8S4pcrokYTbSm4BLat0ulOpUJgRCL1ixDnhwT4ftGIkEFBz8KiIYbfwT/bZCe9VHxD8/s
+ bpXJ4Z6N1DuM1EnVnoMQy4GyH63CVXzi2u+ZM1eMNszMiKfYeeWkpZ+ljiyoNyt9iy/mx7u3pPW
+ 6+jc5CV pbke/Mtw==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 24, 2024 at 11:40=E2=80=AFAM Th=C3=A9o Lebrun <theo.lebrun@boot=
-lin.com> wrote:
->
-> Hello,
->
-> On Wed Jan 24, 2024 at 6:28 PM CET, Th=C3=A9o Lebrun wrote:
-> > Hello,
-> >
-> > On Wed Jan 24, 2024 at 4:14 PM CET, Rob Herring wrote:
-> > > On Tue, Jan 23, 2024 at 07:46:49PM +0100, Th=C3=A9o Lebrun wrote:
-> > > > Add documentation to describe the "Other Logic Block" syscon.
-> > > >
-> > > > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
-> > > > ---
-> > > >  .../bindings/soc/mobileye/mobileye,eyeq5-olb.yaml  | 77 ++++++++++=
-++++++++++++
-> > > >  MAINTAINERS                                        |  1 +
-> > > >  2 files changed, 78 insertions(+)
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/soc/mobileye/mobiley=
-e,eyeq5-olb.yaml b/Documentation/devicetree/bindings/soc/mobileye/mobileye,=
-eyeq5-olb.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..031ef6a532c1
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5=
--olb.yaml
-> > > > @@ -0,0 +1,77 @@
-> > > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/soc/mobileye/mobileye,eyeq5-olb=
-yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: Mobileye EyeQ5 SoC system controller
-> > > > +
-> > > > +maintainers:
-> > > > +  - Gr=C3=A9gory Clement <gregory.clement@bootlin.com>
-> > > > +  - Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
-> > > > +  - Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
-> > > > +
-> > > > +description:
-> > > > +  OLB ("Other Logic Block") is a hardware block grouping smaller b=
-locks. Clocks,
-> > > > +  resets, pinctrl are being handled from here.
-> > > > +
-> > > > +properties:
-> > > > +  compatible:
-> > > > +    items:
-> > > > +      - const: mobileye,eyeq5-olb
-> > > > +      - const: syscon
-> > > > +      - const: simple-mfd
-> > > > +
-> > > > +  reg:
-> > > > +    maxItems: 1
-> > > > +
-> > > > +  clock-controller:
-> > > > +    $ref: /schemas/clock/mobileye,eyeq5-clk.yaml#
-> > > > +    type: object
-> > > > +
-> > > > +  reset-controller:
-> > > > +    $ref: /schemas/reset/mobileye,eyeq5-reset.yaml#
-> > > > +    type: object
-> > > > +
-> > > > +  pinctrl-a:
-> > > > +    $ref: /schemas/pinctrl/mobileye,eyeq5-pinctrl.yaml#
-> > > > +    type: object
-> > > > +
-> > > > +  pinctrl-b:
-> > > > +    $ref: /schemas/pinctrl/mobileye,eyeq5-pinctrl.yaml#
-> > > > +    type: object
-> > > > +
-> > > > +required:
-> > > > +  - compatible
-> > > > +  - reg
-> > > > +
-> > > > +additionalProperties: false
-> > > > +
-> > > > +examples:
-> > > > +  - |
-> > > > +    system-controller@e00000 {
-> > > > +      compatible =3D "mobileye,eyeq5-olb", "syscon", "simple-mfd";
-> > > > +      reg =3D <0xe00000 0x400>;
-> > > > +
-> > > > +      clock-controller {
-> > > > +        compatible =3D "mobileye,eyeq5-clk";
-> > > > +        #clock-cells =3D <1>;
-> > > > +        clocks =3D <&xtal>;
-> > > > +        clock-names =3D "ref";
-> > > > +      };
-> > > > +
-> > > > +      reset-controller {
-> > > > +        compatible =3D "mobileye,eyeq5-reset";
-> > > > +        #reset-cells =3D <2>;
-> > > > +      };
-> > > > +
-> > > > +      pinctrl-a {
-> > > > +        compatible =3D "mobileye,eyeq5-a-pinctrl";
-> > > > +        #pinctrl-cells =3D <1>;
-> > >
-> > > Sure you need this? Generally only pinctrl-single uses this.
-> >
-> > You are completely right, it is useless. I naively expected it in the
-> > same vein as other subsystems.
-> >
-> > >
-> > > > +      };
-> > > > +
-> > > > +      pinctrl-b {
-> > > > +        compatible =3D "mobileye,eyeq5-b-pinctrl";
-> > > > +        #pinctrl-cells =3D <1>;
-> > > > +      };
-> > > > +    };
-> > >
-> > > This can all be simplified to:
-> > >
-> > > system-controller@e00000 {
-> > >     compatible =3D "mobileye,eyeq5-olb", "syscon";
-> > >     reg =3D <0xe00000 0x400>;
-> > >     #reset-cells =3D <2>;
-> > >     #clock-cells =3D <1>;
-> > >     clocks =3D <&xtal>;
-> > >     clock-names =3D "ref";
-> > >
-> > >     pins { ... };
-> > > };
-> > >
-> > > There is no need for sub nodes unless you have reusable blocks or eac=
-h
-> > > block has its own resources in DT.
-> >
-> > That is right, and it does simplify the devicetree as you have shown.
-> > However, the split nodes gives the following advantages:
-> >
-> >  - Devicetree-wise, it allows for one alias per function.
-> >    `clocks =3D <&clocks EQ5C_PLL_CPU>` is surely more intuitive
-> >    than `clocks =3D <&olb EQ5C_PLL_CPU>;`. Same for reset.
+After commit 978ffcbf00d8 ("execve: open the executable file before
+doing anything else"), current->in_execve was no longer in sync with the
+open(). This broke AppArmor and TOMOYO which depend on this flag to
+distinguish "open" operations from being "exec" operations.
 
-clocks: resets: pinctrl: system-controller@e00000 {
+Instead of moving around in_execve, switch to using __FMODE_EXEC, which
+is where the "is this an exec?" intent is stored. Note that TOMOYO still
+uses in_execve around cred handling.
 
-> >
-> >  - It means an MFD driver must be implemented, adding between 100 to 20=
-0
-> >    lines of boilerplate code to the kernel.
+Reported-by: Kevin Locke <kevin@kevinlocke.name>
+Closes: https://lore.kernel.org/all/ZbE4qn9_h14OqADK@kevinlocke.name
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 978ffcbf00d8 ("execve: open the executable file before doing anything else")
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: John Johansen <john.johansen@canonical.com>
+Cc: Paul Moore <paul@paul-moore.com>
+Cc: James Morris <jmorris@namei.org>
+Cc: "Serge E. Hallyn" <serge@hallyn.com>
+Cc: Kentaro Takeda <takedakn@nttdata.co.jp>
+Cc: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Eric Biederman <ebiederm@xmission.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: apparmor@lists.ubuntu.com
+Cc: linux-security-module@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ security/apparmor/lsm.c  | 4 +++-
+ security/tomoyo/tomoyo.c | 3 ++-
+ 2 files changed, 5 insertions(+), 2 deletions(-)
 
-From a binding perspective, not my problem... That's Linux details
-defining the binding. What about u-boot, BSD, future versions of Linux
-with different structure?
+diff --git a/security/apparmor/lsm.c b/security/apparmor/lsm.c
+index 7717354ce095..98e1150bee9d 100644
+--- a/security/apparmor/lsm.c
++++ b/security/apparmor/lsm.c
+@@ -469,8 +469,10 @@ static int apparmor_file_open(struct file *file)
+ 	 * Cache permissions granted by the previous exec check, with
+ 	 * implicit read and executable mmap which are required to
+ 	 * actually execute the image.
++	 *
++	 * Illogically, FMODE_EXEC is in f_flags, not f_mode.
+ 	 */
+-	if (current->in_execve) {
++	if (file->f_flags & __FMODE_EXEC) {
+ 		fctx->allow = MAY_EXEC | MAY_READ | AA_EXEC_MMAP;
+ 		return 0;
+ 	}
+diff --git a/security/tomoyo/tomoyo.c b/security/tomoyo/tomoyo.c
+index 3c3af149bf1c..04a92c3d65d4 100644
+--- a/security/tomoyo/tomoyo.c
++++ b/security/tomoyo/tomoyo.c
+@@ -328,7 +328,8 @@ static int tomoyo_file_fcntl(struct file *file, unsigned int cmd,
+ static int tomoyo_file_open(struct file *f)
+ {
+ 	/* Don't check read permission here if called from execve(). */
+-	if (current->in_execve)
++	/* Illogically, FMODE_EXEC is in f_flags, not f_mode. */
++	if (f->f_flags & __FMODE_EXEC)
+ 		return 0;
+ 	return tomoyo_check_open_permission(tomoyo_domain(), &f->f_path,
+ 					    f->f_flags);
+-- 
+2.34.1
 
-I don't think an MFD is required here. A driver should be able to be
-both clock and reset provider. That's pretty common. pinctrl less so.
-
-> >  - It means one pinctrl device for the two banks. That addresses your
-> >    comment on [PATCH v3 10/17]. This is often done and would be doable
-> >    on this platform. However it means added logic to each individual
-> >    function of pinctrl-eyeq5.
-
-If it makes things easier, 2 'pins' sub-nodes is fine. That's just
-container nodes.
-
-> >    Overall it makes for less readable code, for code that already looks
-> >    more complex than it really is.
-> >
-> >    My initial non-public version of pinctrl-eyeq5 was using this method
-> >    (a device handling both banks) and I've leaned away from it.
->
-> I had forgotten one other reason:
->
->  - Reusability does count for something. Other Mobileye platforms exist,
->    and the system controller stuff is more complex on those. Multiple
->    different OLB blocks, etc. But my understanding is that
->    per-peripheral logic is reused across versions.
-
-IME, this stuff never stays exactly the same from chip to chip.
-
-Rob
 
