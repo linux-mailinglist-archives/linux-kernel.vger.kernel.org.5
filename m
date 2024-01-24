@@ -1,257 +1,147 @@
-Return-Path: <linux-kernel+bounces-36211-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36212-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC240839D93
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:17:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D22D8839D98
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:19:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4941F1F27CE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 00:17:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70BE71F28189
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 00:19:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ED83A32;
-	Wed, 24 Jan 2024 00:17:39 +0000 (UTC)
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B79C7EA9;
+	Wed, 24 Jan 2024 00:18:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aFnBGaXx"
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D840160;
-	Wed, 24 Jan 2024 00:17:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F524620;
+	Wed, 24 Jan 2024 00:18:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706055458; cv=none; b=B3EStGHEc2ptazyyWd7dUGc4HFB8c65eO2Sd77O5WSXBwR2YBaPRq7Y+TnClB3ThfAOGqNB0fOcJGoq5SCV6WrGUgyJ7S3Rh8KTzQBlFECw3iT1D1iQxFsVNaawbH51ajT82TBHEd6QI70hr8HXAIxTKgZAFDuZw4LOgiTYm+y0=
+	t=1706055534; cv=none; b=YVLssh9o0tCGaoKByf6PDRNLWeJjuOGhvACRb+LxhaZlqsXIHv6jKOUawVxXhjmDB58vKkycFKaMA0rpClvYSvMwKIziczYr13QTMPKcc6CXAe8ooF6tXlBEP3ucBxdBx8w7/U37nB5Yrl9J2JYqq1Zqf/odyNgRcglEFPHbUZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706055458; c=relaxed/simple;
-	bh=7S5gsebecCEWrzl2p5jH+A1M/fJoxrLb2LBCC2nJkMI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gaqrCd4Gmsxbqxjt0cVbldy6vNrA5nmETV3zCSFHhT7dBBNzzpp63IuCfnlmCBkG7cW0zt1GxtdGHVZ49eCtwhRyE+jUBT0RnFeUuIiWLqJuFS/prE7/dqMQ1018NGNhE3fECKDElgO5iMfR+mRPkrvx0bJfQNPja9hX64UZxZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1706055534; c=relaxed/simple;
+	bh=wkjbYBnZAVGO6KJw1u24lT10qLDDTdAcPI1R+p6epdI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gwFWi+wgV7T2s4czldQiSVX3c/So2epS6iI/wG6HUwBKEHZv761f5q/77SxCmk5+v5OvX1y1W/k+HLxcv/n93BLUPiZtWDHwY93E/LWII+ZqT3M5tcebLnYsXouXbUJBNzdNZDkwSSJD6mdTPU8MFcqCqtSWMv9E8MsSH46XUyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aFnBGaXx; arc=none smtp.client-ip=209.85.210.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3bd72353d9fso4006636b6e.3;
-        Tue, 23 Jan 2024 16:17:37 -0800 (PST)
+Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6ddf1e88e51so3708931a34.0;
+        Tue, 23 Jan 2024 16:18:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706055531; x=1706660331; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=2odH5pLJYN3YATGCXEp5FH96z/xY+LW/aIByzzRMUEA=;
+        b=aFnBGaXxDmyzJNjjnr3mR3sMKU3/BXbtrjcxQBlT5I2ulvsZmswRAiPBVl6PjmtBVj
+         TS0/bK+yCTpnGKSqpJiNerE3kQT0Lfs4GC6+bOygt+swN7NNltxnKClCu0pvrrwQYHU7
+         LTnjjTT5ayhoqWWvNZTfO27jkazEnbhjHycsxcnDMwQR9BtejJw8ldLqShfQMNk5vX1k
+         WfsD4I+c1zZ1p2qmfoqxOZCyJdbcSmBY/R/9Ac9ph1OWKcZtGet5qLzNYQBzNdCmEDuv
+         vI2rqO0fonVIcyqxiF8b6WP+hCxMyEEUGxl6LF2KDmOCEBEZU5s4llY6Fvy9rn20JUds
+         93PA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706055456; x=1706660256;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uLqC1jIvMWI3cEp/YCvbp1WDnCj+e3OT+PtehIgxizk=;
-        b=WJMXv0uFFPeL2J5o/FqDzC/EHPdGofqS0EpDEtRMSkdzrVd73+V0tIdFpZnovFEucd
-         0YXCeN2luKSb/bAPx3n+YT6BWP2Ct5bKjUfap0DklXRSIJ0msBG+rmuC6bNptDsEPHNm
-         fZbGHSE/V2svmAyhEtwgGOiCguzShPtcdL5zhdpEcLVWrl39slbFBc9sfzNEsiHF2wUn
-         6kx+h2R4Kmk0ut+8OsNWX2rKUuZfy6vsC5oCXSaSZvyRZOoy8ujOVe9kpPUk5LFvMw31
-         ur+F9NVDgmK/d0l4DHXwygs//B7tpSi9MJYuQY6xg5mYM9bkqnfiAmhgaeznA92lqH5E
-         W3sg==
-X-Gm-Message-State: AOJu0YyxbYM1BCjRgEAP98YHgsPJYYcIQVAZGfn2c7nCKiSUhYBM1+He
-	IKJR7V12AliK4ccqh0k2JW81BJrEhZ1KNDk9ULWLWmm1OnhsPGWO0uPYJVUXSDYyiwD1EEweon+
-	iRIqm2eBlqOT0ozSPz1vdU9XgbUdcpLCiV0k=
-X-Google-Smtp-Source: AGHT+IEH2tTLbdxyXcpp6O17qio1Fb5OogJb9d5vLFTTq082EUe4OMFbqbp/epWgYE+atgK26KfLNLHj9wVCU+vWzaw=
-X-Received: by 2002:a05:6808:1201:b0:3bd:9dc0:d39e with SMTP id
- a1-20020a056808120100b003bd9dc0d39emr793916oil.97.1706055456212; Tue, 23 Jan
- 2024 16:17:36 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706055531; x=1706660331;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2odH5pLJYN3YATGCXEp5FH96z/xY+LW/aIByzzRMUEA=;
+        b=DU1Zw2Ce7ffyIqoVTdmBLTIoFwR96TMt5N48OGPp6Vg46wcYnZzkwMfr5x5gySGrBN
+         5Tu2cc+yxt862MKEdY1NVphSoAdp07opbIf/qiNu6CkbLvESbCxLwifi4luqGXSfUHHi
+         x82bnCQwFGKLLNyR3BL2WnMJwYj2QFuL/FJPdcwE3o9EXT4cm0x0N/4cS1NWDbGzPJMC
+         SR6QlXlhLPKS3vY+ngw+Gx7rsXUp7Xk0VnJQE5zDRyK/glg3hu87GU/6X9FhKUyqRd5y
+         Rp1OuBoSf2KpH7u4ugME+vQ9SiwtTyG33j3CPxIwpVLgxCe+wiUNtZ9Hk7/uD54H2ZLg
+         AHhw==
+X-Gm-Message-State: AOJu0YzOTkFmDpexsO/orm3P/7qwZQurpYcUObpsRc/38jfVgIHZobNV
+	agIbvvZjHrU4JbbBJkSG6fCEmjzy4/JEU0SiG+XMskZnlON7yIse
+X-Google-Smtp-Source: AGHT+IEyNHX43xDPAsYsJ4lkRre9gkAYQutyj6do9zeXlnpbSp2srE0pxVivxAxebptDJWoap1RNlw==
+X-Received: by 2002:a05:6830:1d66:b0:6da:46fb:76c with SMTP id l6-20020a0568301d6600b006da46fb076cmr787128oti.8.1706055531647;
+        Tue, 23 Jan 2024 16:18:51 -0800 (PST)
+Received: from rigel ([220.235.35.85])
+        by smtp.gmail.com with ESMTPSA id h20-20020a62b414000000b006d9a9727a8esm12652661pfn.178.2024.01.23.16.18.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jan 2024 16:18:51 -0800 (PST)
+Date: Wed, 24 Jan 2024 08:18:45 +0800
+From: Kent Gibson <warthog618@gmail.com>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+	linux-doc@vger.kernel.org, brgl@bgdev.pl, linus.walleij@linaro.org,
+	andy@kernel.org, corbet@lwn.net
+Subject: Re: [PATCH] Documentation: gpio: describe uAPI behaviour when
+ hardware doesn't support requested config
+Message-ID: <20240124001845.GA4578@rigel>
+References: <20240123133828.141222-1-warthog618@gmail.com>
+ <CAHp75Vd1dipGkCgQBENN3rLeUO+eQfOz9uKzz86eK755smqGag@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAD8CoPAr_bGNmmxkQpb1V7TeGtRE5=epC+5n-B2QiCH4QZjfxA@mail.gmail.com>
- <20240123022425.1611483-1-zegao@tencent.com>
-In-Reply-To: <20240123022425.1611483-1-zegao@tencent.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Tue, 23 Jan 2024 16:17:25 -0800
-Message-ID: <CAM9d7cjThFo=7x+vrqNz3LFfpdisbEEzWZUbJ5JGipH2vaJVjw@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] perf sched: Commit to evsel__taskstate() to parse
- task state info
-To: Ze Gao <zegao2021@gmail.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@redhat.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, Ze Gao <zegao@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75Vd1dipGkCgQBENN3rLeUO+eQfOz9uKzz86eK755smqGag@mail.gmail.com>
 
-On Mon, Jan 22, 2024 at 6:24=E2=80=AFPM Ze Gao <zegao2021@gmail.com> wrote:
+On Tue, Jan 23, 2024 at 05:44:52PM +0200, Andy Shevchenko wrote:
+> On Tue, Jan 23, 2024 at 3:39 PM Kent Gibson <warthog618@gmail.com> wrote:
+> >
+> > The existing uAPI documentation does not adequately describe how the kernel
+> > handles the case where the underlying hardware or driver does not support
+> > the requested configuration.
+> >
+> > Add a Configuration Support section describing that behaviour to both the
+> > v1 and v2 documentation, and better document the errors returned where the
+> > requested configuration cannot be supported.
 >
-> Now that we have evsel__taskstate() which no longer relies on the
-> hardcoded task state string and has good backward compatibility,
-> we have a good reason to use it.
+> ...
 >
-> Note TASK_STATE_TO_CHAR_STR and task bitmasks are useless now so
-> we remove them for good. And now we pass the state info back and
-> forth in a symbolic char which explains itself well instead.
+> > +Bias             best effort
 >
-> Signed-off-by: Ze Gao <zegao@tencent.com>
 
-Thanks for the update!
-Namhyung
+This documents the behaviour of the uAPI as it stands, so is your
+problem with the documentation or the uAPI?
 
+> So, best effort means that in some cases it won't fail. It reminds me
+> of the baud rate setting in serial (TermIOS). The question here is how
+> does user space know that it fell in one of such cases? (In termios
+> the IOCTL updates the respective fields and then user space can get
+> settings to see what has actually been applied.)
+>
 
-> ---
->  tools/perf/builtin-sched.c | 46 +++++++++-----------------------------
->  1 file changed, 10 insertions(+), 36 deletions(-)
+Best effort means it will try, but if it fails it will continue
+regardless.  So the configuration is advisory, not strictly required.
+
+As stated in the docs, userspace cannot currently tell, at least not via
+the uAPI.
+
+> Floating line is not good in some cases and user space really wants to
+> know that and treat it as an error (if needed). Hence the above Q. I
+> believe this needs to be explained in the documentation.
 >
-> diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
-> index ced6fffe8110..42d5fc5d6b7b 100644
-> --- a/tools/perf/builtin-sched.c
-> +++ b/tools/perf/builtin-sched.c
-> @@ -92,13 +92,6 @@ struct sched_atom {
->         struct task_desc        *wakee;
->  };
->
-> -#define TASK_STATE_TO_CHAR_STR "RSDTtXZPI"
-> -
-> -/* task state bitmask, copied from include/linux/sched.h */
-> -#define TASK_RUNNING           0
-> -#define TASK_INTERRUPTIBLE     1
-> -#define TASK_UNINTERRUPTIBLE   2
-> -
->  enum thread_state {
->         THREAD_SLEEPING =3D 0,
->         THREAD_WAIT_CPU,
-> @@ -255,7 +248,7 @@ struct thread_runtime {
->         u64 total_preempt_time;
->         u64 total_delay_time;
->
-> -       int last_state;
-> +       char last_state;
->
->         char shortname[3];
->         bool comm_changed;
-> @@ -425,7 +418,7 @@ static void add_sched_event_wakeup(struct perf_sched =
-*sched, struct task_desc *t
->  }
->
->  static void add_sched_event_sleep(struct perf_sched *sched, struct task_=
-desc *task,
-> -                                 u64 timestamp, u64 task_state __maybe_u=
-nused)
-> +                                 u64 timestamp, const char task_state __=
-maybe_unused)
->  {
->         struct sched_atom *event =3D get_new_event(task, timestamp);
->
-> @@ -849,7 +842,7 @@ static int replay_switch_event(struct perf_sched *sch=
-ed,
->                    *next_comm  =3D evsel__strval(evsel, sample, "next_com=
-m");
->         const u32 prev_pid =3D evsel__intval(evsel, sample, "prev_pid"),
->                   next_pid =3D evsel__intval(evsel, sample, "next_pid");
-> -       const u64 prev_state =3D evsel__intval(evsel, sample, "prev_state=
-");
-> +       const char prev_state =3D evsel__taskstate(evsel, sample, "prev_s=
-tate");
->         struct task_desc *prev, __maybe_unused *next;
->         u64 timestamp0, timestamp =3D sample->time;
->         int cpu =3D sample->cpu;
-> @@ -1039,13 +1032,6 @@ static int thread_atoms_insert(struct perf_sched *=
-sched, struct thread *thread)
->         return 0;
->  }
->
-> -static char sched_out_state(u64 prev_state)
-> -{
-> -       const char *str =3D TASK_STATE_TO_CHAR_STR;
-> -
-> -       return str[prev_state];
-> -}
-> -
->  static int
->  add_sched_out_event(struct work_atoms *atoms,
->                     char run_state,
-> @@ -1121,7 +1107,7 @@ static int latency_switch_event(struct perf_sched *=
-sched,
->  {
->         const u32 prev_pid =3D evsel__intval(evsel, sample, "prev_pid"),
->                   next_pid =3D evsel__intval(evsel, sample, "next_pid");
-> -       const u64 prev_state =3D evsel__intval(evsel, sample, "prev_state=
-");
-> +       const char prev_state =3D evsel__taskstate(evsel, sample, "prev_s=
-tate");
->         struct work_atoms *out_events, *in_events;
->         struct thread *sched_out, *sched_in;
->         u64 timestamp0, timestamp =3D sample->time;
-> @@ -1157,7 +1143,7 @@ static int latency_switch_event(struct perf_sched *=
-sched,
->                         goto out_put;
->                 }
->         }
-> -       if (add_sched_out_event(out_events, sched_out_state(prev_state), =
-timestamp))
-> +       if (add_sched_out_event(out_events, prev_state, timestamp))
->                 return -1;
->
->         in_events =3D thread_atoms_search(&sched->atom_root, sched_in, &s=
-ched->cmp_pid);
-> @@ -2022,24 +2008,12 @@ static void timehist_header(struct perf_sched *sc=
-hed)
->         printf("\n");
->  }
->
-> -static char task_state_char(struct thread *thread, int state)
-> -{
-> -       static const char state_to_char[] =3D TASK_STATE_TO_CHAR_STR;
-> -       unsigned bit =3D state ? ffs(state) : 0;
-> -
-> -       /* 'I' for idle */
-> -       if (thread__tid(thread) =3D=3D 0)
-> -               return 'I';
-> -
-> -       return bit < sizeof(state_to_char) - 1 ? state_to_char[bit] : '?'=
-;
-> -}
-> -
->  static void timehist_print_sample(struct perf_sched *sched,
->                                   struct evsel *evsel,
->                                   struct perf_sample *sample,
->                                   struct addr_location *al,
->                                   struct thread *thread,
-> -                                 u64 t, int state)
-> +                                 u64 t, const char state)
->  {
->         struct thread_runtime *tr =3D thread__priv(thread);
->         const char *next_comm =3D evsel__strval(evsel, sample, "next_comm=
-");
-> @@ -2080,7 +2054,7 @@ static void timehist_print_sample(struct perf_sched=
- *sched,
->         print_sched_time(tr->dt_run, 6);
->
->         if (sched->show_state)
-> -               printf(" %5c ", task_state_char(thread, state));
-> +               printf(" %5c ", thread__tid(thread) =3D=3D 0 ? 'I' : stat=
-e);
->
->         if (sched->show_next) {
->                 snprintf(nstr, sizeof(nstr), "next: %s[%d]", next_comm, n=
-ext_pid);
-> @@ -2152,9 +2126,9 @@ static void timehist_update_runtime_stats(struct th=
-read_runtime *r,
->                 else if (r->last_time) {
->                         u64 dt_wait =3D tprev - r->last_time;
->
-> -                       if (r->last_state =3D=3D TASK_RUNNING)
-> +                       if (r->last_state =3D=3D 'R')
->                                 r->dt_preempt =3D dt_wait;
-> -                       else if (r->last_state =3D=3D TASK_UNINTERRUPTIBL=
-E)
-> +                       else if (r->last_state =3D=3D 'D')
->                                 r->dt_iowait =3D dt_wait;
->                         else
->                                 r->dt_sleep =3D dt_wait;
-> @@ -2579,7 +2553,7 @@ static int timehist_sched_change_event(struct perf_=
-tool *tool,
->         struct thread_runtime *tr =3D NULL;
->         u64 tprev, t =3D sample->time;
->         int rc =3D 0;
-> -       int state =3D evsel__intval(evsel, sample, "prev_state");
-> +       const char state =3D evsel__taskstate(evsel, sample, "prev_state"=
-);
->
->         addr_location__init(&al);
->         if (machine__resolve(machine, &al, sample) < 0) {
-> --
-> 2.41.0
->
+
+Indeed, and I think it is explained in the documentation - worst case it
+will float.  And you wont know.  That is the way it is.
+
+This originally came about as setting bias is entangled with
+setting direction in gpiod_direction_input(), and it is best effort
+there.  The reasoning stated in the doc is what I recall from
+conversations at the time.
+
+Adding bias support was the first bit of kernel code I wrote so I wasn't
+about to go refactoring the guts of gpiolib - though if I were to do it
+now I probably would.
+
+If you consider the current behaviour to be a bug then we can change
+that behaviour, e.g. clearing the bias setting in the line info (bascially
+the desc flags) if setting fails.
+But if it is baked into the ABI then we need to extend the uAPI,
+e.g. with a flag requesting that the bias config be mandatory.
+
+Cheers,
+Kent.
 
