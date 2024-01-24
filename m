@@ -1,171 +1,107 @@
-Return-Path: <linux-kernel+bounces-37602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7746583B265
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 20:40:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5532583B26B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 20:42:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 255A728573A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:40:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E00BC1F25490
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:42:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C533E132C2F;
-	Wed, 24 Jan 2024 19:40:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4B3613340F;
+	Wed, 24 Jan 2024 19:41:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MvAZaKGM"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="V5ub+sov"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55A10131E4E;
-	Wed, 24 Jan 2024 19:40:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 537EC132C31
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 19:41:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706125243; cv=none; b=L40xsGpwFeb8c51l1DUUJwT3fe6gXqvl9o4SI6jWeUuHw3dXI3dJPSu/OHjiJ2+i3nGiqVNvT2srtWYL6PwrtTmSTl40UtsYivpCQWIj3LCS4gTdeTh15s7BVlsRSegS9VyIOAR9zBy/EK2LlJtsJ5eSxJQ9bNCsq13pJ2wfADI=
+	t=1706125317; cv=none; b=QLfqeXmirrxJFwGxuoPq35u103o0sYB1+k7qgmt6oZXpwZ5s1GNcWYWJOSBavQR7xUyxMeMnnwuNzJLyTlKDSc6CxF8Q2SvQYoS8vRVyxqWyzB/ktTgWOGdtYkwobhmHSt6J4UFUmVLqUkf15Ys0bdZZZfuntfuKufW3CAz+B7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706125243; c=relaxed/simple;
-	bh=P0vOpbNw4GVLzVgwN2w4XERVFkiUNoGEFDynIiNskNI=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=NJVBbTan3PptYd+5UlvMX1sD4HAHlguRgdGxgZExc8Fvi0yJBrDWU4k8WekA1qK8wB6z8fCau8lCoO3KQxygo+T7ZAC4nlaguB7sVNSUrTcRQstfFQlkU5Nl2oOul6QIiZefsOsPMOpYgejAMC146kluyYzIrQGFchneOH1TSTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MvAZaKGM; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706125241; x=1737661241;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=P0vOpbNw4GVLzVgwN2w4XERVFkiUNoGEFDynIiNskNI=;
-  b=MvAZaKGMBVefjmcEy5NCkYSLZwMoPw7Tb64/sJNXyZ51quzSsNsKJlCI
-   XkGUq3ZHOMrVxa9x0MJdTT+kWhexNef609b91TCnuizOBi7OHPYwX3oBY
-   7APPWGc/02qLHIXYE4qMBUND/fjTiU5A5G1eFnQkdh+1gBjvEC5Av3uPV
-   fa67pjzuirAwXtKE1uOlieyQ/fOACbsv80uWZ0hlaCPIk7/Y6rwo3L/7X
-   WKMz7/wQ4V0oE546je7BpqYrBwDFuyKFO1X/ILo+ytw+wwyxddA9bgzVl
-   8KgC3JNjjwZ8SLTKnAm965P77clF8Bop+kamIM4RQQPVeQ+/RJncDT3OR
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="8719146"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="8719146"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 11:40:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="736047002"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="736047002"
-Received: from sj-4150-psse-sw-opae-dev2.sj.intel.com ([10.233.115.162])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 11:40:39 -0800
-Date: Wed, 24 Jan 2024 11:40:05 -0800 (PST)
-From: matthew.gerlach@linux.intel.com
-X-X-Sender: mgerlach@sj-4150-psse-sw-opae-dev2
-To: Xu Yilun <yilun.xu@linux.intel.com>
-cc: hao.wu@intel.com, trix@redhat.com, mdf@kernel.org, yilun.xu@intel.com, 
-    linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fpga: dfl: afu: update initialization of port_hdr
- driver
-In-Reply-To: <Za8ibeJc82Xkbpct@yilunxu-OptiPlex-7050>
-Message-ID: <alpine.DEB.2.22.394.2401241106550.77559@sj-4150-psse-sw-opae-dev2>
-References: <20240122172433.537525-1-matthew.gerlach@linux.intel.com> <Za8ibeJc82Xkbpct@yilunxu-OptiPlex-7050>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+	s=arc-20240116; t=1706125317; c=relaxed/simple;
+	bh=ouJwYHRa4mmcxxGDuONLqBrc9eGAB9TSx7zyDOPpuZM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YlUsLRDLIuNtFv9o2Qh/0EpM/360X6NInAaWE/3QelFTW2McYNO39+Be0cVkmf7KfiyUd8YJXOcEm2804qxsOJZ2DrIJ9S4htxKfHs5lHpgfSiTK0fCabKv1/dK0krBDtcIPCqIvhT6jbWnh6pRtwJggwiDeQdTghyOPmu16J78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=V5ub+sov; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a28a6cef709so612190266b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 11:41:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1706125313; x=1706730113; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=uH4xyu20AZv2y9FxRkejBz/ztRhAIrUHK2zRol0B+1g=;
+        b=V5ub+sovq3NZYBptrCECOob6x6h6EcgEA1e6g5WOaLPBI9iqsrCgVgofP4D2t6yM6R
+         kPfHxOdo+oVd5T73X0pRpKil1nrBTLgZYlCuwDRo3ZMM0mnec+Fk8yFvqaFTE/VJ41Mw
+         riBfoWBgIayi0koYFdAt8Z8MffXbA8AAp7qEc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706125313; x=1706730113;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uH4xyu20AZv2y9FxRkejBz/ztRhAIrUHK2zRol0B+1g=;
+        b=RUyYONEZwLUvL90Z0S0Gp9ZzE8nKO41+mdKtjJNSUG9MDnmuerl9hAG3qQ2b3s443x
+         YKS8JveFs0JRf3DUTOfx7ouVZ2mOxol+VLNdNcT7UJAsNphIuLpvi3qFD8uUWI8J6Gq6
+         hCES0fn5FIPyPrn/FuLROnHuyK2GtXcxC+b84uoR22PpTNmvIOQAfwx/toS4Pou6hKkA
+         4ys2NYjfcL2QoL9zU6iP6HMjdlYgvhRFNMeqbVSmcb0fORL02Ok3zu6FPXkSALceR6pi
+         vZ5HXOrN0Af+ksgpaWN5C8+gDRxtzUrhShnBuC6CB/UbgrEWbKO+pEx9pYo60TXna9Df
+         7HzA==
+X-Gm-Message-State: AOJu0Yz5YW5CVswjneCculyv+H/arCmaUo5Xsd+mIu0NkR+YVoA+AWHD
+	9uYLJGpraOqt7BoJCQFCak4wWQAFx6queuEqvyryGFICv/jORXjBQ1eqriZX93oCzOp77sppdrm
+	zAEfQnw==
+X-Google-Smtp-Source: AGHT+IGANGpyVSmLrMJPYB1tDFnY1URvbqeR+SzRSairWOgjL5SuGVSiuIcZsn8N+OqwPlZ+XfgRrA==
+X-Received: by 2002:a17:906:3bc4:b0:a30:df55:ef8d with SMTP id v4-20020a1709063bc400b00a30df55ef8dmr1120752ejf.116.1706125313303;
+        Wed, 24 Jan 2024 11:41:53 -0800 (PST)
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
+        by smtp.gmail.com with ESMTPSA id ka15-20020a170907920f00b00a2a0212cfe1sm201079ejb.50.2024.01.24.11.41.52
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Jan 2024 11:41:52 -0800 (PST)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-55a8fb31fc2so5471034a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 11:41:52 -0800 (PST)
+X-Received: by 2002:aa7:c853:0:b0:55a:6f4b:27cc with SMTP id
+ g19-20020aa7c853000000b0055a6f4b27ccmr1999900edt.44.1706125311944; Wed, 24
+ Jan 2024 11:41:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+References: <ZbE4qn9_h14OqADK@kevinlocke.name> <202401240832.02940B1A@keescook>
+ <CAHk-=wgJmDuYOQ+m_urRzrTTrQoobCJXnSYMovpwKckGgTyMxA@mail.gmail.com>
+ <CAHk-=wijSFE6+vjv7vCrhFJw=y36RY6zApCA07uD1jMpmmFBfA@mail.gmail.com>
+ <CAHk-=wiZj-C-ZjiJdhyCDGK07WXfeROj1ACaSy7OrxtpqQVe-g@mail.gmail.com>
+ <202401240916.044E6A6A7A@keescook> <CAHk-=whq+Kn-_LTvu8naGqtN5iK0c48L1mroyoGYuq_DgFEC7g@mail.gmail.com>
+ <CAHk-=whDAUMSPhDhMUeHNKGd-ZX8ixNeEz7FLfQasAGvi_knDg@mail.gmail.com> <202401241058.16E3140@keescook>
+In-Reply-To: <202401241058.16E3140@keescook>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 24 Jan 2024 11:41:35 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgEXx0m_eaeN5-DoZQxStF0pOLU9s3GkFbhBt-2ro3Ofg@mail.gmail.com>
+Message-ID: <CAHk-=wgEXx0m_eaeN5-DoZQxStF0pOLU9s3GkFbhBt-2ro3Ofg@mail.gmail.com>
+Subject: Re: [6.8-rc1 Regression] Unable to exec apparmor_parser from virt-aa-helper
+To: Kees Cook <keescook@chromium.org>
+Cc: Kentaro Takeda <takedakn@nttdata.co.jp>, 
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, 
+	John Johansen <john.johansen@canonical.com>, Paul Moore <paul@paul-moore.com>, 
+	Kevin Locke <kevin@kevinlocke.name>, Josh Triplett <josh@joshtriplett.org>, 
+	Mateusz Guzik <mjguzik@gmail.com>, Al Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-
-
-On Tue, 23 Jan 2024, Xu Yilun wrote:
-
-> On Mon, Jan 22, 2024 at 09:24:33AM -0800, Matthew Gerlach wrote:
->> Revision 2 of the Device Feature List (DFL) Port feature has
->> slightly different requirements than revision 1. Revision 2
->> does not need the port to reset at driver startup. In fact,
+On Wed, 24 Jan 2024 at 11:02, Kees Cook <keescook@chromium.org> wrote:
 >
-> Please help illustrate what's the difference between Revision 1 & 2, and
-> why revision 2 needs not.
+> Yup. Should I post a formal patch, or do you want to commit what you've
+> got (with the "file" -> "f" fix)?
 
-I will update the commit message to clarify the differences between 
-revision 1 and 2.
+I took your formal patch. Thanks,
 
->
->> performing a port reset during driver initialization can cause
->> driver race conditions when the port is connected to a different
->
-> Please reorganize this part, in this description there seems be a
-> software racing bug and the patch is a workaround. But the fact is port
-> reset shouldn't been done for a new HW.
-
-Reorganizing the commit message a bit will help to clarify why port reset 
-should not be performed during driver initialization with revision 2 of 
-the hardware.
-
->
-> BTW: Is there a way to tell whether the port is connected to a different
-> PF? Any guarantee that revision 3, 4 ... would need a port reset or not?
-
-The use of revision 2 of the port_hdr IP block indicates that the port can 
-be connected multiple PFs, but there is nothing explicitly stating which 
-PFs the port is connected to.
-
-It is hard to predict the requirements and implementation of a future 
-revision of an IP block. If a requirement of a future revision is to work 
-with existing software, then the future revision would not require a port 
-reset at driver initialization.
-
->
-> Thanks,
-> Yilun
->
->> PCIe Physical Function (PF) than the management PF performing
->> the actual port reset.
->>
->> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->> ---
->>  drivers/fpga/dfl-afu-main.c | 13 ++++++++++++-
->>  1 file changed, 12 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/fpga/dfl-afu-main.c b/drivers/fpga/dfl-afu-main.c
->> index c0a75ca360d6..7d7f80cd264f 100644
->> --- a/drivers/fpga/dfl-afu-main.c
->> +++ b/drivers/fpga/dfl-afu-main.c
->> @@ -417,7 +417,18 @@ static const struct attribute_group port_hdr_group = {
->>  static int port_hdr_init(struct platform_device *pdev,
->>  			 struct dfl_feature *feature)
->>  {
->> -	port_reset(pdev);
->> +	void __iomem *base;
->> +	u8 rev;
->> +
->> +	base = dfl_get_feature_ioaddr_by_id(&pdev->dev, PORT_FEATURE_ID_HEADER);
->> +
->> +	rev = dfl_feature_revision(base);
->> +
->> +	if (rev < 2)
->> +		port_reset(pdev);
->> +
->> +	if (rev > 2)
->> +		dev_info(&pdev->dev, "unexpected port feature revision, %u\n", rev);
->
-> Remove the print. It is indicating an error but the function returns OK.
-
-The message is intended to be informational, but I'll remove it because it 
-could be confusing.
-
->
-> Thanks,
-> Yilun
-
-Thanks for the feedback.
-
->
->>
->>  	return 0;
->>  }
->> --
->> 2.34.1
->>
->>
->
+               Linus
 
