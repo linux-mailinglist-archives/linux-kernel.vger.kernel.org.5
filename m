@@ -1,124 +1,199 @@
-Return-Path: <linux-kernel+bounces-37327-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37328-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5043D83AE49
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:24:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4382583AE72
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:36:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 098A61F27088
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:24:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2FBEB2AEF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:24:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34BB67CF30;
-	Wed, 24 Jan 2024 16:24:27 +0000 (UTC)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DF017CF31;
+	Wed, 24 Jan 2024 16:24:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="en8tMvml";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="L1NRr150";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bbyHOYSW";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="SJOfBy2X"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12B2E7CF22
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 16:24:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9DEE7CF13
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 16:24:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706113466; cv=none; b=TRjzJZYyuFZSfNHs7kSruOj+VVtkYeRIUtfY7XejEUC3nVSHKl/x8Oa5bVAdSHPbQDNFWRZV8/iQ6ALjH8joBv1Tko08RcyBf/9T2SCH8+0R6BUXwotBdVfk79M/KP9PAps+d64RBGDHktzb8vrfPMjUJ3ywgRnaU+cYW2Br6zA=
+	t=1706113472; cv=none; b=jjYUnRE5D4aCSb2G+J1Pzl0avpM4FaX4mNIMhsns9UanRpheSVmOS7NmOqs7uTmFYQF/qCAX+bYWfPPq3OuSkbU8BHhMpEbcsySf2eDztkXpEdbCq/fUQhzgVK5TszoUSJQUFXzqL61KAyN30rIM7qahEHHEvN+YbtGDPQt1pwo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706113466; c=relaxed/simple;
-	bh=cmh2v342drxF1dTH1nf4cchjsqCYIhUmT0Augauvd1Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LQfhqFJ1cGgb7XCNzr8wT6vPxcDIuy6Dp9DewBfYq1wUcjWtPpfbOzKBw+Vv8yGIDYwOEcCsefLdLVlVfsbuQvK+q87YFfsXgUAYPRd8sCI1Ftm8ggSrLjI7ILf+uySebXRotMK0lHSUtiB2uirfzezQAps1XqSW4fXntHK9F6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-50ea9daac4cso6196097e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 08:24:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706113463; x=1706718263;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eMrT5P2w10tw7eLH7q5F2CQ18PCwIDF5TrbVadGlCl4=;
-        b=ozf7WMEjNDwBUwxoT9KEtt3OrEREL6cwQ/uDhYWO/gG6dJCUgwgZChm0eJOsez7bs+
-         lc6tfujwptyth+UK0A14l7/0h4JFF44xm1ueBjilJFlifuCWXOPk+40GED80fBwwt3Qt
-         7GXWhWtzg3IVNYjqXHRa6kdH0KHJ42FC06Sb1XJY5w1yhMjxeVBCpicl1kM+5p7GKIF9
-         KvXr6o67ILFXl3jg7Qf6q7WyZGybG25nIXLQTzaKZ7Hv64l/ZLKHOCAXPfVYv6gp4wPj
-         WOEKzpSSXaywnkAb6Fk010r/UsA/NwVENDDwvofpc6F/CtMXGAnNK3aMlAURfH9iAZS0
-         tQ9w==
-X-Gm-Message-State: AOJu0YyHA/p5nFVY5GftLA/4edQ9C1BkMBBc7UC2lEdil5slpb1IC6aM
-	2VGevCAghKvcZYySyjtOkh7mDr/H5Mp26IQpMfkGsYSh3OKsKzS5
-X-Google-Smtp-Source: AGHT+IGIchG2ph+UVbTIfE1JqfL/7GUBYTcpp4ft1R1HeRtkJS7ZJGt2zEDRghte6NPJ5RWquqRInQ==
-X-Received: by 2002:a19:ee10:0:b0:510:17b6:69e with SMTP id g16-20020a19ee10000000b0051017b6069emr68370lfb.89.1706113462769;
-        Wed, 24 Jan 2024 08:24:22 -0800 (PST)
-Received: from gmail.com (fwdproxy-cln-011.fbsv.net. [2a03:2880:31ff:b::face:b00c])
-        by smtp.gmail.com with ESMTPSA id wh11-20020a1709078f8b00b00a26f6b8be1csm47026ejc.75.2024.01.24.08.24.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 08:24:22 -0800 (PST)
-Date: Wed, 24 Jan 2024 08:24:20 -0800
-From: Breno Leitao <leitao@debian.org>
-To: Marco Elver <elver@google.com>
-Cc: andrey.konovalov@linux.dev, Andrew Morton <akpm@linux-foundation.org>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Alexander Potapenko <glider@google.com>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
-	Evgenii Stepanov <eugenis@google.com>,
-	Oscar Salvador <osalvador@suse.de>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Andrey Konovalov <andreyknvl@google.com>
-Subject: Re: [PATCH v4 12/22] lib/stackdepot: use read/write lock
-Message-ID: <ZbE5tBBjlhz3JN5+@gmail.com>
-References: <cover.1700502145.git.andreyknvl@google.com>
- <9f81ffcc4bb422ebb6326a65a770bf1918634cbb.1700502145.git.andreyknvl@google.com>
- <ZbEbmyszaK9tYobe@gmail.com>
- <CANpmjNNnrKYKkV74rcBUkpA09KqwHOjse9J9aCHPRFuYKCQM2w@mail.gmail.com>
+	s=arc-20240116; t=1706113472; c=relaxed/simple;
+	bh=NhyGnk5+4LpAEqT9beyKM4qdA1eh6aZy9msl/hOzSVc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BKJ1g5+NxnaZ9dsZpSwzQqBuppQrbb9ZX11B5BYwq4yGPUdX/Lsa5XmsluCG5V7M6uMnEzBTb0io24JJ32iHA3LaBgVqM6XSMalN4EZ2yeruZ9MT+HzmW3HiIbAOc9Y3SREpg+dYCTa4/NTy/SaJA2v38oEMyME8i65Dt8OrHQk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=en8tMvml; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=L1NRr150; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bbyHOYSW; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=SJOfBy2X; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C4FCB1F7FC;
+	Wed, 24 Jan 2024 16:24:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706113469; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UsSpy/Y0Bf9swqzrSKXgT+4WoTa/jaJXCkrOsFP8epA=;
+	b=en8tMvml0f49x8ahJeG6iB17vOCs4frJhU1hA/HlrV93jXxohfZuWs8codW97ukrJQX57o
+	0hbB5Jx0TtoVrfxa1VRUJEbfigsPM5iInQkcXr+sezrfC5Y1gD19iclQLjzOMrKeZ/C6da
+	xjRS8iYywekP7Z3wEpAei5quwuubWqg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706113469;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UsSpy/Y0Bf9swqzrSKXgT+4WoTa/jaJXCkrOsFP8epA=;
+	b=L1NRr150zQzCUuqoTYtbcDRPU3mYvMWZ96gFXKRqtM+SimlxKU9XnwH5aptoH972hyPFml
+	hBZrPkdLfSPClxAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1706113468; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UsSpy/Y0Bf9swqzrSKXgT+4WoTa/jaJXCkrOsFP8epA=;
+	b=bbyHOYSWYGCbSAqfNTlr7wyGKz78XSWDtMQBdODxvOywT6ygOpGuwVHKc16QbSFpVDE4BJ
+	+tlmo+nfDM/UwPP/tCmnyh4U8KeaAztMfjwX5DzgC4b1DCNU0jdY04XJHA4jQL3by+q4AG
+	sGZUZGYUKFJERzNkuzE4JxQDPF9VeLE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1706113468;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UsSpy/Y0Bf9swqzrSKXgT+4WoTa/jaJXCkrOsFP8epA=;
+	b=SJOfBy2XrgVuGLcWvMg76y/BhbVpgmjQQoMTzRsWbJw9/qZCaRo1auFmYt1UVBopqnBbKW
+	x83pFiDicuvvFkBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A2C401333E;
+	Wed, 24 Jan 2024 16:24:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id o7Y8J7w5sWVtIgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 24 Jan 2024 16:24:28 +0000
+Message-ID: <0a782904-bb19-4111-979a-31b52aa44ca9@suse.cz>
+Date: Wed, 24 Jan 2024 17:24:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANpmjNNnrKYKkV74rcBUkpA09KqwHOjse9J9aCHPRFuYKCQM2w@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [git pull] drm for 6.8
+To: Donald Carr <sirspudd@gmail.com>,
+ Mario Limonciello <mario.limonciello@amd.com>
+Cc: Dave Airlie <airlied@gmail.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Daniel Vetter <daniel.vetter@ffwll.ch>,
+ dri-devel <dri-devel@lists.freedesktop.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ Linux regressions mailing list <regressions@lists.linux.dev>,
+ Thorsten Leemhuis <regressions@leemhuis.info>,
+ Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+References: <CAPM=9twKBmO2Svky-zeP+KS8qWHFj9zrgeBqW9y__tUwcAYZhw@mail.gmail.com>
+ <2faccc1a-7fdd-499b-aa0a-bd54f4068f3e@suse.cz>
+ <CAOVeLGRxXfs4wxSmB2ULZS72NvJkWQvZyPRz0rAmQyFtL39ekw@mail.gmail.com>
+Content-Language: en-US
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <CAOVeLGRxXfs4wxSmB2ULZS72NvJkWQvZyPRz0rAmQyFtL39ekw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=bbyHOYSW;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=SJOfBy2X
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.00 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 TO_DN_ALL(0.00)[];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FREEMAIL_TO(0.00)[gmail.com,amd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[gmail.com,linux-foundation.org,ffwll.ch,lists.freedesktop.org,vger.kernel.org,lists.linux.dev,leemhuis.info];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: -3.00
+X-Rspamd-Queue-Id: C4FCB1F7FC
+X-Spam-Flag: NO
 
-On Wed, Jan 24, 2024 at 03:21:26PM +0100, Marco Elver wrote:
-> On Wed, 24 Jan 2024 at 15:16, Breno Leitao <leitao@debian.org> wrote:
-> >
-> > Hello Andrey,
-> >
-> > On Mon, Nov 20, 2023 at 06:47:10PM +0100, andrey.konovalov@linux.dev wrote:
-> > > From: Andrey Konovalov <andreyknvl@google.com>
-> > >
-> > > Currently, stack depot uses the following locking scheme:
-> > >
-> > > 1. Lock-free accesses when looking up a stack record, which allows to
-> > >    have multiple users to look up records in parallel;
-> > > 2. Spinlock for protecting the stack depot pools and the hash table
-> > >    when adding a new record.
-> > >
-> > > For implementing the eviction of stack traces from stack depot, the
-> > > lock-free approach is not going to work anymore, as we will need to be
-> > > able to also remove records from the hash table.
-> > >
-> > > Convert the spinlock into a read/write lock, and drop the atomic accesses,
-> > > as they are no longer required.
-> > >
-> > > Looking up stack traces is now protected by the read lock and adding new
-> > > records - by the write lock. One of the following patches will add a new
-> > > function for evicting stack records, which will be protected by the write
-> > > lock as well.
-> > >
-> > > With this change, multiple users can still look up records in parallel.
-> > >
-> > > This is preparatory patch for implementing the eviction of stack records
-> > > from the stack depot.
-> >
-> > I am testing quite recent "debug" kernel (with KASAN, Lockdep, etc
-> > enabled). This kernel is based on
-> > 9f8413c4a66f2fb776d3dc3c9ed20bf435eb305e, and I found the following
+On 1/24/24 16:31, Donald Carr wrote:
+> On Wed, Jan 24, 2024 at 7:06 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>> When testing the rc1 on my openSUSE Tumbleweed desktop, I've started
+>> experiencing "frozen desktop" (KDE/Wayland) issues. The symptoms are that
+>> everything freezes including mouse cursor. After a while it either resolves,
+>> or e.g. firefox crashes (if it was actively used when it froze) or it's
+>> frozen for too long and I reboot with alt-sysrq-b. When it's frozen I can
+>> still ssh to the machine, and there's nothing happening in dmesg.
+>> The machine is based on Amd Ryzen 7 2700 and Radeon RX7600.
+>>
+>> I've bisected the merge commits so far and now will try to dig into this
+>> one. I've noticed there was also a drm fixes PR later in the merge window but
+>> since it was also merged into rc1 and thus didn't prevent the issue for me,
+>> I guess it's not relevant here?
+>>
+>> Because the reproduction wasn't very deterministic I considered a commit bad
+>> even if it didn't lead to completely frozen desktop and a forced reboot.
+>> Even the multi-second hangs that resolved were a regression compared to 6.7
+>> anyway.
+>>
+>> If there are known issues and perhaps candidate fixes already, please do tell.
 > 
-> This version predates this series, as far as I can tell. Can you try linux-next?
+> I am experiencing the exact same symptoms; sddm (on weston) starts
+> perfectly, launching a KDE wayland session freezes at various points
+> (leading to plenty of premature celebration), but normally on the
+> handoff from sddm to kde (replete with terminal cursor on screen)
+> 
+> Working perfectly as of the end of 6.7 final release, broken as of 6.8 rc1.
+> Sometimes sddm can be successfully restarted via ssh, other times
+> restarting sddm is slow and fails to complete.
 
-That is true. I will retest and let you know if it is still
-reproducible.
+Big thanks to Thorsten who suggested I look at the following:
 
-Thanks.
+https://lore.kernel.org/all/20240123021155.2775-1-mario.limonciello@amd.com/
+
+https://lore.kernel.org/all/CABXGCsM2VLs489CH-vF-1539-s3in37=bwuOWtoeeE+q26zE+Q@mail.gmail.com/
+
+Instead of further bisection I've applied Mario's revert from the first link
+on top of 6.8-rc1 and the issue seems gone for me now.
+
+Vlastimil
+
+> Yours sincerely,
+> Donald
+
 
