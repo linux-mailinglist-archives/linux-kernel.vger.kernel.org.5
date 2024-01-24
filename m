@@ -1,154 +1,211 @@
-Return-Path: <linux-kernel+bounces-37735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DCB383B49B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:24:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4ECD83B49D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:25:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2421F1F242C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:24:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75A7E28643F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:25:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDFA1135A51;
-	Wed, 24 Jan 2024 22:24:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0496135A73;
+	Wed, 24 Jan 2024 22:24:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TWRlVUz6"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OAodkzHy"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A93B6135A41;
-	Wed, 24 Jan 2024 22:24:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57D97135A41
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 22:24:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706135078; cv=none; b=E1T23ME4j8BOJWUsOl78E9mM1orR/aylYxlhuKeEGjddJ/uNu7234OY9oH3aTuaPSbD206fT7CzWbJ24GrTUP+5OT+DiW0Vc5LpdLBBMxUKAcmn8zi6rSUsU+TS98Ttn+rXjiccxleg1mTORnVkuGoA8EMH7ajVZ0/CGMwIHops=
+	t=1706135091; cv=none; b=NwQmUFYDDDqWe6wLgO5bLCti3w5EwunD28k69Cu92Tz0G2U+sMegZg8b/6UcxdnK07xk8tTqXihnpnzXr2d7DsQFy5tGNkpJP9gccjusewgZQTs8bUI01jp8zNDugXmccIjVjhAZRLT/kvdXwOh1lebJoYNoG37/JRVnJ09jCX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706135078; c=relaxed/simple;
-	bh=6aFoet48IEnWBwMN0oFvWdhYR1O5XItpGbgY5wNmtlI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FVIEHUEPDd66wOx5bhnZ44RxdXSfXa8ZI18t/pY0N5I2lSk8lEipCMSGVI2GNBed+3IbqON17gIwrKEaWJItxeTEwm+9vu4HMP/c2p/wPcIqoK/BF3VDqiFG0WPfqGCECMHxDm3FbSb5P28u/fVWB0bcNt2z/D13D4cZWdy+Bx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TWRlVUz6; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a271a28aeb4so653680266b.2;
-        Wed, 24 Jan 2024 14:24:36 -0800 (PST)
+	s=arc-20240116; t=1706135091; c=relaxed/simple;
+	bh=F07WrWrcJc+aqK6y40knhbK14aLSxZVS1jiyy4tF+uM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iG1v6k40vgi00gdKM3hoaakrN5xIoGKGEraU2tklgC6pNQnPJuS3se8HPRbPei1mp87PgKX1D8RQE8mBlBiad6+xLIZotKFWObjjZm0fVpxSYn/8Iw1wkEvxXwbWgE3KjINP05Zd+oaEtrOpiLeRUd680byGM2H8j+tFW3FFJKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OAodkzHy; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6dd80d3d419so1840840b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 14:24:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706135075; x=1706739875; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FsxxqHwtyuN+pDO2NqY66GmiknEtFe2BpKT5Y2BjYXY=;
-        b=TWRlVUz6+DZhWF74tDNxHOx52164EgmVWnOmXVwTi13zW2Ive1SFbnquzeEgK03hv4
-         8VOCWZ59W+yCFGjtSOJecPKM2VMgU6ou1ob8Ia/mtkpNTNeNGhy2gTSCd/niiTDNYvTr
-         g/kPy4nGvB49VI/eWrHcpeDXtsZX7hUyg4hWGqECe5os5KBICN3c8EAbZvt9kUfOTa6K
-         WTcB5eBHYrTiTW0ytq8iSoaRm77izPKLPXD7Ng7YeiTzue2qD96UnUq33pGf38jEZ9aL
-         KitBKyVCJLM93uLULFZDwCUERuJSTSxY7sWT6IwmPty4ICML4W0l2urwt6Q8TLxZwPjy
-         RFyg==
+        d=google.com; s=20230601; t=1706135087; x=1706739887; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=7s4y9JBqG8sGQYLQqOanboOGz3nHhAEuSqvhsqFQIjU=;
+        b=OAodkzHy+vyGlBb6b6u+zO9cj4TS7LitBSH7hQbXAJCckuUKqWljPDc8b0z8eEKGnC
+         6RR/xvxYjydIvdrM5sVXBrNRrMsmGaOAbp88jKteqx2C6goKLheITv6FeYRb28hVMCHl
+         VLuEGGKDtc6qdzLKSMxfe/y33Y0EJkyFO2Id1tfvgrQbVFWpGivGHoLOSQldCWrurYr0
+         mf8HmrnXjuMEfVXvij3eRUYo0p/ogfhsQ2hmPWVUze6hilKHuW3EHE/B+BitQHGI8fLp
+         CSm59/mZF69jkSUxXSiptMLg4qnEzsj8Xxot6JvL0ncRJn9jJ6s68mhx4aSps6X8lfdP
+         gFrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706135075; x=1706739875;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FsxxqHwtyuN+pDO2NqY66GmiknEtFe2BpKT5Y2BjYXY=;
-        b=n+ciaEG/4ctK3eMqbfhrOwQCxvuZymKLnT3P7/xJlK2r5Ur+mVSS4Wr/F/YL1xnoiF
-         rtCXLNr6UK1G5DsIE85cfmyLxeXrlNPxBMsZWbQKfCBGIBMVDdmhgCXtB6R0o8BUV70K
-         rhZTrVZ+sccfJqq4WE/QdAc5SzX8GvLxyuHSs8L/l0mN17JrdbCBtAWkHJHtjryASnDi
-         Q1l1RstK6gskEiIqyljXHdKDS1QhZLRLLtUgeMD3k2Z0BpO2VIg9fghNwKDS28SxgEZ5
-         Yo8DHeRLwxkUIjnKX5jBhV7GAid0duJ7ZWmc2Nj5vWySghw4e+4zJVzBp0LC/oMVudqh
-         zbYw==
-X-Gm-Message-State: AOJu0YzSg2qPzQYTCJvtTXaYAbU9/oPGM2hvCEF06XWA7hiJ7vLVIaqR
-	KAXkMEXXXbeoEjCmGcJrt5ae0LHtmj4R6Jooy5Uuk6RUjftPDqOViqJeRe2nb3Qr5aHa2XIyBoP
-	qSLClHfpBx6TB3iO30InZIlyfcdQ=
-X-Google-Smtp-Source: AGHT+IG6kTMS24ukkyWs3GfHfagkvUoflx+1XQepoXScIKL1r/dk58wW+DsGtxCF5L4aN9JvPLqwxB5264iXYnp212M=
-X-Received: by 2002:a17:907:8747:b0:a31:ce3:6ca1 with SMTP id
- qo7-20020a170907874700b00a310ce36ca1mr1056927ejc.95.1706135074605; Wed, 24
- Jan 2024 14:24:34 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706135087; x=1706739887;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7s4y9JBqG8sGQYLQqOanboOGz3nHhAEuSqvhsqFQIjU=;
+        b=F6mEUgK4Lj+4wWyxB9GmZdknZImC4bIee9axBWjBe8J4geSSD5Q6ojEQMJVuufLeZa
+         H1ix9qvb9cXHlvi5SgkzOKroJEiNxhDRIC/b9GaFmHMJ985px25DA/XtnN9XIRVvGtCa
+         MCWjNA/yKPP4xWT8jXzZnbB8E4AVb8DdH57XPfBgqjfvI3RZHyG0qiwzNh7G2NQfmtLF
+         zMkZe/3BsONyHbfrxnM07Yqg0X7OrRybW1X0qfxSYJZUbyPmKL5u/A3QbmOiMyB1Jlnp
+         vum/sxaXXK15Q6l37ox3aq4lDSvev59ZSNj0IhNZ8bCvMVQ9cYiLw04EprJmNrDX20lb
+         s6hA==
+X-Gm-Message-State: AOJu0YzeSS1Z+P7/aCAAdztOYDft9KHl9TyrEIphaoKPB6lMP+AwN/bJ
+	07Np2LeDDwMVJD9IcxGE/CERM+NpXsqpLiimNxaVJhPppIAUksfCGKhtDcEKzA==
+X-Google-Smtp-Source: AGHT+IHUR20K1wxsBDC/ddPt9yRSkrVV0P84aEVFp45BZWg3DAqudZXLJ3W7gaFv1/OOWQCCull48w==
+X-Received: by 2002:a05:6a20:5491:b0:19c:6cae:508e with SMTP id i17-20020a056a20549100b0019c6cae508emr144215pzk.36.1706135087383;
+        Wed, 24 Jan 2024 14:24:47 -0800 (PST)
+Received: from google.com (176.13.105.34.bc.googleusercontent.com. [34.105.13.176])
+        by smtp.gmail.com with ESMTPSA id bn21-20020a056a00325500b006d99056c4edsm14409517pfb.187.2024.01.24.14.24.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 14:24:46 -0800 (PST)
+Date: Wed, 24 Jan 2024 22:24:43 +0000
+From: Mingwei Zhang <mizhang@google.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Aaron Lewis <aaronlewis@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] KVM: x86/pmu: Reset perf_capabilities in vcpu to 0
+ if PDCM is disabled
+Message-ID: <ZbGOK9m6UKkQ38bK@google.com>
+References: <20240124003858.3954822-1-mizhang@google.com>
+ <20240124003858.3954822-2-mizhang@google.com>
+ <ZbExcMMl-IAzJrfx@google.com>
+ <CAAAPnDFAvJBuETUsBScX6WqSbf_j=5h_CpWwrPHwXdBxDg_LFQ@mail.gmail.com>
+ <ZbGAXpFUso9JzIjo@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240115144538.12018-1-max@enpas.org> <nycvar.YFH.7.76.2401231047140.29548@cbobk.fhfr.pm>
-In-Reply-To: <nycvar.YFH.7.76.2401231047140.29548@cbobk.fhfr.pm>
-From: Roderick Colenbrander <thunderbird2k@gmail.com>
-Date: Wed, 24 Jan 2024 14:24:22 -0800
-Message-ID: <CAEc3jaATA-Z86jh=njR6yctguQBRp1BQEFcBQhYT0rYKcA4f2w@mail.gmail.com>
-Subject: Re: [PATCH v1 0/7] HID: playstation: DS4: LED bugfix, third-party
- gamepad support
-To: Jiri Kosina <jikos@kernel.org>
-Cc: Max Staudt <max@enpas.org>, Roderick Colenbrander <roderick.colenbrander@sony.com>, 
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>, linux-input@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZbGAXpFUso9JzIjo@google.com>
 
-On Tue, Jan 23, 2024 at 1:51=E2=80=AFAM Jiri Kosina <jikos@kernel.org> wrot=
-e:
->
-> On Mon, 15 Jan 2024, Max Staudt wrote:
->
-> > Dear hid-playstation maintainers,
-> >
-> > Could you please have a look at the enclosed patches for the DualShock =
-4
-> > driver in hid-playstation, and upstream them if possible?
-> >
-> > There is one bugfix, and a few small patches to enable third-party
-> > controllers. They sometimes don't implement features that they
-> > semantically "don't need", but which currently trip the driver.
-> >
-> > For example, for the DualShock 4, we don't actually need to know the
-> > firmware version in order to work with the gamepad - unlike with the
-> > DualSense, which has different driver logic depending on the version.
-> >
-> > Finally, there are two patches to add a DS4 compatible controller with
-> > an unassigned VID/PID - I'd appreciate your thoughts on that.
-> >
-> > If I can make it easier to upstream these patches, please let me know.
-> >
-> > Thanks!
-> >
-> > Max
-> >
-> > Patches in this series:
-> >   [PATCH v1 1/7] HID: playstation: DS4: Fix LED blinking
-> >   [PATCH v1 2/7] HID: playstation: DS4: Don't fail on MAC address
-> >   [PATCH v1 3/7] HID: playstation: DS4: Don't fail on FW/HW version
-> >   [PATCH v1 4/7] HID: playstation: DS4: Don't fail on calibration data
-> >   [PATCH v1 5/7] HID: playstation: DS4: Parse minimal report 0x01
-> >   [PATCH v1 6/7] HID: playstation: Simplify device type ID
-> >   [PATCH v1 7/7] HID: playstation: DS4: Add VID/PID for SZ-MYPOWER
->
-> Roderick, any word on this series, please?
->
-> Thanks,
->
-> --
-> Jiri Kosina
-> SUSE Labs
->
->
+On Wed, Jan 24, 2024, Sean Christopherson wrote:
+> On Wed, Jan 24, 2024, Aaron Lewis wrote:
+> > On Wed, Jan 24, 2024 at 7:49 AM Sean Christopherson <seanjc@google.com> wrote:
+> > >
+> > > On Wed, Jan 24, 2024, Mingwei Zhang wrote:
+> > > > Reset vcpu->arch.perf_capabilities to 0 if PDCM is disabled in guest cpuid.
+> > > > Without this, there is an issue in live migration. In particular, to
+> > > > migrate a VM with no PDCM enabled, VMM on the source is able to retrieve a
+> > > > non-zero value by reading the MSR_IA32_PERF_CAPABILITIES. However, VMM on
+> > > > the target is unable to set the value. This creates confusions on the user
+> > > > side.
+> > > >
+> > > > Fundamentally, it is because vcpu->arch.perf_capabilities as the cached
+> > > > value of MSR_IA32_PERF_CAPABILITIES is incorrect, and there is nothing
+> > > > wrong on the kvm_get_msr_common() which just reads
+> > > > vcpu->arch.perf_capabilities.
+> > > >
+> > > > Fix the issue by adding the reset code in kvm_vcpu_after_set_cpuid(), i.e.
+> > > > early in VM setup time.
+> > > >
+> > > > Cc: Aaron Lewis <aaronlewis@google.com>
+> > > > Signed-off-by: Mingwei Zhang <mizhang@google.com>
+> > > > ---
+> > > >  arch/x86/kvm/cpuid.c | 3 +++
+> > > >  1 file changed, 3 insertions(+)
+> > > >
+> > > > diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> > > > index adba49afb5fe..416bee03c42a 100644
+> > > > --- a/arch/x86/kvm/cpuid.c
+> > > > +++ b/arch/x86/kvm/cpuid.c
+> > > > @@ -369,6 +369,9 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+> > > >       vcpu->arch.maxphyaddr = cpuid_query_maxphyaddr(vcpu);
+> > > >       vcpu->arch.reserved_gpa_bits = kvm_vcpu_reserved_gpa_bits_raw(vcpu);
+> > > >
+> > > > +     /* Reset MSR_IA32_PERF_CAPABILITIES guest value to 0 if PDCM is off. */
+> > > > +     if (!guest_cpuid_has(vcpu, X86_FEATURE_PDCM))
+> > > > +             vcpu->arch.perf_capabilities = 0;
+> > >
+> > > No, this is just papering over the underlying bug.  KVM shouldn't be stuffing
+> > > vcpu->arch.perf_capabilities without explicit writes from host userspace.  E.g
+> > > KVM_SET_CPUID{,2} is allowed multiple times, at which point KVM could clobber a
+> > > host userspace write to MSR_IA32_PERF_CAPABILITIES.  It's unlikely any userspace
+> > > actually does something like that, but KVM overwriting guest state is almost
+> > > never a good thing.
+> > >
+> > > I've been meaning to send a patch for a long time (IIRC, Aaron also ran into this?).
+> > > KVM needs to simply not stuff vcpu->arch.perf_capabilities.  I believe we are
+> > > already fudging around this in our internal kernels, so I don't think there's a
+> > > need to carry a hack-a-fix for the destination kernel.
+> > >
+> > > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > > index 27e23714e960..fdef9d706d61 100644
+> > > --- a/arch/x86/kvm/x86.c
+> > > +++ b/arch/x86/kvm/x86.c
+> > > @@ -12116,7 +12116,6 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
+> > >
+> > >         kvm_async_pf_hash_reset(vcpu);
+> > >
+> > > -       vcpu->arch.perf_capabilities = kvm_caps.supported_perf_cap;
+> > 
+> > Yeah, that will fix the issue we are seeing.  The only thing that's
+> > not clear to me is if userspace should expect KVM to set this or if
+> > KVM should expect userspace to set this.  How is that generally
+> > decided?
+> 
+> By "this", you mean the effective RESET value for vcpu->arch.perf_capabilities?
+> To be consistent with KVM's CPUID module at vCPU creation, which is completely
+> empty (vCPU has no PMU and no PDCM support) KVM *must* zero
+> vcpu->arch.perf_capabilities.
+> 
+> If userspace wants a non-zero value, then userspace needs to set CPUID to enable
+> PDCM and set MSR_IA32_PERF_CAPABILITIES.
+> 
+> MSR_IA32_ARCH_CAPABILITIES is in the same boat, e.g. a vCPU without
+> X86_FEATURE_ARCH_CAPABILITIES can end up seeing a non-zero MSR value.  That too
+> should be excised.
+> 
+hmm, does that mean KVM just allows an invalid vcpu state exist from
+host point of view? I think this makes a lot of confusions on migration
+where VMM on the source believes that a non-zero value from KVM_GET_MSRS
+is valid and the VMM on the target will find it not true.
 
-Sorry for the late reply. I had glanced over them, but didn't have an
-opportunity for a detailed review yet.
+If we follow the suggestion by removing the initial value at vCPU
+creation time, then I think it breaks the existing VMM code, since that
+requires VMM to explicitly set the MSR, which I am not sure we do today.
 
-I will have some input (there was a goto I remember not being needed).
-My general fear is a balance between supporting clone devices vs
-reliability. This driver is heavily used in devices (phones, tablets,
-TVs, cars). There have been bug reports in the past and just getting
-the fixes downstream takes a lot of time (e.g. Android devices).
+The following code below is different. The key difference is that the
+following code preserves a valid value, but this case is to not preserve
+an invalid value. 
 
-One of the key things I really would like to see enhanced are the unit
-tests (hid-tools / kernel side now). To really make sure we emulate
-behavior of these other devices well. The tricky part is that they
-don't always support all the HID requests of the real device (which is
-weird as the game console does use those HID reports and others and I
-don't know how it would have worked there).
+Thanks.
+-Mingwei
 
-That's in general the key feedback about the tests. A question for
-Max: do you have access to all the devices being added?
-
-Thanks,
-Roderick
+> In a perfect world, KVM would also zero-initialize vcpu->arch.msr_platform_info,
+> but that one is less obviously broken and also less obviously safe to remove.
+> 
+>   commit e53d88af63ab4104e1226b8f9959f1e9903da10b
+>   Author:     Jim Mattson <jmattson@google.com>
+>   AuthorDate: Tue Oct 30 12:20:21 2018 -0700
+>   Commit:     Paolo Bonzini <pbonzini@redhat.com>
+>   CommitDate: Fri Dec 14 18:00:01 2018 +0100
+> 
+>       kvm: x86: Don't modify MSR_PLATFORM_INFO on vCPU reset
+>     
+>       If userspace has provided a different value for this MSR (e.g with the
+>       turbo bits set), the userspace-provided value should survive a vCPU
+>       reset. For backwards compatibility, MSR_PLATFORM_INFO is initialized
+>       in kvm_arch_vcpu_setup.
+>     
+>       Signed-off-by: Jim Mattson <jmattson@google.com>
+>       Reviewed-by: Drew Schmitt <dasch@google.com>
+>       Cc: Abhiroop Dabral <adabral@paloaltonetworks.com>
+>       Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> 
+> In other words, KVM shouldn't define the vCPU model beyond the absolute bare
+> minimum that is required by the x86 architecture (as of P6 CPUs, which is more
+> or less the oldest CPU KVM can reasonably virtualize without carrying useless code).
 
