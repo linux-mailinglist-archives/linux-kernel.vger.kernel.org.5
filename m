@@ -1,142 +1,127 @@
-Return-Path: <linux-kernel+bounces-36784-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36787-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 090C183A69A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:21:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 641FA83A6A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:22:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C48D1F2281D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:21:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04D571F2321C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:22:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09D8A18E1A;
-	Wed, 24 Jan 2024 10:21:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hCMnp+bB"
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C4BD19475;
+	Wed, 24 Jan 2024 10:22:10 +0000 (UTC)
+Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1CE718E0C
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:21:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 522F618E2C;
+	Wed, 24 Jan 2024 10:22:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.54.195.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706091680; cv=none; b=J426rt4nB314lGn2z6PAndoDzPo2QFjm8uBw77yLZHnIlt0bMnEVSiUQc82w0NQhhZqum7P6BvXZ3742wvOmPs8UlEqs5fijVHmLpvBhohNtp/tm4SYZhcDNaMBm2gXJGRdqdtU6xjH3W3cYz0IfMW0OsKf6ClW3rYGUZsKYHKs=
+	t=1706091729; cv=none; b=j9+R6CGWmBd9mfl2bXZIMFsOjx0LXiwwpolK9MzytWIJ3C2IpP5z3FUNDDuoM2UbwYUJ3Up6M25sZtjX7N/xixvwjaSnZkq2VKDH+3EKBQDdEjEYToWQ04fhWCmMHpivB1Sli0MaQYsGeINujIBXFE4etutlhDxFEq49lpaNDZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706091680; c=relaxed/simple;
-	bh=ewX7gY72o0cl/yYtspnOPfn5OfSuWve6SbfDlOaK0u4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=K1KrFFnDMsKvrXiPk47ZhTg3o25U1CQ7DmIIic2OtlIL5/fKJ2w70ytuKi7u/06RfqASm3ThfbpuUWqtBQpX78b6I2TFkYi+to+2iBwTQItOGvII1ngDbGhpLJbH5sflxpoMyu3lylicMZFzU1SPMxPEk39pxLCl9lO4jPVlJ48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hCMnp+bB; arc=none smtp.client-ip=209.85.219.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dc371b04559so1730165276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 02:21:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706091678; x=1706696478; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=oahrr0zPn7dyTHABN+YgjB62XpZ+3yBv/LwJfePBLo0=;
-        b=hCMnp+bBiLITDg/sLLkPFHu+Thcyva66Ve2kaglOP9lRu2AoY5ZVF/E1iCtcP4P41k
-         nyccSxaoxN3Ym3YL5xPCvicX3b6E2We1BoCRsBxazoTTj0newp95SNpgBZwzkqTq/rK9
-         5zzoPlYy7Z5sOkSquetM/YhdREcGum/clcYOWkV8/f1pQ7uszClp+o2yqpnPGqQko5Cp
-         2WqjyBoFLAhihKusRdWHe7diY0DIK4W1TFWWQ9GU2h1jqHWW3rwmbi/QrU49UoyZ15xe
-         nJ53Q1lClK4Te5HJi8C9BcPwrU8Ao/sbF6GFaVnSIr/OUsfDg6W1IcN1v0BLTb21nhHq
-         UNDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706091678; x=1706696478;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oahrr0zPn7dyTHABN+YgjB62XpZ+3yBv/LwJfePBLo0=;
-        b=N9qODzXpJuR+9w1E5sltoT+uQ6U6stQsOIZS3bYw6HOr5Q1DtiyFBPKi6kCXBxXzk5
-         OpQA94DW/QFNyK7DAn/U+SAcHw7py0CZxVYa5wfb7uguFDCHeQXrLOlLPNu5fLWjtgZm
-         FUAsxK+2KkdmqJZ9QIvyWRi7LxtMu3vthuPXxNfdDUquTaihZuqEEVJFbStknwBiwGKJ
-         sW1uFF0NiErMcRu9N+DFtP8SmbH5pFHkBGUGFUfwO3USoI6TnHlCeAFfM2g38NZvSy2/
-         lrHnHr5FS4OnwrXtqAsmmnv/aObTGTgs279rNEEeTN/Uxggw0RM+bWTjCGlp2cGCYSDP
-         zBkA==
-X-Gm-Message-State: AOJu0Yz0F/7NqAZjvgYhT5ctFzgm4I+dfOHQI/nwG2li1BYKNFIE8gbZ
-	B5mGTA7D+djev+H8jmJvd0xQvSkjJ8knbGODxdDt6oRmNwFkA7uyduh+rdrETPAnQzZZGPlfg0I
-	gRZkEUQVGlde5ntUOspoegsNrLb95RtGqoMBYFg==
-X-Google-Smtp-Source: AGHT+IGVtGg/WkPzc49U9WuM15rlSuAsDRUaw6mcw+yY8QDg2i3KDIhJyIoiFrhlnelKM6n+BFEPpnW1/A4dbXsMEAc=
-X-Received: by 2002:a25:c402:0:b0:dbf:6240:d8a8 with SMTP id
- u2-20020a25c402000000b00dbf6240d8a8mr457643ybf.17.1706091677756; Wed, 24 Jan
- 2024 02:21:17 -0800 (PST)
+	s=arc-20240116; t=1706091729; c=relaxed/simple;
+	bh=ZlArPEEwD7BQTNN98/r9t9pw2bQYWEwA4G5549Z+BZ0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=eE699mAL3lLXR0e5ZzahL60dotdrcX56KMMLi9rnx+JXqMGBe2s6m4Jc2OvbtIhqQ4Xlx2kqVqB/WineysyYB5x2IZ3mL2oxR3mSZQm/Glai2QA2TZrkFgxmjiLs+SXSs/AjyYJDkX2e9QyQ30/OyW4pkP5UKwcO0iaypadhH6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru; spf=pass smtp.mailfrom=fintech.ru; arc=none smtp.client-ip=195.54.195.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
+Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
+ (195.54.195.169) with Microsoft SMTP Server (TLS) id 14.3.498.0; Wed, 24 Jan
+ 2024 13:21:56 +0300
+Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 24 Jan
+ 2024 13:21:56 +0300
+From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+To: "David S. Miller" <davem@davemloft.net>
+CC: Nikita Zhandarovich <n.zhandarovich@fintech.ru>, Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, Ravi Gunasekaran <r-gunasekaran@ti.com>, Simon Horman
+	<horms@kernel.org>, Wojciech Drewek <wojciech.drewek@intel.com>, "Murali
+ Karicheri" <m-karicheri2@ti.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>,
+	<syzbot+3ae0a3f42c84074b7c8e@syzkaller.appspotmail.com>
+Subject: [PATCH net] net: hsr: remove WARN_ONCE() in send_hsr_supervision_frame()
+Date: Wed, 24 Jan 2024 02:21:47 -0800
+Message-ID: <20240124102147.14081-1-n.zhandarovich@fintech.ru>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122225710.1952066-1-peter.griffin@linaro.org>
- <20240122225710.1952066-3-peter.griffin@linaro.org> <dd8402e7-f8cc-4ddd-a748-e176b6b534a9@app.fastmail.com>
-In-Reply-To: <dd8402e7-f8cc-4ddd-a748-e176b6b534a9@app.fastmail.com>
-From: Peter Griffin <peter.griffin@linaro.org>
-Date: Wed, 24 Jan 2024 10:21:05 +0000
-Message-ID: <CADrjBPpchS0NdqS-mRmmatOksGHc4KdRniJXGDPTS1z73eU9kA@mail.gmail.com>
-Subject: Re: [PATCH 2/9] soc: samsung: exynos-pmu: Add exynos_pmu_update/read/write
- APIs and SoC quirks
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Rob Herring <robh+dt@kernel.org>, krzysztof.kozlowski+dt@linaro.org, 
-	Guenter Roeck <linux@roeck-us.net>, Wim Van Sebroeck <wim@linux-watchdog.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Alim Akhtar <alim.akhtar@samsung.com>, jaewon02.kim@samsung.com, 
-	chanho61.park@samsung.com, Sam Protsenko <semen.protsenko@linaro.org>, 
-	kernel-team@android.com, Tudor Ambarus <tudor.ambarus@linaro.org>, 
-	=?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>, 
-	saravanak@google.com, William McVicker <willmcvicker@google.com>, linux-fsd@tesla.com, 
-	linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
+ (10.0.10.18)
 
-Hi Arnd,
+Syzkaller reported [1] hitting a warning after failing to allocate
+resources for skb in hsr_init_skb(). Since a WARN_ONCE() call will
+not help much in this case, it might be prudent to switch to
+netdev_warn_once(). At the very least it will suppress syzkaller
+reports such as [1].
 
-On Tue, 23 Jan 2024 at 08:11, Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Mon, Jan 22, 2024, at 23:57, Peter Griffin wrote:
->
-> > --- a/include/linux/soc/samsung/exynos-pmu.h
-> > +++ b/include/linux/soc/samsung/exynos-pmu.h
-> > @@ -21,11 +21,39 @@ enum sys_powerdown {
-> >  extern void exynos_sys_powerdown_conf(enum sys_powerdown mode);
-> >  #ifdef CONFIG_EXYNOS_PMU
-> >  extern struct regmap *exynos_get_pmu_regmap(void);
-> > +extern int exynos_pmu_update_bits(unsigned int offset, unsigned int
-> > mask,
-> > +                               unsigned int val);
-> > +extern int exynos_pmu_update(unsigned int offset, unsigned int mask,
-> > +                          unsigned int val);
-> > +extern int exynos_pmu_write(unsigned int offset, unsigned int val);
-> > +extern int exynos_pmu_read(unsigned int offset, unsigned int *val);
-> >  #else
-> >  static inline struct regmap *exynos_get_pmu_regmap(void)
-> >  {
-> >       return ERR_PTR(-ENODEV);
-> >  }
-> > +
-> > +static inline int exynos_pmu_update_bits(unsigned int offset, unsigned
-> > int mask,
-> > +                                      unsigned int val);
-> > +{
-> > +     return ERR_PTR(-ENODEV);
-> > +}
-> > +
-> > +static inline int exynos_pmu_update(unsigned int offset, unsigned int
-> > mask,
-> > +                                 unsigned int val);
-> > +{
-> > +     return ERR_PTR(-ENODEV);
-> > +}
->
-> This won't build since you have the wrong return type.
-> I would suggest you just remove the #ifdef check entirely
-> and instead require drivers using this to have correct
-> dependencies.
+Just in case, use netdev_warn_once() in send_prp_supervision_frame()
+for similar reasons.
 
-Whoops, will fix it in v2. We need those stubs for platforms like
-ARCH_S3C64XX that don't have a PMU but use some of the same drivers.
+[1]
+HSR: Could not send supervision frame
+WARNING: CPU: 1 PID: 85 at net/hsr/hsr_device.c:294 send_hsr_supervision_frame+0x60a/0x810 net/hsr/hsr_device.c:294
+RIP: 0010:send_hsr_supervision_frame+0x60a/0x810 net/hsr/hsr_device.c:294
+..
+Call Trace:
+ <IRQ>
+ hsr_announce+0x114/0x370 net/hsr/hsr_device.c:382
+ call_timer_fn+0x193/0x590 kernel/time/timer.c:1700
+ expire_timers kernel/time/timer.c:1751 [inline]
+ __run_timers+0x764/0xb20 kernel/time/timer.c:2022
+ run_timer_softirq+0x58/0xd0 kernel/time/timer.c:2035
+ __do_softirq+0x21a/0x8de kernel/softirq.c:553
+ invoke_softirq kernel/softirq.c:427 [inline]
+ __irq_exit_rcu kernel/softirq.c:632 [inline]
+ irq_exit_rcu+0xb7/0x120 kernel/softirq.c:644
+ sysvec_apic_timer_interrupt+0x95/0xb0 arch/x86/kernel/apic/apic.c:1076
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:649
+..
 
-Thanks,
+This issue is also found in older kernels (at least up to 5.10).
 
-Peter.
+Cc: stable@vger.kernel.org
+Reported-by: syzbot+3ae0a3f42c84074b7c8e@syzkaller.appspotmail.com
+Fixes: 121c33b07b31 ("net: hsr: introduce common code for skb initialization")
+Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+---
+ net/hsr/hsr_device.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/net/hsr/hsr_device.c b/net/hsr/hsr_device.c
+index 7ceb9ac6e730..9d71b66183da 100644
+--- a/net/hsr/hsr_device.c
++++ b/net/hsr/hsr_device.c
+@@ -308,7 +308,7 @@ static void send_hsr_supervision_frame(struct hsr_port *master,
+ 
+ 	skb = hsr_init_skb(master);
+ 	if (!skb) {
+-		WARN_ONCE(1, "HSR: Could not send supervision frame\n");
++		netdev_warn_once(master->dev, "HSR: Could not send supervision frame\n");
+ 		return;
+ 	}
+ 
+@@ -355,7 +355,7 @@ static void send_prp_supervision_frame(struct hsr_port *master,
+ 
+ 	skb = hsr_init_skb(master);
+ 	if (!skb) {
+-		WARN_ONCE(1, "PRP: Could not send supervision frame\n");
++		netdev_warn_once(master->dev, "PRP: Could not send supervision frame\n");
+ 		return;
+ 	}
+ 
+-- 
+2.25.1
+
 
