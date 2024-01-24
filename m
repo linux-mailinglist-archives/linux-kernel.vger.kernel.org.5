@@ -1,180 +1,121 @@
-Return-Path: <linux-kernel+bounces-37514-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37515-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F331B83B12C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:31:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5B2183B12D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:31:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5744283DE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:31:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6119C28400A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:31:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C444C7CF3F;
-	Wed, 24 Jan 2024 18:31:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BE3B131725;
+	Wed, 24 Jan 2024 18:31:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3Eh03j/+"
-Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="FfowQ89Q"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7063612DDA8
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 18:30:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1703512F59E
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 18:30:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706121064; cv=none; b=KaoEbUG0rkr5Zou2AMNAdoCcg5QnXTyDl7ycom/OL+Q+TmcFHD0qAxmXGHEWshHKrxPTijE96AM2R6szgO38mV5QE0MMHo5taOKpbIuqUmzQMe1IWsZE1pwqeiC/Dut9swDO4CvFjrH3It61ynV6cvOCmOxYa9I+6TOAp6FHHRE=
+	t=1706121065; cv=none; b=iNaUISZCLm7OQKKT5fbTxJxnvD0Ta5biO0md4fS6nPw+bE3Y5dyi+ZVIKcwIsz6sRqMhLorGfsRcoDaQV3mewlXkdsgZnr/z3oe8Q2X6qi4CLh1lmOXn3RxoQzL6QsSyvmmVxGDV5efeclEvSMKljguZl2fqEAchLKsDj2rC+lc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706121064; c=relaxed/simple;
-	bh=P0nzUp0PvO8mm5HPDJlWk9SceYUCT/eyYnvv5nDCvDg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=M8jEy57URjxr0E7sTYbS5uqmwi+zOLuovrP2gl67csSsINxVllybDNeg4CeROjzBcCIbugw7+REy8gA6/J3zN/pQ3kSKI9LJ1jpkULsKMy3m0ZU3Jj8Pa8iFp9XdFCBnabKH1FzgDmdguzV3t0QFbXKFgJpFRNMZ2kJBLLBJS+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3Eh03j/+; arc=none smtp.client-ip=209.85.166.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-3600b2c43a8so9385ab.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:30:44 -0800 (PST)
+	s=arc-20240116; t=1706121065; c=relaxed/simple;
+	bh=5C65bOMspCRwrUd4nqyifHQ9iilJrLYr6DwEmT4uC4w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QgxoSXYS66BAtd0VSfWOYhMkCFIC0WjG+CS4jPIVFHgYQrA+QvLBjmP7w1zH6kDgVYKf2uLQV1FrnZK43MOSGKZW7EwZRjam+Vf3ctWweTflvfMwOTuJYnkNGnv+ecR7enTbvuv7gzmGR2TXGI3xMnXfUAEpzj1grJ843UOasQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=FfowQ89Q; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6ddc0c02665so481121b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:30:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706121043; x=1706725843; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=awu7x77B+bOCRQBjAJIZUBeYxB3ax7vYrRZ3HCTLFHA=;
-        b=3Eh03j/+t/viyE0uk9aMiRJsVjcFvBf0ElftPl98m6KT9HrEWdz7OjMaqTfYR8rBo8
-         DaGwlFtTdqMP3dBOcDEyiSTn7taXRYzCA7A1PVypzqrc8fFpHdHSvhEwckG2Wtcol3Fh
-         3feFxyBZcGfw414b7kn+WnNsZGha35PEj1hVJGiGSKjuuT6lTYmv4cQYMNd6YpDcSGfB
-         Ppp+V2/1HjwO0yM34bH7uFa+m/5y/O/ccm1cm63Ruyp48CijTDrpl8ptY+7BPc4Ml+G2
-         30uU5OXTg+lVJHhGZbEnUA8IHOK+j8x46deUvllxhjkVzixbuFKHGw5DheoW/SRL++DF
-         6roQ==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706121047; x=1706725847; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=X2i8Xd8HMGoPtstPdvP9nqcXZNT+QofCfEBJAvkYMuk=;
+        b=FfowQ89Qj3OCFEP42VqisgbJ8Afo45vKvx11GbVmgw+wDJaXJ5ZfVNPan8GjfkAu9y
+         1JT0gQya6NLmypoiKdydBtICIIi9ueL6Mvlj2laVodvkPAxkYGKCmdG/Areu6mXSTTyH
+         LbF+t5HaQkpjDaRYXqHTtarKFMEPf/STWaTMgCreE5EpMftmOjOIqwBPSA98YXLOLwsy
+         d6GtxR4kiCWh6pX7nW4IPxrnrKYOiWG51Zc5mHPI9Hi6I4Z9VjM5MwEokrZH7LMeWRbg
+         Wj3TgIkgQ6DjP4qKNchVoj+Eeso3NxhUfWDzbqAtxHDxkmoE+tzXJPmnidq39evHJkit
+         CkZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706121043; x=1706725843;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=awu7x77B+bOCRQBjAJIZUBeYxB3ax7vYrRZ3HCTLFHA=;
-        b=weaipnRLIcVSOkNnK4cZpE5Sdg6TUbpeVuygOdwPJnSzStUZFOfIcDg4VsWFL2mK/5
-         ZatIkkZWPYhxsOKHuY5Q+bhuj7ArjWbfOuKMVsV2/dZc497zkz1hzptrijXf2oP3F5N2
-         PgjZZ4r69HJjd52Mn95YqSQy1ehKrCOdnuWhkOFTsI/T2C5wanl1aFHnryyhEXuqMjWt
-         pvmVfXhVy02J/yByl1tru5axt3vKAvPT6mjEulVBwvqNgy6mCUyZKxXKSC/NcHnh2uo1
-         mZPPdFRcrW03W8JR+QFdUXPY/7tBomYQWRTCfwMpWCH/6eDyKxBUG6aaJx94TXFeFt/v
-         hNBA==
-X-Gm-Message-State: AOJu0Yw1WHrhW14RKWL/g+aaiM7khX1KLl/HP4w9oAYdM27HFxAwRqUj
-	culpTc8ujewUif+j53R6qA0x69r3Hsy0KeZLOWCpnKGHca9y03vH8IcCTLx4a+Z/0gfWroxbdZF
-	+B+cOwohz7R4g7URvSvZSTc+w034CPY2AaAPa
-X-Google-Smtp-Source: AGHT+IGreWbUhtTvW+9Ga/OKnLbooNk4a5Iwt7NwGJpE8zRFyvmFj3idijd5lXxo3w4ouUVDvMSVHo93vSPjfKgoMAM=
-X-Received: by 2002:a05:6e02:3207:b0:35f:dab8:1152 with SMTP id
- cd7-20020a056e02320700b0035fdab81152mr15036ilb.3.1706121043449; Wed, 24 Jan
- 2024 10:30:43 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706121047; x=1706725847;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X2i8Xd8HMGoPtstPdvP9nqcXZNT+QofCfEBJAvkYMuk=;
+        b=ncQjLz7Wq3O5TV28WvMlb4sT3Zr93LBW7ddK4io1hC+vOWg9sk38lPbh0iiiBjhCFA
+         ca3i+kssqUC/LSDIfldrMxjN7+am2tu79IHoxaxnIASTUWHMp17rGLwqNfM9Qt5CP8yV
+         vRbQEbGHub6xEcCItJgNZJHe23HU0QxJsQ0NOEAurIbTfbi/RGz9qrf2J5nTWvWxklNn
+         PfvJdluvZUoyRJkpaiyucAw6PPJE+ZnmCJ1WvkjCH6OwkAaFds/Jj9+GffY+8uu0Zmt1
+         BSyN+CVtNfuXBs04i7EsbAE2Z3KwdzW4PK1Ck+Y+EM4Dv8zTp7zZEI/m1j7FgXlFsBRH
+         qiEw==
+X-Gm-Message-State: AOJu0YxT+VHIOaCQSTo2LKVvZBszo2xVSKk9IJ2Z8Cwci3KP7zWbB8jR
+	n5dRi6orZAl4tIVEXn0toshQWwxLCbfpgCtfmquYFNgMeV3GifgXllf0MIaA2qlezFf/HSNEfZm
+	3X70=
+X-Google-Smtp-Source: AGHT+IGhFlCoHvfTo0vDq6Jert274wAOP6jL3oUoJ7+t2cu89hvGIYcsj6qyELcEVpcCVgWYfRktjw==
+X-Received: by 2002:a05:6a20:e121:b0:199:96a4:b6b9 with SMTP id kr33-20020a056a20e12100b0019996a4b6b9mr1382220pzb.38.1706121047168;
+        Wed, 24 Jan 2024 10:30:47 -0800 (PST)
+Received: from ghost ([12.44.203.122])
+        by smtp.gmail.com with ESMTPSA id t6-20020a625f06000000b006dd87826805sm2309454pfb.75.2024.01.24.10.30.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 10:30:46 -0800 (PST)
+Date: Wed, 24 Jan 2024 10:30:43 -0800
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: David Laight <David.Laight@aculab.com>
+Cc: Guenter Roeck <linux@roeck-us.net>, Palmer Dabbelt <palmer@dabbelt.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/2] lib: checksum: Use aligned accesses for
+ ip_fast_csum and csum_ipv6_magic tests
+Message-ID: <ZbFXU4x4p1qw4GHD@ghost>
+References: <20240123-fix_sparse_errors_checksum_tests-v3-0-efecc7f94297@rivosinc.com>
+ <20240123-fix_sparse_errors_checksum_tests-v3-2-efecc7f94297@rivosinc.com>
+ <2235fa55381e481b9252e11463b34720@AcuMS.aculab.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240123163903.350306-1-james.clark@arm.com> <20240123163903.350306-3-james.clark@arm.com>
- <CAP-5=fX4QQYNzEY7-6GyqWJTuH-RQxxc3jB5B1k8HZtDZCHmFw@mail.gmail.com> <faba2e97-7e88-9dcc-756d-f256a6304836@arm.com>
-In-Reply-To: <faba2e97-7e88-9dcc-756d-f256a6304836@arm.com>
-From: Ian Rogers <irogers@google.com>
-Date: Wed, 24 Jan 2024 10:30:32 -0800
-Message-ID: <CAP-5=fUfY0weHXpDaz-oABsspnUyUdaF8ZYDUBFwFOCyiH80sQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] perf test: Skip test_arm_callgraph_fp.sh if unwinding
- isn't built in
-To: James Clark <james.clark@arm.com>
-Cc: linux-perf-users@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kajol Jain <kjain@linux.ibm.com>, 
-	Spoorthy S <spoorts2@in.ibm.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2235fa55381e481b9252e11463b34720@AcuMS.aculab.com>
 
-On Wed, Jan 24, 2024 at 1:24=E2=80=AFAM James Clark <james.clark@arm.com> w=
-rote:
->
->
->
-> On 23/01/2024 17:41, Ian Rogers wrote:
-> > On Tue, Jan 23, 2024 at 8:39=E2=80=AFAM James Clark <james.clark@arm.co=
-m> wrote:
-> >>
-> >> Even though this is a frame pointer unwind test, it's testing that a
-> >> frame pointer stack can be augmented correctly with a partial
-> >> Dwarf unwind. So add a feature check so that this test skips instead o=
-f
-> >> fails if Dwarf unwinding isn't present.
-> >
-> > Hi James,
-> >
-> > Is there value in testing without the partial Dwarf unwind? Presumably
->
-> Yeah I think we could add a test for just --call-graph=3Dfp, I don't thin=
-k
-> there is one. But that would be separate to this test, and would be
-> redundant if the tests are run with a dwarf unwinder present because
-> this test already requires the frame pointer unwinder to be correct.
->
-> > that is covered by the existing dwarf unwind test?
->
-> There is no overlap, this test test is for --call-graph=3Dfp, and the
-> dwarf test is for --call-graph=3Ddwarf
->
-> > https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.gi=
-t/tree/tools/perf/tests/dwarf-unwind.c?h=3Dperf-tools-next
-> > If the issue is inlined functions I'm surprised addr2line isn't doing
-> > the job properly. Is there an addr2line perf script issue here?
-> >
->
-> The issue isn't inlined functions, it's when the leaf frame doesn't
-> insert a frame pointer. In that case we use the link register to see
-> what the parent function of the leaf frame was and insert it into the
-> frame pointer stack.
->
-> Dwarf is only used in this case to confirm if the link register was
-> valid at that instruction.
->
-> See commit b9f6fbb for more info. Long story short this test was only
-> added for that feature and it requires a dwarf unwinder to pass despite
-> being called test_arm_callgraph_fp
+On Wed, Jan 24, 2024 at 09:04:55AM +0000, David Laight wrote:
+> From: Charlie Jenkins
+> > Sent: 24 January 2024 00:39
+> > 
+> > The test cases for ip_fast_csum and csum_ipv6_magic were using arbitrary
+> > alignment of data to iterate through random inputs. ip_fast_csum should
+> > have the data aligned along (14 + NET_IP_ALIGN) bytes and
+> > csum_ipv6_magic should have data aligned along 32-bit boundaries.
+> > 
+> ...
+> > +	0x9359, 0x5630, 0xd659, 0x5b4d, 0x511e, 0x627c, 0x4e30, 0x73f1, 0x63c,
+> > +	0xf2da, 0x7b,	0xa98b, 0x4fb7, 0x87a6, 0x2500, 0x34e4, 0xf0cd, 0xdc69,
+> > +	0x7bde, 0x73f0, 0xd85d, 0x722d, 0x9776, 0x3c8,	0x7e07, 0xdca9, 0x9ecc,
+> > +	0xc6c0, 0xbec1, 0x8de5, 0x6f7f, 0x1a09, 0xdbe6, 0x7c4b, 0x3787, 0xdb38,
+> > +	0xfac,	0xbed9, 0x3039, 0x6501, 0xae1a, 0xed89, 0xd982, 0xc530, 0xccf6,
+> > +	0xd888, 0xf369, 0x2c4e, 0x38c0, 0xcff5, 0xdc9d, 0x5998, 0xe0d1, 0x7e23,
+> 
+> I'm seeing some odd alignment in that table.
+> I think there are 'random' tabs following short constants.
+> (Not helped by outuck deciding that tabs are 6 spaces!)
+> Probably better to add leading spaces (or zeros after the 0x).
 
-Ok, not directly seeing b9f6fbb being dependent on
-HAVE_DWARF_UNWIND_SUPPORT. I'll assume I'm ignorant and the fix here
-is obviously a workaround.
+Sure, I will add zeros.
 
-For the series:
-Reviewed-by: Ian Rogers <irogers@google.com>
+- Charlie
 
-Thanks,
-Ian
-
-> > Thanks,
-> > Ian
-> >
->
->
-> >> Signed-off-by: James Clark <james.clark@arm.com>
-> >> ---
-> >>  tools/perf/tests/shell/test_arm_callgraph_fp.sh | 6 ++++++
-> >>  1 file changed, 6 insertions(+)
-> >>
-> >> diff --git a/tools/perf/tests/shell/test_arm_callgraph_fp.sh b/tools/p=
-erf/tests/shell/test_arm_callgraph_fp.sh
-> >> index e342e6c8aa50..83b53591b1ea 100755
-> >> --- a/tools/perf/tests/shell/test_arm_callgraph_fp.sh
-> >> +++ b/tools/perf/tests/shell/test_arm_callgraph_fp.sh
-> >> @@ -8,6 +8,12 @@ shelldir=3D$(dirname "$0")
-> >>
-> >>  lscpu | grep -q "aarch64" || exit 2
-> >>
-> >> +if perf version --build-options | grep HAVE_DWARF_UNWIND_SUPPORT | gr=
-ep -q OFF
-> >> +then
-> >> +  echo "Skipping, no dwarf unwind support"
-> >> +  exit 2
-> >> +fi
-> >> +
-> >>  skip_test_missing_symbol leafloop
-> >>
-> >>  PERF_DATA=3D$(mktemp /tmp/__perf_test.perf.data.XXXXX)
-> >> --
-> >> 2.34.1
-> >>
+> 
+> 	David
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
 
