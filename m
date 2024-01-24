@@ -1,66 +1,66 @@
-Return-Path: <linux-kernel+bounces-36202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBB0D839D76
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:00:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D3639839D7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:02:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D2141F252B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 00:00:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6FEA01F26F56
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 00:02:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05E2AEED1;
-	Wed, 24 Jan 2024 00:00:11 +0000 (UTC)
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9728DA3D;
+	Wed, 24 Jan 2024 00:02:36 +0000 (UTC)
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 095D2ED8;
-	Wed, 24 Jan 2024 00:00:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2DBA160;
+	Wed, 24 Jan 2024 00:02:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706054410; cv=none; b=o5aVnBQEwubw1vmDe8+mZEmqFTWwRUeOt3ULAiPgXuMryL062ibdLTh64wzuzLOWdSVRBYFiN9qvJbIbTAsMlwaRtc3KYhUQ3PrQEuHvTPW/MlpoNT4cWkyNhZya1wf/qjQ6+/+2XDKEUB6IYfSqLsLm/Gc69MkW6/8tSjgVIqE=
+	t=1706054556; cv=none; b=SJw5wuyVXoJ9KFMUk5BDviVLL+n7+xsISNvJApmSxO3qPiOsHn4ZaItb4GXgKMcjUgh4YFShCSZvueZFuZvSuN746uC8frQREkKXWXHk7P08KK55tRhiXoFtN76QEHD4wli7QBr1fmgEVka/Dy59UQucmK/aULYnp03WrSmleTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706054410; c=relaxed/simple;
-	bh=U10nGEUE4cVQYUDnFu+7rOSFUdiJ6KYDfAxDrn8zcRI=;
+	s=arc-20240116; t=1706054556; c=relaxed/simple;
+	bh=z4pzDx0a8cABnhT64lFfXVb+mR+WAgKNHe/Hz/FUul8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pmc05QTeMEHH/SyKeN3qzGiwcai5CJCc81UwEfF6v5fLVmHOR036c8GEgoy4CNlWdZIuLDMrr+OSstYAm5tY09IO+EYb0HXgn/RpQTtq+FvbGX018dzNgfgURJhuDRZJIWjTi/DFsgKV9sjubKXGOJ4OeMMgzTfhuVv+bg8VvCs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.171
+	 To:Cc:Content-Type; b=aJ/akQBqJ0+EwPAqdMbgGLAt0u6ILkgcHX5Ct2FW0tPXz/W3C13GkfFO+x0s3yx19O+RYXDhoioyHug0gypq9F7IExfYQPzkw8e/JrhxQorqmVo7/34iK9RHJPSW12zVe2inhpUwR3Pxi3afg4Vv/XrshTjVRIrUrNPXFx/Vk5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5d4a1e66750so230116a12.0;
-        Tue, 23 Jan 2024 16:00:08 -0800 (PST)
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2900c648b8bso3704016a91.3;
+        Tue, 23 Jan 2024 16:02:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706054408; x=1706659208;
+        d=1e100.net; s=20230601; t=1706054554; x=1706659354;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vQle4+CUBnZaj6W1Lf3jcAaTPV6tjOTH4uhcTRizJNY=;
-        b=gm6Bege4uOnEos7tTlEmcr7PRS1yCRIzRIawfc1ODKX/5U+KmEJPlvFvbuxLxEJqF2
-         +yUvVNoQQUpmiE4u1yVEkb7Lo0YHhpQa0VgLQPeosaQSQVV73GO4sbM/g1/mETGEWSUu
-         XDDpPjYLkS60ie6jBXfHWhDXgJKxr/PXsx662DMzK7VoA6NWq8zStc4isRTVH/+UYz/R
-         0hGdEHPRZU6y0Pu+MXF6v9Hqj4wqbcoH0+blMhX0v8cPROvU1LKp/2aGiEN7Ks1JT/bA
-         vVtuSR3AopjGc4VidEMoEzay4AonM2ggjNyJqiDMTGlrRy7OSKpy/fDrWCqcS2oxLM8a
-         KHWw==
-X-Gm-Message-State: AOJu0YzJL59ijFOfY3lxGBOrXNtg2zBcnb/q0HRkYJxaj/9UhSudk2Nq
-	LxHFTR50JvZo6RY+1kBpwG9wZxnR3Kdf+pgQ4djiQIyCAloirAzRNUc6JQiWbLDea4liLI57t8h
-	+xB3bZLv7vbnavjILo5cY8GiLjMn1cEgKSk8=
-X-Google-Smtp-Source: AGHT+IEtD8mxiz/f5RScsi5J+Vm2JRwvkAD2vJGFFS128YQLBdkaYD7uUgDBOBLSgqwRGxSdZJ6NPJduMv7wDfOBpM0=
-X-Received: by 2002:a05:6a21:3989:b0:19a:4f9b:3bf0 with SMTP id
- ad9-20020a056a21398900b0019a4f9b3bf0mr19438pzc.0.1706054407846; Tue, 23 Jan
- 2024 16:00:07 -0800 (PST)
+        bh=s1GF8UXi1BgZZZeN0xcHW6QdLAPvrfHAfMo0hXV/s/w=;
+        b=kavUDFcpJtgiqWm0UQuFXhGToWxinDyAy4Zdi5iuNMOjS4+9F9Nvvkh1z0S6fW3iw+
+         cGcEB+Deju6gf0bMoaixJp+PESn7mT3TGatYn+jZhTshTz4HIhsH0oDudXRfZkTv7V4e
+         uh9xDt4IJdOgefh3UT0m2ZqfeozvSTz5h+38eOHCV8OUCfBdk5nsGXbagc/1RiS2JpGw
+         kRCJY1rYKMpvuO/LjeMcxdM0g2GOD7sRlNxBF0Yg6PTCXku1T2vxcYKuKfvjdrFiHgsJ
+         EyUDLYfrrEfx6T7dOmuCqCZxYxpSJ/XJ1gcmL86spdNpTzP+0/jHBszdXtrfi20k9aj+
+         jX5A==
+X-Gm-Message-State: AOJu0YzVUUpCu4q9SYeAPaqo0D2q1z6r+vAwPjO+irbukDv1hfo4xjDu
+	pRauZQdrSJuxQbAz1mc8LMo9zPE15I4kraqccFNkNfoDxypC5zk81CATPpI9zdDnstxkY05PtPZ
+	ds+M0pPIkm5nib1BUdyvhZIB3SPI=
+X-Google-Smtp-Source: AGHT+IEIC6Z8uNO7tVj3Dg0+sn6GGM3mClp7/eIvPY+HwmydTN2TZKKyoO95Y2FpxvE/yApx/SOCd4UVLlieOPsdnTg=
+X-Received: by 2002:a17:90a:8004:b0:290:38ef:454a with SMTP id
+ b4-20020a17090a800400b0029038ef454amr3387287pjn.56.1706054553972; Tue, 23 Jan
+ 2024 16:02:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240123000604.1211486-1-irogers@google.com>
-In-Reply-To: <20240123000604.1211486-1-irogers@google.com>
+References: <20240123000604.1211486-1-irogers@google.com> <20240123000604.1211486-6-irogers@google.com>
+In-Reply-To: <20240123000604.1211486-6-irogers@google.com>
 From: Namhyung Kim <namhyung@kernel.org>
-Date: Tue, 23 Jan 2024 15:59:56 -0800
-Message-ID: <CAM9d7cg2Sr5wjR7Nu8pwmdWzErRT4R5V=VnUnnZhw0w=06Resw@mail.gmail.com>
-Subject: Re: [PATCH v1 0/5] Fixes for 6.8 PR1
+Date: Tue, 23 Jan 2024 16:02:23 -0800
+Message-ID: <CAM9d7ciF+8UVoE46J=tB2MYPwRCGSSvexASwGd3kMBnT-_FFqA@mail.gmail.com>
+Subject: Re: [PATCH v1 5/5] perf test: Make daemon signal test less racy
 To: Ian Rogers <irogers@google.com>
 Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
@@ -73,38 +73,78 @@ Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Ian,
-
 On Mon, Jan 22, 2024 at 4:06=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
 te:
 >
-> Discovered some testing issues around perf list, perf script and perf
-> daemon based on Linux 6.8-rc1. Some of the issues were discovered in
-> the context of an Alderlake system.
+> The daemon signal test sends signals and then expects files to be
+> written. It was observed on an Intel Alderlake that the signals were
+> sent too quickly leading to the 3 expected files not appearing. To
+> avoid this send the next signal only after the expected previous file
+> has appeared. To avoid an infinite loop the number of retries is
+> limited.
 >
-> Ian Rogers (5):
->   perf list: Switch error message to pr_err
->   perf list: Add output file option
->   perf test: Workaround debug output in list test
->   perf test: Fix script test for python being disabled
->   perf test: Make daemon signal test less racy
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/tests/shell/daemon.sh | 34 ++++++++++++++++++++++----------
+>  1 file changed, 24 insertions(+), 10 deletions(-)
+>
+> diff --git a/tools/perf/tests/shell/daemon.sh b/tools/perf/tests/shell/da=
+emon.sh
+> index 4c598cfc5afa..de61e7898578 100755
+> --- a/tools/perf/tests/shell/daemon.sh
+> +++ b/tools/perf/tests/shell/daemon.sh
+> @@ -414,16 +414,30 @@ EOF
+>         # start daemon
+>         daemon_start ${config} test
+>
+> -       # send 2 signals
+> -       perf daemon signal --config ${config} --session test
+> -       perf daemon signal --config ${config}
+> -
+> -       # stop daemon
+> -       daemon_exit ${config}
+> -
+> -       # count is 2 perf.data for signals and 1 for perf record finished
+> -       count=3D`ls ${base}/session-test/*perf.data* | wc -l`
+> -       if [ ${count} -ne 3 ]; then
+> +        # send 2 signals then exit. Do this in a loop watching the numbe=
+r of
+> +        # files to avoid races. If the loop retries more than 600 times =
+then
+> +        # give up.
+> +       local retries=3D0
+> +       local signals=3D0
+> +       local success=3D0
+> +       while [ ${retries} -lt 600 ] && [ ${success} -eq 0 ]; do
+> +               local files
+> +               files=3D`ls ${base}/session-test/*perf.data* | wc -l`
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
-
-I only have a nitpick on patch 5.
+Wouldn't it show error messages for 'file not found' for the first
+round?  I think we can add '2> /dev/null' to suppress that.
 
 Thanks,
 Namhyung
 
->
->  tools/perf/Documentation/perf-list.txt |   4 +
->  tools/perf/builtin-list.c              | 211 +++++++++++++++----------
->  tools/perf/tests/shell/daemon.sh       |  34 ++--
->  tools/perf/tests/shell/list.sh         |  21 ++-
->  tools/perf/tests/shell/script.sh       |   3 +-
->  tools/perf/util/print-events.c         |   2 +-
->  6 files changed, 177 insertions(+), 98 deletions(-)
->
+
+> +               if [ ${signals} -eq 0 ]; then
+> +                       perf daemon signal --config ${config} --session t=
+est
+> +                       signals=3D1
+> +               elif [ ${signals} -eq 1 ] && [ $files -ge 1 ]; then
+> +                       perf daemon signal --config ${config}
+> +                       signals=3D2
+> +               elif [ ${signals} -eq 2 ] && [ $files -ge 2 ]; then
+> +                       daemon_exit ${config}
+> +                       signals=3D3
+> +               elif [ ${signals} -eq 3 ] && [ $files -ge 3 ]; then
+> +                       success=3D1
+> +               fi
+> +               retries=3D$((${retries} +1))
+> +       done
+> +       if [ ${success} -eq 0 ]; then
+>                 error=3D1
+>                 echo "FAILED: perf data no generated"
+>         fi
 > --
 > 2.43.0.429.g432eaa2c6b-goog
 >
