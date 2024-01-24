@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-36224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34C78839DAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:39:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CC27839DAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:39:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E238D2887DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 00:39:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3A75287C74
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 00:39:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75F0C1860;
-	Wed, 24 Jan 2024 00:38:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 360641FB9;
+	Wed, 24 Jan 2024 00:38:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="WHG50iut"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="sYiMiits"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC1AE15AB
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 00:38:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0CDB17CF
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 00:38:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706056728; cv=none; b=AI3YZy8Ri/B23liW34zRbbZ5BBF5FiXZ4+/Gxnb9gQXm+Dy7VHDlHvRfW0qEdaNjtDtqrsC+pKBuAvfZg8qQElJael9qwy4MDOXHGnayJCZj29d4rX1kWfeSh2dzejdVpnAdhDw5G5z0gGI9lPrTJr+TYOvw/5cei8asa/UYpzw=
+	t=1706056729; cv=none; b=Z0ytEhmOJTRWt1RHg5+RshIE7j0v9RJZY9Ldl7N7MUP6bILsGdoFGED/COjv9luFIZFco6AVVF0cXXhuqsbjEkIYMj8GqNKVCSi4w5RzT8zeMGRZzcm9Jy/TOlIEc41M7dwaaA80UBI/H2LrBXPNQEojFNi1TAbqcTn9ZArcEEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706056728; c=relaxed/simple;
-	bh=wGukjyksfhKxl+wN3jLp6qvIjHdJhtPhlh30DmeGEU4=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=JzaKARyG1bLLeuKvyQNuBvYF8U4ohVkCdBX1+1yeJ6s86gZWIj7GNSU9OduuuSCJOpuAYPnD448vSSzD/8g0AhWFRIyHrwrVtTm3+LPh+Vsg3BrzFqo5qEYnPPXS7HabEfrv/wE0q2+KqwOKC5LcQnSqhKPsBGGqHJESOWsxcHU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=WHG50iut; arc=none smtp.client-ip=209.85.214.172
+	s=arc-20240116; t=1706056729; c=relaxed/simple;
+	bh=vtaithEKdlnR6rNf+kxSTk35iDBBx0caxMmfVcvyUEU=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=doEDQk2OLvqYAEHqV29XT0nXc/5KlSE4aLNTN7zfRyMjyHb5L4ypRSIcWgwMwtElMLHML7Ta4nlAgTR48vXr4s+Xr+W9PRQjjPmyl5mObSeZhcPSZroqOWrtl5lPFJGnAoplJbguMKski/Npap13PpdcyJt57eIXolY4TsWM/7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=sYiMiits; arc=none smtp.client-ip=209.85.214.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d7232dcb3eso22515005ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 16:38:46 -0800 (PST)
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d6fbaaec91so40845645ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 16:38:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706056726; x=1706661526; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=brX+Tjgj6em20jRbwvZLT5G9OOMh+GdwBGseR7oDqAs=;
-        b=WHG50iutYpge9z/hybzXqjFMStjjVfmUmvoHazi4b2VPR/fQ78qaW0MAAPDnET7xBr
-         lKc0hu6CQjppwbpqLNgFD25D/feClLwp/6XjwR3IyY1Pvdpq0dgGzU9JHDHpUDc0Saok
-         ttYVYBOUyJsOaSDIQj+INrEP0jwb0XDyBFWoUCnrfCMqQQLYD8sJdygEy+7+Sngo74aA
-         cIx5Qbijp3x0ot4rWzRvs8kO48Uj6koMtaObDgT0cvOlQ98kJmuVPjOFztcTZqxm+UVX
-         RpdCnIetHj5EKcq5KVWGu38J8GvZYdpnnQGyIn3OlWrV25QAi/rT7sZjajzI3bVr95lZ
-         VXvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706056726; x=1706661526;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706056727; x=1706661527; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=brX+Tjgj6em20jRbwvZLT5G9OOMh+GdwBGseR7oDqAs=;
-        b=FXEtY7mDFP//gUX+h2hWCa/e5sFdHBpzfsbtvsAniNclPqP29ZlVhC7UqYoyfCbj5B
-         ZjrJBUHcogeGqzp+XYs/1lRo83T21NC92nN8yLKMLkkHSxtsQgl70sGlCAot2dGA7E+W
-         JID4qI2KrZlvQo8KF0KQAa1+VPXil+NtIuQUWs2/Xo7jIPtQ/2zwRT0KLBWEUXSGPfbS
-         870SnITjrokMACVUdBff+gkNXqrzZcuJPg67jGPuQe6KD5T+K1XwDBe7jwqPtzm//O3U
-         6Kmm2eNxnjL30P/uUMskz+65Ps8r5dM0K+KynJCpuwRV6ldGbviZAMH/fja4MzyysRKA
-         ksdQ==
-X-Gm-Message-State: AOJu0YzONEAYOsuJw1p7z7GDItH9/tdGU9ujXAeATpJYVxXb6RtG9m2F
-	K/kjw2dZ0LhJhea/mqyBm4ew+j1rdqQJboi6fnQrr1M0ycLUMNgih9NPBwJgorBggsIo3wjv8Oz
-	F
-X-Google-Smtp-Source: AGHT+IFy/IOyEkszkl7MjZgGAeqyZ83op788oyXUk1cuGw0HKORx3icTX46n+Mk9lLJzNOjZd46F+A==
-X-Received: by 2002:a17:902:f683:b0:1d5:78db:4293 with SMTP id l3-20020a170902f68300b001d578db4293mr45995plg.29.1706056726258;
-        Tue, 23 Jan 2024 16:38:46 -0800 (PST)
+        bh=8ynZXq3hbnTIt8pJLL68IBYX2Qlu6g0sPaImPdjw3z4=;
+        b=sYiMiitsUtzIv++fA++6jxc0ZNzKheFJFHPX+ALprbb3u6BtQDF/47pacsqZq2Mmdc
+         C/IBPHNljK/jDyvxBcs2LExfvFTjHgqBbq/S6kUKVee569obhFQpE/hHvsc28cE11HRO
+         l1mXLuQEQY8/956EBl0o+u6VTeHcHoVMm7Sd01q2meMh8KaQxZZcMdNSLM4akzZvOMVx
+         uqYyy6VyRyXx00Sp8SL/kePe0iwk3dMhFIbsTBVfTLYbR9dDiIfMLsPdJq4Bpko9n4oQ
+         8p00XeajtDisz5fqM+gyJGyxOLZ0w7eOu17yM36ZGmyD9X6JoaHJkBsQxyN+80THbPsA
+         EmOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706056727; x=1706661527;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8ynZXq3hbnTIt8pJLL68IBYX2Qlu6g0sPaImPdjw3z4=;
+        b=kyU7zRxryJEn+aIbPaEYXPrrvpHqYOvb5U30wHOrPkCyMoFUjmXQ835TG+8Oyd4XTM
+         ui1wGfkMg+g419/mINwIw+QALq8TZgnrjYlNbQh3cTIGHwv5NsY/l+bR6EpTjnXVEhYo
+         jGrqIaxSVHVQ1XXFb0pV56bR2keEA5U44WjeHH5LT24HBsOXIzC+4QRs+pJRMo5afixJ
+         dAksqskw1c4Udo9FJPdjM5eu1OtZwYBpX7GMB2poDGBZaz8MetHRk/xWPLCtAPp2uWr8
+         ppspobowMb2FZhR8Nvmbm4d3EzokYazspfdzwR27RIW1EEMHDhrkMrak3Bw9TiRSw/hm
+         +Kyg==
+X-Gm-Message-State: AOJu0YyK51/lAWmPgXlx0Jn6XGdjBggUEIZLXaB4oPrx85vCQm7rPrjt
+	J+bWIfj9+lbUPDeb/Lx6ItoiDDf/9rFKfDz/r1EN/MYFc7Rk7Eq6BTP+U+UrGnQ=
+X-Google-Smtp-Source: AGHT+IG4FTPgOY+7pijx/l7wOMI0Hg9IEAGR48MqVsQWkpHYrYrJ8PdlSwIgh9F5E8WbMC7gnIVjVQ==
+X-Received: by 2002:a17:902:e88e:b0:1d5:e5b9:19c5 with SMTP id w14-20020a170902e88e00b001d5e5b919c5mr68404plg.1.1706056727140;
+        Tue, 23 Jan 2024 16:38:47 -0800 (PST)
 Received: from charlie.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id bi3-20020a170902bf0300b001d6fe15b563sm9384275plb.157.2024.01.23.16.38.45
+        by smtp.gmail.com with ESMTPSA id bi3-20020a170902bf0300b001d6fe15b563sm9384275plb.157.2024.01.23.16.38.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 16:38:45 -0800 (PST)
+        Tue, 23 Jan 2024 16:38:46 -0800 (PST)
 From: Charlie Jenkins <charlie@rivosinc.com>
-Subject: [PATCH v3 0/2] lib: checksum: Fix issues with checksum tests
-Date: Tue, 23 Jan 2024 16:38:41 -0800
-Message-Id: <20240123-fix_sparse_errors_checksum_tests-v3-0-efecc7f94297@rivosinc.com>
+Date: Tue, 23 Jan 2024 16:38:42 -0800
+Subject: [PATCH v3 1/2] lib: checksum: Fix type casting in checksum kunits
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,47 +76,78 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIABJcsGUC/5XNQQ6CMBCF4auQrq2hLRZ05T2MIbQdpDFQMoONh
- nB3CyvjSpdvkvn+mRGgB2KnbGYI0ZMPQxpqlzHbNcMNuHdpM5nLIhfiyFv/rGlskKAGxIBU2w7
- snR59PQFNxKU2lTaqcGVVsMSMCOlnS1yuaXeepoCvrRjFev0Dj4ILLp1ybaVdlRJn9DGQH+zeh
- p6tfpQfplQ/mJLn3KhcG22hdM3hy1yW5Q02S6fpJwEAAA==
+Message-Id: <20240123-fix_sparse_errors_checksum_tests-v3-1-efecc7f94297@rivosinc.com>
+References: <20240123-fix_sparse_errors_checksum_tests-v3-0-efecc7f94297@rivosinc.com>
+In-Reply-To: <20240123-fix_sparse_errors_checksum_tests-v3-0-efecc7f94297@rivosinc.com>
 To: Guenter Roeck <linux@roeck-us.net>, 
  David Laight <David.Laight@aculab.com>, Palmer Dabbelt <palmer@dabbelt.com>
 Cc: linux-kernel@vger.kernel.org, Charlie Jenkins <charlie@rivosinc.com>, 
  kernel test robot <lkp@intel.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1706056725; l=982;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1706056725; l=2402;
  i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
- bh=wGukjyksfhKxl+wN3jLp6qvIjHdJhtPhlh30DmeGEU4=;
- b=wl+vTT9NaLdB8EnF8clYo8HrBuTOKXUqhd8RcHy8HHB9vdXYDE77jvI79jSUrrF1UM6CteD91
- HivpzVdlwVyB3XVkZX1VzH9SOeuxt2LAG/tTeJj4KpKqaHJv3NAM7lX
+ bh=vtaithEKdlnR6rNf+kxSTk35iDBBx0caxMmfVcvyUEU=;
+ b=+OFFsVkeKTXHR3g8R7WKXY27hVLPEKztOS48oaTY2+wDxMVOXkIwd4K4iwwLNMg0jrZgcEX2m
+ IbTAQUjhl51BWvW2vEXF9pgczeUyGI6tXDU/cqbigjWHwYCi80qeXuM
 X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
  pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
 
-The ip_fast_csum and csum_ipv6_magic tests did not have the data
-types properly casted, and improperly misaligned data.
+The checksum functions use the types __wsum and __sum16. These need to
+be explicitly casted to.
 
 Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+Fixes: 6f4c45cbcb00 ("kunit: Add tests for csum_ipv6_magic and ip_fast_csum")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202401200106.PMTn6g56-lkp@intel.com/
 ---
-Changes in v3:
-- Don't read memory out of bounds
-- Link to v2: https://lore.kernel.org/r/20240123-fix_sparse_errors_checksum_tests-v2-0-b306b6ce7da5@rivosinc.com
+ lib/checksum_kunit.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-Changes in v2:
-- Add additional patch to fix alignment issues
-- Link to v1: https://lore.kernel.org/r/20240119-fix_sparse_errors_checksum_tests-v1-1-2d3df86d8d78@rivosinc.com
+diff --git a/lib/checksum_kunit.c b/lib/checksum_kunit.c
+index 225bb7701460..776ad3d6d5a1 100644
+--- a/lib/checksum_kunit.c
++++ b/lib/checksum_kunit.c
+@@ -215,7 +215,7 @@ static const u32 init_sums_no_overflow[] = {
+ 	0xffff0000, 0xfffffffb,
+ };
+ 
+-static const __sum16 expected_csum_ipv6_magic[] = {
++static const u16 expected_csum_ipv6_magic[] = {
+ 	0x18d4, 0x3085, 0x2e4b, 0xd9f4, 0xbdc8, 0x78f,	0x1034, 0x8422, 0x6fc0,
+ 	0xd2f6, 0xbeb5, 0x9d3,	0x7e2a, 0x312e, 0x778e, 0xc1bb, 0x7cf2, 0x9d1e,
+ 	0xca21, 0xf3ff, 0x7569, 0xb02e, 0xca86, 0x7e76, 0x4539, 0x45e3, 0xf28d,
+@@ -241,7 +241,7 @@ static const __sum16 expected_csum_ipv6_magic[] = {
+ 	0x3845, 0x1014
+ };
+ 
+-static const __sum16 expected_fast_csum[] = {
++static const u16 expected_fast_csum[] = {
+ 	0xda83, 0x45da, 0x4f46, 0x4e4f, 0x34e,	0xe902, 0xa5e9, 0x87a5, 0x7187,
+ 	0x5671, 0xf556, 0x6df5, 0x816d, 0x8f81, 0xbb8f, 0xfbba, 0x5afb, 0xbe5a,
+ 	0xedbe, 0xabee, 0x6aac, 0xe6b,	0xea0d, 0x67ea, 0x7e68, 0x8a7e, 0x6f8a,
+@@ -582,7 +582,7 @@ static void test_ip_fast_csum(struct kunit *test)
+ 	for (int len = IPv4_MIN_WORDS; len < IPv4_MAX_WORDS; len++) {
+ 		for (int index = 0; index < NUM_IP_FAST_CSUM_TESTS; index++) {
+ 			csum_result = ip_fast_csum(random_buf + index, len);
+-			expected =
++			expected = (__force __sum16)
+ 				expected_fast_csum[(len - IPv4_MIN_WORDS) *
+ 						   NUM_IP_FAST_CSUM_TESTS +
+ 						   index];
+@@ -614,8 +614,9 @@ static void test_csum_ipv6_magic(struct kunit *test)
+ 		len = *(unsigned int *)(random_buf + i + len_offset);
+ 		proto = *(random_buf + i + proto_offset);
+ 		csum = *(unsigned int *)(random_buf + i + csum_offset);
+-		CHECK_EQ(expected_csum_ipv6_magic[i],
+-			 csum_ipv6_magic(saddr, daddr, len, proto, csum));
++		CHECK_EQ((__force __sum16)expected_csum_ipv6_magic[i],
++			 csum_ipv6_magic(saddr, daddr, len, proto,
++					 (__force __wsum)csum));
+ 	}
+ #endif /* !CONFIG_NET */
+ }
 
----
-Charlie Jenkins (2):
-      lib: checksum: Fix type casting in checksum kunits
-      lib: checksum: Use aligned accesses for ip_fast_csum and csum_ipv6_magic tests
-
- lib/checksum_kunit.c | 389 +++++++++++++++++----------------------------------
- 1 file changed, 129 insertions(+), 260 deletions(-)
----
-base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
-change-id: 20240119-fix_sparse_errors_checksum_tests-26b86b34d784
 -- 
-- Charlie
+2.43.0
 
 
