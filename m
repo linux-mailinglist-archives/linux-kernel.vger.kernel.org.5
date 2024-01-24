@@ -1,113 +1,110 @@
-Return-Path: <linux-kernel+bounces-37254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37259-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61A2283AD56
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:30:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96B3E83AD62
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:31:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1924828294F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:30:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37E291F25781
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:31:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B59427C09F;
-	Wed, 24 Jan 2024 15:30:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 070F57A708;
+	Wed, 24 Jan 2024 15:31:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="m3cpJ6vr"
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="3ClJx6cS"
+Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ADD27A707;
-	Wed, 24 Jan 2024 15:30:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A48B17A707
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 15:30:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706110228; cv=none; b=X7qe0K3Ndjt09ljaNlki6+QWrYbk8BSKltBixlRrBaLvJfvLZeaTWQ28pfhBz+xVjQCZsYcrNWPNLylVnZbYuJxQJ6pmwHGJ2vhaM8Y4NwtWyOrbrkL//OzASy3/9FUJBt+EycMWRvG4/nOsHFuQgU//uFNG4Ox2eK5PAJqcH68=
+	t=1706110262; cv=none; b=Nr04e4ROTqguvC/Z3NoPHWXRtwWTXE86l9+7fy8bdOSS2703XKA03JENXlKozuAfNKtQ5E9VuRNL1tgUa+x1yD+mt9B8xKk0I9vlpuwEPs6UBKKWhZ6t32efxxbPEoZC60WUXyggopQyHaX1GrG2XMdwTCOuJoqR5EQLz5UVnCs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706110228; c=relaxed/simple;
-	bh=dwNSFLpQJ15WSNLHQJc0HWdI5vgJK4PLbibeEt3onbM=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=R9yqIV4h6u4ESD1wXfBMaPlb6umB5pyVHbkIEG+3RaN+sQI5icuQmsWg3V3YVitzRnZvSYgxCfr/kP1U2tAIIc9UHMnV77V+xASAVs0QOlZreJfqOxYsvhpajXgb5jVYc4GU46GnTPRflzWejqNdDqrT4oYCuwi8TLQofXTx4JU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=m3cpJ6vr; arc=none smtp.client-ip=67.231.152.168
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40O8MvMn030107;
-	Wed, 24 Jan 2024 09:30:19 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=3wVnz+qTDhd7ewymUmUS+IuKvNXLSEtQi0GPLXhpiT0=; b=
-	m3cpJ6vr/YsEf11Pw5ubyLoyQUN5DQGyV0NH7Y41V7Z+oRk9aHEoKwSwzexEUK+T
-	EpjpRsej/rMkxErRj58nk8ZN5ZrtmA2W6x+fL87NIAwmC7iaasUxbks6xhkxHFfm
-	G/m2gSluhoAvxmwQUyg4r6M3F4jVt/HBAjETHak8vCn5n0jVVVdtBO5ofltWUoCV
-	4Pi3EDoA5xIUQOgPAgmBZ9NonPEJ/mDsvQx6ZK4ET/nknOQEGMM5wPA2YuhPoeN5
-	o2fQAudasr+J+A6vFf0AbT73RC+O+95f//oy6Wx8mibsVwT/SU0ELKKaNcKMf//b
-	dqt51C/Rc6q4cqV+G0OG1w==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3vtmf9ryqc-3
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Jan 2024 09:30:19 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 24 Jan
- 2024 15:30:16 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.40 via Frontend Transport; Wed, 24 Jan 2024 15:30:16 +0000
-Received: from ediswws07.ad.cirrus.com (ediswws07.ad.cirrus.com [198.90.208.14])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id CAFCB82024B;
-	Wed, 24 Jan 2024 15:30:16 +0000 (UTC)
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: <lee@kernel.org>, <broonie@kernel.org>
-CC: <andy.shevchenko@gmail.com>, <alsa-devel@alsa-project.org>,
-        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>
-Subject: [PATCH v2 6/6] mfd: cs42l43: Handle error from devm_pm_runtime_enable
-Date: Wed, 24 Jan 2024 15:30:16 +0000
-Message-ID: <20240124153016.1541616-6-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240124153016.1541616-1-ckeepax@opensource.cirrus.com>
-References: <20240124153016.1541616-1-ckeepax@opensource.cirrus.com>
+	s=arc-20240116; t=1706110262; c=relaxed/simple;
+	bh=RoQut5AVHZuhcbsg5rERP3+10LBVd5UTRpunDEoOXys=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=rQRVd//D4IzaTVy96konveaIAXLzXKDf5emToMyjEifSQRyocUZcOpS8sioUN23TlRSYApfRL/eN8Dg1W6VEwUwOO9waRuro3TaY52Tw4uZDUuB6Bat4swCanc3FalpZcNleaV/r4eZ7I2Um+YPpY9dR/qqRJ0BKdSlk0dMJnxo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=3ClJx6cS; arc=none smtp.client-ip=209.85.166.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7bed82030faso73958639f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 07:30:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1706110258; x=1706715058; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kv4/8CDW8QIlduDHXHHg6GE3LBQ6HZvZ3aGnmpvuq+E=;
+        b=3ClJx6cSNtblLTPIBhe0FvfG4QYncPrN0slzIyn3sBYELAW80YXz2NBB0XG2OhuJIl
+         Z71SX9nBY7HtcY/wsmdrPwSK/FoJ+YKMj5x+Bo7xGoBmRAoS3A48FPlMSivGddMY4SwJ
+         Lmtfd+ZWrZ4DJs0xEE5l3yV4snRNyVn9VvMlPD/x0N/H1KQ2S57QsCXq7cVV+hu8JhRy
+         K3ZvA/iiG/jo1/IgkqN24qJy8WuafJ2UeihF/Q2+MqNpfaX3KUKqzTC5ykhUPmWFAy9E
+         ++bkPzCAickJ3NQX/j9Ndkbg7DhPlivUqjZ22uyGcHjSGEQQhFCpJlG/C3u9/CesUmMT
+         ps8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706110258; x=1706715058;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kv4/8CDW8QIlduDHXHHg6GE3LBQ6HZvZ3aGnmpvuq+E=;
+        b=n2Xlrl7CoFx1CaazuNQfQWfwo6nQG8J0ujhMkB+a9hqASuF/e2mH2yt1VAXjDTjUxt
+         bhgKDRZOlyU7XeF/2QA2Zps0TOA4gJIlEfyxVqlt/Meonx+Pn/2yj2I/Ay95DXCG9hd9
+         j1vDJ3DeJKyVctPZm7yxgY0Fd3t+8KoSpe3F/jKeYVQTBeuT3Szk930PPwYjCZgKMJyD
+         gZ8e7sM25pLyptpL67yFRsCbIRqoJtzmUXgEkG4a0lxeZRNTsf18WJqR4m4/GIZGoLrH
+         dbb0OUK5fwj3SRTyNZpqYOygzt/DNtj3YCnjU+1yuanJtb/xhFZ8iAGSZxFyJ0TtI3pU
+         cUQA==
+X-Gm-Message-State: AOJu0YwfGEbglFybTBdnXPNmefT48YOqWCphzWItU+5zVfD0QNUHbUmc
+	mBSmC9PrOUo+m8okEfud7whCxfsgdEiT4UrZyF+K0ydoveEj6pT5ImmAEXkdInKYioz/OHRFoHU
+	1YdM=
+X-Google-Smtp-Source: AGHT+IH7F3rrjrPWkFhZDQe8Kjz8JwG9WX12tOjmn6LkuKcDAei6tT85d2CDl7oJ0hRoJWTK/Fpvrg==
+X-Received: by 2002:a05:6e02:1d95:b0:361:969c:5b4b with SMTP id h21-20020a056e021d9500b00361969c5b4bmr2895875ila.3.1706110258312;
+        Wed, 24 Jan 2024 07:30:58 -0800 (PST)
+Received: from [127.0.0.1] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id o3-20020a056e02068300b0036194d1dad6sm5297438ils.40.2024.01.24.07.30.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 07:30:57 -0800 (PST)
+From: Jens Axboe <axboe@kernel.dk>
+To: Maksim Kiselev <bigunclemax@gmail.com>
+Cc: Justin Sanders <justin@coraid.com>, linux-block@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240124072436.3745720-1-bigunclemax@gmail.com>
+References: <20240124072436.3745720-1-bigunclemax@gmail.com>
+Subject: Re: [PATCH v1 0/1] aoe: possible interrupt unsafe locking scenario
+Message-Id: <170611025731.2148128.9958144886915388505.b4-ty@kernel.dk>
+Date: Wed, 24 Jan 2024 08:30:57 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: c8Z7e5c67-GQC_sft4G-zoF0go-TruDf
-X-Proofpoint-ORIG-GUID: c8Z7e5c67-GQC_sft4G-zoF0go-TruDf
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.5-dev-2aabd
 
-As it devm_pm_runtime_enable can fail due to memory allocations, it is
-best to handle the error.
 
-Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
+On Wed, 24 Jan 2024 10:24:35 +0300, Maksim Kiselev wrote:
+> I'm using an AoE device on board with D1 SoC (riscv arch).
+> When I enabled CONFIG_PROVE_LOCKING option, I got the warning below.
+> After some investigations, I made a not very elegant, but working solution.
+> The patch sent with next message.
+> 
+> I would be glad to know what you think about this.
+> 
+> [...]
 
-No changes since v1.
+Applied, thanks!
 
- drivers/mfd/cs42l43.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+[1/1] aoe: avoid potential deadlock at set_capacity
+      commit: e169bd4fb2b36c4b2bee63c35c740c85daeb2e86
 
-diff --git a/drivers/mfd/cs42l43.c b/drivers/mfd/cs42l43.c
-index aea0f8f485785..56bd9dbbe10b0 100644
---- a/drivers/mfd/cs42l43.c
-+++ b/drivers/mfd/cs42l43.c
-@@ -1065,7 +1065,9 @@ int cs42l43_dev_probe(struct cs42l43 *cs42l43)
- 	 * the boot work runs.
- 	 */
- 	pm_runtime_get_noresume(cs42l43->dev);
--	devm_pm_runtime_enable(cs42l43->dev);
-+	ret = devm_pm_runtime_enable(cs42l43->dev);
-+	if (ret)
-+		return ret;
- 
- 	queue_work(system_long_wq, &cs42l43->boot_work);
- 
+Best regards,
 -- 
-2.30.2
+Jens Axboe
+
+
 
 
