@@ -1,96 +1,128 @@
-Return-Path: <linux-kernel+bounces-36731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36734-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26DFB83A5B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:41:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6573B83A5BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:43:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81C6C293ECD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:41:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26892292E7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 09:43:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9325118029;
-	Wed, 24 Jan 2024 09:40:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="lki1T9jI";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="+JGNhcrN"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C8A1802B;
+	Wed, 24 Jan 2024 09:42:56 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75303182A0;
-	Wed, 24 Jan 2024 09:40:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D1A518026
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 09:42:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706089253; cv=none; b=cBlXDQRtKiSakfqEPu0oQrP2xpyMfVN+o22VNh/PvD2Z2F2HnMmYGEPW+HYR7UV1OPsZSFMgb2bgzvYzN5mFb+YEqfDR73CDGkHHixXvXhpX5uAOgwREb9YsiADK27tEoK6xZH4mFSOVEg8ppfm/5A8X8IMTDt0qcOn9Hrz+U3M=
+	t=1706089376; cv=none; b=jkaOLqcW4A8U7a0PH+Li8INW7qNOxzhQ7TrgQ+OE0CT7XusFdJouCuqPX/kL8/+DEL2nCMg5rzJRz5qGC0QZOQfSPJWU9aMR9LXe6lavzk7jMJjHqFW0d9ZlncluSTkSAL7WzrfWadxXbYXvf1rnllvl48/QLvyUKLfTJi02gTE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706089253; c=relaxed/simple;
-	bh=0nH0pQ4/QHTXj++AgwYVxeag8yUhRFREwHBgcGA8cBw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ZeQlJklhcnX4W3A+cU/W2YUWUDwOkcWyNtJj1WernfF0XwTYrEwc6JODZRPMJ/3LdB/BwURPiN1Tf9J4QSykboW/as6ztPsE+Czg95joC+sz6uxvTT3NpeI596D23f+V3lztYL5yUlcf6avjkVTnvl6yUlYKHdtUpsol7zhu3ek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=lki1T9jI; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=+JGNhcrN; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1706089250;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0nH0pQ4/QHTXj++AgwYVxeag8yUhRFREwHBgcGA8cBw=;
-	b=lki1T9jIapSpv1XcMoYs3pllb6OtT1rHBHnpzlIQuQ+Xa4Gemj/s2yGOF2y4WIM85Knx6P
-	dkpjzMZFzfjbsd+LG6txcIUbddnV8ZWPaSDkB7j4p6RhD1yVb6rlrcblOxieTsN/h1r85R
-	MbSIfTw0VsgJjAkLYOla246osciOB0rXGjskCKS+h6zo0UWHHAtiDIDvT3k9iF33xOkxc+
-	HHChZ+H1STSS5SdJ+6tyuD8YReAktfq1ioH/VP7z8bex42ZNb9q/N16A8CiyO513B9Edga
-	LiOmDoE8uHoJYEhSf8JBJXidMlwU7gmyF1Ifolbdmigxe51nMcumd1lah0GeoA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1706089250;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0nH0pQ4/QHTXj++AgwYVxeag8yUhRFREwHBgcGA8cBw=;
-	b=+JGNhcrNgARPXqwwMYnChO8weeZBRHkXpUbj3CwVm90koLnrqm+IiBWC/VOt1/kjtIFSHF
-	3UiJXlq4wlemS9DA==
-To: Junxiao Chang <junxiao.chang@intel.com>, bigeasy@linutronix.de,
- tglx@linutronix.de, rostedt@goodmis.org, linux-kernel@vger.kernel.org
-Cc: hao3.li@intel.com, lili.li@intel.com, jianfeng.gao@intel.com,
- linux-rt-users@vger.kernel.org
-Subject: Re: [PATCH 0/2] nbcon locking issue with v6.6.10-rt18 kernel
-In-Reply-To: <20240123054033.183114-1-junxiao.chang@intel.com>
-References: <BN9PR11MB5370AED9C562F9DA75093557EC742@BN9PR11MB5370.namprd11.prod.outlook.com>
- <20240123054033.183114-1-junxiao.chang@intel.com>
-Date: Wed, 24 Jan 2024 10:46:44 +0106
-Message-ID: <87o7db9ihv.fsf@jogness.linutronix.de>
+	s=arc-20240116; t=1706089376; c=relaxed/simple;
+	bh=c7AtDwtfUT29Girxwftwf36NoI+3PFJkKiX9LOmNFk4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H1FO4a5WyGhu1WJ26d+UsNB143mpjAfNZ5j8qhzf5S3wsGicAH3joV0GtBOMxDyEKsmv2uTU61wiY8LUXc6XE8bGlolXbC/m8CIBtsddXL4Mo8Oxd3Ipfjo5EkzD0eVjPnOGKyG8kawlJF8qiWlwt5ezmapU4af5hyuYpbnSjzY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rSZmM-0003ht-Lz; Wed, 24 Jan 2024 10:42:42 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rSZmL-0021gA-J6; Wed, 24 Jan 2024 10:42:41 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rSZmL-0071nX-1a;
+	Wed, 24 Jan 2024 10:42:41 +0100
+Date: Wed, 24 Jan 2024 10:42:41 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Jerome Brunet <jbrunet@baylibre.com>
+Cc: Thierry Reding <thierry.reding@gmail.com>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Kevin Hilman <khilman@baylibre.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-amlogic@lists.infradead.org, linux-pwm@vger.kernel.org, JunYi Zhao <junyi.zhao@amlogic.com>
+Subject: Re: [PATCH v4 3/6] pwm: meson: generalize 4 inputs clock on meson8
+ pwm type
+Message-ID: <oyayapgrwaetyhuu6ua2nejcpgydmkijqdgtdlfqvq5jvc6nzp@xgvnwvjja3im>
+References: <20231222111658.832167-1-jbrunet@baylibre.com>
+ <20231222111658.832167-4-jbrunet@baylibre.com>
+ <4kcbh4dezgpic2dpgdi2swtx2puqiq74w2tungmxipf4nznpn7@u4g4f3cimps4>
+ <1jy1cfw0qa.fsf@starbuckisacylon.baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="a3xdp7xgdzkgzofk"
+Content-Disposition: inline
+In-Reply-To: <1jy1cfw0qa.fsf@starbuckisacylon.baylibre.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On 2024-01-23, Junxiao Chang <junxiao.chang@intel.com> wrote:
-> There are two serial port devices in one Intel ADL hardware, one is
-> 8250 lpss, another is 8250 dw. Multiple uart devices are enumerated as
-> ttyS0, ttyS4, ttyS5,... With 6.6.10 rt18 kernel, booting hangs in
-> nbcon_release if console is enabled by appending
-> "console=ttySx,115200n8" to kernel command line. According to nbcon
-> author John's suggestion, lock flag is moved from console structure to
-> uart_port. Another patch is to add uart_is_nbcon checking in
-> nbcon_release.
 
-Isn't the real issue that the console pointer is copied to device that
-are not consoles? I am wondering why that is. Is it possible to
-dynamically switch the console index during runtime? If not, I think a
-proper fix would be to only assign @cons if it actually registered as a
-console. This would also simplify the uart_console() macro.
+--a3xdp7xgdzkgzofk
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It is critical that a struct console is not shared by multiple
-devices. I do not like the idea (or see the point) of having non-console
-devices store a struct console pointer that is registered with another
-device.
+On Wed, Jan 24, 2024 at 10:11:59AM +0100, Jerome Brunet wrote:
+> On Wed 24 Jan 2024 at 10:08, Uwe Kleine-K=F6nig <u.kleine-koenig@pengutro=
+nix.de> wrote:
+> > I suggest to make this
+> >
+> > 	const char *parent_names[MESON_NUM_MUX_PARENTS];
+>=20
+> Ok.
+>=20
+> >
+> > to make it more explicit that really four entries are needed here. This
+> > also makes is unnecessary to add the additional NULL entries to
+> > pwm_gxbb_ao_parent_names and the other arrays.
+>=20
+> I would normally agree but I'd prefer to be explicit.
+>=20
+> There are some instance where the NULL is in the middle, this can't go
+> away. I think it looks if some inputs are explicitly NULL while the
+> other are implicit.
 
-I will take a closer look at that.
+Adding soem NULLs explicitly is fine for me. Using an array of fixed length
+still (somewhat) ensures that later no shorter arrays are added which
+result in surprises.
 
-John
+Best reagrds
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--a3xdp7xgdzkgzofk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWw25AACgkQj4D7WH0S
+/k5e0wf7BlbmFsY4+YWO4iLdNo0BVoOnMnfSSNw2yPZA+YdUvXeulZDQTshMRkgQ
+xNmIvXbYDeBBIUFQ64FzQQ89VyKcwTX459zycaNAg06N51FSdCM1EQO1F/Y6fqy1
+g4+9fH3mHi+UJkcekm0st27G0uTvfiJ7RtkyQYK2KMD1OBmYr2ADURGmMppLzvLX
+6XMsShbScQdqNKMGa2MGjB4plt3IzjyX5ZMRYaMdZABnZJsKJGXWfcr9p3fLZ3I+
+Dvkti+CdMw7zHXAelVFD2EMKCMbV33PjedcIzBe9TTOQM5SPtoZHy3QIbQ+WdqNK
+sbr4C8C10SJBSSUbB1NJfIJfQUTNhw==
+=ENZk
+-----END PGP SIGNATURE-----
+
+--a3xdp7xgdzkgzofk--
 
