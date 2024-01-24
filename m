@@ -1,169 +1,110 @@
-Return-Path: <linux-kernel+bounces-36265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36266-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB940839E22
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 02:19:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10B3E839E26
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 02:19:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8544328D50E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:19:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC09C28E61C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:19:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 225E0137C;
-	Wed, 24 Jan 2024 01:19:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 622861860;
+	Wed, 24 Jan 2024 01:19:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cs.cmu.edu header.i=@cs.cmu.edu header.b="ZJraEpcl"
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NrX5U5jF"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 208B6EC5
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 01:18:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 200361854;
+	Wed, 24 Jan 2024 01:19:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706059139; cv=none; b=Hp3pbg3Izu2qivILu7QM4O1+xUA0DQEgfL7JlluET5nWsgOOGwHVPV92mhWEllTQCPjyhPLG8n3Pcdx5uCC+25MGcAsArSzizPLbAZ7/4TmdAvzNsOEbk4+Oc8/dh1mpK8oWfyYtLF8Yeqf4okY9jGvSRxzOBuMj34UO73TH0+4=
+	t=1706059150; cv=none; b=DHiJCG5tL44ROcA16DLaGT6GhkAdoJuFA3R4d+LCWFBDAKnw4ZY4y+XcpPcYk9dMfh9YWQgDXy4n35UvMk5kR7EoI4+QbZu4QmMyA9il0K9dG5/xpJnDSeIrvxQXW99gcbiGyrzCw1qeLOMXu5j1S+n1YyvMvHI8pBVGzwfE7go=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706059139; c=relaxed/simple;
-	bh=t/X1nR/dlSd60tJeBcYC4x/1XABmgwxC0l6zCDXYUv0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WPKgcZ6xYmTzwvvwuOeT9VB4YYgASNE+S5DJysK1O5Z/Gk4HLHqc7TJSICe0zBZbccp8CoYRn3zOl7laDHPRMCL2Q/pylNcGF0wTQ0JB0X4EnmOiHmvQzOo2+9Evf7SSFkj27EzrfHWjq6h0nES7E8Vz2px6MFvC+2M8cSRCOTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cs.cmu.edu; spf=pass smtp.mailfrom=andrew.cmu.edu; dkim=pass (2048-bit key) header.d=cs.cmu.edu header.i=@cs.cmu.edu header.b=ZJraEpcl; arc=none smtp.client-ip=209.85.219.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cs.cmu.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=andrew.cmu.edu
-Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-68196a09e2eso29806346d6.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 17:18:53 -0800 (PST)
+	s=arc-20240116; t=1706059150; c=relaxed/simple;
+	bh=Rpc6VlcDnbMQpnlT7dJ8ZpIzB0df2U5hyEPssDpp8mg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=X0BgTsogGLgS6/4umELRvocURBQqdso1Ae1mUiKJO5NB71XLntYajD4dXVgYY0VwDtlNdad0lCRPpWAN5dxNmpsgC1LvEEvYgsmLp0lWe+ZjA1wzlJA6XGJitlk9pYYn0S7VmyI7ZYeViS1v3t6KuvWOv4gX6HLxmB7wmoqOUQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NrX5U5jF; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-337d32cd9c1so4338977f8f.2;
+        Tue, 23 Jan 2024 17:19:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cs.cmu.edu; s=google-2021; t=1706059133; x=1706663933; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jzOCm5wYtnoBm7flYhqkMXyh0L013AvfZt8QYlUBMZc=;
-        b=ZJraEpcli65wTDLCGC1/IIV/etji4CvJWjGWb0oURfX0ZP9Q+Bb+l0PSwi47XeuRKI
-         wYWhES8l8+GerEqiqNfYsOJrzbqPy/WyzIwiTrK8jG0jAQ4e+NOZGNXK4X6XO0vflvkJ
-         O4Msrw/2StO7bgoZoeA24DMCZI1iyqvJpL4nEWCwOAQC7Mt/C19XbnOyXbsHeWYK+Yxp
-         cegqUowO3lG5FeN8JuPboON0bye5DUNJngSORYyDxAxZdfg93+RztqpDAT0yJ968M+vI
-         DPNxV2jBjQg+OZoNQ904HmPXsFtEopmMyPKlaewg+615+TBbwOIxbf5LIrggrXg14EZ5
-         DDdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706059133; x=1706663933;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1706059147; x=1706663947; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jzOCm5wYtnoBm7flYhqkMXyh0L013AvfZt8QYlUBMZc=;
-        b=fd/NmX9JM78pt1fFrjrcFMnrWvt7Kh+7QMx4MgkJoYa+zXTziMBjIsc2tBd2ZKKbaZ
-         f5+wgLBnpn8V34ms2+Ch4PS+mQ0neyI2dp5mD9jHrCS4WEDtfjRFWkqcu53wAS0ko2Ui
-         ayfvHSgzMMKcH+Eu/TuCuXxrUIZe6szQD6aCfiPcLJfwqEzl5hi/ShsH7irE/rvN94Gx
-         A6OefQbZfeJpT5YiVaBjUVSZVlWIJ/yrhFpt2TLzs8gBGYo1rf4SIRxH7xDWMbTVFEJO
-         XAD3OrrlqgNdChalts9+La7Y2xKaPjSE2Ks2sLq+xqSAIHowwG2AZ9I3VrDyb16QexKU
-         XX5Q==
-X-Gm-Message-State: AOJu0YxPwCaA1x9DuxTYlecFXO3MoqrGNRG8FW8PM3TTGPcGSW3SeP6G
-	8ZIn4Nl2UqEPtTLPkynVDeClq3MYSym6NFIqqIrQoYyK1kNlRQ9QpNZOpYpsiLHi+/hOJouGn7s
-	=
-X-Google-Smtp-Source: AGHT+IGReTPF9uro0MMPnXtuBwx9j2YPj4LtLfgv/x5LMGd9mJj2i35gtn4P0JCrtdAZdMJIepVXzg==
-X-Received: by 2002:a05:6214:5186:b0:685:56e3:cb90 with SMTP id kl6-20020a056214518600b0068556e3cb90mr2358485qvb.26.1706059133009;
-        Tue, 23 Jan 2024 17:18:53 -0800 (PST)
-Received: from cs.cmu.edu (hurricane.elijah.cs.cmu.edu. [128.2.209.191])
-        by smtp.gmail.com with ESMTPSA id ma8-20020a0562145b0800b00686a0102df9sm1191328qvb.128.2024.01.23.17.18.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 17:18:52 -0800 (PST)
-Date: Tue, 23 Jan 2024 20:18:50 -0500
-From: Jan Harkes <jaharkes@cs.cmu.edu>
-To: Yang Li <yang.lee@linux.alibaba.com>
-Cc: linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] fs: coda: Remove unused variable 'outp' in
- venus_rmdir
-Message-ID: <20240124011850.h46azfxgrzvyttzv@cs.cmu.edu>
-References: <20240124010322.94782-1-yang.lee@linux.alibaba.com>
+        bh=23BMZPjmseE+NnJTiX5FEz+NfeKzQZWgWoSkE38xO34=;
+        b=NrX5U5jF0H424NTgPrVBbHA5AmxqZ1G/nk+r6Ml9vql4O1MQfb5OrKdf0ecd7ErkP1
+         Gae+1NjQLiRL4uyr0d7C9F2+IerLY4U/GbmT3QE4SG8wtFG40/BQiKRC07dNASznxAR+
+         e4zGvUSczYrEl++Rd5mzR03BmWG4bscrAWEViMsHwB7WnSV/5pVXX/VZQiTeZ8NXxInE
+         PPP2OVQ07KvpvJPzIo9l2zzcI1QuD8yEr6PspeNgjeC4ciXE5KNRcF/NXA8+e7k7za4K
+         bCxIMOH/0xRTuC3U+oVEGRLpn9eMATZVih6xh+MIsllWZPTGaOfTTdcdUIsoPm83xMAv
+         u03A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706059147; x=1706663947;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=23BMZPjmseE+NnJTiX5FEz+NfeKzQZWgWoSkE38xO34=;
+        b=VWCudeZgchJWvjAgFUKJAHKzVWbXRPoAOkhFBp1sLlAxoai0W0J/B4oKjAMh7vVLj9
+         HiTJgrFPbF+DelusXKsuJskb5T8p9GSOA4JmpHHaY+8i1ejrZMy9Xp+qdilJKtiES758
+         blvb7sE5J2ZJftCVSxXHj00Yx9nzIqNr+EzPXmt2rNn3ig1ErNORSUroNvXBY2uf9ZKz
+         29j2x7TUYnljEe7on4jYsEp7+FLBcCMZXFzCLpGIiYi+SfIQek70ci4jtYylFcys6FTA
+         XtQMxo0+0pDiEXqI8V1mOoDE/JW0vVmasvMCdOM+LYNov/vNVXZyARpXZAdWcxz8oFtY
+         jUzQ==
+X-Gm-Message-State: AOJu0YwRdkXP1qIEyx5C0Z4Fq/9U1tY4zkGwJ0Q19ZFf0QUnhaosCZqh
+	yXZgzQs4U+8ZKeWBbBrk4csy/1XOjE1kiUoOHUPFuBwCYmJPFxc+V59k79LZEp3c9y4ZGcaCMst
+	gihHcQ8p/Sodlr0aIm9slxx7jJPf8LBMp
+X-Google-Smtp-Source: AGHT+IFkQ3AUOOGgAw7byHYXU4wQvww+xPLx5fYGaP+kl3qDZhA7tHFM2gAlqvC3Xf+bEcEgD1bJ/300g3D++n4w1gY=
+X-Received: by 2002:adf:f348:0:b0:339:30fd:cbb5 with SMTP id
+ e8-20020adff348000000b0033930fdcbb5mr34670wrp.109.1706059146980; Tue, 23 Jan
+ 2024 17:19:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240124010322.94782-1-yang.lee@linux.alibaba.com>
+References: <20240124121605.1c4cc5bc@canb.auug.org.au>
+In-Reply-To: <20240124121605.1c4cc5bc@canb.auug.org.au>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 23 Jan 2024 17:18:55 -0800
+Message-ID: <CAADnVQKBCpkwx1HVaNy1wmHqVrekgkd4LEZm9UzqOkOBniTOyw@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the bpf-next tree with the mm tree
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, bpf <bpf@vger.kernel.org>, 
+	Networking <netdev@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Next Mailing List <linux-next@vger.kernel.org>, Nathan Chancellor <nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Thank you, but you sent the same patch in April 2021 and it resulted in
-compile errors in the expansion of UPARG.
+On Tue, Jan 23, 2024 at 5:16=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.org=
+au> wrote:
+>
+> Hi all,
+>
+> Today's linux-next merge of the bpf-next tree got a conflict in:
+>
+>   tools/testing/selftests/bpf/README.rst
+>
+> between commit:
+>
+>   0d57063bef1b ("selftests/bpf: update LLVM Phabricator links")
+>
+> from the mm-nonmm-unstable branch of the mm tree and commit:
+>
+>   f067074bafd5 ("selftests/bpf: Update LLVM Phabricator links")
+>
+> from the bpf-next tree.
 
-I assume this one will result in the same errors.
+Andrew,
+please drop the bpf related commit from your tree.
 
-Jan
-
-
-    [auto build test ERROR on linus/master]
-    [also build test ERROR on v5.12-rc5 next-20210401]
-    [If your patch is applied to the wrong git tree, kindly drop us a note.
-    And when submitting patch, we suggest to use '--base' as documented in
-    https://git-scm.com/docs/git-format-patch]
-
-    url:
-    https://github.com/0day-ci/linux/commits/Yang-Li/coda-Remove-various-instances-of-an-unused-variable-outp/20210402-173111
-    base:
-    https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-    1678e493d530e7977cce34e59a86bb86f3c5631e
-    config: arc-randconfig-r014-20210402 (attached as .config)
-    compiler: arceb-elf-gcc (GCC) 9.3.0
-    reproduce (this is a W=1 build):
-            wget
-    https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross
-    -O ~/bin/make.cross
-            chmod +x ~/bin/make.cross
-            # https://github.com/0day-ci/linux/commit/b6484bc8a589df437829010ab82b49c48d56ee46
-            git remote add linux-review https://github.com/0day-ci/linux
-            git fetch --no-tags linux-review
-    Yang-Li/coda-Remove-various-instances-of-an-unused-variable-outp/20210402-173111
-            git checkout b6484bc8a589df437829010ab82b49c48d56ee46
-            # save the attached .config to linux build tree
-            COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross
-    ARCH=arc
-
-    If you fix the issue, kindly add following tag as appropriate
-    Reported-by: kernel test robot <lkp@intel.com>
-
-    All errors (new ones prefixed by >>):
-
-       fs/coda/upcall.c: In function 'venus_setattr':
-    >> fs/coda/upcall.c:65:9: error: 'outp' undeclared (first use in this
-    >> function); did you mean 'outl'?
-          65 |         outp = (union outputArgs *)(inp); \
-             |         ^~~~
-       fs/coda/upcall.c:118:2: note: in expansion of macro 'UPARG'
-         118 |  UPARG(CODA_SETATTR);
-             |  ^~~~~
-       fs/coda/upcall.c:65:9: note: each undeclared identifier is reported
-    only once for each function it appears in
-          65 |         outp = (union outputArgs *)(inp); \
-             |         ^~~~
-
-
-On Wed, Jan 24, 2024 at 09:03:22AM +0800, Yang Li wrote:
-> The variable 'outp' is declared but not used in the venus_rmdir
-> function within the Coda filesystem module. This causes a compiler
-> warning about the variable being set but not used.
-> 
-> To clean up the code and address the compiler warning, this patch
-> removes the declaration of the unused 'outp' variable.
-> 
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  fs/coda/upcall.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/fs/coda/upcall.c b/fs/coda/upcall.c
-> index cd6a3721f6f6..d97e0e4374f9 100644
-> --- a/fs/coda/upcall.c
-> +++ b/fs/coda/upcall.c
-> @@ -303,7 +303,6 @@ int venus_rmdir(struct super_block *sb, struct CodaFid *dirfid,
->  		    const char *name, int length)
->  {
->          union inputArgs *inp;
-> -        union outputArgs *outp;
->          int insize, outsize, error;
->          int offset;
->  
-> -- 
-> 2.20.1.7.g153144c
-> 
-> 
+Thanks
 
