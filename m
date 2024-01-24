@@ -1,124 +1,220 @@
-Return-Path: <linux-kernel+bounces-37003-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8E2483AA14
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:42:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4C2083AA19
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:42:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AB6A1F2272E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:42:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70AE91F227D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:42:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FECC77639;
-	Wed, 24 Jan 2024 12:42:13 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 925C117543;
-	Wed, 24 Jan 2024 12:42:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF35177641;
+	Wed, 24 Jan 2024 12:42:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Y2Od0xPz"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59D766A002;
+	Wed, 24 Jan 2024 12:42:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706100132; cv=none; b=lmBE6lq1YJMbD2Wu6iDMES+KAAozKP3dJydfXYl1ZCgoQ4ge18XN3XiPi0YMxtRdvj4wu55fo/Tqj+t/+6hXaC3h3Y7CrePcVJaNXs8bm7ctVPDHsCFd3LcDGJF34ro5RwSKfas8NUJadsANfsYib2l4RJRadJwKI3dtIZnr2iA=
+	t=1706100167; cv=none; b=Bg/qoug6bSoPDeNWNbIQ695+dETfzV3hm3NlDAqau5wON9XvKbeG/UdrLL/0Npm8/NfpYrWeXWeAurGSO9MsHCX6XssWvh6w+NVm94BVmTmOFOZn+7AQoeKPbQX36lmFyzfu1sQalQHOhcPdMu2Hc+l2VUif19mHDLH25SaWrOo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706100132; c=relaxed/simple;
-	bh=EcGrZYA6tDcbHMaVmklIwEpXVmyzro/cspPYoe6ROiM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=f4PJ4S+taMcDOGwks0ilobVwYTyK7y3LKwfWnRRckk/Tb9nk+WVfvCn7SRfHHrno3M/+xN6ehA64Q51w7LDPNj9G6pEn6L4+dnqZtTlVzNl0cys2jcXdEOq1NkY8A2OhB51yK5qNSRrhQMATD56U/k9vaojcX7omL11R8h4esT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AD1361FB;
-	Wed, 24 Jan 2024 04:42:54 -0800 (PST)
-Received: from [10.57.77.165] (unknown [10.57.77.165])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3654A3F5A1;
-	Wed, 24 Jan 2024 04:42:06 -0800 (PST)
-Message-ID: <e7a21ef8-6b72-46da-9a59-7e33394465f3@arm.com>
-Date: Wed, 24 Jan 2024 12:42:04 +0000
+	s=arc-20240116; t=1706100167; c=relaxed/simple;
+	bh=N01sEIdXxdAZjuBvaTnGLi0tuo4RuNA8mAbpjxb83G4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=K4YRgx970+yOn5mEpwYi0E+mH3OffwnGVUBOSOJ8tySCBkoJlgjMaiV/CIIDh8igSFtvmUU9GWFjeqiSPxfOwnYn5OmV6ycoiS2Grho+3GxwpH2rZuMk2w8HJCyP8IUxEkjtMRpjpEssUO6DJPJ9JOihO7BuE2gWBngV2OXDE4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Y2Od0xPz; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40OCagV6013961;
+	Wed, 24 Jan 2024 12:42:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=zwIMoTBgetyseescEdSkA0iCKrExxyXXP+mXbDfuKZo=; b=Y2
+	Od0xPz6oB5P09zEPXET/hXhYQni14v+IUbdybwwKnAHEFrpCdMnKLlU6WuXClbsi
+	RgNpvNhUkg285i6hXKIU2FBXW7Z0Bsr4MkBpQV5pejBneHyNXRUmRKcCMhJpXoiy
+	0gLUcRnVIzxzVR3ebdZOJhqjA63tTDLbVSFALJIJAaBy3uqzqguMegf4n/99aHAj
+	j2ZK4ruep9YUM+tZiAHQCSJus+MU+CbRWMTg2RNOc9DasKTezd3nYrSBO7BoWmNi
+	3zHx+rd0YW7ngFHVZTsIF5oOZn3r/R0nJZmRw8aoJ4qjobClfKkB2anVMckRU+zP
+	hFQQjRs6tIb8+heRJX9g==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vtmhr1rx8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Jan 2024 12:42:40 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40OCgdLm009550
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 24 Jan 2024 12:42:39 GMT
+Received: from [10.216.58.233] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 24 Jan
+ 2024 04:42:32 -0800
+Message-ID: <b4c27fb4-0cbf-7bad-3fc3-163fb4a5eb3f@quicinc.com>
+Date: Wed, 24 Jan 2024 18:12:28 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 02/10] mm: Non-pmd-mappable, large folios for
- folio_add_new_anon_rmap()
-Content-Language: en-GB
-To: Sven Schnelle <svens@linux.ibm.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, David Hildenbrand <david@redhat.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Yin Fengwei <fengwei.yin@intel.com>,
- Yu Zhao <yuzhao@google.com>, Catalin Marinas <catalin.marinas@arm.com>,
- Anshuman Khandual <anshuman.khandual@arm.com>, Yang Shi
- <shy828301@gmail.com>, "Huang, Ying" <ying.huang@intel.com>,
- Zi Yan <ziy@nvidia.com>, Luis Chamberlain <mcgrof@kernel.org>,
- Itaru Kitayama <itaru.kitayama@gmail.com>,
- "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
- John Hubbard <jhubbard@nvidia.com>, David Rientjes <rientjes@google.com>,
- Vlastimil Babka <vbabka@suse.cz>, Hugh Dickins <hughd@google.com>,
- Kefeng Wang <wangkefeng.wang@huawei.com>, Barry Song <21cnbao@gmail.com>,
- Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Barry Song <v-songbaohua@oppo.com>, linux-s390@vger.kernel.org
-References: <20231207161211.2374093-1-ryan.roberts@arm.com>
- <20231207161211.2374093-3-ryan.roberts@arm.com> <ZaMR2EWN-HvlCfUl@krava>
- <41dc7dff-1ea8-4894-a487-88d46ec2b2d8@redhat.com> <ZaRKMwKJIBmh8-lD@krava>
- <1188e67e-5c04-4bb5-b242-78d92c3fc85c@arm.com>
- <yt9d1qa7x9qv.fsf@linux.ibm.com> <ZbDyLzoIm0GdQzZA@krava>
- <6caaced7-a9d7-4fe4-823a-11b96be83e46@arm.com> <ZbD9YdCmZ3_uTj_k@krava>
- <edfade67-269e-4a49-8db6-40617131e283@arm.com>
- <yt9dcytqx6dv.fsf@linux.ibm.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <yt9dcytqx6dv.fsf@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH 1/2] dt-bindings: hwinfo: Introduce board-id
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>
+CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>,
+        Elliot Berman
+	<quic_eberman@quicinc.com>
+References: <1705749649-4708-1-git-send-email-quic_amrianan@quicinc.com>
+ <1705749649-4708-2-git-send-email-quic_amrianan@quicinc.com>
+ <1fc9815e-76dd-41d7-aa1a-caa72ef4ad34@linaro.org>
+From: Amrit Anand <quic_amrianan@quicinc.com>
+In-Reply-To: <1fc9815e-76dd-41d7-aa1a-caa72ef4ad34@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 0eY5KIcnb5mcYtI6Yy6ULcCFaiHf0Ci4
+X-Proofpoint-GUID: 0eY5KIcnb5mcYtI6Yy6ULcCFaiHf0Ci4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-24_06,2024-01-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 mlxlogscore=999 mlxscore=0 bulkscore=0 phishscore=0
+ malwarescore=0 adultscore=0 impostorscore=0 priorityscore=1501
+ clxscore=1011 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2401190000 definitions=main-2401240091
 
-On 24/01/2024 12:28, Sven Schnelle wrote:
-> Hi Ryan,
-> 
-> Ryan Roberts <ryan.roberts@arm.com> writes:
-> 
->>>>>>>>>> I'm hitting this bug (console output below) with adding uprobe
->>>>>>>>>> on simple program like:
->>>>>>>>>>
->>>>>>>>>>    $ cat up.c
->>>>>>>>>>    int main(void)
->>>>>>>>>>    {
->>>>>>>>>>       return 0;
->>>>>>>>>>    }
->>>>>>>>>>
->>>>>>>>>>    # bpftrace -e 'uprobe:/home/jolsa/up:_start {}'
->>>>>>>>>>
->>>>>>>>>>    $ ./up
->>>>>>>>>>
->>>>>>>>>> it's on top of current linus tree master:
->>>>>>>>>>    052d534373b7 Merge tag 'exfat-for-6.8-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/linkinjeon/exfat
->>>>>>>>>>
->>>>>>>>>> before this patch it seems to work, I can send my .config if needed
->>>>>>>
->>>>>>> Thanks for the bug report!
->>>>>>
->>>>>> I just hit the same bug in our CI, but can't find the fix in -next. Is
->>>>>> this in the queue somewhere?
->>>>>
->>>>> we hit it as well, but I can see the fix in linux-next/master
->>>>>
->>>>>   4c137bc28064 uprobes: use pagesize-aligned virtual address when replacing pages
->>>>
->>>> Yes that's the one. Just to confirm: you are still hitting the VM_BUG_ON despite
->>>> having this change in your kernel? Could you please send over the full bug log?
->>>
->>> ah sorry.. I meant the change fixes the problem for us, it just did not
->>> yet propagate through the merge cycle into bpf trees.. but I can see it
->>> in linux-next tree, so it's probably just matter of time
+
+On 1/23/2024 5:39 PM, Krzysztof Kozlowski wrote:
+> On 20/01/2024 12:20, Amrit Anand wrote:
+>> From: Elliot Berman <quic_eberman@quicinc.com>
 >>
->> OK great! How about you, Sven? Do you have this change in your kernel? Hopefully
->> it should fix your problem.
-> 
-> Same here - the fix makes uprobes work again, i just didn't see it in
-> torvalds-master and neither in todays linux-next. But Jiri is right,
-> it's in linux-next/master. I just missed to find it there. So everything
-> should be ok.
+>
+>
+>> How is this better than Qualcomm's qcom,msm-id/qcom,board-id?
+>> -------------------------------------------------------------
+>> The selection process for devicetrees was Qualcomm-specific and not
+>> useful for other devices and bootloaders that were not developed by
+>> Qualcomm because a complex algorithm was used to implement. Board-ids
+>> provide a matching solution that can be implemented by bootloaders
+>> without introducing vendor-specific code. Qualcomm uses three
+>> devicetree properties: msm-id (interchangeably: soc-id), board-id, and
+>> pmic-id.  This does not scale well for use casese which use identifiers,
+>> for example, to distinguish between a display panel. For a display
+>> panel, an approach could be to add a new property: display-id,
+>> but now	bootloaders need to be updated to also read this property. We
+>> want to	avoid requiring to update bootloaders with new hardware
+> Some mis-indentation in two lines above.
+Sure will take care of this.
+>
+>> identifiers: a bootloader need only recognize the identifiers it can
+>> handle.
+>>
+>> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
+>> Signed-off-by: Amrit Anand <quic_amrianan@quicinc.com>
+>> ---
+>>   .../devicetree/bindings/hwinfo/board-id.yaml       | 53 ++++++++++++++++++++++
+>>   1 file changed, 53 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/hwinfo/board-id.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/hwinfo/board-id.yaml b/Documentation/devicetree/bindings/hwinfo/board-id.yaml
+> I think we should add it to dtschema, because bootloaders are using these.
+Do you want us to move this file completely to the below mentioned repo 
+and under which directory?
+https://github.com/devicetree-org/dt-schema
 
-Great!
+>
+>> new file mode 100644
+>> index 0000000..82d5ff7
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/hwinfo/board-id.yaml
+>> @@ -0,0 +1,53 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/hwinfo/board-id.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Board Identifier for Devicetree Selection
+>> +
+>> +maintainers:
+>> +  - Amrit Anand <quic_amrianan@quicinc.com>
+>> +  - Elliot Berman <quic_eberman@quicinc.com>
+>> +
+>> +description: |
+> Do not need '|' unless you need to preserve formatting.
+Will drop it.
+>
+>> +  Device manufacturers frequently ship multiple boards under a single
+>> +  software package. These software packages will ship multiple devicetree
+>> +  blobs and require some mechanism to pick the correct DTB for the board
+>> +  the software package was deployed. board-id provides a mechanism for
+>> +  bootloaders to select the appropriate DTB which is vendor/OEM-agnostic.
+>> +
+>> +select:
+>> +  anyOf:
+>> +    - required:
+>> +        - 'board-id'
+>> +    - required:
+>> +        - 'board-id-types'
+>> +    - required:
+>> +        - '#board-id-cells'
+> I don't fully get why do you need this select. Isn't the schema selected
+> by nodename? Or maybe it is for the final required: but then this could
+> be just set of dependencies.
+The nodename here would be "/". So it will be applied to all the DTs, right?
+Here, we wanted this to apply only if the above mentioned properties are 
+present.
+Do you suggest moving this to qcom,board-id.yaml and the required: as well.
+So that vendor specific yaml could be applied?
+>> +
+>> +properties:
+>> +  $nodename:
+>> +    const: "/"
+> Blank line.
+Will add it.
+>> +  board-id:
+>> +    $ref: /schemas/types.yaml#/definitions/uint32-matrix
+>> +    description: |
+> Do not need '|' unless you need to preserve formatting.
+Ack
+>> +      A list of identifiers that can be used to match with this devicetree.
+> s/devicetree/Devicetree/ ?
+Will update
+>> +      The interpretatation of each cell can be matched with the
+> Typo: interpretation
+Will update
+>> +      board-id-type at the same index.
+>> +
+>> +  board-id-types:
+>> +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+>> +    description:
+>> +      Defines the type of each cell, indicating to the DeviceTree selection
+> s/DeviceTree/Devicetree/ ?
+Will update
+>
+>> +      mechanism how to parse the board-id.
+>> +
+>> +  '#board-id-cells':
+>   What are the cells for?
+Bootloader will use this to check the number of entries in a tuple of 
+board-id.
+Vendors can have different logic in bootloader to specify the number
+So wanted to make it flexible.
+
+Thanks,
+Amrit.
 
