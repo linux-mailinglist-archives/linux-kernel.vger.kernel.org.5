@@ -1,123 +1,268 @@
-Return-Path: <linux-kernel+bounces-36775-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACA6C83A65C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:07:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFA8483A65A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:06:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66866285770
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:07:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 112641C22E72
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:06:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 447A818624;
-	Wed, 24 Jan 2024 10:07:15 +0000 (UTC)
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F4EE182DA;
+	Wed, 24 Jan 2024 10:06:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="YiDN0MLX"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E02A18625
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:07:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0F4A18627
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:06:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706090834; cv=none; b=sUjFQvJwiB/DCBY1NabynW0HNBm2Lmx0xmx/i85fjYxcLgtnxaq8kHC7JmrHs9YDueoqNAwIlE8hVTQAgWi6W5LUUQ8uC/kY0bBTUwzC651+SxiLguoJe9S2RT7fdqjIvb2iyCc8XxyOiP6A6v7O4yLDmHqVf0OPhQtR5iWEoII=
+	t=1706090773; cv=none; b=tBAt4ie2GS+sGZ+S6lDV7Yy3wlNp6yFFduR77HKClXSUpxf0Z6FJkF4edKQvkSz/LZEhA6sMHutl6DFIZ+f6auNk5TptlJo98rO2FIyPMHlblnz7CXzM7HTYrX8H45aJB51MOo7g33ddVOn8RIv1pBsb2Xpw1VAXQUxkHFICt+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706090834; c=relaxed/simple;
-	bh=tge2BaLdjdaFGZrfm77y3RHFGp3ee6D6Qs2RCPl4sYA=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=eE20kJEaSUVuKQBIE6PGTPV+SNYFQAbaxI2JK5YDcqiz+cD2hjJSFteMk3iyMckOa2mBUny5dAHUC2B9H1DlpknAr6FD0j2Ic+HucGPkaOeIqDU/CH5t0g/10uBrxkzwPb0nTbtk8/RezndV1sfPclas3Vr9Z2q17nD5USd5E6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=none smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from fsav115.sakura.ne.jp (fsav115.sakura.ne.jp [27.133.134.242])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 40OA6436043714;
-	Wed, 24 Jan 2024 19:06:04 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav115.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav115.sakura.ne.jp);
- Wed, 24 Jan 2024 19:06:04 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav115.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 40OA64Mq043710
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Wed, 24 Jan 2024 19:06:04 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <42d17017-1d30-4c54-9c28-9d9ba2494e07@I-love.SAKURA.ne.jp>
-Date: Wed, 24 Jan 2024 19:06:04 +0900
+	s=arc-20240116; t=1706090773; c=relaxed/simple;
+	bh=8Ax/Uoo3/XLfUjHoKDYZY5j6g/7lAxXQdhxsIo1C2EE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=h0PuxzEQUNZhrM+NZ4l+rd5mIQH8n2II3k/qSa21Ng0p/ofxTdW1vwipQ929gzobzpYtK162ZD5vq+0JKGAlTBnJjsuFKLunIdoIX0sV42U9rmxz774rWWY1HkIOrXYWNl2vFrbWmttXqknBzIyuMUeEoJq372gN3WMJFq5VQ+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=YiDN0MLX; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-338aca547d9so4240850f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 02:06:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1706090769; x=1706695569; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y8ZL/2lSpva4wbfacwvfZlkqpZ4glNpNOBF1JJbBQIs=;
+        b=YiDN0MLXxK7kOAsDHOVKG70FticpiIWNuhXPXuVJgkW8RpKAnH+N1HVK1ATvUOGfSF
+         DOhLnfcTJltLMrR6slzq985UdI1WOD6/XwSnRtmFiLfHIUsaJWWjYeki3Gs8l6jQ29YZ
+         yjiL3gsPPG8zotktYLjtU58NOk9iB7yyebTxg+98zJg20mt6NzMP18Q+el8QB7+a5fvL
+         JjBW/JEQfyHOoCW5p4HfFSOpMjiAmzsDXGKf0AONeJAS5Qd0deWxyDuW3c0EZjL/VpOF
+         I3s+YysLyylDA92MRu5puXfeIRH0A5j5AjFKZdctMYjFriGF+nkUG2zgCTIArzCKW5Mb
+         sx4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706090769; x=1706695569;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Y8ZL/2lSpva4wbfacwvfZlkqpZ4glNpNOBF1JJbBQIs=;
+        b=c34wxVTisj6BT1OcJ5ZT/RWSUuqqDHj2pqw+y80n9VmPuo7iYfzLgYVGa7xstt8rj7
+         mxLGOFqDUoWfw9bbOVjCiTvvBTV/iCSYtxXZwg0u9RLpgno0RyauhKxJskiRdzHiaUcm
+         tQLqgC64sw6iCPg9kRDuIrFZ6zCAzzU9yEgdQ3DaezvtCSIjX4Jnr0d2aMHw0aa+2+mg
+         /hgp2ailqP6OsBE5PbJsttJzgvzOkUusMJs1yOoKSH3sa5k3LMmcA15uuYCWNZgZPCCX
+         rtj41wJZyJzfo1Cnn9ltqzbiMTZ4UMeV3cEbMrblPw4D7BSj7VPEj9ae7CcNvtKjPB4J
+         ndgA==
+X-Gm-Message-State: AOJu0YyU1nLhVhxdiU6/HtzPJ8mMJe8KvqFVOBhq4QCzzWW5x+yyDqtS
+	FriO4HIzdalBtPhOnLUyE6CHc9U5Y5ktpPTc7U9aAW00ef5uofMSqTdvQZx8aNEwBY9wU4oVVVd
+	u
+X-Google-Smtp-Source: AGHT+IHUexzrojnzjyp31biWMdZQVLr6Ap4bElk2KfCqHe+GPLzfetl5OZRlp7JcdXwLST2E1XjKHw==
+X-Received: by 2002:a5d:5044:0:b0:337:bcb3:2c53 with SMTP id h4-20020a5d5044000000b00337bcb32c53mr181061wrt.226.1706090768993;
+        Wed, 24 Jan 2024 02:06:08 -0800 (PST)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:e737:cf8b:25f7:e0ad])
+        by smtp.gmail.com with ESMTPSA id s8-20020adff808000000b0033905a60689sm13419064wrp.45.2024.01.24.02.06.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 02:06:08 -0800 (PST)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH] gpio: unexport GPIO irq domain functions only used internally
+Date: Wed, 24 Jan 2024 11:06:06 +0100
+Message-Id: <20240124100606.22700-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: [PATCH] tty: n_gsm: restrict tty devices to attach
-Content-Language: en-US
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-To: Jiri Slaby <jirislaby@kernel.org>,
-        syzbot <syzbot+06fa1063cca8163ea541@syzkaller.appspotmail.com>,
-        syzkaller-bugs@googlegroups.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Starke, Daniel" <daniel.starke@siemens.com>,
-        Lee Jones <lee@kernel.org>, Fedor Pchelkin <pchelkin@ispras.ru>
-Cc: linux-kernel@vger.kernel.org, linux-serial <linux-serial@vger.kernel.org>
-References: <00000000000039f237060f354ef7@google.com>
- <83414cb6-df16-4b6d-92e3-d54d22ba26cc@I-love.SAKURA.ne.jp>
- <9cd9d3eb-418f-44cc-afcf-7283d51252d6@I-love.SAKURA.ne.jp>
- <82aa07d4-13ac-4b1d-80cd-0970c71752a5@kernel.org>
- <7dc23b9d-5120-4966-b47b-fcabe270d498@I-love.SAKURA.ne.jp>
-In-Reply-To: <7dc23b9d-5120-4966-b47b-fcabe270d498@I-love.SAKURA.ne.jp>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-syzbot is reporting sleep in atomic context, for gsmld_write() is calling
-con_write() with spinlock held and IRQs disabled.
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Since n_gsm is designed to be used for serial port, reject attaching to
-virtual consoles and PTY devices, by checking tty's device major/minor
-numbers at gsmld_open().
+There are no external users for the irq domain helpers so unexport them
+and remove the prototypes from the driver header.
 
-Link: https://www.kernel.org/doc/html/v6.7/driver-api/tty/n_gsm.html
-Reported-by: syzbot+06fa1063cca8163ea541@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=06fa1063cca8163ea541
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
- drivers/tty/n_gsm.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/gpio/gpiolib.c      | 93 +++++++++++++++++--------------------
+ include/linux/gpio/driver.h | 12 -----
+ 2 files changed, 42 insertions(+), 63 deletions(-)
 
-diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
-index 4036566febcb..14581483af78 100644
---- a/drivers/tty/n_gsm.c
-+++ b/drivers/tty/n_gsm.c
-@@ -3623,6 +3623,7 @@ static void gsmld_close(struct tty_struct *tty)
- static int gsmld_open(struct tty_struct *tty)
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index 44c8f5743a24..d50a786f8176 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -1254,8 +1254,8 @@ static void gpiochip_irqchip_free_valid_mask(struct gpio_chip *gc)
+ 	gpiochip_free_mask(&gc->irq.valid_mask);
+ }
+ 
+-bool gpiochip_irqchip_irq_valid(const struct gpio_chip *gc,
+-				unsigned int offset)
++static bool gpiochip_irqchip_irq_valid(const struct gpio_chip *gc,
++				       unsigned int offset)
  {
- 	struct gsm_mux *gsm;
-+	int major;
+ 	if (!gpiochip_line_is_valid(gc, offset))
+ 		return false;
+@@ -1264,7 +1264,6 @@ bool gpiochip_irqchip_irq_valid(const struct gpio_chip *gc,
+ 		return true;
+ 	return test_bit(offset, gc->irq.valid_mask);
+ }
+-EXPORT_SYMBOL_GPL(gpiochip_irqchip_irq_valid);
  
- 	if (!capable(CAP_NET_ADMIN))
- 		return -EPERM;
-@@ -3630,6 +3631,17 @@ static int gsmld_open(struct tty_struct *tty)
- 	if (tty->ops->write == NULL)
- 		return -EINVAL;
+ #ifdef CONFIG_IRQ_DOMAIN_HIERARCHY
  
-+	major = tty->driver->major;
-+	/* Reject Virtual consoles */
-+	if (major == 4 && tty->driver->minor_start == 1)
-+		return -EINVAL;
-+	/* Reject Unix98 PTY masters/slaves */
-+	if (major >= 128 && major <= 143)
-+		return -EINVAL;
-+	/* Reject BSD PTY masters/slaves */
-+	if (major >= 2 && major <= 3)
-+		return -EINVAL;
+@@ -1439,6 +1438,43 @@ static unsigned int gpiochip_child_offset_to_irq_noop(struct gpio_chip *gc,
+ 	return offset;
+ }
+ 
++/**
++ * gpiochip_irq_domain_activate() - Lock a GPIO to be used as an IRQ
++ * @domain: The IRQ domain used by this IRQ chip
++ * @data: Outermost irq_data associated with the IRQ
++ * @reserve: If set, only reserve an interrupt vector instead of assigning one
++ *
++ * This function is a wrapper that calls gpiochip_lock_as_irq() and is to be
++ * used as the activate function for the &struct irq_domain_ops. The host_data
++ * for the IRQ domain must be the &struct gpio_chip.
++ */
++static int gpiochip_irq_domain_activate(struct irq_domain *domain,
++					struct irq_data *data, bool reserve)
++{
++	struct gpio_chip *gc = domain->host_data;
++	unsigned int hwirq = irqd_to_hwirq(data);
 +
- 	/* Attach our ldisc data */
- 	gsm = gsm_alloc_mux();
- 	if (gsm == NULL)
++	return gpiochip_lock_as_irq(gc, hwirq);
++}
++
++/**
++ * gpiochip_irq_domain_deactivate() - Unlock a GPIO used as an IRQ
++ * @domain: The IRQ domain used by this IRQ chip
++ * @data: Outermost irq_data associated with the IRQ
++ *
++ * This function is a wrapper that will call gpiochip_unlock_as_irq() and is to
++ * be used as the deactivate function for the &struct irq_domain_ops. The
++ * host_data for the IRQ domain must be the &struct gpio_chip.
++ */
++static void gpiochip_irq_domain_deactivate(struct irq_domain *domain,
++					   struct irq_data *data)
++{
++	struct gpio_chip *gc = domain->host_data;
++	unsigned int hwirq = irqd_to_hwirq(data);
++
++	return gpiochip_unlock_as_irq(gc, hwirq);
++}
++
+ static void gpiochip_hierarchy_setup_domain_ops(struct irq_domain_ops *ops)
+ {
+ 	ops->activate = gpiochip_irq_domain_activate;
+@@ -1556,7 +1592,8 @@ static bool gpiochip_hierarchy_is_hierarchical(struct gpio_chip *gc)
+  * gpiochip by assigning the gpiochip as chip data, and using the irqchip
+  * stored inside the gpiochip.
+  */
+-int gpiochip_irq_map(struct irq_domain *d, unsigned int irq, irq_hw_number_t hwirq)
++static int gpiochip_irq_map(struct irq_domain *d, unsigned int irq,
++			    irq_hw_number_t hwirq)
+ {
+ 	struct gpio_chip *gc = d->host_data;
+ 	int ret = 0;
+@@ -1593,9 +1630,8 @@ int gpiochip_irq_map(struct irq_domain *d, unsigned int irq, irq_hw_number_t hwi
+ 
+ 	return 0;
+ }
+-EXPORT_SYMBOL_GPL(gpiochip_irq_map);
+ 
+-void gpiochip_irq_unmap(struct irq_domain *d, unsigned int irq)
++static void gpiochip_irq_unmap(struct irq_domain *d, unsigned int irq)
+ {
+ 	struct gpio_chip *gc = d->host_data;
+ 
+@@ -1604,7 +1640,6 @@ void gpiochip_irq_unmap(struct irq_domain *d, unsigned int irq)
+ 	irq_set_chip_and_handler(irq, NULL, NULL);
+ 	irq_set_chip_data(irq, NULL);
+ }
+-EXPORT_SYMBOL_GPL(gpiochip_irq_unmap);
+ 
+ static const struct irq_domain_ops gpiochip_domain_ops = {
+ 	.map	= gpiochip_irq_map,
+@@ -1626,50 +1661,6 @@ static struct irq_domain *gpiochip_simple_create_domain(struct gpio_chip *gc)
+ 	return domain;
+ }
+ 
+-/*
+- * TODO: move these activate/deactivate in under the hierarchicial
+- * irqchip implementation as static once SPMI and SSBI (all external
+- * users) are phased over.
+- */
+-/**
+- * gpiochip_irq_domain_activate() - Lock a GPIO to be used as an IRQ
+- * @domain: The IRQ domain used by this IRQ chip
+- * @data: Outermost irq_data associated with the IRQ
+- * @reserve: If set, only reserve an interrupt vector instead of assigning one
+- *
+- * This function is a wrapper that calls gpiochip_lock_as_irq() and is to be
+- * used as the activate function for the &struct irq_domain_ops. The host_data
+- * for the IRQ domain must be the &struct gpio_chip.
+- */
+-int gpiochip_irq_domain_activate(struct irq_domain *domain,
+-				 struct irq_data *data, bool reserve)
+-{
+-	struct gpio_chip *gc = domain->host_data;
+-	unsigned int hwirq = irqd_to_hwirq(data);
+-
+-	return gpiochip_lock_as_irq(gc, hwirq);
+-}
+-EXPORT_SYMBOL_GPL(gpiochip_irq_domain_activate);
+-
+-/**
+- * gpiochip_irq_domain_deactivate() - Unlock a GPIO used as an IRQ
+- * @domain: The IRQ domain used by this IRQ chip
+- * @data: Outermost irq_data associated with the IRQ
+- *
+- * This function is a wrapper that will call gpiochip_unlock_as_irq() and is to
+- * be used as the deactivate function for the &struct irq_domain_ops. The
+- * host_data for the IRQ domain must be the &struct gpio_chip.
+- */
+-void gpiochip_irq_domain_deactivate(struct irq_domain *domain,
+-				    struct irq_data *data)
+-{
+-	struct gpio_chip *gc = domain->host_data;
+-	unsigned int hwirq = irqd_to_hwirq(data);
+-
+-	return gpiochip_unlock_as_irq(gc, hwirq);
+-}
+-EXPORT_SYMBOL_GPL(gpiochip_irq_domain_deactivate);
+-
+ static int gpiochip_to_irq(struct gpio_chip *gc, unsigned int offset)
+ {
+ 	struct irq_domain *domain = gc->irq.domain;
+diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
+index 9a5c6c76e653..363d06c7b637 100644
+--- a/include/linux/gpio/driver.h
++++ b/include/linux/gpio/driver.h
+@@ -704,18 +704,6 @@ int bgpio_init(struct gpio_chip *gc, struct device *dev,
+ #define BGPIOF_NO_OUTPUT		BIT(5) /* only input */
+ #define BGPIOF_NO_SET_ON_INPUT		BIT(6)
+ 
+-int gpiochip_irq_map(struct irq_domain *d, unsigned int irq,
+-		     irq_hw_number_t hwirq);
+-void gpiochip_irq_unmap(struct irq_domain *d, unsigned int irq);
+-
+-int gpiochip_irq_domain_activate(struct irq_domain *domain,
+-				 struct irq_data *data, bool reserve);
+-void gpiochip_irq_domain_deactivate(struct irq_domain *domain,
+-				    struct irq_data *data);
+-
+-bool gpiochip_irqchip_irq_valid(const struct gpio_chip *gc,
+-				unsigned int offset);
+-
+ #ifdef CONFIG_GPIOLIB_IRQCHIP
+ int gpiochip_irqchip_add_domain(struct gpio_chip *gc,
+ 				struct irq_domain *domain);
 -- 
-2.18.4
-
+2.40.1
 
 
