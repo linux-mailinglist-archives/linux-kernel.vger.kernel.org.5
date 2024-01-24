@@ -1,168 +1,117 @@
-Return-Path: <linux-kernel+bounces-37331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5EC283AE56
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:27:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C871083AE77
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:37:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46E2F28F761
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:27:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99552B2736C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:28:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3C247CF30;
-	Wed, 24 Jan 2024 16:27:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C9E97CF32;
+	Wed, 24 Jan 2024 16:28:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lQ9tgBBW";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="oE8dTMc/";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lQ9tgBBW";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="oE8dTMc/"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="oKZfGFug"
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BC687C09F
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 16:27:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BABD7CF1A
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 16:28:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706113624; cv=none; b=JABriikj2JpUpbD3TZMHJB4h/Zf5U4P/J5QIPnZoMx1SpFFHXBZa9Tr6wvfYh8r6KHtsQVLxX8bxc20hOlv0/MyizdNDuysHfVBSQYeRmzXKypE1TdfFv4bkyxQrMqtvvl/L9kXWrLmTtuPweYTuJcGwQaH2OtSzaJt1RWMzkJY=
+	t=1706113692; cv=none; b=Jxz0f5U6debC7lr1/i/j2+jYqDhzl0fhXxAwZI/XIpxDFnkZ3NKnJp7GdKOpu9FjxlRkErVLfSh9m6rp59oQLTvZv8FkYd+7L7bobyLFmaSHKj+UseBFmBmUbCbY7dXgLCpBzCwRm4THqoIIRhvvF7mH+k0+IAcMxgp2w8ZZEMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706113624; c=relaxed/simple;
-	bh=waBFxmJupUTBTaPp1HXvC5yAn86vKXcb4A0xPu8gN84=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=a8tduf40m2PoFcSdRCOnhgnRrPLQcQzAP+zph9LDVgYhWfAQiA9KZKsZ5V9565IxUiZaG91oQazaVqVS8I9MGGfD/T9qYS9Q2cNCNKdEFNAclC09c9L/Hzd/eFNR34PY7mXaxx1PpSJBiHbkX/wx9GqaZswePekJ7ud7MAv8oqA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=lQ9tgBBW; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=oE8dTMc/; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=lQ9tgBBW; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=oE8dTMc/; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BE6B01F7FB;
-	Wed, 24 Jan 2024 16:26:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706113619; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=symhIeQH+xFWWu7ZkOKh67eF07PcSm6nFW937Q3F2fE=;
-	b=lQ9tgBBWiCAYqZ9mf1n59omqAWxrXnqo/eL8Hw7Xya/3iKO6iKDWcOMoGSCGkoy6hGlWjE
-	EWDSIEU8zsiL9ZQ6GOeTuLVJp96KhHPG5dsNk8KMPvlt3HZJQ8BY8wMhZ6rxSQnjuBNsYB
-	Vl9cUcdmX0Uz9K8djynrRG7lp9SgYrQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706113619;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=symhIeQH+xFWWu7ZkOKh67eF07PcSm6nFW937Q3F2fE=;
-	b=oE8dTMc/hcssgtim+YYGpNPM7dkYgeDUHTeGwm6Iqi1wBQvReA/gdltDK5A8IIfSovxVRp
-	QfA9m/vVVlUCXqBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706113619; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=symhIeQH+xFWWu7ZkOKh67eF07PcSm6nFW937Q3F2fE=;
-	b=lQ9tgBBWiCAYqZ9mf1n59omqAWxrXnqo/eL8Hw7Xya/3iKO6iKDWcOMoGSCGkoy6hGlWjE
-	EWDSIEU8zsiL9ZQ6GOeTuLVJp96KhHPG5dsNk8KMPvlt3HZJQ8BY8wMhZ6rxSQnjuBNsYB
-	Vl9cUcdmX0Uz9K8djynrRG7lp9SgYrQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706113619;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=symhIeQH+xFWWu7ZkOKh67eF07PcSm6nFW937Q3F2fE=;
-	b=oE8dTMc/hcssgtim+YYGpNPM7dkYgeDUHTeGwm6Iqi1wBQvReA/gdltDK5A8IIfSovxVRp
-	QfA9m/vVVlUCXqBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A48911333E;
-	Wed, 24 Jan 2024 16:26:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id UYzJJ1M6sWVnIwAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 24 Jan 2024 16:26:59 +0000
-Message-ID: <c2995f42-7b35-4d3f-8882-433354b2513a@suse.cz>
-Date: Wed, 24 Jan 2024 17:26:59 +0100
+	s=arc-20240116; t=1706113692; c=relaxed/simple;
+	bh=gLHkSQWpkbD1hmnLgTICPpcir4dWz8DwxnNhev1K+hc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=l9ozQJYyYi+neaoLbd+9NM8Ez99miL/Yaf20kfv50gOcUlmlRjYe6HG/3lxShjnzAAzTvbInW/CeOeIQ3lXlAcRtGteY6TTtxr81AvDSHa1C/g9h6ngn9wKkLHqg64HXiussgFKCcb7jJ5fjiIE1WmzmnvvCzefihRh/XvEpSx4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=oKZfGFug; arc=none smtp.client-ip=209.85.167.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3bbc649c275so2173260b6e.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 08:28:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1706113690; x=1706718490; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KB2zplKZXZmwEaf35sIS9GHJDUJDfzr6dvv7piAnaEg=;
+        b=oKZfGFugwaLHtks6wFDArVuMagDO7BsB6mw4TnYUeoOTRSHRlAwEsy0/aTuD54ERfU
+         DLtQ6rSbmkzj4T1VUMudKZYhPlf/v0L/9KXKpIwGLjaRMlJ8MVypgea3p6TKR8jd4/nA
+         3P+Y05tK/zGbozeej/j2TJJG1Y80w9Fuv+lDvccymWb1jtkJOaEtlE+a2jGjLNYFa6DC
+         T2OzpEaRhhZzk8s9tF5VcmHZe6ITQh9a9qnyldu9YAnlldtMA5OzMfvpF8E2DhjW19CU
+         o7sS9PC+4sGdYDEkv4eoHWhGeyboPvnD3TehwY0/Uv4Jf7WymA7mC1le97wfXDzs01eq
+         i1lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706113690; x=1706718490;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KB2zplKZXZmwEaf35sIS9GHJDUJDfzr6dvv7piAnaEg=;
+        b=owZk+7UqON8377Hh6uFUDLvMj/HhrCTVDTY7Lk/PcB/2poXiT/DPrBkGSB8mhCOGUL
+         Lvk/e2v92g9xKy2NFBehXymXqEzadh2oQQnTgjKLc+uUfgClbOxZUE+bEsqJobtQ6FTD
+         rQigRrIAr9s0kMs6Nk5Fdv3/NMqbE6Bg0SYErfvc7iAxck5wlWyrmhZypi8QV3cRqNZA
+         NeF8fAZSY1DbydG1rs3r/rBf/hjj9JPTCluMwzQTB/ZbB2m8kwmdwtVJYl/gT3JA1//s
+         34kJyP9i9DwD/FJ710FTc6WMnH2Os7A87dTKbYPcrUgdmHFe+t9+7IkRIl+5ltiFXJTN
+         j4MA==
+X-Gm-Message-State: AOJu0Yyo3dnHDsFgZQ+MkPsbcMuwKpL7yZDAj6DMqQfUv+b/sBO6PZk+
+	r4wo3HsIPifyxE26gU18UZOzHhF2Y5ZGRgFfMXqfT2NeVfjHPLtYqTYkM2ixZoM=
+X-Google-Smtp-Source: AGHT+IEi7HTUXH3vmWl30/1TUyQz5MURf/7khn5w6ICtjrdySxkJ4o7FVdQYk67VDlULKCkNAAcMjg==
+X-Received: by 2002:a05:6808:3c85:b0:3bd:36fc:1c1e with SMTP id gs5-20020a0568083c8500b003bd36fc1c1emr2302861oib.44.1706113690073;
+        Wed, 24 Jan 2024 08:28:10 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id g50-20020a0568080df200b003bdb4a17d4bsm1614959oic.16.2024.01.24.08.28.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 08:28:09 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rSg6i-008pwi-AR;
+	Wed, 24 Jan 2024 12:28:08 -0400
+Date: Wed, 24 Jan 2024 12:28:08 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Robin Murphy <robin.murphy@arm.com>
+Cc: "zhangzekun (A)" <zhangzekun11@huawei.com>, will@kernel.org,
+	joro@8bytes.org, nicolinc@nvidia.com, mshavit@google.com,
+	iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iommu/arm-smmu-v3: Add a threshold to avoid potential
+ soft lockup
+Message-ID: <20240124162808.GT50608@ziepe.ca>
+References: <20240115114040.6279-1-zhangzekun11@huawei.com>
+ <20240115153152.GA50608@ziepe.ca>
+ <e74ea905-d107-4202-97ca-c2c509e7aa1e@huawei.com>
+ <20240118142243.GI50608@ziepe.ca>
+ <10c1980a-df07-4f69-93e5-c1c50b106a13@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] Revert "drm/sched: Split free_job into own work item"
-Content-Language: en-US
-To: Mario Limonciello <mario.limonciello@amd.com>,
- Luben Tuikov <ltuikov89@gmail.com>, Matthew Brost <matthew.brost@intel.com>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- "open list:DRM GPU SCHEDULER" <dri-devel@lists.freedesktop.org>,
- open list <linux-kernel@vger.kernel.org>
-References: <20240123021155.2775-1-mario.limonciello@amd.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240123021155.2775-1-mario.limonciello@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-0.09 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BAYES_HAM(-0.00)[27.73%];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 TO_DN_ALL(0.00)[];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 FREEMAIL_TO(0.00)[amd.com,gmail.com,intel.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[linux.intel.com,kernel.org,suse.de,gmail.com,ffwll.ch,amd.com,lists.freedesktop.org,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -0.09
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <10c1980a-df07-4f69-93e5-c1c50b106a13@arm.com>
 
-On 1/23/24 03:11, Mario Limonciello wrote:
-> commit f7fe64ad0f22 ("drm/sched: Split free_job into own work item")
-> causes graphics hangs at GDM or right after logging in on a
-> Framework 13 AMD laptop (containing a Phoenix APU).
-> 
-> This reverts commit f7fe64ad0f22ff034f8ebcfbd7299ee9cc9b57d7.
-> 
-> Fixes: f7fe64ad0f22 ("drm/sched: Split free_job into own work item")
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> ---
-> This is a regression introduced in 6.8-rc1, bisected from 6.7.
-> This revert done on top of 6.8-rc1 fixes the issue.
+On Wed, Jan 24, 2024 at 12:17:43PM +0000, Robin Murphy wrote:
 
-Applying this revert on 6.8-rc1 fixed my issues reported here:
-https://lore.kernel.org/all/2faccc1a-7fdd-499b-aa0a-bd54f4068f3e@suse.cz/
+> I don't think the story here has changed from when I first remember this
+> being discussed probably 7 or 8 years ago - what VFIO has always really
+> wanted for this situation is to know when it's doing a complete teardown and
+> just detach and free the domain, then unpin the pages afterwards, without
+> wasting any time at all on frivolous unmapping. 
 
-Let me know if there's another fix instead of revert so I can test.
+What VFIO/iommufd really wants is a fast way to to read back and unmap
+the PFNs from the domain. Today it has to call iommu_iova_to_phys()
+and then unmap which ends up walking the radix many times.
 
-Thanks,
-Vlastimil
+Ideally we'd batch read and unmap in a single call with a single radix
+walk.
 
-> 
-> I'm happy to gather any data to use to properly debug if that is
-> preferable to a revert.
-> ---
->  drivers/gpu/drm/scheduler/sched_main.c | 133 +++++++++----------------
->  include/drm/gpu_scheduler.h            |   4 +-
->  2 files changed, 48 insertions(+), 89 deletions(-)
-> 
+This is because the domain is used to store the 'struct page *' which
+is needed to unpin the memory.
 
+Combined with the no-attachments optimization I described it could be
+pretty close to optimal.
+
+Jason
 
