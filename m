@@ -1,106 +1,159 @@
-Return-Path: <linux-kernel+bounces-36599-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBF9483A39E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:58:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2C0583A3A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:59:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEEF61C25711
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 07:58:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78ED21F23B53
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 07:59:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AE601754C;
-	Wed, 24 Jan 2024 07:58:21 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9C7C1754E;
+	Wed, 24 Jan 2024 07:58:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VnnRLoV8"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1B3117543;
-	Wed, 24 Jan 2024 07:58:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D2A91754A
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 07:58:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706083101; cv=none; b=AGFigSXvv98amzNaU/70wyvWMWrsJGlmp82jlfMxreX1rww3wfQki3f1ed58V7EPP2PUtsKnL9CXelpQlccAupboGzymn6tQEEifm6uocI0YIJYstKRny5/SVXsfBk44s03pMsGDO/XjJGQT2Wj9m0Uu36oQAN5AczIf23HzcPo=
+	t=1706083138; cv=none; b=tsZFjV5fYNX6Y2VMVms2yMGZ1MekP+CNyo1lo2Mv5wwbf7W/JVWaHVcqlM1NTRujOP43Jo+1bm+C/NNWyRdeOyMrMP5UqUk2Bav2N70nUcLLvkBZnSZ6KyvQA0f4XqCx5veDWMPE3SrKe0yvlLA0Tb93bqVj38A49Qqu0ktygoE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706083101; c=relaxed/simple;
-	bh=1v3O0YVMPI+F7nAtQ6rXg2jQUbThSXmEGB9qvSA8O5g=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pFAw9f5jMcGmxTQSyI9wvc+WiNIHWmTXfat8ZGz1mXjHIsV6rxpAZwxj9ZTMiPO3NqACFSFNLyL6n2+H+h2nQESSXtsGWg0k224aoTpdSsPVUGBVGlYit3gGE+Rs8DyzLkwy1EM694rKg5wyULNngxU1rm5PbpeYkmbi6gLxxqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 299d9bbcd641409e9a7b28d2a21bd8ad-20240124
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:924919e9-e9e1-45c7-b695-27da69cd3540,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:-5
-X-CID-INFO: VERSION:1.1.35,REQID:924919e9-e9e1-45c7-b695-27da69cd3540,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-5
-X-CID-META: VersionHash:5d391d7,CLOUDID:11c5998e-e2c0-40b0-a8fe-7c7e47299109,B
-	ulkID:240124155807WFON35KP,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
-	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
-	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 299d9bbcd641409e9a7b28d2a21bd8ad-20240124
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 2099680962; Wed, 24 Jan 2024 15:58:05 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id DBC79E000EB9;
-	Wed, 24 Jan 2024 15:58:04 +0800 (CST)
-X-ns-mid: postfix-65B0C30C-697750425
-Received: from kernel.. (unknown [172.20.15.234])
-	by mail.kylinos.cn (NSMail) with ESMTPA id 3762CE000EB9;
-	Wed, 24 Jan 2024 15:58:03 +0800 (CST)
-From: Kunwu Chan <chentao@kylinos.cn>
-To: santosh.shilimkar@oracle.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	rds-devel@oss.oracle.com,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH] net: rds: Simplify the allocation of slab caches in rds_conn_init
-Date: Wed, 24 Jan 2024 15:58:01 +0800
-Message-Id: <20240124075801.471330-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1706083138; c=relaxed/simple;
+	bh=315CdLizWLGLXyaVNYVsttdv0aOnIMeQbKpRicgFKUQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=JmRZj1QnBxIIsaQghYog2MY8WE+6zgWzTeybVyoiFX5eo/6LRpCRDOzQis92J9UgW3f/U8f9KClQUJBEmimSFOwElCfsQ3zzFdCdQFU4hzYdpfQ53LiotqqyppJM5k6H4fA9ihhfX1ij0ONQqwDtB9JdfB5M4PZ4kZYSEpi3Ins=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VnnRLoV8; arc=none smtp.client-ip=134.134.136.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706083135; x=1737619135;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=315CdLizWLGLXyaVNYVsttdv0aOnIMeQbKpRicgFKUQ=;
+  b=VnnRLoV8kVcP1n4rC0b0idnor2QrfNfgaMsBMOo7mUvFsR8geI6kzRNO
+   TloMEfHGaAVUgknDOWcu24ef3/xp2Rx3g8lctsiGHeWlRYhDZBbDZyEsT
+   Cx2belT/WRAd2W/jcO27WAOJx3yixP+W0uwbGGTZHXFYI88fVsdllZRUH
+   3s5WLaeEtyKfudRzv9ddHekfhsyFqb192jNXZaJ1vNOaQTw6WU3h+XIWs
+   VuTC360E2do/TC41xPqgowY1+37Zu4Q89A07Qxoj/64LOFaBLq6CcTCJB
+   mMmFbaJ5BcaDM/cw0wTH9aAB1ztB4XoJ+ckTHox8Nkq2ErUSsLAuqQQcD
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="392188418"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="392188418"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 23:58:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="1926470"
+Received: from komalav-mobl2.gar.corp.intel.com (HELO localhost) ([10.252.41.195])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 23:58:29 -0800
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Lucas De Marchi <lucas.demarchi@intel.com>, Yury Norov
+ <yury.norov@gmail.com>
+Cc: linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, Andy
+ Shevchenko <andriy.shevchenko@linux.intel.com>,
+ intel-xe@lists.freedesktop.org, intel-gfx@lists.freedesktop.org
+Subject: Re: [PATCH 1/3] bits: introduce fixed-type genmasks
+In-Reply-To: <20240124050205.3646390-2-lucas.demarchi@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240124050205.3646390-1-lucas.demarchi@intel.com>
+ <20240124050205.3646390-2-lucas.demarchi@intel.com>
+Date: Wed, 24 Jan 2024 09:58:26 +0200
+Message-ID: <87v87jkvrx.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-Use the new KMEM_CACHE() macro instead of direct kmem_cache_create
-to simplify the creation of SLAB caches.
+On Tue, 23 Jan 2024, Lucas De Marchi <lucas.demarchi@intel.com> wrote:
+> From: Yury Norov <yury.norov@gmail.com>
+>
+> Generalize __GENMASK() to support different types, and implement
+> fixed-types versions of GENMASK() based on it. The fixed-type version
+> allows more strict checks to the min/max values accepted, which is
+> useful for defining registers like implemented by i915 and xe drivers
+> with their REG_GENMASK*() macros.
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
- net/rds/connection.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Mmh, the commit message says the fixed-type version allows more strict
+checks, but none are actually added. GENMASK_INPUT_CHECK() remains the
+same.
 
-diff --git a/net/rds/connection.c b/net/rds/connection.c
-index b4cc699c5fad..c749c5525b40 100644
---- a/net/rds/connection.c
-+++ b/net/rds/connection.c
-@@ -829,9 +829,7 @@ int rds_conn_init(void)
- 	if (ret)
- 		return ret;
-=20
--	rds_conn_slab =3D kmem_cache_create("rds_connection",
--					  sizeof(struct rds_connection),
--					  0, 0, NULL);
-+	rds_conn_slab =3D KMEM_CACHE(rds_connection, 0);
- 	if (!rds_conn_slab) {
- 		rds_loop_net_exit();
- 		return -ENOMEM;
---=20
-2.39.2
+Compared to the i915 and xe versions, this is more lax now. You could
+specify GENMASK_U32(63,32) without complaints.
 
+
+BR,
+Jani.
+
+>
+> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> ---
+>  include/linux/bitops.h |  1 -
+>  include/linux/bits.h   | 22 ++++++++++++----------
+>  2 files changed, 12 insertions(+), 11 deletions(-)
+>
+> diff --git a/include/linux/bitops.h b/include/linux/bitops.h
+> index 2ba557e067fe..1db50c69cfdb 100644
+> --- a/include/linux/bitops.h
+> +++ b/include/linux/bitops.h
+> @@ -15,7 +15,6 @@
+>  #  define aligned_byte_mask(n) (~0xffUL << (BITS_PER_LONG - 8 - 8*(n)))
+>  #endif
+>  
+> -#define BITS_PER_TYPE(type)	(sizeof(type) * BITS_PER_BYTE)
+>  #define BITS_TO_LONGS(nr)	__KERNEL_DIV_ROUND_UP(nr, BITS_PER_TYPE(long))
+>  #define BITS_TO_U64(nr)		__KERNEL_DIV_ROUND_UP(nr, BITS_PER_TYPE(u64))
+>  #define BITS_TO_U32(nr)		__KERNEL_DIV_ROUND_UP(nr, BITS_PER_TYPE(u32))
+> diff --git a/include/linux/bits.h b/include/linux/bits.h
+> index 7c0cf5031abe..cb94128171b2 100644
+> --- a/include/linux/bits.h
+> +++ b/include/linux/bits.h
+> @@ -6,6 +6,8 @@
+>  #include <vdso/bits.h>
+>  #include <asm/bitsperlong.h>
+>  
+> +#define BITS_PER_TYPE(type)	(sizeof(type) * BITS_PER_BYTE)
+> +
+>  #define BIT_MASK(nr)		(UL(1) << ((nr) % BITS_PER_LONG))
+>  #define BIT_WORD(nr)		((nr) / BITS_PER_LONG)
+>  #define BIT_ULL_MASK(nr)	(ULL(1) << ((nr) % BITS_PER_LONG_LONG))
+> @@ -30,16 +32,16 @@
+>  #define GENMASK_INPUT_CHECK(h, l) 0
+>  #endif
+>  
+> -#define __GENMASK(h, l) \
+> -	(((~UL(0)) - (UL(1) << (l)) + 1) & \
+> -	 (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
+> -#define GENMASK(h, l) \
+> -	(GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+> +#define __GENMASK(t, h, l) \
+> +	(GENMASK_INPUT_CHECK(h, l) + \
+> +	 (((t)~0ULL - ((t)(1) << (l)) + 1) & \
+> +	 ((t)~0ULL >> (BITS_PER_TYPE(t) - 1 - (h)))))
+>  
+> -#define __GENMASK_ULL(h, l) \
+> -	(((~ULL(0)) - (ULL(1) << (l)) + 1) & \
+> -	 (~ULL(0) >> (BITS_PER_LONG_LONG - 1 - (h))))
+> -#define GENMASK_ULL(h, l) \
+> -	(GENMASK_INPUT_CHECK(h, l) + __GENMASK_ULL(h, l))
+> +#define GENMASK(h, l)		__GENMASK(unsigned long,  h, l)
+> +#define GENMASK_ULL(h, l)	__GENMASK(unsigned long long, h, l)
+> +#define GENMASK_U8(h, l)	__GENMASK(u8,  h, l)
+> +#define GENMASK_U16(h, l)	__GENMASK(u16, h, l)
+> +#define GENMASK_U32(h, l)	__GENMASK(u32, h, l)
+> +#define GENMASK_U64(h, l)	__GENMASK(u64, h, l)
+>  
+>  #endif	/* __LINUX_BITS_H */
+
+-- 
+Jani Nikula, Intel
 
