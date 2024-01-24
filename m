@@ -1,148 +1,94 @@
-Return-Path: <linux-kernel+bounces-37501-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37503-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A52583B0F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:20:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4230C83B0FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:21:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14A83284C1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:20:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B91EA2820D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:21:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 053E212BE9C;
-	Wed, 24 Jan 2024 18:20:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D82BC12BEAB;
+	Wed, 24 Jan 2024 18:21:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Br4mhTz3"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="WfqY8RNk"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C90F12A17A;
-	Wed, 24 Jan 2024 18:20:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D3A012BE8F;
+	Wed, 24 Jan 2024 18:21:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706120420; cv=none; b=VDNsY7bzxSVBAjWZBbSI5fsSYXpsK9hUXk9X1caL0LwnGjLPHeV1c8S6d1HaumkF5TqIcMcPFoCj4hK8htQqvx8I1OnTub9DdUHfI8DvdNmV7KgIT9bAg5X+aeYBOpbWlwlKu72EX9VU5Ok7gDWslrQSVfD/3/vr64ckLkCVQsg=
+	t=1706120490; cv=none; b=DBfiiZ92dz3CPMsgiPZ5+8AOeV4c9g1K+2wEWZDRTGeqpOZyufDKXMxMYcuwzE1R9FeJNbGaz0fis7mO6zWCa2V/IOFmQ+ZtaPKx527Bih4Vn+ygmQdWY5xiuMG+TuQ2v114hPTnbTRTXhMkHl2rJk/IY7O70IcQAzmqL7ipeo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706120420; c=relaxed/simple;
-	bh=8i7hW/P7gRwZbg6eJhfWSHuYfwNb6fjxwXNOYa+zX2M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uvbt8VOh2YMlU93dpHyDsHorJaND6nVPN7sVdVFF3QEvBGjfZGzNqa1wxVlHadVwURmoPNKBcShewV8t81J/hoIrTm8i8lJvdfAk+fT4KYT12tQJ9pnSdfVwNQRHzJKsS4jvGuFPpx73QsrlJ7bGCe3BAYmH/Us5Ew7xt8mEGlc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Br4mhTz3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A92D4C41679;
-	Wed, 24 Jan 2024 18:20:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706120419;
-	bh=8i7hW/P7gRwZbg6eJhfWSHuYfwNb6fjxwXNOYa+zX2M=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Br4mhTz3ABsovsBh891iFtITCloETm7Xd3auyJ06H5OtOXYpmgIubWlxfBF2VAGmf
-	 OlGgldHJriEwX+TyBKeNai970ecogEG/P+gUzZX4GkxGns9Tk6eEXHb1JVxvu6/qbt
-	 skPzgvzkoqvZSI3fIk0qzZS1oVVsfORv8XNRdsm4o8jNjgkmRgXjCqeQuzGAQ/loQ0
-	 MNqC/og/U/JCX02ROA4VSt/31hoJJKyDJYB6eTiM5FtscPo50IXJxuwfPJcISYJ5Bo
-	 JVUzkTQyQJDT/DwPnh/6uJPHvZSstEkjmSaAd1oD/2eYSXBm+WQRf3GOuraJ/L6/c7
-	 dAa8p4/Z1vrVg==
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2cf13c259f3so21609701fa.2;
-        Wed, 24 Jan 2024 10:20:19 -0800 (PST)
-X-Gm-Message-State: AOJu0Yxwpt606+LtDw54OIps+yrDeL+Duhbv0ZdkYRSgbE0kDoNurYaM
-	RRQVhBsZoRJHRy0yuNNyA0kCkqO7uUtAj6p6eoLQ0vZJz/tZFlQy1Y8PJsSjALFq6Y2v+oAYjAT
-	NdqZa/snRZCRp+bmrDS40Zs1R2g==
-X-Google-Smtp-Source: AGHT+IFQ7o9sj+x/bj/29pY9Rds1Cng62HUIvJOWJ1X7OlDRC8xWzyyEJAbOfVXOJaSePIJD48bw3TcKGaUGSzwtDq4=
-X-Received: by 2002:a05:6512:1295:b0:50e:ca83:887e with SMTP id
- u21-20020a056512129500b0050eca83887emr2710515lfs.34.1706120417667; Wed, 24
- Jan 2024 10:20:17 -0800 (PST)
+	s=arc-20240116; t=1706120490; c=relaxed/simple;
+	bh=bAOqor9jVDIe2ro9v+Dr8T0G8/kwV2eE4vt8giEW+18=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=J8d1hCyBk8JcppwfBiXXBlFpEuTsj0OpxSEjtDNxtUmUnTpdriOgsnM4ysti0Ebd+09HFrNRfEDKJmO47ofInL+mDcW4cs0vSfn/RgGendRC9bbaLyxI1dOasit9j7u8XKb02wPwaoSy4CJlO/uJhW3KPmUZXijJa6lOmS1XRO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=WfqY8RNk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B09CC433C7;
+	Wed, 24 Jan 2024 18:21:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1706120489;
+	bh=bAOqor9jVDIe2ro9v+Dr8T0G8/kwV2eE4vt8giEW+18=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WfqY8RNkir20TGHJefjyezhrPNuWOSUmRZVTXPG7Upa9L51rybqgd+LVIm5yvDeHg
+	 XkJB20mTbrsf3evvzwVd/0ZjkCPO1nKNUY4YcWltfBtTeiFgTgWCzm87I249kT8r1w
+	 mVwIqdZS007u9zlmFwH+TSuuML1uah6KHkNOAi3Y=
+Date: Wed, 24 Jan 2024 10:21:18 -0800
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Magnus Damm <magnus.damm@gmail.com>, linux-staging@lists.linux.dev,
+	linux-usb@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/4] staging: Remove EMMA Mobile USB Gadget and board
+ staging support
+Message-ID: <2024012406-handgun-mutation-86d0@gregkh>
+References: <cover.1705932585.git.geert+renesas@glider.be>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122180551.34429-1-francesco@dolcini.it>
-In-Reply-To: <20240122180551.34429-1-francesco@dolcini.it>
-From: Rob Herring <robh@kernel.org>
-Date: Wed, 24 Jan 2024 12:20:05 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKHjj5SfPTxhXUtmNh1nr1-eNKnL-Mmv-XdyONxgn9UVw@mail.gmail.com>
-Message-ID: <CAL_JsqKHjj5SfPTxhXUtmNh1nr1-eNKnL-Mmv-XdyONxgn9UVw@mail.gmail.com>
-Subject: Re: [PATCH v2] treewide, serdev: change receive_buf() return type to size_t
-To: Francesco Dolcini <francesco@dolcini.it>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
-	linux-bluetooth@vger.kernel.org, linux-mediatek@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	greybus-dev@lists.linaro.org, linux-iio@vger.kernel.org, 
-	netdev@vger.kernel.org, chrome-platform@lists.linux.dev, 
-	platform-driver-x86@vger.kernel.org, linux-serial@vger.kernel.org, 
-	linux-sound@vger.kernel.org, 
-	Francesco Dolcini <francesco.dolcini@toradex.com>, 
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>, 
-	Jonathan Cameron <jic23@kernel.org>, Lee Jones <lee@kernel.org>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, 
-	"David S. Miller" <davem@davemloft.net>, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
-	Hans de Goede <hdegoede@redhat.com>, =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	Benson Leung <bleung@chromium.org>, Tzung-Bi Shih <tzungbi@kernel.org>, 
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1705932585.git.geert+renesas@glider.be>
 
-On Mon, Jan 22, 2024 at 12:06=E2=80=AFPM Francesco Dolcini <francesco@dolci=
-ni.it> wrote:
->
-> From: Francesco Dolcini <francesco.dolcini@toradex.com>
->
-> receive_buf() is called from ttyport_receive_buf() that expects values
-> ">=3D 0" from serdev_controller_receive_buf(), change its return type fro=
-m
-> ssize_t to size_t.
->
-> The need for this clean-up was noticed while fixing a warning, see
-> commit 94d053942544 ("Bluetooth: btnxpuart: fix recv_buf() return value")=
-.
-> Changing the callback prototype to return an unsigned seems the best way
-> to document the API and ensure that is properly used.
->
-> GNSS drivers implementation of serdev receive_buf() callback return
-> directly the return value of gnss_insert_raw(). gnss_insert_raw()
-> returns a signed int, however this is not an issue since the value
-> returned is always positive, because of the kfifo_in() implementation.
-> gnss_insert_raw() could be changed to return also an unsigned, however
-> this is not implemented here as request by the GNSS maintainer Johan
-> Hovold.
->
-> Suggested-by: Jiri Slaby <jirislaby@kernel.org>
-> Link: https://lore.kernel.org/all/087be419-ec6b-47ad-851a-5e1e3ea5cfcc@ke=
-rnel.org/
-> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
-> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com> #for-iio
-> ---
-> v1:
->  - https://lore.kernel.org/all/20231214170146.641783-1-francesco@dolcini.=
-it/
-> v2:
->  - rebased on 6.8-rc1
->  - add acked-by Jonathan
->  - do not change gnss_insert_raw()
->  - do not change the code style of the gnss code
->  - commit message improvements, explain the reasons for doing only minima=
-l
->    changes on the GNSS part
-> ---
->  drivers/bluetooth/btmtkuart.c              |  4 ++--
->  drivers/bluetooth/btnxpuart.c              |  4 ++--
->  drivers/bluetooth/hci_serdev.c             |  4 ++--
->  drivers/gnss/serial.c                      |  2 +-
->  drivers/gnss/sirf.c                        |  2 +-
->  drivers/greybus/gb-beagleplay.c            |  6 +++---
->  drivers/iio/chemical/pms7003.c             |  4 ++--
->  drivers/iio/chemical/scd30_serial.c        |  4 ++--
->  drivers/iio/chemical/sps30_serial.c        |  4 ++--
->  drivers/iio/imu/bno055/bno055_ser_core.c   |  4 ++--
->  drivers/mfd/rave-sp.c                      |  4 ++--
->  drivers/net/ethernet/qualcomm/qca_uart.c   |  2 +-
->  drivers/nfc/pn533/uart.c                   |  4 ++--
->  drivers/nfc/s3fwrn5/uart.c                 |  4 ++--
->  drivers/platform/chrome/cros_ec_uart.c     |  4 ++--
->  drivers/platform/surface/aggregator/core.c |  4 ++--
->  drivers/tty/serdev/serdev-ttyport.c        | 10 ++++------
->  include/linux/serdev.h                     |  8 ++++----
->  sound/drivers/serial-generic.c             |  4 ++--
->  19 files changed, 40 insertions(+), 42 deletions(-)
+On Mon, Jan 22, 2024 at 03:24:29PM +0100, Geert Uytterhoeven wrote:
+> 	Hi Greg,
+> 
+> Board staging was introduced to host temporarily legacy board support
+> for platforms that are under active conversion to DT.  Currently it
+> hosts:
+>   1. USB Gadget support for the Kyoto Microcomputer Co. KZM-A9-Dual
+>      (KZM9D) development board,
+>   2. Display support for the Atmark Techno Armadillo-800-EVA development
+>      board.
+> 
+> During the last few years, the KZM9D development board didn't receive
+> much love.  Also, no one really cared about the EMMA Mobile USB Gadget
+> driver, which is also hosted under staging.  Recently, the SH-Mobile
+> LCDC DRM driver and Armadillo-800-EVA display support have been
+> converted to DT.
+> 
+> Hence this patch series removes all board staging support, together with
+> the now unused EMMA Mobile USB Gadget driver.
+> 
+> Changes compared to v1:
+>   - Drop RFC, widen audience,
+>   - Drop EMMA Mobile EV2 clkdev registration patch (merged),
+>   - Add Acked-by,
+>   - Remove Armadillo-800-EVA and core board staging code, too.
+> 
+> Thanks!
+> 
+> [1] "[PATCH/RFC 0/3] Remove KZM9D board staging support"
+>     https://lore.kernel.org/all/cover.1686325857.git.geert+renesas@glider.be/
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Nice, thanks for this, all now queued up.
+
+greg k-h
 
