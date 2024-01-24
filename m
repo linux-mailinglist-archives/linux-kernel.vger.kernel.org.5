@@ -1,291 +1,334 @@
-Return-Path: <linux-kernel+bounces-36804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36FA483A6FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:40:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 43E9A83A705
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:41:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4DD41F2C389
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:40:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8CFC1F2CA70
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:41:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8970018626;
-	Wed, 24 Jan 2024 10:40:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E09D518E1F;
+	Wed, 24 Jan 2024 10:41:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IDXouRdA"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mA366/0k"
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB4B11078B
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:40:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33D811426C
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:41:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706092829; cv=none; b=YXWhqtJiYsKv79xGf5wWOK7XnXkFU+H0Vtkb49HvPVRe+ljzgH4VOdR7Ipe9gpfQiu4l2HC7CQu5sn8vHYu4WKwbnI7YPxTKGtTaZT3qccK5UN05L629wEuh0QpPM2bw3v3eS9/ZsVQji4pk4s+GN7B8mY0wh2MCXL9m/iCSDtA=
+	t=1706092893; cv=none; b=t3ijgGlr40+uH1VG4lNhXwS0alRPhd79fD/fu2c7rtKOxYBMlnxEaLxBEhkovGfmL8ocPkrW5zd8b6z2e7fx7fCMGxlaYK5AkfpctRkHPAWdYcAL8m+LWkuAnd4SC6MFTEqQdnlChNr9kkexN/imtC4f27/tZsMSLOIxhdwzKAE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706092829; c=relaxed/simple;
-	bh=/rcwWLjKNsQ4uNLjDxu0u6HhI08J5Hff713NR3+kdp0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=t8dBz6IQ8erfGzep+MjReBKNvr97KmeIT9z/vS9TPgGKgl7WRoJteXXmQIwjh10fegl6y4qZ1n9/IiuQF4WT+TmR5KDnxKr0IlxJP1y1NkY3q8mvziCi0hdfqYdkhHxgaQyz/gW4kxNsOVi+DLHg+dYcRfyPQ21zsPlJ6J/JBCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IDXouRdA; arc=none smtp.client-ip=209.85.128.51
+	s=arc-20240116; t=1706092893; c=relaxed/simple;
+	bh=7t/ckmKzHlheLjok9vFG6UB4uGApUEbePlDwZjvDVW8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=l94OUwE+ose3/m45rf/nMlrFsS8PNO2oxU9x+fOkD5q52XWuVfY+eycbtLmHyVvLzKU8NpUCHZHoUhXOiABTY4TbYKQTWWB8RSLOPrgLTA2gmvviliFO6c6w88s2HSA6WAv9WW8s3YwIaDyzSG6l9wjomk6yJnvd3TkX/Jisxjw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mA366/0k; arc=none smtp.client-ip=209.85.222.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40eac352733so34340365e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 02:40:27 -0800 (PST)
+Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-78315243c11so342765985a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 02:41:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706092826; x=1706697626; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XSinsUdJBev2A8sF8xAgVSp8tT3w+79VUKvBD3C6qGI=;
-        b=IDXouRdAG/fnp7YF1Knbjx2D9s4VZvjEFCQ2oLUZJXzE1Ow8oP4eZ6bL+yI4FfuoVz
-         pusKvJ6lW7ZPwnj8hF/TFm22m3nCGr8I6fBlRu88xxEpa4Z14I44sbGTPTp56YyVAl4r
-         gKdpnUPcpj9CBjj06PGaOwZFi3R47bgjsa38t8xZgedTZxmaMNhNwYh2mmB1SH6zh0dE
-         XSZuZZG0to55ab99GmSxEwm6zZeIKmbcYzWqumw/t4qbACM4OWZ8g4CS+T7BONU/cmzo
-         Y9ku0VsIpolNCkeRF8iL5UcYyyRXhlofii7RN7F8U5RrPqjH98TKkNJ88E8pfZyfB71M
-         665w==
+        d=linaro.org; s=google; t=1706092889; x=1706697689; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=QiROMXXFXODb7L7UjqjyOxVrJ4ER2WDfQ75RZrjuQlI=;
+        b=mA366/0ksJC0dQX2JHwhMLRJylFBdvGyv1ItB3e3OH9GbRQ9gyzGcULbpvo+xAXevb
+         1eLrG/neangBb+WrW9Pvu7HqoyAJLLC/KsVVYrSWgD62/1nv+wD8sePOxT/AU3NG+G8+
+         N1zzgbbJNInpCErcRWL0Q+bhIhX87F8kOGCLLZ22+ETBfXgF84wzbRfAd1KrugGWDYa3
+         kwzXsYTOL0k0NhuT+o5Y3lRDB/9y6HYAH613TUUvsvn/Z4CwKM+0wbgsbW75PfaFpknX
+         NItTrQC9QOUlean2GDdo+M9mV3WoCoOe6gUWlsaoxw60RDUAYXt/CxtCKIbhrG34IXnR
+         tUBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706092826; x=1706697626;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XSinsUdJBev2A8sF8xAgVSp8tT3w+79VUKvBD3C6qGI=;
-        b=IQtaXsbGmYb6iIoLWEAYN4+e5/OKdefTd8HBHbo0SRx0EiVG+aUGo9MGNKJs3Bd+Cu
-         hkmt6q4tuNDN7x2gHdH1sDq8jHIaJ8LlbByjMRVT8z1+gis5c+s2VBVPI9duaqUw96CW
-         FSB2sLs1f0y3F2jDuEfpabOBACT6zkXJ49r1MhlJTg7VV1wevaew4XiRcOy2MC5JDoy2
-         jNp7weEEB09XKbxDt+Fg/Xp3U0Epv3F2tIN8i63YNC2qY268ZkpfC+mHENP5fzWo+23U
-         rWC1B5cvMctLLpgSLRQ/D2b+kt22yQpUTDMBPyrtVoHe5nGFFwgedq5jYLVO6n3TvSc4
-         wKQQ==
-X-Gm-Message-State: AOJu0Yzdmw9ob1SM25Vgv9mytCOoYMyf+se9ZL3s8oeSDeH0TgLMt5ks
-	zwfpYWK49D5M57stjL90VmJQHxGISeEatYDcfgg7Nf+4c9zNBt6i3sZbfVNSzUc=
-X-Google-Smtp-Source: AGHT+IGwSuI03XUOIGe3ABYN9RVpYB/MTKo6Ld8tEMS2I9ppFs6vnbEwtrd5Se1jBpncAPX3QjbZWA==
-X-Received: by 2002:a05:600c:35c2:b0:40e:4ad9:dbb2 with SMTP id r2-20020a05600c35c200b0040e4ad9dbb2mr950905wmq.112.1706092825892;
-        Wed, 24 Jan 2024 02:40:25 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id bw12-20020a0560001f8c00b00337cef427f8sm16105885wrb.70.2024.01.24.02.40.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jan 2024 02:40:25 -0800 (PST)
-Message-ID: <ab53dbc6-dad5-4278-a1d2-9f963d08eedc@linaro.org>
-Date: Wed, 24 Jan 2024 10:40:23 +0000
+        d=1e100.net; s=20230601; t=1706092889; x=1706697689;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QiROMXXFXODb7L7UjqjyOxVrJ4ER2WDfQ75RZrjuQlI=;
+        b=fP698ipFx02WXp2TPk/CGeD4iIKgdSRIigaB7Z5ZGIq+rOzoXZF3mnuxWMudF2oPF1
+         jlB6cM+w+sn4XmdRH3nxslZCnBNw7+VE1dpkhJ0GgoLQWwIFtjB/+ucnT38mEOgpdxp1
+         66KZz5mXPwE9g8ChQ9nCXF5bT95zA6YMvQWTfaZF6kFlPnFBE9SmxzbGmttYM2eWLcvt
+         R8TrFGaPtYW5iXDAeWQjOlw605bLjPeu1X4jYLlc1HELRmCEyyjKNW+F/3Rkln2LhOut
+         KC47WQWSa+bosrfLqMV8Si6R2o2oh107oZQWDn7koLUkw8ADxE1r7M9CTvxDh+Fg+7iL
+         EpWA==
+X-Gm-Message-State: AOJu0YxhjKeN6Lw8l+qzLYVur3L3V0MSpPZImo8op+2zGhWzbAUEUtQ5
+	IGtLqVv+xygJ3cmbHuX4Ea/fRG1BZIIkiOFzsDopCumSDdIGHZVhFlQXcE9oHaN7Q9r44/VUhzY
+	eM0mdpA86kTfRd7b0RTNhEcWu61x1dcvGHFRzMg==
+X-Google-Smtp-Source: AGHT+IFdsL92eDpEceUPy/NWPdnUioo8kum7OltCPI/0zSDnxL1Kdg86w6Gpzo+sJQrbnoYeqGoisoDoMIBXSecc9ys=
+X-Received: by 2002:ad4:5ce7:0:b0:686:309e:14d2 with SMTP id
+ iv7-20020ad45ce7000000b00686309e14d2mr3021783qvb.119.1706092889057; Wed, 24
+ Jan 2024 02:41:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 19/21] spi: s3c64xx: add support for google,gs101-spi
-Content-Language: en-US
-To: Sam Protsenko <semen.protsenko@linaro.org>
-Cc: broonie@kernel.org, andi.shyti@kernel.org, arnd@arndb.de,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- alim.akhtar@samsung.com, linux-spi@vger.kernel.org,
- linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-arch@vger.kernel.org, andre.draszik@linaro.org,
- peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com
-References: <20240123153421.715951-1-tudor.ambarus@linaro.org>
- <20240123153421.715951-20-tudor.ambarus@linaro.org>
- <CAPLW+4=5ra6rBRwYYckzutawJoGw_kJahLaYmDzct2Dyuw0qQg@mail.gmail.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <CAPLW+4=5ra6rBRwYYckzutawJoGw_kJahLaYmDzct2Dyuw0qQg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240122225710.1952066-1-peter.griffin@linaro.org>
+ <20240122225710.1952066-3-peter.griffin@linaro.org> <26b9a75c-3721-4d7a-985e-772d9f67e6d5@linaro.org>
+In-Reply-To: <26b9a75c-3721-4d7a-985e-772d9f67e6d5@linaro.org>
+From: Peter Griffin <peter.griffin@linaro.org>
+Date: Wed, 24 Jan 2024 10:41:16 +0000
+Message-ID: <CADrjBPqTqe+HDN_ye41sR_yJgnUXOWwkZsQyujptPPfzg+EBeg@mail.gmail.com>
+Subject: Re: [PATCH 2/9] soc: samsung: exynos-pmu: Add exynos_pmu_update/read/write
+ APIs and SoC quirks
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: arnd@arndb.de, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
+	linux@roeck-us.net, wim@linux-watchdog.org, conor+dt@kernel.org, 
+	alim.akhtar@samsung.com, jaewon02.kim@samsung.com, chanho61.park@samsung.com, 
+	semen.protsenko@linaro.org, kernel-team@android.com, tudor.ambarus@linaro.org, 
+	andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com, 
+	linux-fsd@tesla.com, linux-watchdog@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hi, Sam! Thanks for the review!
+Hi Krzysztof,
 
-On 1/23/24 19:25, Sam Protsenko wrote:
-> On Tue, Jan 23, 2024 at 9:34 AM Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
->>
->> Add support for GS101 SPI. All the SPI nodes on GS101 have 64 bytes
->> FIFOs, infer the FIFO size from the compatible. GS101 allows just 32bit
->> register accesses, otherwise a Serror Interrupt is raised. Do the write
->> reg accesses in 32 bits.
->>
->> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
->> ---
-> 
-> I counted 3 different features in this patch. Would be better to split
-> it correspondingly into 3 patches, to make patches atomic:
-> 
->   1. I/O width
->   2. FIFO size
+Thanks for the review feedback.
 
-I kept these 2 in the same patch as gs101 to exemplify their use by
-gs101. But I'm also fine splitting the patch in 3, will do in v2.
+On Tue, 23 Jan 2024 at 11:17, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 22/01/2024 23:57, Peter Griffin wrote:
+> > Newer Exynos SoCs have atomic set/clear bit hardware for PMU registers as
+> > these registers can be accessed by multiple masters. Some platforms also
+> > protect the PMU registers for security hardening reasons so they can't be
+> > written by normal world and are only write acessible in el3 via a SMC call.
+>
+>
+> Typo? accessible?
 
->   3. Adding support for gs101
-> 
-> And I'm not really convinced about FIFO size change.
+Will fix in v2.
+>
+> >
+> > Add support for both of these usecases using SoC specific quirks that are
+> > determined from the DT compatible string.>
+> > Drivers which need to read and write PMU registers should now use these
+> > new exynos_pmu_*() APIs instead of obtaining a regmap using
+> > syscon_regmap_lookup_by_phandle()
+> >
+> > Depending on the SoC specific quirks, the exynos_pmu_*() APIs will access
+> > the PMU register in the appropriate way.
+> >
+> > Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
+> > ---
+> >  drivers/soc/samsung/exynos-pmu.c       | 209 ++++++++++++++++++++++++-
+> >  drivers/soc/samsung/exynos-pmu.h       |   4 +
+> >  include/linux/soc/samsung/exynos-pmu.h |  28 ++++
+> >  3 files changed, 234 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/drivers/soc/samsung/exynos-pmu.c b/drivers/soc/samsung/exynos-pmu.c
+> > index 250537d7cfd6..e9e933ede568 100644
+> > --- a/drivers/soc/samsung/exynos-pmu.c
+> > +++ b/drivers/soc/samsung/exynos-pmu.c
+> > @@ -5,6 +5,7 @@
+> >  //
+> >  // Exynos - CPU PMU(Power Management Unit) support
+> >
+> > +#include <linux/arm-smccc.h>
+> >  #include <linux/of.h>
+> >  #include <linux/of_address.h>
+> >  #include <linux/mfd/core.h>
+> > @@ -12,29 +13,204 @@
+> >  #include <linux/of_platform.h>
+> >  #include <linux/platform_device.h>
+> >  #include <linux/delay.h>
+> > +#include <linux/regmap.h>
+> >
+> >  #include <linux/soc/samsung/exynos-regs-pmu.h>
+> >  #include <linux/soc/samsung/exynos-pmu.h>
+> >
+> >  #include "exynos-pmu.h"
+> >
+> > +/**
+> > + * DOC: Quirk flags for different Exynos PMU IP-cores
+> > + *
+> > + * This driver supports multiple Exynos based SoCs, each of which might have a
+> > + * different set of registers and features supported.
+> > + *
+> > + * Quirk flags described below serve the purpose of telling the driver about
+> > + * mentioned SoC traits, and can be specified in driver data for each particular
+> > + * supported device.
+> > + *
+> > + * %QUIRK_HAS_ATOMIC_BITSETHW: PMU IP has special atomic bit set/clear HW
+> > + * to protect against PMU registers being accessed from multiple bus masters.
+> > + *
+> > + * %QUIRK_PMU_ALIVE_WRITE_SEC: PMU registers are *not* write accesible from
+> > + * normal world. This is found on some SoCs as a security hardening measure. PMU
+> > + * registers on these SoCs can only be written via a SMC call and registers are
+> > + * checked by EL3 firmware against an allowlist before the write can procede.
+> > + * Note: This quirk should only be set for platforms whose el3 firmware
+> > + * implements the TENSOR_SMC_PMU_SEC_REG interface below.
+> > + */
+> > +
+> > +#define QUIRK_HAS_ATOMIC_BITSETHW            BIT(0)
+> > +#define QUIRK_PMU_ALIVE_WRITE_SEC            BIT(1)
+> > +
+> > +#define PMUALIVE_MASK GENMASK(14, 0)
+> > +
+> >  struct exynos_pmu_context {
+> >       struct device *dev;
+> >       const struct exynos_pmu_data *pmu_data;
+> > +     struct regmap *pmureg;
+> > +     void __iomem *pmu_base_addr;
+> > +     phys_addr_t pmu_base_pa;
+> > +     /* protect PMU reg atomic update operations */
+> > +     spinlock_t update_lock;
+> >  };
+> >
+> > -void __iomem *pmu_base_addr;
+> >  static struct exynos_pmu_context *pmu_context;
+> >
+> > +/*
+> > + * Some SoCs are configured so that PMU_ALIVE registers can only be written
+> > + * from el3. As Linux needs to write some of these registers, the following
+> > + * SMC register read/write/read,write,modify interface is used.
+> > + *
+> > + * Note: This SMC interface is known to be implemented on gs101 and derivative
+> > + * SoCs.
+> > + */
+> > +#define TENSOR_SMC_PMU_SEC_REG                       (0x82000504)
+> > +#define TENSOR_PMUREG_READ                   0
+> > +#define TENSOR_PMUREG_WRITE                  1
+> > +#define TENSOR_PMUREG_RMW                    2
+>
+> These are tensor specific...
+>
+> > +
+> > +int set_priv_reg(phys_addr_t reg, u32 val)
+>
+> ...but this not...
+>
+> > +{
+> > +     struct arm_smccc_res res;
+> > +
+> > +     arm_smccc_smc(TENSOR_SMC_PMU_SEC_REG,
+>
+> ... and this is again.
+>
+> Some naming should be clarified, e.g. tensor specific functions should
+> have some prefix as well, e.g. tensor_writel(), tensor_cmpxchg() or
+> something similar.
 
-I'll explain why it's needed below.
+Noted. I will add a tensor prefix on these two functions as well in v2.
 
-> 
->>  drivers/spi/spi-s3c64xx.c | 50 +++++++++++++++++++++++++++++++++------
->>  1 file changed, 43 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
->> index 62671b2d594a..c4ddd2859ba4 100644
->> --- a/drivers/spi/spi-s3c64xx.c
->> +++ b/drivers/spi/spi-s3c64xx.c
->> @@ -20,6 +20,7 @@
->>
->>  #define MAX_SPI_PORTS                          12
->>  #define S3C64XX_SPI_QUIRK_CS_AUTO              BIT(1)
->> +#define S3C64XX_SPI_GS1O1_32BIT_REG_IO_WIDTH   BIT(2)
->>  #define AUTOSUSPEND_TIMEOUT                    2000
->>
->>  /* Registers and bit-fields */
->> @@ -131,6 +132,7 @@ struct s3c64xx_spi_dma_data {
->>   * @rx_lvl_offset: Bit offset of RX_FIFO_LVL bits in SPI_STATUS regiter.
->>   * @tx_st_done: Bit offset of TX_DONE bit in SPI_STATUS regiter.
->>   * @clk_div: Internal clock divider
->> + * @fifosize: size of the FIFO
->>   * @quirks: Bitmask of known quirks
->>   * @high_speed: True, if the controller supports HIGH_SPEED_EN bit.
->>   * @clk_from_cmu: True, if the controller does not include a clock mux and
->> @@ -149,6 +151,7 @@ struct s3c64xx_spi_port_config {
->>         int     tx_st_done;
->>         int     quirks;
->>         int     clk_div;
->> +       unsigned int fifosize;
->>         bool    high_speed;
->>         bool    clk_from_cmu;
->>         bool    clk_ioclk;
->> @@ -175,6 +178,7 @@ struct s3c64xx_spi_port_config {
->>   * @tx_dma: Local transmit DMA data (e.g. chan and direction)
->>   * @port_conf: Local SPI port configuartion data
->>   * @port_id: Port identification number
->> + * @fifosize: size of the FIFO for this port
->>   */
->>  struct s3c64xx_spi_driver_data {
->>         void __iomem                    *regs;
->> @@ -194,6 +198,7 @@ struct s3c64xx_spi_driver_data {
->>         struct s3c64xx_spi_dma_data     tx_dma;
->>         const struct s3c64xx_spi_port_config    *port_conf;
->>         unsigned int                    port_id;
->> +       unsigned int                    fifosize;
->>  };
->>
->>  static void s3c64xx_flush_fifo(struct s3c64xx_spi_driver_data *sdd)
->> @@ -403,7 +408,7 @@ static bool s3c64xx_spi_can_dma(struct spi_controller *host,
->>         struct s3c64xx_spi_driver_data *sdd = spi_controller_get_devdata(host);
->>
->>         if (sdd->rx_dma.ch && sdd->tx_dma.ch)
->> -               return xfer->len > FIFO_DEPTH(sdd);
->> +               return xfer->len > sdd->fifosize;
->>
->>         return false;
->>  }
->> @@ -447,12 +452,22 @@ static int s3c64xx_enable_datapath(struct s3c64xx_spi_driver_data *sdd,
->>                                         xfer->tx_buf, xfer->len / 4);
->>                                 break;
->>                         case 16:
->> -                               iowrite16_rep(regs + S3C64XX_SPI_TX_DATA,
->> -                                       xfer->tx_buf, xfer->len / 2);
->> +                               if (sdd->port_conf->quirks &
->> +                                   S3C64XX_SPI_GS1O1_32BIT_REG_IO_WIDTH)
->> +                                       iowrite16_32_rep(regs + S3C64XX_SPI_TX_DATA,
->> +                                                        xfer->tx_buf, xfer->len / 2);
->> +                               else
->> +                                       iowrite16_rep(regs + S3C64XX_SPI_TX_DATA,
->> +                                                     xfer->tx_buf, xfer->len / 2);
->>                                 break;
->>                         default:
->> -                               iowrite8_rep(regs + S3C64XX_SPI_TX_DATA,
->> -                                       xfer->tx_buf, xfer->len);
->> +                               if (sdd->port_conf->quirks &
->> +                                   S3C64XX_SPI_GS1O1_32BIT_REG_IO_WIDTH)
->> +                                       iowrite8_32_rep(regs + S3C64XX_SPI_TX_DATA,
->> +                                                       xfer->tx_buf, xfer->len);
->> +                               else
->> +                                       iowrite8_rep(regs + S3C64XX_SPI_TX_DATA,
->> +                                                    xfer->tx_buf, xfer->len);
->>                                 break;
->>                         }
->>                 }
->> @@ -696,7 +711,7 @@ static int s3c64xx_spi_transfer_one(struct spi_controller *host,
->>                                     struct spi_transfer *xfer)
->>  {
->>         struct s3c64xx_spi_driver_data *sdd = spi_controller_get_devdata(host);
->> -       const unsigned int fifo_len = FIFO_DEPTH(sdd);
->> +       const unsigned int fifo_len = sdd->fifosize;
->>         const void *tx_buf = NULL;
->>         void *rx_buf = NULL;
->>         int target_len = 0, origin_len = 0;
->> @@ -1145,6 +1160,11 @@ static int s3c64xx_spi_probe(struct platform_device *pdev)
->>                 sdd->port_id = pdev->id;
->>         }
->>
->> +       if (sdd->port_conf->fifosize)
->> +               sdd->fifosize = sdd->port_conf->fifosize;
->> +       else
->> +               sdd->fifosize = FIFO_DEPTH(sdd);
->> +
->>         sdd->cur_bpw = 8;
->>
->>         sdd->tx_dma.direction = DMA_MEM_TO_DEV;
->> @@ -1234,7 +1254,7 @@ static int s3c64xx_spi_probe(struct platform_device *pdev)
->>         dev_dbg(&pdev->dev, "Samsung SoC SPI Driver loaded for Bus SPI-%d with %d Targets attached\n",
->>                                         sdd->port_id, host->num_chipselect);
->>         dev_dbg(&pdev->dev, "\tIOmem=[%pR]\tFIFO %dbytes\n",
->> -                                       mem_res, FIFO_DEPTH(sdd));
->> +                                       mem_res, sdd->fifosize);
->>
->>         pm_runtime_mark_last_busy(&pdev->dev);
->>         pm_runtime_put_autosuspend(&pdev->dev);
->> @@ -1362,6 +1382,18 @@ static const struct dev_pm_ops s3c64xx_spi_pm = {
->>                            s3c64xx_spi_runtime_resume, NULL)
->>  };
->>
->> +static const struct s3c64xx_spi_port_config gs101_spi_port_config = {
->> +       .fifosize       = 64,
-> 
-> I think if you rework the the .fifo_lvl_mask, replacing it with
-> .fifosize, you should also do next things in this series:
->   1. Rework it for all supported (existing) chips in this driver
->   2. Provide fifosize property for each SPI node for all existing dts
-> that use this driver
->   3. Get rid of .fifo_lvl_mask for good. But the compatibility with
-> older kernels has to be taken into the account here as well.
+>
+>
+> > +                   reg,
+> > +                   TENSOR_PMUREG_WRITE,
+> > +                   val, 0, 0, 0, 0, &res);
+> > +
+> > +     if (res.a0)
+> > +             pr_warn("%s(): SMC failed: %lu\n", __func__, res.a0);
+> > +
+> > +     return (int)res.a0;
+> > +}
+> > +
+> > +int rmw_priv_reg(phys_addr_t reg, u32 mask, u32 val)
+> > +{
+> > +     struct arm_smccc_res res;
+> > +
+> > +     arm_smccc_smc(TENSOR_SMC_PMU_SEC_REG,
+> > +                   reg,
+> > +                   TENSOR_PMUREG_RMW,
+> > +                   mask, val, 0, 0, 0, &res);
+> > +
+> > +     if (res.a0)
+> > +             pr_warn("%s(): SMC failed: %lu\n", __func__, res.a0);
+> > +
+> > +     return (int)res.a0;
+> > +}
+> > +
+> > +/*
+> > + * For SoCs that have set/clear bit hardware (as indicated by
+> > + * QUIRK_HAS_ATOMIC_BITSETHW) this function can be used when
+> > + * the PMU register will be accessed by multiple masters.
+> > + *
+> > + * For example, to set bits 13:8 in PMU reg offset 0x3e80
+> > + * exynos_pmu_set_bit_atomic(0x3e80, 0x3f00, 0x3f00);
+> > + *
+> > + * To clear bits 13:8 in PMU offset 0x3e80
+> > + * exynos_pmu_set_bit_atomic(0x3e80, 0x0, 0x3f00);
+> > + */
+> > +static inline void exynos_pmu_set_bit_atomic(unsigned int offset,
+> > +                                          u32 val, u32 mask)
+> > +{
+> > +     unsigned long flags;
+> > +     unsigned int i;
+> > +
+> > +     spin_lock_irqsave(&pmu_context->update_lock, flags);
+> > +     for (i = 0; i < 32; i++) {
+> > +             if (mask & BIT(i)) {
+> > +                     if (val & BIT(i)) {
+> > +                             offset |= 0xc000;
+> > +                             pmu_raw_writel(i, offset);
+> > +                     } else {
+> > +                             offset |= 0x8000;
+> > +                             pmu_raw_writel(i, offset);
+> > +                     }
+> > +             }
+> > +     }
+> > +     spin_unlock_irqrestore(&pmu_context->update_lock, flags);
+> > +}
+> > +
+> > +int exynos_pmu_update_bits(unsigned int offset, unsigned int mask,
+> > +                        unsigned int val)
+> > +{
+> > +     if (pmu_context->pmu_data &&
+> > +         pmu_context->pmu_data->quirks & QUIRK_PMU_ALIVE_WRITE_SEC)
+> > +             return rmw_priv_reg(pmu_context->pmu_base_pa + offset,
+> > +                                 mask, val);
+> > +
+> > +     return regmap_update_bits(pmu_context->pmureg, offset, mask, val);
+> > +}
+> > +EXPORT_SYMBOL(exynos_pmu_update_bits);
+>
+> You need kerneldoc for all exported functions.
+>
+> Also, EXPORT_SYMBOL_GPL
 
-We can't get rid of the .fifo_lvl_mask entirely because we need to be
-backward compatible with the device tree files that we have now.
+Will fix both in v2.
 
-> 
-> Otherwise it looks like a half attempt and not finished, only creating
-> a duplicated property/struct field for the same (already existing)
-> thing. Because it's completely possible to do the same using just
-> .fifo_lvl_mask without introducing new fields or properties. If it
+>
+> > +
+> >  void pmu_raw_writel(u32 val, u32 offset)
+> >  {
+> > -     writel_relaxed(val, pmu_base_addr + offset);
+> > +     if (pmu_context->pmu_data &&
+> > +         pmu_context->pmu_data->quirks & QUIRK_PMU_ALIVE_WRITE_SEC)
+> > +             return (void)set_priv_reg(pmu_context->pmu_base_pa + offset,
+> > +                                       val);
+> > +
+> > +     return writel_relaxed(val, pmu_context->pmu_base_addr + offset);
+> >  }
+> >
+>
+> ...
+>
+> > diff --git a/drivers/soc/samsung/exynos-pmu.h b/drivers/soc/samsung/exynos-pmu.h
+> > index 1c652ffd79b4..570c6e4dc8c3 100644
+> > --- a/drivers/soc/samsung/exynos-pmu.h
+> > +++ b/drivers/soc/samsung/exynos-pmu.h
+> > @@ -25,8 +25,12 @@ struct exynos_pmu_data {
+> >       void (*pmu_init)(void);
+> >       void (*powerdown_conf)(enum sys_powerdown);
+> >       void (*powerdown_conf_extra)(enum sys_powerdown);
+> > +     u32 quirks;
+> >  };
+> >
+> > +int set_priv_reg(phys_addr_t reg, u32 val);
+> > +int rmw_priv_reg(phys_addr_t reg, u32 mask, u32 val);
+>
+> Why these are in the header?
 
-Using fifo_lvl_mask works but is wrong on multiple levels.
-As the code is now, the device tree spi alias is used as an index in the
-fifo_lvl_mask to determine the FIFO depth. I find it unacceptable to
-have a dependency on an alias in a driver. Not specifying an alias will
-make the probe fail, which is even worse. Also, the fifo_lvl_mask value
-does not reflect the FIFO level reg field. This is incorrect as we use
-partial register fields and is misleading. Other problem is that the
-fifo_lvl_mask value is used to determine the FIFO depth which is also
-incorrect. The FIFO depth is dictated by the SoC implementing the IP,
-not by the FIFO_LVL register field. Having in mind these reasons I
-marked the fifo_lvl_mask and the port_id as deprecated in the next
-patch, we shouldn't use fifo_lvl_mask or the alias anymore.
+Will fix in v2.
 
-In what concerns your first 2 points, to rework all the compatibles and
-to introduce a fifosize property, I agree it would be nice to do it, but
-it's not mandatory, we can work in an incremental fashion. Emphasizing
-what is wrong, marking things as deprecated and guiding contributors on
-how things should be handled is good too, which I tried in the next
-patch. Anyway, I'll check what the reworking would involve, and if I
-think it wouldn't take me a terrible amount of time, I'll do it.
+regards,
 
-> seems to much -- maybe just use .fifo_lvl_mask for now, and do all
-> that reworking properly later, in a separate patch series?
-> 
-
-But that means to add gs101 and then to come with patches updating what
-I just proposed, and I'm not thrilled about it.
-
-Cheers,
-ta
+Peter.
 
