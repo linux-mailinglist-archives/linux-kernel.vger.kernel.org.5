@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-37390-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37391-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 813A583AF30
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:07:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2B1A83AF31
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:08:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3F491C24478
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:07:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7AE2B1F21934
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:08:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADA3F7F7F5;
-	Wed, 24 Jan 2024 17:05:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56E5C128369;
+	Wed, 24 Jan 2024 17:05:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iiSLcaLQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="afFu1XEj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 055C07E782
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 17:05:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B05E1272C8
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 17:05:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706115936; cv=none; b=Jw9B+6o31noB5LOfnpRa091yqSmbGt1bFGP7rpF+cWFAHmyAKKY8pXaHeyNvAmdRacOmViNfeWd21D7TLRukeoiBCdg+dI7fEwaxgLnCV04+GFzhamOEggPMoRLhAdwARZstckFNMBAHw7cjRC51N5XPV6+CM7TEIP+Zrufrrqk=
+	t=1706115938; cv=none; b=R7hEmDPYXFPxAxqQTqM7+Z9sHuIDZd9VaR1pETTiUFOue3B0wy1vza1mctVpKdKcwpVS3gvp35Y8YbY/FbA7l8tL8HNLL68Snkuk1rU1bGkcvMlYZhBqdfoG0o3Ah2rlc1dsJMFZUC5IdUlawnaNd7UyYFUVn2SJ2Khs11jN7D0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706115936; c=relaxed/simple;
-	bh=q9uMk1kYzNMw7MFUczwSrP/48nreFiHWAfLI4g8u4gM=;
+	s=arc-20240116; t=1706115938; c=relaxed/simple;
+	bh=vnSjPjyGuwHT0H1EryHVqfaY+UithxNYnUokHTzxfk4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Rp3h3RsGKcZHWJlkFGXq8Mrj/hKVDWEHrlg08ljOlO39A6mIVJydNLnABK/nF361++UUWaoMYhNNyTE+f/tAcxB/12i3OITzaMcDB1xsGhVCZzRLX0+LcVBi6FqyoT/LIlQ8Xku0dk0k2WzRshJpdtIzUOFFq1sgASPZDitAVR8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iiSLcaLQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FE68C433F1;
-	Wed, 24 Jan 2024 17:05:33 +0000 (UTC)
+	 MIME-Version; b=n3Yq3P1T7oUqbcHuX7nPrGLgsFDPqL7VwyrGlJJKQbdIuKoYsr3abUQzlVobbgmVDuHn1EaxqpTo5zJdhAXoxehijliT3x58pVqfyfP8g7i5fPuHvQ96AdcQxjIs6EvYpQxvvo1+55atr/eVKKXXkLZowhfZiIbE/t93kSMbCwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=afFu1XEj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E26A2C433A6;
+	Wed, 24 Jan 2024 17:05:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706115935;
-	bh=q9uMk1kYzNMw7MFUczwSrP/48nreFiHWAfLI4g8u4gM=;
+	s=k20201202; t=1706115937;
+	bh=vnSjPjyGuwHT0H1EryHVqfaY+UithxNYnUokHTzxfk4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=iiSLcaLQx4KzXnHfYnbkXLUfNdon+Rz77GiBfnJ/CRKY2fmwi7IOc3WWrkReuHGmO
-	 UB4Ti93CVUj4DdmIXvQqNOsH+E2SPdkOEVTg0lnjKJ0aLLF2CczUKyEosz6c7FokAO
-	 5lLSmgGf8ITFUSvoqK/daOUEogfBm2En0OT1VsTyppvELjdUFqUZkX7sa+XcOcvDl5
-	 uDzJGLuO+DyS2wXXXQiGvCtdYN8RfyhhIQJiJ7M/Zwtnkx4CSXNsuyk5n5CIMspIE+
-	 J+KCUbz1WZrYnNLvlb5ZpxdwSYQzcSKIZtWstFz8SxFkpoiIRzjz68rHuDRrB88I0M
-	 ysSiDrjn+4cvw==
+	b=afFu1XEjFeSwBajqRmosrrxBggwnp/nNyeClFN2urrOfHJQQptCOWy147a4i2+GBa
+	 cBcDrsslq8L5NHYE3xFkLChWED7FVkPR18wQtkrjJbfMhYPZ0QbfvU3dw/+aNBs8Rg
+	 pRpvq4baTBzf6j5ai49A10AvXDKddfB23OmY2e6V90QZThqt/96Oa2QAm6BJPyA8LM
+	 416Y5S5DLzzLgocpNlCmajaj9itiKEHZ26Ds/Hudauo10wCcfgvTtUxIcxAeGjAzk8
+	 xfPGJRrlE0xSniUwCAZnvWKz63DBjXWceAOvalNH11nv1yq+X9LgIQYbiwbBVKyY4p
+	 VkDrEC8X8M9/A==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -48,9 +48,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	Anna-Maria Behnsen <anna-maria@linutronix.de>,
 	Peng Liu <liupeng17@lenovo.com>,
 	Joel Fernandes <joel@joelfernandes.org>
-Subject: [PATCH 11/15] tick: Move got_idle_tick away from common flags
-Date: Wed, 24 Jan 2024 18:04:55 +0100
-Message-ID: <20240124170459.24850-12-frederic@kernel.org>
+Subject: [PATCH 12/15] tick: Move individual bit features to debuggable mask accesses
+Date: Wed, 24 Jan 2024 18:04:56 +0100
+Message-ID: <20240124170459.24850-13-frederic@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240124170459.24850-1-frederic@kernel.org>
 References: <20240124170459.24850-1-frederic@kernel.org>
@@ -62,50 +62,372 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-tick_nohz_idle_got_tick() is called by cpuidle_reflect() within the idle
-loop with interrupts enabled. This function modifies the struct
-tick_sched's bitfield "got_idle_tick". However this bitfield is stored
-within the same mask as other bitfields that can be modified from
-interrupts.
+The individual bitfields of struct tick_sched must be modified from
+IRQs disabled places, otherwise local modifications can race due to them
+sharing the same memory storage.
 
-Fortunately so far it looks like the only race that can happen is while
-writing ->got_idle_tick to 0, an interrupt fires and writes the
-->idle_active field to 0. It's then possible that the interrupted write
-to ->got_idle_tick writes back the old value of ->idle_active back to 1.
+The recent move of the "got_idle_tick" bitfield to its own storage shows
+that the use of these bitfields, as pretty as they look, can be as much
+error prone.
 
-However if that happens, the worst possible outcome is that the time
-spent between that interrupt and the upcoming call to
-tick_nohz_idle_exit() is accounted as idle, which is negligible quantity.
-
-Still all the bitfield writes within this struct tick_sched's shadow
-mask should be IRQ-safe. Therefore move this bitfield out to its own
-storage to avoid further suprises.
+In order to avoid future issues of the like and make sure that those
+bitfields are safely accessed, move those flags to an explicit mask
+along with a mutator function performing the basic IRQs disabled sanity
+check.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/time/tick-sched.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/time/tick-sched.c | 86 +++++++++++++++++++++++++---------------
+ kernel/time/tick-sched.h | 23 ++++++-----
+ kernel/time/timer_list.c |  5 ++-
+ 3 files changed, 72 insertions(+), 42 deletions(-)
 
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index 3104fff89007..8dc9c7557776 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -180,6 +180,26 @@ static ktime_t tick_init_jiffy_update(void)
+ 	return period;
+ }
+ 
++static inline int tick_sched_flag_test(struct tick_sched *ts,
++				       unsigned long flag)
++{
++	return !!(ts->flags & flag);
++}
++
++static inline void tick_sched_flag_set(struct tick_sched *ts,
++				       unsigned long flag)
++{
++	lockdep_assert_irqs_disabled();
++	ts->flags |= flag;
++}
++
++static inline void tick_sched_flag_clear(struct tick_sched *ts,
++					 unsigned long flag)
++{
++	lockdep_assert_irqs_disabled();
++	ts->flags &= ~flag;
++}
++
+ #define MAX_STALLED_JIFFIES 5
+ 
+ static void tick_sched_do_timer(struct tick_sched *ts, ktime_t now)
+@@ -223,7 +243,7 @@ static void tick_sched_do_timer(struct tick_sched *ts, ktime_t now)
+ 		}
+ 	}
+ 
+-	if (ts->inidle)
++	if (tick_sched_flag_test(ts, TS_FLAG_INIDLE))
+ 		ts->got_idle_tick = 1;
+ }
+ 
+@@ -237,7 +257,8 @@ static void tick_sched_handle(struct tick_sched *ts, struct pt_regs *regs)
+ 	 * idle" jiffy stamp so the idle accounting adjustment we do
+ 	 * when we go busy again does not account too many ticks.
+ 	 */
+-	if (IS_ENABLED(CONFIG_NO_HZ_COMMON) && ts->tick_stopped) {
++	if (IS_ENABLED(CONFIG_NO_HZ_COMMON) &&
++	    tick_sched_flag_test(ts, TS_FLAG_STOPPED)) {
+ 		touch_softlockup_watchdog_sched();
+ 		if (is_idle_task(current))
+ 			ts->idle_jiffies++;
+@@ -280,7 +301,7 @@ static enum hrtimer_restart tick_nohz_highres_handler(struct hrtimer *timer)
+ 	 * - to the idle task if in dynticks-idle
+ 	 * - to IRQ exit if in full-dynticks.
+ 	 */
+-	if (unlikely(ts->tick_stopped))
++	if (unlikely(tick_sched_flag_test(ts, TS_FLAG_STOPPED)))
+ 		return HRTIMER_NORESTART;
+ 
+ 	hrtimer_forward(timer, now, TICK_NSEC);
+@@ -560,7 +581,7 @@ void __tick_nohz_task_switch(void)
+ 
+ 	ts = this_cpu_ptr(&tick_cpu_sched);
+ 
+-	if (ts->tick_stopped) {
++	if (tick_sched_flag_test(ts, TS_FLAG_STOPPED)) {
+ 		if (atomic_read(&current->tick_dep_mask) ||
+ 		    atomic_read(&current->signal->tick_dep_mask))
+ 			tick_nohz_full_kick();
+@@ -657,14 +678,14 @@ bool tick_nohz_tick_stopped(void)
+ {
+ 	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
+ 
+-	return ts->tick_stopped;
++	return tick_sched_flag_test(ts, TS_FLAG_STOPPED);
+ }
+ 
+ bool tick_nohz_tick_stopped_cpu(int cpu)
+ {
+ 	struct tick_sched *ts = per_cpu_ptr(&tick_cpu_sched, cpu);
+ 
+-	return ts->tick_stopped;
++	return tick_sched_flag_test(ts, TS_FLAG_STOPPED);
+ }
+ 
+ /**
+@@ -694,7 +715,7 @@ static void tick_nohz_stop_idle(struct tick_sched *ts, ktime_t now)
+ {
+ 	ktime_t delta;
+ 
+-	if (WARN_ON_ONCE(!ts->idle_active))
++	if (WARN_ON_ONCE(!tick_sched_flag_test(ts, TS_FLAG_IDLE_ACTIVE)))
+ 		return;
+ 
+ 	delta = ktime_sub(now, ts->idle_entrytime);
+@@ -706,7 +727,7 @@ static void tick_nohz_stop_idle(struct tick_sched *ts, ktime_t now)
+ 		ts->idle_sleeptime = ktime_add(ts->idle_sleeptime, delta);
+ 
+ 	ts->idle_entrytime = now;
+-	ts->idle_active = 0;
++	tick_sched_flag_clear(ts, TS_FLAG_IDLE_ACTIVE);
+ 	write_seqcount_end(&ts->idle_sleeptime_seq);
+ 
+ 	sched_clock_idle_wakeup_event();
+@@ -716,7 +737,7 @@ static void tick_nohz_start_idle(struct tick_sched *ts)
+ {
+ 	write_seqcount_begin(&ts->idle_sleeptime_seq);
+ 	ts->idle_entrytime = ktime_get();
+-	ts->idle_active = 1;
++	tick_sched_flag_set(ts, TS_FLAG_IDLE_ACTIVE);
+ 	write_seqcount_end(&ts->idle_sleeptime_seq);
+ 
+ 	sched_clock_idle_sleep_event();
+@@ -738,7 +759,7 @@ static u64 get_cpu_sleep_time_us(struct tick_sched *ts, ktime_t *sleeptime,
+ 	do {
+ 		seq = read_seqcount_begin(&ts->idle_sleeptime_seq);
+ 
+-		if (ts->idle_active && compute_delta) {
++		if (tick_sched_flag_test(ts, TS_FLAG_IDLE_ACTIVE) && compute_delta) {
+ 			ktime_t delta = ktime_sub(now, ts->idle_entrytime);
+ 
+ 			idle = ktime_add(*sleeptime, delta);
+@@ -889,7 +910,7 @@ static ktime_t tick_nohz_next_event(struct tick_sched *ts, int cpu)
+ 		 * We've not stopped the tick yet, and there's a timer in the
+ 		 * next period, so no point in stopping it either, bail.
+ 		 */
+-		if (!ts->tick_stopped) {
++		if (!tick_sched_flag_test(ts, TS_FLAG_STOPPED)) {
+ 			ts->timer_expires = 0;
+ 			goto out;
+ 		}
+@@ -902,7 +923,8 @@ static ktime_t tick_nohz_next_event(struct tick_sched *ts, int cpu)
+ 	 */
+ 	delta = timekeeping_max_deferment();
+ 	if (cpu != tick_do_timer_cpu &&
+-	    (tick_do_timer_cpu != TICK_DO_TIMER_NONE || !ts->do_timer_last))
++	    (tick_do_timer_cpu != TICK_DO_TIMER_NONE ||
++	     !tick_sched_flag_test(ts, TS_FLAG_DO_TIMER_LAST)))
+ 		delta = KTIME_MAX;
+ 
+ 	/* Calculate the next expiry time */
+@@ -936,13 +958,13 @@ static void tick_nohz_stop_tick(struct tick_sched *ts, int cpu)
+ 	 */
+ 	if (cpu == tick_do_timer_cpu) {
+ 		tick_do_timer_cpu = TICK_DO_TIMER_NONE;
+-		ts->do_timer_last = 1;
++		tick_sched_flag_set(ts, TS_FLAG_DO_TIMER_LAST);
+ 	} else if (tick_do_timer_cpu != TICK_DO_TIMER_NONE) {
+-		ts->do_timer_last = 0;
++		tick_sched_flag_clear(ts, TS_FLAG_DO_TIMER_LAST);
+ 	}
+ 
+ 	/* Skip reprogram of event if it's not changed */
+-	if (ts->tick_stopped && (expires == ts->next_tick)) {
++	if (tick_sched_flag_test(ts, TS_FLAG_STOPPED) && (expires == ts->next_tick)) {
+ 		/* Sanity check: make sure clockevent is actually programmed */
+ 		if (expires == KTIME_MAX || ts->next_tick == hrtimer_get_expires(&ts->sched_timer))
+ 			return;
+@@ -960,12 +982,12 @@ static void tick_nohz_stop_tick(struct tick_sched *ts, int cpu)
+ 	 * call we save the current tick time, so we can restart the
+ 	 * scheduler tick in tick_nohz_restart_sched_tick().
+ 	 */
+-	if (!ts->tick_stopped) {
++	if (!tick_sched_flag_test(ts, TS_FLAG_STOPPED)) {
+ 		calc_load_nohz_start();
+ 		quiet_vmstat();
+ 
+ 		ts->last_tick = hrtimer_get_expires(&ts->sched_timer);
+-		ts->tick_stopped = 1;
++		tick_sched_flag_set(ts, TS_FLAG_STOPPED);
+ 		trace_tick_stop(1, TICK_DEP_MASK_NONE);
+ 	}
+ 
+@@ -1022,7 +1044,7 @@ static void tick_nohz_restart_sched_tick(struct tick_sched *ts, ktime_t now)
+ 	touch_softlockup_watchdog_sched();
+ 
+ 	/* Cancel the scheduled timer and restore the tick: */
+-	ts->tick_stopped  = 0;
++	tick_sched_flag_clear(ts, TS_FLAG_STOPPED);
+ 	tick_nohz_restart(ts, now);
+ }
+ 
+@@ -1034,7 +1056,7 @@ static void __tick_nohz_full_update_tick(struct tick_sched *ts,
+ 
+ 	if (can_stop_full_tick(cpu, ts))
+ 		tick_nohz_full_stop_tick(ts, cpu);
+-	else if (ts->tick_stopped)
++	else if (tick_sched_flag_test(ts, TS_FLAG_STOPPED))
+ 		tick_nohz_restart_sched_tick(ts, now);
+ #endif
+ }
+@@ -1154,14 +1176,14 @@ void tick_nohz_idle_stop_tick(void)
+ 	ts->idle_calls++;
+ 
+ 	if (expires > 0LL) {
+-		int was_stopped = ts->tick_stopped;
++		int was_stopped = tick_sched_flag_test(ts, TS_FLAG_STOPPED);
+ 
+ 		tick_nohz_stop_tick(ts, cpu);
+ 
+ 		ts->idle_sleeps++;
+ 		ts->idle_expires = expires;
+ 
+-		if (!was_stopped && ts->tick_stopped) {
++		if (!was_stopped && tick_sched_flag_test(ts, TS_FLAG_STOPPED)) {
+ 			ts->idle_jiffies = ts->last_jiffies;
+ 			nohz_balance_enter_idle(cpu);
+ 		}
+@@ -1197,7 +1219,7 @@ void tick_nohz_idle_enter(void)
+ 
+ 	WARN_ON_ONCE(ts->timer_expires_base);
+ 
+-	ts->inidle = 1;
++	tick_sched_flag_set(ts, TS_FLAG_INIDLE);
+ 	tick_nohz_start_idle(ts);
+ 
+ 	local_irq_enable();
+@@ -1226,7 +1248,7 @@ void tick_nohz_irq_exit(void)
+ {
+ 	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
+ 
+-	if (ts->inidle)
++	if (tick_sched_flag_test(ts, TS_FLAG_INIDLE))
+ 		tick_nohz_start_idle(ts);
+ 	else
+ 		tick_nohz_full_update_tick(ts);
+@@ -1280,7 +1302,7 @@ ktime_t tick_nohz_get_sleep_length(ktime_t *delta_next)
+ 	ktime_t now = ts->idle_entrytime;
+ 	ktime_t next_event;
+ 
+-	WARN_ON_ONCE(!ts->inidle);
++	WARN_ON_ONCE(!tick_sched_flag_test(ts, TS_FLAG_INIDLE));
+ 
+ 	*delta_next = ktime_sub(dev->next_event, now);
+ 
+@@ -1352,7 +1374,7 @@ void tick_nohz_idle_restart_tick(void)
+ {
+ 	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
+ 
+-	if (ts->tick_stopped) {
++	if (tick_sched_flag_test(ts, TS_FLAG_STOPPED)) {
+ 		ktime_t now = ktime_get();
+ 		tick_nohz_restart_sched_tick(ts, now);
+ 		tick_nohz_account_idle_time(ts, now);
+@@ -1393,12 +1415,12 @@ void tick_nohz_idle_exit(void)
+ 
+ 	local_irq_disable();
+ 
+-	WARN_ON_ONCE(!ts->inidle);
++	WARN_ON_ONCE(!tick_sched_flag_test(ts, TS_FLAG_INIDLE));
+ 	WARN_ON_ONCE(ts->timer_expires_base);
+ 
+-	ts->inidle = 0;
+-	idle_active = ts->idle_active;
+-	tick_stopped = ts->tick_stopped;
++	tick_sched_flag_clear(ts, TS_FLAG_INIDLE);
++	idle_active = tick_sched_flag_test(ts, TS_FLAG_IDLE_ACTIVE);
++	tick_stopped = tick_sched_flag_test(ts, TS_FLAG_STOPPED);
+ 
+ 	if (idle_active || tick_stopped)
+ 		now = ktime_get();
+@@ -1464,10 +1486,10 @@ static inline void tick_nohz_irq_enter(void)
+ 	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
+ 	ktime_t now;
+ 
+-	if (!ts->idle_active && !ts->tick_stopped)
++	if (!tick_sched_flag_test(ts, TS_FLAG_STOPPED | TS_FLAG_IDLE_ACTIVE))
+ 		return;
+ 	now = ktime_get();
+-	if (ts->idle_active)
++	if (tick_sched_flag_test(ts, TS_FLAG_IDLE_ACTIVE))
+ 		tick_nohz_stop_idle(ts, now);
+ 	/*
+ 	 * If all CPUs are idle we may need to update a stale jiffies value.
+@@ -1476,7 +1498,7 @@ static inline void tick_nohz_irq_enter(void)
+ 	 * rare case (typically stop machine). So we must make sure we have a
+ 	 * last resort.
+ 	 */
+-	if (ts->tick_stopped)
++	if (tick_sched_flag_test(ts, TS_FLAG_STOPPED))
+ 		tick_nohz_update_jiffies(now);
+ }
+ 
 diff --git a/kernel/time/tick-sched.h b/kernel/time/tick-sched.h
-index 35808bbb8a47..3b555e0fa937 100644
+index 3b555e0fa937..07a4c0144c47 100644
 --- a/kernel/time/tick-sched.h
 +++ b/kernel/time/tick-sched.h
-@@ -61,7 +61,6 @@ struct tick_sched {
- 	unsigned int			tick_stopped	: 1;
- 	unsigned int			idle_active	: 1;
- 	unsigned int			do_timer_last	: 1;
--	unsigned int			got_idle_tick	: 1;
+@@ -20,14 +20,22 @@ enum tick_nohz_mode {
+ 	NOHZ_MODE_HIGHRES,
+ };
+ 
++/* The CPU is in the tick idle mode */
++#define TS_FLAG_INIDLE		BIT(0)
++/* The idle tick has been stopped */
++#define TS_FLAG_STOPPED		BIT(1)
++/*
++ * Indicator that the CPU is actively in the tick idle mode;
++ * it is reset during irq handling phases.
++ */
++#define TS_FLAG_IDLE_ACTIVE	BIT(2)
++/* CPU was the last one doing do_timer before going idle */
++#define TS_FLAG_DO_TIMER_LAST	BIT(3)
++
+ /**
+  * struct tick_sched - sched tick emulation and no idle tick control/stats
+  *
+- * @inidle:		Indicator that the CPU is in the tick idle mode
+- * @tick_stopped:	Indicator that the idle tick has been stopped
+- * @idle_active:	Indicator that the CPU is actively in the tick idle mode;
+- *			it is reset during irq handling phases.
+- * @do_timer_last:	CPU was the last one doing do_timer before going idle
++ * @flags:		State flags gathering the TS_FLAG_* features
+  * @got_idle_tick:	Tick timer function has run with @inidle set
+  * @stalled_jiffies:	Number of stalled jiffies detected across ticks
+  * @last_tick_jiffies:	Value of jiffies seen on last tick
+@@ -57,10 +65,7 @@ enum tick_nohz_mode {
+  */
+ struct tick_sched {
+ 	/* Common flags */
+-	unsigned int			inidle		: 1;
+-	unsigned int			tick_stopped	: 1;
+-	unsigned int			idle_active	: 1;
+-	unsigned int			do_timer_last	: 1;
++	unsigned long			flags;
  
  	/* Tick handling: jiffies stall check */
  	unsigned int			stalled_jiffies;
-@@ -73,6 +72,7 @@ struct tick_sched {
- 	ktime_t				next_tick;
- 	unsigned long			idle_jiffies;
- 	ktime_t				idle_waketime;
-+	unsigned int			got_idle_tick;
- 
- 	/* Idle entry */
- 	seqcount_t			idle_sleeptime_seq;
+diff --git a/kernel/time/timer_list.c b/kernel/time/timer_list.c
+index ed7d6ad694fb..38f81d836fc5 100644
+--- a/kernel/time/timer_list.c
++++ b/kernel/time/timer_list.c
+@@ -147,11 +147,14 @@ static void print_cpu(struct seq_file *m, int cpu, u64 now)
+ # define P_ns(x) \
+ 	SEQ_printf(m, "  .%-15s: %Lu nsecs\n", #x, \
+ 		   (unsigned long long)(ktime_to_ns(ts->x)))
++# define P_flag(x, f)			    \
++	SEQ_printf(m, "  .%-15s: %d\n", #x, !!(ts->flags & (f)))
++
+ 	{
+ 		struct tick_sched *ts = tick_get_tick_sched(cpu);
+ 		P(nohz_mode);
+ 		P_ns(last_tick);
+-		P(tick_stopped);
++		P_flag(tick_stopped, TS_FLAG_STOPPED);
+ 		P(idle_jiffies);
+ 		P(idle_calls);
+ 		P(idle_sleeps);
 -- 
 2.43.0
 
