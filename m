@@ -1,128 +1,139 @@
-Return-Path: <linux-kernel+bounces-37613-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C393383B292
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 20:53:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 396F383B294
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 20:53:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B05FCB23229
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:53:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E724328292C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:53:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79F01133414;
-	Wed, 24 Jan 2024 19:53:03 +0000 (UTC)
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB29C133412;
+	Wed, 24 Jan 2024 19:53:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="A+/A63xh";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="lT+iXOVz"
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A51C67A721;
-	Wed, 24 Jan 2024 19:53:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5DBA131749;
+	Wed, 24 Jan 2024 19:53:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706125983; cv=none; b=ZzL5W25qHMk0g5RtbIxs5gWEEw9VtiwjY1CpW+AIC2jcLaqE/cJPxzs3PHOXV+eJv82rb+M0emqpLzw3HNXbHdXtQqfhKd0JP4UOm44dtam6eqa8z/L11Y4FmQv2DRruKXsWQLwxm1cESVeTZn0bUkeh9D3KTXSvH83NSCE5sXk=
+	t=1706125997; cv=none; b=AFK+83K1CRKJ8dl/x8QwODOWfn0CfIi/MQE8E0iLxqsxJonTrdBo5UcA6TfC2sPjwGni+41mbG6E3GRAuZXst5RPJgVgZCKba4WzmE6LZzvSzrQ6ynqeSPZX4KAMestyn3csT+aPJ1HJOKwfxkTU5LL91THqB29GWL912wcKC5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706125983; c=relaxed/simple;
-	bh=aadZZEOGkkUEm30g9/XpD6S08ZVXC+3z9qo9Z7Hqwto=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=enJ8HoVDqijQI5+9ll5LXcX/QZGzSgJ23W8U9Z+G+P5LGVSZG0CG12j3PO/uA6OTey5N0BBoDsNv+o7FCBZxPjbkXEXSktlMlR/51ZQNpYSt0ors1huGwHxBMNk1njIhlfHGOrNchfNaKukn6Xk5LH//3Pix57eTTE1xj4fMzSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-598afd970e4so722621eaf.0;
-        Wed, 24 Jan 2024 11:53:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706125980; x=1706730780;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SRoNhJ3/05j9Tlj5YG8Cl0Gw7tHLoeZYDuNeT2OREZs=;
-        b=aLrr+1xEmEqBHfqxKwqo0yoWF3iw+7hRphaAzLB74OM1iGb26A6NAoAvz4NEYK8hHm
-         NczXyOUJ5WRdGyXbnf9YjEj8gryX1F1zz1wcbMIO4r/cXuyWAq4VortZD+b9FEuuPN7n
-         +rntXiZpd83WMmyLcy9nKGN7JFL801J7swOEgGj/J+iqfHoNARtVRLskCbIPJyec8oyL
-         OXt4hlj3iRWEtmnsgcX2sCfGJjH9UjmqM1EhNGHgw2p+4UPWbB/lkmg32yPmVOA+BTQr
-         2lsutLcL8jQwNdf3HeyURgc/SaSvy4CGBi96lzmqb+ls3mHFF2Kwn4gD1hkgSwbh8Hqj
-         emUA==
-X-Gm-Message-State: AOJu0Yxu1kD7SbgvOwbgdr+Ov5yjrGRVBbPoj38MIomNA5pQtVDrIymj
-	qfo/v/39TA6jiXaaOZXkhr+0EASKcgP80nXAeVL4WrgemOzXajGNo2ZW1H3NTqDx2c7H27p5TZF
-	D/CoK1Kw7H0Tai6VGH5WnC+tZQ6g=
-X-Google-Smtp-Source: AGHT+IHkHJAffORh/fW3JTP82vIu6+jz/+0vhRELYfwxdDzNLlmrBuVUB//vF1C2NY1AK6LLpbrHXW9egpFdPauocUA=
-X-Received: by 2002:a4a:bd89:0:b0:599:2b86:993 with SMTP id
- k9-20020a4abd89000000b005992b860993mr3258671oop.0.1706125980540; Wed, 24 Jan
- 2024 11:53:00 -0800 (PST)
+	s=arc-20240116; t=1706125997; c=relaxed/simple;
+	bh=SwgTspLxFGhapYw4Ru7+OVzFFI0NckTW4NA+OsvMalo=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=Mpjny2uK2xOARJnKsIEir2R0vnuZ7ZHU5oSCnpcGzK8ah5j62b+HmSXhPsbu4f1c39HfabqCXSkXbMY4tE/Ec1nLcCeIrUV90ads08arEuw+Zuyb2fM88xGWi646ssW++zrIytGBNrSKluyJ82qyJkf36Cw2sh5nO1BJaWvLok8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=A+/A63xh; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=lT+iXOVz; arc=none smtp.client-ip=64.147.123.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id 221733200AD5;
+	Wed, 24 Jan 2024 14:53:14 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 24 Jan 2024 14:53:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1706125993; x=1706212393; bh=sDekHfYu/b
+	reQaJXZDRG+5CmXfkqyiEh3Ug/BHq3NCk=; b=A+/A63xhJvI6FAhB7d21eQqM+8
+	4ROkoAjIrPZecxvmfBU0MJwTTpkdq0v4aN4S98wIC1HXTsaLrlEqj/Zf/7p8nsKR
+	yqbVDC1ikBx/RdDXlxyCQP5AD+7dcRRdoMn6Pe+gZLG+2rGne4dgofSjxE9wFFfD
+	cg/77IYHLEULfVqSdM9gFvRDmqoyt5vc1+Us37AW81hE/em87PCqEQRVVOZYMGp5
+	uC7D5skD0Y+w1xqT/kF7ErVyMV3HOIIn4aYY1yg5XcYroQeaZaitELDKyzd8xaYK
+	OyzyD3oMHeJ6yjLxXaf5Mb1Z3Cs9Oaw+B0aaANp2bT+tD7FeH3o+BleFNFLw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1706125993; x=1706212393; bh=sDekHfYu/breQaJXZDRG+5CmXfkq
+	yiEh3Ug/BHq3NCk=; b=lT+iXOVzpz5ed7FAG5VvhFfsRT83wNtnNPI8oaMVsswF
+	+cRFVm7mci9ShMErww4nN6bNxJarfTlXVW9AbBbT2SuxD1qCFU4TNEgwdn4Ym+9P
+	YL6Sc/QfLKfrxcPL9i9Z2iPZvxPZ7V+DqssiqNJ7cbrcvq+/WSL1HX/UxKXRu9uo
+	l4nufx5n86Kp9Ici2xYXq8n3KFNYTr4tojw9vQ2zfbeELQib6YouEgtH7Jgduq3o
+	HWOX2S2YQ1OhTTmFS0cMCtH+fOfdDqDku8IIMdGIM/q3XbTvgbq1pdlbkczhOQdb
+	VfhPidkByjAgAWoIRKc4cNRLjA1A0MzKjS1l/pSSHQ==
+X-ME-Sender: <xms:qWqxZbmGqv2kbzjy1E6tOr7ZNBmnSmEDHls-Ch7R81SlowSoc6WjUg>
+    <xme:qWqxZe2uJx94oZk6SoHOZjdCiVcKIC80dg4J7oeVctk2_8vOYIrd2EqhoTM2joGkV
+    EY3Az7hC4zxitrU_p8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeluddguddvjecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
+    keetffenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:qWqxZRrB6qraNON4Ij3jtCBB16Q-I-xblqBwZhqrkoUPq609IH_htg>
+    <xmx:qWqxZTkATYRF39lVAtHehvB7BeExjy77z52gNhvOZ5tq6Tb3EEQPSg>
+    <xmx:qWqxZZ0SzGENy1GGBUAVB_nv8wlSST2uLQ_wsK3-0ySUVOWMzLThVw>
+    <xmx:qWqxZToMm9SBs95FdGS1XhmnuE5p-We-wQLVykLbeuUHJx1t8dJXNA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 142D2B6008D; Wed, 24 Jan 2024 14:53:12 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-119-ga8b98d1bd8-fm-20240108.001-ga8b98d1b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122235208.work.748-kees@kernel.org> <20240123002814.1396804-35-keescook@chromium.org>
-In-Reply-To: <20240123002814.1396804-35-keescook@chromium.org>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 24 Jan 2024 20:52:48 +0100
-Message-ID: <CAJZ5v0gLr69vzLr_+yhP4z96nzFZjDfaPR-sTdkiv08vHbBe7w@mail.gmail.com>
-Subject: Re: [PATCH 35/82] ACPI: custom_method: Refactor intentional
- wrap-around test
-To: Kees Cook <keescook@chromium.org>
-Cc: linux-hardening@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org, 
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-Id: <3ec03a12-ee1b-45f8-9f03-258606763d1e@app.fastmail.com>
+In-Reply-To: <4864383.GXAFRqVoOG@camazotz>
+References: <20240124004028.16826-1-zfigura@codeweavers.com>
+ <20240124004028.16826-6-zfigura@codeweavers.com>
+ <18c814fa-b458-48f9-b7e8-88b23a1825e2@app.fastmail.com>
+ <4864383.GXAFRqVoOG@camazotz>
+Date: Wed, 24 Jan 2024 20:52:52 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Elizabeth Figura" <zfigura@codeweavers.com>,
+ "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+ linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
+Cc: wine-devel@winehq.org,
+ =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
+ "Wolfram Sang" <wsa@kernel.org>, "Arkadiusz Hiler" <ahiler@codeweavers.com>,
+ "Peter Zijlstra" <peterz@infradead.org>
+Subject: Re: [RFC PATCH 5/9] ntsync: Introduce NTSYNC_IOC_WAIT_ANY.
+Content-Type: text/plain
 
-On Tue, Jan 23, 2024 at 2:03=E2=80=AFAM Kees Cook <keescook@chromium.org> w=
-rote:
+On Wed, Jan 24, 2024, at 19:02, Elizabeth Figura wrote:
+> On Wednesday, 24 January 2024 01:56:52 CST Arnd Bergmann wrote:
+>> On Wed, Jan 24, 2024, at 01:40, Elizabeth Figura wrote:
+>> 
+>> > +	if (args->timeout) {
+>> > +		struct timespec64 to;
+>> > +
+>> > +		if (get_timespec64(&to, u64_to_user_ptr(args->timeout)))
+>> > +			return -EFAULT;
+>> > +		if (!timespec64_valid(&to))
+>> > +			return -EINVAL;
+>> > +
+>> > +		timeout = timespec64_to_ns(&to);
+>> > +	}
+>> 
+>> Have you considered just passing the nanosecond value here?
+>> Since you do not appear to write it back, that would avoid
+>> the complexities of dealing with timespec layout differences
+>> and indirection.
 >
-> In an effort to separate intentional arithmetic wrap-around from
-> unexpected wrap-around, we need to refactor places that depend on this
-> kind of math. One of the most common code patterns of this is:
->
->         VAR + value < VAR
->
-> Notably, this is considered "undefined behavior" for signed and pointer
-> types, which the kernel works around by using the -fno-strict-overflow
-> option in the build[1] (which used to just be -fwrapv). Regardless, we
-> want to get the kernel source to the position where we can meaningfully
-> instrument arithmetic wrap-around conditions and catch them when they
-> are unexpected, regardless of whether they are signed[2], unsigned[3],
-> or pointer[4] types.
->
-> Refactor open-coded wrap-around addition test to use add_would_overflow()=
-.
-> This paves the way to enabling the wrap-around sanitizers in the future.
->
-> Link: https://git.kernel.org/linus/68df3755e383e6fecf2354a67b08f92f185365=
-94 [1]
-> Link: https://github.com/KSPP/linux/issues/26 [2]
-> Link: https://github.com/KSPP/linux/issues/27 [3]
-> Link: https://github.com/KSPP/linux/issues/344 [4]
-> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> Cc: Len Brown <lenb@kernel.org>
-> Cc: linux-acpi@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  drivers/acpi/custom_method.c | 2 +-
+> That'd be nicer in general. I think there was some documentation that advised
+> using timespec64 for new ioctl interfaces but it may have been outdated or
+> misread.
 
-I may attempt to drop custom_method.c in this cycle, is there a
-problem if I take this into my tree for now?
+It's probably something I wrote. It depends a bit on
+whether you have an absolute or relative timeout. If
+the timeout is relative to the current time as I understand
+it is here, a 64-bit number seems more logical to me.
 
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/acpi/custom_method.c b/drivers/acpi/custom_method.c
-> index d39a9b474727..0789317f4a1a 100644
-> --- a/drivers/acpi/custom_method.c
-> +++ b/drivers/acpi/custom_method.c
-> @@ -54,7 +54,7 @@ static ssize_t cm_write(struct file *file, const char _=
-_user *user_buf,
->
->         if ((*ppos > max_size) ||
->             (*ppos + count > max_size) ||
-> -           (*ppos + count < count) ||
-> +           (add_would_overflow(count, *ppos)) ||
->             (count > uncopied_bytes)) {
->                 kfree(buf);
->                 buf =3D NULL;
-> --
-> 2.34.1
->
+For absolute times, I would usually use a __kernel_timespec,
+especially if it's CLOCK_REALTIME. In this case you would
+also need to specify the time domain.
+
+      Arnd
 
