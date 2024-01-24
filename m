@@ -1,238 +1,266 @@
-Return-Path: <linux-kernel+bounces-37554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37555-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A618183B192
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:55:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95A1183B195
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:56:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55B6C284E94
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:55:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 444B428577B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:56:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15F9B13175C;
-	Wed, 24 Jan 2024 18:55:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA4C6131E24;
+	Wed, 24 Jan 2024 18:55:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="1yoC7uC/"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="C2aMWTug"
+Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E4E81EA85
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 18:55:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E88112BE98
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 18:55:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706122521; cv=none; b=Zf3PcaHzKSm88lgvX7MNrzZxoo0wUQGpcJtzuSJENpXYnaPjurGlCCWuDNuWfTT44jhQWoDP9146FsuUWxBfEfOvU6WqBn/5pgCYNQz3Mmmc/+q5PlQh73X6PsEpi43utf4eAyzNuTV5Y4CvQa/ypMWsMJshIqSVG3a5v+TSvME=
+	t=1706122554; cv=none; b=FKxW1lCJVPM4gIAkRyil0vmvI8rkIeJ2RcwtyOYszPBwLDY77SGrKVJW2RLmU6Mk0c2B2xxQNZlWdUda+pEQLw/zDfVm6D7xTOeaNMsJzet5rhndx0SbSHCcADwEmRwbg2kkxeiU3Sop3d42xATfCKBrFjnfFT7D4ZVfoa7LcME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706122521; c=relaxed/simple;
-	bh=oWD5VLSXRA+rwKDmOK0WcQfre24wTxNEWYYxv4RGXoA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UqdbV16vF1F08/sI0eet2JZ5AWa16HH8pSG+fkfpciZ87XSSLS1mvBJg1I58fE0AHwE3Vi9SBU7ttRLzrcYsUYy5DUA33bH2jbog4zCoGbXU3KF+O3UE32p3nVif5tkw9yUIomfdTP2iBliuwwIFSqVMMMrRv4SP1G7oOjgzH98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=1yoC7uC/; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d7431e702dso27666445ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:55:19 -0800 (PST)
+	s=arc-20240116; t=1706122554; c=relaxed/simple;
+	bh=KLsAeDdaQS/kCf5bcjQjqAY1y7ykrEIrJ+OlMCGRNF4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XPGgl3hETUSh2EgREi4kzXixfW6zhPKwdV3jm6FRfpnRbmIk1JgR6Y5LcRV1ZPmJd4hIsh86UM1o6KbEzYPD9rP6RDJHayd+EnqzBcKb6qsjwwcEsAfV7pWBL0P269L/ANr/veSt7BW+u3eZG2algwNYKLV8S6UczezxAnoD40A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=C2aMWTug; arc=none smtp.client-ip=209.85.160.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-206689895bfso3046982fac.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:55:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706122519; x=1706727319; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jDj/r0j6wjrBeKVb5gL0FLzmDiXz6FHRYIwfCvn46Xc=;
-        b=1yoC7uC/hCY8BTp//3vVQjs2fRNi6cyFkfIHtPN6N6jHHHktsbh7IlTpm6c5kf+Gws
-         QQzmoGSw0qCswbL2GozTeiEoDhFcskhTFsHK3Jarwkk4id+wtSV5N5rg76d6X2FTPGMD
-         q8MRneyYV4rGpab3Lq5qJsnUTNcmfdlyFXDXHs6KjT+19e9JRglz9l31kTsF3EkyurWI
-         W3stkLM6awyOJBw/ko7XbHRMWrTb6lBDoj6R7EsDL2GkYBdKhVnEiTShZ35HOUQ+gv/t
-         YXN0uGkVTsDnZYUSHSShiGP541XuSDHzJPH3Hm9XU55D9JkxmnLErCuZpmO9JnIj/uoc
-         9k2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706122519; x=1706727319;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=chromium.org; s=google; t=1706122551; x=1706727351; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jDj/r0j6wjrBeKVb5gL0FLzmDiXz6FHRYIwfCvn46Xc=;
-        b=e6tZi8BzoKpAe+GwWm7HgaujA0kPlU4/aBaCZQlOuIeGA+9n3ork+nIZlc7MQTfI6p
-         80ztfT+gBWrmnMM3056ZZBcZbZogOciJH9SuI1YO3yyKgHvbx3pUTLGVp7DM4IHWzm7d
-         zzzbsqByf/6adR0q2wzlvXMKZi9o5G8XHHK1AXpzmrscvmaN4HM2vVRd3QZWR8ihkown
-         Iqpz3DQ49EC1Y9d9X+siYpdCXm4iWNxLkBbQ29aAgUhXkxaBdSbssu+BgjrzMKoTHAQ0
-         1k0CuuhGZKUswRfAWPw5gcb1iJoyDoE/ZQ/xdmSCImAvrEc+iK7pVW9ZSW7MKuGwwGg0
-         fF+w==
-X-Gm-Message-State: AOJu0YxPBsadvcMktdv8DIEI3Y7Xs6gvkZgul66C3S9S0kG5uy1BURD0
-	q4Pt47QTKUzaT2PAxGcmDlbW1Xl6ltWGPqH9NZ7EDhB5/X6fergvuixqHydkK9A=
-X-Google-Smtp-Source: AGHT+IEIpZf36EhWLz+OQgHES8qLiyZ0UwP9vaFkyqYaaf3TE93IIKGP2XO1CzR3BfCEE2NcFO6xbw==
-X-Received: by 2002:a17:902:d4ce:b0:1d7:8e11:14a0 with SMTP id o14-20020a170902d4ce00b001d78e1114a0mr887617plg.91.1706122518713;
-        Wed, 24 Jan 2024 10:55:18 -0800 (PST)
-Received: from ghost ([12.44.203.122])
-        by smtp.gmail.com with ESMTPSA id z7-20020a1709028f8700b001d71935e5c1sm9210654plo.195.2024.01.24.10.55.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 10:55:18 -0800 (PST)
-Date: Wed, 24 Jan 2024 10:55:16 -0800
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Alexandre Ghiti <alex@ghiti.fr>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Jonathan Corbet <corbet@lwn.net>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
-	Atish Patra <atishp@atishpatra.org>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, Atish Patra <atishp@rivosinc.com>
-Subject: Re: [PATCH v9 2/2] documentation: Document
- PR_RISCV_SET_ICACHE_FLUSH_CTX prctl
-Message-ID: <ZbFdFARPQzjRd2g8@ghost>
-References: <20240123-fencei-v9-0-71411bfe8d71@rivosinc.com>
- <20240123-fencei-v9-2-71411bfe8d71@rivosinc.com>
- <26808f34-d9c4-404a-bf09-45c4aff139ad@ghiti.fr>
+        bh=HzxBYWU0XLGvtFhW2j53HrOFywmcvwVn8sjJljXglm0=;
+        b=C2aMWTugdu1sxHRF/ulhXhi50AoXFz1/Sk0JpaUSSnARspN4VSnHSZ4tEkl1k8C59J
+         25I8EuHBtDVyiu9/iLwvSPpCMPIGk0OtBebXx3YyVP8Bku5LXvW0QEm14WXdhX7ghhhm
+         B2qQmouQgprN9RG5OW1xmgJWKJ+qUawGaejCc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706122551; x=1706727351;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HzxBYWU0XLGvtFhW2j53HrOFywmcvwVn8sjJljXglm0=;
+        b=dXQSZbk/CykjWKXJcaQoBWJL2VMV6RUX5xyv1hygVS5TJ+DY8MqdOfXuPWgpvo7hGM
+         iX3RggKK3pTYq/DZUFYriF6ybuQsgIwSwipPV346sBJKR++dmSPGAbC6hIPq7YWgx4An
+         2x6bStRfUurp1Bu/BLHQYG+uFLo4j+9ZdD5Vi71OH5qCuSKg5NaasszPPXpcEJYCSp22
+         rKayQZPlkHVk/4dloXJMJRmZUXSsE+KLugJRV7lULc/5UAJxdnPB3IISLl7RGNPQJ6kf
+         pid+USli5FgpBvp00W4lCOrDKabRPM6ZOsUzGJbPhLO/IuGdBykzYxoQbs3iopFAAEhZ
+         2WSg==
+X-Gm-Message-State: AOJu0Yygxzk8zNqF2yW1fHHtIdX0tsJ0g+iTUEjFWJd9zlji/GcJy9mu
+	aAxea3unPSJgqjqtWKgJDS+05Ja7SncTzI6MGrLW8zxWszWjK0CroHlSSToUx0C+PdpkWwV5i2w
+	WKWREcMGgM0OUEv8OaAbuY8gem+9yhxAEyOcx
+X-Google-Smtp-Source: AGHT+IHWbZarCrd4sIhzNv9IZJE3B+OX3xjBmL88b3OOmmDhwGA+wxixbMYXHijO0HSTHdoNR/Ds7SybUvl+5K4zcno=
+X-Received: by 2002:a05:6870:5490:b0:214:448f:e3e with SMTP id
+ f16-20020a056870549000b00214448f0e3emr3479864oan.66.1706122551393; Wed, 24
+ Jan 2024 10:55:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <26808f34-d9c4-404a-bf09-45c4aff139ad@ghiti.fr>
+References: <20240122152905.2220849-1-jeffxu@chromium.org> <726.1705938579@cvs.openbsd.org>
+ <CABi2SkXrnUZsWvpqS61mHw-SqDBOodqpcfjdoTTyeeYG9tRJGA@mail.gmail.com> <86181.1705962897@cvs.openbsd.org>
+In-Reply-To: <86181.1705962897@cvs.openbsd.org>
+From: Jeff Xu <jeffxu@chromium.org>
+Date: Wed, 24 Jan 2024 10:55:39 -0800
+Message-ID: <CABi2SkXrMC_8Ew7uA=Tufyy1YJObkrFJWbJtZuONCw5XHv2LYQ@mail.gmail.com>
+Subject: Re: [PATCH v7 0/4] Introduce mseal()
+To: Theo de Raadt <deraadt@openbsd.org>
+Cc: akpm@linux-foundation.org, keescook@chromium.org, jannh@google.com, 
+	sroettger@google.com, willy@infradead.org, gregkh@linuxfoundation.org, 
+	torvalds@linux-foundation.org, usama.anjum@collabora.com, 
+	rdunlap@infradead.org, jeffxu@google.com, jorgelo@chromium.org, 
+	groeck@chromium.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, pedro.falcato@gmail.com, 
+	dave.hansen@intel.com, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 24, 2024 at 08:19:42AM +0100, Alexandre Ghiti wrote:
-> On 24/01/2024 00:29, Charlie Jenkins wrote:
-> > Provide documentation that explains how to properly do CMODX in riscv.
-> > 
-> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> > Reviewed-by: Atish Patra <atishp@rivosinc.com>
-> > ---
-> >   Documentation/arch/riscv/cmodx.rst | 96 ++++++++++++++++++++++++++++++++++++++
-> >   Documentation/arch/riscv/index.rst |  1 +
-> >   2 files changed, 97 insertions(+)
-> > 
-> > diff --git a/Documentation/arch/riscv/cmodx.rst b/Documentation/arch/riscv/cmodx.rst
-> > new file mode 100644
-> > index 000000000000..2ad46129d812
-> > --- /dev/null
-> > +++ b/Documentation/arch/riscv/cmodx.rst
-> > @@ -0,0 +1,96 @@
-> > +.. SPDX-License-Identifier: GPL-2.0
-> > +
-> > +==============================================================================
-> > +Concurrent Modification and Execution of Instructions (CMODX) for RISC-V Linux
-> > +==============================================================================
-> > +
-> > +CMODX is a programming technique where a program executes instructions that were
-> > +modified by the program itself. Instruction storage and the instruction cache
-> > +(icache) are not guaranteed to be synchronized on RISC-V hardware. Therefore, the
-> > +program must enforce its own synchronization with the unprivileged fence.i
-> > +instruction.
-> > +
-> > +However, the default Linux ABI prohibits the use of fence.i in userspace
-> > +applications. At any point the scheduler may migrate a task onto a new hart. If
-> > +migration occurs after the userspace synchronized the icache and instruction
-> > +storage with fence.i, the icache will no longer be clean. This is due to the
-> 
-> 
-> Nit: I think you mean "the icache on the new hart will no longer be clean".
+On Mon, Jan 22, 2024 at 2:34=E2=80=AFPM Theo de Raadt <deraadt@openbsd.org>=
+ wrote:
+>
+> Jeff Xu <jeffxu@chromium.org> wrote:
+>
+> > On Mon, Jan 22, 2024 at 7:49=E2=80=AFAM Theo de Raadt <deraadt@openbsd.=
+org> wrote:
+> > >
+> > > Regarding these pieces
+> > >
+> > > > The PROT_SEAL bit in prot field of mmap(). When present, it marks
+> > > > the map sealed since creation.
+> > >
+> > > OpenBSD won't be doing this.  I had PROT_IMMUTABLE as a draft.  In my
+> > > research I found basically zero circumstances when you userland does
+> > > that.  The most common circumstance is you create a RW mapping, fill =
+it,
+> > > and then change to a more restrictve mapping, and lock it.
+> > >
+> > > There are a few regions in the addressspace that can be locked while =
+RW.
+> > > For instance, the stack.  But the kernel does that, not userland.  I
+> > > found regions where the kernel wants to do this to the address space,
+> > > but there is no need to export useless functionality to userland.
+> > >
+> > I have a feeling that most apps that need to use mmap() in their code
+> > are likely using RW mappings. Adding sealing to mmap() could stop
+> > those mappings from being executable. Of course, those apps would
+> > need to change their code. We can't do it for them.
+>
+> I don't have a feeling about it.
+>
+> I spent a year engineering a complete system which exercises the maximum
+> amount of memory you can lock.
+>
+> I saw nothing like what you are describing.  I had PROT_IMMUTABLE in my
+> drafts, and saw it turning into a dangerous anti-pattern.
+>
+I'm sorry, I have never looked at one line of openBSD code, prototype
+or not, nor did I install openBSD before.
 
-Aw yes, that should be more explicit.
+Because of this situation on my side, I failed to understand why you
+have such a strong opinion on PROC_SEAL in mmap() in linux kernel,
+based on your own OpenBSD's experience ?
 
-- Charlie
+For PROT_SEAL in mmap(), I see it as a good and reasonable suggestion
+raised during the RFC process, and incorporate it into the patch set,
+there is nothing more and nothing less.
 
-> 
-> 
-> > +behavior of fence.i only affecting the hart that it is called on. Thus, the hart
-> > +that the task has been migrated to may not have synchronized instruction storage
-> > +and icache.
-> > +
-> > +There are two ways to solve this problem: use the riscv_flush_icache() syscall,
-> > +or use the ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` prctl() and emit fence.i in
-> > +userspace. The syscall performs a one-off icache flushing operation. The prctl
-> > +changes the Linux ABI to allow userspace to emit icache flushing operations.
-> > +
-> > +As an aside, "deferred" icache flushes can sometimes be triggered in the kernel.
-> > +At the time of writing, this only occurs during the riscv_flush_icache() syscall
-> > +and when the kernel uses copy_to_user_page(). These deferred flushes happen only
-> > +when the memory map being used by a hart changes. If the prctl() context caused
-> > +an icache flush, this deferred icache flush will be skipped as it is redundant.
-> > +Therefore, there will be no additional flush when using the riscv_flush_icache()
-> > +syscall inside of the prctl() context.
-> > +
-> > +prctl() Interface
-> > +---------------------
-> > +
-> > +Call prctl() with ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` as the first argument. The
-> > +remaining arguments will be delegated to the riscv_set_icache_flush_ctx
-> > +function detailed below.
-> > +
-> > +.. kernel-doc:: arch/riscv/mm/cacheflush.c
-> > +	:identifiers: riscv_set_icache_flush_ctx
-> > +
-> > +Example usage:
-> > +
-> > +The following files are meant to be compiled and linked with each other. The
-> > +modify_instruction() function replaces an add with 0 with an add with one,
-> > +causing the instruction sequence in get_value() to change from returning a zero
-> > +to returning a one.
-> > +
-> > +cmodx.c::
-> > +
-> > +	#include <stdio.h>
-> > +	#include <sys/prctl.h>
-> > +
-> > +	extern int get_value();
-> > +	extern void modify_instruction();
-> > +
-> > +	int main()
-> > +	{
-> > +		int value = get_value();
-> > +		printf("Value before cmodx: %d\n", value);
-> > +
-> > +		// Call prctl before first fence.i is called inside modify_instruction
-> > +		prctl(PR_RISCV_SET_ICACHE_FLUSH_CTX_ON, PR_RISCV_CTX_SW_FENCEI, PR_RISCV_SCOPE_PER_PROCESS);
-> > +		modify_instruction();
-> > +
-> > +		value = get_value();
-> > +		printf("Value after cmodx: %d\n", value);
-> > +		return 0;
-> > +	}
-> > +
-> > +cmodx.S::
-> > +
-> > +	.option norvc
-> > +
-> > +	.text
-> > +	.global modify_instruction
-> > +	modify_instruction:
-> > +	lw a0, new_insn
-> > +	lui a5,%hi(old_insn)
-> > +	sw  a0,%lo(old_insn)(a5)
-> > +	fence.i
-> > +	ret
-> > +
-> > +	.section modifiable, "awx"
-> > +	.global get_value
-> > +	get_value:
-> > +	li a0, 0
-> > +	old_insn:
-> > +	addi a0, a0, 0
-> > +	ret
-> > +
-> > +	.data
-> > +	new_insn:
-> > +	addi a0, a0, 1
-> > diff --git a/Documentation/arch/riscv/index.rst b/Documentation/arch/riscv/index.rst
-> > index 4dab0cb4b900..eecf347ce849 100644
-> > --- a/Documentation/arch/riscv/index.rst
-> > +++ b/Documentation/arch/riscv/index.rst
-> > @@ -13,6 +13,7 @@ RISC-V architecture
-> >       patch-acceptance
-> >       uabi
-> >       vector
-> > +    cmodx
-> >       features
-> > 
-> 
-> I don't know how man pages are synchronized with new additions in the
-> kernel, do you? It would be nice to have this new prctl documented for
-> userspace.
-> 
-> Thanks,
-> 
-> Alex
-> 
+If openBSD doesn't want it, that is fine to me, it is not that I'm
+trying to force this into openBSD's kernel, I understand it is a
+different code base.
+
+> > Also, I believe adding this to mmap() has no downsides, only
+> > performance gain, as Pedro Falcato pointed out in [1].
+> >
+> > [1] https://lore.kernel.org/lkml/CAKbZUD2A+=3Dbp_sd+Q0Yif7NJqMu8p__eb4y=
+guq0agEcmLH8SDQ@mail.gmail.com/
+>
+> Are you joking?  You don't have any code doing that today.  More feelings=
+?
+>
+> OpenBSD userland has zero places it can use mmap() MAP_IMMUTABLE.
+>
+> It has two places where it has mprotect() + mimmutable() adjacent to each
+> other, two codepaths for late mprotect() of RELRO, and then make the RELR=
+O
+> immutable.
+>
+> I think this idea is a premature optimization, and intentionally incompat=
+ible.
+>
+> Like I say, I had a similar MAP_ flag for mprotect() and mmap() in my
+> development trees, and I recognized it was pointless, distracting develop=
+ers
+> into the wrong patterns, and I threw it out.
+>
+> > > OpenBSD now uses this for a high percent of the address space.  It mi=
+ght
+> > > be worth re-reading a description of the split of responsibility rega=
+rding
+> > > who locks different types of memory in a process;
+> > > - kernel (the majority, based upon what ELF layout tell us),
+> > > - shared library linker (the next majority, dealing with shared
+> > >   library mappings and left-overs not determinable at kernel time),
+> > > - libc (a small minority, mostly regarding forced mutable objects)
+> > > - and the applications themselves (only 1 application today)
+> > >
+> > >     https://lwn.net/Articles/915662/
+> > >
+> > > > The MAP_SEALABLE bit in the flags field of mmap(). When present, it=
+ marks
+> > > > the map as sealable. A map created without MAP_SEALABLE will not su=
+pport
+> > > > sealing, i.e. mseal() will fail.
+> > >
+> > > We definately won't be doing this.  We allow a process to lock any an=
+d all
+> > > it's memory that isn't locked already, even if it means it is shootin=
+g
+> > > itself in the foot.
+> > >
+> > > I think you are going to severely hurt the power of this mechanism,
+> > > because you won't be able to lock memory that has been allocated by a
+> > > different callsite not under your source-code control which lacks the
+> > > MAP_SEALABLE flag.  (Which is extremely common with the system-parts =
+of
+> > > a process, meaning not just libc but kernel allocated objects).
+> > >
+> > MAP_SEALABLE was an open discussion item called out on V3 [2] and V4 [3=
+].
+> >
+> > I acknowledge that additional coordination would be required if
+> > mapping were to be allocated by one software component and sealed in
+> > another. However, this is feasible.
+> >
+> > Considering the side effect of not having this flag (as discussed in
+> > V3/V4) and the significant implications of altering the lifetime of
+> > the mapping (since unmapping would not be possible), I believe it is
+> > reasonable to expect developers to exercise additional care and
+> > caution when utilizing memory sealing.
+> >
+> > [2] https://lore.kernel.org/linux-mm/20231212231706.2680890-2-jeffxu@ch=
+romium.org/
+> > [3] https://lore.kernel.org/all/20240104185138.169307-1-jeffxu@chromium=
+org/
+>
+> I disagree *strongly*.  Developers need to exercise additional care on
+> memory, period.  Memory sealing issues is the least of their worries.
+>
+> (Except for handling RELRO, but only the ld.so developers will lose
+> their hair).
+>
+>
+> OK, so mseal and mimmutable are very different.
+>
+> mimmutable can be used by any developer on the address space easily.
+>
+> mseal requires control of the whole stack between allocation and consumpt=
+ion.
+>
+> I'm sorry, but I don't think you understand how dangerous this MAP_SEALAB=
+LE
+> proposal is because of the difficulties it will create for use.
+>
+> The immutable memory management we have today in OpenBSD would completely
+> impossible with such a flag.  Seperation between allocator (that doesn't =
+know
+> what is going to happen), and consumer (that does know), is completely co=
+mmon
+> in the systems environment (meaning the interaction between DSO, libc, ot=
+her
+> libraries, and the underside of applications).
+>
+> This is not not like an application where you can simply sprinkle the fla=
+g
+> into the mmap() calls that cause you problems.  That mmap() call is now i=
+n
+> someone else's code, and you CANNOT gain security advantage unless you
+> convince them to gain an understanding of what that flag means -- and it =
+is
+> a flag that other Linux variants don't have, not even in their #include
+> files.
+>
+I respect your reasoning with OpenBSD, but do you have a real example
+that this will be problematic for linux ?
+
+In my opinion, the extra communication part with mmap()'s owner has
+its pros and cons.
+
+The cons is what you mentioned: extra time for convincing and approval.
+
+The pro is that there won't be unexpected behavior from the code owner
+point of view, once this communication process is completed. It can
+reduce the possibility of introducing bugs.
+
+So far, I do not have enough information to say this is a bad idea.
+if you can provide a real example in the context of linux, e.g. DSO
+and libc you mentioned with details, that will be helpful.
 
