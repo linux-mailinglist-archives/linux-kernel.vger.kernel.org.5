@@ -1,144 +1,139 @@
-Return-Path: <linux-kernel+bounces-36400-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC5CA83A014
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 04:30:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 383A183A013
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 04:29:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF36F1C290EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:30:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E641E288F98
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:29:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C44B63AA;
-	Wed, 24 Jan 2024 03:29:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B43776FDD;
+	Wed, 24 Jan 2024 03:29:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kCoUQYNO"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="D/NWX0IE"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A3CA1381
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 03:29:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D72F1381;
+	Wed, 24 Jan 2024 03:29:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706066997; cv=none; b=ZkvdEsp8+2tLMDB12qrxvTyipeCoSq0a0WP/3PgwxKovIyD7gZU2Yc4lctH6L9qLrU6YkSRgFoSkkCamyBVC/HrEldejBNgmd3lQGlhL0RR7Wo6lJQHu3iWfz8sv8nf///H78SxbaIJS75GxGvJ8BMEBz4MkVySgO73os+3gBmc=
+	t=1706066949; cv=none; b=DMpVQYDdqm+79JSKa0Yo/hw3aT94t6qbQxMYmJeNJ5C/U8x4fUdacBNoKRTvGWa3BTsjnZiEnYrzLC7503HYjC4GMqmf2GZkmKexI3GSP0P0Yf8W5vENLfP9Rr5w9cS/RO0ZusBKZLG+R2gn4+CPNtGZmEkQHcTvioeSVdmVEm8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706066997; c=relaxed/simple;
-	bh=rSaAlk94pMBR8JXrSQ+PW4+MqsgT6LSmV+ZN3ZU7qKo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ld5eQ6lWkcQBlgazvD3eOXU1uLK38oh51YAUkv6SIFjKt0s1NjPiiU7g8adsyEy6RxsCL7axU67cf6qGS9DQd88i8NiQodq6glEg6QBLkiAynOqPW5h35N6PwA1OIk17obm89DSgjpgZ+VzeOdBaGRJS64+Kb4AwNzGEcgQ6qqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kCoUQYNO; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1706066949; c=relaxed/simple;
+	bh=LEKebXaU68il7ohv0EYVm0bpFq9dmjW5BYBJT6VpT8E=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=Tlpn1vRYtrOhQSClihDoDaABVotQoMezJFneoEUToZIE72U8pprgx4wNimfDBHybRFA2Q4HRO2uuG4NnRg1l+TVpxdv69XQsF8U2R6HsFTq9mj6MOgLEdBiriEoGuNn9RxK3Q7wjdWI4Brh4rdaWSBpTlIMlZQWXp5qKYLieqVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=D/NWX0IE; arc=none smtp.client-ip=134.134.136.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706066996; x=1737602996;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=rSaAlk94pMBR8JXrSQ+PW4+MqsgT6LSmV+ZN3ZU7qKo=;
-  b=kCoUQYNOgStJgcYAzeOXLu3UGUS1EdqI+wssLpIfy6ixlKum6rsIfgep
-   Zsa52R7cTQosKkLMDSJUL2xtgbrYuzF4FEGryO0H8k2TIPEzpIp7d5cXk
-   cyIRIafKrDX50icJoqvGS/YTQ3hKUGUvKjkpOfwSRQld3EyuQ47aBFtgQ
-   WIzvqcxrhGu22g5gW3zlhkS0aV+Q+5VR1J+kK/2AwTUlQ+l1U2PBNjtfP
-   ORxQqd0xuQuUmUNf/AgtN0oyEKtFNK9gCMtcP89rhiNfATMxiJ03Uzk+L
-   A6j6kuvcOodC88ESYQLxvKMZaMWhFfneW65TYJKGt4pX7cvn048AW4Ch0
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="1614996"
+  t=1706066947; x=1737602947;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=LEKebXaU68il7ohv0EYVm0bpFq9dmjW5BYBJT6VpT8E=;
+  b=D/NWX0IEjq+FluU77bRl1pe5ooB7wdWhx3Z63suva+c1WuIfXQWSUEOt
+   DOzwCuBHa/ZLUOejgI1qvs45RnhnQXcaclGGNB3xbHm0IAIdzNl9oYfYg
+   NdvidBC/XPglqlS3qePuFI0OAN0p6yXGkYchIli6WvN+WkblDBVbjND0W
+   bOZkaKuFv9wre+PV488NBvDvoL09XE9+EfY+so/qx6trfsduNqehdooGW
+   t1WdaUlWE+hCuYhB8pYOx6BHzD2FnEm3f0f2Cc61JOMKRXI9Wg6tVSSs5
+   Sbh9JUk0ounTqNcwCWszzSZCfAA2oAneWNJ48WgaRGUbElaQ4Tb9Gf5eO
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="466002819"
 X-IronPort-AV: E=Sophos;i="6.05,215,1701158400"; 
-   d="scan'208";a="1614996"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 19:29:55 -0800
+   d="scan'208";a="466002819"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 19:29:06 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.05,215,1701158400"; 
-   d="scan'208";a="28251243"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 19:29:53 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,  Johannes Weiner
- <hannes@cmpxchg.org>,  Nhat Pham <nphamcs@gmail.com>,  Chris Li
- <chrisl@kernel.org>,  Chengming Zhou <zhouchengming@bytedance.com>,
-  linux-mm@kvack.org,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mm: swap: update inuse_pages after all cleanups are
- done
-In-Reply-To: <CAJD7tkbKxfuy-uWrOMVnOeDpx-TuJwosxk2jG_0Gx4bi1tUBog@mail.gmail.com>
-	(Yosry Ahmed's message of "Tue, 23 Jan 2024 19:20:17 -0800")
-References: <20240120024007.2850671-1-yosryahmed@google.com>
-	<20240120024007.2850671-2-yosryahmed@google.com>
-	<87wms0toh4.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<CAJD7tkb=-0mP1CXEmAd4QjMXKgep7myHShiwUSNnY1cjfRqfJA@mail.gmail.com>
-	<878r4ftodl.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<CAJD7tkbKxfuy-uWrOMVnOeDpx-TuJwosxk2jG_0Gx4bi1tUBog@mail.gmail.com>
-Date: Wed, 24 Jan 2024 11:27:56 +0800
-Message-ID: <874jf3tnpf.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+   d="scan'208";a="1765232"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 23 Jan 2024 19:29:04 -0800
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: dave.hansen@linux.intel.com, tj@kernel.org, mkoutny@suse.com,
+ linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
+ cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ hpa@zytor.com, sohil.mehta@intel.com, "Jarkko Sakkinen" <jarkko@kernel.org>
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+ zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+ yangjie@microsoft.com
+Subject: Re: [PATCH v7 04/15] x86/sgx: Implement basic EPC misc cgroup
+ functionality
+References: <20240122172048.11953-1-haitao.huang@linux.intel.com>
+ <20240122172048.11953-5-haitao.huang@linux.intel.com>
+ <CYLIJZZJON62.24BNN310T3B2F@suppilovahvero>
+Date: Tue, 23 Jan 2024 21:29:03 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2h07ypcmwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <CYLIJZZJON62.24BNN310T3B2F@suppilovahvero>
+User-Agent: Opera Mail/1.0 (Win32)
 
-Yosry Ahmed <yosryahmed@google.com> writes:
+On Mon, 22 Jan 2024 14:25:53 -0600, Jarkko Sakkinen <jarkko@kernel.org>  
+wrote:
 
->> > In swap_range_free, we want to make sure that the write to
->> > si->inuse_pages in swap_range_free() happens *after* the cleanups
->> > (specifically zswap_invalidate() in this case).
->> > In swap_off, we want to make sure that the cleanups following
->> > try_to_unuse() (e.g. zswap_swapoff) happen *after* reading
->> > si->inuse_pages == 0 in try_to_unuse().
->> >
->> > So I think we want smp_wmb() in swap_range_free() and smp_mb() in
->> > try_to_unuse(). Does the below look correct to you?
->> >
->> > diff --git a/mm/swapfile.c b/mm/swapfile.c
->> > index 2fedb148b9404..a2fa2f65a8ddd 100644
->> > --- a/mm/swapfile.c
->> > +++ b/mm/swapfile.c
->> > @@ -750,6 +750,12 @@ static void swap_range_free(struct
->> > swap_info_struct *si, unsigned long offset,
->> >                 offset++;
->> >         }
->> >         clear_shadow_from_swap_cache(si->type, begin, end);
->> > +
->> > +       /*
->> > +        * Make sure that try_to_unuse() observes si->inuse_pages reaching 0
->> > +        * only after the above cleanups are done.
->> > +        */
->> > +       smp_wmb();
->> >         atomic_long_add(nr_entries, &nr_swap_pages);
->> >         WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
->> >  }
->> > @@ -2130,6 +2136,11 @@ static int try_to_unuse(unsigned int type)
->> >                 return -EINTR;
->> >         }
->> >
->> > +       /*
->> > +        * Make sure that further cleanups after try_to_unuse() returns happen
->> > +        * after swap_range_free() reduces si->inuse_pages to 0.
->> > +        */
->> > +       smp_mb();
->> >         return 0;
->> >  }
+> On Mon Jan 22, 2024 at 7:20 PM EET, Haitao Huang wrote:
+>> From: Kristen Carlson Accardi <kristen@linux.intel.com>
 >>
->> We need to take care of "si->inuse_pages" checking at the beginning of
->> try_to_unuse() too.  Otherwise, it looks good to me.
+>> SGX Enclave Page Cache (EPC) memory allocations are separate from normal
+>> RAM allocations, and are managed solely by the SGX subsystem. The
+>> existing cgroup memory controller cannot be used to limit or account for
+>> SGX EPC memory, which is a desirable feature in some environments.  For
+>> example, in a Kubernates environment, a user can request certain EPC
+>> quota for a pod but the orchestrator can not enforce the quota to limit
+>> runtime EPC usage of the pod without an EPC cgroup controller.
+>>
+>> Utilize the misc controller [admin-guide/cgroup-v2.rst, 5-9. Misc] to
+>> limit and track EPC allocations per cgroup. Earlier patches have added
+>> the "sgx_epc" resource type in the misc cgroup subsystem. Add basic
+>> support in SGX driver as the "sgx_epc" resource provider:
+>>
+>> - Set "capacity" of EPC by calling misc_cg_set_capacity()
+>> - Update EPC usage counter, "current", by calling charge and uncharge
+>> APIs for EPC allocation and deallocation, respectively.
+>> - Setup sgx_epc resource type specific callbacks, which perform
+>> initialization and cleanup during cgroup allocation and deallocation,
+>> respectively.
+>>
+>> With these changes, the misc cgroup controller enables user to set a  
+>> hard
+>> limit for EPC usage in the "misc.max" interface file. It reports current
+>> usage in "misc.current", the total EPC memory available in
+>> "misc.capacity", and the number of times EPC usage reached the max limit
+>> in "misc.events".
+>>
+>> For now, the EPC cgroup simply blocks additional EPC allocation in
+>> sgx_alloc_epc_page() when the limit is reached. Reclaimable pages are
+>> still tracked in the global active list, only reclaimed by the global
+>> reclaimer when the total free page count is lower than a threshold.
+>>
+>> Later patches will reorganize the tracking and reclamation code in the
+>> global reclaimer and implement per-cgroup tracking and reclaiming.
+>>
+>> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+>> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+>> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+>> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
 >
-> Hmm, why isn't one barrier at the end of the function enough? I think
-> all we need is that before we return from try_to_unuse(), all the
-> cleanups in swap_range_free() are taken care of, which the barrier at
-> the end should be doing. We just want instructions after
-> try_to_unuse() to not get re-ordered before si->inuse_pages is read as
-> 0, right?
+> For consistency sake I'd also add co-developed-by for Kristen. This is
+> at least the format suggested by kernel documentation.
+>
+She is the "From Author", so only Signed-off-by is needed for her  
+according to the second example in the doc[1]?
 
-Because at the begin of try_to_unuse() as below, after reading, function
-returns directly without any memory barriers.
-
-  if (!READ_ONCE(si->inuse_pages))
-        return 0;
-
---
-Best Regards,
-Huang, Ying
+Thanks
+Haitao
+[1]https://docs.kernel.org/process/submitting-patches.html#when-to-use-acked-by-cc-and-co-developed-by
 
