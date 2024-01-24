@@ -1,170 +1,313 @@
-Return-Path: <linux-kernel+bounces-36770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D55583A651
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:03:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2490A83A654
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:04:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 273A7B2D0C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:03:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A34F51F23220
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 10:04:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7873218C3B;
-	Wed, 24 Jan 2024 10:02:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EB0818AE0;
+	Wed, 24 Jan 2024 10:03:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CTZ1JlSz"
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RUkJPtiW"
+Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2539818E0C
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:02:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD31918643
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:03:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706090562; cv=none; b=IYEErwxxKhpCvO2ZtSV3wtm0Ot66hS32Ez8eL9TApqimUCeipqcCQg3wBEV/+ke2FuSuRjSXDi66FR6zitFmDhCBsG9pcQPkHJ9jgQDNlbbpSk0670Pxl6MpyuWzhhXOkocZeeZKyFfTZUWyxp8fZ42Xavu1gVJbx2JoCN6d8eM=
+	t=1706090635; cv=none; b=C9DaC0vh4OkAdGTALMPkeO+nsttambHxc16jqLlanxPbIIGEvA3JCVuSXTFSdmffhtfwzW6hcXpw7G3UXXB1mO+hHhenP6rXYq/+u1U+uuXNtnVi0WfZ2PQaHSxNwXPcfToXWWBUhPFoTPfm/pU/3Zvac2YZIfQpU+1m8+TKJWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706090562; c=relaxed/simple;
-	bh=eZb8KsVdKCKnn8GCgoqYmSVfuu/Q0go0ckHPs8r4gHo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pmJtDQ/limyI5H0+j79FC4GbaH2b7oj7+Pea0ZKzksBW1ZZQ2B94hh8xNX+BWuBs9WJ6DuXCoietlchITVrq1r9uG674dVN5ZO9ZHd1KNqEePuPZ9FfMOMcQLG9gScNm7jckSDf2qKKCFdEORYuyk4Pdlel6wmzbsmEE8gjUP6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CTZ1JlSz; arc=none smtp.client-ip=209.85.210.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6e0df9aa43dso4108022a34.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 02:02:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706090559; x=1706695359; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yUpwH1vvlbubZBmKYelxmGkgmJALQKDTM110+USmxN4=;
-        b=CTZ1JlSzmYzjW/1gSgdcic0Rofquz1rTBIhY4ClIHvHBhe6TG2uLDpolg2+eNbQTpV
-         YZdSjloomPoZccsNH16ltOmkIRusBP/mds7dp6pvlpF6x9newN11amR7eIn+3dC2cLI6
-         R7mi73lny74n82ZDmEVoheuOW1kauPqm8+f1755CG65kR3s/RhMPIaW26Ym72OrOHNOU
-         Umv3vThfXvBPYVQR4IMuyhTxNPdYuOoggI8FEaertHZTfxjNiBJgcz0VVMdoRQSWL7xu
-         YhYxw9eDzGYRvaY79lsCfvqScYAPKQtqs4CorlNR5+StMSyM+YavfKERuo17xo2lJFCB
-         sgkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706090559; x=1706695359;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yUpwH1vvlbubZBmKYelxmGkgmJALQKDTM110+USmxN4=;
-        b=seEYC25kX1ODOAtig/qEaL6XuanSMTJsENOWJhX/V/z+R+eV8bzT5AZWWDD3zy6QdB
-         oSK8Q6JwnIthb5hRzvc3lwk+q3TJlztZTbsVAxCS1iBEDzzoHOla280C6JGNuMW31yAn
-         nxlIP0J3jWusO6yDPI9XVfEFl77LCfYaSjADmdESYw3Yfgjxkn4LtCi1goanaVGUe1MS
-         27UfOs1ZlL59a3A1nBB+Jz1rjtrgvZVFSusu3sZy44iS72g9bz3dP9O5ahfmztg6Z7iN
-         l0sYd1k0sJT6NfTrWdwagXDVQGsEw+FhcYyG9I0xXZw7MVu5WDNyvw3qIEBDLAJ704ei
-         FZ1w==
-X-Gm-Message-State: AOJu0YxZmgHuKWM6Euf6oT174c5WFeU831xruTbZXBiSqgENiD7B/aBF
-	C6oHewzXwBGb6j/pJg5L5EIn+E2bI9gM9zi0ZEGSQPWjQrUTH0zQDDRorVSQK7FluteJh/gtdJf
-	jhxBLUxTr8+HKuwc7nzt2VVFqmJkJvvw4xDPw+g==
-X-Google-Smtp-Source: AGHT+IE79HSwfv0oyaKG/O5pd/o2yGI9NCIYgU09VQo436h6rDnZM1AO/HGfrAmwLFfRmFGKRkbG+6cW5fHWetbuYc8=
-X-Received: by 2002:a9d:6305:0:b0:6dd:eb93:5b20 with SMTP id
- q5-20020a9d6305000000b006ddeb935b20mr1341915otk.21.1706090559206; Wed, 24 Jan
- 2024 02:02:39 -0800 (PST)
+	s=arc-20240116; t=1706090635; c=relaxed/simple;
+	bh=a0VJeN18ot462WFbo+w57xq/CayG8wc5Pf3gNfDAFa0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qo4B/zOJtVOVPX/RCJq2bNeb7zSOCzADcba+nbl/STZheMHjWdKWaTcU7ePQOAIeMlAyQU2UXrAYobvctPMP2Amey2KoI+qb8toJLW1kt65DIQfO5inMmb1o3Bc8fHkWMCqO4IiziRD2YQFL1JTpXrWCNCPNQ1t6gh7WIdLSOPs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RUkJPtiW; arc=none smtp.client-ip=91.218.175.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <7e7c5d46-001c-46db-85ca-eca013225a89@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1706090630;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Yti7MYJIYg6JfWboDSjYnbcVlnUKXyDreyg35KDjqIw=;
+	b=RUkJPtiW8IMhoRLqRwemCoNXGiM5w+ckEtlm7cgDbPwoYX/axGgzOf2u6PSAuqvApemt8O
+	NJDkUqhrSRg2stYS9+hRzIkYTxINC5pUHEhSAbkHhSDYvKf9rnhzjp9JCU12z8V4IpVi7d
+	oOUrlhNKsuL6Fl04BwuA3HMFc42UpSQ=
+Date: Wed, 24 Jan 2024 10:03:45 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122225710.1952066-1-peter.griffin@linaro.org>
- <20240122225710.1952066-3-peter.griffin@linaro.org> <CAPLW+4=G5YiTZaZ5k=H1YciUwOEjKSF0w9Hd8rwymA71UmJnRQ@mail.gmail.com>
-In-Reply-To: <CAPLW+4=G5YiTZaZ5k=H1YciUwOEjKSF0w9Hd8rwymA71UmJnRQ@mail.gmail.com>
-From: Peter Griffin <peter.griffin@linaro.org>
-Date: Wed, 24 Jan 2024 10:02:27 +0000
-Message-ID: <CADrjBPqbToXYUBx=reE5_W4U4aUUJRFs+FC5AHsrQ6mRYB9iAA@mail.gmail.com>
-Subject: Re: [PATCH 2/9] soc: samsung: exynos-pmu: Add exynos_pmu_update/read/write
- APIs and SoC quirks
-To: Sam Protsenko <semen.protsenko@linaro.org>
-Cc: arnd@arndb.de, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
-	linux@roeck-us.net, wim@linux-watchdog.org, conor+dt@kernel.org, 
-	alim.akhtar@samsung.com, jaewon02.kim@samsung.com, chanho61.park@samsung.com, 
-	kernel-team@android.com, tudor.ambarus@linaro.org, andre.draszik@linaro.org, 
-	saravanak@google.com, willmcvicker@google.com, linux-fsd@tesla.com, 
-	linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 1/4] net: wan: Add support for QMC HDLC
+Content-Language: en-US
+To: Herve Codina <herve.codina@bootlin.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, Andrew Lunn <andrew@lunn.ch>,
+ Mark Brown <broonie@kernel.org>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+References: <20240123164912.249540-1-herve.codina@bootlin.com>
+ <20240123164912.249540-2-herve.codina@bootlin.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <20240123164912.249540-2-herve.codina@bootlin.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi Sam,
+On 23/01/2024 16:49, Herve Codina wrote:
+> The QMC HDLC driver provides support for HDLC using the QMC (QUICC
+> Multichannel Controller) to transfer the HDLC data.
+> 
+> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Acked-by: Jakub Kicinski <kuba@kernel.org>
+> ---
+>   drivers/net/wan/Kconfig        |  12 +
+>   drivers/net/wan/Makefile       |   1 +
+>   drivers/net/wan/fsl_qmc_hdlc.c | 422 +++++++++++++++++++++++++++++++++
+>   3 files changed, 435 insertions(+)
+>   create mode 100644 drivers/net/wan/fsl_qmc_hdlc.c
+> 
+> diff --git a/drivers/net/wan/Kconfig b/drivers/net/wan/Kconfig
+> index 7dda87756d3f..31ab2136cdf1 100644
+> --- a/drivers/net/wan/Kconfig
+> +++ b/drivers/net/wan/Kconfig
+> @@ -197,6 +197,18 @@ config FARSYNC
+>   	  To compile this driver as a module, choose M here: the
+>   	  module will be called farsync.
+>   
+> +config FSL_QMC_HDLC
+> +	tristate "Freescale QMC HDLC support"
+> +	depends on HDLC
+> +	depends on CPM_QMC
+> +	help
+> +	  HDLC support using the Freescale QUICC Multichannel Controller (QMC).
+> +
+> +	  To compile this driver as a module, choose M here: the
+> +	  module will be called fsl_qmc_hdlc.
+> +
+> +	  If unsure, say N.
+> +
+>   config FSL_UCC_HDLC
+>   	tristate "Freescale QUICC Engine HDLC support"
+>   	depends on HDLC
+> diff --git a/drivers/net/wan/Makefile b/drivers/net/wan/Makefile
+> index 8119b49d1da9..00e9b7ee1e01 100644
+> --- a/drivers/net/wan/Makefile
+> +++ b/drivers/net/wan/Makefile
+> @@ -25,6 +25,7 @@ obj-$(CONFIG_WANXL)		+= wanxl.o
+>   obj-$(CONFIG_PCI200SYN)		+= pci200syn.o
+>   obj-$(CONFIG_PC300TOO)		+= pc300too.o
+>   obj-$(CONFIG_IXP4XX_HSS)	+= ixp4xx_hss.o
+> +obj-$(CONFIG_FSL_QMC_HDLC)	+= fsl_qmc_hdlc.o
+>   obj-$(CONFIG_FSL_UCC_HDLC)	+= fsl_ucc_hdlc.o
+>   obj-$(CONFIG_SLIC_DS26522)	+= slic_ds26522.o
+>   
+> diff --git a/drivers/net/wan/fsl_qmc_hdlc.c b/drivers/net/wan/fsl_qmc_hdlc.c
+> new file mode 100644
+> index 000000000000..31b637ec8390
+> --- /dev/null
+> +++ b/drivers/net/wan/fsl_qmc_hdlc.c
+> @@ -0,0 +1,422 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Freescale QMC HDLC Device Driver
+> + *
+> + * Copyright 2023 CS GROUP France
+> + *
+> + * Author: Herve Codina <herve.codina@bootlin.com>
+> + */
+> +
+> +#include <linux/dma-mapping.h>
+> +#include <linux/hdlc.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/slab.h>
+> +#include <soc/fsl/qe/qmc.h>
+> +
+> +struct qmc_hdlc_desc {
+> +	struct net_device *netdev;
+> +	struct sk_buff *skb; /* NULL if the descriptor is not in use */
+> +	dma_addr_t dma_addr;
+> +	size_t dma_size;
+> +};
+> +
+> +struct qmc_hdlc {
+> +	struct device *dev;
+> +	struct qmc_chan *qmc_chan;
+> +	struct net_device *netdev;
+> +	bool is_crc32;
+> +	spinlock_t tx_lock; /* Protect tx descriptors */
+> +	struct qmc_hdlc_desc tx_descs[8];
+> +	unsigned int tx_out;
+> +	struct qmc_hdlc_desc rx_descs[4];
+> +};
+> +
+> +static inline struct qmc_hdlc *netdev_to_qmc_hdlc(struct net_device *netdev)
+> +{
+> +	return dev_to_hdlc(netdev)->priv;
+> +}
+> +
+> +static int qmc_hdlc_recv_queue(struct qmc_hdlc *qmc_hdlc, struct qmc_hdlc_desc *desc, size_t size);
+> +
+> +#define QMC_HDLC_RX_ERROR_FLAGS (QMC_RX_FLAG_HDLC_OVF | \
+> +				 QMC_RX_FLAG_HDLC_UNA | \
+> +				 QMC_RX_FLAG_HDLC_ABORT | \
+> +				 QMC_RX_FLAG_HDLC_CRC)
+> +
+> +static void qmc_hcld_recv_complete(void *context, size_t length, unsigned int flags)
+> +{
+> +	struct qmc_hdlc_desc *desc = context;
+> +	struct net_device *netdev = desc->netdev;
+> +	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(desc->netdev);
 
-Thanks for the review feedback.
+a line above desc->netdev was stored in netdev. better to reuse it and 
+make declaration part consistent with qmc_hcld_xmit_complete
 
-On Tue, 23 Jan 2024 at 18:56, Sam Protsenko <semen.protsenko@linaro.org> wr=
-ote:
->
-> On Mon, Jan 22, 2024 at 4:57=E2=80=AFPM Peter Griffin <peter.griffin@lina=
-ro.org> wrote:
-> >
-> > Newer Exynos SoCs have atomic set/clear bit hardware for PMU registers =
-as
-> > these registers can be accessed by multiple masters. Some platforms als=
-o
-> > protect the PMU registers for security hardening reasons so they can't =
-be
-> > written by normal world and are only write acessible in el3 via a SMC c=
-all.
-> >
-> > Add support for both of these usecases using SoC specific quirks that a=
-re
-> > determined from the DT compatible string.
-> >
-> > Drivers which need to read and write PMU registers should now use these
-> > new exynos_pmu_*() APIs instead of obtaining a regmap using
-> > syscon_regmap_lookup_by_phandle()
-> >
-> > Depending on the SoC specific quirks, the exynos_pmu_*() APIs will acce=
-ss
-> > the PMU register in the appropriate way.
-> >
-> > Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
-> > ---
-> >  drivers/soc/samsung/exynos-pmu.c       | 209 ++++++++++++++++++++++++-
-> >  drivers/soc/samsung/exynos-pmu.h       |   4 +
-> >  include/linux/soc/samsung/exynos-pmu.h |  28 ++++
-> >  3 files changed, 234 insertions(+), 7 deletions(-)
-> >
->
-> [snip]
->
-> > +
-> > +int exynos_pmu_update_bits(unsigned int offset, unsigned int mask,
-> > +                          unsigned int val)
-> > +{
-> > +       if (pmu_context->pmu_data &&
-> > +           pmu_context->pmu_data->quirks & QUIRK_PMU_ALIVE_WRITE_SEC)
-> > +               return rmw_priv_reg(pmu_context->pmu_base_pa + offset,
-> > +                                   mask, val);
-> > +
-> > +       return regmap_update_bits(pmu_context->pmureg, offset, mask, va=
-l);
-> > +}
-> > +EXPORT_SYMBOL(exynos_pmu_update_bits);
-> > +
->
-> This seems a bit hacky, from the design perspective. This way the user
-> will have to worry about things like driver dependencies, making sure
-> everything is instantiated in a correct order, etc. It also hides the
-> details otherwise visible through "syscon-phandle" property in the
-> device tree.
+> +	int ret;
+> +
+> +	dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size, DMA_FROM_DEVICE);
+> +
+> +	if (flags & QMC_HDLC_RX_ERROR_FLAGS) {
+> +		netdev->stats.rx_errors++;
+> +		if (flags & QMC_RX_FLAG_HDLC_OVF) /* Data overflow */
+> +			netdev->stats.rx_over_errors++;
+> +		if (flags & QMC_RX_FLAG_HDLC_UNA) /* bits received not multiple of 8 */
+> +			netdev->stats.rx_frame_errors++;
+> +		if (flags & QMC_RX_FLAG_HDLC_ABORT) /* Received an abort sequence */
+> +			netdev->stats.rx_frame_errors++;
+> +		if (flags & QMC_RX_FLAG_HDLC_CRC) /* CRC error */
+> +			netdev->stats.rx_crc_errors++;
+> +		kfree_skb(desc->skb);
+> +	} else {
+> +		netdev->stats.rx_packets++;
+> +		netdev->stats.rx_bytes += length;
+> +
+> +		skb_put(desc->skb, length);
+> +		desc->skb->protocol = hdlc_type_trans(desc->skb, netdev);
+> +		netif_rx(desc->skb);
+> +	}
+> +
+> +	/* Re-queue a transfer using the same descriptor */
+> +	ret = qmc_hdlc_recv_queue(qmc_hdlc, desc, desc->dma_size);
+> +	if (ret) {
+> +		dev_err(qmc_hdlc->dev, "queue recv desc failed (%d)\n", ret);
+> +		netdev->stats.rx_errors++;
+> +	}
+> +}
+> +
+> +static int qmc_hdlc_recv_queue(struct qmc_hdlc *qmc_hdlc, struct qmc_hdlc_desc *desc, size_t size)
+> +{
+> +	int ret;
+> +
+> +	desc->skb = dev_alloc_skb(size);
+> +	if (!desc->skb)
+> +		return -ENOMEM;
+> +
+> +	desc->dma_size = size;
+> +	desc->dma_addr = dma_map_single(qmc_hdlc->dev, desc->skb->data,
+> +					desc->dma_size, DMA_FROM_DEVICE);
+> +	ret = dma_mapping_error(qmc_hdlc->dev, desc->dma_addr);
+> +	if (ret)
+> +		goto free_skb;
+> +
+> +	ret = qmc_chan_read_submit(qmc_hdlc->qmc_chan, desc->dma_addr, desc->dma_size,
+> +				   qmc_hcld_recv_complete, desc);
+> +	if (ret)
+> +		goto dma_unmap;
+> +
+> +	return 0;
+> +
+> +dma_unmap:
+> +	dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size, DMA_FROM_DEVICE);
+> +free_skb:
+> +	kfree_skb(desc->skb);
+> +	desc->skb = NULL;
+> +	return ret;
+> +}
+> +
+> +static void qmc_hdlc_xmit_complete(void *context)
+> +{
+> +	struct qmc_hdlc_desc *desc = context;
+> +	struct net_device *netdev = desc->netdev;
+> +	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
+> +	struct sk_buff *skb;
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&qmc_hdlc->tx_lock, flags);
+> +	dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size, DMA_TO_DEVICE);
+> +	skb = desc->skb;
+> +	desc->skb = NULL; /* Release the descriptor */
+> +	if (netif_queue_stopped(netdev))
+> +		netif_wake_queue(netdev);
+> +	spin_unlock_irqrestore(&qmc_hdlc->tx_lock, flags);
+> +
+> +	netdev->stats.tx_packets++;
+> +	netdev->stats.tx_bytes += skb->len;
+> +
+> +	dev_consume_skb_any(skb);
+> +}
+> +
+> +static int qmc_hdlc_xmit_queue(struct qmc_hdlc *qmc_hdlc, struct qmc_hdlc_desc *desc)
+> +{
+> +	int ret;
+> +
+> +	desc->dma_addr = dma_map_single(qmc_hdlc->dev, desc->skb->data,
+> +					desc->dma_size, DMA_TO_DEVICE);
+> +	ret = dma_mapping_error(qmc_hdlc->dev, desc->dma_addr);
+> +	if (ret) {
+> +		dev_err(qmc_hdlc->dev, "failed to map skb\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = qmc_chan_write_submit(qmc_hdlc->qmc_chan, desc->dma_addr, desc->dma_size,
+> +				    qmc_hdlc_xmit_complete, desc);
+> +	if (ret) {
+> +		dev_err(qmc_hdlc->dev, "qmc chan write returns %d\n", ret);
+> +		dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size, DMA_TO_DEVICE);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static netdev_tx_t qmc_hdlc_xmit(struct sk_buff *skb, struct net_device *netdev)
+> +{
+> +	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
+> +	struct qmc_hdlc_desc *desc;
+> +	unsigned long flags;
+> +	int ret;
+> +
+> +	spin_lock_irqsave(&qmc_hdlc->tx_lock, flags);
+> +	desc = &qmc_hdlc->tx_descs[qmc_hdlc->tx_out];
+> +	if (desc->skb) {
+> +		/* Should never happen.
+> +		 * Previous xmit should have already stopped the queue.
+> +		 */
 
-In v2 I will keep the phandle to pmu_system_controller in DT, and add
-some -EPROBE_DEFER logic (See my email with Krzysztof).
+according to the comment it's better to make if(unlikely(desc->skb)) or
+even WARN_ONCE()
 
-> Can we instead rework it by overriding regmap
-> implementation for Exynos specifics, and then continue to use it in
-> the leaf drivers via "syscon-phandle" property?
+> +		netif_stop_queue(netdev);
+> +		spin_unlock_irqrestore(&qmc_hdlc->tx_lock, flags);
+> +		return NETDEV_TX_BUSY;
+> +	}
+> +	spin_unlock_irqrestore(&qmc_hdlc->tx_lock, flags);
 
-I did look at that possibility first, as like you say it would avoid
-updating the leaf drivers to use the new API. Unfortunately a SMC
-backend to regmap was already tried and nacked upstream pretty hard.
-See here https://lore.kernel.org/lkml/20210723163759.GI5221@sirena.org.uk/T=
-/
-
-regards,
-
-Peter.
+[...]
 
