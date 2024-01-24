@@ -1,95 +1,110 @@
-Return-Path: <linux-kernel+bounces-37185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37206-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8906D83AC61
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:48:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B014183AC89
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:56:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FEFF1F22899
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:48:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48F7A1F256A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:56:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42D96136678;
-	Wed, 24 Jan 2024 14:32:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 391B27C085;
+	Wed, 24 Jan 2024 14:51:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IanqeSEz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="X6wbqruh"
+Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8995E13666A;
-	Wed, 24 Jan 2024 14:32:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB84323C9;
+	Wed, 24 Jan 2024 14:51:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.30.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706106724; cv=none; b=hZtG48PCHtDCHkdGCqoSM2wftdg58FvKY2JnyJQ3S57qltjSiBc6LNnE1hdiL/Sh1mB/T34pUQy82VfMutq1tryqZUwUrNNQm24q9D/dnvj9t4iBNeqTVvvUF1FTnoD40mLlt9y25daIaUmBgzmdPxbwggFP5aP4rVcdHxb/jzk=
+	t=1706107889; cv=none; b=e2LBfMknXpok0VWdvJCwahO5nr56ZhePnwBFVf/TD+0Q3FjgXoSf+WQORxg4tZd3quHklYd7up7dd4oF1oOGlIUu4wDUjqmTlh3ryrVpgg4thcUwenNWr3HtVnUkO2dnx6lqSMK/ncWfab/1Tc/7OyRBEqXSeboezcg/UXLhQQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706106724; c=relaxed/simple;
-	bh=5GUj9lY5aIF+2nq3uSOugqqu4at6clPIk9i1zaZs4Es=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Yh4gJhkmTBAJpVTo7wAvvonC3FDcoXPXUugpUBxfbdFRSJ7kS6dVXbThi81nOhi1EGMM14gfYYMzqgdEjKAAVeH5LDFZuesTKmYsTaGKvB2RU6h4AKXAs7yqeZOVdtF453ZAZgTQ5oZjSljA1FNaRwywMN/dEQPJMA1iZeUye7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IanqeSEz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3F6DC433C7;
-	Wed, 24 Jan 2024 14:32:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706106724;
-	bh=5GUj9lY5aIF+2nq3uSOugqqu4at6clPIk9i1zaZs4Es=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IanqeSEz5tG/rGnktSbpk1ISULmnFXWIxPjpeZlM9Q7N4hFJWhl2+heFrW9Y7Tx7b
-	 kZvaOaYp08CIGJSE/oSfWI0VFHPeutV+ZPjm1uKGabJzWWYJGs0zW10YYnlTLohXfk
-	 3pMS83dq8tIk8yPlGQJbKGZOlDZyJ/ICkY3njaEOL6Xd4G0rgjdarHm3X3kQ+7fq+y
-	 cFEwhj3SEUDW+TZp8cHehxQmDnMpIbOxaWvFTuZxIflYfZclznW4QZrcMqjO44e0a8
-	 EkkXECxHlDVpdJ/e9UXM2rcdLuMMO6KPNnYl4RKZJGbx1KerrPj4OU6+vu01gfQkvP
-	 QUas6iT1PzwXw==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Peter Robinson <pbrobinson@gmail.com>,
-	Lee Jones <lee@kernel.org>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 5/5] mfd: ti_am335x_tscadc: Fix TI SoC dependencies
-Date: Wed, 24 Jan 2024 09:31:40 -0500
-Message-ID: <20240124143149.1284622-5-sashal@kernel.org>
+	s=arc-20240116; t=1706107889; c=relaxed/simple;
+	bh=24wJJWVUh2cZb1nXQXw4kmreJhJJdyXf+GeakqvGMdY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EEEPdYI1vRDAkO/KUnsfGs6J8mx02qniAdGXqrfpJH0K+CdzPjovQd520B/VS4tgdvQVC32zfbPSN/ZJzW4ShiJCbW8PdnWsc51CW1o4HwalDCHCWar3MMtis1X4a6mYspj111+RW3hXzntxTQHm2igQabwZMGv9wmNUgQLTIwE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com; spf=pass smtp.mailfrom=geanix.com; dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b=X6wbqruh; arc=none smtp.client-ip=188.40.30.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=geanix.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
+	s=default2211; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:
+	Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References;
+	bh=s48UK9/txojh0jP006gnClU0QGtWU0AZknMA7NCP1qs=; b=X6wbqruhAC9y80cXiNvdROZnFE
+	slorrNyyr70EfUee+kPi1OzkuDOHpdN1b+iXK95JJ7d04D7rqY5sGiZS/Hzq9Uk0yyk/ofm9SHaV7
+	Zybr9hEvECyWPnkrui/U2iGj4W4B+0xtuzYI/cfufrKSOLZ7MLjicm6lgTSeIRq9+BC4NIaSGjfe/
+	65m9cGr+KUz2Tk/eVAhtH8ZMal8vWAfmupnLtX+CHewTTCuz7GGLwOjTrRGLKK7Px3H5WEcn04cjX
+	MQMqSuarP3Fs9fOZc984VQbsTPH1Roq2kk44sRaM5Phl9iIePsVrEYWUXJHRx1fpb7KJ1H0Qlcx7c
+	0lrqTswQ==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <esben@geanix.com>)
+	id 1rSeJF-000NYX-2A; Wed, 24 Jan 2024 15:32:57 +0100
+Received: from [87.49.43.79] (helo=localhost)
+	by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <esben@geanix.com>)
+	id 1rSeJE-0006ur-80; Wed, 24 Jan 2024 15:32:56 +0100
+From: Esben Haabendal <esben@geanix.com>
+To: netdev@vger.kernel.org,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Christian Marangi <ansuelsmth@gmail.com>
+Cc: stable@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] net: stmmac: do not clear TBS enable bit on link up/down
+Date: Wed, 24 Jan 2024 15:32:55 +0100
+Message-ID: <b365dc6f756a3fad4dfaa2675c98f4078aba8a55.1706105494.git.esben@geanix.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240124143149.1284622-1-sashal@kernel.org>
-References: <20240124143149.1284622-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.19.305
 Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: esben@geanix.com
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27164/Wed Jan 24 10:45:32 2024)
 
-From: Peter Robinson <pbrobinson@gmail.com>
+With the dma conf being reallocated on each call to stmmac_open(), any
+information in there is lost, unless we specifically handle it.
 
-[ Upstream commit 284d16c456e5d4b143f375b8ccc4038ab3f4ee0f ]
+The STMMAC_TBS_EN bit is set when adding an etf qdisc, and the etf qdisc
+therefore would stop working when link was set down and then back up.
 
-The ti_am335x_tscadc is specific to some TI SoCs, update
-the dependencies for those SoCs and compile testing.
-
-Signed-off-by: Peter Robinson <pbrobinson@gmail.com>
-Link: https://lore.kernel.org/r/20231220155643.445849-1-pbrobinson@gmail.com
-Signed-off-by: Lee Jones <lee@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: ba39b344e924 ("net: ethernet: stmicro: stmmac: generate stmmac dma conf before open")
+Cc: stable@vger.kernel.org
+Signed-off-by: Esben Haabendal <esben@geanix.com>
 ---
- drivers/mfd/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index dd938a5d0409..6b7526669875 100644
---- a/drivers/mfd/Kconfig
-+++ b/drivers/mfd/Kconfig
-@@ -1247,6 +1247,7 @@ config MFD_DAVINCI_VOICECODEC
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index a0e46369ae15..691bf3ef5e30 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -3932,6 +3932,9 @@ static int __stmmac_open(struct net_device *dev,
+ 	priv->rx_copybreak = STMMAC_RX_COPYBREAK;
  
- config MFD_TI_AM335X_TSCADC
- 	tristate "TI ADC / Touch Screen chip support"
-+	depends on ARCH_OMAP2PLUS || ARCH_K3 || COMPILE_TEST
- 	select MFD_CORE
- 	select REGMAP
- 	select REGMAP_MMIO
+ 	buf_sz = dma_conf->dma_buf_sz;
++	for (int i = 0; i < MTL_MAX_TX_QUEUES; i++)
++		if (priv->dma_conf.tx_queue[i].tbs & STMMAC_TBS_EN)
++			dma_conf->tx_queue[i].tbs = priv->dma_conf.tx_queue[i].tbs;
+ 	memcpy(&priv->dma_conf, dma_conf, sizeof(*dma_conf));
+ 
+ 	stmmac_reset_queues_param(priv);
 -- 
 2.43.0
 
