@@ -1,124 +1,111 @@
-Return-Path: <linux-kernel+bounces-36862-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BFAD83A7D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:29:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5E3683A7E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:32:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46F0B291916
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:29:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 251341C22D99
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 11:32:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1513820DD2;
-	Wed, 24 Jan 2024 11:28:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9029F1AADE;
+	Wed, 24 Jan 2024 11:32:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XdUeeD7J"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="YkiNUsek"
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C38831B7E7;
-	Wed, 24 Jan 2024 11:28:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE5BF1AAB1;
+	Wed, 24 Jan 2024 11:32:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706095707; cv=none; b=Ueaa3W8Lwfifn4hI2cnlKVSAecm5I1CXJ4fbmKZufAcGocqb+82bfluvZjb6XMVP3BGen9chnx1s5XpG6oMu6nA697jiPCEHQmDbqT2BmLEurihYzWypC8swtat7SbX/MFLseg1wfewYOiU7NY1a0vQpLCZWZt6lGEvvUBEugW0=
+	t=1706095960; cv=none; b=eCmN1hv3AurH1GOp8HjYXSVtfEGgEDHLX1fv1vS1eu2z2PldYmbKuLiaMnUxAFpW8F0FIGeDXo++RxkslbEttD7WrO0VBkyEWwKm/LHR+f8/a5/SvtLwQ7fVNWDAEbAWOt5a7eZT+pJWBJBUQGD6qIbgBPwTWxzsPa44kO2Ut7U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706095707; c=relaxed/simple;
-	bh=r5P74bClM0Y/Nw8KBoTHNtFNfwgS0H4TFcvTQX4Dr/E=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=iLEacD5X2ZT91hZIt9xhjBEFyz4pIXUn5gPsPVLEyg5mr6P4vb6FxGjLdm6ztG5TZNlGWP0po0edRfERws7aUFZyFMKAlWLlacHXc2YXrLs5Fy5kisPwsFds1q5CLXZjWNIcT77VmB8xsxUFJpa4ym0dt6mnQIGjdYkCaqwj2YU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XdUeeD7J; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-50ea9daac4cso5796551e87.3;
-        Wed, 24 Jan 2024 03:28:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706095703; x=1706700503; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=19zsXtwg36DXVDsy+4i27k7o2CEiU+qV1nDyQjqpjRU=;
-        b=XdUeeD7JpJ/Pn5LHsRlwCUV7LCKIdCpRoA8OUI88EPjl5Usb8VZ+5r6i/eCEgL51fK
-         ZzUQGcmBF0aEyxQjZvJbNs31v4oUYDJ0ArUIDlN6v47aa4xkgxBMifxBqTqqjWBH6E9C
-         tOA+k1Vh6YznB3BJ0G/Cpel0ohlYKIYyPsr6TFxbeWjf5G+4vEJcR1pIiJVEIitYFlFs
-         SBxyDESnwlZbCA6/9b7H5homCR8rx1oYkqsqEIXhzZ1MMxjJQG4m3Xo2U0Y+TVJVrtm1
-         t1qavGeIwQWdeaKp2UWYtpA8RI64nv5hTKTfVviULOS9eNCooq3bvXpd44La0FG5Nim5
-         wZ2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706095703; x=1706700503;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=19zsXtwg36DXVDsy+4i27k7o2CEiU+qV1nDyQjqpjRU=;
-        b=D1bAa5T//yRuMYYPNhgMolK0OV9o7nKAzKZRmWaBKj7aTgs+SpWnEO1z+wi2uicQnq
-         6N0CkQEsrF/EvwBS+uJEwKXwWHj/FV1VwSmv1qMGqQGuVFfMWOqhq8xLrvVDt1yfwEi1
-         KOAFf+4cLwdoffgjXRvjvYWP6C/Ue3bQsgtyVTlHFXk51Bf2T13friJ7W3Jvj4le3GxC
-         sTNwbqoeD0CHbaJOd7GIXro5w1AeRpMOHPTe+DfTw+/452ciAQLnUxJ7aqRSjJYYlrMe
-         rFHE6wYbGXzKuyeRu/IPrL2u7ltyX8mbxCu6ByELmZXZOLCFLCjYWPWKZ62tTLbIvBKK
-         me0A==
-X-Gm-Message-State: AOJu0Yy2+/fdVnzJrzq6kZLqrarPP3aCB+U6pHbELCyf9B3GI8Bh3pGt
-	KeSFkVGcob5vWn3VsWSuq/zTx5qc5BkYM31qjiI6OH615J8Gac0+
-X-Google-Smtp-Source: AGHT+IH7xH8oWyqYKIFhEJ5qTsz+x6bLkoTDLlHSuZvmlD+8CSE8n9uXR3Qs1YpVnCCFGIlhoTW1ow==
-X-Received: by 2002:a05:6512:202:b0:510:40a:4cb2 with SMTP id a2-20020a056512020200b00510040a4cb2mr1465756lfo.38.1706095703323;
-        Wed, 24 Jan 2024 03:28:23 -0800 (PST)
-Received: from ?IPv6:2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47? (p200300f6ef1b2000944ccbc71e1c2c47.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47])
-        by smtp.gmail.com with ESMTPSA id e13-20020a170906c00d00b00a2a1bbda0a6sm15497995ejz.175.2024.01.24.03.28.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 03:28:23 -0800 (PST)
-Message-ID: <49c0375637372ccae122f2abd2b992406bb40a5c.camel@gmail.com>
-Subject: Re: [PATCH v2 2/2] net: phy: adin: add recovered clock output
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: Fabian Pfitzner <f.pfitzner@pengutronix.de>, Michael Hennerich
- <michael.hennerich@analog.com>, Andrew Lunn <andrew@lunn.ch>, Heiner
- Kallweit <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>
-Cc: kernel@pengutronix.de, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Date: Wed, 24 Jan 2024 12:31:38 +0100
-In-Reply-To: <20240124102554.1327853-2-f.pfitzner@pengutronix.de>
-References: <20240122110311.2725036-1-f.pfitzner@pengutronix.de>
-	 <20240124102554.1327853-2-f.pfitzner@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1706095960; c=relaxed/simple;
+	bh=/BslgvVYpKPVNWdle14groKEbP1WS7QPlBDCktTNY6s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WnlEgb234Ig0Xrkbj9WPd7SxIg1p0Le2AAj3xJOsKra0sfLKxQ/9Vhor/S30dNEWcgvuwktIkc4sCy2vZAMJFGjY0549xpNhcjFLdglQf09kVqmea0zZXJDD9hFjeM4sQ6zMqZB9yF/6k3mdCr6ZAMFwEYbNDzCOfzzfmFORoN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=YkiNUsek; arc=none smtp.client-ip=212.227.15.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+	s=s31663417; t=1706095922; x=1706700722; i=wahrenst@gmx.net;
+	bh=/BslgvVYpKPVNWdle14groKEbP1WS7QPlBDCktTNY6s=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=YkiNUsekQHvkiImjKEgoQTqATU0p9x1J4775//i6NN3asbAh6qVZqWcBo2lkeAWX
+	 KC+2HMvLKf2URrfxhF6aj8H3r5m+9tj/Q0EYaVWnUwzI/KgpMjs9MAMQkpjx698hh
+	 LocwPpcR5s2gTHVaSRTAZg6qJy98bZT7/IdopkBmYu7kKUzTMuXmN/5SJtImzCPpt
+	 oQoSIy+YtA4uvk273Hzb/3MFft46IfRBUKXMsiVGfIUOESYhLHOH8A0yRKWomjSF1
+	 vq6G44W3QgSesOP7Ws/4Tw/21pWrXZAYzvR7cs1V4K0s/tUdgxbCnYyjYtABN/LIJ
+	 ee0cwiSXZ1akKlM+KQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.1.167] ([37.4.248.43]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MXXuH-1rb0sn2F1L-00Z1nK; Wed, 24
+ Jan 2024 12:32:02 +0100
+Message-ID: <a37db0e2-4b17-4935-a9a6-f7741e91e42c@gmx.net>
+Date: Wed, 24 Jan 2024 12:31:59 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 2/3] dt-bindings: gpio: gpio-vf610: add gpio-line-names
+To: Mathieu Othacehe <othacehe@gnu.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
+ Li Yang <leoyang.li@nxp.com>, Primoz Fiser <primoz.fiser@norik.com>,
+ Christoph Stoidner <c.stoidner@phytec.de>, Wadim Egorov <w.egorov@phytec.de>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ Conor Dooley <conor.dooley@microchip.com>
+References: <20240124074930.26101-1-othacehe@gnu.org>
+ <20240124074930.26101-3-othacehe@gnu.org>
+Content-Language: en-US
+From: Stefan Wahren <wahrenst@gmx.net>
+In-Reply-To: <20240124074930.26101-3-othacehe@gnu.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:NO507OUp8tLlmKolQz3sc5PuTIxw9mI+LCtA6ydOdiIOAV9YNwi
+ c4gKzu5jDGqoPlorHhcbBpB7N7Hf3C6TcBu9XfqREqVOF1naJ4ku7qJChPPakMUmTUvF3Sr
+ IuXfBjlnAZiIFcD7Jb4CNh7LQ2sFWgulLLQKekutizycyJNR6FhfXSjxXPQgyHYKShN+37N
+ 2KcwbXY7ZLwXT4+2kJ/kQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:4Gt+aTtZ98s=;SX+2vTwj3CF/hpWVFrcickHZ5Wd
+ i6HSYYTbauWG2V4eP2qNAgZzzRDvxMezApKhT/BA5kt8uIhikHGGxRZNR14NtW5NbyUhty8J5
+ DdJGQkpqV6VKTj2vr+fZi2bDpQEALY+g1oq/6Ym9YbV8O3taHOvl9LFeBETLNC9b5e/ZcCM8J
+ BN8+lr0sUK4Yu7xNyJlCUXBHeGkMzZ9YbX+I7lnypVaExpApgDBQSAsGQ5ehR8T141/viYMLl
+ BbK4sPV8THsKwbSikSuPTRupSTmfDYqxQ/tX+TCV4kS3Xto2BGRsTbEayRdJ43kwz4wqyG2Px
+ mNzvI4TRoSZ/9X0vjpezhNjcQPepElcjo5kG9RCrTvOwKCRh8M9vMM5XlT1jtgW/JX9/RON7O
+ aECe8t9ITFTkSxppZ1zZdjOVGU3YqCMwNc3RXdaLNWcLgQODPXo5III63m5IgKthpRf4/62M3
+ xN+JU815radyM7h1J8C7sQx06Z5ExUx71L5GJsBqFw4qhtfnYYWK4f9gGjhV7gYdj30Ax+408
+ TiDAbqlQOjXoUkDviT+s2swUYAY0vvlmoD6xWK5PO48CROI5165wyVN2cAlrmdyEAneau16YZ
+ sZsw4DjKflt6b7wyscJisE/7puji3lJHs+0PQQYr+oamcmENCmY2Nt/iwO0dLRlA2lP3jq32W
+ e9JlTysgSHdzQzy0LkXjmq9amb7TwP4GlLw7iKyXFnMeu0WSl/0lTQc3kenw1+ffUdH1mjXYt
+ oxhOn8Q0muJCKZBQb1Hlc1zlasQnHoMcttB3E/KkgwghnTdxsAn4qWtXX+Pzz8Ud0m6tAzZ4f
+ qf9GMG5Nw0AIgjyEhqBJFXXv5efjGtQqKn9y2F/Ns7ULthOgm9IeY1IzgJj1c/FMP0+vXHWig
+ NbyRS7YGmUj6uAzRnUjf9wH+W+C10x9RndeK72XldEap25ZNjaH3J4GNqpRZOTq9rl7UByoTe
+ oKjNjUEmuZCeHTEf0LYmSmrQP1s=
 
-On Wed, 2024-01-24 at 11:25 +0100, Fabian Pfitzner wrote:
-> The ADIN1300 offers three distinct output clocks which can be accessed
-> through the GP_CLK pin. The DT only offers two of the possible options
-> and thus the 125MHz-recovered output clock is missing.
->=20
-> As there is no other way to configure this pin than through the DT it
-> should be possible to do so for all available outputs.
->=20
-> Signed-off-by: Fabian Pfitzner <f.pfitzner@pengutronix.de>
-> ---
 
-Reviewed-by: Nuno Sa <nuno.sa@analog.com>
+Am 24.01.24 um 08:49 schrieb Mathieu Othacehe:
+> Describe common "gpio-line-names" property to fix dtbs_check warnings
+> like:
+>
+> /home/mathieu/linux/arch/arm64/boot/dts/freescale/imx93-phyboard-segin.dtb:
+> gpio@43830000: 'gpio-line-names' does not match any of the regexes:
+> '^.+-hog(-[0-9]+)?$', 'pinctrl-[0-9]+' from schema $id:
+> http://devicetree.org/schemas/gpio/gpio-vf610.yaml#
+>
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> Signed-off-by: Mathieu Othacehe <othacehe@gnu.org>
 
-> =C2=A0drivers/net/phy/adin.c | 2 ++
-> =C2=A01 file changed, 2 insertions(+)
->=20
-> diff --git a/drivers/net/phy/adin.c b/drivers/net/phy/adin.c
-> index 2e1a46e121d9..b1ed6fd24763 100644
-> --- a/drivers/net/phy/adin.c
-> +++ b/drivers/net/phy/adin.c
-> @@ -508,6 +508,8 @@ static int adin_config_clk_out(struct phy_device *phy=
-dev)
-> =C2=A0		sel |=3D ADIN1300_GE_CLK_CFG_25;
-> =C2=A0	} else if (strcmp(val, "125mhz-free-running") =3D=3D 0) {
-> =C2=A0		sel |=3D ADIN1300_GE_CLK_CFG_FREE_125;
-> +	} else if (strcmp(val, "125mhz-recovered") =3D=3D 0) {
-> +		sel |=3D ADIN1300_GE_CLK_CFG_RCVR_125;
-> =C2=A0	} else if (strcmp(val, "adaptive-free-running") =3D=3D 0) {
-> =C2=A0		sel |=3D ADIN1300_GE_CLK_CFG_HRT_FREE;
-> =C2=A0	} else {
-
+Reviewed-by: Stefan Wahren <wahrenst@gmx.net>
 
