@@ -1,107 +1,78 @@
-Return-Path: <linux-kernel+bounces-37240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7163D83AD22
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:21:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 07CD183AD27
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:22:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 309CC28647D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:21:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3DC0287716
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:22:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F1C47A734;
-	Wed, 24 Jan 2024 15:21:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C33AF7A70E;
+	Wed, 24 Jan 2024 15:22:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="j83oTUWT"
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ur9PpaIU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3050723C9;
-	Wed, 24 Jan 2024 15:20:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19C7A23C9
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 15:22:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706109666; cv=none; b=JngTORNHCjSl4J04G4rvB3gBxCAPTO8cO/pp17FfQc9VUCJUWL+MqLRkz6CqwfYeU2W4U7kAi6LUnjLLkV/Qf7Qz0KmqMIdFgOg8GiPcc8nd7ymYS6o3OEtJ1RKXuNxlVLU+S99A3x2qVvxCTDcrPovhVz8tmMkPyn4ASyWyB8E=
+	t=1706109765; cv=none; b=W0mx9eJjwKUFcX4r870pFDDIVfht1FT4f/71LeXNLY12tNN8kTQZDwgYYa/B0NiE7xNs5xPmPq0iZsk/DCRYGafbiO/CAUFkG4kfdLzl95wPT2hVJVhTEJUBghZNqP5eoHLmx/TczgOMPhJ62ZENyIGCZw+kHv9wGmcHlHUUm4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706109666; c=relaxed/simple;
-	bh=agPLFUEFM5/Xl+Qkb3//4GKSlO6yApWCN4GTb4cujnA=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oLoLvYv41h+4Ox6lb9DqSs4iXGjoVvb6M0Otp3BfagCO16AjmOu8xCTaEz23OeECwmn13iX8LnQDlYkBzCaXVmzEKqPNwinsSfWx8IA792ZUlIAtXHBLZoZl9wHs9eYnMtklGqgpDeem1lOeLU0Odtdj52hdESr+lRnTo4VaPPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=j83oTUWT; arc=none smtp.client-ip=67.231.152.168
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40O6UAwg025066;
-	Wed, 24 Jan 2024 09:20:50 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=PODMain02222019; bh=vOohKh4Jlq7Gj3T
-	yhebrNhjFZ8GR73TN9M0kxe4dS2c=; b=j83oTUWT5M9ESeQZKSOzQ5Y3U82cWCL
-	S5SxfcNyFK34eUwgtzVeP59hos64i9+qSsM/otqeD0Cf7UYT+Gf2kj8lGSsFJ5G4
-	u3QwIaTL5cnu+HvJwZPN9EHq5qGoJ7M7D6T/lllH0b22TjYRaKNIgA46EP43AiCG
-	MtMiE7Ki72BVDpR5GKuJPHhbKRQ2zWIKhTc7AiRt74sFhCjWqGOYrvhtAZ7+DMj4
-	4Ne5yC7ldNxdiciQq8xjcpsdMnlYlpSzHhwxSaKxgjWVkTZioBXRlN0WvkjFIcpj
-	vspvfpCWN90l3p6g1+3g4cFMNx74/xeoRS8BkGdCVxZgYHl8L0B0e3A==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3vtmf9ryct-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Jan 2024 09:20:50 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 24 Jan
- 2024 15:20:48 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.40 via Frontend Transport; Wed, 24 Jan 2024 15:20:48 +0000
-Received: from ediswmail9.ad.cirrus.com (ediswmail9.ad.cirrus.com [198.61.86.93])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTPS id E28AA820246;
-	Wed, 24 Jan 2024 15:20:48 +0000 (UTC)
-Date: Wed, 24 Jan 2024 15:20:47 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Mark Brown <broonie@kernel.org>
-CC: <lee@kernel.org>, <alsa-devel@alsa-project.org>,
-        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>
-Subject: Re: [PATCH 6/6] spi: cs42l43: Tidy up header includes
-Message-ID: <ZbEqz31G+WfTtsZ/@ediswmail9.ad.cirrus.com>
-References: <20240124151222.1448570-1-ckeepax@opensource.cirrus.com>
- <20240124151222.1448570-6-ckeepax@opensource.cirrus.com>
- <8b8fcdbd-b1c8-4618-acf8-e31b6ab33be7@sirena.org.uk>
+	s=arc-20240116; t=1706109765; c=relaxed/simple;
+	bh=/I/RVLhwzWSg4OYBfyNQJivQLrlc9TmnSoyx0fkPJjs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uojFqD+jRWcvjG1iuJkbhUvWyYN0KerjQ6cTMf5RGwwJMk0BDVqdSugvtMnTfYpgNkbXElM1Hm202dhiXMww1svPdre2ajNo3yayLLz9EAPoapce7q9CKTTvAWTPWNMrRXBHnNQGyZf006ZZZgKU9h3g4PagybeF3pDw1zo6H1Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ur9PpaIU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 395B2C433C7;
+	Wed, 24 Jan 2024 15:22:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706109764;
+	bh=/I/RVLhwzWSg4OYBfyNQJivQLrlc9TmnSoyx0fkPJjs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ur9PpaIUGlo1PFFVHccI7tRdpzJuXycTMnVze26mYM8xOYgQv9CTa2zylc0Mwvdhw
+	 Z1VWDGnCb2B2r9ZKhFHJVu4nsbyYNHuw95I94OjccjsuzbomoyN45Vaj5V3FqPMTC0
+	 twFxyDVQrcGaJKYCrr7QGR+yJvBKIOFQEcdzKnBHTZ1e+ZFcr0rvLtFEu/US5BaFz2
+	 rNiZg9LC6bjOnD6g73qDnLwYEynY/qXMcPMTysBu/mPNhMFhnvnXkUA0lSAr6GgRH1
+	 kDzbaEE0M3iFsSP/a9AlxGGD3QWvacGL8+FW8UKAJklT6zA8vz4zz1uluZaFekxfRP
+	 i/usizHVXVv5g==
+Date: Wed, 24 Jan 2024 08:22:41 -0700
+From: Keith Busch <kbusch@kernel.org>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>
+Subject: Re: [PATCH v2] iov_iter: streamline iovec/bvec alignment iteration
+Message-ID: <ZbErQX4Z1pD0aa_5@kbusch-mbp.dhcp.thefacebook.com>
+References: <544b31f7-6d4b-42f5-a544-1420501f081f@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8b8fcdbd-b1c8-4618-acf8-e31b6ab33be7@sirena.org.uk>
-X-Proofpoint-GUID: kGDzglf-HN_pl0pxtUvti2jlDz9C3-0p
-X-Proofpoint-ORIG-GUID: kGDzglf-HN_pl0pxtUvti2jlDz9C3-0p
-X-Proofpoint-Spam-Reason: safe
+In-Reply-To: <544b31f7-6d4b-42f5-a544-1420501f081f@kernel.dk>
 
-On Wed, Jan 24, 2024 at 03:16:25PM +0000, Mark Brown wrote:
-> On Wed, Jan 24, 2024 at 03:12:22PM +0000, Charles Keepax wrote:
-> > Including some missing headers.
-> > 
-> > Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> > Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-> > ---
-> > 
-> > The changes to the MFD headers necessitate the inclusion of of.h here to
-> > keep things building, hence my including this SPI change in the this MFD
-> > series. The rest of the SPI fixups will be sent separately, as they are
-> > also not dependent on this change.
+On Tue, Jan 23, 2024 at 03:24:46PM -0700, Jens Axboe wrote:
+> Rewrite the alignment checking iterators for iovec and bvec to be easier
+> to read, and also significantly more compact in terms of generated code.
+> This saves 270 bytes of text on x86-64 for me (with clang-18) and 224
+> bytes on arm64 (with gcc-13).
 > 
-> If this is needed to keep things building then presumably it should be
-> before or part of whatever change introduces the requirement, otherwise
-> we have a bisection issue.  Anyway:
+> In profiles, also saves a bit of time as well for the same workload:
 > 
-> Acked-by: Mark Brown <broonie@kernel.org>
+>      0.81%     -0.18%  [kernel.vmlinux]  [k] iov_iter_aligned_bvec
+>      0.48%     -0.09%  [kernel.vmlinux]  [k] iov_iter_is_aligned
+> 
+> which is a nice side benefit as well.
 
-Yup it should will, I forgot to CC Andy too, so this is a good
-excuse to resend :-)
+Looks good
 
-Thanks,
-Charles
+Reviewed-by: Keith Busch <kbusch@kernel.org>
 
