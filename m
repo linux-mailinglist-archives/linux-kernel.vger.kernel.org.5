@@ -1,184 +1,120 @@
-Return-Path: <linux-kernel+bounces-36994-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36995-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCEF383A9F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:36:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38F2A83A9F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 13:38:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E3821C20FBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:36:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BE9F1C21A38
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 12:38:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AA5677639;
-	Wed, 24 Jan 2024 12:36:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 540A860DEB;
+	Wed, 24 Jan 2024 12:38:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="aKJ3dQEW"
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Td/2QOCl"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 409C5BE74;
-	Wed, 24 Jan 2024 12:36:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A2CEBE74
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 12:38:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706099793; cv=none; b=UeyUBVPhF0uueiB7ViCIj6IzB8ghrJQsvpL8k/xu0lEKeLNBpNyV+pouroPXxnczk775GlWLcIEqdEoXUUM02r6kbx8gGeCM3K+ia4/XsXHG+i+Dsm2ZuuH8diHXKfc41zgoNP75yqjuCQCh+Rm3X4sjaXokweVSHRElYeXA3lI=
+	t=1706099883; cv=none; b=cwe5NhRVdMHZDRYcyy835t8W5et6GTeJgUWGwaojIWoaFbdNDsokxocfYpY/NKM7YXagtg+o1OwbAjiUm4ZU4Vkp5fZmcvD+0Ksu5RUJuSB+e+DiRWRdxFrLgEgtOU/A0jYbeAg2e7vwQiXoiFRNoS1wTpf1igJm5iWdpVNdBHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706099793; c=relaxed/simple;
-	bh=+ScSpzpjrULM5D9D5zj2mBVm80jwAW/ibhGyLqlbUP8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=E1x599e+3YfIqDZo7vT5tMhMgGGYQnIOUGcg9ReNY4x5U0C8YUxkqSSv+X8Q7cJmyCvvA1WmyG+bZin4WFAgAjDxo0TGXULguv5gfCsuNLZEvKUVT9JmW974VwbBYNGA65GLPSBrHnFVdjcXGVzS5U6aSqGilBachwX1eWbpKPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=aKJ3dQEW; arc=none smtp.client-ip=91.207.212.93
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40O9u063008801;
-	Wed, 24 Jan 2024 13:36:06 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	selector1; bh=BGBC9tF/Cd6rbj5dyV7/fk/vzSioDaHQikjSTIAEr4o=; b=aK
-	J3dQEWjWMuf109lvExHWEoekq0n8ACVGJy1e/sKLn9fY4mQguLUV8NrHn2iVLoCq
-	qz7P35OqCmw5Rug03tjpFjBoiI0E9jgCRI6/NLq8ZaGO+9O4tWp6M4TcLMRS+ZyF
-	CW9LrscJ7Dbp6nGeMF2S0YxpC2QnR1k+5qicqbbeYebMe1QWb39Uk64zvQ4/c8eN
-	YcIVBW1tVjkd4dRqzDBn3UlfW3o/peCm6y1phJzLIs2eI5pRC99VmS1xIFq/TeC9
-	ZRLYUAGlfwHU7fa2pu3ql/8tsNnEwOSWTtc/lxhMl3rQQGz2DMTYfdN8aRGyfInO
-	zUGH1IDwuML7fyCfBdMw==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3vtmf9u4rm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 24 Jan 2024 13:36:06 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A6BCA10005C;
-	Wed, 24 Jan 2024 13:36:04 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9822C2D3CC9;
-	Wed, 24 Jan 2024 13:36:04 +0100 (CET)
-Received: from [10.201.21.122] (10.201.21.122) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 24 Jan
- 2024 13:36:03 +0100
-Message-ID: <f7f8344c-7a72-4450-81c7-8bff4569f044@foss.st.com>
-Date: Wed, 24 Jan 2024 13:36:02 +0100
+	s=arc-20240116; t=1706099883; c=relaxed/simple;
+	bh=7CarhI71VUD1zKHMgASvmvAH19o4krLlyNn9Bb24P2s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ABH8zqmtQ+Se4tCwUPFmogU8VB9WdwimHlTyOnkiY8d4nmAsKB+al/LC7dkfOQnX0TGhsMPPC+syPBrRuWo312WrrCDYpUs5iqFQiPT6dgCSy1a9bJ+achaim75Ku1WRhpHx2d7hoRSBaAJBzLF+wIN92n13HSB8WT9ZwtkLFic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Td/2QOCl; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a30e445602cso210264666b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 04:38:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706099880; x=1706704680; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=oOF3NoLpgCBI1PndLI5a5LAEUzAbeXf4T/xw5vWVsC8=;
+        b=Td/2QOClgn1QdniGt+/axJkDJ6grPUoQKjo3DBWnTz3/6ocRsbXvj5UGtAkQjq7WJq
+         eaaUXwwG7FwCuCm57QF1GjZUa64zcYutUiF0Q30xIXFsfXg5TVYczBoT30EWjXdEXMh+
+         jplMWqi8rMfHu+zIL6YNlxIsXCxzwRf4lpzEB4Rb6UVwNHZ+nyINiCknNbFZXJz6Kr4M
+         KTi22Tb7LQasGEi3DMsrP3oRMZS8HnsNmsNZs/K0Hx9dxpbC1GdGWMEPvqQyD3QA3nuO
+         mW27EAd/5ye34NRzAqr64nlrPflNa6Q0owucSIKxIAEpDWu0icWkJ96Gw7/BTJYKP0k9
+         6zYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706099880; x=1706704680;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oOF3NoLpgCBI1PndLI5a5LAEUzAbeXf4T/xw5vWVsC8=;
+        b=blgOpgo92tIWyZZStVw6mQpX429NpnJ7rP03E2DHMx2mt5FHmXeUXNE509I/xYC1gT
+         +u9n5dpR50BnTMOEo1bz5YTj23z9/I4IP9QOVjssh/k9/+vOBZTM0cOlXKefmkifvd6J
+         wX55zeCBKvlj2e4GaF1781seJIXnrPt/AEybaBsgdwuQYwi3bP2rbsQzMZhsplhPjo7p
+         ZtRl9Lo0BYARnXG73BJcFR7nx2jBYE4CCcX7otKWkOpoE8iBsYYr9XXaywqJcXN6xEuB
+         /ipDeLhcE/+mmv8dePa+g9l1mA/zVsTioShJEtueih9aVSTFzbscgzxpFCy+wtLXFJGO
+         oKBw==
+X-Gm-Message-State: AOJu0YxfeViJEnNnjVmfdzlX7lpgNvd4CzhnrPQV4RebKO10r2Vor1d4
+	Vp0dR/R4KPc7IAb2ni2gnUJJpExyM/34RgepCjib2m7W930R0PWbdF5eq8IH4ME=
+X-Google-Smtp-Source: AGHT+IGq9JzPGv4Fh9W1QWnPuQcV5i2Pysemez2A+1m9vVG390zE0ZZYQ29psjZ0hm6Eo33fa6uHlQ==
+X-Received: by 2002:a17:906:594a:b0:a31:3164:8569 with SMTP id g10-20020a170906594a00b00a3131648569mr577123ejr.76.1706099880319;
+        Wed, 24 Jan 2024 04:38:00 -0800 (PST)
+Received: from linaro.org ([79.115.23.25])
+        by smtp.gmail.com with ESMTPSA id tk10-20020a170907c28a00b00a2d60194466sm12593625ejc.52.2024.01.24.04.37.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 04:37:59 -0800 (PST)
+Date: Wed, 24 Jan 2024 14:37:58 +0200
+From: Abel Vesa <abel.vesa@linaro.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Sibi Sankar <quic_sibis@quicinc.com>,
+	Rajendra Nayak <quic_rjendra@quicinc.com>,
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 04/11] arm64: dts: qcom: x1e80100: Add ADSP/CDSP
+ remoteproc nodes
+Message-ID: <ZbEEppK80NpwqUT7@linaro.org>
+References: <20240123-x1e80100-dts-missing-nodes-v4-0-072dc2f5c153@linaro.org>
+ <20240123-x1e80100-dts-missing-nodes-v4-4-072dc2f5c153@linaro.org>
+ <e1313275-ca10-49be-ae68-ce783c3262b1@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH v6 0/5] Add support for video hardware codec of
- STMicroelectronics STM32 SoC series
-Content-Language: en-US
-To: Hugues Fruchet <hugues.fruchet@foss.st.com>,
-        Ezequiel Garcia
-	<ezequiel@vanguardiasur.com.ar>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Nicolas Dufresne
-	<nicolas.dufresne@collabora.com>,
-        Sakari Ailus
-	<sakari.ailus@linux.intel.com>,
-        Benjamin Gaignard
-	<benjamin.gaignard@collabora.com>,
-        Laurent Pinchart
-	<laurent.pinchart+renesas@ideasonboard.com>,
-        Daniel Almeida
-	<daniel.almeida@collabora.com>,
-        Benjamin Mugnier
-	<benjamin.mugnier@foss.st.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Mauro
- Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>, <linux-media@vger.kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-rockchip@lists.infradead.org>
-CC: Marco Felsch <m.felsch@pengutronix.de>, Adam Ford <aford173@gmail.com>
-References: <20240110104642.532011-1-hugues.fruchet@foss.st.com>
-From: Alexandre TORGUE <alexandre.torgue@foss.st.com>
-In-Reply-To: <20240110104642.532011-1-hugues.fruchet@foss.st.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-24_06,2024-01-24_01,2023-05-22_02
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e1313275-ca10-49be-ae68-ce783c3262b1@linaro.org>
 
-Hi
-
-On 1/10/24 11:46, Hugues Fruchet wrote:
-> This patchset introduces support for VDEC video hardware decoder
-> and VENC video hardware encoder of STMicroelectronics STM32MP25
-> SoC series.
+On 24-01-23 19:22:35, Konrad Dybcio wrote:
 > 
-> This initial support implements H264 decoding, VP8 decoding and
-> JPEG encoding.
 > 
-> This has been tested on STM32MP257F-EV1 evaluation board.
+> On 1/23/24 12:01, Abel Vesa wrote:
+> > From: Sibi Sankar <quic_sibis@quicinc.com>
+> > 
+> > Add ADSP and CDSP remoteproc nodes on X1E80100 platforms.
+> > 
+> > Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+> > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> > ---
 > 
-> ===========
-> = history =
-> ===========
-> version 6:
->     - Use a single file for VDEC and VENC variants as suggested by Alex Bee
->     - Fix some typos raised by Sebastian Fricke
->     - Add Krzysztof Kozlowski Reviewed-by
+> [...]
 > 
-> version 5:
->     - Precise that video decoding as been successfully tested up to full HD
->     - Add Nicolas Dufresne Reviewed-by
+> > +		remoteproc_cdsp: remoteproc@32300000 {
+> > +			compatible = "qcom,x1e80100-cdsp-pas";
+> > +			reg = <0 0x32300000 0 0x1400000>;
+> > +
+> > +			interrupts-extended = <&intc GIC_SPI 578 IRQ_TYPE_EDGE_RISING>,
 > 
-> version 4:
->     - Fix comments from Nicolas about dropping encoder raw steps
-> 
-> version 3:
->     - Fix remarks from Krzysztof Kozlowski:
->      - drop "items", we keep simple enum in such case
->      - drop second example - it is the same as the first
->     - Drop unused node labels as suggested by Conor Dooley
->     - Revisit min/max resolutions as suggested by Nicolas Dufresne
-> 
-> version 2:
->     - Fix remarks from Krzysztof Kozlowski on v1:
->      - single video-codec binding for both VDEC/VENC
->      - get rid of "-names"
->      - use of generic node name "video-codec"
-> 
-> version 1:
->    - Initial submission
-> 
-> Hugues Fruchet (5):
->    dt-bindings: media: Document STM32MP25 VDEC & VENC video codecs
->    media: hantro: add support for STM32MP25 VDEC
->    media: hantro: add support for STM32MP25 VENC
->    arm64: dts: st: add video decoder support to stm32mp255
->    arm64: dts: st: add video encoder support to stm32mp255
+> Is there no PDC mapping for this one?
 > 
 
-Sakari, Mauro, do you plan to take patches 1 to 3 on your next branch ?
-I will take DT pacthes in mine but I would like to be sure that 
-dt-binding will be applied in a next branch (for the next v6.9 cycle);
+Nope.
 
-regards
-Alex
-
-
->   .../media/st,stm32mp25-video-codec.yaml       |  49 +++++
->   arch/arm64/boot/dts/st/stm32mp251.dtsi        |  12 ++
->   arch/arm64/boot/dts/st/stm32mp255.dtsi        |  17 ++
->   drivers/media/platform/verisilicon/Kconfig    |  14 +-
->   drivers/media/platform/verisilicon/Makefile   |   3 +
->   .../media/platform/verisilicon/hantro_drv.c   |   4 +
->   .../media/platform/verisilicon/hantro_hw.h    |   2 +
->   .../platform/verisilicon/stm32mp25_vpu_hw.c   | 186 ++++++++++++++++++
->   8 files changed, 284 insertions(+), 3 deletions(-)
->   create mode 100644 Documentation/devicetree/bindings/media/st,stm32mp25-video-codec.yaml
->   create mode 100644 drivers/media/platform/verisilicon/stm32mp25_vpu_hw.c
-> 
+> Konrad
 
