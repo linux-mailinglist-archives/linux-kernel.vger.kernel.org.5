@@ -1,136 +1,133 @@
-Return-Path: <linux-kernel+bounces-36597-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60C0183A393
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:55:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1E8C83A399
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 08:57:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D3DBB27676
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 07:55:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AEC129334E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 07:57:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D9C3171D8;
-	Wed, 24 Jan 2024 07:55:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88DBB171C2;
+	Wed, 24 Jan 2024 07:57:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TkRH08Og"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="P2Hc2rt+";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="C4r5lcFi"
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D927171A2;
-	Wed, 24 Jan 2024 07:55:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 231FC5C85;
+	Wed, 24 Jan 2024 07:57:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706082923; cv=none; b=EXilB8yHl7KqeNxS2xW2p+8eLurKp0DVSN7itScrju/KdSqsWZnm3wPUIbkvBi9YoBKviH3L9zfv3oc2fD34SxMSls1Rz7jPGh/uA6NF9h8QwC+XPdBDfswR4dIsfkD/mzsWhlnXi/t3Zh7RG+GJx+627CmRam6IJj+i9tIciOw=
+	t=1706083037; cv=none; b=lyZfpuJqxVQCus8smxYN5/S2F5P9E2TF9U2mBvvoV/+7xHR1VVtIh8j1Zn6ofJisGdnlP6+OiZ6AunfDyuHGRgIJAewOSFjLTgsb+K/jrNJ4UcwQsNu87Sfwlm1uVKJUfKgaaIxSvut1yztzNc2ABEZRXxTkCxwIHR4lo9WRk6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706082923; c=relaxed/simple;
-	bh=NT+Vf9nE136+iQ8X8hrDDr0oPQKV4IFmb3UOTg7wN3o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bX9FBKRahkIrbS5a2cZf/IHVuOS//wBC4sj0D16jIMK2vN6mBxQCOvZCvs1rcKwtvGmxFMsBNrMo8wycKtPimeq1FkmITjzJoYwKIpGvJJ2UA4JzEL9ZH5Rh+pzSK8iCdGON16yxNx58BWVYHqV3aZE45R2xJW4z9BU2vdDgAX8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TkRH08Og; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C1E6C433F1;
-	Wed, 24 Jan 2024 07:55:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706082923;
-	bh=NT+Vf9nE136+iQ8X8hrDDr0oPQKV4IFmb3UOTg7wN3o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TkRH08OgLfYznR6++IxYRcC8cWcUxVT2AGh+/llDdDJrT9H2O65CLo0sndqoqhrid
-	 JUU8ui2mXII78nEmwj4AegguQmGfCbuiVVONq0PXfrVe3Zg9wylzj6D1kCovi7KINd
-	 iJNZf0CTtBYymdHlfZn6r8g0DsufA4wb2FzSVfjcF7AOFm7xlvBXMWDdCk4BYE1uUA
-	 +kOor9A6L874Ndg2jhIB2K8nhpq0xo9mVZq8RfWOIK1JysnQWcsfgPjqTgeXpD0hVG
-	 HRnCOYHlJeDcwGm+NG+I0mNT1LeJZVxfAYeRh0NiiRbtcEZeM/pKR5PyTXAf4C7pQH
-	 RRGqU28b9c+Eg==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rSY6h-000000001VA-1JkT;
-	Wed, 24 Jan 2024 08:55:35 +0100
-Date: Wed, 24 Jan 2024 08:55:35 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Sebastian Reichel <sre@kernel.org>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	Sebastian Reichel <sebastian.reichel@collabora.com>,
-	linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Xilin Wu <wuxilin123@gmail.com>
-Subject: Re: [PATCH v2] power: supply: qcom_battmgr: Ignore notifications
- before initialization
-Message-ID: <ZbDCd_R7NmXn6X0t@hovoldconsulting.com>
-References: <20240103-topic-battmgr2-v2-1-c07b9206a2a5@linaro.org>
- <Za_iR0ctkgYO0W5L@hovoldconsulting.com>
- <b7e91951-e554-4baf-9b8d-fca4a2f0d412@linaro.org>
+	s=arc-20240116; t=1706083037; c=relaxed/simple;
+	bh=H1RgzITUOCuBAmiNIP/bkdVi51TkAA5ExJr5YGT+qz0=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=QkJA9u3Som96c0rGjWYavizKqujjQTVlSuo7N4F0hNE5kAaaWwI7cLEA3rXRWRMLrpojKTjfAKNvsqRYU05TmyldajAOTRZ3WmUPpKiNfFK2u1Kf7DAkvBQfE0rHOc4kEaqJRyLBSexyTv6PNuKijE9SypqXZbb9uIeb9jcIw0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=P2Hc2rt+; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=C4r5lcFi; arc=none smtp.client-ip=64.147.123.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id 9BE6F3200A35;
+	Wed, 24 Jan 2024 02:57:14 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 24 Jan 2024 02:57:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1706083034; x=1706169434; bh=ZwuSM4ZywO
+	RUMVxFPkG3MmUndAlpqgqOEw7Unxr8DYg=; b=P2Hc2rt+q2/08jOIIXFAlF7a/X
+	yft+6VFlCEWhY36dgDfZ3f96tY0QDNLsEu3uQZ2PY0HP1CG2XE8U25iqyopvlUuZ
+	Rcp/B4YlIxjJqQM2nX1AK/E7Ft2ii7gsQ0IrHS/qWPLmGzHFoYz8pPozzdYI3FQq
+	hf6JUtWfayV+hPYB/xmbKcq4/EcrcbNGfUs4L8pk8ZgEbPki8KZJGDDxOp6vSy/v
+	X9b7lKIEQQjtF4IYyqVpBKoQkX2p2D51K+nSC1rC72v3+BsrlsAVu119HsNzlAA5
+	oMSQtZ6dzwWbVDCBGxVlpeHs9SNtBWkunvQ9fo3EdinX514WzKS9ovOddzoA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1706083034; x=1706169434; bh=ZwuSM4ZywORUMVxFPkG3MmUndAlp
+	qgqOEw7Unxr8DYg=; b=C4r5lcFink3F1aepdJCZCIZq39CNNE53jHzI2zoH45ug
+	iTS2Df9Wb/qWJQiCo33AWL4Wba2Z0iNI5b0qEFaGYGzdE/t5QUT/OEx8J1nj4P8u
+	GPaTTaWfm4cFQ/nebn2V+9xA5eR0iIQZKi/LNscyP1wXjuSwRg1k9KZN8vYNE9cI
+	iEOi0zf0QjXgOWvJ+G14odfg/hXvx7nFnPcONqb3KyFbSaZ54EvLDbetU48xHu2M
+	JJU4vgPNt1+GnRJn59EjOg2K5yQxhRvNfIaXVNlc63iRVS5sct9ZMUArcizbv1GI
+	g6KQWhpodmFf3AVVdPE96CStr6E6qCFilmsCxrN6JQ==
+X-ME-Sender: <xms:2cKwZeg-e8i443zuIg2HciyyyUxzzPOJNizhCWZK2uTj67p4dZoKcA>
+    <xme:2cKwZfBU1Ix5pp0ITIXuQ71LKFDqDts1qxk7R7B15-BPw6p-XAf3EjU-rjKLy-ewK
+    eMS-1xdethDq5Lvj6w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeltddgkedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:2cKwZWEiWB97t7FW-oD9O5r5z4X12FxnIJN-oCDskrVAbUpOuIwQfg>
+    <xmx:2cKwZXQ1uZvQjUPlFXmqCCzATvukhd-71MbVxLfr1msf8JYxoidJtw>
+    <xmx:2cKwZby-Fc8jNHSyir56Ww9VpHx1cRtbNDWv2FhUYaTrRjyAjgrxkQ>
+    <xmx:2sKwZSkuVgritFhUt6bkhjj2XsVgoUleGbxIJGAlhcdkKWINWRfbuA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id C7018B6008D; Wed, 24 Jan 2024 02:57:13 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-119-ga8b98d1bd8-fm-20240108.001-ga8b98d1b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b7e91951-e554-4baf-9b8d-fca4a2f0d412@linaro.org>
+Message-Id: <18c814fa-b458-48f9-b7e8-88b23a1825e2@app.fastmail.com>
+In-Reply-To: <20240124004028.16826-6-zfigura@codeweavers.com>
+References: <20240124004028.16826-1-zfigura@codeweavers.com>
+ <20240124004028.16826-6-zfigura@codeweavers.com>
+Date: Wed, 24 Jan 2024 08:56:52 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Elizabeth Figura" <zfigura@codeweavers.com>,
+ "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+ linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
+Cc: wine-devel@winehq.org,
+ =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
+ "Wolfram Sang" <wsa@kernel.org>, "Arkadiusz Hiler" <ahiler@codeweavers.com>,
+ "Peter Zijlstra" <peterz@infradead.org>
+Subject: Re: [RFC PATCH 5/9] ntsync: Introduce NTSYNC_IOC_WAIT_ANY.
+Content-Type: text/plain
 
-On Tue, Jan 23, 2024 at 06:53:46PM +0100, Konrad Dybcio wrote:
-> On 1/23/24 16:59, Johan Hovold wrote:
-> > On Wed, Jan 03, 2024 at 01:36:08PM +0100, Konrad Dybcio wrote:
-> >> Commit b43f7ddc2b7a ("power: supply: qcom_battmgr: Register the power
-> >> supplies after PDR is up") moved the devm_power_supply_register() calls
-> >> so that the power supply devices are not registered before we go through
-> >> the entire initialization sequence (power up the ADSP remote processor,
-> >> wait for it to come online, coordinate with userspace..).
-> >>
-> >> Some firmware versions (e.g. on SM8550) seem to leave battmgr at least
-> >> partly initialized when exiting the bootloader and loading Linux. Check
-> >> if the power supply devices are registered before consuming the battmgr
-> >> notifications.
+On Wed, Jan 24, 2024, at 01:40, Elizabeth Figura wrote:
 
-> >> +	if (!battmgr->bat_psy)
-> >> +		return;
-> > 
-> > This is not a proper fix. You register 3-4 class devices and only check
-> > one. Even if your checked the last one, there's no locking or barriers
-> > in place to prevent this from breaking.
-> > 
-> > Deferred registration of the class devices also risks missing
-> > notifications as you'll be spending time on registration after the
-> > service has gone live.
-> > 
-> > I'm sure all of this can be handled but as it is non-trivial and the
-> > motivation for the offending commit is questionable to begin with, I
-> > suggest reverting for now.
-> > 
-> > I'll send a revert for Sebastian to consider.
-> 
-> What you're saying is valid, but a "battery" device is always expected
-> to be present. 
+> +	if (args->timeout) {
+> +		struct timespec64 to;
+> +
+> +		if (get_timespec64(&to, u64_to_user_ptr(args->timeout)))
+> +			return -EFAULT;
+> +		if (!timespec64_valid(&to))
+> +			return -EINVAL;
+> +
+> +		timeout = timespec64_to_ns(&to);
+> +	}
 
-Yes, but that's not the point. battmgr->bat_psy is the first class
-device pointer to be initialised, but that being set does not mean that
-the other pointers are not still NULL when you hit this callback.
+Have you considered just passing the nanosecond value here?
+Since you do not appear to write it back, that would avoid
+the complexities of dealing with timespec layout differences
+and indirection.
 
-> If devm_power_supply_register fails, things would go very
-> south very fast anyway.
+> +	ids = kmalloc_array(count, sizeof(*ids), GFP_KERNEL);
+> +	if (!ids)
+> +		return -ENOMEM;
+> +	if (copy_from_user(ids, u64_to_user_ptr(args->objs),
+> +			   array_size(count, sizeof(*ids)))) {
+> +		kfree(ids);
+> +		return -EFAULT;
+> +	}
 
-Eh, no. Before the offending commit, if registration fails, we bail out
-from probe() before registering the PMIC GLINK client (and callbacks) so
-all is good.
+This looks like memdup_user() would be slightly simpler.
 
-That is no longer the case since b43f7ddc2b7a ("power: supply:
-qcom_battmgr: Register the power supplies after PDR is up") which
-happily ignores errors and could theoretically result in all but the
-first class device being registered leading to further NULL derefs on
-notifications.
-
-I could have pointed this out in the commit message for the revert.
-
-> I personally don't see this being a terribly bad fix, but I'm open to
-> different propositions.
-
-It's not a correct fix, only a band-aid that papers over the immediate
-issue, I'm afraid.
-
-Let's revert and if you care deeply about this you can possibly propose
-a complete patch that addresses the above issues, even if I'm more
-inclined to leave things as they were and not spend more time on this.
-
-Johan
+      Arnd
 
