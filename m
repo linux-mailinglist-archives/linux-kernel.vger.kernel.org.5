@@ -1,39 +1,39 @@
-Return-Path: <linux-kernel+bounces-37110-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37111-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FB7683ABAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:27:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0643883ABAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:27:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4FBD5B2AADD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:27:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3899E1C2235A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:27:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D26B37C0A7;
-	Wed, 24 Jan 2024 14:26:31 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ADBA7C0BC;
+	Wed, 24 Jan 2024 14:26:32 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F051B7A713;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A7AF7A718;
 	Wed, 24 Jan 2024 14:26:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706106391; cv=none; b=CkwE2z8c01h4XFx/Qy5y9H2u6FnPgu6/lz+iEkpFotL+MAV9WxpJmohs76ZaUG6ammYhR3SaDfNyHovdQs1h1XzznvPoMaCfxiYLqNjLq/WGV8/q/TDiM7hh82Oxn3tnHddZ4zgJimJ823fffjb0Sy2+FzmezXvoTnaZW3VBRU8=
+	t=1706106391; cv=none; b=l/cyCXUPz7YEkH6o6AVeJgA989Df0zQptuot2hIe4wi/sT0SNmPkpxU78Va9/0AKlLYibYeUbu9FU4eFzjeIgsGp03gK1wwgRGRDX+hIj50d3bWvhD0s/LoFGJpQD5THPbizEC4L4wyUZLuds/IlGT9MnQXvF6FTXmMCunSLfm4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706106391; c=relaxed/simple;
-	bh=lPvpLliId+cA8aYHjC8ognT98Fz3rKIw47pkYuX9fn8=;
+	bh=N2BkwODbR5p4I61Zd4giHOOLJ0sc4FCaSVpwgMLT51U=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=O01c+c3oobLiKHsI6/aQ8q+Z4IZo5Eq7fQfoffBgafplFN3vcW6I7ik96wmH9C/jIr0NhG7Xa58rd7Mnfd61lOOL1cOG60cUyaFL7+vLZfEFSFxrpe/aFnDKxJq8fys4rgM8o5OEb7p1Year5Kbyo1eUFYVd/8T3u0TFaLv681E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+	 MIME-Version:Content-Type; b=PgJDpt3RL/RwtgO4t9ONXgJ2i2U7LrBa3raBv+lQgq7/nPkS4uwV+unKvP1f5FxmRrkqpRLzJok0AkVbMqdRmK30PRaCJAbYwn59MPh7z9CUFJRaqEHBfHrZXRTp7WEo+4fzHTpdxA0evWPXMFgEqu0bjx48iSzTYQscIiuX+Mk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TKmSx4xBfzsWHQ;
-	Wed, 24 Jan 2024 22:25:21 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TKmS9199Cz1gy0X;
+	Wed, 24 Jan 2024 22:24:41 +0800 (CST)
 Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-	by mail.maildlp.com (Postfix) with ESMTPS id BB34E14011A;
-	Wed, 24 Jan 2024 22:26:24 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 6403114011F;
+	Wed, 24 Jan 2024 22:26:25 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
  (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 24 Jan
@@ -45,9 +45,9 @@ CC: <torvalds@linux-foundation.org>, <viro@zeniv.linux.org.uk>,
 	<akpm@linux-foundation.org>, <arnd@arndb.de>, <linux-arch@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
 	<yangerkun@huawei.com>, <yukuai3@huawei.com>, <libaokun1@huawei.com>
-Subject: [PATCH v2 1/3] fs: make the i_size_read/write helpers be smp_load_acquire/store_release()
-Date: Wed, 24 Jan 2024 22:28:55 +0800
-Message-ID: <20240124142857.4146716-2-libaokun1@huawei.com>
+Subject: [PATCH v2 2/3] Revert "mm/filemap: avoid buffered read/write race to read inconsistent data"
+Date: Wed, 24 Jan 2024 22:28:56 +0800
+Message-ID: <20240124142857.4146716-3-libaokun1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20240124142857.4146716-1-libaokun1@huawei.com>
 References: <20240124142857.4146716-1-libaokun1@huawei.com>
@@ -57,75 +57,42 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  dggpeml500021.china.huawei.com (7.185.36.21)
 
-In [Link] Linus mentions that acquire/release makes it clear which
-_particular_ memory accesses are the ordered ones, and it's unlikely
-to make any performance difference, so it's much better to pair up
-the release->acquire ordering than have a "wmb->rmb" ordering.
+This reverts commit e2c27b803bb6 ("mm/filemap: avoid buffered read/write
+race to read inconsistent data"). After making the i_size_read/write
+helpers be smp_load_acquire/store_release(), it is already guaranteed that
+changes to page contents are visible before we see increased inode size,
+so the extra smp_rmb() in filemap_read() can be removed.
 
-=========================================================
- update pagecache
- folio_mark_uptodate(folio)
-   smp_wmb()
-   set_bit PG_uptodate
-
- === ↑↑↑ STLR ↑↑↑ === smp_store_release(&inode->i_size, i_size)
-
- folio_test_uptodate(folio)
-   test_bit PG_uptodate
-   smp_rmb()
-
- === ↓↓↓ LDAR ↓↓↓ === smp_load_acquire(&inode->i_size)
-
- copy_page_to_iter()
-=========================================================
-
-Calling smp_store_release() in i_size_write() ensures that the data
-in the page and the PG_uptodate bit are updated before the isize is
-updated, and calling smp_load_acquire() in i_size_read ensures that
-it will not read a newer isize than the data in the page. Therefore,
-this avoids buffered read-write inconsistencies caused by Load-Load
-reordering.
-
-Link: https://lore.kernel.org/r/CAHk-=wifOnmeJq+sn+2s-P46zw0SFEbw9BSCGgp2c5fYPtRPGw@mail.gmail.com/
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
 ---
- include/linux/fs.h | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ mm/filemap.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 6bb10bbd7035..1cc1f3f08107 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -907,7 +907,8 @@ static inline loff_t i_size_read(const struct inode *inode)
- 	preempt_enable();
- 	return i_size;
- #else
--	return inode->i_size;
-+	/* Pairs with smp_store_release() in i_size_write() */
-+	return smp_load_acquire(&inode->i_size);
- #endif
- }
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 142864338ca4..bed844b07e87 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2608,15 +2608,6 @@ ssize_t filemap_read(struct kiocb *iocb, struct iov_iter *iter,
+ 			goto put_folios;
+ 		end_offset = min_t(loff_t, isize, iocb->ki_pos + iter->count);
  
-@@ -929,7 +930,12 @@ static inline void i_size_write(struct inode *inode, loff_t i_size)
- 	inode->i_size = i_size;
- 	preempt_enable();
- #else
--	inode->i_size = i_size;
-+	/*
-+	 * Pairs with smp_load_acquire() in i_size_read() to ensure
-+	 * changes related to inode size (such as page contents) are
-+	 * visible before we see the changed inode size.
-+	 */
-+	smp_store_release(&inode->i_size, i_size);
- #endif
- }
- 
+-		/*
+-		 * Pairs with a barrier in
+-		 * block_write_end()->mark_buffer_dirty() or other page
+-		 * dirtying routines like iomap_write_end() to ensure
+-		 * changes to page contents are visible before we see
+-		 * increased inode size.
+-		 */
+-		smp_rmb();
+-
+ 		/*
+ 		 * Once we start copying data, we don't want to be touching any
+ 		 * cachelines that might be contended:
 -- 
 2.31.1
 
