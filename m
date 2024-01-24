@@ -1,96 +1,228 @@
-Return-Path: <linux-kernel+bounces-37678-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37679-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42A1A83B382
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:02:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8465983B386
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 22:04:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D63671F245C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 21:02:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A5E7287B87
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 21:04:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E5C51350E3;
-	Wed, 24 Jan 2024 21:02:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CC081350EE;
+	Wed, 24 Jan 2024 21:04:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SAT6BK93"
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RvZ694qF"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32AF1811E4;
-	Wed, 24 Jan 2024 21:02:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B6E6811E4
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 21:04:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706130138; cv=none; b=OlHsBXY/1Ka7A8SxqgBGzarH3w9Rvo+my5fdg0y87NLvQxGu8dG6hYSvnz7V738lysB383BfeV6McSUlmzFrX3YoeMy52OZkxyfHvwpo9rm2zjuKADjWvtB/JAzG61yMxKwFTRm6rLx7IqF9orpX3z5SFIhuB9wg3m+J2jSaYWY=
+	t=1706130260; cv=none; b=DEGSTCX4JneGxNmROsDgdxvqR7P8TxdqILPqMNV0Y7rxwZsVfm3Y8lmtIwT9kZW/+EvxzZICWXWT1xt2Q6OHl1rsrnRdUAo+RicvBjT46sa5R6h7+BkPga2Gi0BuGZFLe3PLAJvmkbwwYcs85cDUqn6IyUWKis4107FSbRjLKEs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706130138; c=relaxed/simple;
-	bh=bAfj+lfShymZsoyfoask6vCqYCWRiyyMZUbTs15Vpx4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gXc7gaLK/CXft48XRipjhR/CiVuNkDGjnjKV1b8ZOm4Vwgbrf6pRT6pD+i6t1wDQzknoMGcam80X4Tm648ywEYniUH2aJpeosHtkPz3DYrrsg2+5F9Ii25GnJ8ksxT5UHgMebyge0+4Fz5DB4sX50BYReqhfrSZdtuIhC9Ug2Pw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SAT6BK93; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-33929364bdaso4230206f8f.2;
-        Wed, 24 Jan 2024 13:02:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706130135; x=1706734935; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bAfj+lfShymZsoyfoask6vCqYCWRiyyMZUbTs15Vpx4=;
-        b=SAT6BK93AAWBwtPCcmFGrqt8VpCp2dJhItpq6DrPnq7kEpemgarqgQfNiqpCApzsYq
-         uxO25MBYNcyL4aWEegY1wB4xI5/CfgwXX+iYLYFaDTTbfguzFOaU5ie7LXUp0yptZzvT
-         9LTbXnI5jfs7SZRDvGl4R8b+jtdJ4ippmstbNVFG1pOKSNEei0kVEDc9td5Q4N6dp3Mg
-         j19kzcbxIVFNbxVcvubbsnNTRwYflI0UudToh5PnXafnlxMfJE0gw1KF6AUP7a4CEMQf
-         2FoodFx1iL3Q93cAegP5GljgsmyZZySs4K2XAtQrJAAK9FVsAg4Y93xNoCyf8YRYVieK
-         cUow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706130135; x=1706734935;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bAfj+lfShymZsoyfoask6vCqYCWRiyyMZUbTs15Vpx4=;
-        b=fuHDSMWgCsVBw8CBQgZqc7b8sJkzVU7dGEN+JMTMUyQpj+B9IiqL0fuv6jKZinvOW7
-         q3RfSFGOLgpoovyPFARBJDJLz9dneleqlWndl/GDXXdxNc6GV3h5/K4U4iH6MOZupEVQ
-         JF45RGGD/PO09hTd/f5hRjoh+hv5S6ZCVWCFiJAHUJvHFZoCrVsfCKrIYaEHRXktazbm
-         BctpMMTAS51YC2VKyfb6ZKHWyyAcohuY+SqDm+MpK3OpP7tXN2i0D35GAAER6Ov7ZMXA
-         qSFCWIf/ieWrE5j0/b+fHyXIQSPHPJ3erEzg/RTshMTYItaIod6xPCRLBwR74ioYaTRC
-         9vHw==
-X-Gm-Message-State: AOJu0Yys4f61Szq/5gptJJ9gbkPWmpTIyeDDfPgXpL09sseubxRCpcGe
-	+R7RfaPs97RoBcSpa4AQ2gEYjBvmOVMRwxP4qua0C1QPpnEMfuQjGWSEcgX69GFoM6q0Dkw22ev
-	DgZg/ixlvhF70nzztxSGsw5iGoCM=
-X-Google-Smtp-Source: AGHT+IGwGaxKf7Y8cfweBcRUvpL0St41Liw7fqV4ScKzacDTxGnaM89bGFd8uR2QyCCyum73jdgw2cuOIb4C0xkQIII=
-X-Received: by 2002:a5d:4e82:0:b0:337:4b63:ea54 with SMTP id
- e2-20020a5d4e82000000b003374b63ea54mr881759wru.85.1706130135326; Wed, 24 Jan
- 2024 13:02:15 -0800 (PST)
+	s=arc-20240116; t=1706130260; c=relaxed/simple;
+	bh=1E1Hz8O3op5RKwGbxyRaRO5oRwByRaoRFqs04ebDiUs=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=JiOOIOHOqdU6ShrKVKgcsABBOvZjCBeDWUa10qvt0C4NbxifYgHFVTnKEBgZcchOoJ0h7TfoUH2e1ynGLDWkneC8vkuY43ZexMQOmcG5/l+mKl/IH3xbaigo0mGXU/WI/Fbsp5EEJRL5FHb+DOWymxZGIgForjnm7riSsh4CUSU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RvZ694qF; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706130259; x=1737666259;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=1E1Hz8O3op5RKwGbxyRaRO5oRwByRaoRFqs04ebDiUs=;
+  b=RvZ694qFkXexjChGyfHP6LokSKd/mwFHbK2iaxx9+VjKHaJVFM4m+APR
+   OskaYvPnQ5mDJkrBiRSiRtg6R7Um3wpPv0F01so9wEBpZtNgF8kR+a/zk
+   TwJCk6gdKmq/XIldPTUSeXw0u1C9294H9nRta21qH2IXeGOAFD2hF7FX+
+   2TY9ljDfK6a4B2Q3ivRed+FKkjtzjziRHkePoLedo0yYiSQX0zzT3Quqg
+   VjBOi7ly2+C0gEmtMRh/rvq07ILY5UIG//Jvh64I/dBahxQunMa10rFH5
+   Y4DErGOK2rGaK35jyK8Bhza56b9zvu2Pu84R2hdAaksRfo1IsplQkpja3
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="20526949"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="20526949"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 13:04:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="2189535"
+Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
+  by orviesa004.jf.intel.com with ESMTP; 24 Jan 2024 13:04:16 -0800
+Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rSkPu-0008Sl-0u;
+	Wed, 24 Jan 2024 21:04:14 +0000
+Date: Thu, 25 Jan 2024 05:04:01 +0800
+From: kernel test robot <lkp@intel.com>
+To: Matthew Brost <matthew.brost@intel.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>
+Subject: drivers/gpu/drm/xe/xe_vm.c:169:47-49: WARNING !A || A && B is
+ equivalent to !A || B
+Message-ID: <202401250436.AnRJp9EQ-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124153016.1541616-1-ckeepax@opensource.cirrus.com>
-In-Reply-To: <20240124153016.1541616-1-ckeepax@opensource.cirrus.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Wed, 24 Jan 2024 23:01:38 +0200
-Message-ID: <CAHp75VfS9jFuxBQQ9B6FJ4nFBgsctY-GX5+53iVtz=UgdtAOEA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/6] spi: cs42l43: Tidy up header includes
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: lee@kernel.org, broonie@kernel.org, alsa-devel@alsa-project.org, 
-	patches@opensource.cirrus.com, linux-kernel@vger.kernel.org, 
-	linux-spi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Wed, Jan 24, 2024 at 5:30=E2=80=AFPM Charles Keepax
-<ckeepax@opensource.cirrus.com> wrote:
->
-> Including some missing headers.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   615d300648869c774bd1fe54b4627bb0c20faed4
+commit: dd08ebf6c3525a7ea2186e636df064ea47281987 drm/xe: Introduce a new DRM driver for Intel GPUs
+date:   6 weeks ago
+config: riscv-randconfig-r064-20240124 (https://download.01.org/0day-ci/archive/20240125/202401250436.AnRJp9EQ-lkp@intel.com/config)
+compiler: clang version 18.0.0git (https://github.com/llvm/llvm-project a31a60074717fc40887cfe132b77eec93bedd307)
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202401250436.AnRJp9EQ-lkp@intel.com/
 
+cocci warnings: (new ones prefixed by >>)
+>> drivers/gpu/drm/xe/xe_vm.c:169:47-49: WARNING !A || A && B is equivalent to !A || B
+--
+>> drivers/gpu/drm/xe/xe_vm.c:158:12-13: WARNING opportunity for min()
 
---=20
-With Best Regards,
-Andy Shevchenko
+vim +169 drivers/gpu/drm/xe/xe_vm.c
+
+    50	
+    51	int xe_vma_userptr_pin_pages(struct xe_vma *vma)
+    52	{
+    53		struct xe_vm *vm = vma->vm;
+    54		struct xe_device *xe = vm->xe;
+    55		const unsigned long num_pages =
+    56			(vma->end - vma->start + 1) >> PAGE_SHIFT;
+    57		struct page **pages;
+    58		bool in_kthread = !current->mm;
+    59		unsigned long notifier_seq;
+    60		int pinned, ret, i;
+    61		bool read_only = vma->pte_flags & PTE_READ_ONLY;
+    62	
+    63		lockdep_assert_held(&vm->lock);
+    64		XE_BUG_ON(!xe_vma_is_userptr(vma));
+    65	retry:
+    66		if (vma->destroyed)
+    67			return 0;
+    68	
+    69		notifier_seq = mmu_interval_read_begin(&vma->userptr.notifier);
+    70		if (notifier_seq == vma->userptr.notifier_seq)
+    71			return 0;
+    72	
+    73		pages = kvmalloc_array(num_pages, sizeof(*pages), GFP_KERNEL);
+    74		if (!pages)
+    75			return -ENOMEM;
+    76	
+    77		if (vma->userptr.sg) {
+    78			dma_unmap_sgtable(xe->drm.dev,
+    79					  vma->userptr.sg,
+    80					  read_only ? DMA_TO_DEVICE :
+    81					  DMA_BIDIRECTIONAL, 0);
+    82			sg_free_table(vma->userptr.sg);
+    83			vma->userptr.sg = NULL;
+    84		}
+    85	
+    86		pinned = ret = 0;
+    87		if (in_kthread) {
+    88			if (!mmget_not_zero(vma->userptr.notifier.mm)) {
+    89				ret = -EFAULT;
+    90				goto mm_closed;
+    91			}
+    92			kthread_use_mm(vma->userptr.notifier.mm);
+    93		}
+    94	
+    95		while (pinned < num_pages) {
+    96			ret = get_user_pages_fast(vma->userptr.ptr + pinned * PAGE_SIZE,
+    97						  num_pages - pinned,
+    98						  read_only ? 0 : FOLL_WRITE,
+    99						  &pages[pinned]);
+   100			if (ret < 0) {
+   101				if (in_kthread)
+   102					ret = 0;
+   103				break;
+   104			}
+   105	
+   106			pinned += ret;
+   107			ret = 0;
+   108		}
+   109	
+   110		if (in_kthread) {
+   111			kthread_unuse_mm(vma->userptr.notifier.mm);
+   112			mmput(vma->userptr.notifier.mm);
+   113		}
+   114	mm_closed:
+   115		if (ret)
+   116			goto out;
+   117	
+   118		ret = sg_alloc_table_from_pages(&vma->userptr.sgt, pages, pinned,
+   119						0, (u64)pinned << PAGE_SHIFT,
+   120						GFP_KERNEL);
+   121		if (ret) {
+   122			vma->userptr.sg = NULL;
+   123			goto out;
+   124		}
+   125		vma->userptr.sg = &vma->userptr.sgt;
+   126	
+   127		ret = dma_map_sgtable(xe->drm.dev, vma->userptr.sg,
+   128				      read_only ? DMA_TO_DEVICE :
+   129				      DMA_BIDIRECTIONAL,
+   130				      DMA_ATTR_SKIP_CPU_SYNC |
+   131				      DMA_ATTR_NO_KERNEL_MAPPING);
+   132		if (ret) {
+   133			sg_free_table(vma->userptr.sg);
+   134			vma->userptr.sg = NULL;
+   135			goto out;
+   136		}
+   137	
+   138		for (i = 0; i < pinned; ++i) {
+   139			if (!read_only) {
+   140				lock_page(pages[i]);
+   141				set_page_dirty(pages[i]);
+   142				unlock_page(pages[i]);
+   143			}
+   144	
+   145			mark_page_accessed(pages[i]);
+   146		}
+   147	
+   148	out:
+   149		release_pages(pages, pinned);
+   150		kvfree(pages);
+   151	
+   152		if (!(ret < 0)) {
+   153			vma->userptr.notifier_seq = notifier_seq;
+   154			if (xe_vma_userptr_check_repin(vma) == -EAGAIN)
+   155				goto retry;
+   156		}
+   157	
+ > 158		return ret < 0 ? ret : 0;
+   159	}
+   160	
+   161	static bool preempt_fences_waiting(struct xe_vm *vm)
+   162	{
+   163		struct xe_engine *e;
+   164	
+   165		lockdep_assert_held(&vm->lock);
+   166		xe_vm_assert_held(vm);
+   167	
+   168		list_for_each_entry(e, &vm->preempt.engines, compute.link) {
+ > 169			if (!e->compute.pfence || (e->compute.pfence &&
+   170			    test_bit(DMA_FENCE_FLAG_ENABLE_SIGNAL_BIT,
+   171				     &e->compute.pfence->flags))) {
+   172				return true;
+   173			}
+   174		}
+   175	
+   176		return false;
+   177	}
+   178	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
