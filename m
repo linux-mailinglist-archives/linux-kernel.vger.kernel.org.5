@@ -1,221 +1,195 @@
-Return-Path: <linux-kernel+bounces-36355-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36356-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23944839F9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:54:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71F48839F9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:55:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7417BB23A40
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 02:54:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C933282389
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 02:55:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D205B1640B;
-	Wed, 24 Jan 2024 02:48:48 +0000 (UTC)
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D634BE61;
+	Wed, 24 Jan 2024 02:51:08 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F72D168DD
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 02:48:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4116DBE45
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 02:51:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706064528; cv=none; b=uTmSB9+CIC6wfo+3fuhmqGUbgGWzo906bMcGThm0nirH7aIbomcC8tMbmESXaStKnXOAXXoqTkf2VDMu7pccc1yGhPYBcMB6AqL4nxWjJ7J/pQbP8HhVlIWtrTXINB72+oIwCjSc/oVqBJkyjjPKaVXYnL5ivwTiFSYAongoSDk=
+	t=1706064667; cv=none; b=gWIQA7vt43wgKOsG32QjoWkiC1gzrXCkM6pjqUx1BXUfiBqd4AZ8OqyqUoe1nQs41onwdrwwtWAGElyM5ty/pxkFkz6wNRKr8cfw/T1mpsUA2M1YAbexaxEqppXM6TkCPkpOwiaBTMwxJFWYj61DglFBfW/Xa8AUC+enHmYZn1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706064528; c=relaxed/simple;
-	bh=tjTwRP8dGA9ZO0/nwlFqunRyh+QXX0rxK43Wn5MqMig=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fLez9gU2s4Q0ZiBHUBoe4raF8v9d4an1QJlMSzYGTz8Uz+onYOTwgkvLBdeMerwf3gEVUb39HDQwcr/qfMk/j6iI5zQIXDY1vHhiRUnnqq65kfcyZqOqBzp/yn1yZ9DacBEA4zsKy8iTAJYsK6lmWQicD0UldxyJFUt2qoq6RvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; arc=none smtp.client-ip=115.124.30.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R611e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W.EWwG5_1706064520;
-Received: from 30.178.66.172(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W.EWwG5_1706064520)
-          by smtp.aliyun-inc.com;
-          Wed, 24 Jan 2024 10:48:42 +0800
-Message-ID: <013dc123-a131-4739-921e-e5979f15199a@linux.alibaba.com>
-Date: Wed, 24 Jan 2024 10:48:40 +0800
+	s=arc-20240116; t=1706064667; c=relaxed/simple;
+	bh=ycNP+a8NhST+9uaMU0omn9nmqoiUGhkB6HDfgVWWHXA=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=rpvI0iGmM4fqYRzwe3Qej3OrmS/nwclHIZvvhSlg7mhC9fgBvN4h0U+Vnc/VZGQYiCgjMSDBd8iaIvDK7zu5qzg8szafBuPytrt7D+4S2X4cQH37G7nRPpggAoTukFU3KMjJmPoIT2HwBKsU7mTCfFpy5R14oKCPBbdU7B1S1sA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-361a7af102eso27368285ab.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jan 2024 18:51:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706064664; x=1706669464;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=L+g72DXx2jSxu6m10Huj2z9SBaJK1Z8TtWL2BpS8toM=;
+        b=buG+thY+YCr7g2iiQoR5vQn/xQni80x7IlTF8p14FYJ5WzOtpCBLQGSvSs+AsohaHR
+         hZ38TiiuQ2EHGdQd00HwV7NjxETniVpzNwTJt8SE79M4FUgQEKUQrQ5Dc/TxLs+xs8BO
+         yztWxag40cYA02KfEyv29LgGaWw6L566NbnreeuGmhDiBFNbOf8g3AW8zPLSYJTy4v3j
+         snk00+0PtgS7dBb5T2qC5G/JWGYGJNz9SUGan61pOjTTKJStUoj5HtU9oeWS6X5ZfAFH
+         yavoDnnDZJZfTC1fmE44YIJzeh/2AXQQMPi+PTlWmBCdnVszJ+INRqeowJRYcLRkVYcE
+         ZMxQ==
+X-Gm-Message-State: AOJu0YzxQBqgbhuiO7MOcrp5J8VyCVVpC0Z2kpmCe5/gorItERJhyPs6
+	guXeAdGs8HJMO41SAtMSlzt/g/WwTsoN868qroud5/TgbI/Olt+nhuJDxKEGet6s2BTqmsBN7ua
+	1IVuR4/EkwXVRvan8JZ5bh6ZPUEtjhF7cw8sZAqe67I77FRw72Ac3vDI=
+X-Google-Smtp-Source: AGHT+IFSQdcwMvqO343/QjGS/JmJue0nwvIn+qoLmYri3GIlru835ixqrtHuaVA/5dyAfVKpHYwFv/eEiS3Dfwop7PYdwjBBWDBx
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] watchdog/softlockup: low-overhead detection of
- interrupt storm
-Content-Language: en-US
-To: Liu Song <liusong@linux.alibaba.com>, dianders@chromium.org,
- akpm@linux-foundation.org, pmladek@suse.com, tglx@linutronix.de,
- maz@kernel.org
-Cc: linux-kernel@vger.kernel.org
-References: <20240123121223.22318-1-yaoma@linux.alibaba.com>
- <20240123121223.22318-2-yaoma@linux.alibaba.com>
- <8d6afe80-58ca-455d-a6ae-797d7c5ce388@linux.alibaba.com>
-From: yaoma <yaoma@linux.alibaba.com>
-In-Reply-To: <8d6afe80-58ca-455d-a6ae-797d7c5ce388@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:2193:b0:35f:e864:f6f with SMTP id
+ j19-20020a056e02219300b0035fe8640f6fmr48222ila.0.1706064664346; Tue, 23 Jan
+ 2024 18:51:04 -0800 (PST)
+Date: Tue, 23 Jan 2024 18:51:04 -0800
+In-Reply-To: <tencent_748DB7122CDDCBDDB29965CF870D9225BF07@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000484891060fa82256@google.com>
+Subject: Re: [syzbot] [can?] memory leak in j1939_netdev_start
+From: syzbot <syzbot+1d37bef05da87b99c5a6@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+memory leak in corrupted
+
+BUG: memory leak
+unreferenced object 0xffff88810e94a000 (size 8192):
+  comm "syz-executor.4", pid 5915, jiffies 4294946150
+  hex dump (first 32 bytes):
+    00 a0 94 0e 81 88 ff ff 00 a0 94 0e 81 88 ff ff  ................
+    00 00 00 00 00 00 00 00 00 00 70 10 81 88 ff ff  ..........p.....
+  backtrace (crc 77c14305):
+    [<ffffffff815fa713>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
+    [<ffffffff815fa713>] slab_post_alloc_hook mm/slub.c:3817 [inline]
+    [<ffffffff815fa713>] slab_alloc_node mm/slub.c:3860 [inline]
+    [<ffffffff815fa713>] kmalloc_trace+0x283/0x330 mm/slub.c:4007
+    [<ffffffff845842c9>] kmalloc include/linux/slab.h:590 [inline]
+    [<ffffffff845842c9>] kzalloc include/linux/slab.h:711 [inline]
+    [<ffffffff845842c9>] j1939_priv_create net/can/j1939/main.c:135 [inline]
+    [<ffffffff845842c9>] j1939_netdev_start+0x159/0x6f0 net/can/j1939/main.c:272
+    [<ffffffff84585f2e>] j1939_sk_bind+0x21e/0x550 net/can/j1939/socket.c:486
+    [<ffffffff83f04a8c>] __sys_bind+0x11c/0x130 net/socket.c:1847
+    [<ffffffff83f04abc>] __do_sys_bind net/socket.c:1858 [inline]
+    [<ffffffff83f04abc>] __se_sys_bind net/socket.c:1856 [inline]
+    [<ffffffff83f04abc>] __x64_sys_bind+0x1c/0x20 net/socket.c:1856
+    [<ffffffff84bc08c0>] do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+    [<ffffffff84bc08c0>] do_syscall_64+0x50/0x140 arch/x86/entry/common.c:83
+    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+BUG: memory leak
+unreferenced object 0xffff888122f26000 (size 8192):
+  comm "syz-executor.1", pid 5923, jiffies 4294946164
+  hex dump (first 32 bytes):
+    00 60 f2 22 81 88 ff ff 00 60 f2 22 81 88 ff ff  .`.".....`."....
+    00 00 00 00 00 00 00 00 00 80 60 10 81 88 ff ff  ..........`.....
+  backtrace (crc c2cb0355):
+    [<ffffffff815fa713>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
+    [<ffffffff815fa713>] slab_post_alloc_hook mm/slub.c:3817 [inline]
+    [<ffffffff815fa713>] slab_alloc_node mm/slub.c:3860 [inline]
+    [<ffffffff815fa713>] kmalloc_trace+0x283/0x330 mm/slub.c:4007
+    [<ffffffff845842c9>] kmalloc include/linux/slab.h:590 [inline]
+    [<ffffffff845842c9>] kzalloc include/linux/slab.h:711 [inline]
+    [<ffffffff845842c9>] j1939_priv_create net/can/j1939/main.c:135 [inline]
+    [<ffffffff845842c9>] j1939_netdev_start+0x159/0x6f0 net/can/j1939/main.c:272
+    [<ffffffff84585f2e>] j1939_sk_bind+0x21e/0x550 net/can/j1939/socket.c:486
+    [<ffffffff83f04a8c>] __sys_bind+0x11c/0x130 net/socket.c:1847
+    [<ffffffff83f04abc>] __do_sys_bind net/socket.c:1858 [inline]
+    [<ffffffff83f04abc>] __se_sys_bind net/socket.c:1856 [inline]
+    [<ffffffff83f04abc>] __x64_sys_bind+0x1c/0x20 net/socket.c:1856
+    [<ffffffff84bc08c0>] do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+    [<ffffffff84bc08c0>] do_syscall_64+0x50/0x140 arch/x86/entry/common.c:83
+    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+BUG: memory leak
+unreferenced object 0xffff888122c06700 (size 240):
+  comm "softirq", pid 0, jiffies 4294946164
+  hex dump (first 32 bytes):
+    68 42 2f 22 81 88 ff ff 68 42 2f 22 81 88 ff ff  hB/"....hB/"....
+    00 80 60 10 81 88 ff ff 00 00 00 00 00 00 00 00  ..`.............
+  backtrace (crc 205e59a3):
+    [<ffffffff815f9bba>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
+    [<ffffffff815f9bba>] slab_post_alloc_hook mm/slub.c:3817 [inline]
+    [<ffffffff815f9bba>] slab_alloc_node mm/slub.c:3860 [inline]
+    [<ffffffff815f9bba>] kmem_cache_alloc_node+0x28a/0x330 mm/slub.c:3903
+    [<ffffffff83f1844f>] __alloc_skb+0x1ef/0x230 net/core/skbuff.c:641
+    [<ffffffff8458ceea>] alloc_skb include/linux/skbuff.h:1296 [inline]
+    [<ffffffff8458ceea>] j1939_session_fresh_new net/can/j1939/transport.c:1536 [inline]
+    [<ffffffff8458ceea>] j1939_xtp_rx_rts_session_new net/can/j1939/transport.c:1634 [inline]
+    [<ffffffff8458ceea>] j1939_xtp_rx_rts+0x4ba/0xa70 net/can/j1939/transport.c:1738
+    [<ffffffff8458d9d5>] j1939_tp_cmd_recv net/can/j1939/transport.c:2063 [inline]
+    [<ffffffff8458d9d5>] j1939_tp_recv+0x1b5/0x7f0 net/can/j1939/transport.c:2150
+    [<ffffffff84583e99>] j1939_can_recv+0x349/0x4e0 net/can/j1939/main.c:112
+    [<ffffffff845748e4>] deliver net/can/af_can.c:572 [inline]
+    [<ffffffff845748e4>] can_rcv_filter+0xd4/0x290 net/can/af_can.c:606
+    [<ffffffff84574fa0>] can_receive+0xf0/0x140 net/can/af_can.c:663
+    [<ffffffff845750e0>] can_rcv+0xf0/0x130 net/can/af_can.c:687
+    [<ffffffff83f50e66>] __netif_receive_skb_one_core+0x66/0x90 net/core/dev.c:5534
+    [<ffffffff83f50edd>] __netif_receive_skb+0x1d/0x90 net/core/dev.c:5648
+    [<ffffffff83f5123c>] process_backlog+0xbc/0x190 net/core/dev.c:5976
+    [<ffffffff83f523ce>] __napi_poll+0x3e/0x310 net/core/dev.c:6576
+    [<ffffffff83f52de8>] napi_poll net/core/dev.c:6645 [inline]
+    [<ffffffff83f52de8>] net_rx_action+0x3d8/0x510 net/core/dev.c:6778
+    [<ffffffff84bde94d>] __do_softirq+0xbd/0x2b0 kernel/softirq.c:553
+
+BUG: memory leak
+unreferenced object 0xffff8881231e0000 (size 131072):
+  comm "softirq", pid 0, jiffies 4294946164
+  hex dump (first 32 bytes):
+    0e 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace (crc f7abe560):
+    [<ffffffff815f315e>] __kmalloc_large_node+0xde/0x150 mm/slub.c:3935
+    [<ffffffff815f8faf>] __do_kmalloc_node mm/slub.c:3969 [inline]
+    [<ffffffff815f8faf>] __kmalloc_node_track_caller+0x35f/0x420 mm/slub.c:4001
+    [<ffffffff83f146a6>] kmalloc_reserve+0x96/0x170 net/core/skbuff.c:582
+    [<ffffffff83f18335>] __alloc_skb+0xd5/0x230 net/core/skbuff.c:651
+    [<ffffffff8458ceea>] alloc_skb include/linux/skbuff.h:1296 [inline]
+    [<ffffffff8458ceea>] j1939_session_fresh_new net/can/j1939/transport.c:1536 [inline]
+    [<ffffffff8458ceea>] j1939_xtp_rx_rts_session_new net/can/j1939/transport.c:1634 [inline]
+    [<ffffffff8458ceea>] j1939_xtp_rx_rts+0x4ba/0xa70 net/can/j1939/transport.c:1738
+    [<ffffffff8458d9d5>] j1939_tp_cmd_recv net/can/j1939/transport.c:2063 [inline]
+    [<ffffffff8458d9d5>] j1939_tp_recv+0x1b5/0x7f0 net/can/j1939/transport.c:2150
+    [<ffffffff84583e99>] j1939_can_recv+0x349/0x4e0 net/can/j1939/main.c:112
+    [<ffffffff845748e4>] deliver net/can/af_can.c:572 [inline]
+    [<ffffffff845748e4>] can_rcv_filter+0xd4/0x290 net/can/af_can.c:606
+    [<ffffffff84574fa0>] can_receive+0xf0/0x140 net/can/af_can.c:663
+    [<ffffffff845750e0>] can_rcv+0xf0/0x130 net/can/af_can.c:687
+    [<ffffffff83f50e66>] __netif_receive_skb_one_core+0x66/0x90 net/core/dev.c:5534
+    [<ffffffff83f50edd>] __netif_receive_skb+0x1d/0x90 net/core/dev.c:5648
+    [<ffffffff83f5123c>] process_backlog+0xbc/0x190 net/core/dev.c:5976
+    [<ffffffff83f523ce>] __napi_poll+0x3e/0x310 net/core/dev.c:6576
+    [<ffffffff83f52de8>] napi_poll net/core/dev.c:6645 [inline]
+    [<ffffffff83f52de8>] net_rx_action+0x3d8/0x510 net/core/dev.c:6778
+    [<ffffffff84bde94d>] __do_softirq+0xbd/0x2b0 kernel/softirq.c:553
 
 
 
-On 2024/1/24 09:43, Liu Song wrote:
-> 
-> 在 2024/1/23 20:12, Bitao Hu 写道:
->> The following softlockup is caused by interrupt storm, but it cannot be
->> identified from the call tree. Because the call tree is just a snapshot
->> and doesn't fully capture the behavior of the CPU during the soft lockup.
->>    watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
->>    ...
->>    Call trace:
->>      __do_softirq+0xa0/0x37c
->>      __irq_exit_rcu+0x108/0x140
->>      irq_exit+0x14/0x20
->>      __handle_domain_irq+0x84/0xe0
->>      gic_handle_irq+0x80/0x108
->>      el0_irq_naked+0x50/0x58
->>
->> Therefore，I think it is necessary to report CPU utilization during the
->> softlockup_thresh period (report once every sample_period, for a total
->> of 5 reportings), like this:
->>    watchdog: BUG: soft lockup - CPU#28 stuck for 23s! [fio:83921]
->>    CPU#28 Utilization every 4s during lockup:
->>      #1: 0.0% system, 0.0% softirq, 100.0% hardirq, 0.0% idle
->>      #2: 0.0% system, 0.0% softirq, 100.0% hardirq, 0.0% idle
->>      #3: 0.0% system, 0.0% softirq, 100.0% hardirq, 0.0% idle
->>      #4: 0.0% system, 0.0% softirq, 100.0% hardirq, 0.0% idle
->>      #5: 0.0% system, 0.0% softirq, 100.0% hardirq, 0.0% idle
->>    ...
->>
->> This would be helpful in determining whether an interrupt storm has
->> occurred or in identifying the cause of the softlockup. The criteria for
->> determination are as follows:
->>    a. If the hardirq utilization is high, then interrupt storm should be
->>    considered and the root cause cannot be determined from the call tree.
->>    b. If the softirq utilization is high, then we could analyze the call
->>    tree but it may cannot reflect the root cause.
->>    c. If the system utilization is high, then we could analyze the root
->>    cause from the call tree.
->>
->> Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
->> ---
->>   kernel/watchdog.c | 58 +++++++++++++++++++++++++++++++++++++++++++++++
->>   1 file changed, 58 insertions(+)
->>
->> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
->> index 81a8862295d6..9fad10e0a147 100644
->> --- a/kernel/watchdog.c
->> +++ b/kernel/watchdog.c
->> @@ -23,6 +23,8 @@
->>   #include <linux/sched/debug.h>
->>   #include <linux/sched/isolation.h>
->>   #include <linux/stop_machine.h>
->> +#include <linux/kernel_stat.h>
->> +#include <linux/math64.h>
->>   #include <asm/irq_regs.h>
->>   #include <linux/kvm_para.h>
->> @@ -441,6 +443,58 @@ static int is_softlockup(unsigned long touch_ts,
->>       return 0;
->>   }
->> +#ifdef CONFIG_IRQ_TIME_ACCOUNTING
->> +static DEFINE_PER_CPU(u64, cpustat_old[NR_STATS]);
->> +static DEFINE_PER_CPU(u64, cpustat_diff[5][NR_STATS]);
->> +static DEFINE_PER_CPU(int, cpustat_tail);
->> +
->> +static void update_cpustat(void)
->> +{
->> +    u64 *old = this_cpu_ptr(cpustat_old);
->> +    u64 (*diff)[NR_STATS] = this_cpu_ptr(cpustat_diff);
->> +    int tail = this_cpu_read(cpustat_tail), i;
->> +    struct kernel_cpustat kcpustat;
->> +    u64 *cpustat = kcpustat.cpustat;
->> +
->> +    kcpustat_cpu_fetch(&kcpustat, smp_processor_id());
->> +    for (i = 0; i < NR_STATS; i++) {
->> +        diff[tail][i] = cpustat[i] - old[i];
->> +        old[i] = cpustat[i];
->> +    }
->> +    this_cpu_write(cpustat_tail, (tail + 1) % 5);
-> The number 5 here is related to the 5 in cpustat_diff[5], and it is 
-> recommended to use a macro definition instead of using the number 5 
-> directly.
-In the "set_sample_period" function, the "sample_period" is hardcoded to 
-be 1/5 of the "softlockup_thresh", therefore I define the length of the 
-array here as 5.
->> +}
->> +
->> +static void print_cpustat(void)
->> +{
->> +    int i, j, k;
->> +    u64 a[5][NR_STATS], b[5][NR_STATS];
-> Use define instead of the literal number 5.
-Same as above
->> +    u64 (*diff)[NR_STATS] = this_cpu_ptr(cpustat_diff);
->> +    int tail = this_cpu_read(cpustat_tail);
->> +    u32 period_us = sample_period / 1000;
-> Use NSEC_PER_USEC
-Sure.
->> +
->> +    for (i = 0; i < 5; i++) {
->> +        for (j = 0; j < NR_STATS; j++) {
->> +            a[i][j] = 100 * (diff[i][j] / 1000);
->> +            b[i][j] = 10 * do_div(a[i][j], period_us);
->> +            do_div(b[i][j], period_us);
->> +        }
->> +    }
->> +    printk(KERN_CRIT "CPU#%d Utilization every %us during lockup:\n",
-> better use "pr_crit", and was the original intent here microseconds (us) 
-> or milliseconds (ms)?
-Using "pr_crit", each line will have a "watchdog:" prefix, which I think 
-might not look very neat.
-The intended unit here is seconds(s).
+Tested on:
 
->> +        smp_processor_id(), period_us/1000000);
-> better use "period_us /NSEC_PER_MSEC"?
-Sure, I will use USEC_PER_SEC here.
->> +    for (k = 0, i = tail; k < 5; k++, i = (i + 1) % 5) {
-> 
-> It seems that only i and j are necessary, k is not essential.
-Sure, I will remove the variable 'k'.
-> 
->> +        printk(KERN_CRIT "\t#%d: %llu.%llu%% system,\t%llu.%llu%% 
->> softirq,\t"
->> +            "%llu.%llu%% hardirq,\t%llu.%llu%% idle\n", k+1,
->> +            a[i][CPUTIME_SYSTEM], b[i][CPUTIME_SYSTEM],
->> +            a[i][CPUTIME_SOFTIRQ], b[i][CPUTIME_SOFTIRQ],
->> +            a[i][CPUTIME_IRQ], b[i][CPUTIME_IRQ],
->> +            a[i][CPUTIME_IDLE], b[i][CPUTIME_IDLE]);
->> +    }
->> +}
->> +#else
->> +static inline void update_cpustat(void) { }
->> +static inline void print_cpustat(void) { }
->> +#endif
->> +
->>   /* watchdog detector functions */
->>   static DEFINE_PER_CPU(struct completion, softlockup_completion);
->>   static DEFINE_PER_CPU(struct cpu_stop_work, softlockup_stop_work);
->> @@ -504,6 +558,9 @@ static enum hrtimer_restart 
->> watchdog_timer_fn(struct hrtimer *hrtimer)
->>        */
->>       period_ts = READ_ONCE(*this_cpu_ptr(&watchdog_report_ts));
->> +    /* update cpu usage stat */
-> The function name already indicates that it involves graphs, so the 
-> comment here appears superfluous.
-> If a comment is absolutely necessary, please provide more detailed 
-> information.
-Sure.
->> +    update_cpustat();
->> +
->>       /* Reset the interval when touched by known problematic code. */
->>       if (period_ts == SOFTLOCKUP_DELAY_REPORT) {
->>           if (unlikely(__this_cpu_read(softlockup_touch_sync))) {
->> @@ -539,6 +596,7 @@ static enum hrtimer_restart 
->> watchdog_timer_fn(struct hrtimer *hrtimer)
->>           pr_emerg("BUG: soft lockup - CPU#%d stuck for %us! [%s:%d]\n",
->>               smp_processor_id(), duration,
->>               current->comm, task_pid_nr(current));
->> +        print_cpustat();
->>           print_modules();
->>           print_irqtrace_events(current);
->>           if (regs)
+commit:         615d3006 Merge tag 'trace-v6.8-rc1' of git://git.kerne..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=100e8b3be80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9f6b64adeddd3dbc
+dashboard link: https://syzkaller.appspot.com/bug?extid=1d37bef05da87b99c5a6
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=17d2a6f7e80000
+
 
