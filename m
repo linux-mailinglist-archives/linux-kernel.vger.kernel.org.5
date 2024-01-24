@@ -1,367 +1,238 @@
-Return-Path: <linux-kernel+bounces-36379-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36395-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DEBD839FD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 04:02:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9D5C83A003
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 04:19:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7387FB2310E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:02:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70D8BB25862
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 03:19:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59B4CC8C3;
-	Wed, 24 Jan 2024 03:01:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC2AE53A2;
+	Wed, 24 Jan 2024 03:19:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=marvell.onmicrosoft.com header.i=@marvell.onmicrosoft.com header.b="bon8xqCw"
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+	dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b="QfH2Us9E"
+Received: from mail-m49214.qiye.163.com (mail-m49214.qiye.163.com [45.254.49.214])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBA32C2D2;
-	Wed, 24 Jan 2024 03:01:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.156.173
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706065302; cv=fail; b=muW3/AbJm72zqJV5D6p6yUAEYqm5UjbQQuFTVrC3MAvUaELReFJFEK2JzIgdj7dusYECKlT7y2rUtu2SoNqHg1TuYFNLHHlHPm1XXNbahhhYCaCG8+hE0XqePA6qGeRLIvJPgCP5NHwWXhggRWCOiuMsFYf2geixa3lEIg0uBdc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706065302; c=relaxed/simple;
-	bh=0EyksLK6XvwcmNEz29DGLrhZgvy7jXn4aIlS35gQ+uc=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=etP1K2h1W+iFt4ORATP0pvjD2gxCEztTKZGfGqEucA2UdHTWAaLLdKam0mTsAAl1LyKlA1Jkd/nbqGAdGsfSzVstgJnZP/llP8zF2vUFCKHW76OnYDbaBXTp2Yw1zMsKahOmxRtxKXIxKKjUSIkHJRVlIujd054rE+niqQ7CAw4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.onmicrosoft.com header.i=@marvell.onmicrosoft.com header.b=bon8xqCw; arc=fail smtp.client-ip=67.231.156.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40NKRvFZ008764;
-	Tue, 23 Jan 2024 19:01:20 -0800
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam04lp2040.outbound.protection.outlook.com [104.47.73.40])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3vtmgvh2xt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Jan 2024 19:01:19 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G/t8rZuSj7uYslJ/25o+cnZKXxkVeOOyR2EqqakchkKo2j0XYeGt0Se+exDqlvtHFnlpxQSa3U4WrKj23ZfnkWJYrKKUVA4wPdzMGrG6cdQWs+MTaAjQrm+POgnbBVcp7aERQMbr57PcftZlOyQQO/QzAiyEGxNTvraHvSAmJ+81lKpgXkA1AI38Zykjv5NS1PFDzQqaKbeeEeY5Rb2PRo+YjJh+0nnJq/Ta/jE+8HNu+HHY69PvVAZRPbJz2CEHa9GliHaqO+7d3hifPlmK4ZLn6tgDnOLdNdnpnkDl8QTbKSiIve63eqES700cUWHXc1OG4fscTOMKngr0yrRMew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NaaBWUPepTKKryRwW+u3OKU/FTVLlGhVb4P7WQdm7J0=;
- b=SuHot3TIbwqEzh6zqgxzZ2cY8Z4OapFREucQqyf77CmodOZJVLlDXHKGkSwFbUZR0RnSBBuAyUKyqMOOfO2O8xvWF4eH0pAeW01iTxdiBj+CzsKKAp3M/mb9SkhqT0eXYsa34UyHEFqIwkbEUahPFate968b6UAbALmwPgObdSPDvZFCoI6oVutJeYjWPX628PV6LMZfX53ePV6WMettmEibw8nZ6hovodWFoulCpM7Q1bfk/XTqASQUxBgpqLzJ1dPaVD1l+67cnm9x/HIuPzuVYoRMt2dLFBN4A/GkI3jqY5vJZ+LNZJEouai0FqWUsR6W+dxD05FRRR7Vkh+mqA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NaaBWUPepTKKryRwW+u3OKU/FTVLlGhVb4P7WQdm7J0=;
- b=bon8xqCwmLXMJJPkD1+zcJJbPpcaL2ufi7KYPdovnsmYLJneVgHt7FK1vwV1U9SAy6xqbgL/CN/7pX//Qtbb90IMpE+grl19UKo0RsT1XmtdViwDMzeX9asJH2fGtNlx65Jy++DrcxB4rYosl34+1pAcurrps+93P5QVwCs0V/M=
-Received: from MWHPR1801MB1918.namprd18.prod.outlook.com
- (2603:10b6:301:68::33) by MW3PR18MB3465.namprd18.prod.outlook.com
- (2603:10b6:303:5f::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.21; Wed, 24 Jan
- 2024 03:01:16 +0000
-Received: from MWHPR1801MB1918.namprd18.prod.outlook.com
- ([fe80::16ce:12bb:5d5:1012]) by MWHPR1801MB1918.namprd18.prod.outlook.com
- ([fe80::16ce:12bb:5d5:1012%4]) with mapi id 15.20.7228.015; Wed, 24 Jan 2024
- 03:01:16 +0000
-From: Ratheesh Kannoth <rkannoth@marvell.com>
-To: Simon Horman <horms@kernel.org>,
-        Subbaraya Sundeep Bhatta
-	<sbhatta@marvell.com>
-CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sunil Kovvuri
- Goutham <sgoutham@marvell.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org"
-	<kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        Geethasowjanya
- Akula <gakula@marvell.com>,
-        Hariprasad Kelam <hkelam@marvell.com>,
-        Suman
- Ghosh <sumang@marvell.com>
-Subject: RE: [EXT] Re: [PATCH net] octeontx2-af: Initialize bitmap arrays.
-Thread-Topic: [EXT] Re: [PATCH net] octeontx2-af: Initialize bitmap arrays.
-Thread-Index: AQHaTbrXg+zTduWcbkyHpGKMW10e/rDntVQAgACO+HA=
-Date: Wed, 24 Jan 2024 03:01:15 +0000
-Message-ID: 
- <MWHPR1801MB1918ADCA9FD3FAFAF9CC68B3D37B2@MWHPR1801MB1918.namprd18.prod.outlook.com>
-References: <20240123051245.3801246-1-rkannoth@marvell.com>
- <20240123181716.GP254773@kernel.org>
-In-Reply-To: <20240123181716.GP254773@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-Mentions: sbhatta@marvell.com
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-rorf: true
-x-dg-ref: 
- =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNccmthbm5vdGhc?=
- =?us-ascii?Q?YXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRi?=
- =?us-ascii?Q?YTI5ZTM1Ylxtc2dzXG1zZy1kNDdmNmFlNS1iYTY0LTExZWUtYjcwNC04MDM4?=
- =?us-ascii?Q?ZmJmMmM2MjJcYW1lLXRlc3RcZDQ3ZjZhZTYtYmE2NC0xMWVlLWI3MDQtODAz?=
- =?us-ascii?Q?OGZiZjJjNjIyYm9keS50eHQiIHN6PSIxOTU0IiB0PSIxMzM1MDUzODg3MzEx?=
- =?us-ascii?Q?NzIzNTIiIGg9IjVnWnJ6RVNYVk5zdE5hTnczYU84Mjdsci9mQT0iIGlkPSIi?=
- =?us-ascii?Q?IGJsPSIwIiBibz0iMSIgY2k9ImNBQUFBRVJIVTFSU1JVRk5DZ1VBQUJnV0FB?=
- =?us-ascii?Q?QUFCdXlXY1U3YUFSYkwvb3dOUXc0bUZzditqQTFERGlZWkFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFIQUFBQUJ1RHdBQTNnOEFBRG9HQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFFQUFRRUJBQUFBOVJlbkx3Q0FBUUFBQUFBQUFBQUFBSjRBQUFCaEFHUUFa?=
- =?us-ascii?Q?QUJ5QUdVQWN3QnpBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBR01BZFFCekFIUUFid0J0QUY4QWNB?=
- =?us-ascii?Q?QmxBSElBY3dCdkFHNEFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FB?=
- =?us-ascii?Q?QUFBQUNlQUFBQVl3QjFBSE1BZEFCdkFHMEFYd0J3QUdnQWJ3QnVBR1VBYmdC?=
- =?us-ascii?Q?MUFHMEFZZ0JsQUhJQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJqQUhV?=
- =?us-ascii?Q?QWN3QjBBRzhBYlFCZkFITUFjd0J1QUY4QVpBQmhBSE1BYUFCZkFIWUFNQUF5?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-refone: 
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFH?=
- =?us-ascii?Q?TUFkUUJ6QUhRQWJ3QnRBRjhBY3dCekFHNEFYd0JyQUdVQWVRQjNBRzhBY2dC?=
- =?us-ascii?Q?a0FITUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFBQ2VBQUFBWXdCMUFITUFkQUJ2QUcw?=
- =?us-ascii?Q?QVh3QnpBSE1BYmdCZkFHNEFid0JrQUdVQWJBQnBBRzBBYVFCMEFHVUFjZ0Jm?=
- =?us-ascii?Q?QUhZQU1BQXlBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFB?=
- =?us-ascii?Q?QUFBSUFBQUFBQUo0QUFBQmpBSFVBY3dCMEFHOEFiUUJmQUhNQWN3QnVBRjhB?=
- =?us-ascii?Q?Y3dCd0FHRUFZd0JsQUY4QWRnQXdBRElBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FB?=
- =?us-ascii?Q?QUdRQWJBQndBRjhBY3dCckFIa0FjQUJsQUY4QVl3Qm9BR0VBZEFCZkFHMEFa?=
- =?us-ascii?Q?UUJ6QUhNQVlRQm5BR1VBWHdCMkFEQUFNZ0FBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFBQUFDZUFBQUFaQUJzQUhBQVh3QnpB?=
- =?us-ascii?Q?R3dBWVFCakFHc0FYd0JqQUdnQVlRQjBBRjhBYlFCbEFITUFjd0JoQUdjQVpR?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-reftwo: 
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCa0FHd0FjQUJm?=
- =?us-ascii?Q?QUhRQVpRQmhBRzBBY3dCZkFHOEFiZ0JsQUdRQWNnQnBBSFlBWlFCZkFHWUFh?=
- =?us-ascii?Q?UUJzQUdVQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVB?=
- =?us-ascii?Q?QUFBQUFBQUFBZ0FBQUFBQW5nQUFBR1VBYlFCaEFHa0FiQUJmQUdFQVpBQmtB?=
- =?us-ascii?Q?SElBWlFCekFITUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFB?=
- =?us-ascii?Q?QUNlQUFBQWJRQmhBSElBZGdCbEFHd0FYd0J3QUhJQWJ3QnFBR1VBWXdCMEFG?=
- =?us-ascii?Q?OEFiZ0JoQUcwQVpRQnpBRjhBWXdCdkFHNEFaZ0JwQUdRQVpRQnVBSFFBYVFC?=
- =?us-ascii?Q?aEFHd0FYd0JoQUd3QWJ3QnVBR1VBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJ0QUdFQWNn?=
- =?us-ascii?Q?QjJBR1VBYkFCZkFIQUFjZ0J2QUdvQVpRQmpBSFFBWHdCdUFHRUFiUUJsQUhN?=
- =?us-ascii?Q?QVh3QnlBR1VBY3dCMEFISUFhUUJqQUhRQVpRQmtBRjhBWVFCc0FHOEFiZ0Js?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?RUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFHMEFZUUJ5QUhZQVpRQnNBRjhBY0FC?=
- =?us-ascii?Q?eUFHOEFhZ0JsQUdNQWRBQmZBRzRBWVFCdEFHVUFjd0JmQUhJQVpRQnpBSFFB?=
- =?us-ascii?Q?Y2dCcEFHTUFkQUJsQUdRQVh3Qm9BR1VBZUFCakFHOEFaQUJsQUhNQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFDQUFB?=
- =?us-ascii?Q?QUFBQ2VBQUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBR0VBY2dCdEFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-refthree: 
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFB?=
- =?us-ascii?Q?SUFBQUFBQUo0QUFBQnRBR0VBY2dCMkFHVUFiQUJzQUY4QVp3QnZBRzhBWndC?=
- =?us-ascii?Q?c0FHVUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUcw?=
- =?us-ascii?Q?QVlRQnlBSFlBWlFCc0FHd0FYd0J3QUhJQWJ3QnFBR1VBWXdCMEFGOEFZd0J2?=
- =?us-ascii?Q?QUdRQVpRQnpBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBUUFBQUFBQUFBQUNBQUFBQUFDZUFBQUFiUUJoQUhJQWRnQmxBR3dB?=
- =?us-ascii?Q?YkFCZkFIQUFjZ0J2QUdvQVpRQmpBSFFBWHdCakFHOEFaQUJsQUhNQVh3QmtB?=
- =?us-ascii?Q?R2tBWXdCMEFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFB?=
- =?us-ascii?Q?QUFJQUFBQUFBSjRBQUFCdEFHRUFjZ0IyQUdVQWJBQnNBRjhBY0FCeUFHOEFh?=
- =?us-ascii?Q?Z0JsQUdNQWRBQmZBRzRBWVFCdEFHVUFjd0JmQUdNQWJ3QnVBR1lBYVFCa0FH?=
- =?us-ascii?Q?VUFiZ0IwQUdrQVlRQnNBRjhBYlFCaEFISUFkZ0JsQUd3QWJBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFB?=
- =?us-ascii?Q?RzBBWVFCeUFIWUFaUUJzQUd3QVh3QndBSElBYndCcUFHVUFZd0IwQUY4QWJn?=
- =?us-ascii?Q?QmhBRzBBWlFCekFGOEFZd0J2QUc0QVpnQnBBR1FBWlFCdUFIUUFhUUJoQUd3?=
- =?us-ascii?Q?QVh3QnRBR0VBY2dCMkFHVUFiQUJzQUY4QWJ3QnlBRjhBWVFCeUFHMEFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-reffour: 
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFBQUNl?=
- =?us-ascii?Q?QUFBQWJRQmhBSElBZGdCbEFHd0FiQUJmQUhBQWNnQnZBR29BWlFCakFIUUFY?=
- =?us-ascii?Q?d0J1QUdFQWJRQmxBSE1BWHdCakFHOEFiZ0JtQUdrQVpBQmxBRzRBZEFCcEFH?=
- =?us-ascii?Q?RUFiQUJmQUcwQVlRQnlBSFlBWlFCc0FHd0FYd0J2QUhJQVh3Qm5BRzhBYndC?=
- =?us-ascii?Q?bkFHd0FaUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJ0QUdFQWNnQjJB?=
- =?us-ascii?Q?R1VBYkFCc0FGOEFjQUJ5QUc4QWFnQmxBR01BZEFCZkFHNEFZUUJ0QUdVQWN3?=
- =?us-ascii?Q?QmZBSElBWlFCekFIUUFjZ0JwQUdNQWRBQmxBR1FBWHdCdEFHRUFjZ0IyQUdV?=
- =?us-ascii?Q?QWJBQnNBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFB?=
- =?us-ascii?Q?QUFBQUFBQUFnQUFBQUFBbmdBQUFHMEFZUUJ5QUhZQVpRQnNBR3dBWHdCd0FI?=
- =?us-ascii?Q?SUFid0JxQUdVQVl3QjBBRjhBYmdCaEFHMEFaUUJ6QUY4QWNnQmxBSE1BZEFC?=
- =?us-ascii?Q?eUFHa0FZd0IwQUdVQVpBQmZBRzBBWVFCeUFIWUFaUUJzQUd3QVh3QnZBSElB?=
- =?us-ascii?Q?WHdCaEFISUFiUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFB?=
- =?us-ascii?Q?Q2VBQUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBSFFBWlFCeUFHMEFhUUJ1QUhV?=
- =?us-ascii?Q?QWN3QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQnRBR0VBY2dC?=
- =?us-ascii?Q?MkFHVUFiQUJzQUY4QWR3QnZBSElBWkFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFF?=
- =?us-ascii?Q?QUFBQUFBQUFBQWdBQUFBQUFPZ1lBQUFBQUFBQUlBQUFBQUFBQUFBZ0FBQUFB?=
- =?us-ascii?Q?QUFBQUNBQUFBQUFBQUFBYUJnQUFHUUFBQUJn?=
-x-dg-reffive: 
- =?us-ascii?Q?QUFBQUFBQUFBWVFCa0FHUUFjZ0JsQUhNQWN3QUFBQ1FBQUFBQkFBQUFZd0Ix?=
- =?us-ascii?Q?QUhNQWRBQnZBRzBBWHdCd0FHVUFjZ0J6QUc4QWJnQUFBQzRBQUFBQUFBQUFZ?=
- =?us-ascii?Q?d0IxQUhNQWRBQnZBRzBBWHdCd0FHZ0Fid0J1QUdVQWJnQjFBRzBBWWdCbEFI?=
- =?us-ascii?Q?SUFBQUF3QUFBQUFBQUFBR01BZFFCekFIUUFid0J0QUY4QWN3QnpBRzRBWHdC?=
- =?us-ascii?Q?a0FHRUFjd0JvQUY4QWRnQXdBRElBQUFBd0FBQUFBQUFBQUdNQWRRQnpBSFFB?=
- =?us-ascii?Q?YndCdEFGOEFjd0J6QUc0QVh3QnJBR1VBZVFCM0FHOEFjZ0JrQUhNQUFBQStB?=
- =?us-ascii?Q?QUFBQUFBQUFHTUFkUUJ6QUhRQWJ3QnRBRjhBY3dCekFHNEFYd0J1QUc4QVpB?=
- =?us-ascii?Q?QmxBR3dBYVFCdEFHa0FkQUJsQUhJQVh3QjJBREFBTWdBQUFESUFBQUFBQUFB?=
- =?us-ascii?Q?QVl3QjFBSE1BZEFCdkFHMEFYd0J6QUhNQWJnQmZBSE1BY0FCaEFHTUFaUUJm?=
- =?us-ascii?Q?QUhZQU1BQXlBQUFBUGdBQUFBQUFBQUJrQUd3QWNBQmZBSE1BYXdCNUFIQUFa?=
- =?us-ascii?Q?UUJmQUdNQWFBQmhBSFFBWHdCdEFHVUFjd0J6QUdFQVp3QmxBRjhBZGdBd0FE?=
- =?us-ascii?Q?SUFBQUEyQUFBQUFBQUFBR1FBYkFCd0FGOEFjd0JzQUdFQVl3QnJBRjhBWXdC?=
- =?us-ascii?Q?b0FHRUFkQUJmQUcwQVpRQnpBSE1BWVFCbkFHVUFBQUE0QUFBQUFBQUFBR1FB?=
- =?us-ascii?Q?YkFCd0FGOEFkQUJsQUdFQWJRQnpBRjhBYndCdUFHVUFaQUJ5QUdrQWRnQmxB?=
- =?us-ascii?Q?RjhBWmdCcEFHd0FaUUFBQUNRQUFBQUJBQUFBWlFCdEFHRUFhUUJzQUY4QVlR?=
- =?us-ascii?Q?QmtBR1FBY2dCbEFITUFjd0FBQUZnQUFBQUFBQUFBYlFCaEFISUFkZ0JsQUd3?=
- =?us-ascii?Q?QVh3QndBSElBYndCcUFHVUFZd0IwQUY4QWJnQmhBRzBBWlFCekFGOEFZd0J2?=
- =?us-ascii?Q?QUc0QVpnQnBBR1FBWlFCdUFIUUFhUUJoQUd3QVh3QmhBR3dBYndCdUFHVUFB?=
- =?us-ascii?Q?QUJVQUFBQUFBQUFBRzBBWVFCeUFIWUFaUUJzQUY4QWNBQnlBRzhBYWdCbEFH?=
- =?us-ascii?Q?TUFkQUJmQUc0QVlRQnRBR1VBY3dCZkFISUFaUUJ6QUhRQWNnQnBBR01BZEFC?=
- =?us-ascii?Q?bEFHUUFYd0JoQUd3QWJ3QnVBR1VBQUFCYUFBQUFBQUFBQUcwQVlRQnlBSFlB?=
- =?us-ascii?Q?WlFCc0FGOEFjQUJ5QUc4QWFnQmxBR01BZEFCZkFHNEFZUUJ0QUdVQWN3QmZB?=
- =?us-ascii?Q?SElBWlFCekFIUUFjZ0JwQUdNQWRBQmxBR1FBWHdCb0FHVUFlQUJqQUc4QVpB?=
- =?us-ascii?Q?QmxBSE1BQUFBZ0FBQUFBQUFBQUcwQVlRQnlBSFlBWlFCc0FHd0FYd0JoQUhJ?=
- =?us-ascii?Q?QWJRQUFBQ1lBQUFBQUFBQUFiUUJoQUhJQWRnQmxBR3dBYkFCZkFHY0Fid0J2?=
- =?us-ascii?Q?QUdjQWJBQmxBQUFBTkFBQUFBQUFBQUJ0QUdF?=
-x-dg-refsix: 
- =?us-ascii?Q?QWNnQjJBR1VBYkFCc0FGOEFjQUJ5QUc4QWFnQmxBR01BZEFCZkFHTUFid0Jr?=
- =?us-ascii?Q?QUdVQWN3QUFBRDRBQUFBQUFBQUFiUUJoQUhJQWRnQmxBR3dBYkFCZkFIQUFj?=
- =?us-ascii?Q?Z0J2QUdvQVpRQmpBSFFBWHdCakFHOEFaQUJsQUhNQVh3QmtBR2tBWXdCMEFB?=
- =?us-ascii?Q?QUFYZ0FBQUFBQUFBQnRBR0VBY2dCMkFHVUFiQUJzQUY4QWNBQnlBRzhBYWdC?=
- =?us-ascii?Q?bEFHTUFkQUJmQUc0QVlRQnRBR1VBY3dCZkFHTUFid0J1QUdZQWFRQmtBR1VB?=
- =?us-ascii?Q?YmdCMEFHa0FZUUJzQUY4QWJRQmhBSElBZGdCbEFHd0FiQUFBQUd3QUFBQUFB?=
- =?us-ascii?Q?QUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBSEFBY2dCdkFHb0FaUUJqQUhRQVh3?=
- =?us-ascii?Q?QnVBR0VBYlFCbEFITUFYd0JqQUc4QWJnQm1BR2tBWkFCbEFHNEFkQUJwQUdF?=
- =?us-ascii?Q?QWJBQmZBRzBBWVFCeUFIWUFaUUJzQUd3QVh3QnZBSElBWHdCaEFISUFiUUFB?=
- =?us-ascii?Q?QUhJQUFBQUFBQUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBSEFBY2dCdkFHb0Fa?=
- =?us-ascii?Q?UUJqQUhRQVh3QnVBR0VBYlFCbEFITUFYd0JqQUc4QWJnQm1BR2tBWkFCbEFH?=
- =?us-ascii?Q?NEFkQUJwQUdFQWJBQmZBRzBBWVFCeUFIWUFaUUJzQUd3QVh3QnZBSElBWHdC?=
- =?us-ascii?Q?bkFHOEFid0JuQUd3QVpRQUFBRm9BQUFBQUFBQUFiUUJoQUhJQWRnQmxBR3dB?=
- =?us-ascii?Q?YkFCZkFIQUFjZ0J2QUdvQVpRQmpBSFFBWHdCdUFHRUFiUUJsQUhNQVh3QnlB?=
- =?us-ascii?Q?R1VBY3dCMEFISUFhUUJqQUhRQVpRQmtBRjhBYlFCaEFISUFkZ0JsQUd3QWJB?=
- =?us-ascii?Q?QUFBR2dBQUFBQUFBQUFiUUJoQUhJQWRnQmxBR3dBYkFCZkFIQUFjZ0J2QUdv?=
- =?us-ascii?Q?QVpRQmpBSFFBWHdCdUFHRUFiUUJsQUhNQVh3QnlBR1VBY3dCMEFISUFhUUJq?=
- =?us-ascii?Q?QUhRQVpRQmtBRjhBYlFCaEFISUFkZ0JsQUd3QWJBQmZBRzhBY2dCZkFHRUFj?=
- =?us-ascii?Q?Z0J0QUFBQUtnQUFBQUFBQUFCdEFHRUFjZ0IyQUdVQWJBQnNBRjhBZEFCbEFI?=
- =?us-ascii?Q?SUFiUUJwQUc0QWRRQnpBQUFBSWdBQUFBQUFBQUJ0QUdFQWNnQjJBR1VBYkFC?=
- =?us-ascii?Q?c0FGOEFkd0J2QUhJQVpBQUFBQT09Ii8+PC9tZXRhPg=3D=3D?=
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MWHPR1801MB1918:EE_|MW3PR18MB3465:EE_
-x-ms-office365-filtering-correlation-id: ab672f14-72b0-489d-ab6e-08dc1c88bb07
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- BVlluexAOiMGOEs3XFac8zSoe8ac566osVKVx2TyeBhkVd+WsCuqDsEFNvHvYNn49Z+ZJ+esCHmghO0u7v+gWgSlOjCM50Xyt/QaJam4goYjlZ5AH4ssDFlezhI0HPuY/AxvBfX/7qixTuWrPdSGodDY3pZE5zSu27nbSOt+AO3TeU+cngTIubRwNFK/ctsC5CeBsncvmFuPLKqY1cptzUmHsZRRtNaUWZulow3tWpZxFhODmycX/EKkPc2FjrrGL25AmsEYi7QRvBGgxjgYDg1BoXdlKAZL/Gbmk8bINzK0VRqW+JxU4P1iuC+BFiUPWvs2xASS6oo9ipAsUtur5U5wChyui0MdmWN+hAUVbxFJxbsUlBVzxwZzLVOaTndN7Z2oovWl+c7V6UYwniCQMvrmAXDrybJuNO7NeJ3fRxXvdOBlfdec2YJRXddzlsl6pgfNWUDId1G97ZyrMUfZTHFVsS/XxD7vrx9olM8qSBWfLr4ptgXirOBWgYxbkVXdSxdPt6Hbs/Cp9IH7SpinQavwxpmPF3mCRYyeUwNKYggCa1gTbCxJj3e+NQ8WwoTUvYqVQ827RhQdNdCLxqJBKijwZ1RKn7TLkCwiKluETkSk0y/AMDD7R8dkEPjQiZst
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1801MB1918.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(346002)(366004)(396003)(376002)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(38070700009)(52536014)(8936002)(4326008)(8676002)(33656002)(122000001)(38100700002)(41300700001)(2906002)(86362001)(4744005)(54906003)(5660300002)(76116006)(66556008)(66946007)(66476007)(64756008)(110136005)(6636002)(316002)(55016003)(107886003)(7696005)(55236004)(6506007)(9686003)(71200400001)(66446008)(478600001)(26005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?us-ascii?Q?VB8cFZM1+uMvXkpgWldX0Vo5fHhgSXZraXYr0jkkN51aA+6sUR16bsqWzW5P?=
- =?us-ascii?Q?2ulo3Di0NvSREOlioQyxOAxRdC0jKVwIsXUlxGD4Dgnjb3xn81Ik/sm1GSYe?=
- =?us-ascii?Q?A4+KTf6Mhh1DDICfPy6Ka52PVVHd0BNdHXiZzYoTu7fMb54ZFpqHGVlJsn+D?=
- =?us-ascii?Q?w4iBFuXkIcgZjgs96wpjaVeKOMkQ0CPDQgCRUpl1dq68ji93oUyU7BFM3XpQ?=
- =?us-ascii?Q?yzIqNf0h1gKMol4Ug0XNmcJqEW2VGDDG0/Wj/DXU0TlLI84Y7sKVZCFeww+N?=
- =?us-ascii?Q?Yyv03ZiwvNb085y2nPrYQPger7VEkZJyzoLjt0g10JB9Y42vtHqpvUTzKAkE?=
- =?us-ascii?Q?MUhAiIWxGMZ9v4sc8w9MliC/1vKO3fKlOZUj2NvrZXcOKTDsiD/35RlAdCUp?=
- =?us-ascii?Q?D4cbXDOMnn6KhYZJ15EAMqVzrbPU4zpydwgh+8+nGOTE7leOagLJCnMBxlo4?=
- =?us-ascii?Q?N8cfQh1XfabCn4Kc9DwLaiWSHD2rgOA813eq/hnE4ackuLj+QtThfg0rg/7W?=
- =?us-ascii?Q?0y3xWtf1sczIIN+03mpLB6kzxlvtl/5Z2TRMiiuap5vyJ+JWep5jD+NI1Sts?=
- =?us-ascii?Q?BAYTQM6Bj8myok6F1C9bejTCe9kjFH37qEa2fwQSq3I1wL+XHGVNjnTonP7/?=
- =?us-ascii?Q?adpguC9sbxrhWeNKCe4kS5cQBKH/52F95Rm6eiWw1a1927iI3ieRnnIutLmY?=
- =?us-ascii?Q?9Cl/mXLK0OZKo3IuonLE2de01iNS1RChYL8dPX0hHaai+cgHADNIdWfon3KF?=
- =?us-ascii?Q?cym7ztIBh+OONv85ZToapWY3e5gIlnGd0I38jaKLF1jPkNj/15ebQeppy6FK?=
- =?us-ascii?Q?NQZcoVCU9N3YDXp3PlMbEGWAlSbNrK3p8aRS2z1BYa+EaDFWBtOfeska16Qv?=
- =?us-ascii?Q?Ewmq3ZWSpKbjmPexDnl8zoOTRb2wDFQbtZ3/YmarieLQ/nZfb926xaKCMgz0?=
- =?us-ascii?Q?AqP71IKNyoW0Vn5VT42qM2hO5Pyak/emuv9yXXa1gw87oBcsiJHuJho0tPkq?=
- =?us-ascii?Q?IF1hFpQsL6Hw2F3NvKTDQ407hYtELljcih9uB7/ZIouG0/lq/AXgtTDsBC1x?=
- =?us-ascii?Q?y5U5PE839ifHsIzmxpy9gx4iPMSW0nQJg4Xe9kK4IPE1/EGl/ObpXLLSCVJk?=
- =?us-ascii?Q?erJYQiaVANRJ4oECmYPrMbSzE+k/YZHddxu9r3UO8efQ/8R3gprhHgEf6bHE?=
- =?us-ascii?Q?wxaiDJWjzj9lr5aaioz6fdrDIbIifPHzfXz8UeN0VKeuXX1GONNafH9TCyYF?=
- =?us-ascii?Q?0rvijrzET//Oq1mDursl5OEz+cKH8wsuPnq6UYoLY1Ya9kf/DdXr9KDXSm67?=
- =?us-ascii?Q?rAmrioIG7RUhYNGzl3plaUyfL0t5E7lnUWId8bdOcGq4d31Tay4VNZWbzsxM?=
- =?us-ascii?Q?ziOUgf01nwXaEtj2zUjo4sbyhQWpFeW87bLfNSuz/mhLvFP0GXiZbxldRMnr?=
- =?us-ascii?Q?5509XcTK7SLu7BNw5tdDuO7xcU++V9c9BbKLaMlj5NtTcz7b+ir2SOklUwf/?=
- =?us-ascii?Q?JRpe2n7zi49xlcj+CuFYzvXkxRuqRYQ0eVKqUPENhekVaFED/8GYFFkhfwDH?=
- =?us-ascii?Q?0BNByf5NKvUPlVTYIeaoh0BLOp9JMDEiVUm57s1n?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64ED846B4;
+	Wed, 24 Jan 2024 03:19:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.49.214
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706066366; cv=none; b=lslZQMWJBqbGNg6OdxStGleXqDqbUQyDvrViCJacdlktrQOIURD92u5ibWek04f6IlYjl+zJ8rlHWdkj+IogdbZ//8fvTezz8jgiIC9FWouBPgkeHoq9dI6KJIFV81dfmdQiNkfb8fiDAEwPomvYn3MkX9KN1hUZxwyznvlmLMU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706066366; c=relaxed/simple;
+	bh=2Afcxvj7vwAOm7pIOzh9bPfEuegqAozbnRiCL18B2Cg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=s1PrUKCAznU2S/B55H6WP9lxNIO2FBMXmj4WzDZ0QKdjYiV90laf0SXrzPBd2xiH4j+4wlsr/ooWPXv10l9BR3pB+Le68BFF7/H/o0gWsvQAhvfDBUBezAjVAHcUBwWWkYwsYr9WcxVw9BzDyn7tedz6aNGSj/n1V15NWrWxTxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com; spf=pass smtp.mailfrom=rock-chips.com; dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b=QfH2Us9E; arc=none smtp.client-ip=45.254.49.214
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rock-chips.com
+DKIM-Signature: a=rsa-sha256;
+	b=QfH2Us9Eq8B0ueN4t3tCCXCgmbIqlFl7ZJymOQuLq7M9YeL9smUzrKpL905TUTtNqsltZOxtpgQpdHkuqvWUXq0CZPZmy8JLlcS1NlFLVNWSTCiKR0ghlYv2lzXt/RCUWBVgMKQx0A0tv8P0Ew9Cyzg2QyIlvURz7W7Yw0MY5Gg=;
+	s=default; c=relaxed/relaxed; d=rock-chips.com; v=1;
+	bh=TAinrEkDcwYxgKcucbTjUS75lf3OZ7z9iVmkDRaZ18I=;
+	h=date:mime-version:subject:message-id:from;
+Received: from [172.16.12.141] (unknown [58.22.7.114])
+	by mail-m12779.qiye.163.com (Hmail) with ESMTPA id 660777801C6;
+	Wed, 24 Jan 2024 10:42:32 +0800 (CST)
+Message-ID: <e1c56975-6a55-4b75-a447-dd2d0eec62e2@rock-chips.com>
+Date: Wed, 24 Jan 2024 10:42:31 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1801MB1918.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ab672f14-72b0-489d-ab6e-08dc1c88bb07
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jan 2024 03:01:15.8492
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: g2nUasbsAPB+mGZSFLsZ/Wd/xiM71WpBQFopq8XMU/UPk/TMgloM6sQEVeih+x0/VjjVrV6KM9+TppLbrZkJhg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR18MB3465
-X-Proofpoint-ORIG-GUID: F9ZuK6UNrBQqQkBkjJJOPwifMRC3xIKf
-X-Proofpoint-GUID: F9ZuK6UNrBQqQkBkjJJOPwifMRC3xIKf
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-23_15,2024-01-23_02,2023-05-22_02
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] phy: rockchip: Add Samsung HDMI/DP Combo PHY driver
+Content-Language: en-US
+To: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I
+ <kishon@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+ Philipp Zabel <p.zabel@pengutronix.de>, Johan Jonker <jbx6244@gmail.com>,
+ Sebastian Reichel <sebastian.reichel@collabora.com>,
+ Algea Cao <algea.cao@rock-chips.com>, linux-phy@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+ kernel@collabora.com, Heiko Stuebner <heiko@sntech.de>
+References: <20240119193806.1030214-1-cristian.ciocaltea@collabora.com>
+ <20240119193806.1030214-4-cristian.ciocaltea@collabora.com>
+ <20240122121409.GW4700@pengutronix.de>
+ <00c749f7-3eb9-4bd1-a057-43a692b77d68@collabora.com>
+From: Andy Yan <andy.yan@rock-chips.com>
+In-Reply-To: <00c749f7-3eb9-4bd1-a057-43a692b77d68@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZQkIdTlZNHx9NTUxKTEJLTk9VEwETFh
+	oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk1PSU5IVUpLS1VKQk
+	tLWQY+
+X-HM-Tid: 0a8d395908efb24fkuuu660777801c6
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NUk6ORw*MzwtCAJMAxoCKRIz
+	DU8aCwJVSlVKTEtNS01PSk5IT0xCVTMWGhIXVRoVHwJVAhoVOwkUGBBWGBMSCwhVGBQWRVlXWRIL
+	WUFZTkNVSUlVTFVKSk9ZV1kIAVlBQ0NITDcG
 
-> From: Simon Horman <horms@kernel.org>
-> Subject: [EXT] Re: [PATCH net] octeontx2-af: Initialize bitmap arrays.
->=20
-> Hi Ratheesh,
->=20
-> I assume that the reason that the cited commit moved away from devm_
-> allocations was to allow more natural management of the resources
-> independently of the life cycle of the driver instance. Or in other words=
-, the
-> need to free the bitmaps in npc_mcam_rsrcs_deinit() probably indicates th=
-at
-> devm_ allocations of them aren't giving us anything.
->=20
-> So, perhaps kcalloc() is more appropriate than devm_kcalloc() ?
-This was a comment from @Subbaraya Sundeep Bhatta during our internal revie=
-w. =20
-Could you please help with below questions/doubts ?
-1. why devm_kfree() API  is available if it is done independently=20
-2. I could see instances of devm_kfree() usage in current kernel where it d=
-oes explicit calls.
+Hi Cristian:
 
--Ratheesh
+On 1/24/24 08:58, Cristian Ciocaltea wrote:
+> On 1/22/24 14:14, Sascha Hauer wrote:
+>> On Fri, Jan 19, 2024 at 09:38:03PM +0200, Cristian Ciocaltea wrote:
+>>> Add driver for the Rockchip HDMI/eDP TX Combo PHY found on RK3588 SoC.
+>>>
+>>> The PHY is based on a Samsung IP block and supports HDMI 2.1 TMDS, FRL
+>>> and eDP links.  The maximum data rate is 12Gbps (HDMI 2.1 FRL), while
+>>> the minimum is 250Mbps (HDMI 2.1 TMDS).
+>>>
+>>> Co-developed-by: Algea Cao <algea.cao@rock-chips.com>
+>>> Signed-off-by: Algea Cao <algea.cao@rock-chips.com>
+>>> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+>>> ---
+>>>   drivers/phy/rockchip/Kconfig                  |    8 +
+>>>   drivers/phy/rockchip/Makefile                 |    1 +
+>>>   .../phy/rockchip/phy-rockchip-samsung-hdptx.c | 2045 +++++++++++++++++
+>>>   3 files changed, 2054 insertions(+)
+>>>   create mode 100644 drivers/phy/rockchip/phy-rockchip-samsung-hdptx.c
+>>>
+>>> diff --git a/drivers/phy/rockchip/Kconfig b/drivers/phy/rockchip/Kconfig
+>>> index 94360fc96a6f..95666ac6aa3b 100644
+>>> --- a/drivers/phy/rockchip/Kconfig
+>>> +++ b/drivers/phy/rockchip/Kconfig
+>>> @@ -83,6 +83,14 @@ config PHY_ROCKCHIP_PCIE
+>>>   	help
+>>>   	  Enable this to support the Rockchip PCIe PHY.
+>>>   
+>>> +config PHY_ROCKCHIP_SAMSUNG_HDPTX
+>>> +	tristate "Rockchip Samsung HDMI/DP Combo PHY driver"
+>>> +	depends on (ARCH_ROCKCHIP || COMPILE_TEST) && OF
+>>> +	select GENERIC_PHY
+>>> +	help
+>>> +	  Enable this to support the Rockchip HDMI/DP Combo PHY
+>>> +	  with Samsung IP block.
+>>> +
+>>>   config PHY_ROCKCHIP_SNPS_PCIE3
+>>>   	tristate "Rockchip Snps PCIe3 PHY Driver"
+>>>   	depends on (ARCH_ROCKCHIP && OF) || COMPILE_TEST
+>>> diff --git a/drivers/phy/rockchip/Makefile b/drivers/phy/rockchip/Makefile
+>>> index 7eab129230d1..3d911304e654 100644
+>>> --- a/drivers/phy/rockchip/Makefile
+>>> +++ b/drivers/phy/rockchip/Makefile
+>>> @@ -8,6 +8,7 @@ obj-$(CONFIG_PHY_ROCKCHIP_INNO_HDMI)	+= phy-rockchip-inno-hdmi.o
+>>>   obj-$(CONFIG_PHY_ROCKCHIP_INNO_USB2)	+= phy-rockchip-inno-usb2.o
+>>>   obj-$(CONFIG_PHY_ROCKCHIP_NANENG_COMBO_PHY)	+= phy-rockchip-naneng-combphy.o
+>>>   obj-$(CONFIG_PHY_ROCKCHIP_PCIE)		+= phy-rockchip-pcie.o
+>>> +obj-$(CONFIG_PHY_ROCKCHIP_SAMSUNG_HDPTX)	+= phy-rockchip-samsung-hdptx.o
+>>>   obj-$(CONFIG_PHY_ROCKCHIP_SNPS_PCIE3)	+= phy-rockchip-snps-pcie3.o
+>>>   obj-$(CONFIG_PHY_ROCKCHIP_TYPEC)	+= phy-rockchip-typec.o
+>>>   obj-$(CONFIG_PHY_ROCKCHIP_USB)		+= phy-rockchip-usb.o
+>>> diff --git a/drivers/phy/rockchip/phy-rockchip-samsung-hdptx.c b/drivers/phy/rockchip/phy-rockchip-samsung-hdptx.c
+>>> new file mode 100644
+>>> index 000000000000..d8171ea5ce2b
+>>> --- /dev/null
+>>> +++ b/drivers/phy/rockchip/phy-rockchip-samsung-hdptx.c
+>>> @@ -0,0 +1,2045 @@
+>>> +// SPDX-License-Identifier: GPL-2.0+
+>>> +/*
+>>> + * Copyright (c) 2021-2022 Rockchip Electronics Co., Ltd.
+>>> + * Copyright (c) 2024 Collabora Ltd.
+>>> + *
+>>> + * Author: Algea Cao <algea.cao@rock-chips.com>
+>>> + * Author: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+>>> + */
+>>> +#include <linux/bitfield.h>
+>>> +#include <linux/clk.h>
+>>> +#include <linux/delay.h>
+>>> +#include <linux/mfd/syscon.h>
+>>> +#include <linux/module.h>
+>>> +#include <linux/of.h>
+>>> +#include <linux/of_platform.h>
+>>> +#include <linux/phy/phy.h>
+>>> +#include <linux/platform_device.h>
+>>> +#include <linux/rational.h>
+>>> +#include <linux/regmap.h>
+>>> +#include <linux/reset.h>
+>>> +
+>>> +#define GRF_HDPTX_CON0			0x00
+>>> +#define HDPTX_I_PLL_EN			BIT(7)
+>>> +#define HDPTX_I_BIAS_EN			BIT(6)
+>>> +#define HDPTX_I_BGR_EN			BIT(5)
+>>> +#define GRF_HDPTX_STATUS		0x80
+>>> +#define HDPTX_O_PLL_LOCK_DONE		BIT(3)
+>>> +#define HDPTX_O_PHY_CLK_RDY		BIT(2)
+>>> +#define HDPTX_O_PHY_RDY			BIT(1)
+>>> +#define HDPTX_O_SB_RDY			BIT(0)
+>>> +
+>>> +#define CMN_REG0000			0x0000
+>>
+>> These register names are not particularly helpful. Maybe use a
+>>
+>> #define CMN_REG(x)			((x) * 4)
+>>
+>> Instead?
+> 
+> Yes, sounds good.
+> 
+>>> +
+>>> +static int hdptx_lcpll_frl_mode_config(struct rockchip_hdptx_phy *hdptx,
+>>> +				       u32 rate)
+>>> +{
+>>> +	u32 bit_rate = rate & DATA_RATE_MASK;
+>>> +	u8 color_depth = (rate & COLOR_DEPTH_MASK) ? 1 : 0;
+>>> +	const struct lcpll_config *cfg = lcpll_cfg;
+>>> +
+>>> +	for (; cfg->bit_rate != ~0; cfg++)
+>>> +		if (bit_rate == cfg->bit_rate)
+>>> +			break;
+>>
+>> You could use ARRAY_SIZE() to iterate over the array and save the extra
+>> entry at the end. Likewise for the other arrays used in the driver.
+> 
+> Sure, will do.
+> 
+>>> +
+>>> +	if (cfg->bit_rate == ~0)
+>>> +		return -EINVAL;
+>>> +
+>>
+>>> +static int rockchip_hdptx_phy_power_on(struct phy *phy)
+>>> +{
+>>> +	struct rockchip_hdptx_phy *hdptx = phy_get_drvdata(phy);
+>>> +	int bus_width = phy_get_bus_width(hdptx->phy);
+>>> +	int bit_rate = bus_width & DATA_RATE_MASK;
+>>
+>> What is going on here? bus_width is set to 8 in probe() using
+>> phy_set_bus_width(), but the value you pull out of phy_get_bus_width()
+>> is expected to contain the bit_rate and several other flags.
+>>
+>> It looks like you are tunneling flags from some other driver using this
+>> field. Isn't there a better way to accomplish this? If not, I think this
+>> needs some explanation.
+> 
+> Indeed, sorry for missing a comment here.  The flags are set by the
+> bridge driver to enable 10-bit color depth, FRL and EARC.  So far I
+> couldn't find an alternative approach to pass custom data using the PHY API.
+> 
+>> At least the variable should be renamed. it's called "bus_width" and it's
+>> passed to functions like hdptx_lcpll_frl_mode_config() which has this
+>> parameter named "rate" which is quite confusing.
+> 
+> I think for the initial support it's not really necessary to implement
+> all those features.  Andy, should we drop them until a better solution
+> is found?
+
+I'm fine with it.
+It would be very appreciated if some linux-phy or drm bridge experts can give
+some suggestions about how to pass different custom phy modes.
+
+> 
+>> Sascha
+> 
+> Thanks for the review,
+> Cristian
 
