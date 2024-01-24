@@ -1,72 +1,72 @@
-Return-Path: <linux-kernel+bounces-37801-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37802-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6222D83B59E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 00:35:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A7CB83B5A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 00:36:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C0B8286AAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:35:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD28B1C2338B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 23:36:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 042CB13666C;
-	Wed, 24 Jan 2024 23:35:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED7AE1353E8;
+	Wed, 24 Jan 2024 23:36:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hzuOPRo4"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JRh/uJvD"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 757D213665E
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 23:35:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A143039AC0
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 23:36:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706139326; cv=none; b=OAK5SNhtdyzRZ9ApgGbFLFRfuVhcUJlqVE5tPsc4CUJHVOnhlH8oZ6gR1ZG7dyOnL+A+frSDlkYpnIuJ12HhLna67v15nviwRKWtqu36RvAsAAkKwSLP5L+68VlOkVWrvobRUpY8Qo5VxDkBnMvCfg4RYhxwUTkS8bsDcZ3Amwc=
+	t=1706139394; cv=none; b=c6Fer3eFmFbqCW/FAPFfMAiyMzXqEBF5qIeDmheyag+jUeDeb1LmgnVaHqTN7U1VTd3jXy6zDnC4/LE7xonEExQdXaQ53ayId6OPgBTNzQuvpvKFg4do1gp73GNuQNJ2iC8MI47CndXGrhSiYdZ0W1qdV6Se+ict4SUgtsniKmU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706139326; c=relaxed/simple;
-	bh=pLOxL3uGdu3PEt3PgpGpSLPDrGG85JqWleyeZmTGcXE=;
+	s=arc-20240116; t=1706139394; c=relaxed/simple;
+	bh=+tvGycd8fkh1gM7sNFqcMBJjG5Qf+7FDcOeuXUANgAs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ue7PrwbuK3wwQUWQiX3nZ2XmliNErga2ubYWdicdaAmJyd9tF3/HrqwUrp00QnomOlfzZM7E3UCmo12NgCX0N39UkQuaKLQMthOk5azF0Ol6dJb8ZCx/gEQMvMN6xvEuZBKhwQVaEnMRtlQwa3IFd1mt/KoaOlSXnb1Kxo5Jdnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hzuOPRo4; arc=none smtp.client-ip=209.85.208.171
+	 In-Reply-To:Content-Type; b=Qxj5b3ZhftZtp9F5XZEwsc/t7cfhoidCL9S64eSjQt2mCZeuu/zdCepWMutUD+9p17Y1zfWrcon/saJG6gfgSL14d4vdGPSmEo18orUd5xWMb5K1rTI1/Xh90v7sXFrQrKDJhXAz0Nm5ZRiv4WHNkfR3DXqxvXLhJkVgglYld1Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JRh/uJvD; arc=none smtp.client-ip=209.85.208.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cf338e1438so2140801fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 15:35:24 -0800 (PST)
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2cd04078ebeso2031031fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 15:36:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706139322; x=1706744122; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1706139391; x=1706744191; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Qe/DnSocfVSs8fWiqOrlmqzT+M3JYs+S/nJyZuNxraM=;
-        b=hzuOPRo4I9F89b35ypvRbHQWNiHyq46re6KUhwZuYQNG34EfYxX71MEPCpt1WXD2QD
-         5nQgQM0oRmCevc2vQPmCvSo4XNXGj6qMpHxUVuVzq1ljsggzUDg+6Aq0MJZyZh2p2F3S
-         xJDMN2RSOSwo8uAWU01Wftn0OqyuQSDq0JXu0teEqLDfMTWkTqRxxwsCkFSZWXyEIoES
-         U8HE1OE4gB+7bstLTL90anQW9Fy4giNFkCrA4ZXZ0d9PSn0ncvl8m/E7kuAYawsYO8zX
-         tztNXcCUR4tabCJm/G/JwJEe4SpudREo0M0j1YcNtjM4fGput/J9IVIetfUutP3RKXuz
-         iytA==
+        bh=/vKlrOmknMa0N0UOD2DGqbxqnH0CSwsvClTmdidQIo4=;
+        b=JRh/uJvDGC1WO3ui9dBHsdSKYvBITKgSz01cUj8PB/qdJ+tAezgKFkzk0ImvRi+G3x
+         SUcRLeQjYFaJfPw26H7JhID5V+R75HRdvmd7sKf0PvjdQlpD77HvYMuepn0LFeu6sCXY
+         lNue1BBI7eFaSK4+n97BUTxx3W4sWeIbxtPl+Pv/mlHrHaW+TLsj0So/O2X8Kfi0fQeX
+         AH3af3XBq7G4eN+LGM8p/c8zmWqfGG+DVQVNWLC9Q0btkrS9Jj9HP17A2Dme6aom5b40
+         ezYnRp/2WavI1Agni8WtlSLfkOckXStjKk0SJ3r6GIjUaVc+ZjFrJJtuLaT2RB0SivWp
+         fTnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706139322; x=1706744122;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1706139391; x=1706744191;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Qe/DnSocfVSs8fWiqOrlmqzT+M3JYs+S/nJyZuNxraM=;
-        b=t9UVZXK/+gUKP6LAvlBpjRPxIhnTPhGqAdtGQ4G9JZ3OpKl7sjLmIdyQEzqBwVd/hl
-         hTeCLyM5/fBAJVUWN0pLXZlt23dnEr0vr10On+rHFQDUROT4VQpUDypfPdu36GAfA/BM
-         aUQQlDpG7KD5rrmyPkf7iNYqQ95ZFw49T1kYun/hGsOu9IBDXDaq5Gqc2M/T3dUI2TXp
-         lSfKsR87CexhB/guGqdEMqTftHPi0TcX7sDIkg5+HATB786mbKkeuIc37vWZRB+5mjrs
-         LyXmvHWeY8KwUfAObvf6jg+cSEgcwT8CGoBsdSPILaQevKXzGU+bYFAzuK7ougMIfCME
-         69Ew==
-X-Gm-Message-State: AOJu0YzDyqsV7E1IxxHHpwRuUKtXY++H+aE3XpZT/Zs/Cr9UI/TtauHF
-	3J43DAtyDUnvt0kttXq1DWIUz5PHAbbjaOy8ngn+wnhRzCbdlEnOSeWJu0RIv7I=
-X-Google-Smtp-Source: AGHT+IF45ww99YyzdSWE+qA57c4PFAaCgYeKd2Czeg2UE2VYoSBeUmQAX31VZC9Jt73KkYa45836oA==
-X-Received: by 2002:a05:651c:169b:b0:2cf:1b2b:6a73 with SMTP id bd27-20020a05651c169b00b002cf1b2b6a73mr38987ljb.19.1706139322326;
-        Wed, 24 Jan 2024 15:35:22 -0800 (PST)
+        bh=/vKlrOmknMa0N0UOD2DGqbxqnH0CSwsvClTmdidQIo4=;
+        b=UqwY4YqdX3GJn0LZ/lKMMaI/imFvhXjPbhw13ta07mm8Hkq5LZg6tJi1Mn+aFKk7BR
+         1zFtJl3CY9EA1sX+I0mVpIsR2gH5VXC57b7xpk5w75eB/fFpMl4E0ivV4QUIU/JjZd++
+         +TPxeYPmbjiFrk9TX33Cu7BSBlemxA1WZfLc/vIHrhOl+bFrGIaalQQa5G+YRBoYd5IG
+         CmsDx/j8tp1iJeQ1ZLpl3CSmJ4ctgByQ9S5A++u15hlcL+htzTPtMz6KcevMlk3TyPzX
+         SSsJ1KvZTO857vVcmzgwY/beGqgwbdq3LNpJ78YHk9clpE4QtDRKyLdtp2Z7DhKuBI8M
+         gQ2A==
+X-Gm-Message-State: AOJu0Yx7kjH6dcObzbYadSwm2/5Pj4swoP9Shs1niYb95cB7PfQLJtGo
+	MvhDPmBB//MENQfraPvPhffLjKzpAT5w7nlNmfRCOz74j4ho70Se53pe1hmn3Ws=
+X-Google-Smtp-Source: AGHT+IHMxl3uJPZqublNZwqgF2mxbIXuF8HFJdMOVCo4DxsM+TsBQn3zKVJqZHDSr5rfY2UR6qF/xw==
+X-Received: by 2002:a2e:5cc8:0:b0:2cd:fb91:4b1d with SMTP id q191-20020a2e5cc8000000b002cdfb914b1dmr198813ljb.21.1706139390692;
+        Wed, 24 Jan 2024 15:36:30 -0800 (PST)
 Received: from [172.30.205.155] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id t6-20020a2e9546000000b002cf15a1d917sm104841ljh.105.2024.01.24.15.35.21
+        by smtp.gmail.com with ESMTPSA id t6-20020a2e9546000000b002cf15a1d917sm104841ljh.105.2024.01.24.15.36.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jan 2024 15:35:21 -0800 (PST)
-Message-ID: <e7457703-fcd1-448a-bcb1-d5aa31bbb1fc@linaro.org>
-Date: Thu, 25 Jan 2024 00:35:20 +0100
+        Wed, 24 Jan 2024 15:36:30 -0800 (PST)
+Message-ID: <30e890e8-42dd-4b36-a133-95bb34c109d8@linaro.org>
+Date: Thu, 25 Jan 2024 00:36:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,68 +74,81 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Revert "power: supply: qcom_battmgr: Register the power
- supplies after PDR is up"
-To: Johan Hovold <johan+linaro@kernel.org>, Sebastian Reichel <sre@kernel.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
- Marijn Suijten <marijn.suijten@somainline.org>,
- Neil Armstrong <neil.armstrong@linaro.org>, Xilin Wu <wuxilin123@gmail.com>,
- linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240123160053.18331-1-johan+linaro@kernel.org>
+Subject: Re: [PATCH v2 1/2] arm64: dts: qcom: sm8650-mtp: add PM8010
+ regulators
 Content-Language: en-US
+To: David Collins <quic_collinsd@quicinc.com>, quic_fenglinw@quicinc.com,
+ kernel@quicinc.com, Bjorn Andersson <andersson@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Neil Armstrong <neil.armstrong@linaro.org>
+References: <20240123-sm8650_pm8010_support-v2-0-52f517b20a1d@quicinc.com>
+ <20240123-sm8650_pm8010_support-v2-1-52f517b20a1d@quicinc.com>
+ <892058db-8013-879d-6c6f-3fbbf4ed3c57@quicinc.com>
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240123160053.18331-1-johan+linaro@kernel.org>
+In-Reply-To: <892058db-8013-879d-6c6f-3fbbf4ed3c57@quicinc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 
 
-On 1/23/24 17:00, Johan Hovold wrote:
-> This reverts commit b43f7ddc2b7a5a90447d96cb4d3c6d142dd4a810.
+On 1/24/24 20:15, David Collins wrote:
+> On 1/23/24 00:49, Fenglin Wu via B4 Relay wrote:
+>> From: Fenglin Wu <quic_fenglinw@quicinc.com>
+>>
+>> Add PM8010 regulator device nodes for sm8650-mtp board.
+>>
+>> Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+>> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+>> ---
+>>   arch/arm64/boot/dts/qcom/sm8650-mtp.dts | 118 ++++++++++++++++++++++++++++++++
+>>   1 file changed, 118 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/sm8650-mtp.dts b/arch/arm64/boot/dts/qcom/sm8650-mtp.dts
+>> index 9d916edb1c73..3791971efee6 100644
+>> --- a/arch/arm64/boot/dts/qcom/sm8650-mtp.dts
+>> +++ b/arch/arm64/boot/dts/qcom/sm8650-mtp.dts
+>> @@ -428,6 +428,124 @@ vreg_l3i_1p2: ldo3 {
+>>   						   RPMH_REGULATOR_MODE_HPM>;
+>>   		};
+>>   	};
+>> +
+>> +	regulators-6 {
+>> +		compatible = "qcom,pm8010-rpmh-regulators";
+>> +		qcom,pmic-id = "m";
+>> +
+>> +		vdd-l1-l2-supply = <&vreg_s1c_1p2>;
+>> +		vdd-l3-l4-supply = <&vreg_bob2>;
+>> +		vdd-l5-supply = <&vreg_s6c_1p8>;
+>> +		vdd-l6-l7-supply = <&vreg_bob1>;
 > 
-> The offending commit deferred power-supply class device registration
-> until the service-started notification is received.
+> Please replace this line with:
 > 
-> This triggers a NULL pointer dereference during boot of the Lenovo
-> ThinkPad X13s and SC8280XP CRD as battery status notifications can be
-> received before the service-start notification:
+> vdd-l6-supply = <&vreg_bob1>;
+> vdd-l7-supply = <&vreg_bob1>;
 > 
-> 	Unable to handle kernel NULL pointer dereference at virtual address 00000000000005c0
-> 	...
-> 	Call trace:
-> 	 _acquire+0x338/0x2064
-> 	 acquire+0x1e8/0x318
-> 	 spin_lock_irqsave+0x60/0x88
-> 	 _supply_changed+0x2c/0xa4
-> 	 battmgr_callback+0x1d4/0x60c [qcom_battmgr]
-> 	 pmic_glink_rpmsg_callback+0x5c/0xa4 [pmic_glink]
-> 	 qcom_glink_native_rx+0x58c/0x7e8
-> 	 qcom_glink_smem_intr+0x14/0x24 [qcom_glink_smem]
-> 	 __handle_irq_event_percpu+0xb0/0x2d4
-> 	 handle_irq_event+0x4c/0xb8
+>> +
+>> +		vreg_l1m_1p1: ldo1 {
+>> +			regulator-name = "vreg_l1m_1p1";
+>> +			regulator-min-microvolt = <1104000>;
+>> +			regulator-max-microvolt = <1104000>;
+>> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
 > 
-> As trying to serialise this is non-trivial and risks missing
-> notifications, let's revert to registration during probe so that the
-> driver data is all set up once the service goes live.
+> Optional:
+> PM8010 L1 and L2 physically support LPM vs HPM configuration.
+> Therefore, these lines could be added here to allow such configuration
+> by software at runtime:
 > 
-> The warning message during resume in case the aDSP firmware is not
-> running that motivated the change can be considered a feature and should
-> not be suppressed.
-> 
-> Fixes: b43f7ddc2b7a ("power: supply: qcom_battmgr: Register the power supplies after PDR is up")
-> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-> ---
+> regulator-allow-set-load;
+> regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
+> 			   RPMH_REGULATOR_MODE_HPM>;
 
-Johan and I talked off-list and decided reverting this is the best
-way to go forward for now, the problem that my original commit
-solved (or well, tried to, anyway) is only an issue with a
-configuration that's not quite supported (i.e. missing all
-pieces of the puzzle for a functional battmgr) and more work would
-need to be put into supporting that. I *may* do it in the future,
-but for now both of us need to work on different things.
+David,
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+I was under the impression that *all* RPMh regulators support
+modesetting. Would that be an incorrect assumption to make?
 
 Konrad
 
