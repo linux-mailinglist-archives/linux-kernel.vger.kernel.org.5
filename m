@@ -1,121 +1,129 @@
-Return-Path: <linux-kernel+bounces-37515-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37516-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5B2183B12D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:31:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19D0A83B130
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 19:32:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6119C28400A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:31:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C40C31F25050
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:32:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BE3B131725;
-	Wed, 24 Jan 2024 18:31:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65E70131724;
+	Wed, 24 Jan 2024 18:32:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="FfowQ89Q"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="d7jMUbwJ"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1703512F59E
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 18:30:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAB65130E5A;
+	Wed, 24 Jan 2024 18:32:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706121065; cv=none; b=iNaUISZCLm7OQKKT5fbTxJxnvD0Ta5biO0md4fS6nPw+bE3Y5dyi+ZVIKcwIsz6sRqMhLorGfsRcoDaQV3mewlXkdsgZnr/z3oe8Q2X6qi4CLh1lmOXn3RxoQzL6QsSyvmmVxGDV5efeclEvSMKljguZl2fqEAchLKsDj2rC+lc=
+	t=1706121162; cv=none; b=csPfxavfIH4389bB35aqO65fWcmsws11rlYkglDm08kegUQ5WLhaR07jRhicuego477AXtj0ukVZ0Kf7BwBCegP+MPc3+/WX4yCys5KUPyApaoxFOXRuW+4LQobAWoX8Qp6k8Mh9tYEHaFIFvlShViuKAXk8f21CVyhD47jIff0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706121065; c=relaxed/simple;
-	bh=5C65bOMspCRwrUd4nqyifHQ9iilJrLYr6DwEmT4uC4w=;
+	s=arc-20240116; t=1706121162; c=relaxed/simple;
+	bh=1ptnX18ROuZF1++MBajLh5HKvxdkkKwzGW8IoJy13AM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QgxoSXYS66BAtd0VSfWOYhMkCFIC0WjG+CS4jPIVFHgYQrA+QvLBjmP7w1zH6kDgVYKf2uLQV1FrnZK43MOSGKZW7EwZRjam+Vf3ctWweTflvfMwOTuJYnkNGnv+ecR7enTbvuv7gzmGR2TXGI3xMnXfUAEpzj1grJ843UOasQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=FfowQ89Q; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6ddc0c02665so481121b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 10:30:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706121047; x=1706725847; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=X2i8Xd8HMGoPtstPdvP9nqcXZNT+QofCfEBJAvkYMuk=;
-        b=FfowQ89Qj3OCFEP42VqisgbJ8Afo45vKvx11GbVmgw+wDJaXJ5ZfVNPan8GjfkAu9y
-         1JT0gQya6NLmypoiKdydBtICIIi9ueL6Mvlj2laVodvkPAxkYGKCmdG/Areu6mXSTTyH
-         LbF+t5HaQkpjDaRYXqHTtarKFMEPf/STWaTMgCreE5EpMftmOjOIqwBPSA98YXLOLwsy
-         d6GtxR4kiCWh6pX7nW4IPxrnrKYOiWG51Zc5mHPI9Hi6I4Z9VjM5MwEokrZH7LMeWRbg
-         Wj3TgIkgQ6DjP4qKNchVoj+Eeso3NxhUfWDzbqAtxHDxkmoE+tzXJPmnidq39evHJkit
-         CkZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706121047; x=1706725847;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X2i8Xd8HMGoPtstPdvP9nqcXZNT+QofCfEBJAvkYMuk=;
-        b=ncQjLz7Wq3O5TV28WvMlb4sT3Zr93LBW7ddK4io1hC+vOWg9sk38lPbh0iiiBjhCFA
-         ca3i+kssqUC/LSDIfldrMxjN7+am2tu79IHoxaxnIASTUWHMp17rGLwqNfM9Qt5CP8yV
-         vRbQEbGHub6xEcCItJgNZJHe23HU0QxJsQ0NOEAurIbTfbi/RGz9qrf2J5nTWvWxklNn
-         PfvJdluvZUoyRJkpaiyucAw6PPJE+ZnmCJ1WvkjCH6OwkAaFds/Jj9+GffY+8uu0Zmt1
-         BSyN+CVtNfuXBs04i7EsbAE2Z3KwdzW4PK1Ck+Y+EM4Dv8zTp7zZEI/m1j7FgXlFsBRH
-         qiEw==
-X-Gm-Message-State: AOJu0YxT+VHIOaCQSTo2LKVvZBszo2xVSKk9IJ2Z8Cwci3KP7zWbB8jR
-	n5dRi6orZAl4tIVEXn0toshQWwxLCbfpgCtfmquYFNgMeV3GifgXllf0MIaA2qlezFf/HSNEfZm
-	3X70=
-X-Google-Smtp-Source: AGHT+IGhFlCoHvfTo0vDq6Jert274wAOP6jL3oUoJ7+t2cu89hvGIYcsj6qyELcEVpcCVgWYfRktjw==
-X-Received: by 2002:a05:6a20:e121:b0:199:96a4:b6b9 with SMTP id kr33-20020a056a20e12100b0019996a4b6b9mr1382220pzb.38.1706121047168;
-        Wed, 24 Jan 2024 10:30:47 -0800 (PST)
-Received: from ghost ([12.44.203.122])
-        by smtp.gmail.com with ESMTPSA id t6-20020a625f06000000b006dd87826805sm2309454pfb.75.2024.01.24.10.30.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 10:30:46 -0800 (PST)
-Date: Wed, 24 Jan 2024 10:30:43 -0800
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: David Laight <David.Laight@aculab.com>
-Cc: Guenter Roeck <linux@roeck-us.net>, Palmer Dabbelt <palmer@dabbelt.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 2/2] lib: checksum: Use aligned accesses for
- ip_fast_csum and csum_ipv6_magic tests
-Message-ID: <ZbFXU4x4p1qw4GHD@ghost>
-References: <20240123-fix_sparse_errors_checksum_tests-v3-0-efecc7f94297@rivosinc.com>
- <20240123-fix_sparse_errors_checksum_tests-v3-2-efecc7f94297@rivosinc.com>
- <2235fa55381e481b9252e11463b34720@AcuMS.aculab.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=VXSHcucUN5GxM6+v42pZqwLOxOFkVD/GvCO2UxKPIvJnjaABjKVXva9uXgH3lzO9bqgHlRnf+hIW4pO4vWhS8YszAFf6YaK4QVIC1anN8tEVMb2Ne74lvZtTvDYJxieh2GTMFTYoPd+RBaz+8Yi2gVTYbEWXjLm3HcrAGjfltC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=d7jMUbwJ; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 0AC5F40E01A9;
+	Wed, 24 Jan 2024 18:32:37 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id pm4fXtx2h_D8; Wed, 24 Jan 2024 18:32:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1706121154; bh=vaEqhiwCC6NaERNe6TMVeVGP6JVmokf1utfp4cV9z9k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=d7jMUbwJEUTZ+kYI59q0QtfID7t0vONybXbFFqog6jM80eJpN3mLntKS5KmV0Xj0f
+	 8TpPiOJ+dwOlWvJ6Yuh+Ti0Uz3Ei7JwqZvSyQiYtYL4jcNorMRI6Z+bwArf5pks2H8
+	 Nx8f+XeJXchVWiDbIBXkg/hyOiFfs4nwH11+GPAQrD5BUeXomUsG4D8L3fiu91Uo43
+	 gXYEnZM75XLpNz84jFIA/ew8w7paePlL0thVhoG7KLUCWZol02ZaNGFvAXYC/cHDqT
+	 cyAKdiNnsxxgn7ic6AhBIXo14IDfsBMikWSJWW5/9W9Z70/dENMuuA5c8ceVj/kKfJ
+	 PiTaSj34viEkzaUTNVc9JutpGVOkTps0OnE1wt/HCiBQva7wia2KuaakT6XDRbpTSN
+	 aBCTg/XE4sRgKTth3hGdHQQvQ2MWv0xLhko+tfcBHjYgzaegE4AHLA6dpOYYcFb6Bg
+	 GbXkwWIXpJyFnPcvhIAC6Ru3BriU6YcDEC+pCTMY1KmSWjGv5QFd+9xbzc1iXjusYH
+	 08balh8wPFrA08XlDml96tzWqQal1rVZ6IeG1UBlgy8R6WZ/MxFmEXvgKMpef9amz+
+	 prsWsIZPWjUK6qLaheRNL1z/KVPjYTYwoOtxNgHm9Pj+ApsPPevx26o9UljmA3HnFe
+	 bgcI8RCcottEYSU9XPCRfyU4=
+Received: from zn.tnic (pd953033e.dip0.t-ipconnect.de [217.83.3.62])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 28B8C40E00C5;
+	Wed, 24 Jan 2024 18:32:00 +0000 (UTC)
+Date: Wed, 24 Jan 2024 19:31:53 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Reinette Chatre <reinette.chatre@intel.com>
+Cc: Babu Moger <babu.moger@amd.com>, corbet@lwn.net, fenghua.yu@intel.com,
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, hpa@zytor.com, paulmck@kernel.org,
+	rdunlap@infradead.org, tj@kernel.org, peterz@infradead.org,
+	yanjiewtw@gmail.com, kim.phillips@amd.com, lukas.bulwahn@gmail.com,
+	seanjc@google.com, jmattson@google.com, leitao@debian.org,
+	jpoimboe@kernel.org, rick.p.edgecombe@intel.com,
+	kirill.shutemov@linux.intel.com, jithu.joseph@intel.com,
+	kai.huang@intel.com, kan.liang@linux.intel.com,
+	daniel.sneddon@linux.intel.com, pbonzini@redhat.com,
+	sandipan.das@amd.com, ilpo.jarvinen@linux.intel.com,
+	peternewman@google.com, maciej.wieczor-retman@intel.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	eranian@google.com
+Subject: Re: [PATCH] x86/resctrl: Fix unneeded variable warning reported by
+ kernel test robot
+Message-ID: <20240124183153.GFZbFXmTKTLEpwZshW@fat_crate.local>
+References: <202401241810.jbd8Ipa1-lkp@intel.com>
+ <84128a3c83654493f637b8349153af10d69e2752.1706118776.git.babu.moger@amd.com>
+ <39c4501e-4937-49de-b12b-742e6201df6f@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2235fa55381e481b9252e11463b34720@AcuMS.aculab.com>
+In-Reply-To: <39c4501e-4937-49de-b12b-742e6201df6f@intel.com>
 
-On Wed, Jan 24, 2024 at 09:04:55AM +0000, David Laight wrote:
-> From: Charlie Jenkins
-> > Sent: 24 January 2024 00:39
+On Wed, Jan 24, 2024 at 10:25:17AM -0800, Reinette Chatre wrote:
+> This can be confusing since it implies that the patch you mention
+> introduces the issue but instead the variable has been unneeded since
+> the original:
+> 92bd5a139033 ("x86/resctrl: Add interface to write mbm_total_bytes_config")
+
+What I said. :)
+
+> To help clarify you can mention this order of events and also add an
+> appropriate "Fixes:" tag.
+> 
+> > cocci warnings: (new ones prefixed by >>)
+> >>> arch/x86/kernel/cpu/resctrl/rdtgroup.c:1621:5-8: Unneeded variable: "ret". Return "  0" on line 1655
 > > 
-> > The test cases for ip_fast_csum and csum_ipv6_magic were using arbitrary
-> > alignment of data to iterate through random inputs. ip_fast_csum should
-> > have the data aligned along (14 + NET_IP_ALIGN) bytes and
-> > csum_ipv6_magic should have data aligned along 32-bit boundaries.
-> > 
-> ...
-> > +	0x9359, 0x5630, 0xd659, 0x5b4d, 0x511e, 0x627c, 0x4e30, 0x73f1, 0x63c,
-> > +	0xf2da, 0x7b,	0xa98b, 0x4fb7, 0x87a6, 0x2500, 0x34e4, 0xf0cd, 0xdc69,
-> > +	0x7bde, 0x73f0, 0xd85d, 0x722d, 0x9776, 0x3c8,	0x7e07, 0xdca9, 0x9ecc,
-> > +	0xc6c0, 0xbec1, 0x8de5, 0x6f7f, 0x1a09, 0xdbe6, 0x7c4b, 0x3787, 0xdb38,
-> > +	0xfac,	0xbed9, 0x3039, 0x6501, 0xae1a, 0xed89, 0xd982, 0xc530, 0xccf6,
-> > +	0xd888, 0xf369, 0x2c4e, 0x38c0, 0xcff5, 0xdc9d, 0x5998, 0xe0d1, 0x7e23,
+> > Fix the warning by removing the variable "ret" and returning 0 directly.
 > 
-> I'm seeing some odd alignment in that table.
-> I think there are 'random' tabs following short constants.
-> (Not helped by outuck deciding that tabs are 6 spaces!)
-> Probably better to add leading spaces (or zeros after the 0x).
+> cocci warning was spot on*. This fix is not just a change to "make a
+> warning go away" but instead fixing an actual problem.
+> It can just be "Remove the unneeded variable and return 0 directly".
 
-Sure, I will add zeros.
+I'll fix all up before applying.
 
-- Charlie
+> * I'll add a private setup with the goal to catch these earlier.
 
-> 
-> 	David
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
+Except that it doesn't fire with the patch that added the code. It looks
+like the cocci script needs adjustment...
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
