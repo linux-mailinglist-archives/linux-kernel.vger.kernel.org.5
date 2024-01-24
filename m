@@ -1,165 +1,128 @@
-Return-Path: <linux-kernel+bounces-37090-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADFFA83AB68
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:11:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3619083AB8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:21:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0882B1F22BD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:11:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E495F283192
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:21:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 829FA7A717;
-	Wed, 24 Jan 2024 14:11:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BF057A724;
+	Wed, 24 Jan 2024 14:21:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FVdhfrOF"
-Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d4W1/8eK"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DE2D7A702;
-	Wed, 24 Jan 2024 14:11:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AABDC7A70E;
+	Wed, 24 Jan 2024 14:21:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706105464; cv=none; b=QTE2BBfKAi6CDTU4DdI8NKxRhZzym4PyI5G2Z7QL6EF1GM7jnKhThOt3eNmP70tky3OxTZPwUpzY2I0ELL7+xpM+l4Kv80bnE11Uu01387lesI+C/SIxJ74O29PL2tq3TRCAXRakvtJz/zKxtZjNMj4kcefzomLFlWQDVrbh9ew=
+	t=1706106072; cv=none; b=eq+48fGgdph8aiM8UCKMKv/Mp/cbQMkEtD+CGsD30B9gZXERLye/UEtnoUWOyhU1Um5KwWLYFktqvsj3kRJa1X6i3J+p8xBkSIK5KGR31TkNad9f9mORKkp4D1FKaMqRmIN6DBLNt2KMXHnT8OzLeEy3Bg8mlQOmlvFzs749pAg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706105464; c=relaxed/simple;
-	bh=9L8i8MRxTRUovMnf6B3+TaY9uldZPEBNGPy4Z42mzbQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fOLzB4TvRqwis0H5thPM0hsiCr7OK4yv7tIxSQJORcEwz3ES4WzwEUSMdRnEfR7lLvudM4KPyyrAKle3n13zl8Kd4cFeQWetZX/eOtjIevMHOyxrG4G8NaOWUl6/3SsPwUV7VcLY+h5bT4MPIAfHYFb3K2ZgKUTn41H4Sg4a4gM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FVdhfrOF; arc=none smtp.client-ip=209.85.160.41
+	s=arc-20240116; t=1706106072; c=relaxed/simple;
+	bh=UslCulOJ4hP1Tj0nrRmZ2+wbi2W8i3qotKFb2uburGg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=F7WJJEHqgQOxFYcsRB7s1/XoUn/lDbwas8U80yLavGlOpkVVDkSoUeVOZIkkXcPGt2sVOMU+XEpEqrjOFxxKr8XXM27JnN4NwAqu9SdMYpF0zdlI3gYF+EO/sA0do9rUYIUj7jSnLVmvkw+xfLtG5CCEPp+J6EhyIu2223ZMBWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d4W1/8eK; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-21481a3de56so1077094fac.2;
-        Wed, 24 Jan 2024 06:11:03 -0800 (PST)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d750660a0aso17160495ad.0;
+        Wed, 24 Jan 2024 06:21:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706105462; x=1706710262; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+xnTLTL2SSu5RMv39utUojmUyQtnjJr+CK/qkZj7DKg=;
-        b=FVdhfrOFBatCCeZQTPJ8mSWNAf2fnyYlwVy2Ul1Im5TjONatvNd3nVsHLKbGgpwpBt
-         hzey21lSer2m48/n1/YfF4gM0UXpwpogSStTsqLoKaGmRph7uPa+gSWkz+aaNTZXdx9v
-         jaPMybe1kl0muO/0sz60XIpJLeevM5OiDeI8Whk+QADmXFxEWa01SH3bQkJGcx6FUMhb
-         eY++ePAU82RTV89K/hhQHM857Jgr3QQqhwg8PNcpNdLGvSMetCeuzW6R75XIw2Na22QG
-         Lat+H3l2/hQpxq1KIb5yodzU2qjq7O14QsJwQxW7ciTgDYWjQpX0wQCgnLpYOBIhOSnT
-         YHAQ==
+        d=gmail.com; s=20230601; t=1706106070; x=1706710870; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vkM7C9VM6ZU2FxPGHAohF+g/nyjtbEK3pFaS9kpNcFU=;
+        b=d4W1/8eKg4px+YehuFC9nz4GY6OI7IzmB79hKUx74ivKzWAsMXn0/Fsrtv4KOHR5WH
+         /IHIiithkObEf10YEqJ0/KKP7D1UexZ+XnrtIHixJEgew9huj174mwgXv//+I75SHkSv
+         QVaOB5hyBq1CfzRA3dXdWXU0N4QrRlSLqJyGxvD/5pRI4szGj2LvOThjGQYkbebfmexO
+         ZJ16MRom/YbKuuJ95l3zNJCNA7sf3o+tguTj6Xf+RAT+5TpigdqhB/C5yeGlYjNJfeDt
+         s2v+4AlS19jWOJ/xXptTfpQ1Jhf3nLcKU0keTmjA/2eXBMg0St1ZMdbabEKYT698Egm4
+         mVeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706105462; x=1706710262;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+xnTLTL2SSu5RMv39utUojmUyQtnjJr+CK/qkZj7DKg=;
-        b=AR6aVWzz1p0mFu/tH4RHcIDhYhZfMm+jInoAk0z0tqqeUqWIEz8AS/KMy+7x32ZOzx
-         ocJ/pkzVBJQTGIc7tzWz82jfi7iK8xGZ+il7AoPAilxJnt/NdFtXdLsdeJwoheZ7NQBs
-         zQazgUfNlSW6hp/rr6Ql48lO6tyNcLFfZFjdC4poHWaO0YGjf3PZeaqIaore9uK0MMaG
-         /GNQP84WvKbl69wnmbqaboNdQ+LWqVcULcEjJdwh87x5qNSzrlErtGjsLB5AEkwOz40l
-         84qQchkUHqnCxb3qvvYltLU7+/ECJLW7foQJ37HS8Wtxb1JDol1a2guzkzH+Toysuhv9
-         4Cfg==
-X-Gm-Message-State: AOJu0Yxnn33uQVVUeT1hvmf9cjpq7qyXDAuYFwiYdvLZJLwsY4aZB5Mr
-	R+Jcfarq6x8JUlfYWBiYGDUM5R08lQ0Pq72rmmWDRwLtFR2mE86UgQmOeTdUjEIoY0uWPAyveRt
-	iNQXWJh9B4ssFrk8CBeGbZldRRW8hhpRj8u3OQg==
-X-Google-Smtp-Source: AGHT+IG9TfD3j0DFTfi1uYZGWP5PaLsWSpYqgym4p+3+gRdC4L7CR6qMM9jCbxA/d6Y6YRCwVXNlWQo0VQ1qeLtd9Vs=
-X-Received: by 2002:a05:6870:718f:b0:214:9c65:b969 with SMTP id
- d15-20020a056870718f00b002149c65b969mr1784734oah.6.1706105462338; Wed, 24 Jan
- 2024 06:11:02 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706106070; x=1706710870;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vkM7C9VM6ZU2FxPGHAohF+g/nyjtbEK3pFaS9kpNcFU=;
+        b=KUIYfmk/Pbsj/wyK8QIe3O6yIFHE3clAy8AGQ8WCsL4V4njfsTuZdZ6AhStbzE2fmn
+         T4suhHbMLOWCS72RlZCGqhrvsvysODEmnh5aqSu1x8ZRnrjWLIbIUWdRdo0xg0ConEmR
+         /5p87hfX/z+9q2sG+1Zuc3wOnOll/xa+yjTiBHgQRRoGQoSS9Em1DiNSaEH2c5YtbP4D
+         MUFw3D0LdF4LnAkSGrybiLWcqR1ncG8D6ebxOq/kFHeDsNr9VL8j47o6+CBQiXQXfv6P
+         GNThPrmc6I9lCZLexnZiZCQQdod7qz7PqL1k3c2m6/EAunHe3Xr8GB2lHDd1tsVCCKBq
+         +qfg==
+X-Gm-Message-State: AOJu0Yw3RNXkeusJKMIo73S/8HTmIyIGwYeTDgexu07dpO7gA/LY3M2q
+	gf5wYwZCT9zr8Xv10IIcjqvgjStxmAGLFDN9XmS6KWlPJWWJLk3b
+X-Google-Smtp-Source: AGHT+IF40Uft6qdKvHYCwchjPCpWLMrA/WX9D91nJJwLr/P8AKj7oyRiZsst11c/Y341gKFa9sTVhA==
+X-Received: by 2002:a17:902:7b90:b0:1d5:4c3b:2aab with SMTP id w16-20020a1709027b9000b001d54c3b2aabmr754138pll.114.1706106069910;
+        Wed, 24 Jan 2024 06:21:09 -0800 (PST)
+Received: from hdebian.corp.toradex.com ([201.82.41.210])
+        by smtp.gmail.com with ESMTPSA id j2-20020a056a00234200b006ddb77d443asm634848pfj.209.2024.01.24.06.21.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jan 2024 06:21:09 -0800 (PST)
+From: Hiago De Franco <hiagofranco@gmail.com>
+To: Shawn Guo <shawnguo@kernel.org>,
+	linux-arm-kernel@lists.infradead.org
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Hiago De Franco <hiago.franco@toradex.com>
+Subject: [PATCH v2 0/2] nxp: imx: Add support for Apalis Evaluation Board v1.2
+Date: Wed, 24 Jan 2024 11:13:18 -0300
+Message-ID: <20240124141849.26254-1-hiagofranco@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124113042.44300-1-jefflexu@linux.alibaba.com> <CAJfpegtkSgRO-24bdnA4xUMFW5vFwSDQ7WkcowNR69zmbRwKqQ@mail.gmail.com>
-In-Reply-To: <CAJfpegtkSgRO-24bdnA4xUMFW5vFwSDQ7WkcowNR69zmbRwKqQ@mail.gmail.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 24 Jan 2024 16:10:50 +0200
-Message-ID: <CAOQ4uxjN6f=M8jjM0-_eysLy8Jx1+r0Dy3MhWHc8f2r7RnEmdQ@mail.gmail.com>
-Subject: Re: [PATCH] fuse: add support for explicit export disabling
-To: Miklos Szeredi <miklos@szeredi.hu>
-Cc: Jingbo Xu <jefflexu@linux.alibaba.com>, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 24, 2024 at 2:17=E2=80=AFPM Miklos Szeredi <miklos@szeredi.hu> =
-wrote:
->
-> On Wed, 24 Jan 2024 at 12:30, Jingbo Xu <jefflexu@linux.alibaba.com> wrot=
-e:
-> >
-> > open_by_handle_at(2) can fail with -ESTALE with a valid handle returned
-> > by a previous name_to_handle_at(2) for evicted fuse inodes, which is
-> > especially common when entry_valid_timeout is 0, e.g. when the fuse
-> > daemon is in "cache=3Dnone" mode.
-> >
-> > The time sequence is like:
-> >
-> >         name_to_handle_at(2)    # succeed
-> >         evict fuse inode
-> >         open_by_handle_at(2)    # fail
-> >
-> > The root cause is that, with 0 entry_valid_timeout, the dput() called i=
-n
-> > name_to_handle_at(2) will trigger iput -> evict(), which will send
-> > FUSE_FORGET to the daemon.  The following open_by_handle_at(2) will sen=
-d
-> > a new FUSE_LOOKUP request upon inode cache miss since the previous inod=
-e
-> > eviction.  Then the fuse daemon may fail the FUSE_LOOKUP request with
-> > -ENOENT as the cached metadata of the requested inode has already been
-> > cleaned up during the previous FUSE_FORGET.  The returned -ENOENT is
-> > treated as -ESTALE when open_by_handle_at(2) returns.
-> >
-> > This confuses the application somehow, as open_by_handle_at(2) fails
-> > when the previous name_to_handle_at(2) succeeds.  The returned errno is
-> > also confusing as the requested file is not deleted and already there.
-> > It is reasonable to fail name_to_handle_at(2) early in this case, after
-> > which the application can fallback to open(2) to access files.
-> >
-> > Since this issue typically appears when entry_valid_timeout is 0 which
-> > is configured by the fuse daemon, the fuse daemon is the right person t=
-o
-> > explicitly disable the export when required.
-> >
-> > Also considering FUSE_EXPORT_SUPPORT actually indicates the support for
-> > lookups of "." and "..", and there are existing fuse daemons supporting
-> > export without FUSE_EXPORT_SUPPORT set, for compatibility, we add a new
-> > INIT flag for such purpose.
->
-> This looks good overall.
->
-> >
-> > Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
-> > ---
-> > RFC: https://lore.kernel.org/all/20240123093701.94166-1-jefflexu@linux.=
-alibaba.com/
-> > ---
-> >  fs/fuse/inode.c           | 11 ++++++++++-
-> >  include/uapi/linux/fuse.h |  2 ++
-> >  2 files changed, 12 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-> > index 2a6d44f91729..851940c0e930 100644
-> > --- a/fs/fuse/inode.c
-> > +++ b/fs/fuse/inode.c
-> > @@ -1110,6 +1110,11 @@ static struct dentry *fuse_get_parent(struct den=
-try *child)
-> >         return parent;
-> >  }
-> >
-> > +/* only for fid encoding; no support for file handle */
-> > +static const struct export_operations fuse_fid_operations =3D {
->
-> Nit: I'd call this fuse_no_export_operations (or something else that
-> emphasizes the fact that this is only for encoding and not for full
-> export support).
+From: Hiago De Franco <hiago.franco@toradex.com>
 
-Not that I really care what the name is, but overlayfs already has
-ovl_export_fid_operations and the name aspires from AT_HANDLE_FID,
-which is already documented in man pages.
+This patch series introduces support for the new Apalis Evaluation Board
+v1.2. With the introduction of v1.2, a common dtsi file, containing
+shared configurations for both apalis-eval.dts and apalis-eval-v1.2.dts,
+has been created. The eval and eval-v1.2 dts files will now capture the
+differences between these two boards. Additionally, updates have been
+made to nxp/imx/Makefile and arm/fsl.yaml to accommodate these changes.
 
-How about fuse_export_fid_operations?
+v1:
+  - https://lore.kernel.org/all/20240122123526.43400-1-hiagofranco@gmail.com/
 
-Thanks,
-Amir.
+v2:
+  - Add missing off-on-delay-us property with 100ms to reg_3v3_mmc and
+  reg_3v3_sd.
+  - Fix startup-delay-us property from 100us (reg_3v3_mmc and reg_3v3_sd)
+  and 1ms (reg_can1 and reg_can2) to 10ms.
+  - Fix pinctrl mux from 0xb000 to 0x1b0b0.
+  - Add Acked-by: Conor Dooley.
+  - Add Reviewed-by: Francesco Dolcini.
+
+Hiago De Franco (2):
+  dt-bindings: arm: fsl: Add toradex,apalis_imx6q-eval-v1.2 board
+  arm: dts: nxp: imx: Add support for Apalis Evaluation Board v1.2
+
+ .../devicetree/bindings/arm/fsl.yaml          |   3 +-
+ arch/arm/boot/dts/nxp/imx/Makefile            |   1 +
+ .../dts/nxp/imx/imx6q-apalis-eval-v1.2.dts    | 200 ++++++++++++++++++
+ .../boot/dts/nxp/imx/imx6q-apalis-eval.dts    | 108 +---------
+ .../boot/dts/nxp/imx/imx6q-apalis-eval.dtsi   | 120 +++++++++++
+ 5 files changed, 325 insertions(+), 107 deletions(-)
+ create mode 100644 arch/arm/boot/dts/nxp/imx/imx6q-apalis-eval-v1.2.dts
+ create mode 100644 arch/arm/boot/dts/nxp/imx/imx6q-apalis-eval.dtsi
+
+-- 
+2.43.0
+
 
