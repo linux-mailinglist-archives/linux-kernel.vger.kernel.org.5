@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-37391-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2B1A83AF31
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:08:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB20383AF32
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:08:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7AE2B1F21934
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:08:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 887C928A77D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:08:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56E5C128369;
-	Wed, 24 Jan 2024 17:05:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57635128364;
+	Wed, 24 Jan 2024 17:05:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="afFu1XEj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DuQkInVA"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B05E1272C8
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 17:05:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BD7D128372
+	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 17:05:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706115938; cv=none; b=R7hEmDPYXFPxAxqQTqM7+Z9sHuIDZd9VaR1pETTiUFOue3B0wy1vza1mctVpKdKcwpVS3gvp35Y8YbY/FbA7l8tL8HNLL68Snkuk1rU1bGkcvMlYZhBqdfoG0o3Ah2rlc1dsJMFZUC5IdUlawnaNd7UyYFUVn2SJ2Khs11jN7D0=
+	t=1706115940; cv=none; b=XPVyY9aJR53i7hK6mGSe3IoERRgItRDTpiWFaPk067Td+c4xK0KkvkC0IHZSxlsads41VX8cqmHGu5puPDZTnteOUmO2Vukk0bwyHVE9o70Qj1weErTlLO3YY7ttyWAayxvjZC3fhMgfcnQDdJuSqlKKu394tVnh1+ksC15OPS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706115938; c=relaxed/simple;
-	bh=vnSjPjyGuwHT0H1EryHVqfaY+UithxNYnUokHTzxfk4=;
+	s=arc-20240116; t=1706115940; c=relaxed/simple;
+	bh=lsGUXL5LMIFhpic7ChOHhkP9MANhD8t8ZIHOwtUbcmM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=n3Yq3P1T7oUqbcHuX7nPrGLgsFDPqL7VwyrGlJJKQbdIuKoYsr3abUQzlVobbgmVDuHn1EaxqpTo5zJdhAXoxehijliT3x58pVqfyfP8g7i5fPuHvQ96AdcQxjIs6EvYpQxvvo1+55atr/eVKKXXkLZowhfZiIbE/t93kSMbCwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=afFu1XEj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E26A2C433A6;
-	Wed, 24 Jan 2024 17:05:35 +0000 (UTC)
+	 MIME-Version; b=fG5tYot9QGAGK5axnEuIKdBWvRqSSYbXjH31hO0uFGnLkPeUT7LwWWx7cSTPmbIXhCn3jgzLOuvgxafU2M5asOu6SiiUdQfz7CtYjPDfKtbPk8w00/qKg/e5E6dVoDRE5+mpiwWMv3vIwLu2AiWfSLT99e5ZLpyeMaAhg2iXQSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DuQkInVA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31A44C43390;
+	Wed, 24 Jan 2024 17:05:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706115937;
-	bh=vnSjPjyGuwHT0H1EryHVqfaY+UithxNYnUokHTzxfk4=;
+	s=k20201202; t=1706115940;
+	bh=lsGUXL5LMIFhpic7ChOHhkP9MANhD8t8ZIHOwtUbcmM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=afFu1XEjFeSwBajqRmosrrxBggwnp/nNyeClFN2urrOfHJQQptCOWy147a4i2+GBa
-	 cBcDrsslq8L5NHYE3xFkLChWED7FVkPR18wQtkrjJbfMhYPZ0QbfvU3dw/+aNBs8Rg
-	 pRpvq4baTBzf6j5ai49A10AvXDKddfB23OmY2e6V90QZThqt/96Oa2QAm6BJPyA8LM
-	 416Y5S5DLzzLgocpNlCmajaj9itiKEHZ26Ds/Hudauo10wCcfgvTtUxIcxAeGjAzk8
-	 xfPGJRrlE0xSniUwCAZnvWKz63DBjXWceAOvalNH11nv1yq+X9LgIQYbiwbBVKyY4p
-	 VkDrEC8X8M9/A==
+	b=DuQkInVAUkFFe9x3NG73vufvMIvDmGKVKl1pu+wVnZqx+sYtQIRaR2APFcfngKhhG
+	 Wd7xhRYwmVwcGjeTqrpcsZxsb2q74P3nKJMMR+cRJX8hFF/K800l2Q7EweXLjcceaI
+	 X42ebGIrKiKadxwUtlGnsgNMYWTlGxvBqgoFdLYCdRokfuxAhfEE9ZTZx+9nmmyC/8
+	 peFsNlziSq3cKqkqSGvNzWumzlsawhLrBqQWOiX2YkXDjpzdUcnSe/VMsvh3AXYR3d
+	 WXEqsBUu4rEqgYRHGp0L65gE4NU18RNs348ts8c/GdLE5zGMOnFoHoX22b3vMQmGiz
+	 KUSObyTXdCfEA==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -48,9 +48,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	Anna-Maria Behnsen <anna-maria@linutronix.de>,
 	Peng Liu <liupeng17@lenovo.com>,
 	Joel Fernandes <joel@joelfernandes.org>
-Subject: [PATCH 12/15] tick: Move individual bit features to debuggable mask accesses
-Date: Wed, 24 Jan 2024 18:04:56 +0100
-Message-ID: <20240124170459.24850-13-frederic@kernel.org>
+Subject: [PATCH 13/15] tick: Split nohz and highres features from nohz_mode
+Date: Wed, 24 Jan 2024 18:04:57 +0100
+Message-ID: <20240124170459.24850-14-frederic@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240124170459.24850-1-frederic@kernel.org>
 References: <20240124170459.24850-1-frederic@kernel.org>
@@ -62,372 +62,240 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The individual bitfields of struct tick_sched must be modified from
-IRQs disabled places, otherwise local modifications can race due to them
-sharing the same memory storage.
+The nohz mode field tells about low resolution nohz mode or high
+resolution nohz mode but it doesn't tell about high resolution non-nohz
+mode.
 
-The recent move of the "got_idle_tick" bitfield to its own storage shows
-that the use of these bitfields, as pretty as they look, can be as much
-error prone.
+In order to retrieve the latter state, tick_cancel_sched_timer() must
+fiddle with struct hrtimer's internals to guess if the tick has been
+initialized in high resolution.
 
-In order to avoid future issues of the like and make sure that those
-bitfields are safely accessed, move those flags to an explicit mask
-along with a mutator function performing the basic IRQs disabled sanity
-check.
+Move instead the nohz mode field information into the tick flags and
+provide two new bits: one to know if the tick is in nohz mode and
+another one to know if the tick is in high resolution. The combination
+of those two flags provides all the needed informations to determine
+which of the three tick modes is running.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/time/tick-sched.c | 86 +++++++++++++++++++++++++---------------
- kernel/time/tick-sched.h | 23 ++++++-----
- kernel/time/timer_list.c |  5 ++-
- 3 files changed, 72 insertions(+), 42 deletions(-)
+ kernel/time/hrtimer.c    |  2 +-
+ kernel/time/tick-sched.c | 32 +++++++++++++++++---------------
+ kernel/time/tick-sched.h | 13 +++++--------
+ kernel/time/timer_list.c |  5 +++--
+ 4 files changed, 26 insertions(+), 26 deletions(-)
 
+diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+index 3b456ec7d4fb..d8ba7985fe0d 100644
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -746,7 +746,7 @@ static void hrtimer_switch_to_hres(void)
+ 	base->hres_active = 1;
+ 	hrtimer_resolution = HIGH_RES_NSEC;
+ 
+-	tick_setup_sched_timer(NOHZ_MODE_HIGHRES);
++	tick_setup_sched_timer(true);
+ 	/* "Retrigger" the interrupt to get things going */
+ 	retrigger_next_event(NULL);
+ }
 diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index 3104fff89007..8dc9c7557776 100644
+index 8dc9c7557776..274ac5941b16 100644
 --- a/kernel/time/tick-sched.c
 +++ b/kernel/time/tick-sched.c
-@@ -180,6 +180,26 @@ static ktime_t tick_init_jiffy_update(void)
- 	return period;
- }
+@@ -832,7 +832,7 @@ static void tick_nohz_restart(struct tick_sched *ts, ktime_t now)
+ 	/* Forward the time to expire in the future */
+ 	hrtimer_forward(&ts->sched_timer, now, TICK_NSEC);
  
-+static inline int tick_sched_flag_test(struct tick_sched *ts,
-+				       unsigned long flag)
-+{
-+	return !!(ts->flags & flag);
-+}
-+
-+static inline void tick_sched_flag_set(struct tick_sched *ts,
-+				       unsigned long flag)
-+{
-+	lockdep_assert_irqs_disabled();
-+	ts->flags |= flag;
-+}
-+
-+static inline void tick_sched_flag_clear(struct tick_sched *ts,
-+					 unsigned long flag)
-+{
-+	lockdep_assert_irqs_disabled();
-+	ts->flags &= ~flag;
-+}
-+
- #define MAX_STALLED_JIFFIES 5
- 
- static void tick_sched_do_timer(struct tick_sched *ts, ktime_t now)
-@@ -223,7 +243,7 @@ static void tick_sched_do_timer(struct tick_sched *ts, ktime_t now)
- 		}
+-	if (ts->nohz_mode == NOHZ_MODE_HIGHRES) {
++	if (tick_sched_flag_test(ts, TS_FLAG_HIGHRES)) {
+ 		hrtimer_start_expires(&ts->sched_timer,
+ 				      HRTIMER_MODE_ABS_PINNED_HARD);
+ 	} else {
+@@ -998,14 +998,14 @@ static void tick_nohz_stop_tick(struct tick_sched *ts, int cpu)
+ 	 * the tick timer.
+ 	 */
+ 	if (unlikely(expires == KTIME_MAX)) {
+-		if (ts->nohz_mode == NOHZ_MODE_HIGHRES)
++		if (tick_sched_flag_test(ts, TS_FLAG_HIGHRES))
+ 			hrtimer_cancel(&ts->sched_timer);
+ 		else
+ 			tick_program_event(KTIME_MAX, 1);
+ 		return;
  	}
  
--	if (ts->inidle)
-+	if (tick_sched_flag_test(ts, TS_FLAG_INIDLE))
- 		ts->got_idle_tick = 1;
- }
- 
-@@ -237,7 +257,8 @@ static void tick_sched_handle(struct tick_sched *ts, struct pt_regs *regs)
- 	 * idle" jiffy stamp so the idle accounting adjustment we do
- 	 * when we go busy again does not account too many ticks.
- 	 */
--	if (IS_ENABLED(CONFIG_NO_HZ_COMMON) && ts->tick_stopped) {
-+	if (IS_ENABLED(CONFIG_NO_HZ_COMMON) &&
-+	    tick_sched_flag_test(ts, TS_FLAG_STOPPED)) {
- 		touch_softlockup_watchdog_sched();
- 		if (is_idle_task(current))
- 			ts->idle_jiffies++;
-@@ -280,7 +301,7 @@ static enum hrtimer_restart tick_nohz_highres_handler(struct hrtimer *timer)
- 	 * - to the idle task if in dynticks-idle
- 	 * - to IRQ exit if in full-dynticks.
- 	 */
--	if (unlikely(ts->tick_stopped))
-+	if (unlikely(tick_sched_flag_test(ts, TS_FLAG_STOPPED)))
- 		return HRTIMER_NORESTART;
- 
- 	hrtimer_forward(timer, now, TICK_NSEC);
-@@ -560,7 +581,7 @@ void __tick_nohz_task_switch(void)
- 
- 	ts = this_cpu_ptr(&tick_cpu_sched);
- 
--	if (ts->tick_stopped) {
-+	if (tick_sched_flag_test(ts, TS_FLAG_STOPPED)) {
- 		if (atomic_read(&current->tick_dep_mask) ||
- 		    atomic_read(&current->signal->tick_dep_mask))
- 			tick_nohz_full_kick();
-@@ -657,14 +678,14 @@ bool tick_nohz_tick_stopped(void)
- {
- 	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
- 
--	return ts->tick_stopped;
-+	return tick_sched_flag_test(ts, TS_FLAG_STOPPED);
- }
- 
- bool tick_nohz_tick_stopped_cpu(int cpu)
- {
- 	struct tick_sched *ts = per_cpu_ptr(&tick_cpu_sched, cpu);
- 
--	return ts->tick_stopped;
-+	return tick_sched_flag_test(ts, TS_FLAG_STOPPED);
- }
- 
- /**
-@@ -694,7 +715,7 @@ static void tick_nohz_stop_idle(struct tick_sched *ts, ktime_t now)
- {
- 	ktime_t delta;
- 
--	if (WARN_ON_ONCE(!ts->idle_active))
-+	if (WARN_ON_ONCE(!tick_sched_flag_test(ts, TS_FLAG_IDLE_ACTIVE)))
+-	if (ts->nohz_mode == NOHZ_MODE_HIGHRES) {
++	if (tick_sched_flag_test(ts, TS_FLAG_HIGHRES)) {
+ 		hrtimer_start(&ts->sched_timer, expires,
+ 			      HRTIMER_MODE_ABS_PINNED_HARD);
+ 	} else {
+@@ -1066,7 +1066,7 @@ static void tick_nohz_full_update_tick(struct tick_sched *ts)
+ 	if (!tick_nohz_full_cpu(smp_processor_id()))
  		return;
  
- 	delta = ktime_sub(now, ts->idle_entrytime);
-@@ -706,7 +727,7 @@ static void tick_nohz_stop_idle(struct tick_sched *ts, ktime_t now)
- 		ts->idle_sleeptime = ktime_add(ts->idle_sleeptime, delta);
+-	if (ts->nohz_mode == NOHZ_MODE_INACTIVE)
++	if (!tick_sched_flag_test(ts, TS_FLAG_NOHZ))
+ 		return;
  
- 	ts->idle_entrytime = now;
--	ts->idle_active = 0;
-+	tick_sched_flag_clear(ts, TS_FLAG_IDLE_ACTIVE);
- 	write_seqcount_end(&ts->idle_sleeptime_seq);
+ 	__tick_nohz_full_update_tick(ts, ktime_get());
+@@ -1126,7 +1126,7 @@ static bool can_stop_idle_tick(int cpu, struct tick_sched *ts)
+ 		return false;
+ 	}
  
- 	sched_clock_idle_wakeup_event();
-@@ -716,7 +737,7 @@ static void tick_nohz_start_idle(struct tick_sched *ts)
+-	if (unlikely(ts->nohz_mode == NOHZ_MODE_INACTIVE))
++	if (unlikely(!tick_sched_flag_test(ts, TS_FLAG_NOHZ)))
+ 		return false;
+ 
+ 	if (need_resched())
+@@ -1453,11 +1453,11 @@ static void tick_nohz_lowres_handler(struct clock_event_device *dev)
+ 		tick_program_event(hrtimer_get_expires(&ts->sched_timer), 1);
+ }
+ 
+-static inline void tick_nohz_activate(struct tick_sched *ts, int mode)
++static inline void tick_nohz_activate(struct tick_sched *ts)
  {
- 	write_seqcount_begin(&ts->idle_sleeptime_seq);
- 	ts->idle_entrytime = ktime_get();
--	ts->idle_active = 1;
-+	tick_sched_flag_set(ts, TS_FLAG_IDLE_ACTIVE);
- 	write_seqcount_end(&ts->idle_sleeptime_seq);
- 
- 	sched_clock_idle_sleep_event();
-@@ -738,7 +759,7 @@ static u64 get_cpu_sleep_time_us(struct tick_sched *ts, ktime_t *sleeptime,
- 	do {
- 		seq = read_seqcount_begin(&ts->idle_sleeptime_seq);
- 
--		if (ts->idle_active && compute_delta) {
-+		if (tick_sched_flag_test(ts, TS_FLAG_IDLE_ACTIVE) && compute_delta) {
- 			ktime_t delta = ktime_sub(now, ts->idle_entrytime);
- 
- 			idle = ktime_add(*sleeptime, delta);
-@@ -889,7 +910,7 @@ static ktime_t tick_nohz_next_event(struct tick_sched *ts, int cpu)
- 		 * We've not stopped the tick yet, and there's a timer in the
- 		 * next period, so no point in stopping it either, bail.
- 		 */
--		if (!ts->tick_stopped) {
-+		if (!tick_sched_flag_test(ts, TS_FLAG_STOPPED)) {
- 			ts->timer_expires = 0;
- 			goto out;
- 		}
-@@ -902,7 +923,8 @@ static ktime_t tick_nohz_next_event(struct tick_sched *ts, int cpu)
+ 	if (!tick_nohz_enabled)
+ 		return;
+-	ts->nohz_mode = mode;
++	tick_sched_flag_set(ts, TS_FLAG_NOHZ);
+ 	/* One update is enough */
+ 	if (!test_and_set_bit(0, &tick_nohz_active))
+ 		timers_update_nohz();
+@@ -1478,7 +1478,7 @@ static void tick_nohz_switch_to_nohz(void)
+ 	 * Recycle the hrtimer in 'ts', so we can share the
+ 	 * highres code.
  	 */
- 	delta = timekeeping_max_deferment();
- 	if (cpu != tick_do_timer_cpu &&
--	    (tick_do_timer_cpu != TICK_DO_TIMER_NONE || !ts->do_timer_last))
-+	    (tick_do_timer_cpu != TICK_DO_TIMER_NONE ||
-+	     !tick_sched_flag_test(ts, TS_FLAG_DO_TIMER_LAST)))
- 		delta = KTIME_MAX;
- 
- 	/* Calculate the next expiry time */
-@@ -936,13 +958,13 @@ static void tick_nohz_stop_tick(struct tick_sched *ts, int cpu)
- 	 */
- 	if (cpu == tick_do_timer_cpu) {
- 		tick_do_timer_cpu = TICK_DO_TIMER_NONE;
--		ts->do_timer_last = 1;
-+		tick_sched_flag_set(ts, TS_FLAG_DO_TIMER_LAST);
- 	} else if (tick_do_timer_cpu != TICK_DO_TIMER_NONE) {
--		ts->do_timer_last = 0;
-+		tick_sched_flag_clear(ts, TS_FLAG_DO_TIMER_LAST);
- 	}
- 
- 	/* Skip reprogram of event if it's not changed */
--	if (ts->tick_stopped && (expires == ts->next_tick)) {
-+	if (tick_sched_flag_test(ts, TS_FLAG_STOPPED) && (expires == ts->next_tick)) {
- 		/* Sanity check: make sure clockevent is actually programmed */
- 		if (expires == KTIME_MAX || ts->next_tick == hrtimer_get_expires(&ts->sched_timer))
- 			return;
-@@ -960,12 +982,12 @@ static void tick_nohz_stop_tick(struct tick_sched *ts, int cpu)
- 	 * call we save the current tick time, so we can restart the
- 	 * scheduler tick in tick_nohz_restart_sched_tick().
- 	 */
--	if (!ts->tick_stopped) {
-+	if (!tick_sched_flag_test(ts, TS_FLAG_STOPPED)) {
- 		calc_load_nohz_start();
- 		quiet_vmstat();
- 
- 		ts->last_tick = hrtimer_get_expires(&ts->sched_timer);
--		ts->tick_stopped = 1;
-+		tick_sched_flag_set(ts, TS_FLAG_STOPPED);
- 		trace_tick_stop(1, TICK_DEP_MASK_NONE);
- 	}
- 
-@@ -1022,7 +1044,7 @@ static void tick_nohz_restart_sched_tick(struct tick_sched *ts, ktime_t now)
- 	touch_softlockup_watchdog_sched();
- 
- 	/* Cancel the scheduled timer and restore the tick: */
--	ts->tick_stopped  = 0;
-+	tick_sched_flag_clear(ts, TS_FLAG_STOPPED);
- 	tick_nohz_restart(ts, now);
+-	tick_setup_sched_timer(NOHZ_MODE_LOWRES);
++	tick_setup_sched_timer(false);
  }
  
-@@ -1034,7 +1056,7 @@ static void __tick_nohz_full_update_tick(struct tick_sched *ts,
+ static inline void tick_nohz_irq_enter(void)
+@@ -1506,7 +1506,7 @@ static inline void tick_nohz_irq_enter(void)
  
- 	if (can_stop_full_tick(cpu, ts))
- 		tick_nohz_full_stop_tick(ts, cpu);
--	else if (ts->tick_stopped)
-+	else if (tick_sched_flag_test(ts, TS_FLAG_STOPPED))
- 		tick_nohz_restart_sched_tick(ts, now);
- #endif
- }
-@@ -1154,14 +1176,14 @@ void tick_nohz_idle_stop_tick(void)
- 	ts->idle_calls++;
+ static inline void tick_nohz_switch_to_nohz(void) { }
+ static inline void tick_nohz_irq_enter(void) { }
+-static inline void tick_nohz_activate(struct tick_sched *ts, int mode) { }
++static inline void tick_nohz_activate(struct tick_sched *ts) { }
  
- 	if (expires > 0LL) {
--		int was_stopped = ts->tick_stopped;
-+		int was_stopped = tick_sched_flag_test(ts, TS_FLAG_STOPPED);
+ #endif /* CONFIG_NO_HZ_COMMON */
  
- 		tick_nohz_stop_tick(ts, cpu);
- 
- 		ts->idle_sleeps++;
- 		ts->idle_expires = expires;
- 
--		if (!was_stopped && ts->tick_stopped) {
-+		if (!was_stopped && tick_sched_flag_test(ts, TS_FLAG_STOPPED)) {
- 			ts->idle_jiffies = ts->last_jiffies;
- 			nohz_balance_enter_idle(cpu);
- 		}
-@@ -1197,7 +1219,7 @@ void tick_nohz_idle_enter(void)
- 
- 	WARN_ON_ONCE(ts->timer_expires_base);
- 
--	ts->inidle = 1;
-+	tick_sched_flag_set(ts, TS_FLAG_INIDLE);
- 	tick_nohz_start_idle(ts);
- 
- 	local_irq_enable();
-@@ -1226,7 +1248,7 @@ void tick_nohz_irq_exit(void)
+@@ -1533,14 +1533,16 @@ early_param("skew_tick", skew_tick);
+  * tick_setup_sched_timer - setup the tick emulation timer
+  * @mode: tick_nohz_mode to setup for
+  */
+-void tick_setup_sched_timer(int mode)
++void tick_setup_sched_timer(bool hrtimer)
  {
  	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
  
--	if (ts->inidle)
-+	if (tick_sched_flag_test(ts, TS_FLAG_INIDLE))
- 		tick_nohz_start_idle(ts);
+ 	/* Emulate tick processing via per-CPU hrtimers: */
+ 	hrtimer_init(&ts->sched_timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_HARD);
+-	if (mode == NOHZ_MODE_HIGHRES)
++	if (hrtimer) {
++		tick_sched_flag_set(ts, TS_FLAG_HIGHRES);
+ 		ts->sched_timer.function = tick_nohz_highres_handler;
++	}
+ 
+ 	/* Get the next period (per-CPU) */
+ 	hrtimer_set_expires(&ts->sched_timer, tick_init_jiffy_update());
+@@ -1554,11 +1556,11 @@ void tick_setup_sched_timer(int mode)
+ 	}
+ 
+ 	hrtimer_forward_now(&ts->sched_timer, TICK_NSEC);
+-	if (mode == NOHZ_MODE_HIGHRES)
++	if (hrtimer)
+ 		hrtimer_start_expires(&ts->sched_timer, HRTIMER_MODE_ABS_PINNED_HARD);
  	else
- 		tick_nohz_full_update_tick(ts);
-@@ -1280,7 +1302,7 @@ ktime_t tick_nohz_get_sleep_length(ktime_t *delta_next)
- 	ktime_t now = ts->idle_entrytime;
- 	ktime_t next_event;
- 
--	WARN_ON_ONCE(!ts->inidle);
-+	WARN_ON_ONCE(!tick_sched_flag_test(ts, TS_FLAG_INIDLE));
- 
- 	*delta_next = ktime_sub(dev->next_event, now);
- 
-@@ -1352,7 +1374,7 @@ void tick_nohz_idle_restart_tick(void)
- {
- 	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
- 
--	if (ts->tick_stopped) {
-+	if (tick_sched_flag_test(ts, TS_FLAG_STOPPED)) {
- 		ktime_t now = ktime_get();
- 		tick_nohz_restart_sched_tick(ts, now);
- 		tick_nohz_account_idle_time(ts, now);
-@@ -1393,12 +1415,12 @@ void tick_nohz_idle_exit(void)
- 
- 	local_irq_disable();
- 
--	WARN_ON_ONCE(!ts->inidle);
-+	WARN_ON_ONCE(!tick_sched_flag_test(ts, TS_FLAG_INIDLE));
- 	WARN_ON_ONCE(ts->timer_expires_base);
- 
--	ts->inidle = 0;
--	idle_active = ts->idle_active;
--	tick_stopped = ts->tick_stopped;
-+	tick_sched_flag_clear(ts, TS_FLAG_INIDLE);
-+	idle_active = tick_sched_flag_test(ts, TS_FLAG_IDLE_ACTIVE);
-+	tick_stopped = tick_sched_flag_test(ts, TS_FLAG_STOPPED);
- 
- 	if (idle_active || tick_stopped)
- 		now = ktime_get();
-@@ -1464,10 +1486,10 @@ static inline void tick_nohz_irq_enter(void)
- 	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
- 	ktime_t now;
- 
--	if (!ts->idle_active && !ts->tick_stopped)
-+	if (!tick_sched_flag_test(ts, TS_FLAG_STOPPED | TS_FLAG_IDLE_ACTIVE))
- 		return;
- 	now = ktime_get();
--	if (ts->idle_active)
-+	if (tick_sched_flag_test(ts, TS_FLAG_IDLE_ACTIVE))
- 		tick_nohz_stop_idle(ts, now);
- 	/*
- 	 * If all CPUs are idle we may need to update a stale jiffies value.
-@@ -1476,7 +1498,7 @@ static inline void tick_nohz_irq_enter(void)
- 	 * rare case (typically stop machine). So we must make sure we have a
- 	 * last resort.
- 	 */
--	if (ts->tick_stopped)
-+	if (tick_sched_flag_test(ts, TS_FLAG_STOPPED))
- 		tick_nohz_update_jiffies(now);
+ 		tick_program_event(hrtimer_get_expires(&ts->sched_timer), 1);
+-	tick_nohz_activate(ts, mode);
++	tick_nohz_activate(ts);
  }
  
+ void tick_cancel_sched_timer(int cpu)
+@@ -1566,7 +1568,7 @@ void tick_cancel_sched_timer(int cpu)
+ 	struct tick_sched *ts = &per_cpu(tick_cpu_sched, cpu);
+ 	ktime_t idle_sleeptime, iowait_sleeptime;
+ 
+-	if (IS_ENABLED(CONFIG_HIGH_RES_TIMERS) && ts->sched_timer.base)
++	if (tick_sched_flag_test(ts, TS_FLAG_HIGHRES))
+ 		hrtimer_cancel(&ts->sched_timer);
+ 
+ 	idle_sleeptime = ts->idle_sleeptime;
+@@ -1612,7 +1614,7 @@ int tick_check_oneshot_change(int allow_nohz)
+ 	if (!test_and_clear_bit(0, &ts->check_clocks))
+ 		return 0;
+ 
+-	if (ts->nohz_mode != NOHZ_MODE_INACTIVE)
++	if (tick_sched_flag_test(ts, TS_FLAG_NOHZ))
+ 		return 0;
+ 
+ 	if (!timekeeping_valid_for_hres() || !tick_is_oneshot_available())
 diff --git a/kernel/time/tick-sched.h b/kernel/time/tick-sched.h
-index 3b555e0fa937..07a4c0144c47 100644
+index 07a4c0144c47..bbe72a078985 100644
 --- a/kernel/time/tick-sched.h
 +++ b/kernel/time/tick-sched.h
-@@ -20,14 +20,22 @@ enum tick_nohz_mode {
- 	NOHZ_MODE_HIGHRES,
+@@ -14,12 +14,6 @@ struct tick_device {
+ 	enum tick_device_mode mode;
  };
  
-+/* The CPU is in the tick idle mode */
-+#define TS_FLAG_INIDLE		BIT(0)
-+/* The idle tick has been stopped */
-+#define TS_FLAG_STOPPED		BIT(1)
-+/*
-+ * Indicator that the CPU is actively in the tick idle mode;
-+ * it is reset during irq handling phases.
-+ */
-+#define TS_FLAG_IDLE_ACTIVE	BIT(2)
-+/* CPU was the last one doing do_timer before going idle */
-+#define TS_FLAG_DO_TIMER_LAST	BIT(3)
-+
+-enum tick_nohz_mode {
+-	NOHZ_MODE_INACTIVE,
+-	NOHZ_MODE_LOWRES,
+-	NOHZ_MODE_HIGHRES,
+-};
+-
+ /* The CPU is in the tick idle mode */
+ #define TS_FLAG_INIDLE		BIT(0)
+ /* The idle tick has been stopped */
+@@ -31,6 +25,10 @@ enum tick_nohz_mode {
+ #define TS_FLAG_IDLE_ACTIVE	BIT(2)
+ /* CPU was the last one doing do_timer before going idle */
+ #define TS_FLAG_DO_TIMER_LAST	BIT(3)
++/* NO_HZ is enabled */
++#define TS_FLAG_NOHZ		BIT(4)
++/* High resolution tick mode */
++#define TS_FLAG_HIGHRES		BIT(5)
+ 
  /**
   * struct tick_sched - sched tick emulation and no idle tick control/stats
-  *
-- * @inidle:		Indicator that the CPU is in the tick idle mode
-- * @tick_stopped:	Indicator that the idle tick has been stopped
-- * @idle_active:	Indicator that the CPU is actively in the tick idle mode;
-- *			it is reset during irq handling phases.
-- * @do_timer_last:	CPU was the last one doing do_timer before going idle
-+ * @flags:		State flags gathering the TS_FLAG_* features
-  * @got_idle_tick:	Tick timer function has run with @inidle set
-  * @stalled_jiffies:	Number of stalled jiffies detected across ticks
-  * @last_tick_jiffies:	Value of jiffies seen on last tick
-@@ -57,10 +65,7 @@ enum tick_nohz_mode {
-  */
- struct tick_sched {
- 	/* Common flags */
--	unsigned int			inidle		: 1;
--	unsigned int			tick_stopped	: 1;
--	unsigned int			idle_active	: 1;
--	unsigned int			do_timer_last	: 1;
-+	unsigned long			flags;
+@@ -84,7 +82,6 @@ struct tick_sched {
+ 	ktime_t				idle_entrytime;
  
- 	/* Tick handling: jiffies stall check */
- 	unsigned int			stalled_jiffies;
+ 	/* Tick stop */
+-	enum tick_nohz_mode		nohz_mode;
+ 	unsigned long			last_jiffies;
+ 	u64				timer_expires_base;
+ 	u64				timer_expires;
+@@ -107,7 +104,7 @@ struct tick_sched {
+ 
+ extern struct tick_sched *tick_get_tick_sched(int cpu);
+ 
+-extern void tick_setup_sched_timer(int mode);
++extern void tick_setup_sched_timer(bool hrtimer);
+ #if defined CONFIG_NO_HZ_COMMON || defined CONFIG_HIGH_RES_TIMERS
+ extern void tick_cancel_sched_timer(int cpu);
+ #else
 diff --git a/kernel/time/timer_list.c b/kernel/time/timer_list.c
-index ed7d6ad694fb..38f81d836fc5 100644
+index 38f81d836fc5..1c311c46da50 100644
 --- a/kernel/time/timer_list.c
 +++ b/kernel/time/timer_list.c
-@@ -147,11 +147,14 @@ static void print_cpu(struct seq_file *m, int cpu, u64 now)
- # define P_ns(x) \
- 	SEQ_printf(m, "  .%-15s: %Lu nsecs\n", #x, \
- 		   (unsigned long long)(ktime_to_ns(ts->x)))
-+# define P_flag(x, f)			    \
-+	SEQ_printf(m, "  .%-15s: %d\n", #x, !!(ts->flags & (f)))
-+
+@@ -152,7 +152,8 @@ static void print_cpu(struct seq_file *m, int cpu, u64 now)
+ 
  	{
  		struct tick_sched *ts = tick_get_tick_sched(cpu);
- 		P(nohz_mode);
+-		P(nohz_mode);
++		P_flag(nohz, TS_FLAG_NOHZ);
++		P_flag(highres, TS_FLAG_HIGHRES);
  		P_ns(last_tick);
--		P(tick_stopped);
-+		P_flag(tick_stopped, TS_FLAG_STOPPED);
+ 		P_flag(tick_stopped, TS_FLAG_STOPPED);
  		P(idle_jiffies);
- 		P(idle_calls);
- 		P(idle_sleeps);
+@@ -259,7 +260,7 @@ static void timer_list_show_tickdevices_header(struct seq_file *m)
+ 
+ static inline void timer_list_header(struct seq_file *m, u64 now)
+ {
+-	SEQ_printf(m, "Timer List Version: v0.9\n");
++	SEQ_printf(m, "Timer List Version: v0.10\n");
+ 	SEQ_printf(m, "HRTIMER_MAX_CLOCK_BASES: %d\n", HRTIMER_MAX_CLOCK_BASES);
+ 	SEQ_printf(m, "now at %Ld nsecs\n", (unsigned long long)now);
+ 	SEQ_printf(m, "\n");
 -- 
 2.43.0
 
