@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-36240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-36242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEBFD839DCF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:59:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3669A839DD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 01:59:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D44D1F25C90
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 00:59:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA87128DD31
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 00:59:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 434933C00;
-	Wed, 24 Jan 2024 00:58:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B752566E;
+	Wed, 24 Jan 2024 00:58:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b="i4sXuuWK"
+	dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b="IOGSE3p/"
 Received: from mail.codeweavers.com (mail.codeweavers.com [4.36.192.163])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3158C1106;
-	Wed, 24 Jan 2024 00:58:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 133E24C78;
+	Wed, 24 Jan 2024 00:58:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=4.36.192.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706057917; cv=none; b=cBZ2F2Y3Iw34KLN5NNgqgSbvdzBC9waRIRl2rri4jFiUW1gx8MU0eX10VWHwG6ACsEHN1WwCS20HgEY+4S2/ms84a+S1Jip+jELJtwx1jzvnkCSx0DUSUfxV4TCBks+fCI8oYYddWakCi+C/HqHtzYLH4639LqjiQMG4OfgT6N0=
+	t=1706057923; cv=none; b=LLkN7N6cpP9SLBFcfqKIHq1H8uL3md/oU6+jyw0tsJcEHNUBsDkE3aaVpUalEllKBqpD5/wnfw+MQnVBP0PEW6jc0/q6fyF+8stYZ+kXXMUdCX56rXGLqFeYMXDYK4s2dvGBbrgZyIbhzsviwu6SEqJXskDKjJ/65akS15ATS7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706057917; c=relaxed/simple;
-	bh=XM9GV8+sIMF5RW/KaB3HIusG5cMiPnVsHGK1IBjoex4=;
+	s=arc-20240116; t=1706057923; c=relaxed/simple;
+	bh=1PoVRiq9uKUZYi4V4WUdlXLfdCr9s7ZAFXEMf3qda60=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aciia/+kjrKlzr4yTxgvGqQZKPmUOc78gdmxTsNTeiHsQeMsCzk1Ic3yhEF89/kcK2H27bHRn5ppuPlF22Wak7s1VQwlUOQxXX51NR1SNHoO5zCGLye8L9pgbkr8uaRWRQ5Z5hLfndh4bZDIb5hJMQyvFxrZWO0U8Jmsfm6ut08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com; spf=pass smtp.mailfrom=codeweavers.com; dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b=i4sXuuWK; arc=none smtp.client-ip=4.36.192.163
+	 MIME-Version; b=tqMTpBG4vBiYv2VSrq9/4rEOTRsTOLuWi76IOeB9raTjAsP/+lpOGu9r39Yi28Q769gMDK9VqN3zc5OHOAqQ6WWkYvF0O0YcL+NrWJscLdkVIu04rxgunoh43n5/h8xkkWtXGUtTjiKt8dEU8KeWoYp5pgPgxvEGmBXwowVE7HI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com; spf=pass smtp.mailfrom=codeweavers.com; dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b=IOGSE3p/; arc=none smtp.client-ip=4.36.192.163
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeweavers.com
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=codeweavers.com; s=s1; h=Message-ID:Date:Subject:Cc:To:From:Sender;
-	bh=/+Jb+z9Ua1CTDoDCd/u+WQhU/PYvORg76KqM3L0CpVs=; b=i4sXuuWKHjKxS4FGq+K00nVbyd
-	HlFC/HixOQ6zLd8hsht4H0sEAuy1eGn37NCPWHIEX+Eq1B88g53/FVvQNJqlXN3xkkSYB8ZSWA6q5
-	UWjhWjzJ4LkoEZt8Ohtp8mjy63flNZb0D6PZ6qsXAiwXRK8o6clyD/0MBE4FH1Dgzz82gbnYJnCv3
-	mw6lFvqXAfrG/ttBhTioQWRcbpDa31XtlA86Ir86L7GcES9HawtUN2gpzlUHApzOouXjq1Dy2ajQ3
-	yg2luBELKYi/4nhk81bFmZmxbIi+ZIUQdfC3KguyST03qarJGjn7T8CPnIwPC9YpIymuR6zhU6y+j
-	b2SYn2Cw==;
+	bh=eSHiOwdmwzGTK6aa3cqA4OMSW9jJsH6a23aKWFD9RUA=; b=IOGSE3p/uwf8X4MRPFrVuy34OR
+	cTV/tLiFcYvqZeHWDkMeqpUGvvx5/ky+lA0R0TKqJLaS0PeE4naC6KBL1CiZeRTHq4neTCD0UKDt7
+	WzQKS452lpelJ9FjFLrUOVdQdvlWdeVJM7b6ci5MxmP5kYhyECzKWtfJB2SHWgB4AzHwQXWtgE6Z9
+	lIArIn0hJaQj37MG6sw3ovRCXeZulQulb+NWCs7LqcYj4tmjezvqDqKrxaEr0fged4vmbJnVvNX9F
+	BIc22vz1k9kPmSoo9g+opjIkzzVlxDLLmF1F9k8b65TjLXuzqNzyrOjRzOsL6ajra7ZUIxpIm2aiZ
+	KFJT1wrQ==;
 Received: from cw137ip160.mn.codeweavers.com ([10.69.137.160] helo=camazotz.mn.codeweavers.com)
 	by mail.codeweavers.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <zfigura@codeweavers.com>)
-	id 1rSRLB-00DVeW-2B;
+	id 1rSRLB-00DVeW-2e;
 	Tue, 23 Jan 2024 18:42:05 -0600
 From: Elizabeth Figura <zfigura@codeweavers.com>
 To: Arnd Bergmann <arnd@arndb.de>,
@@ -55,9 +55,9 @@ Cc: wine-devel@winehq.org,
 	Arkadiusz Hiler <ahiler@codeweavers.com>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Elizabeth Figura <zfigura@codeweavers.com>
-Subject: [RFC PATCH 4/9] ntsync: Introduce NTSYNC_IOC_PUT_SEM.
-Date: Tue, 23 Jan 2024 18:40:23 -0600
-Message-ID: <20240124004028.16826-5-zfigura@codeweavers.com>
+Subject: [RFC PATCH 5/9] ntsync: Introduce NTSYNC_IOC_WAIT_ANY.
+Date: Tue, 23 Jan 2024 18:40:24 -0600
+Message-ID: <20240124004028.16826-6-zfigura@codeweavers.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240124004028.16826-1-zfigura@codeweavers.com>
 References: <20240124004028.16826-1-zfigura@codeweavers.com>
@@ -69,149 +69,320 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This corresponds to the NT syscall NtReleaseSemaphore().
+This corresponds to part of the functionality of the NT syscall
+NtWaitForMultipleObjects(). Specifically, it implements the behaviour where
+the third argument (wait_any) is TRUE, and it does not handle alertable waits.
+Those features have been split out into separate patches to ease review.
 
 Signed-off-by: Elizabeth Figura <zfigura@codeweavers.com>
 ---
- drivers/misc/ntsync.c       | 76 +++++++++++++++++++++++++++++++++++++
- include/uapi/linux/ntsync.h |  2 +
- 2 files changed, 78 insertions(+)
+ drivers/misc/ntsync.c       | 229 ++++++++++++++++++++++++++++++++++++
+ include/uapi/linux/ntsync.h |  13 ++
+ 2 files changed, 242 insertions(+)
 
 diff --git a/drivers/misc/ntsync.c b/drivers/misc/ntsync.c
-index 3287b94be351..d1c91c2a4f1a 100644
+index d1c91c2a4f1a..2e8d3c2d51a4 100644
 --- a/drivers/misc/ntsync.c
 +++ b/drivers/misc/ntsync.c
-@@ -21,9 +21,11 @@ enum ntsync_type {
- struct ntsync_obj {
- 	struct rcu_head rhead;
+@@ -23,6 +23,8 @@ struct ntsync_obj {
  	struct kref refcount;
-+	spinlock_t lock;
+ 	spinlock_t lock;
  
++	struct list_head any_waiters;
++
  	enum ntsync_type type;
  
-+	/* The following fields are protected by the object lock. */
- 	union {
- 		struct {
- 			__u32 count;
-@@ -36,6 +38,19 @@ struct ntsync_device {
- 	struct xarray objects;
+ 	/* The following fields are protected by the object lock. */
+@@ -34,6 +36,28 @@ struct ntsync_obj {
+ 	} u;
  };
  
-+static struct ntsync_obj *get_obj(struct ntsync_device *dev, __u32 id)
-+{
++struct ntsync_q_entry {
++	struct list_head node;
++	struct ntsync_q *q;
 +	struct ntsync_obj *obj;
++	__u32 index;
++};
 +
-+	rcu_read_lock();
-+	obj = xa_load(&dev->objects, id);
-+	if (obj && !kref_get_unless_zero(&obj->refcount))
-+		obj = NULL;
-+	rcu_read_unlock();
++struct ntsync_q {
++	struct task_struct *task;
++	__u32 owner;
 +
-+	return obj;
-+}
++	/*
++	 * Protected via atomic_cmpxchg(). Only the thread that wins the
++	 * compare-and-swap may actually change object states and wake this
++	 * task.
++	 */
++	atomic_t signaled;
 +
- static void destroy_obj(struct kref *ref)
- {
- 	struct ntsync_obj *obj = container_of(ref, struct ntsync_obj, refcount);
-@@ -48,6 +63,18 @@ static void put_obj(struct ntsync_obj *obj)
- 	kref_put(&obj->refcount, destroy_obj);
- }
- 
-+static struct ntsync_obj *get_obj_typed(struct ntsync_device *dev, __u32 id,
-+					enum ntsync_type type)
-+{
-+	struct ntsync_obj *obj = get_obj(dev, id);
++	__u32 count;
++	struct ntsync_q_entry entries[];
++};
 +
-+	if (obj && obj->type != type) {
-+		put_obj(obj);
-+		return NULL;
-+	}
-+	return obj;
-+}
-+
- static int ntsync_char_open(struct inode *inode, struct file *file)
- {
- 	struct ntsync_device *dev;
-@@ -81,6 +108,7 @@ static int ntsync_char_release(struct inode *inode, struct file *file)
- static void init_obj(struct ntsync_obj *obj)
+ struct ntsync_device {
+ 	struct xarray objects;
+ };
+@@ -109,6 +133,26 @@ static void init_obj(struct ntsync_obj *obj)
  {
  	kref_init(&obj->refcount);
-+	spin_lock_init(&obj->lock);
+ 	spin_lock_init(&obj->lock);
++	INIT_LIST_HEAD(&obj->any_waiters);
++}
++
++static void try_wake_any_sem(struct ntsync_obj *sem)
++{
++	struct ntsync_q_entry *entry;
++
++	lockdep_assert_held(&sem->lock);
++
++	list_for_each_entry(entry, &sem->any_waiters, node) {
++		struct ntsync_q *q = entry->q;
++
++		if (!sem->u.sem.count)
++			break;
++
++		if (atomic_cmpxchg(&q->signaled, -1, entry->index) == -1) {
++			sem->u.sem.count--;
++			wake_up_process(q->task);
++		}
++	}
  }
  
  static int ntsync_create_sem(struct ntsync_device *dev, void __user *argp)
-@@ -131,6 +159,52 @@ static int ntsync_delete(struct ntsync_device *dev, void __user *argp)
- 	return 0;
+@@ -194,6 +238,8 @@ static int ntsync_put_sem(struct ntsync_device *dev, void __user *argp)
+ 
+ 	prev_count = sem->u.sem.count;
+ 	ret = put_sem_state(sem, args.count);
++	if (!ret)
++		try_wake_any_sem(sem);
+ 
+ 	spin_unlock(&sem->lock);
+ 
+@@ -205,6 +251,187 @@ static int ntsync_put_sem(struct ntsync_device *dev, void __user *argp)
+ 	return ret;
  }
  
-+/*
-+ * Actually change the semaphore state, returning -EOVERFLOW if it is made
-+ * invalid.
-+ */
-+static int put_sem_state(struct ntsync_obj *sem, __u32 count)
++static int ntsync_schedule(const struct ntsync_q *q, ktime_t *timeout)
 +{
-+	lockdep_assert_held(&sem->lock);
++	int ret = 0;
 +
-+	if (sem->u.sem.count + count < sem->u.sem.count ||
-+	    sem->u.sem.count + count > sem->u.sem.max)
-+		return -EOVERFLOW;
++	do {
++		if (signal_pending(current)) {
++			ret = -ERESTARTSYS;
++			break;
++		}
 +
-+	sem->u.sem.count += count;
-+	return 0;
++		set_current_state(TASK_INTERRUPTIBLE);
++		if (atomic_read(&q->signaled) != -1) {
++			ret = 0;
++			break;
++		}
++		ret = schedule_hrtimeout(timeout, HRTIMER_MODE_ABS);
++	} while (ret < 0);
++	__set_current_state(TASK_RUNNING);
++
++	return ret;
 +}
 +
-+static int ntsync_put_sem(struct ntsync_device *dev, void __user *argp)
++/*
++ * Allocate and initialize the ntsync_q structure, but do not queue us yet.
++ * Also, calculate the relative timeout.
++ */
++static int setup_wait(struct ntsync_device *dev,
++		      const struct ntsync_wait_args *args,
++		      ktime_t *ret_timeout, struct ntsync_q **ret_q)
 +{
-+	struct ntsync_sem_args __user *user_args = argp;
-+	struct ntsync_sem_args args;
-+	struct ntsync_obj *sem;
-+	__u32 prev_count;
++	const __u32 count = args->count;
++	struct ntsync_q *q;
++	ktime_t timeout = 0;
++	__u32 *ids;
++	__u32 i, j;
++
++	if (!args->owner || args->pad)
++		return -EINVAL;
++
++	if (args->count > NTSYNC_MAX_WAIT_COUNT)
++		return -EINVAL;
++
++	if (args->timeout) {
++		struct timespec64 to;
++
++		if (get_timespec64(&to, u64_to_user_ptr(args->timeout)))
++			return -EFAULT;
++		if (!timespec64_valid(&to))
++			return -EINVAL;
++
++		timeout = timespec64_to_ns(&to);
++	}
++
++	ids = kmalloc_array(count, sizeof(*ids), GFP_KERNEL);
++	if (!ids)
++		return -ENOMEM;
++	if (copy_from_user(ids, u64_to_user_ptr(args->objs),
++			   array_size(count, sizeof(*ids)))) {
++		kfree(ids);
++		return -EFAULT;
++	}
++
++	q = kmalloc(struct_size(q, entries, count), GFP_KERNEL);
++	if (!q) {
++		kfree(ids);
++		return -ENOMEM;
++	}
++	q->task = current;
++	q->owner = args->owner;
++	atomic_set(&q->signaled, -1);
++	q->count = count;
++
++	for (i = 0; i < count; i++) {
++		struct ntsync_q_entry *entry = &q->entries[i];
++		struct ntsync_obj *obj = get_obj(dev, ids[i]);
++
++		if (!obj)
++			goto err;
++
++		entry->obj = obj;
++		entry->q = q;
++		entry->index = i;
++	}
++
++	kfree(ids);
++
++	*ret_q = q;
++	*ret_timeout = timeout;
++	return 0;
++
++err:
++	for (j = 0; j < i; j++)
++		put_obj(q->entries[j].obj);
++	kfree(ids);
++	kfree(q);
++	return -EINVAL;
++}
++
++static void try_wake_any_obj(struct ntsync_obj *obj)
++{
++	switch (obj->type) {
++	case NTSYNC_TYPE_SEM:
++		try_wake_any_sem(obj);
++		break;
++	}
++}
++
++static int ntsync_wait_any(struct ntsync_device *dev, void __user *argp)
++{
++	struct ntsync_wait_args args;
++	struct ntsync_q *q;
++	ktime_t timeout;
++	int signaled;
++	__u32 i;
 +	int ret;
 +
 +	if (copy_from_user(&args, argp, sizeof(args)))
 +		return -EFAULT;
 +
-+	sem = get_obj_typed(dev, args.sem, NTSYNC_TYPE_SEM);
-+	if (!sem)
-+		return -EINVAL;
++	ret = setup_wait(dev, &args, &timeout, &q);
++	if (ret < 0)
++		return ret;
 +
-+	spin_lock(&sem->lock);
++	/* queue ourselves */
 +
-+	prev_count = sem->u.sem.count;
-+	ret = put_sem_state(sem, args.count);
++	for (i = 0; i < args.count; i++) {
++		struct ntsync_q_entry *entry = &q->entries[i];
++		struct ntsync_obj *obj = entry->obj;
 +
-+	spin_unlock(&sem->lock);
++		spin_lock(&obj->lock);
++		list_add_tail(&entry->node, &obj->any_waiters);
++		spin_unlock(&obj->lock);
++	}
 +
-+	put_obj(sem);
++	/* check if we are already signaled */
 +
-+	if (!ret && put_user(prev_count, &user_args->count))
-+		ret = -EFAULT;
++	for (i = 0; i < args.count; i++) {
++		struct ntsync_obj *obj = q->entries[i].obj;
 +
++		if (atomic_read(&q->signaled) != -1)
++			break;
++
++		spin_lock(&obj->lock);
++		try_wake_any_obj(obj);
++		spin_unlock(&obj->lock);
++	}
++
++	/* sleep */
++
++	ret = ntsync_schedule(q, args.timeout ? &timeout : NULL);
++
++	/* and finally, unqueue */
++
++	for (i = 0; i < args.count; i++) {
++		struct ntsync_q_entry *entry = &q->entries[i];
++		struct ntsync_obj *obj = entry->obj;
++
++		spin_lock(&obj->lock);
++		list_del(&entry->node);
++		spin_unlock(&obj->lock);
++
++		put_obj(obj);
++	}
++
++	signaled = atomic_read(&q->signaled);
++	if (signaled != -1) {
++		struct ntsync_wait_args __user *user_args = argp;
++
++		/* even if we caught a signal, we need to communicate success */
++		ret = 0;
++
++		if (put_user(signaled, &user_args->index))
++			ret = -EFAULT;
++	} else if (!ret) {
++		ret = -ETIMEDOUT;
++	}
++
++	kfree(q);
 +	return ret;
 +}
 +
  static long ntsync_char_ioctl(struct file *file, unsigned int cmd,
  			      unsigned long parm)
  {
-@@ -142,6 +216,8 @@ static long ntsync_char_ioctl(struct file *file, unsigned int cmd,
- 		return ntsync_create_sem(dev, argp);
- 	case NTSYNC_IOC_DELETE:
+@@ -218,6 +445,8 @@ static long ntsync_char_ioctl(struct file *file, unsigned int cmd,
  		return ntsync_delete(dev, argp);
-+	case NTSYNC_IOC_PUT_SEM:
-+		return ntsync_put_sem(dev, argp);
+ 	case NTSYNC_IOC_PUT_SEM:
+ 		return ntsync_put_sem(dev, argp);
++	case NTSYNC_IOC_WAIT_ANY:
++		return ntsync_wait_any(dev, argp);
  	default:
  		return -ENOIOCTLCMD;
  	}
 diff --git a/include/uapi/linux/ntsync.h b/include/uapi/linux/ntsync.h
-index d97afc138dcc..8c610d65f8ef 100644
+index 8c610d65f8ef..10f07da7864e 100644
 --- a/include/uapi/linux/ntsync.h
 +++ b/include/uapi/linux/ntsync.h
-@@ -21,5 +21,7 @@ struct ntsync_sem_args {
+@@ -16,6 +16,17 @@ struct ntsync_sem_args {
+ 	__u32 max;
+ };
+ 
++struct ntsync_wait_args {
++	__u64 timeout;
++	__u64 objs;
++	__u32 count;
++	__u32 owner;
++	__u32 index;
++	__u32 pad;
++};
++
++#define NTSYNC_MAX_WAIT_COUNT 64
++
+ #define NTSYNC_IOC_BASE 0xf7
+ 
  #define NTSYNC_IOC_CREATE_SEM		_IOWR(NTSYNC_IOC_BASE, 0, \
- 					      struct ntsync_sem_args)
+@@ -23,5 +34,7 @@ struct ntsync_sem_args {
  #define NTSYNC_IOC_DELETE		_IOW (NTSYNC_IOC_BASE, 1, __u32)
-+#define NTSYNC_IOC_PUT_SEM		_IOWR(NTSYNC_IOC_BASE, 2, \
-+					      struct ntsync_sem_args)
+ #define NTSYNC_IOC_PUT_SEM		_IOWR(NTSYNC_IOC_BASE, 2, \
+ 					      struct ntsync_sem_args)
++#define NTSYNC_IOC_WAIT_ANY		_IOWR(NTSYNC_IOC_BASE, 3, \
++					      struct ntsync_wait_args)
  
  #endif
 -- 
