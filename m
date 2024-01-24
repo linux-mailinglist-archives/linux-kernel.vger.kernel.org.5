@@ -1,132 +1,277 @@
-Return-Path: <linux-kernel+bounces-37100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37103-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D54083AB88
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:20:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7441D83AB91
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:21:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0534B2830B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:20:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2466A283239
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 14:21:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D5EB7A724;
-	Wed, 24 Jan 2024 14:20:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCBDD7C0A2;
+	Wed, 24 Jan 2024 14:21:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j9fhaF0j"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dVe8o4fW"
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B258B77641;
-	Wed, 24 Jan 2024 14:20:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 588B77C080;
+	Wed, 24 Jan 2024 14:21:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706106043; cv=none; b=ltsZ8Pksd3bJ1yrreE7QIUGEuG+flwF1geYNZb6qLX2kpYDU9Rdvlc++JVI3/pUBEIzTPZiJPVp1qB9jh8kS+0eC79DxpzTDh/4sEs5iU4bCqSJrzH427pSphhNsIyuXNnfuAgh/+HCiF9kf1j8fwwFMxhl/Ef8xUgC7kFc4omI=
+	t=1706106076; cv=none; b=bQBFs5nJwGJoqlcNZ7o69fT8JLSstFTYyA1wpjrWymbm+rSYmnt3IzGMG7IHtqWqX95viBHOiGtO9rI7MtM9X1KbeMXjQVOVQxn7Aj6tuIsGNbWx0hP/7Q8AGr+LkmGUUJXmkwvGmLciCjRpnegSbGRvLbnza9DvjUYRs2dgN6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706106043; c=relaxed/simple;
-	bh=cZwooKZYY+5BxcC/oTMQ6fPAMp5nU8PfPmstszDkUQw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pZcKNz5TyM1Wwl1ham5WvUgKDzNv1TOROYM+qqFrc2jptXHsvzaqoXAIjb9zfxfS6XSOisZPmOXgfVs9e+sQ46kPxLWwVV2c+iqA3LGfsCNoawP+MCc1p3cKiWLMVHzrliVFaLIQDWha+BxFUbDki+iJF1GKo8eENSv6ROi4D0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j9fhaF0j; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F3BFC433F1;
-	Wed, 24 Jan 2024 14:20:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706106043;
-	bh=cZwooKZYY+5BxcC/oTMQ6fPAMp5nU8PfPmstszDkUQw=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=j9fhaF0jRiU4dn2ygpxvyPiRkUv1hD3E8jANrC8fc+AdPMBxjRgorSZ75Uh4dPxkb
-	 EPhxfsYtbxPof0WQH3kooCzZODEqCjBAuQqaEORiN3vsik91a/WOkAvT4Tci5YqBhB
-	 Pkm9YYXgbmWRW83bJdQ4xplrXSItNmej84/n+Q6LWFoomXfrQAtvUhyWcuVmwtRbDm
-	 fPbyR3yC+Dqb/8M5XNOF8Vh+WtEjRSChu8wbQ/l9JxMkpAngXIGxoHEVqGSFkRpoZY
-	 WWuFDWg/waOnx4BMuVTbPPL5yj5Ji6xcpGCwqdDE+JgmQCzXfyhHSvLZaJ761/AUT6
-	 qws8JAbw1XLkQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id CADFECE0E8B; Wed, 24 Jan 2024 06:20:42 -0800 (PST)
-Date: Wed, 24 Jan 2024 06:20:42 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Jiri Wiesner <jwiesner@suse.de>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the rcu tree
-Message-ID: <f9225eac-7ed9-4abe-8ffc-94936ece0238@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240124151743.052082af@canb.auug.org.au>
- <20240124094954.GL3303@incl>
- <6b5c4acc-f184-4ad9-9029-dd7967fe4a04@paulmck-laptop>
- <20240124133105.GM3303@incl>
+	s=arc-20240116; t=1706106076; c=relaxed/simple;
+	bh=pIEQrV7YkLmxvf9BPqUxV9ppKqXNP8VSag1ofZSmIiU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RKFaTEh8ltw5h30R0ZUj2IX4OM4AZvOHbnbyfzf17mEwHeiPy4LEqhyPoa2WIwHT5BYp9TvqaA0Uesj91nf0j8TyYxdLs7sxNafFCUVOifjL3OGUmmg0Sws5vdrQHblWatmnOCHFvrLa0MonFRtB2Rw0qTfg4JrgDpo0Dc1Cvg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dVe8o4fW; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5ffcb478512so27456607b3.0;
+        Wed, 24 Jan 2024 06:21:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706106074; x=1706710874; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=n+eJ9kOA+fKdqQFTp/IZGzCU4ik0my7sRIdeyMGzakc=;
+        b=dVe8o4fWBfxkpbd96N3Q3dIObEGgFC98ymmy8HDrezNEF2b5SQ+20IMveIwf+FAckV
+         LUU+ErNblAePmAFYYQfFjoxHeVPIaZscb8WGuACjoiGlJIvzbbgNqcuAMVtUCXvQ+wsx
+         5Qggl33QoL4EULDNmCv4NoPA0yCklOIXA6ndPrdUzPNHWy7KppFn6wFH11b8t9sJBK5/
+         oiqhnk/SLXwfN9900pzeOGO7SsutafRUeCELkVyqdsP6IqKFcOVKwuMigoSyi6pg1g4P
+         3CySznLascnYghgTQYYZ1+VvAHY2JDNavewed46aIB1MnWbHpwPmE13bHKTnbQUBzv4V
+         aDtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706106074; x=1706710874;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=n+eJ9kOA+fKdqQFTp/IZGzCU4ik0my7sRIdeyMGzakc=;
+        b=Y+M1stVqT1Erv41eNJeshFoCROhAae5x95fOxMxjhSMYD2iuQOhipqG1iWOSMO1hwo
+         ZURWiWRgBxdILgJ/QD7GGYXXd3aLHQ/P0PioW5d72TFQm6h4Jz6z6owx8XORzS4OeUEl
+         aXJv686j5xiWqqwH8T2n7WlHe97CZwVInbPrufKV3LMZE3RW9JsFouXfihfLjBYx+yYN
+         nxjvDD03M5VlAkvx27TIBxEI0yWoXDCSAZIFhoruZR5qvLjeegdkU4A5lqFPcHsnw9SH
+         GvZW6sMkxQ73j1QPbRo/vsxHxAdA3lWl1nVgd7/L0uAJTtomqJma2p5tlzKP4QHDU9qi
+         Gjxg==
+X-Gm-Message-State: AOJu0YyBti3IWKtmkixIAj90avywqWJMRQORawrCfytj+IL+oEJtWWRb
+	fOwBV88BqwG6A6pwiRK63/qs+Odmig1rGLllX+FROz8YBiFf167JDJvSUv6AWBmR++KTf7m2yA3
+	a+TCUccT1MQ4ykV7GwuKWfclGDtEW+ckwN/w=
+X-Google-Smtp-Source: AGHT+IGfADtmx4YW5vcoMDveqNIj7c/ID9sgjgKC9nFbRYrQvzqyn0p5tcxcsh0kEKgzGNW/7opa2Ptbh1eAeazzpj8=
+X-Received: by 2002:a0d:c2c6:0:b0:5ff:8e30:68a7 with SMTP id
+ e189-20020a0dc2c6000000b005ff8e3068a7mr561175ywd.12.1706106074234; Wed, 24
+ Jan 2024 06:21:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240124133105.GM3303@incl>
+References: <20240108135421.684263-1-tmaimon77@gmail.com> <20240108135421.684263-5-tmaimon77@gmail.com>
+ <98eaac00-1e3d-4c27-89f5-0b6ec0fcb710@linaro.org> <CAP6Zq1hxTgJWtem4Y4_4Hv1ojy5edzGXeBGhh_gzyM4Kewsbeg@mail.gmail.com>
+ <64a35c38-38e4-486f-8a07-4aee1d14e05a@linaro.org> <CAP6Zq1jhy0GUtoO3=m-PHD3WCertSvAg+G7iygiRkWvjzfwSpQ@mail.gmail.com>
+In-Reply-To: <CAP6Zq1jhy0GUtoO3=m-PHD3WCertSvAg+G7iygiRkWvjzfwSpQ@mail.gmail.com>
+From: Tomer Maimon <tmaimon77@gmail.com>
+Date: Wed, 24 Jan 2024 16:21:02 +0200
+Message-ID: <CAP6Zq1j0-zZvpKRc4T_DPOo=7bewc9u-5NuM48e0Akvrd0KLLQ@mail.gmail.com>
+Subject: Re: [PATCH v22 4/8] dt-bindings: soc: nuvoton: add binding for clock
+ and reset registers
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, tali.perry1@gmail.com, joel@jms.id.au, 
+	venture@google.com, yuenn@google.com, benjaminfair@google.com, 
+	openbmc@lists.ozlabs.org, linux-clk@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Jan 24, 2024 at 02:31:05PM +0100, Jiri Wiesner wrote:
-> On Wed, Jan 24, 2024 at 04:12:23AM -0800, Paul E. McKenney wrote:
-> > On Wed, Jan 24, 2024 at 10:49:54AM +0100, Jiri Wiesner wrote:
-> > > On Wed, Jan 24, 2024 at 03:17:43PM +1100, Stephen Rothwell wrote:
-> > > > After merging the rcu tree, today's linux-next build (i386 defconfig)
-> > > > failed like this:
-> > > > In file included from include/linux/dev_printk.h:14,
-> > > >                  from include/linux/device.h:15,
-> > > >                  from kernel/time/clocksource.c:10:
-> > > > kernel/time/clocksource.c: In function 'clocksource_watchdog':
-> > > > kernel/time/clocksource.c:103:34: error: integer overflow in expression of type 'long int' results in '-1619276800' [-Werror=overflow]
-> > > >   103 |                                  * NSEC_PER_SEC / HZ)
-> > > >       |                                  ^
-> > > > Caused by commit
-> > > >   1a4545025600 ("clocksource: Skip watchdog check for large watchdog intervals")
-> > > > I have used the rcu tree from next-20240123 for today.
-> > > 
-> > > This particular patch is still beging discussed on the LKML. This is the 
-> > > latest submission with improved variable naming, increased threshold and 
-> > > changes to the log and the warning message (as proposed by tglx):
-> > > https://lore.kernel.org/lkml/20240122172350.GA740@incl/
-> > > Especially the change to the message is important. I think this message 
-> > > will be commonplace on 8 NUMA node (and larger) machines. If there is 
-> > > anything else I can do to assist please let me know.
-> > 
-> > Here is the offending #define:
-> > 
-> > #define WATCHDOG_INTR_MAX_NS	((WATCHDOG_INTERVAL + (WATCHDOG_INTERVAL >> 1))\
-> > 				 * NSEC_PER_SEC / HZ)
-> > 
-> > The problem is that these things are int or long, and on i386, that
-> > is only 32 bits.  NSEC_PER_SEC is one billion, and WATCHDOG_INTERVAL
-> > is often 1000, which overflows.  The division by HZ gets this back in
-> > range at about 1.5x10^9.
-> 
-> Exactly.
-> 
-> > So this computation must be done in 64 bits even on 32-bit systems.
-> > My thought would be a cast to u64, then back to long for the result.
-> 
-> This will be a more precise solution than enclosing NSEC_PER_SEC / HZ in 
-> brackets, which I chose to do in the v2 of this patch.
-> 
-> > Whatever approach, Jiri, would you like to send an updated patch?
-> 
-> Yes, I can incorporate the casting to u64 and back to long into the patch. 
-> At this point, I am not sure which version to use. There are:
-> * v1 (submitted to the LKML on Jan 3rd): the patch that got merged into linux-next
-> * v2 (submitted to the LKML on Jan 10th): that has an alternative fix for the interger overflow
-> * v3 (submitted to the LKML on Jan 22nd): that incoporates suggestions by Thomas Gleixner
-> 
-> I could update the v3 of this patch with casting to u64 and back to long. 
-> WATCHDOG_INTERVAL_MAX_NS got set to 2 * WATCHDOG_INTERVAL in v3 - a change 
-> I do not entirely agree with. I think WATCHDOG_INTERVAL_MAX_NS should be 
-> kept narrow so as not to impose a limit on time skew that is too strict 
-> for readout intervals approaching 2 * WATCHDOG_INTERVAL in their length. 
-> The question is what is too strict.
+Hi Krzysztof,
 
-Please accept my apologies!  I should have caught your updates.
 
-I will drop my current version of your patch and queue your v3 for review
-and testing.
+On Mon, 22 Jan 2024 at 19:14, Tomer Maimon <tmaimon77@gmail.com> wrote:
+>
+> Hi Krzysztof,
+>
+> Thanks for your comment
+>
+> On Tue, 16 Jan 2024 at 22:37, Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+> >
+> > On 16/01/2024 20:02, Tomer Maimon wrote:
+> > > Hi Krzysztof,
+> > >
+> > > Thanks for your comments.
+> > >
+> > > Sorry for the long explanation but I think it is necessary.
+> > >
+> > > In the NPCM8XX SoC, the reset and the clock register modules are
+> > > scrambled in the same memory register region.
+> > > The NPCM8XX Clock driver is still in the upstream process (for a long
+> > > time) but the NPCM8XX reset driver is already upstreamed.
+> > >
+> > > One of the main comments in the NPCM8XX Clock driver upstream process
+> > > is that the clock register is mixed with the reset register and
+> > > therefore we can't map (ioremap) the clock register
+> > > region because is already mapped by the reset module, therefore we
+> > > decided to use an external syscon to handle the clock and the reset
+> > > registers driver.
+> > >
+> > >  I highly appreciate your guidance on this topic.
+> >
+> > Linux deals with it easily, that's why we have regmaps. What's the
+> > problem exactly?
+> This is exactly what is done in the submitted clock driver.
+> >
+> > >
+> > > On Wed, 10 Jan 2024 at 22:59, Krzysztof Kozlowski
+> > > <krzysztof.kozlowski@linaro.org> wrote:
+> > >>
+> > >> On 08/01/2024 14:54, Tomer Maimon wrote:
+> > >>> A nuvoton,*-clk-rst node is present in nuvoton-common-npcm7xx.dtsi and
+> > >>> will be added to nuvoton-common-npcm8xx.dtsi. It is necessary for the
+> > >>> NPCM7xx and NPCM8xx clock and reset drivers, and may later be used to
+> > >>> retrieve SoC model and version information.
+> > >>>
+> > >>
+> > >> A nit, subject: drop second/last, redundant "bindings". The
+> > >> "dt-bindings" prefix is already stating that these are bindings.
+> > >> See also:
+> > >> https://elixir.bootlin.com/linux/v6.7-rc8/source/Documentation/devicetree/bindings/submitting-patches.rst#L18
+> > >>
+> > >>> This patch adds a binding to describe this node.
+> > >>
+> > >> Please do not use "This commit/patch/change", but imperative mood. See
+> > >> longer explanation here:
+> > >> https://elixir.bootlin.com/linux/v5.17.1/source/Documentation/process/submitting-patches.rst#L95
+> > >>
+> > >>>
+> > >>> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
+> > >>> ---
+> > >>
+> > >> How possibly could it be v22 if there is:
+> > >> 1. No changelog
+> > >> 2. No previous submissions
+> > >> ?
+> > > Should the dt-binding and dts patches be a part of the clock patch set
+> > > (this is why it's V22) or should I open a new patch set?
+> >
+> > You should explain what is happening here. That's why you have changelog
+> > for.
+> Will explain it better in the cover letter in the change log.
+> >
+> > >>
+> > >> NAK, it's something completely new without any explanation.
+> > >>
+> > >> Limited review follows.
+> > >>
+> > >>
+> > >>>  .../soc/nuvoton/nuvoton,npcm-clk-rst.yaml     | 40 +++++++++++++++++++
+> > >>>  1 file changed, 40 insertions(+)
+> > >>>  create mode 100644 Documentation/devicetree/bindings/soc/nuvoton/nuvoton,npcm-clk-rst.yaml
+> > >>>
+> > >>> diff --git a/Documentation/devicetree/bindings/soc/nuvoton/nuvoton,npcm-clk-rst.yaml b/Documentation/devicetree/bindings/soc/nuvoton/nuvoton,npcm-clk-rst.yaml
+> > >>> new file mode 100644
+> > >>> index 000000000000..dfec64a8eb26
+> > >>> --- /dev/null
+> > >>> +++ b/Documentation/devicetree/bindings/soc/nuvoton/nuvoton,npcm-clk-rst.yaml
+> > >>> @@ -0,0 +1,40 @@
+> > >>> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > >>> +%YAML 1.2
+> > >>> +---
+> > >>> +$id: http://devicetree.org/schemas/soc/nuvoton/nuvoton,npcm-clk-rst.yaml#
+> > >>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > >>> +
+> > >>> +title: Clock and reset registers block in Nuvoton SoCs
+> > >>
+> > >> This is vague. Any block? All blocks? Your SoC has only one block? I
+> > >> doubt, although possible.
+> > >>
+> > >> Anyway, clocks go to clock directory, not to soc! We've been here and
+> > >> you already received that feedback.
+> > > Since one region handles the reset and the clock registers shouldn't I
+> > > add the dt-binding to the SoC like the GCR and not to the clock
+> >
+> > No, soc is not a dumping ground..
+> Maybe I do not need to add dt binding document for the clock and reset
+> syscon but handle the registers as follows in the dtsi.
+>
+>                 sysctrl: system-controller@f0801000 {
+>                         compatible = "syscon", "simple-mfd";
+>                         reg = <0x0 0xf0801000 0x0 0x1000>;
+>
+>                         rstc: reset-controller {
+>                                 compatible = "nuvoton,npcm845-reset";
+>                                 #reset-cells = <2>;
+>                                 nuvoton,sysgcr = <&gcr>;
+>                         };
+>
+>                         clk: clock-controller {
+>                                 compatible = "nuvoton,npcm845-clk";
+>                                 #clock-cells = <1>;
+>                                 clocks = <&refclk>;
+>                                 clock-names = "refclk";
+>                         };
+>                 };
+>
+> is it acceptable?
+Appreciate for your advice on the question above.
+> >
+> > > directory?
+> > > https://elixir.bootlin.com/linux/v6.7/source/Documentation/devicetree/bindings/soc/nuvoton/nuvoton,npcm-gcr.yaml
+> >
+> > Choose the main feature of the block - either clock controller or reset
+> > controller - and put it there.
+> >
+> > >>
+> > >>
+> > >>> +
+> > >>> +maintainers:
+> > >>> +  - Tomer Maimon <tmaimon77@gmail.com>
+> > >>> +
+> > >>> +description:
+> > >>> +  The clock and reset registers are a registers block in Nuvoton SoCs that
+> > >>> +  handle both reset and clock functionality.
+> > >>
+> > >> That's still vague. Say something useful.
+> > > Will describe more
+> > >>
+> > >>> +
+> > >>> +properties:
+> > >>> +  compatible:
+> > >>> +    items:
+> > >>> +      - enum:
+> > >>> +          - nuvoton,npcm750-clk-rst
+> > >>> +          - nuvoton,npcm845-clk-rst
+> > >>> +      - const: syscon
+> > >>> +      - const: simple-mfd
+> > >>
+> > >> No, it's not a syscon and not a simple-mfd. You just said it is clock
+> > > Yes, I understand the syscon node represents a register region
+> > > containing a set of miscellaneous registers, but as explain above it
+> > > is quite the case here.
+> >
+> > Nothing in this patch was telling this.
+> >
+> > > I will remove the simple-mfd.
+> > >> provider and reset controller. Thus missing clock cells and reset cells.
+> > > The reset cell and clock cell found at the clock and reset dt-binding,
+> > > is it enough?
+> >
+> > This is the reset and clock binding, isn't it? You called it (your title):
+> > "Clock and reset registers block in Nuvoton SoCs"
+> >
+> >
+> >
+> >
+> > Best regards,
+> > Krzysztof
+> >
+>
+> Best regards,
+>
+> Tomer
 
-							Thanx, Paul
+Best regards,
+
+Tomer
 
