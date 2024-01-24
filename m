@@ -1,155 +1,111 @@
-Return-Path: <linux-kernel+bounces-37374-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64FBE83AEFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:00:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2339E83AEFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 18:01:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16573281B31
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:00:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF6C428316A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 17:00:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C09917E796;
-	Wed, 24 Jan 2024 17:00:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB2897E77A;
+	Wed, 24 Jan 2024 17:00:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZGEvVhnn"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e4ytBszd"
+Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com [209.85.221.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D7767E794
-	for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 17:00:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A13C37E768;
+	Wed, 24 Jan 2024 17:00:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706115606; cv=none; b=gJHxO9WUE1vtELvFn7bARGecigiWKdFbn7+VwmiI+LKilMhfFxWCyqSAeCIOWf8bzx5Q2I3c+4XbycjOYEC6/CdupjbVhwdF9/nR7PXRBjQOMO92TjGlX4h/kK8LZPhifwXhBbLx00UzSCsSrP3ylDhI74tMf0X8EQMFncOGsGU=
+	t=1706115646; cv=none; b=b9XhBP+5i/tenJj4wEJ2rosvQ7iDSWq7pIfvDplSgr7zeD8nhQzXFWG3GNKbHKLIiN6K+saGuaw9lzj8+q5GG9aKeb9gS+pPQw4b+zaEGcdJV6LCQ3eT/WuN6vb4P0VxAEK3NYSnqECJBu0mFYcJIk2V3wENHeNWaJcCm4XEKXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706115606; c=relaxed/simple;
-	bh=/6Es22HZO4SBb18XUL67IJhH77TY3tLD843ntjsbqmU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=o4qGfcxgzB7BahPgYfzoMF18Ki8xmPX+g28aFpQ6JeXYXhbdfy9KHuWJ4Gw+2bpy2pzp9v4MBVpl2eRhydbkcBwrpRAADw7KUoQ0VeeRojomNOyS/V/u4GAAx4v7pD4vKUOXukZ4tL7DtScfB627W1MSHb7jrG+RR0vtEqvSZqs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ZGEvVhnn; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40ea5653f6bso57169425e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 09:00:04 -0800 (PST)
+	s=arc-20240116; t=1706115646; c=relaxed/simple;
+	bh=1kyIDfJabV6lwazMpxM8CPtpStKPapFOQUDAe+cwJWc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JwbaeofZ6xSyAO/FkcGsuOdovLZECFTWYtCj6CJbLvr13ww8pzYCh9nleTu2I5vrcqeOvG3VI0e8+XLdBOfCt53bgxeccBXcXdv2/0oC5/talh0lbq+zV/96fUnGDvblkZXGiRJApPdaB4q5tv3pUWjoLVx8C3trI2S2LeBKPW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e4ytBszd; arc=none smtp.client-ip=209.85.221.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f173.google.com with SMTP id 71dfb90a1353d-4bd84b96feeso70064e0c.1;
+        Wed, 24 Jan 2024 09:00:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706115602; x=1706720402; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=kLyrU0fF5r9PClqIKc8zLmJJUe2QbFXZuF5QBwO8QgU=;
-        b=ZGEvVhnntfRGDfk0oV+YzWWxS6mpAqztCbxC/9vbHaEfcxRBgHwpwDJN+3aB9scTs/
-         gAAt/MuA4PH8eSOwxOrYNvIEJfD1bqaq9KRGcpCHPNYG7ZQi6/dcHDimGOo95KazfjtG
-         ZKJF21CKzywsEiVGUpRW0/bmA31M0WjYYrdIdTZF0O9GCWQVQdNteGAS3c1b9pfIV7MG
-         zeISc2SKom4KDm9pqJbtczXxzzWUcYZhP3OPoCwDLdRpkOHyHggYBwHcTurCzvTiFPTu
-         J/HvlcZsQq/pgVQNMTBcKqkRzM5jLiPGA2v40WApvlr9ncMxGwmvLNpPnhzx93WRSPK9
-         UbLg==
+        d=gmail.com; s=20230601; t=1706115643; x=1706720443; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=f5qJWQaQ6Ftn2s0qa7GtyUkE0k/qzZPL1w9AnZckfKo=;
+        b=e4ytBszdcL8EOYTxv7hTqNSPA4smeES2PSjJMmIjq4nOCtgg8ySDXKRG3Ovg0XsvJh
+         /oy3utpbeR7F18iXKB2tWOysxDnfwVqEcLHEWKmbJT/BpxlXdbegzRDm52pJQDJIROBf
+         bWb3QGC299TjD/HZkK+mtwQ514eMHBJqUK3QMYMEZqcY1odUV4nZ/QNPcJUHlZJMNvey
+         oWj+Q9JaRxe4qr6MXRR38BtUCxwoqc6bh1/nZjPu3X7kPnwCnVxL9FXJ5cas3bA/ohA1
+         GaYs1DPWUrShYzaaOfX5Nl6ehBoI5ZuFyHd1RccwckD2cNiApDTwDyzhLzJH/NEcyjnl
+         ZUZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706115602; x=1706720402;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kLyrU0fF5r9PClqIKc8zLmJJUe2QbFXZuF5QBwO8QgU=;
-        b=VXG+f4qAWebYd3tg+GiIQu+Lz95qYCEzWbBm+YLLoDOsaWf9Ax5Pwu1gkae8vy8d2l
-         T+FP1wW3WuIob01J71l+5iUh1wCinuDg5SsrUDYEhDEoa8mNr9lUf6lC/tgsItFgUCUN
-         SM65q42xcMAtskP8drMMqVE8XNKOFZGg75x4PA4sdZGaBhAd74AeN6UoYpIJsL7vEfr6
-         JEsDaxA7Il5rfc2mVKqMe8eEFlCnL1n9tYvWrc64blmo6+g/z2+gPGtUazuFpvQkF6up
-         iJCHVKLuOvh22SU+qhUz0O3rH9Ij1OlK32qKDF/hJn4jx0VZ8I2ZifxDHM6tuAnmLN0i
-         x/kw==
-X-Gm-Message-State: AOJu0YyItuwBy80h3Y0ip4BLojSFoPNtpELE/5oRzKLkts8V83e4kp/d
-	rkQZVKRjG1cZJIzeQwfjiDwIm9CM0BMNllgoxj0h4HJBPwvhaD3GdLfgEUatuHA=
-X-Google-Smtp-Source: AGHT+IEpD65ZjKU0sl9I9egFcmFZleW0rmiRi5LOTXCvT1vfQukmGwcWUT6LEzyxjISyWMojVd0Pyg==
-X-Received: by 2002:a05:600c:5187:b0:40d:3043:81e with SMTP id fa7-20020a05600c518700b0040d3043081emr1333748wmb.162.1706115602554;
-        Wed, 24 Jan 2024 09:00:02 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id b15-20020a05600c4e0f00b0040ec7f249dfsm236803wmq.14.2024.01.24.09.00.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jan 2024 09:00:02 -0800 (PST)
-Message-ID: <799819b6-6183-4d92-8bf6-93e2e2c1122a@linaro.org>
-Date: Wed, 24 Jan 2024 18:00:00 +0100
+        d=1e100.net; s=20230601; t=1706115643; x=1706720443;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=f5qJWQaQ6Ftn2s0qa7GtyUkE0k/qzZPL1w9AnZckfKo=;
+        b=v5QbVrW7YOc/HbWrOlFTkunX2//Bv57W3Xh4M27o3ohTohEqqNybIXbfgUahPstuqq
+         +fvvPqG58P0AT67rLFHI4TN8LlLUmcbcINjqZt3PxBmFt934gzuuEx6VSmsJg2NFuVQa
+         gvkAaXO9F/y+aZfBGF1pcq7q8XMUQKiFIYU+77UktY3qLgPEdWehMg7/QYJkCY5VfIb4
+         qbr9YDb/7mXP6Cgv/Q9EBNzbhlnmFM0lt3EMrKX2g8he4Dkiw4H2AuMaeJChP1o20FyY
+         XrufospD43G1pxwN4bcBz9dsIYyCgmS94F/rbLszjDjpJLQmhPDdrdmjARFDrgrx/KdC
+         cClg==
+X-Gm-Message-State: AOJu0YzkGlc++wq8+gMhU3Q4u2VFhT44P9auch0UIHMsgiZ9GBaQL82+
+	8hoMuD9jkV727fv6g0THCILA3gkPRO0Ce+sN59OQ1UfhNLoUyfTQ+H5L4Bw0oPSCcWhrJtPPC/q
+	fNcCJyZdLOPqQUbRS6jKreIC+zVk=
+X-Google-Smtp-Source: AGHT+IFlIVFnROaZ1a54V5nFAgBGV89wOM5M/npkbfrCexiktOJgxnmU9rhTkjRO81X0lYzGRR7MqLDp1V5vbEbcts4=
+X-Received: by 2002:a05:6122:c99:b0:4bd:7bdf:31d3 with SMTP id
+ ba25-20020a0561220c9900b004bd7bdf31d3mr584729vkb.23.1706115643187; Wed, 24
+ Jan 2024 09:00:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] dt-bindings: arm: fsl: remove redundant company
- name
-To: Hugo Villeneuve <hugo@hugovil.com>, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, shawnguo@kernel.org,
- s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
- linux-imx@nxp.com, leoyang.li@nxp.com, hvilleneuve@dimonoff.com
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, andy.shevchenko@gmail.com
-References: <20240124164646.1506814-1-hugo@hugovil.com>
- <20240124164646.1506814-2-hugo@hugovil.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240124164646.1506814-2-hugo@hugovil.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240123174500.819179356@linuxfoundation.org>
+In-Reply-To: <20240123174500.819179356@linuxfoundation.org>
+From: Allen <allen.lkml@gmail.com>
+Date: Wed, 24 Jan 2024 09:00:31 -0800
+Message-ID: <CAOMdWS+Ch1QKhcYUSVo+Wpuz4=C_D9hc4vob6cyXGVj9uhCb0g@mail.gmail.com>
+Subject: Re: [PATCH 5.15 000/371] 5.15.148-rc2 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 24/01/2024 17:46, Hugo Villeneuve wrote:
-> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> 
-> Company name in compatible description appears twice, which is not really
-> helpful, so remove it from product name.
+> This is the start of the stable review cycle for the 5.15.148 release.
+> There are 371 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 25 Jan 2024 17:44:14 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.148-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-It's just a string. There is no bug, at least you did not describe where
-the bug is.
+Compiled and booted on my x86_64 and ARM64 test systems. No errors or
+regressions.
 
-This has probably little impact on user-space, but there could be such
-which actually reads compatibles and depends on them. Or bootloader or
-whatever. Therefore to me such cosmetic change of correct compatible is
-not worth ABI impact.
+Tested-by: Allen Pais <apais@linux.microsoft.com>
 
-Best regards,
-Krzysztof
-
+Thanks.
 
