@@ -1,363 +1,174 @@
-Return-Path: <linux-kernel+bounces-37290-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37291-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AE0883ADC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:52:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 513D083ADD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 16:55:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A69622853F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:52:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5AC3EB29786
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jan 2024 15:53:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B092B7CF38;
-	Wed, 24 Jan 2024 15:52:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="ISnHLPX2"
-Received: from aposti.net (aposti.net [89.234.176.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF64D7CF2F;
-	Wed, 24 Jan 2024 15:52:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.234.176.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F3077CF01;
+	Wed, 24 Jan 2024 15:53:49 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A70F43154;
+	Wed, 24 Jan 2024 15:53:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706111536; cv=none; b=UQsGn87GZ5yCKY1tFA3na1wf+6lG3Al4ns50ki8OXu1gC9d0UUkFqUc8KRzJDy1igfoKlYVTU8LTAMNyk4Cn+amoXXiSBSK/eM0Aqqmgz7DW1yMjxwnXau1qlC8YGhNlPJhoJHS8bkFayM7fSTNHc2Da4nG1RP6XtBf9i9vIwlE=
+	t=1706111628; cv=none; b=BKg1nIsXVs7FpUNBs/D9IgD03c8OQtdEDWbZCxJj3G2ymX0LT7MR7lr6y5QWpao8Do95z7rRpUWuAySstctpoMgVWsPSCkHY2vFuJS4w+056WO156WtxqD3wyhKDz/J7JPbT68cUReX5mwDPaHNBxASu4jEcFUC5IwFmEGDj6cs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706111536; c=relaxed/simple;
-	bh=KzDEEPXk1BJzB7T0gf49ptX9Upq6NPCegHjNhUWdYTk=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=MCB6oKV9MqDtWbK4DBt0EqGuyclNsyeFKSyztdkfDQPAnRzBQnPaYyKh1B0sREMTPhkOP8H67Qog/HjSG8IAZETO9nJ8SOoPZaEejwH9AKLT4rwYuHmoll130jlspFb8MO5dXOpZIYzM1j32DQM62e+KjJ6zFfgB6hC0dX5DVBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net; spf=pass smtp.mailfrom=crapouillou.net; dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b=ISnHLPX2; arc=none smtp.client-ip=89.234.176.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-	s=mail; t=1706111528;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=KzDEEPXk1BJzB7T0gf49ptX9Upq6NPCegHjNhUWdYTk=;
-	b=ISnHLPX229T8FzuMol/PUDWkPyo82NdDKorkDpXVrFLMC21chLr2kfn6po5yiBs9OEly4b
-	GFsa5u7pS+RMo+hqHnYxIz/p4BCPX+LDyA8qeTUJHaWJieZ3TS+zT79w7l3QEAdmaNzYqY
-	hXvXwlAnqGhTOJLo3YJr3Vp8RBa/wg4=
-Message-ID: <4819fa1e6b739380abc669a96dcea90ccc07e774.camel@crapouillou.net>
-Subject: Re: [Linaro-mm-sig] [PATCH v5 1/6] dma-buf: Add
- dma_buf_{begin,end}_access()
-From: Paul Cercueil <paul@crapouillou.net>
-To: Andrew Davis <afd@ti.com>, Christian =?ISO-8859-1?Q?K=F6nig?=
- <christian.koenig@amd.com>, Christian =?ISO-8859-1?Q?K=F6nig?=
- <ckoenig.leichtzumerken@gmail.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Jonathan Corbet <corbet@lwn.net>, Sumit
- Semwal <sumit.semwal@linaro.org>
-Cc: Daniel Vetter <daniel@ffwll.ch>, Michael Hennerich
-	 <Michael.Hennerich@analog.com>, linux-doc@vger.kernel.org, 
-	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org, Nuno
-	=?ISO-8859-1?Q?S=E1?=
-	 <noname.nuno@gmail.com>, Jonathan Cameron <jic23@kernel.org>, 
-	linux-media@vger.kernel.org
-Date: Wed, 24 Jan 2024 16:52:05 +0100
-In-Reply-To: <715efa1f-c3a4-4952-b72c-ca7f466e3ccb@ti.com>
-References: <20240119141402.44262-1-paul@crapouillou.net>
-	 <20240119141402.44262-2-paul@crapouillou.net>
-	 <8035f515-591f-4c87-bf0a-23d5705d9b1c@gmail.com>
-	 <442f69f31ece6d441f3dc41c3dfeb4dcf52c00b8.camel@crapouillou.net>
-	 <0b6b8738-9ea3-44fa-a624-9297bd55778f@amd.com>
-	 <e4620acdf24628d904cedcb0030d78b14559f337.camel@crapouillou.net>
-	 <85a89505-edeb-4619-86c1-157f7abdd190@amd.com>
-	 <0fe2755fb320027234c086bcc88fd107855234c5.camel@crapouillou.net>
-	 <577501f9-9d1c-4f8d-9882-7c71090e5ef3@amd.com>
-	 <7928c0866ac5b2bfaaa56ad3422bedc9061e0f7b.camel@crapouillou.net>
-	 <715efa1f-c3a4-4952-b72c-ca7f466e3ccb@ti.com>
-Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
- keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZMLQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5UzFZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtNz8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe+rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIPdlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7Urf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KFlBwgAhlGy6nqP7O3u7q23hRW5AQ0EXQqFwQEIAMo+MgvYHsyjX3Ja4Oolg1Txzm8woj30ch2nACFCqaO0R/1kLj2VVeLrDyQUOlXx9PD6IQI4M8wy8m0sR4wV2p/g/paw7k65cjzYYLh+FdLNyO7IW
-	YXndJO+wDPi3aK/YKUYepqlP+QsmaHNYNdXEQDRKqNfJg8t0f5rfzp9ryxd1tCnbV+tG8VHQWiZXNqN7062DygSNXFUfQ0vZ3J2D4oAcIAEXTymRQ2+hr3Hf7I61KMHWeSkCvCG2decTYsHlw5Erix/jYWqVOtX0roOOLqWkqpQQJWtU+biWrAksmFmCp5fXIg1Nlg39v21xCXBGxJkxyTYuhdWyu1yDQ+LSIUAEQEAAYkBNgQYAQoAIBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsMAAoJEHPua9InSr1B4wsH/Az767YCT0FSsMNt1jkkdLCBi7nY0GTW+PLP1a4zvVqFMo/vD6uz1ZflVTUAEvcTi3VHYZrlgjcxmcGu239oruqUS8Qy/xgZBp9KF0NTWQSl1iBfVbIU5VV1vHS6r77W5x0qXgfvAUWOH4gmN3MnF01SH2zMcLiaUGF+mcwl15rHbjnT3Nu2399aSE6cep86igfCAyFUOXjYEGlJy+c6UyT+DUylpjQg0nl8MlZ/7Whg2fAU9+FALIbQYQzGlT4c71SibR9T741jnegHhlmV4WXXUD6roFt54t0MSAFSVxzG8mLcSjR2cLUJ3NIPXixYUSEn3tQhfZj07xIIjWxAYZo=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1706111628; c=relaxed/simple;
+	bh=dcCbF+oQLns+/Kp4ARJDoH2/E0G8EfELald1sVqSHzM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CbhQJ466r0TayTjTXlWPbmoDooZ5g/RCxNyNsm0Ipeh4QGuqhtKZimcpjge+D2OIf9XCDRmC/I7ABJBNlzKW3eFMJrI00Vv1zLNIrWqSQSHQWZIyKggg/7SY/l8Fvvj3b3jfbOBcMI2A60rjIe11GjTI0YWO105MD7fYZuU44PU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8CCFE1FB;
+	Wed, 24 Jan 2024 07:54:30 -0800 (PST)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.30.162])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C85593F762;
+	Wed, 24 Jan 2024 07:53:43 -0800 (PST)
+Date: Wed, 24 Jan 2024 15:53:41 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: James Clark <james.clark@arm.com>
+Cc: Ian Rogers <irogers@google.com>, acme@redhat.com,
+	john.g.garry@oracle.com, leo.yan@linaro.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-perf-users@vger.kernel.org, mike.leach@linaro.org,
+	namhyung@kernel.org, suzuki.poulose@arm.com, tmricht@linux.ibm.com,
+	will@kernel.org, linux-kernel@vger.kernel.org,
+	Hector Martin <marcan@marcan.st>, Marc Zyngier <maz@kernel.org>
+Subject: Re: [PATCH] perf print-events: make is_event_supported() more robust
+Message-ID: <ZbEyhZScQ9spEE1I@FVFF77S0Q05N.cambridge.arm.com>
+References: <20240116170348.463479-1-mark.rutland@arm.com>
+ <5236cd64-c0ca-6d0e-137f-06a44f03ebc7@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5236cd64-c0ca-6d0e-137f-06a44f03ebc7@arm.com>
 
-Hi Andrew,
+On Mon, Jan 22, 2024 at 10:43:27AM +0000, James Clark wrote:
+> 
+> 
+> On 16/01/2024 17:03, Mark Rutland wrote:
+> > Currently the perf tool doesn't deteect support for extneded event types
+> > on Apple M1/M2 systems, and will not auto-expand plain PERF_EVENT_TYPE
+> > hardware events into per-PMU events. This is due to the detection of
+> > extended event types not handling mandatory filters required by the
+> > M1/M2 PMU driver.
+> > 
+> > PMU drivers and the core perf_events code can require that
+> > perf_event_attr::exclude_* filters are configured in a specific way and
+> > may reject certain configurations of filters, for example:
+> > 
+> > (a) Many PMUs lack support for any event filtering, and require all
+> >     perf_event_attr::exclude_* bits to be clear. This includes Alpha's
+> >     CPU PMU, and ARM CPU PMUs prior to the introduction of PMUv2 in
+> >     ARMv7,
+> > 
+> > (b) When /proc/sys/kernel/perf_event_paranoid >= 2, the perf core
+> >     requires that perf_event_attr::exclude_kernel is set.
+> > 
+> > (c) The Apple M1/M2 PMU requires that perf_event_attr::exclude_guest is
+> >     set as the hardware PMU does not count while a guest is running (but
+> >     might be extended in future to do so).
+> > 
+> > In is_event_supported(), we try to account for cases (a) and (b), first
+> > attempting to open an event without any filters, and if this fails,
+> > retrying with perf_event_attr::exclude_kernel set. We do not account for
+> > case (c), or any other filters that drivers could theoretically require
+> > to be set.
+> > 
+> > Thus is_event_supported() will fail to detect support for any events
+> > targetting an Apple M1/M2 PMU, even where events would be supported with
+> > perf_event_attr:::exclude_guest set.
+> > 
+> > Since commit:
+> > 
+> >   82fe2e45cdb00de4 ("perf pmus: Check if we can encode the PMU number in perf_event_attr.type")
+> > 
+> > ... we use is_event_supported() to detect support for extended types,
+> > with the PMU ID encoded into the perf_event_attr::type. As above, on an
+> > Apple M1/M2 system this will always fail to detect that the event is
+> > supported, and consequently we fail to detect support for extended types
+> > even when these are supported, as they have been since commit:
+> > 
+> >   5c816728651ae425 ("arm_pmu: Add PERF_PMU_CAP_EXTENDED_HW_TYPE capability")
+> > 
+> > Due to this, the perf tool will not automatically expand plain
+> > PERF_TYPE_HARDWARE events into per-PMU events, even when all the
+> > necessary kernel support is present.
+> > 
+> > This patch updates is_event_supported() to additionally try opening
+> > events with perf_event_attr::exclude_guest set, allowing support for
+> > events to be detected on Apple M1/M2 systems. I beleive that this is
+> > sufficient for all contemporary CPU PMU drivers, though in future it may
+> > be necessary to check for other combinations of filter bits.
+> > 
+> > I've deliberately changed the check to not expect a specific error code
+> > for missing filters, as today ;the kernel may return a number of
+> > different error codes for missing filters (e.g. -EACCESS, -EINVAL, or
+> > -EOPNOTSUPP) depending on why and where the filter configuration is
+> > rejected, and retrying for any error is more robust.
+> > 
+> > Note that this does not remove the need for commit:
+> > 
+> >   a24d9d9dc096fc0d ("perf parse-events: Make legacy events lower priority than sysfs/JSON")
+> > 
+> > ... which is still necessary so that named-pmu/event/ events work on
+> > kernels without extended type support, even if the event name happens to
+> > be the same as a PERF_EVENT_TYPE_HARDWARE event (e.g. as is the case for
+> > the M1/M2 PMU's 'cycles' and 'instructions' events).
+> > 
+> > Fixes: 82fe2e45cdb00de4 ("perf pmus: Check if we can encode the PMU number in perf_event_attr.type")
+> > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> > Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
+> > Cc: Hector Martin <marcan@marcan.st>
+> > Cc: Ian Rogers <irogers@google.com>
+> > Cc: James Clark <james.clark@arm.com>
+> > Cc: John Garry <john.g.garry@oracle.com>
+> > Cc: Leo Yan <leo.yan@linaro.org>
+> > Cc: Marc Zyngier <maz@kernel.org>
+> > Cc: Mike Leach <mike.leach@linaro.org>
+> > Cc: Namhyung Kim <namhyung@kernel.org>
+> > Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > Cc: Thomas Richter <tmricht@linux.ibm.com>
+> > Cc: Will Deacon <will@kernel.org>
+> > ---
+> >  tools/perf/util/print-events.c | 27 +++++++++++++++++++--------
+> >  1 file changed, 19 insertions(+), 8 deletions(-)
+> > 
+> 
+> Tested-by: James Clark <james.clark@arm.com>
+> 
+> Tested on Juno and N1SDP, although I wouldn't have expected it to make a
+> difference on those platforms because they support exclude_guest=0.
 
-Le mercredi 24 janvier 2024 =C3=A0 09:38 -0600, Andrew Davis a =C3=A9crit=
-=C2=A0:
-> On 1/24/24 4:58 AM, Paul Cercueil wrote:
-> > Hi Christian,
-> >=20
-> > Le mardi 23 janvier 2024 =C3=A0 14:28 +0100, Christian K=C3=B6nig a =C3=
-=A9crit=C2=A0:
-> > > =C2=A0=C2=A0Am 23.01.24 um 14:02 schrieb Paul Cercueil:
-> > > =C2=A0=20
-> > > > [SNIP]
-> > > > =C2=A0=20
-> > > > > =C2=A0=20
-> > > > > > =C2=A0=C2=A0=20
-> > > > > > > =C2=A0=20
-> > > > > > > That an exporter has to call extra functions to access
-> > > > > > > his
-> > > > > > > own
-> > > > > > > buffers
-> > > > > > > is a complete no-go for the design since this forces
-> > > > > > > exporters
-> > > > > > > into
-> > > > > > > doing extra steps for allowing importers to access their
-> > > > > > > data.
-> > > > > > > =C2=A0=20
-> > > > > > =C2=A0=20
-> > > > > > Then what about we add these dma_buf_{begin,end}_access(),
-> > > > > > with
-> > > > > > only
-> > > > > > implementations for "dumb" exporters e.g. udmabuf or the
-> > > > > > dmabuf
-> > > > > > heaps?
-> > > > > > And only importers (who cache the mapping and actually care
-> > > > > > about
-> > > > > > non-
-> > > > > > coherency) would have to call these.
-> > > > > > =C2=A0=20
-> > > > > =C2=A0=20
-> > > > > No, the problem is still that you would have to change all
-> > > > > importers
-> > > > > to
-> > > > > mandatory use dma_buf_begin/end.
-> > > > >=20
-> > > > > But going a step back caching the mapping is irrelevant for
-> > > > > coherency.
-> > > > > Even if you don't cache the mapping you don't get coherency.
-> > > > > =C2=A0=20
-> > > > =C2=A0=20
-> > > > You actually do - at least with udmabuf, as in that case
-> > > > dma_buf_map_attachment() / dma_buf_unmap_attachment() will
-> > > > handle
-> > > > cache
-> > > > coherency when the SGs are mapped/unmapped.
-> > > > =C2=A0=20
-> > > =C2=A0=20
-> > > =C2=A0=C2=A0Well I just double checked the source in 6.7.1 and I can'=
-t see
-> > > udmabuf doing anything for cache coherency in map/unmap.
-> > > =C2=A0=20
-> > > =C2=A0=C2=A0All it does is calling dma_map_sgtable() and
-> > > dma_unmap_sgtable() to
-> > > create and destroy the SG table and those are not supposed to
-> > > sync
-> > > anything to the CPU cache.
-> > > =C2=A0=20
-> > > =C2=A0=C2=A0In other words drivers usually use DMA_ATTR_SKIP_CPU_SYNC=
- here,
-> > > it's
-> > > just that this is missing from udmabuf.
-> >=20
-> > Ok.
-> > =C2=A0=20
-> > > > =C2=A0=20
-> > > > The problem was then that dma_buf_unmap_attachment cannot be
-> > > > called
-> > > > before the dma_fence is signaled, and calling it after is
-> > > > already
-> > > > too
-> > > > late (because the fence would be signaled before the data is
-> > > > sync'd).
-> > > > =C2=A0=20
-> > > =C2=A0=20
-> > > =C2=A0=C2=A0Well what sync are you talking about? CPU sync? In DMA-bu=
-f that
-> > > is
-> > > handled differently.
-> > > =C2=A0=20
-> > > =C2=A0=C2=A0For importers it's mandatory that they can be coherent wi=
-th the
-> > > exporter. That usually means they can snoop the CPU cache if the
-> > > exporter can snoop the CPU cache.
-> >=20
-> > I seem to have such a system where one device can snoop the CPU
-> > cache
-> > and the other cannot. Therefore if I want to support it properly, I
-> > do
-> > need cache flush/sync. I don't actually try to access the data
-> > using
-> > the CPU (and when I do, I call the sync start/end ioctls).
-> >=20
->=20
-> If you don't access the data using the CPU, then how did the data
-> end up in the CPU caches? If you have a device that can write-
-> allocate
-> into your CPU cache, but some other device in the system cannot snoop
-> that data back out then that is just broken and those devices cannot
-> reasonably share buffers..
+It's good to be certain, anyhow!
 
-I think that's what happens, yes.
+I've folded that tag in for v2.
 
-> Now we do have systems where some hardware can snoop CPU(or L3)
-> caches
-> and others cannot, but they will not *allocate* into those caches
-> (unless they also have the ability to sync them without CPU in the
-> loop).
->=20
-> Your problem may be if you are still using udmabuf driver as your
-> DMA-BUF exporter, which as said before is broken (and I just sent
-> some
-> patches with a few fixes just for you :)). For udmabuf, data starts
-> in the CPU domain (in caches) and is only ever synced for the CPU,
-> not for attached devices. So in this case the writing device might
-> update those cache lines but a non-snooping reader would never see
-> those updates.
+> Although I do see an interaction with the test "Session topology" if I
+> hack the driver to behave like M1. The test has been failing (on
+> big.LITTLE) since commit 251aa040244a ("perf parse-events: Wildcard most
+> "numeric" events") but the result is that the test actually starts
+> passing with this change. I don't think that should really block this
+> though, it's likely going to require a separate fix which I will look into.
 
-I tried today with the system dma-heap, and the behaviour was the same.
-Adding an implementation of .dma_buf_begin/end_access() to it made it
-work there too.
+IIUC that fix is:
 
-> I'm not saying there isn't a need for these new {begin,end}_access()
-> functions. I can think of a few interesting usecases, but as you
-> say below that would be good to work out in a different series.
+  https://lore.kernel.org/lkml/20240124094358.489372-1-james.clark@arm.com/
 
-Yep, but it's a can of worms I'd rather not open if I can avoid it :)
+.. right?
 
-> Andrew
-
-Cheers,
--Paul
-
->=20
-> >=20
-> > > =C2=A0=C2=A0For exporters you can implement the begin/end CPU access
-> > > functions
-> > > which allows you to implement something even if your exporting
-> > > device
-> > > can't snoop the CPU cache.
-> >=20
-> > That only works if the importers call the begin_cpu_access() /
-> > end_cpu_access(), which they don't.
-> >=20
-> > =C2=A0=20
-> > > > Daniel / Sima suggested then that I cache the mapping and add
-> > > > new
-> > > > functions to ensure cache coherency, which is what these
-> > > > patches
-> > > > are
-> > > > about.
-> > > > =C2=A0=20
-> > > =C2=A0=20
-> > > =C2=A0=C2=A0Yeah, I've now catched up on the latest mail. Sorry I hav=
-en't
-> > > seen
-> > > that before.
-> > > =C2=A0=20
-> > > =C2=A0=20
-> > > > =C2=A0=20
-> > > >=20
-> > > > =C2=A0=20
-> > > > > =C2=A0=20
-> > > > > In other words exporters are not require to call sync_to_cpu
-> > > > > or
-> > > > > sync_to_device when you create a mapping.
-> > > > >=20
-> > > > > What exactly is your use case here? And why does coherency
-> > > > > matters?
-> > > > > =C2=A0=20
-> > > > =C2=A0=20
-> > > > My use-case is, I create DMABUFs with udmabuf, that I attach to
-> > > > USB/functionfs with the interface introduced by this patchset.
-> > > > I
-> > > > attach
-> > > > them to IIO with a similar interface (being upstreamed in
-> > > > parallel),
-> > > > and transfer data from USB to IIO and vice-versa in a zero-copy
-> > > > fashion.
-> > > >=20
-> > > > This works perfectly fine as long as the USB and IIO hardware
-> > > > are
-> > > > coherent between themselves, which is the case on most of our
-> > > > boards.
-> > > > However I do have a board (with a Xilinx Ultrascale SoC) where
-> > > > it
-> > > > is
-> > > > not the case, and cache flushes/sync are needed. So I was
-> > > > trying to
-> > > > rework these new interfaces to work on that system too.
-> > > > =C2=A0=20
-> > > =C2=A0=20
-> > > =C2=A0=C2=A0Yeah, that sounds strongly like one of the use cases we h=
-ave
-> > > rejected so far.
-> > > =C2=A0=20
-> > > =C2=A0=20
-> > > =C2=A0=20
-> > > > =C2=A0=20
-> > > > If this really is a no-no, then I am fine with the assumption
-> > > > that
-> > > > devices sharing a DMABUF must be coherent between themselves;
-> > > > but
-> > > > that's something that should probably be enforced rather than
-> > > > assumed.
-> > > >=20
-> > > > (and I *think* there is a way to force coherency in the
-> > > > Ultrascale's
-> > > > interconnect - we're investigating it)
-> > > > =C2=A0=20
-> > > =C2=A0=20
-> > > =C2=A0=C2=A0What you can do is that instead of using udmabuf or dma-h=
-eaps
-> > > is
-> > > that the device which can't provide coherency act as exporters of
-> > > the
-> > > buffers.
-> > > =C2=A0=20
-> > > =C2=A0=C2=A0The exporter is allowed to call sync_for_cpu/sync_for_dev=
-ice on
-> > > it's
-> > > own buffers and also gets begin/end CPU access notfications. So
-> > > you
-> > > can then handle coherency between the exporter and the CPU.
-> >=20
-> > But again that would only work if the importers would call
-> > begin_cpu_access() / end_cpu_access(), which they don't, because
-> > they
-> > don't actually access the data using the CPU.
-> >=20
-> > Unless you mean that the exporter can call
-> > sync_for_cpu/sync_for_device
-> > before/after every single DMA transfer so that the data appears
-> > coherent to the importers, without them having to call
-> > begin_cpu_access() / end_cpu_access().
-> >=20
-> > In which case - this would still demultiply the complexity; my USB-
-> > functionfs interface here (and IIO interface in the separate
-> > patchset)
-> > are not device-specific, so I'd rather keep them importers.
-> > =C2=A0=20
-> > > =C2=A0=C2=A0If you really don't have coherency between devices then t=
-hat
-> > > would
-> > > be a really new use case and we would need much more agreement on
-> > > how
-> > > to do this.
-> >=20
-> > [snip]
-> >=20
-> > Agreed. Desiging a good generic solution would be better.
-> >=20
-> > With that said...
-> >=20
-> > Let's keep it out of this USB-functionfs interface for now. The
-> > interface does work perfectly fine on platforms that don't have
-> > coherency problems. The coherency issue in itself really is a
-> > tangential issue.
-> >=20
-> > So I will send a v6 where I don't try to force the cache coherency
-> > -
-> > and instead assume that the attached devices are coherent between
-> > themselves.
-> >=20
-> > But it would be even better to have a way to detect non-coherency
-> > and
-> > return an error on attach.
-> >=20
-> > Cheers,
-> > -Paul
-
+Mark.
 
