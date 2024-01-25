@@ -1,115 +1,112 @@
-Return-Path: <linux-kernel+bounces-39295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7822F83CE47
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:14:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2959883CE4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:15:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A1D929D4DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:14:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CB701C2300E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:15:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9206313A240;
-	Thu, 25 Jan 2024 21:13:47 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C3A81386B9;
+	Thu, 25 Jan 2024 21:15:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="hcuXl/1s"
+Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66D961386D5
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 21:13:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C044613A24C
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 21:15:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706217227; cv=none; b=igQRBtE1sk/+OafHmsVqIVR4jXbFMEv0Vgz1XhiRlnpJRAtUMs7wBCCOePlUmm0yiv1uS+BG2l52GNarwao1RqnkI2Anin1zZprrP+BBFEXgkutQDy92OMkSw5QTahbIOjAjX9sEKluxQV+Yer0QU7oLlFF1S4FI4AjEztK6cMg=
+	t=1706217313; cv=none; b=eGe9rwO32v0VfzlhObdOQf5HKKYprnKXlVPGq9Tr3bIBJaRO/uHwj0kSK/Vrz0hWRx9KwpM75KQKunwX+ATSlON3eDwHZxy1lze/ecqeSYXDD6dv2ULmoir450MzSo/9XykOPXBmLk4pg6NQN2RK2e1gLrZ8wwMrXFJxQnREjYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706217227; c=relaxed/simple;
-	bh=XfTpl7ZCji0713DaXc5kyRqYgTqhfhPAce0nC47R2Wg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IOtiCjVunpRXFa56BiZb5M76swnAjYhLrTm+UUQ6+MNMDtTRSwP8iSQ1ms8nMd+pHNtDXByBbo+c3Szc500vDN5L0B6AssaIdkMwFC9qckLfwlkyvWnaPu6xTMmxmTpp1Jy8YD9MNDzm0RyNM2WII05kYDPC4ONeUHJCVUzplWc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rT72W-0002Y5-4f; Thu, 25 Jan 2024 22:13:36 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rT72U-002N34-VD; Thu, 25 Jan 2024 22:13:34 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rT72U-00893Q-2o;
-	Thu, 25 Jan 2024 22:13:34 +0100
-Date: Thu, 25 Jan 2024 22:13:34 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Wenhua Lin <Wenhua.Lin@unisoc.com>
-Cc: Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Orson Zhai <orsonzhai@gmail.com>, Baolin Wang <baolin.wang@linux.alibaba.com>, 
-	Chunyan Zhang <zhang.lyra@gmail.com>, linux-pwm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, wenhua lin <wenhua.lin1994@gmail.com>, 
-	Xiongpeng Wu <xiongpeng.wu@unisoc.com>, zhaochen su <zhaochen.su29@gmail.com>, 
-	Zhaochen Su <Zhaochen.Su@unisoc.com>, Xiaolong Wang <Xiaolong.Wang@unisoc.com>
-Subject: Re: [PATCH V2 2/6] pwm: sprd: Improve the pwm backlight control
- function
-Message-ID: <tbtq2rtixo2dkfeuainsjzhymehkym3zvrjuh6hrpg6znnbyzg@ppl4ztw2t2bh>
-References: <20240125025533.10315-1-Wenhua.Lin@unisoc.com>
- <20240125025533.10315-3-Wenhua.Lin@unisoc.com>
+	s=arc-20240116; t=1706217313; c=relaxed/simple;
+	bh=b/qs/nkt+9BuESReMPYiO827KTWJWW0+QfrfS9/NXgs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tceGFt/ioT82IP2YSMej64DfigX3CNVMyZa0uCbkUSxmHdev5/0B3Ao8uciOBJ0m5JjfsflF0lCmp9nDX9Hcyf0vz3jWCFyoGF2Id13RboTHdZvqBIdBfvkf84RiM6CwyogJsW1s7CsO2/jpStwTXcn8o1JrWdWd/rTy5ATQ92c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=hcuXl/1s; arc=none smtp.client-ip=209.85.166.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7bfb1e7f599so28612639f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 13:15:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1706217311; x=1706822111; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ukzAY7Ia5t5Dvy0Ix5ly4ai+YCBGcgR+LuvxltyaCZQ=;
+        b=hcuXl/1s1YvDG0+HCX9DXODxbB30MIK5II+tgWlO4Qh+l1YC/j+04uRZb5b/1u2Ens
+         J57kLUgYGh7FxISRTjpYDo/ZNuy9NRwt6ZyNEjFMCb3NSht2e+8aqCUz03lKWGWD0z49
+         TdjYL+Bp9b4mMcqI+N7gaoUilUb3PdGbwsUYA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706217311; x=1706822111;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ukzAY7Ia5t5Dvy0Ix5ly4ai+YCBGcgR+LuvxltyaCZQ=;
+        b=HZv+4ZXBpFzhNjV+5WLiWaahJNpYXqFWia9InCZ5udIfBIgiNc8SMHExrIe6iAUTmV
+         xxzEo4A2UAVDYqhaHEPOjoQr8EEHrtrJde7BJWCwlmWQ+umDIKHlRjQjLdaDu4/oN4WJ
+         eNqdW7y6KrTfqKfI9I6rVKZ914hN7gWv9oBZjSZxwuTePOqfbBJu2DpAHDFiig876+KC
+         DxpKGNXARZsAcUR9Xq/0Z/xEXnmKkxBW0jbCLxYhOI+TYxpoyLPO99aTpiLcsGB9EdsW
+         mugoItRK6py+1rMybYs3cfE6HE6yxp4w99nX93vxA83wsJ6Z/iaDB4hugT4XL4f0Oggn
+         0RYQ==
+X-Gm-Message-State: AOJu0Yx43MqhBOzqFwAVfx8nfW7GX3tRDgeBroMVc1ZYPhXGsE+b9JRa
+	NcAp3P/9m9/4Xi3r3lQk0PHmRN9pljjVmNX0ONJK+PmjU6qai6p5LTLE9R8N6t4Zf0n8NU0JaIv
+	9
+X-Google-Smtp-Source: AGHT+IGgSDqpN5Nf9SwdxyyhjoxVnGwF3qhAxf3L0te+12vXSMjDhnzep66R9fzDIrxZFj8XvHYjrA==
+X-Received: by 2002:a6b:e416:0:b0:7bf:356b:7a96 with SMTP id u22-20020a6be416000000b007bf356b7a96mr803126iog.2.1706217310758;
+        Thu, 25 Jan 2024 13:15:10 -0800 (PST)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id t5-20020a5edd05000000b007bfbe4e309asm395593iop.27.2024.01.25.13.15.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Jan 2024 13:15:10 -0800 (PST)
+Message-ID: <41addcfe-f897-4394-bf40-aaef22c27fca@linuxfoundation.org>
+Date: Thu, 25 Jan 2024 14:15:09 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="d3eufueza5633f7n"
-Content-Disposition: inline
-In-Reply-To: <20240125025533.10315-3-Wenhua.Lin@unisoc.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 0/2] kselftest/seccomp: Convert to KTAP output
+To: Mark Brown <broonie@kernel.org>, Kees Cook <keescook@chromium.org>,
+ Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>,
+ Shuah Khan <shuah@kernel.org>
+Cc: linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Anders Roxell <anders.roxell@linaro.org>,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20240124-b4-kselftest-seccomp-benchmark-ktap-v4-0-cfd2bd2a31cf@kernel.org>
+Content-Language: en-US
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240124-b4-kselftest-seccomp-benchmark-ktap-v4-0-cfd2bd2a31cf@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 1/24/24 06:00, Mark Brown wrote:
+> Currently the seccomp benchmark selftest produces non-standard output,
+> meaning that while it makes a number of checks of the performance it
+> observes this has to be parsed by humans.  This means that automated
+> systems running this suite of tests are almost certainly ignoring the
+> results which isn't ideal for spotting problems.  Let's rework things so
+> that each check that the program does is reported as a test result to
+> the framework.
+> 
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> ---
+> Changes in v4:
+> - Silence checkpatch noise.
+> - Link to v3: https://lore.kernel.org/r/20240122-b4-kselftest-seccomp-benchmark-ktap-v3-0-785bff4c04fd@kernel.org
+> 
 
---d3eufueza5633f7n
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thank you Mark.
 
-Hello,
+Applied to linux-kselftest fixes for the next rc
 
-On Thu, Jan 25, 2024 at 10:55:29AM +0800, Wenhua Lin wrote:
-> The pwm-sprd driver support only 8-bit linear control of backlight. Now,
-> new requests of supporting 9-bit, 10-bit, 11-bit and 12-bit linear
-> control of backlight are proposed.
+thanks,
+-- Shuah
 
-I would expect that you can determine a sensible value for mod at
-runtime. Also adding this to the device tree isn't hardware description,
-is it?
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---d3eufueza5633f7n
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmWyzv0ACgkQj4D7WH0S
-/k7Azgf/dUHAPnyIf/XXxctd065kx6rEUD/YFEWzCK3lpm00SgG6+Ed/IGxfJp9x
-y3xeE2QT+vmt1LR2ZppdkUgtiSX3NcSmRTY7cK9zX45KJetARln7vBIuK0kLZE4k
-nK6cr+09OoQNXpWXRygk+DeLzpds5yK8o2uviAin4R2OLfzpalzofVg2zHXKeTfN
-hkNWCftPeSpBuK4/AO4SpBzbI40ZB689Ge13KxTnWsfNVvJvprWD4mQMrnYYz9S0
-pDTYwcyfKH/e7yv7u4taoEmH0DK6qkNHaPvYC4T1TaJ1ifPSsw1MtlGBEndm6arT
-ASx7tzFbkJQyb/CC9p9lcYa8KO0YYA==
-=uuTL
------END PGP SIGNATURE-----
-
---d3eufueza5633f7n--
 
