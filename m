@@ -1,224 +1,223 @@
-Return-Path: <linux-kernel+bounces-38853-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38854-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0458F83C744
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:50:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F7E083C748
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:51:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D3DEB23F05
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:50:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1702A1F2319B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:51:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38DF87CF31;
-	Thu, 25 Jan 2024 15:49:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C955745E6;
+	Thu, 25 Jan 2024 15:50:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="OZiRQtwq"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="n006/Zfo"
+Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA6797A707;
-	Thu, 25 Jan 2024 15:49:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8539573175
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 15:50:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706197776; cv=none; b=a658ZMYhoV4UP8AnCs/fKQ+HqmNcKCppKE9irFdizelDIP+s4+lO2jZLaBnm9ih84F+CSrMyxvaMUuONFNpkS4ox/Ihu6ySrl8xTc48h8sTE5NsFzygLv0QTzrkQvZEvXfVMm6KIAEkl9arwv75gACykiuukflz4KxB8dD2QRrA=
+	t=1706197822; cv=none; b=IUW+YxnQiJpCJw/ISrTHzQE8pNdKZuGERUZGevHRTLQ0PQ0jZ68pTT0py5HHmeCIRf/VS1Fkxlcdi+saXlLHg+rJWpcaAXyKpSfqVkhmJrrLFeMmjmH/Vgbdo3AW9PPkzxX4x85xKNVOn2zLNs4I9cHp9qQXz8lpgBxsadz3RVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706197776; c=relaxed/simple;
-	bh=W1Z5z7CyCm6OJIhlRbgJ7qn8gVztgK3gJEzxblTd6J0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=i/R976hNReNV8NH/tN61XCIgHIj/63aDxjx8P2GIp92Jy6Tt0pJkymfG+11FiLiR/acS/+AQFkfBaOOPZEPhysg+JWabCuhc02fVRgndCBY44KD6dbjn5mEjsnY9wV30sSsEg9ER1qb+C/7u93oE3aEIgCVQ4kPMrg5rG8/le34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=OZiRQtwq; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from umang.jain (unknown [103.86.18.175])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id B760951A6;
-	Thu, 25 Jan 2024 16:48:12 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1706197695;
-	bh=W1Z5z7CyCm6OJIhlRbgJ7qn8gVztgK3gJEzxblTd6J0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OZiRQtwqP73QFH7tCmGmTedDWV1o1yIGO/87wKQ3AgVVk2nCEmP8YoZURugOc0zTa
-	 b1+Y+pItMc1UrCvsmQd5mcp1AcyfT/FW6Z12Mf5LKzCjVeI9VNvhOkInPCZ1xJzXeD
-	 PZTdq7DD3jacYG180ySdXqbm9iSs1ZgHB/WqhXjs=
-From: Umang Jain <umang.jain@ideasonboard.com>
-To: linux-media@vger.kernel.org
-Cc: Kieran Bingham <kieran.bingham@ideasonboard.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Matthias Fend <matthias.fend@emfend.at>,
-	Umang Jain <umang.jain@ideasonboard.com>
-Subject: [PATCH 4/4] media: i2c: imx335: Add support for test pattern generator
-Date: Thu, 25 Jan 2024 21:19:08 +0530
-Message-ID: <20240125154908.465191-5-umang.jain@ideasonboard.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20240125154908.465191-1-umang.jain@ideasonboard.com>
-References: <20240125154908.465191-1-umang.jain@ideasonboard.com>
+	s=arc-20240116; t=1706197822; c=relaxed/simple;
+	bh=7tI7GQWmIWcAMWk+voq5Jc5scUNIDQ1xSclcgqYcSmU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UP4+atdEsnwEqvI/ZpEUyJEwPRknF/fYmuyliBBaTudp3VNGs9kEnDu8YaBpLiE4MR715mAh2AMOTqKuRwIKhpesQbcT/3tPVT5CHsAqAChbHXyaBDLAeJuMMG/W7p4JzJlLYH9BhHOCzkdaG6CGhWF4442WT3pva3iC0VYXpXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=n006/Zfo; arc=none smtp.client-ip=209.85.219.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-686aa9f0736so10520116d6.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 07:50:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1706197819; x=1706802619; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=58NyEZxlKioQHJ5VpckWrYBK4rieOl/YNYhuqxJjrTQ=;
+        b=n006/ZfoKWORUU+NWeuczKsvPwALgfw5uIbbNMVQAe2ePv3DJaC0w/UfIPNJGTI5zH
+         S4UC/vVB3VVIzTOxUDTQsSxeXN7U+/rKl5F4IhstTEQJ6xBC+HgHpjf/9WfHU0UoWTKw
+         ZtdydTlcT4OWYp3er4LljhEmaRoa2PvJkI9tsAgrjFXrD53gBg7MnlK21AuplAksdUOs
+         x8z0A/hfFN+JAV9KUyTqrncM8i+XLzknGmtCOQU+UyU/I7PWxEgxZXek2BqZFKuLHjzl
+         GXEhe4PUB/i9CJpc/kWPijZFPHCY90siOg6cGL274VX+/V0h0D+VKiyiPUoJQGnLt665
+         9Vsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706197819; x=1706802619;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=58NyEZxlKioQHJ5VpckWrYBK4rieOl/YNYhuqxJjrTQ=;
+        b=OR8/O1rHclxWbel6mFgBCirU4K0Cr49h0+lcWPVtgImffzFQyEgrL+dp8ugtGac/+K
+         2hvuYYxdjTamM8CK5mzMKFFvpgXv9KbB/WKzWpKRV02YJs32mr176lYFMySFiR+c2QhI
+         gzisrk5SgESP4AETqcKWB5RPQFxu2/CN5gNLrLh7l9P1eNDlz/aXuUOOM27mFV3hMiqQ
+         jhGwj4WE2xqSHY9khuK2bo2JlPyS1SwAzdy+l5fp3XB9bKL09p6fx9EBRhzZQbhIvus2
+         HZcSnIk63ecIxoprEEwRDxSJ4wXOPGSm/UXpUb4JSAOZ6JsI7wx1KuU4KsYlrKhsEzsS
+         wpBg==
+X-Gm-Message-State: AOJu0Ywj8n6A+ngecxiqOQp2o9uJyK8YOMqpZYg2fy6Z7wZOBbguWZ/N
+	CbX1tZwAcSKQ4wOoZ4zGSvANV769Dm40XjpN9+q/nxjho4oxBoKw2i+oZrdfaXg=
+X-Google-Smtp-Source: AGHT+IFLwvlLixMEJ8F1pWJryesPKscOkN+uPtiDwB9PKXC0aC3fby4A8RdctwHTaEij+xMpjf5IVw==
+X-Received: by 2002:a05:6214:1c0c:b0:681:9a5e:c49f with SMTP id u12-20020a0562141c0c00b006819a5ec49fmr1240542qvc.118.1706197819189;
+        Thu, 25 Jan 2024 07:50:19 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id dk13-20020a056214092d00b006852ff71ac2sm5578899qvb.30.2024.01.25.07.50.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 07:50:18 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rT1zd-0091pp-BV;
+	Thu, 25 Jan 2024 11:50:17 -0400
+Date: Thu, 25 Jan 2024 11:50:17 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Shivaprasad G Bhat <sbhat@linux.ibm.com>
+Cc: iommu@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org, mpe@ellerman.id.au, npiggin@gmail.com,
+	christophe.leroy@csgroup.eu, aneesh.kumar@kernel.org,
+	naveen.n.rao@linux.ibm.com, jroedel@suse.de,
+	tpearson@raptorengineering.com, aik@amd.com, bgray@linux.ibm.com,
+	gregkh@linuxfoundation.org, gbatra@linux.vnet.ibm.com,
+	vaibhav@linux.ibm.com
+Subject: Re: [PATCH 1/2] powerpc: iommu: Bring back table group
+ release_ownership() call
+Message-ID: <20240125155017.GW50608@ziepe.ca>
+References: <170618450592.3805.8216395093813382208.stgit@ltcd48-lp2.aus.stglab.ibm.com>
+ <170618451433.3805.9015493852395837391.stgit@ltcd48-lp2.aus.stglab.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <170618451433.3805.9015493852395837391.stgit@ltcd48-lp2.aus.stglab.ibm.com>
 
-From: Matthias Fend <matthias.fend@emfend.at>
+On Thu, Jan 25, 2024 at 06:08:39AM -0600, Shivaprasad G Bhat wrote:
+> The commit 2ad56efa80db ("powerpc/iommu: Setup a default domain and
+> remove set_platform_dma_ops") refactored the code removing the
+> set_platform_dma_ops(). It missed out the table group
+> release_ownership() call which would have got called otherwise
+> during the guest shutdown via vfio_group_detach_container(). On
+> PPC64, this particular call actually sets up the 32-bit TCE table,
+> and enables the 64-bit DMA bypass etc. Now after guest shutdown,
+> the subsequent host driver (e.g megaraid-sas) probe post unbind
+> from vfio-pci fails like,
+> 
+> megaraid_sas 0031:01:00.0: Warning: IOMMU dma not supported: mask 0x7fffffffffffffff, table unavailable
+> megaraid_sas 0031:01:00.0: Warning: IOMMU dma not supported: mask 0xffffffff, table unavailable
+> megaraid_sas 0031:01:00.0: Failed to set DMA mask
+> megaraid_sas 0031:01:00.0: Failed from megasas_init_fw 6539
+> 
+> The patch brings back the call to table_group release_ownership()
+> call when switching back to PLATFORM domain.
+> 
+> Fixes: 2ad56efa80db ("powerpc/iommu: Setup a default domain and remove set_platform_dma_ops")
+> Signed-off-by: Shivaprasad G Bhat <sbhat@linux.ibm.com>
+> ---
+>  arch/powerpc/kernel/iommu.c |   16 +++++++++++++---
+>  1 file changed, 13 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/powerpc/kernel/iommu.c b/arch/powerpc/kernel/iommu.c
+> index ebe259bdd462..ac7df43fa7ef 100644
+> --- a/arch/powerpc/kernel/iommu.c
+> +++ b/arch/powerpc/kernel/iommu.c
+> @@ -1296,9 +1296,19 @@ spapr_tce_platform_iommu_attach_dev(struct iommu_domain *platform_domain,
+>  	if (!grp)
+>  		return -ENODEV;
+>  
+> -	table_group = iommu_group_get_iommudata(grp);
+> -	ret = table_group->ops->take_ownership(table_group);
+> -	iommu_group_put(grp);
+> +	if (platform_domain->type == IOMMU_DOMAIN_PLATFORM) {
+> +		ret = 0;
+> +		table_group = iommu_group_get_iommudata(grp);
+> +		/*
+> +		 * The domain being set to PLATFORM from earlier
+> +		 * BLOCKED. The table_group ownership has to be released.
+> +		 */
+> +		table_group->ops->release_ownership(table_group);
+> +	} else if (platform_domain->type == IOMMU_DOMAIN_BLOCKED) {
+> +		table_group = iommu_group_get_iommudata(grp);
+> +		ret = table_group->ops->take_ownership(table_group);
+> +		iommu_group_put(grp);
+> +	}
 
-Add support for the sensor's test pattern generator.
+Sure, but please split the function, don't test on the
+platform->domain_type.
 
-Signed-off-by: Matthias Fend <matthias.fend@emfend.at>
-Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
-Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
----
- drivers/media/i2c/imx335.c | 99 +++++++++++++++++++++++++++++++++++++-
- 1 file changed, 98 insertions(+), 1 deletion(-)
+Also, is there any chance someone can work on actually fixing this to
+be a proper iommu driver? I think that will become important for power
+to use the common dma_iommu code in the next year...
 
-diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
-index e64ee99cbae4..f9a2337a80c0 100644
---- a/drivers/media/i2c/imx335.c
-+++ b/drivers/media/i2c/imx335.c
-@@ -45,6 +45,21 @@
- /* Group hold register */
- #define IMX335_REG_HOLD		0x3001
+Sort of like this:
+
+diff --git a/arch/powerpc/kernel/iommu.c b/arch/powerpc/kernel/iommu.c
+index ebe259bdd46298..0d6a7fea2bd9a5 100644
+--- a/arch/powerpc/kernel/iommu.c
++++ b/arch/powerpc/kernel/iommu.c
+@@ -1287,20 +1287,20 @@ spapr_tce_platform_iommu_attach_dev(struct iommu_domain *platform_domain,
+ 	struct iommu_domain *domain = iommu_get_domain_for_dev(dev);
+ 	struct iommu_group *grp = iommu_group_get(dev);
+ 	struct iommu_table_group *table_group;
+-	int ret = -EINVAL;
  
-+/* Test pattern generator */
-+#define IMX335_REG_TPG		0x329e
-+#define IMX335_TPG_ALL_000	0
-+#define IMX335_TPG_ALL_FFF	1
-+#define IMX335_TPG_ALL_555	2
-+#define IMX335_TPG_ALL_AAA	3
-+#define IMX335_TPG_TOG_555_AAA	4
-+#define IMX335_TPG_TOG_AAA_555	5
-+#define IMX335_TPG_TOG_000_555	6
-+#define IMX335_TPG_TOG_555_000	7
-+#define IMX335_TPG_TOG_000_FFF	8
-+#define IMX335_TPG_TOG_FFF_000	9
-+#define IMX335_TPG_H_COLOR_BARS 10
-+#define IMX335_TPG_V_COLOR_BARS 11
-+
- /* Input clock rate */
- #define IMX335_INCLK_RATE	24000000
+ 	/* At first attach the ownership is already set */
+ 	if (!domain)
+ 		return 0;
  
-@@ -162,6 +177,38 @@ struct imx335 {
- };
+-	if (!grp)
+-		return -ENODEV;
+-
+ 	table_group = iommu_group_get_iommudata(grp);
+-	ret = table_group->ops->take_ownership(table_group);
++	/*
++	 * The domain being set to PLATFORM from earlier
++	 * BLOCKED. The table_group ownership has to be released.
++	 */
++	table_group->ops->release_ownership(table_group);
+ 	iommu_group_put(grp);
  
- 
-+static const char * const imx335_tpg_menu[] = {
-+	"Disabled",
-+	"All 000h",
-+	"All FFFh",
-+	"All 555h",
-+	"All AAAh",
-+	"Toggle 555/AAAh",
-+	"Toggle AAA/555h",
-+	"Toggle 000/555h",
-+	"Toggle 555/000h",
-+	"Toggle 000/FFFh",
-+	"Toggle FFF/000h",
-+	"Horizontal color bars",
-+	"Vertical color bars",
-+};
-+
-+static const int imx335_tpg_val[] = {
-+	IMX335_TPG_ALL_000,
-+	IMX335_TPG_ALL_000,
-+	IMX335_TPG_ALL_FFF,
-+	IMX335_TPG_ALL_555,
-+	IMX335_TPG_ALL_AAA,
-+	IMX335_TPG_TOG_555_AAA,
-+	IMX335_TPG_TOG_AAA_555,
-+	IMX335_TPG_TOG_000_555,
-+	IMX335_TPG_TOG_555_000,
-+	IMX335_TPG_TOG_000_FFF,
-+	IMX335_TPG_TOG_FFF_000,
-+	IMX335_TPG_H_COLOR_BARS,
-+	IMX335_TPG_V_COLOR_BARS,
-+};
-+
- /* Sensor mode registers */
- static const struct imx335_reg mode_2592x1940_regs[] = {
- 	{0x3000, 0x01},
-@@ -505,6 +552,46 @@ static int imx335_update_exp_gain(struct imx335 *imx335, u32 exposure, u32 gain)
- 	return ret;
+-	return ret;
++	return 0
  }
  
-+static int imx335_update_test_pattern(struct imx335 *imx335, u32 pattern_index)
+ static const struct iommu_domain_ops spapr_tce_platform_domain_ops = {
+@@ -1312,13 +1312,33 @@ static struct iommu_domain spapr_tce_platform_domain = {
+ 	.ops = &spapr_tce_platform_domain_ops,
+ };
+ 
+-static struct iommu_domain spapr_tce_blocked_domain = {
+-	.type = IOMMU_DOMAIN_BLOCKED,
++static int
++spapr_tce_platform_iommu_blocked_dev(struct iommu_domain *platform_domain,
++				     struct device *dev)
 +{
-+	int ret;
++	struct iommu_domain *domain = iommu_get_domain_for_dev(dev);
++	struct iommu_group *grp = iommu_group_get(dev);
++	struct iommu_table_group *table_group;
++	int ret = -EINVAL;
 +
-+	if (pattern_index >= ARRAY_SIZE(imx335_tpg_val))
-+		return -EINVAL;
-+
-+	if (pattern_index) {
-+		const struct imx335_reg tpg_enable_regs[] = {
-+			{ 0x3148, 0x10 },
-+			{ 0x3280, 0x00 },
-+			{ 0x329c, 0x01 },
-+			{ 0x32a0, 0x11 },
-+			{ 0x3302, 0x00 },
-+			{ 0x3303, 0x00 },
-+			{ 0x336c, 0x00 },
-+		};
-+
-+		ret = imx335_write_reg(imx335, IMX335_REG_TPG, 1, imx335_tpg_val[pattern_index]);
-+		if (ret)
-+			return ret;
-+
-+		ret = imx335_write_regs(imx335, tpg_enable_regs, ARRAY_SIZE(tpg_enable_regs));
-+	} else {
-+		const struct imx335_reg tpg_disable_regs[] = {
-+			{ 0x3148, 0x00 },
-+			{ 0x3280, 0x01 },
-+			{ 0x329c, 0x00 },
-+			{ 0x32a0, 0x10 },
-+			{ 0x3302, 0x32 },
-+			{ 0x3303, 0x00 },
-+			{ 0x336c, 0x01 },
-+		};
-+
-+		ret = imx335_write_regs(imx335, tpg_disable_regs, ARRAY_SIZE(tpg_disable_regs));
-+	}
+ 	/*
+ 	 * FIXME: SPAPR mixes blocked and platform behaviors, the blocked domain
+ 	 * also sets the dma_api ops
+ 	 */
+-	.ops = &spapr_tce_platform_domain_ops,
++	table_group = iommu_group_get_iommudata(grp);
++	ret = table_group->ops->take_ownership(table_group);
++	iommu_group_put(grp);
 +
 +	return ret;
 +}
 +
- /**
-  * imx335_set_ctrl() - Set subdevice control
-  * @ctrl: pointer to v4l2_ctrl structure
-@@ -558,6 +645,10 @@ static int imx335_set_ctrl(struct v4l2_ctrl *ctrl)
- 
- 		ret = imx335_update_exp_gain(imx335, exposure, analog_gain);
- 
-+		break;
-+	case V4L2_CID_TEST_PATTERN:
-+		ret = imx335_update_test_pattern(imx335, ctrl->val);
++static const struct iommu_domain_ops spapr_tce_blocked_domain_ops = {
++	.attach_dev = spapr_tce_blocked_iommu_attach_dev,
++};
 +
- 		break;
- 	default:
- 		dev_err(imx335->dev, "Invalid control %d\n", ctrl->id);
-@@ -1122,7 +1213,7 @@ static int imx335_init_controls(struct imx335 *imx335)
- 	u32 lpfr;
- 	int ret;
++static struct iommu_domain spapr_tce_blocked_domain = {
++	.type = IOMMU_DOMAIN_BLOCKED,
++	.ops = &spapr_tce_blocked_domain_ops,
+ };
  
--	ret = v4l2_ctrl_handler_init(ctrl_hdlr, 6);
-+	ret = v4l2_ctrl_handler_init(ctrl_hdlr, 7);
- 	if (ret)
- 		return ret;
- 
-@@ -1156,6 +1247,12 @@ static int imx335_init_controls(struct imx335 *imx335)
- 						mode->vblank_max,
- 						1, mode->vblank);
- 
-+	v4l2_ctrl_new_std_menu_items(ctrl_hdlr,
-+				     &imx335_ctrl_ops,
-+				     V4L2_CID_TEST_PATTERN,
-+				     ARRAY_SIZE(imx335_tpg_menu) - 1,
-+				     0, 0, imx335_tpg_menu);
-+
- 	/* Read only controls */
- 	imx335->pclk_ctrl = v4l2_ctrl_new_std(ctrl_hdlr,
- 					      &imx335_ctrl_ops,
--- 
-2.41.0
-
+ static bool spapr_tce_iommu_capable(struct device *dev, enum iommu_cap cap)
 
