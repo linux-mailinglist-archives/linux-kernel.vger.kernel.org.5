@@ -1,120 +1,115 @@
-Return-Path: <linux-kernel+bounces-39174-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD04A83CC0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:19:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6710D83CC11
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:20:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 461E91F27A0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:19:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 090D51F27A5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:20:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F35B135407;
-	Thu, 25 Jan 2024 19:18:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA6691350D7;
+	Thu, 25 Jan 2024 19:20:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="ReTY6K6r"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="HGUAA8eZ"
+Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BA9A13474F
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 19:18:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 195BB1350CB;
+	Thu, 25 Jan 2024 19:19:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706210337; cv=none; b=H4TVg71nLczzsngRZ3TC/cu3bhK+Z0HnRZUgHX0pvKOa686E6tL3iAFZLN+K+VKpp/5OQSwL9kf93z9nBwl6goGj97rNQz1tD8Rlf3VWHMl6iJTS4mTcgVlQ8ynuTRHm0KtiJ9sQd+hstzOyAk01DMuki/71605MytwT4Jma1to=
+	t=1706210402; cv=none; b=Nq/cGim//2UW7BndG/6L4J+dnWM9IxIoOVLpRLiSXhUbK7fZWUIseJVuynhVqznKLAjZBl3/SyfklIpX9yWGvfnM/OvK/GQx6PwnNdMw2GZ8k9wO7KZsKtZb45Aw97pN1NcjACkBKl6R23QWohPW0syPX0tR78Ev4G1ftYA3YaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706210337; c=relaxed/simple;
-	bh=lab1cc/BnvmVMoI/6a4oqJtvBk6zbJgk82AeHiJrUN8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OBrpvMk39STUZS3erLw8NPSqFOdWflcnB35hGyo3lnBDt2SDuXYvNJQISP5SlFVkBE++56CBnqaigH8hey9GAKCHP3gfhxv0CpeoZmbEIvEgYvLlIpCLF4i1uwgRPK8VyZee8yUb+ibvDakmM7wkLpX0kyWqStZ6UmFkavMW2wE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=ReTY6K6r; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d89518d3b1so4104515ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 11:18:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1706210335; x=1706815135; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vgDFOq40XBBKNZXci2Ggytp+MQppzv/horYrfyyqlNM=;
-        b=ReTY6K6rez9zYsde1a6ELbDDYS6P2XW2eDpp09JX7+NVwe3U6i6nEMXhDs0OizXU4D
-         GEJZ3Cz397l0rhkMwHl7RbIZMi6SMEy4RchuVeSgEl5Q0pup4hxzuz7mStpkPDHWZDWJ
-         4PRRCGxabQ7REwDpcaiwfS3u5wO0frQ7IHwgQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706210335; x=1706815135;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vgDFOq40XBBKNZXci2Ggytp+MQppzv/horYrfyyqlNM=;
-        b=YrE0CDOevg/LkKi3x1iDjU3oznAIHtntG89ROy5W6zFbkOSgNaCO8xnvrEQn6jy1qS
-         Frgo0HllDlbNekgeDikw4HQrnJNKwTGK27UkdLt909k7h/mYOs88Gn6t5TiwkLW5FL0u
-         whDDqueNFT43kjCIUOvK617ePmX9o8PsDtyoKG5j42SBNDV1SrrvQf/kFqM19NcAG0ym
-         4tKeoGSj9+6wkO/ZZkjI5HPeVb3Rg4LDljA1G6KxKTEdkaZwr8bZhuOi9TW4BZ+WVsuM
-         BCqB/mxHrzy8wECkMGf0FAMdZiiUItJVfPOub7YKTH5Dd2FRSmIPhHn/PQG941PwiHWl
-         JJKA==
-X-Gm-Message-State: AOJu0Yxmt/Ldt+V4etCxTrH7xjqLRazSkfxui/7zR7p4i0stjKNEtB/3
-	I+C9HTlYFwBW/M+31c8C73/6hltzomksN6wY/R55i53dHlhLW1PIKxwMtelTbbzA7BY2cLes+4b
-	B47EsZnEK5LZ2VMPKBRQ8heMHEGYVAjz3LWkvNq+QPMEkusK4CqApWNg29aolOgQ7lJ+umiEI5l
-	wjp3aUIaTgrwX/a4nubiz0dxpjppblTbx4N+sZpJJbx4s=
-X-Google-Smtp-Source: AGHT+IHdKHB94OhPgZOVY77ABy+eW7S+fOS7rs6rmsVrvHAqW+Nt5DJrWXeJyflcQ9xYvVmNTGX+MA==
-X-Received: by 2002:a17:902:ced0:b0:1d4:bd1f:e4b7 with SMTP id d16-20020a170902ced000b001d4bd1fe4b7mr29761plg.24.1706210334003;
-        Thu, 25 Jan 2024 11:18:54 -0800 (PST)
-Received: from localhost.localdomain ([2620:11a:c018:0:ea8:be91:8d1:f59b])
-        by smtp.gmail.com with ESMTPSA id n9-20020a170902d0c900b001d706c17af2sm12215017pln.268.2024.01.25.11.18.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 11:18:53 -0800 (PST)
-From: Joe Damato <jdamato@fastly.com>
-To: linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: dhowells@redhat.com,
-	alexander@mihalicyn.com,
-	leitao@debian.org,
-	wuyun.abel@bytedance.com,
-	kuniyu@amazon.com,
-	pabeni@redhat.com,
-	kuba@kernel.org,
-	edumazet@google.com,
-	davem@davemloft.net,
-	Joe Damato <jdamato@fastly.com>
-Subject: [PATCH net-next] net: print error if SO_BUSY_POLL_BUDGET is large
-Date: Thu, 25 Jan 2024 19:18:40 +0000
-Message-Id: <20240125191840.6740-1-jdamato@fastly.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1706210402; c=relaxed/simple;
+	bh=6SC+L2BA5mqzWUrQpqvo942ACjt3fe5tpYr4jLAl8oo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Gb4XCjIUOoIdULBR+Wk1OZUmalZ5dcwRitpKbwVi6vOHOWzjokjSi9pl7D22cagX0wFGK6d1wy3dGTVTKZTtHRctdStTAoQZf+zUoxBkS5U+bgHWK2WQ5I6oWJpMhSogGJJDHBnnvdINiEG1XJQXprOVuPly3PKLD6xGDFPb5Ew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=HGUAA8eZ; arc=none smtp.client-ip=217.194.8.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
+Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+	by mail11.truemail.it (Postfix) with ESMTPA id 3837522DD0;
+	Thu, 25 Jan 2024 20:19:55 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
+	s=default; t=1706210395;
+	bh=TvhSW9GthYG8R5OfcQvqscsrRuKNMD6rW4OJhgfyU7w=; h=From:To:Subject;
+	b=HGUAA8eZZSr+v8rJjH/VfykLZ/zOsSDxR1kdi5pMmRNL4GX2YzaSzDEiPc3cX165F
+	 6hTAkJON1lq4ZeYAUgsxrCNupegBy7MVzs3IXm3JGVYZVK5Cp7agbrY+0i+T7zTRD1
+	 j98+0x1CZP/dxc0PuHVhx3HhsbcBjygruK1FUww11d+T3PFKWbxrEjtPN0aUlULwWD
+	 eYmtWaIFqmIMqa5NjjH8WJokBL/wb8yJoWL+8POD4AozlsTOnfmI7gvqODFVUilWMA
+	 SKPl2e11TTvpCFDN9XZ17TD/xKGhtpCQdOCulXeDjRnuQ2ygn0rouADsJWSZYD3ykM
+	 07bkWKpxEX4fg==
+Date: Thu, 25 Jan 2024 20:19:13 +0100
+From: Francesco Dolcini <francesco@dolcini.it>
+To: Conor Dooley <conor@kernel.org>
+Cc: Francesco Dolcini <francesco@dolcini.it>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Li Yang <leoyang.li@nxp.com>,
+	Joao Paulo Goncalves <joao.goncalves@toradex.com>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Francesco Dolcini <francesco.dolcini@toradex.com>
+Subject: Re: [PATCH v1 1/2] dt-bindings: arm: fsl: add imx8qm apalis eval
+ v1.2 carrier board
+Message-ID: <20240125191913.GA3117@francesco-nb>
+References: <20240125101457.9873-1-francesco@dolcini.it>
+ <20240125101457.9873-2-francesco@dolcini.it>
+ <20240125-player-disposal-a9cd852e9061@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240125-player-disposal-a9cd852e9061@spud>
 
-When drivers call netif_napi_add_weight with a weight that is larger
-than NAPI_POLL_WEIGHT, the networking code allows the larger weight, but
-prints an error.
+On Thu, Jan 25, 2024 at 05:08:04PM +0000, Conor Dooley wrote:
+> On Thu, Jan 25, 2024 at 11:14:56AM +0100, Francesco Dolcini wrote:
+> > From: Joao Paulo Goncalves <joao.goncalves@toradex.com>
+> > 
+> > Add the toradex,apalis-imx8-eval-v1.2 and
+> > toradex,apalis-imx8-v1.1-eval-v1.2 compatible strings for version 1.2
+> > of the Apalis Evaluation Board.
+> > 
+> > Version v1.2 includes the following changes compared to v1.1:
+> > 
+> > - 8-bit MMC connector replaced with a 4-bit uSD connector.
+> > - Audio codec NAU88C22 added.
+> > - M24C02 EEPROM i2c added.
+> > - MIPI-CSI-2 connector directly to the board added.
+> > - PCIe switch PEX8605 removed and PCIe now is routed directly to Mini
+> > PCIe connector.
+> > - Power measurement IC INA219 added.
+> > - Replaced DVI with HDMI connector.
+> > - Single-channel USB to UART converter replaced with four-channel USB
+> > to UART/JTAG.
+> > - Temperature sensor TMP75 added.
+> > 
+> > Please note that board version v1.0 (which reached EOL) is compatible with
+> > v1.1, therefore toradex,apalis-imx8-eval and toradex,apalis-v1.1-imx8-eval
+> > compatible strings should be used for both v1.0 and v1.1.
+> > 
+> > Signed-off-by: Joao Paulo Goncalves <joao.goncalves@toradex.com>
+> > Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+> 
+> I was convinced that I acked this already a few days ago, but no:
+> https://lore.kernel.org/all/20240124141849.26254-2-hiagofranco@gmail.com/
 
-Replicate this check for SO_BUSY_POLL_BUDGET; check if the user
-specified amount exceeds NAPI_POLL_WEIGHT, allow it anyway, but print an
-error.
+Same, but different ;-).
 
-Signed-off-by: Joe Damato <jdamato@fastly.com>
----
- net/core/sock.c | 3 +++
- 1 file changed, 3 insertions(+)
+This is a modular system made of a SoM + carrier board. Those two
+series introduce a new revision of the same carrier board [1], combined
+with two different SoMs (apalis imx8 [2] and apalis imx6 [3]).
 
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 158dbdebce6a..ed243bd0dd77 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -1153,6 +1153,9 @@ int sk_setsockopt(struct sock *sk, int level, int optname,
- 			return -EPERM;
- 		if (val < 0 || val > U16_MAX)
- 			return -EINVAL;
-+		if (val > NAPI_POLL_WEIGHT)
-+			pr_err("SO_BUSY_POLL_BUDGET %u exceeds suggested maximum %u\n", val,
-+			       NAPI_POLL_WEIGHT);
- 		WRITE_ONCE(sk->sk_busy_poll_budget, val);
- 		return 0;
- #endif
--- 
-2.25.1
+Francesco
 
+[1] https://www.toradex.com/products/carrier-board/apalis-evaluation-board
+[2] https://www.toradex.com/computer-on-modules/apalis-arm-family/nxp-imx-8
+[3] https://www.toradex.com/computer-on-modules/apalis-arm-family/nxp-freescale-imx-6
 
