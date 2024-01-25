@@ -1,286 +1,164 @@
-Return-Path: <linux-kernel+bounces-39298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E3A883CE58
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:18:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 035C083CE81
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:25:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA952289713
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:18:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7EAE0B25684
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:25:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53C5113A24F;
-	Thu, 25 Jan 2024 21:18:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59C6913A271;
+	Thu, 25 Jan 2024 21:25:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="rl3c/U5h"
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ZDEztOj4"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D3551F60A;
-	Thu, 25 Jan 2024 21:18:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2322B45951;
+	Thu, 25 Jan 2024 21:25:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706217530; cv=none; b=th4nHpoNSvyn/SRIcSVJ4fDnNZhXAgeakHptQMLYzT/O5dwi+j4y3u8baomXV+LfNo0BDtCT7XXsFtiZpC0b+5fKV9JRFsuHxJA8sewGw06yD3LixXlJJ94BJc/+i273QkjH7++C/5cE7kFjjxY0kDT42Sb60gRkpEIqw+t5+Vk=
+	t=1706217933; cv=none; b=uW03jmhwM6p/3UUTTfYjxJtqgolnMj9QTzbSYqNpyYQFeovvBc4uqyIFVsr14xEMmnaSHYRJzslsDDo5pyR434WDqKF5r2ffCBNviR7v0baU+Np1dlXgVoeifAl4539eV0XjdkMGjHgNVpVnekrvMEDcptXtpeDkcMx07rL+RGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706217530; c=relaxed/simple;
-	bh=7A6T2n0aDnhcce+dO+8Wvx7QMAxrKD6pFzB7Wi0Hv4M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hChGQC277gQ3xW03IUTBlj1eb07z0cwCUDvdMIt7xZMTr3mwgdLStZq/neXesxLsi4Sl1rXASdT6r9+O3FhIioU9fp0Vi4uLKPSpuDbDtBtijQqV3S8swLT8jY/X8UBFqNanfwDbV8aDOXXzBkNdMexFHO8jlNxP+HXsLBb1+iw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=rl3c/U5h; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1706217517;
-	bh=7A6T2n0aDnhcce+dO+8Wvx7QMAxrKD6pFzB7Wi0Hv4M=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=rl3c/U5hL0eP2xGIYusX+iBHqq6uiQW2fTir+xNDuDk+vfXQ3fH8b1Q9kBVbF5enZ
-	 P72LHkwBrSf5suOAFtmHI7IqyLc9MhqqJKpfJhACf7Uv1eayWQt/sBHsj5WdFreaTM
-	 tI8jQKqR2nYDBh+y4UujKPR2PwAzrq6QVG431tRogHZY+jFnXsPxemREo35TykekXx
-	 ghdfNmrPL2m7shN9tyISxeL2RRjduDUBs2QVmTLj8I2TDfQqSGR2zd4VsLMzIY4QVK
-	 73HsmVM0cvAr8fSILRSVZ2q/CooThqu1aO0OzyjxiFJ6BIbEUJHqkt+g3KppyoV9UB
-	 1a8Ujgbtg+rag==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TLYbK4pyZzVMl;
-	Thu, 25 Jan 2024 16:18:37 -0500 (EST)
-Message-ID: <88e9a728-9c9a-42d5-bba4-b9f3fbe61d53@efficios.com>
-Date: Thu, 25 Jan 2024 16:18:37 -0500
+	s=arc-20240116; t=1706217933; c=relaxed/simple;
+	bh=+1rzo44MVhdG1twaPoxAFs/i5CPmmmD3ebkTckAOXgQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FrFqjRPxvrCbLcwrEDtt8JGT9ktSaTQqCvX2Fp3dqa+Pk3Wjb/2VkjDeQ6eNNOYtBcd9Rx1Gnvfh2b33fjbdU2+RglTUG2uzR9+xdOxDO2NIlARga9mB96HQw2TipJBs8R7wznql4QxxayRNRgAL6xofqOl1ScqcxQNupg4bB/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ZDEztOj4; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40PKrCkj028747;
+	Thu, 25 Jan 2024 21:24:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=TFZLj+iicDe+vF0MlXRj2JagqhpN0qB/SfThMG1aMUg=;
+ b=ZDEztOj4agiJQ17j2f9Af8WlWqTH6pFrMi/3nBfhC8ZQmmaOX/HuNs6zoWkUXbH2vjUX
+ pqAwyyczjCG6x86Hgz1b5A4ckJngo33vQOLdS6hY6uIlfZmsw6gNhNR7a6CB/vRflhij
+ ItvVduz80fiXIB2NS2TmUkTi0xKOBY9ptBTi2EbfSJvmyijnVGkXcTH7l5b5EiXw6nrj
+ fne0PhIN56q9axeA853ev+7UPyxAJ6jPJUidNvhtybefk+1xB8RA7W2wGYTGvzA0vZNq
+ syaTIXw0XR4D+BRKnEH+1Am1wDPtsREvCiyITKsg0ehI+XKxN8Vo3C+Nt0QZj/N1E9/O Yg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vuy2srs0v-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Jan 2024 21:24:40 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40PLLcEj028686;
+	Thu, 25 Jan 2024 21:24:38 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vuy2srraf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Jan 2024 21:24:38 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40PKe4u3026485;
+	Thu, 25 Jan 2024 21:22:00 GMT
+Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vrrgtq1md-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Jan 2024 21:22:00 +0000
+Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
+	by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40PLLxq427918698
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 25 Jan 2024 21:21:59 GMT
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 28EFA5805C;
+	Thu, 25 Jan 2024 21:21:59 +0000 (GMT)
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5370658058;
+	Thu, 25 Jan 2024 21:21:57 +0000 (GMT)
+Received: from gfwa153.aus.stglabs.ibm.com (unknown [9.3.84.127])
+	by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 25 Jan 2024 21:21:57 +0000 (GMT)
+From: Ninad Palsule <ninad@linux.ibm.com>
+To: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        joel@jms.id.au, andrew@codeconstruct.com.au, peterhuewe@gmx.de,
+        jarkko@kernel.org, jgg@ziepe.ca, keescook@chromium.org,
+        tony.luck@intel.com, gpiccoli@igalia.com, ninad@linux.ibm.com,
+        johannes.holland@infineon.com, linux@roeck-us.net, broonie@kernel.org,
+        andre.werner@systec-electronic.com
+Cc: patrick.rudolph@9elements.com, vincent@vtremblay.dev,
+        peteryin.openbmc@gmail.com, lakshmiy@us.ibm.com, bhelgaas@google.com,
+        naresh.solanki@9elements.com, alexander.stein@ew.tq-group.com,
+        festevam@denx.de, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-hardening@vger.kernel.org, geissonator@yahoo.com,
+        geert+renesas@glider.be, luca.ceresoli@bootlin.com
+Subject: [PATCH v5 0/2] Add device tree for IBM system1 BMC
+Date: Thu, 25 Jan 2024 15:21:52 -0600
+Message-Id: <20240125212154.4028640-1-ninad@linux.ibm.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ring-buffer: Simplify reservation with try_cmpxchg() loop
-Content-Language: en-US
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
- Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Philippe Proulx <pproulx@efficios.com>
-References: <20240118181206.4977da2f@gandalf.local.home>
- <504085e9-bf91-4948-a158-abae5dcb276a@efficios.com>
- <20240119103754.154dc009@gandalf.local.home>
- <cd3f37cc-31ba-4eb4-8d67-852d05570e7b@efficios.com>
- <20240119164252.54ccb654@gandalf.local.home>
- <5d323a65-8a04-4c73-8702-58869982a269@efficios.com>
- <20240120084713.6eb7aa52@rorschach.local.home>
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20240120084713.6eb7aa52@rorschach.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: GysTMrm6-mcL-m8x12davFsbB12pYHLf
+X-Proofpoint-ORIG-GUID: _vbxIRZNqiN081HErlJ-GrANPNmq_t_E
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-25_14,2024-01-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
+ lowpriorityscore=0 priorityscore=1501 spamscore=0 mlxscore=0
+ mlxlogscore=999 suspectscore=0 phishscore=0 impostorscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401250154
 
-On 2024-01-20 08:47, Steven Rostedt wrote:
-> On Fri, 19 Jan 2024 20:49:36 -0500
-> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
-> 
->>>> Let's say we have the following ktime_get() values (monotonic timestamp value) for
->>>> a sequence of events:
->>>>
->>>>                                      Timestamp (Hex)    Encoding in the trace
->>>>
->>>> Packet header timestamp begin     0x12345678         64-bit: 0x12345678
->>>>
->>>> Event 1                           0x12345678         16-bit: 0x5678
->>>>       (When decoded, same value as previous timestamp, no overflow)
->>>> Event 2                           0x12347777         16-bit: 0x7777
->>>>       (When decoded, going from "0x5678" to "0x7777" does not overflow 16-bit)
->>>> Event 3                           0x12350000         16-bit: 0x0000
->>>>       (When decoded, going from "0x7777" to "0x0000" overflow 16-bit exactly once
->>>>        which allows the trace reader to reconstruct timestamp 0x12350000 from the
->>>>        previous timestamp and the 16-bit timestamp encoding.)
->>>> Event 4                           0x12370000         64-bit: 0x12370000
->>>>       (Encoding over 16-bit not possible because going from 0x12350000 to
->>>>        0x12370000 would overflow 16-bit twice, which cannot be detected
->>>>        by a trace reader. Therefore use the full 64-bit timestamp in the
->>>>        "large" event header representation.)
->>>
->>> I think that's basically what I said, but you are just looking at it
->>> differently ;-) Or should I say, you are using bits for optimization.
->>
->> Based on your explanation below, we are really talking about different things
->> here. Let me try to reply to your explanation to try to show where what I am
->> doing completely differs from what you have in mind. This will help explain
->> how I handle 16-bit overflow as well.
->>
->>> The events are based off of the last injected timestamp.
->>
->> Incorrect. There is no "injected timestamp". There is only a concept
->> of the "current timestamp" as we either write to or read from the
->> event stream. I will take the point of view of the trace reader for
->> the rest of the discussion.
->>
->>> The above example,
->>> starts with an timestamp injection into the packet header: 0x12345678, with
->>> the lsb 16bits ignore.
->>
->> Wrong again. The 16 least significant bits are not ignored. The "current timestamp"
->> is really 0x12345678 when the packet header is read.
-> 
-> In the packet header you have 0x12345678 in the first event you have
-> 0x5678 how does that get you the timestamp? If that event had 0x8888,
-> when the reader reads this packet, it would take the header 0x12345678
-> chop off (ignore) the 5678, and add the 8888, right?
+This patchset adds device tree for IBM system1 bmc board.
 
-We need to consider not only what happens when the 16 low bits increase, but
-also what happens when they end up with a value smaller than the previous
-16 low bits.
+Change log:
+v1:
+ - Added device binding for IBM system1-bmc
+ - Added device binding for TIS I2C devices
+ - Added device tree for IBM system1 BMC board 
+ - Added i2c and muxes
+ - Added voltage regulators
+ - Added GPIO, Fan ctrl, Led
+ - Added more compatible strings for tpm_tis_i2c
+ - Added power supplies, sensors, EEPROMS, TPM and more
 
-As a summary from our video meeting discussion:
+v2:
+ - Incorporated review comments from Conor Dooley, Jarkko Sakkinen,
+   Guenter Roeck, Rob Herring, Krzysztof Kozlowski
+ - Merge all patches into single patch.
+ - Split the trivial device patch.
+ - Cleanup commit messages.
+ - Fixed bootargs string.
+ - Fixed node names.
+ - Dropped tpm schema patch as it is covered by Lukas's patch.
+ - Dropped "tpm: tis-i2c: Add more compatible strings" patch and
+   send it as a separate patch.
 
-There are 3 cases we care about here:
+v3:
+ - Fixed voltage-regulators names.
+ - Updated commit message about TPM compatibility string.
 
-packet header timestamp: 0x12345678
+v4:
+ - Removed compatibility string "nuvoton,npct75x" from TPM
 
-followed by either:
+v5:
+  - Fixed commit message as per reeview comment by Bjorn
+  - Dropped following commit from patchset as it is already merged.
+    -> dt-bindings-Add-DPS310-as-trivial-device.patch
 
-A) first event delta from packet header timestamp is 0: 16-bit value 0x5678
+Andrew Geissler (1):
+  ARM: dts: aspeed: System1: IBM system1 BMC board
 
-B) first event delta from packet header timestamp is <= 0xFFFF:
-    B.1) 16-bit value example 0x5699 (no 16-bit overflow from previous value)
-    B.2) 16-bit value example 0x2222 (exactly one 16-bit overflow from previous value)
+Ninad Palsule (1):
+  dt-bindings: arm: aspeed: add IBM system1-bmc
 
-C) first event delta from packet header timestamp is larger than 0xFFFF, which would
-    cause the low-order 16 bits to have more than one 16-bit overflow from the previous
-    value. The tracer detects this and uses a full 64-bit timestamp instead of the compact
-    16 bits.
-
-[...]
-
-
-> 
->>
->>>
->>> But how do you detect the overflow? That last timestamps to know if
->>> the tsc overflowed or not needs to be saved and compared. I would
->>> assume you have a similar race that I have.
->>
->> Yes, I save a "last timestamp" per buffer, but the race does not
->> matter because of the order in which it is saved wrt local cmpxchg
->> updating the reserved position.
->>
->> The algorithm looks like:
->>
->> do {
->>     - read current reserved position (old pos)
->>     - read time
->>     - compute new reserved position (new pos)
->> } while (cmpxchg(reserved pos, old pos, new pos) != old pos);
->>
->> [A]
->>
->> save_last_tsc()
-> 
-> So the last_tsc that is saved is from the timestamp read before the
-> cmpxchg.
-
-Yes.
-
-> 
->>
->> If interrupted at [A] by another trace producer, it will compare with
->> an older "last tsc" than the tsc of the event physically located just
->> before the nested event. This stale "last tsc" has a value which is
->> necessarily lower than the one we would be saving with the
->> save_last_tsc immediately afterwards, which means in the worse case
->> we end up using a full 64-bit timestamp when in fact we could use a
->> more compact representation. But this race is rare and therefore it
->> does not matter for size.
-> 
-> That's equivalent to me "injecting" an absolute value for the same race.
-
-Yes.
-
-> 
->>
->> The fact that I only need this last_tsc value for the sake of
->> optimization, and not for computation of a time delta from a previous
->> injected timestamp, makes it possible to handle the race gracefully
->> without requiring anything more than a single last_tsc value per
->> buffer and a single comparison for 16-bit overflow.
-> 
-> If you have:
-> 
->> do {
->>     - read current reserved position (old pos)
->>     - read time
->>     - compute new reserved position (new pos)
->> } while (cmpxchg(reserved pos, old pos, new pos) != old pos);
->>
->> [A]
-> 
-> And here you have an interrupt that runs for several minutes (yeah bad
-> code ;-) And it does the same thing
-> 
-> do {
->     - read current reserved position (old pos)
->     - read time
->     - compute new reserved position (new pos)
-> } while (cmpxchg(reserved pos, old pos, new pos) != old pos);
-> 
-> save_last_tsc()
-> 
-> But that last_tsc from before the cmpxchg is much later than the one it
-> interrupted.
-> 
-> 
->>
->> save_last_tsc()
-> 
-> Ah, so if you put the clock back here, it will just cause the next
-> event to inject a full timestamp again because the delta is too big.
-
-Yes.
-
-> 
-> This is how you are able to avoid the "before/after" logic I have, as
-> the race is automatically detected. The least significant bits of the
-> timestamp is ignored for the event delta calculation.
-
-Not quite, as I explained at the beginning of this email. All bits from the
-previous timestamp, including its low bits, are useful to know how many
-overflows happened since the last tsc.
-
-> And if a race
-> happens where the interrupting event saves a later timestamp and comes
-> back here, if the interrupted event writes the older timestamp, it just
-> causes that delta calculation to overflow again and you inject another
-> 64bit timestamp into the buffer.
-
-This part is correct: in the race you describe, we end up with the
-possibility of bringing the last_tsc backwards, which can only cause
-the tracer to use the full 64-bit timestamp when in fact it could use
-the compact representation. But it's rare and should not matter in
-practice.
-
-And by the way this algorithm is designed to work with preemption/migration
-enabled as well, not just interrupts. So the race can come from a thread
-running concurrently on another CPU and it should work as well.
-
-[...]
-
-> 
-> Going through a transition of changing it could end up being just as
-> complex. I'm not sure the complexity in that transition is better than
-> the complexity of the current code, as this code has been there for 15
-> years, and I know of at least 2 other projects that depend on this
-> format as is.
-
-I agree with you that it's not clear-cut whether introducing this change
-would be a benefit at this stage considering the extra complexity of
-extending the ABI while keeping backward compatibility.
-
-But it's something we can keep in mind if we ever have to do major ABI
-extensions for other reasons.
-
-Thanks,
-
-Mathieu
+ .../bindings/arm/aspeed/aspeed.yaml           |    1 +
+ arch/arm/boot/dts/aspeed/Makefile             |    1 +
+ .../dts/aspeed/aspeed-bmc-ibm-system1.dts     | 1623 +++++++++++++++++
+ 3 files changed, 1625 insertions(+)
+ create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+2.39.2
 
 
