@@ -1,80 +1,102 @@
-Return-Path: <linux-kernel+bounces-38640-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38641-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF11B83C389
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:23:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86F8283C38B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:24:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70DB4B236CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:23:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F3C21C2371B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:24:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 087EC4F8B0;
-	Thu, 25 Jan 2024 13:23:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04E034F8B1;
+	Thu, 25 Jan 2024 13:23:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pBL/Jisb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lBQOarpj"
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EF6C4F88D;
-	Thu, 25 Jan 2024 13:23:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D414C4F209
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 13:23:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706188999; cv=none; b=FclJcRFyPgquupPidseQl4Z2fsLBjlluWpkHBtgsOdrTjKh0P1rrDv60lJVAmvGk03B1E/h35wtH+PfSNlDCKh8TqsKExFFnv7lCsUy+isPDLau5RVXgY/bI+aTFqwzEXvh1KeEGkNUEenWmJaht3llhrMYkgVt+y6iM8siWg+g=
+	t=1706189036; cv=none; b=MLemJXKtdoDK1i2fQNKT3l+Jr9rpJbste8aB2wiGJf0BzInRSSnAnO9keVflm5I1j3D+zvR0if/p63D8dk7m04gE1qSEZCRyF/Q4PC4DHuSUS9ZuuoYQ56+pK1Cvn9rK8laQZZ+ebKExTRJa9+mdbBSne/wxhfnTp14lvBcDw8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706188999; c=relaxed/simple;
-	bh=RTrUkGFlhHDqssknlVEh2NOMXjB2QBjHYkzy/Jg4Als=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=Xk6pscdiUij5dsGHNYNphJ3HFVTOEN4KcyMjK4XT1v2kMct3hJN0wqN9xRx9NqoPwHIfroHzcIs6bY8dweZE3v0SSGXPMwrXpOVuoCu1Tt265CZFAFWGbXhJQNqOSPiwXGVHtfDvYYGRS0EKE0CMs1mi6XlWJPOjvVdIz8G0m/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pBL/Jisb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14AA8C433C7;
-	Thu, 25 Jan 2024 13:23:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706188998;
-	bh=RTrUkGFlhHDqssknlVEh2NOMXjB2QBjHYkzy/Jg4Als=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=pBL/JisbmdvDKYuIIgfc3Rxlu0CdWJJHW2gI65zuEtIaOMFAF+ooxCr44jOyb2IDS
-	 GYsDdA0BDzY3u8HIz/yyBCPMLVudOMU/Sw4teA0waV1+6AXY/sdydC/Fe4xwF1Spm8
-	 HjWrWwtdQuX48da9V3uwPdFBFmHWghGljjP3Xd9vxe0oaiSjA/MJxLcsjziKobjYJp
-	 oa4JZUJXO6K/cENGl5Od70HQZzQOx6zaz70imtkt9XdsKDbSKQOetrdUn4WKRF+Jh7
-	 qzG8uMKVZrzE9sMDoiXaEZTE4NWBkOQS3e380xIG0yv6sLkOa4TKEPFH6OBDzc1gIE
-	 dOqTEli/QhAug==
-From: Lee Jones <lee@kernel.org>
-To: dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Lee Jones <lee@kernel.org>, 
- Daniel Thompson <daniel.thompson@linaro.org>, 
- Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>, 
- Dan Carpenter <dan.carpenter@linaro.org>
-In-Reply-To: <20240114143921.550736-1-andriy.shevchenko@linux.intel.com>
-References: <20240114143921.550736-1-andriy.shevchenko@linux.intel.com>
-Subject: Re: (subset) [PATCH v1 1/1] backlight: hx8357: Fix potential NULL
- pointer dereference
-Message-Id: <170618899680.1460445.7138651116963022324.b4-ty@kernel.org>
-Date: Thu, 25 Jan 2024 13:23:16 +0000
+	s=arc-20240116; t=1706189036; c=relaxed/simple;
+	bh=9slEGncr5sZ2i+sO83m3sEyUhFhOGIiWij0i1fDgPT4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WTFbWXteyxqzR4wHvjWZc/O1gLym//ER/rqnrb+qdMe+8y1GU9wqItlDl/mF4yILR5OkscJRHXZFbSmqcddVNqhk7vMODduL1KrFR3ZOkiar4GmfvWx+Jh5y2VYObZKKZzr76GRBoNQdcAb9GlHpsSzuMCeB6b1icCZjcYBoz3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lBQOarpj; arc=none smtp.client-ip=209.85.128.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-5ff7dd8d7ceso59744807b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 05:23:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706189034; x=1706793834; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=SKIQmJv3IRL1HN1k5v1jdt5ZpUKF/3uDhIJJ9D50Mw0=;
+        b=lBQOarpjyA1FJnCIE0Z18AoNBqAJmpqliteXzsHIPPC+64kiHBhwqXNrHQESWUb2SX
+         W9k9XEikVoyH9WFgNMAr76vSnwcfneJ2aQTo+RPv/dMDed5C+ziFRjUoXisqK5hWX6qr
+         b8qYWAZU8T560VNM1Q2C3YFcr9jqt8H0pmiTpzvb70s++c08l4yT4iI4j8GVRHlkreNz
+         SgP6ysDXjiY25TzGQfopvwWVJT2AsEohNUVZBTrb1mz2KWDyYSIlueYOxqsxgofdnKUR
+         gVUWnKtU3m5yb0xoESXhe97kLM/A+wrq1yFchSYAv9DItTd88RRFvkCYLg/s3ku/HDHp
+         KafA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706189034; x=1706793834;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SKIQmJv3IRL1HN1k5v1jdt5ZpUKF/3uDhIJJ9D50Mw0=;
+        b=OH5mhTfJsK1gI6qe3U6eFO/VKaMq6Drx23HHZnbkmXn+1P6Axw8p7d50BWxIzqgQck
+         Cf+CnoOm1wj7fenXpB33DmGpVH8ab+5+ORQNNdbfnt+7f+n5RP+93rlCCr2X+gTLpWeC
+         wOSH7s66/JNysBGUO+L9mjJyCP5Ouu9F1/+ECG4kRC0m2OaP4g4o6LMpAiQSteOnz8GR
+         FbMVkxZ3Q8FJZXDgKjIHuz6evjceD3csbpC1eNfOizbtq7nCfXPtZ4oAC1RPsLDuCnQo
+         4Xk9j+pB2wX7oyRMzEX1/NUvcLqNQPSSivDeBasiTN3W8ZX71I+YzTs8ELJw5JzZ1WWm
+         ZsXg==
+X-Gm-Message-State: AOJu0Yy7FHjDu8VIBdXTUJhDvGG+1pQRqmSb/GsEJRA+TyIZiE/lEIkz
+	KUpkzovpakfpbCvrZ/DsqG0fmLCWNOiU7667X7p1WwXh+uWMzn6EbPGtzgEOysn+YuPxt+QpnCt
+	R0ruYDlfoLMM6g2u+EKnGPdZUHB4jmcN//GoJOQ==
+X-Google-Smtp-Source: AGHT+IGHbJyy+W+hk2nttEPhM/r+2iuDN2cokkfPGX1Gz3cB4l5gZ9pEXayzRvDCgHB/mdI4i0pwoIKX4YkikR4KGNE=
+X-Received: by 2002:a81:ad4a:0:b0:5ff:4842:9ea6 with SMTP id
+ l10-20020a81ad4a000000b005ff48429ea6mr664617ywk.47.1706189033971; Thu, 25 Jan
+ 2024 05:23:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.3
+References: <20240125130626.390850-1-krzysztof.kozlowski@linaro.org> <20240125130626.390850-4-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240125130626.390850-4-krzysztof.kozlowski@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 25 Jan 2024 15:23:43 +0200
+Message-ID: <CAA8EJpo_GUgfYZOgmbCyhO0Oe=RRC0+LP2kZTbSV5wHob4X8=Q@mail.gmail.com>
+Subject: Re: [PATCH 4/6] arm64: dts: qcom: sm8450: describe all PCI MSI interrupts
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Sun, 14 Jan 2024 16:39:21 +0200, Andy Shevchenko wrote:
-> The "im" pins are optional. Add missing check in the hx8357_probe().
-> 
-> 
+On Thu, 25 Jan 2024 at 15:08, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> Each group of MSI interrupts is mapped to the separate host interrupt.
+> Describe each of interrupts in the device tree for PCIe hosts.  Only
+> boot tested on hardware.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sm8450.dtsi | 24 ++++++++++++++++++++----
+>  1 file changed, 20 insertions(+), 4 deletions(-)
 
-Applied, thanks!
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-[1/1] backlight: hx8357: Fix potential NULL pointer dereference
-      commit: 3b75d271e161e22aff8171940a77510d2fb2ad6f
-
---
-Lee Jones [李琼斯]
-
+-- 
+With best wishes
+Dmitry
 
