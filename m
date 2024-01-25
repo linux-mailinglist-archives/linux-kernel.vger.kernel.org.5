@@ -1,127 +1,133 @@
-Return-Path: <linux-kernel+bounces-38626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F093F83C35A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:10:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8907183C35C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:11:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8EC44B25FB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:10:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB88D1C2032E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:11:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83CD450A95;
-	Thu, 25 Jan 2024 13:10:18 +0000 (UTC)
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0BE551014;
+	Thu, 25 Jan 2024 13:10:24 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2B344F61E;
-	Thu, 25 Jan 2024 13:10:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99B594F61B
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 13:10:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706188218; cv=none; b=TvvYqUfJdwME54kjjmMPDCutjlBK73bqpKDcuwA6NMgz+h236r586o/r4QPp+L0jND4zfwdCYLcsjyZlx9P3daUrSp22DWHwak2ndXJ2weO4/BQVUk8kQyVx5KBDl+ReNfdqiE7FDBMpIiC6J9SeleLxj9+sAaAFASz32csan+4=
+	t=1706188224; cv=none; b=tu0ZHNJS8zjgGQamtEQES/Nmq+2++Ng6MMshTZjJNdPVvJ6Dpg7SRD4+k7peecVhSwrnnLB1XGtbKrgr5g57PGt4GGrwK+m/3W+L+fYgQGZ54IxJ0Vq00qyXGZvxsI1DsPH5kDW5VW7KAZgSMMYzHQhfGJU4fGDxMRJ8e3wY6t0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706188218; c=relaxed/simple;
-	bh=LQFpv4X1hT+QUG0VEtK7cRc54lvNGdJoRVXIOPkgluo=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bb6nHZwfngV3LqmR00dt9fewtLqZ/MwMhjfGlCL1nRZdkx/dbpnpwFksDDjRfefruPUhOlI8txGt3p3dys+R4+OWQG85ZAMMs9KFv/NSkB41XVwQTyfgeDvxAm1aZXBVhnCZJAcnOEqCfcd4ucctQ2Qlfx7yRTXOvZvKVB8ENLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from r.smirnovsmtp.omp.ru (10.189.215.22) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Thu, 25 Jan
- 2024 16:10:05 +0300
-From: Roman Smirnov <r.smirnov@omp.ru>
-To: <stable@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC: Roman Smirnov <r.smirnov@omp.ru>, "Matthew Wilcox (Oracle)"
-	<willy@infradead.org>, Andrew Morton <akpm@linux-foundation.org>, Alexey
- Khoroshilov <khoroshilov@ispras.ru>, Sergey Shtylyov <s.shtylyov@omp.ru>,
-	Karina Yankevich <k.yankevich@omp.ru>, <lvc-project@linuxtesting.org>,
-	<linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-mm@kvack.org>
-Subject: [PATCH 5.10/5.15 v2 1/1 RFC] mm/truncate: Replace page_mapped() call in invalidate_inode_page()
-Date: Thu, 25 Jan 2024 13:09:47 +0000
-Message-ID: <20240125130947.600632-2-r.smirnov@omp.ru>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240125130947.600632-1-r.smirnov@omp.ru>
-References: <20240125130947.600632-1-r.smirnov@omp.ru>
+	s=arc-20240116; t=1706188224; c=relaxed/simple;
+	bh=N/VeryT+hkJrerNlRm/J1Efw7HVhXaX62e2O/b9YIhc=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=XEzgneX5U/mRDxEHFj+OGBvwkPqzeep4jdQlqb5fexsggKs7CpHa/ny5mWqfIgPJ0FrpXu6tvzgV0S1TtXj8pyz8D7rq6r0fn3K2Qny4I9JejXRwmyMg0351uTjzPbvApvGihZO8DfyrbxOT1AD1tKCr52xM64ztHvHOCJzwUCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rSzUn-0003Ro-Vu; Thu, 25 Jan 2024 14:10:18 +0100
+Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rSzUl-002I4s-H7; Thu, 25 Jan 2024 14:10:15 +0100
+Received: from pza by lupine with local (Exim 4.96)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rSzUl-0009Xo-1S;
+	Thu, 25 Jan 2024 14:10:15 +0100
+Message-ID: <8eb843fc0a3a40f1090283b3081e4c12846e82c3.camel@pengutronix.de>
+Subject: Re: [PATCH v2 2/4] reset: sophgo: add SG2042 reset generator driver
+From: Philipp Zabel <p.zabel@pengutronix.de>
+To: Chen Wang <unicorn_wang@outlook.com>, Chen Wang <unicornxw@gmail.com>, 
+ aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org, 
+ krzysztof.kozlowski+dt@linaro.org, palmer@dabbelt.com,
+ paul.walmsley@sifive.com,  robh+dt@kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org,  linux-riscv@lists.infradead.org,
+ haijiao.liu@sophgo.com,  xiaoguang.xing@sophgo.com, guoren@kernel.org,
+ jszhang@kernel.org,  inochiama@outlook.com
+Date: Thu, 25 Jan 2024 14:10:15 +0100
+In-Reply-To: <MA0P287MB28226D07A5DC0200132358C4FE7A2@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
+References: <cover.1706161530.git.unicorn_wang@outlook.com>
+	 <34650036ea5f1c500da54c67c3a67b91c4419399.1706161530.git.unicorn_wang@outlook.com>
+	 <bf30a97b4c39e5c606583783058ea12520c1146b.camel@pengutronix.de>
+	 <MA0P287MB28226D07A5DC0200132358C4FE7A2@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: msexch02.omp.ru (10.188.4.13) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 01/25/2024 12:50:25
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 182932 [Jan 25 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: r.smirnov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info:
-	127.0.0.199:7.1.2;omp.ru:7.1.1;r.smirnovsmtp.omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: FromAlignment: s
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 01/25/2024 12:53:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 1/25/2024 10:40:00 AM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+On Do, 2024-01-25 at 20:07 +0800, Chen Wang wrote:
+> On 2024/1/25 18:43, Philipp Zabel wrote:
+> > On Do, 2024-01-25 at 14:11 +0800, Chen Wang wrote:
+> > > From: Chen Wang <unicorn_wang@outlook.com>
+> > >=20
+> > > Reuse reset-simple driver for the Sophgo SG2042 reset generator.
+> > Subject prefix should be "reset: simple: "
+> Ok.
+> >=20
+> > > Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
+> > > ---
+> > >   drivers/reset/Kconfig        |  1 +
+> > >   drivers/reset/reset-simple.c |  2 ++
+> > >   drivers/reset/sophgo/Kconfig | 10 ++++++++++
+> > >   3 files changed, 13 insertions(+)
+> > >   create mode 100644 drivers/reset/sophgo/Kconfig
+> > >=20
+> > [...]
+> > > diff --git a/drivers/reset/sophgo/Kconfig b/drivers/reset/sophgo/Kcon=
+fig
+> > > new file mode 100644
+> > > index 000000000000..9ad96e49e1dd
+> > > --- /dev/null
+> > > +++ b/drivers/reset/sophgo/Kconfig
+> > > @@ -0,0 +1,10 @@
+> > > +# SPDX-License-Identifier: GPL-2.0-only
+> > > +
+> > > +config RESET_SOPHGO_SG2042
+> > > +	bool "Sophgo SG2042 Reset Driver"
+> > > +	depends on ARCH_SOPHGO || COMPILE_TEST
+> > > +	select RESET_SIMPLE
+> > > +	default ARCH_SOPHGO
+> > > +	help
+> > > +	  This enables the reset controller driver for the Sophgo SG2042 So=
+C.
+> > > +
+> > Drop the Kconfig, just add a default y if ARCH_SOPHGO to RESET_SIMPLE.
+>=20
+> hi=EF=BC=8CPhilipp,
+>=20
+> The purpose of my adding Kconfig is to consider that other socs under=20
+> sophgo may not use RESET_SIMPLE. I'm worried that the coverage is too=20
+> large when default y if ARCH_SOPHGO? What do you think?
 
-commit e41c81d0d30e1a6ebf408feaf561f80cac4457dc upstream.
+If ARCH_SOPHGO coverage is considered too wide, it's not correct to
+make RESET_SOPHGO_SG2024 "default ARCH_SOPHGO" either, so there's no
+significant difference.
 
-folio_mapped() is expensive because it has to check each page's mapcount
-field.  A cheaper check is whether there are any extra references to
-the page, other than the one we own, one from the page private data and
-the ones held by the page cache.
+The question is whether you need it at all. Can SG2042 boot, possibly
+with reduced functionality, into a useful system without the reset
+controller? If so, maybe it is enough to rely on a defconfig to enable
+RESET_SIMPLE? Otherwise, reset-simple could be considered small enough
+to accept carrying it around for non-SG2042 SoCs by default, it can be
+disabled manually, after all.
 
-The call to remove_mapping() will fail in any case if it cannot freeze
-the refcount, but failing here avoids cycling the i_pages spinlock.
-
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
-[Roman: replaced folio_ref_count() call with page_ref_count(),
-folio_nr_pages() call with compound_nr(), and
-folio_has_private() call with page_has_private()]
-Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
----
- mm/truncate.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/mm/truncate.c b/mm/truncate.c
-index 8914ca4ce4b1..989bc7785d55 100644
---- a/mm/truncate.c
-+++ b/mm/truncate.c
-@@ -256,7 +256,9 @@ int invalidate_inode_page(struct page *page)
- 		return 0;
- 	if (PageDirty(page) || PageWriteback(page))
- 		return 0;
--	if (page_mapped(page))
-+	/* The refcount will be elevated if the page is used by the system */
-+	if (page_ref_count(page) >
-+			compound_nr(page) + page_has_private(page) + 1)
- 		return 0;
- 	return invalidate_complete_page(mapping, page);
- }
--- 
-2.34.1
+regards
+Philipp
 
 
