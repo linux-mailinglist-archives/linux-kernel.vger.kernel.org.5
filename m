@@ -1,202 +1,126 @@
-Return-Path: <linux-kernel+bounces-39049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D61B383CA3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:43:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 738E283CA40
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:44:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 762F91F21B00
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:43:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A69111C24DAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:44:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B512132C19;
-	Thu, 25 Jan 2024 17:43:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71BB7131E2F;
+	Thu, 25 Jan 2024 17:44:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YmQDML8y"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Mg2hZQtq"
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7788F1E861;
-	Thu, 25 Jan 2024 17:43:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 539081E861
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 17:44:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706204609; cv=none; b=XCZPSR/ByGaBg6LZkpnVI7DW8zXztxegvSD8MRVYBpQFgFQNwOOAM4bFYzBdl3QYFnaf5ReGaXYpVjfeC54WHlooYvgjKIzN1kRFuo2lDAjmf850iqqhQ91RfMnljIfrrZYL7L6Ty3U0bwaJWi9VDwGnPWaElgDMMuHDsTxNkFw=
+	t=1706204667; cv=none; b=czvNcb9lPmVUVFCakyO9qcSMcmYcOxvhy2bb4l0hLCMmgp91eMnxCojHRjhV74lMxqN67VHFZMuSXgwSdHtpe+JXThbDWSTTUlU2y5GSbNMkyoxAfa4o3vWAJnLnkNq5gq06h3OOeELmkdoQK4JVEVKxVzLZcPuaHLYm2AZCfJ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706204609; c=relaxed/simple;
-	bh=H+OmZiH2ZIfXeBeTb+1jrdcr4KMaSl+7lR9ke+VrKy0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LJhew2Hf2w/qaxtfA2OBEspsUjDGIxpY2+sxP4BG8CO65N6F9DDzcfj4TglbNOU2RmIV/2oF8Zs/Nd1NX4OcQKIaxjbYKU702/4bcQFtINdz4nKwlVDJGcbA2GWHFuwueSfHfmYinikwmGFESlNmW1UflrLcN/xiN5z0uewz4gE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YmQDML8y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49925C433C7;
-	Thu, 25 Jan 2024 17:43:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706204608;
-	bh=H+OmZiH2ZIfXeBeTb+1jrdcr4KMaSl+7lR9ke+VrKy0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YmQDML8ylJ+AIeU/tofb9f8a/gvkWs/jTr4AGstTX0M58zZhpf8ERfvuDHai+1WfG
-	 s1zRusVbvY7jrpEaSitbgN2mkLVMPzbsSxTlaVJv81SH7yqVREN2WhQWDb0M7V8ePv
-	 ffYY816Mm+lVBnJ/4H6Wwez0uB02mFPfWkPgzFTognv1v0hWjVWX716xX/uJhYhnPn
-	 5uAKfRPBFU5VhPbeA29PlUi+aT+hYsR8XdPSV2I4/58AolQqGktqcNuTW4AIDuVpre
-	 /cZ3XuIwp+f8vEl5TMCkSiaTw15MOwNsQexNKij6QPaS1jJYCB/OV00lYJUo8MlS/1
-	 gxssXUbkrTIiQ==
-Date: Thu, 25 Jan 2024 17:43:22 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: ran.wang_1@nxp.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Felipe Balbi <balbi@kernel.org>,
-	"open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>,
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>, mark.rutland@arm.com,
-	pku.leo@gmail.com, sergei.shtylyov@cogentembedded.com
-Subject: Re: [PATCH 1/2] dt-bindings: usb: dwc3: Add snps,host-vbus-glitches
- avoiding vbus glitch
-Message-ID: <20240125-appear-unclog-7da879f946e8@spud>
-References: <20240119213130.3147517-1-Frank.Li@nxp.com>
- <20240124-unclothed-dodgy-c78b1fffa752@spud>
- <ZbFNIvEaAJCxC2VB@lizhi-Precision-Tower-5810>
- <20240124-video-lumpiness-178c4e317f5a@spud>
- <ZbFiQmD1VRVzFSa+@lizhi-Precision-Tower-5810>
+	s=arc-20240116; t=1706204667; c=relaxed/simple;
+	bh=tjPfDUpseeEonRNynpV+LoJ4m0AXS1x1V40LUzBpalg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OpX+1KLtAYzzx9wEEwYQ3qGddcYMjjITsiyI/oeXcnVPOsrQ5Xb+J7EZZaFupJGWs1JJ9PsExQj0yXA2QE7VgcuDS+kxtUF+VqM7JTDL8AwaMOh/NVWcLwSqjKY4w4IL7+1r/57IGsHiRz7lpz+s8Da9R9fB5szrFfA5ZpTRQ+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Mg2hZQtq; arc=none smtp.client-ip=209.85.215.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5c66b093b86so709723a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:44:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706204665; x=1706809465; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vvk8W9882Lam2bRB3cQpOZgivCaHjqfd28pX1k9iQeo=;
+        b=Mg2hZQtqY7FfBGr59lGKaq4BUyRdx9Foiya0J2V7UirRxDynOz5aUxbHkqnHYujphX
+         5EPoyW/+x0B8UndVuR2h2ZSMVwvBG/RdbEqIB/OP7ikwXWm8QB0Bm5v5L+6+vXkeMA2H
+         yb07VpETtv7rh+QpS/esxrnbMzFRiU2BDisIobFrWinSukw54cC/wp35HwKZQmgDpBMD
+         wCh2o52kALv8BTJdX9luGjZ0Q8orDFZSElcEuG41WdIDuozGwNAQ7gP0BjBgf/faQSHj
+         PURWv4wGlFiIg0QmvMOh1jk9RSz2Hfb8NmWLw3lD/cOk8s2A6ud/P37Zz6nKHINuXxHU
+         7+dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706204665; x=1706809465;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Vvk8W9882Lam2bRB3cQpOZgivCaHjqfd28pX1k9iQeo=;
+        b=d8BS+kpl2YhsfjgFfUUomHfuUZBAjtG36X/DwKOQj0QbBp3/x2ceO8UzbZCGgvWGHG
+         InZtxkjYQ1uFDSc0tzrVmTQEWgwQlCk9JVaK/D2zqngptg/7WH4Ugwf/KzmgQf5bRW0t
+         gKTr4izopXgh70ehITVwl62kpzo7W2qnveqpe3YysADnOXi/IBlzimRFXrfGLUtr83oj
+         1TBrjPZQr1hHiyocups4rmt+M918ZQ9w8GhqXX51aaNMKO67H+EbZI6RfoJ88lZ8Vq43
+         ujBo60Pt0l7LGs40ZtK647NCMCO+iVqSkstZzisuOnoHVryU+sgiow3W5lsRlu3TC/Fj
+         FRpQ==
+X-Gm-Message-State: AOJu0Yx08YlHO4RrVlE3EgQB2Ov7685fzvI8r9b9AUt4xxE07g6yUEAU
+	6CCn94KXR8nhoqMZvTmBUwyutrgunhq2BHx2d9Ie0aIlfMtKbUrLEl7MMdbDwWS7JXl0cbDhY60
+	MbT/k1Ds+HJaocg6tbocZxXHC/TrZfPEfBq0VAQ==
+X-Google-Smtp-Source: AGHT+IHfHonkTtkTWlL6GYoGsUhbmr9AYoC0XOgZpYtHPtbLgFrAYyzy5Mj/wDRBWsMXJBlVuaC+11JO7JGCnUaLBX4=
+X-Received: by 2002:a05:6a20:4c9b:b0:19b:4eec:cbd9 with SMTP id
+ fq27-20020a056a204c9b00b0019b4eeccbd9mr146530pzb.42.1706204665636; Thu, 25
+ Jan 2024 09:44:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="DYnLHzNM1BRheBXO"
-Content-Disposition: inline
-In-Reply-To: <ZbFiQmD1VRVzFSa+@lizhi-Precision-Tower-5810>
+References: <20240105222014.1025040-1-qyousef@layalina.io> <20240105222014.1025040-2-qyousef@layalina.io>
+ <213f94df-cc36-4281-805d-9f56cbfef796@arm.com> <CAKfTPtCfYcD_zPr7PqgL5hRYny=n3KW8hr6GY8q7zkoyRN7gQg@mail.gmail.com>
+ <20240124224616.wcrexeb2evkugbak@airbuntu>
+In-Reply-To: <20240124224616.wcrexeb2evkugbak@airbuntu>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Thu, 25 Jan 2024 18:44:14 +0100
+Message-ID: <CAKfTPtDnxsOS0je9DgMc5ZCLPXA6QRLz14t6o_ht7rvxbAbc9A@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] sched/fair: Check a task has a fitting cpu when
+ updating misfit
+To: Qais Yousef <qyousef@layalina.io>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>, Ingo Molnar <mingo@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org, 
+	Pierre Gondois <Pierre.Gondois@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 
+On Wed, 24 Jan 2024 at 23:46, Qais Yousef <qyousef@layalina.io> wrote:
+>
+> On 01/23/24 09:32, Vincent Guittot wrote:
+>
+> > > > @@ -9583,9 +9630,7 @@ check_cpu_capacity(struct rq *rq, struct sched_domain *sd)
+> > > >   */
+> > > >  static inline int check_misfit_status(struct rq *rq, struct sched_domain *sd)
+> > > >  {
+> > > > -     return rq->misfit_task_load &&
+> > > > -             (arch_scale_cpu_capacity(rq->cpu) < rq->rd->max_cpu_capacity ||
+> > > > -              check_cpu_capacity(rq, sd));
+> > > > +     return rq->misfit_task_load && check_cpu_capacity(rq, sd);
 
---DYnLHzNM1BRheBXO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Coming back to this:
+With your change above, misfit can't kick an idle load balance and
+must wait for the cpu capacity being noticeably reduced by something
+else
 
-On Wed, Jan 24, 2024 at 02:17:22PM -0500, Frank Li wrote:
-> On Wed, Jan 24, 2024 at 05:59:00PM +0000, Conor Dooley wrote:
-> > On Wed, Jan 24, 2024 at 12:47:14PM -0500, Frank Li wrote:
-> > > On Wed, Jan 24, 2024 at 05:36:42PM +0000, Conor Dooley wrote:
-> > > > On Fri, Jan 19, 2024 at 04:31:28PM -0500, Frank Li wrote:
-> > > > > From: Ran Wang <ran.wang_1@nxp.com>
-> > > > >=20
-> > > > > When DWC3 is set to host mode by programming register DWC3_GCTL, =
-VBUS
-> > > > > (or its control signal) will turn on immediately on related Root =
-Hub
-> > > > > ports. Then the VBUS will be de-asserted for a little while durin=
-g xhci
-> > > > > reset (conducted by xhci driver) for a little while and back to n=
-ormal.
-> > > > >=20
-> > > > > This VBUS glitch might cause some USB devices emuration fail if k=
-ernel
-> > > > > boot with them connected. One SW workaround which can fix this is=
- to
-> > > > > program all PORTSC[PP] to 0 to turn off VBUS immediately after se=
-tting
-> > > > > host mode in DWC3 driver(per signal measurement result, it will b=
-e too
-> > > > > late to do it in xhci-plat.c or xhci.c).
-> > > > >=20
-> > > > > Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
-> > > > > Reviewed-by: Peter Chen <peter.chen@nxp.com>
-> > > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > > > ---
-> > > > >  Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 7 +++++++
-> > > > >  1 file changed, 7 insertions(+)
-> > > > >=20
-> > > > > diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml=
- b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-> > > > > index 203a1eb66691f..dbf272b76e0b5 100644
-> > > > > --- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-> > > > > +++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-> > > > > @@ -273,6 +273,13 @@ properties:
-> > > > >        with an external supply.
-> > > > >      type: boolean
-> > > > > =20
-> > > > > +  snps,host-vbus-glitches:
-> > > > > +    description:
-> > > > > +      When set, power off all Root Hub ports immediately after
-> > > > > +      setting host mode to avoid vbus (negative) glitch happen i=
-n later
-> > > > > +      xhci reset. And the vbus will back to 5V automatically whe=
-n reset done.
-> >=20
-> > nit: "will return to"
-> >=20
-> > > > > +    type: boolean
-> > > >=20
-> > > > Why do we want to have a property for this at all? The commit messa=
-ge
-> > > > seems to describe a problem that's limited to specific configuratio=
-ns
-> > > > and appears to be somethng the driver should do unconditionally.
-> > > >=20
-> > > > Could you explain why this cannot be done unconditionally please?
-> > >=20
-> > > It depends on board design, not all system vbus can be controller by =
-root
-> > > hub port. If it is always on, it will not trigger this issue.
-> >=20
-> > Okay, that seems reasonable to have a property for. Can you add that
-> > info to the commit message please?
->=20
-> By the way, I sent v4 at
-> https://lore.kernel.org/imx/20240124152525.3910311-1-Frank.Li@nxp.com/T/#t
-
-I see.
-
-> How about add below sentence?
->=20
-> This was only happen when PORTSC[PP} can control vbus. Needn't set it if
-> vbus is always on.
-
-"This can only happen when ... controls vbus, if vbus is always on, omit
-this property".
-
-Just a wee grammatical nitpicking.
-
-> > On another note, I like it when the property name explains why you would
-> > add it, rather than the thing it is trying to solve.
-> > Named after the disease, rather than the symptoms, if you get me. I
-> > tried to come up with a name here, but could not really suggest
-> > something good. If you can think of something, that'd be good, but don't
-> > stress it.
->=20
-> snps,host-vbus-glitches change to snps,host-vbus-glitches-quirk.
-
-I don't think adding "quirk" moves the needle.
-
-> How about use below description:
->=20
-> When set, power off all Root Hub ports immediately after
-> setting host mode to avoid vbus (negative) glitch happen in later
-> xhci reset. That may cause some USB devices emuration fail when kernel bo=
-ot
-> with device connected and PORTSC[PP] control vbus in board desgin.
-
-"When set, all root hub ports should be powered off immediately after
-enabling host mode, to avoid Vbus (negative) glitches that may happen
-during xHCI reset. These glitches can cause enumeration of some USB
-devices to fail when PORTSC[PP] controls Vbus. If Vbus is always on,
-omit this property."
-
-How's that?
-
---DYnLHzNM1BRheBXO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbKdugAKCRB4tDGHoIJi
-0rW6AP9mEQlUrIIosavfS3kjJIpwvgVbgjfh5fLTZ2BBHxvtcgEAsQ/t921axT9S
-4B+qHdP7RqUk6gTi8US6ykZQjSheCgc=
-=rgw9
------END PGP SIGNATURE-----
-
---DYnLHzNM1BRheBXO--
+> > >
+> > > You removed 'arch_scale_cpu_capacity(rq->cpu) <
+> > > rq->rd->max_cpu_capacity' here. Why? I can see that with the standard
+> > > setup (max CPU capacity equal 1024) which is what we probably use 100%
+> > > of the time now. It might get useful again when Vincent will introduce
+> > > his 'user space system pressure' implementation?
+> >
+> > That's interesting because I'm doing the opposite in the user space
+> > system pressure that I'm preparing:
+> > I keep something similar to (arch_scale_cpu_capacity(rq->cpu) <
+> > rq->rd->max_cpu_capacity but I remove check_cpu_capacity(rq, sd) which
+> > seems to be useless because it's already used earlier in
+> > nohz_balancer_kick()
+>
+> Okay. I need to look at your patches anyway. I can potentially rebase on top of
+> your series.
+>
+>
+> Cheers
+>
+> --
+> Qais Yousef
 
