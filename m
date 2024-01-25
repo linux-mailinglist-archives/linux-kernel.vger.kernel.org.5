@@ -1,81 +1,109 @@
-Return-Path: <linux-kernel+bounces-39051-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39052-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57FFB83CA42
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:44:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C475783CA47
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:46:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8369C1C25049
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:44:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 034DE1C22C6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:46:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37FD9133409;
-	Thu, 25 Jan 2024 17:44:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91FBA133421;
+	Thu, 25 Jan 2024 17:46:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hdHbrdAq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SWw+roBd"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D71C13175A;
-	Thu, 25 Jan 2024 17:44:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD06763407;
+	Thu, 25 Jan 2024 17:46:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706204686; cv=none; b=WYLN71A4zeK5+r5LGXKbgmCwZU7PMAMKMSbypQsCqaJjgA/56Mld5oDYlnYaykkp0FBTv+lbFPmVZwGTG5eM8iE5rfbt29/0RGCz/lsqiKnAReY2G1CT6MCat7i2SOwZN25rYssDnTDRccAfoNpm0Ktz6ePbKzB0so3BMvNHL50=
+	t=1706204763; cv=none; b=bZz2YJ5cRkjUdnHy2QZJ34qTtf+5bLsopwQZH1Wky4e++k6Z1AwLnELPryOCdKdcWSGY4sNIV5rU9xplhCDRX1nOk/AYKXvHHGSkFLeZBhLIs8Ls+ShvaUcTtvLwlfaAROh/joV8cF12kswTcpCKn+fhcHhH8Y+6mqAOfTLavtE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706204686; c=relaxed/simple;
-	bh=nSGwV2wF/A1m1KK33CaJZwXh3S7H2z5bahv5KRLksB4=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=H5xGx5ZX+0O6/bHxZkJU9zs824HrbLrE2sR+kqgZOhKBo7e3MdC6sMeps87mDtwmACIy7kV1WEM2KPaZmGmhuUF1bA97NyNvOpkP/2y8D7w5ZA0rVZgube2Kc8ZZWRnj1x89CyuQedDsbT9Ip4cfIdsgsKpRprgrNsTNxg4R/0I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hdHbrdAq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 919ACC433C7;
-	Thu, 25 Jan 2024 17:44:45 +0000 (UTC)
+	s=arc-20240116; t=1706204763; c=relaxed/simple;
+	bh=tIFbUb7rvCJU+XmIHpQfyisWg75JMCe5OtoA5r51LVM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SgNITTD6syVZt14eikPMEgiuGkTfTNBBP1nF3A956Ussd9Pm9LiNa6Glk0atkTnhrqc3VPEuYynXKFL1xTi2y0UHrd7lw0c92gci7RQE+QESsqU56BnqbP4XhznXE0dj7eQ/CKI0Q52z5e2+yrFkE3hcm/WyEz0Pl/ncGc24g/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SWw+roBd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A13E2C433F1;
+	Thu, 25 Jan 2024 17:45:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706204686;
-	bh=nSGwV2wF/A1m1KK33CaJZwXh3S7H2z5bahv5KRLksB4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=hdHbrdAqT2alPvemeu3jLjZ3JHu0DurC/s+/H7+BDLCVZu2XlCcJUwAkFFQggt+da
-	 esOSKqPtpkWKLLIT3MpqAsBLhFUq3j60Z9KhNEWWyclOvHUmQ0BKC0nvU0nmOSJ6uV
-	 JhKnWsQ1TcSpugkRQW/d0GcSED727DX2VAPRVojQLIq8FYzwL/9Uz+XvZM2566Wxjw
-	 88+5pqSB9vthc+X28dzy1qDXADNo01L9wtAFTbqdIzEO2cc3+UsfnOJoRj+z52r0QN
-	 W+Cv4xTusZZFDX59Xlka52qkepPjYweqolT9XthKdpLhDszHcAaiJeE8SB3xJxCPJN
-	 44zEekVODTswg==
-Date: Thu, 25 Jan 2024 09:44:44 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: Pavan Chebbi <pavan.chebbi@broadcom.com>, Michael Chan
- <michael.chan@broadcom.com>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Richard
- Cochran <richardcochran@gmail.com>, gospo@broadcom.com, "open list:BROADCOM
- BNXT_EN 50 GIGABIT ETHERNET DRIVER" <netdev@vger.kernel.org>, open list
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net] bnxt_en: Make PTP timestamp HWRM more silent
-Message-ID: <20240125094444.3185487e@kernel.org>
-In-Reply-To: <CALs4sv3cpcy5G6d+3UL8dVSyN1vFbgiin8gLiVxKOfWUAAB0+Q@mail.gmail.com>
-References: <20240125134104.2045573-1-leitao@debian.org>
-	<CALs4sv2U+3uu1Nz0Sf9_Ya6YKxK09WU=QH4VmO94FjC3iWX3rA@mail.gmail.com>
-	<ZbJ11qxfmOfRseJO@gmail.com>
-	<CALs4sv3cpcy5G6d+3UL8dVSyN1vFbgiin8gLiVxKOfWUAAB0+Q@mail.gmail.com>
+	s=k20201202; t=1706204763;
+	bh=tIFbUb7rvCJU+XmIHpQfyisWg75JMCe5OtoA5r51LVM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SWw+roBdU0finNlhvvQnyaImkPJwwEZkqiVd9reBwsFM9ViXSuZ5ALCrMfQwqT3St
+	 Seq+6cKY6hw1LtbUniJFQ1iuERJtlPEqoD0votinHp5LoYivNdfEuruoYD4sADkAqk
+	 m32XQ5cBWr10dMSGy8TsOY4itOuMVFyzAEHYCe/IA2/Q0Q2WgIb3VOlmwe1xqsc7Qt
+	 7IskTrDaeD5DmDOELhgLNedaB28xC3/PFxXDQcAbHTYgISfChcgOGKT8XvFiaNzt7l
+	 DIw5xCLyGvi2eIRq0r64omTAArm4KpXBPT6NwE7kfz3TR1jJDkrhhHgdbWwntDBazk
+	 GFKK/96H8vsZQ==
+Date: Thu, 25 Jan 2024 17:45:56 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: andi.shyti@kernel.org, arnd@arndb.de, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	alim.akhtar@samsung.com, linux-spi@vger.kernel.org,
+	linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-arch@vger.kernel.org, andre.draszik@linaro.org,
+	peter.griffin@linaro.org, semen.protsenko@linaro.org,
+	kernel-team@android.com, willmcvicker@google.com
+Subject: Re: [PATCH v2 05/28] spi: dt-bindings: samsung: add
+ samsung,spi-fifosize property
+Message-ID: <f44d5c58-234d-45ec-8027-47df079e2f16@sirena.org.uk>
+References: <20240125145007.748295-1-tudor.ambarus@linaro.org>
+ <20240125145007.748295-6-tudor.ambarus@linaro.org>
+ <7ef86704-3e40-4d39-a69d-a30719c96660@sirena.org.uk>
+ <1c58deef-bc0f-4889-bf40-54168ce9ff7c@linaro.org>
+ <55af5d4a-7bc9-4ae7-88c5-5acae4666450@sirena.org.uk>
+ <f2ec664b-cd67-4cae-9c0d-5a435c72f121@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="JpqJhr1HaxPy2/jb"
+Content-Disposition: inline
+In-Reply-To: <f2ec664b-cd67-4cae-9c0d-5a435c72f121@linaro.org>
+X-Cookie: Entropy isn't what it used to be.
 
-On Thu, 25 Jan 2024 20:51:25 +0530 Pavan Chebbi wrote:
-> > > LGTM, however, you may still need to add a proper fixes tag.  
-> >
-> > Thanks. I didn't include a fix tag because it is not a fix per se, but,
-> > I can easily send a v2 if this is needed.  
 
-We should pick it as a fix. If we put it in net-next and someone
-complains cherry-picking it into net would be a PITA. And we shouldn't
-spew WARN()s about known-to-be-occurring conditions, GregKH is pretty
-clear about that.
+--JpqJhr1HaxPy2/jb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-If you can post the Fixes tag in a reply our apply scripts should pick
-it up automatically. Or at least mine will :)
+On Thu, Jan 25, 2024 at 05:30:53PM +0000, Tudor Ambarus wrote:
+> On 1/25/24 17:26, Mark Brown wrote:
+
+> > OK, so just the compatible is enough information then?
+
+> For gs101, yes. All the gs101 SPI instances are configured with 64 bytes
+> FIFO depths. So instead of specifying the FIFO depth for each SPI node,
+> we can infer the FIFO depth from the compatible.
+
+But this is needed for other SoCs?  This change is scattered through a
+very large series which does multiple things so it's a bit difficult to
+follow what's going on here.
+
+--JpqJhr1HaxPy2/jb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWynlMACgkQJNaLcl1U
+h9AWIgf/VcfD5zzA5FHst40J+FzkclKI9H7PqSMKnPOfL023kNx0ic5o8lhp6YlO
+q5Nxe4Iq/nOoCxKo5qN0BP/CWFfOU4A4vbNjunU9tLwZiQYRHFW++SCGe+9XrJas
+vfuD1FLLHxE3Dj7Nmgn3iCfTHI0bSI6VKwFo6ZTgAB3FFKBNaioYcXqzKv203oDj
+ZtCHAZvr8W2VOZN05F4WwoFZNBPhI8Kyfu7UJxMGgaJnFj1GCH6C9tNCHPB38gxs
+5rlXg38mhQaL+awPUyOoL3R4wRkdCBPGsvLUBP6cxqrzF0kn5fgY27SM7zYkju/8
+jvw863iKejvXy0T+c+VwdoXIaRbyig==
+=33yx
+-----END PGP SIGNATURE-----
+
+--JpqJhr1HaxPy2/jb--
 
