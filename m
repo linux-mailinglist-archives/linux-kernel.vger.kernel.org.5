@@ -1,142 +1,136 @@
-Return-Path: <linux-kernel+bounces-39272-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39273-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3610583CDF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:00:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F9FC83CDF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:01:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E051D1F26D59
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:00:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5D591F23C78
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:01:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E937E13A240;
-	Thu, 25 Jan 2024 21:00:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E23A91386CC;
+	Thu, 25 Jan 2024 21:01:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="B/GIJejZ"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ajMnkD3h"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44FA31386B5;
-	Thu, 25 Jan 2024 21:00:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A479F135412
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 21:01:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706216441; cv=none; b=X15WIUW2wd3033tIAtaIz+0byAZZDVidKG0Vfkiqpy3Anp4rpZuLD0P0GTMz3WWbavZ+IJB04vCjFwlGowblH79ntDWPJMf97OaW78ZBsldVZ9mE5KX2InqZ3160CIaAAtEgI3B/K+KoeIBckjhhXFUAZiZXFKzR8SGb9HWXB24=
+	t=1706216509; cv=none; b=NPJT2AIHp+q1u0JbwSyijx2jG0KZL0ZOQj9d/j5TfojYs+IQ6HpJENQo2OxGqA3DTQC3zudai8v5pR16WHySUCsjY6EbVFbetJGf3XDKGWrAffaaS3f1bvQcib6PHQsyFnTljXi5qaf9LsktQYkCTeijUoQV/WH9q+1JQ3/e+/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706216441; c=relaxed/simple;
-	bh=ok+32FtmVclV0n6TpLijrlAAhb9UWUJRHcgWWrOsCho=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HtggdpC5YK330t2ygwlMuDt+/IWA7Vb30DXSSRLzB5N0iE1GuSMckyM73VrFxqE8tbB34q7p1aj8xpSydetBFJhxIqcdrNib+YPSgaOXfH/CgvVJWAxZTrrrSAL7tGyZHp2OCZagIyO1Ne228hPKMounXenlEAqqjhhr/cE2B0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=B/GIJejZ; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40PITWOx010339;
-	Thu, 25 Jan 2024 21:00:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=qYbd+OgO9VT2uIIAAIIiB
-	iDYaYXBdYYPdxEdS1JCPeI=; b=B/GIJejZ46j9qkZmmsAhjANbwmtB4voZO09Ua
-	Vood/zrUeUC+TRVbih2Vuu636SrX6xrLvbMTu+o/V9wWjr83VmMhk/ItDf2z+3Dl
-	kHNSwjDd18NTg14qIH2u/n4hUxJtlQHHSP7X3fiTAg7HA6N8RoRLHNY32D208tx9
-	vNyESANezegWQSbZSotpAG+Z/upV2p/ZNO5PKEuNiKMnK/LOLUnN9A1zi+n83cR5
-	+hFRaxGnc8pjtE2otnyUUz3CJwK7PlgmVM/o2rLvEVtSbfjrP/GRSaOQKe2+A52d
-	SYKmzB6llcv9S4SxCx6ABpKjQ6N+8Jzqx8e2jkssdZJpCDKmw==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vun6w1tfa-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Jan 2024 21:00:18 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40PL0HWD022504
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Jan 2024 21:00:17 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 25 Jan 2024 13:00:16 -0800
-Date: Thu, 25 Jan 2024 13:00:15 -0800
-From: Bjorn Andersson <quic_bjorande@quicinc.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-CC: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Taniya Das <quic_tdas@quicinc.com>,
-        Johan Hovold
-	<johan+linaro@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v3 1/8] dt-bindings: clock: qcom: Allow VDD_GFX supply to
- GX
-Message-ID: <20240125210015.GL2936378@hu-bjorande-lv.qualcomm.com>
-References: <20240123-sa8295p-gpu-v3-0-d5b4474c8f33@quicinc.com>
- <20240123-sa8295p-gpu-v3-1-d5b4474c8f33@quicinc.com>
- <f6844d28-c7c2-4afa-8520-2e62c608930d@linaro.org>
- <20240124212116.GH2936378@hu-bjorande-lv.qualcomm.com>
- <cc68112f-3863-4f82-b708-7787a4895a88@linaro.org>
+	s=arc-20240116; t=1706216509; c=relaxed/simple;
+	bh=tcjugv09goaYJycHAFYC9iMMXMtn7q48dmTFTXX855o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OJNDbLYcTvKIZDz2fYq88/U9zsXSiOcikrfwWRmKSnlJ6x7gBTa1EakVjvKX3E6K4eLSkT6Nr/kFAp1Pqo6KStNtDTUd3ZHtU5fy6RT6dKLatYbtZuI3jQ2JVSsrK+zeyCQhdyk0WeWyXiMcUHsNpPbtNMnt6pm6PLYYobMdF5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ajMnkD3h; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-55a3a875f7fso7875635a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 13:01:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706216506; x=1706821306; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HHxJYsj3/b2slg0GpIBhdjGRhcgy6JBtBKDx08y8ugo=;
+        b=ajMnkD3h4+Bxt7nUR2N88o2M91/iIdDM0f9ZfhlSfoCoGfBIP7QWS6NMqygZuUgQqx
+         MELGxM1IzWzu95guiZhT2lLcsXtltD3dSZZ1C3KdcQ7r3nkiXcOX91jI/lMucWvk/kBZ
+         vNeADYTcTvhkUVQ5TQFWiBgRO8WpBaa9y+Yz7JdNwPxnEkH/xCk2MtwQxwgzPDNu7ysD
+         8evdENx3UWYvZJ7kIlTPdRzoZr8kb6EcoBz/9InxYD/fmJ873JVpJZfRfgul0xTu5aP8
+         Gsy3YhkmrR8m4PD2YtfMXpSuvOj7e3BiMfAmFYyKGwo/HueHHc/a5X0gwD2KXRNGOhE/
+         Sh2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706216506; x=1706821306;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HHxJYsj3/b2slg0GpIBhdjGRhcgy6JBtBKDx08y8ugo=;
+        b=Uz0XYOAdhfDC1ZMj40Fk5a3orOakypT2Wa/W9BPyoxNCvQuAZpf73QWZfxUQZ0tYKD
+         ANGKhogfFbmlRRqtVwmq0ZoIIJGJ7Nl0giKjQEN4Z5eEucE54NyHSaIkL9loiHMdc0yD
+         F/xA8clGu+nUSOgpaeIg6myuikyEIJ7yY25eXgqXQi+nTbG07B1xEASRpsADj6HCsEIu
+         qUgIIc3G0ZHqoWvIINvmH4oW1uyfgVs5qXuUWeGNT+5Ans91FBLxc+QZOT84OO6Dekug
+         Nycv+/3qQicAZBLt2E39xnaADjAtfjWiyKIuA+OnT/UStzVCZ+myE2RQ7lhgif4UZHRb
+         D4Hw==
+X-Gm-Message-State: AOJu0YxXu8zscGWEO0InbdmX/sLOJEW+X8OxwjrhhjtCpOVLShBSuoUy
+	DHdXD/rv38DW4aZV9lw3sh5Tn0AhBwrwOHwWRrumkO3pwzhQb7AbK7eVwGjXTAX7u05rsVLoiDR
+	BtHOqfHfaXnDO++YG8dXOvTrx3LEVqf4dzMEp
+X-Google-Smtp-Source: AGHT+IGVqQ1zuVX6dgyb6dJad5fsCjEJeuiQ02r7PgRTBdEA7jkaRsHpW6P9wwBX8IfCUftLd+qYQ5g1jDWXThaYzyA=
+X-Received: by 2002:a17:906:f189:b0:a27:7cc5:b019 with SMTP id
+ gs9-20020a170906f18900b00a277cc5b019mr79138ejb.92.1706216505581; Thu, 25 Jan
+ 2024 13:01:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <cc68112f-3863-4f82-b708-7787a4895a88@linaro.org>
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: T61nsVoCgfHh9mUrWbMo-vwlSjlVLmgd
-X-Proofpoint-ORIG-GUID: T61nsVoCgfHh9mUrWbMo-vwlSjlVLmgd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-25_13,2024-01-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=530
- lowpriorityscore=0 adultscore=0 spamscore=0 priorityscore=1501 mlxscore=0
- bulkscore=0 phishscore=0 impostorscore=0 malwarescore=0 suspectscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401190000 definitions=main-2401250150
+References: <20240120024007.2850671-1-yosryahmed@google.com>
+ <20240120024007.2850671-3-yosryahmed@google.com> <20240122201906.GA1567330@cmpxchg.org>
+ <CAJD7tkaATS48HVuBfbOmPM3EvRUoPFr66WhF64UC4FkyVH5exg@mail.gmail.com>
+ <20240123153851.GA1745986@cmpxchg.org> <CAJD7tkasHsRnT_75-TXsEe58V9_OW6m3g6CF7Kmsvz8CKRG_EA@mail.gmail.com>
+ <20240123201234.GC1745986@cmpxchg.org> <CAJD7tkZC6w2EaE=j2NEVWn1s7Lo2A7YZh8LiZ+w72jQzFFWLUQ@mail.gmail.com>
+ <f3fa799f-1815-4cfe-abc8-3ba929fcd1ba@bytedance.com> <CAF8kJuOv0FHsHgp=i7ZzjTpvZ7fN8uOQ3DT=8Q2eYWzRM7Hsgw@mail.gmail.com>
+ <CAJD7tkY=qy+dfKacFOBx4uW6hDJwf20ODBgVWRP919hEY5URnQ@mail.gmail.com> <CAF8kJuOvjJ1ARzAGMVheDgq6tpUM76BZ9GggWj7CB=J3XgU6mw@mail.gmail.com>
+In-Reply-To: <CAF8kJuOvjJ1ARzAGMVheDgq6tpUM76BZ9GggWj7CB=J3XgU6mw@mail.gmail.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Thu, 25 Jan 2024 13:01:09 -0800
+Message-ID: <CAJD7tkZV0+aPD0_pcFONnsGXC0__62yyQQmXX8jj5G=-QAySsg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm: zswap: remove unnecessary tree cleanups in zswap_swapoff()
+To: Chris Li <chrisl@kernel.org>
+Cc: Chengming Zhou <zhouchengming@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>, 
+	Huang Ying <ying.huang@intel.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 25, 2024 at 08:39:15AM +0100, Krzysztof Kozlowski wrote:
-> On 24/01/2024 22:21, Bjorn Andersson wrote:
-> > On Wed, Jan 24, 2024 at 07:31:34AM +0100, Krzysztof Kozlowski wrote:
-> >> On 24/01/2024 05:25, Bjorn Andersson wrote:
-> >>> +# Allow either power-domains or vdd-gfx-supply, not both
-> >>> +oneOf:
-> >>> +  - required:
-> >>> +      - power-domains
-> >>> +  - required:
-> >>> +      - vdd-gfx-supply
-> >>> +  - not:
-> >>> +      anyOf:
-> >>> +        - required:
-> >>> +            - power-domains
-> >>> +        - required:
-> >>> +            - vdd-gfx-supply
-> >>
-> >> I don't fully understand what you want to achieve here. If only "allow
-> >> either", so not a "require either", then simpler:
-> >>
-> >> https://lore.kernel.org/all/20230118163208.GA117919-robh@kernel.org/
-> >>
-> > 
-> > As discussed in v2, power-domains is currently an optional property in
-> > this binding and I'm adding vdd-gfx-supply as an alternative to that.
-> > 
-> 
-> Then go with Rob's syntax - not:required: Much easier code.
-> 
+On Thu, Jan 25, 2024 at 11:04=E2=80=AFAM Chris Li <chrisl@kernel.org> wrote=
+:
+>
+> On Thu, Jan 25, 2024 at 12:02=E2=80=AFAM Yosry Ahmed <yosryahmed@google.c=
+om> wrote:
+> >
+> > > > // lru list lock held
+> > > > shrink_memcg_cb()
+> > > >   swpentry =3D entry->swpentry
+> > > >   // Don't isolate entry from lru list here, just use list_lru_putb=
+ack()
+> > > >   spin_unlock(lru list lock)
+> > > >
+> > > >   folio =3D __read_swap_cache_async(swpentry)
+> > > >   if (!folio)
+> > > >     return
+> > > >
+> > > >   if (!folio_was_allocated)
+> > > >     folio_put(folio)
+> > > >     return
+> > > >
+> > > >   // folio is locked, swapcache is secured against swapoff
+> > > >   tree =3D get tree from swpentry
+> > > >   spin_lock(&tree->lock)
+> > >
+> > > That will not work well with zswap to xarray change. We want to remov=
+e
+> > > the tree lock and only use the xarray lock.
+> > > The lookup should just hold xarray RCU read lock and return the entry
+> > > with ref count increased.
+> >
+> > In this path, we also invalidate the zswap entry, which would require
+> > holding the xarray lock anyway.
+>
+> It will drop the RCU read lock after finding the entry and re-acquire
+> the xarray spin lock on invalidation. In between there is a brief
+> moment without locks.
 
-I looked at it, but was not able to understand that it expressed my
-desired result. Now I do, and I agree with you, so will update it.
-
-Thanks,
-Bjorn
+If my understanding is correct, at that point in the code writeback is
+guaranteed to succeed unless the entry had already been removed from
+the tree. So we can use xa_cmpxchg() as I described earlier to find
+and remove the entry in the tree only if it exists. If it does, we
+continue with the writeback, otherwise we abort. No need for separate
+load and invalidation. zswap_invalidate_entry() can return a boolean
+(whether the entry was found and removed from the tree or not).
 
