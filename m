@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-39317-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39315-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 593FF83CEA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:30:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D9AB83CEA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:30:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBB3D1F28C09
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:30:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BE0A1C235FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:30:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7B6913AA51;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 718B913AA4A;
 	Thu, 25 Jan 2024 21:30:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YJN1C2EG"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OCk0fJ1k"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E850413A26E
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 21:30:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACF6E1386AD;
+	Thu, 25 Jan 2024 21:30:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706218230; cv=none; b=Hlk7k2r22RYexW6o0yGK2zHze5LBFM7Y1smJc2xJxaFt8ILUcT6JDpnAbjFoFOXGSUMz0It3nJlsSaElQwsiCMC+D/2PRtO7ogKxwAL0uJAv1NnAv8kVG+7yWBUZAKluKJllAzvQWCLbyfp6N7xw2PTsy5FZ7g+whciOoy/sc6E=
+	t=1706218229; cv=none; b=Ha0rb97tYvid02btQcwGW6DU5m27r0OfQBHgRnFt1Ux+s0kGYs4D/6DyUkLstL35ctVw2OBVSBPd52IA552hRB4z0eJZ8AdbHA0FIcJ9pYB8JV4vzzYgRH9Kb1WmShrRQQxTuTiuju30OsZeHok22FwqqSKtbBZLF5wuxdEoEgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706218230; c=relaxed/simple;
-	bh=0c77Px4FgFzSMDDopX9HQK54i0DhuO6fgk/RYUZ7kto=;
+	s=arc-20240116; t=1706218229; c=relaxed/simple;
+	bh=DU2aKLt1gDJPFPkXs014yUzizTB2XryAG05PwCdQcMU=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=eGmBkElYbjDXnzzDIp4vxFfjR9FHU6lhcojoZvTMmbARJxKnL/GSkY9E5IbodhtqzNg9qTC6YREfGNI5dwtgaR5MFoMNvuw10hDVMqb6/ESLJIbND+8/Y9UE3C9bktRGl00Nmw3nOQus46cffBeTG5IBp7ii05veKIH1ZivozaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YJN1C2EG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6D5FDC433B2;
+	 In-Reply-To:To:Cc; b=df0DZLd4rAPZrvASAvEkA5FVVHzR3lJkoEy6SupX58YCyyjpZ0pzZkmzl1kVwSPwD83jxr2uGpaDujmt6PqaC+NTwHEfXxa3aTTIebUGQ0E6dohHylT2Wjmg2EdDxHKxEbIetyPJdB6J+vLWZMX+kp9km96al2i5JQ/871A6l+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OCk0fJ1k; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 567C0C433A6;
 	Thu, 25 Jan 2024 21:30:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1706218229;
-	bh=0c77Px4FgFzSMDDopX9HQK54i0DhuO6fgk/RYUZ7kto=;
+	bh=DU2aKLt1gDJPFPkXs014yUzizTB2XryAG05PwCdQcMU=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=YJN1C2EGISR9CofRVEJLO5WTqYVsqTyEafbuz9HXFhB3nO2Gc6cxsX/dqnSrHR+BB
-	 YcKwRlaicZji+pTptYuomsuowAbnnqda0H4m9w8VNUel1kJhla6qY7Iuk+vmzxlZ6x
-	 65phPPiHu0hEvEBYKvD0Bb4Y8xpD14K/FUuvKsZNWACe+2jsnyGFeRn2IFnkntr+qi
-	 Usw2/ivEMl0B8dV/us4zHDcur/RKpa/4zJux37NvwrFtbH0oEOS0moVLPwGauzaeuZ
-	 UDKbDiWGbdpD3WFPdILH28kl25+H0hsyOpxAIOukVQMM0ChCxbQUmJUg4h2pmhQLoh
-	 9sQ95lHHpmHFw==
+	b=OCk0fJ1km2f4qcwwOqVN9rN3xFh6DvAwQwI+eiNur43sI9ERsQfnRTVxkqZiqz80e
+	 c1DQ4U4k/gQHMQm1bcp5Io+ugoJYCmX+t2awn2ujGQqUH6mBpDt1Qtp+8kvPGPwg54
+	 0jO/H0FCHxTW0Gh2mvBLEc6b06GfE4AxLtgvxsHrM4mBbmIwzKEmmNfw/WO2M21Tiu
+	 3mqQRRq371QDxIIO39ljhxj18xBGU6kMvYJxdTnomaEbr5EMIm2vILmoS4IKQqp6KO
+	 IWehxvkNo+aN5DwBIEfrd7ifICA9fLYX60LP5g6krKvpbONpvGetKosjHjIPzfmpE1
+	 1OyD1J5sDwOMw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 52E22DC99E0;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 406E9D8C961;
 	Thu, 25 Jan 2024 21:30:29 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -51,36 +51,40 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH -next] RISC-V: Remove duplicated include in smpboot.c
+Subject: Re: [PATCH] riscv: Avoid code duplication with generic bitops
+ implementation
 From: patchwork-bot+linux-riscv@kernel.org
 Message-Id: 
- <170621822933.6239.12409482420137215453.git-patchwork-notify@kernel.org>
+ <170621822925.6239.5198530018567200745.git-patchwork-notify@kernel.org>
 Date: Thu, 25 Jan 2024 21:30:29 +0000
-References: <20231031004018.45074-1-yang.lee@linux.alibaba.com>
-In-Reply-To: <20231031004018.45074-1-yang.lee@linux.alibaba.com>
-To: Yang Li <yang.lee@linux.alibaba.com>
+References: <20231112094421.4014931-1-xiao.w.wang@intel.com>
+In-Reply-To: <20231112094421.4014931-1-xiao.w.wang@intel.com>
+To: Wang@codeaurora.org, Xiao W <xiao.w.wang@intel.com>
 Cc: linux-riscv@lists.infradead.org, paul.walmsley@sifive.com,
- palmer@dabbelt.com, aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org,
- abaci@linux.alibaba.com
+ palmer@dabbelt.com, aou@eecs.berkeley.edu, arnd@arndb.de,
+ geert@linux-m68k.org, haicheng.li@intel.com, linux-arch@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 
 Hello:
 
 This patch was applied to riscv/linux.git (for-next)
 by Palmer Dabbelt <palmer@rivosinc.com>:
 
-On Tue, 31 Oct 2023 08:40:18 +0800 you wrote:
-> ./arch/riscv/kernel/smpboot.c: asm/cpufeature.h is included more than once.
+On Sun, 12 Nov 2023 17:44:21 +0800 you wrote:
+> There's code duplication between the fallback implementation for bitops
+> __ffs/__fls/ffs/fls API and the generic C implementation in
+> include/asm-generic/bitops/. To avoid this duplication, this patch renames
+> the generic C implementation by adding a "generic_" prefix to them, then we
+> can use these generic APIs as fallback.
 > 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7086
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  arch/riscv/kernel/smpboot.c | 1 -
->  1 file changed, 1 deletion(-)
+> Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Xiao Wang <xiao.w.wang@intel.com>
+> 
+> [...]
 
 Here is the summary with links:
-  - [-next] RISC-V: Remove duplicated include in smpboot.c
-    https://git.kernel.org/riscv/c/dded618c07fd
+  - riscv: Avoid code duplication with generic bitops implementation
+    https://git.kernel.org/riscv/c/cb4ede926134
 
 You are awesome, thank you!
 -- 
