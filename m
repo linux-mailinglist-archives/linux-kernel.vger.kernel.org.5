@@ -1,46 +1,62 @@
-Return-Path: <linux-kernel+bounces-38821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A925583C673
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:23:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 831FE83C678
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:23:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23DC71F2542A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:23:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C6921C241E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:23:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC8737316C;
-	Thu, 25 Jan 2024 15:22:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D90F6EB7C;
+	Thu, 25 Jan 2024 15:23:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="ne5uFbaZ"
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="GMN1U2t2"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EC39481CB;
-	Thu, 25 Jan 2024 15:22:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7A056EB59;
+	Thu, 25 Jan 2024 15:23:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706196168; cv=none; b=ccUyqRjtR8s4fUvODocN+3Cqiig38xrbdOkBPCKB9p/YJ5CdzGimoxS7tZSleDYxWskY4u30hkQpXKcZddtRTQrpTmC4+OoM8+hBow5Kzd73m4/rxBnpeHKyinjvKRaOT3LxIvqj7HYf75vBsH491rbWWX07hwJg+ZmeHN+yBko=
+	t=1706196192; cv=none; b=J1OmccDxwwlXzh1aNceg6rEOaZ+Nk6GWY4Kl+lTMZPzPGUfhPKR4bIJG0MMZ05kQw31mXN40ZJmSVYss/R4DxgoR18eqbOfyufwBVegRMFBYcgEe374fTLU0aHsWG/D8AYhNeV9/L/igOAe95hjakasuGRa0qkt9mVlk79Qjt6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706196168; c=relaxed/simple;
-	bh=QyKrKPi2OmBilyWipKm6g9LwaREY3/z/OwABiSANKQ4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mUqNa2gobMVN+678qo6lF170wbM/fFoR9+mmuKW7myUZn6v6TKzEuoXc3oP3XvtBsNfmFndP6iyuKH7/4p0p+U7x+RJS4w5OFEVGJlM7VYP7LQgQxdrYdaYloqup7PmFTf79lWFwb67an1yV0vwUuD+d7RJsKc+YhwpMX91CKzk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=ne5uFbaZ; arc=none smtp.client-ip=115.124.30.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1706196154; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=p3tSUpOimDMRg8zqfNouUpnGd0mSimHS2NTV/3U3wfY=;
-	b=ne5uFbaZ1l/WWvKBFAZRT8H197IFwj7/+RpECvDMhtmra6FNh/PBwIlt/q12REBu+wrmo5QpO3ZK0v0dX6QKhsuAK97ImrH85bdJSRiRHFk6B3PWjeMjd6oGdabsFAvTn0mVeDwtFMCUXu5ofUeSsGnJ9nK0iIi+X3g2nOApzcU=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R751e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0W.Kkdiy_1706196152;
-Received: from 192.168.71.114(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0W.Kkdiy_1706196152)
-          by smtp.aliyun-inc.com;
-          Thu, 25 Jan 2024 23:22:33 +0800
-Message-ID: <8ac3a2fd-1c41-493a-b6a0-a5f53afb49e1@linux.alibaba.com>
-Date: Thu, 25 Jan 2024 23:22:31 +0800
+	s=arc-20240116; t=1706196192; c=relaxed/simple;
+	bh=nHHvVom1q2NfxuRV3Y+LvpL/ZmkiaOxOnUB91cTyLtk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=cbRTMQPA8uH+ERMqGYcta/lCW0V/Ni4OysFFIRj/lSptnnr0+Ok80XPtfnZoaRftC8YKu3Eq/7Pt5fzdg2CqWgd6QxAQso7zE2Ztdpe5IEhCZRE8618KSaFxEf05UmU9pEtDalU0Qzqfmt2GyplVowPrPlAT1w0gGvKlrT+3h0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=GMN1U2t2; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40PFMxEB029810;
+	Thu, 25 Jan 2024 09:22:59 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1706196179;
+	bh=3uCm+3uv8GvMxy4OgNybvMflNJ+eaPMs5XH+LYlHVzk=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=GMN1U2t2nH/8OoBPHHzd8rA7ZqBV9C5ul0BVQm6Wfau2GNcBiwiIEQztFf9trtH+a
+	 2VKObYP8D2NJhkUO/SgX/GzUhkx9C2Bv6VEZtVIm2hcYclBoEkqBmY3KYzEAEl9Ykf
+	 ngDTXrObEd5MQccdKVZyg/F5/AF+//T5lBd0QkBc=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40PFMxct048139
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 25 Jan 2024 09:22:59 -0600
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 25
+ Jan 2024 09:22:59 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 25 Jan 2024 09:22:59 -0600
+Received: from [10.249.42.149] ([10.249.42.149])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40PFMwBh079463;
+	Thu, 25 Jan 2024 09:22:58 -0600
+Message-ID: <9bb17376-7793-4cb1-984c-adffb1c7ab1e@ti.com>
+Date: Thu, 25 Jan 2024 09:22:58 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,129 +64,132 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Roadmap for netfslib and local caching (cachefiles)
-To: David Howells <dhowells@redhat.com>
-Cc: Jeff Layton <jlayton@kernel.org>, Christian Brauner <brauner@kernel.org>,
- Matthew Wilcox <willy@infradead.org>, Eric Sandeen <esandeen@redhat.com>,
- v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
- ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
- samba-technical@lists.samba.org, linux-nfs@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <520668.1706191347@warthog.procyon.org.uk>
-From: Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <520668.1706191347@warthog.procyon.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH 1/3] udmabuf: Keep track current device mappings
+Content-Language: en-US
+To: "Kasireddy, Vivek" <vivek.kasireddy@intel.com>,
+        Gerd Hoffmann
+	<kraxel@redhat.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Paul Cercueil
+	<paul@crapouillou.net>
+CC: "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
+References: <20240123221227.868341-1-afd@ti.com>
+ <IA0PR11MB7185C76FC248EDDC5FBC49EFF87B2@IA0PR11MB7185.namprd11.prod.outlook.com>
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <IA0PR11MB7185C76FC248EDDC5FBC49EFF87B2@IA0PR11MB7185.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi David,
+On 1/24/24 4:36 PM, Kasireddy, Vivek wrote:
+> Hi Andrew,
+> 
+>> When a device attaches to and maps our buffer we need to keep track
+>> of this mapping/device. This is needed for synchronization with these
+>> devices when beginning and ending CPU access for instance. Add a list
+>> that tracks device mappings as part of {map,unmap}_udmabuf().
+>>
+>> Signed-off-by: Andrew Davis <afd@ti.com>
+>> ---
+>>   drivers/dma-buf/udmabuf.c | 43
+>> +++++++++++++++++++++++++++++++++++++--
+>>   1 file changed, 41 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/dma-buf/udmabuf.c b/drivers/dma-buf/udmabuf.c
+>> index c406459996489..3a23f0a7d112a 100644
+>> --- a/drivers/dma-buf/udmabuf.c
+>> +++ b/drivers/dma-buf/udmabuf.c
+>> @@ -28,6 +28,14 @@ struct udmabuf {
+>>   	struct page **pages;
+>>   	struct sg_table *sg;
+>>   	struct miscdevice *device;
+>> +	struct list_head attachments;
+>> +	struct mutex lock;
+>> +};
+>> +
+>> +struct udmabuf_attachment {
+>> +	struct device *dev;
+>> +	struct sg_table *table;
+>> +	struct list_head list;
+>>   };
+>>
+>>   static vm_fault_t udmabuf_vm_fault(struct vm_fault *vmf)
+>> @@ -120,14 +128,42 @@ static void put_sg_table(struct device *dev, struct
+>> sg_table *sg,
+>>   static struct sg_table *map_udmabuf(struct dma_buf_attachment *at,
+>>   				    enum dma_data_direction direction)
+>>   {
+>> -	return get_sg_table(at->dev, at->dmabuf, direction);
+>> +	struct udmabuf *ubuf = at->dmabuf->priv;
+>> +	struct udmabuf_attachment *a;
+>> +
+>> +	a = kzalloc(sizeof(*a), GFP_KERNEL);
+>> +	if (!a)
+>> +		return ERR_PTR(-ENOMEM);
+>> +
+>> +	a->table = get_sg_table(at->dev, at->dmabuf, direction);
+>> +	if (IS_ERR(a->table)) {
+>> +		kfree(a);
+>> +		return a->table;
+> Isn't that a use-after-free bug?
 
-On 2024/1/25 22:02, David Howells wrote:
-> Here's a roadmap for the future development of netfslib and local caching
-> (e.g. cachefiles).
+Indeed it is, will fix.
 
-Thanks for writing this detailed email.  And congrats to you work.
-I only comment the parts directly related to myself.
+Seems coccicheck also caught this but I missed it when
+reviewing its output, my bad :(
 
-> 
+Andrew
 
-..
-
+> Rest of the patch lgtm.
 > 
+> Thanks,
+> Vivek
 > 
-> Local Caching
-> =============
+>> +	}
+>> +
+>> +	a->dev = at->dev;
+>> +
+>> +	mutex_lock(&ubuf->lock);
+>> +	list_add(&a->list, &ubuf->attachments);
+>> +	mutex_unlock(&ubuf->lock);
+>> +
+>> +	return a->table;
+>>   }
+>>
+>>   static void unmap_udmabuf(struct dma_buf_attachment *at,
+>>   			  struct sg_table *sg,
+>>   			  enum dma_data_direction direction)
+>>   {
+>> -	return put_sg_table(at->dev, sg, direction);
+>> +	struct udmabuf_attachment *a = at->priv;
+>> +	struct udmabuf *ubuf = at->dmabuf->priv;
+>> +
+>> +	mutex_lock(&ubuf->lock);
+>> +	list_del(&a->list);
+>> +	mutex_unlock(&ubuf->lock);
+>> +
+>> +	put_sg_table(at->dev, sg, direction);
+>> +
+>> +	kfree(a);
+>>   }
+>>
+>>   static void release_udmabuf(struct dma_buf *buf)
+>> @@ -263,6 +299,9 @@ static long udmabuf_create(struct miscdevice
+>> *device,
+>>   		memfd = NULL;
+>>   	}
+>>
+>> +	INIT_LIST_HEAD(&ubuf->attachments);
+>> +	mutex_init(&ubuf->lock);
+>> +
+>>   	exp_info.ops  = &udmabuf_ops;
+>>   	exp_info.size = ubuf->pagecount << PAGE_SHIFT;
+>>   	exp_info.priv = ubuf;
+>> --
+>> 2.39.2
 > 
-> There are a number of things I want to look at with local caching:
-> 
-> [>] Although cachefiles has switched from using bmap to using SEEK_HOLE and
-> SEEK_DATA, this isn't sufficient as we cannot rely on the backing filesystem
-> optimising things and introducing both false positives and false negatives.
-> Cachefiles needs to track the presence/absence of data for itself.
-
-Yes, that is indeed an issue that needs to resolve and already discussed
-before.
-
-> 
-> I had a partially-implemented solution that stores a block bitmap in an xattr,
-> but that only worked up to files of 1G in size (with bits representing 256K
-> blocks in a 512-byte bitmap).
-
-Jingbo once had an approach to use external bitmap files and
-extended-attribute pointers inside the cache files:
-https://listman.redhat.com/archives/linux-cachefs/2022-August/007050.html
-
-I'm not quite sure the performance was but if it's worth trying or comparing,
-that might be useful though.
-
-> 
-> [>] An alternative cache format might prove more fruitful.  Various AFS
-> implementations use a 'tagged cache' format with an index file and a bunch of
-> small files each of which contains a single block (typically 256K in OpenAFS).
-> 
-> This would offer some advantages over the current approach:
-> 
->   - it can handle entry reuse within the index
->   - doesn't require an external culling process
->   - doesn't need to truncate/reallocate when invalidating
-> 
-> There are some downsides, including:
-> 
->   - each block is in a separate file
-
-Not quite sure, yet accessing too many small files might be another issue
-which is currently happening with AI training workloads.. but as you said,
-it's worth trying.
-
->   - metadata coherency is more tricky - a powercut may require a cache wipe
->   - the index key is highly variable in size if used for multiple filesystems
-> 
-> But OpenAFS has been using this for something like 30 years, so it's probably
-> worth a try.
-
-Yes, also configurable chunk sizes per blob are much helpful.
-
-Thanks,
-Gao Xiang
-
-> 
-> [>] Need to work out some way to store xattrs, directory entries and inode
-> metadata efficiently.
-> 
-> [>] Using NVRAM as the cache rather than spinning rust.
-> 
-> [>] Support for disconnected operation to pin desirable data and keep
-> track of changes.
-> 
-> [>] A user API by which the cache for specific files or volumes can be
-> flushed.
-> 
-> 
-> Disconnected Operation
-> ======================
-> 
-> I'm working towards providing support for disconnected operation, so that,
-> provided you've got your working set pinned in the cache, you can continue to
-> work on your network-provided files when the network goes away and resync the
-> changes later.
-> 
-> This is going to require a number of things:
-> 
->   (1) A user API by which files can be preloaded into the cache and pinned.
-> 
->   (2) The ability to track changes in the cache.
-> 
->   (3) A way to synchronise changes on reconnection.
-> 
->   (4) A way to communicate to the user when there's a conflict with a third
->       party change on reconnect.  This might involve communicating via systemd
->       to the desktop environment to ask the user to indicate how they'd like
->       conflicts recolved.
-> 
->   (5) A way to prompt the user to re-enter their authentication/crypto keys.
-> 
->   (6) A way to ask the user how to handle a process that wants to access data
->       we don't have (error/wait) - and how to handle the DE getting stuck in
->       this fashion.
-> 
-> David
 
