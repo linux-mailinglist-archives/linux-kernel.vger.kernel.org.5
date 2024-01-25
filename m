@@ -1,107 +1,238 @@
-Return-Path: <linux-kernel+bounces-39120-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C37D583CB15
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:31:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5554283CB10
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:31:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 023A91C23405
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:31:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9A0B1F2670A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:31:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 576A5137C5C;
-	Thu, 25 Jan 2024 18:26:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84CDD137C31;
+	Thu, 25 Jan 2024 18:26:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IX+HgYcT"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="ndRNjLNt"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF93879C7
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 18:26:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A99679C7
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 18:26:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706207201; cv=none; b=eBzheF7XAFcjgmvPpF/UwXCUi+nLrdK3V6ZVUzbjio64TbcrjZaRwbg0C57wtVW4Ro+wsqHku980GOMQTqhtjVDAgm5QDT0Sf57MiJdrvlmJpmeTS9VxGoxxPLgevWVGES4bo3Znwh57l/cYz0d4+6FUAXDxrH39yb9KXMg1FG4=
+	t=1706207186; cv=none; b=FUNLlO4miCv7LKJishwvNHdtShIpWvhtpaY3tjKq1dm5y9AzSk/WkjgGjgbdnzhvroIYoUvDH4212lSZrAueLNKHqkYPp1Cl7mvFimVnUjDS2qpb93Jm5SDZADr7PLv6H6vk/z1vNR85TNzVDjkTiP45TsB4l6+mgOWFMwSErqA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706207201; c=relaxed/simple;
-	bh=p53X8di65S3zmcAB+leeB/kf78sYPEDljz8OXoCEywA=;
+	s=arc-20240116; t=1706207186; c=relaxed/simple;
+	bh=jx00gY1ANnXUmZbXujxCZw5ack5kqcVrRKjf2wSzAGE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GHEanEe1/Sis4/5PvFL7vM+mU8Yd4iz0/cRxO8/qmyhlO3f3FH7O1UdiC49ci6Po6Nbl1f+bNNNaSCEJTLOc4dO3odfgGUau/TeWPr+GR7BSkaLbx5JUlrmvic+bhNyBE6Hw+Moa+jtWPrwPEwjL2o1CNyKQSlZ2/3jEie7OVO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IX+HgYcT; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706207198;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p53X8di65S3zmcAB+leeB/kf78sYPEDljz8OXoCEywA=;
-	b=IX+HgYcT9ztAL2RsLZXwC9wvlMWfIXv6Q6i44/VfUcTHX0pQRrgyb33lmshs0R+R4OYuLY
-	D9ICWKxAUkWtOgTJlPJWWE468BhLIueXQhZeV3nQrcM04II6EP73hAokCpSPiq7UAW+Am5
-	P3GPUIr6zZsl7bnJSI0unuUfo1BXjeo=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-467-vM6f3SOxPyiC3_8HDtQbiA-1; Thu,
- 25 Jan 2024 13:26:28 -0500
-X-MC-Unique: vM6f3SOxPyiC3_8HDtQbiA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A7C0C3C1E9C5;
-	Thu, 25 Jan 2024 18:26:21 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.14])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 092A53C2E;
-	Thu, 25 Jan 2024 18:26:19 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Thu, 25 Jan 2024 19:25:08 +0100 (CET)
-Date: Thu, 25 Jan 2024 19:25:05 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Tycho Andersen <tycho@tycho.pizza>
-Cc: Christian Brauner <brauner@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-api@vger.kernel.org, Tycho Andersen <tandersen@netflix.com>,
-	"Eric W. Biederman" <ebiederm@xmission.com>
-Subject: Re: [PATCH v3 1/3] pidfd: allow pidfd_open() on non-thread-group
- leaders
-Message-ID: <20240125182505.GD5513@redhat.com>
-References: <20240123153452.170866-1-tycho@tycho.pizza>
- <20240123153452.170866-2-tycho@tycho.pizza>
- <20240123195608.GB9978@redhat.com>
- <ZbArN3EYRfhrNs3o@tycho.pizza>
- <20240125140830.GA5513@redhat.com>
- <20240125-tricksen-baugrube-3f78c487a23a@brauner>
- <20240125175113.GC5513@redhat.com>
- <ZbKigMNQM0Yklc/5@tycho.pizza>
+	 Content-Type:Content-Disposition:In-Reply-To; b=hfg3CaxBMINTw11hwdp/S1uZnlYxNP6yG/otu7ij9LOdQuD4BtkdSKLADNzLiEMjyF2V3NH2UmEXPQKtg4wCDhnbBjs0uZL17Y8d49zKePlUFHFtSeibM+i+DNtH0ruCWx6Ra52ruSdxJuGx7JJCIpCn+5Lec205/JiSe0kvgo0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=ndRNjLNt; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6ddc5faeb7fso1240255b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 10:26:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706207184; x=1706811984; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xyuZ0gVdBuvlPmtjlhSz8uJtD77t/nVDJ3cBvemqEj0=;
+        b=ndRNjLNtyb2HSEDOmH/SyIDmrte0pVJhbjx5ZFOqTVaN7zTiNt5Hv0poqPgH1fvEvW
+         o4qDLhKbdvSU8IfpisXd196IA9OWyysxT9b6MZ/eBWwz+s+GogE5RDlWdvAZ6Pv7CqeX
+         d1nZwoWmgxZh8V3wrRsluC8eWBvyzqJMrD1yWLdPmXld+IZZ2zckxZ7vER8J/2glMQMQ
+         DNtMgs5Iwnxpov8tsBR+gQpM/ZaS8IorzAJ5KtBQs0MLqSmcIN6bJGDpJOdOaNkkBFXq
+         Tq0YI3Ng8+ZVomByK6VtS5pDVUXFVyRFuNVKXd5CbYV60X5g0mGS76qtBFj6D+YS6wIs
+         im9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706207184; x=1706811984;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xyuZ0gVdBuvlPmtjlhSz8uJtD77t/nVDJ3cBvemqEj0=;
+        b=DNF6y0bQgGOk4ZUuA4QYgo/7f7WOS7EHmqnxjaz/KZkYaw6r9odCx2NlbJabFHFON2
+         uoER51o+ZVCZPD+Eu5NowTy997QWICiJJgWC8/gvtu4NUMHgCKCgk1wzc3VtvRvPwdnT
+         3bMqdXXSgTNMawWgIYXvR3uvsxn02XuG02o7WnCJTRMVe1jH8n+grIR3cR7nshc8megr
+         w7cuxjdHwTn3vHfPjYQ5uDZOOeqHNbUuew4/Em5A59gvRYhPy5liMdbL/6bj7mlXE7m2
+         z4XPG8QD+hFApuRwTq/FaLjmsVQ9ORe768NcMsIQg4BFuY6odxvDhOcCrh3cfrmMI4BF
+         rtng==
+X-Gm-Message-State: AOJu0Yyca84SLgnmTIxLNzV96BmrxrQG1D5qouabS55le0lCb4ZHVXsW
+	U/NwiBTGwVS9MiMNf4g56i93+xoCvV9LGZaWv/Mym3Rchc3ireiKijx+iEyQxIA=
+X-Google-Smtp-Source: AGHT+IFBV2oC78chsLzac9k77DXS5/WbnhoEAPatEDRZ6lhNeqqRGgEsUCPUu1zeHuG1e8R3Jwt8hg==
+X-Received: by 2002:a05:6a20:1453:b0:199:ad49:ea79 with SMTP id a19-20020a056a20145300b00199ad49ea79mr78878pzi.63.1706207184482;
+        Thu, 25 Jan 2024 10:26:24 -0800 (PST)
+Received: from debug.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id j38-20020a635526000000b005cf7c4bb938sm13685563pgb.94.2024.01.25.10.26.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 10:26:24 -0800 (PST)
+Date: Thu, 25 Jan 2024 10:26:19 -0800
+From: Deepak Gupta <debug@rivosinc.com>
+To: Conor Dooley <conor@kernel.org>
+Cc: rick.p.edgecombe@intel.com, broonie@kernel.org, Szabolcs.Nagy@arm.com,
+	kito.cheng@sifive.com, keescook@chromium.org,
+	ajones@ventanamicro.com, paul.walmsley@sifive.com,
+	palmer@dabbelt.com, conor.dooley@microchip.com, cleger@rivosinc.com,
+	atishp@atishpatra.org, alex@ghiti.fr, bjorn@rivosinc.com,
+	alexghiti@rivosinc.com, corbet@lwn.net, aou@eecs.berkeley.edu,
+	oleg@redhat.com, akpm@linux-foundation.org, arnd@arndb.de,
+	ebiederm@xmission.com, shuah@kernel.org, brauner@kernel.org,
+	guoren@kernel.org, samitolvanen@google.com, evan@rivosinc.com,
+	xiao.w.wang@intel.com, apatel@ventanamicro.com,
+	mchitale@ventanamicro.com, waylingii@gmail.com,
+	greentime.hu@sifive.com, heiko@sntech.de, jszhang@kernel.org,
+	shikemeng@huaweicloud.com, david@redhat.com, charlie@rivosinc.com,
+	panqinglin2020@iscas.ac.cn, willy@infradead.org,
+	vincent.chen@sifive.com, andy.chiu@sifive.com, gerg@kernel.org,
+	jeeheng.sia@starfivetech.com, mason.huo@starfivetech.com,
+	ancientmodern4@gmail.com, mathis.salmen@matsal.de,
+	cuiyunhui@bytedance.com, bhe@redhat.com, ruscur@russell.cc,
+	bgray@linux.ibm.com, alx@kernel.org, baruch@tkos.co.il,
+	zhangqing@loongson.cn, catalin.marinas@arm.com, revest@chromium.org,
+	josh@joshtriplett.org, joey.gouly@arm.com, shr@devkernel.io,
+	omosnace@redhat.com, ojeda@kernel.org, jhubbard@nvidia.com,
+	linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH v1 05/28] riscv: zicfiss/zicfilp enumeration
+Message-ID: <ZbKny7ZAG5FWHwwF@debug.ba.rivosinc.com>
+References: <20240125062739.1339782-1-debug@rivosinc.com>
+ <20240125062739.1339782-6-debug@rivosinc.com>
+ <20240125-unscathed-coeditor-31f04e811489@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <ZbKigMNQM0Yklc/5@tycho.pizza>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+In-Reply-To: <20240125-unscathed-coeditor-31f04e811489@spud>
 
-On 01/25, Tycho Andersen wrote:
+On Thu, Jan 25, 2024 at 05:59:24PM +0000, Conor Dooley wrote:
+>Yo,
 >
-> One of the things I don't like about PIDFD_THREAD is that it's hard to
-> tell whether an arbitrary thread is a leader or not. Right now we do
-> it by parsing /proc/pid/status, which shows all the stuff from
-> do_task_stat() that we don't care about but which is quite expensive
-> to compute. (Maybe there's a better way?)
+>Series is RFC, so not gonna review it in depth, just wanted to comment
+>on this particular patch.
 >
-> With PIDFD_THREAD we could could do it twice, once with the flag, get
-> EINVAL, and then do it again. But ideally we wouldn't have to.
+>On Wed, Jan 24, 2024 at 10:21:30PM -0800, debug@rivosinc.com wrote:
+>> From: Deepak Gupta <debug@rivosinc.com>
+>>
+>> This patch adds support for detecting zicfiss and zicfilp. zicfiss and zicfilp
+>> stands for unprivleged integer spec extension for shadow stack and branch
+>> tracking on indirect branches, respectively.
+>>
+>> This patch looks for zicfiss and zicfilp in device tree and accordinlgy lights
+>> up bit in cpu feature bitmap. Furthermore this patch adds detection utility
+>> functions to return whether shadow stack or landing pads are supported by
+>> cpu.
+>>
+>> Signed-off-by: Deepak Gupta <debug@rivosinc.com>
+>> ---
+>>  arch/riscv/include/asm/cpufeature.h | 18 ++++++++++++++++++
+>>  arch/riscv/include/asm/hwcap.h      |  2 ++
+>>  arch/riscv/include/asm/processor.h  |  1 +
+>>  arch/riscv/kernel/cpufeature.c      |  2 ++
+>>  4 files changed, 23 insertions(+)
+>>
+>> diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm/cpufeature.h
+>> index a418c3112cd6..216190731c55 100644
+>> --- a/arch/riscv/include/asm/cpufeature.h
+>> +++ b/arch/riscv/include/asm/cpufeature.h
+>> @@ -133,4 +133,22 @@ static __always_inline bool riscv_cpu_has_extension_unlikely(int cpu, const unsi
+>>  	return __riscv_isa_extension_available(hart_isa[cpu].isa, ext);
+>>  }
+>>
+>> +static inline bool cpu_supports_shadow_stack(void)
+>> +{
+>> +#ifdef CONFIG_RISCV_USER_CFI
+>
+>In passing, I don't see any reason for not using IS_ENABLED() here.
 
-Too late for me, most probably I misunderstood.
+No reason. I should probably do that. More readable.
+Thanks.
 
-If you want the PIDFD_THREAD behaviour, you can always use this flag
-without any check...
+>
+>> +	return riscv_isa_extension_available(NULL, ZICFISS);
+>> +#else
+>> +	return false;
+>> +#endif
+>> +}
+>> +
+>> +static inline bool cpu_supports_indirect_br_lp_instr(void)
+>> +{
+>> +#ifdef CONFIG_RISCV_USER_CFI
+>> +	return riscv_isa_extension_available(NULL, ZICFILP);
+>> +#else
+>> +	return false;
+>> +#endif
+>> +}
+>> +
+>>  #endif
+>> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
+>> index 06d30526ef3b..918165cfb4fa 100644
+>> --- a/arch/riscv/include/asm/hwcap.h
+>> +++ b/arch/riscv/include/asm/hwcap.h
+>> @@ -57,6 +57,8 @@
+>>  #define RISCV_ISA_EXT_ZIHPM		42
+>>  #define RISCV_ISA_EXT_SMSTATEEN		43
+>>  #define RISCV_ISA_EXT_ZICOND		44
+>> +#define RISCV_ISA_EXT_ZICFISS	45
+>> +#define RISCV_ISA_EXT_ZICFILP	46
+>>
+>>  #define RISCV_ISA_EXT_MAX		64
+>>
+>> diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
+>> index f19f861cda54..ee2f51787ff8 100644
+>> --- a/arch/riscv/include/asm/processor.h
+>> +++ b/arch/riscv/include/asm/processor.h
+>> @@ -13,6 +13,7 @@
+>>  #include <vdso/processor.h>
+>>
+>>  #include <asm/ptrace.h>
+>> +#include <asm/hwcap.h>
+>>
+>>  #ifdef CONFIG_64BIT
+>>  #define DEFAULT_MAP_WINDOW	(UL(1) << (MMAP_VA_BITS - 1))
+>> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+>> index 98623393fd1f..16624bc9a46b 100644
+>> --- a/arch/riscv/kernel/cpufeature.c
+>> +++ b/arch/riscv/kernel/cpufeature.c
+>> @@ -185,6 +185,8 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+>>  	__RISCV_ISA_EXT_DATA(svinval, RISCV_ISA_EXT_SVINVAL),
+>>  	__RISCV_ISA_EXT_DATA(svnapot, RISCV_ISA_EXT_SVNAPOT),
+>>  	__RISCV_ISA_EXT_DATA(svpbmt, RISCV_ISA_EXT_SVPBMT),
+>> +	__RISCV_ISA_EXT_DATA(zicfiss, RISCV_ISA_EXT_ZICFISS),
+>> +	__RISCV_ISA_EXT_DATA(zicfilp, RISCV_ISA_EXT_ZICFILP),
+>
+>Anything you add to this array, you need to document in a dt-binding.
 
-Could you spell?
+You mean Documentation/devicetree/bindings/riscv/extensions.yaml
+(or possibly any other yaml if needed?)
 
-Oleg.
+>Also, you added these in the wrong place. There's a massive comment
+>before the array describing the order entries must be in, please take a
+>look.
+
+I see the comment.
+In my defense, looks like I missed it when I was rebasing.
+
+Will fix it.
+
+>
+>Thanks,
+>Conor.
+>
+>
+>>  };
+>>
+>>  const size_t riscv_isa_ext_count = ARRAY_SIZE(riscv_isa_ext);
+>> --
+>> 2.43.0
+>>
+>>
+>> _______________________________________________
+>> linux-riscv mailing list
+>> linux-riscv@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-riscv
+
 
 
