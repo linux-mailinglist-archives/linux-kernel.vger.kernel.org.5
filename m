@@ -1,189 +1,205 @@
-Return-Path: <linux-kernel+bounces-38061-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38062-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 317FF83BA7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:17:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4E7C83BA7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:18:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9159AB23786
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 07:17:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F3271F22AA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 07:18:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2642211C83;
-	Thu, 25 Jan 2024 07:17:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="03wRxQ+t"
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2056.outbound.protection.outlook.com [40.107.212.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3332711739;
+	Thu, 25 Jan 2024 07:18:14 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FB168485;
-	Thu, 25 Jan 2024 07:17:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.56
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706167050; cv=fail; b=CVs9bV6aHjfut3TAgPbZ8+ytGhf0mRITpUbr0KyunyM/e+yW5zfShVey6hjsqKIwUlfGkCmwKz0vpcK6D2OxtOiWsIp4IymT8dONhOMDu8kkfVBf8HyAlqX3J+M3gNaQnzv8RvbmZKPmoQVD46Fy0YsmBL0+J16QJSpnRSVYdMo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706167050; c=relaxed/simple;
-	bh=pqatrYytfLKiPk2v/ZKyHk0/71bcH/0KTHfFL5H2apo=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=m7jBGWazpRTAk85VXOuNPwyiNc0owm/v3oSCwIxTNgt+pf8/YpjV3PQDgqMMfHbZSxy+xM76tdJku5cNl+LRQ4OFBYGpEkAXCA8AD3ESkreKOAWN2eP0PpbtAYSlLaCbna08vhoAru3q5n8eydbjo3CuA+rRUf+VgojIROBMXUc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=03wRxQ+t; arc=fail smtp.client-ip=40.107.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ObyP+T/+PeOdRtHKXtEJB4ncG88TqdQH9up6eKFEjdnFvsVYYYVN8J3Fvrky1MhhjRGuym3QfXEesBpvRpb/JTbkPOnAGPX9aQD53+s4bmm4URYeSKfttNLtP54lNS7eMg8iideuTxyyJ40Wpv2dpDN+v6EgoD9POBHtX3JN+REx6rv9Z6OJCAYPlOOpfZtU9gu8/ajeK0uMjDFMqEFQ3hvrFeUnLareJgWJI9ICJ0s9tFw8INyJDRY/yTUEodbF9ciigtJVO/IlBTchDm6vzbp1pXHo+3khEsPiBRGvqTqcrM5HbIsNAAMwrflgLmwiG+DlVM+SrM/Ca5z2+EbHIQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pqatrYytfLKiPk2v/ZKyHk0/71bcH/0KTHfFL5H2apo=;
- b=AXFkSrc3Td5lhrE9C9EwQ8vIrXcK31aWLX89o5oFRTwj8M0u5vaDX74oi8pgPjzNKK+b4YhIRluG9Is0hhk+GEplVHmMk+n9hBl3+3zJ3Ki8l9IOecqn8oj/ZCE81iL4uE+LTfIeFV6cNKHWBMJiI883doO019tNog7eYlMj7a8uZFGsrW7gx68ow3hUNB2D5ikQqKgEuTbJfhfL3PDe395ouYZyS9hvuagCU889OHm8jFIxIgcoxUfT1qGma7a8KlYKnObZ/XI9+Dn220Dz9U6OiKH9SGXensjIJ/sh8OXAae8fEsJZPupADqA04IR92kotRQrG+x4jcXF/nryFcQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pqatrYytfLKiPk2v/ZKyHk0/71bcH/0KTHfFL5H2apo=;
- b=03wRxQ+tdRLcpodjTNYuHUx4w9nJZzHD2bI2Ola6NEeA6RHLQaA+keqbffnKqeQpxnKz1pJs/H+JTKGhRlOG9MUpxmptL1kIm/TkwqzGLnvAU/c9MMbIvrQwVup3vLg0jWj3VnZEw6qzaCLrHAZHuxeBeByM3+vMXlGRJLGheog=
-Received: from BL1PR12MB5849.namprd12.prod.outlook.com (2603:10b6:208:384::18)
- by SA3PR12MB8812.namprd12.prod.outlook.com (2603:10b6:806:312::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22; Thu, 25 Jan
- 2024 07:17:24 +0000
-Received: from BL1PR12MB5849.namprd12.prod.outlook.com
- ([fe80::bafd:1985:94e6:ef33]) by BL1PR12MB5849.namprd12.prod.outlook.com
- ([fe80::bafd:1985:94e6:ef33%7]) with mapi id 15.20.7202.035; Thu, 25 Jan 2024
- 07:17:24 +0000
-From: "Chen, Jiqian" <Jiqian.Chen@amd.com>
-To: Bjorn Helgaas <helgaas@kernel.org>
-CC: "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
-	Juergen Gross <jgross@suse.com>, Stefano Stabellini <sstabellini@kernel.org>,
-	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>, Boris Ostrovsky
-	<boris.ostrovsky@oracle.com>, Bjorn Helgaas <bhelgaas@google.com>,
-	=?utf-8?B?Um9nZXIgUGF1IE1vbm7DqQ==?= <roger.pau@citrix.com>,
-	"xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, "Hildebrand,
- Stewart" <Stewart.Hildebrand@amd.com>, "Huang, Ray" <Ray.Huang@amd.com>,
-	"Ragiadakou, Xenia" <Xenia.Ragiadakou@amd.com>, "Chen, Jiqian"
-	<Jiqian.Chen@amd.com>
-Subject: Re: [RFC KERNEL PATCH v4 3/3] PCI/sysfs: Add gsi sysfs for pci_dev
-Thread-Topic: [RFC KERNEL PATCH v4 3/3] PCI/sysfs: Add gsi sysfs for pci_dev
-Thread-Index: AQHaP5+doYjSbLzTtkiUcLxinuNXV7DmmK+AgAEHcQCAAAvdAIABnLmA
-Date: Thu, 25 Jan 2024 07:17:24 +0000
-Message-ID:
- <BL1PR12MB5849B51FADC8226764078A98E77A2@BL1PR12MB5849.namprd12.prod.outlook.com>
-References: <20240123160252.GA316914@bhelgaas>
-In-Reply-To: <20240123160252.GA316914@bhelgaas>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-exchange-imapappendstamp: BL1PR12MB5851.namprd12.prod.outlook.com
- (15.20.7202.013)
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BL1PR12MB5849:EE_|SA3PR12MB8812:EE_
-x-ms-office365-filtering-correlation-id: a36db38f-0be2-45ad-0aed-08dc1d75ae06
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- VrNxpmNvIT0O4BfVAEuumQml/jMSdoJkzPPabZGX4oig1IfqSQGSfChpnPQEWtlTD6eUojjq+6PYxu2N24UOgA7KYfYDpoeiMD+TuPmteCpf0ms1Cvg0V8DtGDbKwZgIXbX2pk40JkmKpuQ8XPOiJtaQaoRzjExnQKeaR9uVI51ioSMDGGWeOWJLDIDvPPR9RfroCALjkdyLbIjNQK8KHxAmWva+eVPbwFM8g8wC2cliUIb7CpeTJ6ZNJWx6prn/4u/nia1EirfUVxFfumzh6JRYTnJjIcARsIVKLAyE/aRd8e3mG8zKG3rQwsfxhlV7lBOCUoA4nCai5ksm+A9pfoOLGe0RvQheanAc5pQ107v1u7WWN27fKjXX2Cjvra4ljLmgRLLyag3ALWIU9JPjHzzFDTurHxinTt+oCjEW2N10qWkvzSA4hhElFlkpF977mCtYKgdqSMnC2fD4AiOABUYN4EU6H8Zqu804rHd/HXvD17d0H9SC96+WSxbc2V6yVMBbJ1vDxsN6KNmkdeAoU9Xrx0bj3l0p2t9c0DP2IAw1t01J0RBMraWUG3prB+QhTr+h8NzT08nUBZdiPzIj2O5SnnLunZheMOukHxHr77ETI6xcaFkLx3KSpPdlhKBC
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(396003)(136003)(376002)(346002)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(66476007)(316002)(66556008)(66946007)(53546011)(64756008)(26005)(66446008)(122000001)(54906003)(6916009)(9686003)(478600001)(55016003)(38100700002)(6506007)(7696005)(71200400001)(8936002)(76116006)(8676002)(4326008)(52536014)(7416002)(5660300002)(83380400001)(41300700001)(2906002)(33656002)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?V0FYNkdDaVd0NGlleGxvVFduUlduRTUvVE11dDhDamYwMEZrM0w4czNFTlFn?=
- =?utf-8?B?dGQ3ekNPSlhqeUlwTUQ2Skh6bythUmpNY2Vvenh6TUJCNWpMcEZlMXN3d2Fy?=
- =?utf-8?B?aHQrZG51N0lObE5mU2FLUTBPRStRaHZKQ3QzaFRuMnJxa0U5RndDZDNhQUFC?=
- =?utf-8?B?bTBFdjQ0cnlaYWJFc1RLMkd2WFIyUitnb3JpSmFsVEhpa0l0RzVmSFlXUy8x?=
- =?utf-8?B?Q3lxYmFnelc2ZWhycXU3MFZPM3ZQU1lsQXJtVEJTdWo2em01ZGpmSlU5TENu?=
- =?utf-8?B?VkxhbGpESkg4Z0wzaXdyOUt0S05GOVB5N01MZ1BiU0Y5dElOU0pWb2QzNkdv?=
- =?utf-8?B?YkpzTDg0a1J0SE1Gd1J1QXo0VW9BVTJRdkFoUGhHb1JtZXBobU5IRTJITGpu?=
- =?utf-8?B?ZlFaS3dqT1NlRmVLS0NyQlFlUjNpSnByZDZMaktkdDJIRys2UzdkTXBGWlUv?=
- =?utf-8?B?U0tSNU1mOXp2YWZDUnl6YmFaakFKb1FwZ29xYndVSThhM2NZbWRGR3hrL3Ir?=
- =?utf-8?B?cmxQSDJybGFOdzhkUFZwclg0bnJNd2RZQXE4V2Q2UGkyVkMrK3ZUZGQ5Mk1P?=
- =?utf-8?B?djBWSkt4N1lMbi9IaGFIczkxVWVLcVhxcFJvcGVVcjFFUlpiQVlUNTk1UFl0?=
- =?utf-8?B?S0Ewdmx0dVlVREpPeHhFK2VYUGVTbjJuYWhNQjFGUkd0a3cyQzhYNlBrVWlr?=
- =?utf-8?B?RTZBQWRCcGkzK3ZDMVQyOHZieWNneVZjWmtUWXJFYjhoSWJhMEZiVFJJMUV5?=
- =?utf-8?B?cWtqQ0NSakdMbnJlU3lDbThEVjZvT1RhWXZuWnNuZTNpQllSODZoMndUbzNB?=
- =?utf-8?B?WlI5bCtDWDhFcitpQ3ZYQU5jeUxWUktMOWhNT3lKSk4zcW5pTGlYcSt6bnky?=
- =?utf-8?B?OFFIVndJVUdOUTVWRDE5NlZiSURPMm5naEpYQVFtTjdJQ2EzWTNOK1lIbWtI?=
- =?utf-8?B?bXdrclFtTnhVRVZiVkdsL3VodUI1YVhsc0hsdUNqUmZhSFU5LzNvTi85VVJ3?=
- =?utf-8?B?bThMRkpsanFaKzY3YjdoMnF5STJ2aUVDYmRzamZOUXFyYlZ4SXFVeFA4aXdB?=
- =?utf-8?B?RXR2T0V6VXZad3lEMUtpMllCSExTNittdnhXRnpWblhhQ1JrbVoxcmROUU90?=
- =?utf-8?B?SkI4eXJWUGFhV0lIVlVMMHhWc20zaW9lbFhvam11NTFtdUtjRy9xaGpBTExQ?=
- =?utf-8?B?MmFUTG9rY29QRmVscFhxbnlCTjU5RVU3OVRabmVKYXIzaGtpQ1kvdlJLUEhH?=
- =?utf-8?B?RkJLT3Bwb1U2MkdwQzdmdHRPbFVaTkZVdE5IREpGMU5BRG1JTmxZM2VYWmVu?=
- =?utf-8?B?bVpaVUJ2RC9ocDFyZGJNQkIrVW1mWUFVK1VtQkhYWWtvUThhRDlYRXp6MFEy?=
- =?utf-8?B?eEo1TDYwSmZFWVhoeTJWbzhDQTN2MHhQRENYd3lGL1ZQWDRlUU90NFJYV2R4?=
- =?utf-8?B?STZJSGtRSlp0MThCdUZaei9ZTjZCYTBueXBSUmxHR2k1ZHNVeGYyRlpRNEt1?=
- =?utf-8?B?aVd5YzZVcWhuckRrNGNGaGtDNWEvTENuclhNZXVzYTlIREZ4V0psMFpoZ2Vk?=
- =?utf-8?B?R0c5ZmUwdVEvc2lSS2lES20wTXVxVHFvTE1ObVQyMGRnU3d4YzRYS2o0N3VD?=
- =?utf-8?B?RHUvQXVaK2ZVYzFNZ2diQjM4T1VEWVFWRmRqdE9MYlRTdlV4Q1BSQzJBUGFL?=
- =?utf-8?B?Z3E1M3dLNEVpRldJS0xYUjF2cy8wQk1HYXptSE1PN1oybGRXdFRjcXU5YzZF?=
- =?utf-8?B?SU55R1EzcDN4czNHRllvVHJqRnB3K3ByKzdHaTFGS3BBQVNITVRnSEYxandJ?=
- =?utf-8?B?THA4NWJvT0xqaHRHWXNCTmc2dzYySTY1a00rOTJlNW1mN3ZKN0k4QjlFSWQ1?=
- =?utf-8?B?SGQydnh5M3U1UTNCZWhCMHFucnliYVBuZHY5cXRXZE4vbFE4MjA5bk5YeElu?=
- =?utf-8?B?eWxtbUM3aysvY1k1N3A0ckgrcm9hOVhJTEpsZ0w3MTNJTVI2VHR1ZXpiQTFw?=
- =?utf-8?B?TG53VWJITzArOFZTZGN3RmRYZzA0RWJXUURoTXFiRjhOaUNoQjJWZkZ0SFpZ?=
- =?utf-8?B?Yit4ZE9zQjFEaUR6WEpMMG1kZ0R1S2dyU1hlbWM1YlRMcVRZRUF1K05IcFRZ?=
- =?utf-8?Q?tWFM=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <0A0C0ED826A8FC4B9CD427BE0CDA7D40@amdcloud.onmicrosoft.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A30FB125AC;
+	Thu, 25 Jan 2024 07:18:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706167093; cv=none; b=robchwaiK2c9jojkAA4ZS+bExMv51Qv2/O596/Av1hmCDT78Xea0UAPFyD7IGqV8KLxnOOoZGwr9edKvOl3SC292a8zZ6Ja903rCgefz0tKX8qkOfOtQ2c0OZHLxlIBNU1JM/BDuFlydCsbDyY7iNJH5Faeo+TiT5xmv02/4MCw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706167093; c=relaxed/simple;
+	bh=v9CmbAhgiwRyHdIyDJQME8LxQd+xB3pL3KsdDf+BcCw=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=XMfwQ+h0Q4RpVR9DhEr/UceYOc/M/j8GZY0G0ibTAA+3BMO69vGAWGmrcMgnojvqa/Lbh96UV2n/O8wo50dz7BC+JgaHGvMVenMaWP3vV9AvTgenK+p+9pj6npfe2kvEpCGI+Kg25MlQuJJz03lqTajAJ244tm44R7c4WQuDpe0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TLBxS5mf5z4f3k6C;
+	Thu, 25 Jan 2024 15:18:04 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 2D4C91A0171;
+	Thu, 25 Jan 2024 15:18:07 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP4 (Coremail) with SMTP id gCh0CgBXXG4rC7JlVenABw--.25628S2;
+	Thu, 25 Jan 2024 15:18:06 +0800 (CST)
+Subject: Re: [PATCH bpf 2/3] x86/mm: Disallow vsyscall page read for
+ copy_from_kernel_nofault()
+To: Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org, bpf@vger.kernel.org
+Cc: Dave Hansen <dave.hansen@linux.intel.com>,
+ Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, "H . Peter Anvin" <hpa@zytor.com>,
+ linux-kernel@vger.kernel.org, xingwei lee <xrivendell7@gmail.com>,
+ Jann Horn <jannh@google.com>, houtao1@huawei.com
+References: <20240119073019.1528573-1-houtao@huaweicloud.com>
+ <20240119073019.1528573-3-houtao@huaweicloud.com>
+ <e83eb3e8-6d08-462b-9ffe-d843e439d7da@intel.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <6f1aa71b-13f3-0972-3cb0-62f431de7e48@huaweicloud.com>
+Date: Thu, 25 Jan 2024 15:18:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5849.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a36db38f-0be2-45ad-0aed-08dc1d75ae06
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jan 2024 07:17:24.7168
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wpX/ZJDyXtP/MfoAA29vKUvQsZNdB5PCanjMVRjGQcY6qLFx09TJJoAz34i6vBZMMS3lELRKd6L2LsrpgBA5Yg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB8812
+In-Reply-To: <e83eb3e8-6d08-462b-9ffe-d843e439d7da@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:gCh0CgBXXG4rC7JlVenABw--.25628S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJw4rGr1ktw4DXFWkKw17ZFb_yoW7Jw45pw
+	18A3yUtFW8Ar1rAFsFq34qqFyrJ348Ja15Grn5tF1rZw1jgF1YqrWDWa4jgF17Jr4xKw1x
+	tw4UXr1qvw1UJaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
+	67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
+	uYvjxUrR6zUUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-T24gMjAyNC8xLzI0IDAwOjAyLCBCam9ybiBIZWxnYWFzIHdyb3RlOg0KPiBPbiBUdWUsIEphbiAy
-MywgMjAyNCBhdCAxMDoxMzo1MkFNICswMDAwLCBDaGVuLCBKaXFpYW4gd3JvdGU6DQo+PiBPbiAy
-MDI0LzEvMjMgMDc6MzcsIEJqb3JuIEhlbGdhYXMgd3JvdGU6DQo+Pj4gT24gRnJpLCBKYW4gMDUs
-IDIwMjQgYXQgMDI6MjI6MTdQTSArMDgwMCwgSmlxaWFuIENoZW4gd3JvdGU6DQo+Pj4+IFRoZXJl
-IGlzIGEgbmVlZCBmb3Igc29tZSBzY2VuYXJpb3MgdG8gdXNlIGdzaSBzeXNmcy4NCj4+Pj4gRm9y
-IGV4YW1wbGUsIHdoZW4geGVuIHBhc3N0aHJvdWdoIGEgZGV2aWNlIHRvIGR1bVUsIGl0IHdpbGwN
-Cj4+Pj4gdXNlIGdzaSB0byBtYXAgcGlycSwgYnV0IGN1cnJlbnRseSB1c2Vyc3BhY2UgY2FuJ3Qg
-Z2V0IGdzaQ0KPj4+PiBudW1iZXIuDQo+Pj4+IFNvLCBhZGQgZ3NpIHN5c2ZzIGZvciB0aGF0IGFu
-ZCBmb3Igb3RoZXIgcG90ZW50aWFsIHNjZW5hcmlvcy4NCj4+IC4uLg0KPiANCj4+PiBJIGRvbid0
-IGtub3cgZW5vdWdoIGFib3V0IFhlbiB0byBrbm93IHdoeSBpdCBuZWVkcyB0aGUgR1NJIGluDQo+
-Pj4gdXNlcnNwYWNlLiAgSXMgdGhpcyBwYXNzdGhyb3VnaCBicmFuZCBuZXcgZnVuY3Rpb25hbGl0
-eSB0aGF0IGNhbid0IGJlDQo+Pj4gZG9uZSB0b2RheSBiZWNhdXNlIHdlIGRvbid0IGV4cG9zZSB0
-aGUgR1NJIHlldD8NCj4+DQo+PiBJbiBYZW4gYXJjaGl0ZWN0dXJlLCB0aGVyZSBpcyBhIHByaXZp
-bGVnZWQgZG9tYWluIG5hbWVkIERvbTAgdGhhdA0KPj4gaGFzIEFDUEkgc3VwcG9ydCBhbmQgaXMg
-cmVzcG9uc2libGUgZm9yIGRldGVjdGluZyBhbmQgY29udHJvbGxpbmcNCj4+IHRoZSBoYXJkd2Fy
-ZSwgYWxzbyBpdCBwZXJmb3JtcyBwcml2aWxlZ2VkIG9wZXJhdGlvbnMgc3VjaCBhcyB0aGUNCj4+
-IGNyZWF0aW9uIG9mIG5vcm1hbCAodW5wcml2aWxlZ2VkKSBkb21haW5zIERvbVVzLiBXaGVuIHdl
-IGdpdmUgdG8gYQ0KPj4gRG9tVSBkaXJlY3QgYWNjZXNzIHRvIGEgZGV2aWNlLCB3ZSBuZWVkIGFs
-c28gdG8gcm91dGUgdGhlIHBoeXNpY2FsDQo+PiBpbnRlcnJ1cHRzIHRvIHRoZSBEb21VLiBJbiBv
-cmRlciB0byBkbyBzbyBYZW4gbmVlZHMgdG8gc2V0dXAgYW5kIG1hcA0KPj4gdGhlIGludGVycnVw
-dHMgYXBwcm9wcmlhdGVseS4NCj4gDQo+IFdoYXQga2VybmVsIGludGVyZmFjZXMgYXJlIHVzZWQg
-Zm9yIHRoaXMgc2V0dXAgYW5kIG1hcHBpbmc/DQpGb3IgcGFzc3Rocm91Z2ggZGV2aWNlcywgdGhl
-IHNldHVwIGFuZCBtYXBwaW5nIG9mIHJvdXRpbmcgcGh5c2ljYWwgaW50ZXJydXB0cyB0byBEb21V
-IGFyZSBkb25lIG9uIFhlbiBoeXBlcnZpc29yIHNpZGUsIGh5cGVydmlzb3Igb25seSBuZWVkIHVz
-ZXJzcGFjZSB0byBwcm92aWRlIHRoZSBHU0kgaW5mbywgc2VlIFhlbiBjb2RlOiB4Y19waHlzZGV2
-X21hcF9waXJxIHJlcXVpcmUgR1NJIGFuZCB0aGVuIHdpbGwgY2FsbCBoeXBlcmNhbGwgdG8gcGFz
-cyBHU0kgaW50byBoeXBlcnZpc29yIGFuZCB0aGVuIGh5cGVydmlzb3Igd2lsbCBkbyB0aGUgbWFw
-cGluZyBhbmQgcm91dGluZywga2VybmVsIGRvZXNuJ3QgZG8gdGhlIHNldHVwIGFuZCBtYXBwaW5n
-Lg0KRm9yIGRldmljZXMgb24gUFZIIERvbTAsIERvbTAgc2V0dXBzIGludGVycnVwdHMgZm9yIGRl
-dmljZXMgYXMgdGhlIGJhcmVtZXRhbCBMaW51eCBrZXJuZWwgZG9lcywgdGhyb3VnaCB1c2luZyBh
-Y3BpX3BjaV9pcnFfZW5hYmxlLT4gYWNwaV9yZWdpc3Rlcl9nc2ktPiBfX2FjcGlfcmVnaXN0ZXJf
-Z3NpLT5hY3BpX3JlZ2lzdGVyX2dzaV9pb2FwaWMuDQoNCi0tIA0KQmVzdCByZWdhcmRzLA0KSmlx
-aWFuIENoZW4uDQo=
+Hi,
+
+On 1/23/2024 8:18 AM, Sohil Mehta wrote:
+> On 1/18/2024 11:30 PM, Hou Tao wrote:
+>> From: Hou Tao <houtao1@huawei.com>
+>>
+>> When trying to use copy_from_kernel_nofault() to read vsyscall page
+>> through a bpf program, the following oops was reported:
+>>
+>>   BUG: unable to handle page fault for address: ffffffffff600000
+>>   #PF: supervisor read access in kernel mode
+>>   #PF: error_code(0x0000) - not-present page
+>>   PGD 3231067 P4D 3231067 PUD 3233067 PMD 3235067 PTE 0
+>>   Oops: 0000 [#1] PREEMPT SMP PTI
+>>   CPU: 1 PID: 20390 Comm: test_progs ...... 6.7.0+ #58
+>>   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996) ......
+>>   RIP: 0010:copy_from_kernel_nofault+0x6f/0x110
+>>   ......
+>>   Call Trace:
+>>    <TASK>
+>>    ? copy_from_kernel_nofault+0x6f/0x110
+>>    bpf_probe_read_kernel+0x1d/0x50
+>>    bpf_prog_2061065e56845f08_do_probe_read+0x51/0x8d
+>>    trace_call_bpf+0xc5/0x1c0
+>>    perf_call_bpf_enter.isra.0+0x69/0xb0
+>>    perf_syscall_enter+0x13e/0x200
+>>    syscall_trace_enter+0x188/0x1c0
+>>    do_syscall_64+0xb5/0xe0
+>>    entry_SYSCALL_64_after_hwframe+0x6e/0x76
+>>    </TASK>
+>>   ......
+>>   ---[ end trace 0000000000000000 ]---
+>>
+>> The oops happens as follows: A bpf program uses bpf_probe_read_kernel()
+>> to read from vsyscall page, bpf_probe_read_kernel() invokes
+>> copy_from_kernel_nofault() in turn and then invokes __get_user_asm(). A
+>> page fault exception is triggered accordingly, but handle_page_fault()
+>> considers the vsyscall page address as a userspace address instead of
+>> a kernel space address, so the fix-up set-up by bpf isn't applied.
+> This comment and the one in the code below seem contradictory and
+> confusing. Do we want the vsyscall page address to be considered as a
+> userspace address or not?
+
+Now handle_page_fault() has already considered the vsyscall page as a
+userspace address, and in the patch we update copy_from_kernel_nofault()
+to consider vsyscall page as a userspapce address as well.
+>
+> IIUC, the issue here is that the vsyscall page (in xonly mode) is not
+> really mapped and therefore running copy_from_kernel_nofault() on this
+> address is incorrect. This patch fixes this by making
+> copy_from_kernel_nofault() return an error for a vsyscall address.
+>
+
+Yes, but the issue may occur for vsyscall=none case as well. Because
+fault_in_kernel_space() invoked by handle_page_fault() will return
+false, so in do_user_addr_fault(), when smap feature is enabled, the
+invocation of copy_from_kernel_nofault() will trigger oops due to the
+following code snippet:
+
+        if (unlikely(cpu_feature_enabled(X86_FEATURE_SMAP) &&
+                     !(error_code & X86_PF_USER) &&
+                     !(regs->flags & X86_EFLAGS_AC))) {
+                /*
+                 * No extable entry here.  This was a kernel access to an
+                 * invalid pointer.  get_kernel_nofault() will not get here.
+                 */
+                page_fault_oops(regs, error_code, address);
+                return;
+        }
+
+>> Because the exception happens in kernel space and page fault handling is
+>> disabled, page_fault_oops() is invoked and an oops happens.
+>>
+>> Fix it by disallowing vsyscall page read for copy_from_kernel_nofault().
+>>
+> [Maybe I have misunderstood the issue here and following questions are
+> not even relevant.]
+>
+> But, what about vsyscall=emulate? In that mode the page is actually
+> mapped. Would we want the page read to go through then?
+
+Er, Now the vsyscall page is considered as a userspace address, I think
+we should reject its read through copy_from_kernel_nofault() even it is
+mapped.
+
+>
+>> Originally-from: Thomas Gleixner <tglx@linutronix.de>
+> Documentation/process/maintainer-tip.rst says to use "Originally-by:"
+
+Thanks for the tip. Will update.
+>
+>
+>> diff --git a/arch/x86/mm/maccess.c b/arch/x86/mm/maccess.c
+>> index 6993f026adec9..bb454e0abbfcf 100644
+>> --- a/arch/x86/mm/maccess.c
+>> +++ b/arch/x86/mm/maccess.c
+>> @@ -3,6 +3,8 @@
+>>  #include <linux/uaccess.h>
+>>  #include <linux/kernel.h>
+>>  
+>> +#include "mm_internal.h"
+>> +
+>>  #ifdef CONFIG_X86_64
+>>  bool copy_from_kernel_nofault_allowed(const void *unsafe_src, size_t size)
+>>  {
+>> @@ -15,6 +17,10 @@ bool copy_from_kernel_nofault_allowed(const void *unsafe_src, size_t size)
+>>  	if (vaddr < TASK_SIZE_MAX + PAGE_SIZE)
+>>  		return false;
+>>  
+>> +	/* vsyscall page is also considered as userspace address. */
+> A bit more explanation about why this should happen might be useful.
+>
+>> +	if (is_vsyscall_vaddr(vaddr))
+>> +		return false;
+>> +
+>>  	/*
+>>  	 * Allow everything during early boot before 'x86_virt_bits'
+>>  	 * is initialized.  Needed for instruction decoding in early
+
 
