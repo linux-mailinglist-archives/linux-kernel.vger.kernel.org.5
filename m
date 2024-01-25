@@ -1,148 +1,301 @@
-Return-Path: <linux-kernel+bounces-39038-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39039-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D264183C9FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:29:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4425C83C9FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:30:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 894411F25BFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:29:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8990297A7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:30:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12D66130E56;
-	Thu, 25 Jan 2024 17:29:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2511112FF8A;
+	Thu, 25 Jan 2024 17:30:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QtsGlLRx"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="avjnzVCQ"
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 953CB4F611
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 17:29:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62F6A6EB5D
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 17:30:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706203789; cv=none; b=AFb+Z1rJR11PKPN+iKLOIR80Jki2Whr/6ghDKRm/CBdE6SsXCRJlZE125XwIyhk6VgGZiQNWEFof+LxuR852/eAeOrILRPp7uuIXzcKyaKhvLF9bHXSZiGh6By0/+1OJukg/izQP4JIE9LhzldJLDvIK7jOIWKWvwdUH4gbKAvw=
+	t=1706203812; cv=none; b=PsAGYlM7Wa0kHCinHveP0g+RfuR+RURY+TjoLSoXAgi3Mn++g3k6g/y1iqhRF/in3hN95rICYMZNEy8M7hZVIwJAKs/09GO3F9WSqNwTJ0L9mPBlABlmo1mUIU+ZhiP64Rj4H0hJd5n74oK//vyy0FPkerh5dKxhAX65kVMIcnU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706203789; c=relaxed/simple;
-	bh=rg8k8DSz99hlQQsXagfNAy+1dYhgiafR464X4FhdLDE=;
+	s=arc-20240116; t=1706203812; c=relaxed/simple;
+	bh=NzUoVt+asnVPbcKzQRM5nkKBCgKRCSdVtpYDpr1ck0k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YlycNbAzQD2zVvdJ6+7TEnBi3MxAVZp8+ZRMlJ8kUHyN/USN9opx36eiLRK6/rUZkpCGm827nN0KaZR5Z608hakI4y01kRIGqSVjQ3l1ujIsBCvbcHD++MCu2RUSsH30nJl7164+o8JlrUYRx7vW+fbZp7Nmgx95CKkXSeCe5po=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QtsGlLRx; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706203787; x=1737739787;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=rg8k8DSz99hlQQsXagfNAy+1dYhgiafR464X4FhdLDE=;
-  b=QtsGlLRxEO77KUILpnmUbUPEBo9fuYajusHFn2O4MFZSKpATWhbUGSiD
-   ScQZlqn0SQx6l2ies8kpiPCRCBLANlP5+iClQJEgu0tXUD51s8jXPYaPb
-   COta2gZl2EGuBmPWA9SceaVnI4aWSAXV+mhA40uz1xMvjaEXDgK6xEMbf
-   7IDD8sS5n2i4wABfXQsZdkDbc6XwZewOTRqtloC8T8Fa35DCuD73pPJK0
-   aXOAflryp1PvUBtO61kVKj8Atwix60tl2OTPENchco++Jixb28qDwtP+a
-   bDM02qBswi5ByqK/fHp2iSM/lb9HwGC3+eAyFRtUclensmYPl8ibWz/OY
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="9613309"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="9613309"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 09:29:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="2303822"
-Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 09:29:40 -0800
-Date: Thu, 25 Jan 2024 09:29:39 -0800
-From: Tony Luck <tony.luck@intel.com>
-To: James Morse <james.morse@arm.com>, Borislav Petkov <bp@alien8.de>,
-	"Chatre, Reinette" <reinette.chatre@intel.com>
-Cc: "Yu, Fenghua" <fenghua.yu@intel.com>,
-	Peter Newman <peternewman@google.com>,
-	"x86@kernel.org" <x86@kernel.org>,
-	Jamie Iles <quic_jiles@quicinc.com>,
-	Babu Moger <babu.moger@amd.com>,
-	"Shen, Xiaochen" <xiaochen.shen@intel.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"patches@lists.linux.dev" <patches@lists.linux.dev>
-Subject: Re: [PATCH v2] x86/resctrl: Implement new mba_MBps throttling
- heuristic
-Message-ID: <ZbKag2eJcgR_ro34@agluck-desk3>
-References: <45d2891e-989a-45c9-a527-8b14ff5f8748@intel.com>
- <SJ1PR11MB60837D4884419BDC2DCAA2D2FC752@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <bfa5104f-b887-4cc4-a24c-0497b86d9dde@intel.com>
- <20240122182121.GBZa6yIYPtHQx44EU9@fat_crate.local>
- <11fc82e0-961f-4c8d-844f-ad4b99067eb3@intel.com>
- <20240122184755.GCZa64W02KXyeaVXJg@fat_crate.local>
- <SJ1PR11MB6083A27C628E17FB8BBC4922FC752@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <b6ce3e79-aa4a-57e9-8b43-b5be45f75462@arm.com>
- <SJ1PR11MB60830483DCBE64EB726CF7E6FC742@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <ZbBZ9pk2ha99H2Jd@agluck-desk3>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ip8yEeQ1PUtxJF4whJst+mW0/8z0L1ObUMdN1gN4mqYnYZWHQ5l5Ko4ptUDLzyPQgQSx5kml/JSRlLaO5fZ9udNrKBz6tORoJK5v4etTN20hMRLPYrdM6Pyk6BK6X9VWUSBfSzwmbp3+y0aHda2+kWvn+YEROhrlHmSM/sGvGZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=avjnzVCQ; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6da202aa138so5285166b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:30:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706203810; x=1706808610; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FiMcoXLtake3SsYp4VgIXSl2ZPSDDwizQGFnhQxFN8w=;
+        b=avjnzVCQnDo3FCGvxF6RtukgRL+FwLDdU+A6W/2aRhr9z6DGHmtJSZPW8Ao5ICcJio
+         G4kfw7fiqQtHHXg7jHiKFMS4kalCWdDvZo4Z7f7iylV4ZOsCMtxsfssKHdtskSQVAsyT
+         027mmkbo08QBI4+SYWQ8Oq8kVOtSo+l+kAqZtJf1DG99Gt7/+4fvZ4Z/mztkY+84OFbw
+         udFdDQID8EE4ifWnzbOlrPmo7uL3Ud612VWxtsmy8EVb4RF54jXOjxh1hUdezHODDOa1
+         +MjagOZpE2hmjZYOn3FMQPYu/nsDlSsxWnlk5jf1VJ3lDgThEoNULVA9DqUso5ebb2zr
+         T3Bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706203810; x=1706808610;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FiMcoXLtake3SsYp4VgIXSl2ZPSDDwizQGFnhQxFN8w=;
+        b=Obq6B7Bqsv0Ar562Ski5xds87BRuYDjRl8vw9nd3h/1795ilnHN93uOUuZaSQgU0xW
+         VVgWBvBOqIyvlN8ONJ6rKrSJoB/mLhafY4c5LzZ8mimt34CQBz5BjDNaI4q+ma/1y105
+         FDZ+bxADJG+rEROudE0kgHeUHqPPJBTxyOZKPZXm8zg1sLkbIPeqDN8bxTYbroEzDP+r
+         nnkFvELgdVAnFKq9zva/LQlWT0O0iQ5owdV/Q2TbukcR9tUeGr7yirQb5EdYGbT/nKEC
+         vEUWLlC0c1gNMF+Bjze8j5PiAH0bRmvDntASlg0N/dkYzZYwFApUtKTDAKslRtPzSqW0
+         f8gw==
+X-Gm-Message-State: AOJu0Yw+wDSCzARSGnJ32GNcjR/L5O/P25AhYDMS5oIeoBBEryZKPgjq
+	QmbaoFBKPZEiv5egBK7t5n+prvpGvtak53vPbtEjcCnDAtzt2hYOxDX60t+wAZo=
+X-Google-Smtp-Source: AGHT+IFiBmJ9bUWly4Y63SGZXbMGx4CdDV3C4ohhFPjAa5O+ssE0qkHaRA6CwOtYsFJogn6onLaUzQ==
+X-Received: by 2002:aa7:8755:0:b0:6d9:be3e:19a0 with SMTP id g21-20020aa78755000000b006d9be3e19a0mr32266pfo.48.1706203809641;
+        Thu, 25 Jan 2024 09:30:09 -0800 (PST)
+Received: from debug.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id v6-20020aa78086000000b006dbda1b19f7sm9099781pff.159.2024.01.25.09.30.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 09:30:09 -0800 (PST)
+Date: Thu, 25 Jan 2024 09:30:04 -0800
+From: Deepak Gupta <debug@rivosinc.com>
+To: Stefan O'Rear <sorear@fastmail.com>
+Cc: rick.p.edgecombe@intel.com, broonie@kernel.org, Szabolcs.Nagy@arm.com,
+	"kito.cheng@sifive.com" <kito.cheng@sifive.com>,
+	Kees Cook <keescook@chromium.org>,
+	Andrew Jones <ajones@ventanamicro.com>, paul.walmsley@sifive.com,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Conor Dooley <conor.dooley@microchip.com>, cleger@rivosinc.com,
+	Atish Patra <atishp@atishpatra.org>,
+	Alexandre Ghiti <alex@ghiti.fr>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Jonathan Corbet <corbet@lwn.net>, Albert Ou <aou@eecs.berkeley.edu>,
+	oleg@redhat.com, akpm@linux-foundation.org, arnd@arndb.de,
+	"Eric W. Biederman" <ebiederm@xmission.com>, shuah@kernel.org,
+	Christian Brauner <brauner@kernel.org>, guoren <guoren@kernel.org>,
+	samitolvanen@google.com, Evan Green <evan@rivosinc.com>,
+	xiao.w.wang@intel.com, Anup Patel <apatel@ventanamicro.com>,
+	mchitale@ventanamicro.com, waylingii@gmail.com,
+	greentime.hu@sifive.com, Heiko Stuebner <heiko@sntech.de>,
+	Jisheng Zhang <jszhang@kernel.org>, shikemeng@huaweicloud.com,
+	david@redhat.com, Charlie Jenkins <charlie@rivosinc.com>,
+	panqinglin2020@iscas.ac.cn, willy@infradead.org,
+	Vincent Chen <vincent.chen@sifive.com>,
+	Andy Chiu <andy.chiu@sifive.com>, Greg Ungerer <gerg@kernel.org>,
+	jeeheng.sia@starfivetech.com, mason.huo@starfivetech.com,
+	ancientmodern4@gmail.com, mathis.salmen@matsal.de,
+	cuiyunhui@bytedance.com, bhe@redhat.com, chenjiahao16@huawei.com,
+	ruscur@russell.cc, bgray@linux.ibm.com, alx@kernel.org,
+	baruch@tkos.co.il, zhangqing@loongson.cn,
+	Catalin Marinas <catalin.marinas@arm.com>, revest@chromium.org,
+	josh@joshtriplett.org, joey.gouly@arm.com, shr@devkernel.io,
+	omosnace@redhat.com, ojeda@kernel.org, jhubbard@nvidia.com,
+	linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH v1 07/28] riscv: kernel handling on trap entry/exit
+ for user cfi
+Message-ID: <ZbKanLeU7yf9aTkD@debug.ba.rivosinc.com>
+References: <20240125062739.1339782-1-debug@rivosinc.com>
+ <20240125062739.1339782-8-debug@rivosinc.com>
+ <ab343d4b-d8b0-47fc-8040-83313a3d735e@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <ZbBZ9pk2ha99H2Jd@agluck-desk3>
+In-Reply-To: <ab343d4b-d8b0-47fc-8040-83313a3d735e@app.fastmail.com>
 
-On Tue, Jan 23, 2024 at 04:29:42PM -0800, Tony Luck wrote:
-> On Tue, Jan 23, 2024 at 05:07:50PM +0000, Luck, Tony wrote:
-> > >> I need to grab an SNC system to re-check that everything still works when re-based.
-> > >> But right now, this looks like adding the SNC series will be easy (famous last words!).
-> > >
-> > > Once you're ready - can you point me at something I can use as a stable branch to rebase onto?
-> > 
-> > I'll be running the tests this afternoon. But I'm somewhat confident that they will pass.
-> > 
-> > Tree is here: git://git.kernel.org/pub/scm/linux/kernel/git/aegl/linux.git branch "hopeful_snc"
-> > 
-> > Commits are:
-> > 
-> > 793635f10aeb x86/resctrl: Update documentation with Sub-NUMA cluster changes
-> > dca7ba785d6f x86/resctrl: Sub NUMA Cluster detection and enable
-> > e41bd88101c8 x86/resctrl: Introduce snc_nodes_per_l3_cache
-> > ccbab7875197 x86/resctrl: Add node-scope to the options for feature scope
-> > 2f0db8c7072b x86/resctrl: Split the rdt_domain and rdt_hw_domain structures
-> > 22697627cc5f x86/resctrl: Prepare for different scope for control/monitor operations
-> > f3ff831a9042 x86/resctrl: Prepare to split rdt_domain structure
-> > c0679868ee78 x86/resctrl: Prepare for new domain scope
-> > 327b4394f309 x86/resctrl: Implement new mba_MBps throttling heuristic
-> > 5b14817cf87e x86/resctrl: Read supported bandwidth sources using CPUID command
-> > 5699cd082e1f x86/resctrl: Remove hard-coded memory bandwidth limit
-> > 1b908debf53f x86/resctrl: Fix unused variable warning in cache_alloc_hsw_probe()
-> > 
-> > Only the last of these (1b908debf53f) had been accepted by Boris into TIP x86/cache
-> > when I cut this tree yesterday.
-> > 
-> > Two more applied by Boris today without any changes from what is in my tree, but the
-> > commit IDs in TIP are obviously different from in my tree.
-> > 
-> > 54e35eb8611c x86/resctrl: Read supported bandwidth sources from CPUID
-> > 0976783bb123 x86/resctrl: Remove hard-coded memory bandwidth limit
-> > 
-> > All the others have the normal risk that Boris will find some way to make them better.
-> 
-> All my SNC tests pass. So this tree is as good as I can make it.
-> 
-> Boris: After you take/reject "x86/resctrl: Implement new mba_MBps throttling heuristic"
-> in TIP x86/cache I will post v14 of the SNC series rebased to that TIP
-> branch.
+On Thu, Jan 25, 2024 at 02:29:01AM -0500, Stefan O'Rear wrote:
+>On Thu, Jan 25, 2024, at 1:21 AM, debug@rivosinc.com wrote:
+>> From: Deepak Gupta <debug@rivosinc.com>
+>>
+>> Carves out space in arch specific thread struct for cfi status and shadow stack
+>> in usermode on riscv.
+>>
+>> This patch does following
+>> - defines a new structure cfi_status with status bit for cfi feature
+>> - defines shadow stack pointer, base and size in cfi_status structure
+>> - defines offsets to new member fields in thread in asm-offsets.c
+>> - Saves and restore shadow stack pointer on trap entry (U --> S) and exit
+>>   (S --> U)
+>>
+>> Signed-off-by: Deepak Gupta <debug@rivosinc.com>
+>> ---
+>>  arch/riscv/include/asm/processor.h   |  1 +
+>>  arch/riscv/include/asm/thread_info.h |  3 +++
+>>  arch/riscv/include/asm/usercfi.h     | 24 ++++++++++++++++++++++++
+>>  arch/riscv/kernel/asm-offsets.c      |  5 ++++-
+>>  arch/riscv/kernel/entry.S            | 25 +++++++++++++++++++++++++
+>>  5 files changed, 57 insertions(+), 1 deletion(-)
+>>  create mode 100644 arch/riscv/include/asm/usercfi.h
+>>
+>> diff --git a/arch/riscv/include/asm/processor.h
+>> b/arch/riscv/include/asm/processor.h
+>> index ee2f51787ff8..d4dc298880fc 100644
+>> --- a/arch/riscv/include/asm/processor.h
+>> +++ b/arch/riscv/include/asm/processor.h
+>> @@ -14,6 +14,7 @@
+>>
+>>  #include <asm/ptrace.h>
+>>  #include <asm/hwcap.h>
+>> +#include <asm/usercfi.h>
+>>
+>>  #ifdef CONFIG_64BIT
+>>  #define DEFAULT_MAP_WINDOW	(UL(1) << (MMAP_VA_BITS - 1))
+>> diff --git a/arch/riscv/include/asm/thread_info.h
+>> b/arch/riscv/include/asm/thread_info.h
+>> index 320bc899a63b..6a2acecec546 100644
+>> --- a/arch/riscv/include/asm/thread_info.h
+>> +++ b/arch/riscv/include/asm/thread_info.h
+>> @@ -58,6 +58,9 @@ struct thread_info {
+>>  	int			cpu;
+>>  	unsigned long		syscall_work;	/* SYSCALL_WORK_ flags */
+>>  	unsigned long envcfg;
+>> +#ifdef CONFIG_RISCV_USER_CFI
+>> +	struct cfi_status       user_cfi_state;
+>> +#endif
+>>  #ifdef CONFIG_SHADOW_CALL_STACK
+>>  	void			*scs_base;
+>>  	void			*scs_sp;
+>> diff --git a/arch/riscv/include/asm/usercfi.h
+>> b/arch/riscv/include/asm/usercfi.h
+>> new file mode 100644
+>> index 000000000000..080d7077d12c
+>> --- /dev/null
+>> +++ b/arch/riscv/include/asm/usercfi.h
+>> @@ -0,0 +1,24 @@
+>> +/* SPDX-License-Identifier: GPL-2.0
+>> + * Copyright (C) 2023 Rivos, Inc.
+>> + * Deepak Gupta <debug@rivosinc.com>
+>> + */
+>> +#ifndef _ASM_RISCV_USERCFI_H
+>> +#define _ASM_RISCV_USERCFI_H
+>> +
+>> +#ifndef __ASSEMBLY__
+>> +#include <linux/types.h>
+>> +
+>> +#ifdef CONFIG_RISCV_USER_CFI
+>> +struct cfi_status {
+>> +	unsigned long ubcfi_en : 1; /* Enable for backward cfi. */
+>> +	unsigned long rsvd : ((sizeof(unsigned long)*8) - 1);
+>> +	unsigned long user_shdw_stk; /* Current user shadow stack pointer */
+>> +	unsigned long shdw_stk_base; /* Base address of shadow stack */
+>> +	unsigned long shdw_stk_size; /* size of shadow stack */
+>> +};
+>> +
+>> +#endif /* CONFIG_RISCV_USER_CFI */
+>> +
+>> +#endif /* __ASSEMBLY__ */
+>> +
+>> +#endif /* _ASM_RISCV_USERCFI_H */
+>> diff --git a/arch/riscv/kernel/asm-offsets.c
+>> b/arch/riscv/kernel/asm-offsets.c
+>> index cdd8f095c30c..5e1f412e96ba 100644
+>> --- a/arch/riscv/kernel/asm-offsets.c
+>> +++ b/arch/riscv/kernel/asm-offsets.c
+>> @@ -43,8 +43,11 @@ void asm_offsets(void)
+>>  #ifdef CONFIG_SHADOW_CALL_STACK
+>>  	OFFSET(TASK_TI_SCS_SP, task_struct, thread_info.scs_sp);
+>>  #endif
+>> -
+>>  	OFFSET(TASK_TI_CPU_NUM, task_struct, thread_info.cpu);
+>> +#ifdef CONFIG_RISCV_USER_CFI
+>> +	OFFSET(TASK_TI_CFI_STATUS, task_struct, thread_info.user_cfi_state);
+>> +	OFFSET(TASK_TI_USER_SSP, task_struct,
+>> thread_info.user_cfi_state.user_shdw_stk);
+>> +#endif
+>>  	OFFSET(TASK_THREAD_F0,  task_struct, thread.fstate.f[0]);
+>>  	OFFSET(TASK_THREAD_F1,  task_struct, thread.fstate.f[1]);
+>>  	OFFSET(TASK_THREAD_F2,  task_struct, thread.fstate.f[2]);
+>> diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
+>> index 63c3855ba80d..410659e2eadb 100644
+>> --- a/arch/riscv/kernel/entry.S
+>> +++ b/arch/riscv/kernel/entry.S
+>> @@ -49,6 +49,21 @@ SYM_CODE_START(handle_exception)
+>>  	REG_S x5,  PT_T0(sp)
+>>  	save_from_x6_to_x31
+>>
+>> +#ifdef CONFIG_RISCV_USER_CFI
+>> +	/*
+>> +	* we need to save cfi status only when previous mode was U
+>> +	*/
+>> +	csrr s2, CSR_STATUS
+>> +	andi s2, s2, SR_SPP
+>> +	bnez s2, skip_bcfi_save
+>> +	/* load cfi status word */
+>> +	lw s3, TASK_TI_CFI_STATUS(tp)
+>> +	andi s3, s3, 1
+>> +	beqz s3, skip_bcfi_save
+>> +	csrr s3, CSR_SSP
+>> +	REG_S s3, TASK_TI_USER_SSP(tp) /* save user ssp in thread_info */
+>> +skip_bcfi_save:
+>> +#endif
+>>  	/*
+>>  	 * Disable user-mode memory access as it should only be set in the
+>>  	 * actual user copy routines.
+>> @@ -141,6 +156,16 @@ SYM_CODE_START_NOALIGN(ret_from_exception)
+>>  	 * structures again.
+>>  	 */
+>>  	csrw CSR_SCRATCH, tp
+>> +
+>> +#ifdef CONFIG_RISCV_USER_CFI
+>> +	lw s3, TASK_TI_CFI_STATUS(tp)
+>> +	andi s3, s3, 1
+>> +	beqz s3, skip_bcfi_resume
+>> +	REG_L s3, TASK_TI_USER_SSP(tp) /* restore user ssp from thread struct */
+>> +	csrw CSR_SSP, s3
+>> +skip_bcfi_resume:
+>> +#endif
+>> +
+>
+>We shouldn't need any of this in the entry/exit code, at least as long as
+>the kernel itself is not using Zicfiss.  ssp can keep its value in the
+>kernel and swap it on task switches.  Our entry/exit code is rather short
+>and I'd like to keep it that way.
 
-Boris,
+I kept it here because sooner or later we will need to establish kernel shadow
+stack. Kernel shadow stack on riscv (compared to other arches) kernel actually will
+be easier to support and adopt because there is already support for shadow call stack
+(SCS, [1]). Difference between existing shadow call stack (SCS) and `zicfiss` based
+kernel shadow stack would be
 
-I got the tip bot message that you have applied:
+	- In prolog instead of using `sd`, we will be inserting `sspush` to save ret addr
+	- In epilog instead of using `ld` and compare, we will be inserting `sspopchk`
 
-  c2427e70c163 ("x86/resctrl: Implement new mba_MBps throttling heuristic")
+So a lot underlying work and functional testing for shadow kernel stack is already carried
+out with SCS patches. It would be easier and faster to re-use SCS patches to support
+`zicfiss` based shadow stack.
 
-I see that you also applied:
+I don't have favorites here, if overwhelving opinion of community here is to take this
+logic into task switching and re-work this logic back into entry.S whenever shadow stack for
+kernel patches are posted, I can do that as well.
 
-  fc747eebef73 ("x86/resctrl: Remove redundant variable in mbm_config_write_domain()")
+[1] - https://lore.kernel.org/all/20230828195833.756747-8-samitolvanen@google.com/
 
-Does that empty your resctrl queue except for the SNC series? If it
-does, then I'll rebase SNC patches onto TIP x86/cache.
-
--Tony
+>
+>-s
+>
+>>  1:
+>>  	REG_L a0, PT_STATUS(sp)
+>>  	/*
+>> --
+>> 2.43.0
+>>
+>>
+>> _______________________________________________
+>> linux-riscv mailing list
+>> linux-riscv@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
