@@ -1,147 +1,126 @@
-Return-Path: <linux-kernel+bounces-38129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38130-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA9D283BB38
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:03:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C38083BB3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:03:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9323728BFCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:03:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D0D4B275F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:03:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC501175B9;
-	Thu, 25 Jan 2024 08:02:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC17A1772D;
+	Thu, 25 Jan 2024 08:02:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Q67nKkqQ"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="KEz+8DxV"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8315013FF2
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:02:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36C2117579
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:02:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706169751; cv=none; b=ZjU+QGrI2xqeG+N+8d2yO9/YJajY5xITuDFYJKXUhaaUGHq0OiTwk1j6cuuSmG9b7lqiV+PviVvQOhRQnfd8+Yn9moVQOT8qh210mu8+CKFVlg9//zM4LF3yZTbsnzLcFBPqoltVzxLzZzGL/1tZBKmV4RAiESw76Lm4VP4vFEk=
+	t=1706169763; cv=none; b=uDI8im0Z/DaenK5dD75lxD+UR18HXXNqYQv3AN8goFRabZSe3iGYEnyit1ezBZ0ahBLLfUf4oPEW/dbcGqF/28mir2qYOqOv6n51Gw0TDh4RsMSGIywiEuece7SeleVRJkydikFO672UxdNmMJLzpdMvemqynUhnE6TYIOjrLXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706169751; c=relaxed/simple;
-	bh=VCbIeEvU+Hvu9heYcu0mfFKjK9KaE6zRVAxTGdJIkZU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PJR5/fTy0X7CJqaNZWd79TjWU0ll1fSfJzw7UP02RkWSgnMq2mhd3nU3E2AwnHjfvIXrp2Y1IdprJ04LQsZYCzKkmTg3VZXGxvhugafE3q8ZDQgFzF/HL44n081xHINoGXMLHt3Zn6qH2haHvUW08I9pKMey6gYOfIDcnQKfvFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Q67nKkqQ; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706169748;
-	bh=VCbIeEvU+Hvu9heYcu0mfFKjK9KaE6zRVAxTGdJIkZU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Q67nKkqQfLucYoKDEQgXaAZ6lLe4cHno8b+SfamY1VURHam2v3QYTrx9UxEsPp2ZP
-	 yjvuyE0qNnMOsUu+u7+eZkJAOeV+jyKUPIaZw1WypsU+NxWrGptOmoXzc2M7WxtOJy
-	 ynbyBH7rxWqKGhGXQjk2N/9LJozmeviNv0nsRoyQ8GuwB67fLCBbyqTmX9sxcwvRG2
-	 51vt3qhXgP+aHZQj52bFSjs8y3jm1GmGmUNj32HSmOhpWWloTqXO23G5feYQ4H5BCU
-	 hURhKFykXadBi2Sh4ctyvOqhGRwPbyhj1CbPrr4Fmw7jOMnypJgdtg9E0wL9KKL+dP
-	 fR7xw00ttBJNg==
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bbrezillon)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 14E2537820AF;
-	Thu, 25 Jan 2024 08:02:27 +0000 (UTC)
-Date: Thu, 25 Jan 2024 09:02:26 +0100
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc: David Airlie <airlied@gmail.com>, Gerd Hoffmann <kraxel@redhat.com>,
- Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
- <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, Christian =?UTF-8?B?S8O2bmln?=
- <christian.koenig@amd.com>, Qiang Yu <yuq825@gmail.com>, Steven Price
- <steven.price@arm.com>, Emma Anholt <emma@anholt.net>, Melissa Wen
- <mwen@igalia.com>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, kernel@collabora.com,
- virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v19 14/30] drm/shmem-helper: Add
- drm_gem_shmem_put_pages()
-Message-ID: <20240125090226.2f7f0de5@collabora.com>
-In-Reply-To: <20240105184624.508603-15-dmitry.osipenko@collabora.com>
-References: <20240105184624.508603-1-dmitry.osipenko@collabora.com>
-	<20240105184624.508603-15-dmitry.osipenko@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1706169763; c=relaxed/simple;
+	bh=ZjgtlbWQIUt0Kf9OflnIm64u6awCd40qKo9jUccnsRo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=miD7+SPVKTxOCxqbeNwem0VteC9v2O5JhZ71q+xHfqAclZQr+44YGfux3O+9VxR0+tHNV1wyVrfHfKpgrF+YjyPiDa8OIJf+JZJYlw2huyT720eXMot/k66U9NvWppMuupVD198sde1BS/9PLX+mvjHlHcDqVuv+vPImRyfsngM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=KEz+8DxV; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a2dc7827a97so709711766b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 00:02:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706169759; x=1706774559; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dlicmP6F8Wf48jjRJ0ma2aKuzpn0a6Z3GUmH5Zw0Ra4=;
+        b=KEz+8DxVm6X8f9NgmubeKNOOJQulcPYW0jtVluSmHe6Kh9zlG7GBKNglN9i6QQMZEL
+         BTdMqRpTFjlW+8IYdUh9qzCQMepuconJ+/QwS46zodC+FP5LlNQ57l/eNJf0tz+z8fc4
+         F9pcCGTH9xWi76Sth9y25AiJYu9ABx2Ctt8EAf/4tDs+auyEWcRKNUA2KsxPvXLZccC6
+         jQhKcDG3TuHeUXh2Zz5vKNyRTbcA2FqZ5zoPNgM+NI/EjnawlnbiU10HxwOeqLlfXnUp
+         unTZ/gYhA5x/HIlLHs7Q1oooiBeUMZ/uejB929QJAqrPNBr6E+qccTxMT9dOX3PolQaa
+         gxvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706169759; x=1706774559;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dlicmP6F8Wf48jjRJ0ma2aKuzpn0a6Z3GUmH5Zw0Ra4=;
+        b=inDzec/oG+eI4X53l/rfQiESEzhpbXGatJqi0U7HT5+J9uhidOHmfenfqfyQz7lReA
+         +Da9jOuN75iTv9/GBhm8dyLPLwqP5Hd9i/jXT8Y6wK1TA5A2iw0HrEeSKoB5Bgj1nCHc
+         fhP/1dHbIjglvO1725NmK7NPRvBiRZ37qTH2HLUEBBIeq7BDP6nQE8kmfdatRgp/xWtV
+         +ZQUx+CQZB8ej2/8l3pN1bekZcypCvqGOD9jbS/eSpuyTc+GHNkpqKXo06naycxwQ/4p
+         S5UPvPl0W9Ogt4TAfoyoYPV3JiiMLFN3YXS9jBeYPAX+2Rt6dSeJlqhmJDpFCAIg5iaB
+         sMiQ==
+X-Gm-Message-State: AOJu0YylzGrwV9zXrVu5VJdxCG/Hi2sG2ELjYWALZy/sGbTcynwTO+f7
+	/p/Dz6Q/P3HzmUA3Ty6HxU7gub5hzl1YirG8dBybph2FLKjV4u9dZeOX0jPfSZs=
+X-Google-Smtp-Source: AGHT+IHpiO6kaNxRTlXaNGXDNWK2YowwzefIwr4rfQuNvrLr7dQXseMCDo4cuey9q+0kWcAp8iLU5g==
+X-Received: by 2002:a17:906:dd0:b0:a30:bdbf:8f99 with SMTP id p16-20020a1709060dd000b00a30bdbf8f99mr314170eji.77.1706169759417;
+        Thu, 25 Jan 2024 00:02:39 -0800 (PST)
+Received: from linaro.org ([79.115.23.25])
+        by smtp.gmail.com with ESMTPSA id ig8-20020a1709072e0800b00a31930ffa7esm80917ejc.153.2024.01.25.00.02.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 00:02:39 -0800 (PST)
+Date: Thu, 25 Jan 2024 10:02:37 +0200
+From: Abel Vesa <abel.vesa@linaro.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Sibi Sankar <quic_sibis@quicinc.com>,
+	Rajendra Nayak <quic_rjendra@quicinc.com>,
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 07/11] arm64: dts: qcom: x1e80100: Add PCIe nodes
+Message-ID: <ZbIVnWitwE8ehu/R@linaro.org>
+References: <20240123-x1e80100-dts-missing-nodes-v4-0-072dc2f5c153@linaro.org>
+ <20240123-x1e80100-dts-missing-nodes-v4-7-072dc2f5c153@linaro.org>
+ <3d029d7c-7efb-42bb-a16d-30cf965f410b@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3d029d7c-7efb-42bb-a16d-30cf965f410b@linaro.org>
 
-On Fri,  5 Jan 2024 21:46:08 +0300
-Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-
-> We're going to move away from having implicit get_pages() done by
-> get_pages_sgt() to ease simplify refcnt handling. Drivers will manage
-> get/put_pages() by themselves. Add drm_gem_shmem_put_pages().
+On 24-01-23 19:20:38, Konrad Dybcio wrote:
 > 
-> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-
-> ---
->  drivers/gpu/drm/drm_gem_shmem_helper.c | 20 ++++++++++++++++++++
->  include/drm/drm_gem_shmem_helper.h     |  1 +
->  2 files changed, 21 insertions(+)
 > 
-> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> index dc416a4bce1b..f5ed64f78648 100644
-> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
-> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> @@ -218,6 +218,7 @@ static int drm_gem_shmem_get_pages_locked(struct drm_gem_shmem_object *shmem)
->   * @shmem: shmem GEM object
->   *
->   * This function decreases the use count and puts the backing pages when use drops to zero.
-> + * Caller must hold GEM's reservation lock.
->   */
->  void drm_gem_shmem_put_pages_locked(struct drm_gem_shmem_object *shmem)
->  {
-> @@ -228,6 +229,25 @@ void drm_gem_shmem_put_pages_locked(struct drm_gem_shmem_object *shmem)
->  }
->  EXPORT_SYMBOL_GPL(drm_gem_shmem_put_pages_locked);
->  
-> +/*
-> + * drm_gem_shmem_put_pages - Decrease use count on the backing pages for a shmem GEM object
-> + * @shmem: shmem GEM object
-> + *
-> + * This function decreases the use count and puts the backing pages when use drops to zero.
-> + * It's unlocked version of drm_gem_shmem_put_pages_locked(), caller must not hold
-> + * GEM's reservation lock.
-> + */
-> +void drm_gem_shmem_put_pages(struct drm_gem_shmem_object *shmem)
-> +{
-> +	if (refcount_dec_not_one(&shmem->pages_use_count))
-> +		return;
-> +
-> +	dma_resv_lock(shmem->base.resv, NULL);
-> +	drm_gem_shmem_put_pages_locked(shmem);
-> +	dma_resv_unlock(shmem->base.resv);
-> +}
-> +EXPORT_SYMBOL_GPL(drm_gem_shmem_put_pages);
-> +
->  /*
->   * drm_gem_shmem_get_pages - Increase use count on the backing pages for a shmem GEM object
->   * @shmem: shmem GEM object
-> diff --git a/include/drm/drm_gem_shmem_helper.h b/include/drm/drm_gem_shmem_helper.h
-> index 6dedc0739fbc..525480488451 100644
-> --- a/include/drm/drm_gem_shmem_helper.h
-> +++ b/include/drm/drm_gem_shmem_helper.h
-> @@ -111,6 +111,7 @@ struct drm_gem_shmem_object *drm_gem_shmem_create(struct drm_device *dev, size_t
->  void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem);
->  
->  int drm_gem_shmem_get_pages(struct drm_gem_shmem_object *shmem);
-> +void drm_gem_shmem_put_pages(struct drm_gem_shmem_object *shmem);
->  void drm_gem_shmem_put_pages_locked(struct drm_gem_shmem_object *shmem);
->  int drm_gem_shmem_pin(struct drm_gem_shmem_object *shmem);
->  void drm_gem_shmem_unpin(struct drm_gem_shmem_object *shmem);
+> On 1/23/24 12:01, Abel Vesa wrote:
+> > Add nodes for PCIe 4 and 6 controllers and their PHYs for X1E80100 platform.
+> > 
+> > Co-developed-by: Sibi Sankar <quic_sibis@quicinc.com>
+> > Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+> > Co-developed-by: Rajendra Nayak <quic_rjendra@quicinc.com>
+> > Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
+> > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> > ---
+> 
+> [...]
+> 
+> > +
+> > +			interrupts = <GIC_SPI 773 IRQ_TYPE_LEVEL_HIGH>;
+> > +			interrupt-names = "msi";
+> 
+> You may want to add ITS MSIs too
 
+That will be added after we figure out the mapping.
+
+> 
+> [...]
+> 
+> > +
+> > +			resets = <&gcc GCC_PCIE_6A_BCR>,
+> > +				<&gcc GCC_PCIE_6A_LINK_DOWN_BCR>;
+> 
+> The second entry is misaligned
+> 
+> Konrad
 
