@@ -1,64 +1,63 @@
-Return-Path: <linux-kernel+bounces-38370-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38371-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EB3A83BE70
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:15:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F137C83BE71
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:15:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 885C1B2285F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:15:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8E67295E36
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:15:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC4281CA85;
-	Thu, 25 Jan 2024 10:15:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9233F1CAA1;
+	Thu, 25 Jan 2024 10:15:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="AWNDXi9F"
+	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="05fsB2KL"
 Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DBA11CA81;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DB691CA80;
 	Thu, 25 Jan 2024 10:15:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706177722; cv=none; b=U08eGaZcLsZsiIHSFMg0rdNDQdhj+E51H6sil/BWewwRj2p2v6/HFtcqt9b+cV6hfFK560cusI6Pn1yKFB8ZekYRkSEbDjcwKs+Ee9SvlJe3t5pude25TqbQHXJnd8uBrBUzXIFRLc13a64XIrBVssaKoP46xm8YELeG4g1ruNU=
+	t=1706177722; cv=none; b=g97sWefzx/9VNNNKqXb02mltU/rafu5XMDTw6pNAR5Edcq6X31NFdJm2ZkKrcrzfBDrKUHYKzuU7TX/r2b/wUp6JrmUnhK1z/OKR9bkBmaTx+cXd93gHZJ9jJCNpf4oT2sBQwdgbUxGdQpktyLaQEOaNxfrKbLS/FSzmanPy4EE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706177722; c=relaxed/simple;
-	bh=IInxiPcVnGJnkitFQ4JslQKujcO/Onj7En0u9hQF/8M=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hrRHyTZ1eAnUIA8O9Wr7fN5zcvdrLPrWmsgP+uEL9BtxcMMk9aXNlnCGDZushKFQK+/VJ2dKoHWgNXMBzL6XeJouh5wlkWF2u7L1IWgJKBOgaI+sXvC5Pnv/PZ0lp54xXhUrXapoEFLYvYSQqtVCuciZE5zloKVqe39KBkxOYng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=AWNDXi9F; arc=none smtp.client-ip=217.194.8.81
+	bh=VBnrfI7vD3DI2FPA/X28QU+hF15qOM5Zfh24FfPbL28=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=FSmK0PW/OG0yx37dTLGGj8geD8CxklAuWT1lFq6TwohEXaufghvBhI6G0liqQLjjfy6AyZXTFoN0KbTdvKvMtX+86iYkVT1rVOh6ZbLr/DJrVj0wQ8+3S/YyPVbDD9fs39KkLajtOBcllpocZMQh0nOKWGlx6rMqEyHFeY/x8Wg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=05fsB2KL; arc=none smtp.client-ip=217.194.8.81
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
 Received: from francesco-nb.pivistrello.it (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-	by mail11.truemail.it (Postfix) with ESMTPA id B8881206D5;
-	Thu, 25 Jan 2024 11:15:09 +0100 (CET)
+	by mail11.truemail.it (Postfix) with ESMTPA id C3F41207BB;
+	Thu, 25 Jan 2024 11:15:10 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
-	s=default; t=1706177710;
-	bh=INc7mVqBcxtgo9Rib9RuI6CeSV/qamAJQEdqhenWWBg=; h=From:To:Subject;
-	b=AWNDXi9F30vWqFLaI3bnEwAElWAe4pATkNAj7RsQvKhXY3lp4ShPJHK9pKrkY+X3L
-	 NiZqv2vQ2i8qwoXwRpJUT469YGoGmSicGUu5ORVelfqYr1kyjseTjtAMcbNHL6iug5
-	 9uWQoQrtML8yzVrVf5dn4RjpUZxdKjHZspFD7btyPGpUgMPKItmLRJ4ZKmFZG1HsEg
-	 7LmkJ84RXlEkb0c1nGYOINUEZgoM2S6ZLdyvDcNvzzzT6ca1/Gi7BQ++RFJYkug+Mr
-	 BqPKhCluTr4Rk1wOK2PfUTDMv7bCIEwMPc/cpZswL8g8okT1NVwKlF74D4fgrEov1z
-	 uVT15Li9qWEJg==
+	s=default; t=1706177711;
+	bh=tzCVF+0hTipzC3PlmgcUpfi5ANU6ETXa1A9Lgb8gzWA=; h=From:To:Subject;
+	b=05fsB2KLJrsCclca4K+/72xZmc23Qj7pnqHYAhMe+R5HFxJHxFrQiHNZsqtwn8pze
+	 dIgMAawkjYctts+SyKgaJyh+QMYawvQirSr2ZysLhLK8VCFDduogfT6WtCcrVkpjmp
+	 6NWhLlfxym5sigqddQ0vh7/VMerMFSDorzkgOybY2TwenzV5FT3cgyRA+vClvuCtHL
+	 l3gtmTFmloI/4Z/R8vb208KN+P9EZtcYUc8uHBhFA38A7vh1w7l3V6bnUDMFpcI+s0
+	 G8MilsMP3MholVjGM+f8iTuKtulIQeMD+olFJCXN8pIrwmBGsF6iQNkww7KgROVWFl
+	 sB27IrERn9/Xw==
 From: Francesco Dolcini <francesco@dolcini.it>
 To: Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
 	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
 	Li Yang <leoyang.li@nxp.com>
-Cc: Francesco Dolcini <francesco.dolcini@toradex.com>,
+Cc: Joao Paulo Goncalves <joao.goncalves@toradex.com>,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v1 0/2] arm64: dts: freescale: imx8qm: add apalis eval v1.2 carrier board
-Date: Thu, 25 Jan 2024 11:14:55 +0100
-Message-Id: <20240125101457.9873-1-francesco@dolcini.it>
+	Francesco Dolcini <francesco.dolcini@toradex.com>
+Subject: [PATCH v1 1/2] dt-bindings: arm: fsl: add imx8qm apalis eval v1.2 carrier board
+Date: Thu, 25 Jan 2024 11:14:56 +0100
+Message-Id: <20240125101457.9873-2-francesco@dolcini.it>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240125101457.9873-1-francesco@dolcini.it>
+References: <20240125101457.9873-1-francesco@dolcini.it>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,35 +66,60 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Francesco Dolcini <francesco.dolcini@toradex.com>
+From: Joao Paulo Goncalves <joao.goncalves@toradex.com>
 
-This series introduces support for the new Apalis Evaluation Board v1.2
-for imx8qm-based Toradex SoM. With the introduction of board v1.2, a common
-board configurations dtsi file and two version-specific dtsi board files were
-added. Consequently, four possible dts files are generated to support the
-range of different SoM versions. Additionally, updates have been made to dts
-freescale/Makefile and arm/fsl.yaml to accommodate the changes.
+Add the toradex,apalis-imx8-eval-v1.2 and
+toradex,apalis-imx8-v1.1-eval-v1.2 compatible strings for version 1.2
+of the Apalis Evaluation Board.
 
+Version v1.2 includes the following changes compared to v1.1:
 
-Joao Paulo Goncalves (2):
-  dt-bindings: arm: fsl: add imx8qm apalis eval v1.2 carrier board
-  arm64: dts: freescale: imx8qm: add apalis eval v1.2 carrier board
+- 8-bit MMC connector replaced with a 4-bit uSD connector.
+- Audio codec NAU88C22 added.
+- M24C02 EEPROM i2c added.
+- MIPI-CSI-2 connector directly to the board added.
+- PCIe switch PEX8605 removed and PCIe now is routed directly to Mini
+PCIe connector.
+- Power measurement IC INA219 added.
+- Replaced DVI with HDMI connector.
+- Single-channel USB to UART converter replaced with four-channel USB
+to UART/JTAG.
+- Temperature sensor TMP75 added.
 
- .../devicetree/bindings/arm/fsl.yaml          |   6 +-
- arch/arm64/boot/dts/freescale/Makefile        |   2 +
- .../dts/freescale/imx8-apalis-eval-v1.1.dtsi  |  26 ++++
- .../dts/freescale/imx8-apalis-eval-v1.2.dtsi  | 124 ++++++++++++++++++
- .../boot/dts/freescale/imx8-apalis-eval.dtsi  |  22 ----
- .../dts/freescale/imx8qm-apalis-eval-v1.2.dts |  16 +++
- .../boot/dts/freescale/imx8qm-apalis-eval.dts |   2 +-
- .../imx8qm-apalis-v1.1-eval-v1.2.dts          |  26 ++++
- .../dts/freescale/imx8qm-apalis-v1.1-eval.dts |   2 +-
- 9 files changed, 200 insertions(+), 26 deletions(-)
- create mode 100644 arch/arm64/boot/dts/freescale/imx8-apalis-eval-v1.1.dtsi
- create mode 100644 arch/arm64/boot/dts/freescale/imx8-apalis-eval-v1.2.dtsi
- create mode 100644 arch/arm64/boot/dts/freescale/imx8qm-apalis-eval-v1.2.dts
- create mode 100644 arch/arm64/boot/dts/freescale/imx8qm-apalis-v1.1-eval-v1.2.dts
+Please note that board version v1.0 (which reached EOL) is compatible with
+v1.1, therefore toradex,apalis-imx8-eval and toradex,apalis-v1.1-imx8-eval
+compatible strings should be used for both v1.0 and v1.1.
 
+Signed-off-by: Joao Paulo Goncalves <joao.goncalves@toradex.com>
+Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+---
+ Documentation/devicetree/bindings/arm/fsl.yaml | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index 228dcc5c7d6f..b877f940490a 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -1194,7 +1194,8 @@ properties:
+       - description: i.MX8QM Boards with Toradex Apalis iMX8 Modules
+         items:
+           - enum:
+-              - toradex,apalis-imx8-eval            # Apalis iMX8 Module on Apalis Evaluation Board
++              - toradex,apalis-imx8-eval            # Apalis iMX8 Module on Apalis Evaluation V1.0/V1.1 Board
++              - toradex,apalis-imx8-eval-v1.2       # Apalis iMX8 Module on Apalis Evaluation V1.2 Board
+               - toradex,apalis-imx8-ixora-v1.1      # Apalis iMX8 Module on Ixora V1.1 Carrier Board
+           - const: toradex,apalis-imx8
+           - const: fsl,imx8qm
+@@ -1202,7 +1203,8 @@ properties:
+       - description: i.MX8QM Boards with Toradex Apalis iMX8 V1.1 Modules
+         items:
+           - enum:
+-              - toradex,apalis-imx8-v1.1-eval       # Apalis iMX8 V1.1 Module on Apalis Eval. Board
++              - toradex,apalis-imx8-v1.1-eval       # Apalis iMX8 V1.1 Module on Apalis Eval. V1.0/V1.1 Board
++              - toradex,apalis-imx8-v1.1-eval-v1.2  # Apalis iMX8 V1.1 Module on Apalis Eval. V1.2 Board
+               - toradex,apalis-imx8-v1.1-ixora-v1.1 # Apalis iMX8 V1.1 Module on Ixora V1.1 C. Board
+               - toradex,apalis-imx8-v1.1-ixora-v1.2 # Apalis iMX8 V1.1 Module on Ixora V1.2 C. Board
+           - const: toradex,apalis-imx8-v1.1
 -- 
 2.39.2
 
