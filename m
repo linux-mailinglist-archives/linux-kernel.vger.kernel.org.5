@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-38050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 745DD83BA4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 07:51:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0446083BA56
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 07:53:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99B571C22174
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 06:51:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9219A1F23266
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 06:53:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D64EA10A1E;
-	Thu, 25 Jan 2024 06:51:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0FC510A25;
+	Thu, 25 Jan 2024 06:53:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C6e+ztjS"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g41KHtWP"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9319C4411
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 06:51:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8411810A13
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 06:53:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706165475; cv=none; b=HXwZoZOObkbuAeMt5BAEmMG5CfejJh1nvfcfLcCs28upcY3hasF9uZlk+Dn8/ZQy+fsqxIqW/vDh/gcs2LYIYUxcdj0LPmVr08AZN+pQnvJjaRDd/V8m+qLjI1SrWpkB4V76N8g5uAX7mPAP6G5q4Ncm65gZgUHNhj0TlvjoK24=
+	t=1706165584; cv=none; b=dw43jXJrkcQ5D6t1nkBJq7l742Mg0eLtUBKrw2eZudO4DhuWGL0SPMTcDb/OuRrhGnU1SGDvlWeWDhKJHVQZtFkZwd//gQx2NfqxFZMg9ePdeNWBC+yG6ZZ9vuCdi2fExD46Gk8m00duDMWe53VaIr6nLBfd8Zh0Fov4rz/ns0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706165475; c=relaxed/simple;
-	bh=+goqnjmhjwCrbgzCPnU67DdoeacZ3F59LFmr585je5M=;
+	s=arc-20240116; t=1706165584; c=relaxed/simple;
+	bh=ez40Hiks973HTdNYyPZ0h1dvEzreMQy5gsShFgPphuU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VDpti6NeQBUwAwOA5YlsZ/ZL/bebikLIgCSiz/UVbX8gepGP1XozMtOAJntqmS1LWeUX9ZzMn5zxdEDbmq91eHxOuGpRmU9u7QhqlDIlfkH7kGkxn/MVTA86MOuafhEoQWQMaPNB1B5k1RpTENvZmLW3QSAAbW5waW/fnMbKbPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C6e+ztjS; arc=none smtp.client-ip=209.85.208.46
+	 To:Cc:Content-Type; b=EcgD98g03pgVnSgWYiJAFNWWfXK80UtvLIx24oQDYR0wfLdKnS5E6CZzVJTINtZfJLVSGr+g4smPh+0PMJBFM9e99wkPcu8m6Vyj6EdWo37poxlvew9kkH9gWeEXWPQJJmcn56ibPHx+FFHLZ6C3C8DR+KA3NSdRrHmzOoVtPzs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g41KHtWP; arc=none smtp.client-ip=209.85.218.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55cdaa96f34so771062a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 22:51:13 -0800 (PST)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a2dc7827a97so703277066b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 22:53:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706165472; x=1706770272; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1706165580; x=1706770380; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=r+xeN85GCAQuC34lteVDcBey5w6Xz4urLxxRWMpJ/4s=;
-        b=C6e+ztjSq9BhEeM2Qt2c3jdyJV9dyo6+pQ12H70dCZEqrq/TVWcj9z/WZWOuU4CVnr
-         NbxdLt8vXOR7nw8N/XnTjXlH9oPELxEd1CVOmSQ+kbIrH/FjAlXh40q/OK9jIbxY7rtb
-         DVQgrzZ6UMCc+WtglfSGybgW40n2dEh63RzhdXQyNRjHiCOtLzBGFHYh7zzALYVJV0Ub
-         iWjJOJjmTAaR7SYy+FmVYD91Kb8twRT4ys80nFc6HRmzHAwWRaH8umsyPysDa/qPt7MQ
-         q1NepVcWlLJlOHVZbGAAaMafK7Pc+j3f8iLEPt1rSlccn1STKbRZf0XKIL0vaQ1pVJAH
-         ATPg==
+        bh=3EVz39pSu3r4g8xcNZ73J3NLB8OQE3qZV4lHSi35Q0Q=;
+        b=g41KHtWPz6pBgV7ZrCchAXg47bdnB4neCc4yP2pZAqXu/EKELUp8uF0+aJZ17yDmHk
+         fKAFmeFukNCuCMuLYYcErm41MpE6gW8eeWUwnXQan7t31k53ls+06YRp4D5CMk3qGAbU
+         4NXggSlef7qfMTg5XErAQ8mNL0SKsacjBgxViBKGnKrtxBREfbINKB9G9UgURsVSwuw7
+         B2lGHoU7JUaYWUeCDrcfIDsTkDHriKukOVM/fm+DIAJ4f29JMtgsN0WGN/pimQ8NOBuL
+         kIQrnvw49IaVfzNcBqarAbgDsOAK23deN8YfTDBgpo6b8fWFUUxEmYWWclzB54RrSsFv
+         Zz0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706165472; x=1706770272;
+        d=1e100.net; s=20230601; t=1706165580; x=1706770380;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=r+xeN85GCAQuC34lteVDcBey5w6Xz4urLxxRWMpJ/4s=;
-        b=WXo5SXOql/LZZ0fuOYcRX8gKKUyPK/3OdD6thXHMhvbXJWfHr4ukJ6cZJc9is/lnS3
-         jo22YLmvl6Ck2q6gua6GWH71xSdtxHBepd7fZN5sehmkotKtEBDeO55LXNj9m7Z7pACN
-         oC53+QcD3nZXd7Sg+Zlxk3sn98rtwE10MxXHHZdbhnEZegKwdOUiXcbdAATAlHhqE7jj
-         44JzWUpJpBEdgoORx4TCPR9AACxZ+KQh+/1iSmQuR+8pdGavB8P3Bo1KRyeKTllF7uXR
-         DKYdR7C4h/Q1OedxY7X858FeQn6fTqPB+OmY9fY6fWYZAiLFCqdKgEaCnfQQuQKkcUEc
-         uePA==
-X-Gm-Message-State: AOJu0YywefNcGViD9kNduTmDAAqwwzU8/yiTTVkYyd34dDc/DhdVS5dJ
-	KRzG91JJfrj+szeuEZOjoEpYRQvCZwzF/3L/eUNYvq00Wu85p4d00wpt1L2JmDIdD3h71Kmsk2s
-	u/LpCaxKwtjXRQS4Rz7G4YcwaJhs=
-X-Google-Smtp-Source: AGHT+IFDaBPwETdq+Yooxzd1JvlgzMI7LmbOlI8dt0gDK8rlK/hv6U+8xPOcEaPZuVCFiIMlIFr4KgGymrBbc9xDfbM=
-X-Received: by 2002:a17:906:a3c3:b0:a2e:d233:c312 with SMTP id
- ca3-20020a170906a3c300b00a2ed233c312mr503668ejb.27.1706165471458; Wed, 24 Jan
- 2024 22:51:11 -0800 (PST)
+        bh=3EVz39pSu3r4g8xcNZ73J3NLB8OQE3qZV4lHSi35Q0Q=;
+        b=GNo5JeZjjSBxtN7vuKLb3j4C7TQOTKBG6t1ZPmN15ZIbTvoW5a0TeovnGWvaCWUJHj
+         2Ej8rPJvc/oxZiOwtL3hMf+6H/oajyrQLbZanc9aAAqkTMeXvUCZeA/I7QxYfu3TrS77
+         A/xrHnBOmNX+dvhsIXhpBAAMZNsDImlM7BBTWrA+Uez1ECQAo8/o+vJcPbRQlrNNCWjE
+         aJ3vRLt97sHinCKGmkAlAOlz3n5Fuybt1yIvLhum1L7T7fLXg05jzt19WkNnWj2hulZY
+         SoNYVk/M710wes+pZJVMmgTBQu6cCvzPgGo5GLLoeaIL3Y9L2uCf2gmbilEAPbhH4DlA
+         WUbg==
+X-Gm-Message-State: AOJu0Yxc4vHvLD4IUE8p8Tlmk0AZbZZ1jtewC/Ax9krBDagXvlKgD535
+	RFYyk4i8+ufXstsd8fqnV3H/Mp3jxxxBYTA4LOnaNZMO0n4D5kJiChARrYYg3s8R4hhQYOMnXTC
+	4AKbZDPbfhV+BBC4DgM7B0M4SzmKIRftP1H4=
+X-Google-Smtp-Source: AGHT+IFyfX5j4hHaJ5PWa31hvMgEZNaXpF6meOqSVo9coOsPvYcm0tQboIho2tsiwbd8kO6jVuQPHID7YOki1oXXjpM=
+X-Received: by 2002:a17:907:96aa:b0:a30:6278:3968 with SMTP id
+ hd42-20020a17090796aa00b00a3062783968mr287716ejc.116.1706165580432; Wed, 24
+ Jan 2024 22:53:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,31 +70,34 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20240124085721.54442-1-liangchen.linux@gmail.com>
- <20240124085721.54442-3-liangchen.linux@gmail.com> <1706087654.2583706-2-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <1706087654.2583706-2-xuanzhuo@linux.alibaba.com>
+ <20240124085721.54442-3-liangchen.linux@gmail.com> <896749de-39b6-4081-91f3-1e316706a0e9@linux.alibaba.com>
+In-Reply-To: <896749de-39b6-4081-91f3-1e316706a0e9@linux.alibaba.com>
 From: Liang Chen <liangchen.linux@gmail.com>
-Date: Thu, 25 Jan 2024 14:50:59 +0800
-Message-ID: <CAKhg4tKzhnXKVNfefHBF1vWEgXaX8wawF-7k5HX8F5OArQR1tQ@mail.gmail.com>
+Date: Thu, 25 Jan 2024 14:52:48 +0800
+Message-ID: <CAKhg4tJRM4qMJBwNs=HWczq7muw0_m_szH8L0CDaxpC+kJSeNw@mail.gmail.com>
 Subject: Re: [PATCH v2 2/3] virtio_net: Add missing virtio header in skb for XDP_PASS
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: Heng Qi <hengqi@linux.alibaba.com>
 Cc: virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org, 
-	mst@redhat.com, jasowang@redhat.com, hengqi@linux.alibaba.com
+	"Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 24, 2024 at 5:16=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
-om> wrote:
+On Wed, Jan 24, 2024 at 7:04=E2=80=AFPM Heng Qi <hengqi@linux.alibaba.com> =
+wrote:
 >
-> On Wed, 24 Jan 2024 16:57:20 +0800, Liang Chen <liangchen.linux@gmail.com=
-> wrote:
+>
+>
+> =E5=9C=A8 2024/1/24 =E4=B8=8B=E5=8D=884:57, Liang Chen =E5=86=99=E9=81=93=
+:
 > > For the XDP_PASS scenario of the XDP path, the skb constructed with
 > > xdp_buff does not include the virtio header. Adding the virtio header
 > > information back when creating the skb.
 > >
 > > Signed-off-by: Liang Chen <liangchen.linux@gmail.com>
 > > ---
-> >  drivers/net/virtio_net.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
+> >   drivers/net/virtio_net.c | 6 ++++++
+> >   1 file changed, 6 insertions(+)
 > >
 > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
 > > index b56828804e5f..2de46eb4c661 100644
@@ -109,17 +112,15 @@ et_device *dev,
 ver. */
 > > +     memcpy(skb_vnet_common_hdr(skb), &virtnet_xdp.hdr, vi->hdr_len);
 >
-> About this, a spec is waiting for voting.
->
-> This may change the logic of the csum offset and so on.
->
-> Please not do this.
+> If xdp push or xdp pull modifies xdp_buff, will the original header
+> still apply to the modified data?
 >
 
-Sure. This will be dropped in v3. Thanks.
+No, it would be an issue then. Anyway, this patch will be dropped in v3. Th=
+anks.
 
-> Thanks.
->
+> Thanks,
+> Heng
 >
 > > +
 > >       if (metasize)
@@ -139,7 +140,5 @@ i->hdr_len);
 > >               return head_skb;
 > >
 > >       case XDP_TX:
-> > --
-> > 2.40.1
-> >
+>
 
