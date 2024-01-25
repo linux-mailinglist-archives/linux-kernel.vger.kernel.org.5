@@ -1,244 +1,193 @@
-Return-Path: <linux-kernel+bounces-38319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38320-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4936983BDC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:47:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1800B83BDCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:47:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB787283F1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:47:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A6C81F323D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:47:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 678B91BF5C;
-	Thu, 25 Jan 2024 09:46:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 708D61CAA2;
+	Thu, 25 Jan 2024 09:46:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="krZy4pmQ"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11olkn2094.outbound.protection.outlook.com [40.92.18.94])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YoiF5AAH"
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF8B21C6AB;
-	Thu, 25 Jan 2024 09:46:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.18.94
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706175993; cv=fail; b=in3jVYQnN62MOJlr15H4ykFw2mnc+lCGBovdtjJSbO6h5FwLjXVp5/MOlC61cVbso37Re5XKMir7ESX7lyjmGAvkxGAYygiweAU4+cqnC45L0mSrO0w7H41Dl6hTSK/CqkageRag8G1sLq2B1hIpJVaz5AObbA6NwAblaZGladk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706175993; c=relaxed/simple;
-	bh=XyPrv35XYrRVBnvqjcHCv+6Mcj82XvXv/4/9CbDXnLA=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=UALEXucqd/eVKMQt8P9n+ZdDRLtIkL3cTmUDJirQihqUlqNEZnCv+RV6rgcs2FLCXG4Oka1+VW5siQkzqAZcAlVozJM7EHRT5VfD6kzH8MR8XyUYc1JoDFC3szgOgDWQgawYHJuQPMB3H2LlrBk8PmaIlA7oiB4Pig7kaaTK/YU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=krZy4pmQ; arc=fail smtp.client-ip=40.92.18.94
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZzHRbrGoT590sPns9sd23pQ5z9Jcp4gQ4BDhtH0yC7pUKj0yI1ctQhWqf5ndPlwDJi17lpHTOZOgEv6yblWTX3ftdEytAD6f7/OwZeHpjbTn2xF11al/KR60entOosb+FST028ARLSnMg0hkIbeFIF0Ym/sD3jwF7lBQDhW45BR2VmaXvx1ndhnkXqfEBVhOtlU1ADJPZW59JcQqeegr8oT9esn3wwoQkJMCfiP6rqFvfeCjkZ+/g/VSYXj4MkMKnYZaBItnngI8anZ4yBbDkhlF5aMWWXpckEmCvtMjrAPry0UCsHfQI9q0uwZEnXDfe3lHz4U+JTcUO2PPrlh7ww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wvhMhEr1gG2rZCRANSeO9n2GaX3aIe/oAFZU9L/doX8=;
- b=Vi95e/z+aTBYUzycTWooCnVmW7u3NeIjpfN0pf/UGQEis4UikXDuWs28YJnJpPz1p4xpwyP5NmVkOOYrQPay3YNreEshKINWP6SCvD3b7FGe2I9KnmACcBN5LAsNUd/Cm9Ruop/0Nos60STFTlAJTvXkg5IWlz5L8LPsKzi3PgjykyNp40rBjseYiWbXpzSeWfCoh+uu7/tU8kBUCOsAvJ82YN1T3XJHQaT5dRXnVdwxtL5UfO/J6jijTZM/KG0+xUZxuTSCXW9x3VBtqHUGBVPqWzZAg6n6ti9oQzLHZ/k2L/+xGJfuRQoPyRwZjUHK76eRcJPWCIEgTItYvQVZIQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wvhMhEr1gG2rZCRANSeO9n2GaX3aIe/oAFZU9L/doX8=;
- b=krZy4pmQtayOMw3krIy0L8Fz+eCySTTFYHL0fwBikA+A4xb+HZPKhf+5w+YjRFhnoraFGhPqItK3A72D7h+aPVqsx162q+5WvmcALdYr0sArQAuW2UOYm02V9tvWZzFmbPyeB3oA52aUL04JMn4IoA4AxEVBVOChmLd4lHJjpw96YE6ymf2K8ckqO1gdNC0NP7Ltg6YXT5zheWnOmfPDYAkBBfC0AUTBU1S69EGR9jmmwmamrbRl+aJUOepmpm0PpeI4TwlEjUk7f5cQgYDKNUuhMeOR5ECTGqglYaiPtX3oeRLaaQouQNmFQL0/uAcuO3tWwkeWg7EiZOI+ki9ljA==
-Received: from DM6PR20MB2316.namprd20.prod.outlook.com (2603:10b6:5:1a8::28)
- by SA1PR20MB4275.namprd20.prod.outlook.com (2603:10b6:806:22b::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.34; Thu, 25 Jan
- 2024 09:46:29 +0000
-Received: from DM6PR20MB2316.namprd20.prod.outlook.com
- ([fe80::eada:a454:b624:1459]) by DM6PR20MB2316.namprd20.prod.outlook.com
- ([fe80::eada:a454:b624:1459%4]) with mapi id 15.20.7228.022; Thu, 25 Jan 2024
- 09:46:29 +0000
-From: AnnanLiu <annan.liu.xdu@outlook.com>
-To: chao.wei@sophgo.com,
-	unicorn_wang@outlook.com,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org
-Cc: paul.walmsley@sifive.com,
-	palmer@dabbelt.com,
-	aou@eecs.berkeley.edu,
-	devicetree@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	AnnanLiu <annan.liu.xdu@outlook.com>
-Subject: [PATCH v2] riscv: dts: sophgo: add timer dt node for CV1800
-Date: Thu, 25 Jan 2024 17:46:23 +0800
-Message-ID:
- <DM6PR20MB23167ABF18C1F004A5710D4FAB7A2@DM6PR20MB2316.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.34.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [8dmQ79MD5VeY/5T3aa1ZPSLy+/pgmXnGWCBBYxXktng=]
-X-ClientProxiedBy: TYAPR03CA0012.apcprd03.prod.outlook.com
- (2603:1096:404:14::24) To DM6PR20MB2316.namprd20.prod.outlook.com
- (2603:10b6:5:1a8::28)
-X-Microsoft-Original-Message-ID:
- <20240125094623.27188-1-annan.liu.xdu@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6CFB1BF38
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:46:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706175995; cv=none; b=u2QgO6z9JlE9F9Zz7uCq2I4rfAIORIvAgynqXzh65+tAVf+iOOPtZRq3294VsDJ8OKmGx76g/KX5RDU/0mpyBqZZg1EPCwiZwKv4oqBNiPUDL9p56ZiugmQ6MWhrl1aq3WnWUngmAKWR9fwkSyx1O/5NMnoeXTct4VUiIhZ0OWQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706175995; c=relaxed/simple;
+	bh=gmD+NvOsDsUZuLvDpzmgzfyKbOs5AbVhb/st6S83/PM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IOEXlR8VFOaB8DRGHX3q5R8z9MZBugsu4SLSg61vwm8pFTOx5v15p0pvCdhXkCOiaHB4TijAr2K2ifaVjBtgWvh1TPi1IRYqsnr9OwKsiYBuGX4jrG0D1cuF14EFFtwcGFxqKvxKXLjMVS/gLH+Zx37qGUjQwZenm1V1rRouDMQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YoiF5AAH; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40eb0836f8dso38999235e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 01:46:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706175992; x=1706780792; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uKjEA1ufSVAWNn9i+0G+DRJUHaevlwhyDkwZbs4cgCo=;
+        b=YoiF5AAH+/igKarmgDURmMHuUFYpz7lXbfbyB+yXt6SQ9TK5pF4E9zE8+bbqUug50g
+         8ER2l65JAFLCX2/wItWaGSlsT3N48eVMU0ejmXBzWRr1O4pZrNiRmnM+G2s6hbdVaPKn
+         CbjgdRV8hs7l6+vPieFy6BYIFg7v9/L+IfmEsVXu43PmYcea8r7UqqjL7WlBZ6+YcGca
+         Nqwuccx5Fxd1WvNne1Rdi5qRjfKgjq41CuMtrdbjrAhsLlMkyIx0JIE3JWzuE90JLnbD
+         J7MkmkGXhb+erMqJJWyXR6gB9RtZ1dGslYte2YnDh2yGhsig8ADq/Gtu/aU+B8QaF5e5
+         yDbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706175992; x=1706780792;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uKjEA1ufSVAWNn9i+0G+DRJUHaevlwhyDkwZbs4cgCo=;
+        b=kL7VtT+BEZGApUuwLdmNbPwPWA+K9/pz+wwHMd3y2mJDG375rQC7acuzuoRSuLXkXl
+         902HoAoFBwIUQo2YSqO6qRnkr8u99grBDrNRcWdtu9ql6yedoSDEVvcxbxErnncyCPgZ
+         ejjl/WaC9chUr4OS5GvCCk46eSIdcSZRUYceT0ShBIqvgYJ0euEswjVuqouEQeOEIGL0
+         0D1+2V1LCdF3EKybjduAUBj3x3pR/FCMMA90i30cyTWh0x8idWbAzfIzKxAhp7XvNZD3
+         yLtLJid7ktjmyUgRNtevbpCGKZTdrC3wV9eRbDVLzKuLd/CrC+Bh0F3aofzER2QwcFDR
+         XaMg==
+X-Gm-Message-State: AOJu0Yz+4MOw+0SSntunh5B41DocY8ckhu6pGXJhIctwmICYCZfe05sJ
+	HxpklZ/e9Wp5WPvG3qBuEw14x1L52zs1QfUVjC8ZiUHp60y1LnFl5gfhg4g+IyE=
+X-Google-Smtp-Source: AGHT+IGn/FM9gXJkdJJpOQ1l+2CxmF5gIptmChuQvcivFbgEobBNM7oIX991MqEP8m0r+4vw7WNaCQ==
+X-Received: by 2002:a05:600c:a08:b0:40e:69da:4815 with SMTP id z8-20020a05600c0a0800b0040e69da4815mr295213wmp.35.1706175991985;
+        Thu, 25 Jan 2024 01:46:31 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:3cb:7bb0:e809:1d8e:6f0b:53c1? ([2a01:e0a:3cb:7bb0:e809:1d8e:6f0b:53c1])
+        by smtp.gmail.com with ESMTPSA id j11-20020a05600c190b00b0040e53f24ceasm1956031wmq.16.2024.01.25.01.46.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Jan 2024 01:46:31 -0800 (PST)
+Message-ID: <d33bad27-da65-4866-96e7-a249824fcb6e@linaro.org>
+Date: Thu, 25 Jan 2024 10:46:30 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR20MB2316:EE_|SA1PR20MB4275:EE_
-X-MS-Office365-Filtering-Correlation-Id: 189da528-fd9b-4ce6-b13a-08dc1d8a8159
-X-MS-Exchange-SLBlob-MailProps:
-	vuaKsetfIZnl7OK+GjNZx76AODbk0dt+LKWMRPEIDUGU2sukGk3bH82ehqnde3qe9cpdmb3XB7DvY/pfM+yDftnEo3M0GC1iWcNKrNzPSCKS1a8MLn39lTclUQ3/2IcOB5OmkiTsIIU7R9c9r6y6ZKAouj5GfenLbEP8N1BSvAgRvY6+HUaj+gaujtz5CRTFv4qlXRXHOaRspmnA7cToXLx/8hCwRT/PFFZ2CpO/Lov5TxIorpVHpiAbBxWd1ADcdtC57AMzqCnivi/vVNfShAg8mz6o76Z30sWscguGfvEZrSk/LbEACnwkoLcFS4RGcbJSx7p2OfsfyRpFJcJtUbKd8OgWKgHwZNY0YML+bTfBObxdD5wpagNNlZoasgrV1raKY4ZP2wGI+k6kUPZBTsvoCBJ0f8DCpoVxFml0am9mhM+u1Lsv8ICnNIa499x9S4KY1k7XSGIfZwonr3Fw2vmG6gvIzMq53pn5i0CGcYMtd/FasjqLvqpveHANAc/rQFY6tCEXG1InITLcZyC9z0aLmzwTfNotsh70+KTp1gBezDXh5/C8ndF5H6WlDxZr0we+6yxFbAw1YRJDwHrS4vA5CHY0ixz6ZGyyJHWdzs/iQPHe/GyeeN1dZVzfEE6a0JX5r0MxGnRS39MqWH6g9XTUD2Gy4PTbfh2Qy1T6aZAEK1aNDqXLQkj9QCNDIEd8C9qVT38/X8TlvyYicC4ShQSm7Jv/nY7JW7kPPGcfNh6FI7fXbWjLJCvBVxPdvUzaauli35uu9mVWJUIroG5PkRhxJ1zYBukLHy7eu/7jm3lgrmq/Jj8EGDwjDxe7Aeqx
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	ucm7QRgwI7Gu22cXbTdDghDKORct0FfKzsDC1HlG4ztU06eUaaHw9SNcFWlYwS+T88XJZ2a8jce8TdMuT7rXI7EOJ5UD+rrSXFc+EjK2FGYO05blS2sTbg69RDg3WjjYwNruPLp7wOcKb4zyQTQpnBdRdCZM5mmOzV69MwQm11PY0HntiEsEPChzOKcFcdU6/oX18k7yX0qEbjr/TPETewlaXyi0MfSvHfVlVEdfDJfQ35jBmfxf/z3xwvxei5Udl0ilpX/f/Y2ylzvQd8fSOeZXUYMcH7mMgH/ZaZHFjrTJLYmEmYe5xFkhBBIAXtN3ABSuu50llkQ1ONb70ozWi009Z1JUHr2MDWO6eX/JUuNaXPhc2E6fFNYrI4te6xEpoTrsuvZrYQdxIgO3nietrcKaCKl3gv6BSdVaEQgViUO7+FwSgyw47pA0ibV6hhCpNZxTv6jvl2lvd2PWIm/TVQ0C8DBsImYeo1Okc4he/Cg6KAU1xRqlV2/jrUfABfnsLW+wpISkwXjuKR3POnRzj/zk5Vu80R5p54hypnVuD5Ka/TtEyxdBL9XY2+XzxmBxPOKri+hptbH+J9106NPyjrLPmhAgCowy5hwpT0rlQuq9EGuAYbSK3fC38fZqH2OcHzLIq9CaMuzSFlYp8jnEpqE27JSQb/5dPU93ZOTpI6I=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?3Gg3clQr9nB5amSEQdYmqNOdYFJ5lPOQ0+SmtekMo+C4jzVrl8ZjLM/868Ub?=
- =?us-ascii?Q?hrf5yUH2ziVTI0AG4gZW1PRaclI+iK+C2t8ELKYZ4o7b2YWlr7YgRVhw9qhk?=
- =?us-ascii?Q?r/mjsz9NhQMlVTR1iebpv4N4YGXvJMOE4URmuT4S/96JWUERf3Eh15IpLI6g?=
- =?us-ascii?Q?gJU3ZXYTH7R/0PIedQwgqxnwviBBWWp5D+vXm7VrIm/nJeI+pPYouhXjB0F3?=
- =?us-ascii?Q?yJIikzgpdgmxQkQg0+9+Zz+1PF7Qk1oENU1OA6tovDBYLpARFnmnj8eQcFR+?=
- =?us-ascii?Q?z1cg0l9s4pW9Ngb3uevpuF+Z5eI+jBcteJT0CYcvZ0tTHDow1YB46RphhtCn?=
- =?us-ascii?Q?9mbZ0zoxiEnzWHCKIltA4BvAlg0HAPnr1C6or1QksTpkjtTuQxTg62q2dISF?=
- =?us-ascii?Q?gEXteDFZTp9Na5eeD/JDvQHVUDGIzU+Uwh6RRKo8NgVU/PwihgiggNpqnZ0V?=
- =?us-ascii?Q?zCjn0LkGILI+fpCv3kak1P3HZ5pAK5rAn81JWEPxbNAjmDMEhCXsNcsYWpa+?=
- =?us-ascii?Q?Z/tnd7rm5aUp/D8RFKzcGyzWsjgWi3ecqGlQ7/wB3uKLF4mrj8p7Jra2KDW6?=
- =?us-ascii?Q?+29zJ7fk4AuW8Nqe8WTOH9ia5PAloajDbRIXeZ7tIzZzJJXUZOMv1podAgCb?=
- =?us-ascii?Q?3ldHFcp0kNG7MFHCnjpWUSL0N+ax/goKMhDwk8jXRaZMzmz+8Wh/ERxNB7tQ?=
- =?us-ascii?Q?3gQcuPCjaVoqxYx70qMhkBa5X6TsxGU22vkesHJ71WP1Uo/jW99MhtwdeGJ1?=
- =?us-ascii?Q?lkjSOxMicdL04d7t1/nvY2TxgtN8ZGWn9yTrFjXrPiLdyeIiBqn9m1s7/J5d?=
- =?us-ascii?Q?KLADYWlZxV/BAOb00Sji1emNtJJ/WEhARFf8ocYo8fD0jwoo5oEw0n/g3Hp/?=
- =?us-ascii?Q?cZCM11MXslsix4dAq3V/6bMFm783+nJv0Bv84i74P47jHn9wJKgndumCFl/R?=
- =?us-ascii?Q?30QozcXKVWzxf08loDuP6Xd+OJX71mph5ftzVwdsfnsAfsdWPEvISmHXSiXn?=
- =?us-ascii?Q?bDeUtq+fbCqgSk9KZKLstOaPa0SysxHCt503N1rSYn9iLtfFmogC6QY0uwGd?=
- =?us-ascii?Q?KzBVvFSd3t/0I/ZXied0kd6+U08I53ABv8hZ1iA4jIoxwkRw1NgcDw5PilmM?=
- =?us-ascii?Q?euugj468PDJhCJuLNRkeyPJhZ0nRYHa7TpLqJRMtSuNbiGA3OQ2empof8zMi?=
- =?us-ascii?Q?nsA2dtCJjapXUevDIY3Ng91CmHwmAcsqFHe1+w62T2KOWZZcxq7TT6GxxJw?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 189da528-fd9b-4ce6-b13a-08dc1d8a8159
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR20MB2316.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jan 2024 09:46:29.3787
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR20MB4275
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] optee: support wq_sleep_timeout
+Content-Language: en-US
+To: "gavin.liu" <gavin.liu@mediatek.com>,
+ Jens Wiklander <jens.wiklander@linaro.org>,
+ Sumit Garg <sumit.garg@linaro.org>, Matthias Brugger <matthias.bgg@gmail.com>
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ op-tee@lists.trustedfirmware.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20240125052744.18866-1-gavin.liu@mediatek.com>
+From: Jerome Forissier <jerome.forissier@linaro.org>
+In-Reply-To: <20240125052744.18866-1-gavin.liu@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Add the timer device tree node to CV1800 SoC.
 
-Signed-off-by: AnnanLiu <annan.liu.xdu@outlook.com>
----
-This patch depends on the clk driver and reset driver.
-Clk driver link:
-https://lore.kernel.org/all/IA1PR20MB49539CDAD9A268CBF6CA184BBB9FA@IA1PR20MB4953.namprd20.prod.outlook.com/
-Reset driver link:
-https://lore.kernel.org/all/20231113005503.2423-1-jszhang@kernel.org/
 
-Changes since v1:
-- Change the status of the timer from disabled to okay.
-v1 link:
-https://lore.kernel.org/all/DM6PR20MB23167E08FCA546D6C1899CB1AB9EA@DM6PR20MB2316.namprd20.prod.outlook.com/
+On 1/25/24 06:27, gavin.liu via OP-TEE wrote:
+> From: Gavin Liu <gavin.liu@mediatek.com>
+> 
+> Add wq_sleep_timeout to support self waking when timeout for secure
+> driver usage.
+> 
+> Signed-off-by: Gavin Liu <gavin.liu@mediatek.com>
+> ---
+>  drivers/tee/optee/notif.c         |  9 +++++++--
+>  drivers/tee/optee/optee_private.h |  2 +-
+>  drivers/tee/optee/rpc.c           | 10 ++++++++--
+>  3 files changed, 16 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/tee/optee/notif.c b/drivers/tee/optee/notif.c
+> index 05212842b0a5..d5e5c0645609 100644
+> --- a/drivers/tee/optee/notif.c
+> +++ b/drivers/tee/optee/notif.c
+> @@ -29,7 +29,7 @@ static bool have_key(struct optee *optee, u_int key)
+>  	return false;
+>  }
+>  
+> -int optee_notif_wait(struct optee *optee, u_int key)
+> +int optee_notif_wait(struct optee *optee, u_int key, u32 timeout)
+>  {
+>  	unsigned long flags;
+>  	struct notif_entry *entry;
+> @@ -70,7 +70,12 @@ int optee_notif_wait(struct optee *optee, u_int key)
+>  	 * Unlock temporarily and wait for completion.
+>  	 */
+>  	spin_unlock_irqrestore(&optee->notif.lock, flags);
+> -	wait_for_completion(&entry->c);
+> +	if (timeout != 0) {
+> +		if (!wait_for_completion_timeout(&entry->c, timeout))
+> +			rc = -ETIMEDOUT;
+> +	} else {
+> +		wait_for_completion(&entry->c);
+> +	}
+>  	spin_lock_irqsave(&optee->notif.lock, flags);
+>  
+>  	list_del(&entry->link);
+> diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
+> index 7a5243c78b55..da990c4016ec 100644
+> --- a/drivers/tee/optee/optee_private.h
+> +++ b/drivers/tee/optee/optee_private.h
+> @@ -252,7 +252,7 @@ struct optee_call_ctx {
+>  
+>  int optee_notif_init(struct optee *optee, u_int max_key);
+>  void optee_notif_uninit(struct optee *optee);
+> -int optee_notif_wait(struct optee *optee, u_int key);
+> +int optee_notif_wait(struct optee *optee, u_int key, u32 timeout);
+>  int optee_notif_send(struct optee *optee, u_int key);
+>  
+>  u32 optee_supp_thrd_req(struct tee_context *ctx, u32 func, size_t num_params,
+> diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
+> index e69bc6380683..14e6246aaf05 100644
+> --- a/drivers/tee/optee/rpc.c
+> +++ b/drivers/tee/optee/rpc.c
+> @@ -130,6 +130,8 @@ static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
+>  static void handle_rpc_func_cmd_wq(struct optee *optee,
+>  				   struct optee_msg_arg *arg)
+>  {
+> +	int rc = 0;
+> +
+>  	if (arg->num_params != 1)
+>  		goto bad;
+>  
+> @@ -139,7 +141,8 @@ static void handle_rpc_func_cmd_wq(struct optee *optee,
+>  
+>  	switch (arg->params[0].u.value.a) {
+>  	case OPTEE_RPC_NOTIFICATION_WAIT:
+> -		if (optee_notif_wait(optee, arg->params[0].u.value.b))
+> +		rc = optee_notif_wait(optee, arg->params[0].u.value.b, arg->params[0].u.value.c);
 
- arch/riscv/boot/dts/sophgo/cv1800b.dtsi | 73 +++++++++++++++++++++++++
- 1 file changed, 73 insertions(+)
+optee/optee_rpc_cmd.h needs updating (near "Waiting on notification") to reflect the meaning
+of value.c.
 
-diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-index aec6401a467b..aef7970af2b8 100644
---- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-+++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: (GPL-2.0 OR MIT)
- /*
-  * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
-+ * Copyright (C) 2024 Annan Liu <annan.liu.xdu@outlook.com>
-  */
+Was value.c required to be zero prior to this change? Otherwise this could lead to undefined
+behavior.
  
- #include <dt-bindings/interrupt-controller/irq.h>
-@@ -113,6 +114,78 @@ plic: interrupt-controller@70000000 {
- 			riscv,ndev = <101>;
- 		};
- 
-+		timer0: timer@030a0000 {
-+			compatible = "snps,dw-apb-timer";
-+			reg = <0x030a0000 0x14>;
-+			interrupts = <79 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&osc>;
-+			resets = <&rst RST_TIMER0>;
-+			status = "okay";
-+		};
-+
-+		timer1: timer@030a0014 {
-+			compatible = "snps,dw-apb-timer";
-+			reg = <0x030a0014 0x14>;
-+			interrupts = <80 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&osc>;
-+			resets = <&rst RST_TIMER1>;
-+			status = "disabled";
-+		};
-+
-+		timer2: timer@030a0028 {
-+			compatible = "snps,dw-apb-timer";
-+			reg = <0x030a0028 0x14>;
-+			interrupts = <81 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&osc>;
-+			resets = <&rst RST_TIMER2>;
-+			status = "disabled";
-+		};
-+
-+		timer3: timer@030a003c {
-+			compatible = "snps,dw-apb-timer";
-+			reg = <0x030a003c 0x14>;
-+			interrupts = <82 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&osc>;
-+			resets = <&rst RST_TIMER3>;
-+			status = "disabled";
-+		};
-+
-+		timer4: timer@030a0050 {
-+			compatible = "snps,dw-apb-timer";
-+			reg = <0x030a0050 0x14>;
-+			interrupts = <83 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&osc>;
-+			resets = <&rst RST_TIMER4>;
-+			status = "disabled";
-+		};
-+
-+		timer5: timer@30a0064 {
-+			compatible = "snps,dw-apb-timer";
-+			reg = <0x030a0064 0x14>;
-+			interrupts = <84 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&osc>;
-+			resets = <&rst RST_TIMER5>;
-+			status = "disabled";
-+		};
-+
-+		timer6: timer@030a0078 {
-+			compatible = "snps,dw-apb-timer";
-+			reg = <0x030a0078 0x14>;
-+			interrupts = <85 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&osc>;
-+			resets = <&rst RST_TIMER6>;
-+			status = "disabled";
-+		};
-+
-+		timer7: timer@030a008c {
-+			compatible = "snps,dw-apb-timer";
-+			reg = <0x030a008c 0x14>;
-+			interrupts = <86 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&osc>;
-+			resets = <&rst RST_TIMER7>;
-+			status = "disabled";
-+		};
-+
- 		clint: timer@74000000 {
- 			compatible = "sophgo,cv1800b-clint", "thead,c900-clint";
- 			reg = <0x74000000 0x10000>;
+
+> +		if (rc)
+>  			goto bad;
+>  		break;
+>  	case OPTEE_RPC_NOTIFICATION_SEND:
+> @@ -153,7 +156,10 @@ static void handle_rpc_func_cmd_wq(struct optee *optee,
+>  	arg->ret = TEEC_SUCCESS;
+>  	return;
+>  bad:
+> -	arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+> +	if (rc == -ETIMEDOUT)
+> +		arg->ret = TEEC_ERROR_BUSY;
+> +	else
+> +		arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+>  }
+>  
+>  static void handle_rpc_func_cmd_wait(struct optee_msg_arg *arg)
+
 -- 
-2.34.1
-
+Jerome
 
