@@ -1,183 +1,170 @@
-Return-Path: <linux-kernel+bounces-38249-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E1F583BD13
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:20:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A2C283BD17
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:21:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F90C1F2B484
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:20:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3ACFE290E0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:21:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 500321BC5B;
-	Thu, 25 Jan 2024 09:19:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC0CA1BC50;
+	Thu, 25 Jan 2024 09:21:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sE4IMfbI"
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="VQ86jc4j"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D43901BC3D
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:19:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 193FB1BC35;
+	Thu, 25 Jan 2024 09:21:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706174391; cv=none; b=YTuN7lvAiQka4LoUuKQdFvCG06Rd1KMTmz4KnBUdC3Z9ejrSbZQp9YEN9944mpQmY05Iq6QJp+2e9CvMbhKKOzEEiiqqx97/mDmYJzOVMIAakbegKJ/+OLuTe5hkMnu7BbSVARJyzIcMC8BodsyFHWsO8auc7ynBLsvDLZKlOeA=
+	t=1706174467; cv=none; b=hTNO4ol+myBHH2CF0aqL2ibEE9uEHNWYoUA9h7uU9hQQgDDwJmqaw8/D1oygl0Qf0vxzB+H6KjnTBtIex1ofhwSj/bLqLlbAs+jV+GYMdkm6tn8nMCctqiDsWvcClN/kQjViIC5zE1Ef/PM06b9Xjb2IezJv5Q5Kj+Xv3mJDIBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706174391; c=relaxed/simple;
-	bh=hY4QKISaa+b5z3JLeMajVJ/VnYmdjxa6qn7nKSvIo14=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AhSRqeJtyXQL0YRtuXoeV4pojGgEbTk95Q7QKxXdHv0+rrVSNSHZte6FOvERIdwM2TcSpdPqkpoiuSpf2r3WMAfzcMxrcY80wO7+lg4dKoQZwySC9yQSzPbLv6H+QSTUBzGBa6jjlKPGFHINcugkxVM6248GijgfW+nOYo0sUEE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=sE4IMfbI; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3392291b21bso5462453f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 01:19:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706174388; x=1706779188; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4X+3bRBtP42tNMXuYBkK8DKxTBN/GwDVxxSGraNwbGQ=;
-        b=sE4IMfbIpRo00gYefnbsQR0nPmgkLSLGkh/4XXeZDudhMd41NoKDs7p6OluN86qAGh
-         QGpTGPQbi5TYrpNjObhcVhZogtB8Uy3M8MD7Qcu9Tn+MmbQxEEqtte4i3aD9BNvyIcfj
-         rv9woXdGxHvr8Md0xlqatKA7nQZRYpkajKFUwHzPgqFQgGzEgvBAbR9xgc0RkIpk4qOr
-         Ji2lTv+zIBmuqrgBtH2rs4voN2deop/C4HL+1JjcpJ64IEgaVK0Xbx+bf6oucsUMSFam
-         a1F5+GN9p6GhpqPVOEv/FUNOEzF7pA60iqULsznXMW8aOl39qiuIXqF3Yt+SsFMlp+MX
-         dSdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706174388; x=1706779188;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4X+3bRBtP42tNMXuYBkK8DKxTBN/GwDVxxSGraNwbGQ=;
-        b=tjVZAFpdVjVnwnZM1MYTqUtVWWMbvu49SDrtZdHtnZ7tfcnymDcDkDTJK08irFSgtZ
-         u0oipnPLZK5TZJb/BIxa3XHN65HPS5ani+M72DZ8YXnMcaNmQAfKprb60Vojf0fiqU/r
-         6sb6NX4tgrf+P8+4TivtVqQRTd8xGWtoZW303KShmB7apFyYltenGICvPXkjTEmv1NRn
-         tDb8Jbh4zh3kOjNfvkwCVDosUonegzdJcmO3ERpiTbK0bcNy4w7m14ZwsXYTljwHTAJn
-         e5/nMlOSMSKaWZX/lFUlvPlIoieQKKOo7YPXSjufjjv6X2H2AiOsN9ePK9/KRuc8KlMq
-         MRSA==
-X-Gm-Message-State: AOJu0Ywol2DUL16anTYV9unjCb6b1PcTYV0jtTCh50/W9kHeEYtNJ3jr
-	9fopsXmrXE3QM7mWayYdmfCjMDr6s2IpphLiyI6DiGgQhxhM4CPEWRoDl5hm5oM=
-X-Google-Smtp-Source: AGHT+IGSM37j5cCGKBhXBHBBRNisZ/yCBYOSZgstZR6wbZOnSOh1QlrDSppejQ5MaYdkyJoWTcHb+g==
-X-Received: by 2002:a05:600c:310f:b0:40e:aed3:e9b5 with SMTP id g15-20020a05600c310f00b0040eaed3e9b5mr284589wmo.103.1706174388180;
-        Thu, 25 Jan 2024 01:19:48 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id r12-20020a05600c35cc00b0040ecd258f29sm1914308wmq.0.2024.01.25.01.19.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jan 2024 01:19:47 -0800 (PST)
-Message-ID: <3adf7908-be27-4125-ae5b-6f2eb6100304@linaro.org>
-Date: Thu, 25 Jan 2024 10:19:45 +0100
+	s=arc-20240116; t=1706174467; c=relaxed/simple;
+	bh=vqNkEAabo6aICt8fsmv4NUb7Td0W6lltgyPnkptXJFQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=OBQ8Z7/xkCr3S+Ve14GoSqd4FmcKFeNLdM7EA9RvEuKJ3Ri6R6lPB/lb0GZDyD1a40hlt47elr7TzHNdsk/l3u3gz5FMB9RCpq4ZjyOJmj5MJpTXPTPHyHe5tAQKDbEXvipRSorRcAIQ1MAHpcqRZTMZyzQrXjOl7KlHb9aVe7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=VQ86jc4j; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id DA3881BF219;
+	Thu, 25 Jan 2024 09:20:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1706174461;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eKjAu14meoD0UWLGa1Hctnp45OsMD9+KH2IhUcbWrL4=;
+	b=VQ86jc4jMi7kZpSX93HTuIEk4dHcoUQO2jYVvHJKrFbWKkXwZunjal+i7HO2/oynf2bGKQ
+	CYDTSSZAWfKlxhC0kyB9aI8HFAj//uey3jcaKSEEz/1HaS2w6h2ETfSokmazYkVCoJN4pd
+	9QXJE49MHmPyiPllw9VhmA2BRY5LEvfRdNWiuXqt33gGxfFbwv7BZcjNxLofLpQbSeSc+6
+	tD9beY3Sn/veWmIUV2Ys8WpFFrOjXXy1++Q9ki3bL0dINJ1K0ewx2Ag+0RXhMRaZ875MXs
+	+YHWh7+uEfOy3+IwWuICh8XKLw/5yed/TAzlzTOX+PxM1i1sqZwE8qGfLKzE+g==
+Date: Thu, 25 Jan 2024 10:20:58 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: William Zhang <william.zhang@broadcom.com>
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>, David Regan
+ <dregan@broadcom.com>, dregan@mail.com, richard@nod.at, vigneshr@ti.com,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ computersforpeace@gmail.com, kdasu.kdev@gmail.com,
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, joel.peshkin@broadcom.com,
+ tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com,
+ anand.gore@broadcom.com, kursad.oney@broadcom.com, rafal@milecki.pl,
+ bcm-kernel-feedback-list@broadcom.com, andre.przywara@arm.com,
+ baruch@tkos.co.il, linux-arm-kernel@lists.infradead.org,
+ dan.carpenter@linaro.org
+Subject: Re: [PATCH v3 02/10] ARM: dts: broadcom: bcmbca: Add NAND
+ controller node
+Message-ID: <20240125102058.5ae46d8a@xps-13>
+In-Reply-To: <722d6bdf-9a43-436d-a9e2-4c21e1deb8c3@broadcom.com>
+References: <20240124030458.98408-1-dregan@broadcom.com>
+	<20240124030458.98408-3-dregan@broadcom.com>
+	<20240124183008.04a1bcb0@xps-13>
+	<2c10a764-f74f-45b2-8bba-77c40468f4b5@broadcom.com>
+	<85c97d00-a973-46c6-974c-3dfa587ae873@broadcom.com>
+	<722d6bdf-9a43-436d-a9e2-4c21e1deb8c3@broadcom.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] dt-bindings: net: snps,dwmac: Add
- time-based-scheduling property
-Content-Language: en-US
-To: esben@geanix.com, Conor Dooley <conor@kernel.org>
-Cc: devicetree@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Giuseppe Cavallaro <peppe.cavallaro@st.com>,
- Jose Abreu <joabreu@synopsys.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <b365dc6f756a3fad4dfaa2675c98f4078aba8a55.1706105494.git.esben@geanix.com>
- <30ce8f45b8752c603acc861ebb2f18d74d2f8a07.1706105494.git.esben@geanix.com>
- <20240124-reptilian-icing-a95b20f123be@spud> <87bk99hj7q.fsf@geanix.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <87bk99hj7q.fsf@geanix.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 
-On 25/01/2024 10:10, esben@geanix.com wrote:
-> Conor Dooley <conor@kernel.org> writes:
-> 
->> On Wed, Jan 24, 2024 at 03:33:06PM +0100, Esben Haabendal wrote:
->>> Time Based Scheduling can be enabled per TX queue, if supported by the
->>> controller.
->>
->> If time based scheduling is not supported by the controller, then the
->> property should not be present! The presence of a property like this
->> should mean that the feature is supported, using it is up to the
->> operating system.
->>
->> That said, why is this a property that should be in DT?
-> 
-> It is added to the tx-queues-config object of snps,dwmac bindings. This
-> entire object is about configuration of the ethernet controller, which
-> is also what the purpose of the snps,time-based-scheduling.
-> So yes, it is not specifically about describing what the hardware is
-> capable of, but how the hardware is configured. It is a continuation of
-> the current driver design.
-> 
->> If support is per controller is it not sufficient to use the
->> compatible to determine if this is supported?
-> 
-> Are you suggesting to include the mapping from all supported compatible
-> controllers to which TX queues supports TBS in the driver code?  What
-> would the benefit of that compared to describing it explicitly in the
-> binding?
+Hi William,
 
-The benefit is complying with DT bindings rules, saying that bindings
-describe hardware pieces, not drivers.
+> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 nand_controller: nand-co=
+ntroller@1800 {
+> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+#address-cells =3D <1>;
+> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+#size-cells =3D <0>;
+> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+compatible =3D "brcm,nand-bcm63138", >>>> "brcm,brcmnand-v7.1", "brcm,brcmn=
+and";
+> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+reg =3D <0x1800 0x600>, <0x2000 0x10>;
+> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+reg-names =3D "nand", "nand-int-base";
+> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+brcm,nand-use-wp =3D <0>;
+> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+status =3D "disabled";
+> >>>> +
+> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+nandcs: nand@0 {
+> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 compatible =3D "brcm,nandcs";
+> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 reg =3D <0>;
+> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 nand-on-flash-bbt;
+> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 brcm,nand-ecc-use-strap; =20
+> >>>
+> >>> Describing the NAND chip in a SoC DTSI does not look relevant to me.
+> >>> Even more if you add something like this nand-ecc-use-strap setting
+> >>> which is very board dependent.
+> >>> =20
+> >> I am not sure if I understand you comments correctly but are you >> su=
+ggesting to put this whole nand controller node into each board dts? >> We =
+have other ip block nodes like SPI, uart in this same soc dtsi file >> too.=
+=C2=A0 For all the bcmbca soc dtsi I am updating here(and its board >> desi=
+gn), we always use the strap to for ecc setting.=C2=A0 So I thought it >> s=
+hould be okay to put brcm,nand-ecc-use-strap in the default dtsi >> file. F=
+or any board that uses the raw nand nand-ecc property, the >> board dts can=
+ do so and override the brcm,nand-ecc-use-strap setting. =20
+> >=20
+> > I read Miquel's comment as meaning that the nandcs aka the NAND > chip/=
+flash part description should be in the board .dts file, while the > contro=
+ller itself can remain in the .dtsi file with its status =3D > "disabled" p=
+roperty.
+> >=20
+> > Are there customer boards, that is non reference boards that might chos=
+e > a different chip select number and/or not use the strap settings? =20
+> In BCMBCA SoC, there is only one cs and customer design also have to use =
+strap for the bootrom to boot up properly.  They can override it with dts i=
+n linux but I don't think any customer would do that.
+>=20
+> Maybe the nand-on-flash-bbt could be possible item that customer may have=
+ to set it differently if they don't follow our reference software design.
+>=20
+> I will move the nand-on-flash-bbt to the board dts but I would like to ke=
+ep the other default nandcs settings in SoC.dsti if that is not too out of =
+the conventional rule and Miquel is okay with it.
 
-> And for the purpose of the above question, I am talking about it as if
-> the binding was describing the hardware capability and not the
-> configuration.
+I think there is a global misunderstanding regarding the use of the
+nand-ecc-* properties. These are not the default. The default is the OS
+choice and depends on the NAND capabilities. The OS will always try to
+match the closest ECC settings offered by the engine, based on the NAND
+chip requirements which are discoverable. If you want to maximize your
+strength, it is also possible to tell the OS with a dedicated (generic)
+property. And only if you want something different, you may use these
+properties, but they should be the exception rather than the rule.
 
-"if"? You wrote it is for driver design...
+Overriding this with a strap is a bad hardware design on commercial
+products IMO. I am totally fine with the idea of a strap to choose
+the ECC configuration for development boards/evaluation kits, but once
+you've decided which setting you want you cannot change it for the
+lifetime of your project (or with a lot of difficulties) so I don't see
+the point of such a strap. So really, I don't like the idea of defining
+by default a variable which asks for an override of the defaults, even
+though many of your customers might want to use that.
 
-Best regards,
-Krzysztof
+So, anything that is design dependent (the chip CS, ECC
+configuration, etc) should go into the board DTS, and what is SoC
+related hardware (like the definition of the NAND controller) should
+stay in the DTSI, as properly clarified by Florian.
 
+Thanks,
+Miqu=C3=A8l
 
