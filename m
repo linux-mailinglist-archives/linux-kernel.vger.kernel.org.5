@@ -1,111 +1,146 @@
-Return-Path: <linux-kernel+bounces-38746-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E589E83C53C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:50:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69B8883C59C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:54:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6630F294DE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:50:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B2A81F22198
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:54:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9C0C6E2D7;
-	Thu, 25 Jan 2024 14:49:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C04451272AD;
+	Thu, 25 Jan 2024 14:50:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="zsNaadqF"
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rHkHVRvV"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9435A6E2BF
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 14:49:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1AED7F7E4
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 14:50:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706194197; cv=none; b=XGkapEev3pqx+KHVNDN5rSGD+OBwnF3KcIW0xuDuu+uBykBsMzc33VIScYd4UUym+r46DWqhhKdcwai0lB8oUDpHj+Mo7N+jLCMUnQgxhDtKZan6D6snrnefvEXt87Zjxmtzb09dLJVn4BvLNo2X6vVe+vhiTJBDLMuQmjY2Zes=
+	t=1706194227; cv=none; b=CzFAxIGK0x6yuxU28hreLXUXQqomRk2/RWwH9RtRpBj14DV8eAan4M9NvWCF5RvQQItzQfX96IqoaHKkswUkdswMzSgo8CQM6xvYJtNopc/i1asBSqpwYRm4fuMvVQdwUMnLCZRKtiUb+Qk0ppkXyG9V1iUYCeHvpxB6LNuoZCA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706194197; c=relaxed/simple;
-	bh=5utcNi5EbwXGXKE6XBUr2p3B+QtNTPUv/WMImZ3KMxQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=krBXgIqxoj67nRXx0sFvPIcHxr6j9AAM2eYXloB9l+n9lXDGy+TjloAKODOsRIc4zRd+P88ZD9Tx+vqDTr18ZcmrE0YZ92ncbd3LowazjyfuCshfC6ROyKIqfHFW60KU5sgv5iikArsfDJoIvSe4Vua57YWPd5flDMiOLpt9sn4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=zsNaadqF; arc=none smtp.client-ip=209.85.160.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-4298b23abffso38718961cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 06:49:55 -0800 (PST)
+	s=arc-20240116; t=1706194227; c=relaxed/simple;
+	bh=hXVQ0xlIaveU3XkFuaJGe+I4uTpyEmgE+f4FfHSp1qs=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=BQeESNWw1U0WmsuH5yzXrThH1rQ2UFsYL/5sIhz06dN0aYL49Xu9NQzo0yMwyA/6Y43ik6CDnc1mv+BFMzhF7wIuG/e1W4OSqM4aplI5W/iHuAo49HjmD6LHk00Ov2bbCsCvlbp1kpufRLTE60phNFuExDbn9f3cbpGFF60OJvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rHkHVRvV; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40e76626170so75552225e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 06:50:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1706194194; x=1706798994; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=e1Jufmt29FN+BCLayi+KSCZM2a2FaZk0tkZi2gIXjUg=;
-        b=zsNaadqF097doUCGMvDwAc4kbpCdddtucOLm97wr3wzsZwI8cAkIvcg8T2SSbpxiq7
-         3jLnmw1BPUM5ha4zIIrBS5HxnO3F3nA5e1Fl41G0N4ScqMb3iDzwsPdcx5c+hZOl4RHZ
-         FIGijc2nzjaOwGWjiSWvOYwuvQEjEn4E13OIl+7tg4TjdFOkYMceUiFMa8mj9LfvSZFc
-         XHbBRhHoasA8eeCR0Z4V1XiH3/Ejp23zaFyeOtOd9pDZNyw1cKNeP7IPnEn9Cr1ONy8k
-         eqdL5Suo/zJ+41NKIGILR9jkZWOLeQogGQaXb6H0dKwJfotrJbE8fTHjAxBkbZm79fzJ
-         xdeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706194194; x=1706798994;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1706194223; x=1706799023; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=e1Jufmt29FN+BCLayi+KSCZM2a2FaZk0tkZi2gIXjUg=;
-        b=Qat1BaUMxCrOOp2vLHBUmNOIK2XxSHL8PIffx9plqpNIDSzbGCvotY2sXCSG32m3EK
-         L3boK5ssMkOexAEI3xnuUCOsQlEYiM5qiJRa9lQiPZx1QnQYJzRyigvU9MxwrJyt/8s9
-         CMkE6auB3z1am5PTFC2Czlc7ZtHur8VcXb/+nDvKcZf/qsHi8MQzdg0XvKYJM3JcmMNU
-         oDyvu+4URFOuPAsiJm7ZTNR90D64CpaZy6eFFDTGbTVK84YMIil2zodo5RGtb+cT61Cw
-         uRLqZwrk4Zco9phsghqoSiwy4StZFQK2ksdMwdasxDqT12YU4ZiAtjlMr1q0eElsUI6n
-         WVVQ==
-X-Gm-Message-State: AOJu0YyYJZlgMWjwsm3gRv4IjStqptEO6JRwmqYh9wbPo0NcdFQIytmo
-	iDyI7DbIswh9raextkc0aJIaWtyLEzAgTrcDjWkXheQdQ1eJ3YaSujmBF5oMd+c=
-X-Google-Smtp-Source: AGHT+IFMyIXKi0ksURve7d4Kvfnuupv44sbMBvOfwALrt+vAce7BUIIrP25e6L2zwFgSedr4IQ6wGA==
-X-Received: by 2002:a05:622a:10d:b0:42a:3195:e8be with SMTP id u13-20020a05622a010d00b0042a3195e8bemr1205799qtw.51.1706194194446;
-        Thu, 25 Jan 2024 06:49:54 -0800 (PST)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id en11-20020a05622a540b00b003f6ac526568sm5420997qtb.39.2024.01.25.06.49.53
+        bh=GwSZ9ii64mt7cJNVg0lI8ru0eSDBGUd0YlY2mDEiodU=;
+        b=rHkHVRvVsq/fC5NwydsH3ES17+/nzhdUHaLe+oOTHj5w0PmXxcNR8wWQoJeh7MIDZ5
+         hA/9qXxG78lTObSK3IaxMWsI2ExH6gXe9QagmA3o6znxab8Rw8onBngLEBEnykfLoivO
+         vGvnDuKXH4xW3nQX+yhx1OVKPlCUe6Kwr8gWkDCaEyyHdeFwbBrkvvIBvbGgqWuS4cRi
+         tM4h2JNKBVxPMJLSbfAHxAJNDolHMVg8t1DzOLfZT0SRb+Wyt2i/+FdpptNst5eP/emG
+         +fC3KEHQ3mBYnYw0PJCmAmtN2HoUZCG3ayZzq5T7Z/yr4Zs0aE7sWA4rPRtJf83GqbcL
+         8Vug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706194223; x=1706799023;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GwSZ9ii64mt7cJNVg0lI8ru0eSDBGUd0YlY2mDEiodU=;
+        b=iNuojEATaZq0vLekzt4kmqJioLnM3NMmrR6Ra3ljfpwmcq9b29lUHS1kZjKL1wmEjT
+         Q6D5hR0dbqWQEL60ZPTHFvReyINWc2sxZdeBLyjNTjAH31tu0Dy8M64CLyTXQbcYDr8e
+         YOEKEBaWfiDX3bX9EcS+omUiCkDuo0MWFRnxHiS7UPxfjShyv3E1B2Mg8eHWxSQBAG+s
+         0DqmQBusSiuGrZNX3pq9n5hVnv6kFGMtdBfswp61rp1FBJYNnJF0h+W5eg39IV9JmhGG
+         v9uNZRjpVtunNS5JY07LPhftM3q9jSJ7tJsE+YqeTwlmlNSr0Ll8oNaT33r0VgexNo1s
+         ewNQ==
+X-Gm-Message-State: AOJu0YwNXEQhDTOp9uRn/EGJ1WU1/xcvp0HIR+NP4Arm7Hi0BOzv6tbo
+	MwUSlbCJUSpgP/zwuyPCqgkPmzWSbOq9qulg5XjGBHjvfvQHHShOUtk9NyhF/k4=
+X-Google-Smtp-Source: AGHT+IHU3uE9VctkwSLc7sy1ouZi/e0ls1mgPCFV1inwCVVGb/ieTXa3QkXnQoUQMDecFLIT7pf3+w==
+X-Received: by 2002:a05:600c:458b:b0:40e:af93:54f1 with SMTP id r11-20020a05600c458b00b0040eaf9354f1mr697668wmo.5.1706194223137;
+        Thu, 25 Jan 2024 06:50:23 -0800 (PST)
+Received: from ta2.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
+        by smtp.gmail.com with ESMTPSA id v17-20020a05600c471100b0040d91fa270fsm2875875wmo.36.2024.01.25.06.50.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 06:49:54 -0800 (PST)
-Date: Thu, 25 Jan 2024 09:49:52 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Nhat Pham <nphamcs@gmail.com>,
-	Chengming Zhou <zhouchengming@bytedance.com>,
-	Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH] mm: zswap: fix missing folio cleanup in writeback race
- path
-Message-ID: <20240125144952.GE1567330@cmpxchg.org>
-References: <20240125085127.1327013-1-yosryahmed@google.com>
+        Thu, 25 Jan 2024 06:50:22 -0800 (PST)
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+To: broonie@kernel.org,
+	andi.shyti@kernel.org,
+	arnd@arndb.de
+Cc: robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	alim.akhtar@samsung.com,
+	linux-spi@vger.kernel.org,
+	linux-samsung-soc@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-arch@vger.kernel.org,
+	andre.draszik@linaro.org,
+	peter.griffin@linaro.org,
+	semen.protsenko@linaro.org,
+	kernel-team@android.com,
+	willmcvicker@google.com,
+	Tudor Ambarus <tudor.ambarus@linaro.org>
+Subject: [PATCH v2 14/28] spi: s3c64xx: rename prepare_dma() to s3c64xx_prepare_dma()
+Date: Thu, 25 Jan 2024 14:49:52 +0000
+Message-ID: <20240125145007.748295-15-tudor.ambarus@linaro.org>
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+In-Reply-To: <20240125145007.748295-1-tudor.ambarus@linaro.org>
+References: <20240125145007.748295-1-tudor.ambarus@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240125085127.1327013-1-yosryahmed@google.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jan 25, 2024 at 08:51:27AM +0000, Yosry Ahmed wrote:
-> In zswap_writeback_entry(), after we get a folio from
-> __read_swap_cache_async(), we grab the tree lock again to check that the
-> swap entry was not invalidated and recycled. If it was, we delete the
-> folio we just added to the swap cache and exit.
-> 
-> However, __read_swap_cache_async() returns the folio locked when it is
-> newly allocated, which is always true for this path, and the folio is
-> ref'd. Make sure to unlock and put the folio before returning.
-> 
-> This was discovered by code inspection, probably because this path
-> handles a race condition that should not happen often, and the bug would
-> not crash the system, it will only strand the folio indefinitely.
-> 
-> Fixes: 04fc7816089c ("mm: fix zswap writeback race condition")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+Don't monopolize the name. Prepend the driver prefix to the function
+name.
 
-Ouch, good catch.
+Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+---
+ drivers/spi/spi-s3c64xx.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
+index 25d642f99278..447320788697 100644
+--- a/drivers/spi/spi-s3c64xx.c
++++ b/drivers/spi/spi-s3c64xx.c
+@@ -273,8 +273,8 @@ static void s3c64xx_spi_dmacb(void *data)
+ 	spin_unlock_irqrestore(&sdd->lock, flags);
+ }
+ 
+-static int prepare_dma(struct s3c64xx_spi_dma_data *dma,
+-			struct sg_table *sgt)
++static int s3c64xx_prepare_dma(struct s3c64xx_spi_dma_data *dma,
++			       struct sg_table *sgt)
+ {
+ 	struct s3c64xx_spi_driver_data *sdd;
+ 	struct dma_slave_config config;
+@@ -440,7 +440,7 @@ static int s3c64xx_enable_datapath(struct s3c64xx_spi_driver_data *sdd,
+ 		chcfg |= S3C64XX_SPI_CH_TXCH_ON;
+ 		if (dma_mode) {
+ 			modecfg |= S3C64XX_SPI_MODE_TXDMA_ON;
+-			ret = prepare_dma(&sdd->tx_dma, &xfer->tx_sg);
++			ret = s3c64xx_prepare_dma(&sdd->tx_dma, &xfer->tx_sg);
+ 		} else {
+ 			switch (sdd->cur_bpw) {
+ 			case 32:
+@@ -472,7 +472,7 @@ static int s3c64xx_enable_datapath(struct s3c64xx_spi_driver_data *sdd,
+ 			writel(((xfer->len * 8 / sdd->cur_bpw) & 0xffff)
+ 					| S3C64XX_SPI_PACKET_CNT_EN,
+ 					regs + S3C64XX_SPI_PACKET_CNT);
+-			ret = prepare_dma(&sdd->rx_dma, &xfer->rx_sg);
++			ret = s3c64xx_prepare_dma(&sdd->rx_dma, &xfer->rx_sg);
+ 		}
+ 	}
+ 
+-- 
+2.43.0.429.g432eaa2c6b-goog
+
 
