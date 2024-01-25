@@ -1,130 +1,142 @@
-Return-Path: <linux-kernel+bounces-39271-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39272-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0842583CDE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:59:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3610583CDF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:00:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44C921C2265C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:59:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E051D1F26D59
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:00:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAFC21386CC;
-	Thu, 25 Jan 2024 20:59:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E937E13A240;
+	Thu, 25 Jan 2024 21:00:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SMe0vKK4"
-Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="B/GIJejZ"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3B5F13665E
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 20:59:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44FA31386B5;
+	Thu, 25 Jan 2024 21:00:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706216382; cv=none; b=Mj0sg4I8LqJwhhA0kFufObg1No4GV5ARqJbZbrpKE4XyHPQL8eJc86M/mQLVCuv2e3/Iv8+bb6ZlToHt/4/hHNXnj5Pn+NYB5EhZ34vTspSNQx16Wv6wdmcpQvjGDwv0EEH1F9wfqQFJiVIcLGK9fCjSvrudeX88zEoP33ymS50=
+	t=1706216441; cv=none; b=X15WIUW2wd3033tIAtaIz+0byAZZDVidKG0Vfkiqpy3Anp4rpZuLD0P0GTMz3WWbavZ+IJB04vCjFwlGowblH79ntDWPJMf97OaW78ZBsldVZ9mE5KX2InqZ3160CIaAAtEgI3B/K+KoeIBckjhhXFUAZiZXFKzR8SGb9HWXB24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706216382; c=relaxed/simple;
-	bh=kugWdLPRbZv+nvzTzXeYEHDhAGQHx+mp0pJFpgLrtHU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uiuvTHrCtxVRRk4Io7flrtMk0ovWrL3baZNV5H4AxV6jd1O0xPNsx+ES3QL6Wgj66rhJzwf8STGg0Rb1x1qq6eaZA4jE4JjJrpikAiBq7OWXtSReZqaa9su5aAUS7VwbmVQRSAL49IExlT/P6OOIf2v+vdmWhFKX0MM5CmWfzTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SMe0vKK4; arc=none smtp.client-ip=209.85.166.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-361a829e012so17215ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 12:59:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706216380; x=1706821180; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fxhQjCPn4Rmv3lAxNtNAmeDVJacck3kwKzoL0OQKBYo=;
-        b=SMe0vKK4SSoZ8TR2ECS4eYh2DX7n11XvgPG2OIGXfJf2LSunohim7xvl+TvkNOzMnI
-         Pf37y0CNYNq5Pk0lkrGmN54EzrUZVezz9C2So+O0nhuKfmTVFjEyxl3MCTYUBhpCM3z5
-         s/tFi9rRLwE0yYxx+++17WEAl1yVnrKY1hBLFm2BvZuhz5U8UEmQDVviVzm+kYNXDyRY
-         rR82/b26bOiLhflumVwkStXiQlM+MEEoVy58JRawyt+eAWYxesZWwm9rVvQIfUOumLhv
-         xA9RVLLBmkDRgeZGmorJWEIB2wgc1VfiYlOoYrOGBDuTm1NUsCooYzHDIHW0EsMc7nS9
-         zSvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706216380; x=1706821180;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fxhQjCPn4Rmv3lAxNtNAmeDVJacck3kwKzoL0OQKBYo=;
-        b=Tbqn9P/w8T5pAd37xMdBgNpSWuUlhK2qMNHz+e86HXECs0GAnD7PdYA8mPAWsDigQC
-         pQYzqEI7anReLze07agjSE8G6RUVjeW97j8A6Hq2KEXM4onCtzgezi611iROTiutUk56
-         FvO8lq3lHSwWUx8xt8rt9uFMkPC/ZsZ9rNnZTPu4gZ1v5kxHfNzPDv5rd20fjP6FdPOP
-         Lo5pBTiVCCPsmlbPCQsJBgx0Kdw2aGoMzCIY21+G36DesrLJqCttmq1+tmQr9SZy2uCi
-         8NrVOHlsaSwIDY+fV0sz4KS9MXkgqpcGdQRQWyvXEjeODnmknf/WGDvNDHQmjY0gTXyC
-         gM8w==
-X-Gm-Message-State: AOJu0Yyhoxz+rHO2CJoKOpEcflA/HCmuafohQKA2XeMFtJUCMe5Wk8pP
-	PKQsEZyZuoM201jpqehzvH2MhGMnPgX9R2ipvo6aS1LctRWhiuqmfUzu2fUxpToxz3NMi6QM1Pu
-	1JuTSu3Pr1PK+uLBazmVoM5NrDLq3B04EAwiA
-X-Google-Smtp-Source: AGHT+IH6w3OVXl5Xxvj+X6w0bhRST4tKM7ssjJkE4Ww6EnA/boQv6Rq+izaq72As41Kbl3V2NYqiU7fSbQrPhDQo8PY=
-X-Received: by 2002:a92:d4c9:0:b0:35f:6f66:286 with SMTP id
- o9-20020a92d4c9000000b0035f6f660286mr3777ilm.11.1706216379661; Thu, 25 Jan
- 2024 12:59:39 -0800 (PST)
+	s=arc-20240116; t=1706216441; c=relaxed/simple;
+	bh=ok+32FtmVclV0n6TpLijrlAAhb9UWUJRHcgWWrOsCho=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HtggdpC5YK330t2ygwlMuDt+/IWA7Vb30DXSSRLzB5N0iE1GuSMckyM73VrFxqE8tbB34q7p1aj8xpSydetBFJhxIqcdrNib+YPSgaOXfH/CgvVJWAxZTrrrSAL7tGyZHp2OCZagIyO1Ne228hPKMounXenlEAqqjhhr/cE2B0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=B/GIJejZ; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40PITWOx010339;
+	Thu, 25 Jan 2024 21:00:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=qcppdkim1; bh=qYbd+OgO9VT2uIIAAIIiB
+	iDYaYXBdYYPdxEdS1JCPeI=; b=B/GIJejZ46j9qkZmmsAhjANbwmtB4voZO09Ua
+	Vood/zrUeUC+TRVbih2Vuu636SrX6xrLvbMTu+o/V9wWjr83VmMhk/ItDf2z+3Dl
+	kHNSwjDd18NTg14qIH2u/n4hUxJtlQHHSP7X3fiTAg7HA6N8RoRLHNY32D208tx9
+	vNyESANezegWQSbZSotpAG+Z/upV2p/ZNO5PKEuNiKMnK/LOLUnN9A1zi+n83cR5
+	+hFRaxGnc8pjtE2otnyUUz3CJwK7PlgmVM/o2rLvEVtSbfjrP/GRSaOQKe2+A52d
+	SYKmzB6llcv9S4SxCx6ABpKjQ6N+8Jzqx8e2jkssdZJpCDKmw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3vun6w1tfa-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Jan 2024 21:00:18 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 40PL0HWD022504
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Jan 2024 21:00:17 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 25 Jan 2024 13:00:16 -0800
+Date: Thu, 25 Jan 2024 13:00:15 -0800
+From: Bjorn Andersson <quic_bjorande@quicinc.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Taniya Das <quic_tdas@quicinc.com>,
+        Johan Hovold
+	<johan+linaro@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v3 1/8] dt-bindings: clock: qcom: Allow VDD_GFX supply to
+ GX
+Message-ID: <20240125210015.GL2936378@hu-bjorande-lv.qualcomm.com>
+References: <20240123-sa8295p-gpu-v3-0-d5b4474c8f33@quicinc.com>
+ <20240123-sa8295p-gpu-v3-1-d5b4474c8f33@quicinc.com>
+ <f6844d28-c7c2-4afa-8520-2e62c608930d@linaro.org>
+ <20240124212116.GH2936378@hu-bjorande-lv.qualcomm.com>
+ <cc68112f-3863-4f82-b708-7787a4895a88@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240125184411.30757-1-kotborealis@awooo.ru>
-In-Reply-To: <20240125184411.30757-1-kotborealis@awooo.ru>
-From: Ian Rogers <irogers@google.com>
-Date: Thu, 25 Jan 2024 12:59:27 -0800
-Message-ID: <CAP-5=fXWALXbbDSv9rY9DN3vRy8aynk2MQEBCbqC7drP-Xzcrg@mail.gmail.com>
-Subject: Re: [PATCH] perf data convert: Output empty string for null pointer
-To: kotborealis@awooo.ru
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <cc68112f-3863-4f82-b708-7787a4895a88@linaro.org>
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: T61nsVoCgfHh9mUrWbMo-vwlSjlVLmgd
+X-Proofpoint-ORIG-GUID: T61nsVoCgfHh9mUrWbMo-vwlSjlVLmgd
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-25_13,2024-01-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=530
+ lowpriorityscore=0 adultscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ bulkscore=0 phishscore=0 impostorscore=0 malwarescore=0 suspectscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401190000 definitions=main-2401250150
 
-On Thu, Jan 25, 2024 at 10:44=E2=80=AFAM <kotborealis@awooo.ru> wrote:
->
-> From: Evgeny Pistun <kotborealis@awooo.ru>
->
-> Providing ill-formed input to `perf data conver --to-json`
-> causes it to crash with segmentaton fault. There's a bug in
-> `output_json_string` functon: input string is not validated.
-> This could be reproduced by crafting input that does not specify
-> hostname/os-release/etc, which are written to 'headers' section of
-> outputted json.
->
-> This patch adds a null pointer check. If `output_json_string` is
-> called with a null pointer, it should output empty string (`""`).
->
-> Signed-off-by: Evgeny Pistun <kotborealis@awooo.ru>
+On Thu, Jan 25, 2024 at 08:39:15AM +0100, Krzysztof Kozlowski wrote:
+> On 24/01/2024 22:21, Bjorn Andersson wrote:
+> > On Wed, Jan 24, 2024 at 07:31:34AM +0100, Krzysztof Kozlowski wrote:
+> >> On 24/01/2024 05:25, Bjorn Andersson wrote:
+> >>> +# Allow either power-domains or vdd-gfx-supply, not both
+> >>> +oneOf:
+> >>> +  - required:
+> >>> +      - power-domains
+> >>> +  - required:
+> >>> +      - vdd-gfx-supply
+> >>> +  - not:
+> >>> +      anyOf:
+> >>> +        - required:
+> >>> +            - power-domains
+> >>> +        - required:
+> >>> +            - vdd-gfx-supply
+> >>
+> >> I don't fully understand what you want to achieve here. If only "allow
+> >> either", so not a "require either", then simpler:
+> >>
+> >> https://lore.kernel.org/all/20230118163208.GA117919-robh@kernel.org/
+> >>
+> > 
+> > As discussed in v2, power-domains is currently an optional property in
+> > this binding and I'm adding vdd-gfx-supply as an alternative to that.
+> > 
+> 
+> Then go with Rob's syntax - not:required: Much easier code.
+> 
 
-Reviewed-by: Ian Rogers <irogers@google.com>
+I looked at it, but was not able to understand that it expressed my
+desired result. Now I do, and I agree with you, so will update it.
 
 Thanks,
-Ian
-
-> ---
->  tools/perf/util/data-convert-json.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/perf/util/data-convert-json.c b/tools/perf/util/data-c=
-onvert-json.c
-> index 5bb3c2ba9..f8fd22bd7 100644
-> --- a/tools/perf/util/data-convert-json.c
-> +++ b/tools/perf/util/data-convert-json.c
-> @@ -42,7 +42,7 @@ struct convert_json {
->  static void output_json_string(FILE *out, const char *s)
->  {
->         fputc('"', out);
-> -       while (*s) {
-> +       while (s !=3D NULL && *s) {
->                 switch (*s) {
->
->                 // required escapes with special forms as per RFC 8259
-> --
-> 2.25.1
->
+Bjorn
 
