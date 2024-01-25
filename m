@@ -1,287 +1,204 @@
-Return-Path: <linux-kernel+bounces-37868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B136683B6CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 02:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 84BA083B6CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 02:44:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62DF428781A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 01:41:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 355702860BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 01:44:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 906EE566A;
-	Thu, 25 Jan 2024 01:40:58 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A56BC1FB4;
+	Thu, 25 Jan 2024 01:44:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="RXA8HAth";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="NqDw/1B3"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CB3610E6;
-	Thu, 25 Jan 2024 01:40:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706146857; cv=none; b=CKqt5Mz6Hd98CLymhQPMU5nQTqKq46+yZ6rCL5X1x5nRxSZ5tSaEFe5rWDCzCWl35MXfssp+/7qoaPZQlkRewKu/sBkV0i8m3oSyq4oGSIaAyFsU61b0B5Ysns4etwosPqRtOCqFCw1cmpz9vh6soDFruHVRYA/hqc1u5eDY7es=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706146857; c=relaxed/simple;
-	bh=GDEKcx6onVsx23QceFWmpb1VE7xCNpdesMtOmf9hCbM=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=I8NheD1dguGh7CLgFaLvIWEXjp5kNB4s3A9+xe0VaDAFsWoat9GCgxInlC38ad9HnfZkMAnUnPIX6lU4ME2BrUZy+bQpjXG5aNi6PAboDu3bo1Xn20CX5c6t6bgsqzpiAiauNxUvli6WtxnMsndr5sLOpsQ+nd0joN3Gs7XdQc8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TL3SF4JT9z4f3kFM;
-	Thu, 25 Jan 2024 09:40:45 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 88FD01A017A;
-	Thu, 25 Jan 2024 09:40:49 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgBHZQ4fvLFlKESQBw--.18874S3;
-	Thu, 25 Jan 2024 09:40:49 +0800 (CST)
-Subject: Re: [PATCH v2 00/11] dm-raid: fix v6.7 regressions
-To: Xiao Ni <xni@redhat.com>
-Cc: agk@redhat.com, snitzer@kernel.org, mpatocka@redhat.com,
- dm-devel@lists.linux.dev, song@kernel.org, jbrassow@f14.redhat.com,
- neilb@suse.de, heinzm@redhat.com, shli@fb.com, akpm@osdl.org,
- linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
- yukuai1@huaweicloud.com, yi.zhang@huawei.com, yangerkun@huawei.com,
- "yukuai (C)" <yukuai3@huawei.com>
-References: <20240124091421.1261579-1-yukuai3@huawei.com>
- <CALTww28G_CmSxzJZVDqHmPgdmT1e2X8+QcToiUOGV1msAisTcQ@mail.gmail.com>
- <CALTww2-1oSCahsqouQv2WT1SDCYDGRepJyh9e_Ph=YjPEboqXQ@mail.gmail.com>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <b8517f1c-5246-14c5-b443-f3c47eb0bfa2@huaweicloud.com>
-Date: Thu, 25 Jan 2024 09:40:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8800AECC;
+	Thu, 25 Jan 2024 01:44:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706147053; cv=fail; b=mH91bKHf3ZScbHoqOHfrgRhb2gf08we1BwmNyHJHQHQOC894p3lNBLlpcVkkUg8/gi3MZpMzmfDlV8ZIVjHHOIFNLCNiLxZdRKl32L9aZ4sJ5HVXDWtghgkO7ap55ISDmWEqFxZXm6y0wonrrGXtMlW9/6Aoq7SsaxR3N5HTCd8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706147053; c=relaxed/simple;
+	bh=AwIO0HaHI9Vo+wNUNxG8+OVH9mfqIoWmjLwniETgPug=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=Qk+oceRCW3rNzs4MXdMAMtiViQIQD58YZFrMY++M8aJC5c4QVa6pfhc915mWG7j4WrFdRYUp459srjrJiPhkOfS31bMFKeMBfWSnefTQtW3frJOSd08Wjzcw4oQUSIqzj3Onxj8/80Llilg5GYz+2z/drR8OpbbUeSf70SPueGw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=RXA8HAth; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=NqDw/1B3; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40OLcKRX012346;
+	Thu, 25 Jan 2024 01:43:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-type : content-id :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=zTbl73vS7OufFZJ7L3wu3+YWuiq88oCChvonCvS2vrc=;
+ b=RXA8HAthsTySMolaZdrRiyO5TNDmp/hRLA+kdSE6ydev3Cbah65oLMC8FMY0sDXTTV5+
+ xBICTnZMjXwGrWYN4C+7hDjMcLEBGyGCG7qiTlHYe8eih5lHMuqz254+nbMeKVsSl01b
+ ZdfojNLAmFGC94F/fOWSSLL1FIRNjbsLmUVjnCjvDe5/ZxkRqf1pVffnbr/wV95CHjgh
+ mE0h9Qybv8azj0Gmyfiz04sPeqGHU3xerI1vV0PspLUHQM+jKR6hCv80wGpdS8TRCEAt
+ g4b2ywVSg5c+2lPs2jtSUsHDj1NZH94zuXAm5qAO2GZIWDEknTVN/f2cgmcVu/V5opCt OA== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vr79w5xf5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 25 Jan 2024 01:43:53 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40P03hiX026203;
+	Thu, 25 Jan 2024 01:43:52 GMT
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2168.outbound.protection.outlook.com [104.47.73.168])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3vs3183n3g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 25 Jan 2024 01:43:52 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=c6gjqwB1u3roV0vzaedj12+5A6xv3rtUj256C/LhhSIx86yYYljtq2nqxDgmEVLrrXcCDvkv4TxHkz1dGOTAwUWQgv4rtXkkNnltPuX0yr/akCSkdOe3hmYvzwn7IKghKMZziQ0PKPEdPDtbl84Zwvtn47zCdVee6PTJekFQzu45fsMAJ/v3E8LFMmxuJQm+RpY28d7Jnl9/oAJy+f7OmMNQnpXmc/uZy6xkfl+r8HDH6Py1yUt/HhrFjDFjX31MZaOJh5Qvuylx+uK+B/IqVG3VP8xJ5UGptW/pjWMwMTQrqbFRxpgVupDTDPKo8Qz0RmPYjVedKIknUU/vqJEYgg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zTbl73vS7OufFZJ7L3wu3+YWuiq88oCChvonCvS2vrc=;
+ b=K5CZXSq2HNV0mKNHIloLUC6zzP1xoytheSCCDN95gmRt6VCwTZmR+UwQcE4/VP6PT9VkYTGoDoFUq4XgYkgK5wnoojOqYnZ7kB7vLy0ABww3Wbznypb4lBGeCHH8N3ezALSdEOK6uYPm3uY0PFm1q3eMBbqtQTU0Y/wpuGySiCCqs2Rh1+2YjwHWuJpRnSbSHqH+1ZueZTSn6uEtjM57sJpO+KNK1igLu0zQXpVl9otOVVbxW4Ko1wwfdFxFct2Yam150KQX3iVt+laMaB4NdlXzq/ioloyVUV7ZDTSfH7FBZaFlVg83U1bsGJkHSfh7R8BmF/8TH+eZ7f0sXq9z6w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zTbl73vS7OufFZJ7L3wu3+YWuiq88oCChvonCvS2vrc=;
+ b=NqDw/1B3wKfNiuN9SyjTLVpTxdWuX+E5ujnRIU+GMMrRSeEBDvLpWo3qF1pkrK85V5/W1IcocBuPfaQ0wWG8KkKUVDzJhX3NflUwlNuItqf9qn6jp38e4VDh7c4q3TYQXHXWBhEuqdpWp1fH7aqAb2eCRrvQYV4De4FC/ugE3/4=
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
+ by IA1PR10MB6832.namprd10.prod.outlook.com (2603:10b6:208:424::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.22; Thu, 25 Jan
+ 2024 01:43:49 +0000
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::5475:bf96:8fdf:8ff9]) by BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::5475:bf96:8fdf:8ff9%7]) with mapi id 15.20.7228.026; Thu, 25 Jan 2024
+ 01:43:49 +0000
+From: Chuck Lever III <chuck.lever@oracle.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+CC: Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        Linux Kernel Mailing
+ List <linux-kernel@vger.kernel.org>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: [GIT PULL] first round of 6.8 fixes for NFSD
+Thread-Topic: [GIT PULL] first round of 6.8 fixes for NFSD
+Thread-Index: AQHaTy/x3Xtqa1du6UyZnbQL8BRVmw==
+Date: Thu, 25 Jan 2024 01:43:49 +0000
+Message-ID: <A3915BC8-E134-4094-A88F-3C75CA908B10@oracle.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3774.300.61.1.2)
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN0PR10MB5128:EE_|IA1PR10MB6832:EE_
+x-ms-office365-filtering-correlation-id: c81b2888-489f-4c11-78ab-08dc1d47143c
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ YhcVnTwdb6JYLl1MvTYZzYzHJJtUdUSvc1MKZ0BAHQJha3VUopIQe53bfniX6VewlFdFky2EX3NQsqy2YS6bOkj4MK+TOJDWW3j8PmC8OSGKk9bwdp+wkDBwGyIWaouqG/68XfskUGNgpgRMYax2P4Iq5R7xDE2lAM4bmXbr8i0CosFEJusotQ5tj4AAzqzlqFNEPA8LNYIaqLXtwcZ+DHwGBddc0BiZqKeFx5dLEmuKdD8RgnMs/uv6oQNhdq7GBt1xYUOiaD2JC8b4th0BOcizD0n/q8jpsceqksWfhIlSl8dYkdzDROzncXNKLvtOH5BRii8PIzmtJoS3WUj5eopV//6RvkFmF1+uUWw5Z6OZifsAmnSlg8XrqZHnZYGxx+YFI8Fv6E0lZaVzlxuYiOJn7Sfmk9SgxcA4KUgz7pRPvduahDMhGDAqux/pSymJpOimgOU8HLkFclr4ne0LoLl/mE0tFxXZpjGy5qV5DmejrxMoUijgqoQhBNWkiptdstIhXovov8zgJWvKrgZq50LGrQjyPoJ5Fdr6xurOkXJI4t0vWn9Zh/H7si2aXDytte6GS8dCrWQabKwBAlHI94dhO2Qult5EbEojm2hZfykwWZwrhaiA9o9NJGKcVy5r
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(136003)(346002)(366004)(396003)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(66556008)(66446008)(64756008)(6916009)(316002)(66476007)(54906003)(66946007)(76116006)(122000001)(26005)(2616005)(91956017)(38070700009)(478600001)(6486002)(71200400001)(41300700001)(6512007)(36756003)(966005)(33656002)(6506007)(5660300002)(2906002)(4744005)(38100700002)(86362001)(8936002)(8676002)(83380400001)(4326008)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?us-ascii?Q?hgxNih3fU8VsYSusdK3E/dNmY2po1iKbXSdXCW6vjuf9RhLi+CHsf9VmtKcw?=
+ =?us-ascii?Q?8pbSMG0Td1sx27IsysYdZ3iJa5gCOm9shNhwy1i5WbSe7IZUoZVnwen55lXu?=
+ =?us-ascii?Q?DnGWooPB00nkW6OvygKAABeitjYOLMX3eY7aiz67cy4l1Vc4e63GwVfkQLsN?=
+ =?us-ascii?Q?KRJYqsuuXz3ZWDHeQ0JktNphZx8MT4xDEZ9VRelpgT7BP8p4H4eNeqdtQHMk?=
+ =?us-ascii?Q?AxjHChvTKEC9zjFgsPfOOi2NibhVbjgCFffR2XLULxOhfBFhUOVRzXhw8jqZ?=
+ =?us-ascii?Q?0g9Q25gnSmO3TPqiWIVaDt21SV0YNRLVHyK4WaZpJ8Xxxc/Ts8caQWI3OIIr?=
+ =?us-ascii?Q?dnhBJx/hOuL5A/HDNXJnkWfndzPP1CwGitcD5VaWFcOLqAfZJHmx+By043mM?=
+ =?us-ascii?Q?7UOOAdZsTTwwWTqNDrjuYSSzdmR3BYKAS+G1M0SmvnLowLmiPtDat3y38hl+?=
+ =?us-ascii?Q?saVCp7aPnIcNWR+yLLQTGEO/wJrOq7XoiEEWCker+bzHhPXGSQlYZtqQrMyA?=
+ =?us-ascii?Q?IFsobsUT+j3z6LN5D/aJig3C/wjr7h+PSpqB1kIMnWdpzh50eJqZbfkzUkzX?=
+ =?us-ascii?Q?JPwvU/AfODgX8oA8XdIzyENoexA+P5Popwb+2oVkPFCgsC/yG1ZzQG0WzJ90?=
+ =?us-ascii?Q?Zw1vU6PC+9cgUju/LUpzno5NtxY6geWTou7MMOpOx09KkD4evFuaOWBxTDKr?=
+ =?us-ascii?Q?u9VqeS/NKeEyGY1xKVbhLXU36S9Y9fxJM4bGEhXQrvIrHd3Pm54SjVAd1B2Q?=
+ =?us-ascii?Q?piP8smuSysIjPrKpfCzvT1pKjdliWYSMvXrv0nn2pDy5Y7OzmGlMHx5iIBRd?=
+ =?us-ascii?Q?n136b/Rdjjo9Cqr0ygJlwf7PPJBuKccamJ3zPREUXfJpwaSbkmJqUuZGFhxj?=
+ =?us-ascii?Q?aPRW37zO8MDlhRGuhV1YmVyJj3keX9C3/4MB8qdoHk0/Y7Jxg1xr6NZqJwLt?=
+ =?us-ascii?Q?Y74WEGat1JFPsCh8DZ+biHpEaKzlHC8eohrDD4WMCZPuOf1ypFtVJEEeoPas?=
+ =?us-ascii?Q?/VScXeKWHzwsLLQJAFjDHoRRzSryLSmEzi0+hKszaM2V1M0FiMJoT6F9eHln?=
+ =?us-ascii?Q?TbVIHDOxejfzFW3OSrkH/Wvx+iZ89Opz7GQSrzmrtRhrMiHofqeNU5PJdn5m?=
+ =?us-ascii?Q?/p7ygUTaAOGDyFfBKIPyNnrv73vFM60dUUtoCFCAuFjpr1ywKaXr+lH2k/iv?=
+ =?us-ascii?Q?ULIMLrptb1RgfimJUZa9qfv4fQedqfnmgyz/vZQoBWF927Ty4n8fYz1L9WKq?=
+ =?us-ascii?Q?WQtzAcQnvb43OMCo22NseZgShvnaRRDcSAfC9V08zPpPxodOLSqmmAu+PLSO?=
+ =?us-ascii?Q?nBdllo+nugLoCHAXI8pMYHMBmOqEVPiZvt6SbxZ8b6HxegcJYCcYDuLMu8O8?=
+ =?us-ascii?Q?gGHTCHhd4AI491dnFHHCc5JnRRBMn67mT+4r5uFdXm5DpTZduyNAaKM43QpO?=
+ =?us-ascii?Q?DgKJ4gyIXNsbG5mG6GxZKcYUSKcrB2vR3Uej542M+gNFMAU8CkpYqHi408ej?=
+ =?us-ascii?Q?rQZvn9jAG7lKrSuvvtVEdA5BuwPWs6GDpcPS6GaS9Th6tvsAh9hPT9oG9IHn?=
+ =?us-ascii?Q?W1QT+lNJkaEr8O+H30p5bychX525LFr2SVGOkFG/gTiPjrp3nb7tUREThvHF?=
+ =?us-ascii?Q?kg=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <E431C36EAFA2194D87F20809625F5F66@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CALTww2-1oSCahsqouQv2WT1SDCYDGRepJyh9e_Ph=YjPEboqXQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgBHZQ4fvLFlKESQBw--.18874S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3JFyxJw1fJFWkWFWUKF13CFg_yoWfGryfpa
-	42k3Waqr4UAr1xZrZxt3W0qFyYy3s5JrWYqr98G34rA3s0kF1IyrW8GF4UuFZ8AF9xJw42
-	qr45ta4fuas0yFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9214x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWr
-	Zr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
-	BIdaVFxhVjvjDU0xZFpf9x0JUQvtAUUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	rnlH7jYBTgq55jESf+857BaWBfK/BZxKRCnY3NLTkvHG09rS4K5dUmu+ZfbS1PrR6XQAol2dC/HiOBB4KMv7Qs+0ry8njr3G71YDbEr6FiFvNr0z1PPYHeMg4yDIpraKBIlhCccdBVBqIcplHhbrmRrjU23hx8GqemEjKnO4lKlaGkELV0/NUgKyQut9BlXiKkmuvJevZbJRZsnZvxLs1PhAlGY8e6VmDSJYyili/J13mws0FFKQrXgcofYcaLY4mk6bYVTLuJjVu6nzyUzoFqAakei/MjttRNKZPqVftjojbAgs1J/Sv1kN9w79oNhXrp2ZJ6BiV6tSKEjohiMmUBcpd5FoN4DgTJRthuNVUo/t45WJfzOnXHdgmGR5b6ts7Hyv3SWEkr3lFroCQaPtmwCDtNQFYrHQOJyfis0OeWRWipunuKD5rZKC1VvktKjdoYEaYs4+0CGGc4Qnyik2+O0osdFNkkoLdLR2nlxM5d4sNpb2wE8QMbVlm1Xib71LKgtV1TT+HOnuP8l7+RPpdND5p/tTuFDonp3zuOMlJXUG/hILndaGNeeTafpbgpU93ikzSPZofylUcjd9e7L/iID0pz1nQ4R4YwyWnlm6RO0=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c81b2888-489f-4c11-78ab-08dc1d47143c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jan 2024 01:43:49.8610
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ESS+D4AXX4nQdVAOkyc3+LIdxA0QRVrxFYaR69/ejh7X5ppAp36KjFpRiqtGGP+jaKdNqQzsnIoDB4tHvfZQgg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR10MB6832
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-24_12,2024-01-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=995 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 suspectscore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401250011
+X-Proofpoint-GUID: Io0k5sPzZYV9f2QqRwG6H68s2qxYxP2i
+X-Proofpoint-ORIG-GUID: Io0k5sPzZYV9f2QqRwG6H68s2qxYxP2i
 
-Hi,
+The following changes since commit 17419aefcbfd9891863e8b8132f0bca9a6b2984e=
+:
 
-在 2024/01/25 8:50, Xiao Ni 写道:
-> On Wed, Jan 24, 2024 at 8:19 PM Xiao Ni <xni@redhat.com> wrote:
->>
->> On Wed, Jan 24, 2024 at 5:18 PM Yu Kuai <yukuai3@huawei.com> wrote:
->>>
->>> First regression related to stop sync thread:
->>>
->>> The lifetime of sync_thread is designed as following:
->>>
->>> 1) Decide want to start sync_thread, set MD_RECOVERY_NEEDED, and wake up
->>> daemon thread;
->>> 2) Daemon thread detect that MD_RECOVERY_NEEDED is set, then set
->>> MD_RECOVERY_RUNNING and register sync_thread;
->>> 3) Execute md_do_sync() for the actual work, if it's done or
->>> interrupted, it will set MD_RECOVERY_DONE and wake up daemone thread;
->>> 4) Daemon thread detect that MD_RECOVERY_DONE is set, then clear
->>> MD_RECOVERY_RUNNING and unregister sync_thread;
->>>
->>> In v6.7, we fix md/raid to follow this design by commit f52f5c71f3d4
->>> ("md: fix stopping sync thread"), however, dm-raid is not considered at
->>> that time, and following test will hang:
->>
->> Hi Kuai
->>
->> Thanks very much for the patch set. I reported the dm raid deadlock
->> when stopping dm raid and we had the patch set "[PATCH v5 md-fixes
->> 0/3] md: fix stopping sync thread" which has patch f52f5c71f3d4. So we
->> indeed considered dm-raid that time. Because we want to resolve the
->> deadlock problem. I re-look patch f52f5c71f3d4. It has two major
->> changes. One is to use a common function stop_sync_thread for stopping
->> sync thread. This can fix the deadlock problem. The second change
->> changes the way to reap sync thread. mdraid and dmraid reap sync
->> thread in __md_stop_writes. So the patch looks overweight.
->>
->> Before f52f5c71f3d4  do_md_stop release reconfig_mutex before waiting
->> sync_thread to finish. So there should not be the deadlock problem
->> which has been fixed in 130443d60b1b ("md: refactor
->> idle/frozen_sync_thread() to fix deadlock"). So we only need to change
->> __md_stop_writes to stop sync thread like do_md_stop and reap sync
->> thread directly.
->>
->> Maybe this can avoid deadlock? I'll try this way and give the test result.
-> 
-> Please ignore my last comment. There is something wrong. Only dmraid
-> calls reap_sync_thread directly in __md_stop_writes before.
-> 
-> 130443d60b1b ("md: refactor idle/frozen_sync_thread() to fix
-> deadlock") fixes a deadlock problem. sync io is running and user io
-> comes. sync io needs to wait user io. user io needs to update
-> suerblock and it needs mddev->reconfig_mutex. But user action happens
-> with this lock to stop sync thread. So this is the deadlock. For
-> dmraid, it doesn't update superblock like md. I'm not sure if dmraid
-> has such deadlock problem. If not, dmraid can call md_reap_sync_thread
-> directly, right?
+  nfsd: rename nfsd_last_thread() to nfsd_destroy_serv() (2024-01-07 17:54:=
+33 -0500)
 
-Yes, the deadlock problem is because holding the lock to call
-md_reap_sync_thread() directly will block daemon thread to handle IO.
+are available in the Git repository at:
 
-However, for dm-raid superblock, I'm confused here, the code looks like
-md superblock is still there, for example:
+  https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git tags/nfsd-6=
+8-1
 
-rs_update_sbs
-  set_bit(MD_SB_CHANGE_DEVS, &mddev->sb_flags);
-  md_update_sb(mddev, 1);
+for you to fetch changes up to edcf9725150e42beeca42d085149f4c88fa97afd:
 
-And the code in raid1/10/5 to update md superblock doesn't have any
-special handling for dm-raid. Or am I missing something here?
+  nfsd: fix RELEASE_LOCKOWNER (2024-01-24 09:49:11 -0500)
 
-Thanks,
-Kuai
+----------------------------------------------------------------
+nfsd-6.8 fixes:
+- Fix in-kernel RPC UDP transport
+- Fix NFSv4.0 RELEASE_LOCKOWNER
 
-> 
->>>
->>> shell/integrity-caching.sh
->>> shell/lvconvert-raid-reshape.sh
->>>
->>> This patch set fix the broken test by patch 1-4;
->>>   - patch 1 fix that step 4) is broken by suspended array;
->>>   - patch 2 fix that step 4) is broken by read-only array;
->>>   - patch 3 fix that step 3) is broken that md_do_sync() doesn't set
->>>   MD_RECOVERY_DONE; Noted that this patch will introdece new problem that
->>>   data will be corrupted, which will be fixed in later patches.
->>>   - patch 4 fix that setp 1) is broken that sync_thread is register and
->>>   MD_RECOVERY_RUNNING is set directly;
->>>
->>> With patch 1-4, the above test won't hang anymore, however, the test
->>> will still fail and complain that ext4 is corrupted;
->>
->> For patch3, as I mentioned today, the root cause is
->> dm-raid->rs_start_reshape sets MD_RECOVERY_WAIT. So md_do_sync returns
->> when MD_RECOVERY_WAIT is set. It's the reason why dm-raid can't stop
->> sync thread when start a new reshape. . The way in patch3 looks like a
->> workaround. We need to figure out if dm raid really needs to set
->> MD_RECOVERY_WAIT. Because now we stop sync thread in an asynchronous
->> way. So the deadlock problem which was fixed in 644e2537f (dm raid:
->> fix stripe adding reshape deadlock) may disappear. Maybe we can revert
->> the patch.
+----------------------------------------------------------------
+Lucas Stach (1):
+      SUNRPC: use request size to initialize bio_vec in svc_udp_sendto()
 
-In fact, the flag MD_RECOVERY_WAIT looks like a workaround to prevent
-new sync thread to start to me. I actually frozen the sync_thread during
-suspend, and prevent user to unfrozen it from raid_message() in patch 6.
-I think this way is better and probably MD_RECOVERY_WAIT can be removed.
+NeilBrown (1):
+      nfsd: fix RELEASE_LOCKOWNER
 
-> 
-> After talking with Heinz, he mentioned dmraid needs this bit to avoid
-> md sync thread to start during reshape. So patch3 looks good.
-> 
-> Best Regards
-> Xiao
->>
->> Best Regards
->> Xiao
->>
->>>
->>> Second regression related to frozen sync thread:
->>>
->>> Noted that for raid456, if reshape is interrupted, then call
->>> "pers->start_reshape" will corrupt data. This is because dm-raid rely on
->>> md_do_sync() doesn't set MD_RECOVERY_DONE so that new sync_thread won't
->>> be registered, and patch 3 just break this.
->>>
->>>   - Patch 5-6 fix this problem by interrupting reshape and frozen
->>>   sync_thread in dm_suspend(), then unfrozen and continue reshape in
->>> dm_resume(). It's verified that dm-raid tests won't complain that
->>> ext4 is corrupted anymore.
->>>   - Patch 7 fix the problem that raid_message() call
->>>   md_reap_sync_thread() directly, without holding 'reconfig_mutex'.
->>>
->>> Last regression related to dm-raid456 IO concurrent with reshape:
->>>
->>> For raid456, if reshape is still in progress, then IO across reshape
->>> position will wait for reshape to make progress. However, for dm-raid,
->>> in following cases reshape will never make progress hence IO will hang:
->>>
->>> 1) the array is read-only;
->>> 2) MD_RECOVERY_WAIT is set;
->>> 3) MD_RECOVERY_FROZEN is set;
->>>
->>> After commit c467e97f079f ("md/raid6: use valid sector values to determine
->>> if an I/O should wait on the reshape") fix the problem that IO across
->>> reshape position doesn't wait for reshape, the dm-raid test
->>> shell/lvconvert-raid-reshape.sh start to hang at raid5_make_request().
->>>
->>> For md/raid, the problem doesn't exist because:
->>>
->>> 1) If array is read-only, it can switch to read-write by ioctl/sysfs;
->>> 2) md/raid never set MD_RECOVERY_WAIT;
->>> 3) If MD_RECOVERY_FROZEN is set, mddev_suspend() doesn't hold
->>>     'reconfig_mutex' anymore, it can be cleared and reshape can continue by
->>>     sysfs api 'sync_action'.
->>>
->>> However, I'm not sure yet how to avoid the problem in dm-raid yet.
->>>
->>>   - patch 9-11 fix this problem by detecting the above 3 cases in
->>>   dm_suspend(), and fail those IO directly.
->>>
->>> If user really meet the IO error, then it means they're reading the wrong
->>> data before c467e97f079f. And it's safe to read/write the array after
->>> reshape make progress successfully.
->>>
->>> Tests:
->>>
->>> I already run the following two tests many times and verified that they
->>> won't fail anymore:
->>>
->>> shell/integrity-caching.sh
->>> shell/lvconvert-raid-reshape.sh
->>>
->>> For other tests, I'm still running. However, I'm sending this patchset
->>> in case people think the fixes is not appropriate. Running the full
->>> tests will cost lots of time in my VM, and I'll update full test results
->>> soon.
->>>
->>> Yu Kuai (11):
->>>    md: don't ignore suspended array in md_check_recovery()
->>>    md: don't ignore read-only array in md_check_recovery()
->>>    md: make sure md_do_sync() will set MD_RECOVERY_DONE
->>>    md: don't register sync_thread for reshape directly
->>>    md: export helpers to stop sync_thread
->>>    dm-raid: really frozen sync_thread during suspend
->>>    md/dm-raid: don't call md_reap_sync_thread() directly
->>>    dm-raid: remove mddev_suspend/resume()
->>>    dm-raid: add a new helper prepare_suspend() in md_personality
->>>    md: export helper md_is_rdwr()
->>>    md/raid456: fix a deadlock for dm-raid456 while io concurrent with
->>>      reshape
->>>
->>>   drivers/md/dm-raid.c |  76 +++++++++++++++++++++----------
->>>   drivers/md/md.c      | 104 ++++++++++++++++++++++++++++---------------
->>>   drivers/md/md.h      |  16 +++++++
->>>   drivers/md/raid10.c  |  16 +------
->>>   drivers/md/raid5.c   |  61 +++++++++++++------------
->>>   5 files changed, 171 insertions(+), 102 deletions(-)
->>>
->>> --
->>> 2.39.2
->>>
-> 
-> .
-> 
+ fs/nfsd/nfs4state.c  | 26 +++++++++++++++-----------
+ net/sunrpc/svcsock.c |  4 ++--
+ 2 files changed, 17 insertions(+), 13 deletions(-)
+
+--
+Chuck Lever
+
 
 
