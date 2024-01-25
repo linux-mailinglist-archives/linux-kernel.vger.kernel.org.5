@@ -1,244 +1,142 @@
-Return-Path: <linux-kernel+bounces-38310-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38302-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4216D83BDA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:44:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5D9983BD9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:42:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EEAA92944F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:44:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 037091C2531B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:42:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A115F1CA90;
-	Thu, 25 Jan 2024 09:42:22 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A5F02231E;
-	Thu, 25 Jan 2024 09:42:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C8421CD05;
+	Thu, 25 Jan 2024 09:41:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bgAzILgj"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED1C21CAA1
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:41:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706175742; cv=none; b=irfTGIaSuOJmRJ38ULQKyn6YfI7BM/IpDnpZskCfcHDalVwG8X3P6cZb8xLwvO6AbHLG6g3ivLENvSVyBG/Sbcn2qJi7O+8IfT7wykZPv/WcV+UOfSiVBNmgZaqtMuHQAVRgrU3q3Qt/nxY/I8rchmVVitj46cxEHlbNCkiTrZQ=
+	t=1706175710; cv=none; b=IqTuilKYxnpVpEE/SBfLDrbZ7RsXlRiDy8u7CutHO5BKuwMD6cx4ht5gZH/loFpOZt+LueLUhO7wryOsNFu33uKHRojqwZAsXq4/uzfZgFETbPhbgzeCzCdLnvMCpBl7tL2J/hHrIo6LW0O9sQEr9kFqZmdi1zVVctTR69HKtHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706175742; c=relaxed/simple;
-	bh=iha9lIT8tWEBCDldgD5w17x1FYFzupge+jOEAX12YzQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=dzg1czI4UDXSLaGKo7MNxMsFe4lYvhjX9NEP/8Kgupq3BNC+d2CPbSTQyH0P4TVP9X2QCw2+PvyCSovtEzipAOYCHpXOw7xN0dgbrFE93gvtsJ8pihI3u1C2kNSCuThVM5SVhu3/akeqAxVuIwLbpicuof8gG24uvePEulGBB1c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0EA221595;
-	Thu, 25 Jan 2024 01:43:04 -0800 (PST)
-Received: from a077893.arm.com (unknown [10.163.40.116])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B06053F73F;
-	Thu, 25 Jan 2024 01:42:14 -0800 (PST)
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-To: linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	will@kernel.org,
-	catalin.marinas@arm.com,
-	mark.rutland@arm.com
-Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
-	Mark Brown <broonie@kernel.org>,
-	James Clark <james.clark@arm.com>,
-	Rob Herring <robh@kernel.org>,
-	Marc Zyngier <maz@kernel.org>,
-	Suzuki Poulose <suzuki.poulose@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	German Gomez <german.gomez@arm.com>
-Subject: [PATCH V16 8/8] perf: test: Extend branch stack sampling test for Arm64 BRBE
-Date: Thu, 25 Jan 2024 15:11:19 +0530
-Message-Id: <20240125094119.2542332-9-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240125094119.2542332-1-anshuman.khandual@arm.com>
-References: <20240125094119.2542332-1-anshuman.khandual@arm.com>
+	s=arc-20240116; t=1706175710; c=relaxed/simple;
+	bh=WeBZw7CQQ/b0Kuc3VgepmfjtbEo4oCwHmiOwv7/FBic=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=GOB59X6CztC9LkZOn5lqkJtYw7BbL7Hdyp9Ut5CsRqnK36TR9v9QE7hp6rgpV5wih6FQF+Cu1lnZzFMWfGsRcS5PyS64TUpbyiMiFWt045tCvXJkVHMoe2QUcsPFynC3tD9RxnwlSuIhfFSSvvAiEGgixwQ0eVXIsByA9+wAWBY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bgAzILgj; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706175709; x=1737711709;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=WeBZw7CQQ/b0Kuc3VgepmfjtbEo4oCwHmiOwv7/FBic=;
+  b=bgAzILgjHtU/QDu5b6EHx7oVirh9vfHb5CCh4r3VTJCcQDr+X51Xky2v
+   6SBgdZyM9CIy/6matOWw2+F5IDzaKIZdjBVZKHN+0/y1zynE6mwrR0vm7
+   JcOTMOuZI3t0lB/YvrEgYozlEUCp8Mp/yxVoI0H8q/wRu3RHMzY2Nr5Zg
+   I4rcf4AiUc4Al2gRvpQqdyOcQ1/uifai+tG9zw0IjE5t8S9+J4BW8FGjz
+   ACYMUdLXLWyWv3kuQdzN5bbaI5p22noQauqFsD+WViF60onpppus60stJ
+   KYjMJcf8SI47JEUwdX8+kIUsEGpXW2VDIvcGZRe99JYP3WI/0cNJODpn3
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="20662385"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="20662385"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 01:41:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="959789568"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="959789568"
+Received: from cyrillet-mobl.ger.corp.intel.com (HELO localhost) ([10.252.58.252])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 01:41:43 -0800
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: wangxiaoming321 <xiaoming.wang@intel.com>, lucas.demarchi@intel.com,
+ ogabbay@kernel.org, thomas.hellstrom@linux.intel.com,
+ maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+ tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+ intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+Cc: wangxiaoming321 <xiaoming.wang@intel.com>
+Subject: Re: [PATCH] drm/xe/display: Fix memleak in display initialization
+In-Reply-To: <20240125063633.989944-1-xiaoming.wang@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240125063633.989944-1-xiaoming.wang@intel.com>
+Date: Thu, 25 Jan 2024 11:41:40 +0200
+Message-ID: <87bk99lpgr.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-From: James Clark <james.clark@arm.com>
+On Thu, 25 Jan 2024, wangxiaoming321 <xiaoming.wang@intel.com> wrote:
+> In the call stack xe_device_probe ->  xe_display_init_nommio -> intel_power_domains_init
+> Power_domains  hasn't been cleaned up if return error,
+> which has do the clean in i915_driver_late_release call from i915_driver_probe.
 
-Add Arm64 BRBE-specific testing to the existing branch stack sampling test.
-The test currently passes on the Arm FVP RevC model, but no hardware has
-been tested yet.
+This has nothing to do with i915_*.
 
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: linux-perf-users@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Co-developed-by: German Gomez <german.gomez@arm.com>
-Signed-off-by: German Gomez <german.gomez@arm.com>
-Signed-off-by: James Clark <james.clark@arm.com>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- tools/perf/tests/builtin-test.c        |  1 +
- tools/perf/tests/shell/test_brstack.sh | 42 ++++++++++++++++++++++++--
- tools/perf/tests/tests.h               |  1 +
- tools/perf/tests/workloads/Build       |  2 ++
- tools/perf/tests/workloads/traploop.c  | 39 ++++++++++++++++++++++++
- 5 files changed, 82 insertions(+), 3 deletions(-)
- create mode 100644 tools/perf/tests/workloads/traploop.c
+If intel_power_domains_init() returns an error, it should have cleaned
+up after itself, not force its caller to do that. If there's an issue,
+please fix it in intel_power_domains_init().
 
-diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-index 4a5973f9bb9b..bd7202ff5cca 100644
---- a/tools/perf/tests/builtin-test.c
-+++ b/tools/perf/tests/builtin-test.c
-@@ -139,6 +139,7 @@ static struct test_workload *workloads[] = {
- 	&workload__sqrtloop,
- 	&workload__brstack,
- 	&workload__datasym,
-+	&workload__traploop
- };
- 
- static int num_subtests(const struct test_suite *t)
-diff --git a/tools/perf/tests/shell/test_brstack.sh b/tools/perf/tests/shell/test_brstack.sh
-index 928790f35747..6a4069c930e8 100755
---- a/tools/perf/tests/shell/test_brstack.sh
-+++ b/tools/perf/tests/shell/test_brstack.sh
-@@ -53,12 +53,43 @@ test_user_branches() {
- 	grep -E -m1 "^brstack_foo\+[^ ]*/brstack_bench\+[^ ]*/RET/.*$"	$TMPDIR/perf.script
- 	grep -E -m1 "^brstack_bench\+[^ ]*/brstack_bench\+[^ ]*/COND/.*$"	$TMPDIR/perf.script
- 	grep -E -m1 "^brstack\+[^ ]*/brstack\+[^ ]*/UNCOND/.*$"		$TMPDIR/perf.script
-+
-+	if is_arm64; then
-+		# in arm64 with BRBE, we get IRQ entries that correspond
-+		# to any point in the process
-+		grep -m1 "/IRQ/"					$TMPDIR/perf.script
-+	fi
- 	set +x
- 
- 	# some branch types are still not being tested:
- 	# IND COND_CALL COND_RET SYSCALL SYSRET IRQ SERROR NO_TX
- }
- 
-+test_arm64_trap_eret_branches() {
-+	echo "Testing trap & eret branches (arm64 brbe)"
-+	perf record -o $TMPDIR/perf.data --branch-filter any,save_type,u -- \
-+		perf test -w traploop 250
-+	perf script -i $TMPDIR/perf.data --fields brstacksym | tr ' ' '\n' > $TMPDIR/perf.script
-+	set -x
-+	# BRBINF<n>.TYPE == TRAP are mapped to PERF_BR_SYSCALL by the BRBE driver
-+	grep -E -m1 "^trap_bench\+[^ ]*/\[unknown\][^ ]*/SYSCALL/" $TMPDIR/perf.script
-+	grep -E -m1 "^\[unknown\][^ ]*/trap_bench\+[^ ]*/ERET/"	$TMPDIR/perf.script
-+	set +x
-+}
-+
-+test_arm64_kernel_branches() {
-+	echo "Testing kernel branches (arm64 brbe)"
-+	# skip if perf doesn't have enough privileges
-+	if ! perf record --branch-filter any,k -o- -- true > /dev/null; then
-+		echo "[skipped: not enough privileges]"
-+		return 0
-+	fi
-+	perf record -o $TMPDIR/perf.data --branch-filter any,k -- uname -a
-+	perf script -i $TMPDIR/perf.data --fields brstack | tr ' ' '\n' > $TMPDIR/perf.script
-+	grep -E -m1 "0xffff[0-9a-f]{12}" $TMPDIR/perf.script
-+	! egrep -E -m1 "0x0000[0-9a-f]{12}" $TMPDIR/perf.script
-+}
-+
- # first argument <arg0> is the argument passed to "--branch-stack <arg0>,save_type,u"
- # second argument are the expected branch types for the given filter
- test_filter() {
-@@ -81,11 +112,16 @@ set -e
- 
- test_user_branches
- 
--test_filter "any_call"	"CALL|IND_CALL|COND_CALL|SYSCALL|IRQ"
-+if is_arm64; then
-+	test_arm64_trap_eret_branches
-+	test_arm64_kernel_branches
-+fi
-+
-+test_filter "any_call"	"CALL|IND_CALL|COND_CALL|SYSCALL|IRQ|FAULT_DATA|FAULT_INST"
- test_filter "call"	"CALL|SYSCALL"
- test_filter "cond"	"COND"
- test_filter "any_ret"	"RET|COND_RET|SYSRET|ERET"
- 
- test_filter "call,cond"		"CALL|SYSCALL|COND"
--test_filter "any_call,cond"		"CALL|IND_CALL|COND_CALL|IRQ|SYSCALL|COND"
--test_filter "cond,any_call,any_ret"	"COND|CALL|IND_CALL|COND_CALL|SYSCALL|IRQ|RET|COND_RET|SYSRET|ERET"
-+test_filter "any_call,cond"		"CALL|IND_CALL|COND_CALL|IRQ|SYSCALL|COND|FAULT_DATA|FAULT_INST"
-+test_filter "cond,any_call,any_ret"	"COND|CALL|IND_CALL|COND_CALL|SYSCALL|IRQ|RET|COND_RET|SYSRET|ERET|FAULT_DATA|FAULT_INST"
-diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
-index dad3d7414142..6d3d575352d5 100644
---- a/tools/perf/tests/tests.h
-+++ b/tools/perf/tests/tests.h
-@@ -205,6 +205,7 @@ DECLARE_WORKLOAD(leafloop);
- DECLARE_WORKLOAD(sqrtloop);
- DECLARE_WORKLOAD(brstack);
- DECLARE_WORKLOAD(datasym);
-+DECLARE_WORKLOAD(traploop);
- 
- extern const char *dso_to_test;
- extern const char *test_objdump_path;
-diff --git a/tools/perf/tests/workloads/Build b/tools/perf/tests/workloads/Build
-index a1f34d5861e3..a9dc93d8468b 100644
---- a/tools/perf/tests/workloads/Build
-+++ b/tools/perf/tests/workloads/Build
-@@ -6,8 +6,10 @@ perf-y += leafloop.o
- perf-y += sqrtloop.o
- perf-y += brstack.o
- perf-y += datasym.o
-+perf-y += traploop.o
- 
- CFLAGS_sqrtloop.o         = -g -O0 -fno-inline -U_FORTIFY_SOURCE
- CFLAGS_leafloop.o         = -g -O0 -fno-inline -fno-omit-frame-pointer -U_FORTIFY_SOURCE
- CFLAGS_brstack.o          = -g -O0 -fno-inline -U_FORTIFY_SOURCE
- CFLAGS_datasym.o          = -g -O0 -fno-inline -U_FORTIFY_SOURCE
-+CFLAGS_traploop.o         = -g -O0 -fno-inline -U_FORTIFY_SOURCE
-diff --git a/tools/perf/tests/workloads/traploop.c b/tools/perf/tests/workloads/traploop.c
-new file mode 100644
-index 000000000000..7dac94897e49
---- /dev/null
-+++ b/tools/perf/tests/workloads/traploop.c
-@@ -0,0 +1,39 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <stdlib.h>
-+#include "../tests.h"
-+
-+#define BENCH_RUNS 999999
-+
-+static volatile int cnt;
-+
-+#ifdef __aarch64__
-+static void trap_bench(void)
-+{
-+	unsigned long val;
-+
-+	asm("mrs %0, ID_AA64ISAR0_EL1" : "=r" (val));   /* TRAP + ERET */
-+}
-+#else
-+static void trap_bench(void)
-+{
-+
-+}
-+#endif
-+
-+static int traploop(int argc, const char **argv)
-+{
-+	int num_loops = BENCH_RUNS;
-+
-+	if (argc > 0)
-+		num_loops = atoi(argv[0]);
-+
-+	while (1) {
-+		if ((cnt++) > num_loops)
-+			break;
-+
-+		trap_bench();
-+	}
-+	return 0;
-+}
-+
-+DEFINE_WORKLOAD(traploop);
+BR,
+Jani.
+
+
+>
+> unreferenced object 0xffff88811150ee00 (size 512):
+>   comm "systemd-udevd", pid 506, jiffies 4294674198 (age 3605.560s)
+>   hex dump (first 32 bytes):
+>     10 b4 9d a0 ff ff ff ff ff ff ff ff ff ff ff ff  ................
+>     ff ff ff ff ff ff ff ff 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<ffffffff8134b901>] __kmem_cache_alloc_node+0x1c1/0x2b0
+>     [<ffffffff812c98b2>] __kmalloc+0x52/0x150
+>     [<ffffffffa08b0033>] __set_power_wells+0xc3/0x360 [xe]
+>     [<ffffffffa08562fc>] xe_display_init_nommio+0x4c/0x70 [xe]
+>     [<ffffffffa07f0d1c>] xe_device_probe+0x3c/0x5a0 [xe]
+>     [<ffffffffa082e48f>] xe_pci_probe+0x33f/0x5a0 [xe]
+>     [<ffffffff817f2187>] local_pci_probe+0x47/0xa0
+>     [<ffffffff817f3db3>] pci_device_probe+0xc3/0x1f0
+>     [<ffffffff8192f2a2>] really_probe+0x1a2/0x410
+>     [<ffffffff8192f598>] __driver_probe_device+0x78/0x160
+>     [<ffffffff8192f6ae>] driver_probe_device+0x1e/0x90
+>     [<ffffffff8192f92a>] __driver_attach+0xda/0x1d0
+>     [<ffffffff8192c95c>] bus_for_each_dev+0x7c/0xd0
+>     [<ffffffff8192e159>] bus_add_driver+0x119/0x220
+>     [<ffffffff81930d00>] driver_register+0x60/0x120
+>     [<ffffffffa05e50a0>] 0xffffffffa05e50a0
+>
+> Signed-off-by: wangxiaoming321 <xiaoming.wang@intel.com>
+> ---
+>  drivers/gpu/drm/xe/xe_display.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/xe/xe_display.c b/drivers/gpu/drm/xe/xe_display.c
+> index 74391d9b11ae..2725afba4afb 100644
+> --- a/drivers/gpu/drm/xe/xe_display.c
+> +++ b/drivers/gpu/drm/xe/xe_display.c
+> @@ -146,8 +146,10 @@ int xe_display_init_nommio(struct xe_device *xe)
+>  	intel_detect_pch(xe);
+>  
+>  	err = intel_power_domains_init(xe);
+> -	if (err)
+> +	if (err) {
+> +		intel_power_domains_cleanup(xe);
+>  		return err;
+> +	}
+>  
+>  	return drmm_add_action_or_reset(&xe->drm, xe_display_fini_nommio, xe);
+>  }
+
 -- 
-2.25.1
-
+Jani Nikula, Intel
 
