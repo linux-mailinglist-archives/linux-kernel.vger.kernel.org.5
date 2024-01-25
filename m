@@ -1,90 +1,209 @@
-Return-Path: <linux-kernel+bounces-38884-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38885-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1E4E83C7C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:21:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 602D883C7C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:21:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 837E11F276FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:21:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA7101F27B8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:21:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 874B2129A6C;
-	Thu, 25 Jan 2024 16:21:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31A80129A96;
+	Thu, 25 Jan 2024 16:21:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B62H1JSb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H8ZlJM99"
+Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD7BF745FC;
-	Thu, 25 Jan 2024 16:21:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC8D7745FC
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 16:21:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706199688; cv=none; b=HOtSieyrlNtzXbcE+ecPiGphONEOU7hry1Q/6PzUyYkXEryecRmWxjYatcU0qPuy2Vx911R0mGNtDSID+twtSko7nDcjVM8yQ7BsC5MyF1/z8WOImiFM6k66MM/aMUOMc+CqemJI+yOfrEXiHmrwhAx3rFQA6NTeQLftpTJSsCQ=
+	t=1706199695; cv=none; b=m7gkTlbOMvgpSUmCoeDLquDOj946Jzvg6YJz91ufPtmqV6wORauwiwKqA2SE9gj7a+GjB85Dsvry3oNZVQ7ukdBo4kQ5v34RCQhnXEiP8wPu+DqBF6zN6nEPQ8RkxZ4eUG75/2tk7xgQ0wmctccqPuBOGcgMd0Ku/c1wzNsED7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706199688; c=relaxed/simple;
-	bh=e2wzMafEiJ87zPqKUzajnoGGsBbwxCdh9NkGtzE9mUA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cAsDNuCJLZk1eJdkwt6Y5E+q2nRyB6jn5S/TbD4jmyt8xBFvxnkmv6HmTQYJfVs9dA2Zt9gpi+5cksSBA52z6ngjH0AibyEmxT0DFALkQxWv+HoYIJ9TcJ4FbKm9dnJqEJFhkmK5liMuZhwyjwZ8Q6N5XJSXo91l92cqqgtdzOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B62H1JSb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8AAEC433F1;
-	Thu, 25 Jan 2024 16:21:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706199688;
-	bh=e2wzMafEiJ87zPqKUzajnoGGsBbwxCdh9NkGtzE9mUA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=B62H1JSblc++Zb4nnT22+0Ff4+RAP2mrxZICom1zGqCkWkBaA4Jur9TCQQ1U9FwdN
-	 gzZxUdpPx3aKgpXN5ACS/NN/NOYJJJQhxF544797+i8XzmIA31NIjjBRn7yBcNTXj9
-	 x+DRf4WzDPldpojnqacGAyoJwNAVowGZAXmBZCq0jOZQX1Orl7TAI20OXEgxlWedlp
-	 DCPsWaKPBgt/Y0JXGuhwB9JwKc/jdBioTC4wgMqiG3CDoMUjaUnsr3MMi4PC+jOjo2
-	 6d1WC+/w2263d/dyDLuvFD8pGkRWMBvDETnotSPck2hmxayrgwACdt1YnBmzdWiCZE
-	 AHzxeRYNx1wiQ==
-Date: Thu, 25 Jan 2024 17:21:22 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Baokun Li <libaokun1@huawei.com>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the vfs-brauner tree
-Message-ID: <20240125-mochten-lauftraining-9fa7ac4a3461@brauner>
-References: <20240123125227.0521c8d9@canb.auug.org.au>
- <20240124122040.04cd2c8a@canb.auug.org.au>
- <20240124-liquidieren-retten-8b3c65074c33@brauner>
- <20240124223537.35433349@canb.auug.org.au>
+	s=arc-20240116; t=1706199695; c=relaxed/simple;
+	bh=JvLVFnISqE73WkRD/N7UfmvUefbJvc30TLYDv1/a2Pk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=mIZthFCpn/aH+4oPAmyykmxFls891Sk8MwiCmEO56VHquOwRI1q2MlirWyL1t7z40A8hlf//jXRXmYeM6ZNXYYyrFkrQYF6vXwH3QVmzfbIAShbCFBrrYXal5iaeGOOgfZucQ9Vt1PbOVUgutH0Z98wZnOO/JwEYq25ZvkQlyvo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H8ZlJM99; arc=none smtp.client-ip=209.85.166.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7ba903342c2so384397339f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:21:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706199693; x=1706804493; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=LWVj8hVRfJc4tVhdUu/VBqkc8LQiqbjn+xQOE8V4Uzw=;
+        b=H8ZlJM99ho9D3HeA1ElhzfbTct/AnaHR+enDsWS9kgq1rN3gfDXi7XRXIfqg6y6YpR
+         SNnO0MqNA1yocXnvv+i66F5aMngtbFOq4df/Zwj9U+D3ASt8BoPr/02Jy2NpJs+ezrie
+         6jsW7Ix4qdwDvZUTdSv/T6dUeOZ0W+6hu8hLfiLes/Q3K1QjtXlncPIg/cTXMnJqqZ3D
+         mFEiP/ZTyR1ZNOm8ehy3xBuiV3jNUd9tnsWaEieUiR5Ph7K2uU+rKV31w9fRqwICHAuR
+         nrZBTECTd5ZIOSvG/KwCOfEiwafC7c1lf1TfJ8gtg4ErZCeteVWYEtKLrtcfl2mCmLvr
+         oLpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706199693; x=1706804493;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LWVj8hVRfJc4tVhdUu/VBqkc8LQiqbjn+xQOE8V4Uzw=;
+        b=VNXyI0RV3HZhF5b1lJW9SE7Gd0HV2nRbIZ13WFZFyijgrmRiD7EckGCGPzmGbNljkP
+         qYVypSJYrXFFHDP5+VZakLrg2cyvRHO7jGE5/f8ti3xdQftpn2yg6s6MjDMUHp2zkPyu
+         Ehu17JMnW8Sx2q61seH9gNpcbbplz6S7OOimU7tbHgrVYeRs6OU09OSoXwQksspDMpzN
+         Ce4c6WuPpiodazKTrsoEEBjpDkIGslygmbg10AI3CE5vWA5l25CuHUEyRxOvOWYPobmm
+         Ad5ew4pepe2n+sipSQvwq+uBqLLNMI8ZxYwUN0zmWgZbI58F9KHjl3vr630D+edCdVPu
+         HVyw==
+X-Gm-Message-State: AOJu0YxlpUJz7AxcLuTm5oh5UYEMUL1eNI0KV3TCrw/P5a8iXZALG1IY
+	3HAiilN9QhRk+kxiIu+XuG/K7I7rk7fmYBLWp/Tq4XzVle/3M6guwxYIcFzs
+X-Google-Smtp-Source: AGHT+IEtqr0pRrHRDTG7pTzaB0UgsK4mD1AFaPlaHTMKctVtEocduPhPMUg9aFddoqlpSdrp7fDBLA==
+X-Received: by 2002:a6b:7f42:0:b0:7be:427c:37da with SMTP id m2-20020a6b7f42000000b007be427c37damr1601168ioq.27.1706199692786;
+        Thu, 25 Jan 2024 08:21:32 -0800 (PST)
+Received: from localhost (dhcp-141-239-144-21.hawaiiantel.net. [141.239.144.21])
+        by smtp.gmail.com with ESMTPSA id b22-20020a63cf56000000b005cd86cd9055sm13763301pgj.1.2024.01.25.08.21.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 08:21:32 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Thu, 25 Jan 2024 06:21:31 -1000
+From: Tejun Heo <tj@kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: Juri Lelli <juri.lelli@redhat.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: [PATCH wq/for-6.9] tools/workqueue/wq_dump.py: Clean up code and
+ drop duplicate information
+Message-ID: <ZbKKi2cnczB0MuV_@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240124223537.35433349@canb.auug.org.au>
 
-On Wed, Jan 24, 2024 at 10:35:37PM +1100, Stephen Rothwell wrote:
-> Hi Christian,
-> 
-> On Wed, 24 Jan 2024 12:13:02 +0100 Christian Brauner <brauner@kernel.org> wrote:
-> >
-> > I had dropped both from vfs.misc yesterday night. Maybe it didn't make
-> > it in time.
-> 
-> It still has not ... I only fetch your vfs.all branch.  Did you remerge
-> and push it out?
+- Factor out wq_type_str()
 
-So vfs.all should be at:
+- Improve formatting so that it adapts to actual field widths.
 
-commit 8577a331532bb1d75f3536461739a0a8e15b219c
-Merge: 0c5c260545bd 06b8db3a7dde
-Author:     Christian Brauner <brauner@kernel.org>
-AuthorDate: Wed Jan 24 18:33:30 2024 +0100
-Commit:     Christian Brauner <brauner@kernel.org>
-CommitDate: Wed Jan 24 18:33:30 2024 +0100
+- Drop duplicate information from "Workqueue -> rescuer" section. If
+  anything, we should add more rescuer-specific info - e.g. the number of
+  work items rescued.
 
-    Merge branch 'vfs.fs' into vfs.all
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+---
+I'm applying this to wq/for-6.9.
 
-    Signed-off-by: Christian Brauner <brauner@kernel.org>
+Thanks.
 
-And that should've contain a merge of vfs.misc with all problematic
-patches dropped. Please yell if you still see an issue tomorrow!
+ tools/workqueue/wq_dump.py |   69 ++++++++++++++++++++++-----------------------
+ 1 file changed, 35 insertions(+), 34 deletions(-)
+
+--- a/tools/workqueue/wq_dump.py
++++ b/tools/workqueue/wq_dump.py
+@@ -75,6 +75,20 @@ def cpumask_str(cpumask):
+         output += f'{v:08x}'
+     return output.strip()
+ 
++wq_type_len = 9
++
++def wq_type_str(wq):
++    if wq.flags & WQ_UNBOUND:
++        if wq.flags & WQ_ORDERED:
++            return f'{"ordered":{wq_type_len}}'
++        else:
++            if wq.unbound_attrs.affn_strict:
++                return f'{"unbound,S":{wq_type_len}}'
++            else:
++                return f'{"unbound":{wq_type_len}}'
++    else:
++        return f'{"percpu":{wq_type_len}}'
++
+ worker_pool_idr         = prog['worker_pool_idr']
+ workqueues              = prog['workqueues']
+ wq_unbound_cpumask      = prog['wq_unbound_cpumask']
+@@ -92,6 +106,10 @@ WQ_AFFN_CACHE           = prog['WQ_AFFN_
+ WQ_AFFN_NUMA            = prog['WQ_AFFN_NUMA']
+ WQ_AFFN_SYSTEM          = prog['WQ_AFFN_SYSTEM']
+ 
++WQ_NAME_LEN             = prog['WQ_NAME_LEN'].value_()
++
++cpumask_str_len         = len(cpumask_str(wq_unbound_cpumask))
++
+ print('Affinity Scopes')
+ print('===============')
+ 
+@@ -148,24 +166,13 @@ print('')
+ print('Workqueue CPU -> pool')
+ print('=====================')
+ 
+-print('[    workqueue     \     type   CPU', end='')
++print(f'[{"workqueue":^{WQ_NAME_LEN-2}}\\ {"type   CPU":{wq_type_len}}', end='')
+ for cpu in for_each_possible_cpu(prog):
+     print(f' {cpu:{max_pool_id_len}}', end='')
+ print(' dfl]')
+ 
+ for wq in list_for_each_entry('struct workqueue_struct', workqueues.address_of_(), 'list'):
+-    print(f'{wq.name.string_().decode()[-24:]:24}', end='')
+-    if wq.flags & WQ_UNBOUND:
+-        if wq.flags & WQ_ORDERED:
+-            print(' ordered   ', end='')
+-        else:
+-            print(' unbound', end='')
+-            if wq.unbound_attrs.affn_strict:
+-                print(',S ', end='')
+-            else:
+-                print('   ', end='')
+-    else:
+-        print(' percpu    ', end='')
++    print(f'{wq.name.string_().decode():{WQ_NAME_LEN}} {wq_type_str(wq):10}', end='')
+ 
+     for cpu in for_each_possible_cpu(prog):
+         pool_id = per_cpu_ptr(wq.cpu_pwq, cpu)[0].pool.id.value_()
+@@ -178,29 +185,23 @@ for wq in list_for_each_entry('struct wo
+ 
+ print('')
+ print('Workqueue -> rescuer')
+-print('=====================')
+-print(f'wq_unbound_cpumask={cpumask_str(wq_unbound_cpumask)}')
+-print('')
+-print('[    workqueue     \     type            unbound_cpumask     rescuer                  pid   cpumask]')
++print('====================')
++
++ucpus_len = max(cpumask_str_len, len("unbound_cpus"))
++rcpus_len = max(cpumask_str_len, len("rescuer_cpus"))
++
++print(f'[{"workqueue":^{WQ_NAME_LEN-2}}\\ {"unbound_cpus":{ucpus_len}}    pid {"rescuer_cpus":{rcpus_len}} ]')
+ 
+ for wq in list_for_each_entry('struct workqueue_struct', workqueues.address_of_(), 'list'):
+-    print(f'{wq.name.string_().decode()[-24:]:24}', end='')
+-    if wq.flags & WQ_UNBOUND:
+-        if wq.flags & WQ_ORDERED:
+-            print(' ordered   ', end='')
+-        else:
+-            print(' unbound', end='')
+-            if wq.unbound_attrs.affn_strict:
+-                print(',S ', end='')
+-            else:
+-                print('   ', end='')
+-        print(f' {cpumask_str(wq.unbound_attrs.cpumask):24}', end='')
++    if not (wq.flags & WQ_MEM_RECLAIM):
++        continue
++
++    print(f'{wq.name.string_().decode():{WQ_NAME_LEN}}', end='')
++    if wq.unbound_attrs.value_() != 0:
++        print(f' {cpumask_str(wq.unbound_attrs.cpumask):{ucpus_len}}', end='')
+     else:
+-        print(' percpu    ', end='')
+-        print('                         ', end='')
++        print(f' {"":{ucpus_len}}', end='')
+ 
+-    if wq.flags & WQ_MEM_RECLAIM:
+-        print(f' {wq.rescuer.task.comm.string_().decode()[-24:]:24}', end='')
+-        print(f' {wq.rescuer.task.pid.value_():5}', end='')
+-        print(f' {cpumask_str(wq.rescuer.task.cpus_ptr)}', end='')
++    print(f' {wq.rescuer.task.pid.value_():6}', end='')
++    print(f' {cpumask_str(wq.rescuer.task.cpus_ptr):{rcpus_len}}', end='')
+     print('')
 
