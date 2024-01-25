@@ -1,214 +1,129 @@
-Return-Path: <linux-kernel+bounces-39059-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39060-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2380C83CA59
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:54:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C1CA83CA5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:57:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 481841C220F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:54:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C6C11F24FF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:57:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 318B413343E;
-	Thu, 25 Jan 2024 17:54:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E7BD133426;
+	Thu, 25 Jan 2024 17:57:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="Pz6dvobP"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="AKcQG18R"
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6B47131E45
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 17:54:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D636612FF9F
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 17:57:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706205272; cv=none; b=SoaSbisv8TAnXLpj5hsUGU3+J30IeOHmC+ZMOBIQ9gvxjXn1kSpwUCsQmb8ZR8wvxxJCo89/BOgwKHvJVn2kzEoH5n7SNWmzGbfmD2PYsNP8d5VfT6BeSapNnDObCLy3zFkzbw2RnKOEGU0Hikau4rnueKyL7ccndIlHV9VYqXk=
+	t=1706205430; cv=none; b=L115f40ZuZrKBjGtiGyUzjGieB/EAvODHvuc4w91ppfZKTrcWSk3y1cVtkPHYIbaHRiab3bSFhPN0DrZyu6r0LJVXWDVfdgGJFbsbeAQ6lfpxksksISn1/qO0C56hMqbvr5m4HRT11DCeC3rq8X70Vrs7ThmucZeoD6638f8LC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706205272; c=relaxed/simple;
-	bh=VsLFSDl7f7nn/2y4Kg5VSlUgb504F1jxZ9Td7ivSykw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ow9MCLZbV/uWJdUWZU2M0x0x7771CxclAKwGNkcSN5xIPEFNHrF9hO2IA5ia/iNhtv0s8lqNdDeq2pF+ndUfqJQvZ9LpXH1hmFFixRom70MviWveG5ZSSOw9kRG9ITKkaVH/0eYcftX8o6K9AxD165MJPEZZyerSvAJLHKiCNbc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=Pz6dvobP; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d74678df08so30477705ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:54:29 -0800 (PST)
+	s=arc-20240116; t=1706205430; c=relaxed/simple;
+	bh=x+h0NA5KQ56CuKCqcdtm3IG2B55TnTudmen4P3ZAVqE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dmJeYPKl9Wk6S9bszshyMQRr3D0TW6589r0Pt5f2ztkWjsqrGf42NH96Mwv+v8/weo2Sry2E65aGrEEn3fhiPICDQry7nk84oSjkQFwj8j+umnrRfIMubqxGkzAKjn7McYHnkXR4YU2hjGAMsLIwZckPV4z1sDnm22wn7fl+Yes=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=AKcQG18R; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2cf328885b4so13584171fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:57:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706205269; x=1706810069; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2nicyzemtTRD4VSL2aIrfR13izgwrVMBCjiaMcBIu4g=;
-        b=Pz6dvobP3bBpBIqYOwIRbPEQ0kDqPXzNkD24vhOcQZq61EZBwNBa1p2Rv9tIvMkVre
-         wDGHea+x3L8tuQuSnLPbKEEUHu5wzVXFKA62wi1L6hn0S6Ep5grJ53EN+egkxjqxLW1t
-         s+dPT8eBwdocV/D+MFYtKa65myLQXzuVM3hD+MPKKBHFXGPJOOMOE31W89jbrsWMmt3n
-         FrKDUeTdb/9KlGFs5jzc3dlWHeAb3+Rkw7linE+GOZ3ZYiOEz+vR7pTpq1ISGfQ+FkAx
-         /HV/z+7BI+M9OmUnadV/XqmTxrXMPe9B99qL/ubw5PXWSeBTPQVldsxo1dvJgY6DvrUx
-         KmGQ==
+        d=linux-foundation.org; s=google; t=1706205426; x=1706810226; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=a4MukQAgLIZe1lZaeonltfVtZCZSFGzNFrTBHeprDAs=;
+        b=AKcQG18Ral8icAIng4Ahr+YagRQRtCJE5FiZimEVIM1WIYWjTqPH7Em6tJJDmqYj1Y
+         /MD6j5uZ6S4GXNntMOR6UMXQxftVmD7KGlvcRRY5X3mC5vtNTta0jEo2Jvl1u5XbvvvB
+         mjUKbfHi3p5hEd7fTUtz/kDL/jj8foFHQg4dI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706205269; x=1706810069;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2nicyzemtTRD4VSL2aIrfR13izgwrVMBCjiaMcBIu4g=;
-        b=do40PpBiO75g3hX7gd6ZeJFcn6+0ShQdNm5uXXgmpuyx6+gvostX9yeRY5wuhvVOfa
-         TijiZumNP/OYHVzBRPMjt+PKkvPxW+7kNUUJhBdNtYBsCfY55fZ/N3Zz/59YOAGKCgLL
-         EAnrRXRRratp0+ZinMHOsPlD/cOnXGXMCBUbAxSCq5/u+BqDRzDSNgCuA1x99ohFg1DG
-         E40JphqLpd9RbmkRIn0yyVXaLTDY5b7ACzTgSLa2pW3SNch5zM4vOt0p9V45vVOt6AoE
-         zV3Vg7xMntp6c+YW3pkRvTQXuMDWAuchbibY0WZ2UiySLwj5VGpEqGzx3d7d5RBdfdiC
-         4fXA==
-X-Gm-Message-State: AOJu0YyaYzgbzT2l63v9phVar9NIwH/bbVk2eAVvjiFYyNCAyqXCxYQC
-	SNllVWcHLPL2HRE6uWoPCzj81cyOnlh5ayrvtF24Jn3MeEJXy/7kLvOGXVPG/u4=
-X-Google-Smtp-Source: AGHT+IHocjbJl+xR8mMLXKtkqWJu/nhVxybtwo7TBdSkwNgtnoPBjFJ6RTaIl5x14FjrIbULLsROeg==
-X-Received: by 2002:a17:903:124c:b0:1d7:eb1:a053 with SMTP id u12-20020a170903124c00b001d70eb1a053mr104655plh.18.1706205269113;
-        Thu, 25 Jan 2024 09:54:29 -0800 (PST)
-Received: from debug.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id u24-20020a170902a61800b001d74343a53dsm7538299plq.81.2024.01.25.09.54.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 09:54:28 -0800 (PST)
-Date: Thu, 25 Jan 2024 09:54:24 -0800
-From: Deepak Gupta <debug@rivosinc.com>
-To: Stefan O'Rear <sorear@fastmail.com>
-Cc: rick.p.edgecombe@intel.com, broonie@kernel.org, Szabolcs.Nagy@arm.com,
-	"kito.cheng@sifive.com" <kito.cheng@sifive.com>,
-	Kees Cook <keescook@chromium.org>,
-	Andrew Jones <ajones@ventanamicro.com>, paul.walmsley@sifive.com,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Conor Dooley <conor.dooley@microchip.com>, cleger@rivosinc.com,
-	Atish Patra <atishp@atishpatra.org>,
-	Alexandre Ghiti <alex@ghiti.fr>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Jonathan Corbet <corbet@lwn.net>, Albert Ou <aou@eecs.berkeley.edu>,
-	oleg@redhat.com, akpm@linux-foundation.org, arnd@arndb.de,
-	"Eric W. Biederman" <ebiederm@xmission.com>, shuah@kernel.org,
-	Christian Brauner <brauner@kernel.org>, guoren <guoren@kernel.org>,
-	samitolvanen@google.com, Evan Green <evan@rivosinc.com>,
-	xiao.w.wang@intel.com, Anup Patel <apatel@ventanamicro.com>,
-	mchitale@ventanamicro.com, waylingii@gmail.com,
-	greentime.hu@sifive.com, Heiko Stuebner <heiko@sntech.de>,
-	Jisheng Zhang <jszhang@kernel.org>, shikemeng@huaweicloud.com,
-	david@redhat.com, Charlie Jenkins <charlie@rivosinc.com>,
-	panqinglin2020@iscas.ac.cn, willy@infradead.org,
-	Vincent Chen <vincent.chen@sifive.com>,
-	Andy Chiu <andy.chiu@sifive.com>, Greg Ungerer <gerg@kernel.org>,
-	jeeheng.sia@starfivetech.com, mason.huo@starfivetech.com,
-	ancientmodern4@gmail.com, mathis.salmen@matsal.de,
-	cuiyunhui@bytedance.com, bhe@redhat.com, ruscur@russell.cc,
-	bgray@linux.ibm.com, alx@kernel.org, baruch@tkos.co.il,
-	zhangqing@loongson.cn, Catalin Marinas <catalin.marinas@arm.com>,
-	revest@chromium.org, josh@joshtriplett.org, joey.gouly@arm.com,
-	shr@devkernel.io, omosnace@redhat.com, ojeda@kernel.org,
-	jhubbard@nvidia.com, linux-doc@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, linux-arch@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH v1 02/28] riscv: envcfg save and restore on trap
- entry/exit
-Message-ID: <ZbKgUNR+Em55Moaw@debug.ba.rivosinc.com>
-References: <20240125062739.1339782-1-debug@rivosinc.com>
- <20240125062739.1339782-3-debug@rivosinc.com>
- <23d023c0-27cf-44fa-be0a-000d1534ef86@app.fastmail.com>
- <ZbKVutBWoelt33GM@debug.ba.rivosinc.com>
+        d=1e100.net; s=20230601; t=1706205426; x=1706810226;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=a4MukQAgLIZe1lZaeonltfVtZCZSFGzNFrTBHeprDAs=;
+        b=gSZvCj/ggEb+02RiUwUf0BE+DlDjxZi4c8Hpu5Yz9UE0pkEvSrzefQnv8hvLeA4s9E
+         DWeRH2tERn1fm68VnFS8fknJszRhSqCPfgHvn+H2zRqiwUMnSWa68VjV7qpjx7VaBHYe
+         0AC++N80VP/uIut9dFlpCLiI+bHkDLDItwhlNnTZU58eHbtmyG69k8yRbf7u8I+lVkkR
+         DC9Vc7OOTwAwf6YmMFErJ3dSiwpFNKCRBS0xRwB3+ilj5GF8yf2HS+FK4gaVzcWfGjwP
+         c3kTa/r3dRMvP+694SvxSm6LKxc+afoWBZIAOCnt78dhVoIWUQ2JJRaZ3k0wcdIDMUCf
+         B4KA==
+X-Gm-Message-State: AOJu0YzeXWKvB73ZlostaKW3+bbZbAbGNsGAfBuoNL7lkoV5s/KAEZej
+	FwkRUwcAOhndONwwR1VQwh9Rq/8R0k6aie6wkE4Wccp1N9a+YhEJCsYBwLrR+PHbRwCtY4CVCxP
+	1+hM06A==
+X-Google-Smtp-Source: AGHT+IGYYnjuEn+9ndXG+pBJPC2E6dS34uI/vLvKq4pjoek0hdqtKOMO1tFEQKHfvtzRZ7LBoRIHNg==
+X-Received: by 2002:ac2:599d:0:b0:50f:9e2:53de with SMTP id w29-20020ac2599d000000b0050f09e253demr79664lfn.93.1706205426482;
+        Thu, 25 Jan 2024 09:57:06 -0800 (PST)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
+        by smtp.gmail.com with ESMTPSA id g1-20020ac24d81000000b0051020d855easm123154lfe.158.2024.01.25.09.57.05
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Jan 2024 09:57:06 -0800 (PST)
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-5101f2dfd97so1035769e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:57:05 -0800 (PST)
+X-Received: by 2002:ac2:491d:0:b0:510:58:5954 with SMTP id n29-20020ac2491d000000b0051000585954mr91552lfi.80.1706205425541;
+ Thu, 25 Jan 2024 09:57:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <ZbKVutBWoelt33GM@debug.ba.rivosinc.com>
+References: <d2ce7bc75cadd3d39858c02f7f6f0b4286e6319b.camel@HansenPartnership.com>
+ <CAHk-=wi8-9BCn+KxwtwrZ0g=Xpjin_D3p8ZYoT+4n2hvNeCh+w@mail.gmail.com>
+ <7b104abd42691c3e3720ca6667f5e52d75ab6a92.camel@HansenPartnership.com>
+ <CAHk-=wi03SZ4Yn9FRRsxnMv1ED5Qw25Bk9-+ofZVMYEDarHtHQ@mail.gmail.com>
+ <20240121063038.GA1452899@mit.edu> <CAHk-=whhvPKxpRrZPOnjiKPVqWYC3OVKdGy5Z3joEk4vjbTh6Q@mail.gmail.com>
+ <20240124053634.GD1452899@mit.edu>
+In-Reply-To: <20240124053634.GD1452899@mit.edu>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 25 Jan 2024 09:56:49 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wj3tK4ync2S2eBQagOYv06wU+e7jgmnWHk5ZQBbk0E2WA@mail.gmail.com>
+Message-ID: <CAHk-=wj3tK4ync2S2eBQagOYv06wU+e7jgmnWHk5ZQBbk0E2WA@mail.gmail.com>
+Subject: Re: [GIT PULL] final round of SCSI updates for the 6.7+ merge window
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>, G@mit.edu, 
+	James Bottomley <James.Bottomley@hansenpartnership.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, linux-scsi <linux-scsi@vger.kernel.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Jan 25, 2024 at 09:09:14AM -0800, Deepak Gupta wrote:
->On Thu, Jan 25, 2024 at 02:19:29AM -0500, Stefan O'Rear wrote:
->>On Thu, Jan 25, 2024, at 1:21 AM, debug@rivosinc.com wrote:
->>>From: Deepak Gupta <debug@rivosinc.com>
->>>
->>>envcfg CSR defines enabling bits for cache management instructions and soon
->>>will control enabling for control flow integrity and pointer masking features.
->>>
->>>Control flow integrity enabling for forward cfi and backward cfi is controlled
->>>via envcfg and thus need to be enabled on per thread basis.
->>>
->>>This patch creates a place holder for envcfg CSR in `thread_info` and adds
->>>logic to save and restore on trap entry and exits.
->>
->>Should only be "restore"?  I don't see saving.
+On Tue, 23 Jan 2024 at 21:36, Theodore Ts'o <tytso@mit.edu> wrote:
 >
->It's always saved in `thread_info` and user mode can't change it.
->So no point saving it.
+> If we told those people who wantg to pursue key rotation to just
+> always upload keys to the Kernel keyring [..]
 
-Also I'll fix the commit message. I think that's what you were pointing out.
+As long as the keys exist in the kernel.org keyring, it's all good.
 
->
->>
->>>
->>>Signed-off-by: Deepak Gupta <debug@rivosinc.com>
->>>---
->>> arch/riscv/include/asm/thread_info.h | 1 +
->>> arch/riscv/kernel/asm-offsets.c      | 1 +
->>> arch/riscv/kernel/entry.S            | 4 ++++
->>> 3 files changed, 6 insertions(+)
->>>
->>>diff --git a/arch/riscv/include/asm/thread_info.h
->>>b/arch/riscv/include/asm/thread_info.h
->>>index 574779900bfb..320bc899a63b 100644
->>>--- a/arch/riscv/include/asm/thread_info.h
->>>+++ b/arch/riscv/include/asm/thread_info.h
->>>@@ -57,6 +57,7 @@ struct thread_info {
->>> 	long			user_sp;	/* User stack pointer */
->>> 	int			cpu;
->>> 	unsigned long		syscall_work;	/* SYSCALL_WORK_ flags */
->>>+	unsigned long envcfg;
->>> #ifdef CONFIG_SHADOW_CALL_STACK
->>> 	void			*scs_base;
->>> 	void			*scs_sp;
->>>diff --git a/arch/riscv/kernel/asm-offsets.c
->>>b/arch/riscv/kernel/asm-offsets.c
->>>index a03129f40c46..cdd8f095c30c 100644
->>>--- a/arch/riscv/kernel/asm-offsets.c
->>>+++ b/arch/riscv/kernel/asm-offsets.c
->>>@@ -39,6 +39,7 @@ void asm_offsets(void)
->>> 	OFFSET(TASK_TI_PREEMPT_COUNT, task_struct, thread_info.preempt_count);
->>> 	OFFSET(TASK_TI_KERNEL_SP, task_struct, thread_info.kernel_sp);
->>> 	OFFSET(TASK_TI_USER_SP, task_struct, thread_info.user_sp);
->>>+	OFFSET(TASK_TI_ENVCFG, task_struct, thread_info.envcfg);
->>> #ifdef CONFIG_SHADOW_CALL_STACK
->>> 	OFFSET(TASK_TI_SCS_SP, task_struct, thread_info.scs_sp);
->>> #endif
->>>diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
->>>index 54ca4564a926..63c3855ba80d 100644
->>>--- a/arch/riscv/kernel/entry.S
->>>+++ b/arch/riscv/kernel/entry.S
->>>@@ -129,6 +129,10 @@ SYM_CODE_START_NOALIGN(ret_from_exception)
->>> 	addi s0, sp, PT_SIZE_ON_STACK
->>> 	REG_S s0, TASK_TI_KERNEL_SP(tp)
->>>
->>>+	/* restore envcfg bits for current thread */
->>>+	REG_L s0, TASK_TI_ENVCFG(tp)
->>>+	csrw CSR_ENVCFG, s0
->>>+
->>
->>This is redundant if we're repeatedly processing interrupts or exceptions
->>within a single task.  We should only be writing envcfg when switching
->>between tasks or as part of the prctl.
->>
->>We need to use an ALTERNATIVE for this since the oldest supported hardware
->>does not have envcfg csrs.
->
->Yeah fixing that in next series. Thanks
->
->>
->>-s
->>
->>> 	/* Save the kernel shadow call stack pointer */
->>> 	scs_save_current
->>>
->>>--
->>>2.43.0
->>>
->>>
->>>_______________________________________________
->>>linux-riscv mailing list
->>>linux-riscv@lists.infradead.org
->>>http://lists.infradead.org/mailman/listinfo/linux-riscv
+That said, I still claim that nobody has *ever* had a valid and
+meaningful reason to have expiry dates, so I want to stop you right
+there when you talk about "people who want to pursue key rotation".
+
+The absolute *first* thing you should tell those people is "Why? Don't
+bother, it's just added pain for no gain".
+
+It's like revocation keys. To a very close approximation, never in the
+history of the universe have they been useful and meaningful.
+
+The fact that the keyservers don't even work any more have made them
+even less so, since now the revocations will never really spread
+anyway.
+
+So no. Let's not encourage people to do this silly thing.
+
+If you ABSOLUTELY HAVE TO have expiration dates and other silly games,
+yes, I will complain if I can't then easily get your key from the
+single reliably working remaining setup.
+
+But if you cannot explain exactly why you absolutely need to do it and
+have some external entity that forces you to do silly things ("Your
+daughter has been kidnapped, and you're not Liam Neeson"), the answer
+should not be "remember to update the key at kernel.org", but simply a
+plain "DON'T".
+
+               Linus
 
