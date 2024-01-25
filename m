@@ -1,43 +1,43 @@
-Return-Path: <linux-kernel+bounces-37911-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37912-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F72883B78B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 04:09:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E03D283B78C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 04:09:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5FD31F2547B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 03:09:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59D7B1F254F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 03:09:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9991163DD;
-	Thu, 25 Jan 2024 03:08:57 +0000 (UTC)
-Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FEB579FB;
+	Thu, 25 Jan 2024 03:09:02 +0000 (UTC)
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 562911FAD
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 03:08:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47B1679EC
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 03:08:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706152137; cv=none; b=urTBx/2xMWNBkhhlNQSZ8cxC6l7nVjdNdhV0/hOrhseKhNL1zYXQT2mTz4d8KFxcZUUn1J9i0HL4En4o8hQ8ijpAiGqomqJHg0wiOu+vsrK07Jbx2diMYpu3ENHl7KnuQDC2pvVRzcRcKmkxsaA0ULphm3Dd0YcDnxDCBpjprHU=
+	t=1706152142; cv=none; b=Bqb0TlaBhIcsXMW7D5fH91HMHidi8U6G2IYzJvwRNk+AhMtsdEokZEoKSPKIyUwmm+y5BaMflehjpywDqsz2sQbcarSFM52vGvWAauAB7UEiC8RavfQxeu6mNFR6C0xgMR1x/JVsTOEJbqqS0b50p3wKHYmV0Lqw+BXBTFz9iq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706152137; c=relaxed/simple;
-	bh=ucncD4LgxTJrxIeRTuDJbk8/gy62TUU+zwKtbsZDx/c=;
+	s=arc-20240116; t=1706152142; c=relaxed/simple;
+	bh=0KbeYM1emDbbUkaKgcHB/jj/ya65prK23nCjPOG+0Y0=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UF2V7TCAqrqFUR9rSNbW4MgfWEVD0YeMIdSxjdwAqBrrPQJtDLelUA06X9lIKUh6LBhGp/+K6uIiMnmtLsIPm/eDsGAh0KFXYN4RYZj8+w0md9I0kByHjhMoTjbEPIR/Ey6hcaeS5i0QmVGlK3XkLP1FIcpBwCUB7A5QOuPR5z4=
+	 MIME-Version:Content-Type; b=SH2zwNDt3DVHUSHRy3Hl4hhx+BDKzVRPyb2OwL6MAnyjSwJAJnpMMPeVs/ykZmseRiPaFGnCtJSINIScXr4IZ0LtAsSfqApCRfztp3ADyBWekGs2gUYzmzYEUpqdcYjDnYy/pOkErCM+tUWHNGWV+qkE3T+mGsqlaIBuVdv0NEg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
 Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 40P38baV061394;
-	Thu, 25 Jan 2024 11:08:37 +0800 (+08)
+	by SHSQR01.spreadtrum.com with ESMTP id 40P38cmE061480;
+	Thu, 25 Jan 2024 11:08:38 +0800 (+08)
 	(envelope-from Wenhua.Lin@unisoc.com)
 Received: from SHDLP.spreadtrum.com (shmbx06.spreadtrum.com [10.0.1.11])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4TL5F40rjCz2Rq2lv;
-	Thu, 25 Jan 2024 11:01:12 +0800 (CST)
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4TL5F50ct9z2Rq2lq;
+	Thu, 25 Jan 2024 11:01:13 +0800 (CST)
 Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx06.spreadtrum.com
  (10.0.1.11) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Thu, 25 Jan
- 2024 11:08:35 +0800
+ 2024 11:08:36 +0800
 From: Wenhua Lin <Wenhua.Lin@unisoc.com>
 To: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
         Rob
@@ -59,9 +59,9 @@ CC: Orson Zhai <orsonzhai@gmail.com>,
         Zhaochen Su <Zhaochen.Su@unisoc.com>,
         Xiaolong
  Wang <Xiaolong.Wang@unisoc.com>
-Subject: [PATCH V2 1/6] pwm: sprd: Add support for UMS9620
-Date: Thu, 25 Jan 2024 10:55:28 +0800
-Message-ID: <20240125025533.10315-2-Wenhua.Lin@unisoc.com>
+Subject: [PATCH V2 2/6] pwm: sprd: Improve the pwm backlight control function
+Date: Thu, 25 Jan 2024 10:55:29 +0800
+Message-ID: <20240125025533.10315-3-Wenhua.Lin@unisoc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240125025533.10315-1-Wenhua.Lin@unisoc.com>
 References: <20240125025533.10315-1-Wenhua.Lin@unisoc.com>
@@ -74,113 +74,129 @@ MIME-Version: 1.0
 Content-Type: text/plain
 X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
  shmbx06.spreadtrum.com (10.0.1.11)
-X-MAIL:SHSQR01.spreadtrum.com 40P38baV061394
+X-MAIL:SHSQR01.spreadtrum.com 40P38cmE061480
 
-The PMW unit on the current Unisoc's SoCs has 4 channels but has different
-address offsets. On UMS512, they are 0x0, 0x20, 0x40, 0x60 respectively,
-while are 0x0, 0x4000, 0x8000, 0xC000 on UMS9620.
+The pwm-sprd driver support only 8-bit linear control of backlight. Now,
+new requests of supporting 9-bit, 10-bit, 11-bit and 12-bit linear
+control of backlight are proposed. Besides, different channels of pwm
+could be configured into different linear control of backlight. Thus,
+sprd,mod attribute is introduced into dts for every channel of pwm
+device. This attribute would determine the value of MOD and eventually
+realize the new requirements.
 
 Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
 ---
- drivers/pwm/pwm-sprd.c | 28 ++++++++++++++++++++++++----
- 1 file changed, 24 insertions(+), 4 deletions(-)
+ drivers/pwm/pwm-sprd.c | 42 ++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 34 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/pwm/pwm-sprd.c b/drivers/pwm/pwm-sprd.c
-index 77939e161006..bc1e3ed13528 100644
+index bc1e3ed13528..cc54aa77c7e6 100644
 --- a/drivers/pwm/pwm-sprd.c
 +++ b/drivers/pwm/pwm-sprd.c
-@@ -9,6 +9,7 @@
- #include <linux/math64.h>
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pwm.h>
+@@ -18,7 +18,8 @@
+ #define SPRD_PWM_DUTY		0x8
+ #define SPRD_PWM_ENABLE		0x18
  
-@@ -23,7 +24,6 @@
+-#define SPRD_PWM_MOD_MAX	GENMASK(7, 0)
++#define SPRD_PWM_MOD_MAX	GENMASK(15, 0)
++#define SPRD_PWM_MOD_DEFAULT	GENMASK(9, 0)
+ #define SPRD_PWM_DUTY_MSK	GENMASK(15, 0)
+ #define SPRD_PWM_PRESCALE_MSK	GENMASK(7, 0)
  #define SPRD_PWM_ENABLE_BIT	BIT(0)
- 
- #define SPRD_PWM_CHN_NUM	4
--#define SPRD_PWM_REGS_SHIFT	5
- #define SPRD_PWM_CHN_CLKS_NUM	2
- #define SPRD_PWM_CHN_OUTPUT_CLK	1
- 
-@@ -32,14 +32,27 @@ struct sprd_pwm_chn {
- 	u32 clk_rate;
- };
- 
-+struct sprd_pwm_data {
-+	int reg_shift;
-+};
-+
- struct sprd_pwm_chip {
- 	void __iomem *base;
- 	struct device *dev;
- 	struct pwm_chip chip;
-+	const struct sprd_pwm_data *pdata;
+@@ -43,6 +44,7 @@ struct sprd_pwm_chip {
+ 	const struct sprd_pwm_data *pdata;
  	int num_pwms;
  	struct sprd_pwm_chn chn[SPRD_PWM_CHN_NUM];
++	u32 mod[SPRD_PWM_CHN_NUM];
  };
  
-+static const struct sprd_pwm_data ums512_data = {
-+	.reg_shift = 5,
-+};
+ static const struct sprd_pwm_data ums512_data = {
+@@ -120,7 +122,7 @@ static int sprd_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
+ 	 */
+ 	val = sprd_pwm_read(spc, pwm->hwpwm, SPRD_PWM_PRESCALE);
+ 	prescale = val & SPRD_PWM_PRESCALE_MSK;
+-	tmp = (prescale + 1) * NSEC_PER_SEC * SPRD_PWM_MOD_MAX;
++	tmp = (prescale + 1) * NSEC_PER_SEC * spc->mod[pwm->hwpwm];
+ 	state->period = DIV_ROUND_CLOSEST_ULL(tmp, chn->clk_rate);
+ 
+ 	val = sprd_pwm_read(spc, pwm->hwpwm, SPRD_PWM_DUTY);
+@@ -140,7 +142,7 @@ static int sprd_pwm_config(struct sprd_pwm_chip *spc, struct pwm_device *pwm,
+ 			   int duty_ns, int period_ns)
+ {
+ 	struct sprd_pwm_chn *chn = &spc->chn[pwm->hwpwm];
+-	u32 prescale, duty;
++	u32 prescale, duty, mod;
+ 	u64 tmp;
+ 
+ 	/*
+@@ -148,16 +150,21 @@ static int sprd_pwm_config(struct sprd_pwm_chip *spc, struct pwm_device *pwm,
+ 	 * The period length is (PRESCALE + 1) * MOD counter steps.
+ 	 * The duty cycle length is (PRESCALE + 1) * DUTY counter steps.
+ 	 *
+-	 * To keep the maths simple we're always using MOD = SPRD_PWM_MOD_MAX.
++	 * The value for MOD is obtained from dts.
+ 	 * The value for PRESCALE is selected such that the resulting period
+ 	 * gets the maximal length not bigger than the requested one with the
+-	 * given settings (MOD = SPRD_PWM_MOD_MAX and input clock).
++	 * given settings (MOD and input clock).
+ 	 */
+-	duty = duty_ns * SPRD_PWM_MOD_MAX / period_ns;
++	mod = spc->mod[pwm->hwpwm];
++	duty = duty_ns * mod / period_ns;
+ 
+ 	tmp = (u64)chn->clk_rate * period_ns;
+ 	do_div(tmp, NSEC_PER_SEC);
+-	prescale = DIV_ROUND_CLOSEST_ULL(tmp, SPRD_PWM_MOD_MAX) - 1;
++	prescale = DIV_ROUND_CLOSEST_ULL(tmp, mod);
++	if (prescale < 1)
++		prescale = 1;
++	prescale--;
 +
-+static const struct sprd_pwm_data ums9620_data = {
-+	.reg_shift = 14,
-+};
+ 	if (prescale > SPRD_PWM_PRESCALE_MSK)
+ 		prescale = SPRD_PWM_PRESCALE_MSK;
+ 
+@@ -170,7 +177,7 @@ static int sprd_pwm_config(struct sprd_pwm_chip *spc, struct pwm_device *pwm,
+ 	 * before changing a new configuration to avoid mixed settings.
+ 	 */
+ 	sprd_pwm_write(spc, pwm->hwpwm, SPRD_PWM_PRESCALE, prescale);
+-	sprd_pwm_write(spc, pwm->hwpwm, SPRD_PWM_MOD, SPRD_PWM_MOD_MAX);
++	sprd_pwm_write(spc, pwm->hwpwm, SPRD_PWM_MOD, mod);
+ 	sprd_pwm_write(spc, pwm->hwpwm, SPRD_PWM_DUTY, duty);
+ 
+ 	return 0;
+@@ -263,6 +270,21 @@ static int sprd_pwm_clk_init(struct sprd_pwm_chip *spc)
+ 	return 0;
+ }
+ 
++static int sprd_pwm_get_mod(struct platform_device *pdev)
++{
++	int i, ret;
++	struct sprd_pwm_chip *spc = platform_get_drvdata(pdev);
 +
- static inline struct sprd_pwm_chip* sprd_pwm_from_chip(struct pwm_chip *chip)
- {
- 	return container_of(chip, struct sprd_pwm_chip, chip);
-@@ -58,7 +71,7 @@ static const char * const sprd_pwm_clks[] = {
- 
- static u32 sprd_pwm_read(struct sprd_pwm_chip *spc, u32 hwid, u32 reg)
- {
--	u32 offset = reg + (hwid << SPRD_PWM_REGS_SHIFT);
-+	u32 offset = reg + (hwid << spc->pdata->reg_shift);
- 
- 	return readl_relaxed(spc->base + offset);
- }
-@@ -66,7 +79,7 @@ static u32 sprd_pwm_read(struct sprd_pwm_chip *spc, u32 hwid, u32 reg)
- static void sprd_pwm_write(struct sprd_pwm_chip *spc, u32 hwid,
- 			   u32 reg, u32 val)
- {
--	u32 offset = reg + (hwid << SPRD_PWM_REGS_SHIFT);
-+	u32 offset = reg + (hwid << spc->pdata->reg_shift);
- 
- 	writel_relaxed(val, spc->base + offset);
- }
-@@ -253,6 +266,7 @@ static int sprd_pwm_clk_init(struct sprd_pwm_chip *spc)
++	ret = of_property_read_u32_array(pdev->dev.of_node,
++					 "sprd,mod", spc->mod, spc->num_pwms);
++	if (ret) {
++		for (i = 0; i < spc->num_pwms; i++)
++			spc->mod[i] = SPRD_PWM_MOD_DEFAULT;
++	}
++
++	return ret;
++}
++
  static int sprd_pwm_probe(struct platform_device *pdev)
  {
  	struct sprd_pwm_chip *spc;
-+	const void *priv;
- 	int ret;
+@@ -288,6 +310,10 @@ static int sprd_pwm_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
  
- 	spc = devm_kzalloc(&pdev->dev, sizeof(*spc), GFP_KERNEL);
-@@ -263,6 +277,11 @@ static int sprd_pwm_probe(struct platform_device *pdev)
- 	if (IS_ERR(spc->base))
- 		return PTR_ERR(spc->base);
- 
-+	priv = of_device_get_match_data(&pdev->dev);
-+	if (!priv)
-+		return dev_err_probe(&pdev->dev, -EINVAL, "get regs shift failed!\n");
-+	spc->pdata = priv;
++	ret = sprd_pwm_get_mod(pdev);
++	if (ret)
++		dev_info(&pdev->dev, "get pwm mod failed! Use default setting\n");
 +
- 	spc->dev = &pdev->dev;
- 
- 	ret = sprd_pwm_clk_init(spc);
-@@ -281,7 +300,8 @@ static int sprd_pwm_probe(struct platform_device *pdev)
- }
- 
- static const struct of_device_id sprd_pwm_of_match[] = {
--	{ .compatible = "sprd,ums512-pwm", },
-+	{ .compatible = "sprd,ums512-pwm",	.data = (void *)&ums512_data},
-+	{ .compatible = "sprd,ums9620-pwm",	.data = (void *)&ums9620_data},
- 	{ },
- };
- MODULE_DEVICE_TABLE(of, sprd_pwm_of_match);
+ 	spc->chip.dev = &pdev->dev;
+ 	spc->chip.ops = &sprd_pwm_ops;
+ 	spc->chip.npwm = spc->num_pwms;
 -- 
 2.17.1
 
