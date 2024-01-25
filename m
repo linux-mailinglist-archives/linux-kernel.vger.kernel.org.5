@@ -1,227 +1,184 @@
-Return-Path: <linux-kernel+bounces-39331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C91CA83CED3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:47:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2193783CED6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:48:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7107828D7AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:47:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92C581F28A6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:48:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4D8E13AA3B;
-	Thu, 25 Jan 2024 21:47:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BC0F13AA26;
+	Thu, 25 Jan 2024 21:48:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UauIyJax"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kmzzfGms"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C626C135413;
-	Thu, 25 Jan 2024 21:47:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17BAC634E8;
+	Thu, 25 Jan 2024 21:48:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706219225; cv=none; b=D3AGhW9P/kTBs4uW3a5Bd9udZ4vaJX/MHwI97i1DHM8ipDYp2tf3RWaW7iivJVHJpBZb74YEU2nlfZxw8OtY2B8r/bvngkXXuZI2mkAywPQFSaQ4Bi62VJFbOPb1rsFBj2g7O0eowblshYf1iM3BWHsgjc7ke/HbdTFCXLLYDys=
+	t=1706219301; cv=none; b=C3hWt4FJEumGECB5TYGh5NOWm1NanGBO5lkSOvGM8JepFFmF+xknI1/NlVSa6+bhYm3lm+9H/Q+8ldafgoqwLqiSz0UjSjA3sLKZ2rZcXHxRzLdsTRD9yJhaoD6TF+KMe/ji2TvSTWQshJu2dclLsamPGoINpxuBYax9D6cHSBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706219225; c=relaxed/simple;
-	bh=fjFf6vRo4yuWVrpY3vShY+6xxu0dgHE9J/OQbltZeUs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SD0c1pbjYnWQOdbZZSBLa30wbTAKX2wHdq2aDTmzz0SY+ZXeR0by6ryt/1AuBqAsbdkUgiJAVpJ+V8Ya2edYl8pB4411u5U9wrh64lVHvj0+GWusvr6u27OvEiFukotrAyAn44sXwqYebTptd+BQOf3F1ThOi4QIZKVdCox3MfY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UauIyJax; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FE51C433C7;
-	Thu, 25 Jan 2024 21:47:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706219225;
-	bh=fjFf6vRo4yuWVrpY3vShY+6xxu0dgHE9J/OQbltZeUs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UauIyJaxOjRGvGs4W/OY+L7QWCmsRuosHxifU5R6Qx0UzIbhXAa87Cm0Dmpg2x5dr
-	 Jd2PMPu8MnnzXoIfjVsJR3Qc82TKDSFpjGEoW827lPQEoDtPqQi2yGB5PU6DJG5/5k
-	 RRWm1N1X+o1CaFtc0BaWEu4CiYAtNyg0m3XchubQTIXEC64QZNf9zWWJeYoGs+mbl1
-	 TZDQonudge3fIQOhFfNSAK6oSLlGekENiN4IcCc6daA4vT0L2sQXRxmUbJrKXCydW5
-	 /DAKupIyOlPDEMvE2qgrV3rvHNrUVJ3dBMGvq7/oDlN2xNFo0Jk4tFQesovJabhgL1
-	 aeK8IN40vfqjA==
-Date: Thu, 25 Jan 2024 21:46:59 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
-	Theodore Ts'o <tytso@mit.edu>, Greg KH <greg@kroah.com>,
-	Neal Gompa <neal@gompa.dev>, Kees Cook <keescook@chromium.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-	Nikolai Kondrashov <spbnick@gmail.com>,
-	Philip Li <philip.li@intel.com>,
-	Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: [GIT PULL] bcachefs updates for 6.8
-Message-ID: <ZbLW0/t57GVQJVF1@sirena.org.uk>
-References: <olmilpnd7jb57yarny6poqnw6ysqfnv7vdkc27pqxefaipwbdd@4qtlfeh2jcri>
- <CAEg-Je8=RijGLavvYDvw3eOf+CtvQ_fqdLZ3DOZfoHKu34LOzQ@mail.gmail.com>
- <40bcbbe5-948e-4c92-8562-53e60fd9506d@sirena.org.uk>
- <2uh4sgj5mqqkuv7h7fjlpigwjurcxoo6mqxz7cjyzh4edvqdhv@h2y6ytnh37tj>
- <2024011532-mortician-region-8302@gregkh>
- <lr2wz4hos4pcavyrmswpvokiht5mmcww2e7eqyc2m7x5k6nbgf@6zwehwujgez3>
- <20240117055457.GL911245@mit.edu>
- <5b7154f86913a0957e0518b54365a1b0fce5fbea.camel@HansenPartnership.com>
- <c69a3103-ae4d-459a-b5f4-d3bbe2af6fb2@sirena.org.uk>
- <vm5fwfqtqoy5yl37meflf4yrmzotyi5aszouwthfv6q7nrtxhq@oucmld5ak4uo>
+	s=arc-20240116; t=1706219301; c=relaxed/simple;
+	bh=gxD6wLjO9/201y2Y9XhzXJidT9LORX6jQWUUbKfoiZs=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pB8RP9jmsm49J+nFNaBAsFtqp9ZBnnDbhFA2b/7McinOGP/55EDjz7k3EkCkBVqlsK9KOiIqWyCn50Z7Gbdo1eMJLvOQCZ5xZXSbRD7LspsTvdDnJ/77A5ewxRTbB0JRKUljeLX4RvCYG7iTTzeTHd1YEJkxFr+5erCJPsQTlUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kmzzfGms; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5101d38e9b1so204168e87.1;
+        Thu, 25 Jan 2024 13:48:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706219298; x=1706824098; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qrKeQewcWwFL5vL1nGiLtWlm7WkCmJpd3uurZ4CeExQ=;
+        b=kmzzfGmskvdMeYpRtp/dEwBUJapWWr+8abKZC7Kk+qM3VhUktmekKn5rGvMgMFyiZu
+         /SVdqEvFDZCiFSHXApKfSTbKfqwttKQXFW8cj0MsMulJtquIpXIJJcqbhNVFEufalnwA
+         29fkRQ2VwnCBRdFLd0/KwT7OyGePLBl1F0jzAHGoLYjHLcfknxs++GSwKaQjRz+unrb4
+         6AE9fBvr+mklHQSpP4/9eJjCp+HeAYqWePljIEGSEeFoYbgVKbIN/95QaR5ENGd0USJ1
+         XT4jEjifZGWHflOrzMYNnxf9XK3zNbNHo/gz1Y0tOwLYwRXNMk0YpcU1xsHZEaHzcx0N
+         53TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706219298; x=1706824098;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qrKeQewcWwFL5vL1nGiLtWlm7WkCmJpd3uurZ4CeExQ=;
+        b=qpK7tjR+DBlCOXOvjLJp7AieCDXfLhhpLJBQoLi7z5BCZr3w4ex7sv/2kUYV/6fmtI
+         q7Gxle+Gb9Fq4zM7IyP0pMsb4wCbrIKrLaFGlxRH0F3YOT1ZQ+Al25CksD4p4qjOHYdb
+         3WC/4OGt7GoEhaIUr+dGVss9pP2SUZOPV2B56ZTDh0fVkxEs9qxar/vUzRLGPU2eDhb9
+         izNTez18nFS7bTB3zLl6T6cowKxu3hscadlglkow0KaKz0qX862xKI1qntEb0avqMrUX
+         aDq1zViWRgQe08qwXWNtcVNvjyyKE6MV3d2S2SlqodgiiK4gBo+oFt11F7Fk86+XRCYJ
+         0kug==
+X-Gm-Message-State: AOJu0Ywx25YvHfQLh9Nn45J68PjmcKw79h2Upabjv5BIMparLhYvgu44
+	9g/4G7Grs0QxRh+iMUonzY3o1Mc0JdQgZof+pHLNs64fnI9mxUZq
+X-Google-Smtp-Source: AGHT+IFkzs0/quHfA3kUyUVwzlPbepDoGXYlGjDLUf8IXT9q1mUX4cF6lZ2nyJU3cs/sXFZTNpT1rQ==
+X-Received: by 2002:a19:4f07:0:b0:50e:84f9:22dc with SMTP id d7-20020a194f07000000b0050e84f922dcmr575332lfb.2.1706219297770;
+        Thu, 25 Jan 2024 13:48:17 -0800 (PST)
+Received: from localhost (88-115-161-74.elisa-laajakaista.fi. [88.115.161.74])
+        by smtp.gmail.com with ESMTPSA id q16-20020ac24a70000000b0051018c2f199sm351375lfp.206.2024.01.25.13.48.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 13:48:17 -0800 (PST)
+Date: Thu, 25 Jan 2024 23:48:13 +0200
+From: Zhi Wang <zhi.wang.linux@gmail.com>
+To: Longfang Liu <liulongfang@huawei.com>
+Cc: <alex.williamson@redhat.com>, <jgg@nvidia.com>,
+ <shameerali.kolothum.thodi@huawei.com>, <jonathan.cameron@huawei.com>,
+ <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linuxarm@openeuler.org>
+Subject: Re: [PATCH 1/3] hisi_acc_vfio_pci: extract public functions for
+ container_of
+Message-ID: <20240125234813.00005f5d.zhi.wang.linux@gmail.com>
+In-Reply-To: <20240125081031.48707-2-liulongfang@huawei.com>
+References: <20240125081031.48707-1-liulongfang@huawei.com>
+	<20240125081031.48707-2-liulongfang@huawei.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="95W9f47JAmPj9bg9"
-Content-Disposition: inline
-In-Reply-To: <vm5fwfqtqoy5yl37meflf4yrmzotyi5aszouwthfv6q7nrtxhq@oucmld5ak4uo>
-X-Cookie: You might have mail.
-X-TUID: zJhhZNiCh8nK
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
+On Thu, 25 Jan 2024 16:10:29 +0800
+Longfang Liu <liulongfang@huawei.com> wrote:
 
---95W9f47JAmPj9bg9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> In the current driver, vdev is obtained from struct
+> hisi_acc_vf_core_device through the container_of function.
+> This method is used in many places in the driver. In order to
+> reduce this repetitive operation, I extracted a public function
+> to replace it.
+> 
+It is better to use the passive voice in the patch comment.
+> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+> ---
+>  .../vfio/pci/hisilicon/hisi_acc_vfio_pci.c    | 21
+> ++++++++++--------- 1 file changed, 11 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
+> b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c index
+> f4b38a243aa7..5f6e01571a7b 100644 ---
+> a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c +++
+> b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c @@ -641,6 +641,12 @@
+> static void hisi_acc_vf_disable_fds(struct hisi_acc_vf_core_device
+> *hisi_acc_vde } }
+>  
+> +static struct hisi_acc_vf_core_device *hisi_acc_get_vf_dev(struct
+> vfio_device *vdev) +{
+> +	return container_of(vdev, struct hisi_acc_vf_core_device,
+> +			    core_device.vdev);
+> +}
+> +
+>  /*
+>   * This function is called in all state_mutex unlock cases to
+>   * handle a 'deferred_reset' if exists.
+> @@ -1064,8 +1070,7 @@ static struct file *
+>  hisi_acc_vfio_pci_set_device_state(struct vfio_device *vdev,
+>  				   enum vfio_device_mig_state
+> new_state) {
+> -	struct hisi_acc_vf_core_device *hisi_acc_vdev =
+> container_of(vdev,
+> -			struct hisi_acc_vf_core_device,
+> core_device.vdev);
+> +	struct hisi_acc_vf_core_device *hisi_acc_vdev =
+> hisi_acc_get_vf_dev(vdev); enum vfio_device_mig_state next_state;
+>  	struct file *res = NULL;
+>  	int ret;
+> @@ -1106,8 +1111,7 @@ static int
+>  hisi_acc_vfio_pci_get_device_state(struct vfio_device *vdev,
+>  				   enum vfio_device_mig_state
+> *curr_state) {
+> -	struct hisi_acc_vf_core_device *hisi_acc_vdev =
+> container_of(vdev,
+> -			struct hisi_acc_vf_core_device,
+> core_device.vdev);
+> +	struct hisi_acc_vf_core_device *hisi_acc_vdev =
+> hisi_acc_get_vf_dev(vdev); 
+>  	mutex_lock(&hisi_acc_vdev->state_mutex);
+>  	*curr_state = hisi_acc_vdev->mig_state;
+> @@ -1323,8 +1327,7 @@ static long hisi_acc_vfio_pci_ioctl(struct
+> vfio_device *core_vdev, unsigned int 
+>  static int hisi_acc_vfio_pci_open_device(struct vfio_device
+> *core_vdev) {
+> -	struct hisi_acc_vf_core_device *hisi_acc_vdev =
+> container_of(core_vdev,
+> -			struct hisi_acc_vf_core_device,
+> core_device.vdev);
+> +	struct hisi_acc_vf_core_device *hisi_acc_vdev =
+> hisi_acc_get_vf_dev(core_vdev); struct vfio_pci_core_device *vdev =
+> &hisi_acc_vdev->core_device; int ret;
+>  
+> @@ -1347,8 +1350,7 @@ static int hisi_acc_vfio_pci_open_device(struct
+> vfio_device *core_vdev) 
+>  static void hisi_acc_vfio_pci_close_device(struct vfio_device
+> *core_vdev) {
+> -	struct hisi_acc_vf_core_device *hisi_acc_vdev =
+> container_of(core_vdev,
+> -			struct hisi_acc_vf_core_device,
+> core_device.vdev);
+> +	struct hisi_acc_vf_core_device *hisi_acc_vdev =
+> hisi_acc_get_vf_dev(core_vdev); struct hisi_qm *vf_qm =
+> &hisi_acc_vdev->vf_qm; 
+>  	iounmap(vf_qm->io_base);
+> @@ -1363,8 +1365,7 @@ static const struct vfio_migration_ops
+> hisi_acc_vfio_pci_migrn_state_ops = { 
+>  static int hisi_acc_vfio_pci_migrn_init_dev(struct vfio_device
+> *core_vdev) {
+> -	struct hisi_acc_vf_core_device *hisi_acc_vdev =
+> container_of(core_vdev,
+> -			struct hisi_acc_vf_core_device,
+> core_device.vdev);
+> +	struct hisi_acc_vf_core_device *hisi_acc_vdev =
+> hisi_acc_get_vf_dev(core_vdev); struct pci_dev *pdev =
+> to_pci_dev(core_vdev->dev); struct hisi_qm *pf_qm =
+> hisi_acc_get_pf_qm(pdev); 
 
-On Sat, Jan 20, 2024 at 10:24:09PM -0500, Kent Overstreet wrote:
-> On Wed, Jan 17, 2024 at 06:19:43PM +0000, Mark Brown wrote:
-> > On Wed, Jan 17, 2024 at 08:03:35AM -0500, James Bottomley wrote:
-
-> > I think that's a *bit* pessimistic, at least for some areas of the
-> > kernel - there is commercial stuff going on with kernel testing with
-> > varying degrees of community engagement (eg, off the top of my head
-> > Baylibre, Collabora and Linaro all have offerings of various kinds that
-> > I'm aware of), and some of that does turn into investments in reusable
-> > things rather than proprietary stuff.  I know that I look at the
-> > kernelci.org results for my trees, and that I've fixed issues I saw
-> > purely in there.  kselftest is noticably getting much better over time,
-> > and LTP is quite active too.  The stuff I'm aware of is more focused
-> > around the embedded space than the enterprise/server space but it does
-> > exist.  That's not to say that this is all well resourced and there's no
-> > problem (far from it), but it really doesn't feel like a complete dead
-> > loss either.
-
-> kselftest is pretty exciting to me; "collect all our integration tests
-> into one place and start to standarize on running them" is good stuff.
-
-> You seem to be pretty familiar with all the various testing efforts, I
-> wonder if you could talk about what you see that's interesting and
-> useful in the various projects?
-
-Well, I'm familiar with the bits I look at and some of the adjacent
-areas but definitely not with the testing world as a whole.
-
-For tests themselves there's some generic suites like LTP and kselftest,
-plus a lot of domain specific things which are widely used in their
-areas.  Often the stuff that's separate either lives with something like
-a userspace library rather than just being a purely kernel thing or has
-some other special infrastructure needs.
-
-For lab orchestration there's at least:
-
-    https://beaker-project.org/
-    https://github.com/labgrid-project/labgrid
-    https://www.lavasoftware.org/
-
-Beaker and LAVA are broadly similar in a parallel evolution sort of way,
-scalable job scheduler/orchestration things intended for non interactive
-use with a lot of overlap in design choices.  LAVA plays nicer with
-embedded boards since Beaker comes from RedHat and is focused more on
-server/PC type use cases though I don't think there's anything
-fundamental there.  Labgrid has a strong embedded focus with facilities
-like integrating anciliary test equipment and caters a lot more to
-interactive use than either of the other two but AIUI doesn't help so
-much with batch usage, though that can be built on top.  All of them can
-handle virtual targets as well as physical ones.
-
-All of these need something driving them to actually generate test jobs
-and present the results, as well as larger projects there's also people
-like Guenter Roeck and myself who run things that amuse us and report
-them by hand.  Of the bigger general purpose orchestration projects off
-the top of my head there's
-
-    https://github.com/intel/lkp-tests/blob/master/doc/faq.md
-    https://cki-project.org/
-    https://kernelci.org/
-    https://lkft.linaro.org/
-
-CKI and KernelCI are not a million miles apart, they both monitor a
-bunch of trees and run well known testsuites that they've integrated,
-and have code available if you want to deploy your own thing (eg, for
-non-public stuff).  They're looking at pooling their results into kcidb
-as part of the KernelCI LF project.  Like 0day is proprietary to Intel
-LKFT is proprietary to Linaro, LKFT has a focus on running a lot of
-tests on stable -rcs with manual reporting though they do have some best
-effort coverage of mainline and -next as well.
-
-There's also a bunch of people doing things specific to a given hardware
-type or other interest, often internal to a vendor but for example Intel
-have some public CI for their graphics and audio:
-
-    https://intel-gfx-ci.01.org/
-    https://github.com/thesofproject/linux/
-
-(you can see the audio stuff doing it's thing on the pull requests in
-the SOF repo.)  The infra behind these is a bit task specific AIUI, for
-example the audio testing includes a lot of boards that don't have
-serial consoles or anything (eg, laptops) so it uses a fixed filesystem
-on the device, copies a kernel in and uses grub-reboot to try it one
-time.  They're particularly interesting because they're more actively
-tied to the development flow.  The clang people have something too using
-a github flow:
-
-    https://github.com/ClangBuiltLinux/continuous-integration2
-
-(which does have some boots on virtual platforms as well as just build
-coverage.)
-
-> I think a lot of this stems from a lack of organization and a lack of
-> communication; I see a lot of projects reinventing things in slightly
-> different ways and failing to build off of each other.
-
-There's definitely some NIHing going on in places but a lot of it comes
-=66rom people with different needs or environments (like the Intel audio
-stuff I mentioned), or just things already existing and nobody wanting
-to disrupt what they've got for a wholesale replacement.  People are
-rarely working from nothing, and there's a bunch of communication and
-sharing of ideas going on.
-
-> > Some of the issues come from the different questions that people are
-> > trying to answer with testing, or the very different needs of the
-> > tests that people want to run - for example one of the reasons
-> > filesystems aren't particularly well covered for the embedded cases is
-> > that if your local storage is SD or worse eMMC then heavy I/O suddenly
-> > looks a lot more demanding and media durability a real consideration.
-
-> Well, for filesystem testing we (mostly) don't want to be hammering on
-> an actual block device if we can help it - there are occasionally bugs
-> that will only manifest when you're testing on a device with realistic
-> performance characteristics, and we definitely want to be doing some
-> amount of performance testing on actual devices, but most of our testing
-> is best done in a VM where the scratch devices live entirely in dram on
-> the host.
-
-Sure, though there can be limitations with the amount of memory on a lot
-of these systems too!  You can definitely do things, it's just not
-always ideal - for example filesystem people will tend to default to
-using test filesystems sized like the total memory of a lot of even
-modern embedded boards so if nothing else you need to tune things down
-if you're going to do a memory only test.
-
---95W9f47JAmPj9bg9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWy1tIACgkQJNaLcl1U
-h9CVTgf/R7iosqegrv7uwYe4o59k308aqsf0UrmWnF7gVhEtitPC84CIBvjkKRc+
-6w0aNtqn16xcQT11AqCbzmkZvlmODIpwLyS58fknXWBF+VXz082jtYVK0SThg22+
-cGnCMUrWCWJ6t6Y4nsA0ocRe2MDB4Ykk84XSjgn6sPeP8GX3HRY3GKHsJhQ7nLMu
-bTBttmqO/e39T+F8ldYOX25ZK+qHpW4x7k7WEdpVBm2xXGPtdZzUwXHAtqVx/GJQ
-CaiclaF/HHd/uCv6ErlcmYB3VNHtnpW0k+zqiqlW6kC2Z4QkMdr0MdGkvAqbPjHi
-Ooqh5CkJTQXefxz2oEuXWGz7FBIlnA==
-=fF9S
------END PGP SIGNATURE-----
-
---95W9f47JAmPj9bg9--
 
