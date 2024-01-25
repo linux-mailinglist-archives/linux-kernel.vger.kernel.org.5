@@ -1,127 +1,123 @@
-Return-Path: <linux-kernel+bounces-38184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38183-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5974283BC1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:36:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FDF783BC1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:36:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B64B7287F1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:36:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2817A1F27EE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:36:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C50831B973;
-	Thu, 25 Jan 2024 08:36:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="P12TEnux"
-Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com [209.85.221.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D37F01B957;
+	Thu, 25 Jan 2024 08:36:26 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A672818638
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:36:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 414AA12E4A;
+	Thu, 25 Jan 2024 08:36:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706171787; cv=none; b=kW4ed5vbtmMy+qc0fhabSMEED1Wa633nZiZ5lr1cYYGzvEWmv/rGav9i5CKjTIJZ78wiGN5XMjUAkw4423RXhIPVzGDxSqL8YvAp8xMfIyToQYYIaaorOP36Z505VuCyJk5BR9S+cLqBFg/W1IkVKHHUrmfnwVeeAOJVtAYK3v4=
+	t=1706171786; cv=none; b=B40SPXY2rNUqRMC8QClxFtI6x/M7ci1yhVCUxq1d4uUlNOYTsb1DYfma+tXZSl7kSD/qlWNUPDRmNk+B+XGwLDhQHZRQ9NpYsFtUVGAH7HcyJEraBezRtPT9HNfYg99YsLbAB4F+qw5ON8A95bW1ieX6C7aeWn1GYbJadMoccCA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706171787; c=relaxed/simple;
-	bh=qooEtGvBQ+blKW5h4z3pxUBP8ioX7XV+ZmoVKK10Hxo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C/Au9sh8/q1EUhxApO0Pco6iw0HFqUwjSWBbuKao5APa2E7F7fdTgG1BPGtxm9FOGlz63uedqElexJXSofeR4HR5P556co3kiQpMkyWnXtV5A2HHnmr28ngSmaWnNaO26WZStlXSr+cXXcflunVm/VIjOiL6+ClGW1R7HEdMWdo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=P12TEnux; arc=none smtp.client-ip=209.85.221.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-vk1-f175.google.com with SMTP id 71dfb90a1353d-4bd45397c17so538124e0c.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 00:36:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1706171784; x=1706776584; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Yfrj1tSmrxaEJmK1wFt8ZyU62zaatrSaUH2xIk0e35c=;
-        b=P12TEnuxcH1nAFTrJfddf97upD3yAMsK2NKhOWNgbNL3XvAH7vlnKD+SPYQy9kTk0F
-         fxfh92VBVw8MUiHQ+KAKBX79LCQZzPnFDFk4ugB+r6oyoXGm6OWhJRJogXSK4Fo55xnP
-         xLZwcfO981SITTNErLpBQrANOfBvIXpN9uibpgCIwUPopqzjnx93m1y57tcW2q2ony2m
-         4rqTaNkUXA1m+SaihTlVbMmb6KqsglaV34zxQqrz4vybOfn6Ush4z7us2IpDzYZL6QpF
-         5KxL0nPj+4UGUVlA60y3dX4GE8WZ2WD3NAqVXgVwoZzurxRVcGv4Kg1QSjZB/4O0MmrA
-         fNVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706171784; x=1706776584;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Yfrj1tSmrxaEJmK1wFt8ZyU62zaatrSaUH2xIk0e35c=;
-        b=IWdHtg6KgeVwFTjtvy+qJt+0BdST20rS2JN8R1OGwqppB2NrfA2NSlt9tn9SVqLKr5
-         YZ7NmRzaIgs8ejgF+TDd5n9mOx4KT6/S60yZu8kEnN/WNX5MeIMtvS+reCXXFg+UH726
-         QwIwmEK/PJPdGvvARhcaFBrgLDkVTncPuVdTf2H6AbJljaERYVhEBAin9btzBBq3G3Pp
-         UlppSdyZuflzvYDC9grkU5QPV1cJMUq6108tLLmI3ZHDX++P9TjZxInb52iMefpKabcl
-         rvJ6xndBlDUm7uNfos0nR+/1pP/XbDfREUTRyt9QR5ljE6l+j9ZC7qEP0BNLxk6eCffX
-         TDCA==
-X-Gm-Message-State: AOJu0Yx8jgImTpwhBxcYWmgbZgeOFZihhdM5OhrHFUfiy75g5nRQ4H5g
-	jThnvgYHwAwMQshDI6kvRR7L3UZSQrtlZOAuZFLblNk92uaZrStjFUWKYSBWrpvmB7hlkbBI98e
-	A8TQqE6GozoBORv90kqjnzZAedl+6NyVhYY3d+bboyXw7aOvl
-X-Google-Smtp-Source: AGHT+IGjDrSN9NH9Q8W6iSCVre2BCEXpLwCYGPA1USwtRfIaGkgUmdH12KfPvs9ADyh4WxKD9T9WUXSiryfPlu5NEsE=
-X-Received: by 2002:a05:6122:148e:b0:4bd:5edc:26c8 with SMTP id
- z14-20020a056122148e00b004bd5edc26c8mr290683vkp.32.1706171784583; Thu, 25 Jan
- 2024 00:36:24 -0800 (PST)
+	s=arc-20240116; t=1706171786; c=relaxed/simple;
+	bh=OBgQP1LWDaesd2nRxTRT92PCCumz7hyFXJpJ6nvMyMg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=j24VFFBOXL7BPyBMAzRHWpYHY8d9ywk1nP4skjv1ZAmK9H2QJP2/1Ht6B+o8t/Kzr3RuFD3bEEZE/EbKR86Gb/wRz6wk4/p4WIzQFL3gVcKrFoJAD86UFHJyZq+n4aWakg6kCJLlIKO8dnIVQrPt1gnDQdtXlMTpakAfUsiLhqE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 0b9114c47c944f3395e17bb8743a5543-20240125
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:70a3d77d-bc90-44e0-b09b-26ae8d961c29,IP:10,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:-5
+X-CID-INFO: VERSION:1.1.35,REQID:70a3d77d-bc90-44e0-b09b-26ae8d961c29,IP:10,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-5
+X-CID-META: VersionHash:5d391d7,CLOUDID:f443a58e-e2c0-40b0-a8fe-7c7e47299109,B
+	ulkID:240124210134Y4FPAFV7,BulkQuantity:5,Recheck:0,SF:66|38|24|17|19|44|6
+	4|102,TC:nil,Content:0,EDM:-3,IP:-2,URL:1,File:nil,Bulk:40,QS:nil,BEC:nil,
+	COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_ULS,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,
+	TF_CID_SPAM_FSD
+X-UUID: 0b9114c47c944f3395e17bb8743a5543-20240125
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 392365939; Thu, 25 Jan 2024 16:36:17 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id 96B42E000EB9;
+	Thu, 25 Jan 2024 16:36:17 +0800 (CST)
+X-ns-mid: postfix-65B21D81-548321494
+Received: from [172.20.15.234] (unknown [172.20.15.234])
+	by mail.kylinos.cn (NSMail) with ESMTPA id 080AFE000EBA;
+	Thu, 25 Jan 2024 16:36:16 +0800 (CST)
+Message-ID: <fa62f595-6e83-4084-b6ae-b776f3cc504b@kylinos.cn>
+Date: Thu, 25 Jan 2024 16:36:16 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240125081601.118051-1-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20240125081601.118051-1-krzysztof.kozlowski@linaro.org>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Thu, 25 Jan 2024 09:36:13 +0100
-Message-ID: <CAMRc=MesG1nYSxx0osmQEEXCvs-6B4s4=TFYW5wD8pOXpV+OcQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] gpiolib: add gpiod_to_gpio_device() stub for !GPIOLIB
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Peter Rosin <peda@axentia.se>, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	stable@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] KVM: PPC: code cleanup for kvmppc_book3s_irqprio_deliver
+Content-Language: en-US
+To: Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+ "npiggin@gmail.com" <npiggin@gmail.com>,
+ "aneesh.kumar@kernel.org" <aneesh.kumar@kernel.org>,
+ "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>
+Cc: "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+ "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20240124093647.479176-1-chentao@kylinos.cn>
+ <91bfb613-222b-41ea-a049-d4252b655176@csgroup.eu>
+From: Kunwu Chan <chentao@kylinos.cn>
+In-Reply-To: <91bfb613-222b-41ea-a049-d4252b655176@csgroup.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 25, 2024 at 9:16=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> Add empty stub of gpiod_to_gpio_device() when GPIOLIB is not enabled.
->
-> Cc: <stable@vger.kernel.org>
-> Fixes: 370232d096e3 ("gpiolib: provide gpiod_to_gpio_device()")
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->
-> ---
->
-> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> ---
->  include/linux/gpio/driver.h | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
-> index 9a5c6c76e653..012797e7106d 100644
-> --- a/include/linux/gpio/driver.h
-> +++ b/include/linux/gpio/driver.h
-> @@ -819,6 +819,12 @@ static inline struct gpio_chip *gpiod_to_chip(const =
-struct gpio_desc *desc)
->         return ERR_PTR(-ENODEV);
->  }
->
-> +static inline struct gpio_device *gpiod_to_gpio_device(struct gpio_desc =
-*desc)
-> +{
-> +       WARN_ON(1);
-> +       return ERR_PTR(-ENODEV);
-> +}
-> +
->  static inline int gpiochip_lock_as_irq(struct gpio_chip *gc,
->                                        unsigned int offset)
->  {
-> --
-> 2.34.1
->
+On 2024/1/24 21:01, Christophe Leroy wrote:
+>=20
+>=20
+> Le 24/01/2024 =C3=A0 10:36, Kunwu Chan a =C3=A9crit=C2=A0:
+>> This part was commented from commit 2f4cf5e42d13 ("Add book3s.c")
+>> in about 14 years before.
+>> If there are no plans to enable this part code in the future,
+>> we can remove this dead code.
+>>
+>> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+>> ---
+>>    arch/powerpc/kvm/book3s.c | 3 ---
+>>    1 file changed, 3 deletions(-)
+>>
+>> diff --git a/arch/powerpc/kvm/book3s.c b/arch/powerpc/kvm/book3s.c
+>> index 8acec144120e..c2f50e04eec8 100644
+>> --- a/arch/powerpc/kvm/book3s.c
+>> +++ b/arch/powerpc/kvm/book3s.c
+>> @@ -360,9 +360,6 @@ static int kvmppc_book3s_irqprio_deliver(struct kv=
+m_vcpu *vcpu,
+>>    		break;
+>>    	}
+>>   =20
+>> -#if 0
+>> -	printk(KERN_INFO "Deliver interrupt 0x%x? %x\n", vec, deliver);
+>> -#endif
+>=20
+> Please also remove one of the two blank lines.
+Thanks for your reply. I've send the v2 patch:
+https://lore.kernel.org/all/20240125082637.532826-1-chentao@kylinos.cn/
+https://lore.kernel.org/all/20240125083348.533883-1-chentao@kylinos.cn/
+>>   =20
+>>    	if (deliver)
+>>    		kvmppc_inject_interrupt(vcpu, vec, 0);
+--=20
+Thanks,
+   Kunwu
 
-Why is this needed? Users of gpio/driver.h should select GPIOLIB.
-
-Bart
 
