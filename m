@@ -1,179 +1,138 @@
-Return-Path: <linux-kernel+bounces-38104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38105-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 861DD83BAFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:52:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22B3483BB00
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:52:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 14ED71F23951
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 07:52:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C840828A53B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 07:52:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DB4B13FFD;
-	Thu, 25 Jan 2024 07:52:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C24711759C;
+	Thu, 25 Jan 2024 07:52:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zO8O4VXK"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j/mBNtk8"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC25113AC6
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 07:51:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93B5E17588;
+	Thu, 25 Jan 2024 07:52:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706169121; cv=none; b=AbZ8XYhye/gede4GNlHFHnLlVspoSxxxx8z9y2xntTCMs+QWLYTx1ufuJDf+1xRhJftz/oeCgcT30mW9OR1KnZ5+IST2A5b7jp6vSYD4MWzEaqUR608Gf5mCImlP3W2eQch1994LRvYKMB1xK03idEITnmSBvJ2JLDeRhYiHzB8=
+	t=1706169151; cv=none; b=giYei2EYXNN8irI5rz80q9d6w4+DYbY6CGfAAIQC7hKURvHLhLiGb3ervmSVtokPNQSvUgXOq3BeKy3PtFoDUfL0avh12pMIShDFztY0emYdpaJyTVNdPXTAcInOK5m65tOfbKyXMPXQN9RM9Z+lPCTQheD6l87XkDPaxFR1zqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706169121; c=relaxed/simple;
-	bh=l9hU/QKK2PtHrlBfySC/vkpZwslcuIUNq8yPn8eBBow=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=I4upcQa+Bbll++3a+Cd0GW0+UUXHKhOdhwdyUgc8oObXcwtRpzqXR4ybA8rQU4NO361DiZj92BFa5J9VnepDbWcNb+FuNZIzwOu98AewhXf5t2y6tlexTwDvyV82UMlL3x8rdh8WPMJEo/ar5a79KOv/SBSjwDwyU0+TOQPoSCo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zO8O4VXK; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a318ccfe412so11271966b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 23:51:59 -0800 (PST)
+	s=arc-20240116; t=1706169151; c=relaxed/simple;
+	bh=5uK2qKsb1JHnaulezlSEoy6gr4tqLbF94nnEz1jH0Oo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IeSwixdZ7vc1bDCSyqJr7u/Pau7Lz7ooZKWOpbHaKN8jWVzXuMkvmpPfPv84LI5ohi6GfBhBmafbv6f/HCK0Qq1ayQhlF+NBim+4vKZPn6YdFUqo1bCkzJbMEUkGMLi+vinTpH28GMLp91PjUkE9xY1iBbYUtHeP06WsefBgDVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j/mBNtk8; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50e9e5c97e1so8002478e87.0;
+        Wed, 24 Jan 2024 23:52:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706169118; x=1706773918; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nxsDUEfK9tANQSKnsl+k6AMIFKQpzSLvqrgC9O6EHUs=;
-        b=zO8O4VXKqsS5jWzqLyodB/tonR5unBUTUxVBatCBwSlryM8WFIcVuzy8dVTzQCB8YB
-         iuwD4+2zlACSMgCd9q7Q0FLlZ2tr42/oSRFrxafBvD/7zS6BUFg1hpOpgzYZIt9wm79U
-         jcqljuTPELI4ZlgpKaUO0dVNKswady6vKYg/US4ev8dX2+ohv24gC7kZvdRFP9Xrxp/7
-         Kv2D6pxUO+uDs5fL9nxgvd4iZED3giMerNbmHoupJJsW9Z+ZSj/DxuGFg5VV503LEKfA
-         9nL3X3NUe4Cl684wnXxo5pe8lfPRS6G1nDmCO5roRzI2STdBfpoKZARUZg3uVBkcp4C4
-         ++fw==
+        d=gmail.com; s=20230601; t=1706169147; x=1706773947; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5uK2qKsb1JHnaulezlSEoy6gr4tqLbF94nnEz1jH0Oo=;
+        b=j/mBNtk8r7Nq57AfaqqQT6tHPoIWImYllejG8VYTEYgmjTr6oBPK8Z/e+Xx4sRZiZp
+         VlmRtTKwTQOs1hBpnZ1bYapZYch8NiVF12gDMOogaJ6gPOez9I7q8GdyNRbt7ejjR7kg
+         /YRjvy+hd2nWBBjLRFznHVWpVTBgDv1h5uqXCogdsmyeUU2OekqD8ST16MHBF3FUFmsq
+         EW1dAQwwEafrExIYYrBYcTacyKZZojlsOiy5/YXza1Uc5weqM7+gJ+haA+wnvfU1WoY3
+         0PAJq8K4dnFAn/T21RJtO6CGquwppSFQBysH69lfbYumsEukFFgBqp4sObBheWz+mB2X
+         QBuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706169118; x=1706773918;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nxsDUEfK9tANQSKnsl+k6AMIFKQpzSLvqrgC9O6EHUs=;
-        b=cRPeoIpBduhhnlae645ODd/Lb/h6XgvetF1Zpscv11HBVSq3NBg5MoNKTO0+mQtvDN
-         tiYi9oJO+u0m9yctbP6J/tiirzox6YxIR7LaZoiApf+hw3lzTUCI84oxZLo4LuHMKUNy
-         R8unmrKotiZEUsGRrGEQGSfJmiHqKnOaLcE9gEWCkhs2FzE7Ee9N8FPM9Dyv/9qJlH7d
-         ZBjNPP288D5xxfzEJfmdJ0T+NlEpz+e7bYz653mzNyV7ESi7Ive1xhh2WBAVhGuvxOV0
-         fb/XyEPvpjl1iuYzd1FFmTSRQfAmRN85LEJk8wfdDdO/pc8tLgBew4XBIrKOebKBhDYH
-         Ttkw==
-X-Gm-Message-State: AOJu0YyTbfi1i/oEHkqbeg6dPUiOWOhfium3Hhs9QI0yrUcZKwoRoS8p
-	e0Jl5OUSw0iCx713khWtHsI7WFm/A34vbic0tW2LhPacOOJyiUHe+7ZFpt2nuRo=
-X-Google-Smtp-Source: AGHT+IFBKe7scLDRr6uP13ptInBh6NVwFkI/u6B/ANKQDXM2oGaVYvzbiYWVFDto6r17WEwD4EzQpQ==
-X-Received: by 2002:a17:907:1591:b0:a2e:d32b:6fc7 with SMTP id cf17-20020a170907159100b00a2ed32b6fc7mr216045ejc.119.1706169118001;
-        Wed, 24 Jan 2024 23:51:58 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.215.66])
-        by smtp.gmail.com with ESMTPSA id f26-20020a17090624da00b00a26ac037ff3sm727960ejb.132.2024.01.24.23.51.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jan 2024 23:51:57 -0800 (PST)
-Message-ID: <dd7e723d-3c4c-4edf-afc2-51db9a074efa@linaro.org>
-Date: Thu, 25 Jan 2024 08:51:55 +0100
+        d=1e100.net; s=20230601; t=1706169147; x=1706773947;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5uK2qKsb1JHnaulezlSEoy6gr4tqLbF94nnEz1jH0Oo=;
+        b=XOUFziYLE98sgYGY5/ZBVseJ+0DkHMT1VuV0vA8wZ7MlISLrjkGhZm5K1RF8BRNAnT
+         R8K1bBTrFpO9uGI9pLW5r793H7++sr8gfnwtQWuzSadUCVtVvp9DH20kPVsdvsUqQfwK
+         thbfKH6y0WWRQqrUk1jsqFl/aZmVJ252grQzu+D0H6QGibRI5tfb9j8JTHVfaissZCKr
+         /cApR5BdefaPsdsiBAjhKUabAa8oqsfG4xXVpxyJCYedAdh04D+E2klA5XcoerOa+R4j
+         xwBKG+fN8naZ0Q5IP76LK0N+oF4FKi7RbpuPogQmPT4b66FFAnOHyTdAjQ3cuOAPhAZo
+         n7kg==
+X-Gm-Message-State: AOJu0Yyrz2ynpwa8ayKQ5oG5WD1fb8wbaqDOSQCV9icLo1tZGLWQjQVo
+	qpzwyxXbmsV16s76MXcRaRGbD5mkH//wG+1SG9FZMUau82VBpPOo/F5EzyVJa/aVcOYv6SC1XiL
+	CS8cBGzPxMBFsCmlCZJijCBN/XBs=
+X-Google-Smtp-Source: AGHT+IHc5UO3q54Qrbj7KL7mYwjWK6D70f7fzJAn72OzNVdUkSQgBVntcy5ppmoUPTdhI3q7nrnPVGxIMuyQorJy7S0=
+X-Received: by 2002:a05:6512:3ba1:b0:510:d29:cf57 with SMTP id
+ g33-20020a0565123ba100b005100d29cf57mr311022lfv.33.1706169147484; Wed, 24 Jan
+ 2024 23:52:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 04/17] dt-bindings: soc: mobileye: add EyeQ5 OLB system
- controller
-Content-Language: en-US
-To: Rob Herring <robh@kernel.org>, =?UTF-8?Q?Th=C3=A9o_Lebrun?=
- <theo.lebrun@bootlin.com>
-Cc: Gregory CLEMENT <gregory.clement@bootlin.com>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Linus Walleij <linus.walleij@linaro.org>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>, Philipp Zabel <p.zabel@pengutronix.de>,
- Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
- linux-mips@vger.kernel.org, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Tawfik Bayouk <tawfik.bayouk@mobileye.com>, linux-gpio@vger.kernel.org
-References: <20240123-mbly-clk-v3-0-392b010b8281@bootlin.com>
- <20240123-mbly-clk-v3-4-392b010b8281@bootlin.com>
- <20240124151405.GA930997-robh@kernel.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240124151405.GA930997-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240125071901.3223188-1-zhaoyang.huang@unisoc.com> <6b2d5694-f802-43a4-a0fd-1c8e34f8e69a@kernel.org>
+In-Reply-To: <6b2d5694-f802-43a4-a0fd-1c8e34f8e69a@kernel.org>
+From: Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date: Thu, 25 Jan 2024 15:52:16 +0800
+Message-ID: <CAGWkznHK5UPajY2PG24Jm7+A0c9q+tyQzrPdd=n3tp0dgX+T0w@mail.gmail.com>
+Subject: Re: [PATCHv3 1/1] block: introduce content activity based ioprio
+To: Damien Le Moal <dlemoal@kernel.org>
+Cc: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Jens Axboe <axboe@kernel.dk>, Yu Zhao <yuzhao@google.com>, 
+	Niklas Cassel <niklas.cassel@wdc.com>, "Martin K . Petersen" <martin.petersen@oracle.com>, 
+	Hannes Reinecke <hare@suse.de>, Linus Walleij <linus.walleij@linaro.org>, linux-mm@kvack.org, 
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	steve.kang@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 24/01/2024 16:14, Rob Herring wrote:
->> +
->> +      pinctrl-b {
->> +        compatible = "mobileye,eyeq5-b-pinctrl";
->> +        #pinctrl-cells = <1>;
->> +      };
->> +    };
-> 
-> This can all be simplified to:
-> 
-> system-controller@e00000 {
->     compatible = "mobileye,eyeq5-olb", "syscon";
->     reg = <0xe00000 0x400>;
->     #reset-cells = <2>;
->     #clock-cells = <1>;
->     clocks = <&xtal>;
->     clock-names = "ref";
-> 
->     pins { ... };
-> };
-> 
-> There is no need for sub nodes unless you have reusable blocks or each 
-> block has its own resources in DT.
-
-Yes, however I believe there should be resources here: each subnode
-should get its address space. This is a bit tied to implementation,
-which currently assumes "everyone can fiddle with everything" in this block.
-
-Theo, can you draw memory map?
-
-Best regards,
-Krzysztof
-
+On Thu, Jan 25, 2024 at 3:40=E2=80=AFPM Damien Le Moal <dlemoal@kernel.org>=
+ wrote:
+>
+> On 1/25/24 16:19, zhaoyang.huang wrote:
+> > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> >
+> > Currently, request's ioprio are set via task's schedule priority(when n=
+o
+> > blkcg configured), which has high priority tasks possess the privilege =
+on
+> > both of CPU and IO scheduling.
+> > This commit works as a hint of original policy by promoting the request=
+ ioprio
+> > based on the page/folio's activity. The original idea comes from LRU_GE=
+N
+> > which provides more precised folio activity than before. This commit tr=
+y
+> > to adjust the request's ioprio when certain part of its folios are hot,
+> > which indicate that this request carry important contents and need be
+> > scheduled ealier.
+> >
+> > This commit is verified on a v6.6 6GB RAM android14 system via 4 test c=
+ases
+> > by changing the bio_add_page/folio API in ext4 and f2fs.
+>
+> And as mentioned already by Chrisoph and Jens, why don't you just simply =
+set
+> bio->bi_ioprio to the value you want before calling submit_bio() in these=
+ file
+> systems ? Why all the hacking of the priority code for that ? That is not
+> justified at all.
+>
+> Furthermore, the activity things reduces the ioprio hint bits to the bare
+> minimum 3 bits necessary for command duration limits. Not great. But if y=
+ou
+> simply set the prio class based on your activity algorithm, you do not ne=
+ed to
+> change all that.
+That is because bio->io_prio changes during bio grows with adding
+different activity pages in. I have to wrap these into an API which
+has both of fs and block be transparent to the process.
+>
+> Note: Your patch is full of whitespace changes.
+Sorry, I double checked the source code and the patch with
+checkpatch.pl again, no whitespace found, don't know why
+>
+> --
+> Damien Le Moal
+> Western Digital Research
+>
 
