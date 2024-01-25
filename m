@@ -1,103 +1,149 @@
-Return-Path: <linux-kernel+bounces-38856-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38857-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E7C883C750
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:53:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9581A83C753
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:53:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8115C1C22983
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:53:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E40DEB24AE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:53:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 745A5745E9;
-	Thu, 25 Jan 2024 15:53:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4200874E06;
+	Thu, 25 Jan 2024 15:53:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QdtXKOCZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="YEb60p/1";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ank+XVpr"
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB4312C69E;
-	Thu, 25 Jan 2024 15:53:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D35F74E03;
+	Thu, 25 Jan 2024 15:53:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706197995; cv=none; b=Ei3UTzZ4EJsZcWEozQQaQFkp10JJDqumQ8jAe118U5t+ORta0f8xmLiRgPkLCDqg8o/H7sfxEKIHKvreDCZ+qTtSyardJt4hkZshYKy+u7CUY4lP3GpT/oPoYYUgBb0ozTGB19/j8oHqLEaE3gUHOxRS7tkG+nVoUDxBNm0PWVY=
+	t=1706198018; cv=none; b=U/mSBZBS/bU99FLPmznWfA1U1j2Cy5UNUsKeTH8wOKinwqTa5fKGfHmA5SE9BJ0Tt0YZS5ri2mG6fTkJoCWNPMe+23St8HKhNdsiu2uNpyeWur26GbaF/Re3IkvqXrEfZj7d4h5+N0jIPUhJOBWPSXsJhbP3Ht8m0ttPUBydows=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706197995; c=relaxed/simple;
-	bh=nOk6+vpBqAnD0NqUVUx1ai0O80sPEh8od21YAXRQz9o=;
+	s=arc-20240116; t=1706198018; c=relaxed/simple;
+	bh=G18Ngnp8+N1SX1I5AuyLukD8rimjBcb0zqWv+2YoJXw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hLnwPSfiiGdZ/Uh4XDfH6UbqxCZaLqKGrDIt9W1SeG+84A7vX4D0TGKAJdOAZlz/qaDikDNypb8uGE6xe6WFGjebXZfQ5SOr0iAXcudIPok4BO/M6chcV+wjFEZ+gBId+6rrr9woqFmSNeHr86WYuZ9dCbPlj9onl8jjsCfPA5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QdtXKOCZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEE37C43390;
-	Thu, 25 Jan 2024 15:53:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706197995;
-	bh=nOk6+vpBqAnD0NqUVUx1ai0O80sPEh8od21YAXRQz9o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QdtXKOCZ0MumhfGjw0KAxGHAURFnRimM7IChc4rD/5CUdG0XlW9fXu/VLy0UzhC5a
-	 JBVO6oiLnXxqdToZ2Oewci7VR4Oec51N/DksyQu9WkRK8MbLelC3y0mD9ttDimOQvX
-	 833oY53SfTUrWxVTYROVlpcnUwXdw7hiMDltdjiG+5YpN6/o1kSisRhRvQg/GkWcwM
-	 JBNPV0gFbVt35774aTuoae4V4gZfGxFr4a+KuE+bWAD3+BdF9i+/XbptMQFcC2q35/
-	 +Nm5zlQKc+QoqqqQ5tNL0Fm8YAiWo0x33XS/zIMI5S2aB2kg9ddr1PjTi2VdOkN7sG
-	 Uxuvvl528e9Cw==
-Date: Thu, 25 Jan 2024 15:53:08 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-	conor+dt@kernel.org, alim.akhtar@samsung.com,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-spi@vger.kernel.org, andre.draszik@linaro.org,
-	peter.griffin@linaro.org, semen.protsenko@linaro.org,
-	kernel-team@android.com, willmcvicker@google.com
-Subject: Re: [PATCH 0/7] ARM: dts: samsung: specify the SPI fifosize
-Message-ID: <eaa04bac-91dc-40e2-981d-e5f04f6ca19e@sirena.org.uk>
-References: <20240125151630.753318-1-tudor.ambarus@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=QIoPLlQ15gmT7MdSC+FLjCijXmvlnbA9PI/paHDaVoFI+K3TxuYQzXMvjdzrS7JI26k7VWXCAKr9xfv9s1GxWdgaHNqFf0IRmN/xJmRJcdwfTk4tuOMQIfwLxGkoQNpzNc1oxUiknfWFBvlICuofMHmupN70giR0JAfr830W0fA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com; spf=pass smtp.mailfrom=kroah.com; dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b=YEb60p/1; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ank+XVpr; arc=none smtp.client-ip=64.147.123.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailout.west.internal (Postfix) with ESMTP id C713E3200AFB;
+	Thu, 25 Jan 2024 10:53:34 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Thu, 25 Jan 2024 10:53:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1706198014; x=1706284414; bh=dt+FkIaJT/
+	hPdAp0Of7+5zZJ/fkAAqP/0ySEwLtFymE=; b=YEb60p/1b6fJkCu68l1ALy0nSW
+	M7hfMZxhsVozNcNFWVQxBDM/OpJwavHxEdIi3pNqZvej7mmoDdKVV18YulnTUyWr
+	3kVVKrAa0nuBLkscRK+eDMXKxAJBYWC2K4xQs3HOHNUMIxal4JYylJBdqG7qITN2
+	sobVWCWW4SGwOxsHyvQd6KRaP7m5ti7LqhIckYmeAo1337awImrJwaCos/wpKaI2
+	bqkBXaaoGgvlm6fWqxvDiMopVGiZm12xm6YL+x0QqJMOR9+PLFD0DPo+2O2osGtc
+	rkE6mEztgR8B73OKkKFLQc1Mji68wcsY9uUBrWh3N5S3NJ6yaO32LvD8DpkQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1706198014; x=1706284414; bh=dt+FkIaJT/hPdAp0Of7+5zZJ/fkA
+	AqP/0ySEwLtFymE=; b=ank+XVpr4dKMIPQnzsa2yj+0e1iXBX/q/zoVYmjxczA/
+	nBtOPTJI+tD1pUjl3g8HumdXzubeH5On6NLvMPdUTu14ErMBhAWWZdg/bIRAp6dO
+	g9dSX6TprC2siiAxIIZm90lcD/hdAaWxKddjKWDMaufwPj9ymJULfOUG7lujv6e2
+	gNddwwCZs8j6O61bLwXIcNIYcEPoS47HeWvVkbLjj1q7TIwYW8SewbBw6WjJEBP0
+	Lf1ZrnoYg24+qYC5HXr/XijSRrZ4vyNl5RhWW0wVLKZ4SSUN1xCobqghKF+lI9tm
+	21tArQ/MfPf5JPhz+c+P7XcmTbsvBSNJc1Tc5cIDEQ==
+X-ME-Sender: <xms:_YOyZaR7S-czsr-1124zyjTkNnB805Zq78Uu6So5uOnUyaJQ5Dq5fA>
+    <xme:_YOyZfwYX8cUohJaLpMuh21Jv4e0WRc3e97M8t1R7JqQwHmV5BGToAJnho16ZT8g2
+    0p3v0gbdRn5gg>
+X-ME-Received: <xmr:_YOyZX1joNvMgagCHL5SR_1ESgzmqVA_mXT0vskAtofBsJ4QOoTavK3PB4Ft>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdelgedgheehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepgeehue
+    ehgfdtledutdelkeefgeejteegieekheefudeiffdvudeffeelvedttddvnecuffhomhgr
+    ihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:_YOyZWAWzP6GOCoTUKH8RA1crpKYPl8o4_5XlqI6LN1Z987jo40ayw>
+    <xmx:_YOyZTiLw_WL5FPE59SNwP8CYYpIBMkxhqsO1H8yjxm6VgBJs7ZnKg>
+    <xmx:_YOyZSoz3bsYdffLS3IblfoZQkF0gBNKWxlJUArTNfKCstIu7tp2mQ>
+    <xmx:_oOyZeUR34K-SwCcf92h_RuyOtis8yms1g4eWWzka2rF9RKI7g45Mg>
+Feedback-ID: i787e41f1:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 25 Jan 2024 10:53:33 -0500 (EST)
+Date: Thu, 25 Jan 2024 07:53:32 -0800
+From: Greg KH <greg@kroah.com>
+To: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the usb tree
+Message-ID: <2024012518-quickness-breeder-d18d@gregkh>
+References: <20240108160221.743649b5@canb.auug.org.au>
+ <2024010816-fabric-cassette-1548@gregkh>
+ <20240125113527.5c9fca93@canb.auug.org.au>
+ <7d1babf5-0999-4528-8202-09b8dd0ab06b@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="foFfTHRHUmaAcrJ3"
-Content-Disposition: inline
-In-Reply-To: <20240125151630.753318-1-tudor.ambarus@linaro.org>
-X-Cookie: Entropy isn't what it used to be.
-
-
---foFfTHRHUmaAcrJ3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <7d1babf5-0999-4528-8202-09b8dd0ab06b@quicinc.com>
 
-On Thu, Jan 25, 2024 at 03:16:23PM +0000, Tudor Ambarus wrote:
+On Thu, Jan 25, 2024 at 11:23:56AM +0530, Krishna Kurapati PSSNV wrote:
+> 
+> 
+> On 1/25/2024 6:05 AM, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > On Mon, 8 Jan 2024 08:54:39 +0100 Greg KH <greg@kroah.com> wrote:
+> > > 
+> > > On Mon, Jan 08, 2024 at 04:02:21PM +1100, Stephen Rothwell wrote:
+> > > > 
+> > > > After merging the usb tree, today's linux-next build (htmldocs) produced
+> > > > this warning:
+> > > > 
+> > > > Documentation/usb/gadget-testing.rst:459: ERROR: Malformed table.
+> > > > Text in column margin in table line 9.
+> > > > 
+> > > > ===============   ==================================================
+> > > > ifname            network device interface name associated with this
+> > > >                    function instance
+> > > > qmult             queue length multiplier for high and super speed
+> > > > host_addr         MAC address of host's end of this
+> > > >                    Ethernet over USB link
+> > > > dev_addr          MAC address of device's end of this
+> > > >                    Ethernet over USB link
+> > > > max_segment_size  Segment size required for P2P connections. This
+> > > >                    will set MTU to (max_segment_size - 14 bytes)
+> > > > ===============   ==================================================
+> > > > 
+> > > > Introduced by commit
+> > > > 
+> > > >    1900daeefd3e ("usb: gadget: ncm: Add support to update wMaxSegmentSize via configfs")
+> > > 
+> > > Krishna, can you send a fixup patch for this?
+> > 
+> > I am still seeing this warning.
+> > 
+> HI Stephen,
+> 
+>  Udipto and Randy sent patches for fixing this:
+> 
+> https://lore.kernel.org/all/20240108132720.7786-1-quic_ugoswami@quicinc.com/
+> 
+> https://lore.kernel.org/all/20240110203558.2638-1-rdunlap@infradead.org/
+> 
+> Greg, can you help pick one of them up.
 
-> These patches close the circle and break the dependency between the SPI
-> of_alias ID and the SPI driver. The SPI of_alias ID was used as an index
-> into the fifo_lvl_mask to determine the FIFO depth of the SPI node.
-> Changing the alias ID into the device tree would make the driver choose
-> a wrong FIFO size configuration, if not accessing past the fifo_lvl_mask
-> array boundaries. Not specifying an SPI alias would make the driver fail
-> to probe, which was wrong too. Thus I updated the driver and I provided
-
-Specifying a specific compatible is just good practice, it makes the DT
-much more robust for when we discover new things about the hardware and
-reduces the surface of the ABI.
-
---foFfTHRHUmaAcrJ3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWyg98ACgkQJNaLcl1U
-h9DPcgf/cXFXW2mU/ooxWd/EwkvRCkAW4vwoseFFv6E9z59LkE4ds8tHPZDgZOBE
-/3U/AIgAG9tQQFOWmxSNFHnh1E2NCMte/VUoXTisfRnhLdYZj2wlaFdcvGt/JFe+
-E5WTpnGFsKLOEC1JB5XIQLpJVHniXRiPEsc4zDJlro7m6+r/5aLqbIh6ORuwVdVg
-2uzj2iL2c2Ik8I6PreqCA5T6Ow53h/o5OELqui8W7AhDiN1c2cRL8ukRGteN6q0r
-HUWuLVYbuYxifr5BjOS+n7mLDMY2Jg/EhysV+T7ZB23mUSuNZPE9drX1lLb+CZa0
-P4cbB+TJ3sk4DkKU2k5l2l3uIxyAkw==
-=0MC+
------END PGP SIGNATURE-----
-
---foFfTHRHUmaAcrJ3--
+I will, sorry, at a conference this week, will catch up this weekend...
 
