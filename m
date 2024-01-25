@@ -1,134 +1,111 @@
-Return-Path: <linux-kernel+bounces-38521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38501-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2816683C0FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:37:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A24B483C0C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:29:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C77F92865B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:37:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6444128953C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:29:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D92515A7B2;
-	Thu, 25 Jan 2024 11:33:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1Hth3OCF"
-Received: from mail-wr1-f73.google.com (mail-wr1-f73.google.com [209.85.221.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A82428E3C;
+	Thu, 25 Jan 2024 11:29:16 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 943B45A78F
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 11:33:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B99122206D
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 11:29:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706182400; cv=none; b=kQMTBFZsefw7/HuQyn0W+w2Om1a7TeAsroWwYBWjOzQbCD/Ayq7/GJiLY8+YqqUQENcdAep4rJ5awwinc3pAI5tCB9vSJAA/Pieo96wd5Xue/iQ04qLDfSfwibm1mMVrNqjNpAyQxJNbsGsmyl1gtSRmJb4iaVn/oV2s/alpwmE=
+	t=1706182156; cv=none; b=KliUt5/TwZz0SNCEv5tDevMHCI6WPembwHTPaRd2l3AcV3QABv5Awc2FKJvcFLOGNykOQIiPtvC6S63ZMqIn0NTok3VLg99fPBffXdyLZFhWBH6yteFMIdVpFTEu+c8PBO/AJlZ63vQ2rez72FuTlVaty1256eVaYZUOtyTaSug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706182400; c=relaxed/simple;
-	bh=OwW6wBuNpjoZwXNRvFnESPahBXLxFOjLZ++ayooCsxU=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=YtxZuSFWpwb6d/wWws6rNqd8h6LHGmDLSXMtq5ol1MrYBHM82BpQTJoboLNgiz0cLs7jbPbYHRHGsQ9+Esr66ri9EKWS7ZwhObbpZXdOhLyhEXI0quAGFSa6x7hyfGM7FypHdcs03tguWVWYnszM+fDYNTYsZZ1iFJ5E46wft5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1Hth3OCF; arc=none smtp.client-ip=209.85.221.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com
-Received: by mail-wr1-f73.google.com with SMTP id ffacd0b85a97d-337cfc83240so4415242f8f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 03:33:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706182397; x=1706787197; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=M0LWk2oJk+i7OdHacQS8szXmAws8+WmD6+X8i7Byook=;
-        b=1Hth3OCF/4CFibvfC8gzhxHcuSVsOXu60uqUUY0oLKkk6pv9o8ElXY9L55+hXUqerX
-         KI2YJgtufUVANACpD82Vrlpb2sBqdzq5E9nEkNSPb25Y8apUgrbN3mKsBd28WMgBNHeB
-         TXVwmWITB+P/AHPqzmEDr3fJ3eCQczSz2kNyUnsCt1pH2pfbMuuoukd2B/YEvZr2z279
-         D3kNRoo6PPWNEKhLAKLucFVvGxlpu1xu0P5rB1Z5i01WBVudbDRLJ6roiGvcL1eWk90I
-         nDy1WDyU5LL/LLTDJvSKDSIOSjBTdBWCY4oPH4FyYlKE+O8dLuFRKpZcSoBGIAulR1VK
-         CglA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706182397; x=1706787197;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=M0LWk2oJk+i7OdHacQS8szXmAws8+WmD6+X8i7Byook=;
-        b=xMQ4UP850NbUXj2pVZFxD8H5FcIm6/FZKqccfZGwCAzOGyHXCraWJ9WP9VYmM8ab2T
-         ptUT3vMP4QXf7TMrd3GdwqlY0lIw1kBJem0SE0IsRiN6bxQdfpOdASwttQWjzxONNfA4
-         HYm5a7NxXtjTf3AWlFWUtybCBK+6WbBwsr6R9gGCUJge8MBZdR7kPkn+9ga9LW73UyIr
-         SllHjRLTG7Jg06MVrPv/6wzeWpxHSdAYJFm3Yd0oex7WB8TSrp/wGySBbxpB8R3HAa43
-         FxCPcKfIhEJTq9Kzqwn6dvKoTW2+tA42KaAcNGqntxmKkfh3khog4X8HBk1Nu8w78hpP
-         HDdw==
-X-Gm-Message-State: AOJu0Yx1XXwwu3oaog0BrzhaWF5pq3f2XcovqcoDJwTuaZUBRWqLhdps
-	fftQ2RBXhk4+iXKffmBL7/IE063yvfNZpWVHbhPCuFyywRQH1BPyvuDR4s6SDw3REYW0fHX8IgJ
-	dZiIhZBu0pfspwxIrW4sA/+hZUE/j8NMY4xa2Z7eAw70oR2F3ojoBEcObWAPbiwWBbA3XPhRbxO
-	cefNkBjPEw6jrqcrPR4vDadDnQNMG1Fg==
-X-Google-Smtp-Source: AGHT+IG/Nfpuzk7bgzrZNwvHbfRYXZf+jimIHipf+XjfpPJSWyU5yyhZ8rY9HrGdokg9HeoZMcEye6SG
-X-Received: from palermo.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:118a])
- (user=ardb job=sendgmr) by 2002:a5d:4a04:0:b0:33a:d182:fda1 with SMTP id
- m4-20020a5d4a04000000b0033ad182fda1mr704wrq.11.1706182396410; Thu, 25 Jan
- 2024 03:33:16 -0800 (PST)
-Date: Thu, 25 Jan 2024 12:28:36 +0100
-In-Reply-To: <20240125112818.2016733-19-ardb+git@google.com>
+	s=arc-20240116; t=1706182156; c=relaxed/simple;
+	bh=Nw538rruL/XSyChWFyI5KX1BM2Qj4bt/rXvZNCB5Jxo=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=P0azz7fQT+K0Gt9QmrjuFOxskihmjGLJfuvdPz8DVvq/lWg7gGW1NmAgsIb5Klq5ogoyz86Jl+j1WlN6r2x4i8mEnAlrMVwScrtZcVovjUbAzcUC+kApYYPuQt9HQKuIg+bjL3Z1Q5R0YZeGAtW9afHnWs2+nzDh/Zyen10ANnA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from dude05.red.stw.pengutronix.de ([2a0a:edc0:0:1101:1d::54])
+	by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rSxuw-0001TG-WB; Thu, 25 Jan 2024 12:29:11 +0100
+From: Philipp Zabel <p.zabel@pengutronix.de>
+Date: Thu, 25 Jan 2024 12:29:08 +0100
+Subject: [PATCH v2] usb: dwc3-of-simple: Stop using
+ of_reset_control_array_get() directly
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240125112818.2016733-19-ardb+git@google.com>
-X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1282; i=ardb@kernel.org;
- h=from:subject; bh=hctyhPpJV0WOf9z7vrzpK1P7aPRf6ODhgzfVMyHZJzc=;
- b=owGbwMvMwCFmkMcZplerG8N4Wi2JIXWTG8sTO09G1eh3s38HbSvasYtlpd3913LP1YUZb+y3l
- Gtsejy1o4SFQYyDQVZMkUVg9t93O09PlKp1niULM4eVCWQIAxenAEzkgx7D94wEFmeVtglT7X2n
- ae2pfHhf8JzyxIQtHd+dJiq5nqrMYmTYsNiqaMdW0aOzHgsVla44+tL+ZWwd59c1V192eaTtZ4v iBAA=
-X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
-Message-ID: <20240125112818.2016733-36-ardb+git@google.com>
-Subject: [PATCH v2 17/17] x86/startup_64: Don't bother setting up GS before
- the kernel is mapped
-From: Ard Biesheuvel <ardb+git@google.com>
-To: linux-kernel@vger.kernel.org
-Cc: Ard Biesheuvel <ardb@kernel.org>, Kevin Loughlin <kevinloughlin@google.com>, 
-	Tom Lendacky <thomas.lendacky@amd.com>, Dionna Glaze <dionnaglaze@google.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski <luto@kernel.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Brian Gerst <brgerst@gmail.com>, linux-arch@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240125-dwc3-of-simple-reset-control-array-fix-v2-1-1ab6b52cad21@pengutronix.de>
+X-B4-Tracking: v=1; b=H4sIAANGsmUC/5WNQQ6CMBBFr0K6dkxbWFRX3sOwIO0Ak2BLphUhh
+ Ls7cgOX7+f//3aVkQmzule7YlwoU4oC9lIpP3ZxQKAgrKy2jTa2gfDxNaQeMr3mCYExYwGfYuE
+ 0QcfcbdDTCtjgzVlZuRCUnM2MEp+iZys8Ui6Jt9O7mF/6t2IxYMBpZ5z1vu41PmaMw1takdZrQ
+ NUex/EFujhQZuEAAAA=
+To: Thinh Nguyen <Thinh.Nguyen@synopsys.com>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>, 
+ Neil Armstrong <neil.armstrong@linaro.org>, Felipe Balbi <balbi@kernel.org>
+Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Philipp Zabel <p.zabel@pengutronix.de>
+X-Mailer: b4 0.13-dev-a684c
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:1101:1d::54
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+Use of_reset_control_array_get_optional_exclusive() instead, it is
+implemented as:
 
-The code that executes from the early 1:1 mapping of the kernel should
-set up the kernel page tables and nothing else. C code that is linked
-into this code path is severely restricted in what it can do, and is
-therefore required to remain uninstrumented. It also built with -fPIC
-and without stack protector support.
+  static inline struct reset_control *
+  of_reset_control_array_get_optional_exclusive(struct device_node *node)
+  {
+          return of_reset_control_array_get(node, false, true, true);
+  }
 
-This makes it unnecessary to enable per-CPU variable access this early,
-and for the boot CPU, the initialization that occurs in the common CPU
-startup path is sufficient.
+This makes the code easier to understand and removes the last remaining
+direct use of of_reset_control_array_get(). No functional changes.
 
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+This change was made possible by commit f4cc91ddd856 ("usb: dwc3:
+of-simple: remove Amlogic GXL and AXG compatibles"), which made the
+parameters passed to of_reset_control_array_get() constant.
+
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 ---
- arch/x86/kernel/head_64.S | 7 -------
- 1 file changed, 7 deletions(-)
+Changes in v2:
+- Drop Fixes tag, adapt commit message.
+- Link to v1: https://lore.kernel.org/r/20240124-dwc3-of-simple-reset-control-array-fix-v1-1-808182cc3f0e@pengutronix.de
+---
+ drivers/usb/dwc3/dwc3-of-simple.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index 5defefcc7f50..2cce53b2cd70 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -76,13 +76,6 @@ SYM_CODE_START_LOCAL(primary_startup_64)
- 	/* Set up the stack for verify_cpu() */
- 	leaq	(__end_init_task - PTREGS_SIZE)(%rip), %rsp
+diff --git a/drivers/usb/dwc3/dwc3-of-simple.c b/drivers/usb/dwc3/dwc3-of-simple.c
+index d1539fc9eabd..9cf9ee1b637b 100644
+--- a/drivers/usb/dwc3/dwc3-of-simple.c
++++ b/drivers/usb/dwc3/dwc3-of-simple.c
+@@ -52,8 +52,7 @@ static int dwc3_of_simple_probe(struct platform_device *pdev)
+ 	if (of_device_is_compatible(np, "rockchip,rk3399-dwc3"))
+ 		simple->need_reset = true;
  
--	/* Setup GSBASE to allow stack canary access for C code */
--	movl	$MSR_GS_BASE, %ecx
--	leaq	INIT_PER_CPU_VAR(fixed_percpu_data)(%rip), %rdx
--	movl	%edx, %eax
--	shrq	$32,  %rdx
--	wrmsr
--
- 	call	startup_64_setup_env
- 
- 	/* Now switch to __KERNEL_CS so IRET works reliably */
+-	simple->resets = of_reset_control_array_get(np, false, true,
+-						    true);
++	simple->resets = of_reset_control_array_get_optional_exclusive(np);
+ 	if (IS_ERR(simple->resets)) {
+ 		ret = PTR_ERR(simple->resets);
+ 		dev_err(dev, "failed to get device resets, err=%d\n", ret);
+
+---
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+change-id: 20240124-dwc3-of-simple-reset-control-array-fix-e4e9822028dd
+
+Best regards,
 -- 
-2.43.0.429.g432eaa2c6b-goog
+Philipp Zabel <p.zabel@pengutronix.de>
 
 
