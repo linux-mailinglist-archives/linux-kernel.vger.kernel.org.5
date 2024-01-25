@@ -1,123 +1,134 @@
-Return-Path: <linux-kernel+bounces-37823-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37824-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B85E983B617
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 01:31:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59FBC83B619
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 01:34:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70EB3284BD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 00:31:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F6E01C22363
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 00:34:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B3F48495;
-	Thu, 25 Jan 2024 00:30:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A8FBEA9;
+	Thu, 25 Jan 2024 00:33:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="wdCQHqEF"
-Received: from mail-il1-f175.google.com (mail-il1-f175.google.com [209.85.166.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="C+9SZWnS"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2626F67C5D
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 00:30:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D9AE62B;
+	Thu, 25 Jan 2024 00:33:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706142628; cv=none; b=CeL68wzmNUHsVNpsRI9T21UofkkO8pl6ih5tExUb054R9wuY94R05ciLpvs0rZORKRVTCCP1XW2n2R8qTGJIBotope127ncZkZe9QXe1vZICYKpTKNCorzzpAWT4AhfYj1JDQ5CGXCVZ4gG/W7iiuHYIf4Aq1nnKqTXZTvokCrk=
+	t=1706142835; cv=none; b=uJY7UphlUhUhAfk5oaFpVsD/gjSNhI5VvlG6dHrVmTmnsM+z6FYs+4TB8oJ3ZqsMkZqfeflDCnfEBkowUeV/Umx7GvavB9e5xfI6JearkbIEgGM9LaaK4uMbtDjBNtqZZaX6XdO6S44lsVuGldwoDsuk7qiwaU+HE8KpvHK4zMo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706142628; c=relaxed/simple;
-	bh=lab1cc/BnvmVMoI/6a4oqJtvBk6zbJgk82AeHiJrUN8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Qp7+XzYglC7Bnq1qWtkfSk56bH8o4dHVZBmM1VUg7snoBmhFuA7YBL2pnNsbm2CiFy8Z1T4zvKaNkZ8X7wXl27c0Jxhl9QfKsYlR8hb8nuYJ4PIiiaMsJ16XZQfI8CLxcf7q+i5YimsT1cXa6zFhkj79vPoR1bP4cHPKl575MNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=wdCQHqEF; arc=none smtp.client-ip=209.85.166.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-il1-f175.google.com with SMTP id e9e14a558f8ab-361b0f0f971so17911565ab.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 16:30:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1706142626; x=1706747426; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vgDFOq40XBBKNZXci2Ggytp+MQppzv/horYrfyyqlNM=;
-        b=wdCQHqEFj1fELd8jMSd1CTQLr6eZnzKB40m2nzPPjLQCZtci8aSyRLSuQjKZy9gT21
-         4DvQ9s+Ijra/BYPrcmyDDIzAN3lmuPPAbQTZTJsbE4567XCk3CZX8PoFmOxt6b/o1zBb
-         Mbp7YovlQ8q5/7ZE0oQy7vnrHLAiWXyW482mc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706142626; x=1706747426;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vgDFOq40XBBKNZXci2Ggytp+MQppzv/horYrfyyqlNM=;
-        b=HzYMhbxDT7mXXU2+XxlKWfvWcqBy/G2gn5cCgV5uQIi4w8VDG6vPrGYIeohQyf/Ee1
-         ksHnqk4hTFeHZQcL3fKeynRj2qJNlFE77UYq2ZGB/rXJd1cMswAHxOZozsQa0u6PoO3b
-         mutmBqY03smSp45jZMAbNOqR2Qz6jjus594y0eMy/81wWFPImSgXQ+LMVubBO+bp1y6M
-         Ka5AQPabSj2Qurwm6VsurbXkrGodMmL/831pk2CB4hE5MQaqHHPjKPPHEakniyLdZ7d4
-         c1C9Gz3smg30vZ3UccJa0FQPDr+808wgfESsPa1Dkg0Za4BzZ3kPBzkr1oURCxcI9Dxa
-         kE0Q==
-X-Gm-Message-State: AOJu0YwpQLbTSh5c6dcsf5bPLE9uT2TacUZdelKsailRm2JdR1t6El/+
-	CHeKR5+C5OkJmT4ZfOE0TvIPzpATt6r2LqMXKuW7GYpQnnY+moP4ChA9q4e4zjU=
-X-Google-Smtp-Source: AGHT+IE9OMBwdVUF2LOwcQ/6fsfVNS4gRrjXRfy15GDSSC7Tq5Amb3vaXx8NekmcMrDZP656URMpnw==
-X-Received: by 2002:a92:b751:0:b0:361:abba:a7a4 with SMTP id c17-20020a92b751000000b00361abbaa7a4mr270859ilm.14.1706142626425;
-        Wed, 24 Jan 2024 16:30:26 -0800 (PST)
-Received: from localhost.localdomain ([2620:11a:c018:0:ea8:be91:8d1:f59b])
-        by smtp.gmail.com with ESMTPSA id w10-20020a63d74a000000b005cd945c0399sm12550486pgi.80.2024.01.24.16.30.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 16:30:26 -0800 (PST)
-From: Joe Damato <jdamato@fastly.com>
-To: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: chuck.lever@oracle.com,
-	jlayton@kernel.org,
-	linux-api@vger.kernel.org,
-	brauner@kernel.org,
-	edumazet@google.com,
-	davem@davemloft.net,
-	alexander.duyck@gmail.com,
-	sridhar.samudrala@intel.com,
-	kuba@kernel.org,
-	weiwan@google.com,
-	Joe Damato <jdamato@fastly.com>
-Subject: [net-next v2 4/4] net: print error if SO_BUSY_POLL_BUDGET is large
-Date: Thu, 25 Jan 2024 00:30:14 +0000
-Message-Id: <20240125003014.43103-5-jdamato@fastly.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240125003014.43103-1-jdamato@fastly.com>
-References: <20240125003014.43103-1-jdamato@fastly.com>
+	s=arc-20240116; t=1706142835; c=relaxed/simple;
+	bh=VlUFiFKANzH5XTYPF9DZ3GcQtYy4aKlKIL71NaTZ3HE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=oVgIjMhy86V+76bjijZKa4uzjt9KD0LF6DNe0d9Td1lEsF+YwBNkbR5m9oZosyN1QoewmCYKMwbpfCrMYRQwZfMVCfRPp830+KUc4YgAQuy0Q7yV6n/5bUc4K0NECWdZtvkFCnAoRe4Wndlc/lA5Z6xLeviebAvkgLVGrMBZg+w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=C+9SZWnS; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1706142828;
+	bh=E648+W+X9N7+DnPy6fA/Cr+MHbMYJCW4iZrz/S0GTeU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=C+9SZWnSl4uElwrb/T1oXus3N8LdUB2m+FH3TKf/NHQ4+Z4m31eJT6bF3kV+KR4tQ
+	 Wfj31nKqWhlm6apDJec2B9ta/4HoewFksAdNENAmmNRmkP3r04IEjgdx7jk07CQxGs
+	 L7IkN+UB4qW77+wGRTc8U5g1MWlAVcezwO4b9OSrSDP0NCTCg2o4RQ0S6EwmHfWOFI
+	 MeZhVexY3hv/8w8Ib5JKYxMrjzhAZ3CVGOLo2Lb3jXk9ZRaK9q8dcuPEV4pIW2hNCH
+	 +RneezX+MTFHFHjfLTYkWXylRJ/uMuL6+4/xvri8fpnts+F8qF2aakFmpPN4K/ufsr
+	 Ej5JR0tjVo/Pg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TL1yy5xv1z4wbh;
+	Thu, 25 Jan 2024 11:33:46 +1100 (AEDT)
+Date: Thu, 25 Jan 2024 11:33:45 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Dave Airlie <airlied@redhat.com>
+Cc: DRI <dri-devel@lists.freedesktop.org>, Badal Nilawar
+ <badal.nilawar@intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, Linux
+ Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the drm tree
+Message-ID: <20240125113345.291118ff@canb.auug.org.au>
+In-Reply-To: <20240105174745.78b94cb5@canb.auug.org.au>
+References: <20240105174745.78b94cb5@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/CfWWVmfh9DcKFJxP2bE3FfP";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-When drivers call netif_napi_add_weight with a weight that is larger
-than NAPI_POLL_WEIGHT, the networking code allows the larger weight, but
-prints an error.
+--Sig_/CfWWVmfh9DcKFJxP2bE3FfP
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Replicate this check for SO_BUSY_POLL_BUDGET; check if the user
-specified amount exceeds NAPI_POLL_WEIGHT, allow it anyway, but print an
-error.
+Hi all,
 
-Signed-off-by: Joe Damato <jdamato@fastly.com>
----
- net/core/sock.c | 3 +++
- 1 file changed, 3 insertions(+)
+On Fri, 5 Jan 2024 17:47:45 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>=20
+> After merging the drm tree, today's linux-next build (htmldocs) produced
+> this warning:
+>=20
+> Warning: /sys/devices/.../hwmon/hwmon<i>/curr1_crit is defined 2 times:  =
+Documentation/ABI/testing/sysfs-driver-intel-xe-hwmon:35  Documentation/ABI=
+/testing/sysfs-driver-intel-i915-hwmon:52
+> Warning: /sys/devices/.../hwmon/hwmon<i>/energy1_input is defined 2 times=
+:  Documentation/ABI/testing/sysfs-driver-intel-xe-hwmon:54  Documentation/=
+ABI/testing/sysfs-driver-intel-i915-hwmon:65
+> Warning: /sys/devices/.../hwmon/hwmon<i>/in0_input is defined 2 times:  D=
+ocumentation/ABI/testing/sysfs-driver-intel-xe-hwmon:46  Documentation/ABI/=
+testing/sysfs-driver-intel-i915-hwmon:0
+> Warning: /sys/devices/.../hwmon/hwmon<i>/power1_crit is defined 2 times: =
+ Documentation/ABI/testing/sysfs-driver-intel-xe-hwmon:22  Documentation/AB=
+I/testing/sysfs-driver-intel-i915-hwmon:39
+> Warning: /sys/devices/.../hwmon/hwmon<i>/power1_max is defined 2 times:  =
+Documentation/ABI/testing/sysfs-driver-intel-xe-hwmon:0  Documentation/ABI/=
+testing/sysfs-driver-intel-i915-hwmon:8
+> Warning: /sys/devices/.../hwmon/hwmon<i>/power1_max_interval is defined 2=
+ times:  Documentation/ABI/testing/sysfs-driver-intel-xe-hwmon:62  Document=
+ation/ABI/testing/sysfs-driver-intel-i915-hwmon:30
+> Warning: /sys/devices/.../hwmon/hwmon<i>/power1_rated_max is defined 2 ti=
+mes:  Documentation/ABI/testing/sysfs-driver-intel-xe-hwmon:14  Documentati=
+on/ABI/testing/sysfs-driver-intel-i915-hwmon:22
+>=20
+> Introduced by commits
+>=20
+>   fb1b70607f73 ("drm/xe/hwmon: Expose power attributes")
+>   92d44a422d0d ("drm/xe/hwmon: Expose card reactive critical power")
+>   fbcdc9d3bf58 ("drm/xe/hwmon: Expose input voltage attribute")
+>   71d0a32524f9 ("drm/xe/hwmon: Expose hwmon energy attribute")
+>   4446fcf220ce ("drm/xe/hwmon: Expose power1_max_interval")
 
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 158dbdebce6a..ed243bd0dd77 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -1153,6 +1153,9 @@ int sk_setsockopt(struct sock *sk, int level, int optname,
- 			return -EPERM;
- 		if (val < 0 || val > U16_MAX)
- 			return -EINVAL;
-+		if (val > NAPI_POLL_WEIGHT)
-+			pr_err("SO_BUSY_POLL_BUDGET %u exceeds suggested maximum %u\n", val,
-+			       NAPI_POLL_WEIGHT);
- 		WRITE_ONCE(sk->sk_busy_poll_budget, val);
- 		return 0;
- #endif
--- 
-2.25.1
+I am still getting these warnings.
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/CfWWVmfh9DcKFJxP2bE3FfP
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmWxrGkACgkQAVBC80lX
+0GwQKQgAnYX/KC3T2ez2yjBvF6mdwNZVXqMijYMGfqrFSKVlZYqtgks6bEbB+hod
+RLl2fur8BmN4ZVuKs5PgwCxvXiOo62kuMlXh+2ZepBlW/fGqa5MVMClgAqH8Zi7U
+DuQlPnaFHexBKvXH91EPHIPD+MYcTlMARH/OlOYeQOEK7U2BUzGaCY7coFzBpzml
+U2RCzNKn6U9wnLskiYJYj5E39mbuWEQR+7yhtgFMmVAV94fPed3XbtimWX21rb+M
+n0UoHwoIrOmj0cN8i8Ks2oHhJsHPluAaGo6tEEC4p84/38P+IQzTa91UquWnkXJD
+cIe/jhgLjuuLMbZyZGFAt4FG0qhkug==
+=iqyx
+-----END PGP SIGNATURE-----
+
+--Sig_/CfWWVmfh9DcKFJxP2bE3FfP--
 
