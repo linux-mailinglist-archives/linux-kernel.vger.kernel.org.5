@@ -1,92 +1,308 @@
-Return-Path: <linux-kernel+bounces-38957-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38958-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1850A83C8FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:59:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0237483C900
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:59:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C27951F27BDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:59:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 283CC1C24929
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:59:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ECB2133991;
-	Thu, 25 Jan 2024 16:49:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MbI2rlrU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6479312FF99;
+	Thu, 25 Jan 2024 16:51:08 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE45B133982;
-	Thu, 25 Jan 2024 16:49:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21D6B12FF9E
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 16:51:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706201350; cv=none; b=aAG4XzexdOYqmgCW5qdeQOISrdx7/29CNV2U6NT5V7pj9HcLPpx84QOwQLkrl9Mln6W33KQTTVVsxjkp1w39rrgX1Q5rFuR2zgeP2M0m0beVHiKfBXz5CuVFVOgPhtK6GHk4PEsblOWXnC+yZw9waoIpMmpsCQAe6CEOf51ZX54=
+	t=1706201467; cv=none; b=jkHGQokuLbmP/+fgmnpqNcGc0bkJvOWtW5AudHrxPvHfPJkk/HYPQqaOON6IIL/KUEtj9q5HKAL9B9w8E9ip+kV7MKP/3sHGNzEc9Li/3lQkkS5ghP6NGXWT/l+yVuHsaPuMUcptkRjQLCcKZQBwyUFJmkcUZbWL+Klv2JmCKtE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706201350; c=relaxed/simple;
-	bh=pIoSNO+1moku54+nWGOBL9QSYT0GE2IKHfFUu/z2s4o=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=l9ZQyhGmJfe8kBuJs2ezhSmTw7kebrYh3sKZ5pCbuaxtC0/M6QVS+t7Rxs4t/tey2AlppS031meDz/Cg+hz/lFzCXrnSLa4urNgwowjQnqqzGD0gTWa1iNAnfKinhguOoJD34ykVIb8DMbhnzjqhivvYaO1RzNQhP269i0AmxTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MbI2rlrU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AFA8C433F1;
-	Thu, 25 Jan 2024 16:49:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706201350;
-	bh=pIoSNO+1moku54+nWGOBL9QSYT0GE2IKHfFUu/z2s4o=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MbI2rlrUN7CZv/wQEPc326QbX7Rkc9GzsIwP5CxTgLXjJhs5Fkx6D+o49Cs5eS+Ea
-	 CDMudrfrT5pulzKyxZ4jSXCTec8sSeST7aVGX14yf8hh+WWdn9zgQSHbugL8fVzRe/
-	 zCVEKwPKvh6n7j7b/p28pulKXdKjIaWN5ehAsTySXyr28R6nY0r7paf6D5Q3WJgy69
-	 mlcha9gpfREsv9+46d8D/AUfDzEOcBrBjEFTFDiKEiPwdHg4fnR4EYUZV1HiPDcg/V
-	 Yp/H3UHmPsiqxt8TRGwjm2U5vnNVh1slwOQiKhsUgZ3Sm3MxNbxwYlLGObEatOOJTs
-	 lJOKypf4kQcPQ==
-From: Miguel Ojeda <ojeda@kernel.org>
-To: gregkh@linuxfoundation.org
-Cc: akpm@linux-foundation.org,
-	allen.lkml@gmail.com,
-	conor@kernel.org,
-	f.fainelli@gmail.com,
-	jonathanh@nvidia.com,
-	linux-kernel@vger.kernel.org,
-	linux@roeck-us.net,
-	lkft-triage@lists.linaro.org,
-	patches@kernelci.org,
-	patches@lists.linux.dev,
-	pavel@denx.de,
-	rwarsow@gmx.de,
-	shuah@kernel.org,
-	srw@sladewatkins.net,
-	stable@vger.kernel.org,
-	sudipm.mukherjee@gmail.com,
-	torvalds@linux-foundation.org,
-	Miguel Ojeda <ojeda@kernel.org>
-Subject: Re: [PATCH 6.7 000/638] 6.7.2-rc2 review
-Date: Thu, 25 Jan 2024 17:48:58 +0100
-Message-ID: <20240125164858.212025-1-ojeda@kernel.org>
-In-Reply-To: <20240123174544.648088948@linuxfoundation.org>
-References: <20240123174544.648088948@linuxfoundation.org>
+	s=arc-20240116; t=1706201467; c=relaxed/simple;
+	bh=wtfmjZJ7KPghvO4LXTkav9h9b3fxApgrQWu4FggxN3A=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=CAEoSffkPuji4IdphHCDM6U+7wNC5f7bGT09pnhWiuq9ws4Yzsk4DrXNLKId9c3U2HPgnPEI4tUfIg0hdOIlY8n0VFnwkOm4uNSxPiP8fsoIGHVAFiXUP5Vx2r37AmnWwRb0hOfxcM+9DO0lJfs1HX5m64ZwuEkhHCD/Xox2DO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[IPv6:::1])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <l.stach@pengutronix.de>)
+	id 1rT2wM-0003IL-A5; Thu, 25 Jan 2024 17:50:58 +0100
+Message-ID: <516b95eaabc64b4b6c37e7a5840b32203ebcb062.camel@pengutronix.de>
+Subject: Re: [PATCH v2 2/3] drm/etnaviv: Turn etnaviv_is_model_rev() into a
+ function
+From: Lucas Stach <l.stach@pengutronix.de>
+To: Christian Gmeiner <christian.gmeiner@gmail.com>, Philipp Zabel
+	 <p.zabel@pengutronix.de>
+Cc: Russell King <linux+etnaviv@armlinux.org.uk>, David Airlie
+	 <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org
+Date: Thu, 25 Jan 2024 17:50:57 +0100
+In-Reply-To: <CAH9NwWd7kuk9LFD0cXiy3wm50KHVT8uGM37hdv4=rN9+YGCZmw@mail.gmail.com>
+References: <20240125-etnaviv-npu-v2-0-ba23c9a32be1@pengutronix.de>
+	 <20240125-etnaviv-npu-v2-2-ba23c9a32be1@pengutronix.de>
+	 <CAH9NwWd7kuk9LFD0cXiy3wm50KHVT8uGM37hdv4=rN9+YGCZmw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Tue, 23 Jan 2024 at 23:17, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.7.2 release.
-> There are 638 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 25 Jan 2024 17:44:25 +0000.
-> Anything received after that time might be too late.
+Am Donnerstag, dem 25.01.2024 um 17:27 +0100 schrieb Christian Gmeiner:
+> Hi Philipp
+>=20
+> >=20
+> > Turn the etnaviv_is_model_rev() macro into a static inline function.
+> > Use the raw model number as a parameter instead of the chipModel_GCxxxx
+> > defines. This reduces synchronization requirements for the generated
+> > headers. For newer hardware, the GCxxxx names are not the correct model
+> > names anyway. For example, model 0x8000 NPUs are called VIPNano-QI/SI(+=
+)
+> > by VeriSilicon.
+>=20
+> To catch up with your NPU example Vivante's kernel driver has such
+> lines in its hw database [0]
+>=20
+> /* vipnano-si+ */
+> {
+>     0x8000, /* ChipID */
+>     0x8002, /* ChipRevision */
+>     0x5080009, /* ProductID */
+>     0x6000000, /* EcoID */
+>     0x9f, /* CustomerID */
+>     ...
+>=20
+> I think in reality this function should be called
+> etnaviv_is_chip_rev(..) or etnaviv_is_id_rev(..). That would be
+> semantically correct and we could even stick the the current macro
+> (that gets renamed) and with the current
+> GCxxx defines.
 
-Built and QEMU-booted for Rust:
+The value for what is called ChipID in the downstream driver is read
+from a register which is called VIVS_HI_CHIP_MODEL in rnndb. I would
+like to stay consistent by calling this model in the etnaviv driver.
 
-Tested-by: Miguel Ojeda <ojeda@kernel.org>
+I don't see any value in the GCxxx defines, which only add a (pretty)
+prefix to a perfectly readable hex number, so I'm fine with changing
+the current macro and getting rid of any usage of those defines in the
+driver.
 
-Cheers,
-Miguel
+Regards,
+Lucas
+
+>=20
+> [0]: https://github.com/nxp-imx/linux-imx/blob/lf-6.1.y/drivers/mxc/gpu-v=
+iv/hal/kernel/inc/gc_feature_database.h#L22373
+>=20
+> >=20
+> > Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+> > ---
+> >  drivers/gpu/drm/etnaviv/etnaviv_gpu.c | 66 ++++++++++++++++++---------=
+--------
+> >  1 file changed, 34 insertions(+), 32 deletions(-)
+> >=20
+> > diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c b/drivers/gpu/drm/et=
+naviv/etnaviv_gpu.c
+> > index 9b8445d2a128..c61d50dd3829 100644
+> > --- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+> > +++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+> > @@ -172,10 +172,12 @@ int etnaviv_gpu_get_param(struct etnaviv_gpu *gpu=
+, u32 param, u64 *value)
+> >         return 0;
+> >  }
+> >=20
+> > +static inline bool etnaviv_is_model_rev(struct etnaviv_gpu *gpu, u32 m=
+odel, u32 revision)
+> > +{
+> > +       return gpu->identity.model =3D=3D model &&
+> > +              gpu->identity.revision =3D=3D revision;
+> > +}
+> >=20
+> > -#define etnaviv_is_model_rev(gpu, mod, rev) \
+> > -       ((gpu)->identity.model =3D=3D chipModel_##mod && \
+> > -        (gpu)->identity.revision =3D=3D rev)
+> >  #define etnaviv_field(val, field) \
+> >         (((val) & field##__MASK) >> field##__SHIFT)
+> >=20
+> > @@ -281,7 +283,7 @@ static void etnaviv_hw_specs(struct etnaviv_gpu *gp=
+u)
+> >=20
+> >         switch (gpu->identity.instruction_count) {
+> >         case 0:
+> > -               if (etnaviv_is_model_rev(gpu, GC2000, 0x5108) ||
+> > +               if (etnaviv_is_model_rev(gpu, 0x2000, 0x5108) ||
+> >                     gpu->identity.model =3D=3D chipModel_GC880)
+> >                         gpu->identity.instruction_count =3D 512;
+> >                 else
+> > @@ -315,17 +317,17 @@ static void etnaviv_hw_specs(struct etnaviv_gpu *=
+gpu)
+> >          * For some cores, two varyings are consumed for position, so t=
+he
+> >          * maximum varying count needs to be reduced by one.
+> >          */
+> > -       if (etnaviv_is_model_rev(gpu, GC5000, 0x5434) ||
+> > -           etnaviv_is_model_rev(gpu, GC4000, 0x5222) ||
+> > -           etnaviv_is_model_rev(gpu, GC4000, 0x5245) ||
+> > -           etnaviv_is_model_rev(gpu, GC4000, 0x5208) ||
+> > -           etnaviv_is_model_rev(gpu, GC3000, 0x5435) ||
+> > -           etnaviv_is_model_rev(gpu, GC2200, 0x5244) ||
+> > -           etnaviv_is_model_rev(gpu, GC2100, 0x5108) ||
+> > -           etnaviv_is_model_rev(gpu, GC2000, 0x5108) ||
+> > -           etnaviv_is_model_rev(gpu, GC1500, 0x5246) ||
+> > -           etnaviv_is_model_rev(gpu, GC880, 0x5107) ||
+> > -           etnaviv_is_model_rev(gpu, GC880, 0x5106))
+> > +       if (etnaviv_is_model_rev(gpu, 0x5000, 0x5434) ||
+> > +           etnaviv_is_model_rev(gpu, 0x4000, 0x5222) ||
+> > +           etnaviv_is_model_rev(gpu, 0x4000, 0x5245) ||
+> > +           etnaviv_is_model_rev(gpu, 0x4000, 0x5208) ||
+> > +           etnaviv_is_model_rev(gpu, 0x3000, 0x5435) ||
+> > +           etnaviv_is_model_rev(gpu, 0x2200, 0x5244) ||
+> > +           etnaviv_is_model_rev(gpu, 0x2100, 0x5108) ||
+> > +           etnaviv_is_model_rev(gpu, 0x2000, 0x5108) ||
+> > +           etnaviv_is_model_rev(gpu, 0x1500, 0x5246) ||
+> > +           etnaviv_is_model_rev(gpu, 0x880, 0x5107) ||
+> > +           etnaviv_is_model_rev(gpu, 0x880, 0x5106))
+> >                 gpu->identity.varyings_count -=3D 1;
+> >  }
+> >=20
+> > @@ -351,7 +353,7 @@ static void etnaviv_hw_identify(struct etnaviv_gpu =
+*gpu)
+> >                  * Reading these two registers on GC600 rev 0x19 result=
+ in a
+> >                  * unhandled fault: external abort on non-linefetch
+> >                  */
+> > -               if (!etnaviv_is_model_rev(gpu, GC600, 0x19)) {
+> > +               if (!etnaviv_is_model_rev(gpu, 0x600, 0x19)) {
+> >                         gpu->identity.product_id =3D gpu_read(gpu, VIVS=
+_HI_CHIP_PRODUCT_ID);
+> >                         gpu->identity.eco_id =3D gpu_read(gpu, VIVS_HI_=
+CHIP_ECO_ID);
+> >                 }
+> > @@ -368,7 +370,7 @@ static void etnaviv_hw_identify(struct etnaviv_gpu =
+*gpu)
+> >                 }
+> >=20
+> >                 /* Another special case */
+> > -               if (etnaviv_is_model_rev(gpu, GC300, 0x2201)) {
+> > +               if (etnaviv_is_model_rev(gpu, 0x300, 0x2201)) {
+> >                         u32 chipTime =3D gpu_read(gpu, VIVS_HI_CHIP_TIM=
+E);
+> >=20
+> >                         if (chipDate =3D=3D 0x20080814 && chipTime =3D=
+=3D 0x12051100) {
+> > @@ -387,15 +389,15 @@ static void etnaviv_hw_identify(struct etnaviv_gp=
+u *gpu)
+> >                  * Fix model/rev here, so all other places can refer to=
+ this
+> >                  * core by its real identity.
+> >                  */
+> > -               if (etnaviv_is_model_rev(gpu, GC2000, 0xffff5450)) {
+> > +               if (etnaviv_is_model_rev(gpu, 0x2000, 0xffff5450)) {
+> >                         gpu->identity.model =3D chipModel_GC3000;
+> >                         gpu->identity.revision &=3D 0xffff;
+> >                 }
+> >=20
+> > -               if (etnaviv_is_model_rev(gpu, GC1000, 0x5037) && (chipD=
+ate =3D=3D 0x20120617))
+> > +               if (etnaviv_is_model_rev(gpu, 0x1000, 0x5037) && (chipD=
+ate =3D=3D 0x20120617))
+> >                         gpu->identity.eco_id =3D 1;
+> >=20
+> > -               if (etnaviv_is_model_rev(gpu, GC320, 0x5303) && (chipDa=
+te =3D=3D 0x20140511))
+> > +               if (etnaviv_is_model_rev(gpu, 0x320, 0x5303) && (chipDa=
+te =3D=3D 0x20140511))
+> >                         gpu->identity.eco_id =3D 1;
+> >         }
+> >=20
+> > @@ -630,14 +632,14 @@ static void etnaviv_gpu_enable_mlcg(struct etnavi=
+v_gpu *gpu)
+> >                 pmc |=3D BIT(15); /* Unknown bit */
+> >=20
+> >         /* Disable TX clock gating on affected core revisions. */
+> > -       if (etnaviv_is_model_rev(gpu, GC4000, 0x5222) ||
+> > -           etnaviv_is_model_rev(gpu, GC2000, 0x5108) ||
+> > -           etnaviv_is_model_rev(gpu, GC2000, 0x6202) ||
+> > -           etnaviv_is_model_rev(gpu, GC2000, 0x6203))
+> > +       if (etnaviv_is_model_rev(gpu, 0x4000, 0x5222) ||
+> > +           etnaviv_is_model_rev(gpu, 0x2000, 0x5108) ||
+> > +           etnaviv_is_model_rev(gpu, 0x2000, 0x6202) ||
+> > +           etnaviv_is_model_rev(gpu, 0x2000, 0x6203))
+> >                 pmc |=3D VIVS_PM_MODULE_CONTROLS_DISABLE_MODULE_CLOCK_G=
+ATING_TX;
+> >=20
+> >         /* Disable SE and RA clock gating on affected core revisions. *=
+/
+> > -       if (etnaviv_is_model_rev(gpu, GC7000, 0x6202))
+> > +       if (etnaviv_is_model_rev(gpu, 0x7000, 0x6202))
+> >                 pmc |=3D VIVS_PM_MODULE_CONTROLS_DISABLE_MODULE_CLOCK_G=
+ATING_SE |
+> >                        VIVS_PM_MODULE_CONTROLS_DISABLE_MODULE_CLOCK_GAT=
+ING_RA;
+> >=20
+> > @@ -690,14 +692,14 @@ static void etnaviv_gpu_setup_pulse_eater(struct =
+etnaviv_gpu *gpu)
+> >          */
+> >         u32 pulse_eater =3D 0x01590880;
+> >=20
+> > -       if (etnaviv_is_model_rev(gpu, GC4000, 0x5208) ||
+> > -           etnaviv_is_model_rev(gpu, GC4000, 0x5222)) {
+> > +       if (etnaviv_is_model_rev(gpu, 0x4000, 0x5208) ||
+> > +           etnaviv_is_model_rev(gpu, 0x4000, 0x5222)) {
+> >                 pulse_eater |=3D BIT(23);
+> >=20
+> >         }
+> >=20
+> > -       if (etnaviv_is_model_rev(gpu, GC1000, 0x5039) ||
+> > -           etnaviv_is_model_rev(gpu, GC1000, 0x5040)) {
+> > +       if (etnaviv_is_model_rev(gpu, 0x1000, 0x5039) ||
+> > +           etnaviv_is_model_rev(gpu, 0x1000, 0x5040)) {
+> >                 pulse_eater &=3D ~BIT(16);
+> >                 pulse_eater |=3D BIT(17);
+> >         }
+> > @@ -718,8 +720,8 @@ static void etnaviv_gpu_hw_init(struct etnaviv_gpu =
+*gpu)
+> >         WARN_ON(!(gpu->state =3D=3D ETNA_GPU_STATE_IDENTIFIED ||
+> >                   gpu->state =3D=3D ETNA_GPU_STATE_RESET));
+> >=20
+> > -       if ((etnaviv_is_model_rev(gpu, GC320, 0x5007) ||
+> > -            etnaviv_is_model_rev(gpu, GC320, 0x5220)) &&
+> > +       if ((etnaviv_is_model_rev(gpu, 0x320, 0x5007) ||
+> > +            etnaviv_is_model_rev(gpu, 0x320, 0x5220)) &&
+> >             gpu_read(gpu, VIVS_HI_CHIP_TIME) !=3D 0x2062400) {
+> >                 u32 mc_memory_debug;
+> >=20
+> > @@ -745,7 +747,7 @@ static void etnaviv_gpu_hw_init(struct etnaviv_gpu =
+*gpu)
+> >                   VIVS_HI_AXI_CONFIG_ARCACHE(2));
+> >=20
+> >         /* GC2000 rev 5108 needs a special bus config */
+> > -       if (etnaviv_is_model_rev(gpu, GC2000, 0x5108)) {
+> > +       if (etnaviv_is_model_rev(gpu, 0x2000, 0x5108)) {
+> >                 u32 bus_config =3D gpu_read(gpu, VIVS_MC_BUS_CONFIG);
+> >                 bus_config &=3D ~(VIVS_MC_BUS_CONFIG_FE_BUS_CONFIG__MAS=
+K |
+> >                                 VIVS_MC_BUS_CONFIG_TX_BUS_CONFIG__MASK)=
+;
+> >=20
+> > --
+> > 2.39.2
+> >=20
+>=20
+>=20
+
 
