@@ -1,106 +1,127 @@
-Return-Path: <linux-kernel+bounces-39347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0204D83CF33
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:13:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF3CC83CF35
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:14:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9675CB26D1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:13:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D1E11C246BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:14:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94E4E13B786;
-	Thu, 25 Jan 2024 22:13:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bW2gQW2s"
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95BCA13AA53;
+	Thu, 25 Jan 2024 22:14:18 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50606131E4F
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 22:13:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E74B13AA27;
+	Thu, 25 Jan 2024 22:14:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706220824; cv=none; b=KbT5vJhA+/YhUlnLfurVLkrzYwsfjxyWZ3L+02k4n8ss/SXHSDI1D7DKwEQH7RHrAzuOwg3cLB9+UHo+6G/8AUrmjjjYPdSJuDnLRqxldqkNuT22B3+hwg+0Y5/HTJbawLFTQSVrToFkY1sSgYs12sQejUprd8C4+ERg7UHa2sI=
+	t=1706220858; cv=none; b=mPqHXXK0ESVdtcXXc+Qf+SbTUaHvWaq2nfM9vzO6BE2r2UOYA4dO9Qm7TRPQM5AEI+azZ40I7etcVWxO/wOwowvEwbNqRPIvjHrZBBxh79d9eWfnZ09+NdOL5qwu6bjcX3R54lrKdEKtEecLRkIRdiHCv0slRigiF4Zusfh+DoE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706220824; c=relaxed/simple;
-	bh=/q+OKPTvjfhtwgZQ3LtD4ypTdtx/UFBmU0i1AagUJwU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=du94KN9pexieoVFfRqz2tA6rf71efLOb6IgZEL1aLsVJUORY0khRNf1Nmt8uWpn2sWMaHlyGIpwL/tFA8fcpz0hue9B+54FrsQLCwHVrgpGHFjgRu0odENjdSrUn0QXXNOuiHN/Ts2oqyGekgXeSef/O0Zj8UHHz+iSc02cSKdA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bW2gQW2s; arc=none smtp.client-ip=209.85.128.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-6029e069e08so2660817b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 14:13:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706220821; x=1706825621; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=slwtZcSfd5oU0OLpt8FDjn7MWT/cYH2TJp6qwy9HSCY=;
-        b=bW2gQW2sQmAslc3/bpTtAV5QqH6TAAxFQ7V9JEk58Cq7AkNeKTYBKSir+YX4kZvBfL
-         JICtdNL2fOWOOe43hSPVvdmWUjPzsHfuXp08B+scFUSFVk/p9Q41rvQHt7GoTTgfk8kS
-         XtVDn8RZ5tbcQsqmZK2/HLNXVhib5iEpvoArs85b/PC407wLmc2QmOPMllWxzqgkHrAZ
-         SnoIVQXKpw4KUtAEJP1sEjtPa4+LjnxKltA2WvH9MIqae7ytMawnFPt2olm/H0Giz+2X
-         PMH1u87jn0KiQWKtpXmp7jXnrrwYINDo+RDJVUQMi4Xb5fx1INXPKEgWvASiEPRpSKI+
-         6mfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706220821; x=1706825621;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=slwtZcSfd5oU0OLpt8FDjn7MWT/cYH2TJp6qwy9HSCY=;
-        b=McQYuH2Fv47AfsPS2HnzI2oBMFeuTx5go8ysVgWdcOo8qGcVDIcGcVpF38NPAZjdH7
-         4SqZOvcJ0d6fk2Hn2SXMtPYS5EqUwCG1WGPvPKL9lup9T1TuUKIzBxFVul3QQDUVu4Nm
-         yxfd3lDAXtsfjJOqGv5sTSyhVpqur+LqPEDlk2RmZJZYU63MJxKZRilPhScWsCv/b2ws
-         WVYxxnVk5EBSJNjtwqpWhF8XPGxCyrn5iwKxDdMN1/W5oVxpSeHbXro6aMbJe6ViwOA1
-         C6GQH4d5mWOgzmdZx5ZrFRUH5/iYgcbTr6UYCuqGRXFZVcNXnwXluGfUbbOh3dPcEsor
-         qQyA==
-X-Gm-Message-State: AOJu0Yw9/v4Uii7lf+ao2T1xeI+8DHi53+O/EsKojekFFLxaGXeWp3sm
-	+QuDy1YcguZ2pEMj3Vbfw0ZzkqHoQpndnIviM2xtgPWo7GITGMNw+Rn8dgu2nF9+LChStVJ0yrt
-	KkrhudqjIeeDD0rGRmyT5hG3bd3WrhJc0CS1QOu7n1eZsanGTJ9A=
-X-Google-Smtp-Source: AGHT+IE3TWyGHNGHsG2xqF2JXCIF6aVnGmnqe4/3CyA3myFBwqZCxjCHe2OS/OaFjyPxVBpRCKQb3m3/ij+f63iLZtk=
-X-Received: by 2002:a81:c441:0:b0:5ff:7cc9:1691 with SMTP id
- s1-20020a81c441000000b005ff7cc91691mr475647ywj.70.1706220821421; Thu, 25 Jan
- 2024 14:13:41 -0800 (PST)
+	s=arc-20240116; t=1706220858; c=relaxed/simple;
+	bh=R4np8ZsWZvit+NdkWvJhO+66XQ9QZXjcg6nrt984Bgs=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=s9s4cEBuMyUYMt70SG7+FmUhOwy33IY8JaG7XsyaDIFu9kTG2lpyn+TXV0UCFDNwlkZraBhfxqGfG44HfTbv3v5+ZhFyt6/apY8NMRjnCOp6J5+aIgIyHU71u738nVaZWf8eER95HIdXlG3UkOAJPKaoS5gZ+O7tO2gFkSROs6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C255DC433C7;
+	Thu, 25 Jan 2024 22:14:16 +0000 (UTC)
+Date: Thu, 25 Jan 2024 17:14:17 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Philippe Proulx
+ <pproulx@efficios.com>
+Subject: Re: [PATCH] ring-buffer: Simplify reservation with try_cmpxchg()
+ loop
+Message-ID: <20240125171417.62986746@gandalf.local.home>
+In-Reply-To: <88e9a728-9c9a-42d5-bba4-b9f3fbe61d53@efficios.com>
+References: <20240118181206.4977da2f@gandalf.local.home>
+	<504085e9-bf91-4948-a158-abae5dcb276a@efficios.com>
+	<20240119103754.154dc009@gandalf.local.home>
+	<cd3f37cc-31ba-4eb4-8d67-852d05570e7b@efficios.com>
+	<20240119164252.54ccb654@gandalf.local.home>
+	<5d323a65-8a04-4c73-8702-58869982a269@efficios.com>
+	<20240120084713.6eb7aa52@rorschach.local.home>
+	<88e9a728-9c9a-42d5-bba4-b9f3fbe61d53@efficios.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240125-msm8953-mdss-reset-v2-0-fd7824559426@z3ntu.xyz> <20240125-msm8953-mdss-reset-v2-2-fd7824559426@z3ntu.xyz>
-In-Reply-To: <20240125-msm8953-mdss-reset-v2-2-fd7824559426@z3ntu.xyz>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Fri, 26 Jan 2024 00:13:30 +0200
-Message-ID: <CAA8EJpqb_FFUzyGR2SYH7wwrDCrC8Wy7QcUFyJgHqAvx42Vgfw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] clk: qcom: gcc-msm8953: add more resets
-To: Luca Weiss <luca@z3ntu.xyz>
-Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Vladimir Lypak <vladimir.lypak@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, 25 Jan 2024 at 23:36, Luca Weiss <luca@z3ntu.xyz> wrote:
->
-> From: Vladimir Lypak <vladimir.lypak@gmail.com>
->
-> Add new entries in the gcc driver for some more resets found on MSM8953.
->
-> Signed-off-by: Vladimir Lypak <vladimir.lypak@gmail.com>
-> [luca: expand commit message, move entry, add more entries]
-> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
-> ---
->  drivers/clk/qcom/gcc-msm8953.c | 4 ++++
->  1 file changed, 4 insertions(+)
+On Thu, 25 Jan 2024 16:18:37 -0500
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > 
+> > This is how you are able to avoid the "before/after" logic I have, as
+> > the race is automatically detected. The least significant bits of the
+> > timestamp is ignored for the event delta calculation.  
+> 
+> Not quite, as I explained at the beginning of this email. All bits from the
+> previous timestamp, including its low bits, are useful to know how many
+> overflows happened since the last tsc.
 
--- 
-With best wishes
-Dmitry
+Yes, but it still means updating that timestamp you will compare to doesn't
+have the race I have. If the timestamp's upper bits are the same, or are
+off by one and the lower bits are higher than the current timestamp, you
+don't need to inject. But if the lower bits are higher than the timestamp
+or the higehr bits are off by more than one then you do.
+
+The lower bits are a delta against "0" of the current timestamp lower bits.
+There's no race in updating those bits as long as the upper bits remain the
+same or are off by one and the current timestamp lower bits are lower than
+the saved time stamp.
+
+In my case, because the delta is off of the entire timestamp, what I write
+into the saved timestamp, all bits matter. And to handle that I need the
+before/after timestamps to know if the currently saved timestamp didn't
+have a race.
+
+> 
+> > And if a race
+> > happens where the interrupting event saves a later timestamp and comes
+> > back here, if the interrupted event writes the older timestamp, it just
+> > causes that delta calculation to overflow again and you inject another
+> > 64bit timestamp into the buffer.  
+> 
+> This part is correct: in the race you describe, we end up with the
+> possibility of bringing the last_tsc backwards, which can only cause
+> the tracer to use the full 64-bit timestamp when in fact it could use
+> the compact representation. But it's rare and should not matter in
+> practice.
+> 
+> And by the way this algorithm is designed to work with preemption/migration
+> enabled as well, not just interrupts. So the race can come from a thread
+> running concurrently on another CPU and it should work as well.
+> 
+> [...]
+> 
+> > 
+> > Going through a transition of changing it could end up being just as
+> > complex. I'm not sure the complexity in that transition is better than
+> > the complexity of the current code, as this code has been there for 15
+> > years, and I know of at least 2 other projects that depend on this
+> > format as is.  
+> 
+> I agree with you that it's not clear-cut whether introducing this change
+> would be a benefit at this stage considering the extra complexity of
+> extending the ABI while keeping backward compatibility.
+> 
+> But it's something we can keep in mind if we ever have to do major ABI
+> extensions for other reasons.
+
+Yeah, it's something to think about if we want to use a different format
+for something else.
+
+Thanks for the review.
+
+-- Steve
 
