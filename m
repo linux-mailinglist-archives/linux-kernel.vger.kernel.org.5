@@ -1,92 +1,135 @@
-Return-Path: <linux-kernel+bounces-39408-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39409-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3BBE83D089
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 00:20:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CB4EA83D08A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jan 2024 00:21:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F24129105A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:20:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D867291F92
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:21:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA3FF17575;
-	Thu, 25 Jan 2024 23:20:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="qFapaksl"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22BD312B8A;
-	Thu, 25 Jan 2024 23:20:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7551134AE;
+	Thu, 25 Jan 2024 23:21:01 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B39FC12E46;
+	Thu, 25 Jan 2024 23:20:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706224839; cv=none; b=XiUkcSzVc3IDRc59JmCKWZWNParp9Wh6vHMUYYMAjnhTC/2FFf3LajxISlvQygR/QvPCfuVZ3Te0EnF4WjE4yimirmj/C6zgLD555VloixsYOWyFyxGh171yerqxyg9PG7Ex5ivvsg2JVcEivD5y4YK0D0fpvz+xFNB3J2HQgus=
+	t=1706224861; cv=none; b=TwnhZ06ldPL7zEnhddMaVeoMIkp9dC1irGdwvRnNhPcRLzSEtbZwNxeeriZ/G+s9LyJSRRzMXZOEbYVoq0Ltba1RXjcpoemiRu78ZCq6wiowoosLhz4j6UG56f+vyGAsMimvwgsZw6BtW3Z4CqAwUppdQ3/654Ggd8NMTbp/EFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706224839; c=relaxed/simple;
-	bh=Z5D1PY2CAAXEPTMCVPGBGFQOw3qPNmTGxykS0jU56Mw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AiNjPzoNSgWic+J05TwJjcHwO9t8La53eC4/KWvtpuwofRDT0p2/UrR3b4AXQaqf1cxUril9QOr/gPrpalysdWRk/rjbrQh7KvSj2eedhs7foq61BHfEOqzgyjAnmd+OJzvax/J72sb7NyACCWZkn11QjrdFYszDPrxkO1dNRWc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=qFapaksl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83E63C433C7;
-	Thu, 25 Jan 2024 23:20:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1706224838;
-	bh=Z5D1PY2CAAXEPTMCVPGBGFQOw3qPNmTGxykS0jU56Mw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qFapakslXpv/a++Oj3QugNOWhJjpNJ+bjkPKX3/QcKx5BQYb7i65n2NfXnzU15s9f
-	 FzuK56WP3M8kr0haVSDdurBSwS1hrQxx0bK9tNVngVi0NuQ9f7F2hPqxbVHm9afbqH
-	 7nl+PkSqY8UpBPrYpbkIAkN+YUVuOpbyILB4hS9M=
-Date: Thu, 25 Jan 2024 15:20:37 -0800
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Joe Damato <jdamato@fastly.com>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	chuck.lever@oracle.com, jlayton@kernel.org,
-	linux-api@vger.kernel.org, brauner@kernel.org, edumazet@google.com,
-	davem@davemloft.net, alexander.duyck@gmail.com,
-	sridhar.samudrala@intel.com, kuba@kernel.org,
-	willemdebruijn.kernel@gmail.com, weiwan@google.com,
-	Jonathan Corbet <corbet@lwn.net>,
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nathan Lynch <nathanl@linux.ibm.com>,
-	Steve French <stfrench@microsoft.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Julien Panis <jpanis@baylibre.com>, Arnd Bergmann <arnd@arndb.de>,
-	Andrew Waterman <waterman@eecs.berkeley.edu>,
-	Thomas Huth <thuth@redhat.com>, Palmer Dabbelt <palmer@dabbelt.com>,
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-	"open list:FILESYSTEMS (VFS and infrastructure)" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH net-next v3 3/3] eventpoll: Add epoll ioctl for
- epoll_params
-Message-ID: <2024012559-appraiser-coerce-b32f@gregkh>
-References: <20240125225704.12781-1-jdamato@fastly.com>
- <20240125225704.12781-4-jdamato@fastly.com>
+	s=arc-20240116; t=1706224861; c=relaxed/simple;
+	bh=X3hblOpAlzSee7dtBXWTEp8eOvWcRUuPAZEtXlPckKQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=JfOWBv4WUFdS3VXvAIQSHqDHwE+06CuCbp7gIA8nFL2ehFvsKDETMLK2BKrX8NwPAUOvaf8ZDcGyBU1gDW7PpIgT+pj3fz86unWG1aNmQAMUDzkR2Tnd09mtAMEX2yo5hiUYXr2zHSuccS0k+xADnVmOslGwHx0JkW+1VnRNFrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3A9261FB;
+	Thu, 25 Jan 2024 15:21:42 -0800 (PST)
+Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BFEF03F5A1;
+	Thu, 25 Jan 2024 15:20:56 -0800 (PST)
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
+To: linux-kernel@vger.kernel.org,
+	mst@redhat.com
+Cc: kvm@vger.kernel.org,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Feng Liu <feliu@nvidia.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>
+Subject: [PATCH v2] virtio: uapi: Drop __packed attribute in linux/virtio_pci.h
+Date: Thu, 25 Jan 2024 23:20:39 +0000
+Message-Id: <20240125232039.913606-1-suzuki.poulose@arm.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240125181227-mutt-send-email-mst@kernel.org>
+References: <20240125181227-mutt-send-email-mst@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240125225704.12781-4-jdamato@fastly.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jan 25, 2024 at 10:56:59PM +0000, Joe Damato wrote:
-> --- a/fs/eventpoll.c
-> +++ b/fs/eventpoll.c
-> @@ -6,6 +6,8 @@
->   *  Davide Libenzi <davidel@xmailserver.org>
->   */
->  
-> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> +
+Commit 92792ac752aa ("virtio-pci: Introduce admin command sending function")
+added "__packed" structures to UAPI header linux/virtio_pci.h. This triggers
+build failures in the consumer userspace applications without proper "definition"
+of __packed (e.g., kvmtool build fails).
 
-Why this addition?  You do not add any pr_*() calls in this patch at all
-that I can see.
+Moreover, the structures are already packed well, and doesn't need explicit
+packing, similar to the rest of the structures in all virtio_* headers. Remove
+the __packed attribute.
 
-thanks,
+Fixes: 92792ac752aa ("virtio-pci: Introduce admin command sending function")
+Cc: Feng Liu <feliu@nvidia.com>
+Cc: Michael S. Tsirkin <mst@redhat.com>
+Cc: Yishai Hadas <yishaih@nvidia.com>
+Cc: Alex Williamson <alex.williamson@redhat.com>
+Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
+Reviewed-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
+Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+---
 
-greg k-h
+Changes since v1:
+ - Fix description for the "Fixes" tag format
+ - Collect Tags from Jean-Philippe and Michael
+
+---
+ include/uapi/linux/virtio_pci.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/include/uapi/linux/virtio_pci.h b/include/uapi/linux/virtio_pci.h
+index ef3810dee7ef..a8208492e822 100644
+--- a/include/uapi/linux/virtio_pci.h
++++ b/include/uapi/linux/virtio_pci.h
+@@ -240,7 +240,7 @@ struct virtio_pci_cfg_cap {
+ #define VIRTIO_ADMIN_CMD_LEGACY_DEV_CFG_READ		0x5
+ #define VIRTIO_ADMIN_CMD_LEGACY_NOTIFY_INFO		0x6
+ 
+-struct __packed virtio_admin_cmd_hdr {
++struct virtio_admin_cmd_hdr {
+ 	__le16 opcode;
+ 	/*
+ 	 * 1 - SR-IOV
+@@ -252,20 +252,20 @@ struct __packed virtio_admin_cmd_hdr {
+ 	__le64 group_member_id;
+ };
+ 
+-struct __packed virtio_admin_cmd_status {
++struct virtio_admin_cmd_status {
+ 	__le16 status;
+ 	__le16 status_qualifier;
+ 	/* Unused, reserved for future extensions. */
+ 	__u8 reserved2[4];
+ };
+ 
+-struct __packed virtio_admin_cmd_legacy_wr_data {
++struct virtio_admin_cmd_legacy_wr_data {
+ 	__u8 offset; /* Starting offset of the register(s) to write. */
+ 	__u8 reserved[7];
+ 	__u8 registers[];
+ };
+ 
+-struct __packed virtio_admin_cmd_legacy_rd_data {
++struct virtio_admin_cmd_legacy_rd_data {
+ 	__u8 offset; /* Starting offset of the register(s) to read. */
+ };
+ 
+@@ -275,7 +275,7 @@ struct __packed virtio_admin_cmd_legacy_rd_data {
+ 
+ #define VIRTIO_ADMIN_CMD_MAX_NOTIFY_INFO 4
+ 
+-struct __packed virtio_admin_cmd_notify_info_data {
++struct virtio_admin_cmd_notify_info_data {
+ 	__u8 flags; /* 0 = end of list, 1 = owner device, 2 = member device */
+ 	__u8 bar; /* BAR of the member or the owner device */
+ 	__u8 padding[6];
+-- 
+2.34.1
+
 
