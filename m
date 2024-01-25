@@ -1,72 +1,81 @@
-Return-Path: <linux-kernel+bounces-38389-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38390-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95C2383BEAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:28:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A85A83BEB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:29:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CC331F21EBE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:28:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13FE128C201
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:29:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8F7120DDF;
-	Thu, 25 Jan 2024 10:26:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A1A81CD09;
+	Thu, 25 Jan 2024 10:26:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="UaIUHbnr"
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LCE9+Nq6"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 431FC1CA8E;
-	Thu, 25 Jan 2024 10:26:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FB41175BE;
+	Thu, 25 Jan 2024 10:26:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706178364; cv=none; b=mJutFWFHIivbCiAueR8iLhl0jmYLr3ELNvUdvZnTot9k/HTNWf4DTt5EJmI7DdGYNlrIdmWsy6QMfF3QELzIz8XN43fLup0XYuzHEgjxxS61CoZLF459tzqOjVnIB8h2PAoIF959vb3sIJf+XnhACYgWV4Ii2LKJZz5RwYcp8Nw=
+	t=1706178414; cv=none; b=c99mSdQSmZl+oEMvL8El4pqyL09OECICptsDuQjTx4qSJsVt4pAZ7306gsqa+csFdNlwcIFP+HvByeAD0W+O9HJLSkryGo/FRIWbaTcwq2DrCKXIDWlNQ9sLU2ZPYxQFPAqkpio+V4RhXoHmLnSQP2I1pT7ZuawDGm214nQqu2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706178364; c=relaxed/simple;
-	bh=w4dg95HncjAo56RiG38BZGd3Pzu7W8glNY+mUdjX5F0=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ge/c2T+bOOjDaRpd6QTZv5EWC8VIJrE7G+76SraNZYK+T7pGXi5egpzY2yaEuWZwhszHiGEbbxIWya0+8qBhqhil1yBkB3QZBpl/lvFRnbSw+gl+Xne0lSVfH8cba6AIIlgLWS/EhlrV0leOXCqFphhmtDk48D5RZEhmPCAhxfY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=UaIUHbnr; arc=none smtp.client-ip=67.231.152.168
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40P7paSQ014010;
-	Thu, 25 Jan 2024 04:25:59 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=FLv7KEn1hB6G5vu93/SxG16lAdj5fv2FDse9aetjLWg=; b=
-	UaIUHbnrCAIrFSGmVpG13iFn+U/x+c5KTHL4uklV3VsGuXeGEmk1CwHE8a4wIjDJ
-	1mg6ufhYYtya5UK/mlSoIuxrJ9HUtXITzaUSGtaG5+BV0c+5swBCF0YKiyYt2jD9
-	bFTpEu4zymk8uOnH2FkUuaUmFRPrTGhUOoZ225ybXszMDZYjlCe6QE21sGLxo3Nl
-	CDmbCESUa1S+gJi7AELWOvmdkE5BxMQ35VXAUeWyqJIgghv3HCdGpaz2hFnV8kQb
-	IMOHaMkQiwApZOUvtWQcm+YRrNyfd7Ts4aD8H2mgHXiDO1H/rxUjnq/DI3Uyf6Lr
-	2gKUClBe1vdXEQtmZ+nEXg==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3vtmf9t2gh-4
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Jan 2024 04:25:59 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 25 Jan
- 2024 10:25:55 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.40 via Frontend Transport; Thu, 25 Jan 2024 10:25:55 +0000
-Received: from ediswws07.ad.cirrus.com (ediswws07.ad.cirrus.com [198.90.208.14])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 8785882024B;
-	Thu, 25 Jan 2024 10:25:55 +0000 (UTC)
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: <lee@kernel.org>, <broonie@kernel.org>
-CC: <andy.shevchenko@gmail.com>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>
-Subject: [PATCH v3 6/6] mfd: cs42l43: Handle error from devm_pm_runtime_enable()
-Date: Thu, 25 Jan 2024 10:25:55 +0000
-Message-ID: <20240125102555.2621736-6-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240125102555.2621736-1-ckeepax@opensource.cirrus.com>
-References: <20240125102555.2621736-1-ckeepax@opensource.cirrus.com>
+	s=arc-20240116; t=1706178414; c=relaxed/simple;
+	bh=0E0Dmg/X9JFI1Y7lS4dhetCkdveIh8ajKY+1iLi3QU4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=XP+um/a1c3lHGnnjgJtDPw+FYCHoDaV6jdl6/21wPCdOrLd9Iw4bTUbXvLv55Y/LxbJcjpzQdhUt6p1F8fXbGskxLcs9nBScTZjw8uCpFxIlkLvIHToS/DiIw/+awcvsfbhYqk45mtOAZdCsCOyXt5egjXw9UJxPgNwNn18FINQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LCE9+Nq6; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-5100fd7f71dso2345992e87.1;
+        Thu, 25 Jan 2024 02:26:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706178411; x=1706783211; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=srddleVoD/RGZ2ZusIx3j1Qeck2mamgxihSPrAiJLrQ=;
+        b=LCE9+Nq66UHCmh6uIagMd4VP6x37GDnO1AgfXxY5F+/8w0J9+bguPU2W/UmpKWzqKs
+         2VGADudxYnDzj9SD4VU9gFrdVqUVlQt/ueFLl0gaF2ebJblaykFuv9pD0VgipQLdTiIZ
+         D9X361In0H9iYezv07R46Bn8i50LlO4F/D4TvU8JSBAM5q7ZByeCUEzxHyx5wJisSKGO
+         3ylvxdLrhj8gUIBE2Sz793JDuHpFdq2xgSoLyvanjRDRGGETd0caQZrWD+jyHWOBPNnF
+         gvlSeqYODQFvALDKowdzKOTNGHgXsniLsTqc2KmvP6WmyrqRKMTJk7/JQnLLEZcs8yqM
+         aoFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706178411; x=1706783211;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=srddleVoD/RGZ2ZusIx3j1Qeck2mamgxihSPrAiJLrQ=;
+        b=OcsHi9NM1wvLuG5V4Ky69E/gt4SU9CV0iLUzoDQXhpC9645lgwc8GwZ3LDVGz6FoGx
+         pKbVtgm8aCNFnrrONzR5djF5WqyNTUGGTqZsasqjEUAcC2m97nyN/YoI7z5s1Td1TM2z
+         KCd7lKLTiqFEJ7TBWRqD6CBQCDIY2fJ8/Mj3Eyx/cPs3nYKaDeT1SbUwIWwD7pyRZq5F
+         0tCHlCAEs9Cmc5Y9uwkFnUBeP15vX/HjyWc4r6wwIulozIOZ/Q/PGAH4QXlQ3ZIl0RBV
+         7LvFE1EBEqaIZQGTuBPE7fm3GKtrsIFIvDrtu2LzFNCPZ8lERkwRXHx6pdiSIAwZEaKk
+         lGSg==
+X-Gm-Message-State: AOJu0YzettqhL9Ls/UnA1nCh5HQdPJtlod3TTPJkfuFY5NZw5AtTZBN+
+	qWa/qoXYwCNcAzDRzaDnDw/HEXltFnut+b+7Yi4VonlpOQlnItIY
+X-Google-Smtp-Source: AGHT+IFws4q6oOSgLHaQGbz2CrsBQhD9bLg4PqJpBhhxKRYtTN6JbqR4P7C6dMAF+gB3L7GSPxaKvQ==
+X-Received: by 2002:a05:6512:2303:b0:510:1840:336c with SMTP id o3-20020a056512230300b005101840336cmr464330lfu.52.1706178410969;
+        Thu, 25 Jan 2024 02:26:50 -0800 (PST)
+Received: from debian.fritz.box ([93.184.186.109])
+        by smtp.gmail.com with ESMTPSA id vx10-20020a170907a78a00b00a3162e76a6csm723461ejc.215.2024.01.25.02.26.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 02:26:50 -0800 (PST)
+From: Dimitri Fedrau <dima.fedrau@gmail.com>
+To: 
+Cc: Dimitri Fedrau <dima.fedrau@gmail.com>,
+	Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+	Li peiyu <579lpy@gmail.com>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] iio: humidity: hdc3020: fix temperature offset
+Date: Thu, 25 Jan 2024 11:26:41 +0100
+Message-Id: <20240125102641.3850938-1-dima.fedrau@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,42 +83,30 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: nE-1YVLqE_zLrdwjYugUTb51CZuhJ-UK
-X-Proofpoint-ORIG-GUID: nE-1YVLqE_zLrdwjYugUTb51CZuhJ-UK
-X-Proofpoint-Spam-Reason: safe
 
-As it devm_pm_runtime_enable() can fail due to memory allocations, it
-is best to handle the error.
+The temperature offset should be negative according to the datasheet.
+Adding a minus to the existing offset results in correct temperature
+calculations.
 
-Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Dimitri Fedrau <dima.fedrau@gmail.com>
 ---
+ drivers/iio/humidity/hdc3020.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-No changes since v2.
-
-Thanks,
-Charles
-
- drivers/mfd/cs42l43.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mfd/cs42l43.c b/drivers/mfd/cs42l43.c
-index aea0f8f485785..56bd9dbbe10b0 100644
---- a/drivers/mfd/cs42l43.c
-+++ b/drivers/mfd/cs42l43.c
-@@ -1065,7 +1065,9 @@ int cs42l43_dev_probe(struct cs42l43 *cs42l43)
- 	 * the boot work runs.
- 	 */
- 	pm_runtime_get_noresume(cs42l43->dev);
--	devm_pm_runtime_enable(cs42l43->dev);
-+	ret = devm_pm_runtime_enable(cs42l43->dev);
-+	if (ret)
-+		return ret;
+diff --git a/drivers/iio/humidity/hdc3020.c b/drivers/iio/humidity/hdc3020.c
+index 4e3311170725..ed70415512f6 100644
+--- a/drivers/iio/humidity/hdc3020.c
++++ b/drivers/iio/humidity/hdc3020.c
+@@ -322,7 +322,7 @@ static int hdc3020_read_raw(struct iio_dev *indio_dev,
+ 		if (chan->type != IIO_TEMP)
+ 			return -EINVAL;
  
- 	queue_work(system_long_wq, &cs42l43->boot_work);
+-		*val = 16852;
++		*val = -16852;
+ 		return IIO_VAL_INT;
  
+ 	default:
 -- 
-2.30.2
+2.39.2
 
 
