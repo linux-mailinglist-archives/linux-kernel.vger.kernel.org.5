@@ -1,140 +1,147 @@
-Return-Path: <linux-kernel+bounces-39260-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39261-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5347083CDB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:44:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAF8583CDBA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:45:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA4DC1F258C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:44:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71B6A1F26FFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:45:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CC02137C59;
-	Thu, 25 Jan 2024 20:44:34 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6B4E1386BA;
+	Thu, 25 Jan 2024 20:45:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oPrPCEg4"
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 028741CFA8;
-	Thu, 25 Jan 2024 20:44:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C847D13540C
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 20:45:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706215474; cv=none; b=gydjqT4RlVE6TV0UOP/5PTuxYHE4HphzMRZxjQTUvCC70jIUeWZEPC7Wr+i8skhV02rLPGz+EJn44hhEV40mNFw1Rd18nkc4dwG4uFyfRcpsJOUT3LL9LZCTTVYOQsAN9BsnqoQ2riE+OuW6Meli94latk9OMfZcBqYt2tCqsa8=
+	t=1706215534; cv=none; b=GWZoGMH09pBNczDgzBGaRVMXoVWTIbMnmuBHC5noFJAoYmIgm0JJyeRcUKjFb7pWJ/QSM2Hs7qmTZoU6m4x6ROGZfhvtN6YD7l+PMhOoVs0iF5lIOPE/hGoqpFd92Aa/Fk0wQ+AEGHalFGjBmEChPOcCA7JlI4pHxxNoDx6QUsM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706215474; c=relaxed/simple;
-	bh=FkHGNFhFuAD40JuWBR7T/asjbfsZiSRnbeBhW5PY+HM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=u92AgPfPYMClWt7+LFWNggyZDBe3M6LKOxbqPwcUrGwZgODMkokC/5NHDwOUk+OpPISPZyhdGjW9kJymlaLLx9QSlpchGVycEMX5MSKMnm8rpHC4Lrm2mz8Lphe76xQRGrct2aLi7VhpZdgKvfECNDlOijQItxLE7ncfWH9zGCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA903C433C7;
-	Thu, 25 Jan 2024 20:44:32 +0000 (UTC)
-Date: Thu, 25 Jan 2024 15:44:32 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] tracing: initialize trace_seq buffers
-Message-ID: <20240125154432.4ba9e997@gandalf.local.home>
-In-Reply-To: <20240125201621.143968-4-ricardo@marliere.net>
-References: <20240125201621.143968-1-ricardo@marliere.net>
-	<20240125201621.143968-4-ricardo@marliere.net>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706215534; c=relaxed/simple;
+	bh=u4m3rhslZrR5Hsot++6wdzU0ej58tjNpwhODKsqQKLI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IIoqaByq9tJe+lIi0N1FwOgQXneNwYE/Q/OBRDMrkeJ1MT7MzjO3lFcp03urRlL/Jel957h93mvJvFgM+AjSdiTvk2Z5ir/ZoHdYAK9Naal6W6o7HaiTDUutZTy1AmwFb4jNd3l/XKZwQQ6Cl2CIWRwUceh6HnGA6MjlBdpZjbM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oPrPCEg4; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-290ec261a61so4517a91.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 12:45:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706215532; x=1706820332; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OjdvfWOMZIbIKqDPk6c3LehvDX9fVj7yu1ffjzs1Y4w=;
+        b=oPrPCEg49l26MN0w4JTS7mulcbHu3czWBt/DEPdZz4u7jJZTrUcTNgU/6cgGTaN3bw
+         T8bymBfZqrLedtX42si++VVzS0pA2fIxQHz29gfHuqOXEhPmCnAPojItVhRrpWkscn/Y
+         C/E/v5DRWFAODZXkEwUNAqnNqnSw3P8iBZHYqfIgPZ7t77FMSj3f3NxCelhiLJIjWtjn
+         VDQS9+ZyNTsby7YkTFAG68yObCiBCR5nTNM4GMrvhO1vMCkQjb0Y3ewa0MqqO1kSrxr+
+         IM6YQEfGjj5reuKQafnSkUkZc2E0dqAs/L4+Jj/zJ/MKquO3LsCQi7fPGs3gPMNcw7Am
+         YUCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706215532; x=1706820332;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OjdvfWOMZIbIKqDPk6c3LehvDX9fVj7yu1ffjzs1Y4w=;
+        b=cDYOl1+560SXHv/7NRN0+VrOrin7idvGL87qKlshunoY6sy4yOZ/MGAV6eSHWsvR2a
+         qp5PsZwgcscSdjJtfx0ucYO0BOLvxUJziEZv/mXfUft9ICa2cmpxsl/6EHaumELfO/RB
+         yX/jSDXTRIXQQHrGPjYn4nWq9kqY2AendPg8OBtqdZM14bneVjI4wHkGCbcmR1fls02K
+         4PtAI1Zq5bJwHccT7LjrXeAKAxplbHLvtl2yMJCmMQXhdlyEUYkgpVTiaZrtCLwcA1AM
+         h91b8fauxo0nC0lnGUB2U8u/e/torXBispxiqazvPO+ntnLTTa5MWhIK0BHZUSmw3Onp
+         8Yww==
+X-Gm-Message-State: AOJu0YwpbuAsZU5cYWpK9y+dhiBlAd4v1UMe9Oo0j2RiGVfqoFLaU8nR
+	wSgLmL7aJzw4HDcQVI0wWaXGELyxEFNer1CyiGPfFwcpGh4ykvXPyr/ky/6CojUC8IriKEXRR0k
+	gIna3jLyDu0QqaUKJLOgITvzQg327InRGCMVvVQ==
+X-Google-Smtp-Source: AGHT+IFofqibqxuDjtddSx6QluMZVRpw+2AXJrlPUc7U34sNPQ9cpNct34ReKCCPsxw5hwiOFV0+l3LKSUbE88X6ZwI=
+X-Received: by 2002:a17:90a:1a08:b0:292:6b51:6bb with SMTP id
+ 8-20020a17090a1a0800b002926b5106bbmr262488pjk.0.1706215532174; Thu, 25 Jan
+ 2024 12:45:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240125145007.748295-1-tudor.ambarus@linaro.org> <20240125145007.748295-28-tudor.ambarus@linaro.org>
+In-Reply-To: <20240125145007.748295-28-tudor.ambarus@linaro.org>
+From: Sam Protsenko <semen.protsenko@linaro.org>
+Date: Thu, 25 Jan 2024 14:45:21 -0600
+Message-ID: <CAPLW+4kTDxvRuCvg8TO8QFQiTUfrvzEavX=Cx2QVRZ=SnRLrOg@mail.gmail.com>
+Subject: Re: [PATCH v2 27/28] spi: s3c64xx: add support for google,gs101-spi
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: broonie@kernel.org, andi.shyti@kernel.org, arnd@arndb.de, 
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	alim.akhtar@samsung.com, linux-spi@vger.kernel.org, 
+	linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-arch@vger.kernel.org, andre.draszik@linaro.org, 
+	peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 25 Jan 2024 17:16:21 -0300
-"Ricardo B. Marliere" <ricardo@marliere.net> wrote:
-
-> Now that trace_seq_reset have been created, correct the places where the
-> buffers need to be initialized.
-
-This patch would need to come first. You don't ever want to intentionally
-create a broken kernel.
-
-Also, the change log should be:
-
-  In order to extend trace_seq into being dynamic, the struct trace_seq
-  will no longer be valid if simply set to zero. Call trace_seq_init() for
-  all trace_seq when they are first created.
-
-> 
-> Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+On Thu, Jan 25, 2024 at 8:50=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linaro=
+org> wrote:
+>
+> Add support for GS101 SPI. All the SPI nodes on GS101 have 64 bytes
+> FIFOs, infer the FIFO size from the compatible. GS101 allows just 32bit
+> register accesses, otherwise a Serror Interrupt is raised. Do the write
+> reg accesses in 32 bits.
+>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 > ---
->  kernel/trace/trace.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-
-You also need to initialize iter.seq in ftrace_dump()
-
--- Steve
-
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index d4c55d3e21c2..9827700d0164 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -4889,6 +4889,9 @@ __tracing_open(struct inode *inode, struct file *file, bool snapshot)
->  
->  	mutex_unlock(&trace_types_lock);
->  
-> +	trace_seq_init(&iter->seq);
-> +	trace_seq_init(&iter->tmp_seq);
+>  drivers/spi/spi-s3c64xx.c | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+>
+> diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
+> index 35a2d5554dfd..e887be6955a0 100644
+> --- a/drivers/spi/spi-s3c64xx.c
+> +++ b/drivers/spi/spi-s3c64xx.c
+> @@ -1501,6 +1501,18 @@ static const struct s3c64xx_spi_port_config exynos=
+autov9_spi_port_config =3D {
+>         .quirks         =3D S3C64XX_SPI_QUIRK_CS_AUTO,
+>  };
+>
+> +static const struct s3c64xx_spi_port_config gs101_spi_port_config =3D {
+> +       .fifosize       =3D 64,
+> +       .rx_lvl_offset  =3D 15,
+> +       .tx_st_done     =3D 25,
+> +       .clk_div        =3D 4,
+> +       .high_speed     =3D true,
+> +       .clk_from_cmu   =3D true,
+> +       .has_loopback   =3D true,
+> +       .use_32bit_io   =3D true,
+> +       .quirks         =3D S3C64XX_SPI_QUIRK_CS_AUTO,
+> +};
 > +
->  	return iter;
->  
->   fail:
-> @@ -6770,6 +6773,7 @@ static int tracing_open_pipe(struct inode *inode, struct file *filp)
->  	}
->  
->  	trace_seq_init(&iter->seq);
-> +	trace_seq_init(&iter->tmp_seq);
->  	iter->trace = tr->current_trace;
->  
->  	if (!alloc_cpumask_var(&iter->started, GFP_KERNEL)) {
-> @@ -6947,6 +6951,7 @@ tracing_read_pipe(struct file *filp, char __user *ubuf,
->  	trace_iterator_reset(iter);
->  	cpumask_clear(iter->started);
->  	trace_seq_init(&iter->seq);
-> +	trace_seq_init(&iter->tmp_seq);
->  
->  	trace_event_read_lock();
->  	trace_access_lock(iter->cpu_file);
-> @@ -8277,6 +8282,9 @@ static int tracing_buffers_open(struct inode *inode, struct file *filp)
->  	if (ret < 0)
->  		trace_array_put(tr);
->  
-> +	trace_seq_init(&info->iter.seq);
-> +	trace_seq_init(&info->iter.tmp_seq);
-> +
->  	return ret;
->  }
->  
-> @@ -10300,6 +10308,9 @@ void trace_init_global_iter(struct trace_iterator *iter)
->  	iter->temp_size = STATIC_TEMP_BUF_SIZE;
->  	iter->fmt = static_fmt_buf;
->  	iter->fmt_size = STATIC_FMT_BUF_SIZE;
-> +
-> +	trace_seq_init(&iter->seq);
-> +	trace_seq_init(&iter->tmp_seq);
->  }
->  
->  void ftrace_dump(enum ftrace_dump_mode oops_dump_mode)
-> @@ -10712,6 +10723,9 @@ void __init early_trace_init(void)
->  			tracepoint_printk = 0;
->  		else
->  			static_key_enable(&tracepoint_printk_key.key);
-> +
-> +		trace_seq_init(&tracepoint_print_iter->seq);
-> +		trace_seq_init(&tracepoint_print_iter->tmp_seq);
->  	}
->  	tracer_alloc_buffers();
->  
+>  static const struct s3c64xx_spi_port_config fsd_spi_port_config =3D {
+>         .fifosize       =3D 64,
+>         .rx_lvl_offset  =3D 15,
+> @@ -1556,6 +1568,10 @@ static const struct of_device_id s3c64xx_spi_dt_ma=
+tch[] =3D {
+>                 .compatible =3D "samsung,exynosautov9-spi",
+>                 .data =3D &exynosautov9_spi_port_config,
+>         },
+> +       {
 
+As I mentioned before, this braces style looks too bloated to me.
+Other than that:
+
+Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+
+> +               .compatible =3D "google,gs101-spi",
+> +               .data =3D &gs101_spi_port_config,
+> +       },
+>         {
+>                 .compatible =3D "tesla,fsd-spi",
+>                 .data =3D &fsd_spi_port_config,
+> --
+> 2.43.0.429.g432eaa2c6b-goog
+>
 
