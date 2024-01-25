@@ -1,241 +1,199 @@
-Return-Path: <linux-kernel+bounces-39056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FABC83CA50
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:52:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70D2183CA55
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:53:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64ECE1C221AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:52:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F32891F221A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:53:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E7B3131755;
-	Thu, 25 Jan 2024 17:52:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GOdaBr8p"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96100133993;
+	Thu, 25 Jan 2024 17:53:29 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65E0C745C6
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 17:52:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DFFF131E2B
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 17:53:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706205126; cv=none; b=iCVuYtEC+tCyE9GulPhRd14Ntb5SSu/MEKtU7V/jPPCr1ib9Fdp+TaHDq3Kt/3S3QwdNz/KJ3P+veAT1xdNn3d+ZG4eIJrYyRi6/8al1coNvdBk3rqHttndwqxBIjs31fkXahDAJgCNu9L+JHy8BYW6QL2PxIrr4b33wCUvKXnI=
+	t=1706205209; cv=none; b=D3WelWCDT4Q4HQovk8wz8g8brceePYBykRlhCIJ5Hmx+3giRlT5ZTbsw8uTguEsMeS5L4f49woGpv5zgi3Bp3gIUer/Pn7NDHRhhi8NO6gUSiKAXhs3NRyJ+xGh9Lwpr6foFVcEXW9y/XfwjxLw11FMETtx1ASmkUgbYa6eePSI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706205126; c=relaxed/simple;
-	bh=vr/AyOXBh/PfRIcVKSypP8o7xVRseNU4jwIKCJkd2Vg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C1SvhVMJr43EXaWhvjZbyGhCyjEYuRMM2tLdilpilI47YN5mY/vTpOT+eXJ8T/nto326IQm4c5H+QRuJSYsWQIACfLTcnWMB5vOlq1gpDvpuIn+RRWiJZ0bARZxp2e6y0jJqv0bBcNiO3CGtLa8NdKCY1QGRZQvHhdDfQPu8ceM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GOdaBr8p; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2cf205dc075so25418831fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:52:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706205122; x=1706809922; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=58AAw59QVEkmC52O5LxYTi+CX/9Jh0etyAUz49wdjuc=;
-        b=GOdaBr8pn9Cvvp48n+QQzlcK+1xC+KjSZtVQ9F91vBfbqCVFN99u8fWGUTYnfqCWSU
-         nRzNwGLYl43d2W+5gFDjcIs6HjiBLA/b1Nk45LBfsZtoMv8ok3wWx5JlAT981xLCxpFa
-         GvQB6oab+kocg3efoEIZpycrHY041xM7foYASjJ02fsCTkaRmRyA6IhPHeSLW5AyIDf4
-         zhkOW2JB40YJFiEbgHrLOCDjE8oMo0jGp6eQrEn5ARHi+VfFdPsVKM599M3bTvhQEj1j
-         AGzL59PlgzkD9sRW7oTQQhOSA7n+5emqBSNODUA/kF3j/uucH6Srxi4V4NadkegUv2Nr
-         2iSg==
+	s=arc-20240116; t=1706205209; c=relaxed/simple;
+	bh=9NXpVVXWncb/IUWv9CvZzmHyl6/N0VnRCmv41L6VDX4=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=pDZG3tLPmw9KhXnxzrhHIihTPovhUm9fFdWjbxgLmcdzNR9Zm/+1UB0WT07uo4GW0mYfOJK6aomciEELt+Dj7EgFZ7CYzHulVObfF0Qp1NtaESuix6DhHQQWhgoq4cJqXVsuYhzaeQWRvFxfGf6ABj9h2tSkz++Olq/1vQAW1Z4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7bc3dd97ddaso729085539f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:53:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706205122; x=1706809922;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=58AAw59QVEkmC52O5LxYTi+CX/9Jh0etyAUz49wdjuc=;
-        b=wNUrKtXRkLYaqe2IKyB1j5eioSfIqWixYtFC09SJ2MqCTsw8ulRBEtBHIvSZNsUwGs
-         NtxLZEgkeFMKosgAAbVmzxatA8xFqPVLvi5xKXOQk7PW3/aRnUbYrm6UWu8RwRSh5mYg
-         H59c0O9FHv99HcTIItzAo6II2q+4gRwQQr7S5RPDRGkrD1Roxtk4HEso0ORPk2RcPRIo
-         jBM1I9mD9WES9pvHdPX4YRS8pFbmWrffi0loeZSHbrbE+WKf9/uVKpO8zhKHlkAbECIS
-         FauYhwpZyryk8Ile4k4ip+PGcl2qciLxb+EguncG98ym0EaN3q3Pb5IVMw+Aaa/nYgJa
-         Aqrg==
-X-Gm-Message-State: AOJu0YxOglbKC6FJR8wrGg/U0MS8iTJ/jdLrwbHwqQFTdsYcfBdVnoF3
-	me1plQ46rCLknXsSynRw9NK87XmsBMo+t9KTo7hUNIqwOXNX2zis+sshGPGgCLVh0Vtusg/guy1
-	6yMcfziRcscxg+LECxTOOd69goBXCP7pgfVUkxQ==
-X-Google-Smtp-Source: AGHT+IFP7hSPNsDELqXhfc1DSi7wbXwIL00Bvghzh+3rAURSjCAW/OBnfRxEQ2loTtaioTmHEBnCcZGQf0VdPLQbOyM=
-X-Received: by 2002:a2e:9092:0:b0:2cf:433c:b3e with SMTP id
- l18-20020a2e9092000000b002cf433c0b3emr28412ljg.8.1706205121921; Thu, 25 Jan
- 2024 09:52:01 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706205206; x=1706810006;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/GIo5UEfmmEJrGtw4TbN8J6mKXeZ+fxztdMS3KxE1Jo=;
+        b=OUcMPvh2HjAWzOIJEHnBQBaFpmuwzxL7D2D18AwaCeEf9nXxK0HLCWv4plZwBwa8pO
+         PPVxT8M1U15RqxdqEMuFRP2EkpGJVTQJ6RWmwSEkKYdrIAm63K7KUENOmmGlkDgyr6oa
+         9t1Y8qeWgtbcG91GGbP6D4pqHFNMQL7DdLhOzeDeVvkxxQzX+Ltt/WzaGAsKbbwEPtBK
+         E9KZljQYbBPvwwMfmUqZlAuqfRywKjwYudHRI0hJCFTu8dLJFHdKSIyiS6eMk8dnKJqO
+         OINurKzPdxC8xXvDqeimChdT+YkJ2Z14nguUZNPlnOuMc2yauc9WKe11Xe5PvQ2RFxGj
+         VRVA==
+X-Gm-Message-State: AOJu0YwP4O+ErE+pcCrGDUDQBlKti90cF2ZIIWS0iD54h++by8BCOWtX
+	bwFwer+OHct4djy/tsnfIfRLR0imuLr4wDvEP934Z9dWudmGSTuEL2isdx7ZZZZJQX2BInf0Whe
+	vpJ85tyfyJ/zh/KBeEniDTYb1GJmrWa0DHucU4Qv5p0/AJWd4+PckOPk=
+X-Google-Smtp-Source: AGHT+IHPr1gnQYMVgd3XU9mcspBuYbfX2pkIsEBdOgnyKMH9eiOQl0et+oLtEMipLiPun8lunlLDZOT2MtrMNngYVW7e4gCG96QK
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240123184552.59758-1-ryncsn@gmail.com> <20240123184552.59758-2-ryncsn@gmail.com>
- <CAF8kJuNZP-uvsSshVrEY0bPsYLB+5Oi-bQKsEQ3RV6yOW+RgNA@mail.gmail.com>
-In-Reply-To: <CAF8kJuNZP-uvsSshVrEY0bPsYLB+5Oi-bQKsEQ3RV6yOW+RgNA@mail.gmail.com>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Fri, 26 Jan 2024 01:51:44 +0800
-Message-ID: <CAMgjq7CbxZQ2CmWNjsNjJajBEVkZ839_X5twwLfiiv0-ZgN32A@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] mm, lru_gen: try to prefetch next page when
- scanning LRU
-To: Chris Li <chrisl@kernel.org>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
-	Yu Zhao <yuzhao@google.com>, Wei Xu <weixugc@google.com>, 
-	Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org
+X-Received: by 2002:a05:6638:6282:b0:46e:dbd6:691b with SMTP id
+ fh2-20020a056638628200b0046edbd6691bmr92115jab.1.1706205206596; Thu, 25 Jan
+ 2024 09:53:26 -0800 (PST)
+Date: Thu, 25 Jan 2024 09:53:26 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000040d68a060fc8db8c@google.com>
+Subject: [syzbot] [bpf?] general protection fault in bpf_struct_ops_find_value
+From: syzbot <syzbot+88f0aafe5f950d7489d7@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com, 
+	jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org, 
+	martin.lau@kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
+	sdf@google.com, song@kernel.org, syzkaller-bugs@googlegroups.com, 
+	thinker.li@gmail.com, yonghong.song@linux.dev
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 25, 2024 at 3:33=E2=80=AFPM Chris Li <chrisl@kernel.org> wrote:
->
-> On Tue, Jan 23, 2024 at 10:46=E2=80=AFAM Kairui Song <ryncsn@gmail.com> w=
-rote:
-> >
-> > From: Kairui Song <kasong@tencent.com>
-> >
-> > Prefetch for inactive/active LRU have been long exiting, apply the same
-> > optimization for MGLRU.
-> >
-> > Test 1: Ramdisk fio ro test in a 4G memcg on a EPYC 7K62:
-> >   fio -name=3Dmglru --numjobs=3D16 --directory=3D/mnt --size=3D960m \
-> >     --buffered=3D1 --ioengine=3Dio_uring --iodepth=3D128 \
-> >     --iodepth_batch_submit=3D32 --iodepth_batch_complete=3D32 \
-> >     --rw=3Drandread --random_distribution=3Dzipf:0.5 --norandommap \
-> >     --time_based --ramp_time=3D1m --runtime=3D6m --group_reporting
-> >
-> > Before this patch:
-> > bw (  MiB/s): min=3D 7758, max=3D 9239, per=3D100.00%, avg=3D8747.59, s=
-tdev=3D16.51, samples=3D11488
-> > iops        : min=3D1986251, max=3D2365323, avg=3D2239380.87, stdev=3D4=
-225.93, samples=3D11488
-> >
-> > After this patch (+7.2%):
-> > bw (  MiB/s): min=3D 8360, max=3D 9771, per=3D100.00%, avg=3D9381.31, s=
-tdev=3D15.67, samples=3D11488
-> > iops        : min=3D2140296, max=3D2501385, avg=3D2401613.91, stdev=3D4=
-010.41, samples=3D11488
-> >
-> > Test 2: Ramdisk fio hybrid test for 30m in a 4G memcg on a EPYC 7K62 (3=
- times):
-> >   fio --buffered=3D1 --numjobs=3D8 --size=3D960m --directory=3D/mnt \
-> >     --time_based --ramp_time=3D1m --runtime=3D30m \
-> >     --ioengine=3Dio_uring --iodepth=3D128 --iodepth_batch_submit=3D32 \
-> >     --iodepth_batch_complete=3D32 --norandommap \
-> >     --name=3Dmglru-ro --rw=3Drandread --random_distribution=3Dzipf:0.7 =
-\
-> >     --name=3Dmglru-rw --rw=3Drandrw --random_distribution=3Dzipf:0.7
-> >
-> > Before this patch:
-> >  READ: 6622.0 MiB/s. Stdev: 22.090722
-> > WRITE: 1256.3 MiB/s. Stdev: 5.249339
-> >
-> > After this patch (+4.6%, +3.3%):
-> >  READ: 6926.6 MiB/s, Stdev: 37.950260
-> > WRITE: 1297.3 MiB/s, Stdev: 7.408704
-> >
-> > Test 3: 30m of MySQL test in 6G memcg (12 times):
-> >   echo 'set GLOBAL innodb_buffer_pool_size=3D16106127360;' | \
-> >     mysql -u USER -h localhost --password=3DPASS
-> >
-> >   sysbench /usr/share/sysbench/oltp_read_only.lua \
-> >     --mysql-user=3DUSER --mysql-password=3DPASS --mysql-db=3DDB \
-> >     --tables=3D48 --table-size=3D2000000 --threads=3D16 --time=3D1800 r=
-un
-> >
-> > Before this patch
-> > Avg: 134743.714545 qps. Stdev: 582.242189
-> >
-> > After this patch (+0.2%):
-> > Avg: 135005.779091 qps. Stdev: 295.299027
-> >
-> > Test 4: Build linux kernel in 2G memcg with make -j48 with SSD swap
-> >         (for memory stress, 18 times):
-> >
-> > Before this patch:
-> > Avg: 1456.768899 s. Stdev: 20.106973
-> >
-> > After this patch (+0.0%):
-> > Avg: 1455.659254 s. Stdev: 15.274481
-> >
-> > Test 5: Memtier test in a 4G cgroup using brd as swap (18 times):
-> >   memcached -u nobody -m 16384 -s /tmp/memcached.socket \
-> >     -a 0766 -t 16 -B binary &
-> >   memtier_benchmark -S /tmp/memcached.socket \
-> >     -P memcache_binary -n allkeys \
-> >     --key-minimum=3D1 --key-maximum=3D16000000 -d 1024 \
-> >     --ratio=3D1:0 --key-pattern=3DP:P -c 1 -t 16 --pipeline 8 -x 3
-> >
-> > Before this patch:
-> > Avg: 50317.984000 Ops/sec. Stdev: 2568.965458
-> >
-> > After this patch (-5.7%):
-> > Avg: 47691.343500 Ops/sec. Stdev: 3925.772473
-> >
-> > It seems prefetch is helpful in most cases, but the memtier test is
-> > either hitting a case where prefetch causes higher cache miss or it's
-> > just too noisy (high stdev).
-> >
-> > Signed-off-by: Kairui Song <kasong@tencent.com>
-> > ---
-> >  mm/vmscan.c | 30 ++++++++++++++++++++++++++----
-> >  1 file changed, 26 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > index 4f9c854ce6cc..03631cedb3ab 100644
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -3681,15 +3681,26 @@ static bool inc_min_seq(struct lruvec *lruvec, =
-int type, bool can_swap)
-> >         /* prevent cold/hot inversion if force_scan is true */
-> >         for (zone =3D 0; zone < MAX_NR_ZONES; zone++) {
-> >                 struct list_head *head =3D &lrugen->folios[old_gen][typ=
-e][zone];
-> > +               struct folio *prev =3D NULL;
-> >
-> > -               while (!list_empty(head)) {
-> > -                       struct folio *folio =3D lru_to_folio(head);
-> > +               if (!list_empty(head))
-> > +                       prev =3D lru_to_folio(head);
-> > +
-> > +               while (prev) {
-> > +                       struct folio *folio =3D prev;
-> >
-> >                         VM_WARN_ON_ONCE_FOLIO(folio_test_unevictable(fo=
-lio), folio);
-> >                         VM_WARN_ON_ONCE_FOLIO(folio_test_active(folio),=
- folio);
-> >                         VM_WARN_ON_ONCE_FOLIO(folio_is_file_lru(folio) =
-!=3D type, folio);
-> >                         VM_WARN_ON_ONCE_FOLIO(folio_zonenum(folio) !=3D=
- zone, folio);
-> >
-> > +                       if (unlikely(list_is_first(&folio->lru, head)))=
- {
-> > +                               prev =3D NULL;
-> > +                       } else {
-> > +                               prev =3D lru_to_folio(&folio->lru);
-> > +                               prefetchw(&prev->flags);
-> > +                       }
->
-> This makes the code flow much harder to follow. Also for architecture
-> that does not support prefetch, this will be a net loss.
->
-> Can you use refetchw_prev_lru_folio() instead? It will make the code
-> much easier to follow. It also turns into no-op when prefetch is not
-> supported.
->
-> Chris
->
+Hello,
 
-Hi Chris,
+syzbot found the following issue on:
 
-Thanks for the suggestion.
+HEAD commit:    d47b9f68d289 libbpf: Correct bpf_core_read.h comment wrt b..
+git tree:       bpf-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=11479fe7e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=719e6acaf392d56b
+dashboard link: https://syzkaller.appspot.com/bug?extid=88f0aafe5f950d7489d7
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14ea6be3e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15bc199be80000
 
-Yes, that's doable, I made it this way because in previous series (V1
-& V2) I applied the bulk move patch first which needed and introduced
-the `prev` variable here, so the prefetch logic just used it.
-For V3 I did a rebase and moved the prefetch commit to be the first
-one, since it seems to be the most effective one, and just kept the
-code style to avoid redundant change between patches.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/1a9b4a5622fb/disk-d47b9f68.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/dd68baeac4fd/vmlinux-d47b9f68.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/811ba9dc9ddf/bzImage-d47b9f68.xz
 
-I can update in V4 to make this individual patch better with your suggestio=
-n.
+The issue was bisected to:
+
+commit fcc2c1fb0651477c8ed78a3a293c175ccd70697a
+Author: Kui-Feng Lee <thinker.li@gmail.com>
+Date:   Fri Jan 19 22:49:59 2024 +0000
+
+    bpf: pass attached BTF to the bpf_struct_ops subsystem
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=106a04c3e80000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=126a04c3e80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=146a04c3e80000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+88f0aafe5f950d7489d7@syzkaller.appspotmail.com
+Fixes: fcc2c1fb0651 ("bpf: pass attached BTF to the bpf_struct_ops subsystem")
+
+general protection fault, probably for non-canonical address 0xdffffc0000000011: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000088-0x000000000000008f]
+CPU: 0 PID: 5058 Comm: syz-executor257 Not tainted 6.7.0-syzkaller-12348-gd47b9f68d289 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+RIP: 0010:bpf_struct_ops_find_value+0x49/0x140 kernel/bpf/btf.c:8763
+Code: 7d ea dd ff 45 85 e4 0f 84 d7 00 00 00 e8 ff ee dd ff 48 8d bb 88 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 dc 00 00 00 48 8b 9b 88 00 00 00 48 85 db 0f 84
+RSP: 0018:ffffc90003bb7b20 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff81aa3283
+RDX: 0000000000000011 RSI: ffffffff81aa3291 RDI: 0000000000000088
+RBP: ffffc90003bb7dd0 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000002 R11: 0000000000000000 R12: 0000000000000002
+R13: 000000000000001a R14: ffffffff8ad6bca0 R15: ffffc90003bb7e04
+FS:  0000555556ed2380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000160d398 CR3: 000000007809c000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ bpf_struct_ops_map_alloc+0x12f/0x5d0 kernel/bpf/bpf_struct_ops.c:674
+ map_create+0x548/0x1b90 kernel/bpf/syscall.c:1237
+ __sys_bpf+0xa32/0x4a00 kernel/bpf/syscall.c:5445
+ __do_sys_bpf kernel/bpf/syscall.c:5567 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5565 [inline]
+ __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5565
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xd3/0x250 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f9f205ef2e9
+Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fffa4ce4088 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007fffa4ce4268 RCX: 00007f9f205ef2e9
+RDX: 0000000000000048 RSI: 00000000200004c0 RDI: 0000000000000000
+RBP: 00007f9f20662610 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 0000000000000001
+R13: 00007fffa4ce4258 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:bpf_struct_ops_find_value+0x49/0x140 kernel/bpf/btf.c:8763
+Code: 7d ea dd ff 45 85 e4 0f 84 d7 00 00 00 e8 ff ee dd ff 48 8d bb 88 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 dc 00 00 00 48 8b 9b 88 00 00 00 48 85 db 0f 84
+RSP: 0018:ffffc90003bb7b20 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff81aa3283
+RDX: 0000000000000011 RSI: ffffffff81aa3291 RDI: 0000000000000088
+RBP: ffffc90003bb7dd0 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000002 R11: 0000000000000000 R12: 0000000000000002
+R13: 000000000000001a R14: ffffffff8ad6bca0 R15: ffffc90003bb7e04
+FS:  0000555556ed2380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000160d398 CR3: 000000007809c000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess), 4 bytes skipped:
+   0:	45 85 e4             	test   %r12d,%r12d
+   3:	0f 84 d7 00 00 00    	je     0xe0
+   9:	e8 ff ee dd ff       	call   0xffddef0d
+   e:	48 8d bb 88 00 00 00 	lea    0x88(%rbx),%rdi
+  15:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  1c:	fc ff df
+  1f:	48 89 fa             	mov    %rdi,%rdx
+  22:	48 c1 ea 03          	shr    $0x3,%rdx
+* 26:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2a:	0f 85 dc 00 00 00    	jne    0x10c
+  30:	48 8b 9b 88 00 00 00 	mov    0x88(%rbx),%rbx
+  37:	48 85 db             	test   %rbx,%rbx
+  3a:	0f                   	.byte 0xf
+  3b:	84                   	.byte 0x84
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
