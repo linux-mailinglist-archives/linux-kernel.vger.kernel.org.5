@@ -1,269 +1,148 @@
-Return-Path: <linux-kernel+bounces-39363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39362-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BE2883CF79
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:35:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FD8383CF70
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 23:35:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B08AC1C24D00
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:35:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA73D1C240A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:35:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F7E412E5C;
-	Thu, 25 Jan 2024 22:35:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6C5811187;
+	Thu, 25 Jan 2024 22:35:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ZOUobf0e";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="yUs2jVJK";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ZOUobf0e";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="yUs2jVJK"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VO+BhBcB"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4660E10A29;
-	Thu, 25 Jan 2024 22:35:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 924621118E
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 22:35:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706222105; cv=none; b=TpgYWzEsZHfp7I3zkL5TOOBI5JoJYGvPlMWhaKlC8qSmf/EATQCAmVKaHHxNUVtBdCHtHCvj8mTRbObp70pp1uLi3Z/AcOssid/Z6naXe2eLSu6OQSlfInMeu0l1Y/Pxxg44CylzPNTziQtaKlCoHzzK7k0lCE7GemMKEy+v5x8=
+	t=1706222103; cv=none; b=AnLca/0nbzmkL4bknKF2NNK0lCwTtv++34OSVTQwCe+CmaJMiMr3WziNn/nSusraRaaNTqJvBViJvUy6mMESl2waWxePXI1BZPWaxJhv/Yb+q8fgtObH05aCs8mIFk3xVyjMQZfrzUxukT5D63FD3ZPZQLtvXq4KRz016PUqDR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706222105; c=relaxed/simple;
-	bh=YOkDgAPOGX+3yUf289GizPduKRrR4GYqFGRb1/Oir2U=;
-	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
-	 References:Date:Message-id; b=BOKjeYDZznwYiSetYuYS9/XpDfU1H4Ur4A+FjSLKJ2E5Jm7JejQKXVENYPr33bOJYzPgsdmNdI5VFcOpM/4q1v59ld2ZL9yti+/d7hiuoGflqGOhGHi8+KFGZ0Ow88zvjT2SMyejYVEcfcrq+0AMfVwPnv2x4b84sKMquqgfbQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ZOUobf0e; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=yUs2jVJK; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ZOUobf0e; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=yUs2jVJK; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E89982242E;
-	Thu, 25 Jan 2024 22:34:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1706222100; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dEF3qBSHdfhxWr1uVJuvK+HFHBusGPLQ/NY34eH+fno=;
-	b=ZOUobf0eU0MWWTPmMuXuzwMUzRextIfV7U4/QyxXhdOjHBiFji3EwFBX7kg1iz/tfpPG97
-	uqvsCjVpcRVGComQR9QvHmnHZnFB79gp8WWzLYuSsNSBTEtVontA2YPDN0K8xZc6RBTsCv
-	tJRXK0vq6KFVnmcUAZ23T0+eOf9/kEc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1706222100;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dEF3qBSHdfhxWr1uVJuvK+HFHBusGPLQ/NY34eH+fno=;
-	b=yUs2jVJKRMZgaKFPPbx+hxBGNQ7msdbJoZQWI4olnt/4Kde8HDKlyDI3CACVd0MAur9enF
-	gbu4zVRHF6YchcBg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1706222100; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dEF3qBSHdfhxWr1uVJuvK+HFHBusGPLQ/NY34eH+fno=;
-	b=ZOUobf0eU0MWWTPmMuXuzwMUzRextIfV7U4/QyxXhdOjHBiFji3EwFBX7kg1iz/tfpPG97
-	uqvsCjVpcRVGComQR9QvHmnHZnFB79gp8WWzLYuSsNSBTEtVontA2YPDN0K8xZc6RBTsCv
-	tJRXK0vq6KFVnmcUAZ23T0+eOf9/kEc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1706222100;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dEF3qBSHdfhxWr1uVJuvK+HFHBusGPLQ/NY34eH+fno=;
-	b=yUs2jVJKRMZgaKFPPbx+hxBGNQ7msdbJoZQWI4olnt/4Kde8HDKlyDI3CACVd0MAur9enF
-	gbu4zVRHF6YchcBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1F01313649;
-	Thu, 25 Jan 2024 22:34:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Pwa1MQbismWjYAAAD6G6ig
-	(envelope-from <neilb@suse.de>); Thu, 25 Jan 2024 22:34:46 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+	s=arc-20240116; t=1706222103; c=relaxed/simple;
+	bh=PWubl/XtYBpas/AdivCCWYMQQNqPtjT7WZPtVgnZW+E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=s4cKE/1d7EW8QhOKtB8x+yYC2zmqsthtTcmvq+KAapH5Yy4WwbIZZr2AG77Tp2dKThltleFpFO39Rz1tf+YCn9rn23h4cThYoDn1hfYUxUrJNeP9l1XzSQ3L01kGsItIlI2Bg72M8DcG6agtz5Nr3WZWtbyj6dFjXNUfhqTwvng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VO+BhBcB; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6da9c834646so26692b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 14:35:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706222101; x=1706826901; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+Eb0c3haY7NyGtB+8UjAu5Wtfyd5HZxv9SnvbZwJOFM=;
+        b=VO+BhBcBfOPmcG1cPgDAU5nnE9lVBnxh4uTePyfceSP+NDbNp+77ub6+WkdDe2IWGh
+         //oOTFgFYLmVobOMyrt3vO+Fp9VefZ7ZC/Y07TKGM+0vDiL05geJOKM0DtKiOlzcq97q
+         ig1UYrbMCjq3bDQCUt6bTIgqmidkKMkzVvb8wMvNd+52YMdTDhRBJLB66eygo9dZJnZy
+         1pHmHEsshFa1TViFRsy+va8Qi8aAKLFoER0dYXy85NZpYa4zvdmRTykZNxtxNCX/Tf6D
+         oPpxwPMmQEsEWrhoPphPT+zmUd27avLnH+OnK8HJGY4uANbt3drRJkNwK1qnzwtxZGvN
+         UBfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706222101; x=1706826901;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+Eb0c3haY7NyGtB+8UjAu5Wtfyd5HZxv9SnvbZwJOFM=;
+        b=SU2J4J+WpcvV97/WeXhT4YHjL1LJrY0+fs45oZnQKKWlm9EhhK/JXxewbTz2P/F6T/
+         CXtz+6BPnK2G50TTzPgViDLyxis2Rp7nqbQa2e/xldhdSAjYupOxAlxjThi7v9HnwFxn
+         rzVfExKpn/vQuQ+trjV2n25pJl7rtd/cFiUDxr2JjDtTxDWRWj3OtLb/GDAAMbu2q1Bx
+         MxXlMnoA9JoxPd7RYi3qnFLmBwP7DDJ1nJkHhLOPygFYWnnxTHcOXSEmyQZv1B1cgAUV
+         dVMSzJBZH6lN3VzyAI3RraXkuzV1maAD9YKpGeWSSsw9imMUQPpcw5aXlHmHLTZyL0Qn
+         tWKQ==
+X-Gm-Message-State: AOJu0YwgjiCa27R/3LGw8V86xZubY/RE6RIGue75E7R2EUzGjlMS0qqy
+	9p9fFRkbg3T8vcqWSHSTVATPtUiIwsOv5JocG70pGDm6OfHBwS3yO4g0HRwe9wIwGb17POAjr1s
+	141yFC1i2WAAlMpuGXNDSJIl7fHeNVI9HNtXI8w==
+X-Google-Smtp-Source: AGHT+IHK8NjbfVjiOJVvhHwvTy+ErZQG3JChXcCNJ9tq7pj1tBuCcj9cSgMmIm2WuK9z6omDkmihzA64FOxWzj9qVZk=
+X-Received: by 2002:a05:6a20:2453:b0:19a:66a4:7966 with SMTP id
+ t19-20020a056a20245300b0019a66a47966mr509176pzc.55.1706222100868; Thu, 25 Jan
+ 2024 14:35:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: "NeilBrown" <neilb@suse.de>
-To: "Chuck Lever" <chuck.lever@oracle.com>
-Cc: "Jeff Layton" <jlayton@kernel.org>,
- "Christian Brauner" <brauner@kernel.org>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>,
- "Eric Van Hensbergen" <ericvh@kernel.org>,
- "Latchesar Ionkov" <lucho@ionkov.net>,
- "Dominique Martinet" <asmadeus@codewreck.org>,
- "Christian Schoenebeck" <linux_oss@crudebyte.com>,
- "David Howells" <dhowells@redhat.com>,
- "Marc Dionne" <marc.dionne@auristor.com>, "Xiubo Li" <xiubli@redhat.com>,
- "Ilya Dryomov" <idryomov@gmail.com>, "Alexander Aring" <aahringo@redhat.com>,
- "David Teigland" <teigland@redhat.com>, "Miklos Szeredi" <miklos@szeredi.hu>,
- "Andreas Gruenbacher" <agruenba@redhat.com>,
- "Trond Myklebust" <trond.myklebust@hammerspace.com>,
- "Anna Schumaker" <anna@kernel.org>, "Olga Kornievskaia" <kolga@netapp.com>,
- "Dai Ngo" <Dai.Ngo@oracle.com>, "Tom Talpey" <tom@talpey.com>,
- "Jan Kara" <jack@suse.cz>, "Mark Fasheh" <mark@fasheh.com>,
- "Joel Becker" <jlbec@evilplan.org>, "Joseph Qi" <joseph.qi@linux.alibaba.com>,
- "Steve French" <sfrench@samba.org>, "Paulo Alcantara" <pc@manguebit.com>,
- "Shyam Prasad N" <sprasad@microsoft.com>,
- "Namjae Jeon" <linkinjeon@kernel.org>,
- "Sergey Senozhatsky" <senozhatsky@chromium.org>,
- "Steven Rostedt" <rostedt@goodmis.org>,
- "Masami Hiramatsu" <mhiramat@kernel.org>,
- "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
- "Ronnie Sahlberg" <ronniesahlberg@gmail.com>, linux-kernel@vger.kernel.org,
- v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
- ceph-devel@vger.kernel.org, gfs2@lists.linux.dev,
- linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
- ocfs2-devel@lists.linux.dev, linux-cifs@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/41] filelock: split struct file_lock into file_lock
- and file_lease structs
-In-reply-to: <ZbJ2zc3I3uBwF/RE@tissot.1015granger.net>
-References: <20240125-flsplit-v2-0-7485322b62c7@kernel.org>,
- <ZbJ2zc3I3uBwF/RE@tissot.1015granger.net>
-Date: Fri, 26 Jan 2024 09:34:43 +1100
-Message-id: <170622208395.21664.2510213291504081000@noble.neil.brown.name>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=ZOUobf0e;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=yUs2jVJK
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.51 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 R_RATELIMIT(0.00)[to_ip_from(RLouahofup1mwqksbidco3ksry)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[44];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-0.999];
-	 FREEMAIL_CC(0.00)[kernel.org,zeniv.linux.org.uk,ionkov.net,codewreck.org,crudebyte.com,redhat.com,auristor.com,gmail.com,szeredi.hu,hammerspace.com,netapp.com,oracle.com,talpey.com,suse.cz,fasheh.com,evilplan.org,linux.alibaba.com,samba.org,manguebit.com,microsoft.com,chromium.org,goodmis.org,efficios.com,vger.kernel.org,lists.linux.dev,lists.infradead.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Score: -4.51
-X-Rspamd-Queue-Id: E89982242E
-X-Spam-Flag: NO
+References: <20240123153421.715951-1-tudor.ambarus@linaro.org>
+ <e233f4ff-9ed9-42bd-8ffb-17b66bcf2b5b@sirena.org.uk> <7c998d34-919b-46e7-8942-75da94d5ac21@linaro.org>
+ <zbxkm5jbngci5dp3oxcjccnltpht7wsyrvvekozwcsfv5ly3r4@ms3c3bzxgqqx>
+In-Reply-To: <zbxkm5jbngci5dp3oxcjccnltpht7wsyrvvekozwcsfv5ly3r4@ms3c3bzxgqqx>
+From: Sam Protsenko <semen.protsenko@linaro.org>
+Date: Thu, 25 Jan 2024 16:34:49 -0600
+Message-ID: <CAPLW+4m_AAnsXdpcwrDL2dJNq6+2sRg0fv4nB1tpF3ufMX=TNA@mail.gmail.com>
+Subject: Re: [PATCH 00/21] spi: s3c64xx: winter cleanup and gs101 support
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>, arnd@arndb.de, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	alim.akhtar@samsung.com, linux-spi@vger.kernel.org, 
+	linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-arch@vger.kernel.org, andre.draszik@linaro.org, 
+	peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com, 
+	Andi Shyti <andi.shyti@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 26 Jan 2024, Chuck Lever wrote:
-> On Thu, Jan 25, 2024 at 05:42:41AM -0500, Jeff Layton wrote:
-> > Long ago, file locks used to hang off of a singly-linked list in struct
-> > inode. Because of this, when leases were added, they were added to the
-> > same list and so they had to be tracked using the same sort of
-> > structure.
-> > 
-> > Several years ago, we added struct file_lock_context, which allowed us
-> > to use separate lists to track different types of file locks. Given
-> > that, leases no longer need to be tracked using struct file_lock.
-> > 
-> > That said, a lot of the underlying infrastructure _is_ the same between
-> > file leases and locks, so we can't completely separate everything.
-> > 
-> > This patchset first splits a group of fields used by both file locks and
-> > leases into a new struct file_lock_core, that is then embedded in struct
-> > file_lock. Coccinelle was then used to convert a lot of the callers to
-> > deal with the move, with the remaining 25% or so converted by hand.
-> > 
-> > It then converts several internal functions in fs/locks.c to work
-> > with struct file_lock_core. Lastly, struct file_lock is split into
-> > struct file_lock and file_lease, and the lease-related APIs converted to
-> > take struct file_lease.
-> > 
-> > After the first few patches (which I left split up for easier review),
-> > the set should be bisectable. I'll plan to squash the first few
-> > together to make sure the resulting set is bisectable before merge.
-> > 
-> > Finally, I left the coccinelle scripts I used in tree. I had heard it
-> > was preferable to merge those along with the patches that they
-> > generate, but I wasn't sure where they go. I can either move those to a
-> > more appropriate location or we can just drop that commit if it's not
-> > needed.
-> > 
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> 
-> v2 looks nicer.
-> 
-> I would add a few list handling primitives, as I see enough
-> instances of list_for_each_entry, list_for_each_entry_safe,
-> list_first_entry, and list_first_entry_or_null on fl_core.flc_list
-> to make it worth having those.
-> 
-> Also, there doesn't seem to be benefit for API consumers to have to
-> understand the internal structure of struct file_lock/lease to reach
-> into fl_core. Having accessor functions for common fields like
-> fl_type and fl_flags could be cleaner.
+On Thu, Jan 25, 2024 at 4:25=E2=80=AFPM Andi Shyti <andi.shyti@kernel.org> =
+wrote:
+>
+> Hi Tudor,
+>
+> > >> The patch set cleans a bit the driver and adds support for gs101 SPI=
+.
+> > >>
+> > >> Apart of the SPI patches, I added support for iowrite{8,16}_32 acces=
+sors
+> > >> in asm-generic/io.h. This will allow devices that require 32 bits
+> > >> register accesses to write data in chunks of 8 or 16 bits (a typical=
+ use
+> > >> case is SPI, where clients can request transfers in words of 8 bits =
+for
+> > >> example). GS101 only allows 32bit register accesses otherwise it rai=
+sses
+> > >> a Serror Interrupt and hangs the system, thus the accessors are need=
+ed
+> > >> here. If the accessors are fine, I expect they'll be queued either t=
+o
+> > >> the SPI tree or to the ASM header files tree, but by providing an
+> > >> immutable tag, so that the other tree can merge them too.
+> > >>
+> > >> The SPI patches were tested with the spi-loopback-test on the gs101
+> > >> controller.
+> > >
+> > > The reformatting in this series will conflict with the SPI changes in=
+:
+> > >
+> > >    https://lore.kernel.org/r/20240120012948.8836-1-semen.protsenko@li=
+naro.org
+> > >
+> > > Can you please pull those into this series or otherwise coordinate?
+> >
+> > ah, I haven't noticed Sam's updates. I'll rebase on top of his set and
+> > adapt if necessary. I'll review that set in a sec.
+>
+> it's a long series, please give it a few days before resending
+> it.
+>
 
-I'm not a big fan of accessor functions.  They don't *look* like normal
-field access, so a casual reader has to go find out what the function
-does, just to find the it doesn't really do anything.
+Also, I recommend splitting it up in a way I suggested before:
 
-But neither am I a fan have requiring filesystems to use
-"fl_core.flc_foo".  As you say, reaching into fl_core isn't ideal.
+  1. First add gs101 support with minimal amount of patches (without
+fifosize introduction, etc)
+  2. Then do all those cleanups and reworks on top of that
 
-It would be nice if we could make fl_core and anonymous structure, but
-that really requires -fplan9-extensions which Linus is on-record as not
-liking.
-Unless...
+The reason why I think it's better than doing that vice-versa is that
+I feel (2) can take a lot of time/review rounds to get polished and
+accepted. So this way you can make sure gs101 support gets applied
+sooner. It'll also make it easier to do the backporting work later, if
+that's ever needed.
 
-How horrible would it be to use
-
-   union {
-       struct file_lock_core flc_core;
-       struct file_lock_core;
-   };
-
-I think that only requires -fms-extensions, which Linus was less
-negative towards.  That would allow access to the members of
-file_lock_core without the "flc_core." prefix, but would still allow
-getting the address of 'flc_core'.
-Maybe it's too ugly.
-
-While fl_type and fl_flags are most common, fl_pid, fl_owner, fl_file
-and even fl_wait are also used.  Having accessor functions for all of those
-would be too much I think.
-
-Maybe higher-level functions which meet the real need of the filesystem
-might be a useful approach:
-
- locks_wakeup(lock)
- locks_wait_interruptible(lock, condition)
- locks_posix_init(lock, type, pid, ...) ??
- locks_is_unlock() - fl_type is compared with F_UNLCK 22 times.
-
-While those are probably a good idea, through don't really help much
-with reducing the need for accessor functions.
-
-I don't suppose we could just leave the #defines in place?  Probably not
-a good idea.
-
-Maybe spell "fl_core" as "c"?  lk->c.flc_flags ???
-
-
-And I wonder if we could have a new fl_flag for 'FOREIGN' locks rather
-than encoding that flag in the sign of the pid.  That seems a bit ...
-clunky?
-
-NeilBrown
-
+> Thanks,
+> Andi
 
