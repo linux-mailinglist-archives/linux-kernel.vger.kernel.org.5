@@ -1,204 +1,179 @@
-Return-Path: <linux-kernel+bounces-38103-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38104-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78C9983BAF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:51:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 861DD83BAFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:52:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBB7A1F26373
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 07:51:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 14ED71F23951
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 07:52:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9870A17551;
-	Thu, 25 Jan 2024 07:51:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DB4B13FFD;
+	Thu, 25 Jan 2024 07:52:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="O4MFiWAJ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zO8O4VXK"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3C055244
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 07:51:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC25113AC6
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 07:51:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706169086; cv=none; b=BXKoHdZ3zNW/Xap58ky5WzzlzZS4ySMr5I+F0gTC0knEhwUdw0exIoMFnBj3lq7RbZUpWbAU12ClzYc8Gz0VFTrAFR0r14iTb+UwBTQC8amSK7aZUaGk8SAWrx8KEHCSDgk/GP02PJEwLm13Jyth9P6lYP3OlrV/YCdHzFp11hQ=
+	t=1706169121; cv=none; b=AbZ8XYhye/gede4GNlHFHnLlVspoSxxxx8z9y2xntTCMs+QWLYTx1ufuJDf+1xRhJftz/oeCgcT30mW9OR1KnZ5+IST2A5b7jp6vSYD4MWzEaqUR608Gf5mCImlP3W2eQch1994LRvYKMB1xK03idEITnmSBvJ2JLDeRhYiHzB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706169086; c=relaxed/simple;
-	bh=IJk53f2ApOxRAEPTKIzDtiOaoN3YBA85NACNk6p/iB4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uf95rtZIZZwqWT8nKFYmfXrdrpFjJXX2ELB9L6/729WoG7/dR3nuzgiQIq/A4IfTXLhPTuyXs4E9EOqEz5g8nkpiV2khgNhPS7wwR3nQ+Vj7fXm4LCtUqlZyxslmhm3bc6LeVvg7hJ8UJEoNQWgnS23vomNSzwl8rTCBEt7AbBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=O4MFiWAJ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706169082;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LyC31zzzcvBQLccO8yitrHL0CNB1m9jX4OQ2W97orWU=;
-	b=O4MFiWAJqU7cXQ+7vll8X1yn1Iu7fgwN7K9jVrXdcfmnTjJMsMQNHW0Y3l/gABeqDAIxTZ
-	7U/qIfvIIZITkrY1++QlVAxr9Gomi0IdNe436iyvyuxDhVOmc6vnVT1wt0NZ1u3cMWyxBh
-	UoZpt7Tf2UdjPBsz3C1wAMGC9EYSaJQ=
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
- [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-209-E0VmIMqEPcOipDbMhGjpSQ-1; Thu, 25 Jan 2024 02:51:21 -0500
-X-MC-Unique: E0VmIMqEPcOipDbMhGjpSQ-1
-Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-6ddc41f35a3so803032b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 23:51:20 -0800 (PST)
+	s=arc-20240116; t=1706169121; c=relaxed/simple;
+	bh=l9hU/QKK2PtHrlBfySC/vkpZwslcuIUNq8yPn8eBBow=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=I4upcQa+Bbll++3a+Cd0GW0+UUXHKhOdhwdyUgc8oObXcwtRpzqXR4ybA8rQU4NO361DiZj92BFa5J9VnepDbWcNb+FuNZIzwOu98AewhXf5t2y6tlexTwDvyV82UMlL3x8rdh8WPMJEo/ar5a79KOv/SBSjwDwyU0+TOQPoSCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zO8O4VXK; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a318ccfe412so11271966b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 23:51:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1706169118; x=1706773918; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nxsDUEfK9tANQSKnsl+k6AMIFKQpzSLvqrgC9O6EHUs=;
+        b=zO8O4VXKqsS5jWzqLyodB/tonR5unBUTUxVBatCBwSlryM8WFIcVuzy8dVTzQCB8YB
+         iuwD4+2zlACSMgCd9q7Q0FLlZ2tr42/oSRFrxafBvD/7zS6BUFg1hpOpgzYZIt9wm79U
+         jcqljuTPELI4ZlgpKaUO0dVNKswady6vKYg/US4ev8dX2+ohv24gC7kZvdRFP9Xrxp/7
+         Kv2D6pxUO+uDs5fL9nxgvd4iZED3giMerNbmHoupJJsW9Z+ZSj/DxuGFg5VV503LEKfA
+         9nL3X3NUe4Cl684wnXxo5pe8lfPRS6G1nDmCO5roRzI2STdBfpoKZARUZg3uVBkcp4C4
+         ++fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706169080; x=1706773880;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LyC31zzzcvBQLccO8yitrHL0CNB1m9jX4OQ2W97orWU=;
-        b=VksT46Dc5oxHTrOVWjcfPfA+zLzK+ry7G4fVCrtvHx9IByMn0wk/CW9KFjkontsHJM
-         bSWg6BQxajw5tifNcuagWNOfjwb6ZI/ycXeSx3VvQQ8fOEBrxRYaWw+edGECInSyHccB
-         Ibx+hzPxYLZzQGPO59QV167VLMtcpUkmlel7Wiw6sTRpuS9jHYV6Xa0QvypBOZzIfi07
-         evPiWKcc0cUPEuavA4ArI85dQgc3U5EWb5pRsQqegKcGvLGXp4WvHgzfs4p16yJ7+1dy
-         5mHYIamK7UbN25WE2s5YnMcDV9KfIiX2aW8/8UU8rZzTbvlExIOtSCaZxLc2OACATNbw
-         pYbA==
-X-Gm-Message-State: AOJu0YxRWxnDSzoP93MT8n85DQ1BXgzG8iQ0opez1R89TDCJKUkY72/A
-	k+RqvezgqYTrLwNhe3BPjdMg7WTSGlTIkHCC04Wq6qBOnw33LTMqrpRUYnUvw6BFe7ttJLEjV2v
-	6UAT1dQ+GRImGpBdGZqE1ikmnL2u3IsFq7LckV+GMEdifFbf+hpuWLLNMq4EzjAySwWBE3EAyyw
-	5jtGttUdwKn3o6Qlhix7JQKMpN00NsL2zZl5Ea
-X-Received: by 2002:aa7:9819:0:b0:6dd:c379:28f7 with SMTP id e25-20020aa79819000000b006ddc37928f7mr252931pfl.21.1706169079990;
-        Wed, 24 Jan 2024 23:51:19 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHSlcVyOOUsGiV0wV1PdgkTikecKl6oWsCQDpmwLacZpUS4x9H+HIkFzdIbi1zrP/QBZOMNarTehuzV4tTCU7g=
-X-Received: by 2002:aa7:9819:0:b0:6dd:c379:28f7 with SMTP id
- e25-20020aa79819000000b006ddc37928f7mr252918pfl.21.1706169079670; Wed, 24 Jan
- 2024 23:51:19 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706169118; x=1706773918;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nxsDUEfK9tANQSKnsl+k6AMIFKQpzSLvqrgC9O6EHUs=;
+        b=cRPeoIpBduhhnlae645ODd/Lb/h6XgvetF1Zpscv11HBVSq3NBg5MoNKTO0+mQtvDN
+         tiYi9oJO+u0m9yctbP6J/tiirzox6YxIR7LaZoiApf+hw3lzTUCI84oxZLo4LuHMKUNy
+         R8unmrKotiZEUsGRrGEQGSfJmiHqKnOaLcE9gEWCkhs2FzE7Ee9N8FPM9Dyv/9qJlH7d
+         ZBjNPP288D5xxfzEJfmdJ0T+NlEpz+e7bYz653mzNyV7ESi7Ive1xhh2WBAVhGuvxOV0
+         fb/XyEPvpjl1iuYzd1FFmTSRQfAmRN85LEJk8wfdDdO/pc8tLgBew4XBIrKOebKBhDYH
+         Ttkw==
+X-Gm-Message-State: AOJu0YyTbfi1i/oEHkqbeg6dPUiOWOhfium3Hhs9QI0yrUcZKwoRoS8p
+	e0Jl5OUSw0iCx713khWtHsI7WFm/A34vbic0tW2LhPacOOJyiUHe+7ZFpt2nuRo=
+X-Google-Smtp-Source: AGHT+IFBKe7scLDRr6uP13ptInBh6NVwFkI/u6B/ANKQDXM2oGaVYvzbiYWVFDto6r17WEwD4EzQpQ==
+X-Received: by 2002:a17:907:1591:b0:a2e:d32b:6fc7 with SMTP id cf17-20020a170907159100b00a2ed32b6fc7mr216045ejc.119.1706169118001;
+        Wed, 24 Jan 2024 23:51:58 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id f26-20020a17090624da00b00a26ac037ff3sm727960ejb.132.2024.01.24.23.51.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Jan 2024 23:51:57 -0800 (PST)
+Message-ID: <dd7e723d-3c4c-4edf-afc2-51db9a074efa@linaro.org>
+Date: Thu, 25 Jan 2024 08:51:55 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124091421.1261579-1-yukuai3@huawei.com> <20240124091421.1261579-6-yukuai3@huawei.com>
-In-Reply-To: <20240124091421.1261579-6-yukuai3@huawei.com>
-From: Xiao Ni <xni@redhat.com>
-Date: Thu, 25 Jan 2024 15:51:08 +0800
-Message-ID: <CALTww2_hG2_YL1v-d0=uv2=bVzJ2wwpSJyQdBBGMCBx79bot-Q@mail.gmail.com>
-Subject: Re: [PATCH v2 05/11] md: export helpers to stop sync_thread
-To: Yu Kuai <yukuai3@huawei.com>
-Cc: agk@redhat.com, snitzer@kernel.org, mpatocka@redhat.com, 
-	dm-devel@lists.linux.dev, song@kernel.org, jbrassow@f14.redhat.com, 
-	neilb@suse.de, heinzm@redhat.com, shli@fb.com, akpm@osdl.org, 
-	linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org, 
-	yukuai1@huaweicloud.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 04/17] dt-bindings: soc: mobileye: add EyeQ5 OLB system
+ controller
+Content-Language: en-US
+To: Rob Herring <robh@kernel.org>, =?UTF-8?Q?Th=C3=A9o_Lebrun?=
+ <theo.lebrun@bootlin.com>
+Cc: Gregory CLEMENT <gregory.clement@bootlin.com>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Linus Walleij <linus.walleij@linaro.org>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>, Philipp Zabel <p.zabel@pengutronix.de>,
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+ linux-mips@vger.kernel.org, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, linux-gpio@vger.kernel.org
+References: <20240123-mbly-clk-v3-0-392b010b8281@bootlin.com>
+ <20240123-mbly-clk-v3-4-392b010b8281@bootlin.com>
+ <20240124151405.GA930997-robh@kernel.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240124151405.GA930997-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 24, 2024 at 5:19=E2=80=AFPM Yu Kuai <yukuai3@huawei.com> wrote:
->
-> The new heleprs will be used in dm-raid in later patches to fix
-> regressions and prevent calling md_reap_sync_thread() directly.
->
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->  drivers/md/md.c | 41 +++++++++++++++++++++++++++++++++++++----
->  drivers/md/md.h |  3 +++
->  2 files changed, 40 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/md/md.c b/drivers/md/md.c
-> index 6c5d0a372927..90cf31b53804 100644
-> --- a/drivers/md/md.c
-> +++ b/drivers/md/md.c
-> @@ -4915,30 +4915,63 @@ static void stop_sync_thread(struct mddev *mddev,=
- bool locked, bool check_seq)
->                 mddev_lock_nointr(mddev);
->  }
->
-> -static void idle_sync_thread(struct mddev *mddev)
-> +void md_idle_sync_thread(struct mddev *mddev)
->  {
-> +       lockdep_assert_held(mddev->reconfig_mutex);
-> +
+On 24/01/2024 16:14, Rob Herring wrote:
+>> +
+>> +      pinctrl-b {
+>> +        compatible = "mobileye,eyeq5-b-pinctrl";
+>> +        #pinctrl-cells = <1>;
+>> +      };
+>> +    };
+> 
+> This can all be simplified to:
+> 
+> system-controller@e00000 {
+>     compatible = "mobileye,eyeq5-olb", "syscon";
+>     reg = <0xe00000 0x400>;
+>     #reset-cells = <2>;
+>     #clock-cells = <1>;
+>     clocks = <&xtal>;
+>     clock-names = "ref";
+> 
+>     pins { ... };
+> };
+> 
+> There is no need for sub nodes unless you have reusable blocks or each 
+> block has its own resources in DT.
 
-Hi Kuai
+Yes, however I believe there should be resources here: each subnode
+should get its address space. This is a bit tied to implementation,
+which currently assumes "everyone can fiddle with everything" in this block.
 
-There is a building error. It should give a pointer to
-lockdep_assert_held. And same with the other two places in this patch.
+Theo, can you draw memory map?
 
-Regards
-Xiao
-
->         mutex_lock(&mddev->sync_mutex);
->         clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
-> +       stop_sync_thread(mddev, true, true);
-> +       mutex_unlock(&mddev->sync_mutex);
-> +}
-> +EXPORT_SYMBOL_GPL(md_idle_sync_thread);
-> +
-> +void md_frozen_sync_thread(struct mddev *mddev)
-> +{
-> +       lockdep_assert_held(mddev->reconfig_mutex);
-> +
-> +       mutex_lock(&mddev->sync_mutex);
-> +       set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
-> +       stop_sync_thread(mddev, true, false);
-> +       mutex_unlock(&mddev->sync_mutex);
-> +}
-> +EXPORT_SYMBOL_GPL(md_frozen_sync_thread);
->
-> +void md_unfrozen_sync_thread(struct mddev *mddev)
-> +{
-> +       lockdep_assert_held(mddev->reconfig_mutex);
-> +
-> +       mutex_lock(&mddev->sync_mutex);
-> +       clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
-> +       set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
-> +       md_wakeup_thread(mddev->thread);
-> +       sysfs_notify_dirent_safe(mddev->sysfs_action);
-> +       mutex_unlock(&mddev->sync_mutex);
-> +}
-> +EXPORT_SYMBOL_GPL(md_unfrozen_sync_thread);
-> +
-> +static void idle_sync_thread(struct mddev *mddev)
-> +{
->         if (mddev_lock(mddev)) {
->                 mutex_unlock(&mddev->sync_mutex);
->                 return;
->         }
->
-> +       mutex_lock(&mddev->sync_mutex);
-> +       clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
->         stop_sync_thread(mddev, false, true);
->         mutex_unlock(&mddev->sync_mutex);
->  }
->
->  static void frozen_sync_thread(struct mddev *mddev)
->  {
-> -       mutex_lock(&mddev->sync_mutex);
-> -       set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
-> -
->         if (mddev_lock(mddev)) {
->                 mutex_unlock(&mddev->sync_mutex);
->                 return;
->         }
->
-> +       mutex_lock(&mddev->sync_mutex);
-> +       set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
->         stop_sync_thread(mddev, false, false);
->         mutex_unlock(&mddev->sync_mutex);
->  }
-> diff --git a/drivers/md/md.h b/drivers/md/md.h
-> index 8d881cc59799..437ab70ce79b 100644
-> --- a/drivers/md/md.h
-> +++ b/drivers/md/md.h
-> @@ -781,6 +781,9 @@ extern void md_rdev_clear(struct md_rdev *rdev);
->  extern void md_handle_request(struct mddev *mddev, struct bio *bio);
->  extern int mddev_suspend(struct mddev *mddev, bool interruptible);
->  extern void mddev_resume(struct mddev *mddev);
-> +extern void md_idle_sync_thread(struct mddev *mddev);
-> +extern void md_frozen_sync_thread(struct mddev *mddev);
-> +extern void md_unfrozen_sync_thread(struct mddev *mddev);
->
->  extern void md_reload_sb(struct mddev *mddev, int raid_disk);
->  extern void md_update_sb(struct mddev *mddev, int force);
-> --
-> 2.39.2
->
+Best regards,
+Krzysztof
 
 
