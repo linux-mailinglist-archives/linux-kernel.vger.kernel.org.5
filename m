@@ -1,147 +1,102 @@
-Return-Path: <linux-kernel+bounces-39261-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39262-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAF8583CDBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:45:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA8A483CDBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:46:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71B6A1F26FFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:45:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C65EB24F3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:46:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6B4E1386BA;
-	Thu, 25 Jan 2024 20:45:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C01D1386C2;
+	Thu, 25 Jan 2024 20:45:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oPrPCEg4"
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="Iu30FEXn"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C847D13540C
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 20:45:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AA4C131E40;
+	Thu, 25 Jan 2024 20:45:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706215534; cv=none; b=GWZoGMH09pBNczDgzBGaRVMXoVWTIbMnmuBHC5noFJAoYmIgm0JJyeRcUKjFb7pWJ/QSM2Hs7qmTZoU6m4x6ROGZfhvtN6YD7l+PMhOoVs0iF5lIOPE/hGoqpFd92Aa/Fk0wQ+AEGHalFGjBmEChPOcCA7JlI4pHxxNoDx6QUsM=
+	t=1706215551; cv=none; b=JtWhgIkzla+Tji7tBawXM4hWMljOn460Lc3VZj4Pp7j1vP8WDKQfj8LWqCJ7qJARHDDBuOzTZY7v2HuCWA5Xo3Q0eZS8WCNVjuVoAgFhLfCb33k2XbrEoo+akeElm2E/CNZCZgpU0J4fKjZSgnf/Yc9FH0deYjAtLy8eTvL6wCQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706215534; c=relaxed/simple;
-	bh=u4m3rhslZrR5Hsot++6wdzU0ej58tjNpwhODKsqQKLI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IIoqaByq9tJe+lIi0N1FwOgQXneNwYE/Q/OBRDMrkeJ1MT7MzjO3lFcp03urRlL/Jel957h93mvJvFgM+AjSdiTvk2Z5ir/ZoHdYAK9Naal6W6o7HaiTDUutZTy1AmwFb4jNd3l/XKZwQQ6Cl2CIWRwUceh6HnGA6MjlBdpZjbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oPrPCEg4; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-290ec261a61so4517a91.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 12:45:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706215532; x=1706820332; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OjdvfWOMZIbIKqDPk6c3LehvDX9fVj7yu1ffjzs1Y4w=;
-        b=oPrPCEg49l26MN0w4JTS7mulcbHu3czWBt/DEPdZz4u7jJZTrUcTNgU/6cgGTaN3bw
-         T8bymBfZqrLedtX42si++VVzS0pA2fIxQHz29gfHuqOXEhPmCnAPojItVhRrpWkscn/Y
-         C/E/v5DRWFAODZXkEwUNAqnNqnSw3P8iBZHYqfIgPZ7t77FMSj3f3NxCelhiLJIjWtjn
-         VDQS9+ZyNTsby7YkTFAG68yObCiBCR5nTNM4GMrvhO1vMCkQjb0Y3ewa0MqqO1kSrxr+
-         IM6YQEfGjj5reuKQafnSkUkZc2E0dqAs/L4+Jj/zJ/MKquO3LsCQi7fPGs3gPMNcw7Am
-         YUCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706215532; x=1706820332;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OjdvfWOMZIbIKqDPk6c3LehvDX9fVj7yu1ffjzs1Y4w=;
-        b=cDYOl1+560SXHv/7NRN0+VrOrin7idvGL87qKlshunoY6sy4yOZ/MGAV6eSHWsvR2a
-         qp5PsZwgcscSdjJtfx0ucYO0BOLvxUJziEZv/mXfUft9ICa2cmpxsl/6EHaumELfO/RB
-         yX/jSDXTRIXQQHrGPjYn4nWq9kqY2AendPg8OBtqdZM14bneVjI4wHkGCbcmR1fls02K
-         4PtAI1Zq5bJwHccT7LjrXeAKAxplbHLvtl2yMJCmMQXhdlyEUYkgpVTiaZrtCLwcA1AM
-         h91b8fauxo0nC0lnGUB2U8u/e/torXBispxiqazvPO+ntnLTTa5MWhIK0BHZUSmw3Onp
-         8Yww==
-X-Gm-Message-State: AOJu0YwpbuAsZU5cYWpK9y+dhiBlAd4v1UMe9Oo0j2RiGVfqoFLaU8nR
-	wSgLmL7aJzw4HDcQVI0wWaXGELyxEFNer1CyiGPfFwcpGh4ykvXPyr/ky/6CojUC8IriKEXRR0k
-	gIna3jLyDu0QqaUKJLOgITvzQg327InRGCMVvVQ==
-X-Google-Smtp-Source: AGHT+IFofqibqxuDjtddSx6QluMZVRpw+2AXJrlPUc7U34sNPQ9cpNct34ReKCCPsxw5hwiOFV0+l3LKSUbE88X6ZwI=
-X-Received: by 2002:a17:90a:1a08:b0:292:6b51:6bb with SMTP id
- 8-20020a17090a1a0800b002926b5106bbmr262488pjk.0.1706215532174; Thu, 25 Jan
- 2024 12:45:32 -0800 (PST)
+	s=arc-20240116; t=1706215551; c=relaxed/simple;
+	bh=MEYtjeW29vfCnD9UeqkFj+lrriB0AqvztxsmzdZxKf8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oJdE1XIOWBEipotMBWzvhuiQ9m/Zlb2mQKETNBKeTGS855uOeMphe/TrrHch9xGi6UsJXZEFy/gPpr5u02GzlYhSJkV6OS2fKo12Yy4lkgKR1qtCkQFt8Amjt6GoEHSsDaUA3aWXDZyle/ueReHTiDSKiPKIrraZ4JHwjawzPxo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=Iu30FEXn; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=NjvNmpvcyNjsNydEo+Z2ltkIxVtWxwctxxsjrOVm3aI=; b=Iu30FEXnJMWAZuuxH3st9SEc0J
+	05YCNF82thUjrVtBzvkzYVU1IuZKCChHWOB5Qeok3uOZCv7PQ5CQ/s/n5t5j0G74VYzQol8ZZKyGb
+	RUnIMCWFbfjBYch9zGLzaiK+aMJ72YN8j4Z0rfFOr2zW7xcAA33YPLIxKSDMUFqmOWao=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rT6bQ-0067eB-86; Thu, 25 Jan 2024 21:45:36 +0100
+Date: Thu, 25 Jan 2024 21:45:36 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Danielle Ratson <danieller@nvidia.com>
+Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, corbet@lwn.net,
+	linux@armlinux.org.uk, sdf@google.com, kory.maincent@bootlin.com,
+	maxime.chevallier@bootlin.com, vladimir.oltean@nxp.com,
+	przemyslaw.kitszel@intel.com, ahmed.zaki@intel.com,
+	richardcochran@gmail.com, shayagr@amazon.com,
+	paul.greenwalt@intel.com, jiri@resnulli.us,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	mlxsw@nvidia.com, petrm@nvidia.com, idosch@nvidia.com
+Subject: Re: [RFC PATCH net-next 1/9] ethtool: Add ethtool operation to write
+ to a transceiver module EEPROM
+Message-ID: <20ab7355-fc72-4dba-b3ea-db2244909bab@lunn.ch>
+References: <20240122084530.32451-1-danieller@nvidia.com>
+ <20240122084530.32451-2-danieller@nvidia.com>
+ <9eecccb0-a875-4dbc-b88c-5b2aad838305@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240125145007.748295-1-tudor.ambarus@linaro.org> <20240125145007.748295-28-tudor.ambarus@linaro.org>
-In-Reply-To: <20240125145007.748295-28-tudor.ambarus@linaro.org>
-From: Sam Protsenko <semen.protsenko@linaro.org>
-Date: Thu, 25 Jan 2024 14:45:21 -0600
-Message-ID: <CAPLW+4kTDxvRuCvg8TO8QFQiTUfrvzEavX=Cx2QVRZ=SnRLrOg@mail.gmail.com>
-Subject: Re: [PATCH v2 27/28] spi: s3c64xx: add support for google,gs101-spi
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: broonie@kernel.org, andi.shyti@kernel.org, arnd@arndb.de, 
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	alim.akhtar@samsung.com, linux-spi@vger.kernel.org, 
-	linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-arch@vger.kernel.org, andre.draszik@linaro.org, 
-	peter.griffin@linaro.org, kernel-team@android.com, willmcvicker@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9eecccb0-a875-4dbc-b88c-5b2aad838305@lunn.ch>
 
-On Thu, Jan 25, 2024 at 8:50=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linaro=
-org> wrote:
->
-> Add support for GS101 SPI. All the SPI nodes on GS101 have 64 bytes
-> FIFOs, infer the FIFO size from the compatible. GS101 allows just 32bit
-> register accesses, otherwise a Serror Interrupt is raised. Do the write
-> reg accesses in 32 bits.
->
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-> ---
->  drivers/spi/spi-s3c64xx.c | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
->
-> diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
-> index 35a2d5554dfd..e887be6955a0 100644
-> --- a/drivers/spi/spi-s3c64xx.c
-> +++ b/drivers/spi/spi-s3c64xx.c
-> @@ -1501,6 +1501,18 @@ static const struct s3c64xx_spi_port_config exynos=
-autov9_spi_port_config =3D {
->         .quirks         =3D S3C64XX_SPI_QUIRK_CS_AUTO,
->  };
->
-> +static const struct s3c64xx_spi_port_config gs101_spi_port_config =3D {
-> +       .fifosize       =3D 64,
-> +       .rx_lvl_offset  =3D 15,
-> +       .tx_st_done     =3D 25,
-> +       .clk_div        =3D 4,
-> +       .high_speed     =3D true,
-> +       .clk_from_cmu   =3D true,
-> +       .has_loopback   =3D true,
-> +       .use_32bit_io   =3D true,
-> +       .quirks         =3D S3C64XX_SPI_QUIRK_CS_AUTO,
-> +};
-> +
->  static const struct s3c64xx_spi_port_config fsd_spi_port_config =3D {
->         .fifosize       =3D 64,
->         .rx_lvl_offset  =3D 15,
-> @@ -1556,6 +1568,10 @@ static const struct of_device_id s3c64xx_spi_dt_ma=
-tch[] =3D {
->                 .compatible =3D "samsung,exynosautov9-spi",
->                 .data =3D &exynosautov9_spi_port_config,
->         },
-> +       {
+On Thu, Jan 25, 2024 at 09:26:16PM +0100, Andrew Lunn wrote:
+> On Mon, Jan 22, 2024 at 10:45:22AM +0200, Danielle Ratson wrote:
+> > From: Ido Schimmel <idosch@nvidia.com>
+> > 
+> > Ethtool can already retrieve information from a transceiver module
+> > EEPROM by invoking the ethtool_ops::get_module_eeprom_by_page operation.
+> > Add a corresponding operation that allows ethtool to write to a
+> > transceiver module EEPROM.
+> > 
+> > The purpose of this operation is not to enable arbitrary read / write
+> > access, but to allow the kernel to write to specific addresses as part
+> > of transceiver module firmware flashing. In the future, more
+> > functionality can be implemented on top of these read / write
+> > operations.
+> 
+> My memory is dim, but i thought we decided that since the algorithm to
+> program these modules is defined in the standard, all we need to do is
+> pass the firmware blob, and have an in kernel implementation of the
+> algorithm. There is no need to have an arbitrary write blob to module,
+> which might, or might not be abused in the future.
 
-As I mentioned before, this braces style looks too bloated to me.
-Other than that:
+O.K, back after reading more of the patches.
 
-Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+If i'm understanding the code correctly, this is never exposed to
+userspace? Its purely an in kernel API? It would be good to make that
+clear in the commit message, and document that in the ethtool ops
+structure.
 
-> +               .compatible =3D "google,gs101-spi",
-> +               .data =3D &gs101_spi_port_config,
-> +       },
->         {
->                 .compatible =3D "tesla,fsd-spi",
->                 .data =3D &fsd_spi_port_config,
-> --
-> 2.43.0.429.g432eaa2c6b-goog
->
+Thanks
+      Andrew
 
