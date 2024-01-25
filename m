@@ -1,111 +1,142 @@
-Return-Path: <linux-kernel+bounces-38180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38181-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3924983BC0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:34:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D40183BC15
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:35:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BE021C222D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:34:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D19BB230FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:35:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F2AC1B943;
-	Thu, 25 Jan 2024 08:34:05 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BC0D1B945;
+	Thu, 25 Jan 2024 08:34:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BySedhPL"
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E14E54C;
-	Thu, 25 Jan 2024 08:34:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 280DA17731;
+	Thu, 25 Jan 2024 08:34:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706171644; cv=none; b=EnxVKoAtlDqG7QHko+DpZTlnMzxR/cGqfM6zJHHR13jOB44dOAFV8zDhQOiBaUOaPyGoGZeEDXgqlrWk7HSGPacW9eLPqxX8/IZTY+To/43crdJ7cWCoz5iEojeK+/ih87a57jyY89Vstb93Is4deKdCBjHu+DpbF2iVHhHQpjg=
+	t=1706171698; cv=none; b=I8PrZNhH55TV1uQx4zQ1xWpEF2mB3ZfxKLYcWWJ2UO/2U3zl8M3QrGZwb7OgLf2X610IN660RwsbU7WbgLdsLo+5EmSMPZHvgJbknrWXHTNgROil843LutsK27DvcA591VaDW3StEmDXA7do3iWREIV4SO4nbe8C8QxVVhlv710=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706171644; c=relaxed/simple;
-	bh=nu2X+w6CoHZuxTQ+GtRpCRPDCFCdqjvwG2j7jgKiTpU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bCeHpwyMeXErr1JF0VXi5dZD+qaKeYWmI5ZzHYlWvDpQJmWb2SSeZLtnwATOkUCkTRB9A7KkKO6gZ6mTPGu6yNGnKmsGGlKa7lbXzc9xjDiagBHOrZhyHiuH40xoR31hmhvznu3etj3Xjj60jASWEi9MHOctOw1ons+a/9LmAi0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 8121b05ff4ae4a279be3bc3a10dff9e7-20240125
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:61e0fa9d-4ed9-49a3-a7a2-54b5d96d874b,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:-5
-X-CID-INFO: VERSION:1.1.35,REQID:61e0fa9d-4ed9-49a3-a7a2-54b5d96d874b,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-5
-X-CID-META: VersionHash:5d391d7,CLOUDID:312e3e83-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:2401251633590W14PIM2,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
-	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
-	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 8121b05ff4ae4a279be3bc3a10dff9e7-20240125
-Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
-	(envelope-from <chentao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 1342124197; Thu, 25 Jan 2024 16:33:57 +0800
-Received: from mail.kylinos.cn (localhost [127.0.0.1])
-	by mail.kylinos.cn (NSMail) with SMTP id 92147E000EB9;
-	Thu, 25 Jan 2024 16:33:57 +0800 (CST)
-X-ns-mid: postfix-65B21CF5-371084490
-Received: from kernel.. (unknown [172.20.15.234])
-	by mail.kylinos.cn (NSMail) with ESMTPA id E9161E000EB9;
-	Thu, 25 Jan 2024 16:33:49 +0800 (CST)
-From: Kunwu Chan <chentao@kylinos.cn>
-To: mpe@ellerman.id.au,
-	npiggin@gmail.com,
-	christophe.leroy@csgroup.eu,
-	aneesh.kumar@kernel.org,
-	naveen.n.rao@linux.ibm.com
-Cc: linuxppc-dev@lists.ozlabs.org,
-	kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH v2] KVM: PPC: code cleanup for kvmppc_book3s_irqprio_deliver
-Date: Thu, 25 Jan 2024 16:33:48 +0800
-Message-Id: <20240125083348.533883-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1706171698; c=relaxed/simple;
+	bh=xQ3ELqXF3nkIUmMUdjf/42MCdn5UjLE2cnrQvuBnX2k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=siLiNR98ubOPx2jcL5dvBBlWh/3qSsDlBof7Lb6TZvWXJMwJmM7LvxOs4tAv0XpibuqkM8OfyKEYgZQFnJB5vjq2Mk5rjxtXmsMZMYzoqAn5ogyBH0AILbxLyDawVxnAXrPfKry7peFoqa4f+nWfItWrIP9Tp8Qk69H6GwAUd2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BySedhPL; arc=none smtp.client-ip=209.85.219.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc372245aefso2677961276.2;
+        Thu, 25 Jan 2024 00:34:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706171696; x=1706776496; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=7U7VKdIWyrhj7s7eAQrsWiZ5oaoSX60SyzCWbwjlQO0=;
+        b=BySedhPLJF5ZWQpu+QrPP35CqU3k006s1dUWWy1zf7VAhKaVIf+x0GA6oe1WxKrb/m
+         eJxXWPwptcf1jZCOcPKkDdwatfEe093dH7+ZxgrZwVD28hQYCexk1wl0KHbmtCgA16wc
+         85eZiZ77fXS8N+RqlsJvuDeOwK271jKRZW3WmZf996F0jYhsQ2QNzEMbeDrJ2zmuBh2/
+         0nXta/piOQR4q0A0z55fAZ1qivSgL1/NO6DF66e34WOB2M4cDJpTOth4Si6aDOOL7uaQ
+         q4uKX5wucIYAUGT9Q8ij8CR21rKc9lEn8gCED+oSB3RSfEuEzLWF+o+kmSsOVbZqPyMs
+         6aAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706171696; x=1706776496;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7U7VKdIWyrhj7s7eAQrsWiZ5oaoSX60SyzCWbwjlQO0=;
+        b=YpqLa0dIO3rv2ru8BIezSzaWld++7evnnFHzOfL5lwZppxNhGcqkXUzT+ultEWtKS4
+         k2ic4wQgtFmpZVzPKDF1SR5F5JUVz60VC/aRQaSAVl8oQwLZfitbuE9WGTbNbcirI9D5
+         5rRlptZu39pGyG9xsFMgteszAAqDNDPGN9sJ3Py0N2tpkiwCYOexrvy2TpGXSpTiihEG
+         QyWCUjNdc5iWi9fLE1KEnMfScTlXhscGxv7IJqU9DiglxBB07yYVmvBK+Epm+HiooQa3
+         u2mAduCu9imSpuyUrP3uDX+wz+d2wXasaQpQggN4r8y9R9plQ0qAOAzCYxeNli47eQwC
+         tICg==
+X-Gm-Message-State: AOJu0Yw6EwF65TWD11NCMjUdQg6mowHAVop8OSGnG5QqNLGn3AaqZNWr
+	VR9liHb/2+x3+Lhv7A9Dd19jjXnu1hSEGjcBORmFlVyRnWNGN3WAKAK4Klwd/D19Jh1E2dgLbFI
+	xteEvwhcm9+X0FaKgybLmn+8CPKz8UygzSw==
+X-Google-Smtp-Source: AGHT+IE/4ow0NdqbVoY+ay5s1tDiOWK1PsDj9qa5dZ+9geKzcPOli/gpF6TyXHCqnfgNB5DZXhk5dxAJ3zEjIEKykFM=
+X-Received: by 2002:a05:6902:2808:b0:dc2:5674:b408 with SMTP id
+ ed8-20020a056902280800b00dc25674b408mr489570ybb.57.1706171695943; Thu, 25 Jan
+ 2024 00:34:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+References: <20240124103010.51408-1-sunhao.th@gmail.com> <5d33819c5f752755614882e30d971488731d97e0.camel@gmail.com>
+In-Reply-To: <5d33819c5f752755614882e30d971488731d97e0.camel@gmail.com>
+From: Hao Sun <sunhao.th@gmail.com>
+Date: Thu, 25 Jan 2024 09:34:44 +0100
+Message-ID: <CACkBjsZjYewSh4ZHFbj-D_Z7kGOeaVLfROcEDE1beNEDn-aU-A@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: Reject pointer spill with var offset
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, andreimatei1@gmail.com, ast@kernel.org, 
+	andrii@kernel.org, daniel@iogearbox.net, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-This part was commented from commit 2f4cf5e42d13 ("Add book3s.c")
-in about 14 years before.
-If there are no plans to enable this part code in the future,
-we can remove this dead code.
+>
+> I tried this example as a part of selftest
+> (If put to tools/testing/selftests/bpf/progs/verifier_map_ptr.c
+>  could be executed using command:
+>  ./test_progs -vvv -a 'verifier_map_ptr/ctx_addr_leak @unpriv'):
+>
+> SEC("socket")
+> __failure_unpriv
+> __msg_unpriv("spilling pointer with var-offset is disallowed")
+> __naked void ctx_addr_leak(void)
+> {
+>         asm volatile (
+>                 "r0 = 0;"
+>                 "*(u64 *)(r10 -8) = r0;"
+>                 "*(u64 *)(r10 -16) = r0;"
+>                 "*(u64 *)(r10 -24) = r0;"
+>                 "r6 = r1;"
+>                 "r1 = 8;"
+>                 "r1 /= 1;"
+>                 "r1 &= 8;"
+>                 "r2 = r10;"
+>                 "r2 += -16;"
+>                 "r2 += r1;"
+>                 "*(u64 *)(r2 +0) = r6;"
+>                 "r1 = %[map_hash_16b] ll;"
+>                 "r2 = r10;"
+>                 "r2 += -16;"
+>                 "r3 = r10;"
+>                 "r3 += -8;"
+>                 "r4 = 0;"
+>                 "call %[bpf_map_update_elem];"
+>                 "r0 = *(u64 *)(r10 -8);"
+>                 "exit;"
+>         :
+>         : __imm(bpf_map_update_elem),
+>           __imm_addr(map_hash_16b)
+>         : __clobber_all);
+> }
+>
+> And see the following error message:
+>
+> ...
+> r1 &= 8                       ; R1_w=Pscalar(smin=smin32=0,smax=umax=smax32=umax32=8,var_off=(0x0; 0x8))
+> r2 = r10                      ; R2_w=fp0 R10=fp0
+> r2 += -16                     ; R2_w=fp-16
+> r2 += r1
+> R2 variable stack access prohibited for !root, var_off=(0x0; 0x8) off=-16
+>
+> Could you please craft a selftest that checks for expected message?
+> Overall the change makes sense to me.
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
-Change in v2:
-    - Remove redundant blank line
----
- arch/powerpc/kvm/book3s.c | 4 ----
- 1 file changed, 4 deletions(-)
+Testing this case with test_progs/test_verifier is hard because it happens
+when cpu_mitigations_off() is true, but we do not have this setup yet.
+So the mentioned prog is rejected by sanitize_check_bounds() due to ptr
+alu with var_off when adding it to test_progs, and loading as unpriv.
 
-diff --git a/arch/powerpc/kvm/book3s.c b/arch/powerpc/kvm/book3s.c
-index 8acec144120e..be9fbfbf62f7 100644
---- a/arch/powerpc/kvm/book3s.c
-+++ b/arch/powerpc/kvm/book3s.c
-@@ -360,10 +360,6 @@ static int kvmppc_book3s_irqprio_deliver(struct kvm_=
-vcpu *vcpu,
- 		break;
- 	}
-=20
--#if 0
--	printk(KERN_INFO "Deliver interrupt 0x%x? %x\n", vec, deliver);
--#endif
--
- 	if (deliver)
- 		kvmppc_inject_interrupt(vcpu, vec, 0);
-=20
---=20
-2.39.2
-
+My local test was conducted: (1) booting the kernel with "mitigations=off"
+so that bypass_spec_v1 is true and sanitize_check_bounds() is skipped;
+(2) running the prog without the patch leaks the pointer; (3) loading the
+prog with the patch applied resulting in the expected message.
 
