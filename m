@@ -1,136 +1,116 @@
-Return-Path: <linux-kernel+bounces-38252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38286-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B934983BD24
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:22:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5737583BD83
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:38:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 026701C21C96
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:22:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A7AC1C22AD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:38:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AC8B1BC58;
-	Thu, 25 Jan 2024 09:22:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YqL2T9fK"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F83B1CD1C;
+	Thu, 25 Jan 2024 09:37:20 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 106B61BDC3;
-	Thu, 25 Jan 2024 09:22:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F389F1CA9A
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:37:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706174561; cv=none; b=IcfWX9vOgWEsVv/Do5nj18hwn37xuxqPLI365OA4YWqSmksgSPAnNXEBTPEq1nV0RS7WekmZXbTGy34dbkWiglSqO3bCPD0r3JODFPVp73169Mu4Jf6s6XMR3K0MTusepcFEi3B4x89xpLIOcfZxSJXIbaOa/152bKnbmw8mpu8=
+	t=1706175439; cv=none; b=fLSNdebKxKMJXSKM5jRr6G+qHBJeJ65cGJjdQ7zylS1dxjxm3WlaQpgprQUlw5WJml2pknwTm4bgAtO+cJjHPPcL1M9vpKm0db8r3NSBIqwFw1SRWjPRZWXHFwPQvmyXRhSn8wN4acVLrcNSi64PReaztVx64IL4PVFxbJ/kYMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706174561; c=relaxed/simple;
-	bh=bxot2MLwbGx+WPC8RaoJz1YWvtizCki2E8FaJi5WOzE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VjSL3xQcsdKUSUuammJy1Uthp3h5PZXfPrhIeJGtqXi/m5CNqpotTrHtKmneoRZy3LFfmHkT9wLxf36YFlxUGt3e4M7bJS12h1rug9eUjjb0CzCgqM0P9zuEpNt/6MX3oJGZTKtp55VsWIlJYYMJwA/02+GM+PSrajffL0NSaws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YqL2T9fK; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a2a17f3217aso628540966b.2;
-        Thu, 25 Jan 2024 01:22:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706174558; x=1706779358; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=68+k4SXoZiAs2Pfmb+T8MrZfPAp6t3J0ktPdjp0hv2Q=;
-        b=YqL2T9fKFZ430JaMoas57izwGE0KFt7P2u7RWMYeL7Ke3ilU9KQTdQrvDG2viRwESX
-         BuQKb+8xAJpQbQLkTqkCV7qginMkMdd4nxHtWmI3LDoReV+iGHIYGrHTwZYABVYfntP8
-         NyitbCXI5eGwAyIEyHrRvsjT+bKgtVM4PE8Lks/0/ckL/0XYkGHmEze3oXLWEtOZ+NA2
-         fvQL68vvh9aCxUiI4iIvboTTrr0zrQ+WsPzp2OdltEnWr51uUbfDsmrkjgzcwOqV55bH
-         yKSMby6kAW4uk9v30NaZyh2Wn0Dw3wU7oK1itVz46d3M6KmQt0S1L99Fg/bJdOpV69vW
-         JjTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706174558; x=1706779358;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=68+k4SXoZiAs2Pfmb+T8MrZfPAp6t3J0ktPdjp0hv2Q=;
-        b=kjXSoF6DsaOdrrA+AdsjfLTeHTRrWX3DkfJVS1+3RUu3xS6I8Jb14ER3nyjG5gvzA+
-         j2BN5IHT4LdhQ87tcKXtmOlgXcJouMS1tGBdB2qJrULIs7G3pAX1aFA3Ih6xREzAWp+G
-         7SZjbJxscS3vp4jESpAMLvr0oLUUxRIQKbAHBwo48IsIpid3SUQDs6/QaBwbUXKRK8Qz
-         3Isa6lcPjqR6Q/4cdbj4Q+bgy7JmtHkByy1K2wtAnyk5iAZE+E5A2rTQn0cnZN8ZAoda
-         wRlMy6deWsiKbuFj+e4/mYXxJ/iAUpmnnUN8W7ICJNGD4ccPyKjc/WkI1TlZHJh3/0m9
-         WfcQ==
-X-Gm-Message-State: AOJu0YzxYplXlGizPGUtMphamKkTxsLkqEikEeZgykup8Y1FHO4DyxuY
-	PUzynIyxX5NiDW9ErcCo5lIKxZUFgKYpUw2VFmynsP7g5IQwJ/u9
-X-Google-Smtp-Source: AGHT+IGb3kYbCaRZ+ZhuSYYXxrrQOg6MShvOglOKLYhAH70eCEZmTYRZfmR7UOLljeac6wIatBkRnA==
-X-Received: by 2002:a17:906:1ccf:b0:a30:fb95:9387 with SMTP id i15-20020a1709061ccf00b00a30fb959387mr407499ejh.75.1706174557914;
-        Thu, 25 Jan 2024 01:22:37 -0800 (PST)
-Received: from skbuf ([188.25.255.36])
-        by smtp.gmail.com with ESMTPSA id gw9-20020a170906f14900b00a311ab95fbdsm815922ejb.63.2024.01.25.01.22.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 01:22:37 -0800 (PST)
-Date: Thu, 25 Jan 2024 11:22:34 +0200
-From: Vladimir Oltean <olteanv@gmail.com>
-To: =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-Cc: Daniel Golle <daniel@makrotopia.org>,
-	Landen Chao <Landen.Chao@mediatek.com>,
-	DENG Qingfang <dqfext@gmail.com>,
-	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	David Bauer <mail@david-bauer.net>, mithat.guner@xeront.com,
-	erkin.bozoglu@xeront.com,
-	Luiz Angelo Daros de Luca <luizluca@gmail.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net-next] net: dsa: mt7530: support OF-based registration
- of switch MDIO bus
-Message-ID: <20240125092234.czwjwc3izmsl3ekr@skbuf>
-References: <20240122053431.7751-1-arinc.unal@arinc9.com>
+	s=arc-20240116; t=1706175439; c=relaxed/simple;
+	bh=zqW0i7Mt28UhG8E6gHi0hyAhHECwgXyrINp2Clw78K8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tRL31PN8vO3DFLf3gHWoA7Fyjy6T3aMqUe/5j59LlAzDCzV45USon19KYl78hNQPVgEKJDRYjnNA6Li15vu2dB/vEf+kg3W/nfvkf8b7tj7umZCbKWTRWwyqjMKSW86D0zX8RHHAZvYuKIuHSNVoI7toN1gCPMWGkGZ86A5KUBI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 64fd2d18a7e4437c8889442e3c4bdec7-20240125
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:43234eab-9fd4-4712-a46a-9edd81ef7d9f,IP:20,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:5
+X-CID-INFO: VERSION:1.1.35,REQID:43234eab-9fd4-4712-a46a-9edd81ef7d9f,IP:20,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:5
+X-CID-META: VersionHash:5d391d7,CLOUDID:9ff4be7f-4f93-4875-95e7-8c66ea833d57,B
+	ulkID:240125172630BJ3E7V88,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
+	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
+	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 64fd2d18a7e4437c8889442e3c4bdec7-20240125
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 2129244633; Thu, 25 Jan 2024 17:26:27 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id 454FBE000EB9;
+	Thu, 25 Jan 2024 17:26:27 +0800 (CST)
+X-ns-mid: postfix-65B22942-199714737
+Received: from kernel.. (unknown [172.20.15.234])
+	by mail.kylinos.cn (NSMail) with ESMTPA id 8E2EDE000EB9;
+	Thu, 25 Jan 2024 17:26:25 +0800 (CST)
+From: Kunwu Chan <chentao@kylinos.cn>
+To: mpe@ellerman.id.au,
+	npiggin@gmail.com,
+	christophe.leroy@csgroup.eu,
+	aneesh.kumar@kernel.org,
+	naveen.n.rao@linux.ibm.com
+Cc: linuxppc-dev@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH] powerpc/mm: Code cleanup for __hash_page_thp
+Date: Thu, 25 Jan 2024 17:26:24 +0800
+Message-Id: <20240125092624.537564-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240122053431.7751-1-arinc.unal@arinc9.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 22, 2024 at 08:34:31AM +0300, Arınç ÜNAL wrote:
-> Currently the MDIO bus of the switches the MT7530 DSA subdriver controls
-> can only be registered as non-OF-based. Bring support for registering the
-> bus OF-based.
-> 
-> The subdrivers that control switches [with MDIO bus] probed on OF must
-> follow this logic to support all cases properly:
-> 
-> No switch MDIO bus defined: Populate ds->user_mii_bus, register the MDIO
-> bus, set the interrupts for PHYs if "interrupt-controller" is defined at
-> the switch node. This case should only be covered for the switches which
-> their dt-bindings documentation didn't document the MDIO bus from the
-> start. This is to keep supporting the device trees that do not describe the
-> MDIO bus on the device tree but the MDIO bus is being used nonetheless.
-> 
-> Switch MDIO bus defined: Don't populate ds->user_mii_bus, register the MDIO
-> bus, set the interrupts for PHYs if ["interrupt-controller" is defined at
-> the switch node and "interrupts" is defined at the PHY nodes under the
-> switch MDIO bus node].
-> 
-> Switch MDIO bus defined but explicitly disabled: If the device tree says
-> status = "disabled" for the MDIO bus, we shouldn't need an MDIO bus at all.
-> Instead, just exit as early as possible and do not call any MDIO API.
-> 
-> The use of ds->user_mii_bus is inappropriate when the MDIO bus of the
-> switch is described on the device tree [1], which is why we don't populate
-> ds->user_mii_bus in that case.
-> 
-> Link: https://lore.kernel.org/netdev/20231213120656.x46fyad6ls7sqyzv@skbuf/ [1]
-> Suggested-by: David Bauer <mail@david-bauer.net>
-> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-> ---
+This part was commented from commit 6d492ecc6489
+("powerpc/THP: Add code to handle HPTE faults for hugepages")
+in about 11 years before.
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+If there are no plans to enable this part code in the future,
+we can remove this dead code.
+
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+---
+ arch/powerpc/mm/book3s64/hash_hugepage.c | 10 ----------
+ 1 file changed, 10 deletions(-)
+
+diff --git a/arch/powerpc/mm/book3s64/hash_hugepage.c b/arch/powerpc/mm/b=
+ook3s64/hash_hugepage.c
+index c0fabe6c5a12..127a3a2c174b 100644
+--- a/arch/powerpc/mm/book3s64/hash_hugepage.c
++++ b/arch/powerpc/mm/book3s64/hash_hugepage.c
+@@ -59,16 +59,6 @@ int __hash_page_thp(unsigned long ea, unsigned long ac=
+cess, unsigned long vsid,
+=20
+ 	rflags =3D htab_convert_pte_flags(new_pmd, flags);
+=20
+-#if 0
+-	if (!cpu_has_feature(CPU_FTR_COHERENT_ICACHE)) {
+-
+-		/*
+-		 * No CPU has hugepages but lacks no execute, so we
+-		 * don't need to worry about that case
+-		 */
+-		rflags =3D hash_page_do_lazy_icache(rflags, __pte(old_pte), trap);
+-	}
+-#endif
+ 	/*
+ 	 * Find the slot index details for this ea, using base page size.
+ 	 */
+--=20
+2.39.2
+
 
