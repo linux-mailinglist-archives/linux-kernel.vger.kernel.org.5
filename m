@@ -1,140 +1,175 @@
-Return-Path: <linux-kernel+bounces-38469-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B17CC83C094
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:16:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF23683C060
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:11:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 09036B2778A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:10:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FEF429D6AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:11:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95D8259B49;
-	Thu, 25 Jan 2024 11:01:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27ED25B206;
+	Thu, 25 Jan 2024 11:02:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O7WF2Ibo"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jRfou/QQ"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 484591C16;
-	Thu, 25 Jan 2024 11:01:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92F575B200
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 11:02:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706180513; cv=none; b=in5w3c6T9tDRzQ6XinlIUOCZfz5hG0f/teTfOlcmqSQ/y7vLUUXZGoBpPUR4LTjAjfkBh+POGLd1EhRbmH1wOTXJD8eetl559kkTe4rjtvwW37dwCiuSnCB/8lTZFttjoUvKGObgiNsMEqkH5wWJLDtfI5Op5lJNG2sxkFrhfyw=
+	t=1706180574; cv=none; b=j2DG683CvxkfIAUaW8rtwGz6n7KpkyraFMCSIl7B0OXX0o0DbdsSZciBiwp96P+WbRWubcnjPg4p57v5809Oqdjem8vcfRLGjFJkN1TtzYXlxo3wQa2ll7EpGM/6Jm+iYD7o8QfCNUUZWT64CBSIxov0uB2ZShLVBN7BaJmrHLE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706180513; c=relaxed/simple;
-	bh=CZvtojiC0XEHWqTBwc7RTmZP9uSs74MPCzz4IDlB2Xw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iAZxMiJhCdxNj82cRWnSk/5yIqAA+gMG2Nxxd1uhFKLDy+hq63ZvZAoklSsxsHm4GhWY1KV/j4MEkDis3JZZxVg34Hk48jwGb4a1Ie6NwIdrQfxEEVlxAXPH8Yg47HY4TEEvSdCVO68ZHvynHdEwx7M5YmtllmO/HS49xQ+6/vo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O7WF2Ibo; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5100fd7f71dso2386956e87.1;
-        Thu, 25 Jan 2024 03:01:51 -0800 (PST)
+	s=arc-20240116; t=1706180574; c=relaxed/simple;
+	bh=NzpBSwHj3ANTe90qfNqofyt4I++n2BseQJCz4L4PJ+k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bu5nbzMJsP4oDG7bl+QAQZswabWjUzl+4wQuAmk63zEz8AIH9m26b9ZdU8z0aTcL+76l+NaLnN8zLRJgabPhQ9iGBitQwPpo6rG0eG0HSrSvxHiDkM07ePjQBIJTe6E10xwb2iGu2tE1yzMQ/+DzqhggixQDXp3IGdD4YuSJ9Z4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jRfou/QQ; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-559f92bf7b6so1281908a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 03:02:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706180510; x=1706785310; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=miuHCVwgH0ReGM1PaYlhcfq7/djqKFtBuYNwdTBB2rs=;
-        b=O7WF2IboPkiL62qQinMC6InYGnmFuC7YfXkbagmlOav0nOg571nO+d0/d/Z7nfJMvB
-         pS+o8WKF4z/IM5RqQIQ7vY+bmSPxVkwnsgiP7g3C+HrxfPxChb92EErygT3wswTFANSc
-         Kf9NDTHOMnbiN2u3PKhwxm/No1/BGVx/ycFfTu+yqAX+1kOp9eifjUoszlVaS+SAIOyS
-         CUx9+ZfDFIxeHiuzNL659i5CfS8KXh9+44rOA8V9RTsUPOHJSYJmSyjFhcg6V8gImZM7
-         JRQ87+BY9cpDErYFW387suMC2yqN+YGD4r7xTLinj+V+I5UFeV1EaEDoEbVAwcxMhOLQ
-         4wpg==
+        d=linaro.org; s=google; t=1706180571; x=1706785371; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cr6sgDCVNvl2+zTSYayZUMasMb5p1dzPzxTtqTYGBH8=;
+        b=jRfou/QQJ3qUfR5OpK1W4LxWFRrK9rRfGxs7MafKcIZ5q0r8cPNTPn4/Kg6xc5OS5x
+         cpCAuY1F/YroaH9wkPf7A77zHKRiLF21mP2DGFkrh2ZuTZz1fgP+bGc0focDgtAMzyds
+         wA5N0BuLndt4WvvARKeUYRrE1hScg5Yq1eLOrjrCKHLbpyLzzwKRiqWAtjlag8JmtqwL
+         v+tJN2cxdd5zK07fbSqZtgGD8EpnIfvFmr/PwuSeLq/99gdwDE9lJZR2+MULQIswaJsl
+         rZ1QAJTLMcrtL7EWRD+zfztULH3nKP4rxlnDbT/vsiJWA4aXHh5dGljocshRZT4dEguc
+         NpjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706180510; x=1706785310;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=miuHCVwgH0ReGM1PaYlhcfq7/djqKFtBuYNwdTBB2rs=;
-        b=pHARuzsYnNdj3mSJVsfHjQhpIbLGwxkhD3as3NQ4K4dWteMQ6KNefd3bcqeYhECXCl
-         059KkhQSdQzuwmRFGzPLhgUmT8e9r0tdttcfG8fzZYE7uqhLMqG9gO7KTR+YmwCzQaxw
-         PIe4lIg95TUwdtbwytX10rOd5mdi4MBXXlf9B/DsdnJbcj9rZLJ54l+cGUQE3PNOkjhm
-         yJQB+fG2cGDcTSUqQW+xZ2pPJpI/zTZqCfITKfDSZ86ujIsuggJASFGfhZ0rrDPKeqCZ
-         AexquqHThLqc9b2VZGC9kyKqSCGHT0ft+yA8ePY5xJPMamraRK0N9qs6hSWuIcYDdY2w
-         zdDg==
-X-Gm-Message-State: AOJu0Yy/0MsjMs+2Xtsa0HFNRkkq+6cJS0Fu7hWIaS8FkgK6T4xy4DU/
-	dcTxhC0ry1ib0XBWBaqj6mlWeSvyAk9OFrglRyqwlX8coIQ7zTUs
-X-Google-Smtp-Source: AGHT+IFlB2MgGLnpQeRwCJpsgL6fLkk+sNLY3XK5121CEnUBfLxwPC5+nWSbyXBQ20M00lfQUDSEkQ==
-X-Received: by 2002:ac2:57c5:0:b0:50e:6317:54ab with SMTP id k5-20020ac257c5000000b0050e631754abmr324729lfo.42.1706180509935;
-        Thu, 25 Jan 2024 03:01:49 -0800 (PST)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id d14-20020a194f0e000000b0051006813733sm766441lfb.86.2024.01.25.03.01.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 03:01:49 -0800 (PST)
-Date: Thu, 25 Jan 2024 14:01:46 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: Furong Xu <0x1207@gmail.com>, "David S. Miller" <davem@davemloft.net>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Joao Pinto <jpinto@synopsys.com>, 
-	Simon Horman <horms@kernel.org>, netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, xfr@outlook.com, rock.xu@nio.com
-Subject: Re: [PATCH net] net: stmmac: xgmac: fix safety error descriptions
-Message-ID: <3aagjpld4v7u4cfj3lge5rg6v6ro3ehnstjz3jfculx3vdpbvd@4y3hw7v4idhp>
-References: <20240123085037.939471-1-0x1207@gmail.com>
- <ii3muj3nmhuo6s5hm3g7wuiubtyzr632klrcesubtuaoyifogb@ohmunpxvdtsv>
- <20240125103454.0000312a@gmail.com>
- <c37feb621fa3f7867af8d97ffe36f577966ba3ec.camel@redhat.com>
+        d=1e100.net; s=20230601; t=1706180571; x=1706785371;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cr6sgDCVNvl2+zTSYayZUMasMb5p1dzPzxTtqTYGBH8=;
+        b=YYJzJbeuuniP8HG2fje0Ha/bD/VveECFnrBkejWvuigZSKfY9r8uKr8zvQ9vKVRZex
+         zXifnUjU9HYybTTIjmSo6ejjB+pejn/JTkObU6X+6UhiDrPOaBhHDkWyxKMAOVEHFuNq
+         7Tgc1yhQTx2iX8zKKY+yqFgHeBJlmqbDgoealmR3W27X2n4IA/GQjhg1utZhg2nZfUTj
+         NYAIof8zBXLZCT5BzJIg/sTTmtl/98f810TkSQ6mbFggiTQq1HXz6Lv+t9/EXm4xl1tn
+         V9xYeJvWUFVfz6Gbk4Slg90ysfXjqqL0EWAagMf8DQUm8j8kzqQq59pH90lJhhtDsg6k
+         dDVw==
+X-Gm-Message-State: AOJu0YwvKX1PpdOqLqwRjTZyq5SnpStguKO14UD0uWmW5y4L41oOQzUj
+	AzIh0d34+6gFjaTGlkxTfsFeBx5RtQNHZgLUhLrPoRMl8errZry3oL8BLhdbxhOniVxkc/+CW6a
+	2
+X-Google-Smtp-Source: AGHT+IEE942Lq4JN3nGhqRL1L6Adh+ON9zzLB/mIoRBqKydoLVjTZKjcSeCU2SiAjUBpYFbjqConyQ==
+X-Received: by 2002:aa7:c158:0:b0:55d:1615:4bd7 with SMTP id r24-20020aa7c158000000b0055d16154bd7mr31820edp.6.1706180570772;
+        Thu, 25 Jan 2024 03:02:50 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.215.66])
+        by smtp.gmail.com with ESMTPSA id fi15-20020a056402550f00b0055c73b56bb2sm2935445edb.29.2024.01.25.03.02.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Jan 2024 03:02:50 -0800 (PST)
+Message-ID: <ec96c9cd-4734-4265-9693-d997eddccf93@linaro.org>
+Date: Thu, 25 Jan 2024 12:02:48 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c37feb621fa3f7867af8d97ffe36f577966ba3ec.camel@redhat.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] dt-bindings: fpga: Convert fpga-region binding to yaml
+Content-Language: en-US
+To: Rob Herring <robh@kernel.org>, Michal Simek <michal.simek@amd.com>
+Cc: linux-kernel@vger.kernel.org, monstr@monstr.eu, michal.simek@xilinx.com,
+ git@xilinx.com, Conor Dooley <conor+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Moritz Fischer <mdf@kernel.org>, Tom Rix <trix@redhat.com>,
+ Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>,
+ "open list:FPGA MANAGER FRAMEWORK" <linux-fpga@vger.kernel.org>
+References: <4d87561dcbfab9e4818d7ad99caf89938774a839.1705491050.git.michal.simek@amd.com>
+ <20240117214722.GA3176505-robh@kernel.org>
+ <1aa2c865-3a9b-441a-ba61-b551f3f7a832@amd.com>
+ <20240119233231.GA1290941-robh@kernel.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240119233231.GA1290941-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jan 25, 2024 at 11:09:06AM +0100, Paolo Abeni wrote:
-> On Thu, 2024-01-25 at 10:34 +0800, Furong Xu wrote:
-> > On Wed, 24 Jan 2024 17:25:27 +0300
-> > Serge Semin <fancer.lancer@gmail.com> wrote:
-> > 
-> > > On Tue, Jan 23, 2024 at 04:50:37PM +0800, Furong Xu wrote:
-> > > > Commit 56e58d6c8a56 ("net: stmmac: Implement Safety Features in
-> > > > XGMAC core") prints safety error descriptions when safety error assert,
-> > > > but missed some special errors, and mixed correctable errors and
-> > > > uncorrectable errors together.
-> > > > This patch complete the error code list and print the type of errors.  
-> > > 
-> > > The XGMAC ECC Safety code has likely been just copied from the DW GMAC
-> > > v5 (DW QoS Eth) part. So this change is partly relevant to that code too. I
-> > > can't confirm that the special errors support is relevant to the DW
-> > > QoS Eth too (it likely is though), so what about splitting this patch
-> > > up into two:
-> > > 1. Elaborate the errors description for DW GMAC v5 and DW XGMAC.
-> > > 2. Add new ECC safety errors support.
-> > > ?
-> > > 
-> > > On the other hand if we were sure that both DW QoS Eth and XGMAC
-> > > safety features implementation match the ideal solution would be to
-> > > refactor out the common code into a dedicated module.
-> > > 
-> > > -Serge(y)
-> > > 
-> > 
-> > Checked XGMAC Version 3.20a and DW QoS Eth Version 5.20a, the safety error
-> > code definitions are not identical at all, they do have some differences,
-> > about more than 20 bits of status register are different.
-> > I think we should just leave them in individual implementations.
+On 20/01/2024 00:32, Rob Herring wrote:
+> On Thu, Jan 18, 2024 at 01:34:16PM +0100, Michal Simek wrote:
+>>
+>>
+>> On 1/17/24 22:47, Rob Herring wrote:
+>>> On Wed, Jan 17, 2024 at 12:30:58PM +0100, Michal Simek wrote:
+
 > 
-
-> @Serge: given the above, would you still advice for splitting this
-> patch into 2?
-
-Preliminary I would still in insist on splitting up. I'll double check
-the patch and the Safety feature implementations in both devices and
-give more detailed response to Furong in an hour or so.
-
--Serge(y)
-
+>>>> +additionalProperties: true
+>>>
+>>> Why? This should only be used if another schema is going to include this
+>>> one. That's not the case here.
+>>
+>> In v2 we discussed this with Krzysztof. I used pattern properties from
+>> simple-bus.yaml in v2.
+>>
+>> https://lore.kernel.org/all/b2dd8bcd-1e23-4b68-b7b7-c01b034fc1fe@linaro.org/
 > 
-> Thanks,
+> You didn't answer his question. You just picked up 
+> 'additionalProperties: true' which is easy because it avoids 'problems'.
 > 
-> Paolo
-> 
+> His question was is this a common schema referenced by other schemas? If 
+> so, then use 'additionalProperties: true'. But it is not. You've 
+> defined exactly what 'compatible' must be and that means it can't be a 
+> common schema.
+
+Yes, I missed that it has a compatible, so it is not expected to be
+referenced from other schema, thus it should end with
+'additionalProperties: false'.
+
+Best regards,
+Krzysztof
+
 
