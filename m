@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-38774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F74383C5D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:57:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF36683C5D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:58:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 448881C21F0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:57:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64C112925E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:58:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66EF012BEB1;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEDB612CD99;
 	Thu, 25 Jan 2024 14:50:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VmslO8nu"
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vZHq/yQI"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6502B12A15E
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 14:50:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45E2B128383
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 14:50:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706194239; cv=none; b=gOs9ED8ca1HmOKng5of20cfa0DpvvgSoNpH2sxaJIavfV8C/dV1HPO2sqb/URrl/7KCQNkiE3HvPOTQrx5FjLFGYdCqsfE1GNvg3SoLIoYc9QVkla/ogiVW76g9KhPlmwUTgI1xCk8bnCgacHT/xPq+mYwqRgCy4/ujpvkTEyMw=
+	t=1706194239; cv=none; b=Wu6Lxz/VLHimK6Y97MAWXoWVHwBxlumA9Y+sBCaKdySS3Op8PMOSyXrIChgwbIysTw3dUvtRGCJTf8VUK2uymJnoJ6rUZ8zOrPVVSR3xXD9jYDitqHf78WSMwbwnYY3dsMvN6eySfrn0w5fyM38tAOvTl2YrVZEf5WyfWbW7W/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706194239; c=relaxed/simple;
-	bh=kCchjwxWRpfAc5+SmKGpjAGXAy+gVUkzX3d3/qq1C+8=;
+	bh=28hQgaFbSAW82OwCmSk1a75+xEJyszQNZJtVWvyEGuc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uoVzw9F2WeZT8d/11dSJMh40vzPMmMxrorOfKSIzZWrZ5vH977/JL9PxipPv/+HY6UwoaiKONRNo6p5Ih2+taqrUUQnCcXZhGvwIq6nC/Oj1HY22sLI3ZmKEv4H0SlfcfgAqGi6kQqmPSfA/BO1G47xkWRTVGywmTcq59j28piU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VmslO8nu; arc=none smtp.client-ip=209.85.221.49
+	 MIME-Version; b=stTvKdSmoWFQooRgk+6K1mkJeDZ7ZwvoNXytNUxqwuM/eBr2t3tD8EE+LhSDtoa7XKTaOE3QOdyIvHig++cdIrEmRm8xPso+twG4cIO9jg8E3FdxiPiNR9MtfEJIkAthwI8rlluKGX9xALUaukZnNmh01OvpF6VZF/NBGHm9syc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vZHq/yQI; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3394dc75eadso1300489f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 06:50:35 -0800 (PST)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40e76626170so75554495e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 06:50:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706194233; x=1706799033; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1706194234; x=1706799034; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=S9fJpsc9ntkK7Gm49ODwE4XlmIeMd92uqdDuqa4hcJ8=;
-        b=VmslO8nulUoK1cB42SU+hb42Lj4xjfvtL7CS0Mi3KSKxH7uKuHVQuKuD3Y+tiwWW/a
-         yu5uoVIn+NE+gxboumCDBovm1WqjRnUt/BXpB64GSG7vlLkLKTq3EWfLzr3YbIJAH310
-         I4InOywqmlEsmSxWCnsvBl+ulzuhufvXgb6uDQ10RTss7mcShaUf+j5Nx0WUULmQJKI/
-         T0t10GPJKv6WGgeLMewxHU9BNPe+5tSQsBaPawyeuQTJNqIbV/lppLT76C1EePoLvsNx
-         C2sHpAT1/i3SWAjR1JxxcWoW/0ir/jeNhiV5Ne9toKa7TGI0MVATgX3PcFmypVUenqkY
-         MCGQ==
+        bh=ILSaztB6FcGB0AGX6yBD5eg2sH+uIPmbRLL9DGHOYeE=;
+        b=vZHq/yQIgu6r3/fOx1sm7uqJINFB8alxnoCsqCliZsE84wmtitwuI80fNiPl4IECpa
+         PCF+f35BrTWa6eQh6eV6JuxkBllzMkBzRoiHwhLnV/OvEHEGvAxxz0x8t5TXU1khlNu5
+         1xVwbKj21r29dh1IeumNsC4o6Ty6iHKeCpXzGQEITQSH8Anaus52ZxlweZ3hiDNLerzb
+         CrpedIQxHmOcTJqEufq+033PqBq1p461iAzr83CsDZ28prjaVNMaF6h8RAy4s+IrSwjs
+         0wvMTYsIkpPnZ8dcqcraf/yxViXLoRqqHIkeP2BifqPwPy5xngq7ot8r7+WbD9119RAm
+         +7hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706194233; x=1706799033;
+        d=1e100.net; s=20230601; t=1706194234; x=1706799034;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=S9fJpsc9ntkK7Gm49ODwE4XlmIeMd92uqdDuqa4hcJ8=;
-        b=tEPZTimip1ogDZhxQMx8qnCBFb1xnD6YwosFH2sxLJxfN+p7FBNskjqus8l3qV/n0h
-         Mt100mj1BQAp+8OBQh69XVvr0ZOdzFE8Xglh1HRJoo0KyhyEJJPn39JL8I4FFhzR5v4P
-         Vm6IKlbpXYhV+JskfGdPFBHzAG5Lds0oh5+4dB7WQL17rxmPsvzDAZrEvTkehFyOK1gq
-         69J7I2ORITJjo4+gzFEHZFLz6CwmWPRfVGKIac21NRMnGFKlfukcdKtPtDME6Eiu+th1
-         1v8JNUWNT5MXuLwJq8Yg6+AQKZ9+CKwMSDcvGR2iom1DYRY2fJMz8lMma9OMpjoy/lh9
-         VuBg==
-X-Gm-Message-State: AOJu0YxOnkpbJGAzF9p92smheJYaGhEL8suhj7Rs5XngB+Kijr7ez9jU
-	W9BgJiJ2BqBCcEU1uNvWeMED6LycV/m8YRSQjo002kJEFFv9PiOX94zgAtMRxVU=
-X-Google-Smtp-Source: AGHT+IHav9r3fWyDiEX8CdSvB/U4xaT1J9Vfk5kfMl/b6781KqaxDQ9QxWNs1mhHIC22Ki2pTVXdRg==
-X-Received: by 2002:a05:600c:2907:b0:40e:6fa9:345 with SMTP id i7-20020a05600c290700b0040e6fa90345mr406881wmd.66.1706194233577;
-        Thu, 25 Jan 2024 06:50:33 -0800 (PST)
+        bh=ILSaztB6FcGB0AGX6yBD5eg2sH+uIPmbRLL9DGHOYeE=;
+        b=K8i87ycE+KdbrwBLLswMpPPWvdqzRefVgF0JzLmTQOBXliNW1/TfZPKpSDq9hRgQfy
+         Vf4AnOEMsXo01supAYtTCvWtKxAjEGha36FD9pB2zwUmfM9c9b9wZWQ6lKqBOiLAy2XQ
+         GfH7+P7p9L7rv5InLjrGleFscyYLRyvSe3ep3vwythjlmpIlFtJi5SVXiPn18HsH8Nrp
+         kTcykFSkXawQZilRjdQhf8K9f54cCGGe/r+yQFY/eRoyQFaudF/Q9VNdoFYg2FTBV1Uz
+         3JF8GK9hLnkMVJ6oatDMgMyCKT7W9LDzHj65pE+HZuVGmaRpVABlrU1z4DwEm0MTfbeP
+         2uIA==
+X-Gm-Message-State: AOJu0YwsGhaAf57q4R+jM6h2chV8QYk/PYwmVNtgy52rOP+9Eqb8SMuv
+	lEtY4939Z/0AkklvmUcKC12AqX0pGMpvnSlLEX6y79fQ7pCQWagySe+lDDrRYvU=
+X-Google-Smtp-Source: AGHT+IEEFjYXZBt80LZEizQKLMuDRZIJ0xb27lsGtHr9gw6xNivRFK3y+AivGuvHVv+xDYMvvMwlMw==
+X-Received: by 2002:a05:600c:3d09:b0:40d:3b2d:99a0 with SMTP id bh9-20020a05600c3d0900b0040d3b2d99a0mr632998wmb.81.1706194234358;
+        Thu, 25 Jan 2024 06:50:34 -0800 (PST)
 Received: from ta2.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
-        by smtp.gmail.com with ESMTPSA id v17-20020a05600c471100b0040d91fa270fsm2875875wmo.36.2024.01.25.06.50.32
+        by smtp.gmail.com with ESMTPSA id v17-20020a05600c471100b0040d91fa270fsm2875875wmo.36.2024.01.25.06.50.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 06:50:32 -0800 (PST)
+        Thu, 25 Jan 2024 06:50:33 -0800 (PST)
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
 To: broonie@kernel.org,
 	andi.shyti@kernel.org,
@@ -85,9 +85,9 @@ Cc: robh+dt@kernel.org,
 	kernel-team@android.com,
 	willmcvicker@google.com,
 	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH v2 25/28] asm-generic/io.h: add iowrite{8,16}_32 accessors
-Date: Thu, 25 Jan 2024 14:50:03 +0000
-Message-ID: <20240125145007.748295-26-tudor.ambarus@linaro.org>
+Subject: [PATCH v2 26/28] spi: s3c64xx: add iowrite{8,16}_32_rep accessors
+Date: Thu, 25 Jan 2024 14:50:04 +0000
+Message-ID: <20240125145007.748295-27-tudor.ambarus@linaro.org>
 X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
 In-Reply-To: <20240125145007.748295-1-tudor.ambarus@linaro.org>
 References: <20240125145007.748295-1-tudor.ambarus@linaro.org>
@@ -99,115 +99,94 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This will allow devices that require 32 bits register accesses to write
-data in chunks of 8 or 16 bits.
-
-One SoC that requires 32 bit register accesses is the google gs101. A
-typical use case is SPI, where the clients can request transfers in words
-of 8 bits.
+There are SoCs that allow just 32 bit register accesses otherwise they
+throw a SError interrupt if accessing the bus with 8 or 16 bits widths.
+Such an SoC is the google gs101. Allow such SoCs to use the
+iowrite{8,16}_32_rep accessors.
 
 Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 ---
- include/asm-generic/io.h    | 50 +++++++++++++++++++++++++++++++++++++
- include/asm-generic/iomap.h |  2 ++
- 2 files changed, 52 insertions(+)
+ drivers/spi/spi-s3c64xx.c | 46 +++++++++++++++++++++++++++------------
+ 1 file changed, 32 insertions(+), 14 deletions(-)
 
-diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
-index bac63e874c7b..1e224d1ccc98 100644
---- a/include/asm-generic/io.h
-+++ b/include/asm-generic/io.h
-@@ -476,6 +476,21 @@ static inline void writesb(volatile void __iomem *addr, const void *buffer,
- }
- #endif
+diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
+index fa70c6aab7c2..35a2d5554dfd 100644
+--- a/drivers/spi/spi-s3c64xx.c
++++ b/drivers/spi/spi-s3c64xx.c
+@@ -139,6 +139,7 @@ struct s3c64xx_spi_dma_data {
+  *	prescaler unit.
+  * @clk_ioclk: True if clock is present on this device
+  * @has_loopback: True if loopback mode can be supported
++ * @use_32bit_io: True if the SoC allows just 32-bit register accesses.
+  *
+  * The Samsung s3c64xx SPI controller are used on various Samsung SoC's but
+  * differ in some aspects such as the size of the fifo and spi bus clock
+@@ -156,6 +157,7 @@ struct s3c64xx_spi_port_config {
+ 	bool	clk_from_cmu;
+ 	bool	clk_ioclk;
+ 	bool	has_loopback;
++	bool	use_32bit_io;
+ };
  
-+#ifndef writesb_l
-+#define writesb_l writesb_l
-+static inline void writesb_l(volatile void __iomem *addr, const void *buffer,
-+			     unsigned int count)
+ /**
+@@ -412,6 +414,35 @@ static bool s3c64xx_spi_can_dma(struct spi_controller *host,
+ 	return false;
+ }
+ 
++static void s3c64xx_iowrite_rep(const struct s3c64xx_spi_driver_data *sdd,
++				struct spi_transfer *xfer)
 +{
-+	if (count) {
-+		const u8 *buf = buffer;
++	void __iomem *regs = sdd->regs;
 +
-+		do {
-+			__raw_writel(*buf++, addr);
-+		} while (--count);
++	switch (sdd->cur_bpw) {
++	case 32:
++		iowrite32_rep(regs + S3C64XX_SPI_TX_DATA,
++			      xfer->tx_buf, xfer->len / 4);
++		break;
++	case 16:
++		if (sdd->port_conf->use_32bit_io)
++			iowrite16_32_rep(regs + S3C64XX_SPI_TX_DATA,
++					 xfer->tx_buf, xfer->len / 2);
++		else
++			iowrite16_rep(regs + S3C64XX_SPI_TX_DATA,
++				      xfer->tx_buf, xfer->len / 2);
++		break;
++	default:
++		if (sdd->port_conf->use_32bit_io)
++			iowrite8_32_rep(regs + S3C64XX_SPI_TX_DATA,
++					xfer->tx_buf, xfer->len);
++		else
++			iowrite8_rep(regs + S3C64XX_SPI_TX_DATA,
++				     xfer->tx_buf, xfer->len);
++		break;
 +	}
 +}
-+#endif
 +
- #ifndef writesw
- #define writesw writesw
- static inline void writesw(volatile void __iomem *addr, const void *buffer,
-@@ -491,6 +506,21 @@ static inline void writesw(volatile void __iomem *addr, const void *buffer,
- }
- #endif
+ static int s3c64xx_enable_datapath(struct s3c64xx_spi_driver_data *sdd,
+ 				    struct spi_transfer *xfer, int dma_mode)
+ {
+@@ -445,20 +476,7 @@ static int s3c64xx_enable_datapath(struct s3c64xx_spi_driver_data *sdd,
+ 			modecfg |= S3C64XX_SPI_MODE_TXDMA_ON;
+ 			ret = s3c64xx_prepare_dma(&sdd->tx_dma, &xfer->tx_sg);
+ 		} else {
+-			switch (sdd->cur_bpw) {
+-			case 32:
+-				iowrite32_rep(regs + S3C64XX_SPI_TX_DATA,
+-					xfer->tx_buf, xfer->len / 4);
+-				break;
+-			case 16:
+-				iowrite16_rep(regs + S3C64XX_SPI_TX_DATA,
+-					xfer->tx_buf, xfer->len / 2);
+-				break;
+-			default:
+-				iowrite8_rep(regs + S3C64XX_SPI_TX_DATA,
+-					xfer->tx_buf, xfer->len);
+-				break;
+-			}
++			s3c64xx_iowrite_rep(sdd, xfer);
+ 		}
+ 	}
  
-+#ifndef writesw_l
-+#define writesw_l writesw_l
-+static inline void writesw_l(volatile void __iomem *addr, const void *buffer,
-+			     unsigned int count)
-+{
-+	if (count) {
-+		const u16 *buf = buffer;
-+
-+		do {
-+			__raw_writel(*buf++, addr);
-+		} while (--count);
-+	}
-+}
-+#endif
-+
- #ifndef writesl
- #define writesl writesl
- static inline void writesl(volatile void __iomem *addr, const void *buffer,
-@@ -956,6 +986,16 @@ static inline void iowrite8_rep(volatile void __iomem *addr,
- }
- #endif
- 
-+#ifndef iowrite8_32_rep
-+#define iowrite8_32_rep iowrite8_32_rep
-+static inline void iowrite8_32_rep(volatile void __iomem *addr,
-+				   const void *buffer,
-+				   unsigned int count)
-+{
-+	writesb_l(addr, buffer, count);
-+}
-+#endif
-+
- #ifndef iowrite16_rep
- #define iowrite16_rep iowrite16_rep
- static inline void iowrite16_rep(volatile void __iomem *addr,
-@@ -966,6 +1006,16 @@ static inline void iowrite16_rep(volatile void __iomem *addr,
- }
- #endif
- 
-+#ifndef iowrite16_32_rep
-+#define iowrite16_32_rep iowrite16_32_rep
-+static inline void iowrite16_32_rep(volatile void __iomem *addr,
-+				    const void *buffer,
-+				    unsigned int count)
-+{
-+	writesw_l(addr, buffer, count);
-+}
-+#endif
-+
- #ifndef iowrite32_rep
- #define iowrite32_rep iowrite32_rep
- static inline void iowrite32_rep(volatile void __iomem *addr,
-diff --git a/include/asm-generic/iomap.h b/include/asm-generic/iomap.h
-index 196087a8126e..9d63f9adf2db 100644
---- a/include/asm-generic/iomap.h
-+++ b/include/asm-generic/iomap.h
-@@ -84,7 +84,9 @@ extern void ioread16_rep(const void __iomem *port, void *buf, unsigned long coun
- extern void ioread32_rep(const void __iomem *port, void *buf, unsigned long count);
- 
- extern void iowrite8_rep(void __iomem *port, const void *buf, unsigned long count);
-+extern void iowrite8_32_rep(void __iomem *port, const void *buf, unsigned long count);
- extern void iowrite16_rep(void __iomem *port, const void *buf, unsigned long count);
-+extern void iowrite16_32_rep(void __iomem *port, const void *buf, unsigned long count);
- extern void iowrite32_rep(void __iomem *port, const void *buf, unsigned long count);
- 
- #ifdef CONFIG_HAS_IOPORT_MAP
 -- 
 2.43.0.429.g432eaa2c6b-goog
 
