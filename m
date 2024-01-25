@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-38301-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38303-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7899F83BD9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:42:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE03783BD9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:43:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AA5E1F2E3AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:42:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EB0B293DCF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:43:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13F891CA9A;
-	Thu, 25 Jan 2024 09:41:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6A0B1CA83;
+	Thu, 25 Jan 2024 09:41:55 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 110FE1CAA2;
-	Thu, 25 Jan 2024 09:41:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDC401CD14;
+	Thu, 25 Jan 2024 09:41:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706175709; cv=none; b=URvc6qph13jSqoY90D6+AOJ2PnmucbvPS/lA4U8TK/ZKctPQWHdgnUHefBAjO8GSBN5b17wmEyP/TXHZYdsItxCCv+p9D1fIVP71KWUKLK8xTxLSOiF1K4A9HLtBz6A1XlKWcMC/KqFW1Owx/JRL4i1Z/OfZkvjpgJNVIZs/Gz8=
+	t=1706175715; cv=none; b=pcy3K4N/5+86+tH0oxy+5KmEf5jEdCf4iD9xX8j/w/E0wXC+/x+6jxMYmHON6OhT7uoG27UqGAuC2gSIYTr4mO/NCi0b0YkTlSXqno2IZ5vJ8Ammv0xav6PqFDnbgl+rDbQ6FrWzWi4alZGbp6z4LCIz6pPPgQlm7mFKpvmfPMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706175709; c=relaxed/simple;
-	bh=QQgmZAAScA+7Wj2GCosakYmLL9i8rFDmVgjo+VnJ/AA=;
+	s=arc-20240116; t=1706175715; c=relaxed/simple;
+	bh=nfag3pHszLoX0gSwmmf7FHkBVu74OyBI+6RfcEJaxxQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hwXydg7WTqvPwm7pQdhPvNmplb50+TV1Wtkeg5boxctxh5WNjHv75V4Y9cv6g1sRu805a/KYiZigsPPLKVil3beSjm2grhCgmEUfMVX+KEm6AtrmeNTcXuGW1M/w4CVwCHFAjhYgll8EccZ8Iw2oiYUcXf0a7TveesU5UXYuj3Y=
+	 MIME-Version; b=NI5x51QxMZIAnzW0gy9GBkAIarfnMQIH/sWOWHjLINjMr14fGm8pjeZd/mGldxzek6Pyrb17K+I9MNeDTjWzrpCXBD5U04MqPvdCe/q8bRBAYGDisBt7aVn3Zn0jFpjo5NKjU1o1ysuHGWdCc1wb3yUD5b4yh+3R12KojuWbS6g=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 138C61480;
-	Thu, 25 Jan 2024 01:42:31 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D817714BF;
+	Thu, 25 Jan 2024 01:42:36 -0800 (PST)
 Received: from a077893.arm.com (unknown [10.163.40.116])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 08AC23F73F;
-	Thu, 25 Jan 2024 01:41:40 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 33E0E3F73F;
+	Thu, 25 Jan 2024 01:41:46 -0800 (PST)
 From: Anshuman Khandual <anshuman.khandual@arm.com>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
@@ -47,13 +47,10 @@ Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Ingo Molnar <mingo@redhat.com>,
 	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	kvmarm@lists.linux.dev
-Subject: [PATCH V16 2/8] KVM: arm64: Prevent guest accesses into BRBE system registers/instructions
-Date: Thu, 25 Jan 2024 15:11:13 +0530
-Message-Id: <20240125094119.2542332-3-anshuman.khandual@arm.com>
+	linux-perf-users@vger.kernel.org
+Subject: [PATCH V16 3/8] drivers: perf: arm_pmuv3: Enable branch stack sampling framework
+Date: Thu, 25 Jan 2024 15:11:14 +0530
+Message-Id: <20240125094119.2542332-4-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240125094119.2542332-1-anshuman.khandual@arm.com>
 References: <20240125094119.2542332-1-anshuman.khandual@arm.com>
@@ -65,117 +62,494 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently BRBE feature is not supported in a guest environment. This hides
-BRBE feature availability via masking ID_AA64DFR0_EL1.BRBE field. This also
-blocks guest accesses into BRBE system registers and instructions as if the
-underlying hardware never implemented FEAT_BRBE feature.
+Branch stack sampling support i.e capturing branch records during execution
+in core perf, rides along with normal HW events being scheduled on the PMU.
+This prepares ARMV8 PMU framework for branch stack support on relevant PMUs
+with required HW implementation.
 
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Oliver Upton <oliver.upton@linux.dev>
-Cc: James Morse <james.morse@arm.com>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+ARMV8 PMU hardware support for branch stack sampling is indicated via a new
+feature flag called 'has_branch_stack' that can be ascertained via probing.
+This modifies current gate in armpmu_event_init() which blocks branch stack
+sampling based perf events unconditionally. Instead allows such perf events
+getting initialized on supporting PMU hardware.
+
+Branch stack sampling is enabled and disabled along with regular PMU events
+ This adds required function callbacks in armv8pmu_branch_xxx() format, to
+drive the PMU branch stack hardware when supported. This also adds fallback
+stub definitions for these callbacks for PMUs which would not have required
+support.
+
+If a task gets scheduled out, the current branch records get saved in the
+task's context data, which can be later used to fill in the records upon an
+event overflow. Hence, we enable PERF_ATTACH_TASK_DATA (event->attach_state
+based flag) for branch stack requesting perf events. But this also requires
+adding support for pmu::sched_task() callback to arm_pmu.
+
 Cc: Catalin Marinas <catalin.marinas@arm.com>
 Cc: Will Deacon <will@kernel.org>
-Cc: kvmarm@lists.linux.dev
+Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: linux-arm-kernel@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
 Changes in V16:
 
-- Added BRB_INF_SRC_TGT_EL1 macro for corresponding BRB_[INF|SRC|TGT] expansion
+- Renamed arm_brbe.h as arm_pmuv3_branch.h
+- Updated perf_sample_save_brstack()'s new argument requirements with NULL
 
- arch/arm64/kvm/sys_regs.c | 56 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 56 insertions(+)
+ drivers/perf/arm_pmu.c          |  57 ++++++++++++-
+ drivers/perf/arm_pmuv3.c        | 141 +++++++++++++++++++++++++++++++-
+ drivers/perf/arm_pmuv3_branch.h |  50 +++++++++++
+ include/linux/perf/arm_pmu.h    |  29 ++++++-
+ include/linux/perf/arm_pmuv3.h  |   1 -
+ 5 files changed, 273 insertions(+), 5 deletions(-)
+ create mode 100644 drivers/perf/arm_pmuv3_branch.h
 
-diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-index 30253bd19917..6a06dc2f0c06 100644
---- a/arch/arm64/kvm/sys_regs.c
-+++ b/arch/arm64/kvm/sys_regs.c
-@@ -1304,6 +1304,11 @@ static int set_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
- 	return 0;
- }
+diff --git a/drivers/perf/arm_pmu.c b/drivers/perf/arm_pmu.c
+index 8458fe2cebb4..16f488ae7747 100644
+--- a/drivers/perf/arm_pmu.c
++++ b/drivers/perf/arm_pmu.c
+@@ -317,6 +317,15 @@ armpmu_del(struct perf_event *event, int flags)
+ 	struct hw_perf_event *hwc = &event->hw;
+ 	int idx = hwc->idx;
  
-+#define BRB_INF_SRC_TGT_EL1(n)					\
-+	{ SYS_DESC(SYS_BRBINF##n##_EL1), undef_access },	\
-+	{ SYS_DESC(SYS_BRBSRC##n##_EL1), undef_access },	\
-+	{ SYS_DESC(SYS_BRBTGT##n##_EL1), undef_access }		\
++	if (has_branch_stack(event)) {
++		WARN_ON_ONCE(!hw_events->brbe_users);
++		hw_events->brbe_users--;
++		if (!hw_events->brbe_users) {
++			hw_events->brbe_context = NULL;
++			hw_events->brbe_sample_type = 0;
++		}
++	}
 +
- /* Silly macro to expand the DBG{BCR,BVR,WVR,WCR}n_EL1 registers in one go */
- #define DBG_BCR_BVR_WCR_WVR_EL1(n)					\
- 	{ SYS_DESC(SYS_DBGBVRn_EL1(n)),					\
-@@ -1707,6 +1712,9 @@ static u64 read_sanitised_id_aa64dfr0_el1(struct kvm_vcpu *vcpu,
- 	/* Hide SPE from guests */
- 	val &= ~ID_AA64DFR0_EL1_PMSVer_MASK;
+ 	armpmu_stop(event, PERF_EF_UPDATE);
+ 	hw_events->events[idx] = NULL;
+ 	armpmu->clear_event_idx(hw_events, event);
+@@ -333,6 +342,38 @@ armpmu_add(struct perf_event *event, int flags)
+ 	struct hw_perf_event *hwc = &event->hw;
+ 	int idx;
  
-+	/* Hide BRBE from guests */
-+	val &= ~ID_AA64DFR0_EL1_BRBE_MASK;
++	if (has_branch_stack(event)) {
++		/*
++		 * Reset branch records buffer if a new CPU bound event
++		 * gets scheduled on a PMU. Otherwise existing branch
++		 * records present in the buffer might just leak into
++		 * such events.
++		 *
++		 * Also reset current 'hw_events->brbe_context' because
++		 * any previous task bound event now would have lost an
++		 * opportunity for continuous branch records.
++		 */
++		if (!event->ctx->task) {
++			hw_events->brbe_context = NULL;
++			if (armpmu->branch_reset)
++				armpmu->branch_reset();
++		}
 +
- 	return val;
- }
++		/*
++		 * Reset branch records buffer if a new task event gets
++		 * scheduled on a PMU which might have existing records.
++		 * Otherwise older branch records present in the buffer
++		 * might leak into the new task event.
++		 */
++		if (event->ctx->task && hw_events->brbe_context != event->ctx) {
++			hw_events->brbe_context = event->ctx;
++			if (armpmu->branch_reset)
++				armpmu->branch_reset();
++		}
++		hw_events->brbe_users++;
++		hw_events->brbe_sample_type = event->attr.branch_sample_type;
++	}
++
+ 	/* An event following a process won't be stopped earlier */
+ 	if (!cpumask_test_cpu(smp_processor_id(), &armpmu->supported_cpus))
+ 		return -ENOENT;
+@@ -511,13 +552,24 @@ static int armpmu_event_init(struct perf_event *event)
+ 		!cpumask_test_cpu(event->cpu, &armpmu->supported_cpus))
+ 		return -ENOENT;
  
-@@ -2195,6 +2203,8 @@ static const struct sys_reg_desc sys_reg_descs[] = {
- 	{ SYS_DESC(SYS_DC_CISW), access_dcsw },
- 	{ SYS_DESC(SYS_DC_CIGSW), access_dcgsw },
- 	{ SYS_DESC(SYS_DC_CIGDSW), access_dcgsw },
-+	{ SYS_DESC(OP_BRB_IALL), undef_access },
-+	{ SYS_DESC(OP_BRB_INJ), undef_access },
- 
- 	DBG_BCR_BVR_WCR_WVR_EL1(0),
- 	DBG_BCR_BVR_WCR_WVR_EL1(1),
-@@ -2225,6 +2235,52 @@ static const struct sys_reg_desc sys_reg_descs[] = {
- 	{ SYS_DESC(SYS_DBGCLAIMCLR_EL1), trap_raz_wi },
- 	{ SYS_DESC(SYS_DBGAUTHSTATUS_EL1), trap_dbgauthstatus_el1 },
- 
+-	/* does not support taken branch sampling */
+-	if (has_branch_stack(event))
 +	/*
-+	 * BRBE branch record sysreg address space is interleaved between
-+	 * corresponding BRBINF<N>_EL1, BRBSRC<N>_EL1, and BRBTGT<N>_EL1.
++	 * Branch stack sampling events are allowed
++	 * only on PMU which has required support.
 +	 */
-+	BRB_INF_SRC_TGT_EL1(0),
-+	BRB_INF_SRC_TGT_EL1(16),
-+	BRB_INF_SRC_TGT_EL1(1),
-+	BRB_INF_SRC_TGT_EL1(17),
-+	BRB_INF_SRC_TGT_EL1(2),
-+	BRB_INF_SRC_TGT_EL1(18),
-+	BRB_INF_SRC_TGT_EL1(3),
-+	BRB_INF_SRC_TGT_EL1(19),
-+	BRB_INF_SRC_TGT_EL1(4),
-+	BRB_INF_SRC_TGT_EL1(20),
-+	BRB_INF_SRC_TGT_EL1(5),
-+	BRB_INF_SRC_TGT_EL1(21),
-+	BRB_INF_SRC_TGT_EL1(6),
-+	BRB_INF_SRC_TGT_EL1(22),
-+	BRB_INF_SRC_TGT_EL1(7),
-+	BRB_INF_SRC_TGT_EL1(23),
-+	BRB_INF_SRC_TGT_EL1(8),
-+	BRB_INF_SRC_TGT_EL1(24),
-+	BRB_INF_SRC_TGT_EL1(9),
-+	BRB_INF_SRC_TGT_EL1(25),
-+	BRB_INF_SRC_TGT_EL1(10),
-+	BRB_INF_SRC_TGT_EL1(26),
-+	BRB_INF_SRC_TGT_EL1(11),
-+	BRB_INF_SRC_TGT_EL1(27),
-+	BRB_INF_SRC_TGT_EL1(12),
-+	BRB_INF_SRC_TGT_EL1(28),
-+	BRB_INF_SRC_TGT_EL1(13),
-+	BRB_INF_SRC_TGT_EL1(29),
-+	BRB_INF_SRC_TGT_EL1(14),
-+	BRB_INF_SRC_TGT_EL1(30),
-+	BRB_INF_SRC_TGT_EL1(15),
-+	BRB_INF_SRC_TGT_EL1(31),
++	if (has_branch_stack(event) && !armpmu->has_branch_stack)
+ 		return -EOPNOTSUPP;
+ 
+ 	return __hw_perf_event_init(event);
+ }
+ 
++static void armpmu_sched_task(struct perf_event_pmu_context *pmu_ctx, bool sched_in)
++{
++	struct arm_pmu *armpmu = to_arm_pmu(pmu_ctx->pmu);
 +
-+	/* Remaining BRBE sysreg addresses space */
-+	{ SYS_DESC(SYS_BRBCR_EL1), undef_access },
-+	{ SYS_DESC(SYS_BRBFCR_EL1), undef_access },
-+	{ SYS_DESC(SYS_BRBTS_EL1), undef_access },
-+	{ SYS_DESC(SYS_BRBINFINJ_EL1), undef_access },
-+	{ SYS_DESC(SYS_BRBSRCINJ_EL1), undef_access },
-+	{ SYS_DESC(SYS_BRBTGTINJ_EL1), undef_access },
-+	{ SYS_DESC(SYS_BRBIDR0_EL1), undef_access },
++	if (armpmu->sched_task)
++		armpmu->sched_task(pmu_ctx, sched_in);
++}
 +
- 	{ SYS_DESC(SYS_MDCCSR_EL0), trap_raz_wi },
- 	{ SYS_DESC(SYS_DBGDTR_EL0), trap_raz_wi },
- 	// DBGDTR[TR]X_EL0 share the same encoding
+ static void armpmu_enable(struct pmu *pmu)
+ {
+ 	struct arm_pmu *armpmu = to_arm_pmu(pmu);
+@@ -864,6 +916,7 @@ struct arm_pmu *armpmu_alloc(void)
+ 	}
+ 
+ 	pmu->pmu = (struct pmu) {
++		.sched_task	= armpmu_sched_task,
+ 		.pmu_enable	= armpmu_enable,
+ 		.pmu_disable	= armpmu_disable,
+ 		.event_init	= armpmu_event_init,
+diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
+index 23fa6c5da82c..9e17764a0929 100644
+--- a/drivers/perf/arm_pmuv3.c
++++ b/drivers/perf/arm_pmuv3.c
+@@ -26,6 +26,7 @@
+ #include <linux/nmi.h>
+ 
+ #include <asm/arm_pmuv3.h>
++#include "arm_pmuv3_branch.h"
+ 
+ /* ARMv8 Cortex-A53 specific event types. */
+ #define ARMV8_A53_PERFCTR_PREF_LINEFILL				0xC2
+@@ -829,14 +830,56 @@ static void armv8pmu_start(struct arm_pmu *cpu_pmu)
+ 	armv8pmu_pmcr_write(armv8pmu_pmcr_read() | ARMV8_PMU_PMCR_E);
+ 
+ 	kvm_vcpu_pmu_resync_el0();
++	if (cpu_pmu->has_branch_stack)
++		armv8pmu_branch_enable(cpu_pmu);
+ }
+ 
+ static void armv8pmu_stop(struct arm_pmu *cpu_pmu)
+ {
++	if (cpu_pmu->has_branch_stack)
++		armv8pmu_branch_disable();
++
+ 	/* Disable all counters */
+ 	armv8pmu_pmcr_write(armv8pmu_pmcr_read() & ~ARMV8_PMU_PMCR_E);
+ }
+ 
++static void read_branch_records(struct pmu_hw_events *cpuc,
++				struct perf_event *event,
++				struct perf_sample_data *data,
++				bool *branch_captured)
++{
++	/*
++	 * CPU specific branch records buffer must have been allocated already
++	 * for the hardware records to be captured and processed further.
++	 */
++	if (WARN_ON(!cpuc->branches))
++		return;
++
++	/*
++	 * Overflowed event's branch_sample_type does not match the configured
++	 * branch filters in the BRBE HW. So the captured branch records here
++	 * cannot be co-related to the overflowed event. Report to the user as
++	 * if no branch records have been captured, and flush branch records.
++	 * The same scenario is applicable when the current task context does
++	 * not match with overflown event.
++	 */
++	if ((cpuc->brbe_sample_type != event->attr.branch_sample_type) ||
++	    (event->ctx->task && cpuc->brbe_context != event->ctx))
++		return;
++
++	/*
++	 * Read the branch records from the hardware once after the PMU IRQ
++	 * has been triggered but subsequently same records can be used for
++	 * other events that might have been overflowed simultaneously thus
++	 * saving much CPU cycles.
++	 */
++	if (!*branch_captured) {
++		armv8pmu_branch_read(cpuc, event);
++		*branch_captured = true;
++	}
++	perf_sample_save_brstack(data, event, &cpuc->branches->branch_stack, NULL);
++}
++
+ static irqreturn_t armv8pmu_handle_irq(struct arm_pmu *cpu_pmu)
+ {
+ 	u32 pmovsr;
+@@ -844,6 +887,7 @@ static irqreturn_t armv8pmu_handle_irq(struct arm_pmu *cpu_pmu)
+ 	struct pmu_hw_events *cpuc = this_cpu_ptr(cpu_pmu->hw_events);
+ 	struct pt_regs *regs;
+ 	int idx;
++	bool branch_captured = false;
+ 
+ 	/*
+ 	 * Get and reset the IRQ flags
+@@ -887,6 +931,13 @@ static irqreturn_t armv8pmu_handle_irq(struct arm_pmu *cpu_pmu)
+ 		if (!armpmu_event_set_period(event))
+ 			continue;
+ 
++		/*
++		 * PMU IRQ should remain asserted until all branch records
++		 * are captured and processed into struct perf_sample_data.
++		 */
++		if (has_branch_stack(event) && cpu_pmu->has_branch_stack)
++			read_branch_records(cpuc, event, &data, &branch_captured);
++
+ 		/*
+ 		 * Perf event overflow will queue the processing of the event as
+ 		 * an irq_work which will be taken care of in the handling of
+@@ -896,6 +947,8 @@ static irqreturn_t armv8pmu_handle_irq(struct arm_pmu *cpu_pmu)
+ 			cpu_pmu->disable(event);
+ 	}
+ 	armv8pmu_start(cpu_pmu);
++	if (cpu_pmu->has_branch_stack)
++		armv8pmu_branch_reset();
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -985,6 +1038,24 @@ static int armv8pmu_user_event_idx(struct perf_event *event)
+ 	return event->hw.idx;
+ }
+ 
++static void armv8pmu_sched_task(struct perf_event_pmu_context *pmu_ctx, bool sched_in)
++{
++	struct arm_pmu *armpmu = to_arm_pmu(pmu_ctx->pmu);
++	void *task_ctx = pmu_ctx->task_ctx_data;
++
++	if (armpmu->has_branch_stack) {
++		/* Save branch records in task_ctx on sched out */
++		if (task_ctx && !sched_in) {
++			armv8pmu_branch_save(armpmu, task_ctx);
++			return;
++		}
++
++		/* Reset branch records on sched in */
++		if (sched_in)
++			armv8pmu_branch_reset();
++	}
++}
++
+ /*
+  * Add an event filter to a given event.
+  */
+@@ -1077,6 +1148,9 @@ static void armv8pmu_reset(void *info)
+ 		pmcr |= ARMV8_PMU_PMCR_LP;
+ 
+ 	armv8pmu_pmcr_write(pmcr);
++
++	if (cpu_pmu->has_branch_stack)
++		armv8pmu_branch_reset();
+ }
+ 
+ static int __armv8_pmuv3_map_event_id(struct arm_pmu *armpmu,
+@@ -1114,6 +1188,20 @@ static int __armv8_pmuv3_map_event(struct perf_event *event,
+ 
+ 	hw_event_id = __armv8_pmuv3_map_event_id(armpmu, event);
+ 
++	if (has_branch_stack(event)) {
++		if (!armv8pmu_branch_attr_valid(event))
++			return -EOPNOTSUPP;
++
++		/*
++		 * If a task gets scheduled out, the current branch records
++		 * get saved in the task's context data, which can be later
++		 * used to fill in the records upon an event overflow. Let's
++		 * enable PERF_ATTACH_TASK_DATA in 'event->attach_state' for
++		 * all branch stack sampling perf events.
++		 */
++		event->attach_state |= PERF_ATTACH_TASK_DATA;
++	}
++
+ 	/*
+ 	 * CHAIN events only work when paired with an adjacent counter, and it
+ 	 * never makes sense for a user to open one in isolation, as they'll be
+@@ -1229,6 +1317,41 @@ static void __armv8pmu_probe_pmu(void *info)
+ 		cpu_pmu->reg_pmmir = read_pmmir();
+ 	else
+ 		cpu_pmu->reg_pmmir = 0;
++
++	/*
++	 * BRBE is being probed on a single cpu for a
++	 * given PMU. The remaining cpus, are assumed
++	 * to have the exact same BRBE implementation.
++	 */
++	armv8pmu_branch_probe(cpu_pmu);
++}
++
++static int branch_records_alloc(struct arm_pmu *armpmu)
++{
++	struct branch_records __percpu *records;
++	int cpu;
++
++	records = alloc_percpu_gfp(struct branch_records, GFP_KERNEL);
++	if (!records)
++		return -ENOMEM;
++
++	/*
++	 * percpu memory allocated for 'records' gets completely consumed
++	 * here, and never required to be freed up later. So permanently
++	 * losing access to this anchor i.e 'records' is acceptable.
++	 *
++	 * Otherwise this allocation handle would have to be saved up for
++	 * free_percpu() release later if required.
++	 */
++	for_each_possible_cpu(cpu) {
++		struct pmu_hw_events *events_cpu;
++		struct branch_records *records_cpu;
++
++		events_cpu = per_cpu_ptr(armpmu->hw_events, cpu);
++		records_cpu = per_cpu_ptr(records, cpu);
++		events_cpu->branches = records_cpu;
++	}
++	return 0;
+ }
+ 
+ static int armv8pmu_probe_pmu(struct arm_pmu *cpu_pmu)
+@@ -1245,7 +1368,21 @@ static int armv8pmu_probe_pmu(struct arm_pmu *cpu_pmu)
+ 	if (ret)
+ 		return ret;
+ 
+-	return probe.present ? 0 : -ENODEV;
++	if (!probe.present)
++		return -ENODEV;
++
++	if (cpu_pmu->has_branch_stack) {
++		ret = armv8pmu_task_ctx_cache_alloc(cpu_pmu);
++		if (ret)
++			return ret;
++
++		ret = branch_records_alloc(cpu_pmu);
++		if (ret) {
++			armv8pmu_task_ctx_cache_free(cpu_pmu);
++			return ret;
++		}
++	}
++	return 0;
+ }
+ 
+ static void armv8pmu_disable_user_access_ipi(void *unused)
+@@ -1304,6 +1441,8 @@ static int armv8_pmu_init(struct arm_pmu *cpu_pmu, char *name,
+ 	cpu_pmu->set_event_filter	= armv8pmu_set_event_filter;
+ 
+ 	cpu_pmu->pmu.event_idx		= armv8pmu_user_event_idx;
++	cpu_pmu->sched_task		= armv8pmu_sched_task;
++	cpu_pmu->branch_reset		= armv8pmu_branch_reset;
+ 
+ 	cpu_pmu->name			= name;
+ 	cpu_pmu->map_event		= map_event;
+diff --git a/drivers/perf/arm_pmuv3_branch.h b/drivers/perf/arm_pmuv3_branch.h
+new file mode 100644
+index 000000000000..609e4d4ccac6
+--- /dev/null
++++ b/drivers/perf/arm_pmuv3_branch.h
+@@ -0,0 +1,50 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Branch Record Buffer Extension Helpers.
++ *
++ * Copyright (C) 2022-2023 ARM Limited
++ *
++ * Author: Anshuman Khandual <anshuman.khandual@arm.com>
++ */
++#include <linux/perf/arm_pmu.h>
++
++static inline void armv8pmu_branch_reset(void)
++{
++}
++
++static inline void armv8pmu_branch_probe(struct arm_pmu *arm_pmu)
++{
++}
++
++static inline bool armv8pmu_branch_attr_valid(struct perf_event *event)
++{
++	WARN_ON_ONCE(!has_branch_stack(event));
++	return false;
++}
++
++static inline void armv8pmu_branch_enable(struct arm_pmu *arm_pmu)
++{
++}
++
++static inline void armv8pmu_branch_disable(void)
++{
++}
++
++static inline void armv8pmu_branch_read(struct pmu_hw_events *cpuc,
++					struct perf_event *event)
++{
++	WARN_ON_ONCE(!has_branch_stack(event));
++}
++
++static inline void armv8pmu_branch_save(struct arm_pmu *arm_pmu, void *ctx)
++{
++}
++
++static inline int armv8pmu_task_ctx_cache_alloc(struct arm_pmu *arm_pmu)
++{
++	return 0;
++}
++
++static inline void armv8pmu_task_ctx_cache_free(struct arm_pmu *arm_pmu)
++{
++}
+diff --git a/include/linux/perf/arm_pmu.h b/include/linux/perf/arm_pmu.h
+index b3b34f6670cf..8cfcc735c0f7 100644
+--- a/include/linux/perf/arm_pmu.h
++++ b/include/linux/perf/arm_pmu.h
+@@ -46,6 +46,18 @@ static_assert((PERF_EVENT_FLAG_ARCH & ARMPMU_EVT_63BIT) == ARMPMU_EVT_63BIT);
+ 	},								\
+ }
+ 
++/*
++ * Maximum branch record entries which could be processed
++ * for core perf branch stack sampling support, regardless
++ * of the hardware support available on a given ARM PMU.
++ */
++#define MAX_BRANCH_RECORDS 64
++
++struct branch_records {
++	struct perf_branch_stack	branch_stack;
++	struct perf_branch_entry	branch_entries[MAX_BRANCH_RECORDS];
++};
++
+ /* The events for a given PMU register set. */
+ struct pmu_hw_events {
+ 	/*
+@@ -66,6 +78,17 @@ struct pmu_hw_events {
+ 	struct arm_pmu		*percpu_pmu;
+ 
+ 	int irq;
++
++	struct branch_records	*branches;
++
++	/* Active context for task events */
++	void			*brbe_context;
++
++	/* Active events requesting branch records */
++	unsigned int		brbe_users;
++
++	/* Active branch sample type filters */
++	unsigned long		brbe_sample_type;
+ };
+ 
+ enum armpmu_attr_groups {
+@@ -96,8 +119,12 @@ struct arm_pmu {
+ 	void		(*stop)(struct arm_pmu *);
+ 	void		(*reset)(void *);
+ 	int		(*map_event)(struct perf_event *event);
++	void		(*sched_task)(struct perf_event_pmu_context *pmu_ctx, bool sched_in);
++	void		(*branch_reset)(void);
+ 	int		num_events;
+-	bool		secure_access; /* 32-bit ARM only */
++	unsigned int	secure_access	: 1, /* 32-bit ARM only */
++			has_branch_stack: 1, /* 64-bit ARM only */
++			reserved	: 30;
+ #define ARMV8_PMUV3_MAX_COMMON_EVENTS		0x40
+ 	DECLARE_BITMAP(pmceid_bitmap, ARMV8_PMUV3_MAX_COMMON_EVENTS);
+ #define ARMV8_PMUV3_EXT_COMMON_EVENT_BASE	0x4000
+diff --git a/include/linux/perf/arm_pmuv3.h b/include/linux/perf/arm_pmuv3.h
+index 46377e134d67..c3e7d2cfb737 100644
+--- a/include/linux/perf/arm_pmuv3.h
++++ b/include/linux/perf/arm_pmuv3.h
+@@ -308,5 +308,4 @@
+ 		default: WARN(1, "Invalid PMEV* index\n");	\
+ 		}						\
+ 	} while (0)
+-
+ #endif
 -- 
 2.25.1
 
