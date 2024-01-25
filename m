@@ -1,93 +1,196 @@
-Return-Path: <linux-kernel+bounces-39027-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39026-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0230683C9D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:20:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B21983C9CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:19:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 33AC61C212F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:20:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 247D62939A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:19:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A67E8134722;
-	Thu, 25 Jan 2024 17:19:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="gZfblozP"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7696813342B;
+	Thu, 25 Jan 2024 17:19:02 +0000 (UTC)
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34FDB1339A7;
-	Thu, 25 Jan 2024 17:19:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F198B131E2C;
+	Thu, 25 Jan 2024 17:18:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706203147; cv=none; b=YELtbdovwVAGvpZXkbnh6BN3i4WfD5xLDLIBEJ/CVFVkvMF4vxyIM6slpTumb3WD1B+vKmyEOijxKvl9zEOvsQDDlZM7Dyce3ioaXeJQ4guZ3IW73/YuAompAeUmwfMCmnjJqi4I/xwboB0+DHH8NrXBIIpCViVmIihCw2fmKNE=
+	t=1706203142; cv=none; b=oSGzi2MM56Dx2rb4FD5kJUw1u5AF43+BH4CXWeGH9rg+iXsVtaXfv3VxbrUFpkD5vJLbNQh6BtOvzBbppzz1leENohkS0Mud/U9dXx4QOOhWoSp6/P7QvmGFxqAn+q4WMbPmI57RyohYdp01fJgPROfWUAgtIrCOmlwLI/PVB+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706203147; c=relaxed/simple;
-	bh=ZjQiJUD24nK5yX7jLn5kVfmejt7+puip5A0lhvRJGWI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mVHiVt+lxklw5dm4D96sG4iYy32vyeCraSBI0iGZ+tMJU3B6IdAxdMRdmEwSdJexG/qJOQ43VgPqLEzxxlokbVC/j9lER535an2iptOu6Qsm/aq7nC/3M8IG2fEaASJE4H0yaPJmMhZNi37KwTfqRbtlGDYYvDrGQkO++WRBZGs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=gZfblozP; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=SobXRVHM72b9LQv0v2wnfJmsjZXWoOULHbE1NnVnurI=; b=gZfblozPLOIAX4kP5pJhuUXXNR
-	oXH816gdCS+5KV3WLxQf4tMfJWiKyqRb9KTjxI7XM1QteKNiYWHKLIRHqUcXatVdNDvQq4R07JCiz
-	3fKd5ptruoYBJ7mXYj6MDNdEnpS67SOLXQgvy38QI65JLlui09SiOtgU7uMoIECbkEZI=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rT3NO-0066c3-S5; Thu, 25 Jan 2024 18:18:54 +0100
-Date: Thu, 25 Jan 2024 18:18:54 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Jie Luo <quic_luoj@quicinc.com>
-Cc: Christian Marangi <ansuelsmth@gmail.com>,
-	Andy Gross <agross@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Robert Marko <robert.marko@sartura.hr>,
-	linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Sergey Ryazanov <ryazanov.s.a@gmail.com>
-Subject: Re: [net-next PATCH 0/3] net: mdio-ipq4019: fix wrong default MDC
- rate
-Message-ID: <f8a9e328-5284-4f24-be5d-7e9804869ecd@lunn.ch>
-References: <20240124213640.7582-1-ansuelsmth@gmail.com>
- <53445feb-a02c-4859-a993-ccf957208115@quicinc.com>
+	s=arc-20240116; t=1706203142; c=relaxed/simple;
+	bh=sNJgdC50zN0C38SJTk6MtteKpj5pj6U+fUW/cNdoTJE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=u7Shtb65s+NhFaY+X+LooMXqExVvUgiZ/GiTFNFEtTW5LRpHVXLABvDJkMSJdc6JM8KS3/xm+U4Hk2G0W2oOPilbDuymQshz1Te0IODuKy5xh2Fm6+sMEvtq6Jav+cL49cnC/Dx0hq1jIM6YJO8VTElwv/r3DkACYZbvfQofvn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8A3F7FF806;
+	Thu, 25 Jan 2024 17:18:55 +0000 (UTC)
+Message-ID: <9d6cafcc-2bb8-4c7d-8d53-8c10a29a56c9@ghiti.fr>
+Date: Thu, 25 Jan 2024 18:18:55 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <53445feb-a02c-4859-a993-ccf957208115@quicinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v10 2/2] documentation: Document
+ PR_RISCV_SET_ICACHE_FLUSH_CTX prctl
+Content-Language: en-US
+To: Charlie Jenkins <charlie@rivosinc.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Jonathan Corbet <corbet@lwn.net>, Conor Dooley <conor.dooley@microchip.com>,
+ =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
+ Atish Patra <atishp@atishpatra.org>, Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, Atish Patra <atishp@rivosinc.com>
+References: <20240124-fencei-v10-0-a25971f4301d@rivosinc.com>
+ <20240124-fencei-v10-2-a25971f4301d@rivosinc.com>
+From: Alexandre Ghiti <alex@ghiti.fr>
+In-Reply-To: <20240124-fencei-v10-2-a25971f4301d@rivosinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: alex@ghiti.fr
 
-> Hi Christian,
-> Just a gentle reminder.
-> 
-> The MDIO frequency config is already added by the following patch series.
-> https://lore.kernel.org/netdev/28c8b31c-8dcb-4a19-9084-22c77a74b9a1@linaro.org/T/#m840cb8d269dca133c3ad3da3d112c63382ec2058
 
-I admit this version was posted first. However, its embedded in a
-patch series which is not making much progress, and i doubt will make
-progress any time soon.
+On 25/01/2024 05:23, Charlie Jenkins wrote:
+> Provide documentation that explains how to properly do CMODX in riscv.
+>
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> Reviewed-by: Atish Patra <atishp@rivosinc.com>
+> ---
+>   Documentation/arch/riscv/cmodx.rst | 96 ++++++++++++++++++++++++++++++++++++++
+>   Documentation/arch/riscv/index.rst |  1 +
+>   2 files changed, 97 insertions(+)
+>
+> diff --git a/Documentation/arch/riscv/cmodx.rst b/Documentation/arch/riscv/cmodx.rst
+> new file mode 100644
+> index 000000000000..24aafa23a72b
+> --- /dev/null
+> +++ b/Documentation/arch/riscv/cmodx.rst
+> @@ -0,0 +1,96 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +==============================================================================
+> +Concurrent Modification and Execution of Instructions (CMODX) for RISC-V Linux
+> +==============================================================================
+> +
+> +CMODX is a programming technique where a program executes instructions that were
+> +modified by the program itself. Instruction storage and the instruction cache
+> +(icache) are not guaranteed to be synchronized on RISC-V hardware. Therefore, the
+> +program must enforce its own synchronization with the unprivileged fence.i
+> +instruction.
+> +
+> +However, the default Linux ABI prohibits the use of fence.i in userspace
+> +applications. At any point the scheduler may migrate a task onto a new hart. If
+> +migration occurs after the userspace synchronized the icache and instruction
+> +storage with fence.i, the icache on the new hart will no longer be clean. This
+> +is due to the behavior of fence.i only affecting the hart that it is called on.
+> +Thus, the hart that the task has been migrated to may not have synchronized
+> +instruction storage and icache.
+> +
+> +There are two ways to solve this problem: use the riscv_flush_icache() syscall,
+> +or use the ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` prctl() and emit fence.i in
+> +userspace. The syscall performs a one-off icache flushing operation. The prctl
+> +changes the Linux ABI to allow userspace to emit icache flushing operations.
+> +
+> +As an aside, "deferred" icache flushes can sometimes be triggered in the kernel.
+> +At the time of writing, this only occurs during the riscv_flush_icache() syscall
+> +and when the kernel uses copy_to_user_page(). These deferred flushes happen only
+> +when the memory map being used by a hart changes. If the prctl() context caused
+> +an icache flush, this deferred icache flush will be skipped as it is redundant.
+> +Therefore, there will be no additional flush when using the riscv_flush_icache()
+> +syscall inside of the prctl() context.
+> +
+> +prctl() Interface
+> +---------------------
+> +
+> +Call prctl() with ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` as the first argument. The
+> +remaining arguments will be delegated to the riscv_set_icache_flush_ctx
+> +function detailed below.
+> +
+> +.. kernel-doc:: arch/riscv/mm/cacheflush.c
+> +	:identifiers: riscv_set_icache_flush_ctx
+> +
+> +Example usage:
+> +
+> +The following files are meant to be compiled and linked with each other. The
+> +modify_instruction() function replaces an add with 0 with an add with one,
+> +causing the instruction sequence in get_value() to change from returning a zero
+> +to returning a one.
+> +
+> +cmodx.c::
+> +
+> +	#include <stdio.h>
+> +	#include <sys/prctl.h>
+> +
+> +	extern int get_value();
+> +	extern void modify_instruction();
+> +
+> +	int main()
+> +	{
+> +		int value = get_value();
+> +		printf("Value before cmodx: %d\n", value);
+> +
+> +		// Call prctl before first fence.i is called inside modify_instruction
+> +		prctl(PR_RISCV_SET_ICACHE_FLUSH_CTX_ON, PR_RISCV_CTX_SW_FENCEI, PR_RISCV_SCOPE_PER_PROCESS);
+> +		modify_instruction();
+> +
+> +		value = get_value();
+> +		printf("Value after cmodx: %d\n", value);
+> +		return 0;
+> +	}
+> +
+> +cmodx.S::
+> +
+> +	.option norvc
+> +
+> +	.text
+> +	.global modify_instruction
+> +	modify_instruction:
+> +	lw a0, new_insn
+> +	lui a5,%hi(old_insn)
+> +	sw  a0,%lo(old_insn)(a5)
+> +	fence.i
+> +	ret
+> +
+> +	.section modifiable, "awx"
+> +	.global get_value
+> +	get_value:
+> +	li a0, 0
+> +	old_insn:
+> +	addi a0, a0, 0
+> +	ret
+> +
+> +	.data
+> +	new_insn:
+> +	addi a0, a0, 1
+> diff --git a/Documentation/arch/riscv/index.rst b/Documentation/arch/riscv/index.rst
+> index 4dab0cb4b900..eecf347ce849 100644
+> --- a/Documentation/arch/riscv/index.rst
+> +++ b/Documentation/arch/riscv/index.rst
+> @@ -13,6 +13,7 @@ RISC-V architecture
+>       patch-acceptance
+>       uabi
+>       vector
+> +    cmodx
+>   
+>       features
+>   
+>
 
-If you really want your version to be used, please split it out into a
-standalone patch series adding just MDIO clock-frequency support, with
-its binding, and nothing else.
+You can add:
 
-    Andrew
+Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+
+Thanks,
+
+Alex
+
 
