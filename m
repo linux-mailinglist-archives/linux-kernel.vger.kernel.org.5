@@ -1,91 +1,112 @@
-Return-Path: <linux-kernel+bounces-38612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4DF683C32D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:06:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E2B383C330
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:07:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B4E61F26AAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:06:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 453CDB23697
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:07:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FFE34F8AF;
-	Thu, 25 Jan 2024 13:04:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 467A84F8AC;
+	Thu, 25 Jan 2024 13:05:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aZ1UNUcY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lhj7/Acg"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D949059B54;
-	Thu, 25 Jan 2024 13:04:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E665132189;
+	Thu, 25 Jan 2024 13:05:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706187880; cv=none; b=Srn+WrDCF3WsOw8geerYtCpX0ykefYtXl39O+lFnKww+U70oY6RNHTeH1yMGzo/OD+wOtbhs+ZiLLar+e58GnhMxJl+WiBocVYD4+k5aYHCRwGOPNdWG5Wu0R9lBlx8ZZ2VFWc63o0A6N65miJ27POOIIG64nG8kCDmam01QHgg=
+	t=1706187936; cv=none; b=Hz529A0qpOMyzHVdwSmmeAKXZt3hmZIwAK8c7jyLntHsR0J16f/rphTdLWA5LasJoS9acLV9dtEOqJQt8Oht0FnLDZOjP2UJWu+663e0hW39ckG7LqEqbbK7tHp9CmFYk5QhzS/TGI6Q/knBOeLHbrj11u3jFEws0W2Bmd59kF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706187880; c=relaxed/simple;
-	bh=re1mVyPi8aLdjXqW+u5VMYGNKanfxtt0Mx/XGaxSaQk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nM2fYu/i3SxE6EwfWUSY7aEMLFxcwRlDAvvpcZiFSg4GdOgMEbY3MXZP9sAmnMyUJkBt9Su8IqcU8byrojnUWErvBcVjZNUB35EyQ8zZPoHC61RW7xRxPDzWDEPql+ywhjydmbb9JXgH39Eb71qhWYblqPGRotfGoA1VEtEXrmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aZ1UNUcY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB9F4C433F1;
-	Thu, 25 Jan 2024 13:04:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706187879;
-	bh=re1mVyPi8aLdjXqW+u5VMYGNKanfxtt0Mx/XGaxSaQk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aZ1UNUcYqd7mj41uJmYe2V+XXWphdUKswCVdYtgXXW9sMtkUw7QmfJcNcLkc10LBp
-	 E/ltE74PzlL1NsyeLA16n3x7IoHuV5vg5iwOrPy6BABAvhvHnWJ462MCGrG2rmQkDH
-	 DRBAiAltvgNPmrh9usVLBWS+oilC7/kHVHESlmMNiaDV48RGlmVhVHcGHmhIL0OSUx
-	 ohW4WC3dcQdmjr+/Z2ldkZ83M84JVbM1jVmvKTksRigG3mrSU6Y520bXulKqzkidTC
-	 yM8m9r5U57fm69yrkmDfcKLMCJG0Sdq6cVAyhDBYx5SyDLlNV6jmegR23md1SqaKjr
-	 irk8sHhmgvmkw==
-Date: Thu, 25 Jan 2024 13:04:32 +0000
-From: Lee Jones <lee@kernel.org>
-To: Anjelique Melendez <quic_amelende@quicinc.com>
-Cc: pavel@ucw.cz, thierry.reding@gmail.com, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	agross@kernel.org, andersson@kernel.org, luca.weiss@fairphone.com,
-	konrad.dybcio@linaro.org, u.kleine-koenig@pengutronix.de,
-	quic_subbaram@quicinc.com, quic_gurus@quicinc.com,
-	linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v8 3/7] soc: qcom: add QCOM PBS driver
-Message-ID: <20240125130432.GG74950@google.com>
-References: <20231221185838.28440-1-quic_amelende@quicinc.com>
- <20231221185838.28440-4-quic_amelende@quicinc.com>
+	s=arc-20240116; t=1706187936; c=relaxed/simple;
+	bh=ELvRx9TYX92ju1UeYZb5i5zyOpQZ2AlRQbLzGzWx9cM=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=G6sFL+BgKeHEEdtbYhE+vjIQ7GXlrm6/QgjfJhrYq+4X3Vpi2XhpP+8oHIASr4hfOF0UHRAdjYWobZJJM2C8TjHJ8TgSRMWN4YWnYEN49CtDIpuI3dz2QT1RBY9lIp97PbLlK7i8W5k4aDgyDKR+ba6caLhlrM11jBM3l5tpYfg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lhj7/Acg; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a298accc440so738777766b.1;
+        Thu, 25 Jan 2024 05:05:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706187933; x=1706792733; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ELvRx9TYX92ju1UeYZb5i5zyOpQZ2AlRQbLzGzWx9cM=;
+        b=lhj7/AcgDM6mAijOFL86RA01WejQJrGp0cBur735j+VSEaPPiOfJY/ZT3aWwLzBmTq
+         aEwgkjP048SjxBBEwfoom79xeoakMtXRtQ44je9lmQHKDpJj0VRWLKN+9W826AHXgoXa
+         FHAkvx8s707iJWU/AhwNHFcmdd9alzhXw3AcAVWh1Wz/49GCIWThEmVVgvcDJHCDeX6I
+         d8QWzYg5Wfrw5I4qUDCPZf6ZNaL/S11AEC2M6pcsoO6A8c8O/V+NH0twOoq72exdN6pe
+         BebxjVwX1E59aFsI3+mnjaBT7q7sb1D2Q6SZKzelbOzPfZZ9kGoj2De7SxXIMYkohV0L
+         SlIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706187933; x=1706792733;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ELvRx9TYX92ju1UeYZb5i5zyOpQZ2AlRQbLzGzWx9cM=;
+        b=qwRAcnAA/Y2lOz5rsn9iA9KxlS8micMJP+/P0pQ9R1bdEV9ogtFg1zTPg41hziyFdL
+         sb/hyviMnX7ZQvDA5xCHO6ecc6u0kLiT09Sg7Y+kmu2V7OZV+RJ6SVHUZOH1MlcweTY4
+         Cbu9ZTY2skvsXq5nd52Ne2e7d5d/8D17QexWpceZohkDl3sGgECV2VA3fWKhhHbfG/QQ
+         7r8pQ+eobPKMD94aSci2yzWyXSR4tmliCkHyLgOaDH7He1cM3ObYwOXjmhrPD+eGYxJA
+         wwUwsHN1AH4t+ONSF3oUtp7fl8cDrBXc9207k4L39WH4tcO2f7rXlQzm4BRtmMWTMVEE
+         UYTg==
+X-Gm-Message-State: AOJu0YyYSLPCroIMM0Zm4cqLI/w2opAVRShCErwEjTpfPatt7OciYef1
+	anuRebTk/De9HoNAOdMHUvQ/32Pv6l602WacXltmoaf6c2tVNq2L
+X-Google-Smtp-Source: AGHT+IGqK0JG7nni/RexIpcT3AcVECwMSyiwb6z0ID7KEBmx3bksMeHAAsEOu4WG8NFFImNJEXk4sw==
+X-Received: by 2002:a17:906:d93a:b0:a30:86ec:44dd with SMTP id rn26-20020a170906d93a00b00a3086ec44ddmr649671ejb.67.1706187932839;
+        Thu, 25 Jan 2024 05:05:32 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id qx28-20020a170907b59c00b00a28a297d47esm1015212ejc.73.2024.01.25.05.05.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 05:05:32 -0800 (PST)
+Message-ID: <9a39fe710042c71abb252a38e1ec1bbfbe291e52.camel@gmail.com>
+Subject: Re: [PATCH bpf] bpf: Reject pointer spill with var offset
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Hao Sun <sunhao.th@gmail.com>
+Cc: bpf@vger.kernel.org, andreimatei1@gmail.com, ast@kernel.org, 
+	andrii@kernel.org, daniel@iogearbox.net, linux-kernel@vger.kernel.org
+Date: Thu, 25 Jan 2024 15:05:31 +0200
+In-Reply-To: <CACkBjsZjYewSh4ZHFbj-D_Z7kGOeaVLfROcEDE1beNEDn-aU-A@mail.gmail.com>
+References: <20240124103010.51408-1-sunhao.th@gmail.com>
+	 <5d33819c5f752755614882e30d971488731d97e0.camel@gmail.com>
+	 <CACkBjsZjYewSh4ZHFbj-D_Z7kGOeaVLfROcEDE1beNEDn-aU-A@mail.gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231221185838.28440-4-quic_amelende@quicinc.com>
 
-On Thu, 21 Dec 2023, Anjelique Melendez wrote:
+On Thu, 2024-01-25 at 09:34 +0100, Hao Sun wrote:
+[...]
+> Testing this case with test_progs/test_verifier is hard because it happen=
+s
+> when cpu_mitigations_off() is true, but we do not have this setup yet.
+> So the mentioned prog is rejected by sanitize_check_bounds() due to ptr
+> alu with var_off when adding it to test_progs, and loading as unpriv.
+>=20
+> My local test was conducted: (1) booting the kernel with "mitigations=3Do=
+ff"
+> so that bypass_spec_v1 is true and sanitize_check_bounds() is skipped;
+> (2) running the prog without the patch leaks the pointer; (3) loading the
+> prog with the patch applied resulting in the expected message.
 
-> Add the Qualcomm PBS (Programmable Boot Sequencer) driver. The QCOM PBS
-> driver supports configuring software PBS trigger events through PBS RAM
-> on Qualcomm Technologies, Inc (QTI) PMICs.
-> 
-> Signed-off-by: Anjelique Melendez <quic_amelende@quicinc.com>
-> ---
->  drivers/soc/qcom/Kconfig          |   9 ++
->  drivers/soc/qcom/Makefile         |   1 +
->  drivers/soc/qcom/qcom-pbs.c       | 243 ++++++++++++++++++++++++++++++
->  include/linux/soc/qcom/qcom-pbs.h |  30 ++++
->  4 files changed, 283 insertions(+)
->  create mode 100644 drivers/soc/qcom/qcom-pbs.c
->  create mode 100644 include/linux/soc/qcom/qcom-pbs.h
+Thank you for explaining.
+I booted VM with "mitigations=3Doff" and tried test as in [1], it passes.
 
-This needs to be applied soon, or I'll have to remove all of the LEDS
-patches, since the lack of include/linux/soc/qcom/qcom-pbs.h is causing
-build failures.
+Tested-by: Eduard Zingerman <eddyz87@gmail.com>
 
--- 
-Lee Jones [李琼斯]
+[1] https://gist.github.com/eddyz87/bb517437767a8f01891cc6e6a847d448
 
