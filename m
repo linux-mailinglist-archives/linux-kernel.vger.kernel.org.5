@@ -1,115 +1,107 @@
-Return-Path: <linux-kernel+bounces-39118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CF2D83CB09
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:31:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C37D583CB15
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:31:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FE781C20BB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:31:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 023A91C23405
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:31:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B848C13664E;
-	Thu, 25 Jan 2024 18:24:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 576A5137C5C;
+	Thu, 25 Jan 2024 18:26:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EXl3GIM/"
-Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IX+HgYcT"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A56911339A3
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 18:24:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF93879C7
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 18:26:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706207066; cv=none; b=q7STV2yWxHrpU6SbkG5mVTInwEKz9WoY4G1716g0o5QHdMu+d70OuHgiT8Sc+PLophHzj8KOGfs/7nxsdeIFEFwygaZZsjWft7EfN3nkU7tLRMMhmfC1uR5Bk7fBLAIdU1sgLJORNxFMrvccCcU5PFcys/vYG1EyE3Vbs6SVeTQ=
+	t=1706207201; cv=none; b=eBzheF7XAFcjgmvPpF/UwXCUi+nLrdK3V6ZVUzbjio64TbcrjZaRwbg0C57wtVW4Ro+wsqHku980GOMQTqhtjVDAgm5QDT0Sf57MiJdrvlmJpmeTS9VxGoxxPLgevWVGES4bo3Znwh57l/cYz0d4+6FUAXDxrH39yb9KXMg1FG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706207066; c=relaxed/simple;
-	bh=CnDhO4W6RhhnLUIQvYTJD8IqhmD1zLaX0PIGwd3eXqg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CgMi3J0fh/GX7gfvrBRe245uK7ayIsFPSiYNJ9h6oVVHYjhFvhF3DHNQhc8w7gbrGdT7WyOev+DhRSrrcez7Qcwz0+EQlUKMWCw2BItNlYGFKFdU2Ayy9JGcSdlVBkDOtXWiBp/rZkQ0nzvu2pL10c46RHLLj/yt2nNgfDo2PvI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EXl3GIM/; arc=none smtp.client-ip=209.85.222.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-7831362c9bcso468549485a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 10:24:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706207062; x=1706811862; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=QpjAVbS89bblqRKPmH6dCOipZUaPZaPPm0ofRTb7n/M=;
-        b=EXl3GIM/iIIiyJBsxXmmRA4T93Rd0Ye1lrXiestHYTIbfkUOgjfrBk5gKSI2bCimJJ
-         88HFsXVNBzmS0Nykism6g6wgznAcJ0+g3Ovwhs7Wd7q8l9whrlfeL8AR1PPCbaZROnGc
-         RrujUjZRItmfa36CXHcgi94UiCWo4o0Oskq5n3TRjfnLfV2boKZMS9ZfLBow534islaD
-         wgj9SRKs5vKqdB9/R4JGsdvfYcXovJF4T617ODCTtxmQSlxSffJzMITcmh5AJTTGfFMS
-         lrmz8JguqSh8b1NWwSMNHLAw5u/6d/NfRivJIGZhcVd3FJvOTYAbPb7rfVI3wkWLc/JS
-         KmOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706207062; x=1706811862;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QpjAVbS89bblqRKPmH6dCOipZUaPZaPPm0ofRTb7n/M=;
-        b=Z9oCZcT3ti6MuP3yijHT/8+QqxA55ywOlb7Prd8MjFq5QFEen1np4EzIzLy6bSiKT4
-         beXzbiKHJDCpJ0dDTqIa/Xg1JcPe7sSXKVhdNAgGsnj7Z0zOmofJI3H8ECp+CDhazi0A
-         WwTTIeYIWZgTNreKdOdigoBuCU1hqlk/rZgX+yCGGbEbGxCaGfR40+vNV2+pHcJaMyPx
-         UykQnlk0lf0z+n+1PCkDUBkAX6+GpS8Rvf8rUksTZthKu5Q5s87TcWSv8fgNp/4QXtha
-         LNJxqr0bX3OOZVhZtMvT/ZZ/DhtO1PW0RM67TTRG25Sn1VqywIjZHAteZS0U35o5TeDx
-         WFJw==
-X-Gm-Message-State: AOJu0YzcMYmxi27LcqnnisnyK/RJ3qa4mtT+IdcR36QaTGvEBbw7DhbD
-	D68FCdETvVL7VzdWHkbtRUYzxARR2fT+P1V1B9w8H+g/q9EelP+EP2dDvkN/
-X-Google-Smtp-Source: AGHT+IG0LMYny2GeC+0uxeMszMfSaq8oBpCcBsnVHzNd/o+SKpoPRIdqJIICsF7aEZ1b3Sn+Dudzbw==
-X-Received: by 2002:a05:620a:390e:b0:783:26f3:939a with SMTP id qr14-20020a05620a390e00b0078326f3939amr119432qkn.119.1706207062569;
-        Thu, 25 Jan 2024 10:24:22 -0800 (PST)
-Received: from pm2-ws13.praxislan02.com (207-172-141-204.s8906.c3-0.slvr-cbr1.lnh-slvr.md.cable.rcncustomer.com. [207.172.141.204])
-        by smtp.gmail.com with ESMTPSA id y9-20020a05620a44c900b007831f8c5aeasm5211694qkp.55.2024.01.25.10.24.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 10:24:22 -0800 (PST)
-From: Jason Andryuk <jandryuk@gmail.com>
-To: linux-kernel@vger.kernel.org
-Cc: Jason Andryuk <jandryuk@gmail.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH] x86/mm/cpa-test: Correct length selection
-Date: Thu, 25 Jan 2024 13:24:16 -0500
-Message-ID: <20240125182417.51898-1-jandryuk@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1706207201; c=relaxed/simple;
+	bh=p53X8di65S3zmcAB+leeB/kf78sYPEDljz8OXoCEywA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GHEanEe1/Sis4/5PvFL7vM+mU8Yd4iz0/cRxO8/qmyhlO3f3FH7O1UdiC49ci6Po6Nbl1f+bNNNaSCEJTLOc4dO3odfgGUau/TeWPr+GR7BSkaLbx5JUlrmvic+bhNyBE6Hw+Moa+jtWPrwPEwjL2o1CNyKQSlZ2/3jEie7OVO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IX+HgYcT; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706207198;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=p53X8di65S3zmcAB+leeB/kf78sYPEDljz8OXoCEywA=;
+	b=IX+HgYcT9ztAL2RsLZXwC9wvlMWfIXv6Q6i44/VfUcTHX0pQRrgyb33lmshs0R+R4OYuLY
+	D9ICWKxAUkWtOgTJlPJWWE468BhLIueXQhZeV3nQrcM04II6EP73hAokCpSPiq7UAW+Am5
+	P3GPUIr6zZsl7bnJSI0unuUfo1BXjeo=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-467-vM6f3SOxPyiC3_8HDtQbiA-1; Thu,
+ 25 Jan 2024 13:26:28 -0500
+X-MC-Unique: vM6f3SOxPyiC3_8HDtQbiA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A7C0C3C1E9C5;
+	Thu, 25 Jan 2024 18:26:21 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.14])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 092A53C2E;
+	Thu, 25 Jan 2024 18:26:19 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Thu, 25 Jan 2024 19:25:08 +0100 (CET)
+Date: Thu, 25 Jan 2024 19:25:05 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Tycho Andersen <tycho@tycho.pizza>
+Cc: Christian Brauner <brauner@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-api@vger.kernel.org, Tycho Andersen <tandersen@netflix.com>,
+	"Eric W. Biederman" <ebiederm@xmission.com>
+Subject: Re: [PATCH v3 1/3] pidfd: allow pidfd_open() on non-thread-group
+ leaders
+Message-ID: <20240125182505.GD5513@redhat.com>
+References: <20240123153452.170866-1-tycho@tycho.pizza>
+ <20240123153452.170866-2-tycho@tycho.pizza>
+ <20240123195608.GB9978@redhat.com>
+ <ZbArN3EYRfhrNs3o@tycho.pizza>
+ <20240125140830.GA5513@redhat.com>
+ <20240125-tricksen-baugrube-3f78c487a23a@brauner>
+ <20240125175113.GC5513@redhat.com>
+ <ZbKigMNQM0Yklc/5@tycho.pizza>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZbKigMNQM0Yklc/5@tycho.pizza>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-The length of pages to modify corresponding to addr[i] is given in
-len[i].  Remove the hard coded 1.
+On 01/25, Tycho Andersen wrote:
+>
+> One of the things I don't like about PIDFD_THREAD is that it's hard to
+> tell whether an arbitrary thread is a leader or not. Right now we do
+> it by parsing /proc/pid/status, which shows all the stuff from
+> do_task_stat() that we don't care about but which is quite expensive
+> to compute. (Maybe there's a better way?)
+>
+> With PIDFD_THREAD we could could do it twice, once with the flag, get
+> EINVAL, and then do it again. But ideally we wouldn't have to.
 
-Signed-off-by: Jason Andryuk <jandryuk@gmail.com>
----
-This is a typo, right?  The other cases use len[i].
+Too late for me, most probably I misunderstood.
 
- arch/x86/mm/pat/cpa-test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If you want the PIDFD_THREAD behaviour, you can always use this flag
+without any check...
 
-diff --git a/arch/x86/mm/pat/cpa-test.c b/arch/x86/mm/pat/cpa-test.c
-index 3d2f7f0a6ed1..ad3c1feec990 100644
---- a/arch/x86/mm/pat/cpa-test.c
-+++ b/arch/x86/mm/pat/cpa-test.c
-@@ -183,7 +183,7 @@ static int pageattr_test(void)
- 			break;
- 
- 		case 1:
--			err = change_page_attr_set(addrs, len[1], PAGE_CPA_TEST, 1);
-+			err = change_page_attr_set(addrs, len[i], PAGE_CPA_TEST, 1);
- 			break;
- 
- 		case 2:
--- 
-2.43.0
+Could you spell?
+
+Oleg.
 
 
