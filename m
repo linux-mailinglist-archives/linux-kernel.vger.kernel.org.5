@@ -1,124 +1,122 @@
-Return-Path: <linux-kernel+bounces-38264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4E0983BD56
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:31:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D6C183BD59
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:31:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 770261F2DB96
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:31:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5151D1C28780
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:31:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97C2F1CA83;
-	Thu, 25 Jan 2024 09:29:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E70A71D53C;
+	Thu, 25 Jan 2024 09:29:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="EO4lUot8"
-Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com [209.85.217.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="NrDb1FaB"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A9AB1CA86
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:28:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB44E1CAA4
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:29:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706174941; cv=none; b=GQPQutM76qG/dUtZdwP4/nrKu7BVNriWMBFR31yB0O9/cwPYfI3oIzc26DEvVwKuUL2A/DK/B3cGkMcScSn3l/N2+BddaOS1jrzr/na5pPEVzb0gAD+AincVM540T0sXz0aAQDJRHT/zbgAiKUQvssE98yK58F2tUAUpwzOVQCA=
+	t=1706174945; cv=none; b=Jre9SppWHXQUMIkh0Xlqc7eE4vL4pz2Z1pCvpiY3zDCqXcs+MVkQ1ZfBhyVUqx3UcBzrDz8v4LXKRUIlCTJoc0xVEnwtm7ZN0nB3HeRCtFZLyvDqC5GeLTfo9wrndgMUHf3KsCTHQY6UjNIljv7QByGHC7WVWseK9igeZPMWuW8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706174941; c=relaxed/simple;
-	bh=Czou+Fc09Tc9zXH0osqCab6GeZhYtdc1i9VY6/QvHgU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Llx2Dow7htx++sHj45AiwnVqzzCa3fMF/hujLOnbcgZmqN7MaDUdgvMdUOs1s7NWB96hK+icvavWYWU9YUFJpRoRlXaveSV/NNwhQo1hiXDl6TI8rxcaWako/TprbaCE4YkcbaCflXNAHiNY2QNp+/8HVA30yoCDBQESQ99hn04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=EO4lUot8; arc=none smtp.client-ip=209.85.217.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-vs1-f41.google.com with SMTP id ada2fe7eead31-46705557756so1269136137.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 01:28:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1706174938; x=1706779738; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Czou+Fc09Tc9zXH0osqCab6GeZhYtdc1i9VY6/QvHgU=;
-        b=EO4lUot8LR7hgPhWJYLxHCjBv8kbKrmGEL9z8122OztI2VoIlcXC80zxo+KWHk1wco
-         BtZVXt+fyruJQHOHpva4ZjcZCnpYR4o0QO7F/1ge2HmuPai+Sr2gcvUc3q0U+/oYeiY/
-         bBG7GsXLHnUyxWZ7OBn9ubY30eoMcw8stn/Z9JlF9dUzqt6oYq5T9yAIIPFc4BD0XltD
-         3NRRaiUPAI9iNW/Se7qH9ajoORJM9XNxb1z7o5bRNQgadfwdExQByHpphgo8W89uvotH
-         bhzgFCDrkDZHe3PBqEf2feMvr2d8/stKCh9sZ8YnfXs/a3AsKWOd0+a8veVmTqIKQKmT
-         ydCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706174938; x=1706779738;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Czou+Fc09Tc9zXH0osqCab6GeZhYtdc1i9VY6/QvHgU=;
-        b=Y5n5mNjNAg6FtwrBkyAjOu/Ckp6AkikJXfVmbp7D3Ba1lmQhDDvsg/hNKEZtmVsj7r
-         3uPWVjZkqeE8qV6HQAIccTqaavEVHTIL2KQw1OrII3G18aaOMxE1HM1JKlUnIIaodCa1
-         +ooTJVkPTHzI38tCeRm5sMoOdeUvKFMC9LkXBvT/QSakdm2LkI025ntR4zfX9H+RJGsU
-         LqvdV7cceVMs3ChKSYllFt9kR+TabrHudVOPBLj/s4O1tTQaeIpkQfJJnDaGY+6SXFbm
-         RuthAIlnrx77JhScjx/LSEe67yQXOExDQ+jQptyPmxFRFnvtXB5U/eU+dg6poBGM96nv
-         d9ZQ==
-X-Gm-Message-State: AOJu0Yyyu7jGMbnP21R2PzWNaxhwB8hW7SNaWQ0BmXg7e9F3upuViWeI
-	VzJlpeljfYzSv1Yq0aM//U3MrvP+4oHsK9vgfQ9HFUJNNLvtrBgtWrW2JjOnOjF6nkLdy8zkpjc
-	6sY9SIxhHacCMBSA3pB0So3Zk0F41Fw8OWsH6eA==
-X-Google-Smtp-Source: AGHT+IHWAK75KO7eUDVgQBY7634AqsxBL1EjuJMZm7NIdfKFtDNBo90CuaLYi3Ma2HadkTIgwjVGLskQhMUPcf+OjRY=
-X-Received: by 2002:a67:c413:0:b0:46b:528:d5e1 with SMTP id
- c19-20020a67c413000000b0046b0528d5e1mr258950vsk.8.1706174938055; Thu, 25 Jan
- 2024 01:28:58 -0800 (PST)
+	s=arc-20240116; t=1706174945; c=relaxed/simple;
+	bh=MuHOFFDvhunWa09yCKieBQeofTJm5hUil4z2V5RP7/c=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qDj9uu5Zr6JxUSdsDRWEAgUErRj06Pi6Ky7MFYcLHAV13aNnO0Wd98q1psyg2F+gh9NjYcY/tG3KXGIvALRSL/uAEh7sN/7tlQ/2wleHPcAB0JYlQGaZrc42cZZvQkEojqqglvQXZOBhGdTYWn5Icc7X4CR/q61d+q28svKP4Yk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=NrDb1FaB; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1706174941;
+	bh=MuHOFFDvhunWa09yCKieBQeofTJm5hUil4z2V5RP7/c=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=NrDb1FaBaq13ye++Lhg9rKsUJUXv0CRes27oB17iSRjJI+f260kZqghxxIZiHPzKF
+	 yG6w09yncfIcrwFhoeCGYZ/UGRPOvZj+BlKCoxh0Kbrzd/cMl51zO7QWS4loE7xDkx
+	 R8JmJ/OZjwElQbafLdkoQovcnyaDjPRBNW5oDS+E7/hS0AKI10hMKA1rvqLulArOiC
+	 /gg8mIL23r6i4JVwuVbbfG5bPGMGvlO5PRxPX3vXd/g/7vPtHw838An9VQnD8DfxH8
+	 vXnkf3u1PESFA9piBvV8wC2PNTy0r3VVjSEBCViVMZWseP6/oklRc8Ydq8iLOdBE1v
+	 tbEsIRBp4/X9w==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bbrezillon)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E09AB378000B;
+	Thu, 25 Jan 2024 09:29:00 +0000 (UTC)
+Date: Thu, 25 Jan 2024 10:28:59 +0100
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc: David Airlie <airlied@gmail.com>, Gerd Hoffmann <kraxel@redhat.com>,
+ Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
+ <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, Christian =?UTF-8?B?S8O2bmln?=
+ <christian.koenig@amd.com>, Qiang Yu <yuq825@gmail.com>, Steven Price
+ <steven.price@arm.com>, Emma Anholt <emma@anholt.net>, Melissa Wen
+ <mwen@igalia.com>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, kernel@collabora.com,
+ virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v19 24/30] drm/shmem-helper: Optimize unlocked
+ get_pages_sgt()
+Message-ID: <20240125102859.6d8a864f@collabora.com>
+In-Reply-To: <20240105184624.508603-25-dmitry.osipenko@collabora.com>
+References: <20240105184624.508603-1-dmitry.osipenko@collabora.com>
+	<20240105184624.508603-25-dmitry.osipenko@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240125081601.118051-1-krzysztof.kozlowski@linaro.org>
- <20240125081601.118051-3-krzysztof.kozlowski@linaro.org> <CAMRc=MfYg5MgndDZtrAaScmtjXm4-AX6y1np7V3p4ngBKZG-pw@mail.gmail.com>
- <0039e8e3-bfb7-43af-ab04-53aeaa02f4b0@linaro.org>
-In-Reply-To: <0039e8e3-bfb7-43af-ab04-53aeaa02f4b0@linaro.org>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Thu, 25 Jan 2024 10:28:46 +0100
-Message-ID: <CAMRc=MdXRm5UGu3abXXwtGhw5TG7NC0O5w6_X_RoZRH_C6YgdA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] gpiolib: add gpio_device_get_label() stub for !GPIOLIB
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Peter Rosin <peda@axentia.se>, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	stable@vger.kernel.org, kernel test robot <lkp@intel.com>, 
-	Philipp Zabel <p.zabel@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jan 25, 2024 at 10:14=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 25/01/2024 10:04, Bartosz Golaszewski wrote:
-> > On Thu, Jan 25, 2024 at 9:16=E2=80=AFAM Krzysztof Kozlowski
-> > <krzysztof.kozlowski@linaro.org> wrote:
-> >>
-> >> Add empty stub of gpio_device_get_label() when GPIOLIB is not enabled.
-> >>
-> >> Cc: <stable@vger.kernel.org>
-> >> Fixes: d1f7728259ef ("gpiolib: provide gpio_device_get_label()")
-> >> Suggested-by: kernel test robot <lkp@intel.com>
-> >> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> >>
-> >> ---
-> >>
-> >> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> >>
-> >> Reset framework will need it:
-> >> https://lore.kernel.org/oe-kbuild-all/202401250958.YksQmnWj-lkp@intel.=
-com/
-> >
-> > And I suppose you'll want an immutable branch for that?
->
-> I guess that's the question to Philipp, but other way could be an Ack.
->
+On Fri,  5 Jan 2024 21:46:18 +0300
+Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
 
-I prefer it to go through my tree in case of conflicts as I have a big
-refactor coming up. I'll give it a day or two on the list and set up a
-tag for Philipp.
+> SGT isn't refcounted. Once SGT pointer has been obtained, it remains the
+> same for both locked and unlocked get_pages_sgt(). Return cached SGT
+> directly without taking a potentially expensive lock.
+> 
+> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 
-Bartosz
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 
-> Best regards,
-> Krzysztof
->
+but I'm wondering if we should have made this change directly in
+'drm/shmem-helper: Change sgt allocation policy'.
+
+> ---
+>  drivers/gpu/drm/drm_gem_shmem_helper.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> index 8fd7851c088b..e6e6e693ab95 100644
+> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
+> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> @@ -962,6 +962,18 @@ struct sg_table *drm_gem_shmem_get_pages_sgt(struct drm_gem_shmem_object *shmem)
+>  	    drm_WARN_ON(obj->dev, drm_gem_shmem_is_purgeable(shmem)))
+>  		return ERR_PTR(-EBUSY);
+>  
+> +	/*
+> +	 * Drivers that use shrinker should take into account that shrinker
+> +	 * may relocate BO, thus invalidating the returned SGT pointer.
+> +	 * Such drivers should pin GEM while they use SGT.
+> +	 *
+> +	 * Drivers that don't use shrinker should take into account that
+> +	 * SGT is released together with the GEM pages. Pages should be kept
+> +	 * alive while SGT is used.
+> +	 */
+> +	if (shmem->sgt)
+> +		return shmem->sgt;
+> +
+>  	ret = dma_resv_lock_interruptible(shmem->base.resv, NULL);
+>  	if (ret)
+>  		return ERR_PTR(ret);
+
 
