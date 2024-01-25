@@ -1,169 +1,332 @@
-Return-Path: <linux-kernel+bounces-39304-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39303-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BB4283CE7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:25:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 285CA83CE74
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:24:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D03241F28729
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:25:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93F981F28362
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:24:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 769BE13A272;
-	Thu, 25 Jan 2024 21:24:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0078013A26D;
+	Thu, 25 Jan 2024 21:24:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="oDdGM3I/"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="WspdAUIE"
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B32D13A242;
-	Thu, 25 Jan 2024 21:24:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 470AF13A24C
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 21:24:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706217892; cv=none; b=pSEPLFxIfW05rskpy3nb2jLm2IQTMSLix/HN40WH3wNNekOMfirz27sxw0UV1Lrgk5BrXAmwkBAOaPAIW0EAcz1l51zmeKg51m8PcYF03vQaOWDsYfQQA0DGq4n3fmnwkdC1OoOvwqpA54kJCSjpBOUFT0FB/EULxXbvawf0Or8=
+	t=1706217864; cv=none; b=DHpJcL/s2YmblDAeWdB+OgXGCLJproQMiSuT1MsvFEOH0ZpedlweViIq6xIjILAqQ8Gy8eonrhwEaO5Jw57DXllAC5N2/jTnttaLd3Q7F69R7HmiooayxRxbXtamI+x+rgnF073MUXvfT5xdXWyBnfpaL/CvAhdsB6s+peEmFtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706217892; c=relaxed/simple;
-	bh=wF7lnyES1kcFW+pAAffY+2WrYEqI4AmwamSHD36HjYE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uIdbdaRqeNF3FpIaZHeRRSH1lR0tafzQ0lxW961wpxzkeZ3tOoIxE5hUQHhWC7RV8TOrifuhDJq0G2gIshsLMC7f+voTZYRVhFo/uUOPTyrAg1gOpLFk11MY2PLyTkL+2sexedZTCoyNpyfi9kJWclI+fRJnLx98gL3r+jS6y1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=oDdGM3I/; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40PKOsK4003822;
-	Thu, 25 Jan 2024 21:24:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=X4knlC7JqfUtxkp4byTD9WxtEc2D+QZ0DzKaY+9nXvc=;
- b=oDdGM3I/PlfVC3eEYZJUWpkehZIryqK8YI6DAmCPcpEmCGf4pqftn47xiYbX4I7mmDOG
- mWVnRwSabJfoF9QpArNrWfY/InQYzcZ5hdnhb5woY8A5JFE8sbFcU0DDTf7XYFPTz5X/
- kJ9toCpuWfdhs4ggGVSk8NYmLxwM9rTkg4iUjtxo7J2Oy4ebV9/GspiEZT8SYzQqFWkh
- V07dOnACOV4aDFftBOFcdUS3NH95HyQVxXcsepxWQj6FCYVtMYyNTbflCr9mtiPH1m/v
- n2jWNelNZqAuf8t/XmDixav+MiajfrHtUbKmydnzda+WTCr4zTfigZsc3+FtdHiYmqgF 3Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vuvv0v9fe-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Jan 2024 21:24:00 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40PLEhiB000766;
-	Thu, 25 Jan 2024 21:23:59 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vuvv0v9es-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Jan 2024 21:23:59 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40PK3JJQ025291;
-	Thu, 25 Jan 2024 21:23:58 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vrtqkpdva-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 25 Jan 2024 21:23:58 +0000
-Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
-	by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40PLNvY125887374
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 25 Jan 2024 21:23:58 GMT
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id CB36F58055;
-	Thu, 25 Jan 2024 21:23:57 +0000 (GMT)
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C17B358043;
-	Thu, 25 Jan 2024 21:23:56 +0000 (GMT)
-Received: from [9.61.160.70] (unknown [9.61.160.70])
-	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 25 Jan 2024 21:23:56 +0000 (GMT)
-Message-ID: <b5b0e7bd-25e5-49a4-8ac2-349020c2344b@linux.ibm.com>
-Date: Thu, 25 Jan 2024 15:23:56 -0600
+	s=arc-20240116; t=1706217864; c=relaxed/simple;
+	bh=tHMBMbsAsM3IXeBIrKPdzVCQltyNYuAPz6fP7IR+O8I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ORs4EshUGWyM/Agt9TnxHYC6eAPYgLjF+iZCd7mmj3KzTYpPmXNq6x56XZyXnLK397VOJmm8fR1UAMna3sacTFKX0oGlbboB9iBKtPXRecPoZt3ljwgm5lPbACMOAAkA852dIjqkTfQJXwoAbjLjctFLWlnzSEvD+SmTVsOqr0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=WspdAUIE; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5c229dabbb6so3018222a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 13:24:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706217861; x=1706822661; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=iZoT2G19TBg11JNaEabcqd35tlnxoe/xDz/ZFeMpMZQ=;
+        b=WspdAUIEb77G5QPdkXdLpWooF/wcW8YHG9eDseiHXKlOlo9DEq6rb/B32H4MSiIKbo
+         1hPW1jfR8fKBuUF8VA9a+W05Drso1f69RLZKPeZYUJ6Wsqb7tkKqS/JpLKK6BO2MHqc3
+         1E1oviIjaI48/VMcBFX6EQi3LCNletDb8tZatecr+6V6CVwbtM9bIafaaNo3CXBm+rqS
+         zsG6FYjyvQVwP1XROUTpdU1gpJMiscap6uU/QwoAtngvZHbNLus5+84ihOIHr/wo8wZ6
+         JxIvarVUw0zDV5RiNm29xepkaIrgfTA3UsjGqrp0mtjf6XbAxpx7fJtsPmXwuZp1lKGY
+         xXPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706217861; x=1706822661;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iZoT2G19TBg11JNaEabcqd35tlnxoe/xDz/ZFeMpMZQ=;
+        b=Ob7Cm9hCmeFIaeFttFrJLHkl4b6amNDuNl/8UgXUKxyTT/5kE1v2wjAF884Nvo/eql
+         /pHJyl/1vQ0trKT5f5EaEo25kTK8nGJZELOCxIGYj5lzPm5qd2IsHrXr65MQI3PZx/dc
+         Wv6Fghvyo/EyB1452UTTSw/qDaG+zEiPAwmkVj7Z+R8SNtQMqBkcT1Q9tN3/qoczIWWV
+         DntAjKqdGutcvHy26ZNT3stwRWBVUKY4PwT8rt7zxyyNpyyIuL7MGWmlMqKNSBbvnLNv
+         Asahxnwtb7CvBfNxrlDMlEG0K1HcFB9XcIMw4b7KoXIk8vQIkfGqmxostADhEXjoSL0L
+         GD+Q==
+X-Gm-Message-State: AOJu0YwF2hNPKilpodoiOs5Z1vuSI/yYUMW5y6jJGHAztFTioNAsg3w9
+	gyGw3pzCn4nBBuzpuh4DPnR0vTscDCjVNV9l3YCgS74CK1U8HM75qd6DuAtBPhM=
+X-Google-Smtp-Source: AGHT+IGvjaE/JTMbYh7Rdf5yyt9F1/RX+/vud6/Lnw+WvAKkovbLy31AhW1vaTpjsJmHDLgapvOZag==
+X-Received: by 2002:a17:902:db09:b0:1d0:98d8:955c with SMTP id m9-20020a170902db0900b001d098d8955cmr344975plx.124.1706217861416;
+        Thu, 25 Jan 2024 13:24:21 -0800 (PST)
+Received: from ghost ([12.44.203.122])
+        by smtp.gmail.com with ESMTPSA id ml5-20020a17090334c500b001d8921f2058sm989116plb.205.2024.01.25.13.24.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 13:24:21 -0800 (PST)
+Date: Thu, 25 Jan 2024 13:24:16 -0800
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: debug@rivosinc.com
+Cc: rick.p.edgecombe@intel.com, broonie@kernel.org, Szabolcs.Nagy@arm.com,
+	kito.cheng@sifive.com, keescook@chromium.org,
+	ajones@ventanamicro.com, paul.walmsley@sifive.com,
+	palmer@dabbelt.com, conor.dooley@microchip.com, cleger@rivosinc.com,
+	atishp@atishpatra.org, alex@ghiti.fr, bjorn@rivosinc.com,
+	alexghiti@rivosinc.com, corbet@lwn.net, aou@eecs.berkeley.edu,
+	oleg@redhat.com, akpm@linux-foundation.org, arnd@arndb.de,
+	ebiederm@xmission.com, shuah@kernel.org, brauner@kernel.org,
+	guoren@kernel.org, samitolvanen@google.com, evan@rivosinc.com,
+	xiao.w.wang@intel.com, apatel@ventanamicro.com,
+	mchitale@ventanamicro.com, waylingii@gmail.com,
+	greentime.hu@sifive.com, heiko@sntech.de, jszhang@kernel.org,
+	shikemeng@huaweicloud.com, david@redhat.com,
+	panqinglin2020@iscas.ac.cn, willy@infradead.org,
+	vincent.chen@sifive.com, andy.chiu@sifive.com, gerg@kernel.org,
+	jeeheng.sia@starfivetech.com, mason.huo@starfivetech.com,
+	ancientmodern4@gmail.com, mathis.salmen@matsal.de,
+	cuiyunhui@bytedance.com, bhe@redhat.com, chenjiahao16@huawei.com,
+	ruscur@russell.cc, bgray@linux.ibm.com, alx@kernel.org,
+	baruch@tkos.co.il, zhangqing@loongson.cn, catalin.marinas@arm.com,
+	revest@chromium.org, josh@joshtriplett.org, joey.gouly@arm.com,
+	shr@devkernel.io, omosnace@redhat.com, ojeda@kernel.org,
+	jhubbard@nvidia.com, linux-doc@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux-arch@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH v1 15/28] riscv/mm: Implement map_shadow_stack()
+ syscall
+Message-ID: <ZbLRgEVZvh7LE+k/@ghost>
+References: <20240125062739.1339782-1-debug@rivosinc.com>
+ <20240125062739.1339782-16-debug@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/3] ARM: dts: aspeed: System1: IBM system1 BMC board
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        joel@jms.id.au, andrew@codeconstruct.com.au, peterhuewe@gmx.de,
-        jarkko@kernel.org, jgg@ziepe.ca, keescook@chromium.org,
-        tony.luck@intel.com, gpiccoli@igalia.com,
-        johannes.holland@infineon.com, linux@roeck-us.net, broonie@kernel.org,
-        andre.werner@systec-electronic.com,
-        Andrew Geissler <geissonator@yahoo.com>, patrick.rudolph@9elements.com,
-        vincent@vtremblay.dev, peteryin.openbmc@gmail.com, lakshmiy@us.ibm.com,
-        bhelgaas@google.com, naresh.solanki@9elements.com,
-        alexander.stein@ew.tq-group.com, festevam@denx.de,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-hardening@vger.kernel.org,
-        geert+renesas@glider.be, luca.ceresoli@bootlin.com
-References: <20240116190321.GA102334@bhelgaas>
-Content-Language: en-US
-From: Ninad Palsule <ninad@linux.ibm.com>
-In-Reply-To: <20240116190321.GA102334@bhelgaas>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: wUZ0cU7yrFT0wEjuA747LiOyYUO_dYd_
-X-Proofpoint-GUID: HJm4xSjPhV2NU6Q64V5KJgHDqN0uwgdU
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-25_14,2024-01-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 mlxscore=0
- adultscore=0 phishscore=0 clxscore=1011 priorityscore=1501 impostorscore=0
- suspectscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2401250154
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240125062739.1339782-16-debug@rivosinc.com>
 
-Hello Bjorn,
+On Wed, Jan 24, 2024 at 10:21:40PM -0800, debug@rivosinc.com wrote:
+> From: Deepak Gupta <debug@rivosinc.com>
+> 
+> As discussed extensively in the changelog for the addition of this
+> syscall on x86 ("x86/shstk: Introduce map_shadow_stack syscall") the
+> existing mmap() and madvise() syscalls do not map entirely well onto the
+> security requirements for guarded control stacks since they lead to
+> windows where memory is allocated but not yet protected or stacks which
+> are not properly and safely initialised. Instead a new syscall
+> map_shadow_stack() has been defined which allocates and initialises a
+> shadow stack page.
+> 
+> This patch implements this syscall for riscv. riscv doesn't require token
+> to be setup by kernel because user mode can do that by itself. However to
+> provide compatiblity and portability with other architectues, user mode can
+> specify token set flag.
+> 
+> Signed-off-by: Deepak Gupta <debug@rivosinc.com>
+> ---
+>  arch/riscv/kernel/Makefile      |   2 +
+>  arch/riscv/kernel/usercfi.c     | 150 ++++++++++++++++++++++++++++++++
+>  include/uapi/asm-generic/mman.h |   1 +
+>  3 files changed, 153 insertions(+)
+>  create mode 100644 arch/riscv/kernel/usercfi.c
+> 
+> diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+> index fee22a3d1b53..8c668269e886 100644
+> --- a/arch/riscv/kernel/Makefile
+> +++ b/arch/riscv/kernel/Makefile
+> @@ -102,3 +102,5 @@ obj-$(CONFIG_COMPAT)		+= compat_vdso/
+>  
+>  obj-$(CONFIG_64BIT)		+= pi/
+>  obj-$(CONFIG_ACPI)		+= acpi.o
+> +
+> +obj-$(CONFIG_RISCV_USER_CFI) += usercfi.o
+> diff --git a/arch/riscv/kernel/usercfi.c b/arch/riscv/kernel/usercfi.c
+> new file mode 100644
+> index 000000000000..35ede2cbc05b
+> --- /dev/null
+> +++ b/arch/riscv/kernel/usercfi.c
+> @@ -0,0 +1,150 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2023 Rivos, Inc.
+Nit: Should be updated to 2024
+> + * Deepak Gupta <debug@rivosinc.com>
+> + */
+> +
+> +#include <linux/sched.h>
+> +#include <linux/bitops.h>
+> +#include <linux/types.h>
+> +#include <linux/mm.h>
+> +#include <linux/mman.h>
+> +#include <linux/uaccess.h>
+> +#include <linux/sizes.h>
+> +#include <linux/user.h>
+> +#include <linux/syscalls.h>
+> +#include <linux/prctl.h>
+> +#include <asm/csr.h>
+> +#include <asm/usercfi.h>
+> +
+> +#define SHSTK_ENTRY_SIZE sizeof(void *)
+> +
+> +/*
+> + * Writes on shadow stack can either be `sspush` or `ssamoswap`. `sspush` can happen
+> + * implicitly on current shadow stack pointed to by CSR_SSP. `ssamoswap` takes pointer to
+> + * shadow stack. To keep it simple, we plan to use `ssamoswap` to perform writes on shadow
+> + * stack.
+> + */
+> +static noinline unsigned long amo_user_shstk(unsigned long *addr, unsigned long val)
+> +{
+> +	/*
+> +	 * In case ssamoswap faults, return -1.
+> +	 * Never expect -1 on shadow stack. Expect return addresses and zero
+> +	 */
+> +	unsigned long swap = -1;
+> +
+> +	__enable_user_access();
+> +	asm_volatile_goto(
+> +				".option push\n"
+> +				".option arch, +zicfiss\n"
+> +#ifdef CONFIG_64BIT
+> +				"1: ssamoswap.d %0, %2, %1\n"
+> +#else
+> +				"1: ssamoswap.w %0, %2, %1\n"
 
-On 1/16/24 13:03, Bjorn Helgaas wrote:
-> On Tue, Jan 16, 2024 at 12:37:34PM -0600, Ninad Palsule wrote:
->> From: Andrew Geissler <geissonator@yahoo.com>
->>
->> Add a device tree for IBM system1 BMC board. It uses AST2600 SOC.
->> - Added base board
-> s/Added/Add/ to match first sentence.
-Fixed
->
->> - Added i2c devices and muxes.
->> - Added different voltage regulators.
->> - Added GPIO pin assignements, GPIO expansion devices
->> - Added LED brinker devices
-> "brinker"?  "blinker" maybe (no idea what it actually is).
-Fixed. Its blinker.
->> - Added Fan controllers
-> s/Fan/fan/
-Fixed.
->
->> - Added EEPROM/VPD
->> - Added Power supplies
-> s/Power/power/
-Fixed.
->
->> - Added Humidity, pressure and temperature sensors.
-> s/Humidity/humidity/
-Fixed.
->
->> - Added Trusted platform module(TPM) chip.
-> s/Trusted platform module/Trusted Platform Module /
-Fixed
->
->> Tested:
->>      This board is tested using the simics simulator.
->>
->> Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
->> Signed-off-by: Andrew Geissler <geissonator@yahoo.com>
-> Your sign-off should be last since you are sending the series.
+A SSAMOSWAP macro that conditionally defines this would be cleaner
 
-Fixed.
+> +#endif
+> +				_ASM_EXTABLE(1b, %l[fault])
+> +				RISCV_ACQUIRE_BARRIER
+> +				".option pop\n"
+> +				: "=r" (swap), "+A" (*addr)
 
-Thanks for the review.
+I just ran into this on one of my patches that not every compiler
+supports output args in asm goto blocks. You need to guard this with the
+kconfig option CC_HAS_ASM_GOTO_TIED_OUTPUT. Unfortunately, that means
+that this code needs two versions, or you can choose to gate CFI behind
+this option, it's supported by recent versions of GCC/CLANG.
 
-Regards,
+For readability it is also nice to use labels for the asm variables such
+as `"=r" (swap)` can be `[swap] "=r" (swap)` and then replace %0 with
+%[swap].
 
-Ninad Palsule
+- Charlie
 
-
+> +				: "r" (val)
+> +				: "memory"
+> +				: fault
+> +			);
+> +	__disable_user_access();
+> +	return swap;
+> +fault:
+> +	__disable_user_access();
+> +	return -1;
+> +}
+> +
+> +/*
+> + * Create a restore token on the shadow stack.  A token is always XLEN wide
+> + * and aligned to XLEN.
+> + */
+> +static int create_rstor_token(unsigned long ssp, unsigned long *token_addr)
+> +{
+> +	unsigned long addr;
+> +
+> +	/* Token must be aligned */
+> +	if (!IS_ALIGNED(ssp, SHSTK_ENTRY_SIZE))
+> +		return -EINVAL;
+> +
+> +	/* On RISC-V we're constructing token to be function of address itself */
+> +	addr = ssp - SHSTK_ENTRY_SIZE;
+> +
+> +	if (amo_user_shstk((unsigned long __user *)addr, (unsigned long) ssp) == -1)
+> +		return -EFAULT;
+> +
+> +	if (token_addr)
+> +		*token_addr = addr;
+> +
+> +	return 0;
+> +}
+> +
+> +static unsigned long allocate_shadow_stack(unsigned long addr, unsigned long size,
+> +				unsigned long token_offset,
+> +				bool set_tok)
+> +{
+> +	int flags = MAP_ANONYMOUS | MAP_PRIVATE;
+> +	struct mm_struct *mm = current->mm;
+> +	unsigned long populate, tok_loc = 0;
+> +
+> +	if (addr)
+> +		flags |= MAP_FIXED_NOREPLACE;
+> +
+> +	mmap_write_lock(mm);
+> +	addr = do_mmap(NULL, addr, size, PROT_SHADOWSTACK, flags,
+> +				VM_SHADOW_STACK, 0, &populate, NULL);
+> +	mmap_write_unlock(mm);
+> +
+> +	if (!set_tok || IS_ERR_VALUE(addr))
+> +		goto out;
+> +
+> +	if (create_rstor_token(addr + token_offset, &tok_loc)) {
+> +		vm_munmap(addr, size);
+> +		return -EINVAL;
+> +	}
+> +
+> +	addr = tok_loc;
+> +
+> +out:
+> +	return addr;
+> +}
+> +
+> +SYSCALL_DEFINE3(map_shadow_stack, unsigned long, addr, unsigned long, size, unsigned int, flags)
+> +{
+> +	bool set_tok = flags & SHADOW_STACK_SET_TOKEN;
+> +	unsigned long aligned_size = 0;
+> +
+> +	if (!cpu_supports_shadow_stack())
+> +		return -EOPNOTSUPP;
+> +
+> +	/* Anything other than set token should result in invalid param */
+> +	if (flags & ~SHADOW_STACK_SET_TOKEN)
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * Unlike other architectures, on RISC-V, SSP pointer is held in CSR_SSP and is available
+> +	 * CSR in all modes. CSR accesses are performed using 12bit index programmed in instruction
+> +	 * itself. This provides static property on register programming and writes to CSR can't
+> +	 * be unintentional from programmer's perspective. As long as programmer has guarded areas
+> +	 * which perform writes to CSR_SSP properly, shadow stack pivoting is not possible. Since
+> +	 * CSR_SSP is writeable by user mode, it itself can setup a shadow stack token subsequent
+> +	 * to allocation. Although in order to provide portablity with other architecture (because
+> +	 * `map_shadow_stack` is arch agnostic syscall), RISC-V will follow expectation of a token
+> +	 * flag in flags and if provided in flags, setup a token at the base.
+> +	 */
+> +
+> +	/* If there isn't space for a token */
+> +	if (set_tok && size < SHSTK_ENTRY_SIZE)
+> +		return -ENOSPC;
+> +
+> +	if (addr && (addr % PAGE_SIZE))
+> +		return -EINVAL;
+> +
+> +	aligned_size = PAGE_ALIGN(size);
+> +	if (aligned_size < size)
+> +		return -EOVERFLOW;
+> +
+> +	return allocate_shadow_stack(addr, aligned_size, size, set_tok);
+> +}
+> diff --git a/include/uapi/asm-generic/mman.h b/include/uapi/asm-generic/mman.h
+> index 57e8195d0b53..0c0ac6214de6 100644
+> --- a/include/uapi/asm-generic/mman.h
+> +++ b/include/uapi/asm-generic/mman.h
+> @@ -19,4 +19,5 @@
+>  #define MCL_FUTURE	2		/* lock all future mappings */
+>  #define MCL_ONFAULT	4		/* lock all pages that are faulted in */
+>  
+> +#define SHADOW_STACK_SET_TOKEN (1ULL << 0)     /* Set up a restore token in the shadow stack */
+>  #endif /* __ASM_GENERIC_MMAN_H */
+> -- 
+> 2.43.0
+> 
 
