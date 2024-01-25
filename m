@@ -1,83 +1,74 @@
-Return-Path: <linux-kernel+bounces-38359-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38363-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91EF483BE48
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:06:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AA9F83BE54
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:08:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21B1B1F22D7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:06:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39893293FF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:08:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 097BD1CABC;
-	Thu, 25 Jan 2024 10:05:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B30E31C6BF;
+	Thu, 25 Jan 2024 10:08:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ZGZX7DLS"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="gu4ok8ca"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 991891C6AB;
-	Thu, 25 Jan 2024 10:05:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E33F91C6AB;
+	Thu, 25 Jan 2024 10:08:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706177156; cv=none; b=H/aQ5L2C1/t04js0flbg2ivLO5iBcNkI61RC2VsLMlh/AVxOFDNW4dYt8SB2cCa1WY/c3c8zYhJxMSIJle2kqqf+vW5ZYVimnEwTFrpiGVolBr8bLInqtmbSjxD0PEjHMMfo34d3MPHlo1kRnMKXkUvyPDmZuKouC6PVqFkhCrw=
+	t=1706177303; cv=none; b=oiZkTw5k1I4E/7/oRJp5fUc6STAkqGb7Qp3lZAmtwNQpTSMNUPZU3Qu32AAiA8stlqoC8TGjxXcKn687CP6mzJetChCM3xrwIkZ4BI5xgOGk1wuPCLcJ3LlWp3TGENPdg56ra24wdkMyA9krJNsmnnYSMGthdh0xoZ1zr5R2GbE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706177156; c=relaxed/simple;
-	bh=c5GlTcVsIcPhCRJCpqIoAGFuw7rgWBqy6nAzdAEPXVU=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TIZsBwmgekEUJfQ63htfQsYCBZxnNibJ66JjX/0qyvcTmOc+FHtcp1uLQhGl11UKYfLFg0lEaAfASAo2RTEg2hXgma6hx7Z4Aso53h2apEVcEdOcvmYustoGyqJTfhCY/DNkUfasRj8YLnCleKeFYA8OvDeGSHQNPUBk4WnBblQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=ZGZX7DLS; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 40PA5LLb069411;
-	Thu, 25 Jan 2024 04:05:21 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1706177121;
-	bh=GCYtRKqYRCQZAdxhPg4iYh8uQa4d3MRruLSrphd47nY=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=ZGZX7DLSGfLVifD+pwFol4XEM+pfn2stCGpE+ygYl5yOnNVLuOWjG7LBNoCVJ2bBN
-	 BeqTFzrs2/UKh6xvSMVj6l7JYGQsyxlY6MhtLI6KAJ8/E8n6mHv4DQZ7uIp6DsOkvc
-	 k1paaZI98snVDGG/tWcCv5nwIzjVdmM5yP9KlQaw=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 40PA5L0K045511
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 25 Jan 2024 04:05:21 -0600
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 25
- Jan 2024 04:05:21 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 25 Jan 2024 04:05:21 -0600
-Received: from localhost (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.227.220])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 40PA5KZW056416;
-	Thu, 25 Jan 2024 04:05:20 -0600
-From: Chintan Vankar <c-vankar@ti.com>
-To: Andrew Davis <afd@ti.com>, Peter Rosin <peda@axentia.se>,
-        Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, Tero
- Kristo <kristo@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>, Nishanth
- Menon <nm@ti.com>
-CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
-        <s-vadapalli@ti.com>, <r-gunasekaran@ti.com>, <danishanwar@ti.com>,
-        Chintan Vankar
-	<c-vankar@ti.com>
-Subject: [PATCH v3 5/5] arm64: dts: ti: k3-j784s4: Add overlay for dual port USXGMII mode
-Date: Thu, 25 Jan 2024 15:35:01 +0530
-Message-ID: <20240125100501.4137977-6-c-vankar@ti.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240125100501.4137977-1-c-vankar@ti.com>
-References: <20240125100501.4137977-1-c-vankar@ti.com>
+	s=arc-20240116; t=1706177303; c=relaxed/simple;
+	bh=X0qq5ZaVDzahs2+lbQaAYhW2wnzFrplz3eF7XvHPfSY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=J7XKhqgpwpMlZl9OgwwxEEf3MAJ/1BRQ8fCbSsA1PNAZCpl/yvqlgaReMTRUJ1/X2rIdKtX8j39ilPUIstsCmCSnxPVGMdJLA2YknH655NuQqYFYKXMLS12v6oQbMzwuP2ZN2QBhWkP6Dt8FPvkcAMNc0AE7kdI/uiMjMRwlvaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=gu4ok8ca; arc=none smtp.client-ip=68.232.154.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1706177300; x=1737713300;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=X0qq5ZaVDzahs2+lbQaAYhW2wnzFrplz3eF7XvHPfSY=;
+  b=gu4ok8cavgX9ltu43twFi+e+CPjnFtDFHQRJhrePzLK3g4uPWThpYR4Z
+   oRYEGmhsLkaK4SF1V3naRyZ3AlmWjRp3VjYr7ITBsQyocQXVrtFUGwjjR
+   A25hD9+nXNQuyLAoM4SuVAqk+0b7alkEtzNeNtbJm1awyuedu0r7aksWz
+   yqJ45T8C1GAsVC0wYKNucfZqH6qw0UcHe6nAk0H2sds7wY4iLyv0ZrLy+
+   5ga/aQpywqoxonP8AEyhbXSs2hksKqvw/9Tbe4DX0XVAZ8PMyKldc1QWs
+   Mta/wEron2KwmOl+wm2brLZU80I9ynJ3fGc2N5AQaMOViSOZmolF3I3ej
+   g==;
+X-CSE-ConnectionGUID: XzFUEa+2R8WssLIbT7r3rw==
+X-CSE-MsgGUID: /WxQOswXQBeea8jiQrnz6g==
+X-IronPort-AV: E=Sophos;i="6.05,216,1701154800"; 
+   d="scan'208";a="182516535"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 25 Jan 2024 03:08:14 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 25 Jan 2024 03:08:14 -0700
+Received: from che-dk-ungapp03lx.microchip.com (10.10.85.11) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Thu, 25 Jan 2024 03:08:09 -0700
+From: Rengarajan S <rengarajan.s@microchip.com>
+To: <kumaravel.thiagarajan@microchip.com>,
+	<tharunkumar.pasumarthi@microchip.com>, <gregkh@linuxfoundation.org>,
+	<jirislaby@kernel.org>, <ilpo.jarvinen@linux.intel.com>,
+	<andriy.shevchenko@linux.intel.com>, <f.fainelli@gmail.com>,
+	<john.ogness@linutronix.de>, <tony@atomide.com>, <tglx@linutronix.de>,
+	<jiaqing.zhao@linux.intel.com>, <linux-serial@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+CC: <UNGLinuxDriver@microchip.com>
+Subject: [PATCH v1 tty] 8250: microchip: Add 4 Mbps support in PCI1XXXX UART
+Date: Thu, 25 Jan 2024 15:36:19 +0530
+Message-ID: <20240125100619.154873-1-rengarajan.s@microchip.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -86,137 +77,133 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
+The current clock input is set to 62.5 MHz for supporting fractional
+divider, which enables generation of an acceptable baud rate from any
+frequency. With the current clock input the baud rate range is limited
+to 3.9 Mbps. Hence, the current range is extended to support 4 Mbps
+with Burst mode operation. Divisor calculation for a given baud rate is
+updated as the sampling rate is reduced from 16 to 8 for 4 Mbps.
 
-The CPSW9G instance of the CPSW Ethernet Switch supports USXGMII mode
-with MAC Ports 1 and 2 of the instance, which are connected to ENET
-Expansion 1 and ENET Expansion 2 slots on the EVM respectively, through
-the Serdes2 instance of the SERDES.
-
-Enable CPSW9G MAC Ports 1 and 2 in fixed-link configuration USXGMII mode
-at 5 Gbps each.
-
-Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
-Signed-off-by: Chintan Vankar <c-vankar@ti.com>
+Signed-off-by: Rengarajan S <rengarajan.s@microchip.com>
 ---
- arch/arm64/boot/dts/ti/Makefile               |  6 +-
- .../ti/k3-j784s4-evm-usxgmii-exp1-exp2.dtso   | 73 +++++++++++++++++++
- 2 files changed, 78 insertions(+), 1 deletion(-)
- create mode 100644 arch/arm64/boot/dts/ti/k3-j784s4-evm-usxgmii-exp1-exp2.dtso
+ drivers/tty/serial/8250/8250_pci1xxxx.c | 34 +++++++++++++++++++++----
+ drivers/tty/serial/8250/8250_port.c     |  7 +++++
+ 2 files changed, 36 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index 836bc197d932..97be325235dc 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -82,6 +82,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-j721s2-evm-pcie1-ep.dtbo
- dtb-$(CONFIG_ARCH_K3) += k3-am69-sk.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-j784s4-evm.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-j784s4-evm-quad-port-eth-exp1.dtbo
-+dtb-$(CONFIG_ARCH_K3) += k3-j784s4-evm-usxgmii-exp1-exp2.dtbo
+diff --git a/drivers/tty/serial/8250/8250_pci1xxxx.c b/drivers/tty/serial/8250/8250_pci1xxxx.c
+index d53605bf908d..6cfeba058dba 100644
+--- a/drivers/tty/serial/8250/8250_pci1xxxx.c
++++ b/drivers/tty/serial/8250/8250_pci1xxxx.c
+@@ -82,7 +82,8 @@
+ #define ADCL_CFG_PIN_SEL			BIT(1)
+ #define ADCL_CFG_EN				BIT(0)
  
- # Build time test only, enabled by CONFIG_OF_ALL_DTBS
- k3-am625-beagleplay-csi2-ov5640-dtbs := k3-am625-beagleplay.dtb \
-@@ -112,6 +113,8 @@ k3-j721s2-evm-pcie1-ep-dtbs := k3-j721s2-common-proc-board.dtb \
- 	k3-j721s2-evm-pcie1-ep.dtbo
- k3-j784s4-evm-quad-port-eth-exp1-dtbs := k3-j784s4-evm.dtb \
- 	k3-j784s4-evm-quad-port-eth-exp1.dtbo
-+k3-j784s4-evm-usxgmii-exp1-exp2.dtbs := k3-j784s4-evm.dtb \
-+	k3-j784s4-evm-usxgmii-exp1-exp2.dtbo
- dtb- += k3-am625-beagleplay-csi2-ov5640.dtb \
- 	k3-am625-beagleplay-csi2-tevi-ov5640.dtb \
- 	k3-am625-sk-csi2-imx219.dtb \
-@@ -125,7 +128,8 @@ dtb- += k3-am625-beagleplay-csi2-ov5640.dtb \
- 	k3-am642-tqma64xxl-mbax4xxl-wlan.dtb \
- 	k3-j721e-evm-pcie0-ep.dtb \
- 	k3-j721s2-evm-pcie1-ep.dtb \
--	k3-j784s4-evm-quad-port-eth-exp1.dtb
-+	k3-j784s4-evm-quad-port-eth-exp1.dtb \
-+	k3-j784s4-evm-usxgmii-exp1-exp2.dtb
+-#define UART_BIT_SAMPLE_CNT			16
++#define UART_BIT_SAMPLE_CNT_8			8
++#define UART_BIT_SAMPLE_CNT_16			16
+ #define BAUD_CLOCK_DIV_INT_MSK			GENMASK(31, 8)
+ #define ADCL_CFG_RTS_DELAY_MASK			GENMASK(11, 8)
+ #define UART_CLOCK_DEFAULT			(62500 * HZ_PER_KHZ)
+@@ -96,6 +97,7 @@
+ 	(UART_WAKE_N_PIN | UART_WAKE_NCTS | UART_WAKE_INT)
  
- # Enable support for device-tree overlays
- DTC_FLAGS_k3-am625-beagleplay += -@
-diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm-usxgmii-exp1-exp2.dtso b/arch/arm64/boot/dts/ti/k3-j784s4-evm-usxgmii-exp1-exp2.dtso
-new file mode 100644
-index 000000000000..e51381f0a265
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm-usxgmii-exp1-exp2.dtso
-@@ -0,0 +1,73 @@
-+/* SPDX-License-Identifier: GPL-2.0-only OR MIT */
-+/**
-+ * DT Overlay for CPSW9G in dual port fixed-link USXGMII mode using ENET-1
-+ * and ENET-2 Expansion slots of J784S4 EVM.
-+ *
-+ * Copyright (C) 2024 Texas Instruments Incorporated - https://www.ti.com/
-+ */
+ #define UART_BAUD_CLK_DIVISOR_REG		0x54
++#define FRAC_DIV_CFG_REG			0x58
+ 
+ #define UART_RESET_REG				0x94
+ #define UART_RESET_D3_RESET_DISABLE		BIT(16)
+@@ -104,6 +106,10 @@
+ #define UART_TX_BURST_FIFO			0xA0
+ #define UART_RX_BURST_FIFO			0xA4
+ 
++#define UART_BIT_DIVISOR_8			0x26731000
++#define UART_BIT_DIVISOR_16			0x6ef71000
++#define UART_BAUD_4MBPS				4000000
 +
-+/dts-v1/;
-+/plugin/;
+ #define MAX_PORTS				4
+ #define PORT_OFFSET				0x100
+ #define RX_BUF_SIZE				512
+@@ -210,15 +216,24 @@ static int pci1xxxx_get_num_ports(struct pci_dev *dev)
+ static unsigned int pci1xxxx_get_divisor(struct uart_port *port,
+ 					 unsigned int baud, unsigned int *frac)
+ {
++	unsigned int uart_sample_cnt;
+ 	unsigned int quot;
+ 
++	if (baud >= UART_BAUD_4MBPS) {
++		uart_sample_cnt = UART_BIT_SAMPLE_CNT_8;
++		writel(UART_BIT_DIVISOR_8, (port->membase + FRAC_DIV_CFG_REG));
++	} else {
++		uart_sample_cnt = UART_BIT_SAMPLE_CNT_16;
++		writel(UART_BIT_DIVISOR_16, (port->membase + FRAC_DIV_CFG_REG));
++	}
 +
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/phy/phy-cadence.h>
-+#include <dt-bindings/phy/phy.h>
+ 	/*
+ 	 * Calculate baud rate sampling period in nanoseconds.
+ 	 * Fractional part x denotes x/255 parts of a nanosecond.
+ 	 */
+-	quot = NSEC_PER_SEC / (baud * UART_BIT_SAMPLE_CNT);
+-	*frac = (NSEC_PER_SEC - quot * baud * UART_BIT_SAMPLE_CNT) *
+-		  255 / UART_BIT_SAMPLE_CNT / baud;
++	quot = NSEC_PER_SEC / (baud * uart_sample_cnt);
++	*frac = (NSEC_PER_SEC - quot * baud * uart_sample_cnt) *
++		  255 / uart_sample_cnt / baud;
+ 
+ 	return quot;
+ }
+@@ -237,7 +252,16 @@ static int pci1xxxx_rs485_config(struct uart_port *port,
+ 	u32 delay_in_baud_periods;
+ 	u32 baud_period_in_ns;
+ 	u32 mode_cfg = 0;
++	u32 sample_cnt;
+ 	u32 clock_div;
++	u32 frac_div;
 +
-+#include "k3-serdes.h"
++	frac_div = readl(port->membase + FRAC_DIV_CFG_REG);
 +
-+&main_cpsw0 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+};
++	if (frac_div == UART_BIT_DIVISOR_16)
++		sample_cnt = UART_BIT_SAMPLE_CNT_16;
++	else
++		sample_cnt = UART_BIT_SAMPLE_CNT_8;
+ 
+ 	/*
+ 	 * pci1xxxx's uart hardware supports only RTS delay after
+@@ -253,7 +277,7 @@ static int pci1xxxx_rs485_config(struct uart_port *port,
+ 			clock_div = readl(port->membase + UART_BAUD_CLK_DIVISOR_REG);
+ 			baud_period_in_ns =
+ 				FIELD_GET(BAUD_CLOCK_DIV_INT_MSK, clock_div) *
+-				UART_BIT_SAMPLE_CNT;
++				sample_cnt;
+ 			delay_in_baud_periods =
+ 				rs485->delay_rts_after_send * NSEC_PER_MSEC /
+ 				baud_period_in_ns;
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+index 925ee1d61afb..2a85bc9475f9 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -2688,6 +2688,7 @@ static unsigned int serial8250_get_baud_rate(struct uart_port *port,
+ 					     struct ktermios *termios,
+ 					     const struct ktermios *old)
+ {
++	struct uart_8250_port *up = up_to_u8250p(port);
+ 	unsigned int tolerance = port->uartclk / 100;
+ 	unsigned int min;
+ 	unsigned int max;
+@@ -2705,6 +2706,12 @@ static unsigned int serial8250_get_baud_rate(struct uart_port *port,
+ 		max = (port->uartclk + tolerance) / 16;
+ 	}
+ 
++	/*
++	 * Microchip PCI1XXXX UART supports maximum baud rate up to 4 Mbps
++	 */
++	if (up->port.type == PORT_MCHP16550A)
++		max = 4000000;
 +
-+&main_cpsw0_port1 {
-+	status = "okay";
-+	phy-mode = "usxgmii";
-+	mac-address = [00 00 00 00 00 00];
-+	phys = <&cpsw0_phy_gmii_sel 1>, <&serdes2_usxgmii_link>;
-+	phy-names = "mac", "serdes";
-+	fixed-link {
-+		speed = <5000>;
-+		full-duplex;
-+	};
-+};
-+
-+&main_cpsw0_port2 {
-+	status = "okay";
-+	phy-mode = "usxgmii";
-+	mac-address = [00 00 00 00 00 00];
-+	phys = <&cpsw0_phy_gmii_sel 2>, <&serdes2_usxgmii_link>;
-+	phy-names = "mac", "serdes";
-+	fixed-link {
-+		speed = <5000>;
-+		full-duplex;
-+	};
-+};
-+
-+&serdes_wiz2 {
-+	status = "okay";
-+	assigned-clock-parents = <&k3_clks 406 9>; /* Use 156.25 MHz clock for USXGMII */
-+};
-+
-+&serdes2 {
-+	status = "okay";
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	serdes2_usxgmii_link: phy@2 {
-+		reg = <2>;
-+		cdns,num-lanes = <2>;
-+		#phy-cells = <0>;
-+		cdns,phy-type = <PHY_TYPE_USXGMII>;
-+		resets = <&serdes_wiz2 3>, <&serdes_wiz2 4>;
-+	};
-+};
-+
-+&serdes_ln_ctrl {
-+	idle-states = <J784S4_SERDES0_LANE0_PCIE1_LANE0>, <J784S4_SERDES0_LANE1_PCIE1_LANE1>,
-+		      <J784S4_SERDES0_LANE2_IP3_UNUSED>, <J784S4_SERDES0_LANE3_USB>,
-+		      <J784S4_SERDES1_LANE0_PCIE0_LANE0>, <J784S4_SERDES1_LANE1_PCIE0_LANE1>,
-+		      <J784S4_SERDES1_LANE2_PCIE0_LANE2>, <J784S4_SERDES1_LANE3_PCIE0_LANE3>,
-+		      <J784S4_SERDES2_LANE0_IP2_UNUSED>, <J784S4_SERDES2_LANE1_IP2_UNUSED>,
-+		      <J784S4_SERDES2_LANE2_QSGMII_LANE1>, <J784S4_SERDES2_LANE3_QSGMII_LANE2>;
-+};
+ 	/*
+ 	 * Ask the core to calculate the divisor for us.
+ 	 * Allow 1% tolerance at the upper limit so uart clks marginally
 -- 
-2.34.1
+2.25.1
 
 
