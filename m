@@ -1,39 +1,39 @@
-Return-Path: <linux-kernel+bounces-38834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38836-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE59E83C6B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:33:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67F5883C6BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:33:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EA9928D7B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:33:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FCDD1F2385E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:33:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A630874E3C;
-	Thu, 25 Jan 2024 15:32:08 +0000 (UTC)
-Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F41B77F02;
+	Thu, 25 Jan 2024 15:32:10 +0000 (UTC)
+Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AF9F73179;
-	Thu, 25 Jan 2024 15:32:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9D42745DD;
+	Thu, 25 Jan 2024 15:32:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706196727; cv=none; b=lFtoRiwD35GTtJRmFX1Hia/sOF6pFdlje3rtttPUBG5pf0VEmwLTG+dERCgLEZNvtiVtHLtjd3Ckjjzy2sjSDm/yMJD8JGQVhtL/rYtUPWRY7iDdND2Wd0x7W4nCyKbw34bCkhiiX85Kince93z256AdS2Z37HnypUBiLI2FCcY=
+	t=1706196730; cv=none; b=d1gRvW6A0MliNVNyp9K9QNkaMiAJa+pqc0zNUOu7GPbyS0UMxepqqx5J7AqI3na/SP5uHUKipXpL4DMck8HFukH8K/N3HPB2aJh20/eJD5Jbj6ptQee9CkDrvW7f1J0N+HFuEuthztXW/5FbWckdDO6LTwRuKkSTdmDMScHldL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706196727; c=relaxed/simple;
-	bh=kkFVHvkdEMlrMk1Pdy+6LMKQ0RaGip86dJw2W639SpM=;
+	s=arc-20240116; t=1706196730; c=relaxed/simple;
+	bh=LJvKeqWnmJS9YgQYzDhJWoFRmXHdCPe0hkHgpXGDTkE=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=XsCDHIXuwgnVa5jkbBJwGXocwdmZK8vaXuvh8281mzq1sAfjM4jTASi2aNRBtZakH2edCtJX5D/C3S0ESNcT2OsSjXgexIAobGNNjXp5O3WB7++lBhvqUV82QMYtSUd04FyAoAF+TQQ5hQijWqfcQstSJNX6I35GzNKkw55ULeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.186
+	 In-Reply-To:To:Cc; b=kFEQ1NvQBaRiLxGfhjnQPV4fUhO9DtlGOlnP03noCydS9WsA7B6WG7lkSEeuaM/1tFf0jMF0SsCoMQYQLTAuuaY6nI/AqUUfWgNSJpobfkG+uq2FqYxpzYG9bualf7apwIYe6Dvh6DvayyroIfYdEUMPWJ/wwXgZpiwPkPKuunI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.185
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
-Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-	by mx.skole.hr (mx.skole.hr) with ESMTP id D76F2861FB;
-	Thu, 25 Jan 2024 16:31:56 +0100 (CET)
+Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+	by mx.skole.hr (mx.skole.hr) with ESMTP id A4F1084FE8;
+	Thu, 25 Jan 2024 16:31:59 +0100 (CET)
 From: =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Date: Thu, 25 Jan 2024 16:30:54 +0100
-Subject: [PATCH v5 2/4] leds: ktd2692: convert to use ExpressWire library
+Date: Thu, 25 Jan 2024 16:30:55 +0100
+Subject: [PATCH v5 3/4] dt-bindings: backlight: add Kinetic KTD2801 binding
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -42,7 +42,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240125-ktd2801-v5-2-e22da232a825@skole.hr>
+Message-Id: <20240125-ktd2801-v5-3-e22da232a825@skole.hr>
 References: <20240125-ktd2801-v5-0-e22da232a825@skole.hr>
 In-Reply-To: <20240125-ktd2801-v5-0-e22da232a825@skole.hr>
 To: Lee Jones <lee@kernel.org>, 
@@ -56,261 +56,91 @@ Cc: Karel Balej <balejk@matfyz.cz>, ~postmarketos/upstreaming@lists.sr.ht,
  phone-devel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
  linux-leds@vger.kernel.org, devicetree@vger.kernel.org, 
  linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org, 
- =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+ =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=8331;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2000;
  i=duje.mihanovic@skole.hr; h=from:subject:message-id;
- bh=kkFVHvkdEMlrMk1Pdy+6LMKQ0RaGip86dJw2W639SpM=;
- b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlsn7DcNYwR3737nbubVZ5v4DHUMslfShveGUby
- bSzzVmaHxKJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZbJ+wwAKCRCaEZ6wQi2W
- 4d9vD/wKATHZFjiz5XDYltCyAjq3JP0ZArksF5gCQFZJnV2b2zNZPXIdBQzpCNTihu2+s9qj6yx
- YX5OMTeq8AbxFzClh1gwjm+tLAixju0eg2HoEUYj1bbkI7CMxI6kL3EmWTX/dLG8rawn8LHHXJT
- eBViVHcnu8Tuz/eOG0BPOHif4SWe/s+cSBcCRAwfgCpW3X1YZM4cCK56UhNWI58Pu8syY3mW/RN
- /BDUlImfOwSCsQ1SuZvzPiNJKOi3BIgLoipHWGUfDvIpg8HD2Jj4ZMwTN5E1WAGLPqTErhD3qeP
- oT0C6woUjhSloUMxZBGFVY0D0zcRerVd09bkzOb3CNGk/EhCMnqJgSz2VMsZcue+1FGS8EnbDhu
- 1yQ6jVCOnP92QAkm5njSgphVPVOLLiykIwaxDb7P89tq2e1ED0iF/xix4h/Zw1Bk6+ej5unzwwl
- Jq++acESBlXtQ47kpC1UdmnKLCR/S6v1ZbcMfHQl697lBrv2bEKrh3x4jkGX9dR+iwLBIQPz/Se
- +VOeLXsg13GcPDdNaMGR+5D1pDTgXQWjPDyoAZJQI82aF3Tjh2mEzu6LX3e6dKmjL/IElz9f2D5
- tYgN2DDP91d161ruoDnErbCOZjoZDfs8Re4O3REc8gMvUD6pL3hLN+4mEt4+IdMOHRwbvpdUCHU
- HPUgvQGl1xPE6hA==
+ bh=LJvKeqWnmJS9YgQYzDhJWoFRmXHdCPe0hkHgpXGDTkE=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlsn7DgswBUZqnKT+8/fcnn9Hru+hah1ioow/Af
+ vXnD4GbKIyJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZbJ+wwAKCRCaEZ6wQi2W
+ 4R0BD/kB/1Eg1ozHsKPtWBSWi3LiCM+qxnj2ZuVCT6/OhEONtnJGsnXjTe5GRZFMElbjnKU5bUK
+ 0Bvew1WXJ2SPqoef0wAmJhXuSVbOVKMWVjaeLDDv8lWY3saxQW6c3spevVPoSDh2devRw3Oa6tC
+ o/3JKl6L634njze/H8v+qsMth8jD54PnN9MekSfP0Mf4YmIaeilDxgRqcd5nL5narH0J76+EONz
+ Y4eYXGyItA2v09zBCe0SURu+zci/Cga/yw1/OdIzRPm4EKNc8hy7g9xfxDuTjMAHmk98arzFOdu
+ KGbzB5FPhpCYPZjmEbQQEYKVH3iaOckm/P6AzFqaDcu/P5khVBCeq5jcY/LH99vaVEs0EcW4W4m
+ XxCkQB6hLLns3wqKaeqdHB7ORHYsMai1ppkTki1AFQWoS+WKkD0TE7SBYb9SMobDimgK3Hi0uZw
+ xuMteBoc7ImL6F5aVB2ZUHVXdOIfsav9JlPS9jmNMW11P0ZrilAa3jbTNhCNVM7PqwudogIVLpz
+ TtoufeERwAsfbxVUj6MskA041zUuwdfn8xat2aJe01vop6ItZ6G+KoXcWxe26++jXIHD3lwIPQ6
+ h8ztWDgrcVG4zq+m6lDYEOdKUpwRXtRxaR9McbnpA6r28wNl8BldfgJy342B08zvwQ7FgQ5xTig
+ 3cAbMMec7AzUZ6w==
 X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
  fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
 
-The KTD2692 uses the ExpressWire protocol implemented in the newly
-introduced ExpressWire library. Convert the driver to use the library.
+KTD2801 is a LED backlight driver IC found in samsung,coreprimevelte.
+The brightness can be set using PWM or the ExpressWire protocol. Add
+a DT binding for the KTD2801.
 
-Suggested-by: Daniel Thompson <daniel.thompson@linaro.org>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
 Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
 ---
- drivers/leds/flash/Kconfig        |   2 +-
- drivers/leds/flash/leds-ktd2692.c | 116 +++++++++-----------------------------
- 2 files changed, 28 insertions(+), 90 deletions(-)
+ .../bindings/leds/backlight/kinetic,ktd2801.yaml   | 46 ++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
 
-diff --git a/drivers/leds/flash/Kconfig b/drivers/leds/flash/Kconfig
-index 4e08dbc05709..a0fb755b58dc 100644
---- a/drivers/leds/flash/Kconfig
-+++ b/drivers/leds/flash/Kconfig
-@@ -23,7 +23,7 @@ config LEDS_AS3645A
- config LEDS_KTD2692
- 	tristate "LED support for Kinetic KTD2692 flash LED controller"
- 	depends on OF
--	depends on GPIOLIB || COMPILE_TEST
-+	select LEDS_EXPRESSWIRE
- 	help
- 	  This option enables support for Kinetic KTD2692 LED flash connected
- 	  through ExpressWire interface.
-diff --git a/drivers/leds/flash/leds-ktd2692.c b/drivers/leds/flash/leds-ktd2692.c
-index 598eee5daa52..7bb0aa2753e3 100644
---- a/drivers/leds/flash/leds-ktd2692.c
-+++ b/drivers/leds/flash/leds-ktd2692.c
-@@ -6,9 +6,9 @@
-  * Ingi Kim <ingi2.kim@samsung.com>
-  */
- 
--#include <linux/delay.h>
- #include <linux/err.h>
- #include <linux/gpio/consumer.h>
-+#include <linux/leds-expresswire.h>
- #include <linux/led-class-flash.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
-@@ -37,22 +37,9 @@
- #define KTD2692_REG_FLASH_CURRENT_BASE		0x80
- #define KTD2692_REG_MODE_BASE			0xA0
- 
--/* Set bit coding time for expresswire interface */
--#define KTD2692_TIME_RESET_US			700
--#define KTD2692_TIME_DATA_START_TIME_US		10
--#define KTD2692_TIME_HIGH_END_OF_DATA_US	350
--#define KTD2692_TIME_LOW_END_OF_DATA_US		10
--#define KTD2692_TIME_SHORT_BITSET_US		4
--#define KTD2692_TIME_LONG_BITSET_US		12
--
- /* KTD2692 default length of name */
- #define KTD2692_NAME_LENGTH			20
- 
--enum ktd2692_bitset {
--	KTD2692_LOW = 0,
--	KTD2692_HIGH,
--};
--
- /* Movie / Flash Mode Control */
- enum ktd2692_led_mode {
- 	KTD2692_MODE_DISABLE = 0,	/* default */
-@@ -71,7 +58,19 @@ struct ktd2692_led_config_data {
- 	enum led_brightness max_brightness;
- };
- 
-+const struct expresswire_timing ktd2692_timing = {
-+	.poweroff_us = 700,
-+	.data_start_us = 10,
-+	.end_of_data_low_us = 10,
-+	.end_of_data_high_us = 350,
-+	.short_bitset_us = 4,
-+	.long_bitset_us = 12
-+};
+diff --git a/Documentation/devicetree/bindings/leds/backlight/kinetic,ktd2801.yaml b/Documentation/devicetree/bindings/leds/backlight/kinetic,ktd2801.yaml
+new file mode 100644
+index 000000000000..b005065e0f48
+--- /dev/null
++++ b/Documentation/devicetree/bindings/leds/backlight/kinetic,ktd2801.yaml
+@@ -0,0 +1,46 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/leds/backlight/kinetic,ktd2801.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- struct ktd2692_context {
-+	/* Common ExpressWire properties (ctrl GPIO and timing) */
-+	struct expresswire_common_props props;
++title: Kinetic Technologies KTD2801 one-wire backlight
 +
- 	/* Related LED Flash class device */
- 	struct led_classdev_flash fled_cdev;
- 
-@@ -80,7 +79,6 @@ struct ktd2692_context {
- 	struct regulator *regulator;
- 
- 	struct gpio_desc *aux_gpio;
--	struct gpio_desc *ctrl_gpio;
- 
- 	enum ktd2692_led_mode mode;
- 	enum led_brightness torch_brightness;
-@@ -92,67 +90,6 @@ static struct ktd2692_context *fled_cdev_to_led(
- 	return container_of(fled_cdev, struct ktd2692_context, fled_cdev);
- }
- 
--static void ktd2692_expresswire_start(struct ktd2692_context *led)
--{
--	gpiod_direction_output(led->ctrl_gpio, KTD2692_HIGH);
--	udelay(KTD2692_TIME_DATA_START_TIME_US);
--}
--
--static void ktd2692_expresswire_reset(struct ktd2692_context *led)
--{
--	gpiod_direction_output(led->ctrl_gpio, KTD2692_LOW);
--	udelay(KTD2692_TIME_RESET_US);
--}
--
--static void ktd2692_expresswire_end(struct ktd2692_context *led)
--{
--	gpiod_direction_output(led->ctrl_gpio, KTD2692_LOW);
--	udelay(KTD2692_TIME_LOW_END_OF_DATA_US);
--	gpiod_direction_output(led->ctrl_gpio, KTD2692_HIGH);
--	udelay(KTD2692_TIME_HIGH_END_OF_DATA_US);
--}
--
--static void ktd2692_expresswire_set_bit(struct ktd2692_context *led, bool bit)
--{
--	/*
--	 * The Low Bit(0) and High Bit(1) is based on a time detection
--	 * algorithm between time low and time high
--	 * Time_(L_LB) : Low time of the Low Bit(0)
--	 * Time_(H_LB) : High time of the LOW Bit(0)
--	 * Time_(L_HB) : Low time of the High Bit(1)
--	 * Time_(H_HB) : High time of the High Bit(1)
--	 *
--	 * It can be simplified to:
--	 * Low Bit(0) : 2 * Time_(H_LB) < Time_(L_LB)
--	 * High Bit(1) : 2 * Time_(L_HB) < Time_(H_HB)
--	 * HIGH  ___           ____    _..     _________    ___
--	 *          |_________|    |_..  |____|         |__|
--	 * LOW        <L_LB>  <H_LB>     <L_HB>  <H_HB>
--	 *          [  Low Bit (0) ]     [  High Bit(1) ]
--	 */
--	if (bit) {
--		gpiod_direction_output(led->ctrl_gpio, KTD2692_LOW);
--		udelay(KTD2692_TIME_SHORT_BITSET_US);
--		gpiod_direction_output(led->ctrl_gpio, KTD2692_HIGH);
--		udelay(KTD2692_TIME_LONG_BITSET_US);
--	} else {
--		gpiod_direction_output(led->ctrl_gpio, KTD2692_LOW);
--		udelay(KTD2692_TIME_LONG_BITSET_US);
--		gpiod_direction_output(led->ctrl_gpio, KTD2692_HIGH);
--		udelay(KTD2692_TIME_SHORT_BITSET_US);
--	}
--}
--
--static void ktd2692_expresswire_write(struct ktd2692_context *led, u8 value)
--{
--	int i;
--
--	ktd2692_expresswire_start(led);
--	for (i = 7; i >= 0; i--)
--		ktd2692_expresswire_set_bit(led, value & BIT(i));
--	ktd2692_expresswire_end(led);
--}
--
- static int ktd2692_led_brightness_set(struct led_classdev *led_cdev,
- 				       enum led_brightness brightness)
- {
-@@ -163,14 +100,14 @@ static int ktd2692_led_brightness_set(struct led_classdev *led_cdev,
- 
- 	if (brightness == LED_OFF) {
- 		led->mode = KTD2692_MODE_DISABLE;
--		gpiod_direction_output(led->aux_gpio, KTD2692_LOW);
-+		gpiod_direction_output(led->aux_gpio, 0);
- 	} else {
--		ktd2692_expresswire_write(led, brightness |
-+		expresswire_write_u8(&led->props, brightness |
- 					KTD2692_REG_MOVIE_CURRENT_BASE);
- 		led->mode = KTD2692_MODE_MOVIE;
- 	}
- 
--	ktd2692_expresswire_write(led, led->mode | KTD2692_REG_MODE_BASE);
-+	expresswire_write_u8(&led->props, led->mode | KTD2692_REG_MODE_BASE);
- 	mutex_unlock(&led->lock);
- 
- 	return 0;
-@@ -187,17 +124,17 @@ static int ktd2692_led_flash_strobe_set(struct led_classdev_flash *fled_cdev,
- 
- 	if (state) {
- 		flash_tm_reg = GET_TIMEOUT_OFFSET(timeout->val, timeout->step);
--		ktd2692_expresswire_write(led, flash_tm_reg
-+		expresswire_write_u8(&led->props, flash_tm_reg
- 				| KTD2692_REG_FLASH_TIMEOUT_BASE);
- 
- 		led->mode = KTD2692_MODE_FLASH;
--		gpiod_direction_output(led->aux_gpio, KTD2692_HIGH);
-+		gpiod_direction_output(led->aux_gpio, 1);
- 	} else {
- 		led->mode = KTD2692_MODE_DISABLE;
--		gpiod_direction_output(led->aux_gpio, KTD2692_LOW);
-+		gpiod_direction_output(led->aux_gpio, 0);
- 	}
- 
--	ktd2692_expresswire_write(led, led->mode | KTD2692_REG_MODE_BASE);
-+	expresswire_write_u8(&led->props, led->mode | KTD2692_REG_MODE_BASE);
- 
- 	fled_cdev->led_cdev.brightness = LED_OFF;
- 	led->mode = KTD2692_MODE_DISABLE;
-@@ -247,12 +184,12 @@ static void ktd2692_init_flash_timeout(struct led_classdev_flash *fled_cdev,
- static void ktd2692_setup(struct ktd2692_context *led)
- {
- 	led->mode = KTD2692_MODE_DISABLE;
--	ktd2692_expresswire_reset(led);
--	gpiod_direction_output(led->aux_gpio, KTD2692_LOW);
-+	expresswire_power_off(&led->props);
-+	gpiod_direction_output(led->aux_gpio, 0);
- 
--	ktd2692_expresswire_write(led, (KTD2692_MM_MIN_CURR_THRESHOLD_SCALE - 1)
-+	expresswire_write_u8(&led->props, (KTD2692_MM_MIN_CURR_THRESHOLD_SCALE - 1)
- 				 | KTD2692_REG_MM_MIN_CURR_THRESHOLD_BASE);
--	ktd2692_expresswire_write(led, KTD2692_FLASH_MODE_CURR_PERCENT(45)
-+	expresswire_write_u8(&led->props, KTD2692_FLASH_MODE_CURR_PERCENT(45)
- 				 | KTD2692_REG_FLASH_CURRENT_BASE);
- }
- 
-@@ -277,8 +214,8 @@ static int ktd2692_parse_dt(struct ktd2692_context *led, struct device *dev,
- 	if (!np)
- 		return -ENXIO;
- 
--	led->ctrl_gpio = devm_gpiod_get(dev, "ctrl", GPIOD_ASIS);
--	ret = PTR_ERR_OR_ZERO(led->ctrl_gpio);
-+	led->props.ctrl_gpio = devm_gpiod_get(dev, "ctrl", GPIOD_ASIS);
-+	ret = PTR_ERR_OR_ZERO(led->props.ctrl_gpio);
- 	if (ret)
- 		return dev_err_probe(dev, ret, "cannot get ctrl-gpios\n");
- 
-@@ -412,6 +349,7 @@ static struct platform_driver ktd2692_driver = {
- 
- module_platform_driver(ktd2692_driver);
- 
-+MODULE_IMPORT_NS(EXPRESSWIRE);
- MODULE_AUTHOR("Ingi Kim <ingi2.kim@samsung.com>");
- MODULE_DESCRIPTION("Kinetic KTD2692 LED driver");
- MODULE_LICENSE("GPL v2");
++maintainers:
++  - Duje Mihanović <duje.mihanovic@skole.hr>
++
++description: |
++  The Kinetic Technologies KTD2801 is a LED backlight driver controlled
++  by a single GPIO line. The driver can be controlled with a PWM signal
++  or by pulsing the GPIO line to set the backlight level. This is called
++  "ExpressWire".
++
++allOf:
++  - $ref: common.yaml#
++
++properties:
++  compatible:
++    const: kinetic,ktd2801
++
++  ctrl-gpios:
++    maxItems: 1
++
++  default-brightness: true
++  max-brightness: true
++
++required:
++  - compatible
++  - ctrl-gpios
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    backlight {
++        compatible = "kinetic,ktd2801";
++        ctrl-gpios = <&gpio 97 GPIO_ACTIVE_HIGH>;
++        max-brightness = <210>;
++        default-brightness = <100>;
++    };
 
 -- 
 2.43.0
