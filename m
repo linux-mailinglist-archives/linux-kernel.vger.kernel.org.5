@@ -1,122 +1,117 @@
-Return-Path: <linux-kernel+bounces-38561-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38562-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82B2E83C199
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:04:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3774883C1A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:06:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BA3D288747
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:04:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E468828E301
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:06:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44A54374F5;
-	Thu, 25 Jan 2024 12:04:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 446A936B0E;
+	Thu, 25 Jan 2024 12:06:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="dSTgrFVZ"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="R7ouKmoa";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MDUzv9m5"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 048EA4501B
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 12:04:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34FB33589C;
+	Thu, 25 Jan 2024 12:05:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706184291; cv=none; b=m/9GgNOrLLrX9smqkuG9nEChGOZqVoAxeAPGysljS83AFafQ+0/1oNxp/LOsyehBEfhWN013elQoyZKgoUqqQeRthPs+4ti1u1mKp6JfC65Wj3GqIV+sjwE+HsgmtNukZBsgfTggYRvfUrGvPkr6/dr9F/2riXAYzL38j6oDQCU=
+	t=1706184360; cv=none; b=AksamffxEJOYoUae1MPMMRtIqLG1jMkj2VEofSS+1b6jUpZpPGL2fmMaIO4BuErQu5qS4ejuBrhy8JUFkwpJoyFUxLiPUB2iczhVNCK2Gi9CCKqf2ZmIFftUc5OzML9v3/WheNuegGtbHQhEkZWTuNnHUBVdV4ObiPtgXFGPEGc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706184291; c=relaxed/simple;
-	bh=8sTLlfRLG1bLpm/xwyAPsioSxNa/NVfF9kum8TH3Cnk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=r4K1jAyStqo8ZWPTbW/EZwu2eh40Zai5+sR+4mBS/pR1gwczSGKTNeNoiP/XoEDOAio9Z6WgjZx4wZMBagZHdVJD4C3dnElHKzuCt4axKlU/1HO8jgxUkA4jaIRwRuOjBOk6sht75izv84K5fcJEpS/V4beVjl+foW6fXokoVRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=dSTgrFVZ; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706184288;
-	bh=8sTLlfRLG1bLpm/xwyAPsioSxNa/NVfF9kum8TH3Cnk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=dSTgrFVZ9Mgn6xrnSplLE02RSuySI6ta/n6N5lSsDjUqu8PCR05/4WwDn+SSX54PR
-	 ZJgpm5bqzcKILySJzL62P7ZSqdsqvvifoqfRTdV3cUWNLuGvmYwnE1EAzy7yZiI8DM
-	 P7uJrhzg7fE2E/TqqrvleB4TY2Dz/8TWYPBEsqnmWvfsWAO/3utjsWpcBR3absxtp1
-	 bEJmcRs8tKkYfGmdjm/OQtplxKA8pmSpfcf0g4KuzZW3cMmoP5Q00Vq0GuG73vzYwV
-	 pSHir30+r5Pzo1xFslRlF/4dwsL1SjaUOmkSd5pOutZiWPIOw8qPeCxyf9Pn9maKki
-	 OpAB+HS6B7Kvw==
-Received: from [100.109.49.129] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: dmitry.osipenko)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id F26E637820AF;
-	Thu, 25 Jan 2024 12:04:44 +0000 (UTC)
-Message-ID: <1cf2b45f-d41b-4b2c-80c8-0b78203f4467@collabora.com>
-Date: Thu, 25 Jan 2024 15:04:41 +0300
+	s=arc-20240116; t=1706184360; c=relaxed/simple;
+	bh=lt+OF+4UNnZg1c3qaRm5E/ZAZAx+EIVd0cV2DOcXNZ4=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=T8J5WVMo28YP94nCyximnx829tdGn3CqM9z+Ul9MVbTONIPbwSoPSfwIRT+y8mtrzYnzjE8eDPzhnv4WsCK243FScQkwnRpvEYF1BOvgU0SymqyUGiEShhTCCBGdBXGOqe2fhhya5FJYwzh/coM6KFsCf7YVV871WIR9r/Xqg1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=R7ouKmoa; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=MDUzv9m5; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 25 Jan 2024 12:05:54 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1706184355;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YBPORmsO/XzimUu2HpctLujPcqLI8Zbxm+wJVG80IR8=;
+	b=R7ouKmoaORvaGV0EUGxsXrCzX7ETh2LMVltYP0pEJgElR+QioFqCBCvovI3peI8GbD654f
+	yPRjTbE7/x++D04DsdN0OvpLDXn3g0De/NJoSUxd44FyoKbWIk1M/VrHLubOSDU2rxqLRe
+	oAojh0jAkLIDdw2NCEjrj2N8T+5SdJRxMVxhAJkcpWfcyrnDQ9KWlozGQorD9bYyCrHB6T
+	tquvLd++ISJ7ZpQ9bCP/kBqNkQzeLStIMLiKqg6a5aDbZvrPempX5M+CX7DWDnjzYIJyyp
+	C+ZjTpCyevxgK2+t+H6E8EEEDZ0uFv/EaYXRMz0yByoMqpC1p4tfaakhZIs5Dw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1706184355;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YBPORmsO/XzimUu2HpctLujPcqLI8Zbxm+wJVG80IR8=;
+	b=MDUzv9m5x2Kr+285kw2jOuSaV4gvWK/0unFRpjcgxst/CAG9nBdvul3iTg8ubjTya3KUQJ
+	4d4sTXuAIaESZhDA==
+From: "tip-bot2 for Mario Limonciello" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/CPU/AMD: Add more models to X86_FEATURE_ZEN5
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+ "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240124220749.2983-1-mario.limonciello@amd.com>
+References: <20240124220749.2983-1-mario.limonciello@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 30/30] drm/panfrost: Switch to generic memory shrinker
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Cc: David Airlie <airlied@gmail.com>, Gerd Hoffmann <kraxel@redhat.com>,
- Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
- <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Qiang Yu <yuq825@gmail.com>, Steven Price <steven.price@arm.com>,
- Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- kernel@collabora.com, virtualization@lists.linux-foundation.org
-References: <20240105184624.508603-1-dmitry.osipenko@collabora.com>
- <20240105184624.508603-31-dmitry.osipenko@collabora.com>
- <20240125104932.478fa5bd@collabora.com>
-Content-Language: en-US
-From: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-In-Reply-To: <20240125104932.478fa5bd@collabora.com>
-Content-Type: text/plain; charset=UTF-8
+Message-ID: <170618435416.398.10999476782072696923.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 
-On 1/25/24 12:49, Boris Brezillon wrote:
-> On Fri,  5 Jan 2024 21:46:24 +0300
-> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-> 
->> --- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
->> +++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
->> @@ -328,6 +328,7 @@ int panfrost_mmu_map(struct panfrost_gem_mapping *mapping)
->>  	struct panfrost_device *pfdev = to_panfrost_device(obj->dev);
->>  	struct sg_table *sgt;
->>  	int prot = IOMMU_READ | IOMMU_WRITE;
->> +	int ret = 0;
->>  
->>  	if (WARN_ON(mapping->active))
->>  		return 0;
->> @@ -335,15 +336,32 @@ int panfrost_mmu_map(struct panfrost_gem_mapping *mapping)
->>  	if (bo->noexec)
->>  		prot |= IOMMU_NOEXEC;
->>  
->> +	if (!obj->import_attach) {
->> +		/*
->> +		 * Don't allow shrinker to move pages while pages are mapped.
->> +		 * It's fine to move pages afterwards because shrinker will
->> +		 * take care of unmapping pages during eviction.
->> +		 */
-> 
-> That's not exactly what this shmem_pin() is about, is it? I think it's
-> here to meet the drm_gem_shmem_get_pages_sgt() rule stating that pages
-> must be pinned while the sgt returned by drm_gem_shmem_get_pages_sgt()
-> is manipulated. You actually unpin the GEM just after the mmu_map_sg()
-> call, which means pages could very well be reclaimed while the MMU
-> still has a mapping referencing those physical pages. And that's fine,
-> because what's supposed to protect against that is the fence we
-> register to the GEM resv at job submission time.
+The following commit has been merged into the x86/urgent branch of tip:
 
-The comment indeed needs to be improved, thanks.
+Commit-ID:     b9328fd636bd50da89e792e135b234ba8e6fe59f
+Gitweb:        https://git.kernel.org/tip/b9328fd636bd50da89e792e135b234ba8e6fe59f
+Author:        Mario Limonciello <mario.limonciello@amd.com>
+AuthorDate:    Wed, 24 Jan 2024 16:07:49 -06:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Thu, 25 Jan 2024 12:26:21 +01:00
 
-s/are mapped/in process of mapping creation/
+x86/CPU/AMD: Add more models to X86_FEATURE_ZEN5
 
--- 
-Best regards,
-Dmitry
+Add model ranges starting at 0x20, 0x40 and 0x70 to the synthetic
+feature flag X86_FEATURE_ZEN5.
 
+Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/20240124220749.2983-1-mario.limonciello@amd.com
+---
+ arch/x86/kernel/cpu/amd.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index bc49e3b..f3abca3 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -573,6 +573,9 @@ static void bsp_init_amd(struct cpuinfo_x86 *c)
+ 	case 0x1a:
+ 		switch (c->x86_model) {
+ 		case 0x00 ... 0x0f:
++		case 0x20 ... 0x2f:
++		case 0x40 ... 0x4f:
++		case 0x70 ... 0x7f:
+ 			setup_force_cpu_cap(X86_FEATURE_ZEN5);
+ 			break;
+ 		default:
 
