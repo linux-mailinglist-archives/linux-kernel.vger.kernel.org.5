@@ -1,133 +1,119 @@
-Return-Path: <linux-kernel+bounces-38905-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38906-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DAA083C832
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:36:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6F4283C83D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:38:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44FA5B23884
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:36:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85C5E295530
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:38:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8781012FF8C;
-	Thu, 25 Jan 2024 16:36:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1300130E27;
+	Thu, 25 Jan 2024 16:38:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1x5+3VZQ"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IgzLHAvO"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 427907CF13
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 16:36:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F7DC129A6D
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 16:38:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706200607; cv=none; b=lA0yLm7NyRJ6baIgpeI980fUbiOeuen4unymlvWcGaXW/nTPJHV1cX/Lw1Wv8mS+khXIKWtTVT1rNkGFco9B3D9UGtgxpYGaS7riKEizHmQNUm36RP9B3Sk+d/6l9olhm/bt10QIu6cJJ55GK0Ac3Dp6vhhvfhEj9GLqyUHd0Tw=
+	t=1706200693; cv=none; b=h5AH6K3Y5SF6+pit+f78nrCce4akT2s1DAgIEf+syl2uGB4+AmFU0iaZJgQEhaKLeyob+iNohQ7l32OkkAwKFm/ginGvfn1nYqn28mt6VReMfrGXnvc/QyVh52U4oOmoL9gkaEq3bN8IZ9QmyaUz4xNHzovILcmmh7prD77eOT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706200607; c=relaxed/simple;
-	bh=TgqytwWp7U4K2K/6mjOcV2/y4Ac8tA/cTLPLmfZOm0M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=h8ijG0utiy/lyPcQkWtNVhVn7dT2VQVLmDt8Rg1WVPaiw3mhmZZRzjSCrFamrxlmOWfnabI1ShyL0x+BiFCdTZzcPnxSEu7CNlGBo2Czv39ruHuTDZtxbxnAIWbjVTxkFSwS6MSZJz1qWG55rSLqPef5n7n8Xj6UVvG+7AxkZgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1x5+3VZQ; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55818b7053eso19164a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:36:45 -0800 (PST)
+	s=arc-20240116; t=1706200693; c=relaxed/simple;
+	bh=5iHmZSUw/hxQN9z3V+lUnPdT+e3bU0zrcKfS5gS85Hk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rElvphR4jwQ3Ub6azG2QYONo22xde4npBVzKyepZBdynPokUCxeI5smWbmzezBnXSFj8omAKr8vX1T8PZ25g5LkxlQy/wDWFDSukC3Vhhinqqnzk431kHO0w25/0RaoW9TsiFesvoTALZrhwlyej92EExU4inHEayQ3B8pMd/h4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IgzLHAvO; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3392d417a9fso3215720f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:38:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706200604; x=1706805404; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PzhKLh+3d9yOMQ6X8ivbWXymcJAfh+tVgCfjU+pI7Kk=;
-        b=1x5+3VZQnUG2x27UCEDs/pdGO4igqEnhd+viSfAEfCuRIZPYyk7UwDBOsQoFhNaN1b
-         86EkB+Q2P7e6SWGKdrPzXA1QTZ9piIfK+zgdOkfg9dzjBa4Wg92ZtouBRpByCT2ThTV5
-         p1s67Sw2eZvc8gA1ptX+4yMnKQdd6tKDxUVuJOVwp9JckZCgY0XeY4HPQmUuzWAEb3wQ
-         /1v3BDS2Y07fKoE5UsJ1hi6OzyWlgRREza89wcVDYV24CUcOiPrcfLu7bXxrQbiK/XDf
-         nwsZKtivVFP/Dv8ZYZJu6lyngWLDFeGohSupF2S86J09+YtXqkIYj/zp0TEY/8lPnTck
-         Fsuw==
+        d=linaro.org; s=google; t=1706200690; x=1706805490; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rdWJmaQOAQRqKfeFd0MmNRfM9EYtkNX7pmnDfEinoJo=;
+        b=IgzLHAvOEaS80zWpEmg5BFAtnbXO+eTi0fW/bIZznAHv0dHOre72Md6C7cN7Pfu3V/
+         pEzhWSHr6kBWGXrekYoVVadQZ1WUNKd+rxiuLTXtauYCDiXLFHSwJG5fNllg8alXZlH2
+         m0SEGKzkTA98Zp2HWBD85ONaxFUzs3eL6JUXDWOJE1+HysC9YgJVfOkjHF9SahTXSwTv
+         YmjETnOqWYkDR1NfrC45d9d8bEVMZrPd/8/fEBMJRm3lIU0sJ2CVIWmQF+w3196VpOgK
+         FtkAapWKfe2YWG3G+56MB1N7+00+z8DbnPvEsdeyaDD301ZHUT3vm1CRp2cTx3RKf1sc
+         +FZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706200604; x=1706805404;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PzhKLh+3d9yOMQ6X8ivbWXymcJAfh+tVgCfjU+pI7Kk=;
-        b=FBOFd3nOAPh7M4DB6RL6QQucq6DCUV3oJPljpQn5LuZ+U6X5AInHtrX7LSERIXpPha
-         xrmHe9EBhHVzI41YMGBAxOZTyDQZTtnswB4h7Z/6bnx7T80C2HltrgaGTXfqRfkEdXdk
-         i9MA6Qt81WmuplriTMpDW7lA4UXdwdulz1H3aX/rjj7J+o89EfodTzA3uTOXAcbIzfHp
-         jJ9xBw0zqU2LSQijrBU9Ip14X4owpgGOsAnSMHg+T5szwA2Rq/QajizhlNTy/10wPpAh
-         a+Zr85C+p9CR3TsPziOnjvOwgIeJ7Tso/lKZibBec0A25FT06O2uDEoV1DA1fvCtwhvN
-         h/Xw==
-X-Gm-Message-State: AOJu0Yy0fNl6LEx6IBfXDhijG6+Vw4QSpUZnTpYnfKKx3QelnLsWVYmC
-	zndV6qeZ39Uapn9jC/ghRA3igqc6ha4LTEq0H2OMIxs8sI1ngT7UmE+x4RYff+TjeodnUAfoAKa
-	/Fu7ka/MhS0JWnEw6aXZwVrj59s0sX/xsVyxG
-X-Google-Smtp-Source: AGHT+IE8Ob3eSw97oGgRaHA4aa3G3QI4B9MxmUAXtlZVNaBjYW+O7d1zFhaIc8srSbGwvw91lb7d+tmh6zH4S3XN0xo=
-X-Received: by 2002:a05:6402:1c92:b0:55c:eb69:979f with SMTP id
- cy18-20020a0564021c9200b0055ceb69979fmr185588edb.7.1706200604261; Thu, 25 Jan
- 2024 08:36:44 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706200690; x=1706805490;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rdWJmaQOAQRqKfeFd0MmNRfM9EYtkNX7pmnDfEinoJo=;
+        b=cNRPVAsyA5ONzJVMKAMBKXBaM0eG760+pe7QL0ux6JBSzchf/PWPofpJNuo6+4O7r6
+         tz8tbr+VpYxHJNE98ZEvjYFXnbNnVVql9X6YHlzH2QUGk77fxmkVF6KBElHbHERsdYP5
+         rQdsnI+RJcKNhY68lOFNwKvzHo715Ssh+WvE5Gs2RLHxe2YGcCMv5kxVLEjju3JyYJck
+         bZB09DHDb5aBH1HNIqMVXy2bRrhK4NBcGjn6T4i4rfhePaanYCRJbAzFovuPag7us9HS
+         k/5WtH3I6gClVbJCs3PrOyps7hrsLcFXAtHRxXJmUAqBhiPLtyyvfnDnW2VHP3rCzIK3
+         6rEQ==
+X-Gm-Message-State: AOJu0Yxi/S+u4U8jdI3cBf9se5JqYAyPbhjqqMWO+JJ+B1vu6Iw0tj2l
+	6kWIVNevSd11rhTEXTsCkNCvITft6456ibzIMhqDdKnhT7Xq364GJlUuPIShl/c=
+X-Google-Smtp-Source: AGHT+IENGpkXRnJ4oq3mQYeuH9mZrQxEhx1vWZCv34pZFd4Er736Z33tETLnlINQ8GGk7N3f9x3CtA==
+X-Received: by 2002:adf:e686:0:b0:339:21b8:e716 with SMTP id r6-20020adfe686000000b0033921b8e716mr988724wrm.127.1706200689695;
+        Thu, 25 Jan 2024 08:38:09 -0800 (PST)
+Received: from [192.168.2.107] ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id l9-20020a056000022900b00337d980a68asm16818099wrz.106.2024.01.25.08.38.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Jan 2024 08:38:09 -0800 (PST)
+Message-ID: <1c58deef-bc0f-4889-bf40-54168ce9ff7c@linaro.org>
+Date: Thu, 25 Jan 2024 16:38:07 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1699104759.git.quic_charante@quicinc.com>
- <a8e16f7eb295e1843f8edaa1ae1c68325c54c896.1699104759.git.quic_charante@quicinc.com>
- <ZUy1dNvbvHc6gquo@tiehlicka> <5c7f25f9-f86b-8e15-8603-e212b9911cac@quicinc.com>
- <ZVNQdQKQAMjgOK9y@tiehlicka> <342a8854-eef5-f68a-15e5-275de70e3f01@quicinc.com>
-In-Reply-To: <342a8854-eef5-f68a-15e5-275de70e3f01@quicinc.com>
-From: "Zach O'Keefe" <zokeefe@google.com>
-Date: Thu, 25 Jan 2024 08:36:06 -0800
-Message-ID: <CAAa6QmRnfTOCD0uaxVbbiDRWtwzC9y+gZDFOjYF2YWDTrXyMNQ@mail.gmail.com>
-Subject: Re: [PATCH V3 3/3] mm: page_alloc: drain pcp lists before oom kill
-To: Charan Teja Kalla <quic_charante@quicinc.com>
-Cc: Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org, mgorman@techsingularity.net, 
-	david@redhat.com, vbabka@suse.cz, hannes@cmpxchg.org, 
-	quic_pkondeti@quicinc.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Axel Rasmussen <axelrasmussen@google.com>, Yosry Ahmed <yosryahmed@google.com>, 
-	David Rientjes <rientjes@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Thanks for the patch, Charan, and thanks to Yosry for pointing me towards i=
-t.
-
-I took a look at data from our fleet, and there are many cases on
-high-cpu-count machines where we find multi-GiB worth of data sitting
-on pcpu free lists at the time of system oom-kill, when free memory
-for the relevant zones are below min watermarks. I.e. clear cases
-where this patch could have prevented OOM.
-
-This kind of issue scales with the number of cpus, so presumably this
-patch will only become increasingly valuable to both datacenters and
-desktops alike going forward. Can we revamp it as a standalone patch?
-
-Thanks,
-Zach
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 05/28] spi: dt-bindings: samsung: add
+ samsung,spi-fifosize property
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>
+Cc: andi.shyti@kernel.org, arnd@arndb.de, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ alim.akhtar@samsung.com, linux-spi@vger.kernel.org,
+ linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-arch@vger.kernel.org, andre.draszik@linaro.org,
+ peter.griffin@linaro.org, semen.protsenko@linaro.org,
+ kernel-team@android.com, willmcvicker@google.com
+References: <20240125145007.748295-1-tudor.ambarus@linaro.org>
+ <20240125145007.748295-6-tudor.ambarus@linaro.org>
+ <7ef86704-3e40-4d39-a69d-a30719c96660@sirena.org.uk>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <7ef86704-3e40-4d39-a69d-a30719c96660@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
-On Tue, Nov 14, 2023 at 8:37=E2=80=AFAM Charan Teja Kalla
-<quic_charante@quicinc.com> wrote:
->
-> Thanks Michal!!
->
-> On 11/14/2023 4:18 PM, Michal Hocko wrote:
-> >> At least in my particular stress test case it just delayed the OOM as =
-i
-> >> can see that at the time of OOM kill, there are no free pcp pages. My
-> >> understanding of the OOM is that it should be the last resort and only
-> >> after doing the enough reclaim retries. CMIW here.
-> > Yes it is a last resort but it is a heuristic as well. So the real
-> > questoin is whether this makes any practical difference outside of
-> > artificial workloads. I do not see anything particularly worrying to
-> > drain the pcp cache but it should be noted that this won't be 100%
-> > either as racing freeing of memory will end up on pcp lists first.
->
-> Okay, I don't have any practical scenario where this helped me in
-> avoiding the OOM.  Will comeback If I ever encounter this issue in
-> practical scenario.
->
-> Also If you have any comments on [PATCH V2 2/3] mm: page_alloc: correct
-> high atomic reserve calculations will help me.
->
-> Thanks.
->
+
+On 1/25/24 16:16, Mark Brown wrote:
+> On Thu, Jan 25, 2024 at 02:49:43PM +0000, Tudor Ambarus wrote:
+>> Up to now the SPI alias was used as an index into an array defined in
+>> the SPI driver to determine the SPI FIFO size. Drop the dependency on
+>> the SPI alias and allow the SPI nodes to specify their SPI FIFO size.
+> 
+> ...
+> 
+>> +  samsung,spi-fifosize:
+>> +    description: The fifo size supported by the SPI instance.
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>> +    enum: [64, 256]
+> 
+> Do we have any cases where we'd ever want to vary this independently of
+> the SoC - this isn't a configurable IP shipped to random integrators?
+
+The IP supports FIFO depths from 8 to 256 bytes (in powers of 2 I
+guess). The integrator is the one dictating the IP configuration. In
+gs101's case all USIxx_USI (which includes SPI, I2C, and UART) are
+configured with 64 bytes FIFO depths.
 
