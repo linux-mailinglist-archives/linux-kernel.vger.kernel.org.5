@@ -1,140 +1,449 @@
-Return-Path: <linux-kernel+bounces-38910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38934-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A65B483C853
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:43:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C751783C8AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:51:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9B121C226CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:43:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27FB82844A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:51:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7430130E3C;
-	Thu, 25 Jan 2024 16:42:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qS9CYNVm"
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD1C312FF94
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 16:42:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71AB713E224;
+	Thu, 25 Jan 2024 16:44:41 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A68913E222;
+	Thu, 25 Jan 2024 16:44:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706200971; cv=none; b=Drd8rmF1eBk+iT7KJFIZ7QZPmcIlXg+H7u44ej+751e8XGRnGEvlaUwBk5YparBely4wCIWLZqYUkfNyFVZwhNczJhtghOYH+uCAhP+w6HyrBjl9zQ+uyYM/zefGegcMHKOnoRqn52jMaZlZ+o/2dKvhu9kTaNeW5iPHwGxCcdg=
+	t=1706201080; cv=none; b=A6RBxP+oZk/JsWZ3grJSHl/Qb94iYYP9i0+ngmTKhFz0OmYlY41UfmyZUeWk3p7HWDwWkHSzNNCB1Op4FPIS+s0iiy0OUNl1q3FEotwpsjin+/XJnHmohZgYIiucGFacvqSh7+xIIKxAeAPrWIzfI9KtOyKYZRXdn0ojIm94P+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706200971; c=relaxed/simple;
-	bh=L/AEYsPK+lOVA3XMrw4EQq1xfeN7Xl1wlXueNsNSoe0=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=b+a3+JM6sG/U84gyEyHTyFYy5mfWEkExsUR4CeTWPz9rASMS4PgOTzX+yHIUUjrGysEmE3r8gpCeGlMpkQNDOKKn5WzygFdEENkJFSHYh/YTT7HBAD/zRuEJQYRUze1cUy9dpbvngoglIiBXwCLZ9FV7nX4XXkyXPlgtyiN6xFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qS9CYNVm; arc=none smtp.client-ip=209.85.216.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2901f9ea918so3874106a91.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:42:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706200969; x=1706805769; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=V4A/B+fGo6SoJVPZLDbDqwvVEJrcWXHPl47dbcCvQxU=;
-        b=qS9CYNVmCzamUxyBxmbi5tdH6C8sKB44wRbsjMbLYCZu/Q4zJmvk3dXfsQx4gW+CjH
-         bOaqG8LIBEij/c9ALHBD83dfaSx56g8Gdy8EYAuk95ywRFjh2TtTzmPoHXJ4lB1SDfI6
-         4XB7++thsVSStxukPQLYbfgiMFSQATv57HUHqS8MgrxRVASZcCj/hvghqxJLPTpvqTnX
-         o+AscjlpMvjINQNoMNcInB68oCvepnIydtM4rmOXNc9WC8Sh85+XouidnHMrmOZTrcjD
-         V3647mGdJ5Z0IACXR4Kt6Of4t8lYBk7dtqM8ATNbgeNSfCtIFw8Zp5jydi6F8ytMMb/o
-         sfCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706200969; x=1706805769;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=V4A/B+fGo6SoJVPZLDbDqwvVEJrcWXHPl47dbcCvQxU=;
-        b=dCarOlBqKopHLFVh3/1yJcEoJeukxsS5vBxAT4rqWi4TcRYw2OegAszpp0H88wcBca
-         ZoKrW8WaGtg3GXnbdfAKtaBM09Z1pBE6GeF2XQnrbOfqHhz8TSS1vLwb97vvc5aVWT80
-         t2ic/jLVTWmLxWT4GIwdt8auBPfjP94V/217BlS0Yyvc+4MRKxeEeIKSE9BhEdoKDh6K
-         SSnFORv4bi2qPuEhA7EUkpTsfDAhmUvaETeQ+LByg2deQi9BnGBql7Z0JBqy9bpmwUtp
-         ucnJNnOp32LDEL4KpYf2yfsURLwsnB6cPw5TZUk07u7GED5AAqpkyEjpCqgIZNyEltRq
-         83/A==
-X-Gm-Message-State: AOJu0Yyilw485OfUz3X0a9VwXAv/R1P+ANhyiJx/iLq47A8QTtpfNeHY
-	acBZS7ytJrZAHStZEMWXtDPsxhxbjcHQml54gYEktCsP+8UA1oQ7iYkpSwbO9Ms=
-X-Google-Smtp-Source: AGHT+IHB4jeyfnh57rSSIKEeaeUGRNa22GAGU9uwwHYehgMbsAPf9L+fI66IOZb2OwKGZBlGgti9sA==
-X-Received: by 2002:a17:90a:6c25:b0:290:4acd:2751 with SMTP id x34-20020a17090a6c2500b002904acd2751mr874986pjj.20.1706200969047;
-        Thu, 25 Jan 2024 08:42:49 -0800 (PST)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id u15-20020a17090ac88f00b0028c89122f8asm1769170pjt.6.2024.01.25.08.42.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jan 2024 08:42:48 -0800 (PST)
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Subject: [PATCH 0/3] arm64: qcom: sm8650: enable Audio on MTP and QRD
-Date: Thu, 25 Jan 2024 17:42:40 +0100
-Message-Id: <20240125-topic-sm8650-upstream-audio-dt-v1-0-c24d23ae5763@linaro.org>
+	s=arc-20240116; t=1706201080; c=relaxed/simple;
+	bh=XukQx5R0ddUBbcqQsHqz8JxEh94JF8KFUT0xeK6jImA=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=bZX71EtyprbfkM2gbEnl9c6e5tTlN6ie9IWn0tzo4QYovnrEzkO+Sx5WfMCy0JrBgcugDJcsJrlYDMpoOEDJAEJIkmP0qHx03eKObqWMu/IDRGZMLYujiUrKfTZHX3iucCpiSNVowIKCCErt5SJaRV5blmdHY8enNeP36QvmqIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 607B01682;
+	Thu, 25 Jan 2024 08:45:21 -0800 (PST)
+Received: from e121798.cable.virginm.net (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 711BE3F5A1;
+	Thu, 25 Jan 2024 08:44:31 -0800 (PST)
+From: Alexandru Elisei <alexandru.elisei@arm.com>
+To: catalin.marinas@arm.com,
+	will@kernel.org,
+	oliver.upton@linux.dev,
+	maz@kernel.org,
+	james.morse@arm.com,
+	suzuki.poulose@arm.com,
+	yuzenghui@huawei.com,
+	arnd@arndb.de,
+	akpm@linux-foundation.org,
+	mingo@redhat.com,
+	peterz@infradead.org,
+	juri.lelli@redhat.com,
+	vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com,
+	rostedt@goodmis.org,
+	bsegall@google.com,
+	mgorman@suse.de,
+	bristot@redhat.com,
+	vschneid@redhat.com,
+	mhiramat@kernel.org,
+	rppt@kernel.org,
+	hughd@google.com
+Cc: pcc@google.com,
+	steven.price@arm.com,
+	anshuman.khandual@arm.com,
+	vincenzo.frascino@arm.com,
+	david@redhat.com,
+	eugenis@google.com,
+	kcc@google.com,
+	hyesoo.yu@samsung.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	kvmarm@lists.linux.dev,
+	linux-fsdevel@vger.kernel.org,
+	linux-arch@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-trace-kernel@vger.kernel.org
+Subject: [PATCH RFC v3 19/35] arm64: mte: Discover tag storage memory
+Date: Thu, 25 Jan 2024 16:42:40 +0000
+Message-Id: <20240125164256.4147-20-alexandru.elisei@arm.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240125164256.4147-1-alexandru.elisei@arm.com>
+References: <20240125164256.4147-1-alexandru.elisei@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAICPsmUC/42NSw6CMBBAr0K6dkzbyM+V9zAsxnaESYSSaSEaw
- t2tnMDle4v3NhVJmKK6FpsSWjlymDKYU6HcgFNPwD6zstpetLElpDCzgzg2ValhmWMSwhFw8Rz
- AJzAeHVZlXdcPVDkyCz35fQzuXeaBYwryOX6r+dm/06sBDR7btnK60WTN7cUTSjgH6VW37/sXb
- u7ehc0AAAA=
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- Neil Armstrong <neil.armstrong@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1284;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=L/AEYsPK+lOVA3XMrw4EQq1xfeN7Xl1wlXueNsNSoe0=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlso+ERtibcSIQNvpJ1ASQ/lsmge+3QC9MY0Xn+IJa
- PdPHsYiJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZbKPhAAKCRB33NvayMhJ0XNqEA
- CL7GRqDT9P7QPI0nqOeYJLDCH+6y8BPY23xs9oCgbh/IOeH3cjUgAtu1hqpgbzGpBqs2bFf0JhLKTY
- 7BnKcpAilxW4uYBFr/5JgbSBFH8RmVLPdqSikmUHSurLa3j1cQ/DYMEygKVMk7jRwy2HdW1oMbna7j
- 5G0BJwr9keKsV6qDA0MoZGVDyGlurhlZyWRRzhwSKPyYkWXPrsuHlJwHv/OU1TAVCePVUGkChraAdo
- nuOsW52kRhYYgQDCqL0fmdQzCf//ZcxZbABcskCZZS7Gwi+9zRCw5dDKwwT06n2Pp9t16AXYtekyPn
- 9RIRsldqWDmCjsPkE+MOlYD46Oa7W7FYxBbt1+VnscVlBQl+ixoaJvs9QxdsTg90QvzKKz9F0Kg9mq
- cXQZarT//conQOL0bAeUU+H/tkmOsMKZ0Ka2DShE4QRXMczN+qKcYk7tKnA7tYK3HB+8PMcHpTcD4N
- mUck8fgbSep3Im/fXYZpMadY18A8U5pE+nFRZOcBNgvTC0+bnFqpp/UEflQRtFELpTh+SlUewjPStz
- o4Dk53SmEz3JPH8nCHYefbDMaDo3qpKvxyiNcUe5yFFsU9Yav8vHye+vRzAbM6AU5mfA2EBhxAJO60
- 824aE7mEAni2hWVBCPE4yRMXwHnn3wzlLGzPNjgghJFTbGCZRw5jQ/4bjVDA==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+Content-Transfer-Encoding: 8bit
 
-Add the remaining Audio nodes on the SM8650-QRD & MTP boards including:
-- Qualcomm Aqstic WCD9395 audio codec on the RX & TX Soundwire interfaces
-- WSA8845 Left & Right Speakers
-- Link the WCD9395 Codec node to the WCD9395 USB SubSystem node to handle
-  the USB-C Audio Accessory Mode events & lane swapping
-- Sound card with routing for Speakers and Microphones
+Allow the kernel to get the base address, size, block size and associated
+memory node for tag storage from the device tree blob.
 
-Finally enable the missing modules in arm64 defconfig now
-the WCD939x codec driver has been applied.
+A tag storage region represents the smallest contiguous memory region that
+holds all the tags for the associated contiguous memory region which can be
+tagged. For example, for a 32GB contiguous tagged memory the corresponding
+tag storage region is exactly 1GB of contiguous memory, not two adjacent
+512M of tag storage memory, nor one 2GB tag storage region.
 
-Dependencies:
-- altmode: https://lore.kernel.org/all/20240123-topic-sm8650-upstream-altmode-v3-0-300a5ac80e1e@linaro.org/
+Tag storage is described as reserved memory; future patches will teach the
+kernel how to make use of it for data (non-tagged) allocations.
 
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
 ---
-Neil Armstrong (3):
-      arm64: dts: qcom: sm8650-qrd: add Audio nodes
-      arm64: dts: qcom: sm8650-mtp: add Audio sound card node
-      arm64: defconfig: enable audio drivers for SM8650 QRD board
 
- arch/arm64/boot/dts/qcom/sm8650-mtp.dts |  23 ++++
- arch/arm64/boot/dts/qcom/sm8650-qrd.dts | 203 ++++++++++++++++++++++++++++++++
- arch/arm64/configs/defconfig            |   3 +
- 3 files changed, 229 insertions(+)
----
-base-commit: 63be584a33c3c63114aa3866f7cbcb45fa751e60
-change-id: 20240125-topic-sm8650-upstream-audio-dt-1daca65777ba
+Changes since rfc v2:
 
-Best regards,
+* Reworked from rfc v2 patch #11 ("arm64: mte: Reserve tag storage memory").
+* Added device tree schema (Rob Herring)
+* Tag storage memory is now described in the "reserved-memory" node (Rob
+Herring).
+
+ .../reserved-memory/arm,mte-tag-storage.yaml  |  78 +++++++++
+ arch/arm64/Kconfig                            |  12 ++
+ arch/arm64/include/asm/mte_tag_storage.h      |  16 ++
+ arch/arm64/kernel/Makefile                    |   1 +
+ arch/arm64/kernel/mte_tag_storage.c           | 158 ++++++++++++++++++
+ arch/arm64/mm/init.c                          |   3 +
+ 6 files changed, 268 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/reserved-memory/arm,mte-tag-storage.yaml
+ create mode 100644 arch/arm64/include/asm/mte_tag_storage.h
+ create mode 100644 arch/arm64/kernel/mte_tag_storage.c
+
+diff --git a/Documentation/devicetree/bindings/reserved-memory/arm,mte-tag-storage.yaml b/Documentation/devicetree/bindings/reserved-memory/arm,mte-tag-storage.yaml
+new file mode 100644
+index 000000000000..a99aaa1e8b6e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/reserved-memory/arm,mte-tag-storage.yaml
+@@ -0,0 +1,78 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/reserved-memory/arm,mte-tag-storage.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Tag storage memory for Memory Tagging Extension
++
++description: |
++  Description of the tag storage memory region that Linux can use to store
++  data when the associated memory is not tagged.
++
++  The reserved memory described by the node must also be described by a
++  standalone 'memory' node.
++
++maintainers:
++  - Alexandru Elisei <alexandru.elisei@arm.com>
++
++allOf:
++  - $ref: reserved-memory.yaml
++
++properties:
++  compatible:
++    const: arm,mte-tag-storage
++
++  reg:
++    description: |
++      Specifies the memory region that MTE uses for tag storage. The size of the
++      region must be equal to the size needed to store all the tags for the
++      associated tagged memory.
++
++  block-size:
++    description: |
++      Specifies the minimum multiple of 4K bytes of tag storage where all the
++      tags stored in the block correspond to a contiguous memory region. This
++      is needed for platforms where the memory controller interleaves tag
++      writes to memory.
++
++      For example, if the memory controller interleaves tag writes for 256KB
++      of contiguous memory across 8K of tag storage (2-way interleave), then
++      the correct value for 'block-size' is 0x2000.
++
++      This value is a hardware property, independent of the selected kernel page
++      size.
++    $ref: /schemas/types.yaml#/definitions/uint32
++
++  tagged-memory:
++    description: |
++      Specifies the memory node, as a phandle, for which all the tags are
++      stored in the tag storage region.
++
++      The memory node must describe one contiguous memory region (i.e, the
++      'ranges' property of the memory node must have exactly one entry).
++    $ref: /schemas/types.yaml#/definitions/phandle
++
++unevaluatedProperties: false
++
++required:
++  - compatible
++  - reg
++  - block-size
++  - tagged-memory
++  - reusable
++
++examples:
++  - |
++    reserved-memory {
++      #address-cells = <2>;
++      #size-cells = <2>;
++
++      tags0: tag-storage@8f8000000 {
++        compatible = "arm,mte-tag-storage";
++        reg = <0x08 0xf8000000 0x00 0x4000000>;
++        block-size = <0x1000>;
++        tagged-memory = <&memory0>;
++        reusable;
++      };
++    };
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index aa7c1d435139..92d97930b56e 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -2082,6 +2082,18 @@ config ARM64_MTE
+ 
+ 	  Documentation/arch/arm64/memory-tagging-extension.rst.
+ 
++if ARM64_MTE
++config ARM64_MTE_TAG_STORAGE
++	bool
++	help
++	  Adds support for dynamic management of the memory used by the hardware
++	  for storing MTE tags. This memory, unlike normal memory, cannot be
++	  tagged. When it is used to store tags for another memory location it
++	  cannot be used for any type of allocation.
++
++	  If unsure, say N
++endif # ARM64_MTE
++
+ endmenu # "ARMv8.5 architectural features"
+ 
+ menu "ARMv8.7 architectural features"
+diff --git a/arch/arm64/include/asm/mte_tag_storage.h b/arch/arm64/include/asm/mte_tag_storage.h
+new file mode 100644
+index 000000000000..3c2cd29e053e
+--- /dev/null
++++ b/arch/arm64/include/asm/mte_tag_storage.h
+@@ -0,0 +1,16 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (C) 2023 ARM Ltd.
++ */
++#ifndef __ASM_MTE_TAG_STORAGE_H
++#define __ASM_MTE_TAG_STORAGE_H
++
++#ifdef CONFIG_ARM64_MTE_TAG_STORAGE
++void mte_init_tag_storage(void);
++#else
++static inline void mte_init_tag_storage(void)
++{
++}
++#endif /* CONFIG_ARM64_MTE_TAG_STORAGE */
++
++#endif /* __ASM_MTE_TAG_STORAGE_H  */
+diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
+index e5d03a7039b4..89c28b538908 100644
+--- a/arch/arm64/kernel/Makefile
++++ b/arch/arm64/kernel/Makefile
+@@ -70,6 +70,7 @@ obj-$(CONFIG_CRASH_CORE)		+= crash_core.o
+ obj-$(CONFIG_ARM_SDE_INTERFACE)		+= sdei.o
+ obj-$(CONFIG_ARM64_PTR_AUTH)		+= pointer_auth.o
+ obj-$(CONFIG_ARM64_MTE)			+= mte.o
++obj-$(CONFIG_ARM64_MTE_TAG_STORAGE)	+= mte_tag_storage.o
+ obj-y					+= vdso-wrap.o
+ obj-$(CONFIG_COMPAT_VDSO)		+= vdso32-wrap.o
+ obj-$(CONFIG_UNWIND_PATCH_PAC_INTO_SCS)	+= patch-scs.o
+diff --git a/arch/arm64/kernel/mte_tag_storage.c b/arch/arm64/kernel/mte_tag_storage.c
+new file mode 100644
+index 000000000000..2f32265d8ad8
+--- /dev/null
++++ b/arch/arm64/kernel/mte_tag_storage.c
+@@ -0,0 +1,158 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Support for dynamic tag storage.
++ *
++ * Copyright (C) 2023 ARM Ltd.
++ */
++
++#include <linux/memblock.h>
++#include <linux/mm.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/of_fdt.h>
++#include <linux/of_reserved_mem.h>
++#include <linux/range.h>
++#include <linux/string.h>
++#include <linux/xarray.h>
++
++#include <asm/mte_tag_storage.h>
++
++struct tag_region {
++	struct range mem_range;	/* Memory associated with the tag storage, in PFNs. */
++	struct range tag_range;	/* Tag storage memory, in PFNs. */
++	u32 block_size_pages;	/* Tag block size, in pages. */
++	phandle mem_phandle;	/* phandle for the associated memory node. */
++};
++
++#define MAX_TAG_REGIONS	32
++
++static struct tag_region tag_regions[MAX_TAG_REGIONS];
++static int num_tag_regions;
++
++static u32 __init get_block_size_pages(u32 block_size_bytes)
++{
++	u32 a = PAGE_SIZE;
++	u32 b = block_size_bytes;
++	u32 r;
++
++	/* Find greatest common divisor using the Euclidian algorithm. */
++	do {
++		r = a % b;
++		a = b;
++		b = r;
++	} while (b != 0);
++
++	return PHYS_PFN(PAGE_SIZE * block_size_bytes / a);
++}
++
++int __init tag_storage_probe(struct reserved_mem *rmem)
++{
++	struct tag_region *region;
++	u32 block_size_bytes;
++	int ret;
++
++	if (num_tag_regions == MAX_TAG_REGIONS) {
++		pr_err("Exceeded maximum number of tag storage regions");
++		goto out_err;
++	}
++
++	region = &tag_regions[num_tag_regions];
++	region->tag_range.start = PHYS_PFN(rmem->base);
++	region->tag_range.end = PHYS_PFN(rmem->base + rmem->size - 1);
++
++	ret = of_flat_read_u32(rmem->fdt_node, "block-size", &block_size_bytes);
++	if (ret || block_size_bytes == 0) {
++		pr_err("Invalid or missing 'block-size' property");
++		goto out_err;
++	}
++
++	region->block_size_pages = get_block_size_pages(block_size_bytes);
++	if (range_len(&region->tag_range) % region->block_size_pages != 0) {
++		pr_err("Tag storage region size 0x%llx pages is not a multiple of block size 0x%x pages",
++		       range_len(&region->tag_range), region->block_size_pages);
++		goto out_err;
++	}
++
++	ret = of_flat_read_u32(rmem->fdt_node, "tagged-memory", &region->mem_phandle);
++	if (ret) {
++		pr_err("Invalid or missing 'tagged-memory' property");
++		goto out_err;
++	}
++
++	num_tag_regions++;
++	return 0;
++
++out_err:
++	num_tag_regions = 0;
++	return -EINVAL;
++}
++RESERVEDMEM_OF_DECLARE(tag_storage, "arm,mte-tag-storage", tag_storage_probe);
++
++static int __init mte_find_tagged_memory_regions(void)
++{
++	struct device_node *mem_dev;
++	struct tag_region *region;
++	struct range *mem_range;
++	const __be32 *reg;
++	u64 addr, size;
++	int i;
++
++	for (i = 0; i < num_tag_regions; i++) {
++		region = &tag_regions[i];
++		mem_range = &region->mem_range;
++
++		mem_dev = of_find_node_by_phandle(region->mem_phandle);
++		if (!mem_dev) {
++			pr_err("Cannot find tagged memory node");
++			goto out;
++		}
++
++		reg = of_get_property(mem_dev, "reg", NULL);
++		if (!reg) {
++			pr_err("Invalid tagged memory node");
++			goto out_put_mem;
++		}
++
++		addr = of_translate_address(mem_dev, reg);
++		if (addr == OF_BAD_ADDR) {
++			pr_err("Invalid memory address");
++			goto out_put_mem;
++		}
++
++		size = of_read_number(reg + of_n_addr_cells(mem_dev), of_n_size_cells(mem_dev));
++		if (!size) {
++			pr_err("Invalid memory size");
++			goto out_put_mem;
++		}
++
++		mem_range->start = PHYS_PFN(addr);
++		mem_range->end = PHYS_PFN(addr + size - 1);
++
++		of_node_put(mem_dev);
++	}
++
++	return 0;
++
++out_put_mem:
++	of_node_put(mem_dev);
++out:
++	return -EINVAL;
++}
++
++void __init mte_init_tag_storage(void)
++{
++	int ret;
++
++	if (num_tag_regions == 0)
++		return;
++
++	ret = mte_find_tagged_memory_regions();
++	if (ret)
++		goto out_disabled;
++
++	return;
++
++out_disabled:
++	num_tag_regions = 0;
++	pr_info("MTE tag storage region management disabled");
++}
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index 74c1db8ce271..2ccc0c294a13 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -39,6 +39,7 @@
+ #include <asm/kernel-pgtable.h>
+ #include <asm/kvm_host.h>
+ #include <asm/memory.h>
++#include <asm/mte_tag_storage.h>
+ #include <asm/numa.h>
+ #include <asm/sections.h>
+ #include <asm/setup.h>
+@@ -386,6 +387,8 @@ void __init mem_init(void)
+ 	/* this will put all unused low memory onto the freelists */
+ 	memblock_free_all();
+ 
++	mte_init_tag_storage();
++
+ 	/*
+ 	 * Check boundaries twice: Some fundamental inconsistencies can be
+ 	 * detected at build time already.
 -- 
-Neil Armstrong <neil.armstrong@linaro.org>
+2.43.0
 
 
