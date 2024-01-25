@@ -1,186 +1,173 @@
-Return-Path: <linux-kernel+bounces-38176-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 383D883BBFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:28:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1595083BC08
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:30:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98FA2B21820
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:28:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B7041C25739
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 08:30:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7474179AB;
-	Thu, 25 Jan 2024 08:28:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE9A0C2C4;
+	Thu, 25 Jan 2024 08:30:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="t5h14y6l"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="SxjCDQqs"
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8445175B4;
-	Thu, 25 Jan 2024 08:28:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DB9EE54C
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:30:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706171322; cv=none; b=YQkwZsXZKoF7xwGrWqR6ApF/N6CLldorKyK556qbFOg/j7EntcRXPw7UKCJmuysNzSwPSzZbsRELWxYC14p2aNnEaMW3nrCacG9q9YRzE2qUCgmCXjIPiB0abZcyDStYKw3EcmmdJN6G9St2ZJyIE5nFbl9qey6KWPHvz4BB8oc=
+	t=1706171441; cv=none; b=m5yIsJp9/LIPt5G5cBHrUXItC+p6film3kK6rWTcYPIsRNtGdLoVQ7Ou+0n45i5eukxfwTNdrlmL1GNXric2D/lDF0pYbGp6ygVCUlY0/0feT1sLo7snMnA+3URRjr4mcfLKFjDp7uNBKShj6EwBjNeztelZ1rUKDREtUclln6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706171322; c=relaxed/simple;
-	bh=0o18t8f3/iC5wQSPwN+S8bs8VJQ/VDGiBZsmcwU/bDw=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=guWQ21QytdC0/xR0H3QoIQ+6YjmEVKZcPF5D1f1e+c3vjqjYlVxhDi+mX8ORMIJMd+YS4LGInnfjvsmjexndOVGmEaBikfoQINOKvNd9sVR/yD7dIYnwE2eRjrC5T5ivwFgDHmyxFYnru0F4zqJO50L4eMtc+45O1PdbKBQRVhM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=t5h14y6l; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1706171320; x=1737707320;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=0o18t8f3/iC5wQSPwN+S8bs8VJQ/VDGiBZsmcwU/bDw=;
-  b=t5h14y6lHFOYRbzFgZXIcxelOhEUWdmsz/gfdVmr8gnEk6MKHcwwP5aL
-   dEFbwGz00l2O6jzVEyUsb12wsSImVS06oSCWEu2erARSUFxSux8yFllZv
-   htrkJG0eFuU1iC887mXWI+m6hL1GOL+HSVn7FR02GVtffm8ruthlqf08Z
-   onxDTDQTcHci/+5Q/bjkoIXkSwaPLJxPKtz8R2TGZDeqi2R5a4eru9Jsp
-   L6IrIClV2CPVg3RToiy8C/1/hoSYR7gGia8wanS+i7IRCAtK6PoKzuv2Z
-   FX39Q6W4wyXywj81Irr/FamKyQ0fx3QTKhh2GCGxgrllPLIkPwqEAgdNe
-   w==;
-X-CSE-ConnectionGUID: yWKH6XeGSSC8CBa5MkUWWA==
-X-CSE-MsgGUID: /2Vw4AgiQCK4jHQhEACeAA==
-X-IronPort-AV: E=Sophos;i="6.05,216,1701154800"; 
-   d="asc'?scan'208";a="15276256"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 25 Jan 2024 01:28:38 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 25 Jan 2024 01:28:36 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Thu, 25 Jan 2024 01:28:32 -0700
-Date: Thu, 25 Jan 2024 08:27:55 +0000
-From: Conor Dooley <conor.dooley@microchip.com>
-To: <Dharma.B@microchip.com>
-CC: <conor@kernel.org>, <sam@ravnborg.org>, <bbrezillon@kernel.org>,
-	<maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
-	<tzimmermann@suse.de>, <airlied@gmail.com>, <daniel@ffwll.ch>,
-	<robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-	<conor+dt@kernel.org>, <Nicolas.Ferre@microchip.com>,
-	<alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
-	<dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<lee@kernel.org>, <thierry.reding@gmail.com>,
-	<u.kleine-koenig@pengutronix.de>, <linux-pwm@vger.kernel.org>,
-	<Linux4Microchip@microchip.com>
-Subject: Re: [PATCH v3 3/3] dt-bindings: mfd: atmel,hlcdc: Convert to DT
- schema format
-Message-ID: <20240125-proved-passage-7fa128f828db@wendy>
-References: <20240118092612.117491-1-dharma.b@microchip.com>
- <20240118092612.117491-4-dharma.b@microchip.com>
- <20240118-recent-glorified-fd35d72e006e@spud>
- <c33868c8-dc42-4800-885c-5e5f24c2044e@microchip.com>
- <20240119-character-mardi-43571d7fe7d5@wendy>
- <da60f9f3-f955-4a87-a020-5710185953c0@microchip.com>
- <20240122-stark-duress-2f59294dcf27@spud>
- <4906b7e2-0ddb-4d3c-a48b-e16278f2d649@microchip.com>
- <20240124-lend-emerald-1028fe65cc39@spud>
- <c3c30bf2-e7c2-4861-bfdf-519a7afde476@microchip.com>
+	s=arc-20240116; t=1706171441; c=relaxed/simple;
+	bh=l44oJ0CyULOdaERxz736Gu+dFcSUOIqqwHFZRrU8ers=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hO6pcGC/Cx+iGxCv0s07x7+qw23K3A6i1Ck1qvI+T5yz2ZjEVe0VzydRIK7Ea5EzU+3fDQu7ODiaDX0KTi1vY6yYAHupb9AKF1jK15nMp5Q9okUIfqhud9n1qgSQ25xIHEm3+pbpczOV/4RZubXttjZJzegxkffrpA+GUrbu9pg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=SxjCDQqs; arc=none smtp.client-ip=209.85.161.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5994e320086so3549409eaf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 00:30:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1706171437; x=1706776237; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LwxZ89BJlc+x6KjX9RIj+qjWv5VNKTF5oPpXEEUlSoI=;
+        b=SxjCDQqsEi8NxIHq9/RQFm1YT2xcrBd2H7MkkfY8UHrfmGDxVxVXs9USWRVPMbPlZW
+         1PQQfPeZS2i+UFyfdR8uOw+DINcIPb2mIrsAgIJxH8dbdPMmCykjkv/nhcspmGHZaKNG
+         WrVLfJDQBR/ka7VXzA1Y0iD0D7fiA8z37Psr4gCJe8MKcfRshvh7BQwiP0VwtJDCtVLp
+         eqfUBoIJDx3+vqnR/bTNFQ2iyRtd3Q+bXBrjUbvOQdS4tobP6qPOGc1hDtpyAWQ5gLNE
+         j/swaDO3IYz+59DNN4IOT4Qn0Vy3JvchvMtTMK89WXIGJ+hxJsu0JLmqxdoufpHu3i/b
+         +6dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706171437; x=1706776237;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LwxZ89BJlc+x6KjX9RIj+qjWv5VNKTF5oPpXEEUlSoI=;
+        b=gfxGzXccIMmnjlQZTwsgRIghWnyTxHrqx4Vz1XXeedobPLkNi/UeJRi8XSjD0BrZIc
+         149UbTkBu8le5Yt9pcI7h/dx2+fWtLceNQEytuTDyvixjuVOaontq41ZULh2rbK5WSWJ
+         oQzVVLzX/gJxpVJ7r8Ydkrya5YHxlNCbYjxqUt0RnWKgRWxJ+3AqpIL1qRvPPCLKAytd
+         YmXB4o5kT+3ZnwZIFKsT32mzgUHSbFMsxFuHE+sVzrTSW66ikUN6oVw5wKF2MTDUqfC5
+         HwLNd8I/CeOKR2uGas31GyAyXOeC6LVKfEXlXXJpMAU7J4z583gSjXsXqvlgf1Fj5eYO
+         xOtw==
+X-Gm-Message-State: AOJu0YyXv5QVwto99Zq84BUrMgz9tsz1skZAjNW6NekAx0L7vi3WuAc8
+	Q+zMwFEegT44FnyO2tfhCsVO8X9EfY6pzsOtHI1oni713NXxJ2vIi0ZoLfPKPew=
+X-Google-Smtp-Source: AGHT+IGk/ptGROJhqqMQq2ViqVW7xz+uINt3phL+/LVfUWQOsNEd1sf1i68ZEjnezYTXkBlml1Kp9A==
+X-Received: by 2002:a05:6358:2244:b0:170:17eb:b4c with SMTP id i4-20020a056358224400b0017017eb0b4cmr618258rwc.54.1706171437371;
+        Thu, 25 Jan 2024 00:30:37 -0800 (PST)
+Received: from [10.4.195.141] ([139.177.225.254])
+        by smtp.gmail.com with ESMTPSA id h4-20020a056a00000400b006ddcb9adda1sm919738pfk.163.2024.01.25.00.30.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Jan 2024 00:30:37 -0800 (PST)
+Message-ID: <1496dce3-a4bb-4ccf-92d6-701a45b67da3@bytedance.com>
+Date: Thu, 25 Jan 2024 16:30:31 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="KV2dTBGvLz55uW11"
-Content-Disposition: inline
-In-Reply-To: <c3c30bf2-e7c2-4861-bfdf-519a7afde476@microchip.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] mm: zswap: remove unnecessary tree cleanups in
+ zswap_swapoff()
+Content-Language: en-US
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>,
+ Chris Li <chrisl@kernel.org>, Huang Ying <ying.huang@intel.com>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240120024007.2850671-1-yosryahmed@google.com>
+ <20240120024007.2850671-3-yosryahmed@google.com>
+ <20240122201906.GA1567330@cmpxchg.org>
+ <CAJD7tkaATS48HVuBfbOmPM3EvRUoPFr66WhF64UC4FkyVH5exg@mail.gmail.com>
+ <20240123153851.GA1745986@cmpxchg.org>
+ <CAJD7tkasHsRnT_75-TXsEe58V9_OW6m3g6CF7Kmsvz8CKRG_EA@mail.gmail.com>
+ <20240123201234.GC1745986@cmpxchg.org>
+ <CAJD7tkZC6w2EaE=j2NEVWn1s7Lo2A7YZh8LiZ+w72jQzFFWLUQ@mail.gmail.com>
+ <f3fa799f-1815-4cfe-abc8-3ba929fcd1ba@bytedance.com>
+ <CAJD7tka6UuEuuP=df-1V3vwsi0T0QhLORTRDs6qDvA81iY6SGA@mail.gmail.com>
+From: Chengming Zhou <zhouchengming@bytedance.com>
+In-Reply-To: <CAJD7tka6UuEuuP=df-1V3vwsi0T0QhLORTRDs6qDvA81iY6SGA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
---KV2dTBGvLz55uW11
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 2024/1/25 15:53, Yosry Ahmed wrote:
+>> Hello,
+>>
+>> I also thought about this problem for some time, maybe something like below
+>> can be changed to fix it? It's likely I missed something, just some thoughts.
+>>
+>> IMHO, the problem is caused by the different way in which we use zswap entry
+>> in the writeback, that should be much like zswap_load().
+>>
+>> The zswap_load() comes in with the folio locked in swap cache, so it has
+>> stable zswap tree to search and lock... But in writeback case, we don't,
+>> shrink_memcg_cb() comes in with only a zswap entry with lru list lock held,
+>> then release lru lock to get tree lock, which maybe freed already.
+>>
+>> So we should change here, we read swpentry from entry with lru list lock held,
+>> then release lru lock, to try to lock corresponding folio in swap cache,
+>> if we success, the following things is much the same like zswap_load().
+>> We can get tree lock, to recheck the invalidate race, if no race happened,
+>> we can make sure the entry is still right and get refcount of it, then
+>> release the tree lock.
+> 
+> Hmm I think you may be onto something here. Moving the swap cache
+> allocation ahead before referencing the tree should give us the same
+> guarantees as zswap_load() indeed. We can also consolidate the
+> invalidate race checks (right now we have one in shrink_memcg_cb() and
+> another one inside zswap_writeback_entry()).
 
+Right, if we successfully lock folio in the swap cache, we can get the
+tree lock and check the invalidate race, only once.
 
-> > If the lvds pll is an input to the hlcdc, you need to add it here.
-> >  From your description earlier it does sound like it is an input to
-> > the hlcdc, but now you are claiming that it is not.
->=20
-> The LVDS PLL serves as an input to both the LCDC and LVDSC
+> 
+> We will have to be careful about the error handling path to make sure
+> we delete the folio from the swap cache only after we know the tree
+> won't be referenced anymore. Anyway, I think this can work.
 
-Then it should be an input to both the LCDC and LVDSC in the devicetree.
+Yes, we can't reference tree if we early return or after unlocking folio,
+since the reference of zswap entry can't protect the tree.
 
-> with the=20
-> LVDS_PLL multiplied by 7 for the Pixel clock to the LVDS PHY, and=20
+> 
+> On a separate note, I think there is a bug in zswap_writeback_entry()
+> when we delete a folio from the swap cache. I think we are missing a
+> folio_unlock() there.
 
-Are you sure? The diagram doesn't show a multiplier, the 7x comment
-there seems to be showing relations?
+Ah, yes, and folio_put().
 
-> LVDS_PLL divided by 7 for the Pixel clock to the LCDC.
+> 
+>>
+>> The main differences between this writeback with zswap_load() is the handling
+>> of lru entry and the tree lifetime. The whole zswap_load() function has the
+>> stable reference of zswap tree, but it's not for shrink_memcg_cb() bottom half
+>> after __swap_writepage() since we unlock the folio after that. So we can't
+>> reference the tree after that.
+>>
+>> This problem is easy to fix, we can zswap_invalidate_entry(tree, entry) early
+>> in tree lock, since thereafter writeback can't fail. BTW, I think we should
+>> also zswap_invalidate_entry() early in zswap_load() and only support the
+>> zswap_exclusive_loads_enabled mode, but that's another topic.
+> 
+> zswap_invalidate_entry() actually doesn't seem to be using the tree at all.
+> 
+>>
+>> The second difference is the handling of lru entry, which is easy that we
+>> just zswap_lru_del() in tree lock.
+> 
+> Why do we need zswap_lru_del() at all? We should have already isolated
+> the entry at that point IIUC.
 
-> I am inclined to believe that appropriately configuring and enabling it=
-=20
-> in the LVDS driver would be the appropriate course of action.
+I was thinking how to handle the "zswap_lru_putback()" if not writeback,
+in which case we can't use the entry actually since we haven't got reference
+of it. So we can don't isolate at the entry, and only zswap_lru_del() when
+we are going to writeback actually.
 
-We're talking about bindings here, not drivers, but I would imagine that
-if two peripherals are using the same clock then both of them should be
-getting a reference to and enabling that clock so that the clock
-framework can correctly track the users.
-
-> > I don't know your hardware, so I have no idea which of the two is
-> > correct, but it sounds like the former. Without digging into how this
-> > works my assumption about the hardware here looks like is that the lvds
-> > controller is a clock provider,
->=20
-> It's a PLL clock from PMC.
->=20
-> > and that the lvds controller's clock is
-> > an optional input for the hlcdc.
->=20
-> Again it's a PLL clock from PMC.
->=20
-> Please refer Section 39.3=20
-> https://ww1.microchip.com/downloads/aemDocuments/documents/MPU32/ProductD=
-ocuments/DataSheets/SAM9X7-Series-Data-Sheet-DS60001813.pdf
-
-It is not the same exact clock as you pointed out above though, so the
-by 7 divider should be modelled.
-
-> > Can you please explain what provides the lvds pll clock and show an
-> > example of how you think the devictree would look with "the lvds pll in
-> > the lvds dt node"?
->=20
-> Sure, Please see the below example
->=20
-> The typical lvds node will look like
->=20
->                  lvds_controller: lvds-controller@f8060000 {
->                          compatible =3D "microchip,sam9x7-lvds";
->                          reg =3D <0xf8060000 0x100>;
->                          interrupts =3D <56 IRQ_TYPE_LEVEL_HIGH 0>;
->                          clocks =3D <&pmc PMC_TYPE_PERIPHERAL 56>, <&pmc=
-=20
-> PMC_TYPE_CORE PMC_LVDSPLL>;
->                          clock-names =3D "pclk", "lvds_pll_clk";
->                          status =3D "disabled";
->                  };
-
-In isolation, this looks fine.
-
-Cheers,
-Conor.
-
---KV2dTBGvLz55uW11
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbIbiwAKCRB4tDGHoIJi
-0h+8AQCpYI71+drl2FDrbEGThmMOFS/iz1jS+CPJczvYePVUqwD/ZilClwywAcjj
-BSSdZJ4KLwpHGZIe4dxZJbifZWhXPAY=
-=rMTy
------END PGP SIGNATURE-----
-
---KV2dTBGvLz55uW11--
+Thanks!
 
