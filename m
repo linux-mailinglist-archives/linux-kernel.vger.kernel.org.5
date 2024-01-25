@@ -1,225 +1,156 @@
-Return-Path: <linux-kernel+bounces-39062-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39063-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18F2183CA68
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:59:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08F3C83CA6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:00:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C0EF1F26116
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:59:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CBEB1C248AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:00:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71AFA133434;
-	Thu, 25 Jan 2024 17:59:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D20E913343E;
+	Thu, 25 Jan 2024 18:00:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OyAlRKVu"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="aeeurj5v"
+Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94F49131727;
-	Thu, 25 Jan 2024 17:59:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 870FE6EB67
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 18:00:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706205579; cv=none; b=Mvacy5tYUfUj8HIfIWxHV7VffKzRlGmodCZnxG//Y6WAxt6N1dFajaYXug66O4tRH/Yqo/ZmtcvnETarzXSLwYDNEwyLO2sZsmQXIBVHmnedgtZPNaXjixJQRyOyA5+W6Bf8XdQpz7m504Jjy442Jmjfhi3GxUCu8tsyDr6/+s4=
+	t=1706205621; cv=none; b=A1ReOiV/psEo1zIeImh2aj40sCnHtvR3hOc83IZIZkc9QzjkHAqBr+GnVkCoOo2/dE8/X3CQiDZlrPL3cqt6ML6FcCOHeCD9npe1knM+OOM43evajw/lhhUBpoleN9H0XU6crVkHNzhBfUoboIGi9TA/ADzeZ12Fz2czbq8ZN8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706205579; c=relaxed/simple;
-	bh=rC+Q88vkvvSk69dujsUhGZueJ/t7Kyjxb3QFEdgOIJA=;
+	s=arc-20240116; t=1706205621; c=relaxed/simple;
+	bh=mT3YLkbrBaeTvDcmwOHl1CS/WsjvlqLYlUMs+sUIjqo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qN9kgqyXrikCZXoLdwFeFVTexZmrbAhPKC+wiDtX+RRarC4UXND8nucc9nqbTs8yM6mptbv31TBUNQ8edDKJ4HTaH6orxYVNMr1sFMi8oZQByqRwukKhlsp1R/mvxSct/tEOKuwrNqLIeEM5rumsW3uT2wfBqPDyvbk1vEcnE8Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OyAlRKVu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD0DDC433F1;
-	Thu, 25 Jan 2024 17:59:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706205579;
-	bh=rC+Q88vkvvSk69dujsUhGZueJ/t7Kyjxb3QFEdgOIJA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OyAlRKVuBCdCsxLTOqTqSdCeK/5SYgNvOoA3HyrTyOGXHWKWVH7aBanPrtSRIxVIk
-	 Y149mNGvNZ1J1PSJ6yBB85ggKz+qBB0Pd/asIXEEsZrVpj6EpjtcmRV/Q05YrW+wZh
-	 J2seaDdIXlIf5/w46PnlThKYxvad+h8w+C/L7Hs7EK0NAZRU0oTdqcq9ZaqpLilvSo
-	 5RfrqumEvErBVFDhuC4P0/uwxjx7AGB4lbwzbrNOBB14T7jFBrBZ88i07XPRzAns36
-	 cBi8U/5Hzcb0zby68VrjcnwkH3i3E1IFK/I6wH54MogiPMaidzrHF/IyP5HdNqMmFp
-	 aTxYOHfemvtmQ==
-Date: Thu, 25 Jan 2024 17:59:24 +0000
-From: Conor Dooley <conor@kernel.org>
-To: debug@rivosinc.com
-Cc: rick.p.edgecombe@intel.com, broonie@kernel.org, Szabolcs.Nagy@arm.com,
-	kito.cheng@sifive.com, keescook@chromium.org,
-	ajones@ventanamicro.com, paul.walmsley@sifive.com,
-	palmer@dabbelt.com, conor.dooley@microchip.com, cleger@rivosinc.com,
-	atishp@atishpatra.org, alex@ghiti.fr, bjorn@rivosinc.com,
-	alexghiti@rivosinc.com, corbet@lwn.net, aou@eecs.berkeley.edu,
-	oleg@redhat.com, akpm@linux-foundation.org, arnd@arndb.de,
-	ebiederm@xmission.com, shuah@kernel.org, brauner@kernel.org,
-	guoren@kernel.org, samitolvanen@google.com, evan@rivosinc.com,
-	xiao.w.wang@intel.com, apatel@ventanamicro.com,
-	mchitale@ventanamicro.com, waylingii@gmail.com,
-	greentime.hu@sifive.com, heiko@sntech.de, jszhang@kernel.org,
-	shikemeng@huaweicloud.com, david@redhat.com, charlie@rivosinc.com,
-	panqinglin2020@iscas.ac.cn, willy@infradead.org,
-	vincent.chen@sifive.com, andy.chiu@sifive.com, gerg@kernel.org,
-	jeeheng.sia@starfivetech.com, mason.huo@starfivetech.com,
-	ancientmodern4@gmail.com, mathis.salmen@matsal.de,
-	cuiyunhui@bytedance.com, bhe@redhat.com, chenjiahao16@huawei.com,
-	ruscur@russell.cc, bgray@linux.ibm.com, alx@kernel.org,
-	baruch@tkos.co.il, zhangqing@loongson.cn, catalin.marinas@arm.com,
-	revest@chromium.org, josh@joshtriplett.org, joey.gouly@arm.com,
-	shr@devkernel.io, omosnace@redhat.com, ojeda@kernel.org,
-	jhubbard@nvidia.com, linux-doc@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, linux-arch@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH v1 05/28] riscv: zicfiss/zicfilp enumeration
-Message-ID: <20240125-unscathed-coeditor-31f04e811489@spud>
-References: <20240125062739.1339782-1-debug@rivosinc.com>
- <20240125062739.1339782-6-debug@rivosinc.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=VJXpWnDM/vKBhmJ+fEPyt8GC/anxaPP/blzN7RBnCxIAYohmpb6iIMEsxFmZHLPCySW6EO956Yt/QUMiW+hx+S+Ka+J3W9mwIoQ+4aKe7it/HDsWXVjTqdeK7gKXQXq6+paPBxuhYmOlgfHJUqGh5H7uso1TGkgR1iY8wVovW1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=aeeurj5v; arc=none smtp.client-ip=209.85.166.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7bed9f5d35dso347886839f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 10:00:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1706205618; x=1706810418; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ASf7ytaMtxVk0xSdSw9HpPo51B0EyC7CmU5TJyjG/94=;
+        b=aeeurj5vUhzBjQCv2FWqw7xbsQXbYPNAe8V6krXVa2WoocWpvlAs/wNMb+qQeFKCv8
+         MzdG1rxN5fRQ/nSIAsoZ0QXGCtkF4zMAMw79Dv+OmKp5dVtqWQUtdkiR8HKxTRQSqBJR
+         Wdk7/Ygo4OO3jG9IMkZdmLUd5falLLTdrQpCk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706205618; x=1706810418;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ASf7ytaMtxVk0xSdSw9HpPo51B0EyC7CmU5TJyjG/94=;
+        b=j8yTm/eAQsg7O2Ee8WcpXLqChpIVCXxGiBLzVJRrz94rXPxRX+4Nq9NYX3UeTz531U
+         rSK/mBsdGpqA652Y0JMIQFIbwPugRQXtL2akIzKuVCkhr7g/+Nh+hvSFjqiu3U2/OrHQ
+         KunddChs6M2CvdQ+tTAgNa/uZkADPZwGi+4tCUn2DQTvhA7+ium47iikNY1sKi2OyhtK
+         SNMXdZwMLILP/nJhZQi+CZseBw4fgNg3DMafkpkGa8u/zMB1vOk0SKxd/slJAhFqeQST
+         qlgQ74FhBdrAQHW7vSXOuHSxFYWU5G9e2v6PpjoYvTTFUH0rIEWFNUQGcD6U9kfI6v9K
+         f4Uw==
+X-Gm-Message-State: AOJu0YzuNBlpFk1ZImKg7OpX/8eJjQYTwtcSLqmRAO2nAbSJPJIdZ03R
+	xLnyNFz5cgk2mroT6K5BIT1z0U5ZJpg9uj45lwc+9V7S0QR07G3lQnB2wS81+Q==
+X-Google-Smtp-Source: AGHT+IGPddlDJxd6qVGArdVFf9Nrta2FGnNCUo/WGULBp9ke0+atvbxuIdfHfuqucOPAMPk2QtvD5Q==
+X-Received: by 2002:a05:6e02:1a6e:b0:35f:ef30:d665 with SMTP id w14-20020a056e021a6e00b0035fef30d665mr115219ilv.41.1706205617791;
+        Thu, 25 Jan 2024 10:00:17 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id 73-20020a63004c000000b005cd835182c5sm13721878pga.79.2024.01.25.10.00.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 10:00:17 -0800 (PST)
+Date: Thu, 25 Jan 2024 10:00:16 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: Steve French <sfrench@samba.org>, Nathan Chancellor <nathan@kernel.org>,
+	Paulo Alcantara <pc@manguebit.com>,
+	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+	linux-cifs@vger.kernel.org, llvm@lists.linux.dev,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] smb: Work around Clang __bdos() type confusion
+Message-ID: <202401250958.11B29BE48@keescook>
+References: <20240123234731.work.358-kees@kernel.org>
+ <CAMj1kXGcKBPnHOm6PtsrxePdv5a6AokB=qvMrwvGmPh_Uk6vsA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="OJe+q/A6ibDUlSdl"
-Content-Disposition: inline
-In-Reply-To: <20240125062739.1339782-6-debug@rivosinc.com>
-
-
---OJe+q/A6ibDUlSdl
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAMj1kXGcKBPnHOm6PtsrxePdv5a6AokB=qvMrwvGmPh_Uk6vsA@mail.gmail.com>
 
-Yo,
+On Thu, Jan 25, 2024 at 01:19:19PM +0100, Ard Biesheuvel wrote:
+> On Wed, 24 Jan 2024 at 00:47, Kees Cook <keescook@chromium.org> wrote:
+> >
+> > Recent versions of Clang gets confused about the possible size of the
+> > "user" allocation, and CONFIG_FORTIFY_SOURCE ends up emitting a
+> > warning[1]:
+> >
+> > repro.c:126:4: warning: call to '__write_overflow_field' declared with 'warning' attribute: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Wattribute-warning]
+> >   126 |                         __write_overflow_field(p_size_field, size);
+> >       |                         ^
+> >
+> > for this memset():
+> >
+> >         int len;
+> >         __le16 *user;
+> >         ...
+> >         len = ses->user_name ? strlen(ses->user_name) : 0;
+> >         user = kmalloc(2 + (len * 2), GFP_KERNEL);
+> >         ...
+> >         if (len) {
+> >                 ...
+> >         } else {
+> >                 memset(user, '\0', 2);
+> >         }
+> >
+> > While Clang works on this bug[2], switch to using a direct assignment,
+> > which avoids memset() entirely which both simplifies the code and silences
+> > the false positive warning. (Making "len" size_t also silences the
+> > warning, but the direct assignment seems better.)
+> >
+> > Reported-by: Nathan Chancellor <nathan@kernel.org>
+> > Closes: https://github.com/ClangBuiltLinux/linux/issues/1966 [1]
+> > Link: https://github.com/llvm/llvm-project/issues/77813 [2]
+> > Cc: Steve French <sfrench@samba.org>
+> > Cc: Paulo Alcantara <pc@manguebit.com>
+> > Cc: Ronnie Sahlberg <ronniesahlberg@gmail.com>
+> > Cc: Shyam Prasad N <sprasad@microsoft.com>
+> > Cc: Tom Talpey <tom@talpey.com>
+> > Cc: linux-cifs@vger.kernel.org
+> > Cc: llvm@lists.linux.dev
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  fs/smb/client/cifsencrypt.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/fs/smb/client/cifsencrypt.c b/fs/smb/client/cifsencrypt.c
+> > index ef4c2e3c9fa6..6322f0f68a17 100644
+> > --- a/fs/smb/client/cifsencrypt.c
+> > +++ b/fs/smb/client/cifsencrypt.c
+> > @@ -572,7 +572,7 @@ static int calc_ntlmv2_hash(struct cifs_ses *ses, char *ntlmv2_hash,
+> >                 len = cifs_strtoUTF16(user, ses->user_name, len, nls_cp);
+> >                 UniStrupr(user);
+> >         } else {
+> > -               memset(user, '\0', 2);
+> > +               *(u16 *)user = 0;
+> 
+> Is 'user' guaranteed to be 16-bit aligned?
 
-Series is RFC, so not gonna review it in depth, just wanted to comment
-on this particular patch.
+It's the first two bytes of a kmalloced address range, which I'm nearly
+certain will be sanely aligned, as those allocs are commonly used for
+holding structs, etc.
 
-On Wed, Jan 24, 2024 at 10:21:30PM -0800, debug@rivosinc.com wrote:
-> From: Deepak Gupta <debug@rivosinc.com>
->=20
-> This patch adds support for detecting zicfiss and zicfilp. zicfiss and zi=
-cfilp
-> stands for unprivleged integer spec extension for shadow stack and branch
-> tracking on indirect branches, respectively.
->=20
-> This patch looks for zicfiss and zicfilp in device tree and accordinlgy l=
-ights
-> up bit in cpu feature bitmap. Furthermore this patch adds detection utili=
-ty
-> functions to return whether shadow stack or landing pads are supported by
-> cpu.
->=20
-> Signed-off-by: Deepak Gupta <debug@rivosinc.com>
-> ---
->  arch/riscv/include/asm/cpufeature.h | 18 ++++++++++++++++++
->  arch/riscv/include/asm/hwcap.h      |  2 ++
->  arch/riscv/include/asm/processor.h  |  1 +
->  arch/riscv/kernel/cpufeature.c      |  2 ++
->  4 files changed, 23 insertions(+)
->=20
-> diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm=
-/cpufeature.h
-> index a418c3112cd6..216190731c55 100644
-> --- a/arch/riscv/include/asm/cpufeature.h
-> +++ b/arch/riscv/include/asm/cpufeature.h
-> @@ -133,4 +133,22 @@ static __always_inline bool riscv_cpu_has_extension_=
-unlikely(int cpu, const unsi
->  	return __riscv_isa_extension_available(hart_isa[cpu].isa, ext);
->  }
-> =20
-> +static inline bool cpu_supports_shadow_stack(void)
-> +{
-> +#ifdef CONFIG_RISCV_USER_CFI
+-Kees
 
-In passing, I don't see any reason for not using IS_ENABLED() here.
-
-> +	return riscv_isa_extension_available(NULL, ZICFISS);
-> +#else
-> +	return false;
-> +#endif
-> +}
-> +
-> +static inline bool cpu_supports_indirect_br_lp_instr(void)
-> +{
-> +#ifdef CONFIG_RISCV_USER_CFI
-> +	return riscv_isa_extension_available(NULL, ZICFILP);
-> +#else
-> +	return false;
-> +#endif
-> +}
-> +
->  #endif
-> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwca=
-p.h
-> index 06d30526ef3b..918165cfb4fa 100644
-> --- a/arch/riscv/include/asm/hwcap.h
-> +++ b/arch/riscv/include/asm/hwcap.h
-> @@ -57,6 +57,8 @@
->  #define RISCV_ISA_EXT_ZIHPM		42
->  #define RISCV_ISA_EXT_SMSTATEEN		43
->  #define RISCV_ISA_EXT_ZICOND		44
-> +#define RISCV_ISA_EXT_ZICFISS	45
-> +#define RISCV_ISA_EXT_ZICFILP	46
-> =20
->  #define RISCV_ISA_EXT_MAX		64
-> =20
-> diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/=
-processor.h
-> index f19f861cda54..ee2f51787ff8 100644
-> --- a/arch/riscv/include/asm/processor.h
-> +++ b/arch/riscv/include/asm/processor.h
-> @@ -13,6 +13,7 @@
->  #include <vdso/processor.h>
-> =20
->  #include <asm/ptrace.h>
-> +#include <asm/hwcap.h>
-> =20
->  #ifdef CONFIG_64BIT
->  #define DEFAULT_MAP_WINDOW	(UL(1) << (MMAP_VA_BITS - 1))
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
-e.c
-> index 98623393fd1f..16624bc9a46b 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -185,6 +185,8 @@ const struct riscv_isa_ext_data riscv_isa_ext[] =3D {
->  	__RISCV_ISA_EXT_DATA(svinval, RISCV_ISA_EXT_SVINVAL),
->  	__RISCV_ISA_EXT_DATA(svnapot, RISCV_ISA_EXT_SVNAPOT),
->  	__RISCV_ISA_EXT_DATA(svpbmt, RISCV_ISA_EXT_SVPBMT),
-> +	__RISCV_ISA_EXT_DATA(zicfiss, RISCV_ISA_EXT_ZICFISS),
-> +	__RISCV_ISA_EXT_DATA(zicfilp, RISCV_ISA_EXT_ZICFILP),
-
-Anything you add to this array, you need to document in a dt-binding.
-Also, you added these in the wrong place. There's a massive comment
-before the array describing the order entries must be in, please take a
-look.
-
-Thanks,
-Conor.
-
-
->  };
-> =20
->  const size_t riscv_isa_ext_count =3D ARRAY_SIZE(riscv_isa_ext);
-> --=20
-> 2.43.0
->=20
->=20
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-
---OJe+q/A6ibDUlSdl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZbKhfAAKCRB4tDGHoIJi
-0m8PAP9eIW7UlxuUyWUsg6MGHXlv8ZtcBNP6yzYdPsHu14VjBgEA1jfEe577oIh+
-woT0/0AyxBO9r6aPBEj0oGlTA2l5WAI=
-=Oe9E
------END PGP SIGNATURE-----
-
---OJe+q/A6ibDUlSdl--
+-- 
+Kees Cook
 
