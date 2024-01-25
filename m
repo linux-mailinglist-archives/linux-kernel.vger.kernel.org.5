@@ -1,136 +1,179 @@
-Return-Path: <linux-kernel+bounces-37856-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37855-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AD6683B69A
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2095983B699
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 02:35:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0B4A1F22CF7
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 537B01C21C80
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 01:35:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1C6167C6A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8736136F;
 	Thu, 25 Jan 2024 01:35:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZlF9QuT0"
-Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cG8hWv7h"
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A082EA9
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 01:35:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00804A3D;
+	Thu, 25 Jan 2024 01:35:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706146540; cv=none; b=Vp+fOk9tk6JHl739mT64F7MAsSrljOAbBacMUhcUZywPUodxQ6Dh/aHi7VUSGA2Syqg0wqgUdjzbx66kZiY3M/RZ0H3beOECdlSQo+wucmaR8nGatjerm+ubhSyNfG4UvWZHSpmP/Eya53aTKQ5CElbK93nj+16AF8jEWOdfAIg=
+	t=1706146539; cv=none; b=a1hP3VtEJdKdp9q3/ZKk2eJJmJ3G5wnEMJp3JmXLeGDxokOE3BsPtBWdcPOGKtCNIqmce1m23RWiXC4v4zcFqAAz+YSH4dUGc9N57gwnLGdsgjesgmnpTpAUlb4PNyhEqj57SCJZ7K84WH8TLcvny8G2XcsOmjpvXP8B6VsYz8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706146540; c=relaxed/simple;
-	bh=ImPV6ylvDLNKhmYcU5bvYmZGFnnlYjliM2xywtcdAl4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WSltNNmlo2x7/AVGgTBVNt9qr77Y3yOVjYRM8aLMS8JZuci8sq+IPjmqqwn4tZamUlTP9UjsHlblibL6qAM2PCrMaIBajWCU0g4IivAJHcKL38SCb+3kJA2O1Jf3RaijT/dM/tMpDxmSGFm5gObYCDGchn7dZxH5PvEVBT+uCXw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ZlF9QuT0; arc=none smtp.client-ip=209.85.160.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-214ca209184so214982fac.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jan 2024 17:35:38 -0800 (PST)
+	s=arc-20240116; t=1706146539; c=relaxed/simple;
+	bh=ti+MsVvJt249QMQp+AxVc59KZSJRPncqlxj1TUqcMdw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=fTLVM6DiNzGz1FyqU/qVpDpDeU2O5/XZDWVPz+d33if/N7z+g/uNxUcJd4NDkg2kbKODfph6WzcJXKYhcyngM58aggMsyi9THdA0Lm/bEpJXnBguhWtJSxx+pyuekWdOLO0E5ntjf6FYgCZRr98bjPU0rR0Y3i+MwT1xwukWtKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cG8hWv7h; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-339261a6ec2so4273958f8f.0;
+        Wed, 24 Jan 2024 17:35:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1706146537; x=1706751337; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=g5NL15WLk6NkJypOkLe+mhvC699JlR9mZPB9t6UM0NU=;
-        b=ZlF9QuT0jqYVCjLdwbvTfu3DWRrw/QMxuJDkLkLrIf9w2yM4ZCaOGOc6pWYsCdCnrP
-         ZMvInpleH2CQEFqN1vJH25EDdoCzkD7VdWZtCucBY2+0OUWXOu3RuXfUnNq8+dWD2H6y
-         uNcZiMMNIDEIchRWjqEw1zRNZTtvDqgm3NUA4KbDqWX3Do5pLNLGl1yKoPR4AD4c42m6
-         SmXjIJ2uay1TpxgeJLusxwzyCRgiZBWU9VIFdGD1IkwN8P7kUo/9bNvCOnUkuXEwCxo5
-         2Jvvv+EuMT1RbDPN1Jzn22PyWPYYG4y4pxl5efmyDWb9E02wcOy6eMQysMDOQZ5TesRm
-         vv6g==
+        d=gmail.com; s=20230601; t=1706146536; x=1706751336; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=KkO/ck26OLRnLoZIZ+7eWYjPj2Yp+ZFu8jKv4kgRV5k=;
+        b=cG8hWv7hdaIvKm7UgiXS1sTsm4Zi1wVR2+I5QcdQJZLjZLZbfufkqO/I9VBNk129em
+         Oll7aN0yR9pstsZpBydM30LM9bSW0c7JmUf4z3qqnemb5FJwpAMEnX+Awh/TDIY5ku1x
+         qEmZU0SPMKH51QgKy3RdhWYmEyCoKTNJY19z6BjZUvtK59EBYHRre1M8rhTGwX2IKFlY
+         Em1vTUgkSUvoimQVe6KuwGSbI2JfgafvLrlwVwZV/qss6mzl4SoIT4ALUV1KgB3nDL3r
+         Mx1F42DLLnZUNXJuESOdN5zJSOs200i7kusrXi85A9VPOMSQvD1b9a0gZNFxTtm2lsYE
+         s9qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706146537; x=1706751337;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=g5NL15WLk6NkJypOkLe+mhvC699JlR9mZPB9t6UM0NU=;
-        b=qVSEkuz2QKCHGhloxYtKIFWYK23ANX1oO2CSOLqn3hoEV8KRespRD8RQj+5J/pgD7n
-         AdzMgx3QWQ5zOBU8SjTMKIDQZxcD3H1EK20WE60z1Mg69oSYNSsMySDAwrBYJmDO+37C
-         Y7+Y0ve/TTW5FHbemjMR5oeqIdIZV4Ts4kr0mRyNeSo/dW3oz/RH2MIA925XLs4/xaKx
-         8eikY4zz/JUOMYwR3ldETJjYLuWQLbueTdbIK5cr5Os729G4XSf87Pvnd/8oOIjLx5ot
-         bl6zB72aLdQyDVCAGnXuJ2L3dZq5k9pbpcIaDfIgnN4aHaEuQDK1i0I3RQLryJxQJrze
-         +ZRg==
-X-Gm-Message-State: AOJu0Yxhqz0DyNZYCkyqPhZ7OpxBlyMBYvxykx/6tRHr6q5NZew26PwD
-	idE/eK2U2nsx5KWPHdalAox+6eJCda2Olj9hPGYjNO78qxdGwpY/Ak9FwYhz3V4=
-X-Google-Smtp-Source: AGHT+IF9XQTNJJ/f8xT4W68lLb3MvI4ACc9ioQKWxUFT2QjM9BvvZGNao/6NUeDg1g/nqtz/28pKUA==
-X-Received: by 2002:a05:6871:782a:b0:214:88e7:ba98 with SMTP id oy42-20020a056871782a00b0021488e7ba98mr202211oac.107.1706146537573;
-        Wed, 24 Jan 2024 17:35:37 -0800 (PST)
-Received: from localhost ([136.62.192.75])
-        by smtp.gmail.com with ESMTPSA id n25-20020a0568080a1900b003bbcaf2f27fsm2817304oij.27.2024.01.24.17.35.37
+        d=1e100.net; s=20230601; t=1706146536; x=1706751336;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KkO/ck26OLRnLoZIZ+7eWYjPj2Yp+ZFu8jKv4kgRV5k=;
+        b=ezJEzM/eV/enOLEX0nKfRgf05qeDsgVmmQJjO+nxhlfNdp00Zu8MhkYSzehPPgPVOA
+         VX/VK/5WSkk5MILVeo5aLmuQa0mP/nquyCEsUtGlbmwGpExcXf74vAnbAJrn0JXascaT
+         nebRLOZVfOnu8lDtgQpFwv55FFrOMC0Raprq90fUnrYeCXAwGiWuVT8gq9PuPks2acNV
+         5X5XOEE7L6rd9Xm/FBCaf9Qv13Zim5qb5ncJIjLl58gTKoE1/Ct2U8tWWoTI2TPkT0Nc
+         IKWramVunKor0FZ5zyexn8XI9pMEEo0unxbRKyApUWaK4IEiLqmqYFAwnQhMoJkzjTDu
+         FkHQ==
+X-Gm-Message-State: AOJu0YyyFWHdNyjjqWga9Y2Wqw178yEaVcsZ1pq35ncgwkJ35CbuN6GO
+	JfmlFobdQm2HvtbGUSrs1ZZ1gwUejRl+5Qn7Szw1XSTYClx3LymwWosPe5tt
+X-Google-Smtp-Source: AGHT+IF/vTV666cJR3Y5BCnfmvFzWS6ROs77gy6fYU9FDDi7N1tKYT9jAnoZQmuBMCWJe6CSa/l8Tg==
+X-Received: by 2002:a5d:4b49:0:b0:339:358c:9f93 with SMTP id w9-20020a5d4b49000000b00339358c9f93mr101568wrs.7.1706146535890;
+        Wed, 24 Jan 2024 17:35:35 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id g4-20020a1709061c8400b00a2cfb31290fsm453865ejh.191.2024.01.24.17.35.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 17:35:37 -0800 (PST)
-From: Sam Protsenko <semen.protsenko@linaro.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	Sylwester Nawrocki <s.nawrocki@samsung.com>,
-	Tomasz Figa <tomasz.figa@gmail.com>,
-	Chanwoo Choi <cw00.choi@samsung.com>,
-	linux-spi@vger.kernel.org,
-	linux-samsung-soc@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 0/2] spi: samsung: Add Exynos850 support
-Date: Wed, 24 Jan 2024 19:35:34 -0600
-Message-Id: <20240125013536.30887-1-semen.protsenko@linaro.org>
-X-Mailer: git-send-email 2.39.2
+        Wed, 24 Jan 2024 17:35:35 -0800 (PST)
+Message-ID: <5d33819c5f752755614882e30d971488731d97e0.camel@gmail.com>
+Subject: Re: [PATCH bpf] bpf: Reject pointer spill with var offset
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Hao Sun <sunhao.th@gmail.com>, bpf@vger.kernel.org
+Cc: andreimatei1@gmail.com, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, linux-kernel@vger.kernel.org
+Date: Thu, 25 Jan 2024 03:35:34 +0200
+In-Reply-To: <20240124103010.51408-1-sunhao.th@gmail.com>
+References: <20240124103010.51408-1-sunhao.th@gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Enable SPI support for Exynos850 SoC in spi-s3c64xx driver, and add the
-corresponding bindings. It was tested using `spidev_test' tool in all
-possible modes:
+On Wed, 2024-01-24 at 11:30 +0100, Hao Sun wrote:
+> check_stack_write_var_off() does not reject pointer reg, this can lead
+> to pointer leak. When cpu_mitigation_off(), unprivileged users can add
+> var off to stack pointer, and loading the following prog enable them
+> leak kernel address:
+>=20
+> func#0 @0
+> 0: R1=3Dctx() R10=3Dfp0
+> 0: (7a) *(u64 *)(r10 -8) =3D 0          ; R10=3Dfp0 fp-8_w=3D00000000
+> 1: (7a) *(u64 *)(r10 -16) =3D 0         ; R10=3Dfp0 fp-16_w=3D00000000
+> 2: (7a) *(u64 *)(r10 -24) =3D 0         ; R10=3Dfp0 fp-24_w=3D00000000
+> 3: (bf) r6 =3D r1                       ; R1=3Dctx() R6_w=3Dctx()
+> 4: (b7) r1 =3D 8                        ; R1_w=3DP8
+> 5: (37) r1 /=3D 1                       ; R1_w=3DPscalar()
+> 6: (57) r1 &=3D 8                       ; R1_w=3DPscalar(smin=3Dsmin32=3D=
+0,smax=3Dumax=3Dsmax32=3Dumax32=3D8,var_off=3D(0x0; 0x8))
+> 7: (bf) r2 =3D r10                      ; R2_w=3Dfp0 R10=3Dfp0
+> 8: (07) r2 +=3D -16                     ; R2_w=3Dfp-16
+> 9: (0f) r2 +=3D r1                      ; R1_w=3DPscalar(smin=3Dsmin32=3D=
+0,smax=3Dumax=3Dsmax32=3Dumax32=3D8,var_off=3D(0x0; 0x8)) R2_w=3Dfp(off=3D-=
+16,smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D8,var_off=3D(0x0; 0x8)=
+)
+> 10: (7b) *(u64 *)(r2 +0) =3D r6         ; R2_w=3Dfp(off=3D-16,smin=3Dsmin=
+32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D8,var_off=3D(0x0; 0x8)) R6_w=3Dctx()=
+ fp-8_w=3Dmmmmmmmm fp-16_w=3Dmmmmmmmm
+> 11: (18) r1 =3D 0x0                     ; R1_w=3Dmap_ptr(ks=3D4,vs=3D8)
+> 13: (bf) r2 =3D r10                     ; R2_w=3Dfp0 R10=3Dfp0
+> 14: (07) r2 +=3D -16                    ; R2_w=3Dfp-16
+> 15: (bf) r3 =3D r10                     ; R3_w=3Dfp0 R10=3Dfp0
+> 16: (07) r3 +=3D -8                     ; R3_w=3Dfp-8
+> 17: (b7) r4 =3D 0                       ; R4_w=3DP0
+> 18: (85) call bpf_map_update_elem#2   ; R0_w=3DPscalar()
+> 19: (79) r0 =3D *(u64 *)(r10 -8)        ; R0_w=3DPscalar() R10=3Dfp0 fp-8=
+_w=3Dmmmmmmmm
+> 20: (95) exit
+> processed 20 insns (limit 1000000) max_states_per_insn 0 total_states 0 p=
+eak_states 0 mark_read 0
 
-  - Polling mode: xfer_size <= 32
-  - IRQ mode: 64 >= xfer_size >= 32
-  - DMA mode: xfer_size > 64
+I tried this example as a part of selftest
+(If put to tools/testing/selftests/bpf/progs/verifier_map_ptr.c
+ could be executed using command:
+ ./test_progs -vvv -a 'verifier_map_ptr/ctx_addr_leak @unpriv'):
 
-with 200 kHz ... 49.9 MHz SPI frequencies. The next 3 approaches were
-used:
+SEC("socket")
+__failure_unpriv
+__msg_unpriv("spilling pointer with var-offset is disallowed")
+__naked void ctx_addr_leak(void)
+{
+	asm volatile (
+		"r0 =3D 0;"
+		"*(u64 *)(r10 -8) =3D r0;"
+		"*(u64 *)(r10 -16) =3D r0;"
+		"*(u64 *)(r10 -24) =3D r0;"
+		"r6 =3D r1;"
+		"r1 =3D 8;"
+		"r1 /=3D 1;"
+		"r1 &=3D 8;"
+		"r2 =3D r10;"
+		"r2 +=3D -16;"
+		"r2 +=3D r1;"
+		"*(u64 *)(r2 +0) =3D r6;"
+		"r1 =3D %[map_hash_16b] ll;"
+		"r2 =3D r10;"
+		"r2 +=3D -16;"
+		"r3 =3D r10;"
+		"r3 +=3D -8;"
+		"r4 =3D 0;"
+		"call %[bpf_map_update_elem];"
+		"r0 =3D *(u64 *)(r10 -8);"
+		"exit;"
+	:
+	: __imm(bpf_map_update_elem),
+	  __imm_addr(map_hash_16b)
+	: __clobber_all);
+}
 
-  1. Software loopback ('-l' option for `spidev_test' tool)
-  2. Hardware loopback (by connecting MISO line to MOSI)
-  3. By communicating with ATMega found on Sensors Mezzanine board [1],
-     programmed to act as an SPI slave device
+And see the following error message:
 
-and all the transactions were additionally checked on my Logic Analyzer
-to make sure the SCK frequencies were actually correct.
+..
+r1 &=3D 8                       ; R1_w=3DPscalar(smin=3Dsmin32=3D0,smax=3Du=
+max=3Dsmax32=3Dumax32=3D8,var_off=3D(0x0; 0x8))
+r2 =3D r10                      ; R2_w=3Dfp0 R10=3Dfp0
+r2 +=3D -16                     ; R2_w=3Dfp-16
+r2 +=3D r1
+R2 variable stack access prohibited for !root, var_off=3D(0x0; 0x8) off=3D-=
+16
 
-This series is supposed to go via SPI tree. All other related SPI
-changes are independent from this series and will go via Krzysztof's
-tree.
-
-Changes in v2:
-  - Collected R-b tags
-  - Split the initial submission [1] by 2 patch series
-  - Changed bindings patch title to "spi: dt-bindings: ..."
-
-[1] https://www.96boards.org/product/sensors-mezzanine/
-[2] https://lore.kernel.org/all/20240120012948.8836-1-semen.protsenko@linaro.org/
-
-Sam Protsenko (2):
-  spi: dt-bindings: samsung: Add Exynos850 SPI
-  spi: s3c64xx: Add Exynos850 support
-
- .../devicetree/bindings/spi/samsung,spi.yaml       |  1 +
- drivers/spi/spi-s3c64xx.c                          | 14 ++++++++++++++
- 2 files changed, 15 insertions(+)
-
--- 
-2.39.2
-
+Could you please craft a selftest that checks for expected message?
+Overall the change makes sense to me.
 
