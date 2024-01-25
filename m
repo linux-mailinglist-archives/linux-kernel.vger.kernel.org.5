@@ -1,93 +1,78 @@
-Return-Path: <linux-kernel+bounces-39217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E12D983CCFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:57:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4484F83CD01
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:00:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4DAA2B23B12
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:57:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4766290180
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:00:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 878B2135A6F;
-	Thu, 25 Jan 2024 19:57:16 +0000 (UTC)
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45DA513664C;
+	Thu, 25 Jan 2024 20:00:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CTfDeHgP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5CC0131736;
-	Thu, 25 Jan 2024 19:57:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86B9273175;
+	Thu, 25 Jan 2024 20:00:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706212636; cv=none; b=sLFOZkzY8TNnKNR6ZyVQVGmaHlLkmlnTdpKk+ol5ruq3QtKqP7aLjTEP0GOOPdP0IrNGEI33keti6LVcFFxXIQUG1GipyIFIHIGXlJFfMrEUHdzmxUy2UGlGdJGd2laVX0ATIxDZ+fvnASnrMrjnp0ix7IQSSDPiZramBLk9Qkw=
+	t=1706212804; cv=none; b=DSnX23qF50z94uyIaeQXQlKHtpzIo+faMhhwhv9CziDlBoc8FuJjewCahSjazaTaWwprGkSDvCL+clyWfd65Wsaygsx+j81eo5iSzt+bdsaiB9Oeyf6j2MszoeYEc1FiYs9WfvFLfO5wlfbqtkHINkhDEcB064YoVdfYErzuLLI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706212636; c=relaxed/simple;
-	bh=cZtWmGlY42vWGJe6HTabZWkMHoxV2tNOxxICLGfAIG8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RcMCDWms9CcSr8sO27IXc0X3Kv4OSjT2TeXpnvr1LQnGJL5yCTt/r4g88vImek7C3AHAc1PYR/rAtXQgwYHyfo/tTvKLKD4VcGNnXRiMmYIY8NEqQZwAPilA9GM8XMieUa0Rgbn7hvZfi3jkBnjv0+9GxyH/PTx/Z6ccjj2qgAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
-Received: from [194.95.143.137] (helo=phil.dip.tu-dresden.de)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1rT5qE-0001FJ-Df; Thu, 25 Jan 2024 20:56:50 +0100
-From: Heiko Stuebner <heiko@sntech.de>
-To: Johan Jonker <jbx6244@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Algea Cao <algea.cao@rock-chips.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
-	Andy Yan <andy.yan@rock-chips.com>,
-	Vinod Koul <vkoul@kernel.org>,
-	Sebastian Reichel <sebastian.reichel@collabora.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>
-Cc: Heiko Stuebner <heiko@sntech.de>,
-	linux-rockchip@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	kernel@collabora.com,
-	devicetree@vger.kernel.org,
-	linux-phy@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH 0/3] Add support for RK3588 HDMI/DP Combo PHY
-Date: Thu, 25 Jan 2024 20:56:44 +0100
-Message-Id: <170621254052.1850726.5970136297823229036.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240119193806.1030214-1-cristian.ciocaltea@collabora.com>
-References: <20240119193806.1030214-1-cristian.ciocaltea@collabora.com>
+	s=arc-20240116; t=1706212804; c=relaxed/simple;
+	bh=ZFnMI0/SXfSTdJN4Hi4k39XnZenpetS+ne6kdmaF6jo=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=j7JeLJ8eU/1SDX08FqHXhabrKHuNQwSWaWxfAXg+E0e32O+CGKgY8YxUXlD9CDnGmotVDVmUcavhKeuPLKtIbwslBJ6dDcXKQI1iDC92HJigxqtWGUQ5DGAHUR2R4ibvnxOxTy09aHXGLCFBL/NNhFGxJFuye/puRMhJIb1ztE4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CTfDeHgP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 06B51C43390;
+	Thu, 25 Jan 2024 20:00:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706212804;
+	bh=ZFnMI0/SXfSTdJN4Hi4k39XnZenpetS+ne6kdmaF6jo=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=CTfDeHgPUIfBUu+fshKLFjf8cGiKOKyHv+zQ39xUjptsJiFFlmcYfdEHQdCvNDyGn
+	 yqMtKtdPEyHtSQBRGi76s0/G9qp39F9hyT3uNJtKmpZewsvkLiH78aJo/LGCZMCxjk
+	 t8AdnhxvK/FoSXmGfZy8X9Tu/037ZEihCRxOe9rLjtTjZl+gUK6fq2bQQ3PXNhB5j6
+	 ZkN4q2t85wfOdMLEzxeKpk5Q2TrUQ9tKLN//PeGJkWUVZ0ViJK+cg46IAjD72ufkQ1
+	 Rzg+GRJpxfcIkmlCi7yGicebSgJ2AAUQNz94RpDzmv2Yd3EIZUy4svr3nvvUWxN14q
+	 fPLwb02waBhPg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D4114DC99E0;
+	Thu, 25 Jan 2024 20:00:03 +0000 (UTC)
+Subject: Re: [GIT PULL] first round of 6.8 fixes for NFSD
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <A3915BC8-E134-4094-A88F-3C75CA908B10@oracle.com>
+References: <A3915BC8-E134-4094-A88F-3C75CA908B10@oracle.com>
+X-PR-Tracked-List-Id: <linux-nfs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <A3915BC8-E134-4094-A88F-3C75CA908B10@oracle.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git tags/nfsd-6.8-1
+X-PR-Tracked-Commit-Id: edcf9725150e42beeca42d085149f4c88fa97afd
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: b9fa4cbd8415c57d514a45c5eb6272d40961d6c7
+Message-Id: <170621280383.19358.1142771434552068942.pr-tracker-bot@kernel.org>
+Date: Thu, 25 Jan 2024 20:00:03 +0000
+To: Chuck Lever III <chuck.lever@oracle.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Linux NFS Mailing List <linux-nfs@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Jeff Layton <jlayton@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
 
-On Fri, 19 Jan 2024 21:38:00 +0200, Cristian Ciocaltea wrote:
-> Add driver and bindings to support the Rockchip HDMI/eDP TX Combo PHY
-> found on RK3588 SoC.
-> 
-> The PHY is based on a Samsung IP block and supports HDMI 2.1 TMDS, FRL
-> and eDP links.
-> 
-> The HDMI link has been tested on Rock 5B and EVB1 boards.
-> 
-> [...]
+The pull request you sent on Thu, 25 Jan 2024 01:43:49 +0000:
 
-Applied, thanks!
+> https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git tags/nfsd-6.8-1
 
-[1/3] dt-bindings: soc: rockchip: Add rk3588 hdptxphy syscon
-      commit: 738227ab42fe0c6047f932aef11b9fd647d203f9
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/b9fa4cbd8415c57d514a45c5eb6272d40961d6c7
 
-I've grabbed this one already, to keep my GRFs together :-)
+Thank you!
 
-
-Best regards,
 -- 
-Heiko Stuebner <heiko@sntech.de>
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
