@@ -1,144 +1,105 @@
-Return-Path: <linux-kernel+bounces-38497-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAA4B83C0B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:22:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B4E5383C0B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 12:22:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29CC21C221FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:22:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7F281C22629
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:22:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 694B72C68A;
-	Thu, 25 Jan 2024 11:22:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56C6C33998;
+	Thu, 25 Jan 2024 11:22:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="ksFqiTwE"
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jOo3a7ho"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B1151CAAE;
-	Thu, 25 Jan 2024 11:21:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23DA032C8C;
+	Thu, 25 Jan 2024 11:22:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706181720; cv=none; b=CxmpbZBdTOnMH8RRwrXgM7cSY1Q7wpILLTszPieZWV7VapU1PxlvTePYSBZJTt1c7C8eSyyIlK112wonVxCCNJirHuPGBmzdChSTYHkOcwhgDJN2oeenDe1i+1RvwRD+1VYcx8wI4j9PmoY8RPcn9J3JZlhWZWcgHPCpiMNuFFI=
+	t=1706181727; cv=none; b=H2DAHWYBiRCwF38clfbbGLCE1DRNJCychOhx1CcLt1r6toMiccIqzK72fDVICvPSgQukConCgfeqT3nnhHrUHFrqSHBy1+aX5HOESRCzA/JQOyk/ryPolk+N4UttmV070Df3ibRJ+6+ybbeRgBFS3JAqVKTRLAPjXUgx9JTdIno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706181720; c=relaxed/simple;
-	bh=3UJsTPYOcBuLCUS/AoSNIE0q49JbYk1tipQ/7awvQm4=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cR96S6Qz1vVAaHlTX42rX+lC1YtynVOqzTkdZN8u2lvmWT9PKf/NIm0F0RRh4VCJhgUErbwZh0DnQeGFfIT43lYdXnOB3hexUEyFe1vLv66uX+Dyf0xBqdjldVoDVc/hKqks4NRlgek52odS063pnNT16qSh8dDehDQVvCa/hU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=ksFqiTwE; arc=none smtp.client-ip=67.231.156.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 40P8veXf008478;
-	Thu, 25 Jan 2024 03:21:51 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	pfpt0220; bh=fXkopoE1vDo6nTbf5yAboxI/984BJBBIUflwlsaQrIs=; b=ksF
-	qiTwEEOqoKrq9gY1jtjMl7VPu0nPt6CDQMjfV1erDZcuTWyjeHWQDIcFW1HjPC8E
-	+pQgnrOQJG3dFiv6vC2IV5o1Q07oHYz0P9691kBSWH36862xeo2JrFHi2TmCxD2S
-	2tUoVhvZVnddUVCCmNwce1Ho08FPeKpJaS3igbdjhmkoNakVSKqC8LZbLNlcCa66
-	VYLFR2Kq7uPrI83rLDX/YDZv90RCVrIw0BeaxqU34PIFINnMu2ZxwBkcYdUkFGx2
-	KoNcaQJ4MO4qBUjDK4eIp33b8uMemBNxvLyfaPPdz5Twdi9Fg8B07ZmTJw8YNIBO
-	T1IQwaHocWb8I8MH2lA==
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3vumk90cqn-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-	Thu, 25 Jan 2024 03:21:51 -0800 (PST)
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 25 Jan
- 2024 03:21:37 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Thu, 25 Jan 2024 03:21:37 -0800
-Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
-	by maili.marvell.com (Postfix) with ESMTP id 0EF4E3F7082;
-	Thu, 25 Jan 2024 03:21:34 -0800 (PST)
-From: Hariprasad Kelam <hkelam@marvell.com>
-To: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC: <pabeni@redhat.com>, <kuba@kernel.org>, <edumazet@google.com>,
-        <davem@davemloft.net>, <sbhatta@marvell.com>, <gakula@marvell.com>,
-        <sgoutham@marvell.com>
-Subject: [net-next PATCH] octeontx2-pf: Add support to read eeprom information
-Date: Thu, 25 Jan 2024 16:51:33 +0530
-Message-ID: <20240125112133.8483-1-hkelam@marvell.com>
-X-Mailer: git-send-email 2.17.1
+	s=arc-20240116; t=1706181727; c=relaxed/simple;
+	bh=6XmL08t5nvQeDJ0ijBle9RmMpOjyA1qD7j3fdFOhR6k=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Yc7yagjQnkyHiZu/oEjNZxcX3tppU2VwcKTnt2MjT3TAflFwmdlkuzCtLPvmqw3RkqtqmKOwi5AlXw/IfgJf7bGFYXi7WhTYNqP0PbUgGlHDQz9l0oFedTEet5aSn+lGbhZ7seiKIaFDvUreTOb06km08rnQuvIqMU0YyHvN8Lw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jOo3a7ho; arc=none smtp.client-ip=134.134.136.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706181726; x=1737717726;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=6XmL08t5nvQeDJ0ijBle9RmMpOjyA1qD7j3fdFOhR6k=;
+  b=jOo3a7ho0KLSENJLvBa1snW2YXQWlazrtZzh1p7TosAHhjFJE5lvxbRi
+   iiuux1BCwVnxuPr8C3diiEYfzwKKko7Gf286dTF4Svr2F0J8xs7HxiKZO
+   P3oqbj/lj8Tay4o9Rjg8gTd5FOzvAbmdAaZeerQlVfjdHaUjHyu+1zsNv
+   u7Acn//kEinEpV3oOBa36RRMmSwmKorp2TLeUeXYWjsHdDHD4lDrt8o1n
+   kz3e+D6OHYrKI/D+AmYFKJH0gWveEdL56iuGs8hgTgLNXE9YphQdPSfYo
+   qtDqgVRwth10wgt5cGaQty++VfpYZ6kkd0F60qSNM31mMRFqq49ntgrr1
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="466414530"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="466414530"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 03:22:03 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="1117919561"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="1117919561"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.209.226]) ([10.254.209.226])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 03:21:55 -0800
+Message-ID: <95ff904c-4731-46e2-ad3b-313811a3c2f2@linux.intel.com>
+Date: Thu, 25 Jan 2024 19:21:53 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: jiRCFEXdqvLs-pdKTnxH8gPY9UkgKTWQ
-X-Proofpoint-GUID: jiRCFEXdqvLs-pdKTnxH8gPY9UkgKTWQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-25_06,2024-01-25_01,2023-05-22_02
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>,
+ Jacob Pan <jacob.jun.pan@linux.intel.com>,
+ Longfang Liu <liulongfang@huawei.com>, Yan Zhao <yan.y.zhao@intel.com>,
+ iommu@lists.linux.dev, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Jason Gunthorpe <jgg@nvidia.com>
+Subject: Re: [PATCH v10 01/16] iommu: Move iommu fault data to linux/iommu.h
+Content-Language: en-US
+To: Joel Granados <j.granados@samsung.com>
+References: <20240122054308.23901-1-baolu.lu@linux.intel.com>
+ <20240122054308.23901-2-baolu.lu@linux.intel.com>
+ <CGME20240125091737eucas1p2091d853e27e669b3b12cea8ee3bbe34e@eucas1p2.samsung.com>
+ <20240125091734.chekvxgof2d5zpcg@localhost>
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20240125091734.chekvxgof2d5zpcg@localhost>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Add support to read/decode EEPROM module information using ethtool.
+On 2024/1/25 17:17, Joel Granados wrote:
+> On Mon, Jan 22, 2024 at 01:42:53PM +0800, Lu Baolu wrote:
+>> The iommu fault data is currently defined in uapi/linux/iommu.h, but is
+>> only used inside the iommu subsystem. Move it to linux/iommu.h, where it
+>> will be more accessible to kernel drivers.
+>>
+>> With this done, uapi/linux/iommu.h becomes empty and can be removed from
+>> the tree.
+> The reason for removing this [1] is that it is only being used by
+> internal code in the kernel. What happens with usespace code that have
+> used these definitions? Should we deprecate instead of just removing?
 
-Usage: ethtool -m <interface>
+The interfaces to deliver I/O page faults to user space have never been
+implemented in the Linux kernel before. Therefore, from a uAPI point of
+view, this definition is actually dead code.
 
-Signed-off-by: Christina Jacob <cjacob@marvell.com>
-Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
-Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
----
- .../marvell/octeontx2/nic/otx2_ethtool.c      | 33 +++++++++++++++++++
- 1 file changed, 33 insertions(+)
-
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-index 2928898c7f8d..8e4e22a2817b 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-@@ -1185,6 +1185,37 @@ static void otx2_get_link_mode_info(u64 link_mode_bmap,
- 			      otx2_link_modes);
- }
- 
-+static int otx2_get_module_info(struct net_device *netdev,
-+				struct ethtool_modinfo *modinfo)
-+{
-+	struct otx2_nic *pfvf = netdev_priv(netdev);
-+	struct cgx_fw_data *rsp;
-+
-+	rsp = otx2_get_fwdata(pfvf);
-+	if (IS_ERR(rsp))
-+		return PTR_ERR(rsp);
-+
-+	modinfo->type = rsp->fwdata.sfp_eeprom.sff_id;
-+	modinfo->eeprom_len = SFP_EEPROM_SIZE;
-+	return 0;
-+}
-+
-+static int otx2_get_module_eeprom(struct net_device *netdev,
-+				  struct ethtool_eeprom *ee,
-+				  u8 *data)
-+{
-+	struct otx2_nic *pfvf = netdev_priv(netdev);
-+	struct cgx_fw_data *rsp;
-+
-+	rsp = otx2_get_fwdata(pfvf);
-+	if (IS_ERR(rsp))
-+		return PTR_ERR(rsp);
-+
-+	memcpy(data, &rsp->fwdata.sfp_eeprom.buf, ee->len);
-+
-+	return 0;
-+}
-+
- static int otx2_get_link_ksettings(struct net_device *netdev,
- 				   struct ethtool_link_ksettings *cmd)
- {
-@@ -1343,6 +1374,8 @@ static const struct ethtool_ops otx2_ethtool_ops = {
- 	.set_fecparam		= otx2_set_fecparam,
- 	.get_link_ksettings     = otx2_get_link_ksettings,
- 	.set_link_ksettings     = otx2_set_link_ksettings,
-+	.get_module_info	= otx2_get_module_info,
-+	.get_module_eeprom	= otx2_get_module_eeprom,
- };
- 
- void otx2_set_ethtool_ops(struct net_device *netdev)
--- 
-2.17.1
-
+Best regards,
+baolu
 
