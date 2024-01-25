@@ -1,102 +1,155 @@
-Return-Path: <linux-kernel+bounces-39042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6C3083CA1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:33:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8338783CA22
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:35:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 884341F26506
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:33:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23B6F1F269D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:35:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85451131E2B;
-	Thu, 25 Jan 2024 17:33:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2E63131736;
+	Thu, 25 Jan 2024 17:35:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Go2dKEWQ"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="WP0rzOgN"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B88B779C7;
-	Thu, 25 Jan 2024 17:33:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA0BA22089
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 17:35:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706204008; cv=none; b=INONAFk/9Dx4sBtmZj3cBSxH4bQyCafyCq3Vz8BF1At+1+QpBfVLVIUpGXFQFNrMYkq2GdGivQdM0Bnw0OxirUDCuidcAoVYXm1majOt6rH3FYyzrdY9IKgo7SrSj+dezCYKSmoQFGLxTqaVuXpg3U7fSwzALHpawPrha63PEgo=
+	t=1706204100; cv=none; b=HGaCDRyk4KY4oo3NPDPxZZeRvOKFLL9CuZ+BSofLGajTWXbnaNuthwmiWDsM2UIkMrWgsMKFQsAR+w/XxrJPJ0V9werwRCE9qlmYpBORAngBiRk87fNaLMXMplss0C1TzSZgfju5zyg+xL812i/SAgI76PQgeD4/S4D6OC0nOuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706204008; c=relaxed/simple;
-	bh=PVZwAr4x9ILJrtMvklP443EpmlmJp4NX/vWU2AqygLQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nEYx9xxbHjBXN7wResllLHVyKRq71h1oygrs0bxRa5Fn0JNQYKo/+VZiPddwvSJ0m98XqGhAbJgfjkk6w4OC3fL/9DIPMGs3J3Bvg+Ebce0MX7mIfca8zkwT9GShUj3Mai158k0LcAeMkgclRB+IKdR5JMCi8Ic7GmXpAuHN8kY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Go2dKEWQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91746C433C7;
-	Thu, 25 Jan 2024 17:33:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706204008;
-	bh=PVZwAr4x9ILJrtMvklP443EpmlmJp4NX/vWU2AqygLQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Go2dKEWQs5mwFFcm1BOqA6K2e9K0sBlH9kwsN83edz9L010qC3ixe7Dca8PVG0DZi
-	 1gCI0QlpFq5StdzgDGAnj2pVAoU9EzOQNwd6ja/+w+wiMW6V7bi1ABJwZ3VAig+9il
-	 sheq4XFRAm6nJpPOsf21Y1RZXmCLJ53gEu0ldNAOyldiBtRhCjOA5Q5bkG8pnnL5W6
-	 +ly37cPlYAJi4ct0iouKkixWXKVx0b5zl9jVDuThrbsdnhKaUNBry1FWJaTxVciFrs
-	 tqunZU1jE4BPVZjRM7+Vl+OeYo0vJJUdufDEOCt6Qb0z7/n00AzTLsr+16vyc8AAa9
-	 5qi9gUnqEir7w==
-Date: Thu, 25 Jan 2024 17:33:21 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: andi.shyti@kernel.org, arnd@arndb.de, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	alim.akhtar@samsung.com, linux-spi@vger.kernel.org,
-	linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-arch@vger.kernel.org, andre.draszik@linaro.org,
-	peter.griffin@linaro.org, semen.protsenko@linaro.org,
-	kernel-team@android.com, willmcvicker@google.com
-Subject: Re: [PATCH v2 23/28] spi: s3c64xx: retrieve the FIFO size from the
- device tree
-Message-ID: <1e117c5c-1e82-47ae-82f4-cdcf0a087f5f@sirena.org.uk>
-References: <20240125145007.748295-1-tudor.ambarus@linaro.org>
- <20240125145007.748295-24-tudor.ambarus@linaro.org>
+	s=arc-20240116; t=1706204100; c=relaxed/simple;
+	bh=Jn8Mc4RpAgdStA0f7MeGBcH7wYwOehXInowhcwQGF8U=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=o44NGWQQiOwoW2g1lMdE1cKTNW4cpEhfxMw41e+SNfqyIsTOyqgVdenYSn0KpMuqgeDGB72rxEooojx57EXTRmGUrj/2U57I8wEeMZdIgc2xawwxmKxXzkBbPvwcnCrj60Hr/SivSou2BEU/UFqcAcw9d0KNGWz4aXoH3cxO8kM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=WP0rzOgN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06CE7C433C7;
+	Thu, 25 Jan 2024 17:35:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1706204100;
+	bh=Jn8Mc4RpAgdStA0f7MeGBcH7wYwOehXInowhcwQGF8U=;
+	h=From:To:Cc:Subject:Date:From;
+	b=WP0rzOgNFPr/PC6Mca6T8KKT2P9BE6Ya8ZMBHkE5S2+yHAdq8UVQJM5XZpvdWzXlI
+	 500Rx42tI2MRd6JAXkVYFPdMzATppao3AJeE8pVVk/9KVJy4t/qbhwIrkr4ccukhQ2
+	 QVoRtG5OSnf+L/svFSoVr3ImkEmXKISwp3GP954Y=
+From: Linus Torvalds <torvalds@linux-foundation.org>
+To: Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@kernel.org>
+Cc: arch/x86 maintainers <x86@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH] x86: mm: get rid of conditional IF flag handling in page fault path
+Date: Thu, 25 Jan 2024 09:34:57 -0800
+Message-ID: <20240125173457.1281880-1-torvalds@linux-foundation.org>
+X-Mailer: git-send-email 2.43.0.5.g38fb137bdb
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="b/vTOCJnB2w1PQdF"
-Content-Disposition: inline
-In-Reply-To: <20240125145007.748295-24-tudor.ambarus@linaro.org>
-X-Cookie: Entropy isn't what it used to be.
+Content-Transfer-Encoding: 8bit
 
+We had this nonsensical code that would happily handle kernel page
+faults with interrupts disabled, which makes no sense at all.
 
---b/vTOCJnB2w1PQdF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+It turns out that this is legacy code that _used_ to make sense, back
+when we enabled irqs as early as possible, and we used to have this code
+sequence essentially immediately after reading the faulting address from
+register %cr2.
 
-On Thu, Jan 25, 2024 at 02:50:01PM +0000, Tudor Ambarus wrote:
+Back then, we could have kernel page faults to populate the vmalloc area
+with interrupts disabled, and they would need to stay disabled for that
+case.
 
-> Allow SoCs that have multiple instances of the SPI IP with different
-> FIFO sizes to specify their FIFO size via the "samsung,spi-fifosize"
-> device tree property. With this we can break the dependency between the
-> SPI alias, the fifo_lvl_mask and the FIFO size.
+However, the code in question has been moved down in the page fault
+handling, and is now in the "handle faults in user addresses" section,
+and apparently nobody ever noticed that it no longer makes sense to
+handle these page faults with interrupts conditionally disabled.
 
-OK, so we do actually have SoCs with multiple instances of the IP with
-different FIFO depths (and who knows what else other differences)?
+So replace the conditional irq enable
 
---b/vTOCJnB2w1PQdF
-Content-Type: application/pgp-signature; name="signature.asc"
+        if (regs->flags & X86_EFLAGS_IF)
+                local_irq_enable();
 
------BEGIN PGP SIGNATURE-----
+with an unconditional one, and add a temporary WARN_ON_ONCE() if some
+codepath actually does do page faults with interrupts disabled (without
+also doing a pagefault_disable(), of course).
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmWym2AACgkQJNaLcl1U
-h9C4jwf8DgPs3fIGNMrQv7ggtqmY0mUIm6dMIak+pCE454Ik0GV7lwoEO912QoMc
-OezsS9qmJnObR7g5p6OefpAmI/+EzuWrGR+6Q+xji1Nre9/rTmGOILA24LfpLCM/
-w5UePna2yEblcnTFQookxrZE2D6FSf3Hr2IzNct7NFjYyGwoXeJmEq6rxK9dKour
-ieXlK0y42vAz0S419JlaYC4JuaOAP/gQZPOPMIYvv8t/aYZO95EQQhCc58SxUL8h
-3TDEOnNSKt1wUkVGk6ac+/61YwUhRFCjqAARxPPYY0fVLO0YqHcbPM5V8FQ3DxGD
-SvWk5NKRBb1Q31ei9bynMQdxc9HYqA==
-=+ytp
------END PGP SIGNATURE-----
+NOTE! We used to allow user space to disable interrupts with iopl(3).
+That is no longer true since commits
 
---b/vTOCJnB2w1PQdF--
+ a24ca9976843 ("x86/iopl: Remove legacy IOPL option")
+ b968e84b509d ("x86/iopl: Fake iopl(3) CLI/STI usage")
+
+so the WARN_ON_ONCE() is valid for both the kernel and user situation.
+
+For some of the history relevant to this code, see particularly commit
+8c914cb704a1 ("x86_64: actively synchronize vmalloc area when
+registering certain callbacks") which moved this below the vmalloc fault
+handling.
+
+Now that the user_mode() check is irrelevant, we can also move the
+FAULT_FLAG_USER flag setting down to where the other flag settings are
+done.
+
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+---
+ arch/x86/mm/fault.c | 27 ++++++++++++++-------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
+
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index 679b09cfe241..150e002e0884 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -1302,21 +1302,14 @@ void do_user_addr_fault(struct pt_regs *regs,
+ 		return;
+ 	}
+ 
+-	/*
+-	 * It's safe to allow irq's after cr2 has been saved and the
+-	 * vmalloc fault has been handled.
+-	 *
+-	 * User-mode registers count as a user access even for any
+-	 * potential system fault or CPU buglet:
+-	 */
+-	if (user_mode(regs)) {
+-		local_irq_enable();
+-		flags |= FAULT_FLAG_USER;
+-	} else {
+-		if (regs->flags & X86_EFLAGS_IF)
+-			local_irq_enable();
++	/* Legacy check - remove this after verifying that it doesn't trigger */
++	if (WARN_ON_ONCE(!(regs->flags & X86_EFLAGS_IF))) {
++		bad_area_nosemaphore(regs, error_code, address);
++		return;
+ 	}
+ 
++	local_irq_enable();
++
+ 	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
+ 
+ 	/*
+@@ -1332,6 +1325,14 @@ void do_user_addr_fault(struct pt_regs *regs,
+ 	if (error_code & X86_PF_INSTR)
+ 		flags |= FAULT_FLAG_INSTRUCTION;
+ 
++	/*
++	 * We set FAULT_FLAG_USER based on the register state, not
++	 * based on X86_PF_USER. User space accesses that cause
++	 * system page faults are still user accesses.
++	 */
++	if (user_mode(regs))
++		flags |= FAULT_FLAG_USER;
++
+ #ifdef CONFIG_X86_64
+ 	/*
+ 	 * Faults in the vsyscall page might need emulation.  The
+-- 
+2.43.0.5.g38fb137bdb
+
 
