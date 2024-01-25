@@ -1,115 +1,109 @@
-Return-Path: <linux-kernel+bounces-38235-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38236-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEDD983BCE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:10:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F292C83BCEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:10:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78BB1290063
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:10:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E74F292570
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:10:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D4861BDE1;
-	Thu, 25 Jan 2024 09:07:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A16EA1CA85;
+	Thu, 25 Jan 2024 09:08:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="XJdgAyCR"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VYEZMrn/"
+Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com [209.85.222.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 677A91BDDA
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:07:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 855D01CA88
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:08:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706173628; cv=none; b=WS3GAL5pwYN7Usv/LfZT63wfRqzqZsaYZtt7bIbRBLELrCYGaDQJ02tmIrQUWXybM8pKJhI9Oef7p/C9hMpjQS32xaQWUZ1JDIpfEJtpNbWcfDfz/kCN3M1ZRjetlRK27gwkjAZgo2ntGZB47WkVF/T69plWsyMhInXsADf+aUQ=
+	t=1706173729; cv=none; b=OvR5WGRrzyhJO5RNkFv49neE/kDQjp6+ZE4LU0nwq3aYUSISPsIn89/jdcebseStZZNgrBYAZI6Bguj3KHdmjlLNFNJWYAj/oYCmcojtaeV301QiCCJMsx5tILo0dkiAtr3x6hobQWukvcYC+EDB9zysBd4TcU9lQzhwK1CNZTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706173628; c=relaxed/simple;
-	bh=jmxwkZEbRI0XAx+cYJ9cpE0ROLMlbdLaVvy/jQgXN+k=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=n+7ujEPbfriM5jd+TGY4eGn69hUafy33ZUphYmW8EyQ9lC2gzwJdJkemcqFbWD6DTjMr1991EHGTZpuTwFJwy7Em0+imz/11D/xGcshpfnCHlzmToHzdCEQvgeQtXYL5CFzGsCGjOoAzvj5V0r0+g8Ovysjru0wvsL7d1pKZki4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=XJdgAyCR; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1706173625;
-	bh=jmxwkZEbRI0XAx+cYJ9cpE0ROLMlbdLaVvy/jQgXN+k=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=XJdgAyCRCGRT5DZYiJj70aIqs9zLKE3ws7azgqOUKukhW8MrG7e30kyqaQrg6pZ/J
-	 SjlBmKORjFGH0UJk9kC//JPytCbBFzL4bp9od75RK2NDfH+7O005+UUqwet/hfBx+S
-	 GsL/eKTgsKTtZOC/DDaCxr6OnY+lPxCWn6lkP0SzeJgFCbFlREWsJPN51u25R61ZCy
-	 nRFY5YLfNHLWDu8KndWfMdqEiOdwYwFLMJsgtv9LHCknZt9ob0UrjHmMoLVdNaDYnP
-	 wJ9b9gjuSaklo5rFWUUS8ZD1E4NFN8CCMD7EeZp5hR7adRcqPzlduZ7g57t0v4r9Dp
-	 rKhAqRsiXmH2g==
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bbrezillon)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 44F1437813C4;
-	Thu, 25 Jan 2024 09:07:04 +0000 (UTC)
-Date: Thu, 25 Jan 2024 10:07:03 +0100
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc: David Airlie <airlied@gmail.com>, Gerd Hoffmann <kraxel@redhat.com>,
- Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
- <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, Christian =?UTF-8?B?S8O2bmln?=
- <christian.koenig@amd.com>, Qiang Yu <yuq825@gmail.com>, Steven Price
- <steven.price@arm.com>, Emma Anholt <emma@anholt.net>, Melissa Wen
- <mwen@igalia.com>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, kernel@collabora.com,
- virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v19 22/30] drm/shmem-helper: Add common memory shrinker
-Message-ID: <20240125100703.76d802ad@collabora.com>
-In-Reply-To: <20240105184624.508603-23-dmitry.osipenko@collabora.com>
-References: <20240105184624.508603-1-dmitry.osipenko@collabora.com>
-	<20240105184624.508603-23-dmitry.osipenko@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1706173729; c=relaxed/simple;
+	bh=DaaeOBTj4cHWJG3k51yGq2TD3ACFmgQSxId2jEXJNmw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=a2J+H4T+Sz54PXp+tRP+sjcVC9YDV5PUc72ggoehIaXH5cEzSH7AQ4dpic81pX1sR+3OnYrC9qXG54L8/JcCXxUksu1Wx5PJGpNhiqoF86l1pXkIcGLvFmxP90c1Q4ArlGv3kmzXYC68eR3lqztPhso+1wtXX4RmWyEoCo3rPQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VYEZMrn/; arc=none smtp.client-ip=209.85.222.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ua1-f46.google.com with SMTP id a1e0cc1a2514c-7ce603b9051so2098092241.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 01:08:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706173727; x=1706778527; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0tM1J8tB5KHoGKyoGMxs1iTWky7jMmTAuWrPlK6yjZI=;
+        b=VYEZMrn/w1Y+q+tII5Ztg+rUP6CgPvjD4KSAXL+fjScAa9oF1WPVmFBqncscFjW53o
+         68jPvmgdShEzV0g5M2BVRPyiBi3aITrNB/0UBOt7limLRThrk+mduI1NaGAREYIN86QO
+         YZQXjpwh/36pgvDH7GhQbf3rJV24sOPptHhXMXMUgnhQMFFsv8hpMFBBgtRXS8T/noDW
+         1GwTJUP6loW3Er52eB4kJpYd76oIuhzSMv7ta2tLFOYZXHSUB4cNKOKVAa//veXEKfUo
+         cc2KFzql0/dpdtatp9OaZtOdRi+T5P8AijeW3WVPkPwVwQ9b1Bo/lkdfDywR7tibK43z
+         0fUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706173727; x=1706778527;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0tM1J8tB5KHoGKyoGMxs1iTWky7jMmTAuWrPlK6yjZI=;
+        b=H8FrW2RpzLiOp7yXaaY1EKU/ri2mwUuwXC+Upc8+8uwC9m3wMUZXoA5UHBcCFAygXr
+         s4Qpf3AU+sFQGMeGI6pXpKA37G3hhVNDgv05QzNy9HCNItKN8vzCJIK/b4Zce2o77IoK
+         hRuJVQvxIZA2IUZev5anvaFswYHGiiUT/tdnfPPznFHUTvSQa90gLu3j+pjVpZL88RB6
+         wRUd4FcM86Nfj8QsJ3bgIu2rxDHoJBCfbOogljIGqNZInHZ8JO+4jQARWRaTGqOmkCiS
+         t/q0j23roHRbgyaLriNrNyPcwOrkYVR9pBp7oxMGge6mN8gENWmrhEYvtGlyL6ztqSUW
+         BQIw==
+X-Gm-Message-State: AOJu0Yw1s5qlppFNg53AprmjYY1f3wxdn2u7MAUdc4cZGjwzADtC7vni
+	63wh0uWmXN7ruY4NUxWoCKlE9hGNB2a6OLEcjcDZn8QnQoSQ23N8dzGmtABBmdu9/TTQefV7Y0H
+	QqRIJz3aPEQH55/Hxv0RgF5XKw+p15Q4OfT/S
+X-Google-Smtp-Source: AGHT+IGoivSgrVAUX+nyt4dYy58T+ARTSwUUH4QXRl+s5E1AKpYQyYWAi8S3TfHsuXa8DFxFUmruioIfLZcGmtI4GWg=
+X-Received: by 2002:a05:6122:380f:b0:4b7:8e5f:7782 with SMTP id
+ em15-20020a056122380f00b004b78e5f7782mr413172vkb.8.1706173727304; Thu, 25 Jan
+ 2024 01:08:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240122184608.11863-1-dakr@redhat.com>
+In-Reply-To: <20240122184608.11863-1-dakr@redhat.com>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Thu, 25 Jan 2024 10:08:35 +0100
+Message-ID: <CAH5fLgiwRDcyaxbcUNY8M1c_w11vkCWyRfqVVrN9Sgc7XYT0xw@mail.gmail.com>
+Subject: Re: [PATCH] rust: str: add to_ascii_{upper,lower}case() to CString
+To: Danilo Krummrich <dakr@redhat.com>
+Cc: ojeda@kernel.org, alex.gaynor@gmail.com, wedsonaf@gmail.com, 
+	boqun.feng@gmail.com, gary@garyguo.net, bjorn3_gh@protonmail.com, 
+	benno.lossin@proton.me, a.hindborg@samsung.com, 
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri,  5 Jan 2024 21:46:16 +0300
-Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+On Mon, Jan 22, 2024 at 7:46=E2=80=AFPM Danilo Krummrich <dakr@redhat.com> =
+wrote:
+> +    /// Converts the whole CString to lowercase.
+> +    pub fn to_ascii_lowercase(&mut self) {
+> +        self.buf.make_ascii_lowercase();
+> +    }
+> +
+> +    /// Converts the whole CString to uppercase.
+> +    pub fn to_ascii_uppercase(&mut self) {
+> +        self.buf.make_ascii_uppercase();
+> +    }
+>  }
 
->   *
->   * This function Increases the use count and allocates the backing pages if
->   * use-count equals to zero.
-> + *
-> + * Note that this function doesn't pin pages in memory. If your driver
-> + * uses drm-shmem shrinker, then it's free to relocate pages to swap.
-> + * Getting pages only guarantees that pages are allocated, and not that
-> + * pages reside in memory. In order to pin pages use drm_gem_shmem_pin().
+It looks like these methods are defined on `CString`. However, there's
+no requirement that you need *ownership* of the c string to change its
+contents - you just need mutable access.
 
-I still find this explanation confusing, if pages are allocated, they
-reside in memory. The only difference between drm_gem_shmem_get_pages()
-and drm_gem_shmem_pin_pages() is that the former lets the system
-reclaim the memory if the buffer is idle (no unsignalled fence attached
-to the dma_resv).
+I think it would make more sense to introduce an `impl DerefMut for
+CString` that returns a `&mut CStr`, and then define these methods on
+`CStr` as `&mut self`. That way, you can still call them on `CString`,
+but you can also call it on other mutable c strings.
 
-We also need to describe the workflow for GEM validation (that's the
-TTM term for the swapin process happening when a GPU job is submitted).
-
-1. Prepare the GPU job and initialize its fence
-2. Lock the GEM resv
-3. Add the GPU job fence to the resv object
-4. If the GEM is evicted
-   a. call drm_gem_shmem_swapin_locked()
-   b. get the new sgt with drm_gem_shmem_get_pages_sgt_locked()
-   c. repopulate the MMU table (driver internals)
-5. Unlock the GEM dma_resv
-6. Submit the GPU job
-
-With this sequence, the GEM pages are guaranteed to stay around until
-the GPU job is finished.
-
->   */
->  int drm_gem_shmem_get_pages(struct drm_gem_shmem_object *shmem)
+Alice
 
