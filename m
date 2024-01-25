@@ -1,67 +1,67 @@
-Return-Path: <linux-kernel+bounces-38723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BB8583C4B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:29:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B790983C4B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:31:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5B4B28E907
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:29:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F41761C22FFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:31:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 993B1634E1;
-	Thu, 25 Jan 2024 14:29:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDF6467743;
+	Thu, 25 Jan 2024 14:31:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BSyR08Iw"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q8zKiN/b"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6159C63414
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 14:29:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 233B766B5B
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 14:31:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706192955; cv=none; b=lt/LOTVx5d8Koqt1iXYax5nM+tTIGPlogCslzjE/L04Mfp3oGDqoqkxqIRUqIHtIBqEZXPyEOq+y5g0fKCNE7DMP3tKRlyWaSA5s9L4XVQwDO5+mBFEt11Q6utUUxD/ew/0/cxGBSA+SeCs9VWIKOGpKgZlEDhLB1Vwmb8u3BfM=
+	t=1706193062; cv=none; b=m+MqHYuaDIXeGi0YelKx4O79yJtezKGj9Dd5Kk28zwDzSbACIicPeSz5LJWCiLlQDtHMibVTWuvqtwSwK+lPXzOBUBg6UGGwHhSEXCmz7H50MuN87NAEAfyLCfx5h35xLMoahX9sgN92z/InXYnRLOU80NyCe/uOXMFRHrgq4jI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706192955; c=relaxed/simple;
-	bh=I9v6mTvqmxyACa7UAj0Kn3HhukunpBN8/1TUzaln4BY=;
+	s=arc-20240116; t=1706193062; c=relaxed/simple;
+	bh=Jxb0QFGJU2Vow9inN+qsbk60x49TTOXd/mh4ta1O2DM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L5Dpcy6NaPM1zIPgZr/sLRl/Vb2NmMVeAdF+JJR1vFKy55eeKZmS+0LDXiduEVesrBvoAHQzN8QgyyLBZen50fU1N5o2h84EcEG4l6cycZTg0bMEc+DVX7VhIJ+SRxk15FoykkJCWfHMvEoBY6saTFFUbHnIeHH0drw/XL2uj2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BSyR08Iw; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706192953;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kPi/FMkqk0jnFyJr7PYHECOz2TuqXvAotPupADG5z7E=;
-	b=BSyR08IwtHN9SP2Ut5KnEXymVcVQHM8x9u451EmyE7urq9pke8gb6QFEIL3h3MdthsPM8L
-	RrfYooBIkd6Cu5MTTugwCgczdWPF/VFzWZvGISucoHlcgYWb7RRZiGty2jsarJZC1ia6Tc
-	dNnzx/C+IPgmZVC3eXvJhg8R+YbfwQA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-117-ujrFm4q3OBCZXPbbiMa7cg-1; Thu, 25 Jan 2024 09:29:11 -0500
-X-MC-Unique: ujrFm4q3OBCZXPbbiMa7cg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6C1E18A0109;
-	Thu, 25 Jan 2024 14:29:11 +0000 (UTC)
-Received: from localhost (unknown [10.72.116.117])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id B625D1121306;
-	Thu, 25 Jan 2024 14:29:10 +0000 (UTC)
-Date: Thu, 25 Jan 2024 22:29:07 +0800
-From: Baoquan He <bhe@redhat.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the mm tree
-Message-ID: <ZbJwMyCpz4HDySoo@MiWiFi-R3L-srv>
-References: <20240125142907.33015c9f@canb.auug.org.au>
+	 Content-Type:Content-Disposition:In-Reply-To; b=AEjqi0b0T4PCrgCHgN/K1C1yz5M962/cPYXH76Hywb2A108kB6DYtLZNu9jKoRkC6XJs0lf+LZ+3vDA3loTTuKVwvgzAHZHW6FsJHer++jc4SSoJ131Tn9zbNsntLfsramLEWP2Lk2B6eFzOHPNjDuXOYwrO7ctxeq0k6fVfGwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q8zKiN/b; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B2C0C433C7;
+	Thu, 25 Jan 2024 14:31:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706193061;
+	bh=Jxb0QFGJU2Vow9inN+qsbk60x49TTOXd/mh4ta1O2DM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Q8zKiN/bIGZTA6ggfRw1O5Q74VIiT0KvNo1JLp7aiGDsmkdnbF6vW+ykgFaCffBYt
+	 WZ69Y7Pz9I3fdwEmpT405oB5kjT8R5LzGOwSedQMjPn6m1ACbRzhZ+rtBR0DLWP8hm
+	 9qoFcXQZM+fCCs4mWkdJ3DDWfSBLxWzs1MJI5gY5Q54TcHfkxCMrxkyeobYQn0pv6i
+	 ChVhKe0/shxLz+yAJLQ+Hz/LnuA/XR1mi7ByAul9/lfesZn5YK1DKtwy+6M9zFVFhG
+	 u8P/4UU2gflYN1+wZhGJvn7eN+bBrNdiO7XOFSXKBB6jtpExOqY2lMj9oYi0cjm08O
+	 dISzcT5/VSK9w==
+Date: Thu, 25 Jan 2024 15:30:58 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Eric Dumazet <edumazet@google.com>,
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+	Arjan van de Ven <arjan@infradead.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Rik van Riel <riel@surriel.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Sebastian Siewior <bigeasy@linutronix.de>,
+	Giovanni Gherdovich <ggherdovich@suse.cz>,
+	Lukasz Luba <lukasz.luba@arm.com>,
+	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>
+Subject: Re: [PATCH v10 18/20] timers: Implement the hierarchical pull model
+Message-ID: <ZbJwol4QoSgz0QlH@lothringen>
+References: <20240115143743.27827-1-anna-maria@linutronix.de>
+ <20240115143743.27827-19-anna-maria@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,61 +70,86 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240125142907.33015c9f@canb.auug.org.au>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+In-Reply-To: <20240115143743.27827-19-anna-maria@linutronix.de>
 
-Hi Stephen,
+On Mon, Jan 15, 2024 at 03:37:41PM +0100, Anna-Maria Behnsen wrote:
+> +/**
+> + * tmigr_quick_check() - Quick forecast of next tmigr event when CPU wants to
+> + *			 go idle
+> + *
+> + * Returns KTIME_MAX, when it is probable that nothing has to be done (not the
+> + * only one in the level 0 group; and if it is the only one in level 0 group,
+> + * but there are more than a single group active in top level)
+> + *
+> + * Returns first expiry of the top level group, when it is the only one in level
+> + * 0 and top level also only has a single active child.
+> + */
+> +u64 tmigr_quick_check(void)
+> +{
+> +	struct tmigr_cpu *tmc = this_cpu_ptr(&tmigr_cpu);
+> +	struct tmigr_group *topgroup;
+> +	struct list_head lvllist;
+> +
+> +	if (tmigr_is_not_available(tmc))
+> +		return KTIME_MAX;
 
-On 01/25/24 at 02:29pm, Stephen Rothwell wrote:
-..... 
-> Caused by commit
-> 
->   9dc830523e4e ("ppc, crash: enforce KEXEC and KEXEC_FILE to select CRASH_DUMP")
-> 
-> I have applied the following patch:
-> 
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Thu, 25 Jan 2024 14:20:51 +1100
-> Subject: [PATCH] fix up for "ppc, crash: enforce KEXEC and KEXEC_FILE to
->  select CRASH_DUMP"
-> 
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->  arch/powerpc/Kconfig | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-> index 31f013e636e3..e7707bebc061 100644
-> --- a/arch/powerpc/Kconfig
-> +++ b/arch/powerpc/Kconfig
-> @@ -610,6 +610,8 @@ config ARCH_SUPPORTS_KEXEC
->  
->  config ARCH_SELECTS_KEXEC
->  	def_bool y
-> +	depends on ARCH_SUPPORTS_CRASH_DUMP
-> +	depends on KEXEC_CORE
->  	select CRASH_DUMP
->  
->  config ARCH_SUPPORTS_KEXEC_FILE
+Offline CPUs are supposed to handle their own global timers.
 
-Thanks for the work.
+So instead of returning KTIME_MAX here, shouldn't we pass instead
+tevt->global as a parameter and return that value?
 
-I reproduced the failure with allnoconfig on ppc, and found below change
-can fix it too. And the change makes ARCH_SELECTS_KEXEC consistent with
-ARCH_SELECTS_KEXEC_FILE on the dependency. What do you think?
+Otherwise the quick check will simply ignore the next global event of this CPU
+if it's before the next local event.
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 31f013e636e3..79f98cd5f2c9 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -610,6 +610,7 @@ config ARCH_SUPPORTS_KEXEC
- 
- config ARCH_SELECTS_KEXEC
- 	def_bool y
-+	depends on KEXEC
- 	select CRASH_DUMP
- 
- config ARCH_SUPPORTS_KEXEC_FILE
+> +
+> +	if (WARN_ON_ONCE(tmc->idle))
+> +		return KTIME_MAX;
 
+Same here I guess...
 
+> +
+> +	if (!tmigr_check_migrator_and_lonely(tmc->tmgroup, tmc->childmask))
+> +		return KTIME_MAX;
+
+This one makes sense.
+
+> +
+> +	for (int i = tmigr_hierarchy_levels; i > 0 ; i--) {
+> +		lvllist = tmigr_level_list[i - 1];
+> +		if (list_is_singular(&lvllist)) {
+> +			topgroup = list_first_entry(&lvllist, struct
+> tmigr_group, list);
+
+Is it safe against concurrent allocation failure in hotplug?
+
+If the list is seen singular, then concurrently a CPU comes up and creates/add
+a new group. The current CPU actually fetches it instead of the current group
+because it's not singular anymore. But then some higher level group
+allocation fails and the newly added first entry is removed.
+
+list_is_singular() looks safe. But list_first_entry isn't. You can create
+list_first_entry_rcu:
+
+#define list_first_entry_rcu(ptr, type, member) \
+	list_entry_rcu((ptr)->next, type, member)
+
+Protected inside rcu_read_lock() until the below READ_ONCE().
+
+And then use list_del_rcu/list_add_rcu/kfree_rcu on the update side.
+
+Isn't it possible to walk through group->parent instead?
+
+> +
+> +			if (tmigr_check_lonely(topgroup))
+> +				return READ_ONCE(topgroup->next_expiry);
+> +		} else {
+> +			continue;
+> +		}
+> +	}
+> +
+> +	return KTIME_MAX;
+
+I'm less sure about that return value.
+
+Thanks.
 
