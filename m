@@ -1,58 +1,67 @@
-Return-Path: <linux-kernel+bounces-38722-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38723-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE89A83C4AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:28:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BB8583C4B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 15:29:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 445C7B218F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:28:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5B4B28E907
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:29:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84B97634E0;
-	Thu, 25 Jan 2024 14:28:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 993B1634E1;
+	Thu, 25 Jan 2024 14:29:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LXrrbR/J"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BSyR08Iw"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDBC563414
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 14:28:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6159C63414
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 14:29:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706192888; cv=none; b=iul+GMNzhF7uI6uQFV6lZn0p/F0b5LvfBkRixoAQvcZj9JnNu4yuNIo44obswTR/rI8n4eojyagy4ikQLpXEyU38/LoJzfUfR0HXl1h379sRqIpOBBezg7FKS5ySdma0IW3h1TLt9zgBeNB6chcsJrCWko/NTKAS+GdWI9/YNYs=
+	t=1706192955; cv=none; b=lt/LOTVx5d8Koqt1iXYax5nM+tTIGPlogCslzjE/L04Mfp3oGDqoqkxqIRUqIHtIBqEZXPyEOq+y5g0fKCNE7DMP3tKRlyWaSA5s9L4XVQwDO5+mBFEt11Q6utUUxD/ew/0/cxGBSA+SeCs9VWIKOGpKgZlEDhLB1Vwmb8u3BfM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706192888; c=relaxed/simple;
-	bh=iPJKR2ahlCuH15QtcPi5dZ2G0gzOR5bBrxcXevu9pFw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=Z1t2TBUDGX2QrCK3J3UTO94vj3GMS6wKO49a29lP3aMC1vdKle9csw8wddzvE5SL27iAgYN5QLvrtccHxmotm9phX1a3uOi5/OsISfDY94UVDY+bhkGzb3X3lBi1AG8Bz9fQVGo+kRy1incQyox6WkRNP579hqv/I3Qio4sVK/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LXrrbR/J; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C4D6C433F1;
-	Thu, 25 Jan 2024 14:28:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706192888;
-	bh=iPJKR2ahlCuH15QtcPi5dZ2G0gzOR5bBrxcXevu9pFw=;
-	h=Date:From:To:Cc:Subject:From;
-	b=LXrrbR/JiOy+fzpX/QXPjTYXceRBsokqK+Ul+9fiYWtMjEdZVDtn3kkzIS6/X0Dtm
-	 sVGJP1e4I4qXd1ZDn8OVypiORL6M6oIGqvZMuemkdI91puh/XM9L/LQyKJYwwrQsdR
-	 tOcbQ5TUU3eneIBXdG621t5kRL1/EQApS0SSJLVkQBjrqGc9dGlEBDUggR3w4JFD/1
-	 cOZR/Iri1oapEhYXbxFYlQ0zFOjTGef24GjQSSG7QfhUVE29CyFmb2TC+dAKKmvhOI
-	 u3fkChoN1rAwrOUF6D5uAemZM1Is+AkhmBEYHwT2p0H19Kw8s7gRkjp9f+JTtBYRkI
-	 9w3O7mYxkoKDA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id 41A15405B2; Thu, 25 Jan 2024 11:28:05 -0300 (-03)
-Date: Thu, 25 Jan 2024 11:28:05 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: linux-kernel@vger.kernel.org
-Cc: Stefan Berger <stefanb@linux.ibm.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>
-Subject: [PATCH 1/1 FYI] tools headers UAPI: Sync linux/fcntl.h with the
- kernel sources
-Message-ID: <ZbJv9fGF_k2xXEdr@kernel.org>
+	s=arc-20240116; t=1706192955; c=relaxed/simple;
+	bh=I9v6mTvqmxyACa7UAj0Kn3HhukunpBN8/1TUzaln4BY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=L5Dpcy6NaPM1zIPgZr/sLRl/Vb2NmMVeAdF+JJR1vFKy55eeKZmS+0LDXiduEVesrBvoAHQzN8QgyyLBZen50fU1N5o2h84EcEG4l6cycZTg0bMEc+DVX7VhIJ+SRxk15FoykkJCWfHMvEoBY6saTFFUbHnIeHH0drw/XL2uj2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BSyR08Iw; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706192953;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kPi/FMkqk0jnFyJr7PYHECOz2TuqXvAotPupADG5z7E=;
+	b=BSyR08IwtHN9SP2Ut5KnEXymVcVQHM8x9u451EmyE7urq9pke8gb6QFEIL3h3MdthsPM8L
+	RrfYooBIkd6Cu5MTTugwCgczdWPF/VFzWZvGISucoHlcgYWb7RRZiGty2jsarJZC1ia6Tc
+	dNnzx/C+IPgmZVC3eXvJhg8R+YbfwQA=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-117-ujrFm4q3OBCZXPbbiMa7cg-1; Thu, 25 Jan 2024 09:29:11 -0500
+X-MC-Unique: ujrFm4q3OBCZXPbbiMa7cg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6C1E18A0109;
+	Thu, 25 Jan 2024 14:29:11 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.117])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id B625D1121306;
+	Thu, 25 Jan 2024 14:29:10 +0000 (UTC)
+Date: Thu, 25 Jan 2024 22:29:07 +0800
+From: Baoquan He <bhe@redhat.com>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the mm tree
+Message-ID: <ZbJwMyCpz4HDySoo@MiWiFi-R3L-srv>
+References: <20240125142907.33015c9f@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,92 +70,61 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20240125142907.33015c9f@canb.auug.org.au>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-tldr; Just FYI, I'm carrying this on the perf tools tree.
+Hi Stephen,
 
-- Arnaldo
+On 01/25/24 at 02:29pm, Stephen Rothwell wrote:
+..... 
+> Caused by commit
+> 
+>   9dc830523e4e ("ppc, crash: enforce KEXEC and KEXEC_FILE to select CRASH_DUMP")
+> 
+> I have applied the following patch:
+> 
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Thu, 25 Jan 2024 14:20:51 +1100
+> Subject: [PATCH] fix up for "ppc, crash: enforce KEXEC and KEXEC_FILE to
+>  select CRASH_DUMP"
+> 
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  arch/powerpc/Kconfig | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+> index 31f013e636e3..e7707bebc061 100644
+> --- a/arch/powerpc/Kconfig
+> +++ b/arch/powerpc/Kconfig
+> @@ -610,6 +610,8 @@ config ARCH_SUPPORTS_KEXEC
+>  
+>  config ARCH_SELECTS_KEXEC
+>  	def_bool y
+> +	depends on ARCH_SUPPORTS_CRASH_DUMP
+> +	depends on KEXEC_CORE
+>  	select CRASH_DUMP
+>  
+>  config ARCH_SUPPORTS_KEXEC_FILE
 
-Full explanation:
+Thanks for the work.
 
-There used to be no copies, with tools/ code using kernel headers
-directly. From time to time tools/perf/ broke due to legitimate kernel
-hacking. At some point Linus complained about such direct usage. Then we
-adopted the current model.
+I reproduced the failure with allnoconfig on ppc, and found below change
+can fix it too. And the change makes ARCH_SELECTS_KEXEC consistent with
+ARCH_SELECTS_KEXEC_FILE on the dependency. What do you think?
 
-The way these headers are used in perf are not restricted to just
-including them to compile something.
-
-There are sometimes used in scripts that convert defines into string
-tables, etc, so some change may break one of these scripts, or new MSRs
-may use some different #define pattern, etc.
-
-E.g.:
-
-  $ ls -1 tools/perf/trace/beauty/*.sh | head -5
-  tools/perf/trace/beauty/arch_errno_names.sh
-  tools/perf/trace/beauty/drm_ioctl.sh
-  tools/perf/trace/beauty/fadvise.sh
-  tools/perf/trace/beauty/fsconfig.sh
-  tools/perf/trace/beauty/fsmount.sh
-  $
-  $ tools/perf/trace/beauty/fadvise.sh
-  static const char *fadvise_advices[] = {
-  	[0] = "NORMAL",
-  	[1] = "RANDOM",
-  	[2] = "SEQUENTIAL",
-  	[3] = "WILLNEED",
-  	[4] = "DONTNEED",
-  	[5] = "NOREUSE",
-  };
-  $
-
-The tools/perf/check-headers.sh script, part of the tools/ build
-process, points out changes in the original files.
-
-So its important not to touch the copies in tools/ when doing changes in
-the original kernel headers, that will be done later, when
-check-headers.sh inform about the change to the perf tools hackers.
-
----
-
-To get the changes in:
-
-  8a924db2d7b5eb69 ("fs: Pass AT_GETATTR_NOSEC flag to getattr interface function")
-
-That don't add anything that is handled by existing hard coded tables or
-table generation scripts.
-
-This silences this perf build warning:
-
-  Warning: Kernel ABI header differences:
-    diff -u tools/include/uapi/linux/fcntl.h include/uapi/linux/fcntl.h
-
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Stefan Berger <stefanb@linux.ibm.com>
-Link: https://lore.kernel.org/lkml/
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/include/uapi/linux/fcntl.h | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/tools/include/uapi/linux/fcntl.h b/tools/include/uapi/linux/fcntl.h
-index 6c80f96049bd07d1..282e90aeb163c028 100644
---- a/tools/include/uapi/linux/fcntl.h
-+++ b/tools/include/uapi/linux/fcntl.h
-@@ -116,5 +116,8 @@
- #define AT_HANDLE_FID		AT_REMOVEDIR	/* file handle is needed to
- 					compare object identity and may not
- 					be usable to open_by_handle_at(2) */
-+#if defined(__KERNEL__)
-+#define AT_GETATTR_NOSEC	0x80000000
-+#endif
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 31f013e636e3..79f98cd5f2c9 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -610,6 +610,7 @@ config ARCH_SUPPORTS_KEXEC
  
- #endif /* _UAPI_LINUX_FCNTL_H */
--- 
-2.43.0
+ config ARCH_SELECTS_KEXEC
+ 	def_bool y
++	depends on KEXEC
+ 	select CRASH_DUMP
+ 
+ config ARCH_SUPPORTS_KEXEC_FILE
+
 
 
