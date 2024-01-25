@@ -1,613 +1,285 @@
-Return-Path: <linux-kernel+bounces-38894-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76A6A83C7E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:27:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35FE683C7E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 17:28:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F3F4A1F27B01
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:27:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B1E91C25396
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 16:28:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C324129A8A;
-	Thu, 25 Jan 2024 16:27:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C18AC129A6C;
+	Thu, 25 Jan 2024 16:27:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="fhTyWONQ"
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V7fpzvEY"
+Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C2CD74E06;
-	Thu, 25 Jan 2024 16:27:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EF1477F02
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 16:27:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706200050; cv=none; b=icgnS1DIfFj6cRpIonBRv/5X3p59zW/fBh7BqIeloFpWM0aWphz+wT17br9wQsUZs2lIl/pLMoZg9sHCoAzWblk1iOJrdj8QjnZxCsAwXWbDNouXv+DDwAXZ4h0fi5UCKNOk9W5qU86EVexTkNVJUL8E34bSof9xnF8llVtcJmU=
+	t=1706200066; cv=none; b=ngw6St/JngaOjLgomWF46e5W7ds+vKkICuZ0S8UBjA08YGL3kpWmdfQHCAMM1A+vjBEW/JXCVwHFbjDZqSbL4MYsOe30RbGUaUthFWKaxpSwTdvXZo0J8CKFGAyy6b0qr9pb8qHXEsxE5esqsDQc5s88fDNXkFLBXnYooxasP6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706200050; c=relaxed/simple;
-	bh=++9GCsWuYrrdfLGqpF5/T+IlA8Ir5+6Icu8xCPBNl/Q=;
-	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:References; b=UdZW5C4gb+yel9rPWRAnD/3V0LObx5CYIBC+sm4z+L8iCqJvSll5sjmIV55r+rlOb6YNg3I9HxjhCL7Q25bOZcryN8MA7ZwIJWS00lL/nIeKPuNxESFsXewEmH5CzR1KQy5LQkxs0Irsa4s7rzKTHnJF7qNxKKk81MahXk8eDZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=fhTyWONQ; arc=none smtp.client-ip=210.118.77.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240125162724euoutp02665e622e80206c9a4acfae42f2a8aa0c~to_aP91Km1513015130euoutp02o;
-	Thu, 25 Jan 2024 16:27:24 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240125162724euoutp02665e622e80206c9a4acfae42f2a8aa0c~to_aP91Km1513015130euoutp02o
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1706200044;
-	bh=G6aUBS8M5a4fPWsBXXJ7z6P16dUedsvnc88Bcd1faw4=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=fhTyWONQ/ngSOHrJNgOjULeEZFHWWUWJWSGC7562nY2ps2DAYUcwGntcUPYqfq0gF
-	 SSdbvYDQw6SAhc5yZTSdPwy53TOhQ81C8tsFCBYFQYU09V8opRVo3y4lfaxfZkbIcA
-	 1Z2uaO63ZQt8lLBK7lRJugowy0EG/u7ENAxqdx7A=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-	20240125162724eucas1p10cab7b32d097dd19a3da38c2c4d10c98~to_Z_REIs2578225782eucas1p1m;
-	Thu, 25 Jan 2024 16:27:24 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-	eusmges1new.samsung.com (EUCPMTA) with SMTP id 02.F4.09539.CEB82B56; Thu, 25
-	Jan 2024 16:27:24 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240125162723eucas1p2cc7562a22b8af9b46076e1c7b616531b~to_Zjz50V3235132351eucas1p29;
-	Thu, 25 Jan 2024 16:27:23 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240125162723eusmtrp1a527cf104fbbaf9c3d7f987941879dd1~to_Zi82MA0378203782eusmtrp1H;
-	Thu, 25 Jan 2024 16:27:23 +0000 (GMT)
-X-AuditID: cbfec7f2-515ff70000002543-7e-65b28bec04cb
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-	eusmgms2.samsung.com (EUCPMTA) with SMTP id 6B.A7.10702.BEB82B56; Thu, 25
-	Jan 2024 16:27:23 +0000 (GMT)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240125162723eusmtip11b780a14fc8393e1eb53ccbf84b26a5c~to_ZSxYVt2956329563eusmtip1X;
-	Thu, 25 Jan 2024 16:27:23 +0000 (GMT)
-Received: from localhost (106.210.248.232) by CAMSVWEXC02.scsc.local
-	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-	Thu, 25 Jan 2024 16:27:22 +0000
-Date: Thu, 25 Jan 2024 17:27:21 +0100
-From: Joel Granados <j.granados@samsung.com>
-To: Lu Baolu <baolu.lu@linux.intel.com>
-CC: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, Robin
-	Murphy <robin.murphy@arm.com>, Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian
-	<kevin.tian@intel.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>, Jacob Pan
-	<jacob.jun.pan@linux.intel.com>, Longfang Liu <liulongfang@huawei.com>, Yan
-	Zhao <yan.y.zhao@intel.com>, <iommu@lists.linux.dev>, <kvm@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [PATCH v10 15/16] iommu: Make iopf_group_response() return void
-Message-ID: <20240125162721.yd2xejowbri5fg5r@localhost>
+	s=arc-20240116; t=1706200066; c=relaxed/simple;
+	bh=MvSPPV9t/+aS2ij5+6R1fzEI0kOxqUgqLsftpb7LT2s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ddu2V7NKQ5INJ2e6QdIEBORWQwZtymziLM23h7wAaibFZybwjFNvG+Kbc5gchechwks69S+/Uxu0iabDnSj4IssokEJjHBZIO4AcJyXjytJ+2n7X09b6ziOOkn9NKsj5wj4nHCsNStO59rp00+MtWPfLwSvNg+cgl3KZ8Tu9fqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V7fpzvEY; arc=none smtp.client-ip=209.85.167.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3bd6581bca0so4295456b6e.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 08:27:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706200064; x=1706804864; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=dwRxZvGRs7JFUtLi1loUz7ZrrENhM3PimANGbB+eqOY=;
+        b=V7fpzvEYNvnuSP1V048YyIcAqYYTVnlGNLThZxC6FPPhQyfyMSR1o+L7K7gkTVAl4a
+         ROhT+2IFaww9A4iVM2Qr0py9sXZdSXBts8r2PJe+7ae+tFnxmF2La1Rr+J15Ga69Oa6m
+         VCFZweYIygqfuQQrShzLTp3AmICNscFMA3Xf/QMRSgl3oLFyT4edlLq5gwZho+Dtmprx
+         LuB/g5CBJCTXiJllU2GFAcb6vU6967EQlcXi9t5OuoovaIGDsF8VFdyR3wla+h6R7dsk
+         SeACvsYSmaI2Dn2q95ag2o4kGpKtYDdQsrNbez1kBi0MnP2+Szq2tfZPkXJnyip5i5xk
+         NeTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706200064; x=1706804864;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dwRxZvGRs7JFUtLi1loUz7ZrrENhM3PimANGbB+eqOY=;
+        b=cAVw4fT1S/xgVZoFQ6Wim/Tm78oidXXDXih4xlZ3FSQJ4W3WCkefpis0ugEWtq0N+h
+         UcEW8qKHiq7J19rb3YNfugidIMT73oPcNedNmCa1GD7wA55cEx6xAue1tNZCa15ASiaJ
+         34xK1vjZYjJ5H3OCmgB6KNAamORjOOuVk5tt3D4Lltw5pGjyyFWAK0fLuK/dG9VWb9g7
+         TpJVTeTwrew3dGt7kwGVrXncwuHqKohcLBg/VUj54IfgieAMEiTbVQFa6nqhvw5OL5xi
+         2uELwoO5YQ54RK0YzQmeV2VvqKc1KoEELwcHRspoURJihOLgVAXs+idPuy8nFYheYClB
+         KaSQ==
+X-Gm-Message-State: AOJu0YzTqXfXWupUF6DepUys8xPVb2UfCo/Qtcda0xARhozW86aM4CvX
+	iR43rHFsHdSsnLkAdSt77E5PqhxyR3EoqzeN7kCK5TmU3VsumTCn+3Ai1QQmlHls6SvXCxSBuUP
+	KcFX6TUwIRLthUjcqOv3rA5PIuYM=
+X-Google-Smtp-Source: AGHT+IG6UrA79AJnRq/WYLV9gPqguU+PFzbYQgGj0zyccFPKZNcQQKPUtvUH3R3EjSxId4Etg4j5nBMhbc7Cl4vUk9Q=
+X-Received: by 2002:a05:6870:c6a2:b0:214:8388:2915 with SMTP id
+ cv34-20020a056870c6a200b0021483882915mr1167898oab.1.1706200063900; Thu, 25
+ Jan 2024 08:27:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="4s4v2pmzby236ugh"
-Content-Disposition: inline
-In-Reply-To: <20240122054308.23901-16-baolu.lu@linux.intel.com>
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprEJsWRmVeSWpSXmKPExsWy7djPc7pvujelGrTdZbXYPHErm8WvLxYW
-	Sw+uZ7FoWH2B1eLKvz2MFjNnnGC06Jy9gd1i6dut7BZzphZaXN41h81iU0Oyxd6nj9ksDn54
-	wmrRcsfU4u6Ve4wWc39eY3EQ8HhycB6Tx5p5axg9Wo68ZfVYvOclk8emVZ1sHneu7WHzmHcy
-	0OPF5pmMHr3N79g8Pm+S89j6+TZLAHcUl01Kak5mWWqRvl0CV8beRQuZCu40MVbcb9FoYDyQ
-	1cXIySEhYCKxaed8li5GLg4hgRWMEnObPjFCOF8YJXqWLWGCcD4zSux4P5u9i5EDrOXgaQuI
-	+HJGiRcfZyIUNWw4xwzhbGWUWDhtAiPIEhYBVYlLu96zg9hsAjoS59/cYQaZJCKgLvHsSwBI
-	PbNAL4tE8+aHYPXCAj4Sb67eZwKxeQXMJX5ePgllC0qcnPmEBcRmFqiQeH/xAgvIHGYBaYnl
-	/zhAwpwC9hKbP09hhvhNWeL6zBdMEHatxKktt6DsJi6Jt3t8IJ5xkdjdwgkRFpZ4dXwLO4Qt
-	I3F6cg84WCQEJjNK7P/3gR3CWc0osazxK9Qga4mWK0+gOhwlVtw9ywwxlE/ixltBiDP5JCZt
-	mw4V5pXoaBOCqFaTWH3vDcsERuVZSB6bheSxWQiPQYR1JBbs/sSGIawtsWzha2YI21Zi3br3
-	LAsY2VcxiqeWFuempxYb5qWW6xUn5haX5qXrJefnbmIEJtXT/45/2sE499VHvUOMTByMhxhV
-	gJofbVh9gVGKJS8/L1VJhNfEdGOqEG9KYmVValF+fFFpTmrxIUZpDhYlcV7VFPlUIYH0xJLU
-	7NTUgtQimCwTB6dUA1NquVv6m+s3jj368ZUv9+xm5dPd/C/s/nobBQRsP8yy7FzI4akbHkSZ
-	Vx3+vVn6S9xB2e5c+9uvJ7EKrOgtufUmweaJX88W7U2HY3Wbil/yczdcDUqMC7+exFzmUTv/
-	013JhHBli0OPT55bdu1ZTIHq1hW1x927b9YGXIzQcLRNPNyyf96i0pR13Mu0nHX3mXV3SZl6
-	t7xb6qjRKqNy0Kz4YEpuofUnO/MZl3OmNaXK/BWfHsx7bqPqpsh49/UtyosndP9U7KoQn7Mn
-	TIRpX7MDu13o/kMB0o4TOT9zLq1UL1F5ca7/T5hRkinvascG/UmLxRjn7ZfZt1jiUlOK/QE3
-	1xkZ/xtkri2Jm19VrMRSnJFoqMVcVJwIAMPCXpklBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrPKsWRmVeSWpSXmKPExsVy+t/xu7qvuzelGhydpGKxeeJWNotfXyws
-	lh5cz2LRsPoCq8WVf3sYLWbOOMFo0Tl7A7vF0rdb2S3mTC20uLxrDpvFpoZki71PH7NZHPzw
-	hNWi5Y6pxd0r9xgt5v68xuIg4PHk4DwmjzXz1jB6tBx5y+qxeM9LJo9NqzrZPO5c28PmMe9k
-	oMeLzTMZPXqb37F5fN4k57H1822WAO4oPZui/NKSVIWM/OISW6VoQwsjPUNLCz0jE0s9Q2Pz
-	WCsjUyV9O5uU1JzMstQifbsEvYzbT++xFdxqYqyYu6mFsYFxX1YXIweHhICJxMHTFl2MXBxC
-	AksZJf7dPsfSxcgJFJeR2PjlKiuELSzx51oXG0TRR0aJhvbzjCAJIYGtjBItzYYgNouAqsSl
-	Xe/ZQWw2AR2J82/uMIMsEBFQl3j2JQCkl1mgl0Xiwcw+sAXCAj4Sb67eZwKxeQXMJX5ePskE
-	MbNIouPfHHaIuKDEyZlPwOqZBcokvs04wAoyk1lAWmL5Pw6QMKeAvcTmz1OYIe5Ulrg+8wUT
-	hF0r8fnvM8YJjMKzkEyahWTSLIRJEGEtiRv/XjJhCGtLLFv4mhnCtpVYt+49ywJG9lWMIqml
-	xbnpucVGesWJucWleel6yfm5mxiBqWXbsZ9bdjCufPVR7xAjEwfjIUYVoM5HG1ZfYJRiycvP
-	S1US4TUx3ZgqxJuSWFmVWpQfX1Sak1p8iNEUGIgTmaVEk/OBSS+vJN7QzMDU0MTM0sDU0sxY
-	SZzXs6AjUUggPbEkNTs1tSC1CKaPiYNTqoHJs7w8XL/q5Y2dfissvjUWZa6a8bd2YdXTZVwf
-	5v8qVZJY7n/0aW4zV8+OsH9FXfPNf8qn+73+dL/e5sjM10e2Xa+21lHpNZCSyfVs2bwl75l9
-	cNLBjf73yoM7zxpLL1+zW+fzxvilK5uPqCwQTr/N8DLtw5N41onux5/ePiF5/R17S8HVirnH
-	+XjurJ1q/0j3v8wMoa96Jg/O/CpK13Yx+zZtwj2fqxpGzmk/m8INJsStjFQN84q3+7za20d8
-	mdVPy+vvs8KFFeMXZKm0L7m5XLI2K4l3eqVgsZ1E52SbM9blqYw8kZVzfY7wGTh2PzXSfSLW
-	q2vRyR6wuUTpZJSEo8pUm1NGSn7hEiz/WpVYijMSDbWYi4oTAcoNAtLCAwAA
-X-CMS-MailID: 20240125162723eucas1p2cc7562a22b8af9b46076e1c7b616531b
-X-Msg-Generator: CA
-X-RootMTR: 20240125162723eucas1p2cc7562a22b8af9b46076e1c7b616531b
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240125162723eucas1p2cc7562a22b8af9b46076e1c7b616531b
-References: <20240122054308.23901-1-baolu.lu@linux.intel.com>
-	<20240122054308.23901-16-baolu.lu@linux.intel.com>
-	<CGME20240125162723eucas1p2cc7562a22b8af9b46076e1c7b616531b@eucas1p2.samsung.com>
+References: <20240125-etnaviv-npu-v2-0-ba23c9a32be1@pengutronix.de> <20240125-etnaviv-npu-v2-2-ba23c9a32be1@pengutronix.de>
+In-Reply-To: <20240125-etnaviv-npu-v2-2-ba23c9a32be1@pengutronix.de>
+From: Christian Gmeiner <christian.gmeiner@gmail.com>
+Date: Thu, 25 Jan 2024 17:27:31 +0100
+Message-ID: <CAH9NwWd7kuk9LFD0cXiy3wm50KHVT8uGM37hdv4=rN9+YGCZmw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] drm/etnaviv: Turn etnaviv_is_model_rev() into a function
+To: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Lucas Stach <l.stach@pengutronix.de>, Russell King <linux+etnaviv@armlinux.org.uk>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, etnaviv@lists.freedesktop.org, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
---4s4v2pmzby236ugh
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Philipp
 
-On Mon, Jan 22, 2024 at 01:43:07PM +0800, Lu Baolu wrote:
-> The iopf_group_response() should return void, as nothing can do anything
-> with the failure. This implies that ops->page_response() must also return
-> void; this is consistent with what the drivers do. The failure paths,
-> which are all integrity validations of the fault, should be WARN_ON'd,
-> not return codes.
->=20
-> If the iommu core fails to enqueue the fault, it should respond the fault
-> directly by calling ops->page_response() instead of returning an error
-> number and relying on the iommu drivers to do so. Consolidate the error
-> fault handling code in the core.
->=20
-> Co-developed-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+>
+> Turn the etnaviv_is_model_rev() macro into a static inline function.
+> Use the raw model number as a parameter instead of the chipModel_GCxxxx
+> defines. This reduces synchronization requirements for the generated
+> headers. For newer hardware, the GCxxxx names are not the correct model
+> names anyway. For example, model 0x8000 NPUs are called VIPNano-QI/SI(+)
+> by VeriSilicon.
+
+To catch up with your NPU example Vivante's kernel driver has such
+lines in its hw database [0]
+
+/* vipnano-si+ */
+{
+    0x8000, /* ChipID */
+    0x8002, /* ChipRevision */
+    0x5080009, /* ProductID */
+    0x6000000, /* EcoID */
+    0x9f, /* CustomerID */
+    ...
+
+I think in reality this function should be called
+etnaviv_is_chip_rev(..) or etnaviv_is_id_rev(..). That would be
+semantically correct and we could even stick the the current macro
+(that gets renamed) and with the current
+GCxxx defines.
+
+[0]: https://github.com/nxp-imx/linux-imx/blob/lf-6.1.y/drivers/mxc/gpu-viv/hal/kernel/inc/gc_feature_database.h#L22373
+
+>
+> Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 > ---
->  include/linux/iommu.h                       |  14 +--
->  drivers/iommu/intel/iommu.h                 |   4 +-
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c |  50 +++-----
->  drivers/iommu/intel/svm.c                   |  18 +--
->  drivers/iommu/io-pgfault.c                  | 132 +++++++++++---------
->  5 files changed, 99 insertions(+), 119 deletions(-)
->=20
-> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> index 48196efc9327..d7b6f4017254 100644
-> --- a/include/linux/iommu.h
-> +++ b/include/linux/iommu.h
-> @@ -578,9 +578,8 @@ struct iommu_ops {
->  	int (*dev_enable_feat)(struct device *dev, enum iommu_dev_features f);
->  	int (*dev_disable_feat)(struct device *dev, enum iommu_dev_features f);
-> =20
-> -	int (*page_response)(struct device *dev,
-> -			     struct iopf_fault *evt,
-> -			     struct iommu_page_response *msg);
-> +	void (*page_response)(struct device *dev, struct iopf_fault *evt,
-> +			      struct iommu_page_response *msg);
-> =20
->  	int (*def_domain_type)(struct device *dev);
->  	void (*remove_dev_pasid)(struct device *dev, ioasid_t pasid);
-> @@ -1551,8 +1550,8 @@ void iopf_queue_free(struct iopf_queue *queue);
->  int iopf_queue_discard_partial(struct iopf_queue *queue);
->  void iopf_free_group(struct iopf_group *group);
->  int iommu_report_device_fault(struct device *dev, struct iopf_fault *evt=
-);
-> -int iopf_group_response(struct iopf_group *group,
-> -			enum iommu_page_response_code status);
-> +void iopf_group_response(struct iopf_group *group,
-> +			 enum iommu_page_response_code status);
->  #else
->  static inline int
->  iopf_queue_add_device(struct iopf_queue *queue, struct device *dev)
-> @@ -1594,10 +1593,9 @@ iommu_report_device_fault(struct device *dev, stru=
-ct iopf_fault *evt)
->  	return -ENODEV;
+>  drivers/gpu/drm/etnaviv/etnaviv_gpu.c | 66 ++++++++++++++++++-----------------
+>  1 file changed, 34 insertions(+), 32 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+> index 9b8445d2a128..c61d50dd3829 100644
+> --- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+> +++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+> @@ -172,10 +172,12 @@ int etnaviv_gpu_get_param(struct etnaviv_gpu *gpu, u32 param, u64 *value)
+>         return 0;
 >  }
-> =20
-> -static inline int iopf_group_response(struct iopf_group *group,
-> -				      enum iommu_page_response_code status)
-> +static inline void iopf_group_response(struct iopf_group *group,
-> +				       enum iommu_page_response_code status)
->  {
-> -	return -ENODEV;
->  }
->  #endif /* CONFIG_IOMMU_IOPF */
->  #endif /* __LINUX_IOMMU_H */
-> diff --git a/drivers/iommu/intel/iommu.h b/drivers/iommu/intel/iommu.h
-> index 696d95293a69..cf9a28c7fab8 100644
-> --- a/drivers/iommu/intel/iommu.h
-> +++ b/drivers/iommu/intel/iommu.h
-> @@ -1079,8 +1079,8 @@ struct iommu_domain *intel_nested_domain_alloc(stru=
-ct iommu_domain *parent,
->  void intel_svm_check(struct intel_iommu *iommu);
->  int intel_svm_enable_prq(struct intel_iommu *iommu);
->  int intel_svm_finish_prq(struct intel_iommu *iommu);
-> -int intel_svm_page_response(struct device *dev, struct iopf_fault *evt,
-> -			    struct iommu_page_response *msg);
-> +void intel_svm_page_response(struct device *dev, struct iopf_fault *evt,
-> +			     struct iommu_page_response *msg);
->  struct iommu_domain *intel_svm_domain_alloc(void);
->  void intel_svm_remove_dev_pasid(struct device *dev, ioasid_t pasid);
->  void intel_drain_pasid_prq(struct device *dev, u32 pasid);
-> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/=
-arm/arm-smmu-v3/arm-smmu-v3.c
-> index 4e93e845458c..42eb59cb99f4 100644
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> @@ -920,31 +920,29 @@ static int arm_smmu_cmdq_batch_submit(struct arm_sm=
-mu_device *smmu,
->  	return arm_smmu_cmdq_issue_cmdlist(smmu, cmds->cmds, cmds->num, true);
->  }
-> =20
-> -static int arm_smmu_page_response(struct device *dev,
-> -				  struct iopf_fault *unused,
-> -				  struct iommu_page_response *resp)
-> +static void arm_smmu_page_response(struct device *dev, struct iopf_fault=
- *unused,
-> +				   struct iommu_page_response *resp)
->  {
->  	struct arm_smmu_cmdq_ent cmd =3D {0};
->  	struct arm_smmu_master *master =3D dev_iommu_priv_get(dev);
->  	int sid =3D master->streams[0].id;
-> =20
-> -	if (master->stall_enabled) {
-> -		cmd.opcode		=3D CMDQ_OP_RESUME;
-> -		cmd.resume.sid		=3D sid;
-> -		cmd.resume.stag		=3D resp->grpid;
-> -		switch (resp->code) {
-> -		case IOMMU_PAGE_RESP_INVALID:
-> -		case IOMMU_PAGE_RESP_FAILURE:
-> -			cmd.resume.resp =3D CMDQ_RESUME_0_RESP_ABORT;
-> -			break;
-> -		case IOMMU_PAGE_RESP_SUCCESS:
-> -			cmd.resume.resp =3D CMDQ_RESUME_0_RESP_RETRY;
-> -			break;
-> -		default:
-> -			return -EINVAL;
-> -		}
-> -	} else {
-> -		return -ENODEV;
-> +	if (WARN_ON(!master->stall_enabled))
-> +		return;
-> +
-> +	cmd.opcode		=3D CMDQ_OP_RESUME;
-> +	cmd.resume.sid		=3D sid;
-> +	cmd.resume.stag		=3D resp->grpid;
-> +	switch (resp->code) {
-> +	case IOMMU_PAGE_RESP_INVALID:
-> +	case IOMMU_PAGE_RESP_FAILURE:
-> +		cmd.resume.resp =3D CMDQ_RESUME_0_RESP_ABORT;
-> +		break;
-> +	case IOMMU_PAGE_RESP_SUCCESS:
-> +		cmd.resume.resp =3D CMDQ_RESUME_0_RESP_RETRY;
-> +		break;
-> +	default:
-> +		break;
->  	}
-> =20
->  	arm_smmu_cmdq_issue_cmd(master->smmu, &cmd);
-> @@ -954,8 +952,6 @@ static int arm_smmu_page_response(struct device *dev,
->  	 * terminated... at some point in the future. PRI_RESP is fire and
->  	 * forget.
->  	 */
-> -
-> -	return 0;
->  }
-> =20
->  /* Context descriptor manipulation functions */
-> @@ -1516,16 +1512,6 @@ static int arm_smmu_handle_evt(struct arm_smmu_dev=
-ice *smmu, u64 *evt)
->  	}
-> =20
->  	ret =3D iommu_report_device_fault(master->dev, &fault_evt);
-> -	if (ret && flt->type =3D=3D IOMMU_FAULT_PAGE_REQ) {
-> -		/* Nobody cared, abort the access */
-> -		struct iommu_page_response resp =3D {
-> -			.pasid		=3D flt->prm.pasid,
-> -			.grpid		=3D flt->prm.grpid,
-> -			.code		=3D IOMMU_PAGE_RESP_FAILURE,
-> -		};
-> -		arm_smmu_page_response(master->dev, &fault_evt, &resp);
-> -	}
-> -
->  out_unlock:
->  	mutex_unlock(&smmu->streams_mutex);
->  	return ret;
-> diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-> index e1cbcb9515f0..2f8716636dbb 100644
-> --- a/drivers/iommu/intel/svm.c
-> +++ b/drivers/iommu/intel/svm.c
-> @@ -740,9 +740,8 @@ static irqreturn_t prq_event_thread(int irq, void *d)
->  	return IRQ_RETVAL(handled);
->  }
-> =20
-> -int intel_svm_page_response(struct device *dev,
-> -			    struct iopf_fault *evt,
-> -			    struct iommu_page_response *msg)
-> +void intel_svm_page_response(struct device *dev, struct iopf_fault *evt,
-> +			     struct iommu_page_response *msg)
->  {
->  	struct device_domain_info *info =3D dev_iommu_priv_get(dev);
->  	struct intel_iommu *iommu =3D info->iommu;
-> @@ -751,7 +750,6 @@ int intel_svm_page_response(struct device *dev,
->  	bool private_present;
->  	bool pasid_present;
->  	bool last_page;
-> -	int ret =3D 0;
->  	u16 sid;
-> =20
->  	prm =3D &evt->fault.prm;
-> @@ -760,16 +758,6 @@ int intel_svm_page_response(struct device *dev,
->  	private_present =3D prm->flags & IOMMU_FAULT_PAGE_REQUEST_PRIV_DATA;
->  	last_page =3D prm->flags & IOMMU_FAULT_PAGE_REQUEST_LAST_PAGE;
-> =20
-> -	if (!pasid_present) {
-> -		ret =3D -EINVAL;
-> -		goto out;
-> -	}
-> -
-> -	if (prm->pasid =3D=3D 0 || prm->pasid >=3D PASID_MAX) {
-> -		ret =3D -EINVAL;
-> -		goto out;
-> -	}
-> -
->  	/*
->  	 * Per VT-d spec. v3.0 ch7.7, system software must respond
->  	 * with page group response if private data is present (PDP)
-> @@ -798,8 +786,6 @@ int intel_svm_page_response(struct device *dev,
-> =20
->  		qi_submit_sync(iommu, &desc, 1, 0);
->  	}
-> -out:
-> -	return ret;
->  }
-> =20
->  static int intel_svm_set_dev_pasid(struct iommu_domain *domain,
-> diff --git a/drivers/iommu/io-pgfault.c b/drivers/iommu/io-pgfault.c
-> index c22e13df84c2..6e63e5a02884 100644
-> --- a/drivers/iommu/io-pgfault.c
-> +++ b/drivers/iommu/io-pgfault.c
-> @@ -39,7 +39,7 @@ static void iopf_put_dev_fault_param(struct iommu_fault=
-_param *fault_param)
->  		kfree_rcu(fault_param, rcu);
->  }
-> =20
-> -void iopf_free_group(struct iopf_group *group)
-> +static void __iopf_free_group(struct iopf_group *group)
->  {
->  	struct iopf_fault *iopf, *next;
-> =20
-> @@ -50,6 +50,11 @@ void iopf_free_group(struct iopf_group *group)
-> =20
->  	/* Pair with iommu_report_device_fault(). */
->  	iopf_put_dev_fault_param(group->fault_param);
-> +}
-> +
-> +void iopf_free_group(struct iopf_group *group)
+>
+> +static inline bool etnaviv_is_model_rev(struct etnaviv_gpu *gpu, u32 model, u32 revision)
 > +{
-> +	__iopf_free_group(group);
->  	kfree(group);
->  }
->  EXPORT_SYMBOL_GPL(iopf_free_group);
-> @@ -97,14 +102,49 @@ static int report_partial_fault(struct iommu_fault_p=
-aram *fault_param,
->  	return 0;
->  }
-> =20
-> +static struct iopf_group *iopf_group_alloc(struct iommu_fault_param *iop=
-f_param,
-> +					   struct iopf_fault *evt,
-> +					   struct iopf_group *abort_group)
-> +{
-> +	struct iopf_fault *iopf, *next;
-> +	struct iopf_group *group;
-> +
-> +	group =3D kzalloc(sizeof(*group), GFP_KERNEL);
-> +	if (!group) {
-> +		/*
-> +		 * We always need to construct the group as we need it to abort
-> +		 * the request at the driver if it cfan't be handled.
-> +		 */
-> +		group =3D abort_group;
-> +	}
-> +
-> +	group->fault_param =3D iopf_param;
-> +	group->last_fault.fault =3D evt->fault;
-> +	INIT_LIST_HEAD(&group->faults);
-> +	INIT_LIST_HEAD(&group->pending_node);
-> +	list_add(&group->last_fault.list, &group->faults);
-> +
-> +	/* See if we have partial faults for this group */
-> +	mutex_lock(&iopf_param->lock);
-> +	list_for_each_entry_safe(iopf, next, &iopf_param->partial, list) {
-> +		if (iopf->fault.prm.grpid =3D=3D evt->fault.prm.grpid)
-> +			/* Insert *before* the last fault */
-> +			list_move(&iopf->list, &group->faults);
-> +	}
-> +	list_add(&group->pending_node, &iopf_param->faults);
-> +	mutex_unlock(&iopf_param->lock);
-> +
-> +	return group;
+> +       return gpu->identity.model == model &&
+> +              gpu->identity.revision == revision;
 > +}
-> +
->  /**
->   * iommu_report_device_fault() - Report fault event to device driver
->   * @dev: the device
->   * @evt: fault event data
->   *
->   * Called by IOMMU drivers when a fault is detected, typically in a thre=
-aded IRQ
-> - * handler. When this function fails and the fault is recoverable, it is=
- the
-> - * caller's responsibility to complete the fault.
-> + * handler. If this function fails then ops->page_response() was called =
-to
-> + * complete evt if required.
->   *
->   * This module doesn't handle PCI PASID Stop Marker; IOMMU drivers must =
-discard
->   * them before reporting faults. A PASID Stop Marker (LRW =3D 0b100) doe=
-sn't
-> @@ -143,22 +183,18 @@ int iommu_report_device_fault(struct device *dev, s=
-truct iopf_fault *evt)
->  {
->  	struct iommu_fault *fault =3D &evt->fault;
->  	struct iommu_fault_param *iopf_param;
-> -	struct iopf_fault *iopf, *next;
-> -	struct iommu_domain *domain;
-> +	struct iopf_group abort_group =3D {};
->  	struct iopf_group *group;
->  	int ret;
-> =20
-> -	if (fault->type !=3D IOMMU_FAULT_PAGE_REQ)
-> -		return -EOPNOTSUPP;
-> -
->  	iopf_param =3D iopf_get_dev_fault_param(dev);
-> -	if (!iopf_param)
-> +	if (WARN_ON(!iopf_param))
->  		return -ENODEV;
-> =20
->  	if (!(fault->prm.flags & IOMMU_FAULT_PAGE_REQUEST_LAST_PAGE)) {
->  		ret =3D report_partial_fault(iopf_param, fault);
->  		iopf_put_dev_fault_param(iopf_param);
-> -
-> +		/* A request that is not the last does not need to be ack'd */
->  		return ret;
->  	}
-> =20
-> @@ -170,56 +206,33 @@ int iommu_report_device_fault(struct device *dev, s=
-truct iopf_fault *evt)
->  	 * will send a response to the hardware. We need to clean up before
->  	 * leaving, otherwise partial faults will be stuck.
->  	 */
-> -	domain =3D get_domain_for_iopf(dev, fault);
-> -	if (!domain) {
-> +	group =3D iopf_group_alloc(iopf_param, evt, &abort_group);
-> +	if (group =3D=3D &abort_group) {
-> +		ret =3D -ENOMEM;
-> +		goto err_abort;
-> +	}
-> +
-> +	group->domain =3D get_domain_for_iopf(dev, fault);
-> +	if (!group->domain) {
->  		ret =3D -EINVAL;
-> -		goto cleanup_partial;
-> +		goto err_abort;
->  	}
-> =20
-> -	group =3D kzalloc(sizeof(*group), GFP_KERNEL);
-> -	if (!group) {
-> -		ret =3D -ENOMEM;
-> -		goto cleanup_partial;
-> -	}
-> -
-> -	group->fault_param =3D iopf_param;
-> -	group->last_fault.fault =3D *fault;
-> -	INIT_LIST_HEAD(&group->faults);
-> -	INIT_LIST_HEAD(&group->pending_node);
-> -	group->domain =3D domain;
-> -	list_add(&group->last_fault.list, &group->faults);
-> -
-> -	/* See if we have partial faults for this group */
-> -	mutex_lock(&iopf_param->lock);
-> -	list_for_each_entry_safe(iopf, next, &iopf_param->partial, list) {
-> -		if (iopf->fault.prm.grpid =3D=3D fault->prm.grpid)
-> -			/* Insert *before* the last fault */
-> -			list_move(&iopf->list, &group->faults);
-> -	}
-> -	list_add(&group->pending_node, &iopf_param->faults);
-> -	mutex_unlock(&iopf_param->lock);
-> +	/*
-> +	 * On success iopf_handler must call iopf_group_response() and
-> +	 * iopf_free_group()
-> +	 */
-> +	ret =3D group->domain->iopf_handler(group);
-> +	if (ret)
-> +		goto err_abort;
-> +	return 0;
-> =20
-> -	ret =3D domain->iopf_handler(group);
-> -	if (ret) {
-> -		mutex_lock(&iopf_param->lock);
-> -		list_del_init(&group->pending_node);
-> -		mutex_unlock(&iopf_param->lock);
-> +err_abort:
-> +	iopf_group_response(group, IOMMU_PAGE_RESP_FAILURE);
-> +	if (group =3D=3D &abort_group)
-> +		__iopf_free_group(group);
-> +	else
->  		iopf_free_group(group);
-> -	}
-> -
-> -	return ret;
-> -
-> -cleanup_partial:
-> -	mutex_lock(&iopf_param->lock);
-> -	list_for_each_entry_safe(iopf, next, &iopf_param->partial, list) {
-> -		if (iopf->fault.prm.grpid =3D=3D fault->prm.grpid) {
-> -			list_del(&iopf->list);
-> -			kfree(iopf);
-> -		}
-> -	}
-> -	mutex_unlock(&iopf_param->lock);
-> -	iopf_put_dev_fault_param(iopf_param);
-> -
->  	return ret;
+>
+> -#define etnaviv_is_model_rev(gpu, mod, rev) \
+> -       ((gpu)->identity.model == chipModel_##mod && \
+> -        (gpu)->identity.revision == rev)
+>  #define etnaviv_field(val, field) \
+>         (((val) & field##__MASK) >> field##__SHIFT)
+>
+> @@ -281,7 +283,7 @@ static void etnaviv_hw_specs(struct etnaviv_gpu *gpu)
+>
+>         switch (gpu->identity.instruction_count) {
+>         case 0:
+> -               if (etnaviv_is_model_rev(gpu, GC2000, 0x5108) ||
+> +               if (etnaviv_is_model_rev(gpu, 0x2000, 0x5108) ||
+>                     gpu->identity.model == chipModel_GC880)
+>                         gpu->identity.instruction_count = 512;
+>                 else
+> @@ -315,17 +317,17 @@ static void etnaviv_hw_specs(struct etnaviv_gpu *gpu)
+>          * For some cores, two varyings are consumed for position, so the
+>          * maximum varying count needs to be reduced by one.
+>          */
+> -       if (etnaviv_is_model_rev(gpu, GC5000, 0x5434) ||
+> -           etnaviv_is_model_rev(gpu, GC4000, 0x5222) ||
+> -           etnaviv_is_model_rev(gpu, GC4000, 0x5245) ||
+> -           etnaviv_is_model_rev(gpu, GC4000, 0x5208) ||
+> -           etnaviv_is_model_rev(gpu, GC3000, 0x5435) ||
+> -           etnaviv_is_model_rev(gpu, GC2200, 0x5244) ||
+> -           etnaviv_is_model_rev(gpu, GC2100, 0x5108) ||
+> -           etnaviv_is_model_rev(gpu, GC2000, 0x5108) ||
+> -           etnaviv_is_model_rev(gpu, GC1500, 0x5246) ||
+> -           etnaviv_is_model_rev(gpu, GC880, 0x5107) ||
+> -           etnaviv_is_model_rev(gpu, GC880, 0x5106))
+> +       if (etnaviv_is_model_rev(gpu, 0x5000, 0x5434) ||
+> +           etnaviv_is_model_rev(gpu, 0x4000, 0x5222) ||
+> +           etnaviv_is_model_rev(gpu, 0x4000, 0x5245) ||
+> +           etnaviv_is_model_rev(gpu, 0x4000, 0x5208) ||
+> +           etnaviv_is_model_rev(gpu, 0x3000, 0x5435) ||
+> +           etnaviv_is_model_rev(gpu, 0x2200, 0x5244) ||
+> +           etnaviv_is_model_rev(gpu, 0x2100, 0x5108) ||
+> +           etnaviv_is_model_rev(gpu, 0x2000, 0x5108) ||
+> +           etnaviv_is_model_rev(gpu, 0x1500, 0x5246) ||
+> +           etnaviv_is_model_rev(gpu, 0x880, 0x5107) ||
+> +           etnaviv_is_model_rev(gpu, 0x880, 0x5106))
+>                 gpu->identity.varyings_count -= 1;
 >  }
->  EXPORT_SYMBOL_GPL(iommu_report_device_fault);
-> @@ -262,8 +275,8 @@ EXPORT_SYMBOL_GPL(iopf_queue_flush_dev);
->   *
->   * Return 0 on success and <0 on error.
->   */
-Should you adjust the docs as well?
+>
+> @@ -351,7 +353,7 @@ static void etnaviv_hw_identify(struct etnaviv_gpu *gpu)
+>                  * Reading these two registers on GC600 rev 0x19 result in a
+>                  * unhandled fault: external abort on non-linefetch
+>                  */
+> -               if (!etnaviv_is_model_rev(gpu, GC600, 0x19)) {
+> +               if (!etnaviv_is_model_rev(gpu, 0x600, 0x19)) {
+>                         gpu->identity.product_id = gpu_read(gpu, VIVS_HI_CHIP_PRODUCT_ID);
+>                         gpu->identity.eco_id = gpu_read(gpu, VIVS_HI_CHIP_ECO_ID);
+>                 }
+> @@ -368,7 +370,7 @@ static void etnaviv_hw_identify(struct etnaviv_gpu *gpu)
+>                 }
+>
+>                 /* Another special case */
+> -               if (etnaviv_is_model_rev(gpu, GC300, 0x2201)) {
+> +               if (etnaviv_is_model_rev(gpu, 0x300, 0x2201)) {
+>                         u32 chipTime = gpu_read(gpu, VIVS_HI_CHIP_TIME);
+>
+>                         if (chipDate == 0x20080814 && chipTime == 0x12051100) {
+> @@ -387,15 +389,15 @@ static void etnaviv_hw_identify(struct etnaviv_gpu *gpu)
+>                  * Fix model/rev here, so all other places can refer to this
+>                  * core by its real identity.
+>                  */
+> -               if (etnaviv_is_model_rev(gpu, GC2000, 0xffff5450)) {
+> +               if (etnaviv_is_model_rev(gpu, 0x2000, 0xffff5450)) {
+>                         gpu->identity.model = chipModel_GC3000;
+>                         gpu->identity.revision &= 0xffff;
+>                 }
+>
+> -               if (etnaviv_is_model_rev(gpu, GC1000, 0x5037) && (chipDate == 0x20120617))
+> +               if (etnaviv_is_model_rev(gpu, 0x1000, 0x5037) && (chipDate == 0x20120617))
+>                         gpu->identity.eco_id = 1;
+>
+> -               if (etnaviv_is_model_rev(gpu, GC320, 0x5303) && (chipDate == 0x20140511))
+> +               if (etnaviv_is_model_rev(gpu, 0x320, 0x5303) && (chipDate == 0x20140511))
+>                         gpu->identity.eco_id = 1;
+>         }
+>
+> @@ -630,14 +632,14 @@ static void etnaviv_gpu_enable_mlcg(struct etnaviv_gpu *gpu)
+>                 pmc |= BIT(15); /* Unknown bit */
+>
+>         /* Disable TX clock gating on affected core revisions. */
+> -       if (etnaviv_is_model_rev(gpu, GC4000, 0x5222) ||
+> -           etnaviv_is_model_rev(gpu, GC2000, 0x5108) ||
+> -           etnaviv_is_model_rev(gpu, GC2000, 0x6202) ||
+> -           etnaviv_is_model_rev(gpu, GC2000, 0x6203))
+> +       if (etnaviv_is_model_rev(gpu, 0x4000, 0x5222) ||
+> +           etnaviv_is_model_rev(gpu, 0x2000, 0x5108) ||
+> +           etnaviv_is_model_rev(gpu, 0x2000, 0x6202) ||
+> +           etnaviv_is_model_rev(gpu, 0x2000, 0x6203))
+>                 pmc |= VIVS_PM_MODULE_CONTROLS_DISABLE_MODULE_CLOCK_GATING_TX;
+>
+>         /* Disable SE and RA clock gating on affected core revisions. */
+> -       if (etnaviv_is_model_rev(gpu, GC7000, 0x6202))
+> +       if (etnaviv_is_model_rev(gpu, 0x7000, 0x6202))
+>                 pmc |= VIVS_PM_MODULE_CONTROLS_DISABLE_MODULE_CLOCK_GATING_SE |
+>                        VIVS_PM_MODULE_CONTROLS_DISABLE_MODULE_CLOCK_GATING_RA;
+>
+> @@ -690,14 +692,14 @@ static void etnaviv_gpu_setup_pulse_eater(struct etnaviv_gpu *gpu)
+>          */
+>         u32 pulse_eater = 0x01590880;
+>
+> -       if (etnaviv_is_model_rev(gpu, GC4000, 0x5208) ||
+> -           etnaviv_is_model_rev(gpu, GC4000, 0x5222)) {
+> +       if (etnaviv_is_model_rev(gpu, 0x4000, 0x5208) ||
+> +           etnaviv_is_model_rev(gpu, 0x4000, 0x5222)) {
+>                 pulse_eater |= BIT(23);
+>
+>         }
+>
+> -       if (etnaviv_is_model_rev(gpu, GC1000, 0x5039) ||
+> -           etnaviv_is_model_rev(gpu, GC1000, 0x5040)) {
+> +       if (etnaviv_is_model_rev(gpu, 0x1000, 0x5039) ||
+> +           etnaviv_is_model_rev(gpu, 0x1000, 0x5040)) {
+>                 pulse_eater &= ~BIT(16);
+>                 pulse_eater |= BIT(17);
+>         }
+> @@ -718,8 +720,8 @@ static void etnaviv_gpu_hw_init(struct etnaviv_gpu *gpu)
+>         WARN_ON(!(gpu->state == ETNA_GPU_STATE_IDENTIFIED ||
+>                   gpu->state == ETNA_GPU_STATE_RESET));
+>
+> -       if ((etnaviv_is_model_rev(gpu, GC320, 0x5007) ||
+> -            etnaviv_is_model_rev(gpu, GC320, 0x5220)) &&
+> +       if ((etnaviv_is_model_rev(gpu, 0x320, 0x5007) ||
+> +            etnaviv_is_model_rev(gpu, 0x320, 0x5220)) &&
+>             gpu_read(gpu, VIVS_HI_CHIP_TIME) != 0x2062400) {
+>                 u32 mc_memory_debug;
+>
+> @@ -745,7 +747,7 @@ static void etnaviv_gpu_hw_init(struct etnaviv_gpu *gpu)
+>                   VIVS_HI_AXI_CONFIG_ARCACHE(2));
+>
+>         /* GC2000 rev 5108 needs a special bus config */
+> -       if (etnaviv_is_model_rev(gpu, GC2000, 0x5108)) {
+> +       if (etnaviv_is_model_rev(gpu, 0x2000, 0x5108)) {
+>                 u32 bus_config = gpu_read(gpu, VIVS_MC_BUS_CONFIG);
+>                 bus_config &= ~(VIVS_MC_BUS_CONFIG_FE_BUS_CONFIG__MASK |
+>                                 VIVS_MC_BUS_CONFIG_TX_BUS_CONFIG__MASK);
+>
+> --
+> 2.39.2
+>
 
-> -int iopf_group_response(struct iopf_group *group,
-> -			enum iommu_page_response_code status)
-> +void iopf_group_response(struct iopf_group *group,
-> +			 enum iommu_page_response_code status)
->  {
->  	struct iommu_fault_param *fault_param =3D group->fault_param;
->  	struct iopf_fault *iopf =3D &group->last_fault;
-> @@ -274,7 +287,6 @@ int iopf_group_response(struct iopf_group *group,
->  		.grpid =3D iopf->fault.prm.grpid,
->  		.code =3D status,
->  	};
-> -	int ret =3D -EINVAL;
-> =20
->  	if ((iopf->fault.prm.flags & IOMMU_FAULT_PAGE_REQUEST_PASID_VALID) &&
->  	    (iopf->fault.prm.flags & IOMMU_FAULT_PAGE_RESPONSE_NEEDS_PASID))
-> @@ -283,12 +295,10 @@ int iopf_group_response(struct iopf_group *group,
->  	/* Only send response if there is a fault report pending */
->  	mutex_lock(&fault_param->lock);
->  	if (!list_empty(&group->pending_node)) {
-> -		ret =3D ops->page_response(dev, &group->last_fault, &resp);
-> +		ops->page_response(dev, &group->last_fault, &resp);
->  		list_del_init(&group->pending_node);
->  	}
->  	mutex_unlock(&fault_param->lock);
-> -
-> -	return ret;
->  }
->  EXPORT_SYMBOL_GPL(iopf_group_response);
-> =20
-> --=20
-> 2.34.1
->=20
 
---=20
+-- 
+greets
+--
+Christian Gmeiner, MSc
 
-Joel Granados
-
---4s4v2pmzby236ugh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmWyi+kACgkQupfNUreW
-QU8MhQv+LZ+TI6iQ5minlh6NuBV/4F1W8Gdc9iC7p1bY3CYll3M1WPhJdMtD5gGm
-gn1a0aezlzabCGN2qRVKkSs0y/jIItmcFyIpodcrsjlh1P/aLamvoNqn4lNOAIap
-GIUCqdB32HWjgOUU0e+0jUQ14mfT4aG4cDqniOYzoCjawSSxQwwO8SKFMACFR1K9
-91x8JNOYBGa7UCQ7CEwWmBp6UkxY/KjA/pwrcVOT78YoeaEehqoGHouilrcRtm66
-96zouNAicPTtGu/pfOP1XLKn/BO6ikaEfnCPJTw9/8A1i6SaABSUIJbGy1Tj7WKb
-ghuw6Y36CLhU21uMMcQ6KHmE0gSrOKSDIRsqj5Woicj9cSsqpvtu5eaqhRdZ4Jkj
-AEHNuzDmVhU5CnoXyd9Qz1CPEKzggAYt45dVG8ng/HBmcnCGZogM+TmqMQdCl+SJ
-iLgA5fkk0U5vm9VbAIYr7Q9Q5gq/UAhD0Ge2R//ZxWv2kly5ZjoTi7CkVEdv8Sck
-EnYv0psO
-=xiQr
------END PGP SIGNATURE-----
-
---4s4v2pmzby236ugh--
+https://christian-gmeiner.info/privacypolicy
 
