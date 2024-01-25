@@ -1,166 +1,100 @@
-Return-Path: <linux-kernel+bounces-38620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7182F83C34B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:09:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC6D183C34E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 14:09:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 89104B257A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:08:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B3EA1C22837
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 13:09:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E02F2C69C;
-	Thu, 25 Jan 2024 13:07:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64CD950A9F;
+	Thu, 25 Jan 2024 13:08:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="jKf/t//U"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="Rfedy4bS"
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5821F59B49
-	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 13:06:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7293050A95
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 13:08:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706188018; cv=none; b=i/rp3ts9+ZzLTAedaal4O+0y0BR1n8O8IygT+RbPz88uMmrUrmifOsvZ4cn3YLoyhYhtQE0WKNx731TjNlfA+MbLSeaCzNLgb+e9v/FsSQ1cUUOfNgG3Onm8o2DWyuG4de3aaBMqrw8MPNAlL6jAB1xB27kTPHONycv5hyEEa7A=
+	t=1706188116; cv=none; b=rQzabYUPFmxwrQSRSi1XDipomshzB2MPb5G1GKGnqHtS+pqsOEEvezWKwoEPLl9TY1gI9uyd8CU7L64NsTFN/oAP8wRjIXKP35zVFLMBU4xB5BHR3I4QZfAENb6rdOc5n8/IyWUGT52nbZN4FwX8fMYtr4L5i7YSM/FNQiJssTw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706188018; c=relaxed/simple;
-	bh=4tD1G/Ca5v+ls1TNb0SRTW2WCwsF3A3UVdT684WBzZU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XEjp8baC/kCHG27hpbyVnUOk9w3auJ2eTUwiqeUSXxj8OfIrFIRFIMPAgVolrC+1tUyEroo3a5MYtopym4hthZuhNXivSu7cxbGvOTwaMJjFhki9qa9lbOevqGZM2hqrysmUTIn8LkBykngSRnNp3S+VkeyNhi8fFoQwNgVolAA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=jKf/t//U; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 46857FF813;
-	Thu, 25 Jan 2024 13:06:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1706188007;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=n7Q6OTUTtuT1kEA4hYWIhFboomzzNbDeo6fWM/l/3aI=;
-	b=jKf/t//UerWLWfg6Vqq9e7kwmRYFXkYJBpEsiTgHZmzXhw24mrMg5Aa5YJfaDnhi8hlkrU
-	jhu9eg+TpTjcmZ9EKC+1PRQ1GYPe3YaiciZL32VWZdR8oiJsxtZuZ+HDns9hVOTyFPgOLV
-	/fAQU9pduD1N+cx4qSqqUBauxTZ4X8/PC7gRhIpvJOc2jaKpiPnXmVWwRtzuphh/mNMkYD
-	3IfC2c0rSGfThTdzgO3mx5SIFEREsrn4APlNVgSPSwsDS+ypBVYcY1Uf3JXBZjm5yCWHmS
-	7fjVNPNXUlFy3NCUolyyu+QkMfM/dJKcl1wYAbFynMKewrbKX614h517YPDulg==
-Date: Thu, 25 Jan 2024 14:06:45 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: "Arnd Bergmann" <arnd@arndb.de>
-Cc: "Arnd Bergmann" <arnd@kernel.org>, "Srinivas Kandagatla"
- <srinivas.kandagatla@linaro.org>, regressions@lists.linux.dev,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, "Chen-Yu Tsai"
- <wenst@chromium.org>, "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
- asahi@lists.linux.dev, "Sven Peter" <sven@svenpeter.dev>, "Michael Walle"
- <michael@walle.cc>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nvmem: include bit index in cell sysfs file name
-Message-ID: <20240125140645.0c629760@xps-13>
-In-Reply-To: <911c4a6b-83af-46a8-8f7e-250da4f0f1ad@app.fastmail.com>
-References: <20240122153442.7250-1-arnd@kernel.org>
-	<20240124182256.776c164b@xps-13>
-	<1d13250c-e48b-4e31-b449-5b54837a0d40@app.fastmail.com>
-	<20240124231120.562f06f3@xps-13>
-	<911c4a6b-83af-46a8-8f7e-250da4f0f1ad@app.fastmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1706188116; c=relaxed/simple;
+	bh=DQw6SkbRWKUw+mEBZpF+BrHQJGhjrIcRv8sDzH/zTLY=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=O8vdwBX2jnV9nk/3y/zRKBc4kFuGMlV2raHvGHYu7YTa567dpv/cwa3p7TUnztQ0Ef3xIhdjOjydRa8VFNhr5RBUh5DAenpD5UqbMMYiNRxpT/mXjTPNwuxdEbGuV+MqoNPf4zSyVQdwSyRdzVzIb4EfyOd94vqu5tW/vSi5jzY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=Rfedy4bS; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [127.0.0.1] ([76.133.66.138])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 40PD7ohH017921
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Thu, 25 Jan 2024 05:07:51 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 40PD7ohH017921
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2024011201; t=1706188071;
+	bh=aI9WJx+jYvQnEIH6Q4cNpzmMxlGwehYlGZIFWqI/BWw=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=Rfedy4bS6fJrYJhVwO0eqYNK7BQP/zUgo78ry7Yr0XwJ/z0GYR+jw0elS1t+7qCWH
+	 8jYPWWx353vfXtxz0fwzh6DmXxtGax3lWkP6ubcNm7/3hSjbdwSg+IIq4u52f/6Xqm
+	 LQk/AGVLDC0LpVfmwfoPPnLEdFQKRRce8Csw+vAu5q9Q6IZ0DT05i7lpvtEAKxGFRi
+	 BBFCAY/BSVeceaGljlVQAXzLTlxiENwcU1R69l62KrL3V8tzF4v1xonvmRFz1gMejh
+	 q2Egm2lH+Mp1L9GWFfPTTjMrLJOxNyktGMpWiJTNNZyfZF+Ock1ycy2/XIwtHNAMcz
+	 Pt4KCLg3iqLHw==
+Date: Thu, 25 Jan 2024 05:07:47 -0800
+From: "H. Peter Anvin" <hpa@zytor.com>
+To: Andi Kleen <ak@linux.intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+CC: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Kai Huang <kai.huang@intel.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: =?US-ASCII?Q?Re=3A_=5BPATCHv3=2C_RESEND=5D_x86/trampoline=3A_Bypass_co?= =?US-ASCII?Q?mpat_mode_in_trampoline=5Fstart64=28=29_if_not_needed?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <ZbIwfp-jOOlPNb1z@tassilo>
+References: <20240124131510.496803-1-kirill.shutemov@linux.intel.com> <ZbIwfp-jOOlPNb1z@tassilo>
+Message-ID: <E4904B95-C2EC-4FAF-9CB7-8F377CEA6972@zytor.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
 
-Hi Arnd,
+On January 25, 2024 1:57:18 AM PST, Andi Kleen <ak@linux=2Eintel=2Ecom> wro=
+te:
+>> +	/* Paging mode is correct proceed in 64-bit mode */
+>> +
+>> +	LOCK_AND_LOAD_REALMODE_ESP lock_rip=3D1
+>> +
+>> +	movw	$__KERNEL_DS, %dx
+>> +	movl	%edx, %ss
+>> +	addl	$pa_real_mode_base, %esp
+>> +	movl	%edx, %ds
+>> +	movl	%edx, %es
+>> +	movl	%edx, %fs
+>> +	movl	%edx, %gs
+>> +
+>> +	movl	$pa_trampoline_pgd, %eax
+>> +	movq	%rax, %cr3
+>> +
+>> +	jmpq	*tr_start(%rip)
+>
+>Still think we should add a far jump here so that we run on a defined
+>code segment=2E It probably doesn't matter since there are likely no
+>IRETs before reloading anyways, but it seems cleaner=2E
+>
+>-Andi
+>
 
-arnd@arndb.de wrote on Thu, 25 Jan 2024 13:15:26 +0100:
-
-> On Wed, Jan 24, 2024, at 23:11, Miquel Raynal wrote:
-> > Hi Arnd,
-> >
-> > arnd@arndb.de wrote on Wed, 24 Jan 2024 20:49:53 +0100:
-> > =20
-> >> On Wed, Jan 24, 2024, at 18:22, Miquel Raynal wrote: =20
-> >> > arnd@kernel.org wrote on Mon, 22 Jan 2024 16:34:10 +0100:
-> >> >   =20
-> >> >> From: Arnd Bergmann <arnd@arndb.de>
-> >> >>=20
-> >> >>=20
-> >> >> As far as I can tell, this is a problem for any device with multipl=
-e cells on
-> >> >> different bits of the same address. Avoid the issue by changing the=
- file name
-> >> >> to include the first bit number.   =20
-> >> >
-> >> > There is only one bit number right? We are talking about byte offsets
-> >> > so this value can only range from 0 to 7? If we understand each other
-> >> > correctly then why not, I'm fine with the extra ",0" thing.   =20
-> >>=20
-> >> On the Apple M1, the nvmem registers are 32 bit wide, so the
-> >> bit numbers can go up to 31. I can imagine some system using
-> >> 64-bit registers, but it's unlikely to be higher than that. =20
-> >
-> > In this case we will soon or later have a problem again. Can we include
-> > the full offset of the bit and not just the first digit? =20
->=20
-> I thought that is what my patch does, maybe I don't
-> undestand the problem you are referring to. This is what
-> I see on my system with the patch applied:
->=20
-> $ cd /sys/devices/platform/soc@200000000/2922bc000.efuse
-> $ find . -name efuse\*
-> ./apple_efuses_nvmem0/cells/efuse@a24,11
-
-Sorry for the misunderstanding, I thought the above situation would
-be:
-
-  ./apple_efuses_nvmem0/cells/efuse@a24,1
-
-But the below output is actually fine.
-
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-
-> ./apple_efuses_nvmem0/cells/efuse@a24,9
-> ./apple_efuses_nvmem0/cells/efuse@a1c,f
-> ./apple_efuses_nvmem0/cells/efuse@a20,17
-> ./apple_efuses_nvmem0/cells/efuse@a20,1e
-> ./apple_efuses_nvmem0/cells/efuse@a18,0
-> ./apple_efuses_nvmem0/cells/efuse@a14,b
-> ./apple_efuses_nvmem0/cells/efuse@a1c,1f
-> ./apple_efuses_nvmem0/cells/efuse@a1c,d
-> ./apple_efuses_nvmem0/cells/efuse@a20,1c
-> ./apple_efuses_nvmem0/cells/efuse@a18,15
-> ./apple_efuses_nvmem0/cells/efuse@a14,0
-> ./apple_efuses_nvmem0/cells/efuse@a1c,14
-> ./apple_efuses_nvmem0/cells/efuse@a24,3
-> ./apple_efuses_nvmem0/cells/efuse@a20,7
-> ./apple_efuses_nvmem0/cells/efuse@a18,5
-> ./apple_efuses_nvmem0/cells/efuse@a10,16
-> ./apple_efuses_nvmem0/cells/efuse@a1c,12
-> ./apple_efuses_nvmem0/cells/efuse@a20,5
-> ./apple_efuses_nvmem0/cells/efuse@a18,3
-> ./apple_efuses_nvmem0/cells/efuse@a18,a
-> ./apple_efuses_nvmem0/cells/efuse@a10,1b
-> ./apple_efuses_nvmem0/cells/efuse@a14,5
-> ./apple_efuses_nvmem0/cells/efuse@a1c,19
-> ./apple_efuses_nvmem0/cells/efuse@a24,f
-> ./apple_efuses_nvmem0/cells/efuse@a18,1d
-> ./apple_efuses_nvmem0/cells/efuse@a14,13
-> ./apple_efuses_nvmem0/cells/efuse@a18,8
-> ./apple_efuses_nvmem0/cells/efuse@a18,f
-> ./apple_efuses_nvmem0/cells/efuse@a20,14
-> ./apple_efuses_nvmem0/cells/efuse@a10,19
-> ./apple_efuses_nvmem0/cells/efuse@a18,1b
-> ./apple_efuses_nvmem0/cells/efuse@a14,11
-> ./apple_efuses_nvmem0/cells/efuse@a1c,a
-> ./apple_efuses_nvmem0/cells/efuse@a10,1e
-> ./apple_efuses_nvmem0/cells/efuse@a20,19
->=20
->       Arnd
-
-
-Thanks,
-Miqu=C3=A8l
+Agreed=2E
 
