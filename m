@@ -1,166 +1,169 @@
-Return-Path: <linux-kernel+bounces-39307-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39304-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DCF183CE8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:26:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BB4283CE7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 22:25:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F376829548B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:26:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D03241F28729
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:25:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2F4513A27C;
-	Thu, 25 Jan 2024 21:26:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 769BE13A272;
+	Thu, 25 Jan 2024 21:24:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="QK8SP0Nn";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="C2sMW8cn"
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="oDdGM3I/"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A876F13A253;
-	Thu, 25 Jan 2024 21:26:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.29
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B32D13A242;
+	Thu, 25 Jan 2024 21:24:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706218001; cv=none; b=bybJKuIwNwrEDG1n4185puD/OIb4jODL8C9icDeLhNQn9eOWg9weJZIXHpfRc3yH/tMSBmKgpvRNGX89jo4DYX508959/VeOAF8LEMFCsNH6D04VREoUAKLoGtpBeivU/s6FF2ytQ3mZM6DGimzDT0lBmOga+l7mriPbqA8SYFA=
+	t=1706217892; cv=none; b=pSEPLFxIfW05rskpy3nb2jLm2IQTMSLix/HN40WH3wNNekOMfirz27sxw0UV1Lrgk5BrXAmwkBAOaPAIW0EAcz1l51zmeKg51m8PcYF03vQaOWDsYfQQA0DGq4n3fmnwkdC1OoOvwqpA54kJCSjpBOUFT0FB/EULxXbvawf0Or8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706218001; c=relaxed/simple;
-	bh=B/g0KfVrN0Gqw2KKiCNZ2MwRrOUESPX1O0BAPrvSEjA=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=k+8WGAXJCFvq/RzwmM11v3VLyUpoY955gpZSX9AQ0cwN9LCuZkuTGQTfJ+rNHBF8O82uGHti4gV7snCofjLYJ8bPtr04yS9GWH8B1j3wPkA/fDoj8QS1LZpKKQ/9PPNqcr5LUpuBoOH9uR7hPXZ0BGR839eI0FPb5oms62xGpvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=QK8SP0Nn; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=C2sMW8cn; arc=none smtp.client-ip=66.111.4.29
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailout.nyi.internal (Postfix) with ESMTP id A406D5C00F5;
-	Thu, 25 Jan 2024 16:26:38 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute1.internal (MEProxy); Thu, 25 Jan 2024 16:26:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1706217998; x=1706304398; bh=qpZFUm5hoy
-	UFSrZ1IxH2YPgLg1vDc0KKMVjTRgl2rig=; b=QK8SP0Nnse0H+PKqzFqPep9Eaj
-	bFXXf5kjhp0BbqieJzJWYnxWIgyvg8HsOD39bYgIF+e4vTJn82B8CKgYZRf+AZdx
-	MTYOWvDeO/W0at49Yu1e9RV/9V6xpHDfYki020xa0B7C3WKM+hHAWqjMOoVeVZoA
-	fs7YZAhSMqi8XjJCMwenVuh6IYtQDvL9I5rINgrLsS/xdz+EI87khxKBiYY/XL+k
-	bEJHaTtn5y98n+YeyLf/k+3u1pyXLbYRlv1O3QLf5W4QiZAe9wqRvMBKOsM/IE6Q
-	au4QOp7IIsIBXMRZr6coDZsfVrGiMWfyyOLEsb4Ys/LzDvY0h5PfQoqsvLvQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1706217998; x=1706304398; bh=qpZFUm5hoyUFSrZ1IxH2YPgLg1vD
-	c0KKMVjTRgl2rig=; b=C2sMW8cnE4/luDTxawebBPVlYXW16RsCLV4ctJZhaaYK
-	VDwwwJmoAoBFA7kPsEG9uy1yM5GxmsKIlNfwmbK3+gr9Z3EhVIy/dzietHPFUukm
-	pIj8YUTdaJdnJXj2zmSzmAI25Gyic96NSab/Td4xk3w83oRNo48TeQaW9WZAsfTM
-	ut3ql2yLcnJE+7olFwqRl7G+mKp2iFkyvGdORNrlenQcEJ7c8MDL1dnXJ8xB2WcG
-	rvV7YlC7F+OTjlspL/qbAQ5GoD+6zCvxw1QIp3AeekS/tiWmqOZlPD/Q9G7Bjff4
-	pgTbmS0C/38BPcuv8pPnZXpZKzjQkSUBE28NY6Gz4g==
-X-ME-Sender: <xms:DtKyZQdv4ugAirEr53Ddfnb5hEwiKXbAk4uKJ3WY5CvuL4Y6cUDA0w>
-    <xme:DtKyZZKkPau6TiEpRYxZWelLmygMXFMLznkMrTWpS4qd6ldyLuzHoR8eZxFF7BPif
-    0i0BwS0FjczD56yhpc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdelhedgheeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:DtKyZXKp1BlRrGpLl2j_wtnuVlGkXDDBhYgdoUQPH5q_Ew6voXwB5g>
-    <xmx:DtKyZbESVomnS7EoKFMzRddRPuksuKMe5MNEOy8SJSAIpmYcEVWG3w>
-    <xmx:DtKyZcnwwSgv-nFvLSPXv3uXKjSBpo36uKF6rnTTIlgYR4pckQfAzQ>
-    <xmx:DtKyZSsDdHfxXbC4wk5AtsFKsmbUhk6GJLkb9tbPnhVoX9d5GEZS7A>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 22736B6008D; Thu, 25 Jan 2024 16:26:38 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-119-ga8b98d1bd8-fm-20240108.001-ga8b98d1b
+	s=arc-20240116; t=1706217892; c=relaxed/simple;
+	bh=wF7lnyES1kcFW+pAAffY+2WrYEqI4AmwamSHD36HjYE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uIdbdaRqeNF3FpIaZHeRRSH1lR0tafzQ0lxW961wpxzkeZ3tOoIxE5hUQHhWC7RV8TOrifuhDJq0G2gIshsLMC7f+voTZYRVhFo/uUOPTyrAg1gOpLFk11MY2PLyTkL+2sexedZTCoyNpyfi9kJWclI+fRJnLx98gL3r+jS6y1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=oDdGM3I/; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40PKOsK4003822;
+	Thu, 25 Jan 2024 21:24:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=X4knlC7JqfUtxkp4byTD9WxtEc2D+QZ0DzKaY+9nXvc=;
+ b=oDdGM3I/PlfVC3eEYZJUWpkehZIryqK8YI6DAmCPcpEmCGf4pqftn47xiYbX4I7mmDOG
+ mWVnRwSabJfoF9QpArNrWfY/InQYzcZ5hdnhb5woY8A5JFE8sbFcU0DDTf7XYFPTz5X/
+ kJ9toCpuWfdhs4ggGVSk8NYmLxwM9rTkg4iUjtxo7J2Oy4ebV9/GspiEZT8SYzQqFWkh
+ V07dOnACOV4aDFftBOFcdUS3NH95HyQVxXcsepxWQj6FCYVtMYyNTbflCr9mtiPH1m/v
+ n2jWNelNZqAuf8t/XmDixav+MiajfrHtUbKmydnzda+WTCr4zTfigZsc3+FtdHiYmqgF 3Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vuvv0v9fe-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Jan 2024 21:24:00 +0000
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 40PLEhiB000766;
+	Thu, 25 Jan 2024 21:23:59 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3vuvv0v9es-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Jan 2024 21:23:59 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 40PK3JJQ025291;
+	Thu, 25 Jan 2024 21:23:58 GMT
+Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vrtqkpdva-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Jan 2024 21:23:58 +0000
+Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
+	by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 40PLNvY125887374
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 25 Jan 2024 21:23:58 GMT
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id CB36F58055;
+	Thu, 25 Jan 2024 21:23:57 +0000 (GMT)
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C17B358043;
+	Thu, 25 Jan 2024 21:23:56 +0000 (GMT)
+Received: from [9.61.160.70] (unknown [9.61.160.70])
+	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 25 Jan 2024 21:23:56 +0000 (GMT)
+Message-ID: <b5b0e7bd-25e5-49a4-8ac2-349020c2344b@linux.ibm.com>
+Date: Thu, 25 Jan 2024 15:23:56 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <01d24044-6cac-4034-a9de-5b69c2dab139@app.fastmail.com>
-In-Reply-To: <20240125145007.748295-26-tudor.ambarus@linaro.org>
-References: <20240125145007.748295-1-tudor.ambarus@linaro.org>
- <20240125145007.748295-26-tudor.ambarus@linaro.org>
-Date: Thu, 25 Jan 2024 22:23:53 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Tudor Ambarus" <tudor.ambarus@linaro.org>,
- "Mark Brown" <broonie@kernel.org>, "Andi Shyti" <andi.shyti@kernel.org>
-Cc: "Rob Herring" <robh+dt@kernel.org>, krzysztof.kozlowski+dt@linaro.org,
- "Conor Dooley" <conor+dt@kernel.org>,
- "Alim Akhtar" <alim.akhtar@samsung.com>, linux-spi@vger.kernel.org,
- linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Linux-Arch <linux-arch@vger.kernel.org>,
- =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
- "Peter Griffin" <peter.griffin@linaro.org>,
- "Sam Protsenko" <semen.protsenko@linaro.org>, kernel-team@android.com,
- "William McVicker" <willmcvicker@google.com>
-Subject: Re: [PATCH v2 25/28] asm-generic/io.h: add iowrite{8,16}_32 accessors
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 3/3] ARM: dts: aspeed: System1: IBM system1 BMC board
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        joel@jms.id.au, andrew@codeconstruct.com.au, peterhuewe@gmx.de,
+        jarkko@kernel.org, jgg@ziepe.ca, keescook@chromium.org,
+        tony.luck@intel.com, gpiccoli@igalia.com,
+        johannes.holland@infineon.com, linux@roeck-us.net, broonie@kernel.org,
+        andre.werner@systec-electronic.com,
+        Andrew Geissler <geissonator@yahoo.com>, patrick.rudolph@9elements.com,
+        vincent@vtremblay.dev, peteryin.openbmc@gmail.com, lakshmiy@us.ibm.com,
+        bhelgaas@google.com, naresh.solanki@9elements.com,
+        alexander.stein@ew.tq-group.com, festevam@denx.de,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-hardening@vger.kernel.org,
+        geert+renesas@glider.be, luca.ceresoli@bootlin.com
+References: <20240116190321.GA102334@bhelgaas>
+Content-Language: en-US
+From: Ninad Palsule <ninad@linux.ibm.com>
+In-Reply-To: <20240116190321.GA102334@bhelgaas>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: wUZ0cU7yrFT0wEjuA747LiOyYUO_dYd_
+X-Proofpoint-GUID: HJm4xSjPhV2NU6Q64V5KJgHDqN0uwgdU
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-25_14,2024-01-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 mlxscore=0
+ adultscore=0 phishscore=0 clxscore=1011 priorityscore=1501 impostorscore=0
+ suspectscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2401250154
 
-On Thu, Jan 25, 2024, at 15:50, Tudor Ambarus wrote:
-> This will allow devices that require 32 bits register accesses to write
-> data in chunks of 8 or 16 bits.
+Hello Bjorn,
+
+On 1/16/24 13:03, Bjorn Helgaas wrote:
+> On Tue, Jan 16, 2024 at 12:37:34PM -0600, Ninad Palsule wrote:
+>> From: Andrew Geissler <geissonator@yahoo.com>
+>>
+>> Add a device tree for IBM system1 BMC board. It uses AST2600 SOC.
+>> - Added base board
+> s/Added/Add/ to match first sentence.
+Fixed
 >
-> One SoC that requires 32 bit register accesses is the google gs101. A
-> typical use case is SPI, where the clients can request transfers in words
-> of 8 bits.
+>> - Added i2c devices and muxes.
+>> - Added different voltage regulators.
+>> - Added GPIO pin assignements, GPIO expansion devices
+>> - Added LED brinker devices
+> "brinker"?  "blinker" maybe (no idea what it actually is).
+Fixed. Its blinker.
+>> - Added Fan controllers
+> s/Fan/fan/
+Fixed.
 >
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+>> - Added EEPROM/VPD
+>> - Added Power supplies
+> s/Power/power/
+Fixed.
+>
+>> - Added Humidity, pressure and temperature sensors.
+> s/Humidity/humidity/
+Fixed.
+>
+>> - Added Trusted platform module(TPM) chip.
+> s/Trusted platform module/Trusted Platform Module /
+Fixed
+>
+>> Tested:
+>>      This board is tested using the simics simulator.
+>>
+>> Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
+>> Signed-off-by: Andrew Geissler <geissonator@yahoo.com>
+> Your sign-off should be last since you are sending the series.
 
-My feeling is that this operation is rare enough that I'd prefer
-it to be open-coded in the driver than made generic here. Making
-it work for all corner cases is possible but probably not worth
-it.
+Fixed.
 
-> +#ifndef writesb_l
-> +#define writesb_l writesb_l
-> +static inline void writesb_l(volatile void __iomem *addr, const void 
-> *buffer,
-> +			     unsigned int count)
-> +{
-> +	if (count) {
-> +		const u8 *buf = buffer;
-> +
-> +		do {
-> +			__raw_writel(*buf++, addr);
-> +		} while (--count);
-> +	}
-> +}
-> +#endif
+Thanks for the review.
 
-There are architectures where writesb() requires an extra
-barrier before and/or after the loop. I think there are
-others that get the endianess wrong in the generic version
-you have here.
+Regards,
 
-> +#ifndef iowrite8_32_rep
-> +#define iowrite8_32_rep iowrite8_32_rep
-> +static inline void iowrite8_32_rep(volatile void __iomem *addr,
-> +				   const void *buffer,
-> +				   unsigned int count)
-> +{
-> +	writesb_l(addr, buffer, count);
-> +}
-> +#endif
+Ninad Palsule
 
-This one is wrong for architectures that have a custom inl()
-helper and need to multiplex between inl() and writel() in
-iowrite32(), notably x86.
 
-For completeness you would need to add the out-of-line version
-in lib/iomap.c for those, plus the corresponding insb_32()
-and possibly the respective big-endian versions of those.
-
-If you keep the helper in a driver that is only used on
-regular architectures like arm64, it will work reliably.
-
-      Arnd
 
