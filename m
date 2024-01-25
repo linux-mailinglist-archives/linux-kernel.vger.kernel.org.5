@@ -1,161 +1,111 @@
-Return-Path: <linux-kernel+bounces-38415-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 524BC83BF90
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:52:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7688783BF73
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 11:49:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8810B2EBFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:46:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA3FF1C23D85
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:49:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F7444F203;
-	Thu, 25 Jan 2024 10:43:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c0fQQDUb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7104958AAE;
+	Thu, 25 Jan 2024 10:43:56 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C22DF482D5;
-	Thu, 25 Jan 2024 10:43:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B6DD58114
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 10:43:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706179412; cv=none; b=uRKMQxczMgf5iM1lnlNH0eKkjNwi9L5JyS1EPiLZc+oY4fllE7JaD81XTKSp0I9eZu0yJpcPyMGZPhgVQOJ0lzcAnJMxRzcvKHWhIR3qJjXpcV3yg0oScvl2sEjdQhwOx1uB72PotxbQeuEZEL74OhNR6qADa2kJwSAH1NVyutw=
+	t=1706179436; cv=none; b=McwaySR7R5Xf+SS43Rcqi7uMccOmLRG1ID5iahwVj00sB0DjFPJxAgvsEo74NxeuLmw5k1iyNkGbLzzdaLFRIO2cgtBzB/NZLKhgSQwBs3QtS1Zg4am4U/PXFkyJb2Or4Q6fT3Ca9xNfWYJcwPKh2SbodagltkWpwWlYMu2EUpc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706179412; c=relaxed/simple;
-	bh=Py2LF73U8shcDntKXm/CgbRPin2JI3Z+P47Hz2OLILE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CDVDhhGmqTFhu+e4RzZLWFjFNyfdHiMhepABVqZZa5QoSFEVkN7ayo1AtcQ2GdAkFj1I4MxDFIjL7iOhXnIWEbfNAPk2qugbJbrWsnmdA2OvjflPApT2VxQ42Xqd7sHmYDJi5UmedGCCqv01zARWFBCcxdJMLNiIAJsxR/zdaTI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c0fQQDUb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58926C43142;
-	Thu, 25 Jan 2024 10:43:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706179412;
-	bh=Py2LF73U8shcDntKXm/CgbRPin2JI3Z+P47Hz2OLILE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=c0fQQDUbUaQhgtZliLg1cQUQi17sxDSt6cvuB75NXdzyq5Q6hcUYch57y8SZS04Ym
-	 EsBMfOCAvBYOZMR+p/HVbLREs40lr94g1LsKP+AZh4iWwDRr576GQCLpHRZuCt3T4H
-	 JXPxl4RjJ2jwNy82JGDvsBPZu1CFEusYHFeB571AK4Uqv2YZbFToVgn5bmA/PIvx2g
-	 ti2OywY4B1SKvi+R7FWKyaXPQC0SFLBSdgt8WDo7GkE2Ip0irgDhdwyHja76+GcZd+
-	 FdSSnBGF6Wav8Dw8e0iVSZbtEV/LBQyDv3s0yd3ICsATiU8Vf4xIOwkLas6cfyDc4/
-	 Nt0xeSwn2Wl1w==
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-5100ed2b33dso2735563e87.0;
-        Thu, 25 Jan 2024 02:43:32 -0800 (PST)
-X-Gm-Message-State: AOJu0YzyoUCFFNUNboXU66TX5Z0uqqy49OwY29+1DwgdkZDl4dnnYXdr
-	oHM7vhobmiSh3suTMr1ptBDcSjDBTL+LV3I+QvfiunVt5W4r215kUwNipOMBUv0COJVCHXzJOQB
-	pIU8FnzjQwRuUJMo+wXbkppeV+P0=
-X-Google-Smtp-Source: AGHT+IFzqU6KFy5dmynIG7b/rjXy30IO4eSr+xkdm3d1vUzKQXjGUXxD9uNgwDzmUhavcOnStrzpF48+sogOE7LAs2Y=
-X-Received: by 2002:ac2:5459:0:b0:50e:76b0:7374 with SMTP id
- d25-20020ac25459000000b0050e76b07374mr320004lfn.32.1706179410416; Thu, 25 Jan
- 2024 02:43:30 -0800 (PST)
+	s=arc-20240116; t=1706179436; c=relaxed/simple;
+	bh=Pq2HycWL5UZIeTfQdGCMuXNRVUInCqTunQ8KIofIoyU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=XpJYDNXgoPsStjU6r+hPLcumctNkPlQWgDwpy5V6pS7JlArq++sspZhTVm77fQDBx6+wBBnWmD2nxojaXdt+CRRMyqLOzJEhrmiKd02RrlAvy2AU6l3BvSVusIPwPu9AOd1cgJuZ73ekKoCzJS1Q+vWaEmUzJ4dyHdmZur0b4qk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rSxD3-0006Mj-Pz; Thu, 25 Jan 2024 11:43:49 +0100
+Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rSxCz-002GMP-RI; Thu, 25 Jan 2024 11:43:45 +0100
+Received: from pza by lupine with local (Exim 4.96)
+	(envelope-from <p.zabel@pengutronix.de>)
+	id 1rSxCz-0005of-2V;
+	Thu, 25 Jan 2024 11:43:45 +0100
+Message-ID: <bf30a97b4c39e5c606583783058ea12520c1146b.camel@pengutronix.de>
+Subject: Re: [PATCH v2 2/4] reset: sophgo: add SG2042 reset generator driver
+From: Philipp Zabel <p.zabel@pengutronix.de>
+To: Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu,
+ chao.wei@sophgo.com,  conor@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ palmer@dabbelt.com,  paul.walmsley@sifive.com, robh+dt@kernel.org,
+ devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org,
+ linux-riscv@lists.infradead.org,  haijiao.liu@sophgo.com,
+ xiaoguang.xing@sophgo.com, guoren@kernel.org,  jszhang@kernel.org,
+ inochiama@outlook.com
+Cc: Chen Wang <unicorn_wang@outlook.com>
+Date: Thu, 25 Jan 2024 11:43:45 +0100
+In-Reply-To: <34650036ea5f1c500da54c67c3a67b91c4419399.1706161530.git.unicorn_wang@outlook.com>
+References: <cover.1706161530.git.unicorn_wang@outlook.com>
+	 <34650036ea5f1c500da54c67c3a67b91c4419399.1706161530.git.unicorn_wang@outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122090851.851120-7-ardb+git@google.com> <20240122090851.851120-11-ardb+git@google.com>
- <CAMzpN2jcWxCy=H-1uvS7kN8gVohee2_cMwyC0SbSEwEoedo3WQ@mail.gmail.com> <20240122224417.GC141255@dev-fedora.aadp>
-In-Reply-To: <20240122224417.GC141255@dev-fedora.aadp>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Thu, 25 Jan 2024 11:43:18 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXG+97DPc9Ws-5=QrrHmf+KyvfqgoDFwLCV2Afy3ZJQM2Q@mail.gmail.com>
-Message-ID: <CAMj1kXG+97DPc9Ws-5=QrrHmf+KyvfqgoDFwLCV2Afy3ZJQM2Q@mail.gmail.com>
-Subject: Re: [RFC PATCH 4/5] x86/head64: Replace pointer fixups with PIE codegen
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: Brian Gerst <brgerst@gmail.com>, Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, 
-	Kevin Loughlin <kevinloughlin@google.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
-	Dionna Glaze <dionnaglaze@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski <luto@kernel.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
-	linux-arch@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Mon, 22 Jan 2024 at 23:44, Nathan Chancellor <nathan@kernel.org> wrote:
->
-> On Mon, Jan 22, 2024 at 02:34:46PM -0500, Brian Gerst wrote:
-> > On Mon, Jan 22, 2024 at 4:14=E2=80=AFAM Ard Biesheuvel <ardb+git@google=
-com> wrote:
-> > >
-> > > From: Ard Biesheuvel <ardb@kernel.org>
-> > >
-> > > Some of the C code in head64.c may be called from a different virtual
-> > > address than it was linked at. Currently, we deal with this by using
-> > > ordinary, position dependent codegen, and fixing up all symbol
-> > > references on the fly. This is fragile and tricky to maintain. It is
-> > > also unnecessary: we can use position independent codegen (with hidde=
-n
-> > > visibility) to ensure that all compiler generated symbol references a=
-re
-> > > RIP-relative, removing the need for fixups entirely.
-> > >
-> > > It does mean we need explicit references to kernel virtual addresses =
-to
-> > > be generated by hand, so generate those using a movabs instruction in
-> > > inline asm in the handful places where we actually need this.
-> > >
-> > > While at it, move these routines to .inittext where they belong.
-> > >
-> > > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> > > ---
-> > >  arch/x86/Makefile                 |  11 ++
-> > >  arch/x86/boot/compressed/Makefile |   2 +-
-> > >  arch/x86/include/asm/init.h       |   2 -
-> > >  arch/x86/include/asm/setup.h      |   2 +-
-> > >  arch/x86/kernel/Makefile          |   4 +
-> > >  arch/x86/kernel/head64.c          | 117 +++++++-------------
-> > >  6 files changed, 60 insertions(+), 78 deletions(-)
-> > >
-> > > diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-> > > index 1a068de12a56..bed0850d91b0 100644
-> > > --- a/arch/x86/Makefile
-> > > +++ b/arch/x86/Makefile
-> > > @@ -168,6 +168,17 @@ else
-> > >          KBUILD_CFLAGS +=3D -mcmodel=3Dkernel
-> > >          KBUILD_RUSTFLAGS +=3D -Cno-redzone=3Dy
-> > >          KBUILD_RUSTFLAGS +=3D -Ccode-model=3Dkernel
-> > > +
-> > > +       PIE_CFLAGS :=3D -fpie -mcmodel=3Dsmall \
-> > > +                     -include $(srctree)/include/linux/hidden.h
-> > > +
-> > > +       ifeq ($(CONFIG_STACKPROTECTOR),y)
-> > > +               ifeq ($(CONFIG_SMP),y)
-> > > +                       PIE_CFLAGS +=3D -mstack-protector-guard-reg=
-=3Dgs
-> > > +               endif
-> >
-> > This compiler flag requires GCC 8.1 or later.  When I posted a patch
-> > series[1] to convert the stack protector to a normal percpu variable
-> > instead of the fixed offset, there was pushback over requiring GCC 8.1
-> > to keep stack protector support.  I added code to objtool to convert
-> > code from older compilers, but there hasn't been any feedback since.
-> > Similar conversion code would be needed in objtool for this unless the
-> > decision is made to require GCC 8.1 for stack protector support going
-> > forward.
-> >
-> > Brian Gerst
-> >
-> > [1] https://lore.kernel.org/lkml/20231115173708.108316-1-brgerst@gmail.=
-com/
->
-> I was going to comment on this as well, as that flag was only supported
-> in clang 12.0.0 and newer. It should not be too big of a deal for us
-> though, as I was already planning on bumping the minimum supported
-> version of clang for building the kernel to 13.0.1 (but there may be
-> breakage reports if this series lands before that):
->
+On Do, 2024-01-25 at 14:11 +0800, Chen Wang wrote:
+> From: Chen Wang <unicorn_wang@outlook.com>
+>=20
+> Reuse reset-simple driver for the Sophgo SG2042 reset generator.
 
-Thanks for pointing this out.
+Subject prefix should be "reset: simple: "
 
-Given that building the entire kernel with fPIC is neither necessary
-nor sufficient, I am going to abandon this approach.
+> Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
+> ---
+>  drivers/reset/Kconfig        |  1 +
+>  drivers/reset/reset-simple.c |  2 ++
+>  drivers/reset/sophgo/Kconfig | 10 ++++++++++
+>  3 files changed, 13 insertions(+)
+>  create mode 100644 drivers/reset/sophgo/Kconfig
+>=20
+[...]
+> diff --git a/drivers/reset/sophgo/Kconfig b/drivers/reset/sophgo/Kconfig
+> new file mode 100644
+> index 000000000000..9ad96e49e1dd
+> --- /dev/null
+> +++ b/drivers/reset/sophgo/Kconfig
+> @@ -0,0 +1,10 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +
+> +config RESET_SOPHGO_SG2042
+> +	bool "Sophgo SG2042 Reset Driver"
+> +	depends on ARCH_SOPHGO || COMPILE_TEST
+> +	select RESET_SIMPLE
+> +	default ARCH_SOPHGO
+> +	help
+> +	  This enables the reset controller driver for the Sophgo SG2042 SoC.
+> +
 
-If we apply fPIC to only a handful of compilation units containing
-code that runs from the 1:1 mapping, it is not unreasonable to simply
-disable the stack protector altogether for those pieces too. This
-works around the older GCC issue.
+Drop the Kconfig, just add a default y if ARCH_SOPHGO to RESET_SIMPLE.
+
+regards
+Philipp
 
