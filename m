@@ -1,84 +1,102 @@
-Return-Path: <linux-kernel+bounces-38345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-38346-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEEBE83BE1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:57:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44E4983BE1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 10:57:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FE9028449F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:57:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBDDE1F25E0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 09:57:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10B541C6AE;
-	Thu, 25 Jan 2024 09:56:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B22351C6AD;
+	Thu, 25 Jan 2024 09:57:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G3NXLkPP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OSdk7Bne"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 553C01BF33;
-	Thu, 25 Jan 2024 09:56:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3D221C696
+	for <linux-kernel@vger.kernel.org>; Thu, 25 Jan 2024 09:57:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706176613; cv=none; b=miJFd4jgHdYvj88a6R+g8/nvxK/4laYzwMwKNIOuNRoau2IRnXZRRi/w6JfFb7EpVu1u20IihvrvXCkVJpfGmKCl9xhpAev5CIswYwLSaE4RHSuSfgBIWacwavwwv35Yjnx9F2XfVj0N5surkl6b7jrj4FZkUzGaq0e6LNEJLwE=
+	t=1706176641; cv=none; b=X9vHjZb2edKoWhan72q5Re10SOc9d04ZWeyZSeWfFIVASkzwbrkLWp535x5vz342o0CG99iyl3RF9EIOzafo94/NQk/fQVIpicQxUPH6knhf9HssuAlVHR5qpDMoMHNahg7V0fJCoCBdvTDaHkwi4PDZn7DxF1ZcB8YMQVjM5ms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706176613; c=relaxed/simple;
-	bh=nyvlz6SRusR/COWQ5ImICpj/0AOiXRpWb9Sjjkupgxo=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=alrZillo7xy4hZ8bTChG9qo2Xy3stlUoeLAmwS41rjINK9WYmlJysKSO0c9sAOUhhuzvsgk7cfuOhYe8BK9ntDTVqIYrSpdLW8dD01AtYCZ+ccQI0W7R0QuAcrSj6KXIY5+noZwFxSPx0BS939y9HedTNLOQs1JSMziXTiudsmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G3NXLkPP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42616C433F1;
-	Thu, 25 Jan 2024 09:56:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706176612;
-	bh=nyvlz6SRusR/COWQ5ImICpj/0AOiXRpWb9Sjjkupgxo=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=G3NXLkPPYUC6LgXJ+FqNhyCm1Vf/bwGwNiZtloHoAmVyyhHn6Yilflejp+kDkZtK9
-	 u9v1aLglMAMGd1VQv0HvvnCIOWUQy8WBdP6720+f/fF091duUzq/jx8qE8UVHNhxFj
-	 bffYbhOdT7mSwlmS5y96yvd9EblVUg8ajzK0Z8cb2/91b6Iv14IZV3opdQfxY4L4Nd
-	 I31meMrEU/Uhc2XjfxqluLmy249PH+2+yGRxhAQNT9slD5qi7pIJkoTLhzxgEmr5I0
-	 L/VaqIojDDyN/jKVqw7LWi+0HCE3W6yhEisbxgdABffn5MUTzo9uJucuTrQWuOPM10
-	 p23BWVJijdvmw==
-From: Leon Romanovsky <leon@kernel.org>
-To: Zhipeng Lu <alexious@zju.edu.cn>
-Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
- Jason Gunthorpe <jgg@ziepe.ca>, Jubin John <jubin.john@intel.com>,
- Mitko Haralanov <mitko.haralanov@intel.com>,
- Ravi Krishnaswamy <ravi.krishnaswamy@intel.com>,
- Harish Chegondi <harish.chegondi@intel.com>,
- Brendan Cunningham <brendan.cunningham@intel.com>, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240112085523.3731720-1-alexious@zju.edu.cn>
-References: <20240112085523.3731720-1-alexious@zju.edu.cn>
-Subject: Re: [PATCH] IB/hfi1: fix a memleak in init_credit_return
-Message-Id: <170617660887.632552.18288740821667270978.b4-ty@kernel.org>
-Date: Thu, 25 Jan 2024 11:56:48 +0200
+	s=arc-20240116; t=1706176641; c=relaxed/simple;
+	bh=GCTjaxAzQpiJeogtIM7YnckgDznFssj6Z9QaoT8dp7E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ce+C7WMCNXZ+DnYg+DCY62SmL034EqAtOlD6cmNg0u7VJb9xQSrY6HwEQOtPd7+RRwOq+mZR5Vwt8v3Yx+uJjhvzz2bBssiHnfyTUYKYn47HbwqtjT9IeoxPQWtt0QLeYJPB7zAbc0IPP+FYMiEIu/wai1ZLq/1DzdPlXBZUJvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OSdk7Bne; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706176640; x=1737712640;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=GCTjaxAzQpiJeogtIM7YnckgDznFssj6Z9QaoT8dp7E=;
+  b=OSdk7BnecvXacXgED+3Z0PWZ8dipZUgvljSL1NiyIC9TI7jXpJF5zqZ8
+   +y0OD3gmcFXSbqFci6tlgVQSt7/rWDoDdhPziwK+paeNqz1INQX82ordE
+   08xHV6RyBMnecOpFlL/EYjQA6HhdPelFt5DYizmlqz0scsw/nlkTOCbuA
+   CKd9Uf1nxWT2e3QmtCuln0TYMJriIHivsk/Ndasz/eRt+SRRakGGndpDx
+   o74iVdj70PfqPBwWjU78z0LoiPIOo1xPDjj5i4wdnmlHI+bgFA1/Iq2mD
+   52s12wLAJdNYAHc6GgxaoCrAWDY1n0RcKXFzIzROt2SU6BgUDuqmb0U4I
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="8771467"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="8771467"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 01:57:19 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="28427016"
+Received: from tassilo.jf.intel.com (HELO tassilo) ([10.54.38.190])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2024 01:57:19 -0800
+Date: Thu, 25 Jan 2024 01:57:18 -0800
+From: Andi Kleen <ak@linux.intel.com>
+To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+	Kai Huang <kai.huang@intel.com>,
+	Sean Christopherson <seanjc@google.com>
+Subject: Re: [PATCHv3, RESEND] x86/trampoline: Bypass compat mode in
+ trampoline_start64() if not needed
+Message-ID: <ZbIwfp-jOOlPNb1z@tassilo>
+References: <20240124131510.496803-1-kirill.shutemov@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-a055d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240124131510.496803-1-kirill.shutemov@linux.intel.com>
 
+> +	/* Paging mode is correct proceed in 64-bit mode */
+> +
+> +	LOCK_AND_LOAD_REALMODE_ESP lock_rip=1
+> +
+> +	movw	$__KERNEL_DS, %dx
+> +	movl	%edx, %ss
+> +	addl	$pa_real_mode_base, %esp
+> +	movl	%edx, %ds
+> +	movl	%edx, %es
+> +	movl	%edx, %fs
+> +	movl	%edx, %gs
+> +
+> +	movl	$pa_trampoline_pgd, %eax
+> +	movq	%rax, %cr3
+> +
+> +	jmpq	*tr_start(%rip)
 
-On Fri, 12 Jan 2024 16:55:23 +0800, Zhipeng Lu wrote:
-> When dma_alloc_coherent fails to allocate dd->cr_base[i].va,
-> init_credit_return should deallocate dd->cr_base and
-> dd->cr_base[i] that allocated before. Or those resources
-> would be never freed and a memleak is triggered.
-> 
-> 
+Still think we should add a far jump here so that we run on a defined
+code segment. It probably doesn't matter since there are likely no
+IRETs before reloading anyways, but it seems cleaner.
 
-Applied, thanks!
+-Andi
 
-[1/1] IB/hfi1: fix a memleak in init_credit_return
-      https://git.kernel.org/rdma/rdma/c/809aa64ebff51e
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
 
