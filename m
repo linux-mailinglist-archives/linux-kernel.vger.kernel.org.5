@@ -1,203 +1,185 @@
-Return-Path: <linux-kernel+bounces-37890-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-37892-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1FB083B72E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 03:35:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 668E483B735
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 03:38:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D70271C21135
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 02:35:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6DFEDB2229D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 02:38:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12EA66FB6;
-	Thu, 25 Jan 2024 02:35:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7CB76FAD;
+	Thu, 25 Jan 2024 02:37:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RNZT4bTh"
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="VaSHhtak";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="Nrsbx6GS"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B02926FB5;
-	Thu, 25 Jan 2024 02:35:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706150110; cv=none; b=jlTAiF8hgVRmpK3Jha8f/G7UyXWoALEh4+XGTsBQ62pTn/XJKvi8C+yaOut6x8m6HNZnlQ/Qf8Fwj3NtO1D3EcatCT88fmZTLHY1uHKWcFtFxuJTsDY44m821i0L0CDuYUC4llsrwLEDw7D0292GYpIR/5+HT8FRvfr6pR8lBVA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706150110; c=relaxed/simple;
-	bh=XYlohPcYkZZG3N7LFgbcX46ub+cimlttqnW2msr9Xzo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RFaq8AcTcfirS4+UB1DIh6ihs1enKXSmM19KOSZu9jodDKHsYMBZpyvqg+1hOcsnCMl+THns6cwuWtxhC8vkj9myeWsQPY2ENdu6PnpvNe/+1TspEjv9DtnjbKaz18bidFiUMU9n2v32w3irPaTnEECdxw10gP+XcsAsxo0pnKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RNZT4bTh; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-29065efa06fso3767308a91.1;
-        Wed, 24 Jan 2024 18:35:08 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6A891FB2;
+	Thu, 25 Jan 2024 02:37:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706150272; cv=fail; b=CtPEoi9VrZSwbLKJIV7vmLJSH9KePfV69LLlWJx/djExSjq2YdMkqkq49VxUqEqh0uQCCv6/W+53BywR6hzUvGPh03ko3hjmJ0rA6HaOilktqzSqt85rIX2AneKlD9K08Cmao7+SSUVtM5H64GhayaE3yuLOX50MOCaFBS6NTQY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706150272; c=relaxed/simple;
+	bh=WP2A/GHAPU3Vsy48Lhpm2ygUKR95SKgdXC6SEObxMjI=;
+	h=To:Cc:Subject:From:Message-ID:References:Date:In-Reply-To:
+	 Content-Type:MIME-Version; b=a4qfdJTlH6mKLYcHj5vE66j/G6OeQAIlDTyAQpOKcgzlm2MuzCfCFxa0XpPS5b5Vh3I/iEe21lAbnG34mG8Ck0lahXEd1IHUuEKsNCwuNaReRwSVJb99I28L1NGPi0yy2qt3Dwx9GciXW8VXi5RYljSS477+Z0jfOFNTbjd8Wd4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=VaSHhtak; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=Nrsbx6GS; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 40OLcXSv024125;
+	Thu, 25 Jan 2024 02:36:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2023-11-20;
+ bh=K9DhpnuiY9e8D859HU845q0/d+8UmNoxDxHhvUfkNmg=;
+ b=VaSHhtakTc9GWTPcjB78+ARepwe3zR9RYNhwG9YpbGFA2xAxRA/vEML/o0KH9LCK8urH
+ ZcWN/pAfannNNXXT9/nDF4Gui+CDSu2HJT8K9003GGf/nxBsbiUZLeFwF+MVpxLxJNEG
+ v4GLpcde6HG5bayTK35fkK3h6BpIRoXkFBY4zgWynMurQU3Iu1JCMxgz4xR6r5W3D6Mr
+ EwabqAJhRvO3hxCqpGUrBI50dndO4Rc4ANfDkP9v2wzKpPLC7RzpMg+4QQbXPM78/89H
+ 7P0CuUcHtIsJOD1ntpGSsIacecW3AovEtlS/J3QjG5tw/OSbl8rKXZHVTqBJQxxjht/N bg== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3vr7cux0rg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 25 Jan 2024 02:36:15 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 40P13M51026106;
+	Thu, 25 Jan 2024 02:36:14 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2168.outbound.protection.outlook.com [104.47.57.168])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3vs3184wn5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 25 Jan 2024 02:36:14 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KTfcdY+ffYVCbVXa+JwIk3flsX7AVj5Dtp7Fw54ox0Y1lVIVlLn1GPDHd7E+VV7lvVGImmnYYwrfJA6oxCKTZZEowhtpVDwp1xw3adx+0wPhoUnrTyo+0OJIshDtnyzvwiH3ok8pF3Gu9cBcb7d0LDpTm/yIiMUEpM/E1GH/gYPcOr0lAIyS+2c47w3DflxhrK8K9k5fhcOvj5OEAdQS8w3qJMGhWJCloxWHjvJ7b/Q2n0NRdaaPaWrYENIhRanasI7jBrAYPiOxoyO+4CGr9dtBAPc1/GORNZQkjYsQO76awuo4tznkXKdXrYHWyOP1CUBUUqPBfE5Qi0ySYkMGlA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=K9DhpnuiY9e8D859HU845q0/d+8UmNoxDxHhvUfkNmg=;
+ b=M/w98I1js/YomxNTshpR3M6jobM3Y+mwTeNCE2n7ovrpKg/br87bSe8H/UINyw/kw/S4vgm5Hrgc1lJtgEhN0oetUOo+VR7cXshyEKnhSqBpVssPvM2Fb5iaIXWRImRpmt0BvVZOwg/pqzF3eh0pF2lb+2nVCtdX/OVP9XL5vecI+rNVWKjRFvbIU16Ct1fcTqdCMAj9Bii8cImtEeTMsBWmV66CFJLsbykBQE3Re8VlJy6l3UF5Co3YQcilZ8PlG6+puS+kVJN4YjEDs/iDAw5cj5fdTzk/5n5QH6dqA3vcFrJWY+BBD+S5P66/6fmJK9yM8Py7h9W4s6z28NNdvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706150108; x=1706754908; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ElI5s79820kPutuntGaxiQesjo2hgbJF7ifEMpPB0Eg=;
-        b=RNZT4bThZuJ1/AnhwTTouTUaqbgTzAwcMfYjX1Pa/R8yQXqsClACLt7nt4F+QLI48l
-         4kR8h5bW+lo55vtrdEFXfSSTKmWRWPp+kDkX66g8lIM57+jWLy5jqTWXHOpJKAaeBfaD
-         dQ3Yns2iMbAkw+4aEzYFI2nxk+Qp67FJ4U3viosWOlMJ3dZvc03E3ZzJHHWngBZGJsAV
-         GandcWDiS4Kn5UkTaapFyeCvxj1YtQWJKAVzZRb0gx4SVakC+U0ofpmrZTPixwrgGh9L
-         mqiRX7pXXuxIrP1hWPYjU6nx9/EYerQ9ZuUwVX10y7l7YHVm4YL/1v0onsinnnSxOWX7
-         UYPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706150108; x=1706754908;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ElI5s79820kPutuntGaxiQesjo2hgbJF7ifEMpPB0Eg=;
-        b=NT2qxxvhrtHtABON5sMzVuqkF9KDcdiSOaohNVp4Hw5g+peX8gacr7tnQSBhr3N1Nh
-         JbH9dp4KPU/qElpocpKvc/cnll92ApW7EYvJrmYUoA+FnPmNrNcKMfTMTUqcEtwCBf51
-         TNLd5I9NznFWUXEztfWVMvJ95XqWoShlWe8WtPVn/eCpFWTABOP8Z3RBc+j503wxhIO2
-         v2HWF3nvrD+EEHMadd6QYi1Gsm5+UFPuHwOzI/c9lB2rTqqiBX7uoD18q4k8dbMfMXw0
-         JfAtznraQt9qzfUcyE4fYWopnhTr/hwYRnv1koxJRRDWCJ+OtrKt3Ku/yyWBT+gxuHUv
-         vzxA==
-X-Gm-Message-State: AOJu0YxmYAKxJvvZZd18wSJ2d8DY8RgxGBpdHpIdSQP1vIjbRMcyKNr2
-	HibD+NsK/t+PMpvAEfVdCpn+m7ZbvBh5o6bCbyiL6iWCgk9jMj6o
-X-Google-Smtp-Source: AGHT+IH0qJiBgXBUOvhArhS7A5BZqdhwGL4PVANneN5oH8MrPA9qqy+6X4q55NX/xqbSsqPnc7Qb7A==
-X-Received: by 2002:a17:90a:e543:b0:28d:dbe8:aa6c with SMTP id ei3-20020a17090ae54300b0028ddbe8aa6cmr255558pjb.36.1706150107884;
-        Wed, 24 Jan 2024 18:35:07 -0800 (PST)
-Received: from localhost ([129.146.253.192])
-        by smtp.gmail.com with ESMTPSA id sx8-20020a17090b2cc800b0028ac1112124sm358775pjb.30.2024.01.24.18.35.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jan 2024 18:35:07 -0800 (PST)
-Date: Thu, 25 Jan 2024 10:34:54 +0800
-From: Furong Xu <0x1207@gmail.com>
-To: Serge Semin <fancer.lancer@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Alexandre Torgue
- <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
- Abeni <pabeni@redhat.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Joao Pinto <jpinto@synopsys.com>, Simon Horman <horms@kernel.org>,
- netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- xfr@outlook.com, rock.xu@nio.com
-Subject: Re: [PATCH net] net: stmmac: xgmac: fix safety error descriptions
-Message-ID: <20240125103454.0000312a@gmail.com>
-In-Reply-To: <ii3muj3nmhuo6s5hm3g7wuiubtyzr632klrcesubtuaoyifogb@ohmunpxvdtsv>
-References: <20240123085037.939471-1-0x1207@gmail.com>
-	<ii3muj3nmhuo6s5hm3g7wuiubtyzr632klrcesubtuaoyifogb@ohmunpxvdtsv>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-w64-mingw32)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K9DhpnuiY9e8D859HU845q0/d+8UmNoxDxHhvUfkNmg=;
+ b=Nrsbx6GSRZP3aKUKfm8A/Y418Gn9FJQwatuwOrYzWyct2LPMfEslGq5s3cnFLqzXk3tOL0oUf+M+JkKyj2shXPXdaa5W/IqST5O7ymQEWirim6fwxfhjUbIdjzd6V8fbt9wwBYJEHWNSCOYnEPqHgujjtGJ+lyDewZtRr/aikS8=
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by SN7PR10MB6666.namprd10.prod.outlook.com (2603:10b6:806:298::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7202.37; Thu, 25 Jan
+ 2024 02:36:12 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::3676:ea76:7966:1654]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::3676:ea76:7966:1654%4]) with mapi id 15.20.7228.023; Thu, 25 Jan 2024
+ 02:36:12 +0000
+To: Eric Chanudet <echanude@redhat.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+ <konrad.dybcio@linaro.org>,
+        Manivannan Sadhasivam
+ <manivannan.sadhasivam@linaro.org>,
+        "James E.J. Bottomley"
+ <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] scsi: ufs: qcom: avoid re-init quirk when gears match
+From: "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1ttn2uoku.fsf@ca-mkp.ca.oracle.com>
+References: <20240123192854.1724905-4-echanude@redhat.com>
+Date: Wed, 24 Jan 2024 21:36:10 -0500
+In-Reply-To: <20240123192854.1724905-4-echanude@redhat.com> (Eric Chanudet's
+	message of "Tue, 23 Jan 2024 14:28:57 -0500")
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR03CA0006.namprd03.prod.outlook.com
+ (2603:10b6:a02:a8::19) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|SN7PR10MB6666:EE_
+X-MS-Office365-Filtering-Correlation-Id: 60948b8d-acb0-47d4-b7dd-08dc1d4e6533
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	W/0sXKLCe243yIh0BuhmYGY3c/6qVuaPKyLchkFGgOmMdKtKXpWOqSHSW4ppScWWfyNWfTVNoP2fralUxZQBCdpWXJrJAUbNKHzRxx4qDsgd0v5sXZSKDz0s+FBLH/Yup33s+Nuv7FKatIJ6nO12e5L4tUvcgDhC408Bg3E0n2TyP4pzo/8XnT+wrkx6LuaguUhqHk5A2u42yfaSBi9Rz0gEUxDdLJRUlsbhXXZCkZPjowb46xupyaR7ETwDjWlDU0eaC3aKoZvvkY9FoGtZ47HoZPJyGj5knec1A8guMwTqFL50RPaXHWPrupnEG1U1/a3WHY6qqANeb0np4fLZHZGyEJ42lr+xr4EVsduQrbUOil7v5guNHOngkYzRquCEjZzvDBpb0DRC7FFIg/km1vsfeuG1wfFJaeiotlhS00g6luylS2fuByJdOS6NnISsvzFLIhq5MBMnDbeQktmkmE1U8UNvdtaTSDienrvMRc54WwXO1yup+4a/VvDZjKmB4AIk71OMu5iocCQQnl/1A3Z6cTpavM4kgI51wHuBLxT3/PfV6XsfjesEQKB+15Bi
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(136003)(39860400002)(376002)(396003)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(86362001)(6486002)(478600001)(558084003)(6916009)(6512007)(2906002)(38100700002)(8936002)(4326008)(6506007)(54906003)(5660300002)(8676002)(316002)(41300700001)(36916002)(66476007)(66556008)(66946007)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?gQ4c1SSdA/sZ3rIxli4VSUCPCXotrqX004kZHZSVMacjGr8QQBZPPMvTfZzh?=
+ =?us-ascii?Q?y5TEsGranICY1QZSXteMzorki2EROLLTNuVnnNO9HlAtcXi+XN6pCDHRr98e?=
+ =?us-ascii?Q?8atMDdb21MZLRCEw9jFNAGgSEWvh4h00ikQ0yc+tHNDZl6qqp/JwBL4iIx87?=
+ =?us-ascii?Q?IPVzMrFq7wXdWuIwAhHQPIGV+p3BbTSa4dtqm5hnIj+oZ5DK69ONdzNqyo/Y?=
+ =?us-ascii?Q?2K3JkPALUhyvOZ60wMkzaxQVQkjQK3gdctFON9g+ustkiiNn1SMasAel+Mxe?=
+ =?us-ascii?Q?najAnFlEAos1JdiyZU8nBrzUmUZGnqbWIE35/w2SqXeMiMVHZTdzEjmKCkTT?=
+ =?us-ascii?Q?LLkNju+pRs7ps7wDTOXi3qeLyGcBqbeII+gz0E6CB9rDob4uz9BUBerTAi6i?=
+ =?us-ascii?Q?6N0ceJPlgHCCGf/fidzTxjp5bvlLtDHUp1s17OoqpvlcHSd0ikkf/WTvruE0?=
+ =?us-ascii?Q?PoCToIbOLSx4Tw2wbs2qC3JRuwZv9RHzb7yiW1zF/k0z1rvSHrCvTxsL1VjM?=
+ =?us-ascii?Q?yZlwLnk5C+hQVgRc25f0pGV2TdR8NxoEbX6yz/YTStSGc5X+wDW92x6aW33G?=
+ =?us-ascii?Q?MtfBXdoF7ErP6C2AmSl10gdrxdHK/t7/KS4BytE/WFi3NWZdQ/5sTZyauJ2v?=
+ =?us-ascii?Q?7KpxSGh4jFjlU5hgj6p5aeyAAR9rlYN6T40I98CtaSkIwykAwvGCsdkSvMW7?=
+ =?us-ascii?Q?VJqYXzLEsEulPyf6+HZvk5hO6bReBbxxdycPtjyq5TpMSXo5KEAFhe3zQ3eZ?=
+ =?us-ascii?Q?KTSkzpFPJWKX1xnJJ5tbnLcgourCu0lFKTwb/WN+YGkUttkJbSuIE0BEyqWV?=
+ =?us-ascii?Q?wzTYU7WgsR2j8LFTvKbBGMEQAWUPqm4bls2XnHRmUmQTv76awdfNjpTwBA7M?=
+ =?us-ascii?Q?W9EgvX+CDjsGmbBe2YM0R5XoCmc2UQO9kSob2+9RggO2JI6C5mSjJM97ESRP?=
+ =?us-ascii?Q?Q18X/lDpRdwGYas49AdB80btplcDln0G/WKIQO4VlkmP2AgnDXmpmLUt6X6q?=
+ =?us-ascii?Q?GqAsKplCUVSjjM9t67/sExqcfSu38TKSZz3E2JQ3vNwGpCNFOquagjmgnbWG?=
+ =?us-ascii?Q?WkXxXo4SBIxpZtAvArRoVxXXpmYeJUcqssa3A5Ql3/WgBKCov6OYO2/78Amg?=
+ =?us-ascii?Q?YKh4bHFLj5sTCPIPxDeC0oChDe9jchDv1SyVFEN9d4dy8bAH6aPyKfoeP0sN?=
+ =?us-ascii?Q?2aGtWnQbszVkEnKrYlNPpHxJh48JL5onbi/RqnrR3IZdUEw5Vk0Qkysi0REN?=
+ =?us-ascii?Q?/nMYtbE0TwOqWJ8DJRlNwus24f8/kac86FPnSZ1nKUXa+AVAp+za/g9MKjba?=
+ =?us-ascii?Q?nQTkM49GzAx34TFoQTOwM05TNkX9xAekFHWwq2o9EDoB3zhYVTvGUMW//lyy?=
+ =?us-ascii?Q?K2qNdthDBZPATIfNuSTXyM3+gN2jDbP64KZZpWi3jidZiho1QIMHsSB4qT04?=
+ =?us-ascii?Q?oadnOjpZRLjHYw1xFMHcgvPNBVGZBN+L158xVD9Sibo05Cmy3dJtWgtW+jBv?=
+ =?us-ascii?Q?t4kvrn1QYJ+nz0IAcfnnH4q6jyfJ/w+pMxkrZ/nYqCc86NnhMXgpxLQlE1cR?=
+ =?us-ascii?Q?2L5YkPsVOi1KKOWWOYLXYdH99EXhScF/EL00JH3nE28jSpsk8RNgkkYoQT/a?=
+ =?us-ascii?Q?JQ=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	M0Z3xcDKLI/8kXvz/VT8VWXhX0ejD7g9MyUwGP01pb37B7aIICVyKmNK1PBKv5eNXWnHxVffQ/NsPefvvwoHgcypKjDJJVzbfB3ifvs2+GQeBYV/NQytNHZhiTI/+UhOQ5PYKQgRT4EHgyQxmyfbZUT6nCe07qM3itrxeGbBki+YmHm2WZQOCSeoLuELgZVdxlKV63NzPUj9tkxYyvqIJxOjpmX4XqnOcVMVbp5tS2Q+yNf24se0DgemPccEsG/qjQRQNWwVfvWcZeAS2xaaX4HVv6xX/oa6VsExyOKseavxoCz/fx/KArPoV4vFAgFXK0rPskDdBI+FpRMiBI9HZa8uX13MfqO8qUd5Rpr0PXqP+QgT7g7hZQT9MCfbtroceRKlvu4l58FeYduLzqlnH9I9+OJjBIrMI4nmBWF6daPtT23m/zfWqsJNj4Ia/d0GPKHFCv6aBXp4To8CDhVcrm1HuZzkyuLmXoGR3AUdEO6XTBJMSbxEl9kRHU5fbNq4lSHT5ZEGHATgnwi+do9q0FqrlnnPdwONRNbiujclJ8Wbkg+fvqlobO87FltMNHMbszZrLvmOc73oud1NrLGKonu2y0ozWeaaU4yoQalLq9w=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 60948b8d-acb0-47d4-b7dd-08dc1d4e6533
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jan 2024 02:36:12.3138
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1qvxiuEFDmMFtmx7jDiKOROjAdF3Odk44S6APN6ZkjcsRWYLhWlWD0FPYeJTGMEcF8Aw0U2mgU4dnsPYGv4GOMXyCfjvQ8QhLqP4TEzztEM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR10MB6666
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-24_12,2024-01-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=781 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 suspectscore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2401250017
+X-Proofpoint-ORIG-GUID: B1bSY4VOuZqa2Vu5hVqyBF1OUvXchCoP
+X-Proofpoint-GUID: B1bSY4VOuZqa2Vu5hVqyBF1OUvXchCoP
 
-On Wed, 24 Jan 2024 17:25:27 +0300
-Serge Semin <fancer.lancer@gmail.com> wrote:
 
-> On Tue, Jan 23, 2024 at 04:50:37PM +0800, Furong Xu wrote:
-> > Commit 56e58d6c8a56 ("net: stmmac: Implement Safety Features in
-> > XGMAC core") prints safety error descriptions when safety error assert,
-> > but missed some special errors, and mixed correctable errors and
-> > uncorrectable errors together.
-> > This patch complete the error code list and print the type of errors.  
-> 
-> The XGMAC ECC Safety code has likely been just copied from the DW GMAC
-> v5 (DW QoS Eth) part. So this change is partly relevant to that code too. I
-> can't confirm that the special errors support is relevant to the DW
-> QoS Eth too (it likely is though), so what about splitting this patch
-> up into two:
-> 1. Elaborate the errors description for DW GMAC v5 and DW XGMAC.
-> 2. Add new ECC safety errors support.
-> ?
-> 
-> On the other hand if we were sure that both DW QoS Eth and XGMAC
-> safety features implementation match the ideal solution would be to
-> refactor out the common code into a dedicated module.
-> 
-> -Serge(y)
-> 
+Eric,
 
-Checked XGMAC Version 3.20a and DW QoS Eth Version 5.20a, the safety error
-code definitions are not identical at all, they do have some differences,
-about more than 20 bits of status register are different.
-I think we should just leave them in individual implementations.
+> On sa8775p-ride, probing the hba will go through the
+> UFSHCD_QUIRK_REINIT_AFTER_MAX_GEAR_SWITCH path although the power info
+> are same during the second init.
 
-> > 
-> > Fixes: 56e58d6c8a56 ("net: stmmac: Implement Safety Features in XGMAC core")
-> > Signed-off-by: Furong Xu <0x1207@gmail.com>
-> > ---
-> >  .../ethernet/stmicro/stmmac/dwxgmac2_core.c   | 36 +++++++++----------
-> >  1 file changed, 18 insertions(+), 18 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-> > index eb48211d9b0e..ad812484059e 100644
-> > --- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-> > @@ -748,29 +748,29 @@ static void dwxgmac3_handle_mac_err(struct net_device *ndev,
-> >  }
-> >  
-> >  static const struct dwxgmac3_error_desc dwxgmac3_mtl_errors[32]= {
-> > -	{ true, "TXCES", "MTL TX Memory Error" },
-> > +	{ true, "TXCES", "MTL TX Memory Correctable Error" },
-> >  	{ true, "TXAMS", "MTL TX Memory Address Mismatch Error" },
-> > -	{ true, "TXUES", "MTL TX Memory Error" },
-> > +	{ true, "TXUES", "MTL TX Memory Uncorrectable Error" },
-> >  	{ false, "UNKNOWN", "Unknown Error" }, /* 3 */
-> > -	{ true, "RXCES", "MTL RX Memory Error" },
-> > +	{ true, "RXCES", "MTL RX Memory Correctable Error" },
-> >  	{ true, "RXAMS", "MTL RX Memory Address Mismatch Error" },
-> > -	{ true, "RXUES", "MTL RX Memory Error" },
-> > +	{ true, "RXUES", "MTL RX Memory Uncorrectable Error" },
-> >  	{ false, "UNKNOWN", "Unknown Error" }, /* 7 */
-> > -	{ true, "ECES", "MTL EST Memory Error" },
-> > +	{ true, "ECES", "MTL EST Memory Correctable Error" },
-> >  	{ true, "EAMS", "MTL EST Memory Address Mismatch Error" },
-> > -	{ true, "EUES", "MTL EST Memory Error" },
-> > +	{ true, "EUES", "MTL EST Memory Uncorrectable Error" },
-> >  	{ false, "UNKNOWN", "Unknown Error" }, /* 11 */
-> > -	{ true, "RPCES", "MTL RX Parser Memory Error" },
-> > +	{ true, "RPCES", "MTL RX Parser Memory Correctable Error" },
-> >  	{ true, "RPAMS", "MTL RX Parser Memory Address Mismatch Error" },
-> > -	{ true, "RPUES", "MTL RX Parser Memory Error" },
-> > +	{ true, "RPUES", "MTL RX Parser Memory Uncorrectable Error" },
-> >  	{ false, "UNKNOWN", "Unknown Error" }, /* 15 */
-> > -	{ false, "UNKNOWN", "Unknown Error" }, /* 16 */
-> > -	{ false, "UNKNOWN", "Unknown Error" }, /* 17 */
-> > -	{ false, "UNKNOWN", "Unknown Error" }, /* 18 */
-> > +	{ true, "SCES", "MTL SGF GCL Memory Correctable Error" },
-> > +	{ true, "SAMS", "MTL SGF GCL Memory Address Mismatch Error" },
-> > +	{ true, "SUES", "MTL SGF GCL Memory Uncorrectable Error" },
-> >  	{ false, "UNKNOWN", "Unknown Error" }, /* 19 */
-> > -	{ false, "UNKNOWN", "Unknown Error" }, /* 20 */
-> > -	{ false, "UNKNOWN", "Unknown Error" }, /* 21 */
-> > -	{ false, "UNKNOWN", "Unknown Error" }, /* 22 */
-> > +	{ true, "RXFCES", "MTL RXF Memory Correctable Error" },
-> > +	{ true, "RXFAMS", "MTL RXF Memory Address Mismatch Error" },
-> > +	{ true, "RXFUES", "MTL RXF Memory Uncorrectable Error" },
-> >  	{ false, "UNKNOWN", "Unknown Error" }, /* 23 */
-> >  	{ false, "UNKNOWN", "Unknown Error" }, /* 24 */
-> >  	{ false, "UNKNOWN", "Unknown Error" }, /* 25 */
-> > @@ -796,13 +796,13 @@ static void dwxgmac3_handle_mtl_err(struct net_device *ndev,
-> >  }
-> >  
-> >  static const struct dwxgmac3_error_desc dwxgmac3_dma_errors[32]= {
-> > -	{ true, "TCES", "DMA TSO Memory Error" },
-> > +	{ true, "TCES", "DMA TSO Memory Correctable Error" },
-> >  	{ true, "TAMS", "DMA TSO Memory Address Mismatch Error" },
-> > -	{ true, "TUES", "DMA TSO Memory Error" },
-> > +	{ true, "TUES", "DMA TSO Memory Uncorrectable Error" },
-> >  	{ false, "UNKNOWN", "Unknown Error" }, /* 3 */
-> > -	{ true, "DCES", "DMA DCACHE Memory Error" },
-> > +	{ true, "DCES", "DMA DCACHE Memory Correctable Error" },
-> >  	{ true, "DAMS", "DMA DCACHE Address Mismatch Error" },
-> > -	{ true, "DUES", "DMA DCACHE Memory Error" },
-> > +	{ true, "DUES", "DMA DCACHE Memory Uncorrectable Error" },
-> >  	{ false, "UNKNOWN", "Unknown Error" }, /* 7 */
-> >  	{ false, "UNKNOWN", "Unknown Error" }, /* 8 */
-> >  	{ false, "UNKNOWN", "Unknown Error" }, /* 9 */
-> > -- 
-> > 2.34.1
-> > 
-> >   
+Applied to 6.9/scsi-staging, thanks!
 
+-- 
+Martin K. Petersen	Oracle Linux Engineering
 
