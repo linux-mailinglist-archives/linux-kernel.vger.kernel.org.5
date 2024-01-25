@@ -1,116 +1,105 @@
-Return-Path: <linux-kernel+bounces-39236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 815ED83CD3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:13:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CC99E83CD3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 21:16:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3C351C234AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:13:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B96601C23DF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 20:16:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFFFF137C43;
-	Thu, 25 Jan 2024 20:13:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 960C2136674;
+	Thu, 25 Jan 2024 20:16:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="refS9tKZ";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="/0aUNS7m"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=marliere.net header.i=@marliere.net header.b="B3gd0AC4"
+Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08A2C137C4F;
-	Thu, 25 Jan 2024 20:13:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25AE2135A5D;
+	Thu, 25 Jan 2024 20:16:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706213597; cv=none; b=SFuzRH+uYkzLaiIqjTcNrgBfW9UfKaROxuVCwphJOD0hHRBTQHkWzd7WlPW6xhZY2OmgWPHYOemRzCtnyDBHG47fJZKvLXlJltrcJ/atC09BzqxNKcRsnLxKG3WMStU2sdbl8IRttgEecc9OjDsQHz8UsAk8tdxHMn+F3GcoRx8=
+	t=1706213795; cv=none; b=Zaccve7PVURaAWuwZ83unLFvdP4uyQjpNCdxbjCzcIhr2zHL9moj/A/FT13IHVUIM3l0fc7C+J0WD+rJGVO+UsjhMB8qC9HvzuCzS9+FWDDRr7XXoH2xTeEqGaEIIez0wtX/0MrrheatxgS3uinjYBlmhapGNW1Mxo7+OC92p/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706213597; c=relaxed/simple;
-	bh=kjBeNGNqVDJc9FrnmImpOQIUdMHiixU4ZSE2URt8uJM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=YQsSoNKqr7tAjcT7sgilbI6nZRIC9TU+FSW6El7UIGEQof6hnofXGF7qY8JOsU8PUUOnFcWO76GlwNBI+FcUzPk3ABg19eKisHxpbAIOgAh5HZUFd35wEykrPnu6NgVLXftIgBur9fk1h5f1juESHemy9CZR1Xg/ZV+uIXn0v3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=refS9tKZ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=/0aUNS7m; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1706213591;
+	s=arc-20240116; t=1706213795; c=relaxed/simple;
+	bh=i63TgTWD8kL/R1vxwHY8bfZpaTN1p4slFVLxqc2gfq0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=amrK58lQdhMUFS1cV2qSljC+GldQ3xeboWHwk261IqvDlHQlQQ0jSLQ3wI7DkE5Q6ya9g5ke/ow+aO3/d3qIm1TfOv5CDGSMtlLiV16Iyt3pi3Rm89BswuTxcctvHYt3vmRt0KAP6utdCisnjiO6Klp7Z4IFmdWZPztSSc4qlBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=fail (0-bit key) header.d=marliere.net header.i=@marliere.net header.b=B3gd0AC4 reason="key not found in DNS"; arc=none smtp.client-ip=209.85.166.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-362a24b136fso3027735ab.3;
+        Thu, 25 Jan 2024 12:16:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706213793; x=1706818593;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eP6syHlZSO3MV3pmkKXM2pg/pvxUb+MsM9lc01Ms13Q=;
+        b=WJP4sJtIWxUVnP2pbEARL1jnSnBJo3q5/k8vwmaGQHafWaekcp/aaX93V1VqLPORfM
+         QN3GZlbPd3KUF9fqmKN6QGVlaC0hcmFgqpsGwQPB22rwSE51ar0RXSC/npDCvIUn/Dxm
+         i5hmE/LP09qozu3RkPP/8tfgGJAf9RfL5A6+y+vD5tOos4+hvGndKoTG3PNAZaNpABRc
+         ZKeSxdntJz8uLk64HyIX29mBdNvykQX5JKLaiZjhfDC/Qxq8+bqGXHL3PI2udGagXjjs
+         /t3OYms/Gtx0gFlRClCcPmxAuCBwkTMZZ5POruyvtvAiplN1gSiJ6qFV9n/Q4BtTMFOr
+         zTKQ==
+X-Gm-Message-State: AOJu0YykGftnpmAXPuONLz8xPfag+BrfAAnwhzeJY61j5MLHfW5Yk37l
+	DB4j61im/dHUz9eyYQatimbP5DeEg1ZtfACGTGX5KL0GT5En7TMY
+X-Google-Smtp-Source: AGHT+IHxPtb3gemZL68RPGRFPyVoqJoCsNaZAO3s3hHsN1WkVpS0ddihT3XcIZP6lrMtqRpKegrMcg==
+X-Received: by 2002:a92:cb44:0:b0:35f:fb45:a9c9 with SMTP id f4-20020a92cb44000000b0035ffb45a9c9mr308268ilq.31.1706213793176;
+        Thu, 25 Jan 2024 12:16:33 -0800 (PST)
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id y21-20020a656c15000000b005d24e5ae4e3sm4531831pgu.2.2024.01.25.12.16.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jan 2024 12:16:32 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2023; t=1706213791;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PaIo5QJEoCWgfuIV2H0XngC0pt3mav+j7mul9cTp4+o=;
-	b=refS9tKZshoR9HF/jitIxpdw4PBP0KN2fSJDL50TBNSSE4nLT1xt/CiU8WD/qIUovzHFTj
-	Dc1+uMR0mM/KNlOw2Jvc33Eg2sUO4YQugup7mPrKBJK+oRlVqLAh7gD4b37QPoYmblM+XQ
-	DQp3np2HM00y5lR8canjfuWqIcbVb1nBYsJdJgolXNBnHPesw+30bKJr2n+Fcxgg1LSpVZ
-	TEHNSqlzaD3Xi0LltGlhaMWvOF/jHp7XMZbJ+eY+Da8jCC8l0vuxi35Ugn0Mu/WQktYAfX
-	slvgSGHkC8u7+hGZkQxP3/6w39IISbYUt9i3xk04KUEEfRDoK8x5VWsuqSJnXQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1706213591;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PaIo5QJEoCWgfuIV2H0XngC0pt3mav+j7mul9cTp4+o=;
-	b=/0aUNS7maUI9XK8hviQ15XXGp7RCYbM88im65y6z+TXz1RgzScO+jbYOBdJsp5cGHutSS2
-	MYHbkz2Agp+po5Ag==
-To: Simon Horman <horms@kernel.org>, Peter Hilber
- <peter.hilber@opensynergy.com>
-Cc: linux-kernel@vger.kernel.org, "D, Lakshmi Sowjanya"
- <lakshmi.sowjanya.d@intel.com>, jstultz@google.com, giometti@enneenne.com,
- corbet@lwn.net, andriy.shevchenko@linux.intel.com, "Dong, Eddie"
- <eddie.dong@intel.com>, "Hall, Christopher S"
- <christopher.s.hall@intel.com>, Sean Christopherson <seanjc@google.com>,
- Paolo Bonzini <pbonzini@redhat.com>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, Wanpeng Li
- <wanpengli@tencent.com>, Vitaly Kuznetsov <vkuznets@redhat.com>, Mark
- Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>, Daniel
- Lezcano <daniel.lezcano@linaro.org>, Richard Cochran
- <richardcochran@gmail.com>, kvm@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [RFC PATCH v2 2/7] x86/tsc: Add clocksource ID, set
- system_counterval_t.cs_id
-In-Reply-To: <20231224162709.GA230301@kernel.org>
-References: <20231215220612.173603-1-peter.hilber@opensynergy.com>
- <20231215220612.173603-3-peter.hilber@opensynergy.com>
- <20231224162709.GA230301@kernel.org>
-Date: Thu, 25 Jan 2024 21:13:10 +0100
-Message-ID: <87le8dgoix.ffs@tglx>
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=eP6syHlZSO3MV3pmkKXM2pg/pvxUb+MsM9lc01Ms13Q=;
+	b=B3gd0AC4FZSl7bJxRkmclm8eUbSczLn71mlejCR2ttryi7vNturVwWw4A9thasFlb4y+WT
+	VOEc+x/PijmRS6YDFRlTLzZ1VS1qlAScR7acI//w4YaWW1QxD2ShkbjDTli9Po3seZqISK
+	w/lS3R5lP+QrGZyfTr0Dqg9JcA+6/g1OnBC1ifGd0ImiNLeIuPMXeEGikozYn57ku8UhIv
+	Xm6qCPnCriSF6bzZqnn+XwJYRRUuBn/SNrhfuSywoQ0ZkwK+y8nQTHFgT1FfmQHItiEs+E
+	Y0lVX/KeRja4S9pF9vsEw3MA63sg+OZUATNyGdqn2ey7WoCsQ+nIro7fMehKcQ==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+To: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: "Ricardo B. Marliere" <ricardo@marliere.net>,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] add trace_seq_reset function
+Date: Thu, 25 Jan 2024 17:16:18 -0300
+Message-ID: <20240125201621.143968-1-ricardo@marliere.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Sun, Dec 24 2023 at 16:27, Simon Horman wrote:
-> On Fri, Dec 15, 2023 at 11:06:07PM +0100, Peter Hilber wrote:
->> @@ -1327,12 +1334,15 @@ EXPORT_SYMBOL(convert_art_to_tsc);
->>   * that this flag is set before conversion to TSC is attempted.
->>   *
->>   * Return:
->> - * struct system_counterval_t - system counter value with the pointer to the
->> + * struct system_counterval_t - system counter value with the ID of the
->>   *	corresponding clocksource
->>   *	@cycles:	System counter value
->>   *	@cs:		Clocksource corresponding to system counter value. Used
->>   *			by timekeeping code to verify comparability of two cycle
->>   *			values.
->> + *	@cs_id:		Clocksource ID corresponding to system counter value.
->> + *			Used by timekeeping code to verify comparability of two
->> + *			cycle values.
->
-> None of the documented parameters to convert_art_ns_to_tsc() above
-> correspond to the parameters of convert_art_ns_to_tsc() below.
+This series is a prerequisite for a later effort of making trace_seq more
+flexible about its buffer size. To achieve that, initializing and resetting
+the buffers need to be differentiated.
 
-Obviously not because they document the return value. The sole argument
-of the function @art_ns is documented correctly.
+Ricardo B. Marliere (3):
+  tracing: add trace_seq_reset function
+  tracing: initialize trace_seq buffers
+  tracing: convert __trace_seq_init to use WARN_ON_ONCE
 
-> The same patch that corrects the kernel doc for convert_art_ns_to_tsc()
-> could also correct the kernel doc for tsc_refine_calibration_work()
-> by documenting it's work parameter.
+ include/linux/trace_seq.h    | 11 +++++++++++
+ include/trace/trace_events.h |  2 +-
+ kernel/trace/trace.c         | 24 +++++++++++++++++++-----
+ kernel/trace/trace_output.c  |  2 +-
+ kernel/trace/trace_seq.c     |  4 ++--
+ 5 files changed, 34 insertions(+), 9 deletions(-)
 
-That's a separate cleanup. Feel free to send a patch for that.
+-- 
+2.43.0
 
-Thanks,
-
-        tglx
 
