@@ -1,79 +1,76 @@
-Return-Path: <linux-kernel+bounces-39107-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39108-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 534BD83CAF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:27:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB0A483CAF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:27:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8ED81F20FD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:27:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2270FB27360
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:27:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F32A413E237;
-	Thu, 25 Jan 2024 18:21:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3669513EFEF;
+	Thu, 25 Jan 2024 18:21:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="CQKQRypc";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Mmv/DgWE"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="PJNOljaJ";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="wDK5TCeG"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A3DA13B7BB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF71313BE98;
 	Thu, 25 Jan 2024 18:21:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706206899; cv=none; b=lnzw9wbwhFQbIvdIPm9qyUf4yGaJ8qkZXKnAbujC5MHWpAwjJoHMWGa6HecYsBOtcfZKKNkBzSmDfAG2OWN963bLI2mqC1x9pNNnItmIZ8zhO9JY6Rxzwu5f4zf8Hvjllmj5yDPHyQcx7WQU9+jwvZ9ped1aR/PC0sIRgrSQ0ug=
+	t=1706206900; cv=none; b=V15cyOYxzsADhpbezQ9x2W5qGVshQLeCCyVAaTrzlOpazrellJVv4Hgt/Fb8qVBhJCmu+a9KP7JCNi/rTB02pLl0lfytj4vvQfO9ZbEPOeWuISSbbbFBl5yTxiZCYsnR/yJiLWrT5RizWE+zL499wbjNH/qpeipdi9dqIaveORk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706206899; c=relaxed/simple;
-	bh=AFyo1Gorwvt4Rx4HYqfT1N7z/BgQjeYi8Axpr3YcdIQ=;
+	s=arc-20240116; t=1706206900; c=relaxed/simple;
+	bh=V9cSUwT+VGk+A6Ux1blRgQ4N12B0F9vHolcuscPdx/I=;
 	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=hECwL13ZgyF1PDwi8MhxxBHzOEipU2E2a0k16RylvdA7ZrW//yp3BWG4y6L8mMzTx/1TvI5BThvt4mO5+VAjqM9bc+3BxokfSIzoYYr7IhNr3Cs9nba/Ycw+u2aiArQ466yG1KMXL1jnCUg092p//c95i0p8XuYr2xJnUBl8nZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=CQKQRypc; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Mmv/DgWE; arc=none smtp.client-ip=193.142.43.55
+	 Message-ID:Content-Type; b=KrrmQ8dHx5EU9Ois635td9UsjfFpTw/2Zk9JfyljjDXGpULKvVm5C37kitcNzLukwmy6QeeQGXUVwX8Bj4xJeXS5UWM9X9ZQEmi0jKtjfzsYCCOeBFrDCHZKsn0/V1eQtbh4IEEd/v9glSU1frPWyESPqochIHmPPiPkLMHnp9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=PJNOljaJ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=wDK5TCeG; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 25 Jan 2024 18:21:34 -0000
+Date: Thu, 25 Jan 2024 18:21:35 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1706206895;
+	s=2020; t=1706206896;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=xeYB8FHDN9j5zBNpGak6uTANmomo9rFaegdte5z2Vx4=;
-	b=CQKQRypcWFKtiwpwaQ9D89Yj4+yCJJxXAqgMX2jbss5hWcP9PzkIaGyWqvs4fywmYjTCRp
-	5dTKpjpMwd11yyweoqy+VStEzpn6iqVqxoaeNautVob4sadTqDr8o8AnekcDI9ir/4OIOM
-	cUr7q/h+0etAI0IRDQoIFAO4u8jdfU04T+KMKYqSfbNGwhFJzz8esCe4UeNQzYyPyje3KT
-	laM+KN+VUDBj9AwxTakDkm7azFAPEfpX/tNZkLQp23YNpZJHXyrIsY/gz4UN5aHk2ygEZM
-	2JvrX0aiXN8YUAbPZUX5P3MlvR1WTWXkL1xq355hq0VQsNAbwdal++X3udwV3g==
+	bh=wHtsBYfUeADAj+UUq1y6wKXx5FxG+y3myG9XqCvyKoM=;
+	b=PJNOljaJw9BZ9DiMslfnhmvUlS4xiM++Tj5IegDGLa7ggQKDLsWyH0PbW5JnQLg/R1ll78
+	t5bh+i1WcYVijfqftLpHXezWzVUL/Yj6hD4WSlYOQF8zzycSM6FxNpUA5Vd/+clcWFSMXD
+	w63mpBCNOeGld9b6ZE9RiKp5nh7oMiiAarHMNGcfGrTqpbtEAyfbO7rzUmvfSlRIgtLZ5C
+	OxgVrGtHqCfYciF4F5rknp+p8fLkLc6vFkCrrT/e6Gj8nJCO2zVQuKt2nVZkE6+WRnbsWB
+	M6RRqGLmfofjwtJMOlP3QpScYamzewlVKZdI0Yd/AoLCXupcfxRMk8+e5u4RHQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1706206895;
+	s=2020e; t=1706206896;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=xeYB8FHDN9j5zBNpGak6uTANmomo9rFaegdte5z2Vx4=;
-	b=Mmv/DgWEWv+1f5409KlZjZ38gwgCtZ+yfqKQNDRcvdNZNxW/KW9+SKWjw5nZ/igmqiQF9A
-	uhHGm59puOyLaLDA==
-From: "tip-bot2 for H. Peter Anvin (Intel)" <tip-bot2@linutronix.de>
+	bh=wHtsBYfUeADAj+UUq1y6wKXx5FxG+y3myG9XqCvyKoM=;
+	b=wDK5TCeGFIeWlhiG1qlFs3JMMK6Jkrfk4QD5IKssIo2y29aPZud1OrydZSwgKf9mGtIQqB
+	t8TVqoyHqTWDgwDg==
+From: "tip-bot2 for Xin Li" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject:
- [tip: x86/fred] x86/opcode: Add ERET[US] instructions to the x86 opcode map
-Cc: "H. Peter Anvin (Intel)" <hpa@zytor.com>, Xin Li <xin3.li@intel.com>,
- Thomas Gleixner <tglx@linutronix.de>, Shan Kang <shan.kang@intel.com>,
- "Masami Hiramatsu (Google)" <mhiramat@kernel.org>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20231205105030.8698-10-xin3.li@intel.com>
-References: <20231205105030.8698-10-xin3.li@intel.com>
+Subject: [tip: x86/fred] x86/fred: Disable FRED by default in its early stage
+Cc: Xin Li <xin3.li@intel.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Shan Kang <shan.kang@intel.com>, x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20231205105030.8698-9-xin3.li@intel.com>
+References: <20231205105030.8698-9-xin3.li@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170620689481.398.7092495852376627135.tip-bot2@tip-bot2>
+Message-ID: <170620689542.398.3437920556925908485.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -83,57 +80,53 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the x86/fred branch of tip:
 
-Commit-ID:     decaf17d456db9546063999c3a38344a56a2e903
-Gitweb:        https://git.kernel.org/tip/decaf17d456db9546063999c3a38344a56a2e903
-Author:        H. Peter Anvin (Intel) <hpa@zytor.com>
-AuthorDate:    Tue, 05 Dec 2023 02:49:58 -08:00
+Commit-ID:     7a1d75084df087dcae703d70a49274a3982e3681
+Gitweb:        https://git.kernel.org/tip/7a1d75084df087dcae703d70a49274a3982e3681
+Author:        Xin Li <xin3.li@intel.com>
+AuthorDate:    Tue, 05 Dec 2023 02:49:57 -08:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Thu, 25 Jan 2024 19:10:30 +01:00
 
-x86/opcode: Add ERET[US] instructions to the x86 opcode map
+x86/fred: Disable FRED by default in its early stage
 
-ERETU returns from an event handler while making a transition to ring 3,
-and ERETS returns from an event handler while staying in ring 0.
+To enable FRED, a new kernel command line option "fred" needs to be added.
 
-Add instruction opcodes used by ERET[US] to the x86 opcode map; opcode
-numbers are per FRED spec v5.0.
-
-Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
 Signed-off-by: Xin Li <xin3.li@intel.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Tested-by: Shan Kang <shan.kang@intel.com>
-Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Link: https://lore.kernel.org/r/20231205105030.8698-10-xin3.li@intel.com
+Link: https://lore.kernel.org/r/20231205105030.8698-9-xin3.li@intel.com
 
 ---
- arch/x86/lib/x86-opcode-map.txt       | 2 +-
- tools/arch/x86/lib/x86-opcode-map.txt | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ Documentation/admin-guide/kernel-parameters.txt | 3 +++
+ arch/x86/kernel/cpu/common.c                    | 3 +++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/arch/x86/lib/x86-opcode-map.txt b/arch/x86/lib/x86-opcode-map.txt
-index 1efe1d9..12af572 100644
---- a/arch/x86/lib/x86-opcode-map.txt
-+++ b/arch/x86/lib/x86-opcode-map.txt
-@@ -1052,7 +1052,7 @@ EndTable
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 31b3a25..c6c1a2c 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -1539,6 +1539,9 @@
+ 			Warning: use of this parameter will taint the kernel
+ 			and may cause unknown problems.
  
- GrpTable: Grp7
- 0: SGDT Ms | VMCALL (001),(11B) | VMLAUNCH (010),(11B) | VMRESUME (011),(11B) | VMXOFF (100),(11B) | PCONFIG (101),(11B) | ENCLV (000),(11B) | WRMSRNS (110),(11B)
--1: SIDT Ms | MONITOR (000),(11B) | MWAIT (001),(11B) | CLAC (010),(11B) | STAC (011),(11B) | ENCLS (111),(11B)
-+1: SIDT Ms | MONITOR (000),(11B) | MWAIT (001),(11B) | CLAC (010),(11B) | STAC (011),(11B) | ENCLS (111),(11B) | ERETU (F3),(010),(11B) | ERETS (F2),(010),(11B)
- 2: LGDT Ms | XGETBV (000),(11B) | XSETBV (001),(11B) | VMFUNC (100),(11B) | XEND (101)(11B) | XTEST (110)(11B) | ENCLU (111),(11B)
- 3: LIDT Ms
- 4: SMSW Mw/Rv
-diff --git a/tools/arch/x86/lib/x86-opcode-map.txt b/tools/arch/x86/lib/x86-opcode-map.txt
-index 1efe1d9..12af572 100644
---- a/tools/arch/x86/lib/x86-opcode-map.txt
-+++ b/tools/arch/x86/lib/x86-opcode-map.txt
-@@ -1052,7 +1052,7 @@ EndTable
++	fred		[X86-64]
++			Enable flexible return and event delivery
++
+ 	ftrace=[tracer]
+ 			[FTRACE] will set and start the specified tracer
+ 			as early as possible in order to facilitate early
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index 0b97bcd..2121ec6 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -1484,6 +1484,9 @@ static void __init cpu_parse_early_param(void)
+ 	char *argptr = arg, *opt;
+ 	int arglen, taint = 0;
  
- GrpTable: Grp7
- 0: SGDT Ms | VMCALL (001),(11B) | VMLAUNCH (010),(11B) | VMRESUME (011),(11B) | VMXOFF (100),(11B) | PCONFIG (101),(11B) | ENCLV (000),(11B) | WRMSRNS (110),(11B)
--1: SIDT Ms | MONITOR (000),(11B) | MWAIT (001),(11B) | CLAC (010),(11B) | STAC (011),(11B) | ENCLS (111),(11B)
-+1: SIDT Ms | MONITOR (000),(11B) | MWAIT (001),(11B) | CLAC (010),(11B) | STAC (011),(11B) | ENCLS (111),(11B) | ERETU (F3),(010),(11B) | ERETS (F2),(010),(11B)
- 2: LGDT Ms | XGETBV (000),(11B) | XSETBV (001),(11B) | VMFUNC (100),(11B) | XEND (101)(11B) | XTEST (110)(11B) | ENCLU (111),(11B)
- 3: LIDT Ms
- 4: SMSW Mw/Rv
++	if (!cmdline_find_option_bool(boot_command_line, "fred"))
++		setup_clear_cpu_cap(X86_FEATURE_FRED);
++
+ #ifdef CONFIG_X86_32
+ 	if (cmdline_find_option_bool(boot_command_line, "no387"))
+ #ifdef CONFIG_MATH_EMULATION
 
