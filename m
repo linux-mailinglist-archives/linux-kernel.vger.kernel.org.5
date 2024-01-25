@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-39113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-39114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69B2783CAFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:29:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D94D83CAFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 19:29:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EDF01C25EB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:29:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D11E7B217D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jan 2024 18:29:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26EAC1420B2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BA121420C4;
 	Thu, 25 Jan 2024 18:21:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Ott5QImr";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="O1nYAqt0"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="G0V6/xWQ";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="qlVxaO2O"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C6E213EFE4;
-	Thu, 25 Jan 2024 18:21:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B571413F012;
+	Thu, 25 Jan 2024 18:21:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706206903; cv=none; b=mJwwSXlw7B9Smm+PNG3Ka1AGUp1clty84j0nryPGMp1jUxpC/xoz1VAuxO8tKKkb0uAAihtE508s2S8+gtMSut2ixjt5gamaFnWSckwwL5c4xW2RaUaOfg7VnmHt8lI+4hkWeglLE352pJu0++CwvGcnHaweql+RKayGlLGR40U=
+	t=1706206903; cv=none; b=i27qS0GPFROZWU0opaCY3RuKRRIRGZjLAIYlJmyp754PsBNFwRmMKSymUTQXIa73LqkIAsXcEXBt49mfWzSBp2IRV5crVadreAJaAuNZzQAnFQAk73kMwbKrK2qkQSruMhkJFEyIFY4ye5JbwNykJ9PHZg/smLzgBqE74Mq5mfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706206903; c=relaxed/simple;
-	bh=tP+RtK3KGlDtU2n9Hz6fyToQQQhH7l9u6RLL/rUJN8U=;
+	bh=Js9akX23sYN+9s+C7AEpCw/MXLlJDhZRj3+E8qN/PqE=;
 	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=HEUzeTTj0a/94/iUSku0NFybCCFMChlqKHHXj1Pqg8rEhvl8+KG58UF3kXfeoJO/imsMNhmO75Ytioj5rFdNFRy7uRWeDf+gSeW6KW14rwUjx3JtJ+YTo5WK6wDUMk339Sv2UBLYpzRO4gOYttVOvQm/FHJfL3lF8uuTgcjnBNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Ott5QImr; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=O1nYAqt0; arc=none smtp.client-ip=193.142.43.55
+	 Message-ID:Content-Type; b=gmPeFmyNjzzAc2yjKx0FPFDZN/EnhMIwPcKNoaIWUOKPMp9m//Ly/qJUDjUQepvljC3ja+yGjkxlt2WXSd7xFisnh19Y49PRB4EWSvBxZRKQcqmXg+r3ZZwyZVL5Jvykp/M0teprLkK9DBvWTwXj7SapRRbi3copkA6MH5kLk0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=G0V6/xWQ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=qlVxaO2O; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 25 Jan 2024 18:21:38 -0000
+Date: Thu, 25 Jan 2024 18:21:39 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1706206899;
+	s=2020; t=1706206900;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vNoeFfqkZRiYsWsg8X53S1d/fSk6ZpmrreWObpdwhdU=;
-	b=Ott5QImrLd0e1gO2l35TRKFotL0aL4Eq+rNYRtloWmlJYf+3o5/IpwYHDTDi3+P8fkt06g
-	hKlszGZ9tVnfNZmhbBz+0znNzEi8unZXdrZrx6sgpcXvgIaCh6fF1Wob4nlY8iaGG3AJkl
-	NXkma2jOn7jyoKXBUtLGIZX7G+FoJ542vMBps/95MHD6hdH0YfiutX2GH3ESq8mafl/dDV
-	ho/qxCIAEFgWxhOSZlDZLLf0RucFarYdBJjdvXOseRDMNnX/xtnYRJXFPCkxnsQqckpNZf
-	YqG17d5zSo5QaimRZnHEAeZAkPg87oLDWK5iZqEs/cfT6AlUmGapCrk76yoBwQ==
+	bh=85nOS2caKehYGK2OBHSWfa6Y3O0YVF4NpuFopoRvImA=;
+	b=G0V6/xWQyb9O4Wj4EjMI3XzBnop3MiPs/BCZXv1qh+rKueTNyqSEwC0telyK9gLthUynBg
+	Keg2MHJID+dzxsYLYDEjjs4yhpdHmWDuO3khVnFdO6s52gBnKRrY/l7IDLxGg5powqLO29
+	0lc/z+DFwp5abTuQR0i1VvRHJZXUq+lJJDxmNocopJOB+HmKi59IXPRfnO8ICQ9ShKkYXd
+	r7LXogQs5szg4KQX2lhp9CtnprWCncBi8h9eR5aklhDocQKhZXi6fkh1apJmEdlxyy/uI9
+	9mAl5bfG71TBbiXih8jQvSOmqyXqd0n4XdS6MkoPkdlymThaDS+qaBwkUle2ww==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1706206899;
+	s=2020e; t=1706206900;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vNoeFfqkZRiYsWsg8X53S1d/fSk6ZpmrreWObpdwhdU=;
-	b=O1nYAqt0wpughfmuTfCO2Iyx8Ma8yBy9zre0o/PDqdmaYVwQ/3rQcZflnHZzrJvErVOL+L
-	caD0y5RO9AxYanBw==
+	bh=85nOS2caKehYGK2OBHSWfa6Y3O0YVF4NpuFopoRvImA=;
+	b=qlVxaO2O/TovKVn9E+8T1n4AYMbLt0xBqLOPAbBZKrgNWDQi0BdpQOsxhCxQ5cYp9IMd5V
+	ugPa15kNskJjLyAg==
 From: "tip-bot2 for Xin Li" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/fred] x86/trapnr: Add event type macros to <asm/trapnr.h>
-Cc: "H. Peter Anvin (Intel)" <hpa@zytor.com>, Xin Li <xin3.li@intel.com>,
- Thomas Gleixner <tglx@linutronix.de>, Shan Kang <shan.kang@intel.com>,
- x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231205105030.8698-4-xin3.li@intel.com>
-References: <20231205105030.8698-4-xin3.li@intel.com>
+Subject:
+ [tip: x86/fred] x86/entry: Remove idtentry_sysvec from entry_{32,64}.S
+Cc: Xin Li <xin3.li@intel.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Shan Kang <shan.kang@intel.com>, x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20231205105030.8698-3-xin3.li@intel.com>
+References: <20231205105030.8698-3-xin3.li@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170620689849.398.17892249218854161455.tip-bot2@tip-bot2>
+Message-ID: <170620689912.398.7855201534374370406.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -81,88 +81,74 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the x86/fred branch of tip:
 
-Commit-ID:     8df719341e8556f1e2bfa0f78fc433db6eba110b
-Gitweb:        https://git.kernel.org/tip/8df719341e8556f1e2bfa0f78fc433db6eba110b
+Commit-ID:     3167b37f82ea8f9da156ff4edf100756bbc9277e
+Gitweb:        https://git.kernel.org/tip/3167b37f82ea8f9da156ff4edf100756bbc9277e
 Author:        Xin Li <xin3.li@intel.com>
-AuthorDate:    Tue, 05 Dec 2023 02:49:52 -08:00
+AuthorDate:    Tue, 05 Dec 2023 02:49:51 -08:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Thu, 25 Jan 2024 19:10:29 +01:00
 
-x86/trapnr: Add event type macros to <asm/trapnr.h>
+x86/entry: Remove idtentry_sysvec from entry_{32,64}.S
 
-Intel VT-x classifies events into eight different types, which is inherited
-by FRED for event identification. As such, event types becomes a common x86
-concept, and should be defined in a common x86 header.
+idtentry_sysvec is really just DECLARE_IDTENTRY defined in
+<asm/idtentry.h>, no need to define it separately.
 
-Add event type macros to <asm/trapnr.h>, and use them in <asm/vmx.h>.
-
-Suggested-by: H. Peter Anvin (Intel) <hpa@zytor.com>
 Signed-off-by: Xin Li <xin3.li@intel.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Tested-by: Shan Kang <shan.kang@intel.com>
-Link: https://lore.kernel.org/r/20231205105030.8698-4-xin3.li@intel.com
+Link: https://lore.kernel.org/r/20231205105030.8698-3-xin3.li@intel.com
 
 ---
- arch/x86/include/asm/trapnr.h | 12 ++++++++++++
- arch/x86/include/asm/vmx.h    | 17 +++++++++--------
- 2 files changed, 21 insertions(+), 8 deletions(-)
+ arch/x86/entry/entry_32.S       | 4 ----
+ arch/x86/entry/entry_64.S       | 8 --------
+ arch/x86/include/asm/idtentry.h | 2 +-
+ 3 files changed, 1 insertion(+), 13 deletions(-)
 
-diff --git a/arch/x86/include/asm/trapnr.h b/arch/x86/include/asm/trapnr.h
-index f5d2325..8d1154c 100644
---- a/arch/x86/include/asm/trapnr.h
-+++ b/arch/x86/include/asm/trapnr.h
-@@ -2,6 +2,18 @@
- #ifndef _ASM_X86_TRAPNR_H
- #define _ASM_X86_TRAPNR_H
+diff --git a/arch/x86/entry/entry_32.S b/arch/x86/entry/entry_32.S
+index c73047b..89a7ec0 100644
+--- a/arch/x86/entry/entry_32.S
++++ b/arch/x86/entry/entry_32.S
+@@ -649,10 +649,6 @@ SYM_CODE_START_LOCAL(asm_\cfunc)
+ SYM_CODE_END(asm_\cfunc)
+ .endm
  
-+/*
-+ * Event type codes used by FRED, Intel VT-x and AMD SVM
-+ */
-+#define EVENT_TYPE_EXTINT	0	// External interrupt
-+#define EVENT_TYPE_RESERVED	1
-+#define EVENT_TYPE_NMI		2	// NMI
-+#define EVENT_TYPE_HWEXC	3	// Hardware originated traps, exceptions
-+#define EVENT_TYPE_SWINT	4	// INT n
-+#define EVENT_TYPE_PRIV_SWEXC	5	// INT1
-+#define EVENT_TYPE_SWEXC	6	// INTO, INT3
-+#define EVENT_TYPE_OTHER	7	// FRED SYSCALL/SYSENTER, VT-x MTF
-+
- /* Interrupts/Exceptions */
+-.macro idtentry_sysvec vector cfunc
+-	idtentry \vector asm_\cfunc \cfunc has_error_code=0
+-.endm
+-
+ /*
+  * Include the defines which emit the idt entries which are shared
+  * shared between 32 and 64 bit and emit the __irqentry_text_* markers
+diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+index c40f89a..29ce68f 100644
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -370,14 +370,6 @@ SYM_CODE_END(\asmsym)
+ 	idtentry \vector asm_\cfunc \cfunc has_error_code=1
+ .endm
  
- #define X86_TRAP_DE		 0	/* Divide-by-zero */
-diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
-index 0e73616..4dba173 100644
---- a/arch/x86/include/asm/vmx.h
-+++ b/arch/x86/include/asm/vmx.h
-@@ -17,6 +17,7 @@
- #include <linux/types.h>
+-/*
+- * System vectors which invoke their handlers directly and are not
+- * going through the regular common device interrupt handling code.
+- */
+-.macro idtentry_sysvec vector cfunc
+-	idtentry \vector asm_\cfunc \cfunc has_error_code=0
+-.endm
+-
+ /**
+  * idtentry_mce_db - Macro to generate entry stubs for #MC and #DB
+  * @vector:		Vector number
+diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
+index 13639e5..e9f71b3 100644
+--- a/arch/x86/include/asm/idtentry.h
++++ b/arch/x86/include/asm/idtentry.h
+@@ -447,7 +447,7 @@ __visible noinstr void func(struct pt_regs *regs,			\
  
- #include <uapi/asm/vmx.h>
-+#include <asm/trapnr.h>
- #include <asm/vmxfeatures.h>
+ /* System vector entries */
+ #define DECLARE_IDTENTRY_SYSVEC(vector, func)				\
+-	idtentry_sysvec vector func
++	DECLARE_IDTENTRY(vector, func)
  
- #define VMCS_CONTROL_BIT(x)	BIT(VMX_FEATURE_##x & 0x1f)
-@@ -374,14 +375,14 @@ enum vmcs_field {
- #define VECTORING_INFO_DELIVER_CODE_MASK    	INTR_INFO_DELIVER_CODE_MASK
- #define VECTORING_INFO_VALID_MASK       	INTR_INFO_VALID_MASK
- 
--#define INTR_TYPE_EXT_INTR              (0 << 8) /* external interrupt */
--#define INTR_TYPE_RESERVED              (1 << 8) /* reserved */
--#define INTR_TYPE_NMI_INTR		(2 << 8) /* NMI */
--#define INTR_TYPE_HARD_EXCEPTION	(3 << 8) /* processor exception */
--#define INTR_TYPE_SOFT_INTR             (4 << 8) /* software interrupt */
--#define INTR_TYPE_PRIV_SW_EXCEPTION	(5 << 8) /* ICE breakpoint - undocumented */
--#define INTR_TYPE_SOFT_EXCEPTION	(6 << 8) /* software exception */
--#define INTR_TYPE_OTHER_EVENT           (7 << 8) /* other event */
-+#define INTR_TYPE_EXT_INTR		(EVENT_TYPE_EXTINT << 8)	/* external interrupt */
-+#define INTR_TYPE_RESERVED		(EVENT_TYPE_RESERVED << 8)	/* reserved */
-+#define INTR_TYPE_NMI_INTR		(EVENT_TYPE_NMI << 8)		/* NMI */
-+#define INTR_TYPE_HARD_EXCEPTION	(EVENT_TYPE_HWEXC << 8)		/* processor exception */
-+#define INTR_TYPE_SOFT_INTR		(EVENT_TYPE_SWINT << 8)		/* software interrupt */
-+#define INTR_TYPE_PRIV_SW_EXCEPTION	(EVENT_TYPE_PRIV_SWEXC << 8)	/* ICE breakpoint */
-+#define INTR_TYPE_SOFT_EXCEPTION	(EVENT_TYPE_SWEXC << 8)		/* software exception */
-+#define INTR_TYPE_OTHER_EVENT		(EVENT_TYPE_OTHER << 8)		/* other event */
- 
- /* GUEST_INTERRUPTIBILITY_INFO flags. */
- #define GUEST_INTR_STATE_STI		0x00000001
+ #ifdef CONFIG_X86_64
+ # define DECLARE_IDTENTRY_MCE(vector, func)				\
 
